@@ -6,87 +6,327 @@ namespace UnityGAS
 {
     public class GameplayEffectRunner : MonoBehaviour
     {
-        private readonly List<ActiveGameplayEffect> activeEffects = new List<ActiveGameplayEffect>();
-        private TagSystem tagSystem;
+        private readonly List<ActiveGameplayEffect> activeEffects = new();
+        [SerializeField] private GameplayCueManager cueManager;
 
         private void Awake()
         {
-            tagSystem = GetComponent<TagSystem>();
+#if UNITY_2023_1_OR_NEWER
+            if (cueManager == null) cueManager = Object.FindAnyObjectByType<GameplayCueManager>();
+#else
+            if (cueManager == null) cueManager = FindObjectOfType<GameplayCueManager>();
+#endif
         }
 
         private void Update()
         {
-            if (activeEffects.Count == 0) return;
-
             for (int i = activeEffects.Count - 1; i >= 0; i--)
             {
-                var activeEffect = activeEffects[i];
-                activeEffect.TimeRemaining -= Time.deltaTime;
-                if (activeEffect.TimeRemaining <= 0)
+                var ae = activeEffects[i];
+                ae.TimeRemaining -= Time.deltaTime;
+                if (ae.TimeRemaining <= 0f)
                 {
-                    EndEffect(activeEffect);
+                    EndEffect(ae);
                     activeEffects.RemoveAt(i);
                 }
             }
         }
 
+        // -------------------------
+        // Query helpers (Cooldown/Relic 등에 필요)
+        // -------------------------
+        public bool HasActiveEffect(GameplayEffect effect, GameObject target)
+        {
+            if (effect == null || target == null) return false;
+            return activeEffects.Any(e => e.Effect == effect && e.Target == target && e.TimeRemaining > 0f);
+        }
+
+        public float GetRemainingTime(GameplayEffect effect, GameObject target)
+        {
+            if (effect == null || target == null) return 0f;
+            float max = 0f;
+            for (int i = 0; i < activeEffects.Count; i++)
+            {
+                var e = activeEffects[i];
+                if (e.Target == target && e.Effect == effect)
+                    if (e.TimeRemaining > max) max = e.TimeRemaining;
+            }
+            return max;
+        }
+
+        // -------------------------
+        // Non-Spec Apply (기존)
+        // -------------------------
         public void ApplyEffect(GameplayEffect effect, GameObject target, GameObject instigator)
         {
             if (effect == null || target == null) return;
 
-            var existingEffect = activeEffects.FirstOrDefault(e => e.Effect == effect && e.Target == target);
+            var existing = activeEffects.FirstOrDefault(e => e.Effect == effect && e.Target == target);
 
-            if (existingEffect != null)
+            if (existing != null)
             {
-                if (effect.canStack && existingEffect.StackCount < effect.maxStacks)
-                {
-                    existingEffect.StackCount++;
-                }
-                // Always refresh duration
-                existingEffect.TimeRemaining = effect.duration;
-                // Re-apply effect to update modifier values with new stack count
-                effect.Apply(target, instigator, existingEffect.StackCount);
+                if (effect.canStack && existing.StackCount < effect.maxStacks)
+                    existing.StackCount++;
+
+                existing.TimeRemaining = effect.duration;
+                existing.Instigator = instigator;
+                existing.Causer = instigator;
+                existing.SourceObject = effect;
+                existing.Context = null;
+
+                effect.Apply(target, instigator, existing.StackCount);
+
+                FireEffectExecuteCue(effect, instigator, target, effect, existing.StackCount, null);
+                if (effect.cueWhileActive != null)
+                    cueManager?.AddCue(effect.cueWhileActive, BuildCueParams(instigator, instigator, target, effect, existing.StackCount, null));
+                return;
             }
+
+            if (effect.IsInstant)
+            {
+                effect.Apply(target, instigator);
+                FireEffectExecuteCue(effect, instigator, target, effect, 1f, null);
+                return;
+            }
+
+            var ae = new ActiveGameplayEffect(effect, target)
+            {
+                Instigator = instigator,
+                Causer = instigator,
+                SourceObject = effect,
+                Context = null,
+                TimeRemaining = effect.duration,
+                StackCount = 1
+            };
+            activeEffects.Add(ae);
+
+            // granted tags
+            var tags = target.GetComponent<TagSystem>();
+            if (tags != null) tags.AddTags(effect.grantedTags);
+
+            effect.Apply(target, instigator, ae.StackCount);
+
+            FireEffectExecuteCue(effect, instigator, target, effect, ae.StackCount, null);
+            if (effect.cueWhileActive != null)
+                cueManager?.AddCue(effect.cueWhileActive, BuildCueParams(instigator, instigator, target, effect, ae.StackCount, null));
+        }
+
+        // -------------------------
+        // Spec Apply (Duration 완전 지원)
+        // -------------------------
+        public void ApplyEffectSpec(GameplayEffectSpec spec, GameObject target)
+        {
+            if (spec == null || spec.Effect == null || target == null) return;
+
+            var effect = spec.Effect;
+            var ctx = spec.Context;
+
+            var inst = ctx != null ? ctx.Instigator : null;
+            var causer = ctx != null ? ctx.Causer : inst;
+            var srcObj = ctx != null ? ctx.SourceObject : null;
+
+            if (srcObj == null) srcObj = effect;
+            if (causer == null) causer = inst;
+
+            // Instant
+            if (effect.IsInstant)
+            {
+                if (effect is ISpecGameplayEffect specEffect)
+                    specEffect.Apply(spec, target);
+                else
+                    effect.Apply(target, inst, Mathf.Max(1, spec.StackCount));
+
+                FireEffectExecuteCue(effect, inst, target, srcObj, Mathf.Max(1, spec.StackCount), ctx);
+                return;
+            }
+
+            // Duration (spec duration override 지원)
+            float duration = spec.GetDurationOrDefault(effect.duration);
+
+            var existing = activeEffects.FirstOrDefault(e => e.Effect == effect && e.Target == target);
+
+            if (existing != null)
+            {
+                int add = Mathf.Max(1, spec.StackCount);
+                if (effect.canStack)
+                    existing.StackCount = Mathf.Min(effect.maxStacks, existing.StackCount + add);
+
+                existing.TimeRemaining = duration;
+                existing.Instigator = inst;
+                existing.Causer = causer;
+                existing.SourceObject = srcObj;
+                existing.Context = ctx;
+
+                spec.StackCount = existing.StackCount;
+
+                if (effect is ISpecGameplayEffect specEffect)
+                    specEffect.Apply(spec, target);
+                else
+                    effect.Apply(target, inst, existing.StackCount);
+
+                FireEffectExecuteCue(effect, inst, target, srcObj, existing.StackCount, ctx);
+                if (effect.cueWhileActive != null)
+                    cueManager?.AddCue(effect.cueWhileActive, BuildCueParams(inst, causer, target, srcObj, existing.StackCount, ctx));
+
+                return;
+            }
+
+            var ae = new ActiveGameplayEffect(effect, target)
+            {
+                Instigator = inst,
+                Causer = causer,
+                SourceObject = srcObj,
+                Context = ctx,
+                TimeRemaining = duration,
+                StackCount = Mathf.Max(1, spec.StackCount)
+            };
+            activeEffects.Add(ae);
+
+            // granted tags (1회)
+            var tgs = target.GetComponent<TagSystem>();
+            if (tgs != null) tgs.AddTags(effect.grantedTags);
+
+            spec.StackCount = ae.StackCount;
+
+            if (effect is ISpecGameplayEffect specEffectNew)
+                specEffectNew.Apply(spec, target);
             else
-            {
-                if (effect.IsInstant)
-                {
-                    effect.Apply(target, instigator);
-                }
-                else // Is Duration
-                {
-                    var newActiveEffect = new ActiveGameplayEffect(effect, target, instigator);
-                    activeEffects.Add(newActiveEffect);
-                    effect.Apply(target, instigator);
+                effect.Apply(target, inst, ae.StackCount);
 
-                    var targetTags = target.GetComponent<TagSystem>();
-                    if (targetTags != null)
-                    {
-                        targetTags.AddTags(effect.grantedTags);
-                    }
-                }
-            }
+            FireEffectExecuteCue(effect, inst, target, srcObj, ae.StackCount, ctx);
+            if (effect.cueWhileActive != null)
+                cueManager?.AddCue(effect.cueWhileActive, BuildCueParams(inst, causer, target, srcObj, ae.StackCount, ctx));
         }
 
         public void RemoveEffect(GameplayEffect effect, GameObject target)
         {
-            var activeEffect = activeEffects.FirstOrDefault(e => e.Effect == effect && e.Target == target);
-            if (activeEffect != null)
+            var ae = activeEffects.FirstOrDefault(e => e.Effect == effect && e.Target == target);
+            if (ae != null)
             {
-                EndEffect(activeEffect);
-                activeEffects.Remove(activeEffect);
+                EndEffect(ae);
+                activeEffects.Remove(ae);
             }
         }
 
-        private void EndEffect(ActiveGameplayEffect activeEffect)
+        private void EndEffect(ActiveGameplayEffect ae)
         {
-            activeEffect.Effect.Remove(activeEffect.Target, activeEffect.Instigator);
+            var effect = ae.Effect;
+            if (effect == null) return;
 
-            var targetTags = activeEffect.Target.GetComponent<TagSystem>();
-            if (targetTags != null)
+            var inst = ae.Instigator;
+            var causer = ae.Causer != null ? ae.Causer : inst;
+            var srcObj = ae.SourceObject != null ? ae.SourceObject : effect;
+            var ctx = ae.Context;
+
+            if (cueManager != null)
             {
-                targetTags.RemoveTags(activeEffect.Effect.grantedTags);
+                if (effect.cueWhileActive != null)
+                    cueManager.RemoveCue(effect.cueWhileActive, BuildCueParams(inst, causer, ae.Target, srcObj, ae.StackCount, ctx));
+
+                if (effect.cueOnRemove != null)
+                    cueManager.ExecuteCue(effect.cueOnRemove, BuildCueParams(inst, causer, ae.Target, srcObj, ae.StackCount, ctx));
             }
+
+            effect.Remove(ae.Target, inst);
+
+            var tags = ae.Target.GetComponent<TagSystem>();
+            if (tags != null) tags.RemoveTags(effect.grantedTags);
+        }
+
+        private void FireEffectExecuteCue(GameplayEffect effect, GameObject instigator, GameObject target, Object sourceObject, float magnitude, GameplayEffectContext ctx)
+        {
+            if (cueManager == null || effect == null) return;
+            if (effect.cueOnExecute == null) return;
+
+            cueManager.ExecuteCue(effect.cueOnExecute, BuildCueParams(instigator, ctx != null ? ctx.Causer : instigator, target, sourceObject, magnitude, ctx));
+        }
+
+        private GameplayCueParams BuildCueParams(GameObject instigator, GameObject causer, GameObject target, Object sourceObject, float magnitude, GameplayEffectContext ctx)
+        {
+            var p = new GameplayCueParams
+            {
+                Instigator = instigator,
+                Causer = causer,
+                Target = target,
+                SourceObject = sourceObject,
+                Magnitude = magnitude
+            };
+
+            if (ctx != null)
+            {
+                if (ctx.Hit3D.HasValue)
+                {
+                    var h = ctx.Hit3D.Value;
+                    p.Position = h.point;
+                    p.Normal = h.normal;
+                    return p;
+                }
+                if (ctx.Hit2D.HasValue)
+                {
+                    var h2 = ctx.Hit2D.Value;
+                    p.Position = h2.point;
+                    p.Normal = h2.normal;
+                    return p;
+                }
+            }
+
+            p.Position = target != null ? target.transform.position : Vector3.zero;
+            p.Normal = Vector3.up;
+            return p;
+        }
+
+        public IReadOnlyList<ActiveGameplayEffect> ActiveEffects => activeEffects;
+
+        // 유물용: 특정 grantedTag가 붙은 Duration의 남은 시간 조작
+        public int ReduceRemainingTimeByGrantedTag(GameObject target, GameplayTag tag, float reduceSeconds)
+        {
+            if (target == null || tag == null || reduceSeconds <= 0f) return 0;
+
+            int affected = 0;
+
+            for (int i = activeEffects.Count - 1; i >= 0; i--)
+            {
+                var ae = activeEffects[i];
+                if (ae.Target != target) continue;
+                if (ae.Effect?.grantedTags == null) continue;
+                if (!ae.Effect.grantedTags.Contains(tag)) continue;
+
+                ae.TimeRemaining -= reduceSeconds;
+                affected++;
+
+                if (ae.TimeRemaining <= 0f)
+                {
+                    EndEffect(ae);
+                    activeEffects.RemoveAt(i);
+                }
+            }
+            return affected;
+        }
+
+        public int MultiplyRemainingTimeByGrantedTag(GameObject target, GameplayTag tag, float multiplier)
+        {
+            if (target == null || tag == null) return 0;
+            multiplier = Mathf.Clamp(multiplier, 0f, 10f);
+
+            int affected = 0;
+
+            for (int i = activeEffects.Count - 1; i >= 0; i--)
+            {
+                var ae = activeEffects[i];
+                if (ae.Target != target) continue;
+                if (ae.Effect?.grantedTags == null) continue;
+                if (!ae.Effect.grantedTags.Contains(tag)) continue;
+
+                ae.TimeRemaining *= multiplier;
+                affected++;
+
+                if (ae.TimeRemaining <= 0f)
+                {
+                    EndEffect(ae);
+                    activeEffects.RemoveAt(i);
+                }
+            }
+            return affected;
         }
     }
 
@@ -94,17 +334,19 @@ namespace UnityGAS
     {
         public GameplayEffect Effect { get; }
         public GameObject Target { get; }
-        public GameObject Instigator { get; }
+
+        public GameObject Instigator { get; set; }
+        public GameObject Causer { get; set; }
+        public Object SourceObject { get; set; }
+        public GameplayEffectContext Context { get; set; }
+
         public float TimeRemaining { get; set; }
         public int StackCount { get; set; }
 
-        public ActiveGameplayEffect(GameplayEffect effect, GameObject target, GameObject instigator)
+        public ActiveGameplayEffect(GameplayEffect effect, GameObject target)
         {
             Effect = effect;
             Target = target;
-            Instigator = instigator;
-            TimeRemaining = effect.duration;
-            StackCount = 1;
         }
     }
 }

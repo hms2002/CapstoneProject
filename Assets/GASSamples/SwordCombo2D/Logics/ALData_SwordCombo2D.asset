@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f5f23c24b1773ce46b05d7ea5aea9964, type: 3}
+  m_Name: ALData_SwordCombo2D
+  m_EditorClassIdentifier: 
+  comboResetTime: 1
+  damages:
+  - 10
+  - 10
+  - 30
+  animTriggers:
+  - SwordCombo1
+  - SwordCombo2
+  - SwordCombo3
+  hitEventTag: {fileID: 11400000, guid: a9d545fc5072ee3419e47fc9ff0e650c, type: 2}
+  hitEventTimeout: 0.35
+  hitboxSize: {x: 1.2, y: 0.8}
+  forwardOffset: 0.9
+  sideOffset: 0.25
+  sideSigns: ffffffff01000000ffffffff
+  hitLayers:
+    serializedVersion: 2
+    m_Bits: 64
+  lungeDistances:
+  - 0.7
+  - 0.7
+  - 1
+  lungeDurations:
+  - 0.08
+  - 0.08
+  - 0.1
+  damageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
