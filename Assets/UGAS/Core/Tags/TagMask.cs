@@ -25,6 +25,18 @@ namespace UnityGAS
             for (int w = 0; w < Words.Length; w++)
                 Words[w] |= m[w];
         }
+        // TagMask.cs에 추가
+        public void AddId(int id)
+        {
+            TagRegistry.EnsureInitialized();
+            if (id <= 0) return;
+
+            var m = TagRegistry.GetClosureMask(id);
+            for (int w = 0; w < Words.Length; w++)
+                Words[w] |= m[w];
+        }
+
+        public void AddPath(string path) => AddId(TagRegistry.GetIdByPath(path));
 
         public static TagMask Compile(IEnumerable<GameplayTag> tags)
         {

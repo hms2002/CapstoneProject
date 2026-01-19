@@ -19,6 +19,8 @@ namespace UnityGAS
 
         [Header("Granted Tags")]
         public List<GameplayTag> grantedTags = new List<GameplayTag>();
+        [Header("Granted Tag Sets (Optional)")]
+        public List<GameplayTagSet> grantedTagSets = new();
 
         // -------------------------
         // GameplayCue (Cosmetic)

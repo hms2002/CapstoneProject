@@ -54,6 +54,70 @@ namespace UnityGAS
                 if (oldCount == 0 && newCount > 0) OnTagAdded?.Invoke(ctag);
             }
         }
+        // TagSystem.cs 안에 추가
+        public void AddTagId(int id, int amount = 1)
+        {
+            EnsureCapacity();
+            if (id <= 0 || amount <= 0) return;
+
+            _explicitCounts[id] += amount;
+
+            var closure = TagRegistry.GetClosureIds(id);
+            for (int i = 0; i < closure.Length; i++)
+            {
+                int cid = closure[i];
+                int oldCount = _counts[cid];
+                int newCount = oldCount + amount;
+                _counts[cid] = newCount;
+
+                if (oldCount == 0 && newCount > 0) _bits[cid >> 6] |= 1UL << (cid & 63);
+
+                var ctag = TagRegistry.GetTag(cid);
+                OnTagCountChanged?.Invoke(ctag, oldCount, newCount);
+                if (oldCount == 0 && newCount > 0) OnTagAdded?.Invoke(ctag);
+            }
+        }
+
+        public void RemoveTagId(int id, int amount = 1)
+        {
+            EnsureCapacity();
+            if (id <= 0 || amount <= 0) return;
+
+            int have = _explicitCounts[id];
+            if (have <= 0) return;
+
+            if (amount > have) amount = have;
+            _explicitCounts[id] = have - amount;
+
+            var closure = TagRegistry.GetClosureIds(id);
+            for (int i = 0; i < closure.Length; i++)
+            {
+                int cid = closure[i];
+                int oldCount = _counts[cid];
+                int newCount = oldCount - amount;
+                if (newCount < 0) newCount = 0;
+                _counts[cid] = newCount;
+
+                if (oldCount > 0 && newCount == 0) _bits[cid >> 6] &= ~(1UL << (cid & 63));
+
+                var ctag = TagRegistry.GetTag(cid);
+                OnTagCountChanged?.Invoke(ctag, oldCount, newCount);
+                if (oldCount > 0 && newCount == 0) OnTagRemoved?.Invoke(ctag);
+            }
+        }
+
+        public void AddTagByPath(string path, int amount = 1)
+            => AddTagId(TagRegistry.GetIdByPath(path), amount);
+
+        public void RemoveTagByPath(string path, int amount = 1)
+            => RemoveTagId(TagRegistry.GetIdByPath(path), amount);
+
+        public bool HasTagId(int id)
+        {
+            EnsureCapacity();
+            return id > 0 && id < _counts.Length && _counts[id] > 0;
+        }
+
         public void AddTags(List<GameplayTag> tags)
         {
             foreach (GameplayTag tag in tags) AddTag(tag, 1);

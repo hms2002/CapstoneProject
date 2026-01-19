@@ -9,6 +9,14 @@ public class WeaponEquipController : MonoBehaviour
 
     private GameObject currentWeaponGO;
 
+    #region 테스트 코드
+    [Header("임시 변수지롱")]
+    [SerializeField]GameObject Weapon;
+    private void Start()
+    {
+        Equip(Weapon);
+    }
+    #endregion
     public void Equip(GameObject weaponPrefab)
     {
         // 1) 실행 중 무기 액션 정리(권장)

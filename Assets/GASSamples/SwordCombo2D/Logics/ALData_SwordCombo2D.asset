@@ -18,9 +18,9 @@ MonoBehaviour:
   - 10
   - 30
   animTriggers:
-  - SwordCombo1
-  - SwordCombo2
-  - SwordCombo3
+  - Swing1
+  - Swing2
+  - Swing3
   hitEventTag: {fileID: 11400000, guid: a9d545fc5072ee3419e47fc9ff0e650c, type: 2}
   hitEventTimeout: 0.35
   hitboxSize: {x: 1.2, y: 0.8}

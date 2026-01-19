@@ -102,7 +102,13 @@ namespace UnityGAS
 
             // granted tags
             var tags = target.GetComponent<TagSystem>();
-            if (tags != null) tags.AddTags(effect.grantedTags);
+            if (tags != null)
+            {
+                var temp = new HashSet<GameplayTag>();
+                CollectGrantedTags(effect, temp);
+                foreach (var t in temp) tags.AddTag(t, 1);
+            }
+
 
             effect.Apply(target, instigator, ae.StackCount);
 
@@ -182,9 +188,15 @@ namespace UnityGAS
             };
             activeEffects.Add(ae);
 
-            // granted tags (1회)
+            // granted tags (1회) - direct + tagsets
             var tgs = target.GetComponent<TagSystem>();
-            if (tgs != null) tgs.AddTags(effect.grantedTags);
+            if (tgs != null)
+            {
+                var temp = new HashSet<GameplayTag>();
+                CollectGrantedTags(effect, temp);
+                foreach (var t in temp) tgs.AddTag(t, 1);
+            }
+
 
             spec.StackCount = ae.StackCount;
 
@@ -230,7 +242,13 @@ namespace UnityGAS
             effect.Remove(ae.Target, inst);
 
             var tags = ae.Target.GetComponent<TagSystem>();
-            if (tags != null) tags.RemoveTags(effect.grantedTags);
+            if (tags != null)
+            {
+                var temp = new HashSet<GameplayTag>();
+                CollectGrantedTags(effect, temp);
+                foreach (var t in temp) tags.RemoveTag(t, 1);
+            }
+
         }
 
         private void FireEffectExecuteCue(GameplayEffect effect, GameObject instigator, GameObject target, Object sourceObject, float magnitude, GameplayEffectContext ctx)
@@ -288,8 +306,8 @@ namespace UnityGAS
             {
                 var ae = activeEffects[i];
                 if (ae.Target != target) continue;
-                if (ae.Effect?.grantedTags == null) continue;
-                if (!ae.Effect.grantedTags.Contains(tag)) continue;
+                if (!EffectHasGrantedTag(ae.Effect, tag)) continue;
+
 
                 ae.TimeRemaining -= reduceSeconds;
                 affected++;
@@ -314,8 +332,8 @@ namespace UnityGAS
             {
                 var ae = activeEffects[i];
                 if (ae.Target != target) continue;
-                if (ae.Effect?.grantedTags == null) continue;
-                if (!ae.Effect.grantedTags.Contains(tag)) continue;
+                if (!EffectHasGrantedTag(ae.Effect, tag)) continue;
+
 
                 ae.TimeRemaining *= multiplier;
                 affected++;
@@ -328,6 +346,41 @@ namespace UnityGAS
             }
             return affected;
         }
+        private static void CollectGrantedTags(GameplayEffect effect, HashSet<GameplayTag> outTags)
+        {
+            if (effect == null || outTags == null) return;
+
+            if (effect.grantedTags != null)
+                for (int i = 0; i < effect.grantedTags.Count; i++)
+                    if (effect.grantedTags[i] != null) outTags.Add(effect.grantedTags[i]);
+
+            if (effect.grantedTagSets != null)
+            {
+                var visited = new HashSet<GameplayTagSet>();
+                for (int i = 0; i < effect.grantedTagSets.Count; i++)
+                    effect.grantedTagSets[i]?.CollectTags(outTags, visited);
+            }
+        }
+
+        private static bool EffectHasGrantedTag(GameplayEffect effect, GameplayTag tag)
+        {
+            if (effect == null || tag == null) return false;
+
+            if (effect.grantedTags != null && effect.grantedTags.Contains(tag))
+                return true;
+
+            if (effect.grantedTagSets != null)
+            {
+                var visited = new HashSet<GameplayTagSet>();
+                for (int i = 0; i < effect.grantedTagSets.Count; i++)
+                {
+                    var set = effect.grantedTagSets[i];
+                    if (set != null && set.ContainsTag(tag, visited)) return true;
+                }
+            }
+            return false;
+        }
+
     }
 
     public class ActiveGameplayEffect
