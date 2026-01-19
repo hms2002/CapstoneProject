@@ -29,7 +29,7 @@ MonoBehaviour:
   sideSigns: ffffffff01000000ffffffff
   hitLayers:
     serializedVersion: 2
-    m_Bits: 64
+    m_Bits: 2147483648
   lungeDistances:
   - 0.7
   - 0.7

@@ -9,50 +9,66 @@ namespace UnityGAS
     public class AttributeValue
     {
         public AttributeDefinition Definition { get; }
-        public float BaseValue { get; set; }
+        public float BaseValue { get; private set; }
         public float CurrentValue { get; private set; }
 
         private readonly List<AttributeModifier> modifiers = new List<AttributeModifier>();
         private float lastDamageTime;
 
         public Action<float, float> OnValueChanged;
+        private bool dirty;
+
+        public void SetBaseValue(float value)
+        {
+            if (Math.Abs(BaseValue - value) < 0.0001f) return;
+            BaseValue = value;
+            dirty = true;
+        }
+
+        public void AddBaseValue(float delta)
+        {
+            if (Math.Abs(delta) < 0.0001f) return;
+            BaseValue += delta;
+            dirty = true;
+        }
 
         public AttributeValue(AttributeDefinition definition)
         {
             Definition = definition;
             BaseValue = definition.defaultBaseValue;
-            RecalculateValue();
+            dirty = true;
+            RecalculateValue(); // 초기 CurrentValue 세팅은 즉시 필요하니 한 번 호출하는 게 안전
         }
+
 
         public void AddModifier(AttributeModifier modifier)
         {
             modifiers.Add(modifier);
-            RecalculateValue();
+            dirty = true;
         }
 
         public void RemoveModifier(AttributeModifier modifier)
         {
             modifiers.Remove(modifier);
-            RecalculateValue();
+            dirty = true;
         }
 
         public void RemoveModifiersFromSource(UnityEngine.Object source)
         {
-            modifiers.RemoveAll(mod => mod.Source == source);
-            RecalculateValue();
+            if (modifiers.RemoveAll(mod => mod.Source == source) > 0)
+                dirty = true;
         }
 
 
         public void Update(float deltaTime)
         {
-            bool needsRecalculate = false;
             for (int i = modifiers.Count - 1; i >= 0; i--)
             {
                 modifiers[i].Update(deltaTime);
                 if (!modifiers[i].IsPermanent && modifiers[i].TimeRemaining <= 0)
                 {
                     modifiers.RemoveAt(i);
-                    needsRecalculate = true;
+                    dirty = true;
                 }
             }
 
@@ -60,16 +76,17 @@ namespace UnityGAS
             {
                 if (Time.time - lastDamageTime >= Definition.regenerationDelay)
                 {
-                    BaseValue += Definition.regenerationRate * deltaTime;
-                    needsRecalculate = true;
+                    AddBaseValue(Definition.regenerationRate * deltaTime); // dirty = true 처리됨
                 }
             }
 
-            if (needsRecalculate)
+            if (dirty)
             {
+                dirty = false;
                 RecalculateValue();
             }
         }
+
 
         private void RecalculateValue()
         {

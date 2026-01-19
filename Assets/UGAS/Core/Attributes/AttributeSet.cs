@@ -45,7 +45,7 @@ namespace UnityGAS
             var attr = GetAttribute(definition);
             if (attr != null)
             {
-                attr.BaseValue += amount;
+                attr.AddBaseValue(amount);
             }
         }
 

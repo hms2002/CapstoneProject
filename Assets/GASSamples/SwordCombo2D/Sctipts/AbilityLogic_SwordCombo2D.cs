@@ -134,7 +134,8 @@ namespace UnityGAS.Sample
             Vector2 center = (Vector2)system.transform.position
                              + dir * data.forwardOffset
                              + perp * (data.sideOffset * sideSign);
-
+            Debug.DrawLine(center, center+data.hitboxSize, Color.red, 4f);
+            Debug.Log(center);
             var td = AbilityTargetData2D.FromOverlapBox(center, data.hitboxSize, 0f, data.hitLayers, ignore: system.gameObject);
             if (td.Targets.Count == 0) return;
 
