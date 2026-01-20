@@ -13869,6 +13869,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   initialAttributes:
   - {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
+  maxLinks: []
 --- !u!95 &723292224
 Animator:
   serializedVersion: 7
@@ -33645,7 +33646,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8910a2e22aa25664cb9b2709778e44dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  initialAttributes: []
+  initialAttributes:
+  - {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
+  - {fileID: 11400000, guid: 0e177e1d15e428745b5859fac08ce203, type: 2}
+  maxLinks:
+  - value: {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
+    max: {fileID: 11400000, guid: 0e177e1d15e428745b5859fac08ce203, type: 2}
 --- !u!114 &1012006894227905753
 MonoBehaviour:
   m_ObjectHideFlags: 0
