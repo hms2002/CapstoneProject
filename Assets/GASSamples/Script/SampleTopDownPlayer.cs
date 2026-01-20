@@ -17,6 +17,8 @@ public class SampleTopDownPlayer : MonoBehaviour
 
     [Tooltip("이 태그가 있으면 이동 입력을 무시합니다 (예: State.MovementLocked)")]
     public GameplayTag movementLockedTag;
+    [Tooltip("이 태그가 있으면 무기가 마우스 커서를 따라 회전하는 입력을 무시합니다 (예: State.Aim.Blocked)")]
+    public GameplayTag aimLockedTag;
 
     [Header("Attack Input (Hold)")]
     [Tooltip("좌클릭 홀드 중 기본공격을 몇 초마다 재요청할지 (버퍼/콤보 테스트용)")]
@@ -68,6 +70,13 @@ public class SampleTopDownPlayer : MonoBehaviour
     {
         UpdateMouseAim();
         HandleInput();
+
+        // 이동 제한 태그가 있으면 이동 무시
+        if (tagSystem != null && aimLockedTag != null && tagSystem.HasTag(aimLockedTag))
+        {
+            Debug.Log("어 잠깐 막았어~");
+            return;
+        }
         if (Hand != null) 
         {
             Vector2 dir = (MouseWorld - (Vector2)transform.position).normalized;

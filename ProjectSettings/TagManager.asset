@@ -35,7 +35,7 @@ TagManager:
   - 
   - 
   - 
-  - 
+  - Wall
   - TEMP_Enemy_LAYER
   m_SortingLayers:
   - name: Default

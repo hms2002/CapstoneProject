@@ -13,6 +13,10 @@ namespace UnityGAS
 
         [Header("Activation")]
         public float cooldown = 0f;
+        [Header("Charges (Optional)")]
+        public bool useCharges = false;
+        public int maxCharges = 1; // useCharges=true면 2 이상 권장
+
         [Tooltip("설정 시 쿨다운을 GE(Duration)로 관리합니다. (추천: GE_Cooldown + grantedTags에 Cooldown.* 태그 부여)")]
         public GameplayEffect cooldownEffect;
         public float castTime = 0f;

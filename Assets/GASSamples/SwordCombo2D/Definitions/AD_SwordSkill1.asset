@@ -10,17 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 808910561e593534f9ea3637c00cc255, type: 3}
-  m_Name: AD_SwordCombo2D
+  m_Name: AD_SwordSkill1
   m_EditorClassIdentifier: 
-  abilityName: AD_SwordCombo2D
+  abilityName: AD_SwordSkill1
   icon: {fileID: 0}
   description: Ability description.
-  cooldown: 0.5
-  useCharges: 0
-  maxCharges: 1
+  cooldown: 5
+  useCharges: 1
+  maxCharges: 3
   cooldownEffect: {fileID: 0}
   castTime: 0
-  recoveryTime: 0.12
+  recoveryTime: 0
   canCastWhileMoving: 1
   interruptible: 1
   requireTargetObject: 0
@@ -36,14 +36,11 @@ MonoBehaviour:
   blockedByTagSets: []
   targetRequiredTagSets: []
   targetBlockedByTagSets: []
-  grantedTagsWhileActive:
-  - {fileID: 11400000, guid: 27ab8ed529a1dc8489075e262f52eab4, type: 2}
-  - {fileID: 11400000, guid: 6a88dccc70fd08841a7484539aec65c1, type: 2}
-  - {fileID: 11400000, guid: d2be3469c5cf9c849b948eb616f7f868, type: 2}
+  grantedTagsWhileActive: []
   targetRequiredTags: []
   targetBlockedByTags: []
-  logic: {fileID: 11400000, guid: 594473e198894c54988fe51c84b79d3f, type: 2}
-  sourceObject: {fileID: 11400000, guid: c5f49a747dd5b3f43987795bc4ad7771, type: 2}
+  logic: {fileID: 11400000, guid: 670b570d06ab5f3419acbe3e7370e3a3, type: 2}
+  sourceObject: {fileID: 11400000, guid: 43083cfa6d5da894d84ebadea120a909, type: 2}
   containers: []
   cueOnCastStart: {fileID: 0}
   cueWhileCasting: {fileID: 0}

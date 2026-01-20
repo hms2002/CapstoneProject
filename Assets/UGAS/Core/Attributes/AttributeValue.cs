@@ -12,11 +12,40 @@ namespace UnityGAS
         public float BaseValue { get; private set; }
         public float CurrentValue { get; private set; }
 
+        // ✅ 동적 Max (예: Health의 max를 MaxHealth.CurrentValue로)
+        public Func<float> MaxValueGetter { get; private set; }
+
         private readonly List<AttributeModifier> modifiers = new List<AttributeModifier>();
         private float lastDamageTime;
 
         public Action<float, float> OnValueChanged;
         private bool dirty;
+
+        public AttributeValue(AttributeDefinition definition)
+        {
+            Definition = definition;
+            BaseValue = definition.defaultBaseValue;
+            dirty = true;
+            RecalculateValue(); // 초기 CurrentValue 세팅
+        }
+
+        public void SetMaxValueGetter(Func<float> getter)
+        {
+            MaxValueGetter = getter;
+            dirty = true;
+        }
+
+        public void MarkDirty()
+        {
+            dirty = true;
+        }
+
+        // ✅ 즉시 clamp가 필요한 경우(예: MaxHealth가 내려간 순간)
+        public void ForceRecalculate()
+        {
+            dirty = false;
+            RecalculateValue();
+        }
 
         public void SetBaseValue(float value)
         {
@@ -31,15 +60,6 @@ namespace UnityGAS
             BaseValue += delta;
             dirty = true;
         }
-
-        public AttributeValue(AttributeDefinition definition)
-        {
-            Definition = definition;
-            BaseValue = definition.defaultBaseValue;
-            dirty = true;
-            RecalculateValue(); // 초기 CurrentValue 세팅은 즉시 필요하니 한 번 호출하는 게 안전
-        }
-
 
         public void AddModifier(AttributeModifier modifier)
         {
@@ -59,7 +79,6 @@ namespace UnityGAS
                 dirty = true;
         }
 
-
         public void Update(float deltaTime)
         {
             for (int i = modifiers.Count - 1; i >= 0; i--)
@@ -72,11 +91,14 @@ namespace UnityGAS
                 }
             }
 
-            if (Definition.hasRegeneration && CurrentValue < Definition.maxValue)
+            float max = GetMaxForClamp();
+
+            // ✅ regen도 동적 max 기준
+            if (Definition.hasRegeneration && CurrentValue < max)
             {
                 if (Time.time - lastDamageTime >= Definition.regenerationDelay)
                 {
-                    AddBaseValue(Definition.regenerationRate * deltaTime); // dirty = true 처리됨
+                    AddBaseValue(Definition.regenerationRate * deltaTime); // dirty=true
                 }
             }
 
@@ -87,6 +109,18 @@ namespace UnityGAS
             }
         }
 
+        private float GetMaxForClamp()
+        {
+            float max = Definition.maxValue;
+            if (MaxValueGetter != null)
+            {
+                try { max = MaxValueGetter(); }
+                catch { max = Definition.maxValue; }
+            }
+
+            if (max < Definition.minValue) max = Definition.minValue;
+            return max;
+        }
 
         private void RecalculateValue()
         {
@@ -99,15 +133,14 @@ namespace UnityGAS
             finalValue += flatModifiers;
             finalValue *= (1f + percentModifiers);
 
-            CurrentValue = Mathf.Clamp(finalValue, Definition.minValue, Definition.maxValue);
+            float max = GetMaxForClamp();
+            CurrentValue = Mathf.Clamp(finalValue, Definition.minValue, max);
 
             if (Math.Abs(oldValue - CurrentValue) > 0.001f)
             {
                 OnValueChanged?.Invoke(oldValue, CurrentValue);
                 if (CurrentValue < oldValue)
-                {
                     lastDamageTime = Time.time;
-                }
             }
         }
     }
