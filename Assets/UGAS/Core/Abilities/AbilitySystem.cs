@@ -200,6 +200,33 @@ namespace UnityGAS
             return spec;
         }
 
+        public bool TakeAbility(AbilityDefinition def)
+        {
+            if (def == null) return false;
+
+            // spec 찾기
+            AbilitySpec spec = FindSpec(def);
+            if (spec == null) return false;
+
+            // 실행/캐스팅 중이면 우선 취소(강제)
+            if (CurrentExecSpec == spec) CancelExecution(force: true);
+            if (CurrentCastSpec == spec) CancelCasting(force: true);
+
+            // 버퍼에 걸려있으면 제거
+            // (bufferedSpec, bufferedTarget는 AbilitySystem 내부 필드이므로 같은 클래스 안에서만 접근 가능)
+            if (bufferedSpec == spec)
+            {
+                bufferedSpec = null;
+                bufferedTarget = null;
+            }
+
+            // waiter 정리(혹시 남아있을 수 있으니)
+            CancelWaiters(spec);
+
+            // 리스트에서 제거
+            runtimeSpecs.Remove(spec);
+            return true;
+        }
 
         public AbilitySpec FindSpec(AbilityDefinition def)
         {

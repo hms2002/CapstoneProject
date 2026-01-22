@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 139c9e309cf1eec4492c3d3fdf60d8d6, type: 3}
-  m_Name: State.Move
+  m_Name: Event.Input.Attack.Pressed
   m_EditorClassIdentifier: 
   developerNote: 
-  tagName: Move
-  parent: {fileID: 11400000, guid: 9eb4d42439a761946a5375b3f3a69f4e, type: 2}
-  id: 27
+  tagName: Pressed
+  parent: {fileID: 11400000, guid: f00a57048949c144aa81962abca2d7c0, type: 2}
+  id: 18
   cachedPath: 
   cachedLowerPath: 
