@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: AD_SwordSkill2
   m_EditorClassIdentifier: 
   abilityName: SwordSkill2
-  icon: {fileID: 0}
+  icon: {fileID: 8241713052785125428, guid: ce2c877b10aec4742943ec6aeacef6da, type: 3}
   description: Ability description.
   cooldown: 8
   useCharges: 0
