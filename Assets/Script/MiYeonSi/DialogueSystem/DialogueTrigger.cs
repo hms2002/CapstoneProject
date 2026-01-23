@@ -2,39 +2,70 @@ using UnityEngine;
 
 public class DialogueTrigger : MonoBehaviour, IInteractable
 {
-    [Header("µ¥ÀÌÅÍ ¼³Á¤")]
+    [Header("ë°ì´í„° ì„¤ì •")]
     [SerializeField] private NPCData npcData;
     [SerializeField] private TextAsset inkJSON;
 
-    [Header("½Ã°¢Àû ¼³Á¤")]
-    [SerializeField] private GameObject visualCue ; // NPC ¸Ó¸® À§ 'F' ¾ÆÀÌÄÜ µî
+    [Header("ì‹œê°ì  ê°€ì´ë“œ")]
+    [SerializeField] private GameObject visualCue; // ê¸°ì¡´ ë¨¸ë¦¬ ìœ„ F ì•„ì´ì½˜
+
+    [SerializeField] private SpriteRenderer spriteRenderer;
+    private MaterialPropertyBlock propBlock;
+
+    // ì¹œêµ¬ê°€ ì¤€ ì…°ì´ë”ì˜ í”„ë¡œí¼í‹° ì´ë¦„ì— ë§ì¶¤
+    private static readonly int OutlineEnabledID = Shader.PropertyToID("_OutlineEnabled");
+    private static readonly int OutlineColorID = Shader.PropertyToID("_OutlineColor");
+
+    // [ì¶”ê°€] ì´ NPCê°€ ê°€ì§„ ê¸°ëŠ¥ ì»¨íŠ¸ë¡¤ëŸ¬ (ì—†ì„ ìˆ˜ë„ ìˆìŒ)
+    private NPCFeatureController featureController;
 
     private void Awake()
     {
+        propBlock = new MaterialPropertyBlock();
         visualCue.SetActive(false);
+
+        // [ì¶”ê°€] ê°™ì€ ì˜¤ë¸Œì íŠ¸ì— ìˆëŠ” FeatureController ê°€ì ¸ì˜¤ê¸°
+        featureController = GetComponent<NPCFeatureController>();
+
+        // ì´ˆê¸° ìƒíƒœ: í…Œë‘ë¦¬ ë„ê¸°
+        OnUnHighlight();
     }
 
-    // ¹üÀ§ ³»¿¡ µé¾î¿À¸é ½Ã°¢Àû ¾È³» Ç¥½Ã
-    public void OnPlayerNearby() => visualCue.SetActive(true);
-    public void OnPlayerLeave() => visualCue.SetActive(false);
+    // [Nearby/Leave] íŠ¸ë¦¬ê±° ë²”ìœ„ ë‚´ ì§„ì… ì‹œ visualCue ì œì–´
+    public void OnPlayerNearby() => visualCue?.SetActive(true);
+    public void OnPlayerLeave() => visualCue?.SetActive(false);
+
+    // [Highlight] ìµœë‹¨ ê±°ë¦¬ íƒ€ê²Ÿ ì„ ì • ì‹œ ì…°ì´ë” í…Œë‘ë¦¬ ì¼œê¸°
+    public void OnHighlight()
+    {
+        // Debug.Log($"{gameObject.name}: í•˜ì´ë¼ì´íŠ¸ ì‹¤í–‰ë¨!");
+        if (spriteRenderer == null) return;
+
+        spriteRenderer.GetPropertyBlock(propBlock);
+        // _OutlineEnabledë¥¼ 1.0ìœ¼ë¡œ ì„¤ì •í•˜ì—¬ í…Œë‘ë¦¬ í™œì„±í™”
+        propBlock.SetFloat(OutlineEnabledID, 1f);
+        // í•„ìš”í•˜ë‹¤ë©´ ì—¬ê¸°ì„œ ìƒ‰ìƒì„ ì½”ë“œë¡œ ë³€ê²½í•  ìˆ˜ë„ ìˆìŠµë‹ˆë‹¤.
+        // propBlock.SetColor(OutlineColorID, Color.white); 
+        spriteRenderer.SetPropertyBlock(propBlock);
+    }
+
+    // íƒ€ê²Ÿ í•´ì œ ì‹œ í…Œë‘ë¦¬ ë„ê¸°
+    public void OnUnHighlight()
+    {
+        if (spriteRenderer == null) return;
+
+        spriteRenderer.GetPropertyBlock(propBlock);
+        propBlock.SetFloat(OutlineEnabledID, 0f); // 0.0ìœ¼ë¡œ ì„¤ì •í•˜ì—¬ ë¹„í™œì„±í™”
+        spriteRenderer.SetPropertyBlock(propBlock);
+    }
 
     public void OnPlayerInteract(TempPlayer player)
     {
         if (CanInteract(player))
         {
-            DialogueManager.GetInstance().EnterDialogueMode(inkJSON, npcData);
+            // [ìˆ˜ì •] ëŒ€í™” ì‹œì‘ ì‹œ featureControllerë„ í•¨ê»˜ ì „ë‹¬
+            DialogueManager.GetInstance().EnterDialogueMode(inkJSON, npcData, DialogueManager.Direction.Left, featureController);
         }
-    }
-
-    // ÃÖ´Ü °Å¸® Å¸°ÙÀ¸·Î ¼±Á¤µÇ¾úÀ» ¶§ (³ªÁß¿¡ ¼ÎÀÌ´õ Àû¿ë ½Ã »ç¿ë)
-    public void OnHighlight()
-    {
-        Debug.Log($"{npcData.npcName} ÇÏÀÌ¶óÀÌÆ® ½ÃÀÛ");
-    }
-
-    public void OnUnHighlight()
-    {
-        Debug.Log($"{npcData.npcName} ÇÏÀÌ¶óÀÌÆ® Á¾·á");
     }
 
     public bool CanInteract(TempPlayer player)
@@ -44,5 +75,5 @@ public class DialogueTrigger : MonoBehaviour, IInteractable
 
     public void GetInteract(string text) { }
     public InteractState GetInteractType() => InteractState.Talking;
-    public string GetInteractDescription() => "´ëÈ­ÇÏ±â";
+    public string GetInteractDescription() => "ëŒ€í™”í•˜ê¸°";
 }

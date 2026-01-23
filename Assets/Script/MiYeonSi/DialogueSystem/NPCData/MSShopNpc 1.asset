@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7ca3e3429f4d51841b586ade79545d41, type: 3}
-  m_Name: MSShopNpc
+  m_Name: MSShopNpc 1
   m_EditorClassIdentifier: 
-  id: 1001
-  npcName: "\uB9C8\uB140\uC778\uC9C0 \uBB58"
+  id: 1002
+  npcName: "\uB9C8\uB140\uC77C\uAE4C?"
   isBoss: 1
   affectionRewards: []
-  spriteLibraryAsset: {fileID: 7108339969198208228, guid: 11fe976bca44ca04996308bdbaf83e5c, type: 3}
+  spriteLibraryAsset: {fileID: 7108339969198208228, guid: a703341cc9a31ff4aaf1c6e131d61055, type: 3}

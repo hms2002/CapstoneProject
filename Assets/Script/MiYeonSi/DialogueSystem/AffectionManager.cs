@@ -5,50 +5,106 @@ public class AffectionManager : MonoBehaviour
 {
     public static AffectionManager Instance { get; private set; }
 
-    // NPC IDº° ÇöÀç ·¹º§ ÀúÀå (¼¼ÀÌºê ½Ã ÀÌ µ¥ÀÌÅÍ¸¦ ÀúÀåÇÏ¸é µË´Ï´Ù)
-    private Dictionary<int, int> npcLevelDict = new Dictionary<int, int>();
+    // NPC IDë³„ í˜¸ê°ë„ ì €ì¥
+    private Dictionary<int, int> npcAffectionDic = new Dictionary<int, int>();
+
+    // í˜„ì¬ ìƒí˜¸ì‘ìš© ì¤‘ì¸ NPCì˜ ID
+    private int currentNpcId;
+
+    // [ìˆ˜ì •] DialogueManagerê°€ ìƒí™©ì— ë”°ë¼ ì—°ê²°í•´ì£¼ëŠ” UI
+    private AffectionUI linkedUI;
 
     private void Awake()
     {
-        if (Instance == null) Instance = this;
-        else Destroy(gameObject);
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 
-    // ÇöÀç ·¹º§ °¡Á®¿À±â
-    public int GetLevel(int npcId)
+    // [ì¶”ê°€] DialogueManagerì—ì„œ í˜„ì¬ í™œì„±í™”ëœ UI(BossUIì— ìˆëŠ” ê²ƒ)ë¥¼ ì—°ê²°í•´ì£¼ëŠ” í•¨ìˆ˜
+    public void SetLinkedUI(AffectionUI ui)
     {
-        return npcLevelDict.ContainsKey(npcId) ? npcLevelDict[npcId] : 1;
+        linkedUI = ui;
     }
 
-    // ·¹º§ Á÷Á¢ Ãß°¡ (amount¸¸Å­ ·¹º§ »ó½Â)
-    public void AddLevel(NPCData data, int amount)
+    // ëŒ€í™”ê°€ ì‹œì‘ë  ë•Œ, í˜„ì¬ ëŒ€í™”í•˜ëŠ” NPCì˜ IDë¥¼ ì„¤ì •í•´ì£¼ëŠ” í•¨ìˆ˜
+    public void SetCurrentNPC(int npcId)
+    {
+        currentNpcId = npcId;
+
+        // UIê°€ ì—°ê²°ë˜ì–´ ìˆë‹¤ë©´ í˜„ì¬ ê°’ìœ¼ë¡œ ì´ˆê¸°í™”
+        if (linkedUI != null)
+        {
+            int currentVal = GetAffection(npcId);
+            linkedUI.Setup(currentVal);
+        }
+    }
+
+    public int GetAffection()
+    {
+        return GetAffection(currentNpcId);
+    }
+
+    public int GetAffection(int npcId)
+    {
+        if (npcAffectionDic.ContainsKey(npcId))
+        {
+            return npcAffectionDic[npcId];
+        }
+        return 0;
+    }
+
+    public void AddAffection(NPCData data, int amount)
     {
         int id = data.id;
-        int oldLevel = GetLevel(id);
+        int oldAffection = GetAffection(id);
 
-        if (!npcLevelDict.ContainsKey(id)) npcLevelDict[id] = 1;
-        npcLevelDict[id] += amount;
+        if (!npcAffectionDic.ContainsKey(id))
+        {
+            npcAffectionDic[id] = 0;
+        }
 
-        int newLevel = npcLevelDict[id];
-        Debug.Log($"{data.npcName} ·¹º§ »ó½Â: {oldLevel} -> {newLevel}");
+        npcAffectionDic[id] += amount;
+        int newAffection = npcAffectionDic[id];
 
-        // °Ç³Ê¶Ú ·¹º§ÀÌ ÀÖÀ» ¼ö ÀÖÀ¸¹Ç·Î »çÀÌÀÇ ¸ğµç º¸»óÀ» Ã¼Å©ÇÏ¿© ½ÇÇà
-        CheckRewards(data, oldLevel, newLevel);
+        Debug.Log($"{data.npcName} í˜¸ê°ë„ ìƒìŠ¹: {oldAffection} -> {newAffection}");
+
+        // [ìˆ˜ì •] ì—°ê²°ëœ UIê°€ ìˆìœ¼ë©´ ì—°ì¶œ ì‹¤í–‰, ì—†ìœ¼ë©´ ë°”ë¡œ ë³´ìƒ ì²´í¬
+        if (linkedUI != null)
+        {
+            linkedUI.PlayGainAnimation(oldAffection, newAffection, () => {
+                CheckRewards(data, oldAffection, newAffection);
+            });
+        }
+        else
+        {
+            CheckRewards(data, oldAffection, newAffection);
+        }
     }
 
     private void CheckRewards(NPCData data, int fromLevel, int toLevel)
     {
-        foreach (var reward in data.levelRewards)
+        foreach (var reward in data.affectionRewards)
         {
-            // µµ´ŞÇÑ ·¹º§ÀÌ º¸»ó ¼³Á¤ ·¹º§º¸´Ù Å©°Å³ª °°À¸¸é ½ÇÇà (ÀÌ¹Ì ¹ŞÀº º¸»óÀº Á¦¿ÜÇÏ´Â ·ÎÁ÷Àº ÃßÈÄ ¼¼ÀÌºê¿Í ¿¬µ¿)
             if (reward.targetLevel > fromLevel && reward.targetLevel <= toLevel)
             {
-                reward.effect.Execute();
-                Debug.Log($"º¸»ó È¹µæ: {reward.effect.effectDescription}");
+                if (reward.effect != null)
+                {
+                    reward.effect.Execute();
+                    Debug.Log($"ë³´ìƒ íšë“: {reward.effect.effectDescription}");
+                }
             }
         }
     }
 
-    // ¼¼ÀÌºê ·Îµå¿ë ÃÊ±âÈ­
-    public void SetLevel(int npcId, int value) => npcLevelDict[npcId] = value;
+    public void SetAffection(int npcId, int value)
+    {
+        npcAffectionDic[npcId] = value;
+    }
 }
