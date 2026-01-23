@@ -5,12 +5,12 @@ public class TempPlayer : MonoBehaviour
 {
     public static TempPlayer Instance { get; private set; }
 
-    [Header("ÀÌµ¿ ¼³Á¤")]
+    [Header("ì´ë™ ì„¤ì •")]
     [SerializeField] private float moveSpeed = 5f;
-
-    [Header("»óÈ£ÀÛ¿ë ¼³Á¤")]
+     
+    [Header("ìƒí˜¸ì‘ìš© ì„¤ì •")]
     private readonly List<IInteractable> nearbyObjects = new();
-    private IInteractable currentTarget; // ÇöÀç °¡Àå °¡±î¿î Å¸°Ù
+    private IInteractable currentTarget; // í˜„ì¬ ê°€ì¥ ê°€ê¹Œìš´ íƒ€ê²Ÿ
 
     public InteractState CurrentState { get; private set; } = InteractState.Idle;
 
@@ -26,7 +26,7 @@ public class TempPlayer : MonoBehaviour
         HandleMovement();
         HandleInteractSearch();
 
-        // »óÈ£ÀÛ¿ë ½ÇÇà
+        // ìƒí˜¸ì‘ìš© ì‹¤í–‰
         if (Input.GetKeyDown(KeyCode.F) && currentTarget != null)
         {
             currentTarget.OnPlayerInteract(this);
@@ -45,7 +45,7 @@ public class TempPlayer : MonoBehaviour
     {
         IInteractable nearest = GetClosestInteractable();
 
-        // ÃÖ´Ü °Å¸® Å¸°ÙÀÌ º¯°æµÇ¾úÀ» ¶§ (ÇÏÀÌ¶óÀÌÆ® °ü¸®)
+        // ìµœë‹¨ ê±°ë¦¬ íƒ€ê²Ÿì´ ë³€ê²½ë˜ì—ˆì„ ë•Œ (í•˜ì´ë¼ì´íŠ¸ ê´€ë¦¬)
         if (nearest != currentTarget)
         {
             if (currentTarget != null)
@@ -58,7 +58,7 @@ public class TempPlayer : MonoBehaviour
             if (currentTarget != null)
             {
                 currentTarget.OnHighlight();
-                // ±âÁ¸ ÇÁ·ÎÁ§Æ®ÀÇ GameEvents°¡ ÀÖ´Ù¸é ¿©±â¼­ È£Ãâ °¡´É
+                // ê¸°ì¡´ í”„ë¡œì íŠ¸ì˜ GameEventsê°€ ìˆë‹¤ë©´ ì—¬ê¸°ì„œ í˜¸ì¶œ ê°€ëŠ¥
                 // GameEvents.OnShowInteractKey?.Invoke(((MonoBehaviour)currentTarget).transform, currentTarget.GetInteractDescription());
             }
         }
@@ -93,17 +93,17 @@ public class TempPlayer : MonoBehaviour
         return closestObj;
     }
 
-    #region Æ®¸®°Å ±â¹İ ¸®½ºÆ® °ü¸® ¹× Nearby/Leave È£Ãâ
+    #region íŠ¸ë¦¬ê±° ê¸°ë°˜ ë¦¬ìŠ¤íŠ¸ ê´€ë¦¬ ë° Nearby/Leave í˜¸ì¶œ
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        Debug.Log("ÁÖº¯ ¿ÀºêÁ§Æ® È®ÀÎ");
+        Debug.Log("ì£¼ë³€ ì˜¤ë¸Œì íŠ¸ í™•ì¸");
         if (other.TryGetComponent(out IInteractable interactable))
         {
             if (!nearbyObjects.Contains(interactable))
             {
                 nearbyObjects.Add(interactable);
-                interactable.OnPlayerNearby(); // [º¹±¸] ½Ã°¢Àû °¡ÀÌµå È°¼ºÈ­
+                interactable.OnPlayerNearby(); // [ë³µêµ¬] ì‹œê°ì  ê°€ì´ë“œ í™œì„±í™”
             }
         }
     }
@@ -114,7 +114,7 @@ public class TempPlayer : MonoBehaviour
         {
             if (nearbyObjects.Contains(interactable))
             {
-                interactable.OnPlayerLeave(); // [º¹±¸] ½Ã°¢Àû °¡ÀÌµå ºñÈ°¼ºÈ­
+                interactable.OnPlayerLeave(); // [ë³µêµ¬] ì‹œê°ì  ê°€ì´ë“œ ë¹„í™œì„±í™”
 
                 if (currentTarget == interactable)
                 {
@@ -132,7 +132,7 @@ public class TempPlayer : MonoBehaviour
     {
         CurrentState = state;
 
-        // ´ëÈ­ ½ÃÀÛ ½Ã Å¸°Ù ÇÏÀÌ¶óÀÌÆ® ÇØÁ¦ (visualCue´Â À¯ÁöÇÒÁö ¿©ºÎ¿¡ µû¶ó OnPlayerLeave È£Ãâ °¡´É)
+        // ëŒ€í™” ì‹œì‘ ì‹œ íƒ€ê²Ÿ í•˜ì´ë¼ì´íŠ¸ í•´ì œ (visualCueëŠ” ìœ ì§€í• ì§€ ì—¬ë¶€ì— ë”°ë¼ OnPlayerLeave í˜¸ì¶œ ê°€ëŠ¥)
         if (state == InteractState.Talking && currentTarget != null)
         {
             currentTarget.OnUnHighlight();
