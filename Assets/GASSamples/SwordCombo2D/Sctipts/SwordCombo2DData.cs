@@ -9,6 +9,7 @@ namespace UnityGAS.Sample
         public float comboResetTime = 0.45f;
         public float[] damages = new float[3] { 10f, 10f, 30f };
         public string[] animTriggers = new string[3] { "SwordCombo1", "SwordCombo2", "SwordCombo3" };
+        public float[] recoveryOverrides = new float[3]; // 0,1,2콤보 별 후딜
 
         [Header("Hit Timing (Animation Event)")]
         public GameplayTag hitEventTag;        // Event.Anim.SwordCombo.Hit

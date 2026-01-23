@@ -39,6 +39,10 @@ namespace UnityGAS
         public System.Action<AbilityDefinition> OnAbilityCastStart;
         public System.Action<AbilityDefinition> OnAbilityCastCompleted;
         public System.Action<AbilityDefinition> OnAbilityCastCancelled;
+        
+        // 스택형 쿨타임 키
+        private const string KEY_CHARGES = "__Charges";
+        private const string KEY_RECHARGE = "__RechargeRemaining";
 
         public bool IsCasting => isCasting;
         public bool IsExecuting => isExecuting;
@@ -186,7 +190,42 @@ namespace UnityGAS
         {
             var spec = new AbilitySpec(def);
             runtimeSpecs.Add(spec);
+
+            if (def != null && def.useCharges)
+            {
+                spec.SetInt(KEY_CHARGES, Mathf.Max(1, def.maxCharges));
+                spec.SetFloat(KEY_RECHARGE, 0f);
+            }
+
             return spec;
+        }
+
+        public bool TakeAbility(AbilityDefinition def)
+        {
+            if (def == null) return false;
+
+            // spec 찾기
+            AbilitySpec spec = FindSpec(def);
+            if (spec == null) return false;
+
+            // 실행/캐스팅 중이면 우선 취소(강제)
+            if (CurrentExecSpec == spec) CancelExecution(force: true);
+            if (CurrentCastSpec == spec) CancelCasting(force: true);
+
+            // 버퍼에 걸려있으면 제거
+            // (bufferedSpec, bufferedTarget는 AbilitySystem 내부 필드이므로 같은 클래스 안에서만 접근 가능)
+            if (bufferedSpec == spec)
+            {
+                bufferedSpec = null;
+                bufferedTarget = null;
+            }
+
+            // waiter 정리(혹시 남아있을 수 있으니)
+            CancelWaiters(spec);
+
+            // 리스트에서 제거
+            runtimeSpecs.Remove(spec);
+            return true;
         }
 
         public AbilitySpec FindSpec(AbilityDefinition def)
@@ -207,6 +246,9 @@ namespace UnityGAS
         {
             if (spec == null) return false;
             var def = spec.Definition;
+
+            if (def != null && def.useCharges)
+                return spec.GetInt(KEY_CHARGES, 0) <= 0;
 
             if (def != null && def.cooldownEffect != null && effectRunner != null)
                 return effectRunner.HasActiveEffect(def.cooldownEffect, gameObject);
@@ -268,8 +310,10 @@ namespace UnityGAS
 
         private void StartCooldown(AbilitySpec spec)
         {
+
             var def = spec?.Definition;
             if (def == null) return;
+            if (def.useCharges) return; // 충전형은 일반 쿨다운(또는 cooldownEffect) 사용 안 함
 
             if (def.cooldown <= 0f) return;
 
@@ -312,11 +356,44 @@ namespace UnityGAS
                 var s = runtimeSpecs[i];
                 var def = s.Definition;
 
-                if (def != null && def.cooldownEffect != null) continue; // GE가 관리
+                if (def != null && def.useCharges)
+                {
+                    int charges = s.GetInt(KEY_CHARGES, 0);
+                    int max = Mathf.Max(1, def.maxCharges);
+
+                    if (charges < max)
+                    {
+                        float r = s.GetFloat(KEY_RECHARGE, 0f);
+
+                        if (r <= 0f)
+                            r = Mathf.Max(0.01f, def.cooldown);
+
+                        r -= Time.deltaTime;
+
+                        if (r <= 0f)
+                        {
+                            charges++;
+                            s.SetInt(KEY_CHARGES, charges);
+
+                            // 아직 덜 찼으면 다음 충전 시작
+                            r = (charges < max) ? Mathf.Max(0.01f, def.cooldown) : 0f;
+                        }
+
+                        s.SetFloat(KEY_RECHARGE, r);
+                    }
+                    else
+                    {
+                        s.SetFloat(KEY_RECHARGE, 0f);
+                    }
+
+                    continue;
+                }
+
+                // -------- 기존 쿨다운 로직 --------
+                if (def != null && def.cooldownEffect != null) continue;
                 if (s.CooldownRemaining > 0f) s.CooldownRemaining -= Time.deltaTime;
             }
         }
-
 
         // -----------------------------
         // Casting
@@ -381,6 +458,17 @@ namespace UnityGAS
                     StopCoroutine(activeExecution);
 
                 activeExecution = StartCoroutine(RunAbility(spec, target));
+
+                // “charge 1회 소비”
+                if (def.useCharges)
+                {
+                    int c = spec.GetInt(KEY_CHARGES, 0);
+                    if (c > 0) spec.SetInt(KEY_CHARGES, c - 1);
+
+                    // 충전 타이머가 돌고 있지 않다면 시작
+                    if (spec.GetInt(KEY_CHARGES, 0) < def.maxCharges && spec.GetFloat(KEY_RECHARGE, 0f) <= 0f)
+                        spec.SetFloat(KEY_RECHARGE, Mathf.Max(0.01f, def.cooldown));
+                }
 
                 // 쿨다운은 캐스팅 완료 즉시 시작
                 StartCooldown(spec);
@@ -636,5 +724,28 @@ namespace UnityGAS
             };
             return p;
         }
+
+        //UI용 getter 
+        public int GetChargesRemaining(AbilityDefinition ability)
+        {
+            var spec = FindSpec(ability);
+            if (spec == null || spec.Definition == null || !spec.Definition.useCharges) return 0;
+            return spec.GetInt(KEY_CHARGES, 0);
+        }
+
+        public int GetMaxCharges(AbilityDefinition ability)
+        {
+            var spec = FindSpec(ability);
+            if (spec == null || spec.Definition == null || !spec.Definition.useCharges) return 1;
+            return Mathf.Max(1, spec.Definition.maxCharges);
+        }
+
+        public float GetRechargeRemaining(AbilityDefinition ability)
+        {
+            var spec = FindSpec(ability);
+            if (spec == null || spec.Definition == null || !spec.Definition.useCharges) return 0f;
+            return Mathf.Max(0f, spec.GetFloat(KEY_RECHARGE, 0f));
+        }
+
     }
 }

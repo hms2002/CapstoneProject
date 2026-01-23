@@ -21,13 +21,13 @@ namespace UnityGAS
             float modValue = value * stackCount;
             if (type == ModifierType.Flat)
             {
-                attrValue.BaseValue += modValue;
+                attrValue.AddBaseValue(modValue);
             }
             else if (type == ModifierType.Percent)
             {
                 // Note: Percent modifier on instant effects can be tricky.
                 // This implementation modifies the base value, which is one way to do it.
-                attrValue.BaseValue *= (1 + modValue);
+                attrValue.SetBaseValue (attrValue.BaseValue * (1 + modValue));
             }
         }
 

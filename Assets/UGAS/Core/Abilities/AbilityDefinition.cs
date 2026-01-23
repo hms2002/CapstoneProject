@@ -13,6 +13,10 @@ namespace UnityGAS
 
         [Header("Activation")]
         public float cooldown = 0f;
+        [Header("Charges (Optional)")]
+        public bool useCharges = false;
+        public int maxCharges = 1; // useCharges=true면 2 이상 권장
+
         [Tooltip("설정 시 쿨다운을 GE(Duration)로 관리합니다. (추천: GE_Cooldown + grantedTags에 Cooldown.* 태그 부여)")]
         public GameplayEffect cooldownEffect;
         public float castTime = 0f;
@@ -39,6 +43,13 @@ namespace UnityGAS
         public List<GameplayTag> abilityTags = new List<GameplayTag>();
         public List<GameplayTag> requiredTags = new List<GameplayTag>();
         public List<GameplayTag> blockedByTags = new List<GameplayTag>();
+        [Header("Tag Sets (Optional)")]
+        public List<GameplayTagSet> requiredTagSets = new();
+        public List<GameplayTagSet> blockedByTagSets = new();
+        public List<GameplayTagSet> targetRequiredTagSets = new();
+        public List<GameplayTagSet> targetBlockedByTagSets = new();
+        // 태그 셋 변경 여부를 체크하는 내부 캐시 변수
+        private int _reqSetVerHash, _blockSetVerHash, _tReqSetVerHash, _tBlockSetVerHash;
 
         [Tooltip("Tags granted to the caster while this ability is executing (logic + recovery). Managed by AbilitySystem.")]
         public List<GameplayTag> grantedTagsWhileActive = new List<GameplayTag>();
@@ -90,13 +101,49 @@ namespace UnityGAS
 
         private void EnsureTagMasks()
         {
-            if (_tagMasksCompiled) return;
-            _reqMask = TagMask.Compile(requiredTags);
-            _blockMask = TagMask.Compile(blockedByTags);
-            _tReqMask = TagMask.Compile(targetRequiredTags);
-            _tBlockMask = TagMask.Compile(targetBlockedByTags);
+            int newReqHash = GameplayTagSet.ComputeVersionHash(requiredTagSets);
+            int newBlkHash = GameplayTagSet.ComputeVersionHash(blockedByTagSets);
+            int newTReqHash = GameplayTagSet.ComputeVersionHash(targetRequiredTagSets);
+            int newTBlkHash = GameplayTagSet.ComputeVersionHash(targetBlockedByTagSets);
+
+            if (_tagMasksCompiled &&
+                newReqHash == _reqSetVerHash &&
+                newBlkHash == _blockSetVerHash &&
+                newTReqHash == _tReqSetVerHash &&
+                newTBlkHash == _tBlockSetVerHash)
+                return;
+
+            TagRegistry.EnsureInitialized();
+
+            _reqMask = new TagMask(TagRegistry.WordCount);
+            _blockMask = new TagMask(TagRegistry.WordCount);
+            _tReqMask = new TagMask(TagRegistry.WordCount);
+            _tBlockMask = new TagMask(TagRegistry.WordCount);
+
+            // direct tags
+            if (requiredTags != null) for (int i = 0; i < requiredTags.Count; i++) if (requiredTags[i] != null) _reqMask.Add(requiredTags[i]);
+            if (blockedByTags != null) for (int i = 0; i < blockedByTags.Count; i++) if (blockedByTags[i] != null) _blockMask.Add(blockedByTags[i]);
+            if (targetRequiredTags != null) for (int i = 0; i < targetRequiredTags.Count; i++) if (targetRequiredTags[i] != null) _tReqMask.Add(targetRequiredTags[i]);
+            if (targetBlockedByTags != null) for (int i = 0; i < targetBlockedByTags.Count; i++) if (targetBlockedByTags[i] != null) _tBlockMask.Add(targetBlockedByTags[i]);
+
+            // tag sets
+            var visited = new HashSet<GameplayTagSet>();
+            if (requiredTagSets != null) for (int i = 0; i < requiredTagSets.Count; i++) requiredTagSets[i]?.AddToMask(_reqMask, visited);
+            visited.Clear();
+            if (blockedByTagSets != null) for (int i = 0; i < blockedByTagSets.Count; i++) blockedByTagSets[i]?.AddToMask(_blockMask, visited);
+            visited.Clear();
+            if (targetRequiredTagSets != null) for (int i = 0; i < targetRequiredTagSets.Count; i++) targetRequiredTagSets[i]?.AddToMask(_tReqMask, visited);
+            visited.Clear();
+            if (targetBlockedByTagSets != null) for (int i = 0; i < targetBlockedByTagSets.Count; i++) targetBlockedByTagSets[i]?.AddToMask(_tBlockMask, visited);
+
+            _reqSetVerHash = newReqHash;
+            _blockSetVerHash = newBlkHash;
+            _tReqSetVerHash = newTReqHash;
+            _tBlockSetVerHash = newTBlkHash;
+
             _tagMasksCompiled = true;
         }
+
 
         private void OnValidate()
         {

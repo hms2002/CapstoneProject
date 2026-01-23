@@ -5,6 +5,11 @@ public class AbilityAnimationEventRelay : MonoBehaviour
 {
     [SerializeField] private AbilitySystem abilitySystem;
 
+    private void Awake()
+    {
+        abilitySystem ??= GetComponentInParent<AbilitySystem>();
+    }
+
     public void Bind(AbilitySystem system) => abilitySystem = system;
 
     // Animation Event에서 호출 (태그 에셋 전달 버전)

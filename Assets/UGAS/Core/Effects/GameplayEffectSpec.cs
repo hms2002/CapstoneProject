@@ -43,6 +43,7 @@ namespace UnityGAS
             return HasDurationOverride ? DurationOverride : defaultDuration;
         }
 
+        // Ability 시전할 때, Caller가 직접 값을 주입하는 것
         public void SetSetByCallerMagnitude(GameplayTag key, float value)
         {
             if (key == null) return;

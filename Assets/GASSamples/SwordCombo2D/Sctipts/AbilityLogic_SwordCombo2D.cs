@@ -33,6 +33,7 @@ namespace UnityGAS.Sample
             // 3) 애니 트리거
             TryPlayAnim(system, data, comboIndex, spec.Definition);
 
+
             // 4) 전진(Lunge)
             yield return Lunge(system, dir,
                 GetArraySafe(data.lungeDistances, comboIndex, 0f),
@@ -49,7 +50,11 @@ namespace UnityGAS.Sample
                 );
             }
 
-            // 6) 타격 판정 + 데미지 적용
+            // 콤보 별 공격 딜레이 설정
+            float rec = GetArraySafe(data.recoveryOverrides, comboIndex, spec.Definition.recoveryTime);
+            spec.SetFloat("RecoveryOverride", rec);
+
+            // 7) 타격 판정 + 데미지 적용
             DoHit(system, spec, data, comboIndex, dir);
         }
 
@@ -134,7 +139,8 @@ namespace UnityGAS.Sample
             Vector2 center = (Vector2)system.transform.position
                              + dir * data.forwardOffset
                              + perp * (data.sideOffset * sideSign);
-
+            Debug.DrawLine(center, center+data.hitboxSize, Color.red, 4f);
+            Debug.Log(center);
             var td = AbilityTargetData2D.FromOverlapBox(center, data.hitboxSize, 0f, data.hitLayers, ignore: system.gameObject);
             if (td.Targets.Count == 0) return;
 
