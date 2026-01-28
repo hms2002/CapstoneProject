@@ -39,7 +39,6 @@ public class WeaponSkillHUD2D : MonoBehaviour
         if (inventory != null)
         {
             inventory.OnEquippedChanged += HandleEquippedChanged;
-            inventory.OnSlotChanged += (_, __, ___) => RefreshAbilityRefs(); // 슬롯 변경도 영향 가능
             inventory.OnInventoryChanged += RefreshAbilityRefs;
         }
 
@@ -51,7 +50,6 @@ public class WeaponSkillHUD2D : MonoBehaviour
         if (inventory != null)
         {
             inventory.OnEquippedChanged -= HandleEquippedChanged;
-            inventory.OnSlotChanged -= (_, __, ___) => RefreshAbilityRefs();
             inventory.OnInventoryChanged -= RefreshAbilityRefs;
         }
     }
@@ -90,7 +88,8 @@ public class WeaponSkillHUD2D : MonoBehaviour
         {
             ui.icon.enabled = has;
             // AbilityDefinition에 아이콘이 있다면 여기서 연결해도 됨(없으면 유지)
-            // ui.icon.sprite = def.icon;
+            if(def != null)
+                ui.icon.sprite = def.icon;
         }
 
         if (ui.cooldownFill != null)
@@ -111,7 +110,6 @@ public class WeaponSkillHUD2D : MonoBehaviour
         UpdateCooldownAndCharge(skill1UI, skill1Def);
         UpdateCooldownAndCharge(skill2UI, skill2Def);
     }
-
     private void UpdateCooldownAndCharge(SkillSlotUI ui, AbilityDefinition def)
     {
         if (ui == null) return;
@@ -124,9 +122,39 @@ public class WeaponSkillHUD2D : MonoBehaviour
             return;
         }
 
-        // 1) 쿨다운
-        float remaining = abilitySystem.GetCooldownRemaining(def);
         float total = Mathf.Max(0.0001f, def.cooldown);
+
+        // ✅ 충전형
+        if (def.useCharges)
+        {
+            int charges = abilitySystem.GetChargesRemaining(def);
+            int max = abilitySystem.GetMaxCharges(def);
+            float recharge = abilitySystem.GetRechargeRemaining(def); // 다음 1회 충전까지 남은 시간
+
+            // fill: "충전 중"이면 차오르는 형태(= 남은시간 기반)
+            if (ui.cooldownFill != null)
+            {
+                // charges가 풀이면(= 충전 필요 없음) fill 0으로
+                if (charges >= max) ui.cooldownFill.fillAmount = 0f;
+                else ui.cooldownFill.fillAmount = Mathf.Clamp01(recharge / total);
+            }
+
+            if (ui.cooldownText != null)
+            {
+                // 충전 중이고 아직 풀충전 아니면 남은 시간 표시
+                ui.cooldownText.text = (charges < max && recharge > 0.01f) ? recharge.ToString("0.0") : "";
+            }
+
+            if (ui.chargeText != null)
+            {
+                ui.chargeText.text = $"{charges}/{max}";
+            }
+
+            return;
+        }
+
+        // ✅ 일반 쿨다운형
+        float remaining = abilitySystem.GetCooldownRemaining(def);
 
         if (ui.cooldownFill != null)
             ui.cooldownFill.fillAmount = Mathf.Clamp01(remaining / total);
@@ -134,21 +162,8 @@ public class WeaponSkillHUD2D : MonoBehaviour
         if (ui.cooldownText != null)
             ui.cooldownText.text = remaining > 0.01f ? remaining.ToString("0.0") : "";
 
-        // 2) 차지(옵션): 네 프로젝트에 충전형 스킬이 있으면 여기 연결
-        // 아래는 "AbilitySystem에 GetChargesRemaining/GetMaxCharges/GetRechargeRemaining가 있다"는 전제.
-        // 없으면 그 3개만 추가하면 됨.
         if (ui.chargeText != null)
-        {
-            if (def.useCharges) // AbilityDefinition에 useCharges/maxCharges 도입된 상태라면
-            {
-                int c = abilitySystem.GetChargesRemaining(def);
-                int m = abilitySystem.GetMaxCharges(def);
-                ui.chargeText.text = $"{c}/{m}";
-            }
-            else
-            {
-                ui.chargeText.text = "";
-            }
-        }
+            ui.chargeText.text = "";
     }
+
 }

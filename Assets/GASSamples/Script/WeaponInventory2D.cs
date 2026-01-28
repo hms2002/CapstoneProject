@@ -45,6 +45,12 @@ public class WeaponInventory2D : MonoBehaviour
     public WeaponDefinition GetWeaponInSlot(int slotIndex) => IsValidSlot(slotIndex) ? slots[slotIndex] : null;
     public bool HasWeapon(int slotIndex) => GetWeaponInSlot(slotIndex) != null;
 
+    // 중복된 무기 습득 block
+    [SerializeField] private bool disallowDuplicateWeapons = true;
+
+    // (선택) UI용 피드백 이벤트
+    public event Action<WeaponDefinition> OnPickupRejected_Duplicate;
+
     private void Awake()
     {
         if (abilitySystem == null) abilitySystem = GetComponent<AbilitySystem>();
@@ -52,6 +58,17 @@ public class WeaponInventory2D : MonoBehaviour
         if (equipController == null) equipController = GetComponentInChildren<WeaponEquipController>();
     }
 
+    private bool ContainsWeaponId(string weaponId)
+    {
+        if (string.IsNullOrEmpty(weaponId)) return false;
+        for (int i = 0; i < slots.Length; i++)
+        {
+            var w = slots[i];
+            if (w != null && w.weaponId == weaponId)
+                return true;
+        }
+        return false;
+    }
 
     // -----------------------
     // Public API
@@ -60,6 +77,11 @@ public class WeaponInventory2D : MonoBehaviour
     {
         if (weapon == null) return false;
 
+        if (disallowDuplicateWeapons && ContainsWeaponId(weapon.weaponId))
+        {
+            OnPickupRejected_Duplicate?.Invoke(weapon);
+            return false;
+        }
         // ✅ SetSlot/DropSlot로 active 슬롯이 바뀌기 전에 "이전 장착 정보"를 먼저 캡처
         int prevIndex = activeIndex;
         var prevWeapon = ActiveWeapon;
@@ -335,4 +357,143 @@ public class WeaponInventory2D : MonoBehaviour
     {
         OnInventoryChanged?.Invoke();
     }
+
+    // -----------------------
+    // Drag&Drop Minimal API
+    // -----------------------
+    public int SlotCount => slots.Length;
+
+    /// <summary>
+    /// 슬롯에 특정 무기를 놓을 수 있는지(중복 무기 금지 정책 포함)
+    /// </summary>
+    public bool CanPlaceWeaponInSlot(int slotIndex, WeaponDefinition weapon)
+    {
+        if (!IsValidSlot(slotIndex)) return false;
+        if (weapon == null) return true;
+
+        if (disallowDuplicateWeapons)
+        {
+            // 교체될 슬롯은 제외하고 중복 검사
+            if (ContainsWeaponIdExcept(weapon.weaponId, slotIndex))
+                return false;
+        }
+
+        return true;
+    }
+
+    private bool ContainsWeaponIdExcept(string weaponId, int exceptSlotIndex)
+    {
+        if (string.IsNullOrEmpty(weaponId)) return false;
+
+        for (int i = 0; i < slots.Length; i++)
+        {
+            if (i == exceptSlotIndex) continue;
+            var w = slots[i];
+            if (w != null && w.weaponId == weaponId)
+                return true;
+        }
+        return false;
+    }
+
+    /// <summary>
+    /// 슬롯에 무기를 직접 세팅(교체/제거 포함). 드래그&드롭에서 사용.
+    /// - 기존 무기는 인벤에서 빠지므로 Ability Take
+    /// - 새 무기는 인벤에 들어오므로 Ability Give
+    /// - active 슬롯이면 태그/비주얼/이벤트까지 올바르게 갱신
+    /// </summary>
+    public bool TrySetWeaponSlot(int slotIndex, WeaponDefinition newWeapon, bool autoEquipIfNone = true)
+    {
+        if (!IsValidSlot(slotIndex)) return false;
+
+        var oldWeapon = slots[slotIndex];
+        if (oldWeapon == newWeapon) return true;
+
+        // 중복 무기 금지 정책
+        if (newWeapon != null && !CanPlaceWeaponInSlot(slotIndex, newWeapon))
+            return false;
+
+        bool wasActive = (slotIndex == activeIndex);
+        int prevIndex = activeIndex;
+
+        // prevWeapon은 "교체 전" 기준으로 잡아야 한다
+        // (active 슬롯 교체 시 ActiveWeapon이 덮이는 문제 방지)
+        var prevWeapon = wasActive ? oldWeapon : ActiveWeapon;
+
+        // 1) active 슬롯이었다면, 먼저 기존 장착 태그 제거 + 비주얼/상태 정리
+        if (wasActive && oldWeapon != null && oldWeapon.equippedTag != null && tagSystem != null)
+            tagSystem.RemoveTag(oldWeapon.equippedTag);
+
+        if (wasActive && newWeapon == null)
+        {
+            // 무기 제거 후 장착 없음 상태가 되므로 비주얼도 제거
+            activeIndex = -1;
+            if (equipController != null) equipController.Clear();
+        }
+
+        // 2) 기존 무기는 인벤에서 빠지므로 능력 회수
+        if (oldWeapon != null)
+            TakeWeaponAbilities(oldWeapon);
+
+        // 3) 슬롯 갱신 (OnSlotChanged 발생)
+        SetSlot(slotIndex, newWeapon);
+
+        // 4) 새 무기는 인벤에 들어오므로 능력 부여
+        if (newWeapon != null)
+            GiveWeaponAbilities(newWeapon);
+
+        // 5) active 슬롯이었는데 새 무기가 들어온 경우: 그 무기를 즉시 장착 상태로 갱신
+        if (wasActive && newWeapon != null)
+        {
+            // 여기선 이미 이전 태그를 제거했으므로 removePrevTag=false로 코어 호출
+            EquipCore(slotIndex, prevIndex, oldWeapon, removePrevTag: false);
+        }
+        else
+        {
+            // 6) 장착이 없는 상태(-1)인데 새 무기가 들어왔으면 자동 장착(옵션)
+            if (autoEquipIfNone && activeIndex < 0 && newWeapon != null)
+                Equip(slotIndex);
+        }
+
+        NotifyInventoryChanged();
+        return true;
+    }
+
+    /// <summary>
+    /// 인벤토리 슬롯 간 swap. (디아블로식)
+    /// - 무기 개체는 그대로 옮기고
+    /// - "현재 장착 무기"가 유지되도록 activeIndex를 같이 이동시킨다.
+    /// </summary>
+    public bool TrySwapWeaponSlots(int a, int b)
+    {
+        if (!IsValidSlot(a) || !IsValidSlot(b)) return false;
+        if (a == b) return true;
+
+        var wa = slots[a];
+        var wb = slots[b];
+
+        // 그냥 swap
+        slots[a] = wb;
+        slots[b] = wa;
+
+        OnSlotChanged?.Invoke(a, wa, slots[a]);
+        OnSlotChanged?.Invoke(b, wb, slots[b]);
+
+        // activeIndex가 가리키는 "무기"를 유지하도록 activeIndex도 같이 이동
+        if (activeIndex == a) activeIndex = b;
+        else if (activeIndex == b) activeIndex = a;
+
+        // 장착 무기 자체는 변하지 않으므로 태그/비주얼은 그대로 두는 게 자연스러움
+        // 다만 UI는 activeIndex가 바뀔 수 있으니 이벤트는 쏴줌
+        if (activeIndex == a || activeIndex == b)
+        {
+            // 위에서 activeIndex를 이동시켰으므로 "무기는 같고 index만 바뀐" 상황
+            // prev/new weapon은 동일한 값으로 보내도 됨(슬롯 강조용)
+            var equipped = ActiveWeapon;
+            OnEquippedChanged?.Invoke(-2, activeIndex, equipped, equipped); // prevIndex가 의미 없으면 -2 같은 값으로 표기해도 OK
+        }
+
+        NotifyInventoryChanged();
+        return true;
+    }
+
 }
