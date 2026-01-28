@@ -122,31 +122,31 @@ public class DoorObject : MonoBehaviour, IInteractable
     // IInteractable 구현 (플레이어 F키)
     // =========================================================
 
-    public void OnPlayerInteract(TempPlayer player)
-    {
-        if (IsOpen) return;
+    //public void OnPlayerInteract(TempPlayer player)
+    //{
+    //    if (IsOpen) return;
 
-        // 호감도 문은 플레이어가 눌러서 여는 게 아님. (살펴보기 용도)
-        if (doorType == DoorType.Affection)
-        {
-            int cur = AffectionManager.Instance.GetAffection(targetBossID);
-            Debug.Log($"[살펴보기] {targetBossID}번 보스의 호감도가 부족해 닫혀있다. (현재:{cur}/필요:{requiredAffection})");
-            PlayShakeAnimation();
-            return;
-        }
+    //    // 호감도 문은 플레이어가 눌러서 여는 게 아님. (살펴보기 용도)
+    //    if (doorType == DoorType.Affection)
+    //    {
+    //        int cur = AffectionManager.Instance.GetAffection(targetBossID);
+    //        Debug.Log($"[살펴보기] {targetBossID}번 보스의 호감도가 부족해 닫혀있다. (현재:{cur}/필요:{requiredAffection})");
+    //        PlayShakeAnimation();
+    //        return;
+    //    }
 
-        // 나머지 문들 처리
-        Collider2D playerCol = player.GetComponent<Collider2D>();
-        if (playerCol != null && CheckConditionByCollider(playerCol))
-        {
-            ForceOpen(immediate: false, save: isPermanent);
-        }
-        else
-        {
-            PlayShakeAnimation();
-            Debug.Log(GetInteractDescription());
-        }
-    }
+    //    // 나머지 문들 처리
+    //    Collider2D playerCol = player.GetComponent<Collider2D>();
+    //    if (playerCol != null && CheckConditionByCollider(playerCol))
+    //    {
+    //        ForceOpen(immediate: false, save: isPermanent);
+    //    }
+    //    else
+    //    {
+    //        PlayShakeAnimation();
+    //        Debug.Log(GetInteractDescription());
+    //    }
+    //}
 
     public string GetInteractDescription()
     {
@@ -206,7 +206,38 @@ public class DoorObject : MonoBehaviour, IInteractable
     public void OnPlayerLeave() { }
     public void OnHighlight() { }
     public void OnUnHighlight() { }
-    public bool CanInteract(TempPlayer player) => !IsOpen;
+    //  public bool CanInteract(TempPlayer player) => !IsOpen;
     public InteractState GetInteractType() => InteractState.Idle;
     public void GetInteract(string text) { }
+
+    public bool CanInteract(IPlayerInteractor player)
+    {
+        return !IsOpen;
+    }
+
+    public void OnPlayerInteract(IPlayerInteractor player)
+    {
+        if (IsOpen) return;
+
+        // 호감도 문은 플레이어가 눌러서 여는 게 아님. (살펴보기 용도)
+        if (doorType == DoorType.Affection)
+        {
+            int cur = AffectionManager.Instance.GetAffection(targetBossID);
+            Debug.Log($"[살펴보기] {targetBossID}번 보스의 호감도가 부족해 닫혀있다. (현재:{cur}/필요:{requiredAffection})");
+            PlayShakeAnimation();
+            return;
+        }
+
+        // 나머지 문들 처리
+        Collider2D playerCol = player.Transform.GetComponent<Collider2D>();
+        if (playerCol != null && CheckConditionByCollider(playerCol))
+        {
+            ForceOpen(immediate: false, save: isPermanent);
+        }
+        else
+        {
+            PlayShakeAnimation();
+            Debug.Log(GetInteractDescription());
+        }
+    }
 }

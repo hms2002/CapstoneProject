@@ -42,4 +42,17 @@ public abstract class ShortcutBase : MonoBehaviour, IInteractable
     {
         if (targetDoor != null) targetDoor.PlayShakeAnimation();
     }
+
+    public bool CanInteract(IPlayerInteractor player)
+    {
+        return targetDoor != null && !targetDoor.IsOpen;
+    }
+
+    public void OnPlayerInteract(IPlayerInteractor player)
+    {
+        if (targetDoor != null && targetDoor.IsOpen) return;
+
+        if (CheckCondition(player.Transform.GetComponent<TempPlayer>())) OnSuccess();
+        else OnFail();
+    }
 }
