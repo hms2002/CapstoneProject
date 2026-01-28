@@ -59,7 +59,7 @@ public class DialogueTrigger : MonoBehaviour, IInteractable
         spriteRenderer.SetPropertyBlock(propBlock);
     }
 
-    public void OnPlayerInteract(TempPlayer player)
+    public void OnPlayerInteract(IPlayerInteractor player)
     {
         if (CanInteract(player))
         {
@@ -68,7 +68,7 @@ public class DialogueTrigger : MonoBehaviour, IInteractable
         }
     }
 
-    public bool CanInteract(TempPlayer player)
+    public bool CanInteract(IPlayerInteractor player)
     {
         return !DialogueManager.GetInstance().dialogueIsPlaying;
     }

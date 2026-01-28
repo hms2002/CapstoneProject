@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TempPlayer : MonoBehaviour
+public class TempPlayer : MonoBehaviour, IPlayerInteractor
 {
     public static TempPlayer Instance { get; private set; }
 
@@ -13,6 +13,8 @@ public class TempPlayer : MonoBehaviour
     private IInteractable currentTarget; // 현재 가장 가까운 타겟
 
     public InteractState CurrentState { get; private set; } = InteractState.Idle;
+
+    public Transform Transform => transform;
 
     private void Awake()
     {

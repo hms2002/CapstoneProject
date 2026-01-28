@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5686dc461c9b6a546991383454aa181f, type: 3}
+  m_Name: WD_NewWeapon
+  m_EditorClassIdentifier: 
+  weaponId: Weapon.New
+  displayName: New Weapon
+  icon: {fileID: -70393095, guid: 7e11de47ebfa53a42a94e5fb92a94f06, type: 3}
+  weaponPrefab: {fileID: 8490881910473165802, guid: fec6d35c34d9cbc4f95c50b680862890, type: 3}
+  equippedTag: {fileID: 11400000, guid: cac1046499d28814a91fcb2631757240, type: 2}
+  attack: {fileID: 11400000, guid: 1f472dc67709f4248953a0bf39255567, type: 2}
+  skill1: {fileID: 11400000, guid: 0fefa61e5f457d94e828a895b4ddfa2a, type: 2}
+  skill2: {fileID: 11400000, guid: 8ec96225056f3a345a2a97b2e4430efb, type: 2}
