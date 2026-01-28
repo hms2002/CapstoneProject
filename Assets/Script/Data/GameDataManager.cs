@@ -59,6 +59,22 @@ public class GameDataManager : MonoBehaviour
         }
     }
 
+    public void UnlockShortcut(string mapID, string doorID)
+    {
+        StageProgress stageData = Data.mapData.GetStageData(mapID);
+        if (!stageData.unlockedShortcuts.Contains(doorID))
+        {
+            stageData.unlockedShortcuts.Add(doorID);
+            // SaveData();
+        }
+    }
+
+    public bool IsShortcutUnlocked(string mapID, string doorID)
+    {
+        StageProgress stageData = Data.mapData.GetStageData(mapID);
+        return stageData.unlockedShortcuts.Contains(doorID);
+    }
+
     private void OnApplicationQuit()
     {
         SaveData();

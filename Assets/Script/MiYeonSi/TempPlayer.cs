@@ -99,24 +99,44 @@ public class TempPlayer : MonoBehaviour, IPlayerInteractor
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        Debug.Log("주변 오브젝트 확인");
-        if (other.TryGetComponent(out IInteractable interactable))
+        // 1. 물리적 충돌은 감지됨 (로그 확인용)
+        // Debug.Log($"[충돌 감지] {other.name}와 닿았습니다.");
+
+        // [수정] 자식 콜라이더와 부딪혔을 경우를 대비해 부모까지 검색
+        IInteractable interactable = other.GetComponent<IInteractable>();
+
+        if (interactable == null)
+        {
+            interactable = other.GetComponentInParent<IInteractable>();
+        }
+
+        // 인터페이스를 찾았을 때만 리스트에 추가
+        if (interactable != null)
         {
             if (!nearbyObjects.Contains(interactable))
             {
                 nearbyObjects.Add(interactable);
-                interactable.OnPlayerNearby(); // [복구] 시각적 가이드 활성화
+                interactable.OnPlayerNearby();
+                // Debug.Log($"[리스트 추가] {other.name} 상호작용 대상 등록 완료");
             }
         }
     }
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        if (other.TryGetComponent(out IInteractable interactable))
+        // [수정] 나갈 때도 똑같이 부모까지 검색해서 찾아야 함
+        IInteractable interactable = other.GetComponent<IInteractable>();
+
+        if (interactable == null)
+        {
+            interactable = other.GetComponentInParent<IInteractable>();
+        }
+
+        if (interactable != null)
         {
             if (nearbyObjects.Contains(interactable))
             {
-                interactable.OnPlayerLeave(); // [복구] 시각적 가이드 비활성화
+                interactable.OnPlayerLeave();
 
                 if (currentTarget == interactable)
                 {
@@ -124,6 +144,7 @@ public class TempPlayer : MonoBehaviour, IPlayerInteractor
                     currentTarget = null;
                 }
                 nearbyObjects.Remove(interactable);
+                // Debug.Log($"[리스트 제거] {other.name} 상호작용 대상 해제");
             }
         }
     }

@@ -17,3 +17,4 @@ MonoBehaviour:
   isBoss: 1
   affectionRewards: []
   spriteLibraryAsset: {fileID: 7108339969198208228, guid: a703341cc9a31ff4aaf1c6e131d61055, type: 3}
+  emoteOffset: {x: 75, y: 100}
