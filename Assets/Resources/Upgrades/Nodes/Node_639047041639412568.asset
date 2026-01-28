@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 024537cf80dd39847853e246625c6662, type: 3}
   m_Name: Node_639047041639412568
   m_EditorClassIdentifier: 
-  nodeID: 0
+  nodeID: -376190362
   upgradeName: New Upgrade 1_2
   description: 
   icon: {fileID: 0}
   price: 100
-  unlockedNodeIDs: 00000000
+  unlockedNodeIDs: d1efaf69
   requiredParentIDs: 6fd611fe
   nextNodes:
   - {fileID: 11400000, guid: 013e6d3a40ca7dc4190ce7dffc7c136a, type: 2}

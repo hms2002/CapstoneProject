@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -13,6 +14,8 @@ public class AffectionManager : MonoBehaviour
 
     // [수정] DialogueManager가 상황에 따라 연결해주는 UI
     private AffectionUI linkedUI;
+
+    public event Action<int, int> OnAffectionChanged;
 
     private void Awake()
     {
@@ -86,6 +89,8 @@ public class AffectionManager : MonoBehaviour
         {
             CheckRewards(data, oldAffection, newAffection);
         }
+
+        OnAffectionChanged?.Invoke(id, newAffection);
     }
 
     private void CheckRewards(NPCData data, int fromLevel, int toLevel)

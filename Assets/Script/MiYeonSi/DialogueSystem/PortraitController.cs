@@ -9,8 +9,12 @@ public class PortraitController : MonoBehaviour
     public NPCData npcData;
 
     [Header("설정")]
-    [Tooltip("스프라이트 라이브러리에서 사용할 카테고리 이름 (예: Face)")]
+    [Tooltip("표정 스프라이트 카테고리 이름 (예: Face)")]
     public string targetCategory = "Face";
+
+    [Header("이모티콘 설정")]
+    [Tooltip("EmoteController가 붙어있는 말풍선 프리팹")]
+    public GameObject emotePrefab;
 
     [Header("컴포넌트 연결")]
     [SerializeField] private Image portraitImage;
@@ -20,17 +24,20 @@ public class PortraitController : MonoBehaviour
     private Vector2 defaultPos;
     private Vector3 defaultScale;
 
+    // [New] 현재 떠 있는 이모티콘을 기억하는 변수
+    private GameObject currentEmoteObject;
+
     private void Awake()
     {
         rectTransform = GetComponent<RectTransform>();
 
-        // [수정] 컴포넌트가 비어있으면 찾되, 없으면 에러 로그 출력
         if (portraitImage == null) portraitImage = GetComponent<Image>();
-        if (portraitImage == null) Debug.LogError($"[PortraitController] {name} 오브젝트에 Image 컴포넌트가 없습니다!");
-
         if (spriteLibrary == null) spriteLibrary = GetComponent<SpriteLibrary>();
 
-        if (rectTransform != null) defaultPos = rectTransform.anchoredPosition;
+        if (rectTransform != null)
+        {
+            defaultPos = rectTransform.anchoredPosition;
+        }
         defaultScale = transform.localScale;
     }
 
@@ -48,30 +55,19 @@ public class PortraitController : MonoBehaviour
 
         if (data.spriteLibraryAsset != null)
         {
-            // 1. 라이브러리 교체
             spriteLibrary.spriteLibraryAsset = data.spriteLibraryAsset;
-
-            // 2. 표정 설정 (기본값)
-            // 주의: 라이브러리에 "Normal"이라는 라벨이 반드시 있어야 함
+            spriteLibrary.RefreshSpriteResolvers();
             SetExpression("Normal");
         }
         else
         {
-            Debug.LogError($"[PortraitController] {data.npcName}의 NPCData에 Sprite Library Asset이 비어있습니다!");
+            Debug.LogError($"[PortraitController] {data.npcName} 데이터에 Sprite Library Asset이 없습니다!");
         }
     }
 
-    // 기능 1: 표정 변경 (# 1001 : face : smile)
     public void SetExpression(string label)
     {
-        if (spriteLibrary == null || spriteLibrary.spriteLibraryAsset == null)
-        {
-            Debug.LogError("[PortraitController] SpriteLibrary가 연결되지 않았습니다.");
-            return;
-        }
-
-        // [디버깅] 무엇을 찾으려고 하는지 로그로 확인
-        // Debug.Log($"[PortraitController] 표정 찾기 시도 -> Category: {targetCategory}, Label: {label}");
+        if (spriteLibrary == null || spriteLibrary.spriteLibraryAsset == null) return;
 
         Sprite newSprite = spriteLibrary.GetSprite(targetCategory, label);
 
@@ -79,16 +75,44 @@ public class PortraitController : MonoBehaviour
         {
             portraitImage.sprite = newSprite;
         }
-        else
+    }
+
+    // =================================================================
+    // [Updated] 기능 2: 이모티콘 실행 (중복 방지 로직 추가)
+    // =================================================================
+    public void ShowEmote(string emoteName)
+    {
+        if (emotePrefab == null || npcData == null) return;
+
+        // 1. [핵심] 이미 떠 있는 이모티콘이 있다면 즉시 파괴!
+        if (currentEmoteObject != null)
         {
-            // [중요] 여기가 실행된다면 라이브러리 설정 문제임
-            Debug.LogWarning($"[PortraitController] 스프라이트를 찾을 수 없습니다! \n" +
-                             $"대상: {spriteLibrary.spriteLibraryAsset.name} / " +
-                             $"카테고리: '{targetCategory}' / 라벨: '{label}'");
+            Destroy(currentEmoteObject);
+            currentEmoteObject = null;
+        }
+
+        // 2. 프리팹 생성
+        GameObject go = Instantiate(emotePrefab, transform);
+
+        // 3. [핵심] 방금 만든 것을 '현재 이모티콘'으로 등록
+        currentEmoteObject = go;
+
+        // 4. 위치 및 스케일 설정
+        RectTransform rt = go.GetComponent<RectTransform>();
+        if (rt != null)
+        {
+            rt.anchoredPosition = npcData.emoteOffset;
+            rt.localScale = Vector3.one;
+        }
+
+        // 5. 초기화
+        EmoteController ctrl = go.GetComponent<EmoteController>();
+        if (ctrl != null)
+        {
+            ctrl.Init(emoteName);
         }
     }
 
-    // 기능 2: 움직임 연출 (# 1001 : act : jump)
     public void PlayAction(string action)
     {
         if (rectTransform == null) return;
@@ -117,10 +141,14 @@ public class PortraitController : MonoBehaviour
         }
     }
 
-    // [New] 등장 위치 설정
     public void SetInitialPosition(string positionKey)
     {
-        if (rectTransform == null) return;
+        if (rectTransform == null) rectTransform = GetComponent<RectTransform>();
+
+        // 앵커 중앙 고정
+        rectTransform.anchorMin = new Vector2(0f, 0f);
+        rectTransform.anchorMax = new Vector2(1f, 1f);
+        rectTransform.pivot = new Vector2(0.5f, 0.5f);
 
         float xPos = 0;
         switch (positionKey.ToLower())
@@ -131,33 +159,48 @@ public class PortraitController : MonoBehaviour
             case "far_left": xPos = -700f; break;
             case "far_right": xPos = 700f; break;
         }
+
         rectTransform.anchoredPosition = new Vector2(xPos, -200f);
-        defaultPos = rectTransform.anchoredPosition; // 이동 후 디폴트 위치 갱신
+        defaultPos = rectTransform.anchoredPosition;
     }
 
-    // [New] 등장 연출
     public void EnterAnimation()
     {
+        if (rectTransform == null) rectTransform = GetComponent<RectTransform>();
+
         CanvasGroup cg = GetComponent<CanvasGroup>();
         if (cg == null) cg = gameObject.AddComponent<CanvasGroup>();
 
         cg.alpha = 0f;
         cg.DOFade(1f, 0.5f);
-        rectTransform.DOAnchorPosY(0f, 0.5f).SetEase(Ease.OutBack)
-            .OnComplete(() => defaultPos = rectTransform.anchoredPosition); // 연출 끝난 위치를 기준점으로
+
+        if (rectTransform != null)
+        {
+            rectTransform.anchoredPosition = new Vector2(rectTransform.anchoredPosition.x, -200f);
+            rectTransform.DOAnchorPosY(0f, 0.5f).SetEase(Ease.OutBack)
+                .OnComplete(() => defaultPos = rectTransform.anchoredPosition);
+        }
     }
 
-    // [New] 퇴장 연출
     public void ExitAnimationAndDestroy()
     {
+        // [추가] 초상화가 사라질 때 이모티콘도 같이 정리 (혹시 몰라서 추가)
+        if (currentEmoteObject != null) Destroy(currentEmoteObject);
+
         CanvasGroup cg = GetComponent<CanvasGroup>();
         if (cg != null) cg.DOFade(0f, 0.4f);
 
-        rectTransform.DOAnchorPosY(-200f, 0.4f)
-            .OnComplete(() => Destroy(gameObject));
+        if (rectTransform != null)
+        {
+            rectTransform.DOAnchorPosY(-200f, 0.4f)
+                .OnComplete(() => Destroy(gameObject));
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 
-    // [New] 이동 연출 (# 1001 : move : center)
     public void MovePosition(string positionKey)
     {
         if (rectTransform == null) return;

@@ -42,7 +42,7 @@ public class DialogueManager : MonoBehaviour
         public AffectionUI affectionUI;
 
         [Header("보스 전용 연출 오브젝트")]
-        public RectTransform portraitFrame; // (기존 정적 보스 초상화)
+        public RectTransform portraitFrame;
         public RectTransform dialogueEffectGroup;
 
         [Header("시네마틱 패널 (검은색 패널)")]
@@ -69,14 +69,15 @@ public class DialogueManager : MonoBehaviour
     [SerializeField] private Animator portraitAnimator;
 
     // =================================================================
-    // [New] 동적 초상화 시스템 (Dynamic Portrait System)
+    // [System] 동적 초상화 시스템
     // =================================================================
-    [Header("동적 초상화 시스템 (New)")]
-    public GameObject portraitPrefab;       // 생성할 프리팹 (PortraitController가 붙은 UI)
-    public Transform portraitContainer;     // 프리팹이 생성될 부모 Transform (Canvas 안의 Panel 등)
-    public List<NPCData> npcDatabase;       // ID로 데이터를 찾기 위한 NPC 데이터베이스
+    [Header("동적 초상화 시스템")]
+    public GameObject portraitPrefab;
+    public Transform portraitContainer;
 
-    // 현재 소환된 초상화들을 관리하는 딕셔너리 (ID -> Controller)
+    // [Changed] 리스트 대신 전용 데이터베이스 에셋 연결
+    public NPCDatabase npcDatabase;
+
     private Dictionary<int, PortraitController> portraitMap = new Dictionary<int, PortraitController>();
 
     [Header("연출 설정")]
@@ -101,6 +102,9 @@ public class DialogueManager : MonoBehaviour
     private Vector2 topPanelTargetPos;
     private Vector2 bottomPanelTargetPos;
 
+    // =================================================================
+    // [State] 상태 변수
+    // =================================================================
     public bool dialogueIsPlaying { get; private set; }
     public bool IsEventRunning { get; set; } = false;
 
@@ -139,6 +143,9 @@ public class DialogueManager : MonoBehaviour
         if (bossUI.bottomCinematicPanel != null) bottomPanelTargetPos = bossUI.bottomCinematicPanel.anchoredPosition;
 
         dialogueIsPlaying = false;
+        canContinueToNextLine = false;
+        isTyping = false;
+
         normalUI.panelObj.SetActive(false);
         bossUI.panelObj.SetActive(false);
     }
@@ -204,6 +211,13 @@ public class DialogueManager : MonoBehaviour
 
     public void EnterDialogueMode(TextAsset inkJSON, NPCData data, Direction bossDir = Direction.Left, NPCFeatureController featureController = null)
     {
+        // 1. 상태 변수 강제 초기화
+        dialogueIsPlaying = true;
+        canContinueToNextLine = false;
+        isTyping = false;
+
+        if (typingTween != null && typingTween.IsActive()) typingTween.Kill();
+
         currentNPC = data;
         currentBossDir = bossDir;
         currentFeatureController = featureController;
@@ -222,6 +236,13 @@ public class DialogueManager : MonoBehaviour
             AffectionManager.Instance.SetLinkedUI(null);
         }
 
+        // 텍스트 잔상 제거 및 이름 즉시 설정
+        currentUI.dialogueText.text = "";
+        if (currentUI.nameText != null)
+        {
+            currentUI.nameText.text = data.npcName;
+        }
+
         currentStory = new Story(inkJSON.text);
         if (dialogueVariables != null) dialogueVariables.StartListening(currentStory);
 
@@ -229,20 +250,7 @@ public class DialogueManager : MonoBehaviour
             return AffectionManager.Instance.GetAffection();
         });
 
-        dialogueIsPlaying = true;
-
-        // [New] 대화 시작 시 기존 초상화 정리 (선택 사항: 이전 대화 잔상 제거)
-        // foreach(var key in new List<int>(portraitMap.Keys)) DespawnPortrait(key); 
-
-        // =================================================================
-        // [New] 메인 NPC 자동 소환 (Ink에서 # enter 안 써도 됨!)
-        // =================================================================
-        // 보스전이든 일반 대화든, 대화 당사자는 중앙(Center)에 기본 배치
         SpawnPortrait(data.id, "center");
-
-        // 만약 보스전이고, 방향(bossDir)에 따라 위치를 다르게 하고 싶다면:
-        // string startPos = (bossDir == Direction.Left) ? "left" : "right";
-        // SpawnPortrait(data.id, startPos);
 
         if (data.isBoss) StartBossSequence();
         else
@@ -328,13 +336,21 @@ public class DialogueManager : MonoBehaviour
                 bossUI.affectionUI.gameObject.SetActive(true);
                 int currentAff = AffectionManager.Instance.GetAffection();
                 bossUI.affectionUI.Setup(currentAff);
+                bossUI.affectionUI.transform.localScale = Vector3.zero;
             }
 
             bossUI.dialogueTextCon.localScale = Vector3.zero;
             bossUI.speakerFrame.localScale = Vector3.zero;
         });
+
+        // Affection UI 동시 등장 연출
         bossSeq.Append(bossUI.dialogueTextCon.DOScale(1f, 0.4f).SetEase(Ease.OutQuart));
         bossSeq.Join(bossUI.speakerFrame.DOScale(1f, 0.4f).SetEase(Ease.OutQuart));
+
+        if (bossUI.affectionUI != null)
+        {
+            bossSeq.Join(bossUI.affectionUI.transform.DOScale(1f, 0.4f).SetEase(Ease.OutQuart));
+        }
 
         bossSeq.OnComplete(() => ContinueStory());
     }
@@ -431,9 +447,6 @@ public class DialogueManager : MonoBehaviour
         else { if (ui.iconTween != null) ui.iconTween.Kill(); ui.continueIcon.SetActive(false); }
     }
 
-    // =================================================================
-    // [Updated] 태그 처리 함수 (동적 생성 + 제어 로직 통합)
-    // =================================================================
     private void HandleTags(List<string> tags)
     {
         if (tags == null) return;
@@ -444,9 +457,6 @@ public class DialogueManager : MonoBehaviour
 
             string first = s[0].Trim().ToLower();
 
-            // ---------------------------------------------------------
-            // 1. [Enter] 등장 태그 (# enter : 1001 : left)
-            // ---------------------------------------------------------
             if (first == "enter" && s.Length >= 2)
             {
                 if (int.TryParse(s[1].Trim(), out int spawnId))
@@ -457,9 +467,6 @@ public class DialogueManager : MonoBehaviour
                 continue;
             }
 
-            // ---------------------------------------------------------
-            // 2. [Exit] 퇴장 태그 (# exit : 1001)
-            // ---------------------------------------------------------
             if (first == "exit" && s.Length >= 2)
             {
                 if (int.TryParse(s[1].Trim(), out int despawnId))
@@ -469,9 +476,6 @@ public class DialogueManager : MonoBehaviour
                 continue;
             }
 
-            // ---------------------------------------------------------
-            // 3. [ID Control] 특정 캐릭터 제어 (# 1001 : face : smile)
-            // ---------------------------------------------------------
             if (int.TryParse(first, out int targetId))
             {
                 if (portraitMap.TryGetValue(targetId, out PortraitController portrait))
@@ -483,32 +487,29 @@ public class DialogueManager : MonoBehaviour
 
                         if (command == "face") portrait.SetExpression(val);
                         else if (command == "act") portrait.PlayAction(val);
-                        else if (command == "move") portrait.MovePosition(val); // 위치 이동
+                        else if (command == "move") portrait.MovePosition(val);
+                        else if (command == "emote") portrait.ShowEmote(val);
                     }
                 }
                 continue;
             }
 
-            // ---------------------------------------------------------
-            // 4. [Default] 기존 태그 및 현재 NPC 제어
-            // ---------------------------------------------------------
             if (s.Length >= 2)
             {
                 string key = first;
                 string val = s[1].Trim();
 
-                // 현재 대화 중인 NPC 제어 (ID 생략 시)
-                if ((key == "face" || key == "act") && currentNPC != null)
+                if ((key == "face" || key == "act" || key == "emote") && currentNPC != null)
                 {
                     if (portraitMap.TryGetValue(currentNPC.id, out PortraitController curPortrait))
                     {
                         if (key == "face") curPortrait.SetExpression(val);
                         else if (key == "act") curPortrait.PlayAction(val);
+                        else if (key == "emote") curPortrait.ShowEmote(val);
                     }
                     continue;
                 }
 
-                // 기존 기능
                 if (key == "speaker" && currentUI.nameText != null) currentUI.nameText.text = val;
                 else if (key == "portrait" && portraitAnimator != null) portraitAnimator.Play(val);
                 else if (key == "add_aff") AffectionManager.Instance.AddAffection(currentNPC, int.Parse(val));
@@ -525,16 +526,18 @@ public class DialogueManager : MonoBehaviour
         }
     }
 
-    // -----------------------------------------------------------------
-    // [New] 초상화 생성 함수
-    // -----------------------------------------------------------------
     private void SpawnPortrait(int id, string position)
     {
-        // 이미 존재하면 생성하지 않음 (선택 사항: 위치만 이동시킬 수도 있음)
         if (portraitMap.ContainsKey(id)) return;
 
-        // 데이터베이스에서 ID로 NPCData 찾기
-        NPCData data = npcDatabase.Find(x => x.id == id);
+        // [Updated] 데이터베이스 에셋에서 검색
+        if (npcDatabase == null)
+        {
+            Debug.LogError("NPCDatabase가 연결되지 않았습니다!");
+            return;
+        }
+
+        NPCData data = npcDatabase.GetNPC(id);
         if (data == null)
         {
             Debug.LogError($"[DialogueManager] NPC Database에서 ID {id}를 찾을 수 없습니다.");
@@ -543,22 +546,16 @@ public class DialogueManager : MonoBehaviour
 
         if (portraitPrefab == null || portraitContainer == null) return;
 
-        // 프리팹 생성
         GameObject newObj = Instantiate(portraitPrefab, portraitContainer);
         PortraitController ctrl = newObj.GetComponent<PortraitController>();
 
-        // 데이터 적용 및 초기화
         ctrl.ApplyNPCData(data);
         ctrl.SetInitialPosition(position);
         ctrl.EnterAnimation();
 
-        // 맵에 등록
         portraitMap.Add(id, ctrl);
     }
 
-    // -----------------------------------------------------------------
-    // [New] 초상화 제거 함수
-    // -----------------------------------------------------------------
     private void DespawnPortrait(int id)
     {
         if (portraitMap.TryGetValue(id, out PortraitController ctrl))
@@ -601,6 +598,12 @@ public class DialogueManager : MonoBehaviour
         exitSeq.Append(bossUI.dialogueTextCon.DOScale(0f, 0.2f).SetEase(Ease.InQuart));
         exitSeq.Join(bossUI.speakerFrame.DOScale(0f, 0.2f).SetEase(Ease.InQuart));
 
+        // Affection UI 퇴장 동시 연출
+        if (bossUI.affectionUI != null)
+        {
+            exitSeq.Join(bossUI.affectionUI.transform.DOScale(0f, 0.2f).SetEase(Ease.InQuart));
+        }
+
         Vector2 startOffset = Vector2.zero;
         switch (currentBossDir)
         {
@@ -630,11 +633,15 @@ public class DialogueManager : MonoBehaviour
 
     private void FinishDialogueExit()
     {
-        // [New] 대화 종료 시 남아있는 동적 초상화들 정리 (선택 사항)
-        // foreach (var ctrl in portraitMap.Values) { if(ctrl != null) ctrl.ExitAnimationAndDestroy(); }
-        // portraitMap.Clear();
+        foreach (var ctrl in portraitMap.Values) { if (ctrl != null) ctrl.ExitAnimationAndDestroy(); }
+        portraitMap.Clear();
 
         dialogueIsPlaying = false;
+        canContinueToNextLine = false;
+        isTyping = false;
+
+        if (typingTween != null) typingTween.Kill();
+
         currentStory = null;
 
         normalUI.panelObj.SetActive(false);
