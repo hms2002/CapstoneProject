@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 139c9e309cf1eec4492c3d3fdf60d8d6, type: 3}
-  m_Name: Event.Input.Attack
+  m_Name: Element.Poison
   m_EditorClassIdentifier: 
   developerNote: 
-  tagName: Attack
-  parent: {fileID: 11400000, guid: 2264b2f6e65af3b41a9a7d89aa77ac0e, type: 2}
-  id: 22
+  tagName: Poison
+  parent: {fileID: 11400000, guid: 185fe7a2d371a914e9f2a7db7ca5129a, type: 2}
+  id: 13
   cachedPath: 
   cachedLowerPath: 
