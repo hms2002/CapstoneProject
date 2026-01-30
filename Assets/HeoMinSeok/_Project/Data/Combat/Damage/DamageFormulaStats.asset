@@ -27,6 +27,19 @@ MonoBehaviour:
   staggerAdd: {fileID: 11400000, guid: 4f5d1e3ffdcf18e4bbef58f59b785760, type: 2}
   staggerMul: {fileID: 11400000, guid: bd078173c9092104dbc43ac575e1d092, type: 2}
   staggerMulMode: 0
+  elementScalings:
+  - elementType: {fileID: 0}
+    elementAdd: {fileID: 0}
+    elementMul: {fileID: 0}
+    elementMulMode: 0
+  - elementType: {fileID: 0}
+    elementAdd: {fileID: 0}
+    elementMul: {fileID: 0}
+    elementMulMode: 0
+  - elementType: {fileID: 0}
+    elementAdd: {fileID: 0}
+    elementMul: {fileID: 0}
+    elementMulMode: 0
   elementAdd: {fileID: 11400000, guid: 3cf73420df1732240b7c90837ff7efab, type: 2}
   elementMul: {fileID: 11400000, guid: 618d006e7af394a4db0798cfa63b2660, type: 2}
   elementMulMode: 0
