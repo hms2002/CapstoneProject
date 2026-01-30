@@ -28,6 +28,39 @@ public class TrainingDummy2D : MonoBehaviour
     private int damagedTriggerHash;
     private float nextHurtAllowedTime;
 
+    [Header("Never Die")]
+    [SerializeField] private bool neverDie = true;
+    [SerializeField] private AttributeDefinition maxHealthAttribute;
+    [SerializeField] private float healThreshold = 1f; // Health가 1 이하가 되면 회복
+
+    private void OnAttributeChanged(AttributeDefinition attr, float oldValue, float newValue)
+    {
+        if (healthAttribute == null) return;
+        if (attr != healthAttribute) return;
+
+        if (newValue < oldValue)
+        {
+            float dmg = oldValue - newValue;
+
+            if (popupSpawner != null)
+                popupSpawner.Spawn(dmg, transform.position);
+
+            PlayHurt();
+        }
+
+        // ✅ “안 죽는” 처리 (회복은 ModifyAttributeValue로)
+        if (neverDie && maxHealthAttribute != null && attributeSet != null)
+        {
+            if (newValue <= healThreshold)
+            {
+                float maxHp = attributeSet.GetAttributeValue(maxHealthAttribute);
+                float delta = maxHp - newValue; // 부족분만큼 더해줌
+                if (delta > 0f)
+                    attributeSet.ModifyAttributeValue(healthAttribute, delta, this);
+            }
+        }
+    }
+
     private void Awake()
     {
         attributeSet = GetComponent<AttributeSet>();
@@ -46,24 +79,6 @@ public class TrainingDummy2D : MonoBehaviour
     {
         if (attributeSet != null)
             attributeSet.OnAttributeChanged -= OnAttributeChanged;
-    }
-
-    private void OnAttributeChanged(AttributeDefinition attr, float oldValue, float newValue)
-    {
-        if (healthAttribute == null) return;
-        if (attr != healthAttribute) return;
-
-        if (newValue < oldValue)
-        {
-            float dmg = oldValue - newValue;
-
-            // 떠오르는 텍스트
-            if (popupSpawner != null)
-                popupSpawner.Spawn(dmg, transform.position);
-
-            // 기존 Hurt 애니
-            PlayHurt();
-        }
     }
 
     private void PlayHurt()

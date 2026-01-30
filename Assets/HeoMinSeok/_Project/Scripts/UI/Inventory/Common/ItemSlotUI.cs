@@ -192,7 +192,7 @@ public class ItemSlotUI : MonoBehaviour,
     {
         if (container == null) return;
         if (ItemDragContext.Active) return;
-
+        Debug.Log("O");
         var so = container.Get(index);
         //if (so == null)
         //{
@@ -206,6 +206,7 @@ public class ItemSlotUI : MonoBehaviour,
     public void OnPointerExit(PointerEventData eventData)
     {
         if (ItemDragContext.Active) return;
+        Debug.Log("X");
         UIHoverManager.Instance?.UnhoverSlot(slotRect);
     }
 

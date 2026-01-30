@@ -15,7 +15,20 @@ namespace UnityGAS
         public event Action<GameplayTag, int, int> OnTagCountChanged;
         public event Action<GameplayTag> OnTagAdded;
         public event Action<GameplayTag> OnTagRemoved;
-
+        // JUST FOR DEBUG CODE
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        public void PrintHasTags(string title = null)
+        {
+            Debug.Log(title);
+            for(int i = 1; i < _explicitCounts.Length; i++)
+            {
+                if (_explicitCounts[i] > 0)
+                {
+                    Debug.Log(TagRegistry.GetTag(i).Name);
+                }
+            }
+        }
+#endif
         private void Awake() => EnsureCapacity();
 
         private void EnsureCapacity()

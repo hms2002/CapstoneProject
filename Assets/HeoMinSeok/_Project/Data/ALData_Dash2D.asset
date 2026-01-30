@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ef43faa9f8ad7a4f8df843eb4f3f621, type: 3}
+  m_Name: ALData_Dash2D
+  m_EditorClassIdentifier: 
+  duration: 0.1
+  distance: 3
+  useAimWhenNoMoveInput: 1
+  invulnerableTag: {fileID: 11400000, guid: 90cc853a47e809d4e8baa4fbcd354709, type: 2}
+  movementLockedTag: {fileID: 11400000, guid: 6a88dccc70fd08841a7484539aec65c1, type: 2}
+  aimLockedTag: {fileID: 0}
+  zeroVelocity: 1
+  postLockTime: 0

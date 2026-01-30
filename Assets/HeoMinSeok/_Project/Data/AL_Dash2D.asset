@@ -9,12 +9,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 139c9e309cf1eec4492c3d3fdf60d8d6, type: 3}
-  m_Name: State.Equip.Weapon
+  m_Script: {fileID: 11500000, guid: 93e8b1eb67fe24b4387a27e086ef5572, type: 3}
+  m_Name: AL_Dash2D
   m_EditorClassIdentifier: 
-  developerNote: 
-  tagName: Weapon
-  parent: {fileID: 11400000, guid: bd1117e312879d84593b0fa7207a79a5, type: 2}
-  id: 26
-  cachedPath: 
-  cachedLowerPath: 

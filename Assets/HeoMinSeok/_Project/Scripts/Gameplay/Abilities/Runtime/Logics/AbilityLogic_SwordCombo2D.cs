@@ -150,18 +150,49 @@ namespace UnityGAS.Sample
             float baseStagger = GetArraySafe(data.staggerDamages, comboIndex, 0f);
             var stats = system.DamageProfile != null ? system.DamageProfile.formulaStats : null;
 
+            // Multi-element payload (computed per hit, delivered via GameplayEffectContext)
+            System.Collections.Generic.List<ElementDamageResult> elementResults = null;
+            System.Collections.Generic.IReadOnlyList<ElementDamageInput> elementInputs = null;
+            if (data.includeElementDamage && data.elementDamagesByCombo != null && data.elementDamagesByCombo.Length > 0)
+            {
+                var grp = GetArraySafe(data.elementDamagesByCombo, comboIndex, null);
+                if (grp != null && grp.elements != null && grp.elements.Count > 0)
+                {
+                    elementInputs = grp.elements;
+                    elementResults = new System.Collections.Generic.List<ElementDamageResult>(grp.elements.Count);
+                }
+            }
+
             if (stats != null)
             {
                 var attackerAttr = system.AttributeSet;
-                var result = DamageFormulaUtil.Compute(
-                    attackerAttr,
-                    stats,                      // ✅ data.formulaStats → stats
-                    DamageAttackKind.Normal,    // ✅ Skill → Normal (콤보는 일반공격)
-                    baseHpDamage: baseHp,
-                    baseStaggerDamage: baseStagger,
-                    includeElement: data.includeElementDamage,
-                    includeStagger: data.includeStaggerDamage
-                );
+                DamageResult result;
+                if (elementInputs != null)
+                {
+                    result = DamageFormulaUtil.Compute(
+                        attackerAttr,
+                        stats,
+                        DamageAttackKind.Normal,
+                        baseHpDamage: baseHp,
+                        baseStaggerDamage: baseStagger,
+                        elementInputs: elementInputs,
+                        outElementResults: elementResults,
+                        includeStagger: data.includeStaggerDamage
+                    );
+                }
+                else
+                {
+                    // Legacy behaviour (no elementInputs): keep existing stats.elementAdd logic if includeElementDamage=true
+                    result = DamageFormulaUtil.Compute(
+                        attackerAttr,
+                        stats,
+                        DamageAttackKind.Normal,
+                        baseHpDamage: baseHp,
+                        baseStaggerDamage: baseStagger,
+                        includeElement: data.includeElementDamage,
+                        includeStagger: data.includeStaggerDamage
+                    );
+                }
                 finalHp = result.hpDamage;
             }
 
@@ -189,8 +220,9 @@ namespace UnityGAS.Sample
                     data.damageEffect,
                     target,
                     finalHp,
-                    data.hitConfirmedTag,     // 새로 만든 태그
-                    system.gameObject         // causer
+                    elementResults,
+                    data.hitConfirmedTag,
+                    system.gameObject
                 );
 
             }

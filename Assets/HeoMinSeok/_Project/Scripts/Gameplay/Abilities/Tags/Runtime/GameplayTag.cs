@@ -19,7 +19,7 @@ namespace UnityGAS
         // 에디터/디버그/검색 최적화용 캐시
         [SerializeField, HideInInspector] private string cachedPath;
         [SerializeField, HideInInspector] private string cachedLowerPath;
-
+        public string CachedPath => cachedPath;
         public string Name => string.IsNullOrEmpty(tagName) ? FallbackNameFromAssetName() : tagName;
         public GameplayTag Parent => parent;
 

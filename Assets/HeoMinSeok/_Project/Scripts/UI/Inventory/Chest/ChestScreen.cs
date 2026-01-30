@@ -6,6 +6,10 @@ using UnityEngine.UI;
 public class ChestScreen : MonoBehaviour
 {
     [Header("UI Refs")]
+    [Tooltip("플레이어 인벤토리 영역(무기/유물)이 포함된 패널 RectTransform")]
+    [SerializeField] private RectTransform inventoryPanelRect;
+    [Tooltip("상자 영역(상자 슬롯)이 포함된 패널 RectTransform")]
+    [SerializeField] private RectTransform chestPanelRect;
     [SerializeField] private Transform chestGridRoot;
     [SerializeField] private Transform weaponGridRoot;
     [SerializeField] private Transform relicGridRoot;
@@ -42,6 +46,11 @@ public class ChestScreen : MonoBehaviour
 
     private void OnDisable()
     {
+        // Chest UI가 닫히면 Hover/Detail 상태도 정리
+        UIHoverManager.Instance?.HideImmediate();
+        UIHoverManager.Instance?.SetActivePanels(null, null);
+        ItemDetailPanel.Instance?.Hide();
+
         ClearUI();
         ItemContainerGroupRegistry.Clear();
 
@@ -65,6 +74,21 @@ public class ChestScreen : MonoBehaviour
         ItemContainerGroupRegistry.SetGroup(chestContainer, weaponContainer, relicContainer);
 
         BuildUI();
+
+        // ✅ HoverManager에 "현재 활성 UI 패널" 등록
+        // - inventoryPanelRect / chestPanelRect를 인스펙터에서 지정하는 것을 권장
+        // - 미지정 시에는 슬롯이 생성되는 gridRoot를 fallback으로 사용
+        var invRect = inventoryPanelRect != null
+            ? inventoryPanelRect
+            : (weaponGridRoot != null ? weaponGridRoot as RectTransform : null);
+
+        var chestRect = chestPanelRect != null
+            ? chestPanelRect
+            : (chestGridRoot != null ? chestGridRoot as RectTransform : null);
+
+        UIHoverManager.Instance?.SetActivePanels(invRect, chestRect);
+        UIHoverManager.Instance?.HideImmediate();
+        ItemDetailPanel.Instance?.Hide();
     }
 
     private void BuildUI()

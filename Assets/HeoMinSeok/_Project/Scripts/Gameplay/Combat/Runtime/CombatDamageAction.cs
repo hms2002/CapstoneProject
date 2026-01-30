@@ -9,6 +9,7 @@ public static class CombatDamageAction
         GameplayEffect damageEffect,
         GameObject target,
         float finalHpDamage,
+        System.Collections.Generic.IReadOnlyList<ElementDamageResult> elementDamages,
         GameplayTag hitConfirmedTag,
         GameObject causer)
     {
@@ -25,6 +26,15 @@ public static class CombatDamageAction
 
         var geSpec = system.MakeSpec(damageEffect, causer: causer, sourceObject: spec.Definition);
         if (damageKey != null) geSpec.SetSetByCallerMagnitude(damageKey, finalHpDamage);
+
+        // Deliver element damage channels (application is implemented later)
+        if (elementDamages != null && elementDamages.Count > 0)
+        {
+            var dst = geSpec.Context.ElementDamages;
+            dst.Clear();
+            for (int i = 0; i < elementDamages.Count; i++)
+                dst.Add(elementDamages[i]);
+        }
 
         runner.ApplyEffectSpec(geSpec, target);
 

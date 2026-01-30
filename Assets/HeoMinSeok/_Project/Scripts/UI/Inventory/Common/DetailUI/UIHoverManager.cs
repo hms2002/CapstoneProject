@@ -76,6 +76,10 @@ public class UIHoverManager : MonoBehaviour
         if (!hideWhenOutsidePanels) return;
         if (detailPanel == null || !detailPanel.gameObject.activeSelf) return;
 
+        // ✅ 슬롯을 호버 중이면 패널을 숨기지 않는다.
+        // (특히 Chest UI처럼 ActivePanels가 아직 설정되지 않은 경우에도 디테일이 즉시 사라지는 문제를 방지)
+        if (_hoverSlot) return;
+
         // ✅ 패널/브릿지 위면 유지(인벤/상자 밖이어도 OK)
         if (_hoverPanel) return;
 
@@ -467,7 +471,7 @@ public class UIHoverManager : MonoBehaviour
 
     private float ChooseYAlignSlot(Rect canvasRect, Rect slotRect, Vector2 panelSize, Vector2 panelPivot, float xFixed)
     {
-        float slotTop = slotRect.yMax - slotRect.height/2;
+        float slotTop = slotRect.yMax - slotRect.height / 2;
         float slotBottom = slotRect.yMin + slotRect.height / 2;
 
         // 후보 Y (top align / bottom align)

@@ -41,18 +41,39 @@ namespace UnityGAS.Sample
             float finalHp = data.damage;
             var stats = system.DamageProfile != null ? system.DamageProfile.formulaStats : null;
 
+            System.Collections.Generic.List<ElementDamageResult> elementResults = null;
+
             if (stats != null)
             {
-                var attackerAttr = system.AttributeSet; 
-                var result = DamageFormulaUtil.Compute(
-                    attackerAttr,
-                    stats,
-                    DamageAttackKind.Skill,
-                    baseHpDamage: data.damage,
-                    baseStaggerDamage: data.baseStaggerDamage,
-                    includeElement: data.includeElementDamage,
-                    includeStagger: data.includeStaggerDamage
-                );
+                var attackerAttr = system.AttributeSet;
+                DamageResult result;
+                if (data.includeElementDamage && data.elementDamages != null && data.elementDamages.Count > 0)
+                {
+                    elementResults = new System.Collections.Generic.List<ElementDamageResult>(data.elementDamages.Count);
+                    result = DamageFormulaUtil.Compute(
+                        attackerAttr,
+                        stats,
+                        DamageAttackKind.Skill,
+                        baseHpDamage: data.damage,
+                        baseStaggerDamage: data.baseStaggerDamage,
+                        elementInputs: data.elementDamages,
+                        outElementResults: elementResults,
+                        includeStagger: data.includeStaggerDamage
+                    );
+                }
+                else
+                {
+                    result = DamageFormulaUtil.Compute(
+                        attackerAttr,
+                        stats,
+                        DamageAttackKind.Skill,
+                        baseHpDamage: data.damage,
+                        baseStaggerDamage: data.baseStaggerDamage,
+                        includeElement: data.includeElementDamage,
+                        includeStagger: data.includeStaggerDamage
+                    );
+                }
+
                 finalHp = result.hpDamage;
             }
 
@@ -66,6 +87,15 @@ namespace UnityGAS.Sample
 
                 var geSpec = system.MakeSpec(data.damageEffect, causer: system.gameObject, sourceObject: def);
                 if (damageKey != null) geSpec.SetSetByCallerMagnitude(damageKey, finalHp);
+
+                // Deliver element damages (application is implemented later)
+                if (elementResults != null && elementResults.Count > 0)
+                {
+                    var dst = geSpec.Context.ElementDamages;
+                    dst.Clear();
+                    for (int j = 0; j < elementResults.Count; j++)
+                        dst.Add(elementResults[j]);
+                }
 
                 runner.ApplyEffectSpec(geSpec, target);
             }

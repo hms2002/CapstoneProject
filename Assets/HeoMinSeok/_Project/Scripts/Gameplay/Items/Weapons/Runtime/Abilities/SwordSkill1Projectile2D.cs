@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityGAS;
 
 namespace UnityGAS.Sample
 {
@@ -14,6 +15,7 @@ namespace UnityGAS.Sample
         private AbilitySystem ownerSystem;
         private GameplayEffect damageEffect;
         private float damage;
+        private ElementDamageResult[] elementDamages;
         private GameObject ignoreGO;
 
         public void Setup(
@@ -25,6 +27,7 @@ namespace UnityGAS.Sample
             LayerMask dmgLayers,
             GameplayEffect dmgEffect,
             float dmg,
+            ElementDamageResult[] elementDamages,
             GameObject ignore)
         {
             ownerSystem = owner;
@@ -35,6 +38,7 @@ namespace UnityGAS.Sample
             damageLayers = dmgLayers;
             damageEffect = dmgEffect;
             damage = dmg;
+            this.elementDamages = elementDamages;
             ignoreGO = ignore;
 
             // owner 충돌 무시(가능하면)
@@ -76,6 +80,15 @@ namespace UnityGAS.Sample
                     var spec = ownerSystem.MakeSpec(damageEffect, causer: ownerSystem.gameObject, sourceObject: ownerSystem.CurrentExecSpec?.Definition);
                     if (damageEffect is GE_Damage_Spec ge && ge.damageKey != null)
                         spec.SetSetByCallerMagnitude(ge.damageKey, damage);
+
+                    // Deliver element damages (application is implemented later)
+                    if (elementDamages != null && elementDamages.Length > 0)
+                    {
+                        var dst = spec.Context.ElementDamages;
+                        dst.Clear();
+                        for (int i = 0; i < elementDamages.Length; i++)
+                            dst.Add(elementDamages[i]);
+                    }
 
                     runner.ApplyEffectSpec(spec, go);
                 }

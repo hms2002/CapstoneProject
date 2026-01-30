@@ -15932,6 +15932,9 @@ MonoBehaviour:
   damagedTriggerName: Damaged
   minHurtInterval: 0.03
   popupSpawner: {fileID: 723292218}
+  neverDie: 1
+  maxHealthAttribute: {fileID: 11400000, guid: d8b3ad6470ee45a44b839f699b5deeea, type: 2}
+  healThreshold: 1
 --- !u!114 &723292220
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -37337,6 +37340,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c69dd0568093994cb927855266a7abd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  inventoryPanelRect: {fileID: 0}
+  chestPanelRect: {fileID: 0}
   chestGridRoot: {fileID: 426871856}
   weaponGridRoot: {fileID: 1730270058}
   relicGridRoot: {fileID: 17848158}
@@ -39914,6 +39919,18 @@ PrefabInstance:
       propertyPath: defaultCooldownEffect
       value: 
       objectReference: {fileID: 11400000, guid: e0cdcda9b86374b4c99ad2e948fcfd26, type: 2}
+    - target: {fileID: 1832372497922031110, guid: f2946074f70ad1a4194e0ab20873422b, type: 3}
+      propertyPath: initialAbilities.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1832372497922031110, guid: f2946074f70ad1a4194e0ab20873422b, type: 3}
+      propertyPath: 'initialAbilities.Array.data[0]'
+      value: 
+      objectReference: {fileID: 11400000, guid: dadc84cd2fffcae45905741575af20c3, type: 2}
+    - target: {fileID: 4913808379797790544, guid: f2946074f70ad1a4194e0ab20873422b, type: 3}
+      propertyPath: dash
+      value: 
+      objectReference: {fileID: 11400000, guid: dadc84cd2fffcae45905741575af20c3, type: 2}
     - target: {fileID: 4913808379797790544, guid: f2946074f70ad1a4194e0ab20873422b, type: 3}
       propertyPath: mainCamera
       value: 

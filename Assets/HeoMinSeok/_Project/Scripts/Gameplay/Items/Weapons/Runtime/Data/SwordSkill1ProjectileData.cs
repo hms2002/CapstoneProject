@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityGAS;
 
@@ -9,6 +10,8 @@ namespace UnityGAS.Sample
         [Header("Damage Formula")]
         public DamageFormulaStats formulaStats;
         public bool includeElementDamage = false;
+        [Tooltip("Element damages (can contain multiple elements per hit).")]
+        public List<ElementDamageInput> elementDamages = new();
         public bool includeStaggerDamage = false;
         public float baseStaggerDamage = 0f;
 

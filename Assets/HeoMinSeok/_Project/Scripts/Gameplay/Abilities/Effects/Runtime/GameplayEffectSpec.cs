@@ -69,6 +69,12 @@ namespace UnityGAS
         public RaycastHit? Hit3D { get; set; }
         public RaycastHit2D? Hit2D { get; set; }
 
+        /// <summary>
+        /// Optional: per-hit element damages calculated by DamageFormulaUtil.
+        /// Not applied by default - you can implement application logic later.
+        /// </summary>
+        public List<ElementDamageResult> ElementDamages { get; } = new List<ElementDamageResult>(4);
+
         public GameplayEffectContext(GameObject instigator, GameObject causer)
         {
             Instigator = instigator;

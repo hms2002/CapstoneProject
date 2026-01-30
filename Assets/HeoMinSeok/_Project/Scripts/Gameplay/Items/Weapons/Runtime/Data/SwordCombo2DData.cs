@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityGAS;
 
@@ -6,10 +7,18 @@ namespace UnityGAS.Sample
     [CreateAssetMenu(fileName = "SwordCombo2DData", menuName = "GAS/Samples/Data/Sword Combo 2D")]
     public class SwordCombo2DData : ScriptableObject
     {
+        [System.Serializable]
+        public class ElementDamageGroup
+        {
+            public List<ElementDamageInput> elements = new();
+        }
+
         [Header("Damage Formula")]
         public DamageFormulaStats formulaStats;
 
         public bool includeElementDamage = false;
+        [Tooltip("Per-combo element damages (can contain multiple elements per hit).")]
+        public ElementDamageGroup[] elementDamagesByCombo = new ElementDamageGroup[3];
         public bool includeStaggerDamage = false;
         public float[] staggerDamages = new float[3] { 0f, 0f, 0f };
 
