@@ -7,31 +7,34 @@ using UnityGAS;
 public class Enemy : MonoBehaviour
 {
     // My Components =============================
-    protected Rigidbody2D   rigid2D;
-    protected Collider2D    collision;
-    protected Animator      animator;
+    protected Rigidbody2D       rigid2D;
+    protected Collider2D        collision;
+    protected SpriteRenderer    sprite;
+    protected Animator          animator;
 
     protected AbilitySystem         abilitySystem;
     protected AttributeSet          attributeSet;
     protected GameplayEffectRunner  effectRunner;
     protected TagSystem             tagSystem;
 
-    [Header("Public Attributes")]
+    [Header("Enemy's Attributes")]
     [SerializeField] protected AttributeDefinition maxHealthDef;
     [SerializeField] protected AttributeDefinition healthDef;
 
     // My Variables =============================
-    [Header("Basic Settings")]
+    [Header("Enemy's Settings")]
     [SerializeField] protected string   enemyName;
                      protected Vector2  moveDirection;
 
     // Target Components
     protected Transform target;
 
+
     protected virtual void Awake()
     {
         rigid2D     = GetComponent<Rigidbody2D>();
         collision   = GetComponent<Collider2D>();
+        sprite      = GetComponent<SpriteRenderer>();
         animator    = GetComponent<Animator>();
 
         abilitySystem   = GetComponent<AbilitySystem>();
