@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 139c9e309cf1eec4492c3d3fdf60d8d6, type: 3}
-  m_Name: State.Equip.Weapon.Sword
+  m_Name: State.Status.Groggy
   m_EditorClassIdentifier: 
   developerNote: 
-  tagName: Sword
-  parent: {fileID: 11400000, guid: d2373b45df9230f40b4aef0e7fb4d969, type: 2}
-  id: 23
+  tagName: Groggy
+  parent: {fileID: 11400000, guid: 13c397bf609bfd6419f58cb78f10326a, type: 2}
+  id: 27
   cachedPath: 
   cachedLowerPath: 
