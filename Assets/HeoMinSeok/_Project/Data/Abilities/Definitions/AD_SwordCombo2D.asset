@@ -1,0 +1,54 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 808910561e593534f9ea3637c00cc255, type: 3}
+  m_Name: AD_SwordCombo2D
+  m_EditorClassIdentifier: 
+  abilityName: AD_SwordCombo2D
+  icon: {fileID: -2412000197315944437, guid: ce2c877b10aec4742943ec6aeacef6da, type: 3}
+  description: Ability description.
+  cooldown: 0.5
+  useCharges: 0
+  maxCharges: 1
+  cooldownEffect: {fileID: 0}
+  castTime: 0
+  recoveryTime: 0.12
+  canCastWhileMoving: 1
+  interruptible: 1
+  requireTargetObject: 0
+  cost: 0
+  costAttribute: {fileID: 0}
+  animationChannel: 0
+  animationTrigger: 
+  animationTriggerHash: 0
+  abilityTags: []
+  requiredTags: []
+  blockedByTags: []
+  requiredTagSets: []
+  blockedByTagSets: []
+  targetRequiredTagSets: []
+  targetBlockedByTagSets: []
+  grantedTagsWhileActive:
+  - {fileID: 11400000, guid: 27ab8ed529a1dc8489075e262f52eab4, type: 2}
+  - {fileID: 11400000, guid: 6a88dccc70fd08841a7484539aec65c1, type: 2}
+  - {fileID: 11400000, guid: d2be3469c5cf9c849b948eb616f7f868, type: 2}
+  targetRequiredTags: []
+  targetBlockedByTags: []
+  logic: {fileID: 11400000, guid: 594473e198894c54988fe51c84b79d3f, type: 2}
+  sourceObject: {fileID: 11400000, guid: c5f49a747dd5b3f43987795bc4ad7771, type: 2}
+  containers: []
+  cueOnCastStart: {fileID: 0}
+  cueWhileCasting: {fileID: 0}
+  cueOnCommit: {fileID: 0}
+  cueWhileActive: {fileID: 0}
+  cueOnEnd: {fileID: 0}
+  cueOnCastCancelled: {fileID: 0}
+  cueOnExecutionCancelled: {fileID: 0}

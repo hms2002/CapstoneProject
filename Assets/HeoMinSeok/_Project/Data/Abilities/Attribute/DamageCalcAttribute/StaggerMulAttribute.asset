@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d98d22e39756b5842ab9e6a8750ac815, type: 3}
+  m_Name: StaggerMulAttribute
+  m_EditorClassIdentifier: 
+  attributeName: StaggerMulAttribute
+  description: Attribute description.
+  defaultBaseValue: 1
+  minValue: 1
+  maxValue: 100
+  hasRegeneration: 0
+  regenerationRate: 5
+  regenerationDelay: 2
+  displayColor: {r: 1, g: 0, b: 0, a: 1}
+  icon: {fileID: 0}

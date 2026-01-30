@@ -1,20 +1,32 @@
 using UnityEngine;
+using UnityEngine.U2D.Animation; // SpriteLibraryAsset ì‚¬ìš©ì„ ìœ„í•´ í•„ìˆ˜
 using System.Collections.Generic;
 
+// [ê¸°ì¡´ ìœ ì§€] ì‚¬ìš©ì ì •ì˜ ë³´ìƒ êµ¬ì¡°ì²´
 [System.Serializable]
-public struct LevelReward
+public struct AffectionReward
 {
-    public int targetLevel;         // º¸»óÀ» ÁÙ Æ¯Á¤ ·¹º§
-    public AffectionEffect effect;  // ½ÇÇàÇÒ È¿°ú SO
+    public int targetLevel;      // ë³´ìƒì„ ì¤„ íŠ¹ì • ë ˆë²¨
+    public AffectionEffect effect; // ì‹¤í–‰í•  íš¨ê³¼ SO
 }
 
-[CreateAssetMenu(menuName = "NPC/NPC_Data")]
+[CreateAssetMenu(menuName = "NPC/NPC Data")]
 public class NPCData : ScriptableObject
 {
-    public int id;
-    public string npcName;
-    public bool isBoss;
+    [Header("ê¸°ë³¸ ì •ë³´")]
+    public int id;             // ê³ ìœ  ID (Ink íƒœê·¸ ì—°ë™ìš©: 1001, 1002...)
+    public string npcName;     // ì´ë¦„
+    public bool isBoss;        // ë³´ìŠ¤ ì—¬ë¶€
 
-    [Header("·¹º§º° º¸»ó ¼³Á¤")]
-    public List<LevelReward> levelRewards; // Æ¯Á¤ ·¹º§¿¡ µµ´ŞÇßÀ» ¶§ÀÇ º¸»ó ¸®½ºÆ®
+    [Header("í˜¸ê°ë„ ë³´ìƒ ì‹œìŠ¤í…œ")]
+    // ê¸°ì¡´ ê¸°ëŠ¥ ìœ ì§€
+    public List<AffectionReward> affectionRewards;
+
+    [Header("ì‹œê°ì  ë°ì´í„°")]
+    // ì´ NPCê°€ ì‚¬ìš©í•  í‘œì • ìŠ¤í”„ë¼ì´íŠ¸ ëª¨ìŒì§‘
+    public SpriteLibraryAsset spriteLibraryAsset;
+
+    [Header("ì´ˆìƒí™” ì—°ì¶œ ì„¤ì •")]
+    // [New] ì´ëª¨í‹°ì½˜ì´ ëœ° ë¨¸ë¦¬ ìœ„ ìœ„ì¹˜ (ìºë¦­í„° í‚¤ì— ë§ì¶°ì„œ Yê°’ ì¡°ì ˆ)
+    public Vector2 emoteOffset = new Vector2(300f, 300f);
 }

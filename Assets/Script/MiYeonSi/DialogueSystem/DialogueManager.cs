@@ -20,16 +20,16 @@ public class DialogueManager : MonoBehaviour
         public TextMeshProUGUI nameText;
         public CanvasGroup canvasGroup;
 
-        [Header("´ëÈ­Ã¢ ¹× ÀÌ¸§Ç¥ ÇÁ·¹ÀÓ")]
+        [Header("ëŒ€í™”ì°½ ë° ì´ë¦„í‘œ í”„ë ˆì„")]
         public RectTransform dialogueTextCon;
         public RectTransform speakerFrame;
 
-        [Header("Àü¿ë ÄÁÆ¼´º ¾ÆÀÌÄÜ")]
+        [Header("ì „ìš© ì»¨í‹°ë‰´ ì•„ì´ì½˜")]
         public GameObject continueIcon;
         [HideInInspector] public Vector3 iconStartPos;
         [HideInInspector] public Tween iconTween;
 
-        [Header("ÆĞ³Î Àü¿ë ¼±ÅÃÁö ¹öÆ°")]
+        [Header("íŒ¨ë„ ì „ìš© ì„ íƒì§€ ë²„íŠ¼")]
         public GameObject[] choiceButtons;
         [HideInInspector] public TextMeshProUGUI[] choicesText;
         [HideInInspector] public Button[] buttons;
@@ -38,15 +38,18 @@ public class DialogueManager : MonoBehaviour
     [System.Serializable]
     public class BossDialogueUI : DialogueUI
     {
-        [Header("º¸½º Àü¿ë ¿¬Ãâ ¿ÀºêÁ§Æ®")]
+        [Header("ë³´ìŠ¤ ì „ìš©: í˜¸ê°ë„ UI")]
+        public AffectionUI affectionUI;
+
+        [Header("ë³´ìŠ¤ ì „ìš© ì—°ì¶œ ì˜¤ë¸Œì íŠ¸")]
         public RectTransform portraitFrame;
         public RectTransform dialogueEffectGroup;
 
-        [Header("½Ã³×¸¶Æ½ ÆĞ³Î (°ËÀº»ö ÆĞ³Î)")]
+        [Header("ì‹œë„¤ë§ˆí‹± íŒ¨ë„ (ê²€ì€ìƒ‰ íŒ¨ë„)")]
         public RectTransform topCinematicPanel;
         public RectTransform bottomCinematicPanel;
 
-        [Header("º¸½º ÆÄÆí (8¹æÇâ º¯¼ö)")]
+        [Header("ë³´ìŠ¤ íŒŒí¸ (8ë°©í–¥ ë³€ìˆ˜)")]
         public RectTransform shardUp;
         public RectTransform shardUpRight;
         public RectTransform shardRight;
@@ -60,12 +63,24 @@ public class DialogueManager : MonoBehaviour
         [HideInInspector] public Vector2[] shardTargetAnchoredPositions;
     }
 
-    [Header("UI ±¸¼º")]
+    [Header("UI êµ¬ì„±")]
     [SerializeField] private DialogueUI normalUI;
     [SerializeField] private BossDialogueUI bossUI;
     [SerializeField] private Animator portraitAnimator;
 
-    [Header("¿¬Ãâ ¼³Á¤")]
+    // =================================================================
+    // [System] ë™ì  ì´ˆìƒí™” ì‹œìŠ¤í…œ
+    // =================================================================
+    [Header("ë™ì  ì´ˆìƒí™” ì‹œìŠ¤í…œ")]
+    public GameObject portraitPrefab;
+    public Transform portraitContainer;
+
+    // [Changed] ë¦¬ìŠ¤íŠ¸ ëŒ€ì‹  ì „ìš© ë°ì´í„°ë² ì´ìŠ¤ ì—ì…‹ ì—°ê²°
+    public NPCDatabase npcDatabase;
+
+    private Dictionary<int, PortraitController> portraitMap = new Dictionary<int, PortraitController>();
+
+    [Header("ì—°ì¶œ ì„¤ì •")]
     [SerializeField] private float cinematicPanelMoveDistance = 500f;
     [SerializeField] private float shardMoveDistance = 1000f;
     [SerializeField] private float bossMoveDistance = 1200f;
@@ -78,6 +93,8 @@ public class DialogueManager : MonoBehaviour
     private DialogueUI currentUI;
     private Story currentStory;
     private NPCData currentNPC;
+    private NPCFeatureController currentFeatureController;
+
     private DialogueVariables dialogueVariables;
     private Direction currentBossDir;
 
@@ -85,7 +102,12 @@ public class DialogueManager : MonoBehaviour
     private Vector2 topPanelTargetPos;
     private Vector2 bottomPanelTargetPos;
 
+    // =================================================================
+    // [State] ìƒíƒœ ë³€ìˆ˜
+    // =================================================================
     public bool dialogueIsPlaying { get; private set; }
+    public bool IsEventRunning { get; set; } = false;
+
     private bool isTyping = false;
     private bool canContinueToNextLine = false;
     private Tween typingTween;
@@ -121,6 +143,9 @@ public class DialogueManager : MonoBehaviour
         if (bossUI.bottomCinematicPanel != null) bottomPanelTargetPos = bossUI.bottomCinematicPanel.anchoredPosition;
 
         dialogueIsPlaying = false;
+        canContinueToNextLine = false;
+        isTyping = false;
+
         normalUI.panelObj.SetActive(false);
         bossUI.panelObj.SetActive(false);
     }
@@ -154,6 +179,8 @@ public class DialogueManager : MonoBehaviour
     private void Update()
     {
         if (!dialogueIsPlaying || currentStory == null) return;
+        if (IsEventRunning) return;
+
         bool skipInput = Input.GetKeyDown(KeyCode.F) || Input.GetKeyDown(KeyCode.Return) ||
                          Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Escape);
 
@@ -182,19 +209,48 @@ public class DialogueManager : MonoBehaviour
         }
     }
 
-    public void EnterDialogueMode(TextAsset inkJSON, NPCData data, Direction bossDir = Direction.Left)
+    public void EnterDialogueMode(TextAsset inkJSON, NPCData data, Direction bossDir = Direction.Left, NPCFeatureController featureController = null)
     {
+        // 1. ìƒíƒœ ë³€ìˆ˜ ê°•ì œ ì´ˆê¸°í™”
+        dialogueIsPlaying = true;
+        canContinueToNextLine = false;
+        isTyping = false;
+
+        if (typingTween != null && typingTween.IsActive()) typingTween.Kill();
+
         currentNPC = data;
         currentBossDir = bossDir;
-        if (TempPlayer.Instance != null) TempPlayer.Instance.SetInteractState(InteractState.Talking);
+        currentFeatureController = featureController;
 
-        currentUI = data.isBoss ? bossUI : normalUI;
+        if (TempPlayer.Instance != null) TempPlayer.Instance.SetInteractState(InteractState.Talking);
+        AffectionManager.Instance.SetCurrentNPC(currentNPC.id);
+
+        if (data.isBoss)
+        {
+            currentUI = bossUI;
+            AffectionManager.Instance.SetLinkedUI(bossUI.affectionUI);
+        }
+        else
+        {
+            currentUI = normalUI;
+            AffectionManager.Instance.SetLinkedUI(null);
+        }
+
+        // í…ìŠ¤íŠ¸ ì”ìƒ ì œê±° ë° ì´ë¦„ ì¦‰ì‹œ ì„¤ì •
+        currentUI.dialogueText.text = "";
+        if (currentUI.nameText != null)
+        {
+            currentUI.nameText.text = data.npcName;
+        }
 
         currentStory = new Story(inkJSON.text);
         if (dialogueVariables != null) dialogueVariables.StartListening(currentStory);
-        currentStory.BindExternalFunction("GetAffection", () => AffectionManager.Instance.GetLevel(currentNPC.id));
 
-        dialogueIsPlaying = true;
+        currentStory.BindExternalFunction("GetAffection", () => {
+            return AffectionManager.Instance.GetAffection();
+        });
+
+        SpawnPortrait(data.id, "center");
 
         if (data.isBoss) StartBossSequence();
         else
@@ -221,11 +277,12 @@ public class DialogueManager : MonoBehaviour
         bossUI.dialogueTextCon.gameObject.SetActive(false);
         bossUI.speakerFrame.gameObject.SetActive(false);
 
+        if (bossUI.affectionUI != null) bossUI.affectionUI.gameObject.SetActive(false);
+
         bossUI.panelObj.SetActive(true);
 
         Sequence bossSeq = DOTween.Sequence();
 
-        // 1. ½Ã³×¸¶Æ½ ÆĞ³Î
         bossSeq.AppendCallback(() => {
             bossUI.topCinematicPanel.gameObject.SetActive(true);
             bossUI.bottomCinematicPanel.gameObject.SetActive(true);
@@ -236,7 +293,6 @@ public class DialogueManager : MonoBehaviour
         bossSeq.Join(bossUI.bottomCinematicPanel.DOAnchorPos(bottomPanelTargetPos, 0.6f).SetEase(Ease.OutCubic));
         bossSeq.AppendInterval(0.1f);
 
-        // 2. Shard ¿¬Ãâ
         bossSeq.AppendCallback(() => {
             bossUI.dialogueEffectGroup.gameObject.SetActive(true);
             Vector2[] dirs = {
@@ -256,7 +312,6 @@ public class DialogueManager : MonoBehaviour
         }
         bossSeq.AppendInterval(0.15f);
 
-        // 3. º¸½º ÀÏ·¯½ºÆ®
         bossSeq.AppendCallback(() => {
             bossUI.portraitFrame.gameObject.SetActive(true);
             Vector2 startOffset = Vector2.zero;
@@ -272,15 +327,30 @@ public class DialogueManager : MonoBehaviour
         bossSeq.Append(bossUI.portraitFrame.DOAnchorPos(bossPortraitTargetPos, 0.8f).SetEase(Ease.OutCubic));
         bossSeq.AppendInterval(0.1f);
 
-        // 4. ´ëÈ­Ã¢ & ÀÌ¸§Ç¥
         bossSeq.AppendCallback(() => {
             bossUI.dialogueTextCon.gameObject.SetActive(true);
             bossUI.speakerFrame.gameObject.SetActive(true);
+
+            if (bossUI.affectionUI != null)
+            {
+                bossUI.affectionUI.gameObject.SetActive(true);
+                int currentAff = AffectionManager.Instance.GetAffection();
+                bossUI.affectionUI.Setup(currentAff);
+                bossUI.affectionUI.transform.localScale = Vector3.zero;
+            }
+
             bossUI.dialogueTextCon.localScale = Vector3.zero;
             bossUI.speakerFrame.localScale = Vector3.zero;
         });
+
+        // Affection UI ë™ì‹œ ë“±ì¥ ì—°ì¶œ
         bossSeq.Append(bossUI.dialogueTextCon.DOScale(1f, 0.4f).SetEase(Ease.OutQuart));
         bossSeq.Join(bossUI.speakerFrame.DOScale(1f, 0.4f).SetEase(Ease.OutQuart));
+
+        if (bossUI.affectionUI != null)
+        {
+            bossSeq.Join(bossUI.affectionUI.transform.DOScale(1f, 0.4f).SetEase(Ease.OutQuart));
+        }
 
         bossSeq.OnComplete(() => ContinueStory());
     }
@@ -383,16 +453,121 @@ public class DialogueManager : MonoBehaviour
         foreach (string t in tags)
         {
             string[] s = t.Split(':');
-            if (s.Length != 2) continue;
-            string key = s[0].Trim(); string val = s[1].Trim();
-            if (key == "speaker" && currentUI.nameText != null) currentUI.nameText.text = val;
-            else if (key == "portrait" && portraitAnimator != null) portraitAnimator.Play(val);
-            else if (key == "add_aff") AffectionManager.Instance.AddLevel(currentNPC, int.Parse(val));
-            else if (key == "scene") SceneManager.LoadScene(val);
+            if (s.Length == 0) continue;
+
+            string first = s[0].Trim().ToLower();
+
+            if (first == "enter" && s.Length >= 2)
+            {
+                if (int.TryParse(s[1].Trim(), out int spawnId))
+                {
+                    string posKey = (s.Length > 2) ? s[2].Trim() : "center";
+                    SpawnPortrait(spawnId, posKey);
+                }
+                continue;
+            }
+
+            if (first == "exit" && s.Length >= 2)
+            {
+                if (int.TryParse(s[1].Trim(), out int despawnId))
+                {
+                    DespawnPortrait(despawnId);
+                }
+                continue;
+            }
+
+            if (int.TryParse(first, out int targetId))
+            {
+                if (portraitMap.TryGetValue(targetId, out PortraitController portrait))
+                {
+                    if (s.Length >= 3)
+                    {
+                        string command = s[1].Trim().ToLower();
+                        string val = s[2].Trim();
+
+                        if (command == "face") portrait.SetExpression(val);
+                        else if (command == "act") portrait.PlayAction(val);
+                        else if (command == "move") portrait.MovePosition(val);
+                        else if (command == "emote") portrait.ShowEmote(val);
+                    }
+                }
+                continue;
+            }
+
+            if (s.Length >= 2)
+            {
+                string key = first;
+                string val = s[1].Trim();
+
+                if ((key == "face" || key == "act" || key == "emote") && currentNPC != null)
+                {
+                    if (portraitMap.TryGetValue(currentNPC.id, out PortraitController curPortrait))
+                    {
+                        if (key == "face") curPortrait.SetExpression(val);
+                        else if (key == "act") curPortrait.PlayAction(val);
+                        else if (key == "emote") curPortrait.ShowEmote(val);
+                    }
+                    continue;
+                }
+
+                if (key == "speaker" && currentUI.nameText != null) currentUI.nameText.text = val;
+                else if (key == "portrait" && portraitAnimator != null) portraitAnimator.Play(val);
+                else if (key == "add_aff") AffectionManager.Instance.AddAffection(currentNPC, int.Parse(val));
+                else if (key == "scene") SceneManager.LoadScene(val);
+                else if (key == "feature")
+                {
+                    if (currentFeatureController != null)
+                    {
+                        ExitDialogueMode();
+                        currentFeatureController.ExecuteFeature(val);
+                    }
+                }
+            }
         }
     }
 
-    // [ÃÖÁ¾ ¼öÁ¤] ExitDialogueMode¿¡ 2¹è ºü¸¥ ¿ª¼ø º¸½º ¿¬Ãâ Ãß°¡ [cite: 1, 2, 2026-01-15]
+    private void SpawnPortrait(int id, string position)
+    {
+        if (portraitMap.ContainsKey(id)) return;
+
+        // [Updated] ë°ì´í„°ë² ì´ìŠ¤ ì—ì…‹ì—ì„œ ê²€ìƒ‰
+        if (npcDatabase == null)
+        {
+            Debug.LogError("NPCDatabaseê°€ ì—°ê²°ë˜ì§€ ì•Šì•˜ìŠµë‹ˆë‹¤!");
+            return;
+        }
+
+        NPCData data = npcDatabase.GetNPC(id);
+        if (data == null)
+        {
+            Debug.LogError($"[DialogueManager] NPC Databaseì—ì„œ ID {id}ë¥¼ ì°¾ì„ ìˆ˜ ì—†ìŠµë‹ˆë‹¤.");
+            return;
+        }
+
+        if (portraitPrefab == null || portraitContainer == null) return;
+
+        GameObject newObj = Instantiate(portraitPrefab, portraitContainer);
+        PortraitController ctrl = newObj.GetComponent<PortraitController>();
+
+        ctrl.ApplyNPCData(data);
+        ctrl.SetInitialPosition(position);
+        ctrl.EnterAnimation();
+
+        portraitMap.Add(id, ctrl);
+    }
+
+    private void DespawnPortrait(int id)
+    {
+        if (portraitMap.TryGetValue(id, out PortraitController ctrl))
+        {
+            portraitMap.Remove(id);
+            if (ctrl != null)
+            {
+                ctrl.ExitAnimationAndDestroy();
+            }
+        }
+    }
+
     private void ExitDialogueMode()
     {
         if (currentStory != null)
@@ -416,16 +591,19 @@ public class DialogueManager : MonoBehaviour
         }
     }
 
-    // [Áö½Ã»çÇ×] ¿¬Ãâ ¿ª¼ø Àç»ı ¹× 2¹è¼Ó Ã³¸®
     private IEnumerator ExitBossSequence()
     {
         Sequence exitSeq = DOTween.Sequence();
 
-        // 1. ´ëÈ­Ã¢ & ÀÌ¸§Ç¥ Ãà¼Ò (0.4s -> 0.2s)
         exitSeq.Append(bossUI.dialogueTextCon.DOScale(0f, 0.2f).SetEase(Ease.InQuart));
         exitSeq.Join(bossUI.speakerFrame.DOScale(0f, 0.2f).SetEase(Ease.InQuart));
 
-        // 2. º¸½º ÀÏ·¯½ºÆ® ÅğÀå (0.8s -> 0.4s)
+        // Affection UI í‡´ì¥ ë™ì‹œ ì—°ì¶œ
+        if (bossUI.affectionUI != null)
+        {
+            exitSeq.Join(bossUI.affectionUI.transform.DOScale(0f, 0.2f).SetEase(Ease.InQuart));
+        }
+
         Vector2 startOffset = Vector2.zero;
         switch (currentBossDir)
         {
@@ -436,7 +614,6 @@ public class DialogueManager : MonoBehaviour
         }
         exitSeq.Append(bossUI.portraitFrame.DOAnchorPos(bossPortraitTargetPos + (startOffset * bossMoveDistance), 0.4f).SetEase(Ease.InCubic));
 
-        // 3. ÆÄÆí(Shards) ÅğÀå (0.7s -> 0.35s)
         Vector2[] dirs = {
             Vector2.up, new Vector2(1,1).normalized, Vector2.right, new Vector2(1,-1).normalized,
             Vector2.down, new Vector2(-1,-1).normalized, Vector2.left, new Vector2(-1,1).normalized
@@ -447,7 +624,6 @@ public class DialogueManager : MonoBehaviour
             exitSeq.Join(bossUI.shardsArray[i].DOAnchorPos(bossUI.shardTargetAnchoredPositions[i] + (dirs[i] * shardMoveDistance), 0.35f).SetEase(Ease.InQuart));
         }
 
-        // 4. ½Ã³×¸¶Æ½ ÆĞ³Î ÅğÀå (0.6s -> 0.3s)
         exitSeq.Append(bossUI.topCinematicPanel.DOAnchorPos(topPanelTargetPos + Vector2.up * cinematicPanelMoveDistance, 0.3f).SetEase(Ease.InCubic));
         exitSeq.Join(bossUI.bottomCinematicPanel.DOAnchorPos(bottomPanelTargetPos + Vector2.down * cinematicPanelMoveDistance, 0.3f).SetEase(Ease.InCubic));
 
@@ -457,10 +633,22 @@ public class DialogueManager : MonoBehaviour
 
     private void FinishDialogueExit()
     {
+        foreach (var ctrl in portraitMap.Values) { if (ctrl != null) ctrl.ExitAnimationAndDestroy(); }
+        portraitMap.Clear();
+
         dialogueIsPlaying = false;
+        canContinueToNextLine = false;
+        isTyping = false;
+
+        if (typingTween != null) typingTween.Kill();
+
         currentStory = null;
+
         normalUI.panelObj.SetActive(false);
         bossUI.panelObj.SetActive(false);
+
+        if (bossUI.affectionUI != null) bossUI.affectionUI.gameObject.SetActive(false);
+
         if (TempPlayer.Instance != null) TempPlayer.Instance.SetInteractState(InteractState.Idle);
     }
 

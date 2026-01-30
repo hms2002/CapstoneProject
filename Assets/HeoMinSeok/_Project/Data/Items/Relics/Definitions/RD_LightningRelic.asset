@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ac1da532121a934bb7f57799b194806, type: 3}
+  m_Name: RD_LightningRelic
+  m_EditorClassIdentifier: 
+  relicId: Relic.New
+  displayName: LightningRelic
+  icon: {fileID: -1922514944, guid: ef16b2ddeb64123459076c2c8a541a63, type: 3}
+  description: 
+  logic: {fileID: 11400000, guid: 72547bb206ac6a449a94e3b609e673f6, type: 2}
+  param: {fileID: 0}

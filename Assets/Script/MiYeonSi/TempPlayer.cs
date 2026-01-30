@@ -1,18 +1,20 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TempPlayer : MonoBehaviour
+public class TempPlayer : MonoBehaviour, IPlayerInteractor
 {
     public static TempPlayer Instance { get; private set; }
 
-    [Header("ÀÌµ¿ ¼³Á¤")]
+    [Header("ì´ë™ ì„¤ì •")]
     [SerializeField] private float moveSpeed = 5f;
-
-    [Header("»óÈ£ÀÛ¿ë ¼³Á¤")]
+     
+    [Header("ìƒí˜¸ì‘ìš© ì„¤ì •")]
     private readonly List<IInteractable> nearbyObjects = new();
-    private IInteractable currentTarget; // ÇöÀç °¡Àå °¡±î¿î Å¸°Ù
+    private IInteractable currentTarget; // í˜„ì¬ ê°€ì¥ ê°€ê¹Œìš´ íƒ€ê²Ÿ
 
     public InteractState CurrentState { get; private set; } = InteractState.Idle;
+
+    public Transform Transform => transform;
 
     private void Awake()
     {
@@ -26,7 +28,7 @@ public class TempPlayer : MonoBehaviour
         HandleMovement();
         HandleInteractSearch();
 
-        // »óÈ£ÀÛ¿ë ½ÇÇà
+        // ìƒí˜¸ì‘ìš© ì‹¤í–‰
         if (Input.GetKeyDown(KeyCode.F) && currentTarget != null)
         {
             currentTarget.OnPlayerInteract(this);
@@ -45,7 +47,7 @@ public class TempPlayer : MonoBehaviour
     {
         IInteractable nearest = GetClosestInteractable();
 
-        // ÃÖ´Ü °Å¸® Å¸°ÙÀÌ º¯°æµÇ¾úÀ» ¶§ (ÇÏÀÌ¶óÀÌÆ® °ü¸®)
+        // ìµœë‹¨ ê±°ë¦¬ íƒ€ê²Ÿì´ ë³€ê²½ë˜ì—ˆì„ ë•Œ (í•˜ì´ë¼ì´íŠ¸ ê´€ë¦¬)
         if (nearest != currentTarget)
         {
             if (currentTarget != null)
@@ -58,7 +60,7 @@ public class TempPlayer : MonoBehaviour
             if (currentTarget != null)
             {
                 currentTarget.OnHighlight();
-                // ±âÁ¸ ÇÁ·ÎÁ§Æ®ÀÇ GameEvents°¡ ÀÖ´Ù¸é ¿©±â¼­ È£Ãâ °¡´É
+                // ê¸°ì¡´ í”„ë¡œì íŠ¸ì˜ GameEventsê°€ ìˆë‹¤ë©´ ì—¬ê¸°ì„œ í˜¸ì¶œ ê°€ëŠ¥
                 // GameEvents.OnShowInteractKey?.Invoke(((MonoBehaviour)currentTarget).transform, currentTarget.GetInteractDescription());
             }
         }
@@ -93,28 +95,48 @@ public class TempPlayer : MonoBehaviour
         return closestObj;
     }
 
-    #region Æ®¸®°Å ±â¹İ ¸®½ºÆ® °ü¸® ¹× Nearby/Leave È£Ãâ
+    #region íŠ¸ë¦¬ê±° ê¸°ë°˜ ë¦¬ìŠ¤íŠ¸ ê´€ë¦¬ ë° Nearby/Leave í˜¸ì¶œ
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        Debug.Log("ÁÖº¯ ¿ÀºêÁ§Æ® È®ÀÎ");
-        if (other.TryGetComponent(out IInteractable interactable))
+        // 1. ë¬¼ë¦¬ì  ì¶©ëŒì€ ê°ì§€ë¨ (ë¡œê·¸ í™•ì¸ìš©)
+        // Debug.Log($"[ì¶©ëŒ ê°ì§€] {other.name}ì™€ ë‹¿ì•˜ìŠµë‹ˆë‹¤.");
+
+        // [ìˆ˜ì •] ìì‹ ì½œë¼ì´ë”ì™€ ë¶€ë”ªí˜”ì„ ê²½ìš°ë¥¼ ëŒ€ë¹„í•´ ë¶€ëª¨ê¹Œì§€ ê²€ìƒ‰
+        IInteractable interactable = other.GetComponent<IInteractable>();
+
+        if (interactable == null)
+        {
+            interactable = other.GetComponentInParent<IInteractable>();
+        }
+
+        // ì¸í„°í˜ì´ìŠ¤ë¥¼ ì°¾ì•˜ì„ ë•Œë§Œ ë¦¬ìŠ¤íŠ¸ì— ì¶”ê°€
+        if (interactable != null)
         {
             if (!nearbyObjects.Contains(interactable))
             {
                 nearbyObjects.Add(interactable);
-                interactable.OnPlayerNearby(); // [º¹±¸] ½Ã°¢Àû °¡ÀÌµå È°¼ºÈ­
+                interactable.OnPlayerNearby();
+                // Debug.Log($"[ë¦¬ìŠ¤íŠ¸ ì¶”ê°€] {other.name} ìƒí˜¸ì‘ìš© ëŒ€ìƒ ë“±ë¡ ì™„ë£Œ");
             }
         }
     }
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        if (other.TryGetComponent(out IInteractable interactable))
+        // [ìˆ˜ì •] ë‚˜ê°ˆ ë•Œë„ ë˜‘ê°™ì´ ë¶€ëª¨ê¹Œì§€ ê²€ìƒ‰í•´ì„œ ì°¾ì•„ì•¼ í•¨
+        IInteractable interactable = other.GetComponent<IInteractable>();
+
+        if (interactable == null)
+        {
+            interactable = other.GetComponentInParent<IInteractable>();
+        }
+
+        if (interactable != null)
         {
             if (nearbyObjects.Contains(interactable))
             {
-                interactable.OnPlayerLeave(); // [º¹±¸] ½Ã°¢Àû °¡ÀÌµå ºñÈ°¼ºÈ­
+                interactable.OnPlayerLeave();
 
                 if (currentTarget == interactable)
                 {
@@ -122,6 +144,7 @@ public class TempPlayer : MonoBehaviour
                     currentTarget = null;
                 }
                 nearbyObjects.Remove(interactable);
+                // Debug.Log($"[ë¦¬ìŠ¤íŠ¸ ì œê±°] {other.name} ìƒí˜¸ì‘ìš© ëŒ€ìƒ í•´ì œ");
             }
         }
     }
@@ -132,7 +155,7 @@ public class TempPlayer : MonoBehaviour
     {
         CurrentState = state;
 
-        // ´ëÈ­ ½ÃÀÛ ½Ã Å¸°Ù ÇÏÀÌ¶óÀÌÆ® ÇØÁ¦ (visualCue´Â À¯ÁöÇÒÁö ¿©ºÎ¿¡ µû¶ó OnPlayerLeave È£Ãâ °¡´É)
+        // ëŒ€í™” ì‹œì‘ ì‹œ íƒ€ê²Ÿ í•˜ì´ë¼ì´íŠ¸ í•´ì œ (visualCueëŠ” ìœ ì§€í• ì§€ ì—¬ë¶€ì— ë”°ë¼ OnPlayerLeave í˜¸ì¶œ ê°€ëŠ¥)
         if (state == InteractState.Talking && currentTarget != null)
         {
             currentTarget.OnUnHighlight();

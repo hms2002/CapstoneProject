@@ -1,20 +1,28 @@
+using UnityEngine;
+
+public interface IPlayerInteractor
+{
+    Transform Transform { get; }
+    InteractState CurrentState { get; }
+    void SetInteractState(InteractState state);
+}
 public interface IInteractable
 {
     void OnPlayerNearby();
     void OnPlayerLeave();
-    void OnPlayerInteract(TempPlayer player);
     void GetInteract(string text);
     void OnHighlight();
     void OnUnHighlight();
-    bool CanInteract(TempPlayer player);
+    bool CanInteract(IPlayerInteractor player);
+    void OnPlayerInteract(IPlayerInteractor player);
     InteractState GetInteractType();
     string GetInteractDescription();
 }
 
 public enum InteractState
 {
-    Idle,      // ÀÚÀ¯ ÀÌµ¿ »óÅÂ
-    Talking,   // ´ëÈ­ Áß (ÀÌµ¿ ºÒ°¡)
-    Shopping,  // »óÁ¡ ÀÌ¿ë Áß
+    Idle,      // ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½ ï¿½ï¿½ï¿½ï¿½
+    Talking,   // ï¿½ï¿½È­ ï¿½ï¿½ (ï¿½Ìµï¿½ ï¿½Ò°ï¿½)
+    Shopping,  // ï¿½ï¿½ï¿½ï¿½ ï¿½Ì¿ï¿½ ï¿½ï¿½
     None
 }
