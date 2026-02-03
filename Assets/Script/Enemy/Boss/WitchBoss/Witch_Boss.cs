@@ -3,13 +3,10 @@ using UnityGAS;
 
 public class WitchBoss : Boss
 {
-    //[Header("Abilities")]
-    //[SerializeField] private AbilityDefinition 파동;
-    //[SerializeField] private AbilityDefinition 뭐시기Ability;
-    //[SerializeField] private AbilityDefinition unseenPassiveBuff; // 시야 밖 무적/실루엣 효과 GE
+    [Header("Witch's Abilities")]
+    [SerializeField] private AbilityDefinition wave;
 
-    [Header("Visuals")]
-    [SerializeField] private SpriteRenderer sprite;
+    [Header("Witch's Visuals")]
     [SerializeField] private Sprite         silhouetteSprite;
     [SerializeField] private Sprite         normalSprite;
 
