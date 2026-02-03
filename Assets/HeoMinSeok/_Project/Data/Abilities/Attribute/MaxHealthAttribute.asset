@@ -16,7 +16,7 @@ MonoBehaviour:
   description: Attribute description.
   defaultBaseValue: 100
   minValue: 0
-  maxValue: 100
+  maxValue: 1e+10
   hasRegeneration: 0
   regenerationRate: 5
   regenerationDelay: 2

@@ -15893,6 +15893,7 @@ GameObject:
   - component: {fileID: 723292218}
   - component: {fileID: 723292229}
   - component: {fileID: 723292228}
+  - component: {fileID: 723292230}
   m_Layer: 31
   m_Name: ToxicFrogBlueBlue
   m_TagString: Untagged
@@ -15935,7 +15936,7 @@ MonoBehaviour:
   minHurtInterval: 0.03
   popupSpawner: {fileID: 723292218}
   neverDie: 1
-  maxHealthAttribute: {fileID: 11400000, guid: d8b3ad6470ee45a44b839f699b5deeea, type: 2}
+  maxHealthAttribute: {fileID: 11400000, guid: 0e177e1d15e428745b5859fac08ce203, type: 2}
   healThreshold: 1
 --- !u!114 &723292220
 MonoBehaviour:
@@ -15998,10 +15999,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   initialAttributes:
   - {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
-  - {fileID: 11400000, guid: d8b3ad6470ee45a44b839f699b5deeea, type: 2}
+  - {fileID: 11400000, guid: 0e177e1d15e428745b5859fac08ce203, type: 2}
   maxLinks:
   - value: {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
-    max: {fileID: 11400000, guid: d8b3ad6470ee45a44b839f699b5deeea, type: 2}
+    max: {fileID: 11400000, guid: 0e177e1d15e428745b5859fac08ce203, type: 2}
 --- !u!95 &723292224
 Animator:
   serializedVersion: 7
@@ -16155,17 +16156,38 @@ MonoBehaviour:
   gauges:
   - elementType: {fileID: 11400000, guid: 82578c30453dcb04a88dce3cd193db5b, type: 2}
     threshold: 100
-    debuffEffect: {fileID: 11400000, guid: f62b81c5473977a4f98f777c12b4cf8a, type: 2}
+    debuffEffect: {fileID: 11400000, guid: cb642d633f60d7244a4da020444aced1, type: 2}
+    injectDamageToSpec: 1
+    setByCallerKeyOverride: {fileID: 0}
+    percentOfCurrentHealth: 0.1
+    instigatorStatAttribute: {fileID: 0}
+    instigatorStatMultiplier: 0
+    buildUpAmountMultiplier: 0
+    flatDamageBonus: 0
     allowOverflow: 0
     resistancePercentAttribute: {fileID: 0}
   - elementType: {fileID: 11400000, guid: 7c8af04be6bcbb84794e303f3f4c401c, type: 2}
     threshold: 100
     debuffEffect: {fileID: 0}
+    injectDamageToSpec: 0
+    setByCallerKeyOverride: {fileID: 0}
+    percentOfCurrentHealth: 0
+    instigatorStatAttribute: {fileID: 0}
+    instigatorStatMultiplier: 0
+    buildUpAmountMultiplier: 0
+    flatDamageBonus: 0
     allowOverflow: 0
     resistancePercentAttribute: {fileID: 0}
   - elementType: {fileID: 11400000, guid: 53bdedc3d917f83458902716124fcc3c, type: 2}
     threshold: 100
     debuffEffect: {fileID: 0}
+    injectDamageToSpec: 0
+    setByCallerKeyOverride: {fileID: 0}
+    percentOfCurrentHealth: 0
+    instigatorStatAttribute: {fileID: 0}
+    instigatorStatMultiplier: 0
+    buildUpAmountMultiplier: 0
+    flatDamageBonus: 0
     allowOverflow: 0
     resistancePercentAttribute: {fileID: 0}
   logWhenTriggered: 0
@@ -16185,6 +16207,24 @@ MonoBehaviour:
   staggeredEffect: {fileID: 0}
   allowOverflow: 1
   resistancePercentAttribute: {fileID: 0}
+--- !u!114 &723292230
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 723292217}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e26d9b207b43c74ea4d0490aa5b4ebb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  definition: {fileID: 11400000, guid: 270d828b8793b604ea9b0397477cba6b, type: 2}
+  isElite: 0
+  healthAttribute: {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
+  maxHealthAttribute: {fileID: 11400000, guid: 0e177e1d15e428745b5859fac08ce203, type: 2}
+  refillToFullOnInit: 1
+  preserveHpRatioIfNotFull: 0
 --- !u!1001 &723443629
 PrefabInstance:
   m_ObjectHideFlags: 0
