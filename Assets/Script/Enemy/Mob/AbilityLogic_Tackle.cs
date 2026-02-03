@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityGAS;
 
 // 에디터 메뉴: Create > GAS > Ability Logic > Tackle Logic
-[CreateAssetMenu(fileName = "AL_Tackle", menuName = "GAS/Ability Logic/Tackle Logic")]
+[CreateAssetMenu(fileName = "AL_Tackle", menuName = "GAS/Ability Logic/Tackle")]
 public class AL_Tackle : AbilityLogic
 {
     [Header("Tackle Settings")]

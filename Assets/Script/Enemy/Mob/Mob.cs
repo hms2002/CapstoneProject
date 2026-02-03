@@ -25,10 +25,6 @@ public class Mob : Enemy
 
         float distance = Vector2.Distance(transform.position, target.position);
 
-        // 스프라이트 반전
-        if      (transform.position.x < target.position.x) sprite.flipX = true;
-        else if (transform.position.x > target.position.x) sprite.flipX = false;
-
         // 타겟 탐지
         if (distance <= detectionRange)
         {
@@ -37,10 +33,16 @@ public class Mob : Enemy
 
             rigid2D.MovePosition(nextPos);
 
-            animator.SetBool("isWalking", true);
+            // 스프라이트 반전
+            if      (transform.position.x > target.position.x) sprite.flipX = true;
+            else if (transform.position.x < target.position.x) sprite.flipX = false;
+
+            animator.SetBool("isMoving", true);
         }
-        
-        animator.SetBool("isWalking", false);
+        else
+        {
+            animator.SetBool("isMoving", false);
+        }
     }
 
     // ========================================================================

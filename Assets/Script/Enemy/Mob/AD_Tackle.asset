@@ -39,7 +39,7 @@ MonoBehaviour:
   grantedTagsWhileActive: []
   targetRequiredTags: []
   targetBlockedByTags: []
-  logic: {fileID: 0}
+  logic: {fileID: 11400000, guid: 0693fa06e07c3e048966bf91e365ae28, type: 2}
   sourceObject: {fileID: 0}
   containers: []
   cueOnCastStart: {fileID: 0}

@@ -50,6 +50,9 @@ public class Enemy : MonoBehaviour
         // 타겟 위치 설정
         target = GameObject.FindWithTag("Player").gameObject.transform;
         if (target == null) Debug.LogWarning(enemyName + ": No target found with tag 'Player'");
+
+        if (animator == null) Debug.LogWarning(enemyName + ": No animator found");
+        if (collision == null) Debug.LogWarning(enemyName + ": No collision found");
     }
 
     protected virtual void OnEnemyAttributeChanged(AttributeDefinition attribute, float oldValue, float newValue) { }
