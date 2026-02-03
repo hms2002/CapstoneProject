@@ -12,8 +12,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5f23c24b1773ce46b05d7ea5aea9964, type: 3}
   m_Name: ALData_SwordCombo2D
   m_EditorClassIdentifier: 
+  damageConfig:
+    formulaStats: {fileID: 11400000, guid: 83865f9accf70664fa56b704cf0506df, type: 2}
+    includeElementBuildup: 1
+    includeStaggerDamage: 0
+    critAffectsElement: 1
+    _migratedFromLegacy: 1
   formulaStats: {fileID: 11400000, guid: 83865f9accf70664fa56b704cf0506df, type: 2}
   includeElementDamage: 0
+  elementDamagesByCombo:
+  - elements: []
+  - elements: []
+  - elements: []
   includeStaggerDamage: 0
   staggerDamages:
   - 0

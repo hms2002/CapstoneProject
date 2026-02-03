@@ -18,7 +18,7 @@ public class DropZoneUI : MonoBehaviour, IDropHandler
     {
         if (!ItemDragContext.Active) return;
 
-        // Do not allow "dropping" loot items back onto the world again.
+        // loot 슬롯을 다시 월드로 드랍 금지
         if (ItemDragContext.Source is WorldLootContainerAdapter)
         {
             DragIcon.Instance?.Hide();
@@ -30,18 +30,21 @@ public class DropZoneUI : MonoBehaviour, IDropHandler
         var src = ItemDragContext.Source;
         int srcIndex = ItemDragContext.SourceIndex;
 
-        // Remove from source first. (Weapon/Relic adapters will handle unequip/ability-take correctly)
+        // ✅ (중요) 제거 전에 레벨 확보
+        int relicLevel = ItemDragContext.RelicLevel;
+        if (relicLevel <= 0 && item is RelicDefinition && src is IRelicLevelProvider p)
+            p.TryGetRelicLevel(srcIndex, out relicLevel);
+
+        // Remove from source
         bool removed = src != null && src.TrySet(srcIndex, null);
         if (removed)
-        {
-            SpawnWorldItem(item);
-        }
+            SpawnWorldItem(item, relicLevel);
 
         DragIcon.Instance?.Hide();
         ItemDragContext.Clear();
     }
 
-    private void SpawnWorldItem(ScriptableObject item)
+    private void SpawnWorldItem(ScriptableObject item, int relicLevel)
     {
         if (item == null) return;
         if (worldDropPrefab == null) return;
@@ -54,6 +57,6 @@ public class DropZoneUI : MonoBehaviour, IDropHandler
         }
 
         var drop = Instantiate(worldDropPrefab, pos, Quaternion.identity);
-        drop.SetItem(item);
+        drop.SetItem(item, relicLevel);
     }
 }

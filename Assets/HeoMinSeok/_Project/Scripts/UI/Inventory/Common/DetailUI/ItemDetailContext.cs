@@ -12,6 +12,10 @@ public sealed class ItemDetailContext
     public TagSystem tagSystem;
     public GameplayEffectRunner effectRunner;
     public AttributeSet attributeSet;
+    public IItemContainer sourceContainer;
+    public int sourceIndex = -1;
+    public int relicLevelOverride = 0; // 있으면 이 값을 우선 사용
+
 
     public static ItemDetailContext FromOwner(GameObject owner)
     {

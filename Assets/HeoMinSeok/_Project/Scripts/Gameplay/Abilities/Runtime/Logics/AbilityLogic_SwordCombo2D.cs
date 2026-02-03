@@ -125,6 +125,10 @@ namespace UnityGAS.Sample
         {
             if (data.damageEffect == null) return;
 
+            var dmgCfg = data.DamageConfig;
+            bool includeElementBuildup = dmgCfg != null ? dmgCfg.includeElementBuildup : data.includeElementDamage;
+            bool includeStagger = dmgCfg != null ? dmgCfg.includeStaggerDamage : data.includeStaggerDamage;
+
             Vector2 perp = new Vector2(-dir.y, dir.x);
             int sideSign = GetArraySafe(data.sideSigns, comboIndex, 0);
 
@@ -147,20 +151,19 @@ namespace UnityGAS.Sample
             float baseHp = GetArraySafe(data.damages, comboIndex, 0f);
             if (baseHp <= 0f) return;
             float finalHp = baseHp;
+            float finalStagger = 0f;
             float baseStagger = GetArraySafe(data.staggerDamages, comboIndex, 0f);
             var stats = system.DamageProfile != null ? system.DamageProfile.formulaStats : null;
 
             // Multi-element payload (computed per hit, delivered via GameplayEffectContext)
             System.Collections.Generic.List<ElementDamageResult> elementResults = null;
             System.Collections.Generic.IReadOnlyList<ElementDamageInput> elementInputs = null;
-            if (data.includeElementDamage && data.elementDamagesByCombo != null && data.elementDamagesByCombo.Length > 0)
+            if (includeElementBuildup)
             {
+                // If the per-hit list is empty, we still pass an empty list so default channels can be injected.
                 var grp = GetArraySafe(data.elementDamagesByCombo, comboIndex, null);
-                if (grp != null && grp.elements != null && grp.elements.Count > 0)
-                {
-                    elementInputs = grp.elements;
-                    elementResults = new System.Collections.Generic.List<ElementDamageResult>(grp.elements.Count);
-                }
+                elementInputs = (grp != null && grp.elements != null) ? grp.elements : System.Array.Empty<ElementDamageInput>();
+                elementResults = new System.Collections.Generic.List<ElementDamageResult>(elementInputs.Count);
             }
 
             if (stats != null)
@@ -177,7 +180,7 @@ namespace UnityGAS.Sample
                         baseStaggerDamage: baseStagger,
                         elementInputs: elementInputs,
                         outElementResults: elementResults,
-                        includeStagger: data.includeStaggerDamage
+                        includeStagger: includeStagger
                     );
                 }
                 else
@@ -189,11 +192,12 @@ namespace UnityGAS.Sample
                         DamageAttackKind.Normal,
                         baseHpDamage: baseHp,
                         baseStaggerDamage: baseStagger,
-                        includeElement: data.includeElementDamage,
-                        includeStagger: data.includeStaggerDamage
+                        includeElement: includeElementBuildup,
+                        includeStagger: includeStagger
                     );
                 }
                 finalHp = result.hpDamage;
+                finalStagger = result.staggerDamage;
             }
 
             if (finalHp <= 0f) return;
@@ -220,6 +224,7 @@ namespace UnityGAS.Sample
                     data.damageEffect,
                     target,
                     finalHp,
+                    finalStagger,
                     elementResults,
                     data.hitConfirmedTag,
                     system.gameObject

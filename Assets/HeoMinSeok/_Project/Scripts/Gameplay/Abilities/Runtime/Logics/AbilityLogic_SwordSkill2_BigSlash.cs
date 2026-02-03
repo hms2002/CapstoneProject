@@ -39,6 +39,7 @@ namespace UnityGAS.Sample
             if (runner == null) yield break;
 
             float finalHp = data.damage;
+            float finalStagger = 0f;
             var stats = system.DamageProfile != null ? system.DamageProfile.formulaStats : null;
 
             System.Collections.Generic.List<ElementDamageResult> elementResults = null;
@@ -47,18 +48,23 @@ namespace UnityGAS.Sample
             {
                 var attackerAttr = system.AttributeSet;
                 DamageResult result;
-                if (data.includeElementDamage && data.elementDamages != null && data.elementDamages.Count > 0)
+                var dmgCfg = data.DamageConfig;
+                bool includeElementBuildup = dmgCfg != null ? dmgCfg.includeElementBuildup : data.includeElementDamage;
+                bool includeStagger = dmgCfg != null ? dmgCfg.includeStaggerDamage : data.includeStaggerDamage;
+
+                if (includeElementBuildup)
                 {
-                    elementResults = new System.Collections.Generic.List<ElementDamageResult>(data.elementDamages.Count);
+                    var inputs = (data.elementDamages != null) ? (System.Collections.Generic.IReadOnlyList<ElementDamageInput>)data.elementDamages : System.Array.Empty<ElementDamageInput>();
+                    elementResults = new System.Collections.Generic.List<ElementDamageResult>(inputs.Count);
                     result = DamageFormulaUtil.Compute(
                         attackerAttr,
                         stats,
                         DamageAttackKind.Skill,
                         baseHpDamage: data.damage,
                         baseStaggerDamage: data.baseStaggerDamage,
-                        elementInputs: data.elementDamages,
+                        elementInputs: inputs,
                         outElementResults: elementResults,
-                        includeStagger: data.includeStaggerDamage
+                        includeStagger: includeStagger
                     );
                 }
                 else
@@ -69,37 +75,33 @@ namespace UnityGAS.Sample
                         DamageAttackKind.Skill,
                         baseHpDamage: data.damage,
                         baseStaggerDamage: data.baseStaggerDamage,
-                        includeElement: data.includeElementDamage,
-                        includeStagger: data.includeStaggerDamage
+                        includeElement: includeElementBuildup,
+                        includeStagger: includeStagger
                     );
                 }
 
                 finalHp = result.hpDamage;
+                finalStagger = result.staggerDamage;
             }
-
-            GameplayTag damageKey = null;
-            if (data.damageEffect is GE_Damage_Spec ge) damageKey = ge.damageKey;
 
             for (int i = 0; i < td.Targets.Count; i++)
             {
                 var target = td.Targets[i];
                 if (target == null) continue;
 
-                var geSpec = system.MakeSpec(data.damageEffect, causer: system.gameObject, sourceObject: def);
-                if (damageKey != null) geSpec.SetSetByCallerMagnitude(damageKey, finalHp);
-
-                // Deliver element damages (application is implemented later)
-                if (elementResults != null && elementResults.Count > 0)
-                {
-                    var dst = geSpec.Context.ElementDamages;
-                    dst.Clear();
-                    for (int j = 0; j < elementResults.Count; j++)
-                        dst.Add(elementResults[j]);
-                }
-
-                runner.ApplyEffectSpec(geSpec, target);
+                CombatDamageAction.ApplyDamageAndEmitHit(
+                    system, spec,
+                    data.damageEffect,
+                    target,
+                    finalHp,
+                    finalStagger,
+                    elementResults,
+                    hitConfirmedTag: null,
+                    causer: system.gameObject
+                );
             }
         }
+
 
         private Vector2 ResolveAimDirection(AbilitySystem system)
         {

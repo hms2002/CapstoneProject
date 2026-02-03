@@ -9,7 +9,7 @@ using UnityEngine;
 /// - Can only accept null placements (so UI cannot drag items INTO loot slots)
 /// - When a loot item is moved out, setting that slot to null destroys the world object.
 /// </summary>
-public class WorldLootContainerAdapter : IItemContainer
+public class WorldLootContainerAdapter : IItemContainer, IRelicLevelProvider
 {
     public event Action OnChanged;
 
@@ -123,4 +123,17 @@ public class WorldLootContainerAdapter : IItemContainer
 
         OnChanged?.Invoke();
     }
+    public bool TryGetRelicLevel(int index, out int level)
+    {
+        level = 0;
+        if (index < 0 || index >= slotCount) return false;
+
+        var w = slots[index];
+        if (w == null) return false;
+        if (w.Item is not RelicDefinition) return false;
+
+        level = Mathf.Max(1, w.RelicLevel);
+        return true;
+    }
+
 }

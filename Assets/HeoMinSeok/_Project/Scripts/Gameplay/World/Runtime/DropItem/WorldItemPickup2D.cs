@@ -14,6 +14,14 @@ public class WorldItemPickup2D : MonoBehaviour
     [SerializeField] private SpriteRenderer spriteRenderer;
 
     public ScriptableObject Item => item;
+    [SerializeField] private int relicLevel = 0;
+    public int RelicLevel => relicLevel;
+    public void SetItem(ScriptableObject so, int relicLevelOverride = 0)
+    {
+        item = so;
+        relicLevel = relicLevelOverride;
+        RefreshVisual();
+    }
 
     public void SetItem(ScriptableObject so)
     {

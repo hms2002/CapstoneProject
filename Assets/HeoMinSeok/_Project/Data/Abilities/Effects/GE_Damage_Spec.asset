@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50c12b8c197605049b45e2cd383052ca, type: 3}
   m_Name: GE_Damage_Spec
   m_EditorClassIdentifier: 
-  effectName: New Effect
+  effectName: GE_Damage_Spec
   description: Effect description.
   icon: {fileID: 0}
   duration: 0

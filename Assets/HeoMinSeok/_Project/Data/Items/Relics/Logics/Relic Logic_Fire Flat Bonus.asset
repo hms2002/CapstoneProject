@@ -9,10 +9,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 47de7bc346cd48f43ba80cddf5f59263, type: 3}
-  m_Name: TS_TEST
+  m_Script: {fileID: 11500000, guid: fe2f2aa3b7d897b4882187f548f45df1, type: 3}
+  m_Name: Relic Logic_Fire Flat Bonus
   m_EditorClassIdentifier: 
-  tags:
-  - {fileID: 0}
-  includes: []
-  version: 3
+  entries:
+  - attribute: {fileID: 11400000, guid: 3cf73420df1732240b7c90837ff7efab, type: 2}
+    type: 0
+    value: 10
+    valueByLevel: []
+    duration: 0

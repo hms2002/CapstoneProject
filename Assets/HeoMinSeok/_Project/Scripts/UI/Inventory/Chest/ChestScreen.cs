@@ -132,7 +132,7 @@ public class ChestScreen : MonoBehaviour
     // -----------------------
     // Adapters
     // -----------------------
-    private class ChestContainerAdapter : IItemContainer, IDisposable
+    private class ChestContainerAdapter : IItemContainer, IDisposable, IRelicLevelProvider, IRelicSlotReceiver
     {
         private readonly ChestInventory inv;
         public event Action OnChanged;
@@ -159,6 +159,17 @@ public class ChestScreen : MonoBehaviour
         {
             if (inv != null) inv.OnChanged -= HandleChanged;
         }
+        public bool TryGetRelicLevel(int index, out int level)
+        {
+            level = inv != null ? inv.GetRelicLevelInSlot(index) : 0;
+            return level > 0;
+        }
+
+        public bool TrySetRelicWithLevel(int index, RelicDefinition relic, int level)
+        {
+            return inv != null && inv.SetRelicWithLevel(index, relic, level);
+        }
+
     }
 
     private class PlayerWeaponContainerAdapter : IItemContainer, IDisposable
@@ -208,7 +219,7 @@ public class ChestScreen : MonoBehaviour
         }
     }
 
-    private class PlayerRelicContainerAdapter : IItemContainer, IDisposable
+    private class PlayerRelicContainerAdapter : IItemContainer, IDisposable, IRelicLevelProvider, IRelicSlotReceiver
     {
         private readonly RelicInventory inv;
         public event Action OnChanged;
@@ -252,6 +263,19 @@ public class ChestScreen : MonoBehaviour
         public void Dispose()
         {
             if (inv != null) inv.OnChanged -= HandleChanged;
+        }
+
+        public bool TryGetRelicLevel(int index, out int level)
+        {
+            level = inv != null ? inv.GetRelicLevelInSlot(index) : 0;
+            return level > 0;
+        }
+
+        public bool TrySetRelicWithLevel(int index, RelicDefinition relic, int level)
+        {
+            if (inv == null) return false;
+            if (relic == null) return inv.TrySetRelicSlot(index, null);
+            return inv.TrySetRelicSlotWithLevel(index, relic, level);
         }
     }
 }

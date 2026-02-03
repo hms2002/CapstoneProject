@@ -23,7 +23,7 @@ public class PlayerBackpackInventory : MonoBehaviour
         // If capacity changes in inspector, recreate (this will reset contents).
         if (inventory == null || inventory.Capacity != Mathf.Max(0, capacity))
         {
-            inventory = new ChestInventory(Mathf.Max(0, capacity));
+            inventory = new ChestInventory(/*Mathf.Max(0, capacity)*/);
         }
 
         // Bridge event
@@ -42,6 +42,9 @@ public class PlayerBackpackInventory : MonoBehaviour
     public ScriptableObject Get(int index) => inventory != null ? inventory.Get(index) : null;
     public bool Set(int index, ScriptableObject item) => inventory != null && inventory.Set(index, item);
     public bool Swap(int a, int b) => inventory != null && inventory.Swap(a, b);
+    public int GetRelicLevelInSlot(int index) => inventory != null ? inventory.GetRelicLevelInSlot(index) : 0;
+    public bool SetRelicWithLevel(int index, RelicDefinition relic, int level)
+        => inventory != null && inventory.SetRelicWithLevel(index, relic, level);
 
     public bool TryAdd(ScriptableObject item)
     {

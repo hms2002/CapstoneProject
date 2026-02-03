@@ -10,7 +10,7 @@ public class TreasureChest : MonoBehaviour
 
     private void Awake()
     {
-        inventory = new ChestInventory(capacity);
+        inventory = new ChestInventory();
 
         // 수동 채우기(테스트)
         if (initialItems != null)

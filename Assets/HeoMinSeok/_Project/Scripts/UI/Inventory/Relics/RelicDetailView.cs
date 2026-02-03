@@ -17,11 +17,22 @@ public class RelicDetailView : MonoBehaviour, IItemDetailView
 
         // Level info (if the player already owns it)
         int level = 1;
-        if (ctx != null && ctx.owner != null)
+
+        if (ctx != null)
         {
-            var inv = ctx.owner.GetComponent<RelicInventory>();
-            if (inv != null && inv.TryGetRelicLevelById(r.relicId, out var ownedLevel))
-                level = ownedLevel;
+            // 1) 슬롯 레벨(상자/가방/장착/월드루트) 우선
+            if (ctx.relicLevelOverride > 0) level = ctx.relicLevelOverride;
+            else if (ctx.sourceContainer is IRelicLevelProvider p && ctx.sourceIndex >= 0)
+            {
+                if (p.TryGetRelicLevel(ctx.sourceIndex, out var lvl)) level = lvl;
+            }
+            // 2) 그래도 없으면 “플레이어가 이미 보유한 레벨”로 fallback
+            else if (ctx.owner != null)
+            {
+                var inv = ctx.owner.GetComponent<RelicInventory>();
+                if (inv != null && inv.TryGetRelicLevelById(r.relicId, out var ownedLevel))
+                    level = ownedLevel;
+            }
         }
 
         // Description

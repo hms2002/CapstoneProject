@@ -187,7 +187,7 @@ public class UIHoverManager : MonoBehaviour
     }
 
     // --- Slot hooks ---
-    public void HoverSlot(RectTransform slotRect, ScriptableObject itemDef)
+    public void HoverSlot(RectTransform slotRect, ScriptableObject itemDef, IItemContainer container = null, int index = -1)
     {
         if (slotRect == null) return;
         // ✅ 브릿지/패널 위에 있는 동안은 "다른 슬롯로 전환"을 막는다.
@@ -217,6 +217,17 @@ public class UIHoverManager : MonoBehaviour
 
         // 패널 켜고 내용 채우기
         var ctx = _contextProvider != null ? _contextProvider.BuildContext() : null;
+        if (ctx != null)
+        {
+            ctx.sourceContainer = container;
+            ctx.sourceIndex = index;
+
+            if (itemDef is RelicDefinition && container is IRelicLevelProvider p && index >= 0)
+            {
+                if (p.TryGetRelicLevel(index, out var lvl))
+                    ctx.relicLevelOverride = lvl;
+            }
+        }
         detailPanel?.Show(itemDef, ctx);
 
 

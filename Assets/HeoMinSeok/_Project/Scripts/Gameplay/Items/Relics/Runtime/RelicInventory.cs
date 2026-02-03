@@ -142,7 +142,6 @@ public class RelicInventory : MonoBehaviour
         if (!IsValidSlot(slotIndex)) return 0;
         return slots[slotIndex].def != null ? Mathf.Max(1, slots[slotIndex].level) : 0;
     }
-
     public bool TryGetRelicLevelById(string relicId, out int level)
     {
         level = 0;
@@ -231,6 +230,73 @@ public class RelicInventory : MonoBehaviour
             ctx.token = token;
             relic.logic?.OnEquipped(ctx);
         }
+
+        slots[slotIndex] = e;
+
+        RefreshDebugView();
+        OnChanged?.Invoke();
+        return true;
+    }
+    public bool TrySetRelicSlotWithLevel(int slotIndex, RelicDefinition relic, int levelOverride)
+    {
+        if (!IsValidSlot(slotIndex)) return false;
+        if (!CanPlaceRelicInSlot(slotIndex, relic, ignoreIndex: slotIndex)) return false;
+
+        // 제거는 기존 로직 그대로
+        if (relic == null)
+            return TrySetRelicSlot(slotIndex, null);
+
+        int incomingLevel = Mathf.Max(1, levelOverride > 0 ? levelOverride : (relic.dropLevel > 0 ? relic.dropLevel : 1));
+        incomingLevel = relic.ClampLevel(incomingLevel);
+
+        // ✅ 중복 relicId면 "슬롯에 놓지 말고" 기존 것을 강화(합산)
+        if (enforceUniqueRelicId && !string.IsNullOrEmpty(relic.relicId))
+        {
+            int existing = FindSlotByRelicId(relic.relicId);
+            if (existing >= 0 && existing != slotIndex)
+            {
+                var eExist = slots[existing];
+                int oldLevel = Mathf.Max(1, eExist.level);
+                int newLevel = relic.ClampLevel(oldLevel + incomingLevel);
+                if (newLevel == oldLevel) return true; // 이미 만렙이면 소비만
+
+                return ReapplyLevel(existing, newLevel);
+            }
+        }
+
+        // --- 여기부터는 "slotIndex에 실제로 장착" ---
+        var e = slots[slotIndex];
+        var prevDef = e.def;
+        var prevToken = e.token;
+        var prevLevel = e.level;
+
+        // 1) 이전 유물 해제
+        if (prevDef != null)
+        {
+            var ctx = baseCtx;
+            ctx.relicDef = prevDef;
+            ctx.level = prevLevel;
+            ctx.token = prevToken;
+            prevDef.logic?.OnUnequipped(ctx);
+
+            if (prevToken != null) Destroy(prevToken);
+        }
+
+        // 2) 새 유물 장착 (✅ dropLevel이 아니라 incomingLevel 사용)
+        e.def = relic;
+        e.token = null;
+        e.level = 0;
+
+        var token = ScriptableObject.CreateInstance<RelicRuntimeToken>();
+        e.token = token;
+
+        e.level = incomingLevel;
+
+        var ctx2 = baseCtx;
+        ctx2.relicDef = relic;
+        ctx2.level = e.level;
+        ctx2.token = token;
+        relic.logic?.OnEquipped(ctx2);
 
         slots[slotIndex] = e;
 
@@ -410,4 +476,5 @@ public class RelicInventory : MonoBehaviour
         for (int i = 0; i < capacity; i++)
             debugView[i] = IsValidSlot(i) ? slots[i].def : null;
     }
+
 }

@@ -88,44 +88,117 @@ namespace UnityGAS
             }
 
             // Elements (multi-channel)
-            if (elementInputs != null && elementInputs.Count > 0)
+            // NOTE: Channel existence is based on the presence of an entry in elementInputs,
+            // not on baseDamage being > 0. (baseDamage may be 0 and still become >0 via relic/buff adds.)
+            // To reduce inspector maintenance when adding new elements, optional default channels can be injected
+            // from DamageFormulaStats.defaultElementChannels (processed with baseDamage=0).
+            // 'elementInputs != null' is treated as an opt-in signal that this hit participates in
+            // the element buildup system. (Pass null to fully disable element buildup for this hit.)
+            bool elementEnabled = elementInputs != null;
+            bool hasAuthoredEntries = elementEnabled && elementInputs.Count > 0;
+            bool hasDefaultChannels = elementEnabled && stats.injectDefaultElementChannels && stats.defaultElementChannels != null && stats.defaultElementChannels.Length > 0;
+
+            if (hasAuthoredEntries || hasDefaultChannels)
             {
                 float elementCritFactor = critAffectsElement ? critFactor : 1f;
                 float sum = 0f;
 
-                for (int i = 0; i < elementInputs.Count; i++)
+                // 1) Authored channels (per-attack)
+                if (hasAuthoredEntries)
                 {
-                    var input = elementInputs[i];
-                    if (input.elementType == null) continue;
-                    if (input.baseDamage <= 0f) continue;
-
-                    float elAdd;
-                    float elMul;
-
-                    var bind = stats.GetElementScaling(input.elementType);
-                    if (bind != null)
+                    for (int i = 0; i < elementInputs.Count; i++)
                     {
-                        elAdd = Get(attacker, bind.elementAdd, 0f);
-                        elMul = GetMul(attacker, bind.elementMul, bind.elementMulMode);
-                    }
-                    else
-                    {
-                        // legacy fallback
-                        elAdd = Get(attacker, stats.elementAdd, 0f);
-                        elMul = GetMul(attacker, stats.elementMul, stats.elementMulMode);
-                    }
+                        var input = elementInputs[i];
+                        if (input.elementType == null) continue;
 
-                    float dmg = (input.baseDamage + elAdd) * elMul * finalMul * elementCritFactor;
-                    dmg = Mathf.Max(0f, dmg);
-                    sum += dmg;
+                        float elAdd;
+                        float elMul;
 
-                    if (outElementResults != null)
-                    {
-                        outElementResults.Add(new ElementDamageResult
+                        var bind = stats.GetElementScaling(input.elementType);
+                        if (bind != null)
                         {
-                            elementType = input.elementType,
-                            damage = dmg
-                        });
+                            elAdd = Get(attacker, bind.elementAdd, 0f);
+                            elMul = GetMul(attacker, bind.elementMul, bind.elementMulMode);
+                        }
+                        else
+                        {
+                            // legacy fallback
+                            elAdd = Get(attacker, stats.elementAdd, 0f);
+                            elMul = GetMul(attacker, stats.elementMul, stats.elementMulMode);
+                        }
+
+                        float dmg = (input.baseDamage + elAdd) * elMul * finalMul * elementCritFactor;
+                        dmg = Mathf.Max(0f, dmg);
+                        sum += dmg;
+
+                        if (outElementResults != null)
+                        {
+                            // 유물/버프로 더해진 값까지 포함해서 “최종 입력” 만들기
+                            float pre = input.baseDamage + elAdd;
+
+                            // (정책) 최종이 0 이하면 이번 히트에서는 축적 없음
+                            if (pre <= 0f) continue;
+
+                            float elDamage = pre * elMul * finalMul * elementCritFactor;
+                            if (elDamage <= 0f) continue;
+
+                            outElementResults.Add(new ElementDamageResult { elementType = input.elementType, damage = elDamage });
+                        }
+                    }
+                }
+
+                // 2) Default channels (profile-level) injected with baseDamage=0 when missing in authored inputs
+                if (hasDefaultChannels)
+                {
+                    var defaults = stats.defaultElementChannels;
+                    for (int d = 0; d < defaults.Length; d++)
+                    {
+                        var elementType = defaults[d];
+                        if (elementType == null) continue;
+
+                        // Skip if already authored
+                        bool alreadyAuthored = false;
+                        if (hasAuthoredEntries)
+                        {
+                            for (int i = 0; i < elementInputs.Count; i++)
+                            {
+                                if (elementInputs[i].elementType == elementType)
+                                {
+                                    alreadyAuthored = true;
+                                    break;
+                                }
+                            }
+                        }
+                        if (alreadyAuthored) continue;
+
+                        float elAdd;
+                        float elMul;
+
+                        var bind = stats.GetElementScaling(elementType);
+                        if (bind != null)
+                        {
+                            elAdd = Get(attacker, bind.elementAdd, 0f);
+                            elMul = GetMul(attacker, bind.elementMul, bind.elementMulMode);
+                        }
+                        else
+                        {
+                            elAdd = Get(attacker, stats.elementAdd, 0f);
+                            elMul = GetMul(attacker, stats.elementMul, stats.elementMulMode);
+                        }
+
+                        // baseDamage=0 injection
+                        float dmg = (0f + elAdd) * elMul * finalMul * elementCritFactor;
+                        dmg = Mathf.Max(0f, dmg);
+                        sum += dmg;
+
+                        if (outElementResults != null)
+                        {
+                            float pre = 0f + elAdd;
+                            if (pre <= 0f) continue;
+                            float elDamage = pre * elMul * finalMul * elementCritFactor;
+                            if (elDamage <= 0f) continue;
+                            outElementResults.Add(new ElementDamageResult { elementType = elementType, damage = elDamage });
+                        }
                     }
                 }
 

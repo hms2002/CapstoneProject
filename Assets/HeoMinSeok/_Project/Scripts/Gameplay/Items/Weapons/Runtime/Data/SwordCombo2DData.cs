@@ -5,7 +5,7 @@ using UnityGAS;
 namespace UnityGAS.Sample
 {
     [CreateAssetMenu(fileName = "SwordCombo2DData", menuName = "GAS/Samples/Data/Sword Combo 2D")]
-    public class SwordCombo2DData : ScriptableObject
+    public class SwordCombo2DData : DamageLogicDataBase
     {
         [System.Serializable]
         public class ElementDamageGroup
@@ -13,13 +13,13 @@ namespace UnityGAS.Sample
             public List<ElementDamageInput> elements = new();
         }
 
-        [Header("Damage Formula")]
-        public DamageFormulaStats formulaStats;
+        [Header("Damage Formula (Legacy - migrated to Damage)")]
+        [SerializeField, HideInInspector] public DamageFormulaStats formulaStats;
 
-        public bool includeElementDamage = false;
+        [SerializeField, HideInInspector] public bool includeElementDamage = false;
         [Tooltip("Per-combo element damages (can contain multiple elements per hit).")]
         public ElementDamageGroup[] elementDamagesByCombo = new ElementDamageGroup[3];
-        public bool includeStaggerDamage = false;
+        [SerializeField, HideInInspector] public bool includeStaggerDamage = false;
         public float[] staggerDamages = new float[3] { 0f, 0f, 0f };
 
         [Header("Combo")]
@@ -46,5 +46,13 @@ namespace UnityGAS.Sample
 
         [Header("Damage Effect")]
         public GameplayEffect damageEffect; // GE_Damage_Spec (HP)
+
+#if UNITY_EDITOR
+        private void OnValidate()
+        {
+            // Ensure the common damage config exists and migrate legacy fields once.
+            ValidateDamageConfig(ref formulaStats, ref includeElementDamage, ref includeStaggerDamage);
+        }
+#endif
     }
 }

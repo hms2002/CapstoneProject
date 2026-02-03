@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d98d22e39756b5842ab9e6a8750ac815, type: 3}
   m_Name: FinalMulAttribute
   m_EditorClassIdentifier: 
-  attributeName: FinalMulAttribute
+  attributeName: FireFinalMulAttribute
   description: Attribute description.
   defaultBaseValue: 1
   minValue: 1

@@ -13,7 +13,14 @@ MonoBehaviour:
   m_Name: ALData_SwordSkill2_BigSlashData
   m_EditorClassIdentifier: 
   formulaStats: {fileID: 11400000, guid: 83865f9accf70664fa56b704cf0506df, type: 2}
-  includeElementDamage: 0
+  includeElementDamage: 1
+  elementDamages:
+  - elementType: {fileID: 11400000, guid: 82578c30453dcb04a88dce3cd193db5b, type: 2}
+    baseDamage: 0
+  - elementType: {fileID: 11400000, guid: 7c8af04be6bcbb84794e303f3f4c401c, type: 2}
+    baseDamage: 0
+  - elementType: {fileID: 11400000, guid: 53bdedc3d917f83458902716124fcc3c, type: 2}
+    baseDamage: 0
   includeStaggerDamage: 0
   baseStaggerDamage: 0
   hitboxSize: {x: 4, y: 4}
