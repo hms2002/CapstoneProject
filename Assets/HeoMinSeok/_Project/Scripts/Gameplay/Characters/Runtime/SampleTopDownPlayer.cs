@@ -59,6 +59,10 @@ public class SampleTopDownPlayer : MonoBehaviour, IPlayerInteractor
     public AbilityDefinition skill1;
     public AbilityDefinition skill2;
 
+    [Header("Movement Ability")]
+    public AbilityDefinition dash;
+    public KeyCode dashKey = KeyCode.Space;
+
     [Header("Optional Skill Hotkeys")]
     public KeyCode skill1Key = KeyCode.Q;
     public KeyCode skill2Key = KeyCode.E;
@@ -312,6 +316,10 @@ public class SampleTopDownPlayer : MonoBehaviour, IPlayerInteractor
         // Skills
         if (Input.GetKeyDown(skill1Key)) TryActivateSafe(GetSkill1());
         if (Input.GetKeyDown(skill2Key)) TryActivateSafe(GetSkill2());
+
+        // Dash
+        if (Input.GetKeyDown(dashKey)) 
+            TryActivateSafe(dash);
 
         if (weaponInventory != null && Input.GetKeyDown(KeyCode.Tab))
             weaponInventory.Swap();

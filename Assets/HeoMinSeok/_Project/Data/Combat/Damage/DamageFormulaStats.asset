@@ -27,6 +27,24 @@ MonoBehaviour:
   staggerAdd: {fileID: 11400000, guid: 4f5d1e3ffdcf18e4bbef58f59b785760, type: 2}
   staggerMul: {fileID: 11400000, guid: bd078173c9092104dbc43ac575e1d092, type: 2}
   staggerMulMode: 0
+  elementScalings:
+  - elementType: {fileID: 11400000, guid: 53bdedc3d917f83458902716124fcc3c, type: 2}
+    elementAdd: {fileID: 11400000, guid: 62b7b95dad0f7a243bd347214b4206e7, type: 2}
+    elementMul: {fileID: 11400000, guid: f1b00e97d4b97d94dbd5d9df27c64099, type: 2}
+    elementMulMode: 0
+  - elementType: {fileID: 11400000, guid: 7c8af04be6bcbb84794e303f3f4c401c, type: 2}
+    elementAdd: {fileID: 11400000, guid: 3cf73420df1732240b7c90837ff7efab, type: 2}
+    elementMul: {fileID: 11400000, guid: 618d006e7af394a4db0798cfa63b2660, type: 2}
+    elementMulMode: 0
+  - elementType: {fileID: 11400000, guid: 82578c30453dcb04a88dce3cd193db5b, type: 2}
+    elementAdd: {fileID: 11400000, guid: 77a3db6579cf45940a7dae4896dde0db, type: 2}
+    elementMul: {fileID: 11400000, guid: a614422f03de7ff40b35c8b5f4ca74af, type: 2}
+    elementMulMode: 0
+  injectDefaultElementChannels: 1
+  defaultElementChannels:
+  - {fileID: 11400000, guid: 82578c30453dcb04a88dce3cd193db5b, type: 2}
+  - {fileID: 11400000, guid: 7c8af04be6bcbb84794e303f3f4c401c, type: 2}
+  - {fileID: 11400000, guid: 53bdedc3d917f83458902716124fcc3c, type: 2}
   elementAdd: {fileID: 11400000, guid: 3cf73420df1732240b7c90837ff7efab, type: 2}
   elementMul: {fileID: 11400000, guid: 618d006e7af394a4db0798cfa63b2660, type: 2}
   elementMulMode: 0

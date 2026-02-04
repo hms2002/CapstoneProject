@@ -24,22 +24,52 @@ namespace UnityGAS.Sample
 
             // Damage snapshot at cast time
             float finalHp = data.damage;
+            float finalStagger = 0f;
+
+            // Multi-element snapshot at cast time (delivered on hit)
+            ElementDamageResult[] elementSnapshot = null;
 
             var stats = system.DamageProfile != null ? system.DamageProfile.formulaStats : null;
 
             if (stats != null)
             {
                 var attackerAttr = system.AttributeSet;
-                var result = DamageFormulaUtil.Compute(
-                    attackerAttr,
-                    stats,
-                    DamageAttackKind.Skill,
-                    baseHpDamage: data.damage,
-                    baseStaggerDamage: data.baseStaggerDamage,
-                    includeElement: data.includeElementDamage,
-                    includeStagger: data.includeStaggerDamage
-                );
+                DamageResult result;
+                var dmgCfg = data.DamageConfig;
+                bool includeElementBuildup = dmgCfg != null ? dmgCfg.includeElementBuildup : data.includeElementDamage;
+                bool includeStagger = dmgCfg != null ? dmgCfg.includeStaggerDamage : data.includeStaggerDamage;
+
+                if (includeElementBuildup)
+                {
+                    var inputs = (data.elementDamages != null) ? (System.Collections.Generic.IReadOnlyList<ElementDamageInput>)data.elementDamages : System.Array.Empty<ElementDamageInput>();
+                    var elementResults = new System.Collections.Generic.List<ElementDamageResult>(inputs.Count);
+                    result = DamageFormulaUtil.Compute(
+                        attackerAttr,
+                        stats,
+                        DamageAttackKind.Skill,
+                        baseHpDamage: data.damage,
+                        baseStaggerDamage: data.baseStaggerDamage,
+                        elementInputs: inputs,
+                        outElementResults: elementResults,
+                        includeStagger: includeStagger
+                    );
+                    if (elementResults.Count > 0) elementSnapshot = elementResults.ToArray();
+                }
+                else
+                {
+                    // Legacy fallback
+                    result = DamageFormulaUtil.Compute(
+                        attackerAttr,
+                        stats,
+                        DamageAttackKind.Skill,
+                        baseHpDamage: data.damage,
+                        baseStaggerDamage: data.baseStaggerDamage,
+                        includeElement: includeElementBuildup,
+                        includeStagger: includeStagger
+                    );
+                }
                 finalHp = result.hpDamage;
+                finalStagger = result.staggerDamage;
             }
             var proj = go.GetComponent<SwordSkill1Projectile2D>();
             if (proj != null)
@@ -53,6 +83,8 @@ namespace UnityGAS.Sample
                     dmgLayers: data.damageLayers,
                     dmgEffect: data.damageEffect,
                     dmg: finalHp,
+                    staggerBuildUp: finalStagger,
+                    elementDamages: elementSnapshot,
                     ignore: system.gameObject
                 );
             }

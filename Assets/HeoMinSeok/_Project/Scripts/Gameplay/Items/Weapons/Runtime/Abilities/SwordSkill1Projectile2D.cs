@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityGAS;
 
 namespace UnityGAS.Sample
 {
@@ -14,6 +15,8 @@ namespace UnityGAS.Sample
         private AbilitySystem ownerSystem;
         private GameplayEffect damageEffect;
         private float damage;
+        private float staggerBuildUp;
+        private ElementDamageResult[] elementDamages;
         private GameObject ignoreGO;
 
         public void Setup(
@@ -25,6 +28,8 @@ namespace UnityGAS.Sample
             LayerMask dmgLayers,
             GameplayEffect dmgEffect,
             float dmg,
+            float staggerBuildUp,
+            ElementDamageResult[] elementDamages,
             GameObject ignore)
         {
             ownerSystem = owner;
@@ -35,6 +40,8 @@ namespace UnityGAS.Sample
             damageLayers = dmgLayers;
             damageEffect = dmgEffect;
             damage = dmg;
+            this.staggerBuildUp = staggerBuildUp;
+            this.elementDamages = elementDamages;
             ignoreGO = ignore;
 
             // owner 충돌 무시(가능하면)
@@ -70,15 +77,17 @@ namespace UnityGAS.Sample
             // 데미지 대상이면 데미지 적용 후 소멸
             if ((damageLayers.value & layerBit) != 0 && damageEffect != null && ownerSystem != null)
             {
-                var runner = ownerSystem.EffectRunner;
-                if (runner != null)
-                {
-                    var spec = ownerSystem.MakeSpec(damageEffect, causer: ownerSystem.gameObject, sourceObject: ownerSystem.CurrentExecSpec?.Definition);
-                    if (damageEffect is GE_Damage_Spec ge && ge.damageKey != null)
-                        spec.SetSetByCallerMagnitude(ge.damageKey, damage);
-
-                    runner.ApplyEffectSpec(spec, go);
-                }
+                CombatDamageAction.ApplyDamageAndEmitHit(
+                    ownerSystem,
+                    ownerSystem.CurrentExecSpec,
+                    damageEffect,
+                    go,
+                    damage,
+                    staggerBuildUp,
+                    elementDamages,
+                    hitConfirmedTag: null,
+                    causer: ownerSystem.gameObject
+                );
 
                 Destroy(gameObject);
                 return;

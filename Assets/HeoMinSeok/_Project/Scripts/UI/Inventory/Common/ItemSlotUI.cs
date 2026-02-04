@@ -2,6 +2,7 @@ using UnityEngine.EventSystems;
 using UnityEngine;
 using UnityEngine.UI;
 using System;
+using TMPro;
 
 public interface IItemContainer
 {
@@ -20,6 +21,15 @@ public interface IItemContainer
     bool TrySet(int index, ScriptableObject item);
     bool TrySwap(int a, int b);
 }
+public interface IRelicLevelProvider
+{
+    bool TryGetRelicLevel(int index, out int level);
+}
+
+public interface IRelicSlotReceiver
+{
+    bool TrySetRelicWithLevel(int index, RelicDefinition relic, int level);
+}
 
 public class ItemSlotUI : MonoBehaviour,
     IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler,
@@ -27,7 +37,7 @@ public class ItemSlotUI : MonoBehaviour,
 {
     [Header("UI")]
     [SerializeField] private Image icon;
-
+    [SerializeField] private TextMeshProUGUI levelText;
     private IItemContainer container;
     private int index;
     [SerializeField] private RectTransform slotRect; // 없으면 Awake에서 transform as RectTransform
@@ -73,6 +83,13 @@ public class ItemSlotUI : MonoBehaviour,
             icon.enabled = true;
             icon.sprite = def.Icon;
         }
+        if (so is RelicDefinition && container is IRelicLevelProvider p && p.TryGetRelicLevel(index, out var lvl))
+        {
+            levelText.gameObject.SetActive(true);
+            levelText.text = $"Lv {lvl}";
+        }
+        else levelText.gameObject.SetActive(false);
+
     }
 
     public void OnBeginDrag(PointerEventData eventData)
@@ -86,7 +103,11 @@ public class ItemSlotUI : MonoBehaviour,
         var def = so.AsDef();
         if (def == null) return;
 
-        ItemDragContext.Begin(container, index, so);
+        int relicLevel = 0;
+        if (so is RelicDefinition && container is IRelicLevelProvider p)
+            p.TryGetRelicLevel(index, out relicLevel);
+
+        ItemDragContext.Begin(container, index, so, relicLevel);
 
         DragIcon.Instance?.Show(def.Icon);
         DragIcon.Instance?.Follow(eventData.position);
@@ -167,7 +188,11 @@ public class ItemSlotUI : MonoBehaviour,
         if (targetIndex < 0) return;
 
         // 드롭(스왑 로직) 재활용
-        ItemDragContext.Begin(container, index, so);
+        int relicLevel = 0;
+        if (so is RelicDefinition && container is IRelicLevelProvider p)
+            p.TryGetRelicLevel(index, out relicLevel);
+
+        ItemDragContext.Begin(container, index, so, relicLevel);
         ItemDragContext.TryDrop(target, targetIndex);
         DragIcon.Instance?.Hide();
         ItemDragContext.Clear();
@@ -200,12 +225,13 @@ public class ItemSlotUI : MonoBehaviour,
         //    return;
         //}
 
-        UIHoverManager.Instance?.HoverSlot(slotRect, so);
+        UIHoverManager.Instance?.HoverSlot(slotRect, so, container, index);
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
         if (ItemDragContext.Active) return;
+        Debug.Log("X");
         UIHoverManager.Instance?.UnhoverSlot(slotRect);
     }
 

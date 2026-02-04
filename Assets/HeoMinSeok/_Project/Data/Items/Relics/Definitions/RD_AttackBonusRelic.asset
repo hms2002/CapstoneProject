@@ -12,10 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ac1da532121a934bb7f57799b194806, type: 3}
   m_Name: RD_AttackBonusRelic
   m_EditorClassIdentifier: 
-  relicId: Relic.New
+  relicId: AttackBonusRelic
   displayName: AttackBonusRelic
   icon: {fileID: -1330801700, guid: ef16b2ddeb64123459076c2c8a541a63, type: 3}
   rarity: 0
   description: 
+  maxLevel: 5
+  dropLevel: 1
   logic: {fileID: 11400000, guid: e7c57860bd90b7b428e2c99a0ce96b27, type: 2}
   param: {fileID: 0}

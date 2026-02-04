@@ -5,31 +5,30 @@ using UnityEngine;
 [Serializable]
 public class ChestInventory
 {
+    [Serializable]
+    private class Slot
+    {
+        public ScriptableObject item;
+        public int relicLevel; // item이 RelicDefinition일 때만 의미 있음
+    }
+
     [SerializeField] private int capacity = 16;
-    [SerializeField] private List<ScriptableObject> items = new();
+    [SerializeField] private List<Slot> slots = new();
 
     public int Capacity => capacity;
     public event Action OnChanged;
 
-    public ChestInventory(int capacity)
-    {
-        this.capacity = Mathf.Max(0, capacity);
-        items = new List<ScriptableObject>(this.capacity);
-        for (int i = 0; i < this.capacity; i++) items.Add(null);
-    }
-
     private void EnsureSize()
     {
-        if (items == null) items = new List<ScriptableObject>();
-        if (items.Count == capacity) return;
+        if (slots == null) slots = new List<Slot>();
 
-        if (items.Count < capacity)
+        if (slots.Count < capacity)
         {
-            while (items.Count < capacity) items.Add(null);
+            while (slots.Count < capacity) slots.Add(new Slot());
         }
-        else
+        else if (slots.Count > capacity)
         {
-            items.RemoveRange(capacity, items.Count - capacity);
+            slots.RemoveRange(capacity, slots.Count - capacity);
         }
     }
 
@@ -37,7 +36,20 @@ public class ChestInventory
     {
         EnsureSize();
         if (index < 0 || index >= capacity) return null;
-        return items[index];
+        return slots[index].item;
+    }
+
+    public int GetRelicLevelInSlot(int index)
+    {
+        EnsureSize();
+        if (index < 0 || index >= capacity) return 0;
+
+        var so = slots[index].item;
+        if (so is not RelicDefinition r) return 0;
+
+        int lvl = slots[index].relicLevel;
+        if (lvl <= 0) lvl = (r.dropLevel > 0 ? r.dropLevel : 1);
+        return Mathf.Max(1, lvl);
     }
 
     public bool Set(int index, ScriptableObject item)
@@ -45,7 +57,40 @@ public class ChestInventory
         EnsureSize();
         if (index < 0 || index >= capacity) return false;
 
-        items[index] = item;
+        slots[index].item = item;
+
+        if (item is RelicDefinition r)
+        {
+            // 레벨 정보 없이 들어온 경우: 기본 드롭레벨로
+            int lvl = r.dropLevel > 0 ? r.dropLevel : 1;
+            slots[index].relicLevel = Mathf.Max(1, lvl);
+        }
+        else
+        {
+            slots[index].relicLevel = 0;
+        }
+
+        OnChanged?.Invoke();
+        return true;
+    }
+
+    public bool SetRelicWithLevel(int index, RelicDefinition relic, int level)
+    {
+        EnsureSize();
+        if (index < 0 || index >= capacity) return false;
+
+        if (relic == null)
+        {
+            slots[index].item = null;
+            slots[index].relicLevel = 0;
+        }
+        else
+        {
+            int lvl = Mathf.Max(1, level);
+            slots[index].item = relic;
+            slots[index].relicLevel = relic.ClampLevel(lvl);
+        }
+
         OnChanged?.Invoke();
         return true;
     }
@@ -73,7 +118,7 @@ public class ChestInventory
         if (b < 0 || b >= capacity) return false;
         if (a == b) return true;
 
-        (items[a], items[b]) = (items[b], items[a]);
+        (slots[a], slots[b]) = (slots[b], slots[a]);
         OnChanged?.Invoke();
         return true;
     }
@@ -81,9 +126,9 @@ public class ChestInventory
     public bool TryFindEmpty(out int idx)
     {
         EnsureSize();
-        for (int i = 0; i < items.Count; i++)
+        for (int i = 0; i < slots.Count; i++)
         {
-            if (items[i] == null) { idx = i; return true; }
+            if (slots[i].item == null) { idx = i; return true; }
         }
         idx = -1;
         return false;

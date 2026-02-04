@@ -12,17 +12,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50c12b8c197605049b45e2cd383052ca, type: 3}
   m_Name: GE_Damage_Spec
   m_EditorClassIdentifier: 
-  effectName: New Effect
+  effectName: GE_Damage_Spec
   description: Effect description.
   icon: {fileID: 0}
   duration: 0
   canStack: 0
   maxStacks: 1
   grantedTags: []
+  grantedTagSets: []
   cueOnExecute: {fileID: 0}
   cueWhileActive: {fileID: 0}
   cueOnRemove: {fileID: 0}
   healthAttribute: {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
+  invulnerableTag: {fileID: 11400000, guid: 90cc853a47e809d4e8baa4fbcd354709, type: 2}
   damageKey: {fileID: 11400000, guid: 2e2e8bd1bde4f78429bf913fa737505c, type: 2}
   fallbackDamage: 0
   oneHitShieldTag: {fileID: 0}

@@ -39,37 +39,69 @@ namespace UnityGAS.Sample
             if (runner == null) yield break;
 
             float finalHp = data.damage;
+            float finalStagger = 0f;
             var stats = system.DamageProfile != null ? system.DamageProfile.formulaStats : null;
+
+            System.Collections.Generic.List<ElementDamageResult> elementResults = null;
 
             if (stats != null)
             {
-                var attackerAttr = system.AttributeSet; 
-                var result = DamageFormulaUtil.Compute(
-                    attackerAttr,
-                    stats,
-                    DamageAttackKind.Skill,
-                    baseHpDamage: data.damage,
-                    baseStaggerDamage: data.baseStaggerDamage,
-                    includeElement: data.includeElementDamage,
-                    includeStagger: data.includeStaggerDamage
-                );
-                finalHp = result.hpDamage;
-            }
+                var attackerAttr = system.AttributeSet;
+                DamageResult result;
+                var dmgCfg = data.DamageConfig;
+                bool includeElementBuildup = dmgCfg != null ? dmgCfg.includeElementBuildup : data.includeElementDamage;
+                bool includeStagger = dmgCfg != null ? dmgCfg.includeStaggerDamage : data.includeStaggerDamage;
 
-            GameplayTag damageKey = null;
-            if (data.damageEffect is GE_Damage_Spec ge) damageKey = ge.damageKey;
+                if (includeElementBuildup)
+                {
+                    var inputs = (data.elementDamages != null) ? (System.Collections.Generic.IReadOnlyList<ElementDamageInput>)data.elementDamages : System.Array.Empty<ElementDamageInput>();
+                    elementResults = new System.Collections.Generic.List<ElementDamageResult>(inputs.Count);
+                    result = DamageFormulaUtil.Compute(
+                        attackerAttr,
+                        stats,
+                        DamageAttackKind.Skill,
+                        baseHpDamage: data.damage,
+                        baseStaggerDamage: data.baseStaggerDamage,
+                        elementInputs: inputs,
+                        outElementResults: elementResults,
+                        includeStagger: includeStagger
+                    );
+                }
+                else
+                {
+                    result = DamageFormulaUtil.Compute(
+                        attackerAttr,
+                        stats,
+                        DamageAttackKind.Skill,
+                        baseHpDamage: data.damage,
+                        baseStaggerDamage: data.baseStaggerDamage,
+                        includeElement: includeElementBuildup,
+                        includeStagger: includeStagger
+                    );
+                }
+
+                finalHp = result.hpDamage;
+                finalStagger = result.staggerDamage;
+            }
 
             for (int i = 0; i < td.Targets.Count; i++)
             {
                 var target = td.Targets[i];
                 if (target == null) continue;
 
-                var geSpec = system.MakeSpec(data.damageEffect, causer: system.gameObject, sourceObject: def);
-                if (damageKey != null) geSpec.SetSetByCallerMagnitude(damageKey, finalHp);
-
-                runner.ApplyEffectSpec(geSpec, target);
+                CombatDamageAction.ApplyDamageAndEmitHit(
+                    system, spec,
+                    data.damageEffect,
+                    target,
+                    finalHp,
+                    finalStagger,
+                    elementResults,
+                    hitConfirmedTag: null,
+                    causer: system.gameObject
+                );
             }
         }
+
 
         private Vector2 ResolveAimDirection(AbilitySystem system)
         {

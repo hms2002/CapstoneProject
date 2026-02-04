@@ -169,7 +169,7 @@ public class InventoryScreen : MonoBehaviour
     // -----------------------
     // Adapters (public logic copied from ChestScreen)
     // -----------------------
-    private class BackpackContainerAdapter : IItemContainer, IDisposable
+    private class BackpackContainerAdapter : IItemContainer, IDisposable, IRelicLevelProvider, IRelicSlotReceiver
     {
         private readonly PlayerBackpackInventory inv;
         public event Action OnChanged;
@@ -200,6 +200,17 @@ public class InventoryScreen : MonoBehaviour
         {
             if (inv != null) inv.OnChanged -= HandleChanged;
         }
+        public bool TryGetRelicLevel(int index, out int level)
+        {
+            level = inv != null ? inv.GetRelicLevelInSlot(index) : 0;
+            return level > 0;
+        }
+
+        public bool TrySetRelicWithLevel(int index, RelicDefinition relic, int level)
+        {
+            return inv != null && inv.SetRelicWithLevel(index, relic, level);
+        }
+
     }
 
     private class PlayerWeaponContainerAdapter : IItemContainer, IDisposable
@@ -249,7 +260,7 @@ public class InventoryScreen : MonoBehaviour
         }
     }
 
-    private class PlayerRelicContainerAdapter : IItemContainer, IDisposable
+    private class PlayerRelicContainerAdapter : IItemContainer, IDisposable, IRelicLevelProvider, IRelicSlotReceiver
     {
         private readonly RelicInventory inv;
         public event Action OnChanged;
@@ -293,6 +304,18 @@ public class InventoryScreen : MonoBehaviour
         public void Dispose()
         {
             if (inv != null) inv.OnChanged -= HandleChanged;
+        }
+        public bool TryGetRelicLevel(int index, out int level)
+        {
+            level = inv != null ? inv.GetRelicLevelInSlot(index) : 0;
+            return level > 0;
+        }
+
+        public bool TrySetRelicWithLevel(int index, RelicDefinition relic, int level)
+        {
+            if (inv == null) return false;
+            if (relic == null) return inv.TrySetRelicSlot(index, null);
+            return inv.TrySetRelicSlotWithLevel(index, relic, level);
         }
     }
 }

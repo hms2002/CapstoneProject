@@ -78,6 +78,10 @@ public class UIHoverManager : MonoBehaviour
         if (!hideWhenOutsidePanels) return;
         if (detailPanel == null || !detailPanel.gameObject.activeSelf) return;
 
+        // ✅ 슬롯을 호버 중이면 패널을 숨기지 않는다.
+        // (특히 Chest UI처럼 ActivePanels가 아직 설정되지 않은 경우에도 디테일이 즉시 사라지는 문제를 방지)
+        if (_hoverSlot) return;
+
         // ✅ 패널/브릿지 위면 유지(인벤/상자 밖이어도 OK)
         if (_hoverPanel) return;
 
@@ -185,7 +189,7 @@ public class UIHoverManager : MonoBehaviour
     }
 
     // --- Slot hooks ---
-    public void HoverSlot(RectTransform slotRect, ScriptableObject itemDef)
+    public void HoverSlot(RectTransform slotRect, ScriptableObject itemDef, IItemContainer container = null, int index = -1)
     {
         if (slotRect == null) return;
         // ✅ 브릿지/패널 위에 있는 동안은 "다른 슬롯로 전환"을 막는다.
@@ -215,6 +219,17 @@ public class UIHoverManager : MonoBehaviour
 
         // 패널 켜고 내용 채우기
         var ctx = _contextProvider != null ? _contextProvider.BuildContext() : null;
+        if (ctx != null)
+        {
+            ctx.sourceContainer = container;
+            ctx.sourceIndex = index;
+
+            if (itemDef is RelicDefinition && container is IRelicLevelProvider p && index >= 0)
+            {
+                if (p.TryGetRelicLevel(index, out var lvl))
+                    ctx.relicLevelOverride = lvl;
+            }
+        }
         detailPanel?.Show(itemDef, ctx);
 
 
@@ -469,7 +484,7 @@ public class UIHoverManager : MonoBehaviour
 
     private float ChooseYAlignSlot(Rect canvasRect, Rect slotRect, Vector2 panelSize, Vector2 panelPivot, float xFixed)
     {
-        float slotTop = slotRect.yMax - slotRect.height/2;
+        float slotTop = slotRect.yMax - slotRect.height / 2;
         float slotBottom = slotRect.yMin + slotRect.height / 2;
 
         // 후보 Y (top align / bottom align)

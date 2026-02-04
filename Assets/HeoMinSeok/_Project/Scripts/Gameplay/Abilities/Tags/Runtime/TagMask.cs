@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Numerics;
+
 
 namespace UnityGAS
 {
@@ -25,6 +27,13 @@ namespace UnityGAS
             for (int w = 0; w < Words.Length; w++)
                 Words[w] |= m[w];
         }
+        public void AddExact(GameplayTag tag)
+        {
+            TagRegistry.EnsureInitialized();
+            int id = TagRegistry.GetId(tag);
+            AddExactId(id);
+        }
+
         // TagMask.cs에 추가
         public void AddId(int id)
         {
@@ -35,7 +44,16 @@ namespace UnityGAS
             for (int w = 0; w < Words.Length; w++)
                 Words[w] |= m[w];
         }
+        public void AddExactId(int id)
+        {
+            TagRegistry.EnsureInitialized();
+            if (id <= 0) return;
 
+            int w = id >> 6;
+            int b = id & 63;
+            if ((uint)w >= (uint)Words.Length) return; // 안전
+            Words[w] |= 1UL << b;
+        }
         public void AddPath(string path) => AddId(TagRegistry.GetIdByPath(path));
 
         public static TagMask Compile(IEnumerable<GameplayTag> tags)
@@ -49,5 +67,7 @@ namespace UnityGAS
 
             return mask;
         }
+
+
     }
 }

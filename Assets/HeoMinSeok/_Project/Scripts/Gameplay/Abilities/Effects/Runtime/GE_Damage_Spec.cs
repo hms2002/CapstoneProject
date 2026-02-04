@@ -14,6 +14,10 @@ namespace UnityGAS
         [Tooltip("깎을 대상 Attribute (보통 Health)")]
         public AttributeDefinition healthAttribute;
 
+        [Header("Invulnerability (Optional)")]
+        [Tooltip("타겟이 이 태그를 가지고 있으면 이번 피해는 무효(대쉬 무적 등).")]
+        public GameplayTag invulnerableTag;
+
         [Tooltip("SetByCaller 키 (예: Data.Damage)")]
         public GameplayTag damageKey;
 
@@ -50,6 +54,14 @@ namespace UnityGAS
                 damage = v;
 
             if (damage <= 0f) return;
+
+            // 0) 무적 태그(대쉬 무적 등)
+            if (invulnerableTag != null)
+            {
+                var tags = target.GetComponent<TagSystem>();
+                if (tags != null && tags.HasTag(invulnerableTag))
+                    return;
+            }
 
             // 1) 1회 보호막(태그) 처리
             if (oneHitShieldTag != null)

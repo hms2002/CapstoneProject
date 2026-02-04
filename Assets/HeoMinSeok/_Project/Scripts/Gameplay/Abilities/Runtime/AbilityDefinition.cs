@@ -106,6 +106,7 @@ namespace UnityGAS
             int newTReqHash = GameplayTagSet.ComputeVersionHash(targetRequiredTagSets);
             int newTBlkHash = GameplayTagSet.ComputeVersionHash(targetBlockedByTagSets);
 
+
             if (_tagMasksCompiled &&
                 newReqHash == _reqSetVerHash &&
                 newBlkHash == _blockSetVerHash &&
@@ -121,10 +122,10 @@ namespace UnityGAS
             _tBlockMask = new TagMask(TagRegistry.WordCount);
 
             // direct tags
-            if (requiredTags != null) for (int i = 0; i < requiredTags.Count; i++) if (requiredTags[i] != null) _reqMask.Add(requiredTags[i]);
-            if (blockedByTags != null) for (int i = 0; i < blockedByTags.Count; i++) if (blockedByTags[i] != null) _blockMask.Add(blockedByTags[i]);
-            if (targetRequiredTags != null) for (int i = 0; i < targetRequiredTags.Count; i++) if (targetRequiredTags[i] != null) _tReqMask.Add(targetRequiredTags[i]);
-            if (targetBlockedByTags != null) for (int i = 0; i < targetBlockedByTags.Count; i++) if (targetBlockedByTags[i] != null) _tBlockMask.Add(targetBlockedByTags[i]);
+            if (requiredTags != null) for (int i = 0; i < requiredTags.Count; i++) if (requiredTags[i] != null) _reqMask.AddExact(requiredTags[i]);
+            if (blockedByTags != null) for (int i = 0; i < blockedByTags.Count; i++) if (blockedByTags[i] != null) _blockMask.AddExact(blockedByTags[i]);
+            if (targetRequiredTags != null) for (int i = 0; i < targetRequiredTags.Count; i++) if (targetRequiredTags[i] != null) _tReqMask.AddExact(targetRequiredTags[i]);
+            if (targetBlockedByTags != null) for (int i = 0; i < targetBlockedByTags.Count; i++) if (targetBlockedByTags[i] != null) _tBlockMask.AddExact(targetBlockedByTags[i]);
 
             // tag sets
             var visited = new HashSet<GameplayTagSet>();
@@ -168,6 +169,8 @@ namespace UnityGAS
             var tags = caster.GetComponent<TagSystem>();
             if (tags != null)
             {
+                tags.PrintHasTags("HAS TAG");
+                TagRegistry.PrintTagMaskLog(_blockMask);
                 if (tags.HasAny(_blockMask)) return false;
                 if (!tags.HasAll(_reqMask)) return false;
             }

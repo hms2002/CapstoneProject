@@ -162,6 +162,44 @@ namespace UnityGAS
             if (string.IsNullOrEmpty(path)) return -1;
             return _idByPath.TryGetValue(path, out var id) ? id : -1;
         }
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        private static int TrailingZeroCountFallback(ulong x)
+        {
+            // x != 0 이라고 가정
+            int c = 0;
+            while ((x & 1UL) == 0)
+            {
+                x >>= 1;
+                c++;
+            }
+            return c;
+        }
+        public static List<int> Debug_GetIdsFromBits_Fast(ulong[] Words)
+        {
+            var result = new List<int>();
 
+            for (int w = 0; w < Words.Length; w++)
+            {
+                ulong word = Words[w];
+
+                while (word != 0)
+                {
+                    int bit = TrailingZeroCountFallback(word); // 가장 낮은 1비트 위치
+                    int id = (w << 6) + bit;
+                    if (id > 0 && id < TagCount) result.Add(id);
+                    word &= (word - 1); // 가장 낮은 1비트 제거
+                }
+            }
+            return result;
+        }
+        public static void PrintTagMaskLog(TagMask tagMask)
+        {
+            Debug.Log("ThisIsTagMask");
+            List<int> ids = Debug_GetIdsFromBits_Fast(tagMask.Words);
+            foreach (int id in ids) {
+                Debug.Log( GetTag(id).Name);
+            }
+        }
+#endif
     }
 }
