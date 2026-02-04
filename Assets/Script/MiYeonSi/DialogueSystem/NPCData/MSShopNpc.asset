@@ -15,6 +15,8 @@ MonoBehaviour:
   id: 1001
   npcName: "\uB9C8\uB140\uC778\uC9C0 \uBB58"
   isBoss: 1
-  affectionRewards: []
+  affectionRewards:
+  - targetLevel: 2
+    effect: {fileID: 11400000, guid: 9de8ce10bc35dcc4b8303cf7c074028a, type: 2}
   spriteLibraryAsset: {fileID: 7108339969198208228, guid: 11fe976bca44ca04996308bdbaf83e5c, type: 3}
   emoteOffset: {x: 75, y: 100}

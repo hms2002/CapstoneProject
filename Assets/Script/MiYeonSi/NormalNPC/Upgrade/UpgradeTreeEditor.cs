@@ -30,7 +30,6 @@ public class UpgradeTreeEditor : EditorWindow
         window.minSize = new Vector2(900, 600);
     }
 
-    // [수정 1] 마우스가 움직일 때도 부드럽게 갱신되도록 설정
     private void OnEnable()
     {
         wantsMouseMove = true;
@@ -38,8 +37,10 @@ public class UpgradeTreeEditor : EditorWindow
 
     private void OnGUI()
     {
-        // [수정 1] 스크롤이나 마우스 이동 시 강제 Repaint (선이 사라지는 현상 방지)
-        if (Event.current.type == EventType.ScrollWheel || Event.current.type == EventType.MouseMove || Event.current.type == EventType.MouseDrag)
+        // 마우스 움직임 감지하여 갱신 (선 그리기용)
+        if (Event.current.type == EventType.ScrollWheel ||
+            Event.current.type == EventType.MouseMove ||
+            Event.current.type == EventType.MouseDrag)
         {
             Repaint();
         }
@@ -81,7 +82,7 @@ public class UpgradeTreeEditor : EditorWindow
     }
 
     // =================================================================================
-    // [왼쪽] 격자 뷰 (Grid Area)
+    // [왼쪽] 격자 뷰
     // =================================================================================
     private void DrawGridView()
     {
@@ -98,11 +99,9 @@ public class UpgradeTreeEditor : EditorWindow
         Rect canvasRect = GUILayoutUtility.GetRect(canvasWidth, canvasHeight);
 
         DrawBackgroundGrid(canvasRect, totalRows);
+        DrawConnections(canvasRect); // 선 먼저 그리기
 
-        // 1. 연결선 (노드보다 뒤에 그려야 함)
-        DrawConnections(canvasRect);
-
-        // 2. 노드 그리기
+        // 노드 그리기
         for (int y = 0; y < totalRows; y++)
         {
             for (int x = -1; x <= 1; x++)
@@ -115,13 +114,12 @@ public class UpgradeTreeEditor : EditorWindow
             }
         }
 
-        // 3. 연결 모드 마우스 선
+        // 연결 중일 때 마우스 따라다니는 선
         if (isConnecting && selectedNode != null)
         {
             Rect startRect = GetSlotRect(canvasRect, selectedNode.gridX, selectedNode.gridY);
             Vector2 mousePos = Event.current.mousePosition;
             DrawBezierLine(startRect.center, mousePos, Color.green, 3f);
-            Repaint();
         }
 
         GUILayout.EndScrollView();
@@ -147,13 +145,9 @@ public class UpgradeTreeEditor : EditorWindow
         Handles.color = Color.white;
     }
 
-    // [수정 2 & 3] 연결선 그리기 로직 개선
     private void DrawConnections(Rect canvasRect)
     {
-        // 선 그리기(Handles)는 Repaint 이벤트일 때만 수행해야 안전함
         if (Event.current.type != EventType.Repaint) return;
-
-        // [수정 2] Pro 스킨(어두운 테마)이면 흰색, 아니면 검은색 선 사용
         Color lineColor = EditorGUIUtility.isProSkin ? Color.white : Color.black;
 
         foreach (var node in selectedDatabase.allUpgrades)
@@ -168,8 +162,6 @@ public class UpgradeTreeEditor : EditorWindow
                 if (childNode != null)
                 {
                     Rect endRect = GetSlotRect(canvasRect, childNode.gridX, childNode.gridY);
-
-                    // 개선된 베지어 라인 호출
                     DrawBezierLine(startRect.center, endRect.center, lineColor, 3f);
                 }
             }
@@ -180,8 +172,6 @@ public class UpgradeTreeEditor : EditorWindow
     {
         Vector3 startTan = start + Vector3.up * -50f;
         Vector3 endTan = end + Vector3.up * 50f;
-
-        // Handles 함수는 텍스처가 없으면(null) 에디터 기본 선을 씁니다.
         Handles.DrawBezier(start, end, startTan, endTan, color, null, width);
     }
 
@@ -241,13 +231,12 @@ public class UpgradeTreeEditor : EditorWindow
             GUILayout.Label($"Editing: {selectedNode.upgradeName}", EditorStyles.largeLabel);
             GUILayout.Space(5);
 
-            // 노드 삭제 버튼
+            // 삭제 버튼
             GUI.backgroundColor = new Color(1f, 0.4f, 0.4f);
-            if (GUILayout.Button("Delete Node (Remove File)", GUILayout.Height(30)))
+            if (GUILayout.Button("Delete Node", GUILayout.Height(30)))
             {
                 if (EditorUtility.DisplayDialog("Delete Node",
-                    $"정말로 '{selectedNode.upgradeName}' 노드를 삭제하시겠습니까?",
-                    "Yes, Delete", "Cancel"))
+                    $"Delete '{selectedNode.upgradeName}'?", "Yes", "Cancel"))
                 {
                     DeleteNode(selectedNode);
                     return;
@@ -262,6 +251,7 @@ public class UpgradeTreeEditor : EditorWindow
             DrawUILine(Color.gray);
             GUILayout.Space(10);
 
+            // [핵심] 인스펙터 그리기 (여기서 Effects 리스트를 수정하게 됨)
             if (cachedNodeEditor == null || cachedNodeEditor.target != selectedNode)
             {
                 cachedNodeEditor = Editor.CreateEditor(selectedNode);
@@ -273,7 +263,7 @@ public class UpgradeTreeEditor : EditorWindow
         }
         else
         {
-            GUILayout.Label("왼쪽에서 노드를 선택하여\n속성을 편집하거나 연결하세요.", EditorStyles.centeredGreyMiniLabel);
+            GUILayout.Label("Select a node to edit.", EditorStyles.centeredGreyMiniLabel);
         }
 
         GUILayout.EndVertical();
@@ -286,7 +276,7 @@ public class UpgradeTreeEditor : EditorWindow
             GUI.backgroundColor = Color.red;
             if (GUILayout.Button("Cancel Connection Mode", GUILayout.Height(30))) isConnecting = false;
             GUI.backgroundColor = Color.white;
-            EditorGUILayout.HelpBox("왼쪽 화면에서 연결할 자식 노드를 클릭하세요.", MessageType.Warning);
+            EditorGUILayout.HelpBox("Click a child node to connect.", MessageType.Warning);
         }
         else
         {
@@ -332,46 +322,38 @@ public class UpgradeTreeEditor : EditorWindow
     }
 
     // =================================================================================
-    // 로직 함수
+    // [로직] 노드 생성 및 삭제
     // =================================================================================
 
-    private void SelectNode(UpgradeNodeSO node)
-    {
-        selectedNode = node;
-        isConnecting = false;
-        Selection.activeObject = node;
-        GUI.FocusControl(null);
-    }
-
-    private Rect GetSlotRect(Rect canvasRect, int gridX, int gridY)
-    {
-        float centerX = canvasRect.width / 2f;
-        float x = centerX + (gridX * COL_WIDTH) - (NODE_WIDTH / 2f);
-        float y = canvasRect.height - BOTTOM_MARGIN - (gridY * ROW_HEIGHT) - (NODE_HEIGHT / 2f);
-        return new Rect(x, y, NODE_WIDTH, NODE_HEIGHT);
-    }
-
-    private UpgradeNodeSO GetNodeAt(int x, int y)
-    {
-        return selectedDatabase.allUpgrades.Find(node => node.gridX == x && node.gridY == y);
-    }
-
+    // [수정됨] 더미 클래스가 아닌 UpgradeNodeSO 자체를 생성
     private void CreateNode(int gridX, int gridY)
     {
         string path = "Assets/Resources/Upgrades/Nodes/";
         if (!System.IO.Directory.Exists(path)) System.IO.Directory.CreateDirectory(path);
 
-        UpgradeNodeSO newNode = CreateInstance<Upgrade_TestDummy>();
+        UpgradeNodeSO newNode = CreateInstance<UpgradeNodeSO>();
 
+        // 1. 파일 이름 미리 결정
+        string fileName = $"Node_{System.DateTime.Now.Ticks}";
+
+        // 2. 속성 설정
         newNode.gridX = gridX;
         newNode.gridY = gridY;
         newNode.upgradeName = $"New Upgrade {gridX}_{gridY}";
         newNode.price = 100;
 
-        string fileName = $"Node_{System.DateTime.Now.Ticks}";
+        // [핵심 수정] OnValidate를 기다리지 말고, 여기서 바로 ID를 계산해서 넣습니다.
+        // 이때 파일 이름(fileName)을 기준으로 해시를 만듭니다.
+        newNode.name = fileName; // 메모리 상의 이름도 맞춰줍니다.
+        newNode.nodeID = Animator.StringToHash(fileName);
+
+        // 3. 파일 생성
         AssetDatabase.CreateAsset(newNode, path + fileName + ".asset");
 
         selectedDatabase.allUpgrades.Add(newNode);
+
+        // 4. 확실하게 더티 체크 및 저장
+        EditorUtility.SetDirty(newNode);
         EditorUtility.SetDirty(selectedDatabase);
         AssetDatabase.SaveAssets();
 
@@ -380,6 +362,7 @@ public class UpgradeTreeEditor : EditorWindow
 
     private void DeleteNode(UpgradeNodeSO nodeToDelete)
     {
+        // 연결 관계 끊기
         foreach (var node in selectedDatabase.allUpgrades)
         {
             if (node == null || node == nodeToDelete) continue;
@@ -408,6 +391,31 @@ public class UpgradeTreeEditor : EditorWindow
         selectedNode = null;
         isConnecting = false;
         AssetDatabase.SaveAssets();
+    }
+
+    // =================================================================================
+    // [로직] 연결 및 선택
+    // =================================================================================
+
+    private void SelectNode(UpgradeNodeSO node)
+    {
+        selectedNode = node;
+        isConnecting = false;
+        Selection.activeObject = node;
+        GUI.FocusControl(null);
+    }
+
+    private Rect GetSlotRect(Rect canvasRect, int gridX, int gridY)
+    {
+        float centerX = canvasRect.width / 2f;
+        float x = centerX + (gridX * COL_WIDTH) - (NODE_WIDTH / 2f);
+        float y = canvasRect.height - BOTTOM_MARGIN - (gridY * ROW_HEIGHT) - (NODE_HEIGHT / 2f);
+        return new Rect(x, y, NODE_WIDTH, NODE_HEIGHT);
+    }
+
+    private UpgradeNodeSO GetNodeAt(int x, int y)
+    {
+        return selectedDatabase.allUpgrades.Find(node => node.gridX == x && node.gridY == y);
     }
 
     private void CompleteConnection(UpgradeNodeSO targetNode)

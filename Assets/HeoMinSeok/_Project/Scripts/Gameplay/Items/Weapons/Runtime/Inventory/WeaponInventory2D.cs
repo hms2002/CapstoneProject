@@ -70,6 +70,25 @@ public class WeaponInventory2D : MonoBehaviour
         return false;
     }
 
+    /// <summary>
+    /// 현재 인벤토리(슬롯)에 존재하는 모든 무기의 ID 리스트를 반환함.
+    /// (중복 드롭 방지용)
+    /// </summary>
+    public List<string> GetAllWeaponIDs()
+    {
+        List<string> ids = new List<string>();
+
+        foreach (var weapon in slots)
+        {
+            if (weapon != null && !string.IsNullOrEmpty(weapon.weaponId))
+            {
+                ids.Add(weapon.weaponId);
+            }
+        }
+
+        return ids;
+    }
+
     // -----------------------
     // Public API
     // -----------------------

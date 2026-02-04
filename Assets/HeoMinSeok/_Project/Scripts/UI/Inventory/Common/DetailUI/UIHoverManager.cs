@@ -11,8 +11,10 @@ public class UIHoverManager : MonoBehaviour
     [SerializeField] private ItemDetailPanel detailPanel; // 기존 ItemDetailPanel
     [SerializeField] private RectTransform detailPanelRect;
     [Header("UI Bounds (Hide when pointer leaves)")]
+    [SerializeField] private RectTransform[] hoverPanelRects;
     [SerializeField] private RectTransform inventoryPanelRect;
     [SerializeField] private RectTransform chestPanelRect;
+    [SerializeField] private RectTransform unlockPanelRect;
     [SerializeField] private bool hideWhenOutsidePanels = true;
 
     [Header("Positioning")]

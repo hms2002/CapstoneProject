@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c5e5c40c008e4f4db4131950a6c37e4, type: 3}
+  m_Name: Node_639056617737858536
+  m_EditorClassIdentifier: 
+  nodeID: 168475635
+  upgradeName: New Upgrade 0_3
+  description: 
+  icon: {fileID: 0}
+  price: 100
+  effects: []
+  unlockedNodeIDs: 
+  requiredParentIDs: 514ac191df77554f
+  nextNodes: []
+  requiredParents:
+  - {fileID: 11400000, guid: d5103e1f9bf78034da73fc391bab8210, type: 2}
+  - {fileID: 11400000, guid: e256c3f2650daa44882481338bb271cd, type: 2}
+  gridX: 0
+  gridY: 3

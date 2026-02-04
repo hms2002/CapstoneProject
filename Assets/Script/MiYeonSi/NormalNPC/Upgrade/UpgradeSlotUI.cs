@@ -13,8 +13,8 @@ public class UpgradeSlotUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     public TextMeshProUGUI priceText;
     public Image iconImage;
     public Button buyButton;
-    public Image lockIcon; // 잠김/구매완료 표시용 아이콘
-    public GameObject purchasedCheckMark; // (선택) 구매 완료 체크 표시
+    public Image lockIcon;
+    public GameObject purchasedCheckMark;
 
     // 초기화
     public void InitSlot(System.Action<UpgradeNodeSO> onBuy)
@@ -27,12 +27,11 @@ public class UpgradeSlotUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
         RefreshUI();
 
-        // 버튼 이벤트 연결
         buyButton.onClick.RemoveAllListeners();
         buyButton.onClick.AddListener(() => onBuy?.Invoke(assignedNode));
     }
 
-    // [핵심] 상태 갱신 로직
+    // 상태 갱신 로직
     public void RefreshUI()
     {
         if (assignedNode == null) return;
@@ -41,51 +40,64 @@ public class UpgradeSlotUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         priceText.text = assignedNode.price.ToString();
         if (assignedNode.icon != null) iconImage.sprite = assignedNode.icon;
 
-        // 2. 매니저에게 현재 내 상태(LockType)를 물어봄
-        // (매니저가 SaveData를 보고 계산해서 알려줌)
-        LockType status = UpgradeManager.Instance.GetNodeStatus(assignedNode.nodeID);
+        // 2. 매니저에게 상태 확인
+        LockType status = LockType.Locked;
+        if (UpgradeManager.Instance != null)
+        {
+            status = UpgradeManager.Instance.GetNodeStatus(assignedNode.nodeID);
+        }
 
         // 3. 상태에 따른 UI 처리
         switch (status)
         {
             case LockType.Purchased:
-                // 이미 구매함 -> 버튼 비활성
                 buyButton.interactable = false;
                 if (lockIcon) lockIcon.enabled = false;
-                if (purchasedCheckMark) purchasedCheckMark.SetActive(true); // 체크 표시 켜기
-
-                // 혹은 아이콘 색을 어둡게 처리
+                if (purchasedCheckMark) purchasedCheckMark.SetActive(true);
                 iconImage.color = Color.gray;
                 break;
 
             case LockType.UnLocked:
-                // 구매 가능 -> 버튼 활성
                 buyButton.interactable = true;
-                if (lockIcon) lockIcon.enabled = false; // 자물쇠 끄기
+                if (lockIcon) lockIcon.enabled = false;
                 if (purchasedCheckMark) purchasedCheckMark.SetActive(false);
-
                 iconImage.color = Color.white;
                 break;
 
             case LockType.Locked:
-                // 잠김 (조건 불충족) -> 버튼 비활성
                 buyButton.interactable = false;
-                if (lockIcon) lockIcon.enabled = true; // 자물쇠 켜기
+                if (lockIcon) lockIcon.enabled = true;
                 if (purchasedCheckMark) purchasedCheckMark.SetActive(false);
-
-                iconImage.color = new Color(0.3f, 0.3f, 0.3f); // 아주 어둡게
+                iconImage.color = new Color(0.3f, 0.3f, 0.3f);
                 break;
         }
     }
 
-    // 마우스 올렸을 때 툴팁 등 처리
+    // =========================================================
+    // [툴팁 연동 부분]
+    // =========================================================
     public void OnPointerEnter(PointerEventData eventData)
     {
-        // 예: TooltipManager.Show(assignedNode.upgradeName, assignedNode.description);
+        if (assignedNode == null) return;
+
+        // 툴팁 매니저가 있다면 호출
+        if (UpgradeTooltip.Instance != null)
+        {
+            // 제목, 내용, 그리고 '이 슬롯의 위치(transform.position)'를 넘겨줍니다.
+            UpgradeTooltip.Instance.Show(
+                assignedNode.upgradeName,
+                assignedNode.description,
+                transform.position
+            );
+        }
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        // 예: TooltipManager.Hide();
+        // 마우스 나가면 숨김
+        if (UpgradeTooltip.Instance != null)
+        {
+            UpgradeTooltip.Instance.Hide();
+        }
     }
 }

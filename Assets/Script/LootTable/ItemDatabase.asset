@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e993c29be3e1ae48b27f993ae4998b2, type: 3}
+  m_Name: ItemDatabase
+  m_EditorClassIdentifier: 
+  allWeapons:
+  - {fileID: 11400000, guid: 6a8181eecc5ab3a4988f9089d46607b0, type: 2}
+  - {fileID: 11400000, guid: 5fab027f93fec854e85c80601d149d18, type: 2}
+  - {fileID: 11400000, guid: e0f06f473830cbd4d9198ca9e36dc565, type: 2}
+  defaultUnlockedWeapons:
+  - {fileID: 11400000, guid: 6a8181eecc5ab3a4988f9089d46607b0, type: 2}
+  allRelics:
+  - {fileID: 11400000, guid: 1f2641bce49c9884eaec41adfdfa29f3, type: 2}
+  - {fileID: 11400000, guid: a73c39a704801a1488033afff3b7f340, type: 2}
+  - {fileID: 11400000, guid: 1f774045e4d72664996fab05fc0e1308, type: 2}
+  - {fileID: 11400000, guid: d492a6f1c1a7fc84bb3b44a619dcfd4f, type: 2}
+  defaultUnlockedRelics:
+  - {fileID: 11400000, guid: 1f2641bce49c9884eaec41adfdfa29f3, type: 2}
+  - {fileID: 11400000, guid: a73c39a704801a1488033afff3b7f340, type: 2}
+  unlockedWeapons:
+  - {fileID: 11400000, guid: 6a8181eecc5ab3a4988f9089d46607b0, type: 2}
+  - {fileID: 11400000, guid: 5fab027f93fec854e85c80601d149d18, type: 2}
+  - {fileID: 11400000, guid: e0f06f473830cbd4d9198ca9e36dc565, type: 2}
+  lockedWeapons:
+  - {fileID: 11400000, guid: 5fab027f93fec854e85c80601d149d18, type: 2}
+  - {fileID: 11400000, guid: e0f06f473830cbd4d9198ca9e36dc565, type: 2}
+  unlockedRelics:
+  - {fileID: 11400000, guid: 1f2641bce49c9884eaec41adfdfa29f3, type: 2}
+  - {fileID: 11400000, guid: a73c39a704801a1488033afff3b7f340, type: 2}
+  - {fileID: 11400000, guid: 1f774045e4d72664996fab05fc0e1308, type: 2}
+  - {fileID: 11400000, guid: d492a6f1c1a7fc84bb3b44a619dcfd4f, type: 2}
+  lockedRelics:
+  - {fileID: 11400000, guid: 1f774045e4d72664996fab05fc0e1308, type: 2}
+  - {fileID: 11400000, guid: d492a6f1c1a7fc84bb3b44a619dcfd4f, type: 2}

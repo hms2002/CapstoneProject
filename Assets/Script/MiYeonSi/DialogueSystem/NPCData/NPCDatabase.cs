@@ -1,14 +1,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-// [New] NPC µ¥ÀÌÅÍ¸¦ Áß¾Ó¿¡¼­ °ü¸®ÇÏ´Â µ¥ÀÌÅÍº£ÀÌ½º ¿¡¼Â
-[CreateAssetMenu(fileName = "NPC Database", menuName = "Scriptable Object/System/NPC Database")]
+// [New] NPC ë°ì´í„°ë¥¼ ì¤‘ì•™ì—ì„œ ê´€ë¦¬í•˜ëŠ” ë°ì´í„°ë² ì´ìŠ¤ ì—ì…‹
+[CreateAssetMenu(fileName = "NPC Database", menuName = "Game/Database/NPC Database")]
 public class NPCDatabase : ScriptableObject
 {
-    [Header("µî·ÏµÈ NPC ¸ñ·Ï")]
+    [Header("ë“±ë¡ëœ NPC ëª©ë¡")]
     public List<NPCData> npcList = new List<NPCData>();
 
-    // ID·Î NPC µ¥ÀÌÅÍ Ã£±â (¾øÀ¸¸é null ¹İÈ¯)
+    // IDë¡œ NPC ë°ì´í„° ì°¾ê¸° (ì—†ìœ¼ë©´ null ë°˜í™˜)
     public NPCData GetNPC(int id)
     {
         return npcList.Find(x => x.id == id);

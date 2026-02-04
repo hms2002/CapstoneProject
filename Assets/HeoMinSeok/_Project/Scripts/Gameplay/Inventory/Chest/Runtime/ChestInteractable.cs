@@ -25,8 +25,7 @@ public class ChestInteractable : MonoBehaviour, IInteractable
     public void OnPlayerInteract(IPlayerInteractor player)
     {
         if (chest == null || player == null) return;
-
-        ChestUIManager.Instance.OpenChest(chest);
+        chest.Open();
         player.SetInteractState(InteractState.Shopping);
     }
 }

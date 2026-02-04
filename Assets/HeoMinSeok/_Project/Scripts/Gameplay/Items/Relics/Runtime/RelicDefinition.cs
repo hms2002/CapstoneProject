@@ -1,11 +1,16 @@
 using UnityEngine;
 
+// 1. 레어도 Enum 정의
+
 [CreateAssetMenu(fileName = "RD_NewRelic", menuName = "Game/Relic Definition")]
 public class RelicDefinition : ScriptableObject, IInventoryItemDefinition
 {
     public string relicId = "Relic.New";
     public string displayName = "New Relic";
     public Sprite icon;
+
+    [Header("Drop Rules")]
+    public ItemRarity rarity;
 
     [TextArea] public string description;
 

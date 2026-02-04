@@ -6,63 +6,72 @@ using UnityEditor;
 
 public enum LockType
 {
-    Locked,    // 잠김 (구매 불가)
+    Locked,    // 잠김
     UnLocked,  // 해금됨 (구매 가능)
     Purchased  // 이미 구매함
 }
 
-public abstract class UpgradeNodeSO : ScriptableObject
+[CreateAssetMenu(fileName = "NewUpgradeNode", menuName = "Game/Upgrade Node")]
+public class UpgradeNodeSO : ScriptableObject
 {
     [Header("기본 정보")]
-    // ID가 0이면 OnValidate에서 파일 이름 해시값으로 자동 생성
     public int nodeID;
     public string upgradeName;
     [TextArea] public string description;
     public Sprite icon;
     public int price;
 
-    [Header("연결 정보")]
-    // 이 노드를 구매하면 해금되는 자식 노드 ID들
-    public List<int> unlockedNodeIDs = new List<int>();
+    [Header("기능 (Effects)")]
+    // 이 노드가 가진 효과들의 리스트 (컴포지션 패턴)
+    public List<UpgradeEffectSO> effects = new List<UpgradeEffectSO>();
 
-    // 이 노드를 해금하기 위해 필요한 부모 노드 ID들 (AND 조건)
+    [Header("연결 정보 (시스템)")]
+    public List<int> unlockedNodeIDs = new List<int>();
     public List<int> requiredParentIDs = new List<int>();
 
     [Header("에디터 연결용 (Tool 전용)")]
     public List<UpgradeNodeSO> nextNodes = new List<UpgradeNodeSO>();
     public List<UpgradeNodeSO> requiredParents = new List<UpgradeNodeSO>();
 
-    [Header("UI 배치 정보 (Grid System)")]
-    // X축: -1(좌), 0(중), 1(우)
+    [Header("UI 배치 정보")]
     [Range(-1, 1)] public int gridX = 0;
-    // Y축: 0층, 1층, 2층... (위로 쌓임)
     [Min(0)] public int gridY = 0;
 
-    // [핵심] 규격에 따른 실제 UI 좌표 계산
     public Vector2 GetUiPosition()
     {
-        // 기준점: (0, -540) -> 화면 중앙 하단
         float startX = 0f;
         float startY = -540f;
-
-        // X축 간격: 100, Y축 간격: 120
         float posX = startX + (gridX * 100f);
         float posY = startY + (gridY * 120f);
-
         return new Vector2(posX, posY);
     }
 
+    // [수정] TempPlayer -> SampleTopDownPlayer
+    public void ApplyEffect(SampleTopDownPlayer player)
+    {
+        if (effects == null) return;
+
+        foreach (var effect in effects)
+        {
+            if (effect != null)
+            {
+                effect.ApplyEffect(player);
+            }
+        }
+    }
+
+    // 데이터 무결성 유지 (ID 생성 및 리스트 동기화)
     private void OnValidate()
     {
 #if UNITY_EDITOR
-        // 1. ID 자동 생성
-        if (nodeID == 0)
+        int currentHash = Animator.StringToHash(this.name);
+
+        if (nodeID != currentHash)
         {
-            nodeID = Animator.StringToHash(this.name);
+            nodeID = currentHash;
             EditorUtility.SetDirty(this);
         }
 
-        // 2. 리스트 동기화 (SO <-> ID)
         SyncList(nextNodes, ref unlockedNodeIDs);
         SyncList(requiredParents, ref requiredParentIDs);
 #endif
@@ -85,6 +94,4 @@ public abstract class UpgradeNodeSO : ScriptableObject
         }
     }
 #endif
-
-    public virtual void ApplyEffect(TempPlayer player) { }
 }

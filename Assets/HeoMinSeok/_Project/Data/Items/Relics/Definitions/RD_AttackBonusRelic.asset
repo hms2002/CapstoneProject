@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   relicId: Relic.New
   displayName: AttackBonusRelic
-  icon: {fileID: 0}
+  icon: {fileID: -1330801700, guid: ef16b2ddeb64123459076c2c8a541a63, type: 3}
+  rarity: 0
   description: 
   logic: {fileID: 11400000, guid: e7c57860bd90b7b428e2c99a0ce96b27, type: 2}
   param: {fileID: 0}

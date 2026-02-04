@@ -5,15 +5,15 @@ using DG.Tweening;
 
 public class BossTalkManager : MonoBehaviour
 {
-    [Header("µ¥ÀÌÅÍ ¼³Á¤")]
+    [Header("ë°ì´í„° ì„¤ì •")]
     [SerializeField] private TextAsset inkJSON;
     [SerializeField] private NPCData npcData;
 
-    [Header("Ä«¸Þ¶ó ¼³Á¤")]
+    [Header("ì¹´ë©”ë¼ ì„¤ì •")]
     [SerializeField] private CinemachineCamera playerCam;
     [SerializeField] private CinemachineCamera bossCam;
 
-    [Header("º¸½º µîÀå ¿¬Ãâ ¼³Á¤")]
+    [Header("ë³´ìŠ¤ ë“±ìž¥ ì—°ì¶œ ì„¤ì •")]
     [SerializeField] private DialogueManager.Direction bossEntryDir = DialogueManager.Direction.Left;
 
     private CinemachineBrain brain;
@@ -32,28 +32,30 @@ public class BossTalkManager : MonoBehaviour
 
     IEnumerator EncounterSequence()
     {
-        // 1. ÇÃ·¹ÀÌ¾î Á¤Áö
+        // 1. í”Œë ˆì´ì–´ ì •ì§€
         if (TempPlayer.Instance != null)
             TempPlayer.Instance.SetInteractState(InteractState.Talking);
 
-        // 2. Ä«¸Þ¶ó ÀÌµ¿
+        // 2. ì¹´ë©”ë¼ ì´ë™
         bossCam.Priority = 20;
         yield return new WaitForSeconds(0.1f);
         yield return new WaitUntil(() => !brain.IsBlending);
 
-        // 3. Ä«¸Þ¶ó µµÂø ÈÄ UI ¿¬Ãâ ¹× ´ëÈ­ ½ÃÀÛ
-        // EnterDialogueMode ³»ºÎ¿¡¼­ ¿¬Ãâ ½ÃÄö½º°¡ ½ÇÇàµË´Ï´Ù.
+        // 3. ì¹´ë©”ë¼ ë„ì°© í›„ UI ì—°ì¶œ ë° ëŒ€í™” ì‹œìž‘
+        // EnterDialogueMode ë‚´ë¶€ì—ì„œ ì—°ì¶œ ì‹œí€€ìŠ¤ê°€ ì‹¤í–‰ë©ë‹ˆë‹¤.
         DialogueManager.GetInstance().EnterDialogueMode(inkJSON, npcData, bossEntryDir);
 
-        // 4. ´ëÈ­ Á¾·á ´ë±â
+        // 4. ëŒ€í™” ì¢…ë£Œ ëŒ€ê¸°
         yield return new WaitUntil(() => !DialogueManager.GetInstance().dialogueIsPlaying);
 
-        // 5. Ä«¸Þ¶ó º¹±¸
+        // 5. ì¹´ë©”ë¼ ë³µêµ¬
         bossCam.Priority = 5;
         yield return new WaitForSeconds(0.1f);
         yield return new WaitUntil(() => !brain.IsBlending);
 
         if (TempPlayer.Instance != null)
             TempPlayer.Instance.SetInteractState(InteractState.Idle);
+
+        GetComponent<BossDrop>().OnBossDead();
     }
 }

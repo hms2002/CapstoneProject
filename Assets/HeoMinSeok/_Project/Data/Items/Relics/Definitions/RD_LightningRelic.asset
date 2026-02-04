@@ -12,9 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ac1da532121a934bb7f57799b194806, type: 3}
   m_Name: RD_LightningRelic
   m_EditorClassIdentifier: 
-  relicId: Relic.New
+  relicId: Relic.New2
   displayName: LightningRelic
   icon: {fileID: -1922514944, guid: ef16b2ddeb64123459076c2c8a541a63, type: 3}
+  rarity: 0
   description: 
   logic: {fileID: 11400000, guid: 72547bb206ac6a449a94e3b609e673f6, type: 2}
   param: {fileID: 0}

@@ -13,11 +13,8 @@ MonoBehaviour:
   m_Name: New Upgrade Database
   m_EditorClassIdentifier: 
   allUpgrades:
-  - {fileID: 11400000, guid: 3b4daa163920e0b44b5b913712633715, type: 2}
-  - {fileID: 11400000, guid: 007cf4d3abc3fec4aba9da9229936696, type: 2}
-  - {fileID: 11400000, guid: 5ffbea52b825a0b42ad2c10d08de84cd, type: 2}
-  - {fileID: 11400000, guid: 34fe7c9adced156409b6acd07ca7d55b, type: 2}
-  - {fileID: 11400000, guid: f3b09bcd88f7cd44ca2fbc1e736b8d9a, type: 2}
-  - {fileID: 11400000, guid: 645549d234003c5479a95dab0dd36f7d, type: 2}
-  - {fileID: 11400000, guid: 97ac2629d1ccc424b90ed9215f045bf5, type: 2}
-  - {fileID: 11400000, guid: 013e6d3a40ca7dc4190ce7dffc7c136a, type: 2}
+  - {fileID: 11400000, guid: a71900424d1d8324c9e83f78be69a0b8, type: 2}
+  - {fileID: 11400000, guid: c7a505ec3322c2347aaac388692272a3, type: 2}
+  - {fileID: 11400000, guid: e256c3f2650daa44882481338bb271cd, type: 2}
+  - {fileID: 11400000, guid: d5103e1f9bf78034da73fc391bab8210, type: 2}
+  - {fileID: 11400000, guid: 7f4d37e67bd823041a5e74a404becfad, type: 2}
