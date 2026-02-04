@@ -48,8 +48,8 @@ public class UIHoverManager : MonoBehaviour
 
     private void Awake()
     {
+        if (Instance != null && Instance != this) { Destroy(gameObject); return; }
         Instance = this;
-
         if (canvas == null) canvas = GetComponentInParent<Canvas>();
         if (detailPanel == null) detailPanel = FindFirstObjectByType<ItemDetailPanel>();
         if (detailPanelRect == null && detailPanel != null) detailPanelRect = detailPanel.transform as RectTransform;
@@ -303,26 +303,29 @@ public class UIHoverManager : MonoBehaviour
 
     private IEnumerator CoHideIfStillNotHover(int serialAtStart)
     {
-        if (delayHideOneFrame)
-            yield return null;
+        if (delayHideOneFrame) yield return null;
+        if (extraHideDelay > 0f) yield return new WaitForSeconds(extraHideDelay);
 
-        if (extraHideDelay > 0f)
-            yield return new WaitForSeconds(extraHideDelay);
-
-        // 중간에 Enter가 발생했으면 취소
         if (_serial != serialAtStart) yield break;
-
         if (_hoverSlot || _hoverPanel) yield break;
+
+        if (detailPanel == null || !detailPanel.gameObject.activeSelf) yield break;
+        if (detailPanelRect == null) { HideImmediate(); yield break; } // ✅
+
         var cam = canvas != null && canvas.renderMode != RenderMode.ScreenSpaceOverlay ? canvas.worldCamera : null;
+
         bool insidePanel = RectTransformUtility.RectangleContainsScreenPoint(detailPanelRect, Input.mousePosition, cam);
         bool insideBridge = useHoverBridge && IsPointerInBridge(cam);
+
         if (insidePanel || insideBridge)
         {
-            _hoverPanel = true; // 상태 보정
+            _hoverPanel = true;
             yield break;
         }
+
         HideImmediate();
     }
+
 
     private void CancelHide()
     {
