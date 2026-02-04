@@ -138,12 +138,6 @@ public class GameDataManager : MonoBehaviour
                 UnlockRelic(r.relicId); // 문자열 ID 사용
             }
         }
-
-        // 3. UI 띄우기 (SO 리스트 자체를 전달 -> UnlockResultUI 수정사항과 일치)
-        if (UnlockResultUI.Instance != null)
-        {
-            UnlockResultUI.Instance.ShowUnlockResult(weapons, relics);
-        }
     }
 
     // =========================================================
