@@ -90,6 +90,8 @@ public class UIHoverManager : MonoBehaviour
         // 유지 조건
         if (_hoverSlot) { CancelHide(); return; }
         if (_hoverPanel) { CancelHide(); return; }
+
+        Debug.Log("안이야? : " + IsPointerOverAnyKeepAlive());
         if (IsPointerOverAnyKeepAlive()) { CancelHide(); return; }
 
         // ✅ 여기서 즉시 숨기지 말고 딜레이 숨김으로 연결
@@ -305,24 +307,24 @@ public class UIHoverManager : MonoBehaviour
     private IEnumerator CoHideIfStillNotHover(int serialAtStart)
     {
         if (delayHideOneFrame) yield return null;
-        if (extraHideDelay > 0f) yield return new WaitForSeconds(extraHideDelay);
+        //if (extraHideDelay > 0f) yield return new WaitForSeconds(extraHideDelay);
 
-        if (_serial != serialAtStart) yield break;
-        if (_hoverSlot || _hoverPanel) yield break;
+        //if (_serial != serialAtStart) yield break;
+        //if (_hoverSlot || _hoverPanel) yield break;
 
-        if (detailPanel == null || !detailPanel.gameObject.activeSelf) yield break;
-        if (detailPanelRect == null) { HideImmediate(); yield break; } // ✅
+        //if (detailPanel == null || !detailPanel.gameObject.activeSelf) yield break;
+        //if (detailPanelRect == null) { HideImmediate(); yield break; } // ✅
 
-        var cam = canvas != null && canvas.renderMode != RenderMode.ScreenSpaceOverlay ? canvas.worldCamera : null;
+        //var cam = canvas != null && canvas.renderMode != RenderMode.ScreenSpaceOverlay ? canvas.worldCamera : null;
 
-        bool insidePanel = RectTransformUtility.RectangleContainsScreenPoint(detailPanelRect, Input.mousePosition, cam);
-        bool insideBridge = useHoverBridge && IsPointerInBridge(cam);
+        //bool insidePanel = RectTransformUtility.RectangleContainsScreenPoint(detailPanelRect, Input.mousePosition, cam);
+        //bool insideBridge = useHoverBridge && IsPointerInBridge(cam);
 
-        if (insidePanel || insideBridge)
-        {
-            _hoverPanel = true;
-            yield break;
-        }
+        //if (insidePanel || insideBridge)
+        //{
+        //    _hoverPanel = true;
+        //    yield break;
+        //}
 
         HideImmediate();
     }
