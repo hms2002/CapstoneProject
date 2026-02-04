@@ -87,19 +87,15 @@ public class UIHoverManager : MonoBehaviour
         if (!hideWhenOutsideKeepAlive) return;
         if (detailPanel == null || !detailPanel.gameObject.activeSelf) return;
 
-        // ✅ 슬롯을 호버 중이면 패널을 숨기지 않는다.
-        // (특히 Chest UI처럼 ActivePanels가 아직 설정되지 않은 경우에도 디테일이 즉시 사라지는 문제를 방지)
-        if (_hoverSlot) return;
+        // 유지 조건
+        if (_hoverSlot) { CancelHide(); return; }
+        if (_hoverPanel) { CancelHide(); return; }
+        if (IsPointerOverAnyKeepAlive()) { CancelHide(); return; }
 
-        // ✅ 패널/브릿지 위면 유지(인벤/상자 밖이어도 OK)
-        if (_hoverPanel) return;
-
-        // ✅ 인벤/상자 둘 중 하나 위면 유지
-        if (IsPointerOverAnyKeepAlive()) return;
-
-        // 둘 다 아니면 숨김
-        HideImmediate();
+        // ✅ 여기서 즉시 숨기지 말고 딜레이 숨김으로 연결
+        TryScheduleHide();
     }
+
     private bool IsPointerOverAnyKeepAlive()
     {
         if (canvas == null) return false;
