@@ -95,6 +95,7 @@ namespace UnityGAS
                 OnTokenDamaged?.Invoke(tokenDamage);
                 OnTokensChanged?.Invoke(old, currentTokens);
                 SyncAttributesImmediate();
+                Debug.Log("아얏");
             }
 
             if (currentTokens <= 0)
