@@ -145,6 +145,10 @@ GameObject:
   - component: {fileID: 4776885609674041618}
   - component: {fileID: 2236992985390640672}
   - component: {fileID: 3936464590184144143}
+  - component: {fileID: 4488810999718796541}
+  - component: {fileID: 7312919993686142775}
+  - component: {fileID: 8864118504763583097}
+  - component: {fileID: 7184922240575343075}
   m_Layer: 0
   m_Name: PF Player
   m_TagString: Player
@@ -331,11 +335,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f0bcf155a89d8e14db39a9f2416d691c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  initialAbilities: []
+  initialAbilities:
+  - {fileID: 11400000, guid: dadc84cd2fffcae45905741575af20c3, type: 2}
   attributeSet: {fileID: 1414767285602429285}
   effectRunner: {fileID: 7878539558719410035}
   tagSystem: {fileID: 7887873875085709242}
   damageProfile: {fileID: 4776885609674041618}
+  defaultCooldownEffect: {fileID: 11400000, guid: e0cdcda9b86374b4c99ad2e948fcfd26, type: 2}
   cueManager: {fileID: 0}
   autoExecuteCueWhenGameplayEventTagExists: 1
   animator: {fileID: 8399328563048880028}
@@ -371,15 +377,19 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 2c8e2b555f632824fbc8a39cd7bcfc86, type: 2}
   - {fileID: 11400000, guid: 505a2d18dfd7a64479766ed30e612100, type: 2}
   - {fileID: 11400000, guid: 4cf98b7d858f198459256a03d954c0d2, type: 2}
-  - {fileID: 11400000, guid: 3cf73420df1732240b7c90837ff7efab, type: 2}
-  - {fileID: 11400000, guid: 618d006e7af394a4db0798cfa63b2660, type: 2}
-  - {fileID: 11400000, guid: 508e8a7b9bd177a4db23556497bbf018, type: 2}
   - {fileID: 11400000, guid: 4b6e7cdf4c89b0b44adad24835703fdc, type: 2}
   - {fileID: 11400000, guid: f412c7da2733d71489ec2687fd2f7134, type: 2}
   - {fileID: 11400000, guid: 09cf2a7744186794dbb618d28fc887df, type: 2}
   - {fileID: 11400000, guid: 94479dde93479a146a9bd51a982b12ca, type: 2}
   - {fileID: 11400000, guid: 4f5d1e3ffdcf18e4bbef58f59b785760, type: 2}
   - {fileID: 11400000, guid: bd078173c9092104dbc43ac575e1d092, type: 2}
+  - {fileID: 11400000, guid: 508e8a7b9bd177a4db23556497bbf018, type: 2}
+  - {fileID: 11400000, guid: 3cf73420df1732240b7c90837ff7efab, type: 2}
+  - {fileID: 11400000, guid: 618d006e7af394a4db0798cfa63b2660, type: 2}
+  - {fileID: 11400000, guid: 62b7b95dad0f7a243bd347214b4206e7, type: 2}
+  - {fileID: 11400000, guid: f1b00e97d4b97d94dbd5d9df27c64099, type: 2}
+  - {fileID: 11400000, guid: 77a3db6579cf45940a7dae4896dde0db, type: 2}
+  - {fileID: 11400000, guid: a614422f03de7ff40b35c8b5f4ca74af, type: 2}
   maxLinks:
   - value: {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
     max: {fileID: 11400000, guid: 0e177e1d15e428745b5859fac08ce203, type: 2}
@@ -445,9 +455,12 @@ MonoBehaviour:
   basicAttack: {fileID: 0}
   skill1: {fileID: 0}
   skill2: {fileID: 0}
+  dash: {fileID: 11400000, guid: dadc84cd2fffcae45905741575af20c3, type: 2}
+  dashKey: 32
   skill1Key: 113
   skill2Key: 101
   attackRepeatInterval: 0.06
+  reAimGapAfterAttackEnd: 0.06
   attackPressedEvent: {fileID: 11400000, guid: 06fb955e1ce9a9c41abb914e2af4dd01, type: 2}
   attackReleasedEvent: {fileID: 11400000, guid: 77a0a96f4aec927419dcb7815cb7e38b, type: 2}
   Hand: {fileID: 3164067117474922781}
@@ -502,7 +515,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   capacity: 8
-  disallowDuplicateRelics: 0
+  enforceUniqueRelicId: 1
   debugView: []
 --- !u!114 &7028711097407121541
 MonoBehaviour:
@@ -518,6 +531,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   key: 114
   testRelic: {fileID: 11400000, guid: 1f774045e4d72664996fab05fc0e1308, type: 2}
+  gainedLevel: 0
 --- !u!114 &4776885609674041618
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -560,3 +574,70 @@ MonoBehaviour:
   abilitySystem: {fileID: 1832372497922031110}
   tagSystem: {fileID: 7887873875085709242}
   effectRunner: {fileID: 7878539558719410035}
+--- !u!114 &4488810999718796541
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8883617028798182002}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 57091024568945245a8208d47f02ef75, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  capacity: 16
+  inventory:
+    capacity: 0
+    slots: []
+--- !u!114 &7312919993686142775
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8883617028798182002}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 208d837eab958ba448f42addc4733bf6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  system: {fileID: 1832372497922031110}
+  attackAbility: {fileID: 0}
+  drawOnlyWhenSelected: 1
+  showAllCombos: 1
+  useInputAimInPlayMode: 1
+  previewDirection: {x: 1, y: 0}
+--- !u!114 &8864118504763583097
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8883617028798182002}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c92f569cbd8fa0d4181d8a683f2ed235, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  drawOnlyWhenSelected: 0
+  defaultDuration: 0.15
+  maxBoxes: 12
+--- !u!114 &7184922240575343075
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8883617028798182002}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4085317a4c3b25a4fbc70ee1bcb33dd2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxTokens: 5
+  currentTokens: 5
+  resetToFullOnEnable: 1
+  syncToAttributes: 1
+  healthAttribute: {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
+  maxHealthAttribute: {fileID: 11400000, guid: 0e177e1d15e428745b5859fac08ce203, type: 2}
