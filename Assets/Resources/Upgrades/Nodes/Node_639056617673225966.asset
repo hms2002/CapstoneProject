@@ -16,7 +16,7 @@ MonoBehaviour:
   upgradeName: New Upgrade 0_0
   description: 
   icon: {fileID: 0}
-  price: 5
+  price: 0
   effects:
   - {fileID: 11400000, guid: 206548ad62ff26f41a9539393334dc62, type: 2}
   unlockedNodeIDs: 885f2982

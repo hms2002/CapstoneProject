@@ -34,7 +34,7 @@ public class UIHoverManager : MonoBehaviour
     private Coroutine _hideRoutine;
     private int _serial;
 
-    [SerializeField] private MonoBehaviour contextProviderBehaviour; // IItemDetailContextProvider
+    [SerializeField] private PlayerDetailContextProvider contextProviderBehaviour; // IItemDetailContextProvider
     private IItemDetailContextProvider _contextProvider;
 
     [Header("Hover Bridge (gap tolerant)")]
@@ -91,7 +91,6 @@ public class UIHoverManager : MonoBehaviour
         if (_hoverSlot) { CancelHide(); return; }
         if (_hoverPanel) { CancelHide(); return; }
 
-        Debug.Log("안이야? : " + IsPointerOverAnyKeepAlive());
         if (IsPointerOverAnyKeepAlive()) { CancelHide(); return; }
 
         // ✅ 여기서 즉시 숨기지 말고 딜레이 숨김으로 연결

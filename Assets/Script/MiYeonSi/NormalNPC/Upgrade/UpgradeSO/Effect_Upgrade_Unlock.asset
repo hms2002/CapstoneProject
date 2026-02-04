@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1fd33aedb879e024fb82903aa31dab58, type: 3}
   m_Name: Effect_Upgrade_Unlock
   m_EditorClassIdentifier: 
+  rewardText: 
+  rewardIcon: {fileID: 28913994, guid: ef16b2ddeb64123459076c2c8a541a63, type: 3}
   weapons:
   - {fileID: 11400000, guid: e0f06f473830cbd4d9198ca9e36dc565, type: 2}
   relics:

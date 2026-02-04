@@ -231,7 +231,6 @@ public class ItemSlotUI : MonoBehaviour,
     public void OnPointerExit(PointerEventData eventData)
     {
         if (ItemDragContext.Active) return;
-        Debug.Log("X");
         UIHoverManager.Instance?.UnhoverSlot(slotRect);
     }
 

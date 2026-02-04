@@ -15,9 +15,10 @@ MonoBehaviour:
   nodeID: -2111217784
   upgradeName: New Upgrade 0_1
   description: 
-  icon: {fileID: 0}
-  price: 100
-  effects: []
+  icon: {fileID: -1330801700, guid: ef16b2ddeb64123459076c2c8a541a63, type: 3}
+  price: 0
+  effects:
+  - {fileID: 11400000, guid: 2242de075dd2cac4cab06447245a2fdd, type: 2}
   unlockedNodeIDs: df77554f514ac191
   requiredParentIDs: d3afc8f8
   nextNodes:

@@ -1,8 +1,10 @@
 using UnityEngine;
 
-// È£°¨µµ ·¹º§ µµ´Ş ½Ã ¹ß»ıÇÒ È¿°úÀÇ ºÎ¸ğ Å¬·¡½ºÀÔ´Ï´Ù.
 public abstract class AffectionEffect : ScriptableObject
 {
-    [SerializeField] public string effectDescription; // À¯Àú¿¡°Ô º¸¿©ÁÙ ¼³¸í
-    public abstract void Execute(); // ½ÇÁ¦ È¿°ú ·ÎÁ÷
+    [Header("Reward UI Display")]
+    public string rewardText;  // ContextTextì— ì¶œë ¥ë  í…ìŠ¤íŠ¸ (ì˜ˆ: "ë¬´ê¸° ìŠ¬ë¡¯ ì¶”ê°€")
+    public Sprite rewardIcon;
+
+    public abstract void Execute();
 }

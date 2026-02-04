@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 129bb3e33ed94334e9a1d8e580750eea, type: 3}
   m_Name: Effect_Affection_Unlock
   m_EditorClassIdentifier: 
-  effectDescription: 
+  rewardText: "\uBB34\uAE30\uC640 \uC720\uBB3C \uD574\uAE08"
+  rewardIcon: {fileID: 0}
   weapons:
   - {fileID: 11400000, guid: 5fab027f93fec854e85c80601d149d18, type: 2}
   relics:

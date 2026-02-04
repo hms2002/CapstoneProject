@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01a934f4782b4954aa0a5ce21760ea73, type: 3}
   m_Name: AL_Tackle
   m_EditorClassIdentifier: 
-  damageEffect: {fileID: 0}
+  damageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
   damageAmount: 10
