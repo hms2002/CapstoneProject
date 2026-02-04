@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 921253aeb7da6c249a0e4f9e05752a06, type: 3}
   m_Name: Effect_Empty
   m_EditorClassIdentifier: 
+  rewardText: 
+  rewardIcon: {fileID: -1330801700, guid: ef16b2ddeb64123459076c2c8a541a63, type: 3}
   memo: "\uC774 \uD6A8\uACFC\uB294 \uC544\uBB34 \uAE30\uB2A5\uB3C4 \uC5C6\uC2B5\uB2C8\uB2E4.\n\uB2E8\uC21C\uD788
     \uAE38\uC744 \uB6AB\uAC70\uB098, \uB098\uC911\uC5D0 \uAD6C\uD604\uD560 \uAE30\uB2A5\uC744
     \uC704\uD574 \uBE44\uC6CC\uB454 \uAC83\uC785\uB2C8\uB2E4."
