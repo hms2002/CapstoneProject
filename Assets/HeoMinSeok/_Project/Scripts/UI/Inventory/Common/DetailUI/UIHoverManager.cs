@@ -295,7 +295,8 @@ public class UIHoverManager : MonoBehaviour
 
         // 패널이 이미 꺼져있으면 아무 것도 할 필요 없음
         if (detailPanel == null || !detailPanel.gameObject.activeSelf) return;
-
+        // ✅ 이미 스케줄된 숨김이 있으면 다시 걸지 않기
+        if (_hideRoutine != null) return;
         CancelHide();
         int mySerial = _serial;
         _hideRoutine = StartCoroutine(CoHideIfStillNotHover(mySerial));
