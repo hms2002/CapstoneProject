@@ -980,9 +980,8 @@ MonoBehaviour:
   canvas: {fileID: 1493883150}
   detailPanel: {fileID: 135140464}
   detailPanelRect: {fileID: 135140461}
-  inventoryPanelRect: {fileID: 2023635578}
-  chestPanelRect: {fileID: 426871856}
-  hideWhenOutsidePanels: 1
+  keepAliveRects: []
+  hideWhenOutsideKeepAlive: 1
   offset: 12
   edgePadding: 8
   followAnchor: 1
@@ -5851,6 +5850,7 @@ GameObject:
   - component: {fileID: 282277934}
   - component: {fileID: 282277933}
   - component: {fileID: 282277932}
+  - component: {fileID: 282277935}
   m_Layer: 5
   m_Name: InventoryScreen
   m_TagString: Untagged
@@ -5943,6 +5943,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 282277930}
   m_CullTransparentMesh: 1
+--- !u!114 &282277935
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 282277930}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c23454781dce014d9f504ba8eb14dcb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rect: {fileID: 282277931}
 --- !u!1001 &282839040
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -11900,6 +11913,7 @@ GameObject:
   - component: {fileID: 426871859}
   - component: {fileID: 426871858}
   - component: {fileID: 426871857}
+  - component: {fileID: 426871860}
   m_Layer: 5
   m_Name: ChestGridRoot
   m_TagString: Untagged
@@ -11988,6 +12002,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 426871855}
   m_CullTransparentMesh: 1
+--- !u!114 &426871860
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 426871855}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c23454781dce014d9f504ba8eb14dcb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rect: {fileID: 0}
 --- !u!1001 &435911597
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -13621,7 +13648,7 @@ MonoBehaviour:
   m_text: X
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 698a407b32ed1874bb4cb7324dfddce2, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_sharedMaterial: {fileID: 1826925326976027445, guid: 698a407b32ed1874bb4cb7324dfddce2, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -16063,7 +16090,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.48, y: 0.48}
+    oldSize: {x: 0.21, y: 0.16}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -17001,23 +17028,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   capacity: 16
-  initialItems:
-  - {fileID: 11400000, guid: 6a8181eecc5ab3a4988f9089d46607b0, type: 2}
-  - {fileID: 11400000, guid: 1f774045e4d72664996fab05fc0e1308, type: 2}
-  - {fileID: 11400000, guid: 1f774045e4d72664996fab05fc0e1308, type: 2}
-  - {fileID: 11400000, guid: 1f2641bce49c9884eaec41adfdfa29f3, type: 2}
-  - {fileID: 11400000, guid: 1f2641bce49c9884eaec41adfdfa29f3, type: 2}
-  - {fileID: 11400000, guid: 6a8181eecc5ab3a4988f9089d46607b0, type: 2}
-  - {fileID: 11400000, guid: 6a8181eecc5ab3a4988f9089d46607b0, type: 2}
-  - {fileID: 11400000, guid: 6a8181eecc5ab3a4988f9089d46607b0, type: 2}
-  - {fileID: 11400000, guid: 6a8181eecc5ab3a4988f9089d46607b0, type: 2}
-  - {fileID: 11400000, guid: 6a8181eecc5ab3a4988f9089d46607b0, type: 2}
-  - {fileID: 11400000, guid: a901646dacf2764408f638b7cdbb3663, type: 2}
-  - {fileID: 11400000, guid: a901646dacf2764408f638b7cdbb3663, type: 2}
-  - {fileID: 11400000, guid: a901646dacf2764408f638b7cdbb3663, type: 2}
-  - {fileID: 11400000, guid: cac88c9620b50844baf46e203a9d222c, type: 2}
-  - {fileID: 11400000, guid: cac88c9620b50844baf46e203a9d222c, type: 2}
-  - {fileID: 11400000, guid: cac88c9620b50844baf46e203a9d222c, type: 2}
 --- !u!212 &797884954
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -37144,6 +37154,7 @@ GameObject:
   - component: {fileID: 2023635581}
   - component: {fileID: 2023635580}
   - component: {fileID: 2023635579}
+  - component: {fileID: 2023635582}
   m_Layer: 5
   m_Name: PlayerInventoryRoot
   m_TagString: Untagged
@@ -37236,6 +37247,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2023635577}
   m_CullTransparentMesh: 1
+--- !u!114 &2023635582
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2023635577}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c23454781dce014d9f504ba8eb14dcb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rect: {fileID: 0}
 --- !u!1 &2026987685
 GameObject:
   m_ObjectHideFlags: 0

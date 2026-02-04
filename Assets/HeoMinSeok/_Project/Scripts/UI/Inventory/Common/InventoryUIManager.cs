@@ -51,7 +51,6 @@ public class InventoryUIManager : MonoBehaviour
         inventoryScreen.Bind(backpack, weaponInv, relicInv, player);
 
         // Ensure hover/detail doesn't linger from other UIs
-        UIHoverManager.Instance?.SetActivePanels((RectTransform)inventoryScreen.transform, null);
         UIHoverManager.Instance?.HideImmediate(); // 이전 디테일 남아있지 않게
         ItemDetailPanel.Instance?.Hide();
 
@@ -66,7 +65,6 @@ public class InventoryUIManager : MonoBehaviour
 
         // Close should always clear hover/detail
         UIHoverManager.Instance?.HideImmediate();
-        UIHoverManager.Instance?.SetActivePanels(null, null);
         ItemDetailPanel.Instance?.Hide();
 
         inventoryScreen.gameObject.SetActive(false);

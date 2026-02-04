@@ -10,12 +10,12 @@ public class UIHoverManager : MonoBehaviour
     [SerializeField] private Canvas canvas;
     [SerializeField] private ItemDetailPanel detailPanel; // 기존 ItemDetailPanel
     [SerializeField] private RectTransform detailPanelRect;
-    [Header("UI Bounds (Hide when pointer leaves)")]
-    [SerializeField] private RectTransform[] hoverPanelRects;
-    [SerializeField] private RectTransform inventoryPanelRect;
-    [SerializeField] private RectTransform chestPanelRect;
-    [SerializeField] private RectTransform unlockPanelRect;
-    [SerializeField] private bool hideWhenOutsidePanels = true;
+    [Header("Keep Alive Areas (pointer can be outside slot/panel but still keep detail visible)")]
+    [SerializeField] private RectTransform[] keepAliveRects;   // <= 기존 hoverPanelRects를 이 의미로 사용
+    [SerializeField] private bool hideWhenOutsideKeepAlive = true;
+    private readonly System.Collections.Generic.List<RectTransform> _runtimeKeepAliveRects
+    = new System.Collections.Generic.List<RectTransform>();
+
 
     [Header("Positioning")]
     [SerializeField] private float offset = 12f;      // 슬롯과 패널 사이 간격
@@ -56,11 +56,20 @@ public class UIHoverManager : MonoBehaviour
 
         _contextProvider = contextProviderBehaviour as IItemDetailContextProvider;
     }
-    public void SetActivePanels(RectTransform inventoryPanel, RectTransform chestPanel)
+
+    public void RegisterKeepAlive(RectTransform rect)
     {
-        inventoryPanelRect = inventoryPanel;
-        chestPanelRect = chestPanel;
+        if (rect == null) return;
+        if (!_runtimeKeepAliveRects.Contains(rect))
+            _runtimeKeepAliveRects.Add(rect);
     }
+
+    public void UnregisterKeepAlive(RectTransform rect)
+    {
+        if (rect == null) return;
+        _runtimeKeepAliveRects.Remove(rect);
+    }
+
 
     private void LateUpdate()
     {
@@ -75,7 +84,7 @@ public class UIHoverManager : MonoBehaviour
     {
         PollPanelHover();
 
-        if (!hideWhenOutsidePanels) return;
+        if (!hideWhenOutsideKeepAlive) return;
         if (detailPanel == null || !detailPanel.gameObject.activeSelf) return;
 
         // ✅ 슬롯을 호버 중이면 패널을 숨기지 않는다.
@@ -86,12 +95,12 @@ public class UIHoverManager : MonoBehaviour
         if (_hoverPanel) return;
 
         // ✅ 인벤/상자 둘 중 하나 위면 유지
-        if (IsPointerOverEitherPanel()) return;
+        if (IsPointerOverAnyKeepAlive()) return;
 
         // 둘 다 아니면 숨김
         HideImmediate();
     }
-    private bool IsPointerOverEitherPanel()
+    private bool IsPointerOverAnyKeepAlive()
     {
         if (canvas == null) return false;
 
@@ -99,16 +108,28 @@ public class UIHoverManager : MonoBehaviour
             ? null
             : canvas.worldCamera;
 
-        // 비활성 패널은 무시
-        if (inventoryPanelRect != null && inventoryPanelRect.gameObject.activeInHierarchy)
+        // 1) 인스펙터 지정 영역
+        if (keepAliveRects != null)
         {
-            if (RectTransformUtility.RectangleContainsScreenPoint(inventoryPanelRect, Input.mousePosition, cam))
-                return true;
+            for (int i = 0; i < keepAliveRects.Length; i++)
+            {
+                var rt = keepAliveRects[i];
+                if (rt == null) continue;
+                if (!rt.gameObject.activeInHierarchy) continue;
+
+                if (RectTransformUtility.RectangleContainsScreenPoint(rt, Input.mousePosition, cam))
+                    return true;
+            }
         }
 
-        if (chestPanelRect != null && chestPanelRect.gameObject.activeInHierarchy)
+        // 2) 런타임 등록 영역
+        for (int i = _runtimeKeepAliveRects.Count - 1; i >= 0; i--)
         {
-            if (RectTransformUtility.RectangleContainsScreenPoint(chestPanelRect, Input.mousePosition, cam))
+            var rt = _runtimeKeepAliveRects[i];
+            if (rt == null) { _runtimeKeepAliveRects.RemoveAt(i); continue; }
+            if (!rt.gameObject.activeInHierarchy) continue;
+
+            if (RectTransformUtility.RectangleContainsScreenPoint(rt, Input.mousePosition, cam))
                 return true;
         }
 

@@ -16,7 +16,7 @@ public class TreasureChest : MonoBehaviour
 
     private void Awake()
     {
-        inventory = new ChestInventory(capacity);
+        inventory = new ChestInventory(/*capacity*/);
     }
 
     // =========================================================
@@ -24,7 +24,7 @@ public class TreasureChest : MonoBehaviour
     // =========================================================
     public void InitializeWithLoot(List<ScriptableObject> loots)
     {
-        if (inventory == null) inventory = new ChestInventory(capacity);
+        if (inventory == null) inventory = new ChestInventory(/*capacity*/);
 
         HashSet<string> banList = GetPlayerWeaponBanList();
 

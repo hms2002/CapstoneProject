@@ -48,7 +48,6 @@ public class ChestScreen : MonoBehaviour
     {
         // Chest UI가 닫히면 Hover/Detail 상태도 정리
         UIHoverManager.Instance?.HideImmediate();
-        UIHoverManager.Instance?.SetActivePanels(null, null);
         ItemDetailPanel.Instance?.Hide();
 
         ClearUI();
@@ -86,7 +85,6 @@ public class ChestScreen : MonoBehaviour
             ? chestPanelRect
             : (chestGridRoot != null ? chestGridRoot as RectTransform : null);
 
-        UIHoverManager.Instance?.SetActivePanels(invRect, chestRect);
         UIHoverManager.Instance?.HideImmediate();
         ItemDetailPanel.Instance?.Hide();
     }
