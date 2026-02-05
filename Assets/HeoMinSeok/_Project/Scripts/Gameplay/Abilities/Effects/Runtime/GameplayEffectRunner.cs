@@ -377,6 +377,69 @@ namespace UnityGAS
             }
             return affected;
         }
+        // GameplayEffectRunner.cs
+        public int ReduceRemainingTimeBySourceObject(
+            GameObject target,
+            GameplayEffect effect,
+            Object sourceObject,
+            float reduceSeconds)
+        {
+            if (target == null || effect == null || sourceObject == null) return 0;
+            if (reduceSeconds <= 0f) return 0;
+
+            int affected = 0;
+
+            for (int i = activeEffects.Count - 1; i >= 0; i--)
+            {
+                var ae = activeEffects[i];
+                if (ae.Target != target) continue;
+                if (ae.Effect != effect) continue;
+                if (ae.SourceObject != sourceObject) continue;
+
+                ae.TimeRemaining -= reduceSeconds;
+                affected++;
+
+                if (ae.TimeRemaining <= 0f)
+                {
+                    EndEffect(ae);
+                    activeEffects.RemoveAt(i);
+                }
+            }
+
+            return affected;
+        }
+
+        public int MultiplyRemainingTimeBySourceObject(
+            GameObject target,
+            GameplayEffect effect,
+            Object sourceObject,
+            float multiplier)
+        {
+            if (target == null || effect == null || sourceObject == null) return 0;
+            multiplier = Mathf.Clamp(multiplier, 0f, 10f);
+
+            int affected = 0;
+
+            for (int i = activeEffects.Count - 1; i >= 0; i--)
+            {
+                var ae = activeEffects[i];
+                if (ae.Target != target) continue;
+                if (ae.Effect != effect) continue;
+                if (ae.SourceObject != sourceObject) continue;
+
+                ae.TimeRemaining *= multiplier;
+                affected++;
+
+                if (ae.TimeRemaining <= 0f)
+                {
+                    EndEffect(ae);
+                    activeEffects.RemoveAt(i);
+                }
+            }
+
+            return affected;
+        }
+
         private static void CollectGrantedTags(GameplayEffect effect, HashSet<GameplayTag> outTags)
         {
             if (effect == null || outTags == null) return;

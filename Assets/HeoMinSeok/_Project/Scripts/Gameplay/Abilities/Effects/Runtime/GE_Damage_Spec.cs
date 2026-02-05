@@ -11,6 +11,10 @@ namespace UnityGAS
     /// - 타겟에 PlayerTokenHealth가 붙어있으면, Health Attribute 대신 "토큰"을 감소시킵니다.
     /// - 기본 토큰 피해는 fallbackTokenDamage(기본 1).
     /// - 필요하면 tokenDamageKey(SetByCaller)로 토큰 피해를 오버라이드할 수 있습니다.
+    ///
+    /// Hit Feedback (Optional):
+    /// - Stun / CameraShake 등 피격 피드백을 타겟(IHitFeedbackReceiver2D)에게 전달할 수 있습니다.
+    /// - 실제 연출/조작 통제는 타겟 컴포넌트에서 처리합니다.
     /// </summary>
     [CreateAssetMenu(fileName = "GE_Damage_Spec", menuName = "GAS/Effects/Damage (Spec)")]
     public class GE_Damage_Spec : GameplayEffect, ISpecGameplayEffect
@@ -28,6 +32,26 @@ namespace UnityGAS
 
         [Tooltip("SetByCaller 키가 없을 때 적용할 기본 데미지(0이면 사실상 무시)")]
         public float fallbackDamage = 0f;
+
+        [Header("Knockback (Optional)")]
+        [Tooltip("SetByCaller 키 (예: Data.Knockback). 값은 Rigidbody2D AddForce(Impulse)로 적용됩니다.")]
+        public GameplayTag knockbackKey;
+
+        [Tooltip("SetByCaller 키가 없을 때 적용할 기본 넉백(Impulse).")]
+        public float fallbackKnockback = 0f;
+
+        [Header("Hit Feedback (Optional)")]
+        [Tooltip("SetByCaller 키 (예: Data.StunSeconds). 타겟이 IHitFeedbackReceiver2D를 구현/보유하면 전달됩니다.")]
+        public GameplayTag stunSecondsKey;
+
+        [Tooltip("SetByCaller 키가 없을 때 적용할 기본 경직 시간(초). 0이면 전달하지 않습니다.")]
+        public float fallbackStunSeconds = 0.3f;
+
+        [Tooltip("SetByCaller 키 (예: Data.CameraShake). 타겟이 IHitFeedbackReceiver2D를 구현/보유하면 전달됩니다.")]
+        public GameplayTag cameraShakeKey;
+
+        [Tooltip("SetByCaller 키가 없을 때 적용할 기본 카메라 쉐이크(amplitude). 0이면 전달하지 않습니다.")]
+        public float fallbackCameraShake = 0.10f;
 
         [Header("Shield (Optional)")]
         [Tooltip("1회 피해를 막아주는 보호막 태그(있으면 1회 소비하고 데미지 0 처리)")]
@@ -47,6 +71,8 @@ namespace UnityGAS
         {
             duration = 0f;
             if (fallbackTokenDamage < 0) fallbackTokenDamage = 0;
+            if (fallbackStunSeconds < 0f) fallbackStunSeconds = 0f;
+            if (fallbackCameraShake < 0f) fallbackCameraShake = 0f;
         }
 
         /// <summary>
@@ -75,6 +101,48 @@ namespace UnityGAS
                 }
             }
 
+            GameObject ResolveCauser()
+            {
+                GameObject causer = spec != null ? spec.Context?.Causer : null;
+                if (causer == null) causer = spec != null ? spec.Context?.Instigator : null;
+                return causer;
+            }
+
+            void TryApplyKnockback(GameObject t)
+            {
+                if (t == null) return;
+
+                float kb = fallbackKnockback;
+                if (spec != null && knockbackKey != null && spec.TryGetSetByCallerMagnitude(knockbackKey, out var kbv))
+                    kb = kbv;
+
+                if (kb <= 0f) return;
+
+                var receiver = t.GetComponent<KnockbackReceiver2D>();
+                if (receiver != null)
+                    receiver.ApplyKnockback(ResolveCauser(), kb);
+            }
+
+            void TrySendHitFeedback(GameObject t)
+            {
+                if (t == null) return;
+
+                // Resolve values (0 means "do not send" for that channel)
+                float stun = fallbackStunSeconds;
+                if (spec != null && stunSecondsKey != null && spec.TryGetSetByCallerMagnitude(stunSecondsKey, out var sv))
+                    stun = sv;
+
+                float shake = fallbackCameraShake;
+                if (spec != null && cameraShakeKey != null && spec.TryGetSetByCallerMagnitude(cameraShakeKey, out var cv))
+                    shake = cv;
+
+                if (stun <= 0f && shake <= 0f) return;
+
+                var receiver = t.GetComponent<IHitFeedbackReceiver2D>();
+                if (receiver != null)
+                    receiver.OnHitFeedback(new HitFeedbackPayload(ResolveCauser(), stun, shake));
+            }
+
             // ✅ Token Health 우선 처리
             var tokenHealth = target.GetComponent<PlayerTokenHealth>();
             if (tokenHealth != null)
@@ -90,6 +158,9 @@ namespace UnityGAS
                 if (tokenDamage <= 0) return;
 
                 tokenHealth.ApplyTokenDamage(tokenDamage, source: this);
+
+                TryApplyKnockback(target);
+                TrySendHitFeedback(target);
                 return;
             }
 
@@ -123,6 +194,9 @@ namespace UnityGAS
             // 3) Health 감소
             if (healthAttribute == null) return;
             attributeSet.ModifyAttributeValue(healthAttribute, -damage, this);
+
+            TryApplyKnockback(target);
+            TrySendHitFeedback(target);
         }
 
         public override void Apply(GameObject target, GameObject instigator, int stackCount = 1)

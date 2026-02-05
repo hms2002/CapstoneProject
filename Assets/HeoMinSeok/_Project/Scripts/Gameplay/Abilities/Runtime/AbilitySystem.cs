@@ -17,6 +17,14 @@ namespace UnityGAS
         [SerializeField] private AttributeSet attributeSet;
         [SerializeField] private GameplayEffectRunner effectRunner;
         [SerializeField] private TagSystem tagSystem;
+
+        [Header("Cancellation Tags (Global)")]
+        [Tooltip("If any of these tags are added to THIS owner while CASTING, the cast will be cancelled. (Exact match)")]
+        [SerializeField] private List<GameplayTag> globalCancelCastingOnTags = new();
+
+        [Tooltip("If any of these tags are added to THIS owner while EXECUTING, the execution will be cancelled. (Exact match)")]
+        [SerializeField] private List<GameplayTag> globalCancelExecutionOnTags = new();
+
         [SerializeField] private PlayerDamageProfile damageProfile;
         [SerializeField] private GameplayEffect defaultCooldownEffect; // 예: GE_Cooldown
         public PlayerDamageProfile DamageProfile => damageProfile;
@@ -25,6 +33,15 @@ namespace UnityGAS
         public GameplayEffectRunner EffectRunner => effectRunner;
         public TagSystem TagSystem => tagSystem;
 
+        [Header("Cooldown Attributes (GAS-style)")]
+        [Tooltip("FinalCooldown = AD.cooldown * CooldownDurationMultiplier (default 1.0). Example: 0.9 means 10% reduction.")]
+        [SerializeField] private AttributeDefinition cooldownDurationMultiplierAttribute;
+
+        [Tooltip("Optional. Used by helper functions (ex: on-hit reduce cooldown remaining). Default 0.")]
+        [SerializeField] private AttributeDefinition cooldownFlatReduceSecondsOnHitAttribute;
+
+        // 너무 낮아지는 쿨타임 방지(원하면 0으로 둬도 됨)
+        [SerializeField] private float minCooldownSeconds = 0.05f;
 
         [Header("Cue")]
         [SerializeField] private GameplayCueManager cueManager;
@@ -47,7 +64,7 @@ namespace UnityGAS
         public System.Action<AbilityDefinition> OnAbilityCastStart;
         public System.Action<AbilityDefinition> OnAbilityCastCompleted;
         public System.Action<AbilityDefinition> OnAbilityCastCancelled;
-        
+
         // 스택형 쿨타임 키
         private const string KEY_CHARGES = "__Charges";
         private const string KEY_RECHARGE = "__RechargeRemaining";
@@ -179,6 +196,50 @@ namespace UnityGAS
             foreach (var w in copy) w?.Cancel();
         }
 
+
+
+        private void OnEnable()
+        {
+            // Subscribe to tag changes to support "cancel while running" behaviour.
+            if (tagSystem == null) tagSystem = GetComponent<TagSystem>();
+            if (tagSystem != null) tagSystem.OnTagAdded += HandleOwnerTagAdded;
+        }
+
+        private void OnDisable()
+        {
+            if (tagSystem != null) tagSystem.OnTagAdded -= HandleOwnerTagAdded;
+        }
+
+        private static bool ContainsTag(List<GameplayTag> list, GameplayTag tag)
+        {
+            if (list == null || tag == null) return false;
+            for (int i = 0; i < list.Count; i++)
+                if (list[i] == tag) return true; // exact
+            return false;
+        }
+
+        private void HandleOwnerTagAdded(GameplayTag tag)
+        {
+            if (tag == null) return;
+
+            // Cast cancellation
+            if (isCasting && currentCastSpec != null)
+            {
+                var def = currentCastSpec.Definition;
+                bool globalHit = ContainsTag(globalCancelCastingOnTags, tag);
+                bool localHit = def != null && ContainsTag(def.cancelCastingOnTags, tag);
+                if (globalHit || localHit) CancelCasting(force: true);
+            }
+
+            // Execution cancellation
+            if (currentExecSpec != null)
+            {
+                var def = currentExecSpec.Definition;
+                bool globalHit = ContainsTag(globalCancelExecutionOnTags, tag);
+                bool localHit = def != null && ContainsTag(def.cancelExecutionOnTags, tag);
+                if (globalHit || localHit) CancelExecution(force: true);
+            }
+        }
         private void Awake()
         {
             if (attributeSet == null) attributeSet = GetComponent<AttributeSet>();
@@ -336,21 +397,23 @@ namespace UnityGAS
             var def = spec?.Definition;
             if (def == null) return;
             if (def.useCharges) return;
-            if (def.cooldown <= 0f) return;
 
-            // ✅ 기본 쿨타임 GE 사용(AbilityDefinition.cooldownEffect가 없으면 fallback)
-            var cdEffect = def.cooldownEffect != null ? def.cooldownEffect : defaultCooldownEffect;
+            float finalCooldown = CalculateFinalCooldownSeconds(def);
+            if (finalCooldown <= 0f) return;
+
+            // ✅ 무조건 defaultCooldownEffect만 사용
+            var cdEffect = defaultCooldownEffect;
 
             if (cdEffect != null && effectRunner != null)
             {
                 var cdSpec = MakeSpec(cdEffect, causer: gameObject, sourceObject: def); // sourceObject=AbilityDefinition
-                cdSpec.SetDuration(def.cooldown);
+                cdSpec.SetDuration(finalCooldown);
                 effectRunner.ApplyEffectSpec(cdSpec, gameObject);
                 return;
             }
 
-            // 레거시 타이머(최후 fallback)
-            spec.CooldownRemaining = def.cooldown;
+            // (혹시 defaultCooldownEffect 세팅 안 했을 때만 fallback)
+            spec.CooldownRemaining = finalCooldown;
         }
 
 
@@ -364,14 +427,17 @@ namespace UnityGAS
             if (spec == null) return 0f;
 
             var def = spec.Definition;
-            var cdEffect = def != null ? (def.cooldownEffect != null ? def.cooldownEffect : defaultCooldownEffect) : null;
+
+            if (def != null && def.useCharges)
+                return spec.GetFloat(KEY_RECHARGE, 0f); // 필요하면 UI용으로 별도 노출
+
+            var cdEffect = defaultCooldownEffect;
 
             if (cdEffect != null && effectRunner != null)
                 return effectRunner.GetRemainingTime(cdEffect, gameObject, def);
 
             return Mathf.Max(0f, spec.CooldownRemaining);
         }
-
         private bool IsOnCooldown(AbilitySpec spec)
         {
             if (spec == null) return false;
@@ -407,7 +473,7 @@ namespace UnityGAS
                         float r = s.GetFloat(KEY_RECHARGE, 0f);
 
                         if (r <= 0f)
-                            r = Mathf.Max(0.01f, def.cooldown);
+                            r = Mathf.Max(0.01f, CalculateFinalCooldownSeconds(def)); // ✅ 쿨감 반영
 
                         r -= Time.deltaTime;
 
@@ -416,8 +482,7 @@ namespace UnityGAS
                             charges++;
                             s.SetInt(KEY_CHARGES, charges);
 
-                            // 아직 덜 찼으면 다음 충전 시작
-                            r = (charges < max) ? Mathf.Max(0.01f, def.cooldown) : 0f;
+                            r = (charges < max) ? Mathf.Max(0.01f, CalculateFinalCooldownSeconds(def)) : 0f;
                         }
 
                         s.SetFloat(KEY_RECHARGE, r);
@@ -430,8 +495,10 @@ namespace UnityGAS
                     continue;
                 }
 
-                // -------- 기존 쿨다운 로직 --------
-                if (def != null && def.cooldownEffect != null) continue;
+                // ✅ defaultCooldownEffect를 쓰는 경우엔 Runner가 관리하므로 여기서 tick 할 필요 없음
+                if (defaultCooldownEffect != null) continue;
+
+                // fallback 타이머
                 if (s.CooldownRemaining > 0f) s.CooldownRemaining -= Time.deltaTime;
             }
         }
@@ -671,6 +738,31 @@ namespace UnityGAS
             }
         }
 
+        private float CalculateFinalCooldownSeconds(AbilityDefinition def)
+        {
+            if (def == null) return 0f;
+
+            float baseCd = Mathf.Max(0f, def.cooldown);
+            if (baseCd <= 0f) return 0f;
+
+            float mult = 1f;
+
+            // ✅ GAS스럽게: Attribute에서 읽는다
+            if (attributeSet != null && cooldownDurationMultiplierAttribute != null)
+            {
+                var ro = attributeSet.GetReadOnly(cooldownDurationMultiplierAttribute);
+                if (ro != null)
+                    mult = ro.CurrentValue;
+            }
+
+            // 안전장치
+            if (mult <= 0f) mult = 1f;
+
+            float cd = baseCd * mult;
+            cd = Mathf.Max(minCooldownSeconds, cd);
+            return cd;
+        }
+
         // -----------------------------
         // Animation helpers
         // -----------------------------
@@ -689,6 +781,45 @@ namespace UnityGAS
             target.SetTrigger(triggerHash);
         }
 
+        public bool ReduceCooldownRemaining(AbilityDefinition def, float reduceSeconds)
+        {
+            if (def == null || reduceSeconds <= 0f) return false;
+            if (def.useCharges) return false; // 차지는 별도 처리 권장
+
+            if (defaultCooldownEffect != null && effectRunner != null)
+            {
+                int affected = effectRunner.ReduceRemainingTimeBySourceObject(
+                    gameObject,
+                    defaultCooldownEffect,
+                    def,
+                    reduceSeconds);
+
+                return affected > 0;
+            }
+
+            // fallback 타이머
+            var spec = FindSpec(def);
+            if (spec == null) return false;
+
+            spec.CooldownRemaining = Mathf.Max(0f, spec.CooldownRemaining - reduceSeconds);
+            return true;
+        }
+        public bool ReduceCooldownRemaining_OnHit(AbilityDefinition def)
+        {
+            if (def == null) return false;
+            if (def.useCharges) return false;
+
+            float reduce = 0f;
+            if (attributeSet != null && cooldownFlatReduceSecondsOnHitAttribute != null)
+            {
+                var ro = attributeSet.GetReadOnly(cooldownFlatReduceSecondsOnHitAttribute);
+                if (ro != null) reduce = ro.CurrentValue;
+            }
+
+            if (reduce <= 0f) return false;
+
+            return ReduceCooldownRemaining(def, reduce);
+        }
 
         // -----------------------------
         // Spec helpers

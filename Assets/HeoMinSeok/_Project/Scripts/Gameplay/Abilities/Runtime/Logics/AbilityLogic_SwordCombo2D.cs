@@ -148,11 +148,19 @@ namespace UnityGAS.Sample
             var td = AbilityTargetData2D.FromOverlapBox(center, data.hitboxSize, 0f, data.hitLayers, ignore: system.gameObject);
             if (td.Targets.Count == 0) return;
 
-            float baseHp = GetArraySafe(data.damages, comboIndex, 0f);
-            if (baseHp <= 0f) return;
+            float legacyBaseHp = GetArraySafe(data.damages, comboIndex, 0f);
+            float baseHp = legacyBaseHp;
+            if (data.damageFormulas != null && comboIndex >= 0 && comboIndex < data.damageFormulas.Length && data.damageFormulas[comboIndex] != null)
+                baseHp = data.damageFormulas[comboIndex].Evaluate(system.AttributeSet, defaultIfEmpty: legacyBaseHp);
+
             float finalHp = baseHp;
             float finalStagger = 0f;
             float baseStagger = GetArraySafe(data.staggerDamages, comboIndex, 0f);
+
+            float finalKnockback = 0f;
+            if (data.knockbackFormulas != null && comboIndex >= 0 && comboIndex < data.knockbackFormulas.Length && data.knockbackFormulas[comboIndex] != null)
+                finalKnockback = data.knockbackFormulas[comboIndex].Evaluate(system.AttributeSet, defaultIfEmpty: 0f);
+
             var stats = system.DamageProfile != null ? system.DamageProfile.formulaStats : null;
 
             // Multi-element payload (computed per hit, delivered via GameplayEffectContext)
@@ -226,6 +234,7 @@ namespace UnityGAS.Sample
                     finalHp,
                     finalStagger,
                     elementResults,
+                    finalKnockback,
                     data.hitConfirmedTag,
                     system.gameObject
                 );
