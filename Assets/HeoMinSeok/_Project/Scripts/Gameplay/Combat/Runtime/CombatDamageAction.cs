@@ -28,6 +28,25 @@ public static class CombatDamageAction
             hitConfirmedTag: hitConfirmedTag, causer: causer);
     }
 
+
+    // New overload: includes knockback impulse (SetByCaller) for GE_Damage_Spec.
+    public static void ApplyDamageAndEmitHit(
+        AbilitySystem system,
+        AbilitySpec spec,
+        GameplayEffect damageEffect,
+        GameObject target,
+        float finalHpDamage,
+        float finalStaggerBuildUp,
+        IReadOnlyList<ElementDamageResult> elementBuildUps,
+        float finalKnockbackImpulse,
+        GameplayTag hitConfirmedTag,
+        GameObject causer)
+    {
+        ApplyDamageAndEmitHit_Internal(system, spec, damageEffect, target,
+            finalHpDamage, finalStaggerBuildUp, elementBuildUps, finalKnockbackImpulse,
+            hitConfirmedTag, causer);
+    }
+
     /// <summary>
     /// Apply HP damage + stagger build-up + element build-up, then optionally emit hit-confirmed event.
     /// </summary>
@@ -39,6 +58,23 @@ public static class CombatDamageAction
         float finalHpDamage,
         float finalStaggerBuildUp,
         IReadOnlyList<ElementDamageResult> elementBuildUps,
+        GameplayTag hitConfirmedTag,
+        GameObject causer)
+    {
+        ApplyDamageAndEmitHit_Internal(system, spec, damageEffect, target,
+            finalHpDamage, finalStaggerBuildUp, elementBuildUps, finalKnockbackImpulse: 0f,
+            hitConfirmedTag, causer);
+    }
+
+    private static void ApplyDamageAndEmitHit_Internal(
+        AbilitySystem system,
+        AbilitySpec spec,
+        GameplayEffect damageEffect,
+        GameObject target,
+        float finalHpDamage,
+        float finalStaggerBuildUp,
+        IReadOnlyList<ElementDamageResult> elementBuildUps,
+        float finalKnockbackImpulse,
         GameplayTag hitConfirmedTag,
         GameObject causer)
     {
@@ -54,6 +90,13 @@ public static class CombatDamageAction
 
         var geSpec = system.MakeSpec(damageEffect, causer: causer, sourceObject: spec != null ? spec.Definition : null);
         if (damageKey != null) geSpec.SetSetByCallerMagnitude(damageKey, finalHpDamage);
+
+        // 1b) Knockback impulse via Spec + SetByCaller (optional)
+        GameplayTag knockbackKey = null;
+        if (damageEffect is GE_Damage_Spec geDmg2)
+            knockbackKey = geDmg2.knockbackKey;
+        if (knockbackKey != null && finalKnockbackImpulse > 0f)
+            geSpec.SetSetByCallerMagnitude(knockbackKey, finalKnockbackImpulse);
 
         // Keep element breakdown in context as payload (optional)
         if (elementBuildUps != null && elementBuildUps.Count > 0)
@@ -102,5 +145,7 @@ public static class CombatDamageAction
                 Causer = causer
             });
         }
+
     }
+
 }

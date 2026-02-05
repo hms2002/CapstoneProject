@@ -209,42 +209,25 @@ public class ItemSlotUI : MonoBehaviour,
         return -1;
     }
 
-    // 슬롯 간 이동 시 "Exit -> Enter" 순서로 훅이 들어오면서 패널이 깜빡일 수 있어서
-    // 한 프레임 지연 후 Hide를 시도하는 토큰 방식
-    private static int s_hoverSerial = 0;
-
     public void OnPointerEnter(PointerEventData eventData)
     {
         if (container == null) return;
         if (ItemDragContext.Active) return;
 
         var so = container.Get(index);
-        //if (so == null)
-        //{
-        //    UIHoverManager.Instance?.HideImmediate();
-        //    return;
-        //}
-
+        if (so == null)
+        {
+            UIHoverManager.Instance?.HideImmediate();
+            return;
+        }
         UIHoverManager.Instance?.HoverSlot(slotRect, so, container, index);
+
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
         if (ItemDragContext.Active) return;
         UIHoverManager.Instance?.UnhoverSlot(slotRect);
-    }
-
-
-    private System.Collections.IEnumerator HideNextFrame(int serialAtExit)
-    {
-        yield return null; // 1프레임 대기: 다른 슬롯 Enter가 같은 프레임에 오면 Hide 방지
-
-        if (ItemDragContext.Active) yield break;
-
-        // Exit 이후 다른 슬롯 Enter가 발생했으면(Serial 증가) Hide하지 않음
-        if (s_hoverSerial != serialAtExit) yield break;
-
-        ItemDetailPanel.Instance?.Hide();
     }
 
 }

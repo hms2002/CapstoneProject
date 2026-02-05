@@ -43,6 +43,14 @@ namespace UnityGAS
         public List<GameplayTag> abilityTags = new List<GameplayTag>();
         public List<GameplayTag> requiredTags = new List<GameplayTag>();
         public List<GameplayTag> blockedByTags = new List<GameplayTag>();
+
+        [Header("Cancellation (Optional)")]
+        [Tooltip("If any of these tags are added to the caster while CASTING, the cast will be cancelled.")]
+        public List<GameplayTag> cancelCastingOnTags = new();
+
+        [Tooltip("If any of these tags are added to the caster while EXECUTING, the execution will be cancelled.")]
+        public List<GameplayTag> cancelExecutionOnTags = new();
+
         [Header("Tag Sets (Optional)")]
         public List<GameplayTagSet> requiredTagSets = new();
         public List<GameplayTagSet> blockedByTagSets = new();

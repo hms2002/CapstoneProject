@@ -38,8 +38,15 @@ namespace UnityGAS.Sample
             var runner = system.EffectRunner;
             if (runner == null) yield break;
 
-            float finalHp = data.damage;
+            float legacyBaseHp = data.damage;
+            float baseHp = legacyBaseHp;
+            if (data.damageFormula != null)
+                baseHp = data.damageFormula.Evaluate(system.AttributeSet, defaultIfEmpty: legacyBaseHp);
+            float finalHp = baseHp;
             float finalStagger = 0f;
+            float finalKnockback = 0f;
+            if (data.knockbackFormula != null)
+                finalKnockback = data.knockbackFormula.Evaluate(system.AttributeSet, defaultIfEmpty: 0f);
             var stats = system.DamageProfile != null ? system.DamageProfile.formulaStats : null;
 
             System.Collections.Generic.List<ElementDamageResult> elementResults = null;

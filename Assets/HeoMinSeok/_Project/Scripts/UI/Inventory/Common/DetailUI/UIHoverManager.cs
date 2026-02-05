@@ -8,48 +8,33 @@ public class UIHoverManager : MonoBehaviour
 
     [Header("References")]
     [SerializeField] private Canvas canvas;
-    [SerializeField] private ItemDetailPanel detailPanel; // 기존 ItemDetailPanel
+    [SerializeField] private ItemDetailPanel detailPanel;
     [SerializeField] private RectTransform detailPanelRect;
-    [Header("Keep Alive Areas (pointer can be outside slot/panel but still keep detail visible)")]
-    [SerializeField] private RectTransform[] keepAliveRects;   // <= 기존 hoverPanelRects를 이 의미로 사용
-    [SerializeField] private bool hideWhenOutsideKeepAlive = true;
-    private readonly System.Collections.Generic.List<RectTransform> _runtimeKeepAliveRects
-    = new System.Collections.Generic.List<RectTransform>();
-
 
     [Header("Positioning")]
-    [SerializeField] private float offset = 12f;      // 슬롯과 패널 사이 간격
-    [SerializeField] private float edgePadding = 8f;  // 화면 가장자리 여백
-    [SerializeField] private bool followAnchor = true; // 슬롯이 움직이면 따라다닐지
+    [SerializeField] private float offset = 12f;
+    [SerializeField] private float edgePadding = 8f;
+    [SerializeField] private bool followAnchor = true;
 
     [Header("Hide Timing")]
-    [SerializeField] private bool delayHideOneFrame = true; // 슬롯->패널 이동 깜빡임 방지
-    [SerializeField] private float extraHideDelay = 0f;     // 필요하면 0.05 같은 값
+    [SerializeField] private bool delayHideOneFrame = true;
+    [SerializeField] private float extraHideDelay = 0f;
 
     private RectTransform _currentSlotRect;
     private ScriptableObject _currentItem;
     private bool _hoverSlot;
-    private bool _hoverPanel;
 
     private Coroutine _hideRoutine;
     private int _serial;
 
-    [SerializeField] private PlayerDetailContextProvider contextProviderBehaviour; // IItemDetailContextProvider
+    [SerializeField] private PlayerDetailContextProvider contextProviderBehaviour;
     private IItemDetailContextProvider _contextProvider;
-
-    [Header("Hover Bridge (gap tolerant)")]
-    [SerializeField] private bool useHoverBridge = true;
-    [SerializeField] private float bridgeExtraWidth = 6f;         // 틈 보정(가로)
-    [SerializeField] private float bridgeHeightRatio = 0.35f;      // 슬롯 높이 대비 브릿지 높이 비율
-    [SerializeField] private float bridgeMinHeight = 24f;
-    [SerializeField] private float bridgeMaxHeight = 64f;
-    [SerializeField] private float bridgeCenterYOffset = 0f;       // 필요하면 위/아래로 살짝
-
 
     private void Awake()
     {
         if (Instance != null && Instance != this) { Destroy(gameObject); return; }
         Instance = this;
+
         if (canvas == null) canvas = GetComponentInParent<Canvas>();
         if (detailPanel == null) detailPanel = FindFirstObjectByType<ItemDetailPanel>();
         if (detailPanelRect == null && detailPanel != null) detailPanelRect = detailPanel.transform as RectTransform;
@@ -57,171 +42,19 @@ public class UIHoverManager : MonoBehaviour
         _contextProvider = contextProviderBehaviour as IItemDetailContextProvider;
     }
 
-    public void RegisterKeepAlive(RectTransform rect)
-    {
-        if (rect == null) return;
-        if (!_runtimeKeepAliveRects.Contains(rect))
-            _runtimeKeepAliveRects.Add(rect);
-    }
-
-    public void UnregisterKeepAlive(RectTransform rect)
-    {
-        if (rect == null) return;
-        _runtimeKeepAliveRects.Remove(rect);
-    }
-
-
     private void LateUpdate()
     {
         if (!followAnchor) return;
+        if (!_hoverSlot) return;
         if (_currentSlotRect == null) return;
         if (detailPanel == null || detailPanelRect == null) return;
         if (!detailPanel.gameObject.activeSelf) return;
 
         PositionNextToSlot(_currentSlotRect);
     }
-    private void Update()
-    {
-        PollPanelHover();
 
-        if (!hideWhenOutsideKeepAlive) return;
-        if (detailPanel == null || !detailPanel.gameObject.activeSelf) return;
-
-        // 유지 조건
-        if (_hoverSlot) { CancelHide(); return; }
-        if (_hoverPanel) { CancelHide(); return; }
-
-        if (IsPointerOverAnyKeepAlive()) { CancelHide(); return; }
-
-        // ✅ 여기서 즉시 숨기지 말고 딜레이 숨김으로 연결
-        TryScheduleHide();
-    }
-
-    private bool IsPointerOverAnyKeepAlive()
-    {
-        if (canvas == null) return false;
-
-        var cam = canvas.renderMode == RenderMode.ScreenSpaceOverlay
-            ? null
-            : canvas.worldCamera;
-
-        // 1) 인스펙터 지정 영역
-        if (keepAliveRects != null)
-        {
-            for (int i = 0; i < keepAliveRects.Length; i++)
-            {
-                var rt = keepAliveRects[i];
-                if (rt == null) continue;
-                if (!rt.gameObject.activeInHierarchy) continue;
-
-                if (RectTransformUtility.RectangleContainsScreenPoint(rt, Input.mousePosition, cam))
-                    return true;
-            }
-        }
-
-        // 2) 런타임 등록 영역
-        for (int i = _runtimeKeepAliveRects.Count - 1; i >= 0; i--)
-        {
-            var rt = _runtimeKeepAliveRects[i];
-            if (rt == null) { _runtimeKeepAliveRects.RemoveAt(i); continue; }
-            if (!rt.gameObject.activeInHierarchy) continue;
-
-            if (RectTransformUtility.RectangleContainsScreenPoint(rt, Input.mousePosition, cam))
-                return true;
-        }
-
-        return false;
-    }
-
-
-    private void PollPanelHover()
-    {
-        if (detailPanelRect == null) return;
-        if (detailPanel == null || !detailPanel.gameObject.activeSelf) return;
-
-        var cam = canvas != null && canvas.renderMode != RenderMode.ScreenSpaceOverlay
-            ? canvas.worldCamera
-            : null;
-
-        bool insidePanel = RectTransformUtility.RectangleContainsScreenPoint(
-            detailPanelRect, Input.mousePosition, cam);
-
-        bool insideBridge = useHoverBridge && IsPointerInBridge(cam);
-
-        bool inside = insidePanel || insideBridge;
-
-        if (inside && !_hoverPanel)
-            HoverPanel();
-        else if (!inside && _hoverPanel)
-            UnhoverPanel();
-    }
-    private bool IsPointerInBridge(Camera cam)
-    {
-        if (_currentSlotRect == null) return false;
-        if (canvas == null) return false;
-
-        var canvasRect = canvas.transform as RectTransform;
-        if (canvasRect == null) return false;
-
-        // 마우스 위치를 캔버스 로컬로
-        RectTransformUtility.ScreenPointToLocalPointInRectangle(
-            canvasRect, Input.mousePosition, cam, out var mouseLocal);
-
-        // 슬롯/패널 로컬 rect
-        Rect slotLocal = GetLocalRect(_currentSlotRect, canvasRect, cam);
-        Rect panelLocal = PanelRectAt(detailPanelRect.anchoredPosition, detailPanelRect.rect.size, detailPanelRect.pivot);
-
-        // 패널이 슬롯의 오른쪽/왼쪽 어느 쪽에 있는지 판단
-        // (panelLocal이 slotLocal을 완전히 덮는 경우는 gap이 없으니 bridge 불필요)
-        float gapLeft = panelLocal.xMin - slotLocal.xMax;   // 패널이 오른쪽이면 양수
-        float gapRight = slotLocal.xMin - panelLocal.xMax;  // 패널이 왼쪽이면 양수
-
-        float gap = Mathf.Max(gapLeft, gapRight);
-        if (gap <= 0f) return false; // 이미 겹치거나 닿아있음 → 틈 없음
-
-        // 브릿지 x 구간
-        float xMin, xMax;
-        if (gapLeft > 0f)
-        {
-            // 패널이 오른쪽
-            xMin = slotLocal.xMax - bridgeExtraWidth;
-            xMax = panelLocal.xMin + bridgeExtraWidth;
-        }
-        else
-        {
-            // 패널이 왼쪽
-            xMin = panelLocal.xMax - bridgeExtraWidth;
-            xMax = slotLocal.xMin + bridgeExtraWidth;
-        }
-
-        // 브릿지 y 구간 (슬롯 중앙 기준으로 "부분만" 커버해서 슬롯 한 변 전체를 안 가림)
-        float h = Mathf.Clamp(slotLocal.height * bridgeHeightRatio, bridgeMinHeight, bridgeMaxHeight);
-        float centerY = slotLocal.center.y + bridgeCenterYOffset;
-
-        float yMin = centerY - h * 0.5f;
-        float yMax = centerY + h * 0.5f;
-
-        Rect bridge = Rect.MinMaxRect(Mathf.Min(xMin, xMax), yMin, Mathf.Max(xMin, xMax), yMax);
-
-        return bridge.Contains(mouseLocal);
-    }
-
-    // --- Slot hooks ---
     public void HoverSlot(RectTransform slotRect, ScriptableObject itemDef, IItemContainer container = null, int index = -1)
     {
-        if (slotRect == null) return;
-        // ✅ 브릿지/패널 위에 있는 동안은 "다른 슬롯로 전환"을 막는다.
-        if (_currentSlotRect != null && slotRect != _currentSlotRect && detailPanel != null && detailPanel.gameObject.activeSelf)
-        {
-            var cam = canvas != null && canvas.renderMode != RenderMode.ScreenSpaceOverlay ? canvas.worldCamera : null;
-            bool inPanel = detailPanelRect != null &&
-                           RectTransformUtility.RectangleContainsScreenPoint(detailPanelRect, Input.mousePosition, cam);
-            bool inBridge = useHoverBridge && IsPointerInBridge(cam);
-
-            if (inPanel || inBridge)
-                return; // 전환 잠금
-        }
-
         _serial++;
         _hoverSlot = true;
         _currentSlotRect = slotRect;
@@ -235,7 +68,6 @@ public class UIHoverManager : MonoBehaviour
             return;
         }
 
-        // 패널 켜고 내용 채우기
         var ctx = _contextProvider != null ? _contextProvider.BuildContext() : null;
         if (ctx != null)
         {
@@ -248,34 +80,19 @@ public class UIHoverManager : MonoBehaviour
                     ctx.relicLevelOverride = lvl;
             }
         }
+
         detailPanel?.Show(itemDef, ctx);
 
-
-        // 패널이 비활성이었다면 Show에서 활성화되므로 이후 위치 잡기
         if (detailPanelRect == null && detailPanel != null) detailPanelRect = detailPanel.transform as RectTransform;
-
         PositionNextToSlot(slotRect);
     }
 
     public void UnhoverSlot(RectTransform slotRect)
     {
+        // 지금 보고 있던 슬롯에서 나간 경우만 hover 해제
         if (_currentSlotRect == slotRect)
             _hoverSlot = false;
 
-        TryScheduleHide();
-    }
-
-    // --- Panel hooks (UIHoverArea가 호출) ---
-    public void HoverPanel()
-    {
-        _serial++;
-        _hoverPanel = true;
-        CancelHide();
-    }
-
-    public void UnhoverPanel()
-    {
-        _hoverPanel = false;
         TryScheduleHide();
     }
 
@@ -283,7 +100,6 @@ public class UIHoverManager : MonoBehaviour
     {
         CancelHide();
         _hoverSlot = false;
-        _hoverPanel = false;
         _currentSlotRect = null;
         _currentItem = null;
         detailPanel?.Hide();
@@ -292,51 +108,46 @@ public class UIHoverManager : MonoBehaviour
     private void TryScheduleHide()
     {
         if (_hoverSlot) return;
-        if (_hoverPanel) return;
-
-        // 패널이 이미 꺼져있으면 아무 것도 할 필요 없음
         if (detailPanel == null || !detailPanel.gameObject.activeSelf) return;
-        // ✅ 이미 스케줄된 숨김이 있으면 다시 걸지 않기
+
+        // 이미 예약돼 있으면 또 걸지 않음
         if (_hideRoutine != null) return;
-        CancelHide();
+
         int mySerial = _serial;
         _hideRoutine = StartCoroutine(CoHideIfStillNotHover(mySerial));
+        Debug.Log("코루틴 활성화 했지롱 ㅋㅋ : " +_hideRoutine);
     }
 
     private IEnumerator CoHideIfStillNotHover(int serialAtStart)
     {
         if (delayHideOneFrame) yield return null;
-        //if (extraHideDelay > 0f) yield return new WaitForSeconds(extraHideDelay);
+            Debug.Log("곧 끌거임!!");
+        if (extraHideDelay > 0f)
+            yield return new WaitForSecondsRealtime(extraHideDelay);
 
-        //if (_serial != serialAtStart) yield break;
-        //if (_hoverSlot || _hoverPanel) yield break;
+        // 다른 슬롯에 Enter가 발생했으면 취소
+        if (_serial != serialAtStart) { Debug.Log("작전 변경이다. _serial != serialAtStart"); yield break; }
+        if (_hoverSlot)
+        {
+            Debug.Log("작전 변경이다. _serial != _hoverSlot"); yield break;
+        }
 
-        //if (detailPanel == null || !detailPanel.gameObject.activeSelf) yield break;
-        //if (detailPanelRect == null) { HideImmediate(); yield break; } // ✅
-
-        //var cam = canvas != null && canvas.renderMode != RenderMode.ScreenSpaceOverlay ? canvas.worldCamera : null;
-
-        //bool insidePanel = RectTransformUtility.RectangleContainsScreenPoint(detailPanelRect, Input.mousePosition, cam);
-        //bool insideBridge = useHoverBridge && IsPointerInBridge(cam);
-
-        //if (insidePanel || insideBridge)
-        //{
-        //    _hoverPanel = true;
-        //    yield break;
-        //}
-
+            Debug.Log("끔!!!!");
         HideImmediate();
     }
-
 
     private void CancelHide()
     {
         if (_hideRoutine != null)
         {
+            Debug.Log("끊지 마!");
             StopCoroutine(_hideRoutine);
             _hideRoutine = null;
         }
     }
+
+    // PositionNextToSlot 이하(레이아웃/클램프/겹침 방지)는 너 기존 코드 그대로 유지
+
 
     private void PositionNextToSlot(RectTransform slotRect)
     {
