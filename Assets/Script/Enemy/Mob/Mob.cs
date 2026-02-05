@@ -13,8 +13,8 @@ public class Mob : Enemy
     [SerializeField] private AbilityDefinition tackleAbility; // AD_Tackle
 
     // Variables
-    private float attackCoolTime; // 마지막 공격 시간을 저장하여 쿨타임 체크용으로 사용
-    private bool isDead = false;
+    private float   attackCoolTime; // 마지막 공격 시간을 저장하여 쿨타임 체크용으로 사용
+    private bool    isDead = false;
 
     // ========================================================================
     // [1] AI 및 이동 로직
@@ -23,26 +23,27 @@ public class Mob : Enemy
     {
         if (isDead || target == null) return;
 
-        float distance = Vector2.Distance(transform.position, target.position);
+        Vector2 finalVelocity   = Vector2.zero;
+                targetDistance  = Vector2.Distance(transform.position, target.position);
 
         // 타겟 탐지
-        if (distance <= detectionRange)
+        if (targetDistance <= detectionRange)
         {
-            Vector2 direction   = (target.position - transform.position).normalized;
-            Vector2 nextPos     = rigid2D.position + direction * moveSpeed * Time.deltaTime;
-
-            rigid2D.MovePosition(nextPos);
+            moveDirection = (target.position - transform.position).normalized;
+            finalVelocity = moveDirection * moveSpeed;
 
             // 스프라이트 반전
             if      (transform.position.x > target.position.x) sprite.flipX = true;
             else if (transform.position.x < target.position.x) sprite.flipX = false;
+        }
 
-            animator.SetBool("isMoving", true);
-        }
-        else
+        // [넉백 예외처리]: 외부 충격(넉백)으로 인해 속도가 엄청 빠르면 내 의지로 덮어쓰지 않음
+        if (rigid2D.linearVelocity.magnitude <= moveSpeed * 1.5f)
         {
-            animator.SetBool("isMoving", false);
+            rigid2D.linearVelocity = finalVelocity; 
         }
+
+        animator.SetBool("isMoving", finalVelocity.sqrMagnitude > 0.01f);
     }
 
     // ========================================================================
