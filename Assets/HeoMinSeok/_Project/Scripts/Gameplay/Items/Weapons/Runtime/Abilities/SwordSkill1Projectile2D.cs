@@ -17,6 +17,7 @@ namespace UnityGAS.Sample
         private float damage;
         private float staggerBuildUp;
         private ElementDamageResult[] elementDamages;
+        private float knockbackImpulse;
         private GameObject ignoreGO;
 
         public void Setup(
@@ -30,6 +31,7 @@ namespace UnityGAS.Sample
             float dmg,
             float staggerBuildUp,
             ElementDamageResult[] elementDamages,
+            float knockbackImpulse,
             GameObject ignore)
         {
             ownerSystem = owner;
@@ -42,6 +44,7 @@ namespace UnityGAS.Sample
             damage = dmg;
             this.staggerBuildUp = staggerBuildUp;
             this.elementDamages = elementDamages;
+            this.knockbackImpulse = knockbackImpulse;
             ignoreGO = ignore;
 
             // owner 충돌 무시(가능하면)
@@ -85,6 +88,7 @@ namespace UnityGAS.Sample
                     damage,
                     staggerBuildUp,
                     elementDamages,
+                    finalKnockbackImpulse: knockbackImpulse,
                     hitConfirmedTag: null,
                     causer: ownerSystem.gameObject
                 );

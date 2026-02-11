@@ -23,8 +23,15 @@ namespace UnityGAS.Sample
             var go = Object.Instantiate(data.projectilePrefab, spawnPos, Quaternion.identity);
 
             // Damage snapshot at cast time
-            float finalHp = data.damage;
+            float legacyBaseHp = data.damage;
+            float baseHp = legacyBaseHp;
+            if (data.damageFormula != null)
+                baseHp = data.damageFormula.Evaluate(system.AttributeSet, defaultIfEmpty: legacyBaseHp);
+            float finalHp = baseHp;
             float finalStagger = 0f;
+            float finalKnockback = 0f;
+            if (data.knockbackFormula != null)
+                finalKnockback = data.knockbackFormula.Evaluate(system.AttributeSet, defaultIfEmpty: 0f);
 
             // Multi-element snapshot at cast time (delivered on hit)
             ElementDamageResult[] elementSnapshot = null;
@@ -85,6 +92,7 @@ namespace UnityGAS.Sample
                     dmg: finalHp,
                     staggerBuildUp: finalStagger,
                     elementDamages: elementSnapshot,
+                    knockbackImpulse: finalKnockback,
                     ignore: system.gameObject
                 );
             }

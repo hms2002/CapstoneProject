@@ -19,12 +19,25 @@ namespace UnityGAS
         [SerializeField] private List<MaxLink> maxLinks = new List<MaxLink>();
 
         private readonly Dictionary<AttributeDefinition, AttributeValue> attributes = new Dictionary<AttributeDefinition, AttributeValue>();
+        private bool _initialized;
 
         public delegate void AttributeChangedDelegate(AttributeDefinition attribute, float oldValue, float newValue);
         public event AttributeChangedDelegate OnAttributeChanged;
 
+
         private void Awake()
         {
+            EnsureInitialized();
+        }
+
+
+        /// <summary>
+        /// Ensures this AttributeSet has created its runtime AttributeValue instances and MaxLinks.
+        /// This allows safe Get/Read calls even if invoked before Unity's Awake order.
+        /// </summary>
+        private void EnsureInitialized()
+        {
+            if (_initialized) return;
             // 1) 생성
             foreach (var attributeDef in initialAttributes)
             {
@@ -36,7 +49,9 @@ namespace UnityGAS
                 // 이벤트 연결
                 var capturedDef = attributeDef;
                 av.OnValueChanged += (oldVal, newVal) => OnAttributeChanged?.Invoke(capturedDef, oldVal, newVal);
+                _initialized = true;
             }
+
 
             // 2) value-max 링크 구성 (Health <- MaxHealth)
             SetupMaxLinks();
@@ -44,6 +59,7 @@ namespace UnityGAS
 
         private void Update()
         {
+            if (!_initialized) return;
             if (attributes.Count == 0) return;
             float dt = Time.deltaTime;
 
@@ -88,8 +104,30 @@ namespace UnityGAS
             return attributes.TryGetValue(definition, out var v) ? v : null;
         }
 
+
+
+        public IReadOnlyAttributeValue GetReadOnly(AttributeDefinition definition)
+        {
+            EnsureInitialized();
+            return GetAttribute(definition);
+        }
+
+        public bool TryGetReadOnly(AttributeDefinition definition, out IReadOnlyAttributeValue value)
+        {
+            EnsureInitialized();
+            value = null;
+            if (definition == null) return false;
+            if (attributes.TryGetValue(definition, out var v))
+            {
+                value = v;
+                return true;
+            }
+            return false;
+        }
         public float GetAttributeValue(AttributeDefinition definition)
         {
+
+            EnsureInitialized();
             return GetAttribute(definition)?.CurrentValue ?? 0f;
         }
 

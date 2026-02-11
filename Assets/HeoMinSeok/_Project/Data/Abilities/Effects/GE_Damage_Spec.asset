@@ -27,5 +27,13 @@ MonoBehaviour:
   invulnerableTag: {fileID: 11400000, guid: 90cc853a47e809d4e8baa4fbcd354709, type: 2}
   damageKey: {fileID: 11400000, guid: 2e2e8bd1bde4f78429bf913fa737505c, type: 2}
   fallbackDamage: 0
+  knockbackKey: {fileID: 0}
+  fallbackKnockback: 3
+  stunSecondsKey: {fileID: 0}
+  fallbackStunSeconds: 0.3
+  cameraShakeKey: {fileID: 0}
+  fallbackCameraShake: 0.1
   oneHitShieldTag: {fileID: 0}
   absorbShieldAttribute: {fileID: 0}
+  tokenDamageKey: {fileID: 0}
+  fallbackTokenDamage: 1

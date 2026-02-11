@@ -6,7 +6,7 @@ using UnityEngine;
 namespace UnityGAS
 {
     [Serializable]
-    public class AttributeValue
+    public class AttributeValue : IReadOnlyAttributeValue
     {
         public AttributeDefinition Definition { get; }
         public float BaseValue { get; private set; }

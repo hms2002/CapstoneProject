@@ -24,6 +24,15 @@ namespace UnityGAS.Sample
 
         [Header("Combo")]
         public float comboResetTime = 0.45f;
+
+        [Header("Damage / Knockback Formula (Per Hit)")]
+        [Tooltip("If set, base HP damage for each combo hit is computed from attacker stats via this formula.\nIf null, legacy 'damages[]' is used.")]
+        public ScaledStatFormula[] damageFormulas = new ScaledStatFormula[3];
+
+        [Tooltip("If set, knockback impulse for each combo hit is computed from attacker stats via this formula.")]
+        public ScaledStatFormula[] knockbackFormulas = new ScaledStatFormula[3];
+
+        [Header("Legacy Base Damage (Deprecated)")]
         public float[] damages = new float[3] { 10f, 10f, 30f };
         public string[] animTriggers = new string[3] { "SwordCombo1", "SwordCombo2", "SwordCombo3" };
         public float[] recoveryOverrides = new float[3];

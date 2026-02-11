@@ -23,6 +23,15 @@ namespace UnityGAS.Sample
         public LayerMask damageLayers;
 
         public GameplayEffect damageEffect; // GE_Damage_Spec (HP)
+
+        [Header("Damage / Knockback Formula")]
+        [Tooltip("If set, base HP damage is computed from attacker stats via this formula.\nIf null, legacy 'damage' is used.")]
+        public ScaledStatFormula damageFormula;
+
+        [Tooltip("If set, knockback impulse is computed from attacker stats via this formula.")]
+        public ScaledStatFormula knockbackFormula;
+
+        [Header("Legacy Base Damage (Deprecated)")]
         public float damage = 20f;          // 무기 스킬 기본 피해량
 
         public Vector3 spawnOffset = new Vector3(0.8f, 0.2f, 0f);
@@ -35,7 +44,9 @@ namespace UnityGAS.Sample
             return new ItemDetailBlock
             {
                 title = "투사체 스킬",
-                body = $"피해: {damage}+[[공격력(+)]]({atk:F0})"
+                body = (damageFormula != null)
+                    ? $"피해(공식): {damageFormula.BuildDebugString(ctx.attributeSet)}"
+                    : $"피해: {damage}+[[공격력(+)]]({atk:F0})"
             };
         }
 

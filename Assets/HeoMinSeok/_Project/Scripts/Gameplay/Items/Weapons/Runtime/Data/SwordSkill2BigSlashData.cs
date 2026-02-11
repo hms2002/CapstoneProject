@@ -20,6 +20,15 @@ namespace UnityGAS.Sample
         public LayerMask hitLayers;
 
         public GameplayEffect damageEffect; // GE_Damage_Spec (HP)
+
+        [Header("Damage / Knockback Formula")]
+        [Tooltip("If set, base HP damage is computed from attacker stats via this formula.\nIf null, legacy 'damage' is used.")]
+        public ScaledStatFormula damageFormula;
+
+        [Tooltip("If set, knockback impulse is computed from attacker stats via this formula.")]
+        public ScaledStatFormula knockbackFormula;
+
+        [Header("Legacy Base Damage (Deprecated)")]
         public float damage = 50f;          // 무기 스킬 기본 피해량
 
 
