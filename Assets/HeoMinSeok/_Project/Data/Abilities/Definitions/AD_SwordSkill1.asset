@@ -18,7 +18,7 @@ MonoBehaviour:
   cooldown: 5
   useCharges: 1
   maxCharges: 3
-  cooldownEffect: {fileID: 0}
+  cooldownEffect: {fileID: 11400000, guid: fab1dd76add51c74db9dbb7b0f424204, type: 2}
   castTime: 0
   recoveryTime: 0
   canCastWhileMoving: 1
