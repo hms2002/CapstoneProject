@@ -5,14 +5,16 @@ using UnityGAS;
 namespace UnityGAS.Sample
 {
     [CreateAssetMenu(fileName = "SwordSkill1_ProjectileData", menuName = "GAS/Samples/Sword Skill1 Projectile Data")]
-    public class SwordSkill1ProjectileData : DamageLogicDataBase, IDetailProvider
+    public class SwordSkill1ProjectileData : ScriptableObject, IDetailProvider
     {
-        [Header("Damage Formula (Legacy - migrated to Damage)")]
-        [SerializeField, HideInInspector] public DamageFormulaStats formulaStats;
-        [SerializeField, HideInInspector] public bool includeElementDamage = false;
-        [Tooltip("Element damages (can contain multiple elements per hit).")]
+        [Header("Damage Channels")]
+        [SerializeField] private DamagePayloadConfig damageConfig = new();
+        public DamagePayloadConfig DamageConfig => damageConfig;
+
+        [Tooltip("Legacy per-hit element damages (FINAL values). Optional if you use DamageConfig.elementFormulas instead.")]
         public List<ElementDamageInput> elementDamages = new();
-        [SerializeField, HideInInspector] public bool includeStaggerDamage = false;
+
+        [Tooltip("Legacy stagger damage (FINAL value). Optional if you use DamageConfig.staggerFormula instead.")]
         public float baseStaggerDamage = 0f;
 
         public GameObject projectilePrefab;
@@ -37,24 +39,13 @@ namespace UnityGAS.Sample
         public Vector3 spawnOffset = new Vector3(0.8f, 0.2f, 0f);
         public ItemDetailBlock BuildDetailBlock(ItemDetailContext ctx)
         {
-            var stats = DamageConfig != null && DamageConfig.formulaStats != null ? DamageConfig.formulaStats : formulaStats;
-            float atk = (stats != null)
-                ? ctx.attributeSet.GetAttributeValue(stats.attackAdd)
-                : 0f;
             return new ItemDetailBlock
             {
                 title = "투사체 스킬",
                 body = (damageFormula != null)
                     ? $"피해(공식): {damageFormula.BuildDebugString(ctx.attributeSet)}"
-                    : $"피해: {damage}+[[공격력(+)]]({atk:F0})"
+                    : $"피해: {damage}"
             };
         }
-
-#if UNITY_EDITOR
-        private void OnValidate()
-        {
-            ValidateDamageConfig(ref formulaStats, ref includeElementDamage, ref includeStaggerDamage);
-        }
-#endif
     }
 }

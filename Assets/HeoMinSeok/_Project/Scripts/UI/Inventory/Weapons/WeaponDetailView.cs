@@ -16,9 +16,12 @@ public class WeaponDetailView : MonoBehaviour, IItemDetailView
 
         var w = (WeaponDefinition)def;
 
-        AddAbilitySection("일반공격", w.attack, DamageAttackKind.Normal, ctx, services);
-        AddAbilitySection("스킬 1", w.skill1, DamageAttackKind.Skill, ctx, services);
-        AddAbilitySection("스킬 2", w.skill2, DamageAttackKind.Skill, ctx, services);
+        // ✅ 상단: 무기 설명 + 장착 시 적용되는 스탯
+        AddWeaponSummarySection(w, services);
+
+        AddAbilitySection("일반공격", w.attack, DamageAttackKind.Normal, ctx, services, w.attackInputHint);
+        AddAbilitySection("스킬 1", w.skill1, DamageAttackKind.Skill, ctx, services, w.skill1InputHint);
+        AddAbilitySection("스킬 2", w.skill2, DamageAttackKind.Skill, ctx, services, w.skill2InputHint);
     }
 
     public void Hide()
@@ -27,12 +30,12 @@ public class WeaponDetailView : MonoBehaviour, IItemDetailView
         gameObject.SetActive(false);
     }
 
-    private void AddAbilitySection(string header, AbilityDefinition ability, DamageAttackKind kind, ItemDetailContext ctx, ItemDetailPanelServices services)
+    private void AddAbilitySection(string header, AbilityDefinition ability, DamageAttackKind kind, ItemDetailContext ctx, ItemDetailPanelServices services, string inputHint)
     {
         if (sections == null) return;
         if (ability == null) return;
 
-        string body = BuildAbilityBody(ability, kind, ctx);
+        string body = BuildAbilityBody(ability, kind, ctx, inputHint);
         if (services != null && services.formatText != null)
             body = services.formatText(body);
 
@@ -40,13 +43,62 @@ public class WeaponDetailView : MonoBehaviour, IItemDetailView
 
     }
 
-    private string BuildAbilityBody(AbilityDefinition ad, DamageAttackKind kind, ItemDetailContext ctx)
+    private void AddWeaponSummarySection(WeaponDefinition w, ItemDetailPanelServices services)
+    {
+        if (sections == null || w == null) return;
+
+        var sb = new StringBuilder();
+
+        if (!string.IsNullOrEmpty(w.description))
+            sb.AppendLine(w.description);
+
+        if (w.statModifiers != null && w.statModifiers.Count > 0)
+        {
+            if (sb.Length > 0) sb.AppendLine();
+            sb.AppendLine("<b>능력치</b>");
+
+            for (int i = 0; i < w.statModifiers.Count; i++)
+            {
+                var e = w.statModifiers[i];
+                if (e.attribute == null) continue;
+
+                string label = !string.IsNullOrEmpty(e.labelOverride)
+                    ? e.labelOverride
+                    : (!string.IsNullOrEmpty(e.attribute.attributeName) ? e.attribute.attributeName : e.attribute.name);
+
+                string valueText;
+                if (e.type == ModifierType.Percent)
+                {
+                    // Percent는 +0.1 => +10%
+                    valueText = $"+{e.value * 100f:0.#}%";
+                }
+                else
+                {
+                    valueText = $"+{e.value:0.##}";
+                }
+
+                sb.AppendLine($"- {label} <color=#FFD54F>{valueText}</color>");
+            }
+        }
+
+        string body = sb.ToString().TrimEnd();
+        if (services != null && services.formatText != null)
+            body = services.formatText(body);
+
+        if (!string.IsNullOrEmpty(body))
+            sections.Add("요약", body, services != null ? services.showGlossary : null);
+    }
+
+    private string BuildAbilityBody(AbilityDefinition ad, DamageAttackKind kind, ItemDetailContext ctx, string inputHint)
     {
         var sb = new StringBuilder();
 
         sb.AppendLine($"<b>{ad.abilityName}</b>");
         if (!string.IsNullOrEmpty(ad.description))
             sb.AppendLine(ad.description);
+
+        if (!string.IsNullOrEmpty(inputHint))
+            sb.AppendLine($"입력: <color=#A7E1FF>{inputHint}</color>");
 
         if (ad.cooldown > 0f)
             sb.AppendLine($"쿨다운: <color=#FFD54F>{ad.cooldown:0.##}s</color>");
@@ -107,32 +159,5 @@ public class WeaponDetailView : MonoBehaviour, IItemDetailView
         return sb.ToString();
     }
 
-    private void AppendDamagePreview(
-        StringBuilder sb,
-        DamageFormulaStats stats,
-        DamageAttackKind kind,
-        float baseHp,
-        float baseStagger,
-        bool includeElement,
-        bool includeStagger,
-        ItemDetailContext ctx)
-    {
-        // If we can compute with player stats, show non-crit & crit.
-        if (ctx != null && ctx.attributeSet != null && stats != null)
-        {
-            var noCrit = DamageFormulaUtil.Compute(ctx.attributeSet, stats, kind, baseHp, baseStagger, includeElement, includeStagger, critRoll01: 1f, forceCrit: false);
-            var crit  = DamageFormulaUtil.Compute(ctx.attributeSet, stats, kind, baseHp, baseStagger, includeElement, includeStagger, critRoll01: 0f, forceCrit: true);
-
-            sb.AppendLine($"기본 피해: {baseHp:0.##}");
-            sb.AppendLine($"예상 피해: <color=#FFD54F>{noCrit.hpDamage:0}</color> (치명타 <color=#FFB3C7>{crit.hpDamage:0}</color>)");
-
-            if (includeElement) sb.AppendLine($"속성 피해: {noCrit.elementDamage:0} (치명타 {crit.elementDamage:0})");
-            if (includeStagger) sb.AppendLine($"무력화: {noCrit.staggerDamage:0} (치명타 {crit.staggerDamage:0})");
-        }
-        else
-        {
-            sb.AppendLine($"기본 피해: {baseHp:0.##}");
-            sb.AppendLine("(예상 피해 계산을 위해 플레이어 AttributeSet / DamageFormulaStats가 필요)");
-        }
-    }
+    // (Damage preview moved to per-sourceObject IDetailProvider implementations.)
 }

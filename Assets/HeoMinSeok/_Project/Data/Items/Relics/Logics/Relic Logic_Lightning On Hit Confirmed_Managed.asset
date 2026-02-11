@@ -16,6 +16,7 @@ MonoBehaviour:
   damageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
   attackPlusAttribute: {fileID: 11400000, guid: 81ebe564c6bd7d54a92e1093c59a8161, type: 2}
   baseDamage: 50
+  baseDamageByLevel: []
   radius: 4
   enemyMask:
     serializedVersion: 2

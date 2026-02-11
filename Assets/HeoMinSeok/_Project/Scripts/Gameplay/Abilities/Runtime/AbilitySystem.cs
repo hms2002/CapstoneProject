@@ -48,6 +48,12 @@ namespace UnityGAS
         [Tooltip("SendGameplayEvent(tag) 호출 시, 해당 tag가 Cue로 등록되어 있으면 자동으로 ExecuteCue로도 처리")]
         [SerializeField] private bool autoExecuteCueWhenGameplayEventTagExists = true;
 
+        [Header("Combat Events")]
+        [Tooltip("타겟의 HP(healthAttribute)가 0 이하로 떨어져 '사망'이 감지되면 이 태그로 GameplayEvent를 발행합니다.\nRelicProcManager(유물) 트리거로 사용하세요.")]
+        [SerializeField] private GameplayTag killConfirmedTag;
+
+        public GameplayTag KillConfirmedTag => killConfirmedTag;
+
         // 상태
         private bool isCasting;
         private bool isExecuting;
@@ -446,9 +452,11 @@ namespace UnityGAS
             if (def != null && def.useCharges)
                 return spec.GetInt(KEY_CHARGES, 0) <= 0;
 
-            var cdEffect = def != null ? (def.cooldownEffect != null ? def.cooldownEffect : defaultCooldownEffect) : null;
+            // ✅ 쿨다운 GE는 "하나(defaultCooldownEffect)"로 통일.
+            // Ability별 구분은 SourceObject(AbilityDefinition)로 한다.
+            var cdEffect = defaultCooldownEffect;
             if (cdEffect != null && effectRunner != null)
-                return effectRunner.HasActiveEffect(cdEffect, gameObject, def); // ← 아래 2)에서 오버로드 추가
+                return effectRunner.HasActiveEffect(cdEffect, gameObject, def);
 
             return spec.CooldownRemaining > 0f;
         }
@@ -578,8 +586,10 @@ namespace UnityGAS
                         spec.SetFloat(KEY_RECHARGE, Mathf.Max(0.01f, def.cooldown));
                 }
 
-                // 쿨다운은 캐스팅 완료 즉시 시작
-                StartCooldown(spec);
+                // 쿨다운은 기본적으로 캐스팅 완료 즉시 시작.
+                // 단, AbilityDefinition.startCooldownOnEnd=true면 실행이 끝날 때 시작한다.
+                if (!def.startCooldownOnEnd)
+                    StartCooldown(spec);
             }
 
             isCasting = false;
@@ -722,6 +732,10 @@ namespace UnityGAS
                 // 태그 회수
                 if (tagSystem != null && def.grantedTagsWhileActive != null)
                     tagSystem.RemoveTags(def.grantedTagsWhileActive);
+
+                // (옵션) 실행이 끝나는 시점에 쿨다운 시작
+                if (def != null && def.startCooldownOnEnd)
+                    StartCooldown(spec);
 
                 // 토큰 종료
                 spec.Token?.Cancel();

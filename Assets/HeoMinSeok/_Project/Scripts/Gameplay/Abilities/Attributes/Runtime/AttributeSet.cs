@@ -49,8 +49,10 @@ namespace UnityGAS
                 // 이벤트 연결
                 var capturedDef = attributeDef;
                 av.OnValueChanged += (oldVal, newVal) => OnAttributeChanged?.Invoke(capturedDef, oldVal, newVal);
-                _initialized = true;
             }
+
+            // 초기 AttributeValue 생성이 끝난 뒤에만 초기화 완료 처리
+            _initialized = true;
 
 
             // 2) value-max 링크 구성 (Health <- MaxHealth)
@@ -100,6 +102,7 @@ namespace UnityGAS
 
         public AttributeValue GetAttribute(AttributeDefinition definition)
         {
+            EnsureInitialized();
             if (definition == null) return null;
             return attributes.TryGetValue(definition, out var v) ? v : null;
         }
@@ -133,6 +136,7 @@ namespace UnityGAS
 
         public void ModifyAttributeValue(AttributeDefinition definition, float amount, UnityEngine.Object source)
         {
+            EnsureInitialized();
             var attr = GetAttribute(definition);
             if (attr != null)
                 attr.AddBaseValue(amount);
@@ -140,6 +144,7 @@ namespace UnityGAS
 
         public void AddModifier(AttributeDefinition definition, AttributeModifier modifier)
         {
+            EnsureInitialized();
             var attr = GetAttribute(definition);
             if (attr != null)
                 attr.AddModifier(modifier);
@@ -147,6 +152,7 @@ namespace UnityGAS
 
         public void RemoveModifiersFromSource(UnityEngine.Object source)
         {
+            EnsureInitialized();
             foreach (var attribute in attributes.Values)
                 attribute.RemoveModifiersFromSource(source);
         }

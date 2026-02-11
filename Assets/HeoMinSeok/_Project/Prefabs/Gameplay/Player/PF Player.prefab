@@ -239,6 +239,8 @@ GameObject:
   - component: {fileID: 4807128067502290074}
   - component: {fileID: 1334457642439548572}
   - component: {fileID: 2404983202199153576}
+  - component: {fileID: 9155675093091441688}
+  - component: {fileID: 6786668010009585117}
   m_Layer: 0
   m_Name: PF Player
   m_TagString: Player
@@ -431,8 +433,13 @@ MonoBehaviour:
   attributeSet: {fileID: 1414767285602429285}
   effectRunner: {fileID: 7878539558719410035}
   tagSystem: {fileID: 7887873875085709242}
+  globalCancelCastingOnTags: []
+  globalCancelExecutionOnTags: []
   damageProfile: {fileID: 4776885609674041618}
   defaultCooldownEffect: {fileID: 11400000, guid: e0cdcda9b86374b4c99ad2e948fcfd26, type: 2}
+  cooldownDurationMultiplierAttribute: {fileID: 0}
+  cooldownFlatReduceSecondsOnHitAttribute: {fileID: 0}
+  minCooldownSeconds: 0.05
   cueManager: {fileID: 0}
   autoExecuteCueWhenGameplayEventTagExists: 1
   animator: {fileID: 8399328563048880028}
@@ -465,22 +472,30 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
   - {fileID: 11400000, guid: 0e177e1d15e428745b5859fac08ce203, type: 2}
   - {fileID: 11400000, guid: 81ebe564c6bd7d54a92e1093c59a8161, type: 2}
+  - {fileID: 11400000, guid: 947f52c2a34d008428c105cd897d5efd, type: 2}
   - {fileID: 11400000, guid: 2c8e2b555f632824fbc8a39cd7bcfc86, type: 2}
+  - {fileID: 11400000, guid: 77a3db6579cf45940a7dae4896dde0db, type: 2}
+  - {fileID: 11400000, guid: 2fa45d25bb8e0e945912cde04492e6d1, type: 2}
+  - {fileID: 11400000, guid: a614422f03de7ff40b35c8b5f4ca74af, type: 2}
   - {fileID: 11400000, guid: 505a2d18dfd7a64479766ed30e612100, type: 2}
   - {fileID: 11400000, guid: 4cf98b7d858f198459256a03d954c0d2, type: 2}
-  - {fileID: 11400000, guid: 4b6e7cdf4c89b0b44adad24835703fdc, type: 2}
-  - {fileID: 11400000, guid: f412c7da2733d71489ec2687fd2f7134, type: 2}
-  - {fileID: 11400000, guid: 09cf2a7744186794dbb618d28fc887df, type: 2}
-  - {fileID: 11400000, guid: 94479dde93479a146a9bd51a982b12ca, type: 2}
-  - {fileID: 11400000, guid: 4f5d1e3ffdcf18e4bbef58f59b785760, type: 2}
-  - {fileID: 11400000, guid: bd078173c9092104dbc43ac575e1d092, type: 2}
   - {fileID: 11400000, guid: 508e8a7b9bd177a4db23556497bbf018, type: 2}
   - {fileID: 11400000, guid: 3cf73420df1732240b7c90837ff7efab, type: 2}
+  - {fileID: 11400000, guid: 99755bd56436bac4eb944a96f1317059, type: 2}
   - {fileID: 11400000, guid: 618d006e7af394a4db0798cfa63b2660, type: 2}
+  - {fileID: 11400000, guid: 5e0412bd8f40af44c9249edbe58db140, type: 2}
+  - {fileID: 11400000, guid: 4b6e7cdf4c89b0b44adad24835703fdc, type: 2}
+  - {fileID: 11400000, guid: 43e97a0900edf3844b6f95b1486fe62f, type: 2}
+  - {fileID: 11400000, guid: f412c7da2733d71489ec2687fd2f7134, type: 2}
   - {fileID: 11400000, guid: 62b7b95dad0f7a243bd347214b4206e7, type: 2}
+  - {fileID: 11400000, guid: 71c1c19bf70cce34281f4b44cabbed2f, type: 2}
   - {fileID: 11400000, guid: f1b00e97d4b97d94dbd5d9df27c64099, type: 2}
-  - {fileID: 11400000, guid: 77a3db6579cf45940a7dae4896dde0db, type: 2}
-  - {fileID: 11400000, guid: a614422f03de7ff40b35c8b5f4ca74af, type: 2}
+  - {fileID: 11400000, guid: 09cf2a7744186794dbb618d28fc887df, type: 2}
+  - {fileID: 11400000, guid: 7f3731180b19dfd49a133ce75c58992a, type: 2}
+  - {fileID: 11400000, guid: 94479dde93479a146a9bd51a982b12ca, type: 2}
+  - {fileID: 11400000, guid: 4f5d1e3ffdcf18e4bbef58f59b785760, type: 2}
+  - {fileID: 11400000, guid: dde112729dec0bb4a9d2238ee7ee6dcc, type: 2}
+  - {fileID: 11400000, guid: bd078173c9092104dbc43ac575e1d092, type: 2}
   maxLinks:
   - value: {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
     max: {fileID: 11400000, guid: 0e177e1d15e428745b5859fac08ce203, type: 2}
@@ -535,7 +550,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf0c493b3738fec46a2f7eda2d1b98d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 6
+  baseMoveSpeed: 6
+  moveSpeedMultiplierAttribute: {fileID: 0}
+  forcedMoveTag: {fileID: 0}
   movementLockedTag: {fileID: 11400000, guid: 6a88dccc70fd08841a7484539aec65c1, type: 2}
   interactKey: 102
   abilitySystem: {fileID: 1832372497922031110}
@@ -635,7 +652,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b8a581dfd12f534795b6a5dd3c5e479, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  formulaStats: {fileID: 11400000, guid: 83865f9accf70664fa56b704cf0506df, type: 2}
+  statBindings: {fileID: 0}
+  defaultPostProcess: {fileID: 0}
 --- !u!114 &2236992985390640672
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -781,3 +799,41 @@ MonoBehaviour:
   drawOnlyWhenSelected: 0
   defaultDuration: 0.15
   maxBoxes: 12
+--- !u!114 &9155675093091441688
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8883617028798182002}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 15a99cfe40eccb641af350bbaa8a805c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spriteRenderer: {fileID: 4860281173819614724}
+  flashSeconds: 0.08
+  animator: {fileID: 8399328563048880028}
+  hitTrigger: Hit
+  defaultStunSeconds: 0.3
+  componentsToDisable:
+  - {fileID: 4913808379797790544}
+  cameraShake: {fileID: 0}
+  defaultShake: 0.3
+  hitReactImmuneTag: {fileID: 0}
+  stunImmuneTag: {fileID: 0}
+--- !u!114 &6786668010009585117
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8883617028798182002}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26c9fe53bdef53947bbf6f41db722013, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  body: {fileID: 288432539280398367}
+  knockbackImmuneTag: {fileID: 0}
+  resistancePctAttribute: {fileID: 0}

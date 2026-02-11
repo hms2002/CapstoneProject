@@ -26,7 +26,17 @@ public class SampleTopDownPlayer : MonoBehaviour, IPlayerInteractor
     // Movement
     // -----------------------
     [Header("Movement")]
-    public float moveSpeed = 6f;
+    [Tooltip("기본 이동 속도. 최종 속도는 baseMoveSpeed * MoveSpeedMultiplier(CurrentValue)로 계산됩니다.")]
+    public float baseMoveSpeed = 6f;
+
+    [Tooltip("이동속도 배수 StatId (권장: MoveSpeedMultiplierFinal, x1 기반). StatTypeBindings가 설정돼 있으면 이 값을 우선 사용합니다.")]
+    public StatId moveSpeedMultiplierStatId = StatId.MoveSpeedFinal;
+
+    [Tooltip("Legacy: 이동속도 배수 Attribute (기본값 1 권장). StatTypeBindings가 없을 때 fallback으로 사용합니다.")]
+    public AttributeDefinition moveSpeedMultiplierAttribute;
+
+    [Tooltip("이 태그가 있으면 WASD 입력을 무시하고, 마우스 조준 방향(AimDirection)으로 강제 이동합니다.")]
+    public GameplayTag forcedMoveTag;
 
     [Tooltip("이 태그가 있으면 이동 입력 무시")]
     public GameplayTag movementLockedTag;
@@ -86,6 +96,7 @@ public class SampleTopDownPlayer : MonoBehaviour, IPlayerInteractor
     public Vector2 MouseWorld { get; private set; }
 
     private Rigidbody2D rb;
+    private AttributeSet _attr;
 
     private bool isHoldingAttack;
     private float attackRepeatTimer;
@@ -95,6 +106,8 @@ public class SampleTopDownPlayer : MonoBehaviour, IPlayerInteractor
         Instance = this;
 
         rb = GetComponent<Rigidbody2D>();
+
+        _attr = GetComponent<AttributeSet>();
 
         if (abilitySystem == null) abilitySystem = GetComponent<AbilitySystem>();
         if (tagSystem == null) tagSystem = GetComponent<TagSystem>();
@@ -141,11 +154,43 @@ public class SampleTopDownPlayer : MonoBehaviour, IPlayerInteractor
             return;
         }
 
-        float x = Input.GetAxisRaw("Horizontal");
-        float y = Input.GetAxisRaw("Vertical");
-        MoveInput = new Vector2(x, y).normalized;
+        bool forced = (tagSystem != null && forcedMoveTag != null && tagSystem.HasTag(forcedMoveTag));
 
-        rb.linearVelocity = MoveInput * moveSpeed;
+        if (!forced)
+        {
+            float x = Input.GetAxisRaw("Horizontal");
+            float y = Input.GetAxisRaw("Vertical");
+            MoveInput = new Vector2(x, y).normalized;
+        }
+        else
+        {
+            // 강제 이동: AimDirection 방향으로만 이동 (WASD 무시)
+            MoveInput = AimDirection.sqrMagnitude > 0.0001f ? AimDirection.normalized : Vector2.right;
+        }
+
+        float mult = 1f;
+        if (_attr != null)
+        {
+            // Prefer StatId + StatTypeBindings (Final = (Base+Add)*Mul) so relic/weapon buffs are reflected.
+            StatTypeBindings bindings = null;
+            if (abilitySystem != null && abilitySystem.DamageProfile != null)
+                bindings = abilitySystem.DamageProfile.GetStatBindings();
+
+            if (bindings != null)
+            {
+                var provider = new AttributeStatProvider(_attr, bindings);
+                mult = provider.Get(moveSpeedMultiplierStatId);
+            }
+            else if (moveSpeedMultiplierAttribute != null)
+            {
+                // Legacy fallback
+                mult = _attr.GetAttributeValue(moveSpeedMultiplierAttribute);
+            }
+
+            mult = Mathf.Max(0f, mult);
+        }
+
+        rb.linearVelocity = MoveInput * (baseMoveSpeed * mult);
     }
 
     // -----------------------
@@ -318,7 +363,7 @@ public class SampleTopDownPlayer : MonoBehaviour, IPlayerInteractor
         if (Input.GetKeyDown(skill2Key)) TryActivateSafe(GetSkill2());
 
         // Dash
-        if (Input.GetKeyDown(dashKey)) 
+        if (Input.GetKeyDown(dashKey))
             TryActivateSafe(dash);
 
         if (weaponInventory != null && Input.GetKeyDown(KeyCode.Tab))

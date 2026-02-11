@@ -1,0 +1,56 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 808910561e593534f9ea3637c00cc255, type: 3}
+  m_Name: AD_RW_Skill1_Rush
+  m_EditorClassIdentifier: 
+  abilityName: AD_RW_Skill1_Rush
+  icon: {fileID: -1138107394, guid: ef16b2ddeb64123459076c2c8a541a63, type: 3}
+  description: AD_RW_Skill1_Rush
+  cooldown: 12
+  useCharges: 0
+  maxCharges: 1
+  cooldownEffect: {fileID: 11400000, guid: e0cdcda9b86374b4c99ad2e948fcfd26, type: 2}
+  cooldownTag: {fileID: 11400000, guid: ab3da0d16c8c0bb4db636386a1b79068, type: 2}
+  startCooldownOnEnd: 1
+  castTime: 0
+  recoveryTime: 0
+  canCastWhileMoving: 1
+  interruptible: 1
+  requireTargetObject: 0
+  cost: 0
+  costAttribute: {fileID: 0}
+  animationChannel: 0
+  animationTrigger: 
+  animationTriggerHash: 0
+  abilityTags: []
+  requiredTags: []
+  blockedByTags: []
+  cancelCastingOnTags: []
+  cancelExecutionOnTags: []
+  requiredTagSets: []
+  blockedByTagSets: []
+  targetRequiredTagSets: []
+  targetBlockedByTagSets: []
+  grantedTagsWhileActive:
+  - {fileID: 11400000, guid: 837c3c3beac45de458f179f50c7d7500, type: 2}
+  targetRequiredTags: []
+  targetBlockedByTags: []
+  logic: {fileID: 11400000, guid: 766ca51564fbc2149953760a712f78c3, type: 2}
+  sourceObject: {fileID: 0}
+  containers: []
+  cueOnCastStart: {fileID: 0}
+  cueWhileCasting: {fileID: 0}
+  cueOnCommit: {fileID: 0}
+  cueWhileActive: {fileID: 0}
+  cueOnEnd: {fileID: 0}
+  cueOnCastCancelled: {fileID: 0}
+  cueOnExecutionCancelled: {fileID: 0}

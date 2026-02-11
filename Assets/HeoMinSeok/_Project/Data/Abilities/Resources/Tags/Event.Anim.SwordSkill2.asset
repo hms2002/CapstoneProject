@@ -15,6 +15,6 @@ MonoBehaviour:
   developerNote: 
   tagName: SwordSkill2
   parent: {fileID: 11400000, guid: c086a6521210eb943b1188d8edf40d54, type: 2}
-  id: 18
+  id: 22
   cachedPath: 
   cachedLowerPath: 

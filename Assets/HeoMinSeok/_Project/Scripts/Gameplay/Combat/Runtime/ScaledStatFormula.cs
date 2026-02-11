@@ -23,6 +23,13 @@ namespace UnityGAS
         [Serializable]
         public struct Term
         {
+            [Header("Source")]
+            [Tooltip("If true, this term queries the stat provider by StatId (recommended). If false, it reads the AttributeDefinition directly (legacy).")]
+            public bool useStatId;
+
+            [Tooltip("StatId queried from IStatProvider when useStatId is enabled.")]
+            public StatId statId;
+
             [Tooltip("Attacker-side attribute used as the source value.")]
             public AttributeDefinition sourceAttribute;
 
@@ -48,12 +55,16 @@ namespace UnityGAS
         private readonly struct CompiledTerm
         {
             public readonly IReadOnlyAttributeValue value;
+            public readonly StatId statId;
+            public readonly bool useStatId;
             public readonly float rate;
             public readonly float flat;
 
-            public CompiledTerm(IReadOnlyAttributeValue value, float rate, float flat)
+            public CompiledTerm(IReadOnlyAttributeValue value, StatId statId, bool useStatId, float rate, float flat)
             {
                 this.value = value;
+                this.statId = statId;
+                this.useStatId = useStatId;
                 this.rate = rate;
                 this.flat = flat;
             }
@@ -83,7 +94,54 @@ namespace UnityGAS
             for (int i = 0; i < cterms.Length; i++)
             {
                 var t = cterms[i];
-                float src = t.value != null ? t.value.CurrentValue : 0f;
+                // NOTE: StatId-backed terms require a provider to resolve.
+                // For AttributeSet-only evaluation, StatId terms contribute 0 unless they also have sourceAttribute set.
+                float src;
+                if (t.useStatId)
+                {
+                    // Fallback: if author also provided sourceAttribute, use it.
+                    src = t.value != null ? t.value.CurrentValue : 0f;
+                }
+                else
+                {
+                    src = t.value != null ? t.value.CurrentValue : 0f;
+                }
+                v += src * t.rate + t.flat;
+            }
+            return v;
+        }
+
+        /// <summary>
+        /// New: Evaluate using an <see cref="IStatProvider"/> (StatId-based), while still supporting legacy AD terms.
+        /// - For terms with useStatId=true, values are read from provider.
+        /// - For terms with useStatId=false, values are read from the given AttributeSet.
+        ///
+        /// NOTE: This does NOT use compiled caching because StatId queries are already O(1) in provider.
+        /// </summary>
+        public float Evaluate(AttributeSet source, IStatProvider provider, float defaultIfEmpty = 0f)
+        {
+            if (terms == null || terms.Count == 0) return defaultIfEmpty;
+            if (source == null && provider == null) return defaultIfEmpty;
+
+            float v = 0f;
+            for (int i = 0; i < terms.Count; i++)
+            {
+                var t = terms[i];
+                float src = 0f;
+
+                if (t.useStatId)
+                {
+                    if (provider != null && t.statId != StatId.None)
+                        src = provider.Get(t.statId);
+                    else if (source != null && t.sourceAttribute != null)
+                        src = source.GetAttributeValue(t.sourceAttribute);
+                }
+                else
+                {
+                    if (source != null && t.sourceAttribute != null)
+                        src = source.GetAttributeValue(t.sourceAttribute);
+                }
+
                 v += src * t.rate + t.flat;
             }
             return v;
@@ -114,10 +172,11 @@ namespace UnityGAS
             {
                 var t = terms[i];
                 IReadOnlyAttributeValue v = null;
+                // Legacy compilation is only for AD-backed terms.
                 if (t.sourceAttribute != null)
                     source.TryGetReadOnly(t.sourceAttribute, out v);
 
-                outTerms[i] = new CompiledTerm(v, t.rate, t.flat);
+                outTerms[i] = new CompiledTerm(v, t.statId, t.useStatId, t.rate, t.flat);
             }
             return outTerms;
         }
@@ -134,6 +193,8 @@ namespace UnityGAS
                     for (int i = 0; i < terms.Count; i++)
                     {
                         var t = terms[i];
+                        h = h * 31 + (t.useStatId ? 1 : 0);
+                        h = h * 31 + (int)t.statId;
                         h = h * 31 + (t.sourceAttribute != null ? t.sourceAttribute.GetInstanceID() : 0);
                         h = h * 31 + t.rate.GetHashCode();
                         h = h * 31 + t.flat.GetHashCode();
@@ -152,10 +213,18 @@ namespace UnityGAS
             for (int i = 0; i < terms.Count; i++)
             {
                 var t = terms[i];
-                if (t.sourceAttribute == null) continue;
+                if (!t.useStatId && t.sourceAttribute == null) continue;
                 if (sb.Length > 0) sb.Append(" + ");
-                float src = source != null ? source.GetAttributeValue(t.sourceAttribute) : 0f;
-                sb.Append(t.sourceAttribute.name);
+                float src = 0f;
+                if (t.useStatId)
+                {
+                    sb.Append(t.statId.ToString());
+                }
+                else
+                {
+                    src = source != null ? source.GetAttributeValue(t.sourceAttribute) : 0f;
+                    sb.Append(t.sourceAttribute.name);
+                }
                 sb.Append(" * ");
                 sb.Append((t.rate * 100f).ToString("0.##"));
                 sb.Append("%");

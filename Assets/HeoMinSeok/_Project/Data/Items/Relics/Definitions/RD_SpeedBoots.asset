@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ac1da532121a934bb7f57799b194806, type: 3}
+  m_Name: RD_SpeedBoots
+  m_EditorClassIdentifier: 
+  relicId: Relic.New1
+  displayName: SpeedBoots
+  icon: {fileID: -3286651782808291693, guid: ba2326ead771d2a42be5d3de99cb56fc, type: 3}
+  rarity: 0
+  description: 
+  maxLevel: 3
+  dropLevel: 1
+  logic: {fileID: 11400000, guid: 159416ccba97abb43b4cd1fc49a0d026, type: 2}
+  param: {fileID: 0}

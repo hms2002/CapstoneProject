@@ -84,6 +84,18 @@ public static class CombatDamageAction
         if (runner == null) return;
 
         // 1) HP damage via Spec + SetByCaller
+        //    + (Optional) Kill confirmed event: detect target HP crossing >0 -> <=0
+        float preHp = -1f;
+        AttributeDefinition hpAttr = null;
+        AttributeSet targetAttrs = null;
+        if (damageEffect is GE_Damage_Spec geDmg0 && geDmg0.healthAttribute != null)
+        {
+            hpAttr = geDmg0.healthAttribute;
+            targetAttrs = target.GetComponent<AttributeSet>();
+            if (targetAttrs != null)
+                preHp = targetAttrs.GetAttributeValue(hpAttr);
+        }
+        // NOTE: KillConfirmed 판정은 아래에서 preHp/postHp만 사용합니다.
         GameplayTag damageKey = null;
         if (damageEffect is GE_Damage_Spec geDmg)
             damageKey = geDmg.damageKey;
@@ -109,6 +121,28 @@ public static class CombatDamageAction
 
         runner.ApplyEffectSpec(geSpec, target);
 
+        // 1c) Kill confirmed event
+        // NOTE: "죽음" 판정은 프로젝트마다 다를 수 있어요(부활/더미/neverDie 등).
+        //       여기서는 HP가 0 이하로 떨어지는 순간을 기준으로 이벤트를 보냅니다.
+        if (system.KillConfirmedTag != null &&
+            targetAttrs != null && hpAttr != null && preHp > 0f)
+        {
+            float postHp = targetAttrs.GetAttributeValue(hpAttr);
+            if (postHp <= 0f)
+            {
+                system.SendGameplayEvent(system.KillConfirmedTag, new AbilityEventData
+                {
+                    AbilitySystem = system,
+                    Spec = spec,
+                    Instigator = system.gameObject,
+                    Target = target,
+                    WorldPosition = target.transform.position,
+                    Causer = causer
+                });
+            }
+        }
+
+        // (KillConfirmed 중복 블록 제거)
         // 2) Stagger build-up
         if (finalStaggerBuildUp > 0f)
         {

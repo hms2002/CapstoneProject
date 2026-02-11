@@ -19,6 +19,7 @@ public class WeaponInventory2D : MonoBehaviour
     [SerializeField] private AbilitySystem abilitySystem;
     [SerializeField] private TagSystem tagSystem;
     [SerializeField] private WeaponEquipController equipController;
+    [SerializeField] private AttributeSet attributeSet; // 무기 스탯 적용 대상(플레이어)
 
     // -----------------------
     // Slots
@@ -56,6 +57,7 @@ public class WeaponInventory2D : MonoBehaviour
         if (abilitySystem == null) abilitySystem = GetComponent<AbilitySystem>();
         if (tagSystem == null) tagSystem = GetComponent<TagSystem>();
         if (equipController == null) equipController = GetComponentInChildren<WeaponEquipController>();
+        if (attributeSet == null) attributeSet = GetComponent<AttributeSet>();
     }
 
     private bool ContainsWeaponId(string weaponId)
@@ -181,6 +183,9 @@ public class WeaponInventory2D : MonoBehaviour
         if (prevWeapon != null && prevWeapon.equippedTag != null && tagSystem != null)
             tagSystem.RemoveTag(prevWeapon.equippedTag);
 
+        // ✅ 장착 무기 스탯 제거
+        RemoveWeaponStats(prevWeapon);
+
         activeIndex = -1;
 
         // 비주얼 제거/숨김(캐시 사용 시 숨기기)
@@ -276,6 +281,12 @@ public class WeaponInventory2D : MonoBehaviour
         var nowWeapon = slots[newIndex];
         if (nowWeapon == null) return;
 
+        // ✅ 이전 장착 무기 스탯 제거 (무기는 슬롯에 남아있어도 "장착 해제"되면 적용되면 안 됨)
+        RemoveWeaponStats(prevWeapon);
+
+        // ✅ 이전 무기 스탯 제거
+        RemoveWeaponStats(prevWeapon);
+
         // 이전 장착 태그 제거 (상황에 따라 호출자가 스킵 가능)
         if (removePrevTag && prevWeapon != null && prevWeapon.equippedTag != null && tagSystem != null)
             tagSystem.RemoveTag(prevWeapon.equippedTag);
@@ -289,6 +300,15 @@ public class WeaponInventory2D : MonoBehaviour
         // 프리팹 장착
         if (equipController != null && nowWeapon.weaponPrefab != null)
             equipController.Equip(nowWeapon.weaponPrefab);
+
+        // ✅ 새 장착 무기 스탯 적용
+        ApplyWeaponStats(nowWeapon);
+
+        // ✅ 새 장착 무기 스탯 적용 (현재 장착 중인 무기 1개만 적용)
+        ApplyWeaponStats(nowWeapon);
+
+        // ✅ 새 무기 스탯 적용(활성 무기 1개만)
+        ApplyWeaponStats(nowWeapon);
 
         OnEquippedChanged?.Invoke(prevIndex, activeIndex, prevWeapon, nowWeapon);
     }
@@ -307,6 +327,12 @@ public class WeaponInventory2D : MonoBehaviour
         {
             if (weapon.equippedTag != null && tagSystem != null)
                 tagSystem.RemoveTag(weapon.equippedTag);
+
+            // ✅ 장착 무기 스탯 제거
+            RemoveWeaponStats(weapon);
+
+            // ✅ 장착 중 무기 스탯 제거
+            RemoveWeaponStats(weapon);
 
             activeIndex = -1;
 
@@ -378,6 +404,34 @@ public class WeaponInventory2D : MonoBehaviour
     }
 
     // -----------------------
+    // Weapon Stat Modifiers
+    // -----------------------
+    private void RemoveWeaponStats(WeaponDefinition weapon)
+    {
+        if (attributeSet == null || weapon == null) return;
+        attributeSet.RemoveModifiersFromSource(weapon);
+    }
+
+    private void ApplyWeaponStats(WeaponDefinition weapon)
+    {
+        if (attributeSet == null || weapon == null) return;
+
+        // 안전하게 "이 무기"로 들어간 modifier를 먼저 지우고 다시 적용
+        attributeSet.RemoveModifiersFromSource(weapon);
+
+        var list = weapon.statModifiers;
+        if (list == null) return;
+
+        for (int i = 0; i < list.Count; i++)
+        {
+            var e = list[i];
+            if (e.attribute == null) continue;
+            var mod = new AttributeModifier(e.type, e.value, weapon, duration: 0f);
+            attributeSet.AddModifier(e.attribute, mod);
+        }
+    }
+
+    // -----------------------
     // Drag&Drop Minimal API
     // -----------------------
     public int SlotCount => slots.Length;
@@ -441,6 +495,13 @@ public class WeaponInventory2D : MonoBehaviour
         // 1) active 슬롯이었다면, 먼저 기존 장착 태그 제거 + 비주얼/상태 정리
         if (wasActive && oldWeapon != null && oldWeapon.equippedTag != null && tagSystem != null)
             tagSystem.RemoveTag(oldWeapon.equippedTag);
+
+        if (wasActive && oldWeapon != null)
+            RemoveWeaponStats(oldWeapon);
+
+        // ✅ active 슬롯이었다면, 기존 무기 스탯도 제거
+        if (wasActive && oldWeapon != null)
+            RemoveWeaponStats(oldWeapon);
 
         if (wasActive && newWeapon == null)
         {

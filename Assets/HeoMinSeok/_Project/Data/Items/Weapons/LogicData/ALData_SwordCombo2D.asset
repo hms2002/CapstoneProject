@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   damageConfig:
     formulaStats: {fileID: 11400000, guid: 83865f9accf70664fa56b704cf0506df, type: 2}
+    baseDamageAlreadyIncludesAttackPower: 0
     includeElementBuildup: 1
     includeStaggerDamage: 0
     critAffectsElement: 1
@@ -30,6 +31,14 @@ MonoBehaviour:
   - 0
   - 0
   comboResetTime: 1
+  damageFormulas:
+  - {fileID: 11400000, guid: f836f4795e60fd54f9a4e401de9d7dd9, type: 2}
+  - {fileID: 11400000, guid: f836f4795e60fd54f9a4e401de9d7dd9, type: 2}
+  - {fileID: 0}
+  knockbackFormulas:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   damages:
   - 10
   - 10

@@ -1,0 +1,134 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df04a09cd387b7f409a565649841265a, type: 3}
+  m_Name: StatTypeBindings
+  m_EditorClassIdentifier: 
+  bindings:
+  - id: 10
+    attribute: {fileID: 11400000, guid: 947f52c2a34d008428c105cd897d5efd, type: 2}
+    isMultiplier: 0
+  - id: 11
+    attribute: {fileID: 11400000, guid: 81ebe564c6bd7d54a92e1093c59a8161, type: 2}
+    isMultiplier: 0
+  - id: 12
+    attribute: {fileID: 11400000, guid: 2c8e2b555f632824fbc8a39cd7bcfc86, type: 2}
+    isMultiplier: 1
+  - id: 20
+    attribute: {fileID: 11400000, guid: 4b6e7cdf4c89b0b44adad24835703fdc, type: 2}
+    isMultiplier: 0
+  - id: 21
+    attribute: {fileID: 11400000, guid: f412c7da2733d71489ec2687fd2f7134, type: 2}
+    isMultiplier: 1
+  - id: 30
+    attribute: {fileID: 11400000, guid: 09cf2a7744186794dbb618d28fc887df, type: 2}
+    isMultiplier: 0
+  - id: 31
+    attribute: {fileID: 11400000, guid: 94479dde93479a146a9bd51a982b12ca, type: 2}
+    isMultiplier: 1
+  - id: 40
+    attribute: {fileID: 11400000, guid: 505a2d18dfd7a64479766ed30e612100, type: 2}
+    isMultiplier: 0
+  - id: 41
+    attribute: {fileID: 11400000, guid: 4cf98b7d858f198459256a03d954c0d2, type: 2}
+    isMultiplier: 1
+  - id: 42
+    attribute: {fileID: 11400000, guid: dde112729dec0bb4a9d2238ee7ee6dcc, type: 2}
+    isMultiplier: 0
+  - id: 50
+    attribute: {fileID: 11400000, guid: 4f5d1e3ffdcf18e4bbef58f59b785760, type: 2}
+    isMultiplier: 0
+  - id: 51
+    attribute: {fileID: 11400000, guid: bd078173c9092104dbc43ac575e1d092, type: 2}
+    isMultiplier: 1
+  - id: 60
+    attribute: {fileID: 11400000, guid: 508e8a7b9bd177a4db23556497bbf018, type: 2}
+    isMultiplier: 1
+  - id: 100
+    attribute: {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
+    isMultiplier: 0
+  - id: 101
+    attribute: {fileID: 11400000, guid: 0e177e1d15e428745b5859fac08ce203, type: 2}
+    isMultiplier: 0
+  - id: 102
+    attribute: {fileID: 11400000, guid: 5e0412bd8f40af44c9249edbe58db140, type: 2}
+    isMultiplier: 0
+  - id: 103
+    attribute: {fileID: 11400000, guid: d20f7b3816162be4c9148511e7e45ae6, type: 2}
+    isMultiplier: 0
+  - id: 104
+    attribute: {fileID: 11400000, guid: 16f1eeaaef50b1143884b22e4da54a5f, type: 2}
+    isMultiplier: 1
+  - id: 200
+    attribute: {fileID: 11400000, guid: 99755bd56436bac4eb944a96f1317059, type: 2}
+    isMultiplier: 0
+  - id: 201
+    attribute: {fileID: 11400000, guid: 3cf73420df1732240b7c90837ff7efab, type: 2}
+    isMultiplier: 0
+  - id: 202
+    attribute: {fileID: 11400000, guid: 618d006e7af394a4db0798cfa63b2660, type: 2}
+    isMultiplier: 1
+  - id: 204
+    attribute: {fileID: 11400000, guid: 2fa45d25bb8e0e945912cde04492e6d1, type: 2}
+    isMultiplier: 0
+  - id: 205
+    attribute: {fileID: 11400000, guid: 77a3db6579cf45940a7dae4896dde0db, type: 2}
+    isMultiplier: 0
+  - id: 206
+    attribute: {fileID: 11400000, guid: a614422f03de7ff40b35c8b5f4ca74af, type: 2}
+    isMultiplier: 1
+  - id: 208
+    attribute: {fileID: 11400000, guid: 71c1c19bf70cce34281f4b44cabbed2f, type: 2}
+    isMultiplier: 0
+  - id: 209
+    attribute: {fileID: 11400000, guid: 62b7b95dad0f7a243bd347214b4206e7, type: 2}
+    isMultiplier: 0
+  - id: 210
+    attribute: {fileID: 11400000, guid: f1b00e97d4b97d94dbd5d9df27c64099, type: 2}
+    isMultiplier: 1
+  - id: 140
+    attribute: {fileID: 11400000, guid: 567fb769f1a0604458f4f84132a1ffa3, type: 2}
+    isMultiplier: 0
+  - id: 141
+    attribute: {fileID: 11400000, guid: 50a51f5bbc6eb564a8e720c21efba2a4, type: 2}
+    isMultiplier: 0
+  - id: 142
+    attribute: {fileID: 11400000, guid: 23db6468e859c6f42b0230a5af7ca81c, type: 2}
+    isMultiplier: 1
+  composites:
+  - finalId: 13
+    baseId: 10
+    addId: 11
+    mulId: 12
+  - finalId: 52
+    baseId: 42
+    addId: 50
+    mulId: 51
+  - finalId: 120
+    baseId: 102
+    addId: 103
+    mulId: 104
+  - finalId: 203
+    baseId: 200
+    addId: 201
+    mulId: 202
+  - finalId: 207
+    baseId: 204
+    addId: 205
+    mulId: 206
+  - finalId: 211
+    baseId: 208
+    addId: 209
+    mulId: 210
+  - finalId: 143
+    baseId: 140
+    addId: 141
+    mulId: 142

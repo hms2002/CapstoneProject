@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87ebf20bb6bef2f4c979973cb09f383f, type: 3}
+  m_Name: Relic Logic_Speed Up ON Kill
+  m_EditorClassIdentifier: 
+  triggerTag: {fileID: 11400000, guid: 165fc11102fdbfb40b1ce7b341ecc8bb, type: 2}
+  damageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
+  attackPlusAttribute: {fileID: 11400000, guid: 81ebe564c6bd7d54a92e1093c59a8161, type: 2}
+  baseDamage: 50
+  baseDamageByLevel: []
+  radius: 4
+  enemyMask:
+    serializedVersion: 2
+    m_Bits: 0
+  lightningPrefab: {fileID: 7753839861218199246, guid: dff3afb21b2d360409497e3857198481, type: 3}
+  cooldownSeconds: 0
