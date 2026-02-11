@@ -4,98 +4,144 @@ using UnityEngine;
 public class UpgradeTreeUI : MonoBehaviour
 {
     [Header("프리팹 및 부모 연결")]
-    public RectTransform slotParent;    // Pivot: (0.5, 0) 패널
-    public GameObject slotPrefab;
-    public Transform lineParent;
-    public GameObject linePrefab;
+    public Transform slotParent;    // 슬롯들이 들어갈 부모
+    public GameObject slotPrefab;   // UpgradeSlotUI 프리팹
 
+    public Transform lineParent;    // 선들이 들어갈 부모 (슬롯보다 뒤에 배치)
+    public GameObject linePrefab;   // 선 프리팹 (UI Image)
+
+    // 생성된 객체 관리 리스트
     private List<UpgradeSlotUI> allSlots = new List<UpgradeSlotUI>();
     private List<GameObject> allLines = new List<GameObject>();
 
-    private void Start() => BuildUI();
+    private void Start()
+    {
+        // 게임 시작 시 트리를 자동으로 그립니다.
+        BuildUI();
+    }
 
-    private void OnEnable() { if (UpgradeManager.Instance != null) UpgradeManager.Instance.OnDataChanged += RefreshAll; }
-    private void OnDisable() { if (UpgradeManager.Instance != null) UpgradeManager.Instance.OnDataChanged -= RefreshAll; }
+    private void OnEnable()
+    {
+        if (UpgradeManager.Instance != null)
+            UpgradeManager.Instance.OnDataChanged += RefreshAll;
+    }
+
+    private void OnDisable()
+    {
+        if (UpgradeManager.Instance != null)
+            UpgradeManager.Instance.OnDataChanged -= RefreshAll;
+    }
 
     public void BuildUI()
     {
+        // 1. 기존 UI 클리어
         foreach (Transform child in slotParent) Destroy(child.gameObject);
         foreach (Transform child in lineParent) Destroy(child.gameObject);
-        allSlots.Clear(); allLines.Clear();
+        allSlots.Clear();
+        allLines.Clear();
 
         Dictionary<int, UpgradeSlotUI> slotDict = new Dictionary<int, UpgradeSlotUI>();
-        var allUpgrades = UpgradeManager.Instance.GetAllUpgrades();
+        var allUpgrades = UpgradeManager.Instance.GetAllUpgrades(); // DB에 있는 모든 노드 가져오기
 
-        float maxX = 0; float maxY = 0;
-
+        // 2. 슬롯 생성 (SO에 저장된 좌표 사용)
         foreach (var node in allUpgrades)
         {
             if (node == null) continue;
+
             GameObject slotObj = Instantiate(slotPrefab, slotParent);
             UpgradeSlotUI slotUI = slotObj.GetComponent<UpgradeSlotUI>();
             RectTransform rect = slotObj.GetComponent<RectTransform>();
 
-            Vector2 uiPos = node.GetUiPosition();
-            rect.anchoredPosition = uiPos;
+            // [핵심] 툴에서 설정한 Grid 좌표를 실제 UI 좌표로 변환하여 배치
+            rect.anchoredPosition = node.GetUiPosition();
 
-            // 최대 범위 계산
-            if (Mathf.Abs(uiPos.x) > maxX) maxX = Mathf.Abs(uiPos.x);
-            if (uiPos.y > maxY) maxY = uiPos.y;
-
+            // 슬롯 데이터 주입 및 초기화
             slotUI.assignedNode = node;
-            slotUI.InitSlot((n) => UpgradeManager.Instance.TryBuyUpgrade(n.nodeID));
+            slotUI.InitSlot(OnBuyButtonPressed);
+
             allSlots.Add(slotUI);
             slotDict[node.nodeID] = slotUI;
         }
 
-        // [핵심] 패널 크기 업데이트
-        UpdateContentSize(maxX, maxY);
-
-        // 선 그리기
+        // 3. 선 그리기 (Elbow 스타일)
         foreach (var node in allUpgrades)
         {
-            if (node == null || !slotDict.ContainsKey(node.nodeID)) continue;
+            if (node == null) continue;
+            if (!slotDict.ContainsKey(node.nodeID)) continue;
+
+            var fromSlot = slotDict[node.nodeID];
+
+            // 자식 노드들을 향해 선을 그림
             foreach (var nextId in node.unlockedNodeIDs)
             {
                 if (slotDict.TryGetValue(nextId, out var targetSlot))
-                    DrawLine(slotDict[node.nodeID].GetComponent<RectTransform>(), targetSlot.GetComponent<RectTransform>());
+                {
+                    DrawLine(fromSlot.GetComponent<RectTransform>(), targetSlot.GetComponent<RectTransform>());
+                }
             }
         }
     }
 
-    private void UpdateContentSize(float maxX, float maxY)
+    // 선 그리기 로직 (직각 꺾기)
+    private void DrawLine(RectTransform startRect, RectTransform endRect)
     {
-        float padding = 200f;
-        // Y축 시작 지점(-540)을 고려한 높이 설정
-        float newHeight = maxY + padding + 540f;
-        slotParent.sizeDelta = new Vector2(slotParent.sizeDelta.x, newHeight);
-    }
+        Vector2 start = startRect.anchoredPosition;
+        Vector2 end = endRect.anchoredPosition;
 
-    // [New] 닫기 버튼용 함수
-    public void OnClickClose() => UpgradeManager.Instance.CloseUI();
+        float elbowOffset = 50f; // 꺾이는 지점의 여유 공간
+        float direction = Mathf.Sign(end.y - start.y);
 
-    private void DrawLine(RectTransform start, RectTransform end)
-    {
-        Vector2 s = start.anchoredPosition; Vector2 e = end.anchoredPosition;
-        float dir = Mathf.Sign(e.y - s.y);
-        if (Mathf.Abs(e.y - s.y) < 10f) { CreateLineSegment(s, e); return; }
-        Vector2 eb1 = s + new Vector2(0, 50f * dir);
-        Vector2 eb2 = new Vector2(e.x, eb1.y);
-        CreateLineSegment(s, new Vector2(s.x, eb1.y));
-        CreateLineSegment(eb1, eb2);
-        CreateLineSegment(eb2, e);
+        // Y축 높이가 거의 같으면 직선으로 그림
+        if (Mathf.Abs(end.y - start.y) < 10f)
+        {
+            CreateLineSegment(start, end);
+            return;
+        }
+
+        // 'ㄷ' 혹은 'ㄹ' 자 형태로 꺾기
+        Vector2 elbow1 = start + new Vector2(0, elbowOffset * direction);
+        Vector2 elbow2 = new Vector2(end.x, elbow1.y);
+
+        CreateLineSegment(start, new Vector2(start.x, elbow1.y)); // 세로 출발
+        CreateLineSegment(elbow1, elbow2); // 가로 이동
+        CreateLineSegment(elbow2, end); // 세로 도착
     }
 
     private void CreateLineSegment(Vector2 start, Vector2 end)
     {
         var line = Instantiate(linePrefab, lineParent);
         var rect = line.GetComponent<RectTransform>();
+
         Vector2 dir = end - start;
-        rect.sizeDelta = new Vector2(dir.magnitude, 4f);
+        float dist = dir.magnitude;
+
+        // 선이 너무 짧으면 생성 안 함
+        if (dist < 1f)
+        {
+            Destroy(line);
+            return;
+        }
+
+        rect.sizeDelta = new Vector2(dist, 4f); // 선 두께: 4
         rect.anchoredPosition = start + (dir / 2);
-        rect.rotation = Quaternion.Euler(0, 0, Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg);
+
+        float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+        rect.rotation = Quaternion.Euler(0, 0, angle);
+
         allLines.Add(line);
     }
 
-    public void RefreshAll() { foreach (var s in allSlots) if (s != null) s.RefreshUI(); }
+    private void OnBuyButtonPressed(UpgradeNodeSO node)
+    {
+        UpgradeManager.Instance.TryBuyUpgrade(node.nodeID);
+    }
+
+    public void RefreshAll()
+    {
+        foreach (var slot in allSlots)
+        {
+            if (slot != null && slot.gameObject.activeInHierarchy)
+                slot.RefreshUI();
+        }
+    }
 }
