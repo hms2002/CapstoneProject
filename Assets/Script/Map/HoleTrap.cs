@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 using Cainos.PixelArtTopDown_Basic;
 using System.Collections;
 using UnityEngine;
@@ -87,3 +88,21 @@ public class HoleTrap : MonoBehaviour
         isTriggered = false;
     }
 }
+=======
+using UnityEngine;
+
+public class HoleTrap : MonoBehaviour
+{
+    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    void Start()
+    {
+        
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        
+    }
+}
+>>>>>>> Stashed changes
