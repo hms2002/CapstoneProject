@@ -49,10 +49,8 @@ namespace UnityGAS
                 // 이벤트 연결
                 var capturedDef = attributeDef;
                 av.OnValueChanged += (oldVal, newVal) => OnAttributeChanged?.Invoke(capturedDef, oldVal, newVal);
+                _initialized = true;
             }
-
-            // 초기 AttributeValue 생성이 끝난 뒤에만 초기화 완료 처리
-            _initialized = true;
 
 
             // 2) value-max 링크 구성 (Health <- MaxHealth)
@@ -102,7 +100,6 @@ namespace UnityGAS
 
         public AttributeValue GetAttribute(AttributeDefinition definition)
         {
-            EnsureInitialized();
             if (definition == null) return null;
             return attributes.TryGetValue(definition, out var v) ? v : null;
         }
@@ -136,10 +133,17 @@ namespace UnityGAS
 
         public void ModifyAttributeValue(AttributeDefinition definition, float amount, UnityEngine.Object source)
         {
+            // Damage/heal often needs to be visible immediately (same frame)
+            // for kill checks, UI, hit reactions, etc.
+            // AttributeValue uses a 'dirty' flag and normally recalculates in Update(),
+            // so we force a recalc here.
             EnsureInitialized();
             var attr = GetAttribute(definition);
             if (attr != null)
+            {
                 attr.AddBaseValue(amount);
+                attr.ForceRecalculate();
+            }
         }
 
         public void AddModifier(AttributeDefinition definition, AttributeModifier modifier)
@@ -147,12 +151,15 @@ namespace UnityGAS
             EnsureInitialized();
             var attr = GetAttribute(definition);
             if (attr != null)
+            {
                 attr.AddModifier(modifier);
+                // Modifiers are also frequently queried immediately after application.
+                attr.ForceRecalculate();
+            }
         }
 
         public void RemoveModifiersFromSource(UnityEngine.Object source)
         {
-            EnsureInitialized();
             foreach (var attribute in attributes.Values)
                 attribute.RemoveModifiersFromSource(source);
         }

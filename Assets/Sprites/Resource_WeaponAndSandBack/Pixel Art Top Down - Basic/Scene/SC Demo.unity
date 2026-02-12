@@ -29637,7 +29637,7 @@ MonoBehaviour:
   minCooldownSeconds: 0.05
   cueManager: {fileID: 0}
   autoExecuteCueWhenGameplayEventTagExists: 1
-  killConfirmedTag: {fileID: 0}
+  killConfirmedTag: {fileID: 11400000, guid: 165fc11102fdbfb40b1ce7b341ecc8bb, type: 2}
   animator: {fileID: 1334454372}
   playerAnimator: {fileID: 0}
 --- !u!114 &1334454371
