@@ -15,6 +15,6 @@ MonoBehaviour:
   developerNote: 
   tagName: Falling
   parent: {fileID: 11400000, guid: 07b58f92405b23544b048c3ed60ad67f, type: 2}
-  id: 0
-  cachedPath: Cue.Trap.Falling
+  id: 13
+  cachedPath: 
   cachedLowerPath: 

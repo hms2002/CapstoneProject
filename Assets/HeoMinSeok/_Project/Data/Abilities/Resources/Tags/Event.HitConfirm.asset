@@ -15,6 +15,6 @@ MonoBehaviour:
   developerNote: 
   tagName: HitConfirm
   parent: {fileID: 11400000, guid: d316fb229e8ff724cb3d949eae7d3a00, type: 2}
-  id: 24
+  id: 26
   cachedPath: 
   cachedLowerPath: 

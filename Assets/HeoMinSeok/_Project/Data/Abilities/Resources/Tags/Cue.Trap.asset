@@ -15,6 +15,6 @@ MonoBehaviour:
   developerNote: 
   tagName: Trap
   parent: {fileID: 11400000, guid: ccf4e2da310e69d40a23555382491107, type: 2}
-  id: 0
-  cachedPath: Cue.Trap
+  id: 12
+  cachedPath: 
   cachedLowerPath: 
