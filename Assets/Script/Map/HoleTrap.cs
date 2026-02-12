@@ -1,19 +1,22 @@
-<<<<<<< Updated upstream
-using Cainos.PixelArtTopDown_Basic;
 using System.Collections;
 using UnityEngine;
-using UnityGAS; // 네임스페이스 확인
+using UnityGAS; // 프로젝트 GAS 네임스페이스
 
 public class HoleTrap : MonoBehaviour
 {
     [Header("Settings")]
     [SerializeField] private float trapDamage = 10f;
-    [SerializeField] private float trapDuration = 1.0f;
+    [SerializeField] private float trapDuration = 1.0f; // 떨어지는 연출 시간
 
     [Header("GAS References")]
-    [SerializeField] private GameplayEffect damageEffect; // GE_Damage_Spec
-    [SerializeField] private GameplayEffect fallingEffect; // GE_Falling (이동불가 등)
-    [SerializeField] private GameplayTag damageTag; // Data.Damage
+    [Tooltip("데미지를 주는 즉시 이펙트 (GE_Damage_Spec)")]
+    [SerializeField] private GameplayEffect damageEffect;
+
+    [Tooltip("추락 중 상태이상 이펙트 (Infinite Duration). State.Move.Blocked 등의 태그 포함")]
+    [SerializeField] private GameplayEffect fallingEffect;
+
+    [Tooltip("데미지 값을 전달할 태그 (Data.Damage)")]
+    [SerializeField] private GameplayTag damageTag;
 
     private bool isTriggered = false;
 
@@ -23,45 +26,45 @@ public class HoleTrap : MonoBehaviour
         if (!collision.CompareTag("Player")) return;
 
         var abilitySystem = collision.GetComponent<AbilitySystem>();
-        var controller = collision.GetComponent<TopDownCharacterController>();
 
-        if (abilitySystem != null && controller != null)
+        // SafetyTracker 컴포넌트 가져오기
+        var safetyTracker = collision.GetComponent<SafetyTracker>();
+
+        if (abilitySystem != null && safetyTracker != null)
         {
-            StartCoroutine(ApplyTrapRoutine(abilitySystem, controller, collision.transform));
+            StartCoroutine(ApplyTrapRoutine(abilitySystem, safetyTracker, collision.transform));
         }
     }
 
-    private IEnumerator ApplyTrapRoutine(AbilitySystem asc, TopDownCharacterController controller, Transform playerTransform)
+    private IEnumerator ApplyTrapRoutine(AbilitySystem asc, SafetyTracker tracker, Transform playerTransform)
     {
         isTriggered = true;
 
         // -----------------------------------------------------------
-        // 1. 상태 이상 적용 (이동 불가) - 반환값을 받지 않음 (void)
+        // 1. 상태 이상 적용 (이동/행동 불가)
         // -----------------------------------------------------------
         if (fallingEffect != null)
         {
-            // Spec 생성
+            // Spec 생성 및 적용 (반환값 void이므로 변수 저장 안 함)
             var statusSpec = asc.MakeSpec(fallingEffect, asc.gameObject);
-
-            // [수정] 결과를 변수에 담지 않고 바로 실행
             asc.EffectRunner.ApplyEffectSpec(statusSpec, asc.gameObject);
         }
 
-        // 2. 물리 속도 초기화
+        // 2. 물리 속도 초기화 (미끄러짐 방지)
         var rb = playerTransform.GetComponent<Rigidbody2D>();
         if (rb != null) rb.linearVelocity = Vector2.zero;
 
-        // 3. 연출 대기
+        // 3. 연출 대기 (떨어지는 애니메이션이나 Cue가 재생될 시간)
         yield return new WaitForSeconds(trapDuration);
 
         // -----------------------------------------------------------
-        // 4. 데미지 적용 (SetByCaller)
+        // 4. 데미지 적용 (SetByCaller 패턴)
         // -----------------------------------------------------------
         if (damageEffect != null)
         {
             var damageSpec = asc.MakeSpec(damageEffect, asc.gameObject);
 
-            // 데미지 수치 주입 (SetSetByCallerMagnitude가 없다면 SetMagnitude 등 확인 필요)
+            // 데미지 수치 주입
             if (damageTag != null)
             {
                 damageSpec.SetSetByCallerMagnitude(damageTag, trapDamage);
@@ -70,39 +73,17 @@ public class HoleTrap : MonoBehaviour
             asc.EffectRunner.ApplyEffectSpec(damageSpec, asc.gameObject);
         }
 
-        // 5. 리스폰
-        if (controller != null)
-        {
-            playerTransform.position = controller.LastSafePosition;
-        }
+        // 5. 리스폰 (SafetyTracker에게 위치 요청)
+        playerTransform.position = tracker.GetRespawnPosition();
 
         // -----------------------------------------------------------
-        // 6. 상태 이상 해제 (이펙트 원본 에셋으로 삭제 요청)
+        // 6. 상태 이상 해제 (이펙트 원본을 기준으로 제거 요청)
         // -----------------------------------------------------------
         if (fallingEffect != null)
         {
-            // [수정] RemoveActiveEffect 대신 RemoveEffect 사용 (Effect 원본과 타겟을 넘김)
             asc.EffectRunner.RemoveEffect(fallingEffect, asc.gameObject);
         }
 
         isTriggered = false;
     }
 }
-=======
-using UnityEngine;
-
-public class HoleTrap : MonoBehaviour
-{
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-}
->>>>>>> Stashed changes

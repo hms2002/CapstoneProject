@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a2b8399869ef9bd458a40cdf69f1782e, type: 3}
+  m_Name: GE_Trap_Falling
+  m_EditorClassIdentifier: 
+  effectName: GE_Trap_Falling
+  description: Effect description.
+  icon: {fileID: 0}
+  duration: 99
+  canStack: 0
+  maxStacks: 1
+  grantedTags:
+  - {fileID: 11400000, guid: 6a88dccc70fd08841a7484539aec65c1, type: 2}
+  - {fileID: 11400000, guid: 90cc853a47e809d4e8baa4fbcd354709, type: 2}
+  - {fileID: 11400000, guid: 464b82c4380e99c45a839f32f32511a8, type: 2}
+  grantedTagSets: []
+  cueOnExecute: {fileID: 0}
+  cueWhileActive: {fileID: 0}
+  cueOnRemove: {fileID: 0}
+  attribute: {fileID: 0}
+  type: 0
+  value: 0
