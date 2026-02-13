@@ -24,7 +24,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 464b82c4380e99c45a839f32f32511a8, type: 2}
   grantedTagSets: []
   cueOnExecute: {fileID: 0}
-  cueWhileActive: {fileID: 0}
+  cueWhileActive: {fileID: 11400000, guid: f54e8cb58b4f7c64292067442e9286c7, type: 2}
   cueOnRemove: {fileID: 0}
   attribute: {fileID: 0}
   type: 0

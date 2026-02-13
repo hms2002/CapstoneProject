@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -11,13 +12,28 @@ namespace UnityGAS
         private readonly Dictionary<int, GameplayCueDefinition> defByTagId = new();
         private readonly Dictionary<CueKey, ActiveCueInstance> active = new();
 
+        // 초기화 여부를 체크하는 플래그
+        private bool isIndexBuilt = false;
+
+        // ----------------------------------------------------------------
+        // [ID 조회 헬퍼]
+        // ----------------------------------------------------------------
         private static int GetTagKey(GameplayTag tag)
         {
             if (tag == null) return -1;
-            // TagRegistry는 현재 tag.name 기반("A.B.C")을 사용
-            return TagRegistry.GetIdByPath(tag.name);
+            try
+            {
+                // TagRegistry가 초기화 안 됐으면 강제 초기화
+                TagRegistry.EnsureInitialized();
+                return TagRegistry.GetIdByPath(tag.name);
+            }
+            catch
+            {
+                return -1;
+            }
         }
 
+        // ... (CueKey, ActiveCueInstance 구조체는 기존 유지) ...
         [Serializable]
         private struct CueKey : IEquatable<CueKey>
         {
@@ -62,19 +78,23 @@ namespace UnityGAS
 
         private void Awake()
         {
-            TagRegistry.EnsureInitialized();
-            RebuildIndex();
+            // Awake에서는 강제로 하지 않음 (TagRegistry 의존성 문제 회피)
         }
 
-        private void OnValidate()
+        private void Start()
         {
-            RebuildIndex();
+            // 게임 시작 시점까지 아무도 안 불렀으면, 이제 초기화
+            if (!isIndexBuilt)
+            {
+                RebuildIndex();
+            }
         }
 
+        // [핵심] 인덱스 빌드 함수
         public void RebuildIndex()
         {
             defByTagId.Clear();
-            TagRegistry.EnsureInitialized();
+            TagRegistry.EnsureInitialized(); // 태그 시스템 준비
 
             for (int i = 0; i < definitions.Count; i++)
             {
@@ -82,40 +102,87 @@ namespace UnityGAS
                 if (d == null || d.cueTag == null) continue;
 
                 int id = GetTagKey(d.cueTag);
-                if (id < 0) continue;
-
-                defByTagId[id] = d;
+                if (id >= 0)
+                {
+                    defByTagId[id] = d;
+                }
             }
+
+            isIndexBuilt = true; // 초기화 완료 표시
+            // Debug.Log($"[GameplayCueManager] 인덱스 빌드 완료. ({defByTagId.Count}개)");
         }
+
+        // ----------------------------------------------------------------
+        // [핵심 변경] 모든 요청 메서드 첫 줄에 초기화 체크 추가
+        // ----------------------------------------------------------------
 
         public bool HasCue(GameplayTag tag)
         {
+            if (!isIndexBuilt) RebuildIndex(); // <--- 늦은 초기화
             int id = GetTagKey(tag);
             return id >= 0 && defByTagId.ContainsKey(id);
         }
 
         public void ExecuteCue(GameplayTag tag, GameplayCueParams p)
         {
-            int id = GetTagKey(tag);
-            if (id < 0) return;
+            if (!isIndexBuilt) RebuildIndex(); // <--- 늦은 초기화
 
-            if (!defByTagId.TryGetValue(id, out var def) || def == null) return;
-            SpawnAndNotifyExecute(def, p);
+            int id = GetTagKey(tag);
+            // ID 조회 실패 시 리스트 직접 검색 (안전장치)
+            if (id < 0 || !defByTagId.ContainsKey(id))
+            {
+                var fallbackDef = FindDefinitionFallback(tag);
+                if (fallbackDef != null)
+                {
+                    SpawnAndNotifyExecute(fallbackDef, p);
+                    return;
+                }
+            }
+
+            if (id >= 0 && defByTagId.TryGetValue(id, out var def))
+            {
+                SpawnAndNotifyExecute(def, p);
+            }
         }
 
         public void AddCue(GameplayTag tag, GameplayCueParams p)
         {
-            int id = GetTagKey(tag);
-            if (id < 0) return;
+            // [핵심] 누가 Start보다 빨리 불렀다면, 지금 즉시 초기화한다.
+            if (!isIndexBuilt) RebuildIndex();
 
-            if (!defByTagId.TryGetValue(id, out var def) || def == null) return;
-            if (!def.isPersistent) { ExecuteCue(tag, p); return; }
+            int id = GetTagKey(tag);
+            GameplayCueDefinition def = null;
+
+            // 1. 딕셔너리 검색
+            if (id >= 0) defByTagId.TryGetValue(id, out def);
+
+            // 2. 실패 시 리스트 직접 검색 (Fallback)
+            if (def == null)
+            {
+                def = FindDefinitionFallback(tag);
+                // 찾았으면 다음을 위해 ID 갱신 시도
+                if (def != null && id >= 0 && !defByTagId.ContainsKey(id))
+                    defByTagId[id] = def;
+            }
+
+            if (def == null)
+            {
+                Debug.LogError($"[Manager] 정의(Definition)를 찾을 수 없음: {tag?.name}. Manager 리스트를 확인하세요.");
+                return;
+            }
+
+            if (!def.isPersistent)
+            {
+                ExecuteCue(tag, p);
+                return;
+            }
 
             GameObject target = p.Target;
+            int safeId = (id >= 0) ? id : tag.GetInstanceID();
 
-            var key = CueKey.Make(id, target, p.SourceObject);
+            var key = CueKey.Make(safeId, target, p.SourceObject);
             if (def.uniquePerTarget)
-                key = CueKey.Make(id, target, null);
+                key = CueKey.Make(safeId, target, null);
 
             if (active.TryGetValue(key, out var existing) && existing?.Instance != null)
             {
@@ -124,7 +191,11 @@ namespace UnityGAS
             }
 
             var inst = SpawnInstance(def, p, isForAdd: true);
-            if (inst == null) return;
+            if (inst == null)
+            {
+                // 인스턴스 생성 실패는 로그 띄우지 않고 조용히 리턴 (Prefab이 없는 경우 등)
+                return;
+            }
 
             active[key] = inst;
             inst.Notify?.OnAdd(p);
@@ -132,17 +203,18 @@ namespace UnityGAS
 
         public void RemoveCue(GameplayTag tag, GameplayCueParams p)
         {
+            if (!isIndexBuilt) RebuildIndex(); // <--- 늦은 초기화
+
             int id = GetTagKey(tag);
-            if (id < 0) return;
+            GameplayCueDefinition def = null;
 
-            if (!defByTagId.TryGetValue(id, out var def) || def == null) return;
-            if (!def.isPersistent) return;
+            if (id >= 0) defByTagId.TryGetValue(id, out def);
+            if (def == null) def = FindDefinitionFallback(tag);
 
-            GameObject target = p.Target;
+            if (def == null || !def.isPersistent) return;
 
-            var key = CueKey.Make(id, target, p.SourceObject);
-            if (def.uniquePerTarget)
-                key = CueKey.Make(id, target, null);
+            int safeId = (id >= 0) ? id : tag.GetInstanceID();
+            var key = CueKey.Make(safeId, p.Target, def.uniquePerTarget ? null : p.SourceObject);
 
             if (!active.TryGetValue(key, out var inst) || inst == null) return;
 
@@ -154,8 +226,19 @@ namespace UnityGAS
             active.Remove(key);
         }
 
+        // [헬퍼] 리스트 직접 검색 (ID 시스템 고장 대비)
+        private GameplayCueDefinition FindDefinitionFallback(GameplayTag tag)
+        {
+            for (int i = 0; i < definitions.Count; i++)
+            {
+                if (definitions[i] != null && definitions[i].cueTag == tag)
+                    return definitions[i];
+            }
+            return null;
+        }
+
         // -------------------------
-        // Internals
+        // Internals (기존 유지)
         // -------------------------
         private void SpawnAndNotifyExecute(GameplayCueDefinition def, GameplayCueParams p)
         {

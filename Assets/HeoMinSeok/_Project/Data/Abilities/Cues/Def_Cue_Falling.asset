@@ -10,14 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e3a563c8641e8194a964b56cce6ecaa2, type: 3}
-  m_Name: NewGameplayCue
+  m_Name: Def_Cue_Falling
   m_EditorClassIdentifier: 
-  cueTag: {fileID: 0}
-  cuePrefab: {fileID: 0}
+  cueTag: {fileID: 11400000, guid: f54e8cb58b4f7c64292067442e9286c7, type: 2}
+  cuePrefab: {fileID: 5162246622105999104, guid: f09848183e09c7742bef1b7b1deecdfd, type: 3}
   vfxPrefab: {fileID: 0}
   sfx: {fileID: 0}
-  attachToTarget: 1
+  attachToTarget: 0
   localOffset: {x: 0, y: 0, z: 0}
   autoDestroySeconds: 2
   isPersistent: 1
-  uniquePerTarget: 1
+  uniquePerTarget: 0

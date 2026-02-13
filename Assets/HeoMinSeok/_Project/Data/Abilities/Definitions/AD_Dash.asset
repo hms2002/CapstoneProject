@@ -19,6 +19,8 @@ MonoBehaviour:
   useCharges: 0
   maxCharges: 1
   cooldownEffect: {fileID: 11400000, guid: e0cdcda9b86374b4c99ad2e948fcfd26, type: 2}
+  cooldownTag: {fileID: 0}
+  startCooldownOnEnd: 0
   castTime: 0
   recoveryTime: 0
   canCastWhileMoving: 1
@@ -33,11 +35,14 @@ MonoBehaviour:
   requiredTags: []
   blockedByTags:
   - {fileID: 11400000, guid: 6a88dccc70fd08841a7484539aec65c1, type: 2}
+  cancelCastingOnTags: []
+  cancelExecutionOnTags: []
   requiredTagSets: []
   blockedByTagSets: []
   targetRequiredTagSets: []
   targetBlockedByTagSets: []
-  grantedTagsWhileActive: []
+  grantedTagsWhileActive:
+  - {fileID: 11400000, guid: c4d6c74817ae3b945b20c041f24f86b0, type: 2}
   targetRequiredTags: []
   targetBlockedByTags: []
   logic: {fileID: 11400000, guid: 2ff288bb12839d4418fc069dc0fefbd5, type: 2}
