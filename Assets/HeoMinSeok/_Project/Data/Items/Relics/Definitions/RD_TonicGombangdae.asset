@@ -10,14 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2ac1da532121a934bb7f57799b194806, type: 3}
-  m_Name: RD_WindTablet
+  m_Name: RD_TonicGombangdae
   m_EditorClassIdentifier: 
-  relicId: RD_WindTablet
-  displayName: WindTablet
-  icon: {fileID: -2056649486, guid: ef16b2ddeb64123459076c2c8a541a63, type: 3}
+  relicId: RD_TonicGombangdae
+  displayName: TonicGombangdae
+  icon: {fileID: -1568554932, guid: ef16b2ddeb64123459076c2c8a541a63, type: 3}
   rarity: 0
   description: 
   maxLevel: 5
   dropLevel: 1
-  logic: {fileID: 11400000, guid: 62252f9a0ec433649a7688898956f179, type: 2}
+  logic: {fileID: 11400000, guid: 459ea25ccbc709b44bfc9dcce46138d9, type: 2}
   param: {fileID: 0}
