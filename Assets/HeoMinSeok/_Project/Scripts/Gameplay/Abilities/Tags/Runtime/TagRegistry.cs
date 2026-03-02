@@ -44,6 +44,14 @@ namespace UnityGAS
             return _idByTag.TryGetValue(tag, out var id) ? id : -1;
         }
 
+        // [필수] GameplayCueManager에서 사용하는 Path 기반 조회 함수
+        public static int GetIdByPath(string path)
+        {
+            EnsureInitialized();
+            if (string.IsNullOrEmpty(path)) return -1;
+            return _idByPath.TryGetValue(path, out var id) ? id : -1;
+        }
+
         public static GameplayTag GetTag(int id)
         {
             EnsureInitialized();
@@ -136,8 +144,13 @@ namespace UnityGAS
                     if (_idByPath.TryGetValue(parentPath, out var pid))
                         list.Add(pid);
 
-                    dot = parentPath.LastIndexOf('.');
+                    // -----------------------------------------------------------
+                    // [핵심 버그 수정]
+                    // 기존 코드에는 path = parentPath; 가 없어서 무한 루프에 빠졌습니다.
+                    // 반드시 path를 갱신해야 상위 폴더로 올라갑니다.
+                    // -----------------------------------------------------------
                     path = parentPath;
+                    dot = path.LastIndexOf('.');
                 }
 
                 _closureIds[id] = list.ToArray();
@@ -155,14 +168,13 @@ namespace UnityGAS
                 }
                 _closureMasks[id] = words;
             }
+
+            // Debug.Log($"[TagRegistry] Build Complete. Total Tags: {_tagCount - 1}");
         }
-        public static int GetIdByPath(string path)
-        {
-            EnsureInitialized();
-            if (string.IsNullOrEmpty(path)) return -1;
-            return _idByPath.TryGetValue(path, out var id) ? id : -1;
-        }
+
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
+        // [복구됨] 사용자님이 사용하시던 디버그용 함수들 (컴파일 에러 해결)
+
         private static int TrailingZeroCountFallback(ulong x)
         {
             // x != 0 이라고 가정
@@ -174,6 +186,7 @@ namespace UnityGAS
             }
             return c;
         }
+
         public static List<int> Debug_GetIdsFromBits_Fast(ulong[] Words)
         {
             var result = new List<int>();
@@ -192,12 +205,14 @@ namespace UnityGAS
             }
             return result;
         }
+
         public static void PrintTagMaskLog(TagMask tagMask)
         {
             Debug.Log("ThisIsTagMask");
             List<int> ids = Debug_GetIdsFromBits_Fast(tagMask.Words);
-            foreach (int id in ids) {
-                Debug.Log( GetTag(id).Name);
+            foreach (int id in ids)
+            {
+                Debug.Log(GetTag(id).Name);
             }
         }
 #endif

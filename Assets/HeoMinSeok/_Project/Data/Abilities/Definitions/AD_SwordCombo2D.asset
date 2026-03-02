@@ -19,6 +19,8 @@ MonoBehaviour:
   useCharges: 0
   maxCharges: 1
   cooldownEffect: {fileID: 0}
+  cooldownTag: {fileID: 0}
+  startCooldownOnEnd: 0
   castTime: 0
   recoveryTime: 0.12
   canCastWhileMoving: 1
@@ -31,7 +33,10 @@ MonoBehaviour:
   animationTriggerHash: 0
   abilityTags: []
   requiredTags: []
-  blockedByTags: []
+  blockedByTags:
+  - {fileID: 11400000, guid: 464b82c4380e99c45a839f32f32511a8, type: 2}
+  cancelCastingOnTags: []
+  cancelExecutionOnTags: []
   requiredTagSets: []
   blockedByTagSets: []
   targetRequiredTagSets: []

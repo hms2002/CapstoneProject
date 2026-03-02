@@ -134,7 +134,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      RatatingIornBall_0: 7908305673752858820
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
