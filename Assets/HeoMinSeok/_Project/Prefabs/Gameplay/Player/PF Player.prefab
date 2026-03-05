@@ -222,7 +222,6 @@ GameObject:
   - component: {fileID: 7887873875085709242}
   - component: {fileID: 1414767285602429285}
   - component: {fileID: 7878539558719410035}
-  - component: {fileID: 282720634538630130}
   - component: {fileID: 890615227393700347}
   - component: {fileID: 4913808379797790544}
   - component: {fileID: 3517715623297123696}
@@ -442,6 +441,7 @@ MonoBehaviour:
   minCooldownSeconds: 0.05
   cueManager: {fileID: 0}
   autoExecuteCueWhenGameplayEventTagExists: 1
+  killConfirmedTag: {fileID: 0}
   animator: {fileID: 8399328563048880028}
   playerAnimator: {fileID: 0}
 --- !u!114 &7887873875085709242
@@ -512,19 +512,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cueManager: {fileID: 0}
---- !u!114 &282720634538630130
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8883617028798182002}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a608504f4a153fe478f58decddde0706, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  definitions: []
 --- !u!114 &890615227393700347
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -551,6 +538,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   baseMoveSpeed: 6
+  moveSpeedMultiplierStatId: 143
   moveSpeedMultiplierAttribute: {fileID: 0}
   forcedMoveTag: {fileID: 0}
   movementLockedTag: {fileID: 11400000, guid: 6a88dccc70fd08841a7484539aec65c1, type: 2}
@@ -604,6 +592,7 @@ MonoBehaviour:
   abilitySystem: {fileID: 1832372497922031110}
   tagSystem: {fileID: 7887873875085709242}
   equipController: {fileID: 3517715623297123696}
+  attributeSet: {fileID: 0}
   slots:
   - {fileID: 0}
   - {fileID: 0}
