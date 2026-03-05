@@ -13,12 +13,13 @@ EXTERNAL CallFeature(featureKey)
 
     // [수정] 선택지 옆에 바로 태그를 붙입니다. 
     // 이렇게 하면 유니티가 '다음 문장'을 읽기 전에 가로챌 수 있습니다.
-    * [업그레이드 하기] # feature : upgrade
-        성공적으로 업그레이드를 마쳤군! 계속 진행할까?
-        -> after_event
+    * [업그레이드 하기] # feature : upgrade # exit : 1001
+        -> END
     * [그냥 대화하기]
         좋아, 바로 다음 테스트로 넘어가지.
         -> after_event
+    * [아무것도] #exit : 1001
+        -> END
 
 === after_event ===
 
