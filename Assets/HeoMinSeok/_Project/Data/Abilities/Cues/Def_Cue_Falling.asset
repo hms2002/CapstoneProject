@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: Def_Cue_Falling
   m_EditorClassIdentifier: 
   cueTag: {fileID: 11400000, guid: f54e8cb58b4f7c64292067442e9286c7, type: 2}
+  mode: 1
+  cueNotifyHostPrefab: {fileID: 5162246622105999104, guid: f09848183e09c7742bef1b7b1deecdfd, type: 3}
   cuePrefab: {fileID: 5162246622105999104, guid: f09848183e09c7742bef1b7b1deecdfd, type: 3}
   vfxPrefab: {fileID: 0}
   sfx: {fileID: 0}
@@ -21,3 +23,7 @@ MonoBehaviour:
   autoDestroySeconds: 2
   isPersistent: 1
   uniquePerTarget: 0
+  addLocalPosition: {x: 0, y: 0, z: 0}
+  addLocalEuler: {x: 0, y: 0, z: 0}
+  mulLocalScale: {x: 1, y: 1, z: 1}
+  transformExecuteDuration: 0

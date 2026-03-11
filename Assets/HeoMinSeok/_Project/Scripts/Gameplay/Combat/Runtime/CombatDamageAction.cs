@@ -28,7 +28,6 @@ public static class CombatDamageAction
             hitConfirmedTag: hitConfirmedTag, causer: causer);
     }
 
-
     // New overload: includes knockback impulse (SetByCaller) for GE_Damage_Spec.
     public static void ApplyDamageAndEmitHit(
         AbilitySystem system,
@@ -66,6 +65,8 @@ public static class CombatDamageAction
             hitConfirmedTag, causer);
     }
 
+    // ---- Internal orchestration -------------------------------------------------------------
+
     private static void ApplyDamageAndEmitHit_Internal(
         AbilitySystem system,
         AbilitySpec spec,
@@ -78,39 +79,66 @@ public static class CombatDamageAction
         GameplayTag hitConfirmedTag,
         GameObject causer)
     {
-        if (system == null || damageEffect == null || target == null) return;
-
+        if (!Validate(system, damageEffect, target)) return;
         var runner = system.EffectRunner;
-        if (runner == null) return;
 
-        // 1) HP damage via Spec + SetByCaller
-        //    + (Optional) Kill confirmed event: detect target HP crossing >0 -> <=0
-        float preHp = -1f;
-        AttributeDefinition hpAttr = null;
-        AttributeSet targetAttrs = null;
-        if (damageEffect is GE_Damage_Spec geDmg0 && geDmg0.healthAttribute != null)
-        {
-            hpAttr = geDmg0.healthAttribute;
-            targetAttrs = target.GetComponent<AttributeSet>();
-            if (targetAttrs != null)
-                preHp = targetAttrs.GetAttributeValue(hpAttr);
-        }
-        // NOTE: KillConfirmed 판정은 아래에서 preHp/postHp만 사용합니다.
-        GameplayTag damageKey = null;
-        if (damageEffect is GE_Damage_Spec geDmg)
-            damageKey = geDmg.damageKey;
+        // 0) Extract GE_Damage_Spec (optional) once
+        var geDmg = damageEffect as GE_Damage_Spec;
 
-        var geSpec = system.MakeSpec(damageEffect, causer: causer, sourceObject: spec != null ? spec.Definition : null);
-        if (damageKey != null) geSpec.SetSetByCallerMagnitude(damageKey, finalHpDamage);
+        // 1) (Optional) capture pre-HP for KillConfirmed check
+        var killCheck = CaptureKillCheck(target, geDmg);
 
-        // 1b) Knockback impulse via Spec + SetByCaller (optional)
-        GameplayTag knockbackKey = null;
-        if (damageEffect is GE_Damage_Spec geDmg2)
-            knockbackKey = geDmg2.knockbackKey;
-        if (knockbackKey != null && finalKnockbackImpulse > 0f)
-            geSpec.SetSetByCallerMagnitude(knockbackKey, finalKnockbackImpulse);
+        // 2) Build Spec (SetByCaller, payload) and apply
+        var geSpec = BuildDamageSpec(system, spec, damageEffect, geDmg,
+            finalHpDamage, elementBuildUps, finalKnockbackImpulse, causer);
 
-        // Keep element breakdown in context as payload (optional)
+        runner.ApplyEffectSpec(geSpec, target);
+
+        // 3) KillConfirmed (optional)
+        TryEmitKillConfirmed(system, spec, target, causer, killCheck);
+
+        // 4) Post systems
+        ApplyStagger(target, finalStaggerBuildUp, system.gameObject, causer);
+        ApplyElements(target, elementBuildUps, system.gameObject, causer);
+
+        // 5) Hit confirmed event (optional)
+        EmitHitConfirmed(system, spec, target, causer, hitConfirmedTag);
+    }
+
+    private static bool Validate(AbilitySystem system, GameplayEffect damageEffect, GameObject target)
+    {
+        if (system == null || damageEffect == null || target == null) return false;
+        if (system.EffectRunner == null) return false;
+        return true;
+    }
+
+    // ---- Spec building ----------------------------------------------------------------------
+
+    private static GameplayEffectSpec BuildDamageSpec(
+        AbilitySystem system,
+        AbilitySpec spec,
+        GameplayEffect damageEffect,
+        GE_Damage_Spec geDmg,
+        float finalHpDamage,
+        IReadOnlyList<ElementDamageResult> elementBuildUps,
+        float finalKnockbackImpulse,
+        GameObject causer)
+    {
+        // NOTE: sourceObject 유지 (기존과 동일)
+        var geSpec = system.MakeSpec(
+            damageEffect,
+            causer: causer,
+            sourceObject: spec != null ? spec.Definition : null);
+
+        // 1) HP damage via SetByCaller (optional)
+        if (geDmg != null && geDmg.damageKey != null)
+            geSpec.SetSetByCallerMagnitude(geDmg.damageKey, finalHpDamage);
+
+        // 2) Knockback impulse via SetByCaller (optional)
+        if (geDmg != null && geDmg.knockbackKey != null && finalKnockbackImpulse > 0f)
+            geSpec.SetSetByCallerMagnitude(geDmg.knockbackKey, finalKnockbackImpulse);
+
+        // 3) Keep element breakdown in context as payload (optional)
         if (elementBuildUps != null && elementBuildUps.Count > 0)
         {
             var dst = geSpec.Context.ElementDamages;
@@ -119,67 +147,120 @@ public static class CombatDamageAction
                 dst.Add(elementBuildUps[i]);
         }
 
-        runner.ApplyEffectSpec(geSpec, target);
-
-        // 1c) Kill confirmed event
-        // NOTE: "죽음" 판정은 프로젝트마다 다를 수 있어요(부활/더미/neverDie 등).
-        //       여기서는 HP가 0 이하로 떨어지는 순간을 기준으로 이벤트를 보냅니다.
-        if (system.KillConfirmedTag != null &&
-            targetAttrs != null && hpAttr != null && preHp > 0f)
-        {
-            float postHp = targetAttrs.GetAttributeValue(hpAttr);
-            if (postHp <= 0f)
-            {
-                system.SendGameplayEvent(system.KillConfirmedTag, new AbilityEventData
-                {
-                    AbilitySystem = system,
-                    Spec = spec,
-                    Instigator = system.gameObject,
-                    Target = target,
-                    WorldPosition = target.transform.position,
-                    Causer = causer
-                });
-            }
-        }
-
-        // (KillConfirmed 중복 블록 제거)
-        // 2) Stagger build-up
-        if (finalStaggerBuildUp > 0f)
-        {
-            var stagger = target.GetComponent<StaggerGaugeSystem>();
-            if (stagger != null)
-                stagger.AddBuildUp(finalStaggerBuildUp, instigator: system.gameObject, causer: causer);
-        }
-
-        // 3) Element build-up
-        if (elementBuildUps != null && elementBuildUps.Count > 0)
-        {
-            var elem = target.GetComponent<ElementGaugeSystem>();
-            if (elem != null)
-            {
-                for (int i = 0; i < elementBuildUps.Count; i++)
-                {
-                    var e = elementBuildUps[i];
-                    if (e.elementType != null && e.damage > 0f)
-                        elem.AddBuildUp(e.elementType, e.damage, instigator: system.gameObject, causer: causer);
-                }
-            }
-        }
-
-        // 4) Emit hit confirmed event (optional)
-        if (hitConfirmedTag != null)
-        {
-            system.SendGameplayEvent(hitConfirmedTag, new AbilityEventData
-            {
-                AbilitySystem = system,
-                Spec = spec,
-                Instigator = system.gameObject,
-                Target = target,
-                WorldPosition = target.transform.position,
-                Causer = causer
-            });
-        }
-
+        return geSpec;
     }
 
+    // ---- Kill confirmed ---------------------------------------------------------------------
+
+    private readonly struct KillCheckData
+    {
+        public readonly float preHp;
+        public readonly AttributeDefinition hpAttr;
+        public readonly AttributeSet targetAttrs;
+
+        public KillCheckData(float preHp, AttributeDefinition hpAttr, AttributeSet targetAttrs)
+        {
+            this.preHp = preHp;
+            this.hpAttr = hpAttr;
+            this.targetAttrs = targetAttrs;
+        }
+
+        public bool IsValid => targetAttrs != null && hpAttr != null && preHp > 0f;
+    }
+
+    private static KillCheckData CaptureKillCheck(GameObject target, GE_Damage_Spec geDmg)
+    {
+        // Default: invalid
+        if (geDmg == null || geDmg.healthAttribute == null)
+            return default;
+
+        var hpAttr = geDmg.healthAttribute;
+        var targetAttrs = target.GetComponent<AttributeSet>();
+        if (targetAttrs == null) return new KillCheckData(preHp: -1f, hpAttr, targetAttrs: null);
+
+        float preHp = targetAttrs.GetAttributeValue(hpAttr);
+        return new KillCheckData(preHp, hpAttr, targetAttrs);
+    }
+
+    private static void TryEmitKillConfirmed(
+        AbilitySystem system,
+        AbilitySpec spec,
+        GameObject target,
+        GameObject causer,
+        KillCheckData killCheck)
+    {
+        // NOTE: 기존과 동일: KillConfirmedTag가 있어야 하고, preHp > 0 -> postHp <= 0 이면 발행
+        if (system.KillConfirmedTag == null) return;
+        if (!killCheck.IsValid) return;
+
+        float postHp = killCheck.targetAttrs.GetAttributeValue(killCheck.hpAttr);
+        if (postHp > 0f) return;
+
+        system.SendGameplayEvent(system.KillConfirmedTag, new AbilityEventData
+        {
+            AbilitySystem = system,
+            Spec = spec,
+            Instigator = system.gameObject,
+            Target = target,
+            WorldPosition = target.transform.position,
+            Causer = causer
+        });
+    }
+
+    // ---- Post systems -----------------------------------------------------------------------
+
+    private static void ApplyStagger(
+        GameObject target,
+        float finalStaggerBuildUp,
+        GameObject instigator,
+        GameObject causer)
+    {
+        if (finalStaggerBuildUp <= 0f) return;
+
+        var stagger = target.GetComponent<StaggerGaugeSystem>();
+        if (stagger == null) return;
+
+        stagger.AddBuildUp(finalStaggerBuildUp, instigator: instigator, causer: causer);
+    }
+
+    private static void ApplyElements(
+        GameObject target,
+        IReadOnlyList<ElementDamageResult> elementBuildUps,
+        GameObject instigator,
+        GameObject causer)
+    {
+        if (elementBuildUps == null || elementBuildUps.Count <= 0) return;
+
+        var elem = target.GetComponent<ElementGaugeSystem>();
+        if (elem == null) return;
+
+        for (int i = 0; i < elementBuildUps.Count; i++)
+        {
+            var e = elementBuildUps[i];
+            if (e.elementType != null && e.damage > 0f)
+                elem.AddBuildUp(e.elementType, e.damage, instigator: instigator, causer: causer);
+        }
+    }
+
+    // ---- Hit confirmed ----------------------------------------------------------------------
+
+    private static void EmitHitConfirmed(
+        AbilitySystem system,
+        AbilitySpec spec,
+        GameObject target,
+        GameObject causer,
+        GameplayTag hitConfirmedTag)
+    {
+        if (hitConfirmedTag == null) return;
+
+        system.SendGameplayEvent(hitConfirmedTag, new AbilityEventData
+        {
+            AbilitySystem = system,
+            Spec = spec,
+            Instigator = system.gameObject,
+            Target = target,
+            WorldPosition = target.transform.position,
+            Causer = causer
+        });
+    }
 }

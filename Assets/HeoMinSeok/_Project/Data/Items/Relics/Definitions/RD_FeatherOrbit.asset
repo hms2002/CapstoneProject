@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ac1da532121a934bb7f57799b194806, type: 3}
+  m_Name: RD_FeatherOrbit
+  m_EditorClassIdentifier: 
+  relicId: RD_FeatherOrbit
+  displayName: RD_FeatherOrbit
+  icon: {fileID: 8985768934002324412, guid: 7227f5952a8fea246a79b45a4cc804e8, type: 3}
+  rarity: 1
+  description: 
+  maxLevel: 5
+  dropLevel: 1
+  logic: {fileID: 11400000, guid: 74bcbc64a07fc854ca2dade608e8c24c, type: 2}
+  param: {fileID: 0}

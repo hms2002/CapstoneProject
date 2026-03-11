@@ -29442,6 +29442,7 @@ GameObject:
   - component: {fileID: 1334454364}
   - component: {fileID: 1334454363}
   - component: {fileID: 1334454362}
+  - component: {fileID: 1334454377}
   m_Layer: 31
   m_Name: Frog
   m_TagString: Enemy
@@ -29824,6 +29825,24 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1334454377
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1334454361}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26c9fe53bdef53947bbf6f41db722013, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  body: {fileID: 1334454374}
+  knockbackImmuneTag: {fileID: 0}
+  resistancePctAttribute: {fileID: 0}
+  useVelocityInjection: 1
+  damping: 18
+  maxInjectedSpeed: 20
 --- !u!1001 &1369492698
 PrefabInstance:
   m_ObjectHideFlags: 0

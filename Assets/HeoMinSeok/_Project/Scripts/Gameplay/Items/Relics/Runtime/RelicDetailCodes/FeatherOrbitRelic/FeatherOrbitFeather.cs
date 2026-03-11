@@ -1,8 +1,9 @@
+using Ink.Parsed;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityGAS;
 
-[RequireComponent(typeof(Collider))]
+[RequireComponent(typeof(Collider2D))]
 public class FeatherOrbitFeather : MonoBehaviour
 {
     private FeatherOrbitController _controller;
@@ -19,14 +20,14 @@ public class FeatherOrbitFeather : MonoBehaviour
         _controller = controller;
         _index = index;
 
-        var col = GetComponent<Collider>();
+        var col = GetComponent<Collider2D>();
         col.isTrigger = true;
     }
 
-    private void OnTriggerEnter(Collider other) => TryHit(other);
-    private void OnTriggerStay(Collider other) => TryHit(other);
+    private void OnTriggerEnter2D(Collider2D other) => TryHit(other);
+    private void OnTriggerStay2D(Collider2D other) => TryHit(other);
 
-    private void TryHit(Collider other)
+    private void TryHit(Collider2D other)
     {
         if (_controller == null) return;
         var system = _controller.System;
@@ -65,7 +66,7 @@ public class FeatherOrbitFeather : MonoBehaviour
         );
     }
 
-    private static GameObject FindDamageTarget(Collider other)
+    private static GameObject FindDamageTarget(Collider2D other)
     {
         // 1) AttributeSet이 있는 부모를 우선
         var attrs = other.GetComponentInParent<AttributeSet>();

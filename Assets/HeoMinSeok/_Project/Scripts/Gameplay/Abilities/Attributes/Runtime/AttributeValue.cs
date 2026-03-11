@@ -1,10 +1,33 @@
+using DG.Tweening;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using UnityEngine;
 
 namespace UnityGAS
 {
+    /*
+[프로젝트 규칙: HP는 상태값(State)이다]
+- HP는 Modifier/Regeneration/Percent 변경을 금지한다.
+- HP 변경은 델타(Add) 방식(데미지/회복)만 허용한다.
+- 버프/패시브는 MaxHP 또는 DamageTakenMultiplier/HealingMultiplier 같은 별도 Attribute로 표현한다.
+*/
+    /*
+    [책임]
+    - (AttributeDefinition 1개에 대응하는) 런타임 Attribute 상태를 보관/갱신한다.
+    - BaseValue(기본/상태값)과 CurrentValue(최종 계산값)를 관리한다.
+    - Modifier(지속/영구 효과) 만료, 재생(옵션), 동적 최대치(MaxValueGetter) 등 시간/규칙 기반 처리를 수행한다.
+    - 값 변경 시 OnValueChanged 이벤트를 발행한다.
+
+    [규칙/계약]
+    - CurrentValue는 "계산 결과"이므로 직접 Set하지 않는다(재계산 시 덮어써질 수 있음).
+    - 외부 시스템은 AttributeValue를 직접 조작하지 말고 AttributeSet의 공식 API(델타/모디파이어)를 통해 변경한다.
+
+    [주의/경고]
+    - Percent(%) 의미가 '지속(overlay)'인지 '커밋(base 변경)'인지 섞이면 혼란/버그가 발생한다.
+    - 이 Attribute가 HP처럼 '상태값'이라면 Modifier 허용 여부를 명확히 규정한다.
+    */
     [Serializable]
     public class AttributeValue : IReadOnlyAttributeValue
     {
