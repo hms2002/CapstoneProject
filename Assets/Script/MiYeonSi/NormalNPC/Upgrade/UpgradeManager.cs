@@ -20,7 +20,8 @@ public class UpgradeManager : MonoBehaviour
 
     private void Start()
     {
-        CheckAndUnlockStartingNodes();
+        // 시작 시 데이터 로드 후 상태 체크
+        CheckAndUnlockNodes();
         ReapplyAllEffects();
     }
 
@@ -33,56 +34,85 @@ public class UpgradeManager : MonoBehaviour
         }
     }
 
-    private void CheckAndUnlockStartingNodes()
+    // [핵심 수정] 전체 노드를 순회하며 해금 상태 갱신
+    public void CheckAndUnlockNodes()
     {
         if (upgradeDatabase == null || GameDataManager.Instance == null) return;
+
         var data = GameDataManager.Instance.Data.upgradeData;
         bool isChanged = false;
+
         foreach (var node in upgradeDatabase.allUpgrades)
         {
             if (node == null) continue;
-            if (node.gridY == 0 || node.requiredParentIDs.Count == 0)
+
+            // 이미 구매했거나 해금된 상태면 패스
+            if (data.purchasedIDs.Contains(node.nodeID) || data.unlockedIDs.Contains(node.nodeID)) continue;
+
+            // 루트 노드(부모가 없는 노드)는 무조건 해금
+            if (node.requiredParentIDs == null || node.requiredParentIDs.Count == 0)
             {
-                if (data.purchasedIDs.Contains(node.nodeID) || data.unlockedIDs.Contains(node.nodeID)) continue;
+                data.unlockedIDs.Add(node.nodeID);
+                isChanged = true;
+                continue;
+            }
+
+            // [중요] 부모가 모두 '구매(Purchased)' 되었는지 확인
+            if (CheckParentsPurchased(node))
+            {
                 data.unlockedIDs.Add(node.nodeID);
                 isChanged = true;
             }
         }
-        if (isChanged) { GameDataManager.Instance.SaveData(); OnDataChanged?.Invoke(); }
+
+        if (isChanged)
+        {
+            GameDataManager.Instance.SaveData();
+            OnDataChanged?.Invoke();
+        }
+    }
+
+    // [핵심 로직] 모든 부모가 구매되었는지 체크
+    private bool CheckParentsPurchased(UpgradeNodeSO node)
+    {
+        if (node.requiredParentIDs == null || node.requiredParentIDs.Count == 0) return true;
+
+        var purchasedList = GameDataManager.Instance.Data.upgradeData.purchasedIDs;
+
+        foreach (int parentID in node.requiredParentIDs)
+        {
+            // 부모 중 하나라도 구매되지 않았다면 해금 불가
+            if (!purchasedList.Contains(parentID)) return false;
+        }
+        return true;
     }
 
     public void TryBuyUpgrade(int id)
     {
         if (GetNodeStatus(id) != LockType.UnLocked) return;
+
         var node = GetUpgradeByID(id);
         if (node == null || GameDataManager.Instance.Data.magicStone < node.price) return;
 
+        // 구매 처리
         GameDataManager.Instance.Data.magicStone -= node.price;
         var data = GameDataManager.Instance.Data.upgradeData;
+
         data.unlockedIDs.Remove(id);
-        data.purchasedIDs.Add(id);
+        data.purchasedIDs.Add(id); // 구매 목록에 추가
 
         node.ApplyEffect(SampleTopDownPlayer.Instance);
 
+        // 보상 UI 표시
         if (RewardDisplayUI.Instance != null)
             RewardDisplayUI.Instance.ShowReward(node.effects, null);
 
-        foreach (var nextId in node.unlockedNodeIDs)
-        {
-            var nextNode = GetUpgradeByID(nextId);
-            if (nextNode != null && CheckDependencies(nextNode)) data.unlockedIDs.Add(nextId);
-        }
+        // [수정] 구매 후, 다음 노드들의 해금 조건을 다시 체크
+        // 단순히 자식만 보는 게 아니라 전체를 다시 훑어서 조건 만족하는 애들을 풂
+        CheckAndUnlockNodes();
 
         GameDataManager.Instance.SaveData();
         OnDataChanged?.Invoke();
-    }
-
-    private bool CheckDependencies(UpgradeNodeSO node)
-    {
-        if (node.requiredParentIDs == null || node.requiredParentIDs.Count == 0) return true;
-        var purchasedList = GameDataManager.Instance.Data.upgradeData.purchasedIDs;
-        foreach (int reqId in node.requiredParentIDs) if (!purchasedList.Contains(reqId)) return false;
-        return true;
     }
 
     private void ReapplyAllEffects()
@@ -92,6 +122,7 @@ public class UpgradeManager : MonoBehaviour
             GetUpgradeByID(id)?.ApplyEffect(SampleTopDownPlayer.Instance);
     }
 
+    // ... (ToggleUI, CloseUI 등 기존 로직 동일) ...
     public void ToggleUI()
     {
         bool nextState = !upgradeTreePanel.activeSelf;
