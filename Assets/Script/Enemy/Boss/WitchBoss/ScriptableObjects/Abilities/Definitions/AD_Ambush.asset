@@ -10,18 +10,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 808910561e593534f9ea3637c00cc255, type: 3}
-  m_Name: AD_Wave
+  m_Name: AD_Ambush
   m_EditorClassIdentifier: 
-  abilityName: Wave
+  abilityName: Ambush
   icon: {fileID: 0}
-  description: "\uBCF4\uC2A4\uAC00 \uC81C\uC790\uB9AC\uC5D0\uC11C \uC790\uC2E0\uC744
-    \uC911\uC2EC\uC73C\uB85C \uB3C4\uB11B \uBAA8\uC591\uC73C\uB85C \uD37C\uC9C0\uB294
-    \uD30C\uB3D9\uC744 \uBC1C\uC0AC\uD55C\uB2E4. \uD30C\uB3D9\uC740 \uCD1D 3\uBC88
-    0.8\uCD08 \uAC04\uACA9\uC73C\uB85C \uBC1C\uC0AC\uB41C\uB2E4."
+  description: "0.3\uCD08\uAC04 \uC740\uC2E0 \uD6C4 \uD50C\uB808\uC774\uC5B4\uB85C\uBD80\uD130
+    4\uD0C0\uC77C \uAC70\uB9AC\uC758 \uB3D9/\uC11C/\uB0A8/\uBD81 \uC911 \uB79C\uB364\uD55C
+    1\uACF3\uC73C\uB85C \uC21C\uAC04\uC774\uB3D9\uD55C\uB2E4. \uC21C\uAC04\uC774\uB3D9
+    \uC9C1\uD6C4, 0.3\uCD08\uAC04 \uACBD\uACE0\uD55C \uB4A4 7x7 \uBC94\uC704 \uACF5\uACA9\uC744
+    \uC9C4\uD589\uD55C\uB2E4."
   cooldown: 0
   useCharges: 0
   maxCharges: 1
-  cooldownEffect: {fileID: 0}
+  cooldownEffect: {fileID: 11400000, guid: e0cdcda9b86374b4c99ad2e948fcfd26, type: 2}
   castTime: 0
   recoveryTime: 0
   canCastWhileMoving: 1
@@ -35,6 +36,8 @@ MonoBehaviour:
   abilityTags: []
   requiredTags: []
   blockedByTags: []
+  cancelCastingOnTags: []
+  cancelExecutionOnTags: []
   requiredTagSets: []
   blockedByTagSets: []
   targetRequiredTagSets: []
@@ -42,7 +45,7 @@ MonoBehaviour:
   grantedTagsWhileActive: []
   targetRequiredTags: []
   targetBlockedByTags: []
-  logic: {fileID: 0}
+  logic: {fileID: 11400000, guid: 386d8a430406601489b3acfce7552530, type: 2}
   sourceObject: {fileID: 0}
   containers: []
   cueOnCastStart: {fileID: 0}

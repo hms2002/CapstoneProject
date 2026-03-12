@@ -8,6 +8,7 @@ public class Mob : Enemy
     [SerializeField] private float detectionRange   = 6.0f; // 탐지 거리
     [SerializeField] private float moveSpeed        = 3.0f; // 이동 속도
     [SerializeField] private float damageInterval   = 1.0f; // 데미지 주기 (초)
+    [SerializeField] private float staggerDuration  = 0.4f; // 피격 경직 시간 (초)
 
     [Header("Mob's Ability")]
     [SerializeField] private AbilityDefinition tackleAbility; // AD_Tackle
@@ -16,44 +17,60 @@ public class Mob : Enemy
     private float   currentCooltime; // 마지막 공격 시간을 저장하여 쿨타임 체크용으로 사용
     private bool    isDead = false;
 
+    private float   knockbackRecoveryTime = 0f;                     // 넉백에서 회복하기까지 남은 시간
+    private bool    IsKnockbacked => knockbackRecoveryTime > 0f;    // 현재 넉백 상태인지 확인하는 프로퍼티
+
     // ========================================================================
     // [1] AI 및 이동 로직
 
     private void Update()
     {
-        if (isDead || target == null) return;
+        if (isDead) return;
 
-        // 쿨타임 처리 (카운트다운)
+        // 공격 쿨타임 처리
         if (currentCooltime > 0)
         {
             currentCooltime -= Time.deltaTime;
             if (currentCooltime < 0) currentCooltime = 0;
         }
 
-        Vector2 finalVelocity   = Vector2.zero;
-                targetDistance  = Vector2.Distance(transform.position, target.position);
+        // 넉백 회복 타이머 처리
+        if (knockbackRecoveryTime > 0)
+        {
+            knockbackRecoveryTime -= Time.deltaTime;
+            if (knockbackRecoveryTime < 0) knockbackRecoveryTime = 0;
+        }
+
+        // 애니메이션 업데이트
+        animator.SetBool("isMoving", rigid2D.linearVelocity.sqrMagnitude > 0.01f);
+    }
+
+    private void FixedUpdate()
+    {
+        if (isDead || target == null) return;
+
+        if (IsKnockbacked) return;
+
+        targetDistance = Vector2.Distance(transform.position, target.position);
 
         // 타겟 탐지
         if (currentCooltime <= 0)
         {
             if (targetDistance <= detectionRange)
             {
-                moveDirection = (target.position - transform.position).normalized;
-                finalVelocity = moveDirection * moveSpeed;
+                moveDirection           = (target.position - transform.position).normalized;
+                rigid2D.linearVelocity  = moveDirection * moveSpeed;
+
 
                 // 스프라이트 반전
-                if      (transform.position.x > target.position.x) sprite.flipX = true;
+                if (transform.position.x > target.position.x) sprite.flipX = true;
                 else if (transform.position.x < target.position.x) sprite.flipX = false;
             }
-
-            // 넉백 예외처리 - 외부 충격(넉백)으로 인해 속도가 엄청 빠르면 내 의지로 덮어쓰지 않음
-            if (rigid2D.linearVelocity.magnitude <= moveSpeed * 1.5f)
+            else
             {
-                rigid2D.linearVelocity = finalVelocity;
+                rigid2D.linearVelocity = Vector2.zero;
             }
         }
-
-        animator.SetBool("isMoving", finalVelocity.sqrMagnitude > 0.01f);
     }
 
     // ========================================================================
@@ -87,6 +104,23 @@ public class Mob : Enemy
         {
             Die();
         }
+    }
+
+    /// <summary>
+    /// 외부(예: 무기 타격, 스킬 효과 등)에서 몹에게 넉백을 가할 때 호출합니다.
+    /// </summary>
+    /// <param name="force">가해질 힘의 벡터 (방향 * 세기)</param>
+    /// <param name="recoveryTime">넉백 상태(AI 정지)를 유지할 시간</param>
+    public void ApplyKnockback(Vector2 force, float recoveryTime = 0.5f)
+    {
+        if (isDead) return;
+
+        // 넉백 타이머 설정 (이 시간 동안 AI 이동 멈춤)
+        knockbackRecoveryTime = recoveryTime;
+
+        // 기존 속도를 초기화하고 새로운 물리적 힘을 가함
+        rigid2D.linearVelocity = Vector2.zero;
+        rigid2D.AddForce(force, ForceMode2D.Impulse);
     }
 
     protected override void Die()

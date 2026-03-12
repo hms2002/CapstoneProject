@@ -161,7 +161,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0, y: 0.16666667}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0}
@@ -231,8 +231,13 @@ MonoBehaviour:
   attributeSet: {fileID: 1826740684810268922}
   effectRunner: {fileID: 5100326370884691043}
   tagSystem: {fileID: 1241823977743709161}
+  globalCancelCastingOnTags: []
+  globalCancelExecutionOnTags: []
   damageProfile: {fileID: 0}
   defaultCooldownEffect: {fileID: 0}
+  cooldownDurationMultiplierAttribute: {fileID: 0}
+  cooldownFlatReduceSecondsOnHitAttribute: {fileID: 0}
+  minCooldownSeconds: 0.05
   cueManager: {fileID: 0}
   autoExecuteCueWhenGameplayEventTagExists: 1
   animator: {fileID: 2499029360562928561}
