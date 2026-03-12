@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ca1f39e9389d2494a9fe385a14da6a54, type: 3}
+  m_Name: ALData_RW_Skill2_SpeedStrike
+  m_EditorClassIdentifier: 
+  hitboxSize: {x: 1.6, y: 0.9}
+  forwardOffset: 1
+  hitLayers:
+    serializedVersion: 2
+    m_Bits: 2147483648
+  damageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
+  attackStatId: 13
+  moveSpeedMultiplierStatId: 143
+  speedScale: 3
+  knockbackFormula: {fileID: 11400000, guid: 886233d2a5002ae4facf46de4cb4864d, type: 2}
+  attackAttribute: {fileID: 11400000, guid: 947f52c2a34d008428c105cd897d5efd, type: 2}
+  moveSpeedMultiplierAttribute: {fileID: 11400000, guid: 23db6468e859c6f42b0230a5af7ca81c, type: 2}
+  damageConfig:
+    includeStaggerBuildUp: 1
+    includeElementBuildUp: 1
+    staggerFormula: {fileID: 11400000, guid: 8fb95c16fb825134f8ce24efb528fe19, type: 2}
+    elementFormulas:
+    - elementType: {fileID: 11400000, guid: 82578c30453dcb04a88dce3cd193db5b, type: 2}
+      formula: {fileID: 11400000, guid: 4b0e3c35f3acd0441a039c0489db1967, type: 2}
+    postProcess: {fileID: 11400000, guid: e27d90a086193324cab0290ff31a6180, type: 2}
+    critAffectsElement: 1

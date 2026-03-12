@@ -12,8 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5aaab8e3543e7e443bc7397815a8e0e9, type: 3}
   m_Name: ALData_SwordSkill2_BigSlashData
   m_EditorClassIdentifier: 
-  formulaStats: {fileID: 11400000, guid: 83865f9accf70664fa56b704cf0506df, type: 2}
-  includeElementDamage: 1
+  damageConfig:
+    includeStaggerBuildUp: 1
+    includeElementBuildUp: 1
+    staggerFormula: {fileID: 0}
+    elementFormulas: []
+    postProcess: {fileID: 0}
+    critAffectsElement: 1
   elementDamages:
   - elementType: {fileID: 11400000, guid: 82578c30453dcb04a88dce3cd193db5b, type: 2}
     baseDamage: 0
@@ -21,7 +26,6 @@ MonoBehaviour:
     baseDamage: 0
   - elementType: {fileID: 11400000, guid: 53bdedc3d917f83458902716124fcc3c, type: 2}
     baseDamage: 0
-  includeStaggerDamage: 0
   baseStaggerDamage: 0
   hitboxSize: {x: 4, y: 4}
   forwardOffset: 1
@@ -29,6 +33,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 2147483648
   damageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
+  damageFormula: {fileID: 0}
+  knockbackFormula: {fileID: 0}
   damage: 50
   hitEventTag: {fileID: 11400000, guid: ecf3ef1f54c629e40a9659ab9afec7e8, type: 2}
   hitEventTimeout: 1

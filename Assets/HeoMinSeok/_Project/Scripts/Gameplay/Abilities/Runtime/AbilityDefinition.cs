@@ -19,6 +19,13 @@ namespace UnityGAS
 
         [Tooltip("설정 시 쿨다운을 GE(Duration)로 관리합니다. (추천: GE_Cooldown + grantedTags에 Cooldown.* 태그 부여)")]
         public GameplayEffect cooldownEffect;
+
+        [Header("Cooldown (GAS-style)")]
+        [Tooltip("Optional. If set, this tag is granted to the caster while the cooldown is active. Exact match.")]
+        public GameplayTag cooldownTag;
+
+        [Tooltip("If true, cooldown starts when execution ends (normal end or cancelled), not on commit.")]
+        public bool startCooldownOnEnd = false;
         public float castTime = 0f;
         public float recoveryTime = 0f;
 

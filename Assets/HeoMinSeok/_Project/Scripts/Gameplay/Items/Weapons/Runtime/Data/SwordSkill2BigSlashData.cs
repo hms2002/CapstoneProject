@@ -5,14 +5,16 @@ using UnityGAS;
 namespace UnityGAS.Sample
 {
     [CreateAssetMenu(fileName = "SwordSkill2_BigSlashData", menuName = "GAS/Samples/Sword Skill2 BigSlash Data")]
-    public class SwordSkill2BigSlashData : DamageLogicDataBase
+    public class SwordSkill2BigSlashData : ScriptableObject
     {
-        [Header("Damage Formula (Legacy - migrated to Damage)")]
-        [SerializeField, HideInInspector] public DamageFormulaStats formulaStats;
-        [SerializeField, HideInInspector] public bool includeElementDamage = false;
-        [Tooltip("Element damages (can contain multiple elements per hit).")]
+        [Header("Damage Channels")]
+        [SerializeField] private DamagePayloadConfig damageConfig = new();
+        public DamagePayloadConfig DamageConfig => damageConfig;
+
+        [Tooltip("Legacy per-hit element damages (FINAL values). Optional if you use DamageConfig.elementFormulas instead.")]
         public List<ElementDamageInput> elementDamages = new();
-        [SerializeField, HideInInspector] public bool includeStaggerDamage = false;
+
+        [Tooltip("Legacy stagger damage (FINAL value). Optional if you use DamageConfig.staggerFormula instead.")]
         public float baseStaggerDamage = 0f;
 
         public Vector2 hitboxSize = new Vector2(4f, 4f);
@@ -37,11 +39,5 @@ namespace UnityGAS.Sample
 
         public float recoveryOverride = 0.2f;
 
-#if UNITY_EDITOR
-        private void OnValidate()
-        {
-            ValidateDamageConfig(ref formulaStats, ref includeElementDamage, ref includeStaggerDamage);
-        }
-#endif
     }
 }

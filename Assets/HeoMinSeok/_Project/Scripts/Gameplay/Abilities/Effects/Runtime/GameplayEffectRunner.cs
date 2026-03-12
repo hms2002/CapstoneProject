@@ -160,8 +160,13 @@ namespace UnityGAS
             if (srcObj == null) srcObj = effect;
             if (causer == null) causer = inst;
 
-            // Instant
-            if (effect.IsInstant)
+            // ✅ spec duration override를 먼저 고려한다.
+            // (GE_Cooldown 같은 공통 GE가 duration=0(instant)로 저장돼 있더라도,
+            //  spec.SetDuration(x)로 Duration 효과로 동작해야 한다.)
+            float duration = spec.GetDurationOrDefault(effect.duration);
+
+            // Instant ("최종 duration" 기준)
+            if (duration <= 0f)
             {
                 if (effect is ISpecGameplayEffect specEffect)
                     specEffect.Apply(spec, target);
@@ -171,9 +176,6 @@ namespace UnityGAS
                 FireEffectExecuteCue(effect, inst, target, srcObj, Mathf.Max(1, spec.StackCount), ctx);
                 return;
             }
-
-            // Duration (spec duration override 지원)
-            float duration = spec.GetDurationOrDefault(effect.duration);
 
             bool isCooldown = effect is GE_Cooldown;
             var existing = activeEffects.FirstOrDefault(e =>
@@ -219,6 +221,14 @@ namespace UnityGAS
             };
             activeEffects.Add(ae);
 
+            // ✅ CooldownTag 지원: GE_Cooldown은 SourceObject에 AbilityDefinition을 넣어 구분한다.
+            // 하나의 GE_Cooldown을 쓰더라도, AbilityDefinition.cooldownTag가 있으면 해당 태그를 "쿨다운이 도는 동안" 부여한다.
+            if (isCooldown && srcObj is AbilityDefinition ad && ad.cooldownTag != null)
+            {
+                var ts = target.GetComponent<TagSystem>();
+                if (ts != null) ts.AddTag(ad.cooldownTag, 1);
+            }
+
             // granted tags (1회) - direct + tagsets
             var tgs = target.GetComponent<TagSystem>();
             if (tgs != null)
@@ -255,6 +265,13 @@ namespace UnityGAS
         {
             var effect = ae.Effect;
             if (effect == null) return;
+
+            // ✅ CooldownTag 회수 (ApplyEffectSpec에서 추가한 것과 페어)
+            if (effect is GE_Cooldown && ae.SourceObject is AbilityDefinition ad && ad.cooldownTag != null)
+            {
+                var ts = ae.Target != null ? ae.Target.GetComponent<TagSystem>() : null;
+                if (ts != null) ts.RemoveTag(ad.cooldownTag, 1);
+            }
 
             var inst = ae.Instigator;
             var causer = ae.Causer != null ? ae.Causer : inst;

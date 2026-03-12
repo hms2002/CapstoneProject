@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   attributeName: CritMultiplierAttribute
   description: Attribute description.
-  defaultBaseValue: 1
-  minValue: 1
+  defaultBaseValue: 1.2
+  minValue: 1.2
   maxValue: 100
   hasRegeneration: 0
   regenerationRate: 5

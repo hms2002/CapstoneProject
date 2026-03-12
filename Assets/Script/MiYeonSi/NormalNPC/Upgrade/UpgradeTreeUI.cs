@@ -1,49 +1,54 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UpgradeTreeUI : MonoBehaviour
 {
-    [Header("프리팹 및 부모 연결")]
-    public Transform slotParent;    // 슬롯들이 들어갈 부모
-    public GameObject slotPrefab;   // UpgradeSlotUI 프리팹
+    [Header("UI 연결")]
+    // Scroll View의 Content (Panel)
+    public RectTransform contentRect;
+    public Transform slotParent;    // Panel 아래 Slots (빈 오브젝트)
+    public Transform lineParent;    // Panel 아래 Lines (빈 오브젝트)
 
-    public Transform lineParent;    // 선들이 들어갈 부모 (슬롯보다 뒤에 배치)
-    public GameObject linePrefab;   // 선 프리팹 (UI Image)
+    [Header("프리팹")]
+    public GameObject slotPrefab;
+    public GameObject linePrefab;
 
-    // 생성된 객체 관리 리스트
     private List<UpgradeSlotUI> allSlots = new List<UpgradeSlotUI>();
     private List<GameObject> allLines = new List<GameObject>();
 
     private void Start()
     {
-        // 게임 시작 시 트리를 자동으로 그립니다.
+        // 1. Content (Panel) 설정 강제 초기화
+        // 왼쪽부터 시작하도록 Pivot과 Anchor를 (0, 0.5)로 맞춤
+        if (contentRect != null)
+        {
+            contentRect.pivot = new Vector2(0, 0.5f);
+            contentRect.anchorMin = new Vector2(0, 0.5f);
+            contentRect.anchorMax = new Vector2(0, 0.5f);
+            contentRect.anchoredPosition = Vector2.zero;
+        }
+
         BuildUI();
     }
 
-    private void OnEnable()
-    {
-        if (UpgradeManager.Instance != null)
-            UpgradeManager.Instance.OnDataChanged += RefreshAll;
-    }
-
-    private void OnDisable()
-    {
-        if (UpgradeManager.Instance != null)
-            UpgradeManager.Instance.OnDataChanged -= RefreshAll;
-    }
+    private void OnEnable() { if (UpgradeManager.Instance != null) UpgradeManager.Instance.OnDataChanged += RefreshAll; }
+    private void OnDisable() { if (UpgradeManager.Instance != null) UpgradeManager.Instance.OnDataChanged -= RefreshAll; }
 
     public void BuildUI()
     {
-        // 1. 기존 UI 클리어
+        // 기존 UI 삭제
         foreach (Transform child in slotParent) Destroy(child.gameObject);
         foreach (Transform child in lineParent) Destroy(child.gameObject);
         allSlots.Clear();
         allLines.Clear();
 
         Dictionary<int, UpgradeSlotUI> slotDict = new Dictionary<int, UpgradeSlotUI>();
-        var allUpgrades = UpgradeManager.Instance.GetAllUpgrades(); // DB에 있는 모든 노드 가져오기
+        var allUpgrades = UpgradeManager.Instance.GetAllUpgrades();
 
-        // 2. 슬롯 생성 (SO에 저장된 좌표 사용)
+        float maxX = 0f;
+
+        // 2. 노드 생성
         foreach (var node in allUpgrades)
         {
             if (node == null) continue;
@@ -52,78 +57,82 @@ public class UpgradeTreeUI : MonoBehaviour
             UpgradeSlotUI slotUI = slotObj.GetComponent<UpgradeSlotUI>();
             RectTransform rect = slotObj.GetComponent<RectTransform>();
 
-            // [핵심] 툴에서 설정한 Grid 좌표를 실제 UI 좌표로 변환하여 배치
-            rect.anchoredPosition = node.GetUiPosition();
+            // [핵심 수정] 슬롯의 Anchor와 Pivot을 'Middle Left'로 강제 설정
+            // 부모(Content)도 Middle Left이므로 좌표계가 완벽히 일치하게 됨
+            rect.anchorMin = new Vector2(0, 0.5f);
+            rect.anchorMax = new Vector2(0, 0.5f);
+            rect.pivot = new Vector2(0.5f, 0.5f); // 슬롯 자체의 중심점은 중앙으로 유지
 
-            // 슬롯 데이터 주입 및 초기화
+            // NodeSO 데이터 좌표 사용 (왼쪽 기준 100, 300 등...)
+            Vector2 pos = node.GetUiPosition();
+            rect.anchoredPosition = pos;
+
+            if (pos.x > maxX) maxX = pos.x;
+
             slotUI.assignedNode = node;
-            slotUI.InitSlot(OnBuyButtonPressed);
+            slotUI.InitSlot((n) => UpgradeManager.Instance.TryBuyUpgrade(n.nodeID));
 
             allSlots.Add(slotUI);
             slotDict[node.nodeID] = slotUI;
         }
 
-        // 3. 선 그리기 (Elbow 스타일)
+        // 3. Content 크기 확장
+        if (contentRect != null)
+        {
+            // 마지막 노드 위치 + 여백(300f)만큼 Width를 늘려줌
+            float newWidth = Mathf.Max(maxX + 300f, 1000f);
+            contentRect.sizeDelta = new Vector2(newWidth, contentRect.sizeDelta.y);
+        }
+
+        // 4. 라인 그리기
         foreach (var node in allUpgrades)
         {
-            if (node == null) continue;
-            if (!slotDict.ContainsKey(node.nodeID)) continue;
+            if (node == null || !slotDict.ContainsKey(node.nodeID)) continue;
 
-            var fromSlot = slotDict[node.nodeID];
-
-            // 자식 노드들을 향해 선을 그림
             foreach (var nextId in node.unlockedNodeIDs)
             {
                 if (slotDict.TryGetValue(nextId, out var targetSlot))
                 {
-                    DrawLine(fromSlot.GetComponent<RectTransform>(), targetSlot.GetComponent<RectTransform>());
+                    DrawLine(slotDict[node.nodeID].GetComponent<RectTransform>(),
+                             targetSlot.GetComponent<RectTransform>());
                 }
             }
         }
     }
 
-    // 선 그리기 로직 (직각 꺾기)
-    private void DrawLine(RectTransform startRect, RectTransform endRect)
+    private void DrawLine(RectTransform start, RectTransform end)
     {
-        Vector2 start = startRect.anchoredPosition;
-        Vector2 end = endRect.anchoredPosition;
+        Vector2 s = start.anchoredPosition;
+        Vector2 e = end.anchoredPosition;
 
-        float elbowOffset = 50f; // 꺾이는 지점의 여유 공간
-        float direction = Mathf.Sign(end.y - start.y);
+        if (Vector2.Distance(s, e) < 1f) return;
 
-        // Y축 높이가 거의 같으면 직선으로 그림
-        if (Mathf.Abs(end.y - start.y) < 10f)
-        {
-            CreateLineSegment(start, end);
-            return;
-        }
+        float midX = (s.x + e.x) / 2f;
+        Vector2 p1 = new Vector2(midX, s.y);
+        Vector2 p2 = new Vector2(midX, e.y);
 
-        // 'ㄷ' 혹은 'ㄹ' 자 형태로 꺾기
-        Vector2 elbow1 = start + new Vector2(0, elbowOffset * direction);
-        Vector2 elbow2 = new Vector2(end.x, elbow1.y);
-
-        CreateLineSegment(start, new Vector2(start.x, elbow1.y)); // 세로 출발
-        CreateLineSegment(elbow1, elbow2); // 가로 이동
-        CreateLineSegment(elbow2, end); // 세로 도착
+        CreateLineSegment(s, p1);
+        CreateLineSegment(p1, p2);
+        CreateLineSegment(p2, e);
     }
 
     private void CreateLineSegment(Vector2 start, Vector2 end)
     {
+        if (Vector2.Distance(start, end) < 0.1f) return;
+
         var line = Instantiate(linePrefab, lineParent);
         var rect = line.GetComponent<RectTransform>();
+
+        // [핵심 수정] 라인도 Anchor를 Middle Left로 맞춤
+        rect.anchorMin = new Vector2(0, 0.5f);
+        rect.anchorMax = new Vector2(0, 0.5f);
+        rect.pivot = new Vector2(0, 0.5f); // 회전 기준점을 왼쪽 끝으로
 
         Vector2 dir = end - start;
         float dist = dir.magnitude;
 
-        // 선이 너무 짧으면 생성 안 함
-        if (dist < 1f)
-        {
-            Destroy(line);
-            return;
-        }
-
-        rect.sizeDelta = new Vector2(dist, 4f); // 선 두께: 4
-        rect.anchoredPosition = start + (dir / 2);
+        rect.sizeDelta = new Vector2(dist, 4f); // 두께 4
+        rect.anchoredPosition = start; // 시작점에 배치하고 회전
 
         float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
         rect.rotation = Quaternion.Euler(0, 0, angle);
@@ -131,17 +140,6 @@ public class UpgradeTreeUI : MonoBehaviour
         allLines.Add(line);
     }
 
-    private void OnBuyButtonPressed(UpgradeNodeSO node)
-    {
-        UpgradeManager.Instance.TryBuyUpgrade(node.nodeID);
-    }
-
-    public void RefreshAll()
-    {
-        foreach (var slot in allSlots)
-        {
-            if (slot != null && slot.gameObject.activeInHierarchy)
-                slot.RefreshUI();
-        }
-    }
+    public void OnClickClose() => UpgradeManager.Instance.CloseUI();
+    public void RefreshAll() { foreach (var s in allSlots) if (s != null) s.RefreshUI(); }
 }

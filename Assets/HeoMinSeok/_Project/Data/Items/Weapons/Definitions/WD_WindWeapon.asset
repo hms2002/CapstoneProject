@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5686dc461c9b6a546991383454aa181f, type: 3}
+  m_Name: WD_WindWeapon
+  m_EditorClassIdentifier: 
+  weaponId: Weapon.WD_WindWeapon
+  displayName: WD_WindWeapon
+  icon: {fileID: 1408481339, guid: 7e11de47ebfa53a42a94e5fb92a94f06, type: 3}
+  description: 
+  statModifiers:
+  - attribute: {fileID: 11400000, guid: 23db6468e859c6f42b0230a5af7ca81c, type: 2}
+    type: 1
+    value: 0.01
+    labelOverride: 
+  attackInputHint: "\uC6B0\uD074\uB9AD"
+  skill1InputHint: Q
+  skill2InputHint: E
+  weaponPrefab: {fileID: 8490881910473165802, guid: 385e1b24189f77c46bb567603449261f, type: 3}
+  equippedTag: {fileID: 11400000, guid: cac1046499d28814a91fcb2631757240, type: 2}
+  attack: {fileID: 11400000, guid: 89163a8e6b579e14c874528367814f0c, type: 2}
+  skill1: {fileID: 11400000, guid: 524aa038954a7df43802c7db33bb312b, type: 2}
+  skill2: {fileID: 11400000, guid: b9fa83c903647d743a6b1bb8eb64fd54, type: 2}

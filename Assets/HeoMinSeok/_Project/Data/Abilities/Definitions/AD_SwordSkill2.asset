@@ -32,6 +32,8 @@ MonoBehaviour:
   abilityTags: []
   requiredTags: []
   blockedByTags: []
+  cancelCastingOnTags: []
+  cancelExecutionOnTags: []
   requiredTagSets: []
   blockedByTagSets: []
   targetRequiredTagSets: []
