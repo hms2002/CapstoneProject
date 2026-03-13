@@ -3,35 +3,22 @@ using UnityGAS;
 
 public class WitchBoss : Boss
 {
-    [Header("Witch's Abilities")]
-    [SerializeField] private AbilityDefinition wave;
-
-    [Header("Witch's Visuals")]
-    [SerializeField] private Sprite         silhouetteSprite;
-    [SerializeField] private Sprite         normalSprite;
-
     // Variables
     private float separationDistance = 8.0f; // 플레이어와의 적정 거리
 
-    // -----------------------------------------------------------
-    // BT Action Node가 호출할 행동 함수
 
-    /// <summary> BT: "시야 밖이야, 실루엣 모드로 바꿔" </summary>
-    public void SetUnseenMode(bool enable)
+    private void Update()
     {
-        if (enable)
-        {
-            sprite.sprite = silhouetteSprite;
-            sprite.color = Color.black;
-            // 시야 밖 무적/버프 효과 적용
-            // abilitySystem.TryActivateAbility(unseenPassiveBuff); 
-        }
-        else
-        {
-            sprite.sprite = normalSprite;
-            sprite.color = Color.white;
-            // 무적 버프 해제 로직 등...
-        }
+        // 스프라이트 반전
+        if      (transform.position.x > target.position.x) sprite.flipX = true;
+        else if (transform.position.x < target.position.x) sprite.flipX = false;
+    }
+
+    // 실루엣모드
+    public void SetUnseenMode()
+    {
+        // 은신 모드 애니메이션 트리거
+        animator.SetBool("isUnseen", true);
     }
 
     // -----------------------------------------------------------

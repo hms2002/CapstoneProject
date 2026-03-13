@@ -1,0 +1,57 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 808910561e593534f9ea3637c00cc255, type: 3}
+  m_Name: AD_Wave
+  m_EditorClassIdentifier: 
+  abilityName: Wave
+  icon: {fileID: 0}
+  description: "\uBCF4\uC2A4\uAC00 \uC81C\uC790\uB9AC\uC5D0\uC11C \uC790\uC2E0\uC744
+    \uC911\uC2EC\uC73C\uB85C \uB3C4\uB11B \uBAA8\uC591\uC73C\uB85C \uD37C\uC9C0\uB294
+    \uD30C\uB3D9\uC744 \uBC1C\uC0AC\uD55C\uB2E4. \uD30C\uB3D9\uC740 \uCD1D 3\uBC88
+    0.8\uCD08 \uAC04\uACA9\uC73C\uB85C \uBC1C\uC0AC\uB418\uBA70, \uBC1C\uC0AC\uB41C
+    \uD30C\uB3D9\uC740 2.5\uCD08\uAC04 \uD655\uC0B0\uB41C\uB2E4."
+  cooldown: 0
+  useCharges: 0
+  maxCharges: 1
+  cooldownEffect: {fileID: 11400000, guid: e0cdcda9b86374b4c99ad2e948fcfd26, type: 2}
+  castTime: 0
+  recoveryTime: 0
+  canCastWhileMoving: 1
+  interruptible: 1
+  requireTargetObject: 0
+  cost: 0
+  costAttribute: {fileID: 0}
+  animationChannel: 0
+  animationTrigger: 
+  animationTriggerHash: 0
+  abilityTags: []
+  requiredTags: []
+  blockedByTags: []
+  cancelCastingOnTags: []
+  cancelExecutionOnTags: []
+  requiredTagSets: []
+  blockedByTagSets: []
+  targetRequiredTagSets: []
+  targetBlockedByTagSets: []
+  grantedTagsWhileActive: []
+  targetRequiredTags: []
+  targetBlockedByTags: []
+  logic: {fileID: 11400000, guid: 2d7193ec629d4e441ae0cc764d83a9a7, type: 2}
+  sourceObject: {fileID: 0}
+  containers: []
+  cueOnCastStart: {fileID: 0}
+  cueWhileCasting: {fileID: 0}
+  cueOnCommit: {fileID: 0}
+  cueWhileActive: {fileID: 0}
+  cueOnEnd: {fileID: 0}
+  cueOnCastCancelled: {fileID: 0}
+  cueOnExecutionCancelled: {fileID: 0}

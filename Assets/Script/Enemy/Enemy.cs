@@ -6,7 +6,7 @@ using UnityGAS;
 [RequireComponent(typeof(TagSystem))]
 public class Enemy : MonoBehaviour
 {
-    // My Components =============================
+    // Components =============================
     protected Rigidbody2D       rigid2D;
     protected Collider2D        collision;
     protected SpriteRenderer    sprite;
@@ -21,7 +21,7 @@ public class Enemy : MonoBehaviour
     [SerializeField] protected AttributeDefinition maxHealthDef;
     [SerializeField] protected AttributeDefinition healthDef;
 
-    // My Variables =============================
+    // Variables =============================
     [Header("Enemy's Settings")]
     [SerializeField] protected string   enemyName;
                      protected Vector2  moveDirection;

@@ -2,7 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityGAS;
 
-// 에디터 메뉴: Create > GAS > Ability Logic > Tackle Logic
+// 에디터 메뉴: Create > GAS > Ability Logic > Tackle
 [CreateAssetMenu(fileName = "AL_Tackle", menuName = "GAS/Ability Logic/Tackle")]
 public class AL_Tackle : AbilityLogic
 {
