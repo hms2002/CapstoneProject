@@ -14,9 +14,13 @@ namespace UnityGAS
     /// Note:
     /// - Derived stats (e.g., AttackFinal) are usually computed in a provider, not mapped here.
     /// </summary>
+    // 책임 : StatId를 기준으로
+    //  1.  직접 연결된 AttributeDefinition 바인딩을 찾고
+    //  2.  최종 스탯 계산용 Composite 정보를 찾을 수 있게 해주는 정적 매핑 레지스트리 역할을 한다.
     [CreateAssetMenu(fileName = "StatTypeBindings", menuName = "GAS/Stats/Stat Type Bindings")]
     public sealed class StatTypeBindings : ScriptableObject
     {
+        // stat ID(Enum)으로 AttributeDefinition을 찾을 수 있다.
         [Serializable]
         public sealed class Binding
         {
@@ -27,6 +31,7 @@ namespace UnityGAS
             public bool isMultiplier;
         }
 
+        // stat ID(Enum)를 묶어서 스텟 합+곱 할 때 가져올 ATTRIBUTE VALUE를 확인한다.
         [Serializable]
         public sealed class Composite
         {
@@ -48,6 +53,7 @@ namespace UnityGAS
         public IReadOnlyList<Binding> Bindings => bindings;
         public IReadOnlyList<Composite> Composites => composites;
 
+        // STAT ID로 BINDING(AttributeDef와 연결)을 가져옴
         public bool TryGetBinding(StatId id, out Binding binding)
         {
             if (id == StatId.None)
@@ -92,6 +98,7 @@ namespace UnityGAS
             }
         }
 
+        // 최종 스텟 키를 모으는 기능
         private void EnsureCompositeCache()
         {
             if (_compositeCache != null) return;

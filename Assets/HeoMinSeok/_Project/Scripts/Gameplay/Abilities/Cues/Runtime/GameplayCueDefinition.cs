@@ -2,6 +2,7 @@ using UnityEngine;
 
 namespace UnityGAS
 {
+    // 이 스크립트의 책임 : 
     [CreateAssetMenu(fileName = "NewGameplayCue", menuName = "GAS/Gameplay Cue Definition")]
     public class GameplayCueDefinition : ScriptableObject
     {

@@ -4,7 +4,7 @@ using UnityGAS;
 /// <summary>
 /// [적 처치 시] 이동속도(%)를 일정 시간 부여하는 유물 로직.
 /// - AbilitySystem이 KillConfirmedTag로 GameplayEvent를 발행해야 동작합니다.
-/// - RelicProcManager를 통해 AbilitySystem.OnGameplayEvent를 수신합니다.
+/// - RelicProcManager를 통해 AbilitySystem.GameplayEventRaised를 수신합니다.
 /// </summary>
 [CreateAssetMenu(menuName = "Game/Relic Logic/Move Speed On Kill (Managed)")]
 public class RelicLogic_MoveSpeedOnKill_Managed : RelicLogic
