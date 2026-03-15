@@ -972,14 +972,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 644dc9ef8391e3b49a5b89b3c15e18f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  canvas: {fileID: 1493883150}
   detailPanel: {fileID: 135140464}
-  detailPanelRect: {fileID: 135140461}
-  offset: 12
-  edgePadding: 8
-  followAnchor: 1
-  delayHideOneFrame: 1
-  extraHideDelay: 0.08
   contextProviderBehaviour: {fileID: 1012006894227905799}
 --- !u!1001 &98883146
 PrefabInstance:
@@ -13106,7 +13099,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 68696bbb701dad74a83df832637ad06b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemDatabase: {fileID: 11400000, guid: 3f0da48f2a0acc843a80f20a370f3678, type: 2}
 --- !u!4 &505183499
 Transform:
   m_ObjectHideFlags: 0
@@ -16128,7 +16120,7 @@ MonoBehaviour:
   tagSystem: {fileID: 723292222}
   globalCancelCastingOnTags: []
   globalCancelExecutionOnTags: []
-  damageProfile: {fileID: 0}
+  damageProfile: {fileID: 11400000, guid: ddd8b96de81528845828895d9bb33042, type: 2}
   defaultCooldownEffect: {fileID: 0}
   cooldownDurationMultiplierAttribute: {fileID: 0}
   cooldownFlatReduceSecondsOnHitAttribute: {fileID: 0}
@@ -29632,7 +29624,7 @@ MonoBehaviour:
   tagSystem: {fileID: 1334454367}
   globalCancelCastingOnTags: []
   globalCancelExecutionOnTags: []
-  damageProfile: {fileID: 0}
+  damageProfile: {fileID: 11400000, guid: ddd8b96de81528845828895d9bb33042, type: 2}
   defaultCooldownEffect: {fileID: 0}
   cooldownDurationMultiplierAttribute: {fileID: 0}
   cooldownFlatReduceSecondsOnHitAttribute: {fileID: 0}
@@ -37908,11 +37900,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   worldItemPrefab: {fileID: 4439982264372595963, guid: 965ec98195bcbe34f9512acce3712973, type: 3}
-  itemDatabase: {fileID: 11400000, guid: 3f0da48f2a0acc843a80f20a370f3678, type: 2}
   stageTables:
   - {fileID: 11400000, guid: 3903a30b290836e4bb4413a07b019990, type: 2}
   - {fileID: 11400000, guid: 14918d38c644fad49bf378e4043c465d, type: 2}
   - {fileID: 11400000, guid: fc8bb58e5b7362047beddb46d868847d, type: 2}
+  graveLootTable: {fileID: 0}
   currentStageIndex: 0
 --- !u!4 &2006647403
 Transform:
@@ -39748,11 +39740,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3a6c52cc5b114ba4787b483d704a8016, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &1012006894227905800
+--- !u!114 &1012006894227905800 stripped
 MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 6034561116183737726, guid: f2946074f70ad1a4194e0ab20873422b, type: 3}
+  m_PrefabInstance: {fileID: 5305220626812299820}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1957667026}
   m_Enabled: 1
@@ -39760,11 +39751,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c721f3a2f874aa14ea14c5bc2261cc39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &1012006894227905801
+--- !u!114 &1012006894227905801 stripped
 MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 3865965398067882873, guid: f2946074f70ad1a4194e0ab20873422b, type: 3}
+  m_PrefabInstance: {fileID: 5305220626812299820}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1957667026}
   m_Enabled: 1
@@ -39772,11 +39762,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b5ebf9fcd76f27f4f874c8853b167522, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  knockbackDamping: 18
-  defaultKnockbackDominanceTime: 0.12
-  maxKnockbackMagnitude: 25
-  maxCombinedPersistentVelocityMagnitude: 25
---- !u!114 &1012006894227905802
+--- !u!114 &1012006894227905807 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1414767285602429285, guid: f2946074f70ad1a4194e0ab20873422b, type: 3}
+  m_PrefabInstance: {fileID: 5305220626812299820}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1957667026}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8910a2e22aa25664cb9b2709778e44dd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1012006894227905819
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -39785,17 +39782,27 @@ MonoBehaviour:
   m_GameObject: {fileID: 1957667026}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 82ae4624ea26de741ba8bc236cf3108b, type: 3}
+  m_Script: {fileID: 11500000, guid: 526f8835b2c4eeb4593ade78758d3986, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  body: {fileID: 0}
-  intentSourceBehaviour: {fileID: 0}
-  statProviderBehaviour: {fileID: 0}
-  externalMovement: {fileID: 0}
-  motionController: {fileID: 0}
-  freezeAllMovementTag: {fileID: 0}
-  blockIntentMoveTag: {fileID: 0}
-  blockExternalMoveTag: {fileID: 0}
+  attributeSet: {fileID: 1012006894227905807}
+  abilitySystem: {fileID: 1012006894227905754}
+  statBindingsOverride: {fileID: 11400000, guid: 31156f12e65316e409d9858201c3ab8b, type: 2}
+--- !u!114 &1012006894227905820
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1957667026}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e18c12fff305a6e43a659b03a5aa9b0a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tagSystem: {fileID: 0}
+  aim: {fileID: 0}
+  forcedMoveTag: {fileID: 0}
 --- !u!4 &1336196914018830829 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8228059593326255414, guid: 84d669757910f1f488023c92e71fcad5, type: 3}
@@ -40798,46 +40805,22 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1414767285602429285, guid: f2946074f70ad1a4194e0ab20873422b, type: 3}
-      propertyPath: initialAttributes.Array.size
-      value: 30
-      objectReference: {fileID: 0}
-    - target: {fileID: 1414767285602429285, guid: f2946074f70ad1a4194e0ab20873422b, type: 3}
-      propertyPath: 'initialAttributes.Array.data[27]'
+    - target: {fileID: 3806616892958564186, guid: f2946074f70ad1a4194e0ab20873422b, type: 3}
+      propertyPath: externalMovement
       value: 
-      objectReference: {fileID: 11400000, guid: 567fb769f1a0604458f4f84132a1ffa3, type: 2}
-    - target: {fileID: 1414767285602429285, guid: f2946074f70ad1a4194e0ab20873422b, type: 3}
-      propertyPath: 'initialAttributes.Array.data[28]'
+      objectReference: {fileID: 1012006894227905801}
+    - target: {fileID: 3806616892958564186, guid: f2946074f70ad1a4194e0ab20873422b, type: 3}
+      propertyPath: motionController
       value: 
-      objectReference: {fileID: 11400000, guid: 50a51f5bbc6eb564a8e720c21efba2a4, type: 2}
-    - target: {fileID: 1414767285602429285, guid: f2946074f70ad1a4194e0ab20873422b, type: 3}
-      propertyPath: 'initialAttributes.Array.data[29]'
+      objectReference: {fileID: 1012006894227905800}
+    - target: {fileID: 3806616892958564186, guid: f2946074f70ad1a4194e0ab20873422b, type: 3}
+      propertyPath: intentSourceBehaviour
       value: 
-      objectReference: {fileID: 11400000, guid: 23db6468e859c6f42b0230a5af7ca81c, type: 2}
-    - target: {fileID: 1832372497922031110, guid: f2946074f70ad1a4194e0ab20873422b, type: 3}
-      propertyPath: killConfirmedTag
+      objectReference: {fileID: 1012006894227905820}
+    - target: {fileID: 3806616892958564186, guid: f2946074f70ad1a4194e0ab20873422b, type: 3}
+      propertyPath: statProviderBehaviour
       value: 
-      objectReference: {fileID: 11400000, guid: 165fc11102fdbfb40b1ce7b341ecc8bb, type: 2}
-    - target: {fileID: 4776885609674041618, guid: f2946074f70ad1a4194e0ab20873422b, type: 3}
-      propertyPath: statBindings
-      value: 
-      objectReference: {fileID: 11400000, guid: 31156f12e65316e409d9858201c3ab8b, type: 2}
-    - target: {fileID: 4776885609674041618, guid: f2946074f70ad1a4194e0ab20873422b, type: 3}
-      propertyPath: defaultPostProcess
-      value: 
-      objectReference: {fileID: 11400000, guid: e27d90a086193324cab0290ff31a6180, type: 2}
-    - target: {fileID: 4913808379797790544, guid: f2946074f70ad1a4194e0ab20873422b, type: 3}
-      propertyPath: mainCamera
-      value: 
-      objectReference: {fileID: 519420031}
-    - target: {fileID: 4913808379797790544, guid: f2946074f70ad1a4194e0ab20873422b, type: 3}
-      propertyPath: forcedMoveTag
-      value: 
-      objectReference: {fileID: 11400000, guid: 837c3c3beac45de458f179f50c7d7500, type: 2}
-    - target: {fileID: 4913808379797790544, guid: f2946074f70ad1a4194e0ab20873422b, type: 3}
-      propertyPath: moveSpeedMultiplierAttribute
-      value: 
-      objectReference: {fileID: 11400000, guid: 567fb769f1a0604458f4f84132a1ffa3, type: 2}
+      objectReference: {fileID: 1012006894227905819}
     - target: {fileID: 8883617028798182002, guid: f2946074f70ad1a4194e0ab20873422b, type: 3}
       propertyPath: m_Name
       value: PF Player
@@ -40886,23 +40869,16 @@ PrefabInstance:
       propertyPath: cameraShake
       value: 
       objectReference: {fileID: 519420034}
-    m_RemovedComponents:
-    - {fileID: 4807128067502290074, guid: f2946074f70ad1a4194e0ab20873422b, type: 3}
-    - {fileID: 1334457642439548572, guid: f2946074f70ad1a4194e0ab20873422b, type: 3}
-    - {fileID: 2404983202199153576, guid: f2946074f70ad1a4194e0ab20873422b, type: 3}
-    - {fileID: 7312919993686142775, guid: f2946074f70ad1a4194e0ab20873422b, type: 3}
+    m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 8883617028798182002, guid: f2946074f70ad1a4194e0ab20873422b, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1012006894227905802}
+      addedObject: {fileID: 1012006894227905819}
     - targetCorrespondingSourceObject: {fileID: 8883617028798182002, guid: f2946074f70ad1a4194e0ab20873422b, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1012006894227905801}
-    - targetCorrespondingSourceObject: {fileID: 8883617028798182002, guid: f2946074f70ad1a4194e0ab20873422b, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1012006894227905800}
+      addedObject: {fileID: 1012006894227905820}
   m_SourcePrefab: {fileID: 100100000, guid: f2946074f70ad1a4194e0ab20873422b, type: 3}
 --- !u!4 &5466560767580878633 stripped
 Transform:
