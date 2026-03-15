@@ -53,9 +53,6 @@ public class UpgradeTreeUI : MonoBehaviour, IStackableUI
         }
 
         BuildUI();
-
-        // 씬 시작 시에는 기본적으로 꺼져 있도록 설정
-        gameObject.SetActive(false);
     }
 
     private void OnEnable() { if (UpgradeManager.Instance != null) UpgradeManager.Instance.OnDataChanged += RefreshAll; }

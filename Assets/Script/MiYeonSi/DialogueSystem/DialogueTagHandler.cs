@@ -4,21 +4,16 @@ using UnityEngine;
 
 public class DialogueTagHandler : MonoBehaviour
 {
-    // 다중 NPC 지원을 위해 targetId와 value를 넘깁니다.
     public Action<string, string> OnPortraitEnterRequested;
     public Action<string, string> OnPortraitFaceRequested;
     public Action<string, string> OnPortraitEmoteRequested;
     public Action<string, string> OnPortraitMoveRequested;
     public Action<string, string> OnPortraitActionRequested;
-
-    // exit과 feature는 인자가 1개면 충분합니다.
     public Action<string> OnPortraitExitRequested;
-    public Action<string> OnFeatureRequested;
 
-    // [핵심 추가] 호감도 요청 전용 진동벨 (NPC데이터, 올릴 수치, 끝났을 때 누를 버튼)
+    public Action<string, Action> OnFeatureRequested;
     public Action<NPCData, int, Action> OnAffectionRequested;
 
-    // [수정] 대화 재개(onComplete) 콜백을 파라미터로 받습니다.
     public bool ProcessTags(List<string> tags, NPCData currentNPC, Action onComplete)
     {
         bool isBlocking = false;
@@ -47,37 +42,31 @@ public class DialogueTagHandler : MonoBehaviour
 
             switch (command)
             {
-                case "enter":
-                    OnPortraitEnterRequested?.Invoke(targetId, value);
+                // [핵심 추가] Controller가 이미 처리한 태그는 경고를 띄우지 않고 쿨하게 무시합니다!
+                case "speaker":
                     break;
-                case "face":
-                    OnPortraitFaceRequested?.Invoke(targetId, value);
-                    break;
-                case "emote":
-                    OnPortraitEmoteRequested?.Invoke(targetId, value);
-                    break;
+
+                case "enter": OnPortraitEnterRequested?.Invoke(targetId, value); break;
+                case "face": OnPortraitFaceRequested?.Invoke(targetId, value); break;
+                case "emote": OnPortraitEmoteRequested?.Invoke(targetId, value); break;
                 case "pos":
-                case "move":
-                    OnPortraitMoveRequested?.Invoke(targetId, value);
-                    break;
-                case "action":
-                    OnPortraitActionRequested?.Invoke(targetId, value);
-                    break;
-                case "exit":
-                    OnPortraitExitRequested?.Invoke(targetId);
-                    break;
+                case "move": OnPortraitMoveRequested?.Invoke(targetId, value); break;
+                case "action": OnPortraitActionRequested?.Invoke(targetId, value); break;
+                case "exit": OnPortraitExitRequested?.Invoke(targetId); break;
+
                 case "feature":
-                    OnFeatureRequested?.Invoke(value);
+                    OnFeatureRequested?.Invoke(value, onComplete);
                     isBlocking = true;
                     break;
+
                 case "add_aff":
                     if (int.TryParse(value, out int amount))
                     {
-                        // [핵심] 이제 매니저를 찾지 않습니다! 허공에 방송만 합니다.
                         OnAffectionRequested?.Invoke(currentNPC, amount, onComplete);
                         isBlocking = true;
                     }
                     break;
+
                 default:
                     Debug.LogWarning($"[TagHandler] 처리되지 않은 태그: {tag}");
                     break;

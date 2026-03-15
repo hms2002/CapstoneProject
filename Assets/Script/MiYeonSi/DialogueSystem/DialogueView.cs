@@ -21,13 +21,12 @@ public class DialogueView : MonoBehaviour
     [Header("선택지 UI")]
     [SerializeField] private Transform choiceContainer;
     [SerializeField] private GameObject choiceButtonPrefab;
-    [SerializeField] private Color normalChoiceColor = Color.gray;  // 비선택 상태 색상
-    [SerializeField] private Color selectedChoiceColor = Color.white; // 선택 상태 색상
+    [SerializeField] private Color normalChoiceColor = Color.gray;
+    [SerializeField] private Color selectedChoiceColor = Color.white;
 
     private Tween typingTween;
     private List<GameObject> activeChoiceButtons = new List<GameObject>();
 
-    // 키보드 조작을 위한 변수
     private int currentChoiceIndex = 0;
     private Action<int> onChoiceSelectedCallback;
 
@@ -58,6 +57,14 @@ public class DialogueView : MonoBehaviour
         }
 
         ClearChoices();
+        ClearText(); // 시작 시에도 깔끔하게 비움
+    }
+
+    // [핵심 추가] 텍스트 박스와 이름표를 깔끔하게 비워주는 함수
+    public void ClearText()
+    {
+        if (nameText != null) nameText.text = "";
+        if (dialogueText != null) dialogueText.text = "";
     }
 
     public void ShowUI(bool isBoss, Action onComplete = null)
@@ -120,7 +127,7 @@ public class DialogueView : MonoBehaviour
         if (choiceContainer == null || choiceButtonPrefab == null) return;
 
         onChoiceSelectedCallback = onChoiceSelected;
-        currentChoiceIndex = 0; // 첫 번째 선택지로 초기화
+        currentChoiceIndex = 0;
 
         foreach (var choice in choices)
         {
@@ -134,7 +141,6 @@ public class DialogueView : MonoBehaviour
             if (btn != null)
             {
                 int index = choice.index;
-                // 마우스 클릭도 여전히 지원
                 btn.onClick.AddListener(() =>
                 {
                     ClearChoices();
@@ -143,24 +149,21 @@ public class DialogueView : MonoBehaviour
             }
         }
 
-        HighlightChoice(currentChoiceIndex); // 생성 직후 첫 번째 항목 하이라이트
+        HighlightChoice(currentChoiceIndex);
     }
 
-    // [추가] 키보드 위/아래 조작 시 호출됨
     public void ChangeChoiceSelection(int direction)
     {
         if (activeChoiceButtons.Count == 0) return;
 
         currentChoiceIndex += direction;
 
-        // 리스트 끝을 넘어가면 반대편으로 루프되도록 처리
         if (currentChoiceIndex < 0) currentChoiceIndex = activeChoiceButtons.Count - 1;
         else if (currentChoiceIndex >= activeChoiceButtons.Count) currentChoiceIndex = 0;
 
         HighlightChoice(currentChoiceIndex);
     }
 
-    // [추가] 선택된 항목 시각적 강조 (크기 약간 키우고 색상 변경)
     private void HighlightChoice(int index)
     {
         for (int i = 0; i < activeChoiceButtons.Count; i++)
@@ -182,13 +185,12 @@ public class DialogueView : MonoBehaviour
         }
     }
 
-    // [추가] 확인 키를 눌렀을 때 현재 선택된 버튼 클릭 실행
     public void ConfirmChoice()
     {
         if (activeChoiceButtons.Count > 0)
         {
             Button selectedBtn = activeChoiceButtons[currentChoiceIndex].GetComponent<Button>();
-            selectedBtn?.onClick.Invoke(); // 버튼 클릭 이벤트를 코드로 강제 실행
+            selectedBtn?.onClick.Invoke();
         }
     }
 

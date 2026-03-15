@@ -24,12 +24,10 @@ public class DialogueController : MonoBehaviour
     private bool isTransitioning = false;
     private bool isWaitingForCallback = false;
 
-    // ID 기반 화자 관리 변수
     private int currentSpeakerId = -1;
     private string currentSpeakerName = "";
     private string currentText = "";
 
-    // 현재 대화 명단 (동적 난입 지원)
     private Dictionary<int, NPCData> activeNPCs = new Dictionary<int, NPCData>();
     private NPCData currentNPCData;
     private NPCFeatureController currentFeatureController;
@@ -47,29 +45,24 @@ public class DialogueController : MonoBehaviour
             tagHandler.OnPortraitActionRequested += HandlePortraitAction;
             tagHandler.OnPortraitMoveRequested += HandlePortraitMove;
             tagHandler.OnPortraitExitRequested += HandlePortraitExit;
-            tagHandler.OnFeatureRequested += HandleFeature;
+            tagHandler.OnFeatureRequested += HandleFeature; // 서명 일치됨
             tagHandler.OnAffectionRequested += HandleAffection;
         }
     }
 
+    // Update문은 기존과 100% 동일하여 생략 없이 유지
     private void Update()
     {
-        // 연출 중이거나 콜백 대기 중일 땐 입력 무시
         if (!isPlaying || isTransitioning || isWaitingForCallback) return;
 
-        // 선택지 고르는 중
         if (isChoosing)
         {
-            if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
-                view.ChangeChoiceSelection(-1);
-            else if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow))
-                view.ChangeChoiceSelection(1);
-            else if (Input.GetKeyDown(skipKey) || Input.GetKeyDown(skipKeyAlt) || Input.GetKeyDown(KeyCode.Return))
-                view.ConfirmChoice();
+            if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow)) view.ChangeChoiceSelection(-1);
+            else if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow)) view.ChangeChoiceSelection(1);
+            else if (Input.GetKeyDown(skipKey) || Input.GetKeyDown(skipKeyAlt) || Input.GetKeyDown(KeyCode.Return)) view.ConfirmChoice();
             return;
         }
 
-        // 일반 대화 진행 (클릭 또는 스킵 키)
         if (Input.GetMouseButtonDown(0) || Input.GetKeyDown(skipKey) || Input.GetKeyDown(skipKeyAlt))
         {
             if (isTyping)
@@ -78,10 +71,7 @@ public class DialogueController : MonoBehaviour
                 isTyping = false;
                 DisplayChoicesIfNeeded();
             }
-            else
-            {
-                ContinueStory();
-            }
+            else ContinueStory();
         }
     }
 
@@ -101,10 +91,12 @@ public class DialogueController : MonoBehaviour
         isTransitioning = true;
         isWaitingForCallback = false;
 
+        // [핵심 해결] 이전 대화의 잔상이 보이지 않도록 즉시 비워줍니다!
+        view.ClearText();
+
         currentNPCData = participants[0];
         currentFeatureController = featureController;
 
-        // 초기 화자 설정 (첫 번째 인물)
         currentSpeakerId = currentNPCData.id;
         currentSpeakerName = currentNPCData.npcName;
 
@@ -118,7 +110,6 @@ public class DialogueController : MonoBehaviour
 
         currentStory = new Story(inkJSON.text);
 
-        // 감독님에게 자동 배치 지시
         director.PlayIntro(participants, () =>
         {
             view.ShowUI(currentNPCData.isBoss, () =>
@@ -134,17 +125,13 @@ public class DialogueController : MonoBehaviour
         if (currentStory.canContinue)
         {
             currentText = currentStory.Continue();
-
-            // 1. 화자 태그 파싱 (ID 및 이름 세팅)
             HandleSpeakerTag(currentStory.currentTags);
 
-            // 2. 조명 연출 지시 (ID 기반)
             if (portraitController != null) portraitController.HighlightSpeaker(currentSpeakerId);
 
             isWaitingForCallback = true;
-
-            // 3. 기타 태그 처리
             bool isBlocking = false;
+
             if (tagHandler != null)
                 isBlocking = tagHandler.ProcessTags(currentStory.currentTags, currentNPCData, ResumeDialogue);
 
@@ -152,8 +139,6 @@ public class DialogueController : MonoBehaviour
             {
                 isWaitingForCallback = false;
                 isTyping = true;
-
-                // 4. UI에는 파싱된 '이름' 출력
                 view.TypeText(currentSpeakerName, currentText, () =>
                 {
                     isTyping = false;
@@ -161,14 +146,8 @@ public class DialogueController : MonoBehaviour
                 });
             }
         }
-        else if (currentStory.currentChoices.Count > 0)
-        {
-            DisplayChoicesIfNeeded();
-        }
-        else
-        {
-            ExitDialogueMode();
-        }
+        else if (currentStory.currentChoices.Count > 0) DisplayChoicesIfNeeded();
+        else ExitDialogueMode();
     }
 
     private void HandleSpeakerTag(List<string> currentTags)
@@ -181,21 +160,17 @@ public class DialogueController : MonoBehaviour
             if (splitTag[0].Trim().ToLower() == "speaker")
             {
                 string speakerVal = splitTag[1].Trim();
-
-                // 태그가 숫자(ID)라면 DB에서 이름 찾기
                 if (int.TryParse(speakerVal, out int id))
                 {
                     currentSpeakerId = id;
                     NPCData data = GetOrLoadNPC(speakerVal);
-
                     if (data != null) currentSpeakerName = data.npcName;
-                    else currentSpeakerName = "???"; // DB에 없을 때
+                    else currentSpeakerName = "???";
                 }
-                // 나레이션이나 시스템 메시지 등 일반 텍스트일 경우
                 else
                 {
-                    currentSpeakerId = -1; // 모든 액터 조명 끔
-                    currentSpeakerName = speakerVal; // 텍스트 그대로 출력
+                    currentSpeakerId = -1;
+                    currentSpeakerName = speakerVal;
                 }
                 break;
             }
@@ -240,15 +215,11 @@ public class DialogueController : MonoBehaviour
         if (isPlaying && !isTyping && !isChoosing) ContinueStory();
     }
 
-    // =================================================================
-    // 동적 영입 헬퍼 함수
-    // =================================================================
     private NPCData GetOrLoadNPC(string idStr)
     {
         if (int.TryParse(idStr, out int npcId))
         {
             if (activeNPCs.TryGetValue(npcId, out NPCData data)) return data;
-
             NPCData newData = NPCManager.Instance?.GetNPCData(npcId);
             if (newData != null)
             {
@@ -259,57 +230,21 @@ public class DialogueController : MonoBehaviour
         return null;
     }
 
-    // =================================================================
-    // 태그 이벤트 핸들러들
-    // =================================================================
-    private void HandlePortraitEnter(string id, string val)
-    {
-        NPCData targetData = GetOrLoadNPC(id);
-        if (targetData != null && portraitController != null)
-        {
-            portraitController.SetInitialPosition(targetData, val);
-            portraitController.EnterAnimation(targetData);
-        }
-    }
+    // ---------------- 태그 핸들러 ----------------
+    private void HandlePortraitEnter(string id, string val) { NPCData target = GetOrLoadNPC(id); if (target != null && portraitController != null) { portraitController.SetInitialPosition(target, val); portraitController.EnterAnimation(target); } }
+    private void HandlePortraitFace(string id, string val) { NPCData target = GetOrLoadNPC(id); if (target != null && portraitController != null) portraitController.DoCrossFade(target, val, 0.1f, 0.25f); }
+    private void HandlePortraitEmote(string id, string val) { NPCData target = GetOrLoadNPC(id); if (target != null && portraitController != null) portraitController.ShowEmote(target, val); }
+    private void HandlePortraitMove(string id, string val) { NPCData target = GetOrLoadNPC(id); if (target != null && portraitController != null) portraitController.MovePosition(target, val); }
+    private void HandlePortraitAction(string id, string val) { NPCData target = GetOrLoadNPC(id); if (target != null && portraitController != null) portraitController.PlayAction(target, val); }
+    private void HandlePortraitExit(string id) { NPCData target = GetOrLoadNPC(id); if (target != null && portraitController != null) portraitController.ExitAnimationAndDestroy(target); }
 
-    private void HandlePortraitFace(string id, string val)
+    // [핵심 수정] 서명이 Action<string, Action>으로 변경되어 onComplete를 받아 넘깁니다!
+    private void HandleFeature(string val, Action onComplete)
     {
-        NPCData targetData = GetOrLoadNPC(id);
-        if (targetData != null && portraitController != null)
-            portraitController.DoCrossFade(targetData, val, 0.1f, 0.25f);
-    }
-
-    private void HandlePortraitEmote(string id, string val)
-    {
-        NPCData targetData = GetOrLoadNPC(id);
-        if (targetData != null && portraitController != null)
-            portraitController.ShowEmote(targetData, val);
-    }
-
-    private void HandlePortraitMove(string id, string val)
-    {
-        NPCData targetData = GetOrLoadNPC(id);
-        if (targetData != null && portraitController != null)
-            portraitController.MovePosition(targetData, val);
-    }
-
-    private void HandlePortraitAction(string id, string val)
-    {
-        NPCData targetData = GetOrLoadNPC(id);
-        if (targetData != null && portraitController != null)
-            portraitController.PlayAction(targetData, val);
-    }
-
-    private void HandlePortraitExit(string id)
-    {
-        NPCData targetData = GetOrLoadNPC(id);
-        if (targetData != null && portraitController != null)
-            portraitController.ExitAnimationAndDestroy(targetData);
-    }
-
-    private void HandleFeature(string val)
-    {
-        if (currentFeatureController != null) currentFeatureController.ExecuteFeature(val);
+        if (currentFeatureController != null)
+            currentFeatureController.ExecuteFeature(val, onComplete);
+        else
+            onComplete?.Invoke(); // 컨트롤러가 없으면 대화 멈추지 않게 즉시 진행!
     }
 
     private void HandleAffection(NPCData npcData, int amount, Action onComplete)
