@@ -1,94 +1,88 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class DialogueTagHandler : MonoBehaviour
 {
-    [SerializeField] private DialogueUIManager uiManager;
-    [SerializeField] private NPCDatabase npcDatabase;
+    // 다중 NPC 지원을 위해 targetId와 value를 넘깁니다.
+    public Action<string, string> OnPortraitEnterRequested;
+    public Action<string, string> OnPortraitFaceRequested;
+    public Action<string, string> OnPortraitEmoteRequested;
+    public Action<string, string> OnPortraitMoveRequested;
+    public Action<string, string> OnPortraitActionRequested;
 
-    public bool ProcessTags(List<string> tags, NPCData currentNPC)
+    // exit과 feature는 인자가 1개면 충분합니다.
+    public Action<string> OnPortraitExitRequested;
+    public Action<string> OnFeatureRequested;
+
+    // [핵심 추가] 호감도 요청 전용 진동벨 (NPC데이터, 올릴 수치, 끝났을 때 누를 버튼)
+    public Action<NPCData, int, Action> OnAffectionRequested;
+
+    // [수정] 대화 재개(onComplete) 콜백을 파라미터로 받습니다.
+    public bool ProcessTags(List<string> tags, NPCData currentNPC, Action onComplete)
     {
         bool isBlocking = false;
-        if (tags == null) return false;
+        if (tags == null || tags.Count == 0) return false;
+
+        string defaultNpcId = currentNPC != null ? currentNPC.id.ToString() : "Unknown";
 
         foreach (string tag in tags)
         {
             string[] split = tag.Split(':');
-            if (split.Length == 0) continue;
+            if (split.Length < 2) continue;
 
-            string key = split[0].Trim().ToLower();
-            string val = split.Length > 1 ? split[1].Trim() : "";
+            string command = split[0].Trim().ToLower();
+            string targetId = defaultNpcId;
+            string value = "";
 
-            // [디버그] 태그가 들어오는지 확인
-            // Debug.Log($"[TagHandler] 태그 감지됨 - Key: {key}, Value: {val}");
-
-            switch (key)
+            if (split.Length == 2)
             {
+                value = split[1].Trim();
+            }
+            else if (split.Length >= 3)
+            {
+                targetId = split[1].Trim();
+                value = split[2].Trim();
+            }
+
+            switch (command)
+            {
+                case "enter":
+                    OnPortraitEnterRequested?.Invoke(targetId, value);
+                    break;
+                case "face":
+                    OnPortraitFaceRequested?.Invoke(targetId, value);
+                    break;
+                case "emote":
+                    OnPortraitEmoteRequested?.Invoke(targetId, value);
+                    break;
+                case "pos":
+                case "move":
+                    OnPortraitMoveRequested?.Invoke(targetId, value);
+                    break;
+                case "action":
+                    OnPortraitActionRequested?.Invoke(targetId, value);
+                    break;
+                case "exit":
+                    OnPortraitExitRequested?.Invoke(targetId);
+                    break;
                 case "feature":
-                    uiManager.ExecuteFeature(val);
+                    OnFeatureRequested?.Invoke(value);
                     isBlocking = true;
                     break;
-
                 case "add_aff":
-                    // [디버그] 호감도 태그 인식 확인
-                    Debug.Log($"<color=yellow>[TagHandler] 호감도 태그 인식! 추가할 값: {val}</color>");
-
-                    // 호감도 증가 시도
-                    if (AffectionManager.Instance.AddAffection(currentNPC, int.Parse(val)))
+                    if (int.TryParse(value, out int amount))
+                    {
+                        // [핵심] 이제 매니저를 찾지 않습니다! 허공에 방송만 합니다.
+                        OnAffectionRequested?.Invoke(currentNPC, amount, onComplete);
                         isBlocking = true;
-                    break;
-
-                case "enter":
-                    if (int.TryParse(val, out int enterId))
-                    {
-                        string pos = split.Length > 2 ? split[2].Trim() : "center";
-                        uiManager.SpawnPortrait(npcDatabase.GetNPC(enterId), pos);
                     }
                     break;
-
-                case "exit":
-                    if (int.TryParse(val, out int exitId)) uiManager.DespawnPortrait(exitId);
-                    break;
-
-                case "emote":
-                    if (currentNPC != null)
-                    {
-                        var ctrl = uiManager.GetPortrait(currentNPC.id);
-                        if (ctrl != null) ctrl.ShowEmote(val);
-                    }
-                    break;
-
                 default:
-                    HandlePortraitCommand(key, split, currentNPC);
+                    Debug.LogWarning($"[TagHandler] 처리되지 않은 태그: {tag}");
                     break;
             }
         }
         return isBlocking;
-    }
-
-    private void HandlePortraitCommand(string key, string[] split, NPCData currentNPC)
-    {
-        if (int.TryParse(key, out int id))
-        {
-            var ctrl = uiManager.GetPortrait(id);
-            if (ctrl != null && split.Length >= 3)
-            {
-                string cmd = split[1].Trim().ToLower();
-                string val = split[2].Trim();
-                if (cmd == "face") ctrl.SetExpression(val);
-                else if (cmd == "emote") ctrl.ShowEmote(val);
-                else if (cmd == "move") ctrl.MovePosition(val);
-            }
-        }
-        else if (currentNPC != null && split.Length >= 2)
-        {
-            var ctrl = uiManager.GetPortrait(currentNPC.id);
-            if (ctrl != null)
-            {
-                string val = split[1].Trim();
-                if (key == "face") ctrl.SetExpression(val);
-                else if (key == "emote") ctrl.ShowEmote(val);
-            }
-        }
     }
 }

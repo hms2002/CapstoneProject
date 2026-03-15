@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a598f36781bd92f4da3f5aad6482613d, type: 3}
+  m_Name: GraveLootTable
+  m_EditorClassIdentifier: 
+  weaponDropCounts:
+  - count: 1
+    weight: 100
+  relicDropCounts:
+  - count: 1
+    weight: 70
+  - count: 2
+    weight: 30
+  normalRelicWeight: 90
+  rareRelicWeight: 10
+  epicRelicWeight: 0

@@ -1,10 +1,5 @@
 using UnityEngine;
 
-/// <summary>
-/// Standalone inventory UI (not tied to chests).
-/// - Opens/closes via hotkey
-/// - Game continues while open (no timeScale changes)
-/// </summary>
 public class InventoryUIManager : MonoBehaviour
 {
     public static InventoryUIManager Instance { get; private set; }
@@ -20,15 +15,19 @@ public class InventoryUIManager : MonoBehaviour
     private void Awake()
     {
         Instance = this;
-        if (inventoryScreen != null)
+        // 이제 SetActive 대신 UIManager가 알아서 처리하겠지만, 시작 시 꺼두는 건 뷰에서 담당하거나 여기서 안전하게 꺼둡니다.
+        if (inventoryScreen != null && inventoryScreen.gameObject.activeSelf)
+        {
             inventoryScreen.gameObject.SetActive(false);
+        }
     }
 
     private void Update()
     {
         if (Input.GetKeyDown(toggleKey))
         {
-            if (inventoryScreen != null && inventoryScreen.gameObject.activeSelf)
+            // [수정] 인터페이스 프로퍼티(IsActive)를 통해 상태 확인
+            if (inventoryScreen != null && inventoryScreen.IsActive)
                 Close();
             else
                 Open();
@@ -39,7 +38,6 @@ public class InventoryUIManager : MonoBehaviour
     {
         if (inventoryScreen == null) return;
 
-        // Build refs
         var player = lootOriginOverride != null
             ? lootOriginOverride
             : (SampleTopDownPlayer.Instance != null ? SampleTopDownPlayer.Instance.transform : null);
@@ -47,26 +45,21 @@ public class InventoryUIManager : MonoBehaviour
         var relicInv = FindFirstObjectByType<RelicInventory>();
         var backpack = FindFirstObjectByType<PlayerBackpackInventory>();
 
-        inventoryScreen.gameObject.SetActive(true);
         inventoryScreen.Bind(backpack, weaponInv, relicInv, player);
 
-        // Ensure hover/detail doesn't linger from other UIs
-        UIHoverManager.Instance?.HideImmediate(); // 이전 디테일 남아있지 않게
-        ItemDetailPanel.Instance?.Hide();
+        if (UIManager.Instance != null) UIManager.Instance.HideHoverImmediate();
 
-        inventoryScreen.gameObject.SetActive(true);
-
+        // [핵심] 직접 켜지 않고 UIManager의 스택에 밀어넣음!
+        if (UIManager.Instance != null) UIManager.Instance.PushUI(inventoryScreen);
+        else inventoryScreen.OpenUI();
     }
 
     public void Close()
     {
-        if (inventoryScreen != null)
-            inventoryScreen.gameObject.SetActive(false);
+        if (inventoryScreen == null) return;
 
-        // Close should always clear hover/detail
-        UIHoverManager.Instance?.HideImmediate();
-        ItemDetailPanel.Instance?.Hide();
-
-        inventoryScreen.gameObject.SetActive(false);
+        // [핵심] 직접 끄지 않고 UIManager의 스택에서 빼달라고 요청!
+        if (UIManager.Instance != null) UIManager.Instance.PopUI(inventoryScreen);
+        else inventoryScreen.CloseUI();
     }
 }

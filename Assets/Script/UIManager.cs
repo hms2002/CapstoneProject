@@ -1,83 +1,88 @@
-using System.Collections.Generic;
 using UnityEngine;
+using System.Collections.Generic;
 
 public class UIManager : MonoBehaviour
 {
-    private static UIManager instance;
-    public static UIManager Instance
-    {
-        get
-        {
-            if (instance == null)
-            {
-                instance = FindObjectOfType<UIManager>();
-                if (instance == null)
-                {
-                    GameObject go = new GameObject("UIManager");
-                    instance = go.AddComponent<UIManager>();
-                }
-            }
-            return instance;
-        }
-    }
+    public static UIManager Instance { get; private set; }
 
-    // 현재 열려 있는 UI들의 이름을 저장하는 리스트
-    private HashSet<string> openUIs = new HashSet<string>();
+    [Header("Controllers")]
+    [SerializeField] private HoverUIController hoverUIController;
+
+    [Header("UI Stack (Popups)")]
+    private List<IStackableUI> uiStack = new List<IStackableUI>();
 
     private void Awake()
     {
-        if (instance == null)
+        if (Instance == null)
         {
-            instance = this;
+            Instance = this;
             DontDestroyOnLoad(gameObject);
         }
-        else if (instance != this)
+        else Destroy(gameObject);
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape)) CloseTopUI();
+    }
+
+    // =========================================================
+    // 1. 팝업 UI (Stackable) 관리
+    // =========================================================
+    public void PushUI(IStackableUI ui)
+    {
+        if (ui == null) return;
+
+        if (uiStack.Contains(ui)) uiStack.Remove(ui);
+
+        uiStack.Add(ui);
+        ui.OpenUI();
+    }
+
+    public void PopUI(IStackableUI ui)
+    {
+        if (ui == null) return;
+
+        if (uiStack.Contains(ui))
         {
-            Destroy(gameObject);
+            uiStack.Remove(ui);
+            ui.CloseUI();
+
+            // 팝업이 닫힐 때 허공에 떠 있는 Hover UI(툴팁) 강제 정리
+            HideHoverImmediate();
         }
     }
 
-    /// <summary>
-    /// UI가 열릴 때 호출하여 등록합니다.
-    /// </summary>
-    public void RegisterUI(string uiName)
+    public void CloseTopUI()
     {
-        if (!openUIs.Contains(uiName))
+        if (uiStack.Count > 0)
         {
-            openUIs.Add(uiName);
-            // 필요 시 여기서 Player 입력을 끄는 등의 처리를 할 수 있습니다.
-            // Debug.Log($"[UIManager] UI Registered: {uiName}");
+            IStackableUI topUI = uiStack[uiStack.Count - 1];
+            if (topUI.CanCloseOnEscape) PopUI(topUI);
         }
     }
 
-    /// <summary>
-    /// UI가 닫힐 때 호출하여 해제합니다.
-    /// </summary>
-    public void UnregisterUI(string uiName)
+    public bool HasActivePopup() => uiStack.Count > 0;
+
+    // =========================================================
+    // 2. 호버 UI (Hover/Tooltip) 라우팅
+    // =========================================================
+    public void ShowHover(IHoverView view, RectTransform targetRect, object data, object context = null)
     {
-        if (openUIs.Contains(uiName))
-        {
-            openUIs.Remove(uiName);
-            // Debug.Log($"[UIManager] UI Unregistered: {uiName}");
-        }
+        if (hoverUIController != null)
+            hoverUIController.ShowHover(view, targetRect, data, context);
     }
 
-    /// <summary>
-    /// 현재 화면을 가로막는 UI가 하나라도 열려 있는지 확인합니다.
-    /// DialogueManager에서 스킵 방지용으로 참조합니다.
-    /// </summary>
-    public bool IsAnyBlockingUIOpen => openUIs.Count > 0;
-
-    /// <summary>
-    /// 특정 UI가 열려 있는지 확인합니다.
-    /// </summary>
-    public bool IsUIOpen(string uiName) => openUIs.Contains(uiName);
-
-    /// <summary>
-    /// 모든 UI 등록을 강제로 초기화합니다. (씬 전환 시 등)
-    /// </summary>
-    public void ClearAllRegisteredUIs()
+    // [수정] 끄기 지시를 내릴 때 타겟 Rect도 같이 넘겨서 꼬임 방지
+    public void HideHover(IHoverView view, RectTransform targetRect)
     {
-        openUIs.Clear();
+        if (hoverUIController != null)
+            hoverUIController.HideHover(view, targetRect);
+    }
+
+    public void HideHoverImmediate()
+    {
+        if (hoverUIController != null)
+            hoverUIController.HideImmediate();
     }
 }

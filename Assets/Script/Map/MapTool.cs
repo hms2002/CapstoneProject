@@ -7,36 +7,32 @@ public class MapTool : EditorWindow
     [MenuItem("Tools/문(Door) 관리/ID 중복 검사 및 해결")]
     public static void ResolveDuplicateIDs()
     {
-        // [수정됨] 최신 API 사용 (정렬 안 함 = 더 빠름)
+        // 씬 내의 모든 DoorObject 탐색
         DoorObject[] doors = FindObjectsByType<DoorObject>(FindObjectsSortMode.None);
 
-        // ID별로 누가 쓰고 있는지 기록
         Dictionary<string, DoorObject> idRegistry = new Dictionary<string, DoorObject>();
         int fixedCount = 0;
 
         foreach (var door in doors)
         {
-            // 1. ID가 비어있으면 생성
+            // 1. ID가 아예 비어있는 경우
             if (string.IsNullOrEmpty(door.doorID))
             {
                 Undo.RecordObject(door, "Generate Door ID");
                 door.GenerateID();
                 fixedCount++;
             }
-
-            // 2. 이미 누가 쓰고 있는 ID라면? (중복 발생!)
+            // 2. 누군가 이미 선점한 중복 ID인 경우
             else if (idRegistry.ContainsKey(door.doorID))
             {
                 Undo.RecordObject(door, "Resolve Duplicate ID");
-
-                // 새로 발급
-                door.GenerateID();
+                door.GenerateID(); // 새로운 ID 강제 발급
                 fixedCount++;
 
-                Debug.LogWarning($"[중복 발견] {door.name}의 ID가 중복되어 새로 발급했습니다 -> {door.doorID}");
+                Debug.LogWarning($"[중복 발견] '{door.name}'의 ID가 중복되어 새로 발급했습니다 -> {door.doorID}");
             }
 
-            // 레지스트리에 등록 (이제 이 ID는 점유됨)
+            // 안전한 ID를 레지스트리에 등록
             if (!idRegistry.ContainsKey(door.doorID))
             {
                 idRegistry.Add(door.doorID, door);

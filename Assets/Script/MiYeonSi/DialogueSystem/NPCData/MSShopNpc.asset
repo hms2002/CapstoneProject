@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: MSShopNpc
   m_EditorClassIdentifier: 
   id: 1001
-  npcName: "\uB9C8\uB140\uC778\uC9C0 \uBB58"
+  npcName: "1\uBC88 Npc"
   isBoss: 1
   affectionRewards:
   - targetLevel: 2
