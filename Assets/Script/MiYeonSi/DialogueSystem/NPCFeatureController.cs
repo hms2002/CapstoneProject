@@ -1,46 +1,34 @@
+using System;
 using UnityEngine;
-using UnityEngine.Events;
-using System.Collections.Generic;
-
-[System.Serializable]
-public struct NPCFeature
-{
-    public string featureKey;    // 예: "shop", "upgrade"
-    public UnityEvent onExecute; // 실행할 함수 연결
-}
 
 public class NPCFeatureController : MonoBehaviour
 {
-    [Header("이 NPC가 가진 기능 목록")]
-    [SerializeField] private List<NPCFeature> features;
+    // 대화 종료를 Controller에 요청하는 이벤트
+    public Action RequestDialogueExit;
 
-    private Dictionary<string, UnityEvent> featureDict;
+    private INPCFeature[] features;
 
     private void Awake()
     {
-        featureDict = new Dictionary<string, UnityEvent>();
-        foreach (var feature in features)
-        {
-            string key = feature.featureKey.Trim().ToLower();
-            if (!string.IsNullOrEmpty(key) && !featureDict.ContainsKey(key))
-            {
-                featureDict.Add(key, feature.onExecute);
-            }
-        }
+        // 이 NPC에 붙어있는 모든 INPCFeature 컴포넌트를 배열로 가져옵니다.
+        features = GetComponents<INPCFeature>();
     }
 
-    public void ExecuteFeature(string key)
+    // [수정] Action을 선택적(Optional) 매개변수로 받아 Interface와 규격을 맞춥니다.
+    public void ExecuteFeature(string featureName, Action onComplete = null)
     {
-        string searchKey = key.Trim().ToLower();
+        if (features == null) return;
 
-        if (featureDict.TryGetValue(searchKey, out UnityEvent action))
+        foreach (var feature in features)
         {
-            Debug.Log($"[NPCFeature] 기능 실행: {searchKey}");
-            action.Invoke();
+            if (feature.FeatureName.ToLower() == featureName.ToLower())
+            {
+                // 인터페이스 규격에 맞춰 onComplete 전달
+                feature.Execute(onComplete);
+                return;
+            }
         }
-        else
-        {
-            Debug.LogWarning($"[NPCFeature] '{gameObject.name}' NPC는 '{searchKey}' 기능이 없습니다.");
-        }
+
+        Debug.LogWarning($"[NPCFeatureController] '{featureName}' 기능을 찾을 수 없습니다.");
     }
 }

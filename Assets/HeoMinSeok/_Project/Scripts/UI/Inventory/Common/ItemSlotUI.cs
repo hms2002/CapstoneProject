@@ -8,16 +8,8 @@ public interface IItemContainer
 {
     int SlotCount { get; }
     event Action OnChanged;
-
-    /// <summary>슬롯의 아이템(WeaponDefinition / RelicDefinition / null)</summary>
     ScriptableObject Get(int index);
-
-    /// <summary>
-    /// 해당 슬롯에 item을 놓을 수 있는지(타입/중복/규칙 체크).
-    /// ignoreIndex는 “내부 구현에서 필요한 경우”만 쓰고 기본은 -1.
-    /// </summary>
     bool CanPlace(ScriptableObject item, int index, int ignoreIndex = -1);
-
     bool TrySet(int index, ScriptableObject item);
     bool TrySwap(int a, int b);
 }
@@ -40,7 +32,7 @@ public class ItemSlotUI : MonoBehaviour,
     [SerializeField] private TextMeshProUGUI levelText;
     private IItemContainer container;
     private int index;
-    [SerializeField] private RectTransform slotRect; // 없으면 Awake에서 transform as RectTransform
+    [SerializeField] private RectTransform slotRect;
 
     private void Awake()
     {
@@ -89,14 +81,15 @@ public class ItemSlotUI : MonoBehaviour,
             levelText.text = $"Lv {lvl}";
         }
         else levelText.gameObject.SetActive(false);
-
     }
 
     public void OnBeginDrag(PointerEventData eventData)
     {
         if (container == null) return;
-        ItemDetailPanel.Instance?.Hide(); // ✅ 드래그 시작하면 패널 숨김
-        UIHoverManager.Instance?.HideImmediate();
+
+        // [수정] 드래그 시작 시 호버 패널 숨김 (UIManager 활용)
+        if (UIManager.Instance != null) UIManager.Instance.HideHoverImmediate();
+
         var so = container.Get(index);
         if (so == null) return;
 
@@ -130,7 +123,6 @@ public class ItemSlotUI : MonoBehaviour,
         if (container == null) return;
         if (!ItemDragContext.Active) return;
 
-        // source -> target 처리 (Swap 방식)
         ItemDragContext.TryDrop(container, index);
     }
 
@@ -138,14 +130,12 @@ public class ItemSlotUI : MonoBehaviour,
     {
         if (container == null) return;
 
-        // Right click -> Quick Move
         if (eventData.button == PointerEventData.InputButton.Right)
         {
             TryQuickMove();
             return;
         }
     }
-
 
     private void TryQuickMove()
     {
@@ -161,33 +151,19 @@ public class ItemSlotUI : MonoBehaviour,
         var w = ItemContainerGroupRegistry.WeaponEquip;
         var r = ItemContainerGroupRegistry.RelicEquip;
 
-        // 그룹이 설정되지 않았으면 아무것도 안함
         if (chest == null || w == null || r == null) return;
 
         IItemContainer target = null;
 
-        // 1) 장착 슬롯에서 -> 상자(=Backpack)
-        if (container == w || container == r)
-        {
-            target = chest;
-        }
-        // 2) 상자(=Backpack)에서 -> 타입에 맞는 장착 슬롯
-        else if (container == chest)
-        {
-            target = def.Kind == InventoryItemKind.Weapon ? w : r;
-        }
-        // 3) 주변 루트(loot)에서 -> 상자(=Backpack)
-        else if (container is WorldLootContainerAdapter)
-        {
-            target = chest;
-        }
+        if (container == w || container == r) target = chest;
+        else if (container == chest) target = def.Kind == InventoryItemKind.Weapon ? w : r;
+        else if (container is WorldLootContainerAdapter) target = chest;
 
         if (target == null) return;
 
         int targetIndex = FindFirstEmptyIndex(target, so);
         if (targetIndex < 0) return;
 
-        // 드롭(스왑 로직) 재활용
         int relicLevel = 0;
         if (so is RelicDefinition && container is IRelicLevelProvider p)
             p.TryGetRelicLevel(index, out relicLevel);
@@ -202,7 +178,7 @@ public class ItemSlotUI : MonoBehaviour,
     {
         for (int i = 0; i < target.SlotCount; i++)
         {
-            if (target.Get(i) != null) continue; // 빈 칸만
+            if (target.Get(i) != null) continue;
             if (!target.CanPlace(moving, i)) continue;
             return i;
         }
@@ -217,17 +193,25 @@ public class ItemSlotUI : MonoBehaviour,
         var so = container.Get(index);
         if (so == null)
         {
-            UIHoverManager.Instance?.HideImmediate();
+            if (UIManager.Instance != null) UIManager.Instance.HideHoverImmediate();
             return;
         }
-        UIHoverManager.Instance?.HoverSlot(slotRect, so, container, index);
 
+        // [수정] HoverController에게 띄우라고 요청
+        if (ItemHoverController.Instance != null)
+        {
+            ItemHoverController.Instance.HoverSlot(slotRect, so, container, index);
+        }
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
         if (ItemDragContext.Active) return;
-        UIHoverManager.Instance?.UnhoverSlot(slotRect);
-    }
 
+        // [수정] HoverController에게 끄라고 요청
+        if (ItemHoverController.Instance != null)
+        {
+            ItemHoverController.Instance.UnhoverSlot(slotRect);
+        }
+    }
 }

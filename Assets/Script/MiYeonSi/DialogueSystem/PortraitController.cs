@@ -1,220 +1,241 @@
 using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.U2D.Animation;
+using System.Collections.Generic;
 using DG.Tweening;
+using UnityEngine.U2D.Animation;
 
 public class PortraitController : MonoBehaviour
 {
-    [Header("데이터 연동")]
-    public NPCData npcData;
-
-    [Header("설정")]
-    [Tooltip("표정 스프라이트 카테고리 이름 (예: Face)")]
     public string targetCategory = "Face";
 
-    [Header("이모티콘 설정")]
-    [Tooltip("EmoteController가 붙어있는 말풍선 프리팹")]
-    public GameObject emotePrefab;
+    [Header("프리팹 연결")]
+    [SerializeField] private PortraitActor actorPrefab;
+    [SerializeField] private GameObject emotePrefab;
 
-    [Header("컴포넌트 연결")]
-    [SerializeField] private Image portraitImage;
-    [SerializeField] private SpriteLibrary spriteLibrary;
+    [Header("위치 오프셋")]
+    [SerializeField] private float centerPosX = 0f;
+    [SerializeField] private float sideOffset = 400f;
+    [SerializeField] private float farSideOffset = 700f;
+    [SerializeField] private float hidePosY = -600f;
 
-    private RectTransform rectTransform;
-    private Vector2 defaultPos;
-    private Vector3 defaultScale;
+    private List<PortraitActor> actorPool = new List<PortraitActor>();
+    private List<GameObject> emotePool = new List<GameObject>();
 
-    // [New] 현재 떠 있는 이모티콘을 기억하는 변수
-    private GameObject currentEmoteObject;
+    // 🚨 [핵심 개선] 파편화된 3개의 딕셔너리를 단 1개로 압축했습니다!
+    private Dictionary<int, PortraitActor> activeActors = new Dictionary<int, PortraitActor>();
 
-    private void Awake()
+    private int currentSpeakerId = -1;
+
+    private PortraitActor GetActor()
     {
-        rectTransform = GetComponent<RectTransform>();
+        foreach (var actor in actorPool)
+            if (!actor.gameObject.activeSelf) return actor;
 
-        if (portraitImage == null) portraitImage = GetComponent<Image>();
-        if (spriteLibrary == null) spriteLibrary = GetComponent<SpriteLibrary>();
-
-        if (rectTransform != null)
-        {
-            defaultPos = rectTransform.anchoredPosition;
-        }
-        defaultScale = transform.localScale;
+        PortraitActor newActor = Instantiate(actorPrefab, transform);
+        actorPool.Add(newActor);
+        return newActor;
     }
 
-    private void Start()
+    private PortraitActor GetOrCreateActiveActor(NPCData data)
     {
-        if (npcData != null)
-        {
-            ApplyNPCData(npcData);
-        }
-    }
+        if (activeActors.ContainsKey(data.id))
+            return activeActors[data.id];
 
-    public void ApplyNPCData(NPCData data)
-    {
-        this.npcData = data;
+        PortraitActor newActor = GetActor();
+        activeActors[data.id] = newActor;
+
+        // 배우 본인에게 신분증(상태)을 쥐어줍니다!
+        newActor.npcId = data.id;
+        newActor.currentLabel = "Normal";
+        newActor.currentPosition = "center";
 
         if (data.spriteLibraryAsset != null)
+            newActor.SetSprite(data.spriteLibraryAsset.GetSprite(targetCategory, "Normal"));
+
+        return newActor;
+    }
+
+    public void HighlightSpeaker(int speakerId)
+    {
+        currentSpeakerId = speakerId;
+        foreach (var kvp in activeActors)
         {
-            spriteLibrary.spriteLibraryAsset = data.spriteLibraryAsset;
-            spriteLibrary.RefreshSpriteResolvers();
-            SetExpression("Normal");
-        }
-        else
-        {
-            Debug.LogError($"[PortraitController] {data.npcName} 데이터에 Sprite Library Asset이 없습니다!");
+            kvp.Value.SetFocus(kvp.Key == currentSpeakerId);
         }
     }
 
-    public void SetExpression(string label)
+    public void SetInitialPosition(NPCData targetData, string positionKey)
     {
-        if (spriteLibrary == null || spriteLibrary.spriteLibraryAsset == null) return;
+        if (targetData == null) return;
+        PortraitActor actor = GetOrCreateActiveActor(targetData);
 
-        Sprite newSprite = spriteLibrary.GetSprite(targetCategory, label);
+        actor.currentPosition = positionKey.ToLower(); // 배우가 자기 위치 갱신
 
-        if (newSprite != null)
-        {
-            portraitImage.sprite = newSprite;
-        }
+        RectTransform rt = actor.GetComponent<RectTransform>();
+        float targetX = GetTargetXByPositionKey(actor.currentPosition);
+        rt.anchoredPosition = new Vector2(targetX, hidePosY);
     }
 
-    // =================================================================
-    // [Updated] 기능 2: 이모티콘 실행 (중복 방지 로직 추가)
-    // =================================================================
-    public void ShowEmote(string emoteName)
+    public void EnterAnimation(NPCData targetData)
     {
-        if (emotePrefab == null || npcData == null) return;
+        if (targetData == null || !activeActors.ContainsKey(targetData.id)) return;
+        PortraitActor actor = activeActors[targetData.id];
 
-        // 1. [핵심] 이미 떠 있는 이모티콘이 있다면 즉시 파괴!
-        if (currentEmoteObject != null)
-        {
-            Destroy(currentEmoteObject);
-            currentEmoteObject = null;
-        }
+        actor.gameObject.SetActive(true);
+        actor.canvasGroup.alpha = 0f;
+        actor.canvasGroup.DOFade(1f, 0.5f);
 
-        // 2. 프리팹 생성
-        GameObject go = Instantiate(emotePrefab, transform);
+        // [버그 수정 반영] RGB 0(까만색)에서 목표 색상까지 부드럽게 밝아지는 등장 연출!
+        actor.image.color = new Color(0f, 0f, 0f, 1f);
+        Color targetColor = (targetData.id == currentSpeakerId) ? Color.white : new Color(0.4f, 0.4f, 0.4f, 1f);
+        actor.image.DOColor(targetColor, 0.5f);
 
-        // 3. [핵심] 방금 만든 것을 '현재 이모티콘'으로 등록
-        currentEmoteObject = go;
-
-        // 4. 위치 및 스케일 설정
-        RectTransform rt = go.GetComponent<RectTransform>();
-        if (rt != null)
-        {
-            rt.anchoredPosition = npcData.emoteOffset;
-            rt.localScale = Vector3.one;
-        }
-
-        // 5. 초기화
-        EmoteController ctrl = go.GetComponent<EmoteController>();
-        if (ctrl != null)
-        {
-            ctrl.Init(emoteName);
-        }
+        RectTransform rt = actor.GetComponent<RectTransform>();
+        rt.DOAnchorPosY(0f, 0.5f).SetEase(Ease.OutBack);
     }
 
-    public void PlayAction(string action)
+    public void DoCrossFade(NPCData targetData, string label, float appearTime, float fadeOutTime)
     {
-        if (rectTransform == null) return;
+        if (targetData == null || targetData.spriteLibraryAsset == null) return;
+        int id = targetData.id;
 
-        rectTransform.DOKill();
-        rectTransform.anchoredPosition = defaultPos;
-        transform.localScale = defaultScale;
-        transform.localRotation = Quaternion.identity;
+        if (activeActors.ContainsKey(id))
+        {
+            PortraitActor currentActor = activeActors[id];
+            // 배우가 직접 자신의 현재 표정을 확인합니다.
+            if (currentActor.gameObject.activeSelf && currentActor.currentLabel == label)
+                return;
+        }
+
+        PortraitActor nextActor = GetActor();
+        nextActor.npcId = id;
+        nextActor.currentLabel = label;
+
+        Sprite faceSprite = targetData.spriteLibraryAsset.GetSprite(targetCategory, label);
+        nextActor.SetSprite(faceSprite);
+        nextActor.SetFocus(id == currentSpeakerId, 0f);
+
+        // 이전 배우의 위치를 물려받아 저장
+        string currentPosKey = activeActors.ContainsKey(id) ? activeActors[id].currentPosition : "center";
+        nextActor.currentPosition = currentPosKey;
+
+        float targetX = GetTargetXByPositionKey(currentPosKey);
+        nextActor.GetComponent<RectTransform>().anchoredPosition = new Vector2(targetX, 0f);
+
+        nextActor.transform.SetAsLastSibling();
+        nextActor.FadeIn(appearTime);
+
+        if (activeActors.ContainsKey(id))
+        {
+            PortraitActor prevActor = activeActors[id];
+            if (prevActor != null && prevActor != nextActor)
+                prevActor.FadeOut(fadeOutTime);
+        }
+
+        activeActors[id] = nextActor; // 딕셔너리 하나만 업데이트하면 끝!
+    }
+
+    public void ShowEmote(NPCData targetData, string emoteName)
+    {
+        if (targetData == null || !activeActors.ContainsKey(targetData.id)) return;
+        PortraitActor actor = activeActors[targetData.id];
+
+        GameObject targetEmote = null;
+        foreach (var e in emotePool) { if (!e.activeSelf) { targetEmote = e; break; } }
+
+        if (targetEmote == null)
+        {
+            targetEmote = Instantiate(emotePrefab, transform);
+            emotePool.Add(targetEmote);
+        }
+
+        targetEmote.transform.SetParent(actor.transform, false);
+        targetEmote.GetComponent<RectTransform>().anchoredPosition = targetData.emoteOffset;
+        targetEmote.SetActive(true);
+        targetEmote.GetComponent<EmoteController>()?.Init(emoteName);
+    }
+
+    public void MovePosition(NPCData targetData, string positionKey)
+    {
+        if (targetData == null || !activeActors.ContainsKey(targetData.id)) return;
+        PortraitActor actor = activeActors[targetData.id];
+
+        actor.currentPosition = positionKey.ToLower(); // 배우 상태 업데이트
+        float targetX = GetTargetXByPositionKey(actor.currentPosition);
+
+        RectTransform rt = actor.GetComponent<RectTransform>();
+        rt.DOAnchorPosX(targetX, 0.5f).SetEase(Ease.OutQuart);
+    }
+
+    public void PlayAction(NPCData targetData, string action)
+    {
+        if (targetData == null || !activeActors.ContainsKey(targetData.id)) return;
+        PortraitActor actor = activeActors[targetData.id];
+        RectTransform rt = actor.GetComponent<RectTransform>();
+        rt.DOKill();
+
+        // 딕셔너리 검색 없이 배우에게 바로 물어봅니다.
+        Vector2 defaultPos = new Vector2(GetTargetXByPositionKey(actor.currentPosition), 0f);
 
         switch (action.ToLower())
         {
-            case "jump":
-                rectTransform.DOJumpAnchorPos(defaultPos, 50f, 1, 0.4f);
-                break;
-            case "shake":
-                rectTransform.DOShakeAnchorPos(0.5f, 15f, 30, 90);
-                break;
-            case "zoom_in":
-                transform.DOScale(defaultScale * 1.2f, 0.25f).SetEase(Ease.OutBack);
-                break;
-            case "nod":
-                Sequence seq = DOTween.Sequence();
-                seq.Append(rectTransform.DOAnchorPosY(defaultPos.y - 15f, 0.1f));
-                seq.Append(rectTransform.DOAnchorPosY(defaultPos.y, 0.1f));
-                break;
+            case "jump": rt.DOJumpAnchorPos(defaultPos, 50f, 1, 0.4f); break;
+            case "shake": rt.DOShakeAnchorPos(0.5f, 15f, 30, 90); break;
         }
     }
 
-    public void SetInitialPosition(string positionKey)
+    public void ExitAnimationAndDestroy(NPCData targetData)
     {
-        if (rectTransform == null) rectTransform = GetComponent<RectTransform>();
+        if (targetData == null || !activeActors.ContainsKey(targetData.id)) return;
+        PortraitActor actor = activeActors[targetData.id];
 
-        // 앵커 중앙 고정
-        rectTransform.anchorMin = new Vector2(0f, 0f);
-        rectTransform.anchorMax = new Vector2(1f, 1f);
-        rectTransform.pivot = new Vector2(0.5f, 0.5f);
+        actor.FadeOut(0.4f);
+        actor.GetComponent<RectTransform>().DOAnchorPosY(hidePosY, 0.4f).OnComplete(() => {
+            actor.HideImmediate();
+        });
 
-        float xPos = 0;
-        switch (positionKey.ToLower())
-        {
-            case "left": xPos = -400f; break;
-            case "right": xPos = 400f; break;
-            case "center": xPos = 0f; break;
-            case "far_left": xPos = -700f; break;
-            case "far_right": xPos = 700f; break;
-        }
-
-        rectTransform.anchoredPosition = new Vector2(xPos, -200f);
-        defaultPos = rectTransform.anchoredPosition;
+        activeActors.Remove(targetData.id); // 딕셔너리 하나만 지우면 메모리 싹 비워짐!
     }
 
-    public void EnterAnimation()
+    public void ExitAllAndClear()
     {
-        if (rectTransform == null) rectTransform = GetComponent<RectTransform>();
+        foreach (var actor in actorPool) actor.FadeOut(0.4f);
+        foreach (var emote in emotePool) if (emote != null) emote.SetActive(false);
 
-        CanvasGroup cg = GetComponent<CanvasGroup>();
-        if (cg == null) cg = gameObject.AddComponent<CanvasGroup>();
-
-        cg.alpha = 0f;
-        cg.DOFade(1f, 0.5f);
-
-        if (rectTransform != null)
-        {
-            rectTransform.anchoredPosition = new Vector2(rectTransform.anchoredPosition.x, -200f);
-            rectTransform.DOAnchorPosY(0f, 0.5f).SetEase(Ease.OutBack)
-                .OnComplete(() => defaultPos = rectTransform.anchoredPosition);
-        }
+        activeActors.Clear(); // 딕셔너리 하나만 지우면 끝!
+        currentSpeakerId = -1;
     }
 
-    public void ExitAnimationAndDestroy()
+    public void SetupSilhouetteMode(NPCData targetData)
     {
-        // [추가] 초상화가 사라질 때 이모티콘도 같이 정리 (혹시 몰라서 추가)
-        if (currentEmoteObject != null) Destroy(currentEmoteObject);
-
-        CanvasGroup cg = GetComponent<CanvasGroup>();
-        if (cg != null) cg.DOFade(0f, 0.4f);
-
-        if (rectTransform != null)
-        {
-            rectTransform.DOAnchorPosY(-200f, 0.4f)
-                .OnComplete(() => Destroy(gameObject));
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
+        if (targetData == null) return;
+        PortraitActor actor = GetOrCreateActiveActor(targetData);
+        actor.image.color = Color.black;
+        actor.canvasGroup.alpha = 0f;
+        actor.gameObject.SetActive(true);
     }
 
-    public void MovePosition(string positionKey)
+    public Tween GetSilhouetteFadeInTween(NPCData targetData, float duration)
     {
-        if (rectTransform == null) return;
+        if (targetData == null || !activeActors.ContainsKey(targetData.id)) return null;
+        return activeActors[targetData.id].canvasGroup.DOFade(1f, duration);
+    }
 
-        float targetX = 0;
-        switch (positionKey.ToLower())
+    public Tween GetColorizeTween(NPCData targetData, float duration)
+    {
+        if (targetData == null || !activeActors.ContainsKey(targetData.id)) return null;
+        return activeActors[targetData.id].image.DOColor(Color.white, duration);
+    }
+
+    private float GetTargetXByPositionKey(string key)
+    {
+        switch (key.ToLower())
         {
-            case "left": targetX = -400f; break;
-            case "right": targetX = 400f; break;
-            case "center": targetX = 0f; break;
-            case "far_left": targetX = -700f; break;
-            case "far_right": targetX = 700f; break;
+            case "left": return -sideOffset;
+            case "right": return sideOffset;
+            case "center": return centerPosX;
+            case "far_left": return -farSideOffset;
+            case "far_right": return farSideOffset;
+            default: return centerPosX;
         }
-        rectTransform.DOAnchorPosX(targetX, 0.5f).SetEase(Ease.OutQuart)
-            .OnComplete(() => defaultPos = rectTransform.anchoredPosition);
     }
 }

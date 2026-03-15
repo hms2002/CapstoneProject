@@ -3,7 +3,8 @@ using UnityEngine.UI;
 using System.Collections.Generic;
 using TMPro;
 
-public class RewardDisplayUI : MonoBehaviour
+// [수정] IStackableUI를 상속받아 UIManager의 스택 관리를 받습니다!
+public class RewardDisplayUI : MonoBehaviour, IStackableUI
 {
     public static RewardDisplayUI Instance { get; private set; }
 
@@ -17,13 +18,39 @@ public class RewardDisplayUI : MonoBehaviour
     [SerializeField] private GameObject effectSlotPrefab;
     [SerializeField] private Transform slotParent;
 
-    private void Awake() { Instance = this; panelRoot.SetActive(false); }
+    private System.Action onCloseCallback;
 
-    private void OnEnable() => UIManager.Instance?.RegisterUI("RewardDisplay");
-    private void OnDisable() => UIManager.Instance?.UnregisterUI("RewardDisplay");
-
-    public void ShowReward(List<UpgradeEffectSO> uEffects = null, List<AffectionEffect> aEffects = null)
+    private void Awake()
     {
+        Instance = this;
+        panelRoot.SetActive(false);
+    }
+
+    // [수정] RegisterUI / UnregisterUI 삭제 (Push/Pop으로 대체됨)
+
+    // =========================================================
+    // IStackableUI 규약
+    // =========================================================
+    public bool IsActive => panelRoot.activeSelf;
+    public bool CanCloseOnEscape => true;
+
+    public void OpenUI()
+    {
+        panelRoot.SetActive(true);
+    }
+
+    public void CloseUI()
+    {
+        panelRoot.SetActive(false);
+        onCloseCallback?.Invoke();
+        onCloseCallback = null;
+    }
+    // =========================================================
+
+    public void ShowReward(List<UpgradeEffectSO> uEffects = null, List<AffectionEffect> aEffects = null, System.Action callback = null)
+    {
+        this.onCloseCallback = callback;
+
         foreach (Transform child in slotParent) Destroy(child.gameObject);
         string summary = "";
 
@@ -39,7 +66,10 @@ public class RewardDisplayUI : MonoBehaviour
         }
 
         contextText.text = summary.TrimEnd();
-        panelRoot.SetActive(true);
+
+        // [수정] 직접 켜지 않고 UIManager에게 켜달라고(Push) 요청!
+        if (UIManager.Instance != null) UIManager.Instance.PushUI(this);
+        else panelRoot.SetActive(true); // 혹시 UIManager가 없을 때를 대비한 방어코드
     }
 
     private void ProcessUpgrade(UpgradeEffectSO e, ref string s)
@@ -69,15 +99,8 @@ public class RewardDisplayUI : MonoBehaviour
 
     public void Close()
     {
-        panelRoot.SetActive(false);
-
-        // [핵심 수정] 업그레이드 UI가 열려있다면 대화를 재개하지 않음 (업그레이드 UI가 닫힐 때 재개할 것이므로)
-        if (UIManager.Instance.IsUIOpen("UpgradeTree")) return;
-
-        // 그 외의 경우(호감도 이벤트 등)에는 대화 재개
-        if (DialogueManager.GetInstance() != null && DialogueManager.GetInstance().dialogueIsPlaying)
-        {
-            DialogueManager.GetInstance().ResumeDialogueAfterUI();
-        }
+        // [수정] 직접 끄지 않고 UIManager에게 꺼달라고(Pop) 요청!
+        if (UIManager.Instance != null) UIManager.Instance.PopUI(this);
+        else CloseUI();
     }
 }

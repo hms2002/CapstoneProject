@@ -7,16 +7,10 @@ public class GameDataManager : MonoBehaviour
 {
     public static GameDataManager Instance { get; private set; }
 
-    // 런타임에서 사용할 데이터 원본
     public GameData Data { get; private set; }
-
-    // [필수] 인스펙터에서 ItemDatabase 에셋을 연결해야 합니다.
-    [Header("Link")]
-    public ItemDatabase itemDatabase;
 
     private string savePath;
 
-    // [New] 마정석 변경 알림 이벤트 (UI 갱신용)
     public event Action<int> OnMagicStoneChanged;
 
     private void Awake()
@@ -34,15 +28,7 @@ public class GameDataManager : MonoBehaviour
 
         savePath = Application.persistentDataPath + "/GameSave.json";
 
-        // 게임 시작 시 데이터 로드
         LoadData();
-    }
-
-    public void SaveData()
-    {
-        string json = JsonUtility.ToJson(Data, true);
-        File.WriteAllText(savePath, json);
-        Debug.Log($"[GameDataManager] 저장 완료: {savePath}");
     }
 
     public void LoadData()
@@ -67,105 +53,34 @@ public class GameDataManager : MonoBehaviour
             Data = new GameData();
         }
 
-        // [핵심] 로드된 데이터를 기반으로 아이템 DB 동기화
-        if (itemDatabase != null)
+        // [핵심] 로드 후 ItemManager에게 데이터를 넘겨주어 메모리 세팅 지시
+        // (주의: Awake 실행 순서상 ItemManager가 먼저 생겼거나, 다른 곳에서 초기화 호출을 맞춰야 합니다)
+        if (ItemManager.Instance != null)
         {
-            itemDatabase.Initialize(Data.itemData);
-        }
-        else
-        {
-            Debug.LogError("[GameDataManager] ItemDatabase가 연결되지 않았습니다! 인스펙터를 확인하세요.");
+            ItemManager.Instance.Initialize(Data.itemData);
         }
     }
 
-    // =========================================================
-    // [New] Effect 스크립트에서 호출할 공개 해금 함수들
-    // =========================================================
-
-    // 1. 무기 해금 (외부 호출용)
-    public void UnlockWeapon(string id)
+    // [핵심] 중앙 통제형 저장 함수. 이제 여러 곳에서 마구잡이로 부르지 않습니다.
+    public void SaveData()
     {
-        // A. 런타임(게임플레이) 데이터베이스에 즉시 반영
-        // (상점이나 인벤토리에서 바로 뜨게 함)
-        if (itemDatabase != null)
+        if (Data == null) return;
+
+        // 1. 디스크에 쓰기 직전, ItemManager 메모리에 있는 최신 해금 리스트를 끌어옵니다.
+        if (ItemManager.Instance != null)
         {
-            itemDatabase.UnlockWeapon(id);
+            Data.itemData.unlockedWeaponIDs = ItemManager.Instance.GetUnlockedWeaponIDs();
+            Data.itemData.unlockedRelicIDs = ItemManager.Instance.GetUnlockedRelicIDs();
         }
 
-        // B. 세이브 데이터(GameData)에 ID 기록
-        SaveItemUnlock(id, true);
-
-        // C. 파일로 저장 (해금은 중요한 정보라 바로 저장을 권장)
-        SaveData();
-    }
-
-    // 2. 유물 해금 (외부 호출용)
-    public void UnlockRelic(string id)
-    {
-        // A. 런타임 반영
-        if (itemDatabase != null)
-        {
-            // ItemDatabase에 UnlockRelic 함수가 있어야 합니다.
-            // (아래 참고사항 확인)
-            itemDatabase.UnlockRelic(id);
-        }
-
-        // B. 세이브 데이터 기록
-        SaveItemUnlock(id, false);
-
-        // C. 파일 저장
-        SaveData();
-    }
-
-    public void UnlockItems(List<WeaponDefinition> weapons, List<RelicDefinition> relics)
-    {
-        // 1. 무기 해금 처리 (ID 추출하여 DB에 전달)
-        if (weapons != null)
-        {
-            foreach (var w in weapons)
-            {
-                if (w == null) continue;
-                UnlockWeapon(w.weaponId); // 문자열 ID 사용
-            }
-        }
-
-        // 2. 유물 해금 처리 (ID 추출하여 DB에 전달)
-        if (relics != null)
-        {
-            foreach (var r in relics)
-            {
-                if (r == null) continue;
-                UnlockRelic(r.relicId); // 문자열 ID 사용
-            }
-        }
+        // 2. 파일 쓰기
+        string json = JsonUtility.ToJson(Data, true);
+        File.WriteAllText(savePath, json);
+        Debug.Log($"[GameDataManager] 일괄 저장 완료: {savePath}");
     }
 
     // =========================================================
-    // [New] 아이템 해금 데이터 저장 헬퍼 함수
-    // =========================================================
-    public void SaveItemUnlock(string id, bool isWeapon)
-    {
-        if (isWeapon)
-        {
-            if (!Data.itemData.unlockedWeaponIDs.Contains(id))
-            {
-                Data.itemData.unlockedWeaponIDs.Add(id);
-                // 중요할 경우 즉시 저장 (선택 사항)
-                // SaveData(); 
-            }
-        }
-        else
-        {
-            if (!Data.itemData.unlockedRelicIDs.Contains(id))
-            {
-                Data.itemData.unlockedRelicIDs.Add(id);
-                // SaveData();
-            }
-        }
-    }
-
-    // =========================================================
-    // 기존 숏컷 관련 함수
+    // 숏컷 관련 함수 (기존 유지)
     // =========================================================
     public void UnlockShortcut(string mapID, string doorID)
     {
@@ -182,25 +97,23 @@ public class GameDataManager : MonoBehaviour
         return stageData.unlockedShortcuts.Contains(doorID);
     }
 
-    // 마정석 획득
+    // =========================================================
+    // 마정석 관련 함수 (즉시 저장 삭제)
+    // =========================================================
     public void AddMagicStone(int amount)
     {
         Data.magicStone += amount;
         OnMagicStoneChanged?.Invoke(Data.magicStone);
-        // Debug.Log($"[재화] 마정석 획득: +{amount} (Total: {Data.magicStone})");
-
-        // 중요하면 바로 저장 (선택사항)
-        // SaveData(); 
+        // SaveData() 삭제됨. 나중에 한 번에 저장.
     }
 
-    // 마정석 사용 (성공 시 true, 부족하면 false 반환)
     public bool SpendMagicStone(int amount)
     {
         if (Data.magicStone >= amount)
         {
             Data.magicStone -= amount;
             OnMagicStoneChanged?.Invoke(Data.magicStone);
-            SaveData(); // 사용 후에는 저장을 권장
+            // SaveData() 삭제됨. 나중에 한 번에 저장.
             return true;
         }
         else
@@ -210,10 +123,11 @@ public class GameDataManager : MonoBehaviour
         }
     }
 
-    // 현재 개수 확인
     public int GetMagicStoneCount() => Data.magicStone;
+
     private void OnApplicationQuit()
     {
+        // 게임 꺼질 때는 확실하게 한 번 더 저장!
         SaveData();
     }
 }

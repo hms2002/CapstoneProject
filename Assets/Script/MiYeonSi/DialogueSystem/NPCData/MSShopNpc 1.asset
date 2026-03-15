@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: MSShopNpc 1
   m_EditorClassIdentifier: 
   id: 1002
-  npcName: "\uB9C8\uB140\uC77C\uAE4C?"
+  npcName: "2\uBC88 Npc"
   isBoss: 1
   affectionRewards: []
   spriteLibraryAsset: {fileID: 7108339969198208228, guid: a703341cc9a31ff4aaf1c6e131d61055, type: 3}
