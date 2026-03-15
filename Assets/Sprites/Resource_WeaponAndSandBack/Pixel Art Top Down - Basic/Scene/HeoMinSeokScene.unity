@@ -16138,6 +16138,7 @@ MonoBehaviour:
   killConfirmedTag: {fileID: 0}
   animator: {fileID: 723292224}
   playerAnimator: {fileID: 0}
+  initialWeaponAnimator: {fileID: 0}
 --- !u!114 &723292221
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -29641,6 +29642,7 @@ MonoBehaviour:
   killConfirmedTag: {fileID: 11400000, guid: 165fc11102fdbfb40b1ce7b341ecc8bb, type: 2}
   animator: {fileID: 1334454372}
   playerAnimator: {fileID: 0}
+  initialWeaponAnimator: {fileID: 0}
 --- !u!114 &1334454371
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -29659,6 +29661,7 @@ MonoBehaviour:
   detectionRange: 6
   moveSpeed: 4
   damageInterval: 1
+  staggerDuration: 0.4
   tackleAbility: {fileID: 11400000, guid: 0114fc4ac57bcbe46b3d058d930e3a32, type: 2}
 --- !u!95 &1334454372
 Animator:
@@ -29837,12 +29840,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26c9fe53bdef53947bbf6f41db722013, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  body: {fileID: 1334454374}
+  externalMovement: {fileID: 0}
   knockbackImmuneTag: {fileID: 0}
   resistancePctAttribute: {fileID: 0}
-  useVelocityInjection: 1
-  damping: 18
-  maxInjectedSpeed: 20
+  knockbackDominanceTime: 0.12
 --- !u!1001 &1369492698
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -39747,6 +39748,54 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3a6c52cc5b114ba4787b483d704a8016, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1012006894227905800
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1957667026}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c721f3a2f874aa14ea14c5bc2261cc39, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1012006894227905801
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1957667026}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b5ebf9fcd76f27f4f874c8853b167522, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  knockbackDamping: 18
+  defaultKnockbackDominanceTime: 0.12
+  maxKnockbackMagnitude: 25
+  maxCombinedPersistentVelocityMagnitude: 25
+--- !u!114 &1012006894227905802
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1957667026}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82ae4624ea26de741ba8bc236cf3108b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  body: {fileID: 0}
+  intentSourceBehaviour: {fileID: 0}
+  statProviderBehaviour: {fileID: 0}
+  externalMovement: {fileID: 0}
+  motionController: {fileID: 0}
+  freezeAllMovementTag: {fileID: 0}
+  blockIntentMoveTag: {fileID: 0}
+  blockExternalMoveTag: {fileID: 0}
 --- !u!4 &1336196914018830829 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8228059593326255414, guid: 84d669757910f1f488023c92e71fcad5, type: 3}
@@ -40839,9 +40888,21 @@ PrefabInstance:
       objectReference: {fileID: 519420034}
     m_RemovedComponents:
     - {fileID: 4807128067502290074, guid: f2946074f70ad1a4194e0ab20873422b, type: 3}
+    - {fileID: 1334457642439548572, guid: f2946074f70ad1a4194e0ab20873422b, type: 3}
+    - {fileID: 2404983202199153576, guid: f2946074f70ad1a4194e0ab20873422b, type: 3}
+    - {fileID: 7312919993686142775, guid: f2946074f70ad1a4194e0ab20873422b, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8883617028798182002, guid: f2946074f70ad1a4194e0ab20873422b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1012006894227905802}
+    - targetCorrespondingSourceObject: {fileID: 8883617028798182002, guid: f2946074f70ad1a4194e0ab20873422b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1012006894227905801}
+    - targetCorrespondingSourceObject: {fileID: 8883617028798182002, guid: f2946074f70ad1a4194e0ab20873422b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1012006894227905800}
   m_SourcePrefab: {fileID: 100100000, guid: f2946074f70ad1a4194e0ab20873422b, type: 3}
 --- !u!4 &5466560767580878633 stripped
 Transform:

@@ -25,6 +25,7 @@ namespace UnityGAS.Sample
         public LayerMask damageLayers;
 
         public GameplayEffect damageEffect; // GE_Damage_Spec (HP)
+        public GE_Knockback_Spec knockbackEffect; // GE_Damage_Spec (HP)
 
         [Header("Damage / Knockback Formula")]
         [Tooltip("If set, base HP damage is computed from attacker stats via this formula.\nIf null, legacy 'damage' is used.")]

@@ -35,13 +35,9 @@ namespace UnityGAS.Sample
             var td = AbilityTargetData2D.FromOverlapBox(center, data.hitboxSize, 0f, data.hitLayers, ignore: system.gameObject);
             if (td.Targets.Count == 0) yield break;
 
-            var runner = system.EffectRunner;
-            if (runner == null) yield break;
-
             var cfg = data.DamageConfig;
             var bindings = system.DamageProfile != null ? system.DamageProfile.GetStatBindings() : null;
             IStatProvider statProvider = bindings != null ? new AttributeStatProvider(system.AttributeSet, bindings) : null;
-
 
             float legacyBaseHp = data.damage;
             float baseHp = (data.damageFormula != null)
@@ -97,23 +93,26 @@ namespace UnityGAS.Sample
                 if (target == null) continue;
 
                 CombatDamageAction.ApplyDamageAndEmitHit(
-                    system, spec,
-                    data.damageEffect,
-                    target,
-                    finalHp,
-                    finalStagger,
-                    elementResults,
+                    system: system,
+                    spec: spec,
+                    damageEffect: data.damageEffect,
+                    knockbackEffect: data.knockbackEffect,
+                    target: target,
+                    finalHpDamage: finalHp,
+                    finalStaggerBuildUp: finalStagger,
+                    elementBuildUps: elementResults,
+                    finalKnockbackImpulse: finalKnockback,
                     hitConfirmedTag: null,
                     causer: system.gameObject
                 );
             }
         }
 
-
         private Vector2 ResolveAimDirection(AbilitySystem system)
         {
-            var input = system.GetComponent<PlayerCombatInput2D>();
-            if (input != null) return input.AimDirection;
+            var aim = system.GetComponent<PlayerAim2D>();
+            if (aim != null && aim.AimDirection.sqrMagnitude > 0.0001f)
+                return aim.AimDirection;
 
             var cam = Camera.main;
             if (cam != null)
@@ -123,6 +122,7 @@ namespace UnityGAS.Sample
                 Vector2 d = (Vector2)(w - system.transform.position);
                 if (d.sqrMagnitude > 0.0001f) return d.normalized;
             }
+
             return Vector2.right;
         }
     }

@@ -14,6 +14,7 @@ namespace UnityGAS.Sample
 
         private AbilitySystem ownerSystem;
         private GameplayEffect damageEffect;
+        private GE_Knockback_Spec knockbackEffect;
         private float damage;
         private float staggerBuildUp;
         private ElementDamageResult[] elementDamages;
@@ -28,6 +29,7 @@ namespace UnityGAS.Sample
             LayerMask walls,
             LayerMask dmgLayers,
             GameplayEffect dmgEffect,
+            GE_Knockback_Spec kbEffect,
             float dmg,
             float staggerBuildUp,
             ElementDamageResult[] elementDamages,
@@ -41,6 +43,7 @@ namespace UnityGAS.Sample
             wallLayers = walls;
             damageLayers = dmgLayers;
             damageEffect = dmgEffect;
+            knockbackEffect = kbEffect;
             damage = dmg;
             this.staggerBuildUp = staggerBuildUp;
             this.elementDamages = elementDamages;
@@ -81,13 +84,14 @@ namespace UnityGAS.Sample
             if ((damageLayers.value & layerBit) != 0 && damageEffect != null && ownerSystem != null)
             {
                 CombatDamageAction.ApplyDamageAndEmitHit(
-                    ownerSystem,
-                    ownerSystem.CurrentExecSpec,
-                    damageEffect,
-                    go,
-                    damage,
-                    staggerBuildUp,
-                    elementDamages,
+                    system: ownerSystem,
+                    spec: ownerSystem.CurrentExecSpec,
+                    damageEffect: damageEffect,
+                    knockbackEffect: knockbackEffect,
+                    target: go,
+                    finalHpDamage: damage,
+                    finalStaggerBuildUp: staggerBuildUp,
+                    elementBuildUps: elementDamages,
                     finalKnockbackImpulse: knockbackImpulse,
                     hitConfirmedTag: null,
                     causer: ownerSystem.gameObject
@@ -97,7 +101,7 @@ namespace UnityGAS.Sample
                 return;
             }
 
-            // 그 외 충돌은 무시(원하면 여기서 소멸 처리 가능)
+            // 그 외 충돌은 무시
         }
     }
 }

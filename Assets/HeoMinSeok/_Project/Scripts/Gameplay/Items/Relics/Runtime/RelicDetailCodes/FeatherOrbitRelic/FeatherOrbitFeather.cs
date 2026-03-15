@@ -1,4 +1,3 @@
-using Ink.Parsed;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityGAS;
@@ -51,11 +50,11 @@ public class FeatherOrbitFeather : MonoBehaviour
         float hpDmg = _controller.ComputeHpDamage();
         if (hpDmg <= 0f) return;
 
-        // 너희 시그니처에 맞춰 호출
         CombatDamageAction.ApplyDamageAndEmitHit(
             system: system,
-            spec: null,                        // 깃털은 특정 AbilitySpec이 없으니 null로 OK
+            spec: null, // 깃털은 특정 AbilitySpec이 없으니 null
             damageEffect: _controller.DamageEffect,
+            knockbackEffect: _controller.KnockbackEffect,
             target: target,
             finalHpDamage: hpDmg,
             finalStaggerBuildUp: 0f,

@@ -22,84 +22,71 @@ namespace UnityGAS.Sample
             float distance = Mathf.Max(0f, data.distance);
             if (distance <= 0.0001f) yield break;
 
-            // 방향(이동 입력) 결정
             Vector2 dir = ResolveMoveDirection(system, data.useAimWhenNoMoveInput);
             if (dir.sqrMagnitude < 0.0001f) yield break;
             dir.Normalize();
 
             var tags = system.GetComponent<TagSystem>();
+            var motion = system.GetComponent<AbilityMotionController2D>();
 
-            // 태그 부여(무적/이동락/에임락)
+            if (motion == null)
+            {
+                Debug.LogError("[Dash2D] AbilityMotionController2D가 필요합니다.");
+                yield break;
+            }
+
             try
             {
+                // 태그 부여(무적/이동락/에임락)
                 if (tags != null)
                 {
                     if (data.invulnerableTag != null) tags.AddTag(data.invulnerableTag, 1);
-                    if (data.movementLockedTag != null) tags.AddTag(data.movementLockedTag, 1);
                     if (data.aimLockedTag != null) tags.AddTag(data.aimLockedTag, 1);
                 }
 
-                // 애니 트리거(AbilityDefinition.animationTrigger 사용)
+                // 애니 트리거
                 if (spec.Definition.animationTriggerHash != 0)
                     system.TryPlayAnimationTriggerHash(spec.Definition.animationTriggerHash, spec.Definition);
 
-                var rb = system.GetComponent<Rigidbody2D>();
-
-                if (rb != null && data.zeroVelocity)
-                    rb.linearVelocity = Vector2.zero;
-
-                Vector2 startPos = rb != null ? rb.position : (Vector2)system.transform.position;
-                Vector2 endPos = startPos + dir * distance;
+                // 특수이동 시작
+                float dashSpeed = distance / duration;
+                motion.StartDash(dir, dashSpeed, duration);
 
                 float elapsed = 0f;
-
-                // Rigidbody가 있으면 FixedUpdate 기반으로
-                if (rb != null)
+                while (elapsed < duration)
                 {
-                    while (elapsed < duration)
+                    if (spec.Token != null && spec.Token.IsCancelled)
                     {
-                        if (spec.Token != null && spec.Token.IsCancelled) yield break;
-
-                        elapsed += Time.fixedDeltaTime;
-                        float t = Mathf.Clamp01(elapsed / duration);
-                        rb.MovePosition(Vector2.Lerp(startPos, endPos, t));
-                        yield return new WaitForFixedUpdate();
+                        motion.CancelMotion();
+                        yield break;
                     }
 
-                    if (data.zeroVelocity)
-                        rb.linearVelocity = Vector2.zero;
-                }
-                else
-                {
-                    while (elapsed < duration)
-                    {
-                        if (spec.Token != null && spec.Token.IsCancelled) yield break;
-
-                        elapsed += Time.deltaTime;
-                        float t = Mathf.Clamp01(elapsed / duration);
-                        system.transform.position = Vector2.Lerp(startPos, endPos, t);
-                        yield return null;
-                    }
+                    elapsed += Time.deltaTime;
+                    yield return null;
                 }
 
                 // 대쉬 후 잠깐 이동락(선택)
-                if (data.postLockTime > 0f && tags != null && data.movementLockedTag != null)
+                if (data.postLockTime > 0f && tags != null)
                 {
                     float end = Time.time + data.postLockTime;
                     while (Time.time < end)
                     {
-                        if (spec.Token != null && spec.Token.IsCancelled) break;
+                        if (spec.Token != null && spec.Token.IsCancelled)
+                            break;
+
                         yield return null;
                     }
                 }
             }
             finally
             {
+                if (motion != null)
+                    motion.CancelMotion();
+
                 // 무적/락 태그 회수
                 if (tags != null)
                 {
                     if (data.invulnerableTag != null) tags.RemoveTag(data.invulnerableTag, 1);
-                    if (data.movementLockedTag != null) tags.RemoveTag(data.movementLockedTag, 1);
                     if (data.aimLockedTag != null) tags.RemoveTag(data.aimLockedTag, 1);
                 }
             }
@@ -107,18 +94,19 @@ namespace UnityGAS.Sample
 
         private Vector2 ResolveMoveDirection(AbilitySystem system, bool fallbackToAim)
         {
-            // SampleTopDownPlayer가 있으면 MoveInput 사용(이미 정규화)
-            var player = system.GetComponent<SampleTopDownPlayer>();
-            if (player != null)
-            {
-                if (player.MoveInput.sqrMagnitude > 0.0001f)
-                    return player.MoveInput;
+            // 새 구조: PlayerIntentInput2D 우선
+            var intent = system.GetComponent<PlayerIntentInput2D>();
+            if (intent != null && intent.MoveInput.sqrMagnitude > 0.0001f)
+                return intent.MoveInput.normalized;
 
-                if (fallbackToAim && player.AimDirection.sqrMagnitude > 0.0001f)
-                    return player.AimDirection.normalized;
+            if (fallbackToAim)
+            {
+                var aim = system.GetComponent<PlayerAim2D>();
+                if (aim != null && aim.AimDirection.sqrMagnitude > 0.0001f)
+                    return aim.AimDirection.normalized;
             }
 
-            // Input axis fallback
+            // 최소 fallback
             float x = Input.GetAxisRaw("Horizontal");
             float y = Input.GetAxisRaw("Vertical");
             var move = new Vector2(x, y);
@@ -127,18 +115,14 @@ namespace UnityGAS.Sample
 
             if (fallbackToAim)
             {
-                // Combat input(마우스) 방향 fallback
-                var input = system.GetComponent<PlayerCombatInput2D>();
-                if (input != null && input.AimDirection.sqrMagnitude > 0.0001f)
-                    return input.AimDirection.normalized;
-
                 var cam = Camera.main;
                 if (cam != null)
                 {
                     Vector3 w = cam.ScreenToWorldPoint(Input.mousePosition);
                     w.z = 0f;
                     Vector2 d = (Vector2)(w - system.transform.position);
-                    if (d.sqrMagnitude > 0.0001f) return d.normalized;
+                    if (d.sqrMagnitude > 0.0001f)
+                        return d.normalized;
                 }
             }
 

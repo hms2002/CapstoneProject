@@ -10,10 +10,14 @@ public class MonsterDrop : MonoBehaviour
         HashSet<string> banList = new HashSet<string>();
 
         // ✅ [수정됨] 플레이어 인벤토리에서 ID 긁어오기
-        if (SampleTopDownPlayer.Instance != null && SampleTopDownPlayer.Instance.weaponInventory != null)
+        if (SampleTopDownPlayer.Instance != null)
         {
-            List<string> playerWeaponIDs = SampleTopDownPlayer.Instance.weaponInventory.GetAllWeaponIDs();
-            banList.UnionWith(playerWeaponIDs);
+            var weaponInventory = SampleTopDownPlayer.Instance.GetComponent<WeaponInventory2D>();
+            if (weaponInventory != null)
+            {
+                List<string> playerWeaponIDs = weaponInventory.GetAllWeaponIDs();
+                banList.UnionWith(playerWeaponIDs);
+            }        
         }
 
         // 2. 매니저에게 요청

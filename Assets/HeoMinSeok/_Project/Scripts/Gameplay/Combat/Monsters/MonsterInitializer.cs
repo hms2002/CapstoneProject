@@ -40,18 +40,10 @@ public class MonsterInitializer : MonoBehaviour
         if (_attributeSet == null) return;
         if (definition == null || healthAttribute == null || maxHealthAttribute == null) return;
 
-        var maxAttr = _attributeSet.GetAttribute(maxHealthAttribute);
-        var hpAttr = _attributeSet.GetAttribute(healthAttribute);
-        if (maxAttr == null || hpAttr == null) return;
-
-        float oldMax = maxAttr.CurrentValue;
-        float oldHp = hpAttr.CurrentValue;
+        float oldMax = _attributeSet.GetAttributeValue(maxHealthAttribute);
+        float oldHp = _attributeSet.GetAttributeValue(healthAttribute);
 
         float newMax = definition.GetMaxHealth(isElite);
-
-        // 1) MaxHealth 설정
-        maxAttr.SetBaseValue(newMax);
-        maxAttr.ForceRecalculate();
 
         // 2) Health 설정
         float targetHp;
@@ -70,8 +62,8 @@ public class MonsterInitializer : MonoBehaviour
             // 그냥 clamp만 되게 두고 싶다면 oldHp 유지
             targetHp = Mathf.Min(oldHp, newMax);
         }
+        _attributeSet.TrySetBaseValue(maxHealthAttribute, newMax, this);
 
-        hpAttr.SetBaseValue(targetHp);
-        hpAttr.ForceRecalculate();
+        _attributeSet.TrySetBaseValue(healthAttribute, targetHp, this);
     }
 }

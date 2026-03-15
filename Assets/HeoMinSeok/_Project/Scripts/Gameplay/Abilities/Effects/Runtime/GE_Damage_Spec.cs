@@ -3,7 +3,7 @@ using UnityEngine;
 namespace UnityGAS
 {
     /// <summary>
-    /// "SetByCaller" 기반 데미지 GameplayEffect.
+    /// SetByCaller 기반 데미지 GameplayEffect.
     /// - GameplayEffectRunner.ApplyEffectSpec() 경로로 적용되는 것을 전제로 함.
     /// - spec.SetSetByCallerMagnitude(damageKey, damage) 로 데미지 값을 전달.
     ///
@@ -15,6 +15,10 @@ namespace UnityGAS
     /// Hit Feedback (Optional):
     /// - Stun / CameraShake 등 피격 피드백을 타겟(IHitFeedbackReceiver2D)에게 전달할 수 있습니다.
     /// - 실제 연출/조작 통제는 타겟 컴포넌트에서 처리합니다.
+    ///
+    /// 주의:
+    /// - 넉백은 더 이상 이 Effect가 처리하지 않는다.
+    /// - 넉백은 GE_Knockback_Spec 등 별도 외압 Effect로 분리한다.
     /// </summary>
     [CreateAssetMenu(fileName = "GE_Damage_Spec", menuName = "GAS/Effects/Damage (Spec)")]
     public class GE_Damage_Spec : GameplayEffect, ISpecGameplayEffect
@@ -32,13 +36,6 @@ namespace UnityGAS
 
         [Tooltip("SetByCaller 키가 없을 때 적용할 기본 데미지(0이면 사실상 무시)")]
         public float fallbackDamage = 0f;
-
-        [Header("Knockback (Optional)")]
-        [Tooltip("SetByCaller 키 (예: Data.Knockback). 값은 Rigidbody2D AddForce(Impulse)로 적용됩니다.")]
-        public GameplayTag knockbackKey;
-
-        [Tooltip("SetByCaller 키가 없을 때 적용할 기본 넉백(Impulse).")]
-        public float fallbackKnockback = 0f;
 
         [Header("Hit Feedback (Optional)")]
         [Tooltip("SetByCaller 키 (예: Data.StunSeconds). 타겟이 IHitFeedbackReceiver2D를 구현/보유하면 전달됩니다.")]
@@ -75,9 +72,6 @@ namespace UnityGAS
             if (fallbackCameraShake < 0f) fallbackCameraShake = 0f;
         }
 
-        /// <summary>
-        /// Spec 기반 적용 (권장 루트)
-        /// </summary>
         public void Apply(GameplayEffectSpec spec, GameObject target)
         {
             if (target == null) return;
@@ -108,16 +102,6 @@ namespace UnityGAS
                 return causer;
             }
 
-            void TryApplyKnockback(GameObject t, float knockbackImpulse)
-            {
-                if (t == null) return;
-                if (knockbackImpulse <= 0f) return;
-
-                var receiver = t.GetComponent<KnockbackReceiver2D>();
-                if (receiver != null)
-                    receiver.ApplyKnockback(ResolveCauser(), knockbackImpulse);
-            }
-
             void TrySendHitFeedback(GameObject t, float stun, float shake)
             {
                 if (t == null) return;
@@ -128,16 +112,9 @@ namespace UnityGAS
                     receiver.OnHitFeedback(new HitFeedbackPayload(ResolveCauser(), stun, shake));
             }
 
-            // -------------------------
-            // 공통 데미지 값 해석
-            // -------------------------
             float damage = fallbackDamage;
             if (spec != null && damageKey != null && spec.TryGetSetByCallerMagnitude(damageKey, out var dv))
                 damage = dv;
-
-            float knockback = fallbackKnockback;
-            if (spec != null && knockbackKey != null && spec.TryGetSetByCallerMagnitude(knockbackKey, out var kbv))
-                knockback = kbv;
 
             float stunSeconds = fallbackStunSeconds;
             if (spec != null && stunSecondsKey != null && spec.TryGetSetByCallerMagnitude(stunSecondsKey, out var sv))
@@ -151,9 +128,7 @@ namespace UnityGAS
             if (spec != null && tokenDamageKey != null && spec.TryGetSetByCallerMagnitude(tokenDamageKey, out var td))
                 tokenDamage = Mathf.Max(0, Mathf.RoundToInt(td));
 
-            // -------------------------
             // 특수 DamageReceiver 위임 시도
-            // -------------------------
             var damageReceiver = FindDamageReceiver(target);
             if (damageReceiver != null)
             {
@@ -163,27 +138,23 @@ namespace UnityGAS
                     instigator: spec != null ? spec.Context?.Instigator : null,
                     causer: ResolveCauser(),
                     sourceObject: this,
-                    knockbackImpulse: Mathf.Max(0f, knockback),
+                    knockbackImpulse: 0f,
                     stunSeconds: Mathf.Max(0f, stunSeconds),
                     cameraShake: Mathf.Max(0f, cameraShake));
 
                 if (damageReceiver.TryApplyDamage(request))
                 {
-                    TryApplyKnockback(target, knockback);
                     TrySendHitFeedback(target, stunSeconds, cameraShake);
                     return;
                 }
             }
 
-            // -------------------------
             // HP 기반 처리
-            // -------------------------
             var attributeSet = target.GetComponent<AttributeSet>();
             if (attributeSet == null) return;
 
             if (damage <= 0f) return;
 
-            // 2) 흡수 보호막 처리
             if (absorbShieldAttribute != null)
             {
                 float shield = attributeSet.GetAttributeValue(absorbShieldAttribute);
@@ -197,11 +168,9 @@ namespace UnityGAS
                 }
             }
 
-            // 3) Health 감소
             if (healthAttribute == null) return;
             attributeSet.TryModifyAttributeValue(healthAttribute, -damage, this);
 
-            TryApplyKnockback(target, knockback);
             TrySendHitFeedback(target, stunSeconds, cameraShake);
         }
 
@@ -211,6 +180,7 @@ namespace UnityGAS
         }
 
         public override void Remove(GameObject target, GameObject instigator) { }
+
         private static IDamageReceiver FindDamageReceiver(GameObject target)
         {
             if (target == null) return null;

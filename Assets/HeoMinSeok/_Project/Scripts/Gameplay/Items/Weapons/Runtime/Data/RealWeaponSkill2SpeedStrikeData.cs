@@ -12,6 +12,7 @@ namespace UnityGAS
 
         [Header("Damage")]
         public GameplayEffect damageEffect; // 권장: GE_Damage_Spec
+        public GE_Knockback_Spec knockbackEffect; // 권장: GE_Damage_Spec
 
         [Header("Stat Query (Recommended)")]
         [Tooltip("공격력(최종) StatId (권장: AttackFinal)")]

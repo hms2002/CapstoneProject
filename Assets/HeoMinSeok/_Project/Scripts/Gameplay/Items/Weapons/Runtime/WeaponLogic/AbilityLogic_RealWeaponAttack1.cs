@@ -35,7 +35,6 @@ namespace UnityGAS
             var bindings = system.DamageProfile != null ? system.DamageProfile.GetStatBindings() : null;
             IStatProvider statProvider = bindings != null ? new AttributeStatProvider(system.AttributeSet, bindings) : null;
 
-
             // Compute base values
             float baseHp = 0f;
             if (data.damageFormula != null)
@@ -88,8 +87,9 @@ namespace UnityGAS
                 CombatDamageAction.ApplyDamageAndEmitHit(
                     system: system,
                     spec: spec,
-                    target: target,
                     damageEffect: data.damageEffect,
+                    knockbackEffect: data.knockbackEffect,
+                    target: target,
                     finalHpDamage: finalHp,
                     finalStaggerBuildUp: finalStagger,
                     elementBuildUps: elementResults,

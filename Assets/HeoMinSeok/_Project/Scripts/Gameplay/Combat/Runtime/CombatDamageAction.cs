@@ -5,6 +5,7 @@ using UnityGAS;
 /// <summary>
 /// Centralized "apply damage result" utility.
 /// - HP damage: applied via GameplayEffect(Spec) + SetByCaller damageKey (GE_Damage_Spec)
+/// - Knockback: applied via separate GE_Knockback_Spec
 /// - Stagger build-up: applied to StaggerGaugeSystem on target (if present)
 /// - Element build-up: applied to ElementGaugeSystem on target (if present)
 ///
@@ -12,7 +13,7 @@ using UnityGAS;
 /// </summary>
 public static class CombatDamageAction
 {
-    // Backward-compatible overload (no stagger)
+    // Backward-compatible overload (no stagger / no knockback effect)
     public static void ApplyDamageAndEmitHit(
         AbilitySystem system,
         AbilitySpec spec,
@@ -23,16 +24,26 @@ public static class CombatDamageAction
         GameplayTag hitConfirmedTag,
         GameObject causer)
     {
-        ApplyDamageAndEmitHit(system, spec, damageEffect, target,
-            finalHpDamage, finalStaggerBuildUp: 0f, elementBuildUps: elementDamages,
-            hitConfirmedTag: hitConfirmedTag, causer: causer);
+        ApplyDamageAndEmitHit(
+            system,
+            spec,
+            damageEffect,
+            knockbackEffect: null,
+            target: target,
+            finalHpDamage: finalHpDamage,
+            finalStaggerBuildUp: 0f,
+            elementBuildUps: elementDamages,
+            finalKnockbackImpulse: 0f,
+            hitConfirmedTag: hitConfirmedTag,
+            causer: causer);
     }
 
-    // New overload: includes knockback impulse (SetByCaller) for GE_Damage_Spec.
+    // New overload: includes knockback effect + impulse
     public static void ApplyDamageAndEmitHit(
         AbilitySystem system,
         AbilitySpec spec,
         GameplayEffect damageEffect,
+        GE_Knockback_Spec knockbackEffect,
         GameObject target,
         float finalHpDamage,
         float finalStaggerBuildUp,
@@ -41,18 +52,29 @@ public static class CombatDamageAction
         GameplayTag hitConfirmedTag,
         GameObject causer)
     {
-        ApplyDamageAndEmitHit_Internal(system, spec, damageEffect, target,
-            finalHpDamage, finalStaggerBuildUp, elementBuildUps, finalKnockbackImpulse,
-            hitConfirmedTag, causer);
+        ApplyDamageAndEmitHit_Internal(
+            system,
+            spec,
+            damageEffect,
+            knockbackEffect,
+            target,
+            finalHpDamage,
+            finalStaggerBuildUp,
+            elementBuildUps,
+            finalKnockbackImpulse,
+            hitConfirmedTag,
+            causer);
     }
 
     /// <summary>
-    /// Apply HP damage + stagger build-up + element build-up, then optionally emit hit-confirmed event.
+    /// Apply HP damage + knockback + stagger build-up + element build-up,
+    /// then optionally emit hit-confirmed event.
     /// </summary>
     public static void ApplyDamageAndEmitHit(
         AbilitySystem system,
         AbilitySpec spec,
         GameplayEffect damageEffect,
+        GE_Knockback_Spec knockbackEffect,
         GameObject target,
         float finalHpDamage,
         float finalStaggerBuildUp,
@@ -60,9 +82,18 @@ public static class CombatDamageAction
         GameplayTag hitConfirmedTag,
         GameObject causer)
     {
-        ApplyDamageAndEmitHit_Internal(system, spec, damageEffect, target,
-            finalHpDamage, finalStaggerBuildUp, elementBuildUps, finalKnockbackImpulse: 0f,
-            hitConfirmedTag, causer);
+        ApplyDamageAndEmitHit_Internal(
+            system,
+            spec,
+            damageEffect,
+            knockbackEffect,
+            target,
+            finalHpDamage,
+            finalStaggerBuildUp,
+            elementBuildUps,
+            finalKnockbackImpulse: 0f,
+            hitConfirmedTag,
+            causer);
     }
 
     // ---- Internal orchestration -------------------------------------------------------------
@@ -71,6 +102,7 @@ public static class CombatDamageAction
         AbilitySystem system,
         AbilitySpec spec,
         GameplayEffect damageEffect,
+        GE_Knockback_Spec knockbackEffect,
         GameObject target,
         float finalHpDamage,
         float finalStaggerBuildUp,
@@ -82,26 +114,41 @@ public static class CombatDamageAction
         if (!Validate(system, damageEffect, target)) return;
         var runner = system.EffectRunner;
 
-        // 0) Extract GE_Damage_Spec (optional) once
+        // 0) Extract GE_Damage_Spec once
         var geDmg = damageEffect as GE_Damage_Spec;
 
-        // 1) (Optional) capture pre-HP for KillConfirmed check
+        // 1) capture pre-HP for KillConfirmed check
         var killCheck = CaptureKillCheck(target, geDmg);
 
-        // 2) Build Spec (SetByCaller, payload) and apply
-        var geSpec = BuildDamageSpec(system, spec, damageEffect, geDmg,
-            finalHpDamage, elementBuildUps, finalKnockbackImpulse, causer);
+        // 2) Apply damage effect
+        var damageSpec = BuildDamageSpec(
+            system,
+            spec,
+            damageEffect,
+            geDmg,
+            finalHpDamage,
+            elementBuildUps,
+            causer);
 
-        runner.ApplyEffectSpec(geSpec, target);
+        runner.ApplyEffectSpec(damageSpec, target);
 
-        // 3) KillConfirmed (optional)
+        // 3) Apply knockback effect separately
+        ApplyKnockbackEffect(
+            system,
+            spec,
+            knockbackEffect,
+            target,
+            finalKnockbackImpulse,
+            causer);
+
+        // 4) KillConfirmed
         TryEmitKillConfirmed(system, spec, target, causer, killCheck);
 
-        // 4) Post systems
+        // 5) Post systems
         ApplyStagger(target, finalStaggerBuildUp, system.gameObject, causer);
         ApplyElements(target, elementBuildUps, system.gameObject, causer);
 
-        // 5) Hit confirmed event (optional)
+        // 6) Hit confirmed event
         EmitHitConfirmed(system, spec, target, causer, hitConfirmedTag);
     }
 
@@ -121,24 +168,18 @@ public static class CombatDamageAction
         GE_Damage_Spec geDmg,
         float finalHpDamage,
         IReadOnlyList<ElementDamageResult> elementBuildUps,
-        float finalKnockbackImpulse,
         GameObject causer)
     {
-        // NOTE: sourceObject 유지 (기존과 동일)
         var geSpec = system.MakeSpec(
             damageEffect,
             causer: causer,
             sourceObject: spec != null ? spec.Definition : null);
 
-        // 1) HP damage via SetByCaller (optional)
+        // HP damage via SetByCaller
         if (geDmg != null && geDmg.damageKey != null)
             geSpec.SetSetByCallerMagnitude(geDmg.damageKey, finalHpDamage);
 
-        // 2) Knockback impulse via SetByCaller (optional)
-        if (geDmg != null && geDmg.knockbackKey != null && finalKnockbackImpulse > 0f)
-            geSpec.SetSetByCallerMagnitude(geDmg.knockbackKey, finalKnockbackImpulse);
-
-        // 3) Keep element breakdown in context as payload (optional)
+        // Keep element breakdown in context as payload
         if (elementBuildUps != null && elementBuildUps.Count > 0)
         {
             var dst = geSpec.Context.ElementDamages;
@@ -148,6 +189,32 @@ public static class CombatDamageAction
         }
 
         return geSpec;
+    }
+
+    private static void ApplyKnockbackEffect(
+        AbilitySystem system,
+        AbilitySpec spec,
+        GE_Knockback_Spec knockbackEffect,
+        GameObject target,
+        float finalKnockbackImpulse,
+        GameObject causer)
+    {
+        if (system == null || system.EffectRunner == null) return;
+        if (knockbackEffect == null) return;
+        if (target == null) return;
+        if (finalKnockbackImpulse <= 0f) return;
+
+        var knockbackSpec = system.MakeSpec(
+            knockbackEffect,
+            causer: causer,
+            sourceObject: spec != null ? spec.Definition : null);
+
+        if (knockbackEffect.knockbackKey != null)
+            knockbackSpec.SetSetByCallerMagnitude(
+                knockbackEffect.knockbackKey,
+                finalKnockbackImpulse);
+
+        system.EffectRunner.ApplyEffectSpec(knockbackSpec, target);
     }
 
     // ---- Kill confirmed ---------------------------------------------------------------------
@@ -170,7 +237,6 @@ public static class CombatDamageAction
 
     private static KillCheckData CaptureKillCheck(GameObject target, GE_Damage_Spec geDmg)
     {
-        // Default: invalid
         if (geDmg == null || geDmg.healthAttribute == null)
             return default;
 
@@ -189,7 +255,6 @@ public static class CombatDamageAction
         GameObject causer,
         KillCheckData killCheck)
     {
-        // NOTE: 기존과 동일: KillConfirmedTag가 있어야 하고, preHp > 0 -> postHp <= 0 이면 발행
         if (system.KillConfirmedTag == null) return;
         if (!killCheck.IsValid) return;
 

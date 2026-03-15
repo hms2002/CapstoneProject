@@ -27,7 +27,6 @@ namespace UnityGAS.Sample
             var bindings = system.DamageProfile != null ? system.DamageProfile.GetStatBindings() : null;
             IStatProvider statProvider = bindings != null ? new AttributeStatProvider(system.AttributeSet, bindings) : null;
 
-
             float legacyBaseHp = data.damage;
             float baseHp = data.damageFormula != null
                 ? data.damageFormula.Evaluate(system.AttributeSet, statProvider, defaultIfEmpty: legacyBaseHp)
@@ -80,6 +79,7 @@ namespace UnityGAS.Sample
                 : null;
 
             float finalKnockback = baseKnockback;
+
             var proj = go.GetComponent<SwordSkill1Projectile2D>();
             if (proj != null)
             {
@@ -91,6 +91,7 @@ namespace UnityGAS.Sample
                     walls: data.wallLayers,
                     dmgLayers: data.damageLayers,
                     dmgEffect: data.damageEffect,
+                    kbEffect: data.knockbackEffect,
                     dmg: finalHp,
                     staggerBuildUp: finalStagger,
                     elementDamages: elementSnapshot,
@@ -104,8 +105,9 @@ namespace UnityGAS.Sample
 
         private Vector2 ResolveAimDirection(AbilitySystem system)
         {
-            var input = system.GetComponent<PlayerCombatInput2D>();
-            if (input != null) return input.AimDirection;
+            var aim = system.GetComponent<PlayerAim2D>();
+            if (aim != null && aim.AimDirection.sqrMagnitude > 0.0001f)
+                return aim.AimDirection;
 
             var cam = Camera.main;
             if (cam != null)
@@ -115,6 +117,7 @@ namespace UnityGAS.Sample
                 Vector2 d = (Vector2)(w - system.transform.position);
                 if (d.sqrMagnitude > 0.0001f) return d.normalized;
             }
+
             return Vector2.right;
         }
     }

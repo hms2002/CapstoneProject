@@ -21,17 +21,20 @@ namespace UnityGAS.Sample
                 yield break;
             }
 
-            int comboIndex = ResolveComboIndex(spec, data.comboResetTime);
-            spec.SetInt(KEY_COMBO_INDEX, comboIndex);
-            spec.SetFloat(KEY_COMBO_EXPIRE, Time.time + data.comboResetTime);
-
             Vector2 dir = ResolveAimDirection(system);
             if (dir.sqrMagnitude < 0.0001f) dir = Vector2.right;
             dir.Normalize();
 
+            int comboIndex = ResolveComboIndex(spec, data.comboResetTime);
+            spec.SetInt(KEY_COMBO_INDEX, comboIndex);
+            spec.SetFloat(KEY_COMBO_EXPIRE, Time.time + data.comboResetTime);
+
             TryPlayAnim(system, data, comboIndex, spec.Definition);
 
-            yield return Lunge(system, dir,
+            yield return Lunge(
+                system,
+                spec,
+                dir,
                 GetArraySafe(data.lungeDistances, comboIndex, 0f),
                 GetArraySafe(data.lungeDurations, comboIndex, 0f));
 
@@ -64,8 +67,9 @@ namespace UnityGAS.Sample
 
         private Vector2 ResolveAimDirection(AbilitySystem system)
         {
-            var input = system.GetComponent<PlayerCombatInput2D>();
-            if (input != null) return input.AimDirection;
+            var aim = system.GetComponent<PlayerAim2D>();
+            if (aim != null && aim.AimDirection.sqrMagnitude > 0.0001f)
+                return aim.AimDirection;
 
             var cam = Camera.main;
             if (cam != null)
@@ -86,38 +90,31 @@ namespace UnityGAS.Sample
             system.TryPlayAnimationTriggerHash(Animator.StringToHash(trig), definition);
         }
 
-        private IEnumerator Lunge(AbilitySystem system, Vector2 dir, float distance, float duration)
+        private IEnumerator Lunge(AbilitySystem system, AbilitySpec spec, Vector2 dir, float distance, float duration)
         {
             if (distance <= 0f || duration <= 0f) yield break;
 
-            var rb = system.GetComponent<Rigidbody2D>();
-            if (rb == null)
+            var motion = system.GetComponent<AbilityMotionController2D>();
+            if (motion == null)
             {
-                Vector3 start = system.transform.position;
-                Vector3 end = start + (Vector3)(dir * distance);
-                float t = 0f;
-                while (t < duration)
-                {
-                    if (system.CurrentExecSpec?.Token != null && system.CurrentExecSpec.Token.IsCancelled) yield break;
-                    t += Time.deltaTime;
-                    float a = Mathf.Clamp01(t / duration);
-                    system.transform.position = Vector3.Lerp(start, end, a);
-                    yield return null;
-                }
+                Debug.LogError("[SwordCombo2D] AbilityMotionController2D가 필요합니다.");
                 yield break;
             }
 
-            Vector2 startPos = rb.position;
-            Vector2 endPos = startPos + dir * distance;
+            Vector2 start = system.transform.position;
+            motion.StartLunge(start, dir, distance, duration);
 
             float elapsed = 0f;
             while (elapsed < duration)
             {
-                if (system.CurrentExecSpec?.Token != null && system.CurrentExecSpec.Token.IsCancelled) yield break;
-                elapsed += Time.fixedDeltaTime;
-                float a = Mathf.Clamp01(elapsed / duration);
-                rb.MovePosition(Vector2.Lerp(startPos, endPos, a));
-                yield return new WaitForFixedUpdate();
+                if (spec?.Token != null && spec.Token.IsCancelled)
+                {
+                    motion.CancelMotion();
+                    yield break;
+                }
+
+                elapsed += Time.deltaTime;
+                yield return null;
             }
         }
 
@@ -138,10 +135,7 @@ namespace UnityGAS.Sample
 #if UNITY_EDITOR
             if (system.TryGetComponent<UnityGAS.Sample.RealtimeHitboxGizmo2D>(out var gizmo))
             {
-                // 콤보별 색 (원하면 바꿔도 됨)
                 var col = (comboIndex == 0) ? Color.green : (comboIndex == 1 ? Color.yellow : Color.cyan);
-
-                // DoHit은 OverlapBox 각도 0f를 쓰고 있으니 angleDeg=0
                 gizmo.RecordBox(center, data.hitboxSize, 0f, 0.15f, col);
             }
 #endif
@@ -150,7 +144,6 @@ namespace UnityGAS.Sample
 
             var bindings = system.DamageProfile != null ? system.DamageProfile.GetStatBindings() : null;
             IStatProvider statProvider = bindings != null ? new AttributeStatProvider(system.AttributeSet, bindings) : null;
-
 
             float legacyBaseHp = GetArraySafe(data.damages, comboIndex, 0f);
             float baseHp = legacyBaseHp;
@@ -165,7 +158,6 @@ namespace UnityGAS.Sample
             if (data.knockbackFormulas != null && comboIndex >= 0 && comboIndex < data.knockbackFormulas.Length && data.knockbackFormulas[comboIndex] != null)
                 finalKnockback = data.knockbackFormulas[comboIndex].Evaluate(system.AttributeSet, statProvider, defaultIfEmpty: 0f);
 
-            // Element build-up: prefer formulas in config. If none, fall back to per-combo list (treated as FINAL values).
             System.Collections.Generic.List<ElementDamageInput> elementInputs = null;
             if (includeElementBuildup)
             {
@@ -206,36 +198,26 @@ namespace UnityGAS.Sample
             float finalStagger = processed.staggerDamage;
 
             if (finalHp <= 0f) return;
-
-            var runner = system.EffectRunner;
-            if (runner == null) return;
-
-            GameplayTag damageKey = null;
-            if (data.damageEffect is GE_Damage_Spec geDmg)
-                damageKey = geDmg.damageKey;
+            if (system.EffectRunner == null) return;
 
             for (int i = 0; i < td.Targets.Count; i++)
             {
                 var target = td.Targets[i];
                 if (target == null) continue;
 
-                var geSpec = system.MakeSpec(data.damageEffect, causer: system.gameObject, sourceObject: abilitySpec.Definition);
-                if (damageKey != null) geSpec.SetSetByCallerMagnitude(damageKey, finalHp);
-
-                // legacy : runner.ApplyEffectSpec(geSpec, target);
-
                 CombatDamageAction.ApplyDamageAndEmitHit(
-                    system, abilitySpec,
-                    data.damageEffect,
-                    target,
-                    finalHp,
-                    finalStagger,
-                    elementResults,
-                    finalKnockback,
-                    data.hitConfirmedTag,
-                    system.gameObject
+                    system: system,
+                    spec: abilitySpec,
+                    damageEffect: data.damageEffect,
+                    knockbackEffect: data.knockbackEffect,
+                    target: target,
+                    finalHpDamage: finalHp,
+                    finalStaggerBuildUp: finalStagger,
+                    elementBuildUps: elementResults,
+                    finalKnockbackImpulse: finalKnockback,
+                    hitConfirmedTag: data.hitConfirmedTag,
+                    causer: system.gameObject
                 );
-
             }
         }
 
