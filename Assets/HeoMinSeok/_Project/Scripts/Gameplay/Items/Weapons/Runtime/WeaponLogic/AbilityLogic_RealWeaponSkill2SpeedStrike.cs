@@ -63,9 +63,6 @@ namespace UnityGAS
             if (data.knockbackFormula != null)
                 baseKnockback = data.knockbackFormula.Evaluate(attr, statProvider, defaultIfEmpty: 0f);
 
-            var post = (cfg != null && cfg.postProcess != null)
-                ? cfg.postProcess
-                : (system.DamageProfile != null ? system.DamageProfile.GetDefaultPostProcess() : null);
 
             float baseStagger = (cfg != null && cfg.includeStaggerBuildUp && cfg.staggerFormula != null)
                 ? cfg.staggerFormula.Evaluate(attr, statProvider, defaultIfEmpty: 0f)
@@ -90,8 +87,7 @@ namespace UnityGAS
                 : null;
 
             var r = DamageFormulaUtil.PostProcess(
-                attacker: attr,
-                post: post,
+                statProvider,
                 baseHpDamage: baseHp,
                 baseStaggerDamage: baseStagger,
                 elementInputs: elementInputs,

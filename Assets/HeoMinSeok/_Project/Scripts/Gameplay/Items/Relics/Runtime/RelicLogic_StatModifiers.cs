@@ -61,7 +61,7 @@ public class RelicLogic_StatModifiers : RelicLogic
                 duration: Mathf.Max(0f, e.duration)
             );
 
-            ctx.attributeSet.AddModifier(e.attribute, mod);
+            ctx.attributeSet.TryAddModifier(e.attribute, mod);
         }
     }
 

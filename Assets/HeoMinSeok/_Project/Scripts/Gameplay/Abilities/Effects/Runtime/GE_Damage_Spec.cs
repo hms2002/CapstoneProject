@@ -8,7 +8,7 @@ namespace UnityGAS
     /// - spec.SetSetByCallerMagnitude(damageKey, damage) 로 데미지 값을 전달.
     ///
     /// Token Health 지원:
-    /// - 타겟에 PlayerTokenHealth가 붙어있으면, Health Attribute 대신 "토큰"을 감소시킵니다.
+    /// - 타겟이 IDamageReceiver를 구현하면, Health Attribute 대신 해당 수신자에게 피해 처리를 위임합니다.
     /// - 기본 토큰 피해는 fallbackTokenDamage(기본 1).
     /// - 필요하면 tokenDamageKey(SetByCaller)로 토큰 피해를 오버라이드할 수 있습니다.
     ///
@@ -60,11 +60,11 @@ namespace UnityGAS
         [Tooltip("흡수형 보호막 Attribute (있으면 먼저 여기서 깎고 남은 데미지만 Health로)")]
         public AttributeDefinition absorbShieldAttribute;
 
-        [Header("Token Health (Optional)")]
-        [Tooltip("타겟이 PlayerTokenHealth일 때 사용할 SetByCaller 키 (예: Data.TokenDamage). 비워두면 fallbackTokenDamage 사용.")]
+        [Header("Token Damage (Optional)")]
+        [Tooltip("타겟이 IDamageReceiver를 통해 토큰 피해를 처리하는 경우 사용할 SetByCaller 키입니다.")]
         public GameplayTag tokenDamageKey;
 
-        [Tooltip("PlayerTokenHealth 타겟에 대한 기본 토큰 피해(기본 1).")]
+        [Tooltip("IDamageReceiver가 토큰 피해를 처리할 때 사용할 기본 토큰 피해")]
         public int fallbackTokenDamage = 1;
 
         private void OnValidate()
@@ -90,7 +90,7 @@ namespace UnityGAS
                     return;
             }
 
-            // 1) 1회 보호막(태그) 처리 (토큰/HP 공통)
+            // 1) 1회 보호막(태그) 처리
             if (oneHitShieldTag != null)
             {
                 var tags = target.GetComponent<TagSystem>();
@@ -108,34 +108,19 @@ namespace UnityGAS
                 return causer;
             }
 
-            void TryApplyKnockback(GameObject t)
+            void TryApplyKnockback(GameObject t, float knockbackImpulse)
             {
                 if (t == null) return;
-
-                float kb = fallbackKnockback;
-                if (spec != null && knockbackKey != null && spec.TryGetSetByCallerMagnitude(knockbackKey, out var kbv))
-                    kb = kbv;
-
-                if (kb <= 0f) return;
+                if (knockbackImpulse <= 0f) return;
 
                 var receiver = t.GetComponent<KnockbackReceiver2D>();
                 if (receiver != null)
-                    receiver.ApplyKnockback(ResolveCauser(), kb);
+                    receiver.ApplyKnockback(ResolveCauser(), knockbackImpulse);
             }
 
-            void TrySendHitFeedback(GameObject t)
+            void TrySendHitFeedback(GameObject t, float stun, float shake)
             {
                 if (t == null) return;
-
-                // Resolve values (0 means "do not send" for that channel)
-                float stun = fallbackStunSeconds;
-                if (spec != null && stunSecondsKey != null && spec.TryGetSetByCallerMagnitude(stunSecondsKey, out var sv))
-                    stun = sv;
-
-                float shake = fallbackCameraShake;
-                if (spec != null && cameraShakeKey != null && spec.TryGetSetByCallerMagnitude(cameraShakeKey, out var cv))
-                    shake = cv;
-
                 if (stun <= 0f && shake <= 0f) return;
 
                 var receiver = t.GetComponent<IHitFeedbackReceiver2D>();
@@ -143,25 +128,51 @@ namespace UnityGAS
                     receiver.OnHitFeedback(new HitFeedbackPayload(ResolveCauser(), stun, shake));
             }
 
-            // ✅ Token Health 우선 처리
-            var tokenHealth = target.GetComponent<PlayerTokenHealth>();
-            if (tokenHealth != null)
+            // -------------------------
+            // 공통 데미지 값 해석
+            // -------------------------
+            float damage = fallbackDamage;
+            if (spec != null && damageKey != null && spec.TryGetSetByCallerMagnitude(damageKey, out var dv))
+                damage = dv;
+
+            float knockback = fallbackKnockback;
+            if (spec != null && knockbackKey != null && spec.TryGetSetByCallerMagnitude(knockbackKey, out var kbv))
+                knockback = kbv;
+
+            float stunSeconds = fallbackStunSeconds;
+            if (spec != null && stunSecondsKey != null && spec.TryGetSetByCallerMagnitude(stunSecondsKey, out var sv))
+                stunSeconds = sv;
+
+            float cameraShake = fallbackCameraShake;
+            if (spec != null && cameraShakeKey != null && spec.TryGetSetByCallerMagnitude(cameraShakeKey, out var cv))
+                cameraShake = cv;
+
+            int tokenDamage = Mathf.Max(0, fallbackTokenDamage);
+            if (spec != null && tokenDamageKey != null && spec.TryGetSetByCallerMagnitude(tokenDamageKey, out var td))
+                tokenDamage = Mathf.Max(0, Mathf.RoundToInt(td));
+
+            // -------------------------
+            // 특수 DamageReceiver 위임 시도
+            // -------------------------
+            var damageReceiver = FindDamageReceiver(target);
+            if (damageReceiver != null)
             {
-                int tokenDamage = Mathf.Max(0, fallbackTokenDamage);
+                var request = DamageRequest.Create(
+                    hpDamage: Mathf.Max(0f, damage),
+                    tokenDamage: tokenDamage,
+                    instigator: spec != null ? spec.Context?.Instigator : null,
+                    causer: ResolveCauser(),
+                    sourceObject: this,
+                    knockbackImpulse: Mathf.Max(0f, knockback),
+                    stunSeconds: Mathf.Max(0f, stunSeconds),
+                    cameraShake: Mathf.Max(0f, cameraShake));
 
-                if (spec != null && tokenDamageKey != null &&
-                    spec.TryGetSetByCallerMagnitude(tokenDamageKey, out var td))
+                if (damageReceiver.TryApplyDamage(request))
                 {
-                    tokenDamage = Mathf.Max(0, Mathf.RoundToInt(td));
+                    TryApplyKnockback(target, knockback);
+                    TrySendHitFeedback(target, stunSeconds, cameraShake);
+                    return;
                 }
-
-                if (tokenDamage <= 0) return;
-
-                tokenHealth.ApplyTokenDamage(tokenDamage, source: this);
-
-                TryApplyKnockback(target);
-                TrySendHitFeedback(target);
-                return;
             }
 
             // -------------------------
@@ -170,21 +181,16 @@ namespace UnityGAS
             var attributeSet = target.GetComponent<AttributeSet>();
             if (attributeSet == null) return;
 
-            float damage = fallbackDamage;
-
-            if (spec != null && damageKey != null && spec.TryGetSetByCallerMagnitude(damageKey, out var v))
-                damage = v;
-
             if (damage <= 0f) return;
 
-            // 2) 흡수 보호막(실드HP Attribute) 처리
+            // 2) 흡수 보호막 처리
             if (absorbShieldAttribute != null)
             {
                 float shield = attributeSet.GetAttributeValue(absorbShieldAttribute);
                 if (shield > 0f)
                 {
                     float absorbed = Mathf.Min(shield, damage);
-                    attributeSet.ModifyAttributeValue(absorbShieldAttribute, -absorbed, this);
+                    attributeSet.TryModifyAttributeValue(absorbShieldAttribute, -absorbed, this);
                     damage -= absorbed;
 
                     if (damage <= 0f) return;
@@ -193,10 +199,10 @@ namespace UnityGAS
 
             // 3) Health 감소
             if (healthAttribute == null) return;
-            attributeSet.ModifyAttributeValue(healthAttribute, -damage, this);
+            attributeSet.TryModifyAttributeValue(healthAttribute, -damage, this);
 
-            TryApplyKnockback(target);
-            TrySendHitFeedback(target);
+            TryApplyKnockback(target, knockback);
+            TrySendHitFeedback(target, stunSeconds, cameraShake);
         }
 
         public override void Apply(GameObject target, GameObject instigator, int stackCount = 1)
@@ -205,5 +211,18 @@ namespace UnityGAS
         }
 
         public override void Remove(GameObject target, GameObject instigator) { }
+        private static IDamageReceiver FindDamageReceiver(GameObject target)
+        {
+            if (target == null) return null;
+
+            var behaviours = target.GetComponents<MonoBehaviour>();
+            for (int i = 0; i < behaviours.Length; i++)
+            {
+                if (behaviours[i] is IDamageReceiver receiver)
+                    return receiver;
+            }
+
+            return null;
+        }
     }
 }

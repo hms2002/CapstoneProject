@@ -62,7 +62,7 @@ public sealed class MoveSpeedOnKillProc : IRelicProc
             duration: Mathf.Max(0.01f, _duration)
         );
 
-        _ctx.attributeSet.AddModifier(_moveSpeedAttr, mod);
+        _ctx.attributeSet.TryAddModifier(_moveSpeedAttr, mod);
     }
 
     public void Dispose()

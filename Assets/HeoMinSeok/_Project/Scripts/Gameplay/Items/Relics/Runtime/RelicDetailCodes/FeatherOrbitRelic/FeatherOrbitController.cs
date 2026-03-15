@@ -112,11 +112,11 @@ public class FeatherOrbitController : MonoBehaviour
             float a = _angleDeg + (360f / n) * i;
             var rad = a * Mathf.Deg2Rad;
 
-            Vector3 offset = new Vector3(Mathf.Cos(rad), 0f, Mathf.Sin(rad)) * _cfg.radius;
+            Vector3 offset = new Vector3(Mathf.Cos(rad), Mathf.Sin(rad),0f) * _cfg.radius;
             f.transform.position = transform.position + offset;
 
             // (선택) 바라보는 방향 연출
-            f.transform.rotation = Quaternion.LookRotation(offset.normalized, Vector3.up);
+            //f.transform.rotation = Quaternion.LookRotation(offset.normalized, -Vector3.forward);
         }
     }
 

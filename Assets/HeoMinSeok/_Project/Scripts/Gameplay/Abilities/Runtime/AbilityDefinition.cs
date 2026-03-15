@@ -221,7 +221,7 @@ namespace UnityGAS
             if (!HasCost) return;
             var attributeSet = caster.GetComponent<AttributeSet>();
             if (attributeSet != null)
-                attributeSet.ModifyAttributeValue(costAttribute, -cost, this);
+                attributeSet.TryModifyAttributeValue(costAttribute, -cost, this);
         }
     }
 }

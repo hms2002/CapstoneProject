@@ -9,7 +9,7 @@ namespace UnityGAS
     /// - 필요하면 AttributeSet(Health/MaxHealth)과 동기화해서 기존 UI/시스템을 재사용할 수 있음.
     /// </summary>
     [DisallowMultipleComponent]
-    public class PlayerTokenHealth : MonoBehaviour
+    public class PlayerTokenHealth : MonoBehaviour, IDamageReceiver
     {
         [Header("Tokens")]
         [Min(1)] public int maxTokens = 5;
@@ -17,7 +17,7 @@ namespace UnityGAS
 
         [Tooltip("오브젝트가 Enable 될 때 currentTokens를 maxTokens로 리셋할지 (풀링 스폰에 유용)")]
         public bool resetToFullOnEnable = true;
-
+        
         [Header("Optional: Sync to AttributeSet")]
         [Tooltip("true면 AttributeSet의 MaxHealth/Health를 (maxTokens/currentTokens)로 동기화합니다.")]
         public bool syncToAttributes = true;
@@ -32,14 +32,13 @@ namespace UnityGAS
         public event Action<int> OnTokenDamaged;       // (amount)
 
         private AttributeSet _attributeSet;
-        private AttributeValue _health;
-        private AttributeValue _maxHealth;
 
         public bool IsDead => currentTokens <= 0;
 
         private void Awake()
         {
-            CacheAttributes();
+            EnsureAttributeSet();
+
             // 씬 시작 시에도 한번 정합성 맞추기
             currentTokens = Mathf.Clamp(currentTokens, 0, Mathf.Max(1, maxTokens));
             SyncAttributesImmediate();
@@ -48,22 +47,33 @@ namespace UnityGAS
         private void OnEnable()
         {
             if (resetToFullOnEnable)
-            {
                 currentTokens = Mathf.Max(1, maxTokens);
-            }
-            CacheAttributes();
+
+            EnsureAttributeSet();
             SyncAttributesImmediate();
         }
 
-        private void CacheAttributes()
+        private void EnsureAttributeSet()
         {
             if (!syncToAttributes) return;
 
-            if (_attributeSet == null) _attributeSet = GetComponent<AttributeSet>();
-            if (_attributeSet == null) return;
+            if (_attributeSet == null)
+                _attributeSet = GetComponent<AttributeSet>();
+        }
 
-            _maxHealth = maxHealthAttribute != null ? _attributeSet.GetAttribute(maxHealthAttribute) : null;
-            _health = healthAttribute != null ? _attributeSet.GetAttribute(healthAttribute) : null;
+        /// <summary>
+        /// Damage 수신 인터페이스 구현.
+        /// 현재 단계에서는 "토큰 피해"만 처리하고,
+        /// 현재 구현은 TokenDamage만 처리한다.
+        /// TokenDamage가 없으면 처리하지 않은 것으로 보고 false를 반환한다.
+        /// </summary>
+        public bool TryApplyDamage(DamageRequest request)
+        {
+            if (request.TokenDamage <= 0)
+                return false;
+
+            ApplyTokenDamage(request.TokenDamage, request.SourceObject);
+            return true;
         }
 
         /// <summary>
@@ -81,7 +91,7 @@ namespace UnityGAS
         }
 
         /// <summary>
-        /// 토큰 피해 적용 (A안).
+        /// 토큰 피해 적용.
         /// </summary>
         public void ApplyTokenDamage(int tokenDamage, UnityEngine.Object source = null)
         {
@@ -95,21 +105,22 @@ namespace UnityGAS
                 OnTokenDamaged?.Invoke(tokenDamage);
                 OnTokensChanged?.Invoke(old, currentTokens);
                 SyncAttributesImmediate();
-                Debug.Log("아얏");
+                Debug.Log($"[PlayerTokenHealth] Token damaged: {old} -> {currentTokens}");
             }
 
             if (currentTokens <= 0)
             {
                 // TODO: 사망 처리(리스폰/게임오버)는 프로젝트 규칙에 맞춰 여기에서 이벤트만 쏘는 걸 권장.
-                // Debug.Log("[PlayerTokenHealth] Dead");
             }
         }
 
         public void HealTokens(int amount)
         {
             if (amount <= 0) return;
+
             int old = currentTokens;
             currentTokens = Mathf.Clamp(currentTokens + amount, 0, Mathf.Max(1, maxTokens));
+
             if (currentTokens != old)
             {
                 OnTokensChanged?.Invoke(old, currentTokens);
@@ -124,18 +135,16 @@ namespace UnityGAS
         private void SyncAttributesImmediate()
         {
             if (!syncToAttributes) return;
-            if (_attributeSet == null) _attributeSet = GetComponent<AttributeSet>();
-            if (_attributeSet == null) return;
 
-            CacheAttributes();
-            if (_maxHealth == null || _health == null) return;
+            if (_attributeSet == null)
+                _attributeSet = GetComponent<AttributeSet>();
+
+            if (_attributeSet == null) return;
+            if (healthAttribute == null || maxHealthAttribute == null) return;
 
             // 순서 중요: MaxHealth 먼저
-            _maxHealth.SetBaseValue(maxTokens);
-            _maxHealth.ForceRecalculate();
-
-            _health.SetBaseValue(currentTokens);
-            _health.ForceRecalculate();
+            _attributeSet.TrySetBaseValue(maxHealthAttribute, maxTokens, this);
+            _attributeSet.TrySetBaseValue(healthAttribute, currentTokens, this);
         }
     }
 }

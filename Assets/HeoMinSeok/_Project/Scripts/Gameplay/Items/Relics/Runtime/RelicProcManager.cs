@@ -16,12 +16,12 @@ public class RelicProcManager : MonoBehaviour
     private void OnEnable()
     {
         if (abilitySystem == null) abilitySystem = GetComponent<AbilitySystem>();
-        if (abilitySystem != null) abilitySystem.OnGameplayEvent += Dispatch;
+        if (abilitySystem != null) abilitySystem.GameplayEventRaised += Dispatch;
     }
 
     private void OnDisable()
     {
-        if (abilitySystem != null) abilitySystem.OnGameplayEvent -= Dispatch;
+        if (abilitySystem != null) abilitySystem.GameplayEventRaised -= Dispatch;
     }
 
     private void Dispatch(GameplayTag tag, AbilityEventData data)

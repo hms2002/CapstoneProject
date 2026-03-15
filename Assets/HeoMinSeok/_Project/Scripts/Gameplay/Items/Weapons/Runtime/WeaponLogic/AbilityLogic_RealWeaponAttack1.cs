@@ -35,9 +35,6 @@ namespace UnityGAS
             var bindings = system.DamageProfile != null ? system.DamageProfile.GetStatBindings() : null;
             IStatProvider statProvider = bindings != null ? new AttributeStatProvider(system.AttributeSet, bindings) : null;
 
-            var post = (cfg != null && cfg.postProcess != null)
-                ? cfg.postProcess
-                : (system.DamageProfile != null ? system.DamageProfile.GetDefaultPostProcess() : null);
 
             // Compute base values
             float baseHp = 0f;
@@ -71,8 +68,7 @@ namespace UnityGAS
                 elementResults = new List<ElementDamageResult>(elementInputs.Count);
 
             var r = DamageFormulaUtil.PostProcess(
-                attacker: system.AttributeSet,
-                post: post,
+                statProvider,
                 baseHpDamage: baseHp,
                 baseStaggerDamage: baseStagger,
                 elementInputs: elementInputs,
