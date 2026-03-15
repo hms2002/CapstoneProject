@@ -151,9 +151,6 @@ namespace UnityGAS.Sample
             var bindings = system.DamageProfile != null ? system.DamageProfile.GetStatBindings() : null;
             IStatProvider statProvider = bindings != null ? new AttributeStatProvider(system.AttributeSet, bindings) : null;
 
-            var post = (cfg != null && cfg.postProcess != null)
-                ? cfg.postProcess
-                : (system.DamageProfile != null ? system.DamageProfile.GetDefaultPostProcess() : null);
 
             float legacyBaseHp = GetArraySafe(data.damages, comboIndex, 0f);
             float baseHp = legacyBaseHp;
@@ -197,8 +194,7 @@ namespace UnityGAS.Sample
                 : null;
 
             var processed = DamageFormulaUtil.PostProcess(
-                attacker: system.AttributeSet,
-                post: post,
+                statProvider,
                 baseHpDamage: baseHp,
                 baseStaggerDamage: includeStagger ? baseStagger : 0f,
                 elementInputs: elementInputs,

@@ -228,7 +228,6 @@ GameObject:
   - component: {fileID: 963026585117413559}
   - component: {fileID: 4885150337275956111}
   - component: {fileID: 7028711097407121541}
-  - component: {fileID: 4776885609674041618}
   - component: {fileID: 2236992985390640672}
   - component: {fileID: 3936464590184144143}
   - component: {fileID: 4488810999718796541}
@@ -434,7 +433,7 @@ MonoBehaviour:
   tagSystem: {fileID: 7887873875085709242}
   globalCancelCastingOnTags: []
   globalCancelExecutionOnTags: []
-  damageProfile: {fileID: 4776885609674041618}
+  damageProfile: {fileID: 11400000, guid: ddd8b96de81528845828895d9bb33042, type: 2}
   defaultCooldownEffect: {fileID: 11400000, guid: e0cdcda9b86374b4c99ad2e948fcfd26, type: 2}
   cooldownDurationMultiplierAttribute: {fileID: 0}
   cooldownFlatReduceSecondsOnHitAttribute: {fileID: 0}
@@ -444,6 +443,7 @@ MonoBehaviour:
   killConfirmedTag: {fileID: 0}
   animator: {fileID: 8399328563048880028}
   playerAnimator: {fileID: 0}
+  initialWeaponAnimator: {fileID: 0}
 --- !u!114 &7887873875085709242
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -629,20 +629,6 @@ MonoBehaviour:
   key: 114
   testRelic: {fileID: 11400000, guid: 1f774045e4d72664996fab05fc0e1308, type: 2}
   gainedLevel: 0
---- !u!114 &4776885609674041618
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8883617028798182002}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1b8a581dfd12f534795b6a5dd3c5e479, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  statBindings: {fileID: 0}
-  defaultPostProcess: {fileID: 0}
 --- !u!114 &2236992985390640672
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -826,3 +812,6 @@ MonoBehaviour:
   body: {fileID: 288432539280398367}
   knockbackImmuneTag: {fileID: 0}
   resistancePctAttribute: {fileID: 0}
+  useVelocityInjection: 1
+  damping: 18
+  maxInjectedSpeed: 20

@@ -29,8 +29,6 @@ namespace UnityGAS
         public ScaledStatFormula staggerFormula;
         public ElementFormulaEntry[] elementFormulas;
 
-        [Header("Post Process")]
-        public DamagePostProcessStats postProcess;
         public bool critAffectsElement = true;
 
         public bool HasElementFormulas => elementFormulas != null && elementFormulas.Length > 0;
@@ -51,9 +49,6 @@ public sealed class DamagePayloadConfig
 
     [Tooltip("Optional element formulas. Each formula outputs FINAL build-up value for its element.")]
     public ElementFormulaEntry[] elementFormulas;
-
-    [Header("Post Process")]
-    public DamagePostProcessStats postProcess;
 
     [Tooltip("If true, crit factor applies to element build-up as well.")]
     public bool critAffectsElement = true;

@@ -427,7 +427,7 @@ public class WeaponInventory2D : MonoBehaviour
             var e = list[i];
             if (e.attribute == null) continue;
             var mod = new AttributeModifier(e.type, e.value, weapon, duration: 0f);
-            attributeSet.AddModifier(e.attribute, mod);
+            attributeSet.TryAddModifier(e.attribute, mod);
         }
     }
 

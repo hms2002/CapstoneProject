@@ -215,7 +215,7 @@ public class RelicLogic_CritFromBonusMoveSpeed_Managed : RelicLogic
             if (bonusCrit <= 0.000001f) return;
 
             _currentCritMod = new AttributeModifier(ModifierType.Flat, bonusCrit, Token, duration: 0f);
-            _ctx.attributeSet.AddModifier(_critChance, _currentCritMod);
+            _ctx.attributeSet.TryAddModifier(_critChance, _currentCritMod);
         }
 
         private void RemoveCurrentModifier()

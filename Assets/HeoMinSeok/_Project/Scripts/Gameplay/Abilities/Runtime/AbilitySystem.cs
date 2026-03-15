@@ -22,7 +22,7 @@ namespace UnityGAS
         [SerializeField] private List<GameplayTag> globalCancelCastingOnTags = new();
         [SerializeField] private List<GameplayTag> globalCancelExecutionOnTags = new();
 
-        [SerializeField] private PlayerDamageProfile damageProfile;
+        [SerializeField] private DamageProfileDefinition damageProfile;
         [SerializeField] private GameplayEffect defaultCooldownEffect;
 
         [Header("Cooldown Attributes (GAS-style)")]
@@ -73,7 +73,7 @@ namespace UnityGAS
         private AbilityPresentationRouter presentationRouter;
         private AbilityExecutionCoordinator executionCoordinator;
 
-        public PlayerDamageProfile DamageProfile => damageProfile;
+        public DamageProfileDefinition DamageProfile => damageProfile;
         public AttributeSet AttributeSet => attributeSet;
         public GameplayEffectRunner EffectRunner => effectRunner;
         public TagSystem TagSystem => tagSystem;
@@ -148,7 +148,7 @@ namespace UnityGAS
             if (attributeSet == null) attributeSet = GetComponent<AttributeSet>();
             if (effectRunner == null) effectRunner = GetComponent<GameplayEffectRunner>();
             if (tagSystem == null) tagSystem = GetComponent<TagSystem>();
-            if (damageProfile == null) damageProfile = GetComponent<PlayerDamageProfile>();
+            if (damageProfile == null) damageProfile = GetComponent<DamageProfileDefinition>();
 
 #if UNITY_2023_1_OR_NEWER
             if (cueManager == null) cueManager = UnityEngine.Object.FindAnyObjectByType<GameplayCueManager>();
