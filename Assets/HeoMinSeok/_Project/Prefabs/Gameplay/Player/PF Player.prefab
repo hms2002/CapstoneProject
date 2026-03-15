@@ -240,6 +240,7 @@ GameObject:
   - component: {fileID: 6034561116183737726}
   - component: {fileID: 689952884117774573}
   - component: {fileID: 5727091237041186888}
+  - component: {fileID: 5754629299100491768}
   m_Layer: 0
   m_Name: PF Player
   m_TagString: Player
@@ -804,4 +805,29 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tagSystem: {fileID: 0}
   aim: {fileID: 0}
+  player: {fileID: 0}
   forcedMoveTag: {fileID: 0}
+--- !u!114 &5754629299100491768
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8883617028798182002}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e874f8eb8415b047a439782315f309b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  abilitySystem: {fileID: 1832372497922031110}
+  weaponInventory: {fileID: 963026585117413559}
+  player: {fileID: 4913808379797790544}
+  dash: {fileID: 11400000, guid: dadc84cd2fffcae45905741575af20c3, type: 2}
+  dashKey: 32
+  skill1Key: 113
+  skill2Key: 101
+  swapKey: 9
+  attackRepeatInterval: 0.06
+  reAimGapAfterAttackEnd: 0.06
+  attackPressedEvent: {fileID: 11400000, guid: 06fb955e1ce9a9c41abb914e2af4dd01, type: 2}
+  attackReleasedEvent: {fileID: 11400000, guid: 77a0a96f4aec927419dcb7815cb7e38b, type: 2}

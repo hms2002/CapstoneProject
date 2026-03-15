@@ -7,6 +7,7 @@ public sealed class PlayerCombatInput2D : MonoBehaviour
     [Header("Refs")]
     [SerializeField] private AbilitySystem abilitySystem;
     [SerializeField] private WeaponInventory2D weaponInventory;
+    [SerializeField] private SampleTopDownPlayer player;
 
     [Header("Movement Ability")]
     [SerializeField] private AbilityDefinition dash;
@@ -33,10 +34,14 @@ public sealed class PlayerCombatInput2D : MonoBehaviour
     {
         if (abilitySystem == null) abilitySystem = GetComponent<AbilitySystem>();
         if (weaponInventory == null) weaponInventory = GetComponent<WeaponInventory2D>();
+        if (player == null) player = GetComponent<SampleTopDownPlayer>();
     }
 
     private void Update()
     {
+        if (player != null && player.CurrentState != InteractState.Idle)
+            return;
+
         HandleCombatInput();
     }
 
@@ -44,7 +49,6 @@ public sealed class PlayerCombatInput2D : MonoBehaviour
     {
         var atk = GetBasicAttack();
 
-        // 1) Press
         if (Input.GetMouseButtonDown(0))
         {
             isHoldingAttack = true;
@@ -55,14 +59,12 @@ public sealed class PlayerCombatInput2D : MonoBehaviour
                 TryActivateSafe(atk);
         }
 
-        // 2) Release
         if (Input.GetMouseButtonUp(0))
         {
             isHoldingAttack = false;
             SendGameplayEventSafe(attackReleasedEvent);
         }
 
-        // 3) Busy -> Idle 전환 감지
         if (abilitySystem != null)
         {
             bool busyNow = abilitySystem.IsBusy;
@@ -73,7 +75,6 @@ public sealed class PlayerCombatInput2D : MonoBehaviour
             wasBusyLastFrame = busyNow;
         }
 
-        // 4) Hold 자동 연타
         if (isHoldingAttack && atk != null && abilitySystem != null)
         {
             if (!abilitySystem.IsBusy && Time.time >= nextAutoAttackTime)
@@ -83,14 +84,10 @@ public sealed class PlayerCombatInput2D : MonoBehaviour
             }
         }
 
-        // Skills
         if (Input.GetKeyDown(skill1Key)) TryActivateSafe(GetSkill1());
         if (Input.GetKeyDown(skill2Key)) TryActivateSafe(GetSkill2());
-
-        // Dash
         if (Input.GetKeyDown(dashKey)) TryActivateSafe(dash);
 
-        // Weapon swap
         if (weaponInventory != null && Input.GetKeyDown(swapKey))
             weaponInventory.Swap();
     }
