@@ -18,13 +18,19 @@ namespace UnityGAS
         {
             if (system == null || data == null) yield break;
             if (data.damageEffect == null) yield break;
+            if (system.AttributeSet == null) yield break;
 
-            // Aim direction (player) fallback
+            // Aim direction
             Vector2 dir = Vector2.right;
-            if (system.TryGetComponent<SampleTopDownPlayer>(out var p))
-                dir = p.AimDirection.sqrMagnitude > 0.0001f ? p.AimDirection.normalized : Vector2.right;
+            if (system.TryGetComponent<PlayerAim2D>(out var aim))
+            {
+                Vector2 aimDir = aim.AimDirection;
+                dir = aimDir.sqrMagnitude > 0.0001f ? aimDir.normalized : Vector2.right;
+            }
             else
+            {
                 dir = system.transform.right;
+            }
 
             // Hitbox
             Vector2 center = (Vector2)system.transform.position + dir * data.forwardOffset;
@@ -56,9 +62,15 @@ namespace UnityGAS
                 {
                     var e = cfg.elementFormulas[i];
                     if (e == null || e.elementType == null || e.formula == null) continue;
+
                     float v = e.formula.Evaluate(system.AttributeSet, statProvider, defaultIfEmpty: 0f);
                     if (v <= 0f) continue;
-                    elementInputs.Add(new ElementDamageInput { elementType = e.elementType, baseDamage = v });
+
+                    elementInputs.Add(new ElementDamageInput
+                    {
+                        elementType = e.elementType,
+                        baseDamage = v
+                    });
                 }
             }
 

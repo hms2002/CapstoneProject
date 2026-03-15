@@ -93,9 +93,11 @@ public class LootManager : MonoBehaviour
         StageLootTable table = GetCurrentTable();
 
         HashSet<string> banList = new HashSet<string>();
-        if (SampleTopDownPlayer.Instance != null && SampleTopDownPlayer.Instance.weaponInventory != null)
+        if (SampleTopDownPlayer.Instance != null)
         {
-            banList.UnionWith(SampleTopDownPlayer.Instance.weaponInventory.GetAllWeaponIDs());
+            WeaponInventory2D weaponInventory = SampleTopDownPlayer.Instance.GetComponent<WeaponInventory2D>();
+            if (weaponInventory != null)
+                banList.UnionWith(weaponInventory.GetAllWeaponIDs());
         }
 
         int wCount = PickCount(table.chestWeaponCounts);
@@ -139,9 +141,10 @@ public class LootManager : MonoBehaviour
         if (rand < sum)
         {
             HashSet<string> banList = new HashSet<string>();
-            if (SampleTopDownPlayer.Instance != null && SampleTopDownPlayer.Instance.weaponInventory != null)
+            if (SampleTopDownPlayer.Instance != null)
             {
-                banList.UnionWith(SampleTopDownPlayer.Instance.weaponInventory.GetAllWeaponIDs());
+                WeaponInventory2D weaponInventory = SampleTopDownPlayer.Instance.GetComponent<WeaponInventory2D>();
+                banList.UnionWith(weaponInventory.GetAllWeaponIDs());
             }
 
             var weapon = GetRandomWeapon(banList);
