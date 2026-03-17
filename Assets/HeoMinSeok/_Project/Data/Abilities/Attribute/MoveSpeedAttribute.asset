@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   attributeName: MoveSpeedAttribute
   description: MoveSpeedAttribute
-  defaultBaseValue: 1
+  mutationPolicy: 1
+  defaultBaseValue: 5
   minValue: 0
   maxValue: 100
   hasRegeneration: 0

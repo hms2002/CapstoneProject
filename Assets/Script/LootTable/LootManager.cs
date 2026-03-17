@@ -7,11 +7,13 @@ public class LootManager : MonoBehaviour
     public static LootManager Instance { get; private set; }
 
     [Header("Settings")]
-    public GameObject worldItemPrefab; // 바닥에 떨어질 아이템 프리팹 (WorldItemPickup2D)
+    public GameObject worldItemPrefab; // 바닥에 떨어질 아이템 프리팹
 
     [Header("References")]
-    public ItemDatabase itemDatabase;
     public List<StageLootTable> stageTables;
+
+    [Header("시작 방(유해) References")]
+    public GraveLootTable graveLootTable; // 인스펙터 연결 필수!
 
     [Header("State")]
     public int currentStageIndex = 0;
@@ -41,10 +43,8 @@ public class LootManager : MonoBehaviour
         return options.Last().count;
     }
 
-    // [수정됨] Legendary 제외 버전
     private ItemRarity RollRelicRarity(StageLootTable table)
     {
-        // Legendary 가중치 제거 (Common + Rare + Epic)
         int total = table.commonWeight + table.rareWeight + table.epicWeight;
         int rand = Random.Range(0, total);
         int sum = 0;
@@ -52,69 +52,65 @@ public class LootManager : MonoBehaviour
         sum += table.commonWeight; if (rand < sum) return ItemRarity.Common;
         sum += table.rareWeight; if (rand < sum) return ItemRarity.Rare;
 
-        // 남은 확률은 무조건 Epic
         return ItemRarity.Epic;
     }
 
     // =========================================================
-    // 2. 단일 아이템 데이터 뽑기 (DB 조회 + 해금 + 중복체크)
+    // 2. 단일 아이템 데이터 뽑기
     // =========================================================
-
-    // 무기: 중복 방지 리스트(exclusionList) 적용
     public WeaponDefinition GetRandomWeapon(HashSet<string> exclusionList)
     {
-        // 해금된 목록에서만 조회
-        var pool = itemDatabase.unlockedWeapons;
+        if (ItemManager.Instance == null) return null;
 
-        // 제외 목록에 없는 것만 필터링
-        var valid = pool.Where(w => !exclusionList.Contains(w.weaponId)).ToList();
+        var pool = ItemManager.Instance.GetUnlockedWeaponIDs();
+        var valid = pool.Where(w => !exclusionList.Contains(w)).ToList();
 
-        if (valid.Count == 0) return null; // 뽑을 게 없음
-        return valid[Random.Range(0, valid.Count)];
+        if (valid.Count == 0) return null;
+
+        string pickedID = valid[Random.Range(0, valid.Count)];
+        return ItemManager.Instance.GetWeaponData(pickedID);
     }
 
-    // 유물: 스테이지별 등급 확률 적용
     public RelicDefinition GetRandomRelic()
     {
-        // 해금된 목록에서만 조회
-        var pool = itemDatabase.unlockedRelics;
+        if (ItemManager.Instance == null) return null;
+
+        var pool = ItemManager.Instance.GetUnlockedRelicIDs();
         if (pool.Count == 0) return null;
 
         StageLootTable table = GetCurrentTable();
         ItemRarity rarity = RollRelicRarity(table);
 
-        // 해당 등급이면서 해금된 유물 필터링
-        var valid = pool.Where(r => r.rarity == rarity).ToList();
-
-        // 해당 등급에 해금된 게 없으면 전체 해금 목록에서 랜덤 (Fallback)
-        if (valid.Count == 0) valid = pool;
-
-        return valid[Random.Range(0, valid.Count)];
+        return GetRandomRelicByRarity(rarity);
     }
 
     // =========================================================
     // 3. [상자용] 드롭 리스트 생성
     // =========================================================
-    public List<ScriptableObject> GenerateChestLoot(HashSet<string> playerWeapons)
+    public List<ScriptableObject> GenerateChestLoot()
     {
         List<ScriptableObject> drops = new List<ScriptableObject>();
         StageLootTable table = GetCurrentTable();
 
-        // A. 무기 생성 (플레이어 소지품 + 현재 상자 내 중복 방지)
-        int wCount = PickCount(table.chestWeaponCounts);
-        HashSet<string> banList = new HashSet<string>(playerWeapons);
+        HashSet<string> banList = new HashSet<string>();
+        if (SampleTopDownPlayer.Instance != null)
+        {
+            WeaponInventory2D weaponInventory = SampleTopDownPlayer.Instance.GetComponent<WeaponInventory2D>();
+            if (weaponInventory != null)
+                banList.UnionWith(weaponInventory.GetAllWeaponIDs());
+        }
 
+        int wCount = PickCount(table.chestWeaponCounts);
         for (int i = 0; i < wCount; i++)
         {
             var weapon = GetRandomWeapon(banList);
             if (weapon != null)
             {
                 drops.Add(weapon);
-                banList.Add(weapon.weaponId); // 이번 상자에서 중복 방지 등록
+                banList.Add(weapon.weaponId);
             }
         }
 
-        // B. 유물 생성
         int rCount = PickCount(table.chestRelicCounts);
         for (int i = 0; i < rCount; i++)
         {
@@ -128,31 +124,34 @@ public class LootManager : MonoBehaviour
     // =========================================================
     // 4. [일반 몬스터용] 확률 드롭 및 스폰
     // =========================================================
-    public void SpawnMonsterLoot(Vector3 position, HashSet<string> playerWeapons)
+    public void SpawnMonsterLoot(Vector3 position)
     {
         StageLootTable table = GetCurrentTable();
 
-        // 전체 가중치 합산 (꽝 포함)
         int totalWeight = table.mobNothingWeight + table.mobWeaponWeight + table.mobRelicWeight
                           + table.mobConsumableWeight + table.mobFieldItemWeight;
 
         int rand = Random.Range(0, totalWeight);
         int sum = 0;
 
-        // 1. 꽝 (Nothing)
         sum += table.mobNothingWeight;
         if (rand < sum) return;
 
-        // 2. 무기
         sum += table.mobWeaponWeight;
         if (rand < sum)
         {
-            var weapon = GetRandomWeapon(playerWeapons);
+            HashSet<string> banList = new HashSet<string>();
+            if (SampleTopDownPlayer.Instance != null)
+            {
+                WeaponInventory2D weaponInventory = SampleTopDownPlayer.Instance.GetComponent<WeaponInventory2D>();
+                banList.UnionWith(weaponInventory.GetAllWeaponIDs());
+            }
+
+            var weapon = GetRandomWeapon(banList);
             if (weapon != null) SpawnLootObject(position, weapon);
             return;
         }
 
-        // 3. 유물
         sum += table.mobRelicWeight;
         if (rand < sum)
         {
@@ -161,28 +160,13 @@ public class LootManager : MonoBehaviour
             return;
         }
 
-        // 4. 소비 아이템
         sum += table.mobConsumableWeight;
-        if (rand < sum)
-        {
-            // [TODO] var potion = GetRandomConsumable();
-            // if (potion != null) SpawnLootObject(position, potion);
-            return;
-        }
+        if (rand < sum) return;
 
-        // 5. 필드 아이템
         sum += table.mobFieldItemWeight;
-        if (rand < sum)
-        {
-            // [TODO] var heart = GetRandomFieldItem();
-            // if (heart != null) SpawnLootObject(position, heart);
-            return;
-        }
+        if (rand < sum) return;
     }
 
-    // =========================================================
-    // 5. 실제 월드 오브젝트 생성
-    // =========================================================
     public void SpawnLootObject(Vector3 position, ScriptableObject itemData)
     {
         if (worldItemPrefab == null)
@@ -199,15 +183,87 @@ public class LootManager : MonoBehaviour
         }
     }
 
-    // =========================================================
-    // [New] 보스 마정석 개수 계산 (현재 스테이지 테이블 기준)
-    // =========================================================
     public int GetBossMagicStoneCount()
     {
         StageLootTable table = GetCurrentTable();
         if (table == null) return 0;
-
-        // 테이블에 적힌 개수 그대로 반환 (예: 5)
         return table.bossStoneCount;
+    }
+
+    // =========================================================
+    // 🌟 5. 유해(Grave) 전용 드롭 시스템
+    // =========================================================
+    public void SpawnGraveLoot(Vector3 position, GraveType type, int bonusCount = 0, float bonusRareChance = 0f, float bonusEpicChance = 0f)
+    {
+        if (graveLootTable == null || ItemManager.Instance == null) return;
+
+        if (type == GraveType.Weapon)
+        {
+            // [수정] 무기 유해도 테이블 확률에 따라 기본 개수를 뽑습니다!
+            int baseCount = PickCount(graveLootTable.weaponDropCounts);
+            int totalCount = baseCount + bonusCount;
+
+            for (int i = 0; i < totalCount; i++)
+            {
+                var weapon = GetRandomWeapon(new HashSet<string>()); // 중복 드롭 허용
+                if (weapon != null) SpawnLootObject(position + GetRandomOffset(), weapon);
+            }
+        }
+        else if (type == GraveType.Relic)
+        {
+            int baseCount = PickCount(graveLootTable.relicDropCounts);
+            int totalCount = baseCount + bonusCount;
+
+            for (int i = 0; i < totalCount; i++)
+            {
+                ItemRarity rarity = RollGraveRelicRarity(bonusRareChance, bonusEpicChance);
+                var relic = GetRandomRelicByRarity(rarity);
+
+                if (relic != null) SpawnLootObject(position + GetRandomOffset(), relic);
+            }
+        }
+    }
+
+    private Vector3 GetRandomOffset()
+    {
+        return new Vector3(Random.Range(-0.5f, 0.5f), Random.Range(-0.5f, 0.5f), 0);
+    }
+
+    private ItemRarity RollGraveRelicRarity(float bonusRareChance, float bonusEpicChance)
+    {
+        float normalW = graveLootTable.normalRelicWeight;
+        float rareW = graveLootTable.rareRelicWeight + bonusRareChance;
+        float epicW = graveLootTable.epicRelicWeight + bonusEpicChance;
+
+        float total = normalW + rareW + epicW;
+        float rand = Random.Range(0f, total);
+
+        if (rand < normalW) return ItemRarity.Common;
+        if (rand < normalW + rareW) return ItemRarity.Rare;
+
+        return ItemRarity.Epic;
+    }
+
+    private RelicDefinition GetRandomRelicByRarity(ItemRarity targetRarity)
+    {
+        var pool = ItemManager.Instance.GetUnlockedRelicIDs();
+        if (pool.Count == 0) return null;
+
+        List<string> filteredPool = new List<string>();
+
+        foreach (var id in pool)
+        {
+            var relicData = ItemManager.Instance.GetRelicData(id);
+            if (relicData != null)
+            {
+                filteredPool.Add(id);
+            }
+        }
+
+        if (filteredPool.Count == 0)
+            return ItemManager.Instance.GetRelicData(pool[Random.Range(0, pool.Count)]);
+
+        string pickedID = filteredPool[Random.Range(0, filteredPool.Count)];
+        return ItemManager.Instance.GetRelicData(pickedID);
     }
 }

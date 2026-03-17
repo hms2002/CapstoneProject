@@ -56,7 +56,7 @@ public class TrainingDummy2D : MonoBehaviour
                 float maxHp = attributeSet.GetAttributeValue(maxHealthAttribute);
                 float delta = maxHp - newValue; // 부족분만큼 더해줌
                 if (delta > 0f)
-                    attributeSet.ModifyAttributeValue(healthAttribute, delta, this);
+                    attributeSet.TryModifyAttributeValue(healthAttribute, delta, this);
             }
         }
     }

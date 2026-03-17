@@ -18,6 +18,7 @@ namespace UnityGAS
 
         [Header("Damage")]
         public GameplayEffect damageEffect; // 권장: GE_Damage_Spec
+        public GE_Knockback_Spec knockbackEffect; // 권장: GE_Damage_Spec
         public ScaledStatFormula damageFormula; // 예: ATK * 1.0
         public ScaledStatFormula knockbackFormula; // 예: KnockbackPower * 1.0
 

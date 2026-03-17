@@ -16,7 +16,7 @@ public class TreasureChest : MonoBehaviour
 
     private void Awake()
     {
-        inventory = new ChestInventory(/*capacity*/);
+        inventory = new ChestInventory(); // capacity는 내부 기본값 사용
     }
 
     // =========================================================
@@ -24,32 +24,27 @@ public class TreasureChest : MonoBehaviour
     // =========================================================
     public void InitializeWithLoot(List<ScriptableObject> loots)
     {
-        if (inventory == null) inventory = new ChestInventory(/*capacity*/);
+        if (inventory == null) inventory = new ChestInventory();
 
-        HashSet<string> banList = GetPlayerWeaponBanList();
-
+        // [핵심 수정] 플레이어 인벤토리를 뒤져서 중복 검사하는 로직을 완전히 삭제!
+        // (LootManager나 BossDrop에서 이미 중복을 걸러서 깨끗한 리스트만 넘겨줍니다)
         foreach (var item in loots)
         {
-            if (item is WeaponDefinition weapon)
+            if (item != null)
             {
-                if (banList.Contains(weapon.weaponId)) continue;
+                inventory.TryAdd(item);
             }
-            inventory.TryAdd(item);
         }
 
         isGenerated = true;
     }
 
     // =========================================================
-    // 2. 상호작용으로 열 때 (수정됨: 언제든 다시 열 수 있음)
+    // 2. 상호작용으로 열 때 (언제든 다시 열 수 있음)
     // =========================================================
     public void Open()
     {
-        // [삭제됨] if (isOpened) return; 
-        // -> 이 줄 때문에 다시 못 열었던 겁니다. 과감히 삭제!
-
         // 1. 데이터 생성 (아직 안 만들어졌을 때만 1회 실행)
-        // -> 다시 열 때는 isGenerated가 true이므로 실행 안 됨 (내용물 보존)
         if (!isGenerated)
         {
             GenerateSelfLoot();
@@ -65,7 +60,6 @@ public class TreasureChest : MonoBehaviour
         }
 
         // 3. UI 열기 (항상 실행)
-        // -> 이미 열린 상자라도 다시 누르면 인벤토리 창이 뜸
         if (ChestUIManager.Instance != null)
         {
             ChestUIManager.Instance.OpenChest(this);
@@ -77,28 +71,23 @@ public class TreasureChest : MonoBehaviour
     // =========================================================
     private void GenerateSelfLoot()
     {
-        HashSet<string> currentBanList = GetPlayerWeaponBanList();
-
         if (LootManager.Instance != null)
         {
-            List<ScriptableObject> loots = LootManager.Instance.GenerateChestLoot(currentBanList);
+            // [핵심 수정] 매개변수 없이 깔끔하게 호출! 
+            // (누가 중복인지 검사하는 건 LootManager가 알아서 합니다)
+            List<ScriptableObject> loots = LootManager.Instance.GenerateChestLoot();
 
-            foreach (var item in loots)
+            if (loots != null)
             {
-                inventory.TryAdd(item);
+                foreach (var item in loots)
+                {
+                    if (item != null)
+                    {
+                        inventory.TryAdd(item);
+                    }
+                }
             }
         }
-    }
-
-    private HashSet<string> GetPlayerWeaponBanList()
-    {
-        HashSet<string> banList = new HashSet<string>();
-        if (SampleTopDownPlayer.Instance != null && SampleTopDownPlayer.Instance.weaponInventory != null)
-        {
-            List<string> playerWeaponIDs = SampleTopDownPlayer.Instance.weaponInventory.GetAllWeaponIDs();
-            banList.UnionWith(playerWeaponIDs);
-        }
-        return banList;
     }
 
     public ChestInventory GetInventory() => inventory;

@@ -22,24 +22,22 @@ namespace UnityGAS
             var attr = system.AttributeSet;
             if (attr == null) yield break;
 
-            // Provider (Final stats)
             var cfg = data.DamageConfig;
-            var bindings = system.DamageProfile != null ? system.DamageProfile.GetStatBindings() : null;
-            IStatProvider statProvider = bindings != null ? new AttributeStatProvider(attr, bindings) : null;
+            IStatProvider statProvider = AbilityStatProviderFactory.Create(system);
 
-            // Aim direction
-            Vector2 dir = Vector2.right;
-            if (system.TryGetComponent<SampleTopDownPlayer>(out var p))
-                dir = p.AimDirection.sqrMagnitude > 0.0001f ? p.AimDirection.normalized : Vector2.right;
-            else
-                dir = system.transform.right;
+            Vector2 dir = AbilityAimResolver2D.Resolve(system.gameObject, Vector2.right);
 
-            // Hitbox
             Vector2 center = (Vector2)system.transform.position + dir * data.forwardOffset;
-            var td = AbilityTargetData2D.FromOverlapBox(center, data.hitboxSize, 0f, data.hitLayers, ignore: system.gameObject);
-            if (td.Targets.Count == 0) yield break;
+            var td = AbilityTargetData2D.FromOverlapBox(
+                center,
+                data.hitboxSize,
+                0f,
+                data.hitLayers,
+                ignore: system.gameObject);
 
-            // baseHp = ATK_FINAL * (MoveSpeedMult_FINAL * scale)
+            if (td.Targets.Count == 0)
+                yield break;
+
             float atk = 0f;
             float ms = 1f;
 
@@ -50,8 +48,9 @@ namespace UnityGAS
             }
             else
             {
-                // fallback (legacy)
-                if (data.attackAttribute == null || data.moveSpeedMultiplierAttribute == null) yield break;
+                if (data.attackAttribute == null || data.moveSpeedMultiplierAttribute == null)
+                    yield break;
+
                 atk = attr.GetAttributeValue(data.attackAttribute);
                 ms = attr.GetAttributeValue(data.moveSpeedMultiplierAttribute);
             }
@@ -63,63 +62,52 @@ namespace UnityGAS
             if (data.knockbackFormula != null)
                 baseKnockback = data.knockbackFormula.Evaluate(attr, statProvider, defaultIfEmpty: 0f);
 
-            var post = (cfg != null && cfg.postProcess != null)
-                ? cfg.postProcess
-                : (system.DamageProfile != null ? system.DamageProfile.GetDefaultPostProcess() : null);
-
-            float baseStagger = (cfg != null && cfg.includeStaggerBuildUp && cfg.staggerFormula != null)
-                ? cfg.staggerFormula.Evaluate(attr, statProvider, defaultIfEmpty: 0f)
-                : 0f;
+            float baseStagger = 0f;
+            if (cfg != null && cfg.includeStaggerBuildUp && cfg.staggerFormula != null)
+                baseStagger = cfg.staggerFormula.Evaluate(attr, statProvider, defaultIfEmpty: 0f);
 
             List<ElementDamageInput> elementInputs = null;
             if (cfg != null && cfg.includeElementBuildUp && cfg.HasElementFormulas)
             {
                 elementInputs = new List<ElementDamageInput>(cfg.elementFormulas.Length);
+
                 for (int i = 0; i < cfg.elementFormulas.Length; i++)
                 {
                     var e = cfg.elementFormulas[i];
-                    if (e == null || e.elementType == null || e.formula == null) continue;
+                    if (e == null || e.elementType == null || e.formula == null)
+                        continue;
+
                     float v = e.formula.Evaluate(attr, statProvider, defaultIfEmpty: 0f);
-                    if (v <= 0f) continue;
-                    elementInputs.Add(new ElementDamageInput { elementType = e.elementType, baseDamage = v });
+                    if (v <= 0f)
+                        continue;
+
+                    elementInputs.Add(new ElementDamageInput
+                    {
+                        elementType = e.elementType,
+                        baseDamage = v
+                    });
                 }
             }
 
-            List<ElementDamageResult> elementResults = (elementInputs != null && elementInputs.Count > 0)
-                ? new List<ElementDamageResult>(elementInputs.Count)
-                : null;
-
-            var r = DamageFormulaUtil.PostProcess(
-                attacker: attr,
-                post: post,
-                baseHpDamage: baseHp,
-                baseStaggerDamage: baseStagger,
-                elementInputs: elementInputs,
-                outElementResults: elementResults,
-                critAffectsElement: (cfg == null ? true : cfg.critAffectsElement)
+            var snapshot = DamageSnapshotBuilder.BuildFromBaseValues(
+                statProvider: statProvider,
+                config: cfg,
+                baseHp: baseHp,
+                baseStagger: baseStagger,
+                baseKnockback: baseKnockback,
+                elementInputs: elementInputs
             );
 
-            float finalHp = r.hpDamage;
-            float finalStagger = r.staggerDamage;
-
-            for (int i = 0; i < td.Targets.Count; i++)
-            {
-                var target = td.Targets[i];
-                if (target == null) continue;
-
-                CombatDamageAction.ApplyDamageAndEmitHit(
-                    system: system,
-                    spec: spec,
-                    target: target,
-                    damageEffect: data.damageEffect,
-                    finalHpDamage: finalHp,
-                    finalStaggerBuildUp: finalStagger,
-                    elementBuildUps: elementResults,
-                    finalKnockbackImpulse: baseKnockback,
-                    hitConfirmedTag: null,
-                    causer: system.gameObject
-                );
-            }
+            CombatDamageApplicator.ApplyToTargets(
+                system: system,
+                spec: spec,
+                damageEffect: data.damageEffect,
+                knockbackEffect: data.knockbackEffect,
+                targets: td.Targets,
+                snapshot: snapshot,
+                hitConfirmedTag: null,
+                causer: system.gameObject
+            );
 
             yield break;
         }

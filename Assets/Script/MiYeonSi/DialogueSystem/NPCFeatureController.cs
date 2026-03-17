@@ -1,46 +1,37 @@
+using System;
 using UnityEngine;
-using UnityEngine.Events;
-using System.Collections.Generic;
-
-[System.Serializable]
-public struct NPCFeature
-{
-    public string featureKey;    // 예: "shop", "upgrade"
-    public UnityEvent onExecute; // 실행할 함수 연결
-}
 
 public class NPCFeatureController : MonoBehaviour
 {
-    [Header("이 NPC가 가진 기능 목록")]
-    [SerializeField] private List<NPCFeature> features;
+    public Action RequestDialogueExit;
 
-    private Dictionary<string, UnityEvent> featureDict;
+    private INPCFeature[] features;
 
     private void Awake()
     {
-        featureDict = new Dictionary<string, UnityEvent>();
-        foreach (var feature in features)
-        {
-            string key = feature.featureKey.Trim().ToLower();
-            if (!string.IsNullOrEmpty(key) && !featureDict.ContainsKey(key))
-            {
-                featureDict.Add(key, feature.onExecute);
-            }
-        }
+        features = GetComponents<INPCFeature>();
     }
 
-    public void ExecuteFeature(string key)
+    public void ExecuteFeature(string featureName, Action onComplete = null)
     {
-        string searchKey = key.Trim().ToLower();
+        if (features == null)
+        {
+            onComplete?.Invoke(); // 방어: 컴포넌트가 없으면 바로 대화 속행
+            return;
+        }
 
-        if (featureDict.TryGetValue(searchKey, out UnityEvent action))
+        foreach (var feature in features)
         {
-            Debug.Log($"[NPCFeature] 기능 실행: {searchKey}");
-            action.Invoke();
+            if (feature.FeatureName.ToLower() == featureName.ToLower())
+            {
+                feature.Execute(onComplete);
+                return;
+            }
         }
-        else
-        {
-            Debug.LogWarning($"[NPCFeature] '{gameObject.name}' NPC는 '{searchKey}' 기능이 없습니다.");
-        }
+
+        Debug.LogWarning($"[NPCFeatureController] '{featureName}' 기능을 찾을 수 없습니다.");
+        
+        // [핵심 방어코드] 스펠링 실수 등으로 기능을 못 찾았을 때 대화가 영원히 멈추는 것을 방지!
+        onComplete?.Invoke(); 
     }
 }

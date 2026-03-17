@@ -16,7 +16,7 @@ MonoBehaviour:
   upgradeName: Up_1_-1
   description: 
   icon: {fileID: 0}
-  price: 100
+  price: 0
   effects: []
   unlockedNodeIDs: d9eac603
   requiredParentIDs: 870052b8

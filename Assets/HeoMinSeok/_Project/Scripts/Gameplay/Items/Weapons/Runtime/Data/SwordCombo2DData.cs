@@ -54,6 +54,7 @@ namespace UnityGAS.Sample
 
         [Header("Damage Effect")]
         public GameplayEffect damageEffect; // GE_Damage_Spec (HP)
+        public GE_Knockback_Spec knockbackEffect; // GE_Damage_Spec (HP)
 
     }
 }

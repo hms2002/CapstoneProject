@@ -12,6 +12,7 @@ public class FeatherOrbitController : MonoBehaviour
         public Object token;
 
         public GameplayEffect damageEffect;
+        public GE_Knockback_Spec knockbackEffect;
         public StatId attackStatId;
         public float damageCoef;
         public float knockbackImpulse;
@@ -124,6 +125,7 @@ public class FeatherOrbitController : MonoBehaviour
 
     public AbilitySystem System => _system;
     public GameplayEffect DamageEffect => _cfg.damageEffect;
+    public GE_Knockback_Spec KnockbackEffect => _cfg.knockbackEffect;
     public GameplayTag HitConfirmedTag => _cfg.hitConfirmedTag;
 
     public float GetMoveSpeedMultX1()

@@ -972,14 +972,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 644dc9ef8391e3b49a5b89b3c15e18f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  canvas: {fileID: 1493883150}
   detailPanel: {fileID: 135140464}
-  detailPanelRect: {fileID: 135140461}
-  offset: 12
-  edgePadding: 8
-  followAnchor: 1
-  delayHideOneFrame: 1
-  extraHideDelay: 0.08
   contextProviderBehaviour: {fileID: 1012006894227905799}
 --- !u!1001 &98883146
 PrefabInstance:
@@ -13106,7 +13099,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 68696bbb701dad74a83df832637ad06b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemDatabase: {fileID: 11400000, guid: 3f0da48f2a0acc843a80f20a370f3678, type: 2}
 --- !u!4 &505183499
 Transform:
   m_ObjectHideFlags: 0
@@ -16065,7 +16057,6 @@ GameObject:
   - component: {fileID: 723292218}
   - component: {fileID: 723292229}
   - component: {fileID: 723292228}
-  - component: {fileID: 723292230}
   m_Layer: 31
   m_Name: ToxicFrogBlueBlue
   m_TagString: Untagged
@@ -16128,7 +16119,7 @@ MonoBehaviour:
   tagSystem: {fileID: 723292222}
   globalCancelCastingOnTags: []
   globalCancelExecutionOnTags: []
-  damageProfile: {fileID: 0}
+  damageProfile: {fileID: 11400000, guid: ddd8b96de81528845828895d9bb33042, type: 2}
   defaultCooldownEffect: {fileID: 0}
   cooldownDurationMultiplierAttribute: {fileID: 0}
   cooldownFlatReduceSecondsOnHitAttribute: {fileID: 0}
@@ -16136,8 +16127,10 @@ MonoBehaviour:
   cueManager: {fileID: 0}
   autoExecuteCueWhenGameplayEventTagExists: 1
   killConfirmedTag: {fileID: 0}
+  damagedTag: {fileID: 0}
   animator: {fileID: 723292224}
   playerAnimator: {fileID: 0}
+  initialWeaponAnimator: {fileID: 0}
 --- !u!114 &723292221
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16175,12 +16168,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8910a2e22aa25664cb9b2709778e44dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  initialAttributes:
-  - {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
-  - {fileID: 11400000, guid: 0e177e1d15e428745b5859fac08ce203, type: 2}
+  attributeCatalog: {fileID: 0}
+  baseInitProfile: {fileID: 0}
+  overrideInitProfiles: []
   maxLinks:
   - value: {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
     max: {fileID: 11400000, guid: 0e177e1d15e428745b5859fac08ce203, type: 2}
+    fillToMaxOnInitialize: 0
 --- !u!95 &723292224
 Animator:
   serializedVersion: 7
@@ -16333,8 +16327,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gauges:
   - elementType: {fileID: 11400000, guid: 82578c30453dcb04a88dce3cd193db5b, type: 2}
-    threshold: 100
+    currentGaugeAttribute: {fileID: 0}
+    maxGaugeAttribute: {fileID: 0}
+    resistancePercentAttribute: {fileID: 0}
     debuffEffect: {fileID: 11400000, guid: cb642d633f60d7244a4da020444aced1, type: 2}
+    allowOverflow: 0
     injectDamageToSpec: 1
     setByCallerKeyOverride: {fileID: 0}
     percentOfCurrentHealth: 0.1
@@ -16342,11 +16339,12 @@ MonoBehaviour:
     instigatorStatMultiplier: 0
     buildUpAmountMultiplier: 0
     flatDamageBonus: 0
-    allowOverflow: 0
-    resistancePercentAttribute: {fileID: 0}
   - elementType: {fileID: 11400000, guid: 7c8af04be6bcbb84794e303f3f4c401c, type: 2}
-    threshold: 100
+    currentGaugeAttribute: {fileID: 0}
+    maxGaugeAttribute: {fileID: 0}
+    resistancePercentAttribute: {fileID: 0}
     debuffEffect: {fileID: 0}
+    allowOverflow: 0
     injectDamageToSpec: 0
     setByCallerKeyOverride: {fileID: 0}
     percentOfCurrentHealth: 0
@@ -16354,11 +16352,12 @@ MonoBehaviour:
     instigatorStatMultiplier: 0
     buildUpAmountMultiplier: 0
     flatDamageBonus: 0
-    allowOverflow: 0
-    resistancePercentAttribute: {fileID: 0}
   - elementType: {fileID: 11400000, guid: 53bdedc3d917f83458902716124fcc3c, type: 2}
-    threshold: 100
+    currentGaugeAttribute: {fileID: 0}
+    maxGaugeAttribute: {fileID: 0}
+    resistancePercentAttribute: {fileID: 0}
     debuffEffect: {fileID: 0}
+    allowOverflow: 0
     injectDamageToSpec: 0
     setByCallerKeyOverride: {fileID: 0}
     percentOfCurrentHealth: 0
@@ -16366,8 +16365,6 @@ MonoBehaviour:
     instigatorStatMultiplier: 0
     buildUpAmountMultiplier: 0
     flatDamageBonus: 0
-    allowOverflow: 0
-    resistancePercentAttribute: {fileID: 0}
   logWhenTriggered: 0
 --- !u!114 &723292229
 MonoBehaviour:
@@ -16381,28 +16378,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e232de7843f92745a254698e2054f4e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  threshold: 100
+  currentGaugeAttribute: {fileID: 0}
+  maxGaugeAttribute: {fileID: 0}
+  resistancePercentAttribute: {fileID: 0}
   staggeredEffect: {fileID: 0}
   allowOverflow: 1
-  resistancePercentAttribute: {fileID: 0}
---- !u!114 &723292230
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 723292217}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0e26d9b207b43c74ea4d0490aa5b4ebb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  definition: {fileID: 11400000, guid: 270d828b8793b604ea9b0397477cba6b, type: 2}
-  isElite: 0
-  healthAttribute: {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
-  maxHealthAttribute: {fileID: 11400000, guid: 0e177e1d15e428745b5859fac08ce203, type: 2}
-  refillToFullOnInit: 1
-  preserveHpRatioIfNotFull: 0
 --- !u!1001 &723443629
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -29441,8 +29421,11 @@ GameObject:
   - component: {fileID: 1334454365}
   - component: {fileID: 1334454364}
   - component: {fileID: 1334454363}
-  - component: {fileID: 1334454362}
   - component: {fileID: 1334454377}
+  - component: {fileID: 1334454380}
+  - component: {fileID: 1334454379}
+  - component: {fileID: 1334454378}
+  - component: {fileID: 1334454381}
   m_Layer: 31
   m_Name: Frog
   m_TagString: Enemy
@@ -29450,24 +29433,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1334454362
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1334454361}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0e26d9b207b43c74ea4d0490aa5b4ebb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  definition: {fileID: 11400000, guid: d93d3777661901f40bfd35199f4a0cf5, type: 2}
-  isElite: 0
-  healthAttribute: {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
-  maxHealthAttribute: {fileID: 11400000, guid: 0e177e1d15e428745b5859fac08ce203, type: 2}
-  refillToFullOnInit: 1
-  preserveHpRatioIfNotFull: 0
 --- !u!114 &1334454363
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -29482,8 +29447,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gauges:
   - elementType: {fileID: 11400000, guid: 82578c30453dcb04a88dce3cd193db5b, type: 2}
-    threshold: 100
+    currentGaugeAttribute: {fileID: 0}
+    maxGaugeAttribute: {fileID: 0}
+    resistancePercentAttribute: {fileID: 0}
     debuffEffect: {fileID: 11400000, guid: cb642d633f60d7244a4da020444aced1, type: 2}
+    allowOverflow: 0
     injectDamageToSpec: 1
     setByCallerKeyOverride: {fileID: 0}
     percentOfCurrentHealth: 0.1
@@ -29491,11 +29459,12 @@ MonoBehaviour:
     instigatorStatMultiplier: 0
     buildUpAmountMultiplier: 0
     flatDamageBonus: 0
-    allowOverflow: 0
-    resistancePercentAttribute: {fileID: 0}
   - elementType: {fileID: 11400000, guid: 7c8af04be6bcbb84794e303f3f4c401c, type: 2}
-    threshold: 100
+    currentGaugeAttribute: {fileID: 0}
+    maxGaugeAttribute: {fileID: 0}
+    resistancePercentAttribute: {fileID: 0}
     debuffEffect: {fileID: 0}
+    allowOverflow: 0
     injectDamageToSpec: 0
     setByCallerKeyOverride: {fileID: 0}
     percentOfCurrentHealth: 0
@@ -29503,11 +29472,12 @@ MonoBehaviour:
     instigatorStatMultiplier: 0
     buildUpAmountMultiplier: 0
     flatDamageBonus: 0
-    allowOverflow: 0
-    resistancePercentAttribute: {fileID: 0}
   - elementType: {fileID: 11400000, guid: 53bdedc3d917f83458902716124fcc3c, type: 2}
-    threshold: 100
+    currentGaugeAttribute: {fileID: 0}
+    maxGaugeAttribute: {fileID: 0}
+    resistancePercentAttribute: {fileID: 0}
     debuffEffect: {fileID: 0}
+    allowOverflow: 0
     injectDamageToSpec: 0
     setByCallerKeyOverride: {fileID: 0}
     percentOfCurrentHealth: 0
@@ -29515,8 +29485,6 @@ MonoBehaviour:
     instigatorStatMultiplier: 0
     buildUpAmountMultiplier: 0
     flatDamageBonus: 0
-    allowOverflow: 0
-    resistancePercentAttribute: {fileID: 0}
   logWhenTriggered: 0
 --- !u!114 &1334454364
 MonoBehaviour:
@@ -29530,10 +29498,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e232de7843f92745a254698e2054f4e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  threshold: 100
+  currentGaugeAttribute: {fileID: 0}
+  maxGaugeAttribute: {fileID: 0}
+  resistancePercentAttribute: {fileID: 0}
   staggeredEffect: {fileID: 0}
   allowOverflow: 1
-  resistancePercentAttribute: {fileID: 0}
 --- !u!114 &1334454365
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -29606,12 +29575,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8910a2e22aa25664cb9b2709778e44dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  initialAttributes:
-  - {fileID: 11400000, guid: 0e177e1d15e428745b5859fac08ce203, type: 2}
-  - {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
+  attributeCatalog: {fileID: 11400000, guid: b9c79b9448814f2408077eff50c01aeb, type: 2}
+  baseInitProfile: {fileID: 11400000, guid: 78214cbbca9b4804ba1be48157d5657e, type: 2}
+  overrideInitProfiles: []
   maxLinks:
   - value: {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
     max: {fileID: 11400000, guid: 0e177e1d15e428745b5859fac08ce203, type: 2}
+    fillToMaxOnInitialize: 0
 --- !u!114 &1334454370
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -29631,7 +29601,7 @@ MonoBehaviour:
   tagSystem: {fileID: 1334454367}
   globalCancelCastingOnTags: []
   globalCancelExecutionOnTags: []
-  damageProfile: {fileID: 0}
+  damageProfile: {fileID: 11400000, guid: ddd8b96de81528845828895d9bb33042, type: 2}
   defaultCooldownEffect: {fileID: 0}
   cooldownDurationMultiplierAttribute: {fileID: 0}
   cooldownFlatReduceSecondsOnHitAttribute: {fileID: 0}
@@ -29639,8 +29609,10 @@ MonoBehaviour:
   cueManager: {fileID: 0}
   autoExecuteCueWhenGameplayEventTagExists: 1
   killConfirmedTag: {fileID: 11400000, guid: 165fc11102fdbfb40b1ce7b341ecc8bb, type: 2}
+  damagedTag: {fileID: 0}
   animator: {fileID: 1334454372}
   playerAnimator: {fileID: 0}
+  initialWeaponAnimator: {fileID: 0}
 --- !u!114 &1334454371
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -29656,10 +29628,13 @@ MonoBehaviour:
   maxHealthDef: {fileID: 11400000, guid: 0e177e1d15e428745b5859fac08ce203, type: 2}
   healthDef: {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
   enemyName: Frog
-  detectionRange: 6
-  moveSpeed: 4
+  targetTag: Player
   damageInterval: 1
   tackleAbility: {fileID: 11400000, guid: 0114fc4ac57bcbe46b3d058d930e3a32, type: 2}
+  chaseIntent: {fileID: 0}
+  tagSystem: {fileID: 0}
+  blockIntentMoveTag: {fileID: 0}
+  freezeAllMovementTag: {fileID: 0}
 --- !u!95 &1334454372
 Animator:
   serializedVersion: 7
@@ -29837,12 +29812,77 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26c9fe53bdef53947bbf6f41db722013, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  body: {fileID: 1334454374}
+  externalMovement: {fileID: 0}
   knockbackImmuneTag: {fileID: 0}
   resistancePctAttribute: {fileID: 0}
-  useVelocityInjection: 1
-  damping: 18
-  maxInjectedSpeed: 20
+  knockbackDominanceTime: 0.12
+--- !u!114 &1334454378
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1334454361}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b5ebf9fcd76f27f4f874c8853b167522, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  knockbackDamping: 18
+  defaultKnockbackDominanceTime: 0.12
+  maxKnockbackMagnitude: 25
+  maxCombinedPersistentVelocityMagnitude: 25
+--- !u!114 &1334454379
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1334454361}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 526f8835b2c4eeb4593ade78758d3986, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attributeSet: {fileID: 0}
+  abilitySystem: {fileID: 0}
+  statBindingsOverride: {fileID: 0}
+--- !u!114 &1334454380
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1334454361}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82ae4624ea26de741ba8bc236cf3108b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  body: {fileID: 0}
+  intentSourceBehaviour: {fileID: 0}
+  statProviderBehaviour: {fileID: 0}
+  externalMovement: {fileID: 1334454378}
+  motionController: {fileID: 0}
+  freezeAllMovementTag: {fileID: 0}
+  blockIntentMoveTag: {fileID: 0}
+  blockExternalMoveTag: {fileID: 0}
+--- !u!114 &1334454381
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1334454361}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6fa1acd0bb0a39e4f8b916533079d7b6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enemy: {fileID: 0}
+  detectionRange: 6
+  stopRange: 0.2
+  speedScale: 1
 --- !u!1001 &1369492698
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -36187,6 +36227,51 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 7509736641193634087, guid: a0a66c9b152e801409fc26c4ca493d18, type: 3}
   m_PrefabInstance: {fileID: 1813492990}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1827568490
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1827568492}
+  - component: {fileID: 1827568491}
+  m_Layer: 0
+  m_Name: ItemManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1827568491
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1827568490}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 523f1b44aa0cf5a458519400bde02950, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  database: {fileID: 11400000, guid: 3f0da48f2a0acc843a80f20a370f3678, type: 2}
+--- !u!4 &1827568492
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1827568490}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1055.1632, y: 571.5735, z: -5.341057}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1840828624
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -37907,11 +37992,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   worldItemPrefab: {fileID: 4439982264372595963, guid: 965ec98195bcbe34f9512acce3712973, type: 3}
-  itemDatabase: {fileID: 11400000, guid: 3f0da48f2a0acc843a80f20a370f3678, type: 2}
   stageTables:
   - {fileID: 11400000, guid: 3903a30b290836e4bb4413a07b019990, type: 2}
   - {fileID: 11400000, guid: 14918d38c644fad49bf378e4043c465d, type: 2}
   - {fileID: 11400000, guid: fc8bb58e5b7362047beddb46d868847d, type: 2}
+  graveLootTable: {fileID: 0}
   currentStageIndex: 0
 --- !u!4 &2006647403
 Transform:
@@ -40749,46 +40834,30 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1414767285602429285, guid: f2946074f70ad1a4194e0ab20873422b, type: 3}
-      propertyPath: initialAttributes.Array.size
-      value: 30
-      objectReference: {fileID: 0}
-    - target: {fileID: 1414767285602429285, guid: f2946074f70ad1a4194e0ab20873422b, type: 3}
-      propertyPath: 'initialAttributes.Array.data[27]'
-      value: 
-      objectReference: {fileID: 11400000, guid: 567fb769f1a0604458f4f84132a1ffa3, type: 2}
-    - target: {fileID: 1414767285602429285, guid: f2946074f70ad1a4194e0ab20873422b, type: 3}
-      propertyPath: 'initialAttributes.Array.data[28]'
-      value: 
-      objectReference: {fileID: 11400000, guid: 50a51f5bbc6eb564a8e720c21efba2a4, type: 2}
-    - target: {fileID: 1414767285602429285, guid: f2946074f70ad1a4194e0ab20873422b, type: 3}
-      propertyPath: 'initialAttributes.Array.data[29]'
-      value: 
-      objectReference: {fileID: 11400000, guid: 23db6468e859c6f42b0230a5af7ca81c, type: 2}
-    - target: {fileID: 1832372497922031110, guid: f2946074f70ad1a4194e0ab20873422b, type: 3}
-      propertyPath: killConfirmedTag
-      value: 
-      objectReference: {fileID: 11400000, guid: 165fc11102fdbfb40b1ce7b341ecc8bb, type: 2}
-    - target: {fileID: 4776885609674041618, guid: f2946074f70ad1a4194e0ab20873422b, type: 3}
-      propertyPath: statBindings
-      value: 
-      objectReference: {fileID: 11400000, guid: 31156f12e65316e409d9858201c3ab8b, type: 2}
-    - target: {fileID: 4776885609674041618, guid: f2946074f70ad1a4194e0ab20873422b, type: 3}
-      propertyPath: defaultPostProcess
-      value: 
-      objectReference: {fileID: 11400000, guid: e27d90a086193324cab0290ff31a6180, type: 2}
-    - target: {fileID: 4913808379797790544, guid: f2946074f70ad1a4194e0ab20873422b, type: 3}
+    - target: {fileID: 1353302521333203863, guid: f2946074f70ad1a4194e0ab20873422b, type: 3}
       propertyPath: mainCamera
       value: 
       objectReference: {fileID: 519420031}
-    - target: {fileID: 4913808379797790544, guid: f2946074f70ad1a4194e0ab20873422b, type: 3}
-      propertyPath: forcedMoveTag
+    - target: {fileID: 1353302521333203863, guid: f2946074f70ad1a4194e0ab20873422b, type: 3}
+      propertyPath: weaponZOffset
+      value: 90
+      objectReference: {fileID: 0}
+    - target: {fileID: 1414767285602429285, guid: f2946074f70ad1a4194e0ab20873422b, type: 3}
+      propertyPath: baseInitProfile
       value: 
-      objectReference: {fileID: 11400000, guid: 837c3c3beac45de458f179f50c7d7500, type: 2}
-    - target: {fileID: 4913808379797790544, guid: f2946074f70ad1a4194e0ab20873422b, type: 3}
-      propertyPath: moveSpeedMultiplierAttribute
+      objectReference: {fileID: 11400000, guid: ac5ff33387b8e384ea5c5452dcc2efcc, type: 2}
+    - target: {fileID: 1414767285602429285, guid: f2946074f70ad1a4194e0ab20873422b, type: 3}
+      propertyPath: attributeCatalog
       value: 
-      objectReference: {fileID: 11400000, guid: 567fb769f1a0604458f4f84132a1ffa3, type: 2}
+      objectReference: {fileID: 11400000, guid: b9c79b9448814f2408077eff50c01aeb, type: 2}
+    - target: {fileID: 1414767285602429285, guid: f2946074f70ad1a4194e0ab20873422b, type: 3}
+      propertyPath: overrideInitProfiles.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1414767285602429285, guid: f2946074f70ad1a4194e0ab20873422b, type: 3}
+      propertyPath: 'overrideInitProfiles.Array.data[0]'
+      value: 
+      objectReference: {fileID: 11400000, guid: ac5ff33387b8e384ea5c5452dcc2efcc, type: 2}
     - target: {fileID: 8883617028798182002, guid: f2946074f70ad1a4194e0ab20873422b, type: 3}
       propertyPath: m_Name
       value: PF Player
@@ -40838,7 +40907,7 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 519420034}
     m_RemovedComponents:
-    - {fileID: 4807128067502290074, guid: f2946074f70ad1a4194e0ab20873422b, type: 3}
+    - {fileID: 7184922240575343075, guid: f2946074f70ad1a4194e0ab20873422b, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
@@ -41592,3 +41661,4 @@ SceneRoots:
   - {fileID: 2006647403}
   - {fileID: 1334454376}
   - {fileID: 242659379}
+  - {fileID: 1827568492}

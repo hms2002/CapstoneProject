@@ -10,9 +10,28 @@ public class UnlockItemAffectionEffect : AffectionEffect
 
     public override void Execute()
     {
-        if (GameDataManager.Instance != null)
+        // 파일 관리자(GameData)가 아닌, 런타임 상태 관리자(ItemManager)를 호출합니다.
+        if (ItemManager.Instance != null)
         {
-            GameDataManager.Instance.UnlockItems(weapons, relics);
+            if (weapons != null)
+            {
+                foreach (var w in weapons)
+                {
+                    if (w != null) ItemManager.Instance.UnlockWeapon(w.weaponId);
+                }
+            }
+
+            if (relics != null)
+            {
+                foreach (var r in relics)
+                {
+                    if (r != null) ItemManager.Instance.UnlockRelic(r.relicId);
+                }
+            }
+        }
+        else
+        {
+            Debug.LogError("[UnlockItemAffectionEffect] ItemManager 인스턴스를 찾을 수 없습니다!");
         }
     }
 }

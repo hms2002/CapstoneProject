@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ChestScreen : MonoBehaviour
+// [핵심] IStackableUI를 상속받아 UIManager의 통제를 받습니다!
+public class ChestScreen : MonoBehaviour, IStackableUI
 {
     [Header("UI Refs")]
     [Tooltip("플레이어 인벤토리 영역(무기/유물)이 포함된 패널 RectTransform")]
@@ -32,10 +33,42 @@ public class ChestScreen : MonoBehaviour
     private IDisposable weaponAdapterDisposer;
     private IDisposable relicAdapterDisposer;
 
+    // =========================================================
+    // IStackableUI 규약
+    // =========================================================
+    public bool IsActive => gameObject.activeSelf;
+    public bool CanCloseOnEscape => true;
+
+    public void OpenUI()
+    {
+        gameObject.SetActive(true);
+    }
+
+    public void CloseUI()
+    {
+        gameObject.SetActive(false);
+
+        // 창이 닫힐 때 허공에 뜬 Hover UI(툴팁) 강제 제거
+        if (UIManager.Instance != null) UIManager.Instance.HideHoverImmediate();
+
+        // [핵심] UIManager에 의해 창이 닫히면 매니저에게 알려서 시간과 플레이어 상태를 복구합니다.
+        if (ChestUIManager.Instance != null)
+        {
+            ChestUIManager.Instance.HandleChestClosed();
+        }
+    }
+    // =========================================================
+
     private void Awake()
     {
         if (closeButton != null)
-            closeButton.onClick.AddListener(() => ChestUIManager.Instance.CloseChest());
+        {
+            // 직접 끄지 않고 사령탑(UIManager)에게 닫아달라고(Pop) 요청
+            closeButton.onClick.AddListener(() => {
+                if (UIManager.Instance != null) UIManager.Instance.PopUI(this);
+                else CloseUI();
+            });
+        }
 
         if (playerWeaponInventory == null)
             playerWeaponInventory = FindFirstObjectByType<WeaponInventory2D>();
@@ -46,9 +79,7 @@ public class ChestScreen : MonoBehaviour
 
     private void OnDisable()
     {
-        // Chest UI가 닫히면 Hover/Detail 상태도 정리
-        UIHoverManager.Instance?.HideImmediate();
-        ItemDetailPanel.Instance?.Hide();
+        if (UIManager.Instance != null) UIManager.Instance.HideHoverImmediate();
 
         ClearUI();
         ItemContainerGroupRegistry.Clear();
@@ -69,31 +100,18 @@ public class ChestScreen : MonoBehaviour
         chestContainer = new ChestContainerAdapter(chestInventory);
         weaponContainer = new PlayerWeaponContainerAdapter(playerWeaponInventory);
         relicContainer = new PlayerRelicContainerAdapter(playerRelicInventory);
-        // Right-click quick move를 위해 그룹 등록
+
         ItemContainerGroupRegistry.SetGroup(chestContainer, weaponContainer, relicContainer);
 
         BuildUI();
 
-        // ✅ HoverManager에 "현재 활성 UI 패널" 등록
-        // - inventoryPanelRect / chestPanelRect를 인스펙터에서 지정하는 것을 권장
-        // - 미지정 시에는 슬롯이 생성되는 gridRoot를 fallback으로 사용
-        var invRect = inventoryPanelRect != null
-            ? inventoryPanelRect
-            : (weaponGridRoot != null ? weaponGridRoot as RectTransform : null);
-
-        var chestRect = chestPanelRect != null
-            ? chestPanelRect
-            : (chestGridRoot != null ? chestGridRoot as RectTransform : null);
-
-        UIHoverManager.Instance?.HideImmediate();
-        ItemDetailPanel.Instance?.Hide();
+        if (UIManager.Instance != null) UIManager.Instance.HideHoverImmediate();
     }
 
     private void BuildUI()
     {
         ClearUI();
 
-        // Chest slots (16)
         for (int i = 0; i < chestContainer.SlotCount; i++)
         {
             var ui = Instantiate(slotPrefab, chestGridRoot);
@@ -101,7 +119,6 @@ public class ChestScreen : MonoBehaviour
             spawned.Add(ui);
         }
 
-        // Player weapon slots (2)
         for (int i = 0; i < weaponContainer.SlotCount; i++)
         {
             var ui = Instantiate(slotPrefab, weaponGridRoot);
@@ -109,7 +126,6 @@ public class ChestScreen : MonoBehaviour
             spawned.Add(ui);
         }
 
-        // Player relic slots (18)
         for (int i = 0; i < relicContainer.SlotCount; i++)
         {
             var ui = Instantiate(slotPrefab, relicGridRoot);

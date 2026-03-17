@@ -18,13 +18,12 @@ public class BossDrop : MonoBehaviour
         // 1. 상자 생성
         SpawnTreasureChest();
 
-        // 2. 마정석 낱개 드롭 (수정됨)
+        // 2. 마정석 낱개 드롭
         SpawnBossCurrency();
     }
 
     private void SpawnTreasureChest()
     {
-        // ... (기존 상자 생성 코드와 동일) ...
         Vector3 spawnPos = chestSpawnPoint != null ? chestSpawnPoint.position : transform.position;
 
         if (chestPrefab == null) return;
@@ -36,17 +35,16 @@ public class BossDrop : MonoBehaviour
 
         List<ScriptableObject> finalLoots = new List<ScriptableObject>();
 
-        HashSet<string> banList = new HashSet<string>();
-        if (SampleTopDownPlayer.Instance != null && SampleTopDownPlayer.Instance.weaponInventory != null)
-        {
-            List<string> playerWeaponIDs = SampleTopDownPlayer.Instance.weaponInventory.GetAllWeaponIDs();
-            banList.UnionWith(playerWeaponIDs);
-        }
+        // [수정] 플레이어 인벤토리를 뒤지던 banList 로직 완벽히 제거!
 
         if (LootManager.Instance != null)
         {
-            List<ScriptableObject> randomLoots = LootManager.Instance.GenerateChestLoot(banList);
-            finalLoots.AddRange(randomLoots);
+            // 매개변수 없이 깔끔하게 호출만 합니다.
+            List<ScriptableObject> randomLoots = LootManager.Instance.GenerateChestLoot();
+            if (randomLoots != null)
+            {
+                finalLoots.AddRange(randomLoots);
+            }
         }
 
         foreach (var entry in bossUniqueLoots)
@@ -64,7 +62,6 @@ public class BossDrop : MonoBehaviour
     {
         if (magicStonePrefab == null) return;
 
-        // 1. 개수 가져오기 (5, 10, 15...)
         int count = 0;
         if (LootManager.Instance != null)
         {
@@ -73,16 +70,11 @@ public class BossDrop : MonoBehaviour
 
         if (count <= 0) return;
 
-        // 2. 개수만큼 반복해서 생성 (번들 아님, 낱개 생성)
         for (int i = 0; i < count; i++)
         {
-            // 위치를 약간씩 랜덤하게 흩뿌림
             Vector3 spawnPos = transform.position + (Vector3)(Random.insideUnitCircle * 1.5f);
-
             GameObject stoneObj = Instantiate(magicStonePrefab, spawnPos, Quaternion.identity);
 
-            // 마정석 1개 오브젝트 = 가치 1
-            // (MagicStonePickup의 기본 amount가 1이라면 Setup 호출 안 해도 됨, 명시적으로 하려면 아래 코드 사용)
             var pickup = stoneObj.GetComponent<MagicStonePickup>();
             if (pickup != null)
             {

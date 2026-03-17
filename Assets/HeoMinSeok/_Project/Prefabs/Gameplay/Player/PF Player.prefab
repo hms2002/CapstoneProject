@@ -228,18 +228,20 @@ GameObject:
   - component: {fileID: 963026585117413559}
   - component: {fileID: 4885150337275956111}
   - component: {fileID: 7028711097407121541}
-  - component: {fileID: 4776885609674041618}
   - component: {fileID: 2236992985390640672}
   - component: {fileID: 3936464590184144143}
   - component: {fileID: 4488810999718796541}
-  - component: {fileID: 7312919993686142775}
   - component: {fileID: 8864118504763583097}
   - component: {fileID: 7184922240575343075}
-  - component: {fileID: 4807128067502290074}
-  - component: {fileID: 1334457642439548572}
-  - component: {fileID: 2404983202199153576}
   - component: {fileID: 9155675093091441688}
   - component: {fileID: 6786668010009585117}
+  - component: {fileID: 3806616892958564186}
+  - component: {fileID: 3865965398067882873}
+  - component: {fileID: 6034561116183737726}
+  - component: {fileID: 689952884117774573}
+  - component: {fileID: 5727091237041186888}
+  - component: {fileID: 5754629299100491768}
+  - component: {fileID: 1353302521333203863}
   m_Layer: 0
   m_Name: PF Player
   m_TagString: Player
@@ -434,16 +436,17 @@ MonoBehaviour:
   tagSystem: {fileID: 7887873875085709242}
   globalCancelCastingOnTags: []
   globalCancelExecutionOnTags: []
-  damageProfile: {fileID: 4776885609674041618}
+  damageProfile: {fileID: 11400000, guid: ddd8b96de81528845828895d9bb33042, type: 2}
   defaultCooldownEffect: {fileID: 11400000, guid: e0cdcda9b86374b4c99ad2e948fcfd26, type: 2}
   cooldownDurationMultiplierAttribute: {fileID: 0}
   cooldownFlatReduceSecondsOnHitAttribute: {fileID: 0}
   minCooldownSeconds: 0.05
   cueManager: {fileID: 0}
   autoExecuteCueWhenGameplayEventTagExists: 1
-  killConfirmedTag: {fileID: 0}
+  killConfirmedTag: {fileID: 11400000, guid: 165fc11102fdbfb40b1ce7b341ecc8bb, type: 2}
   animator: {fileID: 8399328563048880028}
   playerAnimator: {fileID: 0}
+  initialWeaponAnimator: {fileID: 0}
 --- !u!114 &7887873875085709242
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -496,6 +499,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 4f5d1e3ffdcf18e4bbef58f59b785760, type: 2}
   - {fileID: 11400000, guid: dde112729dec0bb4a9d2238ee7ee6dcc, type: 2}
   - {fileID: 11400000, guid: bd078173c9092104dbc43ac575e1d092, type: 2}
+  - {fileID: 11400000, guid: 567fb769f1a0604458f4f84132a1ffa3, type: 2}
+  - {fileID: 11400000, guid: 50a51f5bbc6eb564a8e720c21efba2a4, type: 2}
+  - {fileID: 11400000, guid: 23db6468e859c6f42b0230a5af7ca81c, type: 2}
   maxLinks:
   - value: {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
     max: {fileID: 11400000, guid: 0e177e1d15e428745b5859fac08ce203, type: 2}
@@ -537,30 +543,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf0c493b3738fec46a2f7eda2d1b98d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  baseMoveSpeed: 6
-  moveSpeedMultiplierStatId: 143
-  moveSpeedMultiplierAttribute: {fileID: 0}
-  forcedMoveTag: {fileID: 0}
-  movementLockedTag: {fileID: 11400000, guid: 6a88dccc70fd08841a7484539aec65c1, type: 2}
   interactKey: 102
-  abilitySystem: {fileID: 1832372497922031110}
-  tagSystem: {fileID: 7887873875085709242}
-  mainCamera: {fileID: 0}
-  aimLockedTag: {fileID: 11400000, guid: d2be3469c5cf9c849b948eb616f7f868, type: 2}
-  weaponInventory: {fileID: 963026585117413559}
-  basicAttack: {fileID: 0}
-  skill1: {fileID: 0}
-  skill2: {fileID: 0}
-  dash: {fileID: 11400000, guid: dadc84cd2fffcae45905741575af20c3, type: 2}
-  dashKey: 32
-  skill1Key: 113
-  skill2Key: 101
-  attackRepeatInterval: 0.06
-  reAimGapAfterAttackEnd: 0.06
-  attackPressedEvent: {fileID: 11400000, guid: 06fb955e1ce9a9c41abb914e2af4dd01, type: 2}
-  attackReleasedEvent: {fileID: 11400000, guid: 77a0a96f4aec927419dcb7815cb7e38b, type: 2}
-  Hand: {fileID: 3164067117474922781}
-  weaponZOffset: 90
 --- !u!114 &3517715623297123696
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -629,20 +612,6 @@ MonoBehaviour:
   key: 114
   testRelic: {fileID: 11400000, guid: 1f774045e4d72664996fab05fc0e1308, type: 2}
   gainedLevel: 0
---- !u!114 &4776885609674041618
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8883617028798182002}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1b8a581dfd12f534795b6a5dd3c5e479, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  statBindings: {fileID: 0}
-  defaultPostProcess: {fileID: 0}
 --- !u!114 &2236992985390640672
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -688,24 +657,6 @@ MonoBehaviour:
   inventory:
     capacity: 0
     slots: []
---- !u!114 &7312919993686142775
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8883617028798182002}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 208d837eab958ba448f42addc4733bf6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  system: {fileID: 1832372497922031110}
-  attackAbility: {fileID: 0}
-  drawOnlyWhenSelected: 1
-  showAllCombos: 1
-  useInputAimInPlayMode: 1
-  previewDirection: {x: 1, y: 0}
 --- !u!114 &8864118504763583097
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -739,55 +690,6 @@ MonoBehaviour:
   syncToAttributes: 1
   healthAttribute: {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
   maxHealthAttribute: {fileID: 11400000, guid: 0e177e1d15e428745b5859fac08ce203, type: 2}
---- !u!114 &4807128067502290074
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8883617028798182002}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 57091024568945245a8208d47f02ef75, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  capacity: 16
-  inventory:
-    capacity: 0
-    slots: []
---- !u!114 &1334457642439548572
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8883617028798182002}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 208d837eab958ba448f42addc4733bf6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  system: {fileID: 1832372497922031110}
-  attackAbility: {fileID: 0}
-  drawOnlyWhenSelected: 1
-  showAllCombos: 1
-  useInputAimInPlayMode: 1
-  previewDirection: {x: 1, y: 0}
---- !u!114 &2404983202199153576
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8883617028798182002}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c92f569cbd8fa0d4181d8a683f2ed235, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  drawOnlyWhenSelected: 0
-  defaultDuration: 0.15
-  maxBoxes: 12
 --- !u!114 &9155675093091441688
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -823,6 +725,128 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26c9fe53bdef53947bbf6f41db722013, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  body: {fileID: 288432539280398367}
+  externalMovement: {fileID: 3865965398067882873}
   knockbackImmuneTag: {fileID: 0}
   resistancePctAttribute: {fileID: 0}
+  knockbackDominanceTime: 0.12
+--- !u!114 &3806616892958564186
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8883617028798182002}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82ae4624ea26de741ba8bc236cf3108b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  body: {fileID: 288432539280398367}
+  intentSourceBehaviour: {fileID: 5727091237041186888}
+  statProviderBehaviour: {fileID: 689952884117774573}
+  externalMovement: {fileID: 3865965398067882873}
+  motionController: {fileID: 6034561116183737726}
+  freezeAllMovementTag: {fileID: 0}
+  blockIntentMoveTag: {fileID: 0}
+  blockExternalMoveTag: {fileID: 0}
+--- !u!114 &3865965398067882873
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8883617028798182002}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b5ebf9fcd76f27f4f874c8853b167522, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  knockbackDamping: 18
+  defaultKnockbackDominanceTime: 0.12
+  maxKnockbackMagnitude: 25
+  maxCombinedPersistentVelocityMagnitude: 25
+--- !u!114 &6034561116183737726
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8883617028798182002}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c721f3a2f874aa14ea14c5bc2261cc39, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &689952884117774573
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8883617028798182002}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 526f8835b2c4eeb4593ade78758d3986, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attributeSet: {fileID: 1414767285602429285}
+  abilitySystem: {fileID: 1832372497922031110}
+  statBindingsOverride: {fileID: 11400000, guid: 31156f12e65316e409d9858201c3ab8b, type: 2}
+--- !u!114 &5727091237041186888
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8883617028798182002}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e18c12fff305a6e43a659b03a5aa9b0a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tagSystem: {fileID: 7887873875085709242}
+  aim: {fileID: 1353302521333203863}
+  player: {fileID: 0}
+  forcedMoveTag: {fileID: 0}
+--- !u!114 &5754629299100491768
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8883617028798182002}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5e874f8eb8415b047a439782315f309b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  abilitySystem: {fileID: 1832372497922031110}
+  weaponInventory: {fileID: 963026585117413559}
+  player: {fileID: 4913808379797790544}
+  dash: {fileID: 11400000, guid: dadc84cd2fffcae45905741575af20c3, type: 2}
+  dashKey: 32
+  skill1Key: 113
+  skill2Key: 101
+  swapKey: 9
+  attackRepeatInterval: 0.06
+  reAimGapAfterAttackEnd: 0.06
+  attackPressedEvent: {fileID: 11400000, guid: 06fb955e1ce9a9c41abb914e2af4dd01, type: 2}
+  attackReleasedEvent: {fileID: 11400000, guid: 77a0a96f4aec927419dcb7815cb7e38b, type: 2}
+--- !u!114 &1353302521333203863
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8883617028798182002}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3bc9514241b86de4d8eb1a58c08679e3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mainCamera: {fileID: 0}
+  tagSystem: {fileID: 7887873875085709242}
+  player: {fileID: 4913808379797790544}
+  aimLockedTag: {fileID: 11400000, guid: 4e1c3565f6c57e34c811431616670c8d, type: 2}
+  hand: {fileID: 3164067117474922781}
+  weaponZOffset: 0

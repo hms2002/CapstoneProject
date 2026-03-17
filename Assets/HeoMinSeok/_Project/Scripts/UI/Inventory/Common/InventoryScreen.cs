@@ -11,7 +11,8 @@ using UnityEngine.UI;
 /// - Nearby loot (fixed slots)
 /// - Drop zone to discard items to the world
 /// </summary>
-public class InventoryScreen : MonoBehaviour
+// [핵심] IStackableUI를 상속받아 UIManager의 통제를 받습니다!
+public class InventoryScreen : MonoBehaviour, IStackableUI
 {
     [Header("UI Refs")]
     [SerializeField] private Transform backpackGridRoot;
@@ -41,10 +42,35 @@ public class InventoryScreen : MonoBehaviour
     private Transform lootOrigin;
     private float lootRefreshTimer;
 
+    // =========================================================
+    // IStackableUI 규약
+    // =========================================================
+    public bool IsActive => gameObject.activeSelf;
+    public bool CanCloseOnEscape => true;
+
+    public void OpenUI()
+    {
+        gameObject.SetActive(true);
+    }
+
+    public void CloseUI()
+    {
+        gameObject.SetActive(false);
+        // 창이 닫힐 때 허공에 남은 툴팁 즉시 해제
+        if (UIManager.Instance != null) UIManager.Instance.HideHoverImmediate();
+    }
+    // =========================================================
+
     private void Awake()
     {
         if (closeButton != null)
-            closeButton.onClick.AddListener(() => InventoryUIManager.Instance.Close());
+        {
+            // [수정] 직접 끄지 않고 UIManager에게 닫아달라고(Pop) 요청
+            closeButton.onClick.AddListener(() => {
+                if (UIManager.Instance != null) UIManager.Instance.PopUI(this);
+                else CloseUI();
+            });
+        }
     }
 
     private void OnDisable()
@@ -64,8 +90,7 @@ public class InventoryScreen : MonoBehaviour
         lootOrigin = null;
         lootRefreshTimer = 0f;
 
-        UIHoverManager.Instance?.HideImmediate();
-        ItemDetailPanel.Instance?.Hide();
+        if (UIManager.Instance != null) UIManager.Instance.HideHoverImmediate();
     }
 
     public void Bind(PlayerBackpackInventory backpack, WeaponInventory2D weaponInv, RelicInventory relicInv, Transform lootOrigin)
@@ -76,12 +101,10 @@ public class InventoryScreen : MonoBehaviour
         weaponContainer = new PlayerWeaponContainerAdapter(weaponInv);
         relicContainer = new PlayerRelicContainerAdapter(relicInv);
 
-        // Right-click quick move group: treat backpack as the "chest" target
         ItemContainerGroupRegistry.SetGroup(backpackContainer, weaponContainer, relicContainer);
 
         lootContainer = new WorldLootContainerAdapter(this.lootOrigin, lootRadius, lootSlotCount);
 
-        // Configure drop zone origin
         if (dropZone != null)
             dropZone.SetDropOrigin(this.lootOrigin);
 
@@ -94,7 +117,6 @@ public class InventoryScreen : MonoBehaviour
         if (!gameObject.activeInHierarchy) return;
         if (lootContainer == null) return;
 
-        // Game continues while inventory is open.
         lootRefreshTimer += Time.deltaTime;
         if (lootRefreshTimer >= lootRefreshInterval)
         {
@@ -111,10 +133,8 @@ public class InventoryScreen : MonoBehaviour
     private void BuildUI()
     {
         ClearUI();
-
         if (slotPrefab == null) return;
 
-        // Backpack
         if (backpackContainer != null && backpackGridRoot != null)
         {
             for (int i = 0; i < backpackContainer.SlotCount; i++)
@@ -125,7 +145,6 @@ public class InventoryScreen : MonoBehaviour
             }
         }
 
-        // Weapon equip
         if (weaponContainer != null && weaponGridRoot != null)
         {
             for (int i = 0; i < weaponContainer.SlotCount; i++)
@@ -136,7 +155,6 @@ public class InventoryScreen : MonoBehaviour
             }
         }
 
-        // Relic equip
         if (relicContainer != null && relicGridRoot != null)
         {
             for (int i = 0; i < relicContainer.SlotCount; i++)
@@ -147,7 +165,6 @@ public class InventoryScreen : MonoBehaviour
             }
         }
 
-        // Nearby loot
         if (lootContainer != null && lootGridRoot != null)
         {
             for (int i = 0; i < lootContainer.SlotCount; i++)

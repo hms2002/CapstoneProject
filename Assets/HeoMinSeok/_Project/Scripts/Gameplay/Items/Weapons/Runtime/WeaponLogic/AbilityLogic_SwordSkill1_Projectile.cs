@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityGAS;
 
@@ -11,25 +12,18 @@ namespace UnityGAS.Sample
         {
             var def = spec?.Definition;
             if (system == null || def == null) yield break;
+            if (system.AttributeSet == null) yield break;
 
             var data = def.sourceObject as SwordSkill1ProjectileData;
             if (data == null || data.projectilePrefab == null) yield break;
 
-            Vector2 dir = ResolveAimDirection(system);
-            if (dir.sqrMagnitude < 0.0001f) dir = Vector2.right;
-            dir.Normalize();
+            Vector2 dir = AbilityAimResolver2D.Resolve(system.gameObject, Vector2.right);
 
             Vector3 spawnPos = system.transform.position + data.spawnOffset;
             var go = Object.Instantiate(data.projectilePrefab, spawnPos, Quaternion.identity);
 
-            // Damage snapshot at cast time
             var cfg = data.DamageConfig;
-            var bindings = system.DamageProfile != null ? system.DamageProfile.GetStatBindings() : null;
-            IStatProvider statProvider = bindings != null ? new AttributeStatProvider(system.AttributeSet, bindings) : null;
-
-            var post = (cfg != null && cfg.postProcess != null)
-                ? cfg.postProcess
-                : (system.DamageProfile != null ? system.DamageProfile.GetDefaultPostProcess() : null);
+            IStatProvider statProvider = AbilityStatProviderFactory.Create(system);
 
             float legacyBaseHp = data.damage;
             float baseHp = data.damageFormula != null
@@ -44,46 +38,47 @@ namespace UnityGAS.Sample
                 ? cfg.staggerFormula.Evaluate(system.AttributeSet, statProvider, defaultIfEmpty: 0f)
                 : Mathf.Max(0f, data.baseStaggerDamage);
 
-            // Element build-up: prefer formulas in config. If none, fall back to legacy list (treated as FINAL values).
-            System.Collections.Generic.List<ElementDamageInput> elementInputs = null;
+            // Element build-up:
+            // 1) config formula 우선
+            // 2) 없으면 legacy list를 최종값처럼 사용
+            List<ElementDamageInput> elementInputs = null;
             if (cfg != null && cfg.includeElementBuildUp && cfg.HasElementFormulas)
             {
-                elementInputs = new System.Collections.Generic.List<ElementDamageInput>(cfg.elementFormulas.Length);
+                elementInputs = new List<ElementDamageInput>(cfg.elementFormulas.Length);
                 for (int i = 0; i < cfg.elementFormulas.Length; i++)
                 {
                     var e = cfg.elementFormulas[i];
                     if (e == null || e.elementType == null || e.formula == null) continue;
+
                     float v = e.formula.Evaluate(system.AttributeSet, statProvider, defaultIfEmpty: 0f);
                     if (v <= 0f) continue;
-                    elementInputs.Add(new ElementDamageInput { elementType = e.elementType, baseDamage = v });
+
+                    elementInputs.Add(new ElementDamageInput
+                    {
+                        elementType = e.elementType,
+                        baseDamage = v
+                    });
                 }
             }
             else if (data.elementDamages != null && data.elementDamages.Count > 0)
             {
-                elementInputs = new System.Collections.Generic.List<ElementDamageInput>(data.elementDamages);
+                elementInputs = new List<ElementDamageInput>(data.elementDamages);
             }
 
-            var elementResults = (elementInputs != null && elementInputs.Count > 0)
-                ? new System.Collections.Generic.List<ElementDamageResult>(elementInputs.Count)
-                : null;
-
-            var processed = DamageFormulaUtil.PostProcess(
-                attacker: system.AttributeSet,
-                post: post,
-                baseHpDamage: baseHp,
-                baseStaggerDamage: baseStagger,
-                elementInputs: elementInputs,
-                outElementResults: elementResults,
-                critAffectsElement: (cfg == null ? true : cfg.critAffectsElement)
+            var snapshot = DamageSnapshotBuilder.BuildFromBaseValues(
+                statProvider: statProvider,
+                config: cfg,
+                baseHp: baseHp,
+                baseStagger: baseStagger,
+                baseKnockback: baseKnockback,
+                elementInputs: elementInputs
             );
 
-            float finalHp = processed.hpDamage;
-            float finalStagger = processed.staggerDamage;
-            ElementDamageResult[] elementSnapshot = (elementResults != null && elementResults.Count > 0)
-                ? elementResults.ToArray()
+            ElementDamageResult[] elementSnapshot =
+                (snapshot.ElementBuildUps != null && snapshot.ElementBuildUps.Count > 0)
+                ? snapshot.ElementBuildUps.ToArray()
                 : null;
 
-            float finalKnockback = baseKnockback;
             var proj = go.GetComponent<SwordSkill1Projectile2D>();
             if (proj != null)
             {
@@ -95,31 +90,16 @@ namespace UnityGAS.Sample
                     walls: data.wallLayers,
                     dmgLayers: data.damageLayers,
                     dmgEffect: data.damageEffect,
-                    dmg: finalHp,
-                    staggerBuildUp: finalStagger,
+                    kbEffect: data.knockbackEffect,
+                    dmg: snapshot.FinalHpDamage,
+                    staggerBuildUp: snapshot.FinalStaggerBuildUp,
                     elementDamages: elementSnapshot,
-                    knockbackImpulse: finalKnockback,
+                    knockbackImpulse: snapshot.FinalKnockbackImpulse,
                     ignore: system.gameObject
                 );
             }
 
             yield break;
-        }
-
-        private Vector2 ResolveAimDirection(AbilitySystem system)
-        {
-            var input = system.GetComponent<PlayerCombatInput2D>();
-            if (input != null) return input.AimDirection;
-
-            var cam = Camera.main;
-            if (cam != null)
-            {
-                Vector3 w = cam.ScreenToWorldPoint(Input.mousePosition);
-                w.z = 0f;
-                Vector2 d = (Vector2)(w - system.transform.position);
-                if (d.sqrMagnitude > 0.0001f) return d.normalized;
-            }
-            return Vector2.right;
         }
     }
 }

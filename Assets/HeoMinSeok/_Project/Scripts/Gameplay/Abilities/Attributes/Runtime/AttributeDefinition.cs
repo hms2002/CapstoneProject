@@ -13,6 +13,11 @@ namespace UnityGAS
         public string attributeName = "Health";
         [TextArea] public string description = "Attribute description.";
 
+        [Header("Mutation Policy")]
+        [Tooltip("이 Attribute가 Base 값 직접 변경만 허용할지, Modifier도 허용할지 결정합니다.")]
+        [SerializeField] private AttributeMutationPolicy mutationPolicy = AttributeMutationPolicy.BaseAndModifier;
+        public AttributeMutationPolicy MutationPolicy => mutationPolicy;
+
         [Header("Values")]
         public float defaultBaseValue = 100f;
         public float minValue = 0f;

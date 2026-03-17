@@ -4,12 +4,12 @@ using DG.Tweening;
 
 public class EmoteController : MonoBehaviour
 {
-    [Header("UI ÄÄÆ÷³ÍÆ® ¿¬°á")]
+    [Header("UI ì»´í¬ë„ŒíŠ¸ ì—°ê²°")]
     [SerializeField] private RectTransform balloonRect;
     [SerializeField] private RectTransform iconRect;
     [SerializeField] private Animator iconAnimator;
 
-    [Header("¿¬Ãâ ¼³Á¤")]
+    [Header("ì—°ì¶œ ì„¤ì •")]
     [SerializeField] private float balloonPopTime = 0.3f;
     [SerializeField] private float iconPopTime = 0.3f;
     [SerializeField] private float stayTime = 2.0f;
@@ -18,47 +18,50 @@ public class EmoteController : MonoBehaviour
 
     public void Init(string emoteName)
     {
-        // 1. ÃÊ±âÈ­ (Å©±â 0, ºñÈ°¼ºÈ­)
+
+        Debug.Log("ê°ì •í‘œí˜„ ì‹¤í–‰ë¨");
+        // 1. ìž¬ì‚¬ìš© ì‹œ ê¸°ì¡´ì— ìž¬ìƒ ì¤‘ì´ë˜ ì‹œí€€ìŠ¤ê°€ ìžˆë‹¤ë©´ ì¦‰ì‹œ ê°•ì œ ì¢…ë£Œ
+        if (emoteSequence != null) emoteSequence.Kill();
+
+        // 2. ì´ˆê¸°í™” (ìž¬ì‚¬ìš©ì„ ìœ„í•´ ë¶€ëª¨ í™œì„±í™” ë° í¬ê¸° 0)
+        gameObject.SetActive(true);
         balloonRect.localScale = Vector3.zero;
         iconRect.localScale = Vector3.zero;
-        iconRect.gameObject.SetActive(false); // Èò ¹Ú½º ¹æÁö
+        iconRect.gameObject.SetActive(false); // í° ë°•ìŠ¤ ë°©ì§€
 
-        // 2. ½ÃÄö½º ½ÃÀÛ
+        // 3. ì‹œí€€ìŠ¤ ì‹œìž‘
         emoteSequence = DOTween.Sequence();
 
-        // [´Ü°è 1] ¸»Ç³¼± µîÀå (0 -> 1)
+        // [ë‹¨ê³„ 1] ë§í’ì„  ë“±ìž¥ (0 -> 1)
         emoteSequence.Append(balloonRect.DOScale(1f, balloonPopTime).SetEase(Ease.OutBack));
 
-        // [´Ü°è 2] (ÇÙ½É ¼öÁ¤) ¾ÆÀÌÄÜ È°¼ºÈ­ -> ¾Ö´Ï¸ÞÀÌ¼Ç Áï½Ã ½ÇÇà -> ±× ´ÙÀ½ DOScale
+        // [ë‹¨ê³„ 2] ì•„ì´ì½˜ í™œì„±í™” -> ì• ë‹ˆë©”ì´ì…˜ ì¦‰ì‹œ ì‹¤í–‰
         emoteSequence.AppendCallback(() =>
         {
             iconRect.gameObject.SetActive(true);
 
             if (iconAnimator != null)
             {
-                // ¾Ö´Ï¸ÞÀÌ¼ÇÀ» ¸ÕÀú ½ÇÇàÇØ¼­, ½ºÇÁ¶óÀÌÆ®°¡ Èò»ö(None)¿¡¼­ ÇÏÆ®/¶¡ µîÀ¸·Î ¹Ù²î°Ô ÇÔ
+                // ì• ë‹ˆë©”ì´ì…˜ì„ ë¨¼ì € ì‹¤í–‰í•´ì„œ, ìŠ¤í”„ë¼ì´íŠ¸ê°€ ë°”ë€Œê²Œ í•¨
                 iconAnimator.Play(emoteName);
-
-                // (¼±ÅÃ) ¸¸¾à 0ÇÁ·¹ÀÓ µô·¹ÀÌµµ Çã¿ë ¾È µÇ¸é °­Á¦ ¾÷µ¥ÀÌÆ®
+                // 0í”„ë ˆìž„ ë”œë ˆì´(í°ìƒ‰ ë²ˆì©ìž„) ë°©ì§€ë¥¼ ìœ„í•œ ê°•ì œ ì—…ë°ì´íŠ¸
                 iconAnimator.Update(0f);
             }
         });
 
-        // [´Ü°è 3] ÀÌ¹ÌÁö°¡ ¼¼ÆÃµÈ »óÅÂ¿¡¼­ ÂËµæÇÏ°Ô Ä¿Áü
+        // [ë‹¨ê³„ 3] ì´ë¯¸ì§€ê°€ ì„¸íŒ…ëœ ìƒíƒœì—ì„œ ì«€ë“í•˜ê²Œ ì»¤ì§
         emoteSequence.Append(iconRect.DOScale(1f, iconPopTime).SetEase(Ease.OutBack));
 
-        // (±âÁ¸¿¡ µÚ¿¡¼­ ½ÇÇàÇÏ´ø Play ÄÚµå´Â À§·Î ¿Ã·ÈÀ¸´Ï »èÁ¦)
-
-        // [´Ü°è 4] À¯Áö ½Ã°£
+        // [ë‹¨ê³„ 4] ìœ ì§€ ì‹œê°„
         emoteSequence.AppendInterval(stayTime);
 
-        // [´Ü°è 5] ÅðÀå (¾ÆÀÌÄÜ ÀÛ¾ÆÁü -> ²ô±â -> ¸»Ç³¼± ÀÛ¾ÆÁü)
+        // [ë‹¨ê³„ 5] í‡´ìž¥ (ì•„ì´ì½˜ ìž‘ì•„ì§ -> ë„ê¸° -> ë§í’ì„  ìž‘ì•„ì§)
         emoteSequence.Append(iconRect.DOScale(0f, 0.2f).SetEase(Ease.InBack));
         emoteSequence.AppendCallback(() => iconRect.gameObject.SetActive(false));
         emoteSequence.Append(balloonRect.DOScale(0f, 0.2f).SetEase(Ease.InBack));
 
-        // [´Ü°è 6] ÆÄ±«
-        emoteSequence.OnComplete(() => Destroy(gameObject));
+        // [ë‹¨ê³„ 6] íŒŒê´´(Destroy) ëŒ€ì‹  êº¼ë‘ê¸° (ì˜¤ë¸Œì íŠ¸ í’€ë§ ë°˜í™˜ íš¨ê³¼)
+        emoteSequence.OnComplete(() => gameObject.SetActive(false));
     }
 
     private void OnDestroy()

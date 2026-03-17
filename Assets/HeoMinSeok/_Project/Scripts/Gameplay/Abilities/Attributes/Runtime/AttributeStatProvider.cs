@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace UnityGAS
 {
-    //  AttributeStatProvider = (AttributeSet + StatTypeBindings)를 묶어서 StatId로 값을 읽어오는 어댑터(일부 Final 합성 포함)
+    //  AttributeStatProvider = (AttributeSet + StatTypeBindings)를 묶어서 StatId로 값을 읽어오는 어댑터((Base + Add) * Mul 형태의 final stat 계산을 지원한다)
     //  IStatProvider는 공식/데이터가 “어떤 AttributeDef를 쓰는지”와 분리되도록 해주는 인터페이스
     /// <summary>
     /// Reads stats from an <see cref="AttributeSet"/> using <see cref="StatTypeBindings"/>.

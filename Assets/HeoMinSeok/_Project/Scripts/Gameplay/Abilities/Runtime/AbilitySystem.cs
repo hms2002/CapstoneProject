@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,10 +9,9 @@ namespace UnityGAS
     public class AbilitySystem : MonoBehaviour
     {
         [Header("Initial Abilities (Definitions)")]
-        [SerializeField] private List<AbilityDefinition> initialAbilities = new List<AbilityDefinition>();
+        [SerializeField] private List<AbilityDefinition> initialAbilities = new();
 
-        // 런타임 "소유" 상태는 Spec으로 들고 간다
-        private readonly List<AbilitySpec> runtimeSpecs = new List<AbilitySpec>();
+        private readonly List<AbilitySpec> runtimeSpecs = new();
 
         [Header("Components")]
         [SerializeField] private AttributeSet attributeSet;
@@ -19,42 +19,33 @@ namespace UnityGAS
         [SerializeField] private TagSystem tagSystem;
 
         [Header("Cancellation Tags (Global)")]
-        [Tooltip("If any of these tags are added to THIS owner while CASTING, the cast will be cancelled. (Exact match)")]
         [SerializeField] private List<GameplayTag> globalCancelCastingOnTags = new();
-
-        [Tooltip("If any of these tags are added to THIS owner while EXECUTING, the execution will be cancelled. (Exact match)")]
         [SerializeField] private List<GameplayTag> globalCancelExecutionOnTags = new();
 
-        [SerializeField] private PlayerDamageProfile damageProfile;
-        [SerializeField] private GameplayEffect defaultCooldownEffect; // 예: GE_Cooldown
-        public PlayerDamageProfile DamageProfile => damageProfile;
-
-        public AttributeSet AttributeSet => attributeSet;
-        public GameplayEffectRunner EffectRunner => effectRunner;
-        public TagSystem TagSystem => tagSystem;
+        [SerializeField] private DamageProfileDefinition damageProfile;
+        [SerializeField] private GameplayEffect defaultCooldownEffect;
 
         [Header("Cooldown Attributes (GAS-style)")]
-        [Tooltip("FinalCooldown = AD.cooldown * CooldownDurationMultiplier (default 1.0). Example: 0.9 means 10% reduction.")]
         [SerializeField] private AttributeDefinition cooldownDurationMultiplierAttribute;
-
-        [Tooltip("Optional. Used by helper functions (ex: on-hit reduce cooldown remaining). Default 0.")]
         [SerializeField] private AttributeDefinition cooldownFlatReduceSecondsOnHitAttribute;
-
-        // 너무 낮아지는 쿨타임 방지(원하면 0으로 둬도 됨)
         [SerializeField] private float minCooldownSeconds = 0.05f;
 
         [Header("Cue")]
         [SerializeField] private GameplayCueManager cueManager;
-        [Tooltip("SendGameplayEvent(tag) 호출 시, 해당 tag가 Cue로 등록되어 있으면 자동으로 ExecuteCue로도 처리")]
         [SerializeField] private bool autoExecuteCueWhenGameplayEventTagExists = true;
 
         [Header("Combat Events")]
-        [Tooltip("타겟의 HP(healthAttribute)가 0 이하로 떨어져 '사망'이 감지되면 이 태그로 GameplayEvent를 발행합니다.\nRelicProcManager(유물) 트리거로 사용하세요.")]
         [SerializeField] private GameplayTag killConfirmedTag;
+        [SerializeField] private GameplayTag damagedTag;
 
         public GameplayTag KillConfirmedTag => killConfirmedTag;
+        public GameplayTag DamagedTag => damagedTag;
 
-        // 상태
+        [Header("Animation")]
+        [SerializeField] private Animator animator;
+        [SerializeField] private Animator playerAnimator;
+        [SerializeField] private Animator initialWeaponAnimator;
+
         private bool isCasting;
         private bool isExecuting;
         private float castTimeRemaining;
@@ -67,453 +58,293 @@ namespace UnityGAS
 
         private Coroutine activeExecution;
 
-        public System.Action<AbilityDefinition> OnAbilityCastStart;
-        public System.Action<AbilityDefinition> OnAbilityCastCompleted;
-        public System.Action<AbilityDefinition> OnAbilityCastCancelled;
+        private AbilitySpec bufferedSpec;
+        private GameObject bufferedTarget;
 
-        // 스택형 쿨타임 키
-        private const string KEY_CHARGES = "__Charges";
-        private const string KEY_RECHARGE = "__RechargeRemaining";
-
-        public bool IsCasting => isCasting;
-        public bool IsExecuting => isExecuting;
-        public bool IsBusy => isCasting || isExecuting;
-
-        // 실행/캐스팅 우선순위로 노출
-        public AbilityDefinition CurrentCast =>
-            isCasting ? (currentCastSpec != null ? currentCastSpec.Definition : null)
-                     : (currentExecSpec != null ? currentExecSpec.Definition : null);
-
-        public AbilitySpec CurrentCastSpec => isCasting ? currentCastSpec : currentExecSpec;
-        public AbilitySpec CurrentExecSpec => currentExecSpec;
-        public GameObject CurrentTargetGameObject => isCasting ? currentTarget : currentExecTarget;
-
-        // 이벤트 버스
-        public event System.Action<GameplayTag, AbilityEventData> OnGameplayEvent;
-
-        // 애니메이팅
-        [SerializeField] private Animator animator;
-        [SerializeField] private Animator playerAnimator;
-        private Animator weaponAnimator;
-
-        public Animator PlayerAnimator => playerAnimator;
-        public Animator WeaponAnimator => weaponAnimator;
-
-        // 충전형 스킬 상태를 Spec 밖(AbilitySystem)에 보관해서 장착/해제로 초기화되는 것 방지
         private struct ChargeState
         {
             public int charges;
             public float rechargeRemaining;
         }
+
         private readonly Dictionary<AbilityDefinition, ChargeState> savedChargeStates = new();
 
+        private const string KEY_CHARGES = "__Charges";
+        private const string KEY_RECHARGE = "__RechargeRemaining";
 
-        /// 무기 장착/교체 시 호출
-        public void RegisterWeaponAnimator(Animator newWeaponAnimator)
+        private AbilityGameplayEventChannel gameplayEventChannel;
+        private AbilityCooldownController cooldownController;
+        private AbilityPresentationRouter presentationRouter;
+        private AbilityExecutionCoordinator executionCoordinator;
+
+        public DamageProfileDefinition DamageProfile => damageProfile;
+        public AttributeSet AttributeSet => attributeSet;
+        public GameplayEffectRunner EffectRunner => effectRunner;
+        public TagSystem TagSystem => tagSystem;
+
+        public Animator PlayerAnimator => presentationRouter != null ? presentationRouter.PlayerAnimator : playerAnimator;
+        public Animator WeaponAnimator => presentationRouter != null ? presentationRouter.WeaponAnimator : initialWeaponAnimator;
+
+        public bool IsCasting => isCasting;
+        public bool IsExecuting => isExecuting;
+        public bool IsBusy => isCasting || isExecuting;
+
+        public AbilityDefinition CurrentCast =>
+            isCasting ? (currentCastSpec != null ? currentCastSpec.Definition : null)
+                      : (currentExecSpec != null ? currentExecSpec.Definition : null);
+
+        public AbilitySpec CurrentCastSpec => isCasting ? currentCastSpec : currentExecSpec;
+        public AbilitySpec CurrentExecSpec => currentExecSpec;
+        public GameObject CurrentTargetGameObject => isCasting ? currentTarget : currentExecTarget;
+
+        internal AbilityPresentationRouter PresentationRouter => presentationRouter;
+        internal AbilityCooldownController CooldownController => cooldownController;
+
+        public Action<AbilityDefinition> OnAbilityCastStart;
+        public Action<AbilityDefinition> OnAbilityCastCompleted;
+        public Action<AbilityDefinition> OnAbilityCastCancelled;
+
+        public event Action<GameplayTag, AbilityEventData> GameplayEventRaised
         {
-            weaponAnimator = newWeaponAnimator;
-        }
-
-        public void OnWeaponEquipped()
-        {
-            if (CurrentExecSpec?.Definition?.animationChannel == AnimationChannel.Weapon)
-                CancelExecution(force: true);
-        }
-
-        public void SendGameplayEvent(GameplayTag tag, AbilityEventData data = new AbilityEventData())
-        {
-            if (tag == null) return;
-
-            OnGameplayEvent?.Invoke(tag, data);
-
-            // (선택) 태그가 Cue로 등록되어 있으면 연출도 자동 처리
-            if (autoExecuteCueWhenGameplayEventTagExists && cueManager != null && cueManager.HasCue(tag))
+            add
             {
-                var p = BuildCueParamsFromEvent(data);
-                cueManager.ExecuteCue(tag, p);
+                if (gameplayEventChannel != null)
+                    gameplayEventChannel.GameplayEventRaised += value;
+            }
+            remove
+            {
+                if (gameplayEventChannel != null)
+                    gameplayEventChannel.GameplayEventRaised -= value;
             }
         }
 
-        // -----------------------------
-        // Waiter 관리
-        // -----------------------------
-        private readonly Dictionary<AbilitySpec, List<GameplayEventWaiter>> waitersBySpec
-            = new Dictionary<AbilitySpec, List<GameplayEventWaiter>>();
-
-        public GameplayEventWaiter WaitGameplayEvent(GameplayTag tag, AbilitySpec ownerSpec)
+        private void Awake()
         {
-            if (tag == null) return null;
-
-            var waiter = new GameplayEventWaiter();
-
-            if (ownerSpec != null)
-            {
-                if (!waitersBySpec.TryGetValue(ownerSpec, out var list))
-                {
-                    list = new List<GameplayEventWaiter>();
-                    waitersBySpec.Add(ownerSpec, list);
-                }
-                list.Add(waiter);
-            }
-
-            void Handler(GameplayTag t, AbilityEventData d)
-            {
-                if (t != tag || waiter.Done) return;
-
-                waiter.Data = d;
-                waiter.Done = true;
-
-                OnGameplayEvent -= Handler;
-                waiter.Cleanup = null;
-
-                if (ownerSpec != null && waitersBySpec.TryGetValue(ownerSpec, out var list))
-                    list.Remove(waiter);
-            }
-
-            waiter.Cleanup = () =>
-            {
-                OnGameplayEvent -= Handler;
-                if (ownerSpec != null && waitersBySpec.TryGetValue(ownerSpec, out var list))
-                    list.Remove(waiter);
-            };
-
-            OnGameplayEvent += Handler;
-            return waiter;
+            CacheRequiredComponents();
+            CreateControllers();
+            InitializeInitialAbilities();
         }
-
-        private void CancelAllWaiters()
-        {
-            foreach (var kv in waitersBySpec)
-            {
-                var list = kv.Value;
-                if (list == null) continue;
-                for (int i = 0; i < list.Count; i++) list[i]?.Cancel();
-            }
-            waitersBySpec.Clear();
-        }
-
-        private void CancelWaiters(AbilitySpec spec)
-        {
-            if (spec == null) return;
-            if (!waitersBySpec.TryGetValue(spec, out var list) || list.Count == 0) return;
-
-            var copy = list.ToArray();
-            list.Clear();
-            foreach (var w in copy) w?.Cancel();
-        }
-
-
 
         private void OnEnable()
         {
-            // Subscribe to tag changes to support "cancel while running" behaviour.
-            if (tagSystem == null) tagSystem = GetComponent<TagSystem>();
-            if (tagSystem != null) tagSystem.OnTagAdded += HandleOwnerTagAdded;
+            if (tagSystem == null)
+                tagSystem = GetComponent<TagSystem>();
+
+            if (tagSystem != null)
+                tagSystem.OnTagAdded += HandleOwnerTagAdded;
         }
 
         private void OnDisable()
         {
-            if (tagSystem != null) tagSystem.OnTagAdded -= HandleOwnerTagAdded;
-        }
-
-        private static bool ContainsTag(List<GameplayTag> list, GameplayTag tag)
-        {
-            if (list == null || tag == null) return false;
-            for (int i = 0; i < list.Count; i++)
-                if (list[i] == tag) return true; // exact
-            return false;
-        }
-
-        private void HandleOwnerTagAdded(GameplayTag tag)
-        {
-            if (tag == null) return;
-
-            // Cast cancellation
-            if (isCasting && currentCastSpec != null)
-            {
-                var def = currentCastSpec.Definition;
-                bool globalHit = ContainsTag(globalCancelCastingOnTags, tag);
-                bool localHit = def != null && ContainsTag(def.cancelCastingOnTags, tag);
-                if (globalHit || localHit) CancelCasting(force: true);
-            }
-
-            // Execution cancellation
-            if (currentExecSpec != null)
-            {
-                var def = currentExecSpec.Definition;
-                bool globalHit = ContainsTag(globalCancelExecutionOnTags, tag);
-                bool localHit = def != null && ContainsTag(def.cancelExecutionOnTags, tag);
-                if (globalHit || localHit) CancelExecution(force: true);
-            }
-        }
-        private void Awake()
-        {
-            if (attributeSet == null) attributeSet = GetComponent<AttributeSet>();
-            if (effectRunner == null) effectRunner = GetComponent<GameplayEffectRunner>();
-            if (tagSystem == null) tagSystem = GetComponent<TagSystem>();
-            if (damageProfile == null) damageProfile = GetComponent<PlayerDamageProfile>();
-
-#if UNITY_2023_1_OR_NEWER
-            if (cueManager == null) cueManager = Object.FindAnyObjectByType<GameplayCueManager>();
-#else
-            if (cueManager == null) cueManager = FindObjectOfType<GameplayCueManager>();
-#endif
-            runtimeSpecs.Clear();
-            foreach (var def in initialAbilities)
-                if (def != null) GiveAbility(def);
+            if (tagSystem != null)
+                tagSystem.OnTagAdded -= HandleOwnerTagAdded;
         }
 
         private void Update()
         {
-            HandleCooldowns();
-            HandleCasting();
+            cooldownController?.TickCooldowns(runtimeSpecs);
+            TickCasting();
         }
 
-        // -----------------------------
-        // Ability Management
-        // -----------------------------
+        private void CacheRequiredComponents()
+        {
+            if (attributeSet == null) attributeSet = GetComponent<AttributeSet>();
+            if (effectRunner == null) effectRunner = GetComponent<GameplayEffectRunner>();
+            if (tagSystem == null) tagSystem = GetComponent<TagSystem>();
+            if (damageProfile == null) damageProfile = GetComponent<DamageProfileDefinition>();
+
+#if UNITY_2023_1_OR_NEWER
+            if (cueManager == null) cueManager = UnityEngine.Object.FindAnyObjectByType<GameplayCueManager>();
+#else
+            if (cueManager == null) cueManager = FindObjectOfType<GameplayCueManager>();
+#endif
+        }
+
+        private void CreateControllers()
+        {
+            presentationRouter = new AbilityPresentationRouter(
+                gameObject,
+                cueManager,
+                playerAnimator,
+                initialWeaponAnimator);
+
+            gameplayEventChannel = new AbilityGameplayEventChannel(
+                this,
+                cueManager,
+                autoExecuteCueWhenGameplayEventTagExists);
+
+            cooldownController = new AbilityCooldownController(
+                this,
+                effectRunner,
+                attributeSet,
+                defaultCooldownEffect,
+                cooldownDurationMultiplierAttribute,
+                cooldownFlatReduceSecondsOnHitAttribute,
+                minCooldownSeconds);
+
+            executionCoordinator = new AbilityExecutionCoordinator();
+        }
+
+        private void InitializeInitialAbilities()
+        {
+            runtimeSpecs.Clear();
+
+            foreach (var def in initialAbilities)
+            {
+                if (def != null)
+                    GiveAbility(def);
+            }
+        }
+
         public AbilitySpec GiveAbility(AbilityDefinition def)
         {
             var spec = new AbilitySpec(def);
             runtimeSpecs.Add(spec);
 
-            if (def != null && def.useCharges)
-            {
-                int max = Mathf.Max(1, def.maxCharges);
-
-                // ✅ 저장된 상태가 있으면 복원
-                if (savedChargeStates.TryGetValue(def, out var st))
-                {
-                    spec.SetInt(KEY_CHARGES, Mathf.Clamp(st.charges, 0, max));
-                    spec.SetFloat(KEY_RECHARGE, Mathf.Max(0f, st.rechargeRemaining));
-                }
-                else
-                {
-                    // 처음 획득한 스킬이면 기존처럼 초기화
-                    spec.SetInt(KEY_CHARGES, max);
-                    spec.SetFloat(KEY_RECHARGE, 0f);
-                }
-            }
-
+            RestoreChargeStateIfNeeded(def, spec);
             return spec;
         }
 
         public bool TakeAbility(AbilityDefinition def)
         {
-            if (def == null) return false;
+            if (def == null)
+                return false;
 
             AbilitySpec spec = FindSpec(def);
-            if (spec == null) return false;
+            if (spec == null)
+                return false;
 
-            // ✅ 제거 전에 충전 상태 저장 (핵심!)
-            if (def.useCharges)
-            {
-                savedChargeStates[def] = new ChargeState
-                {
-                    charges = spec.GetInt(KEY_CHARGES, 0),
-                    rechargeRemaining = spec.GetFloat(KEY_RECHARGE, 0f),
-                };
-            }
+            SaveChargeStateIfNeeded(def, spec);
 
-            // (이하 기존 로직 그대로)
-            if (CurrentExecSpec == spec) CancelExecution(force: true);
-            if (CurrentCastSpec == spec) CancelCasting(force: true);
+            if (CurrentExecSpec == spec)
+                CancelExecution(force: true);
+
+            if (CurrentCastSpec == spec)
+                CancelCasting(force: true);
 
             if (bufferedSpec == spec)
-            {
-                bufferedSpec = null;
-                bufferedTarget = null;
-            }
+                ClearBufferedActivation();
 
-            CancelWaiters(spec);
+            gameplayEventChannel?.CancelWaiters(spec);
             runtimeSpecs.Remove(spec);
             return true;
         }
 
-
         public AbilitySpec FindSpec(AbilityDefinition def)
         {
-            if (def == null) return null;
+            if (def == null)
+                return null;
+
             for (int i = 0; i < runtimeSpecs.Count; i++)
-                if (runtimeSpecs[i].Definition == def) return runtimeSpecs[i];
+            {
+                if (runtimeSpecs[i].Definition == def)
+                    return runtimeSpecs[i];
+            }
+
             return null;
         }
 
-        // -----------------------------
-        // Activation
-        // -----------------------------
-        private AbilitySpec bufferedSpec;
-        private GameObject bufferedTarget;
-
-
-        private void Buffer(AbilitySpec spec, GameObject target)
+        private void RestoreChargeStateIfNeeded(AbilityDefinition def, AbilitySpec spec)
         {
-            bufferedSpec = spec;
-            bufferedTarget = target;
+            if (def == null || spec == null || !def.useCharges)
+                return;
+
+            int max = Mathf.Max(1, def.maxCharges);
+
+            if (savedChargeStates.TryGetValue(def, out var st))
+            {
+                spec.SetInt(KEY_CHARGES, Mathf.Clamp(st.charges, 0, max));
+                spec.SetFloat(KEY_RECHARGE, Mathf.Max(0f, st.rechargeRemaining));
+            }
+            else
+            {
+                spec.SetInt(KEY_CHARGES, max);
+                spec.SetFloat(KEY_RECHARGE, 0f);
+            }
         }
 
-        private void TryConsumeBuffered()
+        private void SaveChargeStateIfNeeded(AbilityDefinition def, AbilitySpec spec)
         {
-            if (bufferedSpec == null) return;
+            if (def == null || spec == null || !def.useCharges)
+                return;
 
-            var s = bufferedSpec;
-            var t = bufferedTarget;
-
-            bufferedSpec = null;
-            bufferedTarget = null;
-
-            TryActivateAbility(s, t);
+            savedChargeStates[def] = new ChargeState
+            {
+                charges = spec.GetInt(KEY_CHARGES, 0),
+                rechargeRemaining = spec.GetFloat(KEY_RECHARGE, 0f),
+            };
         }
 
         public bool TryActivateAbility(AbilityDefinition ability, GameObject target = null)
         {
             var spec = FindSpec(ability);
-            if (spec == null) return false;
+            if (spec == null)
+                return false;
+
             return TryActivateAbility(spec, target);
         }
 
         public bool TryActivateAbility(AbilitySpec spec, GameObject target = null)
         {
             var def = spec?.Definition;
-            if (def == null) return false;
-            if (!def.canCastWhileMoving)
-            {
-                var mover = GetComponent<IMovementStateProvider>();
-                if (mover != null && mover.IsMoving)
-                    return false;
-            }
-            // 쿨다운/조건 불만족은 즉시 false
-            if (IsOnCooldown(spec) || !def.CanActivate(gameObject, target))
+            if (def == null)
                 return false;
 
-            // Busy면 버퍼
+            if (!CanActivateWhileCurrentMovementStateAllows(def))
+                return false;
+
+            if (cooldownController != null && cooldownController.IsOnCooldown(spec))
+                return false;
+
+            if (!def.CanActivate(gameObject, target))
+                return false;
+
             if (IsBusy)
             {
-                Buffer(spec, target);
-                return true; // 입력 접수 의미
+                BufferActivation(spec, target);
+                return true;
             }
 
-            // 캐스팅 시작
             StartCasting(spec, target);
             return true;
         }
 
-        private void StartCooldown(AbilitySpec spec)
+        private bool CanActivateWhileCurrentMovementStateAllows(AbilityDefinition def)
         {
-            var def = spec?.Definition;
-            if (def == null) return;
-            if (def.useCharges) return;
+            if (def == null)
+                return false;
 
-            float finalCooldown = CalculateFinalCooldownSeconds(def);
-            if (finalCooldown <= 0f) return;
+            if (def.canCastWhileMoving)
+                return true;
 
-            // ✅ 무조건 defaultCooldownEffect만 사용
-            var cdEffect = defaultCooldownEffect;
+            var mover = GetComponent<IMovementStateProvider>();
+            return mover == null || !mover.IsMoving;
+        }
 
-            if (cdEffect != null && effectRunner != null)
-            {
-                var cdSpec = MakeSpec(cdEffect, causer: gameObject, sourceObject: def); // sourceObject=AbilityDefinition
-                cdSpec.SetDuration(finalCooldown);
-                effectRunner.ApplyEffectSpec(cdSpec, gameObject);
+        private void BufferActivation(AbilitySpec spec, GameObject target)
+        {
+            bufferedSpec = spec;
+            bufferedTarget = target;
+        }
+
+        internal void TryConsumeBufferedActivation_Internal()
+        {
+            if (bufferedSpec == null)
                 return;
-            }
 
-            // (혹시 defaultCooldownEffect 세팅 안 했을 때만 fallback)
-            spec.CooldownRemaining = finalCooldown;
+            var s = bufferedSpec;
+            var t = bufferedTarget;
+
+            ClearBufferedActivation();
+            TryActivateAbility(s, t);
         }
 
-
-
-        // -----------------------------
-        // Cooldowns
-        // -----------------------------
-        public float GetCooldownRemaining(AbilityDefinition ability)
+        private void ClearBufferedActivation()
         {
-            var spec = FindSpec(ability);
-            if (spec == null) return 0f;
-
-            var def = spec.Definition;
-
-            if (def != null && def.useCharges)
-                return spec.GetFloat(KEY_RECHARGE, 0f); // 필요하면 UI용으로 별도 노출
-
-            var cdEffect = defaultCooldownEffect;
-
-            if (cdEffect != null && effectRunner != null)
-                return effectRunner.GetRemainingTime(cdEffect, gameObject, def);
-
-            return Mathf.Max(0f, spec.CooldownRemaining);
-        }
-        private bool IsOnCooldown(AbilitySpec spec)
-        {
-            if (spec == null) return false;
-            var def = spec.Definition;
-
-            if (def != null && def.useCharges)
-                return spec.GetInt(KEY_CHARGES, 0) <= 0;
-
-            // ✅ 쿨다운 GE는 "하나(defaultCooldownEffect)"로 통일.
-            // Ability별 구분은 SourceObject(AbilityDefinition)로 한다.
-            var cdEffect = defaultCooldownEffect;
-            if (cdEffect != null && effectRunner != null)
-                return effectRunner.HasActiveEffect(cdEffect, gameObject, def);
-
-            return spec.CooldownRemaining > 0f;
+            bufferedSpec = null;
+            bufferedTarget = null;
         }
 
-
-        private void HandleCooldowns()
-        {
-            if (runtimeSpecs.Count == 0) return;
-
-            for (int i = 0; i < runtimeSpecs.Count; i++)
-            {
-                var s = runtimeSpecs[i];
-                var def = s.Definition;
-
-                if (def != null && def.useCharges)
-                {
-                    int charges = s.GetInt(KEY_CHARGES, 0);
-                    int max = Mathf.Max(1, def.maxCharges);
-
-                    if (charges < max)
-                    {
-                        float r = s.GetFloat(KEY_RECHARGE, 0f);
-
-                        if (r <= 0f)
-                            r = Mathf.Max(0.01f, CalculateFinalCooldownSeconds(def)); // ✅ 쿨감 반영
-
-                        r -= Time.deltaTime;
-
-                        if (r <= 0f)
-                        {
-                            charges++;
-                            s.SetInt(KEY_CHARGES, charges);
-
-                            r = (charges < max) ? Mathf.Max(0.01f, CalculateFinalCooldownSeconds(def)) : 0f;
-                        }
-
-                        s.SetFloat(KEY_RECHARGE, r);
-                    }
-                    else
-                    {
-                        s.SetFloat(KEY_RECHARGE, 0f);
-                    }
-
-                    continue;
-                }
-
-                // ✅ defaultCooldownEffect를 쓰는 경우엔 Runner가 관리하므로 여기서 tick 할 필요 없음
-                if (defaultCooldownEffect != null) continue;
-
-                // fallback 타이머
-                if (s.CooldownRemaining > 0f) s.CooldownRemaining -= Time.deltaTime;
-            }
-        }
-
-        // -----------------------------
-        // Casting
-        // -----------------------------
         private void StartCasting(AbilitySpec spec, GameObject target)
         {
             isCasting = true;
@@ -521,26 +352,19 @@ namespace UnityGAS
             currentTarget = target;
 
             var def = spec.Definition;
-
             castTimeRemaining = def.castTime;
 
-            // Cue: CastStart + WhileCasting(Add)
-            if (cueManager != null)
-            {
-                var p = BuildCueParamsForAbility(def, spec, target);
-                if (def.cueOnCastStart != null) cueManager.ExecuteCue(def.cueOnCastStart, p);
-                if (def.cueWhileCasting != null) cueManager.AddCue(def.cueWhileCasting, p);
-            }
-
+            presentationRouter?.PlayCastStart(def, spec, target);
             OnAbilityCastStart?.Invoke(def);
 
             if (def.IsInstant)
                 CompleteCast();
         }
 
-        private void HandleCasting()
+        private void TickCasting()
         {
-            if (!isCasting) return;
+            if (!isCasting)
+                return;
 
             castTimeRemaining -= Time.deltaTime;
             if (castTimeRemaining <= 0f)
@@ -549,7 +373,8 @@ namespace UnityGAS
 
         private void CompleteCast()
         {
-            if (!isCasting) return;
+            if (!isCasting)
+                return;
 
             var spec = currentCastSpec;
             var def = spec != null ? spec.Definition : null;
@@ -557,367 +382,96 @@ namespace UnityGAS
 
             if (def != null)
             {
-                def.ApplyCost(gameObject);
-                // Definition에 animationTrigger가 있으면 자동 실행(간단한 능력용)
-                if (def.animationTriggerHash != 0)
-                    TryPlayAnimationTriggerHash(def.animationTriggerHash, def);
+                CommitAbilityCast(spec, def, target);
+                StartAbilityExecution(spec, target);
+                cooldownController?.ConsumeChargeOnCommit(spec, def);
 
-                // Cue: Commit(Execute) + WhileCasting(Remove)
-                if (cueManager != null)
-                {
-                    var p = BuildCueParamsForAbility(def, spec, target);
-                    if (def.cueWhileCasting != null) cueManager.RemoveCue(def.cueWhileCasting, p);
-                    if (def.cueOnCommit != null) cueManager.ExecuteCue(def.cueOnCommit, p);
-                }
-
-                if (activeExecution != null)
-                    StopCoroutine(activeExecution);
-
-                activeExecution = StartCoroutine(RunAbility(spec, target));
-
-                // “charge 1회 소비”
-                if (def.useCharges)
-                {
-                    int c = spec.GetInt(KEY_CHARGES, 0);
-                    if (c > 0) spec.SetInt(KEY_CHARGES, c - 1);
-
-                    // 충전 타이머가 돌고 있지 않다면 시작
-                    if (spec.GetInt(KEY_CHARGES, 0) < def.maxCharges && spec.GetFloat(KEY_RECHARGE, 0f) <= 0f)
-                        spec.SetFloat(KEY_RECHARGE, Mathf.Max(0.01f, def.cooldown));
-                }
-
-                // 쿨다운은 기본적으로 캐스팅 완료 즉시 시작.
-                // 단, AbilityDefinition.startCooldownOnEnd=true면 실행이 끝날 때 시작한다.
                 if (!def.startCooldownOnEnd)
-                    StartCooldown(spec);
+                    cooldownController?.StartCooldown(spec);
             }
 
+            ClearCastingState();
+            OnAbilityCastCompleted?.Invoke(def);
+        }
+
+        private void CommitAbilityCast(AbilitySpec spec, AbilityDefinition def, GameObject target)
+        {
+            def.ApplyCost(gameObject);
+
+            if (def.animationTriggerHash != 0)
+                presentationRouter?.TryPlayAnimationTriggerHash(def.animationTriggerHash, def);
+
+            presentationRouter?.PlayCastCommit(def, spec, target);
+        }
+
+        private void StartAbilityExecution(AbilitySpec spec, GameObject target)
+        {
+            if (activeExecution != null)
+                StopCoroutine(activeExecution);
+
+            activeExecution = StartCoroutine(executionCoordinator.Run(this, spec, target));
+        }
+
+        private void ClearCastingState()
+        {
             isCasting = false;
             currentCastSpec = null;
             currentTarget = null;
-
-            OnAbilityCastCompleted?.Invoke(def);
         }
 
         public void CancelCasting(bool force = false)
         {
-            if (!isCasting) return;
+            if (!isCasting)
+                return;
 
             var cancelledSpec = currentCastSpec;
             var cancelledDef = cancelledSpec != null ? cancelledSpec.Definition : null;
             var target = currentTarget;
+
             if (!force && cancelledDef != null && !cancelledDef.interruptible)
                 return;
-            // Cue: CastCancelled + WhileCasting(Remove)
-            if (cueManager != null && cancelledDef != null)
-            {
-                var p = BuildCueParamsForAbility(cancelledDef, cancelledSpec, target);
-                if (cancelledDef.cueWhileCasting != null) cueManager.RemoveCue(cancelledDef.cueWhileCasting, p);
-                if (cancelledDef.cueOnCastCancelled != null) cueManager.ExecuteCue(cancelledDef.cueOnCastCancelled, p);
-            }
 
-            isCasting = false;
-            currentCastSpec = null;
-            currentTarget = null;
+            presentationRouter?.PlayCastCancelled(cancelledDef, cancelledSpec, target);
 
-            CancelAllWaiters();
+            ClearCastingState();
+            gameplayEventChannel?.CancelAllWaiters();
             OnAbilityCastCancelled?.Invoke(cancelledDef);
         }
 
-        // -----------------------------
-        // Execution
-        // -----------------------------
         public void CancelExecution(bool force = false)
         {
             var def = currentExecSpec != null ? currentExecSpec.Definition : null;
             if (!force && def != null && !def.interruptible)
                 return;
 
-            if (currentExecSpec?.Token != null)
-                currentExecSpec.Token.Cancel();
+            currentExecSpec?.Token?.Cancel();
         }
 
-        private IEnumerator RunAbility(AbilitySpec spec, GameObject target)
+        public float GetCooldownRemaining(AbilityDefinition ability)
         {
-            isExecuting = true;
-            currentExecSpec = spec;
-            currentExecTarget = target;
-
-            var def = spec.Definition;
-
-            // 실행 단위 토큰
-            spec.Token = new AbilityCancellationToken();
-
-            // 활성 태그 부여: logic + recovery 동안 유지 (여기서만 관리!)
-            if (tagSystem != null && def.grantedTagsWhileActive != null)
-                tagSystem.AddTags(def.grantedTagsWhileActive);
-
-            // Cue: WhileActive(Add)
-            if (cueManager != null && def.cueWhileActive != null)
-            {
-                var p = BuildCueParamsForAbility(def, spec, target);
-                cueManager.AddCue(def.cueWhileActive, p);
-            }
-
-            bool cancelled = false;
-            // containers: OnActivate
-            ApplyEffectContainers(spec, target, AbilityEffectTiming.OnActivate, null);
-
-            System.Action<GameplayTag, AbilityEventData> onEvent = null;
-
-            onEvent = (t, d) =>
-            {
-                // 이 능력 실행 중에만
-                if (!isExecuting || currentExecSpec != spec) return;
-
-                // Spec이 실린 이벤트면 “내 spec”만 받는다 (브로드캐스트 허용하려면 d.Spec==null은 통과)
-                if (d.Spec != null && d.Spec != spec) return;
-
-                ApplyEffectContainers(spec, target, AbilityEffectTiming.OnEvent, t);
-            };
-            try
-            {
-                if (def.logic == null)
-                {
-                    Debug.LogError($"[GAS] Ability '{def.name}' has no Logic. (Legacy pipeline removed)");
-                    yield break;
-                }
-
-
-                OnGameplayEvent += onEvent;
-
-
-                // 로직 실행
-                yield return def.logic.Activate(this, spec, target);
-
-                // 후딜(Recovery)
-                float recovery = def.recoveryTime;
-
-                if (spec.TryGetFloat("RecoveryOverride", out var overrideRecovery))
-                    recovery = overrideRecovery;
-
-                if (recovery > 0f)
-                {
-                    float end = Time.time + recovery;
-                    while (Time.time < end)
-                    {
-                        if (spec.Token != null && spec.Token.IsCancelled)
-                            break;
-                        yield return null;
-                    }
-                }
-            }
-            finally
-            {
-                cancelled = (spec.Token != null && spec.Token.IsCancelled);
-
-                // waiter 정리
-                CancelWaiters(spec);
-
-                if (onEvent != null) OnGameplayEvent -= onEvent;
-
-                // Cue: WhileActive(Remove) + End/Cancelled(Execute)
-                if (cueManager != null)
-                {
-                    var p = BuildCueParamsForAbility(def, spec, target);
-                    if (def.cueWhileActive != null) cueManager.RemoveCue(def.cueWhileActive, p);
-
-                    if (cancelled && def.cueOnExecutionCancelled != null)
-                        cueManager.ExecuteCue(def.cueOnExecutionCancelled, p);
-                    else if (!cancelled && def.cueOnEnd != null)
-                        cueManager.ExecuteCue(def.cueOnEnd, p);
-                }
-                ApplyEffectContainers(spec, target, AbilityEffectTiming.OnEnd, null);
-
-                // 태그 회수
-                if (tagSystem != null && def.grantedTagsWhileActive != null)
-                    tagSystem.RemoveTags(def.grantedTagsWhileActive);
-
-                // (옵션) 실행이 끝나는 시점에 쿨다운 시작
-                if (def != null && def.startCooldownOnEnd)
-                    StartCooldown(spec);
-
-                // 토큰 종료
-                spec.Token?.Cancel();
-                spec.Token = null;
-
-                // 실행 상태 정리
-                isExecuting = false;
-                currentExecSpec = null;
-                currentExecTarget = null;
-                activeExecution = null;
-
-                // 버퍼 소비
-                TryConsumeBuffered();
-            }
-        }
-
-        private float CalculateFinalCooldownSeconds(AbilityDefinition def)
-        {
-            if (def == null) return 0f;
-
-            float baseCd = Mathf.Max(0f, def.cooldown);
-            if (baseCd <= 0f) return 0f;
-
-            float mult = 1f;
-
-            // ✅ GAS스럽게: Attribute에서 읽는다
-            if (attributeSet != null && cooldownDurationMultiplierAttribute != null)
-            {
-                var ro = attributeSet.GetReadOnly(cooldownDurationMultiplierAttribute);
-                if (ro != null)
-                    mult = ro.CurrentValue;
-            }
-
-            // 안전장치
-            if (mult <= 0f) mult = 1f;
-
-            float cd = baseCd * mult;
-            cd = Mathf.Max(minCooldownSeconds, cd);
-            return cd;
-        }
-
-        // -----------------------------
-        // Animation helpers
-        // -----------------------------
-        public void TryPlayAnimationTriggerHash(int triggerHash, AbilityDefinition def)
-        {
-            if (triggerHash == 0) return;
-
-            Animator target = null;
-
-            if (def != null && def.animationChannel == AbilityDefinition.AnimationChannel.Weapon)
-                target = weaponAnimator != null ? weaponAnimator : playerAnimator; // fallback
-            else
-                target = playerAnimator != null ? playerAnimator : weaponAnimator; // fallback
-
-            if (target == null) return;
-            target.SetTrigger(triggerHash);
+            return cooldownController != null
+                ? cooldownController.GetCooldownRemaining(ability)
+                : 0f;
         }
 
         public bool ReduceCooldownRemaining(AbilityDefinition def, float reduceSeconds)
         {
-            if (def == null || reduceSeconds <= 0f) return false;
-            if (def.useCharges) return false; // 차지는 별도 처리 권장
-
-            if (defaultCooldownEffect != null && effectRunner != null)
-            {
-                int affected = effectRunner.ReduceRemainingTimeBySourceObject(
-                    gameObject,
-                    defaultCooldownEffect,
-                    def,
-                    reduceSeconds);
-
-                return affected > 0;
-            }
-
-            // fallback 타이머
-            var spec = FindSpec(def);
-            if (spec == null) return false;
-
-            spec.CooldownRemaining = Mathf.Max(0f, spec.CooldownRemaining - reduceSeconds);
-            return true;
+            return cooldownController != null &&
+                   cooldownController.ReduceCooldownRemaining(def, reduceSeconds);
         }
+
         public bool ReduceCooldownRemaining_OnHit(AbilityDefinition def)
         {
-            if (def == null) return false;
-            if (def.useCharges) return false;
-
-            float reduce = 0f;
-            if (attributeSet != null && cooldownFlatReduceSecondsOnHitAttribute != null)
-            {
-                var ro = attributeSet.GetReadOnly(cooldownFlatReduceSecondsOnHitAttribute);
-                if (ro != null) reduce = ro.CurrentValue;
-            }
-
-            if (reduce <= 0f) return false;
-
-            return ReduceCooldownRemaining(def, reduce);
+            return cooldownController != null &&
+                   cooldownController.ReduceCooldownRemainingOnHit(def);
         }
 
-        // -----------------------------
-        // Spec helpers
-        // -----------------------------
-        public GameplayEffectSpec MakeSpec(GameplayEffect effect, GameObject causer = null, Object sourceObject = null)
-        {
-            var ctx = new GameplayEffectContext(gameObject, causer != null ? causer : gameObject);
-            ctx.SourceObject = sourceObject;
-            return new GameplayEffectSpec(effect, ctx);
-        }
-
-        public void ApplyEffectContainers(AbilitySpec spec, GameObject target, AbilityEffectTiming timing, GameplayTag eventTag)
-        {
-            var def = spec.Definition;
-            if (def.containers == null || def.containers.Count == 0) return;
-
-            for (int i = 0; i < def.containers.Count; i++)
-            {
-                var c = def.containers[i];
-                if (c == null) continue;
-                if (c.timing != timing) continue;
-
-                if (timing == AbilityEffectTiming.OnEvent && c.eventTag != eventTag)
-                    continue;
-
-                if (c.effects == null || c.effects.Count == 0) continue;
-
-                GameObject receiver = null;
-                switch (c.targetPolicy)
-                {
-                    case AbilityEffectTargetPolicy.Caster:
-                        receiver = gameObject;
-                        break;
-                    case AbilityEffectTargetPolicy.ExplicitTarget:
-                        receiver = target;
-                        break;
-                }
-
-                if (receiver == null) continue;
-
-                foreach (var e in c.effects)
-                    effectRunner.ApplyEffect(e, receiver, gameObject);
-            }
-        }
-
-        // -----------------------------
-        // Cue params builders
-        // -----------------------------
-        private GameplayCueParams BuildCueParamsForAbility(AbilityDefinition def, AbilitySpec spec, GameObject target)
-        {
-            return new GameplayCueParams
-            {
-                Instigator = gameObject,
-                Causer = gameObject,
-                Target = target,
-                Position = target != null ? target.transform.position : transform.position,
-                Normal = Vector3.up,
-                SourceObject = def,
-                Magnitude = 1f
-            };
-        }
-
-        private GameplayCueParams BuildCueParamsFromEvent(AbilityEventData data)
-        {
-            var p = new GameplayCueParams
-            {
-                Instigator = data.Instigator != null ? data.Instigator : gameObject,
-                Causer = data.Instigator != null ? data.Instigator : gameObject,
-                Target = data.Target,
-                Position = data.WorldPosition != Vector3.zero ? data.WorldPosition : (data.Target != null ? data.Target.transform.position : transform.position),
-                Normal = Vector3.up,
-                SourceObject = (data.Spec != null ? data.Spec.Definition : null),
-                Magnitude = 1f
-            };
-            return p;
-        }
-
-        //UI용 getter 
         public int GetChargesRemaining(AbilityDefinition def)
         {
             var s = FindSpec(def);
-            if (s != null) return s.GetInt(KEY_CHARGES, 0);
+            if (s != null)
+                return s.GetInt(KEY_CHARGES, 0);
 
-            // 스킬이 현재 장착되어 있지 않아도 저장된 값을 조회 가능
             if (def != null && def.useCharges && savedChargeStates.TryGetValue(def, out var st))
                 return st.charges;
 
@@ -927,14 +481,17 @@ namespace UnityGAS
         public int GetMaxCharges(AbilityDefinition ability)
         {
             var spec = FindSpec(ability);
-            if (spec == null || spec.Definition == null || !spec.Definition.useCharges) return 1;
+            if (spec == null || spec.Definition == null || !spec.Definition.useCharges)
+                return 1;
+
             return Mathf.Max(1, spec.Definition.maxCharges);
         }
 
         public float GetRechargeRemaining(AbilityDefinition def)
         {
             var s = FindSpec(def);
-            if (s != null) return Mathf.Max(0f, s.GetFloat(KEY_RECHARGE, 0f));
+            if (s != null)
+                return Mathf.Max(0f, s.GetFloat(KEY_RECHARGE, 0f));
 
             if (def != null && def.useCharges && savedChargeStates.TryGetValue(def, out var st))
                 return Mathf.Max(0f, st.rechargeRemaining);
@@ -942,5 +499,154 @@ namespace UnityGAS
             return 0f;
         }
 
+        public void SendGameplayEvent(GameplayTag tag, AbilityEventData data = default)
+        {
+            gameplayEventChannel?.Send(tag, data);
+        }
+
+        public GameplayEventWaiter WaitGameplayEvent(GameplayTag tag, AbilitySpec ownerSpec)
+        {
+            return gameplayEventChannel?.Wait(tag, ownerSpec);
+        }
+
+        internal void SubscribeGameplayEvent(Action<GameplayTag, AbilityEventData> handler)
+        {
+            if (handler == null || gameplayEventChannel == null)
+                return;
+
+            gameplayEventChannel.GameplayEventRaised += handler;
+        }
+
+        internal void UnsubscribeGameplayEvent(Action<GameplayTag, AbilityEventData> handler)
+        {
+            if (handler == null || gameplayEventChannel == null)
+                return;
+
+            gameplayEventChannel.GameplayEventRaised -= handler;
+        }
+
+        internal void CancelGameplayEventWaiters(AbilitySpec spec)
+        {
+            gameplayEventChannel?.CancelWaiters(spec);
+        }
+
+        internal void SetExecutionState(bool executing, AbilitySpec spec, GameObject target)
+        {
+            isExecuting = executing;
+            currentExecSpec = spec;
+            currentExecTarget = target;
+        }
+
+        internal void ClearActiveExecutionCoroutine()
+        {
+            activeExecution = null;
+        }
+
+        private static bool ContainsTag(List<GameplayTag> list, GameplayTag tag)
+        {
+            if (list == null || tag == null)
+                return false;
+
+            for (int i = 0; i < list.Count; i++)
+            {
+                if (list[i] == tag)
+                    return true;
+            }
+
+            return false;
+        }
+
+        private void HandleOwnerTagAdded(GameplayTag tag)
+        {
+            if (tag == null)
+                return;
+
+            if (isCasting && currentCastSpec != null)
+            {
+                var def = currentCastSpec.Definition;
+                bool globalHit = ContainsTag(globalCancelCastingOnTags, tag);
+                bool localHit = def != null && ContainsTag(def.cancelCastingOnTags, tag);
+
+                if (globalHit || localHit)
+                    CancelCasting(force: true);
+            }
+
+            if (currentExecSpec != null)
+            {
+                var def = currentExecSpec.Definition;
+                bool globalHit = ContainsTag(globalCancelExecutionOnTags, tag);
+                bool localHit = def != null && ContainsTag(def.cancelExecutionOnTags, tag);
+
+                if (globalHit || localHit)
+                    CancelExecution(force: true);
+            }
+        }
+
+        public GameplayEffectSpec MakeSpec(GameplayEffect effect, GameObject causer = null, UnityEngine.Object sourceObject = null)
+        {
+            var ctx = new GameplayEffectContext(gameObject, causer != null ? causer : gameObject);
+            ctx.SourceObject = sourceObject;
+            return new GameplayEffectSpec(effect, ctx);
+        }
+
+        public void ApplyEffectContainers(AbilitySpec spec, GameObject target, AbilityEffectTiming timing, GameplayTag eventTag)
+        {
+            var def = spec.Definition;
+            if (def.containers == null || def.containers.Count == 0)
+                return;
+
+            for (int i = 0; i < def.containers.Count; i++)
+            {
+                var c = def.containers[i];
+                if (c == null || c.timing != timing)
+                    continue;
+
+                if (timing == AbilityEffectTiming.OnEvent && c.eventTag != eventTag)
+                    continue;
+
+                if (c.effects == null || c.effects.Count == 0)
+                    continue;
+
+                GameObject receiver = ResolveEffectContainerReceiver(c.targetPolicy, target);
+                if (receiver == null)
+                    continue;
+
+                foreach (var e in c.effects)
+                {
+                    var geSpec = MakeSpec(e, causer: gameObject, sourceObject: def);
+                    effectRunner.ApplyEffectSpec(geSpec, receiver);
+                }
+            }
+        }
+
+        private GameObject ResolveEffectContainerReceiver(AbilityEffectTargetPolicy policy, GameObject explicitTarget)
+        {
+            switch (policy)
+            {
+                case AbilityEffectTargetPolicy.Caster:
+                    return gameObject;
+                case AbilityEffectTargetPolicy.ExplicitTarget:
+                    return explicitTarget;
+                default:
+                    return null;
+            }
+        }
+
+        public void RegisterWeaponAnimator(Animator newWeaponAnimator)
+        {
+            initialWeaponAnimator = newWeaponAnimator;
+            presentationRouter?.RegisterWeaponAnimator(newWeaponAnimator);
+        }
+
+        public void OnWeaponEquipped()
+        {
+            if (presentationRouter != null && presentationRouter.ShouldCancelOnWeaponEquipped(this))
+                CancelExecution(force: true);
+        }
+
+        public void TryPlayAnimationTriggerHash(int triggerHash, AbilityDefinition def)
+        {
+            presentationRouter?.TryPlayAnimationTriggerHash(triggerHash, def);
+        }
     }
 }

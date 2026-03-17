@@ -24,17 +24,19 @@ public class UnlockSlotUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        if (_assignedItem != null && UIHoverManager.Instance != null)
+        // [수정] ItemHoverController 사용
+        if (_assignedItem != null && ItemHoverController.Instance != null)
         {
-            UIHoverManager.Instance.HoverSlot(_rect, _assignedItem);
+            ItemHoverController.Instance.HoverSlot(_rect, _assignedItem);
         }
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        if (UIHoverManager.Instance != null)
+        // [수정] ItemHoverController 사용
+        if (ItemHoverController.Instance != null)
         {
-            UIHoverManager.Instance.UnhoverSlot(_rect);
+            ItemHoverController.Instance.UnhoverSlot(_rect);
         }
     }
 }
