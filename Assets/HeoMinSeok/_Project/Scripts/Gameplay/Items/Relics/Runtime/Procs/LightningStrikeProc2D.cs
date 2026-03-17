@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityGAS;
 using Object = UnityEngine.Object;
@@ -9,7 +10,6 @@ public sealed class LightningStrikeProc2D : IRelicProc
     private readonly Object token;
     private readonly GameObject owner;
     private readonly AbilitySystem ownerSystem;
-    private readonly GameplayEffectRunner effectRunner;
     private readonly AttributeSet ownerAttributeSet;
 
     private readonly GameplayTag triggerTag;
@@ -23,6 +23,9 @@ public sealed class LightningStrikeProc2D : IRelicProc
     private readonly float cooldownSeconds;
     private float nextReadyTime;
 
+    private readonly GameplayTag hitConfirmedTag;
+    private readonly GE_Knockback_Spec knockbackEffect;
+
     public LightningStrikeProc2D(
         RelicContext ctx,
         GameplayTag triggerTag,
@@ -32,12 +35,13 @@ public sealed class LightningStrikeProc2D : IRelicProc
         float radius,
         LayerMask enemyMask,
         LightningStrikeVfx lightningPrefab,
-        float cooldownSeconds)
+        float cooldownSeconds,
+        GameplayTag hitConfirmedTag = null,
+        GE_Knockback_Spec knockbackEffect = null)
     {
         this.token = ctx.token;
         this.owner = ctx.owner;
         this.ownerSystem = ctx.abilitySystem;
-        this.effectRunner = ctx.effectRunner;
         this.ownerAttributeSet = ctx.attributeSet;
 
         this.triggerTag = triggerTag;
@@ -50,18 +54,18 @@ public sealed class LightningStrikeProc2D : IRelicProc
         this.lightningPrefab = lightningPrefab;
         this.cooldownSeconds = Mathf.Max(0f, cooldownSeconds);
         this.nextReadyTime = 0f;
+
+        this.hitConfirmedTag = hitConfirmedTag;
+        this.knockbackEffect = knockbackEffect;
     }
 
     public void Handle(GameplayTag tag, AbilityEventData data)
     {
         if (triggerTag == null || tag != triggerTag) return;
-        if (ownerSystem == null || effectRunner == null || damageEffect == null) return;
-
+        if (ownerSystem == null || damageEffect == null) return;
         if (cooldownSeconds > 0f && Time.time < nextReadyTime) return;
 
-        Vector3 strikePos;
-        if (data.Target != null) strikePos = data.Target.transform.position;
-        else strikePos = data.WorldPosition;
+        Vector3 strikePos = ResolveStrikePosition(data);
 
         if (lightningPrefab != null)
         {
@@ -77,36 +81,85 @@ public sealed class LightningStrikeProc2D : IRelicProc
             nextReadyTime = Time.time + cooldownSeconds;
     }
 
+    private Vector3 ResolveStrikePosition(AbilityEventData data)
+    {
+        if (data.Target != null)
+            return data.Target.transform.position;
+
+        return data.WorldPosition;
+    }
+
     private void ApplyAoeDamage(Vector3 center)
     {
         float atkPlus = 0f;
         if (ownerAttributeSet != null && attackPlusAttribute != null)
             atkPlus = ownerAttributeSet.GetAttributeValue(attackPlusAttribute);
 
-        float dmg = baseDamage + atkPlus;
-        if (dmg <= 0f) return;
+        float finalDamage = baseDamage + atkPlus;
+        if (finalDamage <= 0f)
+            return;
 
-        int mask = enemyMask.value;
-        var hits = (mask != 0)
-            ? Physics2D.OverlapCircleAll(center, radius, mask)
+        Collider2D[] hits = enemyMask.value != 0
+            ? Physics2D.OverlapCircleAll(center, radius, enemyMask)
             : Physics2D.OverlapCircleAll(center, radius);
+
+        if (hits == null || hits.Length == 0)
+            return;
+
+        var uniqueTargets = new List<GameObject>(hits.Length);
+        var visited = new HashSet<GameObject>();
 
         for (int i = 0; i < hits.Length; i++)
         {
-            var go = hits[i].attachedRigidbody ? hits[i].attachedRigidbody.gameObject : hits[i].gameObject;
-            if (go == null || go == owner) continue;
-            if (go.GetComponent<AttributeSet>() == null) continue;
+            var hit = hits[i];
+            if (hit == null) continue;
 
-            var spec = ownerSystem.MakeSpec(damageEffect, causer: owner, sourceObject: token);
-            if (damageEffect.damageKey != null)
-                spec.SetSetByCallerMagnitude(damageEffect.damageKey, dmg);
+            var target = ResolveTargetRoot(hit);
+            if (target == null || target == owner) continue;
 
-            effectRunner.ApplyEffectSpec(spec, go);
+            if (target.GetComponent<AttributeSet>() == null)
+                continue;
+
+            if (!visited.Add(target))
+                continue;
+
+            uniqueTargets.Add(target);
         }
+
+        if (uniqueTargets.Count == 0)
+            return;
+
+        var snapshot = new CombatDamageSnapshot(
+            finalHpDamage: finalDamage,
+            finalStaggerBuildUp: 0f,
+            finalKnockbackImpulse: 0f,
+            elementBuildUps: null
+        );
+
+        CombatDamageApplicator.ApplyToTargets(
+            system: ownerSystem,
+            spec: null,
+            damageEffect: damageEffect,
+            knockbackEffect: knockbackEffect,
+            targets: uniqueTargets,
+            snapshot: snapshot,
+            hitConfirmedTag: hitConfirmedTag,
+            causer: owner
+        );
+    }
+
+    private static GameObject ResolveTargetRoot(Collider2D hit)
+    {
+        if (hit == null)
+            return null;
+
+        if (hit.attachedRigidbody != null)
+            return hit.attachedRigidbody.gameObject;
+
+        return hit.gameObject;
     }
 
     public void Dispose()
     {
-        // 필요하면 풀 반환/정리 로직 추가 가능
     }
 }

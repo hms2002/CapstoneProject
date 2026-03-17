@@ -117,8 +117,8 @@ public static class CombatDamageAction
         // 0) Extract GE_Damage_Spec once
         var geDmg = damageEffect as GE_Damage_Spec;
 
-        // 1) capture pre-HP for KillConfirmed check
-        var killCheck = CaptureKillCheck(target, geDmg);
+        // 1) capture pre-HP for KillConfirmed / Damaged check
+        var hpCheck = CaptureHpCheck(target, geDmg);
 
         // 2) Apply damage effect
         var damageSpec = BuildDamageSpec(
@@ -132,7 +132,10 @@ public static class CombatDamageAction
 
         runner.ApplyEffectSpec(damageSpec, target);
 
-        // 3) Apply knockback effect separately
+        // 3) target-side damaged event
+        EmitDamagedTaken(target, spec, causer, hpCheck);
+
+        // 4) Apply knockback effect separately
         ApplyKnockbackEffect(
             system,
             spec,
@@ -141,14 +144,14 @@ public static class CombatDamageAction
             finalKnockbackImpulse,
             causer);
 
-        // 4) KillConfirmed
-        TryEmitKillConfirmed(system, spec, target, causer, killCheck);
+        // 5) KillConfirmed
+        TryEmitKillConfirmed(system, spec, target, causer, hpCheck);
 
-        // 5) Post systems
+        // 6) Post systems
         ApplyStagger(target, finalStaggerBuildUp, system.gameObject, causer);
         ApplyElements(target, elementBuildUps, system.gameObject, causer);
 
-        // 6) Hit confirmed event
+        // 7) Hit confirmed event
         EmitHitConfirmed(system, spec, target, causer, hitConfirmedTag);
     }
 
@@ -219,46 +222,70 @@ public static class CombatDamageAction
 
     // ---- Kill confirmed ---------------------------------------------------------------------
 
-    private readonly struct KillCheckData
+    private readonly struct HpCheckData
     {
-        public readonly float preHp;
-        public readonly AttributeDefinition hpAttr;
-        public readonly AttributeSet targetAttrs;
+        public readonly float PreHp;
+        public readonly AttributeDefinition HpAttr;
+        public readonly AttributeSet TargetAttrs;
 
-        public KillCheckData(float preHp, AttributeDefinition hpAttr, AttributeSet targetAttrs)
+        public HpCheckData(float preHp, AttributeDefinition hpAttr, AttributeSet targetAttrs)
         {
-            this.preHp = preHp;
-            this.hpAttr = hpAttr;
-            this.targetAttrs = targetAttrs;
+            PreHp = preHp;
+            HpAttr = hpAttr;
+            TargetAttrs = targetAttrs;
         }
 
-        public bool IsValid => targetAttrs != null && hpAttr != null && preHp > 0f;
+        public bool IsValid => TargetAttrs != null && HpAttr != null && PreHp >= 0f;
     }
-
-    private static KillCheckData CaptureKillCheck(GameObject target, GE_Damage_Spec geDmg)
+    private static HpCheckData CaptureHpCheck(GameObject target, GE_Damage_Spec geDmg)
     {
         if (geDmg == null || geDmg.healthAttribute == null)
             return default;
 
         var hpAttr = geDmg.healthAttribute;
         var targetAttrs = target.GetComponent<AttributeSet>();
-        if (targetAttrs == null) return new KillCheckData(preHp: -1f, hpAttr, targetAttrs: null);
+        if (targetAttrs == null)
+            return new HpCheckData(preHp: -1f, hpAttr, targetAttrs: null);
 
         float preHp = targetAttrs.GetAttributeValue(hpAttr);
-        return new KillCheckData(preHp, hpAttr, targetAttrs);
+        return new HpCheckData(preHp, hpAttr, targetAttrs);
     }
+    private static void EmitDamagedTaken(
+    GameObject target,
+    AbilitySpec sourceSpec,
+    GameObject causer,
+    HpCheckData hpCheck)
+    {
+        if (!hpCheck.IsValid) return;
 
+        float postHp = hpCheck.TargetAttrs.GetAttributeValue(hpCheck.HpAttr);
+        if (postHp >= hpCheck.PreHp) return; // 실제 감소 없으면 발행 안 함
+
+        var targetSystem = target.GetComponent<AbilitySystem>();
+        if (targetSystem == null) return;
+        if (targetSystem.DamagedTag == null) return;
+
+        targetSystem.SendGameplayEvent(targetSystem.DamagedTag, new AbilityEventData
+        {
+            AbilitySystem = targetSystem,
+            Spec = sourceSpec,
+            Instigator = causer,
+            Target = target,
+            WorldPosition = target.transform.position,
+            Causer = causer
+        });
+    }
     private static void TryEmitKillConfirmed(
         AbilitySystem system,
         AbilitySpec spec,
         GameObject target,
         GameObject causer,
-        KillCheckData killCheck)
+        HpCheckData hpCheck)
     {
         if (system.KillConfirmedTag == null) return;
-        if (!killCheck.IsValid) return;
+        if (!hpCheck.IsValid) return;
 
-        float postHp = killCheck.targetAttrs.GetAttributeValue(killCheck.hpAttr);
+        float postHp = hpCheck.TargetAttrs.GetAttributeValue(hpCheck.HpAttr);
         if (postHp > 0f) return;
 
         system.SendGameplayEvent(system.KillConfirmedTag, new AbilityEventData

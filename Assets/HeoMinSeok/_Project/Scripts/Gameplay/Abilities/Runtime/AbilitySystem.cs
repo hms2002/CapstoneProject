@@ -36,6 +36,10 @@ namespace UnityGAS
 
         [Header("Combat Events")]
         [SerializeField] private GameplayTag killConfirmedTag;
+        [SerializeField] private GameplayTag damagedTag;
+
+        public GameplayTag KillConfirmedTag => killConfirmedTag;
+        public GameplayTag DamagedTag => damagedTag;
 
         [Header("Animation")]
         [SerializeField] private Animator animator;
@@ -77,7 +81,6 @@ namespace UnityGAS
         public AttributeSet AttributeSet => attributeSet;
         public GameplayEffectRunner EffectRunner => effectRunner;
         public TagSystem TagSystem => tagSystem;
-        public GameplayTag KillConfirmedTag => killConfirmedTag;
 
         public Animator PlayerAnimator => presentationRouter != null ? presentationRouter.PlayerAnimator : playerAnimator;
         public Animator WeaponAnimator => presentationRouter != null ? presentationRouter.WeaponAnimator : initialWeaponAnimator;
