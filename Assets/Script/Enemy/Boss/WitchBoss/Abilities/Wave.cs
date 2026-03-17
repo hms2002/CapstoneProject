@@ -11,9 +11,9 @@ public class Wave : MonoBehaviour
     [SerializeField] private int segments = 60;
 
     [Header("Motion Settings")]
-    [SerializeField] private float expansionSpeed   = 5.0f; // 초당 확산 속도 (반경 증가량)
-    [SerializeField] private float thickness        = 1.0f; // 도넛 두께 (딜 판정 범위)
-    [SerializeField] private float maxDuration      = 2.5f; // 최대 지속 시간
+    [SerializeField] private float expansionSpeed   = 5.0f;
+    [SerializeField] private float thickness        = 1.0f;
+    [SerializeField] private float maxDuration      = 2.5f;
 
     [Header("Collision Settings")]
     [SerializeField] private LayerMask targetLayer;
@@ -23,27 +23,32 @@ public class Wave : MonoBehaviour
     private float   timer           = 0f;
     private bool    hasHitPlayer    = false;
 
-    private GameplayEffectSpec  damageSpec; // 보스가 적어준 데미지 명세서
-
+    private GameplayEffectSpec damageSpec;
 
     private void Awake()
     {
         lineRenderer = GetComponent<LineRenderer>();
+
+        if (lineRenderer != null)
+        {
+            lineRenderer.useWorldSpace      = false;
+            lineRenderer.loop               = true;
+            lineRenderer.alignment          = LineAlignment.TransformZ;
+            lineRenderer.numCapVertices     = 0;
+            lineRenderer.numCornerVertices  = 0;
+        }
     }
 
-    // 초기화 함수 (AL에서 호출)
     public void Initialize(GameplayEffectSpec spec)
     {
         damageSpec = spec;
 
-        // LineRenderer 초기 설정
-        if (lineRenderer != null)
-        {
-            lineRenderer.positionCount = segments + 1;
-            lineRenderer.useWorldSpace = false;
-            lineRenderer.startWidth = thickness;
-            lineRenderer.endWidth = thickness;
-        }
+        // 중심점이 꼬이는 현상 방지
+        currentRadius = thickness * 0.5f;
+
+        // 부모의 스케일(Scale)이 찌그러져 있으면 파동도 찌그러짐
+        // 로컬 스케일을 무조건 1,1,1 정비율로 강제 고정
+        transform.localScale = Vector3.one;
     }
 
     private void Update()
@@ -51,47 +56,45 @@ public class Wave : MonoBehaviour
         timer           += Time.deltaTime;
         currentRadius   += expansionSpeed * Time.deltaTime;
 
-        UpdateVisuals();  // DrawCircle 로직
-        CheckLifeTime();  // 수명 검사
+        UpdateVisuals();
+        CheckLifeTime();
 
         if (hasHitPlayer) return;
 
-        DetectCollision(); // 충돌 검사
+        DetectCollision();
     }
 
     private void UpdateVisuals()
     {
         if (lineRenderer == null) return;
 
-        // LineRenderer 두께 업데이트 (혹시 런타임에 바꾸고 싶을까봐)
-        lineRenderer.startWidth = thickness;
-        lineRenderer.endWidth   = thickness;
+        // 런타임에 segments를 바꿔도 즉시 동기화되도록 강제 설정
+        lineRenderer.positionCount  = segments;
+        lineRenderer.startWidth     = thickness;
+        lineRenderer.endWidth       = thickness;
 
-        float angle = 0f;
+        // 가장 오류가 적고 안정적인 라디안 단위 원 방정식
+        float angleStep = (2.0f * Mathf.PI) / segments;
 
-        for (int i = 0; i <= segments; i++)
+        for (int i = 0; i < segments; i++)
         {
-            float x = Mathf.Sin(Mathf.Deg2Rad * angle) * currentRadius;
-            float y = Mathf.Cos(Mathf.Deg2Rad * angle) * currentRadius;
+            float x = Mathf.Cos(i * angleStep) * currentRadius;
+            float y = Mathf.Sin(i * angleStep) * currentRadius;
 
             lineRenderer.SetPosition(i, new Vector3(x, y, 0f));
-            angle += (360.0f / segments);
         }
     }
 
     private void DetectCollision()
     {
-        // 도넛의 바깥쪽 경계까지를 원으로 잡고 검사
-        float checkRadius = currentRadius + (thickness * 0.5f);
-
-        Collider2D hit = Physics2D.OverlapCircle(transform.position, checkRadius, targetLayer);
+        float       checkRadius = currentRadius + (thickness * 0.5f);
+        Collider2D  hit         = Physics2D.OverlapCircle(transform.position, checkRadius, targetLayer);
 
         if (hit != null)
         {
             float distance  = Vector2.Distance(transform.position, hit.transform.position);
             float innerEdge = currentRadius - (thickness * 0.5f);
 
-            // 도넛 안쪽 구멍보다 멀리 있어야 함 (즉, 도넛 위에 있어야 함)
             if (distance >= innerEdge)
             {
                 ApplyDamage(hit.gameObject);
@@ -110,5 +113,14 @@ public class Wave : MonoBehaviour
         }
     }
 
-    private void CheckLifeTime() { if (timer >= maxDuration) Destroy(gameObject); }
+    private void CheckLifeTime()
+    {
+        if (timer >= maxDuration) Destroy(gameObject);
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireSphere(transform.position, currentRadius);
+    }
 }
