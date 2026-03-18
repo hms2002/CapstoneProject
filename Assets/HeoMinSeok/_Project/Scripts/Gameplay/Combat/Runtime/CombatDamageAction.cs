@@ -315,22 +315,58 @@ public static class CombatDamageAction
         stagger.AddBuildUp(finalStaggerBuildUp, instigator: instigator, causer: causer);
     }
 
+    private static readonly List<ElementDamageResult> s_AutoResolvedElements = new(8);
+#if UNITY_EDITOR
+    private static bool s_warnedLegacyElementBuildUpsIgnored;
+#endif
+
+    private static readonly List<ElementDamageResult> s_resolvedElements = new(8);
     private static void ApplyElements(
         GameObject target,
         IReadOnlyList<ElementDamageResult> elementBuildUps,
         GameObject instigator,
         GameObject causer)
     {
-        if (elementBuildUps == null || elementBuildUps.Count <= 0) return;
+        if (target == null) return;
 
-        var elem = target.GetComponent<ElementGaugeSystem>();
-        if (elem == null) return;
+        var gaugeSystem = target.GetComponent<ElementGaugeSystem>();
+        if (gaugeSystem == null) return;
 
-        for (int i = 0; i < elementBuildUps.Count; i++)
+        // Legacy path intentionally ignored.
+        // 과거에는 스킬/투사체가 elementBuildUps 파라미터로 속성 누적량을 직접 전달했지만,
+        // 현재는 공격자의 AttributeSet + ElementOffenseSource 를 기준으로
+        // CombatDamageAction 에서 속성 누적량을 일괄 계산한다.
+        // 따라서 전달된 elementBuildUps 는 의도적으로 무시한다.
+        // 레거시 생산자(ability/projcetile 쪽 element formula 생성 코드) 정리 후
+        // 이 파라미터 자체를 API 에서 제거할 예정.
+#if UNITY_EDITOR
+        if (!s_warnedLegacyElementBuildUpsIgnored &&
+            elementBuildUps != null &&
+            elementBuildUps.Count > 0)
         {
-            var e = elementBuildUps[i];
-            if (e.elementType != null && e.damage > 0f)
-                elem.AddBuildUp(e.elementType, e.damage, instigator: instigator, causer: causer);
+            s_warnedLegacyElementBuildUpsIgnored = true;
+            Debug.LogWarning(
+                "[CombatDamageAction] Legacy elementBuildUps parameter was provided but is ignored. " +
+                "Element build-up is now resolved centrally from attacker attributes. " +
+                "Remove old element formula producers from ability / projectile code.",
+                causer != null ? causer : target);
+        }
+#endif
+
+        var resolved = ElementBuildUpResolver.Evaluate(instigator, target, s_resolvedElements);
+        if (resolved == null || resolved.Count == 0) return;
+
+        for (int i = 0; i < resolved.Count; i++)
+        {
+            var e = resolved[i];
+            if (e.elementType == null) continue;
+            if (e.damage <= 0f) continue;
+
+            gaugeSystem.AddBuildUp(
+                e.elementType,
+                e.damage,
+                instigator: instigator,
+                causer: causer);
         }
     }
 

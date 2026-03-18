@@ -5,41 +5,47 @@ using UnityEngine;
 namespace UnityGAS
 {
     [DisallowMultipleComponent]
-    public class ElementGaugeSystem : MonoBehaviour
+    public sealed class ElementGaugeSystem : MonoBehaviour
     {
         [Serializable]
-        public class GaugeEntry
+        public sealed class ElementGaugeState
         {
-            [Tooltip("Element type tag. e.g. Element.Fire / Element.Bleed / Element.Poison")]
-            public GameplayTag elementType;
+            [Header("Definition")]
+            public ElementGaugeDefinition definition;
 
-            [Header("Gauge Attributes")]
-            public AttributeDefinition currentGaugeAttribute;      // 예: FireGauge
-            public AttributeDefinition maxGaugeAttribute;          // 예: MaxFireGauge
-            public AttributeDefinition resistancePercentAttribute; // 예: FireResistance
+            [Header("Runtime")]
+            public float currentBuildUp;
+            public float lastBuildUpTime = -999f;
 
-            [Header("Trigger")]
-            public GameplayEffect debuffEffect;
-            public bool allowOverflow = true;
+            [Header("Runtime VFX")]
+            public GameObject sustainVfxInstance;
 
-            [Header("Trigger Damage (Optional)")]
-            public bool injectDamageToSpec = false;
-            public GameplayTag setByCallerKeyOverride;
-            [Range(0f, 1f)] public float percentOfCurrentHealth = 0f;
-            public AttributeDefinition instigatorStatAttribute;
-            public float instigatorStatMultiplier = 0f;
-            public float buildUpAmountMultiplier = 0f;
-            public float flatDamageBonus = 0f;
+            [Header("Runtime UI")]
+            public bool uiVisible;
         }
 
-        [Header("Gauges")]
-        public List<GaugeEntry> gauges = new();
+        [Header("Catalog")]
+        [SerializeField] private ElementGaugeCatalog catalog;
+
+        [Header("Decay")]
+        [SerializeField] private bool useDecay = true;
+        [SerializeField] private float decayDelaySeconds = 3f;
+        [SerializeField, Range(0f, 1f)] private float decayPercentPerSecond = 0.02f;
+
+        [Header("Trigger Policy")]
+        [SerializeField] private bool allowOverflowCarry = true;
 
         [Header("Debug")]
-        public bool logWhenTriggered = false;
+        [SerializeField] private bool logWhenTriggered = false;
+        [SerializeField] private bool logMissingDefinition = true;
+
+        [Header("Runtime (Debug)")]
+        [SerializeField] private List<ElementGaugeState> runtimeStates = new();
 
         public event Action<GameplayTag, float, float> OnGaugeChanged; // element, old, new
         public event Action<GameplayTag> OnGaugeTriggered;
+
+        private readonly Dictionary<GameplayTag, ElementGaugeState> stateByTag = new();
 
         private GameplayEffectRunner _runner;
         private AttributeSet _attr;
@@ -48,76 +54,108 @@ namespace UnityGAS
         {
             _runner = GetComponent<GameplayEffectRunner>();
             _attr = GetComponent<AttributeSet>();
+            RebuildRuntimeStates();
+        }
+
+#if UNITY_EDITOR
+        private void OnValidate()
+        {
+            if (Application.isPlaying) return;
+            if (decayDelaySeconds < 0f) decayDelaySeconds = 0f;
+        }
+#endif
+
+        private void Update()
+        {
+            TickDecay();
         }
 
         public float GetValue(GameplayTag elementType)
         {
-            var g = FindGauge(elementType);
-            return g != null ? GetGaugeValue(g) : 0f;
+            var state = FindState(elementType);
+            return state != null ? Mathf.Max(0f, state.currentBuildUp) : 0f;
         }
 
         public float GetThreshold(GameplayTag elementType)
         {
-            var g = FindGauge(elementType);
-            return g != null ? Mathf.Max(0f, GetAttrValue(g.maxGaugeAttribute)) : 0f;
+            var state = FindState(elementType);
+            return state != null ? Mathf.Max(0f, GetMaxGauge(state.definition)) : 0f;
         }
 
         public void ClearAll()
         {
-            if (gauges == null) return;
+            if (runtimeStates == null) return;
 
-            for (int i = 0; i < gauges.Count; i++)
+            for (int i = 0; i < runtimeStates.Count; i++)
             {
-                var g = gauges[i];
-                if (g == null) continue;
+                var state = runtimeStates[i];
+                if (state == null || state.definition == null || state.definition.elementTag == null)
+                    continue;
 
-                float old = GetGaugeValue(g);
-                SetGaugeValue(g, 0f);
-                OnGaugeChanged?.Invoke(g.elementType, old, 0f);
+                float old = state.currentBuildUp;
+                state.currentBuildUp = 0f;
+                state.lastBuildUpTime = -999f;
+
+                if (state.sustainVfxInstance != null)
+                {
+                    Destroy(state.sustainVfxInstance);
+                    state.sustainVfxInstance = null;
+                }
+
+                state.uiVisible = false;
+
+                if (!Mathf.Approximately(old, 0f))
+                    OnGaugeChanged?.Invoke(state.definition.elementTag, old, 0f);
             }
         }
 
         public void AddBuildUp(GameplayTag elementType, float amount, GameObject instigator, GameObject causer)
         {
-            if (_attr == null) return;
-            if (elementType == null || amount <= 0f) return;
+            if (elementType == null || amount <= 0f)
+                return;
 
-            float rawBuildUp = amount;
-
-            var g = FindGauge(elementType);
-            if (g == null)
+            var state = FindState(elementType);
+            if (state == null || state.definition == null)
             {
 #if UNITY_EDITOR
-                Debug.LogWarning($"[ElementGaugeSystem] Missing gauge entry for element '{elementType.CachedPath}' on '{name}'. Ignoring build-up.");
+                if (logMissingDefinition)
+                {
+                    Debug.LogWarning(
+                        $"[ElementGaugeSystem] Missing gauge definition for element '{elementType.CachedPath}' on '{name}'. Ignoring build-up.",
+                        this);
+                }
 #endif
                 return;
             }
 
-            if (g.resistancePercentAttribute != null)
-            {
-                float resist = Mathf.Clamp01(GetAttrValue(g.resistancePercentAttribute));
-                amount *= (1f - resist);
-                if (amount <= 0f) return;
-            }
+            float maxGauge = Mathf.Max(0f, GetMaxGauge(state.definition));
+            float resistance = Mathf.Clamp01(GetResistance(state.definition));
+            float finalAmount = amount * (1f - resistance);
 
-            float old = GetGaugeValue(g);
-            float max = Mathf.Max(0f, GetAttrValue(g.maxGaugeAttribute));
-            float next = old + amount;
+            if (finalAmount <= 0f)
+                return;
 
-            if (max <= 0f)
+            float old = state.currentBuildUp;
+            state.lastBuildUpTime = Time.time;
+            state.uiVisible = true;
+
+            // maxGauge <= 0 이면 임계점 없는 누적통으로 취급
+            if (maxGauge <= 0f)
             {
-                SetGaugeValue(g, next);
-                OnGaugeChanged?.Invoke(elementType, old, next);
+                state.currentBuildUp += finalAmount;
+                OnGaugeChanged?.Invoke(elementType, old, state.currentBuildUp);
                 return;
             }
 
+            float next = old + finalAmount;
             int triggerCount = 0;
-            while (next >= max)
+
+            while (next >= maxGauge)
             {
                 triggerCount++;
 
-                if (g.allowOverflow)
-                    next -= max;
+                if (allowOverflowCarry)
+                    next -= maxGauge;
                 else
                 {
                     next = 0f;
@@ -125,110 +163,173 @@ namespace UnityGAS
                 }
             }
 
-            SetGaugeValue(g, next);
-            OnGaugeChanged?.Invoke(elementType, old, next);
+            state.currentBuildUp = Mathf.Max(0f, next);
+            OnGaugeChanged?.Invoke(elementType, old, state.currentBuildUp);
 
             if (triggerCount <= 0)
                 return;
 
             for (int i = 0; i < triggerCount; i++)
+            {
+                TriggerGaugeFull(state, instigator, causer);
                 OnGaugeTriggered?.Invoke(elementType);
+            }
 
             if (logWhenTriggered)
             {
                 string srcName = instigator != null ? instigator.name : (causer != null ? causer.name : "null");
-                Debug.Log($"[ElementGaugeSystem] TRIGGER {elementType.CachedPath} x{triggerCount} on '{name}' (source='{srcName}')");
-            }
-
-            if (g.debuffEffect == null || _runner == null)
-                return;
-
-            var src = instigator != null ? instigator : causer;
-
-            if (g.injectDamageToSpec && g.debuffEffect is GE_Damage_Spec dmgSpec)
-            {
-                var key = g.setByCallerKeyOverride != null ? g.setByCallerKeyOverride : dmgSpec.damageKey;
-                var healthAttr = dmgSpec.healthAttribute;
-
-                for (int i = 0; i < triggerCount; i++)
-                {
-                    float damage = 0f;
-
-                    if (g.percentOfCurrentHealth > 0f && healthAttr != null)
-                    {
-                        float curHp = GetAttrValue(healthAttr);
-                        if (curHp > 0f)
-                            damage += curHp * g.percentOfCurrentHealth;
-                    }
-
-                    if (g.instigatorStatAttribute != null && g.instigatorStatMultiplier != 0f && src != null)
-                    {
-                        var instAttr = src.GetComponent<AttributeSet>();
-                        if (instAttr != null)
-                            damage += instAttr.GetAttributeValue(g.instigatorStatAttribute) * g.instigatorStatMultiplier;
-                    }
-
-                    if (g.buildUpAmountMultiplier != 0f)
-                        damage += rawBuildUp * g.buildUpAmountMultiplier;
-
-                    damage += g.flatDamageBonus;
-                    if (damage < 0f) damage = 0f;
-
-                    if (key == null)
-                    {
-                        _runner.ApplyEffect(g.debuffEffect, gameObject, src);
-                        continue;
-                    }
-
-                    var ctx = new GameplayEffectContext(src, src);
-                    ctx.SourceObject = g.debuffEffect;
-
-                    var spec = new GameplayEffectSpec(g.debuffEffect, ctx);
-                    spec.SetSetByCallerMagnitude(key, damage);
-
-                    _runner.ApplyEffectSpec(spec, gameObject);
-                }
-            }
-            else
-            {
-                for (int i = 0; i < triggerCount; i++)
-                    _runner.ApplyEffect(g.debuffEffect, gameObject, src);
+                Debug.Log(
+                    $"[ElementGaugeSystem] TRIGGER {elementType.CachedPath} x{triggerCount} on '{name}' (source='{srcName}')",
+                    this);
             }
         }
 
-        private GaugeEntry FindGauge(GameplayTag elementType)
+        public void RebuildRuntimeStates()
         {
-            if (gauges == null) return null;
+            runtimeStates.Clear();
+            stateByTag.Clear();
 
-            for (int i = 0; i < gauges.Count; i++)
+            if (catalog == null || catalog.definitions == null)
+                return;
+
+            for (int i = 0; i < catalog.definitions.Length; i++)
             {
-                var g = gauges[i];
-                if (g != null && g.elementType == elementType)
-                    return g;
+                var def = catalog.definitions[i];
+                if (def == null || def.elementTag == null)
+                    continue;
+
+                if (stateByTag.ContainsKey(def.elementTag))
+                {
+#if UNITY_EDITOR
+                    Debug.LogWarning(
+                        $"[ElementGaugeSystem] Duplicate element tag '{def.elementTag.CachedPath}' in catalog '{catalog.name}'.",
+                        catalog);
+#endif
+                    continue;
+                }
+
+                var state = new ElementGaugeState
+                {
+                    definition = def,
+                    currentBuildUp = 0f,
+                    lastBuildUpTime = -999f,
+                    sustainVfxInstance = null,
+                    uiVisible = false
+                };
+
+                runtimeStates.Add(state);
+                stateByTag.Add(def.elementTag, state);
             }
+        }
+
+        private void TickDecay()
+        {
+            if (!useDecay) return;
+            if (runtimeStates == null || runtimeStates.Count == 0) return;
+
+            float now = Time.time;
+
+            for (int i = 0; i < runtimeStates.Count; i++)
+            {
+                var state = runtimeStates[i];
+                if (state == null || state.definition == null) continue;
+                if (state.currentBuildUp <= 0f) continue;
+
+                if (now - state.lastBuildUpTime < decayDelaySeconds)
+                    continue;
+
+                float maxGauge = Mathf.Max(0f, GetMaxGauge(state.definition));
+                if (maxGauge <= 0f)
+                    continue;
+
+                float decayAmount = maxGauge * decayPercentPerSecond * Time.deltaTime;
+                if (decayAmount <= 0f)
+                    continue;
+
+                float old = state.currentBuildUp;
+                state.currentBuildUp = Mathf.Max(0f, state.currentBuildUp - decayAmount);
+
+                if (!Mathf.Approximately(old, state.currentBuildUp))
+                    OnGaugeChanged?.Invoke(state.definition.elementTag, old, state.currentBuildUp);
+
+                if (state.currentBuildUp <= 0f)
+                    state.uiVisible = false;
+            }
+        }
+
+        private void TriggerGaugeFull(ElementGaugeState state, GameObject instigator, GameObject causer)
+        {
+            if (state == null || state.definition == null)
+                return;
+
+            var def = state.definition;
+            var src = instigator != null ? instigator : causer;
+
+            // 1) Trigger VFX
+            if (def.triggerVfxPrefab != null)
+            {
+                Instantiate(def.triggerVfxPrefab, transform.position, Quaternion.identity, transform);
+            }
+
+            // 2) Sustain VFX
+            if (def.sustainVfxPrefab != null)
+            {
+                if (state.sustainVfxInstance == null)
+                {
+                    state.sustainVfxInstance = Instantiate(
+                        def.sustainVfxPrefab,
+                        transform.position,
+                        Quaternion.identity,
+                        transform);
+                }
+                else
+                {
+                    state.sustainVfxInstance.transform.SetPositionAndRotation(
+                        transform.position,
+                        Quaternion.identity);
+                    state.sustainVfxInstance.SetActive(false);
+                    state.sustainVfxInstance.SetActive(true);
+                }
+            }
+
+            // 3) Trigger effect
+            if (_runner == null || def.triggerEffect == null)
+                return;
+
+            var ctx = new GameplayEffectContext(src, src)
+            {
+                SourceObject = def.triggerEffect
+            };
+
+            var spec = new GameplayEffectSpec(def.triggerEffect, ctx);
+            _runner.ApplyEffectSpec(spec, gameObject);
+        }
+
+        private ElementGaugeState FindState(GameplayTag elementType)
+        {
+            if (elementType == null)
+                return null;
+
+            if (stateByTag.TryGetValue(elementType, out var state))
+                return state;
 
             return null;
         }
 
-        private float GetGaugeValue(GaugeEntry g)
+        private float GetMaxGauge(ElementGaugeDefinition def)
         {
-            if (_attr == null || g == null || g.currentGaugeAttribute == null)
+            if (_attr == null || def == null || def.maxGaugeAttribute == null)
                 return 0f;
 
-            return _attr.GetAttributeValue(g.currentGaugeAttribute);
+            return Mathf.Max(0f, _attr.GetAttributeValue(def.maxGaugeAttribute));
         }
 
-        private void SetGaugeValue(GaugeEntry g, float value)
+        private float GetResistance(ElementGaugeDefinition def)
         {
-            if (_attr == null || g == null || g.currentGaugeAttribute == null)
-                return;
+            if (_attr == null || def == null || def.resistanceAttribute == null)
+                return 0f;
 
-            _attr.TrySetBaseValue(g.currentGaugeAttribute, Mathf.Max(0f, value), this);
-        }
-
-        private float GetAttrValue(AttributeDefinition def)
-        {
-            return (_attr != null && def != null) ? _attr.GetAttributeValue(def) : 0f;
+            return _attr.GetAttributeValue(def.resistanceAttribute);
         }
     }
 }

@@ -112,12 +112,11 @@ public sealed class LightningStrikeProc2D : IRelicProc
         for (int i = 0; i < hits.Length; i++)
         {
             var hit = hits[i];
-            if (hit == null) continue;
+            if (hit == null)
+                continue;
 
-            var target = ResolveTargetRoot(hit);
-            if (target == null || target == owner) continue;
-
-            if (target.GetComponent<AttributeSet>() == null)
+            GameObject target = ResolveTargetRoot(hit);
+            if (target == null || target == owner)
                 continue;
 
             if (!visited.Add(target))
@@ -154,9 +153,17 @@ public sealed class LightningStrikeProc2D : IRelicProc
             return null;
 
         if (hit.attachedRigidbody != null)
-            return hit.attachedRigidbody.gameObject;
+        {
+            var rbGo = hit.attachedRigidbody.gameObject;
+            if (rbGo.GetComponent<AttributeSet>() != null)
+                return rbGo;
+        }
 
-        return hit.gameObject;
+        var attr = hit.GetComponentInParent<AttributeSet>();
+        if (attr != null)
+            return attr.gameObject;
+
+        return null;
     }
 
     public void Dispose()

@@ -12,13 +12,11 @@ namespace UnityGAS
     {
         public Vector2 Direction;
         public float SpeedScale;
-        public bool Blocked;
 
         public static IntentMovementData None => new IntentMovementData
         {
             Direction = Vector2.zero,
             SpeedScale = 1f,
-            Blocked = true
         };
 
         public static IntentMovementData FromDirection(Vector2 direction, float speedScale = 1f)
@@ -30,7 +28,6 @@ namespace UnityGAS
             {
                 Direction = direction,
                 SpeedScale = speedScale,
-                Blocked = false
             };
         }
     }

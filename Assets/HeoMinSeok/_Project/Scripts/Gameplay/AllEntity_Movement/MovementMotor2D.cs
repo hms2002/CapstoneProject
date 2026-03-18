@@ -184,8 +184,7 @@ namespace UnityGAS
                 return Vector2.zero;
 
             IntentMovementData intent = intentSource.GetIntent();
-            if (intent.Blocked)
-                return Vector2.zero;
+
 
             float moveSpeed = Mathf.Max(0f, statProvider.Get(StatId.MoveSpeedFinal));
             if (moveSpeed <= 0f)

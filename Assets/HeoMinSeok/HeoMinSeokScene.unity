@@ -16325,47 +16325,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1d4aa4b27d4ffd45b29291c3673f422, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gauges:
-  - elementType: {fileID: 11400000, guid: 82578c30453dcb04a88dce3cd193db5b, type: 2}
-    currentGaugeAttribute: {fileID: 0}
-    maxGaugeAttribute: {fileID: 0}
-    resistancePercentAttribute: {fileID: 0}
-    debuffEffect: {fileID: 11400000, guid: cb642d633f60d7244a4da020444aced1, type: 2}
-    allowOverflow: 0
-    injectDamageToSpec: 1
-    setByCallerKeyOverride: {fileID: 0}
-    percentOfCurrentHealth: 0.1
-    instigatorStatAttribute: {fileID: 0}
-    instigatorStatMultiplier: 0
-    buildUpAmountMultiplier: 0
-    flatDamageBonus: 0
-  - elementType: {fileID: 11400000, guid: 7c8af04be6bcbb84794e303f3f4c401c, type: 2}
-    currentGaugeAttribute: {fileID: 0}
-    maxGaugeAttribute: {fileID: 0}
-    resistancePercentAttribute: {fileID: 0}
-    debuffEffect: {fileID: 0}
-    allowOverflow: 0
-    injectDamageToSpec: 0
-    setByCallerKeyOverride: {fileID: 0}
-    percentOfCurrentHealth: 0
-    instigatorStatAttribute: {fileID: 0}
-    instigatorStatMultiplier: 0
-    buildUpAmountMultiplier: 0
-    flatDamageBonus: 0
-  - elementType: {fileID: 11400000, guid: 53bdedc3d917f83458902716124fcc3c, type: 2}
-    currentGaugeAttribute: {fileID: 0}
-    maxGaugeAttribute: {fileID: 0}
-    resistancePercentAttribute: {fileID: 0}
-    debuffEffect: {fileID: 0}
-    allowOverflow: 0
-    injectDamageToSpec: 0
-    setByCallerKeyOverride: {fileID: 0}
-    percentOfCurrentHealth: 0
-    instigatorStatAttribute: {fileID: 0}
-    instigatorStatMultiplier: 0
-    buildUpAmountMultiplier: 0
-    flatDamageBonus: 0
+  catalog: {fileID: 0}
+  useDecay: 1
+  decayDelaySeconds: 3
+  decayPercentPerSecond: 0.02
+  allowOverflowCarry: 1
   logWhenTriggered: 0
+  logMissingDefinition: 1
+  runtimeStates: []
 --- !u!114 &723292229
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -29445,47 +29412,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1d4aa4b27d4ffd45b29291c3673f422, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gauges:
-  - elementType: {fileID: 11400000, guid: 82578c30453dcb04a88dce3cd193db5b, type: 2}
-    currentGaugeAttribute: {fileID: 0}
-    maxGaugeAttribute: {fileID: 0}
-    resistancePercentAttribute: {fileID: 0}
-    debuffEffect: {fileID: 11400000, guid: cb642d633f60d7244a4da020444aced1, type: 2}
-    allowOverflow: 0
-    injectDamageToSpec: 1
-    setByCallerKeyOverride: {fileID: 0}
-    percentOfCurrentHealth: 0.1
-    instigatorStatAttribute: {fileID: 0}
-    instigatorStatMultiplier: 0
-    buildUpAmountMultiplier: 0
-    flatDamageBonus: 0
-  - elementType: {fileID: 11400000, guid: 7c8af04be6bcbb84794e303f3f4c401c, type: 2}
-    currentGaugeAttribute: {fileID: 0}
-    maxGaugeAttribute: {fileID: 0}
-    resistancePercentAttribute: {fileID: 0}
-    debuffEffect: {fileID: 0}
-    allowOverflow: 0
-    injectDamageToSpec: 0
-    setByCallerKeyOverride: {fileID: 0}
-    percentOfCurrentHealth: 0
-    instigatorStatAttribute: {fileID: 0}
-    instigatorStatMultiplier: 0
-    buildUpAmountMultiplier: 0
-    flatDamageBonus: 0
-  - elementType: {fileID: 11400000, guid: 53bdedc3d917f83458902716124fcc3c, type: 2}
-    currentGaugeAttribute: {fileID: 0}
-    maxGaugeAttribute: {fileID: 0}
-    resistancePercentAttribute: {fileID: 0}
-    debuffEffect: {fileID: 0}
-    allowOverflow: 0
-    injectDamageToSpec: 0
-    setByCallerKeyOverride: {fileID: 0}
-    percentOfCurrentHealth: 0
-    instigatorStatAttribute: {fileID: 0}
-    instigatorStatMultiplier: 0
-    buildUpAmountMultiplier: 0
-    flatDamageBonus: 0
+  catalog: {fileID: 0}
+  useDecay: 1
+  decayDelaySeconds: 3
+  decayPercentPerSecond: 0.02
+  allowOverflowCarry: 1
   logWhenTriggered: 0
+  logMissingDefinition: 1
+  runtimeStates: []
 --- !u!114 &1334454364
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -39832,6 +39766,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3a6c52cc5b114ba4787b483d704a8016, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1012006894227905800
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1957667026}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c8e37699d46cac4e87b6f288df19c94, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  profile: {fileID: 11400000, guid: 59d6807f0592ec142818217a50ff2733, type: 2}
+  applyToAllDamage: 1
 --- !u!4 &1336196914018830829 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8228059593326255414, guid: 84d669757910f1f488023c92e71fcad5, type: 3}
@@ -40910,7 +40858,10 @@ PrefabInstance:
     - {fileID: 7184922240575343075, guid: f2946074f70ad1a4194e0ab20873422b, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8883617028798182002, guid: f2946074f70ad1a4194e0ab20873422b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1012006894227905800}
   m_SourcePrefab: {fileID: 100100000, guid: f2946074f70ad1a4194e0ab20873422b, type: 3}
 --- !u!4 &5466560767580878633 stripped
 Transform:
