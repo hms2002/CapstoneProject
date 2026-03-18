@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using UnityEngine;
 using UnityGAS;
 
@@ -12,184 +11,116 @@ public class Wave : MonoBehaviour
     [SerializeField] private int segments = 60;
 
     [Header("Motion Settings")]
-    [SerializeField] private float expansionSpeed = 5.0f; // 초당 확산 속도 (반경 증가량)
-    [SerializeField] private float thickness = 1.0f;      // 도넛 두께 (딜 판정 범위)
-    [SerializeField] private float maxDuration = 2.5f;    // 최대 지속 시간
+    [SerializeField] private float expansionSpeed   = 5.0f;
+    [SerializeField] private float thickness        = 1.0f;
+    [SerializeField] private float maxDuration      = 2.5f;
 
     [Header("Collision Settings")]
     [SerializeField] private LayerMask targetLayer;
 
-    // Runtime =============================
-    private float currentRadius = 0f;
-    private float timer = 0f;
-    private bool hasHitTarget = false;
-    private bool isInitialized = false;
+    // Variables ============================
+    private float   currentRadius   = 0f;
+    private float   timer           = 0f;
+    private bool    hasHitPlayer    = false;
 
-    // Damage Context =====================
-    private AbilitySystem sourceSystem;
-    private AbilitySpec sourceSpec;
-    private GameplayEffect damageEffect;
-    private GE_Knockback_Spec knockbackEffect;
-    private CombatDamageSnapshot damageSnapshot;
-    private GameplayTag hitConfirmedTag;
-    private GameObject causer;
+    private GameplayEffectSpec damageSpec;
 
     private void Awake()
     {
         lineRenderer = GetComponent<LineRenderer>();
-    }
-
-    /// <summary>
-    /// AL / 스포너에서 호출.
-    /// 이제 Wave는 GameplayEffectSpec을 직접 들고 있지 않고,
-    /// 공식 전투 적용 경로에 필요한 정보만 보관한다.
-    /// </summary>
-    public void Initialize(
-        AbilitySystem system,
-        AbilitySpec spec,
-        GameplayEffect damageEffect,
-        GE_Knockback_Spec knockbackEffect,
-        CombatDamageSnapshot snapshot,
-        GameplayTag hitConfirmedTag,
-        GameObject causer = null)
-    {
-        sourceSystem = system;
-        sourceSpec = spec;
-        this.damageEffect = damageEffect;
-        this.knockbackEffect = knockbackEffect;
-        damageSnapshot = snapshot;
-        this.hitConfirmedTag = hitConfirmedTag;
-        this.causer = causer != null ? causer : (system != null ? system.gameObject : null);
-
-        isInitialized = true;
 
         if (lineRenderer != null)
         {
-            lineRenderer.positionCount = segments + 1;
-            lineRenderer.useWorldSpace = false;
-            lineRenderer.startWidth = thickness;
-            lineRenderer.endWidth = thickness;
+            lineRenderer.useWorldSpace      = false;
+            lineRenderer.loop               = true;
+            lineRenderer.alignment          = LineAlignment.TransformZ;
+            lineRenderer.numCapVertices     = 0;
+            lineRenderer.numCornerVertices  = 0;
         }
+    }
+
+    public void Initialize(GameplayEffectSpec spec)
+    {
+        damageSpec = spec;
+
+        // 중심점이 꼬이는 현상 방지
+        currentRadius = thickness * 0.5f;
+
+        // 부모의 스케일(Scale)이 찌그러져 있으면 파동도 찌그러짐
+        // 로컬 스케일을 무조건 1,1,1 정비율로 강제 고정
+        transform.localScale = Vector3.one;
     }
 
     private void Update()
     {
-        if (!isInitialized)
-            return;
-
-        timer += Time.deltaTime;
-        currentRadius += expansionSpeed * Time.deltaTime;
+        timer           += Time.deltaTime;
+        currentRadius   += expansionSpeed * Time.deltaTime;
 
         UpdateVisuals();
         CheckLifeTime();
 
-        if (hasHitTarget)
-            return;
+        if (hasHitPlayer) return;
 
         DetectCollision();
     }
 
     private void UpdateVisuals()
     {
-        if (lineRenderer == null)
-            return;
+        if (lineRenderer == null) return;
 
-        lineRenderer.startWidth = thickness;
-        lineRenderer.endWidth = thickness;
+        // 런타임에 segments를 바꿔도 즉시 동기화되도록 강제 설정
+        lineRenderer.positionCount  = segments;
+        lineRenderer.startWidth     = thickness;
+        lineRenderer.endWidth       = thickness;
 
-        float angle = 0f;
+        // 가장 오류가 적고 안정적인 라디안 단위 원 방정식
+        float angleStep = (2.0f * Mathf.PI) / segments;
 
-        for (int i = 0; i <= segments; i++)
+        for (int i = 0; i < segments; i++)
         {
-            float x = Mathf.Sin(Mathf.Deg2Rad * angle) * currentRadius;
-            float y = Mathf.Cos(Mathf.Deg2Rad * angle) * currentRadius;
+            float x = Mathf.Cos(i * angleStep) * currentRadius;
+            float y = Mathf.Sin(i * angleStep) * currentRadius;
 
             lineRenderer.SetPosition(i, new Vector3(x, y, 0f));
-            angle += 360.0f / segments;
         }
     }
 
     private void DetectCollision()
     {
-        float outerRadius = currentRadius + (thickness * 0.5f);
-        float innerRadius = Mathf.Max(0f, currentRadius - (thickness * 0.5f));
+        float       checkRadius = currentRadius + (thickness * 0.5f);
+        Collider2D  hit         = Physics2D.OverlapCircle(transform.position, checkRadius, targetLayer);
 
-        Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, outerRadius, targetLayer);
-        if (hits == null || hits.Length == 0)
-            return;
-
-        var visited = new HashSet<GameObject>();
-
-        for (int i = 0; i < hits.Length; i++)
+        if (hit != null)
         {
-            var hit = hits[i];
-            if (hit == null)
-                continue;
+            float distance  = Vector2.Distance(transform.position, hit.transform.position);
+            float innerEdge = currentRadius - (thickness * 0.5f);
 
-            GameObject target = ResolveTargetRoot(hit);
-            if (target == null)
-                continue;
-
-            if (target == causer)
-                continue;
-
-            if (!visited.Add(target))
-                continue;
-
-            // 실제로 데미지를 받을 수 있는 대상만
-            if (target.GetComponent<AttributeSet>() == null)
-                continue;
-
-            float distance = Vector2.Distance(transform.position, target.transform.position);
-
-            // 도넛의 구멍 안쪽이면 제외
-            if (distance < innerRadius)
-                continue;
-
-            ApplyDamage(target);
-            hasHitTarget = true;
-            break;
+            if (distance >= innerEdge)
+            {
+                ApplyDamage(hit.gameObject);
+                hasHitPlayer = true;
+            }
         }
     }
 
     private void ApplyDamage(GameObject target)
     {
-        if (sourceSystem == null || damageEffect == null || target == null)
-            return;
+        AbilitySystem targetASC = target.GetComponent<AbilitySystem>();
 
-        CombatDamageAction.ApplyDamageAndEmitHit(
-            system: sourceSystem,
-            spec: sourceSpec,
-            damageEffect: damageEffect,
-            knockbackEffect: knockbackEffect,
-            target: target,
-            finalHpDamage: damageSnapshot.FinalHpDamage,
-            finalStaggerBuildUp: damageSnapshot.FinalStaggerBuildUp,
-            elementBuildUps: damageSnapshot.ElementBuildUps,
-            finalKnockbackImpulse: damageSnapshot.FinalKnockbackImpulse,
-            hitConfirmedTag: hitConfirmedTag,
-            causer: causer
-        );
-    }
-
-    private static GameObject ResolveTargetRoot(Collider2D hit)
-    {
-        if (hit == null)
-            return null;
-
-        if (hit.attachedRigidbody != null)
-            return hit.attachedRigidbody.gameObject;
-
-        var attr = hit.GetComponentInParent<AttributeSet>();
-        if (attr != null)
-            return attr.gameObject;
-
-        return hit.gameObject;
+        if (targetASC != null && damageSpec != null)
+        {
+            targetASC.EffectRunner.ApplyEffectSpec(damageSpec, target);
+        }
     }
 
     private void CheckLifeTime()
     {
-        if (timer >= maxDuration)
-            Destroy(gameObject);
+        if (timer >= maxDuration) Destroy(gameObject);
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireSphere(transform.position, currentRadius);
     }
 }

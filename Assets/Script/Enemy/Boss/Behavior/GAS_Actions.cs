@@ -12,7 +12,7 @@ using Action = Unity.Behavior.Action;
 public class ActivateGASAbilityAction : Action
 {
     [SerializeReference] public  BlackboardVariable<AbilityDefinition>  Ability;
-                         private BlackboardVariable<GameObject>         Target;
+    [SerializeReference] public BlackboardVariable<GameObject>          Target;
 
     private AbilitySystem       abilitySystem;
     private bool                isRunning;
