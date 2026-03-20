@@ -48,9 +48,9 @@ public class WeaponInventory2D : MonoBehaviour
     // -----------------------
     // Public getters
     // -----------------------
-    public int ActiveIndex => activeIndex;
-    public WeaponDefinition ActiveWeapon => IsValidSlot(activeIndex) ? slots[activeIndex] : null;
-    public bool HasEquippedWeapon => activeIndex >= 0 && ActiveWeapon != null;
+    public int ActiveIndex => equipRuntime != null ? equipRuntime.ActiveIndex : activeIndex;
+    public WeaponDefinition ActiveWeapon => IsValidSlot(ActiveIndex) ? slots[ActiveIndex] : null;
+    public bool HasEquippedWeapon => ActiveIndex >= 0 && ActiveWeapon != null;
     public int SlotCount => slots.Length;
 
     public WeaponDefinition GetWeaponInSlot(int slotIndex)
@@ -79,7 +79,7 @@ public class WeaponInventory2D : MonoBehaviour
     {
         if (HasEquippedWeapon)
         {
-            var result = equipRuntime.Equip(activeIndex, ActiveWeapon);
+            var result = equipRuntime.Equip(ActiveIndex, ActiveWeapon); 
             SyncActiveStateFromRuntime();
 
             if (result.Changed)
@@ -108,9 +108,10 @@ public class WeaponInventory2D : MonoBehaviour
         {
             replaced = true;
 
-            int other = (activeIndex == 0) ? 1 : 0;
-            targetIndex = (slots[other] != null) ? other : Mathf.Clamp(activeIndex, 0, slots.Length - 1);
-            replacedWasActive = (targetIndex == activeIndex);
+            int current = ActiveIndex;
+            int other = (current == 0) ? 1 : 0;
+            targetIndex = (slots[other] != null) ? other : Mathf.Clamp(current, 0, slots.Length - 1);
+            replacedWasActive = (targetIndex == current);
 
             DropSlot(targetIndex);
         }
@@ -165,6 +166,8 @@ public class WeaponInventory2D : MonoBehaviour
 
     public void Swap()
     {
+        int current = ActiveIndex;
+
         if (!HasEquippedWeapon)
         {
             int first = FindFirstFilledSlot();
@@ -173,8 +176,9 @@ public class WeaponInventory2D : MonoBehaviour
             return;
         }
 
-        int other = 1 - activeIndex;
-        if (!IsValidSlot(other) || slots[other] == null) return;
+        int other = 1 - current;
+        if (!IsValidSlot(other) || slots[other] == null)
+            return;
 
         Equip(other);
         NotifyInventoryChanged();
@@ -184,7 +188,7 @@ public class WeaponInventory2D : MonoBehaviour
     {
         if (!HasEquippedWeapon) return;
 
-        int droppingIndex = activeIndex;
+        int droppingIndex = ActiveIndex;
         DropSlot(droppingIndex);
 
         int other = 1 - droppingIndex;
@@ -227,7 +231,7 @@ public class WeaponInventory2D : MonoBehaviour
         if (newWeapon != null && !CanPlaceWeaponInSlot(slotIndex, newWeapon))
             return false;
 
-        bool wasActive = (slotIndex == activeIndex);
+        bool wasActive = (slotIndex == ActiveIndex);
 
         if (wasActive)
         {
@@ -255,7 +259,7 @@ public class WeaponInventory2D : MonoBehaviour
         {
             Equip(slotIndex);
         }
-        else if (autoEquipIfNone && activeIndex < 0 && newWeapon != null)
+        else if (autoEquipIfNone && ActiveIndex < 0 && newWeapon != null)
         {
             Equip(slotIndex);
         }
@@ -273,6 +277,9 @@ public class WeaponInventory2D : MonoBehaviour
         if (!IsValidSlot(a) || !IsValidSlot(b)) return false;
         if (a == b) return true;
 
+        int prevIndex = ActiveIndex;
+        WeaponDefinition prevWeapon = IsValidSlot(prevIndex) ? slots[prevIndex] : null;
+
         var wa = slots[a];
         var wb = slots[b];
 
@@ -282,17 +289,19 @@ public class WeaponInventory2D : MonoBehaviour
         OnSlotChanged?.Invoke(a, wa, slots[a]);
         OnSlotChanged?.Invoke(b, wb, slots[b]);
 
-        int prevIndex = activeIndex;
+        int newIndex = prevIndex;
+        if (prevIndex == a) newIndex = b;
+        else if (prevIndex == b) newIndex = a;
 
-        if (activeIndex == a) activeIndex = b;
-        else if (activeIndex == b) activeIndex = a;
+        WeaponDefinition newWeapon = IsValidSlot(newIndex) ? slots[newIndex] : null;
 
-        equipRuntime.Initialize(activeIndex, ActiveWeapon);
+        activeIndex = newIndex;
+        equipRuntime.Initialize(newIndex, newWeapon);
+        SyncActiveStateFromRuntime();
 
-        if (prevIndex != activeIndex && activeIndex >= 0)
+        if (prevIndex != newIndex && newIndex >= 0)
         {
-            var equipped = ActiveWeapon;
-            OnEquippedChanged?.Invoke(prevIndex, activeIndex, equipped, equipped);
+            OnEquippedChanged?.Invoke(prevIndex, newIndex, prevWeapon, newWeapon);
         }
 
         NotifyInventoryChanged();
@@ -394,7 +403,7 @@ public class WeaponInventory2D : MonoBehaviour
         var weapon = slots[slotIndex];
         if (weapon == null) return;
 
-        bool wasActive = (slotIndex == activeIndex);
+        bool wasActive = (slotIndex == ActiveIndex);
 
         if (wasActive)
         {
