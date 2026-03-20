@@ -12,6 +12,10 @@ public class SampleTopDownPlayer : MonoBehaviour, IPlayerInteractor
     [Header("Interaction")]
     [SerializeField] private KeyCode interactKey = KeyCode.F;
 
+    [Header("Speech System")]
+    [SerializeField] private SpeechBubbleComponent speechBubble;
+    [SerializeField] private PlayerSpeechData speechData;
+
     private readonly List<IInteractable> nearbyObjects = new();
     private IInteractable currentTarget;
 
@@ -43,6 +47,22 @@ public class SampleTopDownPlayer : MonoBehaviour, IPlayerInteractor
             currentTarget.CanInteract(this))
         {
             currentTarget.OnPlayerInteract(this);
+        }
+    }
+
+    // 상황에 맞는 대사를 띄워주는 핵심 헬퍼 함수
+    public void SpeakSituation(PlayerSpeechSituationEnum situation, float duration = 2f)
+    {
+        if (speechData == null || speechBubble == null)
+        {
+            Debug.LogWarning("[Player] SpeechData 또는 SpeechBubbleComponent가 연결되지 않았습니다!");
+            return;
+        }
+
+        string line = speechData.GetLine(situation);
+        if (!string.IsNullOrEmpty(line))
+        {
+            speechBubble.Speak(line, duration);
         }
     }
 
