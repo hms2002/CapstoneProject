@@ -30,7 +30,6 @@ public class DoorObject : MonoBehaviour, IInteractable
     public bool IsOpen { get; private set; } = false;
 
 #if UNITY_EDITOR
-    // 에디터에서 프리팹을 씬에 배치하거나 값이 바뀔 때 1회 자동 발급
     private void OnValidate()
     {
         if (string.IsNullOrEmpty(doorID) && !UnityEditor.PrefabUtility.IsPartOfPrefabAsset(this))
@@ -38,12 +37,11 @@ public class DoorObject : MonoBehaviour, IInteractable
             UnityEditor.EditorApplication.delayCall += () =>
             {
                 if (this == null) return;
-                GenerateID(); // 아래 복구된 함수를 호출합니다.
+                GenerateID();
             };
         }
     }
 
-    // [복구 완료] MapTool(에디터 스크립트)에서 호출할 수 있도록 다시 살려두었습니다!
     public void GenerateID()
     {
         string cleanName = name.Replace("(Clone)", "").Trim();
@@ -58,7 +56,6 @@ public class DoorObject : MonoBehaviour, IInteractable
         if (string.IsNullOrEmpty(mapID))
             mapID = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
 
-        // 런타임에는 절대 자동 발급하지 않음. 에러로 경고만 띄움.
         if (string.IsNullOrEmpty(doorID))
             Debug.LogError($"[DoorObject] 치명적 에러: '{gameObject.name}'의 Door ID가 없습니다!");
 
@@ -68,6 +65,7 @@ public class DoorObject : MonoBehaviour, IInteractable
     private void Start()
     {
         // 이미 저장된 문이면 즉시 열린 상태로 만들기
+        // (GameDataManager가 구현되어 있다는 가정 하의 코드)
         if (isPermanent && GameDataManager.Instance != null && GameDataManager.Instance.IsShortcutUnlocked(mapID, doorID))
         {
             ForceOpen(immediate: true);
@@ -79,13 +77,22 @@ public class DoorObject : MonoBehaviour, IInteractable
         if (IsOpen) return;
 
         Collider2D playerCol = player.Transform.GetComponent<Collider2D>();
+
+        // 열림 조건 충족 시
         if (playerCol != null && CheckConditionByCollider(playerCol))
         {
             ForceOpen(immediate: false, save: isPermanent);
         }
-        else
+        else // 열림 조건 불충족 시 (잠김)
         {
             PlayShakeAnimation();
+
+            // 플레이어에게 잠긴 문 대사 출력을 요청합니다!
+            SampleTopDownPlayer playerScript = player.Transform.GetComponent<SampleTopDownPlayer>();
+            if (playerScript != null)
+            {
+                playerScript.SpeakSituation(PlayerSpeechSituationEnum.DoorLocked);
+            }
         }
     }
 
@@ -135,7 +142,7 @@ public class DoorObject : MonoBehaviour, IInteractable
     private void DisableObstacle() { if (obstacleCollider != null) obstacleCollider.enabled = false; }
     public void PlayShakeAnimation() { if (model != null) model.DOShakePosition(0.5f, 0.1f); }
 
-    // IInteractable 
+    // IInteractable 인터페이스 구현
     public void OnPlayerNearby() { }
     public void OnPlayerLeave() { }
     public void OnHighlight() { }
