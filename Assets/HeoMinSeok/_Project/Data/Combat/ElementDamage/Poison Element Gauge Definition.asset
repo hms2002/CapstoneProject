@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bbb5acfe5042c134b9916c0a2483d3fd, type: 3}
-  m_Name: New Element Gauge Definition
+  m_Name: Poison Element Gauge Definition
   m_EditorClassIdentifier: 
-  elementTag: {fileID: 11400000, guid: 82578c30453dcb04a88dce3cd193db5b, type: 2}
-  maxGaugeAttribute: {fileID: 0}
+  elementTag: {fileID: 11400000, guid: 53bdedc3d917f83458902716124fcc3c, type: 2}
+  maxGaugeAttribute: {fileID: 11400000, guid: 20da04b1990b4014aabe5a3dba750160, type: 2}
   resistanceAttribute: {fileID: 0}
   triggerEffect: {fileID: 0}
   icon: {fileID: 0}

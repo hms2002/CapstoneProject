@@ -16168,7 +16168,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8910a2e22aa25664cb9b2709778e44dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  attributeCatalog: {fileID: 0}
+  attributeCatalog: {fileID: 11400000, guid: b9c79b9448814f2408077eff50c01aeb, type: 2}
   baseInitProfile: {fileID: 0}
   overrideInitProfiles: []
   maxLinks:
@@ -39766,20 +39766,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3a6c52cc5b114ba4787b483d704a8016, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &1012006894227905800
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1957667026}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0c8e37699d46cac4e87b6f288df19c94, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  profile: {fileID: 11400000, guid: 59d6807f0592ec142818217a50ff2733, type: 2}
-  applyToAllDamage: 1
 --- !u!4 &1336196914018830829 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8228059593326255414, guid: 84d669757910f1f488023c92e71fcad5, type: 3}
@@ -40786,26 +40772,6 @@ PrefabInstance:
       propertyPath: mainCamera
       value: 
       objectReference: {fileID: 519420031}
-    - target: {fileID: 1353302521333203863, guid: f2946074f70ad1a4194e0ab20873422b, type: 3}
-      propertyPath: weaponZOffset
-      value: 90
-      objectReference: {fileID: 0}
-    - target: {fileID: 1414767285602429285, guid: f2946074f70ad1a4194e0ab20873422b, type: 3}
-      propertyPath: baseInitProfile
-      value: 
-      objectReference: {fileID: 11400000, guid: ac5ff33387b8e384ea5c5452dcc2efcc, type: 2}
-    - target: {fileID: 1414767285602429285, guid: f2946074f70ad1a4194e0ab20873422b, type: 3}
-      propertyPath: attributeCatalog
-      value: 
-      objectReference: {fileID: 11400000, guid: b9c79b9448814f2408077eff50c01aeb, type: 2}
-    - target: {fileID: 1414767285602429285, guid: f2946074f70ad1a4194e0ab20873422b, type: 3}
-      propertyPath: overrideInitProfiles.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1414767285602429285, guid: f2946074f70ad1a4194e0ab20873422b, type: 3}
-      propertyPath: 'overrideInitProfiles.Array.data[0]'
-      value: 
-      objectReference: {fileID: 11400000, guid: ac5ff33387b8e384ea5c5452dcc2efcc, type: 2}
     - target: {fileID: 8883617028798182002, guid: f2946074f70ad1a4194e0ab20873422b, type: 3}
       propertyPath: m_Name
       value: PF Player
@@ -40854,14 +40820,10 @@ PrefabInstance:
       propertyPath: cameraShake
       value: 
       objectReference: {fileID: 519420034}
-    m_RemovedComponents:
-    - {fileID: 7184922240575343075, guid: f2946074f70ad1a4194e0ab20873422b, type: 3}
+    m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 8883617028798182002, guid: f2946074f70ad1a4194e0ab20873422b, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1012006894227905800}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f2946074f70ad1a4194e0ab20873422b, type: 3}
 --- !u!4 &5466560767580878633 stripped
 Transform:

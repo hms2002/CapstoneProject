@@ -10,7 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 03cd15295cb99aa498555eb04c296379, type: 3}
-  m_Name: New Element Gauge Catalog
+  m_Name: Element Gauge Catalog
   m_EditorClassIdentifier: 
   definitions:
   - {fileID: 11400000, guid: c8dcfe51fa9e3e044aed999a44ea0965, type: 2}
+  - {fileID: 11400000, guid: 3805c019bc7d27c439fa252c9673e1f6, type: 2}
+  - {fileID: 11400000, guid: af992dd323e918342ae0adff8855bbff, type: 2}
