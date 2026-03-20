@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c73f060d77f561468bdac2c96a2bfdf, type: 3}
+  m_Name: ElementBuildUpFormulaProfile
+  m_EditorClassIdentifier: 
+  baseValue: 10
+  maxCap: 60
+  curveConstant: 25
+  groggyTag: {fileID: 0}
+  groggyMultiplier: 2
+  formulas:
+  - elementType: {fileID: 11400000, guid: 82578c30453dcb04a88dce3cd193db5b, type: 2}
+    sourceStatId: 207
+    multiplier: 0
+    flatBonus: 0
+    enabled: 0
+  - elementType: {fileID: 11400000, guid: 7c8af04be6bcbb84794e303f3f4c401c, type: 2}
+    sourceStatId: 203
+    multiplier: 0
+    flatBonus: 0
+    enabled: 0
+  - elementType: {fileID: 11400000, guid: 53bdedc3d917f83458902716124fcc3c, type: 2}
+    sourceStatId: 211
+    multiplier: 0
+    flatBonus: 0
+    enabled: 0

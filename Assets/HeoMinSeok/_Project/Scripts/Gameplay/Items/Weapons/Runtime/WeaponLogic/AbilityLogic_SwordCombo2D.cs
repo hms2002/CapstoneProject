@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityGAS;
 
@@ -13,6 +14,7 @@ namespace UnityGAS.Sample
         public override IEnumerator Activate(AbilitySystem system, AbilitySpec spec, GameObject initialTarget)
         {
             if (system == null || spec == null || spec.Definition == null) yield break;
+            if (system.AttributeSet == null) yield break;
 
             var data = spec.Definition.sourceObject as SwordCombo2DData;
             if (data == null)
@@ -21,9 +23,7 @@ namespace UnityGAS.Sample
                 yield break;
             }
 
-            Vector2 dir = ResolveAimDirection(system);
-            if (dir.sqrMagnitude < 0.0001f) dir = Vector2.right;
-            dir.Normalize();
+            Vector2 dir = AbilityAimResolver2D.Resolve(system.gameObject, Vector2.right);
 
             int comboIndex = ResolveComboIndex(spec, data.comboResetTime);
             spec.SetInt(KEY_COMBO_INDEX, comboIndex);
@@ -65,24 +65,6 @@ namespace UnityGAS.Sample
             return 0;
         }
 
-        private Vector2 ResolveAimDirection(AbilitySystem system)
-        {
-            var aim = system.GetComponent<PlayerAim2D>();
-            if (aim != null && aim.AimDirection.sqrMagnitude > 0.0001f)
-                return aim.AimDirection;
-
-            var cam = Camera.main;
-            if (cam != null)
-            {
-                Vector3 w = cam.ScreenToWorldPoint(Input.mousePosition);
-                w.z = 0f;
-                Vector2 d = (Vector2)(w - system.transform.position);
-                if (d.sqrMagnitude > 0.0001f) return d.normalized;
-            }
-
-            return Vector2.right;
-        }
-
         private void TryPlayAnim(AbilitySystem system, SwordCombo2DData data, int comboIndex, AbilityDefinition definition)
         {
             string trig = GetArraySafe(data.animTriggers, comboIndex, "");
@@ -121,9 +103,9 @@ namespace UnityGAS.Sample
         private void DoHit(AbilitySystem system, AbilitySpec abilitySpec, SwordCombo2DData data, int comboIndex, Vector2 dir)
         {
             if (data.damageEffect == null) return;
+            if (system.AttributeSet == null) return;
 
             var cfg = data.DamageConfig;
-            bool includeElementBuildup = (cfg != null) && cfg.includeElementBuildUp;
             bool includeStagger = (cfg != null) && cfg.includeStaggerBuildUp;
 
             Vector2 perp = new Vector2(-dir.y, dir.x);
@@ -132,6 +114,7 @@ namespace UnityGAS.Sample
             Vector2 center = (Vector2)system.transform.position
                              + dir * data.forwardOffset
                              + perp * (data.sideOffset * sideSign);
+
 #if UNITY_EDITOR
             if (system.TryGetComponent<UnityGAS.Sample.RealtimeHitboxGizmo2D>(out var gizmo))
             {
@@ -139,86 +122,95 @@ namespace UnityGAS.Sample
                 gizmo.RecordBox(center, data.hitboxSize, 0f, 0.15f, col);
             }
 #endif
-            var td = AbilityTargetData2D.FromOverlapBox(center, data.hitboxSize, 0f, data.hitLayers, ignore: system.gameObject);
+
+            var td = AbilityTargetData2D.FromOverlapBox(
+                center,
+                data.hitboxSize,
+                0f,
+                data.hitLayers,
+                ignore: system.gameObject);
+
             if (td.Targets.Count == 0) return;
 
-            var bindings = system.DamageProfile != null ? system.DamageProfile.GetStatBindings() : null;
-            IStatProvider statProvider = bindings != null ? new AttributeStatProvider(system.AttributeSet, bindings) : null;
+            IStatProvider statProvider = AbilityStatProviderFactory.Create(system);
 
             float legacyBaseHp = GetArraySafe(data.damages, comboIndex, 0f);
             float baseHp = legacyBaseHp;
-            if (data.damageFormulas != null && comboIndex >= 0 && comboIndex < data.damageFormulas.Length && data.damageFormulas[comboIndex] != null)
-                baseHp = data.damageFormulas[comboIndex].Evaluate(system.AttributeSet, statProvider, defaultIfEmpty: legacyBaseHp);
+            if (data.damageFormulas != null &&
+                comboIndex >= 0 &&
+                comboIndex < data.damageFormulas.Length &&
+                data.damageFormulas[comboIndex] != null)
+            {
+                baseHp = data.damageFormulas[comboIndex].Evaluate(
+                    system.AttributeSet,
+                    statProvider,
+                    defaultIfEmpty: legacyBaseHp);
+            }
 
             float baseStagger = (cfg != null && cfg.includeStaggerBuildUp && cfg.staggerFormula != null)
                 ? cfg.staggerFormula.Evaluate(system.AttributeSet, statProvider, defaultIfEmpty: 0f)
                 : GetArraySafe(data.staggerDamages, comboIndex, 0f);
 
-            float finalKnockback = 0f;
-            if (data.knockbackFormulas != null && comboIndex >= 0 && comboIndex < data.knockbackFormulas.Length && data.knockbackFormulas[comboIndex] != null)
-                finalKnockback = data.knockbackFormulas[comboIndex].Evaluate(system.AttributeSet, statProvider, defaultIfEmpty: 0f);
-
-            System.Collections.Generic.List<ElementDamageInput> elementInputs = null;
-            if (includeElementBuildup)
+            float baseKnockback = 0f;
+            if (data.knockbackFormulas != null &&
+                comboIndex >= 0 &&
+                comboIndex < data.knockbackFormulas.Length &&
+                data.knockbackFormulas[comboIndex] != null)
             {
-                if (cfg != null && cfg.includeElementBuildUp && cfg.HasElementFormulas)
-                {
-                    elementInputs = new System.Collections.Generic.List<ElementDamageInput>(cfg.elementFormulas.Length);
-                    for (int i = 0; i < cfg.elementFormulas.Length; i++)
-                    {
-                        var e = cfg.elementFormulas[i];
-                        if (e == null || e.elementType == null || e.formula == null) continue;
-                        float v = e.formula.Evaluate(system.AttributeSet, statProvider, defaultIfEmpty: 0f);
-                        if (v <= 0f) continue;
-                        elementInputs.Add(new ElementDamageInput { elementType = e.elementType, baseDamage = v });
-                    }
-                }
-                else
-                {
-                    var grp = GetArraySafe(data.elementDamagesByCombo, comboIndex, null);
-                    if (grp != null && grp.elements != null && grp.elements.Count > 0)
-                        elementInputs = new System.Collections.Generic.List<ElementDamageInput>(grp.elements);
-                }
+                baseKnockback = data.knockbackFormulas[comboIndex].Evaluate(
+                    system.AttributeSet,
+                    statProvider,
+                    defaultIfEmpty: 0f);
             }
 
-            var elementResults = (elementInputs != null && elementInputs.Count > 0)
-                ? new System.Collections.Generic.List<ElementDamageResult>(elementInputs.Count)
-                : null;
+            List<ElementDamageInput> elementInputs = null;
+            if (cfg != null && cfg.includeElementBuildUp && cfg.HasElementFormulas)
+            {
+                elementInputs = new List<ElementDamageInput>(cfg.elementFormulas.Length);
+                for (int i = 0; i < cfg.elementFormulas.Length; i++)
+                {
+                    var e = cfg.elementFormulas[i];
+                    if (e == null || e.elementType == null || e.formula == null) continue;
 
-            var processed = DamageFormulaUtil.PostProcess(
-                statProvider,
-                baseHpDamage: baseHp,
-                baseStaggerDamage: includeStagger ? baseStagger : 0f,
-                elementInputs: elementInputs,
-                outElementResults: elementResults,
-                critAffectsElement: (cfg == null ? true : cfg.critAffectsElement)
+                    float v = e.formula.Evaluate(system.AttributeSet, statProvider, defaultIfEmpty: 0f);
+                    if (v <= 0f) continue;
+
+                    elementInputs.Add(new ElementDamageInput
+                    {
+                        elementType = e.elementType,
+                        baseDamage = v
+                    });
+                }
+            }
+            else
+            {
+                var grp = GetArraySafe(data.elementDamagesByCombo, comboIndex, null);
+                if (grp != null && grp.elements != null && grp.elements.Count > 0)
+                    elementInputs = new List<ElementDamageInput>(grp.elements);
+            }
+
+            var snapshot = DamageSnapshotBuilder.BuildFromBaseValues(
+                statProvider: statProvider,
+                config: cfg,
+                baseHp: baseHp,
+                baseStagger: includeStagger ? baseStagger : 0f,
+                baseKnockback: baseKnockback,
+                elementInputs: elementInputs
             );
 
-            float finalHp = processed.hpDamage;
-            float finalStagger = processed.staggerDamage;
-
-            if (finalHp <= 0f) return;
+            if (snapshot.FinalHpDamage <= 0f) return;
             if (system.EffectRunner == null) return;
 
-            for (int i = 0; i < td.Targets.Count; i++)
-            {
-                var target = td.Targets[i];
-                if (target == null) continue;
-
-                CombatDamageAction.ApplyDamageAndEmitHit(
-                    system: system,
-                    spec: abilitySpec,
-                    damageEffect: data.damageEffect,
-                    knockbackEffect: data.knockbackEffect,
-                    target: target,
-                    finalHpDamage: finalHp,
-                    finalStaggerBuildUp: finalStagger,
-                    elementBuildUps: elementResults,
-                    finalKnockbackImpulse: finalKnockback,
-                    hitConfirmedTag: data.hitConfirmedTag,
-                    causer: system.gameObject
-                );
-            }
+            CombatDamageApplicator.ApplyToTargets(
+                system: system,
+                spec: abilitySpec,
+                damageEffect: data.damageEffect,
+                knockbackEffect: data.knockbackEffect,
+                targets: td.Targets,
+                snapshot: snapshot,
+                hitConfirmedTag: data.hitConfirmedTag,
+                causer: system.gameObject
+            );
         }
 
         private static T GetArraySafe<T>(T[] arr, int index, T fallback)

@@ -1,149 +1,173 @@
-using DG.Tweening;
 using UnityEngine;
 using UnityGAS;
 
 public class Mob : Enemy
 {
     [Header("Mob's Settings")]
-    [SerializeField] private float detectionRange   = 6.0f; // 탐지 거리
-    [SerializeField] private float moveSpeed        = 3.0f; // 이동 속도
-    [SerializeField] private float damageInterval   = 1.0f; // 데미지 주기 (초)
-    [SerializeField] private float staggerDuration  = 0.4f; // 피격 경직 시간 (초)
+    [SerializeField] private float damageInterval = 1.0f;
 
     [Header("Mob's Ability")]
-    [SerializeField] private AbilityDefinition tackleAbility; // AD_Tackle
+    [SerializeField] private AbilityDefinition tackleAbility;
 
-    // Variables
-    private float   currentCooltime; // 마지막 공격 시간을 저장하여 쿨타임 체크용으로 사용
-    private bool    isDead = false;
+    [Header("Refs")]
+    [SerializeField] private EnemyChaseIntent2D chaseIntent;
+    [SerializeField] private TagSystem tagSystem;
 
-    private float   knockbackRecoveryTime = 0f;                     // 넉백에서 회복하기까지 남은 시간
-    private bool    IsKnockbacked => knockbackRecoveryTime > 0f;    // 현재 넉백 상태인지 확인하는 프로퍼티
+    [Header("Movement Tags")]
+    [Tooltip("공격 후 쿨타임 동안 추적 의도 이동을 막는 태그")]
+    [SerializeField] private GameplayTag blockIntentMoveTag;
 
-    // ========================================================================
-    // [1] AI 및 이동 로직
+    [Tooltip("사망/완전 정지 상태에서 모든 이동을 막는 태그")]
+    [SerializeField] private GameplayTag freezeAllMovementTag;
+
+    private float currentCooltime;
+    private bool isDead = false;
+
+    private bool intentMoveTagApplied;
+    private bool freezeMoveTagApplied;
+
+    protected override void Awake()
+    {
+        base.Awake();
+
+        if (chaseIntent == null)
+            chaseIntent = GetComponent<EnemyChaseIntent2D>();
+
+        if (tagSystem == null)
+            tagSystem = GetComponent<TagSystem>();
+    }
 
     private void Update()
     {
-        if (isDead) return;
+        if (isDead)
+            return;
 
-        // 공격 쿨타임 처리
-        if (currentCooltime > 0)
-        {
-            currentCooltime -= Time.deltaTime;
-            if (currentCooltime < 0) currentCooltime = 0;
-        }
+        UpdateCooldown();
+        SyncMovementTags();
 
-        // 넉백 회복 타이머 처리
-        if (knockbackRecoveryTime > 0)
-        {
-            knockbackRecoveryTime -= Time.deltaTime;
-            if (knockbackRecoveryTime < 0) knockbackRecoveryTime = 0;
-        }
-
-        // 애니메이션 업데이트
-        animator.SetBool("isMoving", rigid2D.linearVelocity.sqrMagnitude > 0.01f);
+        if (animator != null && movementMotor != null)
+            animator.SetBool("isMoving", movementMotor.IsMoving);
     }
 
-    private void FixedUpdate()
+    private void UpdateCooldown()
     {
-        if (isDead || target == null) return;
+        if (currentCooltime <= 0f)
+            return;
 
-        if (IsKnockbacked) return;
-
-        targetDistance = Vector2.Distance(transform.position, target.position);
-
-        // 타겟 탐지
-        if (currentCooltime <= 0)
-        {
-            if (targetDistance <= detectionRange)
-            {
-                moveDirection           = (target.position - transform.position).normalized;
-                rigid2D.linearVelocity  = moveDirection * moveSpeed;
-
-
-                // 스프라이트 반전
-                if (transform.position.x > target.position.x) sprite.flipX = true;
-                else if (transform.position.x < target.position.x) sprite.flipX = false;
-            }
-            else
-            {
-                rigid2D.linearVelocity = Vector2.zero;
-            }
-        }
+        currentCooltime -= Time.deltaTime;
+        if (currentCooltime < 0f)
+            currentCooltime = 0f;
     }
 
-    // ========================================================================
-    // [2] 공격 트리거 (Collision -> GAS 요청)
+    private void SyncMovementTags()
+    {
+        // 쿨타임 동안 추적 이동 금지
+        SetTagActive(blockIntentMoveTag, currentCooltime > 0f, ref intentMoveTagApplied);
+    }
 
-    private void OnCollisionStay2D(Collision2D collision)
+    private void OnCollisionStay2D(Collision2D other)
     {
         if (isDead) return;
+        if (!other.gameObject.CompareTag("Player")) return;
+        if (currentCooltime > 0f) return;
 
-        if (collision.gameObject.CompareTag("Player"))
+        bool activated = abilitySystem != null &&
+                         abilitySystem.TryActivateAbility(
+                             tackleAbility,
+                             target != null ? target.gameObject : other.gameObject);
+
+        if (activated)
         {
-            // 쿨타임이 0일 때만 공격 시도
-            if (currentCooltime <= 0)
-            {
-                abilitySystem.TryActivateAbility(tackleAbility, target.gameObject);
-
-                // 공격 성공 시 쿨타임(경직) 시작
-                currentCooltime = damageInterval;
-            }
+            currentCooltime = damageInterval;
+            SyncMovementTags(); // 즉시 반영
         }
     }
-
-    // ========================================================================
-    // [3] 상태 처리 (사망 등)
 
     protected override void OnEnemyAttributeChanged(AttributeDefinition attribute, float oldValue, float newValue)
     {
         base.OnEnemyAttributeChanged(attribute, oldValue, newValue);
 
-        if (attribute == healthDef && newValue <= 0 && !isDead)
-        {
+        if (attribute == healthDef && newValue <= 0f && !isDead)
             Die();
-        }
     }
 
     /// <summary>
-    /// 외부(예: 무기 타격, 스킬 효과 등)에서 몹에게 넉백을 가할 때 호출합니다.
+    /// 정식 넉백 진입점.
+    /// GE_Knockback_Spec와 같은 구조처럼 causer + impulse를 받아 KnockbackReceiver2D로 위임한다.
     /// </summary>
-    /// <param name="force">가해질 힘의 벡터 (방향 * 세기)</param>
-    /// <param name="recoveryTime">넉백 상태(AI 정지)를 유지할 시간</param>
-    public void ApplyKnockback(Vector2 force, float recoveryTime = 0.5f)
+    public void ApplyKnockbackFrom(GameObject causer, float impulse)
     {
         if (isDead) return;
+        if (knockbackReceiver == null) return;
 
-        // 넉백 타이머 설정 (이 시간 동안 AI 이동 멈춤)
-        knockbackRecoveryTime = recoveryTime;
-
-        // 기존 속도를 초기화하고 새로운 물리적 힘을 가함
-        rigid2D.linearVelocity = Vector2.zero;
-        rigid2D.AddForce(force, ForceMode2D.Impulse);
+        knockbackReceiver.ApplyKnockback(causer, impulse);
     }
 
     protected override void Die()
     {
         if (isDead) return;
-
         isDead = true;
 
-        if (collision != null)  collision.enabled = false;
-        if (rigid2D != null)    rigid2D.simulated = false;
-        if (animator != null)   animator.SetTrigger("Die");
+        // 쿨타임 기반 이동 차단은 정리
+        SetTagActive(blockIntentMoveTag, false, ref intentMoveTagApplied);
+
+        // 사망 중에는 완전 정지
+        SetTagActive(freezeAllMovementTag, true, ref freezeMoveTagApplied);
+
+        if (movementMotor != null)
+            movementMotor.StopAllMotion();
+
+        if (collision != null)
+            collision.enabled = false;
+
+        if (rigid2D != null)
+            rigid2D.simulated = false;
+
+        if (animator != null)
+            animator.SetTrigger("Die");
 
         Destroy(gameObject, 1.0f);
     }
 
+    private void OnDisable()
+    {
+        // 풀링/비정상 종료에도 태그 잔류 방지
+        SetTagActive(blockIntentMoveTag, false, ref intentMoveTagApplied);
+        SetTagActive(freezeAllMovementTag, false, ref freezeMoveTagApplied);
+    }
+
+    private void SetTagActive(GameplayTag tag, bool shouldBeActive, ref bool appliedFlag)
+    {
+        if (tagSystem == null || tag == null)
+            return;
+
+        if (shouldBeActive)
+        {
+            if (appliedFlag)
+                return;
+
+            tagSystem.AddTag(tag);
+            appliedFlag = true;
+        }
+        else
+        {
+            if (!appliedFlag)
+                return;
+
+            tagSystem.RemoveTag(tag);
+            appliedFlag = false;
+        }
+    }
+
     private void OnDrawGizmos()
     {
-        // 1. 그리기 색상 지정 (빨간색)
-        Gizmos.color = Color.red;
+        if (chaseIntent == null)
+            return;
 
-        // 2. 와이어(선)로 된 원 그리기
-        // 중심점: 내 위치 (transform.position)
-        // 반지름: 탐지 거리 (detectionRange)
-        Gizmos.DrawWireSphere(transform.position, detectionRange);
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, chaseIntent.DetectionRange);
+
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireSphere(transform.position, chaseIntent.StopRange);
     }
 }

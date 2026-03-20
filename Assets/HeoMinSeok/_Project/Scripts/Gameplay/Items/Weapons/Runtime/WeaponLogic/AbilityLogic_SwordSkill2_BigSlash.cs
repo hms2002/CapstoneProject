@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityGAS;
 
@@ -14,10 +15,9 @@ namespace UnityGAS.Sample
 
             var data = def.sourceObject as SwordSkill2BigSlashData;
             if (data == null || data.damageEffect == null) yield break;
+            if (system.AttributeSet == null) yield break;
 
-            Vector2 dir = ResolveAimDirection(system);
-            if (dir.sqrMagnitude < 0.0001f) dir = Vector2.right;
-            dir.Normalize();
+            Vector2 dir = AbilityAimResolver2D.Resolve(system.gameObject, Vector2.right);
 
             if (data.hitEventTag != null)
             {
@@ -32,12 +32,18 @@ namespace UnityGAS.Sample
             spec.SetFloat("RecoveryOverride", data.recoveryOverride);
 
             Vector2 center = (Vector2)system.transform.position + dir * data.forwardOffset;
-            var td = AbilityTargetData2D.FromOverlapBox(center, data.hitboxSize, 0f, data.hitLayers, ignore: system.gameObject);
-            if (td.Targets.Count == 0) yield break;
+            var td = AbilityTargetData2D.FromOverlapBox(
+                center,
+                data.hitboxSize,
+                0f,
+                data.hitLayers,
+                ignore: system.gameObject);
+
+            if (td.Targets.Count == 0)
+                yield break;
 
             var cfg = data.DamageConfig;
-            var bindings = system.DamageProfile != null ? system.DamageProfile.GetStatBindings() : null;
-            IStatProvider statProvider = bindings != null ? new AttributeStatProvider(system.AttributeSet, bindings) : null;
+            IStatProvider statProvider = AbilityStatProviderFactory.Create(system);
 
             float legacyBaseHp = data.damage;
             float baseHp = (data.damageFormula != null)
@@ -52,78 +58,49 @@ namespace UnityGAS.Sample
                 ? cfg.staggerFormula.Evaluate(system.AttributeSet, statProvider, defaultIfEmpty: 0f)
                 : Mathf.Max(0f, data.baseStaggerDamage);
 
-            System.Collections.Generic.List<ElementDamageInput> elementInputs = null;
+            List<ElementDamageInput> elementInputs = null;
             if (cfg != null && cfg.includeElementBuildUp && cfg.HasElementFormulas)
             {
-                elementInputs = new System.Collections.Generic.List<ElementDamageInput>(cfg.elementFormulas.Length);
+                elementInputs = new List<ElementDamageInput>(cfg.elementFormulas.Length);
                 for (int i = 0; i < cfg.elementFormulas.Length; i++)
                 {
                     var e = cfg.elementFormulas[i];
                     if (e == null || e.elementType == null || e.formula == null) continue;
+
                     float v = e.formula.Evaluate(system.AttributeSet, statProvider, defaultIfEmpty: 0f);
                     if (v <= 0f) continue;
-                    elementInputs.Add(new ElementDamageInput { elementType = e.elementType, baseDamage = v });
+
+                    elementInputs.Add(new ElementDamageInput
+                    {
+                        elementType = e.elementType,
+                        baseDamage = v
+                    });
                 }
             }
             else if (data.elementDamages != null && data.elementDamages.Count > 0)
             {
-                elementInputs = new System.Collections.Generic.List<ElementDamageInput>(data.elementDamages);
+                elementInputs = new List<ElementDamageInput>(data.elementDamages);
             }
 
-            System.Collections.Generic.List<ElementDamageResult> elementResults = (elementInputs != null && elementInputs.Count > 0)
-                ? new System.Collections.Generic.List<ElementDamageResult>(elementInputs.Count)
-                : null;
-
-            var processed = DamageFormulaUtil.PostProcess(
-                statProvider,
-                baseHpDamage: baseHp,
-                baseStaggerDamage: baseStagger,
-                elementInputs: elementInputs,
-                outElementResults: elementResults,
-                critAffectsElement: (cfg == null ? true : cfg.critAffectsElement)
+            var snapshot = DamageSnapshotBuilder.BuildFromBaseValues(
+                statProvider: statProvider,
+                config: cfg,
+                baseHp: baseHp,
+                baseStagger: baseStagger,
+                baseKnockback: baseKnockback,
+                elementInputs: elementInputs
             );
 
-            float finalHp = processed.hpDamage;
-            float finalStagger = processed.staggerDamage;
-            float finalKnockback = baseKnockback;
-
-            for (int i = 0; i < td.Targets.Count; i++)
-            {
-                var target = td.Targets[i];
-                if (target == null) continue;
-
-                CombatDamageAction.ApplyDamageAndEmitHit(
-                    system: system,
-                    spec: spec,
-                    damageEffect: data.damageEffect,
-                    knockbackEffect: data.knockbackEffect,
-                    target: target,
-                    finalHpDamage: finalHp,
-                    finalStaggerBuildUp: finalStagger,
-                    elementBuildUps: elementResults,
-                    finalKnockbackImpulse: finalKnockback,
-                    hitConfirmedTag: null,
-                    causer: system.gameObject
-                );
-            }
-        }
-
-        private Vector2 ResolveAimDirection(AbilitySystem system)
-        {
-            var aim = system.GetComponent<PlayerAim2D>();
-            if (aim != null && aim.AimDirection.sqrMagnitude > 0.0001f)
-                return aim.AimDirection;
-
-            var cam = Camera.main;
-            if (cam != null)
-            {
-                Vector3 w = cam.ScreenToWorldPoint(Input.mousePosition);
-                w.z = 0f;
-                Vector2 d = (Vector2)(w - system.transform.position);
-                if (d.sqrMagnitude > 0.0001f) return d.normalized;
-            }
-
-            return Vector2.right;
+            CombatDamageApplicator.ApplyToTargets(
+                system: system,
+                spec: spec,
+                damageEffect: data.damageEffect,
+                knockbackEffect: data.knockbackEffect,
+                targets: td.Targets,
+                snapshot: snapshot,
+                hitConfirmedTag: null,
+                causer: system.gameObject
+            );
         }
     }
 }

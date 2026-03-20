@@ -4,67 +4,48 @@ using UnityEngine;
 
 namespace UnityGAS
 {
-    /// <summary>
-    /// Element gauge build-up system.
-    /// In this project, "element damage" is interpreted as "element gauge fill".
-    /// When a gauge reaches its threshold, a corresponding debuff/effect is applied.
-    /// </summary>
     [DisallowMultipleComponent]
-    public class ElementGaugeSystem : MonoBehaviour
+    public sealed class ElementGaugeSystem : MonoBehaviour
     {
         [Serializable]
-        public class GaugeEntry
+        public sealed class ElementGaugeState
         {
-            [Tooltip("Element type tag. e.g. Element.Fire / Element.Bleed / Element.Poison")]
-            public GameplayTag elementType;
+            [Header("Definition")]
+            public ElementGaugeDefinition definition;
 
-            [Min(1f)]
-            public float threshold = 100f;
+            [Header("Runtime")]
+            public float currentBuildUp;
+            public float lastBuildUpTime = -999f;
 
-            [Tooltip("Applied when gauge reaches threshold.")]
-            public GameplayEffect debuffEffect;
+            [Header("Runtime VFX")]
+            public GameObject sustainVfxInstance;
 
-            [Header("Trigger Damage (Optional)")]
-            [Tooltip("If debuffEffect is a GE_Damage_Spec, this will inject a SetByCaller damage value when the gauge triggers.")]
-            public bool injectDamageToSpec = false;
-
-            [Tooltip("Override SetByCaller key. If empty, uses GE_Damage_Spec.damageKey.")]
-            public GameplayTag setByCallerKeyOverride;
-
-            [Range(0f, 1f)]
-            [Tooltip("Damage = target current health * percentOfCurrentHealth (evaluated per trigger). E.g. 0.1 = 10%.")]
-            public float percentOfCurrentHealth = 0f;
-
-            [Tooltip("Optional: add damage based on instigator Attribute. Damage += instigatorStat * instigatorStatMultiplier")]
-            public AttributeDefinition instigatorStatAttribute;
-
-            [Tooltip("Multiplier for instigatorStatAttribute.")]
-            public float instigatorStatMultiplier = 0f;
-
-            [Tooltip("Optional: add damage based on build-up amount from the hit that triggered this gauge. Damage += buildUpAmount * buildUpAmountMultiplier")]
-            public float buildUpAmountMultiplier = 0f;
-
-            [Tooltip("Optional: flat bonus damage added on trigger.")]
-            public float flatDamageBonus = 0f;
-
-            [Tooltip("If true, overflow carries over (value -= threshold). If false, value is reset to 0.")]
-            public bool allowOverflow = true;
-
-            [Tooltip("Optional: build-up resistance attribute on target. (0.2 = 20% reduction)")]
-            public AttributeDefinition resistancePercentAttribute;
-
-            [NonSerialized] public float value;
+            [Header("Runtime UI")]
+            public bool uiVisible;
         }
 
-        [Header("Gauges")]
-        public List<GaugeEntry> gauges = new();
+        [Header("Catalog")]
+        [SerializeField] private ElementGaugeCatalog catalog;
+
+        [Header("Decay")]
+        [SerializeField] private bool useDecay = true;
+        [SerializeField] private float decayDelaySeconds = 3f;
+        [SerializeField, Range(0f, 1f)] private float decayPercentPerSecond = 0.02f;
+
+        [Header("Trigger Policy")]
+        [SerializeField] private bool allowOverflowCarry = true;
 
         [Header("Debug")]
-        [Tooltip("When true, logs whenever a gauge reaches its threshold.")]
-        public bool logWhenTriggered = false;
+        [SerializeField] private bool logWhenTriggered = false;
+        [SerializeField] private bool logMissingDefinition = true;
 
-        public event Action<GameplayTag, float, float> OnGaugeChanged; // (element, old, new)
-        public event Action<GameplayTag> OnGaugeTriggered;            // (element)
+        [Header("Runtime (Debug)")]
+        [SerializeField] private List<ElementGaugeState> runtimeStates = new();
+
+        public event Action<GameplayTag, float, float> OnGaugeChanged; // element, old, new
+        public event Action<GameplayTag> OnGaugeTriggered;
+
+        private readonly Dictionary<GameplayTag, ElementGaugeState> stateByTag = new();
 
         private GameplayEffectRunner _runner;
         private AttributeSet _attr;
@@ -73,163 +54,282 @@ namespace UnityGAS
         {
             _runner = GetComponent<GameplayEffectRunner>();
             _attr = GetComponent<AttributeSet>();
+            RebuildRuntimeStates();
+        }
+
+#if UNITY_EDITOR
+        private void OnValidate()
+        {
+            if (Application.isPlaying) return;
+            if (decayDelaySeconds < 0f) decayDelaySeconds = 0f;
+        }
+#endif
+
+        private void Update()
+        {
+            TickDecay();
         }
 
         public float GetValue(GameplayTag elementType)
         {
-            var g = FindGauge(elementType);
-            return g != null ? g.value : 0f;
+            var state = FindState(elementType);
+            return state != null ? Mathf.Max(0f, state.currentBuildUp) : 0f;
         }
 
         public float GetThreshold(GameplayTag elementType)
         {
-            var g = FindGauge(elementType);
-            return g != null ? g.threshold : 0f;
+            var state = FindState(elementType);
+            return state != null ? Mathf.Max(0f, GetMaxGauge(state.definition)) : 0f;
         }
 
         public void ClearAll()
         {
-            for (int i = 0; i < gauges.Count; i++)
+            if (runtimeStates == null) return;
+
+            for (int i = 0; i < runtimeStates.Count; i++)
             {
-                if (gauges[i] == null) continue;
-                gauges[i].value = 0f;
+                var state = runtimeStates[i];
+                if (state == null || state.definition == null || state.definition.elementTag == null)
+                    continue;
+
+                float old = state.currentBuildUp;
+                state.currentBuildUp = 0f;
+                state.lastBuildUpTime = -999f;
+
+                if (state.sustainVfxInstance != null)
+                {
+                    Destroy(state.sustainVfxInstance);
+                    state.sustainVfxInstance = null;
+                }
+
+                state.uiVisible = false;
+
+                if (!Mathf.Approximately(old, 0f))
+                    OnGaugeChanged?.Invoke(state.definition.elementTag, old, 0f);
             }
         }
 
-        /// <summary>
-        /// Add build-up amount to a specific element gauge.
-        /// </summary>
         public void AddBuildUp(GameplayTag elementType, float amount, GameObject instigator, GameObject causer)
         {
-            if (elementType == null || amount <= 0f) return;
+            if (elementType == null || amount <= 0f)
+                return;
 
-            // "Raw" build-up as provided by the attacker. (Currently no resistance system in this project.)
-            float rawBuildUp = amount;
-
-            var g = FindGauge(elementType);
-            if (g == null)
+            var state = FindState(elementType);
+            if (state == null || state.definition == null)
             {
 #if UNITY_EDITOR
-                Debug.LogWarning($"[ElementGaugeSystem] Missing gauge entry for element '{elementType.CachedPath}' on '{name}'. Ignoring build-up.");
+                if (logMissingDefinition)
+                {
+                    Debug.LogWarning(
+                        $"[ElementGaugeSystem] Missing gauge definition for element '{elementType.CachedPath}' on '{name}'. Ignoring build-up.",
+                        this);
+                }
 #endif
                 return;
             }
 
-            // Resistance (percent reduction)
-            if (g.resistancePercentAttribute != null && _attr != null)
+            float maxGauge = Mathf.Max(0f, GetMaxGauge(state.definition));
+            float resistance = Mathf.Clamp01(GetResistance(state.definition));
+            float finalAmount = amount * (1f - resistance);
+
+            if (finalAmount <= 0f)
+                return;
+
+            float old = state.currentBuildUp;
+            state.lastBuildUpTime = Time.time;
+            state.uiVisible = true;
+
+            // maxGauge <= 0 이면 임계점 없는 누적통으로 취급
+            if (maxGauge <= 0f)
             {
-                float r = Mathf.Clamp01(_attr.GetAttributeValue(g.resistancePercentAttribute));
-                amount *= (1f - r);
-                if (amount <= 0f) return;
+                state.currentBuildUp += finalAmount;
+                OnGaugeChanged?.Invoke(elementType, old, state.currentBuildUp);
+                return;
             }
 
-            float old = g.value;
-            g.value += amount;
-            OnGaugeChanged?.Invoke(elementType, old, g.value);
-
-            if (g.threshold <= 0f) return;
-
-            // Support overflow triggering multiple times in a single hit if desired.
-            // (e.g., one big hit can fill the gauge more than once.)
+            float next = old + finalAmount;
             int triggerCount = 0;
-            while (g.value >= g.threshold)
+
+            while (next >= maxGauge)
             {
                 triggerCount++;
 
-                if (g.allowOverflow)
-                    g.value -= g.threshold;
+                if (allowOverflowCarry)
+                    next -= maxGauge;
                 else
                 {
-                    g.value = 0f;
-                    break; // if not allowing overflow, only trigger once
+                    next = 0f;
+                    break;
                 }
             }
 
-            if (triggerCount <= 0) return;
+            state.currentBuildUp = Mathf.Max(0f, next);
+            OnGaugeChanged?.Invoke(elementType, old, state.currentBuildUp);
 
-            // Notify (once per trigger)
+            if (triggerCount <= 0)
+                return;
+
             for (int i = 0; i < triggerCount; i++)
+            {
+                TriggerGaugeFull(state, instigator, causer);
                 OnGaugeTriggered?.Invoke(elementType);
+            }
 
             if (logWhenTriggered)
             {
-                string srcName = (instigator != null ? instigator.name : (causer != null ? causer.name : "null"));
-                Debug.Log($"[ElementGaugeSystem] TRIGGER {elementType.CachedPath} x{triggerCount} on '{name}' (source='{srcName}')");
+                string srcName = instigator != null ? instigator.name : (causer != null ? causer.name : "null");
+                Debug.Log(
+                    $"[ElementGaugeSystem] TRIGGER {elementType.CachedPath} x{triggerCount} on '{name}' (source='{srcName}')",
+                    this);
+            }
+        }
+
+        public void RebuildRuntimeStates()
+        {
+            runtimeStates.Clear();
+            stateByTag.Clear();
+
+            if (catalog == null || catalog.definitions == null)
+                return;
+
+            for (int i = 0; i < catalog.definitions.Length; i++)
+            {
+                var def = catalog.definitions[i];
+                if (def == null || def.elementTag == null)
+                    continue;
+
+                if (stateByTag.ContainsKey(def.elementTag))
+                {
+#if UNITY_EDITOR
+                    Debug.LogWarning(
+                        $"[ElementGaugeSystem] Duplicate element tag '{def.elementTag.CachedPath}' in catalog '{catalog.name}'.",
+                        catalog);
+#endif
+                    continue;
+                }
+
+                var state = new ElementGaugeState
+                {
+                    definition = def,
+                    currentBuildUp = 0f,
+                    lastBuildUpTime = -999f,
+                    sustainVfxInstance = null,
+                    uiVisible = false
+                };
+
+                runtimeStates.Add(state);
+                stateByTag.Add(def.elementTag, state);
+            }
+        }
+
+        private void TickDecay()
+        {
+            if (!useDecay) return;
+            if (runtimeStates == null || runtimeStates.Count == 0) return;
+
+            float now = Time.time;
+
+            for (int i = 0; i < runtimeStates.Count; i++)
+            {
+                var state = runtimeStates[i];
+                if (state == null || state.definition == null) continue;
+                if (state.currentBuildUp <= 0f) continue;
+
+                if (now - state.lastBuildUpTime < decayDelaySeconds)
+                    continue;
+
+                float maxGauge = Mathf.Max(0f, GetMaxGauge(state.definition));
+                if (maxGauge <= 0f)
+                    continue;
+
+                float decayAmount = maxGauge * decayPercentPerSecond * Time.deltaTime;
+                if (decayAmount <= 0f)
+                    continue;
+
+                float old = state.currentBuildUp;
+                state.currentBuildUp = Mathf.Max(0f, state.currentBuildUp - decayAmount);
+
+                if (!Mathf.Approximately(old, state.currentBuildUp))
+                    OnGaugeChanged?.Invoke(state.definition.elementTag, old, state.currentBuildUp);
+
+                if (state.currentBuildUp <= 0f)
+                    state.uiVisible = false;
+            }
+        }
+
+        private void TriggerGaugeFull(ElementGaugeState state, GameObject instigator, GameObject causer)
+        {
+            if (state == null || state.definition == null)
+                return;
+
+            var def = state.definition;
+            var src = instigator != null ? instigator : causer;
+
+            // 1) Trigger VFX
+            if (def.triggerVfxPrefab != null)
+            {
+                Instantiate(def.triggerVfxPrefab, transform.position, Quaternion.identity, transform);
             }
 
-            // Apply debuff/effect (once per trigger)
-            if (g.debuffEffect != null && _runner != null)
+            // 2) Sustain VFX
+            if (def.sustainVfxPrefab != null)
             {
-                var src = instigator != null ? instigator : causer;
-                // If configured, inject computed damage into GE_Damage_Spec using SetByCaller.
-                // This supports effects like "Bleed gauge max -> deal 10% of current HP".
-                if (g.injectDamageToSpec && g.debuffEffect is GE_Damage_Spec dmgSpec)
+                if (state.sustainVfxInstance == null)
                 {
-                    var key = g.setByCallerKeyOverride != null ? g.setByCallerKeyOverride : dmgSpec.damageKey;
-                    var healthAttr = dmgSpec.healthAttribute;
-
-                    for (int i = 0; i < triggerCount; i++)
-                    {
-                        float damage = 0f;
-
-                        // (1) Percent of current health
-                        if (g.percentOfCurrentHealth > 0f && healthAttr != null && _attr != null)
-                        {
-                            float curHp = _attr.GetAttributeValue(healthAttr);
-                            if (curHp > 0f)
-                                damage += curHp * g.percentOfCurrentHealth;
-                        }
-
-                        // (2) Instigator stat contribution (future-proof)
-                        if (g.instigatorStatAttribute != null && g.instigatorStatMultiplier != 0f && src != null)
-                        {
-                            var instAttr = src.GetComponent<AttributeSet>();
-                            if (instAttr != null)
-                                damage += instAttr.GetAttributeValue(g.instigatorStatAttribute) * g.instigatorStatMultiplier;
-                        }
-
-                        // (3) Build-up amount contribution (future-proof)
-                        if (g.buildUpAmountMultiplier != 0f)
-                            damage += rawBuildUp * g.buildUpAmountMultiplier;
-
-                        // (4) Flat bonus
-                        if (g.flatDamageBonus != 0f)
-                            damage += g.flatDamageBonus;
-
-                        if (damage <= 0f || key == null)
-                        {
-                            // If nothing to inject, just apply the effect normally.
-                            _runner.ApplyEffect(g.debuffEffect, gameObject, src);
-                            continue;
-                        }
-
-                        var ctx = new GameplayEffectContext(instigator != null ? instigator : src, causer != null ? causer : src);
-                        ctx.SourceObject = g.debuffEffect;
-                        var spec = new GameplayEffectSpec(g.debuffEffect, ctx);
-                        spec.SetSetByCallerMagnitude(key, damage);
-
-                        _runner.ApplyEffectSpec(spec, gameObject);
-                    }
+                    state.sustainVfxInstance = Instantiate(
+                        def.sustainVfxPrefab,
+                        transform.position,
+                        Quaternion.identity,
+                        transform);
                 }
                 else
                 {
-                    for (int i = 0; i < triggerCount; i++)
-                        _runner.ApplyEffect(g.debuffEffect, gameObject, src);
+                    state.sustainVfxInstance.transform.SetPositionAndRotation(
+                        transform.position,
+                        Quaternion.identity);
+                    state.sustainVfxInstance.SetActive(false);
+                    state.sustainVfxInstance.SetActive(true);
                 }
             }
+
+            // 3) Trigger effect
+            if (_runner == null || def.triggerEffect == null)
+                return;
+
+            var ctx = new GameplayEffectContext(src, src)
+            {
+                SourceObject = def.triggerEffect
+            };
+
+            var spec = new GameplayEffectSpec(def.triggerEffect, ctx);
+            _runner.ApplyEffectSpec(spec, gameObject);
         }
 
-        private GaugeEntry FindGauge(GameplayTag elementType)
+        private ElementGaugeState FindState(GameplayTag elementType)
         {
-            if (gauges == null) return null;
-            for (int i = 0; i < gauges.Count; i++)
-            {
-                var g = gauges[i];
-                if (g != null && g.elementType == elementType)
-                    return g;
-            }
+            if (elementType == null)
+                return null;
+
+            if (stateByTag.TryGetValue(elementType, out var state))
+                return state;
+
             return null;
+        }
+
+        private float GetMaxGauge(ElementGaugeDefinition def)
+        {
+            if (_attr == null || def == null || def.maxGaugeAttribute == null)
+                return 0f;
+
+            return Mathf.Max(0f, _attr.GetAttributeValue(def.maxGaugeAttribute));
+        }
+
+        private float GetResistance(ElementGaugeDefinition def)
+        {
+            if (_attr == null || def == null || def.resistanceAttribute == null)
+                return 0f;
+
+            return _attr.GetAttributeValue(def.resistanceAttribute);
         }
     }
 }
-

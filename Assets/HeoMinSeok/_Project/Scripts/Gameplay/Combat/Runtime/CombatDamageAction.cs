@@ -117,8 +117,8 @@ public static class CombatDamageAction
         // 0) Extract GE_Damage_Spec once
         var geDmg = damageEffect as GE_Damage_Spec;
 
-        // 1) capture pre-HP for KillConfirmed check
-        var killCheck = CaptureKillCheck(target, geDmg);
+        // 1) capture pre-HP for KillConfirmed / Damaged check
+        var hpCheck = CaptureHpCheck(target, geDmg);
 
         // 2) Apply damage effect
         var damageSpec = BuildDamageSpec(
@@ -132,7 +132,10 @@ public static class CombatDamageAction
 
         runner.ApplyEffectSpec(damageSpec, target);
 
-        // 3) Apply knockback effect separately
+        // 3) target-side damaged event
+        EmitDamagedTaken(target, spec, causer, hpCheck);
+
+        // 4) Apply knockback effect separately
         ApplyKnockbackEffect(
             system,
             spec,
@@ -141,14 +144,14 @@ public static class CombatDamageAction
             finalKnockbackImpulse,
             causer);
 
-        // 4) KillConfirmed
-        TryEmitKillConfirmed(system, spec, target, causer, killCheck);
+        // 5) KillConfirmed
+        TryEmitKillConfirmed(system, spec, target, causer, hpCheck);
 
-        // 5) Post systems
+        // 6) Post systems
         ApplyStagger(target, finalStaggerBuildUp, system.gameObject, causer);
         ApplyElements(target, elementBuildUps, system.gameObject, causer);
 
-        // 6) Hit confirmed event
+        // 7) Hit confirmed event
         EmitHitConfirmed(system, spec, target, causer, hitConfirmedTag);
     }
 
@@ -219,46 +222,70 @@ public static class CombatDamageAction
 
     // ---- Kill confirmed ---------------------------------------------------------------------
 
-    private readonly struct KillCheckData
+    private readonly struct HpCheckData
     {
-        public readonly float preHp;
-        public readonly AttributeDefinition hpAttr;
-        public readonly AttributeSet targetAttrs;
+        public readonly float PreHp;
+        public readonly AttributeDefinition HpAttr;
+        public readonly AttributeSet TargetAttrs;
 
-        public KillCheckData(float preHp, AttributeDefinition hpAttr, AttributeSet targetAttrs)
+        public HpCheckData(float preHp, AttributeDefinition hpAttr, AttributeSet targetAttrs)
         {
-            this.preHp = preHp;
-            this.hpAttr = hpAttr;
-            this.targetAttrs = targetAttrs;
+            PreHp = preHp;
+            HpAttr = hpAttr;
+            TargetAttrs = targetAttrs;
         }
 
-        public bool IsValid => targetAttrs != null && hpAttr != null && preHp > 0f;
+        public bool IsValid => TargetAttrs != null && HpAttr != null && PreHp >= 0f;
     }
-
-    private static KillCheckData CaptureKillCheck(GameObject target, GE_Damage_Spec geDmg)
+    private static HpCheckData CaptureHpCheck(GameObject target, GE_Damage_Spec geDmg)
     {
         if (geDmg == null || geDmg.healthAttribute == null)
             return default;
 
         var hpAttr = geDmg.healthAttribute;
         var targetAttrs = target.GetComponent<AttributeSet>();
-        if (targetAttrs == null) return new KillCheckData(preHp: -1f, hpAttr, targetAttrs: null);
+        if (targetAttrs == null)
+            return new HpCheckData(preHp: -1f, hpAttr, targetAttrs: null);
 
         float preHp = targetAttrs.GetAttributeValue(hpAttr);
-        return new KillCheckData(preHp, hpAttr, targetAttrs);
+        return new HpCheckData(preHp, hpAttr, targetAttrs);
     }
+    private static void EmitDamagedTaken(
+    GameObject target,
+    AbilitySpec sourceSpec,
+    GameObject causer,
+    HpCheckData hpCheck)
+    {
+        if (!hpCheck.IsValid) return;
 
+        float postHp = hpCheck.TargetAttrs.GetAttributeValue(hpCheck.HpAttr);
+        if (postHp >= hpCheck.PreHp) return; // 실제 감소 없으면 발행 안 함
+
+        var targetSystem = target.GetComponent<AbilitySystem>();
+        if (targetSystem == null) return;
+        if (targetSystem.DamagedTag == null) return;
+
+        targetSystem.SendGameplayEvent(targetSystem.DamagedTag, new AbilityEventData
+        {
+            AbilitySystem = targetSystem,
+            Spec = sourceSpec,
+            Instigator = causer,
+            Target = target,
+            WorldPosition = target.transform.position,
+            Causer = causer
+        });
+    }
     private static void TryEmitKillConfirmed(
         AbilitySystem system,
         AbilitySpec spec,
         GameObject target,
         GameObject causer,
-        KillCheckData killCheck)
+        HpCheckData hpCheck)
     {
         if (system.KillConfirmedTag == null) return;
-        if (!killCheck.IsValid) return;
+        if (!hpCheck.IsValid) return;
 
-        float postHp = killCheck.targetAttrs.GetAttributeValue(killCheck.hpAttr);
+        float postHp = hpCheck.TargetAttrs.GetAttributeValue(hpCheck.HpAttr);
         if (postHp > 0f) return;
 
         system.SendGameplayEvent(system.KillConfirmedTag, new AbilityEventData
@@ -288,22 +315,58 @@ public static class CombatDamageAction
         stagger.AddBuildUp(finalStaggerBuildUp, instigator: instigator, causer: causer);
     }
 
+    private static readonly List<ElementDamageResult> s_AutoResolvedElements = new(8);
+#if UNITY_EDITOR
+    private static bool s_warnedLegacyElementBuildUpsIgnored;
+#endif
+
+    private static readonly List<ElementDamageResult> s_resolvedElements = new(8);
     private static void ApplyElements(
         GameObject target,
         IReadOnlyList<ElementDamageResult> elementBuildUps,
         GameObject instigator,
         GameObject causer)
     {
-        if (elementBuildUps == null || elementBuildUps.Count <= 0) return;
+        if (target == null) return;
 
-        var elem = target.GetComponent<ElementGaugeSystem>();
-        if (elem == null) return;
+        var gaugeSystem = target.GetComponent<ElementGaugeSystem>();
+        if (gaugeSystem == null) return;
 
-        for (int i = 0; i < elementBuildUps.Count; i++)
+        // Legacy path intentionally ignored.
+        // 과거에는 스킬/투사체가 elementBuildUps 파라미터로 속성 누적량을 직접 전달했지만,
+        // 현재는 공격자의 AttributeSet + ElementOffenseSource 를 기준으로
+        // CombatDamageAction 에서 속성 누적량을 일괄 계산한다.
+        // 따라서 전달된 elementBuildUps 는 의도적으로 무시한다.
+        // 레거시 생산자(ability/projcetile 쪽 element formula 생성 코드) 정리 후
+        // 이 파라미터 자체를 API 에서 제거할 예정.
+#if UNITY_EDITOR
+        if (!s_warnedLegacyElementBuildUpsIgnored &&
+            elementBuildUps != null &&
+            elementBuildUps.Count > 0)
         {
-            var e = elementBuildUps[i];
-            if (e.elementType != null && e.damage > 0f)
-                elem.AddBuildUp(e.elementType, e.damage, instigator: instigator, causer: causer);
+            s_warnedLegacyElementBuildUpsIgnored = true;
+            Debug.LogWarning(
+                "[CombatDamageAction] Legacy elementBuildUps parameter was provided but is ignored. " +
+                "Element build-up is now resolved centrally from attacker attributes. " +
+                "Remove old element formula producers from ability / projectile code.",
+                causer != null ? causer : target);
+        }
+#endif
+
+        var resolved = ElementBuildUpResolver.Evaluate(instigator, target, s_resolvedElements);
+        if (resolved == null || resolved.Count == 0) return;
+
+        for (int i = 0; i < resolved.Count; i++)
+        {
+            var e = resolved[i];
+            if (e.elementType == null) continue;
+            if (e.damage <= 0f) continue;
+
+            gaugeSystem.AddBuildUp(
+                e.elementType,
+                e.damage,
+                instigator: instigator,
+                causer: causer);
         }
     }
 

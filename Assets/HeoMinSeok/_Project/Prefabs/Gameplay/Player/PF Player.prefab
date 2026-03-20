@@ -241,6 +241,7 @@ GameObject:
   - component: {fileID: 689952884117774573}
   - component: {fileID: 5727091237041186888}
   - component: {fileID: 5754629299100491768}
+  - component: {fileID: 1353302521333203863}
   m_Layer: 0
   m_Name: PF Player
   m_TagString: Player
@@ -803,8 +804,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e18c12fff305a6e43a659b03a5aa9b0a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tagSystem: {fileID: 0}
-  aim: {fileID: 0}
+  tagSystem: {fileID: 7887873875085709242}
+  aim: {fileID: 1353302521333203863}
   player: {fileID: 0}
   forcedMoveTag: {fileID: 0}
 --- !u!114 &5754629299100491768
@@ -831,3 +832,21 @@ MonoBehaviour:
   reAimGapAfterAttackEnd: 0.06
   attackPressedEvent: {fileID: 11400000, guid: 06fb955e1ce9a9c41abb914e2af4dd01, type: 2}
   attackReleasedEvent: {fileID: 11400000, guid: 77a0a96f4aec927419dcb7815cb7e38b, type: 2}
+--- !u!114 &1353302521333203863
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8883617028798182002}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3bc9514241b86de4d8eb1a58c08679e3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mainCamera: {fileID: 0}
+  tagSystem: {fileID: 7887873875085709242}
+  player: {fileID: 4913808379797790544}
+  aimLockedTag: {fileID: 11400000, guid: 4e1c3565f6c57e34c811431616670c8d, type: 2}
+  hand: {fileID: 3164067117474922781}
+  weaponZOffset: 0

@@ -101,7 +101,12 @@ namespace UnityGAS
             if (modifiers.RemoveAll(mod => mod.Source == source) > 0)
                 dirty = true;
         }
-
+        public void ClearAllModifiers()
+        {
+            if (modifiers.Count == 0) return;
+            modifiers.Clear();
+            dirty = true;
+        }
         public void Update(float deltaTime)
         {
             for (int i = modifiers.Count - 1; i >= 0; i--)

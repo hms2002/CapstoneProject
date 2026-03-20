@@ -3,25 +3,17 @@ using UnityEngine;
 
 namespace UnityGAS
 {
-    /// <summary>
-    /// Stagger gauge build-up system ("현기증/무력화 게이지").
-    /// When reaches threshold, a debuff/effect is applied.
-    /// </summary>
     [DisallowMultipleComponent]
     public class StaggerGaugeSystem : MonoBehaviour
     {
-        [Min(1f)] public float threshold = 100f;
+        [Header("Gauge Attributes")]
+        public AttributeDefinition currentGaugeAttribute;      // 예: StaggerGauge
+        public AttributeDefinition maxGaugeAttribute;          // 예: MaxStaggerGauge
+        public AttributeDefinition resistancePercentAttribute; // 예: StaggerResistance (0.2 = 20%)
 
-        [Tooltip("Applied when stagger gauge reaches threshold.")]
+        [Header("Trigger")]
         public GameplayEffect staggeredEffect;
-
-        [Tooltip("If true, overflow carries over (value -= threshold). If false, value is reset to 0.")]
         public bool allowOverflow = true;
-
-        [Tooltip("Optional: build-up resistance attribute on target. (0.2 = 20% reduction)")]
-        public AttributeDefinition resistancePercentAttribute;
-
-        [NonSerialized] public float value;
 
         public event Action<float, float> OnGaugeChanged; // old,new
         public event Action OnTriggered;
@@ -35,35 +27,83 @@ namespace UnityGAS
             _attr = GetComponent<AttributeSet>();
         }
 
-        public void Clear() => value = 0f;
+        public void Clear()
+        {
+            if (_attr == null || currentGaugeAttribute == null) return;
+
+            float old = GetCurrentGauge();
+            SetCurrentGauge(0f);
+            OnGaugeChanged?.Invoke(old, 0f);
+        }
 
         public void AddBuildUp(float amount, GameObject instigator, GameObject causer)
         {
+            if (_attr == null) return;
+            if (currentGaugeAttribute == null || maxGaugeAttribute == null) return;
             if (amount <= 0f) return;
 
-            if (resistancePercentAttribute != null && _attr != null)
+            if (resistancePercentAttribute != null)
             {
-                float r = Mathf.Clamp01(_attr.GetAttributeValue(resistancePercentAttribute));
-                amount *= (1f - r);
+                float resist = Mathf.Clamp01(_attr.GetAttributeValue(resistancePercentAttribute));
+                amount *= (1f - resist);
                 if (amount <= 0f) return;
             }
 
-            float old = value;
-            value += amount;
-            OnGaugeChanged?.Invoke(old, value);
+            float old = GetCurrentGauge();
+            float max = Mathf.Max(0f, _attr.GetAttributeValue(maxGaugeAttribute));
+            float next = old + amount;
 
-            if (value >= threshold)
+            if (max <= 0f)
             {
-                if (allowOverflow) value -= threshold;
-                else value = 0f;
+                SetCurrentGauge(next);
+                OnGaugeChanged?.Invoke(old, next);
+                return;
+            }
 
-                OnTriggered?.Invoke();
+            int triggerCount = 0;
+            while (next >= max)
+            {
+                triggerCount++;
 
-                if (staggeredEffect != null && _runner != null)
+                if (allowOverflow)
+                    next -= max;
+                else
                 {
-                    _runner.ApplyEffect(staggeredEffect, gameObject, instigator != null ? instigator : causer);
+                    next = 0f;
+                    break;
                 }
             }
+
+            SetCurrentGauge(next);
+            OnGaugeChanged?.Invoke(old, next);
+
+            if (triggerCount <= 0)
+                return;
+
+            for (int i = 0; i < triggerCount; i++)
+                OnTriggered?.Invoke();
+
+            if (staggeredEffect != null && _runner != null)
+            {
+                var src = instigator != null ? instigator : causer;
+                for (int i = 0; i < triggerCount; i++)
+                    _runner.ApplyEffect(staggeredEffect, gameObject, src);
+            }
+        }
+
+        private float GetCurrentGauge()
+        {
+            return _attr != null && currentGaugeAttribute != null
+                ? _attr.GetAttributeValue(currentGaugeAttribute)
+                : 0f;
+        }
+
+        private void SetCurrentGauge(float value)
+        {
+            if (_attr == null || currentGaugeAttribute == null)
+                return;
+
+            _attr.TrySetBaseValue(currentGaugeAttribute, Mathf.Max(0f, value), this);
         }
     }
 }

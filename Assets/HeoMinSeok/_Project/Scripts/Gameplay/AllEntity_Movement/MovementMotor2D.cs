@@ -11,7 +11,7 @@ namespace UnityGAS
     /// - 기본 상태면 의도 이동 + 외압 반영
     /// </summary>
     [DisallowMultipleComponent]
-    public sealed class MovementMotor2D : MonoBehaviour
+    public sealed class MovementMotor2D : MonoBehaviour, IMovementStateProvider
     {
         [Header("Physics")]
         [SerializeField] private Rigidbody2D body;
@@ -51,6 +51,17 @@ namespace UnityGAS
         public Vector2 LastExternalVelocity { get; private set; }
         public Vector2 LastMotionVelocity { get; private set; }
         public Vector2 LastFinalVelocity { get; private set; }
+
+        public bool IsMoving
+        {
+            get
+            {
+                if (body != null)
+                    return body.linearVelocity.sqrMagnitude > 0.0001f;
+
+                return LastFinalVelocity.sqrMagnitude > 0.0001f;
+            }
+        }
 
         private void Awake()
         {
@@ -173,8 +184,7 @@ namespace UnityGAS
                 return Vector2.zero;
 
             IntentMovementData intent = intentSource.GetIntent();
-            if (intent.Blocked)
-                return Vector2.zero;
+
 
             float moveSpeed = Mathf.Max(0f, statProvider.Get(StatId.MoveSpeedFinal));
             if (moveSpeed <= 0f)
