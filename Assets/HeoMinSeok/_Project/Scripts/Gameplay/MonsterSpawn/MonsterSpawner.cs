@@ -14,7 +14,7 @@ public class MonsterSpawner : MonoBehaviour
     public static MonsterSpawner Instance { get; private set; }
 
     [Header("Spawn Points")]
-    [SerializeField] private List<MonsterSpawnPoint> spawnPoints = new();
+    [SerializeField] private List<MonsterSpawnContainer> spawnPoints = new();
 
     [Header("Difficulty")]
     [SerializeField] private DifficultyModifiers difficultyModifiers = new();
@@ -91,7 +91,7 @@ public class MonsterSpawner : MonoBehaviour
         spawnPoints.Clear();
 
 #if UNITY_2023_1_OR_NEWER
-        var found = FindObjectsByType<MonsterSpawnPoint>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
+        var found = FindObjectsByType<MonsterSpawnContainer>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
 #else
         var found = FindObjectsOfType<MonsterSpawnPoint>();
 #endif
@@ -117,8 +117,8 @@ public class MonsterSpawner : MonoBehaviour
     [ContextMenu("Spawn All")]
     public void SpawnAll()
     {
-        var defaultPoints = new List<MonsterSpawnPoint>();
-        var extraCandidates = new List<MonsterSpawnPoint>();
+        var defaultPoints = new List<MonsterSpawnContainer>();
+        var extraCandidates = new List<MonsterSpawnContainer>();
 
         for (int i = 0; i < spawnPoints.Count; i++)
         {
@@ -212,7 +212,7 @@ public class MonsterSpawner : MonoBehaviour
     /// - 외부에서 특정 SpawnPoint를 등록할 수 있게 한다.
     /// - 동적 맵 생성 등 Find 기반 수집 외 상황에 대응하기 위한 보조 API다.
     /// </summary>
-    public void RegisterSpawnPoint(MonsterSpawnPoint point)
+    public void RegisterSpawnPoint(MonsterSpawnContainer point)
     {
         if (point == null)
             return;
@@ -225,7 +225,7 @@ public class MonsterSpawner : MonoBehaviour
     /// 책임:
     /// - 외부에서 특정 SpawnPoint를 해제할 수 있게 한다.
     /// </summary>
-    public void UnregisterSpawnPoint(MonsterSpawnPoint point)
+    public void UnregisterSpawnPoint(MonsterSpawnContainer point)
     {
         if (point == null)
             return;

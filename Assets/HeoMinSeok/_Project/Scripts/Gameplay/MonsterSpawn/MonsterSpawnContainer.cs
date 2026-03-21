@@ -5,7 +5,7 @@ using UnityEngine;
 /// - 씬에 배치된 몬스터 스폰 위치 데이터를 보관한다.
 /// - 자신의 설정을 바탕으로 MonsterSpawner가 사용할 스폰 요청을 생성한다.
 /// </summary>
-public class MonsterSpawnPoint : MonoBehaviour
+public class MonsterSpawnContainer : MonoBehaviour
 {
     [Header("Spawn")]
     [SerializeField] private GameObject monsterPrefab;
