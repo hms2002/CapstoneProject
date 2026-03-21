@@ -17090,8 +17090,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e46908affd274f2419d3e3d26578055f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spawnPoints:
-  - {fileID: 1561694363}
+  spawnPoints: []
   difficultyModifiers:
     extraSpawnRatio: 0
     eliteChanceBonus: 0
@@ -32211,7 +32210,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1561694361}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f5e605dc38f9a674f9b8951f01a29e22, type: 3}
+  m_Script: {fileID: 11500000, guid: c81675374be78d949a2b97adae763d77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   monsterPrefab: {fileID: 625522859161183429, guid: 32536a7c661f3a445bd9698a356583ad, type: 3}
