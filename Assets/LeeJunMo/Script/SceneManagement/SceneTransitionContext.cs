@@ -1,13 +1,13 @@
-using static System.TimeZoneInfo;
-
 [System.Serializable]
 public sealed class SceneTransitionContext
 {
     public string fromScene;
     public string toScene;
+
     public string exitPointId;
     public string entryPointId;
-    public TransitionType transitionType;
+
+    public TransitionType transitionType = TransitionType.None;
 
     public bool fullyHealPlayer;
     public bool resetCooldowns;

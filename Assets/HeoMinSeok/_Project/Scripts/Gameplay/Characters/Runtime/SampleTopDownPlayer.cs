@@ -26,6 +26,7 @@ public class SampleTopDownPlayer : MonoBehaviour, IPlayerInteractor
 
     public void SetInteractState(InteractState state)
     {
+        Debug.Log($"[Player] SetInteractState: {CurrentState} -> {state}");
         CurrentState = state;
 
         if (state == InteractState.Talking && currentTarget != null)
@@ -42,15 +43,23 @@ public class SampleTopDownPlayer : MonoBehaviour, IPlayerInteractor
 
         HandleInteractSearch();
 
-        if (Input.GetKeyDown(interactKey) &&
-            currentTarget != null &&
-            currentTarget.CanInteract(this))
+        if (Input.GetKeyDown(interactKey))
         {
-            currentTarget.OnPlayerInteract(this);
+            Debug.Log($"[Player] Interact key pressed. currentTarget = {(currentTarget as MonoBehaviour)?.name ?? "null"}");
+
+            if (currentTarget != null)
+            {
+                bool canInteract = currentTarget.CanInteract(this);
+                Debug.Log($"[Player] currentTarget.CanInteract = {canInteract}");
+
+                if (canInteract)
+                {
+                    currentTarget.OnPlayerInteract(this);
+                }
+            }
         }
     }
 
-    // 상황에 맞는 대사를 띄워주는 핵심 헬퍼 함수
     public void SpeakSituation(PlayerSpeechSituationEnum situation, float duration = 2f)
     {
         if (speechData == null || speechBubble == null)
@@ -78,7 +87,10 @@ public class SampleTopDownPlayer : MonoBehaviour, IPlayerInteractor
             currentTarget = nearest;
 
             if (currentTarget != null)
+            {
+                Debug.Log($"[Player] New currentTarget = {(currentTarget as MonoBehaviour)?.name}");
                 currentTarget.OnHighlight();
+            }
         }
     }
 
@@ -114,19 +126,32 @@ public class SampleTopDownPlayer : MonoBehaviour, IPlayerInteractor
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.TryGetComponent(out IInteractable interactable))
+        IInteractable interactable = other.GetComponent<IInteractable>();
+        if (interactable == null)
+            interactable = other.GetComponentInParent<IInteractable>();
+
+        Debug.Log($"[Player] OnTriggerEnter2D: other={other.name}, foundInteractable={(interactable as MonoBehaviour)?.name ?? "null"}");
+
+        if (interactable != null)
         {
             if (!nearbyObjects.Contains(interactable))
             {
                 nearbyObjects.Add(interactable);
                 interactable.OnPlayerNearby();
+                Debug.Log($"[Player] Added nearby interactable: {(interactable as MonoBehaviour)?.name}");
             }
         }
     }
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        if (other.TryGetComponent(out IInteractable interactable))
+        IInteractable interactable = other.GetComponent<IInteractable>();
+        if (interactable == null)
+            interactable = other.GetComponentInParent<IInteractable>();
+
+        Debug.Log($"[Player] OnTriggerExit2D: other={other.name}, foundInteractable={(interactable as MonoBehaviour)?.name ?? "null"}");
+
+        if (interactable != null)
         {
             if (nearbyObjects.Contains(interactable))
             {
@@ -139,6 +164,7 @@ public class SampleTopDownPlayer : MonoBehaviour, IPlayerInteractor
                 }
 
                 nearbyObjects.Remove(interactable);
+                Debug.Log($"[Player] Removed nearby interactable: {(interactable as MonoBehaviour)?.name}");
             }
         }
     }
