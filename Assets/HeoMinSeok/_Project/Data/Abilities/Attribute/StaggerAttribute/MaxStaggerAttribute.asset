@@ -10,14 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d98d22e39756b5842ab9e6a8750ac815, type: 3}
-  m_Name: MaxFireElementGaugeAttribute
+  m_Name: MaxStaggerAttribute
   m_EditorClassIdentifier: 
-  attributeName: MaxFireElementGaugeAttribute
+  attributeName: MaxStaggerAttribute
   description: Attribute description.
   mutationPolicy: 1
-  defaultBaseValue: 50
-  minValue: 1
-  maxValue: 500
+  defaultBaseValue: 100
+  minValue: 0
+  maxValue: 1e+10
   hasRegeneration: 0
   regenerationRate: 5
   regenerationDelay: 2

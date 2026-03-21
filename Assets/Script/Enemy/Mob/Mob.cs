@@ -11,7 +11,7 @@ public class Mob : Enemy
 
     [Header("Refs")]
     [SerializeField] private EnemyChaseIntent2D chaseIntent;
-    [SerializeField] private TagSystem tagSystem;
+    //[SerializeField] private TagSystem tagSystem;
 
     [Header("Movement Tags")]
     [Tooltip("공격 후 쿨타임 동안 추적 의도 이동을 막는 태그")]

@@ -15,9 +15,9 @@ MonoBehaviour:
   attributeName: MaxFireElementGaugeAttribute
   description: Attribute description.
   mutationPolicy: 1
-  defaultBaseValue: 1
+  defaultBaseValue: 50
   minValue: 1
-  maxValue: 100
+  maxValue: 500
   hasRegeneration: 0
   regenerationRate: 5
   regenerationDelay: 2
