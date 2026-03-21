@@ -331,5 +331,45 @@ namespace UnityGAS
 
             return _attr.GetAttributeValue(def.resistanceAttribute);
         }
+
+        public int GetGaugeUiModels(List<ElementGaugeUiModel> buffer, bool visibleOnly = false)
+        {
+            if (buffer == null)
+                return 0;
+
+            buffer.Clear();
+
+            if (runtimeStates == null || runtimeStates.Count == 0)
+                return 0;
+
+            for (int i = 0; i < runtimeStates.Count; i++)
+            {
+                var state = runtimeStates[i];
+                if (state == null || state.definition == null || state.definition.elementTag == null)
+                    continue;
+
+                float current = Mathf.Max(0f, state.currentBuildUp);
+                float threshold = Mathf.Max(0f, GetMaxGauge(state.definition));
+
+                // 표시 여부는 실제 누적값 기준으로만 판단
+                bool visible = current > 0.0001f;
+
+                // threshold가 0이면 퍼센트 계산 보호용 기본값 사용
+                if (threshold <= 0f)
+                    threshold = 1f;
+
+                if (visibleOnly && !visible)
+                    continue;
+
+                buffer.Add(new ElementGaugeUiModel(
+                    state.definition.elementTag,
+                    state.definition.icon,
+                    current,
+                    threshold,
+                    visible));
+            }
+
+            return buffer.Count;
+        }
     }
 }

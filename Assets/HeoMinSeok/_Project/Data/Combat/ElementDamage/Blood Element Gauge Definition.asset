@@ -16,7 +16,7 @@ MonoBehaviour:
   maxGaugeAttribute: {fileID: 11400000, guid: 5f784222cb78bf545b1c2072c6f551a9, type: 2}
   resistanceAttribute: {fileID: 0}
   triggerEffect: {fileID: 0}
-  icon: {fileID: 0}
+  icon: {fileID: 543113751, guid: ef16b2ddeb64123459076c2c8a541a63, type: 3}
   triggerVfxPrefab: {fileID: 0}
   sustainVfxPrefab: {fileID: 0}
   useTint: 0

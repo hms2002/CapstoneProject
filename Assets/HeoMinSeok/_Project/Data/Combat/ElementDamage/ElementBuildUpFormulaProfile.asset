@@ -20,16 +20,16 @@ MonoBehaviour:
   formulas:
   - elementType: {fileID: 11400000, guid: 82578c30453dcb04a88dce3cd193db5b, type: 2}
     sourceStatId: 207
-    multiplier: 0
+    multiplier: 1
     flatBonus: 0
-    enabled: 0
+    enabled: 1
   - elementType: {fileID: 11400000, guid: 7c8af04be6bcbb84794e303f3f4c401c, type: 2}
     sourceStatId: 203
-    multiplier: 0
+    multiplier: 1
     flatBonus: 0
-    enabled: 0
+    enabled: 1
   - elementType: {fileID: 11400000, guid: 53bdedc3d917f83458902716124fcc3c, type: 2}
     sourceStatId: 211
-    multiplier: 0
+    multiplier: 1
     flatBonus: 0
-    enabled: 0
+    enabled: 1

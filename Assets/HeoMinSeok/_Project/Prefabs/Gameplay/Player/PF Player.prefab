@@ -475,7 +475,7 @@ MonoBehaviour:
   attributeCatalog: {fileID: 11400000, guid: b9c79b9448814f2408077eff50c01aeb, type: 2}
   baseInitProfile: {fileID: 11400000, guid: ac5ff33387b8e384ea5c5452dcc2efcc, type: 2}
   overrideInitProfiles:
-  - {fileID: 11400000, guid: ac5ff33387b8e384ea5c5452dcc2efcc, type: 2}
+  - {fileID: 11400000, guid: 80b68e124be07824ab07f867bfbdb2c4, type: 2}
   maxLinks:
   - value: {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
     max: {fileID: 11400000, guid: 0e177e1d15e428745b5859fac08ce203, type: 2}
@@ -706,7 +706,7 @@ MonoBehaviour:
   externalMovement: {fileID: 3865965398067882873}
   motionController: {fileID: 6034561116183737726}
   freezeAllMovementTag: {fileID: 0}
-  blockIntentMoveTag: {fileID: 0}
+  blockIntentMoveTag: {fileID: 11400000, guid: 6a88dccc70fd08841a7484539aec65c1, type: 2}
   blockExternalMoveTag: {fileID: 0}
 --- !u!114 &3865965398067882873
 MonoBehaviour:
@@ -766,7 +766,7 @@ MonoBehaviour:
   tagSystem: {fileID: 7887873875085709242}
   aim: {fileID: 1353302521333203863}
   player: {fileID: 0}
-  forcedMoveTag: {fileID: 0}
+  forcedMoveTag: {fileID: 11400000, guid: 837c3c3beac45de458f179f50c7d7500, type: 2}
 --- !u!114 &5754629299100491768
 MonoBehaviour:
   m_ObjectHideFlags: 0
