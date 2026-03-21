@@ -244,6 +244,10 @@ GameObject:
   - component: {fileID: 3865359879035668891}
   - component: {fileID: 9064131313457660205}
   - component: {fileID: 8193243277221661669}
+  - component: {fileID: 3806616892958564186}
+  - component: {fileID: 3865965398067882873}
+  - component: {fileID: 6034561116183737726}
+  - component: {fileID: 1967239057589024353}
   m_Layer: 0
   m_Name: PF Player
   m_TagString: Player
@@ -690,54 +694,6 @@ MonoBehaviour:
   knockbackImmuneTag: {fileID: 0}
   resistancePctAttribute: {fileID: 0}
   knockbackDominanceTime: 0.12
---- !u!114 &3806616892958564186
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8883617028798182002}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 82ae4624ea26de741ba8bc236cf3108b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  body: {fileID: 288432539280398367}
-  intentSourceBehaviour: {fileID: 5727091237041186888}
-  statProviderBehaviour: {fileID: 689952884117774573}
-  externalMovement: {fileID: 3865965398067882873}
-  motionController: {fileID: 6034561116183737726}
-  freezeAllMovementTag: {fileID: 0}
-  blockIntentMoveTag: {fileID: 11400000, guid: 6a88dccc70fd08841a7484539aec65c1, type: 2}
-  blockExternalMoveTag: {fileID: 0}
---- !u!114 &3865965398067882873
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8883617028798182002}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b5ebf9fcd76f27f4f874c8853b167522, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  knockbackDamping: 18
-  defaultKnockbackDominanceTime: 0.12
-  maxKnockbackMagnitude: 25
-  maxCombinedPersistentVelocityMagnitude: 25
---- !u!114 &6034561116183737726
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8883617028798182002}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c721f3a2f874aa14ea14c5bc2261cc39, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &689952884117774573
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -911,3 +867,67 @@ MonoBehaviour:
   unsafeTags:
   - {fileID: 11400000, guid: f54e8cb58b4f7c64292067442e9286c7, type: 2}
   - {fileID: 11400000, guid: c4d6c74817ae3b945b20c041f24f86b0, type: 2}
+--- !u!114 &3806616892958564186
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8883617028798182002}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82ae4624ea26de741ba8bc236cf3108b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  body: {fileID: 288432539280398367}
+  intentSourceBehaviour: {fileID: 5727091237041186888}
+  statProviderBehaviour: {fileID: 689952884117774573}
+  externalMovement: {fileID: 3865965398067882873}
+  motionController: {fileID: 6034561116183737726}
+  freezeAllMovementTag: {fileID: 0}
+  blockIntentMoveTag: {fileID: 11400000, guid: 6a88dccc70fd08841a7484539aec65c1, type: 2}
+  blockExternalMoveTag: {fileID: 0}
+--- !u!114 &3865965398067882873
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8883617028798182002}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b5ebf9fcd76f27f4f874c8853b167522, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  knockbackDamping: 18
+  defaultKnockbackDominanceTime: 0.12
+  maxKnockbackMagnitude: 25
+  maxCombinedPersistentVelocityMagnitude: 25
+--- !u!114 &6034561116183737726
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8883617028798182002}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c721f3a2f874aa14ea14c5bc2261cc39, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1967239057589024353
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8883617028798182002}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6e00197596022f438d9b5a1013d5889, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  weaponInventory: {fileID: 963026585117413559}
+  relicInventory: {fileID: 4885150337275956111}
+  attributeSet: {fileID: 1414767285602429285}
+  healthAttribute: {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}

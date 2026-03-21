@@ -79,4 +79,21 @@ public sealed class GamePlayDataManager : MonoBehaviour
         Data.pendingTransition = null;
         return ctx;
     }
+
+    public void PreparePlayerState(PlayerRuntimeState state)
+    {
+        Data.pendingPlayerState = state;
+    }
+
+    public PlayerRuntimeState PeekPendingPlayerState()
+    {
+        return Data.pendingPlayerState;
+    }
+
+    public PlayerRuntimeState ConsumePendingPlayerState()
+    {
+        var state = Data.pendingPlayerState;
+        Data.pendingPlayerState = null;
+        return state;
+    }
 }

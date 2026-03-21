@@ -108,6 +108,25 @@ public sealed class ScenePortal : MonoBehaviour, IInteractable
             return;
         }
 
+        if (!endRunOnTravel)
+        {
+            var playerGo = GameObject.FindGameObjectWithTag("Player");
+            if (playerGo != null)
+            {
+                var facade = playerGo.GetComponent<PlayerSceneTransitionFacade>();
+                if (facade != null)
+                {
+                    var state = facade.CaptureRuntimeState();
+                    gameplay.PreparePlayerState(state);
+                    Debug.Log($"[ScenePortal:{name}] PlayerRuntimeState captured");
+                }
+                else
+                {
+                    Debug.LogWarning("[ScenePortal] PlayerSceneTransitionFacade가 없음. 상태 복원 없이 이동함.");
+                }
+            }
+        }
+
         if (startRunOnTravel)
             gameplay.StartRun();
 

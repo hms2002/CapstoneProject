@@ -25,8 +25,9 @@ public sealed class PlayerSpawner : MonoBehaviour
             return;
         }
 
-        var ctx = GamePlayDataManager.Instance != null
-            ? GamePlayDataManager.Instance.PeekPendingTransition()
+        var gameplay = GamePlayDataManager.Instance;
+        var ctx = gameplay != null
+            ? gameplay.PeekPendingTransition()
             : null;
 
         var spawnPoint = ResolveSpawnPoint(ctx);
@@ -37,10 +38,28 @@ public sealed class PlayerSpawner : MonoBehaviour
             return;
         }
 
-        Instantiate(playerPrefab, spawnPoint.transform.position, spawnPoint.transform.rotation);
+        var player = Instantiate(playerPrefab, spawnPoint.transform.position, spawnPoint.transform.rotation);
+        Debug.Log($"[PlayerSpawner] Player spawned at point={spawnPoint.pointId}");
 
-        // 지금 단계에서는 위치 스폰만 함.
-        // 나중에 PlayerRuntimeState 복원 붙일 때 여기서 이어가면 된다.
+        if (gameplay != null)
+        {
+            var state = gameplay.ConsumePendingPlayerState();
+            if (state != null)
+            {
+                var facade = player.GetComponent<PlayerSceneTransitionFacade>();
+                if (facade != null)
+                {
+                    facade.RestoreRuntimeState(state);
+                    Debug.Log("[PlayerSpawner] PlayerRuntimeState restored");
+                }
+                else
+                {
+                    Debug.LogWarning("[PlayerSpawner] PlayerSceneTransitionFacade가 없음. 상태 복원 생략.");
+                }
+            }
+
+            gameplay.ConsumePendingTransition();
+        }
     }
 
     private PlayerSpawnPoint ResolveSpawnPoint(SceneTransitionContext ctx)

@@ -6,5 +6,5 @@ public sealed class GamePlayData
     public RunEndReason lastRunEndReason = RunEndReason.None;
 
     public SceneTransitionContext pendingTransition;
-    public object pendingPlayerState; // 나중에 PlayerRuntimeState로 교체
+    public PlayerRuntimeState pendingPlayerState;
 }
