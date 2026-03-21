@@ -9,6 +9,12 @@ EditorBuildSettings:
     path: Assets/Scenes/SampleScene.unity
     guid: 8c9cfa26abfee488c85f1582747f6a02
   - enabled: 1
+    path: Assets/Scenes/LEeJunmo.unity
+    guid: d5b6a2079bf8fff49b69b53253999c00
+  - enabled: 1
+    path: Assets/Scenes/LEeJunmo 1.unity
+    guid: 44063079bb076824497c3ef09ebc077f
+  - enabled: 1
     path: Assets/HeoMinSeok/HeoMinSeokScene.unity
     guid: 8c13838df8e680749ae1bb30cfe63339
   m_configObjects:

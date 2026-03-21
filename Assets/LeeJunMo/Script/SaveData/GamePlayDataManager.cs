@@ -6,15 +6,16 @@ public sealed class GamePlayDataManager : MonoBehaviour
 
     public GamePlayData Data { get; private set; } = new GamePlayData();
 
+    private static bool s_isQuitting;
+
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     private static void AutoBootstrap()
     {
-        if (Instance != null)
-            return;
+        if (s_isQuitting) return;
+        if (Instance != null) return;
 
-        var go = new GameObject("GamePlayDataManager");
+        var go = new GameObject(nameof(GamePlayDataManager));
         go.AddComponent<GamePlayDataManager>();
-        DontDestroyOnLoad(go);
     }
 
     private void Awake()
@@ -29,13 +30,32 @@ public sealed class GamePlayDataManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
-    public void StartRun()
+    private void OnApplicationQuit()
     {
-        Data.runCount++;
-        Data.ResetForRunStart();
+        s_isQuitting = true;
     }
 
-    public void TickRun(float deltaTime)
+    private void OnDestroy()
+    {
+        if (Instance == this)
+            Instance = null;
+    }
+
+    public void StartRun()
+    {
+        Data.isRunActive = true;
+        Data.runElapsedSeconds = 0f;
+    }
+
+    public void EndRun(RunEndReason reason)
+    {
+        Data.lastRunEndReason = reason;
+        Data.isRunActive = false;
+        Data.pendingTransition = null;
+        Data.pendingPlayerState = null;
+    }
+
+    public void TickRunTimer(float deltaTime)
     {
         if (!Data.isRunActive)
             return;
@@ -43,29 +63,20 @@ public sealed class GamePlayDataManager : MonoBehaviour
         Data.runElapsedSeconds += Mathf.Max(0f, deltaTime);
     }
 
-    public void EndRun(RunEndReason reason, int defeatedBossId = -1, string defeatReason = null)
-    {
-        Data.lastRunEndReason = reason;
-        Data.lastDefeatedBossId = defeatedBossId;
-        Data.lastDefeatReason = defeatReason;
-        Data.ClearRunState();
-    }
-
     public void PrepareTransition(SceneTransitionContext context)
     {
         Data.pendingTransition = context;
     }
 
-    public SceneTransitionContext ConsumePendingTransition()
+    public SceneTransitionContext PeekPendingTransition()
     {
-        var context = Data.pendingTransition;
-        Data.pendingTransition = null;
-        return context;
+        return Data.pendingTransition;
     }
 
-    private void OnDestroy()
+    public SceneTransitionContext ConsumePendingTransition()
     {
-        if (Instance == this)
-            Instance = null;
+        var ctx = Data.pendingTransition;
+        Data.pendingTransition = null;
+        return ctx;
     }
 }
