@@ -147,6 +147,7 @@ namespace UnityGAS
             ApplyVelocities(intentVelocity, externalVelocity, Vector2.zero);
         }
 
+
         public void WarpTo(
             Vector2 worldPosition,
             bool clearExternalMovement = true,
@@ -247,7 +248,6 @@ namespace UnityGAS
             LastExternalVelocity = externalVelocity;
             LastMotionVelocity = motionVelocity;
             LastFinalVelocity = intentVelocity + externalVelocity + motionVelocity;
-
             if (body != null)
                 body.linearVelocity = LastFinalVelocity;
         }
