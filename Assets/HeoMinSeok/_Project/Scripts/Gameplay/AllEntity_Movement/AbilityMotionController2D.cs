@@ -80,6 +80,7 @@ namespace UnityGAS
 
         public void CancelMotion()
         {
+            Debug.Log("캔슬?");
             activeKind = MotionKind.None;
             motionVelocity = Vector2.zero;
             motionRemainingTime = 0f;
@@ -95,12 +96,12 @@ namespace UnityGAS
         /// </summary>
         public Vector2 TickAndGetMotionVelocity(float dt)
         {
+            
             if (activeKind == MotionKind.None)
                 return Vector2.zero;
 
             if (dt <= 0f)
                 return Vector2.zero;
-
             switch (activeKind)
             {
                 case MotionKind.ConstantVelocity:

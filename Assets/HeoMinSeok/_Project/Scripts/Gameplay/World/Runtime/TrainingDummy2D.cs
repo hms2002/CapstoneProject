@@ -20,8 +20,6 @@ public class TrainingDummy2D : MonoBehaviour
     [Tooltip("연타/다중히트로 트리거가 과도하게 들어가는 걸 막는 최소 간격")]
     [SerializeField] private float minHurtInterval = 0.03f;
 
-    [Tooltip("데미지 UI로 표시하는 컴포넌트")]
-    [SerializeField] private DamagePopupSpawner2D popupSpawner;
 
     private AttributeSet attributeSet;
     private Animator animator;
@@ -42,8 +40,7 @@ public class TrainingDummy2D : MonoBehaviour
         {
             float dmg = oldValue - newValue;
 
-            if (popupSpawner != null)
-                popupSpawner.Spawn(dmg, transform.position);
+            DamagePopupService.Show(dmg, transform.position);
 
             PlayHurt();
         }

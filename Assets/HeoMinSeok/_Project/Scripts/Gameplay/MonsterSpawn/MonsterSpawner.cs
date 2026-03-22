@@ -165,6 +165,9 @@ public class MonsterSpawner : MonoBehaviour
         ApplyDifficulty(monster, difficultyModifiers);
         InstallViews(monster);
 
+        if (request.LinkedChestKillLock != null)
+            request.LinkedChestKillLock.RegisterMonster(monster);
+
         spawnedMonsters.Add(monster);
         return monster;
     }
