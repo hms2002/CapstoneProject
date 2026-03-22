@@ -17,6 +17,8 @@ public class UpgradeManager : MonoBehaviour
     public Action OnDataChanged;
     public Action OnUIClosed;
 
+    private SampleTopDownPlayer appliedPlayer;
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -37,10 +39,20 @@ public class UpgradeManager : MonoBehaviour
     }
 
 
+    private void OnEnable()
+    {
+        PlayerRuntimeRegistry.PlayerRegistered += HandlePlayerRegistered;
+    }
+
     private void Start()
     {
         CheckAndUnlockNodes();
-        ReapplyAllEffects();
+        TryReapplyAllEffects();
+    }
+
+    private void OnDisable()
+    {
+        PlayerRuntimeRegistry.PlayerRegistered -= HandlePlayerRegistered;
     }
 
     private void InitDB()
@@ -50,6 +62,33 @@ public class UpgradeManager : MonoBehaviour
         {
             if (!upgradeMap.ContainsKey(node.nodeID)) upgradeMap.Add(node.nodeID, node);
         }
+    }
+
+
+    private void HandlePlayerRegistered(SampleTopDownPlayer player)
+    {
+        TryReapplyAllEffects();
+    }
+
+    private SampleTopDownPlayer ResolveCurrentPlayer()
+    {
+        if (PlayerRuntimeRegistry.CurrentPlayer != null)
+            return PlayerRuntimeRegistry.CurrentPlayer;
+
+        return SampleTopDownPlayer.Instance;
+    }
+
+    private void TryReapplyAllEffects()
+    {
+        var player = ResolveCurrentPlayer();
+        if (player == null)
+            return;
+
+        if (appliedPlayer == player)
+            return;
+
+        ReapplyAllEffects(player);
+        appliedPlayer = player;
     }
 
     public void CheckAndUnlockNodes()
@@ -109,7 +148,9 @@ public class UpgradeManager : MonoBehaviour
         data.unlockedIDs.Remove(id);
         data.purchasedIDs.Add(id);
 
-        node.ApplyEffect(SampleTopDownPlayer.Instance);
+        var player = ResolveCurrentPlayer();
+        if (player != null)
+            node.ApplyEffect(player);
 
         if (RewardDisplayUI.Instance != null)
             RewardDisplayUI.Instance.ShowReward(node.effects, null);
@@ -119,12 +160,14 @@ public class UpgradeManager : MonoBehaviour
         OnDataChanged?.Invoke();
     }
 
-    private void ReapplyAllEffects()
+    private void ReapplyAllEffects(SampleTopDownPlayer player)
     {
-        if (SampleTopDownPlayer.Instance == null) return;
+        if (player == null || GameDataManager.Instance == null)
+            return;
+
         foreach (var id in GameDataManager.Instance.Data.upgradeData.purchasedIDs)
         {
-            GetUpgradeByID(id)?.ApplyEffect(SampleTopDownPlayer.Instance);
+            GetUpgradeByID(id)?.ApplyEffect(player);
         }
     }
 

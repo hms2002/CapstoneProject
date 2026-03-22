@@ -19,15 +19,60 @@ public class DebugPlayerHpText : MonoBehaviour
 
     private void Awake()
     {
-        if (player != null)
-            _attrs = player.GetComponent<AttributeSet>();
+        TryResolvePlayerAttributes();
 
         if (text == null)
             text = GetComponent<TMP_Text>();
     }
 
+    private void OnEnable()
+    {
+        PlayerRuntimeRegistry.PlayerRegistered += HandlePlayerRegistered;
+        PlayerRuntimeRegistry.PlayerUnregistered += HandlePlayerUnregistered;
+        TryResolvePlayerAttributes();
+    }
+
+    private void OnDisable()
+    {
+        PlayerRuntimeRegistry.PlayerRegistered -= HandlePlayerRegistered;
+        PlayerRuntimeRegistry.PlayerUnregistered -= HandlePlayerUnregistered;
+    }
+
+
+    private void HandlePlayerRegistered(SampleTopDownPlayer registeredPlayer)
+    {
+        player = registeredPlayer != null ? registeredPlayer.gameObject : null;
+        _attrs = registeredPlayer != null ? registeredPlayer.GetComponent<AttributeSet>() : null;
+    }
+
+    private void HandlePlayerUnregistered(SampleTopDownPlayer unregisteredPlayer)
+    {
+        if (unregisteredPlayer != null && player == unregisteredPlayer.gameObject)
+        {
+            player = null;
+            _attrs = null;
+        }
+    }
+
+    private void TryResolvePlayerAttributes()
+    {
+        if (player == null)
+        {
+            var currentPlayer = PlayerRuntimeRegistry.CurrentPlayer != null
+                ? PlayerRuntimeRegistry.CurrentPlayer.gameObject
+                : SampleTopDownPlayer.Instance != null ? SampleTopDownPlayer.Instance.gameObject : null;
+
+            player = currentPlayer;
+        }
+
+        if (player != null)
+            _attrs = player.GetComponent<AttributeSet>();
+    }
+
     private void Update()
     {
+        if (_attrs == null)
+            TryResolvePlayerAttributes();
         if (_attrs == null || hpDef == null || maxHpDef == null || text == null)
             return;
 

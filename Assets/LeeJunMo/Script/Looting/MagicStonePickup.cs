@@ -25,19 +25,26 @@ public class MagicStonePickup : MonoBehaviour
         StartCoroutine(MagnetRoutine());
     }
 
+    private void OnDisable()
+    {
+        StopAllCoroutines();
+        targetPlayer = null;
+    }
+
     private IEnumerator MagnetRoutine()
     {
         // 1. 드롭 연출을 위해 잠시 대기
         yield return new WaitForSeconds(delayBeforeMagnet);
 
-        // 2. 플레이어 찾기 (전역 참조 사용)
-        if (SampleTopDownPlayer.Instance != null)
+        // 2. 플레이어 찾기 (스폰 완료될 때까지 대기)
+        while (targetPlayer == null)
         {
-            targetPlayer = SampleTopDownPlayer.Instance.transform;
-        }
+            targetPlayer = PlayerRuntimeRegistry.GetPlayerTransform();
+            if (targetPlayer != null)
+                break;
 
-        // 플레이어가 없으면 로직 종료 (안전장치)
-        if (targetPlayer == null) yield break;
+            yield return null;
+        }
 
         // 3. 거리 상관없이 플레이어에게 무조건 이동
         while (targetPlayer != null)

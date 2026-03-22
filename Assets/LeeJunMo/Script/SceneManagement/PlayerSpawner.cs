@@ -19,15 +19,19 @@ public sealed class PlayerSpawner : MonoBehaviour
             return;
         }
 
-        if (GameObject.FindGameObjectWithTag("Player") != null)
+        var existingPlayer = GameObject.FindGameObjectWithTag("Player");
+        if (existingPlayer != null)
         {
+            var existingInteractor = existingPlayer.GetComponent<SampleTopDownPlayer>();
+            if (existingInteractor != null)
+                PlayerRuntimeRegistry.Register(existingInteractor);
+
             Debug.Log("[PlayerSpawner] 이미 Player가 씬에 존재해서 스폰을 건너뜀.");
             return;
         }
 
-        var gameplay = GamePlayDataManager.Instance;
-        var ctx = gameplay != null
-            ? gameplay.PeekPendingTransition()
+        var ctx = GamePlayDataManager.Instance != null
+            ? GamePlayDataManager.Instance.PeekPendingTransition()
             : null;
 
         var spawnPoint = ResolveSpawnPoint(ctx);
@@ -39,27 +43,15 @@ public sealed class PlayerSpawner : MonoBehaviour
         }
 
         var player = Instantiate(playerPrefab, spawnPoint.transform.position, spawnPoint.transform.rotation);
-        Debug.Log($"[PlayerSpawner] Player spawned at point={spawnPoint.pointId}");
 
-        if (gameplay != null)
-        {
-            var state = gameplay.ConsumePendingPlayerState();
-            if (state != null)
-            {
-                var facade = player.GetComponent<PlayerSceneTransitionFacade>();
-                if (facade != null)
-                {
-                    facade.RestoreRuntimeState(state);
-                    Debug.Log("[PlayerSpawner] PlayerRuntimeState restored");
-                }
-                else
-                {
-                    Debug.LogWarning("[PlayerSpawner] PlayerSceneTransitionFacade가 없음. 상태 복원 생략.");
-                }
-            }
+        var playerInteractor = player.GetComponent<SampleTopDownPlayer>();
+        if (playerInteractor != null)
+            PlayerRuntimeRegistry.Register(playerInteractor);
+        else
+            Debug.LogWarning("[PlayerSpawner] SampleTopDownPlayer를 찾지 못해 레지스트리 등록을 건너뜀.");
 
-            gameplay.ConsumePendingTransition();
-        }
+        // 지금 단계에서는 위치 스폰만 함.
+        // 나중에 PlayerRuntimeState 복원/바인딩이 모두 끝난 뒤에도 같은 지점에서 등록을 유지하면 된다.
     }
 
     private PlayerSpawnPoint ResolveSpawnPoint(SceneTransitionContext ctx)

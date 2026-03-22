@@ -24,6 +24,14 @@ public class SampleTopDownPlayer : MonoBehaviour, IPlayerInteractor
         Instance = this;
     }
 
+    private void OnDestroy()
+    {
+        if (Instance == this)
+            Instance = null;
+
+        PlayerRuntimeRegistry.Unregister(this);
+    }
+
     public void SetInteractState(InteractState state)
     {
         Debug.Log($"[Player] SetInteractState: {CurrentState} -> {state}");

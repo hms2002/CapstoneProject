@@ -70,11 +70,6 @@ public class ChestScreen : MonoBehaviour, IStackableUI
             });
         }
 
-        if (playerWeaponInventory == null)
-            playerWeaponInventory = FindFirstObjectByType<WeaponInventory2D>();
-
-        if (playerRelicInventory == null)
-            playerRelicInventory = FindFirstObjectByType<RelicInventory>();
     }
 
     private void OnDisable()
@@ -97,6 +92,8 @@ public class ChestScreen : MonoBehaviour, IStackableUI
     {
         chestInventory = inv;
 
+        ResolvePlayerInventories();
+
         chestContainer = new ChestContainerAdapter(chestInventory);
         weaponContainer = new PlayerWeaponContainerAdapter(playerWeaponInventory);
         relicContainer = new PlayerRelicContainerAdapter(playerRelicInventory);
@@ -106,6 +103,26 @@ public class ChestScreen : MonoBehaviour, IStackableUI
         BuildUI();
 
         if (UIManager.Instance != null) UIManager.Instance.HideHoverImmediate();
+    }
+
+
+    private void ResolvePlayerInventories()
+    {
+        var currentPlayer = PlayerRuntimeRegistry.CurrentPlayer != null
+            ? PlayerRuntimeRegistry.CurrentPlayer
+            : SampleTopDownPlayer.Instance;
+
+        if (currentPlayer != null)
+        {
+            playerWeaponInventory = currentPlayer.GetComponent<WeaponInventory2D>();
+            playerRelicInventory = currentPlayer.GetComponent<RelicInventory>();
+        }
+
+        if (playerWeaponInventory == null)
+            playerWeaponInventory = FindFirstObjectByType<WeaponInventory2D>();
+
+        if (playerRelicInventory == null)
+            playerRelicInventory = FindFirstObjectByType<RelicInventory>();
     }
 
     private void BuildUI()

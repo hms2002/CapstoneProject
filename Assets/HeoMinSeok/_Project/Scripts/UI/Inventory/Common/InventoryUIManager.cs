@@ -38,14 +38,19 @@ public class InventoryUIManager : MonoBehaviour
     {
         if (inventoryScreen == null) return;
 
-        var player = lootOriginOverride != null
+        var playerTransform = lootOriginOverride != null
             ? lootOriginOverride
-            : (SampleTopDownPlayer.Instance != null ? SampleTopDownPlayer.Instance.transform : null);
-        var weaponInv = FindFirstObjectByType<WeaponInventory2D>();
-        var relicInv = FindFirstObjectByType<RelicInventory>();
-        var backpack = FindFirstObjectByType<PlayerBackpackInventory>();
+            : PlayerRuntimeRegistry.GetPlayerTransform();
 
-        inventoryScreen.Bind(backpack, weaponInv, relicInv, player);
+        var currentPlayer = PlayerRuntimeRegistry.CurrentPlayer != null
+            ? PlayerRuntimeRegistry.CurrentPlayer
+            : SampleTopDownPlayer.Instance;
+
+        var weaponInv = currentPlayer != null ? currentPlayer.GetComponent<WeaponInventory2D>() : FindFirstObjectByType<WeaponInventory2D>();
+        var relicInv = currentPlayer != null ? currentPlayer.GetComponent<RelicInventory>() : FindFirstObjectByType<RelicInventory>();
+        var backpack = currentPlayer != null ? currentPlayer.GetComponent<PlayerBackpackInventory>() : FindFirstObjectByType<PlayerBackpackInventory>();
+
+        inventoryScreen.Bind(backpack, weaponInv, relicInv, playerTransform);
 
         if (UIManager.Instance != null) UIManager.Instance.HideHoverImmediate();
 
