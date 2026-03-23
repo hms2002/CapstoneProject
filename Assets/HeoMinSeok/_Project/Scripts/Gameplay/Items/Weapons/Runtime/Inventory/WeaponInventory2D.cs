@@ -95,7 +95,11 @@ public class WeaponInventory2D : MonoBehaviour
     // -----------------------
     // Public API
     // -----------------------
-    public bool TryPickupWeapon(WeaponDefinition weapon)
+    /// <summary>
+    /// 책임 : 무기를 인벤토리에 픽업하고, 필요하면 그 무기 인스턴스의 영속 상태도 함께 복원한다.
+    /// 드롭 오브젝트, 상자 보상, 테스트 코드 등 다양한 진입점을 이 API로 통일한다.
+    /// </summary>
+    public bool TryPickupWeapon(WeaponDefinition weapon, WeaponPersistentStatePayload runtimePayload = null)
     {
         if (weapon == null) return false;
 
@@ -123,6 +127,7 @@ public class WeaponInventory2D : MonoBehaviour
 
         SetSlot(targetIndex, weapon);
         abilityBinder.OnWeaponAdded(weapon);
+        ApplyWeaponPersistentState(weapon, runtimePayload);
 
         if (!HasEquippedWeapon)
         {
@@ -346,7 +351,14 @@ public class WeaponInventory2D : MonoBehaviour
                 if (string.IsNullOrEmpty(weaponId))
                     continue;
 
-                slots[i] = weaponResolver(weaponId);
+                var resolved = weaponResolver(weaponId);
+                if (resolved == null)
+                {
+                    Debug.LogWarning($"[WeaponInventory2D] 무기 복원 실패: slot={i}, weaponId={weaponId}", this);
+                    continue;
+                }
+
+                slots[i] = resolved;
             }
         }
 
@@ -354,24 +366,31 @@ public class WeaponInventory2D : MonoBehaviour
         if (restoredActiveIndex < 0 || restoredActiveIndex >= slots.Length || slots[restoredActiveIndex] == null)
             restoredActiveIndex = -1;
 
+        var restoredActiveWeapon =
+            restoredActiveIndex >= 0 && restoredActiveIndex < slots.Length
+                ? slots[restoredActiveIndex]
+                : null;
+
         activeIndex = restoredActiveIndex;
-        equipRuntime.Initialize(activeIndex, ActiveWeapon);
+        equipRuntime.Initialize(restoredActiveIndex, restoredActiveWeapon);
 
         if (applyActiveVisual)
-            presentationBinder?.ApplyVisualOnly(ActiveWeapon);
+            presentationBinder?.ApplyVisualOnly(restoredActiveWeapon);
         else
             presentationBinder?.ClearVisualOnly();
 
         NotifyInventoryChanged();
     }
 
+
     /// <summary>
-    /// 책임 : 껍데기 복원 후 무기 인벤토리의 내부 런타임 훅만 다시 구성한다.
-    /// AbilitySystem grant는 하지 않고, 이후 장착/해제 시 ref count가 맞게 동작하도록 binder 상태만 복원한다.
+    /// 책임 : 껍데기 복원 후 무기 인벤토리의 내부 런타임 훅을 다시 구성하고,
+    /// 현재 슬롯 무기들의 ability grant를 최소 보장한다.
+    /// 이후 개별 runtime state 복원이 cooldown, charges, stack, custom vars를 덮어쓴다.
     /// </summary>
     public void AttachRuntimeHooksForRestore()
     {
-        abilityBinder?.RebuildReferencesWithoutApplying(slots);
+        abilityBinder?.RebuildReferencesAndEnsureGranted(slots);
     }
 
     /// <summary>
@@ -503,12 +522,14 @@ public class WeaponInventory2D : MonoBehaviour
             }
         }
 
+        var payload = CaptureWeaponPersistentState(weapon);
+
         abilityBinder.OnWeaponRemoved(weapon);
 
         if (dropPrefab != null)
         {
             var drop = Instantiate(dropPrefab, transform.position, Quaternion.identity);
-            drop.SetWeapon(weapon);
+            drop.SetWeapon(weapon, payload);
         }
 
         ClearSlot(slotIndex);
@@ -533,5 +554,96 @@ public class WeaponInventory2D : MonoBehaviour
             if (slots[i] != null)
                 abilityBinder.OnWeaponAdded(slots[i]);
         }
+    }
+
+    /// <summary>
+    /// 책임 : 특정 무기 정의에 연결된 ability들의 영속 상태를 추출해 드롭/저장용 payload로 묶는다.
+    /// AbilitySystem에서 현재 살아 있는 spec 상태만 읽으며, 진행 중 실행 상태는 포함하지 않는다.
+    /// </summary>
+    private WeaponPersistentStatePayload CaptureWeaponPersistentState(WeaponDefinition weapon)
+    {
+        if (weapon == null || abilitySystem == null)
+            return null;
+
+        var payload = new WeaponPersistentStatePayload
+        {
+            weaponId = weapon.weaponId
+        };
+
+        AddAbilityPersistentState(payload.abilities, weapon.attack);
+        AddAbilityPersistentState(payload.abilities, weapon.skill1);
+        AddAbilityPersistentState(payload.abilities, weapon.skill2);
+
+        return payload;
+    }
+
+    /// <summary>
+    /// 책임 : 드롭/픽업으로 이동한 무기 payload를 현재 AbilitySystem에 다시 주입한다.
+    /// 무기를 인벤토리에 추가한 직후, 해당 무기의 ability spec이 생성된 뒤 호출되어야 한다.
+    /// </summary>
+    private void ApplyWeaponPersistentState(WeaponDefinition weapon, WeaponPersistentStatePayload payload)
+    {
+        if (weapon == null || payload == null || abilitySystem == null)
+            return;
+
+        if (!string.IsNullOrEmpty(payload.weaponId) &&
+            !string.Equals(payload.weaponId, weapon.weaponId, StringComparison.Ordinal))
+        {
+            Debug.LogWarning(
+                $"[WeaponInventory2D] 무기 payload 복원 생략: weaponId 불일치 ({payload.weaponId} != {weapon.weaponId})",
+                this);
+            return;
+        }
+
+        if (payload.abilities == null || payload.abilities.Count == 0)
+            return;
+
+        for (int i = 0; i < payload.abilities.Count; i++)
+        {
+            var state = payload.abilities[i];
+            if (state == null)
+                continue;
+
+            abilitySystem.ImportPersistentState(
+                state,
+                abilityId => ResolveAbilityOnWeapon(weapon, abilityId));
+        }
+    }
+
+    /// <summary>
+    /// 책임 : payload 목록에 ability 하나의 영속 상태를 추가한다.
+    /// spec이 아직 없거나 export 결과가 null이면 조용히 건너뛴다.
+    /// </summary>
+    private void AddAbilityPersistentState(
+        List<AbilityPersistentState> output,
+        AbilityDefinition ability)
+    {
+        if (output == null || ability == null || abilitySystem == null)
+            return;
+
+        var state = abilitySystem.ExportPersistentState(ability);
+        if (state != null)
+            output.Add(state);
+    }
+
+    /// <summary>
+    /// 책임 : 특정 무기 정의가 가진 attack/skill1/skill2 중 abilityId와 일치하는 AbilityDefinition을 찾는다.
+    /// 무기 payload 복원 시 이 무기 소유 능력만 대상으로 import 되도록 제한한다.
+    /// </summary>
+    private static AbilityDefinition ResolveAbilityOnWeapon(WeaponDefinition weapon, string abilityId)
+    {
+        if (weapon == null || string.IsNullOrEmpty(abilityId))
+            return null;
+
+        if (weapon.attack != null && weapon.attack.name == abilityId)
+            return weapon.attack;
+
+        if (weapon.skill1 != null && weapon.skill1.name == abilityId)
+            return weapon.skill1;
+
+        if (weapon.skill2 != null && weapon.skill2.name == abilityId)
+            return weapon.skill2;
+
+        return null;
     }
 }

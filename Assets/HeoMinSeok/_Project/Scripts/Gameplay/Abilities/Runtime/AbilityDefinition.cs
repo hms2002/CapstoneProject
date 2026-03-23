@@ -6,6 +6,18 @@ namespace UnityGAS
     [CreateAssetMenu(fileName = "NewAbility", menuName = "GAS/Ability Definition")]
     public class AbilityDefinition : ScriptableObject
     {
+        /// <summary>
+        /// 책임 :
+        /// - Ability가 어떤 실행 레인에서 동작할지 정의한다.
+        /// - ExclusiveQueued는 기존 큐/버퍼 단독 실행,
+        ///   ParallelIndependent는 큐에 막히지 않고 독립 실행된다.
+        /// </summary>
+        public enum ExecutionPolicy
+        {
+            ExclusiveQueued,
+            ParallelIndependent
+        }
+
         [Header("Info")]
         public string abilityName = "New Ability";
         public Sprite icon;
@@ -13,9 +25,14 @@ namespace UnityGAS
 
         [Header("Activation")]
         public float cooldown = 0f;
+
+        [Header("Execution Policy")]
+        [Tooltip("1차 병행 구현은 ParallelIndependent + Instant Ability만 안전하게 지원한다.")]
+        public ExecutionPolicy executionPolicy = ExecutionPolicy.ExclusiveQueued;
+
         [Header("Charges (Optional)")]
         public bool useCharges = false;
-        public int maxCharges = 1; // useCharges=true면 2 이상 권장
+        public int maxCharges = 1;
 
         [Tooltip("설정 시 쿨다운을 GE(Duration)로 관리합니다. (추천: GE_Cooldown + grantedTags에 Cooldown.* 태그 부여)")]
         public GameplayEffect cooldownEffect;

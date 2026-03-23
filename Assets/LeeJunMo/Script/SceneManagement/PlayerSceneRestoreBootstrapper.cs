@@ -116,12 +116,20 @@ public sealed class PlayerSceneRestoreBootstrapper : MonoBehaviour
     public bool TryRestorePendingState()
     {
         var player = FindPlayer();
+        var playerWeaponRestorer = player.GetComponent<WeaponAbilityRuntimeStateBridge>();
+        if (playerWeaponRestorer != null)
+            weaponRuntimeRestorer = playerWeaponRestorer;
+
+        var playerRelicRestorer = player.GetComponent<MonoBehaviour>() as IRelicRuntimeStateRestorer;
+        if (playerRelicRestorer != null)
+            relicRuntimeRestorer = playerRelicRestorer;
         return TryRestorePendingState(player);
     }
 
     /// <summary>
     /// 책임 : 지정된 플레이어 GameObject에 pending 상태를 복원한다.
-    /// 복원 성공 시 pending 상태를 consume 하여 재복원을 막는다.
+    /// 복원에 필요한 resolver / runtime restorer를 새 플레이어 기준으로 다시 바인딩한 뒤
+    /// PlayerRuntimeRestoreCoordinator에 전달한다.
     /// </summary>
     public bool TryRestorePendingState(GameObject player)
     {
@@ -138,6 +146,10 @@ public sealed class PlayerSceneRestoreBootstrapper : MonoBehaviour
         var pendingState = gameplay.PeekPendingPlayerState();
         if (pendingState == null)
             return false;
+
+        if (player == null)
+            return false;
+
         resolver = player.GetComponent<PlayerRuntimeResolverBridge>();
         if (resolver == null)
         {
@@ -145,8 +157,15 @@ public sealed class PlayerSceneRestoreBootstrapper : MonoBehaviour
             return false;
         }
 
-        if (player == null)
-            return false;
+        // 책임 : 씬마다 새로 생성된 플레이어 기준으로 runtime restorer를 다시 잡는다.
+        var playerWeaponRestorer = player.GetComponent<WeaponAbilityRuntimeStateBridge>();
+        if (playerWeaponRestorer != null)
+            weaponRuntimeRestorer = playerWeaponRestorer;
+
+        // 유물도 같은 방식으로 플레이어 기준 restorer를 다시 바인딩한다.
+        var playerRelicRestorer = player.GetComponent<MonoBehaviour>() as IRelicRuntimeStateRestorer;
+        if (playerRelicRestorer != null)
+            relicRuntimeRestorer = playerRelicRestorer;
 
         var weaponInventory = player.GetComponent<WeaponInventory2D>();
         var relicInventory = player.GetComponent<RelicInventory>();

@@ -159,6 +159,8 @@ GameObject:
   - component: {fileID: 8193243277221661669}
   - component: {fileID: 1288651143475980145}
   - component: {fileID: 834375791449447937}
+  - component: {fileID: 9123240755929561285}
+  - component: {fileID: 1924190678758458473}
   m_Layer: 0
   m_Name: PF Player
   m_TagString: Player
@@ -795,7 +797,7 @@ MonoBehaviour:
   effectRunner: {fileID: 7878539558719410035}
   tagSystem: {fileID: 7887873875085709242}
   abilitySystem: {fileID: 1832372497922031110}
-  weaponRuntimeCapturerSource: {fileID: 0}
+  weaponRuntimeCapturerSource: {fileID: 9123240755929561285}
   relicRuntimeCapturerSource: {fileID: 0}
 --- !u!114 &834375791449447937
 MonoBehaviour:
@@ -810,3 +812,34 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   restoreCatalog: {fileID: 11400000, guid: cbaae2b0499dc794fa21f6aeced25a93, type: 2}
+--- !u!114 &9123240755929561285
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8883617028798182002}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f84f87eaaf098a49b6d3b457b48e8d5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  abilitySystem: {fileID: 1832372497922031110}
+--- !u!114 &1924190678758458473
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8883617028798182002}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3f8aafb5851b0484db930d7aa89035c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  resolverSource: {fileID: 834375791449447937}
+  weaponRuntimeRestorerSource: {fileID: 9123240755929561285}
+  relicRuntimeRestorerSource: {fileID: 0}
+  maxWaitSeconds: 5
+  retryInterval: 0.1
+  restoreOnStart: 1

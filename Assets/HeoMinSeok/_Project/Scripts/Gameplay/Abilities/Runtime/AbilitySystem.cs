@@ -61,6 +61,151 @@ namespace UnityGAS
         private AbilitySpec bufferedSpec;
         private GameObject bufferedTarget;
 
+        /// <summary>
+        /// 책임 :
+        /// - Exclusive 실행과 별도로 살아 있는 병행 실행 목록을 관리한다.
+        /// - 1차 구현에서는 동일 spec의 중복 병행 실행은 허용하지 않는다.
+        /// </summary>
+        private readonly List<ParallelAbilityExecution> parallelExecutions = new();
+        /// <summary>
+        /// 책임 : 특정 spec이 현재 병행 실행 중인지 판별한다.
+        /// </summary>
+        internal bool IsParallelExecuting(AbilitySpec spec)
+        {
+            if (spec == null)
+                return false;
+
+            for (int i = 0; i < parallelExecutions.Count; i++)
+            {
+                if (parallelExecutions[i] != null && parallelExecutions[i].Spec == spec)
+                    return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// 책임 : 병행 실행 시작 시 spec/target을 등록한다.
+        /// </summary>
+        internal void BeginParallelExecution(AbilitySpec spec, GameObject target)
+        {
+            if (spec == null || IsParallelExecuting(spec))
+                return;
+
+            parallelExecutions.Add(new ParallelAbilityExecution
+            {
+                Spec = spec,
+                Target = target,
+                Coroutine = null
+            });
+        }
+
+        /// <summary>
+        /// 책임 : StartCoroutine 직후 생성된 Coroutine 핸들을 병행 실행 기록에 연결한다.
+        /// </summary>
+        internal void AttachParallelExecutionCoroutine(AbilitySpec spec, Coroutine coroutine)
+        {
+            if (spec == null)
+                return;
+
+            for (int i = 0; i < parallelExecutions.Count; i++)
+            {
+                var exec = parallelExecutions[i];
+                if (exec != null && exec.Spec == spec)
+                {
+                    exec.Coroutine = coroutine;
+                    return;
+                }
+            }
+        }
+
+        /// <summary>
+        /// 책임 : 병행 실행 종료 시 등록 정보를 제거한다.
+        /// </summary>
+        internal void EndParallelExecution(AbilitySpec spec)
+        {
+            if (spec == null)
+                return;
+
+            for (int i = parallelExecutions.Count - 1; i >= 0; i--)
+            {
+                var exec = parallelExecutions[i];
+                if (exec != null && exec.Spec == spec)
+                {
+                    parallelExecutions.RemoveAt(i);
+                    return;
+                }
+            }
+        }
+
+        /// <summary>
+        /// 책임 : 특정 병행 실행을 강제로 정리한다.
+        /// coroutine이 Stop될 때 finally가 보장되지 않는 경로를 대비한 수동 정리 창구다.
+        /// </summary>
+        private void ForceCleanupParallelExecution(ParallelAbilityExecution exec, bool cancelled)
+        {
+            if (exec == null || exec.Spec == null || exec.Spec.Definition == null)
+                return;
+
+            var spec = exec.Spec;
+            var def = spec.Definition;
+            var target = exec.Target;
+
+            CancelGameplayEventWaiters(spec);
+            presentationRouter?.PlayExecutionEnd(def, spec, target, cancelled);
+
+            if (tagSystem != null && def.grantedTagsWhileActive != null)
+                tagSystem.RemoveTags(def.grantedTagsWhileActive);
+
+            spec.Token?.Cancel();
+            spec.Token = null;
+
+            if (exec.Coroutine != null)
+                StopCoroutine(exec.Coroutine);
+        }
+
+        /// <summary>
+        /// 책임 : 현재 살아 있는 모든 병행 실행을 강제로 정리한다.
+        /// 씬 이동/리셋/강제 종료 경로에서 사용한다.
+        /// </summary>
+        private void ForceCleanupAllParallelExecutions(bool cancelled)
+        {
+            for (int i = parallelExecutions.Count - 1; i >= 0; i--)
+            {
+                ForceCleanupParallelExecution(parallelExecutions[i], cancelled);
+            }
+
+            parallelExecutions.Clear();
+        }
+
+        /// <summary>
+        /// 책임 : 특정 태그 추가 시 취소 조건에 걸리는 병행 실행만 골라 취소한다.
+        /// </summary>
+        private void CancelMatchingParallelExecutions(GameplayTag tag, bool force)
+        {
+            if (tag == null)
+                return;
+
+            for (int i = 0; i < parallelExecutions.Count; i++)
+            {
+                var exec = parallelExecutions[i];
+                var spec = exec != null ? exec.Spec : null;
+                var def = spec != null ? spec.Definition : null;
+                if (def == null)
+                    continue;
+
+                bool globalHit = ContainsTag(globalCancelExecutionOnTags, tag);
+                bool localHit = ContainsTag(def.cancelExecutionOnTags, tag);
+
+                if (!globalHit && !localHit)
+                    continue;
+
+                if (!force && !def.interruptible)
+                    continue;
+
+                spec.Token?.Cancel();
+            }
+        }
         private struct ChargeState
         {
             public int charges;
@@ -232,6 +377,19 @@ namespace UnityGAS
             if (CurrentCastSpec == spec)
                 CancelCasting(force: true);
 
+            if (IsParallelExecuting(spec))
+            {
+                for (int i = parallelExecutions.Count - 1; i >= 0; i--)
+                {
+                    var exec = parallelExecutions[i];
+                    if (exec != null && exec.Spec == spec)
+                    {
+                        ForceCleanupParallelExecution(exec, cancelled: true);
+                        parallelExecutions.RemoveAt(i);
+                    }
+                }
+            }
+
             if (bufferedSpec == spec)
                 ClearBufferedActivation();
 
@@ -267,7 +425,15 @@ namespace UnityGAS
 
             var castingDef = castingSpec != null ? castingSpec.Definition : null;
             var executingDef = executingSpec != null ? executingSpec.Definition : null;
+            // 책임 : 병행 실행 중인 ability들도 씬 이동 전에 자체 cleanup 기회를 받는다.
+            for (int i = 0; i < parallelExecutions.Count; i++)
+            {
+                var exec = parallelExecutions[i];
+                if (exec == null || exec.Spec == null)
+                    continue;
 
+                InvokeSceneTransitionCleanup(exec.Spec, exec.Target);
+            }
             // 책임 : AbilityLogic이 직접 만든 modifier / motion / 직접 AddTag 상태를 먼저 정리할 기회를 준다.
             InvokeSceneTransitionCleanup(castingSpec, castingTarget);
             InvokeSceneTransitionCleanup(executingSpec, executingTarget);
@@ -290,6 +456,7 @@ namespace UnityGAS
                 activeExecution = null;
             }
 
+            ForceCleanupAllParallelExecutions(cancelled: true);
             // 책임 : AbilityLogic 외부에서 직접 AddTag 한 전투/행동 상태 태그를 TagSet 기반으로 추가 정리한다.
             RemoveTagsFromSets(extraCleanupTagSets);
 
@@ -419,6 +586,17 @@ namespace UnityGAS
             if (!def.CanActivate(gameObject, target))
                 return false;
 
+            if (def.executionPolicy == AbilityDefinition.ExecutionPolicy.ParallelIndependent)
+                return TryActivateParallelAbility(spec, target);
+
+            return TryActivateExclusiveAbility(spec, target);
+        }
+
+        /// <summary>
+        /// 책임 : 기존 큐/버퍼 기반 단독 실행 Ability 활성화를 처리한다.
+        /// </summary>
+        private bool TryActivateExclusiveAbility(AbilitySpec spec, GameObject target)
+        {
             if (IsBusy)
             {
                 BufferActivation(spec, target);
@@ -429,6 +607,34 @@ namespace UnityGAS
             return true;
         }
 
+        /// <summary>
+        /// 책임 : 큐에 묶이지 않는 병행 실행 Ability를 즉시 시작한다.
+        /// 1차 구현에서는 Instant Ability만 지원하며, 동일 spec의 중복 병행 실행은 허용하지 않는다.
+        /// </summary>
+        private bool TryActivateParallelAbility(AbilitySpec spec, GameObject target)
+        {
+            var def = spec.Definition;
+
+            if (!def.IsInstant)
+            {
+                Debug.LogWarning(
+                    $"[AbilitySystem] ParallelIndependent 1차 구현은 Instant Ability만 지원합니다: {def.name}",
+                    this);
+                return false;
+            }
+
+            if (currentCastSpec == spec || currentExecSpec == spec || IsParallelExecuting(spec))
+                return false;
+
+            CommitAbilityCast(spec, def, target);
+            cooldownController?.ConsumeChargeOnCommit(spec, def);
+
+            if (!def.startCooldownOnEnd)
+                cooldownController?.StartCooldown(spec);
+
+            StartParallelAbilityExecution(spec, target);
+            return true;
+        }
         private bool CanActivateWhileCurrentMovementStateAllows(AbilityDefinition def)
         {
             if (def == null)
@@ -529,7 +735,16 @@ namespace UnityGAS
             if (activeExecution != null)
                 StopCoroutine(activeExecution);
 
-            activeExecution = StartCoroutine(executionCoordinator.Run(this, spec, target));
+            activeExecution = StartCoroutine(executionCoordinator.RunExclusive(this, spec, target));
+        }
+
+        /// <summary>
+        /// 책임 : 병행 실행 Ability의 coroutine을 시작하고 추적 목록에 연결한다.
+        /// </summary>
+        private void StartParallelAbilityExecution(AbilitySpec spec, GameObject target)
+        {
+            var coroutine = StartCoroutine(executionCoordinator.RunParallel(this, spec, target));
+            AttachParallelExecutionCoroutine(spec, coroutine);
         }
 
         private void ClearCastingState()
@@ -678,7 +893,7 @@ namespace UnityGAS
                 StopCoroutine(activeExecution);
                 activeExecution = null;
             }
-
+            ForceCleanupAllParallelExecutions(cancelled: true);
             isCasting = false;
             isExecuting = false;
             castTimeRemaining = 0f;
@@ -690,32 +905,6 @@ namespace UnityGAS
             currentExecTarget = null;
         }
 
-        /// <summary>
-        /// 책임 : 현재 ability들의 복원 가능한 런타임 상태를 스냅샷으로 캡처한다.
-        /// 현재 버전은 ability 식별자, 남은 cooldown, 현재 충전 수를 저장한다.
-        /// </summary>
-        public IReadOnlyList<AbilityRuntimeSnapshot> CaptureAbilitySnapshots()
-        {
-            var result = new List<AbilityRuntimeSnapshot>();
-
-            for (int i = 0; i < runtimeSpecs.Count; i++)
-            {
-                var spec = runtimeSpecs[i];
-                if (spec == null || spec.Definition == null)
-                    continue;
-
-                var def = spec.Definition;
-
-                result.Add(new AbilityRuntimeSnapshot
-                {
-                    abilityId = def.name,
-                    cooldownRemaining = Mathf.Max(0f, GetCooldownRemaining(def)),
-                    chargesRemaining = Mathf.Max(0, GetChargesRemaining(def))
-                });
-            }
-
-            return result;
-        }
 
         /// <summary>
         /// 책임 : 특정 ability의 남은 cooldown을 공식 절차로 복원한다.
@@ -733,55 +922,6 @@ namespace UnityGAS
                 currentCharges);
         }
 
-        /// <summary>
-        /// 책임 : 저장된 ability 스냅샷 전체를 현재 AbilitySystem에 복원한다.
-        /// 진행 중 상태는 먼저 초기화하고, 식별된 ability의 cooldown과 charges를 순차 복원한다.
-        /// </summary>
-        public void RestoreAbilitySnapshots(
-                   IEnumerable<AbilityRuntimeSnapshot> snapshots,
-                   Func<string, AbilityDefinition> resolver)
-        {
-            ResetTransientRuntimeState();
-
-            if (snapshots == null || resolver == null || cooldownController == null)
-                return;
-
-            foreach (var entry in snapshots)
-            {
-                if (entry == null || string.IsNullOrEmpty(entry.abilityId))
-                    continue;
-
-                var def = resolver(entry.abilityId);
-                if (def == null)
-                {
-                    Debug.LogWarning($"[AbilitySystem] ability 복원 실패: '{entry.abilityId}' 을(를) 찾지 못했습니다.", this);
-                    continue;
-                }
-
-                // 책임 : 복원 대상 ability의 런타임 spec이 없으면 먼저 생성한다.
-                var spec = FindSpec(def);
-                if (spec == null)
-                {
-                    spec = GiveAbility(def);
-                    if (spec == null)
-                    {
-                        Debug.LogWarning($"[AbilitySystem] ability spec 생성 실패: '{entry.abilityId}'", this);
-                        continue;
-                    }
-
-                    Debug.Log($"[AbilitySystem] ability spec 자동 생성: {def.name}", this);
-                }
-
-                bool restored = cooldownController.TryRestoreCooldownState(
-                    def,
-                    entry.cooldownRemaining,
-                    entry.chargesRemaining);
-
-                Debug.Log(
-                    $"[AbilitySystem] ability 복원 id={entry.abilityId}, specExists={spec != null}, restored={restored}, cd={entry.cooldownRemaining}, charges={entry.chargesRemaining}",
-                    this);
-            }
-        }
         private static bool ContainsTag(List<GameplayTag> list, GameplayTag tag)
         {
             if (list == null || tag == null)
@@ -820,6 +960,8 @@ namespace UnityGAS
                 if (globalHit || localHit)
                     CancelExecution(force: true);
             }
+
+            CancelMatchingParallelExecutions(tag, force: true);
         }
 
         public GameplayEffectSpec MakeSpec(GameplayEffect effect, GameObject causer = null, UnityEngine.Object sourceObject = null)
@@ -887,6 +1029,212 @@ namespace UnityGAS
         public void TryPlayAnimationTriggerHash(int triggerHash, AbilityDefinition def)
         {
             presentationRouter?.TryPlayAnimationTriggerHash(triggerHash, def);
+        }
+
+        /// <summary>
+        /// 책임 : Ability 내부 특수 키인지 판별한다.
+        /// charges/recharge 같은 시스템 내부 키는 일반 영속 변수 목록에서 제외한다.
+        /// </summary>
+        private static bool IsReservedRuntimeKey(string key)
+        {
+            return key == KEY_CHARGES || key == KEY_RECHARGE;
+        }
+
+        /// <summary>
+        /// 책임 : null/empty 키를 방지하고, 내부 예약 키는 일반 상태 목록에서 제외한다.
+        /// </summary>
+        private static bool IsUserStateKey(string key)
+        {
+            return !string.IsNullOrEmpty(key) && !IsReservedRuntimeKey(key);
+        }
+        /// <summary>
+        /// 책임 :
+        /// - 현재 AbilityDefinition의 지속 상태를 영속 DTO로 내보낸다.
+        /// - 씬 이동, 무기 드롭, 인벤토리 이동 등 소유권 이동 경로의 공식 export 창구다.
+        /// </summary>
+        public AbilityPersistentState ExportPersistentState(AbilityDefinition def)
+        {
+            var spec = FindSpec(def);
+            return ExportPersistentState(spec);
+        }
+
+        /// <summary>
+        /// 책임 :
+        /// - 현재 AbilitySpec의 지속 상태를 영속 DTO로 내보낸다.
+        /// - 진행 중 실행 상태는 제외하고, 레벨/쿨다운/차지/커스텀 변수만 저장한다.
+        /// </summary>
+        public AbilityPersistentState ExportPersistentState(AbilitySpec spec)
+        {
+            if (spec == null || spec.Definition == null)
+                return null;
+
+            var def = spec.Definition;
+
+            var state = new AbilityPersistentState
+            {
+                abilityId = def.name,
+                level = Mathf.Max(1, spec.Level),
+                cooldownRemaining = Mathf.Max(0f, GetCooldownRemaining(def)),
+                chargesRemaining = def.useCharges
+                    ? Mathf.Max(0, GetChargesRemaining(def))
+                    : 0
+            };
+
+            foreach (var pair in spec.IntVars)
+            {
+                if (!IsUserStateKey(pair.Key))
+                    continue;
+
+                state.intVars.Add(new AbilityIntStateEntry
+                {
+                    key = pair.Key,
+                    value = pair.Value
+                });
+            }
+
+            foreach (var pair in spec.FloatVars)
+            {
+                if (!IsUserStateKey(pair.Key))
+                    continue;
+
+                state.floatVars.Add(new AbilityFloatStateEntry
+                {
+                    key = pair.Key,
+                    value = pair.Value
+                });
+            }
+
+            foreach (var pair in spec.BoolVars)
+            {
+                if (!IsUserStateKey(pair.Key))
+                    continue;
+
+                state.boolVars.Add(new AbilityBoolStateEntry
+                {
+                    key = pair.Key,
+                    value = pair.Value
+                });
+            }
+
+            return state;
+        }
+
+        /// <summary>
+        /// 책임 :
+        /// - 영속 DTO를 현재 AbilitySystem에 복원한다.
+        /// - spec이 없으면 생성하고, 지속 상태만 복원하며 진행 중 실행 상태는 복원하지 않는다.
+        /// </summary>
+        public AbilitySpec ImportPersistentState(
+            AbilityPersistentState state,
+            Func<string, AbilityDefinition> resolver)
+        {
+            if (state == null || string.IsNullOrEmpty(state.abilityId) || resolver == null)
+                return null;
+
+            var def = resolver(state.abilityId);
+            if (def == null)
+            {
+                Debug.LogWarning($"[AbilitySystem] ability 상태 복원 실패: '{state.abilityId}' 을(를) 찾지 못했습니다.", this);
+                return null;
+            }
+
+            var spec = FindSpec(def);
+            if (spec == null)
+            {
+                spec = GiveAbility(def);
+                if (spec == null)
+                {
+                    Debug.LogWarning($"[AbilitySystem] ability spec 생성 실패: '{state.abilityId}'", this);
+                    return null;
+                }
+            }
+
+            spec.Level = Mathf.Max(1, state.level);
+
+            // 책임 : 복원 시점의 커스텀 변수는 저장본을 진실 원천으로 보고 통째로 다시 채운다.
+            spec.ClearRuntimeVars();
+
+            if (state.intVars != null)
+            {
+                for (int i = 0; i < state.intVars.Count; i++)
+                {
+                    var entry = state.intVars[i];
+                    if (entry == null || !IsUserStateKey(entry.key))
+                        continue;
+
+                    spec.SetInt(entry.key, entry.value);
+                }
+            }
+
+            if (state.floatVars != null)
+            {
+                for (int i = 0; i < state.floatVars.Count; i++)
+                {
+                    var entry = state.floatVars[i];
+                    if (entry == null || !IsUserStateKey(entry.key))
+                        continue;
+
+                    spec.SetFloat(entry.key, entry.value);
+                }
+            }
+
+            if (state.boolVars != null)
+            {
+                for (int i = 0; i < state.boolVars.Count; i++)
+                {
+                    var entry = state.boolVars[i];
+                    if (entry == null || !IsUserStateKey(entry.key))
+                        continue;
+
+                    spec.SetBool(entry.key, entry.value);
+                }
+            }
+
+            cooldownController?.TryRestoreCooldownState(
+                def,
+                Mathf.Max(0f, state.cooldownRemaining),
+                Mathf.Max(0, state.chargesRemaining));
+
+            return spec;
+        }
+        /// <summary>
+        /// 책임 :
+        /// - 현재 AbilitySystem이 소유한 모든 AbilitySpec의 지속 상태를 영속 DTO 목록으로 캡처한다.
+        /// - 씬 이동, 저장/로드, 소유권 이동 경로가 공통으로 사용할 공식 캡처 API다.
+        /// </summary>
+        public IReadOnlyList<AbilityPersistentState> CapturePersistentStates()
+        {
+            var result = new List<AbilityPersistentState>(runtimeSpecs.Count);
+
+            for (int i = 0; i < runtimeSpecs.Count; i++)
+            {
+                var spec = runtimeSpecs[i];
+                var state = ExportPersistentState(spec);
+                if (state != null)
+                    result.Add(state);
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// 책임 :
+        /// - 영속 DTO 목록을 현재 AbilitySystem에 복원한다.
+        /// - 진행 중 실행 상태는 먼저 끊고, 각 DTO를 순차 import 한다.
+        /// </summary>
+        public void RestorePersistentStates(
+            IEnumerable<AbilityPersistentState> states,
+            Func<string, AbilityDefinition> resolver)
+        {
+            ResetTransientRuntimeState();
+
+            if (states == null || resolver == null)
+                return;
+
+            foreach (var state in states)
+            {
+                ImportPersistentState(state, resolver);
+            }
         }
     }
 }

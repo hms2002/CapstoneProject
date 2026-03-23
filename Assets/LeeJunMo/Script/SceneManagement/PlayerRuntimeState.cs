@@ -18,7 +18,11 @@ public sealed class PlayerRuntimeState
     public List<AttributeRuntimeSnapshot> attributes = new();
     public List<ActiveGameplayEffectSnapshot> activeEffects = new();
     public List<ExplicitTagSnapshot> explicitTags = new();
-    public List<AbilityRuntimeSnapshot> abilities = new();
+    /// <summary>
+    /// 책임 : 플레이어 고유 ability의 persistent state만 저장한다.
+    /// 무기 소유 ability는 중복 저장을 피하기 위해 weaponRuntimeStates로 분리한다.
+    /// </summary>
+    public List<AbilityPersistentState> abilities = new();
 
     [Header("Equipment Runtime")]
     public List<WeaponRuntimeState> weaponRuntimeStates = new();
@@ -60,20 +64,8 @@ public sealed class ActiveGameplayEffectSnapshot
 }
 
 /// <summary>
-/// 책임 : ability별 런타임 상태를 저장/복원한다.
-/// 남은 쿨다운과 현재 충전 수를 함께 보관해 씬 이동 후 실제 사용 가능 상태를 재현한다.
-/// </summary>
-[Serializable]
-public sealed class AbilityRuntimeSnapshot
-{
-    public string abilityId;
-    public float cooldownRemaining;
-    public int chargesRemaining;
-}
-
-/// <summary>
 /// 책임 : 특정 무기 슬롯의 개별 런타임 상태를 저장한다.
-/// stack, 차지량, 내부 카운터 같은 장비 전용 상태 payload를 담는다.
+/// 이제 무기 전용 stack / charges / unlock뿐 아니라 무기 ability persistent state JSON도 담을 수 있다.
 /// </summary>
 [Serializable]
 public sealed class WeaponRuntimeState

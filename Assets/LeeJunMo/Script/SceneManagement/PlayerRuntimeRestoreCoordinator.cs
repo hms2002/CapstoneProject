@@ -174,19 +174,19 @@ public static class PlayerRuntimeRestoreCoordinator
     }
 
     /// <summary>
-    /// 책임 : 저장된 ability 런타임 상태를 현재 AbilitySystem에 복원한다.
-    /// 주 용도는 cooldown 복원이다.
+    /// 책임 : 저장된 ability 지속 상태를 현재 AbilitySystem에 복원한다.
+    /// level, cooldown, charges, 커스텀 런타임 변수까지 함께 복원한다.
     /// </summary>
     private static void RestoreAbilities(
-        List<AbilityRuntimeSnapshot> snapshots,
+        List<AbilityPersistentState> states,
         AbilitySystem abilitySystem,
         IPlayerRuntimeResolver resolver)
     {
         if (abilitySystem == null || resolver == null)
             return;
 
-        abilitySystem.RestoreAbilitySnapshots(
-            snapshots,
+        abilitySystem.RestorePersistentStates(
+            states,
             resolver.ResolveAbility);
     }
 
