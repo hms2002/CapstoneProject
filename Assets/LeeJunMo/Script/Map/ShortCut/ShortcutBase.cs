@@ -3,56 +3,62 @@ using UnityEngine;
 public abstract class ShortcutBase : MonoBehaviour, IInteractable
 {
     [Header("타겟 문")]
-    public DoorObject targetDoor;
-    public Transform uiPopupPoint;
+    [SerializeField] protected DoorObject targetDoor;
+    [SerializeField] protected Transform uiPopupPoint;
 
-    // [수정] 문 찾기는 Awake에서 (자식의 Start보다 먼저)
+    protected DoorObject TargetDoor => targetDoor;
+    public bool IsActivated => targetDoor != null && targetDoor.IsOpen;
+
     protected virtual void Awake()
     {
         if (targetDoor == null)
             targetDoor = GetComponentInParent<DoorObject>();
     }
 
-    // IInteractable 구현
-    public void OnPlayerInteract(TempPlayer player)
+    public virtual bool CanInteract(IPlayerInteractor player)
     {
-        if (targetDoor != null && targetDoor.IsOpen) return;
-
-        if (CheckCondition(player)) OnSuccess();
-        else OnFail();
-    }
-
-    public virtual bool CanInteract(TempPlayer player) => targetDoor != null && !targetDoor.IsOpen;
-
-    // UI 관련 (사용자 구현 필요 시 채우기)
-    public void OnPlayerNearby() { }
-    public void OnPlayerLeave() { }
-    public void OnHighlight() { }
-    public void OnUnHighlight() { }
-    public InteractState GetInteractType() => InteractState.Idle;
-    public void GetInteract(string text) { }
-
-    public abstract string GetInteractDescription();
-
-    // 추상 메서드
-    protected abstract bool CheckCondition(TempPlayer player);
-    protected abstract void OnSuccess(); // 영구/일시적 분기점
-
-    protected virtual void OnFail()
-    {
-        if (targetDoor != null) targetDoor.PlayShakeAnimation();
-    }
-
-    public bool CanInteract(IPlayerInteractor player)
-    {
-        return targetDoor != null && !targetDoor.IsOpen;
+        return player != null
+            && player.CurrentState == InteractState.Idle
+            && targetDoor != null
+            && !targetDoor.IsOpen;
     }
 
     public void OnPlayerInteract(IPlayerInteractor player)
     {
-        if (targetDoor != null && targetDoor.IsOpen) return;
+        if (!CanInteract(player))
+            return;
 
-        if (CheckCondition(player.Transform.GetComponent<TempPlayer>())) OnSuccess();
-        else OnFail();
+        if (!CheckCondition(player))
+        {
+            OnFail();
+            return;
+        }
+
+        if (!ConsumeCondition(player))
+        {
+            OnFail();
+            return;
+        }
+
+        OnSuccess();
+    }
+
+    public virtual void OnPlayerNearby() { }
+    public virtual void OnPlayerLeave() { }
+    public virtual void OnHighlight() { }
+    public virtual void OnUnHighlight() { }
+    public virtual InteractState GetInteractType() => InteractState.Idle;
+    public virtual void GetInteract(string text) { }
+
+    public abstract string GetInteractDescription();
+
+    protected abstract bool CheckCondition(IPlayerInteractor player);
+    protected virtual bool ConsumeCondition(IPlayerInteractor player) => true;
+    protected abstract void OnSuccess();
+
+    protected virtual void OnFail()
+    {
+        if (targetDoor != null)
+            targetDoor.PlayShakeAnimation();
     }
 }
