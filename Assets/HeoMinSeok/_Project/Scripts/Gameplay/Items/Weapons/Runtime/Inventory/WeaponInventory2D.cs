@@ -3,6 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityGAS;
 
+/// <summary>
+/// 책임 : 플레이어의 무기 슬롯, 활성 장착 무기, 픽업/교체/드롭/스왑 흐름을 관리한다.
+/// 일반 플레이 중 장착은 기존 Equip 경로로 처리하고,
+/// 씬 복원 시에는 effect-free shell restore와 runtime hook attach 경로를 제공한다.
+/// </summary>
 public class WeaponInventory2D : MonoBehaviour
 {
     // -----------------------
@@ -75,17 +80,17 @@ public class WeaponInventory2D : MonoBehaviour
         equipRuntime.Initialize(activeIndex, ActiveWeapon);
     }
 
-    private void Start()
-    {
-        if (HasEquippedWeapon)
-        {
-            var result = equipRuntime.Equip(ActiveIndex, ActiveWeapon); 
-            SyncActiveStateFromRuntime();
+    //private void Start()
+    //{
+    //    if (HasEquippedWeapon)
+    //    {
+    //        var result = equipRuntime.Equip(ActiveIndex, ActiveWeapon);
+    //        SyncActiveStateFromRuntime();
 
-            if (result.Changed)
-                OnEquippedChanged?.Invoke(result.PreviousIndex, result.NewIndex, result.PreviousWeapon, result.NewWeapon);
-        }
-    }
+    //        if (result.Changed)
+    //            OnEquippedChanged?.Invoke(result.PreviousIndex, result.NewIndex, result.PreviousWeapon, result.NewWeapon);
+    //    }
+    //}
 
     // -----------------------
     // Public API
@@ -306,6 +311,85 @@ public class WeaponInventory2D : MonoBehaviour
 
         NotifyInventoryChanged();
         return true;
+    }
+
+    /// <summary>
+    /// 책임 : 씬 복원 시 무기 슬롯과 활성 슬롯 정보만 effect 없이 복원한다.
+    /// stat/tag/ability는 적용하지 않고, 필요하면 활성 무기의 비주얼만 맞춘다.
+    /// </summary>
+    public void RestoreShellState(
+        WeaponInventoryState state,
+        Func<string, WeaponDefinition> weaponResolver,
+        bool applyActiveVisual = true)
+    {
+        if (state == null)
+            return;
+
+        if (weaponResolver == null)
+        {
+            Debug.LogError("[WeaponInventory2D] weaponResolver가 null입니다.");
+            return;
+        }
+
+        abilityBinder?.ClearReferencesWithoutRemoving();
+        presentationBinder?.ClearVisualOnly();
+
+        for (int i = 0; i < slots.Length; i++)
+            slots[i] = null;
+
+        if (state.slotWeaponIds != null)
+        {
+            int copyCount = Mathf.Min(slots.Length, state.slotWeaponIds.Length);
+            for (int i = 0; i < copyCount; i++)
+            {
+                string weaponId = state.slotWeaponIds[i];
+                if (string.IsNullOrEmpty(weaponId))
+                    continue;
+
+                slots[i] = weaponResolver(weaponId);
+            }
+        }
+
+        int restoredActiveIndex = state.activeSlotIndex;
+        if (restoredActiveIndex < 0 || restoredActiveIndex >= slots.Length || slots[restoredActiveIndex] == null)
+            restoredActiveIndex = -1;
+
+        activeIndex = restoredActiveIndex;
+        equipRuntime.Initialize(activeIndex, ActiveWeapon);
+
+        if (applyActiveVisual)
+            presentationBinder?.ApplyVisualOnly(ActiveWeapon);
+        else
+            presentationBinder?.ClearVisualOnly();
+
+        NotifyInventoryChanged();
+    }
+
+    /// <summary>
+    /// 책임 : 껍데기 복원 후 무기 인벤토리의 내부 런타임 훅만 다시 구성한다.
+    /// AbilitySystem grant는 하지 않고, 이후 장착/해제 시 ref count가 맞게 동작하도록 binder 상태만 복원한다.
+    /// </summary>
+    public void AttachRuntimeHooksForRestore()
+    {
+        abilityBinder?.RebuildReferencesWithoutApplying(slots);
+    }
+
+    /// <summary>
+    /// 책임 : 현재 무기 슬롯 상태를 그대로 저장용 DTO로 캡처한다.
+    /// 씬 이동 직전 장비 배치 상태 저장의 공식 창구로 사용한다.
+    /// </summary>
+    public WeaponInventoryState CaptureInventoryState()
+    {
+        var state = new WeaponInventoryState
+        {
+            slotWeaponIds = new string[slots.Length],
+            activeSlotIndex = ActiveIndex
+        };
+
+        for (int i = 0; i < slots.Length; i++)
+            state.slotWeaponIds[i] = slots[i] != null ? slots[i].weaponId : null;
+
+        return state;
     }
 
     /// <summary>

@@ -196,16 +196,26 @@ namespace UnityGAS
             }
         }
 
+
         public AbilitySpec GiveAbility(AbilityDefinition def)
         {
+            if (def == null)
+                return null;
+
+            var existing = FindSpec(def);
+            if (existing != null)
+                return existing;
+
             var spec = new AbilitySpec(def);
             runtimeSpecs.Add(spec);
 
             RestoreChargeStateIfNeeded(def, spec);
             return spec;
         }
+        
+    
 
-        public bool TakeAbility(AbilityDefinition def)
+    public bool TakeAbility(AbilityDefinition def)
         {
             if (def == null)
                 return false;
@@ -244,6 +254,116 @@ namespace UnityGAS
             return null;
         }
 
+        /// <summary>
+        /// 책임 : 씬 이동 직전에 현재 캐스팅/실행 중인 능력의 자체 cleanup을 먼저 호출하고,
+        /// 그 다음 공통 일시 상태를 강제로 정리하여 저장 데이터에 남지 않도록 만든다.
+        /// </summary>
+        public void CancelAllForSceneTransition(IReadOnlyList<GameplayTagSet> extraCleanupTagSets = null)
+        {
+            var castingSpec = currentCastSpec;
+            var castingTarget = currentTarget;
+            var executingSpec = currentExecSpec;
+            var executingTarget = currentExecTarget;
+
+            var castingDef = castingSpec != null ? castingSpec.Definition : null;
+            var executingDef = executingSpec != null ? executingSpec.Definition : null;
+
+            // 책임 : AbilityLogic이 직접 만든 modifier / motion / 직접 AddTag 상태를 먼저 정리할 기회를 준다.
+            InvokeSceneTransitionCleanup(castingSpec, castingTarget);
+            InvokeSceneTransitionCleanup(executingSpec, executingTarget);
+
+            CancelCasting(force: true);
+            CancelExecution(force: true);
+
+            // 책임 : AbilityDefinition.grantedTagsWhileActive 로 부여한 태그를
+            // 코루틴 종료 타이밍과 무관하게 즉시 회수한다.
+            RemoveGrantedTagsImmediately(castingDef);
+            RemoveGrantedTagsImmediately(executingDef);
+
+            // 책임 : 씬 이동 시점에는 더 이상 기다리는 GameplayEvent가 의미 없으므로 전부 취소한다.
+            gameplayEventChannel?.CancelAllWaiters();
+
+            // 책임 : 실행 코루틴이 다음 프레임 finally 로 정리되기를 기다리지 않고 즉시 중단한다.
+            if (activeExecution != null)
+            {
+                StopCoroutine(activeExecution);
+                activeExecution = null;
+            }
+
+            // 책임 : AbilityLogic 외부에서 직접 AddTag 한 전투/행동 상태 태그를 TagSet 기반으로 추가 정리한다.
+            RemoveTagsFromSets(extraCleanupTagSets);
+
+            ClearBufferedActivation();
+
+            isCasting = false;
+            isExecuting = false;
+            castTimeRemaining = 0f;
+
+            currentCastSpec = null;
+            currentTarget = null;
+
+            currentExecSpec = null;
+            currentExecTarget = null;
+        }
+        /// <summary>
+        /// 책임 : 현재 spec의 AbilityLogic이 씬 이동 cleanup 훅을 override 했다면 호출한다.
+        /// AbilitySystem은 세부 정리 내용을 모르고, 각 로직이 자기 상태를 정리하도록 위임한다.
+        /// </summary>
+        private void InvokeSceneTransitionCleanup(AbilitySpec spec, GameObject target)
+        {
+            if (spec == null || spec.Definition == null)
+                return;
+
+            var logic = spec.Definition.logic;
+            if (logic == null)
+                return;
+
+            try
+            {
+                logic.CleanupForSceneTransition(this, spec, target);
+            }
+            catch (Exception ex)
+            {
+                Debug.LogException(ex, this);
+            }
+        }
+        /// <summary>
+        /// 책임 : 능력 실행 중 Definition이 active 동안 부여한 태그를 즉시 회수한다.
+        /// </summary>
+        private void RemoveGrantedTagsImmediately(AbilityDefinition def)
+        {
+            if (def == null || tagSystem == null || def.grantedTagsWhileActive == null)
+                return;
+
+            tagSystem.RemoveTags(def.grantedTagsWhileActive);
+        }
+
+        /// <summary>
+        /// 책임 : 씬 이동 전 추가 정리 대상으로 지정한 GameplayTagSet들을 펼쳐 explicit tag를 제거한다.
+        /// AbilityLogic이 직접 AddTag 한 상태를 캡처 전에 없애기 위한 보조 안전장치다.
+        /// </summary>
+        private void RemoveTagsFromSets(IReadOnlyList<GameplayTagSet> tagSets)
+        {
+            if (tagSystem == null || tagSets == null || tagSets.Count == 0)
+                return;
+
+            var collected = new HashSet<GameplayTag>();
+
+            for (int i = 0; i < tagSets.Count; i++)
+            {
+                var set = tagSets[i];
+                if (set == null)
+                    continue;
+
+                set.CollectTags(collected);
+            }
+
+            foreach (var tag in collected)
+            {
+                if (tag != null)
+                    tagSystem.RemoveTag(tag, 1);
+            }
+        }
         private void RestoreChargeStateIfNeeded(AbilityDefinition def, AbilitySpec spec)
         {
             if (def == null || spec == null || !def.useCharges)
@@ -541,7 +661,127 @@ namespace UnityGAS
         {
             activeExecution = null;
         }
+        /// <summary>
+        /// 책임 : 캐스팅/실행/버퍼링 중인 일시 런타임 상태를 초기화한다.
+        /// 씬 이동 후 이전 씬의 진행 중 상태가 이어지지 않도록 정리하는 공식 창구다.
+        /// </summary>
+        public void ResetTransientRuntimeState()
+        {
+            CancelCasting(force: true);
+            CancelExecution(force: true);
 
+            ClearBufferedActivation();
+            gameplayEventChannel?.CancelAllWaiters();
+
+            if (activeExecution != null)
+            {
+                StopCoroutine(activeExecution);
+                activeExecution = null;
+            }
+
+            isCasting = false;
+            isExecuting = false;
+            castTimeRemaining = 0f;
+
+            currentCastSpec = null;
+            currentTarget = null;
+
+            currentExecSpec = null;
+            currentExecTarget = null;
+        }
+
+        /// <summary>
+        /// 책임 : 현재 ability들의 복원 가능한 런타임 상태를 스냅샷으로 캡처한다.
+        /// 현재 버전은 ability 식별자, 남은 cooldown, 현재 충전 수를 저장한다.
+        /// </summary>
+        public IReadOnlyList<AbilityRuntimeSnapshot> CaptureAbilitySnapshots()
+        {
+            var result = new List<AbilityRuntimeSnapshot>();
+
+            for (int i = 0; i < runtimeSpecs.Count; i++)
+            {
+                var spec = runtimeSpecs[i];
+                if (spec == null || spec.Definition == null)
+                    continue;
+
+                var def = spec.Definition;
+
+                result.Add(new AbilityRuntimeSnapshot
+                {
+                    abilityId = def.name,
+                    cooldownRemaining = Mathf.Max(0f, GetCooldownRemaining(def)),
+                    chargesRemaining = Mathf.Max(0, GetChargesRemaining(def))
+                });
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// 책임 : 특정 ability의 남은 cooldown을 공식 절차로 복원한다.
+        /// 차지형 스킬은 현재 충전 수를 유지한 채 cooldown만 복원한다.
+        /// </summary>
+        public bool TrySetCooldownRemaining(AbilityDefinition def, float seconds)
+        {
+            if (def == null || cooldownController == null)
+                return false;
+
+            int currentCharges = GetChargesRemaining(def);
+            return cooldownController.TryRestoreCooldownState(
+                def,
+                Mathf.Max(0f, seconds),
+                currentCharges);
+        }
+
+        /// <summary>
+        /// 책임 : 저장된 ability 스냅샷 전체를 현재 AbilitySystem에 복원한다.
+        /// 진행 중 상태는 먼저 초기화하고, 식별된 ability의 cooldown과 charges를 순차 복원한다.
+        /// </summary>
+        public void RestoreAbilitySnapshots(
+                   IEnumerable<AbilityRuntimeSnapshot> snapshots,
+                   Func<string, AbilityDefinition> resolver)
+        {
+            ResetTransientRuntimeState();
+
+            if (snapshots == null || resolver == null || cooldownController == null)
+                return;
+
+            foreach (var entry in snapshots)
+            {
+                if (entry == null || string.IsNullOrEmpty(entry.abilityId))
+                    continue;
+
+                var def = resolver(entry.abilityId);
+                if (def == null)
+                {
+                    Debug.LogWarning($"[AbilitySystem] ability 복원 실패: '{entry.abilityId}' 을(를) 찾지 못했습니다.", this);
+                    continue;
+                }
+
+                // 책임 : 복원 대상 ability의 런타임 spec이 없으면 먼저 생성한다.
+                var spec = FindSpec(def);
+                if (spec == null)
+                {
+                    spec = GiveAbility(def);
+                    if (spec == null)
+                    {
+                        Debug.LogWarning($"[AbilitySystem] ability spec 생성 실패: '{entry.abilityId}'", this);
+                        continue;
+                    }
+
+                    Debug.Log($"[AbilitySystem] ability spec 자동 생성: {def.name}", this);
+                }
+
+                bool restored = cooldownController.TryRestoreCooldownState(
+                    def,
+                    entry.cooldownRemaining,
+                    entry.chargesRemaining);
+
+                Debug.Log(
+                    $"[AbilitySystem] ability 복원 id={entry.abilityId}, specExists={spec != null}, restored={restored}, cd={entry.cooldownRemaining}, charges={entry.chargesRemaining}",
+                    this);
+            }
+        }
         private static bool ContainsTag(List<GameplayTag> list, GameplayTag tag)
         {
             if (list == null || tag == null)

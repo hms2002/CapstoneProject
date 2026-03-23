@@ -2,9 +2,8 @@ using UnityEngine;
 using UnityGAS;
 
 /// <summary>
-/// [적 처치 시] 이동속도(%)를 일정 시간 부여하는 유물 로직.
-/// - AbilitySystem이 KillConfirmedTag로 GameplayEvent를 발행해야 동작합니다.
-/// - RelicProcManager를 통해 AbilitySystem.GameplayEventRaised를 수신합니다.
+/// 책임 : 적 처치 이벤트를 감지해 일정 시간 이동속도 버프를 부여하는 유물 로직이다.
+/// 일반 장착에서는 proc를 등록하고, 복원 장착에서는 앞으로의 이벤트를 받을 runtime hook만 다시 연결한다.
 /// </summary>
 [CreateAssetMenu(menuName = "Game/Relic Logic/Move Speed On Kill (Managed)")]
 public class RelicLogic_MoveSpeedOnKill_Managed : RelicLogic
@@ -28,6 +27,25 @@ public class RelicLogic_MoveSpeedOnKill_Managed : RelicLogic
 
     public override void OnEquipped(RelicContext ctx)
     {
+        RegisterProc(ctx);
+    }
+
+    public override void OnUnequipped(RelicContext ctx)
+    {
+        if (ctx.owner == null || ctx.token == null) return;
+        var mgr = ctx.owner.GetComponent<RelicProcManager>();
+        if (mgr == null) return;
+
+        mgr.UnregisterAll(ctx.token);
+    }
+
+    public override void OnRestoreAttached(RelicContext ctx)
+    {
+        RegisterProc(ctx);
+    }
+
+    private void RegisterProc(RelicContext ctx)
+    {
         if (ctx.owner == null || ctx.token == null) return;
         if (moveSpeedAttribute == null) return;
 
@@ -44,14 +62,5 @@ public class RelicLogic_MoveSpeedOnKill_Managed : RelicLogic
         );
 
         mgr.Register(proc);
-    }
-
-    public override void OnUnequipped(RelicContext ctx)
-    {
-        if (ctx.owner == null || ctx.token == null) return;
-        var mgr = ctx.owner.GetComponent<RelicProcManager>();
-        if (mgr == null) return;
-
-        mgr.UnregisterAll(ctx.token);
     }
 }

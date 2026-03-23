@@ -4,6 +4,11 @@ using UnityGAS;
 
 namespace UnityGAS.Sample
 {
+    /// <summary>
+    /// 책임 :
+    /// - 대쉬 실행 중 이동 제어와 임시 태그(무적/에임락)를 관리한다.
+    /// - 씬 이동 시 남아 있으면 안 되는 motion/태그를 강제 정리한다.
+    /// </summary>
     [CreateAssetMenu(fileName = "AL_Dash2D", menuName = "GAS/Samples/AbilityLogic/Dash 2D")]
     public class AbilityLogic_Dash2D : AbilityLogic
     {
@@ -37,18 +42,15 @@ namespace UnityGAS.Sample
 
             try
             {
-                // 태그 부여(무적/이동락/에임락)
                 if (tags != null)
                 {
                     if (data.invulnerableTag != null) tags.AddTag(data.invulnerableTag, 1);
                     if (data.aimLockedTag != null) tags.AddTag(data.aimLockedTag, 1);
                 }
 
-                // 애니 트리거
                 if (spec.Definition.animationTriggerHash != 0)
                     system.TryPlayAnimationTriggerHash(spec.Definition.animationTriggerHash, spec.Definition);
 
-                // 특수이동 시작
                 float dashSpeed = distance / duration;
                 motion.StartDash(dir, dashSpeed, duration);
 
@@ -65,7 +67,6 @@ namespace UnityGAS.Sample
                     yield return null;
                 }
 
-                // 대쉬 후 잠깐 이동락(선택)
                 if (data.postLockTime > 0f && tags != null)
                 {
                     float end = Time.time + data.postLockTime;
@@ -80,21 +81,50 @@ namespace UnityGAS.Sample
             }
             finally
             {
-                if (motion != null)
-                    motion.CancelMotion();
+                ForceCleanup(system, spec);
+            }
+        }
 
-                // 무적/락 태그 회수
-                if (tags != null)
-                {
-                    if (data.invulnerableTag != null) tags.RemoveTag(data.invulnerableTag, 1);
-                    if (data.aimLockedTag != null) tags.RemoveTag(data.aimLockedTag, 1);
-                }
+        /// <summary>
+        /// 책임 :
+        /// - 씬 이동 직전에 Dash가 만든 motion/임시 태그를 즉시 회수한다.
+        /// </summary>
+        public override void CleanupForSceneTransition(AbilitySystem system, AbilitySpec spec, GameObject target)
+        {
+            ForceCleanup(system, spec);
+        }
+
+        /// <summary>
+        /// 책임 :
+        /// - Dash 실행 중 생성한 motion, invulnerableTag, aimLockedTag를 강제로 정리한다.
+        /// </summary>
+        private void ForceCleanup(AbilitySystem system, AbilitySpec spec)
+        {
+            if (system == null || spec == null || spec.Definition == null)
+                return;
+
+            var data = spec.Definition.sourceObject as Dash2DData;
+            if (data == null)
+                return;
+
+            var tags = system.GetComponent<TagSystem>();
+            var motion = system.GetComponent<AbilityMotionController2D>();
+
+            if (motion != null)
+                motion.CancelMotion();
+
+            if (tags != null)
+            {
+                if (data.invulnerableTag != null)
+                    tags.RemoveTag(data.invulnerableTag, 1);
+
+                if (data.aimLockedTag != null)
+                    tags.RemoveTag(data.aimLockedTag, 1);
             }
         }
 
         private Vector2 ResolveMoveDirection(AbilitySystem system, bool fallbackToAim)
         {
-            // 새 구조: PlayerIntentInput2D 우선
             var intent = system.GetComponent<PlayerIntentInput2D>();
             if (intent != null && intent.MoveInput.sqrMagnitude > 0.0001f)
                 return intent.MoveInput.normalized;
@@ -106,7 +136,6 @@ namespace UnityGAS.Sample
                     return aim.AimDirection.normalized;
             }
 
-            // 최소 fallback
             float x = Input.GetAxisRaw("Horizontal");
             float y = Input.GetAxisRaw("Vertical");
             var move = new Vector2(x, y);

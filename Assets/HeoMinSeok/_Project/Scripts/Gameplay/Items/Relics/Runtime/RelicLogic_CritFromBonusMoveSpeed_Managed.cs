@@ -2,11 +2,8 @@ using UnityEngine;
 using UnityGAS;
 
 /// <summary>
-/// [추가 이동 속도] 10%마다 치명타 확률 +1%
-/// - 추가 이동 속도 = max(0, MoveSpeedFinal - 1)  (MoveSpeedFinal은 x1 배수: 1.10 = +10%)
-/// - 보너스 치확 = floor(추가이속 / 0.10) * 0.01
-/// - AttributeSet.OnAttributeChanged를 구독해 실시간으로 갱신.
-/// - RelicProcManager를 이용해 Unequip 시 Dispose 호출되게 관리.
+/// 책임 : 추가 이동속도를 읽어 치명타 확률 보너스를 실시간으로 갱신하는 유물 로직이다.
+/// 일반 장착과 복원 장착 모두 앞으로의 이동속도 변화에 반응할 proc 등록이 필요하다.
 /// </summary>
 [CreateAssetMenu(menuName = "Game/Relic Logic/Crit From Bonus MoveSpeed (Managed)")]
 public class RelicLogic_CritFromBonusMoveSpeed_Managed : RelicLogic
@@ -31,6 +28,25 @@ public class RelicLogic_CritFromBonusMoveSpeed_Managed : RelicLogic
 
     public override void OnEquipped(RelicContext ctx)
     {
+        RegisterProc(ctx);
+    }
+
+    public override void OnUnequipped(RelicContext ctx)
+    {
+        if (ctx.owner == null || ctx.token == null) return;
+        var mgr = ctx.owner.GetComponent<RelicProcManager>();
+        if (mgr == null) return;
+
+        mgr.UnregisterAll(ctx.token);
+    }
+
+    public override void OnRestoreAttached(RelicContext ctx)
+    {
+        RegisterProc(ctx);
+    }
+
+    private void RegisterProc(RelicContext ctx)
+    {
         if (ctx.owner == null || ctx.token == null) return;
         if (ctx.attributeSet == null) return;
         if (critChanceAttribute == null) return;
@@ -50,15 +66,6 @@ public class RelicLogic_CritFromBonusMoveSpeed_Managed : RelicLogic
         mgr.Register(proc);
     }
 
-    public override void OnUnequipped(RelicContext ctx)
-    {
-        if (ctx.owner == null || ctx.token == null) return;
-        var mgr = ctx.owner.GetComponent<RelicProcManager>();
-        if (mgr == null) return;
-
-        mgr.UnregisterAll(ctx.token);
-    }
-
     private sealed class CritFromBonusMoveSpeedProc : IRelicProc
     {
         public Object Token { get; }
@@ -73,7 +80,6 @@ public class RelicLogic_CritFromBonusMoveSpeed_Managed : RelicLogic
 
         private AttributeModifier _currentCritMod;
 
-        // MoveSpeed에 영향을 주는 Attribute들만 골라서 반응(불필요한 재계산 줄이기)
         private AttributeDefinition _watchA;
         private AttributeDefinition _watchB;
         private AttributeDefinition _watchC;
@@ -103,7 +109,6 @@ public class RelicLogic_CritFromBonusMoveSpeed_Managed : RelicLogic
 
         public void Handle(GameplayTag tag, AbilityEventData data)
         {
-            // 이 유물은 GameplayEvent 기반이 아니라 Attribute 변화 기반이라 비워둡니다.
         }
 
         public void Dispose()
@@ -111,7 +116,6 @@ public class RelicLogic_CritFromBonusMoveSpeed_Managed : RelicLogic
             if (_ctx.attributeSet != null)
                 _ctx.attributeSet.OnAttributeChanged -= OnAttributeChanged;
 
-            // 남아있는 치확 보너스 제거
             RemoveCurrentModifier();
         }
 
@@ -119,7 +123,6 @@ public class RelicLogic_CritFromBonusMoveSpeed_Managed : RelicLogic
         {
             if (def == null) return;
 
-            // 관련 Attribute 변화일 때만 갱신
             if (_watchSingle != null)
             {
                 if (def != _watchSingle) return;
@@ -134,7 +137,6 @@ public class RelicLogic_CritFromBonusMoveSpeed_Managed : RelicLogic
 
         private void BuildWatchList()
         {
-            // AbilitySystem.DamageProfile.StatBindings가 있으면 composite를 통해 구성요소를 알아낼 수 있음
             StatTypeBindings bindings = null;
             if (_ctx.owner != null)
             {
@@ -157,7 +159,6 @@ public class RelicLogic_CritFromBonusMoveSpeed_Managed : RelicLogic
                 return;
             }
 
-            // composite가 아니면 단일 바인딩
             _watchSingle = GetAttr(bindings, _moveSpeedFinalStatId);
 
             AttributeDefinition GetAttr(StatTypeBindings b, StatId id)
@@ -171,17 +172,16 @@ public class RelicLogic_CritFromBonusMoveSpeed_Managed : RelicLogic
         private void RecomputeAndApply()
         {
             float moveMult = ReadMoveSpeedMultiplierX1();
-            float bonusMove = Mathf.Max(0f, moveMult - 1f); // 0.35 = +35%
+            float bonusMove = Mathf.Max(0f, moveMult - 1f);
 
             int steps = Mathf.FloorToInt(bonusMove / _step);
-            float bonusCrit = Mathf.Max(0f, steps) * _critPerStep; // 0.01 = +1%p
+            float bonusCrit = Mathf.Max(0f, steps) * _critPerStep;
 
             ApplyCritBonus(bonusCrit);
         }
 
         private float ReadMoveSpeedMultiplierX1()
         {
-            // 1) StatId + StatBindings 우선
             StatTypeBindings bindings = null;
             if (_ctx.owner != null)
             {
@@ -197,7 +197,6 @@ public class RelicLogic_CritFromBonusMoveSpeed_Managed : RelicLogic
                 return v != 0f ? Mathf.Max(0f, v) : 1f;
             }
 
-            // 2) fallback attribute
             if (_moveSpeedFallback != null)
             {
                 float v = _ctx.attributeSet.GetAttributeValue(_moveSpeedFallback);
@@ -220,13 +219,9 @@ public class RelicLogic_CritFromBonusMoveSpeed_Managed : RelicLogic
 
         private void RemoveCurrentModifier()
         {
-            if (_currentCritMod == null) return;
-            if (_ctx.attributeSet == null || _critChance == null) { _currentCritMod = null; return; }
-
-            var av = _ctx.attributeSet.GetAttribute(_critChance);
-            if (av != null) av.RemoveModifier(_currentCritMod);
-
-            _currentCritMod = null;
+            if (_ctx.attributeSet == null || _critChance == null) return;
+            _ctx.attributeSet.RemoveModifiersFromSource(Token);
+            _currentCritMod = default;
         }
     }
 }

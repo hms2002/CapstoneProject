@@ -244,6 +244,8 @@ GameObject:
   - component: {fileID: 3865359879035668891}
   - component: {fileID: 9064131313457660205}
   - component: {fileID: 8193243277221661669}
+  - component: {fileID: 1288651143475980145}
+  - component: {fileID: 834375791449447937}
   m_Layer: 0
   m_Name: PF Player
   m_TagString: Player
@@ -863,3 +865,36 @@ MonoBehaviour:
   unsafeTags:
   - {fileID: 11400000, guid: f54e8cb58b4f7c64292067442e9286c7, type: 2}
   - {fileID: 11400000, guid: c4d6c74817ae3b945b20c041f24f86b0, type: 2}
+--- !u!114 &1288651143475980145
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8883617028798182002}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9e28afe12b236964eac1a1dc67c7c43d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  weaponInventory: {fileID: 963026585117413559}
+  relicInventory: {fileID: 4885150337275956111}
+  attributeSet: {fileID: 1414767285602429285}
+  effectRunner: {fileID: 7878539558719410035}
+  tagSystem: {fileID: 7887873875085709242}
+  abilitySystem: {fileID: 1832372497922031110}
+  weaponRuntimeCapturerSource: {fileID: 0}
+  relicRuntimeCapturerSource: {fileID: 0}
+--- !u!114 &834375791449447937
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8883617028798182002}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56aa10e97c753284792babd900f09c10, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  restoreCatalog: {fileID: 11400000, guid: cbaae2b0499dc794fa21f6aeced25a93, type: 2}

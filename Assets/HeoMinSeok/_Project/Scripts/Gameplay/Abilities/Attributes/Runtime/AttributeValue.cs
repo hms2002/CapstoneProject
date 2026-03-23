@@ -101,12 +101,57 @@ namespace UnityGAS
             if (modifiers.RemoveAll(mod => mod.Source == source) > 0)
                 dirty = true;
         }
+
         public void ClearAllModifiers()
         {
             if (modifiers.Count == 0) return;
             modifiers.Clear();
             dirty = true;
         }
+
+        /// <summary>
+        /// 책임 : 현재 적용 중인 Flat modifier 총합을 계산해 제공한다.
+        /// current 복원 시 base 역산의 입력값으로 사용된다.
+        /// </summary>
+        public float GetFlatModifierSum()
+        {
+            return modifiers.Where(m => m.Type == ModifierType.Flat).Sum(m => m.Value);
+        }
+
+        /// <summary>
+        /// 책임 : 현재 적용 중인 Percent modifier 총합을 계산해 제공한다.
+        /// current 복원 시 base 역산의 입력값으로 사용된다.
+        /// </summary>
+        public float GetPercentModifierSum()
+        {
+            return modifiers.Where(m => m.Type == ModifierType.Percent).Sum(m => m.Value);
+        }
+
+        /// <summary>
+        /// 책임 : 현재 modifier/clamp 규칙을 유지한 채 목표 current 값을 만들 수 있도록
+        /// 필요한 base 값을 역산하여 설정한다.
+        /// 복원 시점의 현재 HP/MP 같은 상태값을 되살릴 때 사용한다.
+        /// </summary>
+        public bool TrySetCurrentValue(float targetCurrentValue)
+        {
+            float clampedTarget = Mathf.Clamp(targetCurrentValue, Definition.minValue, GetMaxForClamp());
+
+            float flatSum = GetFlatModifierSum();
+            float percentSum = GetPercentModifierSum();
+            float multiplier = 1f + percentSum;
+
+            // multiplier가 0이면 역산 불가
+            if (Mathf.Abs(multiplier) < 0.0001f)
+                return false;
+
+            float requiredBase = (clampedTarget / multiplier) - flatSum;
+
+            BaseValue = requiredBase;
+            dirty = false;
+            RecalculateValue();
+            return true;
+        }
+
         public void Update(float deltaTime)
         {
             for (int i = modifiers.Count - 1; i >= 0; i--)
