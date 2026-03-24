@@ -2,6 +2,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityGAS;
 
+/// <summary>
+/// 책임 :
+/// - 깃털 1개의 실제 접촉 판정과 타겟별 재타격 쿨다운을 담당한다.
+/// - 타겟 해석과 피해 적용은 공용 CombatTargetResolver2D / CombatHitPayloadApplier 규약을 사용한다.
+/// </summary>
 [RequireComponent(typeof(Collider2D))]
 public class FeatherOrbitFeather : MonoBehaviour
 {
@@ -9,10 +14,10 @@ public class FeatherOrbitFeather : MonoBehaviour
     private int _index;
 
     // 같은 적 재타격 제한
-    private readonly Dictionary<GameObject, float> _lastHitTime = new();
+    private readonly Dictionary<int, float> _lastHitTimeByTargetId = new();
 
     [Header("Target Filter (Optional)")]
-    public LayerMask targetLayers = ~0; // 필요하면 Enemy 레이어만 지정
+    public LayerMask targetLayers = ~0;
 
     public void Bind(FeatherOrbitController controller, int index)
     {
@@ -26,56 +31,53 @@ public class FeatherOrbitFeather : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D other) => TryHit(other);
     private void OnTriggerStay2D(Collider2D other) => TryHit(other);
 
+    /// <summary>
+    /// 책임 :
+    /// - 접촉한 Collider2D를 실제 타격 대상으로 해석하고, 타겟별 쿨다운을 검사한 뒤 payload를 적용한다.
+    /// </summary>
     private void TryHit(Collider2D other)
     {
-        if (_controller == null) return;
+        if (_controller == null || other == null)
+            return;
+
         var system = _controller.System;
-        if (system == null) return;
-
-        if (((1 << other.gameObject.layer) & targetLayers.value) == 0)
+        if (system == null)
             return;
 
-        // 타겟 결정: 보통 AttributeSet/AbilitySystem/Health가 붙은 루트가 실제 타겟
-        GameObject target = FindDamageTarget(other);
-        if (target == null) return;
+        GameObject target = CombatTargetResolver2D.ResolveDamageTarget(other);
+        if (target == null)
+            return;
 
+        if (!IsTargetLayerMatched(other.gameObject.layer, target.layer))
+            return;
+
+        int targetId = target.GetInstanceID();
         float now = Time.time;
-        float cd = _controller.GetPerTargetHitCooldown();
+        float cooldown = _controller.GetPerTargetHitCooldown();
 
-        if (_lastHitTime.TryGetValue(target, out float t) && now - t < cd)
+        if (_lastHitTimeByTargetId.TryGetValue(targetId, out float lastTime) && now - lastTime < cooldown)
             return;
-        _lastHitTime[target] = now;
 
-        // 데미지 계산
-        float hpDmg = _controller.ComputeHpDamage();
-        if (hpDmg <= 0f) return;
+        if (!_controller.TryBuildHitPayload(gameObject, out var payload))
+            return;
 
-        CombatDamageAction.ApplyDamageAndEmitHit(
-            system: system,
-            spec: null, // 깃털은 특정 AbilitySpec이 없으니 null
-            damageEffect: _controller.DamageEffect,
-            knockbackEffect: _controller.KnockbackEffect,
-            target: target,
-            finalHpDamage: hpDmg,
-            finalStaggerBuildUp: 0f,
-            elementBuildUps: null,
-            finalKnockbackImpulse: _controller.KnockbackImpulse,
-            hitConfirmedTag: _controller.HitConfirmedTag,
-            causer: gameObject
-        );
+        if (!CombatHitPayloadApplier.Apply(target, payload))
+            return;
+
+        _lastHitTimeByTargetId[targetId] = now;
     }
 
-    private static GameObject FindDamageTarget(Collider2D other)
+    /// <summary>
+    /// 책임 :
+    /// - 자식 Collider layer와 실제 타겟 루트 layer 중 하나라도 필터에 맞는지 검사한다.
+    /// - 자식 콜라이더/루트 오브젝트 레이어가 다를 때의 누락을 줄인다.
+    /// </summary>
+    private bool IsTargetLayerMatched(int colliderLayer, int targetLayer)
     {
-        // 1) AttributeSet이 있는 부모를 우선
-        var attrs = other.GetComponentInParent<AttributeSet>();
-        if (attrs != null) return attrs.gameObject;
+        int colliderBit = 1 << colliderLayer;
+        int targetBit = 1 << targetLayer;
 
-        // 2) AbilitySystem이 있는 부모
-        var asys = other.GetComponentInParent<AbilitySystem>();
-        if (asys != null) return asys.gameObject;
-
-        // 3) 그냥 해당 오브젝트
-        return other.gameObject;
+        return ((targetLayers.value & colliderBit) != 0) ||
+               ((targetLayers.value & targetBit) != 0);
     }
 }

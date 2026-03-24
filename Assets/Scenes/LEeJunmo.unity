@@ -8650,6 +8650,7 @@ MonoBehaviour:
   endRunOnTravel: 0
   runEndReason: 0
   highlightTarget: {fileID: 0}
+  sceneTravelCleanupTagSets: []
 --- !u!61 &1409518084
 BoxCollider2D:
   m_ObjectHideFlags: 0

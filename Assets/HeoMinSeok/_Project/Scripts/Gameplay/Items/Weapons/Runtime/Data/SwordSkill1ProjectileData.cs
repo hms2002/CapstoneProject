@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityGAS;
 
-namespace UnityGAS.Sample
+namespace UnityGAS
 {
     [CreateAssetMenu(fileName = "SwordSkill1_ProjectileData", menuName = "GAS/Samples/Sword Skill1 Projectile Data")]
     public class SwordSkill1ProjectileData : ScriptableObject, IDetailProvider

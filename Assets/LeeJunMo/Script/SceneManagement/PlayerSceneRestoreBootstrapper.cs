@@ -116,6 +116,7 @@ public sealed class PlayerSceneRestoreBootstrapper : MonoBehaviour
     public bool TryRestorePendingState()
     {
         var player = FindPlayer();
+        if(player == null) return false;
         var playerWeaponRestorer = player.GetComponent<WeaponAbilityRuntimeStateBridge>();
         if (playerWeaponRestorer != null)
             weaponRuntimeRestorer = playerWeaponRestorer;
