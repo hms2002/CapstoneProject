@@ -1,5 +1,5 @@
+using System.Collections.Generic;
 using UnityEngine;
-using System.Collections.Generic; // [추가] List를 사용하기 위해 필요합니다.
 
 public class DialogueTrigger : MonoBehaviour, IInteractable
 {
@@ -7,35 +7,27 @@ public class DialogueTrigger : MonoBehaviour, IInteractable
     [SerializeField] private NPCData npcData;
     [SerializeField] private TextAsset inkJSON;
 
-    [Header("시각적 가이드")]
-    [SerializeField] private GameObject visualCue;
+    [Header("프롬프트")]
+    [SerializeField] private Transform promptAnchor;
+    [SerializeField] private string interactPromptText = "대화하기";
 
+    [Header("하이라이트")]
     [SerializeField] private SpriteRenderer spriteRenderer;
-    private MaterialPropertyBlock propBlock;
 
+    private MaterialPropertyBlock propBlock;
     private static readonly int OutlineEnabledID = Shader.PropertyToID("_OutlineEnabled");
-    private static readonly int OutlineColorID = Shader.PropertyToID("_OutlineColor");
 
     private NPCFeatureController featureController;
 
     private void Awake()
     {
         propBlock = new MaterialPropertyBlock();
-        if (visualCue != null) visualCue.SetActive(false);
-
         featureController = GetComponent<NPCFeatureController>();
         OnUnHighlight();
     }
 
-    public void OnPlayerNearby()
-    {
-        if (visualCue != null) visualCue.SetActive(true);
-    }
-
-    public void OnPlayerLeave()
-    {
-        if (visualCue != null) visualCue.SetActive(false);
-    }
+    public void OnPlayerNearby() { }
+    public void OnPlayerLeave() { }
 
     public void OnHighlight()
     {
@@ -53,25 +45,28 @@ public class DialogueTrigger : MonoBehaviour, IInteractable
         spriteRenderer.SetPropertyBlock(propBlock);
     }
 
-    public void OnPlayerInteract(IPlayerInteractor player)
-    {
-        if (CanInteract(player))
-        {
-            if (DialogueController.Instance != null)
-            {
-                // [에러 해결!] npcData 1명을 List라는 봉투에 예쁘게 담아서(new List) 사장님께 제출합니다!
-                List<NPCData> participants = new List<NPCData>() { npcData };
-                DialogueController.Instance.EnterDialogueMode(inkJSON, participants, featureController);
-            }
-        }
-    }
-
     public bool CanInteract(IPlayerInteractor player)
     {
-        return DialogueController.Instance != null && !DialogueController.Instance.isPlaying;
+        return player != null &&
+               player.CurrentState == InteractState.Idle &&
+               DialogueController.Instance != null &&
+               !DialogueController.Instance.isPlaying;
+    }
+
+    public void OnPlayerInteract(IPlayerInteractor player)
+    {
+        if (!CanInteract(player))
+            return;
+
+        if (DialogueController.Instance != null)
+        {
+            List<NPCData> participants = new() { npcData };
+            DialogueController.Instance.EnterDialogueMode(inkJSON, participants, featureController);
+        }
     }
 
     public void GetInteract(string text) { }
     public InteractState GetInteractType() => InteractState.Talking;
-    public string GetInteractDescription() => "대화하기";
+    public string GetInteractDescription() => interactPromptText;
+    public Transform GetPromptAnchor() => promptAnchor != null ? promptAnchor : transform;
 }

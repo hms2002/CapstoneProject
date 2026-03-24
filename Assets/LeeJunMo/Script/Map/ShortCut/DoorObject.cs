@@ -5,9 +5,9 @@ public class DoorObject : MonoBehaviour, IInteractable
 {
     public enum DoorType
     {
-        Normal,     // 그냥 열림
-        OneWay,     // 한쪽에서만 열림
-        Locked      // 외부 장치(레버/석상)로만 열림
+        Normal,
+        OneWay,
+        Locked
     }
 
     [Header("데이터 (고정형 ID)")]
@@ -18,6 +18,11 @@ public class DoorObject : MonoBehaviour, IInteractable
     public DoorType doorType = DoorType.Locked;
     public bool isPermanent = true;
 
+    [Header("프롬프트")]
+    [SerializeField] private Transform promptAnchor;
+    [SerializeField] private string openPromptText = "열기";
+    [SerializeField] private string lockedPromptText = "굳게 잠겨있다";
+
     [Header("연결 객체")]
     public Transform model;
     public Animator animator;
@@ -27,7 +32,7 @@ public class DoorObject : MonoBehaviour, IInteractable
     public Collider2D openZone;
     public Collider2D blockZone;
 
-    public bool IsOpen { get; private set; } = false;
+    public bool IsOpen { get; private set; }
 
 #if UNITY_EDITOR
     private void OnValidate()
@@ -59,57 +64,56 @@ public class DoorObject : MonoBehaviour, IInteractable
         if (string.IsNullOrEmpty(doorID))
             Debug.LogError($"[DoorObject] 치명적 에러: '{gameObject.name}'의 Door ID가 없습니다!");
 
-        if (animator == null) animator = GetComponentInChildren<Animator>();
+        if (animator == null)
+            animator = GetComponentInChildren<Animator>();
     }
 
     private void Start()
     {
-        // 이미 저장된 문이면 즉시 열린 상태로 만들기
-        // (GameDataManager가 구현되어 있다는 가정 하의 코드)
         if (isPermanent && GameDataManager.Instance != null && GameDataManager.Instance.IsShortcutUnlocked(mapID, doorID))
-        {
             ForceOpen(immediate: true);
-        }
     }
 
     public void OnPlayerInteract(IPlayerInteractor player)
     {
-        if (IsOpen) return;
+        if (IsOpen || player == null)
+            return;
 
         Collider2D playerCol = player.Transform.GetComponent<Collider2D>();
 
-        // 열림 조건 충족 시
         if (playerCol != null && CheckConditionByCollider(playerCol))
         {
             ForceOpen(immediate: false, save: isPermanent);
         }
-        else // 열림 조건 불충족 시 (잠김)
+        else
         {
             PlayShakeAnimation();
 
-            // 플레이어에게 잠긴 문 대사 출력을 요청합니다!
             SampleTopDownPlayer playerScript = player.Transform.GetComponent<SampleTopDownPlayer>();
             if (playerScript != null)
-            {
                 playerScript.SpeakSituation(PlayerSpeechSituationEnum.DoorLocked);
-            }
         }
     }
 
     private bool CheckConditionByCollider(Collider2D playerCol)
     {
-        if (doorType == DoorType.Normal) return true;
+        if (doorType == DoorType.Normal)
+            return true;
+
         if (doorType == DoorType.OneWay)
         {
             if (openZone != null && openZone.IsTouching(playerCol)) return true;
             if (blockZone != null && blockZone.IsTouching(playerCol)) return false;
         }
+
         return false;
     }
 
     public void ForceOpen(bool immediate = false, bool save = false)
     {
-        if (IsOpen) return;
+        if (IsOpen)
+            return;
+
         IsOpen = true;
 
         if (save && GameDataManager.Instance != null)
@@ -125,30 +129,46 @@ public class DoorObject : MonoBehaviour, IInteractable
                 animator.Play("Open", 0, 1.0f);
                 DisableObstacle();
             }
-            else animator.SetTrigger("Open");
+            else
+            {
+                animator.SetTrigger("Open");
+            }
         }
         else
         {
             if (model != null)
             {
-                if (immediate) model.localPosition += Vector3.up * 3f;
-                else model.DOLocalMoveY(3f, 1f).SetRelative().SetEase(Ease.OutQuart);
+                if (immediate)
+                    model.localPosition += Vector3.up * 3f;
+                else
+                    model.DOLocalMoveY(3f, 1f).SetRelative().SetEase(Ease.OutQuart);
             }
+
             DisableObstacle();
         }
     }
 
     public void OnOpenAnimationComplete() => DisableObstacle();
-    private void DisableObstacle() { if (obstacleCollider != null) obstacleCollider.enabled = false; }
-    public void PlayShakeAnimation() { if (model != null) model.DOShakePosition(0.5f, 0.1f); }
 
-    // IInteractable 인터페이스 구현
+    private void DisableObstacle()
+    {
+        if (obstacleCollider != null)
+            obstacleCollider.enabled = false;
+    }
+
+    public void PlayShakeAnimation()
+    {
+        if (model != null)
+            model.DOShakePosition(0.5f, 0.1f);
+    }
+
     public void OnPlayerNearby() { }
     public void OnPlayerLeave() { }
     public void OnHighlight() { }
     public void OnUnHighlight() { }
     public InteractState GetInteractType() => InteractState.Idle;
     public void GetInteract(string text) { }
-    public bool CanInteract(IPlayerInteractor player) => !IsOpen;
-    public string GetInteractDescription() => IsOpen ? "" : (doorType == DoorType.Locked ? "굳게 잠겨있다" : "열기");
+    public Transform GetPromptAnchor() => promptAnchor != null ? promptAnchor : transform;
+    public bool CanInteract(IPlayerInteractor player) => player != null && player.CurrentState == InteractState.Idle && !IsOpen;
+    public string GetInteractDescription() => IsOpen ? string.Empty : (doorType == DoorType.Locked ? lockedPromptText : openPromptText);
 }

@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Sprites_Unlit Outline (Code)
+  m_Name: OutlineMaterial
   m_Shader: {fileID: 4800000, guid: bd6ff141223d814418100d5885e314ef, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0

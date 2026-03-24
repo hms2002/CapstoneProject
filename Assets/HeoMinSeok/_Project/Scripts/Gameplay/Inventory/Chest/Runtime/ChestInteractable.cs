@@ -1,12 +1,13 @@
 using UnityEngine;
 
-/// <summary>
-/// 책임 : 플레이어의 상자 상호작용을 처리하고,
-/// 상자가 현재 열릴 수 있는 상태인지 검사한 뒤 실제 개방을 요청한다.
-/// </summary>
 [RequireComponent(typeof(TreasureChest))]
 public class ChestInteractable : MonoBehaviour, IInteractable
 {
+    [Header("프롬프트")]
+    [SerializeField] private Transform promptAnchor;
+    [SerializeField] private string openPromptText = "상자 열기";
+    [SerializeField] private string lockedPromptFormat = "잠김 ({0})";
+
     private TreasureChest chest;
     private ChestMonsterKillLock killLock;
 
@@ -18,7 +19,6 @@ public class ChestInteractable : MonoBehaviour, IInteractable
 
     public void OnPlayerNearby() { }
     public void OnPlayerLeave() { }
-
     public void OnHighlight() { }
     public void OnUnHighlight() { }
 
@@ -38,12 +38,13 @@ public class ChestInteractable : MonoBehaviour, IInteractable
     public string GetInteractDescription()
     {
         if (killLock != null && !killLock.IsUnlocked)
-            return $"잠김 ({killLock.RemainingAliveCount})";
+            return string.Format(lockedPromptFormat, killLock.RemainingAliveCount);
 
-        return "상자 열기";
+        return openPromptText;
     }
 
     public void GetInteract(string text) { }
+    public Transform GetPromptAnchor() => promptAnchor != null ? promptAnchor : transform;
 
     public void OnPlayerInteract(IPlayerInteractor player)
     {

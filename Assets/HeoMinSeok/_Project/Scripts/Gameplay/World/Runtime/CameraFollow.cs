@@ -1,29 +1,19 @@
-﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Cainos.PixelArtTopDown_Basic
 {
-    //let camera follow target
     public class CameraFollow : MonoBehaviour
     {
-        public Transform target;
-        public float lerpSpeed = 1.0f;
-        public bool autoBindToSpawnedPlayer = true;
-
-        private Vector3 offset;
-
-        private Vector3 targetPos;
+        [SerializeField] private Transform target;
+        [SerializeField] private float lerpSpeed = 10f;
+        [SerializeField] private bool autoBindToSpawnedPlayer = true;
+        [SerializeField] private Vector3 followOffset = new Vector3(0f, 0f, -10f);
+        [SerializeField] private bool snapWhenTargetBound = true;
 
         private void OnEnable()
         {
             PlayerRuntimeRegistry.PlayerRegistered += HandlePlayerRegistered;
             PlayerRuntimeRegistry.PlayerUnregistered += HandlePlayerUnregistered;
-            TryResolveTarget();
-        }
-
-        private void Start()
-        {
             TryResolveTarget();
         }
 
@@ -33,13 +23,12 @@ namespace Cainos.PixelArtTopDown_Basic
             PlayerRuntimeRegistry.PlayerUnregistered -= HandlePlayerUnregistered;
         }
 
-
         private void HandlePlayerRegistered(SampleTopDownPlayer player)
         {
             if (!autoBindToSpawnedPlayer || player == null)
                 return;
 
-            SetTarget(player.transform);
+            BindTarget(player.transform, snapWhenTargetBound);
         }
 
         private void HandlePlayerUnregistered(SampleTopDownPlayer player)
@@ -52,31 +41,39 @@ namespace Cainos.PixelArtTopDown_Basic
         {
             if (!autoBindToSpawnedPlayer && target != null)
             {
-                offset = transform.position - target.position;
+                if (snapWhenTargetBound)
+                    SnapToTarget();
                 return;
             }
 
             var playerTransform = PlayerRuntimeRegistry.GetPlayerTransform();
-            if (playerTransform == null)
-                return;
-
-            SetTarget(playerTransform);
+            if (playerTransform != null)
+                BindTarget(playerTransform, snapWhenTargetBound);
         }
 
-        private void SetTarget(Transform newTarget)
+        public void BindTarget(Transform newTarget, bool snap = true)
         {
             target = newTarget;
-            if (target != null)
-                offset = transform.position - target.position;
+
+            if (target != null && snap)
+                SnapToTarget();
         }
 
-        private void Update()
+        public void SnapToTarget()
         {
-            if (target == null) return;
+            if (target == null)
+                return;
 
-            targetPos = target.position + offset;
+            transform.position = target.position + followOffset;
+        }
+
+        private void LateUpdate()
+        {
+            if (target == null)
+                return;
+
+            Vector3 targetPos = target.position + followOffset;
             transform.position = Vector3.Lerp(transform.position, targetPos, lerpSpeed * Time.deltaTime);
         }
-
     }
 }
