@@ -53,6 +53,9 @@ public sealed class GamePlayDataManager : MonoBehaviour
         Data.isRunActive = false;
         Data.pendingTransition = null;
         Data.pendingPlayerState = null;
+
+        if (PortalRouteManager.Instance != null)
+            PortalRouteManager.Instance.ClearPlan();
     }
 
     public void TickRunTimer(float deltaTime)
@@ -83,6 +86,11 @@ public sealed class GamePlayDataManager : MonoBehaviour
     public void PreparePlayerState(PlayerRuntimeState state)
     {
         Data.pendingPlayerState = state;
+    }
+
+    public void ClearPendingPlayerState()
+    {
+        Data.pendingPlayerState = null;
     }
 
     public PlayerRuntimeState PeekPendingPlayerState()

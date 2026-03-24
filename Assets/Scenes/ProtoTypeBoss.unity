@@ -7125,19 +7125,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f39c8c7eceb5d24d8bb3e78c251c87c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetSceneName: ProtoTypeHub
-  entryPointId: FromRun
-  transitionType: 5
-  fullyHealPlayer: 1
-  resetCooldowns: 1
-  clearAllEffects: 1
-  clearCombatOnlyEffects: 1
-  startRunOnTravel: 1
-  endRunOnTravel: 0
-  runEndReason: 0
+  portalId: f7d24e9c894b4a87862041bc798e9aa0
+  transitionType: 4
+  startRunRouteCatalog: {fileID: 11400000, guid: 2199820cb676dbc4692f5aca1000cb22, type: 2}
   promptAnchor: {fileID: 475528461}
   interactPromptText: "\uC774\uB3D9\uD558\uAE30"
   highlightTarget: {fileID: 0}
+  sceneTravelCleanupTagSets: []
 --- !u!61 &272070919
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -8825,7 +8819,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6db0d45142451d4b9e583b9d97c9b44, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pointId: FromCorridor
+  pointId: Default
   isDefault: 0
 --- !u!4 &593441123
 Transform:
