@@ -1,107 +1,42 @@
 using UnityEngine;
-using UnityGAS;
 
-namespace UnityGAS.Sample
+namespace UnityGAS
 {
-    [RequireComponent(typeof(Collider2D))]
-    public class SwordSkill1Projectile2D : MonoBehaviour
+    /// <summary>
+    /// 책임:
+    /// SwordSkill1 투사체의 이동 규칙만 담당한다.
+    /// 공통 수명, 충돌 해석, 피해 적용, 제거 정책은 AttackBase가 담당한다.
+    /// </summary>
+    public sealed class SwordSkill1Projectile2D : AttackBase
     {
         private Vector2 dir;
         private float speed;
-        private float life;
-        private LayerMask wallLayers;
-        private LayerMask damageLayers;
 
-        private AbilitySystem ownerSystem;
-        private GameplayEffect damageEffect;
-        private GE_Knockback_Spec knockbackEffect;
-        private float damage;
-        private float staggerBuildUp;
-        private ElementDamageResult[] elementDamages;
-        private float knockbackImpulse;
-        private GameObject ignoreGO;
-
-        public void Setup(
-            AbilitySystem owner,
-            Vector2 direction,
-            float spd,
-            float lifetime,
-            LayerMask walls,
-            LayerMask dmgLayers,
-            GameplayEffect dmgEffect,
-            GE_Knockback_Spec kbEffect,
-            float dmg,
-            float staggerBuildUp,
-            ElementDamageResult[] elementDamages,
-            float knockbackImpulse,
-            GameObject ignore)
+        /// <summary>
+        /// 책임:
+        /// 투사체 전용 이동값을 초기화하고, 공통 공격체 초기화를 이어서 수행한다.
+        /// </summary>
+        public void Setup(ProjectileAttackSpawnContext context)
         {
-            ownerSystem = owner;
-            dir = direction.normalized;
-            speed = spd;
-            life = lifetime;
-            wallLayers = walls;
-            damageLayers = dmgLayers;
-            damageEffect = dmgEffect;
-            knockbackEffect = kbEffect;
-            damage = dmg;
-            this.staggerBuildUp = staggerBuildUp;
-            this.elementDamages = elementDamages;
-            this.knockbackImpulse = knockbackImpulse;
-            ignoreGO = ignore;
-
-            // owner 충돌 무시(가능하면)
-            var myCol = GetComponent<Collider2D>();
-            var ownerCol = ignoreGO != null ? ignoreGO.GetComponent<Collider2D>() : null;
-            if (myCol != null && ownerCol != null)
-                Physics2D.IgnoreCollision(myCol, ownerCol, true);
-        }
-
-        private void Update()
-        {
-            transform.position += (Vector3)(dir * speed * Time.deltaTime);
-            life -= Time.deltaTime;
-            if (life <= 0f) Destroy(gameObject);
-        }
-
-        private void OnTriggerEnter2D(Collider2D other)
-        {
-            if (other == null) return;
-
-            var go = other.attachedRigidbody != null ? other.attachedRigidbody.gameObject : other.gameObject;
-            if (go == null || go == ignoreGO) return;
-
-            int layerBit = 1 << go.layer;
-
-            // 벽이면 그냥 소멸
-            if ((wallLayers.value & layerBit) != 0)
+            if (context == null)
             {
-                Destroy(gameObject);
+                Debug.LogError($"[{nameof(SwordSkill1Projectile2D)}] context is null.", this);
+                enabled = false;
                 return;
             }
 
-            // 데미지 대상이면 데미지 적용 후 소멸
-            if ((damageLayers.value & layerBit) != 0 && damageEffect != null && ownerSystem != null)
-            {
-                CombatDamageAction.ApplyDamageAndEmitHit(
-                    system: ownerSystem,
-                    spec: ownerSystem.CurrentExecSpec,
-                    damageEffect: damageEffect,
-                    knockbackEffect: knockbackEffect,
-                    target: go,
-                    finalHpDamage: damage,
-                    finalStaggerBuildUp: staggerBuildUp,
-                    elementBuildUps: elementDamages,
-                    finalKnockbackImpulse: knockbackImpulse,
-                    hitConfirmedTag: null,
-                    causer: ownerSystem.gameObject
-                );
+            dir = context.direction.sqrMagnitude > 0.0001f
+                ? context.direction.normalized
+                : Vector2.right;
 
-                Destroy(gameObject);
-                return;
-            }
+            speed = Mathf.Max(0f, context.speed);
 
-            // 그 외 충돌은 무시
+            SetupBase(context);
+        }
+
+        protected override void TickAttack(float deltaTime)
+        {
+            transform.position += (Vector3)(dir * speed * deltaTime);
         }
     }
 }

@@ -5,6 +5,11 @@ using UnityGAS;
 
 namespace UnityGAS.Sample
 {
+    /// <summary>
+    /// 책임 :
+    /// - 3연속 콤보 공격의 상태 진행을 담당한다.
+    /// - 콤보 인덱스 결정, 애니메이션/돌진 처리, 히트 이벤트 대기 후 MeleeHitboxActor를 생성한다.
+    /// </summary>
     [CreateAssetMenu(fileName = "AL_SwordCombo2D", menuName = "GAS/Samples/AbilityLogic/Sword Combo 2D")]
     public class AbilityLogic_SwordCombo2D : AbilityLogic
     {
@@ -20,6 +25,12 @@ namespace UnityGAS.Sample
             if (data == null)
             {
                 Debug.LogError("[SwordCombo2D] AbilityDefinition.sourceObject must be SwordCombo2DData.");
+                yield break;
+            }
+
+            if (data.hitboxPrefab == null)
+            {
+                Debug.LogError("[SwordCombo2D] hitboxPrefab is null.");
                 yield break;
             }
 
@@ -51,7 +62,7 @@ namespace UnityGAS.Sample
             float rec = GetArraySafe(data.recoveryOverrides, comboIndex, spec.Definition.recoveryTime);
             spec.SetFloat("RecoveryOverride", rec);
 
-            DoHit(system, spec, data, comboIndex, dir);
+            SpawnHitbox(system, spec, data, comboIndex, dir);
         }
 
         private int ResolveComboIndex(AbilitySpec spec, float resetTime)
@@ -100,7 +111,12 @@ namespace UnityGAS.Sample
             }
         }
 
-        private void DoHit(AbilitySystem system, AbilitySpec abilitySpec, SwordCombo2DData data, int comboIndex, Vector2 dir)
+        /// <summary>
+        /// 책임 :
+        /// - 콤보 단계별 중심점, 피해량, 넉백, 원소 누적량을 계산한다.
+        /// - 계산 결과를 payload/context로 묶어 짧게 유지되는 근접 히트박스를 생성한다.
+        /// </summary>
+        private void SpawnHitbox(AbilitySystem system, AbilitySpec abilitySpec, SwordCombo2DData data, int comboIndex, Vector2 dir)
         {
             if (data.damageEffect == null) return;
             if (system.AttributeSet == null) return;
@@ -122,15 +138,6 @@ namespace UnityGAS.Sample
                 gizmo.RecordBox(center, data.hitboxSize, 0f, 0.15f, col);
             }
 #endif
-
-            var td = AbilityTargetData2D.FromOverlapBox(
-                center,
-                data.hitboxSize,
-                0f,
-                data.hitLayers,
-                ignore: system.gameObject);
-
-            if (td.Targets.Count == 0) return;
 
             IStatProvider statProvider = AbilityStatProviderFactory.Create(system);
 
@@ -198,19 +205,44 @@ namespace UnityGAS.Sample
                 elementInputs: elementInputs
             );
 
-            if (snapshot.FinalHpDamage <= 0f) return;
-            if (system.EffectRunner == null) return;
+            if (snapshot.FinalHpDamage <= 0f)
+                return;
 
-            CombatDamageApplicator.ApplyToTargets(
-                system: system,
-                spec: abilitySpec,
-                damageEffect: data.damageEffect,
-                knockbackEffect: data.knockbackEffect,
-                targets: td.Targets,
-                snapshot: snapshot,
-                hitConfirmedTag: data.hitConfirmedTag,
-                causer: system.gameObject
-            );
+            var payload = new AttackHitPayload
+            {
+                damageEffect = data.damageEffect,
+                knockbackEffect = data.knockbackEffect,
+                finalHpDamage = snapshot.FinalHpDamage,
+                finalStaggerBuildUp = snapshot.FinalStaggerBuildUp,
+                elementDamages = snapshot.ElementBuildUps != null && snapshot.ElementBuildUps.Count > 0
+                    ? snapshot.ElementBuildUps.ToArray()
+                    : null,
+                finalKnockbackImpulse = snapshot.FinalKnockbackImpulse,
+                hitConfirmedTag = data.hitConfirmedTag
+            };
+
+            var hitbox = Object.Instantiate(data.hitboxPrefab, center, Quaternion.identity);
+            if (hitbox == null)
+                return;
+
+            var context = new MeleeHitboxSpawnContext
+            {
+                ownerSystem = system,
+                sourceSpec = abilitySpec,
+                causer = system.gameObject,
+                ignoreTarget = system.gameObject,
+                lifetime = GetArraySafe(data.activeTimes, comboIndex, 0.08f),
+                wallLayers = 0,
+                damageLayers = data.hitLayers,
+                hitPayload = payload,
+                worldPosition = center,
+                hitboxSize = data.hitboxSize,
+                hitOncePerTarget = true,
+                destroyOnFirstHit = false,
+                direction = dir
+            };
+
+            hitbox.Setup(context);
         }
 
         private static T GetArraySafe<T>(T[] arr, int index, T fallback)

@@ -3,6 +3,12 @@ using UnityEngine;
 using UnityGAS;
 using Object = UnityEngine.Object;
 
+/// <summary>
+/// 책임 :
+/// - Feather Orbit 유물의 런타임 컨트롤러다.
+/// - 깃털 생성/제거, 공전 위치 갱신, 이속 기반 회전속도/재타격 쿨다운/피해량 계산을 담당한다.
+/// - Feather가 실제 적중할 때 사용할 공통 CombatHitPayload를 만들어 제공한다.
+/// </summary>
 public class FeatherOrbitController : MonoBehaviour
 {
     [System.Serializable]
@@ -42,8 +48,10 @@ public class FeatherOrbitController : MonoBehaviour
     {
         _cfg = cfg;
         _system = GetComponent<AbilitySystem>();
+
         if (_system != null && _system.DamageProfile != null)
             _bindings = _system.DamageProfile.GetStatBindings();
+
         _statProvider = (_system != null && _bindings != null)
             ? new AttributeStatProvider(_system.AttributeSet, _bindings)
             : null;
@@ -51,19 +59,18 @@ public class FeatherOrbitController : MonoBehaviour
 
     public void EnableForToken(Object token)
     {
-        // 이미 켜져 있으면 먼저 정리
         DisableInternal();
 
         _active = true;
         _activeToken = token;
-
         SpawnFeathers();
     }
 
     public void DisableForToken(Object token)
     {
-        // 다른 토큰이면 무시(혹시나 여러 유물/토큰 상황 대비)
-        if (_activeToken != null && token != null && _activeToken != token) return;
+        if (_activeToken != null && token != null && _activeToken != token)
+            return;
+
         DisableInternal();
     }
 
@@ -77,19 +84,21 @@ public class FeatherOrbitController : MonoBehaviour
             if (_feathers[i] != null)
                 Destroy(_feathers[i].gameObject);
         }
+
         _feathers.Clear();
     }
 
     private void SpawnFeathers()
     {
-        if (_cfg.featherPrefab == null) return;
+        if (_cfg.featherPrefab == null)
+            return;
 
         for (int i = 0; i < _cfg.featherCount; i++)
         {
-            var f = Instantiate(_cfg.featherPrefab, transform);
-            f.name = $"FeatherOrbit_{i}";
-            f.Bind(this, index: i);
-            _feathers.Add(f);
+            var feather = Instantiate(_cfg.featherPrefab, transform);
+            feather.name = $"FeatherOrbit_{i}";
+            feather.Bind(this, index: i);
+            _feathers.Add(feather);
         }
     }
 
@@ -102,26 +111,22 @@ public class FeatherOrbitController : MonoBehaviour
         float angular = _cfg.baseAngularSpeedDegPerSec * moveMult;
 
         _angleDeg += angular * Time.deltaTime;
-        if (_angleDeg >= 360f) _angleDeg -= 360f;
+        if (_angleDeg >= 360f)
+            _angleDeg -= 360f;
 
-        int n = _feathers.Count;
-        for (int i = 0; i < n; i++)
+        int count = _feathers.Count;
+        for (int i = 0; i < count; i++)
         {
-            var f = _feathers[i];
-            if (f == null) continue;
+            var feather = _feathers[i];
+            if (feather == null) continue;
 
-            float a = _angleDeg + (360f / n) * i;
-            var rad = a * Mathf.Deg2Rad;
+            float angle = _angleDeg + (360f / count) * i;
+            float rad = angle * Mathf.Deg2Rad;
 
-            Vector3 offset = new Vector3(Mathf.Cos(rad), Mathf.Sin(rad),0f) * _cfg.radius;
-            f.transform.position = transform.position + offset;
-
-            // (선택) 바라보는 방향 연출
-            //f.transform.rotation = Quaternion.LookRotation(offset.normalized, -Vector3.forward);
+            Vector3 offset = new Vector3(Mathf.Cos(rad), Mathf.Sin(rad), 0f) * _cfg.radius;
+            feather.transform.position = transform.position + offset;
         }
     }
-
-    // ---- Feather가 호출하는 API ----
 
     public AbilitySystem System => _system;
     public GameplayEffect DamageEffect => _cfg.damageEffect;
@@ -130,35 +135,66 @@ public class FeatherOrbitController : MonoBehaviour
 
     public float GetMoveSpeedMultX1()
     {
-        // StatBindings 기반(권장)
         if (_statProvider != null)
         {
-            float v = _statProvider.Get(_cfg.moveSpeedFinalStatId);
-            return (v > 0f) ? v : 1f;
+            float value = _statProvider.Get(_cfg.moveSpeedFinalStatId);
+            return value > 0f ? value : 1f;
         }
+
         return 1f;
     }
 
     public float GetPerTargetHitCooldown()
     {
-        // “깃털 공격속도 = 이속 비례” 구현
-        // 실제 쿨다운 = base / MoveSpeedFinal
-        float ms = GetMoveSpeedMultX1();
-        return _cfg.basePerTargetHitCooldown / Mathf.Max(0.01f, ms);
+        float moveSpeed = GetMoveSpeedMultX1();
+        return _cfg.basePerTargetHitCooldown / Mathf.Max(0.01f, moveSpeed);
     }
 
     public float ComputeHpDamage()
     {
-        // ATK * coef
         if (_statProvider != null)
         {
             float atk = _statProvider.Get(_cfg.attackStatId);
             return Mathf.Max(0f, atk) * _cfg.damageCoef;
         }
+
         return 0f;
     }
 
     public float KnockbackImpulse => Mathf.Max(0f, _cfg.knockbackImpulse);
+
+    /// <summary>
+    /// 책임 :
+    /// - 현재 Feather Orbit 상태를 바탕으로 실제 타격에 사용할 payload를 구성한다.
+    /// - 유물은 특정 AbilitySpec이 없으므로 sourceSpec은 null로 유지한다.
+    /// </summary>
+    public bool TryBuildHitPayload(GameObject causer, out CombatHitPayload payload)
+    {
+        payload = null;
+
+        if (_system == null || _cfg.damageEffect == null)
+            return false;
+
+        float hpDamage = ComputeHpDamage();
+        if (hpDamage <= 0f)
+            return false;
+
+        payload = new CombatHitPayload
+        {
+            sourceSystem = _system,
+            sourceSpec = null,
+            damageEffect = _cfg.damageEffect,
+            knockbackEffect = _cfg.knockbackEffect,
+            finalHpDamage = hpDamage,
+            finalStaggerBuildUp = 0f,
+            elementBuildUps = null,
+            finalKnockbackImpulse = KnockbackImpulse,
+            hitConfirmedTag = _cfg.hitConfirmedTag,
+            causer = causer != null ? causer : gameObject
+        };
+
+        return true;
+    }
 
     private void OnDestroy()
     {

@@ -13,6 +13,7 @@ public class RelicLogic_FeatherOrbit_Managed : RelicLogic
 
     [Header("Damage")]
     public GameplayEffect damageEffect;
+    public GE_Knockback_Spec knockbackEffect;
     public StatId attackStatId = StatId.AttackFinal;
     public float damageCoef = 1.0f;
     public float knockbackImpulse = 0f;
@@ -65,7 +66,9 @@ public class RelicLogic_FeatherOrbit_Managed : RelicLogic
         {
             owner = ctx.owner,
             token = ctx.token,
+
             damageEffect = damageEffect,
+            knockbackEffect = knockbackEffect,
             attackStatId = attackStatId,
             damageCoef = damageCoef,
             knockbackImpulse = knockbackImpulse,

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityGAS;
 
-namespace UnityGAS.Sample
+namespace UnityGAS
 {
     [CreateAssetMenu(fileName = "AL_SwordSkill1_Projectile", menuName = "GAS/Samples/AbilityLogic/Sword Skill1 Projectile")]
     public class AbilityLogic_SwordSkill1_Projectile : AbilityLogic
@@ -38,9 +38,6 @@ namespace UnityGAS.Sample
                 ? cfg.staggerFormula.Evaluate(system.AttributeSet, statProvider, defaultIfEmpty: 0f)
                 : Mathf.Max(0f, data.baseStaggerDamage);
 
-            // Element build-up:
-            // 1) config formula 우선
-            // 2) 없으면 legacy list를 최종값처럼 사용
             List<ElementDamageInput> elementInputs = null;
             if (cfg != null && cfg.includeElementBuildUp && cfg.HasElementFormulas)
             {
@@ -82,21 +79,35 @@ namespace UnityGAS.Sample
             var proj = go.GetComponent<SwordSkill1Projectile2D>();
             if (proj != null)
             {
-                proj.Setup(
-                    owner: system,
-                    direction: dir,
-                    spd: data.projectileSpeed,
-                    lifetime: data.lifetime,
-                    walls: data.wallLayers,
-                    dmgLayers: data.damageLayers,
-                    dmgEffect: data.damageEffect,
-                    kbEffect: data.knockbackEffect,
-                    dmg: snapshot.FinalHpDamage,
-                    staggerBuildUp: snapshot.FinalStaggerBuildUp,
-                    elementDamages: elementSnapshot,
-                    knockbackImpulse: snapshot.FinalKnockbackImpulse,
-                    ignore: system.gameObject
-                );
+                // 책임:
+                // 발사 시점에 고정되어야 하는 피해 정보를 캡처한다.
+                // projectile가 나중에 충돌해도 CurrentExecSpec를 다시 읽지 않도록 sourceSpec과 payload를 묶어 전달한다.
+                var payload = new AttackHitPayload
+                {
+                    damageEffect = data.damageEffect,
+                    knockbackEffect = data.knockbackEffect,
+                    finalHpDamage = snapshot.FinalHpDamage,
+                    finalStaggerBuildUp = snapshot.FinalStaggerBuildUp,
+                    elementDamages = elementSnapshot != null ? (ElementDamageResult[])elementSnapshot.Clone() : null,
+                    finalKnockbackImpulse = snapshot.FinalKnockbackImpulse,
+                    hitConfirmedTag = null
+                };
+
+                var context = new ProjectileAttackSpawnContext
+                {
+                    ownerSystem = system,
+                    sourceSpec = spec,
+                    causer = system.gameObject,
+                    ignoreTarget = system.gameObject,
+                    lifetime = data.lifetime,
+                    wallLayers = data.wallLayers,
+                    damageLayers = data.damageLayers,
+                    hitPayload = payload,
+                    direction = dir,
+                    speed = data.projectileSpeed
+                };
+
+                proj.Setup(context);
             }
 
             yield break;

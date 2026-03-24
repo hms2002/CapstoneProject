@@ -4,6 +4,11 @@ using UnityGAS;
 
 namespace UnityGAS.Sample
 {
+    /// <summary>
+    /// 책임 :
+    /// - 3연속 콤보 근접 공격의 정적 데이터를 보관한다.
+    /// - 콤보별 피해/넉백/스태거/활성시간/이동/히트박스 규칙을 정의한다.
+    /// </summary>
     [CreateAssetMenu(fileName = "SwordCombo2DData", menuName = "GAS/Samples/Data/Sword Combo 2D")]
     public class SwordCombo2DData : ScriptableObject
     {
@@ -12,6 +17,10 @@ namespace UnityGAS.Sample
         {
             public List<ElementDamageInput> elements = new();
         }
+
+        [Header("Actor")]
+        public MeleeHitboxActor hitboxPrefab;
+        public float[] activeTimes = new float[3] { 0.08f, 0.08f, 0.10f };
 
         [Header("Damage Channels")]
         [SerializeField] private DamagePayloadConfig damageConfig = new();
@@ -25,7 +34,7 @@ namespace UnityGAS.Sample
         public float comboResetTime = 0.45f;
 
         [Header("Damage / Knockback Formula (Per Hit)")]
-        [Tooltip("If set, base HP damage for each combo hit is computed from attacker stats via this formula.\nIf null, legacy 'damages[]' is used.")]
+        [Tooltip("If set, base HP damage for each combo hit is computed from attacker stats via this formula. If null, legacy 'damages[]' is used.")]
         public ScaledStatFormula[] damageFormulas = new ScaledStatFormula[3];
 
         [Tooltip("If set, knockback impulse for each combo hit is computed from attacker stats via this formula.")]
@@ -53,8 +62,7 @@ namespace UnityGAS.Sample
         public float[] lungeDurations = new float[3] { 0.08f, 0.08f, 0.10f };
 
         [Header("Damage Effect")]
-        public GameplayEffect damageEffect; // GE_Damage_Spec (HP)
-        public GE_Knockback_Spec knockbackEffect; // GE_Damage_Spec (HP)
-
+        public GameplayEffect damageEffect;
+        public GE_Knockback_Spec knockbackEffect;
     }
 }
