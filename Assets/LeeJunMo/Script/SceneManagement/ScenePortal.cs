@@ -7,7 +7,6 @@ public sealed class ScenePortal : MonoBehaviour, IInteractable
     [SerializeField] private string targetSceneName;
 
     [Header("Spawn")]
-    [SerializeField] private string exitPointId;
     [SerializeField] private string entryPointId = "Default";
 
     [Header("Transition")]
@@ -23,6 +22,10 @@ public sealed class ScenePortal : MonoBehaviour, IInteractable
     [SerializeField] private bool startRunOnTravel;
     [SerializeField] private bool endRunOnTravel;
     [SerializeField] private RunEndReason runEndReason = RunEndReason.None;
+
+    [Header("프롬프트")]
+    [SerializeField] private Transform promptAnchor;
+    [SerializeField] private string interactPromptText = "이동하기";
 
     [Header("Optional Visual")]
     [SerializeField] private GameObject highlightTarget;
@@ -40,9 +43,7 @@ public sealed class ScenePortal : MonoBehaviour, IInteractable
         OnUnHighlight();
     }
 
-    public void GetInteract(string text)
-    {
-    }
+    public void GetInteract(string text) { }
 
     public void OnHighlight()
     {
@@ -82,19 +83,12 @@ public sealed class ScenePortal : MonoBehaviour, IInteractable
 
         isTransitioning = true;
         player.SetInteractState(InteractState.None);
-
         Travel();
     }
 
-    public InteractState GetInteractType()
-    {
-        return InteractState.Idle;
-    }
-
-    public string GetInteractDescription()
-    {
-        return "이동하기";
-    }
+    public InteractState GetInteractType() => InteractState.Idle;
+    public string GetInteractDescription() => interactPromptText;
+    public Transform GetPromptAnchor() => promptAnchor != null ? promptAnchor : transform;
 
     private void Travel()
     {
@@ -137,7 +131,6 @@ public sealed class ScenePortal : MonoBehaviour, IInteractable
         {
             fromScene = SceneManager.GetActiveScene().name,
             toScene = targetSceneName,
-            exitPointId = exitPointId,
             entryPointId = entryPointId,
             transitionType = transitionType,
             fullyHealPlayer = fullyHealPlayer,

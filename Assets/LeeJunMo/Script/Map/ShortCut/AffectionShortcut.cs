@@ -2,9 +2,12 @@ using UnityEngine;
 
 public class AffectionShortcut : PermanentShortcut
 {
+    [Header("프롬프트")]
+    [SerializeField] private string interactPromptText = "살펴보기";
+
     [Header("호감도 설정")]
-    public int targetBossID;
-    public int requiredAffection;
+    [SerializeField] private int targetBossID;
+    [SerializeField] private int requiredAffection;
 
     protected override void Start()
     {
@@ -14,10 +17,10 @@ public class AffectionShortcut : PermanentShortcut
             return;
 
         if (AffectionManager.Instance != null)
-        {
             CheckAndAutoOpen(AffectionManager.Instance.GetAffection(targetBossID));
+
+        if (AffectionManager.Instance != null)
             AffectionManager.Instance.OnAffectionChanged += HandleAffectionChange;
-        }
     }
 
     private void OnDestroy()
@@ -46,18 +49,9 @@ public class AffectionShortcut : PermanentShortcut
     protected override bool CheckCondition(IPlayerInteractor player)
     {
         int current = AffectionManager.Instance != null ? AffectionManager.Instance.GetAffection(targetBossID) : 0;
-        bool satisfied = current >= requiredAffection;
-
-        if (!satisfied)
-        {
-            Debug.Log($"[안내] {targetBossID}번 보스의 호감도가 부족하다. (현재:{current} / 필요:{requiredAffection})");
-        }
-
-        return satisfied;
+        Debug.Log($"[안내] {targetBossID}번 보스의 호감도가 부족합니다. (현재:{current} / 필요:{requiredAffection})");
+        return false;
     }
 
-    public override string GetInteractDescription()
-    {
-        return "살펴보기";
-    }
+    public override string GetInteractDescription() => interactPromptText;
 }

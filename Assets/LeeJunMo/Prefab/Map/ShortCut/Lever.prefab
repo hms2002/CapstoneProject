@@ -31,7 +31,8 @@ Transform:
   m_LocalPosition: {x: -12.45, y: -0.19, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1339556334817558425}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &6367013370336474432
@@ -78,7 +79,7 @@ SpriteRenderer:
   m_SortingLayerID: -1039746825
   m_SortingLayer: 2
   m_SortingOrder: 0
-  m_Sprite: {fileID: 7482667652216324306, guid: 75f5f34dc1b5347e0b8351032682f224, type: 3}
+  m_Sprite: {fileID: -4454914845596493489, guid: 289d74fd511a02746a5f2e5bcf4a72bf, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -102,8 +103,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   targetDoor: {fileID: 0}
-  uiPopupPoint: {fileID: 386613921817804834}
-  handle: {fileID: 386613921817804834}
+  promptAnchor: {fileID: 1339556334817558425}
+  interactPromptText: "\uC791\uB3D9\uD558\uAE30"
+  leverRenderer: {fileID: 6367013370336474432}
+  activatedSprite: {fileID: -1868582266, guid: 289d74fd511a02746a5f2e5bcf4a72bf, type: 3}
 --- !u!61 &7397890849955202152
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -141,8 +144,8 @@ BoxCollider2D:
   m_Offset: {x: 0.017840385, y: 0.10429013}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.28866667}
-    oldSize: {x: 1, y: 1}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 1.375, y: 1.5}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -150,3 +153,34 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 2.2488403, y: 1.2140864}
   m_EdgeRadius: 0
+--- !u!1 &9140511980783852794
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1339556334817558425}
+  m_Layer: 0
+  m_Name: InteractUIAnchor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1339556334817558425
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9140511980783852794}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.103, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 386613921817804834}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

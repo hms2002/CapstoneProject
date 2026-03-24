@@ -10,6 +10,11 @@ public class StatueShortcut : TemporaryShortcut
         HP
     }
 
+    private static readonly int OutlineEnabledID = Shader.PropertyToID("_OutlineEnabled");
+
+    [Header("프롬프트")]
+    [SerializeField] private string interactPromptText = "바치기";
+
     [Header("비용 설정")]
     [SerializeField] private CostType costType;
     [SerializeField] private int costAmount = 100;
@@ -31,72 +36,65 @@ public class StatueShortcut : TemporaryShortcut
     [SerializeField] private SpriteRenderer highlightRenderer;
     [SerializeField] private GameObject highlightTarget;
 
-    private MaterialPropertyBlock _propBlock;
-    private bool _isPlayerNearby;
-    private bool _lastActivatedState;
-
-    private static readonly int OutlineEnabledID = Shader.PropertyToID("_OutlineEnabled");
+    private MaterialPropertyBlock propBlock;
 
     protected override void Awake()
     {
         base.Awake();
 
-        _propBlock = new MaterialPropertyBlock();
-        _lastActivatedState = IsActivated;
-
+        propBlock = new MaterialPropertyBlock();
         ApplyRequirementVisual();
         RefreshVisualState();
-        SetOutline(false);
+        OnUnHighlight();
     }
 
-    private void LateUpdate()
+    private void OnValidate()
     {
-        bool activated = IsActivated;
-        if (_lastActivatedState == activated)
-            return;
-
-        _lastActivatedState = activated;
-        RefreshVisualState();
+        ApplyRequirementVisual();
     }
 
     public override void OnPlayerNearby()
     {
-        _isPlayerNearby = true;
+        base.OnPlayerNearby();
         RefreshVisualState();
     }
 
     public override void OnPlayerLeave()
     {
-        _isPlayerNearby = false;
+        base.OnPlayerLeave();
         RefreshVisualState();
     }
 
     public override void OnHighlight()
     {
-        if (IsActivated)
-            return;
+        if (highlightRenderer != null)
+        {
+            highlightRenderer.GetPropertyBlock(propBlock);
+            propBlock.SetFloat(OutlineEnabledID, 1f);
+            highlightRenderer.SetPropertyBlock(propBlock);
+        }
 
-        if (highlightTarget != null)
+        if (highlightTarget != null && !IsActivated)
             highlightTarget.SetActive(true);
-
-        SetOutline(true);
     }
 
     public override void OnUnHighlight()
     {
+        if (highlightRenderer != null)
+        {
+            highlightRenderer.GetPropertyBlock(propBlock);
+            propBlock.SetFloat(OutlineEnabledID, 0f);
+            highlightRenderer.SetPropertyBlock(propBlock);
+        }
+
         if (highlightTarget != null)
             highlightTarget.SetActive(false);
-
-        SetOutline(false);
     }
 
-    public override string GetInteractDescription()
+    public override bool CanInteract(IPlayerInteractor player)
     {
-        if (IsActivated)
-            return "이미 열려 있다";
-
-        string typeName = costType == CostType.MagicStone ? "마정석" : "체력";
-        return $"{typeName} {costAmount} 바치기";
+        RefreshVisualState();
+        return base.CanInteract(player);
     }
 
     protected override bool CheckCondition(IPlayerInteractor player)
@@ -104,87 +102,47 @@ public class StatueShortcut : TemporaryShortcut
         switch (costType)
         {
             case CostType.MagicStone:
-                int currentStone = CurrencyManager.Instance != null ? CurrencyManager.Instance.GetMagicStone() : 0;
-                bool canSpendStone = currentStone >= costAmount;
-                if (!canSpendStone)
-                    Debug.Log($"[StatueShortcut:{name}] 마정석이 부족하다. 현재={currentStone}, 필요={costAmount}");
-                return canSpendStone;
+                return CurrencyManager.Instance != null && CurrencyManager.Instance.GetMagicStone() >= costAmount;
 
             case CostType.HP:
-                if (healthAttribute == null)
-                {
-                    Debug.LogWarning($"[StatueShortcut:{name}] healthAttribute가 연결되지 않았다.");
+                var attributeSet = player != null ? player.Transform.GetComponent<AttributeSet>() : null;
+                if (attributeSet == null || healthAttribute == null)
                     return false;
-                }
-
-                if (!TryGetPlayerAttributeSet(player, out var attributeSet))
-                {
-                    Debug.LogWarning($"[StatueShortcut:{name}] 플레이어 AttributeSet을 찾지 못했다.");
-                    return false;
-                }
 
                 float currentHp = attributeSet.GetAttributeValue(healthAttribute);
-                bool canSpendHp = allowLethalPayment
-                    ? currentHp >= costAmount
-                    : currentHp > costAmount;
+                return allowLethalPayment ? currentHp >= costAmount : currentHp > costAmount;
 
-                if (!canSpendHp)
-                {
-                    string ruleText = allowLethalPayment ? "현재 HP 이상 필요" : "최소 1 HP는 남아야 함";
-                    Debug.Log($"[StatueShortcut:{name}] 체력이 부족하다. 현재={currentHp}, 필요={costAmount}, 규칙={ruleText}");
-                }
-
-                return canSpendHp;
+            default:
+                return false;
         }
-
-        return false;
     }
 
-    protected override bool ConsumeCondition(IPlayerInteractor player)
+    protected override void ConsumeCondition(IPlayerInteractor player)
     {
         switch (costType)
         {
             case CostType.MagicStone:
-                return CurrencyManager.Instance != null && CurrencyManager.Instance.SpendMagicStone(costAmount);
+                CurrencyManager.Instance?.SpendMagicStone(costAmount);
+                break;
 
             case CostType.HP:
-                if (healthAttribute == null)
-                    return false;
-
-                if (!TryGetPlayerAttributeSet(player, out var attributeSet))
-                    return false;
-
-                return attributeSet.TryModifyAttributeValue(healthAttribute, -costAmount, this);
+                var attributeSet = player != null ? player.Transform.GetComponent<AttributeSet>() : null;
+                if (attributeSet != null && healthAttribute != null)
+                    attributeSet.TryModifyAttributeValue(healthAttribute, -costAmount, this);
+                break;
         }
-
-        return false;
     }
 
     protected override void OnSuccess()
     {
         base.OnSuccess();
         RefreshVisualState();
-        SetOutline(false);
+        OnUnHighlight();
     }
 
-    private bool TryGetPlayerAttributeSet(IPlayerInteractor player, out AttributeSet attributeSet)
-    {
-        attributeSet = player != null ? player.Transform.GetComponent<AttributeSet>() : null;
-        return attributeSet != null;
-    }
+    public override string GetInteractDescription() => IsActivated ? string.Empty : interactPromptText;
 
-    private void ApplyRequirementVisual()
-    {
-        if (requirementIconRenderer != null)
-        {
-            requirementIconRenderer.sprite = costType == CostType.MagicStone ? magicStoneIcon : hpIcon;
-        }
-
-        if (requirementAmountText != null)
-        {
-            requirementAmountText.text = costAmount.ToString();
-        }
-    }
+    private bool IsActivated => targetDoor != null && targetDoor.IsOpen;
 
     private void RefreshVisualState()
     {
@@ -194,7 +152,7 @@ public class StatueShortcut : TemporaryShortcut
             requirementRoot.SetActive(!activated);
 
         if (interactPromptRoot != null)
-            interactPromptRoot.SetActive(!activated && _isPlayerNearby);
+            interactPromptRoot.SetActive(false);
 
         if (activatedRoot != null)
             activatedRoot.SetActive(activated);
@@ -203,13 +161,14 @@ public class StatueShortcut : TemporaryShortcut
             highlightTarget.SetActive(false);
     }
 
-    private void SetOutline(bool enabled)
+    private void ApplyRequirementVisual()
     {
-        if (highlightRenderer == null)
+        if (requirementAmountText != null)
+            requirementAmountText.text = costAmount.ToString();
+
+        if (requirementIconRenderer == null)
             return;
 
-        highlightRenderer.GetPropertyBlock(_propBlock);
-        _propBlock.SetFloat(OutlineEnabledID, enabled ? 1f : 0f);
-        highlightRenderer.SetPropertyBlock(_propBlock);
+        requirementIconRenderer.sprite = costType == CostType.MagicStone ? magicStoneIcon : hpIcon;
     }
 }

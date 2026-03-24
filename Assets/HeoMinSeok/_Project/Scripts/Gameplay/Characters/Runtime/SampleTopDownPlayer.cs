@@ -11,6 +11,7 @@ public class SampleTopDownPlayer : MonoBehaviour, IPlayerInteractor
 
     [Header("Interaction")]
     [SerializeField] private KeyCode interactKey = KeyCode.F;
+    [SerializeField] private WorldInteractionPromptController interactionPrompt;
 
     [Header("Speech System")]
     [SerializeField] private SpeechBubbleComponent speechBubble;
@@ -22,6 +23,9 @@ public class SampleTopDownPlayer : MonoBehaviour, IPlayerInteractor
     private void Awake()
     {
         Instance = this;
+
+        if (interactionPrompt == null)
+            interactionPrompt = WorldInteractionPromptController.Instance ?? FindFirstObjectByType<WorldInteractionPromptController>();
     }
 
     private void OnDestroy()
@@ -37,33 +41,34 @@ public class SampleTopDownPlayer : MonoBehaviour, IPlayerInteractor
         Debug.Log($"[Player] SetInteractState: {CurrentState} -> {state}");
         CurrentState = state;
 
-        if (state == InteractState.Talking && currentTarget != null)
+        if (state != InteractState.Idle)
         {
-            currentTarget.OnUnHighlight();
-            currentTarget = null;
+            ClearCurrentTarget();
+            interactionPrompt?.Hide();
         }
     }
 
     private void Update()
     {
-        if (CurrentState == InteractState.Talking)
+        if (CurrentState != InteractState.Idle)
+        {
+            interactionPrompt?.Hide();
             return;
+        }
 
         HandleInteractSearch();
+        RefreshInteractionPrompt();
 
-        if (Input.GetKeyDown(interactKey))
+        if (Input.GetKeyDown(interactKey) && currentTarget != null)
         {
-            Debug.Log($"[Player] Interact key pressed. currentTarget = {(currentTarget as MonoBehaviour)?.name ?? "null"}");
+            bool canInteract = currentTarget.CanInteract(this);
+            Debug.Log($"[Player] currentTarget.CanInteract = {canInteract}");
 
-            if (currentTarget != null)
+            if (canInteract)
             {
-                bool canInteract = currentTarget.CanInteract(this);
-                Debug.Log($"[Player] currentTarget.CanInteract = {canInteract}");
-
-                if (canInteract)
-                {
-                    currentTarget.OnPlayerInteract(this);
-                }
+                currentTarget.OnPlayerInteract(this);
+                HandleInteractSearch();
+                RefreshInteractionPrompt();
             }
         }
     }
@@ -78,16 +83,14 @@ public class SampleTopDownPlayer : MonoBehaviour, IPlayerInteractor
 
         string line = speechData.GetLine(situation);
         if (!string.IsNullOrEmpty(line))
-        {
             speechBubble.Speak(line, duration);
-        }
     }
 
     private void HandleInteractSearch()
     {
         IInteractable nearest = GetClosestInteractable();
 
-        if (nearest != currentTarget)
+        if (!ReferenceEquals(nearest, currentTarget))
         {
             if (currentTarget != null)
                 currentTarget.OnUnHighlight();
@@ -100,6 +103,20 @@ public class SampleTopDownPlayer : MonoBehaviour, IPlayerInteractor
                 currentTarget.OnHighlight();
             }
         }
+    }
+
+    private void RefreshInteractionPrompt()
+    {
+        if (interactionPrompt == null)
+            return;
+
+        if (CurrentState != InteractState.Idle || currentTarget == null)
+        {
+            interactionPrompt.Hide();
+            return;
+        }
+
+        interactionPrompt.Refresh(currentTarget);
     }
 
     private IInteractable GetClosestInteractable()
@@ -140,14 +157,11 @@ public class SampleTopDownPlayer : MonoBehaviour, IPlayerInteractor
 
         Debug.Log($"[Player] OnTriggerEnter2D: other={other.name}, foundInteractable={(interactable as MonoBehaviour)?.name ?? "null"}");
 
-        if (interactable != null)
+        if (interactable != null && !nearbyObjects.Contains(interactable))
         {
-            if (!nearbyObjects.Contains(interactable))
-            {
-                nearbyObjects.Add(interactable);
-                interactable.OnPlayerNearby();
-                Debug.Log($"[Player] Added nearby interactable: {(interactable as MonoBehaviour)?.name}");
-            }
+            nearbyObjects.Add(interactable);
+            interactable.OnPlayerNearby();
+            Debug.Log($"[Player] Added nearby interactable: {(interactable as MonoBehaviour)?.name}");
         }
     }
 
@@ -159,21 +173,24 @@ public class SampleTopDownPlayer : MonoBehaviour, IPlayerInteractor
 
         Debug.Log($"[Player] OnTriggerExit2D: other={other.name}, foundInteractable={(interactable as MonoBehaviour)?.name ?? "null"}");
 
-        if (interactable != null)
-        {
-            if (nearbyObjects.Contains(interactable))
-            {
-                interactable.OnPlayerLeave();
+        if (interactable == null || !nearbyObjects.Contains(interactable))
+            return;
 
-                if (currentTarget == interactable)
-                {
-                    currentTarget.OnUnHighlight();
-                    currentTarget = null;
-                }
+        interactable.OnPlayerLeave();
 
-                nearbyObjects.Remove(interactable);
-                Debug.Log($"[Player] Removed nearby interactable: {(interactable as MonoBehaviour)?.name}");
-            }
-        }
+        if (ReferenceEquals(currentTarget, interactable))
+            ClearCurrentTarget();
+
+        nearbyObjects.Remove(interactable);
+        RefreshInteractionPrompt();
+        Debug.Log($"[Player] Removed nearby interactable: {(interactable as MonoBehaviour)?.name}");
+    }
+
+    private void ClearCurrentTarget()
+    {
+        if (currentTarget != null)
+            currentTarget.OnUnHighlight();
+
+        currentTarget = null;
     }
 }

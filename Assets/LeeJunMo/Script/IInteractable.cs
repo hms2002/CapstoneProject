@@ -6,6 +6,7 @@ public interface IPlayerInteractor
     InteractState CurrentState { get; }
     void SetInteractState(InteractState state);
 }
+
 public interface IInteractable
 {
     void OnPlayerNearby();
@@ -17,12 +18,13 @@ public interface IInteractable
     void OnPlayerInteract(IPlayerInteractor player);
     InteractState GetInteractType();
     string GetInteractDescription();
+    Transform GetPromptAnchor();
 }
 
 public enum InteractState
 {
-    Idle,      // ���� �̵� ����
-    Talking,   // ��ȭ �� (�̵� �Ұ�)
-    Shopping,  // ���� �̿� ��
+    Idle,
+    Talking,
+    Shopping,
     None
 }
