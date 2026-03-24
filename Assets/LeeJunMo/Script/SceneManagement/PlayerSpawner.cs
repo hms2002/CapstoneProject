@@ -15,7 +15,7 @@ public sealed class PlayerSpawner : MonoBehaviour
     {
         if (playerPrefab == null)
         {
-            Debug.LogError("[PlayerSpawner] playerPrefab이 비어 있다.");
+            Debug.LogError("[PlayerSpawner] playerPrefab is missing.");
             return;
         }
 
@@ -26,42 +26,48 @@ public sealed class PlayerSpawner : MonoBehaviour
             if (existingInteractor != null)
                 PlayerRuntimeRegistry.Register(existingInteractor);
 
-            Debug.Log("[PlayerSpawner] 이미 Player가 씬에 존재해서 스폰을 건너뜀.");
+            Debug.Log("[PlayerSpawner] Player already exists in the scene. Skipping spawn.");
             return;
         }
 
-        var ctx = GamePlayDataManager.Instance != null
-            ? GamePlayDataManager.Instance.PeekPendingTransition()
+        var gameplay = GamePlayDataManager.Instance;
+        var transitionContext = gameplay != null
+            ? gameplay.PeekPendingTransition()
             : null;
 
-        var spawnPoint = ResolveSpawnPoint(ctx);
-
+        var spawnPoint = ResolveSpawnPoint(transitionContext);
         if (spawnPoint == null)
         {
-            Debug.LogError("[PlayerSpawner] 스폰 포인트를 찾지 못했다.");
+            Debug.LogError("[PlayerSpawner] Failed to resolve a player spawn point.");
             return;
         }
 
-        var player = Instantiate(playerPrefab, spawnPoint.transform.position, spawnPoint.transform.rotation);
+        ApplySpawnRuntimePolicy(spawnPoint, gameplay);
+
+        var player = Instantiate(
+            playerPrefab,
+            spawnPoint.transform.position,
+            spawnPoint.transform.rotation);
 
         var playerInteractor = player.GetComponent<SampleTopDownPlayer>();
         if (playerInteractor != null)
+        {
             PlayerRuntimeRegistry.Register(playerInteractor);
+        }
         else
-            Debug.LogWarning("[PlayerSpawner] SampleTopDownPlayer를 찾지 못해 레지스트리 등록을 건너뜀.");
-
-        // 지금 단계에서는 위치 스폰만 함.
-        // 나중에 PlayerRuntimeState 복원/바인딩이 모두 끝난 뒤에도 같은 지점에서 등록을 유지하면 된다.
+        {
+            Debug.LogWarning("[PlayerSpawner] SampleTopDownPlayer was not found on the spawned player.");
+        }
     }
 
-    private PlayerSpawnPoint ResolveSpawnPoint(SceneTransitionContext ctx)
+    private PlayerSpawnPoint ResolveSpawnPoint(SceneTransitionContext context)
     {
-        if (ctx != null && !string.IsNullOrEmpty(ctx.entryPointId))
+        if (context != null && !string.IsNullOrEmpty(context.entryPointId) && spawnPoints != null)
         {
             for (int i = 0; i < spawnPoints.Length; i++)
             {
                 var point = spawnPoints[i];
-                if (point != null && point.pointId == ctx.entryPointId)
+                if (point != null && point.pointId == context.entryPointId)
                     return point;
             }
         }
@@ -69,12 +75,32 @@ public sealed class PlayerSpawner : MonoBehaviour
         if (defaultSpawnPoint != null)
             return defaultSpawnPoint;
 
-        for (int i = 0; i < spawnPoints.Length; i++)
+        if (spawnPoints != null)
         {
-            if (spawnPoints[i] != null && spawnPoints[i].isDefault)
-                return spawnPoints[i];
+            for (int i = 0; i < spawnPoints.Length; i++)
+            {
+                var point = spawnPoints[i];
+                if (point != null && point.isDefault)
+                    return point;
+            }
+
+            if (spawnPoints.Length > 0)
+                return spawnPoints[0];
         }
 
-        return spawnPoints != null && spawnPoints.Length > 0 ? spawnPoints[0] : null;
+        return null;
+    }
+
+    private static void ApplySpawnRuntimePolicy(
+        PlayerSpawnPoint spawnPoint,
+        GamePlayDataManager gameplay)
+    {
+        if (spawnPoint == null || gameplay == null)
+            return;
+
+        if (spawnPoint.runtimePolicy != PlayerSpawnRuntimePolicy.ResetToSceneDefault)
+            return;
+
+        gameplay.ClearPendingPlayerState();
     }
 }

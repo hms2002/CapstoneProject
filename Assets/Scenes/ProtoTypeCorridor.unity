@@ -7202,6 +7202,11 @@ MonoBehaviour:
   npcData: {fileID: 11400000, guid: d9ef2aea03d3ddf4488a762102786dde, type: 2}
   playerCam: {fileID: 361708142}
   bossCam: {fileID: 760601613}
+  normalPriority: 10
+  focusPriority: 100
+  playOnStart: 1
+  disableLegacyFollowWhileSequence: 1
+  bossDrop: {fileID: 0}
 --- !u!4 &197106469
 Transform:
   m_ObjectHideFlags: 0
@@ -15055,7 +15060,7 @@ MonoBehaviour:
   lerpSpeed: 1
   autoBindToSpawnedPlayer: 1
   followOffset: {x: 0, y: 0, z: -10}
-  snapOnBind: 1
+  snapWhenTargetBound: 1
 --- !u!1 &720948541
 GameObject:
   m_ObjectHideFlags: 0
@@ -16755,7 +16760,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a6db0d45142451d4b9e583b9d97c9b44, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pointId: FromHubAndBoss
+  pointId: Default
   isDefault: 0
 --- !u!4 &1175960437
 Transform:
@@ -17615,19 +17620,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f39c8c7eceb5d24d8bb3e78c251c87c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetSceneName: ProtoTypeBoss
-  entryPointId: FromCorridor
+  portalId: db80f4f6eafd4d01b076684cd56672ab
   transitionType: 3
-  fullyHealPlayer: 1
-  resetCooldowns: 1
-  clearAllEffects: 1
-  clearCombatOnlyEffects: 1
-  startRunOnTravel: 1
-  endRunOnTravel: 0
-  runEndReason: 0
+  startRunRouteCatalog: {fileID: 11400000, guid: 2199820cb676dbc4692f5aca1000cb22, type: 2}
   promptAnchor: {fileID: 1927740261}
   interactPromptText: "\uC774\uB3D9\uD558\uAE30"
   highlightTarget: {fileID: 0}
+  sceneTravelCleanupTagSets: []
 --- !u!61 &1409518084
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -18954,7 +18953,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2942535351882185593, guid: 14f7910c6104c084b8cbbf8d25e018de, type: 3}
       propertyPath: doorID
-      value: Door (1)_057d7e88
+      value: Door (1)_644f95e9
       objectReference: {fileID: 0}
     - target: {fileID: 2942535351882185593, guid: 14f7910c6104c084b8cbbf8d25e018de, type: 3}
       propertyPath: doorType
@@ -19526,7 +19525,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2942535351882185593, guid: 14f7910c6104c084b8cbbf8d25e018de, type: 3}
       propertyPath: doorID
-      value: Door (1)_ee50d005
+      value: Door (2)_6cd043af
       objectReference: {fileID: 0}
     - target: {fileID: 3336051206690434136, guid: 14f7910c6104c084b8cbbf8d25e018de, type: 3}
       propertyPath: m_LocalScale.x
@@ -19838,7 +19837,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2942535351882185593, guid: 14f7910c6104c084b8cbbf8d25e018de, type: 3}
       propertyPath: doorID
-      value: Door (3)_fc3c061c
+      value: Door (3)_8c31cec9
       objectReference: {fileID: 0}
     - target: {fileID: 3336051206690434136, guid: 14f7910c6104c084b8cbbf8d25e018de, type: 3}
       propertyPath: m_LocalScale.x
@@ -20609,6 +20608,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2942535351882185593, guid: 14f7910c6104c084b8cbbf8d25e018de, type: 3}
+      propertyPath: doorID
+      value: Door_436cb0f0
+      objectReference: {fileID: 0}
     - target: {fileID: 3336051206690434136, guid: 14f7910c6104c084b8cbbf8d25e018de, type: 3}
       propertyPath: m_LocalScale.x
       value: 2
