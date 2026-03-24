@@ -1,6 +1,12 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityGAS;
 
+/// <summary>
+/// 책임 : 플레이어 상호작용을 통해 씬 전이 컨텍스트를 준비하고,
+/// 필요 시 현재 플레이어 런타임 상태를 캡처한 뒤 대상 씬으로 이동시키는 포털 역할을 담당한다.
+/// </summary>
 public sealed class ScenePortal : MonoBehaviour, IInteractable
 {
     [Header("Scene")]
@@ -29,6 +35,8 @@ public sealed class ScenePortal : MonoBehaviour, IInteractable
 
     [Header("Optional Visual")]
     [SerializeField] private GameObject highlightTarget;
+    [Header("Cleanup Before Capture")]
+    [SerializeField] private List<GameplayTagSet> sceneTravelCleanupTagSets = new();
 
     private bool isTransitioning;
 
@@ -90,6 +98,10 @@ public sealed class ScenePortal : MonoBehaviour, IInteractable
     public string GetInteractDescription() => interactPromptText;
     public Transform GetPromptAnchor() => promptAnchor != null ? promptAnchor : transform;
 
+    /// <summary>
+    /// 책임 : 씬 이동 직전 전이 컨텍스트와 플레이어 런타임 상태를 준비하고,
+    /// 대상 씬 로드를 수행한다.
+    /// </summary>
     private void Travel()
     {
         Debug.Log($"[ScenePortal:{name}] Travel start -> {targetSceneName}");
@@ -104,21 +116,7 @@ public sealed class ScenePortal : MonoBehaviour, IInteractable
 
         if (!endRunOnTravel)
         {
-            var playerGo = GameObject.FindGameObjectWithTag("Player");
-            if (playerGo != null)
-            {
-                var facade = playerGo.GetComponent<PlayerSceneTransitionFacade>();
-                if (facade != null)
-                {
-                    var state = facade.CaptureRuntimeState();
-                    gameplay.PreparePlayerState(state);
-                    Debug.Log($"[ScenePortal:{name}] PlayerRuntimeState captured");
-                }
-                else
-                {
-                    Debug.LogWarning("[ScenePortal] PlayerSceneTransitionFacade가 없음. 상태 복원 없이 이동함.");
-                }
-            }
+            CaptureAndStorePlayerRuntimeState(gameplay);
         }
 
         if (startRunOnTravel)
@@ -143,5 +141,48 @@ public sealed class ScenePortal : MonoBehaviour, IInteractable
 
         gameplay.PrepareTransition(ctx);
         SceneManager.LoadScene(targetSceneName);
+    }
+
+    /// <summary>
+    /// 책임 : 씬 이동 직전 현재 플레이어의 전투/행동 중간 상태를 먼저 정리한 뒤,
+    /// 최신 캡처 파이프라인으로 런타임 상태를 저장한다.
+    /// </summary>
+    private void CaptureAndStorePlayerRuntimeState(GamePlayDataManager gameplay)
+    {
+        var playerGo = GameObject.FindGameObjectWithTag("Player");
+        if (playerGo == null)
+        {
+            Debug.LogWarning($"[ScenePortal:{name}] Player 태그 오브젝트를 찾지 못해 런타임 상태를 저장하지 못했습니다.");
+            return;
+        }
+
+        CleanupBeforeCapture(playerGo);
+
+        var captureBridge = playerGo.GetComponent<PlayerRuntimeCaptureBridge>();
+        if (captureBridge == null)
+        {
+            Debug.LogWarning($"[ScenePortal:{name}] PlayerRuntimeCaptureBridge가 없어 런타임 상태를 저장하지 못했습니다.", playerGo);
+            return;
+        }
+
+        var state = captureBridge.CaptureRuntimeState();
+        gameplay.PreparePlayerState(state);
+
+        Debug.Log($"[ScenePortal:{name}] PlayerRuntimeState captured by PlayerRuntimeCaptureBridge");
+    }
+    /// <summary>
+    /// 책임 : 런타임 상태 캡처 전에 현재 플레이어의 ability 실행 상태와
+    /// 씬 이동 시 유지되면 안 되는 일시 태그를 정리한다.
+    /// </summary>
+    private void CleanupBeforeCapture(GameObject playerGo)
+    {
+        if (playerGo == null)
+            return;
+
+        var abilitySystem = playerGo.GetComponent<UnityGAS.AbilitySystem>();
+        if (abilitySystem != null)
+        {
+            abilitySystem.CancelAllForSceneTransition(sceneTravelCleanupTagSets);
+        }
     }
 }

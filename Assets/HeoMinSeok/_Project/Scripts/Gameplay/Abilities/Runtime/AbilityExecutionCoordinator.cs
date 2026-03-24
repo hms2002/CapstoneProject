@@ -5,21 +5,32 @@ using UnityEngine;
 namespace UnityGAS
 {
     /// <summary>
-    /// Ability 1회의 실행 생명주기를 조율한다.
-    /// - 실행 시작 상태 진입
-    /// - OnActivate 처리
-    /// - GameplayEvent 구독
-    /// - AbilityLogic + Recovery 실행
-    /// - 종료/취소 정리
+    /// 책임 :
+    /// - Ability 1회의 실행 생명주기를 조율한다.
+    /// - Exclusive 실행과 Parallel 실행 모두 같은 종료 규칙으로 정리한다.
     /// </summary>
     public sealed class AbilityExecutionCoordinator
     {
-        public IEnumerator Run(AbilitySystem system, AbilitySpec spec, GameObject target)
+        public IEnumerator RunExclusive(AbilitySystem system, AbilitySpec spec, GameObject target)
+        {
+            return RunInternal(system, spec, target, isParallel: false);
+        }
+
+        public IEnumerator RunParallel(AbilitySystem system, AbilitySpec spec, GameObject target)
+        {
+            return RunInternal(system, spec, target, isParallel: true);
+        }
+
+        private IEnumerator RunInternal(
+            AbilitySystem system,
+            AbilitySpec spec,
+            GameObject target,
+            bool isParallel)
         {
             if (system == null || spec == null || spec.Definition == null)
                 yield break;
 
-            BeginExecution(system, spec, target);
+            BeginExecution(system, spec, target, isParallel);
 
             bool cancelled = false;
             Action<GameplayTag, AbilityEventData> onEvent = null;
@@ -29,11 +40,11 @@ namespace UnityGAS
                 var def = spec.Definition;
                 if (def.logic == null)
                 {
-                    Debug.LogError($"[GAS] Ability '{def.name}' has no Logic. (Legacy pipeline removed)");
+                    Debug.LogError($"[GAS] Ability '{def.name}' has no Logic.");
                     yield break;
                 }
 
-                onEvent = CreateExecutionEventHandler(system, spec, target);
+                onEvent = CreateExecutionEventHandler(system, spec, target, isParallel);
                 system.SubscribeGameplayEvent(onEvent);
 
                 yield return RunAbilityLogicAndRecovery(system, spec, target);
@@ -45,13 +56,21 @@ namespace UnityGAS
                 if (onEvent != null)
                     system.UnsubscribeGameplayEvent(onEvent);
 
-                EndExecution(system, spec, target, cancelled);
+                EndExecution(system, spec, target, cancelled, isParallel);
             }
         }
 
-        private void BeginExecution(AbilitySystem system, AbilitySpec spec, GameObject target)
+        private void BeginExecution(
+            AbilitySystem system,
+            AbilitySpec spec,
+            GameObject target,
+            bool isParallel)
         {
-            system.SetExecutionState(true, spec, target);
+            if (isParallel)
+                system.BeginParallelExecution(spec, target);
+            else
+                system.SetExecutionState(true, spec, target);
+
             spec.Token = new AbilityCancellationToken();
 
             var def = spec.Definition;
@@ -63,7 +82,10 @@ namespace UnityGAS
             system.ApplyEffectContainers(spec, target, AbilityEffectTiming.OnActivate, null);
         }
 
-        private IEnumerator RunAbilityLogicAndRecovery(AbilitySystem system, AbilitySpec spec, GameObject target)
+        private IEnumerator RunAbilityLogicAndRecovery(
+            AbilitySystem system,
+            AbilitySpec spec,
+            GameObject target)
         {
             var def = spec.Definition;
 
@@ -86,7 +108,12 @@ namespace UnityGAS
             }
         }
 
-        private void EndExecution(AbilitySystem system, AbilitySpec spec, GameObject target, bool cancelled)
+        private void EndExecution(
+            AbilitySystem system,
+            AbilitySpec spec,
+            GameObject target,
+            bool cancelled,
+            bool isParallel)
         {
             var def = spec.Definition;
 
@@ -104,23 +131,39 @@ namespace UnityGAS
             spec.Token?.Cancel();
             spec.Token = null;
 
-            system.SetExecutionState(false, null, null);
-            system.ClearActiveExecutionCoroutine();
-            system.TryConsumeBufferedActivation_Internal();
+            if (isParallel)
+            {
+                system.EndParallelExecution(spec);
+            }
+            else
+            {
+                system.SetExecutionState(false, null, null);
+                system.ClearActiveExecutionCoroutine();
+                system.TryConsumeBufferedActivation_Internal();
+            }
         }
 
         private Action<GameplayTag, AbilityEventData> CreateExecutionEventHandler(
             AbilitySystem system,
             AbilitySpec spec,
-            GameObject target)
+            GameObject target,
+            bool isParallel)
         {
             return (tag, data) =>
             {
-                if (!system.IsExecuting)
-                    return;
+                if (isParallel)
+                {
+                    if (!system.IsParallelExecuting(spec))
+                        return;
+                }
+                else
+                {
+                    if (!system.IsExecuting)
+                        return;
 
-                if (system.CurrentExecSpec != spec)
-                    return;
+                    if (system.CurrentExecSpec != spec)
+                        return;
+                }
 
                 if (data.Spec != null && data.Spec != spec)
                     return;

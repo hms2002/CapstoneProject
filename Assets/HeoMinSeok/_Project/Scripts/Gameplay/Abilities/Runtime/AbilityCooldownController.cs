@@ -229,5 +229,135 @@ namespace UnityGAS
 
             spec.SetFloat(KEY_RECHARGE, r);
         }
+        /// <summary>
+        /// 책임 : 특정 ability의 남은 cooldown을 정확한 값으로 설정한다.
+        /// 씬 이동 후 cooldown 복원의 공식 setter 역할을 담당한다.
+        /// 
+        /// 처리 규칙:
+        /// - 차지형 스킬은 재충전 남은 시간(KEY_RECHARGE)을 복원한다.
+        /// - GE 기반 쿨다운은 cooldown effect를 제거 후 남은 시간으로 다시 건다.
+        /// - fallback 쿨다운은 spec.CooldownRemaining에 직접 반영한다.
+        /// </summary>
+        public bool TrySetCooldownRemaining(AbilityDefinition def, float seconds)
+        {
+            if (owner == null || def == null)
+                return false;
+
+            float clamped = Mathf.Max(0f, seconds);
+            var spec = owner.FindSpec(def);
+            if (spec == null)
+                return false;
+
+            // 1) 차지형 스킬
+            if (def.useCharges)
+            {
+                int max = Mathf.Max(1, def.maxCharges);
+
+                // 현재 스냅샷 구조에서는 charges 개수 자체는 별도 복원하지 않으므로
+                // 기존 spec의 charges 값을 유지하고, 다음 충전까지 남은 시간만 복원한다.
+                int charges = spec.GetInt(KEY_CHARGES, max);
+                charges = Mathf.Clamp(charges, 0, max);
+                spec.SetInt(KEY_CHARGES, charges);
+
+                if (charges >= max)
+                {
+                    spec.SetFloat(KEY_RECHARGE, 0f);
+                }
+                else
+                {
+                    spec.SetFloat(KEY_RECHARGE, clamped);
+                }
+
+                return true;
+            }
+
+            // 2) GE 기반 쿨다운
+            if (defaultCooldownEffect != null && effectRunner != null)
+            {
+                effectRunner.EndEffectsBySourceObject(
+                    owner.gameObject,
+                    defaultCooldownEffect,
+                    def);
+
+                if (clamped <= 0f)
+                    return true;
+
+                var cdSpec = owner.MakeSpec(
+                    defaultCooldownEffect,
+                    causer: owner.gameObject,
+                    sourceObject: def);
+
+                cdSpec.SetDuration(clamped);
+                effectRunner.ApplyEffectSpec(cdSpec, owner.gameObject);
+                return true;
+            }
+
+            // 3) fallback 쿨다운
+            spec.CooldownRemaining = clamped;
+            return true;
+        }
+        /// <summary>
+        /// 책임 : 특정 ability의 남은 cooldown과 충전 수를 함께 복원한다.
+        /// 일반 스킬은 cooldown만, 차지형 스킬은 charges와 recharge를 함께 맞춰
+        /// 씬 이동 전 사용 가능 상태를 최대한 그대로 재현한다.
+        /// </summary>
+        public bool TryRestoreCooldownState(
+            AbilityDefinition def,
+            float cooldownRemaining,
+            int chargesRemaining)
+        {
+            if (owner == null || def == null)
+                return false;
+
+            float clampedCooldown = Mathf.Max(0f, cooldownRemaining);
+            var spec = owner.FindSpec(def);
+            if (spec == null)
+                return false;
+
+            // 1) 차지형 스킬
+            if (def.useCharges)
+            {
+                int max = Mathf.Max(1, def.maxCharges);
+                int clampedCharges = Mathf.Clamp(chargesRemaining, 0, max);
+
+                spec.SetInt(KEY_CHARGES, clampedCharges);
+
+                if (clampedCharges >= max)
+                {
+                    spec.SetFloat(KEY_RECHARGE, 0f);
+                }
+                else
+                {
+                    spec.SetFloat(KEY_RECHARGE, clampedCooldown);
+                }
+
+                return true;
+            }
+
+            // 2) GE 기반 쿨다운
+            if (defaultCooldownEffect != null && effectRunner != null)
+            {
+                effectRunner.EndEffectsBySourceObject(
+                    owner.gameObject,
+                    defaultCooldownEffect,
+                    def);
+
+                if (clampedCooldown <= 0f)
+                    return true;
+
+                var cdSpec = owner.MakeSpec(
+                    defaultCooldownEffect,
+                    causer: owner.gameObject,
+                    sourceObject: def);
+
+                cdSpec.SetDuration(clampedCooldown);
+                effectRunner.ApplyEffectSpec(cdSpec, owner.gameObject);
+                return true;
+            }
+
+            // 3) fallback 쿨다운
+            spec.CooldownRemaining = clampedCooldown;
+            return true;
+        }
     }
 }
