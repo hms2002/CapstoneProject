@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityGAS;
 
 namespace UnityGAS.Sample
 {
@@ -91,17 +90,20 @@ namespace UnityGAS.Sample
                 elementInputs: elementInputs
             );
 
-            var payload = new AttackHitPayload
+            var payload = new CombatHitPayload
             {
+                sourceSystem = system,
+                sourceSpec = spec,
                 damageEffect = data.damageEffect,
                 knockbackEffect = data.knockbackEffect,
                 finalHpDamage = snapshot.FinalHpDamage,
                 finalStaggerBuildUp = snapshot.FinalStaggerBuildUp,
-                elementDamages = snapshot.ElementBuildUps != null && snapshot.ElementBuildUps.Count > 0
+                elementBuildUps = snapshot.ElementBuildUps != null && snapshot.ElementBuildUps.Count > 0
                     ? snapshot.ElementBuildUps.ToArray()
                     : null,
                 finalKnockbackImpulse = snapshot.FinalKnockbackImpulse,
-                hitConfirmedTag = null
+                hitConfirmedTag = null,
+                causer = system.gameObject
             };
 
             Vector2 center = (Vector2)system.transform.position + dir * data.forwardOffset;

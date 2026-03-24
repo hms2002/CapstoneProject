@@ -1,10 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityGAS;
 
-namespace UnityGAS
+namespace UnityGAS.Sample
 {
+    /// <summary>
+    /// 책임 :
+    /// - SwordSkill1 투사체 스킬의 발사 시점 계산을 담당한다.
+    /// - 방향, 피해 스냅샷, 투사체 생성 문맥을 준비한 뒤 projectile에게 넘긴다.
+    /// </summary>
     [CreateAssetMenu(fileName = "AL_SwordSkill1_Projectile", menuName = "GAS/Samples/AbilityLogic/Sword Skill1 Projectile")]
     public class AbilityLogic_SwordSkill1_Projectile : AbilityLogic
     {
@@ -39,6 +43,7 @@ namespace UnityGAS
                 : Mathf.Max(0f, data.baseStaggerDamage);
 
             List<ElementDamageInput> elementInputs = null;
+
             if (cfg != null && cfg.includeElementBuildUp && cfg.HasElementFormulas)
             {
                 elementInputs = new List<ElementDamageInput>(cfg.elementFormulas.Length);
@@ -77,39 +82,45 @@ namespace UnityGAS
                 : null;
 
             var proj = go.GetComponent<SwordSkill1Projectile2D>();
-            if (proj != null)
+            if (proj == null)
             {
-                // 책임:
-                // 발사 시점에 고정되어야 하는 피해 정보를 캡처한다.
-                // projectile가 나중에 충돌해도 CurrentExecSpec를 다시 읽지 않도록 sourceSpec과 payload를 묶어 전달한다.
-                var payload = new AttackHitPayload
-                {
-                    damageEffect = data.damageEffect,
-                    knockbackEffect = data.knockbackEffect,
-                    finalHpDamage = snapshot.FinalHpDamage,
-                    finalStaggerBuildUp = snapshot.FinalStaggerBuildUp,
-                    elementDamages = elementSnapshot != null ? (ElementDamageResult[])elementSnapshot.Clone() : null,
-                    finalKnockbackImpulse = snapshot.FinalKnockbackImpulse,
-                    hitConfirmedTag = null
-                };
-
-                var context = new ProjectileAttackSpawnContext
-                {
-                    ownerSystem = system,
-                    sourceSpec = spec,
-                    causer = system.gameObject,
-                    ignoreTarget = system.gameObject,
-                    lifetime = data.lifetime,
-                    wallLayers = data.wallLayers,
-                    damageLayers = data.damageLayers,
-                    hitPayload = payload,
-                    direction = dir,
-                    speed = data.projectileSpeed
-                };
-
-                proj.Setup(context);
+                Debug.LogError("[AbilityLogic_SwordSkill1_Projectile] Projectile prefab is missing SwordSkill1Projectile2D.", go);
+                Object.Destroy(go);
+                yield break;
             }
 
+            // 책임 :
+            // - 발사 시점에 확정된 피해 정보를 공용 CombatHitPayload로 고정한다.
+            // - 이후 투사체/근접/유물 공격이 같은 payload 규약으로 피해를 적용하게 한다.
+            var payload = new CombatHitPayload
+            {
+                sourceSystem = system,
+                sourceSpec = spec,
+                damageEffect = data.damageEffect,
+                knockbackEffect = data.knockbackEffect,
+                finalHpDamage = snapshot.FinalHpDamage,
+                finalStaggerBuildUp = snapshot.FinalStaggerBuildUp,
+                elementBuildUps = elementSnapshot != null ? (ElementDamageResult[])elementSnapshot.Clone() : null,
+                finalKnockbackImpulse = snapshot.FinalKnockbackImpulse,
+                hitConfirmedTag = null,
+                causer = system.gameObject
+            };
+
+            var context = new ProjectileAttackSpawnContext
+            {
+                ownerSystem = system,
+                sourceSpec = spec,
+                causer = system.gameObject,
+                ignoreTarget = system.gameObject,
+                lifetime = data.lifetime,
+                wallLayers = data.wallLayers,
+                damageLayers = data.damageLayers,
+                hitPayload = payload,
+                direction = dir,
+                speed = data.projectileSpeed
+            };
+
+            proj.Setup(context);
             yield break;
         }
     }
