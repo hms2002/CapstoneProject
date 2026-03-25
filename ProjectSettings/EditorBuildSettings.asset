@@ -9,6 +9,33 @@ EditorBuildSettings:
     path: Assets/Scenes/SampleScene.unity
     guid: 8c9cfa26abfee488c85f1582747f6a02
   - enabled: 1
+    path: Assets/Scenes/ProtoTypeHub.unity
+    guid: afbc1765355a1ee459c8684bdb51ea3b
+  - enabled: 1
+    path: Assets/Scenes/ProtoTypeCorridor.unity
+    guid: 274a28f1898f6cb4385fe24f7a56b341
+  - enabled: 1
+    path: Assets/Scenes/ProtoTypeCorridor 1.unity
+    guid: bf1fb07cfd75c214ab7e45b086a84b74
+  - enabled: 1
+    path: Assets/Scenes/ProtoTypeCorridor 2.unity
+    guid: 43e9207563224ba4ba57c86c4b2bf8a2
+  - enabled: 1
+    path: Assets/Scenes/ProtoTypeCorridor 3.unity
+    guid: 786a60c28c5a0c448b00b7ae51ee3d90
+  - enabled: 1
+    path: Assets/Scenes/ProtoTypeBoss.unity
+    guid: 082a9c74b9de115459c49b0710498fe2
+  - enabled: 1
+    path: Assets/Scenes/ProtoTypeBoss 1.unity
+    guid: 73d36ac604f8da44e8bd49927b9ae436
+  - enabled: 1
+    path: Assets/Scenes/ProtoTypeBoss 2.unity
+    guid: 1ca70d42e8fb3d74a8874d7a2afff9ac
+  - enabled: 1
+    path: Assets/Scenes/ProtoTypeBoss 3.unity
+    guid: 5d02dcb002426f342af30a4b4023b491
+  - enabled: 1
     path: Assets/HeoMinSeok/HeoMinSeokScene.unity
     guid: 8c13838df8e680749ae1bb30cfe63339
   m_configObjects:

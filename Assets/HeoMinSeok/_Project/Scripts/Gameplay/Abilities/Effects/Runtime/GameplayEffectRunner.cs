@@ -201,7 +201,46 @@ namespace UnityGAS
             ApplyEffectPayloadSpec(effect, spec, target, inst, ae.StackCount);
             PlayStartPresentation(effect, inst, causer, target, srcObj, ae.StackCount, ctx);
         }
+        /// <summary>
+        /// 책임 : 특정 target/effect/sourceObject 조합으로 활성화된 effect를 모두 종료하고 제거한다.
+        /// cooldown처럼 같은 effect 자산을 sourceObject로 구분해야 하는 경우의 공식 종료 경로다.
+        /// </summary>
+        public int EndEffectsBySourceObject(
+            GameObject target,
+            GameplayEffect effect,
+            Object sourceObject)
+        {
+            if (target == null || effect == null || sourceObject == null)
+                return 0;
 
+            var list = repository.ActiveEffects;
+            if (list == null || list.Count == 0)
+                return 0;
+
+            int removedCount = 0;
+
+            for (int i = list.Count - 1; i >= 0; i--)
+            {
+                var active = list[i];
+                if (active == null)
+                    continue;
+
+                if (active.Target != target)
+                    continue;
+
+                if (active.Effect != effect)
+                    continue;
+
+                if (active.SourceObject != sourceObject)
+                    continue;
+
+                EndEffect(active);
+                repository.Remove(active);
+                removedCount++;
+            }
+
+            return removedCount;
+        }
         private void ApplyInstantSpec(
             GameplayEffect effect,
             GameplayEffectSpec spec,
@@ -243,7 +282,132 @@ namespace UnityGAS
         }
 
         #endregion
+        #region Capture RemoveAll RestoreAll
+        /// <summary>
+        /// 책임 : 현재 활성 effect들의 복원 가능한 런타임 상태를 스냅샷으로 캡처한다.
+        /// 씬 이동 후 버프/디버프를 다시 적용하기 위한 저장 단계의 공식 진입점이다.
+        /// </summary>
+        public IReadOnlyList<ActiveGameplayEffectSnapshot> CaptureActiveEffectSnapshots()
+        {
+            var result = new List<ActiveGameplayEffectSnapshot>();
 
+            var list = repository.ActiveEffects;
+            if (list == null || list.Count == 0)
+                return result;
+
+            for (int i = 0; i < list.Count; i++)
+            {
+                var active = list[i];
+                if (active == null) continue;
+                if (active.Effect == null) continue;
+
+                result.Add(new ActiveGameplayEffectSnapshot
+                {
+                    effectId = active.Effect.name,
+                    remainingTime = Mathf.Max(0f, active.TimeRemaining),
+                    stackCount = Mathf.Max(1, active.StackCount)
+                });
+            }
+
+            return result;
+        }
+
+        /// <summary>
+        /// 책임 : 현재 활성 effect를 전부 제거한다.
+        /// 종료 처리(특수 처리, cue, granted tag 회수, effect.Remove)를 공식 경로로 수행한다.
+        /// </summary>
+        public void ClearAllActiveEffects()
+        {
+            var list = repository.ActiveEffects;
+            if (list == null || list.Count == 0)
+                return;
+
+            // repository.Remove 호출 시 컬렉션이 바뀌므로 뒤에서부터 제거
+            for (int i = list.Count - 1; i >= 0; i--)
+            {
+                var active = list[i];
+                if (active == null)
+                    continue;
+
+                EndEffect(active);
+                repository.Remove(active);
+            }
+        }
+
+        /// <summary>
+        /// 책임 : 저장된 effect 스냅샷들을 현재 러너에 복원한다.
+        /// 현재 버전은 effect asset과 남은 시간/스택만 복원하는 최소 구현이다.
+        /// sourceObject/context가 중요한 효과(예: cooldown)는 별도 확장이 필요할 수 있다.
+        /// </summary>
+        public void RestoreActiveEffectSnapshots(
+            IEnumerable<ActiveGameplayEffectSnapshot> snapshots,
+            System.Func<string, GameplayEffect> resolver,
+            GameObject target,
+            GameObject instigator = null)
+        {
+            if (snapshots == null || resolver == null || target == null)
+                return;
+
+            foreach (var entry in snapshots)
+            {
+                if (entry == null)
+                    continue;
+
+                if (string.IsNullOrEmpty(entry.effectId))
+                    continue;
+
+                var effect = resolver(entry.effectId);
+                if (effect == null)
+                {
+                    Debug.LogWarning($"[GameplayEffectRunner] effect 복원 실패: '{entry.effectId}' 을(를) 찾지 못했습니다.", this);
+                    continue;
+                }
+
+                RestoreSingleEffect(effect, target, instigator, entry);
+            }
+        }
+
+        /// <summary>
+        /// 책임 : effect 하나를 지정된 스택/남은 시간 상태로 다시 활성화한다.
+        /// 현재 구현은 non-spec apply 경로를 사용한 최소 복원 방식이다.
+        /// </summary>
+        private void RestoreSingleEffect(
+            GameplayEffect effect,
+            GameObject target,
+            GameObject instigator,
+            ActiveGameplayEffectSnapshot snapshot)
+        {
+            if (effect == null || target == null || snapshot == null)
+                return;
+
+            int desiredStack = Mathf.Max(1, snapshot.stackCount);
+            float desiredRemainingTime = Mathf.Max(0f, snapshot.remainingTime);
+
+            // Instant 효과는 "활성 상태"가 없으므로 복원 대상에서 제외
+            if (effect.IsInstant)
+                return;
+
+            // 1) 최초 1회 적용
+            ApplyEffect(effect, target, instigator);
+
+            var active = repository.FindFirst(effect, target);
+            if (active == null)
+                return;
+
+            // 2) 부족한 스택만큼 추가 적용
+            // ApplyEffect 내부의 stack/refresh 규칙을 그대로 활용한다.
+            while (active.StackCount < desiredStack)
+            {
+                ApplyEffect(effect, target, instigator);
+                active = repository.FindFirst(effect, target);
+                if (active == null)
+                    return;
+            }
+
+            // 3) 남은 시간 복원
+            active.TimeRemaining = desiredRemainingTime;
+        }
+        #endregion
         #region Time Adjustment
 
         public int ReduceRemainingTimeByGrantedTag(GameObject target, GameplayTag tag, float reduceSeconds)

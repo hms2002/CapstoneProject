@@ -1,0 +1,49 @@
+using UnityEngine;
+
+[CreateAssetMenu(
+    fileName = "CorridorBossRouteSet",
+    menuName = "Capstone/Scene Management/Corridor Boss Route Set")]
+public sealed class CorridorBossRouteSetSO : ScriptableObject
+{
+    [SerializeField] private string corridorSceneName;
+    [SerializeField] private string corridorEntryPointId = "Default";
+
+    [Space]
+    [SerializeField] private string bossSceneName;
+    [SerializeField] private string bossEntryPointId = "Default";
+
+    public string CorridorSceneName => corridorSceneName;
+    public string CorridorEntryPointId => corridorEntryPointId;
+    public string BossSceneName => bossSceneName;
+    public string BossEntryPointId => bossEntryPointId;
+
+    public bool IsValid =>
+        !string.IsNullOrWhiteSpace(corridorSceneName) &&
+        !string.IsNullOrWhiteSpace(bossSceneName);
+
+    public bool TryCreateCorridorRoute(TransitionType transitionType, out PortalRouteDecision route)
+    {
+        route = default;
+        if (!IsValid)
+            return false;
+
+        route = new PortalRouteDecision(
+            corridorSceneName,
+            string.IsNullOrWhiteSpace(corridorEntryPointId) ? "Default" : corridorEntryPointId,
+            transitionType);
+        return true;
+    }
+
+    public bool TryCreateBossRoute(TransitionType transitionType, out PortalRouteDecision route)
+    {
+        route = default;
+        if (!IsValid)
+            return false;
+
+        route = new PortalRouteDecision(
+            bossSceneName,
+            string.IsNullOrWhiteSpace(bossEntryPointId) ? "Default" : bossEntryPointId,
+            transitionType);
+        return true;
+    }
+}

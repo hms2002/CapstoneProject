@@ -1,10 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityGAS;
 
 namespace UnityGAS.Sample
 {
+    /// <summary>
+    /// 책임 :
+    /// - BigSlash의 발동 문맥을 계산한다.
+    /// - 히트 이벤트를 기다린 뒤, 피해 스냅샷과 히트박스 문맥을 준비해서 MeleeHitboxActor를 생성한다.
+    /// </summary>
     [CreateAssetMenu(fileName = "AL_SwordSkill2_BigSlash", menuName = "GAS/Samples/AbilityLogic/Sword Skill2 BigSlash")]
     public class AbilityLogic_SwordSkill2_BigSlash : AbilityLogic
     {
@@ -15,6 +19,12 @@ namespace UnityGAS.Sample
 
             var data = def.sourceObject as SwordSkill2BigSlashData;
             if (data == null || data.damageEffect == null) yield break;
+            if (data.hitboxPrefab == null)
+            {
+                Debug.LogError("[AbilityLogic_SwordSkill2_BigSlash] hitboxPrefab is null.");
+                yield break;
+            }
+
             if (system.AttributeSet == null) yield break;
 
             Vector2 dir = AbilityAimResolver2D.Resolve(system.gameObject, Vector2.right);
@@ -30,17 +40,6 @@ namespace UnityGAS.Sample
             }
 
             spec.SetFloat("RecoveryOverride", data.recoveryOverride);
-
-            Vector2 center = (Vector2)system.transform.position + dir * data.forwardOffset;
-            var td = AbilityTargetData2D.FromOverlapBox(
-                center,
-                data.hitboxSize,
-                0f,
-                data.hitLayers,
-                ignore: system.gameObject);
-
-            if (td.Targets.Count == 0)
-                yield break;
 
             var cfg = data.DamageConfig;
             IStatProvider statProvider = AbilityStatProviderFactory.Create(system);
@@ -91,16 +90,46 @@ namespace UnityGAS.Sample
                 elementInputs: elementInputs
             );
 
-            CombatDamageApplicator.ApplyToTargets(
-                system: system,
-                spec: spec,
-                damageEffect: data.damageEffect,
-                knockbackEffect: data.knockbackEffect,
-                targets: td.Targets,
-                snapshot: snapshot,
-                hitConfirmedTag: null,
-                causer: system.gameObject
-            );
+            var payload = new CombatHitPayload
+            {
+                sourceSystem = system,
+                sourceSpec = spec,
+                damageEffect = data.damageEffect,
+                knockbackEffect = data.knockbackEffect,
+                finalHpDamage = snapshot.FinalHpDamage,
+                finalStaggerBuildUp = snapshot.FinalStaggerBuildUp,
+                elementBuildUps = snapshot.ElementBuildUps != null && snapshot.ElementBuildUps.Count > 0
+                    ? snapshot.ElementBuildUps.ToArray()
+                    : null,
+                finalKnockbackImpulse = snapshot.FinalKnockbackImpulse,
+                hitConfirmedTag = null,
+                causer = system.gameObject
+            };
+
+            Vector2 center = (Vector2)system.transform.position + dir * data.forwardOffset;
+
+            var hitbox = Object.Instantiate(data.hitboxPrefab, center, Quaternion.identity);
+            if (hitbox == null)
+                yield break;
+
+            var context = new MeleeHitboxSpawnContext
+            {
+                ownerSystem = system,
+                sourceSpec = spec,
+                causer = system.gameObject,
+                ignoreTarget = system.gameObject,
+                lifetime = data.activeTime,
+                wallLayers = 0,
+                damageLayers = data.hitLayers,
+                hitPayload = payload,
+                worldPosition = center,
+                hitboxSize = data.hitboxSize,
+                hitOncePerTarget = true,
+                destroyOnFirstHit = false,
+                direction = dir
+            };
+
+            hitbox.Setup(context);
         }
     }
 }

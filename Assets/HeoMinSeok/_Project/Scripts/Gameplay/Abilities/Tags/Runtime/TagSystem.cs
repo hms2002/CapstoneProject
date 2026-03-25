@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace UnityGAS
@@ -221,6 +222,105 @@ namespace UnityGAS
             int id = TagRegistry.GetId(tag);
             if (id < 0) return 0;
             return _counts[id];
+        }
+        /// <summary>
+        /// 책임 : 현재 explicit tag들과 각 count를 순회 가능하게 제공한다.
+        /// expanded/final count가 아니라, 직접 AddTag/AddTagId로 부여된 원본 상태만 저장 대상으로 내보낸다.
+        /// </summary>
+        public IEnumerable<ExplicitTagSnapshot> EnumerateExplicitTagsWithCount()
+        {
+            EnsureCapacity();
+
+            for (int id = 1; id < _explicitCounts.Length; id++)
+            {
+                int count = _explicitCounts[id];
+                if (count <= 0)
+                    continue;
+
+                var tag = TagRegistry.GetTag(id);
+                if (tag == null)
+                    continue;
+
+                yield return new ExplicitTagSnapshot
+                {
+                    tagName = tag.Name,
+                    count = count
+                };
+            }
+        }
+
+        /// <summary>
+        /// 책임 : 특정 explicit tag의 현재 count를 조회한다.
+        /// 저장/검증/선택적 복원 분기에서 사용한다.
+        /// </summary>
+        public int GetExplicitTagCount(GameplayTag tag)
+        {
+            EnsureCapacity();
+
+            if (tag == null)
+                return 0;
+
+            int id = TagRegistry.GetId(tag);
+            if (id <= 0 || id >= _explicitCounts.Length)
+                return 0;
+
+            return _explicitCounts[id];
+        }
+
+        /// <summary>
+        /// 책임 : 현재 explicit tag를 전부 제거한다.
+        /// RemoveTagId를 explicit count만큼 한 번에 호출하여 파생 closure count도 함께 정리한다.
+        /// </summary>
+        public void ClearAllExplicitTags()
+        {
+            EnsureCapacity();
+
+            for (int id = 1; id < _explicitCounts.Length; id++)
+            {
+                int count = _explicitCounts[id];
+                if (count <= 0)
+                    continue;
+
+                RemoveTagId(id, count);
+            }
+        }
+
+        /// <summary>
+        /// 책임 : 저장된 explicit tag 스냅샷을 그대로 복원한다.
+        /// 복원 전에 기존 explicit tag를 비우고, snapshot count만큼 AddTag를 호출한다.
+        /// </summary>
+        public void RestoreExplicitTagSnapshots(
+            IEnumerable<ExplicitTagSnapshot> snapshots,
+            Func<string, GameplayTag> resolver)
+        {
+            EnsureCapacity();
+
+            ClearAllExplicitTags();
+
+            if (snapshots == null || resolver == null)
+                return;
+
+            foreach (var entry in snapshots)
+            {
+                if (entry == null)
+                    continue;
+
+                if (string.IsNullOrEmpty(entry.tagName))
+                    continue;
+
+                var tag = resolver(entry.tagName);
+                if (tag == null)
+                {
+                    Debug.LogWarning($"[TagSystem] explicit tag 복원 실패: '{entry.tagName}' 을(를) 찾지 못했습니다.", this);
+                    continue;
+                }
+
+                int count = Mathf.Max(0, entry.count);
+                if (count <= 0)
+                    continue;
+
+                AddTag(tag, count);
+            }
         }
 
     }

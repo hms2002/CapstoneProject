@@ -12,12 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a535d23b058ac549973e928f9d95a0d, type: 3}
   m_Name: ALData_RW_Attack1
   m_EditorClassIdentifier: 
+  hitboxPrefab: {fileID: 6902002014408514032, guid: 4be5e4c30ae21ca4d979927cb057f981, type: 3}
+  activeTime: 0.08
   hitboxSize: {x: 1.4, y: 0.8}
   forwardOffset: 0.9
   hitLayers:
     serializedVersion: 2
     m_Bits: 2147483648
   damageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
+  knockbackEffect: {fileID: 11400000, guid: 2f5faaf6bd840544cb59f6d23905c40d, type: 2}
   damageFormula: {fileID: 11400000, guid: f836f4795e60fd54f9a4e401de9d7dd9, type: 2}
   knockbackFormula: {fileID: 11400000, guid: 886233d2a5002ae4facf46de4cb4864d, type: 2}
   damageConfig:
@@ -27,5 +30,4 @@ MonoBehaviour:
     elementFormulas:
     - elementType: {fileID: 11400000, guid: 82578c30453dcb04a88dce3cd193db5b, type: 2}
       formula: {fileID: 11400000, guid: 4b0e3c35f3acd0441a039c0489db1967, type: 2}
-    postProcess: {fileID: 11400000, guid: e27d90a086193324cab0290ff31a6180, type: 2}
     critAffectsElement: 1

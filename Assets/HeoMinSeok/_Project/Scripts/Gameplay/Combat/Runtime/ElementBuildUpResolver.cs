@@ -26,13 +26,16 @@ namespace UnityGAS
             if (profile == null || profile.formulas == null || profile.formulas.Length == 0)
                 return buffer;
 
-            var statProvider = attacker.GetComponent<AttributeStatProvider>();
+            // 핵심 수정:
+            // AttributeStatProvider는 MonoBehaviour가 아니므로 직접 GetComponent 하지 않는다.
+            // Unity 쪽 브리지인 AttributeStatSource가 구현하는 IStatProvider를 찾는다.
+            var statProvider = attacker.GetComponent<IStatProvider>();
             if (statProvider == null)
             {
 #if UNITY_EDITOR
                 Debug.LogWarning(
-                    $"[ElementBuildUpResolver] '{attacker.name}' 에 AttributeStatProvider 가 없습니다. " +
-                    "자동 속성 누적 계산을 건너뜁니다.",
+                    $"[ElementBuildUpResolver] '{attacker.name}' 에 IStatProvider 가 없습니다. " +
+                    "(예: AttributeStatSource) 자동 속성 누적 계산을 건너뜁니다.",
                     attacker);
 #endif
                 return buffer;
@@ -53,7 +56,6 @@ namespace UnityGAS
                     continue;
 
                 float stat = statProvider.Get(entry.sourceStatId);
-                    
 
                 stat = Mathf.Max(0f, stat);
                 if (stat <= 0f)

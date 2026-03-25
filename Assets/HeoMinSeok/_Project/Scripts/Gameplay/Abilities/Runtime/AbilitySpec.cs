@@ -67,6 +67,24 @@ namespace UnityGAS
         {
             IntVars[key] = value; // ✅
         }
+        internal bool GetBool(string key, bool fallback = false)
+        {
+            if (BoolVars.TryGetValue(key, out bool value))
+                return value;
 
+            return fallback;
+        }
+
+        internal void SetBool(string key, bool value)
+        {
+            BoolVars[key] = value;
+        }
+
+        internal void ClearRuntimeVars()
+        {
+            FloatVars.Clear();
+            IntVars.Clear();
+            BoolVars.Clear();
+        }
     }
 }

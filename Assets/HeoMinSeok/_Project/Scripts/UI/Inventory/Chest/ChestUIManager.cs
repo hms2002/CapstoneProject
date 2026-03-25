@@ -1,7 +1,9 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class ChestUIManager : MonoBehaviour
 {
+    private readonly List<MonoBehaviour> disabledRuntimePlayerScripts = new();
     public static ChestUIManager Instance { get; private set; }
 
     [SerializeField] private ChestScreen chestScreen;
@@ -27,13 +29,7 @@ public class ChestUIManager : MonoBehaviour
         prevTimeScale = Time.timeScale;
         Time.timeScale = 0f;
 
-        if (playerControlScriptsToDisable != null)
-        {
-            foreach (var s in playerControlScriptsToDisable)
-            {
-                if (s != null) s.enabled = false;
-            }
-        }
+        DisablePlayerControlsForCurrentSession();
 
         // 2. 데이터 바인딩
         chestScreen.Bind(chest.GetInventory());
@@ -44,16 +40,55 @@ public class ChestUIManager : MonoBehaviour
     }
 
     // [핵심] ChestScreen이 UIManager에 의해 닫혔을 때(ESC나 X버튼) 호출될 뒷수습(콜백) 함수
+
+    private void DisablePlayerControlsForCurrentSession()
+    {
+        disabledRuntimePlayerScripts.Clear();
+
+        var player = PlayerRuntimeRegistry.CurrentPlayer != null
+            ? PlayerRuntimeRegistry.CurrentPlayer
+            : SampleTopDownPlayer.Instance;
+
+        if (player != null)
+        {
+            TryDisable(player.GetComponent<SampleTopDownPlayer>());
+            TryDisable(player.GetComponent<PlayerIntentInput2D>());
+            TryDisable(player.GetComponent<PlayerCombatInput2D>());
+            TryDisable(player.GetComponent<PlayerAim2D>());
+        }
+
+        if (playerControlScriptsToDisable != null)
+        {
+            foreach (var script in playerControlScriptsToDisable)
+                TryDisable(script);
+        }
+    }
+
+    private void RestorePlayerControlsForCurrentSession()
+    {
+        for (int i = 0; i < disabledRuntimePlayerScripts.Count; i++)
+        {
+            var script = disabledRuntimePlayerScripts[i];
+            if (script != null)
+                script.enabled = true;
+        }
+
+        disabledRuntimePlayerScripts.Clear();
+    }
+
+    private void TryDisable(MonoBehaviour script)
+    {
+        if (script == null || !script.enabled)
+            return;
+
+        script.enabled = false;
+        disabledRuntimePlayerScripts.Add(script);
+    }
+
     public void HandleChestClosed()
     {
         // 상자 닫으면 플레이어 스크립트 복구
-        if (playerControlScriptsToDisable != null)
-        {
-            foreach (var s in playerControlScriptsToDisable)
-            {
-                if (s != null) s.enabled = true;
-            }
-        }
+        RestorePlayerControlsForCurrentSession();
 
         if (SampleTopDownPlayer.Instance != null)
         {

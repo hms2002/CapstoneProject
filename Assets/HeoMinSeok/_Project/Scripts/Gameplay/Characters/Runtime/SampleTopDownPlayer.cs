@@ -11,46 +11,87 @@ public class SampleTopDownPlayer : MonoBehaviour, IPlayerInteractor
 
     [Header("Interaction")]
     [SerializeField] private KeyCode interactKey = KeyCode.F;
+    [SerializeField] private WorldInteractionPromptController interactionPrompt;
+
+    [Header("Speech System")]
+    [SerializeField] private SpeechBubbleComponent speechBubble;
+    [SerializeField] private PlayerSpeechData speechData;
 
     private readonly List<IInteractable> nearbyObjects = new();
+    private readonly Dictionary<IInteractable, int> nearbyOverlapCounts = new();
     private IInteractable currentTarget;
 
     private void Awake()
     {
         Instance = this;
+
+        if (interactionPrompt == null)
+            interactionPrompt = WorldInteractionPromptController.Instance ?? FindFirstObjectByType<WorldInteractionPromptController>();
+    }
+
+    private void OnDestroy()
+    {
+        if (Instance == this)
+            Instance = null;
+
+        PlayerRuntimeRegistry.Unregister(this);
     }
 
     public void SetInteractState(InteractState state)
     {
+        Debug.Log($"[Player] SetInteractState: {CurrentState} -> {state}");
         CurrentState = state;
 
-        if (state == InteractState.Talking && currentTarget != null)
+        if (state != InteractState.Idle)
         {
-            currentTarget.OnUnHighlight();
-            currentTarget = null;
+            ClearCurrentTarget();
+            interactionPrompt?.Hide();
         }
     }
 
     private void Update()
     {
-        if (CurrentState == InteractState.Talking)
+        if (CurrentState != InteractState.Idle)
+        {
+            interactionPrompt?.Hide();
             return;
+        }
 
         HandleInteractSearch();
+        RefreshInteractionPrompt();
 
-        if (Input.GetKeyDown(interactKey) &&
-            currentTarget != null &&
-            currentTarget.CanInteract(this))
+        if (Input.GetKeyDown(interactKey) && currentTarget != null)
         {
-            currentTarget.OnPlayerInteract(this);
+            bool canInteract = currentTarget.CanInteract(this);
+            Debug.Log($"[Player] currentTarget.CanInteract = {canInteract}");
+
+            if (canInteract)
+            {
+                currentTarget.OnPlayerInteract(this);
+                HandleInteractSearch();
+                RefreshInteractionPrompt();
+            }
         }
+    }
+
+    public void SpeakSituation(PlayerSpeechSituationEnum situation, float duration = 2f)
+    {
+        if (speechData == null || speechBubble == null)
+        {
+            Debug.LogWarning("[Player] SpeechData 또는 SpeechBubbleComponent가 연결되지 않았습니다!");
+            return;
+        }
+
+        string line = speechData.GetLine(situation);
+        if (!string.IsNullOrEmpty(line))
+            speechBubble.Speak(line, duration);
     }
 
     private void HandleInteractSearch()
     {
         IInteractable nearest = GetClosestInteractable();
 
-        if (nearest != currentTarget)
+        if (!ReferenceEquals(nearest, currentTarget))
         {
             if (currentTarget != null)
                 currentTarget.OnUnHighlight();
@@ -58,8 +99,25 @@ public class SampleTopDownPlayer : MonoBehaviour, IPlayerInteractor
             currentTarget = nearest;
 
             if (currentTarget != null)
+            {
+                Debug.Log($"[Player] New currentTarget = {(currentTarget as MonoBehaviour)?.name}");
                 currentTarget.OnHighlight();
+            }
         }
+    }
+
+    private void RefreshInteractionPrompt()
+    {
+        if (interactionPrompt == null)
+            return;
+
+        if (CurrentState != InteractState.Idle || currentTarget == null)
+        {
+            interactionPrompt.Hide();
+            return;
+        }
+
+        interactionPrompt.Refresh(currentTarget);
     }
 
     private IInteractable GetClosestInteractable()
@@ -75,6 +133,8 @@ public class SampleTopDownPlayer : MonoBehaviour, IPlayerInteractor
             var obj = nearbyObjects[i];
             if (obj == null || (obj is MonoBehaviour mb && mb == null))
             {
+                if (obj != null)
+                    nearbyOverlapCounts.Remove(obj);
                 nearbyObjects.RemoveAt(i);
                 continue;
             }
@@ -94,32 +154,71 @@ public class SampleTopDownPlayer : MonoBehaviour, IPlayerInteractor
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.TryGetComponent(out IInteractable interactable))
+        IInteractable interactable = other.GetComponent<IInteractable>();
+        if (interactable == null)
+            interactable = other.GetComponentInParent<IInteractable>();
+
+        Debug.Log($"[Player] OnTriggerEnter2D: other={other.name}, foundInteractable={(interactable as MonoBehaviour)?.name ?? "null"}");
+
+        if (interactable == null)
+            return;
+
+        if (nearbyOverlapCounts.TryGetValue(interactable, out int overlapCount))
         {
-            if (!nearbyObjects.Contains(interactable))
-            {
-                nearbyObjects.Add(interactable);
-                interactable.OnPlayerNearby();
-            }
+            nearbyOverlapCounts[interactable] = overlapCount + 1;
+        }
+        else
+        {
+            nearbyOverlapCounts.Add(interactable, 1);
+            nearbyObjects.Add(interactable);
+            interactable.OnPlayerNearby();
+            Debug.Log($"[Player] Added nearby interactable: {(interactable as MonoBehaviour)?.name}");
+        }
+
+        if (CurrentState == InteractState.Idle)
+        {
+            HandleInteractSearch();
+            RefreshInteractionPrompt();
         }
     }
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        if (other.TryGetComponent(out IInteractable interactable))
+        IInteractable interactable = other.GetComponent<IInteractable>();
+        if (interactable == null)
+            interactable = other.GetComponentInParent<IInteractable>();
+
+        Debug.Log($"[Player] OnTriggerExit2D: other={other.name}, foundInteractable={(interactable as MonoBehaviour)?.name ?? "null"}");
+
+        if (interactable == null || !nearbyOverlapCounts.TryGetValue(interactable, out int overlapCount))
+            return;
+
+        overlapCount--;
+
+        if (overlapCount > 0)
         {
-            if (nearbyObjects.Contains(interactable))
-            {
-                interactable.OnPlayerLeave();
-
-                if (currentTarget == interactable)
-                {
-                    currentTarget.OnUnHighlight();
-                    currentTarget = null;
-                }
-
-                nearbyObjects.Remove(interactable);
-            }
+            nearbyOverlapCounts[interactable] = overlapCount;
+            return;
         }
+
+        nearbyOverlapCounts.Remove(interactable);
+        interactable.OnPlayerLeave();
+
+        if (ReferenceEquals(currentTarget, interactable))
+            ClearCurrentTarget();
+
+        nearbyObjects.Remove(interactable);
+        if (CurrentState == InteractState.Idle)
+            HandleInteractSearch();
+        RefreshInteractionPrompt();
+        Debug.Log($"[Player] Removed nearby interactable: {(interactable as MonoBehaviour)?.name}");
+    }
+
+    private void ClearCurrentTarget()
+    {
+        if (currentTarget != null)
+            currentTarget.OnUnHighlight();
+
+        currentTarget = null;
     }
 }

@@ -21,3 +21,5 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 3221225472
   cancelOnAttackOrSkillInput: 1
+  cancelOnDamagedAttribute: {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
+  handoffDurationSeconds: 0.1

@@ -29,29 +29,87 @@ public class WeaponSkillHUD2D : MonoBehaviour
 
     private void Awake()
     {
-        if (inventory == null) inventory = FindFirstObjectByType<WeaponInventory2D>();
-        if (abilitySystem == null && inventory != null) abilitySystem = inventory.GetComponent<AbilitySystem>();
-        if (abilitySystem == null) abilitySystem = FindFirstObjectByType<AbilitySystem>();
+        TryResolvePlayerRefs();
     }
 
     private void OnEnable()
     {
-        if (inventory != null)
-        {
-            inventory.OnEquippedChanged += HandleEquippedChanged;
-            inventory.OnInventoryChanged += RefreshAbilityRefs;
-        }
+        PlayerRuntimeRegistry.PlayerRegistered += HandlePlayerRegistered;
+        PlayerRuntimeRegistry.PlayerUnregistered += HandlePlayerUnregistered;
 
+        TryResolvePlayerRefs();
+        BindInventoryEvents();
         RefreshAbilityRefs();
     }
 
     private void OnDisable()
     {
-        if (inventory != null)
+        PlayerRuntimeRegistry.PlayerRegistered -= HandlePlayerRegistered;
+        PlayerRuntimeRegistry.PlayerUnregistered -= HandlePlayerUnregistered;
+        UnbindInventoryEvents();
+    }
+
+
+    private void HandlePlayerRegistered(SampleTopDownPlayer player)
+    {
+        UnbindInventoryEvents();
+        TryResolvePlayerRefs(player);
+        BindInventoryEvents();
+        RefreshAbilityRefs();
+    }
+
+    private void HandlePlayerUnregistered(SampleTopDownPlayer player)
+    {
+        if (player == null)
+            return;
+
+        if (inventory != null && inventory.gameObject == player.gameObject)
         {
-            inventory.OnEquippedChanged -= HandleEquippedChanged;
-            inventory.OnInventoryChanged -= RefreshAbilityRefs;
+            UnbindInventoryEvents();
+            inventory = null;
+            abilitySystem = null;
+            RefreshAbilityRefs();
         }
+    }
+
+    private void TryResolvePlayerRefs(SampleTopDownPlayer player = null)
+    {
+        if (player == null)
+        {
+            player = PlayerRuntimeRegistry.CurrentPlayer != null
+                ? PlayerRuntimeRegistry.CurrentPlayer
+                : SampleTopDownPlayer.Instance;
+        }
+
+        if (player != null)
+        {
+            inventory = player.GetComponent<WeaponInventory2D>();
+            abilitySystem = player.GetComponent<AbilitySystem>();
+        }
+
+        if (inventory == null) inventory = FindFirstObjectByType<WeaponInventory2D>();
+        if (abilitySystem == null && inventory != null) abilitySystem = inventory.GetComponent<AbilitySystem>();
+        if (abilitySystem == null) abilitySystem = FindFirstObjectByType<AbilitySystem>();
+    }
+
+    private void BindInventoryEvents()
+    {
+        if (inventory == null)
+            return;
+
+        inventory.OnEquippedChanged -= HandleEquippedChanged;
+        inventory.OnInventoryChanged -= RefreshAbilityRefs;
+        inventory.OnEquippedChanged += HandleEquippedChanged;
+        inventory.OnInventoryChanged += RefreshAbilityRefs;
+    }
+
+    private void UnbindInventoryEvents()
+    {
+        if (inventory == null)
+            return;
+
+        inventory.OnEquippedChanged -= HandleEquippedChanged;
+        inventory.OnInventoryChanged -= RefreshAbilityRefs;
     }
 
     private void HandleEquippedChanged(int prevIdx, int newIdx, WeaponDefinition prevW, WeaponDefinition newW)

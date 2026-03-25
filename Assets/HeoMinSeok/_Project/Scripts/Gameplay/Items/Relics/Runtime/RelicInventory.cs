@@ -4,6 +4,11 @@ using UnityEngine;
 using UnityGAS;
 using Object = UnityEngine.Object;
 
+/// <summary>
+/// 책임 : 플레이어가 장착한 유물 슬롯, 레벨, 장착/해제/강화 흐름을 관리한다.
+/// 일반 플레이 중 장착은 기존 OnEquipped/OnUnequipped 경로로 처리하고,
+/// 씬 복원 시에는 effect-free shell restore와 runtime hook attach 경로를 제공한다.
+/// </summary>
 public class RelicInventory : MonoBehaviour
 {
     [Serializable]
@@ -85,13 +90,11 @@ public class RelicInventory : MonoBehaviour
                 continue;
             }
 
-            // duplicate 발견: first에 레벨 합산, 현재 슬롯은 해제 후 비우기
             var keeper = slots[first];
             int keeperOld = Mathf.Max(1, keeper.level);
             int add = Mathf.Max(1, e.level);
             int merged = keeper.def != null ? keeper.def.ClampLevel(keeperOld + add) : keeperOld + add;
 
-            // duplicate 슬롯 효과 제거
             if (e.token != null)
             {
                 var ctx = baseCtx;
@@ -107,7 +110,6 @@ public class RelicInventory : MonoBehaviour
             e.token = null;
             slots[i] = e;
 
-            // keeper는 token 유지한 채로 merged 레벨로 재적용
             if (keeper.def != null && keeper.token != null)
             {
                 ReapplyLevel(first, merged);
@@ -142,6 +144,7 @@ public class RelicInventory : MonoBehaviour
         if (!IsValidSlot(slotIndex)) return 0;
         return slots[slotIndex].def != null ? Mathf.Max(1, slots[slotIndex].level) : 0;
     }
+
     public bool TryGetRelicLevelById(string relicId, out int level)
     {
         level = 0;
@@ -164,9 +167,6 @@ public class RelicInventory : MonoBehaviour
         if (!IsValidSlot(slotIndex)) return false;
         if (relic == null) return true;
 
-        // ✅ 게임 룰: 같은 relicId는 "인벤토리에 1개만" 유지.
-        // 하지만 중복 획득/이동은 "불가"가 아니라 "강화(합산)"로 처리해야 합니다.
-        // 따라서 '놓을 수 있나?'는 true로 반환하고, 실제 처리(합산/장착)는 TrySetRelicSlot에서 결정합니다.
         return true;
     }
 
@@ -175,9 +175,6 @@ public class RelicInventory : MonoBehaviour
         if (!IsValidSlot(slotIndex)) return false;
         if (!CanPlaceRelicInSlot(slotIndex, relic, ignoreIndex: slotIndex)) return false;
 
-        // ✅ 중복 relicId가 이미 인벤토리에 있다면: "슬롯에 두 개로 놓지 말고" 기존 것을 강화한다.
-        // (이 경우, slotIndex의 기존 내용은 건드리지 않음. 드래그/획득 흐름에서는 '성공'으로 반환되어
-        //  소스(상자/드랍)에서 아이템이 제거되는 효과를 얻는다.)
         if (relic != null && enforceUniqueRelicId && !string.IsNullOrEmpty(relic.relicId))
         {
             int existing = FindSlotByRelicId(relic.relicId);
@@ -187,7 +184,7 @@ public class RelicInventory : MonoBehaviour
                 var eExist = slots[existing];
                 int oldLevel = Mathf.Max(1, eExist.level);
                 int newLevel = relic.ClampLevel(oldLevel + gain);
-                if (newLevel == oldLevel) return true; // 이미 만렙이면 소비만 발생(성공)
+                if (newLevel == oldLevel) return true;
 
                 return ReapplyLevel(existing, newLevel);
             }
@@ -198,7 +195,6 @@ public class RelicInventory : MonoBehaviour
         var prevToken = e.token;
         var prevLevel = e.level;
 
-        // 1) 이전 유물 해제
         if (prevDef != null)
         {
             var ctx = baseCtx;
@@ -210,7 +206,6 @@ public class RelicInventory : MonoBehaviour
             if (prevToken != null) Destroy(prevToken);
         }
 
-        // 2) 새 유물 장착
         e.def = relic;
         e.token = null;
         e.level = 0;
@@ -220,7 +215,6 @@ public class RelicInventory : MonoBehaviour
             var token = ScriptableObject.CreateInstance<RelicRuntimeToken>();
             e.token = token;
 
-            // 처음 장착 레벨은 dropLevel(기본 1)
             int lvl = relic.dropLevel > 0 ? relic.dropLevel : 1;
             e.level = relic.ClampLevel(lvl);
 
@@ -237,19 +231,18 @@ public class RelicInventory : MonoBehaviour
         OnChanged?.Invoke();
         return true;
     }
+
     public bool TrySetRelicSlotWithLevel(int slotIndex, RelicDefinition relic, int levelOverride)
     {
         if (!IsValidSlot(slotIndex)) return false;
         if (!CanPlaceRelicInSlot(slotIndex, relic, ignoreIndex: slotIndex)) return false;
 
-        // 제거는 기존 로직 그대로
         if (relic == null)
             return TrySetRelicSlot(slotIndex, null);
 
         int incomingLevel = Mathf.Max(1, levelOverride > 0 ? levelOverride : (relic.dropLevel > 0 ? relic.dropLevel : 1));
         incomingLevel = relic.ClampLevel(incomingLevel);
 
-        // ✅ 중복 relicId면 "슬롯에 놓지 말고" 기존 것을 강화(합산)
         if (enforceUniqueRelicId && !string.IsNullOrEmpty(relic.relicId))
         {
             int existing = FindSlotByRelicId(relic.relicId);
@@ -258,19 +251,17 @@ public class RelicInventory : MonoBehaviour
                 var eExist = slots[existing];
                 int oldLevel = Mathf.Max(1, eExist.level);
                 int newLevel = relic.ClampLevel(oldLevel + incomingLevel);
-                if (newLevel == oldLevel) return true; // 이미 만렙이면 소비만
+                if (newLevel == oldLevel) return true;
 
                 return ReapplyLevel(existing, newLevel);
             }
         }
 
-        // --- 여기부터는 "slotIndex에 실제로 장착" ---
         var e = slots[slotIndex];
         var prevDef = e.def;
         var prevToken = e.token;
         var prevLevel = e.level;
 
-        // 1) 이전 유물 해제
         if (prevDef != null)
         {
             var ctx = baseCtx;
@@ -282,7 +273,6 @@ public class RelicInventory : MonoBehaviour
             if (prevToken != null) Destroy(prevToken);
         }
 
-        // 2) 새 유물 장착 (✅ dropLevel이 아니라 incomingLevel 사용)
         e.def = relic;
         e.token = null;
         e.level = 0;
@@ -310,11 +300,6 @@ public class RelicInventory : MonoBehaviour
         if (!IsValidSlot(a) || !IsValidSlot(b)) return false;
         if (a == b) return true;
 
-        // 타입은 둘 다 relic-only 슬롯이므로 CanPlace는 생략 가능.
-        // 혹시 중복 금지 체크를 엄격히 하고 싶으면 아래를 켜도 됨:
-        // if (!CanPlaceRelicInSlot(b, slots[a].def, ignoreIndex: a)) return false;
-        // if (!CanPlaceRelicInSlot(a, slots[b].def, ignoreIndex: b)) return false;
-
         (slots[a], slots[b]) = (slots[b], slots[a]);
 
         RefreshDebugView();
@@ -322,11 +307,9 @@ public class RelicInventory : MonoBehaviour
         return true;
     }
 
-
     /// <summary>
     /// ✅ 유물 획득/추가용: 같은 relicId가 이미 있으면 강화 레벨을 합산하고,
     /// 없으면 빈 슬롯에 새로 장착합니다.
-    ///
     /// gainedLevel을 지정하지 않으면 RelicDefinition.dropLevel(기본 1)을 사용합니다.
     /// </summary>
     public bool TryAcquireOrUpgrade(RelicDefinition relic, int gainedLevel = -1)
@@ -335,24 +318,146 @@ public class RelicInventory : MonoBehaviour
 
         int gain = gainedLevel > 0 ? gainedLevel : (relic.dropLevel > 0 ? relic.dropLevel : 1);
 
-        // 1) 이미 가진 유물이라면 강화
         int idx = FindSlotByRelicId(relic.relicId);
         if (idx >= 0)
         {
             var e = slots[idx];
             int oldLevel = Mathf.Max(1, e.level);
             int newLevel = relic.ClampLevel(oldLevel + gain);
-            if (newLevel == oldLevel) return true; // 이미 만렙
+            if (newLevel == oldLevel) return true;
 
             return ReapplyLevel(idx, newLevel);
         }
 
-        // 2) 없으면 빈 슬롯에 추가
         int empty = FindFirstEmptySlot();
         if (empty < 0) return false;
 
         int initial = relic.ClampLevel(gain);
         return EquipIntoEmptySlot(empty, relic, initial);
+    }
+
+    /// <summary>
+    /// 책임 : 씬 복원 시 유물 슬롯과 레벨 정보만 effect 없이 복원한다.
+    /// OnEquipped는 호출하지 않으며, token도 아직 만들지 않는다.
+    /// </summary>
+    public void RestoreShellState(
+        RelicInventoryState state,
+        Func<string, RelicDefinition> relicResolver)
+    {
+        if (state == null)
+            return;
+
+        if (relicResolver == null)
+        {
+            Debug.LogError("[RelicInventory] relicResolver가 null입니다.");
+            return;
+        }
+
+        for (int i = 0; i < slots.Length; i++)
+        {
+            slots[i].def = null;
+            slots[i].level = 0;
+            slots[i].token = null;
+        }
+
+        if (state.slots != null)
+        {
+            int copyCount = Mathf.Min(slots.Length, state.slots.Length);
+            for (int i = 0; i < copyCount; i++)
+            {
+                var src = state.slots[i];
+                if (src == null || string.IsNullOrEmpty(src.relicId))
+                    continue;
+
+                var def = relicResolver(src.relicId);
+                if (def == null)
+                    continue;
+
+                slots[i].def = def;
+                slots[i].level = def.ClampLevel(Mathf.Max(1, src.level));
+                slots[i].token = null;
+            }
+        }
+
+        RefreshDebugView();
+        OnChanged?.Invoke();
+    }
+
+    /// <summary>
+    /// 책임 : 껍데기 복원 후 각 유물에 새 runtime token을 부여하고,
+    /// 복원용 runtime hook만 연결한다.
+    /// modifier/effect/tag/ability는 새로 적용하지 않는다.
+    /// </summary>
+    public void AttachRuntimeHooksForRestore()
+    {
+        for (int i = 0; i < slots.Length; i++)
+        {
+            var e = slots[i];
+            if (e.def == null)
+                continue;
+
+            if (e.token != null)
+                continue;
+
+            var token = ScriptableObject.CreateInstance<RelicRuntimeToken>();
+            e.token = token;
+            slots[i] = e;
+
+            var ctx = baseCtx;
+            ctx.relicDef = e.def;
+            ctx.level = Mathf.Max(1, e.level);
+            ctx.token = token;
+
+            e.def.logic?.OnRestoreAttached(ctx);
+        }
+
+        RefreshDebugView();
+        OnChanged?.Invoke();
+    }
+
+    /// <summary>
+    /// 책임 : 특정 슬롯 유물의 현재 복원용 런타임 컨텍스트를 외부에 제공한다.
+    /// 장비별 런타임 상태 복원 단계에서 새 token/level/context를 얻는 공식 창구로 사용한다.
+    /// </summary>
+    public bool TryGetRuntimeContextForSlot(int slotIndex, out RelicContext ctx)
+    {
+        ctx = default;
+
+        if (!IsValidSlot(slotIndex))
+            return false;
+
+        var e = slots[slotIndex];
+        if (e.def == null || e.token == null)
+            return false;
+
+        ctx = baseCtx;
+        ctx.relicDef = e.def;
+        ctx.level = Mathf.Max(1, e.level);
+        ctx.token = e.token;
+        return true;
+    }
+
+    /// <summary>
+    /// 책임 : 현재 유물 장착 상태를 저장용 DTO로 캡처한다.
+    /// 씬 이동 직전 유물 배치/레벨 저장의 공식 창구다.
+    /// </summary>
+    public RelicInventoryState CaptureInventoryState()
+    {
+        var state = new RelicInventoryState
+        {
+            slots = new RelicSlotState[slots.Length]
+        };
+
+        for (int i = 0; i < slots.Length; i++)
+        {
+            state.slots[i] = new RelicSlotState
+            {
+                relicId = slots[i].def != null ? slots[i].def.relicId : null,
+                level = slots[i].def != null ? Mathf.Max(1, slots[i].level) : 0
+            };
+        }
+
+        return state;
     }
 
     private int FindSlotByRelicId(string relicId)
@@ -405,7 +510,6 @@ public class RelicInventory : MonoBehaviour
         newLevel = def.ClampLevel(newLevel);
         if (newLevel == oldLevel) return true;
 
-        // token은 유지한 채로, "제거 → 새 레벨로 적용" (누수/중복 방지)
         var ctx = baseCtx;
         ctx.relicDef = def;
         ctx.token = e.token;
@@ -429,7 +533,6 @@ public class RelicInventory : MonoBehaviour
     {
         if (relic == null) return false;
 
-        // ✅ 게임 룰(유물은 1종당 1개): TryAdd도 중복이면 강화로 처리
         if (enforceUniqueRelicId)
             return TryAcquireOrUpgrade(relic);
 
@@ -441,7 +544,6 @@ public class RelicInventory : MonoBehaviour
 
     public bool RemoveAt(int index) => TrySetRelicSlot(index, null);
 
-    // (선택) 특정 유물 1개 제거(중복 중 하나만)
     public bool RemoveOne(RelicDefinition def)
     {
         if (def == null) return false;
@@ -476,5 +578,4 @@ public class RelicInventory : MonoBehaviour
         for (int i = 0; i < capacity; i++)
             debugView[i] = IsValidSlot(i) ? slots[i].def : null;
     }
-
 }

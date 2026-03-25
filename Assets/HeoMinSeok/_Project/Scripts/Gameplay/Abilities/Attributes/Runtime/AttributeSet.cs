@@ -303,6 +303,54 @@ namespace UnityGAS
             return GetAttribute(definition)?.CurrentValue ?? 0f;
         }
 
+        /// <summary>
+        /// 책임 : 현재 AttributeSet이 보유한 모든 AttributeDefinition을 순회 가능하게 제공한다.
+        /// 씬 이동 저장 시 어떤 Attribute를 캡처할지 자동 수집하는 공식 진입점이다.
+        /// </summary>
+        public IEnumerable<AttributeDefinition> EnumerateDefinitions()
+        {
+            EnsureInitialized();
+            return attributes.Keys;
+        }
+
+        /// <summary>
+        /// 책임 : 특정 Attribute의 현재 base 값을 공식적으로 조회한다.
+        /// 저장/비교/복원 정책 판단의 기준값으로 사용한다.
+        /// </summary>
+        public float GetBaseValue(AttributeDefinition definition)
+        {
+            EnsureInitialized();
+            return GetAttribute(definition)?.BaseValue ?? 0f;
+        }
+
+        /// <summary>
+        /// 책임 : 특정 Attribute의 현재 current 값을 공식적으로 조회한다.
+        /// HP 같은 상태값 저장의 공식 읽기 창구다.
+        /// </summary>
+        public float GetCurrentValue(AttributeDefinition definition)
+        {
+            EnsureInitialized();
+            return GetAttribute(definition)?.CurrentValue ?? 0f;
+        }
+
+        /// <summary>
+        /// 책임 : 현재 modifier/clamp 규칙을 유지한 채 목표 current 값을 복원한다.
+        /// 씬 이동 후 현재 HP/MP 같은 상태값을 안전하게 되살리는 공식 창구다.
+        /// </summary>
+        public bool TrySetCurrentValue(AttributeDefinition definition, float value, UnityEngine.Object source)
+        {
+            EnsureInitialized();
+
+            if (definition == null)
+                return false;
+
+            var attr = GetAttribute(definition);
+            if (attr == null)
+                return false;
+
+            return attr.TrySetCurrentValue(value);
+        }
+
         public bool TrySetBaseValue(AttributeDefinition definition, float newValue, UnityEngine.Object source)
         {
             EnsureInitialized();

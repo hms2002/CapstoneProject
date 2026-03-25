@@ -72,4 +72,9 @@ public class RelicLogic_StatModifiers : RelicLogic
 
         ctx.attributeSet.RemoveModifiersFromSource(ctx.token);
     }
+    public override void OnRestoreAttached(RelicContext ctx)
+    {
+        // 책임 : stat modifier는 GAS 스냅샷 복원 단계가 담당한다.
+        // 복원 장착 시 여기서 다시 붙이면 중복 적용 위험이 있다.
+    }
 }

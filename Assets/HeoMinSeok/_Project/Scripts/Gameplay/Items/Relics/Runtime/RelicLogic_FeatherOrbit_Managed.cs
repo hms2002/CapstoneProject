@@ -1,6 +1,10 @@
 using UnityEngine;
 using UnityGAS;
 
+/// <summary>
+/// 책임 : 플레이어 주위를 도는 깃털 오브젝트를 생성/해제하는 유물 로직이다.
+/// 일반 장착과 복원 장착 모두 컨트롤러 등록은 필요하지만, 복원 시 즉시 추가 수치 효과를 새로 적용하지는 않는다.
+/// </summary>
 [CreateAssetMenu(menuName = "Game/Relic Logic/Feather Orbit (Managed)")]
 public class RelicLogic_FeatherOrbit_Managed : RelicLogic
 {
@@ -8,11 +12,12 @@ public class RelicLogic_FeatherOrbit_Managed : RelicLogic
     public FeatherOrbitFeather featherPrefab;
 
     [Header("Damage")]
-    public GameplayEffect damageEffect;              // GE_Damage_Spec 권장
-    public StatId attackStatId = StatId.AttackFinal;      // 프로젝트에 맞게
-    public float damageCoef = 1.0f;                  // ATK * coef
-    public float knockbackImpulse = 0f;              // SetByCaller(knockbackKey)로 들어감
-    public GameplayTag hitConfirmedTag;              // 필요 없으면 비워둬도 됨
+    public GameplayEffect damageEffect;
+    public GE_Knockback_Spec knockbackEffect;
+    public StatId attackStatId = StatId.AttackFinal;
+    public float damageCoef = 1.0f;
+    public float knockbackImpulse = 0f;
+    public GameplayTag hitConfirmedTag;
 
     [Header("Orbit")]
     public int featherCount = 1;
@@ -30,6 +35,25 @@ public class RelicLogic_FeatherOrbit_Managed : RelicLogic
 
     public override void OnEquipped(RelicContext ctx)
     {
+        EnableController(ctx);
+    }
+
+    public override void OnUnequipped(RelicContext ctx)
+    {
+        if (ctx.owner == null) return;
+        var controller = ctx.owner.GetComponent<FeatherOrbitController>();
+        if (controller == null) return;
+
+        controller.DisableForToken(ctx.token);
+    }
+
+    public override void OnRestoreAttached(RelicContext ctx)
+    {
+        EnableController(ctx);
+    }
+
+    private void EnableController(RelicContext ctx)
+    {
         if (ctx.owner == null) return;
         if (featherPrefab == null) return;
         if (damageEffect == null) return;
@@ -42,7 +66,9 @@ public class RelicLogic_FeatherOrbit_Managed : RelicLogic
         {
             owner = ctx.owner,
             token = ctx.token,
+
             damageEffect = damageEffect,
+            knockbackEffect = knockbackEffect,
             attackStatId = attackStatId,
             damageCoef = damageCoef,
             knockbackImpulse = knockbackImpulse,
@@ -58,14 +84,5 @@ public class RelicLogic_FeatherOrbit_Managed : RelicLogic
         });
 
         controller.EnableForToken(ctx.token);
-    }
-
-    public override void OnUnequipped(RelicContext ctx)
-    {
-        if (ctx.owner == null) return;
-        var controller = ctx.owner.GetComponent<FeatherOrbitController>();
-        if (controller == null) return;
-
-        controller.DisableForToken(ctx.token);
     }
 }

@@ -4,9 +4,9 @@ using UnityEngine;
 namespace UnityGAS
 {
     /// <summary>
-    /// "진짜 무기" - 일반 공격(1타)
-    /// - OverlapBox 1회
-    /// - 피해/넉백은 ScaledStatFormula 기반
+    /// 책임 :
+    /// - "진짜 무기" 일반 공격(1타)의 발동 문맥을 계산한다.
+    /// - 방향, 위치, 피해 스냅샷을 준비하고 MeleeHitboxActor를 생성해 넘긴다.
     /// </summary>
     [CreateAssetMenu(fileName = "AL_RW_Attack1", menuName = "GAS/Weapon/RealWeapon/Logic Attack1")]
     public sealed class AbilityLogic_RealWeaponAttack1 : AbilityLogic
@@ -17,20 +17,16 @@ namespace UnityGAS
         {
             if (system == null || data == null) yield break;
             if (data.damageEffect == null) yield break;
+            if (data.hitboxPrefab == null)
+            {
+                Debug.LogError("[AbilityLogic_RealWeaponAttack1] hitboxPrefab is null.");
+                yield break;
+            }
+
             if (system.AttributeSet == null) yield break;
 
             Vector2 dir = AbilityAimResolver2D.Resolve(system.gameObject, Vector2.right);
-
             Vector2 center = (Vector2)system.transform.position + dir * data.forwardOffset;
-            var td = AbilityTargetData2D.FromOverlapBox(
-                center,
-                data.hitboxSize,
-                0f,
-                data.hitLayers,
-                ignore: system.gameObject);
-
-            if (td.Targets.Count == 0)
-                yield break;
 
             IStatProvider statProvider = AbilityStatProviderFactory.Create(system);
 
@@ -42,17 +38,47 @@ namespace UnityGAS
                 knockbackFormula: data.knockbackFormula
             );
 
-            CombatDamageApplicator.ApplyToTargets(
-                system: system,
-                spec: spec,
-                damageEffect: data.damageEffect,
-                knockbackEffect: data.knockbackEffect,
-                targets: td.Targets,
-                snapshot: snapshot,
-                hitConfirmedTag: null,
-                causer: system.gameObject
-            );
+            // 책임 :
+            // - 근접 공격의 최종 피해량을 공용 CombatHitPayload 규약으로 고정한다.
+            // - 이후 MeleeHitboxActor는 payload 적용만 수행하고 수치 계산 책임은 AbilityLogic에 남긴다.
+            var payload = new CombatHitPayload
+            {
+                sourceSystem = system,
+                sourceSpec = spec,
+                damageEffect = data.damageEffect,
+                knockbackEffect = data.knockbackEffect,
+                finalHpDamage = snapshot.FinalHpDamage,
+                finalStaggerBuildUp = snapshot.FinalStaggerBuildUp,
+                elementBuildUps = snapshot.ElementBuildUps != null && snapshot.ElementBuildUps.Count > 0
+                    ? snapshot.ElementBuildUps.ToArray()
+                    : null,
+                finalKnockbackImpulse = snapshot.FinalKnockbackImpulse,
+                hitConfirmedTag = null,
+                causer = system.gameObject
+            };
 
+            var hitbox = Object.Instantiate(data.hitboxPrefab, center, Quaternion.identity);
+            if (hitbox == null)
+                yield break;
+
+            var context = new MeleeHitboxSpawnContext
+            {
+                ownerSystem = system,
+                sourceSpec = spec,
+                causer = system.gameObject,
+                ignoreTarget = system.gameObject,
+                lifetime = data.activeTime,
+                wallLayers = 0,
+                damageLayers = data.hitLayers,
+                hitPayload = payload,
+                worldPosition = center,
+                hitboxSize = data.hitboxSize,
+                hitOncePerTarget = true,
+                destroyOnFirstHit = false,
+                direction = dir
+            };
+
+            hitbox.Setup(context);
             yield break;
         }
     }
