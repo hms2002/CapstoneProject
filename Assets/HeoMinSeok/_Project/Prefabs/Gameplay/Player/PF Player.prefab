@@ -712,7 +712,7 @@ MonoBehaviour:
   externalMovement: {fileID: 7359355598128478682}
   motionController: {fileID: 3865359879035668891}
   freezeAllMovementTag: {fileID: 0}
-  blockIntentMoveTag: {fileID: 0}
+  blockIntentMoveTag: {fileID: 11400000, guid: 6a88dccc70fd08841a7484539aec65c1, type: 2}
   blockExternalMoveTag: {fileID: 0}
 --- !u!114 &7359355598128478682
 MonoBehaviour:
