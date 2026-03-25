@@ -1091,16 +1091,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 7184922240575343075, guid: f2946074f70ad1a4194e0ab20873422b, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 8883617028798182002, guid: f2946074f70ad1a4194e0ab20873422b, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1499674571}
-    - targetCorrespondingSourceObject: {fileID: 8883617028798182002, guid: f2946074f70ad1a4194e0ab20873422b, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1499674564}
     - targetCorrespondingSourceObject: {fileID: 8883617028798182002, guid: f2946074f70ad1a4194e0ab20873422b, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1499674563}
@@ -4058,14 +4056,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 644dc9ef8391e3b49a5b89b3c15e18f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  canvas: {fileID: 2061744372}
   detailPanel: {fileID: 584586601}
-  detailPanelRect: {fileID: 584586600}
-  offset: 12
-  edgePadding: 8
-  followAnchor: 1
-  delayHideOneFrame: 1
-  extraHideDelay: 0.08
   contextProviderBehaviour: {fileID: 1499674576}
 --- !u!1 &1431292382
 GameObject:
@@ -4529,24 +4520,6 @@ MonoBehaviour:
   drawOnlyWhenSelected: 0
   defaultDuration: 0.15
   maxBoxes: 12
---- !u!114 &1499674564
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1499674561}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 208d837eab958ba448f42addc4733bf6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  system: {fileID: 1499674565}
-  attackAbility: {fileID: 0}
-  drawOnlyWhenSelected: 1
-  showAllCombos: 1
-  useInputAimInPlayMode: 1
-  previewDirection: {x: 1, y: 0}
 --- !u!114 &1499674565 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1832372497922031110, guid: f2946074f70ad1a4194e0ab20873422b, type: 3}
@@ -4883,7 +4856,6 @@ GameObject:
   - component: {fileID: 1602498378}
   - component: {fileID: 1602498386}
   - component: {fileID: 1602498377}
-  - component: {fileID: 1602498385}
   - component: {fileID: 1602498383}
   - component: {fileID: 1602498382}
   - component: {fileID: 1602498381}
@@ -4893,6 +4865,10 @@ GameObject:
   - component: {fileID: 1602498389}
   - component: {fileID: 1602498388}
   - component: {fileID: 1602498387}
+  - component: {fileID: 1602498394}
+  - component: {fileID: 1602498393}
+  - component: {fileID: 1602498392}
+  - component: {fileID: 1602498391}
   m_Layer: 0
   m_Name: Witch
   m_TagString: Untagged
@@ -5044,11 +5020,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8910a2e22aa25664cb9b2709778e44dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  initialAttributes:
-  - {fileID: 11400000, guid: 0e177e1d15e428745b5859fac08ce203, type: 2}
-  - {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
-  - {fileID: 11400000, guid: 122086249f809784c84b56e9b99e367e, type: 2}
-  maxLinks: []
+  attributeCatalog: {fileID: 0}
+  baseInitProfile: {fileID: 0}
+  overrideInitProfiles: []
+  maxLinks:
+  - value: {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
+    max: {fileID: 11400000, guid: 0e177e1d15e428745b5859fac08ce203, type: 2}
+    fillToMaxOnInitialize: 0
 --- !u!114 &1602498382
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5076,8 +5054,10 @@ MonoBehaviour:
   cueManager: {fileID: 0}
   autoExecuteCueWhenGameplayEventTagExists: 1
   killConfirmedTag: {fileID: 0}
+  damagedTag: {fileID: 0}
   animator: {fileID: 1602498377}
   playerAnimator: {fileID: 0}
+  initialWeaponAnimator: {fileID: 0}
 --- !u!114 &1602498383
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5093,8 +5073,13 @@ MonoBehaviour:
   maxHealthDef: {fileID: 11400000, guid: 0e177e1d15e428745b5859fac08ce203, type: 2}
   healthDef: {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
   enemyName: "\uB9C8\uB140"
-  staggerDef: {fileID: 11400000, guid: 122086249f809784c84b56e9b99e367e, type: 2}
-  groggyEffect: {fileID: 11400000, guid: fab1dd76add51c74db9dbb7b0f424204, type: 2}
+  targetTag: Player
+  initialTarget: {fileID: 1499674562}
+  healthAttribute: {fileID: 0}
+  maxHealthAttribute: {fileID: 0}
+  deadTag: {fileID: 0}
+  groggyTag: {fileID: 11400000, guid: 6a381fd96b3c05d4cbcbd73fbf173f4e, type: 2}
+  phases: []
 --- !u!114 &1602498384
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5107,44 +5092,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6675ab8ab5253d745b73cb4b3b1f9345, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &1602498385
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1602498374}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f0038c16c34866b4f9e25c9c0dc0f7e6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Graph: {fileID: 5723419198226221412, guid: 0d937757e91873c48896979854bff935, type: 2}
-  m_BlackboardVariableOverridesList:
-  - rid: 2468850668437241856
-  - rid: 6415103045726634161
-  m_OriginalGraph: {fileID: 5723419198226221412, guid: 0d937757e91873c48896979854bff935, type: 2}
-  m_IsInitialised: 0
-  m_IsStarted: 0
-  references:
-    version: 2
-    RefIds:
-    - rid: 2468850668437241856
-      type: {class: 'BlackboardVariable`1[[UnityEngine.GameObject, UnityEngine.CoreModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
-      data:
-        GUID:
-          m_Value0: 1
-          m_Value1: 0
-        Name: Self
-        m_Value: {fileID: 1602498374}
-    - rid: 6415103045726634161
-      type: {class: 'BlackboardVariable`1[[UnityEngine.GameObject, UnityEngine.CoreModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
-      data:
-        GUID:
-          m_Value0: 4564887561515788351
-          m_Value1: 2865929095947171594
-        Name: Target
-        m_Value: {fileID: 1499674561}
 --- !u!70 &1602498386
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -5194,8 +5141,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1d4aa4b27d4ffd45b29291c3673f422, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gauges: []
+  catalog: {fileID: 0}
+  useDecay: 1
+  decayDelaySeconds: 3
+  decayPercentPerSecond: 0.02
+  allowOverflowCarry: 1
   logWhenTriggered: 0
+  logMissingDefinition: 1
+  runtimeStates: []
 --- !u!114 &1602498388
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5208,10 +5161,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e232de7843f92745a254698e2054f4e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  threshold: 100
+  currentGaugeAttribute: {fileID: 0}
+  maxGaugeAttribute: {fileID: 0}
+  resistancePercentAttribute: {fileID: 0}
   staggeredEffect: {fileID: 0}
   allowOverflow: 1
-  resistancePercentAttribute: {fileID: 0}
 --- !u!114 &1602498389
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5225,7 +5179,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   healthAttribute: {fileID: 0}
-  popupSpawner: {fileID: 0}
   worldAnchor: {fileID: 0}
   extraWorldOffset: {x: 0, y: 0, z: 0}
   minInterval: 0.02
@@ -5247,6 +5200,73 @@ MonoBehaviour:
   worldOffset: {x: 0, y: 0.8, z: 0}
   randomX: 25
   randomY: 10
+--- !u!114 &1602498391
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1602498374}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26c9fe53bdef53947bbf6f41db722013, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  externalMovement: {fileID: 0}
+  knockbackImmuneTag: {fileID: 0}
+  resistancePctAttribute: {fileID: 0}
+  knockbackDominanceTime: 0.12
+--- !u!114 &1602498392
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1602498374}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b5ebf9fcd76f27f4f874c8853b167522, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  knockbackDamping: 18
+  defaultKnockbackDominanceTime: 0.12
+  maxKnockbackMagnitude: 25
+  maxCombinedPersistentVelocityMagnitude: 25
+--- !u!114 &1602498393
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1602498374}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 526f8835b2c4eeb4593ade78758d3986, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attributeSet: {fileID: 0}
+  abilitySystem: {fileID: 0}
+  statBindingsOverride: {fileID: 0}
+--- !u!114 &1602498394
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1602498374}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82ae4624ea26de741ba8bc236cf3108b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  body: {fileID: 1602498378}
+  intentSourceBehaviour: {fileID: 0}
+  statProviderBehaviour: {fileID: 0}
+  externalMovement: {fileID: 0}
+  motionController: {fileID: 0}
+  freezeAllMovementTag: {fileID: 0}
+  intentMoveBlockedTag: {fileID: 0}
+  externalMoveBlockedTag: {fileID: 0}
 --- !u!1 &1612905195
 GameObject:
   m_ObjectHideFlags: 0
@@ -6334,6 +6354,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 676583283aa75a942a115efbb0fdfd2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  promptAnchor: {fileID: 0}
+  openPromptText: "\uC0C1\uC790 \uC5F4\uAE30"
+  lockedPromptFormat: "\uC7A0\uAE40 ({0})"
 --- !u!114 &1986490617
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6970,7 +6993,8 @@ PrefabInstance:
       propertyPath: worldCamera
       value: 
       objectReference: {fileID: 878855578}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 7434347731546503635, guid: 32536a7c661f3a445bd9698a356583ad, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
