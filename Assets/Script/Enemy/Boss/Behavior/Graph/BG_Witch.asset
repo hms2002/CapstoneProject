@@ -23,7 +23,7 @@ MonoBehaviour:
   - rid: 6415103045726634087
   - rid: 6415103045726634092
   - rid: 6415103045726634135
-  m_VersionTimestamp: 639090198276334092
+  m_VersionTimestamp: 639100594767803986
   m_SerializedVersion: 2
   m_DebugInfo: {fileID: 1459767931411977020}
   m_RuntimeGraph: {fileID: 5723419198226221412}
@@ -383,7 +383,7 @@ MonoBehaviour:
         Name: AD_Wave
         IsExposed: 1
         m_IsShared: 0
-        m_Value: {fileID: 11400000, guid: 262fe12e4596d5347806a400d239960e, type: 2}
+        m_Value: {fileID: 0}
     - rid: 6415103045726634135
       type: {class: ActionNodeModel, ns: Unity.Behavior, asm: Unity.Behavior.Authoring}
       data:
@@ -451,7 +451,7 @@ MonoBehaviour:
         Name: AD_Ambush
         IsExposed: 1
         m_IsShared: 0
-        m_Value: {fileID: 11400000, guid: 22feee1e37334794fabb782102c661c5, type: 2}
+        m_Value: {fileID: 0}
 --- !u!114 &1459767931411977020
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -521,7 +521,7 @@ MonoBehaviour:
         Name: AD_Wave
         IsExposed: 1
         m_IsShared: 0
-        m_Value: {fileID: 11400000, guid: 262fe12e4596d5347806a400d239960e, type: 2}
+        m_Value: {fileID: 0}
     - rid: 6415103045726634112
       type: {class: 'TypedVariableModel`1[[UnityGAS.AbilityDefinition, Assembly-CSharp]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
       data:
@@ -531,7 +531,7 @@ MonoBehaviour:
         Name: AD_Ambush
         IsExposed: 1
         m_IsShared: 0
-        m_Value: {fileID: 11400000, guid: 22feee1e37334794fabb782102c661c5, type: 2}
+        m_Value: {fileID: 0}
 --- !u!114 &5723419198226221412
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -564,8 +564,8 @@ MonoBehaviour:
           rid: 2468850623048319257
         BlackboardGroupReferences: []
         Root:
-          rid: 2668037834883727653
-        m_VersionTimestamp: 639090198276334092
+          rid: 2668038107570896971
+        m_VersionTimestamp: 639100594767803986
     - rid: 2468850623048319257
       type: {class: BlackboardReference, ns: Unity.Behavior, asm: Unity.Behavior}
       data:
@@ -580,33 +580,6 @@ MonoBehaviour:
         - rid: 2668037834883727656
         - rid: 2668037834883727657
         - rid: 2668037834883727658
-    - rid: 2668037834883727653
-      type: {class: Start, ns: Unity.Behavior, asm: Unity.Behavior}
-      data:
-        ID:
-          m_Value0: 16410130475189374685
-          m_Value1: 17766297242658381847
-        Graph:
-          rid: 2468850623048319256
-        m_Parent:
-          rid: -2
-        m_Child:
-          rid: 2668037834883727654
-        Repeat: 1
-        AllowMultipleRepeatsPerTick: 0
-    - rid: 2668037834883727654
-      type: {class: SelectorComposite, ns: Unity.Behavior, asm: Unity.Behavior}
-      data:
-        ID:
-          m_Value0: 1174136587453859031
-          m_Value1: 7037553426597378520
-        Graph:
-          rid: 2468850623048319256
-        m_Parent:
-          rid: 2668037834883727653
-        m_Children:
-        - rid: 2668037834883727659
-        m_RegisteredObservers: []
     - rid: 2668037834883727655
       type: {class: 'BlackboardVariable`1[[UnityEngine.GameObject, UnityEngine.CoreModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
@@ -630,7 +603,7 @@ MonoBehaviour:
           m_Value0: 14204471165461185586
           m_Value1: 16025058708561238227
         Name: AD_Wave
-        m_Value: {fileID: 11400000, guid: 262fe12e4596d5347806a400d239960e, type: 2}
+        m_Value: {fileID: 0}
     - rid: 2668037834883727658
       type: {class: 'BlackboardVariable`1[[UnityGAS.AbilityDefinition, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
@@ -638,8 +611,35 @@ MonoBehaviour:
           m_Value0: 8840543212337881465
           m_Value1: 15028187573117453122
         Name: AD_Ambush
-        m_Value: {fileID: 11400000, guid: 22feee1e37334794fabb782102c661c5, type: 2}
-    - rid: 2668037834883727659
+        m_Value: {fileID: 0}
+    - rid: 2668038107570896971
+      type: {class: Start, ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        ID:
+          m_Value0: 16410130475189374685
+          m_Value1: 17766297242658381847
+        Graph:
+          rid: 2468850623048319256
+        m_Parent:
+          rid: -2
+        m_Child:
+          rid: 2668038107570896972
+        Repeat: 1
+        AllowMultipleRepeatsPerTick: 0
+    - rid: 2668038107570896972
+      type: {class: SelectorComposite, ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        ID:
+          m_Value0: 1174136587453859031
+          m_Value1: 7037553426597378520
+        Graph:
+          rid: 2468850623048319256
+        m_Parent:
+          rid: 2668038107570896971
+        m_Children:
+        - rid: 2668038107570896973
+        m_RegisteredObservers: []
+    - rid: 2668038107570896973
       type: {class: BT_RandomSelector, ns: , asm: Assembly-CSharp}
       data:
         ID:
@@ -648,12 +648,12 @@ MonoBehaviour:
         Graph:
           rid: 2468850623048319256
         m_Parent:
-          rid: 2668037834883727654
+          rid: 2668038107570896972
         m_Children:
-        - rid: 2668037834883727660
-        - rid: 2668037834883727661
+        - rid: 2668038107570896974
+        - rid: 2668038107570896975
         m_RegisteredObservers: []
-    - rid: 2668037834883727660
+    - rid: 2668038107570896974
       type: {class: ActivateGASAbilityAction, ns: , asm: Assembly-CSharp}
       data:
         ID:
@@ -662,12 +662,12 @@ MonoBehaviour:
         Graph:
           rid: 2468850623048319256
         m_Parent:
-          rid: 2668037834883727659
+          rid: 2668038107570896973
         Ability:
           rid: 2668037834883727657
         Target:
           rid: 2668037834883727656
-    - rid: 2668037834883727661
+    - rid: 2668038107570896975
       type: {class: ActivateGASAbilityAction, ns: , asm: Assembly-CSharp}
       data:
         ID:
@@ -676,7 +676,7 @@ MonoBehaviour:
         Graph:
           rid: 2468850623048319256
         m_Parent:
-          rid: 2668037834883727659
+          rid: 2668038107570896973
         Ability:
           rid: 2668037834883727658
         Target:
@@ -730,7 +730,7 @@ MonoBehaviour:
           m_Value0: 14204471165461185586
           m_Value1: 16025058708561238227
         Name: AD_Wave
-        m_Value: {fileID: 11400000, guid: 262fe12e4596d5347806a400d239960e, type: 2}
+        m_Value: {fileID: 0}
     - rid: 6415103045726634118
       type: {class: 'BlackboardVariable`1[[UnityGAS.AbilityDefinition, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
@@ -738,4 +738,4 @@ MonoBehaviour:
           m_Value0: 8840543212337881465
           m_Value1: 15028187573117453122
         Name: AD_Ambush
-        m_Value: {fileID: 11400000, guid: 22feee1e37334794fabb782102c661c5, type: 2}
+        m_Value: {fileID: 0}
