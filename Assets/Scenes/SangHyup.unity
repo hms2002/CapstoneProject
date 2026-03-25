@@ -1091,16 +1091,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 7184922240575343075, guid: f2946074f70ad1a4194e0ab20873422b, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 8883617028798182002, guid: f2946074f70ad1a4194e0ab20873422b, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1499674571}
-    - targetCorrespondingSourceObject: {fileID: 8883617028798182002, guid: f2946074f70ad1a4194e0ab20873422b, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1499674564}
     - targetCorrespondingSourceObject: {fileID: 8883617028798182002, guid: f2946074f70ad1a4194e0ab20873422b, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1499674563}
@@ -4522,24 +4520,6 @@ MonoBehaviour:
   drawOnlyWhenSelected: 0
   defaultDuration: 0.15
   maxBoxes: 12
---- !u!114 &1499674564
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1499674561}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 208d837eab958ba448f42addc4733bf6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  system: {fileID: 1499674565}
-  attackAbility: {fileID: 0}
-  drawOnlyWhenSelected: 1
-  showAllCombos: 1
-  useInputAimInPlayMode: 1
-  previewDirection: {x: 1, y: 0}
 --- !u!114 &1499674565 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1832372497922031110, guid: f2946074f70ad1a4194e0ab20873422b, type: 3}
@@ -5043,7 +5023,10 @@ MonoBehaviour:
   attributeCatalog: {fileID: 0}
   baseInitProfile: {fileID: 0}
   overrideInitProfiles: []
-  maxLinks: []
+  maxLinks:
+  - value: {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
+    max: {fileID: 11400000, guid: 0e177e1d15e428745b5859fac08ce203, type: 2}
+    fillToMaxOnInitialize: 0
 --- !u!114 &1602498382
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5091,8 +5074,12 @@ MonoBehaviour:
   healthDef: {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
   enemyName: "\uB9C8\uB140"
   targetTag: Player
-  staggerDef: {fileID: 11400000, guid: 122086249f809784c84b56e9b99e367e, type: 2}
-  groggyEffect: {fileID: 11400000, guid: fab1dd76add51c74db9dbb7b0f424204, type: 2}
+  initialTarget: {fileID: 1499674562}
+  healthAttribute: {fileID: 0}
+  maxHealthAttribute: {fileID: 0}
+  deadTag: {fileID: 0}
+  groggyTag: {fileID: 11400000, guid: 6a381fd96b3c05d4cbcbd73fbf173f4e, type: 2}
+  phases: []
 --- !u!114 &1602498384
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5192,7 +5179,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   healthAttribute: {fileID: 0}
-  popupSpawner: {fileID: 0}
   worldAnchor: {fileID: 0}
   extraWorldOffset: {x: 0, y: 0, z: 0}
   minInterval: 0.02
@@ -5273,14 +5259,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 82ae4624ea26de741ba8bc236cf3108b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  body: {fileID: 0}
+  body: {fileID: 1602498378}
   intentSourceBehaviour: {fileID: 0}
   statProviderBehaviour: {fileID: 0}
   externalMovement: {fileID: 0}
   motionController: {fileID: 0}
   freezeAllMovementTag: {fileID: 0}
-  blockIntentMoveTag: {fileID: 0}
-  blockExternalMoveTag: {fileID: 0}
+  intentMoveBlockedTag: {fileID: 0}
+  externalMoveBlockedTag: {fileID: 0}
 --- !u!1 &1612905195
 GameObject:
   m_ObjectHideFlags: 0
@@ -6368,6 +6354,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 676583283aa75a942a115efbb0fdfd2d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  promptAnchor: {fileID: 0}
+  openPromptText: "\uC0C1\uC790 \uC5F4\uAE30"
+  lockedPromptFormat: "\uC7A0\uAE40 ({0})"
 --- !u!114 &1986490617
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7004,7 +6993,8 @@ PrefabInstance:
       propertyPath: worldCamera
       value: 
       objectReference: {fileID: 878855578}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 7434347731546503635, guid: 32536a7c661f3a445bd9698a356583ad, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
