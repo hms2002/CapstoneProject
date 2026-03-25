@@ -12,20 +12,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f5f23c24b1773ce46b05d7ea5aea9964, type: 3}
   m_Name: ALData_SwordCombo2D
   m_EditorClassIdentifier: 
+  hitboxPrefab: {fileID: 6902002014408514032, guid: 4be5e4c30ae21ca4d979927cb057f981, type: 3}
+  activeTimes:
+  - 0.08
+  - 0.08
+  - 0.1
   damageConfig:
-    formulaStats: {fileID: 11400000, guid: 83865f9accf70664fa56b704cf0506df, type: 2}
-    baseDamageAlreadyIncludesAttackPower: 0
-    includeElementBuildup: 1
-    includeStaggerDamage: 0
+    includeStaggerBuildUp: 1
+    includeElementBuildUp: 1
+    staggerFormula: {fileID: 0}
+    elementFormulas: []
     critAffectsElement: 1
-    _migratedFromLegacy: 1
-  formulaStats: {fileID: 11400000, guid: 83865f9accf70664fa56b704cf0506df, type: 2}
-  includeElementDamage: 0
   elementDamagesByCombo:
   - elements: []
   - elements: []
   - elements: []
-  includeStaggerDamage: 0
   staggerDamages:
   - 0
   - 0
@@ -70,3 +71,4 @@ MonoBehaviour:
   - 0.08
   - 0.1
   damageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
+  knockbackEffect: {fileID: 0}

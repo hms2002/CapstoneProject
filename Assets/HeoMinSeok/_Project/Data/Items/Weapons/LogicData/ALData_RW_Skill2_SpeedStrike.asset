@@ -12,12 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca1f39e9389d2494a9fe385a14da6a54, type: 3}
   m_Name: ALData_RW_Skill2_SpeedStrike
   m_EditorClassIdentifier: 
+  hitboxPrefab: {fileID: 6902002014408514032, guid: 4be5e4c30ae21ca4d979927cb057f981, type: 3}
+  activeTime: 0.08
   hitboxSize: {x: 1.6, y: 0.9}
   forwardOffset: 1
   hitLayers:
     serializedVersion: 2
     m_Bits: 2147483648
   damageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
+  knockbackEffect: {fileID: 0}
   attackStatId: 13
   moveSpeedMultiplierStatId: 143
   speedScale: 3
@@ -31,5 +34,4 @@ MonoBehaviour:
     elementFormulas:
     - elementType: {fileID: 11400000, guid: 82578c30453dcb04a88dce3cd193db5b, type: 2}
       formula: {fileID: 11400000, guid: 4b0e3c35f3acd0441a039c0489db1967, type: 2}
-    postProcess: {fileID: 11400000, guid: e27d90a086193324cab0290ff31a6180, type: 2}
     critAffectsElement: 1

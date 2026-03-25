@@ -161,6 +161,7 @@ GameObject:
   - component: {fileID: 834375791449447937}
   - component: {fileID: 9123240755929561285}
   - component: {fileID: 1924190678758458473}
+  - component: {fileID: 4990856730141791889}
   m_Layer: 0
   m_Name: PF Player
   m_TagString: Player
@@ -437,6 +438,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   interactKey: 102
+  interactionPrompt: {fileID: 0}
   speechBubble: {fileID: 9064131313457660205}
   speechData: {fileID: 11400000, guid: 95081fedc29af6044801e50a4e2d73fb, type: 2}
 --- !u!114 &3517715623297123696
@@ -798,7 +800,7 @@ MonoBehaviour:
   tagSystem: {fileID: 7887873875085709242}
   abilitySystem: {fileID: 1832372497922031110}
   weaponRuntimeCapturerSource: {fileID: 9123240755929561285}
-  relicRuntimeCapturerSource: {fileID: 0}
+  relicRuntimeCapturerSource: {fileID: 4990856730141791889}
 --- !u!114 &834375791449447937
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -839,7 +841,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   resolverSource: {fileID: 834375791449447937}
   weaponRuntimeRestorerSource: {fileID: 9123240755929561285}
-  relicRuntimeRestorerSource: {fileID: 0}
+  relicRuntimeRestorerSource: {fileID: 4990856730141791889}
   maxWaitSeconds: 5
   retryInterval: 0.1
   restoreOnStart: 1
+--- !u!114 &4990856730141791889
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8883617028798182002}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74fc61016a2a29a4e9977a15f7611d49, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  relicInventory: {fileID: 4885150337275956111}
