@@ -19,6 +19,8 @@ public class CameraPresentationDirector : MonoBehaviour
         if (Camera.main != null)
             brain = Camera.main.GetComponent<CinemachineBrain>();
 
+        EnsureImpulseListener(playerCam);
+        EnsureImpulseListener(bossCam);
         RestoreDefaultState();
     }
 
@@ -102,8 +104,24 @@ public class CameraPresentationDirector : MonoBehaviour
         if (playerCam == null || playerTransform == null)
             return;
 
+        EnsureImpulseListener(playerCam);
         playerCam.Follow = playerTransform;
         playerCam.LookAt = playerTransform;
+    }
+
+    private static void EnsureImpulseListener(CinemachineCamera camera)
+    {
+        if (camera == null)
+            return;
+
+        var listener = camera.GetComponent<CinemachineImpulseListener>();
+        if (listener != null)
+            return;
+
+        listener = camera.gameObject.AddComponent<CinemachineImpulseListener>();
+        listener.ChannelMask = 1;
+        listener.Gain = 1f;
+        listener.Use2DDistance = true;
     }
 
     private IEnumerator WaitForBlendEnd()

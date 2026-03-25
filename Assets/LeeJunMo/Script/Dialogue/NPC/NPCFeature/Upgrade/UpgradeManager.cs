@@ -1,22 +1,20 @@
-using UnityEngine;
-using System.Collections.Generic;
 using System;
+using System;
+using System.Collections.Generic;
+using UnityEngine;
 
 public class UpgradeManager : MonoBehaviour
 {
     public static UpgradeManager Instance { get; private set; }
 
-    // [핵심 수정] GameObject가 아니라 우리가 만든 UI 스크립트(IStackableUI)를 연결해야 합니다!
-    // 만약 에러가 난다면 UpgradeTreeUI 스크립트에 "IStackableUI" 인터페이스를 꼭 달아주세요!
     [SerializeField] private UpgradeTreeUI upgradeTreeUI;
-
     [SerializeField] private UpgradeDatabase upgradeDatabase;
-
-    private Dictionary<int, UpgradeNodeSO> upgradeMap = new Dictionary<int, UpgradeNodeSO>();
 
     public Action OnDataChanged;
     public Action OnUIClosed;
 
+    private UpgradeProgressService progressService;
+    private UpgradeEffectApplier effectApplier;
     private SampleTopDownPlayer appliedPlayer;
 
     private void Awake()
@@ -28,8 +26,8 @@ public class UpgradeManager : MonoBehaviour
         }
 
         Instance = this;
-
-        InitDB();
+        progressService = new UpgradeProgressService(upgradeDatabase);
+        effectApplier = new UpgradeEffectApplier();
     }
 
     private void OnDestroy()
@@ -37,7 +35,6 @@ public class UpgradeManager : MonoBehaviour
         if (Instance == this)
             Instance = null;
     }
-
 
     private void OnEnable()
     {
@@ -55,16 +52,6 @@ public class UpgradeManager : MonoBehaviour
         PlayerRuntimeRegistry.PlayerRegistered -= HandlePlayerRegistered;
     }
 
-    private void InitDB()
-    {
-        if (upgradeDatabase == null) return;
-        foreach (var node in upgradeDatabase.allUpgrades)
-        {
-            if (!upgradeMap.ContainsKey(node.nodeID)) upgradeMap.Add(node.nodeID, node);
-        }
-    }
-
-
     private void HandlePlayerRegistered(SampleTopDownPlayer player)
     {
         TryReapplyAllEffects();
@@ -80,7 +67,7 @@ public class UpgradeManager : MonoBehaviour
 
     private void TryReapplyAllEffects()
     {
-        var player = ResolveCurrentPlayer();
+        SampleTopDownPlayer player = ResolveCurrentPlayer();
         if (player == null)
             return;
 
@@ -93,64 +80,38 @@ public class UpgradeManager : MonoBehaviour
 
     public void CheckAndUnlockNodes()
     {
-        if (upgradeDatabase == null || GameDataManager.Instance == null) return;
+        if (progressService == null || GameDataManager.Instance == null)
+            return;
 
-        var data = GameDataManager.Instance.Data.upgradeData;
-        bool isChanged = false;
+        bool isChanged = progressService.CheckAndUnlockNodes();
+        if (!isChanged)
+            return;
 
-        foreach (var node in upgradeDatabase.allUpgrades)
-        {
-            if (node == null) continue;
-
-            if (data.purchasedIDs.Contains(node.nodeID) || data.unlockedIDs.Contains(node.nodeID)) continue;
-
-            if (node.requiredParentIDs == null || node.requiredParentIDs.Count == 0)
-            {
-                data.unlockedIDs.Add(node.nodeID);
-                isChanged = true;
-                continue;
-            }
-
-            if (CheckParentsPurchased(node))
-            {
-                data.unlockedIDs.Add(node.nodeID);
-                isChanged = true;
-            }
-        }
-
-        if (isChanged)
-        {
-            GameDataManager.Instance.SaveData();
-            OnDataChanged?.Invoke();
-        }
-    }
-
-    private bool CheckParentsPurchased(UpgradeNodeSO node)
-    {
-        if (node.requiredParentIDs == null || node.requiredParentIDs.Count == 0) return true;
-        var purchasedList = GameDataManager.Instance.Data.upgradeData.purchasedIDs;
-        foreach (int parentID in node.requiredParentIDs)
-        {
-            if (!purchasedList.Contains(parentID)) return false;
-        }
-        return true;
+        GameDataManager.Instance.SaveData();
+        OnDataChanged?.Invoke();
     }
 
     public void TryBuyUpgrade(int id)
     {
-        if (GetNodeStatus(id) != LockType.UnLocked) return;
+        if (progressService == null)
+            return;
 
-        var node = GetUpgradeByID(id);
-        if (node == null) return;
-        if (CurrencyManager.Instance == null || !CurrencyManager.Instance.SpendMagicStone(node.price)) return;
-        var data = GameDataManager.Instance.Data.upgradeData;
+        UpgradeNodeSO node = progressService.GetUpgradeByID(id);
+        if (node == null)
+            return;
 
-        data.unlockedIDs.Remove(id);
-        data.purchasedIDs.Add(id);
+        if (progressService.GetNodeStatus(id) != LockType.UnLocked)
+            return;
 
-        var player = ResolveCurrentPlayer();
+        if (CurrencyManager.Instance == null || !CurrencyManager.Instance.SpendMagicStone(node.price))
+            return;
+
+        if (!progressService.TryPurchase(id, out node))
+            return;
+
+        SampleTopDownPlayer player = ResolveCurrentPlayer();
         if (player != null)
-            node.ApplyEffect(player);
+            effectApplier.ApplyUpgrade(node, player);
 
         if (RewardDisplayUI.Instance != null)
             RewardDisplayUI.Instance.ShowReward(node.effects, null);
@@ -162,56 +123,56 @@ public class UpgradeManager : MonoBehaviour
 
     private void ReapplyAllEffects(SampleTopDownPlayer player)
     {
-        if (player == null || GameDataManager.Instance == null)
+        if (player == null || GameDataManager.Instance == null || progressService == null || effectApplier == null)
             return;
 
-        foreach (var id in GameDataManager.Instance.Data.upgradeData.purchasedIDs)
-        {
-            GetUpgradeByID(id)?.ApplyEffect(player);
-        }
+        effectApplier.ReapplyPurchasedEffects(GameDataManager.Instance.Data.upgradeData.purchasedIDs, progressService, player);
     }
 
     public void ToggleUI()
     {
-        if (upgradeTreeUI == null) return;
+        if (upgradeTreeUI == null)
+            return;
 
-        // [수정] 직접 켜지 않고 UIManager에게 위임
         if (!upgradeTreeUI.IsActive)
         {
-            if (UIManager.Instance != null) UIManager.Instance.PushUI(upgradeTreeUI);
-            else upgradeTreeUI.OpenUI();
+            if (UIManager.Instance != null)
+                UIManager.Instance.PushUI(upgradeTreeUI);
+            else
+                upgradeTreeUI.OpenUI();
         }
         else
         {
-            if (UIManager.Instance != null) UIManager.Instance.PopUI(upgradeTreeUI);
-            else upgradeTreeUI.CloseUI();
+            if (UIManager.Instance != null)
+                UIManager.Instance.PopUI(upgradeTreeUI);
+            else
+                upgradeTreeUI.CloseUI();
         }
     }
 
     public void CloseUI()
     {
-        if (upgradeTreeUI != null)
-        {
-            if (UIManager.Instance != null) UIManager.Instance.PopUI(upgradeTreeUI);
-            else upgradeTreeUI.CloseUI();
-        }
+        if (upgradeTreeUI == null)
+            return;
 
-        OnUIClosed?.Invoke();
+        if (UIManager.Instance != null)
+            UIManager.Instance.PopUI(upgradeTreeUI);
+        else
+            upgradeTreeUI.CloseUI();
     }
 
     public LockType GetNodeStatus(int id)
     {
-        var data = GameDataManager.Instance.Data.upgradeData;
-        if (data.purchasedIDs.Contains(id)) return LockType.Purchased;
-        if (data.unlockedIDs.Contains(id)) return LockType.UnLocked;
-        return LockType.Locked;
+        return progressService != null ? progressService.GetNodeStatus(id) : LockType.Locked;
     }
 
     public UpgradeNodeSO GetUpgradeByID(int id)
     {
-        upgradeMap.TryGetValue(id, out var node);
-        return node;
+        return progressService != null ? progressService.GetUpgradeByID(id) : null;
     }
 
-    public List<UpgradeNodeSO> GetAllUpgrades() => upgradeDatabase.allUpgrades;
+    public List<UpgradeNodeSO> GetAllUpgrades()
+    {
+        return progressService != null ? progressService.GetAllUpgrades() : null;
+    }
 }

@@ -514,8 +514,10 @@ namespace UnityGAS
             var tags = caster.GetComponent<TagSystem>();
             if (tags != null)
             {
+                #if UNITY_EDITOR || DEVELOPMENT_BUILD
                 tags.PrintHasTags("HAS TAG");
                 TagRegistry.PrintTagMaskLog(_blockMask);
+                #endif
 
                 // 금지 태그가 하나라도 있으면 발동 불가
                 if (tags.HasAny(_blockMask)) return false;
