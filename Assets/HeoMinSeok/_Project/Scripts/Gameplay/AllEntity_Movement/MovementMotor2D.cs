@@ -32,11 +32,11 @@ namespace UnityGAS
 
         [Header("Tags - Intent")]
         [Tooltip("이 태그가 있으면 의도 이동을 차단한다.")]
-        [SerializeField] private GameplayTag blockIntentMoveTag;
+        [SerializeField] private GameplayTag intentMoveBlockedTag;
 
         [Header("Tags - External")]
         [Tooltip("이 태그가 있으면 외압 이동을 차단한다.")]
-        [SerializeField] private GameplayTag blockExternalMoveTag;
+        [SerializeField] private GameplayTag externalMoveBlockedTag;
 
         private IIntentMovementSource2D intentSource;
         private IStatProvider statProvider;
@@ -228,18 +228,18 @@ namespace UnityGAS
 
         private bool CanUseIntentMovement()
         {
-            if (tagSystem == null || blockIntentMoveTag == null)
+            if (tagSystem == null || intentMoveBlockedTag == null)
                 return true;
 
-            return !tagSystem.HasTag(blockIntentMoveTag);
+            return !tagSystem.HasTag(intentMoveBlockedTag);
         }
 
         private bool CanUseExternalMovement()
         {
-            if (tagSystem == null || blockExternalMoveTag == null)
+            if (tagSystem == null || externalMoveBlockedTag == null)
                 return true;
 
-            return !tagSystem.HasTag(blockExternalMoveTag);
+            return !tagSystem.HasTag(externalMoveBlockedTag);
         }
 
         private void ApplyVelocities(Vector2 intentVelocity, Vector2 externalVelocity, Vector2 motionVelocity)

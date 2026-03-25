@@ -137,6 +137,8 @@ public class ItemSlotUI : MonoBehaviour,
         }
     }
 
+    // 책임 : 우클릭 빠른 이동 시 아이템 종류와 현재 컨테이너에 따라
+    // 가장 자연스러운 대상 컨테이너와 슬롯을 선택해 이동을 시도한다.
     private void TryQuickMove()
     {
         if (container == null) return;
@@ -154,14 +156,38 @@ public class ItemSlotUI : MonoBehaviour,
         if (chest == null || w == null || r == null) return;
 
         IItemContainer target = null;
+        int targetIndex = -1;
 
-        if (container == w || container == r) target = chest;
-        else if (container == chest) target = def.Kind == InventoryItemKind.Weapon ? w : r;
-        else if (container is WorldLootContainerAdapter) target = chest;
+        if (container == w || container == r)
+        {
+            target = chest;
+            targetIndex = FindFirstEmptyIndex(target, so);
+        }
+        else if (container == chest)
+        {
+            if (def.Kind == InventoryItemKind.Weapon)
+            {
+                target = w;
+                targetIndex = FindFirstEmptyIndex(target, so);
+            }
+            else if (so is RelicDefinition relic)
+            {
+                target = r;
+                targetIndex = FindRelicQuickMoveIndex(target, relic);
+            }
+            else
+            {
+                target = r;
+                targetIndex = FindFirstEmptyIndex(target, so);
+            }
+        }
+        else if (container is WorldLootContainerAdapter)
+        {
+            target = chest;
+            targetIndex = FindFirstEmptyIndex(target, so);
+        }
 
         if (target == null) return;
-
-        int targetIndex = FindFirstEmptyIndex(target, so);
         if (targetIndex < 0) return;
 
         int relicLevel = 0;
@@ -173,7 +199,6 @@ public class ItemSlotUI : MonoBehaviour,
         DragIcon.Instance?.Hide();
         ItemDragContext.Clear();
     }
-
     private static int FindFirstEmptyIndex(IItemContainer target, ScriptableObject moving)
     {
         for (int i = 0; i < target.SlotCount; i++)
@@ -184,7 +209,53 @@ public class ItemSlotUI : MonoBehaviour,
         }
         return -1;
     }
+    // 책임 : 컨테이너 안에서 같은 relicId를 가진 슬롯 인덱스를 찾는다.
+    private static int FindSameRelicIndex(IItemContainer target, RelicDefinition relic)
+    {
+        if (target == null || relic == null) return -1;
 
+        for (int i = 0; i < target.SlotCount; i++)
+        {
+            var existing = target.Get(i) as RelicDefinition;
+            if (existing == null) continue;
+            if (existing.relicId != relic.relicId) continue;
+            return i;
+        }
+
+        return -1;
+    }
+    // 책임 : 비어 있지 않아도 "드롭 시도용"으로 사용할 수 있는 슬롯을 찾는다.
+    // 동일 유물 슬롯 자체를 target으로 잡으면 merge 조건이 어긋날 수 있으므로 제외할 슬롯을 받을 수 있다.
+    private static int FindAnyPlaceableIndex(IItemContainer target, ScriptableObject moving, int excludeIndex = -1)
+    {
+        if (target == null) return -1;
+
+        for (int i = 0; i < target.SlotCount; i++)
+        {
+            if (i == excludeIndex) continue;
+            if (!target.CanPlace(moving, i)) continue;
+            return i;
+        }
+
+        return -1;
+    }
+    // 책임 : chest -> 플레이어 relic 인벤토리 quick move 시
+    // 빈 슬롯이 있으면 빈 슬롯으로,
+    // 빈 슬롯이 없고 동일 유물이 있으면 merge가 일어날 수 있는 "다른" 슬롯을 반환한다.
+    private static int FindRelicQuickMoveIndex(IItemContainer target, RelicDefinition relic)
+    {
+        if (target == null || relic == null) return -1;
+
+        int emptyIndex = FindFirstEmptyIndex(target, relic);
+        if (emptyIndex >= 0)
+            return emptyIndex;
+
+        int sameRelicIndex = FindSameRelicIndex(target, relic);
+        if (sameRelicIndex >= 0)
+            return FindAnyPlaceableIndex(target, relic, excludeIndex: sameRelicIndex);
+
+        return -1;
+    }
     public void OnPointerEnter(PointerEventData eventData)
     {
         if (container == null) return;

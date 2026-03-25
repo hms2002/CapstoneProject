@@ -30,6 +30,15 @@ public sealed class PlayerSceneRestoreBootstrapper : MonoBehaviour
 
     private void Awake()
     {
+        if (resolverSource == null)
+            resolverSource = GetComponent<PlayerRuntimeResolverBridge>();
+
+        if (weaponRuntimeRestorerSource == null)
+            weaponRuntimeRestorerSource = GetComponent<WeaponAbilityRuntimeStateBridge>();
+
+        if (relicRuntimeRestorerSource == null)
+            relicRuntimeRestorerSource = GetComponent<RelicRuntimeStateBridge>();
+
         resolver = resolverSource as IPlayerRuntimeResolver;
         weaponRuntimeRestorer = weaponRuntimeRestorerSource as IWeaponRuntimeStateRestorer;
         relicRuntimeRestorer = relicRuntimeRestorerSource as IRelicRuntimeStateRestorer;
@@ -121,7 +130,7 @@ public sealed class PlayerSceneRestoreBootstrapper : MonoBehaviour
         if (playerWeaponRestorer != null)
             weaponRuntimeRestorer = playerWeaponRestorer;
 
-        var playerRelicRestorer = player.GetComponent<MonoBehaviour>() as IRelicRuntimeStateRestorer;
+        var playerRelicRestorer = player.GetComponent<RelicRuntimeStateBridge>();
         if (playerRelicRestorer != null)
             relicRuntimeRestorer = playerRelicRestorer;
         return TryRestorePendingState(player);
@@ -163,8 +172,8 @@ public sealed class PlayerSceneRestoreBootstrapper : MonoBehaviour
         if (playerWeaponRestorer != null)
             weaponRuntimeRestorer = playerWeaponRestorer;
 
-        // 유물도 같은 방식으로 플레이어 기준 restorer를 다시 바인딩한다.
-        var playerRelicRestorer = player.GetComponent<MonoBehaviour>() as IRelicRuntimeStateRestorer;
+        // 책임 : 유물도 전용 브리지를 통해 플레이어 기준 restorer를 다시 바인딩한다.
+        var playerRelicRestorer = player.GetComponent<RelicRuntimeStateBridge>();
         if (playerRelicRestorer != null)
             relicRuntimeRestorer = playerRelicRestorer;
 

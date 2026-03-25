@@ -208,17 +208,23 @@ namespace UnityGAS.Sample
             if (snapshot.FinalHpDamage <= 0f)
                 return;
 
-            var payload = new AttackHitPayload
+            // 책임 :
+            // - 콤보 단계별 최종 피해량을 공용 CombatHitPayload 규약으로 고정한다.
+            // - 이후 콤보 히트박스도 다른 공격체와 같은 방식으로 피해를 적용한다.
+            var payload = new CombatHitPayload
             {
+                sourceSystem = system,
+                sourceSpec = abilitySpec,
                 damageEffect = data.damageEffect,
                 knockbackEffect = data.knockbackEffect,
                 finalHpDamage = snapshot.FinalHpDamage,
                 finalStaggerBuildUp = snapshot.FinalStaggerBuildUp,
-                elementDamages = snapshot.ElementBuildUps != null && snapshot.ElementBuildUps.Count > 0
+                elementBuildUps = snapshot.ElementBuildUps != null && snapshot.ElementBuildUps.Count > 0
                     ? snapshot.ElementBuildUps.ToArray()
                     : null,
                 finalKnockbackImpulse = snapshot.FinalKnockbackImpulse,
-                hitConfirmedTag = data.hitConfirmedTag
+                hitConfirmedTag = data.hitConfirmedTag,
+                causer = system.gameObject
             };
 
             var hitbox = Object.Instantiate(data.hitboxPrefab, center, Quaternion.identity);

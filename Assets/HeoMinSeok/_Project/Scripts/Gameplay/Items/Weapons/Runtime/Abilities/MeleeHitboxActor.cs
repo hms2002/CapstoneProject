@@ -132,7 +132,7 @@ namespace UnityGAS
                 if (other == null)
                     continue;
 
-                var targetRoot = ResolveHitRoot(other);
+                var targetRoot = CombatTargetResolver2D.ResolveDamageTarget(other);
                 if (targetRoot == null || targetRoot == IgnoreTarget)
                     continue;
 

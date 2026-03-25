@@ -16,6 +16,7 @@ MonoBehaviour:
   icon: {fileID: -1138107394, guid: ef16b2ddeb64123459076c2c8a541a63, type: 3}
   description: AD_RW_Skill1_Rush
   cooldown: 12
+  executionPolicy: 0
   useCharges: 0
   maxCharges: 1
   cooldownEffect: {fileID: 11400000, guid: e0cdcda9b86374b4c99ad2e948fcfd26, type: 2}
@@ -35,7 +36,9 @@ MonoBehaviour:
   requiredTags: []
   blockedByTags: []
   cancelCastingOnTags: []
-  cancelExecutionOnTags: []
+  cancelExecutionOnTags:
+  - {fileID: 11400000, guid: f54e8cb58b4f7c64292067442e9286c7, type: 2}
+  - {fileID: 11400000, guid: 6a88dccc70fd08841a7484539aec65c1, type: 2}
   requiredTagSets: []
   blockedByTagSets: []
   targetRequiredTagSets: []

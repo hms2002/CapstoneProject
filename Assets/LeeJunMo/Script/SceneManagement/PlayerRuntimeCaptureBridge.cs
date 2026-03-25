@@ -55,9 +55,16 @@ public sealed class PlayerRuntimeCaptureBridge : MonoBehaviour
 
     /// <summary>
     /// 책임 : 선택적으로 연결된 장비 개별 런타임 캡처 구현체를 인터페이스로 캐싱한다.
+    /// 인스펙터 연결이 비어 있으면 같은 오브젝트의 기본 브리지를 자동 탐색한다.
     /// </summary>
     private void CacheOptionalCapturers()
     {
+        if (weaponRuntimeCapturerSource == null)
+            weaponRuntimeCapturerSource = GetComponent<WeaponAbilityRuntimeStateBridge>();
+
+        if (relicRuntimeCapturerSource == null)
+            relicRuntimeCapturerSource = GetComponent<RelicRuntimeStateBridge>();
+
         weaponRuntimeCapturer = weaponRuntimeCapturerSource as IWeaponRuntimeStateCapturer;
         relicRuntimeCapturer = relicRuntimeCapturerSource as IRelicRuntimeStateCapturer;
     }

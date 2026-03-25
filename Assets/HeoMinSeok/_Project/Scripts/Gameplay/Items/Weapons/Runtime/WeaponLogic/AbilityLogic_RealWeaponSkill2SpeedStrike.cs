@@ -93,17 +93,20 @@ namespace UnityGAS
                 elementInputs: elementInputs
             );
 
-            var payload = new AttackHitPayload
+            var payload = new CombatHitPayload
             {
+                sourceSystem = system,
+                sourceSpec = spec,
                 damageEffect = data.damageEffect,
                 knockbackEffect = data.knockbackEffect,
                 finalHpDamage = snapshot.FinalHpDamage,
                 finalStaggerBuildUp = snapshot.FinalStaggerBuildUp,
-                elementDamages = snapshot.ElementBuildUps != null && snapshot.ElementBuildUps.Count > 0
+                elementBuildUps = snapshot.ElementBuildUps != null && snapshot.ElementBuildUps.Count > 0
                     ? snapshot.ElementBuildUps.ToArray()
                     : null,
                 finalKnockbackImpulse = snapshot.FinalKnockbackImpulse,
-                hitConfirmedTag = null
+                hitConfirmedTag = null,
+                causer = system.gameObject
             };
 
             var hitbox = Object.Instantiate(data.hitboxPrefab, center, Quaternion.identity);

@@ -39,28 +39,28 @@ namespace UnityGAS
             );
 
             // 책임 :
-            // - 근접 공격이 나중에 적중하더라도 발동 순간의 피해량을 사용하도록 payload를 고정한다.
-            // - 즉시 질의형 근접에서 actor 기반 근접으로 옮겨도 수치 계산 책임은 여전히 AbilityLogic에 남긴다.
-            var payload = new AttackHitPayload
+            // - 근접 공격의 최종 피해량을 공용 CombatHitPayload 규약으로 고정한다.
+            // - 이후 MeleeHitboxActor는 payload 적용만 수행하고 수치 계산 책임은 AbilityLogic에 남긴다.
+            var payload = new CombatHitPayload
             {
+                sourceSystem = system,
+                sourceSpec = spec,
                 damageEffect = data.damageEffect,
                 knockbackEffect = data.knockbackEffect,
                 finalHpDamage = snapshot.FinalHpDamage,
                 finalStaggerBuildUp = snapshot.FinalStaggerBuildUp,
-                elementDamages = snapshot.ElementBuildUps != null && snapshot.ElementBuildUps.Count > 0
+                elementBuildUps = snapshot.ElementBuildUps != null && snapshot.ElementBuildUps.Count > 0
                     ? snapshot.ElementBuildUps.ToArray()
                     : null,
                 finalKnockbackImpulse = snapshot.FinalKnockbackImpulse,
-                hitConfirmedTag = null
+                hitConfirmedTag = null,
+                causer = system.gameObject
             };
 
             var hitbox = Object.Instantiate(data.hitboxPrefab, center, Quaternion.identity);
             if (hitbox == null)
                 yield break;
 
-            // 책임 :
-            // - 근접 히트박스를 짧게 유지하면서, 생성 직후 겹쳐 있는 적과 이후 들어오는 적을 모두 처리한다.
-            // - destroyOnFirstHit=false 로 두어 기존 OverlapBox 방식처럼 여러 적을 동시에 맞출 수 있게 유지한다.
             var context = new MeleeHitboxSpawnContext
             {
                 ownerSystem = system,
