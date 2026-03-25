@@ -48,7 +48,11 @@
         public static readonly int State_Move = TagRegistry.GetIdByPath("State.Move");
         public static readonly int State_Move_Blocked = TagRegistry.GetIdByPath("State.Move.Blocked");
         public static readonly int State_Move_Dash = TagRegistry.GetIdByPath("State.Move.Dash");
+        public static readonly int State_Move_External = TagRegistry.GetIdByPath("State.Move.External");
+        public static readonly int State_Move_External_Blocked = TagRegistry.GetIdByPath("State.Move.External.Blocked");
         public static readonly int State_Move_ForceMove = TagRegistry.GetIdByPath("State.Move.ForceMove");
+        public static readonly int State_Move_Intent = TagRegistry.GetIdByPath("State.Move.Intent");
+        public static readonly int State_Move_Intent_Blocked = TagRegistry.GetIdByPath("State.Move.Intent.Blocked");
         public static readonly int State_Skill = TagRegistry.GetIdByPath("State.Skill");
         public static readonly int State_Skill_Blocked = TagRegistry.GetIdByPath("State.Skill.Blocked");
         public static readonly int State_Status = TagRegistry.GetIdByPath("State.Status");

@@ -12,8 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dd97307469760244e926cad66cbfe69f, type: 3}
   m_Name: ALData_SwordSkill1_ProjectileData
   m_EditorClassIdentifier: 
-  formulaStats: {fileID: 11400000, guid: 83865f9accf70664fa56b704cf0506df, type: 2}
-  includeElementDamage: 1
+  damageConfig:
+    includeStaggerBuildUp: 1
+    includeElementBuildUp: 1
+    staggerFormula: {fileID: 0}
+    elementFormulas: []
+    critAffectsElement: 1
   elementDamages:
   - elementType: {fileID: 11400000, guid: 82578c30453dcb04a88dce3cd193db5b, type: 2}
     baseDamage: 0
@@ -21,7 +25,6 @@ MonoBehaviour:
     baseDamage: 0
   - elementType: {fileID: 11400000, guid: 53bdedc3d917f83458902716124fcc3c, type: 2}
     baseDamage: 0
-  includeStaggerDamage: 0
   baseStaggerDamage: 0
   projectilePrefab: {fileID: 927440902098676642, guid: 7e342b954b6721a409232120275d693a, type: 3}
   projectileSpeed: 12
@@ -33,5 +36,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 2147483648
   damageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
+  knockbackEffect: {fileID: 11400000, guid: 2f5faaf6bd840544cb59f6d23905c40d, type: 2}
+  damageFormula: {fileID: 11400000, guid: f836f4795e60fd54f9a4e401de9d7dd9, type: 2}
+  knockbackFormula: {fileID: 11400000, guid: f836f4795e60fd54f9a4e401de9d7dd9, type: 2}
   damage: 20
   spawnOffset: {x: 0, y: 0, z: 0}

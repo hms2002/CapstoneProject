@@ -71,4 +71,4 @@ MonoBehaviour:
   - 0.08
   - 0.1
   damageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
-  knockbackEffect: {fileID: 0}
+  knockbackEffect: {fileID: 11400000, guid: 2f5faaf6bd840544cb59f6d23905c40d, type: 2}
