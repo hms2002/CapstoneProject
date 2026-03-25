@@ -18,6 +18,7 @@ public class SampleTopDownPlayer : MonoBehaviour, IPlayerInteractor
     [SerializeField] private PlayerSpeechData speechData;
 
     private readonly List<IInteractable> nearbyObjects = new();
+    private readonly Dictionary<IInteractable, int> nearbyOverlapCounts = new();
     private IInteractable currentTarget;
 
     private void Awake()
@@ -132,6 +133,8 @@ public class SampleTopDownPlayer : MonoBehaviour, IPlayerInteractor
             var obj = nearbyObjects[i];
             if (obj == null || (obj is MonoBehaviour mb && mb == null))
             {
+                if (obj != null)
+                    nearbyOverlapCounts.Remove(obj);
                 nearbyObjects.RemoveAt(i);
                 continue;
             }
@@ -157,11 +160,25 @@ public class SampleTopDownPlayer : MonoBehaviour, IPlayerInteractor
 
         Debug.Log($"[Player] OnTriggerEnter2D: other={other.name}, foundInteractable={(interactable as MonoBehaviour)?.name ?? "null"}");
 
-        if (interactable != null && !nearbyObjects.Contains(interactable))
+        if (interactable == null)
+            return;
+
+        if (nearbyOverlapCounts.TryGetValue(interactable, out int overlapCount))
         {
+            nearbyOverlapCounts[interactable] = overlapCount + 1;
+        }
+        else
+        {
+            nearbyOverlapCounts.Add(interactable, 1);
             nearbyObjects.Add(interactable);
             interactable.OnPlayerNearby();
             Debug.Log($"[Player] Added nearby interactable: {(interactable as MonoBehaviour)?.name}");
+        }
+
+        if (CurrentState == InteractState.Idle)
+        {
+            HandleInteractSearch();
+            RefreshInteractionPrompt();
         }
     }
 
@@ -173,15 +190,26 @@ public class SampleTopDownPlayer : MonoBehaviour, IPlayerInteractor
 
         Debug.Log($"[Player] OnTriggerExit2D: other={other.name}, foundInteractable={(interactable as MonoBehaviour)?.name ?? "null"}");
 
-        if (interactable == null || !nearbyObjects.Contains(interactable))
+        if (interactable == null || !nearbyOverlapCounts.TryGetValue(interactable, out int overlapCount))
             return;
 
+        overlapCount--;
+
+        if (overlapCount > 0)
+        {
+            nearbyOverlapCounts[interactable] = overlapCount;
+            return;
+        }
+
+        nearbyOverlapCounts.Remove(interactable);
         interactable.OnPlayerLeave();
 
         if (ReferenceEquals(currentTarget, interactable))
             ClearCurrentTarget();
 
         nearbyObjects.Remove(interactable);
+        if (CurrentState == InteractState.Idle)
+            HandleInteractSearch();
         RefreshInteractionPrompt();
         Debug.Log($"[Player] Removed nearby interactable: {(interactable as MonoBehaviour)?.name}");
     }

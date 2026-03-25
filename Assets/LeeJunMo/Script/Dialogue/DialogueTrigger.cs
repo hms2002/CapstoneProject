@@ -49,12 +49,26 @@ public class DialogueTrigger : MonoBehaviour, IInteractable
     {
         return player != null &&
                player.CurrentState == InteractState.Idle &&
+               npcData != null &&
+               inkJSON != null &&
                DialogueController.Instance != null &&
                !DialogueController.Instance.isPlaying;
     }
 
     public void OnPlayerInteract(IPlayerInteractor player)
     {
+        if (npcData == null)
+        {
+            Debug.LogError($"[DialogueTrigger] '{name}'의 npcData가 비어 있어 대화를 시작할 수 없습니다.", this);
+            return;
+        }
+
+        if (inkJSON == null)
+        {
+            Debug.LogError($"[DialogueTrigger] '{name}'의 inkJSON이 비어 있어 대화를 시작할 수 없습니다.", this);
+            return;
+        }
+
         if (!CanInteract(player))
             return;
 

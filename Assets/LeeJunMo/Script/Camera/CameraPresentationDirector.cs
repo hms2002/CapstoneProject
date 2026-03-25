@@ -1,52 +1,48 @@
 using System.Collections;
 using UnityEngine;
 using Unity.Cinemachine;
-using Cainos.PixelArtTopDown_Basic;
 
 public class CameraPresentationDirector : MonoBehaviour
 {
-    [Header("카메라")]
+    [Header("Camera")]
     [SerializeField] private CinemachineCamera playerCam;
     [SerializeField] private CinemachineCamera bossCam;
 
-    [Header("우선순위")]
+    [Header("Priority")]
     [SerializeField] private int normalPriority = 10;
     [SerializeField] private int focusPriority = 100;
 
-    [Header("옵션")]
-    [SerializeField] private bool disableLegacyFollowWhilePresenting = true;
-
     private CinemachineBrain brain;
-    private CameraFollow legacyFollowCamera;
 
     private void Awake()
     {
         if (Camera.main != null)
-        {
             brain = Camera.main.GetComponent<CinemachineBrain>();
-            legacyFollowCamera = Camera.main.GetComponent<CameraFollow>();
-        }
 
         RestoreDefaultState();
     }
 
+    private void OnEnable()
+    {
+        PlayerRuntimeRegistry.PlayerRegistered += HandlePlayerRegistered;
+        PlayerRuntimeRegistry.PlayerUnregistered += HandlePlayerUnregistered;
+        BindPlayerCameraToCurrentPlayer();
+    }
+
+    private void OnDisable()
+    {
+        PlayerRuntimeRegistry.PlayerRegistered -= HandlePlayerRegistered;
+        PlayerRuntimeRegistry.PlayerUnregistered -= HandlePlayerUnregistered;
+    }
+
     public void BindPlayerCameraToCurrentPlayer()
     {
-        if (playerCam == null)
-            return;
-
-        var playerTransform = PlayerRuntimeRegistry.GetPlayerTransform();
-        if (playerTransform == null)
-            return;
-
-        playerCam.Follow = playerTransform;
-        playerCam.LookAt = playerTransform;
+        BindPlayerCamera(PlayerRuntimeRegistry.GetPlayerTransform());
     }
 
     public IEnumerator FocusBossRoutine()
     {
         BindPlayerCameraToCurrentPlayer();
-        SetLegacyFollowEnabled(false);
 
         if (playerCam != null)
             playerCam.Priority = normalPriority;
@@ -68,31 +64,46 @@ public class CameraPresentationDirector : MonoBehaviour
             playerCam.Priority = focusPriority;
 
         yield return WaitForBlendEnd();
-
-        SetLegacyFollowEnabled(true);
-
-        if (legacyFollowCamera != null)
-            legacyFollowCamera.SnapToTarget();
     }
 
     public void RestoreDefaultState()
     {
+        BindPlayerCameraToCurrentPlayer();
+
         if (bossCam != null)
             bossCam.Priority = normalPriority;
 
         if (playerCam != null)
             playerCam.Priority = focusPriority;
-
-        SetLegacyFollowEnabled(true);
     }
 
-    private void SetLegacyFollowEnabled(bool enabled)
+    private void HandlePlayerRegistered(SampleTopDownPlayer player)
     {
-        if (!disableLegacyFollowWhilePresenting)
+        if (player == null)
             return;
 
-        if (legacyFollowCamera != null)
-            legacyFollowCamera.enabled = enabled;
+        BindPlayerCamera(player.transform);
+    }
+
+    private void HandlePlayerUnregistered(SampleTopDownPlayer player)
+    {
+        if (playerCam == null || player == null)
+            return;
+
+        if (playerCam.Follow == player.transform)
+            playerCam.Follow = null;
+
+        if (playerCam.LookAt == player.transform)
+            playerCam.LookAt = null;
+    }
+
+    private void BindPlayerCamera(Transform playerTransform)
+    {
+        if (playerCam == null || playerTransform == null)
+            return;
+
+        playerCam.Follow = playerTransform;
+        playerCam.LookAt = playerTransform;
     }
 
     private IEnumerator WaitForBlendEnd()

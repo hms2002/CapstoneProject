@@ -120,11 +120,15 @@ public class DialogueView : MonoBehaviour
         if (continueIcon != null) continueIcon.SetActive(true);
     }
 
-    public void ShowChoices(List<Ink.Runtime.Choice> choices, Action<int> onChoiceSelected)
+    public bool ShowChoices(List<Ink.Runtime.Choice> choices, Action<int> onChoiceSelected)
     {
         ClearChoices();
         if (continueIcon != null) continueIcon.SetActive(false);
-        if (choiceContainer == null || choiceButtonPrefab == null) return;
+        if (choiceContainer == null || choiceButtonPrefab == null)
+        {
+            Debug.LogError("[DialogueView] choiceContainer 또는 choiceButtonPrefab 참조가 비어 있어 선택지를 표시할 수 없습니다.", this);
+            return false;
+        }
 
         onChoiceSelectedCallback = onChoiceSelected;
         currentChoiceIndex = 0;
@@ -150,6 +154,7 @@ public class DialogueView : MonoBehaviour
         }
 
         HighlightChoice(currentChoiceIndex);
+        return true;
     }
 
     public void ChangeChoiceSelection(int direction)
