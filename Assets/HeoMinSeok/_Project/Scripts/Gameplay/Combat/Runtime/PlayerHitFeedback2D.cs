@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using Unity.Cinemachine;
 
 namespace UnityGAS
 {
@@ -31,8 +32,9 @@ namespace UnityGAS
         [SerializeField] private Behaviour[] componentsToDisable;
 
         [Header("Camera Shake")]
-        [SerializeField] private SimpleCameraShake2D cameraShake;
+        [SerializeField] private CinemachineImpulseSource cameraImpulseSource;
         [SerializeField] private float defaultShake = 0.10f;
+        [SerializeField] private float impulseForceMultiplier = 1f;
 
         [Header("Immunity Tags (Optional)")]
         [Tooltip("If the target has this tag, flash/animation/camera shake are ignored.")]
@@ -56,7 +58,7 @@ namespace UnityGAS
 
             if (spriteRenderer == null) spriteRenderer = GetComponentInChildren<SpriteRenderer>();
             if (animator == null) animator = GetComponentInChildren<Animator>();
-            if (cameraShake == null && Camera.main != null) cameraShake = Camera.main.GetComponent<SimpleCameraShake2D>();
+            ResolveCameraImpulseSource();
 
             _hitTriggerHash = !string.IsNullOrEmpty(hitTrigger) ? Animator.StringToHash(hitTrigger) : 0;
 
@@ -86,8 +88,8 @@ namespace UnityGAS
                     _flashRoutine = StartCoroutine(CoFlashWhite());
                 }
 
-                if (cameraShake != null && shake > 0f)
-                    cameraShake.Shake(shake);
+                if (shake > 0f)
+                    EmitCameraImpulse(shake);
             }
 
             if (!stunImmune && stun > 0f)
@@ -139,6 +141,39 @@ namespace UnityGAS
                     if (componentsToDisable[i] != null)
                         componentsToDisable[i].enabled = true;
             }
+        }
+
+        private void EmitCameraImpulse(float shake)
+        {
+            var impulseSource = ResolveCameraImpulseSource();
+            if (impulseSource == null || shake <= 0f)
+                return;
+
+            Vector3 baseVelocity = impulseSource.DefaultVelocity.sqrMagnitude > 0.0001f
+                ? impulseSource.DefaultVelocity.normalized
+                : Vector3.down;
+
+            impulseSource.GenerateImpulseAtPositionWithVelocity(
+                transform.position,
+                baseVelocity * (shake * impulseForceMultiplier));
+        }
+
+        private CinemachineImpulseSource ResolveCameraImpulseSource()
+        {
+            if (cameraImpulseSource != null)
+                return cameraImpulseSource;
+
+            if (Camera.main == null)
+                return null;
+
+            cameraImpulseSource = Camera.main.GetComponent<CinemachineImpulseSource>();
+            if (cameraImpulseSource == null)
+                cameraImpulseSource = Camera.main.gameObject.AddComponent<CinemachineImpulseSource>();
+
+            if (cameraImpulseSource.DefaultVelocity.sqrMagnitude <= 0.0001f)
+                cameraImpulseSource.DefaultVelocity = Vector3.down;
+
+            return cameraImpulseSource;
         }
     }
 }

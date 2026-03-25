@@ -17,6 +17,13 @@ public class CinematicDirector : MonoBehaviour
             return;
         }
 
+        if (portraitController == null)
+        {
+            Debug.LogWarning("[CinematicDirector] PortraitController 참조가 없어 인트로 연출을 건너뜁니다.", this);
+            onComplete?.Invoke();
+            return;
+        }
+
         // 1. 보스 연출 (첫 번째 인물이 보스일 경우 기존 연출 재생)
         if (participants[0].isBoss)
         {
@@ -62,7 +69,11 @@ public class CinematicDirector : MonoBehaviour
     // =================================================================
     private void PlayBossIntroSequence(NPCData npcData, Action onComplete)
     {
-        if (portraitController == null) return;
+        if (portraitController == null)
+        {
+            onComplete?.Invoke();
+            return;
+        }
         portraitController.SetupSilhouetteMode(npcData);
         portraitController.SetInitialPosition(npcData, "center");
         Sequence seq = DOTween.Sequence();

@@ -247,23 +247,36 @@ public class LootManager : MonoBehaviour
     private RelicDefinition GetRandomRelicByRarity(ItemRarity targetRarity)
     {
         var pool = ItemManager.Instance.GetUnlockedRelicIDs();
-        if (pool.Count == 0) return null;
+        if (pool.Count == 0)
+            return null;
 
-        List<string> filteredPool = new List<string>();
+        var allUnlockedRelics = new List<RelicDefinition>();
+        var exactMatches = new List<RelicDefinition>();
+        var lowerRarityMatches = new List<RelicDefinition>();
 
         foreach (var id in pool)
         {
             var relicData = ItemManager.Instance.GetRelicData(id);
-            if (relicData != null)
-            {
-                filteredPool.Add(id);
-            }
+            if (relicData == null)
+                continue;
+
+            allUnlockedRelics.Add(relicData);
+
+            if (relicData.rarity == targetRarity)
+                exactMatches.Add(relicData);
+            else if (relicData.rarity < targetRarity)
+                lowerRarityMatches.Add(relicData);
         }
 
-        if (filteredPool.Count == 0)
-            return ItemManager.Instance.GetRelicData(pool[Random.Range(0, pool.Count)]);
+        if (exactMatches.Count > 0)
+            return exactMatches[Random.Range(0, exactMatches.Count)];
 
-        string pickedID = filteredPool[Random.Range(0, filteredPool.Count)];
-        return ItemManager.Instance.GetRelicData(pickedID);
+        if (lowerRarityMatches.Count > 0)
+            return lowerRarityMatches[Random.Range(0, lowerRarityMatches.Count)];
+
+        if (allUnlockedRelics.Count == 0)
+            return null;
+
+        return allUnlockedRelics[Random.Range(0, allUnlockedRelics.Count)];
     }
 }

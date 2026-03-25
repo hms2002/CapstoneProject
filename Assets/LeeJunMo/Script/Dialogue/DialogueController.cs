@@ -82,10 +82,52 @@ public class DialogueController : MonoBehaviour
 
     public void EnterDialogueMode(TextAsset inkJSON, List<NPCData> participants, NPCFeatureController featureController = null)
     {
-        if (isPlaying || participants == null || participants.Count == 0) return;
+        if (isPlaying) return;
+
+        if (inkJSON == null)
+        {
+            Debug.LogError("[DialogueController] inkJSON이 비어 있어 대화를 시작할 수 없습니다.", this);
+            return;
+        }
+
+        if (participants == null || participants.Count == 0)
+        {
+            Debug.LogError("[DialogueController] 대화 참가자 정보가 비어 있어 대화를 시작할 수 없습니다.", this);
+            return;
+        }
+
+        if (view == null)
+        {
+            Debug.LogError("[DialogueController] DialogueView 참조가 없어 대화를 시작할 수 없습니다.", this);
+            return;
+        }
+
+        if (director == null)
+        {
+            Debug.LogError("[DialogueController] CinematicDirector 참조가 없어 대화를 시작할 수 없습니다.", this);
+            return;
+        }
+
+        List<NPCData> validParticipants = new List<NPCData>();
+        foreach (var npc in participants)
+        {
+            if (npc == null)
+            {
+                Debug.LogWarning("[DialogueController] null NPC 참가자는 무시됩니다.", this);
+                continue;
+            }
+
+            validParticipants.Add(npc);
+        }
+
+        if (validParticipants.Count == 0)
+        {
+            Debug.LogError("[DialogueController] 유효한 NPC 참가자가 없어 대화를 시작할 수 없습니다.", this);
+            return;
+        }
 
         activeNPCs.Clear();
-        foreach (var npc in participants)
+        foreach (var npc in validParticipants)
         {
             if (!activeNPCs.ContainsKey(npc.id)) activeNPCs.Add(npc.id, npc);
         }
@@ -99,7 +141,7 @@ public class DialogueController : MonoBehaviour
         // [핵심 해결] 이전 대화의 잔상이 보이지 않도록 즉시 비워줍니다!
         view.ClearText();
 
-        currentNPCData = participants[0];
+        currentNPCData = validParticipants[0];
         currentFeatureController = featureController;
 
         currentSpeakerId = currentNPCData.id;
@@ -115,7 +157,7 @@ public class DialogueController : MonoBehaviour
 
         currentStory = new Story(inkJSON.text);
 
-        director.PlayIntro(participants, () =>
+        director.PlayIntro(validParticipants, () =>
         {
             view.ShowUI(currentNPCData.isBoss, () =>
             {
@@ -127,6 +169,9 @@ public class DialogueController : MonoBehaviour
 
     private void ContinueStory()
     {
+        if (!isPlaying || isTransitioning || currentStory == null)
+            return;
+
         if (currentStory.canContinue)
         {
             currentText = currentStory.Continue();
@@ -184,21 +229,40 @@ public class DialogueController : MonoBehaviour
 
     private void DisplayChoicesIfNeeded()
     {
+        if (currentStory == null)
+            return;
+
         if (currentStory.currentChoices.Count > 0)
         {
-            isChoosing = true;
-            view.ShowChoices(currentStory.currentChoices, (choiceIndex) =>
+            bool didShowChoices = view != null && view.ShowChoices(currentStory.currentChoices, (choiceIndex) =>
             {
                 currentStory.ChooseChoiceIndex(choiceIndex);
                 isChoosing = false;
                 ContinueStory();
             });
+
+            if (didShowChoices)
+            {
+                isChoosing = true;
+            }
+            else
+            {
+                Debug.LogError("[DialogueController] 선택지 UI를 표시할 수 없어 대화를 종료합니다.", this);
+                isChoosing = false;
+                ExitDialogueMode();
+            }
         }
     }
 
     private void ExitDialogueMode()
     {
+        if (!isPlaying)
+            return;
+
         isTransitioning = true;
+        isWaitingForCallback = false;
+        isTyping = false;
+        isChoosing = false;
         if (currentFeatureController != null) currentFeatureController.RequestDialogueExit -= ExitDialogueMode;
 
         view.HideUI(() =>
@@ -208,6 +272,10 @@ public class DialogueController : MonoBehaviour
                 currentStory = null;
                 currentFeatureController = null;
                 activeNPCs.Clear();
+                currentNPCData = null;
+                currentSpeakerId = -1;
+                currentSpeakerName = "";
+                currentText = "";
                 isTransitioning = false;
                 isPlaying = false;
             });
@@ -217,7 +285,10 @@ public class DialogueController : MonoBehaviour
     public void ResumeDialogue()
     {
         isWaitingForCallback = false;
-        if (isPlaying && !isTyping && !isChoosing) ContinueStory();
+        if (!isPlaying || isTransitioning || currentStory == null)
+            return;
+
+        if (!isTyping && !isChoosing) ContinueStory();
     }
 
     private NPCData GetOrLoadNPC(string idStr)
