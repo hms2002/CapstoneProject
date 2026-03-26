@@ -14,3 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   damageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
   damageAmount: 10
+  knockbackEffect: {fileID: 11400000, guid: 2f5faaf6bd840544cb59f6d23905c40d, type: 2}
+  knockbackImpulse: 100
+  hitConfirmedTag: {fileID: 0}
