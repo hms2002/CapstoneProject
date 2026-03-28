@@ -4,8 +4,8 @@ using UnityGAS;
 /// <summary>
 /// 책임 : AttributeSet의 체력 감소 이벤트를 감지하고,
 /// 실제 피해량이 발생했을 때 데미지 팝업 표시를 요청한다.
-/// 팝업의 실제 생성 위치 계산은 담당하지만,
-/// 어떤 Canvas / Camera에 그릴지는 DamagePopupService에 위임한다.
+/// 팝업이 어느 위치에 떠야 하는지 계산하지만,
+/// 팝업의 실제 생성 방식은 DamagePopupService에 위임한다.
 /// </summary>
 [DisallowMultipleComponent]
 [RequireComponent(typeof(AttributeSet))]
@@ -19,7 +19,7 @@ public class DamagePopupListener2D : MonoBehaviour
     [Tooltip("팝업 위치 기준(비우면 이 오브젝트 Transform).")]
     [SerializeField] private Transform worldAnchor;
 
-    [Tooltip("팝업 생성 월드 오프셋 (서비스의 기본 offset에 추가 적용).")]
+    [Tooltip("팝업 생성 월드 오프셋.")]
     [SerializeField] private Vector3 extraWorldOffset = Vector3.zero;
 
     [Header("Throttle")]
@@ -61,7 +61,6 @@ public class DamagePopupListener2D : MonoBehaviour
         if (attr != healthAttribute)
             return;
 
-        // 감소만 처리
         if (newValue >= oldValue)
             return;
 

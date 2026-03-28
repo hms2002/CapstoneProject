@@ -5751,6 +5751,7 @@ GameObject:
   - component: {fileID: 716580150}
   - component: {fileID: 716580154}
   - component: {fileID: 716580156}
+  - component: {fileID: 716580157}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -5893,6 +5894,21 @@ MonoBehaviour:
   autoBindToSpawnedPlayer: 1
   followOffset: {x: 0, y: 0, z: -10}
   snapWhenTargetBound: 1
+--- !u!114 &716580157
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 716580149}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e6847d3d7549d1459f5ccd03a0d346c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  duration: 0.12
+  frequency: 25
+  target: {fileID: 0}
 --- !u!1 &720948541
 GameObject:
   m_ObjectHideFlags: 0

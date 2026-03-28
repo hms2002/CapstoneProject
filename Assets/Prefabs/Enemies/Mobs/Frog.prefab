@@ -27,6 +27,8 @@ GameObject:
   - component: {fileID: 3341026293018187748}
   - component: {fileID: 4498329263665203074}
   - component: {fileID: 1202927576409601092}
+  - component: {fileID: 8449557556642649421}
+  - component: {fileID: 3949865959590047275}
   m_Layer: 31
   m_Name: Frog
   m_TagString: Enemy
@@ -72,7 +74,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: 2100000, guid: 88c91c7701d6a4241abc1bff8cbbe657, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -397,8 +399,8 @@ MonoBehaviour:
   externalMovement: {fileID: 3341026293018187748}
   motionController: {fileID: 0}
   freezeAllMovementTag: {fileID: 0}
-  blockIntentMoveTag: {fileID: 0}
-  blockExternalMoveTag: {fileID: 0}
+  intentMoveBlockedTag: {fileID: 0}
+  externalMoveBlockedTag: {fileID: 0}
 --- !u!114 &4721849179845252330
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -460,3 +462,42 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   viewPrefab: {fileID: 4173988088759112643, guid: 08da978b416319e47889bb7d3e9e0343, type: 3}
   uiParentOverride: {fileID: 2826825829709561300}
+--- !u!114 &8449557556642649421
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 625522859161183429}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cbeb54d2db10da14b8076a6745dad316, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hitEnterSeconds: 0.2
+  hitActiveSeconds: 0.4
+  animator: {fileID: 0}
+  hitEnterTrigger: 
+  hitLoopBool: 
+  hitFlashController: {fileID: 3949865959590047275}
+  hitReactStateTag: {fileID: 0}
+  attackingBlockedTag: {fileID: 0}
+  skillBlockedTag: {fileID: 0}
+  hitReactImmuneTag: {fileID: 0}
+--- !u!114 &3949865959590047275
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 625522859161183429}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6014e026c86c11f4385811e5bf185269, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetRenderers:
+  - {fileID: 1695031726951874086}
+  flashColor: {r: 1, g: 1, b: 1, a: 1}
+  flashMultiply: 1.5
+  flashDuration: 0.08

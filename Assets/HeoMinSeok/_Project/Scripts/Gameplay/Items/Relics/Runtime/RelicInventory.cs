@@ -180,11 +180,15 @@ public class RelicInventory : MonoBehaviour
             int existing = FindSlotByRelicId(relic.relicId);
             if (existing >= 0 && existing != slotIndex)
             {
+                // 책임 : 동일 유물을 다른 슬롯에 배치하려 할 때,
+                // 이미 보유 중인 유물의 강화 가능 여부를 판정하고 강화 또는 획득 거부를 처리한다.
                 int gain = relic.dropLevel > 0 ? relic.dropLevel : 1;
                 var eExist = slots[existing];
                 int oldLevel = Mathf.Max(1, eExist.level);
                 int newLevel = relic.ClampLevel(oldLevel + gain);
-                if (newLevel == oldLevel) return true;
+
+                // 책임 : 이미 최대 레벨이면 중복 획득을 실패 처리한다.
+                if (newLevel == oldLevel) return false;
 
                 return ReapplyLevel(existing, newLevel);
             }
@@ -248,10 +252,14 @@ public class RelicInventory : MonoBehaviour
             int existing = FindSlotByRelicId(relic.relicId);
             if (existing >= 0 && existing != slotIndex)
             {
+                // 책임 : 레벨이 지정된 유물 드롭/이동 시
+                // 동일 유물의 강화 합산 또는 획득 거부를 처리한다.
                 var eExist = slots[existing];
                 int oldLevel = Mathf.Max(1, eExist.level);
                 int newLevel = relic.ClampLevel(oldLevel + incomingLevel);
-                if (newLevel == oldLevel) return true;
+
+                // 책임 : 이미 최대 레벨이면 드롭/빠른이동을 실패 처리한다.
+                if (newLevel == oldLevel) return false;
 
                 return ReapplyLevel(existing, newLevel);
             }
@@ -321,10 +329,14 @@ public class RelicInventory : MonoBehaviour
         int idx = FindSlotByRelicId(relic.relicId);
         if (idx >= 0)
         {
+            // 책임 : 유물 획득 시 이미 보유 중인 동일 유물이 있으면
+            // 강화 가능 여부를 검사하고 강화 또는 획득 실패를 결정한다.
             var e = slots[idx];
             int oldLevel = Mathf.Max(1, e.level);
             int newLevel = relic.ClampLevel(oldLevel + gain);
-            if (newLevel == oldLevel) return true;
+
+            // 책임 : 이미 최대 레벨이면 추가 획득을 실패 처리한다.
+            if (newLevel == oldLevel) return false;
 
             return ReapplyLevel(idx, newLevel);
         }
