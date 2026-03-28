@@ -1,27 +1,55 @@
-using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.Serialization;
 
 [CreateAssetMenu(fileName = "Table_Stage1", menuName = "Game/Loot/Stage Loot Table")]
 public class StageLootTable : ScriptableObject
 {
-    [Header("1. [상자] 드롭 개수 확률")]
-    public List<DropCountOption> chestWeaponCounts;
-    public List<DropCountOption> chestRelicCounts;
+    [Header("Chest Weapon Count")]
+    [SerializeField] private CountRangeWeightProfile chestWeaponCountProfile = new CountRangeWeightProfile();
 
-    [Header("2. [유물] 등급 가중치")]
+    [Header("Chest Relic Count")]
+    [SerializeField] private CountRangeWeightProfile chestRelicCountProfile = new CountRangeWeightProfile();
+
+    [Header("Relic Rarity Weights")]
     public int commonWeight = 60;
     public int rareWeight = 30;
     public int epicWeight = 10;
     public int legendaryWeight = 0;
 
-    [Header("3. [일반 몬스터] 통합 드롭 가중치")]
+    [Header("Mob Loot Weights")]
     public int mobNothingWeight = 65;
     public int mobWeaponWeight = 2;
     public int mobRelicWeight = 3;
     public int mobConsumableWeight = 15;
     public int mobFieldItemWeight = 15;
 
-    [Header("4. [보스] 마정석 드롭 개수")]
-    [Tooltip("1스테이지: 5, 2스테이지: 10, 3스테이지: 15...")]
+    [Header("Boss Reward")]
     public int bossStoneCount = 5;
+
+    [FormerlySerializedAs("chestWeaponMinCount")]
+    [SerializeField, HideInInspector] private int legacyChestWeaponMinCount = 1;
+    [FormerlySerializedAs("chestWeaponMaxCount")]
+    [SerializeField, HideInInspector] private int legacyChestWeaponMaxCount = 1;
+    [FormerlySerializedAs("chestWeaponCounts")]
+    [SerializeField, HideInInspector] private List<DropCountOption> legacyChestWeaponCounts = new List<DropCountOption>();
+
+    [FormerlySerializedAs("chestRelicMinCount")]
+    [SerializeField, HideInInspector] private int legacyChestRelicMinCount = 1;
+    [FormerlySerializedAs("chestRelicMaxCount")]
+    [SerializeField, HideInInspector] private int legacyChestRelicMaxCount = 1;
+    [FormerlySerializedAs("chestRelicCounts")]
+    [SerializeField, HideInInspector] private List<DropCountOption> legacyChestRelicCounts = new List<DropCountOption>();
+
+    public CountRangeWeightProfile ChestWeaponCountProfile => chestWeaponCountProfile;
+    public CountRangeWeightProfile ChestRelicCountProfile => chestRelicCountProfile;
+
+    private void OnValidate()
+    {
+        chestWeaponCountProfile ??= new CountRangeWeightProfile();
+        chestRelicCountProfile ??= new CountRangeWeightProfile();
+
+        chestWeaponCountProfile.TryInitializeFromLegacy(legacyChestWeaponMinCount, legacyChestWeaponMaxCount, legacyChestWeaponCounts);
+        chestRelicCountProfile.TryInitializeFromLegacy(legacyChestRelicMinCount, legacyChestRelicMaxCount, legacyChestRelicCounts);
+    }
 }

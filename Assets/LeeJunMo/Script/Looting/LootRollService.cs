@@ -34,6 +34,40 @@ public sealed class LootRollService
         return options.Last().count;
     }
 
+    public int PickCountInRange(List<DropCountOption> options, int minCount, int maxCount)
+    {
+        if (options == null || options.Count == 0)
+            return Mathf.Max(0, minCount);
+
+        int definedMin = options.Min(o => o.count);
+        int definedMax = options.Max(o => o.count);
+
+        int requestedMin = minCount <= 0 ? definedMin : minCount;
+        int requestedMax = maxCount <= 0 ? definedMax : maxCount;
+
+        int effectiveMin = Mathf.Clamp(requestedMin, definedMin, definedMax);
+        int effectiveMax = Mathf.Clamp(requestedMax, definedMin, definedMax);
+        if (effectiveMax < effectiveMin)
+            effectiveMax = effectiveMin;
+
+        List<DropCountOption> filtered = options
+            .Where(o => o.count >= effectiveMin && o.count <= effectiveMax && o.weight > 0)
+            .ToList();
+
+        if (filtered.Count == 0)
+            return effectiveMin;
+
+        return PickCount(filtered);
+    }
+
+    public int PickCountInProfile(CountRangeWeightProfile profile, int minBonus = 0, int maxBonus = 0)
+    {
+        if (profile == null)
+            return 0;
+
+        return PickCountInRange(profile.weights, profile.minCount + minBonus, profile.maxCount + maxBonus);
+    }
+
     public ItemRarity RollStageRelicRarity(StageLootTable table)
     {
         if (table == null)

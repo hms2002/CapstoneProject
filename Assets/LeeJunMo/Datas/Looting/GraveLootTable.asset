@@ -12,14 +12,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a598f36781bd92f4da3f5aad6482613d, type: 3}
   m_Name: GraveLootTable
   m_EditorClassIdentifier: 
+  weaponDropMinCount: 1
+  weaponDropMaxCount: 2
   weaponDropCounts:
   - count: 1
     weight: 100
+  relicDropMinCount: 1
+  relicDropMaxCount: 2
   relicDropCounts:
   - count: 1
     weight: 70
   - count: 2
-    weight: 30
+    weight: 20
+  - count: 3
+    weight: 10
   normalRelicWeight: 90
   rareRelicWeight: 10
   epicRelicWeight: 0

@@ -7,10 +7,14 @@ public sealed class LootPoolService
     public HashSet<string> BuildPlayerWeaponExclusionSet()
     {
         var exclusionList = new HashSet<string>();
-        if (SampleTopDownPlayer.Instance == null)
+        var currentPlayer = PlayerRuntimeRegistry.CurrentPlayer != null
+            ? PlayerRuntimeRegistry.CurrentPlayer
+            : SampleTopDownPlayer.Instance;
+
+        if (currentPlayer == null)
             return exclusionList;
 
-        WeaponInventory2D weaponInventory = SampleTopDownPlayer.Instance.GetComponent<WeaponInventory2D>();
+        WeaponInventory2D weaponInventory = currentPlayer.GetComponent<WeaponInventory2D>();
         if (weaponInventory != null)
             exclusionList.UnionWith(weaponInventory.GetAllWeaponIDs());
 

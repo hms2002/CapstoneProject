@@ -29,6 +29,11 @@ public class UpgradeTreeEditor : EditorWindow
 
     private void OnEnable() => wantsMouseMove = true;
 
+    private void OnDisable()
+    {
+        ReleaseCachedNodeEditor();
+    }
+
     private void OnGUI()
     {
         if (selectedDatabase == null) { DrawDatabaseSelector(); return; }
@@ -164,7 +169,12 @@ public class UpgradeTreeEditor : EditorWindow
     private void DrawSidePanel()
     {
         GUILayout.BeginVertical(GUILayout.Width(SIDEBAR_WIDTH));
-        if (GUILayout.Button("Close DB")) selectedDatabase = null;
+        if (GUILayout.Button("Close DB"))
+        {
+            selectedDatabase = null;
+            selectedNode = null;
+            ReleaseCachedNodeEditor();
+        }
         GUILayout.Space(10);
         if (selectedNode != null)
         {
@@ -176,7 +186,10 @@ public class UpgradeTreeEditor : EditorWindow
             DrawConnectionManager();
             GUILayout.Space(10);
             if (cachedNodeEditor == null || cachedNodeEditor.target != selectedNode)
+            {
+                ReleaseCachedNodeEditor();
                 cachedNodeEditor = Editor.CreateEditor(selectedNode);
+            }
             inspectorScrollPos = GUILayout.BeginScrollView(inspectorScrollPos);
             cachedNodeEditor.OnInspectorGUI();
             GUILayout.EndScrollView();
@@ -248,8 +261,12 @@ public class UpgradeTreeEditor : EditorWindow
             if (node.nextNodes.Contains(target)) { node.nextNodes.Remove(target); node.unlockedNodeIDs.Remove(target.nodeID); EditorUtility.SetDirty(node); }
             if (node.requiredParents.Contains(target)) { node.requiredParents.Remove(target); node.requiredParentIDs.Remove(target.nodeID); EditorUtility.SetDirty(node); }
         }
-        selectedDatabase.allUpgrades.Remove(target); AssetDatabase.DeleteAsset(AssetDatabase.GetAssetPath(target));
-        selectedNode = null; AssetDatabase.SaveAssets();
+        selectedDatabase.allUpgrades.Remove(target);
+        EditorUtility.SetDirty(selectedDatabase);
+        AssetDatabase.DeleteAsset(AssetDatabase.GetAssetPath(target));
+        selectedNode = null;
+        ReleaseCachedNodeEditor();
+        AssetDatabase.SaveAssets();
     }
     private void SelectNode(UpgradeNodeSO node) { selectedNode = node; isConnecting = false; Selection.activeObject = node; GUI.FocusControl(null); }
     private void CompleteConnection(UpgradeNodeSO target)
@@ -265,5 +282,14 @@ public class UpgradeTreeEditor : EditorWindow
         EditorUtility.SetDirty(p); EditorUtility.SetDirty(c); AssetDatabase.SaveAssets();
     }
     private void ProcessEvents(Event e) { if (e.type == EventType.KeyDown && e.keyCode == KeyCode.Escape) { isConnecting = false; Repaint(); } }
+
+    private void ReleaseCachedNodeEditor()
+    {
+        if (cachedNodeEditor == null)
+            return;
+
+        DestroyImmediate(cachedNodeEditor);
+        cachedNodeEditor = null;
+    }
 }
 #endif

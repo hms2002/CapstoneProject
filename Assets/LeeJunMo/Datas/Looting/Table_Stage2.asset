@@ -12,8 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7a3617a0ee9d014c8ed345db9073993, type: 3}
   m_Name: Table_Stage2
   m_EditorClassIdentifier: 
-  chestWeaponCounts: []
-  chestRelicCounts: []
+  chestWeaponCounts:
+  - count: 5
+    weight: 100
+  chestRelicCounts:
+  - count: 7
+    weight: 100
   commonWeight: 60
   rareWeight: 30
   epicWeight: 10

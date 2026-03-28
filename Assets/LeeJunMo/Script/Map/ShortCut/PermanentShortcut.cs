@@ -13,10 +13,10 @@ public abstract class PermanentShortcut : ShortcutBase
 
     protected virtual void Start()
     {
-        if (targetDoor == null || GameDataManager.Instance == null)
+        if (targetDoor == null || ShortcutProgressService.Instance == null)
             return;
 
-        if (GameDataManager.Instance.IsShortcutUnlocked(targetDoor.mapID, targetDoor.doorID))
+        if (ShortcutProgressService.Instance.IsShortcutUnlocked(targetDoor.mapID, targetDoor.doorID))
             SetActivatedVisual();
     }
 

@@ -1124,11 +1124,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 793c56947995d6e4588faeb8c701013c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  persistAcrossScenes: 1
+  verboseLogging: 0
   worldItemPrefab: {fileID: 4439982264372595963, guid: 965ec98195bcbe34f9512acce3712973, type: 3}
   stageTables:
   - {fileID: 11400000, guid: 3903a30b290836e4bb4413a07b019990, type: 2}
-  - {fileID: 11400000, guid: 14918d38c644fad49bf378e4043c465d, type: 2}
-  - {fileID: 11400000, guid: fc8bb58e5b7362047beddb46d868847d, type: 2}
+  - {fileID: 11400000, guid: 73f94fed09a844d4fa580676170cabb7, type: 2}
+  - {fileID: 11400000, guid: 736a27640b1e92243903f03bd369e986, type: 2}
   graveLootTable: {fileID: 11400000, guid: 9fde1aac665d3cb48a2f3227bf0c5e5a, type: 2}
   currentStageIndex: 0
 --- !u!4 &161455602
@@ -6018,7 +6020,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   npcData: {fileID: 11400000, guid: d9ef2aea03d3ddf4488a762102786dde, type: 2}
-  inkJSON: {fileID: 4900000, guid: aef34e203f982094b814e11d115a65ed, type: 3}
+  legacyInkJSON: {fileID: 4900000, guid: 1b74491ac05767b4e9e93bc5a9910555, type: 3}
   promptAnchor: {fileID: 531278116}
   interactPromptText: "\uB300\uD654\uD558\uAE30"
   spriteRenderer: {fileID: 1879830427}
@@ -7723,7 +7725,6 @@ MonoBehaviour:
   titleText: {fileID: 1168259577}
   contentText: {fileID: 24998315}
   backgroundRect: {fileID: 728651173}
-  offset: 20
 --- !u!225 &728651178
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -11739,6 +11740,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hoverUIController: {fileID: 1845191719}
+  worldPromptController: {fileID: 0}
 --- !u!4 &1845191721
 Transform:
   m_ObjectHideFlags: 0

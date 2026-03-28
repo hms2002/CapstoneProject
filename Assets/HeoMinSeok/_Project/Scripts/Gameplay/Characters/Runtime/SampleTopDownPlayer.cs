@@ -45,7 +45,10 @@ public class SampleTopDownPlayer : MonoBehaviour, IPlayerInteractor
         if (state != InteractState.Idle)
         {
             ClearCurrentTarget();
-            interactionPrompt?.Hide();
+            if (UIManager.Instance != null)
+                UIManager.Instance.HideWorldPrompt();
+            else
+                interactionPrompt?.Hide();
         }
     }
 
@@ -53,7 +56,10 @@ public class SampleTopDownPlayer : MonoBehaviour, IPlayerInteractor
     {
         if (CurrentState != InteractState.Idle)
         {
-            interactionPrompt?.Hide();
+            if (UIManager.Instance != null)
+                UIManager.Instance.HideWorldPrompt();
+            else
+                interactionPrompt?.Hide();
             return;
         }
 
@@ -109,15 +115,21 @@ public class SampleTopDownPlayer : MonoBehaviour, IPlayerInteractor
     private void RefreshInteractionPrompt()
     {
         if (interactionPrompt == null)
-            return;
+            interactionPrompt = WorldInteractionPromptController.Instance ?? FindFirstObjectByType<WorldInteractionPromptController>();
 
         if (CurrentState != InteractState.Idle || currentTarget == null)
         {
-            interactionPrompt.Hide();
+            if (UIManager.Instance != null)
+                UIManager.Instance.HideWorldPrompt();
+            else
+                interactionPrompt?.Hide();
             return;
         }
 
-        interactionPrompt.Refresh(currentTarget);
+        if (UIManager.Instance != null)
+            UIManager.Instance.RefreshWorldPrompt(currentTarget);
+        else
+            interactionPrompt?.Refresh(currentTarget);
     }
 
     private IInteractable GetClosestInteractable()

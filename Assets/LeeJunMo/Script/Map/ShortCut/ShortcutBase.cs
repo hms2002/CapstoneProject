@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public abstract class ShortcutBase : MonoBehaviour, IInteractable
+public abstract class ShortcutBase : InteractableBase
 {
     [Header("타겟 문")]
     [SerializeField] protected DoorObject targetDoor;
@@ -12,15 +12,10 @@ public abstract class ShortcutBase : MonoBehaviour, IInteractable
             targetDoor = GetComponentInParent<DoorObject>();
     }
 
-    public virtual void OnPlayerNearby() { }
-    public virtual void OnPlayerLeave() { }
-    public virtual void OnHighlight() { }
-    public virtual void OnUnHighlight() { }
-    public virtual InteractState GetInteractType() => InteractState.Idle;
-    public virtual void GetInteract(string text) { }
-    public virtual Transform GetPromptAnchor() => promptAnchor != null ? promptAnchor : transform;
+    public override InteractState GetInteractType() => InteractState.Idle;
+    public override Transform GetPromptAnchor() => promptAnchor != null ? promptAnchor : transform;
 
-    public virtual bool CanInteract(IPlayerInteractor player)
+    public override bool CanInteract(IPlayerInteractor player)
     {
         return player != null &&
                player.CurrentState == InteractState.Idle &&
@@ -28,7 +23,7 @@ public abstract class ShortcutBase : MonoBehaviour, IInteractable
                !targetDoor.IsOpen;
     }
 
-    public void OnPlayerInteract(IPlayerInteractor player)
+    public override void OnPlayerInteract(IPlayerInteractor player)
     {
         if (!CanInteract(player))
             return;
@@ -43,7 +38,7 @@ public abstract class ShortcutBase : MonoBehaviour, IInteractable
         OnSuccess();
     }
 
-    public abstract string GetInteractDescription();
+    public abstract override string GetInteractDescription();
 
     protected abstract bool CheckCondition(IPlayerInteractor player);
     protected virtual void ConsumeCondition(IPlayerInteractor player) { }

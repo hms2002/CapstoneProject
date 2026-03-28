@@ -4,26 +4,59 @@ public class NPCManager : MonoBehaviour
 {
     public static NPCManager Instance { get; private set; }
 
-    [Header("NPC 통합 데이터베이스")]
+    private static bool s_isQuitting;
+
+    [Header("NPC Database")]
     [SerializeField] private NPCDatabase database;
+
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+    private static void AutoBootstrap()
+    {
+        if (s_isQuitting || Instance != null)
+            return;
+
+        var go = new GameObject(nameof(NPCManager));
+        go.AddComponent<NPCManager>();
+    }
 
     private void Awake()
     {
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject); // 씬이 넘어가도 데이터 유지
+            DontDestroyOnLoad(gameObject);
+            return;
         }
-        else
-        {
-            Destroy(gameObject);
-        }
+
+        Instance.TryAdoptDatabase(database);
+        Destroy(gameObject);
     }
 
-    // ID로 NPC 데이터를 요청하면 꺼내주는 함수
     public NPCData GetNPCData(int id)
     {
-        if (database == null) return null;
-        return database.GetNPC(id);
+        return database != null ? database.GetNPC(id) : null;
+    }
+
+    private void TryAdoptDatabase(NPCDatabase incomingDatabase)
+    {
+        if (incomingDatabase == null)
+            return;
+
+        if (database != null)
+        {
+            if (database != incomingDatabase)
+            {
+                Debug.LogWarning("[NPCManager] Different NPCDatabase was supplied by a scene instance. Keeping the existing database.", this);
+            }
+
+            return;
+        }
+
+        database = incomingDatabase;
+    }
+
+    private void OnApplicationQuit()
+    {
+        s_isQuitting = true;
     }
 }

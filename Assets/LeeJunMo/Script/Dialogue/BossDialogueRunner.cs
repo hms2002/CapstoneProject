@@ -21,16 +21,17 @@ public class BossDialogueRunner : MonoBehaviour
             yield break;
         }
 
-        if (DialogueController.Instance == null)
+        if (DialogueService.Instance == null)
         {
             Debug.LogError("[BossDialogueRunner] DialogueController 인스턴스를 찾을 수 없다.");
             yield break;
         }
 
         List<NPCData> participants = new List<NPCData> { npcData };
-        DialogueController.Instance.EnterDialogueMode(inkJSON, participants);
+        if (!DialogueService.Instance.TryStartDialogue(inkJSON, participants))
+            yield break;
 
         yield return new WaitUntil(() =>
-            DialogueController.Instance == null || !DialogueController.Instance.isPlaying);
+            DialogueService.Instance == null || !DialogueService.Instance.IsPlaying);
     }
 }

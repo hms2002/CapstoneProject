@@ -1,5 +1,4 @@
 using System;
-using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -110,11 +109,10 @@ public class UpgradeManager : MonoBehaviour
             return;
 
         SampleTopDownPlayer player = ResolveCurrentPlayer();
-        if (player != null)
-            effectApplier.ApplyUpgrade(node, player);
+        effectApplier.ApplyUpgrade(node, player);
 
-        if (RewardDisplayUI.Instance != null)
-            RewardDisplayUI.Instance.ShowReward(node.effects, null);
+        if (RewardDisplayService.Instance != null)
+            RewardDisplayService.Instance.ShowReward(node.effects, null);
 
         CheckAndUnlockNodes();
         GameDataManager.Instance.SaveData();

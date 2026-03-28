@@ -130,7 +130,7 @@ public class BossTalkManager : MonoBehaviour
             return false;
         }
 
-        if (DialogueController.Instance == null)
+        if (DialogueService.Instance == null)
         {
             Debug.LogError("[BossTalkManager] DialogueController 인스턴스를 찾을 수 없다.");
             return false;
@@ -193,10 +193,11 @@ public class BossTalkManager : MonoBehaviour
     private IEnumerator PlayDialogueRoutine()
     {
         List<NPCData> participants = new List<NPCData> { npcData };
-        DialogueController.Instance.EnterDialogueMode(inkJSON, participants);
+        if (!DialogueService.Instance.TryStartDialogue(inkJSON, participants))
+            yield break;
 
         yield return new WaitUntil(() =>
-            DialogueController.Instance == null || !DialogueController.Instance.isPlaying);
+            DialogueService.Instance == null || !DialogueService.Instance.IsPlaying);
     }
 
     private IEnumerator WaitForBlendEnd()

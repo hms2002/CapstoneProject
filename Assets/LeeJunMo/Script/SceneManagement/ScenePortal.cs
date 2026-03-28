@@ -7,7 +7,7 @@ using UnityGAS;
 /// 책임 : 플레이어 상호작용을 받아 포탈 이동을 요청하는 진입점이다.
 /// 실제 경로 해석은 현재 런 계획을 가진 PortalRouteManager에 위임한다.
 /// </summary>
-public sealed class ScenePortal : MonoBehaviour, IInteractable
+public sealed class ScenePortal : InteractableBase
 {
     [SerializeField, HideInInspector] private string portalId;
 
@@ -54,30 +54,24 @@ public sealed class ScenePortal : MonoBehaviour, IInteractable
         EnsurePortalId();
     }
 
-    public void OnPlayerNearby()
-    {
-    }
-
-    public void OnPlayerLeave()
+    public override void OnPlayerLeave()
     {
         OnUnHighlight();
     }
 
-    public void GetInteract(string text) { }
-
-    public void OnHighlight()
+    public override void OnHighlight()
     {
         if (highlightTarget != null)
             highlightTarget.SetActive(true);
     }
 
-    public void OnUnHighlight()
+    public override void OnUnHighlight()
     {
         if (highlightTarget != null)
             highlightTarget.SetActive(false);
     }
 
-    public bool CanInteract(IPlayerInteractor player)
+    public override bool CanInteract(IPlayerInteractor player)
     {
         bool canResolve = PortalRouteManager.Instance != null &&
             PortalRouteManager.Instance.CanResolveRoute(this);
@@ -89,7 +83,7 @@ public sealed class ScenePortal : MonoBehaviour, IInteractable
             canResolve;
     }
 
-    public void OnPlayerInteract(IPlayerInteractor player)
+    public override void OnPlayerInteract(IPlayerInteractor player)
     {
         if (!CanInteract(player))
             return;
@@ -104,9 +98,9 @@ public sealed class ScenePortal : MonoBehaviour, IInteractable
         }
     }
 
-    public InteractState GetInteractType() => InteractState.Idle;
-    public string GetInteractDescription() => interactPromptText;
-    public Transform GetPromptAnchor() => promptAnchor != null ? promptAnchor : transform;
+    public override InteractState GetInteractType() => InteractState.Idle;
+    public override string GetInteractDescription() => interactPromptText;
+    public override Transform GetPromptAnchor() => promptAnchor != null ? promptAnchor : transform;
 
     private void EnsurePortalId()
     {

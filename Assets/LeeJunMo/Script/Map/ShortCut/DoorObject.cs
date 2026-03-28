@@ -1,7 +1,7 @@
 using UnityEngine;
 using DG.Tweening;
 
-public class DoorObject : MonoBehaviour, IInteractable
+public class DoorObject : InteractableBase
 {
     public enum DoorType
     {
@@ -70,11 +70,11 @@ public class DoorObject : MonoBehaviour, IInteractable
 
     private void Start()
     {
-        if (isPermanent && GameDataManager.Instance != null && GameDataManager.Instance.IsShortcutUnlocked(mapID, doorID))
+        if (isPermanent && ShortcutProgressService.Instance != null && ShortcutProgressService.Instance.IsShortcutUnlocked(mapID, doorID))
             ForceOpen(immediate: true);
     }
 
-    public void OnPlayerInteract(IPlayerInteractor player)
+    public override void OnPlayerInteract(IPlayerInteractor player)
     {
         if (IsOpen || player == null)
             return;
@@ -116,8 +116,8 @@ public class DoorObject : MonoBehaviour, IInteractable
 
         IsOpen = true;
 
-        if (save && GameDataManager.Instance != null)
-            GameDataManager.Instance.UnlockShortcut(mapID, doorID);
+        if (save && ShortcutProgressService.Instance != null)
+            ShortcutProgressService.Instance.UnlockShortcut(mapID, doorID);
 
         if (openZone != null) openZone.enabled = false;
         if (blockZone != null) blockZone.enabled = false;
@@ -162,13 +162,8 @@ public class DoorObject : MonoBehaviour, IInteractable
             model.DOShakePosition(0.5f, 0.1f);
     }
 
-    public void OnPlayerNearby() { }
-    public void OnPlayerLeave() { }
-    public void OnHighlight() { }
-    public void OnUnHighlight() { }
-    public InteractState GetInteractType() => InteractState.Idle;
-    public void GetInteract(string text) { }
-    public Transform GetPromptAnchor() => promptAnchor != null ? promptAnchor : transform;
-    public bool CanInteract(IPlayerInteractor player) => player != null && player.CurrentState == InteractState.Idle && !IsOpen;
-    public string GetInteractDescription() => IsOpen ? string.Empty : (doorType == DoorType.Locked ? lockedPromptText : openPromptText);
+    public override InteractState GetInteractType() => InteractState.Idle;
+    public override Transform GetPromptAnchor() => promptAnchor != null ? promptAnchor : transform;
+    public override bool CanInteract(IPlayerInteractor player) => player != null && player.CurrentState == InteractState.Idle && !IsOpen;
+    public override string GetInteractDescription() => IsOpen ? string.Empty : (doorType == DoorType.Locked ? lockedPromptText : openPromptText);
 }

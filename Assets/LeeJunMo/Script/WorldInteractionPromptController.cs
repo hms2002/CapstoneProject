@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 [DisallowMultipleComponent]
@@ -30,11 +31,22 @@ public sealed class WorldInteractionPromptController : MonoBehaviour
         }
 
         Instance = this;
+        DontDestroyOnLoad(gameObject);
 
         if (promptRoot == null)
             promptRoot = transform;
 
         Hide();
+    }
+
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += HandleSceneLoaded;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= HandleSceneLoaded;
     }
 
     private void OnDestroy()
@@ -104,6 +116,11 @@ public sealed class WorldInteractionPromptController : MonoBehaviour
     {
         defaultIcon = icon;
         ApplyIcon(defaultIcon);
+    }
+
+    private void HandleSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        Hide();
     }
 
     private bool ShouldShow(IInteractable target)
@@ -181,4 +198,5 @@ public sealed class WorldInteractionPromptController : MonoBehaviour
 
         return true;
     }
+
 }

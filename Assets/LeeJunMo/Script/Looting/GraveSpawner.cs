@@ -1,21 +1,52 @@
-using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.Serialization;
 
 public class GraveSpawner : MonoBehaviour
 {
-    [Header("프리팹 연결")]
+    [Header("Prefabs")]
     public GameObject weaponGravePrefab;
     public GameObject relicGravePrefab;
 
-    [Header("스폰 위치 후보 (겹치지 않게)")]
+    [Header("Spawn Points")]
     public List<Transform> spawnPoints;
 
-    [Header("초기 설정")]
-    public int baseWeaponGraveCount = 1;
-    public int baseRelicGraveCount = 2;
+    [Header("Weapon Grave Count")]
+    [SerializeField] private CountRangeWeightProfile weaponGraveCountProfile = new CountRangeWeightProfile();
+
+    [Header("Relic Grave Count")]
+    [SerializeField] private CountRangeWeightProfile relicGraveCountProfile = new CountRangeWeightProfile();
+
+    [FormerlySerializedAs("weaponGraveMinCount")]
+    [SerializeField, HideInInspector] private int legacyWeaponGraveMinCount = 1;
+    [FormerlySerializedAs("weaponGraveMaxCount")]
+    [SerializeField, HideInInspector] private int legacyWeaponGraveMaxCount = 1;
+    [FormerlySerializedAs("weaponGraveCountWeights")]
+    [SerializeField, HideInInspector] private List<DropCountOption> legacyWeaponGraveCountWeights = new List<DropCountOption>();
+
+    [FormerlySerializedAs("relicGraveMinCount")]
+    [SerializeField, HideInInspector] private int legacyRelicGraveMinCount = 2;
+    [FormerlySerializedAs("relicGraveMaxCount")]
+    [SerializeField, HideInInspector] private int legacyRelicGraveMaxCount = 2;
+    [FormerlySerializedAs("relicGraveCountWeights")]
+    [SerializeField, HideInInspector] private List<DropCountOption> legacyRelicGraveCountWeights = new List<DropCountOption>();
+
+    [FormerlySerializedAs("baseWeaponGraveCount")]
+    [SerializeField, HideInInspector] private int legacyBaseWeaponGraveCount = 1;
+
+    [FormerlySerializedAs("baseRelicGraveCount")]
+    [SerializeField, HideInInspector] private int legacyBaseRelicGraveCount = 2;
+
+    private readonly LootRollService rollService = new LootRollService();
+
+    private void OnValidate()
+    {
+        EnsureProfiles();
+    }
 
     private void Start()
     {
+        EnsureProfiles();
         SpawnGraves();
     }
 
@@ -23,24 +54,24 @@ public class GraveSpawner : MonoBehaviour
     {
         if (spawnPoints == null || spawnPoints.Count == 0)
         {
-            Debug.LogWarning("[GraveSpawner] 스폰 위치가 설정되지 않았습니다!");
+            Debug.LogWarning("[GraveSpawner] Spawn points are not configured.");
             return;
         }
 
-        // 1. 업그레이드 수치 읽어오기 (향후 UpgradeManager와 연결)
-        int extraWeaponGrave = 0;       // 필드에 깔리는 무기 유해 개수 추가
-        int extraRelicGrave = 0;        // 필드에 깔리는 유물 유해 개수 추가
+        GraveRunModifierDelta modifiers = RunModifierService.Instance != null
+            ? RunModifierService.Instance.GraveModifiers
+            : default;
 
-        int extraWeaponDropCount = 0;   // 무기 유해에서 무기가 추가로 떨어질 보너스
-        int extraRelicDropCount = 0;    // 유물 유해에서 유물이 추가로 떨어질 보너스
+        int totalWeaponCount = rollService.PickCountInProfile(
+            weaponGraveCountProfile,
+            modifiers.weaponGraveMinBonus,
+            modifiers.weaponGraveMaxBonus);
 
-        float extraRareChance = 0f;     // 레어 등장 확률 증가
-        float extraEpicChance = 0f;     // 에픽 등장 확률 증가
+        int totalRelicCount = rollService.PickCountInProfile(
+            relicGraveCountProfile,
+            modifiers.relicGraveMinBonus,
+            modifiers.relicGraveMaxBonus);
 
-        int totalWeaponCount = baseWeaponGraveCount + extraWeaponGrave;
-        int totalRelicCount = baseRelicGraveCount + extraRelicGrave;
-
-        // 2. 스폰 위치 섞기 (겹침 방지)
         List<Transform> shuffledPoints = new List<Transform>(spawnPoints);
         for (int i = 0; i < shuffledPoints.Count; i++)
         {
@@ -52,42 +83,60 @@ public class GraveSpawner : MonoBehaviour
 
         int spawnIndex = 0;
 
-        // 3. 무기 유해 스폰
         for (int i = 0; i < totalWeaponCount; i++)
         {
-            if (spawnIndex >= shuffledPoints.Count) break;
+            if (spawnIndex >= shuffledPoints.Count)
+                break;
 
             GameObject go = Instantiate(weaponGravePrefab, shuffledPoints[spawnIndex].position, Quaternion.identity);
-            go.transform.SetParent(this.transform);
+            go.transform.SetParent(transform);
 
-            // 무기 유해에도 추가 드롭 개수 보너스를 쥐어줍니다!
-            var interactable = go.GetComponent<GraveInteractable>();
+            GraveInteractable interactable = go.GetComponent<GraveInteractable>();
             if (interactable != null)
             {
-                interactable.bonusDropCount = extraWeaponDropCount;
+                interactable.bonusMinDropCount = modifiers.weaponDropMinBonus;
+                interactable.bonusMaxDropCount = modifiers.weaponDropMaxBonus;
             }
 
             spawnIndex++;
         }
 
-        // 4. 유물 유해 스폰
         for (int i = 0; i < totalRelicCount; i++)
         {
-            if (spawnIndex >= shuffledPoints.Count) break;
+            if (spawnIndex >= shuffledPoints.Count)
+                break;
 
             GameObject go = Instantiate(relicGravePrefab, shuffledPoints[spawnIndex].position, Quaternion.identity);
-            go.transform.SetParent(this.transform);
+            go.transform.SetParent(transform);
 
-            // 유물 유해에 스탯 주입
-            var interactable = go.GetComponent<GraveInteractable>();
+            GraveInteractable interactable = go.GetComponent<GraveInteractable>();
             if (interactable != null)
             {
-                interactable.bonusDropCount = extraRelicDropCount;
-                interactable.bonusRareChance = extraRareChance;
-                interactable.bonusEpicChance = extraEpicChance;
+                interactable.bonusMinDropCount = modifiers.relicDropMinBonus;
+                interactable.bonusMaxDropCount = modifiers.relicDropMaxBonus;
+                interactable.bonusRareChance = modifiers.extraRareChance;
+                interactable.bonusEpicChance = modifiers.extraEpicChance;
             }
 
             spawnIndex++;
         }
+    }
+
+    private void EnsureProfiles()
+    {
+        weaponGraveCountProfile ??= new CountRangeWeightProfile();
+        relicGraveCountProfile ??= new CountRangeWeightProfile();
+
+        weaponGraveCountProfile.TryInitializeFromLegacy(
+            legacyWeaponGraveMinCount,
+            legacyWeaponGraveMaxCount,
+            legacyWeaponGraveCountWeights,
+            legacyBaseWeaponGraveCount);
+
+        relicGraveCountProfile.TryInitializeFromLegacy(
+            legacyRelicGraveMinCount,
+            legacyRelicGraveMaxCount,
+            legacyRelicGraveCountWeights,
+            legacyBaseRelicGraveCount);
     }
 }

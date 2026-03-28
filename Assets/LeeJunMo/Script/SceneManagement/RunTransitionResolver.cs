@@ -6,29 +6,53 @@ public sealed class RunTransitionResolver : MonoBehaviour
 {
     public static RunTransitionResolver Instance { get; private set; }
 
+    private static bool s_isQuitting;
+
     [SerializeField] private bool persistAcrossScenes = true;
     [SerializeField] private bool verboseLogging;
     [SerializeField] private RunTransitionDirective defaultDirective;
     [SerializeField] private List<RunTransitionRule> rules = new();
 
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+    private static void AutoBootstrap()
+    {
+        if (s_isQuitting || Instance != null)
+            return;
+
+        var go = new GameObject(nameof(RunTransitionResolver));
+        go.AddComponent<RunTransitionResolver>();
+    }
+
     private void Awake()
     {
-        if (Instance != null && Instance != this)
+        if (Instance == null)
         {
-            Destroy(gameObject);
+            Instance = this;
+
+            if (persistAcrossScenes)
+                DontDestroyOnLoad(gameObject);
+
             return;
         }
 
-        Instance = this;
+        Instance.TryAdoptConfiguration(
+            persistAcrossScenes,
+            verboseLogging,
+            defaultDirective,
+            rules);
 
-        if (persistAcrossScenes)
-            DontDestroyOnLoad(gameObject);
+        Destroy(gameObject);
     }
 
     private void OnDestroy()
     {
         if (Instance == this)
             Instance = null;
+    }
+
+    private void OnApplicationQuit()
+    {
+        s_isQuitting = true;
     }
 
     public RunTransitionDirective Resolve(PortalRouteDecision route)
@@ -62,5 +86,49 @@ public sealed class RunTransitionResolver : MonoBehaviour
         }
 
         return defaultDirective;
+    }
+
+    private void TryAdoptConfiguration(
+        bool incomingPersistAcrossScenes,
+        bool incomingVerboseLogging,
+        RunTransitionDirective incomingDefaultDirective,
+        List<RunTransitionRule> incomingRules)
+    {
+        bool hasIncomingConfig = HasMeaningfulConfiguration(incomingDefaultDirective, incomingRules);
+        if (!hasIncomingConfig)
+            return;
+
+        bool hasCurrentConfig = HasMeaningfulConfiguration(defaultDirective, rules);
+        if (hasCurrentConfig)
+        {
+            if (verboseLogging)
+            {
+                Debug.LogWarning(
+                    "[RunTransitionResolver] A scene instance tried to supply another configuration, but the global resolver already has one. Keeping the existing configuration.",
+                    this);
+            }
+
+            return;
+        }
+
+        persistAcrossScenes = incomingPersistAcrossScenes;
+        verboseLogging = incomingVerboseLogging;
+        defaultDirective = incomingDefaultDirective;
+        rules = incomingRules != null ? new List<RunTransitionRule>(incomingRules) : new List<RunTransitionRule>();
+
+        if (verboseLogging)
+        {
+            Debug.Log(
+                $"[RunTransitionResolver] Adopted configuration from a scene instance. ruleCount={rules.Count}, defaultDirective={defaultDirective}",
+                this);
+        }
+    }
+
+    private static bool HasMeaningfulConfiguration(RunTransitionDirective directive, List<RunTransitionRule> configuredRules)
+    {
+        if (configuredRules != null && configuredRules.Count > 0)
+            return true;
+
+        return directive.action != RunTransitionAction.None || directive.endReason != RunEndReason.None;
     }
 }

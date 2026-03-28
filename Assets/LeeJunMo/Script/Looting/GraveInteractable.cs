@@ -2,7 +2,7 @@ using UnityEngine;
 
 public enum GraveType { Weapon, Relic }
 
-public class GraveInteractable : MonoBehaviour, IInteractable
+public class GraveInteractable : InteractableBase
 {
     [Header("유해 설정")]
     public GraveType graveType;
@@ -17,7 +17,8 @@ public class GraveInteractable : MonoBehaviour, IInteractable
     private static readonly int OutlineEnabledID = Shader.PropertyToID("_OutlineEnabled");
     private bool isLooted;
 
-    [HideInInspector] public int bonusDropCount;
+    [HideInInspector] public int bonusMinDropCount;
+    [HideInInspector] public int bonusMaxDropCount;
     [HideInInspector] public float bonusRareChance;
     [HideInInspector] public float bonusEpicChance;
 
@@ -27,10 +28,7 @@ public class GraveInteractable : MonoBehaviour, IInteractable
         OnUnHighlight();
     }
 
-    public void OnPlayerNearby() { }
-    public void OnPlayerLeave() { }
-
-    public void OnHighlight()
+    public override void OnHighlight()
     {
         if (spriteRenderer == null || isLooted) return;
         spriteRenderer.GetPropertyBlock(propBlock);
@@ -38,7 +36,7 @@ public class GraveInteractable : MonoBehaviour, IInteractable
         spriteRenderer.SetPropertyBlock(propBlock);
     }
 
-    public void OnUnHighlight()
+    public override void OnUnHighlight()
     {
         if (spriteRenderer == null) return;
         spriteRenderer.GetPropertyBlock(propBlock);
@@ -46,13 +44,12 @@ public class GraveInteractable : MonoBehaviour, IInteractable
         spriteRenderer.SetPropertyBlock(propBlock);
     }
 
-    public bool CanInteract(IPlayerInteractor player) => !isLooted && player != null && player.CurrentState == InteractState.Idle;
-    public InteractState GetInteractType() => InteractState.Idle;
-    public string GetInteractDescription() => interactPromptText;
-    public void GetInteract(string text) { }
-    public Transform GetPromptAnchor() => promptAnchor != null ? promptAnchor : transform;
+    public override bool CanInteract(IPlayerInteractor player) => !isLooted && player != null && player.CurrentState == InteractState.Idle;
+    public override InteractState GetInteractType() => InteractState.Idle;
+    public override string GetInteractDescription() => interactPromptText;
+    public override Transform GetPromptAnchor() => promptAnchor != null ? promptAnchor : transform;
 
-    public void OnPlayerInteract(IPlayerInteractor player)
+    public override void OnPlayerInteract(IPlayerInteractor player)
     {
         if (!CanInteract(player)) return;
 
@@ -60,7 +57,7 @@ public class GraveInteractable : MonoBehaviour, IInteractable
         OnUnHighlight();
 
         if (LootManager.Instance != null)
-            LootManager.Instance.SpawnGraveLoot(transform.position, graveType, bonusDropCount, bonusRareChance, bonusEpicChance);
+            LootManager.Instance.SpawnGraveLoot(transform.position, graveType, bonusMinDropCount, bonusMaxDropCount, bonusRareChance, bonusEpicChance);
 
         if (destroyEffect != null)
             Instantiate(destroyEffect, transform.position, Quaternion.identity);

@@ -1,9 +1,8 @@
-using UnityEngine;
-using UnityEngine.UI;
+using System;
 using System.Collections.Generic;
 using TMPro;
+using UnityEngine;
 
-// [수정] IStackableUI를 상속받아 UIManager의 스택 관리를 받습니다!
 public class RewardDisplayUI : MonoBehaviour, IStackableUI
 {
     public static RewardDisplayUI Instance { get; private set; }
@@ -18,89 +17,153 @@ public class RewardDisplayUI : MonoBehaviour, IStackableUI
     [SerializeField] private GameObject effectSlotPrefab;
     [SerializeField] private Transform slotParent;
 
-    private System.Action onCloseCallback;
+    private Action onCloseCallback;
+
+    public bool IsActive => panelRoot != null && panelRoot.activeSelf;
+    public bool CanCloseOnEscape => true;
 
     private void Awake()
     {
         Instance = this;
-        panelRoot.SetActive(false);
+
+        if (panelRoot != null)
+            panelRoot.SetActive(false);
+
+        RewardDisplayService.Instance?.RegisterView(this);
     }
 
-    // [수정] RegisterUI / UnregisterUI 삭제 (Push/Pop으로 대체됨)
+    private void OnDestroy()
+    {
+        RewardDisplayService.Instance?.UnregisterView(this);
 
-    // =========================================================
-    // IStackableUI 규약
-    // =========================================================
-    public bool IsActive => panelRoot.activeSelf;
-    public bool CanCloseOnEscape => true;
+        if (Instance == this)
+            Instance = null;
+    }
 
     public void OpenUI()
     {
-        panelRoot.SetActive(true);
+        if (panelRoot != null)
+            panelRoot.SetActive(true);
     }
 
     public void CloseUI()
     {
-        panelRoot.SetActive(false);
+        if (panelRoot != null)
+            panelRoot.SetActive(false);
+
         onCloseCallback?.Invoke();
         onCloseCallback = null;
     }
-    // =========================================================
 
-    public void ShowReward(List<UpgradeEffectSO> uEffects = null, List<AffectionEffect> aEffects = null, System.Action callback = null)
+    public void ShowReward(List<UpgradeEffectSO> upgradeEffects = null, List<AffectionEffect> affectionEffects = null, Action callback = null)
     {
-        this.onCloseCallback = callback;
+        onCloseCallback = callback;
 
-        foreach (Transform child in slotParent) Destroy(child.gameObject);
-        string summary = "";
-
-        if (uEffects != null && uEffects.Count > 0)
+        if (slotParent != null)
         {
-            titleText.text = "업그레이드 완료!";
-            foreach (var e in uEffects) ProcessUpgrade(e, ref summary);
-        }
-        else if (aEffects != null && aEffects.Count > 0)
-        {
-            titleText.text = "호감도 보상!";
-            foreach (var e in aEffects) ProcessAffection(e, ref summary);
+            foreach (Transform child in slotParent)
+                Destroy(child.gameObject);
         }
 
-        contextText.text = summary.TrimEnd();
+        string summary = string.Empty;
 
-        // [수정] 직접 켜지 않고 UIManager에게 켜달라고(Push) 요청!
-        if (UIManager.Instance != null) UIManager.Instance.PushUI(this);
-        else panelRoot.SetActive(true); // 혹시 UIManager가 없을 때를 대비한 방어코드
+        if (upgradeEffects != null && upgradeEffects.Count > 0)
+        {
+            if (titleText != null)
+                titleText.text = "업그레이드 완료!";
+
+            foreach (UpgradeEffectSO effect in upgradeEffects)
+                ProcessUpgrade(effect, ref summary);
+        }
+        else if (affectionEffects != null && affectionEffects.Count > 0)
+        {
+            if (titleText != null)
+                titleText.text = "호감도 보상!";
+
+            foreach (AffectionEffect effect in affectionEffects)
+                ProcessAffection(effect, ref summary);
+        }
+
+        if (contextText != null)
+            contextText.text = summary.TrimEnd();
+
+        if (UIManager.Instance != null)
+            UIManager.Instance.PushUI(this);
+        else if (panelRoot != null)
+            panelRoot.SetActive(true);
     }
-
-    private void ProcessUpgrade(UpgradeEffectSO e, ref string s)
-    {
-        if (e is UnlockItemUpgradeEffect uie)
-        {
-            foreach (var w in uie.weapons) CreateUnlockSlot(w);
-            foreach (var r in uie.relics) CreateUnlockSlot(r);
-        }
-        else if (e.rewardIcon != null) CreateEffectSlot(e.rewardIcon);
-        if (!string.IsNullOrEmpty(e.rewardText)) s += $"- {e.rewardText}\n";
-    }
-
-    private void ProcessAffection(AffectionEffect e, ref string s)
-    {
-        if (e is UnlockItemAffectionEffect aie)
-        {
-            foreach (var w in aie.weapons) CreateUnlockSlot(w);
-            foreach (var r in aie.relics) CreateUnlockSlot(r);
-        }
-        else if (e.rewardIcon != null) CreateEffectSlot(e.rewardIcon);
-        if (!string.IsNullOrEmpty(e.rewardText)) s += $"- {e.rewardText}\n";
-    }
-
-    private void CreateUnlockSlot(ScriptableObject d) => Instantiate(unlockSlotPrefab, slotParent).GetComponent<UnlockSlotUI>().Setup(d);
-    private void CreateEffectSlot(Sprite i) => Instantiate(effectSlotPrefab, slotParent).GetComponent<RewardEffectSlotUI>().Setup(i);
 
     public void Close()
     {
-        // [수정] 직접 끄지 않고 UIManager에게 꺼달라고(Pop) 요청!
-        if (UIManager.Instance != null) UIManager.Instance.PopUI(this);
-        else CloseUI();
+        if (UIManager.Instance != null)
+            UIManager.Instance.PopUI(this);
+        else
+            CloseUI();
+    }
+
+    private void ProcessUpgrade(UpgradeEffectSO effect, ref string summary)
+    {
+        if (effect == null)
+            return;
+
+        if (effect is ItemUnlockUpgradeEffectSO unlockEffect)
+        {
+            if (unlockEffect.Weapons != null)
+            {
+                foreach (var weapon in unlockEffect.Weapons)
+                    CreateUnlockSlot(weapon);
+            }
+
+            if (unlockEffect.Relics != null)
+            {
+                foreach (var relic in unlockEffect.Relics)
+                    CreateUnlockSlot(relic);
+            }
+        }
+        else if (effect.rewardIcon != null)
+        {
+            CreateEffectSlot(effect.rewardIcon);
+        }
+
+        if (!string.IsNullOrEmpty(effect.rewardText))
+            summary += $"- {effect.rewardText}\n";
+    }
+
+    private void ProcessAffection(AffectionEffect effect, ref string summary)
+    {
+        if (effect == null)
+            return;
+
+        if (effect is UnlockItemAffectionEffect unlockEffect)
+        {
+            foreach (var weapon in unlockEffect.weapons)
+                CreateUnlockSlot(weapon);
+
+            foreach (var relic in unlockEffect.relics)
+                CreateUnlockSlot(relic);
+        }
+        else if (effect.rewardIcon != null)
+        {
+            CreateEffectSlot(effect.rewardIcon);
+        }
+
+        if (!string.IsNullOrEmpty(effect.rewardText))
+            summary += $"- {effect.rewardText}\n";
+    }
+
+    private void CreateUnlockSlot(ScriptableObject definition)
+    {
+        if (unlockSlotPrefab == null || slotParent == null)
+            return;
+
+        Instantiate(unlockSlotPrefab, slotParent).GetComponent<UnlockSlotUI>().Setup(definition);
+    }
+
+    private void CreateEffectSlot(Sprite icon)
+    {
+        if (effectSlotPrefab == null || slotParent == null)
+            return;
+
+        Instantiate(effectSlotPrefab, slotParent).GetComponent<RewardEffectSlotUI>().Setup(icon);
     }
 }

@@ -25,22 +25,26 @@ public class HoverUIController : MonoBehaviour
 
     private void Awake()
     {
-        if (canvas == null) canvas = GetComponentInParent<Canvas>();
-        if (canvas == null) canvas = FindFirstObjectByType<Canvas>();
+        RefreshCanvasReference();
     }
 
     private void LateUpdate()
     {
+        RefreshCanvasReference(_targetSlotRect, _currentView);
+
         if (!followAnchor || !_isHovering || _targetSlotRect == null || _currentView == null || !_currentView.IsActive)
             return;
 
         PositionNextToTarget(_targetSlotRect);
     }
 
-    // UIManager가 호출할 메인 함수
     public void ShowHover(IHoverView view, RectTransform targetRect, object data, object context)
     {
-        if (view == null || targetRect == null) return;
+        if (view == null || targetRect == null)
+            return;
+
+        if (!RefreshCanvasReference(targetRect, view))
+            return;
 
         _serial++;
         _isHovering = true;
@@ -48,17 +52,17 @@ public class HoverUIController : MonoBehaviour
 
         CancelHide();
 
-        // 기존에 띄워진 다른 Hover가 있다면 끄기
         if (_currentView != null && _currentView != view)
-        {
             _currentView.HideHover();
-        }
 
         _currentView = view;
 
-        // Hover UI 최상단 보장
-        Canvas viewCanvas = (_currentView as MonoBehaviour).GetComponent<Canvas>();
-        if (viewCanvas != null) viewCanvas.sortingOrder = 999;
+        if (_currentView is MonoBehaviour currentViewBehaviour)
+        {
+            Canvas viewCanvas = currentViewBehaviour.GetComponent<Canvas>();
+            if (viewCanvas != null)
+                viewCanvas.sortingOrder = 999;
+        }
 
         _currentView.ShowHover(data, context);
         PositionNextToTarget(_targetSlotRect);
@@ -66,12 +70,9 @@ public class HoverUIController : MonoBehaviour
 
     public void HideHover(IHoverView view, RectTransform targetRect)
     {
-        // 지금 끄려는 대상이 '현재 화면에 띄워진 슬롯'과 완벽히 일치할 때만 호버 상태를 끕니다.
         if (_currentView == view && _targetSlotRect == targetRect)
-        {
             _isHovering = false;
-        }
-                
+
         TryScheduleHide();
     }
 
@@ -88,11 +89,44 @@ public class HoverUIController : MonoBehaviour
         }
     }
 
+    public bool RefreshCanvasReference()
+    {
+        return RefreshCanvasReference(null, null);
+    }
+
+    private bool RefreshCanvasReference(RectTransform targetRect, IHoverView view)
+    {
+        Canvas resolvedCanvas = null;
+
+        if (targetRect != null)
+            resolvedCanvas = targetRect.GetComponentInParent<Canvas>();
+
+        if (resolvedCanvas == null && view is MonoBehaviour viewBehaviour && viewBehaviour != null)
+            resolvedCanvas = viewBehaviour.GetComponentInParent<Canvas>();
+
+        if (resolvedCanvas == null && canvas != null)
+            resolvedCanvas = canvas;
+
+        if (resolvedCanvas == null)
+            resolvedCanvas = GetComponentInParent<Canvas>();
+
+        if (resolvedCanvas == null)
+            resolvedCanvas = FindFirstObjectByType<Canvas>();
+
+        canvas = resolvedCanvas != null ? resolvedCanvas.rootCanvas : null;
+        return canvas != null;
+    }
+
     private void TryScheduleHide()
     {
-        if (_isHovering) return;
-        if (_currentView == null || !_currentView.IsActive) return;
-        if (_hideRoutine != null) return;
+        if (_isHovering)
+            return;
+
+        if (_currentView == null || !_currentView.IsActive)
+            return;
+
+        if (_hideRoutine != null)
+            return;
 
         int mySerial = _serial;
         _hideRoutine = StartCoroutine(CoHideIfStillNotHover(mySerial));
@@ -100,54 +134,62 @@ public class HoverUIController : MonoBehaviour
 
     private IEnumerator CoHideIfStillNotHover(int serialAtStart)
     {
-        if (delayHideOneFrame) yield return null;
-        if (extraHideDelay > 0f) yield return new WaitForSecondsRealtime(extraHideDelay);
+        if (delayHideOneFrame)
+            yield return null;
 
-        if (_serial != serialAtStart) yield break;
-        if (_isHovering) yield break;
+        if (extraHideDelay > 0f)
+            yield return new WaitForSecondsRealtime(extraHideDelay);
+
+        if (_serial != serialAtStart)
+            yield break;
+
+        if (_isHovering)
+            yield break;
 
         HideImmediate();
     }
 
     private void CancelHide()
     {
-        if (_hideRoutine != null)
-        {
-            StopCoroutine(_hideRoutine);
-            _hideRoutine = null;
-        }
+        if (_hideRoutine == null)
+            return;
+
+        StopCoroutine(_hideRoutine);
+        _hideRoutine = null;
     }
 
-    // =========================================================
-    // 이하 수학적 위치 계산 (모든 Hover UI 공용)
-    // =========================================================
     private void PositionNextToTarget(RectTransform targetRect)
     {
-        if (canvas == null || _currentView == null || targetRect == null) return;
+        if (!RefreshCanvasReference(targetRect, _currentView))
+            return;
+
+        if (canvas == null || _currentView == null || targetRect == null)
+            return;
+
         RectTransform viewRect = _currentView.Rect;
 
         Canvas.ForceUpdateCanvases();
         LayoutRebuilder.ForceRebuildLayoutImmediate(viewRect);
 
-        var canvasRect = canvas.transform as RectTransform;
-        var cam = canvas.renderMode == RenderMode.ScreenSpaceOverlay ? null : canvas.worldCamera;
+        RectTransform canvasRect = canvas.transform as RectTransform;
+        Camera cam = canvas.renderMode == RenderMode.ScreenSpaceOverlay ? null : canvas.worldCamera;
 
         Rect targetLocalRect = GetLocalRect(targetRect, canvasRect, cam);
         Rect canvasLocalRect = canvasRect.rect;
 
-        Vector3[] c = new Vector3[4];
-        targetRect.GetWorldCorners(c);
+        Vector3[] corners = new Vector3[4];
+        targetRect.GetWorldCorners(corners);
 
-        Vector2 rt = RectTransformUtility.WorldToScreenPoint(cam, c[2]);
-        Vector2 rb = RectTransformUtility.WorldToScreenPoint(cam, c[3]);
-        Vector2 lt = RectTransformUtility.WorldToScreenPoint(cam, c[1]);
-        Vector2 lb = RectTransformUtility.WorldToScreenPoint(cam, c[0]);
+        Vector2 rightTopScreen = RectTransformUtility.WorldToScreenPoint(cam, corners[2]);
+        Vector2 rightBottomScreen = RectTransformUtility.WorldToScreenPoint(cam, corners[3]);
+        Vector2 leftTopScreen = RectTransformUtility.WorldToScreenPoint(cam, corners[1]);
+        Vector2 leftBottomScreen = RectTransformUtility.WorldToScreenPoint(cam, corners[0]);
 
-        Vector2 centerRightScreen = (rt + rb) * 0.5f;
-        Vector2 centerLeftScreen = (lt + lb) * 0.5f;
+        Vector2 centerRightScreen = (rightTopScreen + rightBottomScreen) * 0.5f;
+        Vector2 centerLeftScreen = (leftTopScreen + leftBottomScreen) * 0.5f;
 
-        RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect, centerRightScreen, cam, out var rightLocal);
-        RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect, centerLeftScreen, cam, out var leftLocal);
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect, centerRightScreen, cam, out Vector2 rightLocal);
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect, centerLeftScreen, cam, out Vector2 leftLocal);
 
         Vector2 size = viewRect.rect.size;
         Vector2 pivot = viewRect.pivot;
@@ -176,14 +218,19 @@ public class HoverUIController : MonoBehaviour
         bool rightOverlap = Intersects(targetExpanded, rightPanel);
         bool leftOverlap = Intersects(targetExpanded, leftPanel);
 
-        if (!rightOverlap && leftOverlap) return rightClamped;
-        if (!leftOverlap && rightOverlap) return leftClamped;
-        if (!rightOverlap && !leftOverlap) return rightClamped;
+        if (!rightOverlap && leftOverlap)
+            return rightClamped;
+
+        if (!leftOverlap && rightOverlap)
+            return leftClamped;
+
+        if (!rightOverlap && !leftOverlap)
+            return rightClamped;
 
         float rightArea = OverlapArea(targetExpanded, rightPanel);
         float leftArea = OverlapArea(targetExpanded, leftPanel);
 
-        return (rightArea <= leftArea) ? rightClamped : leftClamped;
+        return rightArea <= leftArea ? rightClamped : leftClamped;
     }
 
     private float OverlapArea(Rect a, Rect b)
@@ -194,16 +241,19 @@ public class HoverUIController : MonoBehaviour
         float yMax = Mathf.Min(a.yMax, b.yMax);
         float w = xMax - xMin;
         float h = yMax - yMin;
-        if (w <= 0f || h <= 0f) return 0f;
+
+        if (w <= 0f || h <= 0f)
+            return 0f;
+
         return w * h;
     }
 
-    private Rect GetLocalRect(RectTransform rt, RectTransform canvasRect, Camera cam)
+    private Rect GetLocalRect(RectTransform rectTransform, RectTransform canvasRect, Camera cam)
     {
-        Vector3[] w = new Vector3[4];
-        rt.GetWorldCorners(w);
-        Vector2 p0 = ScreenToCanvasLocal(w[0], canvasRect, cam);
-        Vector2 p2 = ScreenToCanvasLocal(w[2], canvasRect, cam);
+        Vector3[] worldCorners = new Vector3[4];
+        rectTransform.GetWorldCorners(worldCorners);
+        Vector2 p0 = ScreenToCanvasLocal(worldCorners[0], canvasRect, cam);
+        Vector2 p2 = ScreenToCanvasLocal(worldCorners[2], canvasRect, cam);
         float xMin = Mathf.Min(p0.x, p2.x);
         float xMax = Mathf.Max(p0.x, p2.x);
         float yMin = Mathf.Min(p0.y, p2.y);
@@ -213,9 +263,9 @@ public class HoverUIController : MonoBehaviour
 
     private Vector2 ScreenToCanvasLocal(Vector3 world, RectTransform canvasRect, Camera cam)
     {
-        Vector2 sp = RectTransformUtility.WorldToScreenPoint(cam, world);
-        RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect, sp, cam, out var lp);
-        return lp;
+        Vector2 screenPoint = RectTransformUtility.WorldToScreenPoint(cam, world);
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(canvasRect, screenPoint, cam, out Vector2 localPoint);
+        return localPoint;
     }
 
     private Rect PanelRectAt(Vector2 pos, Vector2 size, Vector2 pivot)
@@ -225,8 +275,15 @@ public class HoverUIController : MonoBehaviour
         return new Rect(left, bottom, size.x, size.y);
     }
 
-    private bool Intersects(Rect a, Rect b) => a.Overlaps(b);
-    private Rect Expand(Rect r, float amount) => new Rect(r.xMin - amount, r.yMin - amount, r.width + amount * 2f, r.height + amount * 2f);
+    private bool Intersects(Rect a, Rect b)
+    {
+        return a.Overlaps(b);
+    }
+
+    private Rect Expand(Rect rect, float amount)
+    {
+        return new Rect(rect.xMin - amount, rect.yMin - amount, rect.width + amount * 2f, rect.height + amount * 2f);
+    }
 
     private Vector2 ClampToCanvas(Rect canvasRect, Vector2 pos, Vector2 size, Vector2 pivot)
     {
@@ -241,8 +298,8 @@ public class HoverUIController : MonoBehaviour
 
     private float ChooseYAlignSlot(Rect canvasRect, Rect targetRect, Vector2 panelSize, Vector2 panelPivot, float xFixed)
     {
-        float targetTop = targetRect.yMax - targetRect.height / 2;
-        float targetBottom = targetRect.yMin + targetRect.height / 2;
+        float targetTop = targetRect.yMax - targetRect.height / 2f;
+        float targetBottom = targetRect.yMin + targetRect.height / 2f;
         float yTopAlign = targetTop - (1f - panelPivot.y) * panelSize.y;
         float yBottomAlign = targetBottom + panelPivot.y * panelSize.y;
 
@@ -251,13 +308,17 @@ public class HoverUIController : MonoBehaviour
 
         Rect targetExpanded = Expand(targetRect, 4f);
         Rect panelTopRect = PanelRectAt(new Vector2(xFixed, yTopClamped), panelSize, panelPivot);
-        Rect panelBotRect = PanelRectAt(new Vector2(xFixed, yBottomClamped), panelSize, panelPivot);
+        Rect panelBottomRect = PanelRectAt(new Vector2(xFixed, yBottomClamped), panelSize, panelPivot);
 
         float topOverlap = OverlapArea(targetExpanded, panelTopRect);
-        float botOverlap = OverlapArea(targetExpanded, panelBotRect);
+        float bottomOverlap = OverlapArea(targetExpanded, panelBottomRect);
 
-        if (topOverlap < botOverlap) return yTopClamped;
-        if (botOverlap < topOverlap) return yBottomClamped;
+        if (topOverlap < bottomOverlap)
+            return yTopClamped;
+
+        if (bottomOverlap < topOverlap)
+            return yBottomClamped;
+
         return yTopClamped;
     }
 

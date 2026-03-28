@@ -1,7 +1,7 @@
-using UnityEngine;
 using System;
+using System.Collections.Generic;
+using UnityEngine;
 
-// 유물 레어도 정의
 public enum ItemRarity
 {
     Common,
@@ -9,18 +9,84 @@ public enum ItemRarity
     Epic
 }
 
-// 드롭 개수와 가중치를 묶는 구조체 (예: 2개 나올 확률 60)
 [Serializable]
 public struct DropCountOption
 {
-    public int count;  // 드롭할 개수
-    public int weight; // 확률 가중치
+    public int count;
+    public int weight;
 }
 
-// 보스 전용 드롭 정의 (아이템 + 확률)
+[Serializable]
+public class CountRangeWeightProfile
+{
+    public int minCount = 1;
+    public int maxCount = 1;
+    public List<DropCountOption> weights = new List<DropCountOption>();
+
+    public void TryInitializeFromLegacy(int legacyMin, int legacyMax, List<DropCountOption> legacyWeights, int fallbackCount = 0)
+    {
+        bool hadNoWeights = weights == null || weights.Count == 0;
+        bool isDefaultRange = minCount == 1 && maxCount == 1;
+
+        if (hadNoWeights && legacyWeights != null && legacyWeights.Count > 0)
+            weights = new List<DropCountOption>(legacyWeights);
+
+        if ((hadNoWeights || isDefaultRange) && legacyMin > 0)
+            minCount = legacyMin;
+
+        if ((hadNoWeights || isDefaultRange) && legacyMax > 0)
+            maxCount = legacyMax;
+
+        int fallbackMin = fallbackCount > 0 ? fallbackCount : legacyMin;
+        int fallbackMax = fallbackCount > 0 ? fallbackCount : legacyMax;
+        EnsureDefaults(fallbackMin, fallbackMax);
+    }
+
+    public void EnsureDefaults(int fallbackMin = 1, int fallbackMax = 1)
+    {
+        if (weights != null && weights.Count > 0)
+        {
+            int optionMin = int.MaxValue;
+            int optionMax = int.MinValue;
+
+            foreach (DropCountOption option in weights)
+            {
+                optionMin = Mathf.Min(optionMin, option.count);
+                optionMax = Mathf.Max(optionMax, option.count);
+            }
+
+            if (minCount <= 0)
+                minCount = optionMin;
+
+            if (maxCount <= 0)
+                maxCount = optionMax;
+        }
+        else
+        {
+            if (minCount <= 0)
+                minCount = fallbackMin;
+
+            if (maxCount <= 0)
+                maxCount = fallbackMax;
+
+            int fallbackCount = Mathf.Max(0, minCount);
+            weights = new List<DropCountOption>
+            {
+                new DropCountOption { count = fallbackCount, weight = 100 }
+            };
+        }
+
+        if (minCount < 0)
+            minCount = 0;
+
+        if (maxCount < minCount)
+            maxCount = minCount;
+    }
+}
+
 [Serializable]
 public struct BossSpecificLoot
 {
-    public ScriptableObject item;   // 보스 전용 무기 or 유물
-    [Range(0, 100)] public int dropChance; // 드롭 확률 (0~100%)
+    public ScriptableObject item;
+    [Range(0, 100)] public int dropChance;
 }

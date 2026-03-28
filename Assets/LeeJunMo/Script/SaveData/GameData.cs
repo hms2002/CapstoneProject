@@ -67,11 +67,39 @@ public class UpgradeSaveData
 {
     public List<int> purchasedIDs = new List<int>();
     public List<int> unlockedIDs = new List<int>();
+    public RunModifierSaveData runModifierData = new RunModifierSaveData();
 
     public UpgradeSaveData()
     {
         unlockedIDs.Add(0);
     }
+}
+
+[System.Serializable]
+public class RunModifierSaveData
+{
+    public int extraWeaponGraveCount;
+    public int extraRelicGraveCount;
+    public int extraWeaponDropCount;
+    public int extraRelicDropCount;
+
+    public int weaponGraveMinBonus;
+    public int weaponGraveMaxBonus;
+    public int relicGraveMinBonus;
+    public int relicGraveMaxBonus;
+
+    public int weaponDropMinBonus;
+    public int weaponDropMaxBonus;
+    public int relicDropMinBonus;
+    public int relicDropMaxBonus;
+
+    public int chestWeaponMinBonus;
+    public int chestWeaponMaxBonus;
+    public int chestRelicMinBonus;
+    public int chestRelicMaxBonus;
+
+    public float extraRareChance;
+    public float extraEpicChance;
 }
 
 // =========================================================

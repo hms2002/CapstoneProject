@@ -1,14 +1,29 @@
-using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine;
 
 public class ItemManager : MonoBehaviour
 {
     public static ItemManager Instance { get; private set; }
 
+    private static bool s_isQuitting;
+
     [SerializeField] private ItemDatabase database;
 
-    private HashSet<string> unlockedWeaponIDs = new HashSet<string>();
-    private HashSet<string> unlockedRelicIDs = new HashSet<string>();
+    private readonly HashSet<string> unlockedWeaponIDs = new HashSet<string>();
+    private readonly HashSet<string> unlockedRelicIDs = new HashSet<string>();
+
+    private bool isInitialized;
+    private ItemSaveData pendingSaveData;
+
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+    private static void AutoBootstrap()
+    {
+        if (s_isQuitting || Instance != null)
+            return;
+
+        var go = new GameObject(nameof(ItemManager));
+        go.AddComponent<ItemManager>();
+    }
 
     private void Awake()
     {
@@ -16,39 +31,48 @@ public class ItemManager : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
+            TryInitializeFromGameData();
+            return;
         }
-        else
-        {
-            Destroy(gameObject);
-        }
+
+        Instance.TryAdoptDatabase(database);
+        Destroy(gameObject);
+    }
+
+    private void Start()
+    {
+        TryInitializeFromGameData();
     }
 
     public void Initialize(ItemSaveData saveData)
     {
+        pendingSaveData = saveData;
+
         if (database == null)
-        {
-            Debug.LogError("[ItemManager] ItemDatabase가 연결되지 않았습니다!");
             return;
-        }
 
         database.InitializeCache();
         unlockedWeaponIDs.Clear();
         unlockedRelicIDs.Clear();
 
-        // 1. 기본 해금 아이템 세팅
         if (database.defaultUnlockedWeapons != null)
         {
-            foreach (var w in database.defaultUnlockedWeapons)
-                if (w != null) unlockedWeaponIDs.Add(w.weaponId);
+            foreach (var weapon in database.defaultUnlockedWeapons)
+            {
+                if (weapon != null)
+                    unlockedWeaponIDs.Add(weapon.weaponId);
+            }
         }
 
         if (database.defaultUnlockedRelics != null)
         {
-            foreach (var r in database.defaultUnlockedRelics)
-                if (r != null) unlockedRelicIDs.Add(r.relicId);
+            foreach (var relic in database.defaultUnlockedRelics)
+            {
+                if (relic != null)
+                    unlockedRelicIDs.Add(relic.relicId);
+            }
         }
 
-        // 2. 세이브 데이터 덮어쓰기
         if (saveData != null)
         {
             if (saveData.unlockedWeaponIDs != null)
@@ -58,60 +82,86 @@ public class ItemManager : MonoBehaviour
                 unlockedRelicIDs.UnionWith(saveData.unlockedRelicIDs);
         }
 
-        Debug.Log($"[ItemManager] 초기화 완료. (무기 해금: {unlockedWeaponIDs.Count} / 유물 해금: {unlockedRelicIDs.Count})");
+        isInitialized = true;
+        pendingSaveData = null;
+
+        Debug.Log($"[ItemManager] Initialized. unlockedWeapons={unlockedWeaponIDs.Count}, unlockedRelics={unlockedRelicIDs.Count}");
     }
 
     public void UnlockWeapon(string id)
     {
+        if (database == null)
+            return;
+
         if (!unlockedWeaponIDs.Contains(id) && database.GetWeaponByID(id) != null)
         {
             unlockedWeaponIDs.Add(id);
-            Debug.Log($"[ItemManager] 무기 해금됨: {id}");
+            Debug.Log($"[ItemManager] Weapon unlocked: {id}");
         }
     }
 
     public void UnlockRelic(string id)
     {
+        if (database == null)
+            return;
+
         if (!unlockedRelicIDs.Contains(id) && database.GetRelicByID(id) != null)
         {
             unlockedRelicIDs.Add(id);
-            Debug.Log($"[ItemManager] 유물 해금됨: {id}");
+            Debug.Log($"[ItemManager] Relic unlocked: {id}");
         }
     }
 
     public bool IsWeaponUnlocked(string id) => unlockedWeaponIDs.Contains(id);
     public bool IsRelicUnlocked(string id) => unlockedRelicIDs.Contains(id);
 
-    // 게임을 저장할 때 GameDataManager가 이 함수들을 호출해서 리스트를 가져갑니다.
     public List<string> GetUnlockedWeaponIDs() => new List<string>(unlockedWeaponIDs);
     public List<string> GetUnlockedRelicIDs() => new List<string>(unlockedRelicIDs);
 
-
-    // =========================================================
-    // 🌟 [추가됨] 드롭 시스템(LootManager)을 위한 데이터 반환 헬퍼 함수
-    // =========================================================
-    
-    /// <summary>
-    /// 무기 ID를 입력받아 실제 WeaponDefinition(ScriptableObject)을 반환합니다.
-    /// </summary>
     public WeaponDefinition GetWeaponData(string id)
     {
-        if (database != null)
-        {
-            return database.GetWeaponByID(id);
-        }
-        return null;
+        return database != null ? database.GetWeaponByID(id) : null;
     }
 
-    /// <summary>
-    /// 유물 ID를 입력받아 실제 RelicDefinition(ScriptableObject)을 반환합니다.
-    /// </summary>
     public RelicDefinition GetRelicData(string id)
     {
+        return database != null ? database.GetRelicByID(id) : null;
+    }
+
+    private void TryInitializeFromGameData()
+    {
+        if (isInitialized || GameDataManager.Instance == null)
+            return;
+
+        Initialize(GameDataManager.Instance.Data != null ? GameDataManager.Instance.Data.itemData : null);
+    }
+
+    private void TryAdoptDatabase(ItemDatabase incomingDatabase)
+    {
+        if (incomingDatabase == null)
+            return;
+
         if (database != null)
         {
-            return database.GetRelicByID(id);
+            if (database != incomingDatabase)
+            {
+                Debug.LogWarning("[ItemManager] Different ItemDatabase was supplied by a scene instance. Keeping the existing database.", this);
+            }
+
+            return;
         }
-        return null;
+
+        database = incomingDatabase;
+        database.InitializeCache();
+
+        if (!isInitialized)
+        {
+            Initialize(pendingSaveData ?? (GameDataManager.Instance != null ? GameDataManager.Instance.Data?.itemData : null));
+        }
+    }
+
+    private void OnApplicationQuit()
+    {
+        s_isQuitting = true;
     }
 }

@@ -1,17 +1,22 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
-public class DialogueTrigger : MonoBehaviour, IInteractable
+public class DialogueTrigger : InteractableBase
 {
-    [Header("데이터 설정")]
+    [Header("Dialogue Data")]
     [SerializeField] private NPCData npcData;
-    [SerializeField] private TextAsset inkJSON;
+    [FormerlySerializedAs("inkJSON")]
+    [SerializeField, HideInInspector] private TextAsset legacyInkJSON;
 
-    [Header("프롬프트")]
+    [Header("Prompt")]
     [SerializeField] private Transform promptAnchor;
     [SerializeField] private string interactPromptText = "대화하기";
 
-    [Header("하이라이트")]
+    [Header("Highlight")]
     [SerializeField] private SpriteRenderer spriteRenderer;
 
     private MaterialPropertyBlock propBlock;
@@ -23,64 +28,98 @@ public class DialogueTrigger : MonoBehaviour, IInteractable
     {
         propBlock = new MaterialPropertyBlock();
         featureController = GetComponent<NPCFeatureController>();
+        TryMigrateLegacyInk();
         OnUnHighlight();
     }
 
-    public void OnPlayerNearby() { }
-    public void OnPlayerLeave() { }
-
-    public void OnHighlight()
+#if UNITY_EDITOR
+    private void OnValidate()
     {
-        if (spriteRenderer == null) return;
+        if (TryMigrateLegacyInk())
+            EditorUtility.SetDirty(npcData);
+    }
+#endif
+
+    public override void OnHighlight()
+    {
+        if (spriteRenderer == null)
+            return;
+
         spriteRenderer.GetPropertyBlock(propBlock);
         propBlock.SetFloat(OutlineEnabledID, 1f);
         spriteRenderer.SetPropertyBlock(propBlock);
     }
 
-    public void OnUnHighlight()
+    public override void OnUnHighlight()
     {
-        if (spriteRenderer == null) return;
+        if (spriteRenderer == null)
+            return;
+
         spriteRenderer.GetPropertyBlock(propBlock);
         propBlock.SetFloat(OutlineEnabledID, 0f);
         spriteRenderer.SetPropertyBlock(propBlock);
     }
 
-    public bool CanInteract(IPlayerInteractor player)
+    public override bool CanInteract(IPlayerInteractor player)
     {
+        DialogueService dialogueService = DialogueService.Instance;
         return player != null &&
                player.CurrentState == InteractState.Idle &&
                npcData != null &&
-               inkJSON != null &&
-               DialogueController.Instance != null &&
-               !DialogueController.Instance.isPlaying;
+               ResolveInk() != null &&
+               dialogueService != null &&
+               !dialogueService.IsPlaying;
     }
 
-    public void OnPlayerInteract(IPlayerInteractor player)
+    public override void OnPlayerInteract(IPlayerInteractor player)
     {
         if (npcData == null)
         {
-            Debug.LogError($"[DialogueTrigger] '{name}'의 npcData가 비어 있어 대화를 시작할 수 없습니다.", this);
+            Debug.LogError($"[DialogueTrigger] '{name}' has no NPCData assigned.", this);
             return;
         }
 
-        if (inkJSON == null)
+        TextAsset dialogueInk = ResolveInk();
+        if (dialogueInk == null)
         {
-            Debug.LogError($"[DialogueTrigger] '{name}'의 inkJSON이 비어 있어 대화를 시작할 수 없습니다.", this);
+            Debug.LogError($"[DialogueTrigger] '{name}' has no primaryInk assigned on NPCData.", this);
             return;
         }
 
         if (!CanInteract(player))
             return;
 
-        if (DialogueController.Instance != null)
-        {
-            List<NPCData> participants = new() { npcData };
-            DialogueController.Instance.EnterDialogueMode(inkJSON, participants, featureController);
-        }
+        List<NPCData> participants = new() { npcData };
+        DialogueService.Instance?.TryStartDialogue(dialogueInk, participants, featureController);
     }
 
-    public void GetInteract(string text) { }
-    public InteractState GetInteractType() => InteractState.Talking;
-    public string GetInteractDescription() => interactPromptText;
-    public Transform GetPromptAnchor() => promptAnchor != null ? promptAnchor : transform;
+    public override InteractState GetInteractType() => InteractState.Talking;
+
+    public override string GetInteractDescription() => interactPromptText;
+
+    public override Transform GetPromptAnchor() => promptAnchor != null ? promptAnchor : transform;
+
+    private TextAsset ResolveInk()
+    {
+        if (npcData == null)
+            return null;
+
+        if (npcData.PrimaryInk != null)
+            return npcData.PrimaryInk;
+
+        if (legacyInkJSON == null)
+            return null;
+
+        npcData.AssignPrimaryInkIfEmpty(legacyInkJSON);
+        return npcData.PrimaryInk != null ? npcData.PrimaryInk : legacyInkJSON;
+    }
+
+    private bool TryMigrateLegacyInk()
+    {
+        if (npcData == null || legacyInkJSON == null || npcData.PrimaryInk != null)
+            return false;
+
+        npcData.AssignPrimaryInkIfEmpty(legacyInkJSON);
+        return npcData.PrimaryInk != null;
+    }
 }

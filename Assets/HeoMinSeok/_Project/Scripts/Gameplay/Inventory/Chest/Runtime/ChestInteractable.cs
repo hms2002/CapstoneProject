@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [RequireComponent(typeof(TreasureChest))]
-public class ChestInteractable : MonoBehaviour, IInteractable
+public class ChestInteractable : InteractableBase
 {
     [Header("프롬프트")]
     [SerializeField] private Transform promptAnchor;
@@ -17,12 +17,7 @@ public class ChestInteractable : MonoBehaviour, IInteractable
         killLock = GetComponent<ChestMonsterKillLock>();
     }
 
-    public void OnPlayerNearby() { }
-    public void OnPlayerLeave() { }
-    public void OnHighlight() { }
-    public void OnUnHighlight() { }
-
-    public bool CanInteract(IPlayerInteractor player)
+    public override bool CanInteract(IPlayerInteractor player)
     {
         if (player == null || player.CurrentState != InteractState.Idle)
             return false;
@@ -33,9 +28,9 @@ public class ChestInteractable : MonoBehaviour, IInteractable
         return true;
     }
 
-    public InteractState GetInteractType() => InteractState.Shopping;
+    public override InteractState GetInteractType() => InteractState.Shopping;
 
-    public string GetInteractDescription()
+    public override string GetInteractDescription()
     {
         if (killLock != null && !killLock.IsUnlocked)
             return string.Format(lockedPromptFormat, killLock.RemainingAliveCount);
@@ -43,10 +38,9 @@ public class ChestInteractable : MonoBehaviour, IInteractable
         return openPromptText;
     }
 
-    public void GetInteract(string text) { }
-    public Transform GetPromptAnchor() => promptAnchor != null ? promptAnchor : transform;
+    public override Transform GetPromptAnchor() => promptAnchor != null ? promptAnchor : transform;
 
-    public void OnPlayerInteract(IPlayerInteractor player)
+    public override void OnPlayerInteract(IPlayerInteractor player)
     {
         if (chest == null || player == null)
             return;

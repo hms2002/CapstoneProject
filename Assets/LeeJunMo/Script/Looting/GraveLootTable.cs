@@ -1,24 +1,44 @@
-using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.Serialization;
 
 [CreateAssetMenu(fileName = "GraveLootTable", menuName = "Game/Loot/Grave Loot Table")]
 public class GraveLootTable : ScriptableObject
 {
-    [Header("무기 유해 설정 - 드롭 개수")]
-    [Tooltip("예: 1개 확률 90, 2개 확률 10")]
-    public List<DropCountOption> weaponDropCounts;
+    [Header("Weapon Grave Drop Count")]
+    [SerializeField] private CountRangeWeightProfile weaponDropCountProfile = new CountRangeWeightProfile();
 
-    [Header("유물 유해 설정 - 드롭 개수")]
-    [Tooltip("예: 1개 확률 70, 2개 확률 30")]
-    public List<DropCountOption> relicDropCounts;
+    [Header("Relic Grave Drop Count")]
+    [SerializeField] private CountRangeWeightProfile relicDropCountProfile = new CountRangeWeightProfile();
 
-    [Header("유물 유해 설정 - 등급 가중치")]
-    [Tooltip("노말(Common) 등급 등장 가중치 (예: 90)")]
+    [Header("Relic Rarity Weights")]
     public float normalRelicWeight = 90f;
-
-    [Tooltip("레어(Rare) 등급 등장 가중치 (예: 10)")]
     public float rareRelicWeight = 10f;
-
-    [Tooltip("에픽(Epic) 등급 등장 가중치 (기본 0, 향후 업그레이드 대비용)")]
     public float epicRelicWeight = 0f;
+
+    [FormerlySerializedAs("weaponDropMinCount")]
+    [SerializeField, HideInInspector] private int legacyWeaponDropMinCount = 1;
+    [FormerlySerializedAs("weaponDropMaxCount")]
+    [SerializeField, HideInInspector] private int legacyWeaponDropMaxCount = 2;
+    [FormerlySerializedAs("weaponDropCounts")]
+    [SerializeField, HideInInspector] private List<DropCountOption> legacyWeaponDropCounts = new List<DropCountOption>();
+
+    [FormerlySerializedAs("relicDropMinCount")]
+    [SerializeField, HideInInspector] private int legacyRelicDropMinCount = 1;
+    [FormerlySerializedAs("relicDropMaxCount")]
+    [SerializeField, HideInInspector] private int legacyRelicDropMaxCount = 2;
+    [FormerlySerializedAs("relicDropCounts")]
+    [SerializeField, HideInInspector] private List<DropCountOption> legacyRelicDropCounts = new List<DropCountOption>();
+
+    public CountRangeWeightProfile WeaponDropCountProfile => weaponDropCountProfile;
+    public CountRangeWeightProfile RelicDropCountProfile => relicDropCountProfile;
+
+    private void OnValidate()
+    {
+        weaponDropCountProfile ??= new CountRangeWeightProfile();
+        relicDropCountProfile ??= new CountRangeWeightProfile();
+
+        weaponDropCountProfile.TryInitializeFromLegacy(legacyWeaponDropMinCount, legacyWeaponDropMaxCount, legacyWeaponDropCounts);
+        relicDropCountProfile.TryInitializeFromLegacy(legacyRelicDropMinCount, legacyRelicDropMaxCount, legacyRelicDropCounts);
+    }
 }

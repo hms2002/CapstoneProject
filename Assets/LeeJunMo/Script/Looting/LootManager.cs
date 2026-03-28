@@ -5,17 +5,20 @@ public class LootManager : MonoBehaviour
 {
     public static LootManager Instance { get; private set; }
 
+    [SerializeField] private bool persistAcrossScenes = true;
+    [SerializeField] private bool verboseLogging;
+
     [Header("Settings")]
-    public GameObject worldItemPrefab;
+    [SerializeField] private GameObject worldItemPrefab;
 
     [Header("References")]
-    public List<StageLootTable> stageTables;
+    [SerializeField] private List<StageLootTable> stageTables = new List<StageLootTable>();
 
     [Header("Grave References")]
-    public GraveLootTable graveLootTable;
+    [SerializeField] private GraveLootTable graveLootTable;
 
-    [Header("State")]
-    public int currentStageIndex = 0;
+    [Header("Fallback State")]
+    [SerializeField, Min(0)] private int currentStageIndex = 0;
 
     private LootTableResolver tableResolver;
     private LootPoolService poolService;
@@ -24,15 +27,18 @@ public class LootManager : MonoBehaviour
 
     private void Awake()
     {
-        if (Instance == null)
-        {
-            Instance = this;
-            RefreshServices();
-        }
-        else
+        if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
+            return;
         }
+
+        Instance = this;
+
+        if (persistAcrossScenes)
+            DontDestroyOnLoad(gameObject);
+
+        RefreshServices();
     }
 
     private void OnValidate()
@@ -40,27 +46,31 @@ public class LootManager : MonoBehaviour
         RefreshServices();
     }
 
-    private void RefreshServices()
+    private void OnDestroy()
     {
-        tableResolver = new LootTableResolver(stageTables, graveLootTable);
-        poolService = new LootPoolService();
-        rollService = new LootRollService();
-        spawnService = new LootSpawnService(worldItemPrefab);
+        if (Instance == this)
+            Instance = null;
     }
 
-    private StageLootTable GetCurrentTable()
+    public int CurrentStageIndex
     {
-        if (tableResolver == null)
-            RefreshServices();
+        get
+        {
+            if (PortalRouteManager.Instance != null && PortalRouteManager.Instance.HasActivePlan)
+                return PortalRouteManager.Instance.CurrentStageIndex;
 
-        return tableResolver.GetCurrentTable(currentStageIndex);
+            return currentStageIndex;
+        }
+    }
+
+    public void SetFallbackStageIndex(int stageIndex)
+    {
+        currentStageIndex = Mathf.Max(0, stageIndex);
     }
 
     public WeaponDefinition GetRandomWeapon(HashSet<string> exclusionList)
     {
-        if (poolService == null)
-            RefreshServices();
-
+        EnsureServices();
         return poolService.GetRandomWeapon(exclusionList);
     }
 
@@ -70,26 +80,29 @@ public class LootManager : MonoBehaviour
         if (table == null)
             return null;
 
-        if (rollService == null || poolService == null)
-            RefreshServices();
-
+        EnsureServices();
         ItemRarity rarity = rollService.RollStageRelicRarity(table);
         return GetRandomRelicByRarity(rarity);
     }
 
     public List<ScriptableObject> GenerateChestLoot()
     {
-        List<ScriptableObject> drops = new List<ScriptableObject>();
+        var drops = new List<ScriptableObject>();
         StageLootTable table = GetCurrentTable();
         if (table == null)
             return drops;
 
-        if (rollService == null || poolService == null)
-            RefreshServices();
+        EnsureServices();
 
         HashSet<string> banList = poolService.BuildPlayerWeaponExclusionSet();
+        ChestRunModifierDelta chestModifiers = RunModifierService.Instance != null
+            ? RunModifierService.Instance.ChestModifiers
+            : default;
 
-        int weaponCount = rollService.PickCount(table.chestWeaponCounts);
+        int weaponCount = rollService.PickCountInProfile(
+            table.ChestWeaponCountProfile,
+            chestModifiers.chestWeaponMinBonus,
+            chestModifiers.chestWeaponMaxBonus);
         for (int i = 0; i < weaponCount; i++)
         {
             WeaponDefinition weapon = poolService.GetRandomWeapon(banList);
@@ -100,7 +113,10 @@ public class LootManager : MonoBehaviour
             banList.Add(weapon.weaponId);
         }
 
-        int relicCount = rollService.PickCount(table.chestRelicCounts);
+        int relicCount = rollService.PickCountInProfile(
+            table.ChestRelicCountProfile,
+            chestModifiers.chestRelicMinBonus,
+            chestModifiers.chestRelicMaxBonus);
         for (int i = 0; i < relicCount; i++)
         {
             RelicDefinition relic = GetRandomRelic();
@@ -117,31 +133,31 @@ public class LootManager : MonoBehaviour
         if (table == null)
             return;
 
-        if (rollService == null || poolService == null)
-            RefreshServices();
+        EnsureServices();
 
         MonsterLootType lootType = rollService.RollMonsterLootType(table);
         switch (lootType)
         {
             case MonsterLootType.None:
                 return;
+
             case MonsterLootType.Weapon:
             {
                 HashSet<string> banList = poolService.BuildPlayerWeaponExclusionSet();
                 WeaponDefinition weapon = poolService.GetRandomWeapon(banList);
                 if (weapon != null)
                     SpawnLootObject(position, weapon);
-
                 return;
             }
+
             case MonsterLootType.Relic:
             {
                 RelicDefinition relic = GetRandomRelic();
                 if (relic != null)
                     SpawnLootObject(position, relic);
-
                 return;
             }
+
             case MonsterLootType.Consumable:
             case MonsterLootType.FieldItem:
             default:
@@ -151,9 +167,7 @@ public class LootManager : MonoBehaviour
 
     public void SpawnLootObject(Vector3 position, ScriptableObject itemData)
     {
-        if (spawnService == null)
-            RefreshServices();
-
+        EnsureServices();
         spawnService.SpawnLootObject(position, itemData);
     }
 
@@ -163,10 +177,9 @@ public class LootManager : MonoBehaviour
         return table != null ? table.bossStoneCount : 0;
     }
 
-    public void SpawnGraveLoot(Vector3 position, GraveType type, int bonusCount = 0, float bonusRareChance = 0f, float bonusEpicChance = 0f)
+    public void SpawnGraveLoot(Vector3 position, GraveType type, int bonusMinCount = 0, int bonusMaxCount = 0, float bonusRareChance = 0f, float bonusEpicChance = 0f)
     {
-        if (tableResolver == null || rollService == null || poolService == null || spawnService == null)
-            RefreshServices();
+        EnsureServices();
 
         GraveLootTable currentGraveTable = tableResolver.GetGraveLootTable();
         if (currentGraveTable == null || ItemManager.Instance == null)
@@ -175,18 +188,21 @@ public class LootManager : MonoBehaviour
         switch (type)
         {
             case GraveType.Weapon:
-                SpawnWeaponGraveLoot(position, currentGraveTable, bonusCount);
+                SpawnWeaponGraveLoot(position, currentGraveTable, bonusMinCount, bonusMaxCount);
                 break;
+
             case GraveType.Relic:
-                SpawnRelicGraveLoot(position, currentGraveTable, bonusCount, bonusRareChance, bonusEpicChance);
+                SpawnRelicGraveLoot(position, currentGraveTable, bonusMinCount, bonusMaxCount, bonusRareChance, bonusEpicChance);
                 break;
         }
     }
 
-    private void SpawnWeaponGraveLoot(Vector3 position, GraveLootTable currentGraveTable, int bonusCount)
+    private void SpawnWeaponGraveLoot(Vector3 position, GraveLootTable currentGraveTable, int bonusMinCount, int bonusMaxCount)
     {
-        int baseCount = rollService.PickCount(currentGraveTable.weaponDropCounts);
-        int totalCount = baseCount + bonusCount;
+        int totalCount = rollService.PickCountInProfile(
+            currentGraveTable.WeaponDropCountProfile,
+            bonusMinCount,
+            bonusMaxCount);
 
         for (int i = 0; i < totalCount; i++)
         {
@@ -196,10 +212,12 @@ public class LootManager : MonoBehaviour
         }
     }
 
-    private void SpawnRelicGraveLoot(Vector3 position, GraveLootTable currentGraveTable, int bonusCount, float bonusRareChance, float bonusEpicChance)
+    private void SpawnRelicGraveLoot(Vector3 position, GraveLootTable currentGraveTable, int bonusMinCount, int bonusMaxCount, float bonusRareChance, float bonusEpicChance)
     {
-        int baseCount = rollService.PickCount(currentGraveTable.relicDropCounts);
-        int totalCount = baseCount + bonusCount;
+        int totalCount = rollService.PickCountInProfile(
+            currentGraveTable.RelicDropCountProfile,
+            bonusMinCount,
+            bonusMaxCount);
 
         for (int i = 0; i < totalCount; i++)
         {
@@ -210,11 +228,29 @@ public class LootManager : MonoBehaviour
         }
     }
 
+    private void EnsureServices()
+    {
+        if (tableResolver == null || poolService == null || rollService == null || spawnService == null)
+            RefreshServices();
+    }
+
+    private void RefreshServices()
+    {
+        tableResolver = new LootTableResolver(stageTables, graveLootTable);
+        poolService = new LootPoolService();
+        rollService = new LootRollService();
+        spawnService = new LootSpawnService(worldItemPrefab);
+    }
+
+    private StageLootTable GetCurrentTable()
+    {
+        EnsureServices();
+        return tableResolver.GetCurrentTable(CurrentStageIndex);
+    }
+
     private RelicDefinition GetRandomRelicByRarity(ItemRarity targetRarity)
     {
-        if (poolService == null)
-            RefreshServices();
-
+        EnsureServices();
         return poolService.GetRandomRelicByRarity(targetRarity);
     }
 }

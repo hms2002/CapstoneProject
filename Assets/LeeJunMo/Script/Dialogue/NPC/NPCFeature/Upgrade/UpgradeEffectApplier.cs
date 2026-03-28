@@ -4,10 +4,10 @@ public sealed class UpgradeEffectApplier
 {
     public void ApplyUpgrade(UpgradeNodeSO node, SampleTopDownPlayer player)
     {
-        if (node == null || player == null)
+        if (node == null)
             return;
 
-        node.ApplyEffect(player);
+        node.ApplyOnPurchase(player);
     }
 
     public void ReapplyPurchasedEffects(IEnumerable<int> purchasedIDs, UpgradeProgressService progressService, SampleTopDownPlayer player)
@@ -19,7 +19,7 @@ public sealed class UpgradeEffectApplier
         {
             UpgradeNodeSO node = progressService.GetUpgradeByID(id);
             if (node != null)
-                node.ApplyEffect(player);
+                node.ReapplyPlayerEffects(player);
         }
     }
 }

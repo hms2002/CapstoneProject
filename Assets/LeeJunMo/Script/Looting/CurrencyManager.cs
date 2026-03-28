@@ -7,15 +7,13 @@ public class CurrencyManager : MonoBehaviour
 
     public event Action<int> OnMagicStoneChanged;
 
-    private bool isHookedToGameData;
-
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     private static void AutoBootstrap()
     {
         if (Instance != null)
             return;
 
-        var go = new GameObject("CurrencyManager");
+        var go = new GameObject(nameof(CurrencyManager));
         go.AddComponent<CurrencyManager>();
         DontDestroyOnLoad(go);
     }
@@ -30,65 +28,51 @@ public class CurrencyManager : MonoBehaviour
 
         Instance = this;
         DontDestroyOnLoad(gameObject);
-        TryHookGameData();
     }
 
     private void Start()
     {
-        TryHookGameData();
         OnMagicStoneChanged?.Invoke(GetMagicStone());
     }
 
     public int GetMagicStone()
     {
-        TryHookGameData();
-        return GameDataManager.Instance != null ? GameDataManager.Instance.GetMagicStoneCount() : 0;
+        return TryGetData(out GameData data) ? data.magicStone : 0;
     }
 
     public void AddMagicStone(int amount)
     {
-        TryHookGameData();
-        if (GameDataManager.Instance == null)
+        if (!TryGetData(out GameData data))
             return;
 
-        GameDataManager.Instance.AddMagicStone(amount);
-        if (!isHookedToGameData)
-            OnMagicStoneChanged?.Invoke(GetMagicStone());
+        data.magicStone += amount;
+        OnMagicStoneChanged?.Invoke(data.magicStone);
     }
 
     public bool SpendMagicStone(int amount)
     {
-        TryHookGameData();
-        if (GameDataManager.Instance == null)
+        if (!TryGetData(out GameData data))
             return false;
 
-        bool spent = GameDataManager.Instance.SpendMagicStone(amount);
-        if (spent && !isHookedToGameData)
-            OnMagicStoneChanged?.Invoke(GetMagicStone());
-        return spent;
+        if (data.magicStone < amount)
+        {
+            Debug.Log("[CurrencyManager] 마정석이 부족합니다.");
+            return false;
+        }
+
+        data.magicStone -= amount;
+        OnMagicStoneChanged?.Invoke(data.magicStone);
+        return true;
     }
 
-    private void TryHookGameData()
+    private static bool TryGetData(out GameData data)
     {
-        if (isHookedToGameData || GameDataManager.Instance == null)
-            return;
-
-        GameDataManager.Instance.OnMagicStoneChanged += RelayMagicStoneChanged;
-        isHookedToGameData = true;
-    }
-
-    private void RelayMagicStoneChanged(int amount)
-    {
-        OnMagicStoneChanged?.Invoke(amount);
+        data = GameDataManager.Instance != null ? GameDataManager.Instance.Data : null;
+        return data != null;
     }
 
     private void OnDestroy()
     {
-        if (isHookedToGameData && GameDataManager.Instance != null)
-            GameDataManager.Instance.OnMagicStoneChanged -= RelayMagicStoneChanged;
-
-        isHookedToGameData = false;
-
         if (Instance == this)
             Instance = null;
     }
