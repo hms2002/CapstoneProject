@@ -4552,8 +4552,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90321de462d66a740b565c4e066219cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  popupRoot: {fileID: 271044846}
-  worldCamera: {fileID: 0}
 --- !u!114 &271044843
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4999,6 +4997,127 @@ RectTransform:
   m_AnchoredPosition: {x: 105, y: -125}
   m_SizeDelta: {x: 0, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &381638432
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 381638433}
+  - component: {fileID: 381638437}
+  - component: {fileID: 381638436}
+  - component: {fileID: 381638434}
+  - component: {fileID: 381638438}
+  m_Layer: 5
+  m_Name: PlayerHealthHeartHUD
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &381638433
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 381638432}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 532970146}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &381638434
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 381638432}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5a72b4a51a6ed1943a227df87e8ba017, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: {fileID: 0}
+  hpDef: {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
+  maxHpDef: {fileID: 11400000, guid: 0e177e1d15e428745b5859fac08ce203, type: 2}
+  heartTokenPrefab: {fileID: 7286775436942910812, guid: 73286b2f835b74848bc1fef47d7f1294, type: 3}
+  heartContainer: {fileID: 381638433}
+  filledHeartSprite: {fileID: 21300000, guid: 742335e24e5afea4e9516fd89252b06c, type: 3}
+  emptyHeartSprite: {fileID: 2501108752766977309, guid: e75f469ea29530246a4a0543396316af, type: 3}
+  healthPerHeart: 1
+--- !u!114 &381638436
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 381638432}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
+  m_RaycastTarget: 0
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  m_Type: 1
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &381638437
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 381638432}
+  m_CullTransparentMesh: 1
+--- !u!114 &381638438
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 381638432}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a8695521f0d02e499659fee002a26c2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Padding:
+    m_Left: 0
+    m_Right: 0
+    m_Top: 0
+    m_Bottom: 0
+  m_ChildAlignment: 0
+  m_StartCorner: 0
+  m_StartAxis: 0
+  m_CellSize: {x: 70, y: 70}
+  m_Spacing: {x: 10, y: 0}
+  m_Constraint: 0
+  m_ConstraintCount: 2
 --- !u!1 &400535305
 GameObject:
   m_ObjectHideFlags: 0
@@ -5650,8 +5769,26 @@ MonoBehaviour:
   - {fileID: 1428976810}
   - {fileID: 941701481}
   - {fileID: 923936155}
-  baseWeaponGraveCount: 1
-  baseRelicGraveCount: 2
+  weaponGraveCountProfile:
+    minCount: 1
+    maxCount: 1
+    weights:
+    - count: 1
+      weight: 100
+  relicGraveCountProfile:
+    minCount: 2
+    maxCount: 2
+    weights:
+    - count: 2
+      weight: 100
+  legacyWeaponGraveMinCount: 1
+  legacyWeaponGraveMaxCount: 1
+  legacyWeaponGraveCountWeights: []
+  legacyRelicGraveMinCount: 2
+  legacyRelicGraveMaxCount: 2
+  legacyRelicGraveCountWeights: []
+  legacyBaseWeaponGraveCount: 1
+  legacyBaseRelicGraveCount: 2
 --- !u!4 &449784227
 Transform:
   m_ObjectHideFlags: 0
@@ -6238,6 +6375,7 @@ RectTransform:
   - {fileID: 1463279875}
   - {fileID: 418324871}
   - {fileID: 965012066}
+  - {fileID: 381638433}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -9244,8 +9382,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   popupPrefab: {fileID: 8513686018927951383, guid: 5cf83ca88051dcc4eb5e522fc3c27d4d, type: 3}
   worldOffset: {x: 0, y: 0.8, z: 0}
-  randomX: 25
-  randomY: 10
+  randomOffsetX: {x: -0.15, y: 0.15}
+  randomOffsetY: {x: -0.05, y: 0.05}
+  popupParent: {fileID: 0}
 --- !u!4 &1193148250
 Transform:
   m_ObjectHideFlags: 0
@@ -10340,6 +10479,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   inventory: {fileID: 0}
   abilitySystem: {fileID: 0}
+  hudRoot: {fileID: 0}
   attackUI:
     icon: {fileID: 291571629}
     cooldownFill: {fileID: 43944562}

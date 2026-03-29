@@ -163,6 +163,8 @@ GameObject:
   - component: {fileID: 1924190678758458473}
   - component: {fileID: 4990856730141791889}
   - component: {fileID: 2723686145349069958}
+  - component: {fileID: 3624906614828727178}
+  - component: {fileID: 2333025531112780419}
   m_Layer: 0
   m_Name: PF Player
   m_TagString: Player
@@ -582,15 +584,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 15a99cfe40eccb641af350bbaa8a805c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  spriteRenderers:
-  - {fileID: 4860281173819614724}
-  flashSeconds: 0.08
   hitEnterSeconds: 0.3
   hitActiveSeconds: 0.4
   animator: {fileID: 8399328563048880028}
   hitEnterTrigger: HitEnter
   hitLoopBool: 
   clearHitLoopWhenMoving: 1
+  hitFlashController: {fileID: 0}
   cameraShake: {fileID: 0}
   defaultShake: 0.3
   movementStateProviderSource: {fileID: 0}
@@ -884,3 +884,46 @@ MonoBehaviour:
   flashColor: {r: 1, g: 1, b: 1, a: 1}
   flashMultiply: 1.5
   flashDuration: 0.08
+--- !u!114 &3624906614828727178
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8883617028798182002}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed0eb70fdd03ebb4d88e63bb25dd6925, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  attributeSet: {fileID: 0}
+  hpDef: {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
+  player: {fileID: 0}
+  abilitySystem: {fileID: 0}
+  body: {fileID: 0}
+  intentInput: {fileID: 0}
+  combatInput: {fileID: 0}
+  aimInput: {fileID: 0}
+  hitFeedback: {fileID: 0}
+  deathPresentation: {fileID: 0}
+  hubSceneName: ProtoTypeHub
+  fallbackDelaySeconds: 1.25
+  additionalBehavioursToDisable: []
+  collidersToDisable: []
+--- !u!114 &2333025531112780419
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8883617028798182002}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e420ec097168cc1479e40af1d2ef39ce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animator: {fileID: 8399328563048880028}
+  deathTrigger: Death
+  spriteRenderers: []
+  deadTint: {r: 0.45, g: 0.45, b: 0.45, a: 1}
+  presentationDuration: 1.25

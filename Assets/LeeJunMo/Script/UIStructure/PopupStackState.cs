@@ -10,6 +10,12 @@ public sealed class PopupStackState
         stack.Clear();
     }
 
+    public IReadOnlyList<IStackableUI> Snapshot()
+    {
+        PruneDeadEntries();
+        return stack.ToArray();
+    }
+
     public void Push(IStackableUI ui)
     {
         if (ui == null)

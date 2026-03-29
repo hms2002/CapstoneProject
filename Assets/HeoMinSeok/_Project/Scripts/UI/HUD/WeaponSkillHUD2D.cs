@@ -18,6 +18,9 @@ public class WeaponSkillHUD2D : MonoBehaviour
     [SerializeField] private WeaponInventory2D inventory;
     [SerializeField] private AbilitySystem abilitySystem;
 
+    [Header("Visibility")]
+    [SerializeField] private GameObject hudRoot;
+
     [Header("UI Slots")]
     public SkillSlotUI attackUI;
     public SkillSlotUI skill1UI;
@@ -29,7 +32,11 @@ public class WeaponSkillHUD2D : MonoBehaviour
 
     private void Awake()
     {
+        if (hudRoot == null)
+            hudRoot = gameObject;
+
         TryResolvePlayerRefs();
+        RefreshVisibility();
     }
 
     private void OnEnable()
@@ -40,6 +47,7 @@ public class WeaponSkillHUD2D : MonoBehaviour
         TryResolvePlayerRefs();
         BindInventoryEvents();
         RefreshAbilityRefs();
+        RefreshVisibility();
     }
 
     private void OnDisable()
@@ -56,6 +64,7 @@ public class WeaponSkillHUD2D : MonoBehaviour
         TryResolvePlayerRefs(player);
         BindInventoryEvents();
         RefreshAbilityRefs();
+        RefreshVisibility();
     }
 
     private void HandlePlayerUnregistered(SampleTopDownPlayer player)
@@ -69,6 +78,7 @@ public class WeaponSkillHUD2D : MonoBehaviour
             inventory = null;
             abilitySystem = null;
             RefreshAbilityRefs();
+            RefreshVisibility();
         }
     }
 
@@ -125,6 +135,7 @@ public class WeaponSkillHUD2D : MonoBehaviour
             ApplySlot(attackUI, null);
             ApplySlot(skill1UI, null);
             ApplySlot(skill2UI, null);
+            RefreshVisibility();
             return;
         }
 
@@ -135,6 +146,17 @@ public class WeaponSkillHUD2D : MonoBehaviour
         ApplySlot(attackUI, attackDef);
         ApplySlot(skill1UI, skill1Def);
         ApplySlot(skill2UI, skill2Def);
+        RefreshVisibility();
+    }
+
+    private void RefreshVisibility()
+    {
+        if (hudRoot == null)
+            return;
+
+        bool hasPlayerRefs = inventory != null && abilitySystem != null;
+        if (hudRoot.activeSelf != hasPlayerRefs)
+            hudRoot.SetActive(hasPlayerRefs);
     }
 
     private void ApplySlot(SkillSlotUI ui, AbilityDefinition def)

@@ -94,6 +94,25 @@ public class UIManager : MonoBehaviour
             PopUI(topUI);
     }
 
+    public void CloseAllPopups(bool force = true)
+    {
+        var snapshot = popupStack.Snapshot();
+        if (snapshot == null || snapshot.Count == 0)
+            return;
+
+        for (int i = snapshot.Count - 1; i >= 0; i--)
+        {
+            var ui = snapshot[i];
+            if (ui == null)
+                continue;
+
+            if (!force && !ui.CanCloseOnEscape)
+                continue;
+
+            PopUI(ui);
+        }
+    }
+
     public bool HasActivePopup()
     {
         return popupStack.HasAny();
