@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   relicId: RD_WindTablet
   displayName: WindTablet
-  icon: {fileID: -2056649486, guid: ef16b2ddeb64123459076c2c8a541a63, type: 3}
+  icon: {fileID: -725545543995621311, guid: 25e96db64c0011e46b28fac404b03e4b, type: 3}
   rarity: 0
   description: 
   maxLevel: 5

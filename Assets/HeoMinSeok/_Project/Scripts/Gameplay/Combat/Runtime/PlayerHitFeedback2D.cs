@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using Unity.Cinemachine;
 
 namespace UnityGAS
 {
@@ -28,8 +29,9 @@ namespace UnityGAS
         [SerializeField] private SpriteHitFlashController hitFlashController;
 
         [Header("Camera Shake")]
-        [SerializeField] private SimpleCameraShake2D cameraShake;
+        [SerializeField] private CinemachineImpulseSource cameraShake;
         [SerializeField] private float defaultShake = 0.10f;
+        [SerializeField, Min(0f)] private float cameraShakeForceMultiplier = 10f;
 
         [Header("Movement")]
         [Tooltip("선택: 이동 여부를 읽어 피격 루프를 중간 해제한다.")]
@@ -79,8 +81,7 @@ namespace UnityGAS
             if (animator == null)
                 animator = GetComponentInChildren<Animator>();
 
-            if (cameraShake == null && Camera.main != null)
-                cameraShake = Camera.main.GetComponent<SimpleCameraShake2D>();
+            ResolveCameraShakeSource();
 
             if (hitFlashController == null)
                 hitFlashController = GetComponentInChildren<SpriteHitFlashController>();
@@ -160,8 +161,11 @@ namespace UnityGAS
             if (hitFlashController != null)
                 hitFlashController.PlayFlash();
 
+            if (cameraShake == null)
+                ResolveCameraShakeSource();
+
             if (cameraShake != null && shake > 0f)
-                cameraShake.Shake(shake);
+                cameraShake.GenerateImpulse(ResolveShakeDirection(payload.Causer) * (shake * cameraShakeForceMultiplier));
 
             yield return new WaitForSeconds(hitEnterSeconds);
 
@@ -322,6 +326,40 @@ namespace UnityGAS
                 return;
 
             _tags.RemoveTag(tag);
+        }
+
+        /// <summary>
+        /// 책임 :
+        /// - 피격 가해자 기준으로 카메라 흔들림 방향 벡터를 계산한다.
+        /// - 가해자가 없으면 위쪽 기본 방향으로 impulse를 보낸다.
+        /// </summary>
+        private Vector3 ResolveShakeDirection(GameObject causer)
+        {
+            if (causer != null)
+            {
+                Vector3 delta = transform.position - causer.transform.position;
+                delta.z = 0f;
+
+                if (delta.sqrMagnitude > 0.0001f)
+                    return delta.normalized;
+            }
+
+            return Vector3.up;
+        }
+
+        /// <summary>
+        /// 책임 :
+        /// - 현재 MainCamera에서 Cinemachine impulse source를 찾고, 없으면 카메라에 자동으로 추가한다.
+        /// - 피격 연출은 플레이어가 아니라 실제 출력 카메라 기준으로 흔들림을 내보내도록 한다.
+        /// </summary>
+        private void ResolveCameraShakeSource()
+        {
+            if (Camera.main == null)
+                return;
+
+            cameraShake = Camera.main.GetComponent<CinemachineImpulseSource>();
+            if (cameraShake == null)
+                cameraShake = Camera.main.gameObject.AddComponent<CinemachineImpulseSource>();
         }
     }
 }

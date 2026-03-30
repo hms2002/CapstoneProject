@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   relicId: RD_TonicGombangdae
   displayName: TonicGombangdae
-  icon: {fileID: -1568554932, guid: ef16b2ddeb64123459076c2c8a541a63, type: 3}
+  icon: {fileID: -1455096403836856330, guid: 55a13ad98fd04b24bbe28fa5a4113206, type: 3}
   rarity: 0
   description: 
   maxLevel: 5

@@ -8,11 +8,15 @@ using UnityGAS;
 /// - Knockback: applied via separate GE_Knockback_Spec
 /// - Stagger build-up: applied to StaggerGaugeSystem on target (if present)
 /// - Element build-up: applied to ElementGaugeSystem on target (if present)
+/// - hit confirm 태그가 비어 있을 때 공용 기본 태그를 fallback으로 공급한다.
 ///
 /// NOTE: In this project, "element damage" is treated as "element gauge build-up".
 /// </summary>
 public static class CombatDamageAction
 {
+    private const string DefaultHitConfirmTagResourcePath = "Tags/Event.HitConfirm";
+    private static GameplayTag s_defaultHitConfirmTag;
+
     // Backward-compatible overload (no stagger / no knockback effect)
     public static void ApplyDamageAndEmitHit(
         AbilitySystem system,
@@ -22,7 +26,8 @@ public static class CombatDamageAction
         float finalHpDamage,
         IReadOnlyList<ElementDamageResult> elementDamages,
         GameplayTag hitConfirmedTag,
-        GameObject causer)
+        GameObject causer,
+        bool isCriticalHit = false)
     {
         ApplyDamageAndEmitHit(
             system,
@@ -35,7 +40,8 @@ public static class CombatDamageAction
             elementBuildUps: elementDamages,
             finalKnockbackImpulse: 0f,
             hitConfirmedTag: hitConfirmedTag,
-            causer: causer);
+            causer: causer,
+            isCriticalHit: isCriticalHit);
     }
 
     // New overload: includes knockback effect + impulse
@@ -50,7 +56,8 @@ public static class CombatDamageAction
         IReadOnlyList<ElementDamageResult> elementBuildUps,
         float finalKnockbackImpulse,
         GameplayTag hitConfirmedTag,
-        GameObject causer)
+        GameObject causer,
+        bool isCriticalHit = false)
     {
         ApplyDamageAndEmitHit_Internal(
             system,
@@ -63,7 +70,8 @@ public static class CombatDamageAction
             elementBuildUps,
             finalKnockbackImpulse,
             hitConfirmedTag,
-            causer);
+            causer,
+            isCriticalHit);
     }
 
     /// <summary>
@@ -80,7 +88,8 @@ public static class CombatDamageAction
         float finalStaggerBuildUp,
         IReadOnlyList<ElementDamageResult> elementBuildUps,
         GameplayTag hitConfirmedTag,
-        GameObject causer)
+        GameObject causer,
+        bool isCriticalHit = false)
     {
         ApplyDamageAndEmitHit_Internal(
             system,
@@ -93,7 +102,8 @@ public static class CombatDamageAction
             elementBuildUps,
             finalKnockbackImpulse: 0f,
             hitConfirmedTag,
-            causer);
+            causer,
+            isCriticalHit);
     }
 
     // ---- Internal orchestration -------------------------------------------------------------
@@ -109,9 +119,16 @@ public static class CombatDamageAction
         IReadOnlyList<ElementDamageResult> elementBuildUps,
         float finalKnockbackImpulse,
         GameplayTag hitConfirmedTag,
-        GameObject causer)
+        GameObject causer,
+        bool isCriticalHit)
     {
         if (!Validate(system, damageEffect, target)) return;
+        if (CombatEvasionUtil.TryRollEvasion(target))
+        {
+            DamagePopupService.ShowText("EVADE", target.transform.position);
+            return;
+        }
+
         var runner = system.EffectRunner;
 
         // 0) Extract GE_Damage_Spec once
@@ -152,7 +169,7 @@ public static class CombatDamageAction
         ApplyElements(target, elementBuildUps, system.gameObject, causer);
 
         // 7) Hit confirmed event
-        EmitHitConfirmed(system, spec, target, causer, hitConfirmedTag);
+        EmitHitConfirmed(system, spec, target, causer, hitConfirmedTag, isCriticalHit);
     }
 
     private static bool Validate(AbilitySystem system, GameplayEffect damageEffect, GameObject target)
@@ -377,18 +394,38 @@ public static class CombatDamageAction
         AbilitySpec spec,
         GameObject target,
         GameObject causer,
-        GameplayTag hitConfirmedTag)
+        GameplayTag hitConfirmedTag,
+        bool isCriticalHit)
     {
-        if (hitConfirmedTag == null) return;
+        var resolvedHitConfirmedTag = ResolveHitConfirmedTag(hitConfirmedTag);
+        if (resolvedHitConfirmedTag == null)
+            return;
 
-        system.SendGameplayEvent(hitConfirmedTag, new AbilityEventData
+        system.SendGameplayEvent(resolvedHitConfirmedTag, new AbilityEventData
         {
             AbilitySystem = system,
             Spec = spec,
             Instigator = system.gameObject,
             Target = target,
             WorldPosition = target.transform.position,
-            Causer = causer
+            Causer = causer,
+            IsCriticalHit = isCriticalHit
         });
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 개별 공격/스킬이 hit confirm 태그를 지정하지 않은 경우 공용 Event.HitConfirm 태그를 기본값으로 해석한다.
+    /// - 개별 자식 태그가 지정된 경우에는 그 태그를 그대로 유지해 세부 분기를 허용한다.
+    /// </summary>
+    private static GameplayTag ResolveHitConfirmedTag(GameplayTag hitConfirmedTag)
+    {
+        if (hitConfirmedTag != null)
+            return hitConfirmedTag;
+
+        if (s_defaultHitConfirmTag == null)
+            s_defaultHitConfirmTag = Resources.Load<GameplayTag>(DefaultHitConfirmTagResourcePath);
+
+        return s_defaultHitConfirmTag;
     }
 }

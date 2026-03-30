@@ -20,6 +20,12 @@ namespace UnityGAS
             if (targetSystem == null || target == null || damageEffect == null)
                 return;
 
+            if (CombatEvasionUtil.TryRollEvasion(target))
+            {
+                DamagePopupService.ShowText("EVADE", target.transform.position);
+                return;
+            }
+
             if (targetSystem.EffectRunner == null)
                 return;
 

@@ -35,7 +35,8 @@ namespace UnityGAS
                     elementBuildUps: snapshot.ElementBuildUps,
                     finalKnockbackImpulse: snapshot.FinalKnockbackImpulse,
                     hitConfirmedTag: hitConfirmedTag,
-                    causer: causer
+                    causer: causer,
+                    isCriticalHit: snapshot.IsCriticalHit
                 );
             }
         }

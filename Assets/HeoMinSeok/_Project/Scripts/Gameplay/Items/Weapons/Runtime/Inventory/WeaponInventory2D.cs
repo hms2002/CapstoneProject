@@ -153,6 +153,8 @@ public class WeaponInventory2D : MonoBehaviour
 
         var newWeapon = slots[slotIndex];
         if (newWeapon == null) return;
+        if (slotIndex != ActiveIndex)
+            CleanupTransientAbilitiesForWeaponChange();
 
         var result = equipRuntime.Equip(slotIndex, newWeapon);
         if (!result.Changed) return;
@@ -165,6 +167,7 @@ public class WeaponInventory2D : MonoBehaviour
     public void Unequip()
     {
         if (!HasEquippedWeapon) return;
+        CleanupTransientAbilitiesForWeaponChange();
 
         var result = equipRuntime.Unequip();
         if (!result.Changed) return;
@@ -245,6 +248,7 @@ public class WeaponInventory2D : MonoBehaviour
 
         if (wasActive)
         {
+            CleanupTransientAbilitiesForWeaponChange();
             var unequipResult = equipRuntime.Unequip();
             if (unequipResult.Changed)
             {
@@ -510,6 +514,7 @@ public class WeaponInventory2D : MonoBehaviour
 
         if (wasActive)
         {
+            CleanupTransientAbilitiesForWeaponChange();
             var unequipResult = equipRuntime.Unequip();
             if (unequipResult.Changed)
             {
@@ -538,6 +543,15 @@ public class WeaponInventory2D : MonoBehaviour
     private void NotifyInventoryChanged()
     {
         OnInventoryChanged?.Invoke();
+    }
+
+    /// <summary>
+    /// 책임 : 무기 교체/해제 직전에 현재 실행 중인 능력의 일시 상태를 정리한다.
+    /// Rush 같은 지속 실행이 이전 무기 문맥을 붙잡고 남지 않도록 하되, 쿨다운/차지 같은 영속 상태는 건드리지 않는다.
+    /// </summary>
+    private void CleanupTransientAbilitiesForWeaponChange()
+    {
+        abilitySystem?.ResetTransientRuntimeState();
     }
 
     private void SyncActiveStateFromRuntime()

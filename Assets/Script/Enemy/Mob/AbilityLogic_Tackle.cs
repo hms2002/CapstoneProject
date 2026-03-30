@@ -24,7 +24,8 @@ public class AL_Tackle : AbilityLogic
             finalHpDamage: damageAmount,
             finalStaggerBuildUp: 0f,
             finalKnockbackImpulse: knockbackImpulse,
-            elementBuildUps: null
+            elementBuildUps: null,
+            isCriticalHit: false
         );
 
         CombatDamageAction.ApplyDamageAndEmitHit(

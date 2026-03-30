@@ -26,6 +26,8 @@ public class WeaponSkillHUD2D : MonoBehaviour
     public SkillSlotUI skill1UI;
     public SkillSlotUI skill2UI;
 
+    private CanvasGroup hudCanvasGroup;
+    private Graphic[] hudGraphics;
     private AbilityDefinition attackDef;
     private AbilityDefinition skill1Def;
     private AbilityDefinition skill2Def;
@@ -34,6 +36,10 @@ public class WeaponSkillHUD2D : MonoBehaviour
     {
         if (hudRoot == null)
             hudRoot = gameObject;
+
+        hudCanvasGroup = hudRoot.GetComponent<CanvasGroup>();
+        if (hudRoot == gameObject && hudCanvasGroup == null)
+            hudGraphics = hudRoot.GetComponentsInChildren<Graphic>(includeInactive: true);
 
         TryResolvePlayerRefs();
         RefreshVisibility();
@@ -155,8 +161,34 @@ public class WeaponSkillHUD2D : MonoBehaviour
             return;
 
         bool hasPlayerRefs = inventory != null && abilitySystem != null;
-        if (hudRoot.activeSelf != hasPlayerRefs)
-            hudRoot.SetActive(hasPlayerRefs);
+        if (hudRoot != gameObject)
+        {
+            if (hudRoot.activeSelf != hasPlayerRefs)
+                hudRoot.SetActive(hasPlayerRefs);
+            return;
+        }
+
+        if (hudCanvasGroup != null)
+        {
+            hudCanvasGroup.alpha = hasPlayerRefs ? 1f : 0f;
+            hudCanvasGroup.interactable = hasPlayerRefs;
+            hudCanvasGroup.blocksRaycasts = hasPlayerRefs;
+            return;
+        }
+
+        if (hudGraphics == null)
+            hudGraphics = hudRoot.GetComponentsInChildren<Graphic>(includeInactive: true);
+
+        for (int i = 0; i < hudGraphics.Length; i++)
+        {
+            if (hudGraphics[i] == null)
+                continue;
+
+            if (hudGraphics[i].gameObject == gameObject)
+                continue;
+
+            hudGraphics[i].enabled = hasPlayerRefs;
+        }
     }
 
     private void ApplySlot(SkillSlotUI ui, AbilityDefinition def)

@@ -3,6 +3,11 @@ using UnityEngine;
 using UnityGAS;
 using Object = UnityEngine.Object;
 
+/// <summary>
+/// 책임 :
+/// - 번개 유물의 추가타를 발생시키고, 자기 자신이 만든 HitConfirm로 재귀 발동하지 않도록 제어한다.
+/// - 번개 피해의 실제 적용 대상 수집, 전용 causer 표식 생성/해제까지 함께 관리한다.
+/// </summary>
 public sealed class LightningStrikeProc2D : IRelicProc
 {
     public Object Token => token;
@@ -25,6 +30,7 @@ public sealed class LightningStrikeProc2D : IRelicProc
 
     private readonly GameplayTag hitConfirmedTag;
     private readonly GE_Knockback_Spec knockbackEffect;
+    private readonly GameObject lightningCauser;
 
     public LightningStrikeProc2D(
         RelicContext ctx,
@@ -57,12 +63,14 @@ public sealed class LightningStrikeProc2D : IRelicProc
 
         this.hitConfirmedTag = hitConfirmedTag;
         this.knockbackEffect = knockbackEffect;
+        this.lightningCauser = CreateLightningCauser(owner, token);
     }
 
     public void Handle(GameplayTag tag, AbilityEventData data)
     {
         if (triggerTag == null || tag != triggerTag) return;
         if (ownerSystem == null || damageEffect == null) return;
+        if (IsSelfTriggeredLightningHit(data)) return;
         if (cooldownSeconds > 0f && Time.time < nextReadyTime) return;
 
         Vector3 strikePos = ResolveStrikePosition(data);
@@ -132,7 +140,8 @@ public sealed class LightningStrikeProc2D : IRelicProc
             finalHpDamage: finalDamage,
             finalStaggerBuildUp: 0f,
             finalKnockbackImpulse: 0f,
-            elementBuildUps: null
+            elementBuildUps: null,
+            isCriticalHit: false
         );
 
         CombatDamageApplicator.ApplyToTargets(
@@ -143,8 +152,35 @@ public sealed class LightningStrikeProc2D : IRelicProc
             targets: uniqueTargets,
             snapshot: snapshot,
             hitConfirmedTag: hitConfirmedTag,
-            causer: owner
+            causer: lightningCauser != null ? lightningCauser : owner
         );
+    }
+
+    private bool IsSelfTriggeredLightningHit(AbilityEventData data)
+    {
+        var causerObject = data.Causer as GameObject;
+        if (causerObject == null)
+            return false;
+
+        var marker = causerObject.GetComponent<LightningStrikeCauserMarker>();
+        if (marker == null)
+            return false;
+
+        return marker.OwnerToken == token;
+    }
+
+    private static GameObject CreateLightningCauser(GameObject owner, Object ownerToken)
+    {
+        if (owner == null)
+            return null;
+
+        var go = new GameObject("LightningStrikeCauser");
+        go.hideFlags = HideFlags.HideAndDontSave;
+        go.transform.SetParent(owner.transform, false);
+
+        var marker = go.AddComponent<LightningStrikeCauserMarker>();
+        marker.Initialize(ownerToken);
+        return go;
     }
 
     private static GameObject ResolveTargetRoot(Collider2D hit)
@@ -168,5 +204,22 @@ public sealed class LightningStrikeProc2D : IRelicProc
 
     public void Dispose()
     {
+        if (lightningCauser != null)
+            Object.Destroy(lightningCauser);
+    }
+}
+
+/// <summary>
+/// 책임 :
+/// - 번개 유물이 만든 추가타의 causer임을 식별하는 표식 컴포넌트다.
+/// - owner token을 함께 들고 있어 같은 유물 인스턴스가 만든 재귀 발동만 정확히 차단한다.
+/// </summary>
+public sealed class LightningStrikeCauserMarker : MonoBehaviour
+{
+    public Object OwnerToken { get; private set; }
+
+    public void Initialize(Object ownerToken)
+    {
+        OwnerToken = ownerToken;
     }
 }

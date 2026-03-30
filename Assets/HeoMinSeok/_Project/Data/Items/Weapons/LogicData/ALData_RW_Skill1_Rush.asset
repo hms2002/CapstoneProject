@@ -16,10 +16,17 @@ MonoBehaviour:
   stepIntervalSeconds: 3
   stacks: 3
   addPerStack: 1
+  stackAddOverrideTag: {fileID: 11400000, guid: d7e3a9156bf24fa6a1c8d2e47b9f0c53, type: 2}
+  taggedAddPerStackOverrides:
+  - 1.5
+  - 1.5
+  - 2
   collisionCancelRadius: 0.35
   collisionCancelLayers:
     serializedVersion: 2
-    m_Bits: 3221225472
+    m_Bits: 1073741824
   cancelOnAttackOrSkillInput: 1
+  deferSkill2CancelTag: {fileID: 11400000, guid: 9d6f4b2a1c3641e59f8ab2d87ec41f73, type: 2}
+  skill2KillConfirmWindowSeconds: 0.35
   cancelOnDamagedAttribute: {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
   handoffDurationSeconds: 0.1

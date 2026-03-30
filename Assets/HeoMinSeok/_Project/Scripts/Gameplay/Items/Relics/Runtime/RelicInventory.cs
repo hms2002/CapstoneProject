@@ -397,8 +397,8 @@ public class RelicInventory : MonoBehaviour
 
     /// <summary>
     /// 책임 : 껍데기 복원 후 각 유물에 새 runtime token을 부여하고,
-    /// 복원용 runtime hook만 연결한다.
-    /// modifier/effect/tag/ability는 새로 적용하지 않는다.
+    /// 복원용 runtime hook과 복원 후에도 반드시 살아 있어야 하는 상태 표식을 다시 연결한다.
+    /// 이 단계는 explicit tag/GAS 복원 이후 호출되어, 복원 전용 태그가 다시 지워지지 않도록 한다.
     /// </summary>
     public void AttachRuntimeHooksForRestore()
     {

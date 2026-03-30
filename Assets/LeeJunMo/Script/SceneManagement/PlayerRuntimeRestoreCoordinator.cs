@@ -10,7 +10,9 @@ public static class PlayerRuntimeRestoreCoordinator
 {
     /// <summary>
     /// 책임 : 저장된 플레이어 상태를 새 씬 플레이어에 복원한다.
-    /// 복원 순서는 Shell Equip → Hook Attach → GAS Restore → 장비 Runtime Restore 이다.
+    /// 복원 순서는 Shell Equip → GAS Restore → Hook Attach → 장비 Runtime Restore 이다.
+    /// explicit tag 복원이 끝나기 전에 장비가 복원 전용 태그를 다시 부여하면
+    /// 이후 ClearAllExplicitTags에 지워질 수 있으므로 Hook Attach는 GAS 복원 뒤로 둔다.
     /// </summary>
     public static void RestoreAll(
         PlayerRuntimeState state,
@@ -44,11 +46,7 @@ public static class PlayerRuntimeRestoreCoordinator
             state.relicInventory,
             resolver.ResolveRelic);
 
-        // 2) 이후 플레이를 위한 런타임 훅만 연결
-        weaponInventory?.AttachRuntimeHooksForRestore();
-        relicInventory?.AttachRuntimeHooksForRestore();
-
-        // 3) GAS 런타임 복원
+        // 2) GAS 런타임 복원
         RestoreGasRuntime(
             state,
             attributeSet,
@@ -57,6 +55,12 @@ public static class PlayerRuntimeRestoreCoordinator
             abilitySystem,
             resolver,
             restoreSource);
+
+        // 3) explicit tag 복원 이후 런타임 훅 연결
+        // 책임 : 복원 장착이 다시 부여하는 장비/유물 전용 태그가
+        // explicit tag clear 단계에 지워지지 않도록 순서를 보장한다.
+        weaponInventory?.AttachRuntimeHooksForRestore();
+        relicInventory?.AttachRuntimeHooksForRestore();
 
         // 4) 장비별 개별 런타임 상태 복원
         RestoreEquipmentRuntime(

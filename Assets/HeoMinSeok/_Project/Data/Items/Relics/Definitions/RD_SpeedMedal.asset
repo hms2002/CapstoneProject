@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   relicId: RD_SpeedMedal
   displayName: SpeedMedal
-  icon: {fileID: -388329610, guid: ef16b2ddeb64123459076c2c8a541a63, type: 3}
+  icon: {fileID: -5412910156287300836, guid: 7b34ef87eae3f544f8be30f39526b504, type: 3}
   rarity: 0
   description: 
   maxLevel: 5

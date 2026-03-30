@@ -16,8 +16,8 @@ public class RelicLogic_CritFromBonusMoveSpeed_Managed : RelicLogic
     public AttributeDefinition moveSpeedMultiplierAttributeFallback;
 
     [Header("Apply To")]
-    [Tooltip("치명타 확률 AttributeDefinition (0~1)")]
-    public AttributeDefinition critChanceAttribute;
+    [Tooltip("치명타 확률 Add AttributeDefinition (0~1)")]
+    public AttributeDefinition critChanceAddAttribute;
 
     [Header("Tuning")]
     [Tooltip("추가 이동속도 몇 %마다 보너스를 줄지. 0.10 = 10%")]
@@ -49,7 +49,7 @@ public class RelicLogic_CritFromBonusMoveSpeed_Managed : RelicLogic
     {
         if (ctx.owner == null || ctx.token == null) return;
         if (ctx.attributeSet == null) return;
-        if (critChanceAttribute == null) return;
+        if (critChanceAddAttribute == null) return;
 
         var mgr = ctx.owner.GetComponent<RelicProcManager>();
         if (mgr == null) mgr = ctx.owner.AddComponent<RelicProcManager>();
@@ -58,7 +58,7 @@ public class RelicLogic_CritFromBonusMoveSpeed_Managed : RelicLogic
             ctx,
             moveSpeedFinalStatId,
             moveSpeedMultiplierAttributeFallback,
-            critChanceAttribute,
+            critChanceAddAttribute,
             Mathf.Max(0.0001f, bonusMoveStep),
             critPerStep
         );
@@ -73,7 +73,7 @@ public class RelicLogic_CritFromBonusMoveSpeed_Managed : RelicLogic
         private readonly RelicContext _ctx;
         private readonly StatId _moveSpeedFinalStatId;
         private readonly AttributeDefinition _moveSpeedFallback;
-        private readonly AttributeDefinition _critChance;
+        private readonly AttributeDefinition _critChanceAdd;
 
         private readonly float _step;
         private readonly float _critPerStep;
@@ -89,7 +89,7 @@ public class RelicLogic_CritFromBonusMoveSpeed_Managed : RelicLogic
             RelicContext ctx,
             StatId moveSpeedFinalStatId,
             AttributeDefinition moveSpeedFallback,
-            AttributeDefinition critChance,
+            AttributeDefinition critChanceAdd,
             float step,
             float critPerStep)
         {
@@ -97,7 +97,7 @@ public class RelicLogic_CritFromBonusMoveSpeed_Managed : RelicLogic
             Token = ctx.token;
             _moveSpeedFinalStatId = moveSpeedFinalStatId;
             _moveSpeedFallback = moveSpeedFallback;
-            _critChance = critChance;
+            _critChanceAdd = critChanceAdd;
             _step = step;
             _critPerStep = critPerStep;
 
@@ -210,16 +210,16 @@ public class RelicLogic_CritFromBonusMoveSpeed_Managed : RelicLogic
         {
             RemoveCurrentModifier();
 
-            if (_ctx.attributeSet == null || _critChance == null) return;
+            if (_ctx.attributeSet == null || _critChanceAdd == null) return;
             if (bonusCrit <= 0.000001f) return;
 
             _currentCritMod = new AttributeModifier(ModifierType.Flat, bonusCrit, Token, duration: 0f);
-            _ctx.attributeSet.TryAddModifier(_critChance, _currentCritMod);
+            _ctx.attributeSet.TryAddModifier(_critChanceAdd, _currentCritMod);
         }
 
         private void RemoveCurrentModifier()
         {
-            if (_ctx.attributeSet == null || _critChance == null) return;
+            if (_ctx.attributeSet == null || _critChanceAdd == null) return;
             _ctx.attributeSet.RemoveModifiersFromSource(Token);
             _currentCritMod = default;
         }

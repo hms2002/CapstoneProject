@@ -2,11 +2,31 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityGAS;
 
+/// <summary>
+/// 책임 :
+/// - 현재 장착 무기 프리팹의 생성/캐싱/활성화를 관리한다.
+/// - 커서의 좌우 위치에 따라 무기 인스턴스를 좌/우 손 pivot 중 적절한 소켓 아래에 배치한다.
+/// - 무기 회전 자체는 Hand/PlayerAim2D가 맡고, 이 컨트롤러는 배치 소켓 선택과 비주얼 수명만 담당한다.
+/// </summary>
 public class WeaponEquipController : MonoBehaviour
 {
+    private enum HandSide
+    {
+        Right,
+        Left
+    }
+
     [Header("Refs")]
     [SerializeField] private AbilitySystem abilitySystem;
     [SerializeField] private Transform weaponSocket;
+    [SerializeField] private Transform leftWeaponSocket;
+    [SerializeField] private Transform rightWeaponSocket;
+    [SerializeField] private Transform ownerTransform;
+    [SerializeField] private PlayerAim2D aimSource;
+
+    [Header("Side Switch")]
+    [Tooltip("커서가 플레이어 중심선을 이 값만큼 넘기기 전에는 현재 손을 유지한다.")]
+    [SerializeField, Min(0f)] private float sideSwitchDeadZone = 0.1f;
 
     [Header("Cache")]
     [Tooltip("무기 교체 시 Instantiate/Destroy 대신 캐시(비활성/활성)로 처리")]
@@ -17,6 +37,7 @@ public class WeaponEquipController : MonoBehaviour
 
     private GameObject currentPrefab;
     private GameObject currentWeaponGO;
+    private HandSide currentSide = HandSide.Right;
 
     // prefab -> instance
     private readonly Dictionary<GameObject, GameObject> cache = new();
@@ -28,7 +49,15 @@ public class WeaponEquipController : MonoBehaviour
     private void Awake()
     {
         if (abilitySystem == null) abilitySystem = GetComponentInParent<AbilitySystem>();
+        if (aimSource == null) aimSource = GetComponentInParent<PlayerAim2D>();
+        if (ownerTransform == null && abilitySystem != null) ownerTransform = abilitySystem.transform;
         if (weaponSocket == null) weaponSocket = transform;
+        if (rightWeaponSocket == null) rightWeaponSocket = weaponSocket;
+    }
+
+    private void LateUpdate()
+    {
+        RefreshCurrentWeaponSocket();
     }
 
     /// <summary>무기 장착(교체 포함)</summary>
@@ -36,7 +65,10 @@ public class WeaponEquipController : MonoBehaviour
     {
         if (weaponPrefab == null) return;
         if (abilitySystem == null) abilitySystem = GetComponentInParent<AbilitySystem>();
+        if (aimSource == null) aimSource = GetComponentInParent<PlayerAim2D>();
+        if (ownerTransform == null && abilitySystem != null) ownerTransform = abilitySystem.transform;
         if (weaponSocket == null) weaponSocket = transform;
+        if (rightWeaponSocket == null) rightWeaponSocket = weaponSocket;
 
         // 실행 중 무기 채널 정리
         abilitySystem.OnWeaponEquipped();
@@ -58,6 +90,7 @@ public class WeaponEquipController : MonoBehaviour
 
         ActivateInstance(currentWeaponGO, weaponPrefab);
         RegisterAnimatorAndRelays(currentWeaponGO);
+        RefreshCurrentWeaponSocket();
     }
 
     /// <summary>무기 없음 상태(비주얼 제거/숨김)</summary>
@@ -94,6 +127,7 @@ public class WeaponEquipController : MonoBehaviour
 
         currentWeaponGO = null;
         currentPrefab = null;
+        currentSide = HandSide.Right;
 
         // 안전: 이전 무기 Animator 참조 해제
         if (abilitySystem != null) abilitySystem.RegisterWeaponAnimator(null);
@@ -126,7 +160,7 @@ public class WeaponEquipController : MonoBehaviour
     {
         if (instance == null) return;
 
-        instance.transform.SetParent(weaponSocket, false);
+        instance.transform.SetParent(GetCurrentSocket(), false);
         instance.transform.localPosition = Vector3.zero;
         instance.transform.localRotation = Quaternion.identity;
         instance.transform.localScale = Vector3.one;
@@ -142,6 +176,66 @@ public class WeaponEquipController : MonoBehaviour
         }
 
         Touch(prefabKey);
+    }
+
+    /// <summary>
+    /// 책임 : 현재 커서 위치를 기준으로 활성 무기 인스턴스의 부모 소켓을 좌/우 pivot 중 하나로 맞춘다.
+    /// pivot이 비어 있으면 기존 단일 socket 배치 방식으로 자연스럽게 fallback 한다.
+    /// </summary>
+    private void RefreshCurrentWeaponSocket()
+    {
+        if (currentWeaponGO == null)
+            return;
+
+        var nextSide = ResolveHandSide();
+        var nextSocket = GetSocket(nextSide);
+        if (nextSocket == null)
+            nextSocket = weaponSocket != null ? weaponSocket : transform;
+
+        if (currentWeaponGO.transform.parent != nextSocket)
+        {
+            currentWeaponGO.transform.SetParent(nextSocket, false);
+            currentWeaponGO.transform.localPosition = Vector3.zero;
+            currentWeaponGO.transform.localRotation = Quaternion.identity;
+            currentWeaponGO.transform.localScale = Vector3.one;
+        }
+
+        currentSide = nextSide;
+    }
+
+    /// <summary>
+    /// 책임 : 커서의 월드 x 위치가 플레이어 기준 좌/우 어디인지 판정하고,
+    /// 중심 근처에서는 dead zone으로 현재 손을 유지해 좌우 떨림을 줄인다.
+    /// </summary>
+    private HandSide ResolveHandSide()
+    {
+        if (aimSource == null || ownerTransform == null)
+            return currentSide;
+
+        float deltaX = aimSource.MouseWorld.x - ownerTransform.position.x;
+        if (deltaX > sideSwitchDeadZone)
+            return HandSide.Right;
+
+        if (deltaX < -sideSwitchDeadZone)
+            return HandSide.Left;
+
+        return currentSide;
+    }
+
+    private Transform GetCurrentSocket()
+    {
+        return GetSocket(ResolveHandSide());
+    }
+
+    private Transform GetSocket(HandSide side)
+    {
+        if (side == HandSide.Left && leftWeaponSocket != null)
+            return leftWeaponSocket;
+
+        if (side == HandSide.Right && rightWeaponSocket != null)
+            return rightWeaponSocket;
+
+        return weaponSocket != null ? weaponSocket : transform;
     }
 
 

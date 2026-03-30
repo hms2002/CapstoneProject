@@ -10,14 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2ac1da532121a934bb7f57799b194806, type: 3}
-  m_Name: RD_SpurToCounterattack
+  m_Name: RD_HawkEmblem
   m_EditorClassIdentifier: 
-  relicId: RD_WindTablet
-  displayName: WindTablet
-  icon: {fileID: 92458922, guid: ef16b2ddeb64123459076c2c8a541a63, type: 3}
-  rarity: 0
-  description: 
-  maxLevel: 5
+  relicId: RD_HawkEmblem
+  displayName: "\uC1A1\uACE8\uB9E4\uC758 \uC99D\uD45C"
+  icon: {fileID: 0}
+  rarity: 1
+  description: "[\uCD94\uAC00 \uC774\uB3D9\uC18D\uB3C4] 40% \uB9C8\uB2E4 [\uACF5\uACA9\uC744
+    \uD68C\uD53C\uD560 \uD655\uB960] 3% \uCD94\uAC00"
+  maxLevel: 1
   dropLevel: 1
-  logic: {fileID: 11400000, guid: cec20e584852a9a4497e4980246de31f, type: 2}
+  logic: {fileID: 11400000, guid: 53c44760e96f40b4859c04a3cab84d83, type: 2}
   param: {fileID: 0}

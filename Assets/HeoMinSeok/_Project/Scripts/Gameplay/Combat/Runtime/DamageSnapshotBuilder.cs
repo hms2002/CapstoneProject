@@ -12,7 +12,7 @@ namespace UnityGAS
             ScaledStatFormula knockbackFormula)
         {
             if (attributeSet == null)
-                return new CombatDamageSnapshot(0f, 0f, 0f, null);
+                return new CombatDamageSnapshot(0f, 0f, 0f, null, false);
 
             float baseHp = 0f;
             if (damageFormula != null)
@@ -84,7 +84,8 @@ namespace UnityGAS
                 finalHpDamage: r.hpDamage,
                 finalStaggerBuildUp: r.staggerDamage,
                 finalKnockbackImpulse: baseKnockback,
-                elementBuildUps: elementResults
+                elementBuildUps: elementResults,
+                isCriticalHit: r.isCrit
             );
         }
     }

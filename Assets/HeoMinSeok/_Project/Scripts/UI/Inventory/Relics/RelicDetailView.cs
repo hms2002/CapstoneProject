@@ -144,6 +144,86 @@ public class RelicDetailView : MonoBehaviour, IItemDetailView
             return sb.ToString().TrimEnd();
         }
 
+        // 3) Current HP threshold move speed
+        if (r.logic is RelicLogic_MoveSpeedByCurrentHealth_Managed moveByHp)
+        {
+            if (moveByHp.rules == null || moveByHp.rules.Count == 0)
+            {
+                sb.AppendLine("(체력 구간 규칙 없음)");
+                return sb.ToString().TrimEnd();
+            }
+
+            for (int i = 0; i < moveByHp.rules.Count; i++)
+            {
+                var rule = moveByHp.rules[i];
+                float curV = EvalValue(rule.percentBonus, rule.percentBonusByLevel, level);
+                float nextV = hasNext ? EvalValue(rule.percentBonus, rule.percentBonusByLevel, nextLevel) : curV;
+
+                string rangeText;
+                bool hasLower = rule.minHealthInclusive > 0f;
+                bool hasUpper = !float.IsInfinity(rule.maxHealthInclusive) && rule.maxHealthInclusive < 999999f;
+
+                if (Mathf.Approximately(rule.minHealthInclusive, rule.maxHealthInclusive))
+                    rangeText = $"현재 체력이 {rule.minHealthInclusive:0.##}";
+                else if (hasLower && hasUpper)
+                    rangeText = $"현재 체력이 {rule.minHealthInclusive:0.##}~{rule.maxHealthInclusive:0.##}";
+                else if (hasLower)
+                    rangeText = $"현재 체력이 {rule.minHealthInclusive:0.##} 이상";
+                else
+                    rangeText = $"현재 체력이 {rule.maxHealthInclusive:0.##} 이하";
+
+                string curStr = curV >= 0f ? $"+{curV * 100f:0.##}%" : $"{curV * 100f:0.##}%";
+                string nextStr = nextV >= 0f ? $"+{nextV * 100f:0.##}%" : $"{nextV * 100f:0.##}%";
+
+                sb.Append($"- {rangeText}: [[이동속도]] {curStr}");
+                if (hasNext && nextV != curV) sb.Append($"  →  <color=#90CAF9>{nextStr}</color>");
+                sb.AppendLine();
+            }
+
+            return sb.ToString().TrimEnd();
+        }
+
+        if (r.logic is RelicLogic_EvasionFromBonusMoveSpeed_Managed evadeByMove)
+        {
+            string stepStr = $"{evadeByMove.bonusMoveStep * 100f:0.##}%";
+            string evasionStr = $"{evadeByMove.evasionPerStep * 100f:0.##}%";
+
+            sb.AppendLine($"- [[추가 이동속도]] {stepStr}마다 [[공격을 회피할 확률]] {evasionStr} 추가");
+
+            return sb.ToString().TrimEnd();
+        }
+
+        if (r.logic is RelicLogic_MoveSpeedStackOnCriticalHit_Managed moveOnCrit)
+        {
+            string gainStr = $"{moveOnCrit.percentPerCritical * 100f:0.##}%";
+            string capStr = $"{moveOnCrit.maxPercentBonus * 100f:0.##}%";
+
+            sb.AppendLine($"- [[치명타]] 시 [[이동속도]] {gainStr}씩 증가");
+            sb.AppendLine($"- 최대 {capStr}까지 증가 가능");
+            sb.AppendLine("- 피해를 받으면 위 보너스가 초기화됨");
+
+            return sb.ToString().TrimEnd();
+        }
+
+        if (r.logic is RelicLogic_Stenographer_Managed)
+        {
+            sb.AppendLine("- [[잔영의 날개]] 전용 유물");
+            sb.AppendLine("- [[스킬 1]] 변동");
+            sb.AppendLine("- 사용 시 [[이동속도]] +150%");
+            sb.AppendLine("- 3초 후 추가 [[이동속도]] +150%  (총 +300%)");
+            sb.AppendLine("- 3초 후 추가 [[이동속도]] +200%  (총 +500%)");
+
+            return sb.ToString().TrimEnd();
+        }
+
+        if (r.logic is RelicLogic_OneDropOfSwiftness_Managed)
+        {
+            sb.AppendLine("- [[잔영의 날개]] 전용 유물");
+            sb.AppendLine("- [[스킬 2]]로 적 처치 시 [[스킬 1]]의 실행을 취소하지 않음");
+
+            return sb.ToString().TrimEnd();
+        }
+
         // Fallback: show linked param if exists
         if (r.param != null)
         {
