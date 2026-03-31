@@ -12,6 +12,11 @@ public class UpgradeTooltip : MonoBehaviour, IHoverView
     [SerializeField] private TextMeshProUGUI contentText;
     [SerializeField] private RectTransform backgroundRect;
 
+    [Header("Layout")]
+    [SerializeField] private float minTooltipWidth = 180f;
+    [SerializeField] private float maxTooltipWidth = 360f;
+    [SerializeField] private float horizontalPadding = 24f;
+
     private CanvasGroup canvasGroup;
     private RectTransform rectTransform;
 
@@ -64,10 +69,12 @@ public class UpgradeTooltip : MonoBehaviour, IHoverView
             titleText.text = node.upgradeName;
 
         if (contentText != null)
+        {
             contentText.text = node.description;
+            contentText.enableWordWrapping = true;
+        }
 
-        if (backgroundRect != null)
-            LayoutRebuilder.ForceRebuildLayoutImmediate(backgroundRect);
+        ApplyTooltipLayout();
 
         gameObject.SetActive(true);
         canvasGroup.alpha = 1f;
@@ -83,5 +90,32 @@ public class UpgradeTooltip : MonoBehaviour, IHoverView
         canvasGroup.alpha = 0f;
         canvasGroup.interactable = false;
         canvasGroup.blocksRaycasts = false;
+    }
+
+    private void ApplyTooltipLayout()
+    {
+        if (backgroundRect == null)
+            return;
+
+        Canvas.ForceUpdateCanvases();
+
+        float titleWidth = titleText != null ? titleText.preferredWidth + horizontalPadding : minTooltipWidth;
+        float tooltipWidth = Mathf.Clamp(titleWidth, minTooltipWidth, maxTooltipWidth);
+
+        backgroundRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, tooltipWidth);
+
+        if (titleText != null)
+        {
+            RectTransform titleRect = titleText.rectTransform;
+            titleRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, tooltipWidth - horizontalPadding);
+        }
+
+        if (contentText != null)
+        {
+            RectTransform contentRect = contentText.rectTransform;
+            contentRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, tooltipWidth - horizontalPadding);
+        }
+
+        LayoutRebuilder.ForceRebuildLayoutImmediate(backgroundRect);
     }
 }

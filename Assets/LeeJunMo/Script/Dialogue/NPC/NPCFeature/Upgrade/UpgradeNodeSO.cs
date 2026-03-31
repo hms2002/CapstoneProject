@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEditor.ShaderGraph.Internal;
+
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -33,9 +35,10 @@ public class UpgradeNodeSO : ScriptableObject
 
     public Vector2 GetUiPosition()
     {
-        float startX = 100f;
-        float x = startX + (gridX * 120f);
-        float y = gridY * 90f;
+        float startX = 250f;
+        float startY = -50f;
+        float x = startX + (gridX * 360f);
+        float y = startY + (gridY * 240f);
         return new Vector2(x, y);
     }
 

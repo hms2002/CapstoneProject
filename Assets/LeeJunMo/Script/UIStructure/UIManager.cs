@@ -12,6 +12,9 @@ public class UIManager : MonoBehaviour
 
     private readonly PopupStackState popupStack = new PopupStackState();
     private readonly WorldPromptCoordinator worldPromptCoordinator = new WorldPromptCoordinator();
+    private readonly HashSet<int> gameplayHudCurrencyHideOwners = new HashSet<int>();
+    private CurrencyUI gameplayHudCurrencyUI;
+    private bool gameplayHudCurrencyWasActive = true;
 
     private void Awake()
     {
@@ -22,6 +25,7 @@ public class UIManager : MonoBehaviour
         }
 
         Instance = this;
+        GlobalUIRoot.AdoptService(transform);
         DontDestroyOnLoad(gameObject);
 
         if (hoverUIController == null)
@@ -62,6 +66,9 @@ public class UIManager : MonoBehaviour
         HideHoverImmediate();
         hoverUIController?.RefreshCanvasReference();
         worldPromptCoordinator.OnSceneLoaded();
+        gameplayHudCurrencyUI = null;
+        gameplayHudCurrencyHideOwners.Clear();
+        gameplayHudCurrencyWasActive = true;
     }
 
     public void PushUI(IStackableUI ui)
@@ -154,6 +161,55 @@ public class UIManager : MonoBehaviour
     {
         if (hoverUIController != null)
             hoverUIController.HideImmediate();
+    }
+
+    public void SetGameplayHudCurrencyHidden(Object owner, bool hidden)
+    {
+        if (owner == null)
+            return;
+
+        int ownerId = owner.GetInstanceID();
+        if (hidden)
+            gameplayHudCurrencyHideOwners.Add(ownerId);
+        else
+            gameplayHudCurrencyHideOwners.Remove(ownerId);
+
+        ApplyGameplayHudCurrencyVisibility();
+    }
+
+    private void ApplyGameplayHudCurrencyVisibility()
+    {
+        CurrencyUI hudCurrency = ResolveGameplayHudCurrencyUI();
+        if (hudCurrency == null)
+            return;
+
+        bool shouldHide = gameplayHudCurrencyHideOwners.Count > 0;
+        if (shouldHide)
+        {
+            gameplayHudCurrencyWasActive = hudCurrency.gameObject.activeSelf;
+            if (hudCurrency.gameObject.activeSelf)
+                hudCurrency.gameObject.SetActive(false);
+            return;
+        }
+
+        hudCurrency.gameObject.SetActive(gameplayHudCurrencyWasActive);
+    }
+
+    private CurrencyUI ResolveGameplayHudCurrencyUI()
+    {
+        if (gameplayHudCurrencyUI != null)
+            return gameplayHudCurrencyUI;
+
+        Canvas hudCanvas = GlobalUIRoot.GetCanvas(GlobalCanvasLayer.GameplayHUD);
+        if (hudCanvas == null)
+            return null;
+
+        CurrencyUI[] currencyUIs = hudCanvas.GetComponentsInChildren<CurrencyUI>(true);
+        if (currencyUIs == null || currencyUIs.Length == 0)
+            return null;
+
+        gameplayHudCurrencyUI = currencyUIs[0];
+        return gameplayHudCurrencyUI;
     }
 
 }

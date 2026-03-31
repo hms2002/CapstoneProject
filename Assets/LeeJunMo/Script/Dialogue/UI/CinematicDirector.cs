@@ -8,9 +8,17 @@ public class CinematicDirector : MonoBehaviour
     [Header("연결된 시스템")]
     [SerializeField] private PortraitController portraitController;
 
+    public void SetPortraitController(PortraitController controller)
+    {
+        if (controller != null)
+            portraitController = controller;
+    }
+
     // [핵심 변경] 단일 NPCData가 아니라 참여자 명단(List<NPCData>)을 받습니다!
     public void PlayIntro(List<NPCData> participants, Action onComplete)
     {
+        ResolvePortraitController();
+
         if (participants == null || participants.Count == 0)
         {
             onComplete?.Invoke();
@@ -93,7 +101,21 @@ public class CinematicDirector : MonoBehaviour
     // =================================================================
     public void PlayOutro(Action onComplete)
     {
+        ResolvePortraitController();
+
         if (portraitController != null) portraitController.ExitAllAndClear();
         DOVirtual.DelayedCall(0.5f, () => onComplete?.Invoke());
+    }
+
+    private void ResolvePortraitController()
+    {
+        if (portraitController != null)
+            return;
+
+        Canvas dialogueCanvas = GlobalUIRoot.GetCanvas(GlobalCanvasLayer.Dialogue);
+        if (dialogueCanvas == null)
+            return;
+
+        portraitController = dialogueCanvas.GetComponentInChildren<PortraitController>(true);
     }
 }

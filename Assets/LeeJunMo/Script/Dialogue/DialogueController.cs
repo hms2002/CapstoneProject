@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Ink.Runtime;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class DialogueController : MonoBehaviour
 {
@@ -34,36 +35,25 @@ public class DialogueController : MonoBehaviour
         }
 
         Instance = this;
+        ResolveRuntimeReferences();
         DialogueService.Instance?.RegisterController(this);
+        BindTagHandler(tagHandler);
+    }
 
-        if (tagHandler != null)
-        {
-            tagHandler.OnPortraitEnterRequested += HandlePortraitEnter;
-            tagHandler.OnPortraitFaceRequested += HandlePortraitFace;
-            tagHandler.OnPortraitEmoteRequested += HandlePortraitEmote;
-            tagHandler.OnPortraitActionRequested += HandlePortraitAction;
-            tagHandler.OnPortraitMoveRequested += HandlePortraitMove;
-            tagHandler.OnPortraitExitRequested += HandlePortraitExit;
-            tagHandler.OnFeatureRequested += HandleFeature;
-            tagHandler.OnAffectionRequested += HandleAffection;
-        }
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += HandleSceneLoaded;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= HandleSceneLoaded;
     }
 
     private void OnDestroy()
     {
         DialogueService.Instance?.UnregisterController(this);
-
-        if (tagHandler != null)
-        {
-            tagHandler.OnPortraitEnterRequested -= HandlePortraitEnter;
-            tagHandler.OnPortraitFaceRequested -= HandlePortraitFace;
-            tagHandler.OnPortraitEmoteRequested -= HandlePortraitEmote;
-            tagHandler.OnPortraitActionRequested -= HandlePortraitAction;
-            tagHandler.OnPortraitMoveRequested -= HandlePortraitMove;
-            tagHandler.OnPortraitExitRequested -= HandlePortraitExit;
-            tagHandler.OnFeatureRequested -= HandleFeature;
-            tagHandler.OnAffectionRequested -= HandleAffection;
-        }
+        BindTagHandler(null, tagHandler);
 
         if (Instance == this)
             Instance = null;
@@ -96,6 +86,8 @@ public class DialogueController : MonoBehaviour
 
     public void EnterDialogueMode(TextAsset inkJSON, List<NPCData> participants, NPCFeatureController featureController = null)
     {
+        ResolveRuntimeReferences();
+
         if (sessionState.IsPlaying)
             return;
 
@@ -120,6 +112,8 @@ public class DialogueController : MonoBehaviour
         if (AffectionManager.Instance != null && participantRegistry.CurrentNPCData != null)
             AffectionManager.Instance.SetCurrentNPC(participantRegistry.CurrentNPCData.id);
 
+        view.ApplyTheme(participantRegistry.CurrentNPCData != null ? participantRegistry.CurrentNPCData.DialogueTheme : null, true);
+
         if (currentFeatureController != null)
         {
             currentFeatureController.RequestDialogueExit -= ExitDialogueMode;
@@ -128,14 +122,27 @@ public class DialogueController : MonoBehaviour
 
         currentStory = new Story(inkJSON.text);
 
-        director.PlayIntro(validParticipants, () =>
+        Action showDialogueUi = () =>
         {
             view.ShowUI(participantRegistry.CurrentNPCData.isBoss, () =>
             {
                 sessionState.EndTransition();
                 ContinueStory();
             });
-        });
+        };
+
+        Action playPortraitIntro = () =>
+        {
+            director.PlayIntro(validParticipants, showDialogueUi);
+        };
+
+        if (participantRegistry.CurrentNPCData != null && participantRegistry.CurrentNPCData.isBoss)
+        {
+            view.PlayBossPrelude(playPortraitIntro);
+            return;
+        }
+
+        playPortraitIntro();
     }
 
     public void ResumeDialogue()
@@ -157,6 +164,7 @@ public class DialogueController : MonoBehaviour
         {
             string currentText = currentStory.Continue();
             participantRegistry.HandleSpeakerTag(currentStory.currentTags);
+            ApplyCurrentSpeakerTheme();
 
             if (portraitController != null)
                 portraitController.HighlightSpeaker(participantRegistry.CurrentSpeakerId);
@@ -218,6 +226,7 @@ public class DialogueController : MonoBehaviour
         {
             director.PlayOutro(() =>
             {
+                view.ResetTheme();
                 currentStory = null;
                 currentFeatureController = null;
                 participantRegistry.Clear();
@@ -226,8 +235,19 @@ public class DialogueController : MonoBehaviour
         });
     }
 
+    private void ApplyCurrentSpeakerTheme()
+    {
+        NPCData themeOwner = participantRegistry.CurrentSpeakerNPCData != null
+            ? participantRegistry.CurrentSpeakerNPCData
+            : participantRegistry.CurrentNPCData;
+
+        view.ApplyTheme(themeOwner != null ? themeOwner.DialogueTheme : null, false);
+    }
+
     private bool ValidateDialogueSetup(TextAsset inkJSON, List<NPCData> participants)
     {
+        ResolveRuntimeReferences();
+
         if (inkJSON == null)
         {
             Debug.LogError("[DialogueController] inkJSON is missing. Dialogue cannot start.", this);
@@ -354,5 +374,73 @@ public class DialogueController : MonoBehaviour
             AffectionManager.Instance.AddAffection(targetNpc, amount, onComplete);
         else
             onComplete?.Invoke();
+    }
+
+    private void HandleSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        ResolveRuntimeReferences();
+    }
+
+    private void ResolveRuntimeReferences()
+    {
+        DialogueTagHandler previousTagHandler = tagHandler;
+
+        director ??= GetComponent<CinematicDirector>();
+        tagHandler ??= GetComponent<DialogueTagHandler>();
+
+        Canvas dialogueCanvas = GlobalUIRoot.GetCanvas(GlobalCanvasLayer.Dialogue);
+        if (dialogueCanvas != null)
+        {
+            DialogueView resolvedView = dialogueCanvas.GetComponentInChildren<DialogueView>(true);
+            if (resolvedView != null)
+                view = resolvedView;
+
+            PortraitController resolvedPortraitController = dialogueCanvas.GetComponentInChildren<PortraitController>(true);
+            if (resolvedPortraitController != null)
+                portraitController = resolvedPortraitController;
+        }
+
+        if (director != null && portraitController != null)
+            director.SetPortraitController(portraitController);
+
+        if (previousTagHandler != tagHandler)
+            BindTagHandler(tagHandler, previousTagHandler);
+    }
+
+    private void BindTagHandler(DialogueTagHandler newTagHandler, DialogueTagHandler previousTagHandler = null)
+    {
+        if (previousTagHandler != null)
+        {
+            previousTagHandler.OnPortraitEnterRequested -= HandlePortraitEnter;
+            previousTagHandler.OnPortraitFaceRequested -= HandlePortraitFace;
+            previousTagHandler.OnPortraitEmoteRequested -= HandlePortraitEmote;
+            previousTagHandler.OnPortraitActionRequested -= HandlePortraitAction;
+            previousTagHandler.OnPortraitMoveRequested -= HandlePortraitMove;
+            previousTagHandler.OnPortraitExitRequested -= HandlePortraitExit;
+            previousTagHandler.OnFeatureRequested -= HandleFeature;
+            previousTagHandler.OnAffectionRequested -= HandleAffection;
+        }
+
+        tagHandler = newTagHandler;
+        if (tagHandler == null)
+            return;
+
+        tagHandler.OnPortraitEnterRequested -= HandlePortraitEnter;
+        tagHandler.OnPortraitFaceRequested -= HandlePortraitFace;
+        tagHandler.OnPortraitEmoteRequested -= HandlePortraitEmote;
+        tagHandler.OnPortraitActionRequested -= HandlePortraitAction;
+        tagHandler.OnPortraitMoveRequested -= HandlePortraitMove;
+        tagHandler.OnPortraitExitRequested -= HandlePortraitExit;
+        tagHandler.OnFeatureRequested -= HandleFeature;
+        tagHandler.OnAffectionRequested -= HandleAffection;
+
+        tagHandler.OnPortraitEnterRequested += HandlePortraitEnter;
+        tagHandler.OnPortraitFaceRequested += HandlePortraitFace;
+        tagHandler.OnPortraitEmoteRequested += HandlePortraitEmote;
+        tagHandler.OnPortraitActionRequested += HandlePortraitAction;
+        tagHandler.OnPortraitMoveRequested += HandlePortraitMove;
+        tagHandler.OnPortraitExitRequested += HandlePortraitExit;
+        tagHandler.OnFeatureRequested += HandleFeature;
+        tagHandler.OnAffectionRequested += HandleAffection;
     }
 }

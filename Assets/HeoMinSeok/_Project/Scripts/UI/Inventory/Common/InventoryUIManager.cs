@@ -14,6 +14,12 @@ public class InventoryUIManager : MonoBehaviour
 
     private void Awake()
     {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
         Instance = this;
         // 이제 SetActive 대신 UIManager가 알아서 처리하겠지만, 시작 시 꺼두는 건 뷰에서 담당하거나 여기서 안전하게 꺼둡니다.
         if (inventoryScreen != null && inventoryScreen.gameObject.activeSelf)
@@ -66,5 +72,10 @@ public class InventoryUIManager : MonoBehaviour
         // [핵심] 직접 끄지 않고 UIManager의 스택에서 빼달라고 요청!
         if (UIManager.Instance != null) UIManager.Instance.PopUI(inventoryScreen);
         else inventoryScreen.CloseUI();
+    }
+    private void OnDestroy()
+    {
+        if (Instance == this)
+            Instance = null;
     }
 }

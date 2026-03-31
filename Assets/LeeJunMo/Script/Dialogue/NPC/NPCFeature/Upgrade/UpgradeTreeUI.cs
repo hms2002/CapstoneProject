@@ -50,12 +50,18 @@ public class UpgradeTreeUI : MonoBehaviour, IStackableUI
     {
         if (UpgradeManager.Instance != null)
             UpgradeManager.Instance.OnDataChanged += RefreshAll;
+
+        if (UIManager.Instance != null)
+            UIManager.Instance.SetGameplayHudCurrencyHidden(this, true);
     }
 
     private void OnDisable()
     {
         if (UpgradeManager.Instance != null)
             UpgradeManager.Instance.OnDataChanged -= RefreshAll;
+
+        if (UIManager.Instance != null)
+            UIManager.Instance.SetGameplayHudCurrencyHidden(this, false);
     }
 
     public void BuildUI()

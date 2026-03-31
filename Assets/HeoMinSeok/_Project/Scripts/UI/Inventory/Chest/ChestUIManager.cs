@@ -14,7 +14,14 @@ public class ChestUIManager : MonoBehaviour
 
     private void Awake()
     {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
         Instance = this;
+        ResolveChestScreenReference();
         // 씬 시작 시 상자 UI가 꺼져 있도록 보장
         if (chestScreen != null) chestScreen.gameObject.SetActive(false);
     }
@@ -22,6 +29,13 @@ public class ChestUIManager : MonoBehaviour
     public void OpenChest(TreasureChest chest)
     {
         if (chest == null) return;
+
+        ResolveChestScreenReference();
+        if (chestScreen == null)
+        {
+            Debug.LogError("[ChestUIManager] ChestScreen reference is missing.");
+            return;
+        }
 
         openedChest = chest;
 
@@ -98,5 +112,18 @@ public class ChestUIManager : MonoBehaviour
         // 시간 복구 및 상태 초기화
         Time.timeScale = prevTimeScale;
         openedChest = null;
+    }
+    private void OnDestroy()
+    {
+        if (Instance == this)
+            Instance = null;
+    }
+
+    private void ResolveChestScreenReference()
+    {
+        if (chestScreen != null)
+            return;
+
+        chestScreen = GetComponentInChildren<ChestScreen>(true);
     }
 }

@@ -39,7 +39,14 @@ public class ItemDetailPanel : MonoBehaviour, IHoverView
 
     private void Awake()
     {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
         Instance = this;
+        GlobalUIRoot.AdoptToCanvas(GlobalCanvasLayer.Hover, transform);
         _services = new ItemDetailPanelServices
         {
             formatText = raw => DetailTextFormatter.ApplyGlossaryLinks(raw, glossaryLinkColorHex),

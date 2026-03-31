@@ -24,7 +24,14 @@ public class RewardDisplayUI : MonoBehaviour, IStackableUI
 
     private void Awake()
     {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
         Instance = this;
+        GlobalUIRoot.AdoptToCanvas(GlobalCanvasLayer.Reward, transform);
 
         if (panelRoot != null)
             panelRoot.SetActive(false);
