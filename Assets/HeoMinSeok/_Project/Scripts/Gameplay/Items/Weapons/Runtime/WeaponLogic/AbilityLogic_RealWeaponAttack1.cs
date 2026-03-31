@@ -41,21 +41,14 @@ namespace UnityGAS
             // 책임 :
             // - 근접 공격의 최종 피해량을 공용 CombatHitPayload 규약으로 고정한다.
             // - 이후 MeleeHitboxActor는 payload 적용만 수행하고 수치 계산 책임은 AbilityLogic에 남긴다.
-            var payload = new CombatHitPayload
-            {
-                sourceSystem = system,
-                sourceSpec = spec,
-                damageEffect = data.damageEffect,
-                knockbackEffect = data.knockbackEffect,
-                finalHpDamage = snapshot.FinalHpDamage,
-                finalStaggerBuildUp = snapshot.FinalStaggerBuildUp,
-                elementBuildUps = snapshot.ElementBuildUps != null && snapshot.ElementBuildUps.Count > 0
-                    ? snapshot.ElementBuildUps.ToArray()
-                    : null,
-                finalKnockbackImpulse = snapshot.FinalKnockbackImpulse,
-                hitConfirmedTag = null,
-                causer = system.gameObject
-            };
+            var payload = CombatHitPayload.FromSnapshot(
+                sourceSystem: system,
+                sourceSpec: spec,
+                damageEffect: data.damageEffect,
+                knockbackEffect: data.knockbackEffect,
+                snapshot: snapshot,
+                hitConfirmedTag: null,
+                causer: system.gameObject);
 
             var hitbox = Object.Instantiate(data.hitboxPrefab, center, Quaternion.identity);
             if (hitbox == null)

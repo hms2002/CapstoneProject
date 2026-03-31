@@ -21,3 +21,7 @@ MonoBehaviour:
     baseValue: 10
   - attribute: {fileID: 11400000, guid: 5e0412bd8f40af44c9249edbe58db140, type: 2}
     baseValue: 30
+  - attribute: {fileID: 11400000, guid: 434cc32abf8345d19696a284b8f3ddfd, type: 2}
+    baseValue: 0.5
+  - attribute: {fileID: 11400000, guid: 54b7224b39ab4c9f838f4f4df4198cc6, type: 2}
+    baseValue: 0.5

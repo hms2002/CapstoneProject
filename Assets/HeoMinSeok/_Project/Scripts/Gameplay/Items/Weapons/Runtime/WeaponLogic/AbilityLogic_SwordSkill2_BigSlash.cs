@@ -90,21 +90,14 @@ namespace UnityGAS.Sample
                 elementInputs: elementInputs
             );
 
-            var payload = new CombatHitPayload
-            {
-                sourceSystem = system,
-                sourceSpec = spec,
-                damageEffect = data.damageEffect,
-                knockbackEffect = data.knockbackEffect,
-                finalHpDamage = snapshot.FinalHpDamage,
-                finalStaggerBuildUp = snapshot.FinalStaggerBuildUp,
-                elementBuildUps = snapshot.ElementBuildUps != null && snapshot.ElementBuildUps.Count > 0
-                    ? snapshot.ElementBuildUps.ToArray()
-                    : null,
-                finalKnockbackImpulse = snapshot.FinalKnockbackImpulse,
-                hitConfirmedTag = null,
-                causer = system.gameObject
-            };
+            var payload = CombatHitPayload.FromSnapshot(
+                sourceSystem: system,
+                sourceSpec: spec,
+                damageEffect: data.damageEffect,
+                knockbackEffect: data.knockbackEffect,
+                snapshot: snapshot,
+                hitConfirmedTag: null,
+                causer: system.gameObject);
 
             Vector2 center = (Vector2)system.transform.position + dir * data.forwardOffset;
 

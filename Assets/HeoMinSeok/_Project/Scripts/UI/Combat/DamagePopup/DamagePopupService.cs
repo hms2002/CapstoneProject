@@ -51,6 +51,17 @@ public sealed class DamagePopupService : MonoBehaviour
         Instance.ShowInternal(amount, worldPosition);
     }
 
+    public static void ShowText(string content, Vector3 worldPosition)
+    {
+        if (Instance == null)
+        {
+            Debug.LogWarning("[DamagePopupService] Instance가 없습니다. 씬 시작 전에 서비스가 생성되어야 합니다.");
+            return;
+        }
+
+        Instance.ShowTextInternal(content, worldPosition);
+    }
+
     /// <summary>
     /// 책임 : 월드 좌표를 기준으로 데미지 팝업 프리팹을 생성하고 초기화한다.
     /// </summary>
@@ -67,5 +78,18 @@ public sealed class DamagePopupService : MonoBehaviour
 
         DamagePopupWorldText instance = Instantiate(popupPrefab, spawnPos, Quaternion.identity, popupParent);
         instance.Setup(damageInt);
+    }
+
+    private void ShowTextInternal(string content, Vector3 worldPosition)
+    {
+        if (popupPrefab == null)
+            return;
+
+        Vector3 spawnPos = worldPosition + worldOffset;
+        spawnPos.x += Random.Range(randomOffsetX.x, randomOffsetX.y);
+        spawnPos.y += Random.Range(randomOffsetY.x, randomOffsetY.y);
+
+        DamagePopupWorldText instance = Instantiate(popupPrefab, spawnPos, Quaternion.identity, popupParent);
+        instance.Setup(content);
     }
 }

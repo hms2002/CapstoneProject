@@ -18,7 +18,7 @@ MonoBehaviour:
     value: 0.05
     valueByLevel: []
     duration: 0
-  - attribute: {fileID: 11400000, guid: 505a2d18dfd7a64479766ed30e612100, type: 2}
+  - attribute: {fileID: 11400000, guid: d923279fb7e24aa19162adcd29a3c67e, type: 2}
     type: 0
     value: 0.05
     valueByLevel: []

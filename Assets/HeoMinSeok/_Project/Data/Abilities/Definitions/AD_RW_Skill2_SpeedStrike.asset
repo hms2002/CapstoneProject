@@ -16,6 +16,7 @@ MonoBehaviour:
   icon: {fileID: 1229838351, guid: ef16b2ddeb64123459076c2c8a541a63, type: 3}
   description: AD_RW_Skill2_SpeedStrike
   cooldown: 5
+  executionPolicy: 1
   useCharges: 0
   maxCharges: 1
   cooldownEffect: {fileID: 11400000, guid: e0cdcda9b86374b4c99ad2e948fcfd26, type: 2}

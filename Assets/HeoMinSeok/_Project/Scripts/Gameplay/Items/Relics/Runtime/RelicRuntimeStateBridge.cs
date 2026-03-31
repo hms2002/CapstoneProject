@@ -3,15 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// 책임 : 유물별 개별 런타임 상태의 캡처/복원 진입점을 제공한다.
-/// 현재는 구조 정리용 기본 구현을 담당하며,
-/// 실제 저장이 필요한 유물 타입이 생기면 이 클래스에 상태 분기를 추가한다.
+/// 책임 :
+/// - 유물 슬롯별 런타임 상태 저장/복원 순서를 오케스트레이션한다.
+/// - 실제 유물별 직렬화/복원 규칙은 각 RelicLogic의 선택적 serializer 구현에 위임한다.
 /// </summary>
 [DisallowMultipleComponent]
 public sealed class RelicRuntimeStateBridge : MonoBehaviour, IRelicRuntimeStateCapturer, IRelicRuntimeStateRestorer
 {
     [Header("Refs")]
     [SerializeField] private RelicInventory relicInventory;
+    [SerializeField] private RelicRuntimeStateHub runtimeStateHub;
 
     private void Awake()
     {
@@ -32,6 +33,9 @@ public sealed class RelicRuntimeStateBridge : MonoBehaviour, IRelicRuntimeStateC
     {
         if (relicInventory == null)
             relicInventory = GetComponent<RelicInventory>();
+
+        if (runtimeStateHub == null)
+            runtimeStateHub = GetComponent<RelicRuntimeStateHub>();
     }
 
     /// <summary>
@@ -46,17 +50,18 @@ public sealed class RelicRuntimeStateBridge : MonoBehaviour, IRelicRuntimeStateC
         if (relicInventory == null || output == null)
             return;
 
-        // 현재는 저장이 필요한 유물별 런타임 payload가 아직 확정되지 않았으므로 비워 둔다.
-        // 추후 필요한 유물만 아래 구조로 추가:
-        //
-        // for (int slotIndex = 0; slotIndex < relicInventory.Capacity; slotIndex++)
-        // {
-        //     var relic = relicInventory.GetRelicInSlot(slotIndex);
-        //     if (relic == null) continue;
-        //
-        //     if (TryBuildRuntimeState(relicInventory, slotIndex, relic, out var state))
-        //         output.Add(state);
-        // }
+        for (int slotIndex = 0; slotIndex < relicInventory.Capacity; slotIndex++)
+        {
+            var relic = relicInventory.GetRelicInSlot(slotIndex);
+            if (relic == null)
+                continue;
+
+            if (!relicInventory.TryGetRuntimeContextForSlot(slotIndex, out var ctx))
+                continue;
+
+            if (TryBuildRuntimeState(ctx, slotIndex, relic, out var state))
+                output.Add(state);
+        }
     }
 
     /// <summary>
@@ -77,15 +82,11 @@ public sealed class RelicRuntimeStateBridge : MonoBehaviour, IRelicRuntimeStateC
         if (string.IsNullOrWhiteSpace(state.stateType))
             return;
 
-        // 현재는 아직 지원하는 유물별 stateType이 없으므로 no-op.
-        // 추후 state.stateType 분기 추가:
-        //
-        // switch (state.stateType)
-        // {
-        //     case LightningCooldownState.StateTypeKey:
-        //         RestoreLightningCooldown(...);
-        //         break;
-        // }
+        if (!relicInventory.TryGetRuntimeContextForSlot(state.slotIndex, out var ctx))
+            return;
+
+        if (currentRelic.logic is IRelicRuntimeStateSerializer serializer)
+            serializer.RestoreRuntimeState(ctx, state, runtimeStateHub);
     }
 
     /// <summary>
@@ -119,5 +120,26 @@ public sealed class RelicRuntimeStateBridge : MonoBehaviour, IRelicRuntimeStateC
         }
 
         return true;
+    }
+
+    /// <summary>
+    /// 책임 : 현재 슬롯 유물이 저장이 필요한 유물이라면 해당 runtime payload를 생성한다.
+    /// 지원하지 않는 유물은 false를 반환해 상위 루프가 조용히 건너뛰게 한다.
+    /// </summary>
+    private bool TryBuildRuntimeState(
+        RelicContext ctx,
+        int slotIndex,
+        RelicDefinition relic,
+        out RelicRuntimeState state)
+    {
+        state = null;
+
+        if (relic == null || runtimeStateHub == null)
+            return false;
+
+        if (relic.logic is IRelicRuntimeStateSerializer serializer)
+            return serializer.TryCaptureRuntimeState(ctx, runtimeStateHub, slotIndex, out state);
+
+        return false;
     }
 }

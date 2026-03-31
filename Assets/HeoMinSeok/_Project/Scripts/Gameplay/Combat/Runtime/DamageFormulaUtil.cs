@@ -29,7 +29,7 @@ namespace UnityGAS
         /// - outElementResults: optional list filled with final per-element build-up values.
         ///
         /// StatId requirements:
-        /// - CritChance
+        /// - CritChanceFinal
         /// - CritMultiplier
         /// - FinalDamageMultiplier
         /// </summary>
@@ -83,7 +83,7 @@ namespace UnityGAS
                 return r;
             }
 
-            float critChance = Mathf.Clamp01(provider.Get(StatId.CritChance));
+            float critChance = Mathf.Clamp01(provider.Get(StatId.CritChanceFinal));
             float critMul = Mathf.Max(0f, provider.Get(StatId.CritMultiplier));
             float finalMul = Mathf.Max(0f, provider.Get(StatId.FinalMul));
 

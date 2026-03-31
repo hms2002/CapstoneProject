@@ -1,5 +1,8 @@
 using UnityEngine;
 
+/// <summary>
+/// 책임 : 플레이어의 장비 인벤토리와 월드 loot를 InventoryScreen에 바인딩하고 열기/닫기를 제어한다.
+/// </summary>
 public class InventoryUIManager : MonoBehaviour
 {
     public static InventoryUIManager Instance { get; private set; }
@@ -54,9 +57,7 @@ public class InventoryUIManager : MonoBehaviour
 
         var weaponInv = currentPlayer != null ? currentPlayer.GetComponent<WeaponInventory2D>() : FindFirstObjectByType<WeaponInventory2D>();
         var relicInv = currentPlayer != null ? currentPlayer.GetComponent<RelicInventory>() : FindFirstObjectByType<RelicInventory>();
-        var backpack = currentPlayer != null ? currentPlayer.GetComponent<PlayerBackpackInventory>() : FindFirstObjectByType<PlayerBackpackInventory>();
-
-        inventoryScreen.Bind(backpack, weaponInv, relicInv, playerTransform);
+        inventoryScreen.Bind(weaponInv, relicInv, playerTransform);
 
         if (UIManager.Instance != null) UIManager.Instance.HideHoverImmediate();
 
@@ -73,9 +74,11 @@ public class InventoryUIManager : MonoBehaviour
         if (UIManager.Instance != null) UIManager.Instance.PopUI(inventoryScreen);
         else inventoryScreen.CloseUI();
     }
+    
     private void OnDestroy()
     {
         if (Instance == this)
             Instance = null;
     }
+
 }

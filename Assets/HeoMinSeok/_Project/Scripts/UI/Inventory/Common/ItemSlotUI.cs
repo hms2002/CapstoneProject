@@ -23,6 +23,9 @@ public interface IRelicSlotReceiver
     bool TrySetRelicWithLevel(int index, RelicDefinition relic, int level);
 }
 
+/// <summary>
+/// 책임 : 개별 인벤토리 슬롯 UI를 표시하고 drag, drop, quick move 입력을 컨테이너 동작으로 변환한다.
+/// </summary>
 public class ItemSlotUI : MonoBehaviour,
     IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler,
     IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
@@ -153,17 +156,12 @@ public class ItemSlotUI : MonoBehaviour,
         var w = ItemContainerGroupRegistry.WeaponEquip;
         var r = ItemContainerGroupRegistry.RelicEquip;
 
-        if (chest == null || w == null || r == null) return;
+        if (w == null || r == null) return;
 
         IItemContainer target = null;
         int targetIndex = -1;
 
-        if (container == w || container == r)
-        {
-            target = chest;
-            targetIndex = FindFirstEmptyIndex(target, so);
-        }
-        else if (container == chest)
+        if (container == chest && chest != null)
         {
             if (def.Kind == InventoryItemKind.Weapon)
             {
@@ -183,8 +181,16 @@ public class ItemSlotUI : MonoBehaviour,
         }
         else if (container is WorldLootContainerAdapter)
         {
-            target = chest;
-            targetIndex = FindFirstEmptyIndex(target, so);
+            if (def.Kind == InventoryItemKind.Weapon)
+            {
+                target = w;
+                targetIndex = FindFirstEmptyIndex(target, so);
+            }
+            else if (so is RelicDefinition relic)
+            {
+                target = r;
+                targetIndex = FindRelicQuickMoveIndex(target, relic);
+            }
         }
 
         if (target == null) return;

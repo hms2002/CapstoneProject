@@ -882,8 +882,23 @@ namespace UnityGAS
         /// </summary>
         public void ResetTransientRuntimeState()
         {
+            var castingSpec = currentCastSpec;
+            var executingSpec = currentExecSpec;
+            var castingDef = castingSpec != null ? castingSpec.Definition : null;
+            var executingDef = executingSpec != null ? executingSpec.Definition : null;
+
+            // 책임 : 무기 교체/강제 리셋 전에 현재 AbilityLogic이 직접 만든
+            // 이동, modifier, 구독 같은 일시 상태를 먼저 정리할 기회를 준다.
+            InvokeTransientCleanupHooks();
+
             CancelCasting(force: true);
             CancelExecution(force: true);
+
+            // 책임 : 강제 리셋으로 코루틴 finally를 기다리지 못하는 경우에도
+            // active 동안 부여된 상태 태그를 즉시 회수해 입력/이동 모드가 남지 않게 한다.
+            RemoveGrantedTagsImmediately(castingDef);
+            RemoveGrantedTagsImmediately(executingDef);
+            RemoveGrantedTagsFromParallelExecutions();
 
             ClearBufferedActivation();
             gameplayEventChannel?.CancelAllWaiters();
@@ -903,6 +918,44 @@ namespace UnityGAS
 
             currentExecSpec = null;
             currentExecTarget = null;
+        }
+
+        /// <summary>
+        /// 책임 : 병행 실행 중인 ability들이 active 동안 부여한 태그를 강제 리셋 시 즉시 회수한다.
+        /// </summary>
+        private void RemoveGrantedTagsFromParallelExecutions()
+        {
+            for (int i = 0; i < parallelExecutions.Count; i++)
+            {
+                var exec = parallelExecutions[i];
+                var def = exec != null && exec.Spec != null ? exec.Spec.Definition : null;
+                RemoveGrantedTagsImmediately(def);
+            }
+        }
+
+        /// <summary>
+        /// 책임 : 현재 캐스팅/실행/병행 실행 중인 AbilityLogic의 일시 상태 정리 훅을 호출한다.
+        /// 씬 이동뿐 아니라 무기 교체처럼 실행 코루틴이 강제로 끊기는 경로에서도
+        /// Rush/Dash가 남긴 motion과 임시 modifier가 누수되지 않도록 보장한다.
+        /// </summary>
+        private void InvokeTransientCleanupHooks()
+        {
+            var castingSpec = currentCastSpec;
+            var castingTarget = currentTarget;
+            var executingSpec = currentExecSpec;
+            var executingTarget = currentExecTarget;
+
+            for (int i = 0; i < parallelExecutions.Count; i++)
+            {
+                var exec = parallelExecutions[i];
+                if (exec == null || exec.Spec == null)
+                    continue;
+
+                InvokeSceneTransitionCleanup(exec.Spec, exec.Target);
+            }
+
+            InvokeSceneTransitionCleanup(castingSpec, castingTarget);
+            InvokeSceneTransitionCleanup(executingSpec, executingTarget);
         }
 
 

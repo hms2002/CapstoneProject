@@ -8,6 +8,7 @@ namespace UnityGAS
     /// - 이벤트 발행
     /// - waiter 등록/해제
     /// - owner spec 기준 waiter 정리
+    /// - 단일 발행된 태그를 waiter 관점에서 계층 매칭할 수 있게 돕는다.
     /// </summary>
     public sealed class AbilityGameplayEventChannel
     {
@@ -69,7 +70,7 @@ namespace UnityGAS
 
             void Handler(GameplayTag raisedTag, AbilityEventData raisedData)
             {
-                if (raisedTag != tag || waiter.Done)
+                if (!MatchesRequestedTag(raisedTag, tag) || waiter.Done)
                     return;
 
                 waiter.Data = raisedData;
@@ -122,6 +123,25 @@ namespace UnityGAS
             }
 
             waitersBySpec.Clear();
+        }
+
+        /// <summary>
+        /// 책임 :
+        /// - 대기 중인 태그가 발행 태그와 같거나, 발행 태그의 부모 체인에 포함되는지 판별한다.
+        /// - 이벤트는 한 번만 발행하고도 부모 태그 waiter가 자식 태그 이벤트를 받을 수 있게 만든다.
+        /// </summary>
+        private static bool MatchesRequestedTag(GameplayTag raisedTag, GameplayTag requestedTag)
+        {
+            if (raisedTag == null || requestedTag == null)
+                return false;
+
+            for (var current = raisedTag; current != null; current = current.Parent)
+            {
+                if (current == requestedTag)
+                    return true;
+            }
+
+            return false;
         }
 
         private GameplayCueParams BuildCueParamsFromEvent(AbilityEventData data)

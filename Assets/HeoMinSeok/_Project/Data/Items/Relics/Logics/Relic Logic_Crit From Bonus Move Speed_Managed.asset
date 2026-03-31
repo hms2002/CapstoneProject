@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeedFinalStatId: 143
   moveSpeedMultiplierAttributeFallback: {fileID: 11400000, guid: 23db6468e859c6f42b0230a5af7ca81c, type: 2}
-  critChanceAttribute: {fileID: 11400000, guid: 505a2d18dfd7a64479766ed30e612100, type: 2}
+  critChanceAddAttribute: {fileID: 11400000, guid: d923279fb7e24aa19162adcd29a3c67e, type: 2}
   bonusMoveStep: 0.1
   critPerStep: 0.01

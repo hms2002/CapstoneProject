@@ -18,3 +18,8 @@ MonoBehaviour:
     - The door is locked
     - It must be open otherside
     - Is locked..
+  - situation: 4
+    lines:
+    - "\uC7A5\uBE44 \uCE78\uC774 \uAC00\uB4DD \uCC3C\uC5B4."
+    - "\uBE48 \uCE78\uC744 \uB9CC\uB4E4\uC5B4\uC57C \uACA0\uC5B4."
+    - "\uC9C0\uAE08\uC740 \uB354 \uBABB \uC90D\uACA0\uC5B4."

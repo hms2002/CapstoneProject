@@ -72,6 +72,25 @@ public class DamagePopupWorldText : MonoBehaviour
             optionalSpriteRenderer.color = _spriteColor;
     }
 
+    /// <summary>
+    /// 책임 : 표시할 커스텀 텍스트를 반영하고 연출 상태를 초기화한다.
+    /// </summary>
+    public void Setup(string content)
+    {
+        _t = 0f;
+
+        if (text != null)
+            text.text = string.IsNullOrWhiteSpace(content) ? string.Empty : content;
+
+        transform.localScale = Vector3.one * startScale;
+
+        if (text != null)
+            text.color = _textColor;
+
+        if (_hasSprite)
+            optionalSpriteRenderer.color = _spriteColor;
+    }
+
     private void Update()
     {
         _t += Time.deltaTime;

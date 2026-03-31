@@ -11,18 +11,19 @@ namespace UnityGAS
     {
         [SerializeField] private float duration = 0.12f;
         [SerializeField] private float frequency = 25f;
-        [SerializeField] Transform target;
-        private Vector3 _baseLocalPos => target != null ?  target.position : transform.position;
+        [SerializeField] private Transform target;
         private float _timeLeft;
         private float _amplitude;
+        private Vector3 _baseLocalPos;
 
         private void Awake()
         {
+            _baseLocalPos = ResolveBaseLocalPosition();
         }
 
         private void OnDisable()
         {
-            transform.localPosition = _baseLocalPos;
+            transform.localPosition = ResolveBaseLocalPosition();
             _timeLeft = 0f;
             _amplitude = 0f;
         }
@@ -41,6 +42,8 @@ namespace UnityGAS
             _timeLeft -= Time.deltaTime;
             float t = Mathf.Max(0f, _timeLeft);
 
+            _baseLocalPos = ResolveBaseLocalPosition();
+
             // cheap pseudo-noise
             float x = Mathf.Sin(Time.time * frequency) * _amplitude;
             float y = Mathf.Cos(Time.time * frequency * 0.9f) * _amplitude;
@@ -52,6 +55,20 @@ namespace UnityGAS
                 transform.localPosition = _baseLocalPos;
                 _amplitude = 0f;
             }
+        }
+
+        private Vector3 ResolveBaseLocalPosition()
+        {
+            if (target == null)
+                return transform.localPosition;
+
+            if (target.parent == transform.parent)
+                return target.localPosition;
+
+            if (transform.parent != null)
+                return transform.parent.InverseTransformPoint(target.position);
+
+            return target.position;
         }
     }
 }

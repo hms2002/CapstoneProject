@@ -13,10 +13,11 @@ MonoBehaviour:
   m_Name: RD_SpeedMedal
   m_EditorClassIdentifier: 
   relicId: RD_SpeedMedal
-  displayName: SpeedMedal
-  icon: {fileID: -388329610, guid: ef16b2ddeb64123459076c2c8a541a63, type: 3}
+  displayName: "\uC2A4\uD53C\uB4DC \uBA54\uB2EC"
+  icon: {fileID: -5412910156287300836, guid: 7b34ef87eae3f544f8be30f39526b504, type: 3}
   rarity: 0
-  description: 
+  description: "[\uC774\uB3D9\uC18D\uB3C4] 5% \uC99D\uAC00\n[\uCE58\uBA85\uD0C0 \uD655\uB960]
+    5% \uC99D\uAC00"
   maxLevel: 5
   dropLevel: 1
   logic: {fileID: 11400000, guid: 3dbb80240a8ddb744a0525322aad2b6f, type: 2}

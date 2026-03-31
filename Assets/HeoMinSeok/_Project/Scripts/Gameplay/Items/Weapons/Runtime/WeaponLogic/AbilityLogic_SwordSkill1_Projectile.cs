@@ -76,11 +76,6 @@ namespace UnityGAS.Sample
                 elementInputs: elementInputs
             );
 
-            ElementDamageResult[] elementSnapshot =
-                (snapshot.ElementBuildUps != null && snapshot.ElementBuildUps.Count > 0)
-                ? snapshot.ElementBuildUps.ToArray()
-                : null;
-
             var proj = go.GetComponent<SwordSkill1Projectile2D>();
             if (proj == null)
             {
@@ -92,19 +87,14 @@ namespace UnityGAS.Sample
             // 책임 :
             // - 발사 시점에 확정된 피해 정보를 공용 CombatHitPayload로 고정한다.
             // - 이후 투사체/근접/유물 공격이 같은 payload 규약으로 피해를 적용하게 한다.
-            var payload = new CombatHitPayload
-            {
-                sourceSystem = system,
-                sourceSpec = spec,
-                damageEffect = data.damageEffect,
-                knockbackEffect = data.knockbackEffect,
-                finalHpDamage = snapshot.FinalHpDamage,
-                finalStaggerBuildUp = snapshot.FinalStaggerBuildUp,
-                elementBuildUps = elementSnapshot != null ? (ElementDamageResult[])elementSnapshot.Clone() : null,
-                finalKnockbackImpulse = snapshot.FinalKnockbackImpulse,
-                hitConfirmedTag = null,
-                causer = system.gameObject
-            };
+            var payload = CombatHitPayload.FromSnapshot(
+                sourceSystem: system,
+                sourceSpec: spec,
+                damageEffect: data.damageEffect,
+                knockbackEffect: data.knockbackEffect,
+                snapshot: snapshot,
+                hitConfirmedTag: null,
+                causer: system.gameObject);
 
             var context = new ProjectileAttackSpawnContext
             {

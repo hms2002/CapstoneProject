@@ -23,8 +23,11 @@ namespace UnityGAS
         SkillAdd = 30,
         SkillMul = 31,
 
-        CritChance = 40,
+        CritChanceBase = 40,
         CritMultiplier = 41,
+        CritChanceAdd = 43,
+        CritChanceMul = 44,
+        CritChanceFinal = 45,
 
         // --- Stagger (Groggy) (Base/Add/Mul/Final) ---
         StaggerBase,
@@ -68,7 +71,11 @@ namespace UnityGAS
         PoisonMul,
         PoisonFinal,
 
-        // --- Knockback (Power & Resist) (Base/Add/Mul/Final) ---
+        // --- Evasion (Base/Add/Mul/Final) ---
+        EvasionBase = 300,
+        EvasionAdd = 301,
+        EvasionMul = 302,
+        EvasionFinal = 303,
 
     }
 }

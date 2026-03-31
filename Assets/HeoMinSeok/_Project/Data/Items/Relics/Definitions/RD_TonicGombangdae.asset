@@ -13,10 +13,13 @@ MonoBehaviour:
   m_Name: RD_TonicGombangdae
   m_EditorClassIdentifier: 
   relicId: RD_TonicGombangdae
-  displayName: TonicGombangdae
-  icon: {fileID: -1568554932, guid: ef16b2ddeb64123459076c2c8a541a63, type: 3}
+  displayName: "\uBCF4\uC57D \uACF0\uBC29\uB300"
+  icon: {fileID: -1455096403836856330, guid: 55a13ad98fd04b24bbe28fa5a4113206, type: 3}
   rarity: 0
-  description: 
+  description: "[\uCD94\uAC00 \uC774\uB3D9\uC18D\uB3C4] 10% \uB9C8\uB2E4 [\uCE58\uBA85\uD0C0
+    \uD655\uB960] 1% \uC99D\uAC00\n[\uCD94\uAC00 \uC774\uB3D9\uC18D\uB3C4] = \uAE30\uBCF8
+    \uC774\uB3D9\uC18D\uB3C4\uB97C \uC81C\uC678\uD55C \uC774\uB3D9\uC18D\uB3C4 \uBCF4\uB108\uC2A4\uC758
+    \uD569"
   maxLevel: 5
   dropLevel: 1
   logic: {fileID: 11400000, guid: 459ea25ccbc709b44bfc9dcce46138d9, type: 2}
