@@ -1,13 +1,15 @@
 using UnityEngine;
 
 /// <summary>
-/// 책임 : 바닥에 떨어진 무기 정의와 그 무기 인스턴스의 영속 상태를 함께 보관한다.
-/// 플레이어가 주우면 WeaponInventory2D로 전달하고 자신은 제거된다.
+/// 책임 : 바닥에 떨어진 무기 정의와 그 무기 인스턴스의 영속 상태를 함께 보관하고,
+/// 플레이어 상호작용을 통해 획득을 시도하게 한다.
 /// </summary>
 [RequireComponent(typeof(Collider2D))]
-public class WeaponDrop2D : MonoBehaviour
+public class WeaponDrop2D : InteractableBase
 {
     [SerializeField] private WeaponDefinition weapon;
+    [SerializeField] private Transform promptAnchor;
+    [SerializeField] private string interactPromptText = "획득하기";
 
     [Header("Runtime Payload")]
     [SerializeField] private WeaponPersistentStatePayload payload;
@@ -28,12 +30,41 @@ public class WeaponDrop2D : MonoBehaviour
         if (col != null) col.isTrigger = true;
     }
 
-    private void OnTriggerEnter2D(Collider2D other)
+    public override bool CanInteract(IPlayerInteractor player)
     {
-        var inv = other.GetComponentInParent<WeaponInventory2D>();
-        if (inv == null) return;
+        return weapon != null;
+    }
 
-        if (inv.TryPickupWeapon(weapon, payload))
+    public override void OnPlayerInteract(IPlayerInteractor player)
+    {
+        if (weapon == null)
+            return;
+
+        var inventory = ResolveWeaponInventory(player);
+        if (inventory != null && inventory.TryPickupWeapon(weapon, payload))
+        {
             Destroy(gameObject);
+            return;
+        }
+
+        if (player is SampleTopDownPlayer samplePlayer)
+            samplePlayer.SpeakSituation(PlayerSpeechSituationEnum.InventoryFull);
+    }
+
+    public override InteractState GetInteractType() => InteractState.Idle;
+
+    public override string GetInteractDescription()
+    {
+        return weapon != null ? interactPromptText : string.Empty;
+    }
+
+    public override Transform GetPromptAnchor() => promptAnchor != null ? promptAnchor : transform;
+
+    private static WeaponInventory2D ResolveWeaponInventory(IPlayerInteractor player)
+    {
+        if (player is Component component)
+            return component.GetComponent<WeaponInventory2D>();
+
+        return null;
     }
 }

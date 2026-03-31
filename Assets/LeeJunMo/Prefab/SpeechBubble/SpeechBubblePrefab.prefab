@@ -59,7 +59,7 @@ Canvas:
   m_VertexColorAlwaysGammaSpace: 0
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
-  m_SortingLayerID: 0
+  m_SortingLayerID: 119640197
   m_SortingOrder: 0
   m_TargetDisplay: 0
 --- !u!225 &6042541081144591544
@@ -88,7 +88,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   canvasGroup: {fileID: 6042541081144591544}
   bubbleText: {fileID: 5127057115793199306}
-  smoothTime: 0.1
 --- !u!1 &7187667657728760616
 GameObject:
   m_ObjectHideFlags: 0
@@ -274,8 +273,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 123123123123
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 698a407b32ed1874bb4cb7324dfddce2, type: 2}
+  m_sharedMaterial: {fileID: 1826925326976027445, guid: 698a407b32ed1874bb4cb7324dfddce2, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []

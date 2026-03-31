@@ -5110,7 +5110,7 @@ MonoBehaviour:
   maxHpDef: {fileID: 11400000, guid: 0e177e1d15e428745b5859fac08ce203, type: 2}
   heartTokenPrefab: {fileID: 7286775436942910812, guid: 73286b2f835b74848bc1fef47d7f1294, type: 3}
   heartContainer: {fileID: 381638433}
-  filledHeartSprite: {fileID: 21300000, guid: 742335e24e5afea4e9516fd89252b06c, type: 3}
+  filledHeartSprite: {fileID: 3344906249165072059, guid: e75f469ea29530246a4a0543396316af, type: 3}
   emptyHeartSprite: {fileID: 2501108752766977309, guid: e75f469ea29530246a4a0543396316af, type: 3}
   healthPerHeart: 1
 --- !u!114 &381638436
@@ -5250,16 +5250,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80ca680b9055b3b44967c67f42bffb64, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  backpackGridRoot: {fileID: 90191874}
   weaponGridRoot: {fileID: 1954573663}
   relicGridRoot: {fileID: 1564875066}
-  lootGridRoot: {fileID: 1628410788}
   slotPrefab: {fileID: 5002783160473160607, guid: e2d83cdcfb9485d499433d3acc5bad5e, type: 3}
   closeButton: {fileID: 1118660707}
   dropZone: {fileID: 1991059354}
-  lootRadius: 3
-  lootSlotCount: 8
-  lootRefreshInterval: 0.25
 --- !u!224 &418324871
 RectTransform:
   m_ObjectHideFlags: 0

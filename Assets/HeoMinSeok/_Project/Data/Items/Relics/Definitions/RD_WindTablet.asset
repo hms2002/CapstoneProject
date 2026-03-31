@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: RD_WindTablet
   m_EditorClassIdentifier: 
   relicId: RD_WindTablet
-  displayName: WindTablet
+  displayName: "\uC9C8\uD48D\uC758 \uC11D\uD310"
   icon: {fileID: -725545543995621311, guid: 25e96db64c0011e46b28fac404b03e4b, type: 3}
   rarity: 0
-  description: 
+  description: "[\uCD5C\uB300 \uCCB4\uB825] -1\n[\uC774\uB3D9\uC18D\uB3C4] 15% \uC99D\uAC00"
   maxLevel: 5
   dropLevel: 1
   logic: {fileID: 11400000, guid: 62252f9a0ec433649a7688898956f179, type: 2}

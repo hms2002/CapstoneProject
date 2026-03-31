@@ -16,7 +16,10 @@ MonoBehaviour:
   displayName: RD_FeatherOrbit
   icon: {fileID: 8985768934002324412, guid: 7227f5952a8fea246a79b45a4cc804e8, type: 3}
   rarity: 1
-  description: 
+  description: "\uC720\uC800\uB97C \uC911\uC2EC\uC73C\uB85C \uACF5\uC804\uD558\uB294 [\uAE43\uD138]\uC744
+    \uC0DD\uC131\n[\uAE43\uD138]\uACFC \uCDA9\uB3CC\uD55C \uC801\uC740 [\uACF5\uACA9\uB825]\uB9CC\uD07C
+    \uD53C\uD574\uB97C \uBC1B\uC74C\n[\uAE43\uD138]\uC758 \uACF5\uC804 \uC18D\uB3C4\uB294
+    [\uC774\uB3D9\uC18D\uB3C4]\uC5D0 \uBE44\uB840"
   maxLevel: 5
   dropLevel: 1
   logic: {fileID: 11400000, guid: 74bcbc64a07fc854ca2dade608e8c24c, type: 2}

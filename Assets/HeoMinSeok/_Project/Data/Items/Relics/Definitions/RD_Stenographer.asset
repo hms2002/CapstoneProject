@@ -16,8 +16,11 @@ MonoBehaviour:
   displayName: "\uC18D\uAE30\uC0AC"
   icon: {fileID: -4475832180944608382, guid: f56d3f5dfaa479441b291f58693d8fb4, type: 3}
   rarity: 2
-  description: "\uC794\uC601\uC758 \uB0A0\uAC1C \uC2A4\uD0AC 1\uC758 \uC774\uB3D9\uC18D\uB3C4
-    \uC99D\uAC00\uB7C9\uC744 \uB354 \uD06C\uAC8C \uB9CC\uB4E0\uB2E4."
+  description: "\uC794\uC601\uC758 \uB0A0\uAC1C \uC804\uC6A9 \uC720\uBB3C\n\uC2A4\uD0AC
+    1\uC758 \uC774\uB3D9\uC18D\uB3C4 \uBCF4\uB108\uC2A4\uAC00 \uC99D\uAC00\n\uC2A4\uD0AC
+    \uC0AC\uC6A9 \uC2DC [\uC774\uB3D9\uC18D\uB3C4] 150% \uC99D\uAC00\n3\uCD08 \uD6C4
+    [\uC774\uB3D9\uC18D\uB3C4] 150% \uCD94\uAC00 \uC99D\uAC00\n3\uCD08 \uD6C4 [\uC774\uB3D9\uC18D\uB3C4]
+    200% \uCD94\uAC00 \uC99D\uAC00"
   maxLevel: 1
   dropLevel: 1
   logic: {fileID: 11400000, guid: c91e5a6f24b94ef0a2d6c4b8f93e7a12, type: 2}

@@ -9,8 +9,8 @@ MonoImporter:
   - maxHpDef: {fileID: 11400000, guid: 0e177e1d15e428745b5859fac08ce203, type: 2}
   - heartTokenPrefab: {fileID: 7286775436942910812, guid: 73286b2f835b74848bc1fef47d7f1294, type: 3}
   - heartContainer: {instanceID: 0}
-  - filledHeartSprite: {instanceID: 0}
-  - emptyHeartSprite: {instanceID: 0}
+  - filledHeartSprite: {fileID: 3344906249165072059, guid: e75f469ea29530246a4a0543396316af, type: 3}
+  - emptyHeartSprite: {fileID: 2501108752766977309, guid: e75f469ea29530246a4a0543396316af, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

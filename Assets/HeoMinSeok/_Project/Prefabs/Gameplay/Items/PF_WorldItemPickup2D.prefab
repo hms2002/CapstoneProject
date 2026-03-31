@@ -55,7 +55,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: 2100000, guid: 0d09aba533d2fa84da4a54832b741dc2, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -170,5 +170,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item: {fileID: 0}
+  promptAnchor: {fileID: 0}
+  interactPromptText: "\uD68D\uB4DD\uD558\uAE30"
   spriteRenderer: {fileID: 0}
   relicLevel: 0
