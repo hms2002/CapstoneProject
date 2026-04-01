@@ -13,7 +13,7 @@ public class BossEncounterDirector : MonoBehaviour
     [SerializeField] private bool playOnlyOnce = true;
 
     private Coroutine runningSequence;
-    private SampleTopDownPlayer cachedPlayer;
+    private PlayerInteractor2D cachedPlayer;
     private InteractState previousPlayerState = InteractState.Idle;
     private bool hasPlayed;
 
@@ -50,12 +50,12 @@ public class BossEncounterDirector : MonoBehaviour
         if (playerTransform == null)
             return;
 
-        var player = playerTransform.GetComponent<SampleTopDownPlayer>();
+        var player = playerTransform.GetComponent<PlayerInteractor2D>();
         if (player != null)
             HandlePlayerRegistered(player);
     }
 
-    private void HandlePlayerRegistered(SampleTopDownPlayer player)
+    private void HandlePlayerRegistered(PlayerInteractor2D player)
     {
         if (!autoPlayWhenPlayerSpawned)
             return;
@@ -118,7 +118,7 @@ public class BossEncounterDirector : MonoBehaviour
     private void CacheAndLockPlayer()
     {
         var playerTransform = PlayerRuntimeRegistry.GetPlayerTransform();
-        cachedPlayer = playerTransform != null ? playerTransform.GetComponent<SampleTopDownPlayer>() : null;
+        cachedPlayer = playerTransform != null ? playerTransform.GetComponent<PlayerInteractor2D>() : null;
 
         if (cachedPlayer == null)
             return;

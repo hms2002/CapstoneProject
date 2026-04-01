@@ -47,8 +47,8 @@ public class WeaponDrop2D : InteractableBase
             return;
         }
 
-        if (player is SampleTopDownPlayer samplePlayer)
-            samplePlayer.SpeakSituation(PlayerSpeechSituationEnum.InventoryFull);
+        if (player is PlayerInteractor2D playerInteractor)
+            playerInteractor.SpeakSituation(PlayerSpeechSituationEnum.InventoryFull);
     }
 
     public override InteractState GetInteractType() => InteractState.Idle;

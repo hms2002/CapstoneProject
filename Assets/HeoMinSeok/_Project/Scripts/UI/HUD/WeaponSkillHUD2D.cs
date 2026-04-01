@@ -64,7 +64,7 @@ public class WeaponSkillHUD2D : MonoBehaviour
     }
 
 
-    private void HandlePlayerRegistered(SampleTopDownPlayer player)
+    private void HandlePlayerRegistered(PlayerInteractor2D player)
     {
         UnbindInventoryEvents();
         TryResolvePlayerRefs(player);
@@ -73,7 +73,7 @@ public class WeaponSkillHUD2D : MonoBehaviour
         RefreshVisibility();
     }
 
-    private void HandlePlayerUnregistered(SampleTopDownPlayer player)
+    private void HandlePlayerUnregistered(PlayerInteractor2D player)
     {
         if (player == null)
             return;
@@ -88,13 +88,13 @@ public class WeaponSkillHUD2D : MonoBehaviour
         }
     }
 
-    private void TryResolvePlayerRefs(SampleTopDownPlayer player = null)
+    private void TryResolvePlayerRefs(PlayerInteractor2D player = null)
     {
         if (player == null)
         {
             player = PlayerRuntimeRegistry.CurrentPlayer != null
                 ? PlayerRuntimeRegistry.CurrentPlayer
-                : SampleTopDownPlayer.Instance;
+            : PlayerInteractor2D.Instance;
         }
 
         if (player != null)

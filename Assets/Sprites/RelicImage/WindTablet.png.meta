@@ -134,7 +134,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      WindTablet_0: -725545543995621311
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

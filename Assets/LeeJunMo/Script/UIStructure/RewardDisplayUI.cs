@@ -60,6 +60,7 @@ public class RewardDisplayUI : MonoBehaviour, IStackableUI
 
         onCloseCallback?.Invoke();
         onCloseCallback = null;
+        RewardDisplayService.Instance?.NotifyClosed(this);
     }
 
     public void ShowReward(List<UpgradeEffectSO> upgradeEffects = null, List<AffectionEffect> affectionEffects = null, Action callback = null)

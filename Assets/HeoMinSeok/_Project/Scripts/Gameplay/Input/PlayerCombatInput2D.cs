@@ -7,7 +7,7 @@ public sealed class PlayerCombatInput2D : MonoBehaviour
     [Header("Refs")]
     [SerializeField] private AbilitySystem abilitySystem;
     [SerializeField] private WeaponInventory2D weaponInventory;
-    [SerializeField] private SampleTopDownPlayer player;
+    [SerializeField] private PlayerInteractor2D player;
 
     [Header("Movement Ability")]
     [SerializeField] private AbilityDefinition dash;
@@ -34,7 +34,7 @@ public sealed class PlayerCombatInput2D : MonoBehaviour
     {
         if (abilitySystem == null) abilitySystem = GetComponent<AbilitySystem>();
         if (weaponInventory == null) weaponInventory = GetComponent<WeaponInventory2D>();
-        if (player == null) player = GetComponent<SampleTopDownPlayer>();
+        if (player == null) player = GetComponent<PlayerInteractor2D>();
     }
 
     private void Update()

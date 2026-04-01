@@ -8,8 +8,10 @@ public class RewardDisplayService : MonoBehaviour
 
     private static bool s_isQuitting;
 
+    private readonly Queue<PendingRewardRequest> pendingRequests = new Queue<PendingRewardRequest>();
+
     private RewardDisplayUI currentView;
-    private PendingRewardRequest? pendingRequest;
+    private bool isShowingReward;
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     private static void AutoBootstrap()
@@ -50,38 +52,48 @@ public class RewardDisplayService : MonoBehaviour
             return;
 
         currentView = view;
-        TryFlushPending();
+        isShowingReward = view.IsActive;
+        TryPresentNext();
     }
 
     public void UnregisterView(RewardDisplayUI view)
     {
-        if (currentView == view)
-            currentView = null;
+        if (currentView != view)
+            return;
+
+        currentView = null;
+        isShowingReward = false;
     }
 
     public void ShowReward(List<UpgradeEffectSO> upgradeEffects = null, List<AffectionEffect> affectionEffects = null, Action callback = null)
     {
-        if (currentView != null)
-        {
-            currentView.ShowReward(upgradeEffects, affectionEffects, callback);
-            return;
-        }
-
-        pendingRequest = new PendingRewardRequest(
+        pendingRequests.Enqueue(new PendingRewardRequest(
             upgradeEffects != null ? new List<UpgradeEffectSO>(upgradeEffects) : null,
             affectionEffects != null ? new List<AffectionEffect>(affectionEffects) : null,
-            callback);
+            callback));
 
-        Debug.LogWarning("[RewardDisplayService] RewardDisplayUI view가 아직 등록되지 않아 보상 표시를 대기합니다.", this);
+        if (currentView == null)
+            Debug.LogWarning("[RewardDisplayService] RewardDisplayUI view is not registered yet. Reward display request will be queued.", this);
+
+        TryPresentNext();
     }
 
-    private void TryFlushPending()
+    public void NotifyClosed(RewardDisplayUI view)
     {
-        if (currentView == null || pendingRequest == null)
+        if (currentView != view)
             return;
 
-        PendingRewardRequest request = pendingRequest.Value;
-        pendingRequest = null;
+        isShowingReward = false;
+        TryPresentNext();
+    }
+
+    private void TryPresentNext()
+    {
+        if (currentView == null || isShowingReward || pendingRequests.Count == 0)
+            return;
+
+        PendingRewardRequest request = pendingRequests.Dequeue();
+        isShowingReward = true;
         currentView.ShowReward(request.upgradeEffects, request.affectionEffects, request.callback);
     }
 

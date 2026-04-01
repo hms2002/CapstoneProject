@@ -14,7 +14,7 @@ public class UpgradeManager : MonoBehaviour
 
     private UpgradeProgressService progressService;
     private UpgradeEffectApplier effectApplier;
-    private SampleTopDownPlayer appliedPlayer;
+    private PlayerInteractor2D appliedPlayer;
 
     private void Awake()
     {
@@ -51,22 +51,22 @@ public class UpgradeManager : MonoBehaviour
         PlayerRuntimeRegistry.PlayerRegistered -= HandlePlayerRegistered;
     }
 
-    private void HandlePlayerRegistered(SampleTopDownPlayer player)
+    private void HandlePlayerRegistered(PlayerInteractor2D player)
     {
         TryReapplyAllEffects();
     }
 
-    private SampleTopDownPlayer ResolveCurrentPlayer()
+    private PlayerInteractor2D ResolveCurrentPlayer()
     {
         if (PlayerRuntimeRegistry.CurrentPlayer != null)
             return PlayerRuntimeRegistry.CurrentPlayer;
 
-        return SampleTopDownPlayer.Instance;
+        return PlayerInteractor2D.Instance;
     }
 
     private void TryReapplyAllEffects()
     {
-        SampleTopDownPlayer player = ResolveCurrentPlayer();
+        PlayerInteractor2D player = ResolveCurrentPlayer();
         if (player == null)
             return;
 
@@ -108,7 +108,7 @@ public class UpgradeManager : MonoBehaviour
         if (!progressService.TryPurchase(id, out node))
             return;
 
-        SampleTopDownPlayer player = ResolveCurrentPlayer();
+        PlayerInteractor2D player = ResolveCurrentPlayer();
         effectApplier.ApplyUpgrade(node, player);
 
         if (RewardDisplayService.Instance != null)
@@ -119,7 +119,7 @@ public class UpgradeManager : MonoBehaviour
         OnDataChanged?.Invoke();
     }
 
-    private void ReapplyAllEffects(SampleTopDownPlayer player)
+    private void ReapplyAllEffects(PlayerInteractor2D player)
     {
         if (player == null || GameDataManager.Instance == null || progressService == null || effectApplier == null)
             return;

@@ -12,7 +12,7 @@ public class InventoryUIManager : MonoBehaviour
     [SerializeField] private KeyCode toggleKey = KeyCode.I;
 
     [Header("(Optional) Player reference")]
-    [Tooltip("If null, will fallback to SampleTopDownPlayer.Instance")]
+    [Tooltip("If null, will fallback to PlayerInteractor2D.Instance")]
     [SerializeField] private Transform lootOriginOverride;
 
     private void Awake()
@@ -53,7 +53,7 @@ public class InventoryUIManager : MonoBehaviour
 
         var currentPlayer = PlayerRuntimeRegistry.CurrentPlayer != null
             ? PlayerRuntimeRegistry.CurrentPlayer
-            : SampleTopDownPlayer.Instance;
+            : PlayerInteractor2D.Instance;
 
         var weaponInv = currentPlayer != null ? currentPlayer.GetComponent<WeaponInventory2D>() : FindFirstObjectByType<WeaponInventory2D>();
         var relicInv = currentPlayer != null ? currentPlayer.GetComponent<RelicInventory>() : FindFirstObjectByType<RelicInventory>();

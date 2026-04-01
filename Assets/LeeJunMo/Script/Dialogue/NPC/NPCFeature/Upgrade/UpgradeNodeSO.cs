@@ -42,7 +42,7 @@ public class UpgradeNodeSO : ScriptableObject
         return new Vector2(x, y);
     }
 
-    public void ApplyOnPurchase(SampleTopDownPlayer player)
+    public void ApplyOnPurchase(PlayerInteractor2D player)
     {
         if (effects == null)
             return;
@@ -54,7 +54,7 @@ public class UpgradeNodeSO : ScriptableObject
         }
     }
 
-    public void ReapplyPlayerEffects(SampleTopDownPlayer player)
+    public void ReapplyPlayerEffects(PlayerInteractor2D player)
     {
         if (effects == null)
             return;
@@ -66,7 +66,7 @@ public class UpgradeNodeSO : ScriptableObject
         }
     }
 
-    public void ApplyEffect(SampleTopDownPlayer player)
+    public void ApplyEffect(PlayerInteractor2D player)
     {
         ApplyOnPurchase(player);
     }

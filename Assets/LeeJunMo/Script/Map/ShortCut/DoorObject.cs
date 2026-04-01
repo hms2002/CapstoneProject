@@ -89,7 +89,7 @@ public class DoorObject : InteractableBase
         {
             PlayShakeAnimation();
 
-            SampleTopDownPlayer playerScript = player.Transform.GetComponent<SampleTopDownPlayer>();
+        PlayerInteractor2D playerScript = player.Transform.GetComponent<PlayerInteractor2D>();
             if (playerScript != null)
                 playerScript.SpeakSituation(PlayerSpeechSituationEnum.DoorLocked);
         }

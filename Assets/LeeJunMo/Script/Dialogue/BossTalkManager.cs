@@ -24,7 +24,7 @@ public class BossTalkManager : MonoBehaviour
     private CinemachineBrain brain;
     private CameraFollow legacyFollowCamera;
     private Coroutine runningSequence;
-    private SampleTopDownPlayer cachedPlayer;
+    private PlayerInteractor2D cachedPlayer;
     private InteractState previousPlayerState = InteractState.Idle;
 
     private void Awake()
@@ -139,13 +139,13 @@ public class BossTalkManager : MonoBehaviour
         return true;
     }
 
-    private SampleTopDownPlayer ResolvePlayer()
+    private PlayerInteractor2D ResolvePlayer()
     {
         var playerTransform = PlayerRuntimeRegistry.GetPlayerTransform();
         if (playerTransform == null)
             return null;
 
-        return playerTransform.GetComponent<SampleTopDownPlayer>();
+        return playerTransform.GetComponent<PlayerInteractor2D>();
     }
 
     private void BindPlayerCameraToCurrentPlayer()

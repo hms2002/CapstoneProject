@@ -74,8 +74,8 @@ public class ItemHoverController : MonoBehaviour
         if (PlayerRuntimeRegistry.CurrentPlayer != null)
             return ItemDetailContext.FromOwner(PlayerRuntimeRegistry.CurrentPlayer.gameObject);
 
-        if (SampleTopDownPlayer.Instance != null)
-            return ItemDetailContext.FromOwner(SampleTopDownPlayer.Instance.gameObject);
+        if (PlayerInteractor2D.Instance != null)
+            return ItemDetailContext.FromOwner(PlayerInteractor2D.Instance.gameObject);
 
         return new ItemDetailContext();
     }

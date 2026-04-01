@@ -3,12 +3,12 @@ using UnityEngine;
 
 public static class PlayerRuntimeRegistry
 {
-    public static SampleTopDownPlayer CurrentPlayer { get; private set; }
+    public static PlayerInteractor2D CurrentPlayer { get; private set; }
 
-    public static event Action<SampleTopDownPlayer> PlayerRegistered;
-    public static event Action<SampleTopDownPlayer> PlayerUnregistered;
+    public static event Action<PlayerInteractor2D> PlayerRegistered;
+    public static event Action<PlayerInteractor2D> PlayerUnregistered;
 
-    public static void Register(SampleTopDownPlayer player)
+    public static void Register(PlayerInteractor2D player)
     {
         if (player == null)
             return;
@@ -27,7 +27,7 @@ public static class PlayerRuntimeRegistry
         PlayerRegistered?.Invoke(player);
     }
 
-    public static void Unregister(SampleTopDownPlayer player)
+    public static void Unregister(PlayerInteractor2D player)
     {
         if (player == null)
             return;
@@ -44,14 +44,14 @@ public static class PlayerRuntimeRegistry
         if (CurrentPlayer != null)
             return CurrentPlayer.transform;
 
-        return SampleTopDownPlayer.Instance != null
-            ? SampleTopDownPlayer.Instance.transform
+        return PlayerInteractor2D.Instance != null
+            ? PlayerInteractor2D.Instance.transform
             : null;
     }
 
     public static T GetPlayerComponent<T>() where T : Component
     {
-        var player = CurrentPlayer != null ? CurrentPlayer : SampleTopDownPlayer.Instance;
+        var player = CurrentPlayer != null ? CurrentPlayer : PlayerInteractor2D.Instance;
         return player != null ? player.GetComponent<T>() : null;
     }
 }

@@ -39,13 +39,13 @@ public class DebugPlayerHpText : MonoBehaviour
     }
 
 
-    private void HandlePlayerRegistered(SampleTopDownPlayer registeredPlayer)
+    private void HandlePlayerRegistered(PlayerInteractor2D registeredPlayer)
     {
         player = registeredPlayer != null ? registeredPlayer.gameObject : null;
         _attrs = registeredPlayer != null ? registeredPlayer.GetComponent<AttributeSet>() : null;
     }
 
-    private void HandlePlayerUnregistered(SampleTopDownPlayer unregisteredPlayer)
+    private void HandlePlayerUnregistered(PlayerInteractor2D unregisteredPlayer)
     {
         if (unregisteredPlayer != null && player == unregisteredPlayer.gameObject)
         {
@@ -60,7 +60,7 @@ public class DebugPlayerHpText : MonoBehaviour
         {
             var currentPlayer = PlayerRuntimeRegistry.CurrentPlayer != null
                 ? PlayerRuntimeRegistry.CurrentPlayer.gameObject
-                : SampleTopDownPlayer.Instance != null ? SampleTopDownPlayer.Instance.gameObject : null;
+            : PlayerInteractor2D.Instance != null ? PlayerInteractor2D.Instance.gameObject : null;
 
             player = currentPlayer;
         }

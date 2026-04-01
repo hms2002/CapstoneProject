@@ -7,7 +7,7 @@ public class ChestUIManager : MonoBehaviour
     public static ChestUIManager Instance { get; private set; }
 
     [SerializeField] private ChestScreen chestScreen;
-    [SerializeField] private MonoBehaviour[] playerControlScriptsToDisable; // SampleTopDownPlayer 등
+    [SerializeField] private MonoBehaviour[] playerControlScriptsToDisable; // PlayerInteractor2D 등
 
     private TreasureChest openedChest;
     private float prevTimeScale = 1f;
@@ -61,11 +61,11 @@ public class ChestUIManager : MonoBehaviour
 
         var player = PlayerRuntimeRegistry.CurrentPlayer != null
             ? PlayerRuntimeRegistry.CurrentPlayer
-            : SampleTopDownPlayer.Instance;
+            : PlayerInteractor2D.Instance;
 
         if (player != null)
         {
-            TryDisable(player.GetComponent<SampleTopDownPlayer>());
+        TryDisable(player.GetComponent<PlayerInteractor2D>());
             TryDisable(player.GetComponent<PlayerIntentInput2D>());
             TryDisable(player.GetComponent<PlayerCombatInput2D>());
             TryDisable(player.GetComponent<PlayerAim2D>());
@@ -104,9 +104,9 @@ public class ChestUIManager : MonoBehaviour
         // 상자 닫으면 플레이어 스크립트 복구
         RestorePlayerControlsForCurrentSession();
 
-        if (SampleTopDownPlayer.Instance != null)
+        if (PlayerInteractor2D.Instance != null)
         {
-            SampleTopDownPlayer.Instance.SetInteractState(InteractState.Idle);
+            PlayerInteractor2D.Instance.SetInteractState(InteractState.Idle);
         }
 
         // 시간 복구 및 상태 초기화

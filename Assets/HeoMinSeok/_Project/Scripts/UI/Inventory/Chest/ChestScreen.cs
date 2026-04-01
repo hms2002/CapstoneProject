@@ -110,7 +110,7 @@ public class ChestScreen : MonoBehaviour, IStackableUI
     {
         var currentPlayer = PlayerRuntimeRegistry.CurrentPlayer != null
             ? PlayerRuntimeRegistry.CurrentPlayer
-            : SampleTopDownPlayer.Instance;
+            : PlayerInteractor2D.Instance;
 
         if (currentPlayer != null)
         {

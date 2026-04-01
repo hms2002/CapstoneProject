@@ -22,7 +22,7 @@ public sealed class PlayerSpawner : MonoBehaviour
         var existingPlayer = GameObject.FindGameObjectWithTag("Player");
         if (existingPlayer != null)
         {
-            var existingInteractor = existingPlayer.GetComponent<SampleTopDownPlayer>();
+            var existingInteractor = existingPlayer.GetComponent<PlayerInteractor2D>();
             if (existingInteractor != null)
                 PlayerRuntimeRegistry.Register(existingInteractor);
 
@@ -49,15 +49,15 @@ public sealed class PlayerSpawner : MonoBehaviour
             spawnPoint.transform.position,
             spawnPoint.transform.rotation);
 
-        var playerInteractor = player.GetComponent<SampleTopDownPlayer>();
+        var playerInteractor = player.GetComponent<PlayerInteractor2D>();
         if (playerInteractor != null)
         {
             PlayerRuntimeRegistry.Register(playerInteractor);
         }
         else
         {
-            Debug.LogWarning("[PlayerSpawner] SampleTopDownPlayer was not found on the spawned player.");
-        }
+            Debug.LogWarning("[PlayerSpawner] PlayerInteractor2D was not found on the spawned player.");
+    }
     }
 
     private PlayerSpawnPoint ResolveSpawnPoint(SceneTransitionContext context)

@@ -134,7 +134,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      DrunkenChalju_0: 8318818539734883204
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

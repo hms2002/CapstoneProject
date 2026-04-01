@@ -7,7 +7,7 @@ public sealed class PlayerIntentInput2D : MonoBehaviour, IIntentMovementSource2D
     [Header("Refs")]
     [SerializeField] private TagSystem tagSystem;
     [SerializeField] private PlayerAim2D aim;
-    [SerializeField] private SampleTopDownPlayer player;
+    [SerializeField] private PlayerInteractor2D player;
 
     [Header("Tags")]
     [Tooltip("이 태그가 있으면 WASD 대신 AimDirection 방향으로 강제 이동합니다.")]
@@ -19,7 +19,7 @@ public sealed class PlayerIntentInput2D : MonoBehaviour, IIntentMovementSource2D
     {
         if (tagSystem == null) tagSystem = GetComponent<TagSystem>();
         if (aim == null) aim = GetComponent<PlayerAim2D>();
-        if (player == null) player = GetComponent<SampleTopDownPlayer>();
+        if (player == null) player = GetComponent<PlayerInteractor2D>();
     }
 
     private void Update()

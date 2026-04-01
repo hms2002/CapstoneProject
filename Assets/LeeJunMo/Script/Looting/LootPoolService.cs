@@ -9,7 +9,7 @@ public sealed class LootPoolService
         var exclusionList = new HashSet<string>();
         var currentPlayer = PlayerRuntimeRegistry.CurrentPlayer != null
             ? PlayerRuntimeRegistry.CurrentPlayer
-            : SampleTopDownPlayer.Instance;
+            : PlayerInteractor2D.Instance;
 
         if (currentPlayer == null)
             return exclusionList;
