@@ -135,7 +135,7 @@ public class UpgradeManager : MonoBehaviour
         if (!upgradeTreeUI.IsActive)
         {
             if (UIManager.Instance != null)
-                UIManager.Instance.PushUI(upgradeTreeUI);
+                UIManager.Instance.TryPushUI(upgradeTreeUI);
             else
                 upgradeTreeUI.OpenUI();
         }

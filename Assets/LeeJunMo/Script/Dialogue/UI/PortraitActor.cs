@@ -32,7 +32,7 @@ public class PortraitActor : MonoBehaviour
 
         Color targetColor = isFocused ? Color.white : new Color(0.4f, 0.4f, 0.4f, 1f);
         image.DOKill();
-        image.DOColor(targetColor, duration);
+        image.DOColor(targetColor, duration).SetUpdate(true);
     }
 
     public void FadeIn(float duration, System.Action onComplete = null)
@@ -40,13 +40,13 @@ public class PortraitActor : MonoBehaviour
         gameObject.SetActive(true);
         canvasGroup.DOKill();
         canvasGroup.alpha = 0f;
-        canvasGroup.DOFade(1f, duration).OnComplete(() => onComplete?.Invoke());
+        canvasGroup.DOFade(1f, duration).SetUpdate(true).OnComplete(() => onComplete?.Invoke());
     }
 
     public void FadeOut(float duration)
     {
         canvasGroup.DOKill();
-        canvasGroup.DOFade(0f, duration).OnComplete(() => {
+        canvasGroup.DOFade(0f, duration).SetUpdate(true).OnComplete(() => {
             gameObject.SetActive(false);
         });
     }

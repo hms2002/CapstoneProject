@@ -60,7 +60,7 @@ public class CinematicDirector : MonoBehaviour
         }
 
         // 등장 애니메이션 시간(대략 0.5초) 대기 후 대화 시작 콜백
-        DOVirtual.DelayedCall(0.5f, () => onComplete?.Invoke());
+        DOVirtual.DelayedCall(0.5f, () => onComplete?.Invoke()).SetUpdate(true);
     }
 
     // 코드가 길어지는 것을 막기 위한 등장 헬퍼 함수
@@ -85,6 +85,7 @@ public class CinematicDirector : MonoBehaviour
         portraitController.SetupSilhouetteMode(npcData);
         portraitController.SetInitialPosition(npcData, "center");
         Sequence seq = DOTween.Sequence();
+        seq.SetUpdate(true);
         Tween fadeIn = portraitController.GetSilhouetteFadeInTween(npcData, 1.0f);
         if (fadeIn != null) seq.Append(fadeIn);
         seq.AppendInterval(0.5f);
@@ -104,7 +105,7 @@ public class CinematicDirector : MonoBehaviour
         ResolvePortraitController();
 
         if (portraitController != null) portraitController.ExitAllAndClear();
-        DOVirtual.DelayedCall(0.5f, () => onComplete?.Invoke());
+        DOVirtual.DelayedCall(0.5f, () => onComplete?.Invoke()).SetUpdate(true);
     }
 
     private void ResolvePortraitController()

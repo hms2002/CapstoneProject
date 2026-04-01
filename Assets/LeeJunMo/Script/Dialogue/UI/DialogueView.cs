@@ -65,6 +65,8 @@ public class DialogueView : MonoBehaviour
         }
 
         ResetDialogueEffectToHiddenIdle();
+        if (dialogueEffectAnimator != null)
+            dialogueEffectAnimator.updateMode = AnimatorUpdateMode.UnscaledTime;
 
         if (textBoxGroup != null)
         {
@@ -85,6 +87,7 @@ public class DialogueView : MonoBehaviour
             if (iconRect != null)
             {
                 iconRect.DOAnchorPosY(iconRect.anchoredPosition.y - 10f, 0.5f)
+                    .SetUpdate(true)
                     .SetLoops(-1, LoopType.Yoyo)
                     .SetEase(Ease.InOutSine);
             }
@@ -158,12 +161,13 @@ public class DialogueView : MonoBehaviour
             textBoxGroup.gameObject.SetActive(true);
 
             Sequence seq = DOTween.Sequence();
-            seq.Append(textBoxGroup.DOFade(1f, 0.25f));
+            seq.SetUpdate(true);
+            seq.Append(textBoxGroup.DOFade(1f, 0.25f).SetUpdate(true));
 
             if (isBoss && affectionGroup != null)
             {
                 affectionGroup.gameObject.SetActive(true);
-                seq.Join(affectionGroup.DOFade(1f, 0.25f));
+                seq.Join(affectionGroup.DOFade(1f, 0.25f).SetUpdate(true));
             }
             else if (!isBoss && affectionGroup != null)
             {
@@ -184,12 +188,13 @@ public class DialogueView : MonoBehaviour
         RefreshThemePresentation(false);
 
         Sequence seq = DOTween.Sequence();
+        seq.SetUpdate(true);
         float effectDuration = 0f;
 
         if (dimPanelGraphic != null)
         {
             SetDimPanelVisible(true, true);
-            seq.Append(dimPanelGraphic.DOFade(defaultDimPanelAlpha, dimFadeDuration));
+            seq.Append(dimPanelGraphic.DOFade(defaultDimPanelAlpha, dimFadeDuration).SetUpdate(true));
         }
 
         seq.AppendCallback(() =>
@@ -221,6 +226,7 @@ public class DialogueView : MonoBehaviour
         if (dialogueText != null)
         {
             typingTween = dialogueText.DOText(text, text.Length * 0.05f)
+                .SetUpdate(true)
                 .SetEase(Ease.Linear)
                 .OnComplete(() =>
                 {
@@ -327,12 +333,13 @@ public class DialogueView : MonoBehaviour
             continueIcon.SetActive(false);
 
         Sequence seq = DOTween.Sequence();
+        seq.SetUpdate(true);
 
         if (textBoxGroup != null)
-            seq.Append(textBoxGroup.DOFade(0f, 0.25f));
+            seq.Append(textBoxGroup.DOFade(0f, 0.25f).SetUpdate(true));
 
         if (affectionGroup != null && affectionGroup.gameObject.activeSelf)
-            seq.Join(affectionGroup.DOFade(0f, 0.25f));
+            seq.Join(affectionGroup.DOFade(0f, 0.25f).SetUpdate(true));
 
         seq.OnComplete(() =>
         {
@@ -361,12 +368,12 @@ public class DialogueView : MonoBehaviour
             if (i == index)
             {
                 btnText.color = selectedChoiceColor;
-                activeChoiceButtons[i].transform.DOScale(1.05f, 0.1f);
+                activeChoiceButtons[i].transform.DOScale(1.05f, 0.1f).SetUpdate(true);
             }
             else
             {
                 btnText.color = normalChoiceColor;
-                activeChoiceButtons[i].transform.DOScale(1.0f, 0.1f);
+                activeChoiceButtons[i].transform.DOScale(1.0f, 0.1f).SetUpdate(true);
             }
         }
     }

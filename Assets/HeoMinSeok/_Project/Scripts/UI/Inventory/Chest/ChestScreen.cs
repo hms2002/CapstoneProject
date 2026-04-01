@@ -38,6 +38,9 @@ public class ChestScreen : MonoBehaviour, IStackableUI
     // =========================================================
     public bool IsActive => gameObject.activeSelf;
     public bool CanCloseOnEscape => true;
+    public UIOpenGroup OpenGroup => UIOpenGroup.ExclusiveModal;
+    public UIOpenGroup BlockedOpenGroups => UIOpenGroup.ExclusiveModal;
+    public UIGameplayLockProfile GameplayLockProfile => UIGameplayLockProfile.FreezeAndBlockControl;
 
     public void OpenUI()
     {

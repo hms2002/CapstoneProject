@@ -1,5 +1,11 @@
 using UnityEngine;
+using UnityGAS;
 
+/// <summary>
+/// 책임 :
+/// - 근처 상호작용 대상을 탐색하고 하이라이트/월드 프롬프트를 갱신한다.
+/// - 플레이어의 상호작용 입력을 처리하고 현재 상호작용 상태 및 말풍선 출력을 관리한다.
+/// </summary>
 [DisallowMultipleComponent]
 [RequireComponent(typeof(Collider2D))]
 [RequireComponent(typeof(PlayerInteractableTracker2D))]
@@ -8,6 +14,8 @@ using UnityEngine;
 [RequireComponent(typeof(PlayerSpeechController))]
 public class PlayerInteractor2D : MonoBehaviour, IPlayerInteractor
 {
+    private const string InteractBlockedTagResourcePath = "Tags/State.Interact.Blocked";
+
     public static PlayerInteractor2D Instance { get; private set; }
 
     public Transform Transform => transform;
@@ -20,6 +28,8 @@ public class PlayerInteractor2D : MonoBehaviour, IPlayerInteractor
     [Header("Speech System")]
     [SerializeField] private SpeechBubbleComponent speechBubble;
     [SerializeField] private PlayerSpeechData speechData;
+    [SerializeField] private TagSystem tagSystem;
+    [SerializeField] private GameplayTag interactBlockedTag;
 
     [Header("Interaction Components")]
     [SerializeField] private PlayerInteractableTracker2D interactableTracker;
@@ -33,6 +43,10 @@ public class PlayerInteractor2D : MonoBehaviour, IPlayerInteractor
 
         ResolveComponents();
         MigrateLegacySerializedReferences();
+        if (tagSystem == null)
+            tagSystem = GetComponent<TagSystem>();
+        if (interactBlockedTag == null)
+            interactBlockedTag = Resources.Load<GameplayTag>(InteractBlockedTagResourcePath);
     }
 
     protected virtual void OnDestroy()
@@ -59,6 +73,13 @@ public class PlayerInteractor2D : MonoBehaviour, IPlayerInteractor
     {
         if (CurrentState != InteractState.Idle)
         {
+            promptPresenter?.HidePrompt();
+            return;
+        }
+
+        if (IsInteractionBlocked())
+        {
+            targetResolver?.ClearCurrentTarget();
             promptPresenter?.HidePrompt();
             return;
         }
@@ -129,5 +150,12 @@ public class PlayerInteractor2D : MonoBehaviour, IPlayerInteractor
 
         promptPresenter?.SetPromptController(interactionPrompt);
         speechController?.SetSpeechDependencies(speechBubble, speechData);
+    }
+
+    private bool IsInteractionBlocked()
+    {
+        return tagSystem != null &&
+               interactBlockedTag != null &&
+               tagSystem.HasTag(interactBlockedTag);
     }
 }

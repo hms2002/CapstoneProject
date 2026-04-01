@@ -92,6 +92,9 @@ public class RewardDisplayService : MonoBehaviour
         if (currentView == null || isShowingReward || pendingRequests.Count == 0)
             return;
 
+        if (UIManager.Instance != null && !UIManager.Instance.CanOpenUI(currentView))
+            return;
+
         PendingRewardRequest request = pendingRequests.Dequeue();
         isShowingReward = true;
         currentView.ShowReward(request.upgradeEffects, request.affectionEffects, request.callback);

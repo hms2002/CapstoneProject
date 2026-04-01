@@ -29,6 +29,7 @@ public class InventoryUIManager : MonoBehaviour
         {
             inventoryScreen.gameObject.SetActive(false);
         }
+
     }
 
     private void Update()
@@ -62,7 +63,7 @@ public class InventoryUIManager : MonoBehaviour
         if (UIManager.Instance != null) UIManager.Instance.HideHoverImmediate();
 
         // [핵심] 직접 켜지 않고 UIManager의 스택에 밀어넣음!
-        if (UIManager.Instance != null) UIManager.Instance.PushUI(inventoryScreen);
+        if (UIManager.Instance != null) UIManager.Instance.TryPushUI(inventoryScreen);
         else inventoryScreen.OpenUI();
     }
 
@@ -74,7 +75,7 @@ public class InventoryUIManager : MonoBehaviour
         if (UIManager.Instance != null) UIManager.Instance.PopUI(inventoryScreen);
         else inventoryScreen.CloseUI();
     }
-    
+
     private void OnDestroy()
     {
         if (Instance == this)

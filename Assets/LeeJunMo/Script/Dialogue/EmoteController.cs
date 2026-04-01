@@ -31,9 +31,10 @@ public class EmoteController : MonoBehaviour
 
         // 3. 시퀀스 시작
         emoteSequence = DOTween.Sequence();
+        emoteSequence.SetUpdate(true);
 
         // [단계 1] 말풍선 등장 (0 -> 1)
-        emoteSequence.Append(balloonRect.DOScale(1f, balloonPopTime).SetEase(Ease.OutBack));
+        emoteSequence.Append(balloonRect.DOScale(1f, balloonPopTime).SetUpdate(true).SetEase(Ease.OutBack));
 
         // [단계 2] 아이콘 활성화 -> 애니메이션 즉시 실행
         emoteSequence.AppendCallback(() =>
@@ -50,15 +51,15 @@ public class EmoteController : MonoBehaviour
         });
 
         // [단계 3] 이미지가 세팅된 상태에서 쫀득하게 커짐
-        emoteSequence.Append(iconRect.DOScale(1f, iconPopTime).SetEase(Ease.OutBack));
+        emoteSequence.Append(iconRect.DOScale(1f, iconPopTime).SetUpdate(true).SetEase(Ease.OutBack));
 
         // [단계 4] 유지 시간
         emoteSequence.AppendInterval(stayTime);
 
         // [단계 5] 퇴장 (아이콘 작아짐 -> 끄기 -> 말풍선 작아짐)
-        emoteSequence.Append(iconRect.DOScale(0f, 0.2f).SetEase(Ease.InBack));
+        emoteSequence.Append(iconRect.DOScale(0f, 0.2f).SetUpdate(true).SetEase(Ease.InBack));
         emoteSequence.AppendCallback(() => iconRect.gameObject.SetActive(false));
-        emoteSequence.Append(balloonRect.DOScale(0f, 0.2f).SetEase(Ease.InBack));
+        emoteSequence.Append(balloonRect.DOScale(0f, 0.2f).SetUpdate(true).SetEase(Ease.InBack));
 
         // [단계 6] 파괴(Destroy) 대신 꺼두기 (오브젝트 풀링 반환 효과)
         emoteSequence.OnComplete(() => gameObject.SetActive(false));

@@ -765,6 +765,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hoverUIController: {fileID: 89984609331271840}
   worldPromptController: {fileID: 4593699411241161674}
+  blockControlByUiTagSet: {fileID: 0}
 --- !u!114 &89984609331271840
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3688,16 +3689,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80ca680b9055b3b44967c67f42bffb64, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  backpackGridRoot: {fileID: 1313779803686308253}
   weaponGridRoot: {fileID: 1695041096980411487}
   relicGridRoot: {fileID: 7482610541634787566}
-  lootGridRoot: {fileID: 5384518117244112232}
   slotPrefab: {fileID: 5002783160473160607, guid: e2d83cdcfb9485d499433d3acc5bad5e, type: 3}
   closeButton: {fileID: 7042101571890540870}
   dropZone: {fileID: 2076838627227996364}
-  lootRadius: 3
-  lootSlotCount: 8
-  lootRefreshInterval: 0.25
 --- !u!1 &3255032170552487641
 GameObject:
   m_ObjectHideFlags: 0
@@ -4701,8 +4697,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   chestScreen: {fileID: 6420924835394599712}
-  playerControlScriptsToDisable:
-  - {fileID: 0}
 --- !u!1 &4074904847304338062
 GameObject:
   m_ObjectHideFlags: 0
@@ -7134,7 +7128,7 @@ Animator:
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: 36cc70fede5948a49bd1041f9e99fb5e, type: 2}
   m_CullingMode: 0
-  m_UpdateMode: 0
+  m_UpdateMode: 2
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
@@ -9866,7 +9860,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 5349897114230650295}
   m_Direction: 2
   m_Value: 1
-  m_Size: 0.9999984
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:

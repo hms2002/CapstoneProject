@@ -21,6 +21,9 @@ public class RewardDisplayUI : MonoBehaviour, IStackableUI
 
     public bool IsActive => panelRoot != null && panelRoot.activeSelf;
     public bool CanCloseOnEscape => true;
+    public UIOpenGroup OpenGroup => UIOpenGroup.ExclusiveModal;
+    public UIOpenGroup BlockedOpenGroups => UIOpenGroup.ExclusiveModal;
+    public UIGameplayLockProfile GameplayLockProfile => UIGameplayLockProfile.FreezeAndBlockControl;
 
     private void Awake()
     {
@@ -96,7 +99,7 @@ public class RewardDisplayUI : MonoBehaviour, IStackableUI
             contextText.text = summary.TrimEnd();
 
         if (UIManager.Instance != null)
-            UIManager.Instance.PushUI(this);
+            UIManager.Instance.TryPushUI(this);
         else if (panelRoot != null)
             panelRoot.SetActive(true);
     }
