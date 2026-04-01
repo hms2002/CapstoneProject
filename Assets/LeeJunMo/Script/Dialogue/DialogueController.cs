@@ -122,27 +122,16 @@ public class DialogueController : MonoBehaviour
 
         currentStory = new Story(inkJSON.text);
 
-        Action showDialogueUi = () =>
-        {
-            view.ShowUI(participantRegistry.CurrentNPCData.isBoss, () =>
+        DialoguePresentationSequencer.PlayOpening(
+            view,
+            director,
+            validParticipants,
+            participantRegistry.CurrentNPCData != null && participantRegistry.CurrentNPCData.isBoss,
+            () =>
             {
                 sessionState.EndTransition();
                 ContinueStory();
             });
-        };
-
-        Action playPortraitIntro = () =>
-        {
-            director.PlayIntro(validParticipants, showDialogueUi);
-        };
-
-        if (participantRegistry.CurrentNPCData != null && participantRegistry.CurrentNPCData.isBoss)
-        {
-            view.PlayBossPrelude(playPortraitIntro);
-            return;
-        }
-
-        playPortraitIntro();
     }
 
     public void ResumeDialogue()
@@ -222,16 +211,13 @@ public class DialogueController : MonoBehaviour
         if (currentFeatureController != null)
             currentFeatureController.RequestDialogueExit -= ExitDialogueMode;
 
-        view.HideUI(() =>
+        DialoguePresentationSequencer.PlayClosing(view, director, () =>
         {
-            director.PlayOutro(() =>
-            {
-                view.ResetTheme();
-                currentStory = null;
-                currentFeatureController = null;
-                participantRegistry.Clear();
-                sessionState.EndSession();
-            });
+            view.ResetTheme();
+            currentStory = null;
+            currentFeatureController = null;
+            participantRegistry.Clear();
+            sessionState.EndSession();
         });
     }
 
@@ -384,24 +370,11 @@ public class DialogueController : MonoBehaviour
     private void ResolveRuntimeReferences()
     {
         DialogueTagHandler previousTagHandler = tagHandler;
-
-        director ??= GetComponent<CinematicDirector>();
-        tagHandler ??= GetComponent<DialogueTagHandler>();
-
-        Canvas dialogueCanvas = GlobalUIRoot.GetCanvas(GlobalCanvasLayer.Dialogue);
-        if (dialogueCanvas != null)
-        {
-            DialogueView resolvedView = dialogueCanvas.GetComponentInChildren<DialogueView>(true);
-            if (resolvedView != null)
-                view = resolvedView;
-
-            PortraitController resolvedPortraitController = dialogueCanvas.GetComponentInChildren<PortraitController>(true);
-            if (resolvedPortraitController != null)
-                portraitController = resolvedPortraitController;
-        }
-
-        if (director != null && portraitController != null)
-            director.SetPortraitController(portraitController);
+        DialogueResolvedReferences resolved = DialogueRuntimeReferenceResolver.Resolve(this, view, director, portraitController, tagHandler);
+        view = resolved.View;
+        director = resolved.Director;
+        portraitController = resolved.PortraitController;
+        tagHandler = resolved.TagHandler;
 
         if (previousTagHandler != tagHandler)
             BindTagHandler(tagHandler, previousTagHandler);

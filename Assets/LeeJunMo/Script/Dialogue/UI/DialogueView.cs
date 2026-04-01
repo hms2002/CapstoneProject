@@ -184,7 +184,9 @@ public class DialogueView : MonoBehaviour
         RefreshThemePresentation(false);
 
         Sequence seq = DOTween.Sequence();
-        float effectDuration = 0f;
+        float effectDuration = GetDialogueEffectIntroDuration();
+        if (effectDuration <= 0f)
+            effectDuration = dialogueEffectIntroFallbackDuration;
 
         if (dimPanelGraphic != null)
         {
@@ -195,11 +197,8 @@ public class DialogueView : MonoBehaviour
         seq.AppendCallback(() =>
         {
             SetDialogueEffectVisible(true);
-            effectDuration = PlayDialogueEffectIntroAndGetDuration();
+            PlayDialogueEffectIntro();
         });
-
-        if (effectDuration <= 0f)
-            effectDuration = dialogueEffectIntroFallbackDuration;
 
         seq.AppendInterval(effectDuration);
         seq.OnComplete(() => onComplete?.Invoke());
@@ -559,10 +558,14 @@ public class DialogueView : MonoBehaviour
         if (defaultEffectController == null)
             defaultEffectController = dialogueEffectAnimator.runtimeAnimatorController;
 
-        dialogueEffectAnimator.runtimeAnimatorController = overrideController != null
+        RuntimeAnimatorController targetController = overrideController != null
             ? overrideController
             : defaultEffectController;
 
+        if (dialogueEffectAnimator.runtimeAnimatorController == targetController)
+            return;
+
+        dialogueEffectAnimator.runtimeAnimatorController = targetController;
         dialogueEffectAnimator.Rebind();
         dialogueEffectAnimator.Update(0f);
     }
@@ -570,6 +573,9 @@ public class DialogueView : MonoBehaviour
     private void ResetDialogueEffectOverride()
     {
         if (dialogueEffectAnimator == null || defaultEffectController == null)
+            return;
+
+        if (dialogueEffectAnimator.runtimeAnimatorController == defaultEffectController)
             return;
 
         dialogueEffectAnimator.runtimeAnimatorController = defaultEffectController;
@@ -628,15 +634,27 @@ public class DialogueView : MonoBehaviour
         dialogueEffectAnimator.Update(0f);
     }
 
-    private float PlayDialogueEffectIntroAndGetDuration()
+    private float GetDialogueEffectIntroDuration()
     {
-        SetDialogueEffectVisible(true);
-        PlayDialogueEffectIntro();
-
         if (dialogueEffectAnimator == null)
             return 0f;
 
-        return dialogueEffectAnimator.GetCurrentAnimatorStateInfo(0).length;
+        GameObject effectObject = dialogueEffectAnimator.gameObject;
+        bool wasActive = effectObject != null && effectObject.activeSelf;
+        if (effectObject != null && !wasActive)
+            effectObject.SetActive(true);
+
+        PlayDialogueEffectIntro();
+        float duration = dialogueEffectAnimator.GetCurrentAnimatorStateInfo(0).length;
+
+        if (!wasActive)
+        {
+            PlayDialogueEffectIdle();
+            if (effectObject != null)
+                effectObject.SetActive(false);
+        }
+
+        return duration;
     }
 
     private void SetDimPanelVisible(bool visible, bool immediate)
