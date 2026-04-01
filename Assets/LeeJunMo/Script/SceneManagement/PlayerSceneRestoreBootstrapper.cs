@@ -178,6 +178,7 @@ public sealed class PlayerSceneRestoreBootstrapper : MonoBehaviour
             relicRuntimeRestorer = playerRelicRestorer;
 
         var weaponInventory = player.GetComponent<WeaponInventory2D>();
+        var consumableInventory = PlayerConsumableInventory.GetOrAdd(player.transform);
         var relicInventory = player.GetComponent<RelicInventory>();
         var attributeSet = player.GetComponent<AttributeSet>();
         var effectRunner = player.GetComponent<GameplayEffectRunner>();
@@ -186,6 +187,7 @@ public sealed class PlayerSceneRestoreBootstrapper : MonoBehaviour
 
         PlayerRuntimeRestoreCoordinator.RestoreAll(
             pendingState,
+            consumableInventory,
             weaponInventory,
             relicInventory,
             attributeSet,

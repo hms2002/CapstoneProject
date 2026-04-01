@@ -14,6 +14,7 @@ public class ItemDetailPanel : MonoBehaviour, IHoverView
     [Header("Views")]
     [SerializeField] private WeaponDetailView weaponView;
     [SerializeField] private RelicDetailView relicView;
+    [SerializeField] private ConsumableDetailView consumableView;
 
     [Header("Glossary (optional)")]
     [SerializeField] private GlossaryDatabase glossary;
@@ -111,12 +112,24 @@ public class ItemDetailPanel : MonoBehaviour, IHoverView
             weaponView.Show(definition, ctx, _services);
             if (relicView != null)
                 relicView.Hide();
+            if (consumableView != null)
+                consumableView.Hide();
         }
         else if (relicView != null && relicView.CanShow(definition))
         {
             relicView.Show(definition, ctx, _services);
             if (weaponView != null)
                 weaponView.Hide();
+            if (consumableView != null)
+                consumableView.Hide();
+        }
+        else if (consumableView != null && consumableView.CanShow(definition))
+        {
+            consumableView.Show(definition, ctx, _services);
+            if (weaponView != null)
+                weaponView.Hide();
+            if (relicView != null)
+                relicView.Hide();
         }
         else
         {
@@ -125,6 +138,9 @@ public class ItemDetailPanel : MonoBehaviour, IHoverView
 
             if (relicView != null)
                 relicView.Hide();
+
+            if (consumableView != null)
+                consumableView.Hide();
         }
 
         Canvas.ForceUpdateCanvases();
@@ -137,6 +153,9 @@ public class ItemDetailPanel : MonoBehaviour, IHoverView
 
         if (relicView != null)
             relicView.Hide();
+
+        if (consumableView != null)
+            consumableView.Hide();
 
         if (glossaryPopup != null)
             glossaryPopup.Hide();

@@ -171,6 +171,23 @@ public sealed class PlayerRuntimeResolverBridge : MonoBehaviour, IPlayerRuntimeR
     }
 
     /// <summary>
+    /// 책임 : 저장된 consumableId를 실제 ConsumableDefinition으로 해석한다.
+    /// </summary>
+    public ConsumableDefinition ResolveConsumable(string consumableId)
+    {
+        if (string.IsNullOrWhiteSpace(consumableId))
+            return null;
+
+        if (ItemManager.Instance == null)
+        {
+            Debug.LogWarning("[PlayerRuntimeResolverBridge] ItemManager.Instance가 없어 Consumable 조회를 할 수 없습니다.", this);
+            return null;
+        }
+
+        return ItemManager.Instance.GetConsumableData(consumableId);
+    }
+
+    /// <summary>
     /// 책임 : 저장된 weaponId를 실제 WeaponDefinition으로 해석한다.
     /// </summary>
     public WeaponDefinition ResolveWeapon(string weaponId)

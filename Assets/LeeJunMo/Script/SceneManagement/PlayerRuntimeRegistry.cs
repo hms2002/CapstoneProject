@@ -23,6 +23,9 @@ public static class PlayerRuntimeRegistry
             PlayerUnregistered?.Invoke(previous);
         }
 
+        PlayerConsumableInventory.GetOrAdd(player.transform);
+        PlayerConsumableInput2D.GetOrAdd(player.transform);
+
         CurrentPlayer = player;
         PlayerRegistered?.Invoke(player);
     }

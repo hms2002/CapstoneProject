@@ -10,6 +10,7 @@ using UnityGAS;
 public sealed class PlayerRuntimeCaptureBridge : MonoBehaviour
 {
     [Header("Core Runtime Refs")]
+    [SerializeField] private PlayerConsumableInventory consumableInventory;
     [SerializeField] private WeaponInventory2D weaponInventory;
     [SerializeField] private RelicInventory relicInventory;
     [SerializeField] private AttributeSet attributeSet;
@@ -45,6 +46,7 @@ public sealed class PlayerRuntimeCaptureBridge : MonoBehaviour
     /// </summary>
     private void CacheComponents()
     {
+        if (consumableInventory == null) consumableInventory = GetComponent<PlayerConsumableInventory>();
         if (weaponInventory == null) weaponInventory = GetComponent<WeaponInventory2D>();
         if (relicInventory == null) relicInventory = GetComponent<RelicInventory>();
         if (attributeSet == null) attributeSet = GetComponent<AttributeSet>();
@@ -90,9 +92,11 @@ public sealed class PlayerRuntimeCaptureBridge : MonoBehaviour
     /// </summary>
     public PlayerRuntimeState CaptureRuntimeState()
     {
+        CacheComponents();
         WarnIfMissingCoreComponents();
 
         return PlayerRuntimeCaptureCoordinator.CaptureAll(
+            consumableInventory,
             weaponInventory,
             relicInventory,
             attributeSet,
@@ -109,6 +113,9 @@ public sealed class PlayerRuntimeCaptureBridge : MonoBehaviour
     /// </summary>
     private void WarnIfMissingCoreComponents()
     {
+        if (consumableInventory == null)
+            Debug.LogWarning("[PlayerRuntimeCaptureBridge] PlayerConsumableInventory가 없어 1회용 아이템 상태를 저장하지 못합니다.", this);
+
         if (weaponInventory == null)
             Debug.LogWarning("[PlayerRuntimeCaptureBridge] WeaponInventory2D가 없어 무기 배치/런타임 상태를 저장하지 못합니다.", this);
 

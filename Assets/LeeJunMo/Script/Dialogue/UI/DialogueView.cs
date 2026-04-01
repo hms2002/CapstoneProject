@@ -641,27 +641,37 @@ public class DialogueView : MonoBehaviour
         dialogueEffectAnimator.Update(0f);
     }
 
+    /// <summary>
+    /// 책임 :
+    /// - DialogueEffect 인트로 클립 길이를 상태 변경 없이 조회해 프리루드의 대기 시간을 계산한다.
+    /// </summary>
     private float GetDialogueEffectIntroDuration()
     {
         if (dialogueEffectAnimator == null)
             return 0f;
 
-        GameObject effectObject = dialogueEffectAnimator.gameObject;
-        bool wasActive = effectObject != null && effectObject.activeSelf;
-        if (effectObject != null && !wasActive)
-            effectObject.SetActive(true);
+        RuntimeAnimatorController controller = dialogueEffectAnimator.runtimeAnimatorController;
+        if (controller == null || controller.animationClips == null)
+            return 0f;
 
-        PlayDialogueEffectIntro();
-        float duration = dialogueEffectAnimator.GetCurrentAnimatorStateInfo(0).length;
-
-        if (!wasActive)
+        AnimationClip bestMatch = null;
+        for (int i = 0; i < controller.animationClips.Length; i++)
         {
-            PlayDialogueEffectIdle();
-            if (effectObject != null)
-                effectObject.SetActive(false);
+            AnimationClip clip = controller.animationClips[i];
+            if (clip == null)
+                continue;
+
+            if (string.Equals(clip.name, dialogueEffectIntroState, StringComparison.Ordinal))
+                return clip.length;
+
+            if (bestMatch == null &&
+                clip.name.IndexOf(dialogueEffectIntroState, StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                bestMatch = clip;
+            }
         }
 
-        return duration;
+        return bestMatch != null ? bestMatch.length : 0f;
     }
 
     private void SetDimPanelVisible(bool visible, bool immediate)

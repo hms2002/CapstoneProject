@@ -89,5 +89,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   heartImage: {fileID: 1536535346762320212}
-  filledHeartSprite: {fileID: 21300000, guid: 742335e24e5afea4e9516fd89252b06c, type: 3}
+  filledHeartSprite: {fileID: 3344906249165072059, guid: e75f469ea29530246a4a0543396316af, type: 3}
   emptyHeartSprite: {fileID: 21300000, guid: 7b87ba15177304d558d87c194f9ec787, type: 3}

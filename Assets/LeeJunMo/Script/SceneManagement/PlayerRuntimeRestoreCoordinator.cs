@@ -16,6 +16,7 @@ public static class PlayerRuntimeRestoreCoordinator
     /// </summary>
     public static void RestoreAll(
         PlayerRuntimeState state,
+        PlayerConsumableInventory consumableInventory,
         WeaponInventory2D weaponInventory,
         RelicInventory relicInventory,
         AttributeSet attributeSet,
@@ -37,6 +38,10 @@ public static class PlayerRuntimeRestoreCoordinator
         }
 
         // 1) 장비 껍데기 복원
+        consumableInventory?.RestoreShellState(
+            state.consumableInventory,
+            resolver.ResolveConsumable);
+
         weaponInventory?.RestoreShellState(
             state.weaponInventory,
             resolver.ResolveWeapon,

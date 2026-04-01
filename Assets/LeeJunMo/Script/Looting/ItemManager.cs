@@ -128,6 +128,11 @@ public class ItemManager : MonoBehaviour
         return database != null ? database.GetRelicByID(id) : null;
     }
 
+    public ConsumableDefinition GetConsumableData(string id)
+    {
+        return database != null ? database.GetConsumableByID(id) : null;
+    }
+
     private void TryInitializeFromGameData()
     {
         if (isInitialized || GameDataManager.Instance == null)

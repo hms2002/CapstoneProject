@@ -7,6 +7,7 @@ using UnityGAS;
 /// </summary>
 public interface IPlayerRuntimeResolver
 {
+    ConsumableDefinition ResolveConsumable(string consumableId);
     WeaponDefinition ResolveWeapon(string weaponId);
     RelicDefinition ResolveRelic(string relicId);
     AttributeDefinition ResolveAttribute(string attributeId);
