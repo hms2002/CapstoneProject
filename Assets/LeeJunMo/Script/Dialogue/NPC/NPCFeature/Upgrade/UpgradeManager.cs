@@ -77,7 +77,7 @@ public class UpgradeManager : MonoBehaviour
         appliedPlayer = player;
     }
 
-    public void CheckAndUnlockNodes()
+    public void CheckAndUnlockNodes(bool requestSaveOnChange = true)
     {
         if (progressService == null || GameDataManager.Instance == null)
             return;
@@ -86,7 +86,9 @@ public class UpgradeManager : MonoBehaviour
         if (!isChanged)
             return;
 
-        GameDataManager.Instance.SaveData();
+        if (requestSaveOnChange)
+            GameDataSaveCoordinator.RequestImmediateSave(this);
+
         OnDataChanged?.Invoke();
     }
 
@@ -102,11 +104,20 @@ public class UpgradeManager : MonoBehaviour
         if (progressService.GetNodeStatus(id) != LockType.UnLocked)
             return;
 
-        if (CurrencyManager.Instance == null || !CurrencyManager.Instance.SpendMagicStone(node.price))
+        if (CurrencyManager.Instance == null)
+            return;
+
+        if (CurrencyManager.Instance.GetMagicStone() < node.price)
             return;
 
         if (!progressService.TryPurchase(id, out node))
             return;
+
+        if (!CurrencyManager.Instance.SpendMagicStone(node.price))
+        {
+            progressService.RevertPurchase(id);
+            return;
+        }
 
         PlayerInteractor2D player = ResolveCurrentPlayer();
         effectApplier.ApplyUpgrade(node, player);
@@ -114,8 +125,8 @@ public class UpgradeManager : MonoBehaviour
         if (RewardDisplayService.Instance != null)
             RewardDisplayService.Instance.ShowReward(node.effects, null);
 
-        CheckAndUnlockNodes();
-        GameDataManager.Instance.SaveData();
+        CheckAndUnlockNodes(false);
+        GameDataSaveCoordinator.RequestImmediateSave(this);
         OnDataChanged?.Invoke();
     }
 

@@ -146,6 +146,7 @@ public class RunModifierService : MonoBehaviour
         EnsureLoadedFromSave();
         graveModifiers.Add(delta);
         SyncToSave();
+        GameDataSaveCoordinator.RequestImmediateSave(this);
     }
 
     public void AddChestModifier(ChestRunModifierDelta delta)
@@ -153,6 +154,7 @@ public class RunModifierService : MonoBehaviour
         EnsureLoadedFromSave();
         chestModifiers.Add(delta);
         SyncToSave();
+        GameDataSaveCoordinator.RequestImmediateSave(this);
     }
 
     private void EnsureLoadedFromSave()
