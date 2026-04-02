@@ -13,6 +13,7 @@ public class UIManager : MonoBehaviour
 
     [Header("Gameplay Lock")]
     [SerializeField] private GameplayTagSet blockControlByUiTagSet;
+    [SerializeField] private UIGameplayLockProfile dialogueGameplayLockProfile = UIGameplayLockProfile.BlockControlOnly;
 
     private readonly PopupStackState popupStack = new PopupStackState();
     private readonly WorldPromptCoordinator worldPromptCoordinator = new WorldPromptCoordinator();
@@ -318,9 +319,9 @@ public class UIManager : MonoBehaviour
 
         if (DialogueService.Instance != null &&
             DialogueService.Instance.IsPlaying &&
-            UIGameplayLockProfile.FreezeAndBlockControl > highestProfile)
+            dialogueGameplayLockProfile > highestProfile)
         {
-            highestProfile = UIGameplayLockProfile.FreezeAndBlockControl;
+            highestProfile = dialogueGameplayLockProfile;
         }
 
         return highestProfile;

@@ -647,31 +647,49 @@ public class DialogueView : MonoBehaviour
     /// </summary>
     private float GetDialogueEffectIntroDuration()
     {
-        if (dialogueEffectAnimator == null)
+        if (dialogueEffectAnimator == null || string.IsNullOrWhiteSpace(dialogueEffectIntroState))
             return 0f;
 
-        RuntimeAnimatorController controller = dialogueEffectAnimator.runtimeAnimatorController;
-        if (controller == null || controller.animationClips == null)
-            return 0f;
+        AnimationClip introClip = ResolveDialogueEffectClip(dialogueEffectIntroState);
+        return introClip != null ? introClip.length : 0f;
+    }
 
-        AnimationClip bestMatch = null;
-        for (int i = 0; i < controller.animationClips.Length; i++)
+    private AnimationClip ResolveDialogueEffectClip(string stateOrClipName)
+    {
+        RuntimeAnimatorController controller = dialogueEffectAnimator != null
+            ? dialogueEffectAnimator.runtimeAnimatorController
+            : null;
+
+        if (controller == null)
+            return null;
+
+        if (controller is AnimatorOverrideController overrideController)
         {
-            AnimationClip clip = controller.animationClips[i];
-            if (clip == null)
-                continue;
+            List<KeyValuePair<AnimationClip, AnimationClip>> overrides = new List<KeyValuePair<AnimationClip, AnimationClip>>();
+            overrideController.GetOverrides(overrides);
 
-            if (string.Equals(clip.name, dialogueEffectIntroState, StringComparison.Ordinal))
-                return clip.length;
-
-            if (bestMatch == null &&
-                clip.name.IndexOf(dialogueEffectIntroState, StringComparison.OrdinalIgnoreCase) >= 0)
+            foreach (KeyValuePair<AnimationClip, AnimationClip> pair in overrides)
             {
-                bestMatch = clip;
+                if (!MatchesDialogueEffectClipHint(pair.Key, stateOrClipName))
+                    continue;
+
+                return pair.Value != null ? pair.Value : pair.Key;
             }
+
+            controller = overrideController.runtimeAnimatorController;
         }
 
-        return bestMatch != null ? bestMatch.length : 0f;
+        return controller.animationClips
+            .FirstOrDefault(clip => MatchesDialogueEffectClipHint(clip, stateOrClipName));
+    }
+
+    private static bool MatchesDialogueEffectClipHint(AnimationClip clip, string stateOrClipName)
+    {
+        if (clip == null || string.IsNullOrWhiteSpace(stateOrClipName))
+            return false;
+
+        return string.Equals(clip.name, stateOrClipName, StringComparison.OrdinalIgnoreCase)
+               || clip.name.IndexOf(stateOrClipName, StringComparison.OrdinalIgnoreCase) >= 0;
     }
 
     private void SetDimPanelVisible(bool visible, bool immediate)

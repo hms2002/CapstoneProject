@@ -67,6 +67,7 @@ public class UpgradeSaveData
 {
     public List<int> purchasedIDs = new List<int>();
     public List<int> unlockedIDs = new List<int>();
+    // Legacy cache. Run modifiers are rebuilt from purchasedIDs at runtime.
     public RunModifierSaveData runModifierData = new RunModifierSaveData();
 
     public UpgradeSaveData()

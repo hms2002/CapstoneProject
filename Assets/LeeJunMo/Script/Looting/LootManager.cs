@@ -124,6 +124,14 @@ public class LootManager : MonoBehaviour
                 drops.Add(relic);
         }
 
+        int consumableCount = rollService.PickCountInProfile(table.ChestConsumableCountProfile);
+        for (int i = 0; i < consumableCount; i++)
+        {
+            ConsumableDefinition consumable = poolService.GetRandomConsumable();
+            if (consumable != null)
+                drops.Add(consumable);
+        }
+
         return drops;
     }
 

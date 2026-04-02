@@ -15,7 +15,7 @@ MonoBehaviour:
   id: 1001
   npcName: "1\uBC88 Npc"
   isBoss: 1
-  primaryInk: {fileID: 4900000, guid: aef34e203f982094b814e11d115a65ed, type: 3}
+  primaryInk: {fileID: 4900000, guid: a31592d8dbff15843b1f9a68265681de, type: 3}
   dialogueTheme: {fileID: 11400000, guid: 3ef1664fdf0dac148a47091038acdfd9, type: 2}
   affectionRewards:
   - targetLevel: 2

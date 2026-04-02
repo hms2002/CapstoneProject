@@ -73,9 +73,22 @@ public class AffectionManager : MonoBehaviour
             return false;
         }
 
-        AffectionChangeResult change = progressStore.AddAffection(GameDataManager.Instance?.Data, data.id, amount);
+        bool isRunActive = IsRunActive();
+        AffectionChangeResult change = progressStore.AddAffection(
+            GameDataManager.Instance?.Data,
+            data.id,
+            amount,
+            syncToGameData: !isRunActive);
 
         Debug.Log($"<color=cyan>[AffectionManager] {data.npcName}(ID:{data.id}) affection {change.PreviousAmount} -> {change.NewAmount} (delta {change.Delta})</color>");
+
+        if (change.NewAmount != change.PreviousAmount)
+        {
+            if (isRunActive)
+                GamePlayDataManager.Instance?.AddPendingAffectionDelta(data.id, change.Delta);
+            else
+                GameDataSaveCoordinator.RequestImmediateSave(this);
+        }
 
         bool hasReward = rewardProcessor.HasRewardsInRange(data, change.PreviousAmount, change.NewAmount);
         if (hasReward)
@@ -89,7 +102,16 @@ public class AffectionManager : MonoBehaviour
 
     public void SetAffection(int npcId, int value)
     {
-        progressStore.SetAffection(GameDataManager.Instance?.Data, npcId, value);
+        int previousValue = progressStore.GetAffection(npcId);
+        bool isRunActive = IsRunActive();
+        progressStore.SetAffection(GameDataManager.Instance?.Data, npcId, value, syncToGameData: !isRunActive);
+        if (previousValue != value)
+        {
+            if (isRunActive)
+                GamePlayDataManager.Instance?.AddPendingAffectionDelta(npcId, value - previousValue);
+            else
+                GameDataSaveCoordinator.RequestImmediateSave(this);
+        }
     }
 
     private void LoadAffectionData()
@@ -133,5 +155,12 @@ public class AffectionManager : MonoBehaviour
     private void OnApplicationQuit()
     {
         s_isQuitting = true;
+    }
+
+    private static bool IsRunActive()
+    {
+        return GamePlayDataManager.Instance != null
+            && GamePlayDataManager.Instance.Data != null
+            && GamePlayDataManager.Instance.Data.isRunActive;
     }
 }

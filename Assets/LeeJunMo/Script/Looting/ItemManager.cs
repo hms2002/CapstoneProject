@@ -133,6 +133,11 @@ public class ItemManager : MonoBehaviour
         return database != null ? database.GetConsumableByID(id) : null;
     }
 
+    public List<ConsumableDefinition> GetAllConsumables()
+    {
+        return database != null ? database.GetAllConsumables() : new List<ConsumableDefinition>();
+    }
+
     private void TryInitializeFromGameData()
     {
         if (isInitialized || GameDataManager.Instance == null)

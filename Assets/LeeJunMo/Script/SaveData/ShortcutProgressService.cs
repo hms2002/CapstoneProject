@@ -44,13 +44,28 @@ public sealed class ShortcutProgressService : MonoBehaviour
         if (!TryGetMapData(out MapSaveData mapData))
             return;
 
+        if (IsRunActive())
+        {
+            if (IsShortcutUnlocked(mapID, doorID))
+                return;
+
+            GamePlayDataManager.Instance.AddPendingShortcutUnlock(mapID, doorID);
+            return;
+        }
+
         StageProgress stageData = mapData.GetStageData(mapID);
         if (!stageData.unlockedShortcuts.Contains(doorID))
+        {
             stageData.unlockedShortcuts.Add(doorID);
+            GameDataSaveCoordinator.RequestImmediateSave(this);
+        }
     }
 
     public bool IsShortcutUnlocked(string mapID, string doorID)
     {
+        if (IsRunActive() && GamePlayDataManager.Instance.HasPendingShortcutUnlock(mapID, doorID))
+            return true;
+
         if (!TryGetMapData(out MapSaveData mapData))
             return false;
 
@@ -70,5 +85,12 @@ public sealed class ShortcutProgressService : MonoBehaviour
 
         mapData = GameDataManager.Instance.Data.mapData;
         return true;
+    }
+
+    private static bool IsRunActive()
+    {
+        return GamePlayDataManager.Instance != null
+            && GamePlayDataManager.Instance.Data != null
+            && GamePlayDataManager.Instance.Data.isRunActive;
     }
 }
