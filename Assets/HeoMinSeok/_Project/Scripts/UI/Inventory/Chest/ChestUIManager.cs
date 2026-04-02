@@ -27,15 +27,16 @@ public class ChestUIManager : MonoBehaviour
         if (chestScreen != null) chestScreen.gameObject.SetActive(false);
     }
 
-    public void OpenChest(TreasureChest chest)
+    public bool OpenChest(TreasureChest chest)
     {
-        if (chest == null) return;
+        if (chest == null)
+            return false;
 
         ResolveChestScreenReference();
         if (chestScreen == null)
         {
             Debug.LogError("[ChestUIManager] ChestScreen reference is missing.");
-            return;
+            return false;
         }
 
         openedChest = chest;
@@ -50,6 +51,8 @@ public class ChestUIManager : MonoBehaviour
 
         if (!opened && PlayerInteractor2D.Instance != null)
             PlayerInteractor2D.Instance.SetInteractState(InteractState.Idle);
+
+        return opened;
     }
 
     public void HandleChestClosed()

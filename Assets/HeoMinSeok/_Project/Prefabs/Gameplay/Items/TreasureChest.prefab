@@ -25,7 +25,7 @@ Transform:
   m_GameObject: {fileID: 401667468039810420}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.08, z: 0}
+  m_LocalPosition: {x: 0, y: 1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -41,6 +41,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4773129844813817167}
   - component: {fileID: 860439334278707932}
+  - component: {fileID: 7305723242744879239}
   m_Layer: 0
   m_Name: Visual
   m_TagString: Untagged
@@ -57,7 +58,7 @@ Transform:
   m_GameObject: {fileID: 5920694504871736436}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.5, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -107,7 +108,7 @@ SpriteRenderer:
   m_SortingLayerID: -1039746825
   m_SortingLayer: 2
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 29c9cded5e558164aaf8c9bf08aa1510, type: 3}
+  m_Sprite: {fileID: 725556707599801474, guid: 38fff8b5f0a464f4fa7dd878114bb1b2, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -118,6 +119,28 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!95 &7305723242744879239
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5920694504871736436}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 764f4ff81eb2ac34faa4a420f70de20c, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &7530156284439312542
 GameObject:
   m_ObjectHideFlags: 0
@@ -167,6 +190,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   capacity: 16
+  chestAnimator: {fileID: 7305723242744879239}
+  openStateName: Open
+  openedStateName: Opened
+  openPreludeFallbackDuration: 0.5
+  freezeTimeOnFirstOpen: 1
+  openEffects: []
+  chestSpriteRenderer: {fileID: 0}
+  openedSprite: {fileID: 21300040, guid: 29c9cded5e558164aaf8c9bf08aa1510, type: 3}
 --- !u!114 &2992899921198328162
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -182,6 +213,7 @@ MonoBehaviour:
   promptAnchor: {fileID: 3754634418042159138}
   openPromptText: "\uC0C1\uC790 \uC5F4\uAE30"
   lockedPromptFormat: "\uC7A0\uAE40 ({0})"
+  spriteRenderer: {fileID: 0}
 --- !u!58 &4619545861444706312
 CircleCollider2D:
   m_ObjectHideFlags: 0

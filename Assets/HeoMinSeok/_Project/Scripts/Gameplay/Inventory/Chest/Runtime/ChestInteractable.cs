@@ -79,7 +79,7 @@ public class ChestInteractable : InteractableBase
         if (!CanInteract(player))
             return;
 
-        chest.Open();
-        player.SetInteractState(InteractState.Shopping);
+        if (chest.Open())
+            player.SetInteractState(InteractState.Shopping);
     }
 }

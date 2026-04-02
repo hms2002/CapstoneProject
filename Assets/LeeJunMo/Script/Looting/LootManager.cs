@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class LootManager : MonoBehaviour
 {
+    private const string DefaultFieldItemPrefabResourcePath = "PF_FieldHealPickup2D";
+
     public static LootManager Instance { get; private set; }
 
     [SerializeField] private bool persistAcrossScenes = true;
@@ -10,6 +12,7 @@ public class LootManager : MonoBehaviour
 
     [Header("Settings")]
     [SerializeField] private GameObject worldItemPrefab;
+    [SerializeField] private GameObject fieldItemPrefab;
 
     [Header("References")]
     [SerializeField] private List<StageLootTable> stageTables = new List<StageLootTable>();
@@ -167,7 +170,12 @@ public class LootManager : MonoBehaviour
             }
 
             case MonsterLootType.Consumable:
+                return;
+
             case MonsterLootType.FieldItem:
+                spawnService.SpawnFieldHealPickup(position);
+                return;
+
             default:
                 return;
         }
@@ -247,7 +255,15 @@ public class LootManager : MonoBehaviour
         tableResolver = new LootTableResolver(stageTables, graveLootTable);
         poolService = new LootPoolService();
         rollService = new LootRollService();
-        spawnService = new LootSpawnService(worldItemPrefab);
+        spawnService = new LootSpawnService(worldItemPrefab, ResolveFieldItemPrefab());
+    }
+
+    private GameObject ResolveFieldItemPrefab()
+    {
+        if (fieldItemPrefab != null)
+            return fieldItemPrefab;
+
+        return Resources.Load<GameObject>(DefaultFieldItemPrefabResourcePath);
     }
 
     private StageLootTable GetCurrentTable()
