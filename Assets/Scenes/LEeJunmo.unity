@@ -2636,8 +2636,6 @@ MonoBehaviour:
   model: {fileID: 197890059}
   animator: {fileID: 0}
   obstacleCollider: {fileID: 197890057}
-  openZone: {fileID: 0}
-  blockZone: {fileID: 0}
 --- !u!61 &197890057
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -9573,8 +9571,6 @@ MonoBehaviour:
   model: {fileID: 1563111862}
   animator: {fileID: 0}
   obstacleCollider: {fileID: 1563111860}
-  openZone: {fileID: 662736569}
-  blockZone: {fileID: 723065181}
 --- !u!61 &1563111860
 BoxCollider2D:
   m_ObjectHideFlags: 0
