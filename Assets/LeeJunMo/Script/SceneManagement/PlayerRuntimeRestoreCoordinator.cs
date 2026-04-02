@@ -51,7 +51,7 @@ public static class PlayerRuntimeRestoreCoordinator
             state.relicInventory,
             resolver.ResolveRelic);
 
-        // 2) GAS 런타임 복원
+        // 2) GAS 런타임 기본값 복원
         RestoreGasRuntime(
             state,
             attributeSet,
@@ -75,6 +75,13 @@ public static class PlayerRuntimeRestoreCoordinator
             resolver,
             weaponRuntimeRestorer,
             relicRuntimeRestorer);
+
+        // 5) 장착형 modifier/effect가 모두 다시 붙은 뒤 상태형 current 값 복원
+        RestoreAttributeCurrentValues(
+            state.attributes,
+            attributeSet,
+            resolver,
+            restoreSource);
     }
 
     /// <summary>
@@ -92,7 +99,7 @@ public static class PlayerRuntimeRestoreCoordinator
     {
         abilitySystem?.ResetTransientRuntimeState();
 
-        RestoreAttributes(state.attributes, attributeSet, resolver, restoreSource);
+        RestoreAttributeBaseValues(state.attributes, attributeSet, resolver, restoreSource);
         RestoreExplicitTags(state.explicitTags, tagSystem, resolver);
 
         var target = attributeSet != null
@@ -110,7 +117,7 @@ public static class PlayerRuntimeRestoreCoordinator
     /// <summary>
     /// 책임 : 저장된 Attribute 현재값을 현재 플레이어 AttributeSet에 복원한다.
     /// </summary>
-    private static void RestoreAttributes(
+    private static void RestoreAttributeBaseValues(
         List<AttributeRuntimeSnapshot> snapshots,
         AttributeSet attributeSet,
         IPlayerRuntimeResolver resolver,
@@ -126,6 +133,35 @@ public static class PlayerRuntimeRestoreCoordinator
 
             var def = resolver.ResolveAttribute(entry.attributeId);
             if (def == null)
+                continue;
+
+            attributeSet.TrySetBaseValue(def, entry.baseValue, restoreSource);
+        }
+    }
+
+    /// <summary>
+    /// 책임 : 장착형 modifier/effect가 복원된 뒤 상태형 Attribute의 current 값만 다시 복원한다.
+    /// HP처럼 실제 상태값은 살리고, 장비에서 계산되는 파생 스탯은 새 장비 source가 다시 계산하게 둔다.
+    /// </summary>
+    private static void RestoreAttributeCurrentValues(
+        List<AttributeRuntimeSnapshot> snapshots,
+        AttributeSet attributeSet,
+        IPlayerRuntimeResolver resolver,
+        UnityEngine.Object restoreSource)
+    {
+        if (attributeSet == null || snapshots == null)
+            return;
+
+        foreach (var entry in snapshots)
+        {
+            if (entry == null || string.IsNullOrEmpty(entry.attributeId))
+                continue;
+
+            var def = resolver.ResolveAttribute(entry.attributeId);
+            if (def == null)
+                continue;
+
+            if (!attributeSet.ShouldRestoreCurrentValue(def))
                 continue;
 
             attributeSet.TrySetCurrentValue(def, entry.currentValue, restoreSource);

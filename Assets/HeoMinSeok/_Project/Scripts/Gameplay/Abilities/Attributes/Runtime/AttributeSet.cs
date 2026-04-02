@@ -334,6 +334,33 @@ namespace UnityGAS
         }
 
         /// <summary>
+        /// 책임 : 씬 복원 시 current 값을 직접 되살려야 하는 상태형 Attribute인지 판정한다.
+        /// 장착형 modifier로 계산되는 파생 스탯은 제외하고, HP처럼 실제 상태값만 복원 대상으로 삼는다.
+        /// </summary>
+        public bool ShouldRestoreCurrentValue(AttributeDefinition definition)
+        {
+            EnsureInitialized();
+
+            if (definition == null)
+                return false;
+
+            if (definition.IsBaseOnly())
+                return true;
+
+            if (maxLinks == null || maxLinks.Count == 0)
+                return false;
+
+            for (int i = 0; i < maxLinks.Count; i++)
+            {
+                var link = maxLinks[i];
+                if (link.value == definition)
+                    return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
         /// 책임 : 현재 modifier/clamp 규칙을 유지한 채 목표 current 값을 복원한다.
         /// 씬 이동 후 현재 HP/MP 같은 상태값을 안전하게 되살리는 공식 창구다.
         /// </summary>
