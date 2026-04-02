@@ -153,17 +153,23 @@ public class ItemSlotUI : MonoBehaviour,
         if (def == null) return;
 
         var chest = ItemContainerGroupRegistry.Chest;
+        var c = ItemContainerGroupRegistry.ConsumableEquip;
         var w = ItemContainerGroupRegistry.WeaponEquip;
         var r = ItemContainerGroupRegistry.RelicEquip;
 
-        if (w == null || r == null) return;
+        if (c == null || w == null || r == null) return;
 
         IItemContainer target = null;
         int targetIndex = -1;
 
         if (container == chest && chest != null)
         {
-            if (def.Kind == InventoryItemKind.Weapon)
+            if (def.Kind == InventoryItemKind.Consumable)
+            {
+                target = c;
+                targetIndex = FindFirstEmptyIndex(target, so);
+            }
+            else if (def.Kind == InventoryItemKind.Weapon)
             {
                 target = w;
                 targetIndex = FindFirstEmptyIndex(target, so);
@@ -181,7 +187,12 @@ public class ItemSlotUI : MonoBehaviour,
         }
         else if (container is WorldLootContainerAdapter)
         {
-            if (def.Kind == InventoryItemKind.Weapon)
+            if (def.Kind == InventoryItemKind.Consumable)
+            {
+                target = c;
+                targetIndex = FindFirstEmptyIndex(target, so);
+            }
+            else if (def.Kind == InventoryItemKind.Weapon)
             {
                 target = w;
                 targetIndex = FindFirstEmptyIndex(target, so);
@@ -191,6 +202,21 @@ public class ItemSlotUI : MonoBehaviour,
                 target = r;
                 targetIndex = FindRelicQuickMoveIndex(target, relic);
             }
+        }
+        else if (container == c && chest != null)
+        {
+            target = chest;
+            targetIndex = FindFirstEmptyIndex(target, so);
+        }
+        else if (container == w && chest != null)
+        {
+            target = chest;
+            targetIndex = FindFirstEmptyIndex(target, so);
+        }
+        else if (container == r && chest != null)
+        {
+            target = chest;
+            targetIndex = FindFirstEmptyIndex(target, so);
         }
 
         if (target == null) return;

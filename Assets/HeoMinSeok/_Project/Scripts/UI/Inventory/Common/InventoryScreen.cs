@@ -93,7 +93,7 @@ public class InventoryScreen : MonoBehaviour, IStackableUI
         weaponContainer = new PlayerWeaponContainerAdapter(weaponInv);
         relicContainer = new PlayerRelicContainerAdapter(relicInv);
 
-        ItemContainerGroupRegistry.SetGroup(null, weaponContainer, relicContainer);
+        ItemContainerGroupRegistry.SetGroup(null, consumableContainer, weaponContainer, relicContainer);
 
         if (dropZone != null)
             dropZone.SetDropOrigin(this.lootOrigin);
