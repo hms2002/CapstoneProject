@@ -37,7 +37,14 @@ public class CurrencyManager : MonoBehaviour
 
     public int GetMagicStone()
     {
-        return TryGetData(out GameData data) ? data.magicStone : 0;
+        if (!TryGetData(out GameData data))
+            return 0;
+
+        int amount = data.magicStone;
+        if (IsRunActive())
+            amount += GamePlayDataManager.Instance.GetPendingRunMagicStoneDelta();
+
+        return amount;
     }
 
     public void AddMagicStone(int amount)
@@ -45,8 +52,19 @@ public class CurrencyManager : MonoBehaviour
         if (!TryGetData(out GameData data))
             return;
 
+        if (amount == 0)
+            return;
+
+        if (IsRunActive())
+        {
+            GamePlayDataManager.Instance.AddPendingRunMagicStoneDelta(amount);
+            OnMagicStoneChanged?.Invoke(GetMagicStone());
+            return;
+        }
+
         data.magicStone += amount;
         OnMagicStoneChanged?.Invoke(data.magicStone);
+        GameDataSaveCoordinator.RequestImmediateSave(this);
     }
 
     public bool SpendMagicStone(int amount)
@@ -54,14 +72,22 @@ public class CurrencyManager : MonoBehaviour
         if (!TryGetData(out GameData data))
             return false;
 
-        if (data.magicStone < amount)
+        if (GetMagicStone() < amount)
         {
-            Debug.Log("[CurrencyManager] 마정석이 부족합니다.");
+            Debug.Log("[CurrencyManager] Not enough magic stone.");
             return false;
+        }
+
+        if (IsRunActive())
+        {
+            GamePlayDataManager.Instance.AddPendingRunMagicStoneDelta(-amount);
+            OnMagicStoneChanged?.Invoke(GetMagicStone());
+            return true;
         }
 
         data.magicStone -= amount;
         OnMagicStoneChanged?.Invoke(data.magicStone);
+        GameDataSaveCoordinator.RequestImmediateSave(this);
         return true;
     }
 
@@ -69,6 +95,13 @@ public class CurrencyManager : MonoBehaviour
     {
         data = GameDataManager.Instance != null ? GameDataManager.Instance.Data : null;
         return data != null;
+    }
+
+    private static bool IsRunActive()
+    {
+        return GamePlayDataManager.Instance != null
+            && GamePlayDataManager.Instance.Data != null
+            && GamePlayDataManager.Instance.Data.isRunActive;
     }
 
     private void OnDestroy()

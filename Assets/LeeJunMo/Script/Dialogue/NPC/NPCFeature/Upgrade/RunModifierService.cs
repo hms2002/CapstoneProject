@@ -1,3 +1,4 @@
+using System.Linq;
 using UnityEngine;
 
 [System.Serializable]
@@ -85,16 +86,18 @@ public class RunModifierService : MonoBehaviour
     public static RunModifierService Instance { get; private set; }
 
     private static bool s_isQuitting;
+    private const string UpgradeNodeResourcesPath = "Upgrades/Nodes";
 
     private GraveRunModifierDelta graveModifiers;
     private ChestRunModifierDelta chestModifiers;
     private bool hasLoadedFromSave;
+    private UpgradeNodeSO[] cachedUpgradeNodes;
 
     public GraveRunModifierDelta GraveModifiers
     {
         get
         {
-            EnsureLoadedFromSave();
+            EnsureLoadedFromPurchases();
             return graveModifiers;
         }
     }
@@ -103,7 +106,7 @@ public class RunModifierService : MonoBehaviour
     {
         get
         {
-            EnsureLoadedFromSave();
+            EnsureLoadedFromPurchases();
             return chestModifiers;
         }
     }
@@ -132,83 +135,110 @@ public class RunModifierService : MonoBehaviour
 
     private void Start()
     {
-        EnsureLoadedFromSave();
+        EnsureLoadedFromPurchases();
     }
 
     public void ReloadFromSave()
     {
         hasLoadedFromSave = false;
-        EnsureLoadedFromSave();
+        EnsureLoadedFromPurchases();
     }
 
-    public void AddGraveModifier(GraveRunModifierDelta delta)
+    public void RebuildFromPurchasedUpgrades()
     {
-        EnsureLoadedFromSave();
-        graveModifiers.Add(delta);
-        SyncToSave();
-        GameDataSaveCoordinator.RequestImmediateSave(this);
+        hasLoadedFromSave = false;
+        EnsureLoadedFromPurchases();
     }
 
-    public void AddChestModifier(ChestRunModifierDelta delta)
-    {
-        EnsureLoadedFromSave();
-        chestModifiers.Add(delta);
-        SyncToSave();
-        GameDataSaveCoordinator.RequestImmediateSave(this);
-    }
-
-    private void EnsureLoadedFromSave()
+    private void EnsureLoadedFromPurchases()
     {
         if (hasLoadedFromSave)
             return;
 
-        if (GameDataManager.Instance == null || GameDataManager.Instance.Data == null)
-            return;
+        graveModifiers = default;
+        chestModifiers = default;
 
-        RunModifierSaveData saveData = EnsureSaveData();
-        graveModifiers = GraveRunModifierDelta.FromSave(saveData);
-        chestModifiers = ChestRunModifierDelta.FromSave(saveData);
+        UpgradeSaveData saveData = TryGetUpgradeSaveData();
+        if (saveData == null || saveData.purchasedIDs == null || saveData.purchasedIDs.Count == 0)
+        {
+            hasLoadedFromSave = true;
+            return;
+        }
+
+        UpgradeNodeSO[] nodes = LoadUpgradeNodes();
+        if (nodes == null || nodes.Length == 0)
+        {
+            hasLoadedFromSave = true;
+            return;
+        }
+
+        foreach (int purchasedId in saveData.purchasedIDs)
+        {
+            UpgradeNodeSO node = FindNodeById(nodes, purchasedId);
+            if (node == null || node.effects == null)
+                continue;
+
+            foreach (UpgradeEffectSO effect in node.effects)
+            {
+                if (effect is GraveRunModifierUpgradeEffect graveEffect)
+                {
+                    GraveRunModifierDelta delta = graveEffect.Delta;
+                    graveModifiers.Add(delta);
+                    continue;
+                }
+
+                if (effect is ChestRunModifierUpgradeEffect chestEffect)
+                {
+                    ChestRunModifierDelta delta = chestEffect.Delta;
+                    chestModifiers.Add(delta);
+                }
+            }
+        }
+
         hasLoadedFromSave = true;
     }
 
-    private void SyncToSave()
+    private UpgradeNodeSO[] LoadUpgradeNodes()
     {
-        RunModifierSaveData saveData = EnsureSaveData();
-        saveData.extraWeaponGraveCount = 0;
-        saveData.extraRelicGraveCount = 0;
-        saveData.extraWeaponDropCount = 0;
-        saveData.extraRelicDropCount = 0;
-        saveData.weaponGraveMinBonus = graveModifiers.weaponGraveMinBonus;
-        saveData.weaponGraveMaxBonus = graveModifiers.weaponGraveMaxBonus;
-        saveData.relicGraveMinBonus = graveModifiers.relicGraveMinBonus;
-        saveData.relicGraveMaxBonus = graveModifiers.relicGraveMaxBonus;
-        saveData.weaponDropMinBonus = graveModifiers.weaponDropMinBonus;
-        saveData.weaponDropMaxBonus = graveModifiers.weaponDropMaxBonus;
-        saveData.relicDropMinBonus = graveModifiers.relicDropMinBonus;
-        saveData.relicDropMaxBonus = graveModifiers.relicDropMaxBonus;
-        saveData.chestWeaponMinBonus = chestModifiers.chestWeaponMinBonus;
-        saveData.chestWeaponMaxBonus = chestModifiers.chestWeaponMaxBonus;
-        saveData.chestRelicMinBonus = chestModifiers.chestRelicMinBonus;
-        saveData.chestRelicMaxBonus = chestModifiers.chestRelicMaxBonus;
-        saveData.extraRareChance = graveModifiers.extraRareChance;
-        saveData.extraEpicChance = graveModifiers.extraEpicChance;
+        if (cachedUpgradeNodes != null && cachedUpgradeNodes.Length > 0)
+            return cachedUpgradeNodes;
+
+        cachedUpgradeNodes = Resources.LoadAll<UpgradeNodeSO>(UpgradeNodeResourcesPath);
+
+        if ((cachedUpgradeNodes == null || cachedUpgradeNodes.Length == 0) && UpgradeManager.Instance != null)
+        {
+            var upgrades = UpgradeManager.Instance.GetAllUpgrades();
+            if (upgrades != null && upgrades.Count > 0)
+                cachedUpgradeNodes = upgrades.ToArray();
+        }
+
+        return cachedUpgradeNodes;
     }
 
-    private static RunModifierSaveData EnsureSaveData()
+    private static UpgradeNodeSO FindNodeById(UpgradeNodeSO[] nodes, int nodeId)
     {
-        if (GameDataManager.Instance == null)
-            return new RunModifierSaveData();
+        if (nodes == null)
+            return null;
 
-        if (GameDataManager.Instance.Data == null)
-            GameDataManager.Instance.LoadData();
+        for (int i = 0; i < nodes.Length; i++)
+        {
+            UpgradeNodeSO node = nodes[i];
+            if (node != null && node.nodeID == nodeId)
+                return node;
+        }
+
+        return null;
+    }
+
+    private static UpgradeSaveData TryGetUpgradeSaveData()
+    {
+        if (GameDataManager.Instance == null || GameDataManager.Instance.Data == null)
+            return null;
 
         if (GameDataManager.Instance.Data.upgradeData == null)
             GameDataManager.Instance.Data.upgradeData = new UpgradeSaveData();
 
-        if (GameDataManager.Instance.Data.upgradeData.runModifierData == null)
-            GameDataManager.Instance.Data.upgradeData.runModifierData = new RunModifierSaveData();
-
-        return GameDataManager.Instance.Data.upgradeData.runModifierData;
+        return GameDataManager.Instance.Data.upgradeData;
     }
 
     private void OnDestroy()

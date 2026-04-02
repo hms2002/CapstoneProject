@@ -45,13 +45,20 @@ public class GameDataManager : MonoBehaviour
     {
         repository ??= new GameDataRepository();
         Data = repository.LoadOrCreate();
-        Debug.Log("[GameDataManager] 저장 데이터 로드 완료");
+        Debug.Log("[GameDataManager] Game data loaded.");
+    }
+
+    public GameData EnsureData()
+    {
+        if (Data == null)
+            Data = new GameData();
+
+        return Data;
     }
 
     public void SaveData()
     {
-        if (Data == null)
-            Data = new GameData();
+        EnsureData();
 
         if (Data.itemData == null)
             Data.itemData = new ItemSaveData();
@@ -64,12 +71,21 @@ public class GameDataManager : MonoBehaviour
 
         repository ??= new GameDataRepository();
         repository.Save(Data);
-        Debug.Log($"[GameDataManager] 저장 완료: {repository.SavePath}");
+        Debug.Log($"[GameDataManager] Save complete: {repository.SavePath}");
     }
 
     private void OnApplicationQuit()
     {
         s_isQuitting = true;
+
+        if (GamePlayDataManager.Instance != null
+            && GamePlayDataManager.Instance.Data != null
+            && GamePlayDataManager.Instance.Data.isRunActive)
+        {
+            Debug.Log("[GameDataManager] Skipping save on quit because a run is still active.");
+            return;
+        }
+
         SaveData();
     }
 }

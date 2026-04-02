@@ -41,21 +41,23 @@ public sealed class AffectionProgressStore
         return affectionByNpcId.TryGetValue(npcId, out int amount) ? amount : 0;
     }
 
-    public AffectionChangeResult AddAffection(GameData data, int npcId, int amount)
+    public AffectionChangeResult AddAffection(GameData data, int npcId, int amount, bool syncToGameData = true)
     {
         int previousAmount = GetAffection(npcId);
         int newAmount = previousAmount + amount;
 
         affectionByNpcId[npcId] = newAmount;
-        SyncToGameData(data, npcId, newAmount);
+        if (syncToGameData)
+            SyncToGameData(data, npcId, newAmount);
 
         return new AffectionChangeResult(npcId, previousAmount, newAmount, amount);
     }
 
-    public void SetAffection(GameData data, int npcId, int amount)
+    public void SetAffection(GameData data, int npcId, int amount, bool syncToGameData = true)
     {
         affectionByNpcId[npcId] = amount;
-        SyncToGameData(data, npcId, amount);
+        if (syncToGameData)
+            SyncToGameData(data, npcId, amount);
     }
 
     private static void SyncToGameData(GameData data, int npcId, int amount)

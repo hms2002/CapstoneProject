@@ -643,25 +643,49 @@ public class DialogueView : MonoBehaviour
 
     private float GetDialogueEffectIntroDuration()
     {
-        if (dialogueEffectAnimator == null)
+        if (dialogueEffectAnimator == null || string.IsNullOrWhiteSpace(dialogueEffectIntroState))
             return 0f;
 
-        GameObject effectObject = dialogueEffectAnimator.gameObject;
-        bool wasActive = effectObject != null && effectObject.activeSelf;
-        if (effectObject != null && !wasActive)
-            effectObject.SetActive(true);
+        AnimationClip introClip = ResolveDialogueEffectClip(dialogueEffectIntroState);
+        return introClip != null ? introClip.length : 0f;
+    }
 
-        PlayDialogueEffectIntro();
-        float duration = dialogueEffectAnimator.GetCurrentAnimatorStateInfo(0).length;
+    private AnimationClip ResolveDialogueEffectClip(string stateOrClipName)
+    {
+        RuntimeAnimatorController controller = dialogueEffectAnimator != null
+            ? dialogueEffectAnimator.runtimeAnimatorController
+            : null;
 
-        if (!wasActive)
+        if (controller == null)
+            return null;
+
+        if (controller is AnimatorOverrideController overrideController)
         {
-            PlayDialogueEffectIdle();
-            if (effectObject != null)
-                effectObject.SetActive(false);
+            List<KeyValuePair<AnimationClip, AnimationClip>> overrides = new List<KeyValuePair<AnimationClip, AnimationClip>>();
+            overrideController.GetOverrides(overrides);
+
+            foreach (KeyValuePair<AnimationClip, AnimationClip> pair in overrides)
+            {
+                if (!MatchesDialogueEffectClipHint(pair.Key, stateOrClipName))
+                    continue;
+
+                return pair.Value != null ? pair.Value : pair.Key;
+            }
+
+            controller = overrideController.runtimeAnimatorController;
         }
 
-        return duration;
+        return controller.animationClips
+            .FirstOrDefault(clip => MatchesDialogueEffectClipHint(clip, stateOrClipName));
+    }
+
+    private static bool MatchesDialogueEffectClipHint(AnimationClip clip, string stateOrClipName)
+    {
+        if (clip == null || string.IsNullOrWhiteSpace(stateOrClipName))
+            return false;
+
+        return string.Equals(clip.name, stateOrClipName, StringComparison.OrdinalIgnoreCase)
+               || clip.name.IndexOf(stateOrClipName, StringComparison.OrdinalIgnoreCase) >= 0;
     }
 
     private void SetDimPanelVisible(bool visible, bool immediate)
