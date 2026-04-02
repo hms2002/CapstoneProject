@@ -151,9 +151,21 @@ public class DragIcon : MonoBehaviour
 
     private void Awake()
     {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
         Instance = this;
         if (rectTransform == null) rectTransform = transform as RectTransform;
         Hide();
+    }
+
+    private void OnDestroy()
+    {
+        if (Instance == this)
+            Instance = null;
     }
 
     public void Show(Sprite sprite)
