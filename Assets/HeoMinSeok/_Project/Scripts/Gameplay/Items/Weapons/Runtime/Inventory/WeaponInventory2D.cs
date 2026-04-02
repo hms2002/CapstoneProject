@@ -395,6 +395,9 @@ public class WeaponInventory2D : MonoBehaviour
     public void AttachRuntimeHooksForRestore()
     {
         abilityBinder?.RebuildReferencesAndEnsureGranted(slots);
+
+        if (ActiveWeapon != null)
+            statBinder?.Apply(ActiveWeapon);
     }
 
     /// <summary>
