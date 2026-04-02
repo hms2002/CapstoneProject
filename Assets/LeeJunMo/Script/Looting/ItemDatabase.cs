@@ -87,4 +87,19 @@ public class ItemDatabase : ScriptableObject
 
         return null;
     }
+
+    public List<ConsumableDefinition> GetAllConsumables()
+    {
+        var result = new List<ConsumableDefinition>();
+        if (allConsumables == null)
+            return result;
+
+        foreach (var consumable in allConsumables)
+        {
+            if (consumable != null)
+                result.Add(consumable);
+        }
+
+        return result;
+    }
 }
