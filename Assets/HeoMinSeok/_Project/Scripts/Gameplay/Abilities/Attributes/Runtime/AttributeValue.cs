@@ -40,6 +40,7 @@ namespace UnityGAS
 
         private readonly List<AttributeModifier> modifiers = new List<AttributeModifier>();
         private float lastDamageTime;
+        private bool keepBaseWithinClamp;
 
         public Action<float, float> OnValueChanged;
         private bool dirty;
@@ -55,6 +56,16 @@ namespace UnityGAS
         public void SetMaxValueGetter(Func<float> getter)
         {
             MaxValueGetter = getter;
+            dirty = true;
+        }
+
+        /// <summary>
+        /// 책임 : 이 AttributeValue가 재계산 시 base 값까지 clamp 영역 안으로 정규화할지 결정한다.
+        /// Health처럼 상태형 값은 숨은 base 초과분이 남지 않도록 true로 바인딩한다.
+        /// </summary>
+        public void SetClampNormalizationPolicy(bool shouldKeepBaseWithinClamp)
+        {
+            keepBaseWithinClamp = shouldKeepBaseWithinClamp;
             dirty = true;
         }
 
@@ -198,7 +209,16 @@ namespace UnityGAS
         private void RecalculateValue()
         {
             float oldValue = CurrentValue;
-            float finalValue = BaseValue;
+            float max = GetMaxForClamp();
+            float normalizedBase = BaseValue;
+
+            if (keepBaseWithinClamp)
+            {
+                normalizedBase = Mathf.Clamp(BaseValue, Definition.minValue, max);
+                BaseValue = normalizedBase;
+            }
+
+            float finalValue = normalizedBase;
 
             var flatModifiers = modifiers.Where(m => m.Type == ModifierType.Flat).Sum(m => m.Value);
             var percentModifiers = modifiers.Where(m => m.Type == ModifierType.Percent).Sum(m => m.Value);
@@ -206,7 +226,6 @@ namespace UnityGAS
             finalValue += flatModifiers;
             finalValue *= (1f + percentModifiers);
 
-            float max = GetMaxForClamp();
             CurrentValue = Mathf.Clamp(finalValue, Definition.minValue, max);
 
             if (Math.Abs(oldValue - CurrentValue) > 0.001f)
