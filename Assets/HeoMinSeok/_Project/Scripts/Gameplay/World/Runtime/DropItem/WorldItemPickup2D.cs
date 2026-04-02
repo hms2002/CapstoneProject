@@ -1,7 +1,7 @@
 using UnityEngine;
 
 /// <summary>
-/// 책임 : 월드에 떨어진 일반 아이템(무기/유물)을 상호작용 대상으로 노출하고,
+/// 책임 : 월드에 떨어진 일반 아이템(무기/유물/1회용 아이템)을 상호작용 대상으로 노출하고,
 /// 플레이어가 획득을 시도하면 적절한 장착 인벤토리로 즉시 전달한다.
 /// </summary>
 [RequireComponent(typeof(Collider2D))]
@@ -82,6 +82,7 @@ public class WorldItemPickup2D : InteractableBase
         {
             WeaponDefinition weapon => TryPickupWeapon(player, weapon),
             RelicDefinition relic => TryPickupRelic(player, relic),
+            ConsumableDefinition consumable => TryPickupConsumable(player, consumable),
             _ => false
         };
 
@@ -119,6 +120,12 @@ public class WorldItemPickup2D : InteractableBase
         return relicInventory.TryAcquireOrUpgrade(relic, levelOverride);
     }
 
+    private bool TryPickupConsumable(IPlayerInteractor player, ConsumableDefinition consumable)
+    {
+        var consumableInventory = ResolveConsumableInventory(player);
+        return consumableInventory != null && consumableInventory.TryAcquire(consumable);
+    }
+
     private static WeaponInventory2D ResolveWeaponInventory(IPlayerInteractor player)
     {
         if (player is Component component)
@@ -131,6 +138,14 @@ public class WorldItemPickup2D : InteractableBase
     {
         if (player is Component component)
             return component.GetComponent<RelicInventory>();
+
+        return null;
+    }
+
+    private static PlayerConsumableInventory ResolveConsumableInventory(IPlayerInteractor player)
+    {
+        if (player is Component component)
+            return PlayerConsumableInventory.GetOrAdd(component.transform);
 
         return null;
     }

@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 /// <summary>
 /// Standalone inventory screen:
+/// - Consumable (4)
 /// - Weapon equip (2)
 /// - Relic equip (18)
 /// - Drop zone to discard items to the world
@@ -13,17 +14,20 @@ using UnityEngine.UI;
 public class InventoryScreen : MonoBehaviour, IStackableUI
 {
     [Header("UI Refs")]
+    [SerializeField] private Transform consumableGridRoot;
     [SerializeField] private Transform weaponGridRoot;
     [SerializeField] private Transform relicGridRoot;
     [SerializeField] private ItemSlotUI slotPrefab;
     [SerializeField] private Button closeButton;
     [SerializeField] private DropZoneUI dropZone;
 
+    private IItemContainer consumableContainer;
     private IItemContainer weaponContainer;
     private IItemContainer relicContainer;
 
     private readonly List<ItemSlotUI> spawned = new();
 
+    private IDisposable consumableDisposer;
     private IDisposable weaponDisposer;
     private IDisposable relicDisposer;
 
@@ -68,9 +72,11 @@ public class InventoryScreen : MonoBehaviour, IStackableUI
         ClearUI();
         ItemContainerGroupRegistry.Clear();
 
+        consumableDisposer?.Dispose();
         weaponDisposer?.Dispose();
         relicDisposer?.Dispose();
 
+        consumableDisposer = null;
         weaponDisposer = null;
         relicDisposer = null;
 
@@ -79,14 +85,15 @@ public class InventoryScreen : MonoBehaviour, IStackableUI
         if (UIManager.Instance != null) UIManager.Instance.HideHoverImmediate();
     }
 
-    public void Bind(WeaponInventory2D weaponInv, RelicInventory relicInv, Transform lootOrigin)
+    public void Bind(PlayerConsumableInventory consumableInv, WeaponInventory2D weaponInv, RelicInventory relicInv, Transform lootOrigin)
     {
         this.lootOrigin = lootOrigin;
 
+        consumableContainer = new PlayerConsumableContainerAdapter(consumableInv);
         weaponContainer = new PlayerWeaponContainerAdapter(weaponInv);
         relicContainer = new PlayerRelicContainerAdapter(relicInv);
 
-        ItemContainerGroupRegistry.SetGroup(null, weaponContainer, relicContainer);
+        ItemContainerGroupRegistry.SetGroup(null, consumableContainer, weaponContainer, relicContainer);
 
         if (dropZone != null)
             dropZone.SetDropOrigin(this.lootOrigin);
@@ -98,6 +105,16 @@ public class InventoryScreen : MonoBehaviour, IStackableUI
     {
         ClearUI();
         if (slotPrefab == null) return;
+
+        if (consumableContainer != null && consumableGridRoot != null)
+        {
+            for (int i = 0; i < consumableContainer.SlotCount; i++)
+            {
+                var ui = Instantiate(slotPrefab, consumableGridRoot);
+                ui.Bind(consumableContainer, i);
+                spawned.Add(ui);
+            }
+        }
 
         if (weaponContainer != null && weaponGridRoot != null)
         {
@@ -130,6 +147,53 @@ public class InventoryScreen : MonoBehaviour, IStackableUI
     // -----------------------
     // Adapters (public logic copied from ChestScreen)
     // -----------------------
+    private class PlayerConsumableContainerAdapter : IItemContainer, IDisposable
+    {
+        private readonly PlayerConsumableInventory inv;
+        public event Action OnChanged;
+
+        public PlayerConsumableContainerAdapter(PlayerConsumableInventory inv)
+        {
+            this.inv = inv;
+            if (this.inv != null) this.inv.OnChanged += HandleChanged;
+        }
+
+        public int SlotCount => inv != null ? inv.SlotCount : 0;
+
+        public ScriptableObject Get(int index) => inv != null ? inv.GetConsumableInSlot(index) : null;
+
+        public bool CanPlace(ScriptableObject item, int index, int ignoreIndex = -1)
+        {
+            if (inv == null) return false;
+            if (item == null) return true;
+
+            var consumable = item as ConsumableDefinition;
+            if (consumable == null) return false;
+
+            return inv.CanPlaceConsumableInSlot(index, consumable);
+        }
+
+        public bool TrySet(int index, ScriptableObject item)
+        {
+            if (inv == null) return false;
+            if (item == null) return inv.TrySetConsumableSlot(index, null);
+
+            var consumable = item as ConsumableDefinition;
+            if (consumable == null) return false;
+
+            return inv.TrySetConsumableSlot(index, consumable);
+        }
+
+        public bool TrySwap(int a, int b) => inv != null && inv.TrySwapConsumableSlots(a, b);
+
+        private void HandleChanged() => OnChanged?.Invoke();
+
+        public void Dispose()
+        {
+            if (inv != null) inv.OnChanged -= HandleChanged;
+        }
+    }
+
     private class PlayerWeaponContainerAdapter : IItemContainer, IDisposable
     {
         private readonly WeaponInventory2D inv;

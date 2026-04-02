@@ -17,9 +17,13 @@ public class ItemDatabase : ScriptableObject
     [Tooltip("처음부터 해금되어 있을 유물만 여기에 등록하세요")]
     public List<RelicDefinition> defaultUnlockedRelics;
 
+    [Tooltip("게임의 모든 1회용 아이템을 여기에 등록하세요")]
+    public List<ConsumableDefinition> allConsumables;
+
     // 런타임 캐싱용 딕셔너리
     private Dictionary<string, WeaponDefinition> weaponDict;
     private Dictionary<string, RelicDefinition> relicDict;
+    private Dictionary<string, ConsumableDefinition> consumableDict;
 
     public void InitializeCache()
     {
@@ -42,6 +46,16 @@ public class ItemDatabase : ScriptableObject
                     relicDict[r.relicId] = r;
             }
         }
+
+        consumableDict = new Dictionary<string, ConsumableDefinition>();
+        if (allConsumables != null)
+        {
+            foreach (var c in allConsumables)
+            {
+                if (c != null && !string.IsNullOrEmpty(c.consumableId))
+                    consumableDict[c.consumableId] = c;
+            }
+        }
     }
 
     public WeaponDefinition GetWeaponByID(string id)
@@ -60,6 +74,16 @@ public class ItemDatabase : ScriptableObject
 
         if (relicDict.TryGetValue(id, out var relic))
             return relic;
+
+        return null;
+    }
+
+    public ConsumableDefinition GetConsumableByID(string id)
+    {
+        if (consumableDict == null) InitializeCache();
+
+        if (consumableDict.TryGetValue(id, out var consumable))
+            return consumable;
 
         return null;
     }

@@ -52,3 +52,5 @@ MonoBehaviour:
   - {fileID: 11400000, guid: f2a47c8de19b4d8d9e67a31f5b2c4e90, type: 2}
   - {fileID: 11400000, guid: d808a1e0c7ccc7e48abc50b9a9884b61, type: 2}
   - {fileID: 11400000, guid: 3176a6ca3d2df1f4d8f3770d42b8457f, type: 2}
+  allConsumables:
+  - {fileID: 11400000, guid: 6b22cb4e0ab0a194b968acb6b169cbfb, type: 2}

@@ -56,9 +56,10 @@ public class InventoryUIManager : MonoBehaviour
             ? PlayerRuntimeRegistry.CurrentPlayer
             : PlayerInteractor2D.Instance;
 
+        var consumableInv = currentPlayer != null ? PlayerConsumableInventory.GetOrAdd(currentPlayer.transform) : FindFirstObjectByType<PlayerConsumableInventory>();
         var weaponInv = currentPlayer != null ? currentPlayer.GetComponent<WeaponInventory2D>() : FindFirstObjectByType<WeaponInventory2D>();
         var relicInv = currentPlayer != null ? currentPlayer.GetComponent<RelicInventory>() : FindFirstObjectByType<RelicInventory>();
-        inventoryScreen.Bind(weaponInv, relicInv, playerTransform);
+        inventoryScreen.Bind(consumableInv, weaponInv, relicInv, playerTransform);
 
         if (UIManager.Instance != null) UIManager.Instance.HideHoverImmediate();
 

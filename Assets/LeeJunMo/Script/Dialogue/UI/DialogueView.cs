@@ -641,6 +641,10 @@ public class DialogueView : MonoBehaviour
         dialogueEffectAnimator.Update(0f);
     }
 
+    /// <summary>
+    /// 책임 :
+    /// - DialogueEffect 인트로 클립 길이를 상태 변경 없이 조회해 프리루드의 대기 시간을 계산한다.
+    /// </summary>
     private float GetDialogueEffectIntroDuration()
     {
         if (dialogueEffectAnimator == null || string.IsNullOrWhiteSpace(dialogueEffectIntroState))
