@@ -37,4 +37,5 @@ public sealed class GamePlayData
     public int pendingRunMagicStoneDelta;
     public System.Collections.Generic.List<PendingRunAffectionChange> pendingRunAffectionChanges = new System.Collections.Generic.List<PendingRunAffectionChange>();
     public System.Collections.Generic.List<PendingRunShortcutUnlock> pendingRunShortcutUnlocks = new System.Collections.Generic.List<PendingRunShortcutUnlock>();
+    public System.Collections.Generic.List<MerchantRuntimeState> merchantStates = new System.Collections.Generic.List<MerchantRuntimeState>();
 }
