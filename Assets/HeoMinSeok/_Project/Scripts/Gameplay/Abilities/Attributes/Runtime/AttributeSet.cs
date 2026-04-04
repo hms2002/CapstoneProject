@@ -149,6 +149,7 @@ namespace UnityGAS
                     continue;
 
                 valueAttr.SetMaxValueGetter(() => maxAttr.CurrentValue);
+                valueAttr.SetClampNormalizationPolicy(true);
 
                 var capturedValue = valueAttr;
                 maxAttr.OnValueChanged += (_, __) =>
