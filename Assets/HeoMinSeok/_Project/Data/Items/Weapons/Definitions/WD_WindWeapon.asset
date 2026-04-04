@@ -15,7 +15,10 @@ MonoBehaviour:
   weaponId: Weapon.WD_WindWeapon
   displayName: WD_WindWeapon
   icon: {fileID: 1408481339, guid: 7e11de47ebfa53a42a94e5fb92a94f06, type: 3}
-  description: 
+  description: "\uCD5C\uC18D\uC758 \uAC80\uC774\uB2E4"
+  storyText: "\xB7 \uCD5C\uC18D\uC758 \uAC80\uC774\uB2E4\uC544"
+  tooltipStats: []
+  tooltipStatLines: []
   statModifiers:
   - attribute: {fileID: 11400000, guid: 23db6468e859c6f42b0230a5af7ca81c, type: 2}
     type: 1

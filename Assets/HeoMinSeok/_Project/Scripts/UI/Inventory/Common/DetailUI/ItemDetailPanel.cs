@@ -13,6 +13,7 @@ public class ItemDetailPanel : MonoBehaviour, IHoverView
 
     [Header("Views")]
     [SerializeField] private WeaponDetailView weaponView;
+    [SerializeField] private WeaponDetailViewV2 weaponViewV2;
     [SerializeField] private RelicDetailView relicView;
     [SerializeField] private ConsumableDetailView consumableView;
 
@@ -107,9 +108,21 @@ public class ItemDetailPanel : MonoBehaviour, IHoverView
             }
         }
 
-        if (weaponView != null && weaponView.CanShow(definition))
+        if (weaponViewV2 != null && weaponViewV2.CanShow(definition))
+        {
+            weaponViewV2.Show(definition, ctx, _services);
+            if (weaponView != null)
+                weaponView.Hide();
+            if (relicView != null)
+                relicView.Hide();
+            if (consumableView != null)
+                consumableView.Hide();
+        }
+        else if (weaponView != null && weaponView.CanShow(definition))
         {
             weaponView.Show(definition, ctx, _services);
+            if (weaponViewV2 != null)
+                weaponViewV2.Hide();
             if (relicView != null)
                 relicView.Hide();
             if (consumableView != null)
@@ -120,6 +133,8 @@ public class ItemDetailPanel : MonoBehaviour, IHoverView
             relicView.Show(definition, ctx, _services);
             if (weaponView != null)
                 weaponView.Hide();
+            if (weaponViewV2 != null)
+                weaponViewV2.Hide();
             if (consumableView != null)
                 consumableView.Hide();
         }
@@ -128,6 +143,8 @@ public class ItemDetailPanel : MonoBehaviour, IHoverView
             consumableView.Show(definition, ctx, _services);
             if (weaponView != null)
                 weaponView.Hide();
+            if (weaponViewV2 != null)
+                weaponViewV2.Hide();
             if (relicView != null)
                 relicView.Hide();
         }
@@ -135,6 +152,8 @@ public class ItemDetailPanel : MonoBehaviour, IHoverView
         {
             if (weaponView != null)
                 weaponView.Hide();
+            if (weaponViewV2 != null)
+                weaponViewV2.Hide();
 
             if (relicView != null)
                 relicView.Hide();
@@ -150,6 +169,9 @@ public class ItemDetailPanel : MonoBehaviour, IHoverView
     {
         if (weaponView != null)
             weaponView.Hide();
+
+        if (weaponViewV2 != null)
+            weaponViewV2.Hide();
 
         if (relicView != null)
             relicView.Hide();

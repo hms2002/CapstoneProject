@@ -2,18 +2,32 @@ using UnityEngine;
 using UnityGAS;
 using System;
 using System.Collections.Generic;
+using UnityEngine.Serialization;
 
 public enum WeaponAbilitySlot { Attack, Skill1, Skill2 }
 
 [CreateAssetMenu(fileName = "WD_NewWeapon", menuName = "Game/Weapon Definition")]
 public class WeaponDefinition : ScriptableObject, IInventoryItemDefinition
 {
+    /// <summary>
+    /// 책임 :
+    /// - 하나의 무기가 인벤토리/장착/툴팁/UI에서 어떤 이름, 아이콘, 능력, 장착 스탯을 가지는지 정의한다.
+    /// - 무기 툴팁이 사용할 스토리 텍스트와 요약 스탯 줄도 함께 제공한다.
+    /// </summary>
+
     [Header("Info")]
     public string weaponId = "Weapon.New";
     public string displayName = "New Weapon";
     public Sprite icon;
 
     [TextArea] public string description;
+
+    [Header("Tooltip")]
+    [TextArea]
+    public string storyText;
+    public List<WeaponTooltipStatLine> tooltipStats = new();
+    [FormerlySerializedAs("tooltipStatLines")]
+    public List<string> tooltipStatLines = new();
 
     [Header("Stats (applied only while equipped)")]
     public List<WeaponStatModifier> statModifiers = new();
@@ -26,6 +40,11 @@ public class WeaponDefinition : ScriptableObject, IInventoryItemDefinition
     [Serializable]
     public struct WeaponStatModifier
     {
+        /// <summary>
+        /// 책임 :
+        /// - 무기 장착 중 AttributeSet에 적용할 실제 스탯 변경 한 줄을 정의한다.
+        /// - Flat/Percent와 UI 라벨 오버라이드를 함께 제공한다.
+        /// </summary>
         public AttributeDefinition attribute;
         public ModifierType type;  // Flat / Percent
 
@@ -34,6 +53,19 @@ public class WeaponDefinition : ScriptableObject, IInventoryItemDefinition
 
         [Tooltip("(선택) UI에 표시할 라벨. 비우면 AttributeDefinition.name 사용")]
         public string labelOverride;
+    }
+
+    [Serializable]
+    public struct WeaponTooltipStatLine
+    {
+        /// <summary>
+        /// 책임 :
+        /// - 무기 툴팁의 정형화된 한 줄 스탯 정보를 정의한다.
+        /// - 스탯 이름과 값, 퍼센트 여부만으로 "이름 [+-값]" 형태를 구성한다.
+        /// </summary>
+        public string label;
+        public float value;
+        public bool isPercent;
     }
 
     [Header("Prefab")]
