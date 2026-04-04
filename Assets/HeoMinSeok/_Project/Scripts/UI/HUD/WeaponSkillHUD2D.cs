@@ -3,11 +3,18 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityGAS;
 
+/// <summary>
+/// 책임 :
+/// - 현재 장착 무기의 Skill1, Skill2 쿨다운/충전 HUD를 플레이어 상태에 맞춰 갱신한다.
+/// - 플레이어 등록/해제와 무기 장착 변경에 반응해 HUD 표시 대상을 안전하게 동기화한다.
+/// </summary>
 public class WeaponSkillHUD2D : MonoBehaviour
 {
     [System.Serializable]
     public class SkillSlotUI
     {
+        [Tooltip("가능하면 슬롯 루트 오브젝트를 직접 연결합니다. 비어 있으면 icon 등의 부모에서 추론합니다.")]
+        public GameObject root;
         public Image icon;
         public Image cooldownFill;   // fillAmount = remaining/total (Image Type Filled 필요)
         public TMP_Text cooldownText; // 선택(초 표기)
@@ -145,7 +152,7 @@ public class WeaponSkillHUD2D : MonoBehaviour
             return;
         }
 
-        attackDef = inventory.GetActiveAbility(WeaponAbilitySlot.Attack);
+        attackDef = null;
         skill1Def = inventory.GetActiveAbility(WeaponAbilitySlot.Skill1);
         skill2Def = inventory.GetActiveAbility(WeaponAbilitySlot.Skill2);
 
@@ -196,6 +203,8 @@ public class WeaponSkillHUD2D : MonoBehaviour
         if (ui == null) return;
 
         bool has = (def != null);
+        SetSlotVisible(ui, has);
+
         if (ui.icon != null)
         {
             ui.icon.enabled = has;
@@ -214,11 +223,58 @@ public class WeaponSkillHUD2D : MonoBehaviour
             ui.chargeText.text = "";
     }
 
+    /// <summary>
+    /// 책임 :
+    /// - 슬롯 전체 표시 여부를 제어한다.
+    /// - 루트가 명시되지 않았을 때는 현재 연결된 UI 참조의 부모를 이용해 보수적으로 루트를 추론한다.
+    /// </summary>
+    private static void SetSlotVisible(SkillSlotUI ui, bool visible)
+    {
+        if (ui == null)
+            return;
+
+        GameObject root = ResolveSlotRoot(ui);
+        if (root != null)
+        {
+            root.SetActive(visible);
+            return;
+        }
+
+        if (ui.icon != null) ui.icon.enabled = visible;
+        if (ui.cooldownFill != null) ui.cooldownFill.enabled = visible;
+        if (ui.cooldownText != null) ui.cooldownText.enabled = visible;
+        if (ui.chargeText != null) ui.chargeText.enabled = visible;
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - SkillSlotUI가 가리키는 공통 루트 오브젝트를 찾아 슬롯 단위 토글에 사용한다.
+    /// - 인스펙터 루트가 없으면 icon > cooldownFill > text 순으로 부모를 추론한다.
+    /// </summary>
+    private static GameObject ResolveSlotRoot(SkillSlotUI ui)
+    {
+        if (ui.root != null)
+            return ui.root;
+
+        if (ui.icon != null && ui.icon.transform.parent != null)
+            return ui.icon.transform.parent.gameObject;
+
+        if (ui.cooldownFill != null && ui.cooldownFill.transform.parent != null)
+            return ui.cooldownFill.transform.parent.gameObject;
+
+        if (ui.cooldownText != null && ui.cooldownText.transform.parent != null)
+            return ui.cooldownText.transform.parent.gameObject;
+
+        if (ui.chargeText != null && ui.chargeText.transform.parent != null)
+            return ui.chargeText.transform.parent.gameObject;
+
+        return null;
+    }
+
     private void Update()
     {
         if (abilitySystem == null) return;
 
-        UpdateCooldownAndCharge(attackUI, attackDef);
         UpdateCooldownAndCharge(skill1UI, skill1Def);
         UpdateCooldownAndCharge(skill2UI, skill2Def);
     }

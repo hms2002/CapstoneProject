@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   attributeName: Health
   description: Attribute description.
+  mutationPolicy: 0
   defaultBaseValue: 100
   minValue: 0
   maxValue: 100
