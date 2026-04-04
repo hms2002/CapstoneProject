@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using CapstoneAudio;
 using UnityEngine;
 
 namespace UnityGAS
@@ -87,8 +88,14 @@ namespace UnityGAS
             // TransformOnly runtime
             public GameplayCueTransformStack TransformStack;
             public int TransformLayerKey;
+            public AudioHandle AudioLoopHandle;
+            public bool AudioOnly;
 
-            public bool HasRuntime => Instance != null || Notify != null || TransformStack != null;
+            public bool HasRuntime => Instance != null
+                                      || Notify != null
+                                      || TransformStack != null
+                                      || AudioLoopHandle.IsValid
+                                      || AudioOnly;
         }
 
         private void Awake()
@@ -201,6 +208,7 @@ namespace UnityGAS
             if (active.TryGetValue(key, out var existing) && existing != null && existing.HasRuntime)
             {
                 existing.Notify?.OnRefresh(p);
+                EnsureCueLoopAudio(existing, p);
 
                 // TransformOnly는 Refresh 시에도 contribution을 갱신할 수 있게 한다.
                 if (existing.TransformStack != null)
@@ -217,6 +225,7 @@ namespace UnityGAS
             if (inst == null) return;
 
             active[key] = inst;
+            EnsureCueLoopAudio(inst, p);
             inst.Notify?.OnAdd(p);
         }
 
@@ -238,6 +247,8 @@ namespace UnityGAS
             if (!active.TryGetValue(key, out var inst) || inst == null) return;
 
             inst.Notify?.OnRemove(p);
+            StopCueLoopAudio(inst);
+            PlayCueRemoveAudio(def, p);
 
             // TransformOnly 해제
             if (inst.TransformStack != null)
@@ -272,6 +283,7 @@ namespace UnityGAS
         private void SpawnAndNotifyExecute(GameplayCueDefinition def, GameplayCueParams p, int layerKey)
         {
             var inst = SpawnInstance(def, p, isForAdd: false, layerKey: layerKey);
+            PlayCueExecuteAudio(def, p);
             if (inst == null) return;
 
             inst.Notify?.OnExecute(p);
@@ -307,13 +319,17 @@ namespace UnityGAS
 
         private ActiveCueInstance SpawnInstance(GameplayCueDefinition def, GameplayCueParams p, bool isForAdd, int layerKey)
         {
-            var result = new ActiveCueInstance { Def = def };
+            var result = new ActiveCueInstance
+            {
+                Def = def,
+                AudioOnly = HasAudioRuntime(def, isForAdd)
+            };
 
             switch (def.mode)
             {
                 case GameplayCueDefinition.ExecutionMode.TransformOnly:
                 {
-                    if (p.Target == null) return null;
+                    if (p.Target == null) return result.AudioOnly ? result : null;
 
                     var stack = p.Target.GetComponent<GameplayCueTransformStack>();
                     if (stack == null) stack = p.Target.AddComponent<GameplayCueTransformStack>();
@@ -329,13 +345,13 @@ namespace UnityGAS
                 case GameplayCueDefinition.ExecutionMode.TargetNotify:
                 {
                     if (def.cueNotifyHostPrefab == null || p.Target == null)
-                        return null;
+                        return result.AudioOnly ? result : null;
 
                     var type = GetOrCacheNotifyType(def);
                     if (type == null)
                     {
                         Debug.LogWarning($"[GameplayCueManager] cueNotifyHostPrefab에 GameplayCueNotify가 없습니다: {def.name}");
-                        return null;
+                        return result.AudioOnly ? result : null;
                     }
 
                     // 이미 붙어있으면 재사용 (중복 AddComponent 방지)
@@ -351,7 +367,7 @@ namespace UnityGAS
                     if (added == null)
                     {
                         Debug.LogWarning($"[GameplayCueManager] Target에 Notify AddComponent 실패: {type.FullName}");
-                        return null;
+                        return result.AudioOnly ? result : null;
                     }
 
                     result.Notify = added;
@@ -382,11 +398,7 @@ namespace UnityGAS
                         if (!isForAdd && def.autoDestroySeconds > 0f)
                             Destroy(go, def.autoDestroySeconds);
                     }
-
-                    if (def.sfx != null)
-                        AudioSource.PlayClipAtPoint(def.sfx, p.Position);
-
-                    return result.Instance != null || result.Notify != null ? result : null;
+                    return result.HasRuntime ? result : null;
                 }
             }
         }
@@ -449,6 +461,74 @@ namespace UnityGAS
                 t.position = p.Position + def.localOffset;
                 t.rotation = Quaternion.identity;
             }
+        }
+
+        private static bool HasAudioRuntime(GameplayCueDefinition def, bool isForAdd)
+        {
+            if (def == null)
+                return false;
+
+            return isForAdd
+                ? def.audioWhileActive.IsSet || def.audioOnRemove.IsSet
+                : def.audioOnExecute.IsSet || def.sfx != null;
+        }
+
+        private static SoundPlaybackContext BuildSoundContext(GameplayCueParams p)
+        {
+            return new SoundPlaybackContext
+            {
+                Instigator = p.Instigator,
+                Causer = p.Causer,
+                Target = p.Target,
+                Position = p.Position,
+                SourceObject = p.SourceObject
+            };
+        }
+
+        private static void PlayCueExecuteAudio(GameplayCueDefinition def, GameplayCueParams p)
+        {
+            if (def == null)
+                return;
+
+            if (def.audioOnExecute.IsSet)
+            {
+                SoundManager.EnsureInstance().Play(def.audioOnExecute, BuildSoundContext(p));
+                return;
+            }
+
+            if (def.sfx != null)
+            {
+                SoundManager.EnsureInstance().PlayLegacyClip(def.sfx, p.Position);
+            }
+        }
+
+        private static void PlayCueRemoveAudio(GameplayCueDefinition def, GameplayCueParams p)
+        {
+            if (def == null || !def.audioOnRemove.IsSet)
+                return;
+
+            SoundManager.EnsureInstance().Play(def.audioOnRemove, BuildSoundContext(p));
+        }
+
+        private static void EnsureCueLoopAudio(ActiveCueInstance inst, GameplayCueParams p)
+        {
+            if (inst == null || inst.Def == null || !inst.Def.audioWhileActive.IsSet)
+                return;
+
+            SoundManager manager = SoundManager.EnsureInstance();
+            if (manager.IsPlaying(inst.AudioLoopHandle))
+                return;
+
+            inst.AudioLoopHandle = manager.Play(inst.Def.audioWhileActive, BuildSoundContext(p));
+        }
+
+        private static void StopCueLoopAudio(ActiveCueInstance inst)
+        {
+            if (inst == null || !inst.AudioLoopHandle.IsValid)
+                return;
+
+            SoundManager.EnsureInstance().Stop(inst.AudioLoopHandle);
+            inst.AudioLoopHandle = AudioHandle.Invalid;
         }
     }
 }

@@ -16,6 +16,7 @@ MonoBehaviour:
   icon: {fileID: 0}
   description: Ability description.
   cooldown: 1
+  executionPolicy: 0
   useCharges: 0
   maxCharges: 1
   cooldownEffect: {fileID: 11400000, guid: e0cdcda9b86374b4c99ad2e948fcfd26, type: 2}
@@ -49,6 +50,41 @@ MonoBehaviour:
   logic: {fileID: 11400000, guid: 2ff288bb12839d4418fc069dc0fefbd5, type: 2}
   sourceObject: {fileID: 11400000, guid: 64a49098e3c02fd4eb8d1d2ab7bb04a0, type: 2}
   containers: []
+  audioOnCastStart:
+    key: asdf.asdfadfs.adfs
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  audioWhileCasting:
+    key: 
+    volumeMultiplier: 0
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  audioOnCommit:
+    key: 
+    volumeMultiplier: 0
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  audioWhileActive:
+    key: 
+    volumeMultiplier: 0
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  audioOnEnd:
+    key: 
+    volumeMultiplier: 0
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  audioOnCastCancelled:
+    key: 
+    volumeMultiplier: 0
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  audioOnExecutionCancelled:
+    key: 
+    volumeMultiplier: 0
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
   cueOnCastStart: {fileID: 0}
   cueWhileCasting: {fileID: 0}
   cueOnCommit: {fileID: 0}
