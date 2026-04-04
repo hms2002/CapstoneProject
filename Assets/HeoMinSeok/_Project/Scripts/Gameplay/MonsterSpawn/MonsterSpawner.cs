@@ -60,6 +60,8 @@ public class MonsterSpawner : MonoBehaviour
 
     private void Start()
     {
+        ResolveSceneInstallers();
+
         if (recollectSpawnPointsOnSceneLoaded || spawnPoints.Count == 0)
             CollectSpawnPointsFromActiveScene();
 
@@ -238,6 +240,8 @@ public class MonsterSpawner : MonoBehaviour
 
     private void HandleSceneLoaded(Scene scene, LoadSceneMode mode)
     {
+        ResolveSceneInstallers();
+
         if (recollectSpawnPointsOnSceneLoaded)
             CollectSpawnPointsFromActiveScene();
 
@@ -264,8 +268,43 @@ public class MonsterSpawner : MonoBehaviour
 
     private void InstallViews(GameObject monster)
     {
+        if (gaugeViewInstaller == null)
+            ResolveSceneInstallers();
+
         if (gaugeViewInstaller != null)
             gaugeViewInstaller.Install(monster);
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 활성 씬에서 MonsterSpawner가 사용하는 공통 View installer 참조를 자동으로 복구한다.
+    /// - 씬별 수동 연결 누락 때문에 스폰 몬스터의 UI 설치가 빠지지 않도록 한다.
+    /// </summary>
+    private void ResolveSceneInstallers()
+    {
+        if (gaugeViewInstaller != null && gaugeViewInstaller.gameObject.scene == SceneManager.GetActiveScene())
+            return;
+
+#if UNITY_2023_1_OR_NEWER
+        var installers = FindObjectsByType<MonsterElementGaugeViewInstaller>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+#else
+        var installers = FindObjectsOfType<MonsterElementGaugeViewInstaller>(true);
+#endif
+
+        for (int i = 0; i < installers.Length; i++)
+        {
+            var installer = installers[i];
+            if (installer == null)
+                continue;
+
+            if (installer.gameObject.scene != SceneManager.GetActiveScene())
+                continue;
+
+            gaugeViewInstaller = installer;
+            return;
+        }
+
+        gaugeViewInstaller = null;
     }
 
     private int CalculateExtraSpawnCount(int baseCount, float extraRatio)

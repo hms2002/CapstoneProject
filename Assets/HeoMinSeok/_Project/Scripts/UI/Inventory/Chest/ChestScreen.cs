@@ -15,6 +15,7 @@ public class ChestScreen : MonoBehaviour, IStackableUI
     [SerializeField] private Transform consumableGridRoot;
     [SerializeField] private Transform weaponGridRoot;
     [SerializeField] private Transform relicGridRoot;
+    [SerializeField] private PlayerStatPanelView playerStatPanel;
     [SerializeField] private ItemSlotUI slotPrefab;
     [SerializeField] private Button closeButton;
 
@@ -107,6 +108,14 @@ public class ChestScreen : MonoBehaviour, IStackableUI
         consumableContainer = new PlayerConsumableContainerAdapter(playerConsumableInventory);
         weaponContainer = new PlayerWeaponContainerAdapter(playerWeaponInventory);
         relicContainer = new PlayerRelicContainerAdapter(playerRelicInventory);
+
+        if (playerStatPanel != null)
+        {
+            var currentPlayer = PlayerRuntimeRegistry.CurrentPlayer != null
+                ? PlayerRuntimeRegistry.CurrentPlayer
+                : PlayerInteractor2D.Instance;
+            playerStatPanel.Bind(currentPlayer != null ? currentPlayer.transform : null);
+        }
 
         ItemContainerGroupRegistry.SetGroup(chestContainer, consumableContainer, weaponContainer, relicContainer);
 

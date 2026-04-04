@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 320c05ebf08ec6d4f967a29e23267e81, type: 3}
+  m_Name: PS_Section_BasicStats
+  m_EditorClassIdentifier: 
+  title: "\uAE30\uBCF8 \uB2A5\uB825\uCE58"
+  entries:
+  - {fileID: 11400000, guid: a1b2c3d4e5f60718293a4b5c6d7e8f90, type: 2}
+  - {fileID: 11400000, guid: b1c2d3e4f5061728394a5b6c7d8e9f01, type: 2}
+  - {fileID: 11400000, guid: c1d2e3f40516273849a5b6c7d8e9f012, type: 2}

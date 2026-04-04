@@ -17,6 +17,7 @@ public class InventoryScreen : MonoBehaviour, IStackableUI
     [SerializeField] private Transform consumableGridRoot;
     [SerializeField] private Transform weaponGridRoot;
     [SerializeField] private Transform relicGridRoot;
+    [SerializeField] private PlayerStatPanelView playerStatPanel;
     [SerializeField] private ItemSlotUI slotPrefab;
     [SerializeField] private Button closeButton;
     [SerializeField] private DropZoneUI dropZone;
@@ -85,13 +86,16 @@ public class InventoryScreen : MonoBehaviour, IStackableUI
         if (UIManager.Instance != null) UIManager.Instance.HideHoverImmediate();
     }
 
-    public void Bind(PlayerConsumableInventory consumableInv, WeaponInventory2D weaponInv, RelicInventory relicInv, Transform lootOrigin)
+    public void Bind(PlayerConsumableInventory consumableInv, WeaponInventory2D weaponInv, RelicInventory relicInv, Transform lootOrigin, Transform playerRoot)
     {
         this.lootOrigin = lootOrigin;
 
         consumableContainer = new PlayerConsumableContainerAdapter(consumableInv);
         weaponContainer = new PlayerWeaponContainerAdapter(weaponInv);
         relicContainer = new PlayerRelicContainerAdapter(relicInv);
+
+        if (playerStatPanel != null)
+            playerStatPanel.Bind(playerRoot);
 
         ItemContainerGroupRegistry.SetGroup(null, consumableContainer, weaponContainer, relicContainer);
 
