@@ -7,12 +7,18 @@ using UnityEngine;
 [RequireComponent(typeof(Collider2D))]
 public class WeaponDrop2D : InteractableBase
 {
+    private static readonly int OutlineEnabledID = Shader.PropertyToID("_OutlineEnabled");
     [SerializeField] private WeaponDefinition weapon;
     [SerializeField] private Transform promptAnchor;
     [SerializeField] private string interactPromptText = "획득하기";
 
     [Header("Runtime Payload")]
     [SerializeField] private WeaponPersistentStatePayload payload;
+
+    [Header("Visual (optional)")]
+    [SerializeField] private SpriteRenderer spriteRenderer;
+
+    private MaterialPropertyBlock outlinePropertyBlock;
 
     public WeaponDefinition Weapon => weapon;
     public WeaponPersistentStatePayload Payload => payload;
@@ -28,6 +34,20 @@ public class WeaponDrop2D : InteractableBase
     {
         var col = GetComponent<Collider2D>();
         if (col != null) col.isTrigger = true;
+    }
+
+    private void Awake()
+    {
+        if (spriteRenderer == null)
+            spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+
+        outlinePropertyBlock = new MaterialPropertyBlock();
+        OnUnHighlight();
+    }
+
+    private void OnDisable()
+    {
+        WorldItemDetailPresenter.Instance?.Hide(GetDetailAnchor());
     }
 
     public override bool CanInteract(IPlayerInteractor player)
@@ -51,6 +71,30 @@ public class WeaponDrop2D : InteractableBase
             playerInteractor.SpeakSituation(PlayerSpeechSituationEnum.InventoryFull);
     }
 
+    public override void OnHighlight()
+    {
+        if (spriteRenderer != null)
+        {
+            spriteRenderer.GetPropertyBlock(outlinePropertyBlock);
+            outlinePropertyBlock.SetFloat(OutlineEnabledID, 1f);
+            spriteRenderer.SetPropertyBlock(outlinePropertyBlock);
+        }
+
+        WorldItemDetailPresenter.Instance?.Show(GetDetailAnchor(), weapon);
+    }
+
+    public override void OnUnHighlight()
+    {
+        if (spriteRenderer != null)
+        {
+            spriteRenderer.GetPropertyBlock(outlinePropertyBlock);
+            outlinePropertyBlock.SetFloat(OutlineEnabledID, 0f);
+            spriteRenderer.SetPropertyBlock(outlinePropertyBlock);
+        }
+
+        WorldItemDetailPresenter.Instance?.Hide(GetDetailAnchor());
+    }
+
     public override InteractState GetInteractType() => InteractState.Idle;
 
     public override string GetInteractDescription()
@@ -59,6 +103,8 @@ public class WeaponDrop2D : InteractableBase
     }
 
     public override Transform GetPromptAnchor() => promptAnchor != null ? promptAnchor : transform;
+
+    private Transform GetDetailAnchor() => promptAnchor != null ? promptAnchor : transform;
 
     private static WeaponInventory2D ResolveWeaponInventory(IPlayerInteractor player)
     {

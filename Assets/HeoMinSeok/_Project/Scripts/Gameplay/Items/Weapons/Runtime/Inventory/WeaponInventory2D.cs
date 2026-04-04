@@ -64,6 +64,22 @@ public class WeaponInventory2D : MonoBehaviour
     public bool HasWeapon(int slotIndex)
         => GetWeaponInSlot(slotIndex) != null;
 
+    public bool CanAcquireWithoutReplacement(WeaponDefinition weapon)
+    {
+        if (weapon == null)
+            return false;
+
+        if (disallowDuplicateWeapons && ContainsWeaponId(weapon.weaponId))
+            return false;
+
+        return FindEmptySlot() >= 0;
+    }
+
+    public bool TryAcquireWithoutReplacement(WeaponDefinition weapon, WeaponPersistentStatePayload runtimePayload = null)
+    {
+        return CanAcquireWithoutReplacement(weapon) && TryPickupWeapon(weapon, runtimePayload);
+    }
+
     private void Awake()
     {
         if (abilitySystem == null) abilitySystem = GetComponent<AbilitySystem>();

@@ -46,7 +46,12 @@ public class WorldItemPickup2D : InteractableBase
     }
 
     private void OnEnable() => WorldItemRegistry.Register(this);
-    private void OnDisable() => WorldItemRegistry.Unregister(this);
+
+    private void OnDisable()
+    {
+        WorldItemRegistry.Unregister(this);
+        WorldItemDetailPresenter.Instance?.Hide(GetDetailAnchor());
+    }
 
     public override bool CanInteract(IPlayerInteractor player)
     {
@@ -55,22 +60,29 @@ public class WorldItemPickup2D : InteractableBase
 
     public override void OnHighlight()
     {
-        if (spriteRenderer == null || item == null)
+        if (item == null)
             return;
 
-        spriteRenderer.GetPropertyBlock(outlinePropertyBlock);
-        outlinePropertyBlock.SetFloat(OutlineEnabledID, 1f);
-        spriteRenderer.SetPropertyBlock(outlinePropertyBlock);
+        if (spriteRenderer != null)
+        {
+            spriteRenderer.GetPropertyBlock(outlinePropertyBlock);
+            outlinePropertyBlock.SetFloat(OutlineEnabledID, 1f);
+            spriteRenderer.SetPropertyBlock(outlinePropertyBlock);
+        }
+
+        WorldItemDetailPresenter.Instance?.Show(GetDetailAnchor(), item, RelicLevel);
     }
 
     public override void OnUnHighlight()
     {
-        if (spriteRenderer == null)
-            return;
+        if (spriteRenderer != null)
+        {
+            spriteRenderer.GetPropertyBlock(outlinePropertyBlock);
+            outlinePropertyBlock.SetFloat(OutlineEnabledID, 0f);
+            spriteRenderer.SetPropertyBlock(outlinePropertyBlock);
+        }
 
-        spriteRenderer.GetPropertyBlock(outlinePropertyBlock);
-        outlinePropertyBlock.SetFloat(OutlineEnabledID, 0f);
-        spriteRenderer.SetPropertyBlock(outlinePropertyBlock);
+        WorldItemDetailPresenter.Instance?.Hide(GetDetailAnchor());
     }
 
     public override void OnPlayerInteract(IPlayerInteractor player)
@@ -103,6 +115,8 @@ public class WorldItemPickup2D : InteractableBase
     }
 
     public override Transform GetPromptAnchor() => promptAnchor != null ? promptAnchor : transform;
+
+    private Transform GetDetailAnchor() => promptAnchor != null ? promptAnchor : transform;
 
     private bool TryPickupWeapon(IPlayerInteractor player, WeaponDefinition weapon)
     {

@@ -230,5 +230,7 @@ public sealed class GamePlayDataManager : MonoBehaviour
         Data.pendingRunAffectionChanges.Clear();
         Data.pendingRunShortcutUnlocks ??= new List<PendingRunShortcutUnlock>();
         Data.pendingRunShortcutUnlocks.Clear();
+        Data.merchantStates ??= new List<MerchantRuntimeState>();
+        Data.merchantStates.Clear();
     }
 }
