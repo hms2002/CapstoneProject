@@ -1,0 +1,741 @@
+fileFormatVersion: 2
+guid: a10be7d902ae7e84091cb900686b22b2
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 7629293147015993689
+    second: Autumn 3 v1_0
+  - first:
+      213: 3207397080811760577
+    second: Autumn 3 v1_1
+  - first:
+      213: -5888775661204026672
+    second: Autumn 3 v1_2
+  - first:
+      213: 677856777654566474
+    second: Autumn 3 v1_3
+  - first:
+      213: -4023834132753110638
+    second: Autumn 3 v1_4
+  - first:
+      213: -8756099843222006979
+    second: Autumn 3 v1_5
+  - first:
+      213: 8890295177858604620
+    second: Autumn 3 v1_6
+  - first:
+      213: -3779029762422350784
+    second: Autumn 3 v1_7
+  - first:
+      213: 6376231110441092393
+    second: Autumn 3 v1_8
+  - first:
+      213: -2319793947016070469
+    second: Autumn 3 v1_9
+  - first:
+      213: 847370935029049063
+    second: Autumn 3 v1_10
+  - first:
+      213: -5962993671052900999
+    second: Autumn 3 v1_11
+  - first:
+      213: 1066203961480140089
+    second: Autumn 3 v1_12
+  - first:
+      213: -6188610162287568007
+    second: Autumn 3 v1_13
+  - first:
+      213: 6525937590752426810
+    second: Autumn 3 v1_14
+  - first:
+      213: 1246707752804999623
+    second: Autumn 3 v1_15
+  - first:
+      213: 7216997210259534788
+    second: Autumn 3 v1_16
+  - first:
+      213: -5588828747918305507
+    second: Autumn 3 v1_17
+  - first:
+      213: -325034513438676209
+    second: Autumn 3 v1_18
+  - first:
+      213: 7143554782523539978
+    second: Autumn 3 v1_19
+  - first:
+      213: -5417119467763650530
+    second: Autumn 3 v1_20
+  - first:
+      213: -2387816800715363481
+    second: Autumn 3 v1_21
+  - first:
+      213: -1291938289915874418
+    second: Autumn 3 v1_22
+  - first:
+      213: 716311916188146670
+    second: Autumn 3 v1_23
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Autumn 3 v1_0
+      rect:
+        serializedVersion: 2
+        x: 3
+        y: 95
+        width: 17
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 959d53b02b1b0e960800000000000000
+      internalID: 7629293147015993689
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Autumn 3 v1_1
+      rect:
+        serializedVersion: 2
+        x: 27
+        y: 95
+        width: 17
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1cbe867c6a6f28c20800000000000000
+      internalID: 3207397080811760577
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Autumn 3 v1_2
+      rect:
+        serializedVersion: 2
+        x: 51
+        y: 95
+        width: 17
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0dac7f77cbdd64ea0800000000000000
+      internalID: -5888775661204026672
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Autumn 3 v1_3
+      rect:
+        serializedVersion: 2
+        x: 75
+        y: 95
+        width: 17
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a4ef0b8d52b386900800000000000000
+      internalID: 677856777654566474
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Autumn 3 v1_4
+      rect:
+        serializedVersion: 2
+        x: 99
+        y: 95
+        width: 17
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 299a82aec287828c0800000000000000
+      internalID: -4023834132753110638
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Autumn 3 v1_5
+      rect:
+        serializedVersion: 2
+        x: 123
+        y: 95
+        width: 17
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d3316ea95951c7680800000000000000
+      internalID: -8756099843222006979
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Autumn 3 v1_6
+      rect:
+        serializedVersion: 2
+        x: 147
+        y: 95
+        width: 17
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c4e51a88c5ca06b70800000000000000
+      internalID: 8890295177858604620
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Autumn 3 v1_7
+      rect:
+        serializedVersion: 2
+        x: 171
+        y: 95
+        width: 17
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 04cdf2704703e8bc0800000000000000
+      internalID: -3779029762422350784
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Autumn 3 v1_8
+      rect:
+        serializedVersion: 2
+        x: 3
+        y: 71
+        width: 17
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 925c2a7896cec7850800000000000000
+      internalID: 6376231110441092393
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Autumn 3 v1_9
+      rect:
+        serializedVersion: 2
+        x: 27
+        y: 73
+        width: 17
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bba710c22bf6ecfd0800000000000000
+      internalID: -2319793947016070469
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Autumn 3 v1_10
+      rect:
+        serializedVersion: 2
+        x: 51
+        y: 71
+        width: 17
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7e6a567306772cb00800000000000000
+      internalID: 847370935029049063
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Autumn 3 v1_11
+      rect:
+        serializedVersion: 2
+        x: 75
+        y: 73
+        width: 17
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9754df679d03f3da0800000000000000
+      internalID: -5962993671052900999
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Autumn 3 v1_12
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 48
+        width: 21
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 935532e9adaebce00800000000000000
+      internalID: 1066203961480140089
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Autumn 3 v1_13
+      rect:
+        serializedVersion: 2
+        x: 25
+        y: 49
+        width: 21
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 97b1a7798d3ad1aa0800000000000000
+      internalID: -6188610162287568007
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Autumn 3 v1_14
+      rect:
+        serializedVersion: 2
+        x: 49
+        y: 49
+        width: 21
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a3bba23b9a9c09a50800000000000000
+      internalID: 6525937590752426810
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Autumn 3 v1_15
+      rect:
+        serializedVersion: 2
+        x: 73
+        y: 48
+        width: 21
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7c1eaa888123d4110800000000000000
+      internalID: 1246707752804999623
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Autumn 3 v1_16
+      rect:
+        serializedVersion: 2
+        x: 97
+        y: 47
+        width: 21
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4c33186b9bce72460800000000000000
+      internalID: 7216997210259534788
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Autumn 3 v1_17
+      rect:
+        serializedVersion: 2
+        x: 121
+        y: 47
+        width: 21
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d1796d95ddd7072b0800000000000000
+      internalID: -5588828747918305507
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Autumn 3 v1_18
+      rect:
+        serializedVersion: 2
+        x: 145
+        y: 47
+        width: 21
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f0beeb605de3d7bf0800000000000000
+      internalID: -325034513438676209
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Autumn 3 v1_19
+      rect:
+        serializedVersion: 2
+        x: 169
+        y: 47
+        width: 21
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a02cbddf931032360800000000000000
+      internalID: 7143554782523539978
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Autumn 3 v1_20
+      rect:
+        serializedVersion: 2
+        x: 193
+        y: 47
+        width: 21
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e1038129b8682d4b0800000000000000
+      internalID: -5417119467763650530
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Autumn 3 v1_21
+      rect:
+        serializedVersion: 2
+        x: 3
+        y: 23
+        width: 17
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 76ba6ac5545ccded0800000000000000
+      internalID: -2387816800715363481
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Autumn 3 v1_22
+      rect:
+        serializedVersion: 2
+        x: 3
+        y: 0
+        width: 17
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e83b6d568fc121ee0800000000000000
+      internalID: -1291938289915874418
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Autumn 3 v1_23
+      rect:
+        serializedVersion: 2
+        x: 27
+        y: 0
+        width: 17
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: eeb16c084e9d0f900800000000000000
+      internalID: 716311916188146670
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Autumn 3 v1_0: 7629293147015993689
+      Autumn 3 v1_1: 3207397080811760577
+      Autumn 3 v1_10: 847370935029049063
+      Autumn 3 v1_11: -5962993671052900999
+      Autumn 3 v1_12: 1066203961480140089
+      Autumn 3 v1_13: -6188610162287568007
+      Autumn 3 v1_14: 6525937590752426810
+      Autumn 3 v1_15: 1246707752804999623
+      Autumn 3 v1_16: 7216997210259534788
+      Autumn 3 v1_17: -5588828747918305507
+      Autumn 3 v1_18: -325034513438676209
+      Autumn 3 v1_19: 7143554782523539978
+      Autumn 3 v1_2: -5888775661204026672
+      Autumn 3 v1_20: -5417119467763650530
+      Autumn 3 v1_21: -2387816800715363481
+      Autumn 3 v1_22: -1291938289915874418
+      Autumn 3 v1_23: 716311916188146670
+      Autumn 3 v1_3: 677856777654566474
+      Autumn 3 v1_4: -4023834132753110638
+      Autumn 3 v1_5: -8756099843222006979
+      Autumn 3 v1_6: 8890295177858604620
+      Autumn 3 v1_7: -3779029762422350784
+      Autumn 3 v1_8: 6376231110441092393
+      Autumn 3 v1_9: -2319793947016070469
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

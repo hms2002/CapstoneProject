@@ -1,0 +1,741 @@
+fileFormatVersion: 2
+guid: 4bb13c45d89db3b46a8399d91d820c0e
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 2968378325080766823
+    second: Spring 2 v1_0
+  - first:
+      213: -4574152850833078242
+    second: Spring 2 v1_1
+  - first:
+      213: -1510904089641706574
+    second: Spring 2 v1_2
+  - first:
+      213: 6097679254893652442
+    second: Spring 2 v1_3
+  - first:
+      213: 7218331857021281126
+    second: Spring 2 v1_4
+  - first:
+      213: -98786414784759653
+    second: Spring 2 v1_5
+  - first:
+      213: -5622871966447046545
+    second: Spring 2 v1_6
+  - first:
+      213: -4509043052727687112
+    second: Spring 2 v1_7
+  - first:
+      213: 2688247562650274453
+    second: Spring 2 v1_8
+  - first:
+      213: -1733029072770904062
+    second: Spring 2 v1_9
+  - first:
+      213: 2570144667432075866
+    second: Spring 2 v1_10
+  - first:
+      213: 8032986766605019804
+    second: Spring 2 v1_11
+  - first:
+      213: -1629335755304864200
+    second: Spring 2 v1_12
+  - first:
+      213: 7816369979388028800
+    second: Spring 2 v1_13
+  - first:
+      213: 6704263382841730372
+    second: Spring 2 v1_14
+  - first:
+      213: 5215381194085058633
+    second: Spring 2 v1_15
+  - first:
+      213: 7190806259428659926
+    second: Spring 2 v1_16
+  - first:
+      213: -3557484401381741137
+    second: Spring 2 v1_17
+  - first:
+      213: -2927144949081031708
+    second: Spring 2 v1_18
+  - first:
+      213: -3392352744894923550
+    second: Spring 2 v1_19
+  - first:
+      213: -2147007417143738104
+    second: Spring 2 v1_20
+  - first:
+      213: 7210411745707828017
+    second: Spring 2 v1_21
+  - first:
+      213: 7980093376217985013
+    second: Spring 2 v1_22
+  - first:
+      213: -1608836809484290817
+    second: Spring 2 v1_23
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Spring 2 v1_0
+      rect:
+        serializedVersion: 2
+        x: 3
+        y: 95
+        width: 19
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 76978690c5cc13920800000000000000
+      internalID: 2968378325080766823
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spring 2 v1_1
+      rect:
+        serializedVersion: 2
+        x: 27
+        y: 95
+        width: 19
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e1801c197385580c0800000000000000
+      internalID: -4574152850833078242
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spring 2 v1_2
+      rect:
+        serializedVersion: 2
+        x: 51
+        y: 95
+        width: 19
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2bb983f4cb0380be0800000000000000
+      internalID: -1510904089641706574
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spring 2 v1_3
+      rect:
+        serializedVersion: 2
+        x: 75
+        y: 95
+        width: 19
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ad96436b9fe4f9450800000000000000
+      internalID: 6097679254893652442
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spring 2 v1_4
+      rect:
+        serializedVersion: 2
+        x: 99
+        y: 95
+        width: 19
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 663a3a0649aac2460800000000000000
+      internalID: 7218331857021281126
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spring 2 v1_5
+      rect:
+        serializedVersion: 2
+        x: 123
+        y: 95
+        width: 19
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b98be16774a01aef0800000000000000
+      internalID: -98786414784759653
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spring 2 v1_6
+      rect:
+        serializedVersion: 2
+        x: 147
+        y: 95
+        width: 19
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f60fb6edcbb87f1b0800000000000000
+      internalID: -5622871966447046545
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spring 2 v1_7
+      rect:
+        serializedVersion: 2
+        x: 171
+        y: 95
+        width: 19
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8382935cb39ac61c0800000000000000
+      internalID: -4509043052727687112
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spring 2 v1_8
+      rect:
+        serializedVersion: 2
+        x: 3
+        y: 71
+        width: 19
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 59a44105ae29e4520800000000000000
+      internalID: 2688247562650274453
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spring 2 v1_9
+      rect:
+        serializedVersion: 2
+        x: 27
+        y: 73
+        width: 19
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 200d0148d3b03f7e0800000000000000
+      internalID: -1733029072770904062
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spring 2 v1_10
+      rect:
+        serializedVersion: 2
+        x: 51
+        y: 71
+        width: 19
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a5247a335fcfaa320800000000000000
+      internalID: 2570144667432075866
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spring 2 v1_11
+      rect:
+        serializedVersion: 2
+        x: 75
+        y: 73
+        width: 19
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c9ae7e457e6ea7f60800000000000000
+      internalID: 8032986766605019804
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spring 2 v1_12
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 48
+        width: 22
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 836f53d53cf6369e0800000000000000
+      internalID: -1629335755304864200
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spring 2 v1_13
+      rect:
+        serializedVersion: 2
+        x: 24
+        y: 49
+        width: 22
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 08763765513597c60800000000000000
+      internalID: 7816369979388028800
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spring 2 v1_14
+      rect:
+        serializedVersion: 2
+        x: 48
+        y: 49
+        width: 22
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 445a0f6a6045a0d50800000000000000
+      internalID: 6704263382841730372
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spring 2 v1_15
+      rect:
+        serializedVersion: 2
+        x: 72
+        y: 48
+        width: 22
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 94841b15091c06840800000000000000
+      internalID: 5215381194085058633
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spring 2 v1_16
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 47
+        width: 22
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6d296e5c130eac360800000000000000
+      internalID: 7190806259428659926
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spring 2 v1_17
+      rect:
+        serializedVersion: 2
+        x: 120
+        y: 47
+        width: 22
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fade5a909c641aec0800000000000000
+      internalID: -3557484401381741137
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spring 2 v1_18
+      rect:
+        serializedVersion: 2
+        x: 144
+        y: 47
+        width: 22
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4eb32ff6d21b067d0800000000000000
+      internalID: -2927144949081031708
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spring 2 v1_19
+      rect:
+        serializedVersion: 2
+        x: 168
+        y: 47
+        width: 22
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2ec77b7e621fbe0d0800000000000000
+      internalID: -3392352744894923550
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spring 2 v1_20
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 47
+        width: 22
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 801c403212c4432e0800000000000000
+      internalID: -2147007417143738104
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spring 2 v1_21
+      rect:
+        serializedVersion: 2
+        x: 3
+        y: 23
+        width: 19
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1332833c747801460800000000000000
+      internalID: 7210411745707828017
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spring 2 v1_22
+      rect:
+        serializedVersion: 2
+        x: 3
+        y: 0
+        width: 19
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5ffabe335acfebe60800000000000000
+      internalID: 7980093376217985013
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spring 2 v1_23
+      rect:
+        serializedVersion: 2
+        x: 25
+        y: 0
+        width: 19
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ff4bd1d12734ca9e0800000000000000
+      internalID: -1608836809484290817
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Spring 2 v1_0: 2968378325080766823
+      Spring 2 v1_1: -4574152850833078242
+      Spring 2 v1_10: 2570144667432075866
+      Spring 2 v1_11: 8032986766605019804
+      Spring 2 v1_12: -1629335755304864200
+      Spring 2 v1_13: 7816369979388028800
+      Spring 2 v1_14: 6704263382841730372
+      Spring 2 v1_15: 5215381194085058633
+      Spring 2 v1_16: 7190806259428659926
+      Spring 2 v1_17: -3557484401381741137
+      Spring 2 v1_18: -2927144949081031708
+      Spring 2 v1_19: -3392352744894923550
+      Spring 2 v1_2: -1510904089641706574
+      Spring 2 v1_20: -2147007417143738104
+      Spring 2 v1_21: 7210411745707828017
+      Spring 2 v1_22: 7980093376217985013
+      Spring 2 v1_23: -1608836809484290817
+      Spring 2 v1_3: 6097679254893652442
+      Spring 2 v1_4: 7218331857021281126
+      Spring 2 v1_5: -98786414784759653
+      Spring 2 v1_6: -5622871966447046545
+      Spring 2 v1_7: -4509043052727687112
+      Spring 2 v1_8: 2688247562650274453
+      Spring 2 v1_9: -1733029072770904062
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

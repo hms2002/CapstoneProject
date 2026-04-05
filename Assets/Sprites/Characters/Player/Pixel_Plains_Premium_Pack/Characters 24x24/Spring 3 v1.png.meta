@@ -1,0 +1,741 @@
+fileFormatVersion: 2
+guid: 69035a8860cb7d641ba4e6f65e65624c
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 5374810517744982149
+    second: Spring 3 v1_0
+  - first:
+      213: -2980268257894149346
+    second: Spring 3 v1_1
+  - first:
+      213: -2833315669948571280
+    second: Spring 3 v1_2
+  - first:
+      213: -8176408733307203000
+    second: Spring 3 v1_3
+  - first:
+      213: 3400567368491201289
+    second: Spring 3 v1_4
+  - first:
+      213: 4806027864267500394
+    second: Spring 3 v1_5
+  - first:
+      213: -8994671651300465865
+    second: Spring 3 v1_6
+  - first:
+      213: -7037284379239919867
+    second: Spring 3 v1_7
+  - first:
+      213: -8839698380151873051
+    second: Spring 3 v1_8
+  - first:
+      213: -4873870968364145132
+    second: Spring 3 v1_9
+  - first:
+      213: -7807523101590638886
+    second: Spring 3 v1_10
+  - first:
+      213: 1690933057138218952
+    second: Spring 3 v1_11
+  - first:
+      213: -1440043741271658469
+    second: Spring 3 v1_12
+  - first:
+      213: -1152064451785772388
+    second: Spring 3 v1_13
+  - first:
+      213: -7170624600494772843
+    second: Spring 3 v1_14
+  - first:
+      213: 7519662013271380537
+    second: Spring 3 v1_15
+  - first:
+      213: 1106137195765445864
+    second: Spring 3 v1_16
+  - first:
+      213: 3313056593588138169
+    second: Spring 3 v1_17
+  - first:
+      213: 1838722711541658809
+    second: Spring 3 v1_18
+  - first:
+      213: 7553510308755795685
+    second: Spring 3 v1_19
+  - first:
+      213: -5914814867058570809
+    second: Spring 3 v1_20
+  - first:
+      213: -7645601092435646028
+    second: Spring 3 v1_21
+  - first:
+      213: 1844294627390468378
+    second: Spring 3 v1_22
+  - first:
+      213: 1609128115839532988
+    second: Spring 3 v1_23
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Spring 3 v1_0
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 95
+        width: 19
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 588193d50b9279a40800000000000000
+      internalID: 5374810517744982149
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spring 3 v1_1
+      rect:
+        serializedVersion: 2
+        x: 25
+        y: 95
+        width: 19
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e13d8d04fc5f3a6d0800000000000000
+      internalID: -2980268257894149346
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spring 3 v1_2
+      rect:
+        serializedVersion: 2
+        x: 49
+        y: 95
+        width: 19
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 071ea24e86a0ea8d0800000000000000
+      internalID: -2833315669948571280
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spring 3 v1_3
+      rect:
+        serializedVersion: 2
+        x: 73
+        y: 95
+        width: 19
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 84292d8d39f878e80800000000000000
+      internalID: -8176408733307203000
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spring 3 v1_4
+      rect:
+        serializedVersion: 2
+        x: 97
+        y: 95
+        width: 19
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 903f3b1310e313f20800000000000000
+      internalID: 3400567368491201289
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spring 3 v1_5
+      rect:
+        serializedVersion: 2
+        x: 121
+        y: 95
+        width: 19
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a6b2b4e01e072b240800000000000000
+      internalID: 4806027864267500394
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spring 3 v1_6
+      rect:
+        serializedVersion: 2
+        x: 145
+        y: 95
+        width: 19
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 733a5f8f9c18c2380800000000000000
+      internalID: -8994671651300465865
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spring 3 v1_7
+      rect:
+        serializedVersion: 2
+        x: 169
+        y: 95
+        width: 19
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 50fcff7642b865e90800000000000000
+      internalID: -7037284379239919867
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spring 3 v1_8
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 71
+        width: 19
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5e1a3717825135580800000000000000
+      internalID: -8839698380151873051
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spring 3 v1_9
+      rect:
+        serializedVersion: 2
+        x: 25
+        y: 73
+        width: 19
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 416e0995d288c5cb0800000000000000
+      internalID: -4873870968364145132
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spring 3 v1_10
+      rect:
+        serializedVersion: 2
+        x: 49
+        y: 71
+        width: 19
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: adea80aea1b16a390800000000000000
+      internalID: -7807523101590638886
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spring 3 v1_11
+      rect:
+        serializedVersion: 2
+        x: 73
+        y: 73
+        width: 19
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8c750b118a6677710800000000000000
+      internalID: 1690933057138218952
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spring 3 v1_12
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 46
+        width: 21
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b107a74d8dfe30ce0800000000000000
+      internalID: -1440043741271658469
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spring 3 v1_13
+      rect:
+        serializedVersion: 2
+        x: 25
+        y: 47
+        width: 21
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c9234f82c7b0300f0800000000000000
+      internalID: -1152064451785772388
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spring 3 v1_14
+      rect:
+        serializedVersion: 2
+        x: 49
+        y: 47
+        width: 21
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 59de4dddae2dc7c90800000000000000
+      internalID: -7170624600494772843
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spring 3 v1_15
+      rect:
+        serializedVersion: 2
+        x: 73
+        y: 47
+        width: 21
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9321a0c92c43b5860800000000000000
+      internalID: 7519662013271380537
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spring 3 v1_16
+      rect:
+        serializedVersion: 2
+        x: 97
+        y: 47
+        width: 21
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8e432724be9c95f00800000000000000
+      internalID: 1106137195765445864
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spring 3 v1_17
+      rect:
+        serializedVersion: 2
+        x: 121
+        y: 47
+        width: 21
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9b036952b675afd20800000000000000
+      internalID: 3313056593588138169
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spring 3 v1_18
+      rect:
+        serializedVersion: 2
+        x: 145
+        y: 47
+        width: 21
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9b432ed6094748910800000000000000
+      internalID: 1838722711541658809
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spring 3 v1_19
+      rect:
+        serializedVersion: 2
+        x: 169
+        y: 47
+        width: 21
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5eee3a80b9573d860800000000000000
+      internalID: 7553510308755795685
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spring 3 v1_20
+      rect:
+        serializedVersion: 2
+        x: 193
+        y: 47
+        width: 21
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7c946c8673b5aeda0800000000000000
+      internalID: -5914814867058570809
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spring 3 v1_21
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 23
+        width: 19
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4b9e807805e55e590800000000000000
+      internalID: -7645601092435646028
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spring 3 v1_22
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 0
+        width: 19
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a1135ce2130489910800000000000000
+      internalID: 1844294627390468378
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spring 3 v1_23
+      rect:
+        serializedVersion: 2
+        x: 25
+        y: 0
+        width: 18
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cbf75beee75c45610800000000000000
+      internalID: 1609128115839532988
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Spring 3 v1_0: 5374810517744982149
+      Spring 3 v1_1: -2980268257894149346
+      Spring 3 v1_10: -7807523101590638886
+      Spring 3 v1_11: 1690933057138218952
+      Spring 3 v1_12: -1440043741271658469
+      Spring 3 v1_13: -1152064451785772388
+      Spring 3 v1_14: -7170624600494772843
+      Spring 3 v1_15: 7519662013271380537
+      Spring 3 v1_16: 1106137195765445864
+      Spring 3 v1_17: 3313056593588138169
+      Spring 3 v1_18: 1838722711541658809
+      Spring 3 v1_19: 7553510308755795685
+      Spring 3 v1_2: -2833315669948571280
+      Spring 3 v1_20: -5914814867058570809
+      Spring 3 v1_21: -7645601092435646028
+      Spring 3 v1_22: 1844294627390468378
+      Spring 3 v1_23: 1609128115839532988
+      Spring 3 v1_3: -8176408733307203000
+      Spring 3 v1_4: 3400567368491201289
+      Spring 3 v1_5: 4806027864267500394
+      Spring 3 v1_6: -8994671651300465865
+      Spring 3 v1_7: -7037284379239919867
+      Spring 3 v1_8: -8839698380151873051
+      Spring 3 v1_9: -4873870968364145132
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -1,0 +1,741 @@
+fileFormatVersion: 2
+guid: 3a1b85eed6802e540a729c3995999805
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 5429076507532881640
+    second: Basic Bunny character v2_0
+  - first:
+      213: -7643238973727914158
+    second: Basic Bunny character v2_1
+  - first:
+      213: 6707301643116373339
+    second: Basic Bunny character v2_2
+  - first:
+      213: -683441587234897619
+    second: Basic Bunny character v2_3
+  - first:
+      213: -3402582371074887926
+    second: Basic Bunny character v2_4
+  - first:
+      213: 8506281310960710986
+    second: Basic Bunny character v2_5
+  - first:
+      213: 6585017495794278504
+    second: Basic Bunny character v2_6
+  - first:
+      213: 6969540245652708230
+    second: Basic Bunny character v2_7
+  - first:
+      213: -3901033001215476385
+    second: Basic Bunny character v2_8
+  - first:
+      213: -5173768012493734511
+    second: Basic Bunny character v2_9
+  - first:
+      213: 7685226092157554392
+    second: Basic Bunny character v2_10
+  - first:
+      213: -1701554164835304994
+    second: Basic Bunny character v2_11
+  - first:
+      213: -5260076284377676993
+    second: Basic Bunny character v2_12
+  - first:
+      213: -7247107084531792002
+    second: Basic Bunny character v2_13
+  - first:
+      213: -3007019644458694055
+    second: Basic Bunny character v2_14
+  - first:
+      213: 8826583543979965468
+    second: Basic Bunny character v2_15
+  - first:
+      213: 4399383725668331049
+    second: Basic Bunny character v2_16
+  - first:
+      213: -1214880300970357438
+    second: Basic Bunny character v2_17
+  - first:
+      213: -4996063350642235306
+    second: Basic Bunny character v2_18
+  - first:
+      213: -8921141473238308150
+    second: Basic Bunny character v2_19
+  - first:
+      213: -7088504582514374606
+    second: Basic Bunny character v2_20
+  - first:
+      213: -5747871320487177864
+    second: Basic Bunny character v2_21
+  - first:
+      213: -386099116847314760
+    second: Basic Bunny character v2_22
+  - first:
+      213: -7788106365714950829
+    second: Basic Bunny character v2_23
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Basic Bunny character v2_0
+      rect:
+        serializedVersion: 2
+        x: 4
+        y: 95
+        width: 17
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8ee6ae1b154f75b40800000000000000
+      internalID: 5429076507532881640
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Bunny character v2_1
+      rect:
+        serializedVersion: 2
+        x: 28
+        y: 95
+        width: 17
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 257c68526a2cde590800000000000000
+      internalID: -7643238973727914158
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Bunny character v2_2
+      rect:
+        serializedVersion: 2
+        x: 28
+        y: 72
+        width: 17
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b55685fbe4f151d50800000000000000
+      internalID: 6707301643116373339
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Bunny character v2_3
+      rect:
+        serializedVersion: 2
+        x: 52
+        y: 95
+        width: 17
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d2182285f7de386f0800000000000000
+      internalID: -683441587234897619
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Bunny character v2_4
+      rect:
+        serializedVersion: 2
+        x: 76
+        y: 95
+        width: 17
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a0f23157c5997c0d0800000000000000
+      internalID: -3402582371074887926
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Bunny character v2_5
+      rect:
+        serializedVersion: 2
+        x: 76
+        y: 72
+        width: 17
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a457b5bb8c16c0670800000000000000
+      internalID: 8506281310960710986
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Bunny character v2_6
+      rect:
+        serializedVersion: 2
+        x: 100
+        y: 95
+        width: 17
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 860ec84068ea26b50800000000000000
+      internalID: 6585017495794278504
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Bunny character v2_7
+      rect:
+        serializedVersion: 2
+        x: 124
+        y: 95
+        width: 17
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 68b1bed5de7c8b060800000000000000
+      internalID: 6969540245652708230
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Bunny character v2_8
+      rect:
+        serializedVersion: 2
+        x: 148
+        y: 95
+        width: 17
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f5db979672fbcd9c0800000000000000
+      internalID: -3901033001215476385
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Bunny character v2_9
+      rect:
+        serializedVersion: 2
+        x: 172
+        y: 95
+        width: 17
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 19d380987651338b0800000000000000
+      internalID: -5173768012493734511
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Bunny character v2_10
+      rect:
+        serializedVersion: 2
+        x: 4
+        y: 71
+        width: 17
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8de4d99a96867aa60800000000000000
+      internalID: 7685226092157554392
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Bunny character v2_11
+      rect:
+        serializedVersion: 2
+        x: 52
+        y: 71
+        width: 17
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ed9b7e6908dd268e0800000000000000
+      internalID: -1701554164835304994
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Bunny character v2_12
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 49
+        width: 23
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f33463a0d747007b0800000000000000
+      internalID: -5260076284377676993
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Bunny character v2_13
+      rect:
+        serializedVersion: 2
+        x: 23
+        y: 50
+        width: 24
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e770441e08a1d6b90800000000000000
+      internalID: -7247107084531792002
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Bunny character v2_14
+      rect:
+        serializedVersion: 2
+        x: 47
+        y: 50
+        width: 24
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 95a0b63b09be446d0800000000000000
+      internalID: -3007019644458694055
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Bunny character v2_15
+      rect:
+        serializedVersion: 2
+        x: 71
+        y: 49
+        width: 24
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c1cfb3fc7f25e7a70800000000000000
+      internalID: 8826583543979965468
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Bunny character v2_16
+      rect:
+        serializedVersion: 2
+        x: 95
+        y: 47
+        width: 24
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 92e68178030cd0d30800000000000000
+      internalID: 4399383725668331049
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Bunny character v2_17
+      rect:
+        serializedVersion: 2
+        x: 119
+        y: 47
+        width: 24
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 24dca009dc0e32fe0800000000000000
+      internalID: -1214880300970357438
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Bunny character v2_18
+      rect:
+        serializedVersion: 2
+        x: 143
+        y: 47
+        width: 24
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6582f955ada6aaab0800000000000000
+      internalID: -4996063350642235306
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Bunny character v2_19
+      rect:
+        serializedVersion: 2
+        x: 167
+        y: 47
+        width: 24
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: aca20a8a81db13480800000000000000
+      internalID: -8921141473238308150
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Bunny character v2_20
+      rect:
+        serializedVersion: 2
+        x: 191
+        y: 47
+        width: 24
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 238808283a290ad90800000000000000
+      internalID: -7088504582514374606
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Bunny character v2_21
+      rect:
+        serializedVersion: 2
+        x: 4
+        y: 23
+        width: 17
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 871d4bfcc757b30b0800000000000000
+      internalID: -5747871320487177864
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Bunny character v2_22
+      rect:
+        serializedVersion: 2
+        x: 4
+        y: 0
+        width: 17
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8b8493c16ec44aaf0800000000000000
+      internalID: -386099116847314760
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Bunny character v2_23
+      rect:
+        serializedVersion: 2
+        x: 26
+        y: 0
+        width: 18
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3551a9606861be390800000000000000
+      internalID: -7788106365714950829
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Basic Bunny character v2_0: 5429076507532881640
+      Basic Bunny character v2_1: -7643238973727914158
+      Basic Bunny character v2_10: 7685226092157554392
+      Basic Bunny character v2_11: -1701554164835304994
+      Basic Bunny character v2_12: -5260076284377676993
+      Basic Bunny character v2_13: -7247107084531792002
+      Basic Bunny character v2_14: -3007019644458694055
+      Basic Bunny character v2_15: 8826583543979965468
+      Basic Bunny character v2_16: 4399383725668331049
+      Basic Bunny character v2_17: -1214880300970357438
+      Basic Bunny character v2_18: -4996063350642235306
+      Basic Bunny character v2_19: -8921141473238308150
+      Basic Bunny character v2_2: 6707301643116373339
+      Basic Bunny character v2_20: -7088504582514374606
+      Basic Bunny character v2_21: -5747871320487177864
+      Basic Bunny character v2_22: -386099116847314760
+      Basic Bunny character v2_23: -7788106365714950829
+      Basic Bunny character v2_3: -683441587234897619
+      Basic Bunny character v2_4: -3402582371074887926
+      Basic Bunny character v2_5: 8506281310960710986
+      Basic Bunny character v2_6: 6585017495794278504
+      Basic Bunny character v2_7: 6969540245652708230
+      Basic Bunny character v2_8: -3901033001215476385
+      Basic Bunny character v2_9: -5173768012493734511
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
