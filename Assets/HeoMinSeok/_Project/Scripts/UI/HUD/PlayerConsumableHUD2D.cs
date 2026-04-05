@@ -207,6 +207,9 @@ public class PlayerConsumableHUD2D : MonoBehaviour
 
         if (ui.icon != null)
         {
+            if (ui.icon.gameObject.activeSelf != hasItem)
+                ui.icon.gameObject.SetActive(hasItem);
+
             ui.icon.enabled = hasItem;
             ui.icon.sprite = hasItem ? consumable.Icon : null;
         }

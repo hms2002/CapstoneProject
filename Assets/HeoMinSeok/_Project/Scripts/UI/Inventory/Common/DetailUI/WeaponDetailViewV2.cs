@@ -6,11 +6,12 @@ using UnityEngine.UI;
 using UnityGAS;
 
 /// <summary>
+/// 책임 :
 /// 첨부된 새 기획 레이아웃(상단 설명+스탯, 아래 능력 박스 3개)을 위한 무기 디테일 뷰.
 ///
 /// ⚠️ 프리팹/레퍼런스는 인스펙터에서 연결해야 합니다.
 /// - summaryText: 무기 설명(따옴표 박스 등)
-/// - statRoot + statLinePrefab: "이동속도 +10%" 같은 줄들
+/// - statRoot + statLinePrefab: "이동속도 [+10%]" 같은 정형화된 줄들
 /// - abilityRoot + abilityBlockPrefab: 일반/스킬1/스킬2 박스
 ///
 /// 본문 텍스트는 기존과 동일하게 IDetailProvider(BuildDetailBlock)로부터 받아옵니다.
@@ -44,7 +45,7 @@ public class WeaponDetailViewV2 : MonoBehaviour, IItemDetailView
         // Summary
         if (summaryText != null)
         {
-            string text = w.description ?? "";
+            string text = w.storyText ?? "";
             if (services != null && services.formatText != null)
                 text = services.formatText(text);
             summaryText.text = text;
@@ -53,10 +54,9 @@ public class WeaponDetailViewV2 : MonoBehaviour, IItemDetailView
         // Stats
         BuildStatLines(w);
 
-        // Abilities (order matches screenshot: 기본/스킬2/스킬1 등은 기획에 맞춰 바꿔도 됨)
-        AddAbilityBlock("우클릭", w.attack, w.attackInputHint, ctx, services);
-        AddAbilityBlock("Q", w.skill1, w.skill1InputHint, ctx, services);
-        AddAbilityBlock("E", w.skill2, w.skill2InputHint, ctx, services);
+        // Abilities
+        AddAbilityBlock("스킬 1", w.skill1, w.skill1InputHint, ctx, services);
+        AddAbilityBlock("스킬 2", w.skill2, w.skill2InputHint, ctx, services);
 
         Canvas.ForceUpdateCanvases();
     }
@@ -97,9 +97,9 @@ public class WeaponDetailViewV2 : MonoBehaviour, IItemDetailView
 
             string value;
             if (e.type == ModifierType.Percent)
-                value = $"+{e.value * 100f:0.#}%";
+                value = FormatTooltipValue(e.value, true);
             else
-                value = $"+{e.value:0.##}";
+                value = FormatTooltipValue(e.value, false);
 
             var line = Instantiate(statLinePrefab, statRoot);
             line.Set(label, value);
@@ -116,8 +116,9 @@ public class WeaponDetailViewV2 : MonoBehaviour, IItemDetailView
         if (services != null && services.formatText != null)
             body = services.formatText(body);
 
+        string displayHeader = !string.IsNullOrEmpty(ability.abilityName) ? ability.abilityName : header;
         var view = Instantiate(abilityBlockPrefab, abilityRoot);
-        view.Set(header, ability.icon, inputHint, ability.cooldown, body,
+        view.Set(displayHeader, ability.icon, inputHint, ability.cooldown, "-", body,
             services != null ? services.showGlossary : null);
 
         _spawnedAbilities.Add(view);
@@ -127,9 +128,7 @@ public class WeaponDetailViewV2 : MonoBehaviour, IItemDetailView
     {
         var sb = new StringBuilder();
 
-        // 상단 타이틀/설명
-        if (!string.IsNullOrEmpty(ad.abilityName))
-            sb.AppendLine(ad.abilityName);
+        // 상단 설명
         if (!string.IsNullOrEmpty(ad.description))
             sb.AppendLine(ad.description);
 
@@ -145,5 +144,13 @@ public class WeaponDetailViewV2 : MonoBehaviour, IItemDetailView
         }
 
         return sb.ToString().TrimEnd();
+    }
+
+    private static string FormatTooltipValue(float value, bool isPercent)
+    {
+        string sign = value > 0f ? "+" : string.Empty;
+        float absValue = isPercent ? value * 100f : value;
+        string suffix = isPercent ? "%" : string.Empty;
+        return $"[{sign}{absValue:0.##}{suffix}]";
     }
 }

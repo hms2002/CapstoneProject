@@ -18,6 +18,6 @@ MonoBehaviour:
   valueAttribute: {fileID: 0}
   maxAttribute: {fileID: 0}
   statId: 143
-  displayFormat: 2
-  valueMultiplier: 100
-  decimalPlaces: 0
+  displayFormat: 1
+  valueMultiplier: 1
+  decimalPlaces: 2

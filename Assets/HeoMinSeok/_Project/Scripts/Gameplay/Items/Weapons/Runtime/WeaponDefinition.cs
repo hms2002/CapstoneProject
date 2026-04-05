@@ -8,12 +8,20 @@ public enum WeaponAbilitySlot { Attack, Skill1, Skill2 }
 [CreateAssetMenu(fileName = "WD_NewWeapon", menuName = "Game/Weapon Definition")]
 public class WeaponDefinition : ScriptableObject, IInventoryItemDefinition
 {
+    /// <summary>
+    /// 책임 :
+    /// - 하나의 무기가 인벤토리/장착/툴팁/UI에서 어떤 이름, 아이콘, 능력, 장착 스탯을 가지는지 정의한다.
+    /// - 무기 툴팁이 사용할 스토리 텍스트와 요약 스탯 줄도 함께 제공한다.
+    /// </summary>
+
     [Header("Info")]
     public string weaponId = "Weapon.New";
     public string displayName = "New Weapon";
     public Sprite icon;
 
-    [TextArea] public string description;
+    [Header("Tooltip")]
+    [TextArea]
+    public string storyText;
 
     [Header("Stats (applied only while equipped)")]
     public List<WeaponStatModifier> statModifiers = new();
@@ -26,6 +34,11 @@ public class WeaponDefinition : ScriptableObject, IInventoryItemDefinition
     [Serializable]
     public struct WeaponStatModifier
     {
+        /// <summary>
+        /// 책임 :
+        /// - 무기 장착 중 AttributeSet에 적용할 실제 스탯 변경 한 줄을 정의한다.
+        /// - Flat/Percent와 UI 라벨 오버라이드를 함께 제공한다.
+        /// </summary>
         public AttributeDefinition attribute;
         public ModifierType type;  // Flat / Percent
 

@@ -12,10 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5686dc461c9b6a546991383454aa181f, type: 3}
   m_Name: WD_WindWeapon
   m_EditorClassIdentifier: 
-  weaponId: Weapon.WD_WindWeapon
-  displayName: WD_WindWeapon
+  weaponId: Weapon.WindWeapon
+  displayName: "\uC794\uC601\uC758 \uB0A0\uAC1C"
   icon: {fileID: 1408481339, guid: 7e11de47ebfa53a42a94e5fb92a94f06, type: 3}
-  description: 
+  storyText: "\"\uD55C \uBC88 \uC2DC\uC804\uB41C \uAE30\uC0AC\uC758 \uB0A0\uAC2F\uC9D3\uC740
+    \uACB0\uCF54 \uBA48\uCD94\uC9C0 \uC54A\uC73C\uBA70, \n\uADF8 \uB05D\uC740 \uC624\uC9C1
+    \uC2B9\uB9AC \uD639\uC740 \uC644\uC804\uD55C \uC18C\uBA78\uBF50\uC774\uB2E4.\""
   statModifiers:
   - attribute: {fileID: 11400000, guid: 23db6468e859c6f42b0230a5af7ca81c, type: 2}
     type: 1
