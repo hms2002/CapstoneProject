@@ -309,7 +309,15 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Falling leaves 2.1_0: 5509220371016232753
+      Falling leaves 2.1_1: -6284014997262724346
+      Falling leaves 2.1_2: -7370889505130858139
+      Falling leaves 2.1_3: -6972803277347146555
+      Falling leaves 2.1_4: -1965381798918647623
+      Falling leaves 2.1_5: -3258190333473947176
+      Falling leaves 2.1_6: 3649019850798003792
+      Falling leaves 2.1_7: -4975433977070663718
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
