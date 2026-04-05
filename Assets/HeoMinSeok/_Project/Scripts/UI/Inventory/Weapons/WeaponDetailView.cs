@@ -49,8 +49,8 @@ public class WeaponDetailView : MonoBehaviour, IItemDetailView
 
         var sb = new StringBuilder();
 
-        if (!string.IsNullOrEmpty(w.description))
-            sb.AppendLine(w.description);
+        if (!string.IsNullOrEmpty(w.storyText))
+            sb.AppendLine(w.storyText);
 
         if (w.statModifiers != null && w.statModifiers.Count > 0)
         {

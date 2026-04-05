@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 808910561e593534f9ea3637c00cc255, type: 3}
   m_Name: AD_RW_Skill1_Rush
   m_EditorClassIdentifier: 
-  abilityName: AD_RW_Skill1_Rush
+  abilityName: 러쉬
   icon: {fileID: -1138107394, guid: ef16b2ddeb64123459076c2c8a541a63, type: 3}
-  description: AD_RW_Skill1_Rush
+  description: "● 사용 즉시 가속하며, 유지 시 단계별 추가 가속\n● 0/3/6초마다 [[이동속도]] {val:100/200/300%} 증가\n● {em:마우스 방향 강제 이동}\n● {neg:피격, 적 충돌, 공격 시 가속 즉시 종료}"
   cooldown: 12
   executionPolicy: 0
   useCharges: 0

@@ -9,6 +9,8 @@ using UnityEngine;
 public class WeaponStatLineView : MonoBehaviour
 {
     [SerializeField] private TMP_Text bodyText;
+    [SerializeField] private string positiveValueColorHex = "66FF66";
+    [SerializeField] private string negativeValueColorHex = "FF5050";
 
     public void Set(string label, string value)
     {
@@ -16,14 +18,31 @@ public class WeaponStatLineView : MonoBehaviour
             bodyText.text = BuildInlineText(label, value);
     }
 
-    private static string BuildInlineText(string label, string value)
+    private string BuildInlineText(string label, string value)
     {
         string safeLabel = label ?? string.Empty;
         string safeValue = value ?? string.Empty;
         if (string.IsNullOrWhiteSpace(safeValue))
             return $"● {safeLabel}";
         if (string.IsNullOrWhiteSpace(safeLabel))
-            return $"● {safeValue}";
-        return $"● {safeLabel} {safeValue}";
+            return $"● {ApplyValueColor(safeValue)}";
+        return $"● {safeLabel} {ApplyValueColor(safeValue)}";
+    }
+
+    private string ApplyValueColor(string value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return string.Empty;
+
+        string colorHex = string.Empty;
+        if (value.Contains("+"))
+            colorHex = positiveValueColorHex;
+        else if (value.Contains("-"))
+            colorHex = negativeValueColorHex;
+
+        if (string.IsNullOrWhiteSpace(colorHex))
+            return value;
+
+        return $"<color=#{colorHex}>{value}</color>";
     }
 }

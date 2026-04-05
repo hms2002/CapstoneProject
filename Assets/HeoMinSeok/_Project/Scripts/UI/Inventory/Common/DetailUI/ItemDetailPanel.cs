@@ -22,6 +22,7 @@ public class ItemDetailPanel : MonoBehaviour, IHoverView
     [SerializeField] private GlossaryPopup glossaryPopup;
 
     [Header("Services")]
+    [SerializeField] private TooltipColorPalette tooltipColorPalette;
     [SerializeField] private string glossaryLinkColorHex = "5EC8FF";
 
     private ItemDetailPanelServices _services;
@@ -51,7 +52,7 @@ public class ItemDetailPanel : MonoBehaviour, IHoverView
         GlobalUIRoot.AdoptToCanvas(GlobalCanvasLayer.Hover, transform);
         _services = new ItemDetailPanelServices
         {
-            formatText = raw => DetailTextFormatter.ApplyGlossaryLinks(raw, glossaryLinkColorHex),
+            formatText = raw => DetailTextFormatter.Format(raw, tooltipColorPalette, glossaryLinkColorHex),
             showGlossary = ShowGlossaryPopup
         };
 

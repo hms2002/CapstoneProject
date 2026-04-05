@@ -45,7 +45,7 @@ public class WeaponDetailViewV2 : MonoBehaviour, IItemDetailView
         // Summary
         if (summaryText != null)
         {
-            string text = string.IsNullOrWhiteSpace(w.storyText) ? w.description ?? "" : w.storyText;
+            string text = w.storyText ?? "";
             if (services != null && services.formatText != null)
                 text = services.formatText(text);
             summaryText.text = text;
@@ -83,38 +83,6 @@ public class WeaponDetailViewV2 : MonoBehaviour, IItemDetailView
     private void BuildStatLines(WeaponDefinition w)
     {
         if (statRoot == null || statLinePrefab == null || w == null) return;
-
-        if (w.tooltipStats != null && w.tooltipStats.Count > 0)
-        {
-            for (int i = 0; i < w.tooltipStats.Count; i++)
-            {
-                var lineData = w.tooltipStats[i];
-                if (string.IsNullOrWhiteSpace(lineData.label))
-                    continue;
-
-                var line = Instantiate(statLinePrefab, statRoot);
-                line.Set(lineData.label, FormatTooltipValue(lineData.value, lineData.isPercent));
-                _spawnedStats.Add(line);
-            }
-
-            return;
-        }
-
-        if (w.tooltipStatLines != null && w.tooltipStatLines.Count > 0)
-        {
-            for (int i = 0; i < w.tooltipStatLines.Count; i++)
-            {
-                var lineText = w.tooltipStatLines[i];
-                if (string.IsNullOrWhiteSpace(lineText))
-                    continue;
-
-                var line = Instantiate(statLinePrefab, statRoot);
-                line.Set(lineText, string.Empty);
-                _spawnedStats.Add(line);
-            }
-
-            return;
-        }
 
         if (w.statModifiers == null) return;
 
