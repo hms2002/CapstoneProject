@@ -51,7 +51,7 @@ MonoBehaviour:
   sourceObject: {fileID: 11400000, guid: 64a49098e3c02fd4eb8d1d2ab7bb04a0, type: 2}
   containers: []
   audioOnCastStart:
-    key: asdf.asdfadfs.adfs
+    key: ability.dash.start
     volumeMultiplier: 1
     anchorPolicy: 0
     localOffset: {x: 0, y: 0, z: 0}
@@ -71,8 +71,8 @@ MonoBehaviour:
     anchorPolicy: 0
     localOffset: {x: 0, y: 0, z: 0}
   audioOnEnd:
-    key: 
-    volumeMultiplier: 0
+    key: ability.dash.end
+    volumeMultiplier: 1
     anchorPolicy: 0
     localOffset: {x: 0, y: 0, z: 0}
   audioOnCastCancelled:

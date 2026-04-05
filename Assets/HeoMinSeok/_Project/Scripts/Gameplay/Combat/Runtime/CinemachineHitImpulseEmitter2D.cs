@@ -30,7 +30,7 @@ namespace UnityGAS
         /// </summary>
         public void Emit(GameObject causer, float amplitude)
         {
-            if (amplitude <= 0f)
+            if (amplitude <= 0f || !GameSettingsService.IsScreenShakeEnabled())
                 return;
 
             var source = EnsureImpulseSource();

@@ -1,5 +1,8 @@
 using UnityEngine;
 using DG.Tweening;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 public class DoorObject : InteractableBase
 {
@@ -67,6 +70,8 @@ public class DoorObject : InteractableBase
         }
 
         oneWayOpenThreshold = Mathf.Clamp(oneWayOpenThreshold, 0f, 1f);
+        EnforceIntrinsicConfiguration(hasLinkedShortcut: HasLinkedShortcut());
+        EditorSyncConfigurationFromLinkedShortcuts();
     }
 
     public void GenerateID()
@@ -80,6 +85,8 @@ public class DoorObject : InteractableBase
 
     private void Awake()
     {
+        EnforceIntrinsicConfiguration(hasLinkedShortcut: HasLinkedShortcut());
+
         if (string.IsNullOrEmpty(mapID))
             mapID = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
 
@@ -455,6 +462,101 @@ public class DoorObject : InteractableBase
     private float GetSignedDoorZRotation()
     {
         return NormalizeSignedAngle(transform.eulerAngles.z);
+    }
+
+    public void ApplyConfigurationFromShortcut(DoorType requiredDoorType, bool requiredDoorIsPermanent, Object source = null)
+    {
+        bool changed = false;
+
+        if (doorType != requiredDoorType)
+        {
+            doorType = requiredDoorType;
+            changed = true;
+        }
+
+        if (isPermanent != requiredDoorIsPermanent)
+        {
+            isPermanent = requiredDoorIsPermanent;
+            changed = true;
+        }
+
+#if UNITY_EDITOR
+        MarkDirtyIfNeeded(changed);
+#endif
+    }
+
+#if UNITY_EDITOR
+    public void EditorSyncConfigurationFromLinkedShortcuts()
+    {
+        if (this == null)
+            return;
+
+        ShortcutBase[] shortcuts = FindObjectsOfType<ShortcutBase>(true);
+        ShortcutBase linkedShortcut = null;
+        DoorType? resolvedDoorType = null;
+        bool? resolvedIsPermanent = null;
+
+        for (int i = 0; i < shortcuts.Length; i++)
+        {
+            ShortcutBase shortcut = shortcuts[i];
+            if (shortcut == null || shortcut.TargetDoor != this)
+                continue;
+
+            if (!shortcut.TryGetRequiredDoorConfiguration(out DoorType shortcutDoorType, out bool shortcutIsPermanent))
+                continue;
+
+            if (linkedShortcut == null)
+            {
+                linkedShortcut = shortcut;
+                resolvedDoorType = shortcutDoorType;
+                resolvedIsPermanent = shortcutIsPermanent;
+                continue;
+            }
+
+            if (resolvedDoorType != shortcutDoorType || resolvedIsPermanent != shortcutIsPermanent)
+            {
+                Debug.LogWarning(
+                    $"[DoorObject] Conflicting shortcut configuration sources found on '{name}'. " +
+                    $"Keeping '{linkedShortcut.GetType().Name}' and ignoring '{shortcut.GetType().Name}'.",
+                    this);
+            }
+        }
+
+        if (resolvedDoorType.HasValue && resolvedIsPermanent.HasValue)
+        {
+            ApplyConfigurationFromShortcut(resolvedDoorType.Value, resolvedIsPermanent.Value, linkedShortcut);
+            return;
+        }
+
+        EnforceIntrinsicConfiguration(hasLinkedShortcut: false);
+    }
+
+    private void MarkDirtyIfNeeded(bool changed)
+    {
+        if (!changed || Application.isPlaying)
+            return;
+
+        EditorUtility.SetDirty(this);
+    }
+#endif
+
+    private void EnforceIntrinsicConfiguration(bool hasLinkedShortcut)
+    {
+        if (!hasLinkedShortcut && doorType == DoorType.OneWay)
+            isPermanent = true;
+    }
+
+    private bool HasLinkedShortcut()
+    {
+        ShortcutBase[] shortcuts = GetComponentsInChildren<ShortcutBase>(true);
+        for (int i = 0; i < shortcuts.Length; i++)
+        {
+            ShortcutBase shortcut = shortcuts[i];
+            if (shortcut != null && shortcut.TargetDoor == this)
+                return true;
+        }
+
+        return false;
     }
 
     private static float NormalizeSignedAngle(float angle)

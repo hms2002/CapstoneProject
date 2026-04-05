@@ -136,19 +136,17 @@ namespace UnityGAS.Sample
                     return aim.AimDirection.normalized;
             }
 
-            float x = Input.GetAxisRaw("Horizontal");
-            float y = Input.GetAxisRaw("Vertical");
-            var move = new Vector2(x, y);
+            InputBindingService input = InputBindingService.EnsureInstance();
+            var move = input.GetMoveVectorRaw();
             if (move.sqrMagnitude > 0.0001f)
                 return move.normalized;
 
             if (fallbackToAim)
             {
-                var cam = Camera.main;
-                if (cam != null)
+                Camera cam = Camera.main;
+                if (cam != null && input != null)
                 {
-                    Vector3 w = cam.ScreenToWorldPoint(Input.mousePosition);
-                    w.z = 0f;
+                    Vector3 w = input.GetPointerWorldPosition(cam, 0f);
                     Vector2 d = (Vector2)(w - system.transform.position);
                     if (d.sqrMagnitude > 0.0001f)
                         return d.normalized;

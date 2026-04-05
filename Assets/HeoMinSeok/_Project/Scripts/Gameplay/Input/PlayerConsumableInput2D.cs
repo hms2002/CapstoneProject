@@ -42,13 +42,15 @@ public class PlayerConsumableInput2D : MonoBehaviour
         if (IsUseBlocked())
             return;
 
-        if (Input.GetKeyDown(KeyCode.Alpha1))
+        InputBindingService input = InputBindingService.EnsureInstance();
+
+        if (input.WasPressedThisFrame(InputActionId.ConsumableSlot1))
             consumableInventory.TryUseAt(0);
-        else if (Input.GetKeyDown(KeyCode.Alpha2))
+        else if (input.WasPressedThisFrame(InputActionId.ConsumableSlot2))
             consumableInventory.TryUseAt(1);
-        else if (Input.GetKeyDown(KeyCode.Alpha3))
+        else if (input.WasPressedThisFrame(InputActionId.ConsumableSlot3))
             consumableInventory.TryUseAt(2);
-        else if (Input.GetKeyDown(KeyCode.Alpha4))
+        else if (input.WasPressedThisFrame(InputActionId.ConsumableSlot4))
             consumableInventory.TryUseAt(3);
     }
 

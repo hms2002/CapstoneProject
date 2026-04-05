@@ -13,46 +13,6 @@ MonoBehaviour:
   m_Name: DefaultAudioCatalog
   m_EditorClassIdentifier: 
   entries:
-  - key: ability.dash
-    bus: 0
-    category: 3
-    variants:
-    - {fileID: 8300000, guid: 86ac2010d8e791a43b45f1afd2a7ee81, type: 3}
-    volume: 1
-    pitchMin: 1
-    pitchMax: 1
-    loop: 0
-    spatial: 0
-    important: 0
-    cooldown: 0
-    minDistance: 1
-    maxDistance: 20
-  - key: 
-    bus: 0
-    category: 0
-    variants: []
-    volume: 1
-    pitchMin: 1
-    pitchMax: 1
-    loop: 0
-    spatial: 0
-    important: 0
-    cooldown: 0
-    minDistance: 1
-    maxDistance: 20
-  - key: 
-    bus: 0
-    category: 0
-    variants: []
-    volume: 1
-    pitchMin: 1
-    pitchMax: 1
-    loop: 0
-    spatial: 0
-    important: 0
-    cooldown: 0
-    minDistance: 1
-    maxDistance: 20
   - key: 
     bus: 0
     category: 0

@@ -51,9 +51,7 @@ public sealed class PlayerIntentInput2D : MonoBehaviour, IIntentMovementSource2D
 
         if (!forced)
         {
-            float x = Input.GetAxisRaw("Horizontal");
-            float y = Input.GetAxisRaw("Vertical");
-            MoveInput = new Vector2(x, y).normalized;
+            MoveInput = InputBindingService.EnsureInstance().GetMoveVectorNormalized();
         }
         else
         {
