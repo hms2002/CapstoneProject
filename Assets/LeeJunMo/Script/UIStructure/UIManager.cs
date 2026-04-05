@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityGAS;
@@ -15,10 +16,17 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameplayTagSet blockControlByUiTagSet;
     [SerializeField] private UIGameplayLockProfile dialogueGameplayLockProfile = UIGameplayLockProfile.BlockControlOnly;
 
+    [Header("Pause Menu")]
+    [SerializeField] private string titleSceneNameOverride = string.Empty;
+
     private readonly PopupStackState popupStack = new PopupStackState();
     private readonly WorldPromptCoordinator worldPromptCoordinator = new WorldPromptCoordinator();
     private readonly HashSet<int> gameplayHudCurrencyHideOwners = new HashSet<int>();
     private CurrencyUI gameplayHudCurrencyUI;
+    private PauseMenuUI pauseMenu;
+    private SettingsPanelUI settingsPanel;
+    private KeyBindingPanelUI keyBindingPanel;
+    private bool settingsHiddenByKeyBinding;
     private bool gameplayHudCurrencyWasActive = true;
     private PlayerUIControlLockBridge activeControlLockBridge;
     private bool isControlLockApplied;
@@ -74,12 +82,19 @@ public class UIManager : MonoBehaviour
         RefreshDialogueDrivenGameplayLock();
 
         if (Input.GetKeyDown(KeyCode.Escape))
-            CloseTopUI();
+            HandleEscapeInput();
     }
 
     private void HandleSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         popupStack.Clear();
+        pauseMenu?.RefreshCanvasParent();
+        pauseMenu?.CloseUI();
+        settingsPanel?.RefreshCanvasParent();
+        settingsPanel?.CloseUI();
+        keyBindingPanel?.RefreshCanvasParent();
+        keyBindingPanel?.CloseUI();
+        settingsHiddenByKeyBinding = false;
         wasDialoguePlaying = false;
         ReleaseControlLock();
         RestoreTimeScaleIfNeeded();
@@ -141,6 +156,13 @@ public class UIManager : MonoBehaviour
             return;
 
         ui.CloseUI();
+
+        if (ReferenceEquals(ui, keyBindingPanel) && settingsHiddenByKeyBinding)
+        {
+            settingsPanel?.SetTemporarilyHidden(false);
+            settingsHiddenByKeyBinding = false;
+        }
+
         ApplyGameplayLockState();
         HideHoverImmediate();
     }
@@ -150,8 +172,158 @@ public class UIManager : MonoBehaviour
         if (!popupStack.TryGetTop(out IStackableUI topUI))
             return;
 
+        if (topUI is ICloseRequestHandler closeHandler && closeHandler.TryHandleCloseRequest())
+            return;
+
         if (topUI.CanCloseOnEscape)
             PopUI(topUI);
+    }
+
+    private void HandleEscapeInput()
+    {
+        if (popupStack.TryGetTop(out IStackableUI topUI))
+        {
+            if (topUI is ICloseRequestHandler closeHandler && closeHandler.TryHandleCloseRequest())
+                return;
+
+            if (topUI.CanCloseOnEscape)
+                PopUI(topUI);
+
+            return;
+        }
+
+        if (DialogueService.Instance != null && DialogueService.Instance.IsPlaying)
+            return;
+
+        TogglePauseMenu();
+    }
+
+    private void TogglePauseMenu()
+    {
+        PauseMenuUI panel = ResolvePauseMenu();
+        if (panel == null)
+            return;
+
+        if (panel.IsActive)
+        {
+            PopUI(panel);
+            return;
+        }
+
+        HideHoverImmediate();
+        HideWorldPrompt();
+        TryPushUI(panel);
+    }
+
+    public bool OpenSettingsPanel()
+    {
+        SettingsPanelUI panel = ResolveSettingsPanel();
+        if (panel == null || panel.IsActive)
+            return false;
+
+        HideHoverImmediate();
+        HideWorldPrompt();
+        return TryPushUI(panel);
+    }
+
+    public bool OpenKeyBindingPanel()
+    {
+        KeyBindingPanelUI panel = ResolveKeyBindingPanel();
+        if (panel == null || panel.IsActive)
+            return false;
+
+        SettingsPanelUI ownerSettingsPanel = ResolveSettingsPanel();
+        settingsHiddenByKeyBinding = ownerSettingsPanel != null && ownerSettingsPanel.IsActive;
+        if (settingsHiddenByKeyBinding)
+            ownerSettingsPanel.SetTemporarilyHidden(true);
+
+        HideHoverImmediate();
+        HideWorldPrompt();
+        bool opened = TryPushUI(panel);
+        if (!opened && settingsHiddenByKeyBinding)
+        {
+            ownerSettingsPanel?.SetTemporarilyHidden(false);
+            settingsHiddenByKeyBinding = false;
+        }
+
+        return opened;
+    }
+
+    public void ReturnToTitleScreen()
+    {
+        string sceneName = ResolveTitleSceneName();
+        if (string.IsNullOrWhiteSpace(sceneName))
+        {
+            Debug.LogWarning("[UIManager] Title scene name could not be resolved.", this);
+            return;
+        }
+
+        CloseAllPopups();
+        HideHoverImmediate();
+        HideWorldPrompt();
+
+        if (GamePlayDataManager.Instance != null)
+            GamePlayDataManager.Instance.EndRun(RunEndReason.None);
+
+        SceneManager.LoadScene(sceneName);
+    }
+
+    public void QuitGame()
+    {
+        CloseAllPopups();
+        HideHoverImmediate();
+        HideWorldPrompt();
+
+        if (GamePlayDataManager.Instance != null)
+            GamePlayDataManager.Instance.EndRun(RunEndReason.None);
+
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+        Application.Quit();
+#endif
+    }
+
+    private PauseMenuUI ResolvePauseMenu()
+    {
+        if (pauseMenu != null)
+            return pauseMenu;
+
+        pauseMenu = PauseMenuUI.EnsureInstance();
+        pauseMenu?.RefreshCanvasParent();
+        return pauseMenu;
+    }
+
+    private SettingsPanelUI ResolveSettingsPanel()
+    {
+        if (settingsPanel != null)
+            return settingsPanel;
+
+        settingsPanel = SettingsPanelUI.EnsureInstance();
+        settingsPanel?.RefreshCanvasParent();
+        return settingsPanel;
+    }
+
+    private KeyBindingPanelUI ResolveKeyBindingPanel()
+    {
+        if (keyBindingPanel != null)
+            return keyBindingPanel;
+
+        keyBindingPanel = KeyBindingPanelUI.EnsureInstance();
+        keyBindingPanel?.RefreshCanvasParent();
+        return keyBindingPanel;
+    }
+
+    private string ResolveTitleSceneName()
+    {
+        if (!string.IsNullOrWhiteSpace(titleSceneNameOverride))
+            return titleSceneNameOverride;
+
+        string firstBuildScenePath = SceneUtility.GetScenePathByBuildIndex(0);
+        if (!string.IsNullOrWhiteSpace(firstBuildScenePath))
+            return Path.GetFileNameWithoutExtension(firstBuildScenePath);
+
+        return null;
     }
 
     public void CloseAllPopups(bool force = true)

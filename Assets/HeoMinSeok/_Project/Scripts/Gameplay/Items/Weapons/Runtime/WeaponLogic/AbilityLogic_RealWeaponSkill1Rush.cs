@@ -76,6 +76,7 @@ namespace UnityGAS
                 float step = Mathf.Max(0.01f, data.stepIntervalSeconds);
 
                 AddRushModifier(attrSet, state, ResolveStackAdd(system, 0));
+                InputBindingService input = InputBindingService.EnsureInstance();
 
                 for (int s = 1; s < stacks; s++)
                 {
@@ -114,15 +115,15 @@ namespace UnityGAS
 
                         if (data.cancelOnAttackOrSkillInput)
                         {
-                            if (Input.GetMouseButtonDown(0) ||
-                                Input.GetKeyDown(KeyCode.Q))
+                            if (input.WasPressedThisFrame(InputActionId.PrimaryAttack) ||
+                                input.WasPressedThisFrame(InputActionId.Skill1))
                             {
                                 state.ShouldApplyHandoff = true;
                                 system.CancelExecution(force: true);
                                 yield break;
                             }
 
-                            if (Input.GetKeyDown(KeyCode.E))
+                            if (input.WasPressedThisFrame(InputActionId.Skill2))
                             {
                                 if (!TryBeginDeferredSkill2Cancel(system, state))
                                 {
@@ -172,15 +173,15 @@ namespace UnityGAS
 
                     if (data.cancelOnAttackOrSkillInput)
                     {
-                        if (Input.GetMouseButtonDown(0) ||
-                            Input.GetKeyDown(KeyCode.Q))
+                        if (input.WasPressedThisFrame(InputActionId.PrimaryAttack) ||
+                            input.WasPressedThisFrame(InputActionId.Skill1))
                         {
                             state.ShouldApplyHandoff = true;
                             system.CancelExecution(force: true);
                             break;
                         }
 
-                        if (Input.GetKeyDown(KeyCode.E))
+                        if (input.WasPressedThisFrame(InputActionId.Skill2))
                         {
                             if (!TryBeginDeferredSkill2Cancel(system, state))
                             {

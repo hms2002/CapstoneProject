@@ -21,12 +21,6 @@ public sealed class PlayerCombatInput2D : MonoBehaviour
     [Header("Movement Ability")]
     [SerializeField] private AbilityDefinition dash;
 
-    [Header("Hotkeys")]
-    [SerializeField] private KeyCode dashKey = KeyCode.Space;
-    [SerializeField] private KeyCode skill1Key = KeyCode.Q;
-    [SerializeField] private KeyCode skill2Key = KeyCode.E;
-    [SerializeField] private KeyCode swapKey = KeyCode.Tab;
-
     [Header("Attack Input (Hold)")]
     [SerializeField] private float attackRepeatInterval = 0.06f;
     [SerializeField] private float reAimGapAfterAttackEnd = 0.06f;
@@ -69,9 +63,10 @@ public sealed class PlayerCombatInput2D : MonoBehaviour
 
     private void HandleCombatInput()
     {
+        InputBindingService input = InputBindingService.EnsureInstance();
         var atk = GetBasicAttack();
 
-        if (Input.GetMouseButtonDown(0))
+        if (input.WasPressedThisFrame(InputActionId.PrimaryAttack))
         {
             isHoldingAttack = true;
             SendGameplayEventSafe(attackPressedEvent);
@@ -81,7 +76,7 @@ public sealed class PlayerCombatInput2D : MonoBehaviour
                 TryActivateSafe(atk);
         }
 
-        if (Input.GetMouseButtonUp(0))
+        if (input.WasReleasedThisFrame(InputActionId.PrimaryAttack))
         {
             isHoldingAttack = false;
             SendGameplayEventSafe(attackReleasedEvent);
@@ -106,11 +101,11 @@ public sealed class PlayerCombatInput2D : MonoBehaviour
             }
         }
 
-        if (Input.GetKeyDown(skill1Key)) TryActivateSafe(GetSkill1());
-        if (Input.GetKeyDown(skill2Key)) TryActivateSafe(GetSkill2());
-        if (Input.GetKeyDown(dashKey)) TryActivateSafe(dash);
+        if (input.WasPressedThisFrame(InputActionId.Skill1)) TryActivateSafe(GetSkill1());
+        if (input.WasPressedThisFrame(InputActionId.Skill2)) TryActivateSafe(GetSkill2());
+        if (input.WasPressedThisFrame(InputActionId.Dash)) TryActivateSafe(dash);
 
-        if (weaponInventory != null && Input.GetKeyDown(swapKey))
+        if (weaponInventory != null && input.WasPressedThisFrame(InputActionId.SwapWeapon))
             weaponInventory.Swap();
     }
 

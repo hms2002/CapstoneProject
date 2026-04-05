@@ -23,8 +23,10 @@ public class AffectionShortcut : PermanentShortcut
             AffectionManager.Instance.OnAffectionChanged += HandleAffectionChange;
     }
 
-    private void OnDestroy()
+    protected override void OnDestroy()
     {
+        base.OnDestroy();
+
         if (AffectionManager.Instance != null)
             AffectionManager.Instance.OnAffectionChanged -= HandleAffectionChange;
     }

@@ -48,8 +48,7 @@ public sealed class PlayerAim2D : MonoBehaviour, IAimDirectionSource2D
         if (tagSystem != null && aimLockedTag != null && tagSystem.HasTag(aimLockedTag))
             return;
 
-        var world = mainCamera.ScreenToWorldPoint(Input.mousePosition);
-        world.z = 0f;
+        var world = InputBindingService.EnsureInstance().GetPointerWorldPosition(mainCamera, 0f);
         MouseWorld = world;
 
         Vector2 dir = (world - transform.position);

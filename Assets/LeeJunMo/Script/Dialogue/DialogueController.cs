@@ -14,10 +14,6 @@ public class DialogueController : MonoBehaviour
     [SerializeField] private PortraitController portraitController;
     [SerializeField] private DialogueTagHandler tagHandler;
 
-    [Header("Input")]
-    [SerializeField] private KeyCode skipKey = KeyCode.Space;
-    [SerializeField] private KeyCode skipKeyAlt = KeyCode.F;
-
     public bool isPlaying => sessionState.IsPlaying;
 
     private readonly DialogueSessionState sessionState = new DialogueSessionState();
@@ -64,13 +60,16 @@ public class DialogueController : MonoBehaviour
         if (!sessionState.IsPlaying || sessionState.IsTransitioning || sessionState.IsWaitingForCallback)
             return;
 
+        InputBindingService input = InputBindingService.EnsureInstance();
+
         if (sessionState.IsChoosing)
         {
-            HandleChoiceInput();
+            HandleChoiceInput(input);
             return;
         }
 
-        if (!Input.GetMouseButtonDown(0) && !Input.GetKeyDown(skipKey) && !Input.GetKeyDown(skipKeyAlt))
+        if (!Input.GetMouseButtonDown(0) &&
+            !input.WasPressedThisFrame(InputActionId.DialogueAdvance))
             return;
 
         if (sessionState.IsTyping)
@@ -279,13 +278,13 @@ public class DialogueController : MonoBehaviour
         return validParticipants;
     }
 
-    private void HandleChoiceInput()
+    private void HandleChoiceInput(InputBindingService input)
     {
-        if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
+        if (input.WasPressedThisFrame(InputActionId.MoveUp))
             view.ChangeChoiceSelection(-1);
-        else if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow))
+        else if (input.WasPressedThisFrame(InputActionId.MoveDown))
             view.ChangeChoiceSelection(1);
-        else if (Input.GetKeyDown(skipKey) || Input.GetKeyDown(skipKeyAlt) || Input.GetKeyDown(KeyCode.Return))
+        else if (input.WasPressedThisFrame(InputActionId.DialogueAdvance))
             view.ConfirmChoice();
     }
 

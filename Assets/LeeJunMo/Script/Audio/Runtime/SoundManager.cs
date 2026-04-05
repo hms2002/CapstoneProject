@@ -8,6 +8,9 @@ namespace CapstoneAudio
     public sealed class SoundManager : MonoBehaviour
     {
         public const string DefaultCatalogResourcesPath = "Audio/DefaultAudioCatalog";
+        private const string MasterVolumePrefKey = "settings.audio.master";
+        private const string MusicVolumePrefKey = "settings.audio.music";
+        private const string SfxVolumePrefKey = "settings.audio.sfx";
 
         public static SoundManager Instance { get; private set; }
 
@@ -20,6 +23,7 @@ namespace CapstoneAudio
         [SerializeField] private int importantSfxPoolSize = 8;
 
         [Header("Volumes")]
+        [SerializeField, Range(0f, 1f)] private float masterVolume = 1f;
         [SerializeField, Range(0f, 1f)] private float masterMusicVolume = 1f;
         [SerializeField, Range(0f, 1f)] private float masterSfxVolume = 1f;
         [SerializeField, Min(0f)] private float bgmFadeDuration = 0.5f;
@@ -200,19 +204,51 @@ namespace CapstoneAudio
                 .OnComplete(() => ReleaseLoopSource(source));
         }
 
-        public void SetMusicVolume(float volume)
+        public void SetMasterVolume(float volume)
         {
-            masterMusicVolume = Mathf.Clamp01(volume);
+            masterVolume = Mathf.Clamp01(volume);
+            PlayerPrefs.SetFloat(MasterVolumePrefKey, masterVolume);
+
             if (musicSource == null)
                 return;
 
             musicSource.DOKill();
-            musicSource.volume = currentMusicBaseVolume * masterMusicVolume;
+            musicSource.volume = currentMusicBaseVolume * masterMusicVolume * masterVolume;
+        }
+
+        public void SetMusicVolume(float volume)
+        {
+            masterMusicVolume = Mathf.Clamp01(volume);
+            PlayerPrefs.SetFloat(MusicVolumePrefKey, masterMusicVolume);
+            if (musicSource == null)
+                return;
+
+            musicSource.DOKill();
+            musicSource.volume = currentMusicBaseVolume * masterMusicVolume * masterVolume;
         }
 
         public void SetSfxVolume(float volume)
         {
             masterSfxVolume = Mathf.Clamp01(volume);
+            PlayerPrefs.SetFloat(SfxVolumePrefKey, masterSfxVolume);
+        }
+
+        public float GetMasterVolume()
+        {
+            EnsureInitialized();
+            return masterVolume;
+        }
+
+        public float GetMusicVolume()
+        {
+            EnsureInitialized();
+            return masterMusicVolume;
+        }
+
+        public float GetSfxVolume()
+        {
+            EnsureInitialized();
+            return masterSfxVolume;
         }
 
         private void Awake()
@@ -240,6 +276,7 @@ namespace CapstoneAudio
                 return;
 
             initialized = true;
+            LoadVolumePreferences();
 
             if (defaultCatalog == null)
                 defaultCatalog = Resources.Load<AudioCatalogSO>(DefaultCatalogResourcesPath);
@@ -257,6 +294,13 @@ namespace CapstoneAudio
 
             CreateOneShotPool(normalSfxSources, sfxPoolSize, "SFX");
             CreateOneShotPool(importantSfxSources, importantSfxPoolSize, "ImportantSFX");
+        }
+
+        private void LoadVolumePreferences()
+        {
+            masterVolume = Mathf.Clamp01(PlayerPrefs.GetFloat(MasterVolumePrefKey, masterVolume));
+            masterMusicVolume = Mathf.Clamp01(PlayerPrefs.GetFloat(MusicVolumePrefKey, masterMusicVolume));
+            masterSfxVolume = Mathf.Clamp01(PlayerPrefs.GetFloat(SfxVolumePrefKey, masterSfxVolume));
         }
 
         private Transform CreateRoot(string rootName)
@@ -351,7 +395,7 @@ namespace CapstoneAudio
             EnsureInitialized();
 
             float duration = fadeDuration >= 0f ? fadeDuration : bgmFadeDuration;
-            float targetVolume = entry.volume * soundRef.EffectiveVolumeMultiplier * masterMusicVolume;
+            float targetVolume = entry.volume * soundRef.EffectiveVolumeMultiplier * masterMusicVolume * masterVolume;
             currentMusicBaseVolume = entry.volume * soundRef.EffectiveVolumeMultiplier;
 
             if (musicSource.clip == clip && musicSource.isPlaying)
@@ -422,7 +466,7 @@ namespace CapstoneAudio
             source.DOKill();
             source.clip = clip;
             source.pitch = entry.PickPitch();
-            source.volume = entry.volume * soundRef.EffectiveVolumeMultiplier * masterSfxVolume;
+            source.volume = entry.volume * soundRef.EffectiveVolumeMultiplier * masterSfxVolume * masterVolume;
             source.minDistance = Mathf.Max(0.01f, entry.minDistance);
             source.maxDistance = Mathf.Max(source.minDistance, entry.maxDistance);
 
@@ -464,7 +508,7 @@ namespace CapstoneAudio
             source.clip = clip;
             source.pitch = 1f;
             source.loop = false;
-            source.volume = Mathf.Clamp01(volume) * masterSfxVolume;
+            source.volume = Mathf.Clamp01(volume) * masterSfxVolume * masterVolume;
 
             if (spatial)
             {

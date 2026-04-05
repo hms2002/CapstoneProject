@@ -2,6 +2,8 @@ using UnityEngine;
 
 public abstract class PermanentShortcut : ShortcutBase
 {
+    protected override bool RequiredDoorIsPermanent => true;
+
     protected override void OnSuccess()
     {
         if (targetDoor != null)

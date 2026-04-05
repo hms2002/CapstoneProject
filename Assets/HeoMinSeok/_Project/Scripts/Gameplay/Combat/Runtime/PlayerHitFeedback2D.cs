@@ -146,6 +146,8 @@ namespace UnityGAS
         private IEnumerator CoHitReaction(HitFeedbackPayload payload)
         {
             float shake = payload.CameraShake > 0f ? payload.CameraShake : defaultShake;
+            if (!GameSettingsService.IsScreenShakeEnabled())
+                shake = 0f;
 
             // 1) 피격 진입
             AddReactionTags(

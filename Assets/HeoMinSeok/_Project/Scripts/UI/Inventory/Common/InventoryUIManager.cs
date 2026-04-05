@@ -9,7 +9,6 @@ public class InventoryUIManager : MonoBehaviour
 
     [Header("UI")]
     [SerializeField] private InventoryScreen inventoryScreen;
-    [SerializeField] private KeyCode toggleKey = KeyCode.I;
 
     [Header("(Optional) Player reference")]
     [Tooltip("If null, will fallback to PlayerInteractor2D.Instance")]
@@ -34,7 +33,7 @@ public class InventoryUIManager : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(toggleKey))
+        if (InputBindingService.EnsureInstance().WasPressedThisFrame(InputActionId.InventoryToggle))
         {
             // [수정] 인터페이스 프로퍼티(IsActive)를 통해 상태 확인
             if (inventoryScreen != null && inventoryScreen.IsActive)
