@@ -484,22 +484,7 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable:
-      Basic Tiles 1.0_0: -1486623493672939271
-      Basic Tiles 1.0_1: -1295549666596932931
-      Basic Tiles 1.0_10: -708929283800978097
-      Basic Tiles 1.0_11: 7146811520146321193
-      Basic Tiles 1.0_12: 2951216507710456759
-      Basic Tiles 1.0_13: 2125903949922993724
-      Basic Tiles 1.0_14: -7868738894733724309
-      Basic Tiles 1.0_2: 1402388754094710075
-      Basic Tiles 1.0_3: 4501778715742481197
-      Basic Tiles 1.0_4: -6524338072625426964
-      Basic Tiles 1.0_5: 1384828903963204876
-      Basic Tiles 1.0_6: 2807185232625621304
-      Basic Tiles 1.0_7: 6445407698903512912
-      Basic Tiles 1.0_8: -8293040572886649692
-      Basic Tiles 1.0_9: 8207774327680454776
+    nameFileIdTable: {}
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

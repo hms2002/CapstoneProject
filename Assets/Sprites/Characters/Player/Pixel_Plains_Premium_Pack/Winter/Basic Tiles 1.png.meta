@@ -884,38 +884,7 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable:
-      Basic Tiles 1_0: 8171412264013199373
-      Basic Tiles 1_1: -1388134861264856915
-      Basic Tiles 1_10: 1669064258644619270
-      Basic Tiles 1_11: -6398589511714003394
-      Basic Tiles 1_12: 5877987089065936192
-      Basic Tiles 1_13: -120423702469336572
-      Basic Tiles 1_14: 1977903444960875648
-      Basic Tiles 1_15: -6855293385419299516
-      Basic Tiles 1_16: -2296679343053608828
-      Basic Tiles 1_17: 2960131284520849836
-      Basic Tiles 1_18: -3368070995261008778
-      Basic Tiles 1_19: 3084876493585617089
-      Basic Tiles 1_2: 3249859094147412279
-      Basic Tiles 1_20: 6177954004147075069
-      Basic Tiles 1_21: -5767016824397550348
-      Basic Tiles 1_22: 822172869835740247
-      Basic Tiles 1_23: 6026327613778050188
-      Basic Tiles 1_24: 5532704062177601529
-      Basic Tiles 1_25: -4363816284585066154
-      Basic Tiles 1_26: 2936779687052183529
-      Basic Tiles 1_27: -7444986355124657043
-      Basic Tiles 1_28: -7678074321097342291
-      Basic Tiles 1_29: 8186060225307475795
-      Basic Tiles 1_3: -8420308654302134318
-      Basic Tiles 1_30: 8277398732982908616
-      Basic Tiles 1_4: -3798635644078475337
-      Basic Tiles 1_5: -2949929145555681946
-      Basic Tiles 1_6: -8035713804502282255
-      Basic Tiles 1_7: 8634640380153691954
-      Basic Tiles 1_8: 8542369752923999558
-      Basic Tiles 1_9: -7874624783707582136
+    nameFileIdTable: {}
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

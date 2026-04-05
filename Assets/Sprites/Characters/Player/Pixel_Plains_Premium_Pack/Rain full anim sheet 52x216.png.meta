@@ -334,16 +334,7 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable:
-      Rain full anim sheet 52x216_0: -7239591517422398041
-      Rain full anim sheet 52x216_1: -3354302119359576658
-      Rain full anim sheet 52x216_2: -2174534196073356232
-      Rain full anim sheet 52x216_3: -6010650103853624559
-      Rain full anim sheet 52x216_4: -3871352657113852380
-      Rain full anim sheet 52x216_5: -7106351025576457773
-      Rain full anim sheet 52x216_6: -7679033156426125215
-      Rain full anim sheet 52x216_7: -2049999321263538579
-      Rain full anim sheet 52x216_8: -4077274266610101301
+    nameFileIdTable: {}
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

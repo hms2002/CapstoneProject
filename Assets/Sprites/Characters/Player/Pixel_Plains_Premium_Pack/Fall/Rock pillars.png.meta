@@ -709,31 +709,7 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable:
-      Rock pillars_0: -279038372114715402
-      Rock pillars_1: -1175608263902633012
-      Rock pillars_10: 6631081252243652620
-      Rock pillars_11: -1968114683888078753
-      Rock pillars_12: -743806456995971506
-      Rock pillars_13: -7599739184000654907
-      Rock pillars_14: 2432786769841413984
-      Rock pillars_15: -5927456317989106832
-      Rock pillars_16: -4373320709013874917
-      Rock pillars_17: -748349297136903391
-      Rock pillars_18: 352518012817075420
-      Rock pillars_19: 3048078174957943972
-      Rock pillars_2: 984748208622217504
-      Rock pillars_20: 9119437556026145756
-      Rock pillars_21: -6259062766195238439
-      Rock pillars_22: -1190251132933060729
-      Rock pillars_23: 6239905040510880440
-      Rock pillars_3: 1994503474363002067
-      Rock pillars_4: 6073603951740823241
-      Rock pillars_5: 3403182618747384994
-      Rock pillars_6: 671306128383086469
-      Rock pillars_7: 1645933505472868238
-      Rock pillars_8: -1960228594114334241
-      Rock pillars_9: 2276057800104780374
+    nameFileIdTable: {}
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
