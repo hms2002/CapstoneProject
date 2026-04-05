@@ -134,7 +134,8 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Fountain anim_0: 8111935812058709608
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
