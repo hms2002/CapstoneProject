@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: RD_BloodBonusRelic
   m_EditorClassIdentifier: 
   relicId: RD_BloodBonusRelic
-  displayName: RD_BloodBonusRelic
+  displayName: "\uD53C \uBD80\uC801"
   icon: {fileID: -1054136223, guid: ef16b2ddeb64123459076c2c8a541a63, type: 3}
+  rarity: 0
   description: 
   maxLevel: 5
   dropLevel: 1

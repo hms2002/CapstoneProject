@@ -3,14 +3,15 @@ using UnityEngine;
 
 public class BossEncounterDirector : MonoBehaviour
 {
-    [Header("참조")]
+    [Header("References")]
     [SerializeField] private CameraPresentationDirector cameraDirector;
     [SerializeField] private BossDialogueRunner dialogueRunner;
-    [SerializeField] private BossDrop bossDrop;
+    [SerializeField] private BossControllerBase bossController;
 
-    [Header("실행")]
+    [Header("Playback")]
     [SerializeField] private bool autoPlayWhenPlayerSpawned = true;
     [SerializeField] private bool playOnlyOnce = true;
+    [SerializeField] private bool startBossCombatAfterDialogue = true;
 
     private Coroutine runningSequence;
     private PlayerInteractor2D cachedPlayer;
@@ -20,8 +21,7 @@ public class BossEncounterDirector : MonoBehaviour
     private void OnEnable()
     {
         PlayerRuntimeRegistry.PlayerRegistered += HandlePlayerRegistered;
-
-        // 이미 플레이어가 등록된 뒤에 이 오브젝트가 켜졌을 수도 있으니 즉시 체크
+        PrepareBossForEncounter();
         TryBeginIfPlayerAlreadyExists();
     }
 
@@ -46,11 +46,11 @@ public class BossEncounterDirector : MonoBehaviour
         if (!autoPlayWhenPlayerSpawned)
             return;
 
-        var playerTransform = PlayerRuntimeRegistry.GetPlayerTransform();
+        Transform playerTransform = PlayerRuntimeRegistry.GetPlayerTransform();
         if (playerTransform == null)
             return;
 
-        var player = playerTransform.GetComponent<PlayerInteractor2D>();
+        PlayerInteractor2D player = playerTransform.GetComponent<PlayerInteractor2D>();
         if (player != null)
             HandlePlayerRegistered(player);
     }
@@ -84,19 +84,18 @@ public class BossEncounterDirector : MonoBehaviour
     {
         if (cameraDirector == null)
         {
-            Debug.LogError("[BossEncounterDirector] cameraDirector가 비어 있다.");
+            Debug.LogError("[BossEncounterDirector] cameraDirector is missing.", this);
             runningSequence = null;
             yield break;
         }
 
         if (dialogueRunner == null)
         {
-            Debug.LogError("[BossEncounterDirector] dialogueRunner가 비어 있다.");
+            Debug.LogError("[BossEncounterDirector] dialogueRunner is missing.", this);
             runningSequence = null;
             yield break;
         }
 
-        // 플레이어 스폰/등록, 카메라 바인딩, 시네머신 초기화 한 프레임 여유
         yield return null;
         yield return new WaitUntil(() => PlayerRuntimeRegistry.GetPlayerTransform() != null);
 
@@ -107,9 +106,7 @@ public class BossEncounterDirector : MonoBehaviour
         yield return cameraDirector.ReturnToPlayerRoutine();
 
         RestorePlayerState();
-
-        if (bossDrop != null)
-            bossDrop.OnBossDead();
+        StartBossCombat();
 
         hasPlayed = true;
         runningSequence = null;
@@ -117,7 +114,7 @@ public class BossEncounterDirector : MonoBehaviour
 
     private void CacheAndLockPlayer()
     {
-        var playerTransform = PlayerRuntimeRegistry.GetPlayerTransform();
+        Transform playerTransform = PlayerRuntimeRegistry.GetPlayerTransform();
         cachedPlayer = playerTransform != null ? playerTransform.GetComponent<PlayerInteractor2D>() : null;
 
         if (cachedPlayer == null)
@@ -134,5 +131,37 @@ public class BossEncounterDirector : MonoBehaviour
 
         cachedPlayer.SetInteractState(previousPlayerState);
         cachedPlayer = null;
+    }
+
+    private void PrepareBossForEncounter()
+    {
+        ResolveBossController();
+
+        if (bossController != null)
+            bossController.SetCombatActive(false);
+    }
+
+    private void StartBossCombat()
+    {
+        if (!startBossCombatAfterDialogue)
+            return;
+
+        ResolveBossController();
+
+        if (bossController == null)
+        {
+            Debug.LogWarning("[BossEncounterDirector] No BossControllerBase found to start combat.", this);
+            return;
+        }
+
+        bossController.BeginCombatEncounter(PlayerRuntimeRegistry.GetPlayerTransform());
+    }
+
+    private void ResolveBossController()
+    {
+        if (bossController != null)
+            return;
+
+        bossController = FindAnyObjectByType<BossControllerBase>();
     }
 }

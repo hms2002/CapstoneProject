@@ -100,12 +100,12 @@ public class WeaponAbilityBlockView : MonoBehaviour
         if (inputAction.HasValue)
         {
             InputGlyphPresentation glyph = InputBindingService.EnsureInstance().GetBindingGlyph(inputAction.Value);
-            if (glyph.Icon != null)
-                return glyph.Icon;
-
-            Sprite glyphLabelSprite = ResolveMappedInputHintSprite(glyph.DisplayLabel);
-            if (glyphLabelSprite != null)
-                return glyphLabelSprite;
+            Sprite glyphSprite = InputGlyphVisualUtility.ResolveIcon(
+                glyph,
+                inputHint,
+                ResolveMappedInputHintSprite);
+            if (glyphSprite != null)
+                return glyphSprite;
         }
 
         return ResolveMappedInputHintSprite(inputHint);

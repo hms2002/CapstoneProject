@@ -170,11 +170,11 @@ public sealed class WorldInteractionPromptController : MonoBehaviour
         InputBindingService bindingService = InputBindingService.EnsureInstance();
         string description = target != null ? target.GetInteractDescription() : string.Empty;
         InputGlyphPresentation glyph = bindingService.GetBindingGlyph(PromptAction);
-        Sprite icon = glyph.Icon != null ? glyph.Icon : defaultIcon;
+        Sprite icon = InputGlyphVisualUtility.ResolveIcon(glyph, fallbackIcon: defaultIcon);
+        string bindingLabel = InputGlyphVisualUtility.ResolveLabel(glyph);
 
         if (prependBindingLabelWhenIconMissing && icon == null)
         {
-            string bindingLabel = glyph.DisplayLabel;
             if (!string.IsNullOrWhiteSpace(bindingLabel))
                 description = string.IsNullOrWhiteSpace(description) ? bindingLabel : $"{bindingLabel}  {description}";
         }

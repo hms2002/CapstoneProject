@@ -101,7 +101,11 @@ public static class ScenePortalTravelService
 
     private static void CaptureAndStorePlayerRuntimeState(ScenePortal portal, GamePlayDataManager gameplay)
     {
-        var playerGo = GameObject.FindGameObjectWithTag("Player");
+        var playerTransform = PlayerRuntimeRegistry.GetPlayerTransform();
+        var playerGo = playerTransform != null 
+            ? playerTransform.gameObject 
+            : GameObject.FindGameObjectWithTag("Player");
+            
         if (playerGo == null)
         {
             Debug.LogWarning($"[ScenePortalTravelService] Failed to find Player for portal {portal.name}", portal);

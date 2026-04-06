@@ -105,6 +105,7 @@ public class ItemSlotUI : MonoBehaviour,
 
         ItemDragContext.Begin(container, index, so, relicLevel);
 
+        DropZoneUI.ActiveInstance?.Show();
         DragIcon.Instance?.Show(def.Icon);
         DragIcon.Instance?.Follow(eventData.position);
     }
@@ -117,6 +118,7 @@ public class ItemSlotUI : MonoBehaviour,
 
     public void OnEndDrag(PointerEventData eventData)
     {
+        DropZoneUI.ActiveInstance?.Hide();
         DragIcon.Instance?.Hide();
         ItemDragContext.Clear();
     }

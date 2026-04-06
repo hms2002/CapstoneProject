@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: RD_SpeedBoots
   m_EditorClassIdentifier: 
   relicId: Relic.New1
-  displayName: SpeedBoots
-  icon: {fileID: -3286651782808291693, guid: ba2326ead771d2a42be5d3de99cb56fc, type: 3}
+  displayName: "\uC2E0\uC18D\uC758 \uBD80\uCE20"
+  icon: {fileID: 21300000, guid: d950f06d53ce11c41b1f7b2cb791c628, type: 3}
   rarity: 0
   description: 
   maxLevel: 3

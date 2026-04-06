@@ -95,14 +95,19 @@ public sealed class PlayerRuntimeCaptureBridge : MonoBehaviour
         CacheComponents();
         WarnIfMissingCoreComponents();
 
+        var ctx = new PlayerSystemContext
+        {
+            consumableInventory = consumableInventory,
+            weaponInventory = weaponInventory,
+            relicInventory = relicInventory,
+            attributeSet = attributeSet,
+            effectRunner = effectRunner,
+            tagSystem = tagSystem,
+            abilitySystem = abilitySystem
+        };
+
         return PlayerRuntimeCaptureCoordinator.CaptureAll(
-            consumableInventory,
-            weaponInventory,
-            relicInventory,
-            attributeSet,
-            effectRunner,
-            tagSystem,
-            abilitySystem,
+            ctx,
             weaponRuntimeCapturer,
             relicRuntimeCapturer);
     }

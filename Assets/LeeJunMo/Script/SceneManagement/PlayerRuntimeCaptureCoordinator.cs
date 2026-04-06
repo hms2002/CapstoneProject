@@ -12,37 +12,31 @@ public static class PlayerRuntimeCaptureCoordinator
     /// 책임 : 현재 플레이어의 상태를 PlayerRuntimeState로 캡처한다.
     /// </summary>
     public static PlayerRuntimeState CaptureAll(
-        PlayerConsumableInventory consumableInventory,
-        WeaponInventory2D weaponInventory,
-        RelicInventory relicInventory,
-        AttributeSet attributeSet,
-        GameplayEffectRunner effectRunner,
-        TagSystem tagSystem,
-        AbilitySystem abilitySystem,
+        PlayerSystemContext ctx,
         IWeaponRuntimeStateCapturer weaponRuntimeCapturer = null,
         IRelicRuntimeStateCapturer relicRuntimeCapturer = null)
     {
         var state = new PlayerRuntimeState();
 
         // 1) 장비 배치 상태
-        if (consumableInventory != null)
-            state.consumableInventory = consumableInventory.CaptureInventoryState();
+        if (ctx.consumableInventory != null)
+            state.consumableInventory = ctx.consumableInventory.CaptureInventoryState();
 
-        if (weaponInventory != null)
-            state.weaponInventory = weaponInventory.CaptureInventoryState();
+        if (ctx.weaponInventory != null)
+            state.weaponInventory = ctx.weaponInventory.CaptureInventoryState();
 
-        if (relicInventory != null)
-            state.relicInventory = relicInventory.CaptureInventoryState();
+        if (ctx.relicInventory != null)
+            state.relicInventory = ctx.relicInventory.CaptureInventoryState();
 
         // 2) GAS 런타임 상태
-        CaptureAttributes(state.attributes, attributeSet);
-        CaptureExplicitTags(state.explicitTags, tagSystem);
-        CaptureEffects(state.activeEffects, effectRunner);
-        CaptureAbilities(state.abilities, abilitySystem, weaponInventory);
+        CaptureAttributes(state.attributes, ctx.attributeSet);
+        CaptureExplicitTags(state.explicitTags, ctx.tagSystem);
+        CaptureEffects(state.activeEffects, ctx.effectRunner);
+        CaptureAbilities(state.abilities, ctx.abilitySystem, ctx.weaponInventory);
 
         // 3) 장비 개별 런타임 상태
-        weaponRuntimeCapturer?.CaptureWeaponRuntimeStates(weaponInventory, state.weaponRuntimeStates);
-        relicRuntimeCapturer?.CaptureRelicRuntimeStates(relicInventory, state.relicRuntimeStates);
+        weaponRuntimeCapturer?.CaptureWeaponRuntimeStates(ctx.weaponInventory, state.weaponRuntimeStates);
+        relicRuntimeCapturer?.CaptureRelicRuntimeStates(ctx.relicInventory, state.relicRuntimeStates);
 
         return state;
     }

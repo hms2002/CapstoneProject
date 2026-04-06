@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ac1da532121a934bb7f57799b194806, type: 3}
   m_Name: RD_RotatingIornBall
   m_EditorClassIdentifier: 
-  relicId: Relic.New3
+  relicId: RD_RotatingIornBall
   displayName: "\uD68C\uC804\uD558\uB294 \uCCA0\uAD6C"
-  icon: {fileID: 1208040086343421634, guid: a4087b2a0ea950c458af581414909b51, type: 3}
+  icon: {fileID: 21300000, guid: 6a513faa0e54c5147a1942958fe1a540, type: 3}
   rarity: 0
-  description: "[\uC801 \uCC98\uCE58 \uC2DC] [\uC774\uB3D9\uC18D\uB3C4] 18%
-    \uC99D\uAC00\n4\uCD08 \uB3D9\uC548 \uC720\uC9C0"
+  description: "[\uC801 \uCC98\uCE58 \uC2DC] [\uC774\uB3D9\uC18D\uB3C4] 18% \uC99D\uAC00\n4\uCD08
+    \uB3D9\uC548 \uC720\uC9C0"
   maxLevel: 1
   dropLevel: 1
   logic: {fileID: 11400000, guid: 24602c35b51a9f64f8622e1094c8f5b2, type: 2}

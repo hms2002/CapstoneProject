@@ -1,18 +1,54 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 /// <summary>
-/// UI drop target: when the user drops a dragged item onto this zone,
-/// the item is removed from its source container and spawned into the world.
+/// 책임 : 인벤토리 drag 중에만 활성화되는 월드 드롭 전용 UI 타겟을 제공한다.
 /// </summary>
 public class DropZoneUI : MonoBehaviour, IDropHandler
 {
+    public static DropZoneUI ActiveInstance { get; private set; }
+
     [Header("World Drop")]
     [SerializeField] private WorldItemPickup2D worldDropPrefab;
     [SerializeField] private Transform dropOrigin;
     [SerializeField] private float scatterRadius = 0.25f;
+    [Header("Presentation")]
+    [SerializeField] private CanvasGroup canvasGroup;
+
+    private void Awake()
+    {
+        if (canvasGroup == null)
+            canvasGroup = GetComponent<CanvasGroup>();
+        if (canvasGroup == null)
+            canvasGroup = gameObject.AddComponent<CanvasGroup>();
+
+        Hide();
+    }
+
+    private void OnEnable()
+    {
+        ActiveInstance = this;
+        Hide();
+    }
+
+    private void OnDisable()
+    {
+        if (ActiveInstance == this)
+            ActiveInstance = null;
+    }
 
     public void SetDropOrigin(Transform origin) => dropOrigin = origin;
+
+    public void Show()
+    {
+        SetVisible(true);
+    }
+
+    public void Hide()
+    {
+        SetVisible(false);
+    }
 
     public void OnDrop(PointerEventData eventData)
     {
@@ -42,6 +78,14 @@ public class DropZoneUI : MonoBehaviour, IDropHandler
 
         DragIcon.Instance?.Hide();
         ItemDragContext.Clear();
+        Hide();
+    }
+
+    private void SetVisible(bool visible)
+    {
+        canvasGroup.alpha = visible ? 1f : 0f;
+        canvasGroup.blocksRaycasts = visible;
+        canvasGroup.interactable = visible;
     }
 
     private void SpawnWorldItem(ScriptableObject item, int relicLevel)

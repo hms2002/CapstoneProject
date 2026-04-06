@@ -16,13 +16,7 @@ public static class PlayerRuntimeRestoreCoordinator
     /// </summary>
     public static void RestoreAll(
         PlayerRuntimeState state,
-        PlayerConsumableInventory consumableInventory,
-        WeaponInventory2D weaponInventory,
-        RelicInventory relicInventory,
-        AttributeSet attributeSet,
-        GameplayEffectRunner effectRunner,
-        TagSystem tagSystem,
-        AbilitySystem abilitySystem,
+        PlayerSystemContext ctx,
         IPlayerRuntimeResolver resolver,
         IWeaponRuntimeStateRestorer weaponRuntimeRestorer = null,
         IRelicRuntimeStateRestorer relicRuntimeRestorer = null,
@@ -38,40 +32,40 @@ public static class PlayerRuntimeRestoreCoordinator
         }
 
         // 1) 장비 껍데기 복원
-        consumableInventory?.RestoreShellState(
+        ctx.consumableInventory?.RestoreShellState(
             state.consumableInventory,
             resolver.ResolveConsumable);
 
-        weaponInventory?.RestoreShellState(
+        ctx.weaponInventory?.RestoreShellState(
             state.weaponInventory,
             resolver.ResolveWeapon,
             applyActiveVisual: true);
 
-        relicInventory?.RestoreShellState(
+        ctx.relicInventory?.RestoreShellState(
             state.relicInventory,
             resolver.ResolveRelic);
 
         // 2) GAS 런타임 기본값 복원
         RestoreGasRuntime(
             state,
-            attributeSet,
-            effectRunner,
-            tagSystem,
-            abilitySystem,
+            ctx.attributeSet,
+            ctx.effectRunner,
+            ctx.tagSystem,
+            ctx.abilitySystem,
             resolver,
             restoreSource);
 
         // 3) explicit tag 복원 이후 런타임 훅 연결
         // 책임 : 복원 장착이 다시 부여하는 장비/유물 전용 태그가
         // explicit tag clear 단계에 지워지지 않도록 순서를 보장한다.
-        weaponInventory?.AttachRuntimeHooksForRestore();
-        relicInventory?.AttachRuntimeHooksForRestore();
+        ctx.weaponInventory?.AttachRuntimeHooksForRestore();
+        ctx.relicInventory?.AttachRuntimeHooksForRestore();
 
         // 4) 장비별 개별 런타임 상태 복원
         RestoreEquipmentRuntime(
             state,
-            weaponInventory,
-            relicInventory,
+            ctx.weaponInventory,
+            ctx.relicInventory,
             resolver,
             weaponRuntimeRestorer,
             relicRuntimeRestorer);
@@ -79,7 +73,7 @@ public static class PlayerRuntimeRestoreCoordinator
         // 5) 장착형 modifier/effect가 모두 다시 붙은 뒤 상태형 current 값 복원
         RestoreAttributeCurrentValues(
             state.attributes,
-            attributeSet,
+            ctx.attributeSet,
             resolver,
             restoreSource);
     }

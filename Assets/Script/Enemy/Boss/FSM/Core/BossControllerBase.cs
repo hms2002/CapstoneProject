@@ -4,6 +4,9 @@ using UnityGAS;
 
 public abstract class BossControllerBase : Enemy
 {
+    [Header("Encounter")]
+    [SerializeField] private bool startCombatOnStart = true;
+
     [Header("Target")]
     [Tooltip("기본 전투 타겟입니다. 필요 시 런타임에 교체할 수 있습니다.")]
     [SerializeField] private Transform initialTarget;
@@ -41,8 +44,9 @@ public abstract class BossControllerBase : Enemy
     private BossPatternExecuteState patternExecuteState;
     private BossGroggyState groggyState;
     private BossDeadState deadState;
-    private BossDrop bossDrop;
-    private bool isDead;
+    
+    private bool combatActive;
+    private bool hasCombatOverride;
 
     public AbilitySystem AbilitySystem => abilitySystem;
     public TagSystem TagSystem => tagSystem;
@@ -73,10 +77,14 @@ public abstract class BossControllerBase : Enemy
 
         blackboard.SetPhaseIndex(EvaluatePhaseIndexByHealthRatio(GetCurrentHpRatio()));
         stateMachine.ChangeState(spawnState);
+        combatActive = hasCombatOverride ? combatActive : startCombatOnStart;
     }
 
     protected virtual void Update()
     {
+        if (!combatActive)
+            return;
+
         blackboard.Tick(Time.deltaTime, Target, GetCurrentHpRatio());
 
         EvaluatePhaseChange();
@@ -95,6 +103,27 @@ public abstract class BossControllerBase : Enemy
     public void SetCombatTarget(Transform newTarget)
     {
         SetTarget(newTarget);
+    }
+
+    public bool IsCombatActive => combatActive;
+
+    public void SetCombatActive(bool isActive)
+    {
+        combatActive = isActive;
+        hasCombatOverride = true;
+
+        if (!isActive)
+            AbortCurrentPattern();
+    }
+
+    public void BeginCombatEncounter(Transform combatTarget = null)
+    {
+        if (combatTarget != null)
+            SetTarget(combatTarget);
+        else if (Target == null)
+            RefreshTarget();
+
+        SetCombatActive(true);
     }
 
     public void ChangeState(BossState nextState)
