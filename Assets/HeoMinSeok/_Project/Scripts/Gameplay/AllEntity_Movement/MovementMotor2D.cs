@@ -161,6 +161,8 @@ namespace UnityGAS
 
         public void StopAllMotion(bool clearExternal = true, bool clearMotion = true)
         {
+            EnsureMotionController();
+
             if (body != null)
                 body.linearVelocity = Vector2.zero;
 
@@ -212,10 +214,20 @@ namespace UnityGAS
 
         private Vector2 ResolveMotionVelocity(float dt)
         {
+            EnsureMotionController();
+
             if (motionController == null || !motionController.HasActiveMotion)
                 return Vector2.zero;
 
             return motionController.TickAndGetMotionVelocity(dt);
+        }
+
+        private void EnsureMotionController()
+        {
+            if (motionController != null)
+                return;
+
+            motionController = GetComponent<AbilityMotionController2D>();
         }
 
         private bool IsHardStopped()

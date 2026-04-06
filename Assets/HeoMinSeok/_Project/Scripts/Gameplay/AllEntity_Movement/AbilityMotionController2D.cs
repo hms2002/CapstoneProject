@@ -15,6 +15,7 @@ namespace UnityGAS
         {
             None,
             ConstantVelocity,
+            DampedVelocity,
             MoveToPoint
         }
 
@@ -22,6 +23,7 @@ namespace UnityGAS
 
         private Vector2 motionVelocity;
         private float motionRemainingTime;
+        private float motionDamping;
 
         private Vector2 moveToStart;
         private Vector2 moveToEnd;
@@ -47,6 +49,32 @@ namespace UnityGAS
             activeKind = MotionKind.ConstantVelocity;
             motionVelocity = direction * speed;
             motionRemainingTime = duration;
+            motionDamping = 0f;
+
+            moveToStart = Vector2.zero;
+            moveToEnd = Vector2.zero;
+            moveToDuration = 0f;
+            moveToElapsed = 0f;
+        }
+
+        /// <summary>
+        /// 시작 속도를 강하게 주고 시간에 따라 감쇠시키는 특수이동 시작.
+        /// 예: 몸통박치기, 짧은 임펄스 대쉬
+        /// </summary>
+        public void StartDampedDash(Vector2 direction, float initialSpeed, float duration, float damping)
+        {
+            if (duration <= 0f || initialSpeed <= 0f)
+                return;
+
+            if (direction.sqrMagnitude <= 0.000001f)
+                direction = Vector2.right;
+            else
+                direction.Normalize();
+
+            activeKind = MotionKind.DampedVelocity;
+            motionVelocity = direction * initialSpeed;
+            motionRemainingTime = duration;
+            motionDamping = Mathf.Max(0f, damping);
 
             moveToStart = Vector2.zero;
             moveToEnd = Vector2.zero;
@@ -76,6 +104,7 @@ namespace UnityGAS
 
             motionVelocity = Vector2.zero;
             motionRemainingTime = duration;
+            motionDamping = 0f;
         }
 
         public void CancelMotion()
@@ -84,6 +113,7 @@ namespace UnityGAS
             activeKind = MotionKind.None;
             motionVelocity = Vector2.zero;
             motionRemainingTime = 0f;
+            motionDamping = 0f;
             moveToStart = Vector2.zero;
             moveToEnd = Vector2.zero;
             moveToDuration = 0f;
@@ -110,6 +140,20 @@ namespace UnityGAS
                         Vector2 result = motionVelocity;
 
                         if (motionRemainingTime <= 0f)
+                            CancelMotion();
+
+                        return result;
+                    }
+
+                case MotionKind.DampedVelocity:
+                    {
+                        motionRemainingTime -= dt;
+                        Vector2 result = motionVelocity;
+
+                        if (motionDamping > 0f)
+                            motionVelocity = Vector2.Lerp(motionVelocity, Vector2.zero, motionDamping * dt);
+
+                        if (motionRemainingTime <= 0f || motionVelocity.sqrMagnitude <= 0.000001f)
                             CancelMotion();
 
                         return result;

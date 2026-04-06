@@ -4,25 +4,28 @@ using UnityGAS;
 [RequireComponent(typeof(Rigidbody2D), typeof(Collider2D), typeof(Animator))]
 [RequireComponent(typeof(AbilitySystem), typeof(AttributeSet), typeof(GameplayEffectRunner))]
 [RequireComponent(typeof(TagSystem))]
-[RequireComponent(typeof(MovementMotor2D), typeof(AttributeStatSource))]
+[RequireComponent(typeof(MovementMotor2D), typeof(AttributeStatSource), typeof(AbilityMotionController2D))]
 [RequireComponent(typeof(ExternalMovementController2D), typeof(KnockbackReceiver2D))]
 public class Enemy : MonoBehaviour
 {
+    private const string DeathAnimTriggerName = "Die";
+    private const string DeathAnimClipName = "Die";
+
     // Components =============================
-    protected Rigidbody2D rigid2D;
-    protected Collider2D collision;
-    protected SpriteRenderer sprite;
-    protected Animator animator;
+    protected Rigidbody2D       rigid2D;
+    protected Collider2D        collision;
+    protected SpriteRenderer    sprite;
+    protected Animator          animator;
 
-    protected AbilitySystem abilitySystem;
-    protected AttributeSet attributeSet;
-    protected GameplayEffectRunner effectRunner;
-    protected TagSystem tagSystem;
+    protected AbilitySystem         abilitySystem;
+    protected AttributeSet          attributeSet;
+    protected GameplayEffectRunner  effectRunner;
+    protected TagSystem             tagSystem;
 
-    protected MovementMotor2D movementMotor;
-    protected AttributeStatSource attributeStatSource;
-    protected ExternalMovementController2D externalMovement;
-    protected KnockbackReceiver2D knockbackReceiver;
+    protected MovementMotor2D               movementMotor;
+    protected AttributeStatSource           attributeStatSource;
+    protected ExternalMovementController2D  externalMovement;
+    protected KnockbackReceiver2D           knockbackReceiver;
 
     [Header("Enemy's Attributes")]
     [SerializeField] protected AttributeDefinition maxHealthDef;
@@ -32,25 +35,29 @@ public class Enemy : MonoBehaviour
     [SerializeField] protected string enemyName;
     [SerializeField] private string targetTag = "Player";
 
+    [Header("Enemy's Death")]
+    [Tooltip("Die 애니메이션 재생 후 오브젝트를 제거하기까지 기다릴 시간입니다. 0 이하이면 Animator에서 Die 클립 길이를 자동 탐색합니다.")]
+    [SerializeField] protected float dieAnimTime = 0f;
+
     protected Transform target;
     public virtual Transform Target => target;
 
     protected virtual void Awake()
     {
-        rigid2D = GetComponent<Rigidbody2D>();
-        collision = GetComponent<Collider2D>();
-        sprite = GetComponent<SpriteRenderer>();
-        animator = GetComponent<Animator>();
+        rigid2D     = GetComponent<Rigidbody2D>();
+        collision   = GetComponent<Collider2D>();
+        sprite      = GetComponent<SpriteRenderer>();
+        animator    = GetComponent<Animator>();
 
-        abilitySystem = GetComponent<AbilitySystem>();
-        attributeSet = GetComponent<AttributeSet>();
-        effectRunner = GetComponent<GameplayEffectRunner>();
-        tagSystem = GetComponent<TagSystem>();
+        abilitySystem   = GetComponent<AbilitySystem>();
+        attributeSet    = GetComponent<AttributeSet>();
+        effectRunner    = GetComponent<GameplayEffectRunner>();
+        tagSystem       = GetComponent<TagSystem>();
 
-        movementMotor = GetComponent<MovementMotor2D>();
+        movementMotor       = GetComponent<MovementMotor2D>();
         attributeStatSource = GetComponent<AttributeStatSource>();
-        externalMovement = GetComponent<ExternalMovementController2D>();
-        knockbackReceiver = GetComponent<KnockbackReceiver2D>();
+        externalMovement    = GetComponent<ExternalMovementController2D>();
+        knockbackReceiver   = GetComponent<KnockbackReceiver2D>();
 
         if (attributeSet != null)
             attributeSet.OnAttributeChanged += OnEnemyAttributeChanged;
@@ -67,6 +74,7 @@ public class Enemy : MonoBehaviour
             attributeSet.OnAttributeChanged -= OnEnemyAttributeChanged;
     }
 
+    /// <summary>타겟 태그로 현재 추적 대상을 갱신합니다.</summary>
     protected void RefreshTarget()
     {
         if (string.IsNullOrWhiteSpace(targetTag))
@@ -79,16 +87,86 @@ public class Enemy : MonoBehaviour
             Debug.LogWarning($"{enemyName}: No target found with tag '{targetTag}'");
     }
 
+    /// <summary>현재 추적 대상을 지정한 Transform으로 교체합니다.</summary>
     protected void SetTarget(Transform newTarget)
     {
         target = newTarget;
     }
 
+    /// <summary>적 Attribute 값이 바뀔 때 파생 클래스가 반응할 수 있는 훅입니다.</summary>
     protected virtual void OnEnemyAttributeChanged(AttributeDefinition attribute, float oldValue, float newValue) { }
 
+    /// <summary>적 사망 처리의 공통 진입점입니다.</summary>
     protected virtual void Die()
     {
-        gameObject.SetActive(false);
-        Destroy(gameObject);
+        StopDeathGameplay();
+        PlayDeathAnimation();
+        DestroyAfterDelay();
+    }
+
+    /// <summary>사망 시 이동, 충돌, 물리 처리를 정지합니다.</summary>
+    protected virtual void StopDeathGameplay()
+    {
+        if (movementMotor != null)
+            movementMotor.StopAllMotion();
+
+        if (collision != null)
+            collision.enabled = false;
+
+        if (rigid2D != null)
+            rigid2D.simulated = false;
+    }
+
+    /// <summary>Animator에 Die 트리거를 전달해 사망 애니메이션을 재생합니다.</summary>
+    protected virtual void PlayDeathAnimation()
+    {
+        if (animator != null)
+            animator.SetTrigger(DeathAnimTriggerName);
+    }
+
+    /// <summary>사망 대기 시간 이후 적 오브젝트를 제거합니다.</summary>
+    protected virtual void DestroyAfterDelay()
+    {
+        float destroyDelay = Mathf.Max(0f, GetDeathDestroyDelay());
+        Destroy(gameObject, destroyDelay);
+    }
+
+    /// <summary>사망 후 오브젝트 제거까지 기다릴 시간을 반환합니다.</summary>
+    protected virtual float GetDeathDestroyDelay()
+    {
+        if (dieAnimTime > 0f)
+            return dieAnimTime;
+
+        return ResolveDeathAnimationClipLength();
+    }
+
+    /// <summary>Animator Controller에서 Die 애니메이션 클립 길이를 찾아 반환합니다.</summary>
+    private float ResolveDeathAnimationClipLength()
+    {
+        if (animator == null || animator.runtimeAnimatorController == null)
+            return 0f;
+
+        AnimationClip[] animationClips = animator.runtimeAnimatorController.animationClips;
+        if (animationClips == null)
+            return 0f;
+
+        for (int i = 0; i < animationClips.Length; i++)
+        {
+            AnimationClip animationClip = animationClips[i];
+            if (animationClip != null && animationClip.name == DeathAnimClipName)
+                return animationClip.length;
+        }
+
+        for (int i = 0; i < animationClips.Length; i++)
+        {
+            AnimationClip animationClip = animationClips[i];
+            if (animationClip != null &&
+                animationClip.name.IndexOf(DeathAnimClipName, System.StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                return animationClip.length;
+            }
+        }
+
+        return 0f;
     }
 }
