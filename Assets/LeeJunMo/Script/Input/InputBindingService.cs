@@ -192,7 +192,7 @@ public sealed class InputBindingService : MonoBehaviour
         if (secondary && !SupportsSecondaryBinding(action))
             return string.Empty;
 
-        return GetKeyDisplayLabel(GetKey(action, secondary));
+        return InputGlyphDatabase.GetDisplayLabel(GetKey(action, secondary));
     }
 
     public string GetKeyDisplayLabel(KeyCode key)
@@ -231,6 +231,29 @@ public sealed class InputBindingService : MonoBehaviour
             KeyCode.Alpha9 => "9",
             _ => key.ToString(),
         };
+    }
+
+    public InputGlyphPresentation GetBindingGlyph(InputActionId action, bool secondary = false)
+    {
+        if (secondary && !SupportsSecondaryBinding(action))
+            return InputGlyphDatabase.Resolve(KeyCode.None);
+
+        return GetKeyGlyph(GetKey(action, secondary));
+    }
+
+    public InputGlyphPresentation GetKeyGlyph(KeyCode key)
+    {
+        return InputGlyphDatabase.Resolve(key);
+    }
+
+    public Sprite GetBindingIcon(InputActionId action, bool secondary = false)
+    {
+        return GetBindingGlyph(action, secondary).Icon;
+    }
+
+    public Sprite GetKeyIcon(KeyCode key)
+    {
+        return GetKeyGlyph(key).Icon;
     }
 
     public void SetPrimaryKey(InputActionId action, KeyCode key)

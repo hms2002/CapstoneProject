@@ -254,7 +254,15 @@ public sealed class KeyBindingPanelUI : MonoBehaviour, IStackableUI, ICloseReque
         if (secondary && !SupportsSecondaryBinding(action))
             return string.Empty;
 
-        return InputBindingService.EnsureInstance().GetKeyDisplayLabel(GetWorkingKey(action, secondary));
+        return InputGlyphDatabase.GetDisplayLabel(GetWorkingKey(action, secondary));
+    }
+
+    public Sprite GetBindingIcon(InputActionId action, bool secondary = false)
+    {
+        if (secondary && !SupportsSecondaryBinding(action))
+            return null;
+
+        return InputGlyphDatabase.GetIcon(GetWorkingKey(action, secondary));
     }
 
     public bool CanResetAction(InputActionId action)

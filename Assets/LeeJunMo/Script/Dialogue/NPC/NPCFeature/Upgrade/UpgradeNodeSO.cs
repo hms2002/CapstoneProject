@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEditor.ShaderGraph.Internal;
 
 #if UNITY_EDITOR
 using UnityEditor;

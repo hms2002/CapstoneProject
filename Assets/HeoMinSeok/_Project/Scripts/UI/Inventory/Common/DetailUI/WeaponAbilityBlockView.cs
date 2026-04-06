@@ -1,24 +1,14 @@
+using System;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using System;
-using System.Collections.Generic;
 
-/// <summary>
-/// 책임 :
-/// - 무기 툴팁의 능력 카드 한 블록을 렌더링한다.
-/// - 아이콘, 제목, 입력 키 이미지, 쿨다운, 보조 메타 슬롯, 본문 설명을 각각 독립적으로 표시한다.
-/// </summary>
 public class WeaponAbilityBlockView : MonoBehaviour
 {
     [Serializable]
     private struct InputHintSpriteEntry
     {
-        /// <summary>
-        /// 책임 :
-        /// - 입력 문자열(Q/E 등)과 실제 키 이미지 Sprite를 1:1로 매핑한다.
-        /// - WeaponAbilityBlockView가 텍스트 대신 키 이미지를 표시할 수 있게 한다.
-        /// </summary>
         public string inputHint;
         public Sprite sprite;
     }
@@ -37,9 +27,30 @@ public class WeaponAbilityBlockView : MonoBehaviour
     [SerializeField] private GameObject bodyRoot;
     [SerializeField] private TMP_Text bodyText;
 
-    public void Set(string title, Sprite icon, string inputHint, float cooldownSeconds, string extraMeta, string body, System.Action<string> onGlossaryClick = null)
+    public void Set(
+        string title,
+        Sprite icon,
+        string inputHint,
+        float cooldownSeconds,
+        string extraMeta,
+        string body,
+        Action<string> onGlossaryClick = null)
     {
-        if (titleText != null) titleText.text = title ?? string.Empty;
+        Set(title, icon, inputHint, cooldownSeconds, extraMeta, body, null, onGlossaryClick);
+    }
+
+    public void Set(
+        string title,
+        Sprite icon,
+        string inputHint,
+        float cooldownSeconds,
+        string extraMeta,
+        string body,
+        InputActionId? inputAction,
+        Action<string> onGlossaryClick = null)
+    {
+        if (titleText != null)
+            titleText.text = title ?? string.Empty;
 
         if (iconImage != null)
         {
@@ -47,29 +58,25 @@ public class WeaponAbilityBlockView : MonoBehaviour
             iconImage.enabled = icon != null;
         }
 
-        ApplyInputHintSprite(inputHint);
+        ApplyInputHintSprite(inputHint, inputAction);
 
         if (cooldownText != null)
-        {
-            if (cooldownSeconds > 0f)
-                cooldownText.text = $"{cooldownSeconds:0.##}s";
-            else
-                cooldownText.text = "";
-        }
+            cooldownText.text = cooldownSeconds > 0f ? $"{cooldownSeconds:0.##}s" : string.Empty;
 
         if (extraMetaText != null)
             extraMetaText.text = string.IsNullOrEmpty(extraMeta) ? "-" : extraMeta;
 
         if (bodyText != null)
         {
-            bodyText.text = body ?? "";
+            bodyText.text = body ?? string.Empty;
 
             if (bodyRoot != null)
                 bodyRoot.SetActive(!string.IsNullOrWhiteSpace(bodyText.text));
 
-            // glossary link click support (DetailTextFormatter.ApplyGlossaryLinks)
-            var handler = bodyText.GetComponent<TmpLinkClickHandler>();
-            if (handler == null) handler = bodyText.gameObject.AddComponent<TmpLinkClickHandler>();
+            TmpLinkClickHandler handler = bodyText.GetComponent<TmpLinkClickHandler>();
+            if (handler == null)
+                handler = bodyText.gameObject.AddComponent<TmpLinkClickHandler>();
+
             handler.onGlossaryKeyClicked = onGlossaryClick;
         }
         else if (bodyRoot != null)
@@ -78,17 +85,33 @@ public class WeaponAbilityBlockView : MonoBehaviour
         }
     }
 
-    private void ApplyInputHintSprite(string inputHint)
+    private void ApplyInputHintSprite(string inputHint, InputActionId? inputAction)
     {
         if (inputHintImage == null)
             return;
 
-        var resolvedSprite = ResolveInputHintSprite(inputHint);
+        Sprite resolvedSprite = ResolveInputHintSprite(inputHint, inputAction);
         inputHintImage.sprite = resolvedSprite;
         inputHintImage.enabled = resolvedSprite != null;
     }
 
-    private Sprite ResolveInputHintSprite(string inputHint)
+    private Sprite ResolveInputHintSprite(string inputHint, InputActionId? inputAction)
+    {
+        if (inputAction.HasValue)
+        {
+            InputGlyphPresentation glyph = InputBindingService.EnsureInstance().GetBindingGlyph(inputAction.Value);
+            if (glyph.Icon != null)
+                return glyph.Icon;
+
+            Sprite glyphLabelSprite = ResolveMappedInputHintSprite(glyph.DisplayLabel);
+            if (glyphLabelSprite != null)
+                return glyphLabelSprite;
+        }
+
+        return ResolveMappedInputHintSprite(inputHint);
+    }
+
+    private Sprite ResolveMappedInputHintSprite(string inputHint)
     {
         if (string.IsNullOrWhiteSpace(inputHint) || inputHintSprites == null)
             return null;
@@ -96,7 +119,7 @@ public class WeaponAbilityBlockView : MonoBehaviour
         string normalized = inputHint.Trim();
         for (int i = 0; i < inputHintSprites.Count; i++)
         {
-            var entry = inputHintSprites[i];
+            InputHintSpriteEntry entry = inputHintSprites[i];
             if (string.Equals(entry.inputHint?.Trim(), normalized, StringComparison.OrdinalIgnoreCase))
                 return entry.sprite;
         }

@@ -6,6 +6,8 @@ using UnityEngine.UI;
 [DisallowMultipleComponent]
 public sealed class WorldInteractionPromptController : MonoBehaviour
 {
+    private const InputActionId PromptAction = InputActionId.Interact;
+
     public static WorldInteractionPromptController Instance { get; private set; }
 
     [Header("References")]
@@ -18,6 +20,7 @@ public sealed class WorldInteractionPromptController : MonoBehaviour
     [SerializeField] private Sprite defaultIcon;
     [SerializeField] private Vector3 worldOffset = new Vector3(0f, 1.2f, 0f);
     [SerializeField] private bool hideWhenDescriptionEmpty = true;
+    [SerializeField] private bool prependBindingLabelWhenIconMissing = true;
 
     private IInteractable currentTarget;
     private Transform currentAnchor;
@@ -115,6 +118,13 @@ public sealed class WorldInteractionPromptController : MonoBehaviour
     public void SetDefaultIcon(Sprite icon)
     {
         defaultIcon = icon;
+
+        if (currentTarget != null)
+        {
+            ApplyVisuals(currentTarget);
+            return;
+        }
+
         ApplyIcon(defaultIcon);
     }
 
@@ -136,12 +146,22 @@ public sealed class WorldInteractionPromptController : MonoBehaviour
 
     private void ApplyVisuals(IInteractable target)
     {
+        InputBindingService bindingService = InputBindingService.EnsureInstance();
         string description = target != null ? target.GetInteractDescription() : string.Empty;
+        InputGlyphPresentation glyph = bindingService.GetBindingGlyph(PromptAction);
+        Sprite icon = glyph.Icon != null ? glyph.Icon : defaultIcon;
+
+        if (prependBindingLabelWhenIconMissing && icon == null)
+        {
+            string bindingLabel = glyph.DisplayLabel;
+            if (!string.IsNullOrWhiteSpace(bindingLabel))
+                description = string.IsNullOrWhiteSpace(description) ? bindingLabel : $"{bindingLabel}  {description}";
+        }
 
         if (descriptionText != null)
             descriptionText.text = description;
 
-        ApplyIcon(defaultIcon);
+        ApplyIcon(icon);
     }
 
     private void ApplyIcon(Sprite icon)
