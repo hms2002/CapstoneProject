@@ -74,6 +74,7 @@ public class InventoryScreen : MonoBehaviour, IStackableUI
     {
         ClearUI();
         ItemContainerGroupRegistry.Clear();
+        dropZone?.Hide();
 
         consumableDisposer?.Dispose();
         weaponDisposer?.Dispose();
@@ -102,7 +103,10 @@ public class InventoryScreen : MonoBehaviour, IStackableUI
         ItemContainerGroupRegistry.SetGroup(null, consumableContainer, weaponContainer, relicContainer);
 
         if (dropZone != null)
+        {
             dropZone.SetDropOrigin(this.lootOrigin);
+            dropZone.Hide();
+        }
 
         BuildUI();
     }

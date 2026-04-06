@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   attributeName: Health
   description: Attribute description.
+  mutationPolicy: 1
   defaultBaseValue: 100
   minValue: 0
   maxValue: 1e+10
@@ -21,4 +22,4 @@ MonoBehaviour:
   regenerationRate: 5
   regenerationDelay: 2
   displayColor: {r: 1, g: 0, b: 0, a: 1}
-  icon: {fileID: 0}
+  icon: {fileID: 21300000, guid: 742335e24e5afea4e9516fd89252b06c, type: 3}

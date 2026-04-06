@@ -16,8 +16,12 @@ public class ChestScreen : MonoBehaviour, IStackableUI
     [SerializeField] private Transform weaponGridRoot;
     [SerializeField] private Transform relicGridRoot;
     [SerializeField] private PlayerStatPanelView playerStatPanel;
-    [SerializeField] private ItemSlotUI slotPrefab;
+    [SerializeField] private ItemSlotUI chestSlotPrefab;
+    [SerializeField] private ItemSlotUI consumableSlotPrefab;
+    [SerializeField] private ItemSlotUI weaponSlotPrefab;
+    [SerializeField] private ItemSlotUI relicSlotPrefab;
     [SerializeField] private Button closeButton;
+    [SerializeField] private DropZoneUI dropZone;
 
     [Header("Runtime Refs")]
     [SerializeField] private PlayerConsumableInventory playerConsumableInventory;
@@ -25,6 +29,7 @@ public class ChestScreen : MonoBehaviour, IStackableUI
     [SerializeField] private RelicInventory playerRelicInventory;
 
     private ChestInventory chestInventory;
+    private Transform dropOrigin;
 
     private IItemContainer chestContainer;
     private IItemContainer consumableContainer;
@@ -86,6 +91,7 @@ public class ChestScreen : MonoBehaviour, IStackableUI
 
         ClearUI();
         ItemContainerGroupRegistry.Clear();
+        dropZone?.Hide();
 
         chestAdapterDisposer?.Dispose();
         consumableAdapterDisposer?.Dispose();
@@ -96,6 +102,7 @@ public class ChestScreen : MonoBehaviour, IStackableUI
         consumableAdapterDisposer = null;
         weaponAdapterDisposer = null;
         relicAdapterDisposer = null;
+        dropOrigin = null;
     }
 
     public void Bind(ChestInventory inv)
@@ -117,7 +124,18 @@ public class ChestScreen : MonoBehaviour, IStackableUI
             playerStatPanel.Bind(currentPlayer != null ? currentPlayer.transform : null);
         }
 
+        var currentTransform = PlayerRuntimeRegistry.GetPlayerTransform();
+        dropOrigin = currentTransform != null
+            ? currentTransform
+            : (PlayerInteractor2D.Instance != null ? PlayerInteractor2D.Instance.transform : null);
+
         ItemContainerGroupRegistry.SetGroup(chestContainer, consumableContainer, weaponContainer, relicContainer);
+
+        if (dropZone != null)
+        {
+            dropZone.SetDropOrigin(dropOrigin);
+            dropZone.Hide();
+        }
 
         BuildUI();
 
@@ -151,35 +169,24 @@ public class ChestScreen : MonoBehaviour, IStackableUI
     private void BuildUI()
     {
         ClearUI();
+        BuildSlots(chestContainer, chestGridRoot, chestSlotPrefab);
+        BuildSlots(consumableContainer, consumableGridRoot, consumableSlotPrefab);
+        BuildSlots(weaponContainer, weaponGridRoot, weaponSlotPrefab);
+        BuildSlots(relicContainer, relicGridRoot, relicSlotPrefab);
+    }
 
-        for (int i = 0; i < chestContainer.SlotCount; i++)
-        {
-            var ui = Instantiate(slotPrefab, chestGridRoot);
-            ui.Bind(chestContainer, i);
-            spawned.Add(ui);
-        }
+    /// <summary>
+    /// 책임 : 지정된 컨테이너를 대응하는 슬롯 프리팹으로 상자 UI에 렌더링한다.
+    /// </summary>
+    private void BuildSlots(IItemContainer container, Transform gridRoot, ItemSlotUI slotPrefab)
+    {
+        if (container == null || gridRoot == null || slotPrefab == null)
+            return;
 
-        if (consumableContainer != null && consumableGridRoot != null)
+        for (int i = 0; i < container.SlotCount; i++)
         {
-            for (int i = 0; i < consumableContainer.SlotCount; i++)
-            {
-                var ui = Instantiate(slotPrefab, consumableGridRoot);
-                ui.Bind(consumableContainer, i);
-                spawned.Add(ui);
-            }
-        }
-
-        for (int i = 0; i < weaponContainer.SlotCount; i++)
-        {
-            var ui = Instantiate(slotPrefab, weaponGridRoot);
-            ui.Bind(weaponContainer, i);
-            spawned.Add(ui);
-        }
-
-        for (int i = 0; i < relicContainer.SlotCount; i++)
-        {
-            var ui = Instantiate(slotPrefab, relicGridRoot);
-            ui.Bind(relicContainer, i);
+            var ui = Instantiate(slotPrefab, gridRoot);
+            ui.Bind(container, i);
             spawned.Add(ui);
         }
     }
