@@ -137,6 +137,27 @@ public sealed class PlayerSceneRestoreBootstrapper : MonoBehaviour
     }
 
     /// <summary>
+    /// 책임 : 플레이어 게임오브젝트에서 복원에 필요한 모든 컴포넌트를 추출하여 Context로 반환한다.
+    /// (SRP 적용: 메인 복원 로직과 컴포넌트 탐색 로직의 분리)
+    /// </summary>
+    private bool TryGatherPlayerComponents(GameObject player, out PlayerSystemContext ctx)
+    {
+        ctx = new PlayerSystemContext
+        {
+            weaponInventory = player.GetComponent<WeaponInventory2D>(),
+            consumableInventory = PlayerConsumableInventory.GetOrAdd(player.transform),
+            relicInventory = player.GetComponent<RelicInventory>(),
+            attributeSet = player.GetComponent<AttributeSet>(),
+            effectRunner = player.GetComponent<GameplayEffectRunner>(),
+            tagSystem = player.GetComponent<TagSystem>(),
+            abilitySystem = player.GetComponent<AbilitySystem>()
+        };
+
+        // 필수 컴포넌트 누락 여부 등 검증이 필요하다면 여기서 추가 가능합니다.
+        return true;
+    }
+
+    /// <summary>
     /// 책임 : 지정된 플레이어 GameObject에 pending 상태를 복원한다.
     /// 복원에 필요한 resolver / runtime restorer를 새 플레이어 기준으로 다시 바인딩한 뒤
     /// PlayerRuntimeRestoreCoordinator에 전달한다.
@@ -167,6 +188,10 @@ public sealed class PlayerSceneRestoreBootstrapper : MonoBehaviour
             return false;
         }
 
+        // 책임 : 플레이어 컴포넌트 일괄 수집
+        if (!TryGatherPlayerComponents(player, out var ctx))
+            return false;
+
         // 책임 : 씬마다 새로 생성된 플레이어 기준으로 runtime restorer를 다시 잡는다.
         var playerWeaponRestorer = player.GetComponent<WeaponAbilityRuntimeStateBridge>();
         if (playerWeaponRestorer != null)
@@ -177,23 +202,9 @@ public sealed class PlayerSceneRestoreBootstrapper : MonoBehaviour
         if (playerRelicRestorer != null)
             relicRuntimeRestorer = playerRelicRestorer;
 
-        var weaponInventory = player.GetComponent<WeaponInventory2D>();
-        var consumableInventory = PlayerConsumableInventory.GetOrAdd(player.transform);
-        var relicInventory = player.GetComponent<RelicInventory>();
-        var attributeSet = player.GetComponent<AttributeSet>();
-        var effectRunner = player.GetComponent<GameplayEffectRunner>();
-        var tagSystem = player.GetComponent<TagSystem>();
-        var abilitySystem = player.GetComponent<AbilitySystem>();
-
         PlayerRuntimeRestoreCoordinator.RestoreAll(
             pendingState,
-            consumableInventory,
-            weaponInventory,
-            relicInventory,
-            attributeSet,
-            effectRunner,
-            tagSystem,
-            abilitySystem,
+            ctx,
             resolver,
             weaponRuntimeRestorer,
             relicRuntimeRestorer,

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 using UnityEngine.Serialization;
 
 public class GraveSpawner : MonoBehaviour
@@ -39,6 +40,10 @@ public class GraveSpawner : MonoBehaviour
 
     private readonly LootRollService rollService = new LootRollService();
 
+    // 싱글톤 강결합을 끊기 위한 Provider. 
+    // 외부(StageManager 등)에서 스폰 전에 할당해주면 RunModifierService 없이도 동작 가능해집니다.
+    public Func<GraveRunModifierDelta> GraveModifierProvider { get; set; }
+
     private void OnValidate()
     {
         EnsureProfiles();
@@ -58,9 +63,8 @@ public class GraveSpawner : MonoBehaviour
             return;
         }
 
-        GraveRunModifierDelta modifiers = RunModifierService.Instance != null
-            ? RunModifierService.Instance.GraveModifiers
-            : default;
+        // 싱글톤 직접 참조 대신 Provider를 통해 업그레이드 수치를 받아옵니다.
+        GraveRunModifierDelta modifiers = GraveModifierProvider != null ? GraveModifierProvider.Invoke() : default;
 
         int totalWeaponCount = rollService.PickCountInProfile(
             weaponGraveCountProfile,
@@ -76,7 +80,7 @@ public class GraveSpawner : MonoBehaviour
         for (int i = 0; i < shuffledPoints.Count; i++)
         {
             Transform temp = shuffledPoints[i];
-            int randomIndex = Random.Range(i, shuffledPoints.Count);
+            int randomIndex = UnityEngine.Random.Range(i, shuffledPoints.Count);
             shuffledPoints[i] = shuffledPoints[randomIndex];
             shuffledPoints[randomIndex] = temp;
         }

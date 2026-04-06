@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class LootManager : MonoBehaviour
 {
@@ -28,6 +29,11 @@ public class LootManager : MonoBehaviour
     private LootRollService rollService;
     private LootSpawnService spawnService;
 
+    // 외부 시스템(Portal, RunModifier)과의 결합을 끊기 위한 데이터 제공자(Provider) 델리게이트
+    // 외부(예: StageManager 등)에서 이 Func를 할당해주어 LootManager가 싱글톤에 의존하지 않게 합니다.
+    public Func<int> StageIndexProvider { get; set; }
+    public Func<ChestRunModifierDelta> ChestModifierProvider { get; set; }
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -42,6 +48,16 @@ public class LootManager : MonoBehaviour
             DontDestroyOnLoad(gameObject);
 
         RefreshServices();
+    }
+
+    private void OnEnable()
+    {
+        MonsterDrop.OnAnyMonsterDropRequested += SpawnMonsterLoot;
+    }
+
+    private void OnDisable()
+    {
+        MonsterDrop.OnAnyMonsterDropRequested -= SpawnMonsterLoot;
     }
 
     private void OnValidate()
@@ -59,8 +75,8 @@ public class LootManager : MonoBehaviour
     {
         get
         {
-            if (PortalRouteManager.Instance != null && PortalRouteManager.Instance.HasActivePlan)
-                return PortalRouteManager.Instance.CurrentStageIndex;
+            if (StageIndexProvider != null)
+                return StageIndexProvider.Invoke();
 
             return currentStageIndex;
         }
@@ -98,9 +114,9 @@ public class LootManager : MonoBehaviour
         EnsureServices();
 
         HashSet<string> banList = poolService.BuildPlayerWeaponExclusionSet();
-        ChestRunModifierDelta chestModifiers = RunModifierService.Instance != null
-            ? RunModifierService.Instance.ChestModifiers
-            : default;
+        
+        // 싱글톤 직접 참조 대신 외부에서 주입된 Provider를 통해 업그레이드 보너스 수치를 받아옵니다.
+        ChestRunModifierDelta chestModifiers = ChestModifierProvider != null ? ChestModifierProvider.Invoke() : default;
 
         int weaponCount = rollService.PickCountInProfile(
             table.ChestWeaponCountProfile,
@@ -170,7 +186,12 @@ public class LootManager : MonoBehaviour
             }
 
             case MonsterLootType.Consumable:
+            {
+                ConsumableDefinition consumable = poolService.GetRandomConsumable();
+                if (consumable != null)
+                    SpawnLootObject(position, consumable);
                 return;
+            }
 
             case MonsterLootType.FieldItem:
                 spawnService.SpawnFieldHealPickup(position);
@@ -198,7 +219,9 @@ public class LootManager : MonoBehaviour
         EnsureServices();
 
         GraveLootTable currentGraveTable = tableResolver.GetGraveLootTable();
-        if (currentGraveTable == null || ItemManager.Instance == null)
+        
+        // ItemManager 체크는 이미 poolService 내부에서 안전하게 처리하고 있으므로 여기서 강하게 결합할 필요가 없습니다.
+        if (currentGraveTable == null)
             return;
 
         switch (type)
