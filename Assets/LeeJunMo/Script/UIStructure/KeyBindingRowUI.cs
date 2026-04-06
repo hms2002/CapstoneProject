@@ -53,7 +53,7 @@ public sealed class KeyBindingRowUI : MonoBehaviour
         if (supportsSecondary)
             ApplyBindingVisual(secondaryBindingLabel, secondaryBindingIcon, action, true);
         else
-            SetBindingVisual(secondaryBindingLabel, secondaryBindingIcon, string.Empty, null);
+            InputGlyphVisualUtility.ApplyRaw(secondaryBindingLabel, secondaryBindingIcon, string.Empty, null);
 
         if (resetButton != null)
             resetButton.interactable = owner.CanResetAction(action);
@@ -62,10 +62,10 @@ public sealed class KeyBindingRowUI : MonoBehaviour
     public void SetListeningState(bool primary, bool secondary)
     {
         if (primary)
-            SetBindingVisual(primaryBindingLabel, primaryBindingIcon, "Input...", null);
+            InputGlyphVisualUtility.ApplyRaw(primaryBindingLabel, primaryBindingIcon, "Input...", null);
 
         if (secondary)
-            SetBindingVisual(secondaryBindingLabel, secondaryBindingIcon, "Input...", null);
+            InputGlyphVisualUtility.ApplyRaw(secondaryBindingLabel, secondaryBindingIcon, "Input...", null);
 
         if (primaryBindingButton != null)
             primaryBindingButton.interactable = false;
@@ -114,28 +114,10 @@ public sealed class KeyBindingRowUI : MonoBehaviour
         if (owner == null)
             return;
 
-        SetBindingVisual(
+        InputGlyphVisualUtility.ApplyRaw(
             label,
             icon,
             owner.GetBindingDisplayLabel(boundAction, secondary),
             owner.GetBindingIcon(boundAction, secondary));
-    }
-
-    private static void SetBindingVisual(TMP_Text label, Image icon, string text, Sprite sprite)
-    {
-        bool hasIcon = icon != null && sprite != null;
-
-        if (icon != null)
-        {
-            icon.sprite = sprite;
-            icon.enabled = hasIcon;
-            icon.gameObject.SetActive(hasIcon);
-        }
-
-        if (label != null)
-        {
-            label.text = hasIcon ? string.Empty : text;
-            label.gameObject.SetActive(!hasIcon);
-        }
     }
 }

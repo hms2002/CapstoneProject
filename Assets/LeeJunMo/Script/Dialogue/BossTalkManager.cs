@@ -1,18 +1,16 @@
 using System.Collections;
-using System.Collections.Generic;
-using Cainos.PixelArtTopDown_Basic;
 using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.Serialization;
 
 public class BossTalkManager : MonoBehaviour
 {
-    [Header("Data")]
+    [Header("Legacy Data")]
     [SerializeField] private NPCData npcData;
     [FormerlySerializedAs("inkJSON")]
     [SerializeField, HideInInspector] private TextAsset legacyInkJSON;
 
-    [Header("Camera Settings")]
+    [Header("Legacy Camera Settings")]
     [SerializeField] private CinemachineCamera playerCam;
     [SerializeField] private CinemachineCamera bossCam;
     [SerializeField] private int normalPriority = 10;
@@ -21,26 +19,24 @@ public class BossTalkManager : MonoBehaviour
     [SerializeField] private bool disableLegacyFollowWhileSequence = true;
     [SerializeField] private float blendWaitFallbackSeconds = 2f;
 
-    [Header("Post Sequence")]
+    [Header("Sequence")]
+    [SerializeField] private CameraPresentationDirector cameraDirector;
+    [SerializeField] private BossDialogueRunner dialogueRunner;
+    [SerializeField] private BossControllerBase bossController;
+    [SerializeField] private bool startBossCombatAfterDialogue = true;
+
+    [Header("Legacy Post Sequence")]
     [SerializeField] private BossDrop bossDrop;
 
-    private CinemachineBrain brain;
-    private CameraFollow legacyFollowCamera;
     private Coroutine runningSequence;
     private PlayerInteractor2D cachedPlayer;
     private InteractState previousPlayerState = InteractState.Idle;
-    private bool previousBrainIgnoreTimeScale;
-    private bool hasStoredBrainIgnoreTimeScale;
 
     private void Awake()
     {
-        if (Camera.main != null)
-        {
-            brain = Camera.main.GetComponent<CinemachineBrain>();
-            legacyFollowCamera = Camera.main.GetComponent<CameraFollow>();
-        }
-
-        ApplyDefaultCameraState();
+        CacheDependencies();
+        ConfigureLegacyAdapters();
+        PrepareBossForEncounter();
     }
 
     private void Start()
@@ -58,12 +54,9 @@ public class BossTalkManager : MonoBehaviour
         }
 
         RestorePlayerState();
-        RestoreDefaultCameraState();
-        RestoreBrainIgnoreTimeScale();
-        SetLegacyFollowEnabled(true);
 
-        if (legacyFollowCamera != null)
-            legacyFollowCamera.SnapToTarget();
+        if (cameraDirector != null)
+            cameraDirector.RestoreDefaultState();
     }
 
     public void BeginEncounterSequence()
@@ -82,175 +75,78 @@ public class BossTalkManager : MonoBehaviour
             yield break;
         }
 
-        cachedPlayer = ResolvePlayer();
-        EnableUnscaledCameraBlend();
+        yield return null;
+        yield return new WaitUntil(() => PlayerRuntimeRegistry.GetPlayerTransform() != null);
 
-        if (cachedPlayer != null)
-        {
-            previousPlayerState = cachedPlayer.CurrentState;
-            cachedPlayer.SetInteractState(InteractState.Talking);
-        }
-
-        BindPlayerCameraToCurrentPlayer();
-
-        yield return FocusBossCameraRoutine();
-        yield return PlayDialogueRoutine();
-        yield return ReturnToPlayerCameraRoutine();
+        CacheAndLockPlayer();
+        yield return cameraDirector.FocusBossRoutine();
+        yield return dialogueRunner.PlayDialogueRoutine();
+        yield return cameraDirector.ReturnToPlayerRoutine();
 
         RestorePlayerState();
-        RestoreBrainIgnoreTimeScale();
-
-        if (bossDrop != null)
-            bossDrop.OnBossDead();
-
+        StartBossCombat();
         runningSequence = null;
     }
 
     private bool ValidateSetup()
     {
-        if (brain == null)
+        if (cameraDirector == null)
         {
-            Debug.LogError("[BossTalkManager] Main Camera is missing CinemachineBrain.", this);
+            Debug.LogError("[BossTalkManager] cameraDirector is missing.", this);
             return false;
         }
 
-        if (playerCam == null)
+        if (dialogueRunner == null)
         {
-            Debug.LogError("[BossTalkManager] playerCam is missing.", this);
-            return false;
-        }
-
-        if (bossCam == null)
-        {
-            Debug.LogError("[BossTalkManager] bossCam is missing.", this);
-            return false;
-        }
-
-        if (npcData == null)
-        {
-            Debug.LogError("[BossTalkManager] npcData is missing.", this);
-            return false;
-        }
-
-        if (ResolveDialogueInk() == null)
-        {
-            Debug.LogError("[BossTalkManager] No dialogue ink is assigned on NPCData.", this);
-            return false;
-        }
-
-        if (DialogueService.Instance == null)
-        {
-            Debug.LogError("[BossTalkManager] DialogueService instance was not found.", this);
+            Debug.LogError("[BossTalkManager] dialogueRunner is missing.", this);
             return false;
         }
 
         return true;
     }
 
-    private PlayerInteractor2D ResolvePlayer()
+    private void CacheDependencies()
     {
-        Transform playerTransform = PlayerRuntimeRegistry.GetPlayerTransform();
-        if (playerTransform == null)
-            return null;
+        if (cameraDirector == null)
+            cameraDirector = GetComponent<CameraPresentationDirector>();
 
-        return playerTransform.GetComponent<PlayerInteractor2D>();
+        if (cameraDirector == null)
+            cameraDirector = gameObject.AddComponent<CameraPresentationDirector>();
+
+        if (dialogueRunner == null)
+            dialogueRunner = GetComponent<BossDialogueRunner>();
+
+        if (dialogueRunner == null)
+            dialogueRunner = gameObject.AddComponent<BossDialogueRunner>();
     }
 
-    private void BindPlayerCameraToCurrentPlayer()
+    private void ConfigureLegacyAdapters()
+    {
+        if (cameraDirector != null)
+        {
+            cameraDirector.ApplyPresentationSettings(
+                playerCam,
+                bossCam,
+                normalPriority,
+                focusPriority,
+                disableLegacyFollowWhileSequence,
+                blendWaitFallbackSeconds);
+        }
+
+        if (dialogueRunner != null)
+            dialogueRunner.ApplyLegacyDialogueData(npcData, legacyInkJSON);
+    }
+
+    private void CacheAndLockPlayer()
     {
         Transform playerTransform = PlayerRuntimeRegistry.GetPlayerTransform();
-        if (playerTransform == null || playerCam == null)
+        cachedPlayer = playerTransform != null ? playerTransform.GetComponent<PlayerInteractor2D>() : null;
+
+        if (cachedPlayer == null)
             return;
 
-        playerCam.Follow = playerTransform;
-        playerCam.LookAt = playerTransform;
-    }
-
-    private IEnumerator FocusBossCameraRoutine()
-    {
-        SetLegacyFollowEnabled(false);
-
-        if (playerCam != null)
-            playerCam.Priority = normalPriority;
-
-        if (bossCam != null)
-            bossCam.Priority = focusPriority;
-
-        yield return WaitForBlendEnd();
-    }
-
-    private IEnumerator ReturnToPlayerCameraRoutine()
-    {
-        BindPlayerCameraToCurrentPlayer();
-
-        if (bossCam != null)
-            bossCam.Priority = normalPriority;
-
-        if (playerCam != null)
-            playerCam.Priority = focusPriority;
-
-        yield return WaitForBlendEnd();
-
-        SetLegacyFollowEnabled(true);
-
-        if (legacyFollowCamera != null)
-            legacyFollowCamera.SnapToTarget();
-    }
-
-    private IEnumerator PlayDialogueRoutine()
-    {
-        TextAsset dialogueInk = ResolveDialogueInk();
-        if (dialogueInk == null)
-            yield break;
-
-        List<NPCData> participants = new List<NPCData> { npcData };
-        if (!DialogueService.Instance.TryStartDialogue(dialogueInk, participants))
-            yield break;
-
-        yield return new WaitUntil(() =>
-            DialogueService.Instance == null || !DialogueService.Instance.IsPlaying);
-    }
-
-    private IEnumerator WaitForBlendEnd()
-    {
-        yield return null;
-
-        if (brain == null)
-            yield break;
-
-        float fallbackDuration = Mathf.Max(0f, GetBlendWaitFallbackSeconds());
-        float elapsed = 0f;
-        bool sawBlend = brain.IsBlending;
-
-        while (elapsed < fallbackDuration)
-        {
-            if (brain == null)
-                yield break;
-
-            if (brain.IsBlending)
-            {
-                sawBlend = true;
-            }
-            else if (sawBlend)
-            {
-                yield break;
-            }
-
-            elapsed += Time.unscaledDeltaTime;
-            yield return null;
-        }
-    }
-
-    private float GetBlendWaitFallbackSeconds()
-    {
-        if (brain != null)
-        {
-            float defaultBlendTime = brain.DefaultBlend.Time;
-            if (defaultBlendTime > 0f)
-                return defaultBlendTime + 0.1f;
-        }
-
-        return blendWaitFallbackSeconds;
+        previousPlayerState = cachedPlayer.CurrentState;
+        cachedPlayer.SetInteractState(InteractState.Talking);
     }
 
     private void RestorePlayerState()
@@ -262,67 +158,35 @@ public class BossTalkManager : MonoBehaviour
         cachedPlayer = null;
     }
 
-    private void SetLegacyFollowEnabled(bool enabled)
+    private void PrepareBossForEncounter()
     {
-        if (!disableLegacyFollowWhileSequence)
+        ResolveBossController();
+
+        if (bossController != null)
+            bossController.SetCombatActive(false);
+    }
+
+    private void StartBossCombat()
+    {
+        if (!startBossCombatAfterDialogue)
             return;
 
-        if (legacyFollowCamera != null)
-            legacyFollowCamera.enabled = enabled;
-    }
+        ResolveBossController();
 
-    private void ApplyDefaultCameraState()
-    {
-        if (bossCam != null)
-            bossCam.Priority = normalPriority;
-
-        if (playerCam != null)
-            playerCam.Priority = focusPriority;
-    }
-
-    private void RestoreDefaultCameraState()
-    {
-        ApplyDefaultCameraState();
-    }
-
-    private void EnableUnscaledCameraBlend()
-    {
-        if (brain == null)
-            return;
-
-        if (!hasStoredBrainIgnoreTimeScale)
+        if (bossController == null)
         {
-            previousBrainIgnoreTimeScale = brain.IgnoreTimeScale;
-            hasStoredBrainIgnoreTimeScale = true;
+            Debug.LogWarning("[BossTalkManager] No BossControllerBase found to start combat.", this);
+            return;
         }
 
-        brain.IgnoreTimeScale = true;
+        bossController.BeginCombatEncounter(PlayerRuntimeRegistry.GetPlayerTransform());
     }
 
-    private void RestoreBrainIgnoreTimeScale()
+    private void ResolveBossController()
     {
-        if (brain == null || !hasStoredBrainIgnoreTimeScale)
+        if (bossController != null)
             return;
 
-        brain.IgnoreTimeScale = previousBrainIgnoreTimeScale;
-        hasStoredBrainIgnoreTimeScale = false;
-    }
-
-    private TextAsset ResolveDialogueInk()
-    {
-        if (npcData != null)
-        {
-            if (npcData.PrimaryInk != null)
-                return npcData.PrimaryInk;
-
-            if (legacyInkJSON != null)
-            {
-                npcData.AssignPrimaryInkIfEmpty(legacyInkJSON);
-                if (npcData.PrimaryInk != null)
-                    return npcData.PrimaryInk;
-            }
-        }
-
-        return legacyInkJSON;
+        bossController = FindAnyObjectByType<BossControllerBase>();
     }
 }

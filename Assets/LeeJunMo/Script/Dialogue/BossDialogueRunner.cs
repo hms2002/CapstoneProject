@@ -9,6 +9,12 @@ public class BossDialogueRunner : MonoBehaviour
     [FormerlySerializedAs("inkJSON")]
     [SerializeField, HideInInspector] private TextAsset legacyInkJSON;
 
+    public void ApplyLegacyDialogueData(NPCData data, TextAsset legacyInk)
+    {
+        npcData = data;
+        legacyInkJSON = legacyInk;
+    }
+
     public IEnumerator PlayDialogueRoutine()
     {
         if (npcData == null)
