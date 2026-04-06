@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 using UnityGAS;
@@ -14,14 +15,12 @@ public class WeaponDetailView : MonoBehaviour, IItemDetailView
         gameObject.SetActive(true);
         sections?.Clear();
 
-        var w = (WeaponDefinition)def;
+        WeaponDefinition weapon = (WeaponDefinition)def;
 
-        // ✅ 상단: 무기 설명 + 장착 시 적용되는 스탯
-        AddWeaponSummarySection(w, services);
-
-        AddAbilitySection("일반공격", w.attack, DamageAttackKind.Normal, ctx, services, w.attackInputHint);
-        AddAbilitySection("스킬 1", w.skill1, DamageAttackKind.Skill, ctx, services, w.skill1InputHint);
-        AddAbilitySection("스킬 2", w.skill2, DamageAttackKind.Skill, ctx, services, w.skill2InputHint);
+        AddWeaponSummarySection(weapon, services);
+        AddAbilitySection("일반공격", weapon.attack, DamageAttackKind.Normal, ctx, services, weapon.attackInputHint, InputActionId.PrimaryAttack);
+        AddAbilitySection("스킬 1", weapon.skill1, DamageAttackKind.Skill, ctx, services, weapon.skill1InputHint, InputActionId.Skill1);
+        AddAbilitySection("스킬 2", weapon.skill2, DamageAttackKind.Skill, ctx, services, weapon.skill2InputHint, InputActionId.Skill2);
     }
 
     public void Hide()
@@ -30,93 +29,110 @@ public class WeaponDetailView : MonoBehaviour, IItemDetailView
         gameObject.SetActive(false);
     }
 
-    private void AddAbilitySection(string header, AbilityDefinition ability, DamageAttackKind kind, ItemDetailContext ctx, ItemDetailPanelServices services, string inputHint)
+    private void AddAbilitySection(
+        string header,
+        AbilityDefinition ability,
+        DamageAttackKind kind,
+        ItemDetailContext ctx,
+        ItemDetailPanelServices services,
+        string inputHint,
+        InputActionId inputAction)
     {
-        if (sections == null) return;
-        if (ability == null) return;
+        if (sections == null || ability == null)
+            return;
 
-        string body = BuildAbilityBody(ability, kind, ctx, inputHint);
-        if (services != null && services.formatText != null)
+        string body = BuildAbilityBody(ability, kind, ctx, inputHint, inputAction);
+        if (services?.formatText != null)
             body = services.formatText(body);
 
-        sections.Add(header, body, services != null ? services.showGlossary : null);
-
+        sections.Add(header, body, services?.showGlossary);
     }
 
-    private void AddWeaponSummarySection(WeaponDefinition w, ItemDetailPanelServices services)
+    private void AddWeaponSummarySection(WeaponDefinition weapon, ItemDetailPanelServices services)
     {
-        if (sections == null || w == null) return;
+        if (sections == null || weapon == null)
+            return;
 
         var sb = new StringBuilder();
 
-        if (!string.IsNullOrEmpty(w.storyText))
-            sb.AppendLine(w.storyText);
+        if (!string.IsNullOrEmpty(weapon.storyText))
+            sb.AppendLine(weapon.storyText);
 
-        if (w.statModifiers != null && w.statModifiers.Count > 0)
+        if (weapon.statModifiers != null && weapon.statModifiers.Count > 0)
         {
-            if (sb.Length > 0) sb.AppendLine();
+            if (sb.Length > 0)
+                sb.AppendLine();
+
             sb.AppendLine("<b>능력치</b>");
 
-            for (int i = 0; i < w.statModifiers.Count; i++)
+            for (int i = 0; i < weapon.statModifiers.Count; i++)
             {
-                var e = w.statModifiers[i];
-                if (e.attribute == null) continue;
+                WeaponDefinition.WeaponStatModifier entry = weapon.statModifiers[i];
+                if (entry.attribute == null)
+                    continue;
 
-                string label = !string.IsNullOrEmpty(e.labelOverride)
-                    ? e.labelOverride
-                    : (!string.IsNullOrEmpty(e.attribute.attributeName) ? e.attribute.attributeName : e.attribute.name);
+                string label = !string.IsNullOrEmpty(entry.labelOverride)
+                    ? entry.labelOverride
+                    : (!string.IsNullOrEmpty(entry.attribute.attributeName) ? entry.attribute.attributeName : entry.attribute.name);
 
-                string valueText;
-                if (e.type == ModifierType.Percent)
-                {
-                    // Percent는 +0.1 => +10%
-                    valueText = $"+{e.value * 100f:0.#}%";
-                }
-                else
-                {
-                    valueText = $"+{e.value:0.##}";
-                }
+                string valueText = entry.type == ModifierType.Percent
+                    ? $"+{entry.value * 100f:0.#}%"
+                    : $"+{entry.value:0.##}";
 
                 sb.AppendLine($"- {label} <color=#FFD54F>{valueText}</color>");
             }
         }
 
         string body = sb.ToString().TrimEnd();
-        if (services != null && services.formatText != null)
+        if (services?.formatText != null)
             body = services.formatText(body);
 
         if (!string.IsNullOrEmpty(body))
-            sections.Add("요약", body, services != null ? services.showGlossary : null);
+            sections.Add("요약", body, services?.showGlossary);
     }
 
-    private string BuildAbilityBody(AbilityDefinition ad, DamageAttackKind kind, ItemDetailContext ctx, string inputHint)
+    private string BuildAbilityBody(
+        AbilityDefinition ability,
+        DamageAttackKind kind,
+        ItemDetailContext ctx,
+        string inputHint,
+        InputActionId inputAction)
     {
         var sb = new StringBuilder();
 
-        sb.AppendLine($"<b>{ad.abilityName}</b>");
-        if (!string.IsNullOrEmpty(ad.description))
-            sb.AppendLine(ad.description);
+        sb.AppendLine($"<b>{ability.abilityName}</b>");
+        if (!string.IsNullOrEmpty(ability.description))
+            sb.AppendLine(ability.description);
 
-        if (!string.IsNullOrEmpty(inputHint))
-            sb.AppendLine($"입력: <color=#A7E1FF>{inputHint}</color>");
+        string resolvedInputHint = ResolveInputHintLabel(inputHint, inputAction);
+        if (!string.IsNullOrEmpty(resolvedInputHint))
+            sb.AppendLine($"입력: <color=#A7E1FF>{resolvedInputHint}</color>");
 
-        if (ad.cooldown > 0f)
-            sb.AppendLine($"쿨다운: <color=#FFD54F>{ad.cooldown:0.##}s</color>");
+        if (ability.cooldown > 0f)
+            sb.AppendLine($"쿨다운: <color=#FFD54F>{ability.cooldown:0.##}s</color>");
 
-        // Tags (brief)
-        if (ad.abilityTags != null && ad.abilityTags.Count > 0)
-            sb.AppendLine($"태그: {JoinTags(ad.abilityTags)}");
+        if (ability.abilityTags != null && ability.abilityTags.Count > 0)
+            sb.AppendLine($"태그: {JoinTags(ability.abilityTags)}");
 
-        // SourceObject details (best-effort, sample types supported)
-        if (ad.sourceObject != null)
+        if (ability.sourceObject != null)
         {
             sb.AppendLine();
             sb.AppendLine("<b>상세</b>");
-            AppendSourceObjectDetails(sb, ad.sourceObject, kind, ctx);
+            AppendSourceObjectDetails(sb, ability.sourceObject, kind, ctx);
         }
 
         return sb.ToString().TrimEnd();
     }
+
+    private static string ResolveInputHintLabel(string fallbackInputHint, InputActionId inputAction)
+    {
+        string bindingLabel = InputBindingService.EnsureInstance().GetBindingDisplayLabel(inputAction);
+        if (!string.IsNullOrWhiteSpace(bindingLabel) && bindingLabel != "-")
+            return bindingLabel;
+
+        return fallbackInputHint;
+    }
+
     private void AppendSourceObjectDetails(StringBuilder sb, Object sourceObj, DamageAttackKind kind, ItemDetailContext ctx)
     {
         if (sourceObj == null)
@@ -125,12 +141,10 @@ public class WeaponDetailView : MonoBehaviour, IItemDetailView
             return;
         }
 
-        // ✅ 너가 이미 가진 방식: sourceObject가 스스로 블록 제공
         if (sourceObj is IDetailProvider provider)
         {
-            var block = provider.BuildDetailBlock(ctx);
+            ItemDetailBlock block = provider.BuildDetailBlock(ctx);
 
-            // block.title은 선택: 본문에 소제목처럼 넣고 싶으면 사용
             if (!string.IsNullOrEmpty(block.title))
                 sb.AppendLine($"<color=#A7E1FF>{block.title}</color>");
 
@@ -142,22 +156,24 @@ public class WeaponDetailView : MonoBehaviour, IItemDetailView
             return;
         }
 
-        // fallback
-        sb.AppendLine($"{sourceObj.name}");
+        sb.AppendLine(sourceObj.name);
         sb.AppendLine("(디테일 제공 인터페이스 미구현)");
     }
 
-    private string JoinTags(System.Collections.Generic.List<GameplayTag> tags)
+    private static string JoinTags(List<GameplayTag> tags)
     {
         var sb = new StringBuilder();
         for (int i = 0; i < tags.Count; i++)
         {
-            if (tags[i] == null) continue;
-            if (sb.Length > 0) sb.Append(", ");
+            if (tags[i] == null)
+                continue;
+
+            if (sb.Length > 0)
+                sb.Append(", ");
+
             sb.Append(tags[i].ToString());
         }
+
         return sb.ToString();
     }
-
-    // (Damage preview moved to per-sourceObject IDetailProvider implementations.)
 }

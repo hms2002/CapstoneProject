@@ -33,7 +33,7 @@ public class Enemy : MonoBehaviour
     [SerializeField] private string targetTag = "Player";
 
     protected Transform target;
-    public Transform Target => target;
+    public virtual Transform Target => target;
 
     protected virtual void Awake()
     {
@@ -77,6 +77,11 @@ public class Enemy : MonoBehaviour
 
         if (target == null)
             Debug.LogWarning($"{enemyName}: No target found with tag '{targetTag}'");
+    }
+
+    protected void SetTarget(Transform newTarget)
+    {
+        target = newTarget;
     }
 
     protected virtual void OnEnemyAttributeChanged(AttributeDefinition attribute, float oldValue, float newValue) { }

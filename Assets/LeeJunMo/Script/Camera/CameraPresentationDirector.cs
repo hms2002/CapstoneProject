@@ -1,4 +1,5 @@
 using System.Collections;
+using Cainos.PixelArtTopDown_Basic;
 using UnityEngine;
 using Unity.Cinemachine;
 
@@ -12,12 +13,22 @@ public class CameraPresentationDirector : MonoBehaviour
     [SerializeField] private int normalPriority = 10;
     [SerializeField] private int focusPriority = 100;
 
+    [Header("Sequence")]
+    [SerializeField] private bool disableLegacyFollowWhileSequence = true;
+    [SerializeField] private float blendWaitFallbackSeconds = 2f;
+
     private CinemachineBrain brain;
+    private CameraFollow legacyFollowCamera;
+    private bool previousBrainIgnoreTimeScale;
+    private bool hasStoredBrainIgnoreTimeScale;
 
     private void Awake()
     {
         if (Camera.main != null)
+        {
             brain = Camera.main.GetComponent<CinemachineBrain>();
+            legacyFollowCamera = Camera.main.GetComponent<CameraFollow>();
+        }
 
         EnsureImpulseListener(playerCam);
         EnsureImpulseListener(bossCam);
@@ -35,6 +46,8 @@ public class CameraPresentationDirector : MonoBehaviour
     {
         PlayerRuntimeRegistry.PlayerRegistered -= HandlePlayerRegistered;
         PlayerRuntimeRegistry.PlayerUnregistered -= HandlePlayerUnregistered;
+        RestoreBrainIgnoreTimeScale();
+        SetLegacyFollowEnabled(true);
     }
 
     public void BindPlayerCameraToCurrentPlayer()
@@ -42,9 +55,31 @@ public class CameraPresentationDirector : MonoBehaviour
         BindPlayerCamera(PlayerRuntimeRegistry.GetPlayerTransform());
     }
 
+    public void ApplyPresentationSettings(
+        CinemachineCamera playerCamera,
+        CinemachineCamera bossCamera,
+        int defaultPriority,
+        int highlightedPriority,
+        bool disableLegacyFollow,
+        float blendFallbackSeconds)
+    {
+        playerCam = playerCamera;
+        bossCam = bossCamera;
+        normalPriority = defaultPriority;
+        focusPriority = highlightedPriority;
+        disableLegacyFollowWhileSequence = disableLegacyFollow;
+        blendWaitFallbackSeconds = blendFallbackSeconds;
+
+        EnsureImpulseListener(playerCam);
+        EnsureImpulseListener(bossCam);
+        RestoreDefaultState();
+    }
+
     public IEnumerator FocusBossRoutine()
     {
+        EnableUnscaledCameraBlend();
         BindPlayerCameraToCurrentPlayer();
+        SetLegacyFollowEnabled(false);
 
         if (playerCam != null)
             playerCam.Priority = normalPriority;
@@ -66,6 +101,12 @@ public class CameraPresentationDirector : MonoBehaviour
             playerCam.Priority = focusPriority;
 
         yield return WaitForBlendEnd();
+
+        RestoreBrainIgnoreTimeScale();
+        SetLegacyFollowEnabled(true);
+
+        if (legacyFollowCamera != null)
+            legacyFollowCamera.SnapToTarget();
     }
 
     public void RestoreDefaultState()
@@ -77,6 +118,9 @@ public class CameraPresentationDirector : MonoBehaviour
 
         if (playerCam != null)
             playerCam.Priority = focusPriority;
+
+        RestoreBrainIgnoreTimeScale();
+        SetLegacyFollowEnabled(true);
     }
 
     private void HandlePlayerRegistered(PlayerInteractor2D player)
@@ -128,7 +172,73 @@ public class CameraPresentationDirector : MonoBehaviour
     {
         yield return null;
 
+        if (brain == null)
+            yield break;
+
+        float fallbackDuration = Mathf.Max(0f, GetBlendWaitFallbackSeconds());
+        float elapsed = 0f;
+        bool sawBlend = brain.IsBlending;
+
+        while (elapsed < fallbackDuration)
+        {
+            if (brain == null)
+                yield break;
+
+            if (brain.IsBlending)
+            {
+                sawBlend = true;
+            }
+            else if (sawBlend)
+            {
+                yield break;
+            }
+
+            elapsed += Time.unscaledDeltaTime;
+            yield return null;
+        }
+    }
+
+    private float GetBlendWaitFallbackSeconds()
+    {
         if (brain != null)
-            yield return new WaitUntil(() => !brain.IsBlending);
+        {
+            float defaultBlendTime = brain.DefaultBlend.Time;
+            if (defaultBlendTime > 0f)
+                return defaultBlendTime + 0.1f;
+        }
+
+        return blendWaitFallbackSeconds;
+    }
+
+    private void EnableUnscaledCameraBlend()
+    {
+        if (brain == null)
+            return;
+
+        if (!hasStoredBrainIgnoreTimeScale)
+        {
+            previousBrainIgnoreTimeScale = brain.IgnoreTimeScale;
+            hasStoredBrainIgnoreTimeScale = true;
+        }
+
+        brain.IgnoreTimeScale = true;
+    }
+
+    private void RestoreBrainIgnoreTimeScale()
+    {
+        if (brain == null || !hasStoredBrainIgnoreTimeScale)
+            return;
+
+        brain.IgnoreTimeScale = previousBrainIgnoreTimeScale;
+        hasStoredBrainIgnoreTimeScale = false;
+    }
+
+    private void SetLegacyFollowEnabled(bool enabled)
+    {
+        if (!disableLegacyFollowWhileSequence)
+            return;
+
+        if (legacyFollowCamera != null)
+            legacyFollowCamera.enabled = enabled;
     }
 }

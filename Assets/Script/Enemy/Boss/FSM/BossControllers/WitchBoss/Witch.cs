@@ -8,7 +8,10 @@ public class Witch : BossControllerBase
         base.Update();
 
         // 스프라이트 반전
-        if      (transform.position.x > target.position.x) sprite.flipX = true;
-        else if (transform.position.x < target.position.x) sprite.flipX = false;
+        if (Target == null)
+            return;
+
+        if      (transform.position.x > Target.position.x) sprite.flipX = true;
+        else if (transform.position.x < Target.position.x) sprite.flipX = false;
     }
 }

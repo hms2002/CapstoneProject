@@ -8,9 +8,11 @@ public sealed class KeyBindingRowUI : MonoBehaviour
     [SerializeField] private TMP_Text actionLabel;
     [SerializeField] private Button primaryBindingButton;
     [SerializeField] private TMP_Text primaryBindingLabel;
+    [SerializeField] private Image primaryBindingIcon;
     [SerializeField] private GameObject secondaryRoot;
     [SerializeField] private Button secondaryBindingButton;
     [SerializeField] private TMP_Text secondaryBindingLabel;
+    [SerializeField] private Image secondaryBindingIcon;
     [SerializeField] private Button resetButton;
 
     private KeyBindingPanelUI owner;
@@ -37,8 +39,7 @@ public sealed class KeyBindingRowUI : MonoBehaviour
         if (actionLabel != null)
             actionLabel.text = owner.GetActionLabel(action);
 
-        if (primaryBindingLabel != null)
-            primaryBindingLabel.text = owner.GetBindingDisplayLabel(action);
+        ApplyBindingVisual(primaryBindingLabel, primaryBindingIcon, action, false);
 
         if (primaryBindingButton != null)
             primaryBindingButton.interactable = true;
@@ -49,10 +50,10 @@ public sealed class KeyBindingRowUI : MonoBehaviour
         if (secondaryBindingButton != null)
             secondaryBindingButton.interactable = supportsSecondary;
 
-        if (secondaryBindingLabel != null)
-            secondaryBindingLabel.text = supportsSecondary
-                ? owner.GetBindingDisplayLabel(action, secondary: true)
-                : string.Empty;
+        if (supportsSecondary)
+            ApplyBindingVisual(secondaryBindingLabel, secondaryBindingIcon, action, true);
+        else
+            InputGlyphVisualUtility.ApplyRaw(secondaryBindingLabel, secondaryBindingIcon, string.Empty, null);
 
         if (resetButton != null)
             resetButton.interactable = owner.CanResetAction(action);
@@ -60,11 +61,11 @@ public sealed class KeyBindingRowUI : MonoBehaviour
 
     public void SetListeningState(bool primary, bool secondary)
     {
-        if (primaryBindingLabel != null && primary)
-            primaryBindingLabel.text = "입력...";
+        if (primary)
+            InputGlyphVisualUtility.ApplyRaw(primaryBindingLabel, primaryBindingIcon, "Input...", null);
 
-        if (secondaryBindingLabel != null && secondary)
-            secondaryBindingLabel.text = "입력...";
+        if (secondary)
+            InputGlyphVisualUtility.ApplyRaw(secondaryBindingLabel, secondaryBindingIcon, "Input...", null);
 
         if (primaryBindingButton != null)
             primaryBindingButton.interactable = false;
@@ -95,16 +96,28 @@ public sealed class KeyBindingRowUI : MonoBehaviour
 
     private void HandlePrimaryRebind()
     {
-        owner?.BeginRebind(this, action, secondary: false);
+        owner?.BeginRebind(this, action, false);
     }
 
     private void HandleSecondaryRebind()
     {
-        owner?.BeginRebind(this, action, secondary: true);
+        owner?.BeginRebind(this, action, true);
     }
 
     private void HandleReset()
     {
         owner?.ResetAction(action);
+    }
+
+    private void ApplyBindingVisual(TMP_Text label, Image icon, InputActionId boundAction, bool secondary)
+    {
+        if (owner == null)
+            return;
+
+        InputGlyphVisualUtility.ApplyRaw(
+            label,
+            icon,
+            owner.GetBindingDisplayLabel(boundAction, secondary),
+            owner.GetBindingIcon(boundAction, secondary));
     }
 }
