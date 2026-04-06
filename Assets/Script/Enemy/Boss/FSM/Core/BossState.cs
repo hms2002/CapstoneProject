@@ -1,3 +1,5 @@
+using UnityEngine;
+
 public abstract class BossState
 {
     protected readonly BossControllerBase boss;
@@ -12,4 +14,9 @@ public abstract class BossState
     public virtual void OnEnter() { }
     public virtual void OnUpdate() { }
     public virtual void OnExit() { }
+
+    protected void LogState(string message)
+    {
+        Debug.Log($"[BossFSM] {boss.name}: {message}", boss);
+    }
 }

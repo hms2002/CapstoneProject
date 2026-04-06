@@ -4,18 +4,6 @@ using UnityGAS;
 
 public abstract class BossControllerBase : Enemy
 {
-    /*
-    [Header("Core Components")]
-    [Tooltip("보스가 사용하는 GAS AbilitySystem입니다.")]
-    [SerializeField] private AbilitySystem abilitySystem;
-
-    [Tooltip("보스 상태 태그를 관리하는 TagSystem입니다.")]
-    [SerializeField] private TagSystem tagSystem;
-
-    [Tooltip("보스 스탯을 관리하는 AttributeSet입니다.")]
-    [SerializeField] private AttributeSet attributeSet;
-    */
-
     [Header("Target")]
     [Tooltip("기본 전투 타겟입니다. 필요 시 런타임에 교체할 수 있습니다.")]
     [SerializeField] private Transform initialTarget;
@@ -54,14 +42,13 @@ public abstract class BossControllerBase : Enemy
     private BossGroggyState groggyState;
     private BossDeadState deadState;
 
-    private Transform currentTarget;
-
     public AbilitySystem AbilitySystem => abilitySystem;
     public TagSystem TagSystem => tagSystem;
     public AttributeSet AttributeSet => attributeSet;
     public BossBlackboard Blackboard => blackboard;
     public BossStateMachine StateMachine => stateMachine;
-    public Transform CurrentTarget => currentTarget;
+    public Transform CurrentTarget => Target;
+    public override Transform Target => target;
 
     protected override void Awake()
     {
@@ -69,22 +56,17 @@ public abstract class BossControllerBase : Enemy
 
         CacheComponents();
 
-        currentTarget = initialTarget;
-
         blackboard = new BossBlackboard(transform);
         stateMachine = new BossStateMachine(blackboard);
-
-        spawnState = new BossSpawnState(this);
-        combatIdleState = new BossCombatIdleState(this);
-        patternSelectState = new BossPatternSelectState(this);
-        patternExecuteState = new BossPatternExecuteState(this);
-        groggyState = new BossGroggyState(this);
-        deadState = new BossDeadState(this);
+        CreateStates();
     }
 
     protected override void Start()
     {
         base.Start();
+
+        if (initialTarget != null)
+            SetTarget(initialTarget);
 
         blackboard.SetPhaseIndex(EvaluatePhaseIndexByHealthRatio(GetCurrentHpRatio()));
         stateMachine.ChangeState(spawnState);
@@ -92,7 +74,7 @@ public abstract class BossControllerBase : Enemy
 
     protected virtual void Update()
     {
-        blackboard.Tick(Time.deltaTime, currentTarget, GetCurrentHpRatio());
+        blackboard.Tick(Time.deltaTime, Target, GetCurrentHpRatio());
 
         EvaluatePhaseChange();
         EvaluateReactiveStateTransitions();
@@ -109,7 +91,7 @@ public abstract class BossControllerBase : Enemy
 
     public void SetCombatTarget(Transform newTarget)
     {
-        currentTarget = newTarget;
+        SetTarget(newTarget);
     }
 
     public void ChangeState(BossState nextState)
@@ -176,7 +158,7 @@ public abstract class BossControllerBase : Enemy
         if (!patternEntry.IsSelectable(this, blackboard))
             return false;
 
-        GameObject targetObject = currentTarget != null ? currentTarget.gameObject : null;
+        GameObject targetObject = Target != null ? Target.gameObject : null;
         bool isActivated = abilitySystem.TryActivateAbility(patternEntry.Ability, targetObject);
 
         if (!isActivated)
@@ -288,5 +270,45 @@ public abstract class BossControllerBase : Enemy
     public void NotifySpawnFinished()
     {
         OnEnterSpawn();
+    }
+
+    protected virtual void CreateStates()
+    {
+        spawnState = CreateSpawnState();
+        combatIdleState = CreateCombatIdleState();
+        patternSelectState = CreatePatternSelectState();
+        patternExecuteState = CreatePatternExecuteState();
+        groggyState = CreateGroggyState();
+        deadState = CreateDeadState();
+    }
+
+    protected virtual BossSpawnState CreateSpawnState()
+    {
+        return new BossSpawnState(this);
+    }
+
+    protected virtual BossCombatIdleState CreateCombatIdleState()
+    {
+        return new BossCombatIdleState(this);
+    }
+
+    protected virtual BossPatternSelectState CreatePatternSelectState()
+    {
+        return new BossPatternSelectState(this);
+    }
+
+    protected virtual BossPatternExecuteState CreatePatternExecuteState()
+    {
+        return new BossPatternExecuteState(this);
+    }
+
+    protected virtual BossGroggyState CreateGroggyState()
+    {
+        return new BossGroggyState(this);
+    }
+
+    protected virtual BossDeadState CreateDeadState()
+    {
+        return new BossDeadState(this);
     }
 }

@@ -16,9 +16,12 @@ MonoBehaviour:
   icon: {fileID: 0}
   description: "\uBAB8\uD1B5\uBC15\uCE58\uAE30"
   cooldown: 1
+  executionPolicy: 0
   useCharges: 0
   maxCharges: 1
   cooldownEffect: {fileID: 0}
+  cooldownTag: {fileID: 0}
+  startCooldownOnEnd: 1
   castTime: 0
   recoveryTime: 0
   canCastWhileMoving: 1
