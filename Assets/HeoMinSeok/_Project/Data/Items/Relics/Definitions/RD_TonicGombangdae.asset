@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   relicId: RD_TonicGombangdae
   displayName: "\uBCF4\uC57D \uACF0\uBC29\uB300"
-  icon: {fileID: -1455096403836856330, guid: 55a13ad98fd04b24bbe28fa5a4113206, type: 3}
+  icon: {fileID: 21300000, guid: b21ecde7f4efbae44b88a07fc7a7610e, type: 3}
   rarity: 0
   description: "[\uCD94\uAC00 \uC774\uB3D9\uC18D\uB3C4] 10% \uB9C8\uB2E4 [\uCE58\uBA85\uD0C0
     \uD655\uB960] 1% \uC99D\uAC00\n[\uCD94\uAC00 \uC774\uB3D9\uC18D\uB3C4] = \uAE30\uBCF8

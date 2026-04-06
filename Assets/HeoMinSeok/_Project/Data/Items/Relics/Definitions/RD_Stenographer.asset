@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   relicId: RD_Stenographer
   displayName: "\uC18D\uAE30\uC0AC"
-  icon: {fileID: -4475832180944608382, guid: f56d3f5dfaa479441b291f58693d8fb4, type: 3}
+  icon: {fileID: 21300000, guid: 6e5063279097f8b4abb904145fd23e7c, type: 3}
   rarity: 2
   description: "\uC794\uC601\uC758 \uB0A0\uAC1C \uC804\uC6A9 \uC720\uBB3C\n\uC2A4\uD0AC
     1\uC758 \uC774\uB3D9\uC18D\uB3C4 \uBCF4\uB108\uC2A4\uAC00 \uC99D\uAC00\n\uC2A4\uD0AC

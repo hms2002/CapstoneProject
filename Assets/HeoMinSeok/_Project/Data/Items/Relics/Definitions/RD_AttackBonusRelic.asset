@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: RD_AttackBonusRelic
   m_EditorClassIdentifier: 
   relicId: AttackBonusRelic
-  displayName: AttackBonusRelic
+  displayName: "\uD798 \uBD80\uC801"
   icon: {fileID: -1330801700, guid: ef16b2ddeb64123459076c2c8a541a63, type: 3}
   rarity: 0
   description: 

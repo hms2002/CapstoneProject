@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: RD_FireBonusRelic
   m_EditorClassIdentifier: 
   relicId: RD_FireBonusRelic
-  displayName: RD_FireBonusRelic
+  displayName: "\uBD88 \uBD80\uC801"
   icon: {fileID: 543113751, guid: ef16b2ddeb64123459076c2c8a541a63, type: 3}
+  rarity: 0
   description: 
   maxLevel: 5
   dropLevel: 1

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   relicId: RD_RunningLedger
   displayName: "\uB2EC\uB9AC\uB294 \uC7A5\uBD80"
-  icon: {fileID: 4980393042394730227, guid: 720b8dc9b28049347b8baecd7a2e2f33, type: 3}
+  icon: {fileID: 21300000, guid: 6cd59cbf386c7134c99727cb4cdc3f83, type: 3}
   rarity: 1
   description: "[\uCE58\uBA85\uD0C0 \uC2DC] [\uC774\uB3D9\uC18D\uB3C4] 2% \uC529
     \uC99D\uAC00\n\uCD5C\uB300 50%\uAE4C\uC9C0 \uC99D\uAC00 \uAC00\uB2A5\n[\uD53C\uD574\uB97C

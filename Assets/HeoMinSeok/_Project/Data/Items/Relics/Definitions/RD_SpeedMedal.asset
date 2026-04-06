@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   relicId: RD_SpeedMedal
   displayName: "\uC2A4\uD53C\uB4DC \uBA54\uB2EC"
-  icon: {fileID: -5412910156287300836, guid: 7b34ef87eae3f544f8be30f39526b504, type: 3}
+  icon: {fileID: 21300000, guid: cc05db3731cb2e447b06a5902cb16b6c, type: 3}
   rarity: 0
   description: "[\uC774\uB3D9\uC18D\uB3C4] 5% \uC99D\uAC00\n[\uCE58\uBA85\uD0C0 \uD655\uB960]
     5% \uC99D\uAC00"
