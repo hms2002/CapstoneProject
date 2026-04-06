@@ -26,6 +26,9 @@ GameObject:
   - component: {fileID: 6774430360982852736}
   - component: {fileID: 8066174361135364469}
   - component: {fileID: 1293483340863161236}
+  - component: {fileID: 8796106169310618422}
+  - component: {fileID: 1653962602954867552}
+  - component: {fileID: 486424674402126679}
   m_Layer: 0
   m_Name: Witch
   m_TagString: Untagged
@@ -205,6 +208,7 @@ MonoBehaviour:
   healthDef: {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
   enemyName: "\uB9C8\uB140"
   targetTag: Player
+  startCombatOnStart: 1
   initialTarget: {fileID: 0}
   healthAttribute: {fileID: 0}
   maxHealthAttribute: {fileID: 0}
@@ -424,3 +428,53 @@ MonoBehaviour:
   knockbackImmuneTag: {fileID: 0}
   resistancePctAttribute: {fileID: 0}
   knockbackDominanceTime: 0.12
+--- !u!114 &8796106169310618422
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4104743717894493410}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42667dfbf3529e6489882ac43545fe3b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  chestPrefab: {fileID: 7530156284439312542, guid: 296eaa6f1547cb74e990055ce1319470, type: 3}
+  chestSpawnPoint: {fileID: 0}
+  bossUniqueLoots:
+  - item: {fileID: 11400000, guid: 6a8181eecc5ab3a4988f9089d46607b0, type: 2}
+    dropChance: 100
+  magicStonePrefab: {fileID: 5809627508243328825, guid: 108ed5884c0e5294fb2bc08d259e53f5, type: 3}
+--- !u!114 &1653962602954867552
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4104743717894493410}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2eae5b7f38d512841bb3d472aa68139c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  npcData: {fileID: 11400000, guid: d9ef2aea03d3ddf4488a762102786dde, type: 2}
+  legacyInkJSON: {fileID: 4900000, guid: aef34e203f982094b814e11d115a65ed, type: 3}
+--- !u!114 &486424674402126679
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4104743717894493410}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f6527ad7c611aa41ac5e2b94666620e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cameraDirector: {fileID: 0}
+  dialogueRunner: {fileID: 1653962602954867552}
+  bossController: {fileID: 669182791067580952}
+  autoPlayWhenPlayerSpawned: 1
+  playOnlyOnce: 1
+  startBossCombatAfterDialogue: 1
