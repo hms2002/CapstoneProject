@@ -89,6 +89,17 @@ public sealed class UpgradeProgressService
         return true;
     }
 
+    public void RevertPurchase(int id)
+    {
+        UpgradeSaveData data = TryGetSaveData();
+        if (data == null)
+            return;
+
+        data.purchasedIDs.Remove(id);
+        if (!data.unlockedIDs.Contains(id))
+            data.unlockedIDs.Add(id);
+    }
+
     private void BuildLookup()
     {
         upgradeMap.Clear();

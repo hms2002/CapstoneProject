@@ -53,6 +53,26 @@ public class ItemHoverController : MonoBehaviour
             UIManager.Instance.ShowHover(detailPanel, slotRect, itemDef, ctx);
     }
 
+    public void HoverWorldTarget(RectTransform targetRect, ScriptableObject itemDef, int relicLevelOverride = 0)
+    {
+        if (itemDef == null)
+        {
+            if (UIManager.Instance != null)
+                UIManager.Instance.HideHoverImmediate();
+            return;
+        }
+
+        if (detailPanel == null)
+            detailPanel = FindDetailPanelInLoadedScenes();
+
+        ItemDetailContext ctx = BuildContext();
+        if (itemDef is RelicDefinition && relicLevelOverride > 0)
+            ctx.relicLevelOverride = relicLevelOverride;
+
+        if (UIManager.Instance != null && detailPanel != null)
+            UIManager.Instance.ShowHover(detailPanel, targetRect, itemDef, ctx);
+    }
+
     public void UnhoverSlot(RectTransform slotRect)
     {
         if (UIManager.Instance != null && detailPanel != null)
@@ -74,8 +94,8 @@ public class ItemHoverController : MonoBehaviour
         if (PlayerRuntimeRegistry.CurrentPlayer != null)
             return ItemDetailContext.FromOwner(PlayerRuntimeRegistry.CurrentPlayer.gameObject);
 
-        if (SampleTopDownPlayer.Instance != null)
-            return ItemDetailContext.FromOwner(SampleTopDownPlayer.Instance.gameObject);
+        if (PlayerInteractor2D.Instance != null)
+            return ItemDetailContext.FromOwner(PlayerInteractor2D.Instance.gameObject);
 
         return new ItemDetailContext();
     }

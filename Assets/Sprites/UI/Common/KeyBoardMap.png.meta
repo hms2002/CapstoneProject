@@ -1,0 +1,3212 @@
+fileFormatVersion: 2
+guid: 8ce30451b3d0c4e44972a52bea991e52
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -2453588878772853369
+    second: KeyBoardMap_0
+  - first:
+      213: -3448065387965242351
+    second: KeyBoardMap_1
+  - first:
+      213: -3823335192228420828
+    second: KeyBoardMap_2
+  - first:
+      213: 8531691849684955127
+    second: KeyBoardMap_3
+  - first:
+      213: -8070924921467798202
+    second: KeyBoardMap_4
+  - first:
+      213: 4264594768309865951
+    second: KeyBoardMap_5
+  - first:
+      213: 7661433981830210892
+    second: KeyBoardMap_6
+  - first:
+      213: -1026346012011018456
+    second: KeyBoardMap_7
+  - first:
+      213: -5473043141152950451
+    second: KeyBoardMap_8
+  - first:
+      213: -2926518556945408482
+    second: KeyBoardMap_9
+  - first:
+      213: 431438326104627132
+    second: KeyBoardMap_10
+  - first:
+      213: -5436797209666446244
+    second: KeyBoardMap_11
+  - first:
+      213: -8828439169471533123
+    second: KeyBoardMap_12
+  - first:
+      213: 2605733977725973406
+    second: KeyBoardMap_13
+  - first:
+      213: 6268562126940282106
+    second: KeyBoardMap_14
+  - first:
+      213: 2362342637019907006
+    second: KeyBoardMap_15
+  - first:
+      213: -8477754657478723696
+    second: KeyBoardMap_16
+  - first:
+      213: -6821049381152626286
+    second: KeyBoardMap_17
+  - first:
+      213: -1429682860848900209
+    second: KeyBoardMap_18
+  - first:
+      213: 7853339424478138317
+    second: KeyBoardMap_19
+  - first:
+      213: 5864787310336523718
+    second: KeyBoardMap_20
+  - first:
+      213: -6426603258501259865
+    second: KeyBoardMap_21
+  - first:
+      213: 1713106907758770238
+    second: KeyBoardMap_22
+  - first:
+      213: 3629229341689641350
+    second: KeyBoardMap_23
+  - first:
+      213: 2598608109446030064
+    second: KeyBoardMap_24
+  - first:
+      213: 8180115259373063704
+    second: KeyBoardMap_25
+  - first:
+      213: 2274093288504948034
+    second: KeyBoardMap_26
+  - first:
+      213: -6567386365896783723
+    second: KeyBoardMap_27
+  - first:
+      213: 888620009359173897
+    second: KeyBoardMap_28
+  - first:
+      213: -4883097617930712183
+    second: KeyBoardMap_29
+  - first:
+      213: 5443500270855981810
+    second: KeyBoardMap_30
+  - first:
+      213: 4235743910782763077
+    second: KeyBoardMap_31
+  - first:
+      213: -5166403460068359788
+    second: KeyBoardMap_32
+  - first:
+      213: -4855004234859622069
+    second: KeyBoardMap_33
+  - first:
+      213: -5284124077081906940
+    second: KeyBoardMap_34
+  - first:
+      213: -7873273690107525539
+    second: KeyBoardMap_35
+  - first:
+      213: -6573150334988713403
+    second: KeyBoardMap_36
+  - first:
+      213: 5402002805891090258
+    second: KeyBoardMap_37
+  - first:
+      213: -8987295915082906407
+    second: KeyBoardMap_38
+  - first:
+      213: -5018783073542090642
+    second: KeyBoardMap_39
+  - first:
+      213: 3663724139927501588
+    second: KeyBoardMap_40
+  - first:
+      213: 9198484305536891406
+    second: KeyBoardMap_41
+  - first:
+      213: -498126432197791298
+    second: KeyBoardMap_42
+  - first:
+      213: -3538609435089971014
+    second: KeyBoardMap_43
+  - first:
+      213: -1731948150851804722
+    second: KeyBoardMap_44
+  - first:
+      213: -16609781914177152
+    second: KeyBoardMap_45
+  - first:
+      213: 8766454432027809056
+    second: KeyBoardMap_46
+  - first:
+      213: 8306884551423498788
+    second: KeyBoardMap_47
+  - first:
+      213: 5721608308225016363
+    second: KeyBoardMap_48
+  - first:
+      213: -4427540461625909497
+    second: KeyBoardMap_49
+  - first:
+      213: 2773330501939184636
+    second: KeyBoardMap_50
+  - first:
+      213: -7333732249590407781
+    second: KeyBoardMap_51
+  - first:
+      213: -2285238832150815200
+    second: KeyBoardMap_52
+  - first:
+      213: 1394308038944108232
+    second: KeyBoardMap_53
+  - first:
+      213: 5871290587228101311
+    second: KeyBoardMap_54
+  - first:
+      213: -7322914718991492120
+    second: KeyBoardMap_55
+  - first:
+      213: -167209706274070102
+    second: KeyBoardMap_56
+  - first:
+      213: 1286604749207451726
+    second: KeyBoardMap_57
+  - first:
+      213: 482657922395749992
+    second: KeyBoardMap_58
+  - first:
+      213: -5531446206117443613
+    second: KeyBoardMap_59
+  - first:
+      213: 1470792017468804581
+    second: KeyBoardMap_60
+  - first:
+      213: -615781305220935780
+    second: KeyBoardMap_61
+  - first:
+      213: 5556098126554695817
+    second: KeyBoardMap_62
+  - first:
+      213: 4926558407086004311
+    second: KeyBoardMap_63
+  - first:
+      213: -2650393553654931431
+    second: KeyBoardMap_64
+  - first:
+      213: -3624827776646323445
+    second: KeyBoardMap_65
+  - first:
+      213: -2666475245025894070
+    second: KeyBoardMap_66
+  - first:
+      213: 8316299539638423204
+    second: KeyBoardMap_67
+  - first:
+      213: -1234092734986486621
+    second: KeyBoardMap_68
+  - first:
+      213: -4500129250150289059
+    second: KeyBoardMap_69
+  - first:
+      213: 3287789462213070567
+    second: KeyBoardMap_70
+  - first:
+      213: -3241240516041097210
+    second: KeyBoardMap_71
+  - first:
+      213: 1420128102501320501
+    second: KeyBoardMap_72
+  - first:
+      213: -3140854330510750761
+    second: KeyBoardMap_73
+  - first:
+      213: -1762363020086334358
+    second: KeyBoardMap_74
+  - first:
+      213: -6710446425577137869
+    second: KeyBoardMap_75
+  - first:
+      213: 1014800291809402276
+    second: KeyBoardMap_76
+  - first:
+      213: 1375959193498846518
+    second: KeyBoardMap_77
+  - first:
+      213: 6645181854311619448
+    second: KeyBoardMap_78
+  - first:
+      213: -1157535465427115306
+    second: KeyBoardMap_79
+  - first:
+      213: 6144300910492539095
+    second: KeyBoardMap_80
+  - first:
+      213: 5921912398789713353
+    second: KeyBoardMap_81
+  - first:
+      213: -3412173974845527309
+    second: KeyBoardMap_82
+  - first:
+      213: -3582290028143606605
+    second: KeyBoardMap_83
+  - first:
+      213: -5118116193370526722
+    second: KeyBoardMap_84
+  - first:
+      213: 2536129313030786019
+    second: KeyBoardMap_85
+  - first:
+      213: 28762139515620525
+    second: KeyBoardMap_86
+  - first:
+      213: 154606774736492454
+    second: KeyBoardMap_87
+  - first:
+      213: -4045465454639830302
+    second: KeyBoardMap_88
+  - first:
+      213: -1579138971325048723
+    second: KeyBoardMap_89
+  - first:
+      213: 772997672786532923
+    second: KeyBoardMap_90
+  - first:
+      213: 7844962239582081012
+    second: KeyBoardMap_91
+  - first:
+      213: 511319785226190244
+    second: KeyBoardMap_92
+  - first:
+      213: -6900726861461165320
+    second: KeyBoardMap_93
+  - first:
+      213: -6632692354869102697
+    second: KeyBoardMap_94
+  - first:
+      213: 4115033154935024751
+    second: KeyBoardMap_95
+  - first:
+      213: 4574147855228380666
+    second: KeyBoardMap_96
+  - first:
+      213: -194225140103029399
+    second: KeyBoardMap_97
+  - first:
+      213: -3512485682545617445
+    second: KeyBoardMap_98
+  - first:
+      213: 4781832060912063945
+    second: KeyBoardMap_99
+  - first:
+      213: 3485804926150133300
+    second: KeyBoardMap_100
+  - first:
+      213: 2860424717667817803
+    second: KeyBoardMap_101
+  - first:
+      213: 7223150109216293782
+    second: KeyBoardMap_102
+  - first:
+      213: 388454854542746105
+    second: KeyBoardMap_103
+  - first:
+      213: 1927098482793997686
+    second: KeyBoardMap_104
+  - first:
+      213: -5897590738966123721
+    second: KeyBoardMap_105
+  - first:
+      213: 7678645216247351907
+    second: KeyBoardMap_106
+  - first:
+      213: 3877840133579171856
+    second: KeyBoardMap_107
+  - first:
+      213: 1313982632624080058
+    second: KeyBoardMap_108
+  - first:
+      213: 5486479743013229273
+    second: KeyBoardMap_109
+  - first:
+      213: 6752174971133931636
+    second: KeyBoardMap_110
+  - first:
+      213: -7947968359836656804
+    second: KeyBoardMap_111
+  - first:
+      213: -7311338802930418267
+    second: KeyBoardMap_112
+  - first:
+      213: 1061939843569499254
+    second: KeyBoardMap_113
+  - first:
+      213: 4724444076511109183
+    second: KeyBoardMap_114
+  - first:
+      213: 7228986480754017310
+    second: KeyBoardMap_115
+  - first:
+      213: 4229854401244357032
+    second: KeyBoardMap_116
+  - first:
+      213: -7061736176032370794
+    second: KeyBoardMap_117
+  - first:
+      213: -7348351837928649085
+    second: KeyBoardMap_118
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 16
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: KeyBoardMap_0
+      rect:
+        serializedVersion: 2
+        x: 2
+        y: 235
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 78525e71ae913fdd0800000000000000
+      internalID: -2453588878772853369
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_1
+      rect:
+        serializedVersion: 2
+        x: 18
+        y: 235
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 114230c5cc20620d0800000000000000
+      internalID: -3448065387965242351
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_2
+      rect:
+        serializedVersion: 2
+        x: 34
+        y: 235
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 423a9f946e8c0fac0800000000000000
+      internalID: -3823335192228420828
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_3
+      rect:
+        serializedVersion: 2
+        x: 50
+        y: 235
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7ff2191d888a66670800000000000000
+      internalID: 8531691849684955127
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_4
+      rect:
+        serializedVersion: 2
+        x: 66
+        y: 235
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 64d7017ab805eff80800000000000000
+      internalID: -8070924921467798202
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_5
+      rect:
+        serializedVersion: 2
+        x: 82
+        y: 235
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fdd4914d852ee2b30800000000000000
+      internalID: 4264594768309865951
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_6
+      rect:
+        serializedVersion: 2
+        x: 98
+        y: 235
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c45a81d4d91e25a60800000000000000
+      internalID: 7661433981830210892
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_7
+      rect:
+        serializedVersion: 2
+        x: 114
+        y: 235
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 827c1796dbfa1c1f0800000000000000
+      internalID: -1026346012011018456
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_8
+      rect:
+        serializedVersion: 2
+        x: 130
+        y: 235
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d47b033b248db04b0800000000000000
+      internalID: -5473043141152950451
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_9
+      rect:
+        serializedVersion: 2
+        x: 146
+        y: 235
+        width: 15
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e1e1ea8b0eae267d0800000000000000
+      internalID: -2926518556945408482
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_10
+      rect:
+        serializedVersion: 2
+        x: 162
+        y: 235
+        width: 15
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cb794f92fd6ccf500800000000000000
+      internalID: 431438326104627132
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_11
+      rect:
+        serializedVersion: 2
+        x: 178
+        y: 235
+        width: 15
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c5c1ff14ebd9c84b0800000000000000
+      internalID: -5436797209666446244
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_12
+      rect:
+        serializedVersion: 2
+        x: 2
+        y: 219
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dbf2186b9551b7580800000000000000
+      internalID: -8828439169471533123
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_13
+      rect:
+        serializedVersion: 2
+        x: 18
+        y: 219
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e93b5893f3d692420800000000000000
+      internalID: 2605733977725973406
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_14
+      rect:
+        serializedVersion: 2
+        x: 34
+        y: 219
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: afc1ebcca086ef650800000000000000
+      internalID: 6268562126940282106
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_15
+      rect:
+        serializedVersion: 2
+        x: 50
+        y: 219
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: eb3c455bc1ab8c020800000000000000
+      internalID: 2362342637019907006
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_16
+      rect:
+        serializedVersion: 2
+        x: 66
+        y: 219
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 097311c5e07f85a80800000000000000
+      internalID: -8477754657478723696
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_17
+      rect:
+        serializedVersion: 2
+        x: 82
+        y: 219
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 299eff03ab3c651a0800000000000000
+      internalID: -6821049381152626286
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_18
+      rect:
+        serializedVersion: 2
+        x: 98
+        y: 219
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f8713a9430fb82ce0800000000000000
+      internalID: -1429682860848900209
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_19
+      rect:
+        serializedVersion: 2
+        x: 114
+        y: 219
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dcf0798099aacfc60800000000000000
+      internalID: 7853339424478138317
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_20
+      rect:
+        serializedVersion: 2
+        x: 130
+        y: 219
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6cdb3db5cf8e36150800000000000000
+      internalID: 5864787310336523718
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_21
+      rect:
+        serializedVersion: 2
+        x: 146
+        y: 219
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7ad1aa0d26e10d6a0800000000000000
+      internalID: -6426603258501259865
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_22
+      rect:
+        serializedVersion: 2
+        x: 162
+        y: 219
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e38ba3bf7ad26c710800000000000000
+      internalID: 1713106907758770238
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_23
+      rect:
+        serializedVersion: 2
+        x: 178
+        y: 219
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 689f5d79bdc9d5230800000000000000
+      internalID: 3629229341689641350
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_24
+      rect:
+        serializedVersion: 2
+        x: 2
+        y: 203
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0f2eaf9be4c101420800000000000000
+      internalID: 2598608109446030064
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_25
+      rect:
+        serializedVersion: 2
+        x: 18
+        y: 203
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 81e0fa00d7b958170800000000000000
+      internalID: 8180115259373063704
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_26
+      rect:
+        serializedVersion: 2
+        x: 34
+        y: 203
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 245ff671cc33f8f10800000000000000
+      internalID: 2274093288504948034
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_27
+      rect:
+        serializedVersion: 2
+        x: 50
+        y: 203
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5988afd45e4fbd4a0800000000000000
+      internalID: -6567386365896783723
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_28
+      rect:
+        serializedVersion: 2
+        x: 66
+        y: 203
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 909682eb033055c00800000000000000
+      internalID: 888620009359173897
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_29
+      rect:
+        serializedVersion: 2
+        x: 82
+        y: 203
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 98b0fa79690cb3cb0800000000000000
+      internalID: -4883097617930712183
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_30
+      rect:
+        serializedVersion: 2
+        x: 98
+        y: 203
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2fa0d1bc7a23b8b40800000000000000
+      internalID: 5443500270855981810
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_31
+      rect:
+        serializedVersion: 2
+        x: 114
+        y: 203
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5400bb915a268ca30800000000000000
+      internalID: 4235743910782763077
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_32
+      rect:
+        serializedVersion: 2
+        x: 130
+        y: 203
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 491c6440d6f3d48b0800000000000000
+      internalID: -5166403460068359788
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_33
+      rect:
+        serializedVersion: 2
+        x: 146
+        y: 203
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b41dc2e0f5f8f9cb0800000000000000
+      internalID: -4855004234859622069
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_34
+      rect:
+        serializedVersion: 2
+        x: 162
+        y: 203
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 401b17cf5250ba6b0800000000000000
+      internalID: -5284124077081906940
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_35
+      rect:
+        serializedVersion: 2
+        x: 178
+        y: 203
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d5646b11b438cb290800000000000000
+      internalID: -7873273690107525539
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_36
+      rect:
+        serializedVersion: 2
+        x: 2
+        y: 187
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 54202cba89a77c4a0800000000000000
+      internalID: -6573150334988713403
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_37
+      rect:
+        serializedVersion: 2
+        x: 18
+        y: 187
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2574dc05ee4c7fa40800000000000000
+      internalID: 5402002805891090258
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_38
+      rect:
+        serializedVersion: 2
+        x: 34
+        y: 187
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9d40a226bf5b64380800000000000000
+      internalID: -8987295915082906407
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_39
+      rect:
+        serializedVersion: 2
+        x: 50
+        y: 187
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e60d7c0a263b95ab0800000000000000
+      internalID: -5018783073542090642
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_40
+      rect:
+        serializedVersion: 2
+        x: 66
+        y: 187
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 41bf66ba1b928d230800000000000000
+      internalID: 3663724139927501588
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_41
+      rect:
+        serializedVersion: 2
+        x: 82
+        y: 187
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e0a388f7db497af70800000000000000
+      internalID: 9198484305536891406
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_42
+      rect:
+        serializedVersion: 2
+        x: 98
+        y: 187
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: eb13e9b26ac4619f0800000000000000
+      internalID: -498126432197791298
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_43
+      rect:
+        serializedVersion: 2
+        x: 114
+        y: 187
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ab8dd96977554eec0800000000000000
+      internalID: -3538609435089971014
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_44
+      rect:
+        serializedVersion: 2
+        x: 130
+        y: 187
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ec165134552e6f7e0800000000000000
+      internalID: -1731948150851804722
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_45
+      rect:
+        serializedVersion: 2
+        x: 146
+        y: 187
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0817539cd7df4cff0800000000000000
+      internalID: -16609781914177152
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_46
+      rect:
+        serializedVersion: 2
+        x: 162
+        y: 187
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0259aa8fbd3b8a970800000000000000
+      internalID: 8766454432027809056
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_47
+      rect:
+        serializedVersion: 2
+        x: 178
+        y: 187
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 42a17cddc7bf74370800000000000000
+      internalID: 8306884551423498788
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_48
+      rect:
+        serializedVersion: 2
+        x: 2
+        y: 171
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b220da3217c376f40800000000000000
+      internalID: 5721608308225016363
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_49
+      rect:
+        serializedVersion: 2
+        x: 18
+        y: 171
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 70f5e1488673e82c0800000000000000
+      internalID: -4427540461625909497
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_50
+      rect:
+        serializedVersion: 2
+        x: 34
+        y: 171
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cf347d4d569dc7620800000000000000
+      internalID: 2773330501939184636
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_51
+      rect:
+        serializedVersion: 2
+        x: 50
+        y: 171
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b9d5651ff59593a90800000000000000
+      internalID: -7333732249590407781
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_52
+      rect:
+        serializedVersion: 2
+        x: 66
+        y: 171
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 02ed8bec3633940e0800000000000000
+      internalID: -2285238832150815200
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_53
+      rect:
+        serializedVersion: 2
+        x: 82
+        y: 171
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8ce2cb826c3995310800000000000000
+      internalID: 1394308038944108232
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_54
+      rect:
+        serializedVersion: 2
+        x: 98
+        y: 171
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fba53d08ea30b7150800000000000000
+      internalID: 5871290587228101311
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_55
+      rect:
+        serializedVersion: 2
+        x: 114
+        y: 171
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8eb580e8cd7cf5a90800000000000000
+      internalID: -7322914718991492120
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_56
+      rect:
+        serializedVersion: 2
+        x: 130
+        y: 171
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: aa1698678a3fdadf0800000000000000
+      internalID: -167209706274070102
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_57
+      rect:
+        serializedVersion: 2
+        x: 146
+        y: 171
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e4837d2e330fad110800000000000000
+      internalID: 1286604749207451726
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_58
+      rect:
+        serializedVersion: 2
+        x: 162
+        y: 171
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 86e3d6cb2deb2b600800000000000000
+      internalID: 482657922395749992
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_59
+      rect:
+        serializedVersion: 2
+        x: 178
+        y: 171
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3e7003e7bfa5c33b0800000000000000
+      internalID: -5531446206117443613
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_60
+      rect:
+        serializedVersion: 2
+        x: 2
+        y: 155
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5ed45bb1c8d496410800000000000000
+      internalID: 1470792017468804581
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_61
+      rect:
+        serializedVersion: 2
+        x: 18
+        y: 155
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c9fcafa5a2e4477f0800000000000000
+      internalID: -615781305220935780
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_62
+      rect:
+        serializedVersion: 2
+        x: 34
+        y: 155
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 98881820fc93b1d40800000000000000
+      internalID: 5556098126554695817
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_63
+      rect:
+        serializedVersion: 2
+        x: 50
+        y: 155
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 758539be4c6ae5440800000000000000
+      internalID: 4926558407086004311
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_64
+      rect:
+        serializedVersion: 2
+        x: 66
+        y: 155
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 910a967fa19e73bd0800000000000000
+      internalID: -2650393553654931431
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_65
+      rect:
+        serializedVersion: 2
+        x: 82
+        y: 155
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b03e601a75602bdc0800000000000000
+      internalID: -3624827776646323445
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_66
+      rect:
+        serializedVersion: 2
+        x: 98
+        y: 155
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a41ebd964e6cefad0800000000000000
+      internalID: -2666475245025894070
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_67
+      rect:
+        serializedVersion: 2
+        x: 114
+        y: 155
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4ae84e1ae5e696370800000000000000
+      internalID: 8316299539638423204
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_68
+      rect:
+        serializedVersion: 2
+        x: 130
+        y: 155
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3ac7d3f223f9fdee0800000000000000
+      internalID: -1234092734986486621
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_69
+      rect:
+        serializedVersion: 2
+        x: 146
+        y: 155
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d5172792a445c81c0800000000000000
+      internalID: -4500129250150289059
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_70
+      rect:
+        serializedVersion: 2
+        x: 162
+        y: 155
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7ee8b7fa81390ad20800000000000000
+      internalID: 3287789462213070567
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_71
+      rect:
+        serializedVersion: 2
+        x: 178
+        y: 155
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 60044c96cecc403d0800000000000000
+      internalID: -3241240516041097210
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_72
+      rect:
+        serializedVersion: 2
+        x: 2
+        y: 139
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 537042d2cfe45b310800000000000000
+      internalID: 1420128102501320501
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_73
+      rect:
+        serializedVersion: 2
+        x: 18
+        y: 139
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7dbc8aa90a17964d0800000000000000
+      internalID: -3140854330510750761
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_74
+      rect:
+        serializedVersion: 2
+        x: 34
+        y: 139
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a6c287eab24da87e0800000000000000
+      internalID: -1762363020086334358
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_75
+      rect:
+        serializedVersion: 2
+        x: 50
+        y: 139
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3395f278784bfd2a0800000000000000
+      internalID: -6710446425577137869
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_76
+      rect:
+        serializedVersion: 2
+        x: 66
+        y: 139
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4ad134f1d7b451e00800000000000000
+      internalID: 1014800291809402276
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_77
+      rect:
+        serializedVersion: 2
+        x: 82
+        y: 139
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6358ee9a893681310800000000000000
+      internalID: 1375959193498846518
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_78
+      rect:
+        serializedVersion: 2
+        x: 98
+        y: 139
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 87b9d1650bd683c50800000000000000
+      internalID: 6645181854311619448
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_79
+      rect:
+        serializedVersion: 2
+        x: 114
+        y: 139
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6d2ec4880ab9fefe0800000000000000
+      internalID: -1157535465427115306
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_80
+      rect:
+        serializedVersion: 2
+        x: 130
+        y: 139
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7d8540bcf11f44550800000000000000
+      internalID: 6144300910492539095
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_81
+      rect:
+        serializedVersion: 2
+        x: 146
+        y: 139
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9cd97d873fbde2250800000000000000
+      internalID: 5921912398789713353
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_82
+      rect:
+        serializedVersion: 2
+        x: 162
+        y: 139
+        width: 17
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3faef7d29d585a0d0800000000000000
+      internalID: -3412173974845527309
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_83
+      rect:
+        serializedVersion: 2
+        x: 2
+        y: 123
+        width: 17
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3b4831ef236294ec0800000000000000
+      internalID: -3582290028143606605
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_84
+      rect:
+        serializedVersion: 2
+        x: 34
+        y: 123
+        width: 17
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: efba9f6607cc8f8b0800000000000000
+      internalID: -5118116193370526722
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_85
+      rect:
+        serializedVersion: 2
+        x: 66
+        y: 123
+        width: 17
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3ebc7a75c24223320800000000000000
+      internalID: 2536129313030786019
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_86
+      rect:
+        serializedVersion: 2
+        x: 98
+        y: 123
+        width: 17
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dac0fc4730f266000800000000000000
+      internalID: 28762139515620525
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_87
+      rect:
+        serializedVersion: 2
+        x: 130
+        y: 123
+        width: 17
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6a79900ea06452200800000000000000
+      internalID: 154606774736492454
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_88
+      rect:
+        serializedVersion: 2
+        x: 162
+        y: 123
+        width: 17
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2ea24115a9e9bd7c0800000000000000
+      internalID: -4045465454639830302
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_89
+      rect:
+        serializedVersion: 2
+        x: 2
+        y: 107
+        width: 17
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d68d133e875c51ae0800000000000000
+      internalID: -1579138971325048723
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_90
+      rect:
+        serializedVersion: 2
+        x: 34
+        y: 107
+        width: 18
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b3a15a2b94d3aba00800000000000000
+      internalID: 772997672786532923
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_91
+      rect:
+        serializedVersion: 2
+        x: 66
+        y: 107
+        width: 18
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4ff84aea797eedc60800000000000000
+      internalID: 7844962239582081012
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_92
+      rect:
+        serializedVersion: 2
+        x: 98
+        y: 107
+        width: 21
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4ad3905b2a2981700800000000000000
+      internalID: 511319785226190244
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_93
+      rect:
+        serializedVersion: 2
+        x: 130
+        y: 107
+        width: 21
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8fa6c9a2b71bb30a0800000000000000
+      internalID: -6900726861461165320
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_94
+      rect:
+        serializedVersion: 2
+        x: 162
+        y: 107
+        width: 25
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 797f39bd171f3f3a0800000000000000
+      internalID: -6632692354869102697
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_95
+      rect:
+        serializedVersion: 2
+        x: 2
+        y: 91
+        width: 25
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f6c6bde1ad88b1930800000000000000
+      internalID: 4115033154935024751
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_96
+      rect:
+        serializedVersion: 2
+        x: 34
+        y: 91
+        width: 25
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: af5a00d4d33aa7f30800000000000000
+      internalID: 4574147855228380666
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_97
+      rect:
+        serializedVersion: 2
+        x: 66
+        y: 91
+        width: 26
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 96d55bd9349fd4df0800000000000000
+      internalID: -194225140103029399
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_98
+      rect:
+        serializedVersion: 2
+        x: 98
+        y: 91
+        width: 32
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bd51935b1e4214fc0800000000000000
+      internalID: -3512485682545617445
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_99
+      rect:
+        serializedVersion: 2
+        x: 130
+        y: 91
+        width: 17
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9c5dc369cea7c5240800000000000000
+      internalID: 4781832060912063945
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_100
+      rect:
+        serializedVersion: 2
+        x: 162
+        y: 75
+        width: 17
+        height: 29
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4364c7b9c11106030800000000000000
+      internalID: 3485804926150133300
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_101
+      rect:
+        serializedVersion: 2
+        x: 2
+        y: 75
+        width: 33
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b495653202542b720800000000000000
+      internalID: 2860424717667817803
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_102
+      rect:
+        serializedVersion: 2
+        x: 2
+        y: 59
+        width: 33
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 693492321c8cd3460800000000000000
+      internalID: 7223150109216293782
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_103
+      rect:
+        serializedVersion: 2
+        x: 114
+        y: 59
+        width: 40
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9f1eb40d1a1146500800000000000000
+      internalID: 388454854542746105
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_104
+      rect:
+        serializedVersion: 2
+        x: 2
+        y: 43
+        width: 33
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 67561222cdd6eba10800000000000000
+      internalID: 1927098482793997686
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_105
+      rect:
+        serializedVersion: 2
+        x: 50
+        y: 43
+        width: 25
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 73b6a4d387c872ea0800000000000000
+      internalID: -5897590738966123721
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_106
+      rect:
+        serializedVersion: 2
+        x: 82
+        y: 43
+        width: 21
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 36a0da61427009a60800000000000000
+      internalID: 7678645216247351907
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_107
+      rect:
+        serializedVersion: 2
+        x: 114
+        y: 43
+        width: 18
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0186db94e0bd0d530800000000000000
+      internalID: 3877840133579171856
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_108
+      rect:
+        serializedVersion: 2
+        x: 146
+        y: 42
+        width: 17
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ab4479a1e343c3210800000000000000
+      internalID: 1313982632624080058
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_109
+      rect:
+        serializedVersion: 2
+        x: 178
+        y: 42
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9d21ea5f144e32c40800000000000000
+      internalID: 5486479743013229273
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_110
+      rect:
+        serializedVersion: 2
+        x: 3
+        y: 21
+        width: 15
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 470b8b79c5b84bd50800000000000000
+      internalID: 6752174971133931636
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_111
+      rect:
+        serializedVersion: 2
+        x: 19
+        y: 21
+        width: 15
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c5b54e903e423b190800000000000000
+      internalID: -7947968359836656804
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_112
+      rect:
+        serializedVersion: 2
+        x: 35
+        y: 21
+        width: 15
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5ad7dca8818e88a90800000000000000
+      internalID: -7311338802930418267
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_113
+      rect:
+        serializedVersion: 2
+        x: 51
+        y: 21
+        width: 15
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 67c3bcc49a4ccbe00800000000000000
+      internalID: 1061939843569499254
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_114
+      rect:
+        serializedVersion: 2
+        x: 67
+        y: 21
+        width: 15
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f30a4ad3bd8909140800000000000000
+      internalID: 4724444076511109183
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_115
+      rect:
+        serializedVersion: 2
+        x: 2
+        y: 4
+        width: 17
+        height: 14
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e14c17747e4825460800000000000000
+      internalID: 7228986480754017310
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_116
+      rect:
+        serializedVersion: 2
+        x: 18
+        y: 4
+        width: 17
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8a1eacdca2673ba30800000000000000
+      internalID: 4229854401244357032
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_117
+      rect:
+        serializedVersion: 2
+        x: 34
+        y: 4
+        width: 17
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 69fa012dc5caffd90800000000000000
+      internalID: -7061736176032370794
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: KeyBoardMap_118
+      rect:
+        serializedVersion: 2
+        x: 50
+        y: 4
+        width: 17
+        height: 13
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 38e8ca7cfe8650a90800000000000000
+      internalID: -7348351837928649085
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: cd4644459a73257449844232cb0827ac
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      KeyBoardMap_0: -2453588878772853369
+      KeyBoardMap_1: -3448065387965242351
+      KeyBoardMap_10: 431438326104627132
+      KeyBoardMap_100: 3485804926150133300
+      KeyBoardMap_101: 2860424717667817803
+      KeyBoardMap_102: 7223150109216293782
+      KeyBoardMap_103: 388454854542746105
+      KeyBoardMap_104: 1927098482793997686
+      KeyBoardMap_105: -5897590738966123721
+      KeyBoardMap_106: 7678645216247351907
+      KeyBoardMap_107: 3877840133579171856
+      KeyBoardMap_108: 1313982632624080058
+      KeyBoardMap_109: 5486479743013229273
+      KeyBoardMap_11: -5436797209666446244
+      KeyBoardMap_110: 6752174971133931636
+      KeyBoardMap_111: -7947968359836656804
+      KeyBoardMap_112: -7311338802930418267
+      KeyBoardMap_113: 1061939843569499254
+      KeyBoardMap_114: 4724444076511109183
+      KeyBoardMap_115: 7228986480754017310
+      KeyBoardMap_116: 4229854401244357032
+      KeyBoardMap_117: -7061736176032370794
+      KeyBoardMap_118: -7348351837928649085
+      KeyBoardMap_119: 2076626581
+      KeyBoardMap_12: -8828439169471533123
+      KeyBoardMap_13: 2605733977725973406
+      KeyBoardMap_14: 6268562126940282106
+      KeyBoardMap_15: 2362342637019907006
+      KeyBoardMap_16: -8477754657478723696
+      KeyBoardMap_17: -6821049381152626286
+      KeyBoardMap_18: -1429682860848900209
+      KeyBoardMap_19: 7853339424478138317
+      KeyBoardMap_2: -3823335192228420828
+      KeyBoardMap_20: 5864787310336523718
+      KeyBoardMap_21: -6426603258501259865
+      KeyBoardMap_22: 1713106907758770238
+      KeyBoardMap_23: 3629229341689641350
+      KeyBoardMap_24: 2598608109446030064
+      KeyBoardMap_25: 8180115259373063704
+      KeyBoardMap_26: 2274093288504948034
+      KeyBoardMap_27: -6567386365896783723
+      KeyBoardMap_28: 888620009359173897
+      KeyBoardMap_29: -4883097617930712183
+      KeyBoardMap_3: 8531691849684955127
+      KeyBoardMap_30: 5443500270855981810
+      KeyBoardMap_31: 4235743910782763077
+      KeyBoardMap_32: -5166403460068359788
+      KeyBoardMap_33: -4855004234859622069
+      KeyBoardMap_34: -5284124077081906940
+      KeyBoardMap_35: -7873273690107525539
+      KeyBoardMap_36: -6573150334988713403
+      KeyBoardMap_37: 5402002805891090258
+      KeyBoardMap_38: -8987295915082906407
+      KeyBoardMap_39: -5018783073542090642
+      KeyBoardMap_4: -8070924921467798202
+      KeyBoardMap_40: 3663724139927501588
+      KeyBoardMap_41: 9198484305536891406
+      KeyBoardMap_42: -498126432197791298
+      KeyBoardMap_43: -3538609435089971014
+      KeyBoardMap_44: -1731948150851804722
+      KeyBoardMap_45: -16609781914177152
+      KeyBoardMap_46: 8766454432027809056
+      KeyBoardMap_47: 8306884551423498788
+      KeyBoardMap_48: 5721608308225016363
+      KeyBoardMap_49: -4427540461625909497
+      KeyBoardMap_5: 4264594768309865951
+      KeyBoardMap_50: 2773330501939184636
+      KeyBoardMap_51: -7333732249590407781
+      KeyBoardMap_52: -2285238832150815200
+      KeyBoardMap_53: 1394308038944108232
+      KeyBoardMap_54: 5871290587228101311
+      KeyBoardMap_55: -7322914718991492120
+      KeyBoardMap_56: -167209706274070102
+      KeyBoardMap_57: 1286604749207451726
+      KeyBoardMap_58: 482657922395749992
+      KeyBoardMap_59: -5531446206117443613
+      KeyBoardMap_6: 7661433981830210892
+      KeyBoardMap_60: 1470792017468804581
+      KeyBoardMap_61: -615781305220935780
+      KeyBoardMap_62: 5556098126554695817
+      KeyBoardMap_63: 4926558407086004311
+      KeyBoardMap_64: -2650393553654931431
+      KeyBoardMap_65: -3624827776646323445
+      KeyBoardMap_66: -2666475245025894070
+      KeyBoardMap_67: 8316299539638423204
+      KeyBoardMap_68: -1234092734986486621
+      KeyBoardMap_69: -4500129250150289059
+      KeyBoardMap_7: -1026346012011018456
+      KeyBoardMap_70: 3287789462213070567
+      KeyBoardMap_71: -3241240516041097210
+      KeyBoardMap_72: 1420128102501320501
+      KeyBoardMap_73: -3140854330510750761
+      KeyBoardMap_74: -1762363020086334358
+      KeyBoardMap_75: -6710446425577137869
+      KeyBoardMap_76: 1014800291809402276
+      KeyBoardMap_77: 1375959193498846518
+      KeyBoardMap_78: 6645181854311619448
+      KeyBoardMap_79: -1157535465427115306
+      KeyBoardMap_8: -5473043141152950451
+      KeyBoardMap_80: 6144300910492539095
+      KeyBoardMap_81: 5921912398789713353
+      KeyBoardMap_82: -3412173974845527309
+      KeyBoardMap_83: -3582290028143606605
+      KeyBoardMap_84: -5118116193370526722
+      KeyBoardMap_85: 2536129313030786019
+      KeyBoardMap_86: 28762139515620525
+      KeyBoardMap_87: 154606774736492454
+      KeyBoardMap_88: -4045465454639830302
+      KeyBoardMap_89: -1579138971325048723
+      KeyBoardMap_9: -2926518556945408482
+      KeyBoardMap_90: 772997672786532923
+      KeyBoardMap_91: 7844962239582081012
+      KeyBoardMap_92: 511319785226190244
+      KeyBoardMap_93: -6900726861461165320
+      KeyBoardMap_94: -6632692354869102697
+      KeyBoardMap_95: 4115033154935024751
+      KeyBoardMap_96: 4574147855228380666
+      KeyBoardMap_97: -194225140103029399
+      KeyBoardMap_98: -3512485682545617445
+      KeyBoardMap_99: 4781832060912063945
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -1,0 +1,349 @@
+fileFormatVersion: 2
+guid: 975a892d9fe6436429967aba3bd0a5dc
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -7487416287550889646
+    second: Boss1Effect_0
+  - first:
+      213: -7866333390112274278
+    second: Boss1Effect_1
+  - first:
+      213: 1987451056786729491
+    second: Boss1Effect_2
+  - first:
+      213: -8567739382563178125
+    second: Boss1Effect_3
+  - first:
+      213: 1141628978174644246
+    second: Boss1Effect_4
+  - first:
+      213: 7930962986831322477
+    second: Boss1Effect_5
+  - first:
+      213: 480352816320968454
+    second: Boss1Effect_6
+  - first:
+      213: -1109487570016167313
+    second: Boss1Effect_7
+  - first:
+      213: -9123085303653207075
+    second: Boss1Effect_8
+  - first:
+      213: -6253581857668133568
+    second: Boss1Effect_9
+  - first:
+      213: -1859340289783777522
+    second: Boss1Effect_10
+  - first:
+      213: -6622836158197001922
+    second: Boss1Effect_11
+  - first:
+      213: 5553002942376196775
+    second: Boss1Effect_12
+  - first:
+      213: 7071248748567855002
+    second: Boss1Effect_13
+  - first:
+      213: 498355276160659542
+    second: Boss1Effect_14
+  - first:
+      213: -126598100350335796
+    second: Boss1Effect_15
+  - first:
+      213: -1415109089067260712
+    second: Boss1Effect_16
+  - first:
+      213: 6351377030211038638
+    second: Boss1Effect_17
+  - first:
+      213: 6843387042171387296
+    second: Boss1Effect_18
+  - first:
+      213: -2573312849937554447
+    second: Boss1Effect_19
+  - first:
+      213: -9071696267332046714
+    second: Boss1Effect_20
+  - first:
+      213: 4289747028257450810
+    second: Boss1Effect_21
+  - first:
+      213: 8746648386837983996
+    second: Boss1Effect_22
+  - first:
+      213: -128591382397396390
+    second: Boss1Effect_23
+  - first:
+      213: 2874676584755463531
+    second: Boss1Effect_24
+  - first:
+      213: 2879601331939779194
+    second: Boss1Effect_25
+  - first:
+      213: -5649742567289496887
+    second: Boss1Effect_26
+  - first:
+      213: -7946590515383423713
+    second: Boss1Effect_27
+  - first:
+      213: 8766441199281476874
+    second: Boss1Effect_28
+  - first:
+      213: -3698373699662465816
+    second: Boss1Effect_29
+  - first:
+      213: -8148313463509215760
+    second: Boss1Effect_30
+  - first:
+      213: -8448506904380912228
+    second: Boss1Effect_31
+  - first:
+      213: 8363691099740249740
+    second: Boss1Effect_32
+  - first:
+      213: -5809995142121544580
+    second: Boss1Effect_33
+  - first:
+      213: -6224076308982701455
+    second: Boss1Effect_34
+  - first:
+      213: -2726786410303984907
+    second: Boss1Effect_35
+  - first:
+      213: 1253648931209207740
+    second: Boss1Effect_36
+  - first:
+      213: -2129444139750261918
+    second: Boss1Effect_37
+  - first:
+      213: -6482441502359894224
+    second: Boss1Effect_38
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 32
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Boss1Effect_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 1920
+        height: 1080
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2512e077e8a571890800000000000000
+      internalID: -7487416287550889646
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boss1Effect_1
+      rect:
+        serializedVersion: 2
+        x: 1920
+        y: 0
+        width: 1920
+        height: 1080
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a984095957b25d290800000000000000
+      internalID: -7866333390112274278
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boss1Effect_2
+      rect:
+        serializedVersion: 2
+        x: 3840
+        y: 0
+        width: 1920
+        height: 1080
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 31a6f38c438d49b10800000000000000
+      internalID: 1987451056786729491
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boss1Effect_3
+      rect:
+        serializedVersion: 2
+        x: 5760
+        y: 0
+        width: 1920
+        height: 1080
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3797236ec66491980800000000000000
+      internalID: -8567739382563178125
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Boss1Effect_4
+      rect:
+        serializedVersion: 2
+        x: 7680
+        y: 0
+        width: 1920
+        height: 1080
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 610546dc181e7df00800000000000000
+      internalID: 1141628978174644246
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Boss1Effect_0: -7487416287550889646
+      Boss1Effect_1: -7866333390112274278
+      Boss1Effect_2: 1987451056786729491
+      Boss1Effect_3: -8567739382563178125
+      Boss1Effect_4: 1141628978174644246
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

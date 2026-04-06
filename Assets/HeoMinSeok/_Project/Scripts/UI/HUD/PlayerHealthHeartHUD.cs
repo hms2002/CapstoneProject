@@ -54,7 +54,7 @@ public class PlayerHealthHeartHUD : MonoBehaviour
             healthPerHeart = 1f;
     }
 
-    private void HandlePlayerRegistered(SampleTopDownPlayer registeredPlayer)
+    private void HandlePlayerRegistered(PlayerInteractor2D registeredPlayer)
     {
         UnbindAttributeEvents();
 
@@ -65,7 +65,7 @@ public class PlayerHealthHeartHUD : MonoBehaviour
         RefreshHearts(forceRebuild: true);
     }
 
-    private void HandlePlayerUnregistered(SampleTopDownPlayer unregisteredPlayer)
+    private void HandlePlayerUnregistered(PlayerInteractor2D unregisteredPlayer)
     {
         if (unregisteredPlayer == null || player != unregisteredPlayer.gameObject)
             return;
@@ -88,7 +88,7 @@ public class PlayerHealthHeartHUD : MonoBehaviour
         {
             var currentPlayer = PlayerRuntimeRegistry.CurrentPlayer != null
                 ? PlayerRuntimeRegistry.CurrentPlayer.gameObject
-                : SampleTopDownPlayer.Instance != null ? SampleTopDownPlayer.Instance.gameObject : null;
+            : PlayerInteractor2D.Instance != null ? PlayerInteractor2D.Instance.gameObject : null;
 
             player = currentPlayer;
         }

@@ -20,6 +20,9 @@ public class NPCData : ScriptableObject
     [Header("Main Dialogue")]
     [SerializeField] private TextAsset primaryInk;
 
+    [Header("Dialogue Theme")]
+    [SerializeField] private DialogueThemeSO dialogueTheme;
+
     [Header("Affection Rewards")]
     public List<AffectionReward> affectionRewards;
 
@@ -30,6 +33,7 @@ public class NPCData : ScriptableObject
     public Vector2 emoteOffset = new Vector2(300f, 300f);
 
     public TextAsset PrimaryInk => primaryInk;
+    public DialogueThemeSO DialogueTheme => dialogueTheme;
 
     public void AssignPrimaryInkIfEmpty(TextAsset ink)
     {

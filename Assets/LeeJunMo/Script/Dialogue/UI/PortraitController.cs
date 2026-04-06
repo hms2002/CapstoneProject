@@ -82,15 +82,15 @@ public class PortraitController : MonoBehaviour
 
         actor.gameObject.SetActive(true);
         actor.canvasGroup.alpha = 0f;
-        actor.canvasGroup.DOFade(1f, 0.5f);
+        actor.canvasGroup.DOFade(1f, 0.5f).SetUpdate(true);
 
         // [버그 수정 반영] RGB 0(까만색)에서 목표 색상까지 부드럽게 밝아지는 등장 연출!
         actor.image.color = new Color(0f, 0f, 0f, 1f);
         Color targetColor = (targetData.id == currentSpeakerId) ? Color.white : new Color(0.4f, 0.4f, 0.4f, 1f);
-        actor.image.DOColor(targetColor, 0.5f);
+        actor.image.DOColor(targetColor, 0.5f).SetUpdate(true);
 
         RectTransform rt = actor.GetComponent<RectTransform>();
-        rt.DOAnchorPosY(0f, 0.5f).SetEase(Ease.OutBack);
+        rt.DOAnchorPosY(0f, 0.5f).SetUpdate(true).SetEase(Ease.OutBack);
     }
 
     public void DoCrossFade(NPCData targetData, string label, float appearTime, float fadeOutTime)
@@ -163,7 +163,7 @@ public class PortraitController : MonoBehaviour
         float targetX = GetTargetXByPositionKey(actor.currentPosition);
 
         RectTransform rt = actor.GetComponent<RectTransform>();
-        rt.DOAnchorPosX(targetX, 0.5f).SetEase(Ease.OutQuart);
+        rt.DOAnchorPosX(targetX, 0.5f).SetUpdate(true).SetEase(Ease.OutQuart);
     }
 
     public void PlayAction(NPCData targetData, string action)
@@ -178,8 +178,8 @@ public class PortraitController : MonoBehaviour
 
         switch (action.ToLower())
         {
-            case "jump": rt.DOJumpAnchorPos(defaultPos, 50f, 1, 0.4f); break;
-            case "shake": rt.DOShakeAnchorPos(0.5f, 15f, 30, 90); break;
+            case "jump": rt.DOJumpAnchorPos(defaultPos, 50f, 1, 0.4f).SetUpdate(true); break;
+            case "shake": rt.DOShakeAnchorPos(0.5f, 15f, 30, 90).SetUpdate(true); break;
         }
     }
 
@@ -189,7 +189,7 @@ public class PortraitController : MonoBehaviour
         PortraitActor actor = activeActors[targetData.id];
 
         actor.FadeOut(0.4f);
-        actor.GetComponent<RectTransform>().DOAnchorPosY(hidePosY, 0.4f).OnComplete(() => {
+        actor.GetComponent<RectTransform>().DOAnchorPosY(hidePosY, 0.4f).SetUpdate(true).OnComplete(() => {
             actor.HideImmediate();
         });
 
@@ -217,13 +217,13 @@ public class PortraitController : MonoBehaviour
     public Tween GetSilhouetteFadeInTween(NPCData targetData, float duration)
     {
         if (targetData == null || !activeActors.ContainsKey(targetData.id)) return null;
-        return activeActors[targetData.id].canvasGroup.DOFade(1f, duration);
+        return activeActors[targetData.id].canvasGroup.DOFade(1f, duration).SetUpdate(true);
     }
 
     public Tween GetColorizeTween(NPCData targetData, float duration)
     {
         if (targetData == null || !activeActors.ContainsKey(targetData.id)) return null;
-        return activeActors[targetData.id].image.DOColor(Color.white, duration);
+        return activeActors[targetData.id].image.DOColor(Color.white, duration).SetUpdate(true);
     }
 
     private float GetTargetXByPositionKey(string key)

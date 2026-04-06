@@ -33,7 +33,7 @@ namespace Cainos.PixelArtTopDown_Basic
             PlayerRuntimeRegistry.PlayerUnregistered -= HandlePlayerUnregistered;
         }
 
-        private void HandlePlayerRegistered(SampleTopDownPlayer player)
+        private void HandlePlayerRegistered(PlayerInteractor2D player)
         {
             if (!autoBindToSpawnedPlayer || player == null)
                 return;
@@ -41,7 +41,7 @@ namespace Cainos.PixelArtTopDown_Basic
             BindTarget(player.transform, snapWhenTargetBound);
         }
 
-        private void HandlePlayerUnregistered(SampleTopDownPlayer player)
+        private void HandlePlayerUnregistered(PlayerInteractor2D player)
         {
             if (player != null && target == player.transform)
             {

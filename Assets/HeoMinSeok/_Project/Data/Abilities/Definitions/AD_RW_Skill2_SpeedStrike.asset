@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 808910561e593534f9ea3637c00cc255, type: 3}
   m_Name: AD_RW_Skill2_SpeedStrike
   m_EditorClassIdentifier: 
-  abilityName: AD_RW_Skill2_SpeedStrike
+  abilityName: 스피드 스트라이크
   icon: {fileID: 1229838351, guid: ef16b2ddeb64123459076c2c8a541a63, type: 3}
-  description: AD_RW_Skill2_SpeedStrike
+  description: "● 전방으로 고속 베기 공격\n● [[이동속도]]의 {val:x3}만큼 피해 보너스"
   cooldown: 5
   executionPolicy: 1
   useCharges: 0

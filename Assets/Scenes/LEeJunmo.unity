@@ -1202,6 +1202,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 793c56947995d6e4588faeb8c701013c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  persistAcrossScenes: 1
+  verboseLogging: 0
   worldItemPrefab: {fileID: 4439982264372595963, guid: 965ec98195bcbe34f9512acce3712973, type: 3}
   stageTables:
   - {fileID: 11400000, guid: 3903a30b290836e4bb4413a07b019990, type: 2}
@@ -2634,8 +2636,6 @@ MonoBehaviour:
   model: {fileID: 197890059}
   animator: {fileID: 0}
   obstacleCollider: {fileID: 197890057}
-  openZone: {fileID: 0}
-  blockZone: {fileID: 0}
 --- !u!61 &197890057
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -3399,16 +3399,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80ca680b9055b3b44967c67f42bffb64, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  backpackGridRoot: {fileID: 90191874}
   weaponGridRoot: {fileID: 1954573663}
   relicGridRoot: {fileID: 1564875066}
-  lootGridRoot: {fileID: 1628410788}
   slotPrefab: {fileID: 5002783160473160607, guid: e2d83cdcfb9485d499433d3acc5bad5e, type: 3}
   closeButton: {fileID: 1118660707}
   dropZone: {fileID: 1991059354}
-  lootRadius: 3
-  lootSlotCount: 8
-  lootRefreshInterval: 0.25
 --- !u!224 &418324871
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3975,8 +3970,26 @@ MonoBehaviour:
   - {fileID: 1428976810}
   - {fileID: 941701481}
   - {fileID: 923936155}
-  baseWeaponGraveCount: 1
-  baseRelicGraveCount: 2
+  weaponGraveCountProfile:
+    minCount: 1
+    maxCount: 1
+    weights:
+    - count: 1
+      weight: 100
+  relicGraveCountProfile:
+    minCount: 2
+    maxCount: 2
+    weights:
+    - count: 2
+      weight: 100
+  legacyWeaponGraveMinCount: 1
+  legacyWeaponGraveMaxCount: 1
+  legacyWeaponGraveCountWeights: []
+  legacyRelicGraveMinCount: 2
+  legacyRelicGraveMaxCount: 2
+  legacyRelicGraveCountWeights: []
+  legacyBaseWeaponGraveCount: 1
+  legacyBaseRelicGraveCount: 2
 --- !u!4 &449784227
 Transform:
   m_ObjectHideFlags: 0
@@ -4238,7 +4251,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   npcData: {fileID: 11400000, guid: d9ef2aea03d3ddf4488a762102786dde, type: 2}
-  inkJSON: {fileID: 4900000, guid: aef34e203f982094b814e11d115a65ed, type: 3}
+  legacyInkJSON: {fileID: 4900000, guid: aef34e203f982094b814e11d115a65ed, type: 3}
   promptAnchor: {fileID: 0}
   interactPromptText: "\uB300\uD654\uD558\uAE30"
   spriteRenderer: {fileID: 1879830427}
@@ -5258,7 +5271,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!212 &658799159
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -5302,7 +5315,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_Sprite: {fileID: 421501480, guid: c2ab0f44c9f780a48ae6863e48bbdb6f, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -5336,7 +5349,7 @@ Transform:
   m_GameObject: {fileID: 658799158}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -23, y: -3.87, z: 0}
+  m_LocalPosition: {x: -24.5, y: 0.6, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5894,6 +5907,9 @@ MonoBehaviour:
   autoBindToSpawnedPlayer: 1
   followOffset: {x: 0, y: 0, z: -10}
   snapWhenTargetBound: 1
+  controlledCamera: {fileID: 0}
+  autoResolveControlledCamera: 1
+  bindLookAtToTarget: 1
 --- !u!114 &716580157
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6128,7 +6144,9 @@ MonoBehaviour:
   titleText: {fileID: 1168259577}
   contentText: {fileID: 24998315}
   backgroundRect: {fileID: 728651173}
-  offset: 20
+  minTooltipWidth: 180
+  maxTooltipWidth: 360
+  horizontalPadding: 24
 --- !u!225 &728651178
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -7273,8 +7291,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   popupPrefab: {fileID: 8513686018927951383, guid: 5cf83ca88051dcc4eb5e522fc3c27d4d, type: 3}
   worldOffset: {x: 0, y: 0.8, z: 0}
-  randomX: 25
-  randomY: 10
+  randomOffsetX: {x: -0.15, y: 0.15}
+  randomOffsetY: {x: -0.05, y: 0.05}
+  popupParent: {fileID: 0}
 --- !u!4 &1108120209
 Transform:
   m_ObjectHideFlags: 0
@@ -9137,6 +9156,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   inventory: {fileID: 0}
   abilitySystem: {fileID: 0}
+  hudRoot: {fileID: 0}
   attackUI:
     icon: {fileID: 291571629}
     cooldownFill: {fileID: 43944562}
@@ -9551,8 +9571,6 @@ MonoBehaviour:
   model: {fileID: 1563111862}
   animator: {fileID: 0}
   obstacleCollider: {fileID: 1563111860}
-  openZone: {fileID: 662736569}
-  blockZone: {fileID: 723065181}
 --- !u!61 &1563111860
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -10733,6 +10751,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hoverUIController: {fileID: 1845191719}
+  worldPromptController: {fileID: 0}
 --- !u!4 &1845191721
 Transform:
   m_ObjectHideFlags: 0
@@ -10833,7 +10852,7 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
+  m_MaskInteraction: 2
   m_SpriteSortPoint: 0
 --- !u!1 &1883298626
 GameObject:
@@ -11777,6 +11796,15 @@ MonoBehaviour:
   choiceButtonPrefab: {fileID: 1852438800674314143, guid: 435e2a2f9ed451c41a980402201d90f8, type: 3}
   normalChoiceColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   selectedChoiceColor: {r: 1, g: 1, b: 1, a: 1}
+  textBoxThemeTargets: []
+  speakerFrameThemeTargets: []
+  defaultTextBoxFillColor: {r: 0, g: 0, b: 0, a: 0.85}
+  dimPanelGraphic: {fileID: 0}
+  dimFadeDuration: 0.25
+  dialogueEffectIntroFallbackDuration: 0.5
+  dialogueEffectAnimator: {fileID: 0}
+  dialogueEffectIdleState: Idle
+  dialogueEffectIntroState: Intro
 --- !u!114 &1969022366
 MonoBehaviour:
   m_ObjectHideFlags: 0

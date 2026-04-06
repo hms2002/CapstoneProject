@@ -1,0 +1,741 @@
+fileFormatVersion: 2
+guid: d75205293d0024e4daea1d8959e34578
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -8045820464153783457
+    second: Character 13 v2_0
+  - first:
+      213: 1684893029044664708
+    second: Character 13 v2_1
+  - first:
+      213: 6328328679932485127
+    second: Character 13 v2_2
+  - first:
+      213: -2989392106382057068
+    second: Character 13 v2_3
+  - first:
+      213: 232776342347132120
+    second: Character 13 v2_4
+  - first:
+      213: 2990421427575770981
+    second: Character 13 v2_5
+  - first:
+      213: 8381665829332688904
+    second: Character 13 v2_6
+  - first:
+      213: 6847224826152288865
+    second: Character 13 v2_7
+  - first:
+      213: -1440284389383215753
+    second: Character 13 v2_8
+  - first:
+      213: -3585586336183392004
+    second: Character 13 v2_9
+  - first:
+      213: -5559361100024228007
+    second: Character 13 v2_10
+  - first:
+      213: -1377680597842025649
+    second: Character 13 v2_11
+  - first:
+      213: 9119746706249130748
+    second: Character 13 v2_12
+  - first:
+      213: 8207757219719717144
+    second: Character 13 v2_13
+  - first:
+      213: 8116495001528423035
+    second: Character 13 v2_14
+  - first:
+      213: -2919735754900226849
+    second: Character 13 v2_15
+  - first:
+      213: -2465047474186517355
+    second: Character 13 v2_16
+  - first:
+      213: 7016530956554127070
+    second: Character 13 v2_17
+  - first:
+      213: 3759117366482259562
+    second: Character 13 v2_18
+  - first:
+      213: 5090582320120211091
+    second: Character 13 v2_19
+  - first:
+      213: 8159688273682092402
+    second: Character 13 v2_20
+  - first:
+      213: -4753563437150629987
+    second: Character 13 v2_21
+  - first:
+      213: -4236608999062296082
+    second: Character 13 v2_22
+  - first:
+      213: 7140788733460086320
+    second: Character 13 v2_23
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Character 13 v2_0
+      rect:
+        serializedVersion: 2
+        x: 2
+        y: 95
+        width: 18
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f539b8b9ae0875090800000000000000
+      internalID: -8045820464153783457
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Character 13 v2_1
+      rect:
+        serializedVersion: 2
+        x: 26
+        y: 95
+        width: 18
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4893db07841f16710800000000000000
+      internalID: 1684893029044664708
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Character 13 v2_2
+      rect:
+        serializedVersion: 2
+        x: 50
+        y: 95
+        width: 18
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 70eda4dc76db2d750800000000000000
+      internalID: 6328328679932485127
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Character 13 v2_3
+      rect:
+        serializedVersion: 2
+        x: 74
+        y: 95
+        width: 18
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 491adbcb7bb8386d0800000000000000
+      internalID: -2989392106382057068
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Character 13 v2_4
+      rect:
+        serializedVersion: 2
+        x: 98
+        y: 95
+        width: 18
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8dc27bd99dcfa3300800000000000000
+      internalID: 232776342347132120
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Character 13 v2_5
+      rect:
+        serializedVersion: 2
+        x: 122
+        y: 95
+        width: 18
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 56fce57c17c108920800000000000000
+      internalID: 2990421427575770981
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Character 13 v2_6
+      rect:
+        serializedVersion: 2
+        x: 146
+        y: 95
+        width: 18
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 800a76fe9a8a15470800000000000000
+      internalID: 8381665829332688904
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Character 13 v2_7
+      rect:
+        serializedVersion: 2
+        x: 170
+        y: 95
+        width: 18
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1620b0483ba360f50800000000000000
+      internalID: 6847224826152288865
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Character 13 v2_8
+      rect:
+        serializedVersion: 2
+        x: 2
+        y: 71
+        width: 18
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 775e5439af4130ce0800000000000000
+      internalID: -1440284389383215753
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Character 13 v2_9
+      rect:
+        serializedVersion: 2
+        x: 26
+        y: 72
+        width: 18
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cf86b4879307d3ec0800000000000000
+      internalID: -3585586336183392004
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Character 13 v2_10
+      rect:
+        serializedVersion: 2
+        x: 50
+        y: 71
+        width: 18
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9575ee6c88e29d2b0800000000000000
+      internalID: -5559361100024228007
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Character 13 v2_11
+      rect:
+        serializedVersion: 2
+        x: 74
+        y: 72
+        width: 18
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f43ada7abce71ece0800000000000000
+      internalID: -1377680597842025649
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Character 13 v2_12
+      rect:
+        serializedVersion: 2
+        x: 2
+        y: 47
+        width: 21
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cf2a4839f49df8e70800000000000000
+      internalID: 9119746706249130748
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Character 13 v2_13
+      rect:
+        serializedVersion: 2
+        x: 26
+        y: 48
+        width: 21
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 811aa0c64bfc7e170800000000000000
+      internalID: 8207757219719717144
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Character 13 v2_14
+      rect:
+        serializedVersion: 2
+        x: 50
+        y: 48
+        width: 21
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b72d55b633593a070800000000000000
+      internalID: 8116495001528423035
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Character 13 v2_15
+      rect:
+        serializedVersion: 2
+        x: 74
+        y: 48
+        width: 21
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fdc3a23ecc30b77d0800000000000000
+      internalID: -2919735754900226849
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Character 13 v2_16
+      rect:
+        serializedVersion: 2
+        x: 98
+        y: 47
+        width: 21
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 59483a2f1646acdd0800000000000000
+      internalID: -2465047474186517355
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Character 13 v2_17
+      rect:
+        serializedVersion: 2
+        x: 122
+        y: 47
+        width: 21
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ed6c0f4dab9bf5160800000000000000
+      internalID: 7016530956554127070
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Character 13 v2_18
+      rect:
+        serializedVersion: 2
+        x: 146
+        y: 47
+        width: 21
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a6e4d2204511b2430800000000000000
+      internalID: 3759117366482259562
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Character 13 v2_19
+      rect:
+        serializedVersion: 2
+        x: 170
+        y: 47
+        width: 21
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 39626aa26a165a640800000000000000
+      internalID: 5090582320120211091
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Character 13 v2_20
+      rect:
+        serializedVersion: 2
+        x: 194
+        y: 47
+        width: 21
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 271ddb6c0490d3170800000000000000
+      internalID: 8159688273682092402
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Character 13 v2_21
+      rect:
+        serializedVersion: 2
+        x: 2
+        y: 23
+        width: 18
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d9f0a574d33f70eb0800000000000000
+      internalID: -4753563437150629987
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Character 13 v2_22
+      rect:
+        serializedVersion: 2
+        x: 2
+        y: 0
+        width: 18
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ee92ba6df8a8435c0800000000000000
+      internalID: -4236608999062296082
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Character 13 v2_23
+      rect:
+        serializedVersion: 2
+        x: 27
+        y: 0
+        width: 18
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 03efff1058d291360800000000000000
+      internalID: 7140788733460086320
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Character 13 v2_0: -8045820464153783457
+      Character 13 v2_1: 1684893029044664708
+      Character 13 v2_10: -5559361100024228007
+      Character 13 v2_11: -1377680597842025649
+      Character 13 v2_12: 9119746706249130748
+      Character 13 v2_13: 8207757219719717144
+      Character 13 v2_14: 8116495001528423035
+      Character 13 v2_15: -2919735754900226849
+      Character 13 v2_16: -2465047474186517355
+      Character 13 v2_17: 7016530956554127070
+      Character 13 v2_18: 3759117366482259562
+      Character 13 v2_19: 5090582320120211091
+      Character 13 v2_2: 6328328679932485127
+      Character 13 v2_20: 8159688273682092402
+      Character 13 v2_21: -4753563437150629987
+      Character 13 v2_22: -4236608999062296082
+      Character 13 v2_23: 7140788733460086320
+      Character 13 v2_3: -2989392106382057068
+      Character 13 v2_4: 232776342347132120
+      Character 13 v2_5: 2990421427575770981
+      Character 13 v2_6: 8381665829332688904
+      Character 13 v2_7: 6847224826152288865
+      Character 13 v2_8: -1440284389383215753
+      Character 13 v2_9: -3585586336183392004
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

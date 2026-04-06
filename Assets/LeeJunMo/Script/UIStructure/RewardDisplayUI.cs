@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class RewardDisplayUI : MonoBehaviour, IStackableUI
 {
@@ -21,10 +22,20 @@ public class RewardDisplayUI : MonoBehaviour, IStackableUI
 
     public bool IsActive => panelRoot != null && panelRoot.activeSelf;
     public bool CanCloseOnEscape => true;
+    public UIOpenGroup OpenGroup => UIOpenGroup.Overlay;
+    public UIOpenGroup BlockedOpenGroups => UIOpenGroup.None;
+    public UIGameplayLockProfile GameplayLockProfile => UIGameplayLockProfile.FreezeAndBlockControl;
 
     private void Awake()
     {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
         Instance = this;
+        GlobalUIRoot.AdoptToCanvas(GlobalCanvasLayer.Reward, transform);
 
         if (panelRoot != null)
             panelRoot.SetActive(false);
@@ -53,6 +64,7 @@ public class RewardDisplayUI : MonoBehaviour, IStackableUI
 
         onCloseCallback?.Invoke();
         onCloseCallback = null;
+        RewardDisplayService.Instance?.NotifyClosed(this);
     }
 
     public void ShowReward(List<UpgradeEffectSO> upgradeEffects = null, List<AffectionEffect> affectionEffects = null, Action callback = null)
@@ -87,8 +99,16 @@ public class RewardDisplayUI : MonoBehaviour, IStackableUI
         if (contextText != null)
             contextText.text = summary.TrimEnd();
 
+        Canvas.ForceUpdateCanvases();
+
+        if (slotParent is RectTransform slotRect)
+            LayoutRebuilder.ForceRebuildLayoutImmediate(slotRect);
+
+        if (panelRoot != null && panelRoot.transform is RectTransform panelRect)
+            LayoutRebuilder.ForceRebuildLayoutImmediate(panelRect);
+
         if (UIManager.Instance != null)
-            UIManager.Instance.PushUI(this);
+            UIManager.Instance.TryPushUI(this);
         else if (panelRoot != null)
             panelRoot.SetActive(true);
     }

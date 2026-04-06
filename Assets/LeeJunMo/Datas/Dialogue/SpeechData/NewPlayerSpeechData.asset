@@ -15,11 +15,15 @@ MonoBehaviour:
   entries:
   - situation: 3
     lines:
-    - The door is locked
-    - It must be open otherside
-    - Is locked..
+    - "\uC5F4\uB9AC\uC9C0 \uC54A\uC544."
+    - "\uAD73\uAC8C \uC7A0\uACA8\uC788\uC5B4."
+    - "\uB2E4\uB978 \uC7A5\uCE58\uAC00 \uC788\uC744 \uC218\uB3C4 \uC788\uACA0\uC5B4."
   - situation: 4
     lines:
     - "\uC7A5\uBE44 \uCE78\uC774 \uAC00\uB4DD \uCC3C\uC5B4."
     - "\uBE48 \uCE78\uC744 \uB9CC\uB4E4\uC5B4\uC57C \uACA0\uC5B4."
     - "\uC9C0\uAE08\uC740 \uB354 \uBABB \uC90D\uACA0\uC5B4."
+  - situation: 6
+    lines:
+    - "\uC774\uCABD\uC5D0\uC120 \uC548\uC5F4\uB824."
+    - "\uBC18\uB300\uD3B8\uC5D0\uC11C \uC5F4 \uC218 \uC788\uACA0\uC5B4."

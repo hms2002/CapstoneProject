@@ -1,5 +1,6 @@
-using UnityEngine;
 using System.Collections.Generic;
+using CapstoneAudio;
+using UnityEngine;
 
 namespace UnityGAS
 {
@@ -321,6 +322,29 @@ namespace UnityGAS
         // - Cue는 "보여주는 것"을 위한 키다.
         // - 이동 가능 여부 / 데미지 판정 같은 게임 규칙 자체는 Cue로 판단하지 않는다.
         // -------------------------
+
+        [Header("Audio (Optional)")]
+
+        [Tooltip("캐스팅 시작 시 1회 재생되는 사운드")]
+        public SoundRef audioOnCastStart;
+
+        [Tooltip("캐스팅 중 유지되는 루프 사운드")]
+        public SoundRef audioWhileCasting;
+
+        [Tooltip("Commit 시점에 1회 재생되는 사운드")]
+        public SoundRef audioOnCommit;
+
+        [Tooltip("실행 중 유지되는 루프 사운드")]
+        public SoundRef audioWhileActive;
+
+        [Tooltip("정상 종료 시 1회 재생되는 사운드")]
+        public SoundRef audioOnEnd;
+
+        [Tooltip("캐스팅 취소 시 1회 재생되는 사운드")]
+        public SoundRef audioOnCastCancelled;
+
+        [Tooltip("실행 중 취소 시 1회 재생되는 사운드")]
+        public SoundRef audioOnExecutionCancelled;
 
         [Header("GameplayCue (Optional)")]
 

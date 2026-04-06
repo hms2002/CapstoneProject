@@ -42,6 +42,28 @@ public class RelicLogic_StatModifiers : RelicLogic
 
     public override void OnEquipped(RelicContext ctx)
     {
+        ApplyModifiers(ctx);
+    }
+
+    public override void OnUnequipped(RelicContext ctx)
+    {
+        if (ctx.attributeSet == null) return;
+        if (ctx.token == null) return;
+
+        ctx.attributeSet.RemoveModifiersFromSource(ctx.token);
+    }
+    public override void OnRestoreAttached(RelicContext ctx)
+    {
+        ApplyModifiers(ctx);
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 유물 레벨에 맞는 상시 AttributeModifier를 현재 token 기준으로 부여한다.
+    /// - 일반 장착과 씬 복원 장착이 같은 부여 규칙을 공유하도록 한다.
+    /// </summary>
+    private void ApplyModifiers(RelicContext ctx)
+    {
         if (ctx.attributeSet == null) return;
         if (ctx.token == null) return;
 
@@ -63,18 +85,5 @@ public class RelicLogic_StatModifiers : RelicLogic
 
             ctx.attributeSet.TryAddModifier(e.attribute, mod);
         }
-    }
-
-    public override void OnUnequipped(RelicContext ctx)
-    {
-        if (ctx.attributeSet == null) return;
-        if (ctx.token == null) return;
-
-        ctx.attributeSet.RemoveModifiersFromSource(ctx.token);
-    }
-    public override void OnRestoreAttached(RelicContext ctx)
-    {
-        // 책임 : stat modifier는 GAS 스냅샷 복원 단계가 담당한다.
-        // 복원 장착 시 여기서 다시 붙이면 중복 적용 위험이 있다.
     }
 }

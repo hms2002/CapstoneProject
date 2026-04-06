@@ -13,13 +13,16 @@ public class ItemDetailPanel : MonoBehaviour, IHoverView
 
     [Header("Views")]
     [SerializeField] private WeaponDetailView weaponView;
+    [SerializeField] private WeaponDetailViewV2 weaponViewV2;
     [SerializeField] private RelicDetailView relicView;
+    [SerializeField] private ConsumableDetailView consumableView;
 
     [Header("Glossary (optional)")]
     [SerializeField] private GlossaryDatabase glossary;
     [SerializeField] private GlossaryPopup glossaryPopup;
 
     [Header("Services")]
+    [SerializeField] private TooltipColorPalette tooltipColorPalette;
     [SerializeField] private string glossaryLinkColorHex = "5EC8FF";
 
     private ItemDetailPanelServices _services;
@@ -39,10 +42,17 @@ public class ItemDetailPanel : MonoBehaviour, IHoverView
 
     private void Awake()
     {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
         Instance = this;
+        GlobalUIRoot.AdoptToCanvas(GlobalCanvasLayer.Hover, transform);
         _services = new ItemDetailPanelServices
         {
-            formatText = raw => DetailTextFormatter.ApplyGlossaryLinks(raw, glossaryLinkColorHex),
+            formatText = raw => DetailTextFormatter.Format(raw, tooltipColorPalette, glossaryLinkColorHex),
             showGlossary = ShowGlossaryPopup
         };
 
@@ -99,25 +109,58 @@ public class ItemDetailPanel : MonoBehaviour, IHoverView
             }
         }
 
-        if (weaponView != null && weaponView.CanShow(definition))
+        if (weaponViewV2 != null && weaponViewV2.CanShow(definition))
         {
-            weaponView.Show(definition, ctx, _services);
+            weaponViewV2.Show(definition, ctx, _services);
+            if (weaponView != null)
+                weaponView.Hide();
             if (relicView != null)
                 relicView.Hide();
+            if (consumableView != null)
+                consumableView.Hide();
+        }
+        else if (weaponView != null && weaponView.CanShow(definition))
+        {
+            weaponView.Show(definition, ctx, _services);
+            if (weaponViewV2 != null)
+                weaponViewV2.Hide();
+            if (relicView != null)
+                relicView.Hide();
+            if (consumableView != null)
+                consumableView.Hide();
         }
         else if (relicView != null && relicView.CanShow(definition))
         {
             relicView.Show(definition, ctx, _services);
             if (weaponView != null)
                 weaponView.Hide();
+            if (weaponViewV2 != null)
+                weaponViewV2.Hide();
+            if (consumableView != null)
+                consumableView.Hide();
+        }
+        else if (consumableView != null && consumableView.CanShow(definition))
+        {
+            consumableView.Show(definition, ctx, _services);
+            if (weaponView != null)
+                weaponView.Hide();
+            if (weaponViewV2 != null)
+                weaponViewV2.Hide();
+            if (relicView != null)
+                relicView.Hide();
         }
         else
         {
             if (weaponView != null)
                 weaponView.Hide();
+            if (weaponViewV2 != null)
+                weaponViewV2.Hide();
 
             if (relicView != null)
                 relicView.Hide();
+
+            if (consumableView != null)
+                consumableView.Hide();
         }
 
         Canvas.ForceUpdateCanvases();
@@ -128,8 +171,14 @@ public class ItemDetailPanel : MonoBehaviour, IHoverView
         if (weaponView != null)
             weaponView.Hide();
 
+        if (weaponViewV2 != null)
+            weaponViewV2.Hide();
+
         if (relicView != null)
             relicView.Hide();
+
+        if (consumableView != null)
+            consumableView.Hide();
 
         if (glossaryPopup != null)
             glossaryPopup.Hide();

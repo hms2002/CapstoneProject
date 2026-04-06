@@ -1,3 +1,4 @@
+using CapstoneAudio;
 using UnityEngine;
 
 namespace UnityGAS
@@ -51,6 +52,16 @@ namespace UnityGAS
 
         [Tooltip("[mode=SpawnPrefab] 간단 SFX")]
         public AudioClip sfx;
+
+        [Header("Audio (Optional)")]
+        [Tooltip("ExecuteCue에서 1회 재생되는 사운드")]
+        public SoundRef audioOnExecute;
+
+        [Tooltip("AddCue 동안 유지되는 루프 사운드")]
+        public SoundRef audioWhileActive;
+
+        [Tooltip("RemoveCue에서 1회 재생되는 사운드")]
+        public SoundRef audioOnRemove;
 
         [Header("Spawn Options")]
         public bool attachToTarget = true;

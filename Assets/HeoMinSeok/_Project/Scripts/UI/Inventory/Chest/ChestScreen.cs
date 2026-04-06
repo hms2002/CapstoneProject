@@ -12,24 +12,29 @@ public class ChestScreen : MonoBehaviour, IStackableUI
     [Tooltip("상자 영역(상자 슬롯)이 포함된 패널 RectTransform")]
     [SerializeField] private RectTransform chestPanelRect;
     [SerializeField] private Transform chestGridRoot;
+    [SerializeField] private Transform consumableGridRoot;
     [SerializeField] private Transform weaponGridRoot;
     [SerializeField] private Transform relicGridRoot;
+    [SerializeField] private PlayerStatPanelView playerStatPanel;
     [SerializeField] private ItemSlotUI slotPrefab;
     [SerializeField] private Button closeButton;
 
     [Header("Runtime Refs")]
+    [SerializeField] private PlayerConsumableInventory playerConsumableInventory;
     [SerializeField] private WeaponInventory2D playerWeaponInventory;
     [SerializeField] private RelicInventory playerRelicInventory;
 
     private ChestInventory chestInventory;
 
     private IItemContainer chestContainer;
+    private IItemContainer consumableContainer;
     private IItemContainer weaponContainer;
     private IItemContainer relicContainer;
 
     private readonly List<ItemSlotUI> spawned = new();
 
     private IDisposable chestAdapterDisposer;
+    private IDisposable consumableAdapterDisposer;
     private IDisposable weaponAdapterDisposer;
     private IDisposable relicAdapterDisposer;
 
@@ -38,6 +43,9 @@ public class ChestScreen : MonoBehaviour, IStackableUI
     // =========================================================
     public bool IsActive => gameObject.activeSelf;
     public bool CanCloseOnEscape => true;
+    public UIOpenGroup OpenGroup => UIOpenGroup.ExclusiveModal;
+    public UIOpenGroup BlockedOpenGroups => UIOpenGroup.ExclusiveModal;
+    public UIGameplayLockProfile GameplayLockProfile => UIGameplayLockProfile.FreezeAndBlockControl;
 
     public void OpenUI()
     {
@@ -80,10 +88,12 @@ public class ChestScreen : MonoBehaviour, IStackableUI
         ItemContainerGroupRegistry.Clear();
 
         chestAdapterDisposer?.Dispose();
+        consumableAdapterDisposer?.Dispose();
         weaponAdapterDisposer?.Dispose();
         relicAdapterDisposer?.Dispose();
 
         chestAdapterDisposer = null;
+        consumableAdapterDisposer = null;
         weaponAdapterDisposer = null;
         relicAdapterDisposer = null;
     }
@@ -95,10 +105,19 @@ public class ChestScreen : MonoBehaviour, IStackableUI
         ResolvePlayerInventories();
 
         chestContainer = new ChestContainerAdapter(chestInventory);
+        consumableContainer = new PlayerConsumableContainerAdapter(playerConsumableInventory);
         weaponContainer = new PlayerWeaponContainerAdapter(playerWeaponInventory);
         relicContainer = new PlayerRelicContainerAdapter(playerRelicInventory);
 
-        ItemContainerGroupRegistry.SetGroup(chestContainer, weaponContainer, relicContainer);
+        if (playerStatPanel != null)
+        {
+            var currentPlayer = PlayerRuntimeRegistry.CurrentPlayer != null
+                ? PlayerRuntimeRegistry.CurrentPlayer
+                : PlayerInteractor2D.Instance;
+            playerStatPanel.Bind(currentPlayer != null ? currentPlayer.transform : null);
+        }
+
+        ItemContainerGroupRegistry.SetGroup(chestContainer, consumableContainer, weaponContainer, relicContainer);
 
         BuildUI();
 
@@ -110,13 +129,17 @@ public class ChestScreen : MonoBehaviour, IStackableUI
     {
         var currentPlayer = PlayerRuntimeRegistry.CurrentPlayer != null
             ? PlayerRuntimeRegistry.CurrentPlayer
-            : SampleTopDownPlayer.Instance;
+            : PlayerInteractor2D.Instance;
 
         if (currentPlayer != null)
         {
             playerWeaponInventory = currentPlayer.GetComponent<WeaponInventory2D>();
             playerRelicInventory = currentPlayer.GetComponent<RelicInventory>();
+            playerConsumableInventory = currentPlayer.GetComponent<PlayerConsumableInventory>();
         }
+
+        if (playerConsumableInventory == null)
+            playerConsumableInventory = FindFirstObjectByType<PlayerConsumableInventory>();
 
         if (playerWeaponInventory == null)
             playerWeaponInventory = FindFirstObjectByType<WeaponInventory2D>();
@@ -134,6 +157,16 @@ public class ChestScreen : MonoBehaviour, IStackableUI
             var ui = Instantiate(slotPrefab, chestGridRoot);
             ui.Bind(chestContainer, i);
             spawned.Add(ui);
+        }
+
+        if (consumableContainer != null && consumableGridRoot != null)
+        {
+            for (int i = 0; i < consumableContainer.SlotCount; i++)
+            {
+                var ui = Instantiate(slotPrefab, consumableGridRoot);
+                ui.Bind(consumableContainer, i);
+                spawned.Add(ui);
+            }
         }
 
         for (int i = 0; i < weaponContainer.SlotCount; i++)
@@ -201,6 +234,58 @@ public class ChestScreen : MonoBehaviour, IStackableUI
             return inv != null && inv.SetRelicWithLevel(index, relic, level);
         }
 
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 상자 UI에서 플레이어의 1회용 아이템 슬롯을 IItemContainer 규약으로 노출한다.
+    /// - 상자 슬롯과의 drag, drop, quick move가 consumable 인벤토리와 연결되도록 한다.
+    /// </summary>
+    private class PlayerConsumableContainerAdapter : IItemContainer, IDisposable
+    {
+        private readonly PlayerConsumableInventory inv;
+        public event Action OnChanged;
+
+        public PlayerConsumableContainerAdapter(PlayerConsumableInventory inv)
+        {
+            this.inv = inv;
+            if (this.inv != null) this.inv.OnChanged += HandleChanged;
+        }
+
+        public int SlotCount => inv != null ? inv.SlotCount : 0;
+
+        public ScriptableObject Get(int index) => inv != null ? inv.GetConsumableInSlot(index) : null;
+
+        public bool CanPlace(ScriptableObject item, int index, int ignoreIndex = -1)
+        {
+            if (inv == null) return false;
+            if (item == null) return true;
+
+            var consumable = item as ConsumableDefinition;
+            if (consumable == null) return false;
+
+            return inv.CanPlaceConsumableInSlot(index, consumable);
+        }
+
+        public bool TrySet(int index, ScriptableObject item)
+        {
+            if (inv == null) return false;
+            if (item == null) return inv.TrySetConsumableSlot(index, null);
+
+            var consumable = item as ConsumableDefinition;
+            if (consumable == null) return false;
+
+            return inv.TrySetConsumableSlot(index, consumable);
+        }
+
+        public bool TrySwap(int a, int b) => inv != null && inv.TrySwapConsumableSlots(a, b);
+
+        private void HandleChanged() => OnChanged?.Invoke();
+
+        public void Dispose()
+        {
+            if (inv != null) inv.OnChanged -= HandleChanged;
+        }
     }
 
     private class PlayerWeaponContainerAdapter : IItemContainer, IDisposable

@@ -9,7 +9,8 @@ public enum PlayerSpeechSituationEnum
     Death,
     DoorLocked,
     InventoryFull,
-    NotEnoughMana
+    NotEnoughMana,
+    OneWayDoorLocked
 }
 
 [System.Serializable]

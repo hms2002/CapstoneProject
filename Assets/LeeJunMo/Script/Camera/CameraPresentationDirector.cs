@@ -79,7 +79,7 @@ public class CameraPresentationDirector : MonoBehaviour
             playerCam.Priority = focusPriority;
     }
 
-    private void HandlePlayerRegistered(SampleTopDownPlayer player)
+    private void HandlePlayerRegistered(PlayerInteractor2D player)
     {
         if (player == null)
             return;
@@ -87,7 +87,7 @@ public class CameraPresentationDirector : MonoBehaviour
         BindPlayerCamera(player.transform);
     }
 
-    private void HandlePlayerUnregistered(SampleTopDownPlayer player)
+    private void HandlePlayerUnregistered(PlayerInteractor2D player)
     {
         if (playerCam == null || player == null)
             return;

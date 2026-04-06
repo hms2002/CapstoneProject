@@ -18,6 +18,9 @@ public class UpgradeTreeUI : MonoBehaviour, IStackableUI
 
     public bool IsActive => gameObject.activeSelf;
     public bool CanCloseOnEscape => true;
+    public UIOpenGroup OpenGroup => UIOpenGroup.ExclusiveModal;
+    public UIOpenGroup BlockedOpenGroups => UIOpenGroup.ExclusiveModal;
+    public UIGameplayLockProfile GameplayLockProfile => UIGameplayLockProfile.FreezeAndBlockControl;
 
     public void OpenUI()
     {
@@ -50,12 +53,18 @@ public class UpgradeTreeUI : MonoBehaviour, IStackableUI
     {
         if (UpgradeManager.Instance != null)
             UpgradeManager.Instance.OnDataChanged += RefreshAll;
+
+        if (UIManager.Instance != null)
+            UIManager.Instance.SetGameplayHudCurrencyHidden(this, true);
     }
 
     private void OnDisable()
     {
         if (UpgradeManager.Instance != null)
             UpgradeManager.Instance.OnDataChanged -= RefreshAll;
+
+        if (UIManager.Instance != null)
+            UIManager.Instance.SetGameplayHudCurrencyHidden(this, false);
     }
 
     public void BuildUI()

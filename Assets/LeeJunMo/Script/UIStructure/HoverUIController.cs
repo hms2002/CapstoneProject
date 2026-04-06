@@ -25,6 +25,7 @@ public class HoverUIController : MonoBehaviour
 
     private void Awake()
     {
+        GlobalUIRoot.AdoptService(transform);
         RefreshCanvasReference();
     }
 
@@ -96,19 +97,16 @@ public class HoverUIController : MonoBehaviour
 
     private bool RefreshCanvasReference(RectTransform targetRect, IHoverView view)
     {
-        Canvas resolvedCanvas = null;
-
-        if (targetRect != null)
-            resolvedCanvas = targetRect.GetComponentInParent<Canvas>();
+        Canvas resolvedCanvas = canvas;
 
         if (resolvedCanvas == null && view is MonoBehaviour viewBehaviour && viewBehaviour != null)
             resolvedCanvas = viewBehaviour.GetComponentInParent<Canvas>();
 
-        if (resolvedCanvas == null && canvas != null)
-            resolvedCanvas = canvas;
+        if (resolvedCanvas == null && targetRect != null)
+            resolvedCanvas = targetRect.GetComponentInParent<Canvas>();
 
         if (resolvedCanvas == null)
-            resolvedCanvas = GetComponentInParent<Canvas>();
+            resolvedCanvas = GlobalUIRoot.GetCanvas(GlobalCanvasLayer.Hover);
 
         if (resolvedCanvas == null)
             resolvedCanvas = FindFirstObjectByType<Canvas>();

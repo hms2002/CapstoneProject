@@ -1,5 +1,7 @@
 public abstract class TemporaryShortcut : ShortcutBase
 {
+    protected override bool RequiredDoorIsPermanent => false;
+
     protected override void OnSuccess()
     {
         if (targetDoor != null)

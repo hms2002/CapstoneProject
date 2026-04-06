@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using CapstoneAudio;
 using UnityEngine;
 using static UnityGAS.AbilityDefinition;
 
@@ -13,6 +15,8 @@ namespace UnityGAS
         private readonly GameObject ownerObject;
         private readonly Transform ownerTransform;
         private readonly GameplayCueManager cueManager;
+        private readonly Dictionary<AbilitySpec, AudioHandle> castingLoopHandles = new();
+        private readonly Dictionary<AbilitySpec, AudioHandle> activeLoopHandles = new();
 
         private readonly Animator playerAnimator;
         private Animator weaponAnimator;
@@ -60,75 +64,87 @@ namespace UnityGAS
 
         public void PlayCastStart(AbilityDefinition def, AbilitySpec spec, GameObject target)
         {
-            if (cueManager == null || def == null)
+            if (def == null)
                 return;
 
             var p = BuildCueParamsForAbility(def, target);
+            PlayOneShot(def.audioOnCastStart, p);
+            StartOrReplaceLoop(castingLoopHandles, spec, def.audioWhileCasting, p);
 
-            if (def.cueOnCastStart != null)
+            if (cueManager != null && def.cueOnCastStart != null)
                 cueManager.ExecuteCue(def.cueOnCastStart, p);
 
-            if (def.cueWhileCasting != null)
+            if (cueManager != null && def.cueWhileCasting != null)
                 cueManager.AddCue(def.cueWhileCasting, p);
         }
 
         public void PlayCastCommit(AbilityDefinition def, AbilitySpec spec, GameObject target)
         {
-            if (cueManager == null || def == null)
+            if (def == null)
                 return;
 
             var p = BuildCueParamsForAbility(def, target);
+            StopLoop(castingLoopHandles, spec);
+            PlayOneShot(def.audioOnCommit, p);
 
-            if (def.cueWhileCasting != null)
+            if (cueManager != null && def.cueWhileCasting != null)
                 cueManager.RemoveCue(def.cueWhileCasting, p);
 
-            if (def.cueOnCommit != null)
+            if (cueManager != null && def.cueOnCommit != null)
                 cueManager.ExecuteCue(def.cueOnCommit, p);
         }
 
         public void PlayCastCancelled(AbilityDefinition def, AbilitySpec spec, GameObject target)
         {
-            if (cueManager == null || def == null)
+            if (def == null)
                 return;
 
             var p = BuildCueParamsForAbility(def, target);
+            StopLoop(castingLoopHandles, spec);
+            PlayOneShot(def.audioOnCastCancelled, p);
 
-            if (def.cueWhileCasting != null)
+            if (cueManager != null && def.cueWhileCasting != null)
                 cueManager.RemoveCue(def.cueWhileCasting, p);
 
-            if (def.cueOnCastCancelled != null)
+            if (cueManager != null && def.cueOnCastCancelled != null)
                 cueManager.ExecuteCue(def.cueOnCastCancelled, p);
         }
 
         public void PlayExecutionStart(AbilityDefinition def, AbilitySpec spec, GameObject target)
         {
-            if (cueManager == null || def == null)
+            if (def == null)
                 return;
 
             var p = BuildCueParamsForAbility(def, target);
+            StartOrReplaceLoop(activeLoopHandles, spec, def.audioWhileActive, p);
 
-            if (def.cueWhileActive != null)
+            if (cueManager != null && def.cueWhileActive != null)
                 cueManager.AddCue(def.cueWhileActive, p);
         }
 
         public void PlayExecutionEnd(AbilityDefinition def, AbilitySpec spec, GameObject target, bool cancelled)
         {
-            if (cueManager == null || def == null)
+            if (def == null)
                 return;
 
             var p = BuildCueParamsForAbility(def, target);
+            StopLoop(activeLoopHandles, spec);
 
-            if (def.cueWhileActive != null)
+            if (cueManager != null && def.cueWhileActive != null)
                 cueManager.RemoveCue(def.cueWhileActive, p);
 
             if (cancelled)
             {
-                if (def.cueOnExecutionCancelled != null)
+                PlayOneShot(def.audioOnExecutionCancelled, p);
+
+                if (cueManager != null && def.cueOnExecutionCancelled != null)
                     cueManager.ExecuteCue(def.cueOnExecutionCancelled, p);
             }
             else
             {
-                if (def.cueOnEnd != null)
+                PlayOneShot(def.audioOnEnd, p);
+
+                if (cueManager != null && def.cueOnEnd != null)
                     cueManager.ExecuteCue(def.cueOnEnd, p);
             }
         }
@@ -155,6 +171,54 @@ namespace UnityGAS
                 return weaponAnimator != null ? weaponAnimator : playerAnimator;
 
             return playerAnimator != null ? playerAnimator : weaponAnimator;
+        }
+
+        private static SoundPlaybackContext BuildSoundContext(GameplayCueParams p)
+        {
+            return new SoundPlaybackContext
+            {
+                Instigator = p.Instigator,
+                Causer = p.Causer,
+                Target = p.Target,
+                Position = p.Position,
+                SourceObject = p.SourceObject
+            };
+        }
+
+        private static void PlayOneShot(SoundRef soundRef, GameplayCueParams p)
+        {
+            if (!soundRef.IsSet)
+                return;
+
+            SoundManager.EnsureInstance().Play(soundRef, BuildSoundContext(p));
+        }
+
+        private static void StartOrReplaceLoop(
+            Dictionary<AbilitySpec, AudioHandle> handleMap,
+            AbilitySpec spec,
+            SoundRef soundRef,
+            GameplayCueParams p)
+        {
+            if (spec == null)
+                return;
+
+            StopLoop(handleMap, spec);
+
+            if (!soundRef.IsSet)
+                return;
+
+            AudioHandle handle = SoundManager.EnsureInstance().Play(soundRef, BuildSoundContext(p));
+            if (handle.IsValid)
+                handleMap[spec] = handle;
+        }
+
+        private static void StopLoop(Dictionary<AbilitySpec, AudioHandle> handleMap, AbilitySpec spec)
+        {
+            if (spec == null || !handleMap.TryGetValue(spec, out AudioHandle handle))
+                return;
+
+            SoundManager.EnsureInstance().Stop(handle);
+            handleMap.Remove(spec);
         }
     }
 }

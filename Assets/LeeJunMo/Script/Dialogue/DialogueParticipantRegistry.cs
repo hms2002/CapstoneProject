@@ -5,6 +5,7 @@ public sealed class DialogueParticipantRegistry
     private readonly Dictionary<int, NPCData> activeNPCs = new Dictionary<int, NPCData>();
 
     public NPCData CurrentNPCData { get; private set; }
+    public NPCData CurrentSpeakerNPCData { get; private set; }
     public int CurrentSpeakerId { get; private set; } = -1;
     public string CurrentSpeakerName { get; private set; } = string.Empty;
 
@@ -27,6 +28,7 @@ public sealed class DialogueParticipantRegistry
     {
         activeNPCs.Clear();
         CurrentNPCData = null;
+        CurrentSpeakerNPCData = null;
         CurrentSpeakerId = -1;
         CurrentSpeakerName = string.Empty;
     }
@@ -47,11 +49,13 @@ public sealed class DialogueParticipantRegistry
             {
                 CurrentSpeakerId = id;
                 NPCData data = GetOrLoadNPC(speakerValue);
+                CurrentSpeakerNPCData = data;
                 CurrentSpeakerName = data != null ? data.npcName : "???";
             }
             else
             {
                 CurrentSpeakerId = -1;
+                CurrentSpeakerNPCData = null;
                 CurrentSpeakerName = speakerValue;
             }
 
@@ -77,6 +81,7 @@ public sealed class DialogueParticipantRegistry
     private void SetCurrentNPCData(NPCData npcData)
     {
         CurrentNPCData = npcData;
+        CurrentSpeakerNPCData = npcData;
         CurrentSpeakerId = npcData != null ? npcData.id : -1;
         CurrentSpeakerName = npcData != null ? npcData.npcName : string.Empty;
     }

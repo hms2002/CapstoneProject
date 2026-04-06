@@ -1,0 +1,741 @@
+fileFormatVersion: 2
+guid: 1ed6c7e45fac4ae45a372d6b86033752
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 1614426717862407760
+    second: Special 4 v1_0
+  - first:
+      213: -8682439057111181043
+    second: Special 4 v1_1
+  - first:
+      213: 4808953876437220604
+    second: Special 4 v1_2
+  - first:
+      213: 8828015371422636990
+    second: Special 4 v1_3
+  - first:
+      213: -7763117255353562728
+    second: Special 4 v1_4
+  - first:
+      213: -923724763944641151
+    second: Special 4 v1_5
+  - first:
+      213: 7503500982631644183
+    second: Special 4 v1_6
+  - first:
+      213: -2868278880839632281
+    second: Special 4 v1_7
+  - first:
+      213: -874809738475624702
+    second: Special 4 v1_8
+  - first:
+      213: -5381985962516089157
+    second: Special 4 v1_9
+  - first:
+      213: 320297657240622344
+    second: Special 4 v1_10
+  - first:
+      213: -1612812232325709265
+    second: Special 4 v1_11
+  - first:
+      213: 6749320464321218685
+    second: Special 4 v1_12
+  - first:
+      213: -7323897293678856453
+    second: Special 4 v1_13
+  - first:
+      213: -2825723057075917926
+    second: Special 4 v1_14
+  - first:
+      213: 6400733594206125464
+    second: Special 4 v1_15
+  - first:
+      213: 3551112966101138376
+    second: Special 4 v1_16
+  - first:
+      213: -6735693552198728282
+    second: Special 4 v1_17
+  - first:
+      213: 4593337483987177886
+    second: Special 4 v1_18
+  - first:
+      213: -1134854293666509419
+    second: Special 4 v1_19
+  - first:
+      213: 50382522363184311
+    second: Special 4 v1_20
+  - first:
+      213: 6936776506002448522
+    second: Special 4 v1_21
+  - first:
+      213: -2797077272187167731
+    second: Special 4 v1_22
+  - first:
+      213: -1310022106191256947
+    second: Special 4 v1_23
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Special 4 v1_0
+      rect:
+        serializedVersion: 2
+        x: 5
+        y: 95
+        width: 15
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 05ea61adb88976610800000000000000
+      internalID: 1614426717862407760
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Special 4 v1_1
+      rect:
+        serializedVersion: 2
+        x: 29
+        y: 95
+        width: 15
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d0919e8dda7c18780800000000000000
+      internalID: -8682439057111181043
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Special 4 v1_2
+      rect:
+        serializedVersion: 2
+        x: 53
+        y: 95
+        width: 15
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cfc374a5216dcb240800000000000000
+      internalID: 4808953876437220604
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Special 4 v1_3
+      rect:
+        serializedVersion: 2
+        x: 77
+        y: 95
+        width: 15
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ebb955d1539638a70800000000000000
+      internalID: 8828015371422636990
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Special 4 v1_4
+      rect:
+        serializedVersion: 2
+        x: 101
+        y: 95
+        width: 15
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 89902fcacfdd34490800000000000000
+      internalID: -7763117255353562728
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Special 4 v1_5
+      rect:
+        serializedVersion: 2
+        x: 125
+        y: 95
+        width: 15
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 18d19d6a8354e23f0800000000000000
+      internalID: -923724763944641151
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Special 4 v1_6
+      rect:
+        serializedVersion: 2
+        x: 149
+        y: 95
+        width: 15
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 71cbd81736ac12860800000000000000
+      internalID: 7503500982631644183
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Special 4 v1_7
+      rect:
+        serializedVersion: 2
+        x: 173
+        y: 95
+        width: 15
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 76a7ccefd83d138d0800000000000000
+      internalID: -2868278880839632281
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Special 4 v1_8
+      rect:
+        serializedVersion: 2
+        x: 5
+        y: 71
+        width: 15
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 207ab148d2d0cd3f0800000000000000
+      internalID: -874809738475624702
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Special 4 v1_9
+      rect:
+        serializedVersion: 2
+        x: 29
+        y: 73
+        width: 15
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bb6f61638485f45b0800000000000000
+      internalID: -5381985962516089157
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Special 4 v1_10
+      rect:
+        serializedVersion: 2
+        x: 53
+        y: 71
+        width: 15
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8059732b50de17400800000000000000
+      internalID: 320297657240622344
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Special 4 v1_11
+      rect:
+        serializedVersion: 2
+        x: 77
+        y: 73
+        width: 15
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f2242dad1d32e99e0800000000000000
+      internalID: -1612812232325709265
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Special 4 v1_12
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 50
+        width: 21
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d78042fe3376aad50800000000000000
+      internalID: 6749320464321218685
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Special 4 v1_13
+      rect:
+        serializedVersion: 2
+        x: 25
+        y: 51
+        width: 21
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bf6b3de073a4c5a90800000000000000
+      internalID: -7323897293678856453
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Special 4 v1_14
+      rect:
+        serializedVersion: 2
+        x: 49
+        y: 51
+        width: 21
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a9beb55d9d309c8d0800000000000000
+      internalID: -2825723057075917926
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Special 4 v1_15
+      rect:
+        serializedVersion: 2
+        x: 73
+        y: 50
+        width: 21
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 89db0989a49f3d850800000000000000
+      internalID: 6400733594206125464
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Special 4 v1_16
+      rect:
+        serializedVersion: 2
+        x: 97
+        y: 48
+        width: 21
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8cbfdb59d66184130800000000000000
+      internalID: 3551112966101138376
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Special 4 v1_17
+      rect:
+        serializedVersion: 2
+        x: 121
+        y: 47
+        width: 21
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6a54e49c6620682a0800000000000000
+      internalID: -6735693552198728282
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Special 4 v1_18
+      rect:
+        serializedVersion: 2
+        x: 145
+        y: 47
+        width: 21
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e91da8aea10debf30800000000000000
+      internalID: 4593337483987177886
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Special 4 v1_19
+      rect:
+        serializedVersion: 2
+        x: 169
+        y: 47
+        width: 21
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 59d4e2a58003040f0800000000000000
+      internalID: -1134854293666509419
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Special 4 v1_20
+      rect:
+        serializedVersion: 2
+        x: 193
+        y: 47
+        width: 21
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7b4885c13aef2b000800000000000000
+      internalID: 50382522363184311
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Special 4 v1_21
+      rect:
+        serializedVersion: 2
+        x: 5
+        y: 23
+        width: 15
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a802d86ca71644060800000000000000
+      internalID: 6936776506002448522
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Special 4 v1_22
+      rect:
+        serializedVersion: 2
+        x: 5
+        y: 0
+        width: 15
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d0c17fd5a09ce29d0800000000000000
+      internalID: -2797077272187167731
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Special 4 v1_23
+      rect:
+        serializedVersion: 2
+        x: 27
+        y: 0
+        width: 16
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d82af80d5ddd1dde0800000000000000
+      internalID: -1310022106191256947
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Special 4 v1_0: 1614426717862407760
+      Special 4 v1_1: -8682439057111181043
+      Special 4 v1_10: 320297657240622344
+      Special 4 v1_11: -1612812232325709265
+      Special 4 v1_12: 6749320464321218685
+      Special 4 v1_13: -7323897293678856453
+      Special 4 v1_14: -2825723057075917926
+      Special 4 v1_15: 6400733594206125464
+      Special 4 v1_16: 3551112966101138376
+      Special 4 v1_17: -6735693552198728282
+      Special 4 v1_18: 4593337483987177886
+      Special 4 v1_19: -1134854293666509419
+      Special 4 v1_2: 4808953876437220604
+      Special 4 v1_20: 50382522363184311
+      Special 4 v1_21: 6936776506002448522
+      Special 4 v1_22: -2797077272187167731
+      Special 4 v1_23: -1310022106191256947
+      Special 4 v1_3: 8828015371422636990
+      Special 4 v1_4: -7763117255353562728
+      Special 4 v1_5: -923724763944641151
+      Special 4 v1_6: 7503500982631644183
+      Special 4 v1_7: -2868278880839632281
+      Special 4 v1_8: -874809738475624702
+      Special 4 v1_9: -5381985962516089157
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

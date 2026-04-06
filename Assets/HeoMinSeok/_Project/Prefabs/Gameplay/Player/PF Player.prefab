@@ -197,6 +197,10 @@ GameObject:
   - component: {fileID: 2723686145349069958}
   - component: {fileID: 3624906614828727178}
   - component: {fileID: 2333025531112780419}
+  - component: {fileID: 5287530741161564427}
+  - component: {fileID: 8197086752515054346}
+  - component: {fileID: 6050434493472852141}
+  - component: {fileID: 5662210137078847501}
   m_Layer: 0
   m_Name: PF Player
   m_TagString: Player
@@ -470,13 +474,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 8883617028798182002}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bf0c493b3738fec46a2f7eda2d1b98d0, type: 3}
+m_Script: {fileID: 11500000, guid: f6f7a1f6ffeaa0e44a2c3879fa6a7448, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   interactKey: 102
   interactionPrompt: {fileID: 0}
   speechBubble: {fileID: 9064131313457660205}
   speechData: {fileID: 11400000, guid: 95081fedc29af6044801e50a4e2d73fb, type: 2}
+  interactableTracker: {fileID: 0}
+  targetResolver: {fileID: 0}
+  promptPresenter: {fileID: 0}
+  speechController: {fileID: 0}
 --- !u!114 &3517715623297123696
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -631,6 +639,7 @@ MonoBehaviour:
   hitFlashController: {fileID: 0}
   cameraShake: {fileID: 0}
   defaultShake: 0.3
+  cameraShakeForceMultiplier: 10
   movementStateProviderSource: {fileID: 0}
   invulnerableTag: {fileID: 11400000, guid: 90cc853a47e809d4e8baa4fbcd354709, type: 2}
   attackingBlockedTag: {fileID: 11400000, guid: 464b82c4380e99c45a839f32f32511a8, type: 2}
@@ -979,3 +988,55 @@ MonoBehaviour:
   spriteRenderers: []
   deadTint: {r: 0.45, g: 0.45, b: 0.45, a: 1}
   presentationDuration: 1.25
+--- !u!114 &5287530741161564427
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8883617028798182002}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ee6cd750d444e44ba6217bce509eb97, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &8197086752515054346
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8883617028798182002}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 60e32a73bb0d54a4382efc1619f7bb24, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tracker: {fileID: 0}
+--- !u!114 &6050434493472852141
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8883617028798182002}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 675a0888a9f3c8c4b9251aeb19ea7080, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  interactionPrompt: {fileID: 0}
+--- !u!114 &5662210137078847501
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8883617028798182002}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f75d17f2c9d2464cae6ab9dfe4fdc94, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speechBubble: {fileID: 0}
+  speechData: {fileID: 11400000, guid: 95081fedc29af6044801e50a4e2d73fb, type: 2}

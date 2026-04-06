@@ -48,8 +48,9 @@ public class StatueShortcut : TemporaryShortcut
         OnUnHighlight();
     }
 
-    private void OnValidate()
+    protected override void OnValidate()
     {
+        base.OnValidate();
         ApplyRequirementVisual();
     }
 

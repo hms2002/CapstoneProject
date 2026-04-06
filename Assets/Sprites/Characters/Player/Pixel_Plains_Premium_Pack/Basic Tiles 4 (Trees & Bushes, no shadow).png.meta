@@ -1,0 +1,2977 @@
+fileFormatVersion: 2
+guid: 2d53f740318eebe4aa8e6c15dbf7ed0a
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -3070724214025064824
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_0
+  - first:
+      213: -2680402759855969855
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_1
+  - first:
+      213: 6076827040896496655
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_2
+  - first:
+      213: -5997083208139343940
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_3
+  - first:
+      213: 5016114557894740099
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_4
+  - first:
+      213: -3351388089254083474
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_5
+  - first:
+      213: 5609972634823938809
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_6
+  - first:
+      213: 7512643306925996914
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_7
+  - first:
+      213: 526778185228658876
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_8
+  - first:
+      213: 6056476562787379140
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_9
+  - first:
+      213: -8415571963416472854
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_10
+  - first:
+      213: 1527361404619149205
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_11
+  - first:
+      213: -2397665967742166609
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_12
+  - first:
+      213: -3345223625300790318
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_13
+  - first:
+      213: -7276068778723247456
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_14
+  - first:
+      213: -7301642980078433463
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_15
+  - first:
+      213: -8239047417578778996
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_16
+  - first:
+      213: 706461085028044296
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_17
+  - first:
+      213: -7672718918887724542
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_18
+  - first:
+      213: 2597888542622820225
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_19
+  - first:
+      213: -1556686404768957125
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_20
+  - first:
+      213: 8975721973939041959
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_21
+  - first:
+      213: 8796847868993469419
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_22
+  - first:
+      213: -624893725609073541
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_23
+  - first:
+      213: 5660388836817555892
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_24
+  - first:
+      213: 5570770291753714703
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_25
+  - first:
+      213: 8364873984200306552
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_26
+  - first:
+      213: 8536207610792449236
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_27
+  - first:
+      213: 2764041565787976251
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_28
+  - first:
+      213: 5309838339469130394
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_29
+  - first:
+      213: 8801881392641755493
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_30
+  - first:
+      213: 4661971323110171503
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_31
+  - first:
+      213: 3200688509353555951
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_32
+  - first:
+      213: 8064265117664566353
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_33
+  - first:
+      213: -5779729822249883305
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_34
+  - first:
+      213: -6638106063422899405
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_35
+  - first:
+      213: -6801129353396160023
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_36
+  - first:
+      213: -4349503798079592830
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_37
+  - first:
+      213: 2931480265406414091
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_38
+  - first:
+      213: -2980944914842667979
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_39
+  - first:
+      213: 338363718979131755
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_40
+  - first:
+      213: -8274474325345069186
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_41
+  - first:
+      213: 3487508114862291378
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_42
+  - first:
+      213: 420928196272214401
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_43
+  - first:
+      213: 6362640287771359914
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_44
+  - first:
+      213: 9150851895601215189
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_45
+  - first:
+      213: -2745760190104973670
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_46
+  - first:
+      213: -7793579102138261
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_47
+  - first:
+      213: 233045346031065286
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_48
+  - first:
+      213: 7518017428318894427
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_49
+  - first:
+      213: 5475781267744593860
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_50
+  - first:
+      213: 8797811884298067398
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_51
+  - first:
+      213: 1128035657612701578
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_52
+  - first:
+      213: -905180767628694850
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_53
+  - first:
+      213: 7352671026116592373
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_54
+  - first:
+      213: 3020089138815679776
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_55
+  - first:
+      213: 3444277624506159614
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_56
+  - first:
+      213: 8230001845479156941
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_57
+  - first:
+      213: 2240849114931462248
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_58
+  - first:
+      213: -7295450153449208152
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_59
+  - first:
+      213: 718870372778407984
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_60
+  - first:
+      213: -7645916789909456707
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_61
+  - first:
+      213: 3806055689832374271
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_62
+  - first:
+      213: 1205809966298580917
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_63
+  - first:
+      213: -6657393094460657683
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_64
+  - first:
+      213: 3589009941064159615
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_65
+  - first:
+      213: 6790228477458445553
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_66
+  - first:
+      213: 1623305098309931129
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_67
+  - first:
+      213: -3102357450581201433
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_68
+  - first:
+      213: 761885147130012276
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_69
+  - first:
+      213: 4651163538162342666
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_70
+  - first:
+      213: -7857367963634268109
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_71
+  - first:
+      213: 2857753203956348847
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_72
+  - first:
+      213: 1546496537870010022
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_73
+  - first:
+      213: 247865161363966276
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_74
+  - first:
+      213: -8896511502677480801
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_75
+  - first:
+      213: -2793757777810559761
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_76
+  - first:
+      213: 1047385024274129324
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_77
+  - first:
+      213: 87777650152936979
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_78
+  - first:
+      213: 5018345454892233762
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_79
+  - first:
+      213: 3903195432280579665
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_80
+  - first:
+      213: 2938765325706662135
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_81
+  - first:
+      213: -2717639591021246257
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_82
+  - first:
+      213: 6820596941221352366
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_83
+  - first:
+      213: -551566456307539000
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_84
+  - first:
+      213: 4032070684801246725
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_85
+  - first:
+      213: -6970085159474618388
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_86
+  - first:
+      213: -2436929901517281031
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_87
+  - first:
+      213: 8373302738693578778
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_88
+  - first:
+      213: 4191565012527557493
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_89
+  - first:
+      213: 1746889953541372967
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_90
+  - first:
+      213: 5084056914636739174
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_91
+  - first:
+      213: 9200159130538286899
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_92
+  - first:
+      213: 7020740563818169806
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_93
+  - first:
+      213: -7399975911207178626
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_94
+  - first:
+      213: -4632828199351545149
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_95
+  - first:
+      213: -6154757809709969246
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_96
+  - first:
+      213: -559795836368964675
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_97
+  - first:
+      213: 7257184013920970667
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_98
+  - first:
+      213: -353403495611194944
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_99
+  - first:
+      213: 170722484747362770
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_100
+  - first:
+      213: 249785888020127081
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_101
+  - first:
+      213: 438839316967642872
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_102
+  - first:
+      213: -7721226495345094052
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_103
+  - first:
+      213: -4782009238763825510
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_104
+  - first:
+      213: 4512980452548853517
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_105
+  - first:
+      213: 3169835583881021036
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_106
+  - first:
+      213: 8469230753044239792
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_107
+  - first:
+      213: -8797756149498822878
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_108
+  - first:
+      213: 1209584307412988121
+    second: Basic Tiles 4 (Trees & Bushes, no shadow)_109
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_0
+      rect:
+        serializedVersion: 2
+        x: 31
+        y: 367
+        width: 18
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 88e68d3c8989265d0800000000000000
+      internalID: -3070724214025064824
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_1
+      rect:
+        serializedVersion: 2
+        x: 55
+        y: 359
+        width: 33
+        height: 41
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1c9eecb24eb4dcad0800000000000000
+      internalID: -2680402759855969855
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_2
+      rect:
+        serializedVersion: 2
+        x: 97
+        y: 359
+        width: 46
+        height: 41
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f04bf1e4ff9355450800000000000000
+      internalID: 6076827040896496655
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_3
+      rect:
+        serializedVersion: 2
+        x: 175
+        y: 367
+        width: 18
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cb7f46a989416cca0800000000000000
+      internalID: -5997083208139343940
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_4
+      rect:
+        serializedVersion: 2
+        x: 199
+        y: 359
+        width: 33
+        height: 41
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3884bf72d91dc9540800000000000000
+      internalID: 5016114557894740099
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_5
+      rect:
+        serializedVersion: 2
+        x: 241
+        y: 359
+        width: 46
+        height: 41
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e64098b0a4a7d71d0800000000000000
+      internalID: -3351388089254083474
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_6
+      rect:
+        serializedVersion: 2
+        x: 319
+        y: 367
+        width: 18
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9f2d7527360aadd40800000000000000
+      internalID: 5609972634823938809
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_7
+      rect:
+        serializedVersion: 2
+        x: 343
+        y: 359
+        width: 33
+        height: 41
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 27b3a81b845424860800000000000000
+      internalID: 7512643306925996914
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_8
+      rect:
+        serializedVersion: 2
+        x: 385
+        y: 359
+        width: 46
+        height: 41
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cb8aafde7fd7f4700800000000000000
+      internalID: 526778185228658876
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_9
+      rect:
+        serializedVersion: 2
+        x: 463
+        y: 367
+        width: 18
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4c7ab63685dec0450800000000000000
+      internalID: 6056476562787379140
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_10
+      rect:
+        serializedVersion: 2
+        x: 487
+        y: 359
+        width: 33
+        height: 41
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ae213da03e1e53b80800000000000000
+      internalID: -8415571963416472854
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_11
+      rect:
+        serializedVersion: 2
+        x: 529
+        y: 359
+        width: 46
+        height: 41
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 59f47fdea17423510800000000000000
+      internalID: 1527361404619149205
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_12
+      rect:
+        serializedVersion: 2
+        x: 590
+        y: 359
+        width: 20
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fa95fa67187c9bed0800000000000000
+      internalID: -2397665967742166609
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_13
+      rect:
+        serializedVersion: 2
+        x: 11
+        y: 295
+        width: 26
+        height: 53
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2d3b3b726d06391d0800000000000000
+      internalID: -3345223625300790318
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_14
+      rect:
+        serializedVersion: 2
+        x: 59
+        y: 295
+        width: 25
+        height: 41
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0aaf3eafef5360b90800000000000000
+      internalID: -7276068778723247456
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_15
+      rect:
+        serializedVersion: 2
+        x: 97
+        y: 295
+        width: 46
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 94b43b7356a5baa90800000000000000
+      internalID: -7301642980078433463
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_16
+      rect:
+        serializedVersion: 2
+        x: 155
+        y: 295
+        width: 26
+        height: 53
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c8e0e9ba60609ad80800000000000000
+      internalID: -8239047417578778996
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_17
+      rect:
+        serializedVersion: 2
+        x: 203
+        y: 295
+        width: 25
+        height: 41
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 80ecbb42d9addc900800000000000000
+      internalID: 706461085028044296
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_18
+      rect:
+        serializedVersion: 2
+        x: 241
+        y: 295
+        width: 46
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 20a274a8bc6058590800000000000000
+      internalID: -7672718918887724542
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_19
+      rect:
+        serializedVersion: 2
+        x: 299
+        y: 295
+        width: 26
+        height: 53
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 18727158ddd8d0420800000000000000
+      internalID: 2597888542622820225
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_20
+      rect:
+        serializedVersion: 2
+        x: 347
+        y: 295
+        width: 25
+        height: 41
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b3df01966f9856ae0800000000000000
+      internalID: -1556686404768957125
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_21
+      rect:
+        serializedVersion: 2
+        x: 385
+        y: 295
+        width: 46
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7a6fd43749b209c70800000000000000
+      internalID: 8975721973939041959
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_22
+      rect:
+        serializedVersion: 2
+        x: 443
+        y: 295
+        width: 26
+        height: 53
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bebf186778ea41a70800000000000000
+      internalID: 8796847868993469419
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_23
+      rect:
+        serializedVersion: 2
+        x: 491
+        y: 295
+        width: 25
+        height: 41
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b7463b6a77ee357f0800000000000000
+      internalID: -624893725609073541
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_24
+      rect:
+        serializedVersion: 2
+        x: 529
+        y: 295
+        width: 46
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4b1d81538adbd8e40800000000000000
+      internalID: 5660388836817555892
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_25
+      rect:
+        serializedVersion: 2
+        x: 31
+        y: 239
+        width: 18
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f04874da01a5f4d40800000000000000
+      internalID: 5570770291753714703
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_26
+      rect:
+        serializedVersion: 2
+        x: 55
+        y: 231
+        width: 33
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 87f6a23d190061470800000000000000
+      internalID: 8364873984200306552
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_27
+      rect:
+        serializedVersion: 2
+        x: 97
+        y: 231
+        width: 46
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4d415426893b67670800000000000000
+      internalID: 8536207610792449236
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_28
+      rect:
+        serializedVersion: 2
+        x: 175
+        y: 239
+        width: 18
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b32f439d829db5620800000000000000
+      internalID: 2764041565787976251
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_29
+      rect:
+        serializedVersion: 2
+        x: 199
+        y: 231
+        width: 33
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a9abec646d550b940800000000000000
+      internalID: 5309838339469130394
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_30
+      rect:
+        serializedVersion: 2
+        x: 241
+        y: 231
+        width: 46
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 56948830e70962a70800000000000000
+      internalID: 8801881392641755493
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_31
+      rect:
+        serializedVersion: 2
+        x: 319
+        y: 239
+        width: 18
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f632a0bd736a2b040800000000000000
+      internalID: 4661971323110171503
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_32
+      rect:
+        serializedVersion: 2
+        x: 343
+        y: 231
+        width: 33
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fe771b4cd312b6c20800000000000000
+      internalID: 3200688509353555951
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_33
+      rect:
+        serializedVersion: 2
+        x: 385
+        y: 231
+        width: 46
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 15c58f0f5660aef60800000000000000
+      internalID: 8064265117664566353
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_34
+      rect:
+        serializedVersion: 2
+        x: 463
+        y: 239
+        width: 18
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 759601759564acfa0800000000000000
+      internalID: -5779729822249883305
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_35
+      rect:
+        serializedVersion: 2
+        x: 487
+        y: 231
+        width: 33
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 33bbf4c94b5b0e3a0800000000000000
+      internalID: -6638106063422899405
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_36
+      rect:
+        serializedVersion: 2
+        x: 529
+        y: 231
+        width: 46
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9e9f65313e88d91a0800000000000000
+      internalID: -6801129353396160023
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_37
+      rect:
+        serializedVersion: 2
+        x: 590
+        y: 231
+        width: 20
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 286e04e175573a3c0800000000000000
+      internalID: -4349503798079592830
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_38
+      rect:
+        serializedVersion: 2
+        x: 11
+        y: 167
+        width: 26
+        height: 53
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b0dfd9d05c5bea820800000000000000
+      internalID: 2931480265406414091
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_39
+      rect:
+        serializedVersion: 2
+        x: 59
+        y: 167
+        width: 25
+        height: 41
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 534bbc7c46e81a6d0800000000000000
+      internalID: -2980944914842667979
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_40
+      rect:
+        serializedVersion: 2
+        x: 97
+        y: 167
+        width: 46
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b6991aa720c12b400800000000000000
+      internalID: 338363718979131755
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_41
+      rect:
+        serializedVersion: 2
+        x: 155
+        y: 167
+        width: 26
+        height: 53
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e7797bee0792b2d80800000000000000
+      internalID: -8274474325345069186
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_42
+      rect:
+        serializedVersion: 2
+        x: 203
+        y: 167
+        width: 25
+        height: 41
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2b9b8a1272e166030800000000000000
+      internalID: 3487508114862291378
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_43
+      rect:
+        serializedVersion: 2
+        x: 241
+        y: 167
+        width: 46
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 18150ced6ff67d500800000000000000
+      internalID: 420928196272214401
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_44
+      rect:
+        serializedVersion: 2
+        x: 299
+        y: 167
+        width: 26
+        height: 53
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: aaa733a81a3ac4850800000000000000
+      internalID: 6362640287771359914
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_45
+      rect:
+        serializedVersion: 2
+        x: 347
+        y: 167
+        width: 25
+        height: 41
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5d63585d05b5efe70800000000000000
+      internalID: 9150851895601215189
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_46
+      rect:
+        serializedVersion: 2
+        x: 385
+        y: 167
+        width: 46
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a9e426e97a915e9d0800000000000000
+      internalID: -2745760190104973670
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_47
+      rect:
+        serializedVersion: 2
+        x: 443
+        y: 167
+        width: 26
+        height: 53
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b609616f7cf44eff0800000000000000
+      internalID: -7793579102138261
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_48
+      rect:
+        serializedVersion: 2
+        x: 491
+        y: 167
+        width: 25
+        height: 41
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6c85dbae181fb3300800000000000000
+      internalID: 233045346031065286
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_49
+      rect:
+        serializedVersion: 2
+        x: 529
+        y: 167
+        width: 46
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b59b426d40d555860800000000000000
+      internalID: 7518017428318894427
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_50
+      rect:
+        serializedVersion: 2
+        x: 16
+        y: 87
+        width: 48
+        height: 74
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4c797a31d02edfb40800000000000000
+      internalID: 5475781267744593860
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_51
+      rect:
+        serializedVersion: 2
+        x: 80
+        y: 87
+        width: 48
+        height: 74
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6cddb44cb4b181a70800000000000000
+      internalID: 8797811884298067398
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_52
+      rect:
+        serializedVersion: 2
+        x: 144
+        y: 87
+        width: 48
+        height: 74
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a8faaf9347697af00800000000000000
+      internalID: 1128035657612701578
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_53
+      rect:
+        serializedVersion: 2
+        x: 208
+        y: 87
+        width: 49
+        height: 74
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ebae9ff33e62073f0800000000000000
+      internalID: -905180767628694850
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_54
+      rect:
+        serializedVersion: 2
+        x: 271
+        y: 32
+        width: 162
+        height: 129
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5f28cf5975fe90660800000000000000
+      internalID: 7352671026116592373
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_55
+      rect:
+        serializedVersion: 2
+        x: 451
+        y: 131
+        width: 10
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 02dbf15121389e920800000000000000
+      internalID: 3020089138815679776
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_56
+      rect:
+        serializedVersion: 2
+        x: 467
+        y: 131
+        width: 10
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ef1148c30488ccf20800000000000000
+      internalID: 3444277624506159614
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_57
+      rect:
+        serializedVersion: 2
+        x: 483
+        y: 131
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dcc2894f217d63270800000000000000
+      internalID: 8230001845479156941
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_58
+      rect:
+        serializedVersion: 2
+        x: 499
+        y: 131
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8600db2c568191f10800000000000000
+      internalID: 2240849114931462248
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_59
+      rect:
+        serializedVersion: 2
+        x: 515
+        y: 132
+        width: 10
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8a647170dba51ca90800000000000000
+      internalID: -7295450153449208152
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_60
+      rect:
+        serializedVersion: 2
+        x: 531
+        y: 132
+        width: 10
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 03872099bc0f9f900800000000000000
+      internalID: 718870372778407984
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_61
+      rect:
+        serializedVersion: 2
+        x: 547
+        y: 131
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: db8704b703f34e590800000000000000
+      internalID: -7645916789909456707
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_62
+      rect:
+        serializedVersion: 2
+        x: 563
+        y: 131
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fff10db0c73d1d430800000000000000
+      internalID: 3806055689832374271
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_63
+      rect:
+        serializedVersion: 2
+        x: 451
+        y: 115
+        width: 10
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5b74ad396c5ebb010800000000000000
+      internalID: 1205809966298580917
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_64
+      rect:
+        serializedVersion: 2
+        x: 467
+        y: 115
+        width: 10
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: defa882c0403c93a0800000000000000
+      internalID: -6657393094460657683
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_65
+      rect:
+        serializedVersion: 2
+        x: 483
+        y: 115
+        width: 10
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f719978a689bec130800000000000000
+      internalID: 3589009941064159615
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_66
+      rect:
+        serializedVersion: 2
+        x: 499
+        y: 115
+        width: 9
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1f4f6a6f2dcbb3e50800000000000000
+      internalID: 6790228477458445553
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_67
+      rect:
+        serializedVersion: 2
+        x: 515
+        y: 116
+        width: 10
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 97018d2e263278610800000000000000
+      internalID: 1623305098309931129
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_68
+      rect:
+        serializedVersion: 2
+        x: 531
+        y: 116
+        width: 10
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7ed22dfe55632f4d0800000000000000
+      internalID: -3102357450581201433
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_69
+      rect:
+        serializedVersion: 2
+        x: 547
+        y: 115
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 472a4523182c29a00800000000000000
+      internalID: 761885147130012276
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_70
+      rect:
+        serializedVersion: 2
+        x: 564
+        y: 115
+        width: 9
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a0b5a6458904c8040800000000000000
+      internalID: 4651163538162342666
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_71
+      rect:
+        serializedVersion: 2
+        x: 451
+        y: 99
+        width: 10
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3388b0a977505f290800000000000000
+      internalID: -7857367963634268109
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_72
+      rect:
+        serializedVersion: 2
+        x: 467
+        y: 99
+        width: 10
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fa77d81e567c8a720800000000000000
+      internalID: 2857753203956348847
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_73
+      rect:
+        serializedVersion: 2
+        x: 483
+        y: 99
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6a60d125862467510800000000000000
+      internalID: 1546496537870010022
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_74
+      rect:
+        serializedVersion: 2
+        x: 499
+        y: 99
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4494b4f0d08907300800000000000000
+      internalID: 247865161363966276
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_75
+      rect:
+        serializedVersion: 2
+        x: 515
+        y: 100
+        width: 10
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f9a6bbe8ced398480800000000000000
+      internalID: -8896511502677480801
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_76
+      rect:
+        serializedVersion: 2
+        x: 531
+        y: 100
+        width: 10
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: feced116a149a39d0800000000000000
+      internalID: -2793757777810559761
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_77
+      rect:
+        serializedVersion: 2
+        x: 547
+        y: 99
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ca16cea512f098e00800000000000000
+      internalID: 1047385024274129324
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_78
+      rect:
+        serializedVersion: 2
+        x: 563
+        y: 99
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3169598ce49d73100800000000000000
+      internalID: 87777650152936979
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_79
+      rect:
+        serializedVersion: 2
+        x: 262
+        y: 83
+        width: 36
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2243c075a9eb4a540800000000000000
+      internalID: 5018345454892233762
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_80
+      rect:
+        serializedVersion: 2
+        x: 451
+        y: 83
+        width: 10
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 15ed20ec09fea2630800000000000000
+      internalID: 3903195432280579665
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_81
+      rect:
+        serializedVersion: 2
+        x: 467
+        y: 83
+        width: 10
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7f01bf45e7798c820800000000000000
+      internalID: 2938765325706662135
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_82
+      rect:
+        serializedVersion: 2
+        x: 483
+        y: 83
+        width: 10
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fc804adc031094ad0800000000000000
+      internalID: -2717639591021246257
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_83
+      rect:
+        serializedVersion: 2
+        x: 499
+        y: 83
+        width: 9
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ea35d9de7c0a7ae50800000000000000
+      internalID: 6820596941221352366
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_84
+      rect:
+        serializedVersion: 2
+        x: 515
+        y: 84
+        width: 10
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8c3a4c5fa317858f0800000000000000
+      internalID: -551566456307539000
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_85
+      rect:
+        serializedVersion: 2
+        x: 531
+        y: 84
+        width: 10
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 50628dccceac4f730800000000000000
+      internalID: 4032070684801246725
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_86
+      rect:
+        serializedVersion: 2
+        x: 547
+        y: 83
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cef1b4ff978454f90800000000000000
+      internalID: -6970085159474618388
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_87
+      rect:
+        serializedVersion: 2
+        x: 564
+        y: 83
+        width: 9
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9f8e88d7a294e2ed0800000000000000
+      internalID: -2436929901517281031
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_88
+      rect:
+        serializedVersion: 2
+        x: 16
+        y: 7
+        width: 48
+        height: 74
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a10e2a82a72f33470800000000000000
+      internalID: 8373302738693578778
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_89
+      rect:
+        serializedVersion: 2
+        x: 80
+        y: 7
+        width: 48
+        height: 74
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 57b29a8cb2e6b2a30800000000000000
+      internalID: 4191565012527557493
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_90
+      rect:
+        serializedVersion: 2
+        x: 144
+        y: 7
+        width: 48
+        height: 74
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 72c388648233e3810800000000000000
+      internalID: 1746889953541372967
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_91
+      rect:
+        serializedVersion: 2
+        x: 208
+        y: 7
+        width: 49
+        height: 74
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6629acec3d23e8640800000000000000
+      internalID: 5084056914636739174
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_92
+      rect:
+        serializedVersion: 2
+        x: 451
+        y: 67
+        width: 10
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 33f1dc41cf78daf70800000000000000
+      internalID: 9200159130538286899
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_93
+      rect:
+        serializedVersion: 2
+        x: 467
+        y: 67
+        width: 10
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ec5ce86685eae6160800000000000000
+      internalID: 7020740563818169806
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_94
+      rect:
+        serializedVersion: 2
+        x: 483
+        y: 67
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e7e6c029d110e4990800000000000000
+      internalID: -7399975911207178626
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_95
+      rect:
+        serializedVersion: 2
+        x: 499
+        y: 67
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3c21d386c43e4bfb0800000000000000
+      internalID: -4632828199351545149
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_96
+      rect:
+        serializedVersion: 2
+        x: 515
+        y: 68
+        width: 10
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2a01da1a168e59aa0800000000000000
+      internalID: -6154757809709969246
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_97
+      rect:
+        serializedVersion: 2
+        x: 531
+        y: 68
+        width: 10
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: db33c7a17a43b38f0800000000000000
+      internalID: -559795836368964675
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_98
+      rect:
+        serializedVersion: 2
+        x: 547
+        y: 67
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ba727631962b6b460800000000000000
+      internalID: 7257184013920970667
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_99
+      rect:
+        serializedVersion: 2
+        x: 563
+        y: 67
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0c1a6b5a465781bf0800000000000000
+      internalID: -353403495611194944
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_100
+      rect:
+        serializedVersion: 2
+        x: 451
+        y: 51
+        width: 10
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2d1e98202378e5200800000000000000
+      internalID: 170722484747362770
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_101
+      rect:
+        serializedVersion: 2
+        x: 467
+        y: 51
+        width: 10
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 96d585511fa677300800000000000000
+      internalID: 249785888020127081
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_102
+      rect:
+        serializedVersion: 2
+        x: 483
+        y: 51
+        width: 10
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8f6d451a802171600800000000000000
+      internalID: 438839316967642872
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_103
+      rect:
+        serializedVersion: 2
+        x: 499
+        y: 51
+        width: 9
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c521f9a4961b8d490800000000000000
+      internalID: -7721226495345094052
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_104
+      rect:
+        serializedVersion: 2
+        x: 515
+        y: 52
+        width: 10
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a9698dafee3e2adb0800000000000000
+      internalID: -4782009238763825510
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_105
+      rect:
+        serializedVersion: 2
+        x: 531
+        y: 52
+        width: 10
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d0fb4709fc351ae30800000000000000
+      internalID: 4512980452548853517
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_106
+      rect:
+        serializedVersion: 2
+        x: 547
+        y: 51
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c660f954ba48dfb20800000000000000
+      internalID: 3169835583881021036
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_107
+      rect:
+        serializedVersion: 2
+        x: 564
+        y: 51
+        width: 9
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0b5140c7f70c88570800000000000000
+      internalID: 8469230753044239792
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_108
+      rect:
+        serializedVersion: 2
+        x: 345
+        y: 33
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 22f3d90056718e580800000000000000
+      internalID: -8797756149498822878
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 4 (Trees & Bushes, no shadow)_109
+      rect:
+        serializedVersion: 2
+        x: 383
+        y: 31
+        width: 18
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9d0fc39d48e49c010800000000000000
+      internalID: 1209584307412988121
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Basic Tiles 4 (Trees & Bushes, no shadow)_0: -3070724214025064824
+      Basic Tiles 4 (Trees & Bushes, no shadow)_1: -2680402759855969855
+      Basic Tiles 4 (Trees & Bushes, no shadow)_10: -8415571963416472854
+      Basic Tiles 4 (Trees & Bushes, no shadow)_100: 170722484747362770
+      Basic Tiles 4 (Trees & Bushes, no shadow)_101: 249785888020127081
+      Basic Tiles 4 (Trees & Bushes, no shadow)_102: 438839316967642872
+      Basic Tiles 4 (Trees & Bushes, no shadow)_103: -7721226495345094052
+      Basic Tiles 4 (Trees & Bushes, no shadow)_104: -4782009238763825510
+      Basic Tiles 4 (Trees & Bushes, no shadow)_105: 4512980452548853517
+      Basic Tiles 4 (Trees & Bushes, no shadow)_106: 3169835583881021036
+      Basic Tiles 4 (Trees & Bushes, no shadow)_107: 8469230753044239792
+      Basic Tiles 4 (Trees & Bushes, no shadow)_108: -8797756149498822878
+      Basic Tiles 4 (Trees & Bushes, no shadow)_109: 1209584307412988121
+      Basic Tiles 4 (Trees & Bushes, no shadow)_11: 1527361404619149205
+      Basic Tiles 4 (Trees & Bushes, no shadow)_12: -2397665967742166609
+      Basic Tiles 4 (Trees & Bushes, no shadow)_13: -3345223625300790318
+      Basic Tiles 4 (Trees & Bushes, no shadow)_14: -7276068778723247456
+      Basic Tiles 4 (Trees & Bushes, no shadow)_15: -7301642980078433463
+      Basic Tiles 4 (Trees & Bushes, no shadow)_16: -8239047417578778996
+      Basic Tiles 4 (Trees & Bushes, no shadow)_17: 706461085028044296
+      Basic Tiles 4 (Trees & Bushes, no shadow)_18: -7672718918887724542
+      Basic Tiles 4 (Trees & Bushes, no shadow)_19: 2597888542622820225
+      Basic Tiles 4 (Trees & Bushes, no shadow)_2: 6076827040896496655
+      Basic Tiles 4 (Trees & Bushes, no shadow)_20: -1556686404768957125
+      Basic Tiles 4 (Trees & Bushes, no shadow)_21: 8975721973939041959
+      Basic Tiles 4 (Trees & Bushes, no shadow)_22: 8796847868993469419
+      Basic Tiles 4 (Trees & Bushes, no shadow)_23: -624893725609073541
+      Basic Tiles 4 (Trees & Bushes, no shadow)_24: 5660388836817555892
+      Basic Tiles 4 (Trees & Bushes, no shadow)_25: 5570770291753714703
+      Basic Tiles 4 (Trees & Bushes, no shadow)_26: 8364873984200306552
+      Basic Tiles 4 (Trees & Bushes, no shadow)_27: 8536207610792449236
+      Basic Tiles 4 (Trees & Bushes, no shadow)_28: 2764041565787976251
+      Basic Tiles 4 (Trees & Bushes, no shadow)_29: 5309838339469130394
+      Basic Tiles 4 (Trees & Bushes, no shadow)_3: -5997083208139343940
+      Basic Tiles 4 (Trees & Bushes, no shadow)_30: 8801881392641755493
+      Basic Tiles 4 (Trees & Bushes, no shadow)_31: 4661971323110171503
+      Basic Tiles 4 (Trees & Bushes, no shadow)_32: 3200688509353555951
+      Basic Tiles 4 (Trees & Bushes, no shadow)_33: 8064265117664566353
+      Basic Tiles 4 (Trees & Bushes, no shadow)_34: -5779729822249883305
+      Basic Tiles 4 (Trees & Bushes, no shadow)_35: -6638106063422899405
+      Basic Tiles 4 (Trees & Bushes, no shadow)_36: -6801129353396160023
+      Basic Tiles 4 (Trees & Bushes, no shadow)_37: -4349503798079592830
+      Basic Tiles 4 (Trees & Bushes, no shadow)_38: 2931480265406414091
+      Basic Tiles 4 (Trees & Bushes, no shadow)_39: -2980944914842667979
+      Basic Tiles 4 (Trees & Bushes, no shadow)_4: 5016114557894740099
+      Basic Tiles 4 (Trees & Bushes, no shadow)_40: 338363718979131755
+      Basic Tiles 4 (Trees & Bushes, no shadow)_41: -8274474325345069186
+      Basic Tiles 4 (Trees & Bushes, no shadow)_42: 3487508114862291378
+      Basic Tiles 4 (Trees & Bushes, no shadow)_43: 420928196272214401
+      Basic Tiles 4 (Trees & Bushes, no shadow)_44: 6362640287771359914
+      Basic Tiles 4 (Trees & Bushes, no shadow)_45: 9150851895601215189
+      Basic Tiles 4 (Trees & Bushes, no shadow)_46: -2745760190104973670
+      Basic Tiles 4 (Trees & Bushes, no shadow)_47: -7793579102138261
+      Basic Tiles 4 (Trees & Bushes, no shadow)_48: 233045346031065286
+      Basic Tiles 4 (Trees & Bushes, no shadow)_49: 7518017428318894427
+      Basic Tiles 4 (Trees & Bushes, no shadow)_5: -3351388089254083474
+      Basic Tiles 4 (Trees & Bushes, no shadow)_50: 5475781267744593860
+      Basic Tiles 4 (Trees & Bushes, no shadow)_51: 8797811884298067398
+      Basic Tiles 4 (Trees & Bushes, no shadow)_52: 1128035657612701578
+      Basic Tiles 4 (Trees & Bushes, no shadow)_53: -905180767628694850
+      Basic Tiles 4 (Trees & Bushes, no shadow)_54: 7352671026116592373
+      Basic Tiles 4 (Trees & Bushes, no shadow)_55: 3020089138815679776
+      Basic Tiles 4 (Trees & Bushes, no shadow)_56: 3444277624506159614
+      Basic Tiles 4 (Trees & Bushes, no shadow)_57: 8230001845479156941
+      Basic Tiles 4 (Trees & Bushes, no shadow)_58: 2240849114931462248
+      Basic Tiles 4 (Trees & Bushes, no shadow)_59: -7295450153449208152
+      Basic Tiles 4 (Trees & Bushes, no shadow)_6: 5609972634823938809
+      Basic Tiles 4 (Trees & Bushes, no shadow)_60: 718870372778407984
+      Basic Tiles 4 (Trees & Bushes, no shadow)_61: -7645916789909456707
+      Basic Tiles 4 (Trees & Bushes, no shadow)_62: 3806055689832374271
+      Basic Tiles 4 (Trees & Bushes, no shadow)_63: 1205809966298580917
+      Basic Tiles 4 (Trees & Bushes, no shadow)_64: -6657393094460657683
+      Basic Tiles 4 (Trees & Bushes, no shadow)_65: 3589009941064159615
+      Basic Tiles 4 (Trees & Bushes, no shadow)_66: 6790228477458445553
+      Basic Tiles 4 (Trees & Bushes, no shadow)_67: 1623305098309931129
+      Basic Tiles 4 (Trees & Bushes, no shadow)_68: -3102357450581201433
+      Basic Tiles 4 (Trees & Bushes, no shadow)_69: 761885147130012276
+      Basic Tiles 4 (Trees & Bushes, no shadow)_7: 7512643306925996914
+      Basic Tiles 4 (Trees & Bushes, no shadow)_70: 4651163538162342666
+      Basic Tiles 4 (Trees & Bushes, no shadow)_71: -7857367963634268109
+      Basic Tiles 4 (Trees & Bushes, no shadow)_72: 2857753203956348847
+      Basic Tiles 4 (Trees & Bushes, no shadow)_73: 1546496537870010022
+      Basic Tiles 4 (Trees & Bushes, no shadow)_74: 247865161363966276
+      Basic Tiles 4 (Trees & Bushes, no shadow)_75: -8896511502677480801
+      Basic Tiles 4 (Trees & Bushes, no shadow)_76: -2793757777810559761
+      Basic Tiles 4 (Trees & Bushes, no shadow)_77: 1047385024274129324
+      Basic Tiles 4 (Trees & Bushes, no shadow)_78: 87777650152936979
+      Basic Tiles 4 (Trees & Bushes, no shadow)_79: 5018345454892233762
+      Basic Tiles 4 (Trees & Bushes, no shadow)_8: 526778185228658876
+      Basic Tiles 4 (Trees & Bushes, no shadow)_80: 3903195432280579665
+      Basic Tiles 4 (Trees & Bushes, no shadow)_81: 2938765325706662135
+      Basic Tiles 4 (Trees & Bushes, no shadow)_82: -2717639591021246257
+      Basic Tiles 4 (Trees & Bushes, no shadow)_83: 6820596941221352366
+      Basic Tiles 4 (Trees & Bushes, no shadow)_84: -551566456307539000
+      Basic Tiles 4 (Trees & Bushes, no shadow)_85: 4032070684801246725
+      Basic Tiles 4 (Trees & Bushes, no shadow)_86: -6970085159474618388
+      Basic Tiles 4 (Trees & Bushes, no shadow)_87: -2436929901517281031
+      Basic Tiles 4 (Trees & Bushes, no shadow)_88: 8373302738693578778
+      Basic Tiles 4 (Trees & Bushes, no shadow)_89: 4191565012527557493
+      Basic Tiles 4 (Trees & Bushes, no shadow)_9: 6056476562787379140
+      Basic Tiles 4 (Trees & Bushes, no shadow)_90: 1746889953541372967
+      Basic Tiles 4 (Trees & Bushes, no shadow)_91: 5084056914636739174
+      Basic Tiles 4 (Trees & Bushes, no shadow)_92: 9200159130538286899
+      Basic Tiles 4 (Trees & Bushes, no shadow)_93: 7020740563818169806
+      Basic Tiles 4 (Trees & Bushes, no shadow)_94: -7399975911207178626
+      Basic Tiles 4 (Trees & Bushes, no shadow)_95: -4632828199351545149
+      Basic Tiles 4 (Trees & Bushes, no shadow)_96: -6154757809709969246
+      Basic Tiles 4 (Trees & Bushes, no shadow)_97: -559795836368964675
+      Basic Tiles 4 (Trees & Bushes, no shadow)_98: 7257184013920970667
+      Basic Tiles 4 (Trees & Bushes, no shadow)_99: -353403495611194944
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

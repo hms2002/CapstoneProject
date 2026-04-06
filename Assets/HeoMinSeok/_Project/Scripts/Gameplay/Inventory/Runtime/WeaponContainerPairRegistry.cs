@@ -4,12 +4,18 @@
 public static class ItemContainerGroupRegistry
 {
     private static IItemContainer chest;
+    private static IItemContainer consumableEquip;
     private static IItemContainer weaponEquip;
     private static IItemContainer relicEquip;
 
-    public static void SetGroup(IItemContainer chestContainer, IItemContainer weaponContainer, IItemContainer relicContainer)
+    public static void SetGroup(
+        IItemContainer chestContainer,
+        IItemContainer consumableContainer,
+        IItemContainer weaponContainer,
+        IItemContainer relicContainer)
     {
         chest = chestContainer;
+        consumableEquip = consumableContainer;
         weaponEquip = weaponContainer;
         relicEquip = relicContainer;
     }
@@ -17,11 +23,13 @@ public static class ItemContainerGroupRegistry
     public static void Clear()
     {
         chest = null;
+        consumableEquip = null;
         weaponEquip = null;
         relicEquip = null;
     }
 
     public static IItemContainer Chest => chest;
+    public static IItemContainer ConsumableEquip => consumableEquip;
     public static IItemContainer WeaponEquip => weaponEquip;
     public static IItemContainer RelicEquip => relicEquip;
 }

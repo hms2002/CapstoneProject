@@ -11,6 +11,17 @@ public class StageLootTable : ScriptableObject
     [Header("Chest Relic Count")]
     [SerializeField] private CountRangeWeightProfile chestRelicCountProfile = new CountRangeWeightProfile();
 
+    [Header("Chest Consumable Count")]
+    [SerializeField] private CountRangeWeightProfile chestConsumableCountProfile = new CountRangeWeightProfile
+    {
+        minCount = 0,
+        maxCount = 0,
+        weights = new List<DropCountOption>
+        {
+            new DropCountOption { count = 0, weight = 100 }
+        }
+    };
+
     [Header("Relic Rarity Weights")]
     public int commonWeight = 60;
     public int rareWeight = 30;
@@ -43,13 +54,16 @@ public class StageLootTable : ScriptableObject
 
     public CountRangeWeightProfile ChestWeaponCountProfile => chestWeaponCountProfile;
     public CountRangeWeightProfile ChestRelicCountProfile => chestRelicCountProfile;
+    public CountRangeWeightProfile ChestConsumableCountProfile => chestConsumableCountProfile;
 
     private void OnValidate()
     {
         chestWeaponCountProfile ??= new CountRangeWeightProfile();
         chestRelicCountProfile ??= new CountRangeWeightProfile();
+        chestConsumableCountProfile ??= new CountRangeWeightProfile();
 
         chestWeaponCountProfile.TryInitializeFromLegacy(legacyChestWeaponMinCount, legacyChestWeaponMaxCount, legacyChestWeaponCounts);
         chestRelicCountProfile.TryInitializeFromLegacy(legacyChestRelicMinCount, legacyChestRelicMaxCount, legacyChestRelicCounts);
+        chestConsumableCountProfile.EnsureDefaults(0, 0);
     }
 }

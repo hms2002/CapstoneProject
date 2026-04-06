@@ -9,7 +9,7 @@ public sealed class LootPoolService
         var exclusionList = new HashSet<string>();
         var currentPlayer = PlayerRuntimeRegistry.CurrentPlayer != null
             ? PlayerRuntimeRegistry.CurrentPlayer
-            : SampleTopDownPlayer.Instance;
+            : PlayerInteractor2D.Instance;
 
         if (currentPlayer == null)
             return exclusionList;
@@ -74,5 +74,17 @@ public sealed class LootPoolService
             return null;
 
         return allUnlockedRelics[Random.Range(0, allUnlockedRelics.Count)];
+    }
+
+    public ConsumableDefinition GetRandomConsumable()
+    {
+        if (ItemManager.Instance == null)
+            return null;
+
+        var pool = ItemManager.Instance.GetAllConsumables();
+        if (pool == null || pool.Count == 0)
+            return null;
+
+        return pool[Random.Range(0, pool.Count)];
     }
 }

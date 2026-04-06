@@ -1,0 +1,741 @@
+fileFormatVersion: 2
+guid: 1639438ac5d2db74d85eb4aacacabbd6
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 5963496160424306795
+    second: Character 19 v2_0
+  - first:
+      213: 276098830064276385
+    second: Character 19 v2_1
+  - first:
+      213: 3680631134856113720
+    second: Character 19 v2_2
+  - first:
+      213: 238038390147334796
+    second: Character 19 v2_3
+  - first:
+      213: 3476342729831290148
+    second: Character 19 v2_4
+  - first:
+      213: 8345871727712114672
+    second: Character 19 v2_5
+  - first:
+      213: -695378638510038435
+    second: Character 19 v2_6
+  - first:
+      213: -2893095974762350617
+    second: Character 19 v2_7
+  - first:
+      213: 2438182807624825549
+    second: Character 19 v2_8
+  - first:
+      213: -4081373262288359552
+    second: Character 19 v2_9
+  - first:
+      213: -8495502217268764476
+    second: Character 19 v2_10
+  - first:
+      213: -5814258417839063730
+    second: Character 19 v2_11
+  - first:
+      213: 4074731722665914377
+    second: Character 19 v2_12
+  - first:
+      213: -2355617854299105497
+    second: Character 19 v2_13
+  - first:
+      213: -706654614272565397
+    second: Character 19 v2_14
+  - first:
+      213: 1049164919812609960
+    second: Character 19 v2_15
+  - first:
+      213: -974826361196509129
+    second: Character 19 v2_16
+  - first:
+      213: 2530815596463657589
+    second: Character 19 v2_17
+  - first:
+      213: 2069845324483721047
+    second: Character 19 v2_18
+  - first:
+      213: -3534857666126857131
+    second: Character 19 v2_19
+  - first:
+      213: -277206391134605355
+    second: Character 19 v2_20
+  - first:
+      213: 5384940150803564189
+    second: Character 19 v2_21
+  - first:
+      213: -7861774610073245245
+    second: Character 19 v2_22
+  - first:
+      213: 2562816141425357093
+    second: Character 19 v2_23
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Character 19 v2_0
+      rect:
+        serializedVersion: 2
+        x: 2
+        y: 95
+        width: 20
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b682f75792892c250800000000000000
+      internalID: 5963496160424306795
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Character 19 v2_1
+      rect:
+        serializedVersion: 2
+        x: 26
+        y: 95
+        width: 20
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1a3d1e05c66e4d300800000000000000
+      internalID: 276098830064276385
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Character 19 v2_2
+      rect:
+        serializedVersion: 2
+        x: 26
+        y: 72
+        width: 20
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 83e675e248a341330800000000000000
+      internalID: 3680631134856113720
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Character 19 v2_3
+      rect:
+        serializedVersion: 2
+        x: 50
+        y: 95
+        width: 20
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c8243a797aead4300800000000000000
+      internalID: 238038390147334796
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Character 19 v2_4
+      rect:
+        serializedVersion: 2
+        x: 74
+        y: 95
+        width: 20
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4251b195b437e3030800000000000000
+      internalID: 3476342729831290148
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Character 19 v2_5
+      rect:
+        serializedVersion: 2
+        x: 74
+        y: 72
+        width: 20
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0f791473e1e72d370800000000000000
+      internalID: 8345871727712114672
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Character 19 v2_6
+      rect:
+        serializedVersion: 2
+        x: 98
+        y: 95
+        width: 20
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d52e63300d48956f0800000000000000
+      internalID: -695378638510038435
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Character 19 v2_7
+      rect:
+        serializedVersion: 2
+        x: 122
+        y: 95
+        width: 20
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7e77d2b0a88a9d7d0800000000000000
+      internalID: -2893095974762350617
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Character 19 v2_8
+      rect:
+        serializedVersion: 2
+        x: 146
+        y: 95
+        width: 20
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dca31f1785a26d120800000000000000
+      internalID: 2438182807624825549
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Character 19 v2_9
+      rect:
+        serializedVersion: 2
+        x: 170
+        y: 95
+        width: 20
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 08f668954ac0c57c0800000000000000
+      internalID: -4081373262288359552
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Character 19 v2_10
+      rect:
+        serializedVersion: 2
+        x: 2
+        y: 71
+        width: 20
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4c0e6279eb9e91a80800000000000000
+      internalID: -8495502217268764476
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Character 19 v2_11
+      rect:
+        serializedVersion: 2
+        x: 50
+        y: 71
+        width: 20
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e4db06436ca9f4fa0800000000000000
+      internalID: -5814258417839063730
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Character 19 v2_12
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 47
+        width: 23
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9007484b9ea5c8830800000000000000
+      internalID: 4074731722665914377
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Character 19 v2_13
+      rect:
+        serializedVersion: 2
+        x: 23
+        y: 48
+        width: 24
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7271fe7ca0a2f4fd0800000000000000
+      internalID: -2355617854299105497
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Character 19 v2_14
+      rect:
+        serializedVersion: 2
+        x: 47
+        y: 48
+        width: 24
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b6f94615f557136f0800000000000000
+      internalID: -706654614272565397
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Character 19 v2_15
+      rect:
+        serializedVersion: 2
+        x: 71
+        y: 47
+        width: 24
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8a75b349fe16f8e00800000000000000
+      internalID: 1049164919812609960
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Character 19 v2_16
+      rect:
+        serializedVersion: 2
+        x: 95
+        y: 47
+        width: 24
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 738023fd698b872f0800000000000000
+      internalID: -974826361196509129
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Character 19 v2_17
+      rect:
+        serializedVersion: 2
+        x: 119
+        y: 47
+        width: 24
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5721c3b40634f1320800000000000000
+      internalID: 2530815596463657589
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Character 19 v2_18
+      rect:
+        serializedVersion: 2
+        x: 143
+        y: 47
+        width: 24
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 757fad92b5199bc10800000000000000
+      internalID: 2069845324483721047
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Character 19 v2_19
+      rect:
+        serializedVersion: 2
+        x: 167
+        y: 47
+        width: 24
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 55c31fe5ea9a1fec0800000000000000
+      internalID: -3534857666126857131
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Character 19 v2_20
+      rect:
+        serializedVersion: 2
+        x: 191
+        y: 47
+        width: 24
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5df24f6814a272cf0800000000000000
+      internalID: -277206391134605355
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Character 19 v2_21
+      rect:
+        serializedVersion: 2
+        x: 2
+        y: 23
+        width: 20
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d96826959862bba40800000000000000
+      internalID: 5384940150803564189
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Character 19 v2_22
+      rect:
+        serializedVersion: 2
+        x: 2
+        y: 0
+        width: 20
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3c9266645ad55e290800000000000000
+      internalID: -7861774610073245245
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Character 19 v2_23
+      rect:
+        serializedVersion: 2
+        x: 25
+        y: 0
+        width: 20
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 521bb46c3b3f09320800000000000000
+      internalID: 2562816141425357093
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Character 19 v2_0: 5963496160424306795
+      Character 19 v2_1: 276098830064276385
+      Character 19 v2_10: -8495502217268764476
+      Character 19 v2_11: -5814258417839063730
+      Character 19 v2_12: 4074731722665914377
+      Character 19 v2_13: -2355617854299105497
+      Character 19 v2_14: -706654614272565397
+      Character 19 v2_15: 1049164919812609960
+      Character 19 v2_16: -974826361196509129
+      Character 19 v2_17: 2530815596463657589
+      Character 19 v2_18: 2069845324483721047
+      Character 19 v2_19: -3534857666126857131
+      Character 19 v2_2: 3680631134856113720
+      Character 19 v2_20: -277206391134605355
+      Character 19 v2_21: 5384940150803564189
+      Character 19 v2_22: -7861774610073245245
+      Character 19 v2_23: 2562816141425357093
+      Character 19 v2_3: 238038390147334796
+      Character 19 v2_4: 3476342729831290148
+      Character 19 v2_5: 8345871727712114672
+      Character 19 v2_6: -695378638510038435
+      Character 19 v2_7: -2893095974762350617
+      Character 19 v2_8: 2438182807624825549
+      Character 19 v2_9: -4081373262288359552
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

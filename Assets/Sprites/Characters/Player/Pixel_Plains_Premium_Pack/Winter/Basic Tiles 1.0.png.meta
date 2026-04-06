@@ -1,0 +1,507 @@
+fileFormatVersion: 2
+guid: f499def379629ff489d8d95b5acad4f3
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -1486623493672939271
+    second: Basic Tiles 1.0_0
+  - first:
+      213: -1295549666596932931
+    second: Basic Tiles 1.0_1
+  - first:
+      213: 1402388754094710075
+    second: Basic Tiles 1.0_2
+  - first:
+      213: 4501778715742481197
+    second: Basic Tiles 1.0_3
+  - first:
+      213: -6524338072625426964
+    second: Basic Tiles 1.0_4
+  - first:
+      213: 1384828903963204876
+    second: Basic Tiles 1.0_5
+  - first:
+      213: 2807185232625621304
+    second: Basic Tiles 1.0_6
+  - first:
+      213: 6445407698903512912
+    second: Basic Tiles 1.0_7
+  - first:
+      213: -8293040572886649692
+    second: Basic Tiles 1.0_8
+  - first:
+      213: 8207774327680454776
+    second: Basic Tiles 1.0_9
+  - first:
+      213: -708929283800978097
+    second: Basic Tiles 1.0_10
+  - first:
+      213: 7146811520146321193
+    second: Basic Tiles 1.0_11
+  - first:
+      213: 2951216507710456759
+    second: Basic Tiles 1.0_12
+  - first:
+      213: 2125903949922993724
+    second: Basic Tiles 1.0_13
+  - first:
+      213: -7868738894733724309
+    second: Basic Tiles 1.0_14
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Basic Tiles 1.0_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 447
+        width: 369
+        height: 161
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9f0dfd81fc37e5be0800000000000000
+      internalID: -1486623493672939271
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 1.0_1
+      rect:
+        serializedVersion: 2
+        x: 175
+        y: 0
+        width: 721
+        height: 608
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: db23d9d3178450ee0800000000000000
+      internalID: -1295549666596932931
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 1.0_2
+      rect:
+        serializedVersion: 2
+        x: 31
+        y: 271
+        width: 82
+        height: 146
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b3d51d44429467310800000000000000
+      internalID: 1402388754094710075
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 1.0_3
+      rect:
+        serializedVersion: 2
+        x: 113
+        y: 276
+        width: 15
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d2bae39f3e7897e30800000000000000
+      internalID: 4501778715742481197
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 1.0_4
+      rect:
+        serializedVersion: 2
+        x: 127
+        y: 182
+        width: 114
+        height: 251
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cedca922715e475a0800000000000000
+      internalID: -6524338072625426964
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 1.0_5
+      rect:
+        serializedVersion: 2
+        x: 98
+        y: 259
+        width: 12
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c0d9b6f0d86e73310800000000000000
+      internalID: 1384828903963204876
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 1.0_6
+      rect:
+        serializedVersion: 2
+        x: 114
+        y: 260
+        width: 14
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8395f51981025f620800000000000000
+      internalID: 2807185232625621304
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 1.0_7
+      rect:
+        serializedVersion: 2
+        x: 47
+        y: 223
+        width: 50
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 05736b52720b27950800000000000000
+      internalID: 6445407698903512912
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 1.0_8
+      rect:
+        serializedVersion: 2
+        x: 98
+        y: 243
+        width: 12
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4a47031998339ec80800000000000000
+      internalID: -8293040572886649692
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 1.0_9
+      rect:
+        serializedVersion: 2
+        x: 111
+        y: 239
+        width: 20
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 870d6fda34fd7e170800000000000000
+      internalID: 8207774327680454776
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 1.0_10
+      rect:
+        serializedVersion: 2
+        x: 98
+        y: 227
+        width: 12
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f4dab2c82906926f0800000000000000
+      internalID: -708929283800978097
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 1.0_11
+      rect:
+        serializedVersion: 2
+        x: 111
+        y: 228
+        width: 20
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 92fadfe46339e2360800000000000000
+      internalID: 7146811520146321193
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 1.0_12
+      rect:
+        serializedVersion: 2
+        x: 15
+        y: 15
+        width: 146
+        height: 162
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7b3c95d07c3d4f820800000000000000
+      internalID: 2951216507710456759
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 1.0_13
+      rect:
+        serializedVersion: 2
+        x: 162
+        y: 99
+        width: 12
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c3682c1016ab08d10800000000000000
+      internalID: 2125903949922993724
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Basic Tiles 1.0_14
+      rect:
+        serializedVersion: 2
+        x: 164
+        y: 70
+        width: 10
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b65b8156aaf9cc290800000000000000
+      internalID: -7868738894733724309
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Basic Tiles 1.0_0: -1486623493672939271
+      Basic Tiles 1.0_1: -1295549666596932931
+      Basic Tiles 1.0_10: -708929283800978097
+      Basic Tiles 1.0_11: 7146811520146321193
+      Basic Tiles 1.0_12: 2951216507710456759
+      Basic Tiles 1.0_13: 2125903949922993724
+      Basic Tiles 1.0_14: -7868738894733724309
+      Basic Tiles 1.0_2: 1402388754094710075
+      Basic Tiles 1.0_3: 4501778715742481197
+      Basic Tiles 1.0_4: -6524338072625426964
+      Basic Tiles 1.0_5: 1384828903963204876
+      Basic Tiles 1.0_6: 2807185232625621304
+      Basic Tiles 1.0_7: 6445407698903512912
+      Basic Tiles 1.0_8: -8293040572886649692
+      Basic Tiles 1.0_9: 8207774327680454776
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

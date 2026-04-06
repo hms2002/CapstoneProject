@@ -12,18 +12,41 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7a3617a0ee9d014c8ed345db9073993, type: 3}
   m_Name: Table_Stage2
   m_EditorClassIdentifier: 
-  chestWeaponCounts:
-  - count: 5
-    weight: 100
-  chestRelicCounts:
-  - count: 7
-    weight: 100
+  chestWeaponCountProfile:
+    minCount: 1
+    maxCount: 1
+    weights:
+    - count: 5
+      weight: 100
+  chestRelicCountProfile:
+    minCount: 1
+    maxCount: 1
+    weights:
+    - count: 7
+      weight: 100
+  chestConsumableCountProfile:
+    minCount: 1
+    maxCount: 1
+    weights:
+    - count: 1
+      weight: 100
   commonWeight: 60
   rareWeight: 30
   epicWeight: 10
   legendaryWeight: 0
-  mobNothingWeight: 65
-  mobWeaponWeight: 2
-  mobRelicWeight: 3
-  mobConsumableWeight: 15
-  mobFieldItemWeight: 15
+  mobNothingWeight: 80
+  mobWeaponWeight: 0
+  mobRelicWeight: 0
+  mobConsumableWeight: 0
+  mobFieldItemWeight: 20
+  bossStoneCount: 5
+  legacyChestWeaponMinCount: 1
+  legacyChestWeaponMaxCount: 1
+  legacyChestWeaponCounts:
+  - count: 5
+    weight: 100
+  legacyChestRelicMinCount: 1
+  legacyChestRelicMaxCount: 1
+  legacyChestRelicCounts:
+  - count: 7
+    weight: 100

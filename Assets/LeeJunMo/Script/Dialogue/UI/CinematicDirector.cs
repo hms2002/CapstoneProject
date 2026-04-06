@@ -8,9 +8,17 @@ public class CinematicDirector : MonoBehaviour
     [Header("연결된 시스템")]
     [SerializeField] private PortraitController portraitController;
 
+    public void SetPortraitController(PortraitController controller)
+    {
+        if (controller != null)
+            portraitController = controller;
+    }
+
     // [핵심 변경] 단일 NPCData가 아니라 참여자 명단(List<NPCData>)을 받습니다!
     public void PlayIntro(List<NPCData> participants, Action onComplete)
     {
+        ResolvePortraitController();
+
         if (participants == null || participants.Count == 0)
         {
             onComplete?.Invoke();
@@ -52,7 +60,7 @@ public class CinematicDirector : MonoBehaviour
         }
 
         // 등장 애니메이션 시간(대략 0.5초) 대기 후 대화 시작 콜백
-        DOVirtual.DelayedCall(0.5f, () => onComplete?.Invoke());
+        DOVirtual.DelayedCall(0.5f, () => onComplete?.Invoke()).SetUpdate(true);
     }
 
     // 코드가 길어지는 것을 막기 위한 등장 헬퍼 함수
@@ -77,6 +85,7 @@ public class CinematicDirector : MonoBehaviour
         portraitController.SetupSilhouetteMode(npcData);
         portraitController.SetInitialPosition(npcData, "center");
         Sequence seq = DOTween.Sequence();
+        seq.SetUpdate(true);
         Tween fadeIn = portraitController.GetSilhouetteFadeInTween(npcData, 1.0f);
         if (fadeIn != null) seq.Append(fadeIn);
         seq.AppendInterval(0.5f);
@@ -93,7 +102,21 @@ public class CinematicDirector : MonoBehaviour
     // =================================================================
     public void PlayOutro(Action onComplete)
     {
+        ResolvePortraitController();
+
         if (portraitController != null) portraitController.ExitAllAndClear();
-        DOVirtual.DelayedCall(0.5f, () => onComplete?.Invoke());
+        DOVirtual.DelayedCall(0.5f, () => onComplete?.Invoke()).SetUpdate(true);
+    }
+
+    private void ResolvePortraitController()
+    {
+        if (portraitController != null)
+            return;
+
+        Canvas dialogueCanvas = GlobalUIRoot.GetCanvas(GlobalCanvasLayer.Dialogue);
+        if (dialogueCanvas == null)
+            return;
+
+        portraitController = dialogueCanvas.GetComponentInChildren<PortraitController>(true);
     }
 }

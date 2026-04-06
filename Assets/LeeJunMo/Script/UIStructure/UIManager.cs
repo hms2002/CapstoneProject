@@ -1,6 +1,8 @@
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityGAS;
 
 public class UIManager : MonoBehaviour
 {
@@ -10,8 +12,28 @@ public class UIManager : MonoBehaviour
     [SerializeField] private HoverUIController hoverUIController;
     [SerializeField] private WorldInteractionPromptController worldPromptController;
 
+    [Header("Gameplay Lock")]
+    [SerializeField] private GameplayTagSet blockControlByUiTagSet;
+    [SerializeField] private UIGameplayLockProfile dialogueGameplayLockProfile = UIGameplayLockProfile.BlockControlOnly;
+
+    [Header("Pause Menu")]
+    [SerializeField] private string titleSceneNameOverride = string.Empty;
+
     private readonly PopupStackState popupStack = new PopupStackState();
     private readonly WorldPromptCoordinator worldPromptCoordinator = new WorldPromptCoordinator();
+    private readonly HashSet<int> gameplayHudCurrencyHideOwners = new HashSet<int>();
+    private CurrencyUI gameplayHudCurrencyUI;
+    private PauseMenuUI pauseMenu;
+    private SettingsPanelUI settingsPanel;
+    private KeyBindingPanelUI keyBindingPanel;
+    private bool settingsHiddenByKeyBinding;
+    private bool gameplayHudCurrencyWasActive = true;
+    private PlayerUIControlLockBridge activeControlLockBridge;
+    private bool isControlLockApplied;
+    private bool isTimeFrozenByUi;
+    private bool wasDialoguePlaying;
+    private float frozenPreviousTimeScale = 1f;
+    private const string BlockControlByUiTagSetResourcePath = "Tags/TagSet/TS_BlockControlByUI";
 
     private void Awake()
     {
@@ -22,10 +44,14 @@ public class UIManager : MonoBehaviour
         }
 
         Instance = this;
+        GlobalUIRoot.AdoptService(transform);
         DontDestroyOnLoad(gameObject);
 
         if (hoverUIController == null)
             hoverUIController = GetComponent<HoverUIController>();
+
+        if (blockControlByUiTagSet == null)
+            blockControlByUiTagSet = Resources.Load<GameplayTagSet>(BlockControlByUiTagSetResourcePath);
 
         hoverUIController?.RefreshCanvasReference();
         worldPromptCoordinator.Initialize(worldPromptController);
@@ -35,11 +61,13 @@ public class UIManager : MonoBehaviour
     private void OnEnable()
     {
         SceneManager.sceneLoaded += HandleSceneLoaded;
+        PlayerRuntimeRegistry.PlayerRegistered += HandlePlayerRegistered;
     }
 
     private void OnDisable()
     {
         SceneManager.sceneLoaded -= HandleSceneLoaded;
+        PlayerRuntimeRegistry.PlayerRegistered -= HandlePlayerRegistered;
     }
 
     private void OnDestroy()
@@ -51,17 +79,59 @@ public class UIManager : MonoBehaviour
     private void Update()
     {
         popupStack.PruneDeadEntries();
+        RefreshDialogueDrivenGameplayLock();
 
         if (Input.GetKeyDown(KeyCode.Escape))
-            CloseTopUI();
+            HandleEscapeInput();
     }
 
     private void HandleSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         popupStack.Clear();
+        pauseMenu?.RefreshCanvasParent();
+        pauseMenu?.CloseUI();
+        settingsPanel?.RefreshCanvasParent();
+        settingsPanel?.CloseUI();
+        keyBindingPanel?.RefreshCanvasParent();
+        keyBindingPanel?.CloseUI();
+        settingsHiddenByKeyBinding = false;
+        wasDialoguePlaying = false;
+        ReleaseControlLock();
+        RestoreTimeScaleIfNeeded();
         HideHoverImmediate();
         hoverUIController?.RefreshCanvasReference();
         worldPromptCoordinator.OnSceneLoaded();
+        gameplayHudCurrencyUI = null;
+        gameplayHudCurrencyHideOwners.Clear();
+        gameplayHudCurrencyWasActive = true;
+    }
+
+    public bool CanOpenUI(IStackableUI ui)
+    {
+        if (ui == null)
+            return false;
+
+        var snapshot = popupStack.Snapshot();
+        for (int i = 0; i < snapshot.Count; i++)
+        {
+            var openedUi = snapshot[i];
+            if (openedUi == null || ReferenceEquals(openedUi, ui))
+                continue;
+
+            if (AreGroupsConflicting(ui, openedUi))
+                return false;
+        }
+
+        return true;
+    }
+
+    public bool TryPushUI(IStackableUI ui)
+    {
+        if (!CanOpenUI(ui))
+            return false;
+
+        PushUI(ui);
+        return true;
     }
 
     public void PushUI(IStackableUI ui)
@@ -69,8 +139,12 @@ public class UIManager : MonoBehaviour
         if (ui == null)
             return;
 
+        if (!CanOpenUI(ui))
+            return;
+
         popupStack.Push(ui);
         ui.OpenUI();
+        ApplyGameplayLockState();
     }
 
     public void PopUI(IStackableUI ui)
@@ -82,6 +156,14 @@ public class UIManager : MonoBehaviour
             return;
 
         ui.CloseUI();
+
+        if (ReferenceEquals(ui, keyBindingPanel) && settingsHiddenByKeyBinding)
+        {
+            settingsPanel?.SetTemporarilyHidden(false);
+            settingsHiddenByKeyBinding = false;
+        }
+
+        ApplyGameplayLockState();
         HideHoverImmediate();
     }
 
@@ -90,8 +172,158 @@ public class UIManager : MonoBehaviour
         if (!popupStack.TryGetTop(out IStackableUI topUI))
             return;
 
+        if (topUI is ICloseRequestHandler closeHandler && closeHandler.TryHandleCloseRequest())
+            return;
+
         if (topUI.CanCloseOnEscape)
             PopUI(topUI);
+    }
+
+    private void HandleEscapeInput()
+    {
+        if (popupStack.TryGetTop(out IStackableUI topUI))
+        {
+            if (topUI is ICloseRequestHandler closeHandler && closeHandler.TryHandleCloseRequest())
+                return;
+
+            if (topUI.CanCloseOnEscape)
+                PopUI(topUI);
+
+            return;
+        }
+
+        if (DialogueService.Instance != null && DialogueService.Instance.IsPlaying)
+            return;
+
+        TogglePauseMenu();
+    }
+
+    private void TogglePauseMenu()
+    {
+        PauseMenuUI panel = ResolvePauseMenu();
+        if (panel == null)
+            return;
+
+        if (panel.IsActive)
+        {
+            PopUI(panel);
+            return;
+        }
+
+        HideHoverImmediate();
+        HideWorldPrompt();
+        TryPushUI(panel);
+    }
+
+    public bool OpenSettingsPanel()
+    {
+        SettingsPanelUI panel = ResolveSettingsPanel();
+        if (panel == null || panel.IsActive)
+            return false;
+
+        HideHoverImmediate();
+        HideWorldPrompt();
+        return TryPushUI(panel);
+    }
+
+    public bool OpenKeyBindingPanel()
+    {
+        KeyBindingPanelUI panel = ResolveKeyBindingPanel();
+        if (panel == null || panel.IsActive)
+            return false;
+
+        SettingsPanelUI ownerSettingsPanel = ResolveSettingsPanel();
+        settingsHiddenByKeyBinding = ownerSettingsPanel != null && ownerSettingsPanel.IsActive;
+        if (settingsHiddenByKeyBinding)
+            ownerSettingsPanel.SetTemporarilyHidden(true);
+
+        HideHoverImmediate();
+        HideWorldPrompt();
+        bool opened = TryPushUI(panel);
+        if (!opened && settingsHiddenByKeyBinding)
+        {
+            ownerSettingsPanel?.SetTemporarilyHidden(false);
+            settingsHiddenByKeyBinding = false;
+        }
+
+        return opened;
+    }
+
+    public void ReturnToTitleScreen()
+    {
+        string sceneName = ResolveTitleSceneName();
+        if (string.IsNullOrWhiteSpace(sceneName))
+        {
+            Debug.LogWarning("[UIManager] Title scene name could not be resolved.", this);
+            return;
+        }
+
+        CloseAllPopups();
+        HideHoverImmediate();
+        HideWorldPrompt();
+
+        if (GamePlayDataManager.Instance != null)
+            GamePlayDataManager.Instance.EndRun(RunEndReason.None);
+
+        SceneManager.LoadScene(sceneName);
+    }
+
+    public void QuitGame()
+    {
+        CloseAllPopups();
+        HideHoverImmediate();
+        HideWorldPrompt();
+
+        if (GamePlayDataManager.Instance != null)
+            GamePlayDataManager.Instance.EndRun(RunEndReason.None);
+
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+        Application.Quit();
+#endif
+    }
+
+    private PauseMenuUI ResolvePauseMenu()
+    {
+        if (pauseMenu != null)
+            return pauseMenu;
+
+        pauseMenu = PauseMenuUI.EnsureInstance();
+        pauseMenu?.RefreshCanvasParent();
+        return pauseMenu;
+    }
+
+    private SettingsPanelUI ResolveSettingsPanel()
+    {
+        if (settingsPanel != null)
+            return settingsPanel;
+
+        settingsPanel = SettingsPanelUI.EnsureInstance();
+        settingsPanel?.RefreshCanvasParent();
+        return settingsPanel;
+    }
+
+    private KeyBindingPanelUI ResolveKeyBindingPanel()
+    {
+        if (keyBindingPanel != null)
+            return keyBindingPanel;
+
+        keyBindingPanel = KeyBindingPanelUI.EnsureInstance();
+        keyBindingPanel?.RefreshCanvasParent();
+        return keyBindingPanel;
+    }
+
+    private string ResolveTitleSceneName()
+    {
+        if (!string.IsNullOrWhiteSpace(titleSceneNameOverride))
+            return titleSceneNameOverride;
+
+        string firstBuildScenePath = SceneUtility.GetScenePathByBuildIndex(0);
+        if (!string.IsNullOrWhiteSpace(firstBuildScenePath))
+            return Path.GetFileNameWithoutExtension(firstBuildScenePath);
+
+        return null;
     }
 
     public void CloseAllPopups(bool force = true)
@@ -154,6 +386,181 @@ public class UIManager : MonoBehaviour
     {
         if (hoverUIController != null)
             hoverUIController.HideImmediate();
+    }
+
+    public void SetGameplayHudCurrencyHidden(Object owner, bool hidden)
+    {
+        if (owner == null)
+            return;
+
+        int ownerId = owner.GetInstanceID();
+        if (hidden)
+            gameplayHudCurrencyHideOwners.Add(ownerId);
+        else
+            gameplayHudCurrencyHideOwners.Remove(ownerId);
+
+        ApplyGameplayHudCurrencyVisibility();
+    }
+
+    private void ApplyGameplayHudCurrencyVisibility()
+    {
+        CurrencyUI hudCurrency = ResolveGameplayHudCurrencyUI();
+        if (hudCurrency == null)
+            return;
+
+        bool shouldHide = gameplayHudCurrencyHideOwners.Count > 0;
+        if (shouldHide)
+        {
+            gameplayHudCurrencyWasActive = hudCurrency.gameObject.activeSelf;
+            if (hudCurrency.gameObject.activeSelf)
+                hudCurrency.gameObject.SetActive(false);
+            return;
+        }
+
+        hudCurrency.gameObject.SetActive(gameplayHudCurrencyWasActive);
+    }
+
+    private CurrencyUI ResolveGameplayHudCurrencyUI()
+    {
+        if (gameplayHudCurrencyUI != null)
+            return gameplayHudCurrencyUI;
+
+        Canvas hudCanvas = GlobalUIRoot.GetCanvas(GlobalCanvasLayer.GameplayHUD);
+        if (hudCanvas == null)
+            return null;
+
+        CurrencyUI[] currencyUIs = hudCanvas.GetComponentsInChildren<CurrencyUI>(true);
+        if (currencyUIs == null || currencyUIs.Length == 0)
+            return null;
+
+        gameplayHudCurrencyUI = currencyUIs[0];
+        return gameplayHudCurrencyUI;
+    }
+
+    private void HandlePlayerRegistered(PlayerInteractor2D player)
+    {
+        ApplyGameplayLockState();
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 대화 시작/종료처럼 팝업 스택 변경 없이 발생하는 UI 상태 변화를 감지해 gameplay lock을 재평가한다.
+    /// </summary>
+    private void RefreshDialogueDrivenGameplayLock()
+    {
+        bool isDialoguePlaying = DialogueService.Instance != null && DialogueService.Instance.IsPlaying;
+        if (isDialoguePlaying == wasDialoguePlaying)
+            return;
+
+        wasDialoguePlaying = isDialoguePlaying;
+        ApplyGameplayLockState();
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 현재 열린 팝업 UI들의 lock profile을 집계해 시간 정지와 플레이어 조작 차단을 공통 정책으로 적용한다.
+    /// </summary>
+    private void ApplyGameplayLockState()
+    {
+        UIGameplayLockProfile highestProfile = GetHighestGameplayLockProfile();
+
+        bool shouldBlockControl = highestProfile >= UIGameplayLockProfile.BlockControlOnly;
+        bool shouldFreezeTime = highestProfile >= UIGameplayLockProfile.FreezeAndBlockControl;
+
+        if (shouldBlockControl) ApplyControlLock();
+        else ReleaseControlLock();
+
+        if (shouldFreezeTime) FreezeTimeIfNeeded();
+        else RestoreTimeScaleIfNeeded();
+    }
+
+    private UIGameplayLockProfile GetHighestGameplayLockProfile()
+    {
+        UIGameplayLockProfile highestProfile = UIGameplayLockProfile.None;
+        var snapshot = popupStack.Snapshot();
+
+        for (int i = 0; i < snapshot.Count; i++)
+        {
+            var ui = snapshot[i];
+            if (ui == null)
+                continue;
+
+            if (ui.GameplayLockProfile > highestProfile)
+                highestProfile = ui.GameplayLockProfile;
+        }
+
+        if (DialogueService.Instance != null &&
+            DialogueService.Instance.IsPlaying &&
+            dialogueGameplayLockProfile > highestProfile)
+        {
+            highestProfile = dialogueGameplayLockProfile;
+        }
+
+        return highestProfile;
+    }
+
+    private static bool AreGroupsConflicting(IStackableUI incoming, IStackableUI opened)
+    {
+        if (incoming == null || opened == null)
+            return false;
+
+        bool incomingBlocksOpened = incoming.BlockedOpenGroups != UIOpenGroup.None &&
+                                    (incoming.BlockedOpenGroups & opened.OpenGroup) != 0;
+        bool openedBlocksIncoming = opened.BlockedOpenGroups != UIOpenGroup.None &&
+                                    (opened.BlockedOpenGroups & incoming.OpenGroup) != 0;
+        return incomingBlocksOpened || openedBlocksIncoming;
+    }
+
+    private void ApplyControlLock()
+    {
+        if (isControlLockApplied)
+            return;
+
+        if (blockControlByUiTagSet == null)
+            return;
+
+        Transform playerTransform = PlayerRuntimeRegistry.GetPlayerTransform();
+        if (playerTransform == null && PlayerInteractor2D.Instance != null)
+            playerTransform = PlayerInteractor2D.Instance.transform;
+
+        activeControlLockBridge = PlayerUIControlLockBridge.GetOrAdd(playerTransform);
+        if (activeControlLockBridge == null)
+            return;
+
+        if (activeControlLockBridge.Acquire(this, blockControlByUiTagSet))
+            isControlLockApplied = true;
+    }
+
+    private void ReleaseControlLock()
+    {
+        if (!isControlLockApplied)
+            return;
+
+        if (activeControlLockBridge != null && blockControlByUiTagSet != null)
+            activeControlLockBridge.Release(this, blockControlByUiTagSet);
+
+        activeControlLockBridge = null;
+        isControlLockApplied = false;
+    }
+
+    private void FreezeTimeIfNeeded()
+    {
+        if (isTimeFrozenByUi)
+            return;
+
+        frozenPreviousTimeScale = Time.timeScale;
+        Time.timeScale = 0f;
+        isTimeFrozenByUi = true;
+    }
+
+    private void RestoreTimeScaleIfNeeded()
+    {
+        if (!isTimeFrozenByUi)
+            return;
+
+        Time.timeScale = frozenPreviousTimeScale;
+        isTimeFrozenByUi = false;
+        frozenPreviousTimeScale = 1f;
     }
 
 }

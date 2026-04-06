@@ -11,6 +11,7 @@ using UnityGAS;
 public sealed class PlayerRuntimeState
 {
     [Header("Equipment Layout")]
+    public ConsumableInventoryState consumableInventory;
     public WeaponInventoryState weaponInventory;
     public RelicInventoryState relicInventory;
 
@@ -101,6 +102,18 @@ public sealed class WeaponInventoryState
 {
     public string[] slotWeaponIds;
     public int activeSlotIndex;
+}
+
+[Serializable]
+public sealed class ConsumableSlotState
+{
+    public string consumableId;
+}
+
+[Serializable]
+public sealed class ConsumableInventoryState
+{
+    public ConsumableSlotState[] slots;
 }
 
 [Serializable]

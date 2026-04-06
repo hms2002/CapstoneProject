@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Ink.Runtime;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class DialogueController : MonoBehaviour
 {
@@ -12,10 +13,6 @@ public class DialogueController : MonoBehaviour
     [SerializeField] private CinematicDirector director;
     [SerializeField] private PortraitController portraitController;
     [SerializeField] private DialogueTagHandler tagHandler;
-
-    [Header("Input")]
-    [SerializeField] private KeyCode skipKey = KeyCode.Space;
-    [SerializeField] private KeyCode skipKeyAlt = KeyCode.F;
 
     public bool isPlaying => sessionState.IsPlaying;
 
@@ -34,36 +31,25 @@ public class DialogueController : MonoBehaviour
         }
 
         Instance = this;
+        ResolveRuntimeReferences();
         DialogueService.Instance?.RegisterController(this);
+        BindTagHandler(tagHandler);
+    }
 
-        if (tagHandler != null)
-        {
-            tagHandler.OnPortraitEnterRequested += HandlePortraitEnter;
-            tagHandler.OnPortraitFaceRequested += HandlePortraitFace;
-            tagHandler.OnPortraitEmoteRequested += HandlePortraitEmote;
-            tagHandler.OnPortraitActionRequested += HandlePortraitAction;
-            tagHandler.OnPortraitMoveRequested += HandlePortraitMove;
-            tagHandler.OnPortraitExitRequested += HandlePortraitExit;
-            tagHandler.OnFeatureRequested += HandleFeature;
-            tagHandler.OnAffectionRequested += HandleAffection;
-        }
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += HandleSceneLoaded;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= HandleSceneLoaded;
     }
 
     private void OnDestroy()
     {
         DialogueService.Instance?.UnregisterController(this);
-
-        if (tagHandler != null)
-        {
-            tagHandler.OnPortraitEnterRequested -= HandlePortraitEnter;
-            tagHandler.OnPortraitFaceRequested -= HandlePortraitFace;
-            tagHandler.OnPortraitEmoteRequested -= HandlePortraitEmote;
-            tagHandler.OnPortraitActionRequested -= HandlePortraitAction;
-            tagHandler.OnPortraitMoveRequested -= HandlePortraitMove;
-            tagHandler.OnPortraitExitRequested -= HandlePortraitExit;
-            tagHandler.OnFeatureRequested -= HandleFeature;
-            tagHandler.OnAffectionRequested -= HandleAffection;
-        }
+        BindTagHandler(null, tagHandler);
 
         if (Instance == this)
             Instance = null;
@@ -74,13 +60,16 @@ public class DialogueController : MonoBehaviour
         if (!sessionState.IsPlaying || sessionState.IsTransitioning || sessionState.IsWaitingForCallback)
             return;
 
+        InputBindingService input = InputBindingService.EnsureInstance();
+
         if (sessionState.IsChoosing)
         {
-            HandleChoiceInput();
+            HandleChoiceInput(input);
             return;
         }
 
-        if (!Input.GetMouseButtonDown(0) && !Input.GetKeyDown(skipKey) && !Input.GetKeyDown(skipKeyAlt))
+        if (!Input.GetMouseButtonDown(0) &&
+            !input.WasPressedThisFrame(InputActionId.DialogueAdvance))
             return;
 
         if (sessionState.IsTyping)
@@ -96,6 +85,8 @@ public class DialogueController : MonoBehaviour
 
     public void EnterDialogueMode(TextAsset inkJSON, List<NPCData> participants, NPCFeatureController featureController = null)
     {
+        ResolveRuntimeReferences();
+
         if (sessionState.IsPlaying)
             return;
 
@@ -120,6 +111,8 @@ public class DialogueController : MonoBehaviour
         if (AffectionManager.Instance != null && participantRegistry.CurrentNPCData != null)
             AffectionManager.Instance.SetCurrentNPC(participantRegistry.CurrentNPCData.id);
 
+        view.ApplyTheme(participantRegistry.CurrentNPCData != null ? participantRegistry.CurrentNPCData.DialogueTheme : null, true);
+
         if (currentFeatureController != null)
         {
             currentFeatureController.RequestDialogueExit -= ExitDialogueMode;
@@ -128,14 +121,16 @@ public class DialogueController : MonoBehaviour
 
         currentStory = new Story(inkJSON.text);
 
-        director.PlayIntro(validParticipants, () =>
-        {
-            view.ShowUI(participantRegistry.CurrentNPCData.isBoss, () =>
+        DialoguePresentationSequencer.PlayOpening(
+            view,
+            director,
+            validParticipants,
+            participantRegistry.CurrentNPCData != null && participantRegistry.CurrentNPCData.isBoss,
+            () =>
             {
                 sessionState.EndTransition();
                 ContinueStory();
             });
-        });
     }
 
     public void ResumeDialogue()
@@ -157,6 +152,7 @@ public class DialogueController : MonoBehaviour
         {
             string currentText = currentStory.Continue();
             participantRegistry.HandleSpeakerTag(currentStory.currentTags);
+            ApplyCurrentSpeakerTheme();
 
             if (portraitController != null)
                 portraitController.HighlightSpeaker(participantRegistry.CurrentSpeakerId);
@@ -214,20 +210,29 @@ public class DialogueController : MonoBehaviour
         if (currentFeatureController != null)
             currentFeatureController.RequestDialogueExit -= ExitDialogueMode;
 
-        view.HideUI(() =>
+        DialoguePresentationSequencer.PlayClosing(view, director, () =>
         {
-            director.PlayOutro(() =>
-            {
-                currentStory = null;
-                currentFeatureController = null;
-                participantRegistry.Clear();
-                sessionState.EndSession();
-            });
+            view.ResetTheme();
+            currentStory = null;
+            currentFeatureController = null;
+            participantRegistry.Clear();
+            sessionState.EndSession();
         });
+    }
+
+    private void ApplyCurrentSpeakerTheme()
+    {
+        NPCData themeOwner = participantRegistry.CurrentSpeakerNPCData != null
+            ? participantRegistry.CurrentSpeakerNPCData
+            : participantRegistry.CurrentNPCData;
+
+        view.ApplyTheme(themeOwner != null ? themeOwner.DialogueTheme : null, false);
     }
 
     private bool ValidateDialogueSetup(TextAsset inkJSON, List<NPCData> participants)
     {
+        ResolveRuntimeReferences();
+
         if (inkJSON == null)
         {
             Debug.LogError("[DialogueController] inkJSON is missing. Dialogue cannot start.", this);
@@ -273,13 +278,13 @@ public class DialogueController : MonoBehaviour
         return validParticipants;
     }
 
-    private void HandleChoiceInput()
+    private void HandleChoiceInput(InputBindingService input)
     {
-        if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow))
+        if (input.WasPressedThisFrame(InputActionId.MoveUp))
             view.ChangeChoiceSelection(-1);
-        else if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow))
+        else if (input.WasPressedThisFrame(InputActionId.MoveDown))
             view.ChangeChoiceSelection(1);
-        else if (Input.GetKeyDown(skipKey) || Input.GetKeyDown(skipKeyAlt) || Input.GetKeyDown(KeyCode.Return))
+        else if (input.WasPressedThisFrame(InputActionId.DialogueAdvance))
             view.ConfirmChoice();
     }
 
@@ -354,5 +359,60 @@ public class DialogueController : MonoBehaviour
             AffectionManager.Instance.AddAffection(targetNpc, amount, onComplete);
         else
             onComplete?.Invoke();
+    }
+
+    private void HandleSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        ResolveRuntimeReferences();
+    }
+
+    private void ResolveRuntimeReferences()
+    {
+        DialogueTagHandler previousTagHandler = tagHandler;
+        DialogueResolvedReferences resolved = DialogueRuntimeReferenceResolver.Resolve(this, view, director, portraitController, tagHandler);
+        view = resolved.View;
+        director = resolved.Director;
+        portraitController = resolved.PortraitController;
+        tagHandler = resolved.TagHandler;
+
+        if (previousTagHandler != tagHandler)
+            BindTagHandler(tagHandler, previousTagHandler);
+    }
+
+    private void BindTagHandler(DialogueTagHandler newTagHandler, DialogueTagHandler previousTagHandler = null)
+    {
+        if (previousTagHandler != null)
+        {
+            previousTagHandler.OnPortraitEnterRequested -= HandlePortraitEnter;
+            previousTagHandler.OnPortraitFaceRequested -= HandlePortraitFace;
+            previousTagHandler.OnPortraitEmoteRequested -= HandlePortraitEmote;
+            previousTagHandler.OnPortraitActionRequested -= HandlePortraitAction;
+            previousTagHandler.OnPortraitMoveRequested -= HandlePortraitMove;
+            previousTagHandler.OnPortraitExitRequested -= HandlePortraitExit;
+            previousTagHandler.OnFeatureRequested -= HandleFeature;
+            previousTagHandler.OnAffectionRequested -= HandleAffection;
+        }
+
+        tagHandler = newTagHandler;
+        if (tagHandler == null)
+            return;
+
+        tagHandler.OnPortraitEnterRequested -= HandlePortraitEnter;
+        tagHandler.OnPortraitFaceRequested -= HandlePortraitFace;
+        tagHandler.OnPortraitEmoteRequested -= HandlePortraitEmote;
+        tagHandler.OnPortraitActionRequested -= HandlePortraitAction;
+        tagHandler.OnPortraitMoveRequested -= HandlePortraitMove;
+        tagHandler.OnPortraitExitRequested -= HandlePortraitExit;
+        tagHandler.OnFeatureRequested -= HandleFeature;
+        tagHandler.OnAffectionRequested -= HandleAffection;
+
+        tagHandler.OnPortraitEnterRequested += HandlePortraitEnter;
+        tagHandler.OnPortraitFaceRequested += HandlePortraitFace;
+        tagHandler.OnPortraitEmoteRequested += HandlePortraitEmote;
+        tagHandler.OnPortraitActionRequested += HandlePortraitAction;
+        tagHandler.OnPortraitMoveRequested += HandlePortraitMove;
+        tagHandler.OnPortraitExitRequested += HandlePortraitExit;
+        tagHandler.OnFeatureRequested += HandleFeature;
+        tagHandler.OnAffectionRequested += HandleAffection;
     }
 }

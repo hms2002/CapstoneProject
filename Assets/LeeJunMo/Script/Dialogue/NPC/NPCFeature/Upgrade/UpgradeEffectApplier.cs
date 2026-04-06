@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 public sealed class UpgradeEffectApplier
 {
-    public void ApplyUpgrade(UpgradeNodeSO node, SampleTopDownPlayer player)
+    public void ApplyUpgrade(UpgradeNodeSO node, PlayerInteractor2D player)
     {
         if (node == null)
             return;
@@ -10,7 +10,7 @@ public sealed class UpgradeEffectApplier
         node.ApplyOnPurchase(player);
     }
 
-    public void ReapplyPurchasedEffects(IEnumerable<int> purchasedIDs, UpgradeProgressService progressService, SampleTopDownPlayer player)
+    public void ReapplyPurchasedEffects(IEnumerable<int> purchasedIDs, UpgradeProgressService progressService, PlayerInteractor2D player)
     {
         if (purchasedIDs == null || progressService == null || player == null)
             return;

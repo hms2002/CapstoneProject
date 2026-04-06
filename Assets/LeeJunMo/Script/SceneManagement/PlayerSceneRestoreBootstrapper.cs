@@ -86,7 +86,7 @@ public sealed class PlayerSceneRestoreBootstrapper : MonoBehaviour
     /// 책임 : PlayerSpawner가 새 플레이어를 등록했을 때 즉시 복원을 시도한다.
     /// 이벤트가 먼저 오더라도 hasRestored로 중복 복원을 막는다.
     /// </summary>
-    private void OnPlayerRegistered(SampleTopDownPlayer player)
+    private void OnPlayerRegistered(PlayerInteractor2D player)
     {
         if (player == null || hasRestored)
             return;
@@ -178,6 +178,7 @@ public sealed class PlayerSceneRestoreBootstrapper : MonoBehaviour
             relicRuntimeRestorer = playerRelicRestorer;
 
         var weaponInventory = player.GetComponent<WeaponInventory2D>();
+        var consumableInventory = PlayerConsumableInventory.GetOrAdd(player.transform);
         var relicInventory = player.GetComponent<RelicInventory>();
         var attributeSet = player.GetComponent<AttributeSet>();
         var effectRunner = player.GetComponent<GameplayEffectRunner>();
@@ -186,6 +187,7 @@ public sealed class PlayerSceneRestoreBootstrapper : MonoBehaviour
 
         PlayerRuntimeRestoreCoordinator.RestoreAll(
             pendingState,
+            consumableInventory,
             weaponInventory,
             relicInventory,
             attributeSet,

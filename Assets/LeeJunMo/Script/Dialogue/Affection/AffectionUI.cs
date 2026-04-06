@@ -48,20 +48,21 @@ public class AffectionUI : MonoBehaviour
         if (affectionText != null) affectionText.text = prevAffection.ToString();
 
         Sequence seq = DOTween.Sequence();
+        seq.SetUpdate(true);
 
-        seq.Append(affectionSlider.DOValue(1f, fillDuration).SetEase(Ease.OutQuad));
+        seq.Append(affectionSlider.DOValue(1f, fillDuration).SetUpdate(true).SetEase(Ease.OutQuad));
 
         seq.AppendCallback(() => {
             if (affectionText != null)
             {
                 affectionText.text = newAffection.ToString();
-                affectionText.transform.DOPunchScale(Vector3.one * 0.3f, 0.3f, 5, 1f);
+                affectionText.transform.DOPunchScale(Vector3.one * 0.3f, 0.3f, 5, 1f).SetUpdate(true);
             }
         });
 
         seq.AppendInterval(0.4f);
 
-        seq.Append(affectionSlider.DOValue(0f, resetDuration).SetEase(Ease.InQuad));
+        seq.Append(affectionSlider.DOValue(0f, resetDuration).SetUpdate(true).SetEase(Ease.InQuad));
 
         seq.OnComplete(() => {
             onComplete?.Invoke();

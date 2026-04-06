@@ -9,6 +9,8 @@ using UnityGAS;
 [DisallowMultipleComponent]
 public sealed class PlayerAim2D : MonoBehaviour, IAimDirectionSource2D
 {
+    private const string AimBlockedTagResourcePath = "Tags/State.Aim.Blocked";
+
     [SerializeField] private Camera mainCamera;
     [SerializeField] private TagSystem tagSystem;
     [SerializeField] private GameplayTag aimLockedTag;
@@ -25,6 +27,7 @@ public sealed class PlayerAim2D : MonoBehaviour, IAimDirectionSource2D
     {
         if (mainCamera == null) mainCamera = Camera.main;
         if (tagSystem == null) tagSystem = GetComponent<TagSystem>();
+        if (aimLockedTag == null) aimLockedTag = Resources.Load<GameplayTag>(AimBlockedTagResourcePath);
         ResolveHandReferences();
     }
 
@@ -42,9 +45,10 @@ public sealed class PlayerAim2D : MonoBehaviour, IAimDirectionSource2D
     private void UpdateMouseAim()
     {
         if (mainCamera == null) return;
+        if (tagSystem != null && aimLockedTag != null && tagSystem.HasTag(aimLockedTag))
+            return;
 
-        var world = mainCamera.ScreenToWorldPoint(Input.mousePosition);
-        world.z = 0f;
+        var world = InputBindingService.EnsureInstance().GetPointerWorldPosition(mainCamera, 0f);
         MouseWorld = world;
 
         Vector2 dir = (world - transform.position);

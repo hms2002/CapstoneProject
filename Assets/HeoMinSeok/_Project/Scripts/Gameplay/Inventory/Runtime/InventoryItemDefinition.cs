@@ -3,7 +3,8 @@ using UnityEngine;
 public enum InventoryItemKind
 {
     Weapon,
-    Relic
+    Relic,
+    Consumable
 }
 
 public interface IInventoryItemDefinition

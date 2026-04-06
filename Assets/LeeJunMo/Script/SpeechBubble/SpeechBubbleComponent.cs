@@ -12,6 +12,7 @@ public class SpeechBubbleComponent : MonoBehaviour
     [SerializeField] private float defaultTypingSpeed = 0.05f;
 
     private IObjectPool<SpeechBubble> bubblePool;
+    private SpeechBubble activeBubble;
 
     private void Awake()
     {
@@ -21,13 +22,37 @@ public class SpeechBubbleComponent : MonoBehaviour
             actionOnRelease: (bubble) => bubble.gameObject.SetActive(false),
             actionOnDestroy: (bubble) => Destroy(bubble.gameObject),
             defaultCapacity: 1,
-            maxSize: 3
+            maxSize: 1
         );
     }
 
     public void Speak(string text, float duration = 2.5f)
     {
-        SpeechBubble bubble = bubblePool.Get();
-        bubble.SetupAndShow(transform, bubbleOffset, text, duration, defaultUseTyping, defaultTypingSpeed, (b) => bubblePool.Release(b));
+        if (bubblePrefab == null || string.IsNullOrWhiteSpace(text))
+            return;
+
+        SpeechBubble bubble = activeBubble;
+        if (bubble == null)
+        {
+            bubble = bubblePool.Get();
+            activeBubble = bubble;
+        }
+
+        bubble.SetupAndShow(
+            transform,
+            bubbleOffset,
+            text,
+            duration,
+            defaultUseTyping,
+            defaultTypingSpeed,
+            HandleBubbleReleased);
+    }
+
+    private void HandleBubbleReleased(SpeechBubble bubble)
+    {
+        if (activeBubble == bubble)
+            activeBubble = null;
+
+        bubblePool.Release(bubble);
     }
 }

@@ -231,6 +231,8 @@ public class Mob : Enemy
         if (animator != null)
             animator.SetTrigger("Die");
 
+        LootManager.Instance?.SpawnMonsterLoot(transform.position);
+
         Destroy(gameObject, 1.0f);
     }
 

@@ -11,19 +11,16 @@ public class ChestRunModifierUpgradeEffect : RunModifierUpgradeEffectSO
     [SerializeField] private int chestRelicMinBonus;
     [SerializeField] private int chestRelicMaxBonus;
 
+    public ChestRunModifierDelta Delta => new ChestRunModifierDelta
+    {
+        chestWeaponMinBonus = chestWeaponMinBonus,
+        chestWeaponMaxBonus = chestWeaponMaxBonus,
+        chestRelicMinBonus = chestRelicMinBonus,
+        chestRelicMaxBonus = chestRelicMaxBonus
+    };
+
     protected override void ApplyModifier()
     {
-        if (RunModifierService.Instance == null)
-            return;
-
-        ChestRunModifierDelta delta = new ChestRunModifierDelta
-        {
-            chestWeaponMinBonus = chestWeaponMinBonus,
-            chestWeaponMaxBonus = chestWeaponMaxBonus,
-            chestRelicMinBonus = chestRelicMinBonus,
-            chestRelicMaxBonus = chestRelicMaxBonus
-        };
-
-        RunModifierService.Instance.AddChestModifier(delta);
+        RunModifierService.Instance?.RebuildFromPurchasedUpgrades();
     }
 }

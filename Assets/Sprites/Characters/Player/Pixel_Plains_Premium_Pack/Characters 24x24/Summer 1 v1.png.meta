@@ -1,0 +1,741 @@
+fileFormatVersion: 2
+guid: 88566cb2fab4564479209020ec9a67b9
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -298371431348329941
+    second: Summer 1 v1_0
+  - first:
+      213: 1422618212551240504
+    second: Summer 1 v1_1
+  - first:
+      213: 6385219441836192723
+    second: Summer 1 v1_2
+  - first:
+      213: -5835753435695059088
+    second: Summer 1 v1_3
+  - first:
+      213: 8605527759581327788
+    second: Summer 1 v1_4
+  - first:
+      213: -5404709636804355604
+    second: Summer 1 v1_5
+  - first:
+      213: -7369407974059060547
+    second: Summer 1 v1_6
+  - first:
+      213: -423639675343595810
+    second: Summer 1 v1_7
+  - first:
+      213: 4685457155714981771
+    second: Summer 1 v1_8
+  - first:
+      213: -3873828846163126338
+    second: Summer 1 v1_9
+  - first:
+      213: 8596166384599928209
+    second: Summer 1 v1_10
+  - first:
+      213: -8693079444279467715
+    second: Summer 1 v1_11
+  - first:
+      213: 2175303894823792912
+    second: Summer 1 v1_12
+  - first:
+      213: 2935595143591832736
+    second: Summer 1 v1_13
+  - first:
+      213: 3667406111983632471
+    second: Summer 1 v1_14
+  - first:
+      213: 1130563827881217915
+    second: Summer 1 v1_15
+  - first:
+      213: 7067400193933326362
+    second: Summer 1 v1_16
+  - first:
+      213: -6393112656152835995
+    second: Summer 1 v1_17
+  - first:
+      213: 5832839104386394960
+    second: Summer 1 v1_18
+  - first:
+      213: 9109242274965778884
+    second: Summer 1 v1_19
+  - first:
+      213: 4701826735920524573
+    second: Summer 1 v1_20
+  - first:
+      213: -8917871550237335150
+    second: Summer 1 v1_21
+  - first:
+      213: 5818000706883899426
+    second: Summer 1 v1_22
+  - first:
+      213: -8690287799602023486
+    second: Summer 1 v1_23
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Summer 1 v1_0
+      rect:
+        serializedVersion: 2
+        x: 5
+        y: 95
+        width: 15
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b22ab5793c8fbdbf0800000000000000
+      internalID: -298371431348329941
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Summer 1 v1_1
+      rect:
+        serializedVersion: 2
+        x: 29
+        y: 95
+        width: 15
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 83b2e1a1ab72eb310800000000000000
+      internalID: 1422618212551240504
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Summer 1 v1_2
+      rect:
+        serializedVersion: 2
+        x: 53
+        y: 95
+        width: 15
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3d37093804bdc9850800000000000000
+      internalID: 6385219441836192723
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Summer 1 v1_3
+      rect:
+        serializedVersion: 2
+        x: 77
+        y: 95
+        width: 15
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 07f61ac5b2d330fa0800000000000000
+      internalID: -5835753435695059088
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Summer 1 v1_4
+      rect:
+        serializedVersion: 2
+        x: 101
+        y: 95
+        width: 15
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ca1bb9e37e9fc6770800000000000000
+      internalID: 8605527759581327788
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Summer 1 v1_5
+      rect:
+        serializedVersion: 2
+        x: 125
+        y: 95
+        width: 15
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ce95520883d9ef4b0800000000000000
+      internalID: -5404709636804355604
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Summer 1 v1_6
+      rect:
+        serializedVersion: 2
+        x: 149
+        y: 95
+        width: 15
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: db2574d0e7a9ab990800000000000000
+      internalID: -7369407974059060547
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Summer 1 v1_7
+      rect:
+        serializedVersion: 2
+        x: 173
+        y: 95
+        width: 15
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ed61266b5fdee1af0800000000000000
+      internalID: -423639675343595810
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Summer 1 v1_8
+      rect:
+        serializedVersion: 2
+        x: 5
+        y: 71
+        width: 15
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b8f14b06576160140800000000000000
+      internalID: 4685457155714981771
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Summer 1 v1_9
+      rect:
+        serializedVersion: 2
+        x: 29
+        y: 73
+        width: 15
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: eb719c750356d3ac0800000000000000
+      internalID: -3873828846163126338
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Summer 1 v1_10
+      rect:
+        serializedVersion: 2
+        x: 53
+        y: 71
+        width: 15
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 19d8b3848c7bb4770800000000000000
+      internalID: 8596166384599928209
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Summer 1 v1_11
+      rect:
+        serializedVersion: 2
+        x: 77
+        y: 73
+        width: 15
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d31e877ad4afb5780800000000000000
+      internalID: -8693079444279467715
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Summer 1 v1_12
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 50
+        width: 21
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 011fe79fd5b303e10800000000000000
+      internalID: 2175303894823792912
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Summer 1 v1_13
+      rect:
+        serializedVersion: 2
+        x: 25
+        y: 51
+        width: 21
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0ac272aca345db820800000000000000
+      internalID: 2935595143591832736
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Summer 1 v1_14
+      rect:
+        serializedVersion: 2
+        x: 49
+        y: 51
+        width: 21
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 75081e79d6e35e230800000000000000
+      internalID: 3667406111983632471
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Summer 1 v1_15
+      rect:
+        serializedVersion: 2
+        x: 73
+        y: 50
+        width: 21
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b7f04ccbfc190bf00800000000000000
+      internalID: 1130563827881217915
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Summer 1 v1_16
+      rect:
+        serializedVersion: 2
+        x: 97
+        y: 48
+        width: 21
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a183cec1803741260800000000000000
+      internalID: 7067400193933326362
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Summer 1 v1_17
+      rect:
+        serializedVersion: 2
+        x: 121
+        y: 47
+        width: 21
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 568c4f059e91747a0800000000000000
+      internalID: -6393112656152835995
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Summer 1 v1_18
+      rect:
+        serializedVersion: 2
+        x: 145
+        y: 47
+        width: 21
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 05b65f0034862f050800000000000000
+      internalID: 5832839104386394960
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Summer 1 v1_19
+      rect:
+        serializedVersion: 2
+        x: 169
+        y: 47
+        width: 21
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4c17e4416978a6e70800000000000000
+      internalID: 9109242274965778884
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Summer 1 v1_20
+      rect:
+        serializedVersion: 2
+        x: 193
+        y: 47
+        width: 21
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d1d2af5418e304140800000000000000
+      internalID: 4701826735920524573
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Summer 1 v1_21
+      rect:
+        serializedVersion: 2
+        x: 5
+        y: 23
+        width: 15
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 291aa8fe21b5d3480800000000000000
+      internalID: -8917871550237335150
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Summer 1 v1_22
+      rect:
+        serializedVersion: 2
+        x: 5
+        y: 0
+        width: 15
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 22059cc51d0bdb050800000000000000
+      internalID: 5818000706883899426
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Summer 1 v1_23
+      rect:
+        serializedVersion: 2
+        x: 27
+        y: 0
+        width: 16
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2c37fc41a45e56780800000000000000
+      internalID: -8690287799602023486
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Summer 1 v1_0: -298371431348329941
+      Summer 1 v1_1: 1422618212551240504
+      Summer 1 v1_10: 8596166384599928209
+      Summer 1 v1_11: -8693079444279467715
+      Summer 1 v1_12: 2175303894823792912
+      Summer 1 v1_13: 2935595143591832736
+      Summer 1 v1_14: 3667406111983632471
+      Summer 1 v1_15: 1130563827881217915
+      Summer 1 v1_16: 7067400193933326362
+      Summer 1 v1_17: -6393112656152835995
+      Summer 1 v1_18: 5832839104386394960
+      Summer 1 v1_19: 9109242274965778884
+      Summer 1 v1_2: 6385219441836192723
+      Summer 1 v1_20: 4701826735920524573
+      Summer 1 v1_21: -8917871550237335150
+      Summer 1 v1_22: 5818000706883899426
+      Summer 1 v1_23: -8690287799602023486
+      Summer 1 v1_3: -5835753435695059088
+      Summer 1 v1_4: 8605527759581327788
+      Summer 1 v1_5: -5404709636804355604
+      Summer 1 v1_6: -7369407974059060547
+      Summer 1 v1_7: -423639675343595810
+      Summer 1 v1_8: 4685457155714981771
+      Summer 1 v1_9: -3873828846163126338
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

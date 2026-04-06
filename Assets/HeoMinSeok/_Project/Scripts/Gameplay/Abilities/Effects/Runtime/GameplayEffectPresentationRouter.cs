@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+using CapstoneAudio;
 using UnityEngine;
 
 namespace UnityGAS
@@ -10,6 +13,45 @@ namespace UnityGAS
     public sealed class GameplayEffectPresentationRouter
     {
         private readonly GameplayCueManager cueManager;
+        private readonly Dictionary<LoopKey, AudioHandle> activeLoopHandles = new();
+
+        private readonly struct LoopKey : IEquatable<LoopKey>
+        {
+            public readonly int EffectId;
+            public readonly int TargetId;
+            public readonly int SourceId;
+
+            public LoopKey(int effectId, int targetId, int sourceId)
+            {
+                EffectId = effectId;
+                TargetId = targetId;
+                SourceId = sourceId;
+            }
+
+            public bool Equals(LoopKey other)
+            {
+                return EffectId == other.EffectId
+                       && TargetId == other.TargetId
+                       && SourceId == other.SourceId;
+            }
+
+            public override bool Equals(object obj)
+            {
+                return obj is LoopKey other && Equals(other);
+            }
+
+            public override int GetHashCode()
+            {
+                unchecked
+                {
+                    int hash = 17;
+                    hash = (hash * 31) + EffectId;
+                    hash = (hash * 31) + TargetId;
+                    hash = (hash * 31) + SourceId;
+                    return hash;
+                }
+            }
+        }
 
         public GameplayEffectPresentationRouter(GameplayCueManager cueManager)
         {
@@ -21,16 +63,20 @@ namespace UnityGAS
             GameObject instigator,
             GameObject causer,
             GameObject target,
-            Object sourceObject,
+            UnityEngine.Object sourceObject,
             float magnitude,
             GameplayEffectContext ctx)
         {
-            if (cueManager == null || effect == null || effect.cueOnExecute == null)
+            if (effect == null)
                 return;
 
-            cueManager.ExecuteCue(
-                effect.cueOnExecute,
-                BuildCueParams(instigator, causer, target, sourceObject, magnitude, ctx));
+            GameplayCueParams cueParams = BuildCueParams(instigator, causer, target, sourceObject, magnitude, ctx);
+            PlayOneShot(effect.audioOnExecute, cueParams);
+
+            if (cueManager != null && effect.cueOnExecute != null)
+            {
+                cueManager.ExecuteCue(effect.cueOnExecute, cueParams);
+            }
         }
 
         public void AddWhileActive(
@@ -38,16 +84,20 @@ namespace UnityGAS
             GameObject instigator,
             GameObject causer,
             GameObject target,
-            Object sourceObject,
+            UnityEngine.Object sourceObject,
             float magnitude,
             GameplayEffectContext ctx)
         {
-            if (cueManager == null || effect == null || effect.cueWhileActive == null)
+            if (effect == null)
                 return;
 
-            cueManager.AddCue(
-                effect.cueWhileActive,
-                BuildCueParams(instigator, causer, target, sourceObject, magnitude, ctx));
+            GameplayCueParams cueParams = BuildCueParams(instigator, causer, target, sourceObject, magnitude, ctx);
+            StartLoop(MakeLoopKey(effect, target, sourceObject), effect.audioWhileActive, cueParams);
+
+            if (cueManager != null && effect.cueWhileActive != null)
+            {
+                cueManager.AddCue(effect.cueWhileActive, cueParams);
+            }
         }
 
         public void RemoveWhileActive(
@@ -55,16 +105,20 @@ namespace UnityGAS
             GameObject instigator,
             GameObject causer,
             GameObject target,
-            Object sourceObject,
+            UnityEngine.Object sourceObject,
             float magnitude,
             GameplayEffectContext ctx)
         {
-            if (cueManager == null || effect == null || effect.cueWhileActive == null)
+            if (effect == null)
                 return;
 
-            cueManager.RemoveCue(
-                effect.cueWhileActive,
-                BuildCueParams(instigator, causer, target, sourceObject, magnitude, ctx));
+            GameplayCueParams cueParams = BuildCueParams(instigator, causer, target, sourceObject, magnitude, ctx);
+            StopLoop(MakeLoopKey(effect, target, sourceObject));
+
+            if (cueManager != null && effect.cueWhileActive != null)
+            {
+                cueManager.RemoveCue(effect.cueWhileActive, cueParams);
+            }
         }
 
         public void PlayRemove(
@@ -72,23 +126,28 @@ namespace UnityGAS
             GameObject instigator,
             GameObject causer,
             GameObject target,
-            Object sourceObject,
+            UnityEngine.Object sourceObject,
             float magnitude,
             GameplayEffectContext ctx)
         {
-            if (cueManager == null || effect == null || effect.cueOnRemove == null)
+            if (effect == null)
                 return;
 
-            cueManager.ExecuteCue(
-                effect.cueOnRemove,
-                BuildCueParams(instigator, causer, target, sourceObject, magnitude, ctx));
+            GameplayCueParams cueParams = BuildCueParams(instigator, causer, target, sourceObject, magnitude, ctx);
+            StopLoop(MakeLoopKey(effect, target, sourceObject));
+            PlayOneShot(effect.audioOnRemove, cueParams);
+
+            if (cueManager != null && effect.cueOnRemove != null)
+            {
+                cueManager.ExecuteCue(effect.cueOnRemove, cueParams);
+            }
         }
 
         private GameplayCueParams BuildCueParams(
             GameObject instigator,
             GameObject causer,
             GameObject target,
-            Object sourceObject,
+            UnityEngine.Object sourceObject,
             float magnitude,
             GameplayEffectContext ctx)
         {
@@ -123,6 +182,61 @@ namespace UnityGAS
             p.Position = target != null ? target.transform.position : Vector3.zero;
             p.Normal = Vector3.up;
             return p;
+        }
+
+        private static LoopKey MakeLoopKey(GameplayEffect effect, GameObject target, UnityEngine.Object sourceObject)
+        {
+            return new LoopKey(
+                effect != null ? effect.GetInstanceID() : 0,
+                target != null ? target.GetInstanceID() : 0,
+                sourceObject != null ? sourceObject.GetInstanceID() : 0);
+        }
+
+        private static SoundPlaybackContext BuildSoundContext(GameplayCueParams p)
+        {
+            return new SoundPlaybackContext
+            {
+                Instigator = p.Instigator,
+                Causer = p.Causer,
+                Target = p.Target,
+                Position = p.Position,
+                SourceObject = p.SourceObject
+            };
+        }
+
+        private static void PlayOneShot(SoundRef soundRef, GameplayCueParams p)
+        {
+            if (!soundRef.IsSet)
+                return;
+
+            SoundManager.EnsureInstance().Play(soundRef, BuildSoundContext(p));
+        }
+
+        private void StartLoop(LoopKey key, SoundRef soundRef, GameplayCueParams p)
+        {
+            if (activeLoopHandles.TryGetValue(key, out AudioHandle existingHandle)
+                && SoundManager.EnsureInstance().IsPlaying(existingHandle))
+            {
+                return;
+            }
+
+            StopLoop(key);
+
+            if (!soundRef.IsSet)
+                return;
+
+            AudioHandle newHandle = SoundManager.EnsureInstance().Play(soundRef, BuildSoundContext(p));
+            if (newHandle.IsValid)
+                activeLoopHandles[key] = newHandle;
+        }
+
+        private void StopLoop(LoopKey key)
+        {
+            if (!activeLoopHandles.TryGetValue(key, out AudioHandle handle))
+                return;
+
+            SoundManager.EnsureInstance().Stop(handle);
+            activeLoopHandles.Remove(key);
         }
     }
 }

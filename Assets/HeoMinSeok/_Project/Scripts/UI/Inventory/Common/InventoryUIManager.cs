@@ -9,25 +9,31 @@ public class InventoryUIManager : MonoBehaviour
 
     [Header("UI")]
     [SerializeField] private InventoryScreen inventoryScreen;
-    [SerializeField] private KeyCode toggleKey = KeyCode.I;
 
     [Header("(Optional) Player reference")]
-    [Tooltip("If null, will fallback to SampleTopDownPlayer.Instance")]
+    [Tooltip("If null, will fallback to PlayerInteractor2D.Instance")]
     [SerializeField] private Transform lootOriginOverride;
 
     private void Awake()
     {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
         Instance = this;
         // 이제 SetActive 대신 UIManager가 알아서 처리하겠지만, 시작 시 꺼두는 건 뷰에서 담당하거나 여기서 안전하게 꺼둡니다.
         if (inventoryScreen != null && inventoryScreen.gameObject.activeSelf)
         {
             inventoryScreen.gameObject.SetActive(false);
         }
+
     }
 
     private void Update()
     {
-        if (Input.GetKeyDown(toggleKey))
+        if (InputBindingService.EnsureInstance().WasPressedThisFrame(InputActionId.InventoryToggle))
         {
             // [수정] 인터페이스 프로퍼티(IsActive)를 통해 상태 확인
             if (inventoryScreen != null && inventoryScreen.IsActive)
@@ -47,16 +53,17 @@ public class InventoryUIManager : MonoBehaviour
 
         var currentPlayer = PlayerRuntimeRegistry.CurrentPlayer != null
             ? PlayerRuntimeRegistry.CurrentPlayer
-            : SampleTopDownPlayer.Instance;
+            : PlayerInteractor2D.Instance;
 
+        var consumableInv = currentPlayer != null ? PlayerConsumableInventory.GetOrAdd(currentPlayer.transform) : FindFirstObjectByType<PlayerConsumableInventory>();
         var weaponInv = currentPlayer != null ? currentPlayer.GetComponent<WeaponInventory2D>() : FindFirstObjectByType<WeaponInventory2D>();
         var relicInv = currentPlayer != null ? currentPlayer.GetComponent<RelicInventory>() : FindFirstObjectByType<RelicInventory>();
-        inventoryScreen.Bind(weaponInv, relicInv, playerTransform);
+        inventoryScreen.Bind(consumableInv, weaponInv, relicInv, playerTransform, currentPlayer != null ? currentPlayer.transform : null);
 
         if (UIManager.Instance != null) UIManager.Instance.HideHoverImmediate();
 
         // [핵심] 직접 켜지 않고 UIManager의 스택에 밀어넣음!
-        if (UIManager.Instance != null) UIManager.Instance.PushUI(inventoryScreen);
+        if (UIManager.Instance != null) UIManager.Instance.TryPushUI(inventoryScreen);
         else inventoryScreen.OpenUI();
     }
 
@@ -68,4 +75,11 @@ public class InventoryUIManager : MonoBehaviour
         if (UIManager.Instance != null) UIManager.Instance.PopUI(inventoryScreen);
         else inventoryScreen.CloseUI();
     }
+
+    private void OnDestroy()
+    {
+        if (Instance == this)
+            Instance = null;
+    }
+
 }

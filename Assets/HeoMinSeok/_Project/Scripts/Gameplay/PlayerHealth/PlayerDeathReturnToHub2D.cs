@@ -9,7 +9,7 @@ public sealed class PlayerDeathReturnToHub2D : MonoBehaviour
     [Header("Refs")]
     [SerializeField] private AttributeSet attributeSet;
     [SerializeField] private AttributeDefinition hpDef;
-    [SerializeField] private SampleTopDownPlayer player;
+    [SerializeField] private PlayerInteractor2D player;
     [SerializeField] private AbilitySystem abilitySystem;
     [SerializeField] private Rigidbody2D body;
     [SerializeField] private PlayerIntentInput2D intentInput;
@@ -31,7 +31,7 @@ public sealed class PlayerDeathReturnToHub2D : MonoBehaviour
     private void Awake()
     {
         if (attributeSet == null) attributeSet = GetComponent<AttributeSet>();
-        if (player == null) player = GetComponent<SampleTopDownPlayer>();
+        if (player == null) player = GetComponent<PlayerInteractor2D>();
         if (abilitySystem == null) abilitySystem = GetComponent<AbilitySystem>();
         if (body == null) body = GetComponent<Rigidbody2D>();
         if (intentInput == null) intentInput = GetComponent<PlayerIntentInput2D>();

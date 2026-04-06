@@ -149,6 +149,7 @@ namespace UnityGAS
                     continue;
 
                 valueAttr.SetMaxValueGetter(() => maxAttr.CurrentValue);
+                valueAttr.SetClampNormalizationPolicy(true);
 
                 var capturedValue = valueAttr;
                 maxAttr.OnValueChanged += (_, __) =>
@@ -331,6 +332,33 @@ namespace UnityGAS
         {
             EnsureInitialized();
             return GetAttribute(definition)?.CurrentValue ?? 0f;
+        }
+
+        /// <summary>
+        /// 책임 : 씬 복원 시 current 값을 직접 되살려야 하는 상태형 Attribute인지 판정한다.
+        /// 장착형 modifier로 계산되는 파생 스탯은 제외하고, HP처럼 실제 상태값만 복원 대상으로 삼는다.
+        /// </summary>
+        public bool ShouldRestoreCurrentValue(AttributeDefinition definition)
+        {
+            EnsureInitialized();
+
+            if (definition == null)
+                return false;
+
+            if (definition.IsBaseOnly())
+                return true;
+
+            if (maxLinks == null || maxLinks.Count == 0)
+                return false;
+
+            for (int i = 0; i < maxLinks.Count; i++)
+            {
+                var link = maxLinks[i];
+                if (link.value == definition)
+                    return true;
+            }
+
+            return false;
         }
 
         /// <summary>

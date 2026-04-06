@@ -1,7 +1,7 @@
 using UnityEngine;
 
 /// <summary>
-/// 책임 : 월드에 떨어진 일반 아이템(무기/유물)을 상호작용 대상으로 노출하고,
+/// 책임 : 월드에 떨어진 일반 아이템(무기/유물/1회용 아이템)을 상호작용 대상으로 노출하고,
 /// 플레이어가 획득을 시도하면 적절한 장착 인벤토리로 즉시 전달한다.
 /// </summary>
 [RequireComponent(typeof(Collider2D))]
@@ -46,7 +46,12 @@ public class WorldItemPickup2D : InteractableBase
     }
 
     private void OnEnable() => WorldItemRegistry.Register(this);
-    private void OnDisable() => WorldItemRegistry.Unregister(this);
+
+    private void OnDisable()
+    {
+        WorldItemRegistry.Unregister(this);
+        WorldItemDetailPresenter.Instance?.Hide(GetDetailAnchor());
+    }
 
     public override bool CanInteract(IPlayerInteractor player)
     {
@@ -55,22 +60,29 @@ public class WorldItemPickup2D : InteractableBase
 
     public override void OnHighlight()
     {
-        if (spriteRenderer == null || item == null)
+        if (item == null)
             return;
 
-        spriteRenderer.GetPropertyBlock(outlinePropertyBlock);
-        outlinePropertyBlock.SetFloat(OutlineEnabledID, 1f);
-        spriteRenderer.SetPropertyBlock(outlinePropertyBlock);
+        if (spriteRenderer != null)
+        {
+            spriteRenderer.GetPropertyBlock(outlinePropertyBlock);
+            outlinePropertyBlock.SetFloat(OutlineEnabledID, 1f);
+            spriteRenderer.SetPropertyBlock(outlinePropertyBlock);
+        }
+
+        WorldItemDetailPresenter.Instance?.Show(GetDetailAnchor(), item, RelicLevel);
     }
 
     public override void OnUnHighlight()
     {
-        if (spriteRenderer == null)
-            return;
+        if (spriteRenderer != null)
+        {
+            spriteRenderer.GetPropertyBlock(outlinePropertyBlock);
+            outlinePropertyBlock.SetFloat(OutlineEnabledID, 0f);
+            spriteRenderer.SetPropertyBlock(outlinePropertyBlock);
+        }
 
-        spriteRenderer.GetPropertyBlock(outlinePropertyBlock);
-        outlinePropertyBlock.SetFloat(OutlineEnabledID, 0f);
-        spriteRenderer.SetPropertyBlock(outlinePropertyBlock);
+        WorldItemDetailPresenter.Instance?.Hide(GetDetailAnchor());
     }
 
     public override void OnPlayerInteract(IPlayerInteractor player)
@@ -82,6 +94,7 @@ public class WorldItemPickup2D : InteractableBase
         {
             WeaponDefinition weapon => TryPickupWeapon(player, weapon),
             RelicDefinition relic => TryPickupRelic(player, relic),
+            ConsumableDefinition consumable => TryPickupConsumable(player, consumable),
             _ => false
         };
 
@@ -103,6 +116,8 @@ public class WorldItemPickup2D : InteractableBase
 
     public override Transform GetPromptAnchor() => promptAnchor != null ? promptAnchor : transform;
 
+    private Transform GetDetailAnchor() => promptAnchor != null ? promptAnchor : transform;
+
     private bool TryPickupWeapon(IPlayerInteractor player, WeaponDefinition weapon)
     {
         var weaponInventory = ResolveWeaponInventory(player);
@@ -117,6 +132,12 @@ public class WorldItemPickup2D : InteractableBase
 
         int levelOverride = RelicLevel > 0 ? RelicLevel : -1;
         return relicInventory.TryAcquireOrUpgrade(relic, levelOverride);
+    }
+
+    private bool TryPickupConsumable(IPlayerInteractor player, ConsumableDefinition consumable)
+    {
+        var consumableInventory = ResolveConsumableInventory(player);
+        return consumableInventory != null && consumableInventory.TryAcquire(consumable);
     }
 
     private static WeaponInventory2D ResolveWeaponInventory(IPlayerInteractor player)
@@ -135,10 +156,18 @@ public class WorldItemPickup2D : InteractableBase
         return null;
     }
 
+    private static PlayerConsumableInventory ResolveConsumableInventory(IPlayerInteractor player)
+    {
+        if (player is Component component)
+            return PlayerConsumableInventory.GetOrAdd(component.transform);
+
+        return null;
+    }
+
     private static void SpeakPickupFailed(IPlayerInteractor player)
     {
-        if (player is SampleTopDownPlayer samplePlayer)
-            samplePlayer.SpeakSituation(PlayerSpeechSituationEnum.InventoryFull);
+        if (player is PlayerInteractor2D playerInteractor)
+            playerInteractor.SpeakSituation(PlayerSpeechSituationEnum.InventoryFull);
     }
 
     private void RefreshVisual()

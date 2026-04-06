@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -33,13 +34,14 @@ public class UpgradeNodeSO : ScriptableObject
 
     public Vector2 GetUiPosition()
     {
-        float startX = 100f;
-        float x = startX + (gridX * 120f);
-        float y = gridY * 90f;
+        float startX = 250f;
+        float startY = -50f;
+        float x = startX + (gridX * 360f);
+        float y = startY + (gridY * 240f);
         return new Vector2(x, y);
     }
 
-    public void ApplyOnPurchase(SampleTopDownPlayer player)
+    public void ApplyOnPurchase(PlayerInteractor2D player)
     {
         if (effects == null)
             return;
@@ -51,7 +53,7 @@ public class UpgradeNodeSO : ScriptableObject
         }
     }
 
-    public void ReapplyPlayerEffects(SampleTopDownPlayer player)
+    public void ReapplyPlayerEffects(PlayerInteractor2D player)
     {
         if (effects == null)
             return;
@@ -63,7 +65,7 @@ public class UpgradeNodeSO : ScriptableObject
         }
     }
 
-    public void ApplyEffect(SampleTopDownPlayer player)
+    public void ApplyEffect(PlayerInteractor2D player)
     {
         ApplyOnPurchase(player);
     }

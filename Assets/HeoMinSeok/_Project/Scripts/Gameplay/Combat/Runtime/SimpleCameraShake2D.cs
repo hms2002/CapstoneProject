@@ -30,6 +30,7 @@ namespace UnityGAS
 
         public void Shake(float amplitude)
         {
+            if (!GameSettingsService.IsScreenShakeEnabled()) return;
             if (amplitude <= 0f) return;
             _amplitude = Mathf.Max(_amplitude, amplitude);
             _timeLeft = Mathf.Max(_timeLeft, duration);

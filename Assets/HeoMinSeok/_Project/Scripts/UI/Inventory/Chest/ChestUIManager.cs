@@ -1,102 +1,80 @@
-using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// 책임 :
+/// - 상자 UI의 열기/닫기 수명주기를 관리하고, 열림/닫힘에 따라 플레이어 상호작용 상태를 정리한다.
+/// - ChestScreen이 닫힐 때 상자 상호작용 상태를 안전하게 복구한다.
+/// </summary>
 public class ChestUIManager : MonoBehaviour
 {
-    private readonly List<MonoBehaviour> disabledRuntimePlayerScripts = new();
     public static ChestUIManager Instance { get; private set; }
 
     [SerializeField] private ChestScreen chestScreen;
-    [SerializeField] private MonoBehaviour[] playerControlScriptsToDisable; // SampleTopDownPlayer 등
 
     private TreasureChest openedChest;
-    private float prevTimeScale = 1f;
 
     private void Awake()
     {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
         Instance = this;
+        ResolveChestScreenReference();
         // 씬 시작 시 상자 UI가 꺼져 있도록 보장
         if (chestScreen != null) chestScreen.gameObject.SetActive(false);
     }
 
-    public void OpenChest(TreasureChest chest)
+    public bool OpenChest(TreasureChest chest)
     {
-        if (chest == null) return;
+        if (chest == null)
+            return false;
+
+        ResolveChestScreenReference();
+        if (chestScreen == null)
+        {
+            Debug.LogError("[ChestUIManager] ChestScreen reference is missing.");
+            return false;
+        }
 
         openedChest = chest;
 
-        // 1. 게임 정지 및 플레이어 조작 잠금
-        prevTimeScale = Time.timeScale;
-        Time.timeScale = 0f;
-
-        DisablePlayerControlsForCurrentSession();
-
-        // 2. 데이터 바인딩
+        // 1. 데이터 바인딩
         chestScreen.Bind(chest.GetInventory());
 
-        // 3. [핵심] 직접 켜지 않고 UIManager의 스택 명부에 정식 등록 요청! (이제 ESC가 먹힙니다)
-        if (UIManager.Instance != null) UIManager.Instance.PushUI(chestScreen);
+        // 2. [핵심] 직접 켜지 않고 UIManager의 스택 명부에 정식 등록 요청! (이제 ESC가 먹힙니다)
+        bool opened = true;
+        if (UIManager.Instance != null) opened = UIManager.Instance.TryPushUI(chestScreen);
         else chestScreen.OpenUI(); // UIManager가 없을 때를 대비한 방어 코드
-    }
 
-    // [핵심] ChestScreen이 UIManager에 의해 닫혔을 때(ESC나 X버튼) 호출될 뒷수습(콜백) 함수
+        if (!opened && PlayerInteractor2D.Instance != null)
+            PlayerInteractor2D.Instance.SetInteractState(InteractState.Idle);
 
-    private void DisablePlayerControlsForCurrentSession()
-    {
-        disabledRuntimePlayerScripts.Clear();
-
-        var player = PlayerRuntimeRegistry.CurrentPlayer != null
-            ? PlayerRuntimeRegistry.CurrentPlayer
-            : SampleTopDownPlayer.Instance;
-
-        if (player != null)
-        {
-            TryDisable(player.GetComponent<SampleTopDownPlayer>());
-            TryDisable(player.GetComponent<PlayerIntentInput2D>());
-            TryDisable(player.GetComponent<PlayerCombatInput2D>());
-            TryDisable(player.GetComponent<PlayerAim2D>());
-        }
-
-        if (playerControlScriptsToDisable != null)
-        {
-            foreach (var script in playerControlScriptsToDisable)
-                TryDisable(script);
-        }
-    }
-
-    private void RestorePlayerControlsForCurrentSession()
-    {
-        for (int i = 0; i < disabledRuntimePlayerScripts.Count; i++)
-        {
-            var script = disabledRuntimePlayerScripts[i];
-            if (script != null)
-                script.enabled = true;
-        }
-
-        disabledRuntimePlayerScripts.Clear();
-    }
-
-    private void TryDisable(MonoBehaviour script)
-    {
-        if (script == null || !script.enabled)
-            return;
-
-        script.enabled = false;
-        disabledRuntimePlayerScripts.Add(script);
+        return opened;
     }
 
     public void HandleChestClosed()
     {
-        // 상자 닫으면 플레이어 스크립트 복구
-        RestorePlayerControlsForCurrentSession();
-
-        if (SampleTopDownPlayer.Instance != null)
+        if (PlayerInteractor2D.Instance != null)
         {
-            SampleTopDownPlayer.Instance.SetInteractState(InteractState.Idle);
+            PlayerInteractor2D.Instance.SetInteractState(InteractState.Idle);
         }
 
-        // 시간 복구 및 상태 초기화
-        Time.timeScale = prevTimeScale;
         openedChest = null;
+    }
+    private void OnDestroy()
+    {
+        if (Instance == this)
+            Instance = null;
+    }
+
+    private void ResolveChestScreenReference()
+    {
+        if (chestScreen != null)
+            return;
+
+        chestScreen = GetComponentInChildren<ChestScreen>(true);
     }
 }

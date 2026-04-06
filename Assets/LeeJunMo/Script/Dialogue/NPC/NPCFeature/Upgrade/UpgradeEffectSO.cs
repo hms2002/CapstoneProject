@@ -17,35 +17,35 @@ public abstract class UpgradeEffectSO : ScriptableObject
 
     public virtual UpgradeEffectKind EffectKind => UpgradeEffectKind.Generic;
 
-    public virtual void ApplyOnPurchase(SampleTopDownPlayer player) { }
+    public virtual void ApplyOnPurchase(PlayerInteractor2D player) { }
 
-    public virtual void ReapplyForPlayer(SampleTopDownPlayer player) { }
+    public virtual void ReapplyForPlayer(PlayerInteractor2D player) { }
 }
 
 public abstract class PlayerUpgradeEffectSO : UpgradeEffectSO
 {
     public sealed override UpgradeEffectKind EffectKind => UpgradeEffectKind.Player;
 
-    public sealed override void ApplyOnPurchase(SampleTopDownPlayer player)
+    public sealed override void ApplyOnPurchase(PlayerInteractor2D player)
     {
         if (player != null)
             ApplyToPlayer(player);
     }
 
-    public sealed override void ReapplyForPlayer(SampleTopDownPlayer player)
+    public sealed override void ReapplyForPlayer(PlayerInteractor2D player)
     {
         if (player != null)
             ApplyToPlayer(player);
     }
 
-    protected abstract void ApplyToPlayer(SampleTopDownPlayer player);
+    protected abstract void ApplyToPlayer(PlayerInteractor2D player);
 }
 
 public abstract class ItemUnlockUpgradeEffectSO : UpgradeEffectSO
 {
     public sealed override UpgradeEffectKind EffectKind => UpgradeEffectKind.ItemUnlock;
 
-    public sealed override void ApplyOnPurchase(SampleTopDownPlayer player)
+    public sealed override void ApplyOnPurchase(PlayerInteractor2D player)
     {
         ApplyUnlocks();
     }
@@ -60,7 +60,7 @@ public abstract class RunModifierUpgradeEffectSO : UpgradeEffectSO
 {
     public sealed override UpgradeEffectKind EffectKind => UpgradeEffectKind.RunModifier;
 
-    public sealed override void ApplyOnPurchase(SampleTopDownPlayer player)
+    public sealed override void ApplyOnPurchase(PlayerInteractor2D player)
     {
         ApplyModifier();
     }

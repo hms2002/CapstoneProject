@@ -24,25 +24,22 @@ public class GraveRunModifierUpgradeEffect : RunModifierUpgradeEffectSO
     [SerializeField] private float extraRareChance;
     [SerializeField] private float extraEpicChance;
 
+    public GraveRunModifierDelta Delta => new GraveRunModifierDelta
+    {
+        weaponGraveMinBonus = weaponGraveMinBonus,
+        weaponGraveMaxBonus = weaponGraveMaxBonus,
+        relicGraveMinBonus = relicGraveMinBonus,
+        relicGraveMaxBonus = relicGraveMaxBonus,
+        weaponDropMinBonus = weaponDropMinBonus,
+        weaponDropMaxBonus = weaponDropMaxBonus,
+        relicDropMinBonus = relicDropMinBonus,
+        relicDropMaxBonus = relicDropMaxBonus,
+        extraRareChance = extraRareChance,
+        extraEpicChance = extraEpicChance
+    };
+
     protected override void ApplyModifier()
     {
-        if (RunModifierService.Instance == null)
-            return;
-
-        GraveRunModifierDelta delta = new GraveRunModifierDelta
-        {
-            weaponGraveMinBonus = weaponGraveMinBonus,
-            weaponGraveMaxBonus = weaponGraveMaxBonus,
-            relicGraveMinBonus = relicGraveMinBonus,
-            relicGraveMaxBonus = relicGraveMaxBonus,
-            weaponDropMinBonus = weaponDropMinBonus,
-            weaponDropMaxBonus = weaponDropMaxBonus,
-            relicDropMinBonus = relicDropMinBonus,
-            relicDropMaxBonus = relicDropMaxBonus,
-            extraRareChance = extraRareChance,
-            extraEpicChance = extraEpicChance
-        };
-
-        RunModifierService.Instance.AddGraveModifier(delta);
+        RunModifierService.Instance?.RebuildFromPurchasedUpgrades();
     }
 }

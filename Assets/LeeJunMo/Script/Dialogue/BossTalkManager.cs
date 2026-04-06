@@ -1,31 +1,36 @@
-using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.Cinemachine;
 using Cainos.PixelArtTopDown_Basic;
+using Unity.Cinemachine;
+using UnityEngine;
+using UnityEngine.Serialization;
 
 public class BossTalkManager : MonoBehaviour
 {
-    [Header("데이터 설정")]
-    [SerializeField] private TextAsset inkJSON;
+    [Header("Data")]
     [SerializeField] private NPCData npcData;
+    [FormerlySerializedAs("inkJSON")]
+    [SerializeField, HideInInspector] private TextAsset legacyInkJSON;
 
-    [Header("카메라 설정")]
+    [Header("Camera Settings")]
     [SerializeField] private CinemachineCamera playerCam;
     [SerializeField] private CinemachineCamera bossCam;
     [SerializeField] private int normalPriority = 10;
     [SerializeField] private int focusPriority = 100;
     [SerializeField] private bool playOnStart = true;
     [SerializeField] private bool disableLegacyFollowWhileSequence = true;
+    [SerializeField] private float blendWaitFallbackSeconds = 2f;
 
-    [Header("후처리")]
+    [Header("Post Sequence")]
     [SerializeField] private BossDrop bossDrop;
-     
+
     private CinemachineBrain brain;
     private CameraFollow legacyFollowCamera;
     private Coroutine runningSequence;
-    private SampleTopDownPlayer cachedPlayer;
+    private PlayerInteractor2D cachedPlayer;
     private InteractState previousPlayerState = InteractState.Idle;
+    private bool previousBrainIgnoreTimeScale;
+    private bool hasStoredBrainIgnoreTimeScale;
 
     private void Awake()
     {
@@ -54,6 +59,7 @@ public class BossTalkManager : MonoBehaviour
 
         RestorePlayerState();
         RestoreDefaultCameraState();
+        RestoreBrainIgnoreTimeScale();
         SetLegacyFollowEnabled(true);
 
         if (legacyFollowCamera != null)
@@ -77,6 +83,7 @@ public class BossTalkManager : MonoBehaviour
         }
 
         cachedPlayer = ResolvePlayer();
+        EnableUnscaledCameraBlend();
 
         if (cachedPlayer != null)
         {
@@ -91,6 +98,7 @@ public class BossTalkManager : MonoBehaviour
         yield return ReturnToPlayerCameraRoutine();
 
         RestorePlayerState();
+        RestoreBrainIgnoreTimeScale();
 
         if (bossDrop != null)
             bossDrop.OnBossDead();
@@ -102,59 +110,58 @@ public class BossTalkManager : MonoBehaviour
     {
         if (brain == null)
         {
-            Debug.LogError("[BossTalkManager] Main Camera에 CinemachineBrain이 없다.");
+            Debug.LogError("[BossTalkManager] Main Camera is missing CinemachineBrain.", this);
             return false;
         }
 
         if (playerCam == null)
         {
-            Debug.LogError("[BossTalkManager] playerCam이 비어 있다.");
+            Debug.LogError("[BossTalkManager] playerCam is missing.", this);
             return false;
         }
 
         if (bossCam == null)
         {
-            Debug.LogError("[BossTalkManager] bossCam이 비어 있다.");
-            return false;
-        }
-
-        if (inkJSON == null)
-        {
-            Debug.LogError("[BossTalkManager] inkJSON이 비어 있다.");
+            Debug.LogError("[BossTalkManager] bossCam is missing.", this);
             return false;
         }
 
         if (npcData == null)
         {
-            Debug.LogError("[BossTalkManager] npcData가 비어 있다.");
+            Debug.LogError("[BossTalkManager] npcData is missing.", this);
+            return false;
+        }
+
+        if (ResolveDialogueInk() == null)
+        {
+            Debug.LogError("[BossTalkManager] No dialogue ink is assigned on NPCData.", this);
             return false;
         }
 
         if (DialogueService.Instance == null)
         {
-            Debug.LogError("[BossTalkManager] DialogueController 인스턴스를 찾을 수 없다.");
+            Debug.LogError("[BossTalkManager] DialogueService instance was not found.", this);
             return false;
         }
 
         return true;
     }
 
-    private SampleTopDownPlayer ResolvePlayer()
+    private PlayerInteractor2D ResolvePlayer()
     {
-        var playerTransform = PlayerRuntimeRegistry.GetPlayerTransform();
+        Transform playerTransform = PlayerRuntimeRegistry.GetPlayerTransform();
         if (playerTransform == null)
             return null;
 
-        return playerTransform.GetComponent<SampleTopDownPlayer>();
+        return playerTransform.GetComponent<PlayerInteractor2D>();
     }
 
     private void BindPlayerCameraToCurrentPlayer()
     {
-        var playerTransform = PlayerRuntimeRegistry.GetPlayerTransform();
+        Transform playerTransform = PlayerRuntimeRegistry.GetPlayerTransform();
         if (playerTransform == null || playerCam == null)
             return;
 
-        // 네 Cinemachine 버전에서 Follow / LookAt 이름이 다르면 이 부분만 맞춰주면 된다.
         playerCam.Follow = playerTransform;
         playerCam.LookAt = playerTransform;
     }
@@ -192,8 +199,12 @@ public class BossTalkManager : MonoBehaviour
 
     private IEnumerator PlayDialogueRoutine()
     {
+        TextAsset dialogueInk = ResolveDialogueInk();
+        if (dialogueInk == null)
+            yield break;
+
         List<NPCData> participants = new List<NPCData> { npcData };
-        if (!DialogueService.Instance.TryStartDialogue(inkJSON, participants))
+        if (!DialogueService.Instance.TryStartDialogue(dialogueInk, participants))
             yield break;
 
         yield return new WaitUntil(() =>
@@ -204,8 +215,42 @@ public class BossTalkManager : MonoBehaviour
     {
         yield return null;
 
+        if (brain == null)
+            yield break;
+
+        float fallbackDuration = Mathf.Max(0f, GetBlendWaitFallbackSeconds());
+        float elapsed = 0f;
+        bool sawBlend = brain.IsBlending;
+
+        while (elapsed < fallbackDuration)
+        {
+            if (brain == null)
+                yield break;
+
+            if (brain.IsBlending)
+            {
+                sawBlend = true;
+            }
+            else if (sawBlend)
+            {
+                yield break;
+            }
+
+            elapsed += Time.unscaledDeltaTime;
+            yield return null;
+        }
+    }
+
+    private float GetBlendWaitFallbackSeconds()
+    {
         if (brain != null)
-            yield return new WaitUntil(() => !brain.IsBlending);
+        {
+            float defaultBlendTime = brain.DefaultBlend.Time;
+            if (defaultBlendTime > 0f)
+                return defaultBlendTime + 0.1f;
+        }
+
+        return blendWaitFallbackSeconds;
     }
 
     private void RestorePlayerState()
@@ -238,5 +283,46 @@ public class BossTalkManager : MonoBehaviour
     private void RestoreDefaultCameraState()
     {
         ApplyDefaultCameraState();
+    }
+
+    private void EnableUnscaledCameraBlend()
+    {
+        if (brain == null)
+            return;
+
+        if (!hasStoredBrainIgnoreTimeScale)
+        {
+            previousBrainIgnoreTimeScale = brain.IgnoreTimeScale;
+            hasStoredBrainIgnoreTimeScale = true;
+        }
+
+        brain.IgnoreTimeScale = true;
+    }
+
+    private void RestoreBrainIgnoreTimeScale()
+    {
+        if (brain == null || !hasStoredBrainIgnoreTimeScale)
+            return;
+
+        brain.IgnoreTimeScale = previousBrainIgnoreTimeScale;
+        hasStoredBrainIgnoreTimeScale = false;
+    }
+
+    private TextAsset ResolveDialogueInk()
+    {
+        if (npcData != null)
+        {
+            if (npcData.PrimaryInk != null)
+                return npcData.PrimaryInk;
+
+            if (legacyInkJSON != null)
+            {
+                npcData.AssignPrimaryInkIfEmpty(legacyInkJSON);
+                if (npcData.PrimaryInk != null)
+                    return npcData.PrimaryInk;
+            }
+        }
+
+        return legacyInkJSON;
     }
 }
