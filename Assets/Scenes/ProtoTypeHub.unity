@@ -2458,6 +2458,10 @@ MonoBehaviour:
   playOnStart: 1
   disableLegacyFollowWhileSequence: 1
   blendWaitFallbackSeconds: 2
+  cameraDirector: {fileID: 0}
+  dialogueRunner: {fileID: 0}
+  bossController: {fileID: 0}
+  startBossCombatAfterDialogue: 1
   bossDrop: {fileID: 0}
 --- !u!4 &197106469
 Transform:
@@ -8630,7 +8634,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 918450001000000010, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 100
+      value: 60
       objectReference: {fileID: 0}
     - target: {fileID: 918450001000000010, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_AnchoredPosition.x
@@ -8982,7 +8986,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1898198110507461795, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 0
+      value: 640
       objectReference: {fileID: 0}
     - target: {fileID: 1898198110507461795, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_AnchoredPosition.x
