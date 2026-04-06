@@ -19,7 +19,11 @@ public sealed class PlayerSpawner : MonoBehaviour
             return;
         }
 
-        var existingPlayer = GameObject.FindGameObjectWithTag("Player");
+        var playerTransform = PlayerRuntimeRegistry.GetPlayerTransform();
+        var existingPlayer = playerTransform != null 
+            ? playerTransform.gameObject 
+            : GameObject.FindGameObjectWithTag("Player");
+
         if (existingPlayer != null)
         {
             var existingInteractor = existingPlayer.GetComponent<PlayerInteractor2D>();
