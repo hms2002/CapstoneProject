@@ -307,6 +307,9 @@ namespace UnityGAS
 
         private void CreateControllers()
         {
+            if (playerAnimator == null)
+                playerAnimator = animator != null ? animator : GetComponentInChildren<Animator>();
+
             presentationRouter = new AbilityPresentationRouter(
                 gameObject,
                 cueManager,

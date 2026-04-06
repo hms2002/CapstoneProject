@@ -25,6 +25,7 @@ public static class PlayerRuntimeRegistry
 
         PlayerConsumableInventory.GetOrAdd(player.transform);
         PlayerConsumableInput2D.GetOrAdd(player.transform);
+        PlayerAnimatorController2D.GetOrAdd(player.transform);
 
         CurrentPlayer = player;
         PlayerRegistered?.Invoke(player);

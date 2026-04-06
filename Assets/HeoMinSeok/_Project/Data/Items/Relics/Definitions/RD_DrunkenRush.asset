@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   relicId: RD_DrunkenRush
   displayName: "\uB9CC\uCDE8\uD55C \uC9C8\uC8FC"
-  icon: {fileID: 8318818539734883204, guid: 91d23682bc03c7a42a11d541427cbaab, type: 3}
+  icon: {fileID: 21300000, guid: a23fffd2b25f3824fb678b34be8c8d8b, type: 3}
   rarity: 1
   description: "[\uCCB4\uB825] [3 \uC774\uC0C1]\uC774\uB77C\uBA74 [\uC774\uB3D9\uC18D\uB3C4]
     -10%\n[\uCCB4\uB825] [2]\uC774\uB77C\uBA74 [\uC774\uB3D9\uC18D\uB3C4] +15%\n[\uCCB4\uB825]

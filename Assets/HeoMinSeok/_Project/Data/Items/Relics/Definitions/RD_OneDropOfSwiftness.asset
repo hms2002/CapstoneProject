@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   relicId: RD_OneDropOfSwiftness
   displayName: "\uD55C\uBC29\uC6B8\uC758 \uC2E0\uC18D"
-  icon: {fileID: -7937749962922180185, guid: 7cf41ed18ab1ad340975c677806db161, type: 3}
+  icon: {fileID: 21300000, guid: 4af3438a19a9ff54683d8233bd993349, type: 3}
   rarity: 2
   description: "\uC794\uC601\uC758 \uB0A0\uAC1C \uC804\uC6A9 \uC720\uBB3C\n\uC2A4\uD0AC
     2\uB85C \uC801\uC744 \uCC98\uCE58\uD558\uBA74 \uC2A4\uD0AC 1 \uC2E4\uD589\uC774

@@ -12,9 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 808910561e593534f9ea3637c00cc255, type: 3}
   m_Name: AD_RW_Skill1_Rush
   m_EditorClassIdentifier: 
-  abilityName: 러쉬
-  icon: {fileID: -1138107394, guid: ef16b2ddeb64123459076c2c8a541a63, type: 3}
-  description: "● 사용 즉시 가속하며, 유지 시 단계별 추가 가속\n● 0/3/6초마다 [[이동속도]] {val:100/200/300%} 증가\n● {em:마우스 방향 강제 이동}\n● {neg:피격, 적 충돌, 공격 시 가속 즉시 종료}"
+  abilityName: "\uB7EC\uC26C"
+  icon: {fileID: 21300000, guid: 9124215d19b903340846f4f994ea8ea5, type: 3}
+  description: "\u25CF \uC0AC\uC6A9 \uC989\uC2DC \uAC00\uC18D\uD558\uBA70, \uC720\uC9C0
+    \uC2DC \uB2E8\uACC4\uBCC4 \uCD94\uAC00 \uAC00\uC18D\n\u25CF 0/3/6\uCD08\uB9C8\uB2E4
+    [[\uC774\uB3D9\uC18D\uB3C4]] {val:100/200/300%} \uC99D\uAC00\n\u25CF {em:\uB9C8\uC6B0\uC2A4
+    \uBC29\uD5A5 \uAC15\uC81C \uC774\uB3D9}\n\u25CF {neg:\uD53C\uACA9, \uC801 \uCDA9\uB3CC,
+    \uACF5\uACA9 \uC2DC \uAC00\uC18D \uC989\uC2DC \uC885\uB8CC}"
   cooldown: 12
   executionPolicy: 0
   useCharges: 0
@@ -50,6 +54,41 @@ MonoBehaviour:
   logic: {fileID: 11400000, guid: 766ca51564fbc2149953760a712f78c3, type: 2}
   sourceObject: {fileID: 0}
   containers: []
+  audioOnCastStart:
+    key: 
+    volumeMultiplier: 0
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  audioWhileCasting:
+    key: 
+    volumeMultiplier: 0
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  audioOnCommit:
+    key: 
+    volumeMultiplier: 0
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  audioWhileActive:
+    key: 
+    volumeMultiplier: 0
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  audioOnEnd:
+    key: 
+    volumeMultiplier: 0
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  audioOnCastCancelled:
+    key: 
+    volumeMultiplier: 0
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  audioOnExecutionCancelled:
+    key: 
+    volumeMultiplier: 0
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
   cueOnCastStart: {fileID: 0}
   cueWhileCasting: {fileID: 0}
   cueOnCommit: {fileID: 0}

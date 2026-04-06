@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   relicId: RD_HawkEmblem
   displayName: "\uC1A1\uACE8\uB9E4\uC758 \uC99D\uD45C"
-  icon: {fileID: -3369390543426049443, guid: 3fba0b9019125a14e9d8174fc02513a7, type: 3}
+  icon: {fileID: 21300000, guid: 8962ffe16144980439939f691764cb69, type: 3}
   rarity: 1
   description: "[\uCD94\uAC00 \uC774\uB3D9\uC18D\uB3C4] 40% \uB9C8\uB2E4 [\uACF5\uACA9
     \uD68C\uD53C \uD655\uB960] 3% \uC99D\uAC00"

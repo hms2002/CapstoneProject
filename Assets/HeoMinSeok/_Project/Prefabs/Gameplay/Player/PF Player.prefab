@@ -112,8 +112,8 @@ Transform:
   m_GameObject: {fileID: 1906251152075118770}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.25, y: 0.211, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: 0.04, y: 0.047, z: 0}
+  m_LocalScale: {x: 0.2, y: 0.2, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8969203147945012884}
@@ -143,8 +143,8 @@ Transform:
   m_GameObject: {fileID: 6779378432443156341}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.25, y: 0.211, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalPosition: {x: -0.048, y: 0.041, z: 0}
+  m_LocalScale: {x: 0.2, y: 0.2, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8969203147945012884}
@@ -218,7 +218,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 5.82, y: 2.31, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 5, y: 5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 647482627083604036}
@@ -270,11 +270,11 @@ SpriteRenderer:
   m_SortingLayerID: -1039746825
   m_SortingLayer: 2
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: ec47f75fe8aff1644ac73998f4ad31b5, type: 3}
+  m_Sprite: {fileID: -720365038908779728, guid: 54afb36f0c9a5b347b44945f7a8e0f78, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
-  m_DrawMode: 1
+  m_DrawMode: 0
   m_Size: {x: 0.65625, y: 1.4}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
@@ -315,17 +315,17 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0.0019779205, y: 0.2133249}
+  m_Offset: {x: 0.004547298, y: 0.04397222}
   m_SpriteTilingProperty:
-    border: {x: 0, y: 0.03125, z: 0, w: 0.9375}
+    border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0}
-    oldSize: {x: 0.65625, y: 1.5}
+    oldSize: {x: 0.14, y: 0.22}
     newSize: {x: 0.65625, y: 1.4}
     adaptiveTilingThreshold: 0.5
-    drawMode: 1
+    drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 0.5865278, y: 0.36506104}
+  m_Size: {x: 0.12403774, y: 0.06740985}
   m_EdgeRadius: 0
 --- !u!50 &288432539280398367
 Rigidbody2D:
@@ -364,7 +364,7 @@ Animator:
   m_GameObject: {fileID: 8883617028798182002}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: eb1ae3e395b532e4d8dbc08a412e4a7d, type: 2}
+  m_Controller: {fileID: 9100000, guid: c38b14802b2feef43b8a8ded46ca41af, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -474,13 +474,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 8883617028798182002}
   m_Enabled: 1
   m_EditorHideFlags: 0
-m_Script: {fileID: 11500000, guid: f6f7a1f6ffeaa0e44a2c3879fa6a7448, type: 3}
+  m_Script: {fileID: 11500000, guid: f6f7a1f6ffeaa0e44a2c3879fa6a7448, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  interactKey: 102
   interactionPrompt: {fileID: 0}
-  speechBubble: {fileID: 9064131313457660205}
-  speechData: {fileID: 11400000, guid: 95081fedc29af6044801e50a4e2d73fb, type: 2}
+  speechBubble: {fileID: 0}
+  speechData: {fileID: 0}
+  tagSystem: {fileID: 0}
+  interactBlockedTag: {fileID: 0}
   interactableTracker: {fileID: 0}
   targetResolver: {fileID: 0}
   promptPresenter: {fileID: 0}
@@ -633,7 +634,7 @@ MonoBehaviour:
   hitEnterSeconds: 0.3
   hitActiveSeconds: 0.4
   animator: {fileID: 8399328563048880028}
-  hitEnterTrigger: HitEnter
+  hitEnterTrigger: Damaged
   hitLoopBool: 
   clearHitLoopWhenMoving: 1
   hitFlashController: {fileID: 0}
@@ -696,6 +697,7 @@ MonoBehaviour:
   aim: {fileID: 1353302521333203863}
   player: {fileID: 0}
   forcedMoveTag: {fileID: 11400000, guid: 837c3c3beac45de458f179f50c7d7500, type: 2}
+  moveBlockedTag: {fileID: 0}
 --- !u!114 &5754629299100491768
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -711,15 +713,14 @@ MonoBehaviour:
   abilitySystem: {fileID: 1832372497922031110}
   weaponInventory: {fileID: 963026585117413559}
   player: {fileID: 4913808379797790544}
+  tagSystem: {fileID: 0}
   dash: {fileID: 11400000, guid: dadc84cd2fffcae45905741575af20c3, type: 2}
-  dashKey: 32
-  skill1Key: 113
-  skill2Key: 101
-  swapKey: 9
   attackRepeatInterval: 0.06
   reAimGapAfterAttackEnd: 0.06
   attackPressedEvent: {fileID: 11400000, guid: 06fb955e1ce9a9c41abb914e2af4dd01, type: 2}
   attackReleasedEvent: {fileID: 11400000, guid: 77a0a96f4aec927419dcb7815cb7e38b, type: 2}
+  attackBlockedTag: {fileID: 0}
+  skillBlockedTag: {fileID: 0}
 --- !u!114 &1353302521333203863
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -851,6 +852,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e28afe12b236964eac1a1dc67c7c43d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  consumableInventory: {fileID: 0}
   weaponInventory: {fileID: 963026585117413559}
   relicInventory: {fileID: 4885150337275956111}
   attributeSet: {fileID: 1414767285602429285}

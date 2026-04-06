@@ -18,7 +18,9 @@ public class InventoryScreen : MonoBehaviour, IStackableUI
     [SerializeField] private Transform weaponGridRoot;
     [SerializeField] private Transform relicGridRoot;
     [SerializeField] private PlayerStatPanelView playerStatPanel;
-    [SerializeField] private ItemSlotUI slotPrefab;
+    [SerializeField] private ItemSlotUI consumableSlotPrefab;
+    [SerializeField] private ItemSlotUI weaponSlotPrefab;
+    [SerializeField] private ItemSlotUI relicSlotPrefab;
     [SerializeField] private Button closeButton;
     [SerializeField] private DropZoneUI dropZone;
 
@@ -108,36 +110,24 @@ public class InventoryScreen : MonoBehaviour, IStackableUI
     private void BuildUI()
     {
         ClearUI();
-        if (slotPrefab == null) return;
+        BuildSlots(consumableContainer, consumableGridRoot, consumableSlotPrefab);
+        BuildSlots(weaponContainer, weaponGridRoot, weaponSlotPrefab);
+        BuildSlots(relicContainer, relicGridRoot, relicSlotPrefab);
+    }
 
-        if (consumableContainer != null && consumableGridRoot != null)
-        {
-            for (int i = 0; i < consumableContainer.SlotCount; i++)
-            {
-                var ui = Instantiate(slotPrefab, consumableGridRoot);
-                ui.Bind(consumableContainer, i);
-                spawned.Add(ui);
-            }
-        }
+    /// <summary>
+    /// 책임 : 지정된 인벤토리 컨테이너를 대응하는 슬롯 프리팹으로 시각화한다.
+    /// </summary>
+    private void BuildSlots(IItemContainer container, Transform gridRoot, ItemSlotUI slotPrefab)
+    {
+        if (container == null || gridRoot == null || slotPrefab == null)
+            return;
 
-        if (weaponContainer != null && weaponGridRoot != null)
+        for (int i = 0; i < container.SlotCount; i++)
         {
-            for (int i = 0; i < weaponContainer.SlotCount; i++)
-            {
-                var ui = Instantiate(slotPrefab, weaponGridRoot);
-                ui.Bind(weaponContainer, i);
-                spawned.Add(ui);
-            }
-        }
-
-        if (relicContainer != null && relicGridRoot != null)
-        {
-            for (int i = 0; i < relicContainer.SlotCount; i++)
-            {
-                var ui = Instantiate(slotPrefab, relicGridRoot);
-                ui.Bind(relicContainer, i);
-                spawned.Add(ui);
-            }
+            var ui = Instantiate(slotPrefab, gridRoot);
+            ui.Bind(container, i);
+            spawned.Add(ui);
         }
     }
 
