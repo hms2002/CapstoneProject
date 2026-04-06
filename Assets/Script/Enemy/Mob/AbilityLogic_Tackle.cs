@@ -48,7 +48,6 @@ public class AL_Tackle : AbilityLogic
             yield return ActivatePreparedTackle(caster, spec, target, context);
             yield break;
         }
-
         ApplyTackleDamage(caster, spec, target);
     }
 
