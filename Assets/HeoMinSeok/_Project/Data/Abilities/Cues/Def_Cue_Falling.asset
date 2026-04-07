@@ -17,7 +17,21 @@ MonoBehaviour:
   cueNotifyHostPrefab: {fileID: 5162246622105999104, guid: f09848183e09c7742bef1b7b1deecdfd, type: 3}
   cuePrefab: {fileID: 5162246622105999104, guid: f09848183e09c7742bef1b7b1deecdfd, type: 3}
   vfxPrefab: {fileID: 0}
-  sfx: {fileID: 0}
+  audioOnExecute:
+    key: cue.falling
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  audioWhileActive:
+    key: cue.falling
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  audioOnRemove:
+    key: 
+    volumeMultiplier: 0
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
   attachToTarget: 0
   localOffset: {x: 0, y: 0, z: 0}
   autoDestroySeconds: 2

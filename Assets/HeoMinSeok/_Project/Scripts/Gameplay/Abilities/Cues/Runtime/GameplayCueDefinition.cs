@@ -3,7 +3,8 @@ using UnityEngine;
 
 namespace UnityGAS
 {
-    // 이 스크립트의 책임 : 
+    // 이 스크립트의 책임:
+    // 하나의 Gameplay Cue가 어떤 태그에 반응하고, 어떤 방식으로 시청각 연출을 실행할지 정의한다.
     [CreateAssetMenu(fileName = "NewGameplayCue", menuName = "GAS/Gameplay Cue Definition")]
     public class GameplayCueDefinition : ScriptableObject
     {
@@ -49,9 +50,6 @@ namespace UnityGAS
 
         [Tooltip("[mode=SpawnPrefab] cuePrefab이 없거나 Notify가 없을 때 사용")]
         public GameObject vfxPrefab;
-
-        [Tooltip("[mode=SpawnPrefab] 간단 SFX")]
-        public AudioClip sfx;
 
         [Header("Audio (Optional)")]
         [Tooltip("ExecuteCue에서 1회 재생되는 사운드")]

@@ -21,3 +21,4 @@ MonoBehaviour:
   knockbackEffect: {fileID: 11400000, guid: 2f5faaf6bd840544cb59f6d23905c40d, type: 2}
   knockbackImpulse: 100
   hitConfirmedTag: {fileID: 0}
+  telegraphStyle: {fileID: 11400000, guid: b15f18602ec87284d80cbd57720425f1, type: 2}

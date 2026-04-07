@@ -309,6 +309,7 @@ GameObject:
   - component: {fileID: 8197086752515054346}
   - component: {fileID: 6050434493472852141}
   - component: {fileID: 5662210137078847501}
+  - component: {fileID: 7764125724508558370}
   m_Layer: 0
   m_Name: PF Player
   m_TagString: Player
@@ -1074,3 +1075,27 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speechBubble: {fileID: 0}
   speechData: {fileID: 11400000, guid: 95081fedc29af6044801e50a4e2d73fb, type: 2}
+--- !u!114 &7764125724508558370
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8883617028798182002}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4f914c6b3ba7d644b1b428c7d12e9cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animator: {fileID: 4088885187085815971}
+  movementMotor: {fileID: 0}
+  aimSource: {fileID: 0}
+  visualRenderers:
+  - {fileID: 575076908295244749}
+  isMovingBool: IsMoving
+  directionInt: Direction
+  southDirectionValue: 0
+  westDirectionValue: 1
+  northDirectionValue: 2
+  eastDirectionValue: 3
+  flipWhenFacingLeft: 1

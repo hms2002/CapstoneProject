@@ -38,6 +38,10 @@ public class AL_Tackle : AbilityLogic
     [Tooltip("Tackle 적중 시 발행할 Hit Confirm 태그입니다.")]
     [SerializeField] private GameplayTag hitConfirmedTag;
 
+    [Header("Telegraph")]
+    [Tooltip("준비 시간 동안 표시할 공통 공격 예고 스타일입니다.")]
+    [SerializeField] private AttackTelegraphStyle telegraphStyle;
+
     /// <summary>Tackle Ability를 실행하고 준비된 태클 정보가 있으면 돌진 패턴으로 처리합니다.</summary>
     public override IEnumerator Activate(AbilitySystem caster, AbilitySpec spec, GameObject target)
     {
@@ -63,11 +67,15 @@ public class AL_Tackle : AbilityLogic
 
         if (motionController != null)
             motionController.CancelMotion();
+
+        HidePreparedTelegraph(system);
     }
 
     /// <summary>고정된 예고 방향으로 대기 후 감쇠 Tackle 돌진을 실행합니다.</summary>
     private IEnumerator ActivatePreparedTackle(AbilitySystem caster, AbilitySpec spec, GameObject fallbackTarget, Mob mob, Mob.PreparedTackleContext context)
     {
+        mob.ShowPreparedTackleTelegraph(context, attackReadyTime, telegraphStyle);
+
         if (attackReadyTime > 0f)
             yield return AbilityTasks.WaitDelay(caster, spec, attackReadyTime);
 
@@ -189,5 +197,20 @@ public class AL_Tackle : AbilityLogic
             return motionController;
 
         return caster.gameObject.AddComponent<AbilityMotionController2D>();
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 시전자에게 붙은 공통 공격 예고 연출을 안전하게 숨긴다.
+    /// - 씬 전환이나 능력 취소로 실행 흐름이 끊겨도 telegraph가 잔류하지 않게 보장한다.
+    /// </summary>
+    private static void HidePreparedTelegraph(AbilitySystem caster)
+    {
+        if (caster == null)
+            return;
+
+        AttackTelegraphService telegraphService = caster.GetComponent<AttackTelegraphService>();
+        if (telegraphService != null)
+            telegraphService.HideCurrent();
     }
 }

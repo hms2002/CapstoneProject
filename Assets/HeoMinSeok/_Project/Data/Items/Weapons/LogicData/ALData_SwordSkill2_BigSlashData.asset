@@ -28,7 +28,7 @@ MonoBehaviour:
   - elementType: {fileID: 11400000, guid: 53bdedc3d917f83458902716124fcc3c, type: 2}
     baseDamage: 0
   baseStaggerDamage: 0
-  hitboxSize: {x: 4, y: 4}
+  hitboxSize: {x: 2, y: 2}
   forwardOffset: 1
   hitLayers:
     serializedVersion: 2

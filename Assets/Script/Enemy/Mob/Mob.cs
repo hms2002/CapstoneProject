@@ -14,6 +14,8 @@ public class Mob : Enemy
     [Header("Referenses")]
     [Tooltip("플레이어 추적 의도를 제공하는 컴포넌트입니다.")]
     [SerializeField] private EnemyChaseIntent2D chaseIntent;
+    [Tooltip("공격 예고 연출을 재생하는 공통 서비스입니다.")]
+    [SerializeField] private AttackTelegraphService attackTelegraphService;
     //[SerializeField] private TagSystem tagSystem;
 
     [Header("Tackle Range")]
@@ -40,11 +42,9 @@ public class Mob : Enemy
 
     private bool hasPendingPreparedTackle;
     private PreparedTackleContext pendingPreparedTackle;
-    private bool isTackleTelegraphVisible;
-    private PreparedTackleContext activeTackleTelegraph;
 
     public float TackleAttackRangeRadius => Mathf.Max(0f, tackleAttackRangeDiameter * 0.5f);
-    public bool IsPreparingTackle => isTackleTelegraphVisible;
+    public bool IsPreparingTackle => attackTelegraphService != null && attackTelegraphService.HasActiveTelegraph;
     public bool HasTackleHitCooldown => currentCooltime > 0f;
 
     public struct PreparedTackleContext
@@ -63,6 +63,9 @@ public class Mob : Enemy
 
         if (chaseIntent == null)
             chaseIntent = GetComponent<EnemyChaseIntent2D>();
+
+        if (attackTelegraphService == null)
+            attackTelegraphService = GetComponent<AttackTelegraphService>();
 
         if (tagSystem == null)
             tagSystem = GetComponent<TagSystem>();
@@ -165,7 +168,6 @@ public class Mob : Enemy
         };
 
         hasPendingPreparedTackle = true;
-        ShowPreparedTackleTelegraph(pendingPreparedTackle);
     }
 
     /// <summary>준비된 Tackle 정보를 Ability Logic에서 사용할 수 있도록 꺼냅니다.</summary>
@@ -182,15 +184,28 @@ public class Mob : Enemy
     /// <summary>현재 표시 중인 Tackle 예고 기즈모를 숨깁니다.</summary>
     public void HidePreparedTackleTelegraph()
     {
-        isTackleTelegraphVisible = false;
-        activeTackleTelegraph = default(PreparedTackleContext);
+        if (attackTelegraphService != null)
+            attackTelegraphService.HideCurrent();
     }
 
-    /// <summary>준비된 Tackle 정보를 기준으로 예고 기즈모를 표시합니다.</summary>
-    private void ShowPreparedTackleTelegraph(PreparedTackleContext context)
+    /// <summary>준비된 Tackle 정보를 기준으로 공통 공격 예고 연출을 표시합니다.</summary>
+    public void ShowPreparedTackleTelegraph(PreparedTackleContext context, float duration, AttackTelegraphStyle style = null)
     {
-        activeTackleTelegraph = context;
-        isTackleTelegraphVisible = true;
+        if (attackTelegraphService == null)
+            return;
+
+        float lungeDistance = Mathf.Max(0f, context.LungeDistance);
+        Vector3 center = context.StartPosition + context.Direction * (lungeDistance * 0.5f);
+        float rotationDeg = Mathf.Atan2(context.Direction.y, context.Direction.x) * Mathf.Rad2Deg;
+
+        AttackTelegraphSpec spec = AttackTelegraphSpec.CreateRectangle(
+            center,
+            new Vector2(lungeDistance, Mathf.Max(0.01f, context.TelegraphWidth)),
+            rotationDeg,
+            duration,
+            style);
+
+        attackTelegraphService.Show(spec);
     }
 
     /// <summary>대기 중인 Tackle 정보와 필요 시 예고 기즈모를 정리합니다.</summary>
@@ -281,6 +296,7 @@ public class Mob : Enemy
     {
         // 풀링/비정상 종료에도 태그 잔류 방지
         ClearPreparedTackleContext();
+        HidePreparedTackleTelegraph();
         SetTagActive(blockIntentMoveTag, false, ref intentMoveTagApplied);
         SetTagActive(freezeAllMovementTag, false, ref freezeMoveTagApplied);
     }
@@ -333,18 +349,19 @@ public class Mob : Enemy
     /// <summary>코킹 중인 Tackle의 직사각형 예고 범위를 기즈모로 그립니다.</summary>
     private void DrawTackleGizmo()
     {
-        if (!isTackleTelegraphVisible) return;
+        if (!hasPendingPreparedTackle)
+            return;
 
-        float length    = Mathf.Max(0.01f, activeTackleTelegraph.LungeDistance);
-        float width     = Mathf.Max(0.01f, activeTackleTelegraph.TelegraphWidth);
+        float length = Mathf.Max(0.01f, pendingPreparedTackle.LungeDistance);
+        float width = Mathf.Max(0.01f, pendingPreparedTackle.TelegraphWidth);
 
-        Vector2 direction = activeTackleTelegraph.Direction.sqrMagnitude > 0.0001f
-            ? activeTackleTelegraph.Direction.normalized
+        Vector2 direction = pendingPreparedTackle.Direction.sqrMagnitude > 0.0001f
+            ? pendingPreparedTackle.Direction.normalized
             : Vector2.right;
 
-        Vector3     center          = activeTackleTelegraph.StartPosition + direction * (length * 0.5f);
-        Quaternion  rotation        = Quaternion.FromToRotation(Vector3.right, direction);
-        Matrix4x4   previousMatrix  = Gizmos.matrix;
+        Vector3 center = pendingPreparedTackle.StartPosition + direction * (length * 0.5f);
+        Quaternion rotation = Quaternion.FromToRotation(Vector3.right, direction);
+        Matrix4x4 previousMatrix = Gizmos.matrix;
 
         Gizmos.color = Color.red;
         Gizmos.matrix = Matrix4x4.TRS(center, rotation, Vector3.one);

@@ -237,8 +237,8 @@ TextureImporter:
     buildTarget: DefaultTexturePlatform
     maxTextureSize: 2048
     resizeAlgorithm: 0
-    textureFormat: 4
-    textureCompression: 1
+    textureFormat: -1
+    textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -384,10 +384,10 @@ TextureImporter:
       name: TX Shadow Crate Small
       rect:
         serializedVersion: 2
-        x: 163
-        y: 387
-        width: 31
-        height: 27
+        x: 162
+        y: 386
+        width: 33
+        height: 29
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -472,10 +472,10 @@ TextureImporter:
       name: TX Shadow Rune Pillar Broken
       rect:
         serializedVersion: 2
-        x: 227
-        y: 291
-        width: 31
-        height: 25
+        x: 226
+        y: 290
+        width: 33
+        height: 27
       alignment: 7
       pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}

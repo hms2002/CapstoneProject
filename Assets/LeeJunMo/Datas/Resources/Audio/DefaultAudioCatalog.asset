@@ -13,10 +13,11 @@ MonoBehaviour:
   m_Name: DefaultAudioCatalog
   m_EditorClassIdentifier: 
   entries:
-  - key: 
+  - key: cue.falling
     bus: 0
-    category: 0
-    variants: []
+    category: 5
+    variants:
+    - {fileID: 8300000, guid: 833da6051a098464bae9f36c56bf02a8, type: 3}
     volume: 1
     pitchMin: 1
     pitchMax: 1

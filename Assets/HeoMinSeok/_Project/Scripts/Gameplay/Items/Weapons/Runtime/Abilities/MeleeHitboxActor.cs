@@ -38,10 +38,13 @@ namespace UnityGAS
 
         private bool hitOncePerTarget = true;
         private bool destroyOnFirstHit = false;
+        private bool authoredShapeCached;
+        private Vector2 authoredColliderSize = Vector2.one;
+        private Vector3 authoredLocalScale = Vector3.one;
 
         /// <summary>
         /// 책임 :
-        /// - 근접 히트박스의 위치, 크기, 회전, 타격 정책을 초기화한다.
+        /// - 근접 히트박스의 위치, 월드 크기, 회전, 타격 정책을 초기화한다.
         /// - 공통 공격체 초기화를 완료한 뒤 생성 직후 겹쳐 있는 적을 즉시 스캔한다.
         /// </summary>
         public void Setup(MeleeHitboxSpawnContext context)
@@ -56,10 +59,13 @@ namespace UnityGAS
             if (hitboxCollider == null)
                 hitboxCollider = GetComponent<BoxCollider2D>();
 
+            CacheAuthoredShapeIfNeeded();
+
             transform.position = context.worldPosition;
+            ApplyActorScale(context.hitboxSize);
             ApplyActorRotation(context.direction);
 
-            hitboxCollider.size = context.hitboxSize;
+            hitboxCollider.size = authoredColliderSize;
             hitboxCollider.isTrigger = true;
 
             hitOncePerTarget = context.hitOncePerTarget;
@@ -69,6 +75,43 @@ namespace UnityGAS
             SetupBase(context);
 
             PerformImmediateScan();
+        }
+
+        /// <summary>
+        /// 책임 :
+        /// - 프리팹이 원래 가지고 있던 콜라이더 크기와 로컬 스케일을 한 번만 캐시한다.
+        /// - 이후 원하는 월드 크기를 transform scale로 환산할 때 기준값으로 사용한다.
+        /// </summary>
+        private void CacheAuthoredShapeIfNeeded()
+        {
+            if (authoredShapeCached)
+                return;
+
+            authoredShapeCached = true;
+            authoredColliderSize = hitboxCollider != null ? hitboxCollider.size : Vector2.one;
+            authoredLocalScale = transform.localScale;
+        }
+
+        /// <summary>
+        /// 책임 :
+        /// - 원하는 월드 히트박스 크기를 프리팹의 기본 콜라이더 크기 기준 transform scale로 변환한다.
+        /// - 비주얼과 BoxCollider2D가 같은 transform scale을 공유하게 만들어 판정과 연출 크기를 일치시킨다.
+        /// </summary>
+        private void ApplyActorScale(Vector2 desiredWorldSize)
+        {
+            if (!authoredShapeCached)
+                return;
+
+            float baseWidth = Mathf.Abs(authoredColliderSize.x) > 0.0001f ? Mathf.Abs(authoredColliderSize.x) : 1f;
+            float baseHeight = Mathf.Abs(authoredColliderSize.y) > 0.0001f ? Mathf.Abs(authoredColliderSize.y) : 1f;
+
+            float scaleX = Mathf.Max(0.0001f, desiredWorldSize.x) / baseWidth;
+            float scaleY = Mathf.Max(0.0001f, desiredWorldSize.y) / baseHeight;
+
+            transform.localScale = new Vector3(
+                authoredLocalScale.x * scaleX,
+                authoredLocalScale.y * scaleY,
+                authoredLocalScale.z);
         }
 
         /// <summary>

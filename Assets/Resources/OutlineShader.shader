@@ -1,5 +1,8 @@
 Shader "Sprites/Unlit Outline (Code)"
 {
+    // 이 셰이더의 책임:
+    // SpriteRenderer의 원본 알파 경계를 기준으로 바깥쪽 1px(또는 지정 두께) 외곽선을 그린다.
+    // 원본 스프라이트와 외곽선을 한 번의 패스로 합성해 2D 상호작용 하이라이트에 사용한다.
     Properties
     {
         [PerRendererData] _MainTex ("Sprite Texture", 2D) = "white" {}
@@ -85,13 +88,20 @@ Shader "Sprites/Unlit Outline (Code)"
 
                 float2 px = _MainTex_TexelSize.xy * max(_OutlineThickness, 0.0);
 
-                // 4방향 샘플 (총 5샘플)
+                // 8방향 샘플로 대각선 모서리까지 자연스럽게 외곽선을 잡는다.
                 float aL = tex2D(_MainTex, i.uv + float2(-px.x, 0)).a;
                 float aR = tex2D(_MainTex, i.uv + float2( px.x, 0)).a;
                 float aU = tex2D(_MainTex, i.uv + float2(0,  px.y)).a;
                 float aD = tex2D(_MainTex, i.uv + float2(0, -px.y)).a;
+                float aUL = tex2D(_MainTex, i.uv + float2(-px.x,  px.y)).a;
+                float aUR = tex2D(_MainTex, i.uv + float2( px.x,  px.y)).a;
+                float aDL = tex2D(_MainTex, i.uv + float2(-px.x, -px.y)).a;
+                float aDR = tex2D(_MainTex, i.uv + float2( px.x, -px.y)).a;
 
-                float neighborA = max(max(aL, aR), max(aU, aD));
+                float neighborA = max(
+                    max(max(aL, aR), max(aU, aD)),
+                    max(max(aUL, aUR), max(aDL, aDR))
+                );
 
                 float inside = step(_AlphaThreshold, baseA);
                 float edge   = step(_AlphaThreshold, neighborA) * (1.0 - inside); // 바깥쪽만

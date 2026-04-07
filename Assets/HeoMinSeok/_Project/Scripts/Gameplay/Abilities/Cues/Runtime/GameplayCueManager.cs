@@ -470,7 +470,7 @@ namespace UnityGAS
 
             return isForAdd
                 ? def.audioWhileActive.IsSet || def.audioOnRemove.IsSet
-                : def.audioOnExecute.IsSet || def.sfx != null;
+                : def.audioOnExecute.IsSet;
         }
 
         private static SoundPlaybackContext BuildSoundContext(GameplayCueParams p)
@@ -487,19 +487,10 @@ namespace UnityGAS
 
         private static void PlayCueExecuteAudio(GameplayCueDefinition def, GameplayCueParams p)
         {
-            if (def == null)
+            if (def == null || !def.audioOnExecute.IsSet)
                 return;
 
-            if (def.audioOnExecute.IsSet)
-            {
-                SoundManager.EnsureInstance().Play(def.audioOnExecute, BuildSoundContext(p));
-                return;
-            }
-
-            if (def.sfx != null)
-            {
-                SoundManager.EnsureInstance().PlayLegacyClip(def.sfx, p.Position);
-            }
+            SoundManager.EnsureInstance().Play(def.audioOnExecute, BuildSoundContext(p));
         }
 
         private static void PlayCueRemoveAudio(GameplayCueDefinition def, GameplayCueParams p)
