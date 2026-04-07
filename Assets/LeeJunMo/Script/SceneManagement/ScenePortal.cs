@@ -23,11 +23,15 @@ public sealed class ScenePortal : InteractableBase
 
     [Header("Optional Visual")]
     [SerializeField] private GameObject highlightTarget;
+    [SerializeField] private SpriteRenderer spriteRenderer;
 
     [Header("Cleanup Before Capture")]
     [SerializeField] private List<GameplayTagSet> sceneTravelCleanupTagSets = new();
 
     private bool isTransitioning;
+
+    private MaterialPropertyBlock propBlock;
+    private static readonly int OutlineEnabledID = Shader.PropertyToID("_OutlineEnabled");
 
     public string PortalId => portalId;
     public TransitionType PortalTransitionType => transitionType;
@@ -37,6 +41,9 @@ public sealed class ScenePortal : InteractableBase
     private void Awake()
     {
         EnsurePortalId();
+
+        propBlock = new MaterialPropertyBlock();
+        OnUnHighlight();
     }
 
     private void OnEnable()
@@ -47,11 +54,17 @@ public sealed class ScenePortal : InteractableBase
     private void Reset()
     {
         EnsurePortalId();
+
+        if (spriteRenderer == null)
+            spriteRenderer = GetComponentInChildren<SpriteRenderer>();
     }
 
     private void OnValidate()
     {
         EnsurePortalId();
+
+        if (spriteRenderer == null)
+            spriteRenderer = GetComponentInChildren<SpriteRenderer>();
     }
 
     public override void OnPlayerLeave()
@@ -61,12 +74,16 @@ public sealed class ScenePortal : InteractableBase
 
     public override void OnHighlight()
     {
+        SetOutline(true);
+
         if (highlightTarget != null)
             highlightTarget.SetActive(true);
     }
 
     public override void OnUnHighlight()
     {
+        SetOutline(false);
+
         if (highlightTarget != null)
             highlightTarget.SetActive(false);
     }
@@ -74,7 +91,7 @@ public sealed class ScenePortal : InteractableBase
     public override bool CanInteract(IPlayerInteractor player)
     {
         bool canResolve = PortalRouteManager.Instance != null &&
-            PortalRouteManager.Instance.CanResolveRoute(this);
+                          PortalRouteManager.Instance.CanResolveRoute(this);
 
         return
             !isTransitioning &&
@@ -89,6 +106,8 @@ public sealed class ScenePortal : InteractableBase
             return;
 
         isTransitioning = true;
+        OnUnHighlight();
+
         player.SetInteractState(InteractState.None);
 
         if (!ScenePortalTravelService.TryTravel(this))
@@ -101,6 +120,16 @@ public sealed class ScenePortal : InteractableBase
     public override InteractState GetInteractType() => InteractState.Idle;
     public override string GetInteractDescription() => interactPromptText;
     public override Transform GetPromptAnchor() => promptAnchor != null ? promptAnchor : transform;
+
+    private void SetOutline(bool enabled)
+    {
+        if (spriteRenderer == null)
+            return;
+
+        spriteRenderer.GetPropertyBlock(propBlock);
+        propBlock.SetFloat(OutlineEnabledID, enabled ? 1f : 0f);
+        spriteRenderer.SetPropertyBlock(propBlock);
+    }
 
     private void EnsurePortalId()
     {

@@ -36,6 +36,9 @@ EditorBuildSettings:
     path: Assets/Scenes/ProtoTypeBoss 3.unity
     guid: 5d02dcb002426f342af30a4b4023b491
   - enabled: 1
+    path: Assets/Scenes/ProtoTypeBoss 4.unity
+    guid: 709a5294c3bbe4f42917397438384780
+  - enabled: 1
     path: Assets/HeoMinSeok/HeoMinSeokScene.unity
     guid: 8c13838df8e680749ae1bb30cfe63339
   m_configObjects:
