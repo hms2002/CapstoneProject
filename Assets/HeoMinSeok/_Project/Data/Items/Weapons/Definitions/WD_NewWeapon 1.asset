@@ -15,7 +15,12 @@ MonoBehaviour:
   weaponId: Weapon.New1
   displayName: New Weapon
   icon: {fileID: 1408481339, guid: 7e11de47ebfa53a42a94e5fb92a94f06, type: 3}
-  weaponPrefab: {fileID: 8490881910473165802, guid: fec6d35c34d9cbc4f95c50b680862890, type: 3}
+  storyText: 
+  statModifiers: []
+  attackInputHint: "\uC6B0\uD074\uB9AD"
+  skill1InputHint: Q
+  skill2InputHint: E
+  weaponPrefab: {fileID: 916365682996460394, guid: db618625c22a5504ba785650bdc0df2b, type: 3}
   equippedTag: {fileID: 11400000, guid: cac1046499d28814a91fcb2631757240, type: 2}
   attack: {fileID: 11400000, guid: 1f472dc67709f4248953a0bf39255567, type: 2}
   skill1: {fileID: 11400000, guid: 0fefa61e5f457d94e828a895b4ddfa2a, type: 2}

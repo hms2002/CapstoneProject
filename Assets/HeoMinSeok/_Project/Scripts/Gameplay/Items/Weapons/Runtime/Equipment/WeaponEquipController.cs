@@ -6,7 +6,8 @@ using UnityGAS;
 /// 책임 :
 /// - 현재 장착 무기 프리팹의 생성/캐싱/활성화를 관리한다.
 /// - 커서의 좌우 위치에 따라 무기 인스턴스를 좌/우 손 pivot 중 적절한 소켓 아래에 배치한다.
-/// - 무기 회전 자체는 Hand/PlayerAim2D가 맡고, 이 컨트롤러는 배치 소켓 선택과 비주얼 수명만 담당한다.
+/// - 무기 회전 자체는 Hand/PlayerAim2D가 맡고, 이 컨트롤러는 배치 소켓 선택과 비주얼 수명,
+///   그리고 WeaponVisualSetup을 통한 좌/우 손별 비주얼 포즈 적용을 담당한다.
 /// </summary>
 public class WeaponEquipController : MonoBehaviour
 {
@@ -37,6 +38,7 @@ public class WeaponEquipController : MonoBehaviour
 
     private GameObject currentPrefab;
     private GameObject currentWeaponGO;
+    private WeaponVisualSetup currentVisualSetup;
     private HandSide currentSide = HandSide.Right;
 
     // prefab -> instance
@@ -78,6 +80,7 @@ public class WeaponEquipController : MonoBehaviour
         {
             ActivateInstance(currentWeaponGO, weaponPrefab);
             RegisterAnimatorAndRelays(currentWeaponGO);
+            ApplyCurrentVisualPose();
             return;
         }
 
@@ -87,6 +90,9 @@ public class WeaponEquipController : MonoBehaviour
         // 새 무기 인스턴스 얻기
         currentPrefab = weaponPrefab;
         currentWeaponGO = GetOrCreateInstance(weaponPrefab);
+        currentVisualSetup = currentWeaponGO != null
+            ? currentWeaponGO.GetComponentInChildren<WeaponVisualSetup>(true)
+            : null;
 
         ActivateInstance(currentWeaponGO, weaponPrefab);
         RegisterAnimatorAndRelays(currentWeaponGO);
@@ -127,6 +133,7 @@ public class WeaponEquipController : MonoBehaviour
 
         currentWeaponGO = null;
         currentPrefab = null;
+        currentVisualSetup = null;
         currentSide = HandSide.Right;
 
         // 안전: 이전 무기 Animator 참조 해제
@@ -201,6 +208,26 @@ public class WeaponEquipController : MonoBehaviour
         }
 
         currentSide = nextSide;
+        ApplyCurrentVisualPose();
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 현재 장착 무기 인스턴스의 WeaponVisualSetup을 찾아 좌/우 손별 비주얼 포즈를 적용한다.
+    /// - 설정이 없으면 기존 authored 비주얼을 그대로 유지해 하위 호환을 보장한다.
+    /// </summary>
+    private void ApplyCurrentVisualPose()
+    {
+        if (currentWeaponGO == null)
+            return;
+
+        if (currentVisualSetup == null)
+            currentVisualSetup = currentWeaponGO.GetComponentInChildren<WeaponVisualSetup>(true);
+
+        if (currentVisualSetup == null)
+            return;
+
+        currentVisualSetup.ApplyPose(currentSide == HandSide.Left);
     }
 
     /// <summary>
