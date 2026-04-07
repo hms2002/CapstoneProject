@@ -68,14 +68,14 @@ Material:
     m_Ints: []
     m_Floats:
     - _EnableExternalAlpha: 0
-    - _GlowIntensity: 3
+    - _GlowIntensity: 4
     - _QueueControl: 0
     - _QueueOffset: 0
     - _ZWrite: 0
     m_Colors:
     - _BaseColor: {r: 0.6377357, g: 0.39087045, b: 0.18169452, a: 0}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _GlowColor: {r: 1.5320753, g: 0.16844808, b: 0, a: 0}
+    - _GlowColor: {r: 2.4622889, g: 2.4622889, b: 2.4622889, a: 0}
     - _RendererColor: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

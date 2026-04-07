@@ -1,18 +1,16 @@
-Shader "Custom/2D/SoftRadialHalo2D_Fixed"
+Shader "Custom/2D/SpriteOuterPixelOutline2D"
 {
     Properties
     {
         [PerRendererData] _MainTex ("Sprite Texture", 2D) = "white" {}
-        [HDR] _GlowColor ("Glow Color", Color) = (1, 0.55, 0.15, 1)
-        _Intensity ("Intensity", Range(0, 10)) = 2.5
-        _Opacity ("Opacity", Range(0, 1)) = 0.7
+        [MainColor] _Color ("Tint", Color) = (1,1,1,1)
 
-        _InnerRadius ("Inner Radius", Range(0, 1.5)) = 0.0
-        _OuterRadius ("Outer Radius", Range(0.01, 2.0)) = 0.9
+        _OutlineColor ("Outline Color", Color) = (1, 0.85, 0.2, 1)
+        _OutlineThickness ("Outline Thickness (px)", Range(1, 4)) = 1
 
-        _CenterX ("Center X", Range(0, 1)) = 0.5
-        _CenterY ("Center Y", Range(0, 1)) = 0.5
-        _Softness ("Softness", Range(0.01, 4)) = 1.0
+        [HDR] _EmissionColor ("Emission Color", Color) = (1, 0.85, 0.2, 1)
+        _EmissionStrength ("Emission Strength", Range(0, 8)) = 0
+        _AlphaThreshold ("Alpha Threshold", Range(0, 1)) = 0.01
     }
 
     SubShader
@@ -27,7 +25,7 @@ Shader "Custom/2D/SoftRadialHalo2D_Fixed"
 
         Cull Off
         ZWrite Off
-        Blend SrcAlpha One
+        Blend SrcAlpha OneMinusSrcAlpha
 
         Pass
         {
@@ -53,19 +51,18 @@ Shader "Custom/2D/SoftRadialHalo2D_Fixed"
                 float2 uv          : TEXCOORD0;
             };
 
-            // SpriteRenderer 요구사항용
             TEXTURE2D(_MainTex);
             SAMPLER(sampler_MainTex);
 
+            float4 _MainTex_TexelSize;
+
             CBUFFER_START(UnityPerMaterial)
-                half4 _GlowColor;
-                half _Intensity;
-                half _Opacity;
-                half _InnerRadius;
-                half _OuterRadius;
-                half _CenterX;
-                half _CenterY;
-                half _Softness;
+                half4 _Color;
+                half4 _OutlineColor;
+                half4 _EmissionColor;
+                half  _OutlineThickness;
+                half  _EmissionStrength;
+                half  _AlphaThreshold;
             CBUFFER_END
 
             Varyings vert(Attributes IN)
@@ -77,20 +74,50 @@ Shader "Custom/2D/SoftRadialHalo2D_Fixed"
                 return OUT;
             }
 
+            half AlphaAt(float2 uv)
+            {
+                return SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, uv).a;
+            }
+
             half4 frag(Varyings IN) : SV_Target
             {
-                float2 center = float2(_CenterX, _CenterY);
-                float2 p = (IN.uv - center) * 2.0;
+                half4 baseTex = SAMPLE_TEXTURE2D(_MainTex, sampler_MainTex, IN.uv);
+                half4 baseCol = baseTex * _Color * IN.color;
 
-                float dist = length(p);
+                // 원본 스프라이트 픽셀은 절대 안 건드림
+                if (baseTex.a > _AlphaThreshold)
+                {
+                    return baseCol;
+                }
 
-                float mask = 1.0 - smoothstep(_InnerRadius, _OuterRadius, dist);
-                mask = saturate(pow(mask, _Softness));
+                float2 stepUV = _MainTex_TexelSize.xy * max(_OutlineThickness, 1.0h);
 
-                half alpha = mask * _Opacity * IN.color.a;
-                half3 rgb = _GlowColor.rgb * _Intensity * alpha * IN.color.rgb;
+                // 8방향 이웃 검사
+                half aU  = AlphaAt(IN.uv + float2(0,  stepUV.y));
+                half aD  = AlphaAt(IN.uv + float2(0, -stepUV.y));
+                half aR  = AlphaAt(IN.uv + float2( stepUV.x, 0));
+                half aL  = AlphaAt(IN.uv + float2(-stepUV.x, 0));
 
-                return half4(rgb, alpha);
+                half aUR = AlphaAt(IN.uv + float2( stepUV.x,  stepUV.y));
+                half aUL = AlphaAt(IN.uv + float2(-stepUV.x,  stepUV.y));
+                half aDR = AlphaAt(IN.uv + float2( stepUV.x, -stepUV.y));
+                half aDL = AlphaAt(IN.uv + float2(-stepUV.x, -stepUV.y));
+
+                half neighborMax = max(max(max(aU, aD), max(aR, aL)), max(max(aUR, aUL), max(aDR, aDL)));
+
+                // 현재는 투명, 주변에 본체가 있으면 outline
+                half outlineMask = step(_AlphaThreshold, neighborMax);
+
+                if (outlineMask <= 0.0h)
+                {
+                    return half4(0,0,0,0);
+                }
+
+                half4 outlineCol = _OutlineColor;
+                outlineCol.rgb += _EmissionColor.rgb * _EmissionStrength * _EmissionColor.a;
+                outlineCol.a *= outlineMask;
+
+                return outlineCol;
             }
             ENDHLSL
         }
