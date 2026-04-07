@@ -44,6 +44,7 @@ public abstract class BossControllerBase : Enemy
     private BossPatternExecuteState patternExecuteState;
     private BossGroggyState groggyState;
     private BossDeadState deadState;
+    
     private bool combatActive;
     private bool hasCombatOverride;
 
@@ -60,6 +61,7 @@ public abstract class BossControllerBase : Enemy
         base.Awake();
 
         CacheComponents();
+        bossDrop = GetComponent<BossDrop>();
 
         blackboard = new BossBlackboard(transform);
         stateMachine = new BossStateMachine(blackboard);
@@ -214,6 +216,31 @@ public abstract class BossControllerBase : Enemy
         blackboard.ClearPatternContext();
     }
 
+    protected override void OnEnemyAttributeChanged(AttributeDefinition attribute, float oldValue, float newValue)
+    {
+        base.OnEnemyAttributeChanged(attribute, oldValue, newValue);
+
+        AttributeDefinition deathHealthAttribute = ResolveHealthAttribute();
+        if (attribute == deathHealthAttribute && newValue <= 0f && oldValue > 0f)
+            Die();
+    }
+
+    protected override void Die()
+    {
+        if (isDead)
+            return;
+
+        isDead = true;
+
+        if (stateMachine != null && deadState != null && stateMachine.CurrentState != deadState)
+            ChangeState(deadState);
+
+        if (bossDrop != null)
+            bossDrop.OnBossDead();
+
+        base.Die();
+    }
+
     public bool HasDeadTag()
     {
         return deadTag != null && tagSystem != null && tagSystem.HasTag(deadTag);
@@ -285,16 +312,29 @@ public abstract class BossControllerBase : Enemy
 
     private float GetCurrentHpRatio()
     {
-        if (attributeSet == null || healthAttribute == null || maxHealthAttribute == null)
+        AttributeDefinition currentHealthAttribute = ResolveHealthAttribute();
+        AttributeDefinition currentMaxHealthAttribute = ResolveMaxHealthAttribute();
+
+        if (attributeSet == null || currentHealthAttribute == null || currentMaxHealthAttribute == null)
             return 1f;
 
-        float currentHealth = attributeSet.GetAttributeValue(healthAttribute);
-        float maxHealth = attributeSet.GetAttributeValue(maxHealthAttribute);
+        float currentHealth = attributeSet.GetAttributeValue(currentHealthAttribute);
+        float maxHealth = attributeSet.GetAttributeValue(currentMaxHealthAttribute);
 
         if (maxHealth <= 0f)
             return 0f;
 
         return currentHealth / maxHealth;
+    }
+
+    private AttributeDefinition ResolveHealthAttribute()
+    {
+        return healthAttribute != null ? healthAttribute : healthDef;
+    }
+
+    private AttributeDefinition ResolveMaxHealthAttribute()
+    {
+        return maxHealthAttribute != null ? maxHealthAttribute : maxHealthDef;
     }
 
     public void NotifySpawnFinished()

@@ -21,6 +21,7 @@ public class Boss : Enemy
         bossDrop = GetComponent<BossDrop>();
     }
 
+    /// <summary>보스 Attribute 변화에 따라 그로기와 사망 처리를 실행합니다.</summary>
     protected override void OnEnemyAttributeChanged(AttributeDefinition attribute, float oldValue, float newValue)
     {
         base.OnEnemyAttributeChanged(attribute, oldValue, newValue);
@@ -37,11 +38,13 @@ public class Boss : Enemy
         }
     }
 
+    /// <summary>보스에게 그로기 GameplayEffect를 적용합니다.</summary>
     private void ApplyGroggy()
     {
         effectRunner.ApplyEffect(groggyEffect, gameObject, gameObject);
     }
 
+    /// <summary>보스 사망 보상을 처리하고 공통 사망 처리를 실행합니다.</summary>
     protected override void Die()
     {
         if (bossDrop != null)
@@ -52,13 +55,13 @@ public class Boss : Enemy
         base.Die();
     }
 
-    /// <summary>BT Condition: 지금 그로기 상태인가?</summary>
+    /// <summary>보스가 현재 그로기 상태인지 반환합니다.</summary>
     public bool IsGroggy()
     {
         return tagSystem.HasTagId(TagRegistry.GetIdByPath("State.Status.Groggy"));
     }
 
-    /// <summary>BT Action: 스킬 사용해!</summary>
+    /// <summary>현재 타겟을 대상으로 지정한 Ability 사용을 시도합니다.</summary>
     public bool TryUseAbility(AbilityDefinition ability)
     {
         return abilitySystem.TryActivateAbility(ability, target?.gameObject);
