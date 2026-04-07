@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   corridorSceneName: ProtoTypeCorridor 1
   corridorEntryPointId: Default
-  bossSceneName: ProtoTypeBoss 1
+  bossSceneName: ProtoTypeBoss 2
   bossEntryPointId: Default
