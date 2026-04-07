@@ -45,14 +45,12 @@ public class Boss : Enemy
     }
 
     /// <summary>보스 사망 보상을 처리하고 공통 사망 처리를 실행합니다.</summary>
-    protected override void Die()
+    protected override void OnDeathStarted()
     {
         if (bossDrop != null)
         {
             bossDrop.OnBossDead();
         }
-
-        base.Die();
     }
 
     /// <summary>보스가 현재 그로기 상태인지 반환합니다.</summary>

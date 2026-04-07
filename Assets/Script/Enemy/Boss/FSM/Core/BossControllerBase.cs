@@ -4,6 +4,9 @@ using UnityGAS;
 
 public abstract class BossControllerBase : Enemy
 {
+    // 이 클래스의 책임:
+    // Enemy의 공통 전투/사망 처리 위에 보스 전용 전투 상태, 페이즈, 반응 전환을 조율한다.
+
     [Header("Encounter")]
     [SerializeField] private bool startCombatOnStart = true;
 
@@ -44,7 +47,10 @@ public abstract class BossControllerBase : Enemy
     private BossPatternExecuteState patternExecuteState;
     private BossGroggyState groggyState;
     private BossDeadState deadState;
-    
+
+    // 보스 전용 드롭 처리의 책임을 이 컨트롤러에서 맡기 위한 참조입니다.
+    private BossDrop bossDrop;
+
     private bool combatActive;
     private bool hasCombatOverride;
 
@@ -225,20 +231,13 @@ public abstract class BossControllerBase : Enemy
             Die();
     }
 
-    protected override void Die()
+    protected override void OnDeathStarted()
     {
-        if (isDead)
-            return;
-
-        isDead = true;
-
         if (stateMachine != null && deadState != null && stateMachine.CurrentState != deadState)
             ChangeState(deadState);
 
         if (bossDrop != null)
             bossDrop.OnBossDead();
-
-        base.Die();
     }
 
     public bool HasDeadTag()

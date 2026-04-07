@@ -39,8 +39,13 @@ public class Enemy : MonoBehaviour
     [Tooltip("Die 애니메이션 재생 후 오브젝트를 제거하기까지 기다릴 시간입니다. 0 이하이면 Animator에서 Die 클립 길이를 자동 탐색합니다.")]
     [SerializeField] protected float dieAnimTime = 0f;
 
+    // 이 클래스의 책임:
+    // 모든 적이 공유하는 공통 사망 진입 상태와 사망 연출 재생/제거 흐름의 단일 진실 원천이 된다.
+    protected bool isDead;
+
     protected Transform target;
     public virtual Transform Target => target;
+    public bool IsDead => isDead;
 
     protected virtual void Awake()
     {
@@ -99,10 +104,18 @@ public class Enemy : MonoBehaviour
     /// <summary>적 사망 처리의 공통 진입점입니다.</summary>
     protected virtual void Die()
     {
+        if (isDead)
+            return;
+
+        isDead = true;
+        OnDeathStarted();
         StopDeathGameplay();
         PlayDeathAnimation();
         DestroyAfterDelay();
     }
+
+    /// <summary>파생 클래스가 공통 사망 처리 시작 직전에 전용 정리를 끼워 넣는 훅입니다.</summary>
+    protected virtual void OnDeathStarted() { }
 
     /// <summary>사망 시 이동, 충돌, 물리 처리를 정지합니다.</summary>
     protected virtual void StopDeathGameplay()

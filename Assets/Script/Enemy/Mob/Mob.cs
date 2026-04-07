@@ -34,7 +34,6 @@ public class Mob : Enemy
     [SerializeField] private GameplayTag freezeAllMovementTag;
 
     private float currentCooltime;
-    private bool isDead = false;
 
     private bool intentMoveTagApplied;
     private bool freezeMoveTagApplied;
@@ -266,11 +265,8 @@ public class Mob : Enemy
     }
 
     /// <summary>Mob 사망 시 태그와 Tackle 상태를 정리하고 공통 사망 처리를 실행합니다.</summary>
-    protected override void Die()
+    protected override void OnDeathStarted()
     {
-        if (isDead) return;
-        isDead = true;
-
         // 쿨타임 기반 이동 차단은 정리
         ClearPreparedTackleContext();
         SetTagActive(blockIntentMoveTag, false, ref intentMoveTagApplied);
@@ -279,8 +275,6 @@ public class Mob : Enemy
         SetTagActive(freezeAllMovementTag, true, ref freezeMoveTagApplied);
 
         LootManager.Instance?.SpawnMonsterLoot(transform.position);
-
-        base.Die();
     }
 
     private void OnDisable()
