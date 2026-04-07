@@ -24,7 +24,7 @@ EditorBuildSettings:
     path: Assets/Scenes/ProtoTypeCorridor 3.unity
     guid: 786a60c28c5a0c448b00b7ae51ee3d90
   - enabled: 1
-    path: Assets/Scenes/ProtoTypeBoss.unity
+    path: Assets/Scenes/ProtoTypeBossLagacy.unity
     guid: 082a9c74b9de115459c49b0710498fe2
   - enabled: 1
     path: Assets/Scenes/ProtoTypeBoss 1.unity

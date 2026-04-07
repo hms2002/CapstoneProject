@@ -6,12 +6,21 @@ public class BossDrop : MonoBehaviour
     [Header("Chest Settings")]
     public GameObject chestPrefab;
     public Transform chestSpawnPoint;
+    public GameObject portalObj;
 
     [Header("Boss Unique Loot")]
     public List<BossSpecificLoot> bossUniqueLoots;
 
     [Header("Currency Drop")]
     public GameObject magicStonePrefab;
+
+    private void Start()
+    {
+        if (portalObj != null)
+        {
+            portalObj.SetActive(false);
+        }
+    }
 
     public void OnBossDead()
     {
@@ -20,6 +29,8 @@ public class BossDrop : MonoBehaviour
 
         // 2. 마정석 낱개 드롭
         SpawnBossCurrency();
+
+        ActivePortal();
     }
 
     private void SpawnTreasureChest()
@@ -80,6 +91,14 @@ public class BossDrop : MonoBehaviour
             {
                 pickup.amount = 1;
             }
+        }
+    }
+
+    private void ActivePortal()
+    {
+        if(portalObj != null)
+        {
+            portalObj.SetActive(true);
         }
     }
 }
