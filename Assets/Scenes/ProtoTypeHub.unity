@@ -2352,7 +2352,7 @@ MonoBehaviour:
     primary: 101
     secondary: 0
   - action: 9
-    primary: 9
+    primary: 114
     secondary: 0
   - action: 10
     primary: 49
@@ -2367,7 +2367,7 @@ MonoBehaviour:
     primary: 52
     secondary: 0
   - action: 14
-    primary: 105
+    primary: 9
     secondary: 0
   - action: 15
     primary: 32
