@@ -32,6 +32,7 @@ public class PlayerInteractor2D : MonoBehaviour, IPlayerInteractor
 
     [Header("Interaction Components")]
     [SerializeField] private PlayerInteractableTracker2D interactableTracker;
+    [SerializeField] private PlayerInteractionSensor2D interactionSensor;
     [SerializeField] private PlayerInteractionTargetResolver2D targetResolver;
     [SerializeField] private PlayerInteractionPromptPresenter promptPresenter;
     [SerializeField] private PlayerSpeechController speechController;
@@ -126,6 +127,12 @@ public class PlayerInteractor2D : MonoBehaviour, IPlayerInteractor
             interactableTracker = GetComponent<PlayerInteractableTracker2D>();
         if (interactableTracker == null)
             interactableTracker = gameObject.AddComponent<PlayerInteractableTracker2D>();
+
+        Collider2D bodyCollider = GetComponent<Collider2D>();
+        if (bodyCollider != null)
+            bodyCollider.isTrigger = false;
+
+        interactionSensor = PlayerInteractionSensor2D.EnsureFor(transform, bodyCollider, interactableTracker);
 
         if (targetResolver == null)
             targetResolver = GetComponent<PlayerInteractionTargetResolver2D>();
