@@ -131,6 +131,16 @@ public sealed class UpgradeProgressService
 
     private static UpgradeSaveData TryGetSaveData()
     {
-        return GameDataManager.Instance != null ? GameDataManager.Instance.Data.upgradeData : null;
+        if (GameDataManager.Instance == null)
+            return null;
+
+        GameData data = GameDataManager.Instance.EnsureData();
+        if (data == null)
+            return null;
+
+        if (data.upgradeData == null)
+            data.upgradeData = new UpgradeSaveData();
+
+        return data.upgradeData;
     }
 }
