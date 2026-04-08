@@ -16,8 +16,10 @@ public class WorldItemPickup2D : InteractableBase
     [Header("Visual (optional)")]
     [SerializeField] private SpriteRenderer spriteRenderer;
     private MaterialPropertyBlock outlinePropertyBlock;
+    private Collider2D triggerCollider;
 
     public ScriptableObject Item => item;
+    [SerializeField] private bool interactionLocked;
     [SerializeField] private int relicLevel = 0;
     public int RelicLevel => relicLevel;
     public void SetItem(ScriptableObject so, int relicLevelOverride = 0)
@@ -38,8 +40,12 @@ public class WorldItemPickup2D : InteractableBase
         if (spriteRenderer == null) spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         outlinePropertyBlock = new MaterialPropertyBlock();
 
-        var col = GetComponent<Collider2D>();
-        if (col != null) col.isTrigger = true;
+        triggerCollider = GetComponent<Collider2D>();
+        if (triggerCollider != null)
+        {
+            triggerCollider.isTrigger = true;
+            triggerCollider.enabled = !interactionLocked;
+        }
 
         RefreshVisual();
         OnUnHighlight();
@@ -55,12 +61,12 @@ public class WorldItemPickup2D : InteractableBase
 
     public override bool CanInteract(IPlayerInteractor player)
     {
-        return item != null;
+        return item != null && !interactionLocked;
     }
 
     public override void OnHighlight()
     {
-        if (item == null)
+        if (item == null || interactionLocked)
             return;
 
         if (spriteRenderer != null)
@@ -111,12 +117,22 @@ public class WorldItemPickup2D : InteractableBase
 
     public override string GetInteractDescription()
     {
-        return item != null ? interactPromptText : string.Empty;
+        return item != null && !interactionLocked ? interactPromptText : string.Empty;
     }
 
     public override Transform GetPromptAnchor() => promptAnchor != null ? promptAnchor : transform;
 
     private Transform GetDetailAnchor() => promptAnchor != null ? promptAnchor : transform;
+
+    public void SetInteractionLocked(bool locked)
+    {
+        interactionLocked = locked;
+        if (locked)
+            OnUnHighlight();
+
+        if (triggerCollider != null)
+            triggerCollider.enabled = !locked;
+    }
 
     private bool TryPickupWeapon(IPlayerInteractor player, WeaponDefinition weapon)
     {

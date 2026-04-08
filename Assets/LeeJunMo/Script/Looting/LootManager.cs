@@ -253,12 +253,13 @@ public class LootManager : MonoBehaviour
             currentGraveTable.WeaponDropCountProfile,
             bonusMinCount,
             bonusMaxCount);
+        List<Vector3> landingPositions = spawnService.GetHorizontalGroundPositions(position, 1);
 
         for (int i = 0; i < totalCount; i++)
         {
             WeaponDefinition weapon = poolService.GetRandomWeapon(new HashSet<string>());
             if (weapon != null)
-                SpawnLootObject(position + spawnService.GetRandomScatterOffset(), weapon);
+                SpawnAnimatedGraveLoot(position, landingPositions, i, weapon);
         }
     }
 
@@ -268,13 +269,14 @@ public class LootManager : MonoBehaviour
             currentGraveTable.RelicDropCountProfile,
             bonusMinCount,
             bonusMaxCount);
+        List<Vector3> landingPositions = spawnService.GetHorizontalGroundPositions(position, 1);
 
         for (int i = 0; i < totalCount; i++)
         {
             ItemRarity rarity = rollService.RollGraveRelicRarity(currentGraveTable, bonusRareChance, bonusEpicChance);
             RelicDefinition relic = GetRandomRelicByRarity(rarity);
             if (relic != null)
-                SpawnLootObject(position + spawnService.GetRandomScatterOffset(), relic);
+                SpawnAnimatedGraveLoot(position, landingPositions, i, relic);
         }
     }
 
@@ -315,5 +317,14 @@ public class LootManager : MonoBehaviour
     {
         EnsureServices();
         return poolService.GetRandomRelicByRarity(targetRarity);
+    }
+
+    private void SpawnAnimatedGraveLoot(Vector3 originPosition, List<Vector3> landingPositions, int dropIndex, ScriptableObject itemData)
+    {
+        Vector3 landingPosition = landingPositions != null && landingPositions.Count > 0
+            ? landingPositions[dropIndex % landingPositions.Count]
+            : originPosition + spawnService.GetRandomScatterOffset();
+
+        spawnService.SpawnAnimatedLootObject(originPosition, landingPosition, itemData);
     }
 }
