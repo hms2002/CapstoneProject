@@ -10,21 +10,21 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e3a563c8641e8194a964b56cce6ecaa2, type: 3}
-  m_Name: Def_Cue_Falling
+  m_Name: Def_Cue_Sword_Hit
   m_EditorClassIdentifier: 
-  cueTag: {fileID: 11400000, guid: f54e8cb58b4f7c64292067442e9286c7, type: 2}
-  mode: 1
-  cueNotifyHostPrefab: {fileID: 5162246622105999104, guid: f09848183e09c7742bef1b7b1deecdfd, type: 3}
-  cuePrefab: {fileID: 5162246622105999104, guid: f09848183e09c7742bef1b7b1deecdfd, type: 3}
+  cueTag: {fileID: 11400000, guid: 4af7daafb91813e4985c8a1c393c77c1, type: 2}
+  mode: 2
+  cueNotifyHostPrefab: {fileID: 0}
+  cuePrefab: {fileID: 1412473672868303488, guid: c257fcc31167b184e9a65f583e74626f, type: 3}
   vfxPrefab: {fileID: 0}
   audioOnExecute:
-    key: cue.falling
-    volumeMultiplier: 1
+    key: 
+    volumeMultiplier: 0
     anchorPolicy: 0
     localOffset: {x: 0, y: 0, z: 0}
   audioWhileActive:
-    key: cue.falling
-    volumeMultiplier: 1
+    key: 
+    volumeMultiplier: 0
     anchorPolicy: 0
     localOffset: {x: 0, y: 0, z: 0}
   audioOnRemove:
@@ -33,12 +33,12 @@ MonoBehaviour:
     anchorPolicy: 0
     localOffset: {x: 0, y: 0, z: 0}
   attachToTarget: 0
-  useExplicitHitPoint: 0
+  useExplicitHitPoint: 1
   spawnAnchorPolicy: 0
   applyOffsetInTargetLocalSpace: 1
   localOffset: {x: 0, y: 0, z: 0}
-  autoDestroySeconds: 2
-  isPersistent: 1
+  autoDestroySeconds: 0.35
+  isPersistent: 0
   uniquePerTarget: 0
   addLocalPosition: {x: 0, y: 0, z: 0}
   addLocalEuler: {x: 0, y: 0, z: 0}

@@ -207,7 +207,7 @@ namespace UnityGAS
                 if (!CanHitTarget(targetRoot))
                     continue;
 
-                if (!TryApplyHit(targetRoot))
+                if (!TryApplyHit(targetRoot, other))
                     continue;
 
                 OnHitTarget(targetRoot, other);

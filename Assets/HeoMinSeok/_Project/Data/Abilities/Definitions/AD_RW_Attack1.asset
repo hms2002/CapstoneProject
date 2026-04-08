@@ -16,9 +16,12 @@ MonoBehaviour:
   icon: {fileID: 655937068, guid: ef16b2ddeb64123459076c2c8a541a63, type: 3}
   description: AD_RW_Attack1
   cooldown: 0.5
+  executionPolicy: 0
   useCharges: 0
   maxCharges: 1
   cooldownEffect: {fileID: 11400000, guid: e0cdcda9b86374b4c99ad2e948fcfd26, type: 2}
+  cooldownTag: {fileID: 0}
+  startCooldownOnEnd: 0
   castTime: 0
   recoveryTime: 0
   canCastWhileMoving: 1
@@ -44,6 +47,41 @@ MonoBehaviour:
   logic: {fileID: 11400000, guid: 1c748446d88e6e345b09cba95fad4e23, type: 2}
   sourceObject: {fileID: 0}
   containers: []
+  audioOnCastStart:
+    key: 
+    volumeMultiplier: 0
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  audioWhileCasting:
+    key: 
+    volumeMultiplier: 0
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  audioOnCommit:
+    key: 
+    volumeMultiplier: 0
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  audioWhileActive:
+    key: 
+    volumeMultiplier: 0
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  audioOnEnd:
+    key: 
+    volumeMultiplier: 0
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  audioOnCastCancelled:
+    key: 
+    volumeMultiplier: 0
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  audioOnExecutionCancelled:
+    key: 
+    volumeMultiplier: 0
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
   cueOnCastStart: {fileID: 0}
   cueWhileCasting: {fileID: 0}
   cueOnCommit: {fileID: 0}
@@ -51,3 +89,4 @@ MonoBehaviour:
   cueOnEnd: {fileID: 0}
   cueOnCastCancelled: {fileID: 0}
   cueOnExecutionCancelled: {fileID: 0}
+  cueOnHitConfirmed: {fileID: 11400000, guid: 4af7daafb91813e4985c8a1c393c77c1, type: 2}

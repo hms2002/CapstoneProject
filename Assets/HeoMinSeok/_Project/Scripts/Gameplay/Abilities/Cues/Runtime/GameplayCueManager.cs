@@ -1,33 +1,37 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using CapstoneAudio;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace UnityGAS
 {
     public class GameplayCueManager : MonoBehaviour
     {
-        [SerializeField] private List<GameplayCueDefinition> definitions = new();
+        [SerializeField] private GameplayCueDatabase cueDatabase;
+        [FormerlySerializedAs("definitions")]
+        [SerializeField, HideInInspector] private List<GameplayCueDefinition> legacyDefinitions = new();
 
         private readonly Dictionary<int, GameplayCueDefinition> defByTagId = new();
         private readonly Dictionary<CueKey, ActiveCueInstance> active = new();
 
-        // cueNotifyHostPrefab에서 Notify 타입을 뽑아오는 비용을 줄이기 위한 캐시
+        // cueNotifyHostPrefab?먯꽌 Notify ??낆쓣 戮묒븘?ㅻ뒗 鍮꾩슜??以꾩씠湲??꾪븳 罹먯떆
         private readonly Dictionary<int, System.Type> notifyTypeCacheByDefId = new();
 
-        // 초기화 여부를 체크하는 플래그
+        // 珥덇린???щ?瑜?泥댄겕?섎뒗 ?뚮옒洹?
         private bool isIndexBuilt = false;
+        private bool hasWarnedAboutLegacyDefinitions = false;
 
         // ----------------------------------------------------------------
-        // [ID 조회 헬퍼]
+        // [ID 議고쉶 ?ы띁]
         // ----------------------------------------------------------------
         private static int GetTagKey(GameplayTag tag)
         {
             if (tag == null) return -1;
             try
             {
-                // TagRegistry가 초기화 안 됐으면 강제 초기화
+                // TagRegistry媛 珥덇린?????먯쑝硫?媛뺤젣 珥덇린??
                 TagRegistry.EnsureInitialized();
                 return TagRegistry.GetIdByPath(tag.name);
             }
@@ -76,13 +80,13 @@ namespace UnityGAS
         {
             public GameplayCueDefinition Def;
 
-            // Spawned prefab instance (SpawnPrefab 경로)
+            // Spawned prefab instance (SpawnPrefab 寃쎈줈)
             public GameObject Instance;
 
-            // Notify component (SpawnPrefab 경로의 인스턴스 내부, 또는 TargetNotify 경로로 Target에 직접 붙인 컴포넌트)
+            // Notify component (SpawnPrefab 寃쎈줈???몄뒪?댁뒪 ?대?, ?먮뒗 TargetNotify 寃쎈줈濡?Target??吏곸젒 遺숈씤 而댄룷?뚰듃)
             public GameplayCueNotify Notify;
 
-            // Target에 AddComponent로 생성했는지(= Remove 시 Destroy 대상)
+            // Target??AddComponent濡??앹꽦?덈뒗吏(= Remove ??Destroy ???
             public bool CreatedNotifyOnTarget;
 
             // TransformOnly runtime
@@ -100,24 +104,25 @@ namespace UnityGAS
 
         private void Awake()
         {
-            // Awake에서는 강제로 하지 않음 (TagRegistry 의존성 문제 회피)
+            // Awake?먯꽌??媛뺤젣濡??섏? ?딆쓬 (TagRegistry ?섏〈??臾몄젣 ?뚰뵾)
         }
 
         private void Start()
         {
-            // 게임 시작 시점까지 아무도 안 불렀으면, 이제 초기화
+            // 寃뚯엫 ?쒖옉 ?쒖젏源뚯? ?꾨Т????遺덈??쇰㈃, ?댁젣 珥덇린??
             if (!isIndexBuilt)
             {
                 RebuildIndex();
             }
         }
 
-        // [핵심] 인덱스 빌드 함수
+        // [?듭떖] ?몃뜳??鍮뚮뱶 ?⑥닔
         public void RebuildIndex()
         {
             defByTagId.Clear();
-            TagRegistry.EnsureInitialized(); // 태그 시스템 준비
+            TagRegistry.EnsureInitialized(); // ?쒓렇 ?쒖뒪??以鍮?
 
+            IReadOnlyList<GameplayCueDefinition> definitions = GetDefinitions();
             for (int i = 0; i < definitions.Count; i++)
             {
                 var d = definitions[i];
@@ -130,10 +135,9 @@ namespace UnityGAS
                 }
             }
 
-            isIndexBuilt = true; // 초기화 완료 표시
-            Debug.Log($"[GameplayCueManager] 인덱스 빌드 완료. ({defByTagId.Count}개)");
+            isIndexBuilt = true; // 珥덇린???꾨즺 ?쒖떆
+            Debug.Log($"[GameplayCueManager] ?몃뜳??鍮뚮뱶 ?꾨즺. ({defByTagId.Count}媛?");
         }
-
         // ----------------------------------------------------------------
         // Public API
         // ----------------------------------------------------------------
@@ -151,7 +155,7 @@ namespace UnityGAS
 
             int id = GetTagKey(tag);
 
-            // ID 조회 실패 시 리스트 직접 검색 (안전장치)
+            // ID 議고쉶 ?ㅽ뙣 ??由ъ뒪??吏곸젒 寃??(?덉쟾?μ튂)
             if (id < 0 || !defByTagId.ContainsKey(id))
             {
                 var fallbackDef = FindDefinitionFallback(tag);
@@ -175,10 +179,10 @@ namespace UnityGAS
             int id = GetTagKey(tag);
             GameplayCueDefinition def = null;
 
-            // 1) 딕셔너리 검색
+            // 1) ?뺤뀛?덈━ 寃??
             if (id >= 0) defByTagId.TryGetValue(id, out def);
 
-            // 2) 실패 시 리스트 직접 검색 (Fallback)
+            // 2) ?ㅽ뙣 ??由ъ뒪??吏곸젒 寃??(Fallback)
             if (def == null)
             {
                 def = FindDefinitionFallback(tag);
@@ -188,7 +192,7 @@ namespace UnityGAS
 
             if (def == null)
             {
-                Debug.LogError($"[Manager] 정의(Definition)를 찾을 수 없음: {tag?.name}. Manager 리스트를 확인하세요.");
+                Debug.LogError($"[Manager] ?뺤쓽(Definition)瑜?李얠쓣 ???놁쓬: {tag?.name}. Manager 由ъ뒪?몃? ?뺤씤?섏꽭??");
                 return;
             }
 
@@ -210,7 +214,7 @@ namespace UnityGAS
                 existing.Notify?.OnRefresh(p);
                 EnsureCueLoopAudio(existing, p);
 
-                // TransformOnly는 Refresh 시에도 contribution을 갱신할 수 있게 한다.
+                // TransformOnly??Refresh ?쒖뿉??contribution??媛깆떊?????덇쾶 ?쒕떎.
                 if (existing.TransformStack != null)
                 {
                     var c = MakeTransformContribution(existing.Def);
@@ -250,13 +254,13 @@ namespace UnityGAS
             StopCueLoopAudio(inst);
             PlayCueRemoveAudio(def, p);
 
-            // TransformOnly 해제
+            // TransformOnly ?댁젣
             if (inst.TransformStack != null)
             {
                 inst.TransformStack.Remove(inst.TransformLayerKey);
             }
 
-            // Target에 붙인 Notify는 Remove 시 제거(생성한 경우에만)
+            // Target??遺숈씤 Notify??Remove ???쒓굅(?앹꽦??寃쎌슦?먮쭔)
             if (inst.CreatedNotifyOnTarget && inst.Notify != null)
                 Destroy(inst.Notify);
 
@@ -272,6 +276,7 @@ namespace UnityGAS
 
         private GameplayCueDefinition FindDefinitionFallback(GameplayTag tag)
         {
+            IReadOnlyList<GameplayCueDefinition> definitions = GetDefinitions();
             for (int i = 0; i < definitions.Count; i++)
             {
                 if (definitions[i] != null && definitions[i].cueTag == tag)
@@ -280,6 +285,23 @@ namespace UnityGAS
             return null;
         }
 
+        private IReadOnlyList<GameplayCueDefinition> GetDefinitions()
+        {
+            GameplayCueDatabase database = cueDatabase != null ? cueDatabase : GameplayCueDatabase.LoadDefault();
+            if (database != null)
+            {
+                cueDatabase = database;
+                return database.Definitions ?? Array.Empty<GameplayCueDefinition>();
+            }
+
+            if (!hasWarnedAboutLegacyDefinitions && legacyDefinitions.Count > 0)
+            {
+                hasWarnedAboutLegacyDefinitions = true;
+                Debug.LogWarning("[GameplayCueManager] GameplayCueDatabase was not assigned, so legacy scene definitions are being used as a fallback.");
+            }
+
+            return legacyDefinitions;
+        }
         private void SpawnAndNotifyExecute(GameplayCueDefinition def, GameplayCueParams p, int layerKey)
         {
             var inst = SpawnInstance(def, p, isForAdd: false, layerKey: layerKey);
@@ -288,15 +310,15 @@ namespace UnityGAS
 
             inst.Notify?.OnExecute(p);
 
-            // TransformOnly Execute는 duration 후 자동 해제
+            // TransformOnly Execute??duration ???먮룞 ?댁젣
             if (inst.TransformStack != null)
             {
                 float dur = def.transformExecuteDuration;
                 StartCoroutine(RemoveTransformAfter(inst.TransformStack, inst.TransformLayerKey, dur));
             }
 
-            // Execute에서 Target에 임시로 붙인 Notify는 바로 제거한다.
-            // (주의) Notify가 시간에 걸친 연출을 코루틴/트윈으로 돌린다면, Execute 대신 Add/Remove 기반으로 쓰는 것을 권장.
+            // Execute?먯꽌 Target???꾩떆濡?遺숈씤 Notify??諛붾줈 ?쒓굅?쒕떎.
+            // (二쇱쓽) Notify媛 ?쒓컙??嫄몄튇 ?곗텧??肄붾（???몄쐢?쇰줈 ?뚮┛?ㅻ㈃, Execute ???Add/Remove 湲곕컲?쇰줈 ?곕뒗 寃껋쓣 沅뚯옣.
             if (inst.CreatedNotifyOnTarget && inst.Notify != null)
                 Destroy(inst.Notify);
 
@@ -309,7 +331,7 @@ namespace UnityGAS
             if (stack == null) yield break;
 
             if (duration <= 0f)
-                yield return null; // 1프레임만 적용
+                yield return null; // 1?꾨젅?꾨쭔 ?곸슜
             else
                 yield return new WaitForSeconds(duration);
 
@@ -350,11 +372,11 @@ namespace UnityGAS
                     var type = GetOrCacheNotifyType(def);
                     if (type == null)
                     {
-                        Debug.LogWarning($"[GameplayCueManager] cueNotifyHostPrefab에 GameplayCueNotify가 없습니다: {def.name}");
+                        Debug.LogWarning($"[GameplayCueManager] cueNotifyHostPrefab??GameplayCueNotify媛 ?놁뒿?덈떎: {def.name}");
                         return result.AudioOnly ? result : null;
                     }
 
-                    // 이미 붙어있으면 재사용 (중복 AddComponent 방지)
+                    // ?대? 遺숈뼱?덉쑝硫??ъ궗??(以묐났 AddComponent 諛⑹?)
                     var existing = p.Target.GetComponent(type) as GameplayCueNotify;
                     if (existing != null)
                     {
@@ -366,7 +388,7 @@ namespace UnityGAS
                     var added = p.Target.AddComponent(type) as GameplayCueNotify;
                     if (added == null)
                     {
-                        Debug.LogWarning($"[GameplayCueManager] Target에 Notify AddComponent 실패: {type.FullName}");
+                        Debug.LogWarning($"[GameplayCueManager] Target??Notify AddComponent ?ㅽ뙣: {type.FullName}");
                         return result.AudioOnly ? result : null;
                     }
 
@@ -378,13 +400,19 @@ namespace UnityGAS
                 case GameplayCueDefinition.ExecutionMode.SpawnPrefab:
                 default:
                 {
-                    // 1) Prefab Notify 경로 (Instantiate)
+                    // 1) Prefab Notify 寃쎈줈 (Instantiate)
                     if (def.cuePrefab != null)
                     {
                         var go = Instantiate(def.cuePrefab);
                         result.Instance = go;
                         result.Notify = go.GetComponentInChildren<GameplayCueNotify>();
-                        Place(go.transform, def, p);
+                        if (!Place(go.transform, def, p))
+                        {
+                            Destroy(go);
+                            result.Instance = null;
+                            result.Notify = null;
+                            return result.AudioOnly ? result : null;
+                        }
                         return result;
                     }
 
@@ -393,7 +421,12 @@ namespace UnityGAS
                     {
                         var go = Instantiate(def.vfxPrefab);
                         result.Instance = go;
-                        Place(go.transform, def, p);
+                        if (!Place(go.transform, def, p))
+                        {
+                            Destroy(go);
+                            result.Instance = null;
+                            return result.AudioOnly ? result : null;
+                        }
 
                         if (!isForAdd && def.autoDestroySeconds > 0f)
                             Destroy(go, def.autoDestroySeconds);
@@ -432,7 +465,7 @@ namespace UnityGAS
         {
             unchecked
             {
-                // Execute는 매번 새로 적용/해제가 필요하므로 sourceObject까지 포함해서 키를 만든다.
+                // Execute??留ㅻ쾲 ?덈줈 ?곸슜/?댁젣媛 ?꾩슂?섎?濡?sourceObject源뚯? ?ы븿?댁꽌 ?ㅻ? 留뚮뱺??
                 int safeTag = (tagId >= 0) ? tagId : (def != null && def.cueTag != null ? def.cueTag.GetInstanceID() : 0);
                 int targetId = p.Target != null ? p.Target.GetInstanceID() : 0;
                 int sourceId = (isPersistent || def == null || def.uniquePerTarget) ? 0 : (p.SourceObject != null ? p.SourceObject.GetInstanceID() : 0);
@@ -445,22 +478,134 @@ namespace UnityGAS
             }
         }
 
-        private void Place(Transform t, GameplayCueDefinition def, GameplayCueParams p)
+        private bool Place(Transform t, GameplayCueDefinition def, GameplayCueParams p)
         {
-            if (t == null) return;
+            if (t == null)
+                return false;
+
+            if (!TryResolveAnchorWorldPosition(def, p, out Vector3 anchorWorld))
+                return false;
+
+            Vector3 worldOffset = ResolveWorldOffset(def, p);
 
             if (def.attachToTarget && p.Target != null)
             {
                 t.SetParent(p.Target.transform, worldPositionStays: false);
-                t.localPosition = def.localOffset;
+                Vector3 localAnchor = p.Target.transform.InverseTransformPoint(anchorWorld);
+                t.localPosition = localAnchor + (def.applyOffsetInTargetLocalSpace
+                    ? def.localOffset
+                    : p.Target.transform.InverseTransformVector(worldOffset));
                 t.localRotation = Quaternion.identity;
             }
             else
             {
                 t.SetParent(null);
-                t.position = p.Position + def.localOffset;
+                t.position = anchorWorld + worldOffset;
                 t.rotation = Quaternion.identity;
             }
+
+            return true;
+        }
+
+        private static Vector3 ResolveWorldOffset(GameplayCueDefinition def, GameplayCueParams p)
+        {
+            if (p.Target == null || !def.applyOffsetInTargetLocalSpace)
+                return def.localOffset;
+
+            return p.Target.transform.TransformVector(def.localOffset);
+        }
+
+        private static bool TryResolveAnchorWorldPosition(GameplayCueDefinition def, GameplayCueParams p, out Vector3 anchorWorld)
+        {
+            if (p.Target == null)
+            {
+                if (p.HasExplicitPosition)
+                {
+                    anchorWorld = p.Position;
+                    return true;
+                }
+
+                anchorWorld = default;
+                return false;
+            }
+
+            if (def.useExplicitHitPoint && p.HasExplicitPosition)
+            {
+                anchorWorld = p.Position;
+                return true;
+            }
+
+            switch (def.spawnAnchorPolicy)
+            {
+                case GameplayCueDefinition.SpawnAnchorPolicy.TargetPivot:
+                    anchorWorld = p.Target.transform.position;
+                    return true;
+
+                case GameplayCueDefinition.SpawnAnchorPolicy.TargetSpriteCenter:
+                    if (TryGetCombinedSpriteBounds(p.Target, out Bounds spriteBounds))
+                    {
+                        anchorWorld = spriteBounds.center;
+                        return true;
+                    }
+                    break;
+
+                case GameplayCueDefinition.SpawnAnchorPolicy.TargetSpriteTop:
+                    if (TryGetCombinedSpriteBounds(p.Target, out Bounds topBounds))
+                    {
+                        anchorWorld = new Vector3(topBounds.center.x, topBounds.max.y, topBounds.center.z);
+                        return true;
+                    }
+                    break;
+
+                case GameplayCueDefinition.SpawnAnchorPolicy.TargetSpriteBottom:
+                    if (TryGetCombinedSpriteBounds(p.Target, out Bounds bottomBounds))
+                    {
+                        anchorWorld = new Vector3(bottomBounds.center.x, bottomBounds.min.y, bottomBounds.center.z);
+                        return true;
+                    }
+                    break;
+
+                case GameplayCueDefinition.SpawnAnchorPolicy.TargetColliderCenter:
+                    if (TryGetCombinedColliderBounds(p.Target, out Bounds colliderBounds))
+                    {
+                        anchorWorld = colliderBounds.center;
+                        return true;
+                    }
+                    break;
+            }
+
+            anchorWorld = default;
+            return false;
+        }
+
+        private static bool TryGetCombinedSpriteBounds(GameObject target, out Bounds bounds)
+        {
+            SpriteRenderer[] renderers = target.GetComponentsInChildren<SpriteRenderer>(includeInactive: false);
+            if (renderers != null && renderers.Length > 0)
+            {
+                bounds = renderers[0].bounds;
+                for (int i = 1; i < renderers.Length; i++)
+                    bounds.Encapsulate(renderers[i].bounds);
+                return true;
+            }
+
+            bounds = default;
+            return false;
+        }
+
+        private static bool TryGetCombinedColliderBounds(GameObject target, out Bounds bounds)
+        {
+            Collider2D[] colliders = target.GetComponentsInChildren<Collider2D>(includeInactive: false);
+            if (colliders != null && colliders.Length > 0)
+            {
+                bounds = colliders[0].bounds;
+                for (int i = 1; i < colliders.Length; i++)
+                    bounds.Encapsulate(colliders[i].bounds);
+                return true;
+            }
+
+            bounds = default;
+            return false;
         }
 
         private static bool HasAudioRuntime(GameplayCueDefinition def, bool isForAdd)
@@ -523,3 +668,5 @@ namespace UnityGAS
         }
     }
 }
+
+

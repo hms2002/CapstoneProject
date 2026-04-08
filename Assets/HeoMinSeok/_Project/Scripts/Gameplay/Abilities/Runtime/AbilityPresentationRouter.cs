@@ -159,6 +159,7 @@ namespace UnityGAS
                 Position = target != null
                     ? target.transform.position
                     : (ownerTransform != null ? ownerTransform.position : Vector3.zero),
+                HasExplicitPosition = false,
                 Normal = Vector3.up,
                 SourceObject = def,
                 Magnitude = 1f

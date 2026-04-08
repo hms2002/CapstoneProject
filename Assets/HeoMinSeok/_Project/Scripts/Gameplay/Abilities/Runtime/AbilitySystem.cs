@@ -220,6 +220,7 @@ namespace UnityGAS
         private AbilityGameplayEventChannel gameplayEventChannel;
         private AbilityCooldownController cooldownController;
         private AbilityPresentationRouter presentationRouter;
+        private AbilityHitCueRouter hitCueRouter;
         private AbilityExecutionCoordinator executionCoordinator;
 
         public DamageProfileDefinition DamageProfile => damageProfile;
@@ -285,6 +286,12 @@ namespace UnityGAS
                 tagSystem.OnTagAdded -= HandleOwnerTagAdded;
         }
 
+        private void OnDestroy()
+        {
+            hitCueRouter?.Dispose();
+            hitCueRouter = null;
+        }
+
         private void Update()
         {
             cooldownController?.TickCooldowns(runtimeSpecs);
@@ -320,6 +327,11 @@ namespace UnityGAS
                 this,
                 cueManager,
                 autoExecuteCueWhenGameplayEventTagExists);
+
+            hitCueRouter = new AbilityHitCueRouter(
+                this,
+                cueManager,
+                gameplayEventChannel);
 
             cooldownController = new AbilityCooldownController(
                 this,
