@@ -147,13 +147,26 @@ public class WorldItemPickup2D : InteractableBase
             return false;
 
         int levelOverride = RelicLevel > 0 ? RelicLevel : -1;
-        return relicInventory.TryAcquireOrUpgrade(relic, levelOverride);
+        RelicInventory.AcquireResult result = relicInventory.TryAcquireOrUpgradeDetailed(relic, levelOverride);
+        if (result == RelicInventory.AcquireResult.Success)
+            return true;
+
+        ShowRelicPickupWarning(result);
+        return false;
     }
 
     private bool TryPickupConsumable(IPlayerInteractor player, ConsumableDefinition consumable)
     {
         var consumableInventory = ResolveConsumableInventory(player);
-        return consumableInventory != null && consumableInventory.TryAcquire(consumable);
+        if (consumableInventory == null)
+            return false;
+
+        PlayerConsumableInventory.AcquireResult result = consumableInventory.TryAcquireDetailed(consumable);
+        if (result == PlayerConsumableInventory.AcquireResult.Success)
+            return true;
+
+        ShowConsumablePickupWarning(result);
+        return false;
     }
 
     private static WeaponInventory2D ResolveWeaponInventory(IPlayerInteractor player)
@@ -184,6 +197,41 @@ public class WorldItemPickup2D : InteractableBase
     {
         if (player is PlayerInteractor2D playerInteractor)
             playerInteractor.SpeakSituation(PlayerSpeechSituationEnum.InventoryFull);
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 월드 유물 픽업 실패 사유를 UIManager 경고 팝업 코드로 변환해 전달한다.
+    /// - 픽업 도메인 로직과 실제 경고 문구/표시 방식의 결합을 줄인다.
+    /// </summary>
+    private static void ShowRelicPickupWarning(RelicInventory.AcquireResult result)
+    {
+        WarningPopupCode code = result switch
+        {
+            RelicInventory.AcquireResult.InventoryFull => WarningPopupCode.RelicInventoryFull,
+            RelicInventory.AcquireResult.AlreadyMaxLevel => WarningPopupCode.RelicAlreadyMaxLevel,
+            _ => WarningPopupCode.None
+        };
+
+        if (code != WarningPopupCode.None)
+            UIManager.Instance?.ShowWarning(code);
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 월드 1회용 아이템 픽업 실패 사유를 UIManager 경고 팝업 코드로 변환해 전달한다.
+    /// - 1회용 아이템 인벤토리 부족을 조용한 실패가 아니라 즉시 읽히는 피드백으로 바꾼다.
+    /// </summary>
+    private static void ShowConsumablePickupWarning(PlayerConsumableInventory.AcquireResult result)
+    {
+        WarningPopupCode code = result switch
+        {
+            PlayerConsumableInventory.AcquireResult.InventoryFull => WarningPopupCode.ConsumableInventoryFull,
+            _ => WarningPopupCode.None
+        };
+
+        if (code != WarningPopupCode.None)
+            UIManager.Instance?.ShowWarning(code);
     }
 
     private void RefreshVisual()

@@ -8,6 +8,18 @@ using UnityEngine;
 /// </summary>
 public class PlayerConsumableInventory : MonoBehaviour
 {
+    /// <summary>
+    /// 책임 :
+    /// - 1회용 아이템 획득 시도가 어떤 결과로 끝났는지 도메인 수준에서 구분한다.
+    /// - 상위 호출부가 인벤토리 가득 참 같은 실패 사유를 UI 경고로 정확히 연결할 수 있게 한다.
+    /// </summary>
+    public enum AcquireResult
+    {
+        Success = 0,
+        InvalidDefinition,
+        InventoryFull
+    }
+
     public event Action OnChanged;
 
     [Header("Slots")]
@@ -28,18 +40,28 @@ public class PlayerConsumableInventory : MonoBehaviour
     public ConsumableDefinition GetConsumableInSlot(int slotIndex)
         => IsValidSlot(slotIndex) ? slots[slotIndex] : null;
 
-    public bool TryAcquire(ConsumableDefinition consumable)
+    /// <summary>
+    /// 책임 :
+    /// - 1회용 아이템 획득 시도의 상세 결과를 반환한다.
+    /// - 기존 bool API를 유지하면서도 실패 사유를 상위 흐름에 전달할 수 있게 한다.
+    /// </summary>
+    public AcquireResult TryAcquireDetailed(ConsumableDefinition consumable)
     {
         if (consumable == null)
-            return false;
+            return AcquireResult.InvalidDefinition;
 
         int emptyIndex = FindFirstEmptySlot();
         if (emptyIndex < 0)
-            return false;
+            return AcquireResult.InventoryFull;
 
         slots[emptyIndex] = consumable;
         OnChanged?.Invoke();
-        return true;
+        return AcquireResult.Success;
+    }
+
+    public bool TryAcquire(ConsumableDefinition consumable)
+    {
+        return TryAcquireDetailed(consumable) == AcquireResult.Success;
     }
 
     public bool TryUseAt(int slotIndex)

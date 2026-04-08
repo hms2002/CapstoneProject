@@ -93,6 +93,7 @@ public sealed class MerchantNPC : MonoBehaviour
             return;
         }
 
+        ShowPurchaseWarning(result.Type);
         SpeakFailure(result.Type);
     }
 
@@ -167,12 +168,34 @@ public sealed class MerchantNPC : MonoBehaviour
         string line = resultType switch
         {
             MerchantPurchaseResultType.NotEnoughCurrency => notEnoughCurrencySpeech,
-            MerchantPurchaseResultType.InventoryFull => inventoryFullSpeech,
+            MerchantPurchaseResultType.WeaponInventoryFull => inventoryFullSpeech,
+            MerchantPurchaseResultType.RelicInventoryFull => inventoryFullSpeech,
+            MerchantPurchaseResultType.ConsumableInventoryFull => inventoryFullSpeech,
             _ => string.Empty
         };
 
         if (!string.IsNullOrWhiteSpace(line))
             speechBubble.Speak(line);
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 상점 구매 실패 사유를 공통 경고 팝업 코드로 변환해 UIManager에 전달한다.
+    /// - 상점 도메인 로직이 실제 UI 문구나 팝업 구현에 직접 의존하지 않도록 분리한다.
+    /// </summary>
+    private static void ShowPurchaseWarning(MerchantPurchaseResultType resultType)
+    {
+        WarningPopupCode code = resultType switch
+        {
+            MerchantPurchaseResultType.WeaponInventoryFull => WarningPopupCode.WeaponInventoryFull,
+            MerchantPurchaseResultType.RelicInventoryFull => WarningPopupCode.RelicInventoryFull,
+            MerchantPurchaseResultType.ConsumableInventoryFull => WarningPopupCode.ConsumableInventoryFull,
+            MerchantPurchaseResultType.RelicAlreadyMaxLevel => WarningPopupCode.RelicAlreadyMaxLevel,
+            _ => WarningPopupCode.None
+        };
+
+        if (code != WarningPopupCode.None)
+            UIManager.Instance?.ShowWarning(code);
     }
 
     private void CollectSlotsFromChildren()

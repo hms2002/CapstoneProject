@@ -222,7 +222,11 @@ public class ItemSlotUI : MonoBehaviour,
         }
 
         if (target == null) return;
-        if (targetIndex < 0) return;
+        if (targetIndex < 0)
+        {
+            ShowQuickMoveFailureWarning(so, target);
+            return;
+        }
 
         int relicLevel = 0;
         if (so is RelicDefinition && container is IRelicLevelProvider p)
@@ -289,6 +293,28 @@ public class ItemSlotUI : MonoBehaviour,
             return FindAnyPlaceableIndex(target, relic, excludeIndex: sameRelicIndex);
 
         return -1;
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 빠른 이동 대상 슬롯을 찾지 못했을 때 아이템 종류에 맞는 공통 경고 팝업을 요청한다.
+    /// - 인벤토리 가득 참 같은 조용한 실패를 사용자에게 즉시 피드백한다.
+    /// </summary>
+    private static void ShowQuickMoveFailureWarning(ScriptableObject item, IItemContainer target)
+    {
+        if (item == null || target == null || UIManager.Instance == null)
+            return;
+
+        WarningPopupCode code = item switch
+        {
+            WeaponDefinition => WarningPopupCode.WeaponInventoryFull,
+            RelicDefinition => WarningPopupCode.RelicInventoryFull,
+            ConsumableDefinition => WarningPopupCode.ConsumableInventoryFull,
+            _ => WarningPopupCode.None
+        };
+
+        if (code != WarningPopupCode.None)
+            UIManager.Instance.ShowWarning(code);
     }
     public void OnPointerEnter(PointerEventData eventData)
     {
