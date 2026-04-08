@@ -208,7 +208,7 @@ public abstract class BossControllerBase : Enemy
 
     public void FinishCurrentPattern()
     {
-        blackboard.EndPattern();
+        blackboard?.EndPattern();
     }
 
     public void AbortCurrentPattern()
@@ -219,7 +219,7 @@ public abstract class BossControllerBase : Enemy
         if (abilitySystem != null && abilitySystem.IsExecuting)
             abilitySystem.CancelExecution(true);
 
-        blackboard.ClearPatternContext();
+        blackboard?.ClearPatternContext();
     }
 
     protected override void OnEnemyAttributeChanged(AttributeDefinition attribute, float oldValue, float newValue)

@@ -83,9 +83,18 @@ public class DropZoneUI : MonoBehaviour, IDropHandler
 
     private void SetVisible(bool visible)
     {
+        EnsureCanvasGroup();
         canvasGroup.alpha = visible ? 1f : 0f;
         canvasGroup.blocksRaycasts = visible;
         canvasGroup.interactable = visible;
+    }
+
+    private void EnsureCanvasGroup()
+    {
+        if (canvasGroup == null)
+            canvasGroup = GetComponent<CanvasGroup>();
+        if (canvasGroup == null)
+            canvasGroup = gameObject.AddComponent<CanvasGroup>();
     }
 
     private void SpawnWorldItem(ScriptableObject item, int relicLevel)

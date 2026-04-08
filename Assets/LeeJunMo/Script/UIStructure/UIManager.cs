@@ -45,7 +45,7 @@ public class UIManager : MonoBehaviour
 
         Instance = this;
         GlobalUIRoot.AdoptService(transform);
-        DontDestroyOnLoad(gameObject);
+        MarkPersistent();
 
         if (hoverUIController == null)
             hoverUIController = GetComponent<HoverUIController>();
@@ -74,6 +74,18 @@ public class UIManager : MonoBehaviour
     {
         if (Instance == this)
             Instance = null;
+    }
+
+    private void MarkPersistent()
+    {
+        Transform persistentRoot = transform.root;
+        if (persistentRoot == null)
+            return;
+
+        if (persistentRoot.parent != null)
+            return;
+
+        DontDestroyOnLoad(persistentRoot.gameObject);
     }
 
     private void Update()
