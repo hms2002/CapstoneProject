@@ -26,7 +26,7 @@ MonoBehaviour:
   attackInputHint: "\uC6B0\uD074\uB9AD"
   skill1InputHint: Q
   skill2InputHint: E
-  weaponPrefab: {fileID: 8490881910473165802, guid: 385e1b24189f77c46bb567603449261f, type: 3}
+  weaponPrefab: {fileID: 916365682996460394, guid: d1fe14c7b12d9f64fac5f81b12c5aa28, type: 3}
   equippedTag: {fileID: 11400000, guid: cac1046499d28814a91fcb2631757240, type: 2}
   attack: {fileID: 11400000, guid: 89163a8e6b579e14c874528367814f0c, type: 2}
   skill1: {fileID: 11400000, guid: 524aa038954a7df43802c7db33bb312b, type: 2}

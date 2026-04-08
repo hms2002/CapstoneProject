@@ -26,7 +26,9 @@ public sealed class PlayerSceneRestoreBootstrapper : MonoBehaviour
     private IRelicRuntimeStateRestorer relicRuntimeRestorer;
 
     private Coroutine restoreRoutine;
+    private Coroutine restoreConfirmRoutine;
     private bool hasRestored;
+    private bool isRestoreConfirmationPending;
 
     private void Awake()
     {
@@ -67,6 +69,12 @@ public sealed class PlayerSceneRestoreBootstrapper : MonoBehaviour
     private void OnDisable()
     {
         PlayerRuntimeRegistry.PlayerRegistered -= OnPlayerRegistered;
+
+        if (restoreConfirmRoutine != null)
+        {
+            StopCoroutine(restoreConfirmRoutine);
+            restoreConfirmRoutine = null;
+        }
     }
 
     private void Start()
@@ -164,7 +172,7 @@ public sealed class PlayerSceneRestoreBootstrapper : MonoBehaviour
     /// </summary>
     public bool TryRestorePendingState(GameObject player)
     {
-        if (hasRestored)
+        if (hasRestored || isRestoreConfirmationPending)
             return false;
 
         var gameplay = GamePlayDataManager.Instance;
@@ -181,12 +189,18 @@ public sealed class PlayerSceneRestoreBootstrapper : MonoBehaviour
         if (player == null)
             return false;
 
+        if (!IsItemRestoreReady())
+            return false;
+
         resolver = player.GetComponent<PlayerRuntimeResolverBridge>();
         if (resolver == null)
         {
             Debug.LogError("[PlayerSceneRestoreBootstrapper] Resolver가 없어 PlayerRuntimeState를 복원할 수 없습니다.", this);
             return false;
         }
+
+        if (!CanResolvePendingEquipment(pendingState, resolver))
+            return false;
 
         // 책임 : 플레이어 컴포넌트 일괄 수집
         if (!TryGatherPlayerComponents(player, out var ctx))
@@ -210,8 +224,52 @@ public sealed class PlayerSceneRestoreBootstrapper : MonoBehaviour
             relicRuntimeRestorer,
             this);
 
+        isRestoreConfirmationPending = true;
+        restoreConfirmRoutine = StartCoroutine(ConfirmRestoreNextFrame(gameplay, pendingState, player));
+        return true;
+    }
+
+    /// <summary>
+    /// 책임 : 복원 직후 한 프레임을 넘긴 뒤 실제 장비 슬롯 상태가 저장본과 일치하는지 검증한다.
+    /// Start/OnEnable 초기화가 뒤늦게 복원 결과를 덮는 경우를 탐지하고, 실패 시 pending state를 소비하지 않는다.
+    /// </summary>
+    private IEnumerator ConfirmRestoreNextFrame(
+        GamePlayDataManager gameplay,
+        PlayerRuntimeState pendingState,
+        GameObject player)
+    {
+        yield return null;
+
+        restoreConfirmRoutine = null;
+
+        if (hasRestored)
+        {
+            isRestoreConfirmationPending = false;
+            yield break;
+        }
+
+        if (gameplay == null || pendingState == null || player == null)
+        {
+            isRestoreConfirmationPending = false;
+            yield break;
+        }
+
+        if (!TryGatherPlayerComponents(player, out var ctx))
+        {
+            isRestoreConfirmationPending = false;
+            yield break;
+        }
+
+        if (!MatchesPendingEquipmentState(pendingState, ctx))
+        {
+            isRestoreConfirmationPending = false;
+            Debug.LogWarning("[PlayerSceneRestoreBootstrapper] 복원 직후 장비 상태가 저장본과 일치하지 않아 pending state 소비를 보류합니다.", this);
+            yield break;
+        }
+
         gameplay.ConsumePendingPlayerState();
         hasRestored = true;
+        isRestoreConfirmationPending = false;
 
         if (restoreRoutine != null)
         {
@@ -220,6 +278,235 @@ public sealed class PlayerSceneRestoreBootstrapper : MonoBehaviour
         }
 
         Debug.Log("[PlayerSceneRestoreBootstrapper] PlayerRuntimeState 복원 완료.", this);
+    }
+
+    /// <summary>
+    /// 책임 : 실제 플레이어 인벤토리 상태가 pending PlayerRuntimeState의 장비 배치와 일치하는지 검증한다.
+    /// 복원 성공 확정 전에 shell layout이 보존되었는지 확인하는 최종 안전장치다.
+    /// </summary>
+    private bool MatchesPendingEquipmentState(PlayerRuntimeState pendingState, PlayerSystemContext ctx)
+    {
+        if (!MatchesPendingWeapons(pendingState.weaponInventory, ctx.weaponInventory))
+            return false;
+
+        if (!MatchesPendingRelics(pendingState.relicInventory, ctx.relicInventory))
+            return false;
+
+        if (!MatchesPendingConsumables(pendingState.consumableInventory, ctx.consumableInventory))
+            return false;
+
+        return true;
+    }
+
+    /// <summary>
+    /// 책임 : 현재 무기 슬롯/활성 슬롯이 저장본과 같은지 비교한다.
+    /// </summary>
+    private bool MatchesPendingWeapons(WeaponInventoryState pending, WeaponInventory2D inventory)
+    {
+        if (pending == null)
+            return true;
+
+        if (inventory == null)
+            return false;
+
+        var current = inventory.CaptureInventoryState();
+        if (current == null)
+            return false;
+
+        if (current.activeSlotIndex != pending.activeSlotIndex)
+            return false;
+
+        int pendingCount = pending.slotWeaponIds != null ? pending.slotWeaponIds.Length : 0;
+        int currentCount = current.slotWeaponIds != null ? current.slotWeaponIds.Length : 0;
+        if (pendingCount != currentCount)
+            return false;
+
+        for (int i = 0; i < pendingCount; i++)
+        {
+            if (!string.Equals(current.slotWeaponIds[i], pending.slotWeaponIds[i], System.StringComparison.Ordinal))
+                return false;
+        }
+
+        return true;
+    }
+
+    /// <summary>
+    /// 책임 : 현재 유물 슬롯/레벨이 저장본과 같은지 비교한다.
+    /// </summary>
+    private bool MatchesPendingRelics(RelicInventoryState pending, RelicInventory inventory)
+    {
+        if (pending == null)
+            return true;
+
+        if (inventory == null)
+            return false;
+
+        var current = inventory.CaptureInventoryState();
+        if (current == null)
+            return false;
+
+        int pendingCount = pending.slots != null ? pending.slots.Length : 0;
+        int currentCount = current.slots != null ? current.slots.Length : 0;
+        if (pendingCount != currentCount)
+            return false;
+
+        for (int i = 0; i < pendingCount; i++)
+        {
+            var pendingSlot = pending.slots[i];
+            var currentSlot = current.slots[i];
+
+            string pendingId = pendingSlot != null ? pendingSlot.relicId : null;
+            string currentId = currentSlot != null ? currentSlot.relicId : null;
+            int pendingLevel = pendingSlot != null ? pendingSlot.level : 0;
+            int currentLevel = currentSlot != null ? currentSlot.level : 0;
+
+            if (!string.Equals(currentId, pendingId, System.StringComparison.Ordinal))
+                return false;
+
+            if (currentLevel != pendingLevel)
+                return false;
+        }
+
+        return true;
+    }
+
+    /// <summary>
+    /// 책임 : 현재 consumable 슬롯 상태가 저장본과 같은지 비교한다.
+    /// </summary>
+    private bool MatchesPendingConsumables(ConsumableInventoryState pending, PlayerConsumableInventory inventory)
+    {
+        if (pending == null)
+            return true;
+
+        if (inventory == null)
+            return false;
+
+        var current = inventory.CaptureInventoryState();
+        if (current == null)
+            return false;
+
+        int pendingCount = pending.slots != null ? pending.slots.Length : 0;
+        int currentCount = current.slots != null ? current.slots.Length : 0;
+        if (pendingCount != currentCount)
+            return false;
+
+        for (int i = 0; i < pendingCount; i++)
+        {
+            var pendingSlot = pending.slots[i];
+            var currentSlot = current.slots[i];
+
+            string pendingId = pendingSlot != null ? pendingSlot.consumableId : null;
+            string currentId = currentSlot != null ? currentSlot.consumableId : null;
+
+            if (!string.Equals(currentId, pendingId, System.StringComparison.Ordinal))
+                return false;
+        }
+
+        return true;
+    }
+
+    /// <summary>
+    /// 책임 : 씬 복원 직전에 ItemManager가 실제 데이터베이스를 채운 준비 상태인지 확인한다.
+    /// ItemManager 인스턴스만 먼저 생성되고 database는 아직 adopt되지 않은 레이스를 막는다.
+    /// </summary>
+    private bool IsItemRestoreReady()
+    {
+        if (ItemManager.Instance == null)
+            return false;
+
+        return ItemManager.Instance.IsReady;
+    }
+
+    /// <summary>
+    /// 책임 : pending PlayerRuntimeState에 포함된 장비 ID가 현재 resolver로 모두 해석 가능한지 사전 검증한다.
+    /// 하나라도 해석 실패하면 이번 프레임 복원을 보류해 pending state를 다음 재시도까지 유지한다.
+    /// </summary>
+    private bool CanResolvePendingEquipment(PlayerRuntimeState pendingState, IPlayerRuntimeResolver runtimeResolver)
+    {
+        if (pendingState == null || runtimeResolver == null)
+            return false;
+
+        if (!CanResolvePendingWeapons(pendingState.weaponInventory, runtimeResolver))
+            return false;
+
+        if (!CanResolvePendingRelics(pendingState.relicInventory, runtimeResolver))
+            return false;
+
+        if (!CanResolvePendingConsumables(pendingState.consumableInventory, runtimeResolver))
+            return false;
+
+        return true;
+    }
+
+    /// <summary>
+    /// 책임 : 저장된 무기 슬롯 ID가 모두 현재 아이템 데이터베이스에 존재하는지 검증한다.
+    /// </summary>
+    private bool CanResolvePendingWeapons(WeaponInventoryState state, IPlayerRuntimeResolver runtimeResolver)
+    {
+        if (state?.slotWeaponIds == null)
+            return true;
+
+        for (int i = 0; i < state.slotWeaponIds.Length; i++)
+        {
+            string weaponId = state.slotWeaponIds[i];
+            if (string.IsNullOrEmpty(weaponId))
+                continue;
+
+            if (runtimeResolver.ResolveWeapon(weaponId) != null)
+                continue;
+
+            Debug.LogWarning($"[PlayerSceneRestoreBootstrapper] 무기 복원을 보류합니다. 아직 해석할 수 없는 weaponId={weaponId}, slot={i}", this);
+            return false;
+        }
+
+        return true;
+    }
+
+    /// <summary>
+    /// 책임 : 저장된 유물 슬롯 ID가 모두 현재 아이템 데이터베이스에 존재하는지 검증한다.
+    /// </summary>
+    private bool CanResolvePendingRelics(RelicInventoryState state, IPlayerRuntimeResolver runtimeResolver)
+    {
+        if (state?.slots == null)
+            return true;
+
+        for (int i = 0; i < state.slots.Length; i++)
+        {
+            var slot = state.slots[i];
+            if (slot == null || string.IsNullOrEmpty(slot.relicId))
+                continue;
+
+            if (runtimeResolver.ResolveRelic(slot.relicId) != null)
+                continue;
+
+            Debug.LogWarning($"[PlayerSceneRestoreBootstrapper] 유물 복원을 보류합니다. 아직 해석할 수 없는 relicId={slot.relicId}, slot={i}", this);
+            return false;
+        }
+
+        return true;
+    }
+
+    /// <summary>
+    /// 책임 : 저장된 consumable 슬롯 ID가 모두 현재 아이템 데이터베이스에 존재하는지 검증한다.
+    /// </summary>
+    private bool CanResolvePendingConsumables(ConsumableInventoryState state, IPlayerRuntimeResolver runtimeResolver)
+    {
+        if (state?.slots == null)
+            return true;
+
+        for (int i = 0; i < state.slots.Length; i++)
+        {
+            var slot = state.slots[i];
+            if (slot == null || string.IsNullOrEmpty(slot.consumableId))
+                continue;
+
+            if (runtimeResolver.ResolveConsumable(slot.consumableId) != null)
+                continue;
+
+            Debug.LogWarning($"[PlayerSceneRestoreBootstrapper] consumable 복원을 보류합니다. 아직 해석할 수 없는 consumableId={slot.consumableId}, slot={i}", this);
+            return false;
+        }
+
         return true;
     }
 

@@ -15,6 +15,13 @@ public class ItemManager : MonoBehaviour
     private bool isInitialized;
     private ItemSaveData pendingSaveData;
 
+    /// <summary>
+    /// 책임 :
+    /// - 씬 복원/루팅 시스템이 ItemManager를 안전하게 조회할 수 있는 준비 상태를 노출한다.
+    /// - 싱글톤 인스턴스만 존재하고 database가 아직 adopt되지 않은 중간 상태를 구분한다.
+    /// </summary>
+    public bool IsReady => database != null && isInitialized;
+
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     private static void AutoBootstrap()
     {
