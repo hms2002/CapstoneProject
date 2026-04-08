@@ -10,12 +10,21 @@ using UnityGAS;
 /// </summary>
 public class WeaponSkillHUD2D : MonoBehaviour
 {
+    /// <summary>
+    /// 책임 :
+    /// - 무기 HUD의 개별 스킬 슬롯이 사용하는 비주얼 참조를 묶는다.
+    /// - 기본 상태와 시전 중 상태를 슬롯 단위로 전환할 수 있게 한다.
+    /// </summary>
     [System.Serializable]
     public class SkillSlotUI
     {
         [Tooltip("가능하면 슬롯 루트 오브젝트를 직접 연결합니다. 비어 있으면 icon 등의 부모에서 추론합니다.")]
         public GameObject root;
         public Image icon;
+        [Tooltip("스킬 시전/실행 중 기존 아이콘 위에 얹을 강조 비주얼입니다.")]
+        public GameObject activeOverlay;
+        [Tooltip("activeOverlay 안의 Image를 직접 연결하면, 현재 스킬 아이콘 스프라이트를 자동 동기화합니다.")]
+        public Image activeOverlayImage;
         public Image cooldownFill;   // fillAmount = remaining/total (Image Type Filled 필요)
         public TMP_Text cooldownText; // 선택(초 표기)
         public TMP_Text chargeText;   // 선택(예: 2/3)
@@ -32,6 +41,12 @@ public class WeaponSkillHUD2D : MonoBehaviour
     public SkillSlotUI attackUI;
     public SkillSlotUI skill1UI;
     public SkillSlotUI skill2UI;
+
+    [Header("Casting Visual")]
+    [SerializeField] private Color normalIconColor = Color.white;
+    [SerializeField] private Color activeIconColor = new Color(1f, 0.92f, 0.55f, 1f);
+    [SerializeField] private float activePulseSpeed = 8f;
+    [SerializeField] private float activePulseStrength = 0.18f;
 
     private CanvasGroup hudCanvasGroup;
     private Graphic[] hudGraphics;
@@ -208,10 +223,16 @@ public class WeaponSkillHUD2D : MonoBehaviour
         if (ui.icon != null)
         {
             ui.icon.enabled = has;
+            ui.icon.color = normalIconColor;
             // AbilityDefinition에 아이콘이 있다면 여기서 연결해도 됨(없으면 유지)
             if(def != null)
                 ui.icon.sprite = def.icon;
         }
+
+        SyncOverlaySprite(ui, def);
+
+        if (ui.activeOverlay != null)
+            ui.activeOverlay.SetActive(false);
 
         if (ui.cooldownFill != null)
             ui.cooldownFill.fillAmount = has ? 0f : 0f;
@@ -277,6 +298,101 @@ public class WeaponSkillHUD2D : MonoBehaviour
 
         UpdateCooldownAndCharge(skill1UI, skill1Def);
         UpdateCooldownAndCharge(skill2UI, skill2Def);
+        UpdateCastingVisual(skill1UI, skill1Def);
+        UpdateCastingVisual(skill2UI, skill2Def);
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 현재 AbilitySystem의 캐스팅/실행 상태를 슬롯 정의와 비교해 시전 중 비주얼을 전환한다.
+    /// - 별도 대체 오브젝트가 없으면 기본 비주얼만 유지한다.
+    /// </summary>
+    private void UpdateCastingVisual(SkillSlotUI ui, AbilityDefinition def)
+    {
+        if (ui == null)
+            return;
+
+        bool hasAbility = def != null;
+        bool isActive = hasAbility && IsAbilityActive(def);
+        if (ui.activeOverlay != null)
+            ui.activeOverlay.SetActive(hasAbility && isActive);
+
+        if (ui.icon != null)
+            ui.icon.color = hasAbility && isActive
+                ? EvaluateActiveIconColor()
+                : normalIconColor;
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 현재 AbilityDefinition이 캐스팅 중이거나 실행 중인지 HUD 관점에서 판별한다.
+    /// - Skill HUD는 슬롯별 정의와 현재 런타임 spec의 definition을 비교해 활성 상태를 판단한다.
+    /// </summary>
+    private bool IsAbilityActive(AbilityDefinition def)
+    {
+        if (abilitySystem == null || def == null)
+            return false;
+
+        var currentCast = abilitySystem.CurrentCastSpec != null
+            ? abilitySystem.CurrentCastSpec.Definition
+            : null;
+        if (abilitySystem.IsCasting && currentCast == def)
+            return true;
+
+        var currentExec = abilitySystem.CurrentExecSpec != null
+            ? abilitySystem.CurrentExecSpec.Definition
+            : null;
+        return abilitySystem.IsExecuting && currentExec == def;
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 시전 중 아이콘에 적용할 펄스 색을 계산한다.
+    /// - HUD 공통 시전 강조 톤을 한 곳에서 관리한다.
+    /// </summary>
+    private Color EvaluateActiveIconColor()
+    {
+        float pulse = (Mathf.Sin(Time.unscaledTime * activePulseSpeed) + 1f) * 0.5f;
+        float t = Mathf.Lerp(1f - activePulseStrength, 1f, pulse);
+        return Color.Lerp(normalIconColor, activeIconColor, t);
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 시전 강조용 오버레이 Image가 현재 스킬 아이콘 스프라이트를 자동으로 따라가게 만든다.
+    /// - 무기 교체로 icon sprite가 바뀌어도 오버레이 authoring을 다시 하지 않도록 돕는다.
+    /// - 레이아웃을 망가뜨리지 않도록 transform/rect 크기는 건드리지 않는다.
+    /// </summary>
+    private static void SyncOverlaySprite(SkillSlotUI ui, AbilityDefinition def)
+    {
+        if (ui == null)
+            return;
+
+        Image overlayImage = ResolveOverlayImage(ui);
+        if (overlayImage == null)
+            return;
+
+        overlayImage.enabled = def != null;
+        overlayImage.sprite = def != null ? def.icon : null;
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - activeOverlay가 사용할 실제 Image 컴포넌트를 찾는다.
+    /// - 인스펙터 지정이 없으면 activeOverlay 자신에게서 보수적으로 탐색한다.
+    /// </summary>
+    private static Image ResolveOverlayImage(SkillSlotUI ui)
+    {
+        if (ui == null)
+            return null;
+
+        if (ui.activeOverlayImage != null)
+            return ui.activeOverlayImage;
+
+        if (ui.activeOverlay == null)
+            return null;
+
+        return ui.activeOverlay.GetComponent<Image>();
     }
     private void UpdateCooldownAndCharge(SkillSlotUI ui, AbilityDefinition def)
     {

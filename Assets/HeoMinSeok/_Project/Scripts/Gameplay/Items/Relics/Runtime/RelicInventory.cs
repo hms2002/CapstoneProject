@@ -11,6 +11,19 @@ using Object = UnityEngine.Object;
 /// </summary>
 public class RelicInventory : MonoBehaviour
 {
+    /// <summary>
+    /// 책임 :
+    /// - 유물 획득/강화 시도가 어떤 결과로 끝났는지 도메인 수준에서 구분한다.
+    /// - 상위 호출부가 UI 경고, 대사, 로그를 같은 사유 코드로 처리할 수 있게 한다.
+    /// </summary>
+    public enum AcquireResult
+    {
+        Success = 0,
+        InvalidDefinition,
+        InventoryFull,
+        AlreadyMaxLevel
+    }
+
     [Serializable]
     private class Entry
     {
@@ -320,9 +333,10 @@ public class RelicInventory : MonoBehaviour
     /// 없으면 빈 슬롯에 새로 장착합니다.
     /// gainedLevel을 지정하지 않으면 RelicDefinition.dropLevel(기본 1)을 사용합니다.
     /// </summary>
-    public bool TryAcquireOrUpgrade(RelicDefinition relic, int gainedLevel = -1)
+    public AcquireResult TryAcquireOrUpgradeDetailed(RelicDefinition relic, int gainedLevel = -1)
     {
-        if (relic == null) return false;
+        if (relic == null)
+            return AcquireResult.InvalidDefinition;
 
         int gain = gainedLevel > 0 ? gainedLevel : (relic.dropLevel > 0 ? relic.dropLevel : 1);
 
@@ -336,16 +350,32 @@ public class RelicInventory : MonoBehaviour
             int newLevel = relic.ClampLevel(oldLevel + gain);
 
             // 책임 : 이미 최대 레벨이면 추가 획득을 실패 처리한다.
-            if (newLevel == oldLevel) return false;
+            if (newLevel == oldLevel)
+                return AcquireResult.AlreadyMaxLevel;
 
-            return ReapplyLevel(idx, newLevel);
+            return ReapplyLevel(idx, newLevel)
+                ? AcquireResult.Success
+                : AcquireResult.InvalidDefinition;
         }
 
         int empty = FindFirstEmptySlot();
-        if (empty < 0) return false;
+        if (empty < 0)
+            return AcquireResult.InventoryFull;
 
         int initial = relic.ClampLevel(gain);
-        return EquipIntoEmptySlot(empty, relic, initial);
+        return EquipIntoEmptySlot(empty, relic, initial)
+            ? AcquireResult.Success
+            : AcquireResult.InvalidDefinition;
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 유물 획득/강화 시도의 상세 결과를 bool 성공/실패 규약으로 감싼다.
+    /// - 기존 호출부를 깨지 않으면서 점진적으로 상세 결과 enum 도입을 허용한다.
+    /// </summary>
+    public bool TryAcquireOrUpgrade(RelicDefinition relic, int gainedLevel = -1)
+    {
+        return TryAcquireOrUpgradeDetailed(relic, gainedLevel) == AcquireResult.Success;
     }
 
     /// <summary>

@@ -15,6 +15,8 @@ namespace UnityGAS
     {
         [Header("Physics")]
         [SerializeField] private Rigidbody2D body;
+        [Tooltip("빠른 이동에서 벽 관통 가능성을 줄이기 위해 Rigidbody2D 충돌 검출을 Continuous로 강제합니다.")]
+        [SerializeField] private bool enforceContinuousCollision = true;
 
         [Header("Sources")]
         [Tooltip("IIntentMovementSource2D를 구현한 컴포넌트")]
@@ -68,6 +70,8 @@ namespace UnityGAS
             if (body == null)
                 body = GetComponent<Rigidbody2D>();
 
+            EnsureCollisionDetectionMode();
+
             if (externalMovement == null)
                 externalMovement = GetComponent<ExternalMovementController2D>();
 
@@ -93,6 +97,20 @@ namespace UnityGAS
             if (statProvider == null)
                 Debug.LogWarning($"[MovementMotor2D] {name}: IStatProvider를 찾지 못했습니다. (예: AttributeStatSource 필요)");
 #endif
+        }
+
+        /// <summary>
+        /// 책임 :
+        /// - MovementMotor2D가 최종 이동을 담당하는 Rigidbody2D의 충돌 검출 모드를 안전한 기본값으로 보정한다.
+        /// - 프리팹 세팅 누락으로 고속 이동체가 Discrete 충돌 검출에 머무는 상황을 줄인다.
+        /// </summary>
+        private void EnsureCollisionDetectionMode()
+        {
+            if (!enforceContinuousCollision || body == null)
+                return;
+
+            if (body.collisionDetectionMode != CollisionDetectionMode2D.Continuous)
+                body.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
         }
 
         private void FixedUpdate()

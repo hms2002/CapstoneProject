@@ -12,6 +12,9 @@ public class UIManager : MonoBehaviour
     [SerializeField] private HoverUIController hoverUIController;
     [SerializeField] private WorldInteractionPromptController worldPromptController;
 
+    [Header("Feedback")]
+    [SerializeField] private WarningPopupService warningPopupService;
+
     [Header("Gameplay Lock")]
     [SerializeField] private GameplayTagSet blockControlByUiTagSet;
     [SerializeField] private UIGameplayLockProfile dialogueGameplayLockProfile = UIGameplayLockProfile.BlockControlOnly;
@@ -388,6 +391,43 @@ public class UIManager : MonoBehaviour
             hoverUIController.HideImmediate();
     }
 
+    /// <summary>
+    /// 책임 :
+    /// - 자주 사용하는 경고 사유 코드를 UI 전용 메시지로 해석해 WarningPopupService에 전달한다.
+    /// - gameplay/domain 계층이 경고 문구와 팝업 서비스 구현을 직접 알지 않도록 UIManager 진입점을 제공한다.
+    /// </summary>
+    public void ShowWarning(WarningPopupCode code, float duration = WarningPopupUI.DefaultDuration)
+    {
+        if (code == WarningPopupCode.None)
+            return;
+
+        string message = ResolveWarningMessage(code);
+        if (string.IsNullOrWhiteSpace(message))
+            return;
+
+        ShowWarning(message, duration);
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 외부 시스템이 전달한 경고 문자열을 공통 WarningPopupService로 위임한다.
+    /// - UIManager가 보유한 고정 서비스 참조만 사용해 경고 표시 경로를 일관되게 유지한다.
+    /// </summary>
+    public void ShowWarning(string message, float duration = WarningPopupUI.DefaultDuration)
+    {
+        if (string.IsNullOrWhiteSpace(message))
+            return;
+
+        WarningPopupService service = ResolveWarningPopupService();
+        if (service == null)
+        {
+            Debug.LogWarning("[UIManager] WarningPopupService could not be resolved.", this);
+            return;
+        }
+
+        service.ShowWarning(message, duration);
+    }
+
     public void SetGameplayHudCurrencyHidden(Object owner, bool hidden)
     {
         if (owner == null)
@@ -435,6 +475,34 @@ public class UIManager : MonoBehaviour
 
         gameplayHudCurrencyUI = currencyUIs[0];
         return gameplayHudCurrencyUI;
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 경고 팝업 서비스 참조를 UIManager가 가진 직렬화 필드에서만 제공한다.
+    /// - 경고 팝업 의존 경로를 UIManager -> WarningPopupService 한 단계로 단순화한다.
+    /// </summary>
+    private WarningPopupService ResolveWarningPopupService()
+    {
+        return warningPopupService;
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - WarningPopupCode를 실제 플레이어에게 보여줄 한국어 경고 문구로 변환한다.
+    /// - 경고 문구의 일관성과 향후 수정 포인트를 UIManager 한 곳으로 모은다.
+    /// </summary>
+    private static string ResolveWarningMessage(WarningPopupCode code)
+    {
+        return code switch
+        {
+            WarningPopupCode.RelicInventoryFull => "유물 인벤토리가 가득 찼습니다.",
+            WarningPopupCode.RelicAlreadyMaxLevel => "이미 최대 레벨인 유물입니다.",
+            WarningPopupCode.WeaponInventoryFull => "무기 인벤토리가 가득 찼습니다.",
+            WarningPopupCode.ConsumableInventoryFull => "일회용 아이템 인벤토리가 가득 찼습니다.",
+            WarningPopupCode.CannotDropHere => "여기에는 버릴 수 없습니다.",
+            _ => string.Empty,
+        };
     }
 
     private void HandlePlayerRegistered(PlayerInteractor2D player)

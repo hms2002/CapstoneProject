@@ -376,7 +376,10 @@ public class ChestScreen : MonoBehaviour, IStackableUI
             var r = item as RelicDefinition;
             if (r == null) return false;
 
-            return inv.TrySetRelicSlot(index, r);
+            bool ok = inv.TrySetRelicSlot(index, r);
+            if (!ok)
+                ShowRelicWarning(ResolveRelicFailure(r, r.dropLevel > 0 ? r.dropLevel : 1));
+            return ok;
         }
 
         public bool TrySwap(int a, int b) => inv != null && inv.TrySwapRelicSlots(a, b);
@@ -398,7 +401,51 @@ public class ChestScreen : MonoBehaviour, IStackableUI
         {
             if (inv == null) return false;
             if (relic == null) return inv.TrySetRelicSlot(index, null);
-            return inv.TrySetRelicSlotWithLevel(index, relic, level);
+            bool ok = inv.TrySetRelicSlotWithLevel(index, relic, level);
+            if (!ok)
+                ShowRelicWarning(ResolveRelicFailure(relic, level));
+            return ok;
+        }
+
+        /// <summary>
+        /// 책임 :
+        /// - 상자에서 플레이어 유물 인벤토리로 이동하는 과정의 실패 사유를 공통 경고 팝업 코드로 변환한다.
+        /// - 유물 최대 레벨과 인벤토리 부족을 조용한 실패가 아니라 즉시 피드백으로 보여준다.
+        /// </summary>
+        private static void ShowRelicWarning(RelicInventory.AcquireResult result)
+        {
+            if (UIManager.Instance == null)
+                return;
+
+            WarningPopupCode code = result switch
+            {
+                RelicInventory.AcquireResult.InventoryFull => WarningPopupCode.RelicInventoryFull,
+                RelicInventory.AcquireResult.AlreadyMaxLevel => WarningPopupCode.RelicAlreadyMaxLevel,
+                _ => WarningPopupCode.None
+            };
+
+            if (code != WarningPopupCode.None)
+                UIManager.Instance.ShowWarning(code);
+        }
+
+        /// <summary>
+        /// 책임 :
+        /// - 특정 유물 이동 실패가 최대 레벨 때문인지 판단해 상세 실패 사유를 복원한다.
+        /// - 상자 drag/drop 경로에서 bool 실패만으로는 알 수 없는 유물 강화 막힘을 경고 팝업으로 연결한다.
+        /// </summary>
+        private RelicInventory.AcquireResult ResolveRelicFailure(RelicDefinition relic, int incomingLevel)
+        {
+            if (inv == null || relic == null)
+                return RelicInventory.AcquireResult.InvalidDefinition;
+
+            if (!inv.TryGetRelicLevelById(relic.relicId, out int currentLevel))
+                return RelicInventory.AcquireResult.InvalidDefinition;
+
+            int gain = Mathf.Max(1, incomingLevel);
+            int nextLevel = relic.ClampLevel(currentLevel + gain);
+            return nextLevel == currentLevel
+                ? RelicInventory.AcquireResult.AlreadyMaxLevel
+                : RelicInventory.AcquireResult.InvalidDefinition;
         }
     }
 }
