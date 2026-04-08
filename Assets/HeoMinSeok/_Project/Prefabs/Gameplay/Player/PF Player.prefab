@@ -674,6 +674,11 @@ MonoBehaviour:
   cameraShake: {fileID: 0}
   defaultShake: 0.3
   cameraShakeForceMultiplier: 10
+  playerHitSound:
+    key: hit.player
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
   movementStateProviderSource: {fileID: 0}
   invulnerableTag: {fileID: 11400000, guid: 90cc853a47e809d4e8baa4fbcd354709, type: 2}
   attackingBlockedTag: {fileID: 11400000, guid: 464b82c4380e99c45a839f32f32511a8, type: 2}
@@ -799,6 +804,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   body: {fileID: 288432539280398367}
+  enforceContinuousCollision: 1
   intentSourceBehaviour: {fileID: 5727091237041186888}
   statProviderBehaviour: {fileID: 689952884117774573}
   externalMovement: {fileID: 7359355598128478682}

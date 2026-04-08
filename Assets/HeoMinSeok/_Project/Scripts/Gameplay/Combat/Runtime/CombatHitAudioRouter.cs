@@ -1,0 +1,53 @@
+using CapstoneAudio;
+using UnityEngine;
+using UnityGAS;
+
+/// <summary>
+/// 책임 :
+/// - 실제 타격 성공 시 어떤 impact sound를 재생할지 중앙 규칙으로 결정한다.
+/// - 플레이어 타깃이면 PlayerHitFeedback2D의 전용 피격음을 우선하고, 아니면 공격 AbilityDefinition의 impactSound를 사용한다.
+/// </summary>
+public static class CombatHitAudioRouter
+{
+    /// <summary>
+    /// 책임 :
+    /// - 실제 HP 감소가 확인된 타격에 대해 최종 재생할 SoundRef를 선택하고 재생한다.
+    /// - 공격자/타깃/위치 문맥을 SoundManager가 해석할 수 있도록 공통 SoundPlaybackContext를 구성한다.
+    /// </summary>
+    public static void PlayImpact(AbilitySystem system, AbilitySpec spec, GameObject target, GameObject causer)
+    {
+        if (target == null)
+            return;
+
+        SoundRef resolved = ResolveImpactSound(spec, target);
+        if (!resolved.IsSet)
+            return;
+
+        SoundManager.EnsureInstance().Play(resolved, new SoundPlaybackContext
+        {
+            Instigator = system != null ? system.gameObject : null,
+            Causer = causer,
+            Target = target,
+            Position = target.transform.position,
+            SourceObject = spec != null ? spec.Definition : null
+        });
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 타깃이 플레이어면 플레이어 전용 피격음을, 아니면 공격 정의의 기본 타격음을 선택한다.
+    /// - 오디오 선택 규칙을 CombatDamageAction 밖으로 분리해 재사용 가능하게 유지한다.
+    /// </summary>
+    private static SoundRef ResolveImpactSound(AbilitySpec spec, GameObject target)
+    {
+        if (target != null)
+        {
+            PlayerHitFeedback2D playerHitFeedback = target.GetComponent<PlayerHitFeedback2D>();
+            if (playerHitFeedback != null && playerHitFeedback.PlayerHitSound.IsSet)
+                return playerHitFeedback.PlayerHitSound;
+        }
+
+        AbilityDefinition def = spec != null ? spec.Definition : null;
+        return def != null ? def.impactSound : default;
+    }
+}

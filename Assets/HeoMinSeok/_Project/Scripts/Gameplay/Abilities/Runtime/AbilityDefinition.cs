@@ -346,6 +346,9 @@ namespace UnityGAS
         [Tooltip("실행 중 취소 시 1회 재생되는 사운드")]
         public SoundRef audioOnExecutionCancelled;
 
+        [Tooltip("실제 타격이 적중했을 때 재생할 기본 타격 사운드")]
+        public SoundRef impactSound;
+
         [Header("GameplayCue (Optional)")]
 
         /// <summary>

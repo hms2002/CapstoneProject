@@ -150,7 +150,7 @@ public static class CombatDamageAction
         runner.ApplyEffectSpec(damageSpec, target);
 
         // 3) target-side damaged event
-        EmitDamagedTaken(target, spec, causer, hpCheck);
+        EmitDamagedTaken(system, target, spec, causer, hpCheck);
 
         // 4) Apply knockback effect separately
         ApplyKnockbackEffect(
@@ -268,6 +268,7 @@ public static class CombatDamageAction
         return new HpCheckData(preHp, hpAttr, targetAttrs);
     }
     private static void EmitDamagedTaken(
+    AbilitySystem sourceSystem,
     GameObject target,
     AbilitySpec sourceSpec,
     GameObject causer,
@@ -277,6 +278,12 @@ public static class CombatDamageAction
 
         float postHp = hpCheck.TargetAttrs.GetAttributeValue(hpCheck.HpAttr);
         if (postHp >= hpCheck.PreHp) return; // 실제 감소 없으면 발행 안 함
+
+        CombatHitAudioRouter.PlayImpact(
+            sourceSystem,
+            sourceSpec,
+            target,
+            causer);
 
         var targetSystem = target.GetComponent<AbilitySystem>();
         if (targetSystem == null) return;
