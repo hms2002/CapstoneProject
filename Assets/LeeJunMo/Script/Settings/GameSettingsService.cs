@@ -125,6 +125,27 @@ public sealed class GameSettingsService : MonoBehaviour
         return resolutionOptions;
     }
 
+    public DisplayResolutionOption GetDisplayedResolutionOption(GameWindowMode mode, int resolutionIndex)
+    {
+        EnsureInitialized();
+
+        if (mode != GameWindowMode.Windowed)
+            return GetSystemDisplayResolution();
+
+        if (resolutionOptions.Count == 0)
+            BuildResolutionOptions();
+
+        if (resolutionOptions.Count == 0)
+            return new DisplayResolutionOption(resolutionWidth, resolutionHeight);
+
+        int clampedIndex = Mathf.Clamp(
+            resolutionIndex < 0 ? GetCurrentResolutionIndex() : resolutionIndex,
+            0,
+            resolutionOptions.Count - 1);
+
+        return resolutionOptions[clampedIndex];
+    }
+
     public int GetCurrentResolutionIndex()
     {
         EnsureInitialized();
@@ -137,6 +158,22 @@ public sealed class GameSettingsService : MonoBehaviour
         }
 
         return resolutionOptions.Count > 0 ? 0 : -1;
+    }
+
+    private static DisplayResolutionOption GetSystemDisplayResolution()
+    {
+        Resolution currentResolution = Screen.currentResolution;
+        if (currentResolution.width > 0 && currentResolution.height > 0)
+            return new DisplayResolutionOption(currentResolution.width, currentResolution.height);
+
+        Display mainDisplay = Display.main;
+        if (mainDisplay != null && mainDisplay.systemWidth > 0 && mainDisplay.systemHeight > 0)
+            return new DisplayResolutionOption(mainDisplay.systemWidth, mainDisplay.systemHeight);
+
+        if (Screen.width > 0 && Screen.height > 0)
+            return new DisplayResolutionOption(Screen.width, Screen.height);
+
+        return new DisplayResolutionOption(DefaultWindowWidth, DefaultWindowHeight);
     }
 
     public void SetWindowMode(GameWindowMode mode)
@@ -500,8 +537,15 @@ public sealed class GameSettingsService : MonoBehaviour
             _ => FullScreenMode.Windowed,
         };
 
+        DisplayResolutionOption appliedResolution = mode == GameWindowMode.Windowed
+            ? new DisplayResolutionOption(width, height)
+            : GetSystemDisplayResolution();
+
         Screen.fullScreenMode = fullScreenMode;
-        Screen.SetResolution(Mathf.Max(640, width), Mathf.Max(360, height), fullScreenMode);
+        Screen.SetResolution(
+            Mathf.Max(640, appliedResolution.width),
+            Mathf.Max(360, appliedResolution.height),
+            fullScreenMode);
 #endif
     }
 }

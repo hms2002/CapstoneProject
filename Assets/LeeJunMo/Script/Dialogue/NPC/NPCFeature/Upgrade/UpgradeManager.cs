@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class UpgradeManager : MonoBehaviour
 {
@@ -25,6 +26,9 @@ public class UpgradeManager : MonoBehaviour
         }
 
         Instance = this;
+        GlobalUIRoot.AdoptService(transform);
+        MarkPersistent();
+        ResolveUpgradeTreeUiReference();
         progressService = new UpgradeProgressService(upgradeDatabase);
         effectApplier = new UpgradeEffectApplier();
     }
@@ -38,6 +42,7 @@ public class UpgradeManager : MonoBehaviour
     private void OnEnable()
     {
         PlayerRuntimeRegistry.PlayerRegistered += HandlePlayerRegistered;
+        SceneManager.sceneLoaded += HandleSceneLoaded;
     }
 
     private void Start()
@@ -49,11 +54,37 @@ public class UpgradeManager : MonoBehaviour
     private void OnDisable()
     {
         PlayerRuntimeRegistry.PlayerRegistered -= HandlePlayerRegistered;
+        SceneManager.sceneLoaded -= HandleSceneLoaded;
     }
 
     private void HandlePlayerRegistered(PlayerInteractor2D player)
     {
         TryReapplyAllEffects();
+    }
+
+    private void HandleSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        ResolveUpgradeTreeUiReference();
+        CheckAndUnlockNodes(false);
+        appliedPlayer = null;
+        TryReapplyAllEffects();
+    }
+
+    private void MarkPersistent()
+    {
+        Transform persistentRoot = transform.root;
+        if (persistentRoot == null || persistentRoot.parent != null)
+            return;
+
+        DontDestroyOnLoad(persistentRoot.gameObject);
+    }
+
+    private void ResolveUpgradeTreeUiReference()
+    {
+        if (upgradeTreeUI != null)
+            return;
+
+        upgradeTreeUI = UpgradeTreeUI.EnsureInstance();
     }
 
     private PlayerInteractor2D ResolveCurrentPlayer()
@@ -135,11 +166,17 @@ public class UpgradeManager : MonoBehaviour
         if (player == null || GameDataManager.Instance == null || progressService == null || effectApplier == null)
             return;
 
-        effectApplier.ReapplyPurchasedEffects(GameDataManager.Instance.Data.upgradeData.purchasedIDs, progressService, player);
+        GameData data = GameDataManager.Instance.EnsureData();
+        if (data == null)
+            return;
+
+        data.upgradeData ??= new UpgradeSaveData();
+        effectApplier.ReapplyPurchasedEffects(data.upgradeData.purchasedIDs, progressService, player);
     }
 
     public void ToggleUI()
     {
+        ResolveUpgradeTreeUiReference();
         if (upgradeTreeUI == null)
             return;
 
@@ -161,6 +198,7 @@ public class UpgradeManager : MonoBehaviour
 
     public void CloseUI()
     {
+        ResolveUpgradeTreeUiReference();
         if (upgradeTreeUI == null)
             return;
 

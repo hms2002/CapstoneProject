@@ -7,6 +7,7 @@ public sealed class GamePresentationController : MonoBehaviour
 {
     private const int DefaultWindowWidth = 1280;
     private const int DefaultWindowHeight = 720;
+    private const float BasePresentationAspectRatio = 16f / 9f;
     private const float AspectRatioTolerance = 0.0001f;
     private const int LetterboxSortingOrder = 32767;
 
@@ -32,12 +33,24 @@ public sealed class GamePresentationController : MonoBehaviour
     private Image bottomLetterboxBar;
     private Image leftLetterboxBar;
     private Image rightLetterboxBar;
-    private int lastPresentationWidth = -1;
-    private int lastPresentationHeight = -1;
+    private int lastContainerWidth = -1;
+    private int lastContainerHeight = -1;
+    private GameWindowMode lastWindowMode = (GameWindowMode)(-1);
+    private int lastResolutionWidth = -1;
+    private int lastResolutionHeight = -1;
+    private int lastPresentationCameraInstanceId = -1;
 
     public void RefreshIfNeeded(GameWindowMode windowMode, int resolutionWidth, int resolutionHeight)
     {
-        if (lastPresentationWidth == Screen.width && lastPresentationHeight == Screen.height)
+        Camera presentationCamera = ResolvePresentationCamera();
+        int presentationCameraInstanceId = presentationCamera != null ? presentationCamera.GetInstanceID() : 0;
+        Vector2Int containerSize = GetPresentationContainerSize(windowMode);
+        if (lastContainerWidth == containerSize.x &&
+            lastContainerHeight == containerSize.y &&
+            lastWindowMode == windowMode &&
+            lastResolutionWidth == resolutionWidth &&
+            lastResolutionHeight == resolutionHeight &&
+            lastPresentationCameraInstanceId == presentationCameraInstanceId)
             return;
 
         ApplyPresentation(windowMode, resolutionWidth, resolutionHeight);
@@ -45,22 +58,39 @@ public sealed class GamePresentationController : MonoBehaviour
 
     public void ApplyPresentation(GameWindowMode windowMode, int resolutionWidth, int resolutionHeight)
     {
+        Camera presentationCamera = ResolvePresentationCamera();
         Vector2Int containerSize = GetPresentationContainerSize(windowMode);
-        float contentAspectRatio = GetSelectedResolutionAspectRatio(resolutionWidth, resolutionHeight);
+        float contentAspectRatio = BasePresentationAspectRatio;
         Rect viewportRect = CalculateViewportRect(containerSize.x, containerSize.y, contentAspectRatio);
         ApplyCameraViewport(viewportRect);
-        ApplyUiCanvasPresentation(viewportRect);
+        ApplyUiCanvasPresentation(viewportRect, presentationCamera);
         ApplyLetterboxOverlay(viewportRect);
-        lastPresentationWidth = Screen.width;
-        lastPresentationHeight = Screen.height;
+        Canvas.ForceUpdateCanvases();
+        lastContainerWidth = containerSize.x;
+        lastContainerHeight = containerSize.y;
+        lastWindowMode = windowMode;
+        lastResolutionWidth = resolutionWidth;
+        lastResolutionHeight = resolutionHeight;
+        lastPresentationCameraInstanceId = presentationCamera != null ? presentationCamera.GetInstanceID() : 0;
     }
 
-    private static float GetSelectedResolutionAspectRatio(int resolutionWidth, int resolutionHeight)
+    private static Camera ResolvePresentationCamera()
     {
-        if (resolutionWidth <= 0 || resolutionHeight <= 0)
-            return (float)DefaultWindowWidth / DefaultWindowHeight;
+        Camera mainCamera = Camera.main;
+        if (mainCamera != null)
+            return mainCamera;
 
-        return resolutionWidth / (float)resolutionHeight;
+        Camera[] cameras = Camera.allCameras;
+        for (int i = 0; i < cameras.Length; i++)
+        {
+            Camera candidate = cameras[i];
+            if (candidate == null || !candidate.isActiveAndEnabled || candidate.targetTexture != null)
+                continue;
+
+            return candidate;
+        }
+
+        return null;
     }
 
     private static Rect CalculateViewportRect(int containerWidth, int containerHeight, float targetAspectRatio)
@@ -87,13 +117,25 @@ public sealed class GamePresentationController : MonoBehaviour
     private static Vector2Int GetPresentationContainerSize(GameWindowMode windowMode)
     {
         if (windowMode == GameWindowMode.Windowed)
-            return new Vector2Int(Mathf.Max(1, Screen.width), Mathf.Max(1, Screen.height));
+        {
+            if (Screen.width > 0 && Screen.height > 0)
+                return new Vector2Int(Screen.width, Screen.height);
+
+            return new Vector2Int(DefaultWindowWidth, DefaultWindowHeight);
+        }
+
+        Resolution currentResolution = Screen.currentResolution;
+        if (currentResolution.width > 0 && currentResolution.height > 0)
+            return new Vector2Int(currentResolution.width, currentResolution.height);
 
         Display mainDisplay = Display.main;
-        if (mainDisplay != null)
-            return new Vector2Int(Mathf.Max(1, mainDisplay.systemWidth), Mathf.Max(1, mainDisplay.systemHeight));
+        if (mainDisplay != null && mainDisplay.systemWidth > 0 && mainDisplay.systemHeight > 0)
+            return new Vector2Int(mainDisplay.systemWidth, mainDisplay.systemHeight);
 
-        return new Vector2Int(Mathf.Max(1, Screen.width), Mathf.Max(1, Screen.height));
+        if (Screen.width > 0 && Screen.height > 0)
+            return new Vector2Int(Screen.width, Screen.height);
+
+        return new Vector2Int(DefaultWindowWidth, DefaultWindowHeight);
     }
 
     private static void ApplyCameraViewport(Rect viewportRect)
@@ -109,14 +151,13 @@ public sealed class GamePresentationController : MonoBehaviour
         }
     }
 
-    private void ApplyUiCanvasPresentation(Rect viewportRect)
+    private void ApplyUiCanvasPresentation(Rect viewportRect, Camera presentationCamera)
     {
         bool useFullScreen = Mathf.Approximately(viewportRect.x, 0f) &&
                              Mathf.Approximately(viewportRect.y, 0f) &&
                              Mathf.Approximately(viewportRect.width, 1f) &&
                              Mathf.Approximately(viewportRect.height, 1f);
 
-        Camera presentationCamera = Camera.main;
         for (int i = 0; i < UiPresentationLayers.Length; i++)
         {
             Canvas canvas = GlobalUIRoot.GetCanvas(UiPresentationLayers[i]);

@@ -37,7 +37,7 @@ public sealed class WorldItemDetailPresenter : MonoBehaviour
 
         Instance = this;
         GlobalUIRoot.AdoptService(transform);
-        DontDestroyOnLoad(gameObject);
+        MarkPersistent();
     }
 
     private void Update()
@@ -69,6 +69,18 @@ public sealed class WorldItemDetailPresenter : MonoBehaviour
             Instance = null;
 
         HideCurrent();
+    }
+
+    private void MarkPersistent()
+    {
+        Transform persistentRoot = transform.root;
+        if (persistentRoot == null)
+            return;
+
+        if (persistentRoot.parent != null)
+            return;
+
+        DontDestroyOnLoad(persistentRoot.gameObject);
     }
 
     public void Show(Transform worldAnchor, ScriptableObject itemDefinition, int relicLevelOverride = 0)

@@ -4,6 +4,21 @@ using UnityEngine.UI;
 
 public class UpgradeTreeUI : MonoBehaviour, IStackableUI
 {
+    public static UpgradeTreeUI EnsureInstance()
+    {
+        UpgradeTreeUI[] existing = Resources.FindObjectsOfTypeAll<UpgradeTreeUI>();
+        for (int i = 0; i < existing.Length; i++)
+        {
+            UpgradeTreeUI candidate = existing[i];
+            if (candidate == null || !candidate.gameObject.scene.IsValid())
+                continue;
+
+            return candidate;
+        }
+
+        return null;
+    }
+
     [Header("UI References")]
     public RectTransform contentRect;
     public Transform slotParent;

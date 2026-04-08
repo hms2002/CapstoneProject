@@ -2,6 +2,7 @@ using System.Collections;
 using Cainos.PixelArtTopDown_Basic;
 using UnityEngine;
 using Unity.Cinemachine;
+using UnityEngine.SceneManagement;
 
 public class CameraPresentationDirector : MonoBehaviour
 {
@@ -24,14 +25,7 @@ public class CameraPresentationDirector : MonoBehaviour
 
     private void Awake()
     {
-        if (Camera.main != null)
-        {
-            brain = Camera.main.GetComponent<CinemachineBrain>();
-            legacyFollowCamera = Camera.main.GetComponent<CameraFollow>();
-        }
-
-        EnsureImpulseListener(playerCam);
-        EnsureImpulseListener(bossCam);
+        ResolveRuntimeReferences();
         RestoreDefaultState();
     }
 
@@ -39,6 +33,8 @@ public class CameraPresentationDirector : MonoBehaviour
     {
         PlayerRuntimeRegistry.PlayerRegistered += HandlePlayerRegistered;
         PlayerRuntimeRegistry.PlayerUnregistered += HandlePlayerUnregistered;
+        SceneManager.sceneLoaded += HandleSceneLoaded;
+        ResolveRuntimeReferences();
         BindPlayerCameraToCurrentPlayer();
     }
 
@@ -46,6 +42,7 @@ public class CameraPresentationDirector : MonoBehaviour
     {
         PlayerRuntimeRegistry.PlayerRegistered -= HandlePlayerRegistered;
         PlayerRuntimeRegistry.PlayerUnregistered -= HandlePlayerUnregistered;
+        SceneManager.sceneLoaded -= HandleSceneLoaded;
         RestoreBrainIgnoreTimeScale();
         SetLegacyFollowEnabled(true);
     }
@@ -63,21 +60,21 @@ public class CameraPresentationDirector : MonoBehaviour
         bool disableLegacyFollow,
         float blendFallbackSeconds)
     {
-        playerCam = playerCamera;
-        bossCam = bossCamera;
+        playerCam = ResolvePlayerCameraReference(playerCamera);
+        bossCam = ResolveBossCameraReference(bossCamera);
         normalPriority = defaultPriority;
         focusPriority = highlightedPriority;
         disableLegacyFollowWhileSequence = disableLegacyFollow;
         blendWaitFallbackSeconds = blendFallbackSeconds;
 
-        EnsureImpulseListener(playerCam);
-        EnsureImpulseListener(bossCam);
+        ResolveRuntimeReferences();
         RestoreDefaultState();
     }
 
     public IEnumerator FocusBossRoutine()
     {
         EnableUnscaledCameraBlend();
+        ValidateBossCameraAvailability();
         BindPlayerCameraToCurrentPlayer();
         SetLegacyFollowEnabled(false);
 
@@ -131,6 +128,12 @@ public class CameraPresentationDirector : MonoBehaviour
         BindPlayerCamera(player.transform);
     }
 
+    private void HandleSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        ResolveRuntimeReferences();
+        RestoreDefaultState();
+    }
+
     private void HandlePlayerUnregistered(PlayerInteractor2D player)
     {
         if (playerCam == null || player == null)
@@ -151,6 +154,49 @@ public class CameraPresentationDirector : MonoBehaviour
         EnsureImpulseListener(playerCam);
         playerCam.Follow = playerTransform;
         playerCam.LookAt = playerTransform;
+    }
+
+    private void ResolveRuntimeReferences()
+    {
+        CameraBootstrap.EnsureRuntimeRigForCurrentScene();
+
+        playerCam = ResolvePlayerCameraReference(playerCam);
+        bossCam = ResolveBossCameraReference(bossCam);
+        brain = CameraBootstrap.GetBrain();
+        legacyFollowCamera = CameraBootstrap.GetLegacyFollow();
+
+        EnsureImpulseListener(playerCam);
+        EnsureImpulseListener(bossCam);
+
+        if (legacyFollowCamera != null && playerCam != null)
+            legacyFollowCamera.SetControlledCamera(playerCam, rebindCurrentTarget: true);
+    }
+
+    private void ValidateBossCameraAvailability()
+    {
+        if (!CameraBootstrap.IsBossScene(gameObject.scene))
+            return;
+
+        if (bossCam == null)
+            Debug.LogError("[CameraPresentationDirector] Boss scene is missing BossCam. Boss presentation integrity is not guaranteed.", this);
+    }
+
+    private CinemachineCamera ResolvePlayerCameraReference(CinemachineCamera fallbackCamera)
+    {
+        CinemachineCamera bootstrapPlayerCamera = CameraBootstrap.GetPlayerCamera();
+        return bootstrapPlayerCamera != null ? bootstrapPlayerCamera : fallbackCamera;
+    }
+
+    private CinemachineCamera ResolveBossCameraReference(CinemachineCamera fallbackCamera)
+    {
+        Scene ownerScene = gameObject.scene;
+        if (!CameraBootstrap.IsBossScene(ownerScene))
+            return null;
+
+        if (fallbackCamera != null && fallbackCamera.gameObject.scene == ownerScene)
+            return fallbackCamera;
+
+        return CameraBootstrap.FindSceneBossCamera(ownerScene);
     }
 
     private static void EnsureImpulseListener(CinemachineCamera camera)
