@@ -76,6 +76,7 @@ namespace UnityGAS
                 float step = Mathf.Max(0.01f, data.stepIntervalSeconds);
 
                 AddRushModifier(attrSet, state, ResolveStackAdd(system, 0));
+                PlayRushStackAdvanceSound(system, spec, initialTarget, 0);
                 InputBindingService input = InputBindingService.EnsureInstance();
 
                 for (int s = 1; s < stacks; s++)
@@ -113,24 +114,26 @@ namespace UnityGAS
                             }
                         }
 
-                        if (data.cancelOnAttackOrSkillInput)
+                    if (data.cancelOnAttackOrSkillInput)
+                    {
+                        if (input.WasPressedThisFrame(InputActionId.PrimaryAttack) ||
+                            input.WasPressedThisFrame(InputActionId.Skill1))
                         {
-                            if (input.WasPressedThisFrame(InputActionId.PrimaryAttack) ||
-                                input.WasPressedThisFrame(InputActionId.Skill1))
+                            state.ShouldApplyHandoff = true;
+                            PlayRushInputCancelSound(system, spec, initialTarget);
+                            system.CancelExecution(force: true);
+                            yield break;
+                        }
+
+                        if (input.WasPressedThisFrame(InputActionId.Skill2))
+                        {
+                            if (!TryBeginDeferredSkill2Cancel(system, state))
                             {
                                 state.ShouldApplyHandoff = true;
+                                PlayRushInputCancelSound(system, spec, initialTarget);
                                 system.CancelExecution(force: true);
                                 yield break;
                             }
-
-                            if (input.WasPressedThisFrame(InputActionId.Skill2))
-                            {
-                                if (!TryBeginDeferredSkill2Cancel(system, state))
-                                {
-                                    state.ShouldApplyHandoff = true;
-                                    system.CancelExecution(force: true);
-                                    yield break;
-                                }
                             }
                         }
 
@@ -141,6 +144,7 @@ namespace UnityGAS
                         yield break;
 
                     AddRushModifier(attrSet, state, ResolveStackAdd(system, s));
+                    PlayRushStackAdvanceSound(system, spec, initialTarget, s);
                 }
 
                 while (spec.Token != null && !spec.Token.IsCancelled)
@@ -177,6 +181,7 @@ namespace UnityGAS
                             input.WasPressedThisFrame(InputActionId.Skill1))
                         {
                             state.ShouldApplyHandoff = true;
+                            PlayRushInputCancelSound(system, spec, initialTarget);
                             system.CancelExecution(force: true);
                             break;
                         }
@@ -186,6 +191,7 @@ namespace UnityGAS
                             if (!TryBeginDeferredSkill2Cancel(system, state))
                             {
                                 state.ShouldApplyHandoff = true;
+                                PlayRushInputCancelSound(system, spec, initialTarget);
                                 system.CancelExecution(force: true);
                                 break;
                             }
@@ -230,6 +236,45 @@ namespace UnityGAS
                 state.Added.Add(modifier);
                 state.CurrentBonus += add;
             }
+        }
+
+        /// <summary>
+        /// 책임 :
+        /// - Rush 스택 단계 상승 시 LogicData에 authoring된 단계별 사운드를 공통 Ability 오디오 경로로 재생한다.
+        /// - 배열 길이를 넘는 단계는 무음으로 처리해 데이터 누락을 허용한다.
+        /// </summary>
+        private void PlayRushStackAdvanceSound(AbilitySystem system, AbilitySpec spec, GameObject target, int stackIndex)
+        {
+            if (data == null || data.stackAdvanceSounds == null)
+                return;
+
+            if (stackIndex < 0 || stackIndex >= data.stackAdvanceSounds.Length)
+                return;
+
+            AbilityAudioRouter.PlayOneShot(
+                data.stackAdvanceSounds[stackIndex],
+                system,
+                spec,
+                target,
+                sourceObjectOverride: data);
+        }
+
+        /// <summary>
+        /// 책임 :
+        /// - Rush가 입력 취소로 종료될 때 LogicData 전용 취소 사운드를 재생한다.
+        /// - 실제 재생은 공통 AbilityAudioRouter를 통해 SoundManager 정책을 그대로 따른다.
+        /// </summary>
+        private void PlayRushInputCancelSound(AbilitySystem system, AbilitySpec spec, GameObject target)
+        {
+            if (data == null)
+                return;
+
+            AbilityAudioRouter.PlayOneShot(
+                data.cancelByInputSound,
+                system,
+                spec,
+                target,
+                sourceObjectOverride: data);
         }
 
         /// <summary>

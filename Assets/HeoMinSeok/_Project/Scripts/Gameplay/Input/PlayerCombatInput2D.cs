@@ -47,8 +47,23 @@ public sealed class PlayerCombatInput2D : MonoBehaviour
         if (skillBlockedTag == null) skillBlockedTag = Resources.Load<GameplayTag>(SkillBlockedTagResourcePath);
     }
 
+    private void OnEnable()
+    {
+        if (weaponInventory != null)
+            weaponInventory.OnEquippedChanged += HandleEquippedChanged;
+    }
+
+    private void OnDisable()
+    {
+        if (weaponInventory != null)
+            weaponInventory.OnEquippedChanged -= HandleEquippedChanged;
+    }
+
     private void Update()
     {
+        InputBindingService input = InputBindingService.EnsureInstance();
+        SyncAttackHoldWithRealInput(input);
+
         if (player != null && player.CurrentState != InteractState.Idle)
             return;
 
@@ -128,7 +143,32 @@ public sealed class PlayerCombatInput2D : MonoBehaviour
             return;
 
         isHoldingAttack = false;
+        nextAutoAttackTime = 0f;
         SendGameplayEventSafe(attackReleasedEvent);
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - Update 초반에 실제 입력 눌림 상태와 내부 홀드 캐시를 동기화한다.
+    /// - UI/상호작용/상태 전환 중 KeyUp 이벤트를 놓쳐도 자동 공격이 고착되지 않게 막는다.
+    /// </summary>
+    private void SyncAttackHoldWithRealInput(InputBindingService input)
+    {
+        if (!isHoldingAttack || input == null)
+            return;
+
+        if (!input.IsPressed(InputActionId.PrimaryAttack))
+            ReleaseAttackHoldIfNeeded();
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 무기 장착/교체 직후 이전 무기에서 유지되던 공격 홀드 캐시를 끊는다.
+    /// - 무기 픽업이나 스왑 이후 새 기본 공격이 자동 연타되는 현상을 방지한다.
+    /// </summary>
+    private void HandleEquippedChanged(int previousIndex, int newIndex, WeaponDefinition previousWeapon, WeaponDefinition newWeapon)
+    {
+        ReleaseAttackHoldIfNeeded();
     }
 
     private void TryActivateSafe(AbilityDefinition def)

@@ -1,4 +1,5 @@
 using UnityEngine;
+using CapstoneAudio;
 
 namespace UnityGAS
 {
@@ -41,5 +42,12 @@ namespace UnityGAS
         [Header("Handoff")]
         [Min(0.01f)]
         public float handoffDurationSeconds = 0.1f;
+
+        [Header("Audio (Optional)")]
+        [Tooltip("Rush 스택 단계가 상승할 때 stack index 순서대로 재생할 사운드입니다. 길이가 부족하면 해당 단계는 무음으로 둡니다.")]
+        public SoundRef[] stackAdvanceSounds;
+
+        [Tooltip("Rush가 입력 취소로 handoff 종료될 때 재생할 선택 사운드입니다.")]
+        public SoundRef cancelByInputSound;
     }
 }
