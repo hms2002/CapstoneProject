@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using Unity.Cinemachine;
+using CapstoneAudio;
 
 namespace UnityGAS
 {
@@ -32,6 +33,9 @@ namespace UnityGAS
         [SerializeField] private CinemachineImpulseSource cameraShake;
         [SerializeField] private float defaultShake = 0.10f;
         [SerializeField, Min(0f)] private float cameraShakeForceMultiplier = 10f;
+
+        [Header("Audio")]
+        [SerializeField] private SoundRef playerHitSound;
 
         [Header("Movement")]
         [Tooltip("선택: 이동 여부를 읽어 피격 루프를 중간 해제한다.")]
@@ -72,6 +76,13 @@ namespace UnityGAS
         private int _hitLoopBoolHash;
 
         private Coroutine _reactionRoutine;
+
+        /// <summary>
+        /// 책임 :
+        /// - 플레이어가 피격되었을 때 공격측 impact sound 대신 우선 재생할 전용 피격 사운드를 제공한다.
+        /// - 전투 오디오 라우터가 플레이어 타깃 여부를 판별할 때 참조하는 데이터 소켓 역할을 한다.
+        /// </summary>
+        public SoundRef PlayerHitSound => playerHitSound;
 
         private void Awake()
         {
