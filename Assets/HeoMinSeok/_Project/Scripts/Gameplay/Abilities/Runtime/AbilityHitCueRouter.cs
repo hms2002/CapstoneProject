@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace UnityGAS
@@ -43,10 +44,11 @@ namespace UnityGAS
                 return;
 
             AbilityDefinition definition = data.Spec != null ? data.Spec.Definition : null;
-            if (definition == null || definition.cueOnHitConfirmed == null)
+            if (definition == null)
                 return;
 
-            cueManager.ExecuteCue(definition.cueOnHitConfirmed, BuildCueParams(data, definition));
+            GameplayCueParams cueParams = BuildCueParams(data, definition);
+            ExecuteHitCues(definition, cueParams);
         }
 
         private GameplayCueParams BuildCueParams(AbilityEventData data, AbilityDefinition definition)
@@ -95,6 +97,29 @@ namespace UnityGAS
             }
 
             return false;
+        }
+
+        private void ExecuteHitCues(AbilityDefinition definition, GameplayCueParams cueParams)
+        {
+            if (cueManager == null || definition == null)
+                return;
+
+            HashSet<GameplayTag> executed = new HashSet<GameplayTag>();
+
+            if (definition.cueOnHitConfirmed != null && executed.Add(definition.cueOnHitConfirmed))
+                cueManager.ExecuteCue(definition.cueOnHitConfirmed, cueParams);
+
+            if (definition.additionalCuesOnHitConfirmed == null)
+                return;
+
+            for (int i = 0; i < definition.additionalCuesOnHitConfirmed.Count; i++)
+            {
+                GameplayTag tag = definition.additionalCuesOnHitConfirmed[i];
+                if (tag == null || !executed.Add(tag))
+                    continue;
+
+                cueManager.ExecuteCue(tag, cueParams);
+            }
         }
     }
 }

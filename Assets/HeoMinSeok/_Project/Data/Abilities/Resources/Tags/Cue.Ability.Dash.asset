@@ -9,10 +9,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b7f9efc3a0d341f7bd8e2f95b4ec9517, type: 3}
-  m_Name: InputGlyphDatabase
+  m_Script: {fileID: 11500000, guid: 139c9e309cf1eec4492c3d3fdf60d8d6, type: 3}
+  m_Name: Cue.Ability.Dash
   m_EditorClassIdentifier: 
-  glyphEntries:
-  - key: 0
-    displayLabel: 
-    icon: {fileID: 0}
+  developerNote: 
+  tagName: Dash
+  parent: {fileID: 11400000, guid: 89e1aa74278e3db47bd54e4c8ed475a6, type: 2}
+  id: 15
+  cachedPath: 
+  cachedLowerPath: 
