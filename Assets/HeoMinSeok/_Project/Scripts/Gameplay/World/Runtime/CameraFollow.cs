@@ -210,14 +210,7 @@ namespace Cainos.PixelArtTopDown_Basic
             if (camera == null)
                 return;
 
-            var listener = camera.GetComponent<CinemachineImpulseListener>();
-            if (listener != null)
-                return;
-
-            listener = camera.gameObject.AddComponent<CinemachineImpulseListener>();
-            listener.ChannelMask = 1;
-            listener.Gain = 1f;
-            listener.Use2DDistance = true;
+            CameraBootstrap.EnsureImpulseListener(camera.gameObject);
         }
     }
 }

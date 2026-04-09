@@ -71,11 +71,8 @@ namespace UnityGAS
             PlayOneShot(def.audioOnCastStart, p);
             StartOrReplaceLoop(castingLoopHandles, spec, def.audioWhileCasting, p);
 
-            if (cueManager != null && def.cueOnCastStart != null)
-                cueManager.ExecuteCue(def.cueOnCastStart, p);
-
-            if (cueManager != null && def.cueWhileCasting != null)
-                cueManager.AddCue(def.cueWhileCasting, p);
+            ExecuteCues(def.EnumerateCuesOnCastStart(), p);
+            AddCues(def.EnumerateCuesWhileCasting(), p);
         }
 
         public void PlayCastCommit(AbilityDefinition def, AbilitySpec spec, GameObject target)
@@ -87,11 +84,8 @@ namespace UnityGAS
             StopLoop(castingLoopHandles, spec);
             PlayOneShot(def.audioOnCommit, p);
 
-            if (cueManager != null && def.cueWhileCasting != null)
-                cueManager.RemoveCue(def.cueWhileCasting, p);
-
-            if (cueManager != null && def.cueOnCommit != null)
-                cueManager.ExecuteCue(def.cueOnCommit, p);
+            RemoveCues(def.EnumerateCuesWhileCasting(), p);
+            ExecuteCues(def.EnumerateCuesOnCommit(), p);
         }
 
         public void PlayCastCancelled(AbilityDefinition def, AbilitySpec spec, GameObject target)
@@ -103,11 +97,8 @@ namespace UnityGAS
             StopLoop(castingLoopHandles, spec);
             PlayOneShot(def.audioOnCastCancelled, p);
 
-            if (cueManager != null && def.cueWhileCasting != null)
-                cueManager.RemoveCue(def.cueWhileCasting, p);
-
-            if (cueManager != null && def.cueOnCastCancelled != null)
-                cueManager.ExecuteCue(def.cueOnCastCancelled, p);
+            RemoveCues(def.EnumerateCuesWhileCasting(), p);
+            ExecuteCues(def.EnumerateCuesOnCastCancelled(), p);
         }
 
         public void PlayExecutionStart(AbilityDefinition def, AbilitySpec spec, GameObject target)
@@ -118,8 +109,7 @@ namespace UnityGAS
             var p = BuildCueParamsForAbility(def, target);
             StartOrReplaceLoop(activeLoopHandles, spec, def.audioWhileActive, p);
 
-            if (cueManager != null && def.cueWhileActive != null)
-                cueManager.AddCue(def.cueWhileActive, p);
+            AddCues(def.EnumerateCuesWhileActive(), p);
         }
 
         public void PlayExecutionEnd(AbilityDefinition def, AbilitySpec spec, GameObject target, bool cancelled)
@@ -130,23 +120,20 @@ namespace UnityGAS
             var p = BuildCueParamsForAbility(def, target);
             StopLoop(activeLoopHandles, spec);
 
-            if (cueManager != null && def.cueWhileActive != null)
-                cueManager.RemoveCue(def.cueWhileActive, p);
+            RemoveCues(def.EnumerateCuesWhileActive(), p);
 
             if (cancelled)
             {
                 PlayOneShot(def.audioOnExecutionCancelled, p);
 
-                if (cueManager != null && def.cueOnExecutionCancelled != null)
-                    cueManager.ExecuteCue(def.cueOnExecutionCancelled, p);
+                ExecuteCues(def.EnumerateCuesOnExecutionCancelled(), p);
             }
             else
             {
                 PlayOneShot(def.audioOnEnd, p);
 
-                if (cueManager != null && def.cueOnEnd != null)
-                    cueManager.ExecuteCue(def.cueOnEnd, p);
-            }
+                ExecuteCues(def.EnumerateCuesOnEnd(), p);
+        }
         }
 
         public GameplayCueParams BuildCueParamsForAbility(AbilityDefinition def, GameObject target)
@@ -223,6 +210,42 @@ namespace UnityGAS
 
             SoundManager.EnsureInstance().Stop(handle);
             handleMap.Remove(spec);
+        }
+
+        private void ExecuteCues(IEnumerable<GameplayTag> cues, GameplayCueParams cueParams)
+        {
+            if (cueManager == null || cues == null)
+                return;
+
+            foreach (GameplayTag cue in cues)
+            {
+                if (cue != null)
+                    cueManager.ExecuteCue(cue, cueParams);
+            }
+        }
+
+        private void AddCues(IEnumerable<GameplayTag> cues, GameplayCueParams cueParams)
+        {
+            if (cueManager == null || cues == null)
+                return;
+
+            foreach (GameplayTag cue in cues)
+            {
+                if (cue != null)
+                    cueManager.AddCue(cue, cueParams);
+            }
+        }
+
+        private void RemoveCues(IEnumerable<GameplayTag> cues, GameplayCueParams cueParams)
+        {
+            if (cueManager == null || cues == null)
+                return;
+
+            foreach (GameplayTag cue in cues)
+            {
+                if (cue != null)
+                    cueManager.RemoveCue(cue, cueParams);
+            }
         }
     }
 }

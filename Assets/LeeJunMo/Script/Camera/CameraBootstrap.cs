@@ -9,6 +9,8 @@ using UnityEngine.SceneManagement;
 [DisallowMultipleComponent]
 public sealed class CameraBootstrap : MonoBehaviour
 {
+    public const int DefaultImpulseChannel = 1;
+
     public static CameraBootstrap Instance { get; private set; }
 
     [Header("Runtime Rig")]
@@ -66,6 +68,79 @@ public sealed class CameraBootstrap : MonoBehaviour
     public static CinemachineCamera GetPlayerCamera()
     {
         return EnsureRuntimeRigForCurrentScene().runtimePlayerCam;
+    }
+
+    public static CinemachineImpulseSource EnsureImpulseSource(GameObject owner)
+    {
+        if (owner == null)
+            return null;
+
+        CinemachineImpulseSource source = owner.GetComponent<CinemachineImpulseSource>();
+        bool created = false;
+        if (source == null)
+        {
+            source = owner.AddComponent<CinemachineImpulseSource>();
+            created = true;
+        }
+
+        ConfigureImpulseSource(source, created);
+        return source;
+    }
+
+    public static void ConfigureImpulseSource(CinemachineImpulseSource source, bool applyFullDefaults = false)
+    {
+        if (source == null)
+            return;
+
+        source.ImpulseDefinition ??= new CinemachineImpulseDefinition();
+        if (applyFullDefaults)
+        {
+            source.ImpulseDefinition.ImpulseShape = CinemachineImpulseDefinition.ImpulseShapes.Bump;
+            source.ImpulseDefinition.ImpulseDuration = 0.2f;
+            source.ImpulseDefinition.ImpulseType = CinemachineImpulseDefinition.ImpulseTypes.Uniform;
+            source.ImpulseDefinition.DissipationDistance = 100f;
+            source.ImpulseDefinition.DissipationRate = 0.25f;
+            source.ImpulseDefinition.PropagationSpeed = 343f;
+            source.DefaultVelocity = Vector3.down;
+        }
+
+        source.ImpulseDefinition.ImpulseChannel = DefaultImpulseChannel;
+        source.ImpulseDefinition.OnValidate();
+    }
+
+    public static CinemachineImpulseListener EnsureImpulseListener(GameObject owner)
+    {
+        if (owner == null)
+            return null;
+
+        CinemachineImpulseListener listener = owner.GetComponent<CinemachineImpulseListener>();
+        if (listener == null)
+            listener = owner.AddComponent<CinemachineImpulseListener>();
+
+        ConfigureImpulseListener(listener);
+        return listener;
+    }
+
+    public static void ConfigureImpulseListener(CinemachineImpulseListener listener)
+    {
+        if (listener == null)
+            return;
+
+        listener.ApplyAfter = CinemachineCore.Stage.Noise;
+        listener.ChannelMask = -1;
+        listener.Gain = 1f;
+        listener.Use2DDistance = true;
+        listener.UseCameraSpace = true;
+        listener.SignalCombinationMode = CinemachineImpulseListener.SignalCombinationModes.Additive;
+
+        var reaction = listener.ReactionSettings;
+        if (reaction.AmplitudeGain <= 0f)
+            reaction.AmplitudeGain = 1f;
+        if (reaction.FrequencyGain <= 0f)
+            reaction.FrequencyGain = 1f;
+        if (reaction.Duration <= 0f)
+            reaction.Duration = 1f;
+        listener.ReactionSettings = reaction;
     }
 
     public static CinemachineCamera FindSceneBossCamera(Scene scene)
@@ -222,7 +297,7 @@ public sealed class CameraBootstrap : MonoBehaviour
         cameraObject.AddComponent<AudioListener>();
         cameraObject.AddComponent<CinemachineBrain>();
         cameraObject.AddComponent<CameraFollow>();
-        cameraObject.AddComponent<CinemachineImpulseSource>();
+        EnsureImpulseSource(cameraObject);
         return cameraComponent;
     }
 
@@ -263,8 +338,7 @@ public sealed class CameraBootstrap : MonoBehaviour
         if (cameraObject.GetComponent<CameraFollow>() == null)
             cameraObject.AddComponent<CameraFollow>();
 
-        if (cameraObject.GetComponent<CinemachineImpulseSource>() == null)
-            cameraObject.AddComponent<CinemachineImpulseSource>();
+        EnsureImpulseSource(cameraObject);
     }
 
     private static void EnsurePlayerCameraComponents(GameObject cameraObject)
@@ -275,13 +349,7 @@ public sealed class CameraBootstrap : MonoBehaviour
         if (cameraObject.GetComponent<CinemachineFollow>() == null)
             cameraObject.AddComponent<CinemachineFollow>();
 
-        if (cameraObject.GetComponent<CinemachineImpulseListener>() == null)
-        {
-            var listener = cameraObject.AddComponent<CinemachineImpulseListener>();
-            listener.ChannelMask = 1;
-            listener.Gain = 1f;
-            listener.Use2DDistance = true;
-        }
+        EnsureImpulseListener(cameraObject);
     }
 
     private void AdoptRuntimeObject(Transform target)

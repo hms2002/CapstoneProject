@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 // [핵심] IStackableUI를 상속받아 UIManager의 통제를 받습니다!
-public class ChestScreen : MonoBehaviour, IStackableUI
+public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
 {
     [Header("UI Refs")]
     [Tooltip("플레이어 인벤토리 영역(무기/유물)이 포함된 패널 RectTransform")]
@@ -51,6 +51,7 @@ public class ChestScreen : MonoBehaviour, IStackableUI
     public UIOpenGroup OpenGroup => UIOpenGroup.ExclusiveModal;
     public UIOpenGroup BlockedOpenGroups => UIOpenGroup.ExclusiveModal;
     public UIGameplayLockProfile GameplayLockProfile => UIGameplayLockProfile.FreezeAndBlockControl;
+    public MouseCursorDomain CursorDomain => MouseCursorDomain.Inventory;
 
     public void OpenUI()
     {
@@ -85,8 +86,15 @@ public class ChestScreen : MonoBehaviour, IStackableUI
 
     }
 
+    private void OnEnable()
+    {
+        MouseCursorService.EnsureInstance().SetDomain(this, MouseCursorDomain.Inventory, priority: 100);
+    }
+
     private void OnDisable()
     {
+        MouseCursorService.Instance?.ClearDomain(this);
+
         if (UIManager.Instance != null) UIManager.Instance.HideHoverImmediate();
 
         ClearUI();
