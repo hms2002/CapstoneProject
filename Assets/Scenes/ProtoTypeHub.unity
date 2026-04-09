@@ -6375,7 +6375,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a608504f4a153fe478f58decddde0706, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  definitions:
+  cueDatabase: {fileID: 11400000, guid: ff2cf50821484d47804f40dd530f2c77, type: 2}
+  legacyDefinitions:
   - {fileID: 11400000, guid: 2903e043ebd252a42b711835ac01484e, type: 2}
 --- !u!4 &1032229110
 Transform:

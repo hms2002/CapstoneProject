@@ -149,16 +149,19 @@ namespace UnityGAS
             GameObject ownerObject = owner != null ? owner.gameObject : null;
             Transform ownerTransform = ownerObject != null ? ownerObject.transform : null;
 
+            bool hasExplicitPosition = data.WorldPosition != Vector3.zero;
+
             return new GameplayCueParams
             {
                 Instigator = data.Instigator != null ? data.Instigator : ownerObject,
                 Causer = data.Instigator != null ? data.Instigator : ownerObject,
                 Target = data.Target,
-                Position = data.WorldPosition != Vector3.zero
+                Position = hasExplicitPosition
                     ? data.WorldPosition
                     : (data.Target != null
                         ? data.Target.transform.position
                         : (ownerTransform != null ? ownerTransform.position : Vector3.zero)),
+                HasExplicitPosition = hasExplicitPosition,
                 Normal = Vector3.up,
                 SourceObject = data.Spec != null ? data.Spec.Definition : null,
                 Magnitude = 1f

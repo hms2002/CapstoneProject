@@ -402,6 +402,9 @@ namespace UnityGAS
         [Tooltip("실행 중 취소(Interrupt/CancelExecution) 1회 실행")]
         public GameplayTag cueOnExecutionCancelled;
 
+        [Tooltip("실제 피격 확정(HitConfirm) 시 실행할 1회성 cue")]
+        public GameplayTag cueOnHitConfirmed;
+
         public bool IsInstant => castTime <= 0f;
         public bool HasCost => cost > 0f && costAttribute != null;
 

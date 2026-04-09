@@ -166,6 +166,7 @@ namespace UnityGAS
                 {
                     var h = ctx.Hit3D.Value;
                     p.Position = h.point;
+                    p.HasExplicitPosition = true;
                     p.Normal = h.normal;
                     return p;
                 }
@@ -174,12 +175,14 @@ namespace UnityGAS
                 {
                     var h2 = ctx.Hit2D.Value;
                     p.Position = h2.point;
+                    p.HasExplicitPosition = true;
                     p.Normal = h2.normal;
                     return p;
                 }
             }
 
             p.Position = target != null ? target.transform.position : Vector3.zero;
+            p.HasExplicitPosition = false;
             p.Normal = Vector3.up;
             return p;
         }

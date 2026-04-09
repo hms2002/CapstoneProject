@@ -82,11 +82,6 @@ MonoBehaviour:
     volumeMultiplier: 0
     anchorPolicy: 0
     localOffset: {x: 0, y: 0, z: 0}
-  impactSound:
-    key: hit
-    volumeMultiplier: 1
-    anchorPolicy: 0
-    localOffset: {x: 0, y: 0, z: 0}
   cueOnCastStart: {fileID: 0}
   cueWhileCasting: {fileID: 0}
   cueOnCommit: {fileID: 0}
@@ -94,3 +89,4 @@ MonoBehaviour:
   cueOnEnd: {fileID: 0}
   cueOnCastCancelled: {fileID: 0}
   cueOnExecutionCancelled: {fileID: 0}
+  cueOnHitConfirmed: {fileID: 11400000, guid: 4af7daafb91813e4985c8a1c393c77c1, type: 2}
