@@ -184,11 +184,12 @@ namespace UnityGAS
 
             float worldAngle = angleOffset;
             Vector3 worldOffset = localOffset;
+            Vector3 followPosition = followTarget.position;
 
             if (alignToMovementDirection && movementMotor != null)
             {
                 Vector2 velocity = movementMotor.LastFinalVelocity;
-                if (velocity.sqrMagnitude > 0.0001f)
+                if (float.IsFinite(velocity.x) && float.IsFinite(velocity.y) && velocity.sqrMagnitude > 0.0001f)
                 {
                     worldAngle = Mathf.Atan2(velocity.y, velocity.x) * Mathf.Rad2Deg + angleOffset;
                     worldOffset = Quaternion.Euler(0f, 0f, worldAngle) * localOffset;
@@ -196,7 +197,7 @@ namespace UnityGAS
             }
 
             instanceRoot.transform.SetPositionAndRotation(
-                followTarget.position + worldOffset,
+                followPosition + worldOffset,
                 Quaternion.Euler(0f, 0f, worldAngle));
         }
     }

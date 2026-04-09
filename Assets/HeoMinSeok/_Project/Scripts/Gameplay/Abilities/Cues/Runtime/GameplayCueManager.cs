@@ -323,7 +323,10 @@ namespace UnityGAS
                 Destroy(inst.Notify);
 
             if (inst.Instance != null && def.autoDestroySeconds > 0f)
-                Destroy(inst.Instance, def.autoDestroySeconds);
+            {
+                if (inst.Notify is not GameplayCue_HitSparkParticles)
+                    Destroy(inst.Instance, def.autoDestroySeconds);
+            }
         }
 
         private IEnumerator RemoveTransformAfter(GameplayCueTransformStack stack, int layerKey, float duration)
@@ -403,12 +406,12 @@ namespace UnityGAS
                     // 1) Prefab Notify 寃쎈줈 (Instantiate)
                     if (def.cuePrefab != null)
                     {
-                        var go = Instantiate(def.cuePrefab);
+                        var go = AcquireCuePrefabInstance(def.cuePrefab);
                         result.Instance = go;
                         result.Notify = go.GetComponentInChildren<GameplayCueNotify>();
                         if (!Place(go.transform, def, p))
                         {
-                            Destroy(go);
+                            ReleaseCuePrefabInstance(go, result.Notify);
                             result.Instance = null;
                             result.Notify = null;
                             return result.AudioOnly ? result : null;
@@ -444,6 +447,35 @@ namespace UnityGAS
                 AddLocalEuler = def.addLocalEuler,
                 MulLocalScale = (def.mulLocalScale == Vector3.zero) ? Vector3.one : def.mulLocalScale
             };
+        }
+
+        /// <summary>
+        /// 책임 : cue prefab이 자체 풀링을 지원하면 재사용 인스턴스를 우선 받고, 아니면 새 인스턴스를 생성한다.
+        /// </summary>
+        private static GameObject AcquireCuePrefabInstance(GameObject cuePrefab)
+        {
+            if (cuePrefab != null && cuePrefab.GetComponent<GameplayCue_HitSparkParticles>() != null)
+                return GameplayCue_HitSparkParticles.AcquireInstance(cuePrefab);
+
+            return Instantiate(cuePrefab);
+        }
+
+        /// <summary>
+        /// 책임 : cue 배치에 실패한 인스턴스를 적절한 수명 정책으로 정리한다.
+        /// HitSpark처럼 자체 풀링을 쓰는 경우에는 비활성화만 하여 풀로 되돌린다.
+        /// </summary>
+        private static void ReleaseCuePrefabInstance(GameObject instance, GameplayCueNotify notify)
+        {
+            if (instance == null)
+                return;
+
+            if (notify is GameplayCue_HitSparkParticles)
+            {
+                instance.SetActive(false);
+                return;
+            }
+
+            Destroy(instance);
         }
 
         private System.Type GetOrCacheNotifyType(GameplayCueDefinition def)
@@ -490,17 +522,21 @@ namespace UnityGAS
 
             if (def.attachToTarget && p.Target != null)
             {
-                t.SetParent(p.Target.transform, worldPositionStays: false);
-                Vector3 localAnchor = p.Target.transform.InverseTransformPoint(anchorWorld);
-                t.localPosition = localAnchor + (def.applyOffsetInTargetLocalSpace
+                Transform targetTransform = p.Target.transform;
+                Vector3 localAnchor = targetTransform.InverseTransformPoint(anchorWorld);
+                Vector3 localOffset = def.applyOffsetInTargetLocalSpace
                     ? def.localOffset
-                    : p.Target.transform.InverseTransformVector(worldOffset));
+                    : targetTransform.InverseTransformVector(worldOffset);
+
+                t.SetParent(p.Target.transform, worldPositionStays: false);
+                t.localPosition = localAnchor + localOffset;
                 t.localRotation = Quaternion.identity;
             }
             else
             {
+                Vector3 worldPosition = anchorWorld + worldOffset;
                 t.SetParent(null);
-                t.position = anchorWorld + worldOffset;
+                t.position = worldPosition;
                 t.rotation = Quaternion.identity;
             }
 

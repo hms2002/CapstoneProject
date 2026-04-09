@@ -16,7 +16,6 @@ public class AbilityAnimationEventRelay : MonoBehaviour
     public void SendEvent(GameplayTag tag)
     {
         if (abilitySystem == null || tag == null) return;
-
         var data = new AbilityEventData
         {
             Instigator = abilitySystem.gameObject,

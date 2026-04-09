@@ -97,6 +97,12 @@ namespace UnityGAS
             if (renderers == null || renderers.Length == 0)
                 return;
 
+            if (!IsFiniteVector3(sourceRoot.position) || !IsFiniteVector3(sourceRoot.lossyScale))
+            {
+                Debug.LogWarning($"[SpriteAfterimageEmitter2D] {name}: sourceRoot transform 값이 비정상이라 잔상 생성을 건너뜁니다. position={sourceRoot.position}, scale={sourceRoot.lossyScale}");
+                return;
+            }
+
             CleanupDestroyedGhostRefs();
 
             GameObject ghostRoot = new($"{sourceRoot.name}_Afterimage");
@@ -112,6 +118,14 @@ namespace UnityGAS
                 SpriteRenderer source = renderers[i];
                 if (source == null || !source.enabled || source.sprite == null)
                     continue;
+
+                if (!IsFiniteVector3(source.transform.position) ||
+                    !IsFiniteQuaternion(source.transform.rotation) ||
+                    !IsFiniteVector3(source.transform.lossyScale))
+                {
+                    Debug.LogWarning($"[SpriteAfterimageEmitter2D] {name}: child renderer transform 값이 비정상이라 일부 잔상 생성을 건너뜁니다. renderer={source.name}");
+                    continue;
+                }
 
                 GameObject child = new($"{source.gameObject.name}_Ghost");
                 child.transform.SetPositionAndRotation(source.transform.position, source.transform.rotation);
@@ -158,6 +172,29 @@ namespace UnityGAS
                 if (spawnedGhostRoots[i] == null)
                     spawnedGhostRoots.RemoveAt(i);
             }
+        }
+
+        /// <summary>
+        /// 책임 :
+        /// - 잔상 스냅샷 생성 전에 transform 좌표/스케일이 유효한지 확인한다.
+        /// - 비정상 renderer를 복제해 렌더 파이프라인 assert를 유발하는 상황을 막는다.
+        /// </summary>
+        private static bool IsFiniteVector3(Vector3 value)
+        {
+            return float.IsFinite(value.x) && float.IsFinite(value.y) && float.IsFinite(value.z);
+        }
+
+        /// <summary>
+        /// 책임 :
+        /// - 회전 quaternion 값이 유효한지 검증한다.
+        /// - NaN 회전을 가진 source renderer를 잔상으로 복제하지 않게 한다.
+        /// </summary>
+        private static bool IsFiniteQuaternion(Quaternion value)
+        {
+            return float.IsFinite(value.x) &&
+                   float.IsFinite(value.y) &&
+                   float.IsFinite(value.z) &&
+                   float.IsFinite(value.w);
         }
 
         /// <summary>

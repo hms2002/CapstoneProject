@@ -42,22 +42,14 @@ namespace UnityGAS.Sample
 
             TryPlayAnim(system, data, comboIndex, spec.Definition);
 
-            yield return Lunge(
+            yield return WaitForHitTimingDuringLunge(
                 system,
                 spec,
+                data,
+                comboIndex,
                 dir,
                 GetArraySafe(data.lungeDistances, comboIndex, 0f),
                 GetArraySafe(data.lungeDurations, comboIndex, 0f));
-
-            if (data.hitEventTag != null)
-            {
-                yield return AbilityTasks.WaitGameplayEvent(
-                    system, spec, data.hitEventTag,
-                    onReceived: _ => { },
-                    timeout: data.hitEventTimeout,
-                    predicate: d => d.Spec == spec
-                );
-            }
 
             float rec = GetArraySafe(data.recoveryOverrides, comboIndex, spec.Definition.recoveryTime);
             spec.SetFloat("RecoveryOverride", rec);
@@ -83,10 +75,20 @@ namespace UnityGAS.Sample
             system.TryPlayAnimationTriggerHash(Animator.StringToHash(trig), definition);
         }
 
-        private IEnumerator Lunge(AbilitySystem system, AbilitySpec spec, Vector2 dir, float distance, float duration)
+        /// <summary>
+        /// 책임 :
+        /// - 콤보 lunge와 애니메이션 hit event 대기를 같은 구간에서 함께 처리한다.
+        /// - hit event 등록을 먼저 열어 이벤트 miss를 막고, 이벤트가 오면 lunge 종료를 기다리지 않고 바로 다음 단계로 진행시킨다.
+        /// </summary>
+        private IEnumerator WaitForHitTimingDuringLunge(
+            AbilitySystem system,
+            AbilitySpec spec,
+            SwordCombo2DData data,
+            int comboIndex,
+            Vector2 dir,
+            float distance,
+            float duration)
         {
-            if (distance <= 0f || duration <= 0f) yield break;
-
             var motion = system.GetComponent<AbilityMotionController2D>();
             if (motion == null)
             {
@@ -94,21 +96,42 @@ namespace UnityGAS.Sample
                 yield break;
             }
 
-            Vector2 start = system.transform.position;
-            motion.StartLunge(start, dir, distance, duration);
+            GameplayEventWaiter waiter = null;
+            float eventDeadline = data != null && data.hitEventTimeout > 0f
+                ? Time.time + data.hitEventTimeout
+                : float.PositiveInfinity;
+
+            if (data != null && data.hitEventTag != null)
+                waiter = system.WaitGameplayEvent(data.hitEventTag, spec);
+
+            if (distance > 0f && duration > 0f)
+            {
+                Vector2 start = system.transform.position;
+                motion.StartLunge(start, dir, distance, duration);
+            }
 
             float elapsed = 0f;
-            while (elapsed < duration)
+            while (true)
             {
                 if (spec?.Token != null && spec.Token.IsCancelled)
                 {
+                    waiter?.Cancel();
                     motion.CancelMotion();
                     yield break;
                 }
 
+                bool lungeCompleted = duration <= 0f || elapsed >= duration;
+                bool eventCompleted = waiter == null || waiter.Done;
+                bool eventTimedOut = waiter != null && Time.time >= eventDeadline;
+
+                if (eventCompleted || eventTimedOut || lungeCompleted)
+                    break;
+
                 elapsed += Time.deltaTime;
                 yield return null;
             }
+
+            waiter?.Cancel();
         }
 
         /// <summary>

@@ -1,16 +1,35 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace UnityGAS
 {
+    /// <summary>
+    /// 책임 : 적중 확정 이벤트를 감지해 히트 전용 Gameplay Cue를 큐에 적재하고, 짧은 간격으로 분산 배출한다.
+    /// 한 프레임에 과도한 히트 파티클이 동시에 생성되지 않도록 하되, 첫 타격감은 최대한 유지한다.
+    /// </summary>
     public sealed class AbilityHitCueRouter
     {
         private const string DefaultHitConfirmTagResourcePath = "Tags/Event.HitConfirm";
+        private const int MaxQueuedHitCues = 24;
+        private const int MaxHitCuesPerDrainStep = 2;
+        private const float HitCueDrainIntervalSeconds = 0.02f;
 
         private readonly AbilitySystem owner;
         private readonly GameplayCueManager cueManager;
         private readonly AbilityGameplayEventChannel eventChannel;
         private readonly GameplayTag hitConfirmRootTag;
+        private readonly Queue<QueuedHitCueRequest> pendingHitCues = new();
+        private Coroutine drainCoroutine;
+
+        /// <summary>
+        /// 책임 : 히트 큐 배출에 필요한 정의와 파라미터를 큐에 담아 순차 실행할 수 있게 보관한다.
+        /// </summary>
+        private struct QueuedHitCueRequest
+        {
+            public AbilityDefinition Definition;
+            public GameplayCueParams CueParams;
+        }
 
         public AbilityHitCueRouter(
             AbilitySystem owner,
@@ -33,6 +52,14 @@ namespace UnityGAS
         {
             if (eventChannel != null)
                 eventChannel.GameplayEventRaised -= HandleGameplayEvent;
+
+            if (owner != null && drainCoroutine != null)
+            {
+                owner.StopCoroutine(drainCoroutine);
+                drainCoroutine = null;
+            }
+
+            pendingHitCues.Clear();
         }
 
         private void HandleGameplayEvent(GameplayTag raisedTag, AbilityEventData data)
@@ -48,7 +75,7 @@ namespace UnityGAS
                 return;
 
             GameplayCueParams cueParams = BuildCueParams(data, definition);
-            ExecuteHitCues(definition, cueParams);
+            EnqueueHitCues(definition, cueParams);
         }
 
         private GameplayCueParams BuildCueParams(AbilityEventData data, AbilityDefinition definition)
@@ -99,7 +126,46 @@ namespace UnityGAS
             return false;
         }
 
-        private void ExecuteHitCues(AbilityDefinition definition, GameplayCueParams cueParams)
+        private void EnqueueHitCues(AbilityDefinition definition, GameplayCueParams cueParams)
+        {
+            if (cueManager == null || definition == null || owner == null)
+                return;
+
+            if (pendingHitCues.Count >= MaxQueuedHitCues)
+            {
+                pendingHitCues.Dequeue();
+            }
+
+            pendingHitCues.Enqueue(new QueuedHitCueRequest
+            {
+                Definition = definition,
+                CueParams = cueParams
+            });
+
+            if (drainCoroutine == null)
+                drainCoroutine = owner.StartCoroutine(DrainQueuedHitCues());
+        }
+
+        private IEnumerator DrainQueuedHitCues()
+        {
+            while (pendingHitCues.Count > 0)
+            {
+                int remainingBudget = MaxHitCuesPerDrainStep;
+                while (remainingBudget > 0 && pendingHitCues.Count > 0)
+                {
+                    QueuedHitCueRequest request = pendingHitCues.Dequeue();
+                    ExecuteHitCuesImmediate(request.Definition, request.CueParams);
+                    remainingBudget--;
+                }
+
+                if (pendingHitCues.Count > 0)
+                    yield return new WaitForSeconds(HitCueDrainIntervalSeconds);
+            }
+
+            drainCoroutine = null;
+        }
+
+        private void ExecuteHitCuesImmediate(AbilityDefinition definition, GameplayCueParams cueParams)
         {
             if (cueManager == null || definition == null)
                 return;
