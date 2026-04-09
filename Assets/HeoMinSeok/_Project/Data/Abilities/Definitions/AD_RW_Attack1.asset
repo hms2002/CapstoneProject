@@ -90,3 +90,5 @@ MonoBehaviour:
   cueOnCastCancelled: {fileID: 0}
   cueOnExecutionCancelled: {fileID: 0}
   cueOnHitConfirmed: {fileID: 11400000, guid: 4af7daafb91813e4985c8a1c393c77c1, type: 2}
+  additionalCuesOnHitConfirmed:
+  - {fileID: 11400000, guid: 6bc2fd7ae3b74a6f8e6de53d6f89ca42, type: 2}
