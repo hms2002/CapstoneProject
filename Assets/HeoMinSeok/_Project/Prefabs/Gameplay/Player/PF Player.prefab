@@ -310,6 +310,7 @@ GameObject:
   - component: {fileID: 6050434493472852141}
   - component: {fileID: 5662210137078847501}
   - component: {fileID: 7764125724508558370}
+  - component: {fileID: 6601192358712345678}
   m_Layer: 0
   m_Name: PF Player
   m_TagString: Player
@@ -1107,6 +1108,24 @@ MonoBehaviour:
   northDirectionValue: 2
   eastDirectionValue: 3
   flipWhenFacingLeft: 1
+--- !u!114 &6601192358712345678
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8883617028798182002}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2a74f4d93ae4b5cba8d6ef129f34abc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  movementMotor: {fileID: 0}
+  walkDustPrefab: {fileID: 8506123537514629582, guid: ecb4afd3a51ad454698847ffd2ecb649, type: 3}
+  dustAnchor: {fileID: 647482627083604036}
+  localOffset: {x: 0, y: 0, z: 0}
+  minIntentSpeed: 0.05
+  clearOnStop: 0
 --- !u!1 &6118371081096453658
 GameObject:
   m_ObjectHideFlags: 0

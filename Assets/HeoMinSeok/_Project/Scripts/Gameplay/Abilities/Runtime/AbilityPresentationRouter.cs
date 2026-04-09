@@ -151,15 +151,18 @@ namespace UnityGAS
 
         public GameplayCueParams BuildCueParamsForAbility(AbilityDefinition def, GameObject target)
         {
+            bool hasSelfPosition = target == null && ownerTransform != null;
+            Vector3 position = target != null
+                ? target.transform.position
+                : (ownerTransform != null ? ownerTransform.position : Vector3.zero);
+
             return new GameplayCueParams
             {
                 Instigator = ownerObject,
                 Causer = ownerObject,
                 Target = target,
-                Position = target != null
-                    ? target.transform.position
-                    : (ownerTransform != null ? ownerTransform.position : Vector3.zero),
-                HasExplicitPosition = false,
+                Position = position,
+                HasExplicitPosition = hasSelfPosition,
                 Normal = Vector3.up,
                 SourceObject = def,
                 Magnitude = 1f
