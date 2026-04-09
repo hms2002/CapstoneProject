@@ -70,8 +70,8 @@ MonoBehaviour:
     anchorPolicy: 0
     localOffset: {x: 0, y: 0, z: 0}
   audioWhileActive:
-    key: 
-    volumeMultiplier: 0
+    key: skill.rush
+    volumeMultiplier: 1
     anchorPolicy: 0
     localOffset: {x: 0, y: 0, z: 0}
   audioOnEnd:
@@ -85,6 +85,11 @@ MonoBehaviour:
     anchorPolicy: 0
     localOffset: {x: 0, y: 0, z: 0}
   audioOnExecutionCancelled:
+    key: 
+    volumeMultiplier: 0
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  impactSound:
     key: 
     volumeMultiplier: 0
     anchorPolicy: 0

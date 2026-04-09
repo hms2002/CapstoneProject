@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityGAS;
+using System.Collections.Generic;
 
 /// <summary>
 /// 책임 : 플레이어 주위를 도는 깃털 오브젝트를 생성/해제하는 유물 로직이다.
@@ -8,6 +9,8 @@ using UnityGAS;
 [CreateAssetMenu(menuName = "Game/Relic Logic/Feather Orbit (Managed)")]
 public class RelicLogic_FeatherOrbit_Managed : RelicLogic
 {
+    protected override string DefaultEffectTemplate => "● 깃털 {feather_count}개가 플레이어 주위를 회전\n● 깃털 피해 계수 {damage_coef}\n● 회전 반경 {radius}\n● 재타격 기본 쿨다운 {hit_cooldown}";
+
     [Header("Prefabs")]
     public FeatherOrbitFeather featherPrefab;
 
@@ -84,5 +87,18 @@ public class RelicLogic_FeatherOrbit_Managed : RelicLogic
         });
 
         controller.EnableForToken(ctx.token);
+    }
+
+    public override RelicTooltipData BuildTooltip(RelicDefinition definition, int previewLevel, ItemDetailContext ctx)
+    {
+        return BuildTemplatedTooltip(
+            "● 깃털 {feather_count}개가 플레이어 주위를 회전\n● 깃털 피해 계수 {damage_coef}\n● 회전 반경 {radius}\n● 재타격 기본 쿨다운 {hit_cooldown}",
+            new Dictionary<string, string>
+            {
+                ["feather_count"] = RelicTooltipFormatter.FormatUnsignedValueToken(featherCount, false),
+                ["damage_coef"] = RelicTooltipFormatter.FormatUnsignedValueToken(damageCoef, false),
+                ["radius"] = RelicTooltipFormatter.FormatUnsignedValueToken(radius, false),
+                ["hit_cooldown"] = RelicTooltipFormatter.FormatSeconds(basePerTargetHitCooldown),
+            });
     }
 }

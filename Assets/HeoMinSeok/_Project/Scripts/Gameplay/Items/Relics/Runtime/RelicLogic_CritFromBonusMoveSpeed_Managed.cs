@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityGAS;
+using System.Collections.Generic;
 
 /// <summary>
 /// 책임 : 추가 이동속도를 읽어 치명타 확률 보너스를 실시간으로 갱신하는 유물 로직이다.
@@ -8,6 +9,8 @@ using UnityGAS;
 [CreateAssetMenu(menuName = "Game/Relic Logic/Crit From Bonus MoveSpeed (Managed)")]
 public class RelicLogic_CritFromBonusMoveSpeed_Managed : RelicLogic
 {
+    protected override string DefaultEffectTemplate => "● [[추가 이동속도]] {bonus_move_step}마다 [[치명타 확률]] {crit_gain_per_step} 추가";
+
     [Header("Read MoveSpeed (x1 multiplier)")]
     [Tooltip("권장: MoveSpeedFinal (x1). StatTypeBindings의 Composite(Final=(Base+Add)*Mul)를 활용합니다.")]
     public StatId moveSpeedFinalStatId = StatId.MoveSpeedFinal;
@@ -223,5 +226,16 @@ public class RelicLogic_CritFromBonusMoveSpeed_Managed : RelicLogic
             _ctx.attributeSet.RemoveModifiersFromSource(Token);
             _currentCritMod = default;
         }
+    }
+
+    public override RelicTooltipData BuildTooltip(RelicDefinition definition, int previewLevel, ItemDetailContext ctx)
+    {
+        return BuildTemplatedTooltip(
+            "● [[추가 이동속도]] {bonus_move_step}마다 [[치명타 확률]] {crit_gain_per_step} 추가",
+            new Dictionary<string, string>
+            {
+                ["bonus_move_step"] = RelicTooltipFormatter.FormatSignedValueToken(bonusMoveStep, true),
+                ["crit_gain_per_step"] = RelicTooltipFormatter.FormatSignedValueToken(critPerStep, true),
+            });
     }
 }

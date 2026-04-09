@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityGAS;
+using System.Collections.Generic;
 
 /// <summary>
 /// 책임 : 추가 이동속도를 읽어 회피 확률 보너스를 실시간으로 갱신하는 유물 로직이다.
@@ -7,6 +8,8 @@ using UnityGAS;
 [CreateAssetMenu(menuName = "Game/Relic Logic/Evasion From Bonus MoveSpeed (Managed)")]
 public class RelicLogic_EvasionFromBonusMoveSpeed_Managed : RelicLogic
 {
+    protected override string DefaultEffectTemplate => "● [[추가 이동속도]] {bonus_move_step}마다 [[공격을 회피할 확률]] {evasion_gain_per_step} 추가";
+
     [Header("Read MoveSpeed (x1 multiplier)")]
     public StatId moveSpeedFinalStatId = StatId.MoveSpeedFinal;
     public AttributeDefinition moveSpeedMultiplierAttributeFallback;
@@ -212,5 +215,16 @@ public class RelicLogic_EvasionFromBonusMoveSpeed_Managed : RelicLogic
             _ctx.attributeSet.RemoveModifiersFromSource(Token);
             _currentEvasionMod = default;
         }
+    }
+
+    public override RelicTooltipData BuildTooltip(RelicDefinition definition, int previewLevel, ItemDetailContext ctx)
+    {
+        return BuildTemplatedTooltip(
+            "● [[추가 이동속도]] {bonus_move_step}마다 [[공격을 회피할 확률]] {evasion_gain_per_step} 추가",
+            new Dictionary<string, string>
+            {
+                ["bonus_move_step"] = RelicTooltipFormatter.FormatSignedValueToken(bonusMoveStep, true),
+                ["evasion_gain_per_step"] = RelicTooltipFormatter.FormatSignedValueToken(evasionPerStep, true),
+            });
     }
 }

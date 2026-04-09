@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityGAS;
+using System.Collections.Generic;
 
 /// <summary>
 /// 책임 : 적 처치 이벤트를 감지해 일정 시간 이동속도 버프를 부여하는 유물 로직이다.
@@ -8,6 +9,8 @@ using UnityGAS;
 [CreateAssetMenu(menuName = "Game/Relic Logic/Move Speed On Kill (Managed)")]
 public class RelicLogic_MoveSpeedOnKill_Managed : RelicLogic
 {
+    protected override string DefaultEffectTemplate => "● 적 처치 시 {duration} 동안 [[이동속도]] {move_speed_bonus}";
+
     [Header("Trigger")]
     [Tooltip("킬 확정 이벤트 태그. 보통 AbilitySystem.killConfirmedTag에 설정한 태그(Event.KillConfirmed).")]
     public GameplayTag triggerTag;
@@ -62,5 +65,16 @@ public class RelicLogic_MoveSpeedOnKill_Managed : RelicLogic
         );
 
         mgr.Register(proc);
+    }
+
+    public override RelicTooltipData BuildTooltip(RelicDefinition definition, int previewLevel, ItemDetailContext ctx)
+    {
+        return BuildTemplatedTooltip(
+            "● 적 처치 시 {duration} 동안 [[이동속도]] {move_speed_bonus}",
+            new Dictionary<string, string>
+            {
+                ["duration"] = RelicTooltipFormatter.FormatSeconds(durationSeconds),
+                ["move_speed_bonus"] = RelicTooltipFormatter.FormatSignedValueToken(percentBonus, true),
+            });
     }
 }
