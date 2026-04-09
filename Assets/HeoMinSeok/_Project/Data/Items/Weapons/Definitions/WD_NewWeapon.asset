@@ -22,6 +22,6 @@ MonoBehaviour:
   skill2InputHint: E
   weaponPrefab: {fileID: 916365682996460394, guid: db618625c22a5504ba785650bdc0df2b, type: 3}
   equippedTag: {fileID: 11400000, guid: cac1046499d28814a91fcb2631757240, type: 2}
-  attack: {fileID: 11400000, guid: 89163a8e6b579e14c874528367814f0c, type: 2}
+  attack: {fileID: 11400000, guid: 1f472dc67709f4248953a0bf39255567, type: 2}
   skill1: {fileID: 11400000, guid: 0fefa61e5f457d94e828a895b4ddfa2a, type: 2}
   skill2: {fileID: 11400000, guid: 8ec96225056f3a345a2a97b2e4430efb, type: 2}

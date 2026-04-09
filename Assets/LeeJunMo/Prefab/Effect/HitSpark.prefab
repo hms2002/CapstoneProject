@@ -61,7 +61,7 @@ ParticleSystem:
   serializedVersion: 8
   lengthInSec: 2
   simulationSpeed: 1
-  stopAction: 2
+  stopAction: 1
   cullingMode: 0
   ringBufferMode: 0
   ringBufferLoopRange: {x: 0, y: 1}
@@ -3879,7 +3879,7 @@ ParticleSystem:
       serializedVersion: 2
       m_Bits: 4294967295
     maxCollisionShapes: 256
-    quality: 0
+    quality: 1
     voxelSize: 0.5
     collisionMessages: 0
     collidesWithDynamic: 1

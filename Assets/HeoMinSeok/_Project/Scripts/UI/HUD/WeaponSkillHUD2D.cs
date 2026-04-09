@@ -14,13 +14,22 @@ public class WeaponSkillHUD2D : MonoBehaviour
     /// 책임 :
     /// - 무기 HUD의 개별 스킬 슬롯이 사용하는 비주얼 참조를 묶는다.
     /// - 기본 상태와 시전 중 상태를 슬롯 단위로 전환할 수 있게 한다.
+    /// - 각 슬롯이 어떤 입력 액션의 글리프를 표시할지 함께 보관한다.
     /// </summary>
     [System.Serializable]
     public class SkillSlotUI
     {
         [Tooltip("가능하면 슬롯 루트 오브젝트를 직접 연결합니다. 비어 있으면 icon 등의 부모에서 추론합니다.")]
         public GameObject root;
+        [Tooltip("켜져 있으면 이 슬롯은 현재 입력 바인딩 글리프를 표시합니다.")]
+        public bool useInputGuide;
+        [Tooltip("이 슬롯이 표시할 입력 액션입니다. 아이콘 가이드가 있으면 InputBindingService를 통해 현재 바인딩 이미지를 읽습니다.")]
+        public InputActionId inputActionId = InputActionId.PrimaryAttack;
         public Image icon;
+        [Tooltip("입력 키 가이드 루트입니다. 비어 있으면 inputGuideIcon의 오브젝트를 직접 사용합니다.")]
+        public GameObject inputGuideRoot;
+        [Tooltip("InputGlyphDatabase에서 가져온 현재 바인딩 아이콘을 표시할 Image입니다.")]
+        public Image inputGuideIcon;
         [Tooltip("스킬 시전/실행 중 기존 아이콘 위에 얹을 강조 비주얼입니다.")]
         public GameObject activeOverlay;
         [Tooltip("activeOverlay 안의 Image를 직접 연결하면, 현재 스킬 아이콘 스프라이트를 자동 동기화합니다.")]
@@ -53,6 +62,7 @@ public class WeaponSkillHUD2D : MonoBehaviour
     private AbilityDefinition attackDef;
     private AbilityDefinition skill1Def;
     private AbilityDefinition skill2Def;
+    private InputBindingService cachedInputBindingService;
 
     private void Awake()
     {
@@ -230,6 +240,7 @@ public class WeaponSkillHUD2D : MonoBehaviour
         }
 
         SyncOverlaySprite(ui, def);
+        SyncInputGuide(ui, has);
 
         if (ui.activeOverlay != null)
             ui.activeOverlay.SetActive(false);
@@ -393,6 +404,62 @@ public class WeaponSkillHUD2D : MonoBehaviour
             return null;
 
         return ui.activeOverlay.GetComponent<Image>();
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 슬롯이 현재 표시 중일 때만 입력 키 가이드 아이콘을 켜고, 현재 바인딩 글리프를 반영한다.
+    /// - 실제 아이콘 조회는 InputBindingService를 통해 수행해 InputGlyphDatabase와 동일한 경로를 사용한다.
+    /// </summary>
+    private void SyncInputGuide(SkillSlotUI ui, bool isSlotVisible)
+    {
+        if (ui == null)
+            return;
+
+        GameObject guideRoot = ResolveInputGuideRoot(ui);
+        Image guideIcon = ui.inputGuideIcon;
+        bool shouldShow = isSlotVisible && ui.useInputGuide && guideIcon != null;
+
+        if (guideRoot != null)
+            guideRoot.SetActive(shouldShow);
+
+        if (!shouldShow || guideIcon == null)
+            return;
+
+        InputBindingService input = GetInputBindingService();
+        guideIcon.enabled = true;
+        guideIcon.sprite = input != null
+            ? input.GetBindingIcon(ui.inputActionId)
+            : null;
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 슬롯의 입력 가이드 루트 오브젝트를 찾아 슬롯 on/off와 함께 제어할 수 있게 한다.
+    /// - 별도 루트가 없으면 아이콘 Image 오브젝트 자체를 루트로 사용한다.
+    /// </summary>
+    private static GameObject ResolveInputGuideRoot(SkillSlotUI ui)
+    {
+        if (ui == null)
+            return null;
+
+        if (ui.inputGuideRoot != null)
+            return ui.inputGuideRoot;
+
+        return ui.inputGuideIcon != null ? ui.inputGuideIcon.gameObject : null;
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - HUD가 사용하는 입력 바인딩 서비스 참조를 한 번만 확보해 반복 조회 비용을 줄인다.
+    /// - 서비스가 아직 없으면 필요 시점에 안전하게 다시 찾아 현재 글리프를 읽게 한다.
+    /// </summary>
+    private InputBindingService GetInputBindingService()
+    {
+        if (cachedInputBindingService == null)
+            cachedInputBindingService = InputBindingService.EnsureInstance();
+
+        return cachedInputBindingService;
     }
     private void UpdateCooldownAndCharge(SkillSlotUI ui, AbilityDefinition def)
     {

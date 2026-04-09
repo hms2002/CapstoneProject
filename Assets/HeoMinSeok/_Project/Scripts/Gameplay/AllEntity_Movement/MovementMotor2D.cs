@@ -274,12 +274,30 @@ namespace UnityGAS
 
         private void ApplyVelocities(Vector2 intentVelocity, Vector2 externalVelocity, Vector2 motionVelocity)
         {
+            intentVelocity = SanitizeVelocity(intentVelocity, nameof(intentVelocity));
+            externalVelocity = SanitizeVelocity(externalVelocity, nameof(externalVelocity));
+            motionVelocity = SanitizeVelocity(motionVelocity, nameof(motionVelocity));
+
             LastIntentVelocity = intentVelocity;
             LastExternalVelocity = externalVelocity;
             LastMotionVelocity = motionVelocity;
-            LastFinalVelocity = intentVelocity + externalVelocity + motionVelocity;
+            LastFinalVelocity = SanitizeVelocity(intentVelocity + externalVelocity + motionVelocity, nameof(LastFinalVelocity));
             if (body != null)
                 body.linearVelocity = LastFinalVelocity;
+        }
+
+        /// <summary>
+        /// 책임 :
+        /// - MovementMotor2D가 렌더/물리 계층으로 NaN, Infinity 속도를 넘기지 않도록 마지막 방어선을 제공한다.
+        /// - 비정상 값이 감지되면 경고를 남기고 안전한 0 벡터로 치환한다.
+        /// </summary>
+        private Vector2 SanitizeVelocity(Vector2 velocity, string sourceName)
+        {
+            if (float.IsFinite(velocity.x) && float.IsFinite(velocity.y))
+                return velocity;
+
+            Debug.LogWarning($"[MovementMotor2D] {name}: {sourceName} 에 비정상 속도 값이 들어와 Vector2.zero 로 치환했습니다. value={velocity}");
+            return Vector2.zero;
         }
 
         private void HandlePendingWarp()

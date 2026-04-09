@@ -59,7 +59,6 @@ namespace UnityGAS
 
                 var data = waiter.Data;
                 waiter.Cancel(); // 구독 정리
-
                 if (predicate == null || predicate(data))
                 {
                     onReceived?.Invoke(data);
