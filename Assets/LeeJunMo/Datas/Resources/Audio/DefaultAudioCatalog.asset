@@ -27,10 +27,39 @@ MonoBehaviour:
     cooldown: 0
     minDistance: 1
     maxDistance: 20
-  - key: 
+  - key: hit
     bus: 0
     category: 0
-    variants: []
+    variants:
+    - {fileID: 8300000, guid: 14647c9f135bc8d4b8d70e571ac0736b, type: 3}
+    volume: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 0
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: skill.rush
+    bus: 0
+    category: 3
+    variants:
+    - {fileID: 8300000, guid: de09623bb2f0a174f9f172cd4b527d99, type: 3}
+    volume: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 0
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: hit.player
+    bus: 0
+    category: 5
+    variants:
+    - {fileID: 8300000, guid: 11045d46d80e1ce41b2cbfe4f6ce9b4d, type: 3}
     volume: 1
     pitchMin: 1
     pitchMax: 1

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityGAS;
 using Object = UnityEngine.Object;
@@ -12,6 +13,7 @@ using Object = UnityEngine.Object;
 public class RelicLogic_MoveSpeedStackOnCriticalHit_Managed : RelicLogic, IRelicRuntimeStateSerializer
 {
     public const string StateTypeKey = "RelicMoveSpeedStackOnCriticalHit";
+    protected override string DefaultEffectTemplate => "● [[치명타]] 시 [[이동속도]] {move_speed_gain}씩 증가\n● 최대 {max_move_speed_bonus}까지 증가 가능\n● 피해를 받으면 위 보너스가 초기화됨";
 
     [Header("Trigger")]
     [Tooltip("치명타 판정을 읽을 적중 이벤트 태그. 보통 Event.HitConfirm.")]
@@ -303,6 +305,17 @@ public class RelicLogic_MoveSpeedStackOnCriticalHit_Managed : RelicLogic, IRelic
 
             _hub.SetJson(Token, JsonUtility.ToJson(payload));
         }
+    }
+
+    public override RelicTooltipData BuildTooltip(RelicDefinition definition, int previewLevel, ItemDetailContext ctx)
+    {
+        return BuildTemplatedTooltip(
+            "● [[치명타]] 시 [[이동속도]] {move_speed_gain}씩 증가\n● 최대 {max_move_speed_bonus}까지 증가 가능\n● 피해를 받으면 위 보너스가 초기화됨",
+            new Dictionary<string, string>
+            {
+                ["move_speed_gain"] = RelicTooltipFormatter.FormatSignedValueToken(percentPerCritical, true),
+                ["max_move_speed_bonus"] = RelicTooltipFormatter.FormatSignedValueToken(maxPercentBonus, true),
+            });
     }
 }
 

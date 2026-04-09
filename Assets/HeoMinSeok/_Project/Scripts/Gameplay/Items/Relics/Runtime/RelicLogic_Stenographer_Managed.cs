@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityGAS;
+using System.Collections.Generic;
 
 /// <summary>
 /// 책임 :
@@ -9,6 +10,8 @@ using UnityGAS;
 [CreateAssetMenu(menuName = "Game/Relic Logic/Stenographer (Managed)")]
 public class RelicLogic_Stenographer_Managed : RelicLogic
 {
+    protected override string DefaultEffectTemplate => "● [[잔영의 날개]] 전용 유물\n● [[스킬 1]] 변동\n● 사용 시 [[이동속도]] {stage_0_bonus}\n● 3초 후 추가 [[이동속도]] {stage_1_bonus} (총 {stage_1_total})\n● 6초 후 추가 [[이동속도]] {stage_2_bonus} (총 {stage_2_total})";
+
     [Tooltip("속기사 장착 상태를 나타내는 태그.")]
     public GameplayTag grantedTag;
 
@@ -46,5 +49,19 @@ public class RelicLogic_Stenographer_Managed : RelicLogic
             ctx.tagSystem.AddTag(grantedTag);
         else
             ctx.tagSystem.RemoveTag(grantedTag);
+    }
+
+    public override RelicTooltipData BuildTooltip(RelicDefinition definition, int previewLevel, ItemDetailContext ctx)
+    {
+        return BuildTemplatedTooltip(
+            "● [[잔영의 날개]] 전용 유물\n● [[스킬 1]] 변동\n● 사용 시 [[이동속도]] {stage_0_bonus}\n● 3초 후 추가 [[이동속도]] {stage_1_bonus} (총 {stage_1_total})\n● 6초 후 추가 [[이동속도]] {stage_2_bonus} (총 {stage_2_total})",
+            new Dictionary<string, string>
+            {
+                ["stage_0_bonus"] = "{pos:[+150%]}",
+                ["stage_1_bonus"] = "{pos:[+150%]}",
+                ["stage_1_total"] = "{pos:[+300%]}",
+                ["stage_2_bonus"] = "{pos:[+200%]}",
+                ["stage_2_total"] = "{pos:[+500%]}",
+            });
     }
 }

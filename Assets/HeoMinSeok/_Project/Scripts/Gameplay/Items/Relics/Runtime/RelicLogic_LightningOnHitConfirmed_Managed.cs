@@ -9,6 +9,8 @@ using UnityGAS;
 [CreateAssetMenu(menuName = "Game/Relic Logic/Lightning On Hit Confirmed (Managed)")]
 public class RelicLogic_LightningOnHitConfirmed_Managed : RelicLogic
 {
+    protected override string DefaultEffectTemplate => "● 적중 확정 시 주변 적에게 번개 추가타\n● 번개 피해 {lightning_damage}\n● 범위 {radius}\n{cooldown_line}";
+
     [Header("Trigger")]
     public GameplayTag triggerTag;
 
@@ -33,15 +35,7 @@ public class RelicLogic_LightningOnHitConfirmed_Managed : RelicLogic
 
     private float EvalDamage(int level)
     {
-        if (level < 1) level = 1;
-
-        if (baseDamageByLevel != null && baseDamageByLevel.Count > 0)
-        {
-            int idx = Mathf.Clamp(level - 1, 0, baseDamageByLevel.Count - 1);
-            return baseDamageByLevel[idx];
-        }
-
-        return baseDamage * level;
+        return RelicTooltipFormatter.EvaluateLeveledValue(baseDamage, baseDamageByLevel, level);
     }
 
     public override void OnEquipped(RelicContext ctx)
@@ -86,5 +80,19 @@ public class RelicLogic_LightningOnHitConfirmed_Managed : RelicLogic
         );
 
         mgr.Register(proc);
+    }
+
+    public override RelicTooltipData BuildTooltip(RelicDefinition definition, int previewLevel, ItemDetailContext ctx)
+    {
+        return BuildTemplatedTooltip(
+            "● 적중 확정 시 주변 적에게 번개 추가타\n● 번개 피해 {lightning_damage}\n● 범위 {radius}\n{cooldown_line}",
+            new Dictionary<string, string>
+            {
+                ["lightning_damage"] = RelicTooltipFormatter.FormatUnsignedValueToken(EvalDamage(previewLevel), false),
+                ["radius"] = RelicTooltipFormatter.FormatUnsignedValueToken(radius, false),
+                ["cooldown_line"] = cooldownSeconds > 0f
+                    ? $"● 쿨다운 {RelicTooltipFormatter.FormatSeconds(cooldownSeconds)}"
+                    : string.Empty,
+            });
     }
 }

@@ -35,6 +35,8 @@ MonoBehaviour:
   abilityTags: []
   requiredTags: []
   blockedByTags: []
+  cancelCastingOnTags: []
+  cancelExecutionOnTags: []
   requiredTagSets: []
   blockedByTagSets: []
   targetRequiredTagSets: []
@@ -45,6 +47,46 @@ MonoBehaviour:
   logic: {fileID: 11400000, guid: 0693fa06e07c3e048966bf91e365ae28, type: 2}
   sourceObject: {fileID: 0}
   containers: []
+  audioOnCastStart:
+    key: 
+    volumeMultiplier: 0
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  audioWhileCasting:
+    key: 
+    volumeMultiplier: 0
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  audioOnCommit:
+    key: 
+    volumeMultiplier: 0
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  audioWhileActive:
+    key: 
+    volumeMultiplier: 0
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  audioOnEnd:
+    key: 
+    volumeMultiplier: 0
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  audioOnCastCancelled:
+    key: 
+    volumeMultiplier: 0
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  audioOnExecutionCancelled:
+    key: 
+    volumeMultiplier: 0
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  impactSound:
+    key: hit
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
   cueOnCastStart: {fileID: 0}
   cueWhileCasting: {fileID: 0}
   cueOnCommit: {fileID: 0}

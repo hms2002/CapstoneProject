@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 87ebf20bb6bef2f4c979973cb09f383f, type: 3}
-  m_Name: Relic Logic_Speed Up ON Kill
+  m_Name: Relic Logic_Lightning
   m_EditorClassIdentifier: 
   triggerTag: {fileID: 11400000, guid: 165fc11102fdbfb40b1ce7b341ecc8bb, type: 2}
   damageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}

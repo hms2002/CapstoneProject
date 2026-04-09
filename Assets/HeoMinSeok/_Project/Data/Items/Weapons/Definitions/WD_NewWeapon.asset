@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weaponId: Weapon.New
   displayName: New Weapon
-  icon: {fileID: -415446080585258355, guid: bdc1b2723e9b86648969bdb67e325831, type: 3}
+  icon: {fileID: -70393095, guid: 7e11de47ebfa53a42a94e5fb92a94f06, type: 3}
   storyText: 
   statModifiers: []
   attackInputHint: "\uC6B0\uD074\uB9AD"
