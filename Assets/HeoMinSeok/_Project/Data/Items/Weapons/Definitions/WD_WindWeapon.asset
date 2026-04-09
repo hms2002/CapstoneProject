@@ -17,12 +17,12 @@ MonoBehaviour:
   icon: {fileID: -6255143421326930151, guid: e658b351294cef44b8a5c823d1fdcb73, type: 3}
   storyText: "\"\uD55C \uBC88 \uC2DC\uC804\uB41C \uAE30\uC0AC\uC758 \uB0A0\uAC2F\uC9D3\uC740
     \uACB0\uCF54 \uBA48\uCD94\uC9C0 \uC54A\uC73C\uBA70, \n\uADF8 \uB05D\uC740 \uC624\uC9C1
-    \uC2B9\uB9AC \uD639\uC740 \uC644\uC804\uD55C \uC18C\uBA78\uBF50\uC774\uB2E4.\""
+    \uC2B9\uB9AC \uD639\uC740 \uC644\uC804\uD55C \uC18C\uBA78 \uBFD0\uC774\uB2E4.\""
   statModifiers:
   - attribute: {fileID: 11400000, guid: 23db6468e859c6f42b0230a5af7ca81c, type: 2}
     type: 1
     value: 0.01
-    labelOverride: 
+    labelOverride: "\uC774\uB3D9\uC18D\uB3C4"
   attackInputHint: "\uC6B0\uD074\uB9AD"
   skill1InputHint: Q
   skill2InputHint: E

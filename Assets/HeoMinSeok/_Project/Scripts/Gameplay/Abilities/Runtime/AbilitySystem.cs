@@ -220,6 +220,7 @@ namespace UnityGAS
         private AbilityGameplayEventChannel gameplayEventChannel;
         private AbilityCooldownController cooldownController;
         private AbilityPresentationRouter presentationRouter;
+        private AbilityVisualRouter visualRouter;
         private AbilityHitCueRouter hitCueRouter;
         private AbilityExecutionCoordinator executionCoordinator;
 
@@ -244,6 +245,7 @@ namespace UnityGAS
         public GameObject CurrentTargetGameObject => isCasting ? currentTarget : currentExecTarget;
 
         internal AbilityPresentationRouter PresentationRouter => presentationRouter;
+        internal AbilityVisualRouter VisualRouter => visualRouter;
         internal AbilityCooldownController CooldownController => cooldownController;
 
         public Action<AbilityDefinition> OnAbilityCastStart;
@@ -322,6 +324,7 @@ namespace UnityGAS
                 cueManager,
                 playerAnimator,
                 initialWeaponAnimator);
+            visualRouter = new AbilityVisualRouter(gameObject);
 
             gameplayEventChannel = new AbilityGameplayEventChannel(
                 this,
@@ -472,6 +475,7 @@ namespace UnityGAS
             }
 
             ForceCleanupAllParallelExecutions(cancelled: true);
+            visualRouter?.ReleaseAll();
             // 책임 : AbilityLogic 외부에서 직접 AddTag 한 전투/행동 상태 태그를 TagSet 기반으로 추가 정리한다.
             RemoveTagsFromSets(extraCleanupTagSets);
 
@@ -924,6 +928,7 @@ namespace UnityGAS
                 activeExecution = null;
             }
             ForceCleanupAllParallelExecutions(cancelled: true);
+            visualRouter?.ReleaseAll();
             isCasting = false;
             isExecuting = false;
             castTimeRemaining = 0f;
