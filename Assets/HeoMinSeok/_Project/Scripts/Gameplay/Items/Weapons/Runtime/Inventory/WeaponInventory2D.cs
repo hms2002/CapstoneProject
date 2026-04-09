@@ -10,6 +10,19 @@ using UnityGAS;
 /// </summary>
 public class WeaponInventory2D : MonoBehaviour
 {
+    /// <summary>
+    /// 책임 :
+    /// - 무기 획득 시도가 어떤 결과로 끝났는지 도메인 수준에서 구분한다.
+    /// - 상위 호출부가 인벤토리 가득 참 같은 실패 사유를 UI 경고로 정확히 전달할 수 있게 한다.
+    /// </summary>
+    public enum AcquireResult
+    {
+        Success = 0,
+        InvalidDefinition,
+        InventoryFull,
+        DuplicateRejected
+    }
+
     // -----------------------
     // Events (UI/HUD Friendly)
     // -----------------------
@@ -75,9 +88,30 @@ public class WeaponInventory2D : MonoBehaviour
         return FindEmptySlot() >= 0;
     }
 
+    public AcquireResult TryAcquireWithoutReplacementDetailed(WeaponDefinition weapon, WeaponPersistentStatePayload runtimePayload = null)
+    {
+        if (weapon == null)
+            return AcquireResult.InvalidDefinition;
+
+        if (disallowDuplicateWeapons && ContainsWeaponId(weapon.weaponId))
+            return AcquireResult.DuplicateRejected;
+
+        if (FindEmptySlot() < 0)
+            return AcquireResult.InventoryFull;
+
+        return TryPickupWeapon(weapon, runtimePayload)
+            ? AcquireResult.Success
+            : AcquireResult.InvalidDefinition;
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 무기 획득 시도의 상세 결과를 기존 bool 성공/실패 규약으로 감싼다.
+    /// - 호출부 전체를 한 번에 바꾸지 않고도 상세 실패 사유 enum을 점진적으로 도입한다.
+    /// </summary>
     public bool TryAcquireWithoutReplacement(WeaponDefinition weapon, WeaponPersistentStatePayload runtimePayload = null)
     {
-        return CanAcquireWithoutReplacement(weapon) && TryPickupWeapon(weapon, runtimePayload);
+        return TryAcquireWithoutReplacementDetailed(weapon, runtimePayload) == AcquireResult.Success;
     }
 
     private void Awake()

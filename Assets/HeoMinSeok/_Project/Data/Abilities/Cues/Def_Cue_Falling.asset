@@ -33,6 +33,9 @@ MonoBehaviour:
     anchorPolicy: 0
     localOffset: {x: 0, y: 0, z: 0}
   attachToTarget: 0
+  useExplicitHitPoint: 0
+  spawnAnchorPolicy: 0
+  applyOffsetInTargetLocalSpace: 1
   localOffset: {x: 0, y: 0, z: 0}
   autoDestroySeconds: 2
   isPersistent: 1

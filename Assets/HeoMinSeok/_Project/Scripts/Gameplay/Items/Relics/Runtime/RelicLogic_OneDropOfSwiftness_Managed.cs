@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityGAS;
+using System.Collections.Generic;
 
 /// <summary>
 /// 책임 :
@@ -9,6 +10,8 @@ using UnityGAS;
 [CreateAssetMenu(menuName = "Game/Relic Logic/One Drop Of Swiftness (Managed)")]
 public class RelicLogic_OneDropOfSwiftness_Managed : RelicLogic
 {
+    protected override string DefaultEffectTemplate => "● [[잔영의 날개]] 전용 유물\n● [[스킬 2]]로 적 처치 시 [[스킬 1]]의 실행을 취소하지 않음";
+
     [Tooltip("한방울의 신속 장착 상태를 나타내는 태그.")]
     public GameplayTag grantedTag;
 
@@ -46,5 +49,12 @@ public class RelicLogic_OneDropOfSwiftness_Managed : RelicLogic
             ctx.tagSystem.AddTag(grantedTag);
         else
             ctx.tagSystem.RemoveTag(grantedTag);
+    }
+
+    public override RelicTooltipData BuildTooltip(RelicDefinition definition, int previewLevel, ItemDetailContext ctx)
+    {
+        return BuildTemplatedTooltip(
+            "● [[잔영의 날개]] 전용 유물\n● [[스킬 2]]로 적 처치 시 [[스킬 1]]의 실행을 취소하지 않음",
+            new Dictionary<string, string>());
     }
 }

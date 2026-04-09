@@ -1,0 +1,46 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e3a563c8641e8194a964b56cce6ecaa2, type: 3}
+  m_Name: Def_Cue_Dash_Dust
+  m_EditorClassIdentifier: 
+  cueTag: {fileID: 11400000, guid: c7e6d4f3fa724348af1ff1ad85b7df41, type: 2}
+  mode: 2
+  cueNotifyHostPrefab: {fileID: 0}
+  cuePrefab: {fileID: 6718438523550872990, guid: a377460fdf422a74f98915cf652001d4, type: 3}
+  vfxPrefab: {fileID: 0}
+  audioOnExecute:
+    key: 
+    volumeMultiplier: 0
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  audioWhileActive:
+    key: 
+    volumeMultiplier: 0
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  audioOnRemove:
+    key: 
+    volumeMultiplier: 0
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  attachToTarget: 0
+  useExplicitHitPoint: 0
+  spawnAnchorPolicy: 0
+  applyOffsetInTargetLocalSpace: 1
+  localOffset: {x: 0, y: 0, z: 0}
+  autoDestroySeconds: 2.2
+  isPersistent: 0
+  uniquePerTarget: 0
+  addLocalPosition: {x: 0, y: 0, z: 0}
+  addLocalEuler: {x: 0, y: 0, z: 0}
+  mulLocalScale: {x: 1, y: 1, z: 1}
+  transformExecuteDuration: 0

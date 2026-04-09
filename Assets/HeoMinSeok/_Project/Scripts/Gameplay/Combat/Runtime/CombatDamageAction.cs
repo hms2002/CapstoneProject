@@ -33,6 +33,31 @@ public static class CombatDamageAction
             system,
             spec,
             damageEffect,
+            target,
+            finalHpDamage,
+            elementDamages,
+            hitConfirmedTag,
+            target != null ? target.transform.position : Vector3.zero,
+            causer,
+            isCriticalHit);
+    }
+
+    public static void ApplyDamageAndEmitHit(
+        AbilitySystem system,
+        AbilitySpec spec,
+        GameplayEffect damageEffect,
+        GameObject target,
+        float finalHpDamage,
+        IReadOnlyList<ElementDamageResult> elementDamages,
+        GameplayTag hitConfirmedTag,
+        Vector3 hitWorldPosition,
+        GameObject causer,
+        bool isCriticalHit = false)
+    {
+        ApplyDamageAndEmitHit(
+            system,
+            spec,
+            damageEffect,
             knockbackEffect: null,
             target: target,
             finalHpDamage: finalHpDamage,
@@ -40,6 +65,7 @@ public static class CombatDamageAction
             elementBuildUps: elementDamages,
             finalKnockbackImpulse: 0f,
             hitConfirmedTag: hitConfirmedTag,
+            hitWorldPosition: hitWorldPosition,
             causer: causer,
             isCriticalHit: isCriticalHit);
     }
@@ -59,6 +85,37 @@ public static class CombatDamageAction
         GameObject causer,
         bool isCriticalHit = false)
     {
+        ApplyDamageAndEmitHit(
+            system,
+            spec,
+            damageEffect,
+            knockbackEffect,
+            target,
+            finalHpDamage,
+            finalStaggerBuildUp,
+            elementBuildUps,
+            finalKnockbackImpulse,
+            hitConfirmedTag,
+            target != null ? target.transform.position : Vector3.zero,
+            causer,
+            isCriticalHit);
+    }
+
+    public static void ApplyDamageAndEmitHit(
+        AbilitySystem system,
+        AbilitySpec spec,
+        GameplayEffect damageEffect,
+        GE_Knockback_Spec knockbackEffect,
+        GameObject target,
+        float finalHpDamage,
+        float finalStaggerBuildUp,
+        IReadOnlyList<ElementDamageResult> elementBuildUps,
+        float finalKnockbackImpulse,
+        GameplayTag hitConfirmedTag,
+        Vector3 hitWorldPosition,
+        GameObject causer,
+        bool isCriticalHit = false)
+    {
         ApplyDamageAndEmitHit_Internal(
             system,
             spec,
@@ -70,6 +127,7 @@ public static class CombatDamageAction
             elementBuildUps,
             finalKnockbackImpulse,
             hitConfirmedTag,
+            hitWorldPosition,
             causer,
             isCriticalHit);
     }
@@ -91,6 +149,35 @@ public static class CombatDamageAction
         GameObject causer,
         bool isCriticalHit = false)
     {
+        ApplyDamageAndEmitHit(
+            system,
+            spec,
+            damageEffect,
+            knockbackEffect,
+            target,
+            finalHpDamage,
+            finalStaggerBuildUp,
+            elementBuildUps,
+            hitConfirmedTag,
+            target != null ? target.transform.position : Vector3.zero,
+            causer,
+            isCriticalHit);
+    }
+
+    public static void ApplyDamageAndEmitHit(
+        AbilitySystem system,
+        AbilitySpec spec,
+        GameplayEffect damageEffect,
+        GE_Knockback_Spec knockbackEffect,
+        GameObject target,
+        float finalHpDamage,
+        float finalStaggerBuildUp,
+        IReadOnlyList<ElementDamageResult> elementBuildUps,
+        GameplayTag hitConfirmedTag,
+        Vector3 hitWorldPosition,
+        GameObject causer,
+        bool isCriticalHit = false)
+    {
         ApplyDamageAndEmitHit_Internal(
             system,
             spec,
@@ -102,6 +189,7 @@ public static class CombatDamageAction
             elementBuildUps,
             finalKnockbackImpulse: 0f,
             hitConfirmedTag,
+            hitWorldPosition,
             causer,
             isCriticalHit);
     }
@@ -119,6 +207,7 @@ public static class CombatDamageAction
         IReadOnlyList<ElementDamageResult> elementBuildUps,
         float finalKnockbackImpulse,
         GameplayTag hitConfirmedTag,
+        Vector3 hitWorldPosition,
         GameObject causer,
         bool isCriticalHit)
     {
@@ -150,7 +239,7 @@ public static class CombatDamageAction
         runner.ApplyEffectSpec(damageSpec, target);
 
         // 3) target-side damaged event
-        EmitDamagedTaken(target, spec, causer, hpCheck);
+        EmitDamagedTaken(system, target, spec, causer, hpCheck);
 
         // 4) Apply knockback effect separately
         ApplyKnockbackEffect(
@@ -169,7 +258,7 @@ public static class CombatDamageAction
         ApplyElements(target, elementBuildUps, system.gameObject, causer);
 
         // 7) Hit confirmed event
-        EmitHitConfirmed(system, spec, target, causer, hitConfirmedTag, isCriticalHit);
+        EmitHitConfirmed(system, spec, target, causer, hitConfirmedTag, hitWorldPosition, isCriticalHit);
     }
 
     private static bool Validate(AbilitySystem system, GameplayEffect damageEffect, GameObject target)
@@ -268,6 +357,7 @@ public static class CombatDamageAction
         return new HpCheckData(preHp, hpAttr, targetAttrs);
     }
     private static void EmitDamagedTaken(
+    AbilitySystem sourceSystem,
     GameObject target,
     AbilitySpec sourceSpec,
     GameObject causer,
@@ -277,6 +367,12 @@ public static class CombatDamageAction
 
         float postHp = hpCheck.TargetAttrs.GetAttributeValue(hpCheck.HpAttr);
         if (postHp >= hpCheck.PreHp) return; // 실제 감소 없으면 발행 안 함
+
+        CombatHitAudioRouter.PlayImpact(
+            sourceSystem,
+            sourceSpec,
+            target,
+            causer);
 
         var targetSystem = target.GetComponent<AbilitySystem>();
         if (targetSystem == null) return;
@@ -395,6 +491,7 @@ public static class CombatDamageAction
         GameObject target,
         GameObject causer,
         GameplayTag hitConfirmedTag,
+        Vector3 hitWorldPosition,
         bool isCriticalHit)
     {
         var resolvedHitConfirmedTag = ResolveHitConfirmedTag(hitConfirmedTag);
@@ -407,7 +504,7 @@ public static class CombatDamageAction
             Spec = spec,
             Instigator = system.gameObject,
             Target = target,
-            WorldPosition = target.transform.position,
+            WorldPosition = hitWorldPosition != Vector3.zero ? hitWorldPosition : target.transform.position,
             Causer = causer,
             IsCriticalHit = isCriticalHit
         });

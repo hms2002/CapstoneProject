@@ -69,6 +69,8 @@ public class UpgradeSlotUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
     public void OnPointerEnter(PointerEventData eventData)
     {
+        MouseCursorService.EnsureInstance().SetInteractable(this, assignedNode != null);
+
         if (assignedNode == null || UIManager.Instance == null || UpgradeTooltip.Instance == null)
             return;
 
@@ -81,6 +83,8 @@ public class UpgradeSlotUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
     public void OnPointerExit(PointerEventData eventData)
     {
+        MouseCursorService.EnsureInstance().SetInteractable(this, false);
+
         if (UIManager.Instance == null || UpgradeTooltip.Instance == null)
             return;
 
@@ -89,5 +93,10 @@ public class UpgradeSlotUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
             return;
 
         UIManager.Instance.HideHover(UpgradeTooltip.Instance, slotRect);
+    }
+
+    private void OnDisable()
+    {
+        MouseCursorService.Instance?.SetInteractable(this, false);
     }
 }

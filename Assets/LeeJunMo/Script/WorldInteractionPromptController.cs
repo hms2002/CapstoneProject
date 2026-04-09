@@ -51,7 +51,7 @@ public sealed class WorldInteractionPromptController : MonoBehaviour
         }
 
         Instance = this;
-        DontDestroyOnLoad(gameObject);
+        MarkPersistent();
 
         if (promptRoot == null)
             promptRoot = transform;
@@ -74,6 +74,18 @@ public sealed class WorldInteractionPromptController : MonoBehaviour
     {
         if (Instance == this)
             Instance = null;
+    }
+
+    private void MarkPersistent()
+    {
+        Transform persistentRoot = transform.root;
+        if (persistentRoot == null)
+            return;
+
+        if (persistentRoot.parent != null)
+            return;
+
+        DontDestroyOnLoad(persistentRoot.gameObject);
     }
 
     private void LateUpdate()

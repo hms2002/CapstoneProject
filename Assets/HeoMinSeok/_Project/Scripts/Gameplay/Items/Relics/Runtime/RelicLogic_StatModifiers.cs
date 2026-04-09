@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 using UnityGAS;
 
@@ -10,6 +11,10 @@ public class RelicLogic_StatModifiers : RelicLogic
     public struct Entry
     {
         public AttributeDefinition attribute;
+
+        [Tooltip("비워두면 AttributeDefinition의 표시 이름을 사용합니다.")]
+        public string displayNameOverride;
+
         public ModifierType type;  // Flat / Percent
 
         [Tooltip("레벨 1 기준 값. valueByLevel이 비어있으면 value * level 로 선형 강화합니다.")]
@@ -27,17 +32,25 @@ public class RelicLogic_StatModifiers : RelicLogic
 
     private static float EvalValue(Entry e, int level)
     {
-        if (level < 1) level = 1;
+        return RelicTooltipFormatter.EvaluateLeveledValue(e.value, e.valueByLevel, level);
+    }
 
-        // 1) explicit table
-        if (e.valueByLevel != null && e.valueByLevel.Count > 0)
-        {
-            int idx = Mathf.Clamp(level - 1, 0, e.valueByLevel.Count - 1);
-            return e.valueByLevel[idx];
-        }
+    /// <summary>
+    /// 책임 :
+    /// - 엔트리별 표시 이름 override를 우선 사용하고, 없으면 AttributeDefinition의 기본 이름으로 fallback 한다.
+    /// - 시스템용 속성 식별자와 유물 툴팁 문구를 느슨하게 분리한다.
+    /// </summary>
+    private static string ResolveDisplayName(Entry entry)
+    {
+        if (!string.IsNullOrWhiteSpace(entry.displayNameOverride))
+            return entry.displayNameOverride;
 
-        // 2) fallback: simple linear scaling
-        return e.value * level;
+        if (entry.attribute == null)
+            return string.Empty;
+
+        return !string.IsNullOrEmpty(entry.attribute.attributeName)
+            ? entry.attribute.attributeName
+            : entry.attribute.name;
     }
 
     public override void OnEquipped(RelicContext ctx)
@@ -85,5 +98,38 @@ public class RelicLogic_StatModifiers : RelicLogic
 
             ctx.attributeSet.TryAddModifier(e.attribute, mod);
         }
+    }
+
+    public override RelicTooltipData BuildTooltip(RelicDefinition definition, int previewLevel, ItemDetailContext ctx)
+    {
+        var sb = new StringBuilder();
+
+        if (entries == null || entries.Count == 0)
+        {
+            sb.AppendLine("(스탯 변경 없음)");
+        }
+        else
+        {
+            for (int i = 0; i < entries.Count; i++)
+            {
+                var entry = entries[i];
+                if (entry.attribute == null)
+                    continue;
+
+                string value = RelicTooltipFormatter.FormatSignedValueToken(
+                    EvalValue(entry, previewLevel),
+                    entry.type == ModifierType.Percent);
+
+                sb.Append($"● [[{ResolveDisplayName(entry)}]] {value}");
+                if (entry.duration > 0f)
+                    sb.Append($" ({RelicTooltipFormatter.FormatSeconds(entry.duration)})");
+                sb.AppendLine();
+            }
+        }
+
+        return new RelicTooltipData
+        {
+            effectText = sb.ToString().TrimEnd()
+        };
     }
 }

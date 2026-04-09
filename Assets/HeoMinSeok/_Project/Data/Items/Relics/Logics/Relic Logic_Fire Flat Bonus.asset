@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   entries:
   - attribute: {fileID: 11400000, guid: 3cf73420df1732240b7c90837ff7efab, type: 2}
+    displayNameOverride: 화염 피해
     type: 0
     value: 10
     valueByLevel: []

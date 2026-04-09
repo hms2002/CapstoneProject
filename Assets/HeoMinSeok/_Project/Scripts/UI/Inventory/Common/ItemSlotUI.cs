@@ -43,6 +43,9 @@ public class ItemSlotUI : MonoBehaviour,
     }
     private void OnDisable()
     {
+        MouseCursorService.Instance?.SetDragging(this, false);
+        MouseCursorService.Instance?.SetInteractable(this, false);
+
         if (container != null)
             container.OnChanged -= Refresh;
     }
@@ -104,6 +107,8 @@ public class ItemSlotUI : MonoBehaviour,
             p.TryGetRelicLevel(index, out relicLevel);
 
         ItemDragContext.Begin(container, index, so, relicLevel);
+        MouseCursorService.EnsureInstance().SetInteractable(this, false);
+        MouseCursorService.EnsureInstance().SetDragging(this, true);
 
         DropZoneUI.ActiveInstance?.Show();
         DragIcon.Instance?.Show(def.Icon);
@@ -120,6 +125,7 @@ public class ItemSlotUI : MonoBehaviour,
     {
         DropZoneUI.ActiveInstance?.Hide();
         DragIcon.Instance?.Hide();
+        MouseCursorService.EnsureInstance().SetDragging(this, false);
         ItemDragContext.Clear();
     }
 
@@ -222,7 +228,11 @@ public class ItemSlotUI : MonoBehaviour,
         }
 
         if (target == null) return;
-        if (targetIndex < 0) return;
+        if (targetIndex < 0)
+        {
+            ShowQuickMoveFailureWarning(so, target);
+            return;
+        }
 
         int relicLevel = 0;
         if (so is RelicDefinition && container is IRelicLevelProvider p)
@@ -290,6 +300,28 @@ public class ItemSlotUI : MonoBehaviour,
 
         return -1;
     }
+
+    /// <summary>
+    /// 책임 :
+    /// - 빠른 이동 대상 슬롯을 찾지 못했을 때 아이템 종류에 맞는 공통 경고 팝업을 요청한다.
+    /// - 인벤토리 가득 참 같은 조용한 실패를 사용자에게 즉시 피드백한다.
+    /// </summary>
+    private static void ShowQuickMoveFailureWarning(ScriptableObject item, IItemContainer target)
+    {
+        if (item == null || target == null || UIManager.Instance == null)
+            return;
+
+        WarningPopupCode code = item switch
+        {
+            WeaponDefinition => WarningPopupCode.WeaponInventoryFull,
+            RelicDefinition => WarningPopupCode.RelicInventoryFull,
+            ConsumableDefinition => WarningPopupCode.ConsumableInventoryFull,
+            _ => WarningPopupCode.None
+        };
+
+        if (code != WarningPopupCode.None)
+            UIManager.Instance.ShowWarning(code);
+    }
     public void OnPointerEnter(PointerEventData eventData)
     {
         if (container == null) return;
@@ -298,9 +330,12 @@ public class ItemSlotUI : MonoBehaviour,
         var so = container.Get(index);
         if (so == null)
         {
+            MouseCursorService.EnsureInstance().SetInteractable(this, false);
             if (UIManager.Instance != null) UIManager.Instance.HideHoverImmediate();
             return;
         }
+
+        MouseCursorService.EnsureInstance().SetInteractable(this, true);
 
         // [수정] HoverController에게 띄우라고 요청
         if (ItemHoverController.Instance != null)
@@ -311,6 +346,8 @@ public class ItemSlotUI : MonoBehaviour,
 
     public void OnPointerExit(PointerEventData eventData)
     {
+        MouseCursorService.EnsureInstance().SetInteractable(this, false);
+
         if (ItemDragContext.Active) return;
 
         // [수정] HoverController에게 끄라고 요청

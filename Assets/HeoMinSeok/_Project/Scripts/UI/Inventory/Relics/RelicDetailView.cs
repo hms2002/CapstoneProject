@@ -1,237 +1,163 @@
-using System.Text;
 using UnityEngine;
-using UnityGAS;
 
+/// <summary>
+/// 책임 :
+/// - 유물 상세의 현재/프리뷰 레벨 상태를 관리하고, 해당 레벨 기준 툴팁 생성을 RelicLogic에 요청한다.
+/// - Q/E 입력에 따른 레벨 프리뷰 갱신과 헤더 레벨 문자열 전달만 맡고, 공용 패널 레이아웃은 직접 다루지 않는다.
+/// </summary>
 public class RelicDetailView : MonoBehaviour, IItemDetailView
 {
     [SerializeField] private SectionListView sections;
+    [SerializeField] private string previewLevelUpColorHex = "90CAF9";
+    [SerializeField] private string previewLevelDownColorHex = "FF5050";
+
+    private RelicDefinition currentRelic;
+    private ItemDetailContext currentContext;
+    private ItemDetailPanelServices currentServices;
+    private int actualLevel = 1;
+    private int previewLevel = 1;
 
     public bool CanShow(object def) => def is RelicDefinition;
+    public bool CanPreviewPreviousLevel => currentRelic != null && previewLevel > 1;
+    public bool CanPreviewNextLevel => currentRelic != null && previewLevel < Mathf.Max(1, currentRelic.maxLevel);
 
     public void Show(object def, ItemDetailContext ctx, ItemDetailPanelServices services)
     {
+        currentRelic = (RelicDefinition)def;
+        currentContext = ctx;
+        currentServices = services;
+        actualLevel = ResolveActualLevel(currentRelic, ctx);
+        previewLevel = actualLevel;
+
         gameObject.SetActive(true);
-        sections?.Clear();
-
-        var r = (RelicDefinition)def;
-
-        // Level info (if the player already owns it)
-        int level = 1;
-
-        if (ctx != null)
-        {
-            // 1) 슬롯 레벨(상자/가방/장착/월드루트) 우선
-            if (ctx.relicLevelOverride > 0) level = ctx.relicLevelOverride;
-            else if (ctx.sourceContainer is IRelicLevelProvider p && ctx.sourceIndex >= 0)
-            {
-                if (p.TryGetRelicLevel(ctx.sourceIndex, out var lvl)) level = lvl;
-            }
-            // 2) 그래도 없으면 “플레이어가 이미 보유한 레벨”로 fallback
-            else if (ctx.owner != null)
-            {
-                var inv = ctx.owner.GetComponent<RelicInventory>();
-                if (inv != null && inv.TryGetRelicLevelById(r.relicId, out var ownedLevel))
-                    level = ownedLevel;
-            }
-        }
-
-        // Description
-        if (!string.IsNullOrEmpty(r.description))
-        {
-            var desc = services.formatText != null ? services.formatText(r.description) : r.description;
-            sections.Add("설명", desc, services.showGlossary);
-        }
-
-        // Upgrade / Level
-        {
-            var sb = new StringBuilder();
-            sb.AppendLine($"현재 강화: +{level} / +{Mathf.Max(1, r.maxLevel)}");
-            sb.AppendLine($"획득 시 강화량: +{Mathf.Max(1, r.dropLevel)}");
-            sections.Add("강화", sb.ToString().TrimEnd(), services.showGlossary);
-        }
-
-        // Effects
-        string effect = BuildEffectText(r, ctx, level);
-        effect = services.formatText != null ? services.formatText(effect) : effect;
-        sections.Add("효과", effect, services.showGlossary);
+        RefreshSections();
     }
 
     public void Hide()
     {
         sections?.Clear();
+        ResetPreviewState();
         gameObject.SetActive(false);
     }
 
-    private static float EvalValue(float baseValue, System.Collections.Generic.List<float> table, int level)
+    private void Update()
     {
-        if (level < 1) level = 1;
-        if (table != null && table.Count > 0)
-        {
-            int idx = Mathf.Clamp(level - 1, 0, table.Count - 1);
-            return table[idx];
-        }
-        return baseValue * level;
+        if (!gameObject.activeSelf || currentRelic == null)
+            return;
+
+        InputBindingService input = InputBindingService.EnsureInstance();
+        int nextPreviewLevel = previewLevel;
+        int maxLevel = Mathf.Max(1, currentRelic.maxLevel);
+
+        if (input.WasPressedThisFrame(InputActionId.Skill1))
+            nextPreviewLevel = Mathf.Max(1, nextPreviewLevel - 1);
+
+        if (input.WasPressedThisFrame(InputActionId.Skill2))
+            nextPreviewLevel = Mathf.Min(maxLevel, nextPreviewLevel + 1);
+
+        if (nextPreviewLevel == previewLevel)
+            return;
+
+        previewLevel = nextPreviewLevel;
+        RefreshSections();
     }
 
-    private string BuildEffectText(RelicDefinition r, ItemDetailContext ctx, int level)
+    /// <summary>
+    /// 책임 :
+    /// - 현재 유물/레벨 프리뷰 상태를 기준으로 레벨 섹션과 효과 섹션을 다시 구성한다.
+    /// - 상세 뷰는 프리뷰 레벨 상태만 관리하고, 실제 효과 문장 생성은 RelicLogic에 위임한다.
+    /// </summary>
+    private void RefreshSections()
     {
-        var sb = new StringBuilder();
+        if (sections == null || currentRelic == null)
+            return;
 
-        if (r.logic == null)
+        sections.Clear();
+        currentServices?.setHeaderLevelText?.Invoke(BuildLevelHeaderText());
+
+        RelicTooltipData tooltip = currentRelic.logic != null
+            ? currentRelic.logic.BuildTooltip(currentRelic, previewLevel, currentContext)
+            : null;
+
+        string effect = tooltip != null && !string.IsNullOrEmpty(tooltip.effectText)
+            ? tooltip.effectText
+            : "(로직 없음)";
+
+        if (currentServices?.formatText != null)
+            effect = currentServices.formatText(effect);
+
+        sections.Add("효과", effect, currentServices?.showGlossary);
+        Canvas.ForceUpdateCanvases();
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 유물의 실제 레벨과 프리뷰 레벨을 구분해 레벨 섹션 문자열을 만든다.
+    /// - 프리뷰 중이면 현재 레벨이 아니라는 걸 알 수 있게 레벨 숫자만 별도 색으로 강조한다.
+    /// </summary>
+    private string BuildLevelHeaderText()
+    {
+        int maxLevel = currentRelic != null ? Mathf.Max(1, currentRelic.maxLevel) : 1;
+        string levelNumber = previewLevel == actualLevel
+            ? previewLevel.ToString()
+            : $"<color=#{ResolvePreviewLevelColorHex()}>{previewLevel}</color>";
+
+        return $"Lv {levelNumber} / {maxLevel}";
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 유물 레벨 프리뷰 방향에 따라 표시 색을 결정한다.
+    /// - 실제 레벨보다 높으면 파랑, 낮으면 빨강으로 표시해 현재 상태와의 차이를 읽기 쉽게 만든다.
+    /// </summary>
+    private string ResolvePreviewLevelColorHex()
+    {
+        return previewLevel < actualLevel
+            ? previewLevelDownColorHex
+            : previewLevelUpColorHex;
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 현재 표시 대상 유물의 실제 레벨을 sourceContainer/override/플레이어 인벤토리 기준으로 계산한다.
+    /// - 상세 뷰 프리뷰의 시작 기준점이 되는 레벨을 한 곳에서 일관되게 결정한다.
+    /// </summary>
+    private static int ResolveActualLevel(RelicDefinition relic, ItemDetailContext ctx)
+    {
+        int level = 1;
+
+        if (ctx != null)
         {
-            sb.AppendLine("(로직 없음)");
-            return sb.ToString().TrimEnd();
-        }
-
-        int maxLevel = Mathf.Max(1, r.maxLevel);
-        int nextLevel = Mathf.Clamp(level + 1, 1, maxLevel);
-        bool hasNext = nextLevel != level;
-
-        // 1) Stat Modifiers
-        if (r.logic is RelicLogic_StatModifiers mods)
-        {
-            if (mods.entries == null || mods.entries.Count == 0)
+            if (ctx.relicLevelOverride > 0)
+                level = ctx.relicLevelOverride;
+            else if (ctx.sourceContainer is IRelicLevelProvider provider && ctx.sourceIndex >= 0)
             {
-                sb.AppendLine("(스탯 변경 없음)");
-                return sb.ToString();
+                if (provider.TryGetRelicLevel(ctx.sourceIndex, out int slotLevel))
+                    level = slotLevel;
             }
-
-            for (int i = 0; i < mods.entries.Count; i++)
+            else if (ctx.owner != null)
             {
-                var e = mods.entries[i];
-                if (e.attribute == null) continue;
-
-                float curV = EvalValue(e.value, e.valueByLevel, level);
-                float nextV = hasNext ? EvalValue(e.value, e.valueByLevel, nextLevel) : curV;
-
-                string name = e.attribute.attributeName;
-                string type = e.type.ToString();
-
-                string curStr = e.type == ModifierType.Percent ? $"{curV * 100f:0.##}%" : $"{curV:0.##}";
-                string nextStr = e.type == ModifierType.Percent ? $"{nextV * 100f:0.##}%" : $"{nextV:0.##}";
-
-                sb.Append($"- [[{name}]]: {type} {curStr}");
-                if (hasNext && nextV != curV) sb.Append($"  →  <color=#90CAF9>{nextStr}</color>");
-                if (e.duration > 0f) sb.Append($" ({e.duration:0.##}s)");
-
-                // show current value if available
-                if (ctx != null && ctx.attributeSet != null)
-                {
-                    float cur = ctx.attributeSet.GetAttributeValue(e.attribute);
-                    sb.Append($"  | 현재: <color=#FFD54F>{cur:0.##}</color>");
-                }
-
-                sb.AppendLine();
+                var inventory = ctx.owner.GetComponent<RelicInventory>();
+                if (inventory != null && inventory.TryGetRelicLevelById(relic.relicId, out int ownedLevel))
+                    level = ownedLevel;
             }
-
-            return sb.ToString().TrimEnd();
         }
 
-        // 2) Lightning proc
-        if (r.logic is RelicLogic_LightningOnHitConfirmed_Managed lightning)
-        {
-            float curDmg = EvalValue(lightning.baseDamage, lightning.baseDamageByLevel, level);
-            float nextDmg = hasNext ? EvalValue(lightning.baseDamage, lightning.baseDamageByLevel, nextLevel) : curDmg;
+        return relic != null ? relic.ClampLevel(level) : Mathf.Max(1, level);
+    }
 
-            sb.AppendLine("- 발동: HitConfirmed");
-            sb.Append($"- 번개 피해: {curDmg:0.##}");
-            if (hasNext && nextDmg != curDmg) sb.Append($"  →  <color=#90CAF9>{nextDmg:0.##}</color>");
-            sb.AppendLine();
-
-            sb.AppendLine($"- 반경: {lightning.radius:0.##}");
-            if (lightning.cooldownSeconds > 0f) sb.AppendLine($"- 쿨다운: {lightning.cooldownSeconds:0.##}s");
-
-            return sb.ToString().TrimEnd();
-        }
-
-        // 3) Current HP threshold move speed
-        if (r.logic is RelicLogic_MoveSpeedByCurrentHealth_Managed moveByHp)
-        {
-            if (moveByHp.rules == null || moveByHp.rules.Count == 0)
-            {
-                sb.AppendLine("(체력 구간 규칙 없음)");
-                return sb.ToString().TrimEnd();
-            }
-
-            for (int i = 0; i < moveByHp.rules.Count; i++)
-            {
-                var rule = moveByHp.rules[i];
-                float curV = EvalValue(rule.percentBonus, rule.percentBonusByLevel, level);
-                float nextV = hasNext ? EvalValue(rule.percentBonus, rule.percentBonusByLevel, nextLevel) : curV;
-
-                string rangeText;
-                bool hasLower = rule.minHealthInclusive > 0f;
-                bool hasUpper = !float.IsInfinity(rule.maxHealthInclusive) && rule.maxHealthInclusive < 999999f;
-
-                if (Mathf.Approximately(rule.minHealthInclusive, rule.maxHealthInclusive))
-                    rangeText = $"현재 체력이 {rule.minHealthInclusive:0.##}";
-                else if (hasLower && hasUpper)
-                    rangeText = $"현재 체력이 {rule.minHealthInclusive:0.##}~{rule.maxHealthInclusive:0.##}";
-                else if (hasLower)
-                    rangeText = $"현재 체력이 {rule.minHealthInclusive:0.##} 이상";
-                else
-                    rangeText = $"현재 체력이 {rule.maxHealthInclusive:0.##} 이하";
-
-                string curStr = curV >= 0f ? $"+{curV * 100f:0.##}%" : $"{curV * 100f:0.##}%";
-                string nextStr = nextV >= 0f ? $"+{nextV * 100f:0.##}%" : $"{nextV * 100f:0.##}%";
-
-                sb.Append($"- {rangeText}: [[이동속도]] {curStr}");
-                if (hasNext && nextV != curV) sb.Append($"  →  <color=#90CAF9>{nextStr}</color>");
-                sb.AppendLine();
-            }
-
-            return sb.ToString().TrimEnd();
-        }
-
-        if (r.logic is RelicLogic_EvasionFromBonusMoveSpeed_Managed evadeByMove)
-        {
-            string stepStr = $"{evadeByMove.bonusMoveStep * 100f:0.##}%";
-            string evasionStr = $"{evadeByMove.evasionPerStep * 100f:0.##}%";
-
-            sb.AppendLine($"- [[추가 이동속도]] {stepStr}마다 [[공격을 회피할 확률]] {evasionStr} 추가");
-
-            return sb.ToString().TrimEnd();
-        }
-
-        if (r.logic is RelicLogic_MoveSpeedStackOnCriticalHit_Managed moveOnCrit)
-        {
-            string gainStr = $"{moveOnCrit.percentPerCritical * 100f:0.##}%";
-            string capStr = $"{moveOnCrit.maxPercentBonus * 100f:0.##}%";
-
-            sb.AppendLine($"- [[치명타]] 시 [[이동속도]] {gainStr}씩 증가");
-            sb.AppendLine($"- 최대 {capStr}까지 증가 가능");
-            sb.AppendLine("- 피해를 받으면 위 보너스가 초기화됨");
-
-            return sb.ToString().TrimEnd();
-        }
-
-        if (r.logic is RelicLogic_Stenographer_Managed)
-        {
-            sb.AppendLine("- [[잔영의 날개]] 전용 유물");
-            sb.AppendLine("- [[스킬 1]] 변동");
-            sb.AppendLine("- 사용 시 [[이동속도]] +150%");
-            sb.AppendLine("- 3초 후 추가 [[이동속도]] +150%  (총 +300%)");
-            sb.AppendLine("- 3초 후 추가 [[이동속도]] +200%  (총 +500%)");
-
-            return sb.ToString().TrimEnd();
-        }
-
-        if (r.logic is RelicLogic_OneDropOfSwiftness_Managed)
-        {
-            sb.AppendLine("- [[잔영의 날개]] 전용 유물");
-            sb.AppendLine("- [[스킬 2]]로 적 처치 시 [[스킬 1]]의 실행을 취소하지 않음");
-
-            return sb.ToString().TrimEnd();
-        }
-
-        // Fallback: show linked param if exists
-        if (r.param != null)
-        {
-            sb.AppendLine($"Param: {r.param.name}");
-            sb.AppendLine();
-        }
-
-        sb.AppendLine("(이 유물 로직 타입에 대한 상세 표시를 추가할 수 있어요)");
-        return sb.ToString().TrimEnd();
+    /// <summary>
+    /// 책임 :
+    /// - 상세 뷰가 숨겨지거나 다른 아이템으로 전환될 때 레벨 프리뷰 상태를 초기화한다.
+    /// - 다음 표시에서 이전 유물의 프리뷰 레벨이 남지 않도록 한다.
+    /// </summary>
+    private void ResetPreviewState()
+    {
+        currentServices?.setHeaderLevelText?.Invoke(string.Empty);
+        currentRelic = null;
+        currentContext = null;
+        currentServices = null;
+        actualLevel = 1;
+        previewLevel = 1;
     }
 }

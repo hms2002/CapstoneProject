@@ -19,6 +19,9 @@ public sealed class SettingStepperControl
 
 public sealed class SettingsPanelUI : MonoBehaviour, IStackableUI
 {
+    private const float DisabledStepperAlpha = 0.45f;
+    private const float EnabledStepperAlpha = 1f;
+
     private static readonly GameWindowMode[] WindowModeOptions =
     {
         GameWindowMode.Windowed,
@@ -222,22 +225,28 @@ public sealed class SettingsPanelUI : MonoBehaviour, IStackableUI
 
     private void RefreshDisplayStepperState(GameSettingsService settings)
     {
+        GameWindowMode pendingMode = WindowModeOptions[pendingWindowModeIndex];
         SetStepperState(
             windowModeStepper,
-            settings.GetWindowModeLabel(WindowModeOptions[pendingWindowModeIndex]),
+            settings.GetWindowModeLabel(pendingMode),
             pendingWindowModeIndex > 0,
             pendingWindowModeIndex < WindowModeOptions.Length - 1);
 
         IReadOnlyList<DisplayResolutionOption> options = settings.GetResolutionOptions();
-        string resolutionLabel = options.Count > 0 && pendingResolutionIndex >= 0 && pendingResolutionIndex < options.Count
-            ? options[pendingResolutionIndex].ToString()
-            : "-";
+        bool canEditResolution = CanEditResolutionForPendingMode();
+        DisplayResolutionOption displayedResolution = settings.GetDisplayedResolutionOption(pendingMode, pendingResolutionIndex);
+        string resolutionLabel = displayedResolution.width > 0 && displayedResolution.height > 0
+            ? displayedResolution.ToString()
+            : options.Count > 0 && pendingResolutionIndex >= 0 && pendingResolutionIndex < options.Count
+                ? options[pendingResolutionIndex].ToString()
+                : "-";
 
         SetStepperState(
             resolutionStepper,
             resolutionLabel,
-            options.Count > 0 && pendingResolutionIndex > 0,
-            options.Count > 0 && pendingResolutionIndex < options.Count - 1);
+            canEditResolution && options.Count > 0 && pendingResolutionIndex > 0,
+            canEditResolution && options.Count > 0 && pendingResolutionIndex < options.Count - 1,
+            canEditResolution);
     }
 
     private void RefreshScreenShakeStepper(GameSettingsService settings)
@@ -278,8 +287,10 @@ public sealed class SettingsPanelUI : MonoBehaviour, IStackableUI
             return;
 
         int currentResolutionIndex = Mathf.Max(0, settings.GetCurrentResolutionIndex());
-        bool hasChanges = WindowModeOptions[pendingWindowModeIndex] != settings.CurrentWindowMode ||
-                          pendingResolutionIndex != currentResolutionIndex;
+        bool windowModeChanged = WindowModeOptions[pendingWindowModeIndex] != settings.CurrentWindowMode;
+        bool shouldCompareResolution = CanEditResolutionForPendingMode() || settings.CurrentWindowMode == GameWindowMode.Windowed;
+        bool resolutionChanged = shouldCompareResolution && pendingResolutionIndex != currentResolutionIndex;
+        bool hasChanges = windowModeChanged || resolutionChanged;
         applyDisplayButton.interactable = hasChanges;
     }
 
@@ -321,7 +332,13 @@ public sealed class SettingsPanelUI : MonoBehaviour, IStackableUI
         if (suppressCallbacks)
             return;
 
+        if (!CanEditResolutionForPendingMode())
+            return;
+
         GameSettingsService settings = GameSettingsService.EnsureInstance();
+        if (settings == null)
+            return;
+
         IReadOnlyList<DisplayResolutionOption> options = settings.GetResolutionOptions();
         if (options.Count == 0)
             return;
@@ -489,19 +506,53 @@ public sealed class SettingsPanelUI : MonoBehaviour, IStackableUI
         button.onClick.AddListener(callback);
     }
 
-    private static void SetStepperState(SettingStepperControl stepper, string value, bool canGoPrevious, bool canGoNext)
+    private bool CanEditResolutionForPendingMode()
+    {
+        return WindowModeOptions[pendingWindowModeIndex] == GameWindowMode.Windowed;
+    }
+
+    private static void SetStepperState(SettingStepperControl stepper, string value, bool canGoPrevious, bool canGoNext, bool isVisuallyEnabled = true)
     {
         if (stepper == null)
             return;
 
         if (stepper.ValueText != null)
+        {
             stepper.ValueText.text = value;
+            SetGraphicAlpha(stepper.ValueText, isVisuallyEnabled ? EnabledStepperAlpha : DisabledStepperAlpha);
+        }
 
         if (stepper.PreviousButton != null)
+        {
             stepper.PreviousButton.interactable = canGoPrevious;
+            SetButtonGraphicsAlpha(stepper.PreviousButton, isVisuallyEnabled ? EnabledStepperAlpha : DisabledStepperAlpha);
+        }
 
         if (stepper.NextButton != null)
+        {
             stepper.NextButton.interactable = canGoNext;
+            SetButtonGraphicsAlpha(stepper.NextButton, isVisuallyEnabled ? EnabledStepperAlpha : DisabledStepperAlpha);
+        }
+    }
+
+    private static void SetButtonGraphicsAlpha(Button button, float alpha)
+    {
+        if (button == null)
+            return;
+
+        Graphic[] graphics = button.GetComponentsInChildren<Graphic>(true);
+        for (int i = 0; i < graphics.Length; i++)
+            SetGraphicAlpha(graphics[i], alpha);
+    }
+
+    private static void SetGraphicAlpha(Graphic graphic, float alpha)
+    {
+        if (graphic == null)
+            return;
+
+        Color color = graphic.color;
+        color.a = alpha;
+        graphic.color = color;
     }
 
     private static void UpdateValueLabel(TMP_Text label, float value)

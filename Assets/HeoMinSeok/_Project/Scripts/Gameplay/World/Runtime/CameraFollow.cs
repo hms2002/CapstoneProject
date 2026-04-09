@@ -71,6 +71,20 @@ namespace Cainos.PixelArtTopDown_Basic
             ApplyBinding(snap);
         }
 
+        public void SetControlledCamera(CinemachineCamera camera, bool rebindCurrentTarget = true)
+        {
+            controlledCamera = camera;
+            hasLoggedMissingCamera = false;
+
+            if (!rebindCurrentTarget)
+                return;
+
+            if (target != null)
+                ApplyBinding(snapWhenTargetBound);
+            else
+                ResolveControlledCamera();
+        }
+
         public void SnapToTarget()
         {
             if (target == null || !ResolveControlledCamera())
@@ -117,6 +131,15 @@ namespace Cainos.PixelArtTopDown_Basic
 
             if (!autoResolveControlledCamera)
                 return false;
+
+            CameraBootstrap.EnsureRuntimeRigForCurrentScene();
+            controlledCamera = CameraBootstrap.GetPlayerCamera();
+            if (controlledCamera != null)
+            {
+                hasLoggedMissingCamera = false;
+                SyncControlledCameraSettings();
+                return true;
+            }
 
             controlledCamera = FindBestPlayerCamera();
             if (controlledCamera == null)
@@ -187,14 +210,7 @@ namespace Cainos.PixelArtTopDown_Basic
             if (camera == null)
                 return;
 
-            var listener = camera.GetComponent<CinemachineImpulseListener>();
-            if (listener != null)
-                return;
-
-            listener = camera.gameObject.AddComponent<CinemachineImpulseListener>();
-            listener.ChannelMask = 1;
-            listener.Gain = 1f;
-            listener.Use2DDistance = true;
+            CameraBootstrap.EnsureImpulseListener(camera.gameObject);
         }
     }
 }

@@ -346,13 +346,48 @@ namespace UnityGAS
         [Tooltip("실행 중 취소 시 1회 재생되는 사운드")]
         public SoundRef audioOnExecutionCancelled;
 
+        [Tooltip("실제 타격이 적중했을 때 재생할 기본 타격 사운드")]
+        public SoundRef impactSound;
+
         [Header("GameplayCue (Optional)")]
+        [Tooltip("캐스트 시작 시 실행할 cue 목록")]
+        public List<GameplayTag> cuesOnCastStart = new List<GameplayTag>();
+
+        [Tooltip("캐스팅 중 유지할 cue 목록")]
+        public List<GameplayTag> cuesWhileCasting = new List<GameplayTag>();
+
+        [Tooltip("Commit 시 실행할 cue 목록")]
+        public List<GameplayTag> cuesOnCommit = new List<GameplayTag>();
+
+        [Tooltip("실행 중 유지할 cue 목록")]
+        public List<GameplayTag> cuesWhileActive = new List<GameplayTag>();
+
+        [Tooltip("정상 종료 시 실행할 cue 목록")]
+        public List<GameplayTag> cuesOnEnd = new List<GameplayTag>();
+
+        [Tooltip("캐스팅 취소 시 실행할 cue 목록")]
+        public List<GameplayTag> cuesOnCastCancelled = new List<GameplayTag>();
+
+        [Tooltip("실행 중 취소 시 실행할 cue 목록")]
+        public List<GameplayTag> cuesOnExecutionCancelled = new List<GameplayTag>();
+
+        [Tooltip("실제 히트 확정 시 실행할 cue 목록")]
+        public List<GameplayTag> cuesOnHitConfirmed = new List<GameplayTag>();
+
+        [Min(0f)]
+        [Tooltip("히트 cue 전반에 전달할 기본 세기 배수")]
+        public float hitCueMagnitude = 1f;
+
+        [Min(0f)]
+        [Tooltip("치명타일 때 hit cue 세기에 곱할 배수")]
+        public float criticalHitCueMagnitudeMultiplier = 2f;
 
         /// <summary>
         /// 책임 :
         /// - 입력 접수 후 castTime이 시작되는 시점에 1회성 연출을 요청한다.
         /// </summary>
         [Tooltip("캐스팅 시작(입력 접수 후 castTime 시작)")]
+        [HideInInspector]
         public GameplayTag cueOnCastStart;
 
         /// <summary>
@@ -361,6 +396,7 @@ namespace UnityGAS
         /// - 보통 Add/Remove 형태의 루프형 VFX, 차징 이펙트 등에 사용한다.
         /// </summary>
         [Tooltip("캐스팅 중 지속(Add/Remove)")]
+        [HideInInspector]
         public GameplayTag cueWhileCasting;
 
         /// <summary>
@@ -368,6 +404,7 @@ namespace UnityGAS
         /// - Commit(코스트 지불 + 실제 실행 시작) 시점의 1회성 연출을 요청한다.
         /// </summary>
         [Tooltip("Commit(코스트 지불 + 실행 시작 시점)")]
+        [HideInInspector]
         public GameplayTag cueOnCommit;
 
         /// <summary>
@@ -376,6 +413,7 @@ namespace UnityGAS
         /// - 보통 돌진 잔상, 지속 오라, 활성화 상태 표시에 사용한다.
         /// </summary>
         [Tooltip("능력 실행 중 지속(Add/Remove)")]
+        [HideInInspector]
         public GameplayTag cueWhileActive;
 
         /// <summary>
@@ -383,6 +421,7 @@ namespace UnityGAS
         /// - Ability가 정상 종료되었을 때 1회성 연출을 요청한다.
         /// </summary>
         [Tooltip("정상 종료 1회 실행")]
+        [HideInInspector]
         public GameplayTag cueOnEnd;
 
         /// <summary>
@@ -390,6 +429,7 @@ namespace UnityGAS
         /// - 캐스팅 단계에서 취소되었을 때 1회성 연출을 요청한다.
         /// </summary>
         [Tooltip("캐스팅 취소 1회 실행")]
+        [HideInInspector]
         public GameplayTag cueOnCastCancelled;
 
         /// <summary>
@@ -397,7 +437,14 @@ namespace UnityGAS
         /// - 실행 단계에서 취소되었을 때 1회성 연출을 요청한다.
         /// </summary>
         [Tooltip("실행 중 취소(Interrupt/CancelExecution) 1회 실행")]
+        [HideInInspector]
         public GameplayTag cueOnExecutionCancelled;
+
+        [Tooltip("실제 피격 확정(HitConfirm) 시 실행할 1회성 cue")]
+        [HideInInspector]
+        public GameplayTag cueOnHitConfirmed;
+        [HideInInspector]
+        public List<GameplayTag> additionalCuesOnHitConfirmed = new List<GameplayTag>();
 
         public bool IsInstant => castTime <= 0f;
         public bool HasCost => cost > 0f && costAttribute != null;
@@ -508,7 +555,100 @@ namespace UnityGAS
             else
                 animationTriggerHash = 0;
 
+            MigrateLegacyCueFields();
             _tagMasksCompiled = false;
+        }
+
+        public IEnumerable<GameplayTag> EnumerateCuesOnCastStart() => EnumerateCueTags(cuesOnCastStart, cueOnCastStart);
+        public IEnumerable<GameplayTag> EnumerateCuesWhileCasting() => EnumerateCueTags(cuesWhileCasting, cueWhileCasting);
+        public IEnumerable<GameplayTag> EnumerateCuesOnCommit() => EnumerateCueTags(cuesOnCommit, cueOnCommit);
+        public IEnumerable<GameplayTag> EnumerateCuesWhileActive() => EnumerateCueTags(cuesWhileActive, cueWhileActive);
+        public IEnumerable<GameplayTag> EnumerateCuesOnEnd() => EnumerateCueTags(cuesOnEnd, cueOnEnd);
+        public IEnumerable<GameplayTag> EnumerateCuesOnCastCancelled() => EnumerateCueTags(cuesOnCastCancelled, cueOnCastCancelled);
+        public IEnumerable<GameplayTag> EnumerateCuesOnExecutionCancelled() => EnumerateCueTags(cuesOnExecutionCancelled, cueOnExecutionCancelled);
+        public IEnumerable<GameplayTag> EnumerateCuesOnHitConfirmed() => EnumerateCueTags(cuesOnHitConfirmed, cueOnHitConfirmed, additionalCuesOnHitConfirmed);
+
+        private void MigrateLegacyCueFields()
+        {
+            MigrateLegacyCue(cuesOnCastStart, ref cueOnCastStart);
+            MigrateLegacyCue(cuesWhileCasting, ref cueWhileCasting);
+            MigrateLegacyCue(cuesOnCommit, ref cueOnCommit);
+            MigrateLegacyCue(cuesWhileActive, ref cueWhileActive);
+            MigrateLegacyCue(cuesOnEnd, ref cueOnEnd);
+            MigrateLegacyCue(cuesOnCastCancelled, ref cueOnCastCancelled);
+            MigrateLegacyCue(cuesOnExecutionCancelled, ref cueOnExecutionCancelled);
+            MigrateLegacyCue(cuesOnHitConfirmed, ref cueOnHitConfirmed);
+            MigrateLegacyCueList(cuesOnHitConfirmed, additionalCuesOnHitConfirmed);
+        }
+
+        private static void MigrateLegacyCue(List<GameplayTag> destination, ref GameplayTag legacyCue)
+        {
+            if (legacyCue == null)
+                return;
+
+            destination ??= new List<GameplayTag>();
+            if (!destination.Contains(legacyCue))
+                destination.Add(legacyCue);
+
+            legacyCue = null;
+        }
+
+        private static void MigrateLegacyCueList(List<GameplayTag> destination, List<GameplayTag> legacyCues)
+        {
+            if (legacyCues == null || legacyCues.Count == 0)
+                return;
+
+            destination ??= new List<GameplayTag>();
+            for (int i = 0; i < legacyCues.Count; i++)
+            {
+                GameplayTag cue = legacyCues[i];
+                if (cue != null && !destination.Contains(cue))
+                    destination.Add(cue);
+            }
+
+            legacyCues.Clear();
+        }
+
+        private static IEnumerable<GameplayTag> EnumerateCueTags(
+            List<GameplayTag> cueList,
+            GameplayTag legacyCue,
+            List<GameplayTag> legacyExtra = null)
+        {
+            HashSet<GameplayTag> yielded = null;
+
+            if (legacyCue != null)
+            {
+                yielded = new HashSet<GameplayTag> { legacyCue };
+                yield return legacyCue;
+            }
+
+            if (legacyExtra != null)
+            {
+                for (int i = 0; i < legacyExtra.Count; i++)
+                {
+                    GameplayTag cue = legacyExtra[i];
+                    if (cue == null)
+                        continue;
+
+                    yielded ??= new HashSet<GameplayTag>();
+                    if (yielded.Add(cue))
+                        yield return cue;
+                }
+            }
+
+            if (cueList == null)
+                yield break;
+
+            for (int i = 0; i < cueList.Count; i++)
+            {
+                GameplayTag cue = cueList[i];
+                if (cue == null)
+                    continue;
+
+                yielded ??= new HashSet<GameplayTag>();
+                if (yielded.Add(cue))
+                    yield return cue;
+            }
         }
 
         /// <summary>

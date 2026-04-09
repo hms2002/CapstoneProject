@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 using UnityGAS;
 
@@ -86,15 +87,7 @@ public class RelicLogic_MoveSpeedByCurrentHealth_Managed : RelicLogic
 
     private static float EvalValue(Rule rule, int level)
     {
-        if (level < 1) level = 1;
-
-        if (rule.percentBonusByLevel != null && rule.percentBonusByLevel.Count > 0)
-        {
-            int idx = Mathf.Clamp(level - 1, 0, rule.percentBonusByLevel.Count - 1);
-            return rule.percentBonusByLevel[idx];
-        }
-
-        return rule.percentBonus * level;
+        return RelicTooltipFormatter.EvaluateLeveledValue(rule.percentBonus, rule.percentBonusByLevel, level);
     }
 
     private sealed class MoveSpeedByCurrentHealthProc : IRelicProc
@@ -184,5 +177,42 @@ public class RelicLogic_MoveSpeedByCurrentHealth_Managed : RelicLogic
             _ctx.attributeSet.RemoveModifiersFromSource(Token);
             _currentMoveSpeedMod = default;
         }
+    }
+
+    public override RelicTooltipData BuildTooltip(RelicDefinition definition, int previewLevel, ItemDetailContext ctx)
+    {
+        var sb = new StringBuilder();
+
+        if (rules == null || rules.Count == 0)
+        {
+            sb.AppendLine("(체력 구간 규칙 없음)");
+        }
+        else
+        {
+            for (int i = 0; i < rules.Count; i++)
+            {
+                var rule = rules[i];
+                string rangeText;
+                bool hasLower = rule.minHealthInclusive > 0f;
+                bool hasUpper = !float.IsInfinity(rule.maxHealthInclusive) && rule.maxHealthInclusive < 999999f;
+
+                if (Mathf.Approximately(rule.minHealthInclusive, rule.maxHealthInclusive))
+                    rangeText = $"현재 체력이 {rule.minHealthInclusive:0.##}";
+                else if (hasLower && hasUpper)
+                    rangeText = $"현재 체력이 {rule.minHealthInclusive:0.##}~{rule.maxHealthInclusive:0.##}";
+                else if (hasLower)
+                    rangeText = $"현재 체력이 {rule.minHealthInclusive:0.##} 이상";
+                else
+                    rangeText = $"현재 체력이 {rule.maxHealthInclusive:0.##} 이하";
+
+                string bonus = RelicTooltipFormatter.FormatSignedValueToken(EvalValue(rule, previewLevel), true);
+                sb.AppendLine($"● {rangeText}: [[이동속도]] {bonus}");
+            }
+        }
+
+        return new RelicTooltipData
+        {
+            effectText = sb.ToString().TrimEnd()
+        };
     }
 }

@@ -9,7 +9,7 @@ public sealed class PlayerInteractableTracker2D : MonoBehaviour
 
     public IReadOnlyList<IInteractable> NearbyObjects => nearbyObjects;
 
-    private void OnTriggerEnter2D(Collider2D other)
+    public void RegisterOverlap(Collider2D other)
     {
         IInteractable interactable = ResolveInteractable(other);
         if (interactable == null)
@@ -26,7 +26,7 @@ public sealed class PlayerInteractableTracker2D : MonoBehaviour
         interactable.OnPlayerNearby();
     }
 
-    private void OnTriggerExit2D(Collider2D other)
+    public void UnregisterOverlap(Collider2D other)
     {
         IInteractable interactable = ResolveInteractable(other);
         if (interactable == null || !nearbyOverlapCounts.TryGetValue(interactable, out int overlapCount))

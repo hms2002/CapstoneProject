@@ -85,6 +85,15 @@ MonoBehaviour:
     volumeMultiplier: 0
     anchorPolicy: 0
     localOffset: {x: 0, y: 0, z: 0}
+  cuesOnCastStart: []
+  cuesWhileCasting: []
+  cuesOnCommit:
+  - {fileID: 11400000, guid: c7e6d4f3fa724348af1ff1ad85b7df41, type: 2}
+  cuesWhileActive: []
+  cuesOnEnd: []
+  cuesOnCastCancelled: []
+  cuesOnExecutionCancelled: []
+  cuesOnHitConfirmed: []
   cueOnCastStart: {fileID: 0}
   cueWhileCasting: {fileID: 0}
   cueOnCommit: {fileID: 0}

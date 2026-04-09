@@ -30,3 +30,36 @@ MonoBehaviour:
   skill2KillConfirmWindowSeconds: 0.35
   cancelOnDamagedAttribute: {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
   handoffDurationSeconds: 0.1
+  stackAdvanceSounds:
+  - key: cue.falling
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  - key: hit
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  - key: hit.player
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  cancelByInputSound:
+    key: 
+    volumeMultiplier: 0
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  enableAfterimage: 1
+  afterimageIntervalsByStack:
+  - 0.08
+  - 0.05
+  - 0.03
+  afterimageLifetimeSeconds: 0.18
+  afterimageColor: {r: 1, g: 1, b: 1, a: 0.45}
+  windParticlePrefab: {fileID: 1526247301321994131, guid: 432c5930f160f794287b829f1c2b0ab0, type: 3}
+  windParticleLocalOffset: {x: 0, y: -2, z: 0}
+  windParticleAngleOffset: 90
+  alignWindParticleToMovementDirection: 1
+  windParticleEmissionMultipliersByStack:
+  - 1
+  - 1.35
+  - 1.7

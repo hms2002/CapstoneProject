@@ -69,6 +69,11 @@ namespace UnityGAS
     {
         public static bool Apply(GameObject target, CombatHitPayload payload)
         {
+            return Apply(target, payload, target != null ? target.transform.position : Vector3.zero);
+        }
+
+        public static bool Apply(GameObject target, CombatHitPayload payload, Vector3 hitWorldPosition)
+        {
             if (target == null || payload == null || !payload.IsValid())
                 return false;
 
@@ -83,6 +88,7 @@ namespace UnityGAS
                 elementBuildUps: payload.elementBuildUps,
                 finalKnockbackImpulse: payload.finalKnockbackImpulse,
                 hitConfirmedTag: payload.hitConfirmedTag,
+                hitWorldPosition: hitWorldPosition,
                 causer: payload.causer,
                 isCriticalHit: payload.isCriticalHit);
 

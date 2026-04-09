@@ -4,6 +4,7 @@ using System.Linq;
 using TMPro;
 using UnityEditor;
 using UnityEditor.SceneManagement;
+using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
@@ -54,6 +55,9 @@ public sealed class SceneSetupValidatorWindow : EditorWindow
 
             if (GUILayout.Button("Auto Fix Active Scene", EditorStyles.toolbarButton))
                 AutoFixActiveScene();
+
+            if (GUILayout.Button("Auto Fix All Scenes", EditorStyles.toolbarButton))
+                AutoFixAllScenes();
 
             if (GUILayout.Button("Cleanup Active Scene", EditorStyles.toolbarButton))
                 CleanupActiveScene();
@@ -163,17 +167,60 @@ public sealed class SceneSetupValidatorWindow : EditorWindow
         ValidateActiveScene();
     }
 
+    private void AutoFixAllScenes()
+    {
+        if (!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
+            return;
+
+        results.Clear();
+        List<string> scenePaths = GetScenePaths().ToList();
+        if (scenePaths.Count == 0)
+        {
+            AddResult(string.Empty, Severity.Error, "No enabled scenes are registered in Build Settings.", null, string.Empty);
+            return;
+        }
+
+        SceneSetup[] originalSetup = EditorSceneManager.GetSceneManagerSetup();
+
+        try
+        {
+            foreach (string scenePath in scenePaths)
+            {
+                Scene scene = EditorSceneManager.OpenScene(scenePath, OpenSceneMode.Single);
+                Undo.IncrementCurrentGroup();
+                Undo.SetCurrentGroupName($"Auto Fix Scene Setup - {scene.name}");
+
+                AutoFixScene(scene);
+                EditorSceneManager.MarkSceneDirty(scene);
+                EditorSceneManager.SaveScene(scene);
+                ValidateScene(scene);
+            }
+        }
+        finally
+        {
+            if (originalSetup != null && originalSetup.Length > 0)
+                EditorSceneManager.RestoreSceneManagerSetup(originalSetup);
+        }
+    }
+
     private void ValidateAllScenes()
     {
         if (!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
             return;
 
         results.Clear();
+        List<string> scenePaths = GetScenePaths().ToList();
+        if (scenePaths.Count == 0)
+        {
+            AddResult(string.Empty, Severity.Error, "No enabled scenes are registered in Build Settings.", null, string.Empty);
+            return;
+        }
+
         SceneSetup[] originalSetup = EditorSceneManager.GetSceneManagerSetup();
 
         try
         {
-            foreach (string scenePath in GetScenePaths())
+            foreach (string scenePath in scenePaths)
             {
                 Scene scene = EditorSceneManager.OpenScene(scenePath, OpenSceneMode.Single);
                 ValidateScene(scene);
@@ -188,17 +235,19 @@ public sealed class SceneSetupValidatorWindow : EditorWindow
 
     private static IEnumerable<string> GetScenePaths()
     {
-        string[] sceneGuids = AssetDatabase.FindAssets("t:Scene", new[] { "Assets/Scenes" });
-        List<string> scenePaths = new List<string>(sceneGuids.Length);
+        List<string> scenePaths = new List<string>();
+        EditorBuildSettingsScene[] buildScenes = EditorBuildSettings.scenes;
 
-        foreach (string guid in sceneGuids)
+        for (int i = 0; i < buildScenes.Length; i++)
         {
-            string path = AssetDatabase.GUIDToAssetPath(guid);
-            if (!string.IsNullOrEmpty(path))
-                scenePaths.Add(path);
+            EditorBuildSettingsScene buildScene = buildScenes[i];
+            if (buildScene == null || !buildScene.enabled || string.IsNullOrEmpty(buildScene.path))
+                continue;
+
+            if (!scenePaths.Contains(buildScene.path, StringComparer.Ordinal))
+                scenePaths.Add(buildScene.path);
         }
 
-        scenePaths.Sort(StringComparer.Ordinal);
         return scenePaths;
     }
 
@@ -210,6 +259,7 @@ public sealed class SceneSetupValidatorWindow : EditorWindow
         ValidateGlobalUIRoot(scene);
         ValidateLegacyUiRoots(scene);
         ValidateUniqueGlobalComponents(scene);
+        ValidateCameraRig(scene);
         ValidateDialogueControllers(scene);
         ValidateCinematicDirectors(scene);
         ValidateDialogueViews(scene);
@@ -220,6 +270,7 @@ public sealed class SceneSetupValidatorWindow : EditorWindow
     {
         EnsureGlobalUIRootInstance(scene);
         AutoFixGlobalUIRoot(scene);
+        AutoFixCameraRig(scene);
         DisableDuplicateGlobalComponentsOutsideRoot(scene);
         DisableLegacyUiRoots(scene);
         AutoFixDialogueControllers(scene);
@@ -277,6 +328,7 @@ public sealed class SceneSetupValidatorWindow : EditorWindow
         ValidateChildComponentCount<HoverUIController>(scene.path, servicesRoot, 1, "Services should contain exactly one HoverUIController.");
         ValidateChildComponentCount<EventSystem>(scene.path, servicesRoot, 1, "Services should contain exactly one EventSystem.");
         ValidateChildComponentCount<DamagePopupService>(scene.path, servicesRoot, 1, "Services should contain exactly one DamagePopupService.");
+        ValidateUpgradeManagerPlacement(scene, servicesRoot);
     }
 
     private void AutoFixGlobalUIRoot(Scene scene)
@@ -310,6 +362,7 @@ public sealed class SceneSetupValidatorWindow : EditorWindow
         MoveUniqueComponentUnderRoot<HoverUIController>(scene, servicesRoot);
         MoveUniqueComponentUnderRoot<EventSystem>(scene, servicesRoot);
         MoveUniqueComponentUnderRoot<DamagePopupService>(scene, servicesRoot);
+        MoveUniqueComponentUnderRoot<UpgradeManager>(scene, servicesRoot);
     }
 
     private void ValidateLegacyUiRoots(Scene scene)
@@ -346,6 +399,35 @@ public sealed class SceneSetupValidatorWindow : EditorWindow
         ValidateUniqueComponent<DamagePopupService>(scene, "DamagePopupService should exist exactly once after GlobalUIRoot migration.");
     }
 
+    private void ValidateUpgradeManagerPlacement(Scene scene, Transform servicesRoot)
+    {
+        UpgradeManager[] managers = FindSceneObjects<UpgradeManager>(scene, includeInactive: true);
+        if (managers.Length == 0)
+            return;
+
+        if (managers.Length > 1)
+        {
+            foreach (UpgradeManager manager in managers)
+            {
+                AddResult(scene.path, Severity.Error, "UpgradeManager should exist exactly once when upgrade support is present in a scene.", manager, GetObjectPath(manager.transform));
+            }
+
+            return;
+        }
+
+        UpgradeManager managerInstance = managers[0];
+        if (servicesRoot == null)
+        {
+            AddResult(scene.path, Severity.Error, "GlobalUIRoot.servicesRoot is missing, so UpgradeManager cannot be placed under Services.", managerInstance, GetObjectPath(managerInstance.transform));
+            return;
+        }
+
+        if (!managerInstance.transform.IsChildOf(servicesRoot))
+        {
+            AddResult(scene.path, Severity.Warning, "UpgradeManager should be a child of GlobalUIRoot/Services in the scene hierarchy.", managerInstance, GetObjectPath(managerInstance.transform));
+        }
+    }
+
     private void ValidateDialogueControllers(Scene scene)
     {
         DialogueController[] controllers = FindSceneObjects<DialogueController>(scene, includeInactive: false);
@@ -357,6 +439,82 @@ public sealed class SceneSetupValidatorWindow : EditorWindow
             ValidateSerializedReference(scene.path, controller, serializedController, "director", "DialogueController.director is missing.");
             ValidateSerializedReference(scene.path, controller, serializedController, "portraitController", "DialogueController.portraitController is missing.");
             ValidateSerializedReference(scene.path, controller, serializedController, "tagHandler", "DialogueController.tagHandler is missing.");
+        }
+    }
+
+    private void ValidateCameraRig(Scene scene)
+    {
+        bool isBossScene =
+            FindSceneObjects<BossEncounterDirector>(scene, includeInactive: true).Length > 0 ||
+            FindSceneObjects<BossTalkManager>(scene, includeInactive: true).Length > 0;
+
+        CinemachineCamera[] playerCams = FindSceneObjects<CinemachineCamera>(scene, includeInactive: true)
+            .Where(camera => camera != null && string.Equals(camera.name, "PlayerCam", StringComparison.Ordinal))
+            .ToArray();
+        foreach (CinemachineCamera playerCam in playerCams)
+        {
+            AddResult(scene.path, Severity.Warning, "Scene-local PlayerCam still exists. CameraBootstrap should own the persistent PlayerCam.", playerCam, GetObjectPath(playerCam.transform));
+        }
+
+        CinemachineCamera[] bossCams = FindSceneObjects<CinemachineCamera>(scene, includeInactive: true)
+            .Where(camera => camera != null && string.Equals(camera.name, "BossCam", StringComparison.Ordinal))
+            .ToArray();
+
+        if (isBossScene)
+        {
+            if (bossCams.Length != 1)
+            {
+                if (bossCams.Length == 0)
+                {
+                    AddResult(scene.path, Severity.Error, "Boss scene must contain exactly one BossCam for boss presentation integrity.", null, string.Empty);
+                }
+                else
+                {
+                    foreach (CinemachineCamera bossCam in bossCams)
+                    {
+                        AddResult(scene.path, Severity.Error, "Boss scene should contain exactly one BossCam.", bossCam, GetObjectPath(bossCam.transform));
+                    }
+                }
+            }
+        }
+        else
+        {
+            foreach (CinemachineCamera bossCam in bossCams)
+            {
+                AddResult(scene.path, Severity.Warning, "Non-boss scene still contains BossCam. Remove it after camera bootstrap migration is complete.", bossCam, GetObjectPath(bossCam.transform));
+            }
+        }
+    }
+
+    private void AutoFixCameraRig(Scene scene)
+    {
+        bool isBossScene =
+            FindSceneObjects<BossEncounterDirector>(scene, includeInactive: true).Length > 0 ||
+            FindSceneObjects<BossTalkManager>(scene, includeInactive: true).Length > 0;
+
+        CinemachineCamera[] bossCams = FindSceneObjects<CinemachineCamera>(scene, includeInactive: true)
+            .Where(camera => camera != null && string.Equals(camera.name, "BossCam", StringComparison.Ordinal))
+            .ToArray();
+
+        if (!isBossScene)
+        {
+            foreach (CinemachineCamera bossCam in bossCams)
+            {
+                Undo.DestroyObjectImmediate(bossCam.gameObject);
+            }
+
+            return;
+        }
+
+        if (bossCams.Length <= 1)
+            return;
+
+        for (int i = 1; i < bossCams.Length; i++)
+        {
+            if (bossCams[i] == null)
+                continue;
+
+            Undo.DestroyObjectImmediate(bossCams[i].gameObject);
         }
     }
 
@@ -745,7 +903,7 @@ public sealed class SceneSetupValidatorWindow : EditorWindow
 
     private static void MoveUniqueComponentUnderRoot<T>(Scene scene, Transform newParent) where T : Component
     {
-        T component = FindUniqueSceneObject<T>(scene, includeInactive: false);
+        T component = FindUniqueSceneObject<T>(scene, includeInactive: true);
         if (component == null || component.transform.parent == newParent)
             return;
 
@@ -827,6 +985,7 @@ public sealed class SceneSetupValidatorWindow : EditorWindow
         DisableDuplicateComponentsOutsideRoot<RewardDisplayUI>(scene, root.transform);
         DisableDuplicateComponentsOutsideRoot<ItemDetailPanel>(scene, root.transform);
         DisableDuplicateComponentsOutsideRoot<DamagePopupService>(scene, root.transform);
+        DisableDuplicateComponentsOutsideRoot<UpgradeManager>(scene, root.transform);
     }
 
     private static void CleanupDuplicateGlobalComponentsOutsideRoot(Scene scene)
@@ -845,6 +1004,7 @@ public sealed class SceneSetupValidatorWindow : EditorWindow
         CleanupDuplicateComponentsOutsideRoot<RewardDisplayUI>(scene, root.transform);
         CleanupDuplicateComponentsOutsideRoot<ItemDetailPanel>(scene, root.transform);
         CleanupDuplicateComponentsOutsideRoot<DamagePopupService>(scene, root.transform);
+        CleanupDuplicateComponentsOutsideRoot<UpgradeManager>(scene, root.transform);
     }
 
     private static void DisableDuplicateComponentsOutsideRoot<T>(Scene scene, Transform rootTransform) where T : Component

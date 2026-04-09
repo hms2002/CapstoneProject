@@ -49,9 +49,9 @@ MonoBehaviour:
   - Swing2
   - Swing3
   recoveryOverrides:
-  - 0.4
-  - 0.4
-  - 1
+  - 0.1
+  - 0.1
+  - 0.2
   hitEventTag: {fileID: 11400000, guid: a9d545fc5072ee3419e47fc9ff0e650c, type: 2}
   hitConfirmedTag: {fileID: 11400000, guid: 465249853d3321e47b796f8e8c787f64, type: 2}
   hitEventTimeout: 0.35

@@ -83,9 +83,18 @@ public class DropZoneUI : MonoBehaviour, IDropHandler
 
     private void SetVisible(bool visible)
     {
+        EnsureCanvasGroup();
         canvasGroup.alpha = visible ? 1f : 0f;
         canvasGroup.blocksRaycasts = visible;
         canvasGroup.interactable = visible;
+    }
+
+    private void EnsureCanvasGroup()
+    {
+        if (canvasGroup == null)
+            canvasGroup = GetComponent<CanvasGroup>();
+        if (canvasGroup == null)
+            canvasGroup = gameObject.AddComponent<CanvasGroup>();
     }
 
     private void SpawnWorldItem(ScriptableObject item, int relicLevel)
@@ -93,14 +102,23 @@ public class DropZoneUI : MonoBehaviour, IDropHandler
         if (item == null) return;
         if (worldDropPrefab == null) return;
 
-        Vector3 pos = dropOrigin != null ? dropOrigin.position : Vector3.zero;
-        if (scatterRadius > 0f)
+        Transform playerTransform = PlayerRuntimeRegistry.GetPlayerTransform();
+        Transform directionSource = playerTransform != null ? playerTransform : dropOrigin;
+        Vector3 spawnOrigin = playerTransform != null
+            ? playerTransform.position
+            : (dropOrigin != null ? dropOrigin.position : Vector3.zero);
+
+        var spawnService = new LootSpawnService(worldDropPrefab.gameObject, null);
+        var candidatePositions = spawnService.GetForwardGroundPositions(spawnOrigin, directionSource);
+        Vector3 landingPosition = candidatePositions.Count > 0
+            ? candidatePositions[Random.Range(0, candidatePositions.Count)]
+            : spawnService.ResolveForwardGroundPosition(spawnOrigin, directionSource);
+        if (landingPosition == spawnOrigin && scatterRadius > 0f)
         {
-            var r = Random.insideUnitCircle * scatterRadius;
-            pos += new Vector3(r.x, r.y, 0f);
+            var scatter = Random.insideUnitCircle.normalized * scatterRadius;
+            landingPosition += new Vector3(scatter.x, scatter.y, 0f);
         }
 
-        var drop = Instantiate(worldDropPrefab, pos, Quaternion.identity);
-        drop.SetItem(item, relicLevel);
+        spawnService.SpawnAnimatedLootObject(spawnOrigin, landingPosition, item, relicLevel);
     }
 }

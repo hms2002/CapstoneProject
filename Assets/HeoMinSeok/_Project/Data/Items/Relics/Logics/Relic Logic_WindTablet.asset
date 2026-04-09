@@ -14,11 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   entries:
   - attribute: {fileID: 11400000, guid: 23db6468e859c6f42b0230a5af7ca81c, type: 2}
+    displayNameOverride: 이동속도
     type: 1
     value: 0.05
     valueByLevel: []
     duration: 0
   - attribute: {fileID: 11400000, guid: 0e177e1d15e428745b5859fac08ce203, type: 2}
+    displayNameOverride: 최대 체력
     type: 0
     value: -1
     valueByLevel: []

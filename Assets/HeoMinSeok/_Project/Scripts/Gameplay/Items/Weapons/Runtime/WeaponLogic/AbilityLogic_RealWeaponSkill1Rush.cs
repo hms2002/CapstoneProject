@@ -76,6 +76,9 @@ namespace UnityGAS
                 float step = Mathf.Max(0.01f, data.stepIntervalSeconds);
 
                 AddRushModifier(attrSet, state, ResolveStackAdd(system, 0));
+                PlayRushStackAdvanceSound(system, spec, initialTarget, 0);
+                BeginOrUpdateRushAfterimage(system, spec, 0);
+                BeginOrUpdateRushWindParticles(system, spec, 0);
                 InputBindingService input = InputBindingService.EnsureInstance();
 
                 for (int s = 1; s < stacks; s++)
@@ -113,24 +116,26 @@ namespace UnityGAS
                             }
                         }
 
-                        if (data.cancelOnAttackOrSkillInput)
+                    if (data.cancelOnAttackOrSkillInput)
+                    {
+                        if (input.WasPressedThisFrame(InputActionId.PrimaryAttack) ||
+                            input.WasPressedThisFrame(InputActionId.Skill1))
                         {
-                            if (input.WasPressedThisFrame(InputActionId.PrimaryAttack) ||
-                                input.WasPressedThisFrame(InputActionId.Skill1))
+                            state.ShouldApplyHandoff = true;
+                            PlayRushInputCancelSound(system, spec, initialTarget);
+                            system.CancelExecution(force: true);
+                            yield break;
+                        }
+
+                        if (input.WasPressedThisFrame(InputActionId.Skill2))
+                        {
+                            if (!TryBeginDeferredSkill2Cancel(system, state))
                             {
                                 state.ShouldApplyHandoff = true;
+                                PlayRushInputCancelSound(system, spec, initialTarget);
                                 system.CancelExecution(force: true);
                                 yield break;
                             }
-
-                            if (input.WasPressedThisFrame(InputActionId.Skill2))
-                            {
-                                if (!TryBeginDeferredSkill2Cancel(system, state))
-                                {
-                                    state.ShouldApplyHandoff = true;
-                                    system.CancelExecution(force: true);
-                                    yield break;
-                                }
                             }
                         }
 
@@ -141,6 +146,9 @@ namespace UnityGAS
                         yield break;
 
                     AddRushModifier(attrSet, state, ResolveStackAdd(system, s));
+                    PlayRushStackAdvanceSound(system, spec, initialTarget, s);
+                    BeginOrUpdateRushAfterimage(system, spec, s);
+                    BeginOrUpdateRushWindParticles(system, spec, s);
                 }
 
                 while (spec.Token != null && !spec.Token.IsCancelled)
@@ -177,6 +185,7 @@ namespace UnityGAS
                             input.WasPressedThisFrame(InputActionId.Skill1))
                         {
                             state.ShouldApplyHandoff = true;
+                            PlayRushInputCancelSound(system, spec, initialTarget);
                             system.CancelExecution(force: true);
                             break;
                         }
@@ -186,6 +195,7 @@ namespace UnityGAS
                             if (!TryBeginDeferredSkill2Cancel(system, state))
                             {
                                 state.ShouldApplyHandoff = true;
+                                PlayRushInputCancelSound(system, spec, initialTarget);
                                 system.CancelExecution(force: true);
                                 break;
                             }
@@ -197,6 +207,8 @@ namespace UnityGAS
             }
             finally
             {
+                StopRushAfterimage(system, spec, clearGhosts: false);
+                StopRushWindParticles(system, spec, clearParticles: false);
                 CleanupRuntimeState(system, spec, applyHandoff: state.ShouldApplyHandoff);
             }
         }
@@ -207,7 +219,121 @@ namespace UnityGAS
         /// </summary>
         public override void CleanupForSceneTransition(AbilitySystem system, AbilitySpec spec, GameObject target)
         {
+            StopRushAfterimage(system, spec, clearGhosts: true);
+            StopRushWindParticles(system, spec, clearParticles: true);
+            ReleaseRushVisuals(system, spec);
             CleanupRuntimeState(system, spec, applyHandoff: false);
+        }
+
+        /// <summary>
+        /// 책임 :
+        /// - Rush 실행 단계에 맞는 잔상 emitter를 확보하고 현재 stack 기준 밀도로 갱신한다.
+        /// - AbilityVisualRouter를 통해 spec 수명에 묶어 같은 Rush 실행 동안 emitter를 재사용한다.
+        /// </summary>
+        private void BeginOrUpdateRushAfterimage(AbilitySystem system, AbilitySpec spec, int stackIndex)
+        {
+            if (system == null || spec == null || data == null || !data.enableAfterimage)
+                return;
+
+            AbilityVisualRouter router = system.VisualRouter;
+            if (router == null)
+                return;
+
+            SpriteAfterimageEmitter2D emitter = router.GetOrAddOwnedComponent<SpriteAfterimageEmitter2D>(spec);
+            if (emitter == null)
+                return;
+
+            emitter.Begin(
+                system.transform,
+                data.ResolveAfterimageInterval(stackIndex),
+                data.afterimageLifetimeSeconds,
+                data.afterimageColor);
+        }
+
+        /// <summary>
+        /// 책임 :
+        /// - Rush 실행 단계에 맞는 바람 파티클 visual을 확보하고 이동 방향 정렬/강도 multiplier를 갱신한다.
+        /// - 파티클 프리팹 authoring은 Data에 두고, 로직은 stack별 강도 타이밍만 전달한다.
+        /// </summary>
+        private void BeginOrUpdateRushWindParticles(AbilitySystem system, AbilitySpec spec, int stackIndex)
+        {
+            if (system == null || spec == null || data == null || data.windParticlePrefab == null)
+                return;
+
+            AbilityVisualRouter router = system.VisualRouter;
+            if (router == null)
+                return;
+
+            MotionAlignedParticleVisual2D visual = router.GetOrAddOwnedComponent<MotionAlignedParticleVisual2D>(spec);
+            if (visual == null)
+                return;
+
+            visual.Begin(
+                data.windParticlePrefab,
+                system.transform,
+                system.GetComponent<MovementMotor2D>(),
+                data.windParticleLocalOffset,
+                data.windParticleAngleOffset,
+                data.alignWindParticleToMovementDirection);
+            visual.SetEmissionMultiplier(data.ResolveWindParticleEmissionMultiplier(stackIndex));
+        }
+
+        /// <summary>
+        /// 책임 :
+        /// - Rush 종료 시 emitter 생성만 멈추고, 강제 정리 경로에선 아직 남은 ghost까지 즉시 제거한다.
+        /// - 최종적으로 AbilityVisualRouter.Release를 호출해 spec에 귀속된 emitter component를 회수한다.
+        /// </summary>
+        private void StopRushAfterimage(AbilitySystem system, AbilitySpec spec, bool clearGhosts)
+        {
+            if (system == null || spec == null)
+                return;
+
+            AbilityVisualRouter router = system.VisualRouter;
+            if (router == null)
+                return;
+
+            SpriteAfterimageEmitter2D emitter = router.GetOwnedComponent<SpriteAfterimageEmitter2D>(spec);
+            if (emitter == null)
+                return;
+
+            emitter.StopEmission();
+
+            if (clearGhosts)
+                emitter.ClearSpawnedGhosts();
+        }
+
+        /// <summary>
+        /// 책임 :
+        /// - Rush 바람 파티클의 emission을 중지하고, 강제 정리 경로에선 입자를 즉시 비운다.
+        /// - 정상 종료에선 컴포넌트를 남겨 다음 Rush 실행에서 재사용할 수 있게 한다.
+        /// </summary>
+        private void StopRushWindParticles(AbilitySystem system, AbilitySpec spec, bool clearParticles)
+        {
+            if (system == null || spec == null)
+                return;
+
+            AbilityVisualRouter router = system.VisualRouter;
+            if (router == null)
+                return;
+
+            MotionAlignedParticleVisual2D visual = router.GetOwnedComponent<MotionAlignedParticleVisual2D>(spec);
+            if (visual == null)
+                return;
+
+            visual.StopEmission(clearParticles);
+        }
+
+        /// <summary>
+        /// 책임 :
+        /// - 씬 이동처럼 즉시 회수가 필요한 경로에서 Rush가 등록한 visual component를 spec 단위로 정리한다.
+        /// - 정상 종료와 강제 정리의 수명 정책을 분리하기 위한 최종 회수 창구다.
+        /// </summary>
+        private void ReleaseRushVisuals(AbilitySystem system, AbilitySpec spec)
+        {
+            if (system == null || spec == null)
+                return;
+
+            system.VisualRouter?.Release(spec);
         }
 
         /// <summary>
@@ -230,6 +356,45 @@ namespace UnityGAS
                 state.Added.Add(modifier);
                 state.CurrentBonus += add;
             }
+        }
+
+        /// <summary>
+        /// 책임 :
+        /// - Rush 스택 단계 상승 시 LogicData에 authoring된 단계별 사운드를 공통 Ability 오디오 경로로 재생한다.
+        /// - 배열 길이를 넘는 단계는 무음으로 처리해 데이터 누락을 허용한다.
+        /// </summary>
+        private void PlayRushStackAdvanceSound(AbilitySystem system, AbilitySpec spec, GameObject target, int stackIndex)
+        {
+            if (data == null || data.stackAdvanceSounds == null)
+                return;
+
+            if (stackIndex < 0 || stackIndex >= data.stackAdvanceSounds.Length)
+                return;
+
+            AbilityAudioRouter.PlayOneShot(
+                data.stackAdvanceSounds[stackIndex],
+                system,
+                spec,
+                target,
+                sourceObjectOverride: data);
+        }
+
+        /// <summary>
+        /// 책임 :
+        /// - Rush가 입력 취소로 종료될 때 LogicData 전용 취소 사운드를 재생한다.
+        /// - 실제 재생은 공통 AbilityAudioRouter를 통해 SoundManager 정책을 그대로 따른다.
+        /// </summary>
+        private void PlayRushInputCancelSound(AbilitySystem system, AbilitySpec spec, GameObject target)
+        {
+            if (data == null)
+                return;
+
+            AbilityAudioRouter.PlayOneShot(
+                data.cancelByInputSound,
+                system,
+                spec,
+                target,
+                sourceObjectOverride: data);
         }
 
         /// <summary>

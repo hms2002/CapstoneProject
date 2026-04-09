@@ -167,7 +167,7 @@ namespace UnityGAS
             if (!CanHitTarget(targetRoot))
                 return;
 
-            if (!TryApplyHit(targetRoot))
+            if (!TryApplyHit(targetRoot, other))
                 return;
 
             OnHitTarget(targetRoot, other);
@@ -198,12 +198,34 @@ namespace UnityGAS
         /// - 공용 CombatHitPayloadApplier를 통해 피해를 적용한다.
         /// - AttackBase는 더 이상 직접 CombatDamageAction 세부 인자를 펼치지 않는다.
         /// </summary>
-        protected bool TryApplyHit(GameObject target)
+        protected bool TryApplyHit(GameObject target, Collider2D hitCollider = null)
         {
             if (target == null || HitPayload == null)
                 return false;
 
-            return CombatHitPayloadApplier.Apply(target, HitPayload);
+            Vector3 hitWorldPosition = ResolveHitWorldPosition(target, hitCollider);
+            return CombatHitPayloadApplier.Apply(target, HitPayload, hitWorldPosition);
+        }
+
+        private Vector3 ResolveHitWorldPosition(GameObject target, Collider2D hitCollider)
+        {
+            if (target == null)
+                return Vector3.zero;
+
+            Collider2D myCollider = GetComponent<Collider2D>();
+            if (myCollider != null && hitCollider != null)
+            {
+                ColliderDistance2D distance = Physics2D.Distance(myCollider, hitCollider);
+                Vector2 midpoint = (distance.pointA + distance.pointB) * 0.5f;
+                if (!float.IsNaN(midpoint.x) && !float.IsNaN(midpoint.y))
+                    return midpoint;
+
+                Vector2 fallbackFromHit = hitCollider.ClosestPoint(myCollider.bounds.center);
+                if (!float.IsNaN(fallbackFromHit.x) && !float.IsNaN(fallbackFromHit.y))
+                    return fallbackFromHit;
+            }
+
+            return target.transform.position;
         }
 
         /// <summary>

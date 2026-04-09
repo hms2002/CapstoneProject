@@ -35,6 +35,7 @@ namespace UnityGAS
                     elementBuildUps: snapshot.ElementBuildUps,
                     finalKnockbackImpulse: snapshot.FinalKnockbackImpulse,
                     hitConfirmedTag: hitConfirmedTag,
+                    hitWorldPosition: target.transform.position,
                     causer: causer,
                     isCriticalHit: snapshot.IsCriticalHit
                 );

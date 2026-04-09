@@ -14,11 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   entries:
   - attribute: {fileID: 11400000, guid: 23db6468e859c6f42b0230a5af7ca81c, type: 2}
+    displayNameOverride: 이동속도
     type: 1
     value: 0.05
     valueByLevel: []
     duration: 0
   - attribute: {fileID: 11400000, guid: d923279fb7e24aa19162adcd29a3c67e, type: 2}
+    displayNameOverride: 치명타 확률
     type: 0
     value: 0.05
     valueByLevel: []

@@ -1,6 +1,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 public class LootManager : MonoBehaviour
 {
@@ -62,7 +65,15 @@ public class LootManager : MonoBehaviour
 
     private void OnValidate()
     {
-        RefreshServices();
+#if UNITY_EDITOR
+        // Avoid asset loading during import/build-time validation. Unity invokes OnValidate
+        // while opening scenes for player builds, and Resources.Load from there trips
+        // editor-only SendMessage restrictions.
+        if (EditorApplication.isCompiling || EditorApplication.isUpdating)
+            return;
+#endif
+
+        RefreshServices(editorSafe: true);
     }
 
     private void OnDestroy()
@@ -242,12 +253,13 @@ public class LootManager : MonoBehaviour
             currentGraveTable.WeaponDropCountProfile,
             bonusMinCount,
             bonusMaxCount);
+        List<Vector3> landingPositions = spawnService.GetHorizontalGroundPositions(position, 1);
 
         for (int i = 0; i < totalCount; i++)
         {
             WeaponDefinition weapon = poolService.GetRandomWeapon(new HashSet<string>());
             if (weapon != null)
-                SpawnLootObject(position + spawnService.GetRandomScatterOffset(), weapon);
+                SpawnAnimatedGraveLoot(position, landingPositions, i, weapon);
         }
     }
 
@@ -257,13 +269,14 @@ public class LootManager : MonoBehaviour
             currentGraveTable.RelicDropCountProfile,
             bonusMinCount,
             bonusMaxCount);
+        List<Vector3> landingPositions = spawnService.GetHorizontalGroundPositions(position, 1);
 
         for (int i = 0; i < totalCount; i++)
         {
             ItemRarity rarity = rollService.RollGraveRelicRarity(currentGraveTable, bonusRareChance, bonusEpicChance);
             RelicDefinition relic = GetRandomRelicByRarity(rarity);
             if (relic != null)
-                SpawnLootObject(position + spawnService.GetRandomScatterOffset(), relic);
+                SpawnAnimatedGraveLoot(position, landingPositions, i, relic);
         }
     }
 
@@ -273,18 +286,23 @@ public class LootManager : MonoBehaviour
             RefreshServices();
     }
 
-    private void RefreshServices()
+    private void RefreshServices(bool editorSafe = false)
     {
         tableResolver = new LootTableResolver(stageTables, graveLootTable);
         poolService = new LootPoolService();
         rollService = new LootRollService();
-        spawnService = new LootSpawnService(worldItemPrefab, ResolveFieldItemPrefab());
+        spawnService = new LootSpawnService(worldItemPrefab, ResolveFieldItemPrefab(editorSafe));
     }
 
-    private GameObject ResolveFieldItemPrefab()
+    private GameObject ResolveFieldItemPrefab(bool editorSafe = false)
     {
         if (fieldItemPrefab != null)
             return fieldItemPrefab;
+
+#if UNITY_EDITOR
+        if (editorSafe && !Application.isPlaying)
+            return null;
+#endif
 
         return Resources.Load<GameObject>(DefaultFieldItemPrefabResourcePath);
     }
@@ -299,5 +317,14 @@ public class LootManager : MonoBehaviour
     {
         EnsureServices();
         return poolService.GetRandomRelicByRarity(targetRarity);
+    }
+
+    private void SpawnAnimatedGraveLoot(Vector3 originPosition, List<Vector3> landingPositions, int dropIndex, ScriptableObject itemData)
+    {
+        Vector3 landingPosition = landingPositions != null && landingPositions.Count > 0
+            ? landingPositions[dropIndex % landingPositions.Count]
+            : originPosition + spawnService.GetRandomScatterOffset();
+
+        spawnService.SpawnAnimatedLootObject(originPosition, landingPosition, itemData);
     }
 }

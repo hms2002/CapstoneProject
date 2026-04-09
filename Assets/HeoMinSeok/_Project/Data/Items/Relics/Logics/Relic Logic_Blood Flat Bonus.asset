@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   entries:
   - attribute: {fileID: 11400000, guid: 77a3db6579cf45940a7dae4896dde0db, type: 2}
+    displayNameOverride: 출혈 피해
     type: 0
     value: 10
     valueByLevel: []

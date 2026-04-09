@@ -16,8 +16,10 @@ public class WorldItemPickup2D : InteractableBase
     [Header("Visual (optional)")]
     [SerializeField] private SpriteRenderer spriteRenderer;
     private MaterialPropertyBlock outlinePropertyBlock;
+    private Collider2D triggerCollider;
 
     public ScriptableObject Item => item;
+    [SerializeField] private bool interactionLocked;
     [SerializeField] private int relicLevel = 0;
     public int RelicLevel => relicLevel;
     public void SetItem(ScriptableObject so, int relicLevelOverride = 0)
@@ -38,8 +40,12 @@ public class WorldItemPickup2D : InteractableBase
         if (spriteRenderer == null) spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         outlinePropertyBlock = new MaterialPropertyBlock();
 
-        var col = GetComponent<Collider2D>();
-        if (col != null) col.isTrigger = true;
+        triggerCollider = GetComponent<Collider2D>();
+        if (triggerCollider != null)
+        {
+            triggerCollider.isTrigger = true;
+            triggerCollider.enabled = !interactionLocked;
+        }
 
         RefreshVisual();
         OnUnHighlight();
@@ -55,12 +61,12 @@ public class WorldItemPickup2D : InteractableBase
 
     public override bool CanInteract(IPlayerInteractor player)
     {
-        return item != null;
+        return item != null && !interactionLocked;
     }
 
     public override void OnHighlight()
     {
-        if (item == null)
+        if (item == null || interactionLocked)
             return;
 
         if (spriteRenderer != null)
@@ -111,12 +117,22 @@ public class WorldItemPickup2D : InteractableBase
 
     public override string GetInteractDescription()
     {
-        return item != null ? interactPromptText : string.Empty;
+        return item != null && !interactionLocked ? interactPromptText : string.Empty;
     }
 
     public override Transform GetPromptAnchor() => promptAnchor != null ? promptAnchor : transform;
 
     private Transform GetDetailAnchor() => promptAnchor != null ? promptAnchor : transform;
+
+    public void SetInteractionLocked(bool locked)
+    {
+        interactionLocked = locked;
+        if (locked)
+            OnUnHighlight();
+
+        if (triggerCollider != null)
+            triggerCollider.enabled = !locked;
+    }
 
     private bool TryPickupWeapon(IPlayerInteractor player, WeaponDefinition weapon)
     {
@@ -131,13 +147,26 @@ public class WorldItemPickup2D : InteractableBase
             return false;
 
         int levelOverride = RelicLevel > 0 ? RelicLevel : -1;
-        return relicInventory.TryAcquireOrUpgrade(relic, levelOverride);
+        RelicInventory.AcquireResult result = relicInventory.TryAcquireOrUpgradeDetailed(relic, levelOverride);
+        if (result == RelicInventory.AcquireResult.Success)
+            return true;
+
+        ShowRelicPickupWarning(result);
+        return false;
     }
 
     private bool TryPickupConsumable(IPlayerInteractor player, ConsumableDefinition consumable)
     {
         var consumableInventory = ResolveConsumableInventory(player);
-        return consumableInventory != null && consumableInventory.TryAcquire(consumable);
+        if (consumableInventory == null)
+            return false;
+
+        PlayerConsumableInventory.AcquireResult result = consumableInventory.TryAcquireDetailed(consumable);
+        if (result == PlayerConsumableInventory.AcquireResult.Success)
+            return true;
+
+        ShowConsumablePickupWarning(result);
+        return false;
     }
 
     private static WeaponInventory2D ResolveWeaponInventory(IPlayerInteractor player)
@@ -168,6 +197,41 @@ public class WorldItemPickup2D : InteractableBase
     {
         if (player is PlayerInteractor2D playerInteractor)
             playerInteractor.SpeakSituation(PlayerSpeechSituationEnum.InventoryFull);
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 월드 유물 픽업 실패 사유를 UIManager 경고 팝업 코드로 변환해 전달한다.
+    /// - 픽업 도메인 로직과 실제 경고 문구/표시 방식의 결합을 줄인다.
+    /// </summary>
+    private static void ShowRelicPickupWarning(RelicInventory.AcquireResult result)
+    {
+        WarningPopupCode code = result switch
+        {
+            RelicInventory.AcquireResult.InventoryFull => WarningPopupCode.RelicInventoryFull,
+            RelicInventory.AcquireResult.AlreadyMaxLevel => WarningPopupCode.RelicAlreadyMaxLevel,
+            _ => WarningPopupCode.None
+        };
+
+        if (code != WarningPopupCode.None)
+            UIManager.Instance?.ShowWarning(code);
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 월드 1회용 아이템 픽업 실패 사유를 UIManager 경고 팝업 코드로 변환해 전달한다.
+    /// - 1회용 아이템 인벤토리 부족을 조용한 실패가 아니라 즉시 읽히는 피드백으로 바꾼다.
+    /// </summary>
+    private static void ShowConsumablePickupWarning(PlayerConsumableInventory.AcquireResult result)
+    {
+        WarningPopupCode code = result switch
+        {
+            PlayerConsumableInventory.AcquireResult.InventoryFull => WarningPopupCode.ConsumableInventoryFull,
+            _ => WarningPopupCode.None
+        };
+
+        if (code != WarningPopupCode.None)
+            UIManager.Instance?.ShowWarning(code);
     }
 
     private void RefreshVisual()
