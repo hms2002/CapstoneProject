@@ -18,51 +18,78 @@ namespace UnityGAS.Sample
             public List<ElementDamageInput> elements = new();
         }
 
+        [System.Serializable]
+        public struct SwordComboStepData
+        {
+            /// <summary>
+            /// 책임 :
+            /// - 검 콤보 한 타의 전투/타이밍/이동/히트박스 데이터를 한 덩어리로 보관한다.
+            /// - 병렬 배열 인덱스 동기화 대신 "한 타의 설정"을 한 곳에서 읽게 만든다.
+            /// </summary>
+            public string animationTrigger;
+            public float activeTime;
+            public float recoveryDuration;
+            public float nextAttackDelay;
+            public ScaledStatFormula damageFormula;
+            public ScaledStatFormula knockbackFormula;
+            public float legacyDamage;
+            public float legacyStaggerDamage;
+            public ElementDamageGroup elementDamages;
+            public Vector2 hitboxSize;
+            public float forwardOffset;
+            public float sideOffset;
+            public int sideSign;
+            public float lungeDistance;
+            public float lungeDuration;
+
+            public float ResolveNextAttackDelay()
+            {
+                return nextAttackDelay > 0f ? nextAttackDelay : Mathf.Max(0f, recoveryDuration);
+            }
+        }
+
         [Header("Actor")]
         public MeleeHitboxActor hitboxPrefab;
-        public float[] activeTimes = new float[3] { 0.08f, 0.08f, 0.10f };
+
+        [Header("Combo Steps")]
+        public SwordComboStepData[] steps = new SwordComboStepData[3];
 
         [Header("Damage Channels")]
         [SerializeField] private DamagePayloadConfig damageConfig = new();
         public DamagePayloadConfig DamageConfig => damageConfig;
 
-        [Tooltip("Per-combo element damages (can contain multiple elements per hit).")]
-        public ElementDamageGroup[] elementDamagesByCombo = new ElementDamageGroup[3];
-        public float[] staggerDamages = new float[3] { 0f, 0f, 0f };
-
         [Header("Combo")]
         public float comboResetTime = 0.45f;
-
-        [Header("Damage / Knockback Formula (Per Hit)")]
-        [Tooltip("If set, base HP damage for each combo hit is computed from attacker stats via this formula. If null, legacy 'damages[]' is used.")]
-        public ScaledStatFormula[] damageFormulas = new ScaledStatFormula[3];
-
-        [Tooltip("If set, knockback impulse for each combo hit is computed from attacker stats via this formula.")]
-        public ScaledStatFormula[] knockbackFormulas = new ScaledStatFormula[3];
-
-        [Header("Legacy Base Damage (Deprecated)")]
-        public float[] damages = new float[3] { 10f, 10f, 30f };
-        public string[] animTriggers = new string[3] { "SwordCombo1", "SwordCombo2", "SwordCombo3" };
-        public float[] recoveryOverrides = new float[3];
 
         [Header("Hit Timing (Animation Event)")]
         public GameplayTag hitEventTag;
         public GameplayTag hitConfirmedTag;
         public float hitEventTimeout = 0.35f;
-
-        [Header("Hitbox")]
-        public Vector2 hitboxSize = new Vector2(1.2f, 0.8f);
-        public float forwardOffset = 0.9f;
-        public float sideOffset = 0.25f;
-        public int[] sideSigns = new int[3] { -1, +1, -1 };
         public LayerMask hitLayers;
-
-        [Header("Lunge")]
-        public float[] lungeDistances = new float[3] { 0.7f, 0.7f, 1.0f };
-        public float[] lungeDurations = new float[3] { 0.08f, 0.08f, 0.10f };
 
         [Header("Damage Effect")]
         public GameplayEffect damageEffect;
         public GE_Knockback_Spec knockbackEffect;
+
+        /// <summary>
+        /// 책임 :
+        /// - 현재 콤보 데이터에서 유효한 step 수를 반환한다.
+        /// - 신규 step 데이터가 비어 있으면 legacy 배열 길이를 기반으로 안전한 기본 길이를 제공한다.
+        /// </summary>
+        public int GetStepCount()
+        {
+            return steps != null && steps.Length > 0 ? steps.Length : 1;
+        }
+
+        /// <summary>
+        /// 책임 :
+        /// - 지정한 콤보 단계의 데이터를 신규 step 구조로 반환한다.
+        /// - step 데이터가 비어 있는 자리는 legacy 배열 값으로 안전하게 보간한다.
+        /// </summary>
+        public SwordComboStepData GetStep(int comboIndex)
+        {
+            comboIndex = Mathf.Clamp(comboIndex, 0, GetStepCount() - 1);
+            return steps[Mathf.Clamp(comboIndex, 0, steps.Length - 1)];
+        }
     }
 }

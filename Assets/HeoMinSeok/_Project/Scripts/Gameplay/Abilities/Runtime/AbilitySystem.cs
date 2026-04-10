@@ -60,6 +60,7 @@ namespace UnityGAS
 
         private AbilitySpec bufferedSpec;
         private GameObject bufferedTarget;
+        private float bufferedActivationNotBeforeTime;
 
         /// <summary>
         /// 책임 :
@@ -216,6 +217,7 @@ namespace UnityGAS
 
         private const string KEY_CHARGES = "__Charges";
         private const string KEY_RECHARGE = "__RechargeRemaining";
+        private const string KEY_NEXT_ACTIVATE_ALLOWED_TIME = "__NextActivateAllowedTime";
 
         private AbilityGameplayEventChannel gameplayEventChannel;
         private AbilityCooldownController cooldownController;
@@ -298,6 +300,7 @@ namespace UnityGAS
         {
             cooldownController?.TickCooldowns(runtimeSpecs);
             TickCasting();
+            TryConsumeBufferedActivationWhenReady();
         }
 
         private void CacheRequiredComponents()
@@ -596,6 +599,17 @@ namespace UnityGAS
             if (def == null)
                 return false;
 
+            if (!IsActivationDelaySatisfied(spec))
+            {
+                if (def.executionPolicy != AbilityDefinition.ExecutionPolicy.ParallelIndependent)
+                {
+                    BufferActivation(spec, target, GetNextActivationAllowedTime(spec));
+                    return true;
+                }
+
+                return false;
+            }
+
             if (!CanActivateWhileCurrentMovementStateAllows(def))
                 return false;
 
@@ -668,13 +682,25 @@ namespace UnityGAS
 
         private void BufferActivation(AbilitySpec spec, GameObject target)
         {
+            BufferActivation(spec, target, 0f);
+        }
+
+        /// <summary>
+        /// 책임 : ExclusiveQueued ability의 재시도 요청을 보관하고 지정 시각 이후에만 다시 소비되게 만든다.
+        /// </summary>
+        private void BufferActivation(AbilitySpec spec, GameObject target, float notBeforeTime)
+        {
             bufferedSpec = spec;
             bufferedTarget = target;
+            bufferedActivationNotBeforeTime = Mathf.Max(0f, notBeforeTime);
         }
 
         internal void TryConsumeBufferedActivation_Internal()
         {
             if (bufferedSpec == null)
+                return;
+
+            if (Time.time < bufferedActivationNotBeforeTime)
                 return;
 
             var s = bufferedSpec;
@@ -688,6 +714,21 @@ namespace UnityGAS
         {
             bufferedSpec = null;
             bufferedTarget = null;
+            bufferedActivationNotBeforeTime = 0f;
+        }
+
+        /// <summary>
+        /// 책임 : 예약된 ExclusiveQueued activation이 소비 가능한 시점이 오면 자동으로 재시도한다.
+        /// </summary>
+        private void TryConsumeBufferedActivationWhenReady()
+        {
+            if (bufferedSpec == null || IsBusy)
+                return;
+
+            if (Time.time < bufferedActivationNotBeforeTime)
+                return;
+
+            TryConsumeBufferedActivation_Internal();
         }
 
         private void StartCasting(AbilitySpec spec, GameObject target)
@@ -1105,12 +1146,65 @@ namespace UnityGAS
         }
 
         /// <summary>
+        /// 책임 : ability별 다음 재활성 가능 시각을 기록해 recovery와 별도로 공격 템포를 제어한다.
+        /// </summary>
+        public void SetNextActivationDelay(AbilitySpec spec, float delaySeconds)
+        {
+            if (spec == null)
+                return;
+
+            if (delaySeconds <= 0f)
+            {
+                spec.SetFloat(KEY_NEXT_ACTIVATE_ALLOWED_TIME, 0f);
+                return;
+            }
+
+            spec.SetFloat(KEY_NEXT_ACTIVATE_ALLOWED_TIME, Time.time + delaySeconds);
+        }
+
+        /// <summary>
+        /// 책임 : definition 기준 다음 재활성 가능 시각까지 남은 시간을 반환한다.
+        /// 입력 계층이 공격 반복 간격을 조절할 때 공통으로 사용한다.
+        /// </summary>
+        public float GetNextActivationRemaining(AbilityDefinition def)
+        {
+            return GetNextActivationRemaining(FindSpec(def));
+        }
+
+        /// <summary>
+        /// 책임 : spec 기준 다음 재활성 가능 시각까지 남은 시간을 반환한다.
+        /// </summary>
+        public float GetNextActivationRemaining(AbilitySpec spec)
+        {
+            if (spec == null)
+                return 0f;
+
+            return Mathf.Max(0f, GetNextActivationAllowedTime(spec) - Time.time);
+        }
+
+        /// <summary>
         /// 책임 : Ability 내부 특수 키인지 판별한다.
         /// charges/recharge 같은 시스템 내부 키는 일반 영속 변수 목록에서 제외한다.
         /// </summary>
         private static bool IsReservedRuntimeKey(string key)
         {
-            return key == KEY_CHARGES || key == KEY_RECHARGE;
+            return key == KEY_CHARGES || key == KEY_RECHARGE || key == KEY_NEXT_ACTIVATE_ALLOWED_TIME;
+        }
+
+        /// <summary>
+        /// 책임 : spec의 다음 재활성 가능 시각을 조회한다.
+        /// </summary>
+        private float GetNextActivationAllowedTime(AbilitySpec spec)
+        {
+            return spec != null ? spec.GetFloat(KEY_NEXT_ACTIVATE_ALLOWED_TIME, 0f) : 0f;
+        }
+
+        /// <summary>
+        /// 책임 : 현재 시각이 spec의 다음 재활성 가능 시각을 넘었는지 판정한다.
+        /// </summary>
+        private bool IsActivationDelaySatisfied(AbilitySpec spec)
+        {
+            return Time.time >= GetNextActivationAllowedTime(spec);
         }
 
         /// <summary>

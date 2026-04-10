@@ -111,8 +111,18 @@ public sealed class PlayerCombatInput2D : MonoBehaviour
         {
             if (!abilitySystem.IsBusy && Time.time >= nextAutoAttackTime)
             {
-                nextAutoAttackTime = Time.time + attackRepeatInterval;
-                TryActivateSafe(atk);
+                if (TryActivateSafe(atk))
+                {
+                    nextAutoAttackTime = 0f;
+                }
+                else
+                {
+                    float nextActivationRemaining = abilitySystem.GetNextActivationRemaining(atk);
+                    nextAutoAttackTime = Time.time + (
+                        nextActivationRemaining > 0f
+                            ? nextActivationRemaining
+                            : attackRepeatInterval);
+                }
             }
         }
 
@@ -171,10 +181,10 @@ public sealed class PlayerCombatInput2D : MonoBehaviour
         ReleaseAttackHoldIfNeeded();
     }
 
-    private void TryActivateSafe(AbilityDefinition def)
+    private bool TryActivateSafe(AbilityDefinition def)
     {
-        if (def == null || abilitySystem == null) return;
-        abilitySystem.TryActivateAbility(def, null);
+        if (def == null || abilitySystem == null) return false;
+        return abilitySystem.TryActivateAbility(def, null);
     }
 
     private void SendGameplayEventSafe(GameplayTag tag)

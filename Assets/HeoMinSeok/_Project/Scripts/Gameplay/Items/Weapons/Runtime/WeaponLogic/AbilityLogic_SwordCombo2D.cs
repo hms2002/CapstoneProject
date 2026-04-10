@@ -34,43 +34,47 @@ namespace UnityGAS.Sample
                 yield break;
             }
 
-            Vector2 dir = AbilityAimResolver2D.Resolve(system.gameObject, Vector2.right);
+            Vector2 attackDir = AbilityAimResolver2D.Resolve(system.gameObject, Vector2.right);
+            Vector2 lungeDir = AbilityMoveDirectionResolver2D.ResolveMoveThenAim(system.gameObject, attackDir);
 
-            int comboIndex = ResolveComboIndex(spec, data.comboResetTime);
+            int comboIndex = ResolveComboIndex(spec, data);
+            var step = data.GetStep(comboIndex);
             spec.SetInt(KEY_COMBO_INDEX, comboIndex);
             spec.SetFloat(KEY_COMBO_EXPIRE, Time.time + data.comboResetTime);
+            system.SetNextActivationDelay(spec, step.ResolveNextAttackDelay());
 
-            TryPlayAnim(system, data, comboIndex, spec.Definition);
+            TryPlayAnim(system, step, spec.Definition);
 
             yield return WaitForHitTimingDuringLunge(
                 system,
                 spec,
                 data,
-                comboIndex,
-                dir,
-                GetArraySafe(data.lungeDistances, comboIndex, 0f),
-                GetArraySafe(data.lungeDurations, comboIndex, 0f));
+                step,
+                lungeDir,
+                step.lungeDistance,
+                step.lungeDuration);
 
-            float rec = GetArraySafe(data.recoveryOverrides, comboIndex, spec.Definition.recoveryTime);
+            float rec = step.recoveryDuration > 0f ? step.recoveryDuration : spec.Definition.recoveryTime;
             spec.SetFloat("RecoveryOverride", rec);
 
-            SpawnHitbox(system, spec, data, comboIndex, dir);
+            SpawnHitbox(system, spec, data, step, attackDir);
         }
 
-        private int ResolveComboIndex(AbilitySpec spec, float resetTime)
+        private int ResolveComboIndex(AbilitySpec spec, SwordCombo2DData data)
         {
             float expire = spec.GetFloat(KEY_COMBO_EXPIRE, -1f);
             int current = spec.GetInt(KEY_COMBO_INDEX, -1);
+            int comboCount = data != null ? Mathf.Max(1, data.GetStepCount()) : 3;
 
             if (expire > 0f && Time.time <= expire && current >= 0)
-                return (current + 1) % 3;
+                return (current + 1) % comboCount;
 
             return 0;
         }
 
-        private void TryPlayAnim(AbilitySystem system, SwordCombo2DData data, int comboIndex, AbilityDefinition definition)
+        private void TryPlayAnim(AbilitySystem system, SwordCombo2DData.SwordComboStepData step, AbilityDefinition definition)
         {
-            string trig = GetArraySafe(data.animTriggers, comboIndex, "");
+            string trig = step.animationTrigger;
             if (string.IsNullOrEmpty(trig)) return;
             system.TryPlayAnimationTriggerHash(Animator.StringToHash(trig), definition);
         }
@@ -84,7 +88,7 @@ namespace UnityGAS.Sample
             AbilitySystem system,
             AbilitySpec spec,
             SwordCombo2DData data,
-            int comboIndex,
+            SwordCombo2DData.SwordComboStepData step,
             Vector2 dir,
             float distance,
             float duration)
@@ -139,7 +143,12 @@ namespace UnityGAS.Sample
         /// - 콤보 단계별 중심점, 피해량, 넉백, 원소 누적량을 계산한다.
         /// - 계산 결과를 payload/context로 묶어 짧게 유지되는 근접 히트박스를 생성한다.
         /// </summary>
-        private void SpawnHitbox(AbilitySystem system, AbilitySpec abilitySpec, SwordCombo2DData data, int comboIndex, Vector2 dir)
+        private void SpawnHitbox(
+            AbilitySystem system,
+            AbilitySpec abilitySpec,
+            SwordCombo2DData data,
+            SwordCombo2DData.SwordComboStepData step,
+            Vector2 dir)
         {
             if (data.damageEffect == null) return;
             if (system.AttributeSet == null) return;
@@ -148,30 +157,28 @@ namespace UnityGAS.Sample
             bool includeStagger = (cfg != null) && cfg.includeStaggerBuildUp;
 
             Vector2 perp = new Vector2(-dir.y, dir.x);
-            int sideSign = GetArraySafe(data.sideSigns, comboIndex, 0);
+            int sideSign = step.sideSign;
 
             Vector2 center = (Vector2)system.transform.position
-                             + dir * data.forwardOffset
-                             + perp * (data.sideOffset * sideSign);
+                             + dir * step.forwardOffset
+                             + perp * (step.sideOffset * sideSign);
 
 #if UNITY_EDITOR
             if (system.TryGetComponent<UnityGAS.Sample.RealtimeHitboxGizmo2D>(out var gizmo))
             {
-                var col = (comboIndex == 0) ? Color.green : (comboIndex == 1 ? Color.yellow : Color.cyan);
-                gizmo.RecordBox(center, data.hitboxSize, 0f, 0.15f, col);
+                int stepIndex = abilitySpec.GetInt(KEY_COMBO_INDEX, 0);
+                var col = (stepIndex == 0) ? Color.green : (stepIndex == 1 ? Color.yellow : Color.cyan);
+                gizmo.RecordBox(center, step.hitboxSize, 0f, 0.15f, col);
             }
 #endif
 
             IStatProvider statProvider = AbilityStatProviderFactory.Create(system);
 
-            float legacyBaseHp = GetArraySafe(data.damages, comboIndex, 0f);
+            float legacyBaseHp = step.legacyDamage;
             float baseHp = legacyBaseHp;
-            if (data.damageFormulas != null &&
-                comboIndex >= 0 &&
-                comboIndex < data.damageFormulas.Length &&
-                data.damageFormulas[comboIndex] != null)
+            if (step.damageFormula != null)
             {
-                baseHp = data.damageFormulas[comboIndex].Evaluate(
+                baseHp = step.damageFormula.Evaluate(
                     system.AttributeSet,
                     statProvider,
                     defaultIfEmpty: legacyBaseHp);
@@ -179,15 +186,12 @@ namespace UnityGAS.Sample
 
             float baseStagger = (cfg != null && cfg.includeStaggerBuildUp && cfg.staggerFormula != null)
                 ? cfg.staggerFormula.Evaluate(system.AttributeSet, statProvider, defaultIfEmpty: 0f)
-                : GetArraySafe(data.staggerDamages, comboIndex, 0f);
+                : step.legacyStaggerDamage;
 
             float baseKnockback = 0f;
-            if (data.knockbackFormulas != null &&
-                comboIndex >= 0 &&
-                comboIndex < data.knockbackFormulas.Length &&
-                data.knockbackFormulas[comboIndex] != null)
+            if (step.knockbackFormula != null)
             {
-                baseKnockback = data.knockbackFormulas[comboIndex].Evaluate(
+                baseKnockback = step.knockbackFormula.Evaluate(
                     system.AttributeSet,
                     statProvider,
                     defaultIfEmpty: 0f);
@@ -214,7 +218,7 @@ namespace UnityGAS.Sample
             }
             else
             {
-                var grp = GetArraySafe(data.elementDamagesByCombo, comboIndex, null);
+                var grp = step.elementDamages;
                 if (grp != null && grp.elements != null && grp.elements.Count > 0)
                     elementInputs = new List<ElementDamageInput>(grp.elements);
             }
@@ -253,25 +257,18 @@ namespace UnityGAS.Sample
                 sourceSpec = abilitySpec,
                 causer = system.gameObject,
                 ignoreTarget = system.gameObject,
-                lifetime = GetArraySafe(data.activeTimes, comboIndex, 0.08f),
+                lifetime = step.activeTime,
                 wallLayers = 0,
                 damageLayers = data.hitLayers,
                 hitPayload = payload,
                 worldPosition = center,
-                hitboxSize = data.hitboxSize,
+                hitboxSize = step.hitboxSize,
                 hitOncePerTarget = true,
                 destroyOnFirstHit = false,
                 direction = dir
             };
 
             hitbox.Setup(context);
-        }
-
-        private static T GetArraySafe<T>(T[] arr, int index, T fallback)
-        {
-            if (arr == null || arr.Length == 0) return fallback;
-            index = Mathf.Clamp(index, 0, arr.Length - 1);
-            return arr[index];
         }
     }
 }
