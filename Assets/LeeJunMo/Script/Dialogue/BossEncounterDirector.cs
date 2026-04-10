@@ -17,6 +17,7 @@ public class BossEncounterDirector : MonoBehaviour
     private PlayerInteractor2D cachedPlayer;
     private InteractState previousPlayerState = InteractState.Idle;
     private bool hasPlayed;
+    private bool holdsTransitionPlayerLock;
 
     private void OnEnable()
     {
@@ -28,6 +29,7 @@ public class BossEncounterDirector : MonoBehaviour
     private void OnDisable()
     {
         PlayerRuntimeRegistry.PlayerRegistered -= HandlePlayerRegistered;
+        ReleaseTransitionPlayerLock();
 
         if (runningSequence != null)
         {
@@ -66,6 +68,8 @@ public class BossEncounterDirector : MonoBehaviour
         if (playOnlyOnce && hasPlayed)
             return;
 
+        AcquireTransitionPlayerLock();
+        TryCacheAndLockPlayer(player);
         BeginSequence();
     }
 
@@ -77,6 +81,7 @@ public class BossEncounterDirector : MonoBehaviour
         if (playOnlyOnce && hasPlayed)
             return;
 
+        AcquireTransitionPlayerLock();
         runningSequence = StartCoroutine(SequenceRoutine());
     }
 
@@ -85,6 +90,7 @@ public class BossEncounterDirector : MonoBehaviour
         if (cameraDirector == null)
         {
             Debug.LogError("[BossEncounterDirector] cameraDirector is missing.", this);
+            ReleaseTransitionPlayerLock();
             runningSequence = null;
             yield break;
         }
@@ -92,15 +98,15 @@ public class BossEncounterDirector : MonoBehaviour
         if (dialogueRunner == null)
         {
             Debug.LogError("[BossEncounterDirector] dialogueRunner is missing.", this);
+            ReleaseTransitionPlayerLock();
             runningSequence = null;
             yield break;
         }
 
-        yield return null;
         yield return new WaitUntil(() => PlayerRuntimeRegistry.GetPlayerTransform() != null);
+        TryCacheAndLockPlayer();
         yield return new WaitUntil(IsSceneTransitionReady);
-
-        CacheAndLockPlayer();
+        ReleaseTransitionPlayerLock();
 
         yield return cameraDirector.FocusBossRoutine();
         yield return dialogueRunner.PlayDialogueRoutine();
@@ -113,10 +119,18 @@ public class BossEncounterDirector : MonoBehaviour
         runningSequence = null;
     }
 
-    private void CacheAndLockPlayer()
+    private void TryCacheAndLockPlayer(PlayerInteractor2D player = null)
     {
-        Transform playerTransform = PlayerRuntimeRegistry.GetPlayerTransform();
-        cachedPlayer = playerTransform != null ? playerTransform.GetComponent<PlayerInteractor2D>() : null;
+        if (cachedPlayer != null)
+            return;
+
+        if (player == null)
+        {
+            Transform playerTransform = PlayerRuntimeRegistry.GetPlayerTransform();
+            player = playerTransform != null ? playerTransform.GetComponent<PlayerInteractor2D>() : null;
+        }
+
+        cachedPlayer = player;
 
         if (cachedPlayer == null)
             return;
@@ -140,9 +154,36 @@ public class BossEncounterDirector : MonoBehaviour
         return transitionService == null || !transitionService.IsTransitionActive;
     }
 
+    private void AcquireTransitionPlayerLock()
+    {
+        if (holdsTransitionPlayerLock)
+            return;
+
+        SceneFadeTransitionService transitionService = SceneFadeTransitionService.EnsureInstance();
+        if (transitionService == null)
+            return;
+
+        transitionService.SetPlayerUnlockBlocked(this, true);
+        holdsTransitionPlayerLock = true;
+    }
+
+    private void ReleaseTransitionPlayerLock()
+    {
+        if (!holdsTransitionPlayerLock)
+            return;
+
+        SceneFadeTransitionService transitionService = SceneFadeTransitionService.Instance;
+        if (transitionService != null)
+            transitionService.SetPlayerUnlockBlocked(this, false);
+
+        holdsTransitionPlayerLock = false;
+    }
+
     private static InteractState NormalizeRestoredPlayerState(InteractState state)
     {
-        return state == InteractState.None ? InteractState.Idle : state;
+        return state == InteractState.None || state == InteractState.Talking
+            ? InteractState.Idle
+            : state;
     }
 
     private void PrepareBossForEncounter()

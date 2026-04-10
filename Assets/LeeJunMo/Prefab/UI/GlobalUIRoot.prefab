@@ -2408,8 +2408,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: Interact
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 698a407b32ed1874bb4cb7324dfddce2, type: 2}
-  m_sharedMaterial: {fileID: 1826925326976027445, guid: 698a407b32ed1874bb4cb7324dfddce2, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 46edeb50a3c50454ebceca0f0822b6ad, type: 2}
+  m_sharedMaterial: {fileID: 1826925326976027445, guid: 46edeb50a3c50454ebceca0f0822b6ad, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -5241,7 +5241,7 @@ MonoBehaviour:
   worldOffset: {x: 0, y: 0.8, z: 0}
   randomOffsetX: {x: -0.15, y: 0.15}
   randomOffsetY: {x: -0.05, y: 0.05}
-  popupParent: {fileID: 3787340938172783585}
+  popupParent: {fileID: 0}
 --- !u!1 &1599957046012113080
 GameObject:
   m_ObjectHideFlags: 0

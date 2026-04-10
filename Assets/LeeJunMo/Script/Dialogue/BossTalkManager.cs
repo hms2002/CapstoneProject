@@ -31,6 +31,7 @@ public class BossTalkManager : MonoBehaviour
     private Coroutine runningSequence;
     private PlayerInteractor2D cachedPlayer;
     private InteractState previousPlayerState = InteractState.Idle;
+    private bool holdsTransitionPlayerLock;
 
     private void Awake()
     {
@@ -45,8 +46,16 @@ public class BossTalkManager : MonoBehaviour
             BeginEncounterSequence();
     }
 
+    private void OnEnable()
+    {
+        PlayerRuntimeRegistry.PlayerRegistered += HandlePlayerRegistered;
+    }
+
     private void OnDisable()
     {
+        PlayerRuntimeRegistry.PlayerRegistered -= HandlePlayerRegistered;
+        ReleaseTransitionPlayerLock();
+
         if (runningSequence != null)
         {
             StopCoroutine(runningSequence);
@@ -64,6 +73,8 @@ public class BossTalkManager : MonoBehaviour
         if (runningSequence != null)
             return;
 
+        AcquireTransitionPlayerLock();
+        TryCacheAndLockPlayer();
         runningSequence = StartCoroutine(EncounterSequence());
     }
 
@@ -71,15 +82,15 @@ public class BossTalkManager : MonoBehaviour
     {
         if (!ValidateSetup())
         {
+            ReleaseTransitionPlayerLock();
             runningSequence = null;
             yield break;
         }
 
-        yield return null;
         yield return new WaitUntil(() => PlayerRuntimeRegistry.GetPlayerTransform() != null);
+        TryCacheAndLockPlayer();
         yield return new WaitUntil(IsSceneTransitionReady);
-
-        CacheAndLockPlayer();
+        ReleaseTransitionPlayerLock();
         yield return cameraDirector.FocusBossRoutine();
         yield return dialogueRunner.PlayDialogueRoutine();
         yield return cameraDirector.ReturnToPlayerRoutine();
@@ -138,10 +149,18 @@ public class BossTalkManager : MonoBehaviour
             dialogueRunner.ApplyLegacyDialogueData(npcData, legacyInkJSON);
     }
 
-    private void CacheAndLockPlayer()
+    private void TryCacheAndLockPlayer(PlayerInteractor2D player = null)
     {
-        Transform playerTransform = PlayerRuntimeRegistry.GetPlayerTransform();
-        cachedPlayer = playerTransform != null ? playerTransform.GetComponent<PlayerInteractor2D>() : null;
+        if (cachedPlayer != null)
+            return;
+
+        if (player == null)
+        {
+            Transform playerTransform = PlayerRuntimeRegistry.GetPlayerTransform();
+            player = playerTransform != null ? playerTransform.GetComponent<PlayerInteractor2D>() : null;
+        }
+
+        cachedPlayer = player;
 
         if (cachedPlayer == null)
             return;
@@ -165,9 +184,36 @@ public class BossTalkManager : MonoBehaviour
         return transitionService == null || !transitionService.IsTransitionActive;
     }
 
+    private void AcquireTransitionPlayerLock()
+    {
+        if (holdsTransitionPlayerLock)
+            return;
+
+        SceneFadeTransitionService transitionService = SceneFadeTransitionService.EnsureInstance();
+        if (transitionService == null)
+            return;
+
+        transitionService.SetPlayerUnlockBlocked(this, true);
+        holdsTransitionPlayerLock = true;
+    }
+
+    private void ReleaseTransitionPlayerLock()
+    {
+        if (!holdsTransitionPlayerLock)
+            return;
+
+        SceneFadeTransitionService transitionService = SceneFadeTransitionService.Instance;
+        if (transitionService != null)
+            transitionService.SetPlayerUnlockBlocked(this, false);
+
+        holdsTransitionPlayerLock = false;
+    }
+
     private static InteractState NormalizeRestoredPlayerState(InteractState state)
     {
-        return state == InteractState.None ? InteractState.Idle : state;
+        return state == InteractState.None || state == InteractState.Talking
+            ? InteractState.Idle
+            : state;
     }
 
     private void PrepareBossForEncounter()
@@ -192,6 +238,14 @@ public class BossTalkManager : MonoBehaviour
         }
 
         bossController.BeginCombatEncounter(PlayerRuntimeRegistry.GetPlayerTransform());
+    }
+
+    private void HandlePlayerRegistered(PlayerInteractor2D player)
+    {
+        if (runningSequence == null || player == null)
+            return;
+
+        TryCacheAndLockPlayer(player);
     }
 
     private void ResolveBossController()

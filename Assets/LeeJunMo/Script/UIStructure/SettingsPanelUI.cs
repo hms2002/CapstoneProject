@@ -21,6 +21,7 @@ public sealed class SettingsPanelUI : MonoBehaviour, IStackableUI
 {
     private const float DisabledStepperAlpha = 0.45f;
     private const float EnabledStepperAlpha = 1f;
+    private const int SystemCursorPriority = 300;
 
     private static readonly GameWindowMode[] WindowModeOptions =
     {
@@ -119,8 +120,20 @@ public sealed class SettingsPanelUI : MonoBehaviour, IStackableUI
 
     private void OnDestroy()
     {
+        MouseCursorService.Instance?.ClearDomain(this);
+
         if (Instance == this)
             Instance = null;
+    }
+
+    private void OnEnable()
+    {
+        MouseCursorService.EnsureInstance().SetDomain(this, MouseCursorDomain.SystemUi, priority: SystemCursorPriority);
+    }
+
+    private void OnDisable()
+    {
+        MouseCursorService.Instance?.ClearDomain(this);
     }
 
     public void OpenUI()

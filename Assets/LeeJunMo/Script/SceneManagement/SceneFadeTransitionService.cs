@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -27,8 +28,24 @@ public sealed class SceneFadeTransitionService : MonoBehaviour
     private bool isTransitionActive;
     private float savedTimeScale = 1f;
     private bool isInitialized;
+    private readonly Dictionary<int, Object> externalPlayerUnlockBlockers = new();
 
     public bool IsTransitionActive => isTransitionActive;
+
+    public void SetPlayerUnlockBlocked(Object owner, bool blocked)
+    {
+        if (owner == null)
+            return;
+
+        int ownerId = owner.GetInstanceID();
+        if (blocked)
+        {
+            externalPlayerUnlockBlockers[ownerId] = owner;
+            return;
+        }
+
+        externalPlayerUnlockBlockers.Remove(ownerId);
+    }
 
     public static SceneFadeTransitionService EnsureInstance()
     {
@@ -238,6 +255,9 @@ public sealed class SceneFadeTransitionService : MonoBehaviour
 
     private void UnlockCurrentPlayer()
     {
+        if (HasExternalPlayerUnlockBlockers())
+            return;
+
         PlayerInteractor2D player = PlayerRuntimeRegistry.CurrentPlayer != null
             ? PlayerRuntimeRegistry.CurrentPlayer
             : PlayerInteractor2D.Instance;
@@ -252,6 +272,30 @@ public sealed class SceneFadeTransitionService : MonoBehaviour
             return;
 
         player.SetInteractState(InteractState.None);
+    }
+
+    private bool HasExternalPlayerUnlockBlockers()
+    {
+        if (externalPlayerUnlockBlockers.Count == 0)
+            return false;
+
+        List<int> deadOwnerIds = null;
+        foreach (KeyValuePair<int, Object> pair in externalPlayerUnlockBlockers)
+        {
+            if (pair.Value != null)
+                return true;
+
+            deadOwnerIds ??= new List<int>();
+            deadOwnerIds.Add(pair.Key);
+        }
+
+        if (deadOwnerIds != null)
+        {
+            for (int i = 0; i < deadOwnerIds.Count; i++)
+                externalPlayerUnlockBlockers.Remove(deadOwnerIds[i]);
+        }
+
+        return false;
     }
 
     private void EnsurePersistence()
