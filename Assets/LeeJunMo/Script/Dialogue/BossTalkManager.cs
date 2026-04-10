@@ -77,6 +77,7 @@ public class BossTalkManager : MonoBehaviour
 
         yield return null;
         yield return new WaitUntil(() => PlayerRuntimeRegistry.GetPlayerTransform() != null);
+        yield return new WaitUntil(IsSceneTransitionReady);
 
         CacheAndLockPlayer();
         yield return cameraDirector.FocusBossRoutine();
@@ -145,7 +146,7 @@ public class BossTalkManager : MonoBehaviour
         if (cachedPlayer == null)
             return;
 
-        previousPlayerState = cachedPlayer.CurrentState;
+        previousPlayerState = NormalizeRestoredPlayerState(cachedPlayer.CurrentState);
         cachedPlayer.SetInteractState(InteractState.Talking);
     }
 
@@ -156,6 +157,17 @@ public class BossTalkManager : MonoBehaviour
 
         cachedPlayer.SetInteractState(previousPlayerState);
         cachedPlayer = null;
+    }
+
+    private static bool IsSceneTransitionReady()
+    {
+        SceneFadeTransitionService transitionService = SceneFadeTransitionService.EnsureInstance();
+        return transitionService == null || !transitionService.IsTransitionActive;
+    }
+
+    private static InteractState NormalizeRestoredPlayerState(InteractState state)
+    {
+        return state == InteractState.None ? InteractState.Idle : state;
     }
 
     private void PrepareBossForEncounter()

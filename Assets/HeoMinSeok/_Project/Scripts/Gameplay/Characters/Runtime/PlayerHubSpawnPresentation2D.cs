@@ -49,6 +49,9 @@ public sealed class PlayerHubSpawnPresentation2D : MonoBehaviour
     [Header("Camera")]
     [SerializeField] private HubSpawnCameraMode cameraMode = HubSpawnCameraMode.LockToLandingPoint;
 
+    [Header("Gameplay Presentation (Optional)")]
+    [SerializeField] private GameplayPresentationDefinition gameplayPresentation;
+
     private PlayerInteractor2D interactor;
     private PlayerIntentInput2D intentInput;
     private PlayerCombatInput2D combatInput;
@@ -75,10 +78,12 @@ public sealed class PlayerHubSpawnPresentation2D : MonoBehaviour
     private bool presentationPrepared;
     private bool hasPlayedThisScene;
     private Vector3 landingPosition;
+    private GameplayPresentationRuntime presentationRuntime;
 
     private void Awake()
     {
         CacheReferences();
+        presentationRuntime = new GameplayPresentationRuntime(gameObject);
     }
 
     private void OnEnable()
@@ -131,6 +136,7 @@ public sealed class PlayerHubSpawnPresentation2D : MonoBehaviour
         transform.rotation = Quaternion.identity;
         ApplyShadowScale(0f);
         ApplyCameraPresentationMode(landingPosition);
+        presentationRuntime?.Start(gameplayPresentation, BuildPresentationParams(startPosition, hasExplicitPosition: true));
 
         float elapsed = 0f;
         float directionSign = Mathf.Approximately(spinDirection, 0f) ? 1f : Mathf.Sign(spinDirection);
@@ -155,6 +161,7 @@ public sealed class PlayerHubSpawnPresentation2D : MonoBehaviour
         transform.position = landingPosition;
         transform.rotation = Quaternion.Euler(0f, 0f, landingRotationZ);
         ApplyShadowScale(1f);
+        presentationRuntime?.Stop(gameplayPresentation, BuildPresentationParams(landingPosition, hasExplicitPosition: true), playRemove: true);
 
         RestorePhysicsParticipation();
         movementMotor?.StopAllMotion();
@@ -208,6 +215,7 @@ public sealed class PlayerHubSpawnPresentation2D : MonoBehaviour
         RestoreCameraBindingToPlayer();
         CleanupCameraAnchor();
         ZeroAllRigidbodies();
+        presentationRuntime?.Stop(gameplayPresentation, BuildPresentationParams(landingPosition, hasExplicitPosition: true), playRemove: false);
 
         presentationPrepared = false;
     }
@@ -500,6 +508,15 @@ public sealed class PlayerHubSpawnPresentation2D : MonoBehaviour
             ownerScene = SceneManager.GetActiveScene();
 
         return string.Equals(ownerScene.name, hubSceneName, System.StringComparison.Ordinal);
+    }
+
+    private GameplayCueParams BuildPresentationParams(Vector3 position, bool hasExplicitPosition)
+    {
+        return presentationRuntime.BuildParams(
+            target: gameObject,
+            sourceObject: this,
+            explicitPosition: position,
+            hasExplicitPosition: hasExplicitPosition);
     }
 
     private static float EvaluateCurve(AnimationCurve curve, float time)

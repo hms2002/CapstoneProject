@@ -8,7 +8,7 @@ public abstract class PermanentShortcut : ShortcutBase
     {
         if (targetDoor != null)
         {
-            targetDoor.ForceOpen(immediate: false, save: true);
+            targetDoor.ForceOpen(immediate: false, save: true, instigator: gameObject);
             SetActivatedVisual();
         }
     }
