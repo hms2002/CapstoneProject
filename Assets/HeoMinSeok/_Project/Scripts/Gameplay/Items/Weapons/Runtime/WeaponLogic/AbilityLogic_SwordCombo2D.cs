@@ -34,7 +34,8 @@ namespace UnityGAS.Sample
                 yield break;
             }
 
-            Vector2 dir = AbilityAimResolver2D.Resolve(system.gameObject, Vector2.right);
+            Vector2 attackDir = AbilityAimResolver2D.Resolve(system.gameObject, Vector2.right);
+            Vector2 lungeDir = AbilityMoveDirectionResolver2D.ResolveMoveThenAim(system.gameObject, attackDir);
 
             int comboIndex = ResolveComboIndex(spec, data.comboResetTime);
             spec.SetInt(KEY_COMBO_INDEX, comboIndex);
@@ -47,14 +48,14 @@ namespace UnityGAS.Sample
                 spec,
                 data,
                 comboIndex,
-                dir,
+                lungeDir,
                 GetArraySafe(data.lungeDistances, comboIndex, 0f),
                 GetArraySafe(data.lungeDurations, comboIndex, 0f));
 
             float rec = GetArraySafe(data.recoveryOverrides, comboIndex, spec.Definition.recoveryTime);
             spec.SetFloat("RecoveryOverride", rec);
 
-            SpawnHitbox(system, spec, data, comboIndex, dir);
+            SpawnHitbox(system, spec, data, comboIndex, attackDir);
         }
 
         private int ResolveComboIndex(AbilitySpec spec, float resetTime)
