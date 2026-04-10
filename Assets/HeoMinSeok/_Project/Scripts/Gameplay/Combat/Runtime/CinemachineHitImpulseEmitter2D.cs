@@ -46,12 +46,7 @@ namespace UnityGAS
         /// </summary>
         private CinemachineImpulseSource EnsureImpulseSource()
         {
-            if (impulseSource == null)
-                impulseSource = GetComponent<CinemachineImpulseSource>();
-
-            if (impulseSource == null)
-                impulseSource = gameObject.AddComponent<CinemachineImpulseSource>();
-
+            impulseSource = CameraBootstrap.EnsureImpulseSource(gameObject);
             return impulseSource;
         }
 

@@ -43,6 +43,9 @@ public class ItemSlotUI : MonoBehaviour,
     }
     private void OnDisable()
     {
+        MouseCursorService.Instance?.SetDragging(this, false);
+        MouseCursorService.Instance?.SetInteractable(this, false);
+
         if (container != null)
             container.OnChanged -= Refresh;
     }
@@ -104,6 +107,8 @@ public class ItemSlotUI : MonoBehaviour,
             p.TryGetRelicLevel(index, out relicLevel);
 
         ItemDragContext.Begin(container, index, so, relicLevel);
+        MouseCursorService.EnsureInstance().SetInteractable(this, false);
+        MouseCursorService.EnsureInstance().SetDragging(this, true);
 
         DropZoneUI.ActiveInstance?.Show();
         DragIcon.Instance?.Show(def.Icon);
@@ -120,6 +125,7 @@ public class ItemSlotUI : MonoBehaviour,
     {
         DropZoneUI.ActiveInstance?.Hide();
         DragIcon.Instance?.Hide();
+        MouseCursorService.EnsureInstance().SetDragging(this, false);
         ItemDragContext.Clear();
     }
 
@@ -324,9 +330,12 @@ public class ItemSlotUI : MonoBehaviour,
         var so = container.Get(index);
         if (so == null)
         {
+            MouseCursorService.EnsureInstance().SetInteractable(this, false);
             if (UIManager.Instance != null) UIManager.Instance.HideHoverImmediate();
             return;
         }
+
+        MouseCursorService.EnsureInstance().SetInteractable(this, true);
 
         // [수정] HoverController에게 띄우라고 요청
         if (ItemHoverController.Instance != null)
@@ -337,6 +346,8 @@ public class ItemSlotUI : MonoBehaviour,
 
     public void OnPointerExit(PointerEventData eventData)
     {
+        MouseCursorService.EnsureInstance().SetInteractable(this, false);
+
         if (ItemDragContext.Active) return;
 
         // [수정] HoverController에게 끄라고 요청

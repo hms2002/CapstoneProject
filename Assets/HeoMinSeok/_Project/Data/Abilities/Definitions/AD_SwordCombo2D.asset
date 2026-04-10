@@ -15,7 +15,7 @@ MonoBehaviour:
   abilityName: AD_SwordCombo2D
   icon: {fileID: -2412000197315944437, guid: ce2c877b10aec4742943ec6aeacef6da, type: 3}
   description: Ability description.
-  cooldown: 0
+  cooldown: 0.5
   executionPolicy: 0
   useCharges: 0
   maxCharges: 1
@@ -23,13 +23,13 @@ MonoBehaviour:
   cooldownTag: {fileID: 0}
   startCooldownOnEnd: 0
   castTime: 0
-  recoveryTime: 0.03
+  recoveryTime: 0.12
   canCastWhileMoving: 1
   interruptible: 1
   requireTargetObject: 0
   cost: 0
   costAttribute: {fileID: 0}
-  animationChannel: 1
+  animationChannel: 0
   animationTrigger: 
   animationTriggerHash: 0
   abilityTags: []
@@ -86,11 +86,19 @@ MonoBehaviour:
     volumeMultiplier: 0
     anchorPolicy: 0
     localOffset: {x: 0, y: 0, z: 0}
-  impactSound:
-    key: 
-    volumeMultiplier: 0
-    anchorPolicy: 0
-    localOffset: {x: 0, y: 0, z: 0}
+  cuesOnCastStart: []
+  cuesWhileCasting: []
+  cuesOnCommit: []
+  cuesWhileActive: []
+  cuesOnEnd: []
+  cuesOnCastCancelled: []
+  cuesOnExecutionCancelled: []
+  cuesOnHitConfirmed:
+  - {fileID: 11400000, guid: 4af7daafb91813e4985c8a1c393c77c1, type: 2}
+  - {fileID: 11400000, guid: 6bc2fd7ae3b74a6f8e6de53d6f89ca42, type: 2}
+  - {fileID: 11400000, guid: d4d6195a317245c2a40ea5e3fd767750, type: 2}
+  hitCueMagnitude: 0.8
+  criticalHitCueMagnitudeMultiplier: 1.5
   cueOnCastStart: {fileID: 0}
   cueWhileCasting: {fileID: 0}
   cueOnCommit: {fileID: 0}
@@ -98,6 +106,5 @@ MonoBehaviour:
   cueOnEnd: {fileID: 0}
   cueOnCastCancelled: {fileID: 0}
   cueOnExecutionCancelled: {fileID: 0}
-  cueOnHitConfirmed: {fileID: 11400000, guid: 4af7daafb91813e4985c8a1c393c77c1, type: 2}
-  additionalCuesOnHitConfirmed:
-  - {fileID: 11400000, guid: 6bc2fd7ae3b74a6f8e6de53d6f89ca42, type: 2}
+  cueOnHitConfirmed: {fileID: 0}
+  additionalCuesOnHitConfirmed: []

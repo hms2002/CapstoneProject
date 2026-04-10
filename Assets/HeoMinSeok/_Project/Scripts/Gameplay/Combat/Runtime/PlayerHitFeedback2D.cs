@@ -367,12 +367,13 @@ namespace UnityGAS
         /// </summary>
         private void ResolveCameraShakeSource()
         {
-            if (Camera.main == null)
+            Camera camera = CameraBootstrap.GetMainCamera();
+            if (camera == null)
+                camera = Camera.main;
+            if (camera == null)
                 return;
 
-            cameraShake = Camera.main.GetComponent<CinemachineImpulseSource>();
-            if (cameraShake == null)
-                cameraShake = Camera.main.gameObject.AddComponent<CinemachineImpulseSource>();
+            cameraShake = CameraBootstrap.EnsureImpulseSource(camera.gameObject);
         }
     }
 }

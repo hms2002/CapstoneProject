@@ -49,12 +49,12 @@ public class Mob : Enemy
 
     public struct PreparedTackleContext
     {
-        public GameObject Target;
-        public Vector2 StartPosition;
-        public Vector2 Direction;
-        public Vector2 ImpactPosition;
-        public float LungeDistance;
-        public float TelegraphWidth;
+        public GameObject   Target;
+        public Vector2      StartPosition;
+        public Vector2      Direction;
+        public Vector2      ImpactPosition;
+        public float        LungeDistance;
+        public float        TelegraphWidth;
     }
 
     protected override void Awake()
@@ -77,14 +77,9 @@ public class Mob : Enemy
 
         UpdateCooldown();
         SyncMovementTags();
-        TryStartPreparedTackle();
-
-        if      (transform.position.x > Target.position.x) sprite.flipX = true;
-        else if (transform.position.x < Target.position.x) sprite.flipX = false;
-
-        if (animator != null && movementMotor != null)
-            animator.SetBool("isMoving", movementMotor.IsMoving);
-
+        UpdatePrimaryAttack();
+        UpdateFacing();
+        UpdateMovementAnimation();
     }
 
     /// <summary>Tackle 접촉 피해 쿨타임을 갱신합니다.</summary>
@@ -102,6 +97,44 @@ public class Mob : Enemy
         // 쿨타임/공격 실행 중에는 추적 의도 이동 금지
         bool shouldBlockIntentMove = currentCooltime > 0f || (abilitySystem != null && abilitySystem.IsBusy);
         SetTagActive(blockIntentMoveTag, shouldBlockIntentMove, ref intentMoveTagApplied);
+    }
+
+    /// <summary>현재 Mob이 추적 이동을 사용할 수 있는지 반환합니다.</summary>
+    public virtual bool CanUseChaseMovement()
+    {
+        return true;
+    }
+
+    /// <summary>현재 Mob이 기본 공격 시도를 사용할 수 있는지 반환합니다.</summary>
+    protected virtual bool CanUsePrimaryAttack()
+    {
+        return true;
+    }
+
+    /// <summary>Mob의 기본 공격 시도 갱신을 실행합니다.</summary>
+    protected virtual void UpdatePrimaryAttack()
+    {
+        if (!CanUsePrimaryAttack())
+            return;
+
+        TryStartPreparedTackle();
+    }
+
+    /// <summary>현재 타겟 위치를 기준으로 스프라이트 방향을 갱신합니다.</summary>
+    private void UpdateFacing()
+    {
+        if (sprite == null || Target == null)
+            return;
+
+        if      (transform.position.x > Target.position.x) sprite.flipX = true;
+        else if (transform.position.x < Target.position.x) sprite.flipX = false;
+    }
+
+    /// <summary>현재 이동 상태를 애니메이터 파라미터에 동기화합니다.</summary>
+    private void UpdateMovementAnimation()
+    {
+        if (animator != null && movementMotor != null)
+            animator.SetBool("isMoving", movementMotor.IsMoving);
     }
 
     /// <summary>공격 가능 범위에 들어온 타겟을 향해 준비 Tackle을 시도합니다.</summary>
@@ -327,6 +360,13 @@ public class Mob : Enemy
 
     private void OnDrawGizmos()
     {
+        DrawChaseGizmos();
+        DrawAttackGizmos();
+    }
+
+    /// <summary>Mob의 추적 감지 범위를 기즈모로 그립니다.</summary>
+    private void DrawChaseGizmos()
+    {
         EnemyChaseIntent2D gizmoChaseIntent = chaseIntent != null
             ? chaseIntent
             : GetComponent<EnemyChaseIntent2D>();
@@ -339,7 +379,11 @@ public class Mob : Enemy
             Gizmos.color = Color.yellow;
             Gizmos.DrawWireSphere(transform.position, gizmoChaseIntent.StopRange);
         }
+    }
 
+    /// <summary>Mob의 기본 공격 관련 기즈모를 그립니다.</summary>
+    protected virtual void DrawAttackGizmos()
+    {
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, TackleAttackRangeRadius);
 

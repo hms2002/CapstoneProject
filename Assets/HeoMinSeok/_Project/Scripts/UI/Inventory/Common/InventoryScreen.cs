@@ -11,7 +11,7 @@ using UnityEngine.UI;
 /// - Drop zone to discard items to the world
 /// </summary>
 // [핵심] IStackableUI를 상속받아 UIManager의 통제를 받습니다!
-public class InventoryScreen : MonoBehaviour, IStackableUI
+public class InventoryScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
 {
     [Header("UI Refs")]
     [SerializeField] private Transform consumableGridRoot;
@@ -44,6 +44,7 @@ public class InventoryScreen : MonoBehaviour, IStackableUI
     public UIOpenGroup OpenGroup => UIOpenGroup.ExclusiveModal;
     public UIOpenGroup BlockedOpenGroups => UIOpenGroup.ExclusiveModal;
     public UIGameplayLockProfile GameplayLockProfile => UIGameplayLockProfile.FreezeAndBlockControl;
+    public MouseCursorDomain CursorDomain => MouseCursorDomain.Inventory;
 
     public void OpenUI()
     {
@@ -70,8 +71,14 @@ public class InventoryScreen : MonoBehaviour, IStackableUI
         }
     }
 
+    private void OnEnable()
+    {
+        MouseCursorService.EnsureInstance().SetDomain(this, MouseCursorDomain.Inventory, priority: 100);
+    }
+
     private void OnDisable()
     {
+        MouseCursorService.Instance?.ClearDomain(this);
         ClearUI();
         ItemContainerGroupRegistry.Clear();
         dropZone?.Hide();

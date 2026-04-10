@@ -38,6 +38,12 @@ public sealed class EnemyChaseIntent2D : MonoBehaviour, IIntentMovementSource2D
         }
 
         Mob mob = enemy as Mob;
+        if (mob != null && !mob.CanUseChaseMovement())
+        {
+            lastIntent = IntentMovementData.None;
+            return lastIntent;
+        }
+
         if (mob != null && mob.IsPreparingTackle)
         {
             lastIntent = IntentMovementData.None;

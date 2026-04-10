@@ -1,3 +1,4 @@
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -86,6 +87,11 @@ namespace UnityGAS
             bool hasExplicitPosition = data.WorldPosition != Vector3.zero;
             Vector3 position = hasExplicitPosition ? data.WorldPosition : Vector3.zero;
 
+            float baseMagnitude = Mathf.Max(0f, definition.hitCueMagnitude);
+            float finalMagnitude = data.IsCriticalHit
+                ? baseMagnitude * Mathf.Max(0f, definition.criticalHitCueMagnitudeMultiplier)
+                : baseMagnitude;
+
             return new GameplayCueParams
             {
                 Instigator = data.Instigator != null ? data.Instigator : ownerObject,
@@ -95,7 +101,7 @@ namespace UnityGAS
                 HasExplicitPosition = hasExplicitPosition,
                 Normal = Vector3.up,
                 SourceObject = definition,
-                Magnitude = data.IsCriticalHit ? 2f : 1f
+                Magnitude = finalMagnitude
             };
         }
 
@@ -170,21 +176,10 @@ namespace UnityGAS
             if (cueManager == null || definition == null)
                 return;
 
-            HashSet<GameplayTag> executed = new HashSet<GameplayTag>();
-
-            if (definition.cueOnHitConfirmed != null && executed.Add(definition.cueOnHitConfirmed))
-                cueManager.ExecuteCue(definition.cueOnHitConfirmed, cueParams);
-
-            if (definition.additionalCuesOnHitConfirmed == null)
-                return;
-
-            for (int i = 0; i < definition.additionalCuesOnHitConfirmed.Count; i++)
+            foreach (GameplayTag tag in definition.EnumerateCuesOnHitConfirmed())
             {
-                GameplayTag tag = definition.additionalCuesOnHitConfirmed[i];
-                if (tag == null || !executed.Add(tag))
-                    continue;
-
-                cueManager.ExecuteCue(tag, cueParams);
+                if (tag != null)
+                    cueManager.ExecuteCue(tag, cueParams);
             }
         }
     }

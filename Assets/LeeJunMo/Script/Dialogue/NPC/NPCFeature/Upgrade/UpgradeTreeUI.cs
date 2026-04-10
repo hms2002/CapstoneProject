@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UpgradeTreeUI : MonoBehaviour, IStackableUI
+public class UpgradeTreeUI : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
 {
     public static UpgradeTreeUI EnsureInstance()
     {
@@ -36,6 +36,7 @@ public class UpgradeTreeUI : MonoBehaviour, IStackableUI
     public UIOpenGroup OpenGroup => UIOpenGroup.ExclusiveModal;
     public UIOpenGroup BlockedOpenGroups => UIOpenGroup.ExclusiveModal;
     public UIGameplayLockProfile GameplayLockProfile => UIGameplayLockProfile.FreezeAndBlockControl;
+    public MouseCursorDomain CursorDomain => MouseCursorDomain.NpcUi;
 
     public void OpenUI()
     {
@@ -66,6 +67,8 @@ public class UpgradeTreeUI : MonoBehaviour, IStackableUI
 
     private void OnEnable()
     {
+        MouseCursorService.EnsureInstance().SetDomain(this, MouseCursorDomain.NpcUi, priority: 100);
+
         if (UpgradeManager.Instance != null)
             UpgradeManager.Instance.OnDataChanged += RefreshAll;
 
@@ -75,6 +78,8 @@ public class UpgradeTreeUI : MonoBehaviour, IStackableUI
 
     private void OnDisable()
     {
+        MouseCursorService.Instance?.ClearDomain(this);
+
         if (UpgradeManager.Instance != null)
             UpgradeManager.Instance.OnDataChanged -= RefreshAll;
 

@@ -1,0 +1,65 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7e1d4a9b87e246d3891f4d5dc4f63172, type: 3}
+  m_Name: DefaultMouseCursorTheme
+  m_EditorClassIdentifier: 
+  combatDomain:
+    defaultCursor:
+      sprite: {fileID: 5373116329307524478, guid: 2a195b84427e14a4ba63fe519397dd8e, type: 3}
+      hotspotPixels: {x: 0, y: 0}
+      scale: 1
+    interactableCursor:
+      sprite: {fileID: 0}
+      hotspotPixels: {x: 0, y: 0}
+      scale: 1
+    pressedCursor:
+      sprite: {fileID: 0}
+      hotspotPixels: {x: 0, y: 0}
+      scale: 1
+    draggingCursor:
+      sprite: {fileID: 0}
+      hotspotPixels: {x: 0, y: 0}
+      scale: 1
+  inventoryDomain:
+    defaultCursor:
+      sprite: {fileID: -8448536817689828998, guid: 1d56a304110f63a4fbab81eeacf6910a, type: 3}
+      hotspotPixels: {x: 0, y: 0}
+      scale: 1
+    interactableCursor:
+      sprite: {fileID: 2244188990704038074, guid: 1d56a304110f63a4fbab81eeacf6910a, type: 3}
+      hotspotPixels: {x: 0, y: 0}
+      scale: 1
+    pressedCursor:
+      sprite: {fileID: 6051788245673681451, guid: 1d56a304110f63a4fbab81eeacf6910a, type: 3}
+      hotspotPixels: {x: 0, y: 0}
+      scale: 1
+    draggingCursor:
+      sprite: {fileID: -3239814733474346692, guid: 1d56a304110f63a4fbab81eeacf6910a, type: 3}
+      hotspotPixels: {x: 0, y: 0}
+      scale: 1
+  npcUiDomain:
+    defaultCursor:
+      sprite: {fileID: -8448536817689828998, guid: 1d56a304110f63a4fbab81eeacf6910a, type: 3}
+      hotspotPixels: {x: 0, y: 0}
+      scale: 1
+    interactableCursor:
+      sprite: {fileID: 6031248440567335274, guid: 1d56a304110f63a4fbab81eeacf6910a, type: 3}
+      hotspotPixels: {x: 0, y: 0}
+      scale: 1
+    pressedCursor:
+      sprite: {fileID: 1449552957060229219, guid: 1d56a304110f63a4fbab81eeacf6910a, type: 3}
+      hotspotPixels: {x: 0, y: 0}
+      scale: 1
+    draggingCursor:
+      sprite: {fileID: -3239814733474346692, guid: 1d56a304110f63a4fbab81eeacf6910a, type: 3}
+      hotspotPixels: {x: 0, y: 0}
+      scale: 1
