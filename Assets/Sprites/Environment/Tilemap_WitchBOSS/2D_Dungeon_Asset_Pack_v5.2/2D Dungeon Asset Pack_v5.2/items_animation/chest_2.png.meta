@@ -1,10 +1,19 @@
 fileFormatVersion: 2
-guid: 66dc6cbb5247f4842b2db3329d25bcaa
+guid: 4fa08f9d926817546824aded305f3d39
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -3282638300470552162
-    second: PlayerSleep_0
+      213: -2843431537666986790
+    second: chest_2_0
+  - first:
+      213: -4048223600079441791
+    second: chest_2_1
+  - first:
+      213: 4456802530164884767
+    second: chest_2_2
+  - first:
+      213: 1455949670613664316
+    second: chest_2_3
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -37,7 +46,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 0
+    filterMode: 1
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -51,7 +60,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 20
+  spritePixelsToUnits: 100
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -75,7 +84,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 0
+    textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -100,23 +109,89 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: PlayerSleep_0
+      name: chest_2_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 12
-        height: 20
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        x: 1
+        y: 1
+        width: 14
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: e995c5e9bd9b172d0800000000000000
-      internalID: -3282638300470552162
+      spriteID: adc6736e41a1a88d0800000000000000
+      internalID: -2843431537666986790
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: chest_2_1
+      rect:
+        serializedVersion: 2
+        x: 16
+        y: 1
+        width: 16
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 18079e98512d1d7c0800000000000000
+      internalID: -4048223600079441791
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: chest_2_2
+      rect:
+        serializedVersion: 2
+        x: 33
+        y: 4
+        width: 14
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f154a8cb94eb9dd30800000000000000
+      internalID: 4456802530164884767
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: chest_2_3
+      rect:
+        serializedVersion: 2
+        x: 49
+        y: 1
+        width: 14
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c3246cfe282943410800000000000000
+      internalID: 1455949670613664316
       vertices: []
       indices: 
       edges: []
@@ -125,7 +200,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: e533a4ce45da2c0488e15659812aa3bd
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -134,8 +209,7 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable:
-      PlayerSleep_0: -3282638300470552162
+    nameFileIdTable: {}
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

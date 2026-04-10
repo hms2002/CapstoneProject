@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 66dc6cbb5247f4842b2db3329d25bcaa
+guid: 956e0a374fcc17641928c60a7c359552
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -3282638300470552162
-    second: PlayerSleep_0
+      213: 1921053324792869636
+    second: gate_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -37,7 +37,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 0
+    filterMode: 1
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -51,7 +51,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 20
+  spritePixelsToUnits: 100
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -75,7 +75,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 0
+    textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -100,23 +100,23 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: PlayerSleep_0
+      name: gate_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 12
-        height: 20
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        width: 80
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: e995c5e9bd9b172d0800000000000000
-      internalID: -3282638300470552162
+      spriteID: 403bcda12d3f8aa10800000000000000
+      internalID: 1921053324792869636
       vertices: []
       indices: 
       edges: []
@@ -125,7 +125,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: e533a4ce45da2c0488e15659812aa3bd
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -134,8 +134,7 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable:
-      PlayerSleep_0: -3282638300470552162
+    nameFileIdTable: {}
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

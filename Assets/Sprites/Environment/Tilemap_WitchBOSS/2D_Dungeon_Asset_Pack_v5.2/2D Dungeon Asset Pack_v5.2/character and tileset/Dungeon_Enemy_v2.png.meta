@@ -1,10 +1,19 @@
 fileFormatVersion: 2
-guid: 66dc6cbb5247f4842b2db3329d25bcaa
+guid: ccaabf12c26b7cd4e89051c625220629
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -3282638300470552162
-    second: PlayerSleep_0
+      213: 279326659666560431
+    second: Dungeon_Enemy_v2_0
+  - first:
+      213: 554223877389357736
+    second: Dungeon_Enemy_v2_1
+  - first:
+      213: -5039169701063044818
+    second: Dungeon_Enemy_v2_2
+  - first:
+      213: -185288622565617985
+    second: Dungeon_Enemy_v2_3
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -51,7 +60,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 20
+  spritePixelsToUnits: 16
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -100,23 +109,89 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: PlayerSleep_0
+      name: Dungeon_Enemy_v2_0
       rect:
         serializedVersion: 2
-        x: 0
+        x: 1
         y: 0
-        width: 12
-        height: 20
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+        width: 14
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: e995c5e9bd9b172d0800000000000000
-      internalID: -3282638300470552162
+      spriteID: fa5c8b5fd1e50e300800000000000000
+      internalID: 279326659666560431
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dungeon_Enemy_v2_1
+      rect:
+        serializedVersion: 2
+        x: 16
+        y: 0
+        width: 17
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8a215d91eaff0b700800000000000000
+      internalID: 554223877389357736
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dungeon_Enemy_v2_2
+      rect:
+        serializedVersion: 2
+        x: 33
+        y: 0
+        width: 13
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e21d9350bd5411ab0800000000000000
+      internalID: -5039169701063044818
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dungeon_Enemy_v2_3
+      rect:
+        serializedVersion: 2
+        x: 47
+        y: 0
+        width: 17
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fbe0e0fbaf8bd6df0800000000000000
+      internalID: -185288622565617985
       vertices: []
       indices: 
       edges: []
@@ -125,7 +200,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: e533a4ce45da2c0488e15659812aa3bd
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -135,7 +210,10 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      PlayerSleep_0: -3282638300470552162
+      Dungeon_Enemy_v2_0: 279326659666560431
+      Dungeon_Enemy_v2_1: 554223877389357736
+      Dungeon_Enemy_v2_2: -5039169701063044818
+      Dungeon_Enemy_v2_3: -185288622565617985
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
