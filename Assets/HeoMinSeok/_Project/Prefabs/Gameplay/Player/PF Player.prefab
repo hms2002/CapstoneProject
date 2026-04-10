@@ -1332,12 +1332,11 @@ MonoBehaviour:
   hpDef: {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
   player: {fileID: 0}
   abilitySystem: {fileID: 0}
+  tagSystem: {fileID: 0}
   body: {fileID: 0}
-  intentInput: {fileID: 0}
-  combatInput: {fileID: 0}
-  aimInput: {fileID: 0}
   hitFeedback: {fileID: 0}
   deathPresentation: {fileID: 0}
+  deathStateTagSet: {fileID: 0}
   hubSceneName: ProtoTypeHub
   fallbackDelaySeconds: 1.25
   additionalBehavioursToDisable: []
@@ -1358,6 +1357,11 @@ MonoBehaviour:
   deathTrigger: Death
   spriteRenderers: []
   deadTint: {r: 0.45, g: 0.45, b: 0.45, a: 1}
+  deathSound:
+    key: death.player
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
   presentationDuration: 1.25
 --- !u!114 &5287530741161564427
 MonoBehaviour:
