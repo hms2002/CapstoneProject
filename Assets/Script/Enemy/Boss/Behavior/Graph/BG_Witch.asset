@@ -553,75 +553,6 @@ MonoBehaviour:
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
-    - rid: 84001757239705674
-      type: {class: Start, ns: Unity.Behavior, asm: Unity.Behavior}
-      data:
-        ID:
-          m_Value0: 16410130475189374685
-          m_Value1: 17766297242658381847
-        Graph:
-          rid: 2468850623048319256
-        m_Parent:
-          rid: -2
-        m_Child:
-          rid: 84001757239705675
-        Repeat: 1
-        AllowMultipleRepeatsPerTick: 0
-    - rid: 84001757239705675
-      type: {class: SelectorComposite, ns: Unity.Behavior, asm: Unity.Behavior}
-      data:
-        ID:
-          m_Value0: 1174136587453859031
-          m_Value1: 7037553426597378520
-        Graph:
-          rid: 2468850623048319256
-        m_Parent:
-          rid: 84001757239705674
-        m_Children:
-        - rid: 84001757239705676
-        m_RegisteredObservers: []
-    - rid: 84001757239705676
-      type: {class: BT_RandomSelector, ns: , asm: Assembly-CSharp}
-      data:
-        ID:
-          m_Value0: 11698181117508244752
-          m_Value1: 9507073644419585462
-        Graph:
-          rid: 2468850623048319256
-        m_Parent:
-          rid: 84001757239705675
-        m_Children:
-        - rid: 84001757239705677
-        - rid: 84001757239705678
-        m_RegisteredObservers: []
-    - rid: 84001757239705677
-      type: {class: ActivateGASAbilityAction, ns: , asm: Assembly-CSharp}
-      data:
-        ID:
-          m_Value0: 17129291100652068023
-          m_Value1: 17747093690242864371
-        Graph:
-          rid: 2468850623048319256
-        m_Parent:
-          rid: 84001757239705676
-        Ability:
-          rid: 2668037834883727657
-        Target:
-          rid: 2668037834883727656
-    - rid: 84001757239705678
-      type: {class: ActivateGASAbilityAction, ns: , asm: Assembly-CSharp}
-      data:
-        ID:
-          m_Value0: 9308625515439014994
-          m_Value1: 3756010352840602799
-        Graph:
-          rid: 2468850623048319256
-        m_Parent:
-          rid: 84001757239705676
-        Ability:
-          rid: 2668037834883727658
-        Target:
-          rid: 2668037834883727656
     - rid: 2468850623048319256
       type: {class: BehaviorGraphModule, ns: Unity.Behavior, asm: Unity.Behavior}
       data:
@@ -633,7 +564,7 @@ MonoBehaviour:
           rid: 2468850623048319257
         BlackboardGroupReferences: []
         Root:
-          rid: 84001757239705674
+          rid: 2668038107570896971
         m_VersionTimestamp: 639111867604799958
     - rid: 2468850623048319257
       type: {class: BlackboardReference, ns: Unity.Behavior, asm: Unity.Behavior}
@@ -681,6 +612,75 @@ MonoBehaviour:
           m_Value1: 15028187573117453122
         Name: AD_Ambush
         m_Value: {fileID: 0}
+    - rid: 2668038107570896971
+      type: {class: Start, ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        ID:
+          m_Value0: 16410130475189374685
+          m_Value1: 17766297242658381847
+        Graph:
+          rid: 2468850623048319256
+        m_Parent:
+          rid: -2
+        m_Child:
+          rid: 2668038107570896972
+        Repeat: 1
+        AllowMultipleRepeatsPerTick: 0
+    - rid: 2668038107570896972
+      type: {class: SelectorComposite, ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        ID:
+          m_Value0: 1174136587453859031
+          m_Value1: 7037553426597378520
+        Graph:
+          rid: 2468850623048319256
+        m_Parent:
+          rid: 2668038107570896971
+        m_Children:
+        - rid: 2668038107570896973
+        m_RegisteredObservers: []
+    - rid: 2668038107570896973
+      type: {class: BT_RandomSelector, ns: , asm: Assembly-CSharp}
+      data:
+        ID:
+          m_Value0: 11698181117508244752
+          m_Value1: 9507073644419585462
+        Graph:
+          rid: 2468850623048319256
+        m_Parent:
+          rid: 2668038107570896972
+        m_Children:
+        - rid: 2668038107570896974
+        - rid: 2668038107570896975
+        m_RegisteredObservers: []
+    - rid: 2668038107570896974
+      type: {class: ActivateGASAbilityAction, ns: , asm: Assembly-CSharp}
+      data:
+        ID:
+          m_Value0: 17129291100652068023
+          m_Value1: 17747093690242864371
+        Graph:
+          rid: 2468850623048319256
+        m_Parent:
+          rid: 2668038107570896973
+        Ability:
+          rid: 2668037834883727657
+        Target:
+          rid: 2668037834883727656
+    - rid: 2668038107570896975
+      type: {class: ActivateGASAbilityAction, ns: , asm: Assembly-CSharp}
+      data:
+        ID:
+          m_Value0: 9308625515439014994
+          m_Value1: 3756010352840602799
+        Graph:
+          rid: 2468850623048319256
+        m_Parent:
+          rid: 2668038107570896973
+        Ability:
+          rid: 2668037834883727658
+        Target:
+          rid: 2668037834883727656
 --- !u!114 &8459624539162266045
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -30,6 +30,8 @@ public sealed class PlayerSpawner : MonoBehaviour
             if (existingInteractor != null)
                 PlayerRuntimeRegistry.Register(existingInteractor);
 
+            TryStartHubSpawnPresentation(existingPlayer);
+
             Debug.Log("[PlayerSpawner] Player already exists in the scene. Skipping spawn.");
             return;
         }
@@ -61,7 +63,21 @@ public sealed class PlayerSpawner : MonoBehaviour
         else
         {
             Debug.LogWarning("[PlayerSpawner] PlayerInteractor2D was not found on the spawned player.");
+        }
+
+        TryStartHubSpawnPresentation(player);
     }
+
+    private static void TryStartHubSpawnPresentation(GameObject player)
+    {
+        if (player == null)
+            return;
+
+        var presentation = player.GetComponent<PlayerHubSpawnPresentation2D>();
+        if (presentation == null)
+            return;
+
+        presentation.TryPlayIfEligible();
     }
 
     private PlayerSpawnPoint ResolveSpawnPoint(SceneTransitionContext context)
