@@ -13,62 +13,67 @@ MonoBehaviour:
   m_Name: ALData_SwordCombo2D
   m_EditorClassIdentifier: 
   hitboxPrefab: {fileID: 6902002014408514032, guid: 4be5e4c30ae21ca4d979927cb057f981, type: 3}
-  activeTimes:
-  - 0.08
-  - 0.08
-  - 0.1
+  steps:
+  - animationTrigger: Swing1
+    activeTime: 0.08
+    recoveryDuration: 0.2
+    nextAttackDelay: 0.2
+    damageFormula: {fileID: 11400000, guid: f836f4795e60fd54f9a4e401de9d7dd9, type: 2}
+    knockbackFormula: {fileID: 0}
+    legacyDamage: 10
+    legacyStaggerDamage: 0
+    elementDamages:
+      elements: []
+    hitboxSize: {x: 1.2, y: 0.8}
+    forwardOffset: 0.9
+    sideOffset: 0.25
+    sideSign: -1
+    lungeDistance: 0.7
+    lungeDuration: 0.08
+  - animationTrigger: Swing2
+    activeTime: 0.08
+    recoveryDuration: 0.3
+    nextAttackDelay: 0.3
+    damageFormula: {fileID: 11400000, guid: f836f4795e60fd54f9a4e401de9d7dd9, type: 2}
+    knockbackFormula: {fileID: 0}
+    legacyDamage: 10
+    legacyStaggerDamage: 0
+    elementDamages:
+      elements: []
+    hitboxSize: {x: 1.2, y: 0.8}
+    forwardOffset: 0.9
+    sideOffset: 0.25
+    sideSign: 1
+    lungeDistance: 0.7
+    lungeDuration: 0.08
+  - animationTrigger: Swing3
+    activeTime: 0.1
+    recoveryDuration: 0.49
+    nextAttackDelay: 0.49
+    damageFormula: {fileID: 0}
+    knockbackFormula: {fileID: 0}
+    legacyDamage: 30
+    legacyStaggerDamage: 0
+    elementDamages:
+      elements: []
+    hitboxSize: {x: 1.2, y: 0.8}
+    forwardOffset: 0.9
+    sideOffset: 0.25
+    sideSign: -1
+    lungeDistance: 1
+    lungeDuration: 0.1
   damageConfig:
     includeStaggerBuildUp: 1
     includeElementBuildUp: 1
     staggerFormula: {fileID: 0}
     elementFormulas: []
     critAffectsElement: 1
-  elementDamagesByCombo:
-  - elements: []
-  - elements: []
-  - elements: []
-  staggerDamages:
-  - 0
-  - 0
-  - 0
   comboResetTime: 1
-  damageFormulas:
-  - {fileID: 11400000, guid: f836f4795e60fd54f9a4e401de9d7dd9, type: 2}
-  - {fileID: 11400000, guid: f836f4795e60fd54f9a4e401de9d7dd9, type: 2}
-  - {fileID: 0}
-  knockbackFormulas:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  damages:
-  - 10
-  - 10
-  - 30
-  animTriggers:
-  - Swing1
-  - Swing2
-  - Swing3
-  recoveryOverrides:
-  - 0.2
-  - 0.3
-  - 0.49
   hitEventTag: {fileID: 11400000, guid: a9d545fc5072ee3419e47fc9ff0e650c, type: 2}
   hitConfirmedTag: {fileID: 11400000, guid: 465249853d3321e47b796f8e8c787f64, type: 2}
   hitEventTimeout: 0.35
-  hitboxSize: {x: 1.2, y: 0.8}
-  forwardOffset: 0.9
-  sideOffset: 0.25
-  sideSigns: ffffffff01000000ffffffff
   hitLayers:
     serializedVersion: 2
     m_Bits: 2147483648
-  lungeDistances:
-  - 0.7
-  - 0.7
-  - 1
-  lungeDurations:
-  - 0.08
-  - 0.08
-  - 0.1
   damageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
   knockbackEffect: {fileID: 11400000, guid: 2f5faaf6bd840544cb59f6d23905c40d, type: 2}
