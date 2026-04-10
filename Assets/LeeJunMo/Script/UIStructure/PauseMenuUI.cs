@@ -3,6 +3,8 @@ using UnityEngine.UI;
 
 public sealed class PauseMenuUI : MonoBehaviour, IStackableUI
 {
+    private const int SystemCursorPriority = 300;
+
     public static PauseMenuUI Instance { get; private set; }
 
     [Header("UI References")]
@@ -55,8 +57,20 @@ public sealed class PauseMenuUI : MonoBehaviour, IStackableUI
 
     private void OnDestroy()
     {
+        MouseCursorService.Instance?.ClearDomain(this);
+
         if (Instance == this)
             Instance = null;
+    }
+
+    private void OnEnable()
+    {
+        MouseCursorService.EnsureInstance().SetDomain(this, MouseCursorDomain.SystemUi, priority: SystemCursorPriority);
+    }
+
+    private void OnDisable()
+    {
+        MouseCursorService.Instance?.ClearDomain(this);
     }
 
     public void OpenUI()

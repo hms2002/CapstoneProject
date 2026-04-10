@@ -1,5 +1,6 @@
 using UnityEngine;
 using DG.Tweening;
+using UnityGAS;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -41,6 +42,10 @@ public class DoorObject : InteractableBase
     public Animator animator;
     public Collider2D obstacleCollider;
 
+    [Header("Presentation")]
+    [SerializeField] private Transform presentationAnchor;
+    [SerializeField] private WorldObjectPresentationDefinition openPresentation = new();
+
     [Header("단방향 문 전용")]
     [SerializeField] private OneWayOpenSide oneWayOpenSide = OneWayOpenSide.LocalUp;
     [Tooltip("문 중앙 판정선 근처의 애매한 구간. 보통 0.02 ~ 0.1 정도를 권장하며 최대 1까지 허용한다.")]
@@ -52,6 +57,7 @@ public class DoorObject : InteractableBase
     private Vector3 closedModelLocalPosition;
     private bool hasClosedModelLocalPosition;
     private const float VerticalPromptAngleTolerance = 1f;
+    private WorldObjectPresentationRuntime openPresentationRuntime;
 
 #if UNITY_EDITOR
     private const float DefaultOneWayGizmoWidth = 1.2f;
@@ -96,6 +102,8 @@ public class DoorObject : InteractableBase
         if (animator == null)
             animator = GetComponentInChildren<Animator>();
 
+        openPresentationRuntime = new WorldObjectPresentationRuntime(gameObject);
+
         if (model != null)
         {
             closedModelLocalPosition = model.localPosition;
@@ -106,7 +114,7 @@ public class DoorObject : InteractableBase
     private void Start()
     {
         if (isPermanent && ShortcutProgressService.Instance != null && ShortcutProgressService.Instance.IsShortcutUnlocked(mapID, doorID))
-            ForceOpen(immediate: true);
+            ForceOpen(immediate: true, playPresentation: false);
     }
 
     private void LateUpdate()
@@ -122,7 +130,10 @@ public class DoorObject : InteractableBase
 
         if (CanPlayerOpenDoor(player))
         {
-            ForceOpen(immediate: false, save: isPermanent);
+            ForceOpen(
+                immediate: false,
+                save: isPermanent,
+                instigator: player.Transform != null ? player.Transform.gameObject : null);
         }
         else
         {
@@ -205,7 +216,7 @@ public class DoorObject : InteractableBase
         return transform.TransformDirection(localDirection).normalized;
     }
 
-    public void ForceOpen(bool immediate = false, bool save = false)
+    public void ForceOpen(bool immediate = false, bool save = false, GameObject instigator = null, bool playPresentation = true)
     {
         if (IsOpen)
             return;
@@ -216,6 +227,8 @@ public class DoorObject : InteractableBase
             ShortcutProgressService.Instance.UnlockShortcut(mapID, doorID);
 
         ResetModelAfterShake();
+        if (playPresentation)
+            PlayOpenPresentation(instigator);
 
         if (animator != null)
         {
@@ -249,6 +262,16 @@ public class DoorObject : InteractableBase
     {
         if (obstacleCollider != null)
             obstacleCollider.enabled = false;
+    }
+
+    private void PlayOpenPresentation(GameObject instigator)
+    {
+        openPresentationRuntime?.PlayExecuteOnly(
+            openPresentation,
+            instigator: instigator,
+            target: gameObject,
+            anchor: ResolvePresentationAnchor(),
+            sourceObject: this);
     }
 
     public void PlayShakeAnimation()
@@ -575,6 +598,17 @@ public class DoorObject : InteractableBase
             return;
 
         model.localPosition = closedModelLocalPosition;
+    }
+
+    private Transform ResolvePresentationAnchor()
+    {
+        if (presentationAnchor != null)
+            return presentationAnchor;
+
+        if (model != null)
+            return model;
+
+        return transform;
     }
 
     private void OnDestroy()

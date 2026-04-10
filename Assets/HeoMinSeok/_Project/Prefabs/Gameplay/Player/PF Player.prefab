@@ -722,6 +722,7 @@ MonoBehaviour:
   attributeSet: {fileID: 1414767285602429285}
   effectRunner: {fileID: 7878539558719410035}
   tagSystem: {fileID: 7887873875085709242}
+  enableExclusiveActivationBuffer: 0
   globalCancelCastingOnTags: []
   globalCancelExecutionOnTags: []
   damageProfile: {fileID: 11400000, guid: ddd8b96de81528845828895d9bb33042, type: 2}
@@ -1420,6 +1421,31 @@ MonoBehaviour:
   localOffset: {x: 0, y: 0, z: 0}
   minIntentSpeed: 0.05
   clearOnStop: 0
+  gameplayPresentation:
+    audioOnExecute:
+      key: 
+      volumeMultiplier: 0
+      anchorPolicy: 0
+      localOffset: {x: 0, y: 0, z: 0}
+    audioWhileActive:
+      key: 
+      volumeMultiplier: 0
+      anchorPolicy: 0
+      localOffset: {x: 0, y: 0, z: 0}
+    audioOnRemove:
+      key: 
+      volumeMultiplier: 0
+      anchorPolicy: 0
+      localOffset: {x: 0, y: 0, z: 0}
+    cuesOnExecute: []
+    cuesWhileActive: []
+    cuesOnRemove: []
+    executeCueMagnitude: 0
+    whileActiveCueMagnitude: 0
+    removeCueMagnitude: 0
+    cueOnExecute: {fileID: 0}
+    cueWhileActive: {fileID: 0}
+    cueOnRemove: {fileID: 0}
 --- !u!114 &8470790143729662828
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1519,3 +1545,30 @@ MonoBehaviour:
   presentationAnimator: {fileID: 4088885187085815971}
   disableAnimatorDuringPresentation: 1
   cameraMode: 0
+  gameplayPresentation:
+    audioOnExecute:
+      key: 
+      volumeMultiplier: 0
+      anchorPolicy: 0
+      localOffset: {x: 0, y: 0, z: 0}
+    audioWhileActive:
+      key: 
+      volumeMultiplier: 0
+      anchorPolicy: 0
+      localOffset: {x: 0, y: 0, z: 0}
+    audioOnRemove:
+      key: 
+      volumeMultiplier: 0
+      anchorPolicy: 0
+      localOffset: {x: 0, y: 0, z: 0}
+    cuesOnExecute: []
+    cuesWhileActive: []
+    cuesOnRemove:
+    - {fileID: 11400000, guid: d4d6195a317245c2a40ea5e3fd767750, type: 2}
+    - {fileID: 11400000, guid: 87c7f3b44e6f74a49ad8cfcb49dae1de, type: 2}
+    executeCueMagnitude: 0
+    whileActiveCueMagnitude: 0
+    removeCueMagnitude: 15
+    cueOnExecute: {fileID: 0}
+    cueWhileActive: {fileID: 0}
+    cueOnRemove: {fileID: 0}

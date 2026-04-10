@@ -104,6 +104,38 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetDoor: {fileID: 0}
   promptAnchor: {fileID: 1339556334817558425}
+  presentationAnchor: {fileID: 386613921817804834}
+  successPresentation:
+    gameplayPresentation:
+      audioOnExecute:
+        key: 
+        volumeMultiplier: 0
+        anchorPolicy: 0
+        localOffset: {x: 0, y: 0, z: 0}
+      audioWhileActive:
+        key: 
+        volumeMultiplier: 0
+        anchorPolicy: 0
+        localOffset: {x: 0, y: 0, z: 0}
+      audioOnRemove:
+        key: 
+        volumeMultiplier: 0
+        anchorPolicy: 0
+        localOffset: {x: 0, y: 0, z: 0}
+      cuesOnExecute: []
+      cuesWhileActive: []
+      cuesOnRemove: []
+      executeCueMagnitude: 0
+      whileActiveCueMagnitude: 0
+      removeCueMagnitude: 0
+      cueOnExecute: {fileID: 0}
+      cueWhileActive: {fileID: 0}
+      cueOnRemove: {fileID: 0}
+    particlePrefab: {fileID: 170880958126991584, guid: 64509a90bf026d84792768de01688456, type: 3}
+    particleLocalOffset: {x: 0, y: 0, z: 0}
+    particleLifetimeOverrideSeconds: -1
+    useUnscaledParticleTime: 0
+  lastSyncedTargetDoor: {fileID: 0}
   interactPromptText: "\uC791\uB3D9\uD558\uAE30"
   leverRenderer: {fileID: 6367013370336474432}
   activatedSprite: {fileID: -1868582266, guid: 289d74fd511a02746a5f2e5bcf4a72bf, type: 3}

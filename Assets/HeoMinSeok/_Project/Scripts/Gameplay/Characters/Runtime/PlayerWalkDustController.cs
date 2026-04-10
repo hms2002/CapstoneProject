@@ -12,9 +12,13 @@ namespace UnityGAS
         [SerializeField, Min(0f)] private float minIntentSpeed = 0.05f;
         [SerializeField] private bool clearOnStop = false;
 
+        [Header("Gameplay Presentation (Optional)")]
+        [SerializeField] private GameplayPresentationDefinition gameplayPresentation;
+
         private GameObject dustInstance;
         private ParticleSystem[] particleSystems;
         private bool isEmitting;
+        private GameplayPresentationRuntime presentationRuntime;
 
         private void Awake()
         {
@@ -24,6 +28,7 @@ namespace UnityGAS
             if (dustAnchor == null)
                 dustAnchor = transform;
 
+            presentationRuntime = new GameplayPresentationRuntime(gameObject);
             EnsureDustInstance();
             StopDust(clear: true);
         }
@@ -41,6 +46,7 @@ namespace UnityGAS
         private void OnDisable()
         {
             StopDust(clear: true);
+            presentationRuntime?.Stop(gameplayPresentation, BuildPresentationParams(), playRemove: false);
             isEmitting = false;
         }
 
@@ -48,16 +54,37 @@ namespace UnityGAS
         {
             bool shouldEmit = movementMotor != null &&
                               movementMotor.LastIntentVelocity.sqrMagnitude >= minIntentSpeed * minIntentSpeed;
+            bool wasEmitting = isEmitting;
 
-            if (!force && shouldEmit == isEmitting)
+            if (!force && shouldEmit == wasEmitting)
                 return;
 
             if (shouldEmit)
+            {
+                if (!wasEmitting)
+                    presentationRuntime?.Start(gameplayPresentation, BuildPresentationParams());
+
                 PlayDust();
+            }
             else
+            {
                 StopDust(clearOnStop);
 
+                if (wasEmitting)
+                    presentationRuntime?.Stop(gameplayPresentation, BuildPresentationParams(), playRemove: true);
+            }
+
             isEmitting = shouldEmit;
+        }
+
+        private GameplayCueParams BuildPresentationParams()
+        {
+            Vector3 position = dustAnchor != null ? dustAnchor.position : transform.position;
+            return presentationRuntime.BuildParams(
+                target: gameObject,
+                sourceObject: this,
+                explicitPosition: position,
+                hasExplicitPosition: dustAnchor != null);
         }
 
         private void EnsureDustInstance()

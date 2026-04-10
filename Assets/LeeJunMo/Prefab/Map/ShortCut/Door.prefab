@@ -162,6 +162,37 @@ MonoBehaviour:
   model: {fileID: 3336051206690434136}
   animator: {fileID: 8025805421795082607}
   obstacleCollider: {fileID: 8131229036808013587}
+  presentationAnchor: {fileID: 3336051206690434136}
+  openPresentation:
+    gameplayPresentation:
+      audioOnExecute:
+        key: 
+        volumeMultiplier: 0
+        anchorPolicy: 0
+        localOffset: {x: 0, y: 0, z: 0}
+      audioWhileActive:
+        key: 
+        volumeMultiplier: 0
+        anchorPolicy: 0
+        localOffset: {x: 0, y: 0, z: 0}
+      audioOnRemove:
+        key: 
+        volumeMultiplier: 0
+        anchorPolicy: 0
+        localOffset: {x: 0, y: 0, z: 0}
+      cuesOnExecute: []
+      cuesWhileActive: []
+      cuesOnRemove: []
+      executeCueMagnitude: 0
+      whileActiveCueMagnitude: 0
+      removeCueMagnitude: 0
+      cueOnExecute: {fileID: 0}
+      cueWhileActive: {fileID: 0}
+      cueOnRemove: {fileID: 0}
+    particlePrefab: {fileID: 6718438523550872990, guid: 3beff166e52dff245afb887c7a3993bd, type: 3}
+    particleLocalOffset: {x: 0, y: 0.25, z: 0}
+    particleLifetimeOverrideSeconds: -1
+    useUnscaledParticleTime: 0
   oneWayOpenSide: 0
   oneWayOpenThreshold: 0.25
 --- !u!95 &8025805421795082607

@@ -1,5 +1,36 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &589449558253681941
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6996574808649623073}
+  m_Layer: 0
+  m_Name: ParticleAnchor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6996574808649623073
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 589449558253681941}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.65, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5698896082064649552}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1716703071323334317
 GameObject:
   m_ObjectHideFlags: 0
@@ -422,6 +453,7 @@ Transform:
   - {fileID: 675310916656280275}
   - {fileID: 7929298368788562834}
   - {fileID: 8096222563062667738}
+  - {fileID: 6996574808649623073}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &7908045054142067715
@@ -493,6 +525,38 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   targetDoor: {fileID: 0}
   promptAnchor: {fileID: 675310916656280275}
+  presentationAnchor: {fileID: 6996574808649623073}
+  successPresentation:
+    gameplayPresentation:
+      audioOnExecute:
+        key: 
+        volumeMultiplier: 0
+        anchorPolicy: 0
+        localOffset: {x: 0, y: 0, z: 0}
+      audioWhileActive:
+        key: 
+        volumeMultiplier: 0
+        anchorPolicy: 0
+        localOffset: {x: 0, y: 0, z: 0}
+      audioOnRemove:
+        key: 
+        volumeMultiplier: 0
+        anchorPolicy: 0
+        localOffset: {x: 0, y: 0, z: 0}
+      cuesOnExecute: []
+      cuesWhileActive: []
+      cuesOnRemove: []
+      executeCueMagnitude: 0
+      whileActiveCueMagnitude: 0
+      removeCueMagnitude: 0
+      cueOnExecute: {fileID: 0}
+      cueWhileActive: {fileID: 0}
+      cueOnRemove: {fileID: 0}
+    particlePrefab: {fileID: 6821349489537912191, guid: 53c48d36675d8be4a95ddf04536c6c68, type: 3}
+    particleLocalOffset: {x: 0, y: 0, z: 0}
+    particleLifetimeOverrideSeconds: -1
+    useUnscaledParticleTime: 0
+  lastSyncedTargetDoor: {fileID: 0}
   interactPromptText: "\uBC14\uCE58\uAE30"
   costType: 0
   costAmount: 5
