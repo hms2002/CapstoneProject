@@ -21,6 +21,18 @@ public sealed class PlayerIntentInput2D : MonoBehaviour, IIntentMovementSource2D
     [SerializeField] private GameplayTag forcedMoveTag;
     [SerializeField] private GameplayTag moveBlockedTag;
 
+    /// <summary>
+    /// 책임 :
+    /// - 플레이어가 실제로 누르고 있는 원본 이동 입력을 보관한다.
+    /// - 이동 차단 tag와 무관하게 "입력이 무엇이었는지"를 참조해야 하는 능력이 사용한다.
+    /// </summary>
+    public Vector2 RawMoveInput { get; private set; }
+
+    /// <summary>
+    /// 책임 :
+    /// - 이동 차단 및 강제 이동 tag를 반영한 최종 이동 입력을 보관한다.
+    /// - 일반 이동 시스템은 이 값을 읽어 현재 허용된 이동만 적용한다.
+    /// </summary>
     public Vector2 MoveInput { get; private set; }
 
     private void Awake()
@@ -33,6 +45,8 @@ public sealed class PlayerIntentInput2D : MonoBehaviour, IIntentMovementSource2D
 
     private void Update()
     {
+        RawMoveInput = InputBindingService.EnsureInstance().GetMoveVectorNormalized();
+
         if (player != null && player.CurrentState != InteractState.Idle)
         {
             MoveInput = Vector2.zero;
@@ -51,7 +65,7 @@ public sealed class PlayerIntentInput2D : MonoBehaviour, IIntentMovementSource2D
 
         if (!forced)
         {
-            MoveInput = InputBindingService.EnsureInstance().GetMoveVectorNormalized();
+            MoveInput = RawMoveInput;
         }
         else
         {

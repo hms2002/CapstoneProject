@@ -3,10 +3,10 @@ using UnityEngine;
 namespace UnityGAS
 {
     /// <summary>
-    /// 대쉬/런지/백스텝 같은 "능동적 특수이동"을 관리한다.
-    /// - 최종 적용은 하지 않는다
-    /// - 현재 프레임의 특수이동 속도만 제공한다
-    /// - Rigidbody2D는 직접 만지지 않는다
+    /// 책임 :
+    /// - dash, damped dash, lunge 같은 능동적 특수이동을 단일 motion 채널에서 관리한다.
+    /// - motion 종류 간 덮어쓰기/거절 규칙을 적용하고, 현재 프레임의 특수이동 속도만 계산해 제공한다.
+    /// - Rigidbody2D를 직접 만지지 않고 MovementMotor2D가 읽을 motion velocity만 반환한다.
     /// </summary>
     [DisallowMultipleComponent]
     public sealed class AbilityMotionController2D : MonoBehaviour
@@ -32,6 +32,10 @@ namespace UnityGAS
 
         public bool HasActiveMotion => activeKind != MotionKind.None;
 
+        private bool IsDashLikeActive =>
+            activeKind == MotionKind.ConstantVelocity ||
+            activeKind == MotionKind.DampedVelocity;
+
         /// <summary>
         /// 일정 시간 동안 일정 속도로 이동하는 특수이동 시작.
         /// 예: 대쉬, 짧은 돌진
@@ -45,6 +49,8 @@ namespace UnityGAS
                 direction = Vector2.right;
             else
                 direction.Normalize();
+
+            CancelMotion();
 
             activeKind = MotionKind.ConstantVelocity;
             motionVelocity = direction * speed;
@@ -71,6 +77,8 @@ namespace UnityGAS
             else
                 direction.Normalize();
 
+            CancelMotion();
+
             activeKind = MotionKind.DampedVelocity;
             motionVelocity = direction * initialSpeed;
             motionRemainingTime = duration;
@@ -91,6 +99,9 @@ namespace UnityGAS
             if (duration <= 0f || distance <= 0f)
                 return;
 
+            if (IsDashLikeActive)
+                return;
+
             if (direction.sqrMagnitude <= 0.000001f)
                 direction = Vector2.right;
             else
@@ -109,7 +120,6 @@ namespace UnityGAS
 
         public void CancelMotion()
         {
-            Debug.Log("캔슬?");
             activeKind = MotionKind.None;
             motionVelocity = Vector2.zero;
             motionRemainingTime = 0f;

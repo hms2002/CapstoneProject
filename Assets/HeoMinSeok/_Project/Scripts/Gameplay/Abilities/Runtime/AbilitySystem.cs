@@ -18,6 +18,9 @@ namespace UnityGAS
         [SerializeField] private GameplayEffectRunner effectRunner;
         [SerializeField] private TagSystem tagSystem;
 
+        [Header("Execution")]
+        [SerializeField] private bool enableExclusiveActivationBuffer = false;
+
         [Header("Cancellation Tags (Global)")]
         [SerializeField] private List<GameplayTag> globalCancelCastingOnTags = new();
         [SerializeField] private List<GameplayTag> globalCancelExecutionOnTags = new();
@@ -632,6 +635,9 @@ namespace UnityGAS
         {
             if (IsBusy)
             {
+                if (!enableExclusiveActivationBuffer)
+                    return false;
+
                 BufferActivation(spec, target);
                 return true;
             }

@@ -36,12 +36,13 @@ namespace UnityGAS.Sample
 
             Vector2 attackDir = AbilityAimResolver2D.Resolve(system.gameObject, Vector2.right);
             Vector2 lungeDir = AbilityMoveDirectionResolver2D.ResolveMoveThenAim(system.gameObject, attackDir);
+            float finalAttackSpeed = AbilityAttackSpeedResolver.ResolveFinalAttackSpeed(system);
 
             int comboIndex = ResolveComboIndex(spec, data);
-            var step = data.GetStep(comboIndex);
+            var step = data.GetRuntimeStep(comboIndex, finalAttackSpeed);
             spec.SetInt(KEY_COMBO_INDEX, comboIndex);
             spec.SetFloat(KEY_COMBO_EXPIRE, Time.time + data.comboResetTime);
-            system.SetNextActivationDelay(spec, step.ResolveNextAttackDelay());
+            system.SetNextActivationDelay(spec, step.nextAttackDelay);
 
             TryPlayAnim(system, step, spec.Definition);
 
@@ -54,7 +55,9 @@ namespace UnityGAS.Sample
                 step.lungeDistance,
                 step.lungeDuration);
 
-            float rec = step.recoveryDuration > 0f ? step.recoveryDuration : spec.Definition.recoveryTime;
+            float rec = step.recoveryDuration > 0f
+                ? step.recoveryDuration
+                : Mathf.Max(0.02f, spec.Definition.recoveryTime / finalAttackSpeed);
             spec.SetFloat("RecoveryOverride", rec);
 
             SpawnHitbox(system, spec, data, step, attackDir);
@@ -72,7 +75,7 @@ namespace UnityGAS.Sample
             return 0;
         }
 
-        private void TryPlayAnim(AbilitySystem system, SwordCombo2DData.SwordComboStepData step, AbilityDefinition definition)
+        private void TryPlayAnim(AbilitySystem system, SwordCombo2DData.RuntimeSwordComboStepData step, AbilityDefinition definition)
         {
             string trig = step.animationTrigger;
             if (string.IsNullOrEmpty(trig)) return;
@@ -88,7 +91,7 @@ namespace UnityGAS.Sample
             AbilitySystem system,
             AbilitySpec spec,
             SwordCombo2DData data,
-            SwordCombo2DData.SwordComboStepData step,
+            SwordCombo2DData.RuntimeSwordComboStepData step,
             Vector2 dir,
             float distance,
             float duration)
@@ -147,7 +150,7 @@ namespace UnityGAS.Sample
             AbilitySystem system,
             AbilitySpec abilitySpec,
             SwordCombo2DData data,
-            SwordCombo2DData.SwordComboStepData step,
+            SwordCombo2DData.RuntimeSwordComboStepData step,
             Vector2 dir)
         {
             if (data.damageEffect == null) return;

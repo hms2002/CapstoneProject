@@ -16,7 +16,7 @@ MonoBehaviour:
   icon: {fileID: 0}
   description: Ability description.
   cooldown: 1
-  executionPolicy: 0
+  executionPolicy: 1
   useCharges: 0
   maxCharges: 1
   cooldownEffect: {fileID: 11400000, guid: e0cdcda9b86374b4c99ad2e948fcfd26, type: 2}
