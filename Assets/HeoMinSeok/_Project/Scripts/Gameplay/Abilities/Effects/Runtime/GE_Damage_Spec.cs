@@ -23,6 +23,9 @@ namespace UnityGAS
     [CreateAssetMenu(fileName = "GE_Damage_Spec", menuName = "GAS/Effects/Damage (Spec)")]
     public class GE_Damage_Spec : GameplayEffect, ISpecGameplayEffect
     {
+        private const string DefaultDeadTagResourcePath = "Tags/State.Dead";
+        private static GameplayTag s_defaultDeadTag;
+
         [Header("Damage")]
         [Tooltip("깎을 대상 Attribute (보통 Health)")]
         public AttributeDefinition healthAttribute;
@@ -76,10 +79,16 @@ namespace UnityGAS
         {
             if (target == null) return;
 
+            if (s_defaultDeadTag == null)
+                s_defaultDeadTag = Resources.Load<GameplayTag>(DefaultDeadTagResourcePath);
+
+            var tags = target.GetComponent<TagSystem>();
+            if (tags != null && s_defaultDeadTag != null && tags.HasTag(s_defaultDeadTag))
+                return;
+
             // 0) 무적 태그
             if (invulnerableTag != null)
             {
-                var tags = target.GetComponent<TagSystem>();
                 if (tags != null && tags.HasTag(invulnerableTag))
                     return;
             }
@@ -87,7 +96,6 @@ namespace UnityGAS
             // 1) 1회 보호막(태그) 처리
             if (oneHitShieldTag != null)
             {
-                var tags = target.GetComponent<TagSystem>();
                 if (tags != null && tags.GetTagCount(oneHitShieldTag) > 0)
                 {
                     tags.RemoveTag(oneHitShieldTag, 1);

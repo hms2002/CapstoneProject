@@ -12,6 +12,9 @@ namespace UnityGAS
     [DisallowMultipleComponent]
     public sealed class MonsterHitFeedback2D : MonoBehaviour, IHitFeedbackReceiver2D
     {
+        private const string DefaultDeadTagResourcePath = "Tags/State.Dead";
+        private static GameplayTag s_defaultDeadTag;
+
         [Header("Timing")]
         [SerializeField] private float hitEnterSeconds = 0.20f;
         [SerializeField] private float hitActiveSeconds = 0.40f;
@@ -114,9 +117,28 @@ namespace UnityGAS
         /// </summary>
         private bool ShouldIgnoreHitReaction()
         {
+            if (IsDeadState())
+                return true;
+
             return hitReactImmuneTag != null &&
                    _tags != null &&
                    _tags.HasTag(hitReactImmuneTag);
+        }
+
+        /// <summary>
+        /// 책임 :
+        /// - 몬스터가 이미 사망 상태면 추가 피격 연출을 시작하지 않도록 차단한다.
+        /// - 사망 이후 남은 후속 타격으로 피격 애니메이션이 다시 켜지지 않게 방어한다.
+        /// </summary>
+        private bool IsDeadState()
+        {
+            if (_tags == null)
+                return false;
+
+            if (s_defaultDeadTag == null)
+                s_defaultDeadTag = Resources.Load<GameplayTag>(DefaultDeadTagResourcePath);
+
+            return s_defaultDeadTag != null && _tags.HasTag(s_defaultDeadTag);
         }
 
         /// <summary>

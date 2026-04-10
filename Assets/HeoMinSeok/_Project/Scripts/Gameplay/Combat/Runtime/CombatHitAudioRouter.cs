@@ -9,6 +9,9 @@ using UnityGAS;
 /// </summary>
 public static class CombatHitAudioRouter
 {
+    private const string DefaultDeadTagResourcePath = "Tags/State.Dead";
+    private static GameplayTag s_defaultDeadTag;
+
     /// <summary>
     /// 책임 :
     /// - 실제 HP 감소가 확인된 타격에 대해 최종 재생할 SoundRef를 선택하고 재생한다.
@@ -17,6 +20,9 @@ public static class CombatHitAudioRouter
     public static void PlayImpact(AbilitySystem system, AbilitySpec spec, GameObject target, GameObject causer)
     {
         if (target == null)
+            return;
+
+        if (IsDeadTarget(target))
             return;
 
         SoundRef resolved = ResolveImpactSound(spec, target);
@@ -49,5 +55,25 @@ public static class CombatHitAudioRouter
 
         AbilityDefinition def = spec != null ? spec.Definition : null;
         return def != null ? def.impactSound : default;
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 사망 태그가 붙은 타깃에 대해서는 추가 피격 사운드를 재생하지 않도록 차단한다.
+    /// - 사망 직후 남아 있는 후속 타격 연출이 청각적으로 이어지지 않게 방어한다.
+    /// </summary>
+    private static bool IsDeadTarget(GameObject target)
+    {
+        if (target == null)
+            return true;
+
+        if (s_defaultDeadTag == null)
+            s_defaultDeadTag = Resources.Load<GameplayTag>(DefaultDeadTagResourcePath);
+
+        if (s_defaultDeadTag == null)
+            return false;
+
+        TagSystem tags = target.GetComponent<TagSystem>();
+        return tags != null && tags.HasTag(s_defaultDeadTag);
     }
 }
