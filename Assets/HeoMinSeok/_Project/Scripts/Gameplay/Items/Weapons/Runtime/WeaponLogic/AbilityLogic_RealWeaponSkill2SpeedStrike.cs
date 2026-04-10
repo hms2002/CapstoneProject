@@ -59,25 +59,33 @@ namespace UnityGAS
                 Vector2 dir = AbilityAimResolver2D.Resolve(system.gameObject, Vector2.right);
                 Vector2 center = (Vector2)system.transform.position + dir * data.forwardOffset;
 
-                float atk = 0f;
-                float ms = 1f;
-
-                if (statProvider != null)
+                float baseHp;
+                if (data.damageFormula != null)
                 {
-                    atk = statProvider.Get(data.attackStatId);
-                    ms = statProvider.Get(data.moveSpeedMultiplierStatId);
+                    baseHp = data.damageFormula.Evaluate(attr, statProvider, defaultIfEmpty: 0f);
                 }
                 else
                 {
-                    if (data.attackAttribute == null || data.moveSpeedMultiplierAttribute == null)
-                        yield break;
+                    float atk = 0f;
+                    float ms = 1f;
 
-                    atk = attr.GetAttributeValue(data.attackAttribute);
-                    ms = attr.GetAttributeValue(data.moveSpeedMultiplierAttribute);
+                    if (statProvider != null)
+                    {
+                        atk = statProvider.Get(data.attackStatId);
+                        ms = statProvider.Get(data.moveSpeedMultiplierStatId);
+                    }
+                    else
+                    {
+                        if (data.attackAttribute == null || data.moveSpeedMultiplierAttribute == null)
+                            yield break;
+
+                        atk = attr.GetAttributeValue(data.attackAttribute);
+                        ms = attr.GetAttributeValue(data.moveSpeedMultiplierAttribute);
+                    }
+
+                    ms = Mathf.Max(0f, ms);
+                    baseHp = atk * (ms * data.speedScale);
                 }
-
-                ms = Mathf.Max(0f, ms);
-                float baseHp = atk * (ms * data.speedScale);
 
                 float baseKnockback = 0f;
                 if (data.knockbackFormula != null)

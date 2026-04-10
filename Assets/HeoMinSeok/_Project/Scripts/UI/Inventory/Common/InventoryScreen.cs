@@ -78,6 +78,7 @@ public class InventoryScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSo
 
     private void OnDisable()
     {
+        ItemDragContext.CancelActiveDragSession();
         MouseCursorService.Instance?.ClearDomain(this);
         ClearUI();
         ItemContainerGroupRegistry.Clear();

@@ -93,6 +93,7 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
 
     private void OnDisable()
     {
+        ItemDragContext.CancelActiveDragSession();
         MouseCursorService.Instance?.ClearDomain(this);
 
         if (UIManager.Instance != null) UIManager.Instance.HideHoverImmediate();
