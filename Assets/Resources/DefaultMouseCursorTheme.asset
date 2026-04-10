@@ -15,7 +15,7 @@ MonoBehaviour:
   combatDomain:
     defaultCursor:
       sprite: {fileID: 5373116329307524478, guid: 2a195b84427e14a4ba63fe519397dd8e, type: 3}
-      hotspotPixels: {x: 0, y: 0}
+      hotspotPixels: {x: 8, y: 8}
       scale: 1
     interactableCursor:
       sprite: {fileID: 0}
@@ -32,34 +32,34 @@ MonoBehaviour:
   inventoryDomain:
     defaultCursor:
       sprite: {fileID: -8448536817689828998, guid: 1d56a304110f63a4fbab81eeacf6910a, type: 3}
-      hotspotPixels: {x: 0, y: 0}
+      hotspotPixels: {x: 2, y: 2}
       scale: 1
     interactableCursor:
       sprite: {fileID: 2244188990704038074, guid: 1d56a304110f63a4fbab81eeacf6910a, type: 3}
-      hotspotPixels: {x: 0, y: 0}
+      hotspotPixels: {x: 2, y: 2}
       scale: 1
     pressedCursor:
       sprite: {fileID: 6051788245673681451, guid: 1d56a304110f63a4fbab81eeacf6910a, type: 3}
-      hotspotPixels: {x: 0, y: 0}
+      hotspotPixels: {x: 2, y: 2}
       scale: 1
     draggingCursor:
       sprite: {fileID: -3239814733474346692, guid: 1d56a304110f63a4fbab81eeacf6910a, type: 3}
-      hotspotPixels: {x: 0, y: 0}
+      hotspotPixels: {x: 6, y: 6}
       scale: 1
   npcUiDomain:
     defaultCursor:
       sprite: {fileID: -8448536817689828998, guid: 1d56a304110f63a4fbab81eeacf6910a, type: 3}
-      hotspotPixels: {x: 0, y: 0}
+      hotspotPixels: {x: 2, y: 2}
       scale: 1
     interactableCursor:
       sprite: {fileID: 6031248440567335274, guid: 1d56a304110f63a4fbab81eeacf6910a, type: 3}
-      hotspotPixels: {x: 0, y: 0}
+      hotspotPixels: {x: 2, y: 2}
       scale: 1
     pressedCursor:
       sprite: {fileID: 1449552957060229219, guid: 1d56a304110f63a4fbab81eeacf6910a, type: 3}
-      hotspotPixels: {x: 0, y: 0}
+      hotspotPixels: {x: 2, y: 2}
       scale: 1
     draggingCursor:
       sprite: {fileID: -3239814733474346692, guid: 1d56a304110f63a4fbab81eeacf6910a, type: 3}
-      hotspotPixels: {x: 0, y: 0}
+      hotspotPixels: {x: 2, y: 2}
       scale: 1
