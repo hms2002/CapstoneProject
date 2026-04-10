@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6530703324997b44ea2c30df3f4c4f98, type: 3}
+  m_Name: SSF_SpeedStrikeDamage
+  m_EditorClassIdentifier: 
+  instructions:
+  - opCode: 0
+    useStatId: 1
+    statId: 13
+    sourceAttribute: {fileID: 11400000, guid: 947f52c2a34d008428c105cd897d5efd, type: 2}
+    constantValue: 0
+  - opCode: 0
+    useStatId: 1
+    statId: 143
+    sourceAttribute: {fileID: 11400000, guid: 23db6468e859c6f42b0230a5af7ca81c, type: 2}
+    constantValue: 0
+  - opCode: 4
+    useStatId: 0
+    statId: 0
+    sourceAttribute: {fileID: 0}
+    constantValue: 0
+  - opCode: 1
+    useStatId: 0
+    statId: 0
+    sourceAttribute: {fileID: 0}
+    constantValue: 3
+  - opCode: 4
+    useStatId: 0
+    statId: 0
+    sourceAttribute: {fileID: 0}
+    constantValue: 0
+  lastValidationMessage: 

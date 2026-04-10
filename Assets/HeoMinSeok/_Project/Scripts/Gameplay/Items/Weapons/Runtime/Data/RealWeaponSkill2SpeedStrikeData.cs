@@ -33,6 +33,9 @@ namespace UnityGAS
         [Tooltip("피해 스케일. baseHp = ATK * (MoveSpeedMult * scale)")]
         public float speedScale = 3f;
 
+        [Tooltip("선택: 복합 피해 공식. 지정되면 attack/moveSpeed query 대신 이 공식을 우선 사용한다.")]
+        public StackStatFormula damageFormula;
+
         [Tooltip("선택: 넉백 공식")]
         public ScaledStatFormula knockbackFormula;
 

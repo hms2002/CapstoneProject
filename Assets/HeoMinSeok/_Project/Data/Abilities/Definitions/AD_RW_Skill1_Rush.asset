@@ -49,6 +49,7 @@ MonoBehaviour:
   targetBlockedByTagSets: []
   grantedTagsWhileActive:
   - {fileID: 11400000, guid: 837c3c3beac45de458f179f50c7d7500, type: 2}
+  - {fileID: 11400000, guid: fde966f9052442118618165742e0c459, type: 2}
   targetRequiredTags: []
   targetBlockedByTags: []
   logic: {fileID: 11400000, guid: 766ca51564fbc2149953760a712f78c3, type: 2}
