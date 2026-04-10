@@ -1,5 +1,36 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &152093733963621922
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4115971267136633410}
+  m_Layer: 0
+  m_Name: SleepAnchor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4115971267136633410
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 152093733963621922}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.189, y: 0.833, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8969203147945012884}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1205072191240670631
 GameObject:
   m_ObjectHideFlags: 0
@@ -630,6 +661,7 @@ Transform:
   - {fileID: 6393756630389079545}
   - {fileID: 3534864477184363294}
   - {fileID: 6118371081096453659}
+  - {fileID: 4115971267136633410}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!61 &4526646571639922450
@@ -1517,6 +1549,7 @@ MonoBehaviour:
     m_RotationOrder: 4
   shadowChildName: Shadow
   shadowTransform: {fileID: 647482627083604036}
+  shadowSpriteRenderer: {fileID: 0}
   shadowStartScaleMultiplier: 4
   shadowScaleCurve:
     serializedVersion: 2
@@ -1543,7 +1576,22 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   presentationAnimator: {fileID: 4088885187085815971}
+  presentationSpriteRenderer: {fileID: 0}
   disableAnimatorDuringPresentation: 1
+  sleepAfterIdleSeconds: 10
+  sleepWakeDelaySeconds: 1
+  useLyingShadowOverride: 1
+  lyingShadowPoseReference: {fileID: 0}
+  lyingShadowSprite: {fileID: 0}
+  lyingShadowLocalOffset: {x: -0.2, y: 0.4, z: 0.1}
+  lyingShadowLocalRotationZ: -90
+  lyingShadowScaleMultiplier: {x: 2.2, y: 1, z: 1}
+  awakeIdleSpriteOverride: {fileID: -720365038908779728, guid: 54afb36f0c9a5b347b44945f7a8e0f78, type: 3}
+  sleepSprite: {fileID: -3282638300470552162, guid: 66dc6cbb5247f4842b2db3329d25bcaa, type: 3}
+  sleepEffectAnchor: {fileID: 4115971267136633410}
+  sleepEffectPrefab: {fileID: 5901972143961512537, guid: 1585d72a2e7a6574bbdafcb2f8a24b41, type: 3}
+  sleepEffectLocalOffset: {x: 0, y: 0, z: 0}
+  useUnscaledSleepEffectTime: 0
   cameraMode: 0
   gameplayPresentation:
     audioOnExecute:
