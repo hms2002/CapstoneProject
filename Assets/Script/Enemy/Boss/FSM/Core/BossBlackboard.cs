@@ -1,10 +1,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BossBlackboard
+public sealed class BossBlackboard
 {
     private readonly Transform ownerTransform;
     private readonly Dictionary<BossPatternEntry, float> patternSelectionReadyTimes = new();
+    private readonly Dictionary<BossPatternEntry, int> patternUseCounts = new();
 
     public BossBlackboard(Transform ownerTransform)
     {
@@ -73,10 +74,10 @@ public class BossBlackboard
         CurrentPattern = pattern;
         ReservedPattern = null;
 
-        if (pattern == null)
-            return;
+        if (pattern == null) return;
 
         patternSelectionReadyTimes[pattern] = Time.time + pattern.AiSelectionLockTime;
+        patternUseCounts[pattern] = GetUseCount(pattern) + 1;
 
         if (LastUsedPattern == pattern)
             ConsecutivePatternUseCount++;
@@ -99,12 +100,20 @@ public class BossBlackboard
 
     public bool IsPatternSelectionReady(BossPatternEntry pattern)
     {
-        if (pattern == null)
-            return false;
+        if (pattern == null) return false;
 
-        if (!patternSelectionReadyTimes.TryGetValue(pattern, out float readyTime))
-            return true;
+        if (!patternSelectionReadyTimes.TryGetValue(pattern, out float readyTime)) return true;
 
         return Time.time >= readyTime;
+    }
+
+    /// <summary>패턴 사용 횟수를 반환합니다.</summary>
+    public int GetUseCount(BossPatternEntry pattern)
+    {
+        if (pattern == null) return 0;
+
+        if (!patternUseCounts.TryGetValue(pattern, out int useCount)) return 0;
+
+        return useCount;
     }
 }

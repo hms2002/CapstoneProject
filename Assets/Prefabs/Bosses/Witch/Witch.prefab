@@ -28,6 +28,8 @@ GameObject:
   - component: {fileID: 1293483340863161236}
   - component: {fileID: 6288342579342210011}
   - component: {fileID: 6288342579342210012}
+  - component: {fileID: 5551234567890123456}
+  - component: {fileID: 1699081613814899334}
   m_Layer: 31
   m_Name: Witch
   m_TagString: Enemy
@@ -52,6 +54,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &8897721723054304330
 SpriteRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -70,6 +73,8 @@ SpriteRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -91,9 +96,11 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -1039746825
   m_SortingLayer: 2
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_Sprite: {fileID: 739828523011928573, guid: 7f270a471d0074a4cb5cae87b3df06bc, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -103,7 +110,6 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
   m_SpriteSortPoint: 1
 --- !u!50 &5310030812964765969
 Rigidbody2D:
@@ -205,14 +211,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealthDef: {fileID: 11400000, guid: 0e177e1d15e428745b5859fac08ce203, type: 2}
   healthDef: {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
-  enemyName: "\uB9C8\uB140"
+  enemyName: Witch
   targetTag: Player
+  dieAnimTime: 0
+  startCombatOnStart: 1
   initialTarget: {fileID: 0}
   healthAttribute: {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
   maxHealthAttribute: {fileID: 11400000, guid: 0e177e1d15e428745b5859fac08ce203, type: 2}
   deadTag: {fileID: 0}
   groggyTag: {fileID: 11400000, guid: 6a381fd96b3c05d4cbcbd73fbf173f4e, type: 2}
   phases: []
+  fogPrefab: {fileID: 4201956065249926095, guid: 983d63dce5dc9454a9a74287a2ed4d94, type: 3}
+  extinguishDamageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
+  extinguishDamage: 1
 --- !u!114 &8462024867634775818
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -230,6 +241,7 @@ MonoBehaviour:
   attributeSet: {fileID: 5277792941553958002}
   effectRunner: {fileID: 3113701687370779019}
   tagSystem: {fileID: 4477728599806979434}
+  enableExclusiveActivationBuffer: 0
   globalCancelCastingOnTags: []
   globalCancelExecutionOnTags: []
   damageProfile: {fileID: 11400000, guid: ddd8b96de81528845828895d9bb33042, type: 2}
@@ -372,6 +384,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   body: {fileID: 5310030812964765969}
+  enforceContinuousCollision: 1
   intentSourceBehaviour: {fileID: 0}
   statProviderBehaviour: {fileID: 0}
   externalMovement: {fileID: 0}
@@ -465,3 +478,29 @@ MonoBehaviour:
   flashColor: {r: 1, g: 1, b: 1, a: 1}
   flashMultiply: 1.5
   flashDuration: 0.08
+--- !u!114 &5551234567890123456
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4104743717894493410}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e976ed306a130c94db8843af68333d15, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  telegraphPrefab: {fileID: 788264263987448140, guid: 211dd09e2da9caf47ad8409c9e35b83d, type: 3}
+  defaultStyle: {fileID: 0}
+--- !u!114 &1699081613814899334
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4104743717894493410}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c721f3a2f874aa14ea14c5bc2261cc39, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UnityGAS.AbilityMotionController2D

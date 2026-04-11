@@ -13,11 +13,9 @@ public class FogSightLock : MonoBehaviour
 
     private void Update()
     {
-        if (!isDark)
-            return;
+        if (!isDark) return;
 
-        if (Time.time < endTime)
-            return;
+        if (Time.time < endTime) return;
 
         RestoreLight();
     }
@@ -33,8 +31,7 @@ public class FogSightLock : MonoBehaviour
         CacheLights();
         endTime = Time.time + Mathf.Max(0f, duration);
 
-        if (isDark)
-            return;
+        if (isDark) return;
 
         SetDark();
     }
@@ -42,16 +39,14 @@ public class FogSightLock : MonoBehaviour
     /// <summary>글로벌 라이트를 찾아 저장합니다.</summary>
     private void CacheLights()
     {
-        if (globalLights.Count > 0)
-            return;
+        if (globalLights.Count > 0) return;
 
         Light2D[] lights = FindObjectsByType<Light2D>(FindObjectsSortMode.None);
 
         for (int i = 0; i < lights.Length; i++)
         {
             Light2D light = lights[i];
-            if (light == null || light.lightType != Light2D.LightType.Global)
-                continue;
+            if (light == null || light.lightType != Light2D.LightType.Global) continue;
 
             globalLights.Add(light);
             lightValues.Add(light.intensity);
@@ -64,8 +59,7 @@ public class FogSightLock : MonoBehaviour
         for (int i = 0; i < globalLights.Count; i++)
         {
             Light2D light = globalLights[i];
-            if (light == null)
-                continue;
+            if (light == null) continue;
 
             light.intensity = 0f;
         }
@@ -76,14 +70,12 @@ public class FogSightLock : MonoBehaviour
     /// <summary>글로벌 라이트 밝기를 되돌립니다.</summary>
     private void RestoreLight()
     {
-        if (!isDark)
-            return;
+        if (!isDark) return;
 
         for (int i = 0; i < globalLights.Count; i++)
         {
             Light2D light = globalLights[i];
-            if (light == null)
-                continue;
+            if (light == null) continue;
 
             light.intensity = lightValues[i];
         }

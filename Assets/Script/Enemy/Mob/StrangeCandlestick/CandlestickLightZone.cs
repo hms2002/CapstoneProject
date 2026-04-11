@@ -27,8 +27,7 @@ public class CandlestickLightZone : MonoBehaviour
         if (triggerZone == null)
             triggerZone = GetComponent<CircleCollider2D>();
 
-        if (pointLight == null || triggerZone == null)
-            return;
+        if (pointLight == null || triggerZone == null) return;
 
         triggerZone.isTrigger = true;
         triggerZone.radius = Mathf.Max(0.01f, pointLight.pointLightOuterRadius);

@@ -156,8 +156,7 @@ public class DeadsSkeleton : Mob
     /// <summary>자폭 대기 시간을 갱신합니다.</summary>
     private void TickSelfDestruct()
     {
-        if (Time.time < explodeTime)
-            return;
+        if (Time.time < explodeTime) return;
 
         Explode(target != null ? target.gameObject : null);
     }
@@ -165,8 +164,7 @@ public class DeadsSkeleton : Mob
     /// <summary>자폭 경고를 표시합니다.</summary>
     private void ShowWarning()
     {
-        if (telegraphService == null)
-            return;
+        if (telegraphService == null) return;
 
         AttackTelegraphSpec spec = AttackTelegraphSpec.CreateCircle(
             transform.position,
