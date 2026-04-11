@@ -88,7 +88,7 @@ public class Witch : BossControllerBase
     {
         if (telegraphService == null || fogPrefab == null) return false;
 
-        StrangeCandlestick candle = GetNearestCandle();
+        Candlestick candle = GetNearestCandle();
         if (candle == null) return false;
 
         if (GetFogRadius() <= 0f) return false;
@@ -103,7 +103,7 @@ public class Witch : BossControllerBase
     /// <summary>촛불 끄기 패턴을 끝냅니다.</summary>
     public void FinishExtinguish()
     {
-        StrangeCandlestick extinguishCandle = runtimeData.SelectedCandle;
+        Candlestick extinguishCandle = runtimeData.SelectedCandle;
         if (extinguishCandle == null) return;
 
         Vector3 extinguishCenter = runtimeData.SelectedCenter;
@@ -142,15 +142,15 @@ public class Witch : BossControllerBase
     }
 
     /// <summary>가장 가까운 촛대를 구합니다.</summary>
-    public StrangeCandlestick GetNearestCandle()
+    public Candlestick GetNearestCandle()
     {
         float bestDistance = float.MaxValue;
-        StrangeCandlestick bestCandle = null;
+        Candlestick bestCandle = null;
 
-        for (int i = 0; i < StrangeCandlestick.Instances.Count; i++)
+        for (int i = 0; i < Candlestick.Instances.Count; i++)
         {
-            StrangeCandlestick candle = StrangeCandlestick.Instances[i];
-            if (candle == null || candle.IsDead || candle.IsSealed) continue;
+            Candlestick candle = Candlestick.Instances[i];
+            if (candle == null || candle.IsSealed) continue;
 
             float sqrDistance = (GetCandleCenter(candle) - transform.position).sqrMagnitude;
             if (sqrDistance >= bestDistance)
@@ -164,7 +164,7 @@ public class Witch : BossControllerBase
     }
 
     /// <summary>촛대 중심 위치를 구합니다.</summary>
-    public Vector3 GetCandleCenter(StrangeCandlestick candle)
+    public Vector3 GetCandleCenter(Candlestick candle)
     {
         if (candle == null) return transform.position;
 

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
@@ -18,6 +19,7 @@ public class CandlestickSeal : MonoBehaviour
     private bool isSealed;
 
     public bool IsSealed => isSealed;
+    public event Action<bool> SealChanged;
 
     private void Awake()
     {
@@ -38,6 +40,7 @@ public class CandlestickSeal : MonoBehaviour
         hitsLeft = SealHitCount;
         ToggleLight(false);
         ShowMarks();
+        SealChanged?.Invoke(true);
     }
 
     /// <summary>봉인 해제 타격을 처리합니다.</summary>
@@ -60,6 +63,7 @@ public class CandlestickSeal : MonoBehaviour
         isSealed = false;
         ToggleLight(true);
         HideMarks();
+        SealChanged?.Invoke(false);
     }
 
     /// <summary>광원과 마스크 표시를 켜고 끕니다.</summary>
