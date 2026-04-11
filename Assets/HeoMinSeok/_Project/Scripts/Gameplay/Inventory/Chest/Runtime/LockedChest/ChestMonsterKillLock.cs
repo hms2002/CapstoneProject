@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityGAS;
 
 /// <summary>
 /// 책임 : 특정 상자에 연결된 몬스터 처치 기반 잠금 상태를 관리한다.
@@ -12,8 +13,13 @@ public sealed class ChestMonsterKillLock : MonoBehaviour
 {
     private readonly List<GameObject> trackedMonsters = new();
 
+    [Header("Presentation")]
+    [SerializeField] private Transform presentationAnchor;
+    [SerializeField] private WorldObjectPresentationDefinition unlockPresentation = new();
+
     private bool isUnlocked = true;
     private int remainingAliveCount = 0;
+    private WorldObjectPresentationRuntime unlockPresentationRuntime;
 
     /// <summary>
     /// 책임 : 잠금 상태가 바뀌었을 때 외부 뷰나 연출 시스템에 알린다.
@@ -39,6 +45,7 @@ public sealed class ChestMonsterKillLock : MonoBehaviour
 
     private void Awake()
     {
+        unlockPresentationRuntime = new WorldObjectPresentationRuntime(gameObject);
         RecalculateState(raiseEvents: false);
     }
 
@@ -114,6 +121,19 @@ public sealed class ChestMonsterKillLock : MonoBehaviour
             OnRemainingCountChanged?.Invoke(remainingAliveCount);
 
         if (lockStateChanged)
+        {
             OnLockStateChanged?.Invoke(isUnlocked);
+            if (isUnlocked)
+                PlayUnlockPresentation();
+        }
+    }
+
+    private void PlayUnlockPresentation()
+    {
+        unlockPresentationRuntime?.PlayExecuteOnly(
+            unlockPresentation,
+            target: gameObject,
+            anchor: presentationAnchor != null ? presentationAnchor : transform,
+            sourceObject: this);
     }
 }

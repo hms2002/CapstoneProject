@@ -1,13 +1,15 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public enum MouseCursorDomain
 {
     Combat = 0,
     Inventory = 1,
-    NpcUi = 2
+    NpcUi = 2,
+    SystemUi = 3
 }
 
 public enum MouseCursorVariant
@@ -51,6 +53,7 @@ public sealed class MouseCursorDomainDefinition
 public sealed class MouseCursorService : MonoBehaviour
 {
     private const string DefaultThemeResourcePath = "DefaultMouseCursorTheme";
+    private const int DialogueDomainPriority = 50;
 
     private sealed class DomainRequest
     {
@@ -80,10 +83,13 @@ public sealed class MouseCursorService : MonoBehaviour
     private readonly Dictionary<int, OwnerFlag> draggingOwners = new Dictionary<int, OwnerFlag>();
     private readonly Dictionary<int, Texture2D> generatedCursorTextures = new Dictionary<int, Texture2D>();
     private readonly HashSet<int> unreadableSpriteWarnings = new HashSet<int>();
+    private readonly List<RaycastResult> uiRaycastResults = new List<RaycastResult>(8);
 
     private Canvas cursorCanvas;
     private RectTransform cursorRect;
     private Image cursorImage;
+    private EventSystem pointerEventSystem;
+    private PointerEventData pointerEventData;
     private long nextOrder;
     private bool isBootstrapInstance;
     private bool defaultThemeLoadAttempted;
@@ -370,12 +376,15 @@ public sealed class MouseCursorService : MonoBehaviour
 
     private MouseCursorDomain ResolveDomain()
     {
-        if (DialogueService.Instance != null && DialogueService.Instance.IsPlaying)
-            return MouseCursorDomain.NpcUi;
-
         MouseCursorDomain resolved = MouseCursorDomain.Combat;
         int highestPriority = int.MinValue;
         long latestOrder = long.MinValue;
+
+        if (DialogueService.Instance != null && DialogueService.Instance.IsPlaying)
+        {
+            resolved = MouseCursorDomain.NpcUi;
+            highestPriority = DialogueDomainPriority;
+        }
 
         foreach (DomainRequest request in domainRequests.Values)
         {
@@ -407,6 +416,9 @@ public sealed class MouseCursorService : MonoBehaviour
         if (HasAnyOwner(interactableOwners))
             return MouseCursorVariant.Interactable;
 
+        if (currentDomain == MouseCursorDomain.SystemUi && IsPointerOverInteractableSystemUi())
+            return MouseCursorVariant.Interactable;
+
         return MouseCursorVariant.Default;
     }
 
@@ -424,6 +436,38 @@ public sealed class MouseCursorService : MonoBehaviour
     private static bool IsAnyMouseButtonPressed()
     {
         return Input.GetMouseButton(0) || Input.GetMouseButton(1) || Input.GetMouseButton(2);
+    }
+
+    private bool IsPointerOverInteractableSystemUi()
+    {
+        EventSystem eventSystem = EventSystem.current;
+        if (eventSystem == null)
+            return false;
+
+        if (pointerEventData == null || pointerEventSystem != eventSystem)
+        {
+            pointerEventData = new PointerEventData(eventSystem);
+            pointerEventSystem = eventSystem;
+        }
+
+        pointerEventData.Reset();
+        pointerEventData.position = Input.mousePosition;
+
+        uiRaycastResults.Clear();
+        eventSystem.RaycastAll(pointerEventData, uiRaycastResults);
+
+        for (int i = 0; i < uiRaycastResults.Count; i++)
+        {
+            GameObject target = uiRaycastResults[i].gameObject;
+            if (target == null)
+                continue;
+
+            Selectable selectable = target.GetComponentInParent<Selectable>();
+            if (selectable != null && selectable.IsInteractable() && selectable.IsActive())
+                return true;
+        }
+
+        return false;
     }
 
     private MouseCursorSpriteDefinition ResolveDefinition(MouseCursorDomain domain, MouseCursorVariant variant)

@@ -63,3 +63,20 @@ MonoBehaviour:
       sprite: {fileID: -3239814733474346692, guid: 1d56a304110f63a4fbab81eeacf6910a, type: 3}
       hotspotPixels: {x: 2, y: 2}
       scale: 1
+  systemUiDomain:
+    defaultCursor:
+      sprite: {fileID: -6278213907298179816, guid: 2a195b84427e14a4ba63fe519397dd8e, type: 3}
+      hotspotPixels: {x: 0, y: 0}
+      scale: 1
+    interactableCursor:
+      sprite: {fileID: 0}
+      hotspotPixels: {x: 2, y: 2}
+      scale: 1
+    pressedCursor:
+      sprite: {fileID: 0}
+      hotspotPixels: {x: 2, y: 2}
+      scale: 1
+    draggingCursor:
+      sprite: {fileID: 0}
+      hotspotPixels: {x: 0, y: 0}
+      scale: 1

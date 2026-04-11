@@ -6,6 +6,11 @@ using UnityEngine.UI;
 // -----------------------
 // Drag Context (Swap support, generic)
 // -----------------------
+/// <summary>
+/// 책임 :
+/// - 현재 진행 중인 인벤토리 drag 세션의 source/item 정보를 전역으로 보관한다.
+/// - drag가 정상 종료되지 못하는 UI 닫힘 경로에서도 공통 취소 처리를 제공한다.
+/// </summary>
 public static class ItemDragContext
 {
 
@@ -32,6 +37,18 @@ public static class ItemDragContext
         SourceIndex = -1;
         Item = null;
         RelicLevel = 0;
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - ESC 닫힘처럼 OnEndDrag가 호출되지 않는 경로에서 drag 세션을 안전하게 종료한다.
+    /// - drag icon, drop zone, drag context를 한 번에 정리해 UI 잔상을 남기지 않는다.
+    /// </summary>
+    public static void CancelActiveDragSession()
+    {
+        DropZoneUI.ActiveInstance?.Hide();
+        DragIcon.Instance?.Hide();
+        Clear();
     }
 
     /// <summary>

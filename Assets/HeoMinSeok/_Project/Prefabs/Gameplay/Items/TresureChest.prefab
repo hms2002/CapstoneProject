@@ -154,7 +154,7 @@ GameObject:
   - component: {fileID: 2992899921198328162}
   - component: {fileID: 4619545861444706312}
   m_Layer: 0
-  m_Name: TreasureChest
+  m_Name: TresureChest
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -198,6 +198,37 @@ MonoBehaviour:
   openEffects: []
   chestSpriteRenderer: {fileID: 0}
   openedSprite: {fileID: 21300040, guid: 29c9cded5e558164aaf8c9bf08aa1510, type: 3}
+  presentationAnchor: {fileID: 5205111981208987127}
+  openPresentation:
+    gameplayPresentation:
+      audioOnExecute:
+        key: 
+        volumeMultiplier: 0
+        anchorPolicy: 0
+        localOffset: {x: 0, y: 0, z: 0}
+      audioWhileActive:
+        key: 
+        volumeMultiplier: 0
+        anchorPolicy: 0
+        localOffset: {x: 0, y: 0, z: 0}
+      audioOnRemove:
+        key: 
+        volumeMultiplier: 0
+        anchorPolicy: 0
+        localOffset: {x: 0, y: 0, z: 0}
+      cuesOnExecute: []
+      cuesWhileActive: []
+      cuesOnRemove: []
+      executeCueMagnitude: 0
+      whileActiveCueMagnitude: 0
+      removeCueMagnitude: 0
+      cueOnExecute: {fileID: 0}
+      cueWhileActive: {fileID: 0}
+      cueOnRemove: {fileID: 0}
+    particlePrefab: {fileID: 6821349489537912191, guid: beac3d8a478eebb45a9cbef082420e8f, type: 3}
+    particleLocalOffset: {x: 0, y: 0, z: 0}
+    particleLifetimeOverrideSeconds: -1
+    useUnscaledParticleTime: 0
 --- !u!114 &2992899921198328162
 MonoBehaviour:
   m_ObjectHideFlags: 0

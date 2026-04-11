@@ -8,6 +8,21 @@ using UnityGAS;
 [DisallowMultipleComponent]
 public sealed class PlayerHubSpawnPresentation2D : MonoBehaviour
 {
+    private static readonly InputActionId[] WakeInputActions =
+    {
+        InputActionId.Interact,
+        InputActionId.PrimaryAttack,
+        InputActionId.Dash,
+        InputActionId.Skill1,
+        InputActionId.Skill2,
+        InputActionId.SwapWeapon,
+        InputActionId.ConsumableSlot1,
+        InputActionId.ConsumableSlot2,
+        InputActionId.ConsumableSlot3,
+        InputActionId.ConsumableSlot4,
+        InputActionId.InventoryToggle,
+    };
+
     private enum HubSpawnCameraMode
     {
         LockToLandingPoint = 0,
@@ -16,7 +31,6 @@ public sealed class PlayerHubSpawnPresentation2D : MonoBehaviour
 
     private const string DefaultHubSceneName = "ProtoTypeHub";
     private const string DefaultShadowChildName = "Shadow";
-
     [Header("Scene")]
     [SerializeField] private string hubSceneName = DefaultHubSceneName;
     [SerializeField] private bool playOnHubSpawn = true;
@@ -39,15 +53,40 @@ public sealed class PlayerHubSpawnPresentation2D : MonoBehaviour
     [Header("Shadow")]
     [SerializeField] private string shadowChildName = DefaultShadowChildName;
     [SerializeField] private Transform shadowTransform;
+    [SerializeField] private SpriteRenderer shadowSpriteRenderer;
     [SerializeField, Min(1f)] private float shadowStartScaleMultiplier = 3f;
     [SerializeField] private AnimationCurve shadowScaleCurve = AnimationCurve.EaseInOut(0f, 0f, 1f, 1f);
 
     [Header("Presentation")]
     [SerializeField] private Animator presentationAnimator;
+    [SerializeField] private SpriteRenderer presentationSpriteRenderer;
     [SerializeField] private bool disableAnimatorDuringPresentation = true;
+
+    [Header("Post Landing")]
+    [SerializeField, Min(0f)] private float sleepAfterIdleSeconds = 10f;
+    [SerializeField, Min(0f)] private float sleepWakeDelaySeconds = 1f;
+
+    [Header("Lying Shadow")]
+    [SerializeField] private bool useLyingShadowOverride;
+    [SerializeField] private Transform lyingShadowPoseReference;
+    [SerializeField] private Sprite lyingShadowSprite;
+    [SerializeField] private Vector3 lyingShadowLocalOffset = new Vector3(-0.02f, 0.1f, 0.1f);
+    [SerializeField] private float lyingShadowLocalRotationZ;
+    [SerializeField] private Vector3 lyingShadowScaleMultiplier = Vector3.one;
+
+    [Header("Sleep Presentation")]
+    [SerializeField] private Sprite awakeIdleSpriteOverride;
+    [SerializeField] private Sprite sleepSprite;
+    [SerializeField] private Transform sleepEffectAnchor;
+    [SerializeField] private GameObject sleepEffectPrefab;
+    [SerializeField] private Vector3 sleepEffectLocalOffset = new Vector3(0f, 1.2f, 0f);
+    [SerializeField] private bool useUnscaledSleepEffectTime;
 
     [Header("Camera")]
     [SerializeField] private HubSpawnCameraMode cameraMode = HubSpawnCameraMode.LockToLandingPoint;
+
+    [Header("Gameplay Presentation (Optional)")]
+    [SerializeField] private GameplayPresentationDefinition gameplayPresentation;
 
     private PlayerInteractor2D interactor;
     private PlayerIntentInput2D intentInput;
@@ -75,10 +114,15 @@ public sealed class PlayerHubSpawnPresentation2D : MonoBehaviour
     private bool presentationPrepared;
     private bool hasPlayedThisScene;
     private Vector3 landingPosition;
+    private GameplayPresentationRuntime presentationRuntime;
+    private Sprite capturedAwakeSprite;
+    private Sprite capturedAwakeShadowSprite;
+    private GameObject activeSleepEffectInstance;
 
     private void Awake()
     {
         CacheReferences();
+        presentationRuntime = new GameplayPresentationRuntime(gameObject);
     }
 
     private void OnEnable()
@@ -131,6 +175,7 @@ public sealed class PlayerHubSpawnPresentation2D : MonoBehaviour
         transform.rotation = Quaternion.identity;
         ApplyShadowScale(0f);
         ApplyCameraPresentationMode(landingPosition);
+        presentationRuntime?.Start(gameplayPresentation, BuildPresentationParams(startPosition, hasExplicitPosition: true));
 
         float elapsed = 0f;
         float directionSign = Mathf.Approximately(spinDirection, 0f) ? 1f : Mathf.Sign(spinDirection);
@@ -155,18 +200,57 @@ public sealed class PlayerHubSpawnPresentation2D : MonoBehaviour
         transform.position = landingPosition;
         transform.rotation = Quaternion.Euler(0f, 0f, landingRotationZ);
         ApplyShadowScale(1f);
+        ApplyLyingShadowPresentation();
+        presentationRuntime?.Stop(gameplayPresentation, BuildPresentationParams(landingPosition, hasExplicitPosition: true), playRemove: true);
 
         RestorePhysicsParticipation();
         movementMotor?.StopAllMotion();
         ZeroAllRigidbodies();
+        RestoreCameraBindingToPlayer();
 
         yield return new WaitForSeconds(landingLockSeconds);
 
-        transform.rotation = Quaternion.identity;
-        ReattachShadow();
-        RestoreGameplayControl();
-        RestoreCameraBindingToPlayer();
-        CleanupCameraAnchor();
+        bool completedWake = false;
+        float idleElapsed = 0f;
+        while (idleElapsed < sleepAfterIdleSeconds)
+        {
+            if (HasWakeInput())
+            {
+                WakeIntoGameplay();
+                completedWake = true;
+                break;
+            }
+
+            idleElapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        if (!completedWake)
+        {
+            ApplySleepSprite();
+            SpawnSleepEffect();
+
+            while (true)
+            {
+                if (HasWakeInput())
+                {
+                    StopAndClearSleepEffects();
+                    ApplyAwakeIdleSprite();
+
+                    if (sleepWakeDelaySeconds > 0f)
+                        yield return new WaitForSeconds(sleepWakeDelaySeconds);
+
+                    WakeIntoGameplay();
+                    completedWake = true;
+                    break;
+                }
+
+                yield return null;
+            }
+        }
+
+        if (!completedWake)
+            WakeIntoGameplay();
 
         presentationPrepared = false;
         sequenceRoutine = null;
@@ -181,6 +265,8 @@ public sealed class PlayerHubSpawnPresentation2D : MonoBehaviour
         abilitySystem?.ResetTransientRuntimeState();
         movementMotor?.StopAllMotion();
         ZeroAllRigidbodies();
+        CaptureAwakeSprite();
+        CaptureAwakeShadowSprite();
 
         if (interactor != null)
             interactor.SetInteractState(InteractState.None);
@@ -202,12 +288,16 @@ public sealed class PlayerHubSpawnPresentation2D : MonoBehaviour
         transform.position = landingPosition;
         transform.rotation = Quaternion.identity;
 
+        StopAndClearSleepEffects();
+        ApplyAwakeIdleSprite();
+        RestoreAwakeShadowPresentation();
         RestorePhysicsParticipation();
         ReattachShadow();
         RestoreGameplayControl();
         RestoreCameraBindingToPlayer();
         CleanupCameraAnchor();
         ZeroAllRigidbodies();
+        presentationRuntime?.Stop(gameplayPresentation, BuildPresentationParams(landingPosition, hasExplicitPosition: true), playRemove: false);
 
         presentationPrepared = false;
     }
@@ -235,8 +325,19 @@ public sealed class PlayerHubSpawnPresentation2D : MonoBehaviour
                 ? playerRender.GetComponent<Animator>()
                 : GetComponentInChildren<Animator>(true);
         }
+        if (presentationSpriteRenderer == null)
+        {
+            Transform playerRender = transform.Find("PlayerRender");
+            presentationSpriteRenderer = playerRender != null
+                ? playerRender.GetComponent<SpriteRenderer>()
+                : GetComponentInChildren<SpriteRenderer>(true);
+        }
         if (shadowTransform == null)
             shadowTransform = transform.Find(shadowChildName);
+        if (shadowSpriteRenderer == null && shadowTransform != null)
+            shadowSpriteRenderer = shadowTransform.GetComponent<SpriteRenderer>();
+        if (sleepEffectAnchor == null)
+            sleepEffectAnchor = presentationSpriteRenderer != null ? presentationSpriteRenderer.transform : transform;
     }
 
     private void CaptureManagedBehaviourStates()
@@ -399,6 +500,166 @@ public sealed class PlayerHubSpawnPresentation2D : MonoBehaviour
         shadowTransform.localScale = detachedShadowBaseScale * scaleMultiplier;
     }
 
+    private void CaptureAwakeSprite()
+    {
+        if (presentationSpriteRenderer == null)
+            return;
+
+        capturedAwakeSprite = presentationSpriteRenderer.sprite;
+    }
+
+    private void CaptureAwakeShadowSprite()
+    {
+        if (shadowSpriteRenderer == null)
+            return;
+
+        capturedAwakeShadowSprite = shadowSpriteRenderer.sprite;
+    }
+
+    private void ApplyAwakeIdleSprite()
+    {
+        if (presentationSpriteRenderer == null)
+            return;
+
+        Sprite spriteToApply = awakeIdleSpriteOverride != null ? awakeIdleSpriteOverride : capturedAwakeSprite;
+        if (spriteToApply != null)
+            presentationSpriteRenderer.sprite = spriteToApply;
+    }
+
+    private void ApplySleepSprite()
+    {
+        if (presentationSpriteRenderer == null || sleepSprite == null)
+            return;
+
+        presentationSpriteRenderer.sprite = sleepSprite;
+    }
+
+    private void ApplyLyingShadowPresentation()
+    {
+        if (!useLyingShadowOverride)
+            return;
+
+        ApplyShadowPresentation(
+            poseReference: lyingShadowPoseReference,
+            overrideSprite: ResolveLyingShadowSprite(),
+            localOffset: lyingShadowLocalOffset,
+            localRotationZ: lyingShadowLocalRotationZ,
+            scaleMultiplier: lyingShadowScaleMultiplier);
+    }
+
+    private void ApplyShadowPresentation(
+        Transform poseReference,
+        Sprite overrideSprite,
+        Vector3 localOffset,
+        float localRotationZ,
+        Vector3 scaleMultiplier)
+    {
+        if (shadowTransform == null || !shadowDetached)
+            return;
+
+        if (shadowSpriteRenderer != null && overrideSprite != null)
+            shadowSpriteRenderer.sprite = overrideSprite;
+
+        if (poseReference != null)
+        {
+            shadowTransform.position = poseReference.position;
+            shadowTransform.rotation = poseReference.rotation;
+            shadowTransform.localScale = poseReference.lossyScale;
+            return;
+        }
+
+        shadowTransform.position = transform.TransformPoint(localOffset);
+        shadowTransform.rotation = transform.rotation * Quaternion.Euler(0f, 0f, localRotationZ);
+        shadowTransform.localScale = new Vector3(
+            detachedShadowBaseScale.x * scaleMultiplier.x,
+            detachedShadowBaseScale.y * scaleMultiplier.y,
+            detachedShadowBaseScale.z * scaleMultiplier.z);
+    }
+
+    private void RestoreAwakeShadowPresentation()
+    {
+        if (shadowSpriteRenderer != null && capturedAwakeShadowSprite != null)
+            shadowSpriteRenderer.sprite = capturedAwakeShadowSprite;
+    }
+
+    private Sprite ResolveLyingShadowSprite()
+    {
+        if (lyingShadowSprite != null)
+            return lyingShadowSprite;
+
+        if (lyingShadowPoseReference == null)
+            return null;
+
+        SpriteRenderer referenceRenderer = lyingShadowPoseReference.GetComponent<SpriteRenderer>();
+        return referenceRenderer != null ? referenceRenderer.sprite : null;
+    }
+
+    private void WakeIntoGameplay()
+    {
+        StopAndClearSleepEffects();
+        ApplyAwakeIdleSprite();
+        transform.rotation = Quaternion.identity;
+        ReattachShadow();
+        RestoreCameraBindingToPlayer();
+        RestoreGameplayControl();
+        CleanupCameraAnchor();
+    }
+
+    private bool HasWakeInput()
+    {
+        InputBindingService input = InputBindingService.EnsureInstance();
+        if (input == null)
+            return false;
+
+        if (input.GetMoveVectorRaw().sqrMagnitude > 0.0001f)
+            return true;
+
+        for (int i = 0; i < WakeInputActions.Length; i++)
+        {
+            if (input.IsPressed(WakeInputActions[i]))
+                return true;
+        }
+
+        return false;
+    }
+
+    private void SpawnSleepEffect()
+    {
+        if (sleepEffectPrefab == null || activeSleepEffectInstance != null)
+            return;
+
+        Transform anchor = sleepEffectAnchor != null ? sleepEffectAnchor : transform;
+        Vector3 spawnPosition = anchor.TransformPoint(sleepEffectLocalOffset);
+        Quaternion spawnRotation = anchor.rotation;
+
+        GameObject instance = Instantiate(sleepEffectPrefab, spawnPosition, spawnRotation);
+        if (instance == null)
+            return;
+
+        instance.SetActive(true);
+        ConfigureSleepEffectParticles(instance);
+        activeSleepEffectInstance = instance;
+    }
+
+    private void ConfigureSleepEffectParticles(GameObject instance)
+    {
+        ParticleSystem[] particleSystems = instance.GetComponentsInChildren<ParticleSystem>(includeInactive: true);
+        for (int i = 0; i < particleSystems.Length; i++)
+        {
+            ParticleSystem particleSystem = particleSystems[i];
+            if (particleSystem == null)
+                continue;
+
+            if (useUnscaledSleepEffectTime)
+            {
+                var main = particleSystem.main;
+                main.useUnscaledTime = true;
+            }
+
+            particleSystem.Play(withChildren: true);
+        }
+    }
+
     private void BindCameraToLandingAnchor(Vector3 targetPosition)
     {
         CleanupCameraAnchor();
@@ -502,12 +763,29 @@ public sealed class PlayerHubSpawnPresentation2D : MonoBehaviour
         return string.Equals(ownerScene.name, hubSceneName, System.StringComparison.Ordinal);
     }
 
+    private GameplayCueParams BuildPresentationParams(Vector3 position, bool hasExplicitPosition)
+    {
+        return presentationRuntime.BuildParams(
+            target: gameObject,
+            sourceObject: this,
+            explicitPosition: position,
+            hasExplicitPosition: hasExplicitPosition);
+    }
+
     private static float EvaluateCurve(AnimationCurve curve, float time)
     {
         if (curve == null || curve.length == 0)
             return time;
 
         return curve.Evaluate(time);
+    }
+
+    private void StopAndClearSleepEffects()
+    {
+        if (activeSleepEffectInstance != null)
+            Destroy(activeSleepEffectInstance);
+
+        activeSleepEffectInstance = null;
     }
 
     private readonly struct ManagedBehaviourState

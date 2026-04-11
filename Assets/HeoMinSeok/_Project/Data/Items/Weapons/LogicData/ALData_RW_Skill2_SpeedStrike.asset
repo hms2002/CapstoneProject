@@ -24,6 +24,7 @@ MonoBehaviour:
   attackStatId: 13
   moveSpeedMultiplierStatId: 143
   speedScale: 3
+  damageFormula: {fileID: 11400000, guid: 2da8cf5534b74c6180f74f116299e203, type: 2}
   knockbackFormula: {fileID: 11400000, guid: 886233d2a5002ae4facf46de4cb4864d, type: 2}
   attackAttribute: {fileID: 11400000, guid: 947f52c2a34d008428c105cd897d5efd, type: 2}
   moveSpeedMultiplierAttribute: {fileID: 11400000, guid: 23db6468e859c6f42b0230a5af7ca81c, type: 2}

@@ -77,5 +77,9 @@ namespace UnityGAS
         EvasionMul = 302,
         EvasionFinal = 303,
 
+        AttackSpeedBase = 310,
+        AttackSpeedAdd = 311,
+        AttackSpeedFinal = 312,
+
     }
 }

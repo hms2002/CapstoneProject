@@ -7,6 +7,8 @@ using UnityEngine.UI;
 
 public sealed class KeyBindingPanelUI : MonoBehaviour, IStackableUI, ICloseRequestHandler
 {
+    private const int SystemCursorPriority = 300;
+
     public static KeyBindingPanelUI Instance { get; private set; }
 
     [Header("List")]
@@ -143,8 +145,20 @@ public sealed class KeyBindingPanelUI : MonoBehaviour, IStackableUI, ICloseReque
 
     private void OnDestroy()
     {
+        MouseCursorService.Instance?.ClearDomain(this);
+
         if (Instance == this)
             Instance = null;
+    }
+
+    private void OnEnable()
+    {
+        MouseCursorService.EnsureInstance().SetDomain(this, MouseCursorDomain.SystemUi, priority: SystemCursorPriority);
+    }
+
+    private void OnDisable()
+    {
+        MouseCursorService.Instance?.ClearDomain(this);
     }
 
     public void OpenUI()

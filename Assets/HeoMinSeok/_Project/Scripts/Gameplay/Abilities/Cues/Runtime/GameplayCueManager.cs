@@ -15,6 +15,7 @@ namespace UnityGAS
 
         private readonly Dictionary<int, GameplayCueDefinition> defByTagId = new();
         private readonly Dictionary<CueKey, ActiveCueInstance> active = new();
+        private readonly HashSet<string> warnedMissingDefinitionKeys = new();
 
         // cueNotifyHostPrefab?먯꽌 Notify ??낆쓣 戮묒븘?ㅻ뒗 鍮꾩슜??以꾩씠湲??꾪븳 罹먯떆
         private readonly Dictionary<int, System.Type> notifyTypeCacheByDefId = new();
@@ -120,6 +121,7 @@ namespace UnityGAS
         public void RebuildIndex()
         {
             defByTagId.Clear();
+            warnedMissingDefinitionKeys.Clear();
             TagRegistry.EnsureInitialized(); // ?쒓렇 ?쒖뒪??以鍮?
 
             IReadOnlyList<GameplayCueDefinition> definitions = GetDefinitions();
@@ -135,8 +137,8 @@ namespace UnityGAS
                 }
             }
 
-            isIndexBuilt = true; // 珥덇린???꾨즺 ?쒖떆
-            Debug.Log($"[GameplayCueManager] ?몃뜳??鍮뚮뱶 ?꾨즺. ({defByTagId.Count}媛?");
+            isIndexBuilt = true;
+            Debug.Log($"[GameplayCueManager] Cue index rebuilt. ({defByTagId.Count} definitions)");
         }
         // ----------------------------------------------------------------
         // Public API
@@ -169,7 +171,10 @@ namespace UnityGAS
             if (id >= 0 && defByTagId.TryGetValue(id, out var def))
             {
                 SpawnAndNotifyExecute(def, p, layerKey: MakeLayerKey(def, id, p, isPersistent: false));
+                return;
             }
+
+            WarnMissingDefinition(tag, "Execute");
         }
 
         public void AddCue(GameplayTag tag, GameplayCueParams p)
@@ -179,10 +184,10 @@ namespace UnityGAS
             int id = GetTagKey(tag);
             GameplayCueDefinition def = null;
 
-            // 1) ?뺤뀛?덈━ 寃??
+            // 1) Look up the indexed definition first.
             if (id >= 0) defByTagId.TryGetValue(id, out def);
 
-            // 2) ?ㅽ뙣 ??由ъ뒪??吏곸젒 寃??(Fallback)
+            // 2) Fall back to a direct definition scan.
             if (def == null)
             {
                 def = FindDefinitionFallback(tag);
@@ -192,7 +197,7 @@ namespace UnityGAS
 
             if (def == null)
             {
-                Debug.LogError($"[Manager] ?뺤쓽(Definition)瑜?李얠쓣 ???놁쓬: {tag?.name}. Manager 由ъ뒪?몃? ?뺤씤?섏꽭??");
+                Debug.LogError($"[GameplayCueManager] Missing definition for cue tag: {tag?.name}. Check the cue database registration.");
                 return;
             }
 
@@ -214,7 +219,7 @@ namespace UnityGAS
                 existing.Notify?.OnRefresh(p);
                 EnsureCueLoopAudio(existing, p);
 
-                // TransformOnly??Refresh ?쒖뿉??contribution??媛깆떊?????덇쾶 ?쒕떎.
+                // Keep the transform contribution fresh when a persistent cue is refreshed.
                 if (existing.TransformStack != null)
                 {
                     var c = MakeTransformContribution(existing.Def);
@@ -254,13 +259,13 @@ namespace UnityGAS
             StopCueLoopAudio(inst);
             PlayCueRemoveAudio(def, p);
 
-            // TransformOnly ?댁젣
+            // Release TransformOnly state.
             if (inst.TransformStack != null)
             {
                 inst.TransformStack.Remove(inst.TransformLayerKey);
             }
 
-            // Target??遺숈씤 Notify??Remove ???쒓굅(?앹꽦??寃쎌슦?먮쭔)
+            // Remove a notify that was created directly on the target for this cue.
             if (inst.CreatedNotifyOnTarget && inst.Notify != null)
                 Destroy(inst.Notify);
 
@@ -283,6 +288,18 @@ namespace UnityGAS
                     return definitions[i];
             }
             return null;
+        }
+
+        private void WarnMissingDefinition(GameplayTag tag, string phase)
+        {
+            string tagName = tag != null ? tag.name : "<null>";
+            string warningKey = $"{phase}:{tagName}";
+            if (!warnedMissingDefinitionKeys.Add(warningKey))
+                return;
+
+            Debug.LogWarning(
+                $"[GameplayCueManager] Missing cue definition for {phase}: {tagName}. " +
+                "Check the GameplayCueDatabase asset and confirm the cue definition is registered.");
         }
 
         private IReadOnlyList<GameplayCueDefinition> GetDefinitions()
@@ -310,15 +327,15 @@ namespace UnityGAS
 
             inst.Notify?.OnExecute(p);
 
-            // TransformOnly Execute??duration ???먮룞 ?댁젣
+            // Execute-time TransformOnly cues are removed after their configured duration.
             if (inst.TransformStack != null)
             {
                 float dur = def.transformExecuteDuration;
                 StartCoroutine(RemoveTransformAfter(inst.TransformStack, inst.TransformLayerKey, dur));
             }
 
-            // Execute?먯꽌 Target???꾩떆濡?遺숈씤 Notify??諛붾줈 ?쒓굅?쒕떎.
-            // (二쇱쓽) Notify媛 ?쒓컙??嫄몄튇 ?곗텧??肄붾（???몄쐢?쇰줈 ?뚮┛?ㅻ㈃, Execute ???Add/Remove 湲곕컲?쇰줈 ?곕뒗 寃껋쓣 沅뚯옣.
+            // Execute-time target notifies are transient, so remove them right away.
+            // If a notify needs lifecycle callbacks over time, prefer Add/Remove based cues.
             if (inst.CreatedNotifyOnTarget && inst.Notify != null)
                 Destroy(inst.Notify);
 
@@ -334,7 +351,7 @@ namespace UnityGAS
             if (stack == null) yield break;
 
             if (duration <= 0f)
-                yield return null; // 1?꾨젅?꾨쭔 ?곸슜
+                yield return null; // Apply for one frame.
             else
                 yield return new WaitForSeconds(duration);
 
@@ -375,11 +392,11 @@ namespace UnityGAS
                     var type = GetOrCacheNotifyType(def);
                     if (type == null)
                     {
-                        Debug.LogWarning($"[GameplayCueManager] cueNotifyHostPrefab??GameplayCueNotify媛 ?놁뒿?덈떎: {def.name}");
+                        Debug.LogWarning($"[GameplayCueManager] cueNotifyHostPrefab does not contain a GameplayCueNotify: {def.name}");
                         return result.AudioOnly ? result : null;
                     }
 
-                    // ?대? 遺숈뼱?덉쑝硫??ъ궗??(以묐났 AddComponent 諛⑹?)
+                    // Reuse an existing notify to avoid duplicate AddComponent calls.
                     var existing = p.Target.GetComponent(type) as GameplayCueNotify;
                     if (existing != null)
                     {
@@ -391,7 +408,7 @@ namespace UnityGAS
                     var added = p.Target.AddComponent(type) as GameplayCueNotify;
                     if (added == null)
                     {
-                        Debug.LogWarning($"[GameplayCueManager] Target??Notify AddComponent ?ㅽ뙣: {type.FullName}");
+                        Debug.LogWarning($"[GameplayCueManager] Failed to add target notify component: {type.FullName}");
                         return result.AudioOnly ? result : null;
                     }
 

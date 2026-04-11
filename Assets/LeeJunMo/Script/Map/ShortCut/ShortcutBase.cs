@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityGAS;
 
 public abstract class ShortcutBase : InteractableBase
 {
@@ -6,7 +7,12 @@ public abstract class ShortcutBase : InteractableBase
     [SerializeField] protected DoorObject targetDoor;
     [SerializeField] protected Transform promptAnchor;
 
+    [Header("Presentation")]
+    [SerializeField] private Transform presentationAnchor;
+    [SerializeField] private WorldObjectPresentationDefinition successPresentation = new();
+
     [SerializeField, HideInInspector] private DoorObject lastSyncedTargetDoor;
+    private WorldObjectPresentationRuntime successPresentationRuntime;
 
     public DoorObject TargetDoor => targetDoor;
 
@@ -18,6 +24,7 @@ public abstract class ShortcutBase : InteractableBase
         if (targetDoor == null)
             targetDoor = GetComponentInParent<DoorObject>();
 
+        successPresentationRuntime = new WorldObjectPresentationRuntime(gameObject);
         SyncTargetDoorConfiguration();
     }
 
@@ -73,6 +80,7 @@ public abstract class ShortcutBase : InteractableBase
 
         ConsumeCondition(player);
         OnSuccess();
+        PlaySuccessPresentation(player);
     }
 
     public abstract override string GetInteractDescription();
@@ -103,5 +111,23 @@ public abstract class ShortcutBase : InteractableBase
             return;
 
         targetDoor.ApplyConfigurationFromShortcut(requiredDoorType, requiredDoorIsPermanent, this);
+    }
+
+    private void PlaySuccessPresentation(IPlayerInteractor player)
+    {
+        successPresentationRuntime?.PlayExecuteOnly(
+            successPresentation,
+            instigator: player?.Transform != null ? player.Transform.gameObject : null,
+            target: gameObject,
+            anchor: ResolvePresentationAnchor(),
+            sourceObject: this);
+    }
+
+    private Transform ResolvePresentationAnchor()
+    {
+        if (presentationAnchor != null)
+            return presentationAnchor;
+
+        return promptAnchor != null ? promptAnchor : transform;
     }
 }

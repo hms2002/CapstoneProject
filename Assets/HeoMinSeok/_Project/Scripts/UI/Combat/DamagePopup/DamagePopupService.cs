@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 /// <summary>
 /// 책임 : 데미지 팝업 생성 요청을 받아 월드 좌표에 실제 팝업 프리팹을 생성한다.
@@ -24,6 +25,8 @@ public sealed class DamagePopupService : MonoBehaviour
     [Tooltip("비우면 생성된 팝업은 루트에 배치된다.")]
     [SerializeField] private Transform popupParent;
 
+    private bool hasWarnedInvalidPopupParent;
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -35,6 +38,14 @@ public sealed class DamagePopupService : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(gameObject);
     }
+
+#if UNITY_EDITOR
+    private void OnValidate()
+    {
+        if (popupParent != null && popupParent.GetComponentInParent<Canvas>() != null)
+            popupParent = null;
+    }
+#endif
 
     /// <summary>
     /// 책임 : 외부 게임 로직이 간단히 호출할 수 있는 전역 정적 진입점이다.
@@ -76,7 +87,8 @@ public sealed class DamagePopupService : MonoBehaviour
         spawnPos.x += Random.Range(randomOffsetX.x, randomOffsetX.y);
         spawnPos.y += Random.Range(randomOffsetY.x, randomOffsetY.y);
 
-        DamagePopupWorldText instance = Instantiate(popupPrefab, spawnPos, Quaternion.identity, popupParent);
+        Transform resolvedParent = ResolvePopupParent();
+        DamagePopupWorldText instance = Instantiate(popupPrefab, spawnPos, Quaternion.identity, resolvedParent);
         instance.Setup(damageInt);
     }
 
@@ -89,7 +101,27 @@ public sealed class DamagePopupService : MonoBehaviour
         spawnPos.x += Random.Range(randomOffsetX.x, randomOffsetX.y);
         spawnPos.y += Random.Range(randomOffsetY.x, randomOffsetY.y);
 
-        DamagePopupWorldText instance = Instantiate(popupPrefab, spawnPos, Quaternion.identity, popupParent);
+        Transform resolvedParent = ResolvePopupParent();
+        DamagePopupWorldText instance = Instantiate(popupPrefab, spawnPos, Quaternion.identity, resolvedParent);
         instance.Setup(content);
+    }
+
+    private Transform ResolvePopupParent()
+    {
+        if (popupParent == null)
+            return null;
+
+        if (popupParent.GetComponentInParent<Canvas>() == null)
+            return popupParent;
+
+        if (!hasWarnedInvalidPopupParent)
+        {
+            Debug.LogWarning(
+                "[DamagePopupService] popupParent is under a Canvas. World-space damage popups ignore Canvas parents and spawn without it.",
+                this);
+            hasWarnedInvalidPopupParent = true;
+        }
+
+        return null;
     }
 }

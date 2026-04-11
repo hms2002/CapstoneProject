@@ -126,8 +126,13 @@ namespace UnityGAS.Sample
         private Vector2 ResolveMoveDirection(AbilitySystem system, bool fallbackToAim)
         {
             var intent = system.GetComponent<PlayerIntentInput2D>();
-            if (intent != null && intent.MoveInput.sqrMagnitude > 0.0001f)
-                return intent.MoveInput.normalized;
+            if (intent != null && intent.RawMoveInput.sqrMagnitude > 0.0001f)
+                return intent.RawMoveInput.normalized;
+
+            InputBindingService input = InputBindingService.EnsureInstance();
+            var move = input.GetMoveVectorRaw();
+            if (move.sqrMagnitude > 0.0001f)
+                return move.normalized;
 
             if (fallbackToAim)
             {
@@ -135,11 +140,6 @@ namespace UnityGAS.Sample
                 if (aim != null && aim.AimDirection.sqrMagnitude > 0.0001f)
                     return aim.AimDirection.normalized;
             }
-
-            InputBindingService input = InputBindingService.EnsureInstance();
-            var move = input.GetMoveVectorRaw();
-            if (move.sqrMagnitude > 0.0001f)
-                return move.normalized;
 
             if (fallbackToAim)
             {

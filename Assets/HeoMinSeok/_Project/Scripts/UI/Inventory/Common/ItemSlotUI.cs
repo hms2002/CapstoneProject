@@ -43,6 +43,7 @@ public class ItemSlotUI : MonoBehaviour,
     }
     private void OnDisable()
     {
+        ItemDragContext.CancelActiveDragSession();
         MouseCursorService.Instance?.SetDragging(this, false);
         MouseCursorService.Instance?.SetInteractable(this, false);
 
@@ -123,10 +124,8 @@ public class ItemSlotUI : MonoBehaviour,
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        DropZoneUI.ActiveInstance?.Hide();
-        DragIcon.Instance?.Hide();
+        ItemDragContext.CancelActiveDragSession();
         MouseCursorService.EnsureInstance().SetDragging(this, false);
-        ItemDragContext.Clear();
     }
 
     public void OnDrop(PointerEventData eventData)

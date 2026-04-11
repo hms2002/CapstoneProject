@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityGAS;
 
 public class TreasureChest : MonoBehaviour
 {
@@ -17,12 +18,17 @@ public class TreasureChest : MonoBehaviour
     [SerializeField] private SpriteRenderer chestSpriteRenderer;
     [SerializeField] private Sprite openedSprite;
 
+    [Header("Interaction Presentation")]
+    [SerializeField] private Transform presentationAnchor;
+    [SerializeField] private WorldObjectPresentationDefinition openPresentation = new();
+
     private ChestInventory inventory;
     private bool isOpened;
     private bool isGenerated;
     private bool isOpening;
     private bool isPreludeTimeFrozen;
     private float preludePreviousTimeScale = 1f;
+    private WorldObjectPresentationRuntime openPresentationRuntime;
     public int Capacity => capacity;
     public bool IsOpened => isOpened;
 
@@ -39,6 +45,7 @@ public class TreasureChest : MonoBehaviour
         if (chestSpriteRenderer == null)
             chestSpriteRenderer = GetComponentInChildren<SpriteRenderer>();
 
+        openPresentationRuntime = new WorldObjectPresentationRuntime(gameObject);
         ConfigureOpenEffects();
     }
 
@@ -61,7 +68,7 @@ public class TreasureChest : MonoBehaviour
         isGenerated = true;
     }
 
-    public bool Open()
+    public bool Open(IPlayerInteractor player = null)
     {
         if (!isGenerated)
         {
@@ -75,15 +82,15 @@ public class TreasureChest : MonoBehaviour
         if (isOpened)
             return TryOpenUi();
 
-        StartCoroutine(OpenRoutine());
+        StartCoroutine(OpenRoutine(player != null ? player.Transform.gameObject : null));
         return true;
     }
 
-    private IEnumerator OpenRoutine()
+    private IEnumerator OpenRoutine(GameObject instigator)
     {
         isOpening = true;
         FreezePreludeTimeIfNeeded();
-        PlayOpenPresentation();
+        PlayOpenPresentation(instigator);
 
         float duration = GetOpenPreludeDuration();
         if (duration > 0f)
@@ -126,12 +133,19 @@ public class TreasureChest : MonoBehaviour
 
     public ChestInventory GetInventory() => inventory;
 
-    private void PlayOpenPresentation()
+    private void PlayOpenPresentation(GameObject instigator)
     {
         SetAnimatorSpeed(1f);
 
         if (!string.IsNullOrWhiteSpace(openStateName))
             PlayAnimatorState(openStateName, 0f);
+
+        openPresentationRuntime?.PlayExecuteOnly(
+            openPresentation,
+            instigator: instigator,
+            target: gameObject,
+            anchor: ResolvePresentationAnchor(),
+            sourceObject: this);
 
         if (openEffects == null)
             return;
@@ -286,5 +300,16 @@ public class TreasureChest : MonoBehaviour
             return;
 
         chestSpriteRenderer.sprite = openedSprite;
+    }
+
+    private Transform ResolvePresentationAnchor()
+    {
+        if (presentationAnchor != null)
+            return presentationAnchor;
+
+        if (chestSpriteRenderer != null)
+            return chestSpriteRenderer.transform;
+
+        return transform;
     }
 }

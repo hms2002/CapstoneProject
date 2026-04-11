@@ -9,6 +9,18 @@ public static class ScenePortalTravelService
         if (portal == null)
             return false;
 
+        var transitionService = SceneFadeTransitionService.EnsureInstance();
+        if (transitionService == null)
+        {
+            Debug.LogError(
+                "[ScenePortalTravelService] SceneFadeTransitionService is missing. Attach it manually under GlobalUIRoot/Services before using ScenePortal.",
+                portal);
+            return false;
+        }
+
+        if (transitionService.IsTransitionActive)
+            return false;
+
         var route = ResolveRoute(portal);
         if (!route.IsValid)
         {
@@ -45,8 +57,7 @@ public static class ScenePortalTravelService
         if (PortalRouteManager.Instance != null)
             PortalRouteManager.Instance.NotifyTransitionConsumed(route.TransitionType);
 
-        SceneManager.LoadScene(route.TargetSceneName);
-        return true;
+        return transitionService.TryLoadScene(route.TargetSceneName);
     }
 
     private static PortalRouteDecision ResolveRoute(ScenePortal portal)

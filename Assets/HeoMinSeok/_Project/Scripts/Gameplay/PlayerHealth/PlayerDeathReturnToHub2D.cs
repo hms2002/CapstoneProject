@@ -1,22 +1,30 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityGAS;
 
+/// <summary>
+/// 책임 :
+/// - 플레이어 HP가 0 이하가 되면 사망 시퀀스를 시작한다.
+/// - 사망 직후 입력 차단은 TagSet으로 통일 적용하고, 능력/물리/충돌만 직접 정리한다.
+/// - 사망 연출 후 허브 복귀 전환을 수행한다.
+/// </summary>
 [DisallowMultipleComponent]
 public sealed class PlayerDeathReturnToHub2D : MonoBehaviour
 {
+    private const string DeadStateTagSetResourcePath = "Tags/TagSet/TS_PlayerDeadState";
+
     [Header("Refs")]
     [SerializeField] private AttributeSet attributeSet;
     [SerializeField] private AttributeDefinition hpDef;
     [SerializeField] private PlayerInteractor2D player;
     [SerializeField] private AbilitySystem abilitySystem;
+    [SerializeField] private TagSystem tagSystem;
     [SerializeField] private Rigidbody2D body;
-    [SerializeField] private PlayerIntentInput2D intentInput;
-    [SerializeField] private PlayerCombatInput2D combatInput;
-    [SerializeField] private PlayerAim2D aimInput;
     [SerializeField] private PlayerHitFeedback2D hitFeedback;
     [SerializeField] private PlayerDeathPresentation2D deathPresentation;
+    [SerializeField] private GameplayTagSet deathStateTagSet;
 
     [Header("Transition")]
     [SerializeField] private string hubSceneName = "ProtoTypeHub";
@@ -27,18 +35,18 @@ public sealed class PlayerDeathReturnToHub2D : MonoBehaviour
     [SerializeField] private Collider2D[] collidersToDisable;
 
     private bool isDeathSequenceRunning;
+    private readonly HashSet<GameplayTag> deathTagsBuffer = new();
 
     private void Awake()
     {
         if (attributeSet == null) attributeSet = GetComponent<AttributeSet>();
         if (player == null) player = GetComponent<PlayerInteractor2D>();
         if (abilitySystem == null) abilitySystem = GetComponent<AbilitySystem>();
+        if (tagSystem == null) tagSystem = GetComponent<TagSystem>();
         if (body == null) body = GetComponent<Rigidbody2D>();
-        if (intentInput == null) intentInput = GetComponent<PlayerIntentInput2D>();
-        if (combatInput == null) combatInput = GetComponent<PlayerCombatInput2D>();
-        if (aimInput == null) aimInput = GetComponent<PlayerAim2D>();
         if (hitFeedback == null) hitFeedback = GetComponent<PlayerHitFeedback2D>();
         if (deathPresentation == null) deathPresentation = GetComponent<PlayerDeathPresentation2D>();
+        if (deathStateTagSet == null) deathStateTagSet = Resources.Load<GameplayTagSet>(DeadStateTagSetResourcePath);
 
         if (collidersToDisable == null || collidersToDisable.Length == 0)
             collidersToDisable = GetComponentsInChildren<Collider2D>(includeInactive: false);
@@ -101,6 +109,8 @@ public sealed class PlayerDeathReturnToHub2D : MonoBehaviour
 
     private void BlockPlayerControl()
     {
+        ApplyDeathStateTags();
+
         if (UIManager.Instance != null)
         {
             UIManager.Instance.CloseAllPopups();
@@ -119,11 +129,6 @@ public sealed class PlayerDeathReturnToHub2D : MonoBehaviour
 
         if (player != null)
             player.SetInteractState(InteractState.None);
-
-        if (intentInput != null) intentInput.enabled = false;
-        if (combatInput != null) combatInput.enabled = false;
-        if (aimInput != null) aimInput.enabled = false;
-        if (player != null) player.enabled = false;
 
         if (body != null)
         {
@@ -157,5 +162,27 @@ public sealed class PlayerDeathReturnToHub2D : MonoBehaviour
             GamePlayDataManager.Instance.EndRun(RunEndReason.Defeat);
 
         SceneManager.LoadScene(hubSceneName);
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 사망 상태에서 항상 같이 다녀야 하는 태그 묶음을 GameplayTagSet으로 전개해 적용한다.
+    /// - 개별 AddTag 호출을 흩뿌리지 않고 사망 규칙의 단일 진실 원천을 유지한다.
+    /// </summary>
+    private void ApplyDeathStateTags()
+    {
+        if (tagSystem == null || deathStateTagSet == null)
+            return;
+
+        deathTagsBuffer.Clear();
+        deathStateTagSet.CollectTags(deathTagsBuffer);
+
+        foreach (var tag in deathTagsBuffer)
+        {
+            if (tag == null)
+                continue;
+
+            tagSystem.AddTag(tag, 1);
+        }
     }
 }

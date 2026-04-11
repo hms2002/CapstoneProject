@@ -118,6 +118,12 @@ MonoBehaviour:
   - id: 302
     attribute: {fileID: 11400000, guid: c11e55e5307a4f61b594d95d8ff8fafe, type: 2}
     isMultiplier: 1
+  - id: 310
+    attribute: {fileID: 11400000, guid: 40277bede661488094dd09d158341e30, type: 2}
+    isMultiplier: 0
+  - id: 311
+    attribute: {fileID: 11400000, guid: f466dc1481454c2da49e416aa7749743, type: 2}
+    isMultiplier: 0
   composites:
   - finalId: 45
     baseId: 40
@@ -155,3 +161,7 @@ MonoBehaviour:
     baseId: 140
     addId: 141
     mulId: 142
+  - finalId: 312
+    baseId: 310
+    addId: 311
+    mulId: 0

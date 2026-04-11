@@ -14,6 +14,9 @@ namespace UnityGAS
     [DisallowMultipleComponent]
     public sealed class PlayerHitFeedback2D : MonoBehaviour, IHitFeedbackReceiver2D
     {
+        private const string DefaultDeadTagResourcePath = "Tags/State.Dead";
+        private static GameplayTag s_defaultDeadTag;
+
         [Header("Hit Timing")]
         [SerializeField] private float hitEnterSeconds = 0.30f;
         [SerializeField] private float hitActiveSeconds = 0.40f;
@@ -234,9 +237,28 @@ namespace UnityGAS
         /// </summary>
         private bool ShouldIgnoreHitReaction()
         {
+            if (IsDeadState())
+                return true;
+
             return hitReactImmuneTag != null &&
                    _tags != null &&
                    _tags.HasTag(hitReactImmuneTag);
+        }
+
+        /// <summary>
+        /// 책임 :
+        /// - 플레이어가 이미 사망 상태면 추가 피격 연출을 시작하지 않도록 차단한다.
+        /// - 사망 이후 남은 후속 타격이 들어와도 피격 애니메이션/플래시가 다시 시작되지 않게 막는다.
+        /// </summary>
+        private bool IsDeadState()
+        {
+            if (_tags == null)
+                return false;
+
+            if (s_defaultDeadTag == null)
+                s_defaultDeadTag = Resources.Load<GameplayTag>(DefaultDeadTagResourcePath);
+
+            return s_defaultDeadTag != null && _tags.HasTag(s_defaultDeadTag);
         }
 
         /// <summary>

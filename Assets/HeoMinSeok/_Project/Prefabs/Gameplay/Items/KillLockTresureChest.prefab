@@ -4934,9 +4934,9 @@ ParticleSystemRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 1
+  m_SortingLayerID: 119640197
+  m_SortingLayer: 3
+  m_SortingOrder: 0
   m_RenderMode: 0
   m_MeshDistribution: 0
   m_SortMode: 0
@@ -5081,11 +5081,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 5205111981208987127, guid: 296eaa6f1547cb74e990055ce1319470, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -18.979927
       objectReference: {fileID: 0}
     - target: {fileID: 5205111981208987127, guid: 296eaa6f1547cb74e990055ce1319470, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 13.942566
       objectReference: {fileID: 0}
     - target: {fileID: 5205111981208987127, guid: 296eaa6f1547cb74e990055ce1319470, type: 3}
       propertyPath: m_LocalPosition.z
@@ -5162,6 +5162,37 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e70ff4a1c8da75a4fad7c6bbd18d056d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  presentationAnchor: {fileID: 6066747848749373809}
+  unlockPresentation:
+    gameplayPresentation:
+      audioOnExecute:
+        key: 
+        volumeMultiplier: 0
+        anchorPolicy: 0
+        localOffset: {x: 0, y: 0, z: 0}
+      audioWhileActive:
+        key: 
+        volumeMultiplier: 0
+        anchorPolicy: 0
+        localOffset: {x: 0, y: 0, z: 0}
+      audioOnRemove:
+        key: 
+        volumeMultiplier: 0
+        anchorPolicy: 0
+        localOffset: {x: 0, y: 0, z: 0}
+      cuesOnExecute: []
+      cuesWhileActive: []
+      cuesOnRemove: []
+      executeCueMagnitude: 0
+      whileActiveCueMagnitude: 0
+      removeCueMagnitude: 0
+      cueOnExecute: {fileID: 0}
+      cueWhileActive: {fileID: 0}
+      cueOnRemove: {fileID: 0}
+    particlePrefab: {fileID: 1644707888644810291, guid: b07b0eb095be8404d9583e01bb73b977, type: 3}
+    particleLocalOffset: {x: 0, y: 0, z: 0}
+    particleLifetimeOverrideSeconds: -1
+    useUnscaledParticleTime: 0
 --- !u!114 &5757594863695819826
 MonoBehaviour:
   m_ObjectHideFlags: 0
