@@ -39,6 +39,7 @@ public abstract class BossControllerBase : Enemy
     [SerializeField] private List<BossPhaseConfig> phases = new();
 
     private BossBlackboard blackboard;
+    private BossPatternRuntimeState patternRuntime;
     private BossStateMachine stateMachine;
 
     private BossSpawnState spawnState;
@@ -62,6 +63,7 @@ public abstract class BossControllerBase : Enemy
     public TagSystem TagSystem => tagSystem;
     public AttributeSet AttributeSet => attributeSet;
     public BossBlackboard Blackboard => blackboard;
+    public BossPatternRuntimeState PatternRuntime => patternRuntime;
     public BossStateMachine StateMachine => stateMachine;
     public Transform CurrentTarget => Target;
     public override Transform Target => target;
@@ -73,7 +75,8 @@ public abstract class BossControllerBase : Enemy
         CacheComponents();
         bossDrop = GetComponent<BossDrop>();
 
-        blackboard = new BossBlackboard(transform);
+        blackboard = CreateBlackboard();
+        patternRuntime = CreatePatternRuntimeState();
         stateMachine = new BossStateMachine(blackboard);
         CreateStates();
     }
@@ -200,7 +203,8 @@ public abstract class BossControllerBase : Enemy
     {
         if (patternEntry == null) return BossPatternEvalResult.HardFail("패턴이 없습니다.");
 
-        BossPatternEvalResult result = patternEntry.Evaluate(this, blackboard);
+        BossPatternEvalContext context = new BossPatternEvalContext(this, blackboard, patternRuntime);
+        BossPatternEvalResult result = patternEntry.Evaluate(context);
         return AdjustPatternEval(patternEntry, result);
     }
 
@@ -219,20 +223,20 @@ public abstract class BossControllerBase : Enemy
         if (!isActivated)
             return false;
 
-        blackboard.BeginPattern(patternEntry);
+        patternRuntime.BeginPattern(patternEntry);
         return true;
     }
 
     public void FinishCurrentPattern()
     {
-        BossPatternEntry finishedPattern = blackboard != null ? blackboard.CurrentPattern : null;
+        BossPatternEntry finishedPattern = patternRuntime != null ? patternRuntime.CurrentPattern : null;
         OnPatternEnd(finishedPattern, false);
-        blackboard?.EndPattern();
+        patternRuntime?.EndPattern();
     }
 
     public void AbortCurrentPattern()
     {
-        BossPatternEntry activePattern = blackboard != null ? blackboard.CurrentPattern ?? blackboard.ReservedPattern : null;
+        BossPatternEntry activePattern = patternRuntime != null ? patternRuntime.CurrentPattern ?? patternRuntime.ReservedPattern : null;
 
         if (abilitySystem != null && abilitySystem.IsCasting)
             abilitySystem.CancelCasting(true);
@@ -241,7 +245,7 @@ public abstract class BossControllerBase : Enemy
             abilitySystem.CancelExecution(true);
 
         OnPatternEnd(activePattern, true);
-        blackboard?.ClearPatternContext();
+        patternRuntime?.ClearPatternContext();
     }
 
     protected override void OnEnemyAttributeChanged(AttributeDefinition attribute, float oldValue, float newValue)
@@ -444,6 +448,16 @@ public abstract class BossControllerBase : Enemy
         patternExecuteState = CreatePatternExecuteState();
         groggyState = CreateGroggyState();
         deadState = CreateDeadState();
+    }
+
+    protected virtual BossBlackboard CreateBlackboard()
+    {
+        return new BossBlackboard(transform);
+    }
+
+    protected virtual BossPatternRuntimeState CreatePatternRuntimeState()
+    {
+        return new BossPatternRuntimeState();
     }
 
     protected virtual BossSpawnState CreateSpawnState()

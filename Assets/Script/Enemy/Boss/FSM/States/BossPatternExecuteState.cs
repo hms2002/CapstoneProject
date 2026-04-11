@@ -8,7 +8,7 @@ public class BossPatternExecuteState : BossState
     {
         activationRequested = false;
 
-        BossPatternEntry reservedPattern = boss.Blackboard.ReservedPattern;
+        BossPatternEntry reservedPattern = boss.PatternRuntime.ReservedPattern;
         if (reservedPattern == null)
         {
             LogState("예약된 패턴이 없어 다시 대기합니다.");
@@ -23,7 +23,7 @@ public class BossPatternExecuteState : BossState
         if (!activationRequested)
         {
             LogState($"패턴 '{reservedPatternName}' 실행에 실패했습니다.");
-            boss.Blackboard.ClearReservedPattern();
+            boss.PatternRuntime.ClearReservedPattern();
             boss.ChangeState(boss.GetCombatIdleState());
         }
     }
@@ -36,8 +36,8 @@ public class BossPatternExecuteState : BossState
         if (boss.AbilitySystem != null && boss.AbilitySystem.IsBusy)
             return;
 
-        string currentPatternName = boss.Blackboard.CurrentPattern != null && boss.Blackboard.CurrentPattern.Ability != null
-            ? boss.Blackboard.CurrentPattern.Ability.name
+        string currentPatternName = boss.PatternRuntime.CurrentPattern != null && boss.PatternRuntime.CurrentPattern.Ability != null
+            ? boss.PatternRuntime.CurrentPattern.Ability.name
             : "None";
         LogState($"패턴 '{currentPatternName}'을 마칩니다.");
         boss.FinishCurrentPattern();
@@ -46,6 +46,6 @@ public class BossPatternExecuteState : BossState
 
     public override void OnExit()
     {
-        boss.Blackboard.ClearReservedPattern();
+        boss.PatternRuntime.ClearReservedPattern();
     }
 }

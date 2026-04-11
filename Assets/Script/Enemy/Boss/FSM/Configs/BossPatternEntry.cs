@@ -10,6 +10,9 @@ public enum BossPatternEvalState
 
 public readonly struct BossPatternEvalResult
 {
+    // 이 구조체의 책임:
+    // 패턴 선택 평가의 다단계 결과와 가중치 보정값을 전달한다.
+
     public BossPatternEvalState State { get; }
     public float WeightMultiplier { get; }
     public string Reason { get; }
@@ -53,6 +56,9 @@ public readonly struct BossPatternEvalResult
 [System.Serializable]
 public sealed class BossPatternEntry
 {
+    // 이 클래스의 책임:
+    // 패턴 하나의 선택 데이터와 평가 규칙을 보관하고 최종 평가 결과를 종합한다.
+
     [Header("Ability")]
     [Tooltip("이 패턴이 실제로 실행할 GAS Ability입니다.")]
     [SerializeField] private AbilityDefinition ability;
@@ -89,6 +95,11 @@ public sealed class BossPatternEntry
     [Range(0f, 1f)]
     [SerializeField] private float maxHpRatio = 1f;
 
+    [Space(8)]
+    [Header("Additional Conditions")]
+    [Tooltip("보스 전용 또는 특수 조건을 추가합니다.")]
+    [SerializeField] private BossPatternCondition[] additionalConditions;
+
     public AbilityDefinition Ability => ability;
     public int SelectionWeight => Mathf.Max(1, selectionWeight);
     public int MaxConsecutiveUseCount => Mathf.Max(1, maxConsecutiveUseCount);
@@ -100,9 +111,14 @@ public sealed class BossPatternEntry
     public float MaxHpRatio => maxHpRatio;
 
     /// <summary>공통 패턴 평가 결과를 계산합니다.</summary>
-    public BossPatternEvalResult Evaluate(BossControllerBase boss, BossBlackboard blackboard)
+    public BossPatternEvalResult Evaluate(BossPatternEvalContext context)
     {
-        if (boss == null || blackboard == null) return BossPatternEvalResult.HardFail("평가 대상이 없습니다.");
+        BossControllerBase boss = context.Boss;
+        BossBlackboard blackboard = context.Blackboard;
+        BossPatternRuntimeState patternRuntime = context.PatternRuntime;
+
+        if (boss == null || blackboard == null || patternRuntime == null)
+            return BossPatternEvalResult.HardFail("평가 대상이 없습니다.");
 
         if (ability == null) return BossPatternEvalResult.HardFail("어빌리티가 없습니다.");
 
@@ -112,21 +128,52 @@ public sealed class BossPatternEntry
         if (blackboard.DistanceToTarget < minDistanceToTarget || blackboard.DistanceToTarget > maxDistanceToTarget)
             return BossPatternEvalResult.HardFail("거리 조건이 맞지 않습니다.");
 
-        if (!blackboard.IsPatternSelectionReady(this))
+        if (!patternRuntime.IsPatternSelectionReady(this))
             return BossPatternEvalResult.HardFail("선택 잠금 중입니다.");
 
-        if (blackboard.LastUsedPattern == this &&
-            blackboard.ConsecutivePatternUseCount >= MaxConsecutiveUseCount)
+        if (patternRuntime.LastUsedPattern == this &&
+            patternRuntime.ConsecutivePatternUseCount >= MaxConsecutiveUseCount)
         {
             return BossPatternEvalResult.HardFail("연속 사용 제한에 걸렸습니다.");
         }
 
-        if (MaxUseCount > 0 && blackboard.GetUseCount(this) >= MaxUseCount)
+        if (MaxUseCount > 0 && patternRuntime.GetUseCount(this) >= MaxUseCount)
             return BossPatternEvalResult.HardFail("사용 횟수를 모두 소모했습니다.");
 
         GameObject targetObject = blackboard.CurrentTarget != null ? blackboard.CurrentTarget.gameObject : null;
         if (!ability.CanActivate(boss.gameObject, targetObject))
             return BossPatternEvalResult.HardFail("GAS 활성화 조건을 만족하지 않습니다.");
+
+        BossPatternEvalResult extraConditionResult = EvaluateAdditionalConditions(context);
+        if (extraConditionResult.State != BossPatternEvalState.Pass || extraConditionResult.WeightMultiplier != 1f)
+            return extraConditionResult;
+
+        return BossPatternEvalResult.Pass();
+    }
+
+    private BossPatternEvalResult EvaluateAdditionalConditions(BossPatternEvalContext context)
+    {
+        if (additionalConditions == null || additionalConditions.Length == 0)
+            return BossPatternEvalResult.Pass();
+
+        float combinedWeightMultiplier = 1f;
+
+        for (int i = 0; i < additionalConditions.Length; i++)
+        {
+            BossPatternCondition condition = additionalConditions[i];
+            if (condition == null)
+                continue;
+
+            BossPatternEvalResult result = condition.Evaluate(context, this);
+            if (result.State == BossPatternEvalState.HardFail)
+                return result;
+
+            if (result.State == BossPatternEvalState.SoftFail)
+                combinedWeightMultiplier *= Mathf.Max(0f, result.WeightMultiplier);
+        }
+
+        if (combinedWeightMultiplier < 1f)
+            return BossPatternEvalResult.SoftFail(weightMultiplier: combinedWeightMultiplier);
 
         return BossPatternEvalResult.Pass();
     }

@@ -4,6 +4,9 @@ using UnityGAS;
 
 public class Witch : BossControllerBase
 {
+    // 이 클래스의 책임:
+    // 마녀 보스 전용 상태, 연출, 패턴 보조 동작을 조율하고 전용 런타임 데이터를 관리한다.
+
     private static readonly int AttackHash = Animator.StringToHash("attack");
 
     [Header("Pattern")]
@@ -18,12 +21,12 @@ public class Witch : BossControllerBase
     private AttackTelegraphService telegraphService;
     private AttackTelegraphStyle extinguishWarningStyle;
     private bool hasAttackTrigger;
-    private StrangeCandlestick extinguishCandle;
-    private Vector3 extinguishCenter;
+    private WitchRuntimeData runtimeData;
 
     protected override void Awake()
     {
         base.Awake();
+        runtimeData = new WitchRuntimeData();
         telegraphService = GetComponent<AttackTelegraphService>();
         extinguishWarningStyle = MakeWarningStyle();
         hasAttackTrigger = CheckAttackTrigger();
@@ -39,6 +42,8 @@ public class Witch : BossControllerBase
     {
         HideExtinguishWarning();
     }
+
+    public WitchRuntimeData RuntimeData => runtimeData;
 
     protected override void Update()
     {
@@ -88,8 +93,8 @@ public class Witch : BossControllerBase
 
         if (GetFogRadius() <= 0f) return false;
 
-        extinguishCandle = candle;
-        extinguishCenter = GetCandleCenter(candle);
+        Vector3 extinguishCenter = GetCandleCenter(candle);
+        runtimeData.SetExtinguishSelection(candle, extinguishCenter);
         PlayAttackMotion();
         ShowWarning(extinguishCenter, warningTime);
         return true;
@@ -98,7 +103,10 @@ public class Witch : BossControllerBase
     /// <summary>촛불 끄기 패턴을 끝냅니다.</summary>
     public void FinishExtinguish()
     {
+        StrangeCandlestick extinguishCandle = runtimeData.SelectedCandle;
         if (extinguishCandle == null) return;
+
+        Vector3 extinguishCenter = runtimeData.SelectedCenter;
 
         TryHitPlayer(extinguishCenter);
         SpawnFog(extinguishCenter);
@@ -109,8 +117,7 @@ public class Witch : BossControllerBase
     public void HideExtinguishWarning()
     {
         HideWarning();
-        extinguishCandle = null;
-        extinguishCenter = Vector3.zero;
+        runtimeData.ClearExtinguishSelection();
     }
 
     /// <summary>대화 State 사용 여부를 정합니다.</summary>
