@@ -16,6 +16,6 @@ public class BossPatternSelectState : BossState
         string selectedPatternName = nextPattern.Ability != null ? nextPattern.Ability.name : "None";
         LogState($"패턴 '{selectedPatternName}'을 선택합니다.");
         boss.PatternRuntime.ReservePattern(nextPattern);
-        boss.ChangeState(boss.GetPatternExecuteState());
+        boss.ChangeState(boss.GetPatternState(nextPattern));
     }
 }

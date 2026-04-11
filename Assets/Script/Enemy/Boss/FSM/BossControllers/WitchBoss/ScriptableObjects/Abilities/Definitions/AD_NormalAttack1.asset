@@ -1,0 +1,96 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 808910561e593534f9ea3637c00cc255, type: 3}
+  m_Name: AD_NormalAttack1
+  m_EditorClassIdentifier: 
+  abilityName: Normal Attack 1
+  icon: {fileID: 0}
+  description: "\uB9C8\uB140\uAC00 \uD50C\uB808\uC774\uC5B4 \uBC29\uD5A5\uC73C\uB85C \uC5F0\uC18D \uC7A5\uD310 \uACF5\uACA9\uC744 \uC2DC\uC804\uD569\uB2C8\uB2E4."
+  cooldown: 0
+  executionPolicy: 0
+  useCharges: 0
+  maxCharges: 1
+  cooldownEffect: {fileID: 0}
+  cooldownTag: {fileID: 0}
+  startCooldownOnEnd: 1
+  castTime: 0
+  recoveryTime: 0
+  canCastWhileMoving: 1
+  interruptible: 1
+  requireTargetObject: 0
+  cost: 0
+  costAttribute: {fileID: 0}
+  animationChannel: 0
+  animationTrigger: 
+  animationTriggerHash: 0
+  abilityTags: []
+  requiredTags: []
+  blockedByTags: []
+  cancelCastingOnTags: []
+  cancelExecutionOnTags: []
+  requiredTagSets: []
+  blockedByTagSets: []
+  targetRequiredTagSets: []
+  targetBlockedByTagSets: []
+  grantedTagsWhileActive: []
+  targetRequiredTags: []
+  targetBlockedByTags: []
+  logic: {fileID: 11400000, guid: f14a219b0d1f4df4a16f9bcf6cf1a027, type: 2}
+  sourceObject: {fileID: 0}
+  containers: []
+  audioOnCastStart:
+    key: 
+    volumeMultiplier: 0
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  audioWhileCasting:
+    key: 
+    volumeMultiplier: 0
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  audioOnCommit:
+    key: 
+    volumeMultiplier: 0
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  audioWhileActive:
+    key: 
+    volumeMultiplier: 0
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  audioOnEnd:
+    key: 
+    volumeMultiplier: 0
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  audioOnCastCancelled:
+    key: 
+    volumeMultiplier: 0
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  audioOnExecutionCancelled:
+    key: 
+    volumeMultiplier: 0
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  impactSound:
+    key: 
+    volumeMultiplier: 0
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  cueOnCastStart: {fileID: 0}
+  cueWhileCasting: {fileID: 0}
+  cueOnCommit: {fileID: 0}
+  cueWhileActive: {fileID: 0}
+  cueOnEnd: {fileID: 0}
+  cueOnCastCancelled: {fileID: 0}
+  cueOnExecutionCancelled: {fileID: 0}

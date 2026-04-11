@@ -102,7 +102,7 @@ public sealed class BossPatternEntry
 
     public AbilityDefinition Ability => ability;
     public int SelectionWeight => Mathf.Max(1, selectionWeight);
-    public int MaxConsecutiveUseCount => Mathf.Max(1, maxConsecutiveUseCount);
+    public int MaxConsecutiveUseCount => Mathf.Max(0, maxConsecutiveUseCount);
     public int MaxUseCount => Mathf.Max(0, maxUseCount);
     public float AiSelectionLockTime => Mathf.Max(0f, aiSelectionLockTime);
     public float MinDistanceToTarget => minDistanceToTarget;
@@ -131,7 +131,8 @@ public sealed class BossPatternEntry
         if (!patternRuntime.IsPatternSelectionReady(this))
             return BossPatternEvalResult.HardFail("선택 잠금 중입니다.");
 
-        if (patternRuntime.LastUsedPattern == this &&
+        if (MaxConsecutiveUseCount > 0 &&
+            patternRuntime.LastUsedPattern == this &&
             patternRuntime.ConsecutivePatternUseCount >= MaxConsecutiveUseCount)
         {
             return BossPatternEvalResult.HardFail("연속 사용 제한에 걸렸습니다.");

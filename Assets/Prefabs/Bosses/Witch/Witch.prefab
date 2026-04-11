@@ -220,10 +220,86 @@ MonoBehaviour:
   maxHealthAttribute: {fileID: 11400000, guid: 0e177e1d15e428745b5859fac08ce203, type: 2}
   deadTag: {fileID: 0}
   groggyTag: {fileID: 11400000, guid: 6a381fd96b3c05d4cbcbd73fbf173f4e, type: 2}
-  phases: []
+  phases:
+  - phaseName: "1 \uD398\uC774\uC988"
+    enterHpRatioBelowOrEqual: 1
+    thinkDelayMin: 0
+    thinkDelayMax: 0
+    patterns:
+    - ability: {fileID: 11400000, guid: 0c89c5f9457540d6a5d0c393c44b0c7e, type: 2}
+      selectionWeight: 200
+      maxConsecutiveUseCount: 0
+      maxUseCount: 0
+      aiSelectionLockTime: 0
+      minDistanceToTarget: 0
+      maxDistanceToTarget: 5
+      minHpRatio: 0
+      maxHpRatio: 1
+      additionalConditions: []
+    - ability: {fileID: 11400000, guid: 3d9f7b2e6c4a4fd5a18be7f0c3d2a941, type: 2}
+      selectionWeight: 100
+      maxConsecutiveUseCount: 0
+      maxUseCount: 0
+      aiSelectionLockTime: 0
+      minDistanceToTarget: 0
+      maxDistanceToTarget: 999
+      minHpRatio: 0
+      maxHpRatio: 1
+      additionalConditions: []
+    - ability: {fileID: 11400000, guid: 8dbccf3ca7da42d88efb39ed3d1d2f20, type: 2}
+      selectionWeight: 400
+      maxConsecutiveUseCount: 0
+      maxUseCount: 0
+      aiSelectionLockTime: 0
+      minDistanceToTarget: 0
+      maxDistanceToTarget: 999
+      minHpRatio: 0
+      maxHpRatio: 1
+      additionalConditions:
+      - {fileID: 11400000, guid: 3dbba152ab1946d89f913d70073cc988, type: 2}
+  - phaseName: "2 \uD398\uC774\uC988"
+    enterHpRatioBelowOrEqual: 0.5
+    thinkDelayMin: 0
+    thinkDelayMax: 0
+    patterns:
+    - ability: {fileID: 11400000, guid: 0c89c5f9457540d6a5d0c393c44b0c7e, type: 2}
+      selectionWeight: 200
+      maxConsecutiveUseCount: 0
+      maxUseCount: 0
+      aiSelectionLockTime: 0
+      minDistanceToTarget: 0
+      maxDistanceToTarget: 5
+      minHpRatio: 0
+      maxHpRatio: 1
+      additionalConditions: []
+    - ability: {fileID: 11400000, guid: 3d9f7b2e6c4a4fd5a18be7f0c3d2a941, type: 2}
+      selectionWeight: 100
+      maxConsecutiveUseCount: 0
+      maxUseCount: 0
+      aiSelectionLockTime: 0
+      minDistanceToTarget: 0
+      maxDistanceToTarget: 999
+      minHpRatio: 0
+      maxHpRatio: 1
+      additionalConditions: []
+    - ability: {fileID: 11400000, guid: 8dbccf3ca7da42d88efb39ed3d1d2f20, type: 2}
+      selectionWeight: 400
+      maxConsecutiveUseCount: 0
+      maxUseCount: 0
+      aiSelectionLockTime: 0
+      minDistanceToTarget: 0
+      maxDistanceToTarget: 999
+      minHpRatio: 0
+      maxHpRatio: 1
+      additionalConditions:
+      - {fileID: 11400000, guid: 3dbba152ab1946d89f913d70073cc988, type: 2}
   fogPrefab: {fileID: 4201956065249926095, guid: 983d63dce5dc9454a9a74287a2ed4d94, type: 3}
   extinguishDamageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
   extinguishDamage: 1
+  normalAttack1TilePrefab: {fileID: 1000000000000000003, guid: cd6075224a63408383d85a752fb3d67a, type: 3}
+  normalAttack1DamageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
+  normalAttack1Damage: 1
+  retreatSkeletonPrefab: {fileID: 7098643081786945513, guid: b1f84c1064c662345a49453bf9a8fd34, type: 3}
 --- !u!114 &8462024867634775818
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -237,7 +313,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   initialAbilities:
-  - {fileID: 11400000, guid: 262fe12e4596d5347806a400d239960e, type: 2}
+  - {fileID: 11400000, guid: 8dbccf3ca7da42d88efb39ed3d1d2f20, type: 2}
+  - {fileID: 11400000, guid: 0c89c5f9457540d6a5d0c393c44b0c7e, type: 2}
+  - {fileID: 11400000, guid: 3d9f7b2e6c4a4fd5a18be7f0c3d2a941, type: 2}
   attributeSet: {fileID: 5277792941553958002}
   effectRunner: {fileID: 3113701687370779019}
   tagSystem: {fileID: 4477728599806979434}

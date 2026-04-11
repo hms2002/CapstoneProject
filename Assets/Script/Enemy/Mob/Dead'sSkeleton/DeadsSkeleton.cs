@@ -4,7 +4,7 @@ using UnityGAS;
 
 public class DeadsSkeleton : Mob
 {
-    private const float ExplosionDiameter = 5f;
+    private float explosionDiameter = 5f;
     private const string DeathTriggerName = "isDead";
 
     [Header("자폭")]
@@ -168,7 +168,7 @@ public class DeadsSkeleton : Mob
 
         AttackTelegraphSpec spec = AttackTelegraphSpec.CreateCircle(
             transform.position,
-            ExplosionDiameter,
+            explosionDiameter,
             Mathf.Max(0f, explodeDelay),
             warningStyle);
 
@@ -204,7 +204,7 @@ public class DeadsSkeleton : Mob
         LayerMask damageMask = GetDamageMask(hitTarget);
         Collider2D[] hits = Physics2D.OverlapCircleAll(
             transform.position,
-            ExplosionDiameter * 0.5f,
+            GetExplosionRadius(),
             damageMask);
 
         damagedTargets.Clear();
@@ -263,6 +263,30 @@ public class DeadsSkeleton : Mob
     private float GetSelfDestructRadius()
     {
         return Mathf.Max(0f, selfDestructRangeDiameter * 0.5f);
+    }
+
+    /// <summary>폭발 반경을 돌려줍니다.</summary>
+    private float GetExplosionRadius()
+    {
+        return Mathf.Max(0f, explosionDiameter * 0.5f);
+    }
+
+    /// <summary>패턴용 강화 수치를 적용합니다.</summary>
+    public void SetBoost(
+        Transform combatTarget,
+        float boostedExplosionDiameter,
+        float boostedSpeedScale,
+        bool ignoreRange)
+    {
+        if (combatTarget != null)
+            SetTarget(combatTarget);
+
+        explosionDiameter = Mathf.Max(0f, boostedExplosionDiameter);
+
+        if (ChaseIntent == null) return;
+
+        ChaseIntent.SetSpeedScale(boostedSpeedScale);
+        ChaseIntent.SetIgnoreDetectionRange(ignoreRange);
     }
 
     /// <summary>해골 전용 경고 스타일을 만듭니다.</summary>
