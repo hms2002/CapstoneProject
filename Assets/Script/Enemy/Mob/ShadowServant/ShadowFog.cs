@@ -17,8 +17,7 @@ public class ShadowFog : MonoBehaviour
 
     private void Update()
     {
-        if (Time.time < dieTime)
-            return;
+        if (Time.time < dieTime) return;
 
         Destroy(gameObject);
     }
@@ -43,12 +42,10 @@ public class ShadowFog : MonoBehaviour
     /// <summary>닿은 대상에 안개 효과를 적용합니다.</summary>
     private void HandleTouch(Collider2D other)
     {
-        if (other == null)
-            return;
+        if (other == null) return;
 
         GameObject targetObject = GetTarget(other);
-        if (targetObject == null)
-            return;
+        if (targetObject == null) return;
 
         if (targetObject.CompareTag(PlayerTag))
         {
@@ -76,8 +73,7 @@ public class ShadowFog : MonoBehaviour
         if (candlestickSeal == null)
             candlestickSeal = other.GetComponentInParent<CandlestickSeal>();
 
-        if (candlestickSeal == null)
-            return;
+        if (candlestickSeal == null) return;
 
         candlestickSeal.Seal();
     }
@@ -85,8 +81,7 @@ public class ShadowFog : MonoBehaviour
     /// <summary>충돌한 루트 오브젝트를 구합니다.</summary>
     private GameObject GetTarget(Collider2D other)
     {
-        if (other.attachedRigidbody != null)
-            return other.attachedRigidbody.gameObject;
+        if (other.attachedRigidbody != null) return other.attachedRigidbody.gameObject;
 
         return other.gameObject;
     }

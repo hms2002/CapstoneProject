@@ -12,7 +12,7 @@ public class ShadowServant : Mob
 
     [Header("Fog")]
     [Tooltip("폭발 뒤 생성할 안개 프리팹입니다.")]
-    [SerializeField] private GameObject fogPrefab;
+    [SerializeField] private GameObject fog;
 
     [Tooltip("폭발에 사용할 데미지 이펙트입니다.")]
     [SerializeField] private GE_Damage_Spec explosionDamageEffect;
@@ -42,11 +42,9 @@ public class ShadowServant : Mob
 
     protected override void UpdateAttack()
     {
-        if (attackRoutine != null)
-            return;
+        if (attackRoutine != null) return;
 
-        if (!CanAttack())
-            return;
+        if (!CanAttack()) return;
 
         attackRoutine = StartCoroutine(RunAttack());
     }
@@ -68,8 +66,7 @@ public class ShadowServant : Mob
     protected override void DrawAttackGizmos()
     {
         float attackRadius = GetAttackRadius();
-        if (attackRadius <= 0f)
-            return;
+        if (attackRadius <= 0f) return;
 
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, attackRadius);
@@ -79,8 +76,7 @@ public class ShadowServant : Mob
     {
         base.OnDestroy();
 
-        if (warningStyle != null)
-            Destroy(warningStyle);
+        if (warningStyle != null) Destroy(warningStyle);
     }
 
     /// <summary>지금 공격을 시작할 수 있는지 확인합니다.</summary>
@@ -101,7 +97,7 @@ public class ShadowServant : Mob
     /// <summary>공격에 필요한 참조가 있는지 확인합니다.</summary>
     private bool HasAttackData()
     {
-        bool isValid = fogPrefab != null &&
+        bool isValid = fog != null &&
                        explosionDamageEffect != null &&
                        abilitySystem != null &&
                        GetFogRadius() > 0f;
@@ -163,8 +159,7 @@ public class ShadowServant : Mob
     /// <summary>원형 경고를 표시합니다.</summary>
     private void ShowWarning(Vector3 targetPoint)
     {
-        if (telegraphService == null)
-            return;
+        if (telegraphService == null) return;
 
         AttackTelegraphSpec spec = AttackTelegraphSpec.CreateCircle(
             targetPoint,
@@ -189,8 +184,7 @@ public class ShadowServant : Mob
     private void Explode(Vector3 targetPoint)
     {
         CombatHitPayload payload = MakeHitPayload();
-        if (payload == null)
-            return;
+        if (payload == null) return;
 
         Collider2D[] hits = Physics2D.OverlapCircleAll(
             targetPoint,
@@ -217,7 +211,7 @@ public class ShadowServant : Mob
     /// <summary>폭발 뒤 안개를 생성합니다.</summary>
     private void SpawnFog(Vector3 targetPoint)
     {
-        Instantiate(fogPrefab, new Vector3(targetPoint.x, targetPoint.y, 0f), Quaternion.identity);
+        Instantiate(fog, new Vector3(targetPoint.x, targetPoint.y, 0f), Quaternion.identity);
     }
 
     /// <summary>플레이어 피해 레이어를 구합니다.</summary>
@@ -259,12 +253,10 @@ public class ShadowServant : Mob
     /// <summary>안개 반지름을 구합니다.</summary>
     private float GetFogRadius()
     {
-        if (fogPrefab == null)
-            return 0f;
+        if (fog == null) return 0f;
 
-        CircleCollider2D fogCollider = fogPrefab.GetComponent<CircleCollider2D>();
-        if (fogCollider == null)
-            return 0f;
+        CircleCollider2D fogCollider = fog.GetComponent<CircleCollider2D>();
+        if (fogCollider == null) return 0f;
 
         return Mathf.Max(0f, fogCollider.radius);
     }
@@ -285,14 +277,12 @@ public class ShadowServant : Mob
     /// <summary>안개 콜라이더 오프셋을 구합니다.</summary>
     private Vector2 GetFogOffset()
     {
-        if (fogPrefab == null)
-            return Vector2.zero;
+        if (fog == null) return Vector2.zero;
 
-        CircleCollider2D fogCollider = fogPrefab.GetComponent<CircleCollider2D>();
-        if (fogCollider == null)
-            return Vector2.zero;
+        CircleCollider2D fogCollider = fog.GetComponent<CircleCollider2D>();
+        if (fogCollider == null) return Vector2.zero;
 
-        Vector3 scale = fogPrefab.transform.localScale;
+        Vector3 scale = fog.transform.localScale;
         return new Vector2(
             fogCollider.offset.x * scale.x,
             fogCollider.offset.y * scale.y);

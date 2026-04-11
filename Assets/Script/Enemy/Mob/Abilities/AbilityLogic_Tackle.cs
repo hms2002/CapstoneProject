@@ -60,8 +60,7 @@ public class AL_Tackle : AbilityLogic
             ? system.GetComponent<AbilityMotionController2D>()
             : null;
 
-        if (motion != null)
-            motion.CancelMotion();
+        if (motion != null) motion.CancelMotion();
 
         HideTelegraph(system);
     }
@@ -76,8 +75,7 @@ public class AL_Tackle : AbilityLogic
     {
         tackle.ShowTelegraph(context, readyTime, telegraphStyle);
 
-        if (readyTime > 0f)
-            yield return AbilityTasks.WaitDelay(caster, spec, readyTime);
+        if (readyTime > 0f) yield return AbilityTasks.WaitDelay(caster, spec, readyTime);
 
         if (IsCancelled(spec))
         {
@@ -103,8 +101,7 @@ public class AL_Tackle : AbilityLogic
             yield return AbilityTasks.WaitDelay(caster, spec, finalLungeTime);
         }
 
-        if (IsCancelled(spec))
-            yield break;
+        if (IsCancelled(spec)) yield break;
 
         GameObject finalTarget = context.Target != null ? context.Target : fallbackTarget;
         if (!tackle.HasDelay && InBox(finalTarget, context) && ApplyDamage(caster, spec, finalTarget))
@@ -114,13 +111,11 @@ public class AL_Tackle : AbilityLogic
     /// <summary>타겟이 고정된 태클 범위 안에 있는지 확인합니다.</summary>
     private bool InBox(GameObject target, TackleAttack.TackleContext context)
     {
-        if (target == null)
-            return false;
+        if (target == null) return false;
 
         float length = Mathf.Max(0f, context.LungeDistance);
         float halfWidth = Mathf.Max(0.01f, context.TelegraphWidth * 0.5f);
-        if (length <= 0f)
-            return false;
+        if (length <= 0f) return false;
 
         Vector2 direction = context.Direction.sqrMagnitude > 0.0001f
             ? context.Direction.normalized
@@ -130,8 +125,7 @@ public class AL_Tackle : AbilityLogic
         Vector2 toTarget = targetPos - context.StartPos;
         float forward = Vector2.Dot(toTarget, direction);
 
-        if (forward < 0f || forward > length)
-            return false;
+        if (forward < 0f || forward > length) return false;
 
         Vector2 closest = context.StartPos + direction * forward;
         Vector2 side = targetPos - closest;
@@ -183,12 +177,10 @@ public class AL_Tackle : AbilityLogic
     /// <summary>이동 컨트롤러를 가져오거나 추가합니다.</summary>
     private static AbilityMotionController2D GetMotion(AbilitySystem caster)
     {
-        if (caster == null)
-            return null;
+        if (caster == null) return null;
 
         AbilityMotionController2D motion = caster.GetComponent<AbilityMotionController2D>();
-        if (motion != null)
-            return motion;
+        if (motion != null) return motion;
 
         return caster.gameObject.AddComponent<AbilityMotionController2D>();
     }
@@ -196,11 +188,9 @@ public class AL_Tackle : AbilityLogic
     /// <summary>남아 있는 태클 경고를 정리합니다.</summary>
     private static void HideTelegraph(AbilitySystem caster)
     {
-        if (caster == null)
-            return;
+        if (caster == null) return;
 
         TackleAttack tackle = caster.GetComponent<TackleAttack>();
-        if (tackle != null)
-            tackle.HideTelegraph();
+        if (tackle != null) tackle.HideTelegraph();
     }
 }

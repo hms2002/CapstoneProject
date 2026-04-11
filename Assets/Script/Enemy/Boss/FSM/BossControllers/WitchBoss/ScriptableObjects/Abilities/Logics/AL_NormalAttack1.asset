@@ -9,6 +9,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6ad9af6593c0bbd4282258268579642a, type: 3}
-  m_Name: AL_Ambush
-  m_EditorClassIdentifier: 
+  m_Script: {fileID: 11500000, guid: 2f4af8b7c5a24b12a6df0c14dd6d9b3f, type: 3}
+  m_Name: AL_NormalAttack1
+  m_EditorClassIdentifier:

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
@@ -18,6 +19,7 @@ public class CandlestickSeal : MonoBehaviour
     private bool isSealed;
 
     public bool IsSealed => isSealed;
+    public event Action<bool> SealChanged;
 
     private void Awake()
     {
@@ -32,20 +34,19 @@ public class CandlestickSeal : MonoBehaviour
     /// <summary>촛대를 봉인 상태로 바꿉니다.</summary>
     public void Seal()
     {
-        if (isSealed)
-            return;
+        if (isSealed) return;
 
         isSealed = true;
         hitsLeft = SealHitCount;
         ToggleLight(false);
         ShowMarks();
+        SealChanged?.Invoke(true);
     }
 
     /// <summary>봉인 해제 타격을 처리합니다.</summary>
     public bool UseHit()
     {
-        if (!isSealed)
-            return false;
+        if (!isSealed) return false;
 
         hitsLeft = Mathf.Max(0, hitsLeft - 1);
         UpdateMarks();
@@ -62,23 +63,21 @@ public class CandlestickSeal : MonoBehaviour
         isSealed = false;
         ToggleLight(true);
         HideMarks();
+        SealChanged?.Invoke(false);
     }
 
     /// <summary>광원과 마스크 표시를 켜고 끕니다.</summary>
     private void ToggleLight(bool isOn)
     {
-        if (candleLight != null)
-            candleLight.gameObject.SetActive(isOn);
+        if (candleLight != null) candleLight.gameObject.SetActive(isOn);
 
-        if (sightMask != null)
-            sightMask.gameObject.SetActive(isOn);
+        if (sightMask != null) sightMask.gameObject.SetActive(isOn);
     }
 
     /// <summary>봉인 표식을 만듭니다.</summary>
     private void BuildMarks()
     {
-        if (marks.Count > 0)
-            return;
+        if (marks.Count > 0) return;
 
         Sprite sprite = GetMarkSprite();
         int sortingLayerId = ownerSprite != null ? ownerSprite.sortingLayerID : 0;
@@ -106,8 +105,7 @@ public class CandlestickSeal : MonoBehaviour
     {
         for (int i = 0; i < marks.Count; i++)
         {
-            if (marks[i] == null)
-                continue;
+            if (marks[i] == null) continue;
 
             marks[i].gameObject.SetActive(i < hitsLeft);
         }
@@ -124,8 +122,7 @@ public class CandlestickSeal : MonoBehaviour
     {
         for (int i = 0; i < marks.Count; i++)
         {
-            if (marks[i] == null)
-                continue;
+            if (marks[i] == null) continue;
 
             marks[i].gameObject.SetActive(false);
         }
@@ -145,8 +142,7 @@ public class CandlestickSeal : MonoBehaviour
     /// <summary>표식에 쓸 스프라이트를 구합니다.</summary>
     private Sprite GetMarkSprite()
     {
-        if (markSprite != null)
-            return markSprite;
+        if (markSprite != null) return markSprite;
 
         Rect rect = new Rect(0f, 0f, Texture2D.whiteTexture.width, Texture2D.whiteTexture.height);
         markSprite = Sprite.Create(Texture2D.whiteTexture, rect, new Vector2(0.5f, 0.5f), 100f);

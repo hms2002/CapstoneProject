@@ -3,12 +3,11 @@ using UnityEngine;
 
 namespace UnityGAS.Sample
 {
-    [CreateAssetMenu(fileName = "AL_Wave", menuName = "GAS/Ability Logic/Witch Boss/AL_Wave")]
-    public class AbilityLogic_Wave : AbilityLogic
+    [CreateAssetMenu(fileName = "AL_NormalAttack1", menuName = "GAS/Ability Logic/Witch Boss/AL_NormalAttack1")]
+    public class AbilityLogic_NormalAttack1 : AbilityLogic
     {
         public override IEnumerator Activate(AbilitySystem system, AbilitySpec spec, GameObject initialTarget)
         {
-            Debug.Log("AbilityLogic_Wave Activate");
             yield return null;
         }
     }

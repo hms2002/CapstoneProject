@@ -19,6 +19,9 @@ public class BossEncounterDirector : MonoBehaviour
     private bool hasPlayed;
     private bool holdsTransitionPlayerLock;
 
+    public bool IsSequenceRunning => runningSequence != null;
+    public bool HasPlayed => hasPlayed;
+
     private void OnEnable()
     {
         PlayerRuntimeRegistry.PlayerRegistered += HandlePlayerRegistered;

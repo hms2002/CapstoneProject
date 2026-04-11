@@ -1,10 +1,11 @@
-using System.Collections.Generic;
 using UnityEngine;
 
-public class BossBlackboard
+public sealed class BossBlackboard
 {
+    // 이 클래스의 책임:
+    // 공통 FSM이 함께 참조하는 전투 문맥(타깃, 거리, 방향, HP, 페이즈, 상태 시간)만 보관한다.
+
     private readonly Transform ownerTransform;
-    private readonly Dictionary<BossPatternEntry, float> patternSelectionReadyTimes = new();
 
     public BossBlackboard(Transform ownerTransform)
     {
@@ -20,11 +21,6 @@ public class BossBlackboard
     public float StateElapsedTime { get; private set; }
 
     public int CurrentPhaseIndex { get; private set; }
-
-    public BossPatternEntry ReservedPattern { get; private set; }
-    public BossPatternEntry CurrentPattern { get; private set; }
-    public BossPatternEntry LastUsedPattern { get; private set; }
-    public int ConsecutivePatternUseCount { get; private set; }
 
     public void Tick(float deltaTime, Transform target, float currentHpRatio)
     {
@@ -56,55 +52,5 @@ public class BossBlackboard
     public void SetPhaseIndex(int phaseIndex)
     {
         CurrentPhaseIndex = Mathf.Max(0, phaseIndex);
-    }
-
-    public void ReservePattern(BossPatternEntry pattern)
-    {
-        ReservedPattern = pattern;
-    }
-
-    public void ClearReservedPattern()
-    {
-        ReservedPattern = null;
-    }
-
-    public void BeginPattern(BossPatternEntry pattern)
-    {
-        CurrentPattern = pattern;
-        ReservedPattern = null;
-
-        if (pattern == null)
-            return;
-
-        patternSelectionReadyTimes[pattern] = Time.time + pattern.AiSelectionLockTime;
-
-        if (LastUsedPattern == pattern)
-            ConsecutivePatternUseCount++;
-        else
-            ConsecutivePatternUseCount = 1;
-
-        LastUsedPattern = pattern;
-    }
-
-    public void EndPattern()
-    {
-        CurrentPattern = null;
-    }
-
-    public void ClearPatternContext()
-    {
-        ReservedPattern = null;
-        CurrentPattern = null;
-    }
-
-    public bool IsPatternSelectionReady(BossPatternEntry pattern)
-    {
-        if (pattern == null)
-            return false;
-
-        if (!patternSelectionReadyTimes.TryGetValue(pattern, out float readyTime))
-            return true;
-
-        return Time.time >= readyTime;
     }
 }

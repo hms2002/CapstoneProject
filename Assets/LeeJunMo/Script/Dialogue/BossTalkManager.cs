@@ -33,6 +33,8 @@ public class BossTalkManager : MonoBehaviour
     private InteractState previousPlayerState = InteractState.Idle;
     private bool holdsTransitionPlayerLock;
 
+    public bool IsSequenceRunning => runningSequence != null;
+
     private void Awake()
     {
         CacheDependencies();

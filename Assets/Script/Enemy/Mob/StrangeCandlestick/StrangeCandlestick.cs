@@ -3,6 +3,8 @@ using UnityGAS;
 
 public class StrangeCandlestick : Mob
 {
+    private static readonly System.Collections.Generic.List<StrangeCandlestick> instances = new();
+
     private const float ProjectileAttackInterval = 2f;
     private const int WallLayer = 30;
 
@@ -24,11 +26,25 @@ public class StrangeCandlestick : Mob
     private float nextProjectileFireTime;
     private bool hasLoggedInvalidConfig;
 
+    public static System.Collections.Generic.IReadOnlyList<StrangeCandlestick> Instances => instances;
+    public bool IsSealed => candlestickSeal != null && candlestickSeal.IsSealed;
+
     protected override void Awake()
     {
         base.Awake();
         detectionSensor = GetComponent<EnemyChaseIntent2D>();
         candlestickSeal = GetComponent<CandlestickSeal>();
+    }
+
+    private void OnEnable()
+    {
+        if (!instances.Contains(this))
+            instances.Add(this);
+    }
+
+    private void OnDisable()
+    {
+        instances.Remove(this);
     }
 
     public override bool CanUseChaseMovement()
@@ -42,6 +58,16 @@ public class StrangeCandlestick : Mob
             return;
 
         Shoot();
+    }
+
+    /// <summary>촛대를 봉인 상태로 만듭니다.</summary>
+    public bool Seal()
+    {
+        if (candlestickSeal == null)
+            return false;
+
+        candlestickSeal.Seal();
+        return true;
     }
 
     protected override void OnEnemyAttributeChanged(AttributeDefinition attribute, float oldValue, float newValue)

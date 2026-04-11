@@ -39,9 +39,11 @@ public abstract class BossControllerBase : Enemy
     [SerializeField] private List<BossPhaseConfig> phases = new();
 
     private BossBlackboard blackboard;
+    private BossPatternRuntimeState patternRuntime;
     private BossStateMachine stateMachine;
 
     private BossSpawnState spawnState;
+    private BossEncounterIntroState encounterIntroState;
     private BossCombatIdleState combatIdleState;
     private BossPatternSelectState patternSelectState;
     private BossPatternExecuteState patternExecuteState;
@@ -50,14 +52,18 @@ public abstract class BossControllerBase : Enemy
 
     // 보스 전용 드롭 처리의 책임을 이 컨트롤러에서 맡기 위한 참조입니다.
     private BossDrop bossDrop;
+    private BossEncounterDirector encounterDirector;
+    private BossTalkManager bossTalkManager;
 
     private bool combatActive;
     private bool hasCombatOverride;
+    private bool encounterIntroFinished;
 
     public AbilitySystem AbilitySystem => abilitySystem;
     public TagSystem TagSystem => tagSystem;
     public AttributeSet AttributeSet => attributeSet;
     public BossBlackboard Blackboard => blackboard;
+    public BossPatternRuntimeState PatternRuntime => patternRuntime;
     public BossStateMachine StateMachine => stateMachine;
     public Transform CurrentTarget => Target;
     public override Transform Target => target;
@@ -69,7 +75,8 @@ public abstract class BossControllerBase : Enemy
         CacheComponents();
         bossDrop = GetComponent<BossDrop>();
 
-        blackboard = new BossBlackboard(transform);
+        blackboard = CreateBlackboard();
+        patternRuntime = CreatePatternRuntimeState();
         stateMachine = new BossStateMachine(blackboard);
         CreateStates();
     }
@@ -88,8 +95,9 @@ public abstract class BossControllerBase : Enemy
 
     protected virtual void Update()
     {
-        if (!combatActive)
-            return;
+        bool canTickStateMachine = combatActive ||
+                                   (stateMachine != null && stateMachine.CurrentState == encounterIntroState);
+        if (!canTickStateMachine) return;
 
         blackboard.Tick(Time.deltaTime, Target, GetCurrentHpRatio());
 
@@ -142,12 +150,23 @@ public abstract class BossControllerBase : Enemy
         return combatIdleState;
     }
 
+    public BossState GetEncounterIntroState()
+    {
+        return encounterIntroState;
+    }
+
     public BossState GetPatternSelectState()
     {
         return patternSelectState;
     }
 
     public BossState GetPatternExecuteState()
+    {
+        return patternExecuteState;
+    }
+
+    /// <summary>선택된 패턴에 맞는 실행 상태를 돌려줍니다.</summary>
+    public virtual BossState GetPatternState(BossPatternEntry patternEntry)
     {
         return patternExecuteState;
     }
@@ -185,16 +204,24 @@ public abstract class BossControllerBase : Enemy
         return BossPatternSelector.Select(this, blackboard, GetCurrentPhase());
     }
 
+    /// <summary>패턴 평가 결과를 반환합니다.</summary>
+    public virtual BossPatternEvalResult EvaluatePattern(BossPatternEntry patternEntry)
+    {
+        if (patternEntry == null) return BossPatternEvalResult.HardFail("패턴이 없습니다.");
+
+        BossPatternEvalContext context = new BossPatternEvalContext(this, blackboard, patternRuntime);
+        BossPatternEvalResult result = patternEntry.Evaluate(context);
+        return AdjustPatternEval(patternEntry, result);
+    }
+
     public bool TryStartPattern(BossPatternEntry patternEntry)
     {
-        if (patternEntry == null || abilitySystem == null)
-            return false;
+        if (patternEntry == null || abilitySystem == null) return false;
 
-        if (abilitySystem.IsBusy)
-            return false;
+        if (abilitySystem.IsBusy) return false;
 
-        if (!patternEntry.IsSelectable(this, blackboard))
-            return false;
+        BossPatternEvalResult result = EvaluatePattern(patternEntry);
+        if (!result.CanUse) return false;
 
         GameObject targetObject = Target != null ? Target.gameObject : null;
         bool isActivated = abilitySystem.TryActivateAbility(patternEntry.Ability, targetObject);
@@ -202,24 +229,29 @@ public abstract class BossControllerBase : Enemy
         if (!isActivated)
             return false;
 
-        blackboard.BeginPattern(patternEntry);
+        patternRuntime.BeginPattern(patternEntry);
         return true;
     }
 
     public void FinishCurrentPattern()
     {
-        blackboard?.EndPattern();
+        BossPatternEntry finishedPattern = patternRuntime != null ? patternRuntime.CurrentPattern : null;
+        OnPatternEnd(finishedPattern, false);
+        patternRuntime?.EndPattern();
     }
 
     public void AbortCurrentPattern()
     {
+        BossPatternEntry activePattern = patternRuntime != null ? patternRuntime.CurrentPattern ?? patternRuntime.ReservedPattern : null;
+
         if (abilitySystem != null && abilitySystem.IsCasting)
             abilitySystem.CancelCasting(true);
 
         if (abilitySystem != null && abilitySystem.IsExecuting)
             abilitySystem.CancelExecution(true);
 
-        blackboard?.ClearPatternContext();
+        OnPatternEnd(activePattern, true);
+        patternRuntime?.ClearPatternContext();
     }
 
     protected override void OnEnemyAttributeChanged(AttributeDefinition attribute, float oldValue, float newValue)
@@ -252,6 +284,12 @@ public abstract class BossControllerBase : Enemy
 
     protected virtual void OnEnterSpawn()
     {
+        if (CanEnterEncounterIntroState() && encounterIntroState != null)
+        {
+            ChangeState(encounterIntroState);
+            return;
+        }
+
         ChangeState(combatIdleState);
     }
 
@@ -341,9 +379,76 @@ public abstract class BossControllerBase : Enemy
         OnEnterSpawn();
     }
 
+    /// <summary>인트로 State를 쓸지 확인합니다.</summary>
+    public bool CanEnterEncounterIntroState()
+    {
+        return !encounterIntroFinished && CanUseEncounterIntro();
+    }
+
+    /// <summary>인트로 시퀀스를 시작합니다.</summary>
+    public virtual bool TryStartEncounterIntro()
+    {
+        if (encounterDirector == null) encounterDirector = FindAnyObjectByType<BossEncounterDirector>();
+        if (encounterDirector != null)
+        {
+            if (!encounterDirector.IsSequenceRunning)
+                encounterDirector.BeginSequence();
+
+            return encounterDirector.IsSequenceRunning;
+        }
+
+        if (bossTalkManager == null) bossTalkManager = FindAnyObjectByType<BossTalkManager>();
+        if (bossTalkManager != null)
+        {
+            if (!bossTalkManager.IsSequenceRunning)
+                bossTalkManager.BeginEncounterSequence();
+
+            return bossTalkManager.IsSequenceRunning;
+        }
+
+        return TryStartDialogue();
+    }
+
+    /// <summary>인트로 시퀀스 진행 여부를 확인합니다.</summary>
+    public virtual bool IsEncounterIntroActive()
+    {
+        if (encounterDirector == null) encounterDirector = FindAnyObjectByType<BossEncounterDirector>();
+        if (encounterDirector != null) return encounterDirector.IsSequenceRunning;
+
+        if (bossTalkManager == null) bossTalkManager = FindAnyObjectByType<BossTalkManager>();
+        if (bossTalkManager != null) return bossTalkManager.IsSequenceRunning;
+
+        return IsDialogueActive();
+    }
+
+    /// <summary>인트로 종료를 기록합니다.</summary>
+    public void FinishEncounterIntro()
+    {
+        encounterIntroFinished = true;
+    }
+
+    /// <summary>보스 대화를 시작합니다.</summary>
+    public virtual bool TryStartDialogue()
+    {
+        return false;
+    }
+
+    /// <summary>보스 대화가 진행 중인지 확인합니다.</summary>
+    public virtual bool IsDialogueActive()
+    {
+        return DialogueService.Instance != null && DialogueService.Instance.IsPlaying;
+    }
+
+    /// <summary>보스 대화 종료를 기록합니다.</summary>
+    public void FinishDialogue()
+    {
+        FinishEncounterIntro();
+    }
+
     protected virtual void CreateStates()
     {
         spawnState = CreateSpawnState();
+        encounterIntroState = CreateEncounterIntroState();
         combatIdleState = CreateCombatIdleState();
         patternSelectState = CreatePatternSelectState();
         patternExecuteState = CreatePatternExecuteState();
@@ -351,9 +456,24 @@ public abstract class BossControllerBase : Enemy
         deadState = CreateDeadState();
     }
 
+    protected virtual BossBlackboard CreateBlackboard()
+    {
+        return new BossBlackboard(transform);
+    }
+
+    protected virtual BossPatternRuntimeState CreatePatternRuntimeState()
+    {
+        return new BossPatternRuntimeState();
+    }
+
     protected virtual BossSpawnState CreateSpawnState()
     {
         return new BossSpawnState(this);
+    }
+
+    protected virtual BossEncounterIntroState CreateEncounterIntroState()
+    {
+        return new BossEncounterIntroState(this);
     }
 
     protected virtual BossCombatIdleState CreateCombatIdleState()
@@ -379,5 +499,34 @@ public abstract class BossControllerBase : Enemy
     protected virtual BossDeadState CreateDeadState()
     {
         return new BossDeadState(this);
+    }
+
+    /// <summary>보스별 평가 결과를 보정합니다.</summary>
+    protected virtual BossPatternEvalResult AdjustPatternEval(BossPatternEntry patternEntry, BossPatternEvalResult result)
+    {
+        return result;
+    }
+
+    /// <summary>패턴 종료 후 정리 작업을 처리합니다.</summary>
+    protected virtual void OnPatternEnd(BossPatternEntry patternEntry, bool forced)
+    {
+    }
+
+    /// <summary>인트로 State 사용 여부를 정합니다.</summary>
+    protected virtual bool CanUseEncounterIntro()
+    {
+        if (encounterDirector == null) encounterDirector = FindAnyObjectByType<BossEncounterDirector>();
+        if (encounterDirector != null) return true;
+
+        if (bossTalkManager == null) bossTalkManager = FindAnyObjectByType<BossTalkManager>();
+        if (bossTalkManager != null) return true;
+
+        return CanUseDialogue();
+    }
+
+    /// <summary>대화 사용 여부를 정합니다.</summary>
+    protected virtual bool CanUseDialogue()
+    {
+        return false;
     }
 }
