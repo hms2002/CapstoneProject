@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using DG.Tweening;
 using UnityGAS;
@@ -11,7 +12,8 @@ public class DoorObject : InteractableBase
     {
         Normal,
         OneWay,
-        Locked
+        Locked,
+        AffectionLocked
     }
 
     public enum OneWayOpenSide
@@ -51,6 +53,10 @@ public class DoorObject : InteractableBase
     [Tooltip("문 중앙 판정선 근처의 애매한 구간. 보통 0.02 ~ 0.1 정도를 권장하며 최대 1까지 허용한다.")]
     [SerializeField, Range(0f, 1f)] private float oneWayOpenThreshold = 0.05f;
 
+    [Header("Affection Locked Door")]
+    [SerializeField] private int affectionTargetNpcId;
+    [SerializeField] private int requiredAffection;
+
     public bool IsOpen { get; private set; }
     private Transform runtimePromptAnchor;
     private Tween shakeTween;
@@ -58,6 +64,8 @@ public class DoorObject : InteractableBase
     private bool hasClosedModelLocalPosition;
     private const float VerticalPromptAngleTolerance = 1f;
     private WorldObjectPresentationRuntime openPresentationRuntime;
+    private bool affectionChangeSubscribed;
+    private Coroutine deferredAffectionRefreshCoroutine;
 
 #if UNITY_EDITOR
     private const float DefaultOneWayGizmoWidth = 1.2f;
@@ -115,6 +123,8 @@ public class DoorObject : InteractableBase
     {
         if (isPermanent && ShortcutProgressService.Instance != null && ShortcutProgressService.Instance.IsShortcutUnlocked(mapID, doorID))
             ForceOpen(immediate: true, playPresentation: false);
+
+        InitializeAffectionDoorState();
     }
 
     private void LateUpdate()
@@ -155,6 +165,9 @@ public class DoorObject : InteractableBase
 
         if (doorType == DoorType.OneWay)
             return IsPlayerOnAllowedOneWaySide(player.Transform.position);
+
+        if (doorType == DoorType.AffectionLocked)
+            return CanAffectionDoorOpen();
 
         return false;
     }
@@ -300,7 +313,19 @@ public class DoorObject : InteractableBase
         return true;
     }
 
-    public override string GetInteractDescription() => IsOpen ? string.Empty : (doorType == DoorType.Locked ? lockedPromptText : openPromptText);
+    public override string GetInteractDescription()
+    {
+        if (IsOpen)
+            return string.Empty;
+
+        if (doorType == DoorType.Locked)
+            return lockedPromptText;
+
+        if (doorType == DoorType.AffectionLocked)
+            return CanAffectionDoorOpen() ? openPromptText : lockedPromptText;
+
+        return openPromptText;
+    }
 
 #if UNITY_EDITOR
     private void OnDrawGizmos()
@@ -569,6 +594,85 @@ public class DoorObject : InteractableBase
             isPermanent = true;
     }
 
+    private void InitializeAffectionDoorState()
+    {
+        if (doorType != DoorType.AffectionLocked || IsOpen)
+        {
+            UnsubscribeFromAffectionChanges();
+            return;
+        }
+
+        SubscribeToAffectionChanges();
+        TryAutoOpenFromAffection(playPresentation: false);
+
+        if (!IsOpen && deferredAffectionRefreshCoroutine == null)
+            deferredAffectionRefreshCoroutine = StartCoroutine(DeferredAffectionDoorRefresh());
+    }
+
+    private IEnumerator DeferredAffectionDoorRefresh()
+    {
+        yield return null;
+        deferredAffectionRefreshCoroutine = null;
+        TryAutoOpenFromAffection(playPresentation: false);
+    }
+
+    private void HandleAffectionChanged(int npcId, int currentAffection)
+    {
+        if (doorType != DoorType.AffectionLocked || IsOpen)
+            return;
+
+        if (npcId != affectionTargetNpcId)
+            return;
+
+        if (currentAffection >= requiredAffection)
+            TryAutoOpenFromAffection(playPresentation: true);
+    }
+
+    private void TryAutoOpenFromAffection(bool playPresentation)
+    {
+        if (doorType != DoorType.AffectionLocked || IsOpen)
+            return;
+
+        if (!CanAffectionDoorOpen())
+            return;
+
+        ForceOpen(
+            immediate: false,
+            save: isPermanent,
+            playPresentation: playPresentation);
+
+        UnsubscribeFromAffectionChanges();
+    }
+
+    private bool CanAffectionDoorOpen()
+    {
+        if (doorType != DoorType.AffectionLocked)
+            return false;
+
+        if (AffectionManager.Instance == null)
+            return false;
+
+        return AffectionManager.Instance.GetAffection(affectionTargetNpcId) >= requiredAffection;
+    }
+
+    private void SubscribeToAffectionChanges()
+    {
+        if (affectionChangeSubscribed || AffectionManager.Instance == null)
+            return;
+
+        AffectionManager.Instance.OnAffectionChanged += HandleAffectionChanged;
+        affectionChangeSubscribed = true;
+    }
+
+    private void UnsubscribeFromAffectionChanges()
+    {
+        if (!affectionChangeSubscribed || AffectionManager.Instance == null)
+            return;
+
+        AffectionManager.Instance.OnAffectionChanged -= HandleAffectionChanged;
+        affectionChangeSubscribed = false;
+    }
+
     private bool HasLinkedShortcut()
     {
         ShortcutBase[] shortcuts = GetComponentsInChildren<ShortcutBase>(true);
@@ -613,6 +717,10 @@ public class DoorObject : InteractableBase
 
     private void OnDestroy()
     {
+        if (deferredAffectionRefreshCoroutine != null)
+            StopCoroutine(deferredAffectionRefreshCoroutine);
+
+        UnsubscribeFromAffectionChanges();
         ResetModelAfterShake();
 
         if (runtimePromptAnchor == null)

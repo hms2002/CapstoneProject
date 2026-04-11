@@ -1,6 +1,10 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+#if ENABLE_INPUT_SYSTEM
+using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Controls;
+#endif
 
 [Serializable]
 public struct InputBinding
@@ -13,6 +17,241 @@ public struct InputBinding
         this.primary = primary;
         this.secondary = secondary;
     }
+}
+
+internal static class InputKeyCompatibility
+{
+    public static bool IsPressed(KeyCode key)
+    {
+        if (key == KeyCode.None)
+            return false;
+
+        if (Input.GetKey(key))
+            return true;
+
+#if ENABLE_INPUT_SYSTEM
+        return TryGetButtonControl(key, out ButtonControl control) && control.isPressed;
+#else
+        return false;
+#endif
+    }
+
+    public static bool WasPressedThisFrame(KeyCode key)
+    {
+        if (key == KeyCode.None)
+            return false;
+
+        if (Input.GetKeyDown(key))
+            return true;
+
+#if ENABLE_INPUT_SYSTEM
+        return TryGetButtonControl(key, out ButtonControl control) && control.wasPressedThisFrame;
+#else
+        return false;
+#endif
+    }
+
+    public static bool WasReleasedThisFrame(KeyCode key)
+    {
+        if (key == KeyCode.None)
+            return false;
+
+        if (Input.GetKeyUp(key))
+            return true;
+
+#if ENABLE_INPUT_SYSTEM
+        return TryGetButtonControl(key, out ButtonControl control) && control.wasReleasedThisFrame;
+#else
+        return false;
+#endif
+    }
+
+    public static bool TryReadPressedKeyThisFrame(out KeyCode key)
+    {
+#if ENABLE_INPUT_SYSTEM
+        if (TryReadPressedKeyThisFrameFromInputSystem(out key))
+            return true;
+#endif
+
+        Array values = Enum.GetValues(typeof(KeyCode));
+        for (int i = 0; i < values.Length; i++)
+        {
+            KeyCode candidate = (KeyCode)values.GetValue(i);
+            if (candidate != KeyCode.None && Input.GetKeyDown(candidate))
+            {
+                key = candidate;
+                return true;
+            }
+        }
+
+        key = KeyCode.None;
+        return false;
+    }
+
+#if ENABLE_INPUT_SYSTEM
+    private static bool TryReadPressedKeyThisFrameFromInputSystem(out KeyCode key)
+    {
+        Array values = Enum.GetValues(typeof(KeyCode));
+        for (int i = 0; i < values.Length; i++)
+        {
+            KeyCode candidate = (KeyCode)values.GetValue(i);
+            if (candidate == KeyCode.None)
+                continue;
+
+            if (TryGetButtonControl(candidate, out ButtonControl control) && control.wasPressedThisFrame)
+            {
+                key = candidate;
+                return true;
+            }
+        }
+
+        key = KeyCode.None;
+        return false;
+    }
+
+    private static bool TryGetButtonControl(KeyCode key, out ButtonControl control)
+    {
+        if (TryGetMouseButtonControl(key, out control))
+            return true;
+
+        Keyboard keyboard = Keyboard.current;
+        if (keyboard == null)
+        {
+            control = null;
+            return false;
+        }
+
+        control = key switch
+        {
+            KeyCode.A => keyboard.aKey,
+            KeyCode.B => keyboard.bKey,
+            KeyCode.C => keyboard.cKey,
+            KeyCode.D => keyboard.dKey,
+            KeyCode.E => keyboard.eKey,
+            KeyCode.F => keyboard.fKey,
+            KeyCode.G => keyboard.gKey,
+            KeyCode.H => keyboard.hKey,
+            KeyCode.I => keyboard.iKey,
+            KeyCode.J => keyboard.jKey,
+            KeyCode.K => keyboard.kKey,
+            KeyCode.L => keyboard.lKey,
+            KeyCode.M => keyboard.mKey,
+            KeyCode.N => keyboard.nKey,
+            KeyCode.O => keyboard.oKey,
+            KeyCode.P => keyboard.pKey,
+            KeyCode.Q => keyboard.qKey,
+            KeyCode.R => keyboard.rKey,
+            KeyCode.S => keyboard.sKey,
+            KeyCode.T => keyboard.tKey,
+            KeyCode.U => keyboard.uKey,
+            KeyCode.V => keyboard.vKey,
+            KeyCode.W => keyboard.wKey,
+            KeyCode.X => keyboard.xKey,
+            KeyCode.Y => keyboard.yKey,
+            KeyCode.Z => keyboard.zKey,
+            KeyCode.Alpha0 => keyboard.digit0Key,
+            KeyCode.Alpha1 => keyboard.digit1Key,
+            KeyCode.Alpha2 => keyboard.digit2Key,
+            KeyCode.Alpha3 => keyboard.digit3Key,
+            KeyCode.Alpha4 => keyboard.digit4Key,
+            KeyCode.Alpha5 => keyboard.digit5Key,
+            KeyCode.Alpha6 => keyboard.digit6Key,
+            KeyCode.Alpha7 => keyboard.digit7Key,
+            KeyCode.Alpha8 => keyboard.digit8Key,
+            KeyCode.Alpha9 => keyboard.digit9Key,
+            KeyCode.Keypad0 => keyboard.numpad0Key,
+            KeyCode.Keypad1 => keyboard.numpad1Key,
+            KeyCode.Keypad2 => keyboard.numpad2Key,
+            KeyCode.Keypad3 => keyboard.numpad3Key,
+            KeyCode.Keypad4 => keyboard.numpad4Key,
+            KeyCode.Keypad5 => keyboard.numpad5Key,
+            KeyCode.Keypad6 => keyboard.numpad6Key,
+            KeyCode.Keypad7 => keyboard.numpad7Key,
+            KeyCode.Keypad8 => keyboard.numpad8Key,
+            KeyCode.Keypad9 => keyboard.numpad9Key,
+            KeyCode.UpArrow => keyboard.upArrowKey,
+            KeyCode.DownArrow => keyboard.downArrowKey,
+            KeyCode.LeftArrow => keyboard.leftArrowKey,
+            KeyCode.RightArrow => keyboard.rightArrowKey,
+            KeyCode.Space => keyboard.spaceKey,
+            KeyCode.Tab => keyboard.tabKey,
+            KeyCode.Return => keyboard.enterKey,
+            KeyCode.Escape => keyboard.escapeKey,
+            KeyCode.Backspace => keyboard.backspaceKey,
+            KeyCode.Delete => keyboard.deleteKey,
+            KeyCode.Insert => keyboard.insertKey,
+            KeyCode.Home => keyboard.homeKey,
+            KeyCode.End => keyboard.endKey,
+            KeyCode.PageUp => keyboard.pageUpKey,
+            KeyCode.PageDown => keyboard.pageDownKey,
+            KeyCode.CapsLock => keyboard.capsLockKey,
+            KeyCode.Numlock => keyboard.numLockKey,
+            KeyCode.ScrollLock => keyboard.scrollLockKey,
+            KeyCode.Print => keyboard.printScreenKey,
+            KeyCode.Pause => keyboard.pauseKey,
+            KeyCode.LeftShift => keyboard.leftShiftKey,
+            KeyCode.RightShift => keyboard.rightShiftKey,
+            KeyCode.LeftControl => keyboard.leftCtrlKey,
+            KeyCode.RightControl => keyboard.rightCtrlKey,
+            KeyCode.LeftAlt => keyboard.leftAltKey,
+            KeyCode.RightAlt => keyboard.rightAltKey,
+            KeyCode.BackQuote => keyboard.backquoteKey,
+            KeyCode.Minus => keyboard.minusKey,
+            KeyCode.Equals => keyboard.equalsKey,
+            KeyCode.LeftBracket => keyboard.leftBracketKey,
+            KeyCode.RightBracket => keyboard.rightBracketKey,
+            KeyCode.Backslash => keyboard.backslashKey,
+            KeyCode.Semicolon => keyboard.semicolonKey,
+            KeyCode.Quote => keyboard.quoteKey,
+            KeyCode.Comma => keyboard.commaKey,
+            KeyCode.Period => keyboard.periodKey,
+            KeyCode.Slash => keyboard.slashKey,
+            KeyCode.KeypadPeriod => keyboard.numpadPeriodKey,
+            KeyCode.KeypadDivide => keyboard.numpadDivideKey,
+            KeyCode.KeypadMultiply => keyboard.numpadMultiplyKey,
+            KeyCode.KeypadMinus => keyboard.numpadMinusKey,
+            KeyCode.KeypadPlus => keyboard.numpadPlusKey,
+            KeyCode.KeypadEnter => keyboard.numpadEnterKey,
+            KeyCode.F1 => keyboard.f1Key,
+            KeyCode.F2 => keyboard.f2Key,
+            KeyCode.F3 => keyboard.f3Key,
+            KeyCode.F4 => keyboard.f4Key,
+            KeyCode.F5 => keyboard.f5Key,
+            KeyCode.F6 => keyboard.f6Key,
+            KeyCode.F7 => keyboard.f7Key,
+            KeyCode.F8 => keyboard.f8Key,
+            KeyCode.F9 => keyboard.f9Key,
+            KeyCode.F10 => keyboard.f10Key,
+            KeyCode.F11 => keyboard.f11Key,
+            KeyCode.F12 => keyboard.f12Key,
+            _ => null,
+        };
+
+        return control != null;
+    }
+
+    private static bool TryGetMouseButtonControl(KeyCode key, out ButtonControl control)
+    {
+        Mouse mouse = Mouse.current;
+        if (mouse == null)
+        {
+            control = null;
+            return false;
+        }
+
+        control = key switch
+        {
+            KeyCode.Mouse0 => mouse.leftButton,
+            KeyCode.Mouse1 => mouse.rightButton,
+            KeyCode.Mouse2 => mouse.middleButton,
+            KeyCode.Mouse3 => mouse.backButton,
+            KeyCode.Mouse4 => mouse.forwardButton,
+            _ => null,
+        };
+
+        return control != null;
+    }
+#endif
 }
 
 [Serializable]
@@ -97,17 +336,17 @@ public sealed class InputBindingService : MonoBehaviour
 
     public bool WasPressedThisFrame(InputActionId action)
     {
-        return Matches(action, Input.GetKeyDown);
+        return Matches(action, InputKeyCompatibility.WasPressedThisFrame);
     }
 
     public bool WasReleasedThisFrame(InputActionId action)
     {
-        return Matches(action, Input.GetKeyUp);
+        return Matches(action, InputKeyCompatibility.WasReleasedThisFrame);
     }
 
     public bool IsPressed(InputActionId action)
     {
-        return Matches(action, Input.GetKey);
+        return Matches(action, InputKeyCompatibility.IsPressed);
     }
 
     public Vector2 GetMoveVectorRaw()
@@ -405,8 +644,15 @@ public sealed class InputBindingService : MonoBehaviour
 
         Instance = this;
         DontDestroyOnLoad(gameObject);
+        ApplyImePolicy();
         EnsureDefaultBindingEntries();
         EnsureInitialized();
+    }
+
+    private void OnApplicationFocus(bool hasFocus)
+    {
+        if (hasFocus)
+            ApplyImePolicy();
     }
 
     private void Reset()
@@ -467,6 +713,11 @@ public sealed class InputBindingService : MonoBehaviour
         }
 
         return false;
+    }
+
+    private static void ApplyImePolicy()
+    {
+        Input.imeCompositionMode = IMECompositionMode.Off;
     }
 
     private void LoadBindings()

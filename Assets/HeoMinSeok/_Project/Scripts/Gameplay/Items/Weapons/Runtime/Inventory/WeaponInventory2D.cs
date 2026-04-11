@@ -88,7 +88,7 @@ public class WeaponInventory2D : MonoBehaviour
         return FindEmptySlot() >= 0;
     }
 
-    public AcquireResult TryAcquireWithoutReplacementDetailed(WeaponDefinition weapon, WeaponPersistentStatePayload runtimePayload = null)
+    public AcquireResult PreviewAcquireWithoutReplacement(WeaponDefinition weapon)
     {
         if (weapon == null)
             return AcquireResult.InvalidDefinition;
@@ -96,8 +96,16 @@ public class WeaponInventory2D : MonoBehaviour
         if (disallowDuplicateWeapons && ContainsWeaponId(weapon.weaponId))
             return AcquireResult.DuplicateRejected;
 
-        if (FindEmptySlot() < 0)
-            return AcquireResult.InventoryFull;
+        return FindEmptySlot() >= 0
+            ? AcquireResult.Success
+            : AcquireResult.InventoryFull;
+    }
+
+    public AcquireResult TryAcquireWithoutReplacementDetailed(WeaponDefinition weapon, WeaponPersistentStatePayload runtimePayload = null)
+    {
+        AcquireResult previewResult = PreviewAcquireWithoutReplacement(weapon);
+        if (previewResult != AcquireResult.Success)
+            return previewResult;
 
         return TryPickupWeapon(weapon, runtimePayload)
             ? AcquireResult.Success
