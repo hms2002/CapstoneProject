@@ -1,155 +1,151 @@
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 using UnityGAS;
 
-// 에디터 메뉴: Create > GAS > Ability Logic > Tackle
 [CreateAssetMenu(fileName = "AL_Tackle", menuName = "GAS/Ability Logic/Tackle")]
 public class AL_Tackle : AbilityLogic
 {
-    [Header("Damage")]
-    [Tooltip("Tackle이 적용할 데미지 GameplayEffect입니다.")]
+    [Header("데미지")]
+    [Tooltip("태클 데미지에 사용할 이펙트입니다.")]
     [SerializeField] private GE_Damage_Spec damageEffect;
 
-    [Tooltip("Tackle 적중 시 적용할 HP 데미지입니다.")]
-    [SerializeField] private float damageAmount = 10.0f;
+    [Tooltip("태클 피해량입니다.")]
+    [SerializeField] private float damageAmount = 10f;
 
-    [Space(8)]
+    [Header("준비")]
+    [Tooltip("경고를 보여줄 시간입니다.")]
+    [SerializeField] private float readyTime = 0.5f;
 
-    [Header("Prepared Tackle")]
-    [Tooltip("공격 범위를 고정한 뒤 실제 돌진하기 전까지 대기하는 시간입니다.")]
-    [SerializeField] private float attackReadyTime = 0.5f;
+    [Tooltip("태클 시작 속도입니다.")]
+    [SerializeField] private float tackleSpeed = 20f;
 
-    [Tooltip("Tackle 돌진 시작 시 적용할 초기 이동 속도입니다.")]
-    [SerializeField] private float tackleSpeed = 20.0f;
+    [Tooltip("태클 감속값입니다.")]
+    [SerializeField] private float tackleDamping = 3f;
 
-    [Tooltip("Tackle 돌진 속도가 줄어드는 감쇠 강도입니다.")]
-    [SerializeField] private float tackleDamping = 3.0f;
+    [Tooltip("태클 지속 시간입니다.")]
+    [SerializeField] private float lungeTime = 0.5f;
 
-    [Tooltip("감쇠 Tackle을 유지하는 시간입니다.")]
-    [SerializeField] private float lungeDuration = 0.5f;
-
-    [Header("Optional")]
-    [Tooltip("Tackle 적중 시 함께 적용할 넉백 GameplayEffect입니다.")]
+    [Header("옵션")]
+    [Tooltip("넉백에 사용할 이펙트입니다.")]
     [SerializeField] private GE_Knockback_Spec knockbackEffect;
 
-    [Tooltip("Tackle 적중 시 적용할 넉백 세기입니다.")]
+    [Tooltip("넉백 세기입니다.")]
     [SerializeField] private float knockbackImpulse = 0f;
 
-    [Tooltip("Tackle 적중 시 발행할 Hit Confirm 태그입니다.")]
+    [Tooltip("적중 확인 태그입니다.")]
     [SerializeField] private GameplayTag hitConfirmedTag;
 
-    [Header("Telegraph")]
-    [Tooltip("준비 시간 동안 표시할 공통 공격 예고 스타일입니다.")]
+    [Header("경고")]
+    [Tooltip("태클 경고 스타일입니다.")]
     [SerializeField] private AttackTelegraphStyle telegraphStyle;
 
-    /// <summary>Tackle Ability를 실행하고 준비된 태클 정보가 있으면 돌진 패턴으로 처리합니다.</summary>
     public override IEnumerator Activate(AbilitySystem caster, AbilitySpec spec, GameObject target)
     {
         if (caster == null || target == null || damageEffect == null)
             yield break;
 
-        Mob mob = caster.GetComponent<Mob>();
-        if (mob != null && mob.TryConsumePreparedTackleContext(out Mob.PreparedTackleContext context))
+        TackleAttack tackle = caster.GetComponent<TackleAttack>();
+        if (tackle != null && tackle.TryGetContext(out TackleAttack.TackleContext context))
         {
-            yield return ActivatePreparedTackle(caster, spec, target, mob, context);
+            yield return RunPreparedTackle(caster, spec, target, tackle, context);
             yield break;
         }
 
-        TryApplyTackleDamage(caster, spec, target);
+        ApplyDamage(caster, spec, target);
     }
 
-    /// <summary>씬 전환 시 진행 중인 Tackle 이동을 정리합니다.</summary>
     public override void CleanupForSceneTransition(AbilitySystem system, AbilitySpec spec, GameObject target)
     {
-        AbilityMotionController2D motionController = system != null
+        AbilityMotionController2D motion = system != null
             ? system.GetComponent<AbilityMotionController2D>()
             : null;
 
-        if (motionController != null)
-            motionController.CancelMotion();
+        if (motion != null)
+            motion.CancelMotion();
 
-        HidePreparedTelegraph(system);
+        HideTelegraph(system);
     }
 
-    /// <summary>고정된 예고 방향으로 대기 후 감쇠 Tackle 돌진을 실행합니다.</summary>
-    private IEnumerator ActivatePreparedTackle(AbilitySystem caster, AbilitySpec spec, GameObject fallbackTarget, Mob mob, Mob.PreparedTackleContext context)
+    /// <summary>준비된 태클을 실행합니다.</summary>
+    private IEnumerator RunPreparedTackle(
+        AbilitySystem caster,
+        AbilitySpec spec,
+        GameObject fallbackTarget,
+        TackleAttack tackle,
+        TackleAttack.TackleContext context)
     {
-        mob.ShowPreparedTackleTelegraph(context, attackReadyTime, telegraphStyle);
+        tackle.ShowTelegraph(context, readyTime, telegraphStyle);
 
-        if (attackReadyTime > 0f)
-            yield return AbilityTasks.WaitDelay(caster, spec, attackReadyTime);
+        if (readyTime > 0f)
+            yield return AbilityTasks.WaitDelay(caster, spec, readyTime);
 
         if (IsCancelled(spec))
         {
-            mob.HidePreparedTackleTelegraph();
+            tackle.HideTelegraph();
             yield break;
         }
 
-        mob.HidePreparedTackleTelegraph();
+        tackle.HideTelegraph();
 
-        AbilityMotionController2D motionController = GetOrAddMotionController(caster);
-        float finalLungeDuration = Mathf.Max(0f, lungeDuration);
-        float finalTackleSpeed = Mathf.Max(0f, tackleSpeed);
-        float finalTackleDamping = Mathf.Max(0f, tackleDamping);
+        AbilityMotionController2D motion = GetMotion(caster);
+        float finalLungeTime = Mathf.Max(0f, lungeTime);
+        float finalSpeed = Mathf.Max(0f, tackleSpeed);
+        float finalDamping = Mathf.Max(0f, tackleDamping);
 
-        if (motionController != null && finalLungeDuration > 0f && finalTackleSpeed > 0f)
+        if (motion != null && finalLungeTime > 0f && finalSpeed > 0f)
         {
-            motionController.StartDampedDash(
+            motion.StartDampedDash(
                 context.Direction,
-                finalTackleSpeed,
-                finalLungeDuration,
-                finalTackleDamping);
+                finalSpeed,
+                finalLungeTime,
+                finalDamping);
 
-            yield return AbilityTasks.WaitDelay(caster, spec, finalLungeDuration);
+            yield return AbilityTasks.WaitDelay(caster, spec, finalLungeTime);
         }
 
         if (IsCancelled(spec))
             yield break;
 
         GameObject finalTarget = context.Target != null ? context.Target : fallbackTarget;
-        if (!mob.HasTackleHitCooldown &&
-            IsTargetInsideFixedImpactArea(finalTarget, context) &&
-            TryApplyTackleDamage(caster, spec, finalTarget))
-        {
-            mob.StartTackleHitCooldown();
-        }
+        if (!tackle.HasDelay && InBox(finalTarget, context) && ApplyDamage(caster, spec, finalTarget))
+            tackle.StartDelay();
     }
 
-    /// <summary>타겟이 준비 시점에 고정된 Tackle 직사각형 판정 안에 있는지 확인합니다.</summary>
-    private bool IsTargetInsideFixedImpactArea(GameObject target, Mob.PreparedTackleContext context)
+    /// <summary>타겟이 고정된 태클 범위 안에 있는지 확인합니다.</summary>
+    private bool InBox(GameObject target, TackleAttack.TackleContext context)
     {
         if (target == null)
             return false;
 
-        float lungeDistance = Mathf.Max(0f, context.LungeDistance);
+        float length = Mathf.Max(0f, context.LungeDistance);
         float halfWidth = Mathf.Max(0.01f, context.TelegraphWidth * 0.5f);
-        if (lungeDistance <= 0f)
+        if (length <= 0f)
             return false;
 
         Vector2 direction = context.Direction.sqrMagnitude > 0.0001f
             ? context.Direction.normalized
             : Vector2.right;
 
-        Vector2 targetPosition = target.transform.position;
-        Vector2 toTarget = targetPosition - context.StartPosition;
-        float forwardDistance = Vector2.Dot(toTarget, direction);
+        Vector2 targetPos = target.transform.position;
+        Vector2 toTarget = targetPos - context.StartPos;
+        float forward = Vector2.Dot(toTarget, direction);
 
-        if (forwardDistance < 0f || forwardDistance > lungeDistance)
+        if (forward < 0f || forward > length)
             return false;
 
-        Vector2 closestPointOnLine = context.StartPosition + direction * forwardDistance;
-        Vector2 lateralOffset = targetPosition - closestPointOnLine;
-        return lateralOffset.sqrMagnitude <= halfWidth * halfWidth;
+        Vector2 closest = context.StartPos + direction * forward;
+        Vector2 side = targetPos - closest;
+        return side.sqrMagnitude <= halfWidth * halfWidth;
     }
 
-    /// <summary>Mob과 접촉 중인 타겟에게 Tackle 피해를 즉시 적용합니다.</summary>
+    /// <summary>접촉 피해를 바로 적용합니다.</summary>
     public bool TryApplyContactDamage(AbilitySystem caster, AbilitySpec spec, GameObject target)
     {
-        return TryApplyTackleDamage(caster, spec, target);
+        return ApplyDamage(caster, spec, target);
     }
 
-    /// <summary>Tackle 피해와 부가 전투 효과를 중앙 전투 파이프라인으로 적용합니다.</summary>
-    private bool TryApplyTackleDamage(AbilitySystem caster, AbilitySpec spec, GameObject target)
+    /// <summary>태클 피해를 적용합니다.</summary>
+    private bool ApplyDamage(AbilitySystem caster, AbilitySpec spec, GameObject target)
     {
         if (caster == null || target == null || damageEffect == null)
             return false;
@@ -159,8 +155,7 @@ public class AL_Tackle : AbilityLogic
             finalStaggerBuildUp: 0f,
             finalKnockbackImpulse: knockbackImpulse,
             elementBuildUps: null,
-            isCriticalHit: false
-        );
+            isCriticalHit: false);
 
         CombatDamageAction.ApplyDamageAndEmitHit(
             system: caster,
@@ -173,44 +168,39 @@ public class AL_Tackle : AbilityLogic
             elementBuildUps: snapshot.ElementBuildUps,
             finalKnockbackImpulse: snapshot.FinalKnockbackImpulse,
             hitConfirmedTag: hitConfirmedTag,
-            causer: caster.gameObject
-        );
+            causer: caster.gameObject);
 
         Debug.Log($"[GAS] {caster.name} hit {target.name} for {damageAmount}");
         return true;
     }
 
-    /// <summary>현재 Ability 실행 토큰이 취소되었는지 확인합니다.</summary>
+    /// <summary>어빌리티가 취소됐는지 확인합니다.</summary>
     private static bool IsCancelled(AbilitySpec spec)
     {
         return spec != null && spec.Token != null && spec.Token.IsCancelled;
     }
 
-    /// <summary>시전자에게 AbilityMotionController2D가 없으면 추가해서 반환합니다.</summary>
-    private static AbilityMotionController2D GetOrAddMotionController(AbilitySystem caster)
+    /// <summary>이동 컨트롤러를 가져오거나 추가합니다.</summary>
+    private static AbilityMotionController2D GetMotion(AbilitySystem caster)
     {
         if (caster == null)
             return null;
 
-        AbilityMotionController2D motionController = caster.GetComponent<AbilityMotionController2D>();
-        if (motionController != null)
-            return motionController;
+        AbilityMotionController2D motion = caster.GetComponent<AbilityMotionController2D>();
+        if (motion != null)
+            return motion;
 
         return caster.gameObject.AddComponent<AbilityMotionController2D>();
     }
 
-    /// <summary>
-    /// 책임 :
-    /// - 시전자에게 붙은 공통 공격 예고 연출을 안전하게 숨긴다.
-    /// - 씬 전환이나 능력 취소로 실행 흐름이 끊겨도 telegraph가 잔류하지 않게 보장한다.
-    /// </summary>
-    private static void HidePreparedTelegraph(AbilitySystem caster)
+    /// <summary>남아 있는 태클 경고를 정리합니다.</summary>
+    private static void HideTelegraph(AbilitySystem caster)
     {
         if (caster == null)
             return;
 
-        AttackTelegraphService telegraphService = caster.GetComponent<AttackTelegraphService>();
-        if (telegraphService != null)
-            telegraphService.HideCurrent();
+        TackleAttack tackle = caster.GetComponent<TackleAttack>();
+        if (tackle != null)
+            tackle.HideTelegraph();
     }
 }

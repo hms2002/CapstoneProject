@@ -44,12 +44,6 @@ public sealed class EnemyChaseIntent2D : MonoBehaviour, IIntentMovementSource2D
             return lastIntent;
         }
 
-        if (mob != null && mob.IsPreparingTackle)
-        {
-            lastIntent = IntentMovementData.None;
-            return lastIntent;
-        }
-
         Vector2 toTarget = (Vector2)(enemy.Target.position - transform.position);
         float sqrDistance = toTarget.sqrMagnitude;
 

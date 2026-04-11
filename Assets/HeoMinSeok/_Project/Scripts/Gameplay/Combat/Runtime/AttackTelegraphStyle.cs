@@ -17,10 +17,15 @@ namespace UnityGAS
         public Color borderColorStart = new Color(1f, 0.95f, 0.65f, 0.8f);
         public Color borderColorEnd = new Color(1f, 0.2f, 0.2f, 1f);
 
-        [Header("Timing")]
-        public AnimationCurve progressCurve = AnimationCurve.Linear(0f, 0f, 1f, 1f);
-        [Range(0f, 1f)] public float blinkStartNormalized = 0.8f;
-        [Min(0f)] public float blinkFrequency = 10f;
-        [Range(0f, 1f)] public float blinkAlphaMin = 0.35f;
-    }
+    [Header("Timing")]
+    public AnimationCurve progressCurve = AnimationCurve.Linear(0f, 0f, 1f, 1f);
+    [Range(0f, 1f)] public float blinkStartNormalized = 0.8f;
+    [Min(0f)] public float blinkFrequency = 10f;
+    [Range(0f, 1f)] public float blinkAlphaMin = 0.35f;
+
+    [Header("Scale")]
+    public bool scaleFillWithProgress = false;
+    [Range(0f, 1f)] public float fillScaleStart = 0f;
+    [Range(0f, 1f)] public float fillScaleEnd = 1f;
+}
 }

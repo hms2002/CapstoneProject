@@ -9,17 +9,27 @@ namespace UnityGAS
     /// </summary>
     public sealed class AttackTelegraphView : MonoBehaviour
     {
+        private const int CircleTextureSize = 128;
+        private const float CircleBorderThickness = 0.08f;
+
         [Header("Refs")]
         [SerializeField] private Transform fillRoot;
         [SerializeField] private Transform borderRoot;
         [SerializeField] private SpriteRenderer fillRenderer;
         [SerializeField] private SpriteRenderer borderRenderer;
 
+        private static Sprite circleFillSprite;
+        private static Sprite circleBorderSprite;
+
         private bool baseScaleCaptured;
         private Vector3 fillBaseScale = Vector3.one;
         private Vector3 borderBaseScale = Vector3.one;
+        private Sprite fillBaseSprite;
+        private Sprite borderBaseSprite;
 
         private AttackTelegraphStyle activeStyle;
+        private AttackTelegraphShape activeShape;
+        private Vector2 activeSize = Vector2.one;
         private float startTime;
         private float duration;
         private bool isVisible;
@@ -34,6 +44,7 @@ namespace UnityGAS
                 borderRoot = borderRenderer.transform;
 
             CaptureBaseScaleIfNeeded();
+            CaptureBaseSprites();
             HideImmediate();
         }
 
@@ -94,6 +105,15 @@ namespace UnityGAS
             borderBaseScale = borderRoot != null ? borderRoot.localScale : Vector3.one;
         }
 
+        private void CaptureBaseSprites()
+        {
+            if (fillRenderer != null && fillBaseSprite == null)
+                fillBaseSprite = fillRenderer.sprite;
+
+            if (borderRenderer != null && borderBaseSprite == null)
+                borderBaseSprite = borderRenderer.sprite;
+        }
+
         private void ApplyShapeScale(AttackTelegraphShape shape, Vector2 size)
         {
             Vector2 safeSize = new Vector2(Mathf.Max(0.0001f, size.x), Mathf.Max(0.0001f, size.y));
@@ -108,21 +128,119 @@ namespace UnityGAS
                 }
             }
 
-            if (fillRoot != null)
+            activeShape = shape;
+            activeSize = safeSize;
+
+            ApplyShapeSprites();
+            ApplyBorderScale();
+            ApplyFillScale(0f);
+        }
+
+        private void ApplyShapeSprites()
+        {
+            if (activeShape == AttackTelegraphShape.Circle)
             {
-                fillRoot.localScale = new Vector3(
-                    fillBaseScale.x * safeSize.x,
-                    fillBaseScale.y * safeSize.y,
-                    fillBaseScale.z);
+                EnsureCircleSprites();
+
+                if (fillRenderer != null)
+                    fillRenderer.sprite = circleFillSprite;
+
+                if (borderRenderer != null)
+                    borderRenderer.sprite = circleBorderSprite;
+
+                return;
             }
 
-            if (borderRoot != null)
+            if (fillRenderer != null)
+                fillRenderer.sprite = fillBaseSprite;
+
+            if (borderRenderer != null)
+                borderRenderer.sprite = borderBaseSprite;
+        }
+
+        private void ApplyBorderScale()
+        {
+            if (borderRoot == null)
+                return;
+
+            borderRoot.localScale = new Vector3(
+                borderBaseScale.x * activeSize.x,
+                borderBaseScale.y * activeSize.y,
+                borderBaseScale.z);
+        }
+
+        private void ApplyFillScale(float normalized)
+        {
+            if (fillRoot == null)
+                return;
+
+            Vector2 fillSize = activeSize;
+            if (activeStyle != null && activeStyle.scaleFillWithProgress)
             {
-                borderRoot.localScale = new Vector3(
-                    borderBaseScale.x * safeSize.x,
-                    borderBaseScale.y * safeSize.y,
-                    borderBaseScale.z);
+                float start = Mathf.Clamp01(activeStyle.fillScaleStart);
+                float end = Mathf.Clamp01(activeStyle.fillScaleEnd);
+                float scale = Mathf.Lerp(start, end, normalized);
+                fillSize *= scale;
+
+                if (activeShape == AttackTelegraphShape.Circle)
+                {
+                    float diameter = Mathf.Max(fillSize.x, fillSize.y);
+                    fillSize = new Vector2(diameter, diameter);
+                }
             }
+
+            fillRoot.localScale = new Vector3(
+                fillBaseScale.x * fillSize.x,
+                fillBaseScale.y * fillSize.y,
+                fillBaseScale.z);
+        }
+
+        private static void EnsureCircleSprites()
+        {
+            if (circleFillSprite == null)
+                circleFillSprite = MakeCircleSprite(false);
+
+            if (circleBorderSprite == null)
+                circleBorderSprite = MakeCircleSprite(true);
+        }
+
+        private static Sprite MakeCircleSprite(bool borderOnly)
+        {
+            Texture2D texture = new Texture2D(CircleTextureSize, CircleTextureSize, TextureFormat.RGBA32, false);
+            texture.name = borderOnly ? "TelegraphCircleBorder" : "TelegraphCircleFill";
+            texture.wrapMode = TextureWrapMode.Clamp;
+            texture.filterMode = FilterMode.Bilinear;
+
+            float halfSize = (CircleTextureSize - 1) * 0.5f;
+            float outerRadius = halfSize;
+            float innerRadius = outerRadius * (1f - CircleBorderThickness);
+            Color clear = new Color(1f, 1f, 1f, 0f);
+            Color solid = Color.white;
+
+            for (int y = 0; y < CircleTextureSize; y++)
+            {
+                for (int x = 0; x < CircleTextureSize; x++)
+                {
+                    float dx = x - halfSize;
+                    float dy = y - halfSize;
+                    float distance = Mathf.Sqrt(dx * dx + dy * dy);
+                    bool isInside = distance <= outerRadius;
+                    bool isBorder = distance >= innerRadius && distance <= outerRadius;
+
+                    texture.SetPixel(x, y, borderOnly ? (isBorder ? solid : clear) : (isInside ? solid : clear));
+                }
+            }
+
+            texture.Apply();
+
+            Sprite sprite = Sprite.Create(
+                texture,
+                new Rect(0f, 0f, CircleTextureSize, CircleTextureSize),
+                new Vector2(0.5f, 0.5f),
+                100f);
+
+            sprite.name = texture.name;
+            return sprite;
         }
 
         private void ApplyStyle(float normalized)
@@ -133,6 +251,8 @@ namespace UnityGAS
             float curved = activeStyle != null && activeStyle.progressCurve != null
                 ? Mathf.Clamp01(activeStyle.progressCurve.Evaluate(normalized))
                 : normalized;
+
+            ApplyFillScale(curved);
 
             float blinkMultiplier = 1f;
             if (activeStyle != null &&

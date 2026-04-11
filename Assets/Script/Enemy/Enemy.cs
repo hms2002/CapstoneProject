@@ -8,8 +8,8 @@ using UnityGAS;
 [RequireComponent(typeof(ExternalMovementController2D), typeof(KnockbackReceiver2D))]
 public class Enemy : MonoBehaviour
 {
-    private const string DeathAnimTriggerName = "Die";
-    private const string DeathAnimClipName = "Die";
+    private const string DeathAnimTriggerName = "die";
+    private const string DeathAnimClipName = "die";
 
     // Components =============================
     protected Rigidbody2D       rigid2D;
@@ -104,8 +104,7 @@ public class Enemy : MonoBehaviour
     /// <summary>적 사망 처리의 공통 진입점입니다.</summary>
     protected virtual void Die()
     {
-        if (isDead)
-            return;
+        if (isDead) return;
 
         isDead = true;
         OnDeathStarted();

@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 4601776432013924379}
   - component: {fileID: 6906640129251997176}
   - component: {fileID: 2187307734231238555}
+  - component: {fileID: 7001000000000000002}
   - component: {fileID: 3790217430196525045}
   - component: {fileID: 1535278931212011680}
   - component: {fileID: 5052094422871209493}
@@ -220,15 +221,26 @@ MonoBehaviour:
   enemyName: Frog
   targetTag: Player
   dieAnimTime: 0
-  damageInterval: 1
-  tackleAbility: {fileID: 11400000, guid: 0114fc4ac57bcbe46b3d058d930e3a32, type: 2}
   chaseIntent: {fileID: 0}
-  attackTelegraphService: {fileID: 0}
-  tackleAttackRangeDiameter: 6
-  tackleLungeDistance: 5
-  tackleTelegraphWidth: 1
-  blockIntentMoveTag: {fileID: 0}
-  freezeAllMovementTag: {fileID: 0}
+--- !u!114 &7001000000000000002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 625522859161183429}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9e6e915a26784ef2b8d9df8e2d4d3bf1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tackleAbility: {fileID: 11400000, guid: 0114fc4ac57bcbe46b3d058d930e3a32, type: 2}
+  hitDelay: 1
+  attackRangeDiameter: 6
+  lungeDistance: 5
+  telegraphWidth: 1
+  blockMoveTag: {fileID: 0}
+  telegraph: {fileID: 0}
 --- !u!114 &3790217430196525045
 MonoBehaviour:
   m_ObjectHideFlags: 0

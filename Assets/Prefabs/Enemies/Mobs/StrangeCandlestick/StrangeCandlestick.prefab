@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 4601776432013924379}
   - component: {fileID: 6906640129251997176}
   - component: {fileID: 4785622051289123377}
+  - component: {fileID: 6611337799001122334}
   - component: {fileID: 3790217430196525045}
   - component: {fileID: 1535278931212011680}
   - component: {fileID: 5052094422871209493}
@@ -219,18 +220,26 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealthDef: {fileID: 11400000, guid: 0e177e1d15e428745b5859fac08ce203, type: 2}
   healthDef: {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
-  enemyName: StrangeCandlestick
+  enemyName: Strange Candlestick
   targetTag: Player
   dieAnimTime: 0
-  damageInterval: 1
-  tackleAbility: {fileID: 11400000, guid: 0114fc4ac57bcbe46b3d058d930e3a32, type: 2}
   chaseIntent: {fileID: 0}
-  attackTelegraphService: {fileID: 0}
-  tackleAttackRangeDiameter: 6
-  tackleLungeDistance: 5
-  tackleTelegraphWidth: 1
-  blockIntentMoveTag: {fileID: 0}
-  freezeAllMovementTag: {fileID: 0}
+  lightBeadPrefab: {fileID: 8003320094034868151, guid: b1f8e58050cba114da8fe6380275e443, type: 3}
+  projectileSpeed: 8
+  projectileDamageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
+  projectileDamage: 1
+--- !u!114 &6611337799001122334
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 625522859161183429}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 81a3fdc68f0f46c4bc3289b58063fb40, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &3790217430196525045
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -403,6 +412,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   body: {fileID: 0}
+  enforceContinuousCollision: 1
   intentSourceBehaviour: {fileID: 0}
   statProviderBehaviour: {fileID: 0}
   externalMovement: {fileID: 3341026293018187748}
@@ -633,6 +643,8 @@ GameObject:
   m_Component:
   - component: {fileID: 6077880585160822940}
   - component: {fileID: 8601407548542167181}
+  - component: {fileID: 771122334455667788}
+  - component: {fileID: 771122334455667789}
   m_Layer: 0
   m_Name: SpotLight2D
   m_TagString: Untagged
@@ -707,3 +719,51 @@ MonoBehaviour:
   - {x: 0.5, y: -0.5, z: 0}
   - {x: 0.5, y: 0.5, z: 0}
   - {x: -0.5, y: 0.5, z: 0}
+--- !u!58 &771122334455667788
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4652457260014428747}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: 0}
+  m_Radius: 3
+--- !u!114 &771122334455667789
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4652457260014428747}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3f2fdcefb3e14b4492d010cc4dd49ec6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
