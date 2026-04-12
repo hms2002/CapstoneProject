@@ -328,6 +328,28 @@ public class RelicInventory : MonoBehaviour
         return true;
     }
 
+    public AcquireResult PreviewAcquireOrUpgrade(RelicDefinition relic, int gainedLevel = -1)
+    {
+        if (relic == null)
+            return AcquireResult.InvalidDefinition;
+
+        int gain = gainedLevel > 0 ? gainedLevel : (relic.dropLevel > 0 ? relic.dropLevel : 1);
+        int existingIndex = FindSlotByRelicId(relic.relicId);
+        if (existingIndex >= 0)
+        {
+            Entry existingEntry = slots[existingIndex];
+            int oldLevel = Mathf.Max(1, existingEntry.level);
+            int newLevel = relic.ClampLevel(oldLevel + gain);
+            return newLevel == oldLevel
+                ? AcquireResult.AlreadyMaxLevel
+                : AcquireResult.Success;
+        }
+
+        return FindFirstEmptySlot() >= 0
+            ? AcquireResult.Success
+            : AcquireResult.InventoryFull;
+    }
+
     /// <summary>
     /// ✅ 유물 획득/추가용: 같은 relicId가 이미 있으면 강화 레벨을 합산하고,
     /// 없으면 빈 슬롯에 새로 장착합니다.

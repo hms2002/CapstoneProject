@@ -101,9 +101,6 @@ public sealed class KeyBindingPanelUI : MonoBehaviour, IStackableUI, ICloseReque
         if (Time.frameCount == listeningStartFrame)
             return;
 
-        if (!Input.anyKeyDown)
-            return;
-
         KeyCode key = ReadPressedKey();
         if (key == KeyCode.None)
             return;
@@ -769,15 +766,9 @@ public sealed class KeyBindingPanelUI : MonoBehaviour, IStackableUI, ICloseReque
 
     private static KeyCode ReadPressedKey()
     {
-        Array values = Enum.GetValues(typeof(KeyCode));
-        for (int i = 0; i < values.Length; i++)
-        {
-            KeyCode key = (KeyCode)values.GetValue(i);
-            if (key != KeyCode.None && Input.GetKeyDown(key))
-                return key;
-        }
-
-        return KeyCode.None;
+        return InputKeyCompatibility.TryReadPressedKeyThisFrame(out KeyCode key)
+            ? key
+            : KeyCode.None;
     }
 
     private bool CancelTransientInputState()

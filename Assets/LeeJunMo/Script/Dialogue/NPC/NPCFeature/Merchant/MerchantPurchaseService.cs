@@ -128,7 +128,8 @@ public sealed class MerchantPurchaseService
     private static bool CanAcquireWeapon(Component playerComponent, WeaponDefinition weapon)
     {
         WeaponInventory2D inventory = playerComponent.GetComponent<WeaponInventory2D>();
-        return inventory != null && inventory.CanAcquireWithoutReplacement(weapon);
+        return inventory != null &&
+               inventory.PreviewAcquireWithoutReplacement(weapon) == WeaponInventory2D.AcquireResult.Success;
     }
 
     /// <summary>
@@ -142,7 +143,7 @@ public sealed class MerchantPurchaseService
         if (inventory == null || weapon == null)
             return MerchantPurchaseResultType.InvalidRequest;
 
-        WeaponInventory2D.AcquireResult result = inventory.TryAcquireWithoutReplacementDetailed(weapon);
+        WeaponInventory2D.AcquireResult result = inventory.PreviewAcquireWithoutReplacement(weapon);
         return result switch
         {
             WeaponInventory2D.AcquireResult.Success => MerchantPurchaseResultType.Success,
@@ -155,16 +156,8 @@ public sealed class MerchantPurchaseService
     private static bool CanAcquireRelic(Component playerComponent, RelicDefinition relic)
     {
         RelicInventory inventory = playerComponent.GetComponent<RelicInventory>();
-        if (inventory == null || relic == null)
-            return false;
-
-        if (inventory.TryGetRelicLevelById(relic.relicId, out int currentLevel))
-        {
-            int nextLevel = relic.ClampLevel(currentLevel + Mathf.Max(1, relic.dropLevel));
-            return nextLevel > currentLevel;
-        }
-
-        return inventory.Count < inventory.Capacity;
+        return inventory != null &&
+               inventory.PreviewAcquireOrUpgrade(relic) == RelicInventory.AcquireResult.Success;
     }
 
     /// <summary>
@@ -178,7 +171,7 @@ public sealed class MerchantPurchaseService
         if (inventory == null || relic == null)
             return MerchantPurchaseResultType.InvalidRequest;
 
-        RelicInventory.AcquireResult result = inventory.TryAcquireOrUpgradeDetailed(relic);
+        RelicInventory.AcquireResult result = inventory.PreviewAcquireOrUpgrade(relic);
         return result switch
         {
             RelicInventory.AcquireResult.Success => MerchantPurchaseResultType.Success,

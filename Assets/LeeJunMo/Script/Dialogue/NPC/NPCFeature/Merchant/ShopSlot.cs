@@ -6,6 +6,13 @@ public sealed class ShopSlot : InteractableBase
 {
     private static readonly int OutlineEnabledID = Shader.PropertyToID("_OutlineEnabled");
 
+    private enum PriceIconPositionMode
+    {
+        CharacterCount,
+        RenderedWidth,
+        FixedDistance
+    }
+
     [Header("Ownership")]
     [SerializeField] private MerchantNPC owner;
     [SerializeField] private int slotIndex = -1;
@@ -23,17 +30,23 @@ public sealed class ShopSlot : InteractableBase
     [SerializeField] private SpriteRenderer itemSpriteRenderer;
     [SerializeField] private TMP_Text priceText;
 
+    [Header("Price Icon")]
+    [SerializeField] private SpriteRenderer priceIconRenderer;
+    [SerializeField] private Sprite currencyIconSprite;
+    [SerializeField] private Vector3 priceIconOffset = Vector3.zero;
+    [SerializeField, Min(0f)] private float priceIconSpacing = 0.08f;
+    [SerializeField] private PriceIconPositionMode priceIconPositionMode = PriceIconPositionMode.CharacterCount;
+    [SerializeField, Min(0f)] private float priceCharacterWidth = 0.18f;
+    [SerializeField, Min(0f)] private float priceIconFixedDistance = 0.32f;
+    [SerializeField] private Vector3 priceIconLocalScale = Vector3.one;
+
     private MaterialPropertyBlock outlinePropertyBlock;
     private MerchantStockEntryState currentState;
     private ScriptableObject currentDefinition;
 
     private void Awake()
     {
-        if (owner == null)
-            owner = GetComponentInParent<MerchantNPC>();
-
-        if (itemSpriteRenderer == null)
-            itemSpriteRenderer = GetComponentInChildren<SpriteRenderer>();
+        CacheReferences();
 
         outlinePropertyBlock = new MaterialPropertyBlock();
 
@@ -43,6 +56,12 @@ public sealed class ShopSlot : InteractableBase
 
         RefreshView();
         OnUnHighlight();
+    }
+
+    private void OnValidate()
+    {
+        CacheReferences();
+        ApplyPriceIconScale();
     }
 
     private void OnDisable()
@@ -141,6 +160,102 @@ public sealed class ShopSlot : InteractableBase
             else
                 priceText.text = currentState.isSold ? soldLabel : currentState.price.ToString();
         }
+
+        RefreshPriceIcon(hasActiveItem && currentState != null && !currentState.isSold);
+    }
+
+    private void RefreshPriceIcon(bool showCurrencyIcon)
+    {
+        if (priceIconRenderer == null)
+            return;
+
+        bool shouldShow = showCurrencyIcon && currencyIconSprite != null && priceText != null;
+        priceIconRenderer.enabled = shouldShow;
+
+        if (!shouldShow)
+            return;
+
+        priceIconRenderer.sprite = currencyIconSprite;
+        ApplyPriceIconScale();
+        priceText.ForceMeshUpdate();
+
+        float iconDistanceFromTextCenter = ResolvePriceIconDistanceFromTextCenter();
+        Vector3 targetLocalPosition =
+            priceText.transform.localPosition +
+            priceIconOffset +
+            (Vector3.left * iconDistanceFromTextCenter);
+
+        priceIconRenderer.transform.localPosition = targetLocalPosition;
+    }
+
+    private void CacheReferences()
+    {
+        if (owner == null)
+            owner = GetComponentInParent<MerchantNPC>();
+
+        if (itemSpriteRenderer == null)
+            itemSpriteRenderer = GetComponentInChildren<SpriteRenderer>();
+
+        if (priceIconRenderer == null)
+        {
+            Transform iconTransform = transform.Find("Icon");
+            if (iconTransform != null)
+                priceIconRenderer = iconTransform.GetComponent<SpriteRenderer>();
+        }
+    }
+
+    private void ApplyPriceIconScale()
+    {
+        if (priceIconRenderer == null)
+            return;
+
+        priceIconRenderer.transform.localScale = priceIconLocalScale;
+    }
+
+    private float ResolvePriceIconDistanceFromTextCenter()
+    {
+        switch (priceIconPositionMode)
+        {
+            case PriceIconPositionMode.RenderedWidth:
+                return Mathf.Max(0f, priceText.preferredWidth * 0.5f) + ResolvePriceIconHalfWidth() + priceIconSpacing;
+
+            case PriceIconPositionMode.FixedDistance:
+                return Mathf.Max(0f, priceIconFixedDistance);
+
+            case PriceIconPositionMode.CharacterCount:
+            default:
+                return ResolvePriceCharacterCountHalfWidth() + ResolvePriceIconHalfWidth() + priceIconSpacing;
+        }
+    }
+
+    private float ResolvePriceCharacterCountHalfWidth()
+    {
+        if (priceText == null || string.IsNullOrEmpty(priceText.text))
+            return 0f;
+
+        int visibleCharacterCount = 0;
+        string label = priceText.text;
+        for (int i = 0; i < label.Length; i++)
+        {
+            if (!char.IsWhiteSpace(label[i]))
+                visibleCharacterCount++;
+        }
+
+        return visibleCharacterCount * priceCharacterWidth * 0.5f;
+    }
+
+    private float ResolvePriceIconHalfWidth()
+    {
+        Sprite iconSprite = priceIconRenderer != null ? priceIconRenderer.sprite : null;
+        if (iconSprite == null)
+            return 0f;
+
+        Vector3 localScale = priceIconLocalScale;
+        float scaleX = Mathf.Abs(localScale.x);
+        if (scaleX <= Mathf.Epsilon)
+            scaleX = 1f;
+
+        return iconSprite.bounds.extents.x * scaleX;
     }
 
     private void SetOutline(bool enabled)

@@ -10,6 +10,14 @@ public class Witch : BossControllerBase
 
     private static readonly int AttackHash = Animator.StringToHash("attack");
     private const int WallLayer = 30;
+    private static readonly Vector3 RetreatLeftOffset = new Vector3(-0.5f, 0.2f, 0f);
+    private static readonly Vector3 RetreatRightOffset = new Vector3(0.5f, 0.2f, 0f);
+    private const int Normal1Count = 3;
+    private const float Normal1Interval = 0.3f;
+    private const float Normal1Size = 1.7f;
+    private const float Normal1HitTime = 0.12f;
+    private const float RetreatExplosionDiameter = 6f;
+    private const float RetreatSpeedScale = 1f;
 
     [Header("Pattern")]
     [Tooltip("촛대를 끄는 패턴에 사용할 Fog 프리팹입니다.")]
@@ -24,10 +32,16 @@ public class Witch : BossControllerBase
     [SerializeField] private float projectileSpeed = 4f;
     [SerializeField] private bool useRuntimeDefaultPatternsWhenPhasesEmpty = true;
     [SerializeField] private float fallbackCandleSpawnRadius = 6f;
+    [SerializeField] private WitchNormalAttack1Tile normalAttack1TilePrefab;
+    [SerializeField] private GE_Damage_Spec normalAttack1DamageEffect;
+    [SerializeField] private float normalAttack1Damage = 1f;
+    [SerializeField] private DeadsSkeleton retreatSkeletonPrefab;
 
     private BossDialogueRunner dialogueRunner;
     private Coroutine dialogueRoutine;
-    private WitchExtinguishState extinguishState;
+    private WitchExtinguishPatternState extinguishState;
+    private WitchNormalAttack1State normalAttack1State;
+    private WitchRetreatToCandleState retreatState;
     private AttackTelegraphService telegraphService;
     private AttackTelegraphStyle extinguishWarningStyle;
     private AttackTelegraphStyle mapWideWarningStyle;
@@ -70,15 +84,17 @@ public class Witch : BossControllerBase
     protected override void CreateStates()
     {
         base.CreateStates();
-        extinguishState = new WitchExtinguishState(this);
+        extinguishState = new WitchExtinguishPatternState(this);
+        normalAttack1State = new WitchNormalAttack1State(this);
+        retreatState = new WitchRetreatToCandleState(this);
     }
 
     protected override void OnPatternEnd(BossPatternEntry patternEntry, bool forced)
     {
         HideExtinguishWarning();
-
         if (patternEntry != null && patternEntry.Ability != null && patternEntry.Ability.logic is AbilityLogic_WitchLightAllCandles)
             ClearShield();
+        ClearNormal1();
     }
 
     public WitchRuntimeData RuntimeData
@@ -123,6 +139,15 @@ public class Witch : BossControllerBase
         return extinguishState;
     }
 
+    public override BossState GetPatternState(BossPatternEntry patternEntry)
+    {
+        if (IsExtinguishPattern(patternEntry)) return extinguishState;
+        if (IsNormal1Pattern(patternEntry)) return normalAttack1State;
+        if (IsRetreatPattern(patternEntry)) return retreatState;
+
+        return base.GetPatternState(patternEntry);
+    }
+
     public override bool TryStartDialogue()
     {
         BossDialogueRunner runner = GetDialogueRunner();
@@ -144,6 +169,30 @@ public class Witch : BossControllerBase
         PlayAttackMotion();
     }
 
+    /// <summary>촛불 끄기 패턴인지 확인합니다.</summary>
+    private bool IsExtinguishPattern(BossPatternEntry patternEntry)
+    {
+        if (patternEntry == null || patternEntry.Ability == null) return false;
+
+        return patternEntry.Ability.logic is UnityGAS.Sample.AbilityLogic_ExtinguishCandle;
+    }
+
+    /// <summary>평타1 패턴인지 확인합니다.</summary>
+    private bool IsNormal1Pattern(BossPatternEntry patternEntry)
+    {
+        if (patternEntry == null || patternEntry.Ability == null) return false;
+
+        return patternEntry.Ability.logic is UnityGAS.Sample.AbilityLogic_NormalAttack1;
+    }
+
+    /// <summary>촛대로의 피난 패턴인지 확인합니다.</summary>
+    private bool IsRetreatPattern(BossPatternEntry patternEntry)
+    {
+        if (patternEntry == null || patternEntry.Ability == null) return false;
+
+        return patternEntry.Ability.logic is UnityGAS.Sample.AbilityLogic_RetreatToCandle;
+    }
+
     /// <summary>촛불 끄기 패턴을 시작합니다.</summary>
     public bool StartExtinguish(float warningTime)
     {
@@ -159,6 +208,53 @@ public class Witch : BossControllerBase
         PlayAttackMotion();
         ShowWarning(extinguishCenter, warningTime);
         return true;
+    }
+
+    /// <summary>평타1 장판 공격을 시작합니다.</summary>
+    public bool StartNormal1()
+    {
+        if (abilitySystem == null || Target == null) return false;
+        if (normalAttack1TilePrefab == null || normalAttack1DamageEffect == null) return false;
+
+        Vector2 aimDir = GetAimDir();
+        if (aimDir == Vector2.zero) return false;
+
+        runtimeData.ClearNormal1Tiles();
+        PlayAttackMotion();
+
+        float angle = Mathf.Atan2(aimDir.y, aimDir.x) * Mathf.Rad2Deg;
+        Vector2 tileSize = Vector2.one * Normal1Size;
+        CombatHitPayload payload = MakeNormal1Payload();
+
+        for (int i = 0; i < Normal1Count; i++)
+        {
+            WitchNormalAttack1Tile tile = Instantiate(
+                normalAttack1TilePrefab,
+                GetTilePoint(aimDir, i),
+                Quaternion.Euler(0f, 0f, angle));
+
+            runtimeData.AddNormal1Tile(tile);
+            tile.Play(
+                Target.gameObject,
+                payload,
+                tileSize,
+                angle,
+                i * Normal1Interval,
+                GetNormal1StartTime() + (i * Normal1Interval));
+        }
+
+        return true;
+    }
+
+    /// <summary>촛대로의 피난 패턴을 시작합니다.</summary>
+    public bool StartRetreat()
+    {
+        if (retreatSkeletonPrefab == null) return false;
+
+        PlayAttackMotion();
+        bool spawnedLeft = SpawnRetreatSkeleton(RetreatLeftOffset);
+        bool spawnedRight = SpawnRetreatSkeleton(RetreatRightOffset);
+        return spawnedLeft || spawnedRight;
     }
 
     /// <summary>촛불 끄기 패턴을 끝냅니다.</summary>
@@ -205,6 +301,18 @@ public class Witch : BossControllerBase
         shieldController?.ClearShield();
     }
 
+    /// <summary>평타1 장판을 모두 지웁니다.</summary>
+    public void ClearNormal1()
+    {
+        runtimeData.ClearNormal1Tiles();
+    }
+
+    /// <summary>평타1 전체 시간을 돌려줍니다.</summary>
+    public float GetNormal1Time()
+    {
+        return GetNormal1StartTime() + ((Normal1Count - 1) * Normal1Interval) + Normal1HitTime;
+    }
+
     /// <summary>대화 State 사용 여부를 정합니다.</summary>
     protected override bool CanUseDialogue()
     {
@@ -246,6 +354,37 @@ public class Witch : BossControllerBase
         }
 
         return bestCandle;
+    }
+
+    /// <summary>플레이어를 향한 방향을 구합니다.</summary>
+    private Vector2 GetAimDir()
+    {
+        Vector2 toTarget = Target.position - transform.position;
+        if (toTarget.sqrMagnitude <= 0.0001f) return Vector2.right;
+
+        return toTarget.normalized;
+    }
+
+    /// <summary>평타1 장판 위치를 구합니다.</summary>
+    private Vector3 GetTilePoint(Vector2 aimDir, int index)
+    {
+        float distance = (Normal1Size * 0.5f) + (Normal1Size * index);
+        Vector3 offset = new Vector3(aimDir.x, aimDir.y, 0f) * distance;
+        return transform.position + offset;
+    }
+
+    /// <summary>강화된 망자의 해골 하나를 소환합니다.</summary>
+    private bool SpawnRetreatSkeleton(Vector3 localOffset)
+    {
+        DeadsSkeleton skeleton = Instantiate(
+            retreatSkeletonPrefab,
+            transform.TransformPoint(localOffset),
+            Quaternion.identity);
+
+        if (skeleton == null) return false;
+
+        skeleton.SetBoost(Target, RetreatExplosionDiameter, RetreatSpeedScale, true);
+        return true;
     }
 
     /// <summary>촛대 중심 위치를 구합니다.</summary>
@@ -505,6 +644,26 @@ public class Witch : BossControllerBase
         return CombatHitPayloadApplier.Apply(Target.gameObject, payload, center);
     }
 
+    /// <summary>평타1 공격 payload를 만듭니다.</summary>
+    private CombatHitPayload MakeNormal1Payload()
+    {
+        CombatDamageSnapshot snapshot = new CombatDamageSnapshot(
+            finalHpDamage: normalAttack1Damage,
+            finalStaggerBuildUp: 0f,
+            finalKnockbackImpulse: 0f,
+            elementBuildUps: null,
+            isCriticalHit: false);
+
+        return CombatHitPayload.FromSnapshot(
+            sourceSystem: abilitySystem,
+            sourceSpec: null,
+            damageEffect: normalAttack1DamageEffect,
+            knockbackEffect: null,
+            snapshot: snapshot,
+            hitConfirmedTag: null,
+            causer: gameObject);
+    }
+
     /// <summary>촛대 위치에 Fog를 생성합니다.</summary>
     private bool SpawnFog(Vector3 center)
     {
@@ -547,6 +706,12 @@ public class Witch : BossControllerBase
         return new Vector2(
             fogCollider.offset.x * scale.x,
             fogCollider.offset.y * scale.y);
+    }
+
+    /// <summary>평타1 타격 시작 시점을 구합니다.</summary>
+    private float GetNormal1StartTime()
+    {
+        return Normal1Count * Normal1Interval;
     }
 
     /// <summary>패턴 모션을 재생합니다.</summary>

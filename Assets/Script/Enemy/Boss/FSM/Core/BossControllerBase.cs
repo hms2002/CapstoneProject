@@ -168,6 +168,12 @@ public abstract class BossControllerBase : Enemy
         return patternExecuteState;
     }
 
+    /// <summary>선택된 패턴에 맞는 실행 상태를 돌려줍니다.</summary>
+    public virtual BossState GetPatternState(BossPatternEntry patternEntry)
+    {
+        return patternExecuteState;
+    }
+
     public BossState GetGroggyState()
     {
         return groggyState;

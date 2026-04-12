@@ -19,6 +19,7 @@ public sealed class EnemyChaseIntent2D : MonoBehaviour, IIntentMovementSource2D
     [SerializeField] private float speedScale = 1f;
 
     private IntentMovementData lastIntent;
+    private bool ignoreDetectionRange;
 
     public float DetectionRange => detectionRange;
     public float StopRange => stopRange;
@@ -47,7 +48,7 @@ public sealed class EnemyChaseIntent2D : MonoBehaviour, IIntentMovementSource2D
         Vector2 toTarget = (Vector2)(enemy.Target.position - transform.position);
         float sqrDistance = toTarget.sqrMagnitude;
 
-        if (sqrDistance > detectionRange * detectionRange)
+        if (!ignoreDetectionRange && sqrDistance > detectionRange * detectionRange)
         {
             lastIntent = IntentMovementData.None;
             return lastIntent;
@@ -62,6 +63,18 @@ public sealed class EnemyChaseIntent2D : MonoBehaviour, IIntentMovementSource2D
         Vector2 dir = toTarget.normalized;
         lastIntent = IntentMovementData.FromDirection(dir, speedScale);
         return lastIntent;
+    }
+
+    /// <summary>추적 속도 배율을 바꿉니다.</summary>
+    public void SetSpeedScale(float value)
+    {
+        speedScale = Mathf.Max(0f, value);
+    }
+
+    /// <summary>감지 범위 무시 여부를 바꿉니다.</summary>
+    public void SetIgnoreDetectionRange(bool value)
+    {
+        ignoreDetectionRange = value;
     }
 
     private void OnDrawGizmosSelected()
