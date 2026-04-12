@@ -604,12 +604,6 @@ namespace UnityGAS
 
             if (!IsActivationDelaySatisfied(spec))
             {
-                if (def.executionPolicy != AbilityDefinition.ExecutionPolicy.ParallelIndependent)
-                {
-                    BufferActivation(spec, target, GetNextActivationAllowedTime(spec));
-                    return true;
-                }
-
                 return false;
             }
 

@@ -15,11 +15,12 @@ namespace UnityGAS
         [Tooltip("최종 넉백 = impulse * (1 - Clamp01(resistancePct))")]
         [SerializeField] private AttributeDefinition resistancePctAttribute;
 
-        [Header("Dominance")]
-        [SerializeField] private float knockbackDominanceTime = 0.12f;
+    [Header("Dominance")]
+    [SerializeField] private float knockbackDominanceTime = 0.12f;
 
-        private AttributeSet attributeSet;
-        private TagSystem tags;
+    private AttributeSet attributeSet;
+    private TagSystem tags;
+    private const string DefaultKnockbackImmuneTagResourcePath = "Tags/State.Status.KnockbackImmune";
 
         private void Awake()
         {
@@ -28,6 +29,9 @@ namespace UnityGAS
 
             attributeSet = GetComponent<AttributeSet>();
             tags = GetComponent<TagSystem>();
+
+            if (knockbackImmuneTag == null)
+                knockbackImmuneTag = Resources.Load<GameplayTag>(DefaultKnockbackImmuneTagResourcePath);
         }
 
         public void ApplyKnockback(GameObject causer, float impulse)

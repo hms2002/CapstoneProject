@@ -4,6 +4,9 @@ using UnityGAS;
 [DisallowMultipleComponent]
 public sealed class EnemyChaseIntent2D : MonoBehaviour, IIntentMovementSource2D
 {
+    // 이 클래스의 책임:
+    // 평소에는 플레이어 추적 의도 이동을 만들고, 복귀 상태일 때는 집으로 돌아가는 의도 이동을 우선 제공한다.
+
     [Header("Refs")]
     [Tooltip("추적 대상 정보를 제공하는 Enemy 컴포넌트입니다.")]
     [SerializeField] private Enemy enemy;
@@ -18,8 +21,13 @@ public sealed class EnemyChaseIntent2D : MonoBehaviour, IIntentMovementSource2D
     [Tooltip("현재 이동속도에 곱할 추적 속도 배율입니다.")]
     [SerializeField] private float speedScale = 1f;
 
+    [Header("Return")]
+    [Tooltip("집으로 돌아갈 때 사용할 속도 배율입니다.")]
+    [SerializeField] private float returnSpeedScale = 0.9f;
+
     private IntentMovementData lastIntent;
     private bool ignoreDetectionRange;
+    private MonsterReturnHome2D returnHome;
 
     public float DetectionRange => detectionRange;
     public float StopRange => stopRange;
@@ -28,10 +36,20 @@ public sealed class EnemyChaseIntent2D : MonoBehaviour, IIntentMovementSource2D
     {
         if (enemy == null)
             enemy = GetComponent<Enemy>();
+
+        RefreshReturnHomeReference();
     }
 
     public IntentMovementData GetIntent()
     {
+        RefreshReturnHomeReference();
+
+        if (returnHome != null && returnHome.TryGetReturnDirection(out Vector2 returnDirection))
+        {
+            lastIntent = IntentMovementData.FromDirection(returnDirection, returnSpeedScale);
+            return lastIntent;
+        }
+
         if (enemy == null || enemy.Target == null)
         {
             lastIntent = IntentMovementData.None;
@@ -75,6 +93,29 @@ public sealed class EnemyChaseIntent2D : MonoBehaviour, IIntentMovementSource2D
     public void SetIgnoreDetectionRange(bool value)
     {
         ignoreDetectionRange = value;
+    }
+
+    /// <summary>현재 플레이어 추적 조건이 유효한지 반환합니다.</summary>
+    public bool IsTargetWithinDetectionRange()
+    {
+        if (enemy == null || enemy.Target == null)
+            return false;
+
+        Vector2 toTarget = (Vector2)(enemy.Target.position - transform.position);
+        float sqrDistance = toTarget.sqrMagnitude;
+        if (!ignoreDetectionRange && sqrDistance > detectionRange * detectionRange)
+            return false;
+
+        return true;
+    }
+
+    /// <summary>런타임에 뒤늦게 추가된 복귀 컴포넌트 참조를 안전하게 다시 잡습니다.</summary>
+    private void RefreshReturnHomeReference()
+    {
+        if (returnHome != null)
+            return;
+
+        returnHome = GetComponent<MonsterReturnHome2D>();
     }
 
     private void OnDrawGizmosSelected()

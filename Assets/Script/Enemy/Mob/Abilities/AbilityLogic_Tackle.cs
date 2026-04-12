@@ -5,6 +5,11 @@ using UnityGAS;
 [CreateAssetMenu(fileName = "AL_Tackle", menuName = "GAS/Ability Logic/Tackle")]
 public class AL_Tackle : AbilityLogic
 {
+    // 이 클래스의 책임:
+    // 태클 경고와 돌진 공격을 실행하고, 돌진 구간에만 넉백 면역 태그를 관리한다.
+
+    private const string KnockbackImmuneTagResourcePath = "Tags/State.Status.KnockbackImmune";
+
     [Header("데미지")]
     [Tooltip("태클 데미지에 사용할 이펙트입니다.")]
     [SerializeField] private GE_Damage_Spec damageEffect;
@@ -35,6 +40,9 @@ public class AL_Tackle : AbilityLogic
     [Tooltip("적중 확인 태그입니다.")]
     [SerializeField] private GameplayTag hitConfirmedTag;
 
+    [Tooltip("돌진 중에만 적용할 넉백 면역 태그입니다.")]
+    [SerializeField] private GameplayTag knockbackImmuneTag;
+
     [Header("경고")]
     [Tooltip("태클 경고 스타일입니다.")]
     [SerializeField] private AttackTelegraphStyle telegraphStyle;
@@ -61,6 +69,8 @@ public class AL_Tackle : AbilityLogic
             : null;
 
         if (motion != null) motion.CancelMotion();
+
+        RemoveKnockbackImmuneTag(system != null ? system.TagSystem : null);
 
         HideTelegraph(system);
     }
@@ -89,22 +99,36 @@ public class AL_Tackle : AbilityLogic
         float finalLungeTime = Mathf.Max(0f, lungeTime);
         float finalSpeed = Mathf.Max(0f, tackleSpeed);
         float finalDamping = Mathf.Max(0f, tackleDamping);
+        bool appliedKnockbackImmune = false;
 
-        if (motion != null && finalLungeTime > 0f && finalSpeed > 0f)
+        try
         {
-            motion.StartDampedDash(
-                context.Direction,
-                finalSpeed,
-                finalLungeTime,
-                finalDamping);
+            if (motion != null && finalLungeTime > 0f && finalSpeed > 0f)
+            {
+                appliedKnockbackImmune = AddKnockbackImmuneTag(caster.TagSystem);
 
-            yield return AbilityTasks.WaitDelay(caster, spec, finalLungeTime);
+                motion.StartDampedDash(
+                    context.Direction,
+                    finalSpeed,
+                    finalLungeTime,
+                    finalDamping);
+
+                yield return AbilityTasks.WaitDelay(caster, spec, finalLungeTime);
+            }
+        }
+        finally
+        {
+            if (appliedKnockbackImmune)
+                RemoveKnockbackImmuneTag(caster.TagSystem);
         }
 
         if (IsCancelled(spec)) yield break;
 
         GameObject finalTarget = context.Target != null ? context.Target : fallbackTarget;
-        if (!tackle.HasDelay && InBox(finalTarget, context) && ApplyDamage(caster, spec, finalTarget))
+        if (!tackle.HasDelay
+            && tackle.HasClearPathTo(finalTarget)
+            && InBox(finalTarget, context)
+            && ApplyDamage(caster, spec, finalTarget))
             tackle.StartDelay();
     }
 
@@ -192,5 +216,35 @@ public class AL_Tackle : AbilityLogic
 
         TackleAttack tackle = caster.GetComponent<TackleAttack>();
         if (tackle != null) tackle.HideTelegraph();
+    }
+
+    /// <summary>돌진 중 사용할 넉백 면역 태그를 추가합니다.</summary>
+    private bool AddKnockbackImmuneTag(TagSystem tags)
+    {
+        GameplayTag tag = ResolveKnockbackImmuneTag();
+        if (tag == null || tags == null)
+            return false;
+
+        tags.AddTag(tag, 1);
+        return true;
+    }
+
+    /// <summary>돌진 종료 시 넉백 면역 태그를 제거합니다.</summary>
+    private void RemoveKnockbackImmuneTag(TagSystem tags)
+    {
+        GameplayTag tag = ResolveKnockbackImmuneTag();
+        if (tag == null || tags == null)
+            return;
+
+        tags.RemoveTag(tag, 1);
+    }
+
+    /// <summary>태클이 사용할 넉백 면역 태그를 해석합니다.</summary>
+    private GameplayTag ResolveKnockbackImmuneTag()
+    {
+        if (knockbackImmuneTag == null)
+            knockbackImmuneTag = Resources.Load<GameplayTag>(KnockbackImmuneTagResourcePath);
+
+        return knockbackImmuneTag;
     }
 }
