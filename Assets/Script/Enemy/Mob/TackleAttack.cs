@@ -5,6 +5,11 @@ using UnityGAS;
 [RequireComponent(typeof(Mob))]
 public class TackleAttack : MonoBehaviour
 {
+    // 이 클래스의 책임:
+    // 태클 발동 가능 여부를 판단하고, 태클 경고/돌진에 필요한 문맥을 준비하며, 태클 중 이동 차단 상태를 관리한다.
+
+    private const int WallLayer = 30;
+
     [Header("태클")]
     [Tooltip("태클에 사용할 GAS 어빌리티입니다.")]
     [SerializeField] private AbilityDefinition tackleAbility;
@@ -82,6 +87,7 @@ public class TackleAttack : MonoBehaviour
         if (other == null || !other.gameObject.CompareTag("Player")) return;
 
         if (HasDelay) return;
+        if (!HasClearPathTo(other.gameObject)) return;
 
         if (HitPlayer(other.gameObject))
             StartDelay();
@@ -149,7 +155,7 @@ public class TackleAttack : MonoBehaviour
         if (abilitySystem.GetCooldownRemaining(tackleAbility) > 0f)
             return false;
 
-        return InRange();
+        return InRange() && HasClearPathToTarget();
     }
 
     /// <summary>플레이어가 태클 범위 안에 있는지 확인합니다.</summary>
@@ -163,6 +169,32 @@ public class TackleAttack : MonoBehaviour
 
         Vector2 toTarget = (Vector2)(mob.Target.position - transform.position);
         return toTarget.sqrMagnitude <= radius * radius;
+    }
+
+    /// <summary>태클 시작점과 타깃 사이에 벽이 있는지 확인합니다.</summary>
+    private bool HasClearPathToTarget()
+    {
+        if (mob == null || mob.Target == null)
+            return false;
+
+        return HasClearPathTo(mob.Target.gameObject);
+    }
+
+    /// <summary>현재 위치에서 지정한 대상까지 벽이 없는지 확인합니다.</summary>
+    public bool HasClearPathTo(GameObject target)
+    {
+        if (target == null)
+            return false;
+
+        Vector2 start = transform.position;
+        Vector2 end = target.transform.position;
+        Vector2 toTarget = end - start;
+        float distance = toTarget.magnitude;
+        if (distance <= 0.001f)
+            return true;
+
+        RaycastHit2D hit = Physics2D.Raycast(start, toTarget / distance, distance, 1 << WallLayer);
+        return hit.collider == null;
     }
 
     /// <summary>태클에 쓸 방향과 범위를 저장합니다.</summary>

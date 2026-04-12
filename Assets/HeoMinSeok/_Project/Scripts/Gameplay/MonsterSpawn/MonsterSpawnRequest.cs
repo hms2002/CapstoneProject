@@ -10,17 +10,20 @@ public readonly struct MonsterSpawnRequest
     public readonly GameObject MonsterPrefab;
     public readonly Vector3 Position;
     public readonly Quaternion Rotation;
+    public readonly MonsterRoomArea2D RoomArea;
     public readonly ChestMonsterKillLock LinkedChestKillLock;
 
     public MonsterSpawnRequest(
         GameObject monsterPrefab,
         Vector3 position,
         Quaternion rotation,
+        MonsterRoomArea2D roomArea,
         ChestMonsterKillLock linkedChestKillLock)
     {
         MonsterPrefab = monsterPrefab;
         Position = position;
         Rotation = rotation;
+        RoomArea = roomArea;
         LinkedChestKillLock = linkedChestKillLock;
     }
 

@@ -15,12 +15,16 @@ public class MonsterSpawner : MonoBehaviour
 
     [Header("Spawn Points")]
     [SerializeField] private List<MonsterSpawnContainer> spawnPoints = new();
+    [SerializeField] private List<MonsterSpawnRoomGroup> spawnRooms = new();
 
     [Header("Difficulty")]
     [SerializeField] private DifficultyModifiers difficultyModifiers = new();
 
     [Header("Installers")]
     [SerializeField] private MonsterElementGaugeViewInstaller gaugeViewInstaller;
+
+    [Header("Navigation")]
+    [SerializeField] private TilemapPathfinder2D pathfinder;
 
     [Header("Scene Policy")]
     [SerializeField] private bool recollectSpawnPointsOnSceneLoaded = true;
@@ -91,11 +95,14 @@ public class MonsterSpawner : MonoBehaviour
     public void CollectSpawnPointsFromActiveScene()
     {
         spawnPoints.Clear();
+        spawnRooms.Clear();
 
 #if UNITY_2023_1_OR_NEWER
         var found = FindObjectsByType<MonsterSpawnContainer>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
+        var foundRooms = FindObjectsByType<MonsterSpawnRoomGroup>(FindObjectsInactive.Exclude, FindObjectsSortMode.None);
 #else
         var found = FindObjectsOfType<MonsterSpawnPoint>();
+        var foundRooms = FindObjectsOfType<MonsterSpawnRoomGroup>();
 #endif
 
         for (int i = 0; i < found.Length; i++)
@@ -109,6 +116,18 @@ public class MonsterSpawner : MonoBehaviour
 
             spawnPoints.Add(point);
         }
+
+        for (int i = 0; i < foundRooms.Length; i++)
+        {
+            MonsterSpawnRoomGroup room = foundRooms[i];
+            if (room == null)
+                continue;
+
+            if (room.gameObject.scene != SceneManager.GetActiveScene())
+                continue;
+
+            spawnRooms.Add(room);
+        }
     }
 
     /// <summary>
@@ -119,6 +138,36 @@ public class MonsterSpawner : MonoBehaviour
     [ContextMenu("Spawn All")]
     public void SpawnAll()
     {
+        SpawnGroupedRooms();
+        SpawnUngroupedFallback();
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 방 단위 스폰 그룹이 설정된 경우, 각 방 프로파일을 기준으로 스폰 요청을 생성해 실행한다.
+    /// </summary>
+    private void SpawnGroupedRooms()
+    {
+        List<MonsterSpawnRequest> requests = new List<MonsterSpawnRequest>();
+        for (int i = 0; i < spawnRooms.Count; i++)
+        {
+            MonsterSpawnRoomGroup room = spawnRooms[i];
+            if (room == null || room.SpawnProfile == null)
+                continue;
+
+            room.BuildSpawnRequests(requests);
+        }
+
+        for (int i = 0; i < requests.Count; i++)
+            SpawnOne(requests[i]);
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 방 그룹에 속하지 않은 옛 스폰 포인트들에 대해서는 기존 flat 스폰 정책을 그대로 유지한다.
+    /// </summary>
+    private void SpawnUngroupedFallback()
+    {
         var defaultPoints = new List<MonsterSpawnContainer>();
         var extraCandidates = new List<MonsterSpawnContainer>();
 
@@ -126,6 +175,9 @@ public class MonsterSpawner : MonoBehaviour
         {
             var point = spawnPoints[i];
             if (point == null || point.MonsterPrefab == null)
+                continue;
+
+            if (point.RoomGroup != null && point.RoomGroup.SpawnProfile != null)
                 continue;
 
             if (point.SpawnByDefault)
@@ -166,6 +218,7 @@ public class MonsterSpawner : MonoBehaviour
 
         ApplyDifficulty(monster, difficultyModifiers);
         InstallViews(monster);
+        ApplySpawnContext(monster, request);
 
         if (request.LinkedChestKillLock != null)
             request.LinkedChestKillLock.RegisterMonster(monster);
@@ -283,7 +336,7 @@ public class MonsterSpawner : MonoBehaviour
     private void ResolveSceneInstallers()
     {
         if (gaugeViewInstaller != null && gaugeViewInstaller.gameObject.scene == SceneManager.GetActiveScene())
-            return;
+            goto ResolvePathfinder;
 
 #if UNITY_2023_1_OR_NEWER
         var installers = FindObjectsByType<MonsterElementGaugeViewInstaller>(FindObjectsInactive.Include, FindObjectsSortMode.None);
@@ -305,6 +358,57 @@ public class MonsterSpawner : MonoBehaviour
         }
 
         gaugeViewInstaller = null;
+
+ResolvePathfinder:
+        if (pathfinder != null && pathfinder.gameObject.scene == SceneManager.GetActiveScene())
+            return;
+
+#if UNITY_2023_1_OR_NEWER
+        var pathfinders = FindObjectsByType<TilemapPathfinder2D>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+#else
+        var pathfinders = FindObjectsOfType<TilemapPathfinder2D>(true);
+#endif
+
+        for (int i = 0; i < pathfinders.Length; i++)
+        {
+            var scenePathfinder = pathfinders[i];
+            if (scenePathfinder == null)
+                continue;
+
+            if (scenePathfinder.gameObject.scene != SceneManager.GetActiveScene())
+                continue;
+
+            pathfinder = scenePathfinder;
+            return;
+        }
+
+        pathfinder = null;
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 스폰된 몬스터와 그 하위 구성요소에 홈 위치/방 영역/길찾기 문맥을 전달한다.
+    /// </summary>
+    private void ApplySpawnContext(GameObject monster, MonsterSpawnRequest request)
+    {
+        if (monster == null)
+            return;
+
+        EnemyChaseIntent2D chaseIntent = monster.GetComponent<EnemyChaseIntent2D>();
+        if (chaseIntent != null && monster.GetComponent<MonsterReturnHome2D>() == null)
+            monster.AddComponent<MonsterReturnHome2D>();
+
+        var context = new MonsterSpawnContext(
+            request.Position,
+            request.Rotation,
+            request.RoomArea,
+            pathfinder);
+
+        var receivers = monster.GetComponentsInChildren<IMonsterSpawnContextReceiver>(true);
+        for (int i = 0; i < receivers.Length; i++)
+        {
+            receivers[i].ApplySpawnContext(context);
+        }
     }
 
     private int CalculateExtraSpawnCount(int baseCount, float extraRatio)

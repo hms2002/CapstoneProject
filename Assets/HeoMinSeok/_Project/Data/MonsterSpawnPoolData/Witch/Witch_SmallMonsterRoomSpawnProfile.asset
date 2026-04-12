@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d26164ce00041742a35f6fcac85bde1, type: 3}
+  m_Name: Witch_SmallMonsterRoomSpawnProfile
+  m_EditorClassIdentifier: Assembly-CSharp::MonsterRoomSpawnProfileSO
+  spawnTables:
+  - tableName: OpA
+    spawnCount: 6
+    entries:
+    - monsterPrefab: {fileID: 625522859161183429, guid: 0b51d4a4499f87a48946b57538449b77, type: 3}
+      weight: 3
+    - monsterPrefab: {fileID: 625522859161183429, guid: 49288bedfccdaf14a9a7248b01f1565e, type: 3}
+      weight: 1
+    - monsterPrefab: {fileID: 625522859161183429, guid: b1f84c1064c662345a49453bf9a8fd34, type: 3}
+      weight: 2
+  - tableName: OpB
+    spawnCount: 6
+    entries:
+    - monsterPrefab: {fileID: 625522859161183429, guid: 0b51d4a4499f87a48946b57538449b77, type: 3}
+      weight: 2
+    - monsterPrefab: {fileID: 625522859161183429, guid: 49288bedfccdaf14a9a7248b01f1565e, type: 3}
+      weight: 1
+    - monsterPrefab: {fileID: 625522859161183429, guid: b1f84c1064c662345a49453bf9a8fd34, type: 3}
+      weight: 3
+  - tableName: OpC
+    spawnCount: 6
+    entries:
+    - monsterPrefab: {fileID: 625522859161183429, guid: 0b51d4a4499f87a48946b57538449b77, type: 3}
+      weight: 3
+    - monsterPrefab: {fileID: 625522859161183429, guid: 49288bedfccdaf14a9a7248b01f1565e, type: 3}
+      weight: 0
+    - monsterPrefab: {fileID: 625522859161183429, guid: b1f84c1064c662345a49453bf9a8fd34, type: 3}
+      weight: 3

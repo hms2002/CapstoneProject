@@ -4,6 +4,9 @@ using UnityEngine;
 [RequireComponent(typeof(Collider2D), typeof(Animator))]
 public class ShadowFog : MonoBehaviour
 {
+    // 이 클래스의 책임:
+    // 안개 영역에 닿은 플레이어에게 시야 제한만 적용하고, 일정 시간이 지나면 스스로 사라진다.
+
     private const float FogTime = 3f;
     private const string PlayerTag = "Player";
 
@@ -48,12 +51,7 @@ public class ShadowFog : MonoBehaviour
         if (targetObject == null) return;
 
         if (targetObject.CompareTag(PlayerTag))
-        {
             ApplyFog(targetObject);
-            return;
-        }
-
-        TrySeal(other);
     }
 
     /// <summary>플레이어 시야 제한 시간을 갱신합니다.</summary>
@@ -64,18 +62,6 @@ public class ShadowFog : MonoBehaviour
             sightLock = playerObject.AddComponent<FogSightLock>();
 
         sightLock.ApplyFog(FogTime);
-    }
-
-    /// <summary>촛대 봉인을 시도합니다.</summary>
-    private void TrySeal(Collider2D other)
-    {
-        CandlestickSeal candlestickSeal = other.GetComponent<CandlestickSeal>();
-        if (candlestickSeal == null)
-            candlestickSeal = other.GetComponentInParent<CandlestickSeal>();
-
-        if (candlestickSeal == null) return;
-
-        candlestickSeal.Seal();
     }
 
     /// <summary>충돌한 루트 오브젝트를 구합니다.</summary>
