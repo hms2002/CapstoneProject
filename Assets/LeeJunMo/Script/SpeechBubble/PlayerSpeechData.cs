@@ -23,7 +23,13 @@ public class PlayerSpeechEntry
 [CreateAssetMenu(fileName = "NewPlayerSpeechData", menuName = "GameData/Player Speech Data")]
 public class PlayerSpeechData : ScriptableObject
 {
+    [Header("Bubble Theme")]
+    public SpeechBubbleThemeSettings bubbleTheme = new SpeechBubbleThemeSettings();
+
+    [Header("Speech Lines")]
     public List<PlayerSpeechEntry> entries = new List<PlayerSpeechEntry>();
+
+    public SpeechBubbleThemeSettings BubbleTheme => bubbleTheme;
 
     public string GetLine(PlayerSpeechSituationEnum situation)
     {

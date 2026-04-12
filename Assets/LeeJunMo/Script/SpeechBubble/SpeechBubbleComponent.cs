@@ -6,6 +6,9 @@ public class SpeechBubbleComponent : MonoBehaviour
     [Header("Bubble Settings")]
     [SerializeField] private SpeechBubble bubblePrefab;
     [SerializeField] private Vector3 bubbleOffset = new Vector3(0, 2f, 0);
+    [SerializeField] private bool showBubbleOffsetGizmo = true;
+    [SerializeField] private Color bubbleOffsetGizmoColor = new Color(1f, 0.92f, 0.16f, 0.9f);
+    [SerializeField] private float bubbleOffsetGizmoRadius = 0.12f;
 
     [Header("Typing Settings")]
     [SerializeField] private bool defaultUseTyping = true;
@@ -28,6 +31,11 @@ public class SpeechBubbleComponent : MonoBehaviour
 
     public void Speak(string text, float duration = 2.5f)
     {
+        Speak(text, duration, null);
+    }
+
+    public void Speak(string text, float duration, SpeechBubbleThemeSettings theme)
+    {
         if (bubblePrefab == null || string.IsNullOrWhiteSpace(text))
             return;
 
@@ -45,6 +53,7 @@ public class SpeechBubbleComponent : MonoBehaviour
             duration,
             defaultUseTyping,
             defaultTypingSpeed,
+            theme,
             HandleBubbleReleased);
     }
 
@@ -54,5 +63,20 @@ public class SpeechBubbleComponent : MonoBehaviour
             activeBubble = null;
 
         bubblePool.Release(bubble);
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        if (!showBubbleOffsetGizmo)
+            return;
+
+        Vector3 origin = transform.position;
+        Vector3 targetPosition = origin + bubbleOffset;
+        float radius = Mathf.Max(0.01f, bubbleOffsetGizmoRadius);
+
+        Gizmos.color = bubbleOffsetGizmoColor;
+        Gizmos.DrawLine(origin, targetPosition);
+        Gizmos.DrawWireSphere(targetPosition, radius);
+        Gizmos.DrawSphere(targetPosition, radius * 0.35f);
     }
 }

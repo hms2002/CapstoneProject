@@ -30,6 +30,9 @@ GameObject:
   - component: {fileID: 6288342579342210012}
   - component: {fileID: 5551234567890123456}
   - component: {fileID: 1699081613814899334}
+  - component: {fileID: 5724109387412903854}
+  - component: {fileID: 4097123456789012345}
+  - component: {fileID: 8412503971642095334}
   m_Layer: 31
   m_Name: Witch
   m_TagString: Enemy
@@ -98,7 +101,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -1039746825
-  m_SortingLayer: 2
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: 739828523011928573, guid: 7f270a471d0074a4cb5cae87b3df06bc, type: 3}
@@ -299,6 +302,7 @@ MonoBehaviour:
   extinguishDamageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
   groggyStatusEffect: {fileID: 11400000, guid: fab1dd76add51c74db9dbb7b0f424204, type: 2}
   mapWideWarningStyleAsset: {fileID: 11400000, guid: 5c4c8108f36d4acbaa6dfaf6d6b3f6e7, type: 2}
+  phaseTransitionCenterPoint: {fileID: 0}
   extinguishDamage: 1
   projectileSpeed: 4
   useRuntimeDefaultPatternsWhenPhasesEmpty: 1
@@ -589,3 +593,65 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c721f3a2f874aa14ea14c5bc2261cc39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UnityGAS.AbilityMotionController2D
+--- !u!114 &5724109387412903854
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4104743717894493410}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d58f7ddaaeeb3da489b8e9fbafa66102, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bubblePrefab: {fileID: 8482697653009772348, guid: 62446638c99411c4c9669c3f3efc113d, type: 3}
+  bubbleOffset: {x: 0, y: 0, z: 0}
+  defaultUseTyping: 1
+  defaultTypingSpeed: 0.05
+--- !u!114 &4097123456789012345
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4104743717894493410}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8d47b449fb5f4f14a1b8be7e114d7b29, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speechBubble: {fileID: 5724109387412903854}
+  speechData: {fileID: 11400000, guid: b1f6e8fa2c2b48cc925e3f5ac1ffd2cb, type: 2}
+--- !u!114 &8412503971642095334
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4104743717894493410}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1fb35ba1d82842c4b4d58b07af4f7081, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  useDeathPresentation: 1
+  deathCinematicIntroDuration: 0.45
+  deathLetterboxScreenHeightRatio: 0.14
+  deathUiTargetAlpha: 0
+  deathPreSpeechDelaySeconds: 0.1
+  deathSpeechDuration: 2.5
+  deathPostSpeechHoldSeconds: 0.15
+  deathPostVanishHoldSeconds: 0.35
+  deathCinematicOutroDuration: 0.35
+  deathCameraDirector: {fileID: 0}
+  deathSpriteRenderer: {fileID: 8897721723054304330}
+  deathAnimator: {fileID: 6551344037253640885}
+  deathEffectAnchor: {fileID: 7124681143442968898}
+  speechController: {fileID: 4097123456789012345}
+  deathPoseSprite: {fileID: 0}
+  deathPoseSpriteSwapDelaySeconds: 0
+  disableAnimatorWhenShowingDeathPoseSprite: 1
+  deathVanishEffectPrefab: {fileID: 0}
+  deathVanishEffectOffset: {x: 0, y: 0, z: 0}
+  deathSpeechSituation: 2

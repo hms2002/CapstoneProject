@@ -25,6 +25,7 @@ public class AbilityLogic_WitchLightAllCandles : AbilityLogic
         yield return new WaitForSeconds(MoveToCenterDuration);
 
         Vector3 center = witch.GetPhaseTransitionCenter();
+        witch.SpeakSituation(BossSpeechSituationEnum.UltimateWarning);
         witch.ShowMapWideWarning(center, RelightDeadlineSeconds);
         witch.SealAllCandles();
         float deadlineTime = Time.time + RelightDeadlineSeconds;

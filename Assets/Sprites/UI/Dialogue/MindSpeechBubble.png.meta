@@ -1,25 +1,10 @@
 fileFormatVersion: 2
-guid: 6896844baeba3b347b2fbd5bf032e0cc
+guid: fcd40f1a446b57c4493bef84fd4513cf
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -1848290253955479093
-    second: bubble_emotes_july_update_0
-  - first:
-      213: -8784455701509569777
-    second: bubble_emotes_july_update_1
-  - first:
-      213: 5772526547304594798
-    second: bubble_emotes_july_update_2
-  - first:
-      213: 646379842392459910
-    second: bubble_emotes_july_update_3
-  - first:
-      213: 2673537108140432676
-    second: bubble_emotes_july_update_4
-  - first:
-      213: -2072452782567926015
-    second: bubble_emotes_july_update_5
+      213: -5102040285558324427
+    second: MindSpeechBubble_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -52,7 +37,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 0
+    filterMode: 1
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -63,11 +48,11 @@ TextureImporter:
   compressionQuality: 50
   spriteMode: 1
   spriteExtrude: 1
-  spriteMeshType: 0
-  alignment: 9
-  spritePivot: {x: 0.05832906, y: 0.06748692}
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 32
-  spriteBorder: {x: 7, y: 6, z: 3, w: 3}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
   alphaIsTransparency: 1
@@ -90,7 +75,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 0
+    textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -111,37 +96,11 @@ TextureImporter:
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 4
-    buildTarget: Android
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 0
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
-  - serializedVersion: 4
-    buildTarget: iOS
-    maxTextureSize: 2048
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 0
-    compressionQuality: 50
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    overridden: 0
-    ignorePlatformSupport: 0
-    androidETC2FallbackOverride: 0
-    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: bubble_emotes_july_update_0
+      name: MindSpeechBubble_0
       rect:
         serializedVersion: 2
         x: 0
@@ -149,15 +108,15 @@ TextureImporter:
         width: 19
         height: 16
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 7, y: 6, z: 4, w: 3}
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: bc9ca238ecd8956e0800000000000000
-      internalID: -1848290253955479093
+      spriteID: 533409d5469e139b0800000000000000
+      internalID: -5102040285558324427
       vertices: []
       indices: 
       edges: []
@@ -166,8 +125,8 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 3c0ef0e9888f0794aa05635c6909f3bc
-    internalID: -1023066781
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
     vertices: []
     indices: 
     edges: []
@@ -176,12 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      bubble_emotes_july_update_0: -1848290253955479093
-      bubble_emotes_july_update_1: -8784455701509569777
-      bubble_emotes_july_update_2: 5772526547304594798
-      bubble_emotes_july_update_3: 646379842392459910
-      bubble_emotes_july_update_4: 2673537108140432676
-      bubble_emotes_july_update_5: -2072452782567926015
+      MindSpeechBubble_0: -5102040285558324427
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

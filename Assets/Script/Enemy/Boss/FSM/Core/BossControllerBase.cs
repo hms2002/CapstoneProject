@@ -54,6 +54,8 @@ public abstract class BossControllerBase : Enemy
     private BossDrop bossDrop;
     private BossEncounterDirector encounterDirector;
     private BossTalkManager bossTalkManager;
+    private BossDeathPresentation deathPresentation;
+    private BossSpeechController speechController;
 
     private bool combatActive;
     private bool hasCombatOverride;
@@ -75,6 +77,8 @@ public abstract class BossControllerBase : Enemy
 
         CacheComponents();
         bossDrop = GetComponent<BossDrop>();
+        speechController = GetComponent<BossSpeechController>();
+        ResolveDeathPresentation();
 
         blackboard = CreateBlackboard();
         patternRuntime = CreatePatternRuntimeState();
@@ -141,6 +145,12 @@ public abstract class BossControllerBase : Enemy
             RefreshTarget();
 
         SetCombatActive(true);
+    }
+
+    public bool SpeakSituation(BossSpeechSituationEnum situation, float duration = 2f)
+    {
+        ResolveSpeechController();
+        return speechController != null && speechController.TrySpeakSituation(situation, duration);
     }
 
     public void ChangeState(BossState nextState)
@@ -271,8 +281,28 @@ public abstract class BossControllerBase : Enemy
         if (stateMachine != null && deadState != null && stateMachine.CurrentState != deadState)
             ChangeState(deadState);
 
-        if (bossDrop != null)
-            bossDrop.OnBossDead();
+        SetCombatActive(false);
+        ResolveDeathPresentation();
+        deathPresentation?.NotifyDeathStarted();
+    }
+
+    protected override void DestroyAfterDelay()
+    {
+        ResolveDeathPresentation();
+        if (deathPresentation != null && deathPresentation.TryBeginDeathSequence())
+            return;
+
+        SpawnDeathRewards();
+        base.DestroyAfterDelay();
+    }
+
+    protected override void PlayDeathAnimation()
+    {
+        ResolveDeathPresentation();
+        if (deathPresentation != null && deathPresentation.ShouldDeferDeathAnimation)
+            return;
+
+        base.PlayDeathAnimation();
     }
 
     public bool HasDeadTag()
@@ -572,5 +602,30 @@ public abstract class BossControllerBase : Enemy
     protected virtual bool CanUseDialogue()
     {
         return false;
+    }
+
+    private void SpawnDeathRewards()
+    {
+        if (bossDrop != null)
+            bossDrop.OnBossDead();
+    }
+
+    internal void PlayDeferredDeathAnimationFromPresentation()
+    {
+        base.PlayDeathAnimation();
+    }
+
+    private void ResolveDeathPresentation()
+    {
+        if (deathPresentation == null)
+            deathPresentation = GetComponent<BossDeathPresentation>();
+
+        deathPresentation?.Bind(this, bossDrop);
+    }
+
+    private void ResolveSpeechController()
+    {
+        if (speechController == null)
+            speechController = GetComponent<BossSpeechController>();
     }
 }
