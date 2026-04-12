@@ -4,6 +4,9 @@ using UnityGAS;
 
 public class DeadsSkeleton : Mob
 {
+    // 이 클래스의 책임:
+    // 플레이어 추적 중 자폭 조건을 판단하고, 빛 영역과 접촉하면 즉시 소멸하는 해골 몬스터의 전투 흐름을 관리한다.
+
     private float explosionDiameter = 5f;
     private const string DeathTriggerName = "isDead";
 
@@ -151,11 +154,20 @@ public class DeadsSkeleton : Mob
         isSelfDestruct = true;
         explodeTime = Time.time + Mathf.Max(0f, explodeDelay);
         ShowWarning();
+
+        if (IsInsideCandlestickLight())
+            DieFromLight();
     }
 
     /// <summary>자폭 대기 시간을 갱신합니다.</summary>
     private void TickSelfDestruct()
     {
+        if (IsInsideCandlestickLight())
+        {
+            DieFromLight();
+            return;
+        }
+
         if (Time.time < explodeTime) return;
 
         Explode(target != null ? target.gameObject : null);
@@ -198,6 +210,39 @@ public class DeadsSkeleton : Mob
         Die();
     }
 
+    /// <summary>
+    /// 책임 :
+    /// - 해골이 현재 촛대 광원 트리거 안에 이미 들어와 있는지 즉시 판정한다.
+    /// - 자폭 모드 진입 전에 이미 빛 안에 있던 경우도 놓치지 않게 한다.
+    /// </summary>
+    private bool IsInsideCandlestickLight()
+    {
+        Collider2D ownCollider = GetComponent<Collider2D>();
+        if (ownCollider == null)
+            return false;
+
+        ContactFilter2D filter = new ContactFilter2D();
+        filter.useTriggers = true;
+        filter.useLayerMask = false;
+
+        Collider2D[] overlaps = new Collider2D[16];
+        int overlapCount = ownCollider.Overlap(filter, overlaps);
+        for (int i = 0; i < overlapCount; i++)
+        {
+            Collider2D overlap = overlaps[i];
+            if (overlap == null)
+                continue;
+
+            if (overlap.GetComponent<CandlestickLightZone>() != null ||
+                overlap.GetComponentInParent<CandlestickLightZone>() != null)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     /// <summary>폭발 범위 안의 타겟에게 피해를 적용합니다.</summary>
     private void DamageTargets(CombatHitPayload payload, GameObject hitTarget)
     {
@@ -220,11 +265,8 @@ public class DeadsSkeleton : Mob
             if (!damagedTargets.Add(targetRoot))
                 continue;
 
-            CombatHitPayloadApplier.Apply(targetRoot, payload, hit.transform.position);
+            CombatHitPayloadApplier.Apply(targetRoot, payload, hit.ClosestPoint(transform.position));
         }
-
-        if (damagedTargets.Count == 0 && hitTarget != null)
-            CombatHitPayloadApplier.Apply(hitTarget, payload, hitTarget.transform.position);
     }
 
     /// <summary>폭발이 맞을 레이어를 구합니다.</summary>
