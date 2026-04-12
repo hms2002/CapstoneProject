@@ -6,6 +6,9 @@ using UnityGAS;
 [RequireComponent(typeof(Collider2D), typeof(CandlestickSeal))]
 public class Candlestick : MonoBehaviour, IDamageReceiver
 {
+    // 이 클래스의 책임:
+    // 촛대의 봉인 상태와 피격 가능 레이어를 관리한다.
+
     private static readonly List<Candlestick> instances = new();
 
     private CandlestickSeal candlestickSeal;

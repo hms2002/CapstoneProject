@@ -10,7 +10,7 @@ public class WitchAfterExtinguishCondition : WitchPatternCondition
         if (lastPattern == null || lastPattern.Ability == null)
             return BossPatternEvalResult.HardFail("이전 패턴이 없습니다.");
 
-        if (lastPattern.Ability.logic is UnityGAS.Sample.AbilityLogic_ExtinguishCandle)
+        if (lastPattern.Ability.logic is UnityGAS.Sample.AbilityLogic_WitchExtinguishCandle)
             return BossPatternEvalResult.Pass();
 
         return BossPatternEvalResult.HardFail("촛불 끄기 패턴 뒤에만 사용할 수 있습니다.");

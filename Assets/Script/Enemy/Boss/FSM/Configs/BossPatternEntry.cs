@@ -68,7 +68,7 @@ public sealed class BossPatternEntry
     [Tooltip("가중치 기반 패턴 선택 시 사용합니다.")]
     [SerializeField] private int selectionWeight = 100;
 
-    [Tooltip("같은 패턴 연속 사용 제한 횟수입니다. 1이면 연속 사용 금지입니다.")]
+    [Tooltip("같은 패턴 연속 사용 제한 횟수입니다. 0이면 제한이 없습니다.")]
     [SerializeField] private int maxConsecutiveUseCount = 1;
 
     [Tooltip("전체 전투 중 최대 사용 횟수입니다. 0이면 제한이 없습니다.")]
@@ -109,6 +109,33 @@ public sealed class BossPatternEntry
     public float MaxDistanceToTarget => maxDistanceToTarget;
     public float MinHpRatio => minHpRatio;
     public float MaxHpRatio => maxHpRatio;
+
+    /// <summary>런타임 전용 패턴 엔트리를 만듭니다.</summary>
+    public static BossPatternEntry CreateRuntime(
+        AbilityDefinition runtimeAbility,
+        int runtimeSelectionWeight,
+        int runtimeMaxConsecutiveUseCount,
+        int runtimeMaxUseCount,
+        float runtimeSelectionLockTime,
+        float runtimeMinDistanceToTarget,
+        float runtimeMaxDistanceToTarget,
+        float runtimeMinHpRatio,
+        float runtimeMaxHpRatio,
+        params BossPatternCondition[] runtimeAdditionalConditions)
+    {
+        BossPatternEntry entry = new BossPatternEntry();
+        entry.ability = runtimeAbility;
+        entry.selectionWeight = runtimeSelectionWeight;
+        entry.maxConsecutiveUseCount = runtimeMaxConsecutiveUseCount;
+        entry.maxUseCount = runtimeMaxUseCount;
+        entry.aiSelectionLockTime = runtimeSelectionLockTime;
+        entry.minDistanceToTarget = runtimeMinDistanceToTarget;
+        entry.maxDistanceToTarget = runtimeMaxDistanceToTarget;
+        entry.minHpRatio = runtimeMinHpRatio;
+        entry.maxHpRatio = runtimeMaxHpRatio;
+        entry.additionalConditions = runtimeAdditionalConditions;
+        return entry;
+    }
 
     /// <summary>공통 패턴 평가 결과를 계산합니다.</summary>
     public BossPatternEvalResult Evaluate(BossPatternEvalContext context)

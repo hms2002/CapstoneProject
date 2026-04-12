@@ -67,6 +67,7 @@ public abstract class BossControllerBase : Enemy
     public BossStateMachine StateMachine => stateMachine;
     public Transform CurrentTarget => Target;
     public override Transform Target => target;
+    protected int ConfiguredPhaseCount => phases != null ? phases.Count : 0;
 
     protected override void Awake()
     {
@@ -84,6 +85,8 @@ public abstract class BossControllerBase : Enemy
     protected override void Start()
     {
         base.Start();
+
+        RegisterConfiguredPatternAbilities();
 
         if (initialTarget != null)
             SetTarget(initialTarget);
@@ -464,6 +467,47 @@ public abstract class BossControllerBase : Enemy
     protected virtual BossPatternRuntimeState CreatePatternRuntimeState()
     {
         return new BossPatternRuntimeState();
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 런타임 기본 패턴 구성을 사용할 때 보스의 phase 리스트를 안전하게 교체한다.
+    /// - 공통 FSM은 phase 데이터를 소비만 하고, 실제 phase 구성 책임은 보스 구현체에 둔다.
+    /// </summary>
+    protected void SetRuntimePhases(IEnumerable<BossPhaseConfig> runtimePhases)
+    {
+        phases = runtimePhases != null
+            ? new List<BossPhaseConfig>(runtimePhases)
+            : new List<BossPhaseConfig>();
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 현재 phase 설정이 참조하는 모든 패턴 ability를 AbilitySystem에 미리 등록한다.
+    /// - 패턴 선택은 되었지만 spec이 없어 실행에 실패하는 일을 공통 계층에서 방지한다.
+    /// </summary>
+    private void RegisterConfiguredPatternAbilities()
+    {
+        if (abilitySystem == null || phases == null || phases.Count == 0)
+            return;
+
+        for (int phaseIndex = 0; phaseIndex < phases.Count; phaseIndex++)
+        {
+            BossPhaseConfig phase = phases[phaseIndex];
+            IReadOnlyList<BossPatternEntry> patterns = phase != null ? phase.Patterns : null;
+            if (patterns == null)
+                continue;
+
+            for (int patternIndex = 0; patternIndex < patterns.Count; patternIndex++)
+            {
+                BossPatternEntry pattern = patterns[patternIndex];
+                AbilityDefinition ability = pattern != null ? pattern.Ability : null;
+                if (ability == null)
+                    continue;
+
+                abilitySystem.GiveAbility(ability);
+            }
+        }
     }
 
     protected virtual BossSpawnState CreateSpawnState()

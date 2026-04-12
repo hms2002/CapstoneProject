@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityGAS;
 
 public static class BossPatternSelector
 {
@@ -17,7 +18,15 @@ public static class BossPatternSelector
 
             BossPatternEvalResult result = boss.EvaluatePattern(patternEntry);
             int weight = result.GetWeight(patternEntry.SelectionWeight);
-            if (weight <= 0) continue;
+            if (weight <= 0)
+            {
+                AbilityDefinition ability = patternEntry.Ability;
+                string patternName = ability != null ? ability.name : "None";
+                Debug.Log(
+                    $"[BossFSM] {boss.name}: 패턴 '{patternName}' 후보 탈락. state={result.State}, reason={result.Reason ?? "없음"}",
+                    boss);
+                continue;
+            }
 
             totalWeight += weight;
             candidates.Add((patternEntry, weight));

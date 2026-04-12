@@ -7,6 +7,7 @@ namespace UnityGAS
     public enum AttackTelegraphShape
     {
         Rectangle = 0,
-        Circle = 1
+        Circle = 1,
+        Ring = 2
     }
 }
