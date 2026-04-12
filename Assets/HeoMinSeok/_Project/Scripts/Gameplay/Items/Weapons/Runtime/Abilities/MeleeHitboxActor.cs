@@ -6,7 +6,7 @@ namespace UnityGAS
     /// <summary>
     /// 책임 :
     /// - 근접 히트박스 공격체가 추가로 필요로 하는 생성 문맥을 보관한다.
-    /// - 월드 위치, 히트박스 크기, 타겟당 1회 타격 여부, 방향 정보를 전달한다.
+    /// - 월드 위치, 히트박스 크기, 타겟당 1회 타격 여부, 방향, 비주얼 뒤집기 정보를 전달한다.
     /// </summary>
     public sealed class MeleeHitboxSpawnContext : AttackSpawnContext
     {
@@ -15,6 +15,7 @@ namespace UnityGAS
         public bool hitOncePerTarget = true;
         public bool destroyOnFirstHit = false;
         public Vector2 direction = Vector2.right;
+        public bool flipVisualX;
     }
 
     /// <summary>
@@ -41,6 +42,8 @@ namespace UnityGAS
         private bool authoredShapeCached;
         private Vector2 authoredColliderSize = Vector2.one;
         private Vector3 authoredLocalScale = Vector3.one;
+        private Vector3 authoredVisualLocalScale = Vector3.one;
+        private bool authoredVisualCached;
 
         /// <summary>
         /// 책임 :
@@ -71,7 +74,8 @@ namespace UnityGAS
             hitOncePerTarget = context.hitOncePerTarget;
             destroyOnFirstHit = context.destroyOnFirstHit;
 
-            ApplyVisualLocalRotation();
+            CacheVisualShapeIfNeeded();
+            ApplyVisualLocalRotation(context.flipVisualX);
             SetupBase(context);
 
             PerformImmediateScan();
@@ -90,6 +94,20 @@ namespace UnityGAS
             authoredShapeCached = true;
             authoredColliderSize = hitboxCollider != null ? hitboxCollider.size : Vector2.one;
             authoredLocalScale = transform.localScale;
+        }
+
+        /// <summary>
+        /// 책임 :
+        /// - visualRoot가 가진 원래 로컬 스케일을 한 번만 캐시한다.
+        /// - 이후 좌우 반전 시 원본 비율을 유지한 채 X축 부호만 바꾸게 한다.
+        /// </summary>
+        private void CacheVisualShapeIfNeeded()
+        {
+            if (authoredVisualCached || visualRoot == null)
+                return;
+
+            authoredVisualCached = true;
+            authoredVisualLocalScale = visualRoot.localScale;
         }
 
         /// <summary>
@@ -156,15 +174,23 @@ namespace UnityGAS
 
         /// <summary>
         /// 책임 :
-        /// - visualRoot가 있을 경우, 공격체 회전 위에 추가 로컬 보정 회전을 적용한다.
-        /// - 이펙트 프리팹의 기본 정면 축이 다를 때 미세 보정 용도로 사용한다.
+        /// - visualRoot가 있을 경우, 공격체 회전 위에 추가 로컬 보정 회전과 좌우 반전을 적용한다.
+        /// - 이펙트 프리팹의 기본 정면 축이 다르거나 콤보 단계별 좌우 이미지를 뒤집어야 할 때 사용한다.
         /// </summary>
-        private void ApplyVisualLocalRotation()
+        private void ApplyVisualLocalRotation(bool flipVisualX)
         {
             if (visualRoot == null)
                 return;
 
             visualRoot.localRotation = Quaternion.Euler(0f, 0f, visualLocalAngleOffsetDeg);
+            if (authoredVisualCached)
+            {
+                float signY = flipVisualX ? -1f : 1f;
+                visualRoot.localScale = new Vector3(
+                    authoredVisualLocalScale.x,
+                    Mathf.Abs(authoredVisualLocalScale.y) * signY,
+                    authoredVisualLocalScale.z);
+            }
         }
 
         /// <summary>
