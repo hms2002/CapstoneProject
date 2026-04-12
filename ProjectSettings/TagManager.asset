@@ -54,6 +54,9 @@ TagManager:
   - name: Projectile
     uniqueID: 119640197
     locked: 0
+  - name: MaskRender
+    uniqueID: 2877089501
+    locked: 0
   - name: ForeGround
     uniqueID: 2334152271
     locked: 0

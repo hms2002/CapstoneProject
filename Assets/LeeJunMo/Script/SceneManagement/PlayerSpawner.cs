@@ -2,6 +2,9 @@ using UnityEngine;
 
 public sealed class PlayerSpawner : MonoBehaviour
 {
+    // 이 클래스의 책임:
+    // 씬 진입 시 플레이어 스폰 위치를 결정해 플레이어를 생성하고, 런타임 레지스트리와 후속 연출 시스템에 플레이어를 연결한다.
+
     [SerializeField] private GameObject playerPrefab;
     [SerializeField] private PlayerSpawnPoint defaultSpawnPoint;
     [SerializeField] private PlayerSpawnPoint[] spawnPoints;
@@ -30,6 +33,7 @@ public sealed class PlayerSpawner : MonoBehaviour
             if (existingInteractor != null)
                 PlayerRuntimeRegistry.Register(existingInteractor);
 
+            TryAttachGlobalVisionMask(existingPlayer);
             TryStartHubSpawnPresentation(existingPlayer);
 
             Debug.Log("[PlayerSpawner] Player already exists in the scene. Skipping spawn.");
@@ -65,7 +69,23 @@ public sealed class PlayerSpawner : MonoBehaviour
             Debug.LogWarning("[PlayerSpawner] PlayerInteractor2D was not found on the spawned player.");
         }
 
+        TryAttachGlobalVisionMask(player);
         TryStartHubSpawnPresentation(player);
+    }
+
+    private static void TryAttachGlobalVisionMask(GameObject player)
+    {
+        if (player == null)
+            return;
+
+        GlobalVisionMaskController visionMaskController = GlobalVisionMaskController.Instance;
+        if (visionMaskController == null)
+            visionMaskController = FindFirstObjectByType<GlobalVisionMaskController>();
+
+        if (visionMaskController == null)
+            return;
+
+        visionMaskController.AttachToPlayer(player.transform);
     }
 
     private static void TryStartHubSpawnPresentation(GameObject player)

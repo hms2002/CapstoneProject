@@ -1,11 +1,14 @@
 using UnityEngine;
-using UnityEngine.Rendering.Universal;
 
 [DisallowMultipleComponent]
-[RequireComponent(typeof(Light2D), typeof(CircleCollider2D))]
+[RequireComponent(typeof(CircleCollider2D))]
 public class CandlestickLightZone : MonoBehaviour
 {
-    private Light2D pointLight;
+    // 이 클래스의 책임:
+    // 촛불의 빛 판정 범위를 CircleCollider2D 기준으로 유지하고, 필요 시 인스펙터 값으로 반경을 제어한다.
+
+    [SerializeField] private float lightRadius = 3f;
+
     private CircleCollider2D triggerZone;
 
     private void Awake()
@@ -18,18 +21,16 @@ public class CandlestickLightZone : MonoBehaviour
         SyncRadius();
     }
 
-    /// <summary>광원 반경에 맞춰 트리거 크기를 맞춥니다.</summary>
+    /// <summary>지정된 빛 반경에 맞춰 트리거 크기를 맞춥니다.</summary>
     private void SyncRadius()
     {
-        if (pointLight == null)
-            pointLight = GetComponent<Light2D>();
-
         if (triggerZone == null)
             triggerZone = GetComponent<CircleCollider2D>();
 
-        if (pointLight == null || triggerZone == null) return;
+        if (triggerZone == null)
+            return;
 
         triggerZone.isTrigger = true;
-        triggerZone.radius = Mathf.Max(0.01f, pointLight.pointLightOuterRadius);
+        triggerZone.radius = Mathf.Max(0.01f, lightRadius);
     }
 }

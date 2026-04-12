@@ -1,15 +1,14 @@
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Rendering.Universal;
 
 [DisallowMultipleComponent]
 public class FogSightLock : MonoBehaviour
 {
-    private readonly List<Light2D> globalLights = new();
-    private readonly List<float> lightValues = new();
+    // 이 클래스의 책임:
+    // 플레이어에게 일정 시간 동안 시야 제한을 적용하고, 전역 시야 마스크 컨트롤러에 어둠 요청을 등록/해제한다.
 
     private float endTime;
     private bool isDark;
+    private GlobalVisionMaskController visionMaskController;
 
     private void Update()
     {
@@ -28,7 +27,6 @@ public class FogSightLock : MonoBehaviour
     /// <summary>시야 제한 시간을 적용합니다.</summary>
     public void ApplyFog(float duration)
     {
-        CacheLights();
         endTime = Time.time + Mathf.Max(0f, duration);
 
         if (isDark) return;
@@ -36,50 +34,34 @@ public class FogSightLock : MonoBehaviour
         SetDark();
     }
 
-    /// <summary>글로벌 라이트를 찾아 저장합니다.</summary>
-    private void CacheLights()
-    {
-        if (globalLights.Count > 0) return;
-
-        Light2D[] lights = FindObjectsByType<Light2D>(FindObjectsSortMode.None);
-
-        for (int i = 0; i < lights.Length; i++)
-        {
-            Light2D light = lights[i];
-            if (light == null || light.lightType != Light2D.LightType.Global) continue;
-
-            globalLights.Add(light);
-            lightValues.Add(light.intensity);
-        }
-    }
-
-    /// <summary>글로벌 라이트를 꺼서 시야를 좁힙니다.</summary>
+    /// <summary>전역 시야 마스크에 어둠 요청을 등록합니다.</summary>
     private void SetDark()
     {
-        for (int i = 0; i < globalLights.Count; i++)
-        {
-            Light2D light = globalLights[i];
-            if (light == null) continue;
-
-            light.intensity = 0f;
-        }
+        EnsureController();
+        visionMaskController?.AcquireDarkness(this);
 
         isDark = true;
     }
 
-    /// <summary>글로벌 라이트 밝기를 되돌립니다.</summary>
+    /// <summary>전역 시야 마스크에서 어둠 요청을 해제합니다.</summary>
     private void RestoreLight()
     {
         if (!isDark) return;
 
-        for (int i = 0; i < globalLights.Count; i++)
-        {
-            Light2D light = globalLights[i];
-            if (light == null) continue;
-
-            light.intensity = lightValues[i];
-        }
+        EnsureController();
+        visionMaskController?.ReleaseDarkness(this);
 
         isDark = false;
+    }
+
+    /// <summary>전역 시야 마스크 컨트롤러 참조를 확보합니다.</summary>
+    private void EnsureController()
+    {
+        if (visionMaskController != null)
+            return;
+
+        visionMaskController = GlobalVisionMaskController.Instance;
+        if (visionMaskController == null)
+            visionMaskController = FindFirstObjectByType<GlobalVisionMaskController>();
     }
 }

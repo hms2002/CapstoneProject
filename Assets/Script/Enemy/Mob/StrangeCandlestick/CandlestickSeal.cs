@@ -1,19 +1,22 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Rendering.Universal;
 
 [DisallowMultipleComponent]
 public class CandlestickSeal : MonoBehaviour
 {
+    // 이 클래스의 책임:
+    // 촛대 봉인 상태와 남은 해제 타격 수를 관리하고, 봉인 상태에 맞춰 빛 연출/판정 루트를 켜고 끈다.
+
     private const int SealHitCount = 3;
 
     private static Sprite markSprite;
 
     private readonly List<SpriteRenderer> marks = new();
 
-    private Light2D candleLight;
-    private SpriteMask sightMask;
+    [SerializeField] private GameObject lightVisualRoot;
+    [SerializeField] private SpriteMask sightMask;
+    [SerializeField] private CandlestickLightZone lightZone;
     private SpriteRenderer ownerSprite;
     private int hitsLeft;
     private bool isSealed;
@@ -24,8 +27,14 @@ public class CandlestickSeal : MonoBehaviour
     private void Awake()
     {
         ownerSprite = GetComponent<SpriteRenderer>();
-        candleLight = GetComponentInChildren<Light2D>(true);
-        sightMask = GetComponentInChildren<SpriteMask>(true);
+        if (lightVisualRoot == null)
+            lightVisualRoot = FindLightVisualRoot();
+
+        if (sightMask == null)
+            sightMask = GetComponentInChildren<SpriteMask>(true);
+
+        if (lightZone == null)
+            lightZone = GetComponentInChildren<CandlestickLightZone>(true);
 
         BuildMarks();
         HideMarks();
@@ -66,12 +75,17 @@ public class CandlestickSeal : MonoBehaviour
         SealChanged?.Invoke(false);
     }
 
-    /// <summary>광원과 마스크 표시를 켜고 끕니다.</summary>
+    /// <summary>빛 연출 루트와 빛 판정 범위를 켜고 끕니다.</summary>
     private void ToggleLight(bool isOn)
     {
-        if (candleLight != null) candleLight.gameObject.SetActive(isOn);
+        if (lightVisualRoot != null)
+            lightVisualRoot.SetActive(isOn);
 
-        if (sightMask != null) sightMask.gameObject.SetActive(isOn);
+        if (sightMask != null && sightMask.gameObject != lightVisualRoot)
+            sightMask.gameObject.SetActive(isOn);
+
+        if (lightZone != null)
+            lightZone.gameObject.SetActive(isOn);
     }
 
     /// <summary>봉인 표식을 만듭니다.</summary>
@@ -147,5 +161,18 @@ public class CandlestickSeal : MonoBehaviour
         Rect rect = new Rect(0f, 0f, Texture2D.whiteTexture.width, Texture2D.whiteTexture.height);
         markSprite = Sprite.Create(Texture2D.whiteTexture, rect, new Vector2(0.5f, 0.5f), 100f);
         return markSprite;
+    }
+
+    /// <summary>촛대 빛 연출 루트 후보를 찾아 반환합니다.</summary>
+    private GameObject FindLightVisualRoot()
+    {
+        if (sightMask != null)
+            return sightMask.gameObject;
+
+        SpriteMask foundMask = GetComponentInChildren<SpriteMask>(true);
+        if (foundMask != null)
+            return foundMask.gameObject;
+
+        return null;
     }
 }

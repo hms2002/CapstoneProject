@@ -220,7 +220,7 @@ MonoBehaviour:
   spawnAnchor: {fileID: 13218096}
   roomArea: {fileID: 943851734}
   roomGroup: {fileID: 0}
-  linkedChestKillLock: {fileID: 491675584}
+  linkedChestKillLock: {fileID: 1293756967}
 --- !u!1 &23973813
 GameObject:
   m_ObjectHideFlags: 0
@@ -271,7 +271,7 @@ MonoBehaviour:
   spawnAnchor: {fileID: 23973814}
   roomArea: {fileID: 943851734}
   roomGroup: {fileID: 0}
-  linkedChestKillLock: {fileID: 491675584}
+  linkedChestKillLock: {fileID: 1702468254}
 --- !u!1 &29060070
 GameObject:
   m_ObjectHideFlags: 0
@@ -322,7 +322,7 @@ MonoBehaviour:
   spawnAnchor: {fileID: 29060071}
   roomArea: {fileID: 943851734}
   roomGroup: {fileID: 0}
-  linkedChestKillLock: {fileID: 491675584}
+  linkedChestKillLock: {fileID: 1909995624}
 --- !u!1 &29607687
 GameObject:
   m_ObjectHideFlags: 0
@@ -373,7 +373,7 @@ MonoBehaviour:
   spawnAnchor: {fileID: 29607688}
   roomArea: {fileID: 943851734}
   roomGroup: {fileID: 0}
-  linkedChestKillLock: {fileID: 491675584}
+  linkedChestKillLock: {fileID: 2134243210}
 --- !u!1 &29683915
 GameObject:
   m_ObjectHideFlags: 0
@@ -424,7 +424,7 @@ MonoBehaviour:
   spawnAnchor: {fileID: 29683916}
   roomArea: {fileID: 943851734}
   roomGroup: {fileID: 0}
-  linkedChestKillLock: {fileID: 491675584}
+  linkedChestKillLock: {fileID: 629269943}
 --- !u!1 &55575738
 GameObject:
   m_ObjectHideFlags: 0
@@ -475,7 +475,7 @@ MonoBehaviour:
   spawnAnchor: {fileID: 55575739}
   roomArea: {fileID: 943851734}
   roomGroup: {fileID: 0}
-  linkedChestKillLock: {fileID: 491675584}
+  linkedChestKillLock: {fileID: 1908528505}
 --- !u!1 &59439380
 GameObject:
   m_ObjectHideFlags: 0
@@ -526,7 +526,7 @@ MonoBehaviour:
   spawnAnchor: {fileID: 59439381}
   roomArea: {fileID: 943851734}
   roomGroup: {fileID: 0}
-  linkedChestKillLock: {fileID: 491675584}
+  linkedChestKillLock: {fileID: 1702468254}
 --- !u!1 &104541871
 GameObject:
   m_ObjectHideFlags: 0
@@ -577,7 +577,7 @@ MonoBehaviour:
   spawnAnchor: {fileID: 104541872}
   roomArea: {fileID: 943851734}
   roomGroup: {fileID: 0}
-  linkedChestKillLock: {fileID: 491675584}
+  linkedChestKillLock: {fileID: 2134243210}
 --- !u!1 &107748360
 GameObject:
   m_ObjectHideFlags: 0
@@ -628,7 +628,7 @@ MonoBehaviour:
   spawnAnchor: {fileID: 107748361}
   roomArea: {fileID: 943851734}
   roomGroup: {fileID: 0}
-  linkedChestKillLock: {fileID: 491675584}
+  linkedChestKillLock: {fileID: 1702468254}
 --- !u!1 &117457805
 GameObject:
   m_ObjectHideFlags: 0
@@ -771,7 +771,7 @@ MonoBehaviour:
   spawnAnchor: {fileID: 135881766}
   roomArea: {fileID: 943851734}
   roomGroup: {fileID: 0}
-  linkedChestKillLock: {fileID: 491675584}
+  linkedChestKillLock: {fileID: 1908528505}
 --- !u!1 &158101514
 GameObject:
   m_ObjectHideFlags: 0
@@ -822,7 +822,7 @@ MonoBehaviour:
   spawnAnchor: {fileID: 158101515}
   roomArea: {fileID: 943851734}
   roomGroup: {fileID: 0}
-  linkedChestKillLock: {fileID: 491675584}
+  linkedChestKillLock: {fileID: 629269943}
 --- !u!1 &161455600
 GameObject:
   m_ObjectHideFlags: 0
@@ -989,7 +989,7 @@ MonoBehaviour:
   spawnAnchor: {fileID: 164553233}
   roomArea: {fileID: 943851734}
   roomGroup: {fileID: 0}
-  linkedChestKillLock: {fileID: 491675584}
+  linkedChestKillLock: {fileID: 1909995624}
 --- !u!1 &167450169
 GameObject:
   m_ObjectHideFlags: 0
@@ -23908,7 +23908,7 @@ MonoBehaviour:
   spawnAnchor: {fileID: 201618072}
   roomArea: {fileID: 943851734}
   roomGroup: {fileID: 0}
-  linkedChestKillLock: {fileID: 491675584}
+  linkedChestKillLock: {fileID: 1702468254}
 --- !u!1 &202412819
 GameObject:
   m_ObjectHideFlags: 0
@@ -32590,7 +32590,7 @@ MonoBehaviour:
   spawnAnchor: {fileID: 254712997}
   roomArea: {fileID: 943851734}
   roomGroup: {fileID: 0}
-  linkedChestKillLock: {fileID: 491675584}
+  linkedChestKillLock: {fileID: 2134243210}
 --- !u!1 &280972977
 GameObject:
   m_ObjectHideFlags: 0
@@ -32641,7 +32641,7 @@ MonoBehaviour:
   spawnAnchor: {fileID: 280972978}
   roomArea: {fileID: 943851734}
   roomGroup: {fileID: 0}
-  linkedChestKillLock: {fileID: 491675584}
+  linkedChestKillLock: {fileID: 1909995624}
 --- !u!1 &289098015
 GameObject:
   m_ObjectHideFlags: 0
@@ -32893,7 +32893,7 @@ MonoBehaviour:
   spawnAnchor: {fileID: 444722931}
   roomArea: {fileID: 943851734}
   roomGroup: {fileID: 0}
-  linkedChestKillLock: {fileID: 491675584}
+  linkedChestKillLock: {fileID: 1293756967}
 --- !u!1 &457929347
 GameObject:
   m_ObjectHideFlags: 0
@@ -32944,7 +32944,7 @@ MonoBehaviour:
   spawnAnchor: {fileID: 457929348}
   roomArea: {fileID: 943851734}
   roomGroup: {fileID: 0}
-  linkedChestKillLock: {fileID: 491675584}
+  linkedChestKillLock: {fileID: 629269943}
 --- !u!114 &491675584 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3675793086032016732, guid: 670170a4e9390bc458d0b686227549af, type: 3}
@@ -33172,7 +33172,7 @@ MonoBehaviour:
   spawnAnchor: {fileID: 511982777}
   roomArea: {fileID: 943851734}
   roomGroup: {fileID: 0}
-  linkedChestKillLock: {fileID: 491675584}
+  linkedChestKillLock: {fileID: 1909995624}
 --- !u!1 &545107574
 GameObject:
   m_ObjectHideFlags: 0
@@ -33223,7 +33223,7 @@ MonoBehaviour:
   spawnAnchor: {fileID: 545107575}
   roomArea: {fileID: 943851734}
   roomGroup: {fileID: 0}
-  linkedChestKillLock: {fileID: 491675584}
+  linkedChestKillLock: {fileID: 1702468254}
 --- !u!1 &545842854
 GameObject:
   m_ObjectHideFlags: 0
@@ -33274,7 +33274,7 @@ MonoBehaviour:
   spawnAnchor: {fileID: 545842855}
   roomArea: {fileID: 943851734}
   roomGroup: {fileID: 0}
-  linkedChestKillLock: {fileID: 491675584}
+  linkedChestKillLock: {fileID: 1702468254}
 --- !u!1 &565302361
 GameObject:
   m_ObjectHideFlags: 0
@@ -33325,7 +33325,7 @@ MonoBehaviour:
   spawnAnchor: {fileID: 565302362}
   roomArea: {fileID: 943851734}
   roomGroup: {fileID: 0}
-  linkedChestKillLock: {fileID: 491675584}
+  linkedChestKillLock: {fileID: 1909995624}
 --- !u!1001 &600451078
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -33630,6 +33630,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 6066747848749373809, guid: 670170a4e9390bc458d0b686227549af, type: 3}
   m_PrefabInstance: {fileID: 629269940}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &629269943 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3675793086032016732, guid: 670170a4e9390bc458d0b686227549af, type: 3}
+  m_PrefabInstance: {fileID: 629269940}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e70ff4a1c8da75a4fad7c6bbd18d056d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &642437084
 GameObject:
   m_ObjectHideFlags: 0
@@ -33772,7 +33783,7 @@ MonoBehaviour:
   spawnAnchor: {fileID: 647991171}
   roomArea: {fileID: 943851734}
   roomGroup: {fileID: 0}
-  linkedChestKillLock: {fileID: 491675584}
+  linkedChestKillLock: {fileID: 1908528505}
 --- !u!1 &673085776
 GameObject:
   m_ObjectHideFlags: 0
@@ -33874,7 +33885,7 @@ MonoBehaviour:
   spawnAnchor: {fileID: 707399052}
   roomArea: {fileID: 943851734}
   roomGroup: {fileID: 0}
-  linkedChestKillLock: {fileID: 491675584}
+  linkedChestKillLock: {fileID: 1908528505}
 --- !u!1 &740471650
 GameObject:
   m_ObjectHideFlags: 0
@@ -33925,7 +33936,7 @@ MonoBehaviour:
   spawnAnchor: {fileID: 740471651}
   roomArea: {fileID: 943851734}
   roomGroup: {fileID: 0}
-  linkedChestKillLock: {fileID: 491675584}
+  linkedChestKillLock: {fileID: 1909995624}
 --- !u!1001 &755463458
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -34189,7 +34200,7 @@ MonoBehaviour:
   spawnAnchor: {fileID: 784185020}
   roomArea: {fileID: 943851734}
   roomGroup: {fileID: 0}
-  linkedChestKillLock: {fileID: 491675584}
+  linkedChestKillLock: {fileID: 1293756967}
 --- !u!1 &790760345
 GameObject:
   m_ObjectHideFlags: 0
@@ -34352,7 +34363,7 @@ MonoBehaviour:
   spawnAnchor: {fileID: 818867913}
   roomArea: {fileID: 943851734}
   roomGroup: {fileID: 0}
-  linkedChestKillLock: {fileID: 491675584}
+  linkedChestKillLock: {fileID: 1909995624}
 --- !u!1 &821234440
 GameObject:
   m_ObjectHideFlags: 0
@@ -34468,7 +34479,7 @@ MonoBehaviour:
   spawnAnchor: {fileID: 829403083}
   roomArea: {fileID: 943851734}
   roomGroup: {fileID: 0}
-  linkedChestKillLock: {fileID: 491675584}
+  linkedChestKillLock: {fileID: 1702468254}
 --- !u!1 &847701827
 GameObject:
   m_ObjectHideFlags: 0
@@ -34519,7 +34530,7 @@ MonoBehaviour:
   spawnAnchor: {fileID: 847701828}
   roomArea: {fileID: 943851734}
   roomGroup: {fileID: 0}
-  linkedChestKillLock: {fileID: 491675584}
+  linkedChestKillLock: {fileID: 1702468254}
 --- !u!1 &873510306
 GameObject:
   m_ObjectHideFlags: 0
@@ -34570,7 +34581,7 @@ MonoBehaviour:
   spawnAnchor: {fileID: 873510307}
   roomArea: {fileID: 943851734}
   roomGroup: {fileID: 0}
-  linkedChestKillLock: {fileID: 491675584}
+  linkedChestKillLock: {fileID: 1702468254}
 --- !u!1001 &892499339
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -34683,7 +34694,7 @@ MonoBehaviour:
   spawnAnchor: {fileID: 927187474}
   roomArea: {fileID: 943851734}
   roomGroup: {fileID: 0}
-  linkedChestKillLock: {fileID: 491675584}
+  linkedChestKillLock: {fileID: 1908528505}
 --- !u!1 &943851733
 GameObject:
   m_ObjectHideFlags: 0
@@ -34833,7 +34844,7 @@ MonoBehaviour:
   spawnAnchor: {fileID: 948790511}
   roomArea: {fileID: 943851734}
   roomGroup: {fileID: 0}
-  linkedChestKillLock: {fileID: 491675584}
+  linkedChestKillLock: {fileID: 1702468254}
 --- !u!1 &949997131
 GameObject:
   m_ObjectHideFlags: 0
@@ -34884,7 +34895,7 @@ MonoBehaviour:
   spawnAnchor: {fileID: 949997132}
   roomArea: {fileID: 943851734}
   roomGroup: {fileID: 0}
-  linkedChestKillLock: {fileID: 491675584}
+  linkedChestKillLock: {fileID: 629269943}
 --- !u!1 &972791721
 GameObject:
   m_ObjectHideFlags: 0
@@ -34935,7 +34946,7 @@ MonoBehaviour:
   spawnAnchor: {fileID: 972791722}
   roomArea: {fileID: 943851734}
   roomGroup: {fileID: 0}
-  linkedChestKillLock: {fileID: 491675584}
+  linkedChestKillLock: {fileID: 1908528505}
 --- !u!1 &988747540
 GameObject:
   m_ObjectHideFlags: 0
@@ -35017,7 +35028,7 @@ MonoBehaviour:
   spawnAnchor: {fileID: 996026717}
   roomArea: {fileID: 943851734}
   roomGroup: {fileID: 0}
-  linkedChestKillLock: {fileID: 491675584}
+  linkedChestKillLock: {fileID: 1293756967}
 --- !u!1001 &1004915103
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -35157,7 +35168,7 @@ MonoBehaviour:
   spawnAnchor: {fileID: 1019224776}
   roomArea: {fileID: 943851734}
   roomGroup: {fileID: 0}
-  linkedChestKillLock: {fileID: 491675584}
+  linkedChestKillLock: {fileID: 1702468254}
 --- !u!1 &1026324007
 GameObject:
   m_ObjectHideFlags: 0
@@ -35208,7 +35219,7 @@ MonoBehaviour:
   spawnAnchor: {fileID: 1026324008}
   roomArea: {fileID: 943851734}
   roomGroup: {fileID: 0}
-  linkedChestKillLock: {fileID: 491675584}
+  linkedChestKillLock: {fileID: 1293756967}
 --- !u!1 &1032229108
 GameObject:
   m_ObjectHideFlags: 0
@@ -35367,7 +35378,7 @@ MonoBehaviour:
   spawnAnchor: {fileID: 1036134750}
   roomArea: {fileID: 943851734}
   roomGroup: {fileID: 0}
-  linkedChestKillLock: {fileID: 491675584}
+  linkedChestKillLock: {fileID: 2134243210}
 --- !u!1 &1038703075
 GameObject:
   m_ObjectHideFlags: 0
@@ -35482,7 +35493,7 @@ MonoBehaviour:
   spawnAnchor: {fileID: 1058487411}
   roomArea: {fileID: 943851734}
   roomGroup: {fileID: 0}
-  linkedChestKillLock: {fileID: 491675584}
+  linkedChestKillLock: {fileID: 1293756967}
 --- !u!1 &1065567748
 GameObject:
   m_ObjectHideFlags: 0
@@ -35533,7 +35544,7 @@ MonoBehaviour:
   spawnAnchor: {fileID: 1065567749}
   roomArea: {fileID: 943851734}
   roomGroup: {fileID: 0}
-  linkedChestKillLock: {fileID: 491675584}
+  linkedChestKillLock: {fileID: 1909995624}
 --- !u!1 &1077348069
 GameObject:
   m_ObjectHideFlags: 0
@@ -35742,7 +35753,7 @@ MonoBehaviour:
   spawnAnchor: {fileID: 1153076115}
   roomArea: {fileID: 943851734}
   roomGroup: {fileID: 0}
-  linkedChestKillLock: {fileID: 491675584}
+  linkedChestKillLock: {fileID: 1909995624}
 --- !u!1 &1164984532
 GameObject:
   m_ObjectHideFlags: 0
@@ -35793,7 +35804,7 @@ MonoBehaviour:
   spawnAnchor: {fileID: 1164984533}
   roomArea: {fileID: 943851734}
   roomGroup: {fileID: 0}
-  linkedChestKillLock: {fileID: 491675584}
+  linkedChestKillLock: {fileID: 2134243210}
 --- !u!1 &1172513644
 GameObject:
   m_ObjectHideFlags: 0
@@ -35942,7 +35953,7 @@ MonoBehaviour:
   spawnAnchor: {fileID: 1181899262}
   roomArea: {fileID: 943851734}
   roomGroup: {fileID: 0}
-  linkedChestKillLock: {fileID: 491675584}
+  linkedChestKillLock: {fileID: 2134243210}
 --- !u!1 &1187276120
 GameObject:
   m_ObjectHideFlags: 0
@@ -35993,7 +36004,7 @@ MonoBehaviour:
   spawnAnchor: {fileID: 1187276121}
   roomArea: {fileID: 943851734}
   roomGroup: {fileID: 0}
-  linkedChestKillLock: {fileID: 491675584}
+  linkedChestKillLock: {fileID: 1909995624}
 --- !u!1 &1194525644
 GameObject:
   m_ObjectHideFlags: 0
@@ -36297,6 +36308,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 6066747848749373809, guid: 670170a4e9390bc458d0b686227549af, type: 3}
   m_PrefabInstance: {fileID: 1256855428}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1293756967 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3675793086032016732, guid: 670170a4e9390bc458d0b686227549af, type: 3}
+  m_PrefabInstance: {fileID: 181322662}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e70ff4a1c8da75a4fad7c6bbd18d056d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1338442287
 GameObject:
   m_ObjectHideFlags: 0
@@ -36347,7 +36369,7 @@ MonoBehaviour:
   spawnAnchor: {fileID: 1338442288}
   roomArea: {fileID: 943851734}
   roomGroup: {fileID: 0}
-  linkedChestKillLock: {fileID: 491675584}
+  linkedChestKillLock: {fileID: 629269943}
 --- !u!1 &1345456807
 GameObject:
   m_ObjectHideFlags: 0
@@ -36551,7 +36573,7 @@ MonoBehaviour:
   spawnAnchor: {fileID: 1374504433}
   roomArea: {fileID: 943851734}
   roomGroup: {fileID: 0}
-  linkedChestKillLock: {fileID: 491675584}
+  linkedChestKillLock: {fileID: 1293756967}
 --- !u!1 &1378529151
 GameObject:
   m_ObjectHideFlags: 0
@@ -36754,7 +36776,7 @@ MonoBehaviour:
   spawnAnchor: {fileID: 1467094062}
   roomArea: {fileID: 943851734}
   roomGroup: {fileID: 0}
-  linkedChestKillLock: {fileID: 491675584}
+  linkedChestKillLock: {fileID: 1702468254}
 --- !u!1 &1467713557
 GameObject:
   m_ObjectHideFlags: 0
@@ -36959,7 +36981,7 @@ MonoBehaviour:
   spawnAnchor: {fileID: 1521154503}
   roomArea: {fileID: 943851734}
   roomGroup: {fileID: 0}
-  linkedChestKillLock: {fileID: 491675584}
+  linkedChestKillLock: {fileID: 1702468254}
 --- !u!1 &1528454703
 GameObject:
   m_ObjectHideFlags: 0
@@ -37010,7 +37032,7 @@ MonoBehaviour:
   spawnAnchor: {fileID: 1528454704}
   roomArea: {fileID: 943851734}
   roomGroup: {fileID: 0}
-  linkedChestKillLock: {fileID: 491675584}
+  linkedChestKillLock: {fileID: 1702468254}
 --- !u!1001 &1531557033
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -39991,7 +40013,7 @@ MonoBehaviour:
   spawnAnchor: {fileID: 1582485447}
   roomArea: {fileID: 943851734}
   roomGroup: {fileID: 0}
-  linkedChestKillLock: {fileID: 491675584}
+  linkedChestKillLock: {fileID: 2134243210}
 --- !u!1 &1584056653
 GameObject:
   m_ObjectHideFlags: 0
@@ -40042,7 +40064,7 @@ MonoBehaviour:
   spawnAnchor: {fileID: 1584056654}
   roomArea: {fileID: 943851734}
   roomGroup: {fileID: 0}
-  linkedChestKillLock: {fileID: 491675584}
+  linkedChestKillLock: {fileID: 629269943}
 --- !u!1 &1620531038
 GameObject:
   m_ObjectHideFlags: 0
@@ -40093,7 +40115,7 @@ MonoBehaviour:
   spawnAnchor: {fileID: 1620531039}
   roomArea: {fileID: 943851734}
   roomGroup: {fileID: 0}
-  linkedChestKillLock: {fileID: 491675584}
+  linkedChestKillLock: {fileID: 1702468254}
 --- !u!1 &1642182286
 GameObject:
   m_ObjectHideFlags: 0
@@ -40144,7 +40166,7 @@ MonoBehaviour:
   spawnAnchor: {fileID: 1642182287}
   roomArea: {fileID: 943851734}
   roomGroup: {fileID: 0}
-  linkedChestKillLock: {fileID: 491675584}
+  linkedChestKillLock: {fileID: 1909995624}
 --- !u!1 &1674352265
 GameObject:
   m_ObjectHideFlags: 0
@@ -40302,7 +40324,7 @@ MonoBehaviour:
   spawnAnchor: {fileID: 1683552527}
   roomArea: {fileID: 943851734}
   roomGroup: {fileID: 0}
-  linkedChestKillLock: {fileID: 491675584}
+  linkedChestKillLock: {fileID: 1909995624}
 --- !u!1001 &1702468251
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -40365,6 +40387,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 6066747848749373809, guid: 670170a4e9390bc458d0b686227549af, type: 3}
   m_PrefabInstance: {fileID: 1702468251}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1702468254 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3675793086032016732, guid: 670170a4e9390bc458d0b686227549af, type: 3}
+  m_PrefabInstance: {fileID: 1702468251}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e70ff4a1c8da75a4fad7c6bbd18d056d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1710714977
 GameObject:
   m_ObjectHideFlags: 0
@@ -40415,7 +40448,7 @@ MonoBehaviour:
   spawnAnchor: {fileID: 1710714978}
   roomArea: {fileID: 943851734}
   roomGroup: {fileID: 0}
-  linkedChestKillLock: {fileID: 491675584}
+  linkedChestKillLock: {fileID: 1909995624}
 --- !u!1 &1743326682
 GameObject:
   m_ObjectHideFlags: 0
@@ -40466,7 +40499,7 @@ MonoBehaviour:
   spawnAnchor: {fileID: 1743326683}
   roomArea: {fileID: 943851734}
   roomGroup: {fileID: 0}
-  linkedChestKillLock: {fileID: 491675584}
+  linkedChestKillLock: {fileID: 1702468254}
 --- !u!1 &1764990985
 GameObject:
   m_ObjectHideFlags: 0
@@ -40722,7 +40755,7 @@ MonoBehaviour:
   spawnAnchor: {fileID: 1827327424}
   roomArea: {fileID: 943851734}
   roomGroup: {fileID: 0}
-  linkedChestKillLock: {fileID: 491675584}
+  linkedChestKillLock: {fileID: 629269943}
 --- !u!1001 &1832085384
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -40835,7 +40868,7 @@ MonoBehaviour:
   spawnAnchor: {fileID: 1845147877}
   roomArea: {fileID: 943851734}
   roomGroup: {fileID: 0}
-  linkedChestKillLock: {fileID: 491675584}
+  linkedChestKillLock: {fileID: 1908528505}
 --- !u!1 &1869528951
 GameObject:
   m_ObjectHideFlags: 0
@@ -40886,7 +40919,7 @@ MonoBehaviour:
   spawnAnchor: {fileID: 1869528952}
   roomArea: {fileID: 943851734}
   roomGroup: {fileID: 0}
-  linkedChestKillLock: {fileID: 491675584}
+  linkedChestKillLock: {fileID: 629269943}
 --- !u!1 &1889657301
 GameObject:
   m_ObjectHideFlags: 0
@@ -40937,7 +40970,7 @@ MonoBehaviour:
   spawnAnchor: {fileID: 1889657302}
   roomArea: {fileID: 943851734}
   roomGroup: {fileID: 0}
-  linkedChestKillLock: {fileID: 491675584}
+  linkedChestKillLock: {fileID: 1293756967}
 --- !u!1 &1897876399
 GameObject:
   m_ObjectHideFlags: 0
@@ -40988,7 +41021,29 @@ MonoBehaviour:
   spawnAnchor: {fileID: 1897876400}
   roomArea: {fileID: 943851734}
   roomGroup: {fileID: 0}
-  linkedChestKillLock: {fileID: 491675584}
+  linkedChestKillLock: {fileID: 1908528505}
+--- !u!114 &1908528505 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3675793086032016732, guid: 670170a4e9390bc458d0b686227549af, type: 3}
+  m_PrefabInstance: {fileID: 600451078}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e70ff4a1c8da75a4fad7c6bbd18d056d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1909995624 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3675793086032016732, guid: 670170a4e9390bc458d0b686227549af, type: 3}
+  m_PrefabInstance: {fileID: 1256855428}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e70ff4a1c8da75a4fad7c6bbd18d056d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1928760720
 GameObject:
   m_ObjectHideFlags: 0
@@ -41039,7 +41094,7 @@ MonoBehaviour:
   spawnAnchor: {fileID: 1928760721}
   roomArea: {fileID: 943851734}
   roomGroup: {fileID: 0}
-  linkedChestKillLock: {fileID: 491675584}
+  linkedChestKillLock: {fileID: 2134243210}
 --- !u!1 &1969022361
 GameObject:
   m_ObjectHideFlags: 0
@@ -41287,7 +41342,7 @@ MonoBehaviour:
   spawnAnchor: {fileID: 2018333855}
   roomArea: {fileID: 943851734}
   roomGroup: {fileID: 0}
-  linkedChestKillLock: {fileID: 491675584}
+  linkedChestKillLock: {fileID: 1702468254}
 --- !u!1001 &2057764047
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -41677,7 +41732,7 @@ MonoBehaviour:
   spawnAnchor: {fileID: 2132531108}
   roomArea: {fileID: 943851734}
   roomGroup: {fileID: 0}
-  linkedChestKillLock: {fileID: 491675584}
+  linkedChestKillLock: {fileID: 1909995624}
 --- !u!1001 &2134243207
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -41740,6 +41795,86 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 6066747848749373809, guid: 670170a4e9390bc458d0b686227549af, type: 3}
   m_PrefabInstance: {fileID: 2134243207}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &2134243210 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3675793086032016732, guid: 670170a4e9390bc458d0b686227549af, type: 3}
+  m_PrefabInstance: {fileID: 2134243207}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e70ff4a1c8da75a4fad7c6bbd18d056d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!1001 &3672581027963229683
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1258023493295557649, guid: b43c9469d7b8ae6489086cdaf3a82442, type: 3}
+      propertyPath: m_SortingLayer
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1258023493295557649, guid: b43c9469d7b8ae6489086cdaf3a82442, type: 3}
+      propertyPath: m_SortingOrder
+      value: -10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1258023493295557649, guid: b43c9469d7b8ae6489086cdaf3a82442, type: 3}
+      propertyPath: m_SortingLayerID
+      value: -1417877795
+      objectReference: {fileID: 0}
+    - target: {fileID: 3240306113368821918, guid: b43c9469d7b8ae6489086cdaf3a82442, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3240306113368821918, guid: b43c9469d7b8ae6489086cdaf3a82442, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3240306113368821918, guid: b43c9469d7b8ae6489086cdaf3a82442, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3240306113368821918, guid: b43c9469d7b8ae6489086cdaf3a82442, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3240306113368821918, guid: b43c9469d7b8ae6489086cdaf3a82442, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3240306113368821918, guid: b43c9469d7b8ae6489086cdaf3a82442, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3240306113368821918, guid: b43c9469d7b8ae6489086cdaf3a82442, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3240306113368821918, guid: b43c9469d7b8ae6489086cdaf3a82442, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3240306113368821918, guid: b43c9469d7b8ae6489086cdaf3a82442, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3240306113368821918, guid: b43c9469d7b8ae6489086cdaf3a82442, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4868167822977025523, guid: b43c9469d7b8ae6489086cdaf3a82442, type: 3}
+      propertyPath: m_Name
+      value: GlobalVisionMaskRoot
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: b43c9469d7b8ae6489086cdaf3a82442, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -41765,3 +41900,4 @@ SceneRoots:
   - {fileID: 1531557033}
   - {fileID: 2073217018}
   - {fileID: 1138330085}
+  - {fileID: 3672581027963229683}
