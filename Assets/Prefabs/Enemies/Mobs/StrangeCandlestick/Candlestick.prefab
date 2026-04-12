@@ -347,7 +347,7 @@ SpriteMask:
   m_BackSortingLayer: 5
   m_FrontSortingOrder: 100
   m_BackSortingOrder: -100
-  m_IsCustomRangeActive: 1
+  m_IsCustomRangeActive: 0
   m_SpriteSortPoint: 0
   m_MaskSource: 0
 --- !u!1 &4652457260014428747
@@ -362,7 +362,7 @@ GameObject:
   - component: {fileID: 771122334455667788}
   - component: {fileID: 771122334455667789}
   m_Layer: 0
-  m_Name: SpotLight2D
+  m_Name: LightBound
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
