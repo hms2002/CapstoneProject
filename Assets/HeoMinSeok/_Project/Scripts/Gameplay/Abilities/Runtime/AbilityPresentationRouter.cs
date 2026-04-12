@@ -70,6 +70,8 @@ namespace UnityGAS
             var p = BuildCueParamsForAbility(def, target);
             PlayOneShot(def.audioOnCastStart, p);
             StartOrReplaceLoop(castingLoopHandles, spec, def.audioWhileCasting, p);
+            PlayShake(def.cameraShakeOnCastStart, p);
+            PlayShake(def.cameraShakeWhileCasting, p);
 
             ExecuteCues(def.EnumerateCuesOnCastStart(), p);
             AddCues(def.EnumerateCuesWhileCasting(), p);
@@ -83,6 +85,7 @@ namespace UnityGAS
             var p = BuildCueParamsForAbility(def, target);
             StopLoop(castingLoopHandles, spec);
             PlayOneShot(def.audioOnCommit, p);
+            PlayShake(def.cameraShakeOnCommit, p);
 
             RemoveCues(def.EnumerateCuesWhileCasting(), p);
             ExecuteCues(def.EnumerateCuesOnCommit(), p);
@@ -96,6 +99,7 @@ namespace UnityGAS
             var p = BuildCueParamsForAbility(def, target);
             StopLoop(castingLoopHandles, spec);
             PlayOneShot(def.audioOnCastCancelled, p);
+            PlayShake(def.cameraShakeOnCastCancelled, p);
 
             RemoveCues(def.EnumerateCuesWhileCasting(), p);
             ExecuteCues(def.EnumerateCuesOnCastCancelled(), p);
@@ -108,6 +112,7 @@ namespace UnityGAS
 
             var p = BuildCueParamsForAbility(def, target);
             StartOrReplaceLoop(activeLoopHandles, spec, def.audioWhileActive, p);
+            PlayShake(def.cameraShakeWhileActive, p);
 
             AddCues(def.EnumerateCuesWhileActive(), p);
         }
@@ -125,15 +130,17 @@ namespace UnityGAS
             if (cancelled)
             {
                 PlayOneShot(def.audioOnExecutionCancelled, p);
+                PlayShake(def.cameraShakeOnExecutionCancelled, p);
 
                 ExecuteCues(def.EnumerateCuesOnExecutionCancelled(), p);
             }
             else
             {
                 PlayOneShot(def.audioOnEnd, p);
+                PlayShake(def.cameraShakeOnEnd, p);
 
                 ExecuteCues(def.EnumerateCuesOnEnd(), p);
-        }
+            }
         }
 
         public GameplayCueParams BuildCueParamsForAbility(AbilityDefinition def, GameObject target)
@@ -182,6 +189,11 @@ namespace UnityGAS
                 return;
 
             SoundManager.EnsureInstance().Play(soundRef, BuildSoundContext(p));
+        }
+
+        private static void PlayShake(CameraShakeHook shake, in GameplayCueParams cueParams)
+        {
+            shake.TryPlayFromCueParams(cueParams, debugReason: nameof(AbilityPresentationRouter));
         }
 
         private static void StartOrReplaceLoop(

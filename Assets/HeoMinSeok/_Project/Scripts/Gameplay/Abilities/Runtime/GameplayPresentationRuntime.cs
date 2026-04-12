@@ -62,8 +62,10 @@ namespace UnityGAS
             GameplayCueParams activeParams = WithMagnitude(cueParams, definition.EffectiveWhileActiveCueMagnitude);
 
             PlayOneShot(definition.audioOnExecute, executeParams);
+            PlayShake(definition.cameraShakeOnExecute, executeParams);
             ExecuteCues(definition.EnumerateCuesOnExecute(), executeParams);
             EnsureLoop(definition.audioWhileActive, activeParams);
+            PlayShake(definition.cameraShakeWhileActive, activeParams);
             EnsureActiveCues(definition.EnumerateCuesWhileActive(), activeParams);
         }
 
@@ -74,6 +76,7 @@ namespace UnityGAS
 
             GameplayCueParams executeParams = WithMagnitude(cueParams, definition.EffectiveExecuteCueMagnitude);
             PlayOneShot(definition.audioOnExecute, executeParams);
+            PlayShake(definition.cameraShakeOnExecute, executeParams);
             ExecuteCues(definition.EnumerateCuesOnExecute(), executeParams);
         }
 
@@ -87,6 +90,7 @@ namespace UnityGAS
 
             GameplayCueParams removeParams = WithMagnitude(cueParams, definition.EffectiveRemoveCueMagnitude);
             PlayOneShot(definition.audioOnRemove, removeParams);
+            PlayShake(definition.cameraShakeOnRemove, removeParams);
             ExecuteCues(definition.EnumerateCuesOnRemove(), removeParams);
         }
 
@@ -108,6 +112,11 @@ namespace UnityGAS
                 return;
 
             SoundManager.EnsureInstance().Play(soundRef, BuildSoundContext(cueParams));
+        }
+
+        private static void PlayShake(CameraShakeHook shake, in GameplayCueParams cueParams)
+        {
+            shake.TryPlayFromCueParams(cueParams, debugReason: nameof(GameplayPresentationRuntime));
         }
 
         private static GameplayCueParams WithMagnitude(in GameplayCueParams cueParams, float magnitude)

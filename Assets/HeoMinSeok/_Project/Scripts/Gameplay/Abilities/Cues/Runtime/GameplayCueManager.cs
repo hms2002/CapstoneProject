@@ -235,6 +235,7 @@ namespace UnityGAS
 
             active[key] = inst;
             EnsureCueLoopAudio(inst, p);
+            PlayCueWhileActiveShake(def, p);
             inst.Notify?.OnAdd(p);
         }
 
@@ -258,6 +259,7 @@ namespace UnityGAS
             inst.Notify?.OnRemove(p);
             StopCueLoopAudio(inst);
             PlayCueRemoveAudio(def, p);
+            PlayCueRemoveShake(def, p);
 
             // Release TransformOnly state.
             if (inst.TransformStack != null)
@@ -323,6 +325,7 @@ namespace UnityGAS
         {
             var inst = SpawnInstance(def, p, isForAdd: false, layerKey: layerKey);
             PlayCueExecuteAudio(def, p);
+            PlayCueExecuteShake(def, p);
             if (inst == null) return;
 
             inst.Notify?.OnExecute(p);
@@ -667,8 +670,9 @@ namespace UnityGAS
                 return false;
 
             return isForAdd
-                ? def.audioWhileActive.IsSet || def.audioOnRemove.IsSet
-                : def.audioOnExecute.IsSet;
+                ? def.audioWhileActive.IsSet || def.audioOnRemove.IsSet ||
+                  def.cameraShakeWhileActive.amplitude > 0f || def.cameraShakeOnRemove.amplitude > 0f
+                : def.audioOnExecute.IsSet || def.cameraShakeOnExecute.amplitude > 0f;
         }
 
         private static SoundPlaybackContext BuildSoundContext(GameplayCueParams p)
@@ -691,12 +695,28 @@ namespace UnityGAS
             SoundManager.EnsureInstance().Play(def.audioOnExecute, BuildSoundContext(p));
         }
 
+        private static void PlayCueExecuteShake(GameplayCueDefinition def, in GameplayCueParams p)
+        {
+            if (def == null)
+                return;
+
+            def.cameraShakeOnExecute.TryPlayFromCueParams(p, debugReason: nameof(GameplayCueManager));
+        }
+
         private static void PlayCueRemoveAudio(GameplayCueDefinition def, GameplayCueParams p)
         {
             if (def == null || !def.audioOnRemove.IsSet)
                 return;
 
             SoundManager.EnsureInstance().Play(def.audioOnRemove, BuildSoundContext(p));
+        }
+
+        private static void PlayCueRemoveShake(GameplayCueDefinition def, in GameplayCueParams p)
+        {
+            if (def == null)
+                return;
+
+            def.cameraShakeOnRemove.TryPlayFromCueParams(p, debugReason: nameof(GameplayCueManager));
         }
 
         private static void EnsureCueLoopAudio(ActiveCueInstance inst, GameplayCueParams p)
@@ -709,6 +729,14 @@ namespace UnityGAS
                 return;
 
             inst.AudioLoopHandle = manager.Play(inst.Def.audioWhileActive, BuildSoundContext(p));
+        }
+
+        private static void PlayCueWhileActiveShake(GameplayCueDefinition def, in GameplayCueParams p)
+        {
+            if (def == null)
+                return;
+
+            def.cameraShakeWhileActive.TryPlayFromCueParams(p, debugReason: nameof(GameplayCueManager));
         }
 
         private static void StopCueLoopAudio(ActiveCueInstance inst)

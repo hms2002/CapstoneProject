@@ -44,6 +44,11 @@ namespace UnityGAS
         public SoundRef audioWhileActive;
         public SoundRef audioOnRemove;
 
+        [Header("Camera Shake (Optional)")]
+        public CameraShakeHook cameraShakeOnExecute;
+        public CameraShakeHook cameraShakeWhileActive;
+        public CameraShakeHook cameraShakeOnRemove;
+
         [Header("Spawn Options")]
         public bool attachToTarget = true;
         [Tooltip("Use the explicit hit/world position supplied by gameplay events when available.")]

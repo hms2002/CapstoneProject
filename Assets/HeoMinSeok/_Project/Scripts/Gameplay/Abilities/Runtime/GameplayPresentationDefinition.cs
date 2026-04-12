@@ -13,6 +13,11 @@ namespace UnityGAS
         public SoundRef audioWhileActive;
         public SoundRef audioOnRemove;
 
+        [Header("Camera Shake (Optional)")]
+        public CameraShakeHook cameraShakeOnExecute;
+        public CameraShakeHook cameraShakeWhileActive;
+        public CameraShakeHook cameraShakeOnRemove;
+
         [Header("GameplayCue (Optional)")]
         public List<GameplayTag> cuesOnExecute;
         public List<GameplayTag> cuesWhileActive;
@@ -31,6 +36,9 @@ namespace UnityGAS
             audioOnExecute.IsSet ||
             audioWhileActive.IsSet ||
             audioOnRemove.IsSet ||
+            cameraShakeOnExecute.amplitude > 0f ||
+            cameraShakeWhileActive.amplitude > 0f ||
+            cameraShakeOnRemove.amplitude > 0f ||
             cueOnExecute != null ||
             cueWhileActive != null ||
             cueOnRemove != null ||

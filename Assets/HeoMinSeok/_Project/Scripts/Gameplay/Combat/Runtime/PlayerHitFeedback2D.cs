@@ -1,6 +1,5 @@
 using System.Collections;
 using UnityEngine;
-using Unity.Cinemachine;
 using CapstoneAudio;
 
 namespace UnityGAS
@@ -33,9 +32,15 @@ namespace UnityGAS
         [SerializeField] private SpriteHitFlashController hitFlashController;
 
         [Header("Camera Shake")]
-        [SerializeField] private CinemachineImpulseSource cameraShake;
-        [SerializeField] private float defaultShake = 0.10f;
-        [SerializeField, Min(0f)] private float cameraShakeForceMultiplier = 10f;
+        [SerializeField] private CameraShakeHook hitCameraShake = CameraShakeHook.Create(
+            amplitude: 0.10f,
+            amplitudeMultiplier: 10f,
+            maxAmplitude: 0f,
+            minIntervalSeconds: 0.02f);
+        [HideInInspector, SerializeField] private float defaultShake = 0.10f;
+        [HideInInspector, SerializeField, Min(0f)] private float cameraShakeForceMultiplier = 10f;
+        [HideInInspector, SerializeField, Min(0f)] private float cameraShakeMinIntervalSeconds = 0.02f;
+        [HideInInspector, SerializeField] private bool legacyCameraShakeMigrated;
 
         [Header("Audio")]
         [SerializeField] private SoundRef playerHitSound;
@@ -89,13 +94,12 @@ namespace UnityGAS
 
         private void Awake()
         {
+            MigrateLegacyCameraShakeIfNeeded();
             _tags = GetComponent<TagSystem>();
             _abilitySystem = GetComponent<AbilitySystem>();
 
             if (animator == null)
                 animator = GetComponentInChildren<Animator>();
-
-            ResolveCameraShakeSource();
 
             if (hitFlashController == null)
                 hitFlashController = GetComponentInChildren<SpriteHitFlashController>();
@@ -107,6 +111,11 @@ namespace UnityGAS
 
             _hitEnterTriggerHash = string.IsNullOrWhiteSpace(hitEnterTrigger) ? 0 : Animator.StringToHash(hitEnterTrigger);
             _hitLoopBoolHash = string.IsNullOrWhiteSpace(hitLoopBool) ? 0 : Animator.StringToHash(hitLoopBool);
+        }
+
+        private void OnValidate()
+        {
+            MigrateLegacyCameraShakeIfNeeded();
         }
 
         /// <summary>
@@ -160,8 +169,6 @@ namespace UnityGAS
         private IEnumerator CoHitReaction(HitFeedbackPayload payload)
         {
             float shake = payload.CameraShake > 0f ? payload.CameraShake : defaultShake;
-            if (!GameSettingsService.IsScreenShakeEnabled())
-                shake = 0f;
 
             // 1) 피격 진입
             AddReactionTags(
@@ -177,11 +184,14 @@ namespace UnityGAS
             if (hitFlashController != null)
                 hitFlashController.PlayFlash();
 
-            if (cameraShake == null)
-                ResolveCameraShakeSource();
-
-            if (cameraShake != null && shake > 0f)
-                cameraShake.GenerateImpulse(ResolveShakeDirection(payload.Causer) * (shake * cameraShakeForceMultiplier));
+            if (shake > 0f)
+            {
+                hitCameraShake.TryPlayOverrideAmplitude(
+                    shake,
+                    gameObject,
+                    ResolveShakeDirection(payload.Causer),
+                    nameof(PlayerHitFeedback2D));
+            }
 
             yield return new WaitForSeconds(hitEnterSeconds);
 
@@ -368,6 +378,19 @@ namespace UnityGAS
         /// - 피격 가해자 기준으로 카메라 흔들림 방향 벡터를 계산한다.
         /// - 가해자가 없으면 위쪽 기본 방향으로 impulse를 보낸다.
         /// </summary>
+        private void MigrateLegacyCameraShakeIfNeeded()
+        {
+            if (legacyCameraShakeMigrated)
+                return;
+
+            hitCameraShake = CameraShakeHook.Create(
+                amplitude: defaultShake,
+                amplitudeMultiplier: cameraShakeForceMultiplier,
+                maxAmplitude: 0f,
+                minIntervalSeconds: cameraShakeMinIntervalSeconds);
+            legacyCameraShakeMigrated = true;
+        }
+
         private Vector3 ResolveShakeDirection(GameObject causer)
         {
             if (causer != null)
@@ -387,15 +410,5 @@ namespace UnityGAS
         /// - 현재 MainCamera에서 Cinemachine impulse source를 찾고, 없으면 카메라에 자동으로 추가한다.
         /// - 피격 연출은 플레이어가 아니라 실제 출력 카메라 기준으로 흔들림을 내보내도록 한다.
         /// </summary>
-        private void ResolveCameraShakeSource()
-        {
-            Camera camera = CameraBootstrap.GetMainCamera();
-            if (camera == null)
-                camera = Camera.main;
-            if (camera == null)
-                return;
-
-            cameraShake = CameraBootstrap.EnsureImpulseSource(camera.gameObject);
-        }
     }
 }

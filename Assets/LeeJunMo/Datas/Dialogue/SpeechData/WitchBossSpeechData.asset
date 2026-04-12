@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: WitchBossSpeechData
   m_EditorClassIdentifier: 
   bubbleTheme:
-    useCustomColors: 0
+    useCustomColors: 1
     borderColor: {r: 0.93333334, g: 0.5411765, b: 0.96862745, a: 1}
     fillColor: {r: 0.23529412, g: 0, b: 0.44313726, a: 0.39215687}
     fontColor: {r: 0.93333334, g: 0.5411765, b: 0.96862745, a: 1}

@@ -3,73 +3,37 @@ using UnityEngine;
 namespace UnityGAS
 {
     /// <summary>
-    /// Simple camera shake without Cinemachine.
-    /// Attach to the Camera (usually MainCamera) and call Shake(amplitude).
+    /// Legacy helper that now exposes the shared camera shake hook in the inspector.
     /// </summary>
     [DisallowMultipleComponent]
     public sealed class SimpleCameraShake2D : MonoBehaviour
     {
-        [SerializeField] private float duration = 0.12f;
-        [SerializeField] private float frequency = 25f;
-        [SerializeField] private Transform target;
-        private float _timeLeft;
-        private float _amplitude;
-        private Vector3 _baseLocalPos;
+        [Header("Camera Shake")]
+        [SerializeField] private CameraShakeHook shake = CameraShakeHook.Create(
+            amplitude: 1f,
+            amplitudeMultiplier: 1f,
+            maxAmplitude: 0f,
+            minIntervalSeconds: 0f);
 
-        private void Awake()
-        {
-            _baseLocalPos = ResolveBaseLocalPosition();
-        }
-
-        private void OnDisable()
-        {
-            transform.localPosition = ResolveBaseLocalPosition();
-            _timeLeft = 0f;
-            _amplitude = 0f;
-        }
+        [HideInInspector, SerializeField] private float duration = 0.12f;
+        [HideInInspector, SerializeField] private float frequency = 25f;
+        [HideInInspector, SerializeField] private Transform target;
 
         public void Shake(float amplitude)
         {
-            if (!GameSettingsService.IsScreenShakeEnabled()) return;
-            if (amplitude <= 0f) return;
-            _amplitude = Mathf.Max(_amplitude, amplitude);
-            _timeLeft = Mathf.Max(_timeLeft, duration);
+            shake.TryPlayOverrideAmplitude(
+                amplitude,
+                gameObject,
+                Vector3.up,
+                nameof(SimpleCameraShake2D));
         }
 
-        private void LateUpdate()
+        private void OnValidate()
         {
-            if (_timeLeft <= 0f) return;
-
-            _timeLeft -= Time.deltaTime;
-            float t = Mathf.Max(0f, _timeLeft);
-
-            _baseLocalPos = ResolveBaseLocalPosition();
-
-            // cheap pseudo-noise
-            float x = Mathf.Sin(Time.time * frequency) * _amplitude;
-            float y = Mathf.Cos(Time.time * frequency * 0.9f) * _amplitude;
-
-            transform.localPosition = _baseLocalPos + new Vector3(x, y, 0f);
-
-            if (t <= 0f)
-            {
-                transform.localPosition = _baseLocalPos;
-                _amplitude = 0f;
-            }
-        }
-
-        private Vector3 ResolveBaseLocalPosition()
-        {
-            if (target == null)
-                return transform.localPosition;
-
-            if (target.parent == transform.parent)
-                return target.localPosition;
-
-            if (transform.parent != null)
-                return transform.parent.InverseTransformPoint(target.position);
-
-            return target.position;
+            duration = Mathf.Max(0f, duration);
+            frequency = Mathf.Max(0f, frequency);
+            if (target == transform)
+                target = null;
         }
     }
 }
