@@ -22,7 +22,13 @@ public class BossSpeechEntry
 [CreateAssetMenu(fileName = "NewBossSpeechData", menuName = "GameData/Boss Speech Data")]
 public class BossSpeechData : ScriptableObject
 {
+    [Header("Bubble Theme")]
+    public SpeechBubbleThemeSettings bubbleTheme = new SpeechBubbleThemeSettings();
+
+    [Header("Speech Lines")]
     public List<BossSpeechEntry> entries = new List<BossSpeechEntry>();
+
+    public SpeechBubbleThemeSettings BubbleTheme => bubbleTheme;
 
     public string GetLine(BossSpeechSituationEnum situation)
     {

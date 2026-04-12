@@ -5,10 +5,12 @@ Shader "UI/Alpha Outline"
         [PerRendererData] _MainTex ("Sprite Texture", 2D) = "white" {}
         _Color ("Tint", Color) = (1,1,1,1)
 
+        _FillColor ("Fill Color", Color) = (1,1,1,1)
         _OutlineColor ("Outline Color", Color) = (0,0,0,1)
         _OutlineThickness ("Outline Thickness (px)", Range(0, 8)) = 1
         _AlphaThreshold ("Alpha Threshold", Range(0,1)) = 0.1
         _InnerPadding ("Inner Padding UV (L,B,R,T)", Vector) = (0.03, 0.03, 0.03, 0.03)
+        _TextureInfluence ("Texture Influence", Range(0,1)) = 1
 
         _StencilComp ("Stencil Comparison", Float) = 8
         _Stencil ("Stencil ID", Float) = 0
@@ -78,10 +80,12 @@ Shader "UI/Alpha Outline"
             sampler2D _MainTex;
             float4 _MainTex_TexelSize;
             fixed4 _Color;
+            fixed4 _FillColor;
             fixed4 _OutlineColor;
             float _OutlineThickness;
             float _AlphaThreshold;
             float4 _InnerPadding;
+            float _TextureInfluence;
             float4 _ClipRect;
 
             float2 GetInsetMin()
@@ -137,7 +141,12 @@ Shader "UI/Alpha Outline"
 
             fixed4 frag(v2f IN) : SV_Target
             {
-                fixed4 baseCol = SampleInsetSprite(IN.texcoord) * IN.color;
+                fixed4 texCol = SampleInsetSprite(IN.texcoord);
+                fixed3 textureColor = lerp(fixed3(1, 1, 1), texCol.rgb, saturate(_TextureInfluence));
+
+                fixed4 baseCol;
+                baseCol.rgb = textureColor * _FillColor.rgb * IN.color.rgb;
+                baseCol.a = texCol.a * _FillColor.a * IN.color.a;
                 float baseA = baseCol.a;
                 float inside = step(_AlphaThreshold, baseA);
 

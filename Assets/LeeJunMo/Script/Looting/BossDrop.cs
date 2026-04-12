@@ -13,6 +13,7 @@ public class BossDrop : MonoBehaviour
 
     [Header("Currency Drop")]
     public GameObject magicStonePrefab;
+    private bool hasProcessedDeath;
 
     private void Start()
     {
@@ -24,6 +25,10 @@ public class BossDrop : MonoBehaviour
 
     public void OnBossDead()
     {
+        if (hasProcessedDeath)
+            return;
+
+        hasProcessedDeath = true;
         // 1. 상자 생성
         SpawnTreasureChest();
 

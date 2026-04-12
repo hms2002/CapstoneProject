@@ -1,17 +1,17 @@
 using UnityEngine;
 
 [DisallowMultipleComponent]
-public sealed class PlayerSpeechController : MonoBehaviour
+public sealed class BossSpeechController : MonoBehaviour
 {
     [SerializeField] private SpeechBubbleComponent speechBubble;
-    [SerializeField] private PlayerSpeechData speechData;
+    [SerializeField] private BossSpeechData speechData;
 
     private void Awake()
     {
         ResolveSpeechBubble();
     }
 
-    public void SetSpeechDependencies(SpeechBubbleComponent bubble, PlayerSpeechData data)
+    public void SetSpeechDependencies(SpeechBubbleComponent bubble, BossSpeechData data)
     {
         if (bubble != null)
             speechBubble = bubble;
@@ -20,19 +20,22 @@ public sealed class PlayerSpeechController : MonoBehaviour
             speechData = data;
     }
 
-    public void SpeakSituation(PlayerSpeechSituationEnum situation, float duration = 2f)
+    public bool TrySpeakSituation(BossSpeechSituationEnum situation, float duration = 2f)
     {
         ResolveSpeechBubble();
 
         if (speechData == null || speechBubble == null)
         {
-            Debug.LogWarning("[PlayerSpeechController] Missing SpeechData or SpeechBubbleComponent.", this);
-            return;
+            Debug.LogWarning("[BossSpeechController] Missing BossSpeechData or SpeechBubbleComponent.", this);
+            return false;
         }
 
         string line = speechData.GetLine(situation);
-        if (!string.IsNullOrEmpty(line))
-            speechBubble.Speak(line, duration, speechData.BubbleTheme);
+        if (string.IsNullOrWhiteSpace(line))
+            return false;
+
+        speechBubble.Speak(line, duration, speechData.BubbleTheme);
+        return true;
     }
 
     private void ResolveSpeechBubble()
