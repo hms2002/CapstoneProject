@@ -6356,7 +6356,7 @@ MeshRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -1960815025
-  m_SortingLayer: 5
+  m_SortingLayer: 6
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
@@ -7200,6 +7200,63 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &1715069927
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 3240306113368821918, guid: b43c9469d7b8ae6489086cdaf3a82442, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -8.21515
+      objectReference: {fileID: 0}
+    - target: {fileID: 3240306113368821918, guid: b43c9469d7b8ae6489086cdaf3a82442, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 23.33594
+      objectReference: {fileID: 0}
+    - target: {fileID: 3240306113368821918, guid: b43c9469d7b8ae6489086cdaf3a82442, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3240306113368821918, guid: b43c9469d7b8ae6489086cdaf3a82442, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3240306113368821918, guid: b43c9469d7b8ae6489086cdaf3a82442, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3240306113368821918, guid: b43c9469d7b8ae6489086cdaf3a82442, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3240306113368821918, guid: b43c9469d7b8ae6489086cdaf3a82442, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3240306113368821918, guid: b43c9469d7b8ae6489086cdaf3a82442, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3240306113368821918, guid: b43c9469d7b8ae6489086cdaf3a82442, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3240306113368821918, guid: b43c9469d7b8ae6489086cdaf3a82442, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4868167822977025523, guid: b43c9469d7b8ae6489086cdaf3a82442, type: 3}
+      propertyPath: m_Name
+      value: GlobalVisionMaskRoot
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: b43c9469d7b8ae6489086cdaf3a82442, type: 3}
 --- !u!1 &1764990985
 GameObject:
   m_ObjectHideFlags: 0
@@ -7695,12 +7752,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spawnPoints: []
+  spawnRooms: []
   difficultyModifiers:
     extraSpawnRatio: 0
     eliteChanceBonus: 0
     hpMultiplier: 1
     attackMultiplier: 1
   gaugeViewInstaller: {fileID: 0}
+  pathfinder: {fileID: 0}
   recollectSpawnPointsOnSceneLoaded: 1
   spawnOnStart: 0
   spawnOnSceneLoaded: 1
@@ -7849,7 +7908,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -1960815025
-  m_SortingLayer: 5
+  m_SortingLayer: 6
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: -4657369681490478202, guid: 3cc7769716d9efa46a3c163d7375237e, type: 3}
@@ -10011,11 +10070,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7349978582733647170, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 959.88916
+      value: 960
       objectReference: {fileID: 0}
     - target: {fileID: 7349978582733647170, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -532.0554
+      value: -531.99304
       objectReference: {fileID: 0}
     - target: {fileID: 7352247737264506656, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_AnchorMax.y
@@ -10523,4 +10582,5 @@ SceneRoots:
   - {fileID: 1088156732}
   - {fileID: 544346152}
   - {fileID: 955166970}
+  - {fileID: 1715069927}
   - {fileID: 1262540736}
