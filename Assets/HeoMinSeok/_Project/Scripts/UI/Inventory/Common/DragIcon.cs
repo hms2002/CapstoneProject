@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using CapstoneAudio;
 
 // -----------------------
 // Drag Context (Swap support, generic)
@@ -13,6 +14,12 @@ using UnityEngine.UI;
 /// </summary>
 public static class ItemDragContext
 {
+    /// <summary>
+    /// 책임 :
+    /// - 인벤토리 drag 시작 시 재생할 그랩 사운드 키를 한 곳에 고정한다.
+    /// - UI drag 시작 로직이 사운드 카탈로그 문자열에 직접 의존하지 않게 한다.
+    /// </summary>
+    private static readonly SoundRef ItemGrabSound = SoundRef.FromKey("ui.inventory.grab");
 
 
     public static bool Active => Source != null && Item != null;
@@ -29,6 +36,7 @@ public static class ItemDragContext
         SourceIndex = sourceIndex;
         Item = item;
         RelicLevel = relicLevel;
+        PlayItemGrabSound();
     }
 
     public static void Clear()
@@ -155,6 +163,20 @@ public static class ItemDragContext
         }
 
         return requestedIndex;
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 인벤토리 UI에서 아이템을 집어 drag를 시작하는 순간 그랩 사운드를 재생한다.
+    /// - 드롭/스왑 성공 여부와 무관한 "집기" 피드백을 시작 시점에 고정한다.
+    /// </summary>
+    private static void PlayItemGrabSound()
+    {
+        SoundManager.EnsureInstance().Play(ItemGrabSound, new SoundPlaybackContext
+        {
+            Position = Vector3.zero,
+            SourceObject = DragIcon.Instance
+        });
     }
 }
 

@@ -202,8 +202,8 @@ MonoBehaviour:
   openPresentation:
     gameplayPresentation:
       audioOnExecute:
-        key: 
-        volumeMultiplier: 0
+        key: world.chest.open
+        volumeMultiplier: 1
         anchorPolicy: 0
         localOffset: {x: 0, y: 0, z: 0}
       audioWhileActive:

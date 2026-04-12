@@ -1,10 +1,18 @@
 using UnityEngine;
+using CapstoneAudio;
 
 /// <summary>
 /// 책임 : 플레이어의 장비 인벤토리와 월드 loot를 InventoryScreen에 바인딩하고 열기/닫기를 제어한다.
 /// </summary>
 public class InventoryUIManager : MonoBehaviour
 {
+    /// <summary>
+    /// 책임 :
+    /// - 인벤토리 열기 시 재생할 UI 사운드 키를 한 곳에 고정한다.
+    /// - 호출부가 문자열 리터럴을 반복하지 않게 해 authoring 변경을 쉽게 만든다.
+    /// </summary>
+    private static readonly SoundRef OpenInventorySound = SoundRef.FromKey("ui.inventory.open");
+
     public static InventoryUIManager Instance { get; private set; }
 
     [Header("UI")]
@@ -63,8 +71,17 @@ public class InventoryUIManager : MonoBehaviour
         if (UIManager.Instance != null) UIManager.Instance.HideHoverImmediate();
 
         // [핵심] 직접 켜지 않고 UIManager의 스택에 밀어넣음!
-        if (UIManager.Instance != null) UIManager.Instance.TryPushUI(inventoryScreen);
-        else inventoryScreen.OpenUI();
+        bool opened = false;
+        if (UIManager.Instance != null)
+            opened = UIManager.Instance.TryPushUI(inventoryScreen);
+        else
+        {
+            inventoryScreen.OpenUI();
+            opened = true;
+        }
+
+        if (opened)
+            PlayOpenInventorySound(currentPlayer != null ? currentPlayer.gameObject : null);
     }
 
     public void Close()
@@ -80,6 +97,23 @@ public class InventoryUIManager : MonoBehaviour
     {
         if (Instance == this)
             Instance = null;
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 인벤토리 UI가 실제로 열렸을 때만 오픈 사운드를 1회 재생한다.
+    /// - UI push 실패나 중복 열림 상황에서 불필요한 사운드 중첩을 막는다.
+    /// </summary>
+    private static void PlayOpenInventorySound(GameObject playerObject)
+    {
+        SoundManager.EnsureInstance().Play(OpenInventorySound, new SoundPlaybackContext
+        {
+            Instigator = playerObject,
+            Causer = playerObject,
+            Target = playerObject,
+            Position = playerObject != null ? playerObject.transform.position : Vector3.zero,
+            SourceObject = playerObject
+        });
     }
 
 }

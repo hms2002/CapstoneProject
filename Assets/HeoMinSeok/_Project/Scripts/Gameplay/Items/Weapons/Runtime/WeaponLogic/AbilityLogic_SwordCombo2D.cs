@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityGAS;
+using CapstoneAudio;
 
 namespace UnityGAS.Sample
 {
@@ -45,6 +46,7 @@ namespace UnityGAS.Sample
             system.SetNextActivationDelay(spec, step.nextAttackDelay);
 
             TryPlayAnim(system, step, spec.Definition);
+            PlayStepSound(system, step);
 
             yield return WaitForHitTimingDuringLunge(
                 system,
@@ -80,6 +82,26 @@ namespace UnityGAS.Sample
             string trig = step.animationTrigger;
             if (string.IsNullOrEmpty(trig)) return;
             system.TryPlayAnimationTriggerHash(Animator.StringToHash(trig), definition);
+        }
+
+        /// <summary>
+        /// 책임 :
+        /// - 콤보 단계가 시작될 때 step 전용 공격 사운드를 1회 재생한다.
+        /// - ability 공용 오디오와 분리해 각 타마다 다른 키를 데이터에서 authoring 할 수 있게 만든다.
+        /// </summary>
+        private void PlayStepSound(AbilitySystem system, SwordCombo2DData.RuntimeSwordComboStepData step)
+        {
+            if (system == null || !step.attackSound.IsSet)
+                return;
+
+            SoundManager.EnsureInstance().Play(step.attackSound, new SoundPlaybackContext
+            {
+                Instigator = system.gameObject,
+                Causer = system.gameObject,
+                Target = system.gameObject,
+                Position = system.transform.position,
+                SourceObject = this
+            });
         }
 
         /// <summary>

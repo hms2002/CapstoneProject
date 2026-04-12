@@ -33,6 +33,7 @@ namespace UnityGAS
         [SerializeField] private Transform visualRoot;
         [SerializeField] private float actorAngleOffsetDeg = 0f;
         [SerializeField] private float visualLocalAngleOffsetDeg = 0f;
+        [SerializeField] private bool attachToOwnerOnSetup = false;
 
         private BoxCollider2D hitboxCollider;
         private readonly HashSet<int> hitTargetIds = new();
@@ -77,8 +78,22 @@ namespace UnityGAS
             CacheVisualShapeIfNeeded();
             ApplyVisualLocalRotation(context.flipVisualX);
             SetupBase(context);
+            ApplyOwnerAttachment(context);
 
             PerformImmediateScan();
+        }
+
+        /// <summary>
+        /// 책임 :
+        /// - 설정에 따라 근접 공격체를 owner 자식으로 붙여 owner 이동을 따라가게 만든다.
+        /// - 월드 위치/회전은 유지한 채 parent만 연결해 짧은 베기 이펙트가 몸에 붙은 느낌을 유지한다.
+        /// </summary>
+        private void ApplyOwnerAttachment(MeleeHitboxSpawnContext context)
+        {
+            if (!attachToOwnerOnSetup || context?.ownerSystem == null)
+                return;
+
+            transform.SetParent(context.ownerSystem.transform, worldPositionStays: true);
         }
 
         /// <summary>

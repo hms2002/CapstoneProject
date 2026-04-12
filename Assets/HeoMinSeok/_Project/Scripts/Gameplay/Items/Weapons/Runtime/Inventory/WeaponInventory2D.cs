@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityGAS;
+using CapstoneAudio;
 
 /// <summary>
 /// 책임 : 플레이어의 무기 슬롯, 활성 장착 무기, 픽업/교체/드롭/스왑 흐름을 관리한다.
@@ -10,6 +11,13 @@ using UnityGAS;
 /// </summary>
 public class WeaponInventory2D : MonoBehaviour
 {
+    /// <summary>
+    /// 책임 :
+    /// - 런타임 무기 스왑 성공 시 재생할 공용 사운드 키를 한 곳에 고정한다.
+    /// - 인벤토리 UI 장착 변경과 구분되는 전투 중 스왑 피드백을 안정적으로 재사용하게 한다.
+    /// </summary>
+    private static readonly SoundRef ChangeWeaponSound = SoundRef.FromKey("weapon.swap");
+
     /// <summary>
     /// 책임 :
     /// - 무기 획득 시도가 어떤 결과로 끝났는지 도메인 수준에서 구분한다.
@@ -251,7 +259,10 @@ public class WeaponInventory2D : MonoBehaviour
         if (!IsValidSlot(other) || slots[other] == null)
             return;
 
+        int previousActiveIndex = ActiveIndex;
         Equip(other);
+        if (ActiveIndex != previousActiveIndex)
+            PlayRuntimeSwapSound();
         NotifyInventoryChanged();
     }
 
@@ -271,6 +282,23 @@ public class WeaponInventory2D : MonoBehaviour
 
     public AbilityDefinition GetActiveAbility(WeaponAbilitySlot slot)
         => ActiveWeapon != null ? ActiveWeapon.GetAbility(slot) : null;
+
+    /// <summary>
+    /// 책임 :
+    /// - 전투 중 스왑 입력으로 실제 활성 무기가 바뀐 경우에만 스왑 사운드를 1회 재생한다.
+    /// - 동일 슬롯 재장착이나 실패한 스왑 시도에서는 불필요한 UI/전투 사운드가 울리지 않게 한다.
+    /// </summary>
+    private void PlayRuntimeSwapSound()
+    {
+        SoundManager.EnsureInstance().Play(ChangeWeaponSound, new SoundPlaybackContext
+        {
+            Instigator = gameObject,
+            Causer = gameObject,
+            Target = gameObject,
+            Position = transform.position,
+            SourceObject = this
+        });
+    }
 
     /// <summary>
     /// 슬롯에 특정 무기를 놓을 수 있는지(중복 무기 금지 정책 포함)

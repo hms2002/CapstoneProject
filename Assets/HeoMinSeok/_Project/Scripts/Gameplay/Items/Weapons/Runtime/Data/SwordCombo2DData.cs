@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityGAS;
+using CapstoneAudio;
 
 namespace UnityGAS.Sample
 {
@@ -29,6 +30,7 @@ namespace UnityGAS.Sample
             /// - 원본 SO 데이터를 수정하지 않고 실행 시점의 최종 타이밍만 안전하게 사용하게 만든다.
             /// </summary>
             public readonly MeleeHitboxActor hitboxPrefab;
+            public readonly SoundRef attackSound;
             public readonly string animationTrigger;
             public readonly float activeTime;
             public readonly float recoveryDuration;
@@ -47,6 +49,7 @@ namespace UnityGAS.Sample
 
             public RuntimeSwordComboStepData(
                 MeleeHitboxActor hitboxPrefab,
+                SoundRef attackSound,
                 string animationTrigger,
                 float activeTime,
                 float recoveryDuration,
@@ -64,6 +67,7 @@ namespace UnityGAS.Sample
                 float lungeDuration)
             {
                 this.hitboxPrefab = hitboxPrefab;
+                this.attackSound = attackSound;
                 this.animationTrigger = animationTrigger;
                 this.activeTime = activeTime;
                 this.recoveryDuration = recoveryDuration;
@@ -91,6 +95,7 @@ namespace UnityGAS.Sample
             /// - 병렬 배열 인덱스 동기화 대신 "한 타의 설정"을 한 곳에서 읽게 만든다.
             /// </summary>
             public MeleeHitboxActor hitboxPrefab;
+            public SoundRef attackSound;
             public string animationTrigger;
             public float activeTime;
             public float recoveryDuration;
@@ -122,6 +127,7 @@ namespace UnityGAS.Sample
 
                 return new RuntimeSwordComboStepData(
                     hitboxPrefab,
+                    attackSound,
                     animationTrigger,
                     activeTime,
                     scaledRecovery,

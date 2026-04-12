@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityGAS;
+using CapstoneAudio;
 using Object = UnityEngine.Object;
 
 /// <summary>
@@ -11,6 +12,13 @@ using Object = UnityEngine.Object;
 /// </summary>
 public class RelicInventory : MonoBehaviour
 {
+    /// <summary>
+    /// 책임 :
+    /// - 유물 강화 성공 시 재생할 공용 사운드 키를 한 곳에 고정한다.
+    /// - 신규 획득과 구분되는 "레벨 상승" 피드백을 재사용 가능한 규칙으로 유지한다.
+    /// </summary>
+    private static readonly SoundRef ItemLevelUpSound = SoundRef.FromKey("relic.levelup");
+
     /// <summary>
     /// 책임 :
     /// - 유물 획득/강화 시도가 어떤 결과로 끝났는지 도메인 수준에서 구분한다.
@@ -587,9 +595,27 @@ public class RelicInventory : MonoBehaviour
         e.level = newLevel;
         slots[slotIndex] = e;
 
+        PlayRelicLevelUpSound();
         RefreshDebugView();
         OnChanged?.Invoke();
         return true;
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 이미 보유 중인 유물의 레벨이 실제로 상승한 경우에만 강화 사운드를 1회 재생한다.
+    /// - 신규 획득, 최대 레벨 실패, 일반 슬롯 조작과 강화 피드백을 명확히 분리한다.
+    /// </summary>
+    private void PlayRelicLevelUpSound()
+    {
+        SoundManager.EnsureInstance().Play(ItemLevelUpSound, new SoundPlaybackContext
+        {
+            Instigator = gameObject,
+            Causer = gameObject,
+            Target = gameObject,
+            Position = transform.position,
+            SourceObject = this
+        });
     }
 
     /// <summary>빈 슬롯에 추가(기존 TryAdd 호환용)</summary>

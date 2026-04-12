@@ -209,3 +209,4 @@ MonoBehaviour:
   visualRoot: {fileID: 8853175397622598828}
   actorAngleOffsetDeg: 0
   visualLocalAngleOffsetDeg: 0
+  attachToOwnerOnSetup: 1

@@ -31,7 +31,7 @@ MonoBehaviour:
     bus: 0
     category: 0
     variants:
-    - {fileID: 8300000, guid: 14647c9f135bc8d4b8d70e571ac0736b, type: 3}
+    - {fileID: 8300000, guid: 14dc4aac306a3a34ca5a10eb1e2395d2, type: 3}
     volume: 1
     pitchMin: 1
     pitchMax: 1
@@ -80,6 +80,160 @@ MonoBehaviour:
     loop: 0
     spatial: 0
     important: 1
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: weapon.sword.swing.1
+    bus: 0
+    category: 3
+    variants:
+    - {fileID: 8300000, guid: 09d1becf347fddc46a5b5087987932a2, type: 3}
+    volume: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 0
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: weapon.sword.swing.2
+    bus: 0
+    category: 3
+    variants:
+    - {fileID: 8300000, guid: d52e56b3618f0a6409f0327c512b094b, type: 3}
+    volume: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 0
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: ui.shop.purchase
+    bus: 0
+    category: 9
+    variants:
+    - {fileID: 8300000, guid: 98f6e924c8c17394db1e7efbce94cf4c, type: 3}
+    volume: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 0
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: weapon.swap
+    bus: 0
+    category: 5
+    variants:
+    - {fileID: 8300000, guid: a662487d2287ffc41bbb39a39b6d8bcf, type: 3}
+    volume: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 0
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: item.consume.potion
+    bus: 0
+    category: 5
+    variants:
+    - {fileID: 8300000, guid: 7f8daebda9cc15040b30448f36e61996, type: 3}
+    volume: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 0
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: ui.inventory.open
+    bus: 0
+    category: 1
+    variants:
+    - {fileID: 8300000, guid: 149e958a559e67e4cbe8b2c10926aa47, type: 3}
+    volume: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 0
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: player.dash
+    bus: 0
+    category: 5
+    variants:
+    - {fileID: 8300000, guid: df42ce14627662f429494f90dfef377a, type: 3}
+    volume: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 0
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: ui.inventory.grab
+    bus: 0
+    category: 1
+    variants:
+    - {fileID: 8300000, guid: 59d97656334f2de45acd0fdc888e2eb5, type: 3}
+    volume: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 0
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: relic.levelup
+    bus: 0
+    category: 1
+    variants:
+    - {fileID: 8300000, guid: 5cf721fa8c11ac54e929a85ec8975e8e, type: 3}
+    volume: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 0
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: world.chest.open
+    bus: 0
+    category: 8
+    variants:
+    - {fileID: 8300000, guid: dd15661f9001539489e34950b030994a, type: 3}
+    volume: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 0
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: world.door.open
+    bus: 0
+    category: 10
+    variants:
+    - {fileID: 8300000, guid: c76c42f74b78f454eb5915c451e0ba5c, type: 3}
+    volume: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 0
+    important: 0
     cooldown: 0
     minDistance: 1
     maxDistance: 20

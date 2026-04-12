@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using CapstoneAudio;
 
 /// <summary>
 /// 책임 :
@@ -8,6 +9,13 @@ using UnityEngine;
 /// </summary>
 public class PlayerConsumableInventory : MonoBehaviour
 {
+    /// <summary>
+    /// 책임 :
+    /// - 1회용 아이템 사용 성공 시 재생할 공용 사운드 키를 한 곳에 고정한다.
+    /// - 입력 처리 계층이 아닌 실제 사용 성공 계층에서만 사운드가 울리게 해 실패 시 무음 규칙을 보장한다.
+    /// </summary>
+    private static readonly SoundRef EatPotionSound = SoundRef.FromKey("item.consume.potion");
+
     /// <summary>
     /// 책임 :
     /// - 1회용 아이템 획득 시도가 어떤 결과로 끝났는지 도메인 수준에서 구분한다.
@@ -76,6 +84,7 @@ public class PlayerConsumableInventory : MonoBehaviour
         if (!consumable.TryUse(gameObject))
             return false;
 
+        PlayConsumableUseSound();
         slots[slotIndex] = null;
         OnChanged?.Invoke();
         return true;
@@ -183,4 +192,21 @@ public class PlayerConsumableInventory : MonoBehaviour
 
     private bool IsValidSlot(int slotIndex)
         => slotIndex >= 0 && slotIndex < Capacity;
+
+    /// <summary>
+    /// 책임 :
+    /// - 1회용 아이템 사용이 실제로 성공했을 때만 소비 사운드를 1회 재생한다.
+    /// - 빈 슬롯/사용 실패 상황에서는 호출되지 않아 불필요한 오디오 피드백을 막는다.
+    /// </summary>
+    private void PlayConsumableUseSound()
+    {
+        SoundManager.EnsureInstance().Play(EatPotionSound, new SoundPlaybackContext
+        {
+            Instigator = gameObject,
+            Causer = gameObject,
+            Target = gameObject,
+            Position = transform.position,
+            SourceObject = this
+        });
+    }
 }
