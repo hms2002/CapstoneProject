@@ -222,8 +222,15 @@ MonoBehaviour:
   groggyTag: {fileID: 11400000, guid: 6a381fd96b3c05d4cbcbd73fbf173f4e, type: 2}
   phases: []
   fogPrefab: {fileID: 4201956065249926095, guid: 983d63dce5dc9454a9a74287a2ed4d94, type: 3}
+  candlestickPrefab: {fileID: 625522859161183429, guid: 49288bedfccdaf14a9a7248b01f1565e, type: 3}
+  lightBeadPrefab: {fileID: 8003320094034868151, guid: b1f8e58050cba114da8fe6380275e443, type: 3}
   extinguishDamageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
+  groggyStatusEffect: {fileID: 11400000, guid: fab1dd76add51c74db9dbb7b0f424204, type: 2}
+  mapWideWarningStyleAsset: {fileID: 11400000, guid: 5c4c8108f36d4acbaa6dfaf6d6b3f6e7, type: 2}
   extinguishDamage: 1
+  projectileSpeed: 4
+  useRuntimeDefaultPatternsWhenPhasesEmpty: 1
+  fallbackCandleSpawnRadius: 6
 --- !u!114 &8462024867634775818
 MonoBehaviour:
   m_ObjectHideFlags: 0

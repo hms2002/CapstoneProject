@@ -114,6 +114,16 @@ namespace UnityGAS
 
         /// <summary>
         /// 책임 :
+        /// - 파생형이 벽/환경 충돌을 실제 파괴 대상으로 볼지 결정할 수 있게 한다.
+        /// - 기본 구현은 wallLayers에 들어온 충돌체를 모두 유효한 벽으로 본다.
+        /// </summary>
+        protected virtual bool CanHitWall(GameObject wall, Collider2D hitCollider)
+        {
+            return true;
+        }
+
+        /// <summary>
+        /// 책임 :
         /// - 벽 충돌 후 기본 반응을 정의한다.
         /// - 기본 정책은 즉시 제거다.
         /// </summary>
@@ -150,13 +160,16 @@ namespace UnityGAS
                 return;
 
             var targetRoot = CombatTargetResolver2D.ResolveDamageTarget(other);
-            if (targetRoot == null || targetRoot == IgnoreTarget)
+            if (targetRoot == null || IsIgnoredTarget(targetRoot))
                 return;
 
             int layerBit = 1 << targetRoot.layer;
 
             if ((WallLayers.value & layerBit) != 0)
             {
+                if (!CanHitWall(targetRoot, other))
+                    return;
+
                 OnHitWall(targetRoot, other);
                 return;
             }
@@ -226,6 +239,24 @@ namespace UnityGAS
             }
 
             return target.transform.position;
+        }
+
+        /// <summary>
+        /// 책임 :
+        /// - 공격체가 무시해야 하는 대상과 그 자식/부모 계층까지 같은 대상으로 간주한다.
+        /// - 자식 트리거 콜라이더를 가진 오브젝트에서 발사 직후 자기 자신을 맞는 문제를 방지한다.
+        /// </summary>
+        private bool IsIgnoredTarget(GameObject targetRoot)
+        {
+            if (targetRoot == null || IgnoreTarget == null)
+                return false;
+
+            if (targetRoot == IgnoreTarget)
+                return true;
+
+            Transform targetTransform = targetRoot.transform;
+            Transform ignoreTransform = IgnoreTarget.transform;
+            return targetTransform.IsChildOf(ignoreTransform) || ignoreTransform.IsChildOf(targetTransform);
         }
 
         /// <summary>

@@ -30,4 +30,23 @@ public sealed class BossPhaseConfig
     public float ThinkDelayMin => thinkDelayMin;
     public float ThinkDelayMax => thinkDelayMax;
     public IReadOnlyList<BossPatternEntry> Patterns => patterns;
+
+    /// <summary>런타임 전용 페이즈 구성을 만듭니다.</summary>
+    public static BossPhaseConfig CreateRuntime(
+        string runtimePhaseName,
+        float runtimeEnterHpRatioBelowOrEqual,
+        float runtimeThinkDelayMin,
+        float runtimeThinkDelayMax,
+        params BossPatternEntry[] runtimePatterns)
+    {
+        BossPhaseConfig config = new BossPhaseConfig();
+        config.phaseName = runtimePhaseName;
+        config.enterHpRatioBelowOrEqual = runtimeEnterHpRatioBelowOrEqual;
+        config.thinkDelayMin = runtimeThinkDelayMin;
+        config.thinkDelayMax = runtimeThinkDelayMax;
+        config.patterns = runtimePatterns != null
+            ? new List<BossPatternEntry>(runtimePatterns)
+            : new List<BossPatternEntry>();
+        return config;
+    }
 }

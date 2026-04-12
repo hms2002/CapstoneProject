@@ -20,6 +20,11 @@ namespace UnityGAS
 
         private static Sprite circleFillSprite;
         private static Sprite circleBorderSprite;
+        private Sprite ringFillSprite;
+        private Sprite ringBorderSprite;
+        private Texture2D ringFillTexture;
+        private Texture2D ringBorderTexture;
+        private float ringInnerNormalized = -1f;
 
         private bool baseScaleCaptured;
         private Vector3 fillBaseScale = Vector3.one;
@@ -30,6 +35,7 @@ namespace UnityGAS
         private AttackTelegraphStyle activeStyle;
         private AttackTelegraphShape activeShape;
         private Vector2 activeSize = Vector2.one;
+        private float activeInnerDiameter;
         private float startTime;
         private float duration;
         private bool isVisible;
@@ -72,6 +78,7 @@ namespace UnityGAS
             duration = Mathf.Max(0f, spec.duration);
             startTime = Time.time;
             isVisible = true;
+            activeInnerDiameter = Mathf.Max(0f, spec.innerDiameter);
 
             gameObject.SetActive(true);
             transform.position = spec.center;
@@ -121,6 +128,7 @@ namespace UnityGAS
             switch (shape)
             {
                 case AttackTelegraphShape.Circle:
+                case AttackTelegraphShape.Ring:
                 {
                     float diameter = Mathf.Max(safeSize.x, safeSize.y);
                     safeSize = new Vector2(diameter, diameter);
@@ -147,6 +155,19 @@ namespace UnityGAS
 
                 if (borderRenderer != null)
                     borderRenderer.sprite = circleBorderSprite;
+
+                return;
+            }
+
+            if (activeShape == AttackTelegraphShape.Ring)
+            {
+                EnsureRingSprites();
+
+                if (fillRenderer != null)
+                    fillRenderer.sprite = ringFillSprite;
+
+                if (borderRenderer != null)
+                    borderRenderer.sprite = ringBorderSprite;
 
                 return;
             }
@@ -204,16 +225,42 @@ namespace UnityGAS
                 circleBorderSprite = MakeCircleSprite(true);
         }
 
+        private void EnsureRingSprites()
+        {
+            float outerDiameter = Mathf.Max(0.0001f, activeSize.x);
+            float normalizedInner = Mathf.Clamp01(activeInnerDiameter / outerDiameter);
+
+            if (ringFillSprite != null && ringBorderSprite != null && Mathf.Approximately(ringInnerNormalized, normalizedInner))
+                return;
+
+            ReleaseRingSprites();
+            ringInnerNormalized = normalizedInner;
+
+            ringFillTexture = MakeCircleTexture(false, normalizedInner);
+            ringBorderTexture = MakeCircleTexture(true, normalizedInner);
+            ringFillSprite = MakeSprite(ringFillTexture, "TelegraphRingFill");
+            ringBorderSprite = MakeSprite(ringBorderTexture, "TelegraphRingBorder");
+        }
+
         private static Sprite MakeCircleSprite(bool borderOnly)
         {
+            Texture2D texture = MakeCircleTexture(borderOnly, 0f);
+            string name = borderOnly ? "TelegraphCircleBorder" : "TelegraphCircleFill";
+            Sprite sprite = MakeSprite(texture, name);
+            return sprite;
+        }
+
+        private static Texture2D MakeCircleTexture(bool borderOnly, float innerRadiusNormalized)
+        {
             Texture2D texture = new Texture2D(CircleTextureSize, CircleTextureSize, TextureFormat.RGBA32, false);
-            texture.name = borderOnly ? "TelegraphCircleBorder" : "TelegraphCircleFill";
             texture.wrapMode = TextureWrapMode.Clamp;
             texture.filterMode = FilterMode.Bilinear;
 
             float halfSize = (CircleTextureSize - 1) * 0.5f;
             float outerRadius = halfSize;
             float innerRadius = outerRadius * (1f - CircleBorderThickness);
+            float ringInnerRadius = outerRadius * Mathf.Clamp01(innerRadiusNormalized);
+            float innerBorderOuterRadius = Mathf.Min(outerRadius, ringInnerRadius + outerRadius * CircleBorderThickness);
             Color clear = new Color(1f, 1f, 1f, 0f);
             Color solid = Color.white;
 
@@ -224,15 +271,26 @@ namespace UnityGAS
                     float dx = x - halfSize;
                     float dy = y - halfSize;
                     float distance = Mathf.Sqrt(dx * dx + dy * dy);
-                    bool isInside = distance <= outerRadius;
-                    bool isBorder = distance >= innerRadius && distance <= outerRadius;
+                    bool isInsideOuter = distance <= outerRadius;
+                    bool isOutsideInnerHole = distance >= ringInnerRadius;
+                    bool isInside = isInsideOuter && isOutsideInnerHole;
+                    bool isOuterBorder = distance >= innerRadius && distance <= outerRadius;
+                    bool isInnerBorder = ringInnerRadius > 0f &&
+                                         distance >= ringInnerRadius &&
+                                         distance <= innerBorderOuterRadius;
+                    bool isBorder = isOuterBorder || isInnerBorder;
 
                     texture.SetPixel(x, y, borderOnly ? (isBorder ? solid : clear) : (isInside ? solid : clear));
                 }
             }
 
             texture.Apply();
+            return texture;
+        }
 
+        private static Sprite MakeSprite(Texture2D texture, string name)
+        {
+            texture.name = name;
             Sprite sprite = Sprite.Create(
                 texture,
                 new Rect(0f, 0f, CircleTextureSize, CircleTextureSize),
@@ -241,6 +299,31 @@ namespace UnityGAS
 
             sprite.name = texture.name;
             return sprite;
+        }
+
+        private void OnDestroy()
+        {
+            ReleaseRingSprites();
+        }
+
+        private void ReleaseRingSprites()
+        {
+            if (ringFillSprite != null)
+                Destroy(ringFillSprite);
+
+            if (ringBorderSprite != null)
+                Destroy(ringBorderSprite);
+
+            if (ringFillTexture != null)
+                Destroy(ringFillTexture);
+
+            if (ringBorderTexture != null)
+                Destroy(ringBorderTexture);
+
+            ringFillSprite = null;
+            ringBorderSprite = null;
+            ringFillTexture = null;
+            ringBorderTexture = null;
         }
 
         private void ApplyStyle(float normalized)
