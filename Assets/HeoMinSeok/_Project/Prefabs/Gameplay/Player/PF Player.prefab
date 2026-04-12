@@ -249,7 +249,7 @@ GameObject:
   - component: {fileID: 6118371081096453660}
   - component: {fileID: 6118371081096453661}
   - component: {fileID: 6118371081096453662}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: InteractionSensor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1405,6 +1405,30 @@ MonoBehaviour:
       volumeMultiplier: 0
       anchorPolicy: 0
       localOffset: {x: 0, y: 0, z: 0}
+    cameraShakeOnExecute:
+      amplitude: 0
+      amplitudeMultiplier: 0
+      maxAmplitude: 0
+      minIntervalSeconds: 0
+      directionMode: 0
+      customDirection: {x: 0, y: 0, z: 0}
+      ignoreScreenShakeSetting: 0
+    cameraShakeWhileActive:
+      amplitude: 0
+      amplitudeMultiplier: 0
+      maxAmplitude: 0
+      minIntervalSeconds: 0
+      directionMode: 0
+      customDirection: {x: 0, y: 0, z: 0}
+      ignoreScreenShakeSetting: 0
+    cameraShakeOnRemove:
+      amplitude: 0
+      amplitudeMultiplier: 0
+      maxAmplitude: 0
+      minIntervalSeconds: 0
+      directionMode: 0
+      customDirection: {x: 0, y: 0, z: 0}
+      ignoreScreenShakeSetting: 0
     cuesOnExecute: []
     cuesWhileActive: []
     cuesOnRemove: []
@@ -1545,6 +1569,30 @@ MonoBehaviour:
       volumeMultiplier: 0
       anchorPolicy: 0
       localOffset: {x: 0, y: 0, z: 0}
+    cameraShakeOnExecute:
+      amplitude: 0
+      amplitudeMultiplier: 0
+      maxAmplitude: 0
+      minIntervalSeconds: 0
+      directionMode: 0
+      customDirection: {x: 0, y: 0, z: 0}
+      ignoreScreenShakeSetting: 0
+    cameraShakeWhileActive:
+      amplitude: 0
+      amplitudeMultiplier: 0
+      maxAmplitude: 0
+      minIntervalSeconds: 0
+      directionMode: 0
+      customDirection: {x: 0, y: 0, z: 0}
+      ignoreScreenShakeSetting: 0
+    cameraShakeOnRemove:
+      amplitude: 0
+      amplitudeMultiplier: 0
+      maxAmplitude: 0
+      minIntervalSeconds: 0
+      directionMode: 0
+      customDirection: {x: 0, y: 0, z: 0}
+      ignoreScreenShakeSetting: 0
     cuesOnExecute: []
     cuesWhileActive: []
     cuesOnRemove:
