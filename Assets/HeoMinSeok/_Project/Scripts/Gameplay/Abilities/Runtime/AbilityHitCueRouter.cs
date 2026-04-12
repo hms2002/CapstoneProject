@@ -65,7 +65,7 @@ namespace UnityGAS
 
         private void HandleGameplayEvent(GameplayTag raisedTag, AbilityEventData data)
         {
-            if (cueManager == null || hitConfirmRootTag == null)
+            if (hitConfirmRootTag == null)
                 return;
 
             if (!MatchesRequestedTag(raisedTag, hitConfirmRootTag))
@@ -134,7 +134,7 @@ namespace UnityGAS
 
         private void EnqueueHitCues(AbilityDefinition definition, GameplayCueParams cueParams)
         {
-            if (cueManager == null || definition == null || owner == null)
+            if (definition == null || owner == null)
                 return;
 
             if (pendingHitCues.Count >= MaxQueuedHitCues)
@@ -173,14 +173,21 @@ namespace UnityGAS
 
         private void ExecuteHitCuesImmediate(AbilityDefinition definition, GameplayCueParams cueParams)
         {
-            if (cueManager == null || definition == null)
+            if (definition == null)
                 return;
 
-            foreach (GameplayTag tag in definition.EnumerateCuesOnHitConfirmed())
+            if (cueManager != null)
             {
-                if (tag != null)
-                    cueManager.ExecuteCue(tag, cueParams);
+                foreach (GameplayTag tag in definition.EnumerateCuesOnHitConfirmed())
+                {
+                    if (tag != null)
+                        cueManager.ExecuteCue(tag, cueParams);
+                }
             }
+
+            definition.cameraShakeOnHitConfirmed.TryPlayFromCueParams(
+                cueParams,
+                debugReason: nameof(AbilityHitCueRouter));
         }
     }
 }

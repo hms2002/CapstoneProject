@@ -921,9 +921,18 @@ MonoBehaviour:
   hitLoopBool: 
   clearHitLoopWhenMoving: 1
   hitFlashController: {fileID: 0}
-  cameraShake: {fileID: 0}
+  hitCameraShake:
+    amplitude: 0.3
+    amplitudeMultiplier: 10
+    maxAmplitude: 0
+    minIntervalSeconds: 0.02
+    directionMode: 0
+    customDirection: {x: 0, y: 0, z: 0}
+    ignoreScreenShakeSetting: 0
   defaultShake: 0.3
   cameraShakeForceMultiplier: 10
+  cameraShakeMinIntervalSeconds: 0.02
+  legacyCameraShakeMigrated: 1
   playerHitSound:
     key: hit.player
     volumeMultiplier: 1
@@ -1104,6 +1113,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bubblePrefab: {fileID: 8482697653009772348, guid: 62446638c99411c4c9669c3f3efc113d, type: 3}
   bubbleOffset: {x: 0, y: 2, z: 0}
+  showBubbleOffsetGizmo: 1
+  bubbleOffsetGizmoColor: {r: 1, g: 0.92, b: 0.16, a: 0.9}
+  bubbleOffsetGizmoRadius: 0.12
   defaultUseTyping: 1
   defaultTypingSpeed: 0.05
 --- !u!114 &8193243277221661669

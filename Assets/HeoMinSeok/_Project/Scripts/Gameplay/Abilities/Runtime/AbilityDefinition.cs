@@ -349,6 +349,16 @@ namespace UnityGAS
         [Tooltip("실제 타격이 적중했을 때 재생할 기본 타격 사운드")]
         public SoundRef impactSound;
 
+        [Header("Camera Shake (Optional)")]
+        public CameraShakeHook cameraShakeOnCastStart;
+        public CameraShakeHook cameraShakeWhileCasting;
+        public CameraShakeHook cameraShakeOnCommit;
+        public CameraShakeHook cameraShakeWhileActive;
+        public CameraShakeHook cameraShakeOnEnd;
+        public CameraShakeHook cameraShakeOnCastCancelled;
+        public CameraShakeHook cameraShakeOnExecutionCancelled;
+        public CameraShakeHook cameraShakeOnHitConfirmed;
+
         [Header("GameplayCue (Optional)")]
         [Tooltip("캐스트 시작 시 실행할 cue 목록")]
         public List<GameplayTag> cuesOnCastStart = new List<GameplayTag>();

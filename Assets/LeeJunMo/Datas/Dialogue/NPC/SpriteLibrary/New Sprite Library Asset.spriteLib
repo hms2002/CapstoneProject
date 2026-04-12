@@ -11,29 +11,34 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a5e6fedc2472449cead18ef23b5cb30d, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: 
+  m_EditorClassIdentifier: Unity.2D.Animation.Runtime::UnityEngine.U2D.Animation.SpriteLibrarySourceAsset
   m_Library:
   - m_Name: Face
     m_Hash: 623301721
     m_CategoryList: []
     m_OverrideEntries:
-    - m_Name: Normal
-      m_Hash: 640249298
-      m_Sprite: {fileID: 21300000, guid: 9d3ba752f6f13344aa64a97eade9e9cd, type: 3}
+    - m_Name: Default
+      m_Hash: 753088835
+      m_Sprite: {fileID: 21300000, guid: b8dd2c5f74ef2b842be9a4918464dd0c, type: 3}
       m_FromMain: 0
-      m_SpriteOverride: {fileID: 21300000, guid: 9d3ba752f6f13344aa64a97eade9e9cd, type: 3}
+      m_SpriteOverride: {fileID: 21300000, guid: b8dd2c5f74ef2b842be9a4918464dd0c, type: 3}
     - m_Name: Smile
       m_Hash: 55258123
-      m_Sprite: {fileID: 21300000, guid: 9d3ba752f6f13344aa64a97eade9e9cd, type: 3}
+      m_Sprite: {fileID: 21300000, guid: b3c096dac376348438c1c20063da80dd, type: 3}
       m_FromMain: 0
-      m_SpriteOverride: {fileID: 21300000, guid: 9d3ba752f6f13344aa64a97eade9e9cd, type: 3}
-    - m_Name: Angry
-      m_Hash: 16779677
-      m_Sprite: {fileID: 2507666684982464652, guid: ce2c877b10aec4742943ec6aeacef6da, type: 3}
+      m_SpriteOverride: {fileID: 21300000, guid: b3c096dac376348438c1c20063da80dd, type: 3}
+    - m_Name: Panic
+      m_Hash: 526823062
+      m_Sprite: {fileID: 21300000, guid: d58941eb8c2553941940e2880efb81f0, type: 3}
       m_FromMain: 0
-      m_SpriteOverride: {fileID: 2507666684982464652, guid: ce2c877b10aec4742943ec6aeacef6da, type: 3}
+      m_SpriteOverride: {fileID: 21300000, guid: d58941eb8c2553941940e2880efb81f0, type: 3}
+    - m_Name: Surprise
+      m_Hash: 1687455
+      m_Sprite: {fileID: 21300000, guid: 6ba41f593a391b34e9c0038f24d19413, type: 3}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: 21300000, guid: 6ba41f593a391b34e9c0038f24d19413, type: 3}
     m_FromMain: 0
-    m_EntryOverrideCount: 3
+    m_EntryOverrideCount: 4
   m_PrimaryLibraryGUID: 
-  m_ModificationHash: 639105172253522677
+  m_ModificationHash: 639116327015616713
   m_Version: 1

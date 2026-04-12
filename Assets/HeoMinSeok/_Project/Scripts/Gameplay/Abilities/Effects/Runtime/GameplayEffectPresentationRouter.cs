@@ -72,6 +72,7 @@ namespace UnityGAS
 
             GameplayCueParams cueParams = BuildCueParams(instigator, causer, target, sourceObject, magnitude, ctx);
             PlayOneShot(effect.audioOnExecute, cueParams);
+            PlayShake(effect.cameraShakeOnExecute, cueParams);
 
             if (cueManager != null && effect.cueOnExecute != null)
             {
@@ -93,6 +94,7 @@ namespace UnityGAS
 
             GameplayCueParams cueParams = BuildCueParams(instigator, causer, target, sourceObject, magnitude, ctx);
             StartLoop(MakeLoopKey(effect, target, sourceObject), effect.audioWhileActive, cueParams);
+            PlayShake(effect.cameraShakeWhileActive, cueParams);
 
             if (cueManager != null && effect.cueWhileActive != null)
             {
@@ -136,6 +138,7 @@ namespace UnityGAS
             GameplayCueParams cueParams = BuildCueParams(instigator, causer, target, sourceObject, magnitude, ctx);
             StopLoop(MakeLoopKey(effect, target, sourceObject));
             PlayOneShot(effect.audioOnRemove, cueParams);
+            PlayShake(effect.cameraShakeOnRemove, cueParams);
 
             if (cueManager != null && effect.cueOnRemove != null)
             {
@@ -213,6 +216,11 @@ namespace UnityGAS
                 return;
 
             SoundManager.EnsureInstance().Play(soundRef, BuildSoundContext(p));
+        }
+
+        private static void PlayShake(CameraShakeHook shake, in GameplayCueParams cueParams)
+        {
+            shake.TryPlayFromCueParams(cueParams, debugReason: nameof(GameplayEffectPresentationRouter));
         }
 
         private void StartLoop(LoopKey key, SoundRef soundRef, GameplayCueParams p)

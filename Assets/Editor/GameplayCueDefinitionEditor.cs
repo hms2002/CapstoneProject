@@ -14,6 +14,9 @@ public class GameplayCueDefinitionEditor : Editor
     private SerializedProperty audioOnExecute;
     private SerializedProperty audioWhileActive;
     private SerializedProperty audioOnRemove;
+    private SerializedProperty cameraShakeOnExecute;
+    private SerializedProperty cameraShakeWhileActive;
+    private SerializedProperty cameraShakeOnRemove;
     private SerializedProperty attachToTarget;
     private SerializedProperty useExplicitHitPoint;
     private SerializedProperty spawnAnchorPolicy;
@@ -37,6 +40,9 @@ public class GameplayCueDefinitionEditor : Editor
         audioOnExecute = serializedObject.FindProperty("audioOnExecute");
         audioWhileActive = serializedObject.FindProperty("audioWhileActive");
         audioOnRemove = serializedObject.FindProperty("audioOnRemove");
+        cameraShakeOnExecute = serializedObject.FindProperty("cameraShakeOnExecute");
+        cameraShakeWhileActive = serializedObject.FindProperty("cameraShakeWhileActive");
+        cameraShakeOnRemove = serializedObject.FindProperty("cameraShakeOnRemove");
         attachToTarget = serializedObject.FindProperty("attachToTarget");
         useExplicitHitPoint = serializedObject.FindProperty("useExplicitHitPoint");
         spawnAnchorPolicy = serializedObject.FindProperty("spawnAnchorPolicy");
@@ -88,6 +94,12 @@ public class GameplayCueDefinitionEditor : Editor
         EditorGUILayout.PropertyField(audioOnExecute);
         EditorGUILayout.PropertyField(audioWhileActive);
         EditorGUILayout.PropertyField(audioOnRemove);
+
+        EditorGUILayout.Space();
+        EditorGUILayout.LabelField("Camera Shake", EditorStyles.boldLabel);
+        EditorGUILayout.PropertyField(cameraShakeOnExecute);
+        EditorGUILayout.PropertyField(cameraShakeWhileActive);
+        EditorGUILayout.PropertyField(cameraShakeOnRemove);
 
         if (selectedMode == GameplayCueDefinition.ExecutionMode.SpawnPrefab)
         {
