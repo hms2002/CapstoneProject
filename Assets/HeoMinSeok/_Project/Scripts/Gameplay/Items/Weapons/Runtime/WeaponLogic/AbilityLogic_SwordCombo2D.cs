@@ -28,18 +28,18 @@ namespace UnityGAS.Sample
                 yield break;
             }
 
-            if (data.hitboxPrefab == null)
-            {
-                Debug.LogError("[SwordCombo2D] hitboxPrefab is null.");
-                yield break;
-            }
-
             Vector2 attackDir = AbilityAimResolver2D.Resolve(system.gameObject, Vector2.right);
             Vector2 lungeDir = AbilityMoveDirectionResolver2D.ResolveMoveThenAim(system.gameObject, attackDir);
             float finalAttackSpeed = AbilityAttackSpeedResolver.ResolveFinalAttackSpeed(system);
 
             int comboIndex = ResolveComboIndex(spec, data);
             var step = data.GetRuntimeStep(comboIndex, finalAttackSpeed);
+            if (ResolveHitboxPrefab(data, step) == null)
+            {
+                Debug.LogError("[SwordCombo2D] combo step hitboxPrefab is null.");
+                yield break;
+            }
+
             spec.SetInt(KEY_COMBO_INDEX, comboIndex);
             spec.SetFloat(KEY_COMBO_EXPIRE, Time.time + data.comboResetTime);
             system.SetNextActivationDelay(spec, step.nextAttackDelay);
@@ -250,7 +250,8 @@ namespace UnityGAS.Sample
                 hitConfirmedTag: data.hitConfirmedTag,
                 causer: system.gameObject);
 
-            var hitbox = Object.Instantiate(data.hitboxPrefab, center, Quaternion.identity);
+            MeleeHitboxActor hitboxPrefab = ResolveHitboxPrefab(data, step);
+            var hitbox = Object.Instantiate(hitboxPrefab, center, Quaternion.identity);
             if (hitbox == null)
                 return;
 
@@ -268,10 +269,26 @@ namespace UnityGAS.Sample
                 hitboxSize = step.hitboxSize,
                 hitOncePerTarget = true,
                 destroyOnFirstHit = false,
-                direction = dir
+                direction = dir,
+                flipVisualX = step.sideSign < 0
             };
 
             hitbox.Setup(context);
+        }
+
+        /// <summary>
+        /// 책임 :
+        /// - 콤보 단계 전용 히트박스 프리팹을 우선 사용하고, 비어 있으면 데이터 공용 프리팹으로 안전하게 대체한다.
+        /// - 기존 공용 프리팹 기반 데이터와 새 step별 프리팹 데이터를 모두 호환한다.
+        /// </summary>
+        private MeleeHitboxActor ResolveHitboxPrefab(
+            SwordCombo2DData data,
+            SwordCombo2DData.RuntimeSwordComboStepData step)
+        {
+            if (step.hitboxPrefab != null)
+                return step.hitboxPrefab;
+
+            return data.hitboxPrefab;
         }
     }
 }
