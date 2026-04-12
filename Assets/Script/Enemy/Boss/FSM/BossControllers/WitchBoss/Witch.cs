@@ -174,7 +174,7 @@ public class Witch : BossControllerBase
     {
         if (patternEntry == null || patternEntry.Ability == null) return false;
 
-        return patternEntry.Ability.logic is UnityGAS.Sample.AbilityLogic_ExtinguishCandle;
+        return patternEntry.Ability.logic is UnityGAS.Sample.AbilityLogic_WitchExtinguishCandle;
     }
 
     /// <summary>평타1 패턴인지 확인합니다.</summary>
@@ -182,7 +182,7 @@ public class Witch : BossControllerBase
     {
         if (patternEntry == null || patternEntry.Ability == null) return false;
 
-        return patternEntry.Ability.logic is UnityGAS.Sample.AbilityLogic_NormalAttack1;
+        return patternEntry.Ability.logic is UnityGAS.Sample.AbilityLogic_WitchNormalAttack1;
     }
 
     /// <summary>촛대로의 피난 패턴인지 확인합니다.</summary>
@@ -190,7 +190,7 @@ public class Witch : BossControllerBase
     {
         if (patternEntry == null || patternEntry.Ability == null) return false;
 
-        return patternEntry.Ability.logic is UnityGAS.Sample.AbilityLogic_RetreatToCandle;
+        return patternEntry.Ability.logic is UnityGAS.Sample.AbilityLogic_WitchRetreatToCandle;
     }
 
     /// <summary>촛불 끄기 패턴을 시작합니다.</summary>
