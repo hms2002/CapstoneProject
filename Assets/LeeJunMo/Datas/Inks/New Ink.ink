@@ -1,19 +1,35 @@
-# speaker : 1001
-어서 오게나! 마정석은 좀 모아 왔는가? # face: 1001: Smile
+// Boss encounter dialogue
+// One choice raises affection, the other does not.
+// Combat starts after the dialogue sequence finishes.
 
-무엇을 도와줄까?
+# speaker: 1003
+# face: 1003: Normal
+드디어 여기까지 올라왔군.
 
-+ [업그레이드를 하고 싶습니다.]
-    좋아, 자네의 능력을 한 단계 끌어올려 주지!
-    // 아래 태그는 유저님의 DialogueManager에서 파싱하여 UpgradeManager.Instance.ToggleUI()를 호출하도록 연결해주세요!
-    # feature : Upgrade 
-    -> DONE
+네가 어떤 대답을 내놓는지 보고 나서 직접 시험해 보겠다.
 
-+ [그냥 인사하러 왔습니다.]
-    허허, 싱거운 녀석. 언제든 마정석이 모이면 다시 찾아오게. # face: 1001: Normal
-    -> DONE
++ [당신을 넘어서기 위해 여기까지 왔다.]
+    # add_aff: 1
+    -> boss_positive_reply
 
-+ [상점(유물/무기)을 보고 싶습니다.]
-    // 나중에 상점 UI 테스트용으로 쓰실 수 있게 남겨둡니다.
-    그건 아직 준비 중이라네. 조금만 기다려 주게나.
-    -> DONE
++ [길을 막고 있으니 쓰러뜨릴 뿐이다.]
+    -> boss_neutral_reply
+
+= boss_positive_reply
+# face: 1003: Smile
+좋다. 그 눈빛은 마음에 드는군.
+
+말뿐이 아니라 실력으로도 증명해 봐라.
+-> boss_battle_start
+
+= boss_neutral_reply
+# face: 1003: Normal
+냉정한 대답이군.
+
+상관없다. 결국 남는 건 승패뿐이니까.
+-> boss_battle_start
+
+= boss_battle_start
+# face: 1003: Smile
+준비해라. 이제 전투를 시작하지.
+-> END

@@ -606,7 +606,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b469ddddb21161a4093426def65e57b8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  npcData: {fileID: 11400000, guid: d9ef2aea03d3ddf4488a762102786dde, type: 2}
+  npcData: {fileID: 11400000, guid: 4a2fd65cb07d41d2b4925014a094b1fe, type: 2}
   legacyInkJSON: {fileID: 4900000, guid: aef34e203f982094b814e11d115a65ed, type: 3}
   playerCam: {fileID: 361708142}
   bossCam: {fileID: 760601613}

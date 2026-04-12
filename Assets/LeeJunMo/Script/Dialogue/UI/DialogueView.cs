@@ -267,6 +267,9 @@ public class DialogueView : MonoBehaviour
         foreach (Ink.Runtime.Choice choice in choices)
         {
             GameObject btnObj = Instantiate(choiceButtonPrefab, choiceContainer);
+            if (btnObj != null && !btnObj.activeSelf)
+                btnObj.SetActive(true);
+
             activeChoiceButtons.Add(btnObj);
 
             TextMeshProUGUI btnText = btnObj.GetComponentInChildren<TextMeshProUGUI>();
@@ -276,6 +279,7 @@ public class DialogueView : MonoBehaviour
             Button btn = btnObj.GetComponent<Button>();
             if (btn != null)
             {
+                btn.onClick = new Button.ButtonClickedEvent();
                 int index = choice.index;
                 btn.onClick.AddListener(() =>
                 {

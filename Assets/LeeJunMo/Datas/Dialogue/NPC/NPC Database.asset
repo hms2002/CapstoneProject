@@ -15,3 +15,4 @@ MonoBehaviour:
   npcList:
   - {fileID: 11400000, guid: d9ef2aea03d3ddf4488a762102786dde, type: 2}
   - {fileID: 11400000, guid: f569d34990ab7514fa546779656d80cb, type: 2}
+  - {fileID: 11400000, guid: 4a2fd65cb07d41d2b4925014a094b1fe, type: 2}

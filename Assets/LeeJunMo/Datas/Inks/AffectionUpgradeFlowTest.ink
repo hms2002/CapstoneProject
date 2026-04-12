@@ -1,38 +1,30 @@
-// Affection + Upgrade feature integration test
-// Recommended setup:
-// - Assign this Ink to an NPC that has affection rewards configured
-// - The same NPC should also have NPCFeatureController + UpgradeFeature
+// Upgrade NPC dialogue
+// This NPC talks first, then opens the Upgrade feature through NPCFeatureController.
 
-# speaker: 1001
-# face: 1001: Normal
-이번 테스트는 호감도 증가와 업그레이드 기능 호출을 한 번에 확인하기 위한 흐름이야.
+# speaker: 1002
+# face: 1002: Normal
+왔군. 이번에는 어떤 강화를 준비하고 있지?
 
-먼저 호감도를 올린 뒤, 바로 업그레이드 창을 열어볼게.
+필요한 재화만 준비되어 있다면 바로 업그레이드를 진행해 줄 수 있다.
 
-+ [호감도 +1 후 업그레이드 열기]
-    좋아. 먼저 조금만 올려보자.
-    # add_aff: 1
++ [업그레이드를 부탁한다.]
+    # face: 1002: Smile
+    좋아. 지금 바로 업그레이드 경로를 열어 주지.
     -> open_upgrade
 
-+ [호감도 +5 후 업그레이드 열기]
-    이번에는 조금 더 크게 올려볼게.
-    # add_aff: 5
-    -> open_upgrade
-
-+ [호감도 +20 후 업그레이드 열기]
-    보상 구간이 있다면 이번 선택에서 같이 확인할 수 있어.
-    # add_aff: 20
-    -> open_upgrade
-
-+ [업그레이드만 열기]
-    호감도 변화 없이 업그레이드 기능만 확인해보자.
-    -> open_upgrade
++ [아직 결정하지 못했다.]
+    # face: 1002: Normal
+    서두를 필요는 없다.
+    준비가 끝나면 그때 다시 와라.
+    -> upgrade_end
 
 = open_upgrade
-# face: 1001: Smile
-이제 업그레이드 기능을 호출할게.
-
+# face: 1002: Smile
+잘 보고 신중하게 고르도록 해라.
 # feature: Upgrade
-업그레이드 기능이 정상이라면 여기서 대화가 종료되고 창이 열려야 해.
+-> END
 
+= upgrade_end
+# face: 1002: Normal
+다음에는 더 분명한 답을 들려주길 기대하지.
 -> END

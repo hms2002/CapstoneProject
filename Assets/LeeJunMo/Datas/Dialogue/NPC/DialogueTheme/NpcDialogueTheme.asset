@@ -10,8 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8ddf1ef475ec817428bba471c494d75a, type: 3}
-  m_Name: New Dialogue Theme SO 1
+  m_Name: NpcDialogueTheme
   m_EditorClassIdentifier: 
-  outlineColor: {r: 0, g: 1, b: 0.028833866, a: 1}
-  speakerFrameFillColor: {r: 0.9815546, g: 1, b: 0, a: 1}
+  outlineColor: {r: 0, g: 0, b: 0, a: 1}
+  speakerFrameFillColor: {r: 0.61960787, g: 0.5568628, b: 0.53333336, a: 1}
   effectOverride: {fileID: 22100000, guid: d6d5d20cf545ee347a035dd2929d6f00, type: 2}

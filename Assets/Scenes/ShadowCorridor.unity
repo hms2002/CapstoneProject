@@ -31720,7 +31720,7 @@ Transform:
   m_GameObject: {fileID: 400535305}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1498.6984, y: 806.3411, z: -4.8066583}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -31734,6 +31734,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 289098016}
     m_Modifications:
+    - target: {fileID: 2942535351882185593, guid: 14f7910c6104c084b8cbbf8d25e018de, type: 3}
+      propertyPath: doorID
+      value: AffectionDoor1_1658801a
+      objectReference: {fileID: 0}
     - target: {fileID: 2942535351882185593, guid: 14f7910c6104c084b8cbbf8d25e018de, type: 3}
       propertyPath: doorType
       value: 3
@@ -31866,6 +31870,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 289098016}
     m_Modifications:
+    - target: {fileID: 2942535351882185593, guid: 14f7910c6104c084b8cbbf8d25e018de, type: 3}
+      propertyPath: doorID
+      value: OneWayDoor (2)_2bc3e9b9
+      objectReference: {fileID: 0}
     - target: {fileID: 2942535351882185593, guid: 14f7910c6104c084b8cbbf8d25e018de, type: 3}
       propertyPath: doorType
       value: 1
@@ -32002,6 +32010,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 289098016}
     m_Modifications:
+    - target: {fileID: 2942535351882185593, guid: 14f7910c6104c084b8cbbf8d25e018de, type: 3}
+      propertyPath: doorID
+      value: AffectionDoor2_5919d4ad
+      objectReference: {fileID: 0}
     - target: {fileID: 2942535351882185593, guid: 14f7910c6104c084b8cbbf8d25e018de, type: 3}
       propertyPath: doorType
       value: 3
@@ -32197,7 +32209,7 @@ Transform:
   m_GameObject: {fileID: 770899546}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 832.4853, y: 575.8881, z: -8.586858}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -32603,6 +32615,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 289098016}
     m_Modifications:
+    - target: {fileID: 2942535351882185593, guid: 14f7910c6104c084b8cbbf8d25e018de, type: 3}
+      propertyPath: doorID
+      value: StatueDoor2_91234ac5
+      objectReference: {fileID: 0}
     - target: {fileID: 3336051206690434136, guid: 14f7910c6104c084b8cbbf8d25e018de, type: 3}
       propertyPath: m_LocalPosition.x
       value: -46
@@ -35544,6 +35560,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 289098016}
     m_Modifications:
     - target: {fileID: 2942535351882185593, guid: 14f7910c6104c084b8cbbf8d25e018de, type: 3}
+      propertyPath: doorID
+      value: StatueDoor_d653e301
+      objectReference: {fileID: 0}
+    - target: {fileID: 2942535351882185593, guid: 14f7910c6104c084b8cbbf8d25e018de, type: 3}
       propertyPath: isPermanent
       value: 0
       objectReference: {fileID: 0}
@@ -35774,6 +35794,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 289098016}
     m_Modifications:
     - target: {fileID: 2942535351882185593, guid: 14f7910c6104c084b8cbbf8d25e018de, type: 3}
+      propertyPath: doorID
+      value: LeverDoor_9eb04296
+      objectReference: {fileID: 0}
+    - target: {fileID: 2942535351882185593, guid: 14f7910c6104c084b8cbbf8d25e018de, type: 3}
       propertyPath: isPermanent
       value: 1
       objectReference: {fileID: 0}
@@ -35850,6 +35874,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 289098016}
     m_Modifications:
+    - target: {fileID: 2942535351882185593, guid: 14f7910c6104c084b8cbbf8d25e018de, type: 3}
+      propertyPath: doorID
+      value: OneWayDoor (1)_bff82005
+      objectReference: {fileID: 0}
     - target: {fileID: 2942535351882185593, guid: 14f7910c6104c084b8cbbf8d25e018de, type: 3}
       propertyPath: doorType
       value: 1
@@ -36183,6 +36211,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 289098016}
     m_Modifications:
+    - target: {fileID: 2942535351882185593, guid: 14f7910c6104c084b8cbbf8d25e018de, type: 3}
+      propertyPath: doorID
+      value: OneWayDoor_83d5aea1
+      objectReference: {fileID: 0}
     - target: {fileID: 2942535351882185593, guid: 14f7910c6104c084b8cbbf8d25e018de, type: 3}
       propertyPath: doorType
       value: 1
