@@ -98,7 +98,11 @@ public class WitchNormalAttack1Tile : MonoBehaviour
         Collider2D[] hits = Physics2D.OverlapBoxAll(transform.position, tileSize, angleDeg);
         for (int i = 0; i < hits.Length; i++)
         {
-            GameObject hitObject = GetHitObject(hits[i]);
+            Collider2D hitCollider = hits[i];
+            if (ShouldIgnoreColliderForDamage(hitCollider))
+                continue;
+
+            GameObject hitObject = GetHitObject(hitCollider);
             if (hitObject != targetObject) continue;
 
             CombatHitPayloadApplier.Apply(hitObject, hitPayload, transform.position);
@@ -125,6 +129,15 @@ public class WitchNormalAttack1Tile : MonoBehaviour
         if (hitCollider.attachedRigidbody != null) return hitCollider.attachedRigidbody.gameObject;
 
         return hitCollider.transform.root.gameObject;
+    }
+
+    /// <summary>공격체/무기 히트박스 콜라이더는 장판 피해 후보에서 제외합니다.</summary>
+    private static bool ShouldIgnoreColliderForDamage(Collider2D hitCollider)
+    {
+        if (hitCollider == null)
+            return true;
+
+        return hitCollider.GetComponentInParent<AttackBase>() != null;
     }
 
     /// <summary>경고 색상 스타일을 만듭니다.</summary>
