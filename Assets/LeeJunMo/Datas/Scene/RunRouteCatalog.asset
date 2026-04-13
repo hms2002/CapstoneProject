@@ -16,5 +16,10 @@ MonoBehaviour:
   normalRouteSets: []
   allowDuplicateNormalRoutes: 0
   finalRouteSet: {fileID: 11400000, guid: d35e3630a31b6ef42a9a2b03d2afa4e3, type: 2}
+  hubBgm:
+    key: bgm.hub
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
   hubSceneName: ProtoTypeHub
   hubEntryPointId: Default

@@ -38,6 +38,9 @@ namespace CapstoneAudio
         public float volume = 1f;
 
         [Range(0.1f, 3f)]
+        public float playbackSpeed = 1f;
+
+        [Range(0.1f, 3f)]
         public float pitchMin = 1f;
 
         [Range(0.1f, 3f)]
@@ -102,6 +105,11 @@ namespace CapstoneAudio
                 : UnityEngine.Random.Range(min, max);
         }
 
+        public float PickAudioSourcePitch()
+        {
+            return PickPitch() * Mathf.Max(0.1f, playbackSpeed);
+        }
+
         public void Normalize()
         {
             if (string.IsNullOrWhiteSpace(key))
@@ -118,6 +126,9 @@ namespace CapstoneAudio
 
             if (pitchMax <= 0f)
                 pitchMax = 1f;
+
+            if (playbackSpeed <= 0f)
+                playbackSpeed = 1f;
 
             if (maxDistance < minDistance)
                 maxDistance = minDistance;

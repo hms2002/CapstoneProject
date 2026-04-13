@@ -211,6 +211,7 @@ public class BossEncounterDirector : MonoBehaviour
         }
 
         bossController.BeginCombatEncounter(PlayerRuntimeRegistry.GetPlayerTransform());
+        RunRouteBgmService.EnsureInstance()?.NotifyBossCombatStarted();
     }
 
     private void ResolveBossController()

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using CapstoneAudio;
 using UnityEngine;
 
 [CreateAssetMenu(
@@ -15,6 +16,9 @@ public sealed class RunRouteCatalogSO : ScriptableObject
     [Header("Final Route Set")]
     [SerializeField] private CorridorBossRouteSetSO finalRouteSet;
 
+    [Header("BGM")]
+    [SerializeField] private SoundRef hubBgm;
+
     [Header("Hub Return")]
     [SerializeField] private string hubSceneName;
     [SerializeField] private string hubEntryPointId = "Default";
@@ -23,6 +27,7 @@ public sealed class RunRouteCatalogSO : ScriptableObject
     public IReadOnlyList<CorridorBossRouteSetSO> NormalRouteSets => normalRouteSets;
     public bool AllowDuplicateNormalRoutes => allowDuplicateNormalRoutes;
     public CorridorBossRouteSetSO FinalRouteSet => finalRouteSet;
+    public SoundRef HubBgm => hubBgm;
     public string HubSceneName => hubSceneName;
     public string HubEntryPointId => hubEntryPointId;
 
