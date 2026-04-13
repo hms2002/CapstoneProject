@@ -8963,6 +8963,10 @@ PrefabInstance:
       propertyPath: timeLimitSystem
       value: 
       objectReference: {fileID: 48151495}
+    - target: {fileID: 1004008627076729963, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: hideWhenTimerInactive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1031922640116191210, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
