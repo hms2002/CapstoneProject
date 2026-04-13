@@ -29,6 +29,7 @@ public sealed class GamePlayData
 {
     public bool isRunActive;
     public float runElapsedSeconds;
+    public float runRemainingSeconds;
     public RunEndReason lastRunEndReason = RunEndReason.None;
 
     public SceneTransitionContext pendingTransition;

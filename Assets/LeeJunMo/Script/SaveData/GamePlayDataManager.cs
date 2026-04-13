@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,6 +7,9 @@ public sealed class GamePlayDataManager : MonoBehaviour
     public static GamePlayDataManager Instance { get; private set; }
 
     public GamePlayData Data { get; private set; } = new GamePlayData();
+
+    public event Action OnRunStarted;
+    public event Action<RunEndReason> OnRunEnded;
 
     private static bool s_isQuitting;
 
@@ -47,6 +51,8 @@ public sealed class GamePlayDataManager : MonoBehaviour
         ClearPendingRunProgress();
         Data.isRunActive = true;
         Data.runElapsedSeconds = 0f;
+        Data.runRemainingSeconds = 0f;
+        OnRunStarted?.Invoke();
     }
 
     public void EndRun(RunEndReason reason)
@@ -59,11 +65,37 @@ public sealed class GamePlayDataManager : MonoBehaviour
         }
 
         Data.isRunActive = false;
+        Data.runRemainingSeconds = 0f;
         Data.pendingTransition = null;
         Data.pendingPlayerState = null;
 
         if (PortalRouteManager.Instance != null)
             PortalRouteManager.Instance.ClearPlan();
+
+        OnRunEnded?.Invoke(reason);
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 런 진행 중 남은 제한 시간을 GamePlayData에 동기화한다.
+    /// - 씬 전환 이후에도 런 타이머 상태가 이어지도록 중앙 저장소 역할을 맡는다.
+    /// </summary>
+    public void SetRunRemainingSeconds(float remainingSeconds)
+    {
+        if (Data == null)
+            return;
+
+        Data.runRemainingSeconds = Mathf.Max(0f, remainingSeconds);
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 현재 런에 저장된 남은 제한 시간을 조회한다.
+    /// - 런 타이머 시스템이 씬 전환 후 복원할 기준값을 읽을 수 있게 한다.
+    /// </summary>
+    public float GetRunRemainingSeconds()
+    {
+        return Data != null ? Mathf.Max(0f, Data.runRemainingSeconds) : 0f;
     }
 
     public int GetPendingRunMagicStoneDelta()
