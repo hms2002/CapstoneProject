@@ -7,7 +7,8 @@ using UnityEngine;
 public sealed class RunRouteCatalogSO : ScriptableObject
 {
     [Header("Normal Route Sets")]
-    [SerializeField, Min(1)] private int normalStageCount = 3;
+    [Tooltip("Set to 0 to skip normal routes and start directly from the final route set.")]
+    [SerializeField, Min(0)] private int normalStageCount = 3;
     [SerializeField] private List<CorridorBossRouteSetSO> normalRouteSets = new();
     [SerializeField] private bool allowDuplicateNormalRoutes;
 
@@ -27,7 +28,16 @@ public sealed class RunRouteCatalogSO : ScriptableObject
 
     public bool HasEnoughNormalSets => GetValidNormalRouteSetCount() >= RequiredNormalRouteCount;
     public bool HasFinalRouteSet => finalRouteSet != null && finalRouteSet.IsValid;
-    public int RequiredNormalRouteCount => allowDuplicateNormalRoutes ? 1 : normalStageCount;
+    public int RequiredNormalRouteCount
+    {
+        get
+        {
+            if (normalStageCount <= 0)
+                return 0;
+
+            return allowDuplicateNormalRoutes ? 1 : normalStageCount;
+        }
+    }
 
     public bool TryCreateHubReturnRoute(TransitionType transitionType, out PortalRouteDecision route)
     {

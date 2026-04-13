@@ -1,0 +1,312 @@
+fileFormatVersion: 2
+guid: 65633814affcc704fbd9de0c57f8591b
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 559245041406589515
+    second: Dead'sSkeleton_0
+  - first:
+      213: 1979579193424203138
+    second: Dead'sSkeleton_1
+  - first:
+      213: -3328733072603385717
+    second: Dead'sSkeleton_2
+  - first:
+      213: 2850983627925790771
+    second: Dead'sSkeleton_3
+  - first:
+      213: 1950075908686438635
+    second: Dead'sSkeleton_4
+  - first:
+      213: -154659896790729593
+    second: Dead'sSkeleton_5
+  - first:
+      213: 3221979335439810763
+    second: Dead'sSkeleton_6
+  - first:
+      213: 6325197276997520285
+    second: Dead'sSkeleton_7
+  - first:
+      213: 7960250938286422949
+    second: Dead'sSkeleton_8
+  - first:
+      213: -6602749974995435278
+    second: Dead'sSkeleton_9
+  - first:
+      213: -5981673082081794430
+    second: Dead'sSkeleton_10
+  - first:
+      213: 6650262857770603401
+    second: Dead'sSkeleton_11
+  - first:
+      213: -3957708181884064894
+    second: Dead'sSkeleton_12
+  - first:
+      213: 7439593762324367713
+    second: Dead'sSkeleton_13
+  - first:
+      213: -2435727100981350246
+    second: Dead'sSkeleton_14
+  - first:
+      213: -1145835209775299014
+    second: Dead'sSkeleton_15
+  - first:
+      213: 4385992639052602727
+    second: Dead'sSkeleton_16
+  - first:
+      213: 7207592594415796256
+    second: Dead'sSkeleton_17
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 24
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 256
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: iOS
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Dead'sSkeleton_Float_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 103
+        width: 25
+        height: 26
+      alignment: 9
+      pivot: {x: 0.5, y: 0.17}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 40fd425a4ee5e0b4886b1c1f298eb38f
+      internalID: 1208040618
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dead'sSkeleton_Float_1
+      rect:
+        serializedVersion: 2
+        x: 26
+        y: 103
+        width: 25
+        height: 26
+      alignment: 9
+      pivot: {x: 0.5, y: 0.17}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ebdda879937c45242b041807ccc0a850
+      internalID: 296404449
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dead'sSkeleton_Float_2
+      rect:
+        serializedVersion: 2
+        x: 52
+        y: 103
+        width: 25
+        height: 26
+      alignment: 9
+      pivot: {x: 0.5, y: 0.17}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: bd39aac46ef49464f8ad95204c643687
+      internalID: -2078283290
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Dead'sSkeleton_Float_3
+      rect:
+        serializedVersion: 2
+        x: 78
+        y: 103
+        width: 25
+        height: 26
+      alignment: 9
+      pivot: {x: 0.5, y: 0.17}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f02507dd344512e4aa423e4430c538a1
+      internalID: 1942611105
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 6c5111801d4e447449cf7350e225419a
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":25.0,"y":26.0},"gridSpriteOffset":{"x":0.0,"y":1.0},"gridSpritePadding":{"x":1.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
+    nameFileIdTable:
+      Dead'sSkeleton_Float_0: 1208040618
+      Dead'sSkeleton_Float_1: 296404449
+      Dead'sSkeleton_Float_10: 2064866039
+      Dead'sSkeleton_Float_11: -1224569468
+      Dead'sSkeleton_Float_2: -2078283290
+      Dead'sSkeleton_Float_3: 1942611105
+      Dead'sSkeleton_Float_4: -2142054522
+      Dead'sSkeleton_Float_5: 1404523591
+      Dead'sSkeleton_Float_6: -1797278941
+      Dead'sSkeleton_Float_7: -1993148969
+      Dead'sSkeleton_Float_8: 1065252769
+      Dead'sSkeleton_Float_9: 509483127
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

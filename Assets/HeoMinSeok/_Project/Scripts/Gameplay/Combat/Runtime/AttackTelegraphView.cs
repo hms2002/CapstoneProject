@@ -22,9 +22,14 @@ namespace UnityGAS
         private static Sprite circleBorderSprite;
         private Sprite ringFillSprite;
         private Sprite ringBorderSprite;
+        private Sprite sectorFillSprite;
+        private Sprite sectorBorderSprite;
         private Texture2D ringFillTexture;
         private Texture2D ringBorderTexture;
+        private Texture2D sectorFillTexture;
+        private Texture2D sectorBorderTexture;
         private float ringInnerNormalized = -1f;
+        private float sectorAngleNormalized = -1f;
 
         private bool baseScaleCaptured;
         private Vector3 fillBaseScale = Vector3.one;
@@ -36,6 +41,7 @@ namespace UnityGAS
         private AttackTelegraphShape activeShape;
         private Vector2 activeSize = Vector2.one;
         private float activeInnerDiameter;
+        private float activeSectorAngleDeg;
         private float startTime;
         private float duration;
         private bool isVisible;
@@ -59,11 +65,7 @@ namespace UnityGAS
             if (!isVisible)
                 return;
 
-            float normalized = duration <= 0f
-                ? 1f
-                : Mathf.Clamp01((Time.time - startTime) / duration);
-
-            ApplyStyle(normalized);
+            ApplyStyle(GetCurrentNormalizedProgress());
         }
 
         /// <summary>
@@ -79,6 +81,7 @@ namespace UnityGAS
             startTime = Time.time;
             isVisible = true;
             activeInnerDiameter = Mathf.Max(0f, spec.innerDiameter);
+            activeSectorAngleDeg = Mathf.Clamp(spec.sectorAngleDeg, 0.1f, 360f);
 
             gameObject.SetActive(true);
             transform.position = spec.center;
@@ -86,6 +89,25 @@ namespace UnityGAS
 
             ApplyShapeScale(spec.shape, spec.size);
             ApplyStyle(0f);
+        }
+
+        /// <summary>
+        /// 책임 :
+        /// - 현재 표시 중인 텔레그래프의 진행도는 유지한 채 위치/회전/크기만 갱신한다.
+        /// - 락온처럼 목표를 추적해야 하는 사각형 경고에 사용한다.
+        /// </summary>
+        public void UpdateGeometry(AttackTelegraphSpec spec)
+        {
+            if (!isVisible)
+                return;
+
+            activeInnerDiameter = Mathf.Max(0f, spec.innerDiameter);
+            activeSectorAngleDeg = Mathf.Clamp(spec.sectorAngleDeg, 0.1f, 360f);
+            transform.position = spec.center;
+            transform.rotation = Quaternion.Euler(0f, 0f, spec.rotationDeg);
+
+            ApplyShapeScale(spec.shape, spec.size);
+            ApplyStyle(GetCurrentNormalizedProgress());
         }
 
         /// <summary>
@@ -100,6 +122,13 @@ namespace UnityGAS
                 fillRenderer.enabled = false;
             if (borderRenderer != null)
                 borderRenderer.enabled = false;
+        }
+
+        private float GetCurrentNormalizedProgress()
+        {
+            return duration <= 0f
+                ? 1f
+                : Mathf.Clamp01((Time.time - startTime) / duration);
         }
 
         private void CaptureBaseScaleIfNeeded()
@@ -168,6 +197,19 @@ namespace UnityGAS
 
                 if (borderRenderer != null)
                     borderRenderer.sprite = ringBorderSprite;
+
+                return;
+            }
+
+            if (activeShape == AttackTelegraphShape.Sector)
+            {
+                EnsureSectorSprites();
+
+                if (fillRenderer != null)
+                    fillRenderer.sprite = sectorFillSprite;
+
+                if (borderRenderer != null)
+                    borderRenderer.sprite = sectorBorderSprite;
 
                 return;
             }
@@ -242,6 +284,22 @@ namespace UnityGAS
             ringBorderSprite = MakeSprite(ringBorderTexture, "TelegraphRingBorder");
         }
 
+        private void EnsureSectorSprites()
+        {
+            float normalizedAngle = Mathf.Clamp01(activeSectorAngleDeg / 360f);
+
+            if (sectorFillSprite != null && sectorBorderSprite != null && Mathf.Approximately(sectorAngleNormalized, normalizedAngle))
+                return;
+
+            ReleaseSectorSprites();
+            sectorAngleNormalized = normalizedAngle;
+
+            sectorFillTexture = MakeSectorTexture(false, activeSectorAngleDeg);
+            sectorBorderTexture = MakeSectorTexture(true, activeSectorAngleDeg);
+            sectorFillSprite = MakeSprite(sectorFillTexture, "TelegraphSectorFill");
+            sectorBorderSprite = MakeSprite(sectorBorderTexture, "TelegraphSectorBorder");
+        }
+
         private static Sprite MakeCircleSprite(bool borderOnly)
         {
             Texture2D texture = MakeCircleTexture(borderOnly, 0f);
@@ -288,6 +346,46 @@ namespace UnityGAS
             return texture;
         }
 
+        private static Texture2D MakeSectorTexture(bool borderOnly, float angleDeg)
+        {
+            Texture2D texture = new Texture2D(CircleTextureSize, CircleTextureSize, TextureFormat.RGBA32, false);
+            texture.wrapMode = TextureWrapMode.Clamp;
+            texture.filterMode = FilterMode.Bilinear;
+
+            float halfSize = (CircleTextureSize - 1) * 0.5f;
+            float halfAngle = Mathf.Clamp(angleDeg, 0.1f, 360f) * 0.5f;
+            float radialBorderAngle = Mathf.Max(1f, halfAngle * CircleBorderThickness);
+            float outerBorderStart = 1f - CircleBorderThickness;
+            bool useRadialBorders = angleDeg < 359.9f;
+            Color clear = new Color(1f, 1f, 1f, 0f);
+            Color solid = Color.white;
+
+            for (int y = 0; y < CircleTextureSize; y++)
+            {
+                for (int x = 0; x < CircleTextureSize; x++)
+                {
+                    float localX = x / (CircleTextureSize - 1f);
+                    float localY = (y - halfSize) / halfSize;
+                    float radius = Mathf.Sqrt((localX * localX) + (localY * localY));
+                    float angle = Mathf.Abs(Mathf.Atan2(localY, localX) * Mathf.Rad2Deg);
+                    bool isInside = localX >= 0f &&
+                                    radius <= 1f &&
+                                    angle <= halfAngle;
+
+                    bool isOuterBorder = isInside && radius >= outerBorderStart;
+                    bool isRadialBorder = useRadialBorders &&
+                                          isInside &&
+                                          angle >= Mathf.Max(0f, halfAngle - radialBorderAngle);
+                    bool isBorder = isOuterBorder || isRadialBorder;
+
+                    texture.SetPixel(x, y, borderOnly ? (isBorder ? solid : clear) : (isInside ? solid : clear));
+                }
+            }
+
+            texture.Apply();
+            return texture;
+        }
+
         private static Sprite MakeSprite(Texture2D texture, string name)
         {
             texture.name = name;
@@ -304,6 +402,7 @@ namespace UnityGAS
         private void OnDestroy()
         {
             ReleaseRingSprites();
+            ReleaseSectorSprites();
         }
 
         private void ReleaseRingSprites()
@@ -324,6 +423,27 @@ namespace UnityGAS
             ringBorderSprite = null;
             ringFillTexture = null;
             ringBorderTexture = null;
+        }
+
+        private void ReleaseSectorSprites()
+        {
+            if (sectorFillSprite != null)
+                Destroy(sectorFillSprite);
+
+            if (sectorBorderSprite != null)
+                Destroy(sectorBorderSprite);
+
+            if (sectorFillTexture != null)
+                Destroy(sectorFillTexture);
+
+            if (sectorBorderTexture != null)
+                Destroy(sectorBorderTexture);
+
+            sectorFillSprite = null;
+            sectorBorderSprite = null;
+            sectorFillTexture = null;
+            sectorBorderTexture = null;
+            sectorAngleNormalized = -1f;
         }
 
         private void ApplyStyle(float normalized)

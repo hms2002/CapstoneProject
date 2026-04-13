@@ -1,0 +1,1300 @@
+fileFormatVersion: 2
+guid: 39bd009af457dba428efc70aaa4b3387
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -2795848010738754333
+    second: GhostMonster(ShadowO)_0
+  - first:
+      213: -4365037399035875291
+    second: GhostMonster(ShadowO)_1
+  - first:
+      213: -7143135374801647763
+    second: GhostMonster(ShadowO)_2
+  - first:
+      213: -5571298914266470382
+    second: GhostMonster(ShadowO)_3
+  - first:
+      213: -6835148999042293587
+    second: GhostMonster(ShadowO)_4
+  - first:
+      213: 6255238876138121809
+    second: GhostMonster(ShadowO)_5
+  - first:
+      213: -3166678547179974397
+    second: GhostMonster(ShadowO)_6
+  - first:
+      213: 3277032393753881095
+    second: GhostMonster(ShadowO)_7
+  - first:
+      213: -5980754526098524120
+    second: GhostMonster(ShadowO)_8
+  - first:
+      213: 4693226105244251752
+    second: GhostMonster(ShadowO)_9
+  - first:
+      213: 2419364300111813861
+    second: GhostMonster(ShadowO)_10
+  - first:
+      213: -2643665315958494617
+    second: GhostMonster(ShadowO)_11
+  - first:
+      213: -3275753745830339579
+    second: GhostMonster(ShadowO)_12
+  - first:
+      213: -3186132219180963759
+    second: GhostMonster(ShadowO)_13
+  - first:
+      213: 5567038885279777049
+    second: GhostMonster(ShadowO)_14
+  - first:
+      213: 2014999887574249870
+    second: GhostMonster(ShadowO)_15
+  - first:
+      213: 9029520822839529723
+    second: GhostMonster(ShadowO)_16
+  - first:
+      213: -2795306464441785041
+    second: GhostMonster(ShadowO)_17
+  - first:
+      213: -8952736341999139548
+    second: GhostMonster(ShadowO)_18
+  - first:
+      213: -8407647698509574068
+    second: GhostMonster(ShadowO)_19
+  - first:
+      213: 7028049891713693819
+    second: GhostMonster(ShadowO)_20
+  - first:
+      213: 3471174418275003311
+    second: GhostMonster(ShadowO)_21
+  - first:
+      213: -4505974701046690238
+    second: GhostMonster(ShadowO)_22
+  - first:
+      213: -7932851333792806482
+    second: GhostMonster(ShadowO)_23
+  - first:
+      213: 2973348423335741321
+    second: GhostMonster(ShadowO)_24
+  - first:
+      213: -4767218641009468513
+    second: GhostMonster(ShadowO)_25
+  - first:
+      213: 5165630519271586005
+    second: GhostMonster(ShadowO)_26
+  - first:
+      213: 2857980333373559229
+    second: GhostMonster(ShadowO)_27
+  - first:
+      213: -5744509480526252336
+    second: GhostMonster(ShadowO)_28
+  - first:
+      213: 1065803466503819126
+    second: GhostMonster(ShadowO)_29
+  - first:
+      213: 7925652753606565892
+    second: GhostMonster(ShadowO)_30
+  - first:
+      213: 7234386030032356723
+    second: GhostMonster(ShadowO)_31
+  - first:
+      213: 6633453806297088374
+    second: GhostMonster(ShadowO)_32
+  - first:
+      213: 5370102657348043469
+    second: GhostMonster(ShadowO)_33
+  - first:
+      213: 3474417529507781241
+    second: GhostMonster(ShadowO)_34
+  - first:
+      213: -3931788056973646197
+    second: GhostMonster(ShadowO)_35
+  - first:
+      213: -9038441542016297656
+    second: GhostMonster(ShadowO)_36
+  - first:
+      213: -7313687901886158625
+    second: GhostMonster(ShadowO)_37
+  - first:
+      213: -2902521612763562871
+    second: GhostMonster(ShadowO)_38
+  - first:
+      213: 3036654516054204308
+    second: GhostMonster(ShadowO)_39
+  - first:
+      213: -763363803726762063
+    second: GhostMonster(ShadowO)_40
+  - first:
+      213: -641031277414457292
+    second: GhostMonster(ShadowO)_41
+  - first:
+      213: -4714088896906260844
+    second: GhostMonster(ShadowO)_42
+  - first:
+      213: -1237066521869127445
+    second: GhostMonster(ShadowO)_43
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 24
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 512
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: iOS
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: GhostMonster(ShadowO)_0
+      rect:
+        serializedVersion: 2
+        x: 11
+        y: 190
+        width: 21
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3ec1fe91c072339d0800000000000000
+      internalID: -2795848010738754333
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GhostMonster(ShadowO)_1
+      rect:
+        serializedVersion: 2
+        x: 61
+        y: 190
+        width: 21
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 520fb2fcc954c63c0800000000000000
+      internalID: -4365037399035875291
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GhostMonster(ShadowO)_2
+      rect:
+        serializedVersion: 2
+        x: 111
+        y: 190
+        width: 21
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d67cb6af83c7edc90800000000000000
+      internalID: -7143135374801647763
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GhostMonster(ShadowO)_3
+      rect:
+        serializedVersion: 2
+        x: 161
+        y: 190
+        width: 21
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 218a0adc725cea2b0800000000000000
+      internalID: -5571298914266470382
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GhostMonster(ShadowO)_4
+      rect:
+        serializedVersion: 2
+        x: 211
+        y: 190
+        width: 21
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: da0a735133ca421a0800000000000000
+      internalID: -6835148999042293587
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GhostMonster(ShadowO)_5
+      rect:
+        serializedVersion: 2
+        x: 260
+        y: 190
+        width: 23
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 15a2d6dbd921fc650800000000000000
+      internalID: 6255238876138121809
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GhostMonster(ShadowO)_6
+      rect:
+        serializedVersion: 2
+        x: 10
+        y: 159
+        width: 23
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 301dc7d93a2bd04d0800000000000000
+      internalID: -3166678547179974397
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GhostMonster(ShadowO)_7
+      rect:
+        serializedVersion: 2
+        x: 61
+        y: 159
+        width: 21
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 70ae523899b5a7d20800000000000000
+      internalID: 3277032393753881095
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GhostMonster(ShadowO)_8
+      rect:
+        serializedVersion: 2
+        x: 111
+        y: 159
+        width: 21
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 82876172277100da0800000000000000
+      internalID: -5980754526098524120
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GhostMonster(ShadowO)_9
+      rect:
+        serializedVersion: 2
+        x: 161
+        y: 159
+        width: 21
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8667ca5e640b12140800000000000000
+      internalID: 4693226105244251752
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GhostMonster(ShadowO)_10
+      rect:
+        serializedVersion: 2
+        x: 211
+        y: 159
+        width: 21
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5ec1d6a330f439120800000000000000
+      internalID: 2419364300111813861
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GhostMonster(ShadowO)_11
+      rect:
+        serializedVersion: 2
+        x: 260
+        y: 159
+        width: 23
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 76ae541e660df4bd0800000000000000
+      internalID: -2643665315958494617
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GhostMonster(ShadowO)_12
+      rect:
+        serializedVersion: 2
+        x: 10
+        y: 128
+        width: 23
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 50c9028e25f2a82d0800000000000000
+      internalID: -3275753745830339579
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GhostMonster(ShadowO)_13
+      rect:
+        serializedVersion: 2
+        x: 61
+        y: 128
+        width: 21
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 158aa44a0a598c3d0800000000000000
+      internalID: -3186132219180963759
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GhostMonster(ShadowO)_14
+      rect:
+        serializedVersion: 2
+        x: 111
+        y: 128
+        width: 21
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 91143e7ee58124d40800000000000000
+      internalID: 5567038885279777049
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GhostMonster(ShadowO)_15
+      rect:
+        serializedVersion: 2
+        x: 161
+        y: 128
+        width: 21
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e81b059c8b7b6fb10800000000000000
+      internalID: 2014999887574249870
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GhostMonster(ShadowO)_16
+      rect:
+        serializedVersion: 2
+        x: 211
+        y: 128
+        width: 21
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bf0d751195d4f4d70800000000000000
+      internalID: 9029520822839529723
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GhostMonster(ShadowO)_17
+      rect:
+        serializedVersion: 2
+        x: 260
+        y: 128
+        width: 23
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f25289ca4931539d0800000000000000
+      internalID: -2795306464441785041
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GhostMonster(ShadowO)_18
+      rect:
+        serializedVersion: 2
+        x: 10
+        y: 97
+        width: 23
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 42549670bbd71c380800000000000000
+      internalID: -8952736341999139548
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GhostMonster(ShadowO)_19
+      rect:
+        serializedVersion: 2
+        x: 61
+        y: 97
+        width: 21
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c40d4bdb6f8025b80800000000000000
+      internalID: -8407647698509574068
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GhostMonster(ShadowO)_20
+      rect:
+        serializedVersion: 2
+        x: 111
+        y: 97
+        width: 21
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b78315be326a88160800000000000000
+      internalID: 7028049891713693819
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GhostMonster(ShadowO)_21
+      rect:
+        serializedVersion: 2
+        x: 161
+        y: 97
+        width: 21
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fab64ba0eb61c2030800000000000000
+      internalID: 3471174418275003311
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GhostMonster(ShadowO)_22
+      rect:
+        serializedVersion: 2
+        x: 211
+        y: 97
+        width: 21
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 24e073112ef8771c0800000000000000
+      internalID: -4505974701046690238
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GhostMonster(ShadowO)_23
+      rect:
+        serializedVersion: 2
+        x: 260
+        y: 97
+        width: 23
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ea9cb41fdb9d8e190800000000000000
+      internalID: -7932851333792806482
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GhostMonster(ShadowO)_24
+      rect:
+        serializedVersion: 2
+        x: 11
+        y: 66
+        width: 21
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 987056633a4734920800000000000000
+      internalID: 2973348423335741321
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GhostMonster(ShadowO)_25
+      rect:
+        serializedVersion: 2
+        x: 61
+        y: 66
+        width: 21
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f9b920067ef67ddb0800000000000000
+      internalID: -4767218641009468513
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GhostMonster(ShadowO)_26
+      rect:
+        serializedVersion: 2
+        x: 111
+        y: 66
+        width: 21
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5d8791ea69100b740800000000000000
+      internalID: 5165630519271586005
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GhostMonster(ShadowO)_27
+      rect:
+        serializedVersion: 2
+        x: 145
+        y: 7
+        width: 94
+        height: 82
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: db198c198f599a720800000000000000
+      internalID: 2857980333373559229
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GhostMonster(ShadowO)_28
+      rect:
+        serializedVersion: 2
+        x: 210
+        y: 66
+        width: 22
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0d67e5c20176740b0800000000000000
+      internalID: -5744509480526252336
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GhostMonster(ShadowO)_29
+      rect:
+        serializedVersion: 2
+        x: 248
+        y: 9
+        width: 44
+        height: 73
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 67f075d1b9e7ace00800000000000000
+      internalID: 1065803466503819126
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GhostMonster(ShadowO)_30
+      rect:
+        serializedVersion: 2
+        x: 303
+        y: 10
+        width: 38
+        height: 72
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 400e0dfff239dfd60800000000000000
+      internalID: 7925652753606565892
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GhostMonster(ShadowO)_31
+      rect:
+        serializedVersion: 2
+        x: 355
+        y: 17
+        width: 37
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3758020d3c3b56460800000000000000
+      internalID: 7234386030032356723
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GhostMonster(ShadowO)_32
+      rect:
+        serializedVersion: 2
+        x: 406
+        y: 61
+        width: 32
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6710d4e5713ce0c50800000000000000
+      internalID: 6633453806297088374
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GhostMonster(ShadowO)_33
+      rect:
+        serializedVersion: 2
+        x: 460
+        y: 66
+        width: 28
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dc28c923aef668a40800000000000000
+      internalID: 5370102657348043469
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GhostMonster(ShadowO)_34
+      rect:
+        serializedVersion: 2
+        x: 11
+        y: 35
+        width: 21
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 97a93b7b55c973030800000000000000
+      internalID: 3474417529507781241
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GhostMonster(ShadowO)_35
+      rect:
+        serializedVersion: 2
+        x: 61
+        y: 35
+        width: 21
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b8666fbf79b7f69c0800000000000000
+      internalID: -3931788056973646197
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GhostMonster(ShadowO)_36
+      rect:
+        serializedVersion: 2
+        x: 3
+        y: 4
+        width: 39
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8451cf42e41019280800000000000000
+      internalID: -9038441542016297656
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GhostMonster(ShadowO)_37
+      rect:
+        serializedVersion: 2
+        x: 52
+        y: 17
+        width: 18
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fd8e0025a9f808a90800000000000000
+      internalID: -7313687901886158625
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GhostMonster(ShadowO)_38
+      rect:
+        serializedVersion: 2
+        x: 60
+        y: 4
+        width: 44
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 98c755ea8fb28b7d0800000000000000
+      internalID: -2902521612763562871
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GhostMonster(ShadowO)_39
+      rect:
+        serializedVersion: 2
+        x: 69
+        y: 24
+        width: 10
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 49f1ff6813d542a20800000000000000
+      internalID: 3036654516054204308
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GhostMonster(ShadowO)_40
+      rect:
+        serializedVersion: 2
+        x: 107
+        y: 18
+        width: 23
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1bfa97c3aacf765f0800000000000000
+      internalID: -763363803726762063
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GhostMonster(ShadowO)_41
+      rect:
+        serializedVersion: 2
+        x: 108
+        y: 10
+        width: 18
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 430ebc313799a17f0800000000000000
+      internalID: -641031277414457292
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GhostMonster(ShadowO)_42
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 9
+        width: 11
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 49e0a44ef11349eb0800000000000000
+      internalID: -4714088896906260844
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GhostMonster(ShadowO)_43
+      rect:
+        serializedVersion: 2
+        x: 117
+        y: 6
+        width: 11
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: be076787d8e05dee0800000000000000
+      internalID: -1237066521869127445
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      GhostMonster(ShadowO)_0: -2795848010738754333
+      GhostMonster(ShadowO)_1: -4365037399035875291
+      GhostMonster(ShadowO)_10: 2419364300111813861
+      GhostMonster(ShadowO)_11: -2643665315958494617
+      GhostMonster(ShadowO)_12: -3275753745830339579
+      GhostMonster(ShadowO)_13: -3186132219180963759
+      GhostMonster(ShadowO)_14: 5567038885279777049
+      GhostMonster(ShadowO)_15: 2014999887574249870
+      GhostMonster(ShadowO)_16: 9029520822839529723
+      GhostMonster(ShadowO)_17: -2795306464441785041
+      GhostMonster(ShadowO)_18: -8952736341999139548
+      GhostMonster(ShadowO)_19: -8407647698509574068
+      GhostMonster(ShadowO)_2: -7143135374801647763
+      GhostMonster(ShadowO)_20: 7028049891713693819
+      GhostMonster(ShadowO)_21: 3471174418275003311
+      GhostMonster(ShadowO)_22: -4505974701046690238
+      GhostMonster(ShadowO)_23: -7932851333792806482
+      GhostMonster(ShadowO)_24: 2973348423335741321
+      GhostMonster(ShadowO)_25: -4767218641009468513
+      GhostMonster(ShadowO)_26: 5165630519271586005
+      GhostMonster(ShadowO)_27: 2857980333373559229
+      GhostMonster(ShadowO)_28: -5744509480526252336
+      GhostMonster(ShadowO)_29: 1065803466503819126
+      GhostMonster(ShadowO)_3: -5571298914266470382
+      GhostMonster(ShadowO)_30: 7925652753606565892
+      GhostMonster(ShadowO)_31: 7234386030032356723
+      GhostMonster(ShadowO)_32: 6633453806297088374
+      GhostMonster(ShadowO)_33: 5370102657348043469
+      GhostMonster(ShadowO)_34: 3474417529507781241
+      GhostMonster(ShadowO)_35: -3931788056973646197
+      GhostMonster(ShadowO)_36: -9038441542016297656
+      GhostMonster(ShadowO)_37: -7313687901886158625
+      GhostMonster(ShadowO)_38: -2902521612763562871
+      GhostMonster(ShadowO)_39: 3036654516054204308
+      GhostMonster(ShadowO)_4: -6835148999042293587
+      GhostMonster(ShadowO)_40: -763363803726762063
+      GhostMonster(ShadowO)_41: -641031277414457292
+      GhostMonster(ShadowO)_42: -4714088896906260844
+      GhostMonster(ShadowO)_43: -1237066521869127445
+      GhostMonster(ShadowO)_5: 6255238876138121809
+      GhostMonster(ShadowO)_6: -3166678547179974397
+      GhostMonster(ShadowO)_7: 3277032393753881095
+      GhostMonster(ShadowO)_8: -5980754526098524120
+      GhostMonster(ShadowO)_9: 4693226105244251752
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

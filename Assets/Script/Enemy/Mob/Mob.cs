@@ -3,12 +3,20 @@ using UnityGAS;
 
 public class Mob : Enemy
 {
-    private static readonly int IsMovingHash = Animator.StringToHash("isMoving");
+    private static readonly string[] MoveBoolNames =
+    {
+        "isMoving",
+        "move",
+        "isMove",
+        "moving"
+    };
+
     [Header("참조")]
     [Tooltip("플레이어 추적 범위를 가진 컴포넌트입니다.")]
     [SerializeField] private EnemyChaseIntent2D chaseIntent;
 
     private bool hasMoveBool;
+    private int moveBoolHash;
 
     protected EnemyChaseIntent2D ChaseIntent => chaseIntent;
 
@@ -19,7 +27,7 @@ public class Mob : Enemy
         if (chaseIntent == null)
             chaseIntent = GetComponent<EnemyChaseIntent2D>();
 
-        hasMoveBool = CheckMoveBool();
+        hasMoveBool = TryCacheMoveBoolHash();
     }
 
     private void Update()
@@ -45,7 +53,7 @@ public class Mob : Enemy
     protected virtual void UpdateAnimation()
     {
         if (animator != null && movementMotor != null && hasMoveBool)
-            animator.SetBool(IsMovingHash, movementMotor.IsMoving);
+            animator.SetBool(moveBoolHash, movementMotor.IsMoving);
 
         if (Target == null || sprite == null) return;
 
@@ -53,23 +61,13 @@ public class Mob : Enemy
         else if (transform.position.x < Target.position.x) sprite.flipX = false;
     }
 
-    /// <summary></summary>
-    private bool CheckMoveBool()
+    /// <summary>이동 Bool 파라미터 해시를 캐시합니다.</summary>
+    private bool TryCacheMoveBoolHash()
     {
-        if (animator == null) return false;
-
-        AnimatorControllerParameter[] parameters = animator.parameters;
-        for (int i = 0; i < parameters.Length; i++)
-        {
-            AnimatorControllerParameter parameter = parameters[i];
-            if (parameter.type == AnimatorControllerParameterType.Bool &&
-                parameter.nameHash == IsMovingHash)
-            {
-                return true;
-            }
-        }
-
-        return false;
+        return TryFindAnimatorParameterHash(
+            AnimatorControllerParameterType.Bool,
+            MoveBoolNames,
+            out moveBoolHash);
     }
 
     protected override void OnEnemyAttributeChanged(AttributeDefinition attribute, float oldValue, float newValue)

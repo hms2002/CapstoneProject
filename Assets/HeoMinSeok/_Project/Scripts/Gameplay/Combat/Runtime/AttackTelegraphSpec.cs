@@ -12,6 +12,7 @@ namespace UnityGAS
         public Vector3 center;
         public Vector2 size;
         public float innerDiameter;
+        public float sectorAngleDeg;
         public float rotationDeg;
         public float duration;
         public AttackTelegraphStyle style;
@@ -29,6 +30,7 @@ namespace UnityGAS
                 center = center,
                 size = size,
                 innerDiameter = 0f,
+                sectorAngleDeg = 0f,
                 rotationDeg = rotationDeg,
                 duration = duration,
                 style = style
@@ -47,6 +49,7 @@ namespace UnityGAS
                 center = center,
                 size = new Vector2(diameter, diameter),
                 innerDiameter = 0f,
+                sectorAngleDeg = 0f,
                 rotationDeg = 0f,
                 duration = duration,
                 style = style
@@ -70,7 +73,37 @@ namespace UnityGAS
                 center = center,
                 size = new Vector2(outerDiameter, outerDiameter),
                 innerDiameter = Mathf.Clamp(innerDiameter, 0f, outerDiameter),
+                sectorAngleDeg = 0f,
                 rotationDeg = 0f,
+                duration = duration,
+                style = style
+            };
+        }
+
+        /// <summary>
+        /// 책임 :
+        /// - 원점에서 지정 방향으로 뻗는 부채꼴 텔레그래프를 생성한다.
+        /// - center는 렌더링용 중심으로 자동 환산되며, 호출자는 실제 원점만 넘기면 된다.
+        /// </summary>
+        public static AttackTelegraphSpec CreateSector(
+            Vector3 origin,
+            float radius,
+            float angleDeg,
+            float rotationDeg,
+            float duration,
+            AttackTelegraphStyle style = null)
+        {
+            float safeRadius = Mathf.Max(0.01f, radius);
+            Vector3 renderCenter = origin + (Quaternion.Euler(0f, 0f, rotationDeg) * Vector3.right) * (safeRadius * 0.5f);
+
+            return new AttackTelegraphSpec
+            {
+                shape = AttackTelegraphShape.Sector,
+                center = renderCenter,
+                size = new Vector2(safeRadius, safeRadius * 2f),
+                innerDiameter = 0f,
+                sectorAngleDeg = Mathf.Clamp(angleDeg, 0.1f, 360f),
+                rotationDeg = rotationDeg,
                 duration = duration,
                 style = style
             };

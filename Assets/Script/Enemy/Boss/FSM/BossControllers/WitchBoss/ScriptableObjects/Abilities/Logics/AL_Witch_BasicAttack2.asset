@@ -12,3 +12,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 27043dcf72e17524f824f9ba7a3a42c5, type: 3}
   m_Name: AL_Witch_BasicAttack2
   m_EditorClassIdentifier: 
+  hitEffectCount: 8
+  hitParticleCount: 1
+  hitPresentationRadiusLerp: 0.75
+  hitEffectPrefab: {fileID: 1412473672868303488, guid: c257fcc31167b184e9a65f583e74626f, type: 3}
+  hitEffectLocalOffset: {x: 0, y: 0, z: -0.05}
+  hitEffectLifetimeSeconds: 0.35
+  hitEffectScaleMultiplier: {x: 0.4, y: 0.4, z: 1}
+  hitEffectRotationOffsetZ: 0
+  hitParticlePrefab: {fileID: 4255554260198325544, guid: 537be2dc596b9474e881fad5fbce523e, type: 3}
+  hitParticleLocalOffset: {x: 0, y: 0, z: -0.02}
+  hitParticleLifetimeOverrideSeconds: 0
+  useUnscaledHitParticleTime: 0
+  hitParticleScaleMultiplier: {x: 1, y: 1, z: 1}
+  hitParticleRotationOffsetZ: 0
+  hitCameraShake:
+    amplitude: 3
+    amplitudeMultiplier: 0
+    maxAmplitude: 0
+    minIntervalSeconds: 2.07
+    directionMode: 1
+    customDirection: {x: 5, y: 5, z: 5}
+    ignoreScreenShakeSetting: 0

@@ -15,7 +15,9 @@ public class Witch : BossControllerBase
     private static readonly Vector3 RetreatRightOffset = new Vector3(0.5f, 0.2f, 0f);
     private const int Normal1Count = 3;
     private const float Normal1Interval = 0.3f;
-    private const float Normal1Size = 1.7f;
+    private const float Normal1TileUnitSize = 1.7f;
+    private const float Normal1TileWidthInTiles = 2f;
+    private const float Normal1TileHeightInTiles = 3f;
     private const float Normal1HitTime = 0.12f;
     private const float RetreatExplosionDiameter = 6f;
     private const float RetreatSpeedScale = 1f;
@@ -230,7 +232,7 @@ public class Witch : BossControllerBase
         PlayAttackMotion();
 
         float angle = Mathf.Atan2(aimDir.y, aimDir.x) * Mathf.Rad2Deg;
-        Vector2 tileSize = Vector2.one * Normal1Size;
+        Vector2 tileSize = GetNormal1TileSize();
         CombatHitPayload payload = MakeNormal1Payload();
 
         for (int i = 0; i < Normal1Count; i++)
@@ -403,9 +405,18 @@ public class Witch : BossControllerBase
     /// <summary>평타1 장판 위치를 구합니다.</summary>
     private Vector3 GetTilePoint(Vector2 aimDir, int index)
     {
-        float distance = (Normal1Size * 0.5f) + (Normal1Size * index);
+        float forwardSize = GetNormal1TileSize().x;
+        float distance = (forwardSize * 0.5f) + (forwardSize * index);
         Vector3 offset = new Vector3(aimDir.x, aimDir.y, 0f) * distance;
         return transform.position + offset;
+    }
+
+    /// <summary>평타1 장판의 가로세로 크기를 반환합니다.</summary>
+    private Vector2 GetNormal1TileSize()
+    {
+        return new Vector2(
+            Normal1TileUnitSize * Normal1TileWidthInTiles,
+            Normal1TileUnitSize * Normal1TileHeightInTiles);
     }
 
     /// <summary>강화된 망자의 해골 하나를 소환합니다.</summary>
