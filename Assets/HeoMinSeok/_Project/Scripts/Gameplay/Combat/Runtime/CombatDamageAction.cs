@@ -15,7 +15,11 @@ using UnityGAS;
 public static class CombatDamageAction
 {
     private const string DefaultHitConfirmTagResourcePath = "Tags/Event.HitConfirm";
+    private const string GroggyTagResourcePath = "Tags/State.Status.Groggy";
+    private const string StaggerImmuneTagResourcePath = "Tags/State.Status.StaggerImmune";
     private static GameplayTag s_defaultHitConfirmTag;
+    private static GameplayTag s_groggyTag;
+    private static GameplayTag s_staggerImmuneTag;
 
     // Backward-compatible overload (no stagger / no knockback effect)
     public static void ApplyDamageAndEmitHit(
@@ -421,11 +425,41 @@ public static class CombatDamageAction
         GameObject causer)
     {
         if (finalStaggerBuildUp <= 0f) return;
+        if (IsStaggerSuppressed(target)) return;
 
         var stagger = target.GetComponent<StaggerGaugeSystem>();
         if (stagger == null) return;
 
         stagger.AddBuildUp(finalStaggerBuildUp, instigator: instigator, causer: causer);
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 대상이 현재 stagger buildup을 무시해야 하는 상태인지 판정한다.
+    /// - 패턴 전용 stagger 면역과 그로기 진행 중 상태를 함께 처리해 중복 buildup을 막는다.
+    /// </summary>
+    private static bool IsStaggerSuppressed(GameObject target)
+    {
+        if (target == null)
+            return false;
+
+        if (s_groggyTag == null)
+            s_groggyTag = Resources.Load<GameplayTag>(GroggyTagResourcePath);
+
+        if (s_staggerImmuneTag == null)
+            s_staggerImmuneTag = Resources.Load<GameplayTag>(StaggerImmuneTagResourcePath);
+
+        var tagSystem = target.GetComponent<TagSystem>();
+        if (tagSystem == null)
+            return false;
+
+        if (s_groggyTag != null && tagSystem.HasTag(s_groggyTag))
+            return true;
+
+        if (s_staggerImmuneTag != null && tagSystem.HasTag(s_staggerImmuneTag))
+            return true;
+
+        return false;
     }
 
     private static readonly List<ElementDamageResult> s_AutoResolvedElements = new(8);

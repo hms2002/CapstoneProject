@@ -21,6 +21,7 @@ public class AbilityLogic_WitchLightAllCandles : AbilityLogic
         witch.PlayPatternAttackMotion();
         witch.MoveToPhaseTransitionCenter(MoveToCenterDuration);
         witch.ActivateShield();
+        witch.EnableStaggerImmuneDuringPhaseTransition();
 
         yield return new WaitForSeconds(MoveToCenterDuration);
 
@@ -52,12 +53,14 @@ public class AbilityLogic_WitchLightAllCandles : AbilityLogic
             if (witch.ShieldController != null && witch.ShieldController.HasShield)
                 witch.BreakShield();
 
+            witch.DisableStaggerImmuneDuringPhaseTransition();
             witch.ApplyGroggyStatus();
             yield break;
         }
 
         if (witch.HasAnySealedCandles())
         {
+            witch.DisableStaggerImmuneDuringPhaseTransition();
             witch.ClearShield();
             witch.ApplyMapWideDamage(initialTarget);
         }

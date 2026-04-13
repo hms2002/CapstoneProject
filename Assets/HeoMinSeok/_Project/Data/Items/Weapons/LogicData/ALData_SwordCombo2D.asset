@@ -83,7 +83,7 @@ MonoBehaviour:
   damageConfig:
     includeStaggerBuildUp: 1
     includeElementBuildUp: 1
-    staggerFormula: {fileID: 0}
+    staggerFormula: {fileID: 11400000, guid: 8fb95c16fb825134f8ce24efb528fe19, type: 2}
     elementFormulas: []
     critAffectsElement: 1
   comboResetTime: 1

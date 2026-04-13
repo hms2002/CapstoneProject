@@ -3,6 +3,11 @@ using UnityEngine;
 
 namespace UnityGAS
 {
+    /// <summary>
+    /// 책임 :
+    /// - 대상의 스태거 게이지 누적/트리거를 관리한다.
+    /// - 스태거 관련 월드 UI가 공통 기준점을 잡을 수 있도록 선택적 표현 오프셋 정보를 제공한다.
+    /// </summary>
     [DisallowMultipleComponent]
     public class StaggerGaugeSystem : MonoBehaviour
     {
@@ -15,16 +20,35 @@ namespace UnityGAS
         public GameplayEffect staggeredEffect;
         public bool allowOverflow = true;
 
+        [Header("Presentation")]
+        [SerializeField] private bool allowPresentationOffset;
+        [SerializeField] private Vector3 presentationWorldOffset = new(0f, 1.6f, 0f);
+        [SerializeField] private Transform presentationAnchor;
+        [SerializeField] private SpriteRenderer presentationBoundsSource;
+        [SerializeField] private BossGroggyHeadTimer groggyTimerPrefab;
+        [SerializeField] private Transform groggyTimerParent;
+
         public event Action<float, float> OnGaugeChanged; // old,new
         public event Action OnTriggered;
 
         private GameplayEffectRunner _runner;
         private AttributeSet _attr;
+        private BossGroggyHeadTimer _spawnedGroggyTimer;
+
+        public bool AllowPresentationOffset => allowPresentationOffset;
+        public Vector3 PresentationWorldOffset => presentationWorldOffset;
+        public Transform PresentationAnchor => presentationAnchor != null ? presentationAnchor : transform;
+        public SpriteRenderer PresentationBoundsSource => presentationBoundsSource;
 
         private void Awake()
         {
             _runner = GetComponent<GameplayEffectRunner>();
             _attr = GetComponent<AttributeSet>();
+        }
+
+        private void Start()
+        {
+            EnsureGroggyTimerInstance();
         }
 
         public void Clear()
@@ -104,6 +128,25 @@ namespace UnityGAS
                 return;
 
             _attr.TrySetBaseValue(currentGaugeAttribute, Mathf.Max(0f, value), this);
+        }
+
+        /// <summary>
+        /// 책임 :
+        /// - 스태거 시스템과 함께 쓰이는 그로기 타이머 프리팹을 자동 생성하고 기본 바인딩을 주입한다.
+        /// - 보스별 presentation authoring 지점을 StaggerGaugeSystem 하나로 모아 수동 연결 부담을 줄인다.
+        /// </summary>
+        private void EnsureGroggyTimerInstance()
+        {
+            if (groggyTimerPrefab == null || _spawnedGroggyTimer != null)
+                return;
+
+            BossControllerBase boss = GetComponent<BossControllerBase>();
+            if (boss == null)
+                return;
+
+            Transform parent = groggyTimerParent != null ? groggyTimerParent : transform;
+            _spawnedGroggyTimer = Instantiate(groggyTimerPrefab, parent);
+            _spawnedGroggyTimer.ConfigureForBoss(boss, this, staggeredEffect, _runner);
         }
     }
 }

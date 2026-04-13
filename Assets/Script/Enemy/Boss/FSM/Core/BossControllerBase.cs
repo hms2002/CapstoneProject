@@ -70,6 +70,9 @@ public abstract class BossControllerBase : Enemy
     public Transform CurrentTarget => Target;
     public override Transform Target => target;
     protected int ConfiguredPhaseCount => phases != null ? phases.Count : 0;
+    public float CurrentHealthRatio => GetCurrentHpRatio();
+    public float CurrentHealthValue => GetCurrentHealthValue();
+    public float MaxHealthValue => GetCurrentMaxHealthValue();
 
     protected override void Awake()
     {
@@ -382,19 +385,41 @@ public abstract class BossControllerBase : Enemy
 
     private float GetCurrentHpRatio()
     {
-        AttributeDefinition currentHealthAttribute = ResolveHealthAttribute();
-        AttributeDefinition currentMaxHealthAttribute = ResolveMaxHealthAttribute();
-
-        if (attributeSet == null || currentHealthAttribute == null || currentMaxHealthAttribute == null)
-            return 1f;
-
-        float currentHealth = attributeSet.GetAttributeValue(currentHealthAttribute);
-        float maxHealth = attributeSet.GetAttributeValue(currentMaxHealthAttribute);
+        float currentHealth = GetCurrentHealthValue();
+        float maxHealth = GetCurrentMaxHealthValue();
 
         if (maxHealth <= 0f)
             return 0f;
 
         return currentHealth / maxHealth;
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 보스 UI/HUD 같은 외부 표시 계층이 현재 체력 값을 안전하게 읽을 수 있게 제공한다.
+    /// - 보스 내부 Attribute 참조 해석은 컨트롤러 안에 가두고, 외부는 숫자만 소비하게 만든다.
+    /// </summary>
+    private float GetCurrentHealthValue()
+    {
+        AttributeDefinition currentHealthAttribute = ResolveHealthAttribute();
+        if (attributeSet == null || currentHealthAttribute == null)
+            return 0f;
+
+        return attributeSet.GetAttributeValue(currentHealthAttribute);
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 보스 UI/HUD 같은 외부 표시 계층이 최대 체력 값을 안전하게 읽을 수 있게 제공한다.
+    /// - Health/MaxHealth Attribute 정의 fallback 규칙을 보스 컨트롤러 내부에 유지한다.
+    /// </summary>
+    private float GetCurrentMaxHealthValue()
+    {
+        AttributeDefinition currentMaxHealthAttribute = ResolveMaxHealthAttribute();
+        if (attributeSet == null || currentMaxHealthAttribute == null)
+            return 0f;
+
+        return attributeSet.GetAttributeValue(currentMaxHealthAttribute);
     }
 
     private AttributeDefinition ResolveHealthAttribute()

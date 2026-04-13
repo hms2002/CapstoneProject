@@ -9,12 +9,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1d3b97f7b6e98034ea6d65cb0257dbf4, type: 3}
-  m_Name: SF_STAGGERx1
+  m_Script: {fileID: 11500000, guid: 139c9e309cf1eec4492c3d3fdf60d8d6, type: 3}
+  m_Name: Cue.Status.GroggyBreak
   m_EditorClassIdentifier: 
-  terms:
-  - useStatId: 1
-    statId: 52
-    sourceAttribute: {fileID: 11400000, guid: dde112729dec0bb4a9d2238ee7ee6dcc, type: 2}
-    rate: 1
-    flat: 0
+  developerNote: 
+  tagName: GroggyBreak
+  parent: {fileID: 11400000, guid: 3d7d2ab34d724604b4063276897c4eb0, type: 2}
+  id: 68
+  cachedPath: 
+  cachedLowerPath: 
