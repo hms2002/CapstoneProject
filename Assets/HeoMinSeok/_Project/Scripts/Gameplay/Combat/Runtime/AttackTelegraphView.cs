@@ -124,6 +124,19 @@ namespace UnityGAS
                 borderRenderer.enabled = false;
         }
 
+        /// <summary>
+        /// 책임 :
+        /// - 공격 예고 렌더러의 정렬 레이어와 오더를 기준 렌더러에 맞춘다.
+        /// </summary>
+        public void SyncSorting(SpriteRenderer referenceRenderer, int orderOffset = 1)
+        {
+            if (referenceRenderer == null)
+                return;
+
+            ApplySorting(fillRenderer, referenceRenderer, orderOffset);
+            ApplySorting(borderRenderer, referenceRenderer, orderOffset + 1);
+        }
+
         private float GetCurrentNormalizedProgress()
         {
             return duration <= 0f
@@ -487,6 +500,22 @@ namespace UnityGAS
                 borderRenderer.color = borderColor;
                 borderRenderer.enabled = true;
             }
+        }
+
+        /// <summary>
+        /// 책임 :
+        /// - 개별 렌더러의 정렬 레이어와 오더를 기준 렌더러에 맞춰 설정한다.
+        /// </summary>
+        private static void ApplySorting(
+            SpriteRenderer targetRenderer,
+            SpriteRenderer referenceRenderer,
+            int orderOffset)
+        {
+            if (targetRenderer == null || referenceRenderer == null)
+                return;
+
+            targetRenderer.sortingLayerID = referenceRenderer.sortingLayerID;
+            targetRenderer.sortingOrder = referenceRenderer.sortingOrder + orderOffset;
         }
     }
 }

@@ -7,8 +7,6 @@ public class Witch : BossControllerBase
 {
     // 이 클래스의 책임:
     // 마녀 보스 전용 상태, 연출, 패턴 보조 동작을 조율하고 전용 런타임 데이터를 관리한다.
-
-    private static readonly int AttackHash = Animator.StringToHash("attack");
     private const int WallLayer = 30;
     private static readonly Vector3 RetreatLeftOffset = new Vector3(-0.5f, 0.2f, 0f);
     private static readonly Vector3 RetreatRightOffset = new Vector3(0.5f, 0.2f, 0f);
@@ -728,7 +726,7 @@ public class Witch : BossControllerBase
     /// <summary>패턴 모션을 재생합니다.</summary>
     private void PlayAttackMotion()
     {
-        if (animator != null && hasAttackTrigger) animator.SetTrigger(AttackHash);
+        if (animator != null && hasAttackTrigger) animator.SetTrigger("attack");
     }
 
     /// <summary>attack 트리거 유무를 확인합니다.</summary>
@@ -741,7 +739,7 @@ public class Witch : BossControllerBase
         {
             AnimatorControllerParameter parameter = parameters[i];
             if (parameter.type == AnimatorControllerParameterType.Trigger &&
-                parameter.nameHash == AttackHash)
+                parameter.name == "attack")
             {
                 return true;
             }
@@ -946,7 +944,7 @@ public class Witch : BossControllerBase
         definition.recoveryTime = recoveryTime;
         definition.animationChannel = AbilityDefinition.AnimationChannel.Player;
         definition.animationTrigger = "attack";
-        definition.animationTriggerHash = AttackHash;
+        definition.animationTriggerHash = 0;
         definition.logic = runtimeLogic;
         definition.executionPolicy = AbilityDefinition.ExecutionPolicy.ExclusiveQueued;
 
