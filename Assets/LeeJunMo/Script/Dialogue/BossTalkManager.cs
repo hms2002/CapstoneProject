@@ -32,6 +32,7 @@ public class BossTalkManager : MonoBehaviour
     private PlayerInteractor2D cachedPlayer;
     private InteractState previousPlayerState = InteractState.Idle;
     private bool holdsTransitionPlayerLock;
+    private bool holdsRunTimerPause;
 
     public bool IsSequenceRunning => runningSequence != null;
 
@@ -57,6 +58,7 @@ public class BossTalkManager : MonoBehaviour
     {
         PlayerRuntimeRegistry.PlayerRegistered -= HandlePlayerRegistered;
         ReleaseTransitionPlayerLock();
+        ReleaseRunTimerPause();
 
         if (runningSequence != null)
         {
@@ -76,6 +78,7 @@ public class BossTalkManager : MonoBehaviour
             return;
 
         AcquireTransitionPlayerLock();
+        AcquireRunTimerPause();
         TryCacheAndLockPlayer();
         runningSequence = StartCoroutine(EncounterSequence());
     }
@@ -85,6 +88,7 @@ public class BossTalkManager : MonoBehaviour
         if (!ValidateSetup())
         {
             ReleaseTransitionPlayerLock();
+            ReleaseRunTimerPause();
             runningSequence = null;
             yield break;
         }
@@ -99,6 +103,7 @@ public class BossTalkManager : MonoBehaviour
 
         RestorePlayerState();
         StartBossCombat();
+        ReleaseRunTimerPause();
         runningSequence = null;
     }
 
@@ -209,6 +214,34 @@ public class BossTalkManager : MonoBehaviour
             transitionService.SetPlayerUnlockBlocked(this, false);
 
         holdsTransitionPlayerLock = false;
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 보스 연출과 대화 시퀀스 전체 동안 런 제한 시간 감소를 멈춘다.
+    /// - 대화 본문이 시작되기 전 카메라 연출/대기 시간도 공정하게 보호한다.
+    /// </summary>
+    private void AcquireRunTimerPause()
+    {
+        if (holdsRunTimerPause || RunTimeLimitSystem.Instance == null)
+            return;
+
+        RunTimeLimitSystem.Instance.SetExternalPause(this, true);
+        holdsRunTimerPause = true;
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 보스 연출 시퀀스가 끝나거나 중도 취소될 때 런 제한 시간 pause를 해제한다.
+    /// - 레거시 시퀀스 경로에서도 타이머 정리 누락이 발생하지 않게 보장한다.
+    /// </summary>
+    private void ReleaseRunTimerPause()
+    {
+        if (!holdsRunTimerPause || RunTimeLimitSystem.Instance == null)
+            return;
+
+        RunTimeLimitSystem.Instance.SetExternalPause(this, false);
+        holdsRunTimerPause = false;
     }
 
     private static InteractState NormalizeRestoredPlayerState(InteractState state)

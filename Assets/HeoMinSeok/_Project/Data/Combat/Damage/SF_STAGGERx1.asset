@@ -15,6 +15,6 @@ MonoBehaviour:
   terms:
   - useStatId: 1
     statId: 52
-    sourceAttribute: {fileID: 11400000, guid: 122086249f809784c84b56e9b99e367e, type: 2}
+    sourceAttribute: {fileID: 11400000, guid: dde112729dec0bb4a9d2238ee7ee6dcc, type: 2}
     rate: 1
     flat: 0

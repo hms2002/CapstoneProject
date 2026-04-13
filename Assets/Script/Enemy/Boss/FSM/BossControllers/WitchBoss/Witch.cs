@@ -7,6 +7,9 @@ public class Witch : BossControllerBase
 {
     // 이 클래스의 책임:
     // 마녀 보스 전용 상태, 연출, 패턴 보조 동작을 조율하고 전용 런타임 데이터를 관리한다.
+
+    private static readonly int AttackHash = Animator.StringToHash("attack");
+    private const string StaggerImmuneTagResourcePath = "Tags/State.Status.StaggerImmune";
     private const int WallLayer = 30;
     private static readonly Vector3 RetreatLeftOffset = new Vector3(-0.5f, 0.2f, 0f);
     private static readonly Vector3 RetreatRightOffset = new Vector3(0.5f, 0.2f, 0f);
@@ -54,6 +57,8 @@ public class Witch : BossControllerBase
     private readonly List<Candlestick> runtimeSpawnedCandles = new();
     private WitchShieldController shieldController;
     private WitchShieldVisualController shieldVisualController;
+    private GameplayTag staggerImmuneTag;
+    private bool hasAppliedStaggerImmuneTag;
 
     protected override void Awake()
     {
@@ -71,6 +76,7 @@ public class Witch : BossControllerBase
         shieldVisualController = GetComponent<WitchShieldVisualController>();
         if (shieldVisualController == null)
             shieldVisualController = gameObject.AddComponent<WitchShieldVisualController>();
+        staggerImmuneTag = Resources.Load<GameplayTag>(StaggerImmuneTagResourcePath);
     }
 
     protected override void Start()
@@ -93,7 +99,10 @@ public class Witch : BossControllerBase
     {
         HideExtinguishWarning();
         if (patternEntry != null && patternEntry.Ability != null && patternEntry.Ability.logic is AbilityLogic_WitchLightAllCandles)
+        {
             ClearShield();
+            DisableStaggerImmuneDuringPhaseTransition();
+        }
         ClearNormal1();
     }
 
@@ -299,6 +308,34 @@ public class Witch : BossControllerBase
     public void ClearShield()
     {
         shieldController?.ClearShield();
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 촛불을 켜라 패턴 동안만 사용할 stagger 면역 태그를 중복 없이 부여한다.
+    /// - HP 무적과 별도로 stagger buildup 차단 의도를 분리해 유지한다.
+    /// </summary>
+    public void EnableStaggerImmuneDuringPhaseTransition()
+    {
+        if (hasAppliedStaggerImmuneTag || staggerImmuneTag == null || TagSystem == null)
+            return;
+
+        TagSystem.AddTag(staggerImmuneTag, 1);
+        hasAppliedStaggerImmuneTag = true;
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 촛불을 켜라 패턴이 끝날 때 이 보스가 직접 부여한 stagger 면역 태그만 회수한다.
+    /// - 강제 종료나 보호막 파괴 종료에서도 태그가 남지 않게 정리한다.
+    /// </summary>
+    public void DisableStaggerImmuneDuringPhaseTransition()
+    {
+        if (!hasAppliedStaggerImmuneTag || staggerImmuneTag == null || TagSystem == null)
+            return;
+
+        TagSystem.RemoveTag(staggerImmuneTag, 1);
+        hasAppliedStaggerImmuneTag = false;
     }
 
     /// <summary>평타1 장판을 모두 지웁니다.</summary>
@@ -726,7 +763,7 @@ public class Witch : BossControllerBase
     /// <summary>패턴 모션을 재생합니다.</summary>
     private void PlayAttackMotion()
     {
-        if (animator != null && hasAttackTrigger) animator.SetTrigger("attack");
+        if (animator != null && hasAttackTrigger) animator.SetTrigger(AttackHash);
     }
 
     /// <summary>attack 트리거 유무를 확인합니다.</summary>
@@ -739,7 +776,7 @@ public class Witch : BossControllerBase
         {
             AnimatorControllerParameter parameter = parameters[i];
             if (parameter.type == AnimatorControllerParameterType.Trigger &&
-                parameter.name == "attack")
+                parameter.nameHash == AttackHash)
             {
                 return true;
             }
@@ -944,7 +981,7 @@ public class Witch : BossControllerBase
         definition.recoveryTime = recoveryTime;
         definition.animationChannel = AbilityDefinition.AnimationChannel.Player;
         definition.animationTrigger = "attack";
-        definition.animationTriggerHash = 0;
+        definition.animationTriggerHash = AttackHash;
         definition.logic = runtimeLogic;
         definition.executionPolicy = AbilityDefinition.ExecutionPolicy.ExclusiveQueued;
 

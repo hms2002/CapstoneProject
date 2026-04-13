@@ -12,12 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 636dab40de92d174c9a3c2d736773018, type: 3}
   m_Name: RunRouteCatalog
   m_EditorClassIdentifier: 
-  normalStageCount: 3
-  normalRouteSets:
-  - {fileID: 11400000, guid: d35e3630a31b6ef42a9a2b03d2afa4e3, type: 2}
-  - {fileID: 11400000, guid: 1376fe2d23ed5c84cbfd15d0d3b1dd3d, type: 2}
-  - {fileID: 11400000, guid: 1e1a84d1d6fd3a64497702131d4665c5, type: 2}
+  normalStageCount: 0
+  normalRouteSets: []
   allowDuplicateNormalRoutes: 0
-  finalRouteSet: {fileID: 11400000, guid: 4082a0f1d0dd40b41be8d40d90e7bf45, type: 2}
+  finalRouteSet: {fileID: 11400000, guid: d35e3630a31b6ef42a9a2b03d2afa4e3, type: 2}
   hubSceneName: ProtoTypeHub
   hubEntryPointId: Default

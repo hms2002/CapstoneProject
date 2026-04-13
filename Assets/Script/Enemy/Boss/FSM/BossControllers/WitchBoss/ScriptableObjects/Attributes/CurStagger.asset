@@ -10,11 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d98d22e39756b5842ab9e6a8750ac815, type: 3}
-  m_Name: Stagger
+  m_Name: CurStagger
   m_EditorClassIdentifier: 
   attributeName: Stagger
   description: "\uBCF4\uC2A4\uC758 \uADF8\uB85C\uAE30 \uAC8C\uC774\uC9C0\uC785\uB2C8\uB2E4."
-  defaultBaseValue: 100
+  mutationPolicy: 1
+  defaultBaseValue: 0
   minValue: 0
   maxValue: 100
   hasRegeneration: 0

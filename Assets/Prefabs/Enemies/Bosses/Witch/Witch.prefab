@@ -33,6 +33,10 @@ GameObject:
   - component: {fileID: 5724109387412903854}
   - component: {fileID: 4097123456789012345}
   - component: {fileID: 8412503971642095334}
+  - component: {fileID: 5675224341811256986}
+  - component: {fileID: 3836901854821853225}
+  - component: {fileID: 2539260762478503238}
+  - component: {fileID: 8439794030914778521}
   m_Layer: 31
   m_Name: Witch
   m_TagString: Enemy
@@ -214,7 +218,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealthDef: {fileID: 11400000, guid: 0e177e1d15e428745b5859fac08ce203, type: 2}
   healthDef: {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
-  enemyName: Witch
+  enemyName: 
   targetTag: Player
   dieAnimTime: 0
   startCombatOnStart: 1
@@ -226,11 +230,11 @@ MonoBehaviour:
   phases:
   - phaseName: "1 \uD398\uC774\uC988"
     enterHpRatioBelowOrEqual: 1
-    thinkDelayMin: 0
-    thinkDelayMax: 0
+    thinkDelayMin: 1
+    thinkDelayMax: 3
     patterns:
     - ability: {fileID: 11400000, guid: 0c89c5f9457540d6a5d0c393c44b0c7e, type: 2}
-      selectionWeight: 200
+      selectionWeight: 1
       maxConsecutiveUseCount: 0
       maxUseCount: 0
       aiSelectionLockTime: 0
@@ -239,65 +243,58 @@ MonoBehaviour:
       minHpRatio: 0
       maxHpRatio: 1
       additionalConditions: []
-    - ability: {fileID: 11400000, guid: 3d9f7b2e6c4a4fd5a18be7f0c3d2a941, type: 2}
-      selectionWeight: 100
+    - ability: {fileID: 11400000, guid: 7282429da9b7468f9340e1de621d2d3c, type: 2}
+      selectionWeight: 1
       maxConsecutiveUseCount: 0
       maxUseCount: 0
       aiSelectionLockTime: 0
-      minDistanceToTarget: 0
-      maxDistanceToTarget: 999
+      minDistanceToTarget: 5
+      maxDistanceToTarget: 15
       minHpRatio: 0
       maxHpRatio: 1
       additionalConditions: []
     - ability: {fileID: 11400000, guid: 8dbccf3ca7da42d88efb39ed3d1d2f20, type: 2}
-      selectionWeight: 400
+      selectionWeight: 1
       maxConsecutiveUseCount: 0
       maxUseCount: 0
       aiSelectionLockTime: 0
       minDistanceToTarget: 0
-      maxDistanceToTarget: 999
+      maxDistanceToTarget: 100
       minHpRatio: 0
       maxHpRatio: 1
-      additionalConditions:
-      - {fileID: 11400000, guid: 3dbba152ab1946d89f913d70073cc988, type: 2}
-  - phaseName: "2 \uD398\uC774\uC988"
-    enterHpRatioBelowOrEqual: 0.5
-    thinkDelayMin: 0
-    thinkDelayMax: 0
-    patterns:
-    - ability: {fileID: 11400000, guid: 0c89c5f9457540d6a5d0c393c44b0c7e, type: 2}
-      selectionWeight: 200
+      additionalConditions: []
+    - ability: {fileID: 11400000, guid: a07ae8e7f7a349a9a9d79a5c4af4ab96, type: 2}
+      selectionWeight: 1
       maxConsecutiveUseCount: 0
       maxUseCount: 0
       aiSelectionLockTime: 0
       minDistanceToTarget: 0
-      maxDistanceToTarget: 5
+      maxDistanceToTarget: 100
       minHpRatio: 0
       maxHpRatio: 1
       additionalConditions: []
     - ability: {fileID: 11400000, guid: 3d9f7b2e6c4a4fd5a18be7f0c3d2a941, type: 2}
-      selectionWeight: 100
+      selectionWeight: 1
       maxConsecutiveUseCount: 0
       maxUseCount: 0
       aiSelectionLockTime: 0
       minDistanceToTarget: 0
-      maxDistanceToTarget: 999
+      maxDistanceToTarget: 100
       minHpRatio: 0
       maxHpRatio: 1
       additionalConditions: []
-    - ability: {fileID: 11400000, guid: 8dbccf3ca7da42d88efb39ed3d1d2f20, type: 2}
-      selectionWeight: 400
+    - ability: {fileID: 11400000, guid: b5241a76782b44ec892e9bff62fbeb80, type: 2}
+      selectionWeight: 1000
       maxConsecutiveUseCount: 0
-      maxUseCount: 0
+      maxUseCount: 1
       aiSelectionLockTime: 0
       minDistanceToTarget: 0
-      maxDistanceToTarget: 999
+      maxDistanceToTarget: 100
       minHpRatio: 0
-      maxHpRatio: 1
-      additionalConditions:
-      - {fileID: 11400000, guid: 3dbba152ab1946d89f913d70073cc988, type: 2}
+      maxHpRatio: 0.5
+      additionalConditions: []
   fogPrefab: {fileID: 4201956065249926095, guid: 983d63dce5dc9454a9a74287a2ed4d94, type: 3}
-  candlestickPrefab: {fileID: 625522859161183429, guid: 49288bedfccdaf14a9a7248b01f1565e, type: 3}
+  candlestickPrefab: {fileID: 625522859161183429, guid: 84e107a2d896c944b86df050ad0becb7, type: 3}
   lightBeadPrefab: {fileID: 8003320094034868151, guid: b1f8e58050cba114da8fe6380275e443, type: 3}
   extinguishDamageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
   groggyStatusEffect: {fileID: 11400000, guid: fab1dd76add51c74db9dbb7b0f424204, type: 2}
@@ -435,11 +432,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e232de7843f92745a254698e2054f4e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentGaugeAttribute: {fileID: 0}
-  maxGaugeAttribute: {fileID: 0}
+  currentGaugeAttribute: {fileID: 11400000, guid: 122086249f809784c84b56e9b99e367e, type: 2}
+  maxGaugeAttribute: {fileID: 11400000, guid: ddbd05a9b77349441a875c479e48212d, type: 2}
   resistancePercentAttribute: {fileID: 0}
-  staggeredEffect: {fileID: 0}
-  allowOverflow: 1
+  staggeredEffect: {fileID: 11400000, guid: fab1dd76add51c74db9dbb7b0f424204, type: 2}
+  allowOverflow: 0
+  allowPresentationOffset: 0
+  presentationWorldOffset: {x: 0, y: 1.6, z: 0}
+  presentationAnchor: {fileID: 0}
+  presentationBoundsSource: {fileID: 0}
+  groggyTimerPrefab: {fileID: 0}
+  groggyTimerParent: {fileID: 0}
 --- !u!114 &4949378769908726236
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -580,7 +583,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   telegraphPrefab: {fileID: 788264263987448140, guid: 211dd09e2da9caf47ad8409c9e35b83d, type: 3}
-  defaultStyle: {fileID: 0}
+  defaultStyle: {fileID: 11400000, guid: 5c4c8108f36d4acbaa6dfaf6d6b3f6e7, type: 2}
 --- !u!114 &1699081613814899334
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -606,7 +609,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bubblePrefab: {fileID: 8482697653009772348, guid: 62446638c99411c4c9669c3f3efc113d, type: 3}
-  bubbleOffset: {x: 0, y: 0, z: 0}
+  bubbleOffset: {x: 0.5, y: 1.5, z: 0}
+  showBubbleOffsetGizmo: 1
+  bubbleOffsetGizmoColor: {r: 1, g: 0.92, b: 0.16, a: 0.9}
+  bubbleOffsetGizmoRadius: 0.12
   defaultUseTyping: 1
   defaultTypingSpeed: 0.05
 --- !u!114 &4097123456789012345
@@ -649,9 +655,78 @@ MonoBehaviour:
   deathAnimator: {fileID: 6551344037253640885}
   deathEffectAnchor: {fileID: 7124681143442968898}
   speechController: {fileID: 4097123456789012345}
-  deathPoseSprite: {fileID: 0}
+  deathPoseSprite: {fileID: -3282638300470552162, guid: 66dc6cbb5247f4842b2db3329d25bcaa, type: 3}
   deathPoseSpriteSwapDelaySeconds: 0
   disableAnimatorWhenShowingDeathPoseSprite: 1
-  deathVanishEffectPrefab: {fileID: 0}
+  deathVanishEffectPrefab: {fileID: 6718438523550872990, guid: a18c5da0a9e3ce74bb0699bed51accde, type: 3}
   deathVanishEffectOffset: {x: 0, y: 0, z: 0}
   deathSpeechSituation: 2
+--- !u!114 &5675224341811256986
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4104743717894493410}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42667dfbf3529e6489882ac43545fe3b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  chestPrefab: {fileID: 7530156284439312542, guid: 296eaa6f1547cb74e990055ce1319470, type: 3}
+  chestSpawnPoint: {fileID: 0}
+  portalObj: {fileID: 0}
+  bossUniqueLoots:
+  - item: {fileID: 11400000, guid: 6a8181eecc5ab3a4988f9089d46607b0, type: 2}
+    dropChance: 100
+  magicStonePrefab: {fileID: 5809627508243328825, guid: 108ed5884c0e5294fb2bc08d259e53f5, type: 3}
+--- !u!114 &3836901854821853225
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4104743717894493410}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2eae5b7f38d512841bb3d472aa68139c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  npcData: {fileID: 11400000, guid: 4a2fd65cb07d41d2b4925014a094b1fe, type: 2}
+  legacyInkJSON: {fileID: 4900000, guid: aef34e203f982094b814e11d115a65ed, type: 3}
+--- !u!114 &2539260762478503238
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4104743717894493410}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f6527ad7c611aa41ac5e2b94666620e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cameraDirector: {fileID: 8439794030914778521}
+  dialogueRunner: {fileID: 3836901854821853225}
+  bossController: {fileID: 669182791067580952}
+  autoPlayWhenPlayerSpawned: 1
+  playOnlyOnce: 1
+  startBossCombatAfterDialogue: 1
+--- !u!114 &8439794030914778521
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4104743717894493410}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 928775a6a95adc64a9a5a0bd430fa85a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerCam: {fileID: 0}
+  bossCam: {fileID: 0}
+  normalPriority: 10
+  focusPriority: 100
+  disableLegacyFollowWhileSequence: 1
+  blendWaitFallbackSeconds: 2
