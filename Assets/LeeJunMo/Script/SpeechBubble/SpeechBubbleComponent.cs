@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.Pool;
 
@@ -36,6 +37,11 @@ public class SpeechBubbleComponent : MonoBehaviour
 
     public void Speak(string text, float duration, SpeechBubbleThemeSettings theme)
     {
+        Speak(text, duration, theme, null);
+    }
+
+    public void Speak(string text, float duration, SpeechBubbleThemeSettings theme, Action onHidden)
+    {
         if (bubblePrefab == null || string.IsNullOrWhiteSpace(text))
             return;
 
@@ -54,6 +60,7 @@ public class SpeechBubbleComponent : MonoBehaviour
             defaultUseTyping,
             defaultTypingSpeed,
             theme,
+            onHidden,
             HandleBubbleReleased);
     }
 

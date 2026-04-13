@@ -609,7 +609,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bubblePrefab: {fileID: 8482697653009772348, guid: 62446638c99411c4c9669c3f3efc113d, type: 3}
-  bubbleOffset: {x: 0.5, y: 1.5, z: 0}
+  bubbleOffset: {x: 0.3, y: 1.3, z: 0}
   showBubbleOffsetGizmo: 1
   bubbleOffsetGizmoColor: {r: 1, g: 0.92, b: 0.16, a: 0.9}
   bubbleOffsetGizmoRadius: 0.12
@@ -647,20 +647,26 @@ MonoBehaviour:
   deathUiTargetAlpha: 0
   deathPreSpeechDelaySeconds: 0.1
   deathSpeechDuration: 2.5
-  deathPostSpeechHoldSeconds: 0.15
   deathPostVanishHoldSeconds: 0.35
   deathCinematicOutroDuration: 0.35
   deathCameraDirector: {fileID: 0}
-  deathSpriteRenderer: {fileID: 8897721723054304330}
   deathAnimator: {fileID: 6551344037253640885}
   deathEffectAnchor: {fileID: 7124681143442968898}
   speechController: {fileID: 4097123456789012345}
-  deathPoseSprite: {fileID: -3282638300470552162, guid: 66dc6cbb5247f4842b2db3329d25bcaa, type: 3}
-  deathPoseSpriteSwapDelaySeconds: 0
-  disableAnimatorWhenShowingDeathPoseSprite: 1
+  breakdownAnimation:
+    triggerName: 
+    stateName: Boss1BreakdownAnim
+    crossFadeDuration: 0.05
+    fallbackDuration: 0
+  deathAnimation:
+    triggerName: 
+    stateName: BossDeathAnim
+    crossFadeDuration: 0.05
+    fallbackDuration: 0
   deathVanishEffectPrefab: {fileID: 6718438523550872990, guid: a18c5da0a9e3ce74bb0699bed51accde, type: 3}
   deathVanishEffectOffset: {x: 0, y: 0, z: 0}
   deathSpeechSituation: 2
+  deathBgmFadeOutDuration: 0
 --- !u!114 &5675224341811256986
 MonoBehaviour:
   m_ObjectHideFlags: 0

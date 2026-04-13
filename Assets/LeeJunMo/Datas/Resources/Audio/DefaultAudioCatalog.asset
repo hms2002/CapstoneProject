@@ -258,7 +258,7 @@ MonoBehaviour:
     category: 11
     variants:
     - {fileID: 8300000, guid: a1a1c58fa8202454e90a9b2bf22fbb7b, type: 3}
-    volume: 0.065
+    volume: 0.04
     playbackSpeed: 1
     pitchMin: 1
     pitchMax: 1
@@ -273,7 +273,7 @@ MonoBehaviour:
     category: 11
     variants:
     - {fileID: 8300000, guid: 16dd768bf5974ab46b7374f36e182a90, type: 3}
-    volume: 0.07
+    volume: 0.03
     playbackSpeed: 1
     pitchMin: 1
     pitchMax: 1
@@ -288,7 +288,7 @@ MonoBehaviour:
     category: 11
     variants:
     - {fileID: 8300000, guid: f389dfdf760f49646a8d71035f3e7f24, type: 3}
-    volume: 0.08
+    volume: 0.035
     playbackSpeed: 1.1
     pitchMin: 0.9
     pitchMax: 0.9
