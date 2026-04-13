@@ -1,3 +1,4 @@
+using CapstoneAudio;
 using UnityEngine;
 
 [CreateAssetMenu(
@@ -12,10 +13,16 @@ public sealed class CorridorBossRouteSetSO : ScriptableObject
     [SerializeField] private string bossSceneName;
     [SerializeField] private string bossEntryPointId = "Default";
 
+    [Header("BGM")]
+    [SerializeField] private SoundRef corridorBgm;
+    [SerializeField] private SoundRef bossCombatBgm;
+
     public string CorridorSceneName => corridorSceneName;
     public string CorridorEntryPointId => corridorEntryPointId;
     public string BossSceneName => bossSceneName;
     public string BossEntryPointId => bossEntryPointId;
+    public SoundRef CorridorBgm => corridorBgm;
+    public SoundRef BossCombatBgm => bossCombatBgm;
 
     public bool IsValid =>
         !string.IsNullOrWhiteSpace(corridorSceneName) &&
