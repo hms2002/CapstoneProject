@@ -1,11 +1,35 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using CapstoneAudio;
 using UnityEngine;
 using UnityGAS;
 
 [DisallowMultipleComponent]
 public sealed class BossDeathPresentation : MonoBehaviour
 {
+    [Serializable]
+    private sealed class AnimationStepSettings
+    {
+        [Tooltip("트리거 기반으로 애니메이션을 재생하고 싶을 때 사용합니다.")]
+        public string triggerName;
+
+        [Tooltip("상태명 기반으로 직접 재생하거나, 트리거 사용 시 완료 대기 기준으로 사용할 상태명입니다.")]
+        public string stateName;
+
+        [Min(0f)]
+        public float crossFadeDuration = 0.05f;
+
+        [Tooltip("상태 진입을 확인할 수 없을 때 사용할 마지막 대기 시간입니다. 0이면 클립 길이를 자동 탐색합니다.")]
+        [Min(0f)]
+        public float fallbackDuration;
+
+        public bool HasPlayableConfiguration =>
+            !string.IsNullOrWhiteSpace(triggerName) ||
+            !string.IsNullOrWhiteSpace(stateName) ||
+            fallbackDuration > 0f;
+    }
+
     [Header("Timing")]
     [SerializeField] private bool useDeathPresentation = true;
     [SerializeField, Min(0f)] private float deathCinematicIntroDuration = 0.45f;
@@ -13,26 +37,36 @@ public sealed class BossDeathPresentation : MonoBehaviour
     [SerializeField, Range(0f, 1f)] private float deathUiTargetAlpha = 0f;
     [SerializeField, Min(0f)] private float deathPreSpeechDelaySeconds = 0.1f;
     [SerializeField, Min(0f)] private float deathSpeechDuration = 2.5f;
-    [SerializeField, Min(0f)] private float deathPostSpeechHoldSeconds = 0.15f;
     [SerializeField, Min(0f)] private float deathPostVanishHoldSeconds = 0.35f;
     [SerializeField, Min(0f)] private float deathCinematicOutroDuration = 0.35f;
 
     [Header("References")]
     [SerializeField] private CameraPresentationDirector deathCameraDirector;
-    [SerializeField] private SpriteRenderer deathSpriteRenderer;
     [SerializeField] private Animator deathAnimator;
     [SerializeField] private Transform deathEffectAnchor;
     [SerializeField] private BossSpeechController speechController;
 
+    [Header("Animation")]
+    [SerializeField] private AnimationStepSettings breakdownAnimation = new AnimationStepSettings
+    {
+        stateName = "Boss1BreakdownAnim",
+        crossFadeDuration = 0.05f
+    };
+    [SerializeField] private AnimationStepSettings deathAnimation = new AnimationStepSettings
+    {
+        stateName = "BossDeathAnim",
+        crossFadeDuration = 0.05f
+    };
+
     [Header("Visuals")]
-    [SerializeField] private Sprite deathPoseSprite;
-    [SerializeField, Min(0f)] private float deathPoseSpriteSwapDelaySeconds;
-    [SerializeField] private bool disableAnimatorWhenShowingDeathPoseSprite = true;
     [SerializeField] private GameObject deathVanishEffectPrefab;
     [SerializeField] private Vector3 deathVanishEffectOffset;
 
     [Header("Speech")]
     [SerializeField] private BossSpeechSituationEnum deathSpeechSituation = BossSpeechSituationEnum.Death;
+
+    [Header("Audio")]
+    [SerializeField, Min(0f)] private float deathBgmFadeOutDuration = 0f;
 
     private BossControllerBase owner;
     private BossDrop bossDrop;
@@ -45,7 +79,6 @@ public sealed class BossDeathPresentation : MonoBehaviour
     private MovementMotor2D lockedPlayerMovement;
     private Rigidbody2D lockedPlayerBody;
     private InteractState previousLockedPlayerState = InteractState.Idle;
-    private bool hasPlayedDeferredDeathAnimation;
 
     private readonly struct ManagedBehaviourState
     {
@@ -103,17 +136,9 @@ public sealed class BossDeathPresentation : MonoBehaviour
         return true;
     }
 
-    public void PlayDeferredDeathAnimation()
-    {
-        if (hasPlayedDeferredDeathAnimation || owner == null)
-            return;
-
-        hasPlayedDeferredDeathAnimation = true;
-        owner.PlayDeferredDeathAnimationFromPresentation();
-    }
-
     private IEnumerator RunDeathPresentationRoutine()
     {
+        SoundManager.EnsureInstance().StopMusic(deathBgmFadeOutDuration);
         LockPlayerControls();
         overlay = new BossDeathCinematicOverlay();
 
@@ -128,21 +153,9 @@ public sealed class BossDeathPresentation : MonoBehaviour
 
         yield return overlayIntroRoutine;
         yield return WaitForPresentationSeconds(deathPreSpeechDelaySeconds);
-
-        PlayDeferredDeathAnimation();
-
-        if (deathPoseSprite != null)
-        {
-            if (deathPoseSpriteSwapDelaySeconds <= 0f)
-                ApplyDeathPoseSprite();
-            else
-                StartCoroutine(ApplyDeathPoseSpriteAfterDelay());
-        }
-
-        if (PlayDeathSpeech())
-            yield return WaitForPresentationSeconds(deathSpeechDuration);
-
-        yield return WaitForPresentationSeconds(deathPostSpeechHoldSeconds);
+        yield return PlayAnimationAndWait(breakdownAnimation);
+        yield return PlayDeathSpeechAndWait();
+        yield return PlayAnimationAndWait(deathAnimation);
 
         HideBossVisuals();
         SpawnDeathVanishEffect();
@@ -160,12 +173,6 @@ public sealed class BossDeathPresentation : MonoBehaviour
         UnlockPlayerControls();
         CleanupPresentationArtifacts();
         runningSequence = null;
-    }
-
-    private IEnumerator ApplyDeathPoseSpriteAfterDelay()
-    {
-        yield return WaitForPresentationSeconds(deathPoseSpriteSwapDelaySeconds);
-        ApplyDeathPoseSprite();
     }
 
     private IEnumerator WaitForPresentationSeconds(float seconds)
@@ -187,9 +194,6 @@ public sealed class BossDeathPresentation : MonoBehaviour
         if (deathCameraDirector == null)
             deathCameraDirector = FindAnyObjectByType<CameraPresentationDirector>();
 
-        if (deathSpriteRenderer == null)
-            deathSpriteRenderer = GetComponent<SpriteRenderer>();
-
         if (deathAnimator == null)
             deathAnimator = GetComponent<Animator>();
 
@@ -198,28 +202,6 @@ public sealed class BossDeathPresentation : MonoBehaviour
 
         if (deathEffectAnchor == null)
             deathEffectAnchor = transform;
-    }
-
-    private void ApplyDeathPoseSprite()
-    {
-        if (deathSpriteRenderer == null || deathPoseSprite == null)
-            return;
-
-        if (disableAnimatorWhenShowingDeathPoseSprite && deathAnimator != null)
-            deathAnimator.enabled = false;
-
-        deathSpriteRenderer.sprite = deathPoseSprite;
-    }
-
-    private bool PlayDeathSpeech()
-    {
-        if (speechController == null)
-        {
-            Debug.LogWarning("[BossDeathPresentation] BossSpeechController is missing.", this);
-            return false;
-        }
-
-        return speechController.TrySpeakSituation(deathSpeechSituation, deathSpeechDuration);
     }
 
     private void LockPlayerControls()
@@ -302,6 +284,177 @@ public sealed class BossDeathPresentation : MonoBehaviour
 
         if (deathAnimator != null)
             deathAnimator.enabled = false;
+    }
+
+    private IEnumerator PlayDeathSpeechAndWait()
+    {
+        if (speechController == null)
+        {
+            Debug.LogWarning("[BossDeathPresentation] BossSpeechController is missing.", this);
+            yield break;
+        }
+
+        bool bubbleHidden = false;
+        bool started = speechController.TrySpeakSituation(
+            deathSpeechSituation,
+            deathSpeechDuration,
+            () => bubbleHidden = true);
+
+        if (!started)
+            yield break;
+
+        float timeout = Mathf.Max(0.5f, deathSpeechDuration + 1f);
+        float elapsed = 0f;
+
+        while (!bubbleHidden && elapsed < timeout)
+        {
+            elapsed += Time.unscaledDeltaTime;
+            yield return null;
+        }
+    }
+
+    private IEnumerator PlayAnimationAndWait(AnimationStepSettings settings)
+    {
+        if (settings == null || !settings.HasPlayableConfiguration)
+            yield break;
+
+        float resolvedDuration = ResolveAnimationDuration(settings);
+
+        if (deathAnimator == null)
+        {
+            yield return WaitForPresentationSeconds(resolvedDuration);
+            yield break;
+        }
+
+        deathAnimator.enabled = true;
+        StartConfiguredAnimation(settings);
+
+        if (!string.IsNullOrWhiteSpace(settings.stateName))
+        {
+            yield return WaitForAnimatorStateCompletion(settings.stateName, resolvedDuration);
+            yield break;
+        }
+
+        yield return WaitForPresentationSeconds(resolvedDuration);
+    }
+
+    private void StartConfiguredAnimation(AnimationStepSettings settings)
+    {
+        if (deathAnimator == null || settings == null)
+            return;
+
+        if (!string.IsNullOrWhiteSpace(settings.triggerName))
+        {
+            deathAnimator.ResetTrigger(settings.triggerName);
+            deathAnimator.SetTrigger(settings.triggerName);
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(settings.stateName))
+            return;
+
+        if (settings.crossFadeDuration > 0f)
+            deathAnimator.CrossFadeInFixedTime(settings.stateName, settings.crossFadeDuration, 0);
+        else
+            deathAnimator.Play(settings.stateName, 0, 0f);
+    }
+
+    private IEnumerator WaitForAnimatorStateCompletion(string stateName, float fallbackDuration)
+    {
+        if (deathAnimator == null || string.IsNullOrWhiteSpace(stateName))
+        {
+            yield return WaitForPresentationSeconds(fallbackDuration);
+            yield break;
+        }
+
+        int shortNameHash = Animator.StringToHash(stateName);
+        float enterTimeout = Mathf.Max(0.1f, fallbackDuration + 0.5f);
+        float elapsed = 0f;
+        bool enteredState = false;
+
+        while (elapsed < enterTimeout)
+        {
+            AnimatorStateInfo stateInfo = deathAnimator.GetCurrentAnimatorStateInfo(0);
+            if (AnimatorStateMatches(stateInfo, stateName, shortNameHash))
+            {
+                enteredState = true;
+                break;
+            }
+
+            elapsed += Time.unscaledDeltaTime;
+            yield return null;
+        }
+
+        if (!enteredState)
+        {
+            yield return WaitForPresentationSeconds(fallbackDuration);
+            yield break;
+        }
+
+        float completionTimeout = Mathf.Max(0.1f, fallbackDuration + 2f);
+        elapsed = 0f;
+
+        while (elapsed < completionTimeout)
+        {
+            AnimatorStateInfo stateInfo = deathAnimator.GetCurrentAnimatorStateInfo(0);
+            bool isExpectedState = AnimatorStateMatches(stateInfo, stateName, shortNameHash);
+
+            if (!isExpectedState)
+                yield break;
+
+            if (!deathAnimator.IsInTransition(0) && stateInfo.normalizedTime >= 1f)
+                yield break;
+
+            elapsed += Time.unscaledDeltaTime;
+            yield return null;
+        }
+    }
+
+    private float ResolveAnimationDuration(AnimationStepSettings settings)
+    {
+        if (settings == null)
+            return 0f;
+
+        if (settings.fallbackDuration > 0f)
+            return settings.fallbackDuration;
+
+        if (deathAnimator == null || deathAnimator.runtimeAnimatorController == null)
+            return 0f;
+
+        string preferredClipName = !string.IsNullOrWhiteSpace(settings.stateName)
+            ? settings.stateName
+            : settings.triggerName;
+
+        if (string.IsNullOrWhiteSpace(preferredClipName))
+            return 0f;
+
+        AnimationClip[] clips = deathAnimator.runtimeAnimatorController.animationClips;
+        if (clips == null || clips.Length == 0)
+            return 0f;
+
+        for (int i = 0; i < clips.Length; i++)
+        {
+            AnimationClip clip = clips[i];
+            if (clip != null && clip.name == preferredClipName)
+                return clip.length;
+        }
+
+        for (int i = 0; i < clips.Length; i++)
+        {
+            AnimationClip clip = clips[i];
+            if (clip == null)
+                continue;
+
+            if (clip.name.IndexOf(preferredClipName, StringComparison.OrdinalIgnoreCase) >= 0)
+                return clip.length;
+        }
+
+        return 0f;
+    }
+
+    private static bool AnimatorStateMatches(AnimatorStateInfo stateInfo, string stateName, int shortNameHash)
+    {
+        return stateInfo.shortNameHash == shortNameHash || stateInfo.IsName(stateName);
     }
 
     private void CacheDeathRenderers()

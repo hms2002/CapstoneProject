@@ -411,7 +411,7 @@ namespace CapstoneAudio
                     return;
 
                 musicSource.clip = clip;
-                musicSource.pitch = entry.PickPitch();
+                musicSource.pitch = entry.PickAudioSourcePitch();
                 musicSource.loop = entry.loop || entry.bus == AudioBus.BGM;
                 musicSource.spatialBlend = 0f;
                 musicSource.volume = duration > 0f ? 0f : targetVolume;
@@ -465,7 +465,7 @@ namespace CapstoneAudio
 
             source.DOKill();
             source.clip = clip;
-            source.pitch = entry.PickPitch();
+            source.pitch = entry.PickAudioSourcePitch();
             source.volume = entry.volume * soundRef.EffectiveVolumeMultiplier * masterSfxVolume * masterVolume;
             source.minDistance = Mathf.Max(0.01f, entry.minDistance);
             source.maxDistance = Mathf.Max(source.minDistance, entry.maxDistance);

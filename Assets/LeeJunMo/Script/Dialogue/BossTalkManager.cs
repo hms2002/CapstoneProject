@@ -273,6 +273,7 @@ public class BossTalkManager : MonoBehaviour
         }
 
         bossController.BeginCombatEncounter(PlayerRuntimeRegistry.GetPlayerTransform());
+        RunRouteBgmService.EnsureInstance()?.NotifyBossCombatStarted();
     }
 
     private void HandlePlayerRegistered(PlayerInteractor2D player)

@@ -101,9 +101,44 @@ public class BossDrop : MonoBehaviour
 
     private void ActivePortal()
     {
-        if(portalObj != null)
+        if (portalObj == null)
         {
-            portalObj.SetActive(true);
+            Debug.LogWarning("[BossDrop] portalObj is not assigned, so no exit portal could be activated.", this);
+            return;
+        }
+
+        Transform portalTransform = portalObj.transform;
+        if (portalTransform != null && portalTransform.IsChildOf(transform))
+            portalTransform.SetParent(null, true);
+
+        portalObj.SetActive(true);
+        RestorePortalVisibilityAndInteraction(portalObj);
+    }
+
+    private static void RestorePortalVisibilityAndInteraction(GameObject portalRoot)
+    {
+        if (portalRoot == null)
+            return;
+
+        Renderer[] renderers = portalRoot.GetComponentsInChildren<Renderer>(true);
+        for (int i = 0; i < renderers.Length; i++)
+        {
+            if (renderers[i] != null)
+                renderers[i].enabled = true;
+        }
+
+        Collider2D[] colliders = portalRoot.GetComponentsInChildren<Collider2D>(true);
+        for (int i = 0; i < colliders.Length; i++)
+        {
+            if (colliders[i] != null)
+                colliders[i].enabled = true;
+        }
+
+        ScenePortal[] scenePortals = portalRoot.GetComponentsInChildren<ScenePortal>(true);
+        for (int i = 0; i < scenePortals.Length; i++)
+        {
+            if (scenePortals[i] != null)
+                scenePortals[i].enabled = true;
         }
     }
 }

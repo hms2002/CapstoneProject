@@ -1,3 +1,4 @@
+using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -32,8 +33,19 @@ public sealed class BossHudController : MonoBehaviour
     [Header("Groggy Label")]
     [SerializeField] private string groggyStateLabel = "GROGGY";
 
+    [Header("Slide Presentation")]
+    [SerializeField] private RectTransform bossHudSlideRoot;
+    [SerializeField] private bool useBossHudSlidePresentation = true;
+    [SerializeField] private float hiddenAnchoredPosY = 120f;
+    [SerializeField] private float shownAnchoredPosY = 0f;
+    [SerializeField, Min(0f)] private float slideDuration = 0.3f;
+    [SerializeField] private bool useUnscaledSlideTime = true;
+
     private StaggerGaugeSystem _staggerGaugeSystem;
     private GameplayEffectRunner _effectRunner;
+    private Coroutine _slideRoutine;
+    private bool _hasAppliedInitialSlideState;
+    private bool _lastSlideVisibleState;
 
     private void Awake()
     {
@@ -56,6 +68,12 @@ public sealed class BossHudController : MonoBehaviour
     private void OnDisable()
     {
         SceneManager.sceneLoaded -= HandleSceneLoaded;
+
+        if (_slideRoutine != null)
+        {
+            StopCoroutine(_slideRoutine);
+            _slideRoutine = null;
+        }
     }
 
     private void OnDestroy()
@@ -92,6 +110,8 @@ public sealed class BossHudController : MonoBehaviour
     /// </summary>
     private void ResolveBossBinding()
     {
+        ResolveSlideRoot();
+
         if (targetBoss == null && autoFindBossOnSceneLoad)
             targetBoss = FindAnyObjectByType<BossControllerBase>();
 
@@ -240,10 +260,97 @@ public sealed class BossHudController : MonoBehaviour
                 healthBarUI.gameObject.SetActive(visible);
             if (groggyBarUI != null)
                 groggyBarUI.gameObject.SetActive(visible);
+        }
+        else if (targetRoot.activeSelf != visible)
+            targetRoot.SetActive(visible);
+
+        ApplySlidePresentation(visible);
+    }
+
+    private void ResolveSlideRoot()
+    {
+        if (bossHudSlideRoot == null && transform.parent is RectTransform parentRect)
+            bossHudSlideRoot = parentRect;
+    }
+
+    private void ApplySlidePresentation(bool visible)
+    {
+        if (!useBossHudSlidePresentation)
+            return;
+
+        ResolveSlideRoot();
+        if (bossHudSlideRoot == null)
+            return;
+
+        if (!_hasAppliedInitialSlideState)
+        {
+            SnapSlideRoot(visible);
+            _hasAppliedInitialSlideState = true;
+            _lastSlideVisibleState = visible;
             return;
         }
 
-        if (targetRoot.activeSelf != visible)
-            targetRoot.SetActive(visible);
+        if (_lastSlideVisibleState == visible)
+            return;
+
+        _lastSlideVisibleState = visible;
+
+        if (_slideRoutine != null)
+        {
+            StopCoroutine(_slideRoutine);
+            _slideRoutine = null;
+        }
+
+        if (visible)
+        {
+            _slideRoutine = StartCoroutine(AnimateSlideRoot(GetSlideTargetPosition(true)));
+            return;
+        }
+
+        SnapSlideRoot(false);
+    }
+
+    private void SnapSlideRoot(bool visible)
+    {
+        if (bossHudSlideRoot == null)
+            return;
+
+        bossHudSlideRoot.anchoredPosition = GetSlideTargetPosition(visible);
+    }
+
+    private Vector2 GetSlideTargetPosition(bool visible)
+    {
+        Vector2 current = bossHudSlideRoot.anchoredPosition;
+        return new Vector2(
+            current.x,
+            visible ? shownAnchoredPosY : hiddenAnchoredPosY);
+    }
+
+    private IEnumerator AnimateSlideRoot(Vector2 targetPosition)
+    {
+        if (bossHudSlideRoot == null)
+            yield break;
+
+        Vector2 startPosition = bossHudSlideRoot.anchoredPosition;
+        float duration = Mathf.Max(0f, slideDuration);
+        if (duration <= 0f)
+        {
+            bossHudSlideRoot.anchoredPosition = targetPosition;
+            _slideRoutine = null;
+            yield break;
+        }
+
+        float elapsed = 0f;
+        while (elapsed < duration)
+        {
+            elapsed += useUnscaledSlideTime ? Time.unscaledDeltaTime : Time.deltaTime;
+            float t = Mathf.Clamp01(elapsed / duration);
+            t = Mathf.SmoothStep(0f, 1f, t);
+            bossHudSlideRoot.anchoredPosition = Vector2.LerpUnclamped(startPosition, targetPosition, t);
+            yield return null;
+        }
+
+        bossHudSlideRoot.anchoredPosition = targetPosition;
+        _slideRoutine = null;
     }
 }

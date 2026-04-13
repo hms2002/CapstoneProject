@@ -23,6 +23,7 @@ public class SpeechBubble : MonoBehaviour
     private Tween hideDelayTween;
     private Vector3 originalScale;
     private Action<SpeechBubble> releaseAction;
+    private Action hiddenAction;
     private Material runtimeBackgroundMaterial;
     private Material runtimeTextMaterial;
     private bool supportsBackgroundTheme;
@@ -51,12 +52,14 @@ public class SpeechBubble : MonoBehaviour
         bool useTyping,
         float typingSpeed,
         SpeechBubbleThemeSettings theme,
+        Action onHidden,
         Action<SpeechBubble> onRelease)
     {
         StopActiveTweens();
 
         this.target = target;
         this.offset = offset;
+        hiddenAction = onHidden;
         releaseAction = onRelease;
 
         transform.position = target.position + offset;
@@ -95,11 +98,13 @@ public class SpeechBubble : MonoBehaviour
         {
             canvasGroup.DOFade(0f, 0.3f).OnComplete(() =>
             {
+                NotifyHidden();
                 ReleaseToPool();
             });
         }
         else
         {
+            NotifyHidden();
             ReleaseToPool();
         }
 
@@ -118,6 +123,7 @@ public class SpeechBubble : MonoBehaviour
     {
         StopActiveTweens();
         target = null;
+        hiddenAction = null;
         releaseAction = null;
     }
 
@@ -255,5 +261,12 @@ public class SpeechBubble : MonoBehaviour
         Action<SpeechBubble> callback = releaseAction;
         releaseAction = null;
         callback?.Invoke(this);
+    }
+
+    private void NotifyHidden()
+    {
+        Action callback = hiddenAction;
+        hiddenAction = null;
+        callback?.Invoke();
     }
 }

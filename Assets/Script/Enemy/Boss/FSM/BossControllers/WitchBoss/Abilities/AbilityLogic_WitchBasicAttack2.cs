@@ -9,11 +9,13 @@ public class AbilityLogic_WitchBasicAttack2 : AbilityLogic
     // 마녀 보스의 평타2 패턴을 실행하고 마녀 중심 도넛 범위를 경고한 뒤 지연 피해를 적용한다.
 
     private const float WarningSeconds = 1.4f;
-    private const float FallbackOuterRadius = 6f;
-    private const float InnerSafeDiameterScale = 1.5f;
-    private const float MinimumInnerSafeRadius = 0.75f;
     private const float DefaultPresentationLifetimeSeconds = 1f;
     private readonly HashSet<GameObject> damagedTargets = new();
+
+    [Header("Donut Range")]
+    [SerializeField, Min(0.1f)] private float fallbackOuterRadius = 6f;
+    [SerializeField, Min(0f)] private float innerSafeDiameterScale = 1.5f;
+    [SerializeField, Min(0f)] private float minimumInnerSafeRadius = 0.75f;
 
     [Header("Hit Presentation")]
     [SerializeField] [Min(1)] private int hitEffectCount = 8;
@@ -139,20 +141,20 @@ public class AbilityLogic_WitchBasicAttack2 : AbilityLogic
             outerRadius = Mathf.Max(outerRadius, candleDistance + candleExtent);
         }
 
-        return Mathf.Max(FallbackOuterRadius, outerRadius);
+        return Mathf.Max(fallbackOuterRadius, outerRadius);
     }
 
     private float ComputeInnerSafeRadius(Transform targetTransform)
     {
         if (targetTransform == null)
-            return MinimumInnerSafeRadius;
+            return minimumInnerSafeRadius;
 
         float targetSize = 1f;
         Collider2D targetCollider = targetTransform.GetComponent<Collider2D>();
         if (targetCollider != null)
             targetSize = Mathf.Max(targetCollider.bounds.size.x, targetCollider.bounds.size.y);
 
-        return Mathf.Max(MinimumInnerSafeRadius, targetSize * InnerSafeDiameterScale * 0.5f);
+        return Mathf.Max(minimumInnerSafeRadius, targetSize * innerSafeDiameterScale * 0.5f);
     }
 
     private float GetObjectExtentRadius(GameObject gameObject)

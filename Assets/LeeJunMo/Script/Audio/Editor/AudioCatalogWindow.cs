@@ -43,6 +43,11 @@ namespace CapstoneAudio.EditorTools
             }
         }
 
+        private void OnDisable()
+        {
+            AudioCatalogPreviewUtility.StopPreview();
+        }
+
         private void OnGUI()
         {
             DrawCatalogSelector();
@@ -124,6 +129,12 @@ namespace CapstoneAudio.EditorTools
             if (GUILayout.Button("Validate", EditorStyles.toolbarButton, GUILayout.Width(64f)))
                 ValidateSelectedCatalog();
 
+            using (new EditorGUI.DisabledScope(!AudioCatalogPreviewUtility.CanPreview))
+            {
+                if (GUILayout.Button("Stop Preview", EditorStyles.toolbarButton, GUILayout.Width(92f)))
+                    AudioCatalogPreviewUtility.StopPreview();
+            }
+
             EditorGUILayout.EndHorizontal();
 
             EditorGUILayout.HelpBox(
@@ -188,21 +199,94 @@ namespace CapstoneAudio.EditorTools
             EditorGUILayout.EndVertical();
         }
 
-        private static void DrawEntryFields(SerializedProperty entry)
+        private void DrawEntryFields(SerializedProperty entry)
         {
             EditorGUILayout.PropertyField(entry.FindPropertyRelative("key"));
             EditorGUILayout.PropertyField(entry.FindPropertyRelative("bus"));
             EditorGUILayout.PropertyField(entry.FindPropertyRelative("category"));
-            EditorGUILayout.PropertyField(entry.FindPropertyRelative("variants"), true);
             EditorGUILayout.PropertyField(entry.FindPropertyRelative("volume"));
+            EditorGUILayout.PropertyField(entry.FindPropertyRelative("playbackSpeed"));
             EditorGUILayout.PropertyField(entry.FindPropertyRelative("pitchMin"));
             EditorGUILayout.PropertyField(entry.FindPropertyRelative("pitchMax"));
+            DrawVariantsField(entry);
             EditorGUILayout.PropertyField(entry.FindPropertyRelative("loop"));
             EditorGUILayout.PropertyField(entry.FindPropertyRelative("spatial"));
             EditorGUILayout.PropertyField(entry.FindPropertyRelative("important"));
             EditorGUILayout.PropertyField(entry.FindPropertyRelative("cooldown"));
             EditorGUILayout.PropertyField(entry.FindPropertyRelative("minDistance"));
             EditorGUILayout.PropertyField(entry.FindPropertyRelative("maxDistance"));
+
+            EditorGUILayout.HelpBox(
+                "Preview uses the entry volume, playback speed, and pitch range. Each Play click samples the pitch once like runtime playback.",
+                MessageType.None);
+        }
+
+        private void DrawVariantsField(SerializedProperty entry)
+        {
+            SerializedProperty variantsProperty = entry.FindPropertyRelative("variants");
+            if (variantsProperty == null)
+                return;
+
+            variantsProperty.isExpanded = EditorGUILayout.Foldout(
+                variantsProperty.isExpanded,
+                "Variants",
+                true);
+
+            if (!variantsProperty.isExpanded)
+                return;
+
+            using (new EditorGUI.IndentLevelScope())
+            {
+                variantsProperty.arraySize = Mathf.Max(0, EditorGUILayout.IntField("Size", variantsProperty.arraySize));
+
+                float previewVolume = entry.FindPropertyRelative("volume").floatValue;
+                float previewSpeed = Mathf.Max(0.1f, entry.FindPropertyRelative("playbackSpeed").floatValue);
+                float previewPitchMin = entry.FindPropertyRelative("pitchMin").floatValue;
+                float previewPitchMax = entry.FindPropertyRelative("pitchMax").floatValue;
+                int removeIndex = -1;
+
+                for (int i = 0; i < variantsProperty.arraySize; i++)
+                {
+                    SerializedProperty variantProperty = variantsProperty.GetArrayElementAtIndex(i);
+                    AudioClip clip = variantProperty.objectReferenceValue as AudioClip;
+
+                    EditorGUILayout.BeginHorizontal();
+                    EditorGUILayout.PropertyField(variantProperty, new GUIContent($"Element {i}"));
+
+                    using (new EditorGUI.DisabledScope(!AudioCatalogPreviewUtility.CanPreview || clip == null))
+                    {
+                        if (GUILayout.Button("Play", GUILayout.Width(48f)))
+                        {
+                            AudioCatalogPreviewUtility.PlayVariant(
+                                clip,
+                                previewVolume,
+                                previewSpeed,
+                                previewPitchMin,
+                                previewPitchMax);
+                        }
+
+                        if (GUILayout.Button("Stop", GUILayout.Width(48f)))
+                            AudioCatalogPreviewUtility.StopPreview();
+                    }
+
+                    if (GUILayout.Button("-", GUILayout.Width(24f)))
+                        removeIndex = i;
+
+                    EditorGUILayout.EndHorizontal();
+                }
+
+                if (GUILayout.Button("Add Variant", GUILayout.Width(96f)))
+                    variantsProperty.arraySize++;
+
+                if (removeIndex >= 0 && removeIndex < variantsProperty.arraySize)
+                {
+                    SerializedProperty variantProperty = variantsProperty.GetArrayElementAtIndex(removeIndex);
+                    if (variantProperty.objectReferenceValue != null)
+                        variantsProperty.DeleteArrayElementAtIndex(removeIndex);
+
+                    variantsProperty.DeleteArrayElementAtIndex(removeIndex);
+                }
+            }
         }
 
         private void AddEntry()
@@ -213,6 +297,7 @@ namespace CapstoneAudio.EditorTools
             SerializedProperty entry = entriesProperty.GetArrayElementAtIndex(selectedIndex);
             entry.FindPropertyRelative("key").stringValue = string.Empty;
             entry.FindPropertyRelative("volume").floatValue = 1f;
+            entry.FindPropertyRelative("playbackSpeed").floatValue = 1f;
             entry.FindPropertyRelative("pitchMin").floatValue = 1f;
             entry.FindPropertyRelative("pitchMax").floatValue = 1f;
             entry.FindPropertyRelative("minDistance").floatValue = 1f;

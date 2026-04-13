@@ -22,7 +22,7 @@ MonoBehaviour:
       localOffset: {x: 0, y: 0, z: 0}
     animationTrigger: Swing1
     activeTime: 0.2
-    recoveryDuration: 0.4
+    recoveryDuration: 0.2
     nextAttackDelay: 0
     damageFormula: {fileID: 11400000, guid: f836f4795e60fd54f9a4e401de9d7dd9, type: 2}
     knockbackFormula: {fileID: 0}
@@ -44,7 +44,7 @@ MonoBehaviour:
       localOffset: {x: 0, y: 0, z: 0}
     animationTrigger: Swing2
     activeTime: 0.2
-    recoveryDuration: 0.4
+    recoveryDuration: 0.2
     nextAttackDelay: 0
     damageFormula: {fileID: 11400000, guid: f836f4795e60fd54f9a4e401de9d7dd9, type: 2}
     knockbackFormula: {fileID: 0}

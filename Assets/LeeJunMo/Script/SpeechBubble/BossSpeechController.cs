@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 [DisallowMultipleComponent]
@@ -22,6 +23,11 @@ public sealed class BossSpeechController : MonoBehaviour
 
     public bool TrySpeakSituation(BossSpeechSituationEnum situation, float duration = 2f)
     {
+        return TrySpeakSituation(situation, duration, null);
+    }
+
+    public bool TrySpeakSituation(BossSpeechSituationEnum situation, float duration, Action onBubbleHidden)
+    {
         ResolveSpeechBubble();
 
         if (speechData == null || speechBubble == null)
@@ -34,7 +40,7 @@ public sealed class BossSpeechController : MonoBehaviour
         if (string.IsNullOrWhiteSpace(line))
             return false;
 
-        speechBubble.Speak(line, duration, speechData.BubbleTheme);
+        speechBubble.Speak(line, duration, speechData.BubbleTheme, onBubbleHidden);
         return true;
     }
 
