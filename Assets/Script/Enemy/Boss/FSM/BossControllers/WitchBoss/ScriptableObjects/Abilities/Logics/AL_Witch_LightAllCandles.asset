@@ -12,3 +12,37 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bcb8b8d3d317f6643b864b36cb6f874e, type: 3}
   m_Name: AL_Witch_LightAllCandles
   m_EditorClassIdentifier: 
+  chargeOrbPrefab: {fileID: 7156570376058531874, guid: 503dfd491e32de84889c91ada7e82579, type: 3}
+  chargeOrbLocalOffset: {x: 0, y: 4, z: -0.05}
+  chargeOrbStartScale: {x: 2, y: 2, z: 1}
+  chargeOrbEndScale: {x: 8, y: 8, z: 1}
+  followWitchDuringCharge: 1
+  chargeOrbFailureDropDuration: 0.22
+  chargeOrbImpactLocalOffset: {x: 0, y: 0.1, z: -0.05}
+  chargeLoopCameraShake:
+    amplitude: 0.4
+    amplitudeMultiplier: 0
+    maxAmplitude: 1
+    minIntervalSeconds: 0.08
+    directionMode: 0
+    customDirection: {x: 0, y: 0, z: 0}
+    ignoreScreenShakeSetting: 0
+  failureEffectPrefab: {fileID: 4788678428882809434, guid: 573e2c50fe0a61b42a1f503837ef1053, type: 3}
+  failureEffectLocalOffset: {x: 0, y: 0, z: -0.05}
+  failureEffectLifetimeSeconds: 0.35
+  failureEffectScaleMultiplier: {x: 1, y: 1, z: 1}
+  failureEffectRotationOffsetZ: 0
+  failureParticlePrefab: {fileID: 4255554260198325544, guid: 537be2dc596b9474e881fad5fbce523e, type: 3}
+  failureParticleLocalOffset: {x: 0, y: 0, z: 0}
+  failureParticleLifetimeOverrideSeconds: 1
+  useUnscaledFailureParticleTime: 1
+  failureParticleScaleMultiplier: {x: 1.6, y: 1.6, z: 1}
+  failureParticleRotationOffsetZ: 0
+  failureCameraShake:
+    amplitude: 6
+    amplitudeMultiplier: 0
+    maxAmplitude: 0
+    minIntervalSeconds: 0.05
+    directionMode: 0
+    customDirection: {x: 0, y: 0, z: 0}
+    ignoreScreenShakeSetting: 0

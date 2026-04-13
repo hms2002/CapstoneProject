@@ -37,6 +37,8 @@ GameObject:
   - component: {fileID: 3836901854821853225}
   - component: {fileID: 2539260762478503238}
   - component: {fileID: 8439794030914778521}
+  - component: {fileID: 2108456829143765123}
+  - component: {fileID: 2108456829143765124}
   m_Layer: 31
   m_Name: Witch
   m_TagString: Enemy
@@ -736,3 +738,69 @@ MonoBehaviour:
   focusPriority: 100
   disableLegacyFollowWhileSequence: 1
   blendWaitFallbackSeconds: 2
+--- !u!114 &2108456829143765123
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4104743717894493410}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 16b5dced38ff4ce1a6994a142f29e24a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tagSystem: {fileID: 0}
+  shieldedTag: {fileID: 0}
+  invulnerableTag: {fileID: 0}
+  defaultShieldStageCount: 4
+--- !u!114 &2108456829143765124
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4104743717894493410}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0730508b2089443bb5296176c0329ab5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  shieldController: {fileID: 2108456829143765123}
+  ownerSpriteRenderer: {fileID: 8897721723054304330}
+  radiusX: 1.25
+  radiusY: 1.65
+  lineWidth: 0.12
+  segmentCount: 40
+  localOffset: {x: 0, y: 0.15, z: 0}
+  shieldVisualRoot: {fileID: 0}
+  shieldVisualSpriteRenderer: {fileID: 0}
+  shieldVisualAnimator: {fileID: 0}
+  shieldVisualLocalOffset: {x: 0, y: 0.15, z: 0}
+  shieldVisualLocalRotationZ: 0
+  shieldVisualLocalScale: {x: 1, y: 1, z: 1}
+  shieldVisualSortingOrderOffset: 1
+  tintShieldVisualWithStageColor: 1
+  shieldVisualAlphaMultiplier: 0.72
+  activateAnimation:
+    triggerName: 
+    stateName: Boss1ShieldAnim
+    crossFadeDuration: 0.05
+  breakAnimation:
+    triggerName: 
+    stateName: 
+    crossFadeDuration: 0.05
+  shieldBreakParticlePrefab: {fileID: 6821349489537912191, guid: e6cf7f0dfc7a4f0ab23e38d2b55ccf91, type: 3}
+  shieldBreakParticleLocalOffset: {x: 0, y: 0.15, z: -0.02}
+  shieldBreakParticleLifetimeOverrideSeconds: 0
+  useUnscaledShieldBreakParticleTime: 0
+  shieldBreakParticleScaleMultiplier: {x: 1.2, y: 1.2, z: 1}
+  shieldBreakParticleRotationOffsetZ: 0
+  shieldBreakCameraShake:
+    amplitude: 0.2
+    amplitudeMultiplier: 1
+    maxAmplitude: 0.32
+    minIntervalSeconds: 0.05
+    directionMode: 0
+    customDirection: {x: 0, y: 0, z: 0}
+    ignoreScreenShakeSetting: 0
