@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: MSBossNpc
   m_EditorClassIdentifier: 
   id: 1003
-  npcName: "\uBCF4\uC2A4"
+  npcName: "\uD074\uB85C\uC5D0"
   isBoss: 1
   primaryInk: {fileID: 4900000, guid: aef34e203f982094b814e11d115a65ed, type: 3}
   dialogueTheme: {fileID: 11400000, guid: 3ef1664fdf0dac148a47091038acdfd9, type: 2}
