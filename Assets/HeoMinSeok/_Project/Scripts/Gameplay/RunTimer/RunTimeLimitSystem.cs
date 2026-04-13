@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -9,6 +10,8 @@ using UnityEngine;
 [DisallowMultipleComponent]
 public sealed class RunTimeLimitSystem : MonoBehaviour
 {
+    public static RunTimeLimitSystem Instance { get; private set; }
+
     [Header("Binding")]
     [SerializeField] private RunTimeLimitConfig config;
     [SerializeField] private MonoBehaviour stageTimerPolicySource;
@@ -20,16 +23,30 @@ public sealed class RunTimeLimitSystem : MonoBehaviour
     public event Action OnTimeExpired;
 
     public float RemainingSeconds => remainingSeconds;
+    public float InactivePreviewSeconds => config != null ? Mathf.Max(0f, config.InitialLimitSeconds) : 0f;
     public bool IsRunning => isRunning;
     public bool IsLowTime => config != null && remainingSeconds <= config.LowTimeWarningSeconds;
+    public bool IsExternallyPaused => HasExternalPauseBlockers();
+    public bool IsPausedByStagePolicy => ShouldPauseByStagePolicy();
+    public bool IsVisuallyPaused => IsExternallyPaused || IsPausedByStagePolicy;
 
     private IStageTimerPolicy stageTimerPolicy;
     private float remainingSeconds;
     private bool isRunning;
     private bool hasInitializedFromRun;
+    private readonly Dictionary<int, UnityEngine.Object> externalPauseOwners = new();
 
     private void Awake()
     {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        Instance = this;
+        DontDestroyOnLoad(gameObject);
+
         stageTimerPolicy = stageTimerPolicySource as IStageTimerPolicy;
         if (stageTimerPolicy == null && stageTimerPolicySource != null)
         {
@@ -60,15 +77,44 @@ public sealed class RunTimeLimitSystem : MonoBehaviour
         }
     }
 
+    private void OnDestroy()
+    {
+        if (Instance == this)
+            Instance = null;
+    }
+
     private void Update()
     {
         if (!isRunning || config == null)
             return;
 
-        if (stageTimerPolicy != null && !stageTimerPolicy.ShouldTick())
+        if (HasExternalPauseBlockers())
+            return;
+
+        if (ShouldPauseByStagePolicy())
             return;
 
         Tick(Time.deltaTime);
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 외부 시스템이 런 제한 시간 감소를 일시정지/해제할 수 있는 공용 진입점을 제공한다.
+    /// - owner 단위로 pause 요청을 집계해, 여러 시스템이 동시에 시간을 멈춰도 안전하게 관리한다.
+    /// </summary>
+    public void SetExternalPause(UnityEngine.Object owner, bool paused)
+    {
+        if (owner == null)
+            return;
+
+        int ownerId = owner.GetInstanceID();
+        if (paused)
+        {
+            externalPauseOwners[ownerId] = owner;
+            return;
+        }
+
+        externalPauseOwners.Remove(ownerId);
     }
 
     /// <summary>
@@ -161,5 +207,44 @@ public sealed class RunTimeLimitSystem : MonoBehaviour
             GamePlayDataManager.Instance.SetRunRemainingSeconds(remainingSeconds);
 
         OnRemainingTimeChanged?.Invoke(remainingSeconds);
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 현재 살아 있는 외부 pause 요청자가 있는지 판정한다.
+    /// - 파괴된 owner를 정리해, 일시정지 해제가 누락돼도 타이머가 영구 정지되지 않게 보완한다.
+    /// </summary>
+    private bool HasExternalPauseBlockers()
+    {
+        if (externalPauseOwners.Count == 0)
+            return false;
+
+        List<int> deadOwnerIds = null;
+        foreach (KeyValuePair<int, UnityEngine.Object> pair in externalPauseOwners)
+        {
+            if (pair.Value != null)
+                return true;
+
+            deadOwnerIds ??= new List<int>();
+            deadOwnerIds.Add(pair.Key);
+        }
+
+        if (deadOwnerIds != null)
+        {
+            for (int i = 0; i < deadOwnerIds.Count; i++)
+                externalPauseOwners.Remove(deadOwnerIds[i]);
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 현재 스테이지 정책이 런 제한 시간을 멈춰야 하는 상태인지 판정한다.
+    /// - HUD와 타이머 본체가 동일한 기준으로 "지금 시간이 흐르지 않는다"를 해석하게 만든다.
+    /// </summary>
+    private bool ShouldPauseByStagePolicy()
+    {
+        return stageTimerPolicy != null && !stageTimerPolicy.ShouldTick();
     }
 }

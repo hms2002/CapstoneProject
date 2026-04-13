@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityGAS;
 
 /// <summary>
@@ -11,14 +12,18 @@ using UnityGAS;
 [DisallowMultipleComponent]
 public sealed class BossHudController : MonoBehaviour
 {
+    public static BossHudController Instance { get; private set; }
+
     [Header("Binding")]
     [Tooltip("씬에서 직접 연결할 보스 엔티티입니다.")]
     [SerializeField] private BossControllerBase targetBoss;
+    [SerializeField] private bool autoFindBossOnSceneLoad = true;
 
     [Tooltip("비어 있으면 보스 오브젝트 이름을 그대로 사용합니다.")]
     [SerializeField] private string displayNameOverride;
 
     [Header("Views")]
+    [SerializeField] private GameObject visibleRoot;
     [SerializeField] private BossHealthBarUI healthBarUI;
     [SerializeField] private BossGroggyBarUI groggyBarUI;
     [SerializeField] private TMP_Text bossNameText;
@@ -32,25 +37,105 @@ public sealed class BossHudController : MonoBehaviour
 
     private void Awake()
     {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        Instance = this;
+        ResolveBossBinding();
+    }
+
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += HandleSceneLoaded;
+        ResolveBossBinding();
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= HandleSceneLoaded;
+    }
+
+    private void OnDestroy()
+    {
+        if (Instance == this)
+            Instance = null;
+    }
+
+    private void Update()
+    {
         if (targetBoss == null)
         {
-            gameObject.SetActive(false);
+            SetHudVisible(false);
+            return;
+        }
+
+        RefreshAll();
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 씬 로드 직후 현재 씬의 보스 엔티티를 다시 탐색해 DDOL HUD와 재바인딩한다.
+    /// - 보스가 없는 씬에서는 HUD만 숨기고, 컴포넌트는 살아 있어 다음 씬에서 자동 복구되게 한다.
+    /// </summary>
+    private void HandleSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        ResolveBossBinding();
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 현재 씬의 보스 엔티티를 수동 참조 또는 자동 탐색으로 결정하고 관련 런타임 참조를 갱신한다.
+    /// - 바인딩 성공 시 HUD를 즉시 갱신하고, 실패 시에는 안전하게 숨김 상태로 전환한다.
+    /// </summary>
+    private void ResolveBossBinding()
+    {
+        if (targetBoss == null && autoFindBossOnSceneLoad)
+            targetBoss = FindAnyObjectByType<BossControllerBase>();
+
+        if (targetBoss == null)
+        {
+            _staggerGaugeSystem = null;
+            _effectRunner = null;
+            SetHudVisible(false);
             return;
         }
 
         _staggerGaugeSystem = targetBoss.GetComponent<StaggerGaugeSystem>();
         _effectRunner = targetBoss.GetComponent<GameplayEffectRunner>();
 
+        SetHudVisible(true);
         ApplyStaticVisuals();
         RefreshAll();
     }
 
-    private void Update()
+    /// <summary>
+    /// 책임 :
+    /// - 활성 보스가 자신을 HUD에 명시적으로 등록할 수 있는 단일 진입점을 제공한다.
+    /// - 씬 탐색보다 우선하는 명시적 바인딩 경로를 통해 다중 보스/타이밍 문제를 줄인다.
+    /// </summary>
+    public void BindBoss(BossControllerBase boss)
     {
-        if (targetBoss == null)
+        targetBoss = boss;
+        ResolveBossBinding();
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 현재 HUD에 연결된 보스가 해제될 때만 안전하게 참조를 비우고 HUD를 숨긴다.
+    /// - 다른 보스가 이미 등록된 상황에서 잘못된 해제가 들어와도 현재 HUD 바인딩을 보호한다.
+    /// </summary>
+    public void UnbindBoss(BossControllerBase boss)
+    {
+        if (boss == null || targetBoss != boss)
             return;
 
-        RefreshAll();
+        targetBoss = null;
+        _staggerGaugeSystem = null;
+        _effectRunner = null;
+        SetHudVisible(false);
     }
 
     /// <summary>
@@ -135,5 +220,30 @@ public sealed class BossHudController : MonoBehaviour
         float max = targetBoss.AttributeSet.GetAttributeValue(_staggerGaugeSystem.maxGaugeAttribute);
 
         return max > 0f ? 1f - Mathf.Clamp01(current / max) : 0f;
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 보스 HUD의 표시 루트만 켜고 끄며 DDOL 컨트롤러 오브젝트 자체는 계속 살아 있게 유지한다.
+    /// - 씬에 보스가 없을 때 HUD를 숨기고, 다음 씬에서 보스를 찾으면 다시 표시할 수 있게 만든다.
+    /// </summary>
+    private void SetHudVisible(bool visible)
+    {
+        GameObject targetRoot = visibleRoot != null ? visibleRoot : gameObject;
+        if (targetRoot == gameObject)
+        {
+            if (bossNameText != null)
+                bossNameText.gameObject.SetActive(visible);
+            if (groggyStateText != null)
+                groggyStateText.gameObject.SetActive(visible && targetBoss != null && targetBoss.HasGroggyTag());
+            if (healthBarUI != null)
+                healthBarUI.gameObject.SetActive(visible);
+            if (groggyBarUI != null)
+                groggyBarUI.gameObject.SetActive(visible);
+            return;
+        }
+
+        if (targetRoot.activeSelf != visible)
+            targetRoot.SetActive(visible);
     }
 }

@@ -7,7 +7,7 @@ using UnityEngine;
 /// </summary>
 [CreateAssetMenu(
     fileName = "RunTimeLimitConfig",
-    menuName = "HMS/Run Timer/Run Time Limit Config")]
+    menuName = "Gameplay/Run Timer/Run Time Limit Config")]
 public sealed class RunTimeLimitConfig : ScriptableObject
 {
     [Header("Time Limit")]

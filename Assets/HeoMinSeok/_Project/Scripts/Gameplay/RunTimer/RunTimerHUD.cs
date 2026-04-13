@@ -4,7 +4,7 @@ using UnityEngine;
 /// <summary>
 /// 책임 :
 /// - RunTimeLimitSystem의 남은 시간을 사람이 읽기 쉬운 텍스트로 출력한다.
-/// - 시간이 적을 때의 색상 변화와 표시/숨김만 담당하고, 타이머 로직은 소유하지 않는다.
+/// - 시간이 적을 때와 외부 pause 중일 때의 색상 변화, 표시/숨김만 담당하고 타이머 로직은 소유하지 않는다.
 /// </summary>
 [DisallowMultipleComponent]
 public sealed class RunTimerHUD : MonoBehaviour
@@ -18,6 +18,11 @@ public sealed class RunTimerHUD : MonoBehaviour
     [SerializeField] private string timeFormat = "{0:00}:{1:00}";
     [SerializeField] private Color normalColor = Color.white;
     [SerializeField] private Color lowTimeColor = new(1f, 0.35f, 0.25f, 1f);
+    [SerializeField] private Color pausedColor = new(0.6f, 0.85f, 1f, 1f);
+    [SerializeField] private bool hideWhenTimerInactive = true;
+    [SerializeField] private bool pulseWhilePaused = true;
+    [SerializeField] private float pausedPulseSpeed = 2.5f;
+    [SerializeField, Range(0f, 1f)] private float pausedPulseMinAlpha = 0.55f;
 
     private void Awake()
     {
@@ -30,17 +35,40 @@ public sealed class RunTimerHUD : MonoBehaviour
 
     private void Update()
     {
-        if (timeLimitSystem == null || !timeLimitSystem.IsRunning)
+        if (timeLimitSystem == null)
         {
             SetVisible(false);
             return;
         }
 
+        if (!timeLimitSystem.IsRunning)
+        {
+            SetVisible(!hideWhenTimerInactive);
+
+            if (!hideWhenTimerInactive)
+            {
+                UpdateTimeText(
+                    timeLimitSystem.InactivePreviewSeconds,
+                    false,
+                    true);
+            }
+
+            return;
+        }
+
         SetVisible(true);
-        UpdateTimeText(timeLimitSystem.RemainingSeconds, timeLimitSystem.IsLowTime);
+        UpdateTimeText(
+            timeLimitSystem.RemainingSeconds,
+            timeLimitSystem.IsLowTime,
+            timeLimitSystem.IsVisuallyPaused);
     }
 
-    private void UpdateTimeText(float remainingSeconds, bool isLowTime)
+    /// <summary>
+    /// 책임 :
+    /// - 남은 시간을 mm:ss 형식으로 표시하고, 상태에 따라 우선순위 있는 색상 규칙을 적용한다.
+    /// - 외부 pause와 스테이지 정책 정지를 같은 "멈춤 상태"로 표현해, 시간이 흐르지 않는 씬에서도 즉시 읽히게 한다.
+    /// </summary>
+    private void UpdateTimeText(float remainingSeconds, bool isLowTime, bool isPaused)
     {
         if (timeText == null)
             return;
@@ -51,7 +79,21 @@ public sealed class RunTimerHUD : MonoBehaviour
         int seconds = totalSeconds % 60;
 
         timeText.text = string.Format(timeFormat, minutes, seconds);
-        timeText.color = isLowTime ? lowTimeColor : normalColor;
+        Color targetColor = isPaused
+            ? pausedColor
+            : (isLowTime ? lowTimeColor : normalColor);
+
+        if (isPaused && pulseWhilePaused)
+        {
+            float pulse = Mathf.Lerp(
+                pausedPulseMinAlpha,
+                1f,
+                Mathf.PingPong(Time.unscaledTime * pausedPulseSpeed, 1f));
+
+            targetColor.a *= pulse;
+        }
+
+        timeText.color = targetColor;
     }
 
     private void SetVisible(bool isVisible)
