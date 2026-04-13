@@ -131,6 +131,18 @@ namespace UnityGAS
         }
 
         /// <summary>
+        /// 책임 :
+        /// - MoveToPoint 계열 특수이동의 시간 진행도를 이동 진행도로 변환한다.
+        /// - 런지 시작은 빠르게, 끝은 천천히 감속되는 ease-out 감각을 공통으로 제공한다.
+        /// </summary>
+        private static float EvaluateMoveToProgress(float normalizedTime)
+        {
+            float t = Mathf.Clamp01(normalizedTime);
+            float inv = 1f - t;
+            return 1f - (inv * inv);
+        }
+
+        /// <summary>
         /// 현재 프레임의 특수이동 속도를 계산해 반환한다.
         /// FixedUpdate에서만 읽는 것을 권장.
         /// </summary>
@@ -171,17 +183,19 @@ namespace UnityGAS
 
                 case MotionKind.MoveToPoint:
                     {
+                        float prevProgress = EvaluateMoveToProgress(moveToElapsed / moveToDuration);
                         Vector2 prevPos = Vector2.Lerp(
                             moveToStart,
                             moveToEnd,
-                            Mathf.Clamp01(moveToElapsed / moveToDuration));
+                            prevProgress);
 
                         moveToElapsed += dt;
 
+                        float nextProgress = EvaluateMoveToProgress(moveToElapsed / moveToDuration);
                         Vector2 nextPos = Vector2.Lerp(
                             moveToStart,
                             moveToEnd,
-                            Mathf.Clamp01(moveToElapsed / moveToDuration));
+                            nextProgress);
 
                         motionRemainingTime = Mathf.Max(0f, moveToDuration - moveToElapsed);
 

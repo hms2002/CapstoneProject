@@ -40,6 +40,7 @@ public class WeaponEquipController : MonoBehaviour
     private GameObject currentWeaponGO;
     private WeaponVisualSetup currentVisualSetup;
     private HandSide currentSide = HandSide.Right;
+    private int currentAttackSideSign = 1;
 
     // prefab -> instance
     private readonly Dictionary<GameObject, GameObject> cache = new();
@@ -110,8 +111,20 @@ public class WeaponEquipController : MonoBehaviour
         DeactivateCurrent();
         currentPrefab = null;
         currentWeaponGO = null;
+        currentAttackSideSign = 1;
 
         abilitySystem.RegisterWeaponAnimator(null);
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 현재 공격 단계가 요구하는 sideSign을 장착 무기 비주얼에 반영한다.
+    /// - 손 소켓 포즈 적용과 별개로 공격 중 표현 계층의 좌우 반전을 유지한다.
+    /// </summary>
+    public void SetAttackVisualSideSign(int sideSign)
+    {
+        currentAttackSideSign = sideSign == 0 ? 1 : sideSign;
+        ApplyCurrentVisualPose();
     }
 
 
@@ -135,6 +148,7 @@ public class WeaponEquipController : MonoBehaviour
         currentPrefab = null;
         currentVisualSetup = null;
         currentSide = HandSide.Right;
+        currentAttackSideSign = 1;
 
         // 안전: 이전 무기 Animator 참조 해제
         if (abilitySystem != null) abilitySystem.RegisterWeaponAnimator(null);
@@ -228,6 +242,7 @@ public class WeaponEquipController : MonoBehaviour
             return;
 
         currentVisualSetup.ApplyPose(currentSide == HandSide.Left);
+        currentVisualSetup.ApplyAttackSideSign(currentAttackSideSign);
     }
 
     /// <summary>

@@ -45,6 +45,7 @@ namespace UnityGAS.Sample
             spec.SetFloat(KEY_COMBO_EXPIRE, Time.time + data.comboResetTime);
             system.SetNextActivationDelay(spec, step.nextAttackDelay);
 
+            ApplyWeaponVisualSideSign(system, step.sideSign);
             TryPlayAnim(system, step, spec.Definition);
             PlayStepSound(system, step);
 
@@ -102,6 +103,23 @@ namespace UnityGAS.Sample
                 Position = system.transform.position,
                 SourceObject = this
             });
+        }
+
+        /// <summary>
+        /// 책임 :
+        /// - 콤보 단계의 sideSign을 현재 장착 무기 비주얼에 전달한다.
+        /// - 히트박스와 같은 단계 데이터를 무기 표현 계층에도 공유해 공격 방향 피드백을 일치시킨다.
+        /// </summary>
+        private void ApplyWeaponVisualSideSign(AbilitySystem system, int sideSign)
+        {
+            if (system == null)
+                return;
+
+            WeaponEquipController equipController = system.GetComponentInChildren<WeaponEquipController>();
+            if (equipController == null)
+                return;
+
+            equipController.SetAttackVisualSideSign(sideSign);
         }
 
         /// <summary>

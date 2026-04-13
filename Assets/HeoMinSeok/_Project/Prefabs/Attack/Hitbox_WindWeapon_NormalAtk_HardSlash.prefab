@@ -125,7 +125,7 @@ GameObject:
   - component: {fileID: 6973826575809085779}
   - component: {fileID: 3343002971103465845}
   - component: {fileID: 6902002014408514032}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Hitbox_WindWeapon_NormalAtk_HardSlash
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -15,9 +15,14 @@ MonoBehaviour:
   hitboxPrefab: {fileID: 6902002014408514032, guid: 4be5e4c30ae21ca4d979927cb057f981, type: 3}
   steps:
   - hitboxPrefab: {fileID: 6902002014408514032, guid: 72a9e1dccd20cec4a94b05267400bf54, type: 3}
+    attackSound:
+      key: weapon.sword.swing.1
+      volumeMultiplier: 1
+      anchorPolicy: 0
+      localOffset: {x: 0, y: 0, z: 0}
     animationTrigger: Swing1
-    activeTime: 0.08
-    recoveryDuration: 0.1
+    activeTime: 0.2
+    recoveryDuration: 0.4
     nextAttackDelay: 0
     damageFormula: {fileID: 11400000, guid: f836f4795e60fd54f9a4e401de9d7dd9, type: 2}
     knockbackFormula: {fileID: 0}
@@ -26,15 +31,20 @@ MonoBehaviour:
     elementDamages:
       elements: []
     hitboxSize: {x: 1.2, y: 0.8}
-    forwardOffset: 0.9
-    sideOffset: 0.25
+    forwardOffset: 2
+    sideOffset: -0.1
     sideSign: -1
     lungeDistance: 0.7
     lungeDuration: 0.08
   - hitboxPrefab: {fileID: 6902002014408514032, guid: 72a9e1dccd20cec4a94b05267400bf54, type: 3}
+    attackSound:
+      key: weapon.sword.swing.1
+      volumeMultiplier: 1
+      anchorPolicy: 0
+      localOffset: {x: 0, y: 0, z: 0}
     animationTrigger: Swing2
-    activeTime: 0.08
-    recoveryDuration: 0.1
+    activeTime: 0.2
+    recoveryDuration: 0.4
     nextAttackDelay: 0
     damageFormula: {fileID: 11400000, guid: f836f4795e60fd54f9a4e401de9d7dd9, type: 2}
     knockbackFormula: {fileID: 0}
@@ -43,14 +53,19 @@ MonoBehaviour:
     elementDamages:
       elements: []
     hitboxSize: {x: 1.2, y: 0.8}
-    forwardOffset: 0.9
-    sideOffset: 0.25
+    forwardOffset: 2
+    sideOffset: 0.15
     sideSign: 1
     lungeDistance: 0.7
     lungeDuration: 0.08
   - hitboxPrefab: {fileID: 6902002014408514032, guid: 230cdfca747527646b1afc30748bbfcc, type: 3}
+    attackSound:
+      key: weapon.sword.swing.2
+      volumeMultiplier: 1
+      anchorPolicy: 0
+      localOffset: {x: 0, y: 0, z: 0}
     animationTrigger: Swing3
-    activeTime: 0.1
+    activeTime: 0.2
     recoveryDuration: 0
     nextAttackDelay: 0.49
     damageFormula: {fileID: 11400000, guid: f836f4795e60fd54f9a4e401de9d7dd9, type: 2}
@@ -60,8 +75,8 @@ MonoBehaviour:
     elementDamages:
       elements: []
     hitboxSize: {x: 1.2, y: 0.8}
-    forwardOffset: 1.5
-    sideOffset: 0.25
+    forwardOffset: 2
+    sideOffset: -0.1
     sideSign: -1
     lungeDistance: 1
     lungeDuration: 0.1
