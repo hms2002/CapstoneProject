@@ -99,10 +99,10 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -1039746825
-  m_SortingLayer: 2
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 95313277, guid: 1d8645f9c36ef13479e1867e35fdc297, type: 3}
+  m_Sprite: {fileID: -653279953, guid: 78ad9bb39ac5f284bbe1dc2c6595339d, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -177,7 +177,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0}
-    oldSize: {x: 0.4375, y: 0.33333334}
+    oldSize: {x: 0.4375, y: 0.41666666}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -195,7 +195,7 @@ Animator:
   m_GameObject: {fileID: 625522859161183429}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: f8f80490a6498494a8c5d9a387e7361b, type: 2}
+  m_Controller: {fileID: 9100000, guid: 48c0d20d195000141a93c7aaadeaf287, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -455,6 +455,7 @@ MonoBehaviour:
   detectionRange: 6
   stopRange: 2.5
   speedScale: 1
+  returnSpeedScale: 0.9
 --- !u!114 &1202927576409601092
 MonoBehaviour:
   m_ObjectHideFlags: 0

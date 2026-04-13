@@ -55,6 +55,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &1695031726951874086
 SpriteRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -73,6 +74,8 @@ SpriteRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -94,19 +97,20 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -1039746825
-  m_SortingLayer: 2
+  m_SortingLayer: 3
   m_SortingOrder: 0
-  m_Sprite: {fileID: 419725015, guid: cf74e16b4224d5b4f9a4d52e67143f72, type: 3}
+  m_MaskInteraction: 1
+  m_Sprite: {fileID: -101365722, guid: 0d366a34caa3bee4ba89bd536ddacd96, type: 3}
   m_Color: {r: 0.5622641, g: 0.5622641, b: 0.5622641, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 0.48, y: 0.28}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_MaskInteraction: 1
   m_SpriteSortPoint: 1
 --- !u!50 &1119615970379559667
 Rigidbody2D:
@@ -173,8 +177,8 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.4375, y: 0.33333334}
-    newSize: {x: 1, y: 1}
+    oldSize: {x: 0.48, y: 0.28}
+    newSize: {x: 0.48, y: 0.28}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
@@ -191,7 +195,7 @@ Animator:
   m_GameObject: {fileID: 625522859161183429}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: b6ceaa5200196b245b737d05137b1c78, type: 2}
+  m_Controller: {fileID: 9100000, guid: 162048fde42ec0942a0b4752a23c38ed, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -257,6 +261,7 @@ MonoBehaviour:
   attributeSet: {fileID: 1535278931212011680}
   effectRunner: {fileID: 5052094422871209493}
   tagSystem: {fileID: 2310470610362802669}
+  enableExclusiveActivationBuffer: 0
   globalCancelCastingOnTags: []
   globalCancelExecutionOnTags: []
   damageProfile: {fileID: 11400000, guid: ddd8b96de81528845828895d9bb33042, type: 2}
@@ -412,6 +417,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   body: {fileID: 0}
+  enforceContinuousCollision: 1
   intentSourceBehaviour: {fileID: 0}
   statProviderBehaviour: {fileID: 0}
   externalMovement: {fileID: 3341026293018187748}
@@ -466,6 +472,7 @@ MonoBehaviour:
   detectionRange: 6
   stopRange: 0.2
   speedScale: 0.5
+  returnSpeedScale: 0.9
 --- !u!114 &1202927576409601092
 MonoBehaviour:
   m_ObjectHideFlags: 0

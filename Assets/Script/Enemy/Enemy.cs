@@ -132,8 +132,10 @@ public class Enemy : MonoBehaviour
     /// <summary>Animator에 Die 트리거를 전달해 사망 애니메이션을 재생합니다.</summary>
     protected virtual void PlayDeathAnimation()
     {
-        if (animator != null)
-            animator.SetTrigger(DeathAnimTriggerName);
+        if (TrySetAnimatorTrigger(DeathAnimTriggerName, "isDead", "death"))
+            return;
+
+        TryPlayAnimatorState("Die", "Death", DeathAnimTriggerName);
     }
 
     /// <summary>사망 대기 시간 이후 적 오브젝트를 제거합니다.</summary>
@@ -155,27 +157,136 @@ public class Enemy : MonoBehaviour
     /// <summary>Animator Controller에서 Die 애니메이션 클립 길이를 찾아 반환합니다.</summary>
     private float ResolveDeathAnimationClipLength()
     {
+        return FindAnimationClipLength(DeathAnimClipName);
+    }
+
+    /// <summary>후보 이름과 일치하는 Animator 파라미터 해시를 찾습니다.</summary>
+    protected bool TryFindAnimatorParameterHash(
+        AnimatorControllerParameterType parameterType,
+        string[] candidateNames,
+        out int parameterHash)
+    {
+        parameterHash = 0;
+
+        if (animator == null || candidateNames == null || candidateNames.Length == 0)
+            return false;
+
+        AnimatorControllerParameter[] parameters = animator.parameters;
+        for (int i = 0; i < candidateNames.Length; i++)
+        {
+            string candidateName = candidateNames[i];
+            if (string.IsNullOrWhiteSpace(candidateName))
+                continue;
+
+            int candidateHash = Animator.StringToHash(candidateName);
+            for (int j = 0; j < parameters.Length; j++)
+            {
+                AnimatorControllerParameter parameter = parameters[j];
+                if (parameter.type == parameterType && parameter.nameHash == candidateHash)
+                {
+                    parameterHash = candidateHash;
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /// <summary>후보 이름 중 존재하는 Trigger 파라미터를 발동합니다.</summary>
+    protected bool TrySetAnimatorTrigger(params string[] candidateNames)
+    {
+        if (!TryFindAnimatorParameterHash(
+                AnimatorControllerParameterType.Trigger,
+                candidateNames,
+                out int parameterHash))
+        {
+            return false;
+        }
+
+        animator.SetTrigger(parameterHash);
+        return true;
+    }
+
+    /// <summary>후보 이름 중 존재하는 Bool 파라미터 값을 갱신합니다.</summary>
+    protected bool TrySetAnimatorBool(bool value, params string[] candidateNames)
+    {
+        if (!TryFindAnimatorParameterHash(
+                AnimatorControllerParameterType.Bool,
+                candidateNames,
+                out int parameterHash))
+        {
+            return false;
+        }
+
+        animator.SetBool(parameterHash, value);
+        return true;
+    }
+
+    /// <summary>후보 이름 중 존재하는 상태를 즉시 재생합니다.</summary>
+    protected bool TryPlayAnimatorState(params string[] stateNames)
+    {
+        if (animator == null || stateNames == null || stateNames.Length == 0)
+            return false;
+
+        for (int i = 0; i < stateNames.Length; i++)
+        {
+            string stateName = stateNames[i];
+            if (string.IsNullOrWhiteSpace(stateName))
+                continue;
+
+            int stateHash = Animator.StringToHash(stateName);
+            if (!animator.HasState(0, stateHash))
+                continue;
+
+            animator.Play(stateHash, 0, 0f);
+            return true;
+        }
+
+        return false;
+    }
+
+    /// <summary>후보 이름과 일치하는 애니메이션 클립 길이를 찾습니다.</summary>
+    protected float FindAnimationClipLength(params string[] clipNames)
+    {
         if (animator == null || animator.runtimeAnimatorController == null)
             return 0f;
 
         AnimationClip[] animationClips = animator.runtimeAnimatorController.animationClips;
-        if (animationClips == null)
+        if (animationClips == null || clipNames == null || clipNames.Length == 0)
             return 0f;
 
         for (int i = 0; i < animationClips.Length; i++)
         {
             AnimationClip animationClip = animationClips[i];
-            if (animationClip != null && animationClip.name == DeathAnimClipName)
-                return animationClip.length;
+            if (animationClip == null)
+                continue;
+
+            for (int j = 0; j < clipNames.Length; j++)
+            {
+                string clipName = clipNames[j];
+                if (string.IsNullOrWhiteSpace(clipName))
+                    continue;
+
+                if (animationClip.name == clipName)
+                    return animationClip.length;
+            }
         }
 
         for (int i = 0; i < animationClips.Length; i++)
         {
             AnimationClip animationClip = animationClips[i];
-            if (animationClip != null &&
-                animationClip.name.IndexOf(DeathAnimClipName, System.StringComparison.OrdinalIgnoreCase) >= 0)
+            if (animationClip == null)
+                continue;
+
+            for (int j = 0; j < clipNames.Length; j++)
             {
-                return animationClip.length;
+                string clipName = clipNames[j];
+                if (string.IsNullOrWhiteSpace(clipName))
+                    continue;
+
+                if (animationClip.name.IndexOf(clipName, System.StringComparison.OrdinalIgnoreCase) >= 0)
+                    return animationClip.length;
             }
         }
 

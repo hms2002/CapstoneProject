@@ -6,9 +6,20 @@ using UnityGAS;
 public class ShadowServant : Mob
 {
     private const float AttackDelay = 2f;
-    private const string AttackTriggerName = "attack";
 
-    private static readonly int AttackHash = Animator.StringToHash(AttackTriggerName);
+    private static readonly string[] AttackTriggerNames =
+    {
+        "attack",
+        "explode",
+        "cast",
+        "fire"
+    };
+
+    private static readonly string[] AttackStateNames =
+    {
+        "ShadowServant_Attack",
+        "Attack"
+    };
 
     [Header("Fog")]
     [Tooltip("폭발 뒤 생성할 안개 프리팹입니다.")]
@@ -148,8 +159,7 @@ public class ShadowServant : Mob
             yield break;
         }
 
-        if (animator != null)
-            animator.SetTrigger(AttackHash);
+        PlayAttackAnimation();
 
         Explode(hitPoint);
         SpawnFog(targetPoint);
@@ -304,5 +314,14 @@ public class ShadowServant : Mob
         style.fillScaleStart = 1f;
         style.fillScaleEnd = 1f;
         return style;
+    }
+
+    /// <summary>폭발 직전 공격 애니메이션을 재생합니다.</summary>
+    private void PlayAttackAnimation()
+    {
+        if (TrySetAnimatorTrigger(AttackTriggerNames))
+            return;
+
+        TryPlayAnimatorState(AttackStateNames);
     }
 }

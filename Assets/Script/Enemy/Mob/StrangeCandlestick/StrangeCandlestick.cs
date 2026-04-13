@@ -4,6 +4,32 @@ using UnityGAS;
 public class StrangeCandlestick : Mob
 {
     private static readonly System.Collections.Generic.List<StrangeCandlestick> instances = new();
+    private static readonly string[] AttackTriggerNames =
+    {
+        "attack",
+        "shoot",
+        "fire"
+    };
+
+    private static readonly string[] AttackStateNames =
+    {
+        "StrangeCandlestick_Attack",
+        "Attack"
+    };
+
+    private static readonly string[] TurnOffTriggerNames =
+    {
+        "turnOff",
+        "die",
+        "isDead"
+    };
+
+    private static readonly string[] TurnOffStateNames =
+    {
+        "StrangeCandlestick_TurnOff",
+        "TurnOff",
+        "Die"
+    };
 
     private const float ProjectileAttackInterval = 2f;
     private const int WallLayer = 30;
@@ -82,6 +108,24 @@ public class StrangeCandlestick : Mob
         }
 
         base.OnEnemyAttributeChanged(attribute, oldValue, newValue);
+    }
+
+    /// <summary>촛대 사망 시 꺼지는 애니메이션을 재생합니다.</summary>
+    protected override void PlayDeathAnimation()
+    {
+        if (TrySetAnimatorTrigger(TurnOffTriggerNames))
+            return;
+
+        TryPlayAnimatorState(TurnOffStateNames);
+    }
+
+    /// <summary>촛대 사망 애니메이션 길이를 반환합니다.</summary>
+    protected override float GetDeathDestroyDelay()
+    {
+        if (dieAnimTime > 0f)
+            return dieAnimTime;
+
+        return FindAnimationClipLength("StrangeCandlestick_TurnOff", "TurnOff", "die");
     }
 
     /// <summary>지금 탄막을 발사할 수 있는지 확인합니다.</summary>
@@ -176,6 +220,7 @@ public class StrangeCandlestick : Mob
 
         lightBead.Setup(context);
         nextProjectileFireTime = Time.time + ProjectileAttackInterval;
+        PlayShootAnimation();
         return true;
     }
 
@@ -219,5 +264,14 @@ public class StrangeCandlestick : Mob
             snapshot: snapshot,
             hitConfirmedTag: null,
             causer: gameObject);
+    }
+
+    /// <summary>탄막 발사 애니메이션을 재생합니다.</summary>
+    private void PlayShootAnimation()
+    {
+        if (TrySetAnimatorTrigger(AttackTriggerNames))
+            return;
+
+        TryPlayAnimatorState(AttackStateNames);
     }
 }

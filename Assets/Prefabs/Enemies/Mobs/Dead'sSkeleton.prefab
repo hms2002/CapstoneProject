@@ -103,7 +103,7 @@ SpriteRenderer:
   m_SortingLayer: 3
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: -1315658871, guid: 1b62a3e39ade37544b80cc5b37c70ccd, type: 3}
+  m_Sprite: {fileID: 1208040618, guid: 65633814affcc704fbd9de0c57f8591b, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -177,8 +177,8 @@ BoxCollider2D:
   m_Offset: {x: 0, y: 0.16666667}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0}
-    oldSize: {x: 0.4375, y: 0.33333334}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 0.25, y: 0.26}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -196,7 +196,7 @@ Animator:
   m_GameObject: {fileID: 625522859161183429}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 91f89b4c638a4a446b6663e590975723, type: 2}
+  m_Controller: {fileID: 9100000, guid: eb6db995b31d0ad4ca09fe5e0540e130, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -312,7 +312,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 625522859161183429}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6f0ae6e32d91e0f45a4b821a03209428, type: 3}
   m_Name: 
@@ -479,7 +479,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 625522859161183429}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cbeb54d2db10da14b8076a6745dad316, type: 3}
   m_Name: 

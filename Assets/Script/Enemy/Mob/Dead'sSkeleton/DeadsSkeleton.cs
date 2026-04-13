@@ -2,13 +2,49 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityGAS;
 
-public class DeadsSkeleton : Mob
+public class DeadsSkeleton : Mob, IDamageReceiver
 {
     // 이 클래스의 책임:
-    // 플레이어 추적 중 자폭 조건을 판단하고, 빛 영역과 접촉하면 즉시 소멸하는 해골 몬스터의 전투 흐름을 관리한다.
+    // 플레이어 추적 중 자폭 조건을 판단하고, 자폭 모드에서만 폭발/광원 사망 규칙이 적용되며 일반 피해는 무시하는 해골 몬스터의 전투 흐름을 관리한다.
+
+    private static readonly string[] SelfDestructModeBoolNames =
+    {
+        "isSelfDestructionMode",
+        "isSelfDestructMode",
+        "isSelfDestruct",
+        "selfDestructMode"
+    };
+
+    private static readonly string[] SelfDestructTriggerNames =
+    {
+        "beSelfDestructionMode",
+        "enterSelfDestructionMode",
+        "startSelfDestruct",
+        "selfDestruct"
+    };
+
+    private static readonly string[] SelfDestructStateNames =
+    {
+        "DeadsSkeleton_BeSelfDestructionMode",
+        "DeadsSkeleton_Float(SelfDestructionMode)",
+        "Float(SelfDestructionMode)"
+    };
+
+    private static readonly string[] DeathTriggerNames =
+    {
+        "die",
+        "isDead",
+        "death"
+    };
+
+    private static readonly string[] DeathStateNames =
+    {
+        "DeadsSkeleton_Die",
+        "Die",
+        "Death"
+    };
 
     private float explosionDiameter = 5f;
-    private const string DeathTriggerName = "isDead";
 
     [Header("자폭")]
     [Tooltip("자폭 모드에 들어가는 거리의 지름입니다.")]
@@ -51,6 +87,7 @@ public class DeadsSkeleton : Mob
         StartSelfDestruct();
     }
 
+    /// <summary>해골은 체력 Attribute 변화로 사망하지 않도록 공통 체력 처리 훅을 비워 둡니다.</summary>
     protected override void OnEnemyAttributeChanged(AttributeDefinition attribute, float oldValue, float newValue)
     {
     }
@@ -58,13 +95,16 @@ public class DeadsSkeleton : Mob
     protected override void OnDeathStarted()
     {
         HideWarning();
+        TrySetAnimatorBool(false, SelfDestructModeBoolNames);
         base.OnDeathStarted();
     }
 
     protected override void PlayDeathAnimation()
     {
-        if (animator != null)
-            animator.SetTrigger(DeathTriggerName);
+        if (TrySetAnimatorTrigger(DeathTriggerNames))
+            return;
+
+        TryPlayAnimatorState(DeathStateNames);
     }
 
     protected override bool CanDrawStopRangeGizmo()
@@ -74,22 +114,23 @@ public class DeadsSkeleton : Mob
 
     private void OnCollisionEnter2D(Collision2D other)
     {
-        if (!isSelfDestruct || isDead || other == null) return;
+        if (isDead || other == null) return;
 
-        if (!other.gameObject.CompareTag("Player")) return;
-
-        Explode(other.gameObject);
+        TryExplodeOnPlayerContact(other.gameObject);
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (!isSelfDestruct || isDead || other == null) return;
+        if (isDead || other == null) return;
+
+        if (TryExplodeOnPlayerContact(other.gameObject))
+            return;
 
         CandlestickLightZone lightZone = other.GetComponent<CandlestickLightZone>();
         if (lightZone == null)
             lightZone = other.GetComponentInParent<CandlestickLightZone>();
 
-        if (lightZone == null) return;
+        if (lightZone == null || !isSelfDestruct) return;
 
         DieFromLight();
     }
@@ -153,6 +194,7 @@ public class DeadsSkeleton : Mob
     {
         isSelfDestruct = true;
         explodeTime = Time.time + Mathf.Max(0f, explodeDelay);
+        PlaySelfDestructAnimation();
         ShowWarning();
 
         if (IsInsideCandlestickLight())
@@ -194,6 +236,17 @@ public class DeadsSkeleton : Mob
             telegraphService.HideCurrent();
     }
 
+    /// <summary>자폭 모드 진입 애니메이션을 재생합니다.</summary>
+    private void PlaySelfDestructAnimation()
+    {
+        TrySetAnimatorBool(true, SelfDestructModeBoolNames);
+
+        if (TrySetAnimatorTrigger(SelfDestructTriggerNames))
+            return;
+
+        TryPlayAnimatorState(SelfDestructStateNames);
+    }
+
     /// <summary>플레이어와 닿았을 때 폭발을 처리합니다.</summary>
     private void Explode(GameObject hitTarget)
     {
@@ -208,6 +261,29 @@ public class DeadsSkeleton : Mob
     private void DieFromLight()
     {
         Die();
+    }
+
+    /// <summary>일반 공격 피해를 무시하고 0 데미지 팝업만 표시합니다.</summary>
+    public bool TryApplyDamage(DamageRequest request)
+    {
+        if (isDead)
+            return false;
+
+        DamagePopupService.ShowText("0", transform.position);
+        return true;
+    }
+
+    /// <summary>플레이어와 접촉했을 때 즉시 폭발을 시도합니다.</summary>
+    private bool TryExplodeOnPlayerContact(GameObject contactObject)
+    {
+        if (!isSelfDestruct)
+            return false;
+
+        if (contactObject == null || !contactObject.CompareTag("Player"))
+            return false;
+
+        Explode(contactObject);
+        return true;
     }
 
     /// <summary>
