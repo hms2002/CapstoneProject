@@ -7,20 +7,6 @@ public class ShadowServant : Mob
 {
     private const float AttackDelay = 2f;
 
-    private static readonly string[] AttackTriggerNames =
-    {
-        "attack",
-        "explode",
-        "cast",
-        "fire"
-    };
-
-    private static readonly string[] AttackStateNames =
-    {
-        "ShadowServant_Attack",
-        "Attack"
-    };
-
     [Header("Fog")]
     [Tooltip("폭발 뒤 생성할 안개 프리팹입니다.")]
     [SerializeField] private GameObject fog;
@@ -319,9 +305,7 @@ public class ShadowServant : Mob
     /// <summary>폭발 직전 공격 애니메이션을 재생합니다.</summary>
     private void PlayAttackAnimation()
     {
-        if (TrySetAnimatorTrigger(AttackTriggerNames))
-            return;
-
-        TryPlayAnimatorState(AttackStateNames);
+        if (animator != null)
+            animator.SetTrigger("attack");
     }
 }

@@ -3,20 +3,11 @@ using UnityGAS;
 
 public class Mob : Enemy
 {
-    private static readonly string[] MoveBoolNames =
-    {
-        "isMoving",
-        "move",
-        "isMove",
-        "moving"
-    };
-
     [Header("참조")]
     [Tooltip("플레이어 추적 범위를 가진 컴포넌트입니다.")]
     [SerializeField] private EnemyChaseIntent2D chaseIntent;
 
     private bool hasMoveBool;
-    private int moveBoolHash;
 
     protected EnemyChaseIntent2D ChaseIntent => chaseIntent;
 
@@ -27,7 +18,7 @@ public class Mob : Enemy
         if (chaseIntent == null)
             chaseIntent = GetComponent<EnemyChaseIntent2D>();
 
-        hasMoveBool = TryCacheMoveBoolHash();
+        hasMoveBool = CheckMoveBool();
     }
 
     private void Update()
@@ -53,21 +44,38 @@ public class Mob : Enemy
     protected virtual void UpdateAnimation()
     {
         if (animator != null && movementMotor != null && hasMoveBool)
-            animator.SetBool(moveBoolHash, movementMotor.IsMoving);
+            animator.SetBool("isMoving", movementMotor.IsMoving);
 
+        UpdateFacing();
+    }
+
+    /// <summary>타겟 기준으로 스프라이트 방향을 갱신합니다.</summary>
+    protected virtual void UpdateFacing()
+    {
         if (Target == null || sprite == null) return;
 
         if      (transform.position.x > Target.position.x) sprite.flipX = true;
         else if (transform.position.x < Target.position.x) sprite.flipX = false;
     }
 
-    /// <summary>이동 Bool 파라미터 해시를 캐시합니다.</summary>
-    private bool TryCacheMoveBoolHash()
+    /// <summary>이동 Bool 파라미터가 있는지 확인합니다.</summary>
+    private bool CheckMoveBool()
     {
-        return TryFindAnimatorParameterHash(
-            AnimatorControllerParameterType.Bool,
-            MoveBoolNames,
-            out moveBoolHash);
+        if (animator == null)
+            return false;
+
+        AnimatorControllerParameter[] parameters = animator.parameters;
+        for (int i = 0; i < parameters.Length; i++)
+        {
+            AnimatorControllerParameter parameter = parameters[i];
+            if (parameter.type == AnimatorControllerParameterType.Bool &&
+                parameter.name == "isMoving")
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     protected override void OnEnemyAttributeChanged(AttributeDefinition attribute, float oldValue, float newValue)

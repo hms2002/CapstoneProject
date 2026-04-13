@@ -31,6 +31,7 @@ GameObject:
   - component: {fileID: 8449557556642649421}
   - component: {fileID: 3949865959590047275}
   - component: {fileID: 344486096308046059}
+  - component: {fileID: 8223012456081861757}
   m_Layer: 31
   m_Name: ShadowMonster
   m_TagString: Enemy
@@ -176,8 +177,8 @@ BoxCollider2D:
   m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.48, y: 0.28}
+    pivot: {x: 0.5, y: 0.18}
+    oldSize: {x: 2, y: 1.1666666}
     newSize: {x: 0.48, y: 0.28}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -538,3 +539,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c721f3a2f874aa14ea14c5bc2261cc39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &8223012456081861757
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 625522859161183429}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e976ed306a130c94db8843af68333d15, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UnityGAS.AttackTelegraphService
+  telegraphPrefab: {fileID: 788264263987448140, guid: 211dd09e2da9caf47ad8409c9e35b83d, type: 3}
+  defaultStyle: {fileID: 11400000, guid: b15f18602ec87284d80cbd57720425f1, type: 2}

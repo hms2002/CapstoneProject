@@ -2,51 +2,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityGAS;
 
+/// <summary>
+/// 이 클래스의 책임: 
+/// 플레이어 추적 중 자폭 조건을 판단하고, 자폭 모드에서만 폭발/광원 사망 규칙이 적용되며 일반 피해는 무시하는 해골 몬스터의 전투 흐름을 관리한다.
+/// </summary>
 public class DeadsSkeleton : Mob, IDamageReceiver
 {
-    // 이 클래스의 책임:
-    // 플레이어 추적 중 자폭 조건을 판단하고, 자폭 모드에서만 폭발/광원 사망 규칙이 적용되며 일반 피해는 무시하는 해골 몬스터의 전투 흐름을 관리한다.
-
-    private static readonly string[] SelfDestructModeBoolNames =
-    {
-        "isSelfDestructionMode",
-        "isSelfDestructMode",
-        "isSelfDestruct",
-        "selfDestructMode"
-    };
-
-    private static readonly string[] SelfDestructTriggerNames =
-    {
-        "beSelfDestructionMode",
-        "enterSelfDestructionMode",
-        "startSelfDestruct",
-        "selfDestruct"
-    };
-
-    private static readonly string[] SelfDestructStateNames =
-    {
-        "DeadsSkeleton_BeSelfDestructionMode",
-        "DeadsSkeleton_Float(SelfDestructionMode)",
-        "Float(SelfDestructionMode)"
-    };
-
-    private static readonly string[] DeathTriggerNames =
-    {
-        "die",
-        "isDead",
-        "death"
-    };
-
-    private static readonly string[] DeathStateNames =
-    {
-        "DeadsSkeleton_Die",
-        "Die",
-        "Death"
-    };
-
     private float explosionDiameter = 5f;
 
-    [Header("자폭")]
+    [Header("자폭 모드")]
     [Tooltip("자폭 모드에 들어가는 거리의 지름입니다.")]
     [SerializeField] private float selfDestructRangeDiameter = 6f;
 
@@ -95,21 +59,27 @@ public class DeadsSkeleton : Mob, IDamageReceiver
     protected override void OnDeathStarted()
     {
         HideWarning();
-        TrySetAnimatorBool(false, SelfDestructModeBoolNames);
         base.OnDeathStarted();
     }
 
     protected override void PlayDeathAnimation()
     {
-        if (TrySetAnimatorTrigger(DeathTriggerNames))
-            return;
-
-        TryPlayAnimatorState(DeathStateNames);
+        if (animator != null)
+            animator.SetTrigger("die");
     }
 
     protected override bool CanDrawStopRangeGizmo()
     {
         return false;
+    }
+
+    /// <summary>해골 스프라이트 기준에 맞춰 반대 방향으로 뒤집습니다.</summary>
+    protected override void UpdateFacing()
+    {
+        if (Target == null || sprite == null) return;
+
+        if (transform.position.x > Target.position.x) sprite.flipX = false;
+        else if (transform.position.x < Target.position.x) sprite.flipX = true;
     }
 
     private void OnCollisionEnter2D(Collision2D other)
@@ -239,12 +209,8 @@ public class DeadsSkeleton : Mob, IDamageReceiver
     /// <summary>자폭 모드 진입 애니메이션을 재생합니다.</summary>
     private void PlaySelfDestructAnimation()
     {
-        TrySetAnimatorBool(true, SelfDestructModeBoolNames);
-
-        if (TrySetAnimatorTrigger(SelfDestructTriggerNames))
-            return;
-
-        TryPlayAnimatorState(SelfDestructStateNames);
+        if (animator != null)
+            animator.SetTrigger("selfDestructionMode");
     }
 
     /// <summary>플레이어와 닿았을 때 폭발을 처리합니다.</summary>
