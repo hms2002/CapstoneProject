@@ -243,7 +243,8 @@ public static class CombatDamageAction
         runner.ApplyEffectSpec(damageSpec, target);
 
         // 3) target-side damaged event
-        EmitDamagedTaken(system, target, spec, causer, hpCheck);
+        EmitDamagedTaken(system, damageEffect, target, spec, causer, hpCheck);
+        
 
         // 4) Apply knockback effect separately
         ApplyKnockbackEffect(
@@ -361,11 +362,12 @@ public static class CombatDamageAction
         return new HpCheckData(preHp, hpAttr, targetAttrs);
     }
     private static void EmitDamagedTaken(
-    AbilitySystem sourceSystem,
-    GameObject target,
-    AbilitySpec sourceSpec,
-    GameObject causer,
-    HpCheckData hpCheck)
+        AbilitySystem sourceSystem,
+        GameplayEffect damageEffect,
+        GameObject target,
+        AbilitySpec sourceSpec,
+        GameObject causer,
+        HpCheckData hpCheck)
     {
         if (!hpCheck.IsValid) return;
 
@@ -375,6 +377,7 @@ public static class CombatDamageAction
         CombatHitAudioRouter.PlayImpact(
             sourceSystem,
             sourceSpec,
+            damageEffect,
             target,
             causer);
 

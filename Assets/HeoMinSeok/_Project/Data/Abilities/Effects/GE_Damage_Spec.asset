@@ -21,7 +21,7 @@ MonoBehaviour:
   grantedTags: []
   grantedTagSets: []
   audioOnExecute:
-    key: 
+    key: hit
     volumeMultiplier: 1
     anchorPolicy: 0
     localOffset: {x: 0, y: 0, z: 0}
