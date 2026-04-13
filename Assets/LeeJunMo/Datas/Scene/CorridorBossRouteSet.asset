@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 49e819959f62ded44b5570bd39d55be6, type: 3}
   m_Name: CorridorBossRouteSet
   m_EditorClassIdentifier: 
-  corridorSceneName: ProtoTypeCorridor
+  corridorSceneName: ShadowCorridor
   corridorEntryPointId: Default
-  bossSceneName: ProtoTypeBoss 1
+  bossSceneName: HeoMinSeok_Boss
   bossEntryPointId: Default
