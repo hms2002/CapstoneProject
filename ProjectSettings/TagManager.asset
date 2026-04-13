@@ -14,8 +14,8 @@ TagManager:
   - UI
   - HoleTrap
   - Ground
-  - 
-  - 
+  - Non_FightCollision
+  - HitCollision
   - 
   - 
   - 

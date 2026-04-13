@@ -9394,7 +9394,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 425920425, guid: ef16b2ddeb64123459076c2c8a541a63, type: 3}
+  m_Sprite: {fileID: 2733973228906417710, guid: 54d49fcb5010f7c4fba7b7db5af57ab4, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -11042,8 +11042,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1092956013960523478}
   m_HandleRect: {fileID: 8332966245323845281}
   m_Direction: 2
-  m_Value: 0.00000024100746
-  m_Size: 0.6725214
+  m_Value: 0.9999998
+  m_Size: 0.67252135
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -11415,7 +11415,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0.000061035156}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &383469899696053745
@@ -23205,10 +23205,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 5714358525819109809}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.5}
-  m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 100, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 1500, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5372235068290118098
 CanvasRenderer:
@@ -23253,7 +23253,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: adsfadfsasdfadsfasdfadsfasdfadsfasdf
+  m_text: adsfadfsasdfadsfasdfadsfasdfadsfasdfdasdasdasdasdasdasdasdasdasdasdweasdasdasdasda
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 698a407b32ed1874bb4cb7324dfddce2, type: 2}
   m_sharedMaterial: {fileID: 1826925326976027445, guid: 698a407b32ed1874bb4cb7324dfddce2, type: 2}
@@ -23297,7 +23297,7 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_TextWrappingMode: 0
+  m_TextWrappingMode: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}
@@ -23723,7 +23723,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 379.87512}
+  m_AnchoredPosition: {x: 0, y: 0.000030517578}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &6890480575044433170
@@ -25470,6 +25470,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 5878805655169768314}
     m_Modifications:
+    - target: {fileID: 1673563683990405721, guid: 713cfeb5710be48478cd9b4ae8f324a4, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 2733973228906417710, guid: 54d49fcb5010f7c4fba7b7db5af57ab4, type: 3}
     - target: {fileID: 3295569520514700847, guid: 713cfeb5710be48478cd9b4ae8f324a4, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5

@@ -102,7 +102,7 @@ Animator:
   m_GameObject: {fileID: 643282084940440820}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 69802d2b0927e2d4fab626854e4de785, type: 2}
+  m_Controller: {fileID: 9100000, guid: 99cbc2ac87ece95438542ebfa0c2692e, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -125,7 +125,7 @@ GameObject:
   - component: {fileID: 6973826575809085779}
   - component: {fileID: 3343002971103465845}
   - component: {fileID: 6902002014408514032}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Hitbox_WindWeapon_NormalAtk_Slash
   m_TagString: Untagged
   m_Icon: {fileID: 0}

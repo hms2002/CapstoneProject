@@ -87,6 +87,80 @@ MonoBehaviour:
     volumeMultiplier: 1
     anchorPolicy: 0
     localOffset: {x: 0, y: 0, z: 0}
+  cameraShakeOnCastStart:
+    amplitude: 0
+    amplitudeMultiplier: 0
+    maxAmplitude: 0
+    minIntervalSeconds: 0
+    directionMode: 0
+    customDirection: {x: 0, y: 0, z: 0}
+    ignoreScreenShakeSetting: 0
+  cameraShakeWhileCasting:
+    amplitude: 0
+    amplitudeMultiplier: 0
+    maxAmplitude: 0
+    minIntervalSeconds: 0
+    directionMode: 0
+    customDirection: {x: 0, y: 0, z: 0}
+    ignoreScreenShakeSetting: 0
+  cameraShakeOnCommit:
+    amplitude: 0
+    amplitudeMultiplier: 0
+    maxAmplitude: 0
+    minIntervalSeconds: 0
+    directionMode: 0
+    customDirection: {x: 0, y: 0, z: 0}
+    ignoreScreenShakeSetting: 0
+  cameraShakeWhileActive:
+    amplitude: 0
+    amplitudeMultiplier: 0
+    maxAmplitude: 0
+    minIntervalSeconds: 0
+    directionMode: 0
+    customDirection: {x: 0, y: 0, z: 0}
+    ignoreScreenShakeSetting: 0
+  cameraShakeOnEnd:
+    amplitude: 0
+    amplitudeMultiplier: 0
+    maxAmplitude: 0
+    minIntervalSeconds: 0
+    directionMode: 0
+    customDirection: {x: 0, y: 0, z: 0}
+    ignoreScreenShakeSetting: 0
+  cameraShakeOnCastCancelled:
+    amplitude: 0
+    amplitudeMultiplier: 0
+    maxAmplitude: 0
+    minIntervalSeconds: 0
+    directionMode: 0
+    customDirection: {x: 0, y: 0, z: 0}
+    ignoreScreenShakeSetting: 0
+  cameraShakeOnExecutionCancelled:
+    amplitude: 0
+    amplitudeMultiplier: 0
+    maxAmplitude: 0
+    minIntervalSeconds: 0
+    directionMode: 0
+    customDirection: {x: 0, y: 0, z: 0}
+    ignoreScreenShakeSetting: 0
+  cameraShakeOnHitConfirmed:
+    amplitude: 0
+    amplitudeMultiplier: 0
+    maxAmplitude: 0
+    minIntervalSeconds: 0
+    directionMode: 0
+    customDirection: {x: 0, y: 0, z: 0}
+    ignoreScreenShakeSetting: 0
+  cuesOnCastStart: []
+  cuesWhileCasting: []
+  cuesOnCommit: []
+  cuesWhileActive: []
+  cuesOnEnd: []
+  cuesOnCastCancelled: []
+  cuesOnExecutionCancelled: []
+  cuesOnHitConfirmed: []
+  hitCueMagnitude: 1
+  criticalHitCueMagnitudeMultiplier: 2
   cueOnCastStart: {fileID: 0}
   cueWhileCasting: {fileID: 0}
   cueOnCommit: {fileID: 0}
@@ -94,3 +168,5 @@ MonoBehaviour:
   cueOnEnd: {fileID: 0}
   cueOnCastCancelled: {fileID: 0}
   cueOnExecutionCancelled: {fileID: 0}
+  cueOnHitConfirmed: {fileID: 0}
+  additionalCuesOnHitConfirmed: []

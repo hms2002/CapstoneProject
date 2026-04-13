@@ -239,7 +239,7 @@ GameObject:
   - component: {fileID: 3918432212345678902}
   - component: {fileID: 5899509119815525248}
   - component: {fileID: 3918432212345678901}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: LightBead
   m_TagString: Untagged
   m_Icon: {fileID: 0}
