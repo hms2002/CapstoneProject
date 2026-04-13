@@ -12,6 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 27043dcf72e17524f824f9ba7a3a42c5, type: 3}
   m_Name: AL_Witch_BasicAttack2
   m_EditorClassIdentifier: 
+  fallbackOuterRadius: 6
+  innerSafeDiameterScale: 1.5
+  minimumInnerSafeRadius: 2
   hitEffectCount: 8
   hitParticleCount: 1
   hitPresentationRadiusLerp: 0.75
