@@ -13,6 +13,20 @@ public class AbilityLogic_WitchSealedCandleRampage : AbilityLogic
     private const float BurstIntervalSeconds = 0.45f;
     private const int ProjectileCountPerCandle = 5;
     private const float SpreadAngleDegrees = 52f;
+    private const float TelegraphTileUnitSize = 1.7f;
+    private const float TelegraphTileDepth = 3f;
+    private const float DefaultTelegraphRadius = TelegraphTileUnitSize * TelegraphTileDepth;
+
+    [Header("Telegraph")]
+    [SerializeField] private float telegraphRadius = 0f;
+    [SerializeField] private AttackTelegraphStyle telegraphStyle;
+
+    private struct CandleBurstShotPlan
+    {
+        public Candlestick candle;
+        public Vector3 origin;
+        public Vector2 direction;
+    }
 
     public override IEnumerator Activate(AbilitySystem system, AbilitySpec spec, GameObject initialTarget)
     {
@@ -21,49 +35,137 @@ public class AbilityLogic_WitchSealedCandleRampage : AbilityLogic
             yield break;
 
         witch.PlayPatternAttackMotion();
-        yield return new WaitForSeconds(WindupSeconds);
-
         GameObject targetObject = initialTarget != null ? initialTarget : witch.CurrentTarget != null ? witch.CurrentTarget.gameObject : null;
         List<Candlestick> sealedCandles = new List<Candlestick>();
+        List<CandleBurstShotPlan> burstPlans = new List<CandleBurstShotPlan>();
+        List<AttackTelegraphView> warningViews = new List<AttackTelegraphView>();
+        AttackTelegraphService telegraphService = witch.GetComponent<AttackTelegraphService>();
 
         witch.CollectSealedCandles(sealedCandles);
         if (sealedCandles.Count == 0)
             yield break;
 
+        BuildBurstPlans(witch, sealedCandles, targetObject, burstPlans);
+        if (burstPlans.Count == 0)
+            yield break;
+
+        SpawnBurstWarnings(telegraphService, burstPlans, WindupSeconds, warningViews, ResolveTelegraphRadius());
+
+        if (WindupSeconds > 0f)
+            yield return new WaitForSeconds(WindupSeconds);
+
+        DestroyWarningViews(warningViews);
+
         for (int burstIndex = 0; burstIndex < BurstRepeatCount; burstIndex++)
         {
-            witch.CollectSealedCandles(sealedCandles);
-            if (sealedCandles.Count == 0)
-                yield break;
-
-            for (int i = 0; i < sealedCandles.Count; i++)
+            for (int i = 0; i < burstPlans.Count; i++)
             {
-                Candlestick candle = sealedCandles[i];
-                if (candle == null)
+                CandleBurstShotPlan plan = burstPlans[i];
+                if (plan.candle == null)
                     continue;
-
-                Vector3 origin = witch.GetCandleCenter(candle);
-                Vector2 direction = witch.GetDirectionToTargetOrFacing(targetObject != null ? targetObject.transform : null, origin);
 
                 WitchProjectileAttackHelper.SpawnLightBeadBurst(
                     system,
                     witch.gameObject,
-                    candle.gameObject,
+                    plan.candle.gameObject,
                     witch.LightBeadPrefab,
                     witch.ProjectileDamageEffect,
                     witch.ProjectileDamage,
                     witch.ProjectileSpeed,
-                    origin,
-                    direction,
+                    plan.origin,
+                    plan.direction,
                     ProjectileCountPerCandle,
                     SpreadAngleDegrees,
                     targetObject);
             }
 
-            sealedCandles.Clear();
-
-            if (burstIndex < BurstRepeatCount - 1)
+            if (burstIndex < BurstRepeatCount - 1 && BurstIntervalSeconds > 0f)
                 yield return new WaitForSeconds(BurstIntervalSeconds);
         }
+    }
+
+    private void BuildBurstPlans(
+        Witch witch,
+        List<Candlestick> sealedCandles,
+        GameObject targetObject,
+        List<CandleBurstShotPlan> buffer)
+    {
+        if (buffer == null)
+            return;
+
+        buffer.Clear();
+
+        for (int i = 0; i < sealedCandles.Count; i++)
+        {
+            Candlestick candle = sealedCandles[i];
+            if (candle == null)
+                continue;
+
+            Vector3 origin = witch.GetCandleCenter(candle);
+            Vector2 direction = witch.GetDirectionToTargetOrFacing(targetObject != null ? targetObject.transform : null, origin);
+
+            buffer.Add(new CandleBurstShotPlan
+            {
+                candle = candle,
+                origin = origin,
+                direction = direction
+            });
+        }
+    }
+
+    private void SpawnBurstWarnings(
+        AttackTelegraphService telegraphService,
+        List<CandleBurstShotPlan> burstPlans,
+        float duration,
+        List<AttackTelegraphView> warningViews,
+        float radius)
+    {
+        DestroyWarningViews(warningViews);
+
+        if (telegraphService == null || burstPlans == null || warningViews == null)
+            return;
+
+        for (int i = 0; i < burstPlans.Count; i++)
+        {
+            CandleBurstShotPlan plan = burstPlans[i];
+            if (plan.candle == null)
+                continue;
+
+            float angle = Mathf.Atan2(plan.direction.y, plan.direction.x) * Mathf.Rad2Deg;
+            AttackTelegraphSpec spec = AttackTelegraphSpec.CreateSector(
+                plan.origin,
+                radius,
+                SpreadAngleDegrees,
+                angle,
+                duration,
+                telegraphStyle);
+
+            AttackTelegraphView view = telegraphService.SpawnDetachedView(spec);
+            if (view != null)
+                warningViews.Add(view);
+        }
+    }
+
+    private float ResolveTelegraphRadius()
+    {
+        if (telegraphRadius > 0f)
+            return telegraphRadius;
+
+        return DefaultTelegraphRadius;
+    }
+
+    private static void DestroyWarningViews(List<AttackTelegraphView> warningViews)
+    {
+        if (warningViews == null)
+            return;
+
+        for (int i = 0; i < warningViews.Count; i++)
+        {
+            AttackTelegraphView view = warningViews[i];
+            if (view != null)
+                Object.Destroy(view.gameObject);
+        }
+
+        warningViews.Clear();
     }
 }

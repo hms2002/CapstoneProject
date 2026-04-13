@@ -47,10 +47,20 @@ public class StrangeCandlestick : Mob
     [Tooltip("LightBead 한 발의 피해량입니다.")]
     [SerializeField] private float projectileDamage = 1f;
 
+    [Header("Lock On Warning")]
+    [SerializeField] private float lockOnDuration = 0.8f;
+    [SerializeField] private float lockOnLineWidth = 0.28f;
+    [SerializeField] private Color lockOnColor = new Color(1f, 0.15f, 0.15f, 1f);
+    [SerializeField] private AttackTelegraphStyle lockOnStyleAsset;
+
     private EnemyChaseIntent2D detectionSensor;
     private CandlestickSeal candlestickSeal;
+    private AttackTelegraphService telegraphService;
+    private AttackTelegraphStyle runtimeLockOnStyle;
     private float nextProjectileFireTime;
     private bool hasLoggedInvalidConfig;
+    private bool isLockingOn;
+    private float lockOnFinishTime;
 
     public static System.Collections.Generic.IReadOnlyList<StrangeCandlestick> Instances => instances;
     public bool IsSealed => candlestickSeal != null && candlestickSeal.IsSealed;
@@ -60,6 +70,8 @@ public class StrangeCandlestick : Mob
         base.Awake();
         detectionSensor = GetComponent<EnemyChaseIntent2D>();
         candlestickSeal = GetComponent<CandlestickSeal>();
+        telegraphService = GetComponent<AttackTelegraphService>();
+        runtimeLockOnStyle = lockOnStyleAsset == null ? MakeLockOnStyle() : null;
     }
 
     private void OnEnable()
@@ -71,6 +83,15 @@ public class StrangeCandlestick : Mob
     private void OnDisable()
     {
         instances.Remove(this);
+        CancelLockOn();
+    }
+
+    protected override void OnDestroy()
+    {
+        base.OnDestroy();
+
+        if (runtimeLockOnStyle != null)
+            Destroy(runtimeLockOnStyle);
     }
 
     public override bool CanUseChaseMovement()
@@ -80,10 +101,16 @@ public class StrangeCandlestick : Mob
 
     protected override void UpdateAttack()
     {
+        if (isLockingOn)
+        {
+            TickLockOn();
+            return;
+        }
+
         if (!CanShoot())
             return;
 
-        Shoot();
+        StartLockOn();
     }
 
     /// <summary>촛대를 봉인 상태로 만듭니다.</summary>
@@ -108,6 +135,12 @@ public class StrangeCandlestick : Mob
         }
 
         base.OnEnemyAttributeChanged(attribute, oldValue, newValue);
+    }
+
+    protected override void OnDeathStarted()
+    {
+        CancelLockOn();
+        base.OnDeathStarted();
     }
 
     /// <summary>촛대 사망 시 꺼지는 애니메이션을 재생합니다.</summary>
@@ -219,9 +252,127 @@ public class StrangeCandlestick : Mob
         };
 
         lightBead.Setup(context);
-        nextProjectileFireTime = Time.time + ProjectileAttackInterval;
+        nextProjectileFireTime = Time.time + GetPostShotCooldown();
         PlayShootAnimation();
         return true;
+    }
+
+    private void StartLockOn()
+    {
+        isLockingOn = true;
+        lockOnFinishTime = Time.time + Mathf.Max(0f, lockOnDuration);
+
+        if (telegraphService != null)
+            telegraphService.Show(MakeLockOnSpec());
+    }
+
+    private void TickLockOn()
+    {
+        if (!CanContinueLockOn())
+        {
+            CancelLockOn();
+            return;
+        }
+
+        if (telegraphService != null)
+        {
+            AttackTelegraphSpec spec = MakeLockOnSpec();
+
+            if (telegraphService.HasActiveTelegraph)
+                telegraphService.UpdateCurrentGeometry(spec);
+            else
+                telegraphService.Show(spec);
+        }
+
+        if (Time.time < lockOnFinishTime)
+            return;
+
+        HideLockOnTelegraph();
+        isLockingOn = false;
+        Shoot();
+    }
+
+    private bool CanContinueLockOn()
+    {
+        if (isDead)
+            return false;
+
+        if (!HasShootData())
+            return false;
+
+        if (target == null)
+            return false;
+
+        return IsTargetInRange();
+    }
+
+    private void CancelLockOn()
+    {
+        isLockingOn = false;
+        lockOnFinishTime = 0f;
+        HideLockOnTelegraph();
+    }
+
+    private void HideLockOnTelegraph()
+    {
+        if (telegraphService != null)
+            telegraphService.HideCurrent();
+    }
+
+    private AttackTelegraphSpec MakeLockOnSpec()
+    {
+        Vector2 start = transform.position;
+        Vector2 end = target != null ? (Vector2)target.position : start;
+        Vector2 delta = end - start;
+        float length = Mathf.Max(0.01f, delta.magnitude);
+        Vector2 direction = delta.sqrMagnitude <= 0.0001f
+            ? (sprite != null && sprite.flipX ? Vector2.left : Vector2.right)
+            : delta / length;
+
+        Vector3 center = start + direction * (length * 0.5f);
+        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+
+        return AttackTelegraphSpec.CreateRectangle(
+            center,
+            new Vector2(length, Mathf.Max(0.01f, lockOnLineWidth)),
+            angle,
+            Mathf.Max(0.01f, lockOnDuration),
+            GetLockOnStyle());
+    }
+
+    private AttackTelegraphStyle GetLockOnStyle()
+    {
+        if (lockOnStyleAsset != null)
+            return lockOnStyleAsset;
+
+        if (runtimeLockOnStyle == null)
+            runtimeLockOnStyle = MakeLockOnStyle();
+
+        return runtimeLockOnStyle;
+    }
+
+    private AttackTelegraphStyle MakeLockOnStyle()
+    {
+        AttackTelegraphStyle style = ScriptableObject.CreateInstance<AttackTelegraphStyle>();
+        Color transparent = new Color(lockOnColor.r, lockOnColor.g, lockOnColor.b, 0f);
+
+        style.fillColorStart = transparent;
+        style.fillColorEnd = lockOnColor;
+        style.borderColorStart = transparent;
+        style.borderColorEnd = lockOnColor;
+        style.progressCurve = AnimationCurve.Linear(0f, 0f, 1f, 1f);
+        style.blinkStartNormalized = 1f;
+        style.blinkFrequency = 0f;
+        style.blinkAlphaMin = 1f;
+        style.scaleFillWithProgress = false;
+        style.fillScaleStart = 1f;
+        style.fillScaleEnd = 1f;
+        return style;
+    }
+
+    private float GetPostShotCooldown()
+    {
+        return Mathf.Max(0f, ProjectileAttackInterval - Mathf.Max(0f, lockOnDuration));
     }
 
     /// <summary>발사 방향을 계산합니다.</summary>

@@ -8,6 +8,7 @@ public static class WitchProjectileAttackHelper
 
     private const int PlayerLayer = 3;
     private const int WallLayer = 30;
+    public const float DefaultProjectileLifetimeSeconds = 5f;
 
     /// <summary>주어진 위치에서 LightBead 부채꼴 탄막을 발사합니다.</summary>
     public static bool SpawnLightBeadBurst(
@@ -77,7 +78,7 @@ public static class WitchProjectileAttackHelper
             sourceSpec = null,
             causer = causer,
             ignoreTarget = ignoreTarget != null ? ignoreTarget : causer,
-            lifetime = 5f,
+            lifetime = DefaultProjectileLifetimeSeconds,
             wallLayers = 1 << WallLayer,
             damageLayers = damageLayers,
             hitPayload = payload,

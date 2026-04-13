@@ -16,7 +16,8 @@ public class AbilityLogic_WitchBasicAttack2 : AbilityLogic
     private readonly HashSet<GameObject> damagedTargets = new();
 
     [Header("Hit Presentation")]
-    [SerializeField] [Min(1)] private int hitPresentationCount = 8;
+    [SerializeField] [Min(1)] private int hitEffectCount = 8;
+    [SerializeField] [Min(1)] private int hitParticleCount = 1;
     [SerializeField] [Range(0f, 1f)] private float hitPresentationRadiusLerp = 0.75f;
     [SerializeField] private GameObject hitEffectPrefab;
     [SerializeField] private Vector3 hitEffectLocalOffset = new Vector3(0f, 0f, -0.05f);
@@ -172,61 +173,81 @@ public class AbilityLogic_WitchBasicAttack2 : AbilityLogic
 
     private void PlayHitPresentation(Vector3 center, float outerRadius, float innerSafeRadius)
     {
-        int presentationCount = Mathf.Max(1, hitPresentationCount);
-        float spawnRadius = Mathf.Lerp(innerSafeRadius, outerRadius, Mathf.Clamp01(hitPresentationRadiusLerp));
-
-        if (presentationCount == 1)
-        {
-            Vector3 direction = Vector3.up;
-            SpawnEffectPrefab(
-                hitEffectPrefab,
-                center + hitEffectLocalOffset,
-                direction,
-                hitEffectRotationOffsetZ,
-                hitEffectScaleMultiplier,
-                hitEffectLifetimeSeconds,
-                useUnscaledTime: false);
-            SpawnEffectPrefab(
-                hitParticlePrefab,
-                center + hitParticleLocalOffset,
-                direction,
-                hitParticleRotationOffsetZ,
-                hitParticleScaleMultiplier,
-                hitParticleLifetimeOverrideSeconds,
-                useUnscaledHitParticleTime);
-        }
-        else
-        {
-            float angleStep = 360f / presentationCount;
-            for (int i = 0; i < presentationCount; i++)
-            {
-                float angleDeg = angleStep * i;
-                Vector3 direction = Quaternion.Euler(0f, 0f, angleDeg) * Vector3.right;
-                Vector3 ringPoint = center + (direction * spawnRadius);
-
-                SpawnEffectPrefab(
-                    hitEffectPrefab,
-                    ringPoint + hitEffectLocalOffset,
-                    direction,
-                    hitEffectRotationOffsetZ,
-                    hitEffectScaleMultiplier,
-                    hitEffectLifetimeSeconds,
-                    useUnscaledTime: false);
-                SpawnEffectPrefab(
-                    hitParticlePrefab,
-                    ringPoint + hitParticleLocalOffset,
-                    direction,
-                    hitParticleRotationOffsetZ,
-                    hitParticleScaleMultiplier,
-                    hitParticleLifetimeOverrideSeconds,
-                    useUnscaledHitParticleTime);
-            }
-        }
+        SpawnPresentationBurst(
+            hitEffectPrefab,
+            Mathf.Max(1, hitEffectCount),
+            center,
+            outerRadius,
+            innerSafeRadius,
+            hitEffectLocalOffset,
+            hitEffectRotationOffsetZ,
+            hitEffectScaleMultiplier,
+            hitEffectLifetimeSeconds,
+            useUnscaledTime: false);
+        SpawnPresentationBurst(
+            hitParticlePrefab,
+            Mathf.Max(1, hitParticleCount),
+            center,
+            outerRadius,
+            innerSafeRadius,
+            hitParticleLocalOffset,
+            hitParticleRotationOffsetZ,
+            hitParticleScaleMultiplier,
+            hitParticleLifetimeOverrideSeconds,
+            useUnscaledHitParticleTime);
 
         hitCameraShake.TryPlay(
             source: null,
             fallbackDirection: Vector3.up,
             debugReason: "WitchBasicAttack2.Hit");
+    }
+
+    private void SpawnPresentationBurst(
+        GameObject prefab,
+        int spawnCount,
+        Vector3 center,
+        float outerRadius,
+        float innerSafeRadius,
+        Vector3 localOffset,
+        float rotationOffsetZ,
+        Vector3 scaleMultiplier,
+        float lifetimeOverrideSeconds,
+        bool useUnscaledTime)
+    {
+        if (prefab == null)
+            return;
+
+        float spawnRadius = Mathf.Lerp(innerSafeRadius, outerRadius, Mathf.Clamp01(hitPresentationRadiusLerp));
+
+        if (spawnCount <= 1)
+        {
+            SpawnEffectPrefab(
+                prefab,
+                center + localOffset,
+                Vector3.up,
+                rotationOffsetZ,
+                scaleMultiplier,
+                lifetimeOverrideSeconds,
+                useUnscaledTime);
+            return;
+        }
+
+        float angleStep = 360f / spawnCount;
+        for (int i = 0; i < spawnCount; i++)
+        {
+            float angleDeg = angleStep * i;
+            Vector3 direction = Quaternion.Euler(0f, 0f, angleDeg) * Vector3.right;
+            Vector3 ringPoint = center + (direction * spawnRadius);
+
+            SpawnEffectPrefab(
+                prefab,
+                ringPoint + localOffset,
+                direction,
+                rotationOffsetZ,
+                scaleMultiplier,
+                lifetimeOverrideSeconds,
+                useUnscaledTime);
+        }
     }
 
     private static void SpawnEffectPrefab(
