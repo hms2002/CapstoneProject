@@ -105,14 +105,14 @@ public sealed class BossHudController : MonoBehaviour
 
     /// <summary>
     /// 책임 :
-    /// - 기절 중이면 남은 시간 비율(1→0)을 반환한다.
-    /// - 기절 중이 아니면 스태거 게이지 누적 비율(0→1)을 반환한다.
+    /// - 기절 중이면 경과 시간 비율(0→1)을 반환해 남은 시간 표현을 기존과 반대로 뒤집는다.
+    /// - 기절 중이 아니면 스태거 게이지 누적의 역비율(1→0)을 반환해 피격될수록 슬라이더가 줄어들게 만든다.
     /// </summary>
     private float GetGroggyRatio()
     {
         if (_staggerGaugeSystem == null) return 0f;
 
-        // 기절 중 : 남은 시간 비율
+        // 기절 중 : 경과 시간 비율(남은 시간 표현 반전)
         if (_effectRunner != null)
         {
             GameplayEffect groggyEffect = _staggerGaugeSystem.staggeredEffect;
@@ -120,17 +120,20 @@ public sealed class BossHudController : MonoBehaviour
             {
                 float remaining = _effectRunner.GetRemainingTime(groggyEffect, targetBoss.gameObject);
                 if (remaining > 0.001f)
-                    return Mathf.Clamp01(remaining / groggyEffect.duration);
+                {
+                    float elapsedNormalized = 1f - Mathf.Clamp01(remaining / groggyEffect.duration);
+                    return elapsedNormalized;
+                }
             }
         }
 
-        // 기절 아닐 때 : 스태거 게이지 누적 비율
+        // 기절 아닐 때 : 스태거 게이지 누적 역비율
         if (targetBoss.AttributeSet == null) return 0f;
         if (_staggerGaugeSystem.currentGaugeAttribute == null || _staggerGaugeSystem.maxGaugeAttribute == null) return 0f;
 
         float current = targetBoss.AttributeSet.GetAttributeValue(_staggerGaugeSystem.currentGaugeAttribute);
         float max = targetBoss.AttributeSet.GetAttributeValue(_staggerGaugeSystem.maxGaugeAttribute);
 
-        return max > 0f ? Mathf.Clamp01(current / max) : 0f;
+        return max > 0f ? 1f - Mathf.Clamp01(current / max) : 0f;
     }
 }
