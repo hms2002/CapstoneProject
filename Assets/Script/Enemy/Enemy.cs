@@ -1,6 +1,10 @@
 using UnityEngine;
 using UnityGAS;
 
+/// <summary>
+/// 이 클래스의 책임: 
+/// 모든 적이 공유하는 공통 사망 진입 상태와 사망 연출 재생/제거 흐름의 단일 진실 원천이 된다.
+/// </summary>
 [RequireComponent(typeof(Rigidbody2D), typeof(Collider2D), typeof(Animator))]
 [RequireComponent(typeof(AbilitySystem), typeof(AttributeSet), typeof(GameplayEffectRunner))]
 [RequireComponent(typeof(TagSystem))]
@@ -8,6 +12,9 @@ using UnityGAS;
 [RequireComponent(typeof(ExternalMovementController2D), typeof(KnockbackReceiver2D))]
 public class Enemy : MonoBehaviour
 {
+    private const float DeathStateEnterTimeout = 1f;
+    private const float DeathDestroyFailSafeTimeout = 5f;
+
     // Components =============================
     protected Rigidbody2D       rigid2D;
     protected Collider2D        collision;
@@ -32,13 +39,9 @@ public class Enemy : MonoBehaviour
     [SerializeField] protected string enemyName;
     [SerializeField] private string targetTag = "Player";
 
-    [Header("Enemy's Death")]
-    [Tooltip("Die 애니메이션 재생 후 오브젝트를 제거하기까지 기다릴 시간입니다. 0 이하이면 Animator에서 Die 클립 길이를 자동 탐색합니다.")]
-    [SerializeField] protected float dieAnimTime = 0f;
-
-    // 이 클래스의 책임:
-    // 모든 적이 공유하는 공통 사망 진입 상태와 사망 연출 재생/제거 흐름의 단일 진실 원천이 된다.
     protected bool isDead;
+    private Coroutine deathDestroyRoutine;
+    private int deathStartStateHash;
 
     protected Transform target;
     public virtual Transform Target => target;
@@ -74,6 +77,8 @@ public class Enemy : MonoBehaviour
     {
         if (attributeSet != null)
             attributeSet.OnAttributeChanged -= OnEnemyAttributeChanged;
+
+        deathDestroyRoutine = null;
     }
 
     /// <summary>타겟 태그로 현재 추적 대상을 갱신합니다.</summary>
@@ -104,6 +109,7 @@ public class Enemy : MonoBehaviour
         if (isDead) return;
 
         isDead = true;
+        deathStartStateHash = animator != null ? animator.GetCurrentAnimatorStateInfo(0).fullPathHash : 0;
         OnDeathStarted();
         StopDeathGameplay();
         PlayDeathAnimation();
@@ -133,26 +139,78 @@ public class Enemy : MonoBehaviour
             animator.SetTrigger("die");
     }
 
-    /// <summary>사망 대기 시간 이후 적 오브젝트를 제거합니다.</summary>
+    /// <summary>사망 애니메이션이 끝나면 적 오브젝트를 제거합니다.</summary>
     protected virtual void DestroyAfterDelay()
     {
-        float destroyDelay = Mathf.Max(0f, GetDeathDestroyDelay());
-        Destroy(gameObject, destroyDelay);
+        if (deathDestroyRoutine != null)
+            StopCoroutine(deathDestroyRoutine);
+
+        if (animator == null || !animator.isActiveAndEnabled || animator.runtimeAnimatorController == null)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        deathDestroyRoutine = StartCoroutine(WaitForDeathAnimationAndDestroy());
     }
 
-    /// <summary>사망 후 오브젝트 제거까지 기다릴 시간을 반환합니다.</summary>
-    protected virtual float GetDeathDestroyDelay()
+    /// <summary>죽는 상태가 끝날 때까지 기다린 뒤 오브젝트를 제거합니다.</summary>
+    private System.Collections.IEnumerator WaitForDeathAnimationAndDestroy()
     {
-        if (dieAnimTime > 0f)
-            return dieAnimTime;
+        float stateEnterElapsed = 0f;
+        float totalElapsed = 0f;
+        bool hasLeftStartState = false;
 
-        return ResolveDeathAnimationClipLength();
-    }
+        yield return null;
 
-    /// <summary>Animator Controller에서 Die 애니메이션 클립 길이를 찾아 반환합니다.</summary>
-    private float ResolveDeathAnimationClipLength()
-    {
-        return FindAnimationClipLength("die");
+        while (animator != null)
+        {
+            totalElapsed += Time.deltaTime;
+            if (totalElapsed >= DeathDestroyFailSafeTimeout)
+                break;
+
+            if (!animator.isActiveAndEnabled)
+                break;
+
+            if (animator.IsInTransition(0))
+            {
+                stateEnterElapsed += Time.deltaTime;
+                if (!hasLeftStartState && stateEnterElapsed >= DeathStateEnterTimeout)
+                    break;
+
+                yield return null;
+                continue;
+            }
+
+            AnimatorStateInfo currentState = animator.GetCurrentAnimatorStateInfo(0);
+
+            if (!hasLeftStartState)
+            {
+                hasLeftStartState = currentState.fullPathHash != deathStartStateHash;
+
+                if (!hasLeftStartState)
+                {
+                    stateEnterElapsed += Time.deltaTime;
+                    if (stateEnterElapsed >= DeathStateEnterTimeout)
+                        break;
+
+                    yield return null;
+                    continue;
+                }
+            }
+
+            if (!currentState.loop &&
+                !animator.IsInTransition(0) &&
+                currentState.normalizedTime >= 1f)
+            {
+                break;
+            }
+
+            yield return null;
+        }
+
+        deathDestroyRoutine = null;
+        Destroy(gameObject);
     }
 
     /// <summary>후보 이름과 일치하는 애니메이션 클립 길이를 찾습니다.</summary>

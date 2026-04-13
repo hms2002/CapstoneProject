@@ -145,7 +145,8 @@ public class ShadowServant : Mob
             yield break;
         }
 
-        PlayAttackAnimation();
+        if (animator != null)
+            animator.SetTrigger("attack");
 
         Explode(hitPoint);
         SpawnFog(targetPoint);
@@ -300,12 +301,5 @@ public class ShadowServant : Mob
         style.fillScaleStart = 1f;
         style.fillScaleEnd = 1f;
         return style;
-    }
-
-    /// <summary>폭발 직전 공격 애니메이션을 재생합니다.</summary>
-    private void PlayAttackAnimation()
-    {
-        if (animator != null)
-            animator.SetTrigger("attack");
     }
 }

@@ -61,6 +61,8 @@ public class TackleAttack : MonoBehaviour
 
         if (telegraph == null)
             telegraph = GetComponent<AttackTelegraphService>();
+
+        EnsureContactTriggerCollider();
     }
 
     private void Update()
@@ -79,17 +81,25 @@ public class TackleAttack : MonoBehaviour
         TryAttack();
     }
 
-    private void OnCollisionStay2D(Collision2D other)
+    private void OnTriggerStay2D(Collider2D other)
     {
         if (mob == null || mob.IsDead)
             return;
 
-        if (other == null || !other.gameObject.CompareTag("Player")) return;
+        if (other == null)
+            return;
+
+        GameObject contactObject = other.attachedRigidbody != null
+            ? other.attachedRigidbody.gameObject
+            : other.gameObject;
+
+        if (!contactObject.CompareTag("Player"))
+            return;
 
         if (HasDelay) return;
-        if (!HasClearPathTo(other.gameObject)) return;
+        if (!HasClearPathTo(contactObject)) return;
 
-        if (HitPlayer(other.gameObject))
+        if (HitPlayer(contactObject))
             StartDelay();
     }
 
@@ -294,6 +304,28 @@ public class TackleAttack : MonoBehaviour
     {
         hasContext = false;
         tackleContext = default;
+    }
+
+    /// <summary>플레이어 접촉 감지용 트리거 콜라이더를 보장합니다.</summary>
+    private void EnsureContactTriggerCollider()
+    {
+        Collider2D[] colliders = GetComponents<Collider2D>();
+        for (int i = 0; i < colliders.Length; i++)
+        {
+            Collider2D existingCollider = colliders[i];
+            if (existingCollider != null && existingCollider.isTrigger)
+                return;
+        }
+
+        BoxCollider2D bodyCollider = GetComponent<BoxCollider2D>();
+        if (bodyCollider == null)
+            return;
+
+        BoxCollider2D triggerCollider = gameObject.AddComponent<BoxCollider2D>();
+        triggerCollider.isTrigger = true;
+        triggerCollider.offset = bodyCollider.offset;
+        triggerCollider.size = bodyCollider.size;
+        triggerCollider.edgeRadius = bodyCollider.edgeRadius;
     }
 
     /// <summary>태그를 켜거나 끕니다.</summary>

@@ -173,17 +173,17 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: -0.02, y: 0.25}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0}
-    oldSize: {x: 0.4375, y: 0.41666666}
+    oldSize: {x: 0.875, y: 0.8333333}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 0.4375, y: 0.33333334}
+  m_Size: {x: 0.67, y: 0.49}
   m_EdgeRadius: 0
 --- !u!95 &6906640129251997176
 Animator:
@@ -223,7 +223,6 @@ MonoBehaviour:
   healthDef: {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
   enemyName: Shadow Servant
   targetTag: Player
-  dieAnimTime: 0
   chaseIntent: {fileID: 0}
   fog: {fileID: 4201956065249926095, guid: 983d63dce5dc9454a9a74287a2ed4d94, type: 3}
   explosionDamageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
@@ -336,6 +335,12 @@ MonoBehaviour:
   resistancePercentAttribute: {fileID: 0}
   staggeredEffect: {fileID: 0}
   allowOverflow: 1
+  allowPresentationOffset: 0
+  presentationWorldOffset: {x: 0, y: 1.6, z: 0}
+  presentationAnchor: {fileID: 0}
+  presentationBoundsSource: {fileID: 0}
+  groggyTimerPrefab: {fileID: 0}
+  groggyTimerParent: {fileID: 0}
 --- !u!114 &5379449037062217096
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -8,7 +8,6 @@ public class Witch : BossControllerBase
     // 이 클래스의 책임:
     // 마녀 보스 전용 상태, 연출, 패턴 보조 동작을 조율하고 전용 런타임 데이터를 관리한다.
 
-    private static readonly int AttackHash = Animator.StringToHash("attack");
     private const string StaggerImmuneTagResourcePath = "Tags/State.Status.StaggerImmune";
     private const int WallLayer = 30;
     private static readonly Vector3 RetreatLeftOffset = new Vector3(-0.5f, 0.2f, 0f);
@@ -175,7 +174,8 @@ public class Witch : BossControllerBase
     /// <summary>패턴 공용 공격 모션을 재생합니다.</summary>
     public void PlayPatternAttackMotion()
     {
-        PlayAttackMotion();
+        if (animator != null && hasAttackTrigger)
+            animator.SetTrigger("attack");
     }
 
     /// <summary>촛불 끄기 패턴인지 확인합니다.</summary>
@@ -214,7 +214,7 @@ public class Witch : BossControllerBase
 
         Vector3 extinguishCenter = GetCandleCenter(candle);
         runtimeData.SetExtinguishSelection(candle, extinguishCenter);
-        PlayAttackMotion();
+        PlayPatternAttackMotion();
         ShowWarning(extinguishCenter, warningTime);
         return true;
     }
@@ -229,7 +229,7 @@ public class Witch : BossControllerBase
         if (aimDir == Vector2.zero) return false;
 
         runtimeData.ClearNormal1Tiles();
-        PlayAttackMotion();
+        PlayPatternAttackMotion();
 
         float angle = Mathf.Atan2(aimDir.y, aimDir.x) * Mathf.Rad2Deg;
         Vector2 tileSize = GetNormal1TileSize();
@@ -260,7 +260,7 @@ public class Witch : BossControllerBase
     {
         if (retreatSkeletonPrefab == null) return false;
 
-        PlayAttackMotion();
+        PlayPatternAttackMotion();
         bool spawnedLeft = SpawnRetreatSkeleton(RetreatLeftOffset);
         bool spawnedRight = SpawnRetreatSkeleton(RetreatRightOffset);
         return spawnedLeft || spawnedRight;
@@ -760,12 +760,6 @@ public class Witch : BossControllerBase
         return Normal1Count * Normal1Interval;
     }
 
-    /// <summary>패턴 모션을 재생합니다.</summary>
-    private void PlayAttackMotion()
-    {
-        if (animator != null && hasAttackTrigger) animator.SetTrigger(AttackHash);
-    }
-
     /// <summary>attack 트리거 유무를 확인합니다.</summary>
     private bool CheckAttackTrigger()
     {
@@ -776,7 +770,7 @@ public class Witch : BossControllerBase
         {
             AnimatorControllerParameter parameter = parameters[i];
             if (parameter.type == AnimatorControllerParameterType.Trigger &&
-                parameter.nameHash == AttackHash)
+                parameter.name == "attack")
             {
                 return true;
             }
@@ -981,7 +975,7 @@ public class Witch : BossControllerBase
         definition.recoveryTime = recoveryTime;
         definition.animationChannel = AbilityDefinition.AnimationChannel.Player;
         definition.animationTrigger = "attack";
-        definition.animationTriggerHash = AttackHash;
+        definition.animationTriggerHash = 0;
         definition.logic = runtimeLogic;
         definition.executionPolicy = AbilityDefinition.ExecutionPolicy.ExclusiveQueued;
 

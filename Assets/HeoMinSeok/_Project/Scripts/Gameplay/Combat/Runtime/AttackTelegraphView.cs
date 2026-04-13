@@ -137,6 +137,20 @@ namespace UnityGAS
             ApplySorting(borderRenderer, referenceRenderer, orderOffset + 1);
         }
 
+        /// <summary>
+        /// 책임 :
+        /// - 공격 예고 렌더러의 마스크 상호작용을 기준 렌더러와 동일하게 맞춘다.
+        /// </summary>
+        public void SyncMaskInteraction(SpriteRenderer referenceRenderer)
+        {
+            SpriteMaskInteraction maskInteraction = referenceRenderer != null
+                ? referenceRenderer.maskInteraction
+                : SpriteMaskInteraction.None;
+
+            ApplyMaskInteraction(fillRenderer, maskInteraction);
+            ApplyMaskInteraction(borderRenderer, maskInteraction);
+        }
+
         private float GetCurrentNormalizedProgress()
         {
             return duration <= 0f
@@ -406,7 +420,7 @@ namespace UnityGAS
                 texture,
                 new Rect(0f, 0f, CircleTextureSize, CircleTextureSize),
                 new Vector2(0.5f, 0.5f),
-                100f);
+                CircleTextureSize);
 
             sprite.name = texture.name;
             return sprite;
@@ -516,6 +530,20 @@ namespace UnityGAS
 
             targetRenderer.sortingLayerID = referenceRenderer.sortingLayerID;
             targetRenderer.sortingOrder = referenceRenderer.sortingOrder + orderOffset;
+        }
+
+        /// <summary>
+        /// 책임 :
+        /// - 개별 렌더러의 스프라이트 마스크 상호작용을 지정 값으로 설정한다.
+        /// </summary>
+        private static void ApplyMaskInteraction(
+            SpriteRenderer targetRenderer,
+            SpriteMaskInteraction maskInteraction)
+        {
+            if (targetRenderer == null)
+                return;
+
+            targetRenderer.maskInteraction = maskInteraction;
         }
     }
 }

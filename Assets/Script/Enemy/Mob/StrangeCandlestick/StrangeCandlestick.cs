@@ -121,20 +121,11 @@ public class StrangeCandlestick : Mob
         base.OnDeathStarted();
     }
 
-    /// <summary>촛대 사망 시 꺼지는 애니메이션을 재생합니다.</summary>
+    /// <summary>촛대 종료 애니메이션을 재생합니다.</summary>
     protected override void PlayDeathAnimation()
     {
         if (animator != null)
-            animator.SetTrigger("die");
-    }
-
-    /// <summary>촛대 사망 애니메이션 길이를 반환합니다.</summary>
-    protected override float GetDeathDestroyDelay()
-    {
-        if (dieAnimTime > 0f)
-            return dieAnimTime;
-
-        return FindAnimationClipLength("StrangeCandlestick_TurnOff");
+            animator.SetBool("isLightOn", false);
     }
 
     /// <summary>지금 탄막을 발사할 수 있는지 확인합니다.</summary>
@@ -229,7 +220,10 @@ public class StrangeCandlestick : Mob
 
         lightBead.Setup(context);
         nextProjectileFireTime = Time.time + GetPostShotCooldown();
-        PlayShootAnimation();
+
+        if (animator != null)
+            animator.SetTrigger("attack");
+
         return true;
     }
 
@@ -391,12 +385,5 @@ public class StrangeCandlestick : Mob
             snapshot: snapshot,
             hitConfirmedTag: null,
             causer: gameObject);
-    }
-
-    /// <summary>탄막 발사 애니메이션을 재생합니다.</summary>
-    private void PlayShootAnimation()
-    {
-        if (animator != null)
-            animator.SetTrigger("attack");
     }
 }

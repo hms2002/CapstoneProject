@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 using UnityGAS;
 
@@ -8,11 +9,9 @@ using UnityGAS;
 /// </summary>
 public class DeadsSkeleton : Mob, IDamageReceiver
 {
-    private float explosionDiameter = 5f;
-
     [Header("자폭 모드")]
-    [Tooltip("자폭 모드에 들어가는 거리의 지름입니다.")]
-    [SerializeField] private float selfDestructRangeDiameter = 6f;
+    [Tooltip("자폭 경고와 실제 폭발 범위의 지름입니다.")]
+    [SerializeField] private float explosionDiameter = 5f;
 
     [Tooltip("자폭 모드에 들어간 뒤 폭발까지 걸리는 시간입니다.")]
     [SerializeField] private float explodeDelay = 3f;
@@ -27,8 +26,14 @@ public class DeadsSkeleton : Mob, IDamageReceiver
 
     private AttackTelegraphService telegraphService;
     private AttackTelegraphStyle warningStyle;
+    private SpriteMask sightMask;
+    private Transform sightMaskTransform;
+    private Vector3 defaultSightMaskScale = Vector3.one;
+    private Tween sightMaskScaleTween;
     private bool isSelfDestruct;
+    private bool canCancelSelfDestruct = true;
     private float explodeTime;
+    private float selfDestructIntroEndTime;
     private bool hasLoggedInvalidConfig;
 
     protected override void Awake()
@@ -36,12 +41,25 @@ public class DeadsSkeleton : Mob, IDamageReceiver
         base.Awake();
         telegraphService = GetComponent<AttackTelegraphService>();
         warningStyle = MakeWarningStyle();
+        sightMask = GetComponentInChildren<SpriteMask>(true);
+        sightMaskTransform = sightMask != null ? sightMask.transform : null;
+
+        if (sightMaskTransform != null)
+            defaultSightMaskScale = sightMaskTransform.localScale;
+
+        EnsureContactTriggerCollider();
     }
 
     protected override void UpdateAttack()
     {
         if (isSelfDestruct)
         {
+            if (ShouldCancelSelfDestruct())
+            {
+                CancelSelfDestruct();
+                return;
+            }
+
             TickSelfDestruct();
             return;
         }
@@ -49,6 +67,12 @@ public class DeadsSkeleton : Mob, IDamageReceiver
         if (!CanStartSelfDestruct()) return;
 
         StartSelfDestruct();
+    }
+
+    /// <summary>자폭 전환 애니메이션 중에는 추적 이동을 멈춥니다.</summary>
+    public override bool CanUseChaseMovement()
+    {
+        return !IsPlayingSelfDestructIntro();
     }
 
     /// <summary>해골은 체력 Attribute 변화로 사망하지 않도록 공통 체력 처리 훅을 비워 둡니다.</summary>
@@ -60,12 +84,6 @@ public class DeadsSkeleton : Mob, IDamageReceiver
     {
         HideWarning();
         base.OnDeathStarted();
-    }
-
-    protected override void PlayDeathAnimation()
-    {
-        if (animator != null)
-            animator.SetTrigger("die");
     }
 
     protected override bool CanDrawStopRangeGizmo()
@@ -82,18 +100,15 @@ public class DeadsSkeleton : Mob, IDamageReceiver
         else if (transform.position.x < Target.position.x) sprite.flipX = true;
     }
 
-    private void OnCollisionEnter2D(Collision2D other)
-    {
-        if (isDead || other == null) return;
-
-        TryExplodeOnPlayerContact(other.gameObject);
-    }
-
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (isDead || other == null) return;
 
-        if (TryExplodeOnPlayerContact(other.gameObject))
+        GameObject contactObject = other.attachedRigidbody != null
+            ? other.attachedRigidbody.gameObject
+            : other.gameObject;
+
+        if (TryExplodeOnPlayerContact(contactObject))
             return;
 
         CandlestickLightZone lightZone = other.GetComponent<CandlestickLightZone>();
@@ -103,6 +118,17 @@ public class DeadsSkeleton : Mob, IDamageReceiver
         if (lightZone == null || !isSelfDestruct) return;
 
         DieFromLight();
+    }
+
+    private void OnTriggerStay2D(Collider2D other)
+    {
+        if (isDead || other == null) return;
+
+        GameObject contactObject = other.attachedRigidbody != null
+            ? other.attachedRigidbody.gameObject
+            : other.gameObject;
+
+        TryExplodeOnPlayerContact(contactObject);
     }
 
     protected override void DrawAttackGizmos()
@@ -164,11 +190,48 @@ public class DeadsSkeleton : Mob, IDamageReceiver
     {
         isSelfDestruct = true;
         explodeTime = Time.time + Mathf.Max(0f, explodeDelay);
-        PlaySelfDestructAnimation();
+        selfDestructIntroEndTime = Time.time + GetSelfDestructIntroDuration();
+
+        if (movementMotor != null)
+            movementMotor.StopAllMotion();
+
+        if (animator != null)
+            animator.SetBool("selfDestructionMode", true);
+
+        PlaySightMaskExpand();
         ShowWarning();
 
         if (IsInsideCandlestickLight())
             DieFromLight();
+    }
+
+    /// <summary>자폭 유지 조건이 깨졌는지 확인합니다.</summary>
+    private bool ShouldCancelSelfDestruct()
+    {
+        if (!isSelfDestruct)
+            return false;
+
+        if (!canCancelSelfDestruct)
+            return false;
+
+        if (ChaseIntent == null)
+            return false;
+
+        return !ChaseIntent.IsTargetWithinDetectionRange();
+    }
+
+    /// <summary>자폭 모드를 해제하고 일반 추적 상태로 되돌립니다.</summary>
+    private void CancelSelfDestruct()
+    {
+        isSelfDestruct = false;
+        explodeTime = 0f;
+        selfDestructIntroEndTime = 0f;
+
+        if (animator != null)
+            animator.SetBool("selfDestructionMode", false);
+
+        HideWarning();
+        PlaySightMaskReset();
     }
 
     /// <summary>자폭 대기 시간을 갱신합니다.</summary>
@@ -206,11 +269,53 @@ public class DeadsSkeleton : Mob, IDamageReceiver
             telegraphService.HideCurrent();
     }
 
-    /// <summary>자폭 모드 진입 애니메이션을 재생합니다.</summary>
-    private void PlaySelfDestructAnimation()
+    /// <summary>자폭 전환과 동시에 시야 마스크를 폭발 지름만큼 확장합니다.</summary>
+    private void PlaySightMaskExpand()
     {
-        if (animator != null)
-            animator.SetTrigger("selfDestructionMode");
+        if (sightMask == null || sightMaskTransform == null || sightMask.sprite == null)
+            return;
+
+        float introDuration = GetSelfDestructIntroDuration();
+        if (introDuration <= 0f)
+        {
+            sightMaskTransform.localScale = GetExplosionSightMaskScale();
+            return;
+        }
+
+        if (sightMaskScaleTween != null && sightMaskScaleTween.IsActive())
+            sightMaskScaleTween.Kill();
+
+        sightMaskTransform.localScale = defaultSightMaskScale;
+        sightMaskScaleTween = sightMaskTransform
+            .DOScale(GetExplosionSightMaskScale(), introDuration)
+            .SetEase(Ease.Linear);
+    }
+
+    /// <summary>시야 마스크 크기를 기본값으로 되돌립니다.</summary>
+    private void ResetSightMaskScale()
+    {
+        if (sightMaskScaleTween != null && sightMaskScaleTween.IsActive())
+            sightMaskScaleTween.Kill();
+
+        if (sightMaskTransform != null)
+            sightMaskTransform.localScale = defaultSightMaskScale;
+    }
+
+    /// <summary>시야 마스크 크기를 기본값으로 부드럽게 되돌립니다.</summary>
+    private void PlaySightMaskReset()
+    {
+        if (sightMaskTransform == null)
+            return;
+
+        float introDuration = GetSelfDestructIntroDuration();
+        float resetDuration = introDuration > 0f ? introDuration : 0.15f;
+
+        if (sightMaskScaleTween != null && sightMaskScaleTween.IsActive())
+            sightMaskScaleTween.Kill();
+
+        sightMaskScaleTween = sightMaskTransform
+            .DOScale(defaultSightMaskScale, resetDuration)
+            .SetEase(Ease.Linear);
     }
 
     /// <summary>플레이어와 닿았을 때 폭발을 처리합니다.</summary>
@@ -346,7 +451,7 @@ public class DeadsSkeleton : Mob, IDamageReceiver
     /// <summary>자폭 발동 반경을 구합니다.</summary>
     private float GetSelfDestructRadius()
     {
-        return Mathf.Max(0f, selfDestructRangeDiameter * 0.5f);
+        return GetExplosionRadius();
     }
 
     /// <summary>폭발 반경을 돌려줍니다.</summary>
@@ -366,11 +471,63 @@ public class DeadsSkeleton : Mob, IDamageReceiver
             SetTarget(combatTarget);
 
         explosionDiameter = Mathf.Max(0f, boostedExplosionDiameter);
+        canCancelSelfDestruct = !ignoreRange;
 
         if (ChaseIntent == null) return;
 
         ChaseIntent.SetSpeedScale(boostedSpeedScale);
         ChaseIntent.SetIgnoreDetectionRange(ignoreRange);
+    }
+
+    /// <summary>자폭 전환 애니메이션이 아직 재생 중인지 확인합니다.</summary>
+    private bool IsPlayingSelfDestructIntro()
+    {
+        return isSelfDestruct && Time.time < selfDestructIntroEndTime;
+    }
+
+    /// <summary>자폭 전환 애니메이션 길이를 반환합니다.</summary>
+    private float GetSelfDestructIntroDuration()
+    {
+        return Mathf.Max(0f, FindAnimationClipLength("DeadsSkeleton_BeSelfDestructionMode"));
+    }
+
+    /// <summary>플레이어 접촉 감지용 트리거 콜라이더를 보장합니다.</summary>
+    private void EnsureContactTriggerCollider()
+    {
+        Collider2D[] colliders = GetComponents<Collider2D>();
+        for (int i = 0; i < colliders.Length; i++)
+        {
+            Collider2D existingCollider = colliders[i];
+            if (existingCollider != null && existingCollider.isTrigger)
+                return;
+        }
+
+        BoxCollider2D bodyCollider = GetComponent<BoxCollider2D>();
+        if (bodyCollider == null)
+            return;
+
+        BoxCollider2D triggerCollider = gameObject.AddComponent<BoxCollider2D>();
+        triggerCollider.isTrigger = true;
+        triggerCollider.offset = bodyCollider.offset;
+        triggerCollider.size = bodyCollider.size;
+        triggerCollider.edgeRadius = bodyCollider.edgeRadius;
+    }
+
+    /// <summary>폭발 지름에 맞는 시야 마스크 스케일을 계산합니다.</summary>
+    private Vector3 GetExplosionSightMaskScale()
+    {
+        if (sightMask == null || sightMask.sprite == null || sightMaskTransform == null)
+            return defaultSightMaskScale;
+
+        Vector2 spriteSize = sightMask.sprite.bounds.size;
+        if (spriteSize.x <= 0f || spriteSize.y <= 0f)
+            return defaultSightMaskScale;
+
+        float explosionWorldDiameter = explosionDiameter;
+        return new Vector3(
+            explosionWorldDiameter / spriteSize.x,
+            explosionWorldDiameter / spriteSize.y,
+            defaultSightMaskScale.z);
     }
 
     /// <summary>해골 전용 경고 스타일을 만듭니다.</summary>
@@ -394,6 +551,9 @@ public class DeadsSkeleton : Mob, IDamageReceiver
     protected override void OnDestroy()
     {
         base.OnDestroy();
+
+        if (sightMaskScaleTween != null && sightMaskScaleTween.IsActive())
+            sightMaskScaleTween.Kill();
 
         if (warningStyle != null)
             Destroy(warningStyle);

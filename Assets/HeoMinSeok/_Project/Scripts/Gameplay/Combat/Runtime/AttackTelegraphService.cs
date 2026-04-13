@@ -105,6 +105,7 @@ namespace UnityGAS
                 ownerRenderer = GetComponent<SpriteRenderer>();
 
             view.SyncSorting(ownerRenderer);
+            view.SyncMaskInteraction(ownerRenderer);
         }
 
         private System.Collections.IEnumerator DestroyDetachedViewAfter(AttackTelegraphView view, float duration)

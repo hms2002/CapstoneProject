@@ -177,8 +177,8 @@ BoxCollider2D:
   m_Offset: {x: 0, y: 0.16666667}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.25, y: 0.26}
+    pivot: {x: 0.5, y: 0.17}
+    oldSize: {x: 1.0416666, y: 1.0833334}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -224,9 +224,8 @@ MonoBehaviour:
   healthDef: {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
   enemyName: Deads' Skeleton
   targetTag: Player
-  dieAnimTime: 0
   chaseIntent: {fileID: 0}
-  selfDestructRangeDiameter: 6
+  explosionDiameter: 5
   explodeDelay: 3
   explosionDamageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
   explosionDamage: 1
@@ -338,6 +337,12 @@ MonoBehaviour:
   resistancePercentAttribute: {fileID: 0}
   staggeredEffect: {fileID: 0}
   allowOverflow: 1
+  allowPresentationOffset: 0
+  presentationWorldOffset: {x: 0, y: 1.6, z: 0}
+  presentationAnchor: {fileID: 0}
+  presentationBoundsSource: {fileID: 0}
+  groggyTimerPrefab: {fileID: 0}
+  groggyTimerParent: {fileID: 0}
 --- !u!114 &5379449037062217096
 MonoBehaviour:
   m_ObjectHideFlags: 0
