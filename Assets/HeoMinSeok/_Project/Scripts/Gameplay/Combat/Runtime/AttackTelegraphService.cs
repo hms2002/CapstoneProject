@@ -13,8 +13,14 @@ namespace UnityGAS
         [SerializeField] private AttackTelegraphStyle defaultStyle;
 
         private AttackTelegraphView activeView;
+        private SpriteRenderer ownerRenderer;
 
         public bool HasActiveTelegraph => activeView != null && activeView.IsVisible;
+
+        private void Awake()
+        {
+            ownerRenderer = GetComponent<SpriteRenderer>();
+        }
 
         /// <summary>
         /// 책임 :
@@ -26,6 +32,7 @@ namespace UnityGAS
             if (view == null)
                 return;
 
+            SyncViewSorting(view);
             view.Show(spec, defaultStyle);
         }
 
@@ -66,6 +73,7 @@ namespace UnityGAS
 
             AttackTelegraphView view = Instantiate(telegraphPrefab, parent != null ? parent : transform);
             view.HideImmediate();
+            SyncViewSorting(view);
             view.Show(spec, defaultStyle);
             StartCoroutine(DestroyDetachedViewAfter(view, spec.duration));
             return view;
@@ -82,6 +90,21 @@ namespace UnityGAS
             activeView = Instantiate(telegraphPrefab, transform);
             activeView.HideImmediate();
             return activeView;
+        }
+
+        /// <summary>
+        /// 책임 :
+        /// - 생성된 텔레그래프 뷰가 소유자 스프라이트 위에서 보이도록 정렬값을 맞춘다.
+        /// </summary>
+        private void SyncViewSorting(AttackTelegraphView view)
+        {
+            if (view == null)
+                return;
+
+            if (ownerRenderer == null)
+                ownerRenderer = GetComponent<SpriteRenderer>();
+
+            view.SyncSorting(ownerRenderer);
         }
 
         private System.Collections.IEnumerator DestroyDetachedViewAfter(AttackTelegraphView view, float duration)

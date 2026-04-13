@@ -100,7 +100,14 @@ public abstract class BossControllerBase : Enemy
 
         blackboard.SetPhaseIndex(EvaluatePhaseIndexByHealthRatio(GetCurrentHpRatio()));
         stateMachine.ChangeState(spawnState);
-        combatActive = hasCombatOverride ? combatActive : startCombatOnStart;
+        if (hasCombatOverride)
+        {
+            SyncBossHudRegistration();
+        }
+        else
+        {
+            SetCombatActive(startCombatOnStart);
+        }
     }
 
     protected virtual void Update()
@@ -138,6 +145,8 @@ public abstract class BossControllerBase : Enemy
 
         if (!isActive)
             AbortCurrentPattern();
+
+        SyncBossHudRegistration();
     }
 
     public void BeginCombatEncounter(Transform combatTarget = null)
@@ -289,6 +298,12 @@ public abstract class BossControllerBase : Enemy
         deathPresentation?.NotifyDeathStarted();
     }
 
+    protected override void OnDestroy()
+    {
+        SyncBossHudRegistration(forceUnbind: true);
+        base.OnDestroy();
+    }
+
     protected override void DestroyAfterDelay()
     {
         ResolveDeathPresentation();
@@ -392,6 +407,25 @@ public abstract class BossControllerBase : Enemy
             return 0f;
 
         return currentHealth / maxHealth;
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 보스 전투 활성 상태에 따라 HUD 등록/해제를 한 곳에서 일관되게 수행한다.
+    /// - HUD가 보스를 탐색하지 않아도 현재 전투 중인 보스를 정확히 가리키도록 연결한다.
+    /// </summary>
+    private void SyncBossHudRegistration(bool forceUnbind = false)
+    {
+        if (BossHudController.Instance == null)
+            return;
+
+        if (forceUnbind || !combatActive)
+        {
+            BossHudController.Instance.UnbindBoss(this);
+            return;
+        }
+
+        BossHudController.Instance.BindBoss(this);
     }
 
     /// <summary>

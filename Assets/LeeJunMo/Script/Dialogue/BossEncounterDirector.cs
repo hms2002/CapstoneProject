@@ -18,6 +18,7 @@ public class BossEncounterDirector : MonoBehaviour
     private InteractState previousPlayerState = InteractState.Idle;
     private bool hasPlayed;
     private bool holdsTransitionPlayerLock;
+    private bool holdsRunTimerPause;
 
     public bool IsSequenceRunning => runningSequence != null;
     public bool HasPlayed => hasPlayed;
@@ -33,6 +34,7 @@ public class BossEncounterDirector : MonoBehaviour
     {
         PlayerRuntimeRegistry.PlayerRegistered -= HandlePlayerRegistered;
         ReleaseTransitionPlayerLock();
+        ReleaseRunTimerPause();
 
         if (runningSequence != null)
         {
@@ -72,6 +74,7 @@ public class BossEncounterDirector : MonoBehaviour
             return;
 
         AcquireTransitionPlayerLock();
+        AcquireRunTimerPause();
         TryCacheAndLockPlayer(player);
         BeginSequence();
     }
@@ -85,6 +88,7 @@ public class BossEncounterDirector : MonoBehaviour
             return;
 
         AcquireTransitionPlayerLock();
+        AcquireRunTimerPause();
         runningSequence = StartCoroutine(SequenceRoutine());
     }
 
@@ -94,6 +98,7 @@ public class BossEncounterDirector : MonoBehaviour
         {
             Debug.LogError("[BossEncounterDirector] cameraDirector is missing.", this);
             ReleaseTransitionPlayerLock();
+            ReleaseRunTimerPause();
             runningSequence = null;
             yield break;
         }
@@ -102,6 +107,7 @@ public class BossEncounterDirector : MonoBehaviour
         {
             Debug.LogError("[BossEncounterDirector] dialogueRunner is missing.", this);
             ReleaseTransitionPlayerLock();
+            ReleaseRunTimerPause();
             runningSequence = null;
             yield break;
         }
@@ -117,6 +123,7 @@ public class BossEncounterDirector : MonoBehaviour
 
         RestorePlayerState();
         StartBossCombat();
+        ReleaseRunTimerPause();
 
         hasPlayed = true;
         runningSequence = null;
@@ -180,6 +187,34 @@ public class BossEncounterDirector : MonoBehaviour
             transitionService.SetPlayerUnlockBlocked(this, false);
 
         holdsTransitionPlayerLock = false;
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 보스 등장 연출 시퀀스 전체 동안 런 제한 시간 감소를 멈춘다.
+    /// - 대화 본문뿐 아니라 카메라 연출/대기 구간까지 포함해 시간 손실이 생기지 않도록 보호한다.
+    /// </summary>
+    private void AcquireRunTimerPause()
+    {
+        if (holdsRunTimerPause || RunTimeLimitSystem.Instance == null)
+            return;
+
+        RunTimeLimitSystem.Instance.SetExternalPause(this, true);
+        holdsRunTimerPause = true;
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 보스 등장 연출 시퀀스가 끝나거나 중단될 때 런 제한 시간 pause를 해제한다.
+    /// - 중도 종료/비활성화가 발생해도 타이머가 영구 정지되지 않도록 정리 책임을 진다.
+    /// </summary>
+    private void ReleaseRunTimerPause()
+    {
+        if (!holdsRunTimerPause || RunTimeLimitSystem.Instance == null)
+            return;
+
+        RunTimeLimitSystem.Instance.SetExternalPause(this, false);
+        holdsRunTimerPause = false;
     }
 
     private static InteractState NormalizeRestoredPlayerState(InteractState state)

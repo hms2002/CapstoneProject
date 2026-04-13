@@ -4,33 +4,6 @@ using UnityGAS;
 public class StrangeCandlestick : Mob
 {
     private static readonly System.Collections.Generic.List<StrangeCandlestick> instances = new();
-    private static readonly string[] AttackTriggerNames =
-    {
-        "attack",
-        "shoot",
-        "fire"
-    };
-
-    private static readonly string[] AttackStateNames =
-    {
-        "StrangeCandlestick_Attack",
-        "Attack"
-    };
-
-    private static readonly string[] TurnOffTriggerNames =
-    {
-        "turnOff",
-        "die",
-        "isDead"
-    };
-
-    private static readonly string[] TurnOffStateNames =
-    {
-        "StrangeCandlestick_TurnOff",
-        "TurnOff",
-        "Die"
-    };
-
     private const float ProjectileAttackInterval = 2f;
     private const int WallLayer = 30;
 
@@ -99,6 +72,11 @@ public class StrangeCandlestick : Mob
         return false;
     }
 
+    /// <summary>고정형 촛대 몬스터는 타겟을 따라 방향을 바꾸지 않습니다.</summary>
+    protected override void UpdateFacing()
+    {
+    }
+
     protected override void UpdateAttack()
     {
         if (isLockingOn)
@@ -146,10 +124,8 @@ public class StrangeCandlestick : Mob
     /// <summary>촛대 사망 시 꺼지는 애니메이션을 재생합니다.</summary>
     protected override void PlayDeathAnimation()
     {
-        if (TrySetAnimatorTrigger(TurnOffTriggerNames))
-            return;
-
-        TryPlayAnimatorState(TurnOffStateNames);
+        if (animator != null)
+            animator.SetTrigger("die");
     }
 
     /// <summary>촛대 사망 애니메이션 길이를 반환합니다.</summary>
@@ -158,7 +134,7 @@ public class StrangeCandlestick : Mob
         if (dieAnimTime > 0f)
             return dieAnimTime;
 
-        return FindAnimationClipLength("StrangeCandlestick_TurnOff", "TurnOff", "die");
+        return FindAnimationClipLength("StrangeCandlestick_TurnOff");
     }
 
     /// <summary>지금 탄막을 발사할 수 있는지 확인합니다.</summary>
@@ -420,9 +396,7 @@ public class StrangeCandlestick : Mob
     /// <summary>탄막 발사 애니메이션을 재생합니다.</summary>
     private void PlayShootAnimation()
     {
-        if (TrySetAnimatorTrigger(AttackTriggerNames))
-            return;
-
-        TryPlayAnimatorState(AttackStateNames);
+        if (animator != null)
+            animator.SetTrigger("attack");
     }
 }
