@@ -188,18 +188,7 @@ public sealed class LightningStrikeProc2D : IRelicProc
         if (hit == null)
             return null;
 
-        if (hit.attachedRigidbody != null)
-        {
-            var rbGo = hit.attachedRigidbody.gameObject;
-            if (rbGo.GetComponent<AttributeSet>() != null)
-                return rbGo;
-        }
-
-        var attr = hit.GetComponentInParent<AttributeSet>();
-        if (attr != null)
-            return attr.gameObject;
-
-        return null;
+        return CombatTargetResolver2D.ResolveDamageTarget(hit);
     }
 
     public void Dispose()

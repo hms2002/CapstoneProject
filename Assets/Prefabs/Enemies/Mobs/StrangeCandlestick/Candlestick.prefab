@@ -17,6 +17,7 @@ GameObject:
   - component: {fileID: 6611337799001122334}
   - component: {fileID: 3949865959590047275}
   - component: {fileID: 7126308191730215511}
+  - component: {fileID: 448947532990333868}
   m_Layer: 0
   m_Name: Candlestick
   m_TagString: Untagged
@@ -259,6 +260,24 @@ MonoBehaviour:
   projectileLifetime: 2.2
   projectileHitRadius: 0.08
   spawnHeightOffset: 0.35
+  shieldHitSound:
+    key: 
+    volumeMultiplier: 0
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+--- !u!114 &448947532990333868
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 625522859161183429}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cbc9a19645b6c8f458d6e368d5e1dabc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UnityGAS.CombatHurtbox2D
+  targetRoot: {fileID: 0}
 --- !u!1 &4115588661587353561
 GameObject:
   m_ObjectHideFlags: 0

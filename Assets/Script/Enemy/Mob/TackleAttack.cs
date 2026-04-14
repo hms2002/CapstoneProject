@@ -89,11 +89,8 @@ public class TackleAttack : MonoBehaviour
         if (other == null)
             return;
 
-        GameObject contactObject = other.attachedRigidbody != null
-            ? other.attachedRigidbody.gameObject
-            : other.gameObject;
-
-        if (!contactObject.CompareTag("Player"))
+        GameObject contactObject = CombatTargetResolver2D.ResolveDamageTarget(other);
+        if (contactObject == null || !contactObject.CompareTag("Player"))
             return;
 
         if (HasDelay) return;

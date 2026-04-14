@@ -32,6 +32,7 @@ GameObject:
   - component: {fileID: 3949865959590047275}
   - component: {fileID: 344486096308046059}
   - component: {fileID: 8223012456081861757}
+  - component: {fileID: 5188487318859962288}
   m_Layer: 31
   m_Name: ShadowMonster
   m_TagString: Enemy
@@ -558,3 +559,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UnityGAS.AttackTelegraphService
   telegraphPrefab: {fileID: 788264263987448140, guid: 211dd09e2da9caf47ad8409c9e35b83d, type: 3}
   defaultStyle: {fileID: 11400000, guid: b15f18602ec87284d80cbd57720425f1, type: 2}
+--- !u!114 &5188487318859962288
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 625522859161183429}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cbc9a19645b6c8f458d6e368d5e1dabc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UnityGAS.CombatHurtbox2D
+  targetRoot: {fileID: 0}

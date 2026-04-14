@@ -39,6 +39,7 @@ GameObject:
   - component: {fileID: 8439794030914778521}
   - component: {fileID: 2108456829143765123}
   - component: {fileID: 2108456829143765124}
+  - component: {fileID: 5477811146804509481}
   m_Layer: 31
   m_Name: Witch
   m_TagString: Enemy
@@ -222,7 +223,6 @@ MonoBehaviour:
   healthDef: {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
   enemyName: "\uADF8\uB9BC\uC790 \uC815\uB839 \uD074\uB85C\uC5D0"
   targetTag: Player
-  dieAnimTime: 0
   startCombatOnStart: 1
   initialTarget: {fileID: 0}
   healthAttribute: {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
@@ -240,6 +240,7 @@ MonoBehaviour:
       maxConsecutiveUseCount: 0
       maxUseCount: 0
       aiSelectionLockTime: 0
+      postPatternDelay: 0
       minDistanceToTarget: 0
       maxDistanceToTarget: 5
       minHpRatio: 0
@@ -250,6 +251,7 @@ MonoBehaviour:
       maxConsecutiveUseCount: 0
       maxUseCount: 0
       aiSelectionLockTime: 0
+      postPatternDelay: 0
       minDistanceToTarget: 5
       maxDistanceToTarget: 15
       minHpRatio: 0
@@ -260,6 +262,7 @@ MonoBehaviour:
       maxConsecutiveUseCount: 0
       maxUseCount: 0
       aiSelectionLockTime: 0
+      postPatternDelay: 0
       minDistanceToTarget: 0
       maxDistanceToTarget: 100
       minHpRatio: 0
@@ -270,6 +273,7 @@ MonoBehaviour:
       maxConsecutiveUseCount: 0
       maxUseCount: 0
       aiSelectionLockTime: 0
+      postPatternDelay: 0
       minDistanceToTarget: 0
       maxDistanceToTarget: 100
       minHpRatio: 0
@@ -280,6 +284,7 @@ MonoBehaviour:
       maxConsecutiveUseCount: 0
       maxUseCount: 0
       aiSelectionLockTime: 0
+      postPatternDelay: 0
       minDistanceToTarget: 0
       maxDistanceToTarget: 100
       minHpRatio: 0
@@ -290,6 +295,7 @@ MonoBehaviour:
       maxConsecutiveUseCount: 0
       maxUseCount: 1
       aiSelectionLockTime: 0
+      postPatternDelay: 0
       minDistanceToTarget: 0
       maxDistanceToTarget: 100
       minHpRatio: 0
@@ -310,6 +316,28 @@ MonoBehaviour:
   normalAttack1DamageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
   normalAttack1Damage: 1
   retreatSkeletonPrefab: {fileID: 7098643081786945513, guid: b1f84c1064c662345a49453bf9a8fd34, type: 3}
+  extinguishExplosionVisualPrefab: {fileID: 0}
+  extinguishExplosionParticlePrefab: {fileID: 0}
+  extinguishExplosionVisualSocket: {fileID: 0}
+  extinguishExplosionVisualOffset: {x: 0, y: 0, z: 0}
+  extinguishExplosionVisualScale: {x: 1, y: 1, z: 1}
+  extinguishExplosionParticleOffset: {x: 0, y: 0, z: 0}
+  extinguishExplosionParticleScale: {x: 1, y: 1, z: 1}
+  extinguishExplosionSound:
+    key: 
+    volumeMultiplier: 0
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  extinguishExplosionCameraShake:
+    amplitude: 0.18
+    amplitudeMultiplier: 1
+    maxAmplitude: 0.28
+    minIntervalSeconds: 0.04
+    directionMode: 0
+    customDirection: {x: 0, y: 0, z: 0}
+    ignoreScreenShakeSetting: 0
+  extinguishFogSpawnScaleMultiplier: {x: 1, y: 1, z: 1}
+  extinguishAttackRadiusMultiplier: 6
 --- !u!114 &8462024867634775818
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -684,6 +712,8 @@ MonoBehaviour:
   chestPrefab: {fileID: 7530156284439312542, guid: 296eaa6f1547cb74e990055ce1319470, type: 3}
   chestSpawnPoint: {fileID: 0}
   portalObj: {fileID: 0}
+  portalSpawnPoint: {fileID: 0}
+  portalSpawnOffset: {x: 0, y: 0, z: 0}
   bossUniqueLoots:
   - item: {fileID: 11400000, guid: 6a8181eecc5ab3a4988f9089d46607b0, type: 2}
     dropChance: 100
@@ -738,6 +768,11 @@ MonoBehaviour:
   focusPriority: 100
   disableLegacyFollowWhileSequence: 1
   blendWaitFallbackSeconds: 2
+  useBossLensPresentation: 1
+  deathLensScale: 0.82
+  deathLensBlendDuration: 0.35
+  phaseLensScale: 1.18
+  phaseLensBlendDuration: 0.35
 --- !u!114 &2108456829143765123
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -768,11 +803,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shieldController: {fileID: 2108456829143765123}
   ownerSpriteRenderer: {fileID: 8897721723054304330}
-  radiusX: 1.25
-  radiusY: 1.65
-  lineWidth: 0.12
-  segmentCount: 40
-  localOffset: {x: 0, y: 0.15, z: 0}
+  shieldVisualPrefab: {fileID: 0}
   shieldVisualRoot: {fileID: 0}
   shieldVisualSpriteRenderer: {fileID: 0}
   shieldVisualAnimator: {fileID: 0}
@@ -782,6 +813,16 @@ MonoBehaviour:
   shieldVisualSortingOrderOffset: 1
   tintShieldVisualWithStageColor: 1
   shieldVisualAlphaMultiplier: 0.72
+  shieldActivateSound:
+    key: 
+    volumeMultiplier: 0
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  shieldBreakSound:
+    key: 
+    volumeMultiplier: 0
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
   activateAnimation:
     triggerName: 
     stateName: Boss1ShieldAnim
@@ -804,3 +845,16 @@ MonoBehaviour:
     directionMode: 0
     customDirection: {x: 0, y: 0, z: 0}
     ignoreScreenShakeSetting: 0
+--- !u!114 &5477811146804509481
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4104743717894493410}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cbc9a19645b6c8f458d6e368d5e1dabc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UnityGAS.CombatHurtbox2D
+  targetRoot: {fileID: 0}
