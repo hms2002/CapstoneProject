@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using CapstoneAudio;
 using UnityEngine;
 using UnityGAS;
 
@@ -32,6 +33,7 @@ public class AbilityLogic_WitchBasicAttack2 : AbilityLogic
     [SerializeField] private bool useUnscaledHitParticleTime;
     [SerializeField] private Vector3 hitParticleScaleMultiplier = Vector3.one;
     [SerializeField] private float hitParticleRotationOffsetZ;
+    [SerializeField] private SoundRef hitSound;
     [SerializeField] private CameraShakeHook hitCameraShake = CameraShakeHook.Create(0.14f, 1f, 0.22f, 0.05f);
 
     public override IEnumerator Activate(AbilitySystem system, AbilitySpec spec, GameObject initialTarget)
@@ -198,6 +200,10 @@ public class AbilityLogic_WitchBasicAttack2 : AbilityLogic
             hitParticleLifetimeOverrideSeconds,
             useUnscaledHitParticleTime);
 
+        SoundPlaybackUtility.Play(
+            hitSound,
+            position: center,
+            sourceObject: this);
         hitCameraShake.TryPlay(
             source: null,
             fallbackDirection: Vector3.up,

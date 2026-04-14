@@ -1,4 +1,5 @@
 using UnityEngine;
+using CapstoneAudio;
 
 [DisallowMultipleComponent]
 public class WitchShieldBreakerProjectile2D : MonoBehaviour
@@ -12,6 +13,7 @@ public class WitchShieldBreakerProjectile2D : MonoBehaviour
     private float speed;
     private float lifetime;
     private float hitRadius;
+    private SoundRef hitSound;
 
     /// <summary>
     /// 책임 :
@@ -22,7 +24,8 @@ public class WitchShieldBreakerProjectile2D : MonoBehaviour
         WitchShieldController targetShield,
         float speed,
         float lifetime,
-        float hitRadius = 0.08f)
+        float hitRadius = 0.08f,
+        SoundRef hitSound = default)
     {
         if (targetShield == null)
             return null;
@@ -43,7 +46,7 @@ public class WitchShieldBreakerProjectile2D : MonoBehaviour
         projectileObject.transform.localScale = new Vector3(0.22f, 0.22f, 1f);
 
         WitchShieldBreakerProjectile2D projectile = projectileObject.AddComponent<WitchShieldBreakerProjectile2D>();
-        projectile.Setup(targetShield, speed, lifetime, hitRadius);
+        projectile.Setup(targetShield, speed, lifetime, hitRadius, hitSound);
         return projectile;
     }
 
@@ -51,12 +54,18 @@ public class WitchShieldBreakerProjectile2D : MonoBehaviour
     /// 책임 :
     /// - 목표 보호막과 이동/충돌 기본값을 초기화한다.
     /// </summary>
-    public void Setup(WitchShieldController shieldTarget, float projectileSpeed, float projectileLifetime, float projectileHitRadius)
+    public void Setup(
+        WitchShieldController shieldTarget,
+        float projectileSpeed,
+        float projectileLifetime,
+        float projectileHitRadius,
+        SoundRef projectileHitSound = default)
     {
         targetShield = shieldTarget;
         speed = Mathf.Max(0.01f, projectileSpeed);
         lifetime = Mathf.Max(0.1f, projectileLifetime);
         hitRadius = Mathf.Max(0.05f, projectileHitRadius);
+        hitSound = projectileHitSound;
     }
 
     private void Update()
@@ -80,7 +89,15 @@ public class WitchShieldBreakerProjectile2D : MonoBehaviour
 
         if (distance <= hitRadius)
         {
-            targetShield.TryApplyShieldHit(1);
+            if (targetShield.TryApplyShieldHit(1))
+            {
+                SoundPlaybackUtility.Play(
+                    hitSound,
+                    instigator: targetShield.gameObject,
+                    causer: gameObject,
+                    position: transform.position,
+                    sourceObject: this);
+            }
             Destroy(gameObject);
             return;
         }

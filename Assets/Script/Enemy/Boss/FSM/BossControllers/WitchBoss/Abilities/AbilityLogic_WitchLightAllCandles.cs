@@ -1,4 +1,6 @@
 using System.Collections;
+using System.Collections.Generic;
+using CapstoneAudio;
 using UnityEngine;
 using UnityGAS;
 
@@ -19,6 +21,10 @@ public class AbilityLogic_WitchLightAllCandles : AbilityLogic
     [SerializeField] private Vector3 chargeOrbImpactLocalOffset = new Vector3(0f, 0.1f, -0.05f);
 
     [Header("Charge Presentation")]
+    [SerializeField] private SoundRef chargeLoopSound;
+    [SerializeField] [Min(0f)] private float chargeLoopFadeOutSeconds = 0.1f;
+    [SerializeField] private SoundRef orbLaunchSound;
+    [SerializeField] private SoundRef orbImpactSound;
     [SerializeField] private CameraShakeHook chargeLoopCameraShake = CameraShakeHook.Create(0.03f, 1f, 0.08f, 0.08f);
 
     [Header("Failure Presentation")]
@@ -34,6 +40,8 @@ public class AbilityLogic_WitchLightAllCandles : AbilityLogic
     [SerializeField] private Vector3 failureParticleScaleMultiplier = Vector3.one;
     [SerializeField] private float failureParticleRotationOffsetZ;
     [SerializeField] private CameraShakeHook failureCameraShake = CameraShakeHook.Create(0.24f, 1f, 0.36f, 0.05f);
+
+    private readonly Dictionary<int, AudioHandle> activeChargeLoopHandles = new();
 
     public override IEnumerator Activate(AbilitySystem system, AbilitySpec spec, GameObject initialTarget)
     {
@@ -61,6 +69,7 @@ public class AbilityLogic_WitchLightAllCandles : AbilityLogic
         witch.SealAllCandles();
 
         GameObject chargeOrbInstance = SpawnChargeOrb(witch);
+        BeginChargeLoopSound(witch);
         float chargeStartTime = Time.time;
         float deadlineTime = chargeStartTime + RelightDeadlineSeconds;
         bool allCandlesRelit = false;
@@ -85,6 +94,7 @@ public class AbilityLogic_WitchLightAllCandles : AbilityLogic
 
         if (allCandlesRelit)
         {
+            StopChargeLoopSound(witch);
             CleanupChargeOrb(chargeOrbInstance);
 
             float shieldBreakDeadline = Time.time + ShieldBreakWaitGraceSeconds;
@@ -106,6 +116,7 @@ public class AbilityLogic_WitchLightAllCandles : AbilityLogic
 
         if (witch.HasAnySealedCandles())
         {
+            StopChargeLoopSound(witch);
             yield return PlayFailurePresentation(witch, chargeOrbInstance);
             witch.DisableStaggerImmuneDuringPhaseTransition();
             witch.ClearShield();
@@ -117,6 +128,7 @@ public class AbilityLogic_WitchLightAllCandles : AbilityLogic
             yield break;
         }
 
+        StopChargeLoopSound(witch);
         CleanupChargeOrb(chargeOrbInstance);
 
         if (shouldReturnPhaseCamera)
@@ -156,6 +168,13 @@ public class AbilityLogic_WitchLightAllCandles : AbilityLogic
     {
         Vector3 impactPosition = ResolveChargeOrbImpactPosition(witch);
 
+        SoundPlaybackUtility.Play(
+            orbLaunchSound,
+            instigator: witch != null ? witch.gameObject : null,
+            causer: witch != null ? witch.gameObject : null,
+            position: chargeOrbInstance != null ? chargeOrbInstance.transform.position : impactPosition,
+            sourceObject: this);
+
         if (chargeOrbInstance != null)
         {
             Vector3 startPosition = chargeOrbInstance.transform.position;
@@ -175,6 +194,13 @@ public class AbilityLogic_WitchLightAllCandles : AbilityLogic
         }
 
         CleanupChargeOrb(chargeOrbInstance);
+
+        SoundPlaybackUtility.Play(
+            orbImpactSound,
+            instigator: witch != null ? witch.gameObject : null,
+            causer: witch != null ? witch.gameObject : null,
+            position: impactPosition,
+            sourceObject: this);
 
         SpawnPresentationPrefab(
             failureEffectPrefab,
@@ -197,6 +223,19 @@ public class AbilityLogic_WitchLightAllCandles : AbilityLogic
             debugReason: "WitchLightAllCandles.FailImpact");
     }
 
+    public void StopChargeLoopFor(Witch witch)
+    {
+        StopChargeLoopSound(witch);
+    }
+
+    public override void CleanupForSceneTransition(AbilitySystem system, AbilitySpec spec, GameObject target)
+    {
+        base.CleanupForSceneTransition(system, spec, target);
+
+        Witch witch = system != null ? system.GetComponent<Witch>() : null;
+        StopChargeLoopSound(witch);
+    }
+
     private Vector3 ResolveChargeOrbPosition(Witch witch)
     {
         return witch != null
@@ -215,6 +254,34 @@ public class AbilityLogic_WitchLightAllCandles : AbilityLogic
     {
         if (chargeOrbInstance != null)
             Object.Destroy(chargeOrbInstance);
+    }
+
+    private void BeginChargeLoopSound(Witch witch)
+    {
+        if (witch == null || !chargeLoopSound.IsSet)
+            return;
+
+        int key = witch.GetInstanceID();
+        StopChargeLoopSound(witch);
+        activeChargeLoopHandles[key] = SoundPlaybackUtility.Play(
+            chargeLoopSound,
+            instigator: witch.gameObject,
+            causer: witch.gameObject,
+            position: witch.transform.position,
+            sourceObject: this);
+    }
+
+    private void StopChargeLoopSound(Witch witch)
+    {
+        if (witch == null)
+            return;
+
+        int key = witch.GetInstanceID();
+        if (!activeChargeLoopHandles.TryGetValue(key, out AudioHandle handle))
+            return;
+
+        activeChargeLoopHandles.Remove(key);
+        SoundPlaybackUtility.Stop(handle, chargeLoopFadeOutSeconds);
     }
 
     private static void SpawnPresentationPrefab(

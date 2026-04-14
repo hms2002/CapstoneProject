@@ -1,4 +1,5 @@
 using UnityEngine;
+using CapstoneAudio;
 
 [DisallowMultipleComponent]
 [RequireComponent(typeof(Candlestick), typeof(CandlestickSeal))]
@@ -15,6 +16,7 @@ public class CandlestickShieldBreakerLauncher : MonoBehaviour
     [SerializeField] private float projectileLifetime = 2.2f;
     [SerializeField] private float projectileHitRadius = 0.08f;
     [SerializeField] private float spawnHeightOffset = 0.35f;
+    [SerializeField] private SoundRef shieldHitSound;
 
     private void Awake()
     {
@@ -60,7 +62,7 @@ public class CandlestickShieldBreakerLauncher : MonoBehaviour
             WitchShieldBreakerProjectile2D projectile = projectileObject.GetComponent<WitchShieldBreakerProjectile2D>();
             if (projectile != null)
             {
-                projectile.Setup(witch.ShieldController, projectileSpeed, projectileLifetime, projectileHitRadius);
+                projectile.Setup(witch.ShieldController, projectileSpeed, projectileLifetime, projectileHitRadius, shieldHitSound);
                 return;
             }
 
@@ -72,7 +74,8 @@ public class CandlestickShieldBreakerLauncher : MonoBehaviour
             witch.ShieldController,
             projectileSpeed,
             projectileLifetime,
-            projectileHitRadius);
+            projectileHitRadius,
+            shieldHitSound);
     }
 
     private Witch ResolveWitch()

@@ -101,6 +101,8 @@ public class Witch : BossControllerBase
         HideExtinguishWarning();
         if (patternEntry != null && patternEntry.Ability != null && patternEntry.Ability.logic is AbilityLogic_WitchLightAllCandles)
         {
+            if (patternEntry.Ability.logic is AbilityLogic_WitchLightAllCandles lightAllCandlesLogic)
+                lightAllCandlesLogic.StopChargeLoopFor(this);
             ClearShield();
             DisableStaggerImmuneDuringPhaseTransition();
             if (!IsDead)

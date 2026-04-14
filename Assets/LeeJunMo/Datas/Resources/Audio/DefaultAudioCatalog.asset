@@ -313,3 +313,93 @@ MonoBehaviour:
     cooldown: 0
     minDistance: 1
     maxDistance: 20
+  - key: chloe.pattern.phasepatternloop
+    bus: 0
+    category: 7
+    variants:
+    - {fileID: 8300000, guid: 5ff5686693ff031498bc5b23c9551947, type: 3}
+    volume: 0.1
+    playbackSpeed: 1
+    pitchMin: 0.601
+    pitchMax: 0.601
+    loop: 1
+    spatial: 0
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: chloe.pattern.normal2
+    bus: 0
+    category: 7
+    variants:
+    - {fileID: 8300000, guid: f78d3b0600533dc48a3e084721856508, type: 3}
+    volume: 0.298
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 0
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: chloe.pattern.shieldbreak
+    bus: 0
+    category: 7
+    variants:
+    - {fileID: 8300000, guid: 711aa880d087e7947a08c111610ea4da, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 0
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: player.fallhit
+    bus: 0
+    category: 5
+    variants:
+    - {fileID: 8300000, guid: 5ff5686693ff031498bc5b23c9551947, type: 3}
+    volume: 0.504
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 0
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: chloe.pattern.normal1
+    bus: 0
+    category: 7
+    variants:
+    - {fileID: 8300000, guid: 14dc4aac306a3a34ca5a10eb1e2395d2, type: 3}
+    volume: 0.397
+    playbackSpeed: 1
+    pitchMin: 0.25
+    pitchMax: 0.25
+    loop: 0
+    spatial: 0
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: chloe.pattern.phasepatternorblunch
+    bus: 0
+    category: 7
+    variants:
+    - {fileID: 8300000, guid: 84a4eef749e7f5a4ba2a18524b6ee7a4, type: 3}
+    volume: 0.412
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 0
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20

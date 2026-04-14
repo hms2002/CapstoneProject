@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using CapstoneAudio;
 using UnityEngine;
 
 [DisallowMultipleComponent]
@@ -34,6 +35,8 @@ public class WitchShieldVisualController : MonoBehaviour
     [SerializeField] private int shieldVisualSortingOrderOffset = 1;
     [SerializeField] private bool tintShieldVisualWithStageColor = true;
     [SerializeField] [Range(0f, 1f)] private float shieldVisualAlphaMultiplier = 0.72f;
+    [SerializeField] private SoundRef shieldActivateSound;
+    [SerializeField] private SoundRef shieldBreakSound;
     [SerializeField] private ShieldAnimationSettings activateAnimation = new ShieldAnimationSettings();
     [SerializeField] private ShieldAnimationSettings breakAnimation = new ShieldAnimationSettings();
 
@@ -192,6 +195,12 @@ public class WitchShieldVisualController : MonoBehaviour
 
         SetOptionalShieldVisualVisible(true);
         PlayConfiguredAnimation(breakAnimation);
+        SoundPlaybackUtility.Play(
+            shieldBreakSound,
+            instigator: gameObject,
+            causer: gameObject,
+            position: transform.position,
+            sourceObject: this);
         SpawnPresentationPrefab(
             shieldBreakParticlePrefab,
             shieldBreakParticleLocalOffset,
@@ -217,7 +226,15 @@ public class WitchShieldVisualController : MonoBehaviour
         ApplyShieldVisual(currentStage, maxStage);
 
         if (playActivatePresentation)
+        {
+            SoundPlaybackUtility.Play(
+                shieldActivateSound,
+                instigator: gameObject,
+                causer: gameObject,
+                position: transform.position,
+                sourceObject: this);
             PlayConfiguredAnimation(activateAnimation);
+        }
     }
 
     private void ApplyShieldVisual(int currentStage, int maxStage)

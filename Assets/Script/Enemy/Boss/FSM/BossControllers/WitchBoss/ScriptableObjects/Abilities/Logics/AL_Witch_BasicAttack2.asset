@@ -29,6 +29,11 @@ MonoBehaviour:
   useUnscaledHitParticleTime: 0
   hitParticleScaleMultiplier: {x: 1, y: 1, z: 1}
   hitParticleRotationOffsetZ: 0
+  hitSound:
+    key: chloe.pattern.normal2
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
   hitCameraShake:
     amplitude: 3
     amplitudeMultiplier: 0
