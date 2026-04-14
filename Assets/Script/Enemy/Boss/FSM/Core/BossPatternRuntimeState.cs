@@ -5,6 +5,7 @@ public sealed class BossPatternRuntimeState
 {
     // 이 클래스의 책임:
     // 공통 블랙보드 밖에서 패턴 선택/실행 이력과 예약 상태를 관리한다.
+    // 패턴 시작 시점 잠금과 종료 후 후딜 잠금을 함께 반영해 다음 선택 가능 시점을 계산한다.
 
     private readonly Dictionary<BossPatternEntry, float> patternSelectionReadyTimes = new();
     private readonly Dictionary<BossPatternEntry, int> patternUseCounts = new();
@@ -43,8 +44,11 @@ public sealed class BossPatternRuntimeState
         LastUsedPattern = pattern;
     }
 
-    public void EndPattern()
+    public void EndPattern(BossPatternEntry pattern)
     {
+        if (pattern != null && pattern.PostPatternDelay > 0f)
+            patternSelectionReadyTimes[pattern] = Time.time + pattern.PostPatternDelay;
+
         CurrentPattern = null;
     }
 

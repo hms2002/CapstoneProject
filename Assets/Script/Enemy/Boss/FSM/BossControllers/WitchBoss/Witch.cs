@@ -10,16 +10,18 @@ public class Witch : BossControllerBase
 
     private const string StaggerImmuneTagResourcePath = "Tags/State.Status.StaggerImmune";
     private const int WallLayer = 30;
+    private const int ExtinguishCandleCount = 2;
     private static readonly Vector3 RetreatLeftOffset = new Vector3(-0.5f, 0.2f, 0f);
     private static readonly Vector3 RetreatRightOffset = new Vector3(0.5f, 0.2f, 0f);
     private const int Normal1Count = 3;
     private const float Normal1Interval = 0.3f;
     private const float Normal1TileUnitSize = 1.7f;
-    private const float Normal1TileWidthInTiles = 2f;
-    private const float Normal1TileHeightInTiles = 3f;
+    private const float Normal1TileWidthInTiles = 3f;
+    private const float Normal1TileHeightInTiles = 6f;
     private const float Normal1HitTime = 0.12f;
     private const float RetreatExplosionDiameter = 6f;
     private const float RetreatSpeedScale = 1f;
+    private const float ExtinguishAttackRadiusMultiplier = 6f;
 
     [Header("Pattern")]
     [Tooltip("촛대를 끄는 패턴에 사용할 Fog 프리팹입니다.")]
@@ -38,6 +40,11 @@ public class Witch : BossControllerBase
     [SerializeField] private GE_Damage_Spec normalAttack1DamageEffect;
     [SerializeField] private float normalAttack1Damage = 1f;
     [SerializeField] private DeadsSkeleton retreatSkeletonPrefab;
+    [Header("Extinguish Presentation")]
+    [SerializeField] private GameObject extinguishExplosionVisualPrefab;
+    [SerializeField] private Transform extinguishExplosionVisualSocket;
+    [SerializeField] private Vector3 extinguishExplosionVisualOffset;
+    [SerializeField] private Vector3 extinguishExplosionVisualScale = Vector3.one;
 
     private BossDialogueRunner dialogueRunner;
     private Coroutine dialogueRoutine;
@@ -54,6 +61,7 @@ public class Witch : BossControllerBase
     private AbilityDefinition sealedCandleRampageAbility;
     private AbilityDefinition lightAllCandlesAbility;
     private readonly List<Candlestick> runtimeSpawnedCandles = new();
+    private readonly List<AttackTelegraphView> activeExtinguishWarningViews = new();
     private WitchShieldController shieldController;
     private WitchShieldVisualController shieldVisualController;
     private CameraPresentationDirector cameraPresentationDirector;
@@ -228,15 +236,18 @@ public class Witch : BossControllerBase
     {
         if (telegraphService == null || fogPrefab == null) return false;
 
-        Candlestick candle = GetNearestCandle();
-        if (candle == null) return false;
+        List<Candlestick> selectedCandles = BuildExtinguishSelectionBuffer();
+        if (selectedCandles.Count == 0) return false;
 
         if (GetFogRadius() <= 0f) return false;
 
-        Vector3 extinguishCenter = GetCandleCenter(candle);
-        runtimeData.SetExtinguishSelection(candle, extinguishCenter);
+        List<Vector3> extinguishCenters = new List<Vector3>(selectedCandles.Count);
+        for (int i = 0; i < selectedCandles.Count; i++)
+            extinguishCenters.Add(GetCandleCenter(selectedCandles[i]));
+
+        runtimeData.SetExtinguishSelections(selectedCandles, extinguishCenters);
         PlayPatternAttackMotion();
-        ShowWarning(extinguishCenter, warningTime);
+        ShowWarnings(extinguishCenters, warningTime);
         return true;
     }
 
@@ -290,14 +301,27 @@ public class Witch : BossControllerBase
     /// <summary>촛불 끄기 패턴을 끝냅니다.</summary>
     public void FinishExtinguish()
     {
-        Candlestick extinguishCandle = runtimeData.SelectedCandle;
-        if (extinguishCandle == null) return;
+        if (!runtimeData.HasActiveExtinguishSelection)
+            return;
 
-        Vector3 extinguishCenter = runtimeData.SelectedCenter;
+        IReadOnlyList<Candlestick> extinguishCandles = runtimeData.SelectedCandles;
+        IReadOnlyList<Vector3> extinguishCenters = runtimeData.SelectedCenters;
 
-        TryHitPlayer(extinguishCenter);
-        SpawnFog(extinguishCenter);
-        extinguishCandle.Seal();
+        for (int i = 0; i < extinguishCenters.Count; i++)
+        {
+            Vector3 extinguishCenter = extinguishCenters[i];
+            TryHitPlayer(extinguishCenter);
+            SpawnFog(extinguishCenter);
+            PlayExtinguishExplosionVisual(extinguishCenter);
+        }
+
+        for (int i = 0; i < extinguishCandles.Count; i++)
+        {
+            Candlestick candle = extinguishCandles[i];
+            if (candle != null)
+                candle.Seal();
+        }
+
         HideExtinguishWarning();
     }
 
@@ -412,6 +436,47 @@ public class Witch : BossControllerBase
         }
 
         return bestCandle;
+    }
+
+    /// <summary>가장 가까운 촛대와 랜덤 촛대 조합으로 촛불 끄기 대상을 구성합니다.</summary>
+    private List<Candlestick> BuildExtinguishSelectionBuffer()
+    {
+        List<Candlestick> selections = new List<Candlestick>(ExtinguishCandleCount);
+        Candlestick nearestCandle = GetNearestCandle();
+        if (nearestCandle == null)
+            return selections;
+
+        selections.Add(nearestCandle);
+
+        if (ExtinguishCandleCount <= 1)
+            return selections;
+
+        Candlestick randomCandle = GetRandomAvailableCandleExcluding(nearestCandle);
+        if (randomCandle != null)
+            selections.Add(randomCandle);
+
+        return selections;
+    }
+
+    /// <summary>지정한 촛대를 제외하고 미봉인 촛대 하나를 랜덤으로 고릅니다.</summary>
+    private Candlestick GetRandomAvailableCandleExcluding(Candlestick excludedCandle)
+    {
+        List<Candlestick> availableCandles = new List<Candlestick>();
+
+        for (int i = 0; i < Candlestick.Instances.Count; i++)
+        {
+            Candlestick candle = Candlestick.Instances[i];
+            if (candle == null || candle.IsSealed || candle == excludedCandle)
+                continue;
+
+            availableCandles.Add(candle);
+        }
+
+        if (availableCandles.Count == 0)
+            return null;
+
+        int randomIndex = Random.Range(0, availableCandles.Count);
+        return availableCandles[randomIndex];
     }
 
     /// <summary>플레이어를 향한 방향을 구합니다.</summary>
@@ -664,22 +729,48 @@ public class Witch : BossControllerBase
         return CombatHitPayloadApplier.Apply(targetObject, payload, targetObject.transform.position);
     }
 
-    /// <summary>폭발 경고를 표시합니다.</summary>
-    private void ShowWarning(Vector3 center, float warningTime)
+    /// <summary>촛불 끄기 패턴의 원형 경고를 여러 개 동시에 표시합니다.</summary>
+    private void ShowWarnings(IReadOnlyList<Vector3> centers, float warningTime)
     {
-        AttackTelegraphSpec spec = AttackTelegraphSpec.CreateCircle(
-            center,
-            GetFogRadius() * 2f,
-            Mathf.Max(0f, warningTime),
-            extinguishWarningStyle);
+        DestroyExtinguishWarningViews();
 
-        telegraphService.Show(spec);
+        if (telegraphService == null || centers == null)
+            return;
+
+        float warningDiameter = GetExtinguishAttackRadius() * 2f;
+        float clampedWarningTime = Mathf.Max(0f, warningTime);
+
+        for (int i = 0; i < centers.Count; i++)
+        {
+            AttackTelegraphSpec spec = AttackTelegraphSpec.CreateCircle(
+                centers[i],
+                warningDiameter,
+                clampedWarningTime,
+                extinguishWarningStyle);
+
+            AttackTelegraphView view = telegraphService.SpawnDetachedView(spec);
+            if (view != null)
+                activeExtinguishWarningViews.Add(view);
+        }
     }
 
     /// <summary>폭발 경고를 숨깁니다.</summary>
     private void HideWarning()
     {
-        if (telegraphService != null) telegraphService.HideCurrent();
+        DestroyExtinguishWarningViews();
+    }
+
+    /// <summary>촛불 끄기 패턴에서 사용한 경고 뷰들을 정리합니다.</summary>
+    private void DestroyExtinguishWarningViews()
+    {
+        for (int i = 0; i < activeExtinguishWarningViews.Count; i++)
+        {
+            AttackTelegraphView view = activeExtinguishWarningViews[i];
+            if (view != null)
+                Destroy(view.gameObject);
+        }
+
+        activeExtinguishWarningViews.Clear();
     }
 
     /// <summary>플레이어에게 폭발 피해를 적용합니다.</summary>
@@ -687,7 +778,7 @@ public class Witch : BossControllerBase
     {
         if (Target == null || abilitySystem == null || extinguishDamageEffect == null) return false;
 
-        float fogRadius = GetFogRadius();
+        float fogRadius = GetExtinguishAttackRadius();
         Vector2 toTarget = (Vector2)(Target.position - center);
 
         if (toTarget.sqrMagnitude > fogRadius * fogRadius) return false;
@@ -740,6 +831,26 @@ public class Witch : BossControllerBase
         return true;
     }
 
+    /// <summary>촛불 끄기 패턴의 폭발 연출 프리팹을 지정 위치에 생성합니다.</summary>
+    private bool PlayExtinguishExplosionVisual(Vector3 center)
+    {
+        if (extinguishExplosionVisualPrefab == null)
+            return false;
+
+        Transform parent = extinguishExplosionVisualSocket;
+        GameObject instance = Instantiate(
+            extinguishExplosionVisualPrefab,
+            center + extinguishExplosionVisualOffset,
+            Quaternion.identity,
+            parent);
+
+        if (instance == null)
+            return false;
+
+        instance.transform.localScale = Vector3.Scale(instance.transform.localScale, extinguishExplosionVisualScale);
+        return true;
+    }
+
     /// <summary>Fog 생성 위치를 구합니다.</summary>
     private Vector3 GetFogSpawnPos(Vector3 center)
     {
@@ -759,6 +870,12 @@ public class Witch : BossControllerBase
         float xRadius = fogCollider.radius * Mathf.Abs(scale.x);
         float yRadius = fogCollider.radius * Mathf.Abs(scale.y);
         return Mathf.Max(xRadius, yRadius);
+    }
+
+    /// <summary>촛불 끄기 패턴의 실제 공격 반경을 반환합니다.</summary>
+    private float GetExtinguishAttackRadius()
+    {
+        return GetFogRadius() * ExtinguishAttackRadiusMultiplier;
     }
 
     /// <summary>Fog 오프셋을 구합니다.</summary>

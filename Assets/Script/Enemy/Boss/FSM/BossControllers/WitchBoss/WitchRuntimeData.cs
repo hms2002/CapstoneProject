@@ -6,21 +6,42 @@ public sealed class WitchRuntimeData
     // 이 클래스의 책임:
     // 마녀 보스 패턴이 공유하는 전용 런타임 상태를 보관한다.
 
-    public Candlestick SelectedCandle { get; private set; }
-    public Vector3 SelectedCenter { get; private set; }
-    public bool HasActiveExtinguishSelection => SelectedCandle != null;
+    private readonly List<Candlestick> selectedCandles = new();
+    private readonly List<Vector3> selectedCenters = new();
     private readonly List<WitchNormalAttack1Tile> normal1Tiles = new();
 
-    public void SetExtinguishSelection(Candlestick candle, Vector3 center)
+    public IReadOnlyList<Candlestick> SelectedCandles => selectedCandles;
+    public IReadOnlyList<Vector3> SelectedCenters => selectedCenters;
+    public bool HasActiveExtinguishSelection => selectedCandles.Count > 0;
+
+    /// <summary>촛불 끄기 패턴에서 선택된 촛대들과 중심점을 저장합니다.</summary>
+    public void SetExtinguishSelections(IReadOnlyList<Candlestick> candles, IReadOnlyList<Vector3> centers)
     {
-        SelectedCandle = candle;
-        SelectedCenter = center;
+        selectedCandles.Clear();
+        selectedCenters.Clear();
+
+        if (candles != null)
+        {
+            for (int i = 0; i < candles.Count; i++)
+            {
+                Candlestick candle = candles[i];
+                if (candle != null)
+                    selectedCandles.Add(candle);
+            }
+        }
+
+        if (centers != null)
+        {
+            for (int i = 0; i < centers.Count; i++)
+                selectedCenters.Add(centers[i]);
+        }
     }
 
+    /// <summary>촛불 끄기 패턴에서 저장한 선택 정보를 비웁니다.</summary>
     public void ClearExtinguishSelection()
     {
-        SelectedCandle = null;
-        SelectedCenter = Vector3.zero;
+        selectedCandles.Clear();
+        selectedCenters.Clear();
     }
 
     /// <summary>평타1 장판을 등록합니다.</summary>
