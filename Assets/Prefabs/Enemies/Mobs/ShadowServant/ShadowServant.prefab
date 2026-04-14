@@ -232,17 +232,25 @@ MonoBehaviour:
   attackEffectLifetimeSeconds: 0.35
   attackEffectScaleMultiplier: {x: 0.7, y: 0.7, z: 1}
   attackEffectRotationOffsetZ: 0
-  attackParticlePrefab: {fileID: 0}
+  attackParticlePrefab: {fileID: 2356285918434582956, guid: 7e3dd9b93aa3a5b498afc1b7b958ee42, type: 3}
   attackParticleLocalOffset: {x: 0, y: 0, z: -0.02}
   attackParticleLifetimeOverrideSeconds: 0
   useUnscaledAttackParticleTime: 0
-  attackParticleScaleMultiplier: {x: 1, y: 1, z: 1}
+  attackParticleScaleMultiplier: {x: 0.7, y: 0.7, z: 1}
   attackParticleRotationOffsetZ: 0
   attackSound:
     key: chloe.pattern.phasepatternorblunch
     volumeMultiplier: 1
     anchorPolicy: 0
     localOffset: {x: 0, y: 0, z: 0}
+  attackCameraShake:
+    amplitude: 1
+    amplitudeMultiplier: 1
+    maxAmplitude: 0
+    minIntervalSeconds: 0.04
+    directionMode: 0
+    customDirection: {x: 0, y: 0, z: 0}
+    ignoreScreenShakeSetting: 0
 --- !u!114 &3790217430196525045
 MonoBehaviour:
   m_ObjectHideFlags: 0

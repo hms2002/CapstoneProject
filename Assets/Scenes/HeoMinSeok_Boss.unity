@@ -7233,6 +7233,18 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 544346152}
     - target: {fileID: 669182791067580952, guid: 900e8eeac487b5b41b95ccbd78628ce3, type: 3}
+      propertyPath: extinguishExplosionSound.key
+      value: chloe.pattern.normal2
+      objectReference: {fileID: 0}
+    - target: {fileID: 669182791067580952, guid: 900e8eeac487b5b41b95ccbd78628ce3, type: 3}
+      propertyPath: extinguishFogScaleMultiplier.x
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 669182791067580952, guid: 900e8eeac487b5b41b95ccbd78628ce3, type: 3}
+      propertyPath: extinguishFogScaleMultiplier.y
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 669182791067580952, guid: 900e8eeac487b5b41b95ccbd78628ce3, type: 3}
       propertyPath: extinguishExplosionVisualPrefab
       value: 
       objectReference: {fileID: 4540458603196068083, guid: f3e6d674c38bfa3459b9aa0e37af577d, type: 3}
@@ -7245,6 +7257,18 @@ PrefabInstance:
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 669182791067580952, guid: 900e8eeac487b5b41b95ccbd78628ce3, type: 3}
+      propertyPath: extinguishExplosionParticlePrefab
+      value: 
+      objectReference: {fileID: 2356285918434582956, guid: 7e3dd9b93aa3a5b498afc1b7b958ee42, type: 3}
+    - target: {fileID: 669182791067580952, guid: 900e8eeac487b5b41b95ccbd78628ce3, type: 3}
+      propertyPath: extinguishExplosionParticleScale.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 669182791067580952, guid: 900e8eeac487b5b41b95ccbd78628ce3, type: 3}
+      propertyPath: extinguishExplosionParticleScale.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 669182791067580952, guid: 900e8eeac487b5b41b95ccbd78628ce3, type: 3}
       propertyPath: phases.Array.data[0].thinkDelayMax
       value: 0.7
       objectReference: {fileID: 0}
@@ -7253,8 +7277,20 @@ PrefabInstance:
       value: 0.7
       objectReference: {fileID: 0}
     - target: {fileID: 669182791067580952, guid: 900e8eeac487b5b41b95ccbd78628ce3, type: 3}
+      propertyPath: extinguishExplosionCameraShake.amplitude
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 669182791067580952, guid: 900e8eeac487b5b41b95ccbd78628ce3, type: 3}
       propertyPath: phases.Array.data[0].patterns.Array.size
       value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 669182791067580952, guid: 900e8eeac487b5b41b95ccbd78628ce3, type: 3}
+      propertyPath: extinguishExplosionSound.volumeMultiplier
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 669182791067580952, guid: 900e8eeac487b5b41b95ccbd78628ce3, type: 3}
+      propertyPath: extinguishExplosionCameraShake.maxAmplitude
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 669182791067580952, guid: 900e8eeac487b5b41b95ccbd78628ce3, type: 3}
       propertyPath: phases.Array.data[0].enterHpRatioBelowOrEqual
@@ -10145,11 +10181,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7349978582733647170, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 960
+      value: 959.88916
       objectReference: {fileID: 0}
     - target: {fileID: 7349978582733647170, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -531.99304
+      value: -532.0554
       objectReference: {fileID: 0}
     - target: {fileID: 7352247737264506656, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_AnchorMax.y

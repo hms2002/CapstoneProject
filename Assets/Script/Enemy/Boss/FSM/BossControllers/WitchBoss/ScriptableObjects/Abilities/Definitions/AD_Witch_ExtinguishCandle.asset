@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   abilityName: Extinguish Candle
   icon: {fileID: 0}
-  description: "\uAC00\uC7A5 \uAC00\uAE4C\uC6B4 \uCDDB\uB300\uC5D0 \uC548\uAC1C\uB97C \uC0DD\uC131\uD558\uACE0 \uBD09\uC778\uD569\uB2C8\uB2E4."
+  description: "\uAC00\uC7A5 \uAC00\uAE4C\uC6B4 \uCDDB\uB300\uC5D0 \uC548\uAC1C\uB97C
+    \uC0DD\uC131\uD558\uACE0 \uBD09\uC778\uD569\uB2C8\uB2E4."
   cooldown: 0
   executionPolicy: 0
   useCharges: 0
@@ -87,6 +88,80 @@ MonoBehaviour:
     volumeMultiplier: 0
     anchorPolicy: 0
     localOffset: {x: 0, y: 0, z: 0}
+  cameraShakeOnCastStart:
+    amplitude: 0
+    amplitudeMultiplier: 0
+    maxAmplitude: 0
+    minIntervalSeconds: 0
+    directionMode: 0
+    customDirection: {x: 0, y: 0, z: 0}
+    ignoreScreenShakeSetting: 0
+  cameraShakeWhileCasting:
+    amplitude: 0
+    amplitudeMultiplier: 0
+    maxAmplitude: 0
+    minIntervalSeconds: 0
+    directionMode: 0
+    customDirection: {x: 0, y: 0, z: 0}
+    ignoreScreenShakeSetting: 0
+  cameraShakeOnCommit:
+    amplitude: 0
+    amplitudeMultiplier: 0
+    maxAmplitude: 0
+    minIntervalSeconds: 0
+    directionMode: 0
+    customDirection: {x: 0, y: 0, z: 0}
+    ignoreScreenShakeSetting: 0
+  cameraShakeWhileActive:
+    amplitude: 0
+    amplitudeMultiplier: 0
+    maxAmplitude: 0
+    minIntervalSeconds: 0
+    directionMode: 0
+    customDirection: {x: 0, y: 0, z: 0}
+    ignoreScreenShakeSetting: 0
+  cameraShakeOnEnd:
+    amplitude: 0
+    amplitudeMultiplier: 0
+    maxAmplitude: 0
+    minIntervalSeconds: 0
+    directionMode: 0
+    customDirection: {x: 0, y: 0, z: 0}
+    ignoreScreenShakeSetting: 0
+  cameraShakeOnCastCancelled:
+    amplitude: 0
+    amplitudeMultiplier: 0
+    maxAmplitude: 0
+    minIntervalSeconds: 0
+    directionMode: 0
+    customDirection: {x: 0, y: 0, z: 0}
+    ignoreScreenShakeSetting: 0
+  cameraShakeOnExecutionCancelled:
+    amplitude: 0
+    amplitudeMultiplier: 0
+    maxAmplitude: 0
+    minIntervalSeconds: 0
+    directionMode: 0
+    customDirection: {x: 0, y: 0, z: 0}
+    ignoreScreenShakeSetting: 0
+  cameraShakeOnHitConfirmed:
+    amplitude: 0
+    amplitudeMultiplier: 0
+    maxAmplitude: 0
+    minIntervalSeconds: 0
+    directionMode: 0
+    customDirection: {x: 0, y: 0, z: 0}
+    ignoreScreenShakeSetting: 0
+  cuesOnCastStart: []
+  cuesWhileCasting: []
+  cuesOnCommit: []
+  cuesWhileActive: []
+  cuesOnEnd: []
+  cuesOnCastCancelled: []
+  cuesOnExecutionCancelled: []
+  cuesOnHitConfirmed: []
+  hitCueMagnitude: 1
+  criticalHitCueMagnitudeMultiplier: 2
   cueOnCastStart: {fileID: 0}
   cueWhileCasting: {fileID: 0}
   cueOnCommit: {fileID: 0}
@@ -94,3 +169,5 @@ MonoBehaviour:
   cueOnEnd: {fileID: 0}
   cueOnCastCancelled: {fileID: 0}
   cueOnExecutionCancelled: {fileID: 0}
+  cueOnHitConfirmed: {fileID: 0}
+  additionalCuesOnHitConfirmed: []
