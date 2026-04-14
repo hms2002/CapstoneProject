@@ -5,6 +5,7 @@ using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using CapstoneAudio;
 
 public class DialogueView : MonoBehaviour
 {
@@ -36,6 +37,10 @@ public class DialogueView : MonoBehaviour
     [SerializeField] private string dialogueEffectIdleState = "Idle";
     [SerializeField] private string dialogueEffectIntroState = "Intro";
 
+    [Header("Typing Audio")]
+    [SerializeField] private bool playTypingSound = true;
+    [SerializeField, Min(0f)] private float typingSoundInterval = 0.035f;
+
     private Tween typingTween;
     private readonly List<GameObject> activeChoiceButtons = new List<GameObject>();
     private readonly Dictionary<Graphic, Material> originalThemeMaterials = new Dictionary<Graphic, Material>();
@@ -51,6 +56,8 @@ public class DialogueView : MonoBehaviour
     private bool isUiVisible;
     private int currentChoiceIndex;
     private Action<int> onChoiceSelectedCallback;
+    private int lastTypedCharacterCount;
+    private float nextTypingSoundTime;
 
     private void Awake()
     {
@@ -110,6 +117,8 @@ public class DialogueView : MonoBehaviour
 
     public void ClearText()
     {
+        ResetTypingAudioTracking();
+
         if (nameText != null)
             nameText.text = string.Empty;
 
@@ -221,14 +230,18 @@ public class DialogueView : MonoBehaviour
             continueIcon.SetActive(false);
 
         typingTween?.Kill();
+        ResetTypingAudioTracking();
 
         if (dialogueText != null)
         {
             typingTween = dialogueText.DOText(text, text.Length * 0.05f)
                 .SetUpdate(true)
                 .SetEase(Ease.Linear)
+                .OnUpdate(HandleTypingTweenUpdated)
                 .OnComplete(() =>
                 {
+                    HandleTypingTweenUpdated();
+
                     if (continueIcon != null)
                         continueIcon.SetActive(true);
 
@@ -243,6 +256,8 @@ public class DialogueView : MonoBehaviour
 
         if (dialogueText != null)
             dialogueText.text = fullText;
+
+        lastTypedCharacterCount = string.IsNullOrEmpty(fullText) ? 0 : fullText.Length;
 
         if (continueIcon != null)
             continueIcon.SetActive(true);
@@ -656,6 +671,31 @@ public class DialogueView : MonoBehaviour
 
         AnimationClip introClip = ResolveDialogueEffectClip(dialogueEffectIntroState);
         return introClip != null ? introClip.length : 0f;
+    }
+
+    private void ResetTypingAudioTracking()
+    {
+        lastTypedCharacterCount = 0;
+        nextTypingSoundTime = 0f;
+    }
+
+    private void HandleTypingTweenUpdated()
+    {
+        if (!playTypingSound || dialogueText == null)
+            return;
+
+        string currentText = dialogueText.text;
+        int currentCharacterCount = string.IsNullOrEmpty(currentText) ? 0 : currentText.Length;
+        if (currentCharacterCount <= lastTypedCharacterCount)
+            return;
+
+        if (Time.unscaledTime >= nextTypingSoundTime)
+        {
+            TypingAudioUtility.PlayBossTalking(this, gameObject);
+            nextTypingSoundTime = Time.unscaledTime + typingSoundInterval;
+        }
+
+        lastTypedCharacterCount = currentCharacterCount;
     }
 
     private AnimationClip ResolveDialogueEffectClip(string stateOrClipName)

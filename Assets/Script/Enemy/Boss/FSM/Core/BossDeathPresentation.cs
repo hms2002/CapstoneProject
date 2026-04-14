@@ -149,7 +149,7 @@ public sealed class BossDeathPresentation : MonoBehaviour
                 deathUiTargetAlpha));
 
         if (deathCameraDirector != null)
-            yield return deathCameraDirector.FocusBossRoutine();
+            yield return deathCameraDirector.FocusBossWithDeathLensRoutine();
 
         yield return overlayIntroRoutine;
         yield return WaitForPresentationSeconds(deathPreSpeechDelaySeconds);
@@ -191,6 +191,9 @@ public sealed class BossDeathPresentation : MonoBehaviour
 
     private void ResolveReferences()
     {
+        if (deathCameraDirector == null)
+            deathCameraDirector = GetComponent<CameraPresentationDirector>();
+
         if (deathCameraDirector == null)
             deathCameraDirector = FindAnyObjectByType<CameraPresentationDirector>();
 

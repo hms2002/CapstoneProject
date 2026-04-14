@@ -45,6 +45,13 @@ public class AbilityLogic_WitchLightAllCandles : AbilityLogic
         witch.MoveToPhaseTransitionCenter(MoveToCenterDuration);
         witch.ActivateShield();
         witch.EnableStaggerImmuneDuringPhaseTransition();
+        CameraPresentationDirector phaseCameraDirector = witch.GetCameraPresentationDirector();
+        bool shouldReturnPhaseCamera = false;
+        if (phaseCameraDirector != null)
+        {
+            phaseCameraDirector.BeginBossFocusWithPhaseLens();
+            shouldReturnPhaseCamera = true;
+        }
 
         yield return new WaitForSeconds(MoveToCenterDuration);
 
@@ -90,6 +97,10 @@ public class AbilityLogic_WitchLightAllCandles : AbilityLogic
 
             witch.DisableStaggerImmuneDuringPhaseTransition();
             witch.ApplyGroggyStatus();
+
+            if (shouldReturnPhaseCamera)
+                yield return phaseCameraDirector.ReturnToPlayerRoutine();
+
             yield break;
         }
 
@@ -99,10 +110,17 @@ public class AbilityLogic_WitchLightAllCandles : AbilityLogic
             witch.DisableStaggerImmuneDuringPhaseTransition();
             witch.ClearShield();
             witch.ApplyMapWideDamage(initialTarget);
+
+            if (shouldReturnPhaseCamera)
+                yield return phaseCameraDirector.ReturnToPlayerRoutine();
+
             yield break;
         }
 
         CleanupChargeOrb(chargeOrbInstance);
+
+        if (shouldReturnPhaseCamera)
+            yield return phaseCameraDirector.ReturnToPlayerRoutine();
     }
 
     private GameObject SpawnChargeOrb(Witch witch)

@@ -6,7 +6,11 @@ public class BossDrop : MonoBehaviour
     [Header("Chest Settings")]
     public GameObject chestPrefab;
     public Transform chestSpawnPoint;
+
+    [Header("Portal Settings")]
     public GameObject portalObj;
+    public Transform portalSpawnPoint;
+    public Vector3 portalSpawnOffset;
 
     [Header("Boss Unique Loot")]
     public List<BossSpecificLoot> bossUniqueLoots;
@@ -30,12 +34,12 @@ public class BossDrop : MonoBehaviour
 
         hasProcessedDeath = true;
         // 1. 상자 생성
-        SpawnTreasureChest();
+        TryRunDeathRewardStep(SpawnTreasureChest, "SpawnTreasureChest");
 
         // 2. 마정석 낱개 드롭
-        SpawnBossCurrency();
+        TryRunDeathRewardStep(SpawnBossCurrency, "SpawnBossCurrency");
 
-        ActivePortal();
+        TryRunDeathRewardStep(ActivePortal, "ActivePortal");
     }
 
     private void SpawnTreasureChest()
@@ -111,8 +115,27 @@ public class BossDrop : MonoBehaviour
         if (portalTransform != null && portalTransform.IsChildOf(transform))
             portalTransform.SetParent(null, true);
 
+        Vector3 spawnPosition = ResolvePortalSpawnPosition();
+        if (portalTransform != null)
+            portalTransform.position = spawnPosition;
+
         portalObj.SetActive(true);
         RestorePortalVisibilityAndInteraction(portalObj);
+
+        Debug.Log(
+            $"[BossDrop] Portal activation attempted. name={portalObj.name}, activeSelf={portalObj.activeSelf}, activeInHierarchy={portalObj.activeInHierarchy}, position={portalObj.transform.position}",
+            portalObj);
+    }
+
+    private Vector3 ResolvePortalSpawnPosition()
+    {
+        if (portalSpawnPoint != null)
+            return portalSpawnPoint.position + portalSpawnOffset;
+
+        if (chestSpawnPoint != null)
+            return chestSpawnPoint.position + portalSpawnOffset;
+
+        return transform.position + portalSpawnOffset;
     }
 
     private static void RestorePortalVisibilityAndInteraction(GameObject portalRoot)
@@ -139,6 +162,21 @@ public class BossDrop : MonoBehaviour
         {
             if (scenePortals[i] != null)
                 scenePortals[i].enabled = true;
+        }
+    }
+
+    private void TryRunDeathRewardStep(System.Action action, string stepName)
+    {
+        if (action == null)
+            return;
+
+        try
+        {
+            action.Invoke();
+        }
+        catch (System.Exception exception)
+        {
+            Debug.LogException(new System.Exception($"[BossDrop] {stepName} failed.", exception), this);
         }
     }
 }

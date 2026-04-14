@@ -220,7 +220,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealthDef: {fileID: 11400000, guid: 0e177e1d15e428745b5859fac08ce203, type: 2}
   healthDef: {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
-  enemyName: 
+  enemyName: "\uADF8\uB9BC\uC790 \uC815\uB839 \uD074\uB85C\uC5D0"
   targetTag: Player
   dieAnimTime: 0
   startCombatOnStart: 1

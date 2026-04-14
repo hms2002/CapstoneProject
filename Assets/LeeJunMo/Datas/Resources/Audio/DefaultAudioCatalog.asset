@@ -262,7 +262,7 @@ MonoBehaviour:
     playbackSpeed: 1
     pitchMin: 1
     pitchMax: 1
-    loop: 1
+    loop: 0
     spatial: 0
     important: 0
     cooldown: 0
@@ -293,6 +293,21 @@ MonoBehaviour:
     pitchMin: 0.9
     pitchMax: 0.9
     loop: 1
+    spatial: 0
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: boss.talking
+    bus: 0
+    category: 2
+    variants:
+    - {fileID: 8300000, guid: 711aa880d087e7947a08c111610ea4da, type: 3}
+    volume: 0.3
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
     spatial: 0
     important: 0
     cooldown: 0

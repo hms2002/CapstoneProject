@@ -171,9 +171,14 @@ public sealed class BossHudController : MonoBehaviour
             return;
         }
 
-        bossNameText.text = string.IsNullOrWhiteSpace(displayNameOverride)
-            ? targetBoss.gameObject.name
+        string resolvedBossName = string.IsNullOrWhiteSpace(displayNameOverride)
+            ? targetBoss.EnemyName
             : displayNameOverride;
+
+        if (string.IsNullOrWhiteSpace(resolvedBossName))
+            resolvedBossName = targetBoss.gameObject.name;
+
+        bossNameText.text = resolvedBossName;
         ApplyGroggyLabel(targetBoss != null && targetBoss.HasGroggyTag());
     }
 

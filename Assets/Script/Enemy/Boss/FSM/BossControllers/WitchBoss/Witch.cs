@@ -56,6 +56,7 @@ public class Witch : BossControllerBase
     private readonly List<Candlestick> runtimeSpawnedCandles = new();
     private WitchShieldController shieldController;
     private WitchShieldVisualController shieldVisualController;
+    private CameraPresentationDirector cameraPresentationDirector;
     private GameplayTag staggerImmuneTag;
     private bool hasAppliedStaggerImmuneTag;
 
@@ -75,6 +76,7 @@ public class Witch : BossControllerBase
         shieldVisualController = GetComponent<WitchShieldVisualController>();
         if (shieldVisualController == null)
             shieldVisualController = gameObject.AddComponent<WitchShieldVisualController>();
+        cameraPresentationDirector = GetComponent<CameraPresentationDirector>();
         staggerImmuneTag = Resources.Load<GameplayTag>(StaggerImmuneTagResourcePath);
     }
 
@@ -101,6 +103,12 @@ public class Witch : BossControllerBase
         {
             ClearShield();
             DisableStaggerImmuneDuringPhaseTransition();
+            if (!IsDead)
+            {
+                CameraPresentationDirector phaseCameraDirector = GetCameraPresentationDirector();
+                if (phaseCameraDirector != null)
+                    phaseCameraDirector.RestoreDefaultState();
+            }
         }
         ClearNormal1();
     }
@@ -121,6 +129,17 @@ public class Witch : BossControllerBase
     public float ProjectileSpeed => projectileSpeed;
     public bool HasProjectilePatternConfig => lightBeadPrefab != null && extinguishDamageEffect != null;
     public WitchShieldController ShieldController => shieldController;
+
+    public CameraPresentationDirector GetCameraPresentationDirector()
+    {
+        if (cameraPresentationDirector == null)
+            cameraPresentationDirector = GetComponent<CameraPresentationDirector>();
+
+        if (cameraPresentationDirector == null)
+            cameraPresentationDirector = FindAnyObjectByType<CameraPresentationDirector>();
+
+        return cameraPresentationDirector;
+    }
 
     protected override void Update()
     {
@@ -867,12 +886,13 @@ public class Witch : BossControllerBase
         if (candlestickPrefab == null || Candlestick.Instances.Count > 0)
             return;
 
+        float halfExtent = fallbackCandleSpawnRadius / Mathf.Sqrt(2f);
         Vector2[] offsets =
         {
-            new Vector2(-fallbackCandleSpawnRadius, 0f),
-            new Vector2(fallbackCandleSpawnRadius, 0f),
-            new Vector2(0f, -fallbackCandleSpawnRadius),
-            new Vector2(0f, fallbackCandleSpawnRadius)
+            new Vector2(-halfExtent, halfExtent),
+            new Vector2(halfExtent, halfExtent),
+            new Vector2(-halfExtent, -halfExtent),
+            new Vector2(halfExtent, -halfExtent)
         };
 
         for (int i = 0; i < offsets.Length; i++)

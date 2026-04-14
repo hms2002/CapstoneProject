@@ -7191,7 +7191,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 669182791067580952, guid: 900e8eeac487b5b41b95ccbd78628ce3, type: 3}
       propertyPath: enemyName
-      value: 
+      value: "\uADF8\uB9BC\uC790 \uC815\uB839 \uD074\uB85C\uC5D0"
       objectReference: {fileID: 0}
     - target: {fileID: 669182791067580952, guid: 900e8eeac487b5b41b95ccbd78628ce3, type: 3}
       propertyPath: deathPoseSprite

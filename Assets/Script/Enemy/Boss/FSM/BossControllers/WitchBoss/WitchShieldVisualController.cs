@@ -19,14 +19,9 @@ public class WitchShieldVisualController : MonoBehaviour
 
     private const float DefaultPresentationLifetimeSeconds = 1f;
 
-    [Header("Shield Outline")]
+    [Header("References")]
     [SerializeField] private WitchShieldController shieldController;
     [SerializeField] private SpriteRenderer ownerSpriteRenderer;
-    [SerializeField] private float radiusX = 1.25f;
-    [SerializeField] private float radiusY = 1.65f;
-    [SerializeField] private float lineWidth = 0.12f;
-    [SerializeField] private int segmentCount = 40;
-    [SerializeField] private Vector3 localOffset = new Vector3(0f, 0.15f, 0f);
 
     [Header("Shield Prefab Visual")]
     [SerializeField] private GameObject shieldVisualPrefab;
@@ -51,7 +46,6 @@ public class WitchShieldVisualController : MonoBehaviour
     [SerializeField] private float shieldBreakParticleRotationOffsetZ;
     [SerializeField] private CameraShakeHook shieldBreakCameraShake = CameraShakeHook.Create(0.2f, 1f, 0.32f, 0.05f);
 
-    private LineRenderer lineRenderer;
     private Coroutine breakRoutine;
     private bool isSubscribedToShieldController;
     private int lastCurrentStage;
@@ -65,7 +59,7 @@ public class WitchShieldVisualController : MonoBehaviour
     private void Awake()
     {
         ResolveCoreReferences();
-        EnsureLineRenderer();
+        CleanupLegacyOutlineVisual();
         ApplySorting();
         ApplyShieldVisualPose();
         HideImmediate();
@@ -101,15 +95,11 @@ public class WitchShieldVisualController : MonoBehaviour
 
     private void LateUpdate()
     {
-        if (lineRenderer == null || !lineRenderer.enabled || lastCurrentStage <= 0)
+        if (lastCurrentStage <= 0)
             return;
 
         float ratio = lastMaxStage > 0 ? (float)lastCurrentStage / lastMaxStage : 0f;
         float pulse = 0.88f + (Mathf.Sin(Time.time * 5.5f) * 0.08f);
-        Color color = GetShieldColor(ratio);
-        color.a *= pulse;
-        lineRenderer.startColor = color;
-        lineRenderer.endColor = color;
 
         SpriteRenderer visualRenderer = GetShieldVisualSpriteRenderer();
         if (tintShieldVisualWithStageColor && visualRenderer != null && visualRenderer.enabled)
@@ -219,20 +209,8 @@ public class WitchShieldVisualController : MonoBehaviour
 
     private void ShowShield(int currentStage, int maxStage, bool playActivatePresentation)
     {
-        EnsureLineRenderer();
         ApplySorting();
-        BuildEllipse(radiusX, radiusY);
-
-        float ratio = maxStage > 0 ? (float)currentStage / maxStage : 0f;
-        float widthScale = Mathf.Lerp(0.52f, 1f, ratio);
-        float resolvedWidth = lineWidth * widthScale;
-        Color color = GetShieldColor(ratio);
-
-        lineRenderer.enabled = true;
-        lineRenderer.startWidth = resolvedWidth;
-        lineRenderer.endWidth = resolvedWidth;
-        lineRenderer.startColor = color;
-        lineRenderer.endColor = color;
+        CleanupLegacyOutlineVisual();
 
         EnsureShieldVisualInstance();
         ApplyShieldVisualPose();
@@ -268,40 +246,9 @@ public class WitchShieldVisualController : MonoBehaviour
 
     private IEnumerator PlayBreakRoutine()
     {
-        EnsureLineRenderer();
         ApplySorting();
-
-        float duration = 0.22f;
-        float elapsed = 0f;
-        float startRadiusX = radiusX * 0.94f;
-        float startRadiusY = radiusY * 0.94f;
-        float endRadiusX = radiusX * 1.24f;
-        float endRadiusY = radiusY * 1.24f;
-        Color startColor = new Color(1f, 0.86f, 0.72f, 0.92f);
-        Color endColor = new Color(1f, 0.18f, 0.18f, 0f);
-
-        lineRenderer.enabled = true;
-
-        while (elapsed < duration)
-        {
-            elapsed += Time.deltaTime;
-            float t = Mathf.Clamp01(elapsed / duration);
-            float eased = 1f - Mathf.Pow(1f - t, 3f);
-
-            BuildEllipse(
-                Mathf.Lerp(startRadiusX, endRadiusX, eased),
-                Mathf.Lerp(startRadiusY, endRadiusY, eased));
-
-            float width = Mathf.Lerp(lineWidth * 1.35f, 0.01f, eased);
-            Color color = Color.Lerp(startColor, endColor, eased);
-
-            lineRenderer.startWidth = width;
-            lineRenderer.endWidth = width;
-            lineRenderer.startColor = color;
-            lineRenderer.endColor = color;
-
-            yield return null;
-        }
+        CleanupLegacyOutlineVisual();
+        yield return new WaitForSeconds(0.22f);
 
         HideImmediate();
         breakRoutine = null;
@@ -309,31 +256,9 @@ public class WitchShieldVisualController : MonoBehaviour
 
     private void HideImmediate()
     {
-        if (lineRenderer != null)
-            lineRenderer.enabled = false;
+        CleanupLegacyOutlineVisual();
 
         SetOptionalShieldVisualVisible(false);
-    }
-
-    private void EnsureLineRenderer()
-    {
-        if (lineRenderer != null)
-            return;
-
-        lineRenderer = GetComponent<LineRenderer>();
-        if (lineRenderer == null)
-            lineRenderer = gameObject.AddComponent<LineRenderer>();
-
-        lineRenderer.useWorldSpace = false;
-        lineRenderer.loop = true;
-        lineRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
-        lineRenderer.receiveShadows = false;
-        lineRenderer.alignment = LineAlignment.View;
-        lineRenderer.textureMode = LineTextureMode.Stretch;
-        lineRenderer.numCapVertices = 4;
-        lineRenderer.numCornerVertices = 4;
-        lineRenderer.positionCount = Mathf.Max(8, segmentCount);
-        lineRenderer.material = new Material(Shader.Find("Sprites/Default"));
     }
 
     private void EnsureShieldVisualInstance()
@@ -355,38 +280,11 @@ public class WitchShieldVisualController : MonoBehaviour
         if (ownerSpriteRenderer == null)
             return;
 
-        if (lineRenderer != null)
-        {
-            lineRenderer.sortingLayerID = ownerSpriteRenderer.sortingLayerID;
-            lineRenderer.sortingOrder = ownerSpriteRenderer.sortingOrder + 2;
-        }
-
         SpriteRenderer visualRenderer = GetShieldVisualSpriteRenderer();
         if (visualRenderer != null)
         {
             visualRenderer.sortingLayerID = ownerSpriteRenderer.sortingLayerID;
             visualRenderer.sortingOrder = ownerSpriteRenderer.sortingOrder + shieldVisualSortingOrderOffset;
-        }
-    }
-
-    private void BuildEllipse(float ellipseRadiusX, float ellipseRadiusY)
-    {
-        if (lineRenderer == null)
-            return;
-
-        int count = Mathf.Max(8, segmentCount);
-        if (lineRenderer.positionCount != count)
-            lineRenderer.positionCount = count;
-
-        for (int i = 0; i < count; i++)
-        {
-            float normalized = (float)i / count;
-            float angle = normalized * Mathf.PI * 2f;
-            Vector3 point = new Vector3(
-                Mathf.Cos(angle) * ellipseRadiusX,
-                Mathf.Sin(angle) * ellipseRadiusY,
-                0f) + localOffset;
-            lineRenderer.SetPosition(i, point);
         }
     }
 
@@ -416,6 +314,20 @@ public class WitchShieldVisualController : MonoBehaviour
             return shieldVisualAnimator.transform;
 
         return null;
+    }
+
+    private void CleanupLegacyOutlineVisual()
+    {
+        LineRenderer legacyLineRenderer = GetComponent<LineRenderer>();
+        if (legacyLineRenderer == null)
+            return;
+
+        legacyLineRenderer.enabled = false;
+
+        if (Application.isPlaying)
+            Destroy(legacyLineRenderer);
+        else
+            DestroyImmediate(legacyLineRenderer);
     }
 
     private SpriteRenderer GetShieldVisualSpriteRenderer()
