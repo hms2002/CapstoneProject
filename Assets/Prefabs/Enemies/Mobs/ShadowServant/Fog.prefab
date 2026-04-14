@@ -85,7 +85,7 @@ SpriteRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: -2031011008148426383, guid: 6b50432f8e4555943a74ca0e9fa79543, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.78431374}
+  m_Color: {r: 0.89308393, g: 0.28490567, b: 1, a: 0.78431374}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -165,7 +165,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   idleDuration: 3
-  idleFogRefreshDuration: 0.12
+  fogDebuffDuration: 3
   endFallbackDestroyDelay: 0.35
   startStateName: FogStartAnim
   idleStateName: FogIdleAnim

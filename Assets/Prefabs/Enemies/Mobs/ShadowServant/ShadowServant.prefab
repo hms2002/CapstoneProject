@@ -227,6 +227,22 @@ MonoBehaviour:
   fog: {fileID: 4201956065249926095, guid: 983d63dce5dc9454a9a74287a2ed4d94, type: 3}
   explosionDamageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
   explosionDamage: 1
+  attackEffectPrefab: {fileID: 4540458603196068083, guid: f3e6d674c38bfa3459b9aa0e37af577d, type: 3}
+  attackEffectLocalOffset: {x: 0, y: 0, z: -0.05}
+  attackEffectLifetimeSeconds: 0.35
+  attackEffectScaleMultiplier: {x: 0.7, y: 0.7, z: 1}
+  attackEffectRotationOffsetZ: 0
+  attackParticlePrefab: {fileID: 0}
+  attackParticleLocalOffset: {x: 0, y: 0, z: -0.02}
+  attackParticleLifetimeOverrideSeconds: 0
+  useUnscaledAttackParticleTime: 0
+  attackParticleScaleMultiplier: {x: 1, y: 1, z: 1}
+  attackParticleRotationOffsetZ: 0
+  attackSound:
+    key: chloe.pattern.phasepatternorblunch
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
 --- !u!114 &3790217430196525045
 MonoBehaviour:
   m_ObjectHideFlags: 0
