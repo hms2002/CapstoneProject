@@ -1565,8 +1565,8 @@ MonoBehaviour:
       anchorPolicy: 0
       localOffset: {x: 0, y: 0, z: 0}
     audioOnRemove:
-      key: 
-      volumeMultiplier: 0
+      key: player.fallhit
+      volumeMultiplier: 1
       anchorPolicy: 0
       localOffset: {x: 0, y: 0, z: 0}
     cameraShakeOnExecute:
@@ -1586,7 +1586,7 @@ MonoBehaviour:
       customDirection: {x: 0, y: 0, z: 0}
       ignoreScreenShakeSetting: 0
     cameraShakeOnRemove:
-      amplitude: 0
+      amplitude: 3
       amplitudeMultiplier: 0
       maxAmplitude: 0
       minIntervalSeconds: 0
@@ -1600,7 +1600,7 @@ MonoBehaviour:
     - {fileID: 11400000, guid: 87c7f3b44e6f74a49ad8cfcb49dae1de, type: 2}
     executeCueMagnitude: 0
     whileActiveCueMagnitude: 0
-    removeCueMagnitude: 15
+    removeCueMagnitude: 0
     cueOnExecute: {fileID: 0}
     cueWhileActive: {fileID: 0}
     cueOnRemove: {fileID: 0}

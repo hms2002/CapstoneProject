@@ -19,6 +19,22 @@ MonoBehaviour:
   followWitchDuringCharge: 1
   chargeOrbFailureDropDuration: 0.22
   chargeOrbImpactLocalOffset: {x: 0, y: 0.1, z: -0.05}
+  chargeLoopSound:
+    key: chloe.pattern.phasepatternloop
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  chargeLoopFadeOutSeconds: 0.1
+  orbLaunchSound:
+    key: chloe.pattern.normal1
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  orbImpactSound:
+    key: chloe.pattern.normal2
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
   chargeLoopCameraShake:
     amplitude: 0.4
     amplitudeMultiplier: 0

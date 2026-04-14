@@ -15,10 +15,10 @@ MonoBehaviour:
   fallbackOuterRadius: 6
   innerSafeDiameterScale: 1.5
   minimumInnerSafeRadius: 2
-  hitEffectCount: 8
+  hitEffectCount: 1
   hitParticleCount: 1
-  hitPresentationRadiusLerp: 0.75
-  hitEffectPrefab: {fileID: 1412473672868303488, guid: c257fcc31167b184e9a65f583e74626f, type: 3}
+  hitPresentationRadiusLerp: 0
+  hitEffectPrefab: {fileID: 7283175124365028653, guid: 7b4c91ec38bc898439801eccdbc0701c, type: 3}
   hitEffectLocalOffset: {x: 0, y: 0, z: -0.05}
   hitEffectLifetimeSeconds: 0.35
   hitEffectScaleMultiplier: {x: 0.4, y: 0.4, z: 1}
@@ -29,6 +29,11 @@ MonoBehaviour:
   useUnscaledHitParticleTime: 0
   hitParticleScaleMultiplier: {x: 1, y: 1, z: 1}
   hitParticleRotationOffsetZ: 0
+  hitSound:
+    key: chloe.pattern.normal2
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
   hitCameraShake:
     amplitude: 3
     amplitudeMultiplier: 0

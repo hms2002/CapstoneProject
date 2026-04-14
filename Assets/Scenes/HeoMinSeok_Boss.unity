@@ -6430,7 +6430,7 @@ Transform:
   m_GameObject: {fileID: 760601612}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -22.5, y: 9, z: -10}
+  m_LocalPosition: {x: -22.5, y: 6.72, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -7154,6 +7154,8 @@ MonoBehaviour:
   chestPrefab: {fileID: 7530156284439312542, guid: 296eaa6f1547cb74e990055ce1319470, type: 3}
   chestSpawnPoint: {fileID: 35865593}
   portalObj: {fileID: 272070917}
+  portalSpawnPoint: {fileID: 0}
+  portalSpawnOffset: {x: 0, y: 0, z: 0}
   bossUniqueLoots:
   - item: {fileID: 11400000, guid: 6a8181eecc5ab3a4988f9089d46607b0, type: 2}
     dropChance: 100
@@ -7176,6 +7178,11 @@ MonoBehaviour:
   focusPriority: 100
   disableLegacyFollowWhileSequence: 1
   blendWaitFallbackSeconds: 2
+  useBossLensPresentation: 1
+  deathLensScale: 0.7
+  deathLensBlendDuration: 0.35
+  phaseLensScale: 1.18
+  phaseLensBlendDuration: 0.35
 --- !u!212 &1785454332 stripped
 SpriteRenderer:
   m_CorrespondingSourceObject: {fileID: 8897721723054304330, guid: 900e8eeac487b5b41b95ccbd78628ce3, type: 3}
@@ -7378,6 +7385,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2108456829143765124, guid: 900e8eeac487b5b41b95ccbd78628ce3, type: 3}
+      propertyPath: tintShieldVisualWithStageColor
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2108456829143765124, guid: 900e8eeac487b5b41b95ccbd78628ce3, type: 3}
       propertyPath: shieldBreakParticleLocalOffset.y
       value: 0
       objectReference: {fileID: 0}
@@ -7401,6 +7412,18 @@ PrefabInstance:
       propertyPath: defaultStyle
       value: 
       objectReference: {fileID: 11400000, guid: 5c4c8108f36d4acbaa6dfaf6d6b3f6e7, type: 2}
+    - target: {fileID: 5675224341811256986, guid: 900e8eeac487b5b41b95ccbd78628ce3, type: 3}
+      propertyPath: portalObj
+      value: 
+      objectReference: {fileID: 272070917}
+    - target: {fileID: 5675224341811256986, guid: 900e8eeac487b5b41b95ccbd78628ce3, type: 3}
+      propertyPath: chestSpawnPoint
+      value: 
+      objectReference: {fileID: 35865593}
+    - target: {fileID: 5675224341811256986, guid: 900e8eeac487b5b41b95ccbd78628ce3, type: 3}
+      propertyPath: portalSpawnPoint
+      value: 
+      objectReference: {fileID: 1987507145}
     - target: {fileID: 5724109387412903854, guid: 900e8eeac487b5b41b95ccbd78628ce3, type: 3}
       propertyPath: bubbleOffset.x
       value: 0.5
@@ -7415,7 +7438,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7124681143442968898, guid: 900e8eeac487b5b41b95ccbd78628ce3, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 9
+      value: 6.72
       objectReference: {fileID: 0}
     - target: {fileID: 7124681143442968898, guid: 900e8eeac487b5b41b95ccbd78628ce3, type: 3}
       propertyPath: m_LocalPosition.z
@@ -7671,6 +7694,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 99cd9d723ba00e14e8bf7327129f4aae, type: 3}
+--- !u!4 &1987507145 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2049793296081275421, guid: 99cd9d723ba00e14e8bf7327129f4aae, type: 3}
+  m_PrefabInstance: {fileID: 1987507144}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1998590699
 GameObject:
   m_ObjectHideFlags: 0

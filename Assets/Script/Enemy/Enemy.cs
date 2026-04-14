@@ -46,6 +46,7 @@ public class Enemy : MonoBehaviour
     protected Transform target;
     public virtual Transform Target => target;
     public bool IsDead => isDead;
+    public virtual string EnemyName => enemyName;
 
     protected virtual void Awake()
     {

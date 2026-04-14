@@ -3,6 +3,7 @@ using DG.Tweening;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using CapstoneAudio;
 
 public class SpeechBubble : MonoBehaviour
 {
@@ -17,6 +18,10 @@ public class SpeechBubble : MonoBehaviour
     [SerializeField] private Color defaultFontColor = Color.black;
     [SerializeField] private float backgroundTextureInfluence = 0f;
 
+    [Header("Typing Audio")]
+    [SerializeField] private bool playTypingSound = true;
+    [SerializeField, Min(0f)] private float typingSoundInterval = 0.035f;
+
     private Transform target;
     private Vector3 offset;
     private Tween typingTween;
@@ -29,6 +34,8 @@ public class SpeechBubble : MonoBehaviour
     private bool supportsBackgroundTheme;
     private bool supportsTextFaceColor;
     private int backgroundBorderColorPropertyId = -1;
+    private int lastTypedCharacterCount;
+    private float nextTypingSoundTime;
 
     private static readonly int FillColorId = Shader.PropertyToID("_FillColor");
     private static readonly int BorderColorId = Shader.PropertyToID("_BorderColor");
@@ -79,11 +86,18 @@ public class SpeechBubble : MonoBehaviour
         if (bubbleText != null)
         {
             bubbleText.text = string.Empty;
+            ResetTypingAudioTracking();
 
             if (useTyping)
-                typingTween = bubbleText.DOText(text, text.Length * typingSpeed).SetEase(Ease.Linear);
+                typingTween = bubbleText.DOText(text, text.Length * typingSpeed)
+                    .SetEase(Ease.Linear)
+                    .OnUpdate(HandleTypingTweenUpdated)
+                    .OnComplete(HandleTypingTweenUpdated);
             else
+            {
                 bubbleText.text = text;
+                lastTypedCharacterCount = string.IsNullOrEmpty(text) ? 0 : text.Length;
+            }
         }
 
         if (duration > 0f)
@@ -131,6 +145,7 @@ public class SpeechBubble : MonoBehaviour
     {
         typingTween?.Kill();
         typingTween = null;
+        ResetTypingAudioTracking();
 
         hideDelayTween?.Kill();
         hideDelayTween = null;
@@ -268,5 +283,30 @@ public class SpeechBubble : MonoBehaviour
         Action callback = hiddenAction;
         hiddenAction = null;
         callback?.Invoke();
+    }
+
+    private void ResetTypingAudioTracking()
+    {
+        lastTypedCharacterCount = 0;
+        nextTypingSoundTime = 0f;
+    }
+
+    private void HandleTypingTweenUpdated()
+    {
+        if (!playTypingSound || bubbleText == null)
+            return;
+
+        string currentText = bubbleText.text;
+        int currentCharacterCount = string.IsNullOrEmpty(currentText) ? 0 : currentText.Length;
+        if (currentCharacterCount <= lastTypedCharacterCount)
+            return;
+
+        if (Time.unscaledTime >= nextTypingSoundTime)
+        {
+            TypingAudioUtility.PlayBossTalking(this, target != null ? target.gameObject : gameObject);
+            nextTypingSoundTime = Time.unscaledTime + typingSoundInterval;
+        }
+
+        lastTypedCharacterCount = currentCharacterCount;
     }
 }

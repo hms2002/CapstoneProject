@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using CapstoneAudio;
 using UnityEngine;
 using UnityGAS;
 
@@ -20,6 +21,7 @@ public class AbilityLogic_WitchSealedCandleRampage : AbilityLogic
     [Header("Telegraph")]
     [SerializeField] private float telegraphRadius = 0f;
     [SerializeField] private AttackTelegraphStyle telegraphStyle;
+    [SerializeField] private SoundRef candleAttackSound;
 
     private struct CandleBurstShotPlan
     {
@@ -64,6 +66,12 @@ public class AbilityLogic_WitchSealedCandleRampage : AbilityLogic
                 if (plan.candle == null)
                     continue;
 
+                SoundPlaybackUtility.Play(
+                    candleAttackSound,
+                    instigator: witch.gameObject,
+                    causer: plan.candle.gameObject,
+                    position: plan.origin,
+                    sourceObject: this);
                 WitchProjectileAttackHelper.SpawnLightBeadBurst(
                     system,
                     witch.gameObject,

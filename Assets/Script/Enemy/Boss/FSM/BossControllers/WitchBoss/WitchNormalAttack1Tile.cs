@@ -1,4 +1,5 @@
 using System.Collections;
+using CapstoneAudio;
 using UnityEngine;
 using UnityGAS;
 
@@ -25,6 +26,7 @@ public class WitchNormalAttack1Tile : MonoBehaviour
     [SerializeField] private Vector3 hitParticleLocalOffset = new Vector3(0f, 0f, -0.02f);
     [SerializeField] [Min(0f)] private float hitParticleLifetimeOverrideSeconds = 0f;
     [SerializeField] private bool useUnscaledHitParticleTime;
+    [SerializeField] private SoundRef hitSound;
     [SerializeField] private CameraShakeHook hitCameraShake = CameraShakeHook.Create(0.12f, 1f, 0.18f, 0.03f);
 
     private void Awake()
@@ -181,6 +183,13 @@ public class WitchNormalAttack1Tile : MonoBehaviour
         Vector3 hitDirection = ResolveHitDirection();
         SpawnPresentationPrefab(hitEffectPrefab, hitEffectLocalOffset, hitEffectLifetimeSeconds, useUnscaledTime: false);
         SpawnPresentationPrefab(hitParticlePrefab, hitParticleLocalOffset, hitParticleLifetimeOverrideSeconds, useUnscaledHitParticleTime);
+        SoundPlaybackUtility.Play(
+            hitSound,
+            instigator: hitPayload != null ? hitPayload.sourceSystem != null ? hitPayload.sourceSystem.gameObject : null : null,
+            causer: hitPayload != null ? hitPayload.causer : gameObject,
+            target: targetObject,
+            position: transform.position,
+            sourceObject: this);
         hitCameraShake.TryPlay(gameObject, hitDirection, debugReason: "WitchNormalAttack1Tile.Hit");
     }
 
