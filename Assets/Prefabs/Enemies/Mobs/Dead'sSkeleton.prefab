@@ -31,7 +31,6 @@ GameObject:
   - component: {fileID: 3949865959590047275}
   - component: {fileID: 344486096308046059}
   - component: {fileID: 1033480238846917190}
-  - component: {fileID: 4898502572782916126}
   m_Layer: 31
   m_Name: Dead'sSkeleton
   m_TagString: Enemy
@@ -235,21 +234,21 @@ MonoBehaviour:
   explosionDamageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
   explosionDamage: 1
   explosionVisualPrefab: {fileID: 4540458603196068083, guid: f3e6d674c38bfa3459b9aa0e37af577d, type: 3}
-  explosionParticlePrefab: {fileID: 0}
+  explosionParticlePrefab: {fileID: 2356285918434582956, guid: 7e3dd9b93aa3a5b498afc1b7b958ee42, type: 3}
   explosionVisualAnchor: {fileID: 0}
   explosionVisualOffset: {x: 0, y: 0, z: 0}
   explosionParticleOffset: {x: 0, y: 0, z: 0}
   explosionVisualScale: {x: 1, y: 1, z: 1}
   explosionParticleScale: {x: 1, y: 1, z: 1}
   explosionSound:
-    key: 
-    volumeMultiplier: 0
+    key: chloe.pattern.normal2
+    volumeMultiplier: 1
     anchorPolicy: 0
     localOffset: {x: 0, y: 0, z: 0}
   explosionCameraShake:
-    amplitude: 0.18
+    amplitude: 2
     amplitudeMultiplier: 1
-    maxAmplitude: 0.28
+    maxAmplitude: 0
     minIntervalSeconds: 0.04
     directionMode: 0
     customDirection: {x: 0, y: 0, z: 0}
@@ -567,19 +566,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   telegraphPrefab: {fileID: 788264263987448140, guid: 211dd09e2da9caf47ad8409c9e35b83d, type: 3}
   defaultStyle: {fileID: 0}
---- !u!114 &4898502572782916126
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 625522859161183429}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cbc9a19645b6c8f458d6e368d5e1dabc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::UnityGAS.CombatHurtbox2D
-  targetRoot: {fileID: 0}
 --- !u!1 &9100000000000000001
 GameObject:
   m_ObjectHideFlags: 0

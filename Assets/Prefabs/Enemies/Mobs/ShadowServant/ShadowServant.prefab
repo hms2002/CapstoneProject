@@ -31,7 +31,6 @@ GameObject:
   - component: {fileID: 3949865959590047275}
   - component: {fileID: 344486096308046059}
   - component: {fileID: 1033480238846917190}
-  - component: {fileID: 7805949970273280143}
   m_Layer: 31
   m_Name: ShadowServant
   m_TagString: Enemy
@@ -233,11 +232,11 @@ MonoBehaviour:
   attackEffectLifetimeSeconds: 0.35
   attackEffectScaleMultiplier: {x: 0.7, y: 0.7, z: 1}
   attackEffectRotationOffsetZ: 0
-  attackParticlePrefab: {fileID: 0}
+  attackParticlePrefab: {fileID: 2356285918434582956, guid: 7e3dd9b93aa3a5b498afc1b7b958ee42, type: 3}
   attackParticleLocalOffset: {x: 0, y: 0, z: -0.02}
   attackParticleLifetimeOverrideSeconds: 0
   useUnscaledAttackParticleTime: 0
-  attackParticleScaleMultiplier: {x: 1, y: 1, z: 1}
+  attackParticleScaleMultiplier: {x: 0.7, y: 0.7, z: 1}
   attackParticleRotationOffsetZ: 0
   attackSound:
     key: chloe.pattern.phasepatternorblunch
@@ -245,9 +244,9 @@ MonoBehaviour:
     anchorPolicy: 0
     localOffset: {x: 0, y: 0, z: 0}
   attackCameraShake:
-    amplitude: 0.14
+    amplitude: 1
     amplitudeMultiplier: 1
-    maxAmplitude: 0.22
+    maxAmplitude: 0
     minIntervalSeconds: 0.04
     directionMode: 0
     customDirection: {x: 0, y: 0, z: 0}
@@ -565,16 +564,3 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   telegraphPrefab: {fileID: 788264263987448140, guid: 211dd09e2da9caf47ad8409c9e35b83d, type: 3}
   defaultStyle: {fileID: 0}
---- !u!114 &7805949970273280143
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 625522859161183429}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cbc9a19645b6c8f458d6e368d5e1dabc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::UnityGAS.CombatHurtbox2D
-  targetRoot: {fileID: 0}
