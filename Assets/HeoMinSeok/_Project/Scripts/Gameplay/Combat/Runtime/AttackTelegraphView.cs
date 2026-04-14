@@ -126,15 +126,16 @@ namespace UnityGAS
 
         /// <summary>
         /// 책임 :
-        /// - 공격 예고 렌더러의 정렬 레이어와 오더를 기준 렌더러에 맞춘다.
+        /// - 공격 예고 렌더러의 정렬 레이어만 기준 렌더러에 맞춘다.
+        /// - 정렬 오더는 텔레그래프 프리팹이 가진 값을 유지해 연출 authoring을 존중한다.
         /// </summary>
-        public void SyncSorting(SpriteRenderer referenceRenderer, int orderOffset = 1)
+        public void SyncSorting(SpriteRenderer referenceRenderer)
         {
             if (referenceRenderer == null)
                 return;
 
-            ApplySorting(fillRenderer, referenceRenderer, orderOffset);
-            ApplySorting(borderRenderer, referenceRenderer, orderOffset + 1);
+            ApplySortingLayer(fillRenderer, referenceRenderer);
+            ApplySortingLayer(borderRenderer, referenceRenderer);
         }
 
         /// <summary>
@@ -518,18 +519,17 @@ namespace UnityGAS
 
         /// <summary>
         /// 책임 :
-        /// - 개별 렌더러의 정렬 레이어와 오더를 기준 렌더러에 맞춰 설정한다.
+        /// - 개별 렌더러의 정렬 레이어만 기준 렌더러에 맞춰 설정한다.
+        /// - 프리팹에서 authoring한 sorting order는 유지한다.
         /// </summary>
-        private static void ApplySorting(
+        private static void ApplySortingLayer(
             SpriteRenderer targetRenderer,
-            SpriteRenderer referenceRenderer,
-            int orderOffset)
+            SpriteRenderer referenceRenderer)
         {
             if (targetRenderer == null || referenceRenderer == null)
                 return;
 
             targetRenderer.sortingLayerID = referenceRenderer.sortingLayerID;
-            targetRenderer.sortingOrder = referenceRenderer.sortingOrder + orderOffset;
         }
 
         /// <summary>

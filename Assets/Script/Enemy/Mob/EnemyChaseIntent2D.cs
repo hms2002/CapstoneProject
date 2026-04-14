@@ -89,6 +89,12 @@ public sealed class EnemyChaseIntent2D : MonoBehaviour, IIntentMovementSource2D
         speedScale = Mathf.Max(0f, value);
     }
 
+    /// <summary>추적 감지 범위를 런타임에 바꿉니다.</summary>
+    public void SetDetectionRange(float value)
+    {
+        detectionRange = Mathf.Max(0f, value);
+    }
+
     /// <summary>감지 범위 무시 여부를 바꿉니다.</summary>
     public void SetIgnoreDetectionRange(bool value)
     {

@@ -225,10 +225,18 @@ MonoBehaviour:
   enemyName: Deads' Skeleton
   targetTag: Player
   chaseIntent: {fileID: 0}
+  selfDestructTriggerDiameter: 7
   explosionDiameter: 5
   explodeDelay: 3
+  selfDestructChaseSpeedScale: 1.5
+  normalChaseSpeedScale: 1
+  normalDetectionRange: 5
+  selfDestructDetectionRange: 12
   explosionDamageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
   explosionDamage: 1
+  explosionVisualPrefab: {fileID: 4540458603196068083, guid: f3e6d674c38bfa3459b9aa0e37af577d, type: 3}
+  explosionVisualAnchor: {fileID: 0}
+  explosionVisualOffset: {x: 0, y: 0, z: 0}
 --- !u!114 &3790217430196525045
 MonoBehaviour:
   m_ObjectHideFlags: 0
