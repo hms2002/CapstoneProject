@@ -10,17 +10,38 @@ using UnityGAS;
 public class DeadsSkeleton : Mob, IDamageReceiver
 {
     [Header("자폭 모드")]
+    [Tooltip("플레이어가 이 범위에 들어오면 자폭 시퀀스 인트로를 시작하는 지름입니다.")]
+    [SerializeField] private float selfDestructTriggerDiameter = 7f;
+
     [Tooltip("자폭 경고와 실제 폭발 범위의 지름입니다.")]
     [SerializeField] private float explosionDiameter = 5f;
 
-    [Tooltip("자폭 모드에 들어간 뒤 폭발까지 걸리는 시간입니다.")]
-    [SerializeField] private float explodeDelay = 3f;
+    [Tooltip("자폭 모드로 완전히 전환된 뒤 플레이어를 추격할 때 사용할 속도 배율입니다.")]
+    [SerializeField] private float selfDestructChaseSpeedScale = 1.5f;
+
+    [Tooltip("자폭 상태가 아닐 때 사용할 기본 추적 속도 배율입니다.")]
+    [SerializeField] private float normalChaseSpeedScale = 1f;
+
+    [Tooltip("자폭 상태가 아닐 때 사용할 기본 추적 감지 범위 반지름입니다.")]
+    [SerializeField] private float normalDetectionRange = 5f;
+
+    [Tooltip("자폭 모드로 완전히 전환된 뒤 사용할 추적 감지 범위 반지름입니다.")]
+    [SerializeField] private float selfDestructDetectionRange = 8f;
 
     [Tooltip("폭발에 사용할 데미지 이펙트입니다.")]
     [SerializeField] private GE_Damage_Spec explosionDamageEffect;
 
     [Tooltip("폭발 피해량입니다.")]
     [SerializeField] private float explosionDamage = 1f;
+
+    [Tooltip("자폭 시 한 번 재생할 폭발 비주얼 프리팹입니다.")]
+    [SerializeField] private GameObject explosionVisualPrefab;
+
+    [Tooltip("폭발 비주얼을 생성할 기준점입니다. 비어 있으면 자기 자신 위치를 사용합니다.")]
+    [SerializeField] private Transform explosionVisualAnchor;
+
+    [Tooltip("폭발 비주얼에 적용할 추가 월드 오프셋입니다.")]
+    [SerializeField] private Vector3 explosionVisualOffset = Vector3.zero;
 
     private readonly HashSet<GameObject> damagedTargets = new();
 
@@ -31,10 +52,11 @@ public class DeadsSkeleton : Mob, IDamageReceiver
     private Vector3 defaultSightMaskScale = Vector3.one;
     private Tween sightMaskScaleTween;
     private bool isSelfDestruct;
+    private bool hasEnteredArmedPhase;
     private bool canCancelSelfDestruct = true;
-    private float explodeTime;
     private float selfDestructIntroEndTime;
     private bool hasLoggedInvalidConfig;
+    private bool suppressHealthRestore;
 
     protected override void Awake()
     {
@@ -48,12 +70,17 @@ public class DeadsSkeleton : Mob, IDamageReceiver
             defaultSightMaskScale = sightMaskTransform.localScale;
 
         EnsureContactTriggerCollider();
+        ApplyNormalChaseSpeed();
+        ApplyNormalDetectionRange();
     }
 
     protected override void UpdateAttack()
     {
         if (isSelfDestruct)
         {
+            if (!IsPlayingSelfDestructIntro())
+                EnterArmedPhaseIfNeeded();
+
             if (ShouldCancelSelfDestruct())
             {
                 CancelSelfDestruct();
@@ -78,11 +105,24 @@ public class DeadsSkeleton : Mob, IDamageReceiver
     /// <summary>해골은 체력 Attribute 변화로 사망하지 않도록 공통 체력 처리 훅을 비워 둡니다.</summary>
     protected override void OnEnemyAttributeChanged(AttributeDefinition attribute, float oldValue, float newValue)
     {
+        if (suppressHealthRestore || attributeSet == null)
+            return;
+
+        if (attribute != healthDef || isDead)
+            return;
+
+        if (newValue >= oldValue)
+            return;
+
+        suppressHealthRestore = true;
+        attributeSet.TrySetBaseValue(attribute, oldValue, this);
+        suppressHealthRestore = false;
     }
 
     protected override void OnDeathStarted()
     {
         HideWarning();
+        ApplyNormalDetectionRange();
         base.OnDeathStarted();
     }
 
@@ -104,11 +144,7 @@ public class DeadsSkeleton : Mob, IDamageReceiver
     {
         if (isDead || other == null) return;
 
-        GameObject contactObject = other.attachedRigidbody != null
-            ? other.attachedRigidbody.gameObject
-            : other.gameObject;
-
-        if (TryExplodeOnPlayerContact(contactObject))
+        if (TryExplodeOnPlayerContact(other))
             return;
 
         CandlestickLightZone lightZone = other.GetComponent<CandlestickLightZone>();
@@ -124,17 +160,16 @@ public class DeadsSkeleton : Mob, IDamageReceiver
     {
         if (isDead || other == null) return;
 
-        GameObject contactObject = other.attachedRigidbody != null
-            ? other.attachedRigidbody.gameObject
-            : other.gameObject;
-
-        TryExplodeOnPlayerContact(contactObject);
+        TryExplodeOnPlayerContact(other);
     }
 
     protected override void DrawAttackGizmos()
     {
+        Gizmos.color = new Color(1f, 0.5f, 0f, 0.9f);
+        Gizmos.DrawWireSphere(transform.position, GetSelfDestructTriggerRadius());
+
         Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, GetSelfDestructRadius());
+        Gizmos.DrawWireSphere(transform.position, GetExplosionRadius());
     }
 
     /// <summary>지금 자폭 모드에 들어갈 수 있는지 확인합니다.</summary>
@@ -146,7 +181,7 @@ public class DeadsSkeleton : Mob, IDamageReceiver
         if (!HasExplodeData())
             return false;
 
-        return IsTargetInRange();
+        return IsTargetInSelfDestructTriggerRange();
     }
 
     /// <summary>폭발에 필요한 참조가 있는지 확인합니다.</summary>
@@ -171,13 +206,41 @@ public class DeadsSkeleton : Mob, IDamageReceiver
         return false;
     }
 
-    /// <summary>플레이어가 자폭 발동 범위 안에 있는지 확인합니다.</summary>
-    private bool IsTargetInRange()
+    /// <summary>플레이어가 자폭 시퀀스 진입 범위 안에 있는지 확인합니다.</summary>
+    private bool IsTargetInSelfDestructTriggerRange()
     {
         if (target == null)
             return false;
 
-        float radius = GetSelfDestructRadius();
+        float radius = GetSelfDestructTriggerRadius();
+        if (radius <= 0f)
+            return false;
+
+        Vector2 toTarget = (Vector2)(target.position - transform.position);
+        return toTarget.sqrMagnitude <= radius * radius;
+    }
+
+    /// <summary>자폭 모드 완전 진입 후 추적/유지에 사용할 감지 범위 안에 있는지 확인합니다.</summary>
+    private bool IsTargetInSelfDestructDetectionRange()
+    {
+        if (target == null)
+            return false;
+
+        float radius = Mathf.Max(0f, selfDestructDetectionRange);
+        if (radius <= 0f)
+            return false;
+
+        Vector2 toTarget = (Vector2)(target.position - transform.position);
+        return toTarget.sqrMagnitude <= radius * radius;
+    }
+
+    /// <summary>자폭 모드 활성화 후 플레이어가 실제 폭발 반경 안에 들어왔는지 확인합니다.</summary>
+    private bool IsTargetInExplosionRange()
+    {
+        if (target == null)
+            return false;
+
+        float radius = GetExplosionRadius();
         if (radius <= 0f)
             return false;
 
@@ -189,8 +252,9 @@ public class DeadsSkeleton : Mob, IDamageReceiver
     private void StartSelfDestruct()
     {
         isSelfDestruct = true;
-        explodeTime = Time.time + Mathf.Max(0f, explodeDelay);
-        selfDestructIntroEndTime = Time.time + GetSelfDestructIntroDuration();
+        hasEnteredArmedPhase = false;
+        float introDuration = GetSelfDestructIntroDuration();
+        selfDestructIntroEndTime = Time.time + introDuration;
 
         if (movementMotor != null)
             movementMotor.StopAllMotion();
@@ -198,8 +262,11 @@ public class DeadsSkeleton : Mob, IDamageReceiver
         if (animator != null)
             animator.SetBool("selfDestructionMode", true);
 
+        ApplyNormalChaseSpeed();
+        ApplyNormalDetectionRange();
+        ApplySelfDestructDetectionBypass(true);
         PlaySightMaskExpand();
-        ShowWarning();
+        ShowIntroWarning(introDuration);
 
         if (IsInsideCandlestickLight())
             DieFromLight();
@@ -211,26 +278,35 @@ public class DeadsSkeleton : Mob, IDamageReceiver
         if (!isSelfDestruct)
             return false;
 
+        // 자폭 모드로 변신하는 인트로 동안에는 다른 상태 전환이 끼어들지 않게 유지한다.
+        if (IsPlayingSelfDestructIntro())
+            return false;
+
         if (!canCancelSelfDestruct)
             return false;
 
         if (ChaseIntent == null)
             return false;
 
-        return !ChaseIntent.IsTargetWithinDetectionRange();
+        return hasEnteredArmedPhase
+            ? !IsTargetInSelfDestructDetectionRange()
+            : !IsTargetInSelfDestructTriggerRange();
     }
 
     /// <summary>자폭 모드를 해제하고 일반 추적 상태로 되돌립니다.</summary>
     private void CancelSelfDestruct()
     {
         isSelfDestruct = false;
-        explodeTime = 0f;
+        hasEnteredArmedPhase = false;
         selfDestructIntroEndTime = 0f;
 
         if (animator != null)
             animator.SetBool("selfDestructionMode", false);
 
         HideWarning();
+        ApplyNormalChaseSpeed();
+        ApplyNormalDetectionRange();
+        ApplySelfDestructDetectionBypass(false);
         PlaySightMaskReset();
     }
 
@@ -243,23 +319,78 @@ public class DeadsSkeleton : Mob, IDamageReceiver
             return;
         }
 
-        if (Time.time < explodeTime) return;
+        if (IsPlayingSelfDestructIntro())
+            return;
 
-        Explode(target != null ? target.gameObject : null);
+        EnterArmedPhaseIfNeeded();
+
+        if (IsTargetInExplosionRange())
+            Explode(target != null ? target.gameObject : null);
     }
 
-    /// <summary>자폭 경고를 표시합니다.</summary>
-    private void ShowWarning()
+    /// <summary>자폭 인트로 동안 애니메이션 길이에 맞춰 채워지는 경고를 표시합니다.</summary>
+    private void ShowIntroWarning(float introDuration)
     {
         if (telegraphService == null) return;
 
         AttackTelegraphSpec spec = AttackTelegraphSpec.CreateCircle(
             transform.position,
             explosionDiameter,
-            Mathf.Max(0f, explodeDelay),
+            Mathf.Max(0f, introDuration),
             warningStyle);
 
         telegraphService.Show(spec);
+    }
+
+    /// <summary>자폭 모드가 완전히 활성화된 뒤에는 꽉 찬 경고를 유지한 채 돌진하도록 전환합니다.</summary>
+    private void EnterArmedPhaseIfNeeded()
+    {
+        if (!isSelfDestruct)
+            return;
+
+        if (hasEnteredArmedPhase)
+            return;
+
+        hasEnteredArmedPhase = true;
+
+        if (ChaseIntent != null)
+        {
+            ChaseIntent.SetSpeedScale(selfDestructChaseSpeedScale);
+            ChaseIntent.SetDetectionRange(selfDestructDetectionRange);
+        }
+
+        ShowArmedWarning();
+        UpdateArmedWarningGeometry();
+    }
+
+    /// <summary>자폭 모드 활성화 후에는 진행도가 꽉 찬 원형 경고를 유지합니다.</summary>
+    private void ShowArmedWarning()
+    {
+        if (telegraphService == null)
+            return;
+
+        AttackTelegraphSpec spec = AttackTelegraphSpec.CreateCircle(
+            transform.position,
+            explosionDiameter,
+            0f,
+            warningStyle);
+
+        telegraphService.Show(spec);
+    }
+
+    /// <summary>활성화된 자폭 경고가 해골과 함께 이동하도록 원형 위치를 갱신합니다.</summary>
+    private void UpdateArmedWarningGeometry()
+    {
+        if (telegraphService == null || IsPlayingSelfDestructIntro())
+            return;
+
+        AttackTelegraphSpec spec = AttackTelegraphSpec.CreateCircle(
+            transform.position,
+            explosionDiameter,
+            0f,
+            warningStyle);
+
+        telegraphService.UpdateCurrentGeometry(spec);
     }
 
     /// <summary>자폭 경고를 숨깁니다.</summary>
@@ -325,6 +456,7 @@ public class DeadsSkeleton : Mob, IDamageReceiver
         if (payload != null)
             DamageTargets(payload, hitTarget);
 
+        PlayExplosionVisual();
         Die();
     }
 
@@ -345,15 +477,19 @@ public class DeadsSkeleton : Mob, IDamageReceiver
     }
 
     /// <summary>플레이어와 접촉했을 때 즉시 폭발을 시도합니다.</summary>
-    private bool TryExplodeOnPlayerContact(GameObject contactObject)
+    private bool TryExplodeOnPlayerContact(Collider2D other)
     {
         if (!isSelfDestruct)
             return false;
 
-        if (contactObject == null || !contactObject.CompareTag("Player"))
+        if (other == null)
             return false;
 
-        Explode(contactObject);
+        GameObject contactTarget = CombatTargetResolver2D.ResolveDamageTarget(other);
+        if (contactTarget == null || !contactTarget.CompareTag("Player"))
+            return false;
+
+        Explode(contactTarget);
         return true;
     }
 
@@ -454,10 +590,33 @@ public class DeadsSkeleton : Mob, IDamageReceiver
         return GetExplosionRadius();
     }
 
+    /// <summary>자폭 인트로 시작/취소 판정에 사용할 반경입니다.</summary>
+    private float GetSelfDestructTriggerRadius()
+    {
+        return Mathf.Max(0f, selfDestructTriggerDiameter * 0.5f);
+    }
+
     /// <summary>폭발 반경을 돌려줍니다.</summary>
     private float GetExplosionRadius()
     {
         return Mathf.Max(0f, explosionDiameter * 0.5f);
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 자폭이 실제로 발생한 순간에만 원샷 폭발 비주얼 프리팹을 생성한다.
+    /// - 폭발 중심 연출을 본체 사망 처리와 분리해 프리팹 교체/튜닝을 쉽게 유지한다.
+    /// </summary>
+    private void PlayExplosionVisual()
+    {
+        if (explosionVisualPrefab == null)
+            return;
+
+        Transform anchor = explosionVisualAnchor != null ? explosionVisualAnchor : transform;
+        Vector3 spawnPosition = anchor.position + explosionVisualOffset;
+        Quaternion spawnRotation = anchor.rotation;
+
+        Instantiate(explosionVisualPrefab, spawnPosition, spawnRotation);
     }
 
     /// <summary>패턴용 강화 수치를 적용합니다.</summary>
@@ -472,11 +631,38 @@ public class DeadsSkeleton : Mob, IDamageReceiver
 
         explosionDiameter = Mathf.Max(0f, boostedExplosionDiameter);
         canCancelSelfDestruct = !ignoreRange;
+        selfDestructChaseSpeedScale = Mathf.Max(0f, boostedSpeedScale);
 
         if (ChaseIntent == null) return;
 
-        ChaseIntent.SetSpeedScale(boostedSpeedScale);
         ChaseIntent.SetIgnoreDetectionRange(ignoreRange);
+    }
+
+    /// <summary>비자폭 상태에서 사용할 기본 추적 속도를 복원합니다.</summary>
+    private void ApplyNormalChaseSpeed()
+    {
+        if (ChaseIntent == null)
+            return;
+
+        ChaseIntent.SetSpeedScale(normalChaseSpeedScale);
+    }
+
+    /// <summary>평상시 상태에 사용할 기본 추적 감지 범위를 복원합니다.</summary>
+    private void ApplyNormalDetectionRange()
+    {
+        if (ChaseIntent == null)
+            return;
+
+        ChaseIntent.SetDetectionRange(normalDetectionRange);
+    }
+
+    /// <summary>자폭 상태 동안에는 기본 추적 감지 규칙이 간섭하지 않도록 무시 모드를 켜거나 끕니다.</summary>
+    private void ApplySelfDestructDetectionBypass(bool enabled)
+    {
+        if (ChaseIntent == null)
+            return;
+
+        ChaseIntent.SetIgnoreDetectionRange(enabled);
     }
 
     /// <summary>자폭 전환 애니메이션이 아직 재생 중인지 확인합니다.</summary>
