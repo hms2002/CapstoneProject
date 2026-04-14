@@ -106,6 +106,7 @@ public class AbilityLogic_WitchLightAllCandles : AbilityLogic
                 witch.BreakShield();
 
             witch.DisableStaggerImmuneDuringPhaseTransition();
+            witch.HideMapWideWarning();
             witch.ApplyGroggyStatus();
 
             if (shouldReturnPhaseCamera)
@@ -120,6 +121,7 @@ public class AbilityLogic_WitchLightAllCandles : AbilityLogic
             yield return PlayFailurePresentation(witch, chargeOrbInstance);
             witch.DisableStaggerImmuneDuringPhaseTransition();
             witch.ClearShield();
+            witch.HideMapWideWarning();
             witch.ApplyMapWideDamage(initialTarget);
 
             if (shouldReturnPhaseCamera)
@@ -130,6 +132,7 @@ public class AbilityLogic_WitchLightAllCandles : AbilityLogic
 
         StopChargeLoopSound(witch);
         CleanupChargeOrb(chargeOrbInstance);
+        witch.HideMapWideWarning();
 
         if (shouldReturnPhaseCamera)
             yield return phaseCameraDirector.ReturnToPlayerRoutine();
@@ -234,6 +237,7 @@ public class AbilityLogic_WitchLightAllCandles : AbilityLogic
 
         Witch witch = system != null ? system.GetComponent<Witch>() : null;
         StopChargeLoopSound(witch);
+        witch?.HideMapWideWarning();
     }
 
     private Vector3 ResolveChargeOrbPosition(Witch witch)

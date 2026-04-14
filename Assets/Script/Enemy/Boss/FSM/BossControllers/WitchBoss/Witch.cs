@@ -118,6 +118,7 @@ public class Witch : BossControllerBase
         {
             if (patternEntry.Ability.logic is AbilityLogic_WitchLightAllCandles lightAllCandlesLogic)
                 lightAllCandlesLogic.StopChargeLoopFor(this);
+            HideMapWideWarning();
             ClearShield();
             DisableStaggerImmuneDuringPhaseTransition();
             if (!IsDead)
@@ -335,7 +336,7 @@ public class Witch : BossControllerBase
     public void HideExtinguishWarning()
     {
         HideWarning();
-        runtimeData.ClearExtinguishSelection();
+        runtimeData?.ClearExtinguishSelection();
     }
 
     /// <summary>마녀 보호막을 지정 단계수로 활성화합니다.</summary>
@@ -703,6 +704,15 @@ public class Witch : BossControllerBase
             mapWideWarningStyle);
 
         telegraphService.Show(spec);
+    }
+
+    /// <summary>맵 전체 피해 경고 텔레그래프를 즉시 숨깁니다.</summary>
+    public void HideMapWideWarning()
+    {
+        if (telegraphService == null)
+            return;
+
+        telegraphService.HideCurrent();
     }
 
     /// <summary>현재 타깃에게 맵 전체 피해를 적용합니다.</summary>
