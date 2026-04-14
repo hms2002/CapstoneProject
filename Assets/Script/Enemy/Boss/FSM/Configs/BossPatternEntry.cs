@@ -77,6 +77,9 @@ public sealed class BossPatternEntry
     [Tooltip("GAS 쿨다운과 별개인 AI 선택 잠금 시간입니다.")]
     [SerializeField] private float aiSelectionLockTime = 0f;
 
+    [Tooltip("패턴이 끝난 뒤 다음 패턴 선택 전까지 추가로 쉬는 시간입니다.")]
+    [SerializeField] private float postPatternDelay = 0f;
+
     [Space(8)]
     [Header("Distance Preference")]
     [Tooltip("이 거리 이상일 때만 선택합니다.")]
@@ -105,6 +108,7 @@ public sealed class BossPatternEntry
     public int MaxConsecutiveUseCount => Mathf.Max(0, maxConsecutiveUseCount);
     public int MaxUseCount => Mathf.Max(0, maxUseCount);
     public float AiSelectionLockTime => Mathf.Max(0f, aiSelectionLockTime);
+    public float PostPatternDelay => Mathf.Max(0f, postPatternDelay);
     public float MinDistanceToTarget => minDistanceToTarget;
     public float MaxDistanceToTarget => maxDistanceToTarget;
     public float MinHpRatio => minHpRatio;
@@ -117,6 +121,7 @@ public sealed class BossPatternEntry
         int runtimeMaxConsecutiveUseCount,
         int runtimeMaxUseCount,
         float runtimeSelectionLockTime,
+        float runtimePostPatternDelay,
         float runtimeMinDistanceToTarget,
         float runtimeMaxDistanceToTarget,
         float runtimeMinHpRatio,
@@ -129,12 +134,40 @@ public sealed class BossPatternEntry
         entry.maxConsecutiveUseCount = runtimeMaxConsecutiveUseCount;
         entry.maxUseCount = runtimeMaxUseCount;
         entry.aiSelectionLockTime = runtimeSelectionLockTime;
+        entry.postPatternDelay = runtimePostPatternDelay;
         entry.minDistanceToTarget = runtimeMinDistanceToTarget;
         entry.maxDistanceToTarget = runtimeMaxDistanceToTarget;
         entry.minHpRatio = runtimeMinHpRatio;
         entry.maxHpRatio = runtimeMaxHpRatio;
         entry.additionalConditions = runtimeAdditionalConditions;
         return entry;
+    }
+
+    /// <summary>기존 런타임 패턴 생성 경로와의 하위 호환을 유지합니다.</summary>
+    public static BossPatternEntry CreateRuntime(
+        AbilityDefinition runtimeAbility,
+        int runtimeSelectionWeight,
+        int runtimeMaxConsecutiveUseCount,
+        int runtimeMaxUseCount,
+        float runtimeSelectionLockTime,
+        float runtimeMinDistanceToTarget,
+        float runtimeMaxDistanceToTarget,
+        float runtimeMinHpRatio,
+        float runtimeMaxHpRatio,
+        params BossPatternCondition[] runtimeAdditionalConditions)
+    {
+        return CreateRuntime(
+            runtimeAbility,
+            runtimeSelectionWeight,
+            runtimeMaxConsecutiveUseCount,
+            runtimeMaxUseCount,
+            runtimeSelectionLockTime,
+            0f,
+            runtimeMinDistanceToTarget,
+            runtimeMaxDistanceToTarget,
+            runtimeMinHpRatio,
+            runtimeMaxHpRatio,
+            runtimeAdditionalConditions);
     }
 
     /// <summary>공통 패턴 평가 결과를 계산합니다.</summary>

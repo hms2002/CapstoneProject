@@ -9,7 +9,7 @@ public class AbilityLogic_WitchSealedCandleRampage : AbilityLogic
     // 이 클래스의 책임:
     // 현재 봉인된 촛대들을 이용해 마녀 보스의 폭주 탄막 패턴을 실행한다.
 
-    private const float WindupSeconds = 0.25f;
+    private const float WindupSeconds = 0.5f;
     private const int BurstRepeatCount = 2;
     private const float BurstIntervalSeconds = 0.45f;
     private const int ProjectileCountPerCandle = 5;

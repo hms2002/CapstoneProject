@@ -262,7 +262,7 @@ public abstract class BossControllerBase : Enemy
     {
         BossPatternEntry finishedPattern = patternRuntime != null ? patternRuntime.CurrentPattern : null;
         OnPatternEnd(finishedPattern, false);
-        patternRuntime?.EndPattern();
+        patternRuntime?.EndPattern(finishedPattern);
     }
 
     public void AbortCurrentPattern()
