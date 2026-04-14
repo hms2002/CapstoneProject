@@ -32,6 +32,7 @@ public class ShadowServant : Mob
     [SerializeField] private Vector3 attackParticleScaleMultiplier = Vector3.one;
     [SerializeField] private float attackParticleRotationOffsetZ;
     [SerializeField] private SoundRef attackSound;
+    [SerializeField] private CameraShakeHook attackCameraShake = CameraShakeHook.Create(0.14f, 1f, 0.22f, 0.04f);
 
     private readonly HashSet<GameObject> damagedTargets = new();
 
@@ -250,6 +251,11 @@ public class ShadowServant : Mob
             target: target != null ? target.gameObject : null,
             position: targetPoint,
             sourceObject: this);
+
+        attackCameraShake.TryPlay(
+            gameObject,
+            targetPoint - transform.position,
+            debugReason: "ShadowServant.Attack");
     }
 
     private LayerMask GetDamageMask()

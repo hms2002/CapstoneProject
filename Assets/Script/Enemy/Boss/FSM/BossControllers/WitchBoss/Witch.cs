@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using CapstoneAudio;
 using UnityEngine;
 using UnityGAS;
 
@@ -42,9 +43,15 @@ public class Witch : BossControllerBase
     [SerializeField] private DeadsSkeleton retreatSkeletonPrefab;
     [Header("Extinguish Presentation")]
     [SerializeField] private GameObject extinguishExplosionVisualPrefab;
+    [SerializeField] private GameObject extinguishExplosionParticlePrefab;
     [SerializeField] private Transform extinguishExplosionVisualSocket;
     [SerializeField] private Vector3 extinguishExplosionVisualOffset;
     [SerializeField] private Vector3 extinguishExplosionVisualScale = Vector3.one;
+    [SerializeField] private Vector3 extinguishExplosionParticleOffset;
+    [SerializeField] private Vector3 extinguishExplosionParticleScale = Vector3.one;
+    [SerializeField] private SoundRef extinguishExplosionSound;
+    [SerializeField] private CameraShakeHook extinguishExplosionCameraShake = CameraShakeHook.Create(0.18f, 1f, 0.28f, 0.04f);
+    [SerializeField] private Vector3 extinguishFogScaleMultiplier = Vector3.one;
 
     private BossDialogueRunner dialogueRunner;
     private Coroutine dialogueRoutine;
@@ -312,7 +319,7 @@ public class Witch : BossControllerBase
             Vector3 extinguishCenter = extinguishCenters[i];
             TryHitPlayer(extinguishCenter);
             SpawnFog(extinguishCenter);
-            PlayExtinguishExplosionVisual(extinguishCenter);
+            PlayExtinguishExplosionPresentation(extinguishCenter);
         }
 
         for (int i = 0; i < extinguishCandles.Count; i++)
@@ -827,27 +834,57 @@ public class Witch : BossControllerBase
     {
         if (fogPrefab == null) return false;
 
-        Instantiate(fogPrefab, GetFogSpawnPos(center), Quaternion.identity);
+        GameObject fogInstance = Instantiate(fogPrefab, GetFogSpawnPos(center), Quaternion.identity);
+        if (fogInstance == null)
+            return false;
+
+        fogInstance.transform.localScale = Vector3.Scale(fogInstance.transform.localScale, extinguishFogScaleMultiplier);
         return true;
     }
 
-    /// <summary>촛불 끄기 패턴의 폭발 연출 프리팹을 지정 위치에 생성합니다.</summary>
-    private bool PlayExtinguishExplosionVisual(Vector3 center)
+    /// <summary>촛불 끄기 패턴의 폭발 비주얼/파티클/사운드/카메라 셰이크를 함께 재생합니다.</summary>
+    private bool PlayExtinguishExplosionPresentation(Vector3 center)
     {
-        if (extinguishExplosionVisualPrefab == null)
-            return false;
-
         Transform parent = extinguishExplosionVisualSocket;
-        GameObject instance = Instantiate(
+        bool hasSpawnedVisual = SpawnExtinguishPresentationPrefab(
             extinguishExplosionVisualPrefab,
             center + extinguishExplosionVisualOffset,
-            Quaternion.identity,
+            extinguishExplosionVisualScale,
+            parent);
+        bool hasSpawnedParticle = SpawnExtinguishPresentationPrefab(
+            extinguishExplosionParticlePrefab,
+            center + extinguishExplosionParticleOffset,
+            extinguishExplosionParticleScale,
             parent);
 
+        SoundPlaybackUtility.Play(
+            extinguishExplosionSound,
+            instigator: gameObject,
+            causer: gameObject,
+            target: Target != null ? Target.gameObject : null,
+            position: center,
+            sourceObject: this);
+
+        Vector3 shakeDirection = Target != null ? Target.position - center : Vector3.up;
+        extinguishExplosionCameraShake.TryPlay(gameObject, shakeDirection, debugReason: "Witch.ExtinguishExplosion");
+        return hasSpawnedVisual || hasSpawnedParticle;
+    }
+
+    /// <summary>촛불 끄기 패턴용 연출 프리팹을 생성하고 배율 보정을 적용합니다.</summary>
+    private static bool SpawnExtinguishPresentationPrefab(
+        GameObject prefab,
+        Vector3 position,
+        Vector3 scaleMultiplier,
+        Transform parent)
+    {
+        if (prefab == null)
+            return false;
+
+        GameObject instance = Instantiate(prefab, position, Quaternion.identity, parent);
         if (instance == null)
             return false;
 
-        instance.transform.localScale = Vector3.Scale(instance.transform.localScale, extinguishExplosionVisualScale);
+        instance.transform.localScale = Vector3.Scale(instance.transform.localScale, scaleMultiplier);
         return true;
     }
 
@@ -866,7 +903,7 @@ public class Witch : BossControllerBase
         CircleCollider2D fogCollider = fogPrefab.GetComponent<CircleCollider2D>();
         if (fogCollider == null) return 0f;
 
-        Vector3 scale = fogPrefab.transform.localScale;
+        Vector3 scale = Vector3.Scale(fogPrefab.transform.localScale, extinguishFogScaleMultiplier);
         float xRadius = fogCollider.radius * Mathf.Abs(scale.x);
         float yRadius = fogCollider.radius * Mathf.Abs(scale.y);
         return Mathf.Max(xRadius, yRadius);
@@ -886,7 +923,7 @@ public class Witch : BossControllerBase
         CircleCollider2D fogCollider = fogPrefab.GetComponent<CircleCollider2D>();
         if (fogCollider == null) return Vector2.zero;
 
-        Vector3 scale = fogPrefab.transform.localScale;
+        Vector3 scale = Vector3.Scale(fogPrefab.transform.localScale, extinguishFogScaleMultiplier);
         return new Vector2(
             fogCollider.offset.x * scale.x,
             fogCollider.offset.y * scale.y);

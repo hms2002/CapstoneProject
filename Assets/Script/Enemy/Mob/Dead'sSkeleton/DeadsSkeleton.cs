@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using CapstoneAudio;
 using DG.Tweening;
 using UnityEngine;
 using UnityGAS;
@@ -37,11 +38,29 @@ public class DeadsSkeleton : Mob, IDamageReceiver
     [Tooltip("자폭 시 한 번 재생할 폭발 비주얼 프리팹입니다.")]
     [SerializeField] private GameObject explosionVisualPrefab;
 
+    [Tooltip("자폭 시 추가로 재생할 폭발 파티클 프리팹입니다.")]
+    [SerializeField] private GameObject explosionParticlePrefab;
+
     [Tooltip("폭발 비주얼을 생성할 기준점입니다. 비어 있으면 자기 자신 위치를 사용합니다.")]
     [SerializeField] private Transform explosionVisualAnchor;
 
     [Tooltip("폭발 비주얼에 적용할 추가 월드 오프셋입니다.")]
     [SerializeField] private Vector3 explosionVisualOffset = Vector3.zero;
+
+    [Tooltip("폭발 파티클에 적용할 추가 월드 오프셋입니다.")]
+    [SerializeField] private Vector3 explosionParticleOffset = Vector3.zero;
+
+    [Tooltip("폭발 비주얼 배율 보정값입니다.")]
+    [SerializeField] private Vector3 explosionVisualScale = Vector3.one;
+
+    [Tooltip("폭발 파티클 배율 보정값입니다.")]
+    [SerializeField] private Vector3 explosionParticleScale = Vector3.one;
+
+    [Tooltip("자폭 시 재생할 사운드입니다.")]
+    [SerializeField] private SoundRef explosionSound;
+
+    [Tooltip("자폭 시 재생할 카메라 셰이크입니다.")]
+    [SerializeField] private CameraShakeHook explosionCameraShake = CameraShakeHook.Create(0.18f, 1f, 0.28f, 0.04f);
 
     private readonly HashSet<GameObject> damagedTargets = new();
 
@@ -456,7 +475,7 @@ public class DeadsSkeleton : Mob, IDamageReceiver
         if (payload != null)
             DamageTargets(payload, hitTarget);
 
-        PlayExplosionVisual();
+        PlayExplosionPresentation();
         Die();
     }
 
@@ -604,19 +623,57 @@ public class DeadsSkeleton : Mob, IDamageReceiver
 
     /// <summary>
     /// 책임 :
-    /// - 자폭이 실제로 발생한 순간에만 원샷 폭발 비주얼 프리팹을 생성한다.
-    /// - 폭발 중심 연출을 본체 사망 처리와 분리해 프리팹 교체/튜닝을 쉽게 유지한다.
+    /// - 자폭 발생 순간에 비주얼/파티클/사운드/카메라 셰이크를 함께 재생한다.
+    /// - 각 연출 자산을 직렬화 설정으로 분리해 프리팹 교체와 튜닝을 쉽게 유지한다.
     /// </summary>
-    private void PlayExplosionVisual()
+    private void PlayExplosionPresentation()
     {
-        if (explosionVisualPrefab == null)
+        Transform anchor = explosionVisualAnchor != null ? explosionVisualAnchor : transform;
+        Vector3 origin = anchor.position;
+        Vector3 direction = target != null ? target.position - origin : Vector3.up;
+
+        SpawnExplosionPresentationPrefab(
+            explosionVisualPrefab,
+            anchor,
+            explosionVisualOffset,
+            explosionVisualScale);
+        SpawnExplosionPresentationPrefab(
+            explosionParticlePrefab,
+            anchor,
+            explosionParticleOffset,
+            explosionParticleScale);
+
+        SoundPlaybackUtility.Play(
+            explosionSound,
+            instigator: gameObject,
+            causer: gameObject,
+            target: target != null ? target.gameObject : null,
+            position: origin,
+            sourceObject: this);
+
+        explosionCameraShake.TryPlay(gameObject, direction, debugReason: "DeadsSkeleton.Explode");
+    }
+
+    /// <summary>자폭 연출 프리팹을 기준점 기준으로 생성하고 배율 보정을 적용합니다.</summary>
+    private void SpawnExplosionPresentationPrefab(
+        GameObject prefab,
+        Transform anchor,
+        Vector3 localOffset,
+        Vector3 scaleMultiplier)
+    {
+        if (prefab == null || anchor == null)
             return;
 
-        Transform anchor = explosionVisualAnchor != null ? explosionVisualAnchor : transform;
-        Vector3 spawnPosition = anchor.position + explosionVisualOffset;
-        Quaternion spawnRotation = anchor.rotation;
+        GameObject instance = Instantiate(
+            prefab,
+            anchor.position + localOffset,
+            anchor.rotation,
+            anchor);
 
-        Instantiate(explosionVisualPrefab, spawnPosition, spawnRotation);
+        if (instance == null)
+            return;
+
+        instance.transform.localScale = Vector3.Scale(instance.transform.localScale, scaleMultiplier);
     }
 
     /// <summary>패턴용 강화 수치를 적용합니다.</summary>
