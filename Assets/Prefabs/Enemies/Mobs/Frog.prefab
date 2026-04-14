@@ -32,6 +32,7 @@ GameObject:
   - component: {fileID: 3949865959590047275}
   - component: {fileID: 344486096308046059}
   - component: {fileID: 1033480238846917190}
+  - component: {fileID: 5523319380639165943}
   m_Layer: 31
   m_Name: Frog
   m_TagString: Enemy
@@ -56,6 +57,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &1695031726951874086
 SpriteRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -74,6 +76,8 @@ SpriteRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -95,9 +99,11 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -1039746825
-  m_SortingLayer: 2
+  m_SortingLayer: 3
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_Sprite: {fileID: 1559784003, guid: 04c50facf069bad43845261d3131b7df, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -107,7 +113,6 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
   m_SpriteSortPoint: 1
 --- !u!50 &1119615970379559667
 Rigidbody2D:
@@ -220,7 +225,6 @@ MonoBehaviour:
   healthDef: {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
   enemyName: Frog
   targetTag: Player
-  dieAnimTime: 0
   chaseIntent: {fileID: 0}
 --- !u!114 &7001000000000000002
 MonoBehaviour:
@@ -258,6 +262,7 @@ MonoBehaviour:
   attributeSet: {fileID: 1535278931212011680}
   effectRunner: {fileID: 5052094422871209493}
   tagSystem: {fileID: 2310470610362802669}
+  enableExclusiveActivationBuffer: 0
   globalCancelCastingOnTags: []
   globalCancelExecutionOnTags: []
   damageProfile: {fileID: 11400000, guid: ddd8b96de81528845828895d9bb33042, type: 2}
@@ -349,6 +354,12 @@ MonoBehaviour:
   resistancePercentAttribute: {fileID: 0}
   staggeredEffect: {fileID: 0}
   allowOverflow: 1
+  allowPresentationOffset: 0
+  presentationWorldOffset: {x: 0, y: 1.6, z: 0}
+  presentationAnchor: {fileID: 0}
+  presentationBoundsSource: {fileID: 0}
+  groggyTimerPrefab: {fileID: 0}
+  groggyTimerParent: {fileID: 0}
 --- !u!114 &5379449037062217096
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -413,6 +424,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   body: {fileID: 0}
+  enforceContinuousCollision: 1
   intentSourceBehaviour: {fileID: 0}
   statProviderBehaviour: {fileID: 0}
   externalMovement: {fileID: 3341026293018187748}
@@ -467,6 +479,7 @@ MonoBehaviour:
   detectionRange: 6
   stopRange: 0.2
   speedScale: 1
+  returnSpeedScale: 0.9
 --- !u!114 &1202927576409601092
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -546,3 +559,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   telegraphPrefab: {fileID: 788264263987448140, guid: 211dd09e2da9caf47ad8409c9e35b83d, type: 3}
   defaultStyle: {fileID: 0}
+--- !u!114 &5523319380639165943
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 625522859161183429}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cbc9a19645b6c8f458d6e368d5e1dabc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UnityGAS.CombatHurtbox2D
+  targetRoot: {fileID: 0}

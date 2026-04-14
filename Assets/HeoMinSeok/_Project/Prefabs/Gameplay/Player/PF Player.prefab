@@ -555,6 +555,7 @@ GameObject:
   - component: {fileID: 7764125724508558370}
   - component: {fileID: 6601192358712345678}
   - component: {fileID: 8470790143729662828}
+  - component: {fileID: 829412313411764659}
   m_Layer: 3
   m_Name: PF Player
   m_TagString: Player
@@ -1604,3 +1605,16 @@ MonoBehaviour:
     cueOnExecute: {fileID: 0}
     cueWhileActive: {fileID: 0}
     cueOnRemove: {fileID: 0}
+--- !u!114 &829412313411764659
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8883617028798182002}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cbc9a19645b6c8f458d6e368d5e1dabc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UnityGAS.CombatHurtbox2D
+  targetRoot: {fileID: 8883617028798182002}

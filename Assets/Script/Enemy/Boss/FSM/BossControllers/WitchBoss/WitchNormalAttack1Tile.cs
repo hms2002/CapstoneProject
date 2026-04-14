@@ -126,11 +126,10 @@ public class WitchNormalAttack1Tile : MonoBehaviour
     /// <summary>충돌한 대상의 본체를 찾습니다.</summary>
     private GameObject GetHitObject(Collider2D hitCollider)
     {
-        if (hitCollider == null) return null;
+        if (hitCollider == null)
+            return null;
 
-        if (hitCollider.attachedRigidbody != null) return hitCollider.attachedRigidbody.gameObject;
-
-        return hitCollider.transform.root.gameObject;
+        return CombatTargetResolver2D.ResolveDamageTarget(hitCollider);
     }
 
     /// <summary>공격체/무기 히트박스 콜라이더는 장판 피해 후보에서 제외합니다.</summary>

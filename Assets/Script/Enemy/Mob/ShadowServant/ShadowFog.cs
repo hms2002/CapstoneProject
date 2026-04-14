@@ -76,9 +76,7 @@ public class ShadowFog : MonoBehaviour
         if (phase != FogPhase.Idle || other == null)
             return;
 
-        GameObject targetObject = other.attachedRigidbody != null
-            ? other.attachedRigidbody.gameObject
-            : other.gameObject;
+        GameObject targetObject = UnityGAS.CombatTargetResolver2D.ResolveDamageTarget(other);
         if (targetObject == null || !targetObject.CompareTag(PlayerTag))
             return;
 
