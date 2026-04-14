@@ -18,7 +18,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: e0f06f473830cbd4d9198ca9e36dc565, type: 2}
   - {fileID: 11400000, guid: 86f606da826554b40b2d47660998aa30, type: 2}
   defaultUnlockedWeapons:
-  - {fileID: 11400000, guid: 6a8181eecc5ab3a4988f9089d46607b0, type: 2}
   - {fileID: 11400000, guid: 86f606da826554b40b2d47660998aa30, type: 2}
   allRelics:
   - {fileID: 11400000, guid: 1f2641bce49c9884eaec41adfdfa29f3, type: 2}

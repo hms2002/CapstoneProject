@@ -4,25 +4,61 @@ using UnityEngine;
 [RequireComponent(typeof(Collider2D), typeof(Animator))]
 public class ShadowFog : MonoBehaviour
 {
-    // 이 클래스의 책임:
-    // 안개 영역에 닿은 플레이어에게 시야 제한만 적용하고, 일정 시간이 지나면 스스로 사라진다.
+    private enum FogPhase
+    {
+        Starting,
+        Idle,
+        Ending
+    }
 
-    private const float FogTime = 3f;
     private const string PlayerTag = "Player";
+    private const int BaseLayerIndex = 0;
 
-    private float dieTime;
+    [Header("Timing")]
+    [SerializeField] [Min(0f)] private float idleDuration = 3f;
+    [SerializeField] [Min(0.01f)] private float fogDebuffDuration = 3f;
+    [SerializeField] [Min(0.01f)] private float endFallbackDestroyDelay = 0.35f;
+
+    [Header("Animator")]
+    [SerializeField] private string startStateName = "FogStartAnim";
+    [SerializeField] private string idleStateName = "FogIdleAnim";
+    [SerializeField] private string endStateName = "FogEndAnim";
+    [SerializeField] private string endTriggerName = "FogEndAnim";
+
+    private Animator animator;
+    private Collider2D triggerZone;
+    private FogPhase phase = FogPhase.Starting;
+    private float idleEndTime;
+    private float endFallbackDestroyTime = -1f;
+    private bool hasEndTrigger;
 
     private void Awake()
     {
-        SetupTrigger();
-        dieTime = Time.time + FogTime;
+        animator = GetComponent<Animator>();
+        triggerZone = GetComponent<Collider2D>();
+        if (triggerZone != null)
+            triggerZone.isTrigger = true;
+
+        hasEndTrigger = HasAnimatorTrigger(endTriggerName);
     }
 
     private void Update()
     {
-        if (Time.time < dieTime) return;
+        switch (phase)
+        {
+            case FogPhase.Starting:
+                TryEnterIdlePhase();
+                break;
 
-        Destroy(gameObject);
+            case FogPhase.Idle:
+                if (Time.time >= idleEndTime)
+                    BeginEndPhase();
+                break;
+
+            case FogPhase.Ending:
+                TryFinishEndPhase();
+                break;
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -35,40 +71,107 @@ public class ShadowFog : MonoBehaviour
         HandleTouch(other);
     }
 
-    /// <summary>안개 충돌을 트리거로 맞춥니다.</summary>
-    private void SetupTrigger()
-    {
-        Collider2D triggerZone = GetComponent<Collider2D>();
-        triggerZone.isTrigger = true;
-    }
-
-    /// <summary>닿은 대상에 안개 효과를 적용합니다.</summary>
     private void HandleTouch(Collider2D other)
     {
-        if (other == null) return;
+        if (phase != FogPhase.Idle || other == null)
+            return;
 
-        GameObject targetObject = GetTarget(other);
-        if (targetObject == null) return;
+        GameObject targetObject = other.attachedRigidbody != null
+            ? other.attachedRigidbody.gameObject
+            : other.gameObject;
+        if (targetObject == null || !targetObject.CompareTag(PlayerTag))
+            return;
 
-        if (targetObject.CompareTag(PlayerTag))
-            ApplyFog(targetObject);
-    }
-
-    /// <summary>플레이어 시야 제한 시간을 갱신합니다.</summary>
-    private void ApplyFog(GameObject playerObject)
-    {
-        FogSightLock sightLock = playerObject.GetComponent<FogSightLock>();
+        FogSightLock sightLock = targetObject.GetComponent<FogSightLock>();
         if (sightLock == null)
-            sightLock = playerObject.AddComponent<FogSightLock>();
+            sightLock = targetObject.AddComponent<FogSightLock>();
 
-        sightLock.ApplyFog(FogTime);
+        sightLock.ApplyFog(fogDebuffDuration);
     }
 
-    /// <summary>충돌한 루트 오브젝트를 구합니다.</summary>
-    private GameObject GetTarget(Collider2D other)
+    private void TryEnterIdlePhase()
     {
-        if (other.attachedRigidbody != null) return other.attachedRigidbody.gameObject;
+        if (animator == null)
+        {
+            EnterIdlePhase();
+            return;
+        }
 
-        return other.gameObject;
+        if (IsAnimatorInState(idleStateName) || (!IsAnimatorInState(startStateName) && !animator.IsInTransition(BaseLayerIndex)))
+            EnterIdlePhase();
+    }
+
+    private void EnterIdlePhase()
+    {
+        phase = FogPhase.Idle;
+        idleEndTime = Time.time + idleDuration;
+    }
+
+    private void BeginEndPhase()
+    {
+        phase = FogPhase.Ending;
+
+        if (triggerZone != null)
+            triggerZone.enabled = false;
+
+        if (animator != null)
+        {
+            if (hasEndTrigger)
+                animator.SetTrigger(endTriggerName);
+            else if (!string.IsNullOrWhiteSpace(endStateName))
+                animator.Play(endStateName, BaseLayerIndex, 0f);
+        }
+
+        endFallbackDestroyTime = Time.time + endFallbackDestroyDelay;
+    }
+
+    private void TryFinishEndPhase()
+    {
+        if (animator == null || string.IsNullOrWhiteSpace(endStateName))
+        {
+            if (Time.time >= endFallbackDestroyTime)
+                Destroy(gameObject);
+            return;
+        }
+
+        AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(BaseLayerIndex);
+        if (stateInfo.IsName(endStateName) &&
+            !animator.IsInTransition(BaseLayerIndex) &&
+            stateInfo.normalizedTime >= 1f)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        if (Time.time >= endFallbackDestroyTime && !stateInfo.IsName(endStateName))
+            Destroy(gameObject);
+    }
+
+    private bool HasAnimatorTrigger(string triggerName)
+    {
+        if (animator == null || string.IsNullOrWhiteSpace(triggerName))
+            return false;
+
+        AnimatorControllerParameter[] parameters = animator.parameters;
+        for (int i = 0; i < parameters.Length; i++)
+        {
+            AnimatorControllerParameter parameter = parameters[i];
+            if (parameter.type == AnimatorControllerParameterType.Trigger &&
+                parameter.name == triggerName)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private bool IsAnimatorInState(string stateName)
+    {
+        if (animator == null || string.IsNullOrWhiteSpace(stateName))
+            return false;
+
+        AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(BaseLayerIndex);
+        return stateInfo.IsName(stateName) && !animator.IsInTransition(BaseLayerIndex);
     }
 }
