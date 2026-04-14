@@ -22,7 +22,6 @@ public class Witch : BossControllerBase
     private const float Normal1HitTime = 0.12f;
     private const float RetreatExplosionDiameter = 6f;
     private const float RetreatSpeedScale = 1f;
-    private const float ExtinguishAttackRadiusMultiplier = 6f;
 
     [Header("Pattern")]
     [Tooltip("촛대를 끄는 패턴에 사용할 Fog 프리팹입니다.")]
@@ -51,7 +50,8 @@ public class Witch : BossControllerBase
     [SerializeField] private Vector3 extinguishExplosionParticleScale = Vector3.one;
     [SerializeField] private SoundRef extinguishExplosionSound;
     [SerializeField] private CameraShakeHook extinguishExplosionCameraShake = CameraShakeHook.Create(0.18f, 1f, 0.28f, 0.04f);
-    [SerializeField] private Vector3 extinguishFogScaleMultiplier = Vector3.one;
+    [SerializeField] private Vector3 extinguishFogSpawnScaleMultiplier = Vector3.one;
+    [SerializeField] private float extinguishAttackRadiusMultiplier = 6f;
 
     private BossDialogueRunner dialogueRunner;
     private Coroutine dialogueRoutine;
@@ -838,7 +838,7 @@ public class Witch : BossControllerBase
         if (fogInstance == null)
             return false;
 
-        fogInstance.transform.localScale = Vector3.Scale(fogInstance.transform.localScale, extinguishFogScaleMultiplier);
+        fogInstance.transform.localScale = Vector3.Scale(fogInstance.transform.localScale, extinguishFogSpawnScaleMultiplier);
         return true;
     }
 
@@ -903,7 +903,7 @@ public class Witch : BossControllerBase
         CircleCollider2D fogCollider = fogPrefab.GetComponent<CircleCollider2D>();
         if (fogCollider == null) return 0f;
 
-        Vector3 scale = Vector3.Scale(fogPrefab.transform.localScale, extinguishFogScaleMultiplier);
+        Vector3 scale = fogPrefab.transform.localScale;
         float xRadius = fogCollider.radius * Mathf.Abs(scale.x);
         float yRadius = fogCollider.radius * Mathf.Abs(scale.y);
         return Mathf.Max(xRadius, yRadius);
@@ -912,7 +912,7 @@ public class Witch : BossControllerBase
     /// <summary>촛불 끄기 패턴의 실제 공격 반경을 반환합니다.</summary>
     private float GetExtinguishAttackRadius()
     {
-        return GetFogRadius() * ExtinguishAttackRadiusMultiplier;
+        return GetFogRadius() * Mathf.Max(0f, extinguishAttackRadiusMultiplier);
     }
 
     /// <summary>Fog 오프셋을 구합니다.</summary>
@@ -923,7 +923,7 @@ public class Witch : BossControllerBase
         CircleCollider2D fogCollider = fogPrefab.GetComponent<CircleCollider2D>();
         if (fogCollider == null) return Vector2.zero;
 
-        Vector3 scale = Vector3.Scale(fogPrefab.transform.localScale, extinguishFogScaleMultiplier);
+        Vector3 scale = Vector3.Scale(fogPrefab.transform.localScale, extinguishFogSpawnScaleMultiplier);
         return new Vector2(
             fogCollider.offset.x * scale.x,
             fogCollider.offset.y * scale.y);
