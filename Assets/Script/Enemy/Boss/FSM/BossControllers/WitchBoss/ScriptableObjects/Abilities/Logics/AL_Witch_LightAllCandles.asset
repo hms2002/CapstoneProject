@@ -48,11 +48,11 @@ MonoBehaviour:
   failureEffectLifetimeSeconds: 0.35
   failureEffectScaleMultiplier: {x: 1, y: 1, z: 1}
   failureEffectRotationOffsetZ: 0
-  failureParticlePrefab: {fileID: 4255554260198325544, guid: 537be2dc596b9474e881fad5fbce523e, type: 3}
+  failureParticlePrefab: {fileID: 4402221444671133582, guid: bb13154b262064e419b705d221ebd3cb, type: 3}
   failureParticleLocalOffset: {x: 0, y: 0, z: 0}
   failureParticleLifetimeOverrideSeconds: 1
   useUnscaledFailureParticleTime: 1
-  failureParticleScaleMultiplier: {x: 1.6, y: 1.6, z: 1}
+  failureParticleScaleMultiplier: {x: 1, y: 1, z: 1}
   failureParticleRotationOffsetZ: 0
   failureCameraShake:
     amplitude: 6

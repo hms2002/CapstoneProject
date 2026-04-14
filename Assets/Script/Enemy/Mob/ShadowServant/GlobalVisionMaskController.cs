@@ -22,10 +22,13 @@ public class GlobalVisionMaskController : MonoBehaviour
     [SerializeField, Min(0f)] private float enterFogFadeDuration = 0.3f;
     [SerializeField, Min(0f)] private float exitFogFadeDuration = 0.2f;
     [SerializeField] private bool useUnscaledOverlayFadeTime = true;
+    [SerializeField] private int fogOverlaySortingOrderBoost = 1;
 
     private readonly HashSet<int> activeRequesterIds = new();
     private PlayerVisionMaskFollower spawnedVisionMaskFollower;
     private Tween overlayAlphaTween;
+    private bool hasCapturedBaseSortingOrder;
+    private int baseOverlaySortingOrder;
 
     public static GlobalVisionMaskController Instance => instance;
 
@@ -108,6 +111,8 @@ public class GlobalVisionMaskController : MonoBehaviour
         if (darkOverlayRenderer == null)
             return;
 
+        ApplyOverlaySortingOrder(isActive);
+
         float targetAlpha = isActive ? fogOverlayAlpha : defaultOverlayAlpha;
         float fadeDuration = isActive ? enterFogFadeDuration : exitFogFadeDuration;
         ApplyOverlayAlpha(targetAlpha, instant, fadeDuration);
@@ -116,12 +121,39 @@ public class GlobalVisionMaskController : MonoBehaviour
     private void EnsureOverlayRenderer()
     {
         if (darkOverlayRenderer != null)
+        {
+            CacheBaseOverlaySortingOrder();
             return;
+        }
 
         if (darkMaskRoot == null)
             return;
 
         darkOverlayRenderer = darkMaskRoot.GetComponentInChildren<SpriteRenderer>(true);
+        CacheBaseOverlaySortingOrder();
+    }
+
+    private void CacheBaseOverlaySortingOrder()
+    {
+        if (darkOverlayRenderer == null || hasCapturedBaseSortingOrder)
+            return;
+
+        baseOverlaySortingOrder = darkOverlayRenderer.sortingOrder;
+        hasCapturedBaseSortingOrder = true;
+    }
+
+    private void ApplyOverlaySortingOrder(bool isActive)
+    {
+        if (darkOverlayRenderer == null)
+            return;
+
+        CacheBaseOverlaySortingOrder();
+        if (!hasCapturedBaseSortingOrder)
+            return;
+
+        darkOverlayRenderer.sortingOrder = isActive
+            ? baseOverlaySortingOrder + fogOverlaySortingOrderBoost
+            : baseOverlaySortingOrder;
     }
 
     private void ApplyOverlayAlpha(float targetAlpha, bool instant, float duration)
