@@ -71,7 +71,8 @@ public class GameDataManager : MonoBehaviour
 
         repository ??= new GameDataRepository();
         repository.Save(Data);
-        Debug.Log($"[GameDataManager] Save complete: {repository.SavePath}");
+        Debug.Log(
+            $"[GameDataManager] Save complete. Persistent: {repository.SavePath}, Inspectable: {repository.InspectableSavePath}");
     }
 
     private void OnApplicationQuit()
