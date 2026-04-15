@@ -1,4 +1,5 @@
 using CapstoneAudio;
+using CapstonePresentation;
 using UnityEngine;
 
 namespace UnityGAS
@@ -48,6 +49,11 @@ namespace UnityGAS
         public CameraShakeHook cameraShakeOnExecute;
         public CameraShakeHook cameraShakeWhileActive;
         public CameraShakeHook cameraShakeOnRemove;
+
+        [Header("Spawned Presentation (Optional)")]
+        public WorldPresentationHook presentationOnExecute;
+        public WorldPresentationHook presentationWhileActive;
+        public WorldPresentationHook presentationOnRemove;
 
         [Header("Spawn Options")]
         public bool attachToTarget = true;

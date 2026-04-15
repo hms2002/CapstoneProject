@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using CapstoneAudio;
+using CapstonePresentation;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityGAS;
 
 public class AbilityLogic_WitchSealedCandleRampage : AbilityLogic
@@ -21,7 +23,9 @@ public class AbilityLogic_WitchSealedCandleRampage : AbilityLogic
     [Header("Telegraph")]
     [SerializeField] private float telegraphRadius = 0f;
     [SerializeField] private AttackTelegraphStyle telegraphStyle;
-    [SerializeField] private SoundRef candleAttackSound;
+    [SerializeField] private WorldPresentationHook candleAttackPresentation;
+    [HideInInspector, FormerlySerializedAs("candleAttackSound")]
+    [SerializeField] private SoundRef legacyCandleAttackSound;
 
     private struct CandleBurstShotPlan
     {
@@ -30,8 +34,15 @@ public class AbilityLogic_WitchSealedCandleRampage : AbilityLogic
         public Vector2 direction;
     }
 
+    private void OnValidate()
+    {
+        MigrateLegacyAttackPresentation();
+    }
+
     public override IEnumerator Activate(AbilitySystem system, AbilitySpec spec, GameObject initialTarget)
     {
+        MigrateLegacyAttackPresentation();
+
         Witch witch = system != null ? system.GetComponent<Witch>() : null;
         if (witch == null || !witch.HasProjectilePatternConfig)
             yield break;
@@ -66,12 +77,16 @@ public class AbilityLogic_WitchSealedCandleRampage : AbilityLogic
                 if (plan.candle == null)
                     continue;
 
-                SoundPlaybackUtility.Play(
-                    candleAttackSound,
-                    instigator: witch.gameObject,
-                    causer: plan.candle.gameObject,
-                    position: plan.origin,
-                    sourceObject: this);
+                WorldPresentationRuntime.Play(
+                    candleAttackPresentation,
+                    WorldPresentationContext.AtWorld(
+                        instigator: witch.gameObject,
+                        position: plan.origin,
+                        fallbackDirection: plan.direction,
+                        target: targetObject,
+                        sourceObject: this,
+                        rotation: Quaternion.LookRotation(Vector3.forward, plan.direction),
+                        causer: plan.candle.gameObject));
                 WitchProjectileAttackHelper.SpawnLightBeadBurst(
                     system,
                     witch.gameObject,
@@ -175,5 +190,11 @@ public class AbilityLogic_WitchSealedCandleRampage : AbilityLogic
         }
 
         warningViews.Clear();
+    }
+
+    private void MigrateLegacyAttackPresentation()
+    {
+        if (!candleAttackPresentation.HasSound && legacyCandleAttackSound.IsSet)
+            candleAttackPresentation.sound = legacyCandleAttackSound;
     }
 }

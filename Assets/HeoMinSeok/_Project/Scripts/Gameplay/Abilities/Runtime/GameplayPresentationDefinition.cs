@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using CapstoneAudio;
+using CapstonePresentation;
 using UnityEngine;
 
 namespace UnityGAS
@@ -17,6 +18,11 @@ namespace UnityGAS
         public CameraShakeHook cameraShakeOnExecute;
         public CameraShakeHook cameraShakeWhileActive;
         public CameraShakeHook cameraShakeOnRemove;
+
+        [Header("Spawned Presentation (Optional)")]
+        public WorldPresentationHook presentationOnExecute;
+        public WorldPresentationHook presentationWhileActive;
+        public WorldPresentationHook presentationOnRemove;
 
         [Header("GameplayCue (Optional)")]
         public List<GameplayTag> cuesOnExecute;
@@ -39,6 +45,9 @@ namespace UnityGAS
             cameraShakeOnExecute.amplitude > 0f ||
             cameraShakeWhileActive.amplitude > 0f ||
             cameraShakeOnRemove.amplitude > 0f ||
+            presentationOnExecute.HasAnyContent ||
+            presentationWhileActive.HasAnyContent ||
+            presentationOnRemove.HasAnyContent ||
             cueOnExecute != null ||
             cueWhileActive != null ||
             cueOnRemove != null ||

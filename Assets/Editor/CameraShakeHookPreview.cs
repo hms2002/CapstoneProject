@@ -30,6 +30,11 @@ public static class CameraShakeHookPreview
         return SceneView.lastActiveSceneView != null;
     }
 
+    public static bool HasActivePreview()
+    {
+        return s_activePreview != null;
+    }
+
     public static bool Preview(float amplitude, Vector3 direction)
     {
         SceneView sceneView = SceneView.lastActiveSceneView;
@@ -104,7 +109,7 @@ public static class CameraShakeHookPreview
         SceneView.RepaintAll();
     }
 
-    private static void StopPreview()
+    public static void StopPreview()
     {
         EditorApplication.update -= UpdatePreview;
 

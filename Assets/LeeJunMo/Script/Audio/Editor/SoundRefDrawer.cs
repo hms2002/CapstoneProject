@@ -11,6 +11,7 @@ namespace CapstoneAudio.EditorTools
     {
         private const float ButtonWidth = 56f;
         private const float ToolWidth = 52f;
+        private const float BottomPadding = 6f;
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
@@ -25,17 +26,25 @@ namespace CapstoneAudio.EditorTools
 
             EditorGUI.BeginProperty(position, label, property);
 
-            Rect foldoutRect = new Rect(lineRect.x, lineRect.y, 14f, lineHeight);
-            Rect labelRect = new Rect(foldoutRect.xMax, lineRect.y, Mathf.Max(60f, lineRect.width - (ButtonWidth + ToolWidth + 6f)), lineHeight);
+            Rect headerRect = new Rect(
+                lineRect.x,
+                lineRect.y,
+                lineRect.width,
+                lineHeight);
             Rect pickRect = new Rect(lineRect.xMax - (ButtonWidth + ToolWidth + 4f), lineRect.y, ButtonWidth, lineHeight);
             Rect toolRect = new Rect(lineRect.xMax - ToolWidth, lineRect.y, ToolWidth, lineHeight);
-
-            property.isExpanded = EditorGUI.Foldout(foldoutRect, property.isExpanded, GUIContent.none, true);
 
             string headerText = string.IsNullOrWhiteSpace(keyProperty.stringValue)
                 ? label.text
                 : $"{label.text} ({keyProperty.stringValue})";
-            EditorGUI.LabelField(labelRect, headerText);
+            property.isExpanded = EditorGUI.Foldout(headerRect, property.isExpanded, headerText, true);
+
+            lineRect.y += lineHeight + spacing;
+            float buttonSpacing = 4f;
+            float totalButtonWidth = ButtonWidth + ToolWidth + buttonSpacing;
+            float buttonStartX = lineRect.xMax - totalButtonWidth;
+            pickRect = new Rect(buttonStartX, lineRect.y, ButtonWidth, lineHeight);
+            toolRect = new Rect(pickRect.xMax + buttonSpacing, lineRect.y, ToolWidth, lineHeight);
 
             if (GUI.Button(pickRect, "Pick"))
                 ShowKeyPicker(property.serializedObject, keyProperty.propertyPath, volumeMultiplierProperty.propertyPath);
@@ -76,7 +85,7 @@ namespace CapstoneAudio.EditorTools
         {
             float lineHeight = EditorGUIUtility.singleLineHeight;
             float spacing = EditorGUIUtility.standardVerticalSpacing;
-            float height = (lineHeight * 2f) + spacing;
+            float height = (lineHeight * 3f) + (spacing * 2f);
 
             if (property.isExpanded)
                 height += (lineHeight * 2f) + (spacing * 2f);
@@ -88,7 +97,7 @@ namespace CapstoneAudio.EditorTools
                 height += lineHeight + spacing;
             }
 
-            return height;
+            return height + BottomPadding;
         }
 
         private static void ShowKeyPicker(SerializedObject serializedObject, string keyPropertyPath, string volumeMultiplierPath)

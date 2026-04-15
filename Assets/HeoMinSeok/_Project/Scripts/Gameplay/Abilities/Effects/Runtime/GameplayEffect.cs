@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using CapstoneAudio;
+using CapstonePresentation;
 using UnityEngine;
 
 namespace UnityGAS
@@ -62,6 +63,11 @@ namespace UnityGAS
         public CameraShakeHook cameraShakeOnExecute;
         public CameraShakeHook cameraShakeWhileActive;
         public CameraShakeHook cameraShakeOnRemove;
+
+        [Header("Spawned Presentation (Optional)")]
+        public WorldPresentationHook presentationOnExecute;
+        public WorldPresentationHook presentationWhileActive;
+        public WorldPresentationHook presentationOnRemove;
 
         [Header("GameplayCue (Optional)")]
         [Tooltip("효과가 실행될 때 1회 실행되는 큐. Duration 효과는 Runner 정책에 따라 최초 적용/갱신 시 실행될 수 있다.")]

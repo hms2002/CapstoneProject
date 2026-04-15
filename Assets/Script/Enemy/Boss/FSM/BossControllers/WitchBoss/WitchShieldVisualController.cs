@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
 using CapstoneAudio;
+using CapstonePresentation;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 [DisallowMultipleComponent]
 public class WitchShieldVisualController : MonoBehaviour
@@ -17,8 +19,6 @@ public class WitchShieldVisualController : MonoBehaviour
             !string.IsNullOrWhiteSpace(triggerName) ||
             !string.IsNullOrWhiteSpace(stateName);
     }
-
-    private const float DefaultPresentationLifetimeSeconds = 1f;
 
     [Header("References")]
     [SerializeField] private WitchShieldController shieldController;
@@ -41,13 +41,21 @@ public class WitchShieldVisualController : MonoBehaviour
     [SerializeField] private ShieldAnimationSettings breakAnimation = new ShieldAnimationSettings();
 
     [Header("Shield Break Presentation")]
-    [SerializeField] private GameObject shieldBreakParticlePrefab;
-    [SerializeField] private Vector3 shieldBreakParticleLocalOffset = new Vector3(0f, 0.15f, -0.02f);
-    [SerializeField] [Min(0f)] private float shieldBreakParticleLifetimeOverrideSeconds;
-    [SerializeField] private bool useUnscaledShieldBreakParticleTime;
-    [SerializeField] private Vector3 shieldBreakParticleScaleMultiplier = Vector3.one;
-    [SerializeField] private float shieldBreakParticleRotationOffsetZ;
-    [SerializeField] private CameraShakeHook shieldBreakCameraShake = CameraShakeHook.Create(0.2f, 1f, 0.32f, 0.05f);
+    [SerializeField] private WorldPresentationHook shieldBreakPresentation;
+    [HideInInspector, FormerlySerializedAs("shieldBreakParticlePrefab")]
+    [SerializeField] private GameObject legacyShieldBreakParticlePrefab;
+    [HideInInspector, FormerlySerializedAs("shieldBreakParticleLocalOffset")]
+    [SerializeField] private Vector3 legacyShieldBreakParticleLocalOffset = new Vector3(0f, 0.15f, -0.02f);
+    [HideInInspector, FormerlySerializedAs("shieldBreakParticleLifetimeOverrideSeconds")]
+    [SerializeField] private float legacyShieldBreakParticleLifetimeOverrideSeconds;
+    [HideInInspector, FormerlySerializedAs("useUnscaledShieldBreakParticleTime")]
+    [SerializeField] private bool legacyUseUnscaledShieldBreakParticleTime;
+    [HideInInspector, FormerlySerializedAs("shieldBreakParticleScaleMultiplier")]
+    [SerializeField] private Vector3 legacyShieldBreakParticleScaleMultiplier = Vector3.one;
+    [HideInInspector, FormerlySerializedAs("shieldBreakParticleRotationOffsetZ")]
+    [SerializeField] private float legacyShieldBreakParticleRotationOffsetZ;
+    [HideInInspector, FormerlySerializedAs("shieldBreakCameraShake")]
+    [SerializeField] private CameraShakeHook legacyShieldBreakCameraShake = CameraShakeHook.Create(0.2f, 1f, 0.32f, 0.05f);
 
     private Coroutine breakRoutine;
     private bool isSubscribedToShieldController;
@@ -61,11 +69,17 @@ public class WitchShieldVisualController : MonoBehaviour
 
     private void Awake()
     {
+        MigrateLegacyShieldBreakPresentation();
         ResolveCoreReferences();
         CleanupLegacyOutlineVisual();
         ApplySorting();
         ApplyShieldVisualPose();
         HideImmediate();
+    }
+
+    private void OnValidate()
+    {
+        MigrateLegacyShieldBreakPresentation();
     }
 
     private void OnEnable()
@@ -201,17 +215,16 @@ public class WitchShieldVisualController : MonoBehaviour
             causer: gameObject,
             position: transform.position,
             sourceObject: this);
-        SpawnPresentationPrefab(
-            shieldBreakParticlePrefab,
-            shieldBreakParticleLocalOffset,
-            shieldBreakParticleRotationOffsetZ,
-            shieldBreakParticleScaleMultiplier,
-            shieldBreakParticleLifetimeOverrideSeconds,
-            useUnscaledShieldBreakParticleTime);
-        shieldBreakCameraShake.TryPlay(
-            source: gameObject,
-            fallbackDirection: Vector3.up,
-            debugReason: "WitchShield.Break");
+        Transform presentationAnchor = ResolveVisualTransform();
+        WorldPresentationRuntime.Play(
+            shieldBreakPresentation,
+            WorldPresentationContext.AtAnchor(
+                instigator: gameObject,
+                anchor: presentationAnchor != null ? presentationAnchor : transform,
+                fallbackDirection: Vector3.up,
+                target: null,
+                sourceObject: this,
+                causer: gameObject));
 
         breakRoutine = StartCoroutine(PlayBreakRoutine());
     }
@@ -404,163 +417,6 @@ public class WitchShieldVisualController : MonoBehaviour
             visualAnimator.Play(settings.stateName);
     }
 
-    private void SpawnPresentationPrefab(
-        GameObject prefab,
-        Vector3 localOffset,
-        float rotationOffsetZ,
-        Vector3 scaleMultiplier,
-        float lifetimeOverrideSeconds,
-        bool useUnscaledTime)
-    {
-        if (prefab == null)
-            return;
-
-        Transform anchor = ResolveVisualTransform();
-        if (anchor == null)
-            anchor = transform;
-
-        Vector3 position = anchor.TransformPoint(localOffset);
-        Quaternion rotation = anchor.rotation * Quaternion.Euler(0f, 0f, rotationOffsetZ);
-        GameObject instance = Instantiate(prefab, position, rotation);
-        if (instance == null)
-            return;
-
-        instance.transform.localScale = Vector3.Scale(instance.transform.localScale, scaleMultiplier);
-        ConfigureSpawnedPresentation(instance, useUnscaledTime);
-
-        float lifetime = ResolvePresentationLifetime(instance, lifetimeOverrideSeconds);
-        if (lifetime > 0f)
-            Destroy(instance, lifetime);
-    }
-
-    private static void ConfigureSpawnedPresentation(GameObject instance, bool useUnscaledTime)
-    {
-        if (instance == null)
-            return;
-
-        instance.SetActive(true);
-
-        ParticleSystem[] particleSystems = instance.GetComponentsInChildren<ParticleSystem>(includeInactive: true);
-        for (int i = 0; i < particleSystems.Length; i++)
-        {
-            ParticleSystem particleSystem = particleSystems[i];
-            if (particleSystem == null)
-                continue;
-
-            if (useUnscaledTime)
-            {
-                ParticleSystem.MainModule main = particleSystem.main;
-                main.useUnscaledTime = true;
-            }
-
-            particleSystem.Play(withChildren: true);
-        }
-
-        Animation[] animations = instance.GetComponentsInChildren<Animation>(includeInactive: true);
-        for (int i = 0; i < animations.Length; i++)
-        {
-            Animation animationComponent = animations[i];
-            if (animationComponent == null)
-                continue;
-
-            animationComponent.Play();
-        }
-    }
-
-    private static float ResolvePresentationLifetime(GameObject instance, float lifetimeOverrideSeconds)
-    {
-        if (lifetimeOverrideSeconds > 0f)
-            return lifetimeOverrideSeconds;
-
-        float particleLifetime = ResolveParticleLifetime(instance);
-        if (particleLifetime > 0f)
-            return particleLifetime;
-
-        float animationLifetime = ResolveAnimatorLifetime(instance);
-        if (animationLifetime > 0f)
-            return animationLifetime;
-
-        return DefaultPresentationLifetimeSeconds;
-    }
-
-    private static float ResolveParticleLifetime(GameObject instance)
-    {
-        ParticleSystem[] particleSystems = instance.GetComponentsInChildren<ParticleSystem>(includeInactive: true);
-        if (particleSystems == null || particleSystems.Length == 0)
-            return 0f;
-
-        float maxLifetime = 0f;
-        for (int i = 0; i < particleSystems.Length; i++)
-        {
-            ParticleSystem particleSystem = particleSystems[i];
-            if (particleSystem == null)
-                continue;
-
-            ParticleSystem.MainModule main = particleSystem.main;
-            if (main.loop)
-                return DefaultPresentationLifetimeSeconds;
-
-            float startDelay = ResolveCurveMax(main.startDelay);
-            float startLifetime = ResolveCurveMax(main.startLifetime);
-            maxLifetime = Mathf.Max(maxLifetime, startDelay + main.duration + startLifetime);
-        }
-
-        return maxLifetime > 0f ? maxLifetime + 0.25f : 0f;
-    }
-
-    private static float ResolveAnimatorLifetime(GameObject instance)
-    {
-        float maxLifetime = 0f;
-
-        Animator[] animators = instance.GetComponentsInChildren<Animator>(includeInactive: true);
-        for (int i = 0; i < animators.Length; i++)
-        {
-            Animator animator = animators[i];
-            if (animator == null || animator.runtimeAnimatorController == null)
-                continue;
-
-            AnimationClip[] clips = animator.runtimeAnimatorController.animationClips;
-            for (int clipIndex = 0; clipIndex < clips.Length; clipIndex++)
-            {
-                AnimationClip clip = clips[clipIndex];
-                if (clip == null)
-                    continue;
-
-                maxLifetime = Mathf.Max(maxLifetime, clip.length);
-            }
-        }
-
-        Animation[] animations = instance.GetComponentsInChildren<Animation>(includeInactive: true);
-        for (int i = 0; i < animations.Length; i++)
-        {
-            Animation animationComponent = animations[i];
-            if (animationComponent == null)
-                continue;
-
-            foreach (AnimationState state in animationComponent)
-            {
-                if (state?.clip == null)
-                    continue;
-
-                maxLifetime = Mathf.Max(maxLifetime, state.clip.length);
-            }
-        }
-
-        return maxLifetime > 0f ? maxLifetime + 0.05f : 0f;
-    }
-
-    private static float ResolveCurveMax(ParticleSystem.MinMaxCurve curve)
-    {
-        return curve.mode switch
-        {
-            ParticleSystemCurveMode.Constant => curve.constant,
-            ParticleSystemCurveMode.TwoConstants => curve.constantMax,
-            ParticleSystemCurveMode.Curve => curve.curveMultiplier,
-            ParticleSystemCurveMode.TwoCurves => curve.curveMultiplier,
-            _ => Mathf.Max(curve.constant, curve.constantMax)
-        };
-    }
-
     private Color GetShieldColor(float ratio)
     {
         if (ratio >= 0.75f)
@@ -573,5 +429,21 @@ public class WitchShieldVisualController : MonoBehaviour
             return new Color(0.98f, 0.7f, 0.28f, 0.92f);
 
         return new Color(1f, 0.34f, 0.34f, 0.96f);
+    }
+
+    private void MigrateLegacyShieldBreakPresentation()
+    {
+        if (legacyShieldBreakParticlePrefab != null && !shieldBreakPresentation.particle.HasContent)
+        {
+            shieldBreakPresentation.particle.prefab = legacyShieldBreakParticlePrefab;
+            shieldBreakPresentation.particle.localOffset = legacyShieldBreakParticleLocalOffset;
+            shieldBreakPresentation.particle.rotationOffsetZ = legacyShieldBreakParticleRotationOffsetZ;
+            shieldBreakPresentation.particle.scaleMultiplier = legacyShieldBreakParticleScaleMultiplier;
+            shieldBreakPresentation.particle.lifetimeOverrideSeconds = legacyShieldBreakParticleLifetimeOverrideSeconds;
+            shieldBreakPresentation.particle.useUnscaledTime = legacyUseUnscaledShieldBreakParticleTime;
+        }
+
+        if (!shieldBreakPresentation.HasShake && legacyShieldBreakCameraShake.amplitude > 0f)
+            shieldBreakPresentation.cameraShake = legacyShieldBreakCameraShake;
     }
 }

@@ -1,13 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using CapstoneAudio;
+using CapstonePresentation;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityGAS;
 
 public class ShadowServant : Mob
 {
     private const float AttackDelay = 2f;
-    private const float DefaultPresentationLifetimeSeconds = 1f;
 
     [Header("Fog")]
     [Tooltip("안개를 생성할 때 사용할 안개 프리팹입니다.")]
@@ -20,19 +21,33 @@ public class ShadowServant : Mob
     [SerializeField] private float explosionDamage = 1f;
 
     [Header("Attack Presentation")]
-    [SerializeField] private GameObject attackEffectPrefab;
-    [SerializeField] private Vector3 attackEffectLocalOffset = new Vector3(0f, 0f, -0.05f);
-    [SerializeField] [Min(0f)] private float attackEffectLifetimeSeconds = 0.35f;
-    [SerializeField] private Vector3 attackEffectScaleMultiplier = Vector3.one;
-    [SerializeField] private float attackEffectRotationOffsetZ;
-    [SerializeField] private GameObject attackParticlePrefab;
-    [SerializeField] private Vector3 attackParticleLocalOffset = new Vector3(0f, 0f, -0.02f);
-    [SerializeField] [Min(0f)] private float attackParticleLifetimeOverrideSeconds;
-    [SerializeField] private bool useUnscaledAttackParticleTime;
-    [SerializeField] private Vector3 attackParticleScaleMultiplier = Vector3.one;
-    [SerializeField] private float attackParticleRotationOffsetZ;
-    [SerializeField] private SoundRef attackSound;
-    [SerializeField] private CameraShakeHook attackCameraShake = CameraShakeHook.Create(0.14f, 1f, 0.22f, 0.04f);
+    [SerializeField] private WorldPresentationHook attackPresentation;
+    [HideInInspector, FormerlySerializedAs("attackEffectPrefab")]
+    [SerializeField] private GameObject legacyAttackEffectPrefab;
+    [HideInInspector, FormerlySerializedAs("attackEffectLocalOffset")]
+    [SerializeField] private Vector3 legacyAttackEffectLocalOffset = new Vector3(0f, 0f, -0.05f);
+    [HideInInspector, FormerlySerializedAs("attackEffectLifetimeSeconds")]
+    [SerializeField] private float legacyAttackEffectLifetimeSeconds = 0.35f;
+    [HideInInspector, FormerlySerializedAs("attackEffectScaleMultiplier")]
+    [SerializeField] private Vector3 legacyAttackEffectScaleMultiplier = Vector3.one;
+    [HideInInspector, FormerlySerializedAs("attackEffectRotationOffsetZ")]
+    [SerializeField] private float legacyAttackEffectRotationOffsetZ;
+    [HideInInspector, FormerlySerializedAs("attackParticlePrefab")]
+    [SerializeField] private GameObject legacyAttackParticlePrefab;
+    [HideInInspector, FormerlySerializedAs("attackParticleLocalOffset")]
+    [SerializeField] private Vector3 legacyAttackParticleLocalOffset = new Vector3(0f, 0f, -0.02f);
+    [HideInInspector, FormerlySerializedAs("attackParticleLifetimeOverrideSeconds")]
+    [SerializeField] private float legacyAttackParticleLifetimeOverrideSeconds;
+    [HideInInspector, FormerlySerializedAs("useUnscaledAttackParticleTime")]
+    [SerializeField] private bool legacyUseUnscaledAttackParticleTime;
+    [HideInInspector, FormerlySerializedAs("attackParticleScaleMultiplier")]
+    [SerializeField] private Vector3 legacyAttackParticleScaleMultiplier = Vector3.one;
+    [HideInInspector, FormerlySerializedAs("attackParticleRotationOffsetZ")]
+    [SerializeField] private float legacyAttackParticleRotationOffsetZ;
+    [HideInInspector, FormerlySerializedAs("attackSound")]
+    [SerializeField] private SoundRef legacyAttackSound;
+    [HideInInspector, FormerlySerializedAs("attackCameraShake")]
+    [SerializeField] private CameraShakeHook legacyAttackCameraShake = CameraShakeHook.Create(0.14f, 1f, 0.22f, 0.04f);
 
     private readonly HashSet<GameObject> damagedTargets = new();
 
@@ -45,8 +60,14 @@ public class ShadowServant : Mob
     protected override void Awake()
     {
         base.Awake();
+        MigrateLegacyAttackPresentation();
         telegraphService = GetComponent<AttackTelegraphService>();
         warningStyle = MakeWarningStyle();
+    }
+
+    private void OnValidate()
+    {
+        MigrateLegacyAttackPresentation();
     }
 
     public override bool CanUseChaseMovement()
@@ -229,33 +250,16 @@ public class ShadowServant : Mob
 
     private void PlayAttackPresentation(Vector3 targetPoint)
     {
-        SpawnPresentationPrefab(
-            attackEffectPrefab,
-            targetPoint + attackEffectLocalOffset,
-            attackEffectRotationOffsetZ,
-            attackEffectScaleMultiplier,
-            attackEffectLifetimeSeconds,
-            useUnscaledTime: false);
-        SpawnPresentationPrefab(
-            attackParticlePrefab,
-            targetPoint + attackParticleLocalOffset,
-            attackParticleRotationOffsetZ,
-            attackParticleScaleMultiplier,
-            attackParticleLifetimeOverrideSeconds,
-            useUnscaledAttackParticleTime);
-
-        SoundPlaybackUtility.Play(
-            attackSound,
-            instigator: gameObject,
-            causer: gameObject,
-            target: target != null ? target.gameObject : null,
-            position: targetPoint,
-            sourceObject: this);
-
-        attackCameraShake.TryPlay(
-            gameObject,
-            targetPoint - transform.position,
-            debugReason: "ShadowServant.Attack");
+        WorldPresentationRuntime.Play(
+            attackPresentation,
+            WorldPresentationContext.AtWorld(
+                instigator: gameObject,
+                position: targetPoint,
+                fallbackDirection: targetPoint - transform.position,
+                target: target != null ? target.gameObject : null,
+                sourceObject: this,
+                rotation: Quaternion.identity,
+                causer: gameObject));
     }
 
     private LayerMask GetDamageMask()
@@ -346,155 +350,32 @@ public class ShadowServant : Mob
         return style;
     }
 
-    private static void SpawnPresentationPrefab(
-        GameObject prefab,
-        Vector3 position,
-        float rotationOffsetZ,
-        Vector3 scaleMultiplier,
-        float lifetimeOverrideSeconds,
-        bool useUnscaledTime)
+    private void MigrateLegacyAttackPresentation()
     {
-        if (prefab == null)
-            return;
-
-        Quaternion rotation = Quaternion.Euler(0f, 0f, rotationOffsetZ);
-        GameObject instance = Instantiate(prefab, position, rotation);
-        if (instance == null)
-            return;
-
-        instance.transform.localScale = Vector3.Scale(instance.transform.localScale, scaleMultiplier);
-        ConfigureSpawnedPresentation(instance, useUnscaledTime);
-
-        float lifetime = ResolvePresentationLifetime(instance, lifetimeOverrideSeconds);
-        if (lifetime > 0f)
-            Destroy(instance, lifetime);
-    }
-
-    private static void ConfigureSpawnedPresentation(GameObject instance, bool useUnscaledTime)
-    {
-        if (instance == null)
-            return;
-
-        instance.SetActive(true);
-
-        ParticleSystem[] particleSystems = instance.GetComponentsInChildren<ParticleSystem>(includeInactive: true);
-        for (int i = 0; i < particleSystems.Length; i++)
+        if (legacyAttackEffectPrefab != null && !attackPresentation.effect.HasContent)
         {
-            ParticleSystem particleSystem = particleSystems[i];
-            if (particleSystem == null)
-                continue;
-
-            if (useUnscaledTime)
-            {
-                ParticleSystem.MainModule main = particleSystem.main;
-                main.useUnscaledTime = true;
-            }
-
-            particleSystem.Play(withChildren: true);
+            attackPresentation.effect.prefab = legacyAttackEffectPrefab;
+            attackPresentation.effect.localOffset = legacyAttackEffectLocalOffset;
+            attackPresentation.effect.rotationOffsetZ = legacyAttackEffectRotationOffsetZ;
+            attackPresentation.effect.scaleMultiplier = legacyAttackEffectScaleMultiplier;
+            attackPresentation.effect.lifetimeOverrideSeconds = legacyAttackEffectLifetimeSeconds;
         }
 
-        Animation[] animations = instance.GetComponentsInChildren<Animation>(includeInactive: true);
-        for (int i = 0; i < animations.Length; i++)
+        if (legacyAttackParticlePrefab != null && !attackPresentation.particle.HasContent)
         {
-            Animation animationComponent = animations[i];
-            if (animationComponent == null)
-                continue;
-
-            animationComponent.Play();
-        }
-    }
-
-    private static float ResolvePresentationLifetime(GameObject instance, float lifetimeOverrideSeconds)
-    {
-        if (lifetimeOverrideSeconds > 0f)
-            return lifetimeOverrideSeconds;
-
-        float particleLifetime = ResolveParticleLifetime(instance);
-        if (particleLifetime > 0f)
-            return particleLifetime;
-
-        float animationLifetime = ResolveAnimatorLifetime(instance);
-        if (animationLifetime > 0f)
-            return animationLifetime;
-
-        return DefaultPresentationLifetimeSeconds;
-    }
-
-    private static float ResolveParticleLifetime(GameObject instance)
-    {
-        ParticleSystem[] particleSystems = instance.GetComponentsInChildren<ParticleSystem>(includeInactive: true);
-        if (particleSystems == null || particleSystems.Length == 0)
-            return 0f;
-
-        float maxLifetime = 0f;
-        for (int i = 0; i < particleSystems.Length; i++)
-        {
-            ParticleSystem particleSystem = particleSystems[i];
-            if (particleSystem == null)
-                continue;
-
-            ParticleSystem.MainModule main = particleSystem.main;
-            if (main.loop)
-                return DefaultPresentationLifetimeSeconds;
-
-            float startDelay = ResolveCurveMax(main.startDelay);
-            float startLifetime = ResolveCurveMax(main.startLifetime);
-            maxLifetime = Mathf.Max(maxLifetime, startDelay + main.duration + startLifetime);
+            attackPresentation.particle.prefab = legacyAttackParticlePrefab;
+            attackPresentation.particle.localOffset = legacyAttackParticleLocalOffset;
+            attackPresentation.particle.rotationOffsetZ = legacyAttackParticleRotationOffsetZ;
+            attackPresentation.particle.scaleMultiplier = legacyAttackParticleScaleMultiplier;
+            attackPresentation.particle.lifetimeOverrideSeconds = legacyAttackParticleLifetimeOverrideSeconds;
+            attackPresentation.particle.useUnscaledTime = legacyUseUnscaledAttackParticleTime;
         }
 
-        return maxLifetime > 0f ? maxLifetime + 0.25f : 0f;
+        if (!attackPresentation.HasSound && legacyAttackSound.IsSet)
+            attackPresentation.sound = legacyAttackSound;
+
+        if (!attackPresentation.HasShake && legacyAttackCameraShake.amplitude > 0f)
+            attackPresentation.cameraShake = legacyAttackCameraShake;
     }
 
-    private static float ResolveAnimatorLifetime(GameObject instance)
-    {
-        float maxLifetime = 0f;
-
-        Animator[] animators = instance.GetComponentsInChildren<Animator>(includeInactive: true);
-        for (int i = 0; i < animators.Length; i++)
-        {
-            Animator animator = animators[i];
-            if (animator == null || animator.runtimeAnimatorController == null)
-                continue;
-
-            AnimationClip[] clips = animator.runtimeAnimatorController.animationClips;
-            for (int clipIndex = 0; clipIndex < clips.Length; clipIndex++)
-            {
-                AnimationClip clip = clips[clipIndex];
-                if (clip == null)
-                    continue;
-
-                maxLifetime = Mathf.Max(maxLifetime, clip.length);
-            }
-        }
-
-        Animation[] animations = instance.GetComponentsInChildren<Animation>(includeInactive: true);
-        for (int i = 0; i < animations.Length; i++)
-        {
-            Animation animationComponent = animations[i];
-            if (animationComponent == null)
-                continue;
-
-            foreach (AnimationState state in animationComponent)
-            {
-                if (state?.clip == null)
-                    continue;
-
-                maxLifetime = Mathf.Max(maxLifetime, state.clip.length);
-            }
-        }
-
-        return maxLifetime > 0f ? maxLifetime + 0.05f : 0f;
-    }
-
-    private static float ResolveCurveMax(ParticleSystem.MinMaxCurve curve)
-    {
-        return curve.mode switch
-        {
-            ParticleSystemCurveMode.Constant => curve.constant,
-            ParticleSystemCurveMode.TwoConstants => curve.constantMax,
-            ParticleSystemCurveMode.Curve => curve.curveMultiplier,
-            ParticleSystemCurveMode.TwoCurves => curve.curveMultiplier,
-            _ => Mathf.Max(curve.constant, curve.constantMax)
-        };
-    }
 }

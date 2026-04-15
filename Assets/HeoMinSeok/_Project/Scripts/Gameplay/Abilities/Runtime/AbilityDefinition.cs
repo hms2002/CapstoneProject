@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using CapstoneAudio;
+using CapstonePresentation;
 using UnityEngine;
 
 namespace UnityGAS
@@ -358,6 +359,16 @@ namespace UnityGAS
         public CameraShakeHook cameraShakeOnCastCancelled;
         public CameraShakeHook cameraShakeOnExecutionCancelled;
         public CameraShakeHook cameraShakeOnHitConfirmed;
+
+        [Header("Spawned Presentation (Optional)")]
+        public WorldPresentationHook presentationOnCastStart;
+        public WorldPresentationHook presentationWhileCasting;
+        public WorldPresentationHook presentationOnCommit;
+        public WorldPresentationHook presentationWhileActive;
+        public WorldPresentationHook presentationOnEnd;
+        public WorldPresentationHook presentationOnCastCancelled;
+        public WorldPresentationHook presentationOnExecutionCancelled;
+        public WorldPresentationHook presentationOnHitConfirmed;
 
         [Header("GameplayCue (Optional)")]
         [Tooltip("캐스트 시작 시 실행할 cue 목록")]

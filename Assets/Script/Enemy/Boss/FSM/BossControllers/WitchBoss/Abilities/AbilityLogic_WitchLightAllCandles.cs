@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using CapstoneAudio;
+using CapstonePresentation;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityGAS;
 
 public class AbilityLogic_WitchLightAllCandles : AbilityLogic
@@ -9,7 +11,6 @@ public class AbilityLogic_WitchLightAllCandles : AbilityLogic
     private const float MoveToCenterDuration = 0.45f;
     private const float RelightDeadlineSeconds = 8f;
     private const float ShieldBreakWaitGraceSeconds = 1.5f;
-    private const float DefaultPresentationLifetimeSeconds = 1f;
 
     [Header("Charge Orb")]
     [SerializeField] private GameObject chargeOrbPrefab;
@@ -23,28 +24,55 @@ public class AbilityLogic_WitchLightAllCandles : AbilityLogic
     [Header("Charge Presentation")]
     [SerializeField] private SoundRef chargeLoopSound;
     [SerializeField] [Min(0f)] private float chargeLoopFadeOutSeconds = 0.1f;
-    [SerializeField] private SoundRef orbLaunchSound;
-    [SerializeField] private SoundRef orbImpactSound;
-    [SerializeField] private CameraShakeHook chargeLoopCameraShake = CameraShakeHook.Create(0.03f, 1f, 0.08f, 0.08f);
+    [SerializeField] private WorldPresentationHook chargePulsePresentation;
+    [SerializeField] private WorldPresentationHook orbLaunchPresentation;
+    [HideInInspector, FormerlySerializedAs("orbLaunchSound")]
+    [SerializeField] private SoundRef legacyOrbLaunchSound;
+    [HideInInspector, FormerlySerializedAs("chargeLoopCameraShake")]
+    [SerializeField] private CameraShakeHook legacyChargeLoopCameraShake = CameraShakeHook.Create(0.03f, 1f, 0.08f, 0.08f);
 
     [Header("Failure Presentation")]
-    [SerializeField] private GameObject failureEffectPrefab;
-    [SerializeField] private Vector3 failureEffectLocalOffset = new Vector3(0f, 0f, -0.05f);
-    [SerializeField] [Min(0f)] private float failureEffectLifetimeSeconds = 0.35f;
-    [SerializeField] private Vector3 failureEffectScaleMultiplier = Vector3.one;
-    [SerializeField] private float failureEffectRotationOffsetZ;
-    [SerializeField] private GameObject failureParticlePrefab;
-    [SerializeField] private Vector3 failureParticleLocalOffset = new Vector3(0f, 0f, -0.02f);
-    [SerializeField] [Min(0f)] private float failureParticleLifetimeOverrideSeconds = 0f;
-    [SerializeField] private bool useUnscaledFailureParticleTime;
-    [SerializeField] private Vector3 failureParticleScaleMultiplier = Vector3.one;
-    [SerializeField] private float failureParticleRotationOffsetZ;
-    [SerializeField] private CameraShakeHook failureCameraShake = CameraShakeHook.Create(0.24f, 1f, 0.36f, 0.05f);
+    [SerializeField] private WorldPresentationHook failureImpactPresentation;
+    [HideInInspector, FormerlySerializedAs("orbImpactSound")]
+    [SerializeField] private SoundRef legacyOrbImpactSound;
+    [HideInInspector, FormerlySerializedAs("failureEffectPrefab")]
+    [SerializeField] private GameObject legacyFailureEffectPrefab;
+    [HideInInspector, FormerlySerializedAs("failureEffectLocalOffset")]
+    [SerializeField] private Vector3 legacyFailureEffectLocalOffset = new Vector3(0f, 0f, -0.05f);
+    [HideInInspector, FormerlySerializedAs("failureEffectLifetimeSeconds")]
+    [SerializeField] private float legacyFailureEffectLifetimeSeconds = 0.35f;
+    [HideInInspector, FormerlySerializedAs("failureEffectScaleMultiplier")]
+    [SerializeField] private Vector3 legacyFailureEffectScaleMultiplier = Vector3.one;
+    [HideInInspector, FormerlySerializedAs("failureEffectRotationOffsetZ")]
+    [SerializeField] private float legacyFailureEffectRotationOffsetZ;
+    [HideInInspector, FormerlySerializedAs("failureParticlePrefab")]
+    [SerializeField] private GameObject legacyFailureParticlePrefab;
+    [HideInInspector, FormerlySerializedAs("failureParticleLocalOffset")]
+    [SerializeField] private Vector3 legacyFailureParticleLocalOffset = new Vector3(0f, 0f, -0.02f);
+    [HideInInspector, FormerlySerializedAs("failureParticleLifetimeOverrideSeconds")]
+    [SerializeField] private float legacyFailureParticleLifetimeOverrideSeconds;
+    [HideInInspector, FormerlySerializedAs("useUnscaledFailureParticleTime")]
+    [SerializeField] private bool legacyUseUnscaledFailureParticleTime;
+    [HideInInspector, FormerlySerializedAs("failureParticleScaleMultiplier")]
+    [SerializeField] private Vector3 legacyFailureParticleScaleMultiplier = Vector3.one;
+    [HideInInspector, FormerlySerializedAs("failureParticleRotationOffsetZ")]
+    [SerializeField] private float legacyFailureParticleRotationOffsetZ;
+    [HideInInspector, FormerlySerializedAs("failureCameraShake")]
+    [SerializeField] private CameraShakeHook legacyFailureCameraShake = CameraShakeHook.Create(0.24f, 1f, 0.36f, 0.05f);
 
     private readonly Dictionary<int, AudioHandle> activeChargeLoopHandles = new();
 
+    private void OnValidate()
+    {
+        MigrateLegacyChargePresentations();
+        MigrateLegacyFailurePresentation();
+    }
+
     public override IEnumerator Activate(AbilitySystem system, AbilitySpec spec, GameObject initialTarget)
     {
+        MigrateLegacyChargePresentations();
+        MigrateLegacyFailurePresentation();
+
         Witch witch = system != null ? system.GetComponent<Witch>() : null;
         if (witch == null)
             yield break;
@@ -78,10 +106,16 @@ public class AbilityLogic_WitchLightAllCandles : AbilityLogic
         {
             float chargeProgress = Mathf.InverseLerp(chargeStartTime, deadlineTime, Time.time);
             UpdateChargeOrb(witch, chargeOrbInstance, chargeProgress);
-            chargeLoopCameraShake.TryPlay(
-                source: witch.gameObject,
-                fallbackDirection: Vector3.up,
-                debugReason: "WitchLightAllCandles.Charging");
+            WorldPresentationRuntime.PlaySignalOnly(
+                chargePulsePresentation,
+                WorldPresentationContext.AtWorld(
+                    instigator: witch.gameObject,
+                    position: witch.transform.position,
+                    fallbackDirection: Vector3.up,
+                    target: null,
+                    sourceObject: this,
+                    rotation: Quaternion.identity,
+                    causer: witch.gameObject));
 
             if (!witch.HasAnySealedCandles())
             {
@@ -149,7 +183,7 @@ public class AbilityLogic_WitchLightAllCandles : AbilityLogic
             return null;
 
         instance.transform.localScale = chargeOrbStartScale;
-        ConfigureSpawnedPresentation(instance, useUnscaledTime: false);
+        WorldPresentationRuntime.InitializeSpawnedPresentation(instance, useUnscaledTime: false);
         return instance;
     }
 
@@ -171,12 +205,16 @@ public class AbilityLogic_WitchLightAllCandles : AbilityLogic
     {
         Vector3 impactPosition = ResolveChargeOrbImpactPosition(witch);
 
-        SoundPlaybackUtility.Play(
-            orbLaunchSound,
-            instigator: witch != null ? witch.gameObject : null,
-            causer: witch != null ? witch.gameObject : null,
-            position: chargeOrbInstance != null ? chargeOrbInstance.transform.position : impactPosition,
-            sourceObject: this);
+        WorldPresentationRuntime.PlaySignalOnly(
+            orbLaunchPresentation,
+            WorldPresentationContext.AtWorld(
+                instigator: witch != null ? witch.gameObject : null,
+                position: chargeOrbInstance != null ? chargeOrbInstance.transform.position : impactPosition,
+                fallbackDirection: Vector3.down,
+                target: null,
+                sourceObject: this,
+                rotation: Quaternion.identity,
+                causer: witch != null ? witch.gameObject : null));
 
         if (chargeOrbInstance != null)
         {
@@ -198,32 +236,16 @@ public class AbilityLogic_WitchLightAllCandles : AbilityLogic
 
         CleanupChargeOrb(chargeOrbInstance);
 
-        SoundPlaybackUtility.Play(
-            orbImpactSound,
-            instigator: witch != null ? witch.gameObject : null,
-            causer: witch != null ? witch.gameObject : null,
-            position: impactPosition,
-            sourceObject: this);
-
-        SpawnPresentationPrefab(
-            failureEffectPrefab,
-            impactPosition + failureEffectLocalOffset,
-            failureEffectRotationOffsetZ,
-            failureEffectScaleMultiplier,
-            failureEffectLifetimeSeconds,
-            useUnscaledTime: false);
-        SpawnPresentationPrefab(
-            failureParticlePrefab,
-            impactPosition + failureParticleLocalOffset,
-            failureParticleRotationOffsetZ,
-            failureParticleScaleMultiplier,
-            failureParticleLifetimeOverrideSeconds,
-            useUnscaledFailureParticleTime);
-
-        failureCameraShake.TryPlay(
-            source: witch != null ? witch.gameObject : null,
-            fallbackDirection: Vector3.down,
-            debugReason: "WitchLightAllCandles.FailImpact");
+        WorldPresentationRuntime.Play(
+            failureImpactPresentation,
+            WorldPresentationContext.AtWorld(
+                instigator: witch != null ? witch.gameObject : null,
+                position: impactPosition,
+                fallbackDirection: Vector3.down,
+                target: null,
+                sourceObject: this,
+                rotation: Quaternion.identity,
+                causer: witch != null ? witch.gameObject : null));
     }
 
     public void StopChargeLoopFor(Witch witch)
@@ -288,155 +310,41 @@ public class AbilityLogic_WitchLightAllCandles : AbilityLogic
         SoundPlaybackUtility.Stop(handle, chargeLoopFadeOutSeconds);
     }
 
-    private static void SpawnPresentationPrefab(
-        GameObject prefab,
-        Vector3 position,
-        float rotationOffsetZ,
-        Vector3 scaleMultiplier,
-        float lifetimeOverrideSeconds,
-        bool useUnscaledTime)
+    private void MigrateLegacyFailurePresentation()
     {
-        if (prefab == null)
-            return;
-
-        Quaternion rotation = Quaternion.Euler(0f, 0f, rotationOffsetZ);
-        GameObject instance = Object.Instantiate(prefab, position, rotation);
-        if (instance == null)
-            return;
-
-        instance.transform.localScale = Vector3.Scale(instance.transform.localScale, scaleMultiplier);
-        ConfigureSpawnedPresentation(instance, useUnscaledTime);
-
-        float lifetime = ResolvePresentationLifetime(instance, lifetimeOverrideSeconds);
-        if (lifetime > 0f)
-            Object.Destroy(instance, lifetime);
-    }
-
-    private static void ConfigureSpawnedPresentation(GameObject instance, bool useUnscaledTime)
-    {
-        if (instance == null)
-            return;
-
-        instance.SetActive(true);
-
-        ParticleSystem[] particleSystems = instance.GetComponentsInChildren<ParticleSystem>(includeInactive: true);
-        for (int i = 0; i < particleSystems.Length; i++)
+        if (legacyFailureEffectPrefab != null && !failureImpactPresentation.effect.HasContent)
         {
-            ParticleSystem particleSystem = particleSystems[i];
-            if (particleSystem == null)
-                continue;
-
-            if (useUnscaledTime)
-            {
-                ParticleSystem.MainModule main = particleSystem.main;
-                main.useUnscaledTime = true;
-            }
-
-            particleSystem.Play(withChildren: true);
+            failureImpactPresentation.effect.prefab = legacyFailureEffectPrefab;
+            failureImpactPresentation.effect.localOffset = legacyFailureEffectLocalOffset;
+            failureImpactPresentation.effect.rotationOffsetZ = legacyFailureEffectRotationOffsetZ;
+            failureImpactPresentation.effect.scaleMultiplier = legacyFailureEffectScaleMultiplier;
+            failureImpactPresentation.effect.lifetimeOverrideSeconds = legacyFailureEffectLifetimeSeconds;
         }
 
-        Animation[] animations = instance.GetComponentsInChildren<Animation>(includeInactive: true);
-        for (int i = 0; i < animations.Length; i++)
+        if (legacyFailureParticlePrefab != null && !failureImpactPresentation.particle.HasContent)
         {
-            Animation animationComponent = animations[i];
-            if (animationComponent == null)
-                continue;
-
-            animationComponent.Play();
-        }
-    }
-
-    private static float ResolvePresentationLifetime(GameObject instance, float lifetimeOverrideSeconds)
-    {
-        if (lifetimeOverrideSeconds > 0f)
-            return lifetimeOverrideSeconds;
-
-        float particleLifetime = ResolveParticleLifetime(instance);
-        if (particleLifetime > 0f)
-            return particleLifetime;
-
-        float animationLifetime = ResolveAnimatorLifetime(instance);
-        if (animationLifetime > 0f)
-            return animationLifetime;
-
-        return DefaultPresentationLifetimeSeconds;
-    }
-
-    private static float ResolveParticleLifetime(GameObject instance)
-    {
-        ParticleSystem[] particleSystems = instance.GetComponentsInChildren<ParticleSystem>(includeInactive: true);
-        if (particleSystems == null || particleSystems.Length == 0)
-            return 0f;
-
-        float maxLifetime = 0f;
-        for (int i = 0; i < particleSystems.Length; i++)
-        {
-            ParticleSystem particleSystem = particleSystems[i];
-            if (particleSystem == null)
-                continue;
-
-            ParticleSystem.MainModule main = particleSystem.main;
-            if (main.loop)
-                return DefaultPresentationLifetimeSeconds;
-
-            float startDelay = ResolveCurveMax(main.startDelay);
-            float startLifetime = ResolveCurveMax(main.startLifetime);
-            maxLifetime = Mathf.Max(maxLifetime, startDelay + main.duration + startLifetime);
+            failureImpactPresentation.particle.prefab = legacyFailureParticlePrefab;
+            failureImpactPresentation.particle.localOffset = legacyFailureParticleLocalOffset;
+            failureImpactPresentation.particle.rotationOffsetZ = legacyFailureParticleRotationOffsetZ;
+            failureImpactPresentation.particle.scaleMultiplier = legacyFailureParticleScaleMultiplier;
+            failureImpactPresentation.particle.lifetimeOverrideSeconds = legacyFailureParticleLifetimeOverrideSeconds;
+            failureImpactPresentation.particle.useUnscaledTime = legacyUseUnscaledFailureParticleTime;
         }
 
-        return maxLifetime > 0f ? maxLifetime + 0.25f : 0f;
+        if (!failureImpactPresentation.HasSound && legacyOrbImpactSound.IsSet)
+            failureImpactPresentation.sound = legacyOrbImpactSound;
+
+        if (!failureImpactPresentation.HasShake && legacyFailureCameraShake.amplitude > 0f)
+            failureImpactPresentation.cameraShake = legacyFailureCameraShake;
     }
 
-    private static float ResolveAnimatorLifetime(GameObject instance)
+    private void MigrateLegacyChargePresentations()
     {
-        float maxLifetime = 0f;
+        if (!orbLaunchPresentation.HasSound && legacyOrbLaunchSound.IsSet)
+            orbLaunchPresentation.sound = legacyOrbLaunchSound;
 
-        Animator[] animators = instance.GetComponentsInChildren<Animator>(includeInactive: true);
-        for (int i = 0; i < animators.Length; i++)
-        {
-            Animator animator = animators[i];
-            if (animator == null || animator.runtimeAnimatorController == null)
-                continue;
-
-            AnimationClip[] clips = animator.runtimeAnimatorController.animationClips;
-            for (int clipIndex = 0; clipIndex < clips.Length; clipIndex++)
-            {
-                AnimationClip clip = clips[clipIndex];
-                if (clip == null)
-                    continue;
-
-                maxLifetime = Mathf.Max(maxLifetime, clip.length);
-            }
-        }
-
-        Animation[] animations = instance.GetComponentsInChildren<Animation>(includeInactive: true);
-        for (int i = 0; i < animations.Length; i++)
-        {
-            Animation animationComponent = animations[i];
-            if (animationComponent == null)
-                continue;
-
-            foreach (AnimationState state in animationComponent)
-            {
-                if (state?.clip == null)
-                    continue;
-
-                maxLifetime = Mathf.Max(maxLifetime, state.clip.length);
-            }
-        }
-
-        return maxLifetime > 0f ? maxLifetime + 0.05f : 0f;
+        if (!chargePulsePresentation.HasShake && legacyChargeLoopCameraShake.amplitude > 0f)
+            chargePulsePresentation.cameraShake = legacyChargeLoopCameraShake;
     }
 
-    private static float ResolveCurveMax(ParticleSystem.MinMaxCurve curve)
-    {
-        return curve.mode switch
-        {
-            ParticleSystemCurveMode.Constant => curve.constant,
-            ParticleSystemCurveMode.TwoConstants => curve.constantMax,
-            ParticleSystemCurveMode.Curve => curve.curveMultiplier,
-            ParticleSystemCurveMode.TwoCurves => curve.curveMultiplier,
-            _ => Mathf.Max(curve.constant, curve.constantMax)
-        };
-    }
 }

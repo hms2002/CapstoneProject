@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using CapstoneAudio;
+using CapstonePresentation;
 using UnityEngine;
 
 namespace UnityGAS
@@ -71,8 +72,11 @@ namespace UnityGAS
                 return;
 
             GameplayCueParams cueParams = BuildCueParams(instigator, causer, target, sourceObject, magnitude, ctx);
-            PlayOneShot(effect.audioOnExecute, cueParams);
-            PlayShake(effect.cameraShakeOnExecute, cueParams);
+            WorldPresentationRuntime.PlayMerged(
+                effect.presentationOnExecute,
+                effect.audioOnExecute,
+                effect.cameraShakeOnExecute,
+                BuildWorldPresentationContext(cueParams));
 
             if (cueManager != null && effect.cueOnExecute != null)
             {
@@ -94,7 +98,11 @@ namespace UnityGAS
 
             GameplayCueParams cueParams = BuildCueParams(instigator, causer, target, sourceObject, magnitude, ctx);
             StartLoop(MakeLoopKey(effect, target, sourceObject), effect.audioWhileActive, cueParams);
-            PlayShake(effect.cameraShakeWhileActive, cueParams);
+            WorldPresentationRuntime.PlayMerged(
+                effect.presentationWhileActive,
+                default,
+                effect.cameraShakeWhileActive,
+                BuildWorldPresentationContext(cueParams));
 
             if (cueManager != null && effect.cueWhileActive != null)
             {
@@ -137,8 +145,11 @@ namespace UnityGAS
 
             GameplayCueParams cueParams = BuildCueParams(instigator, causer, target, sourceObject, magnitude, ctx);
             StopLoop(MakeLoopKey(effect, target, sourceObject));
-            PlayOneShot(effect.audioOnRemove, cueParams);
-            PlayShake(effect.cameraShakeOnRemove, cueParams);
+            WorldPresentationRuntime.PlayMerged(
+                effect.presentationOnRemove,
+                effect.audioOnRemove,
+                effect.cameraShakeOnRemove,
+                BuildWorldPresentationContext(cueParams));
 
             if (cueManager != null && effect.cueOnRemove != null)
             {
@@ -190,6 +201,19 @@ namespace UnityGAS
             return p;
         }
 
+        private static WorldPresentationContext BuildWorldPresentationContext(in GameplayCueParams cueParams)
+        {
+            Vector3 normal = cueParams.Normal.sqrMagnitude > 0.0001f ? cueParams.Normal : Vector3.up;
+            return WorldPresentationContext.AtWorld(
+                instigator: cueParams.Instigator,
+                position: cueParams.Position,
+                fallbackDirection: normal,
+                target: cueParams.Target,
+                sourceObject: cueParams.SourceObject,
+                rotation: Quaternion.LookRotation(Vector3.forward, normal),
+                causer: cueParams.Causer);
+        }
+
         private static LoopKey MakeLoopKey(GameplayEffect effect, GameObject target, UnityEngine.Object sourceObject)
         {
             return new LoopKey(
@@ -208,19 +232,6 @@ namespace UnityGAS
                 Position = p.Position,
                 SourceObject = p.SourceObject
             };
-        }
-
-        private static void PlayOneShot(SoundRef soundRef, GameplayCueParams p)
-        {
-            if (!soundRef.IsSet)
-                return;
-
-            SoundManager.EnsureInstance().Play(soundRef, BuildSoundContext(p));
-        }
-
-        private static void PlayShake(CameraShakeHook shake, in GameplayCueParams cueParams)
-        {
-            shake.TryPlayFromCueParams(cueParams, debugReason: nameof(GameplayEffectPresentationRouter));
         }
 
         private void StartLoop(LoopKey key, SoundRef soundRef, GameplayCueParams p)

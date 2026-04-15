@@ -5,6 +5,7 @@ using UnityEngine;
 public sealed class CameraShakeHookDrawer : PropertyDrawer
 {
     private const float TestButtonWidth = 88f;
+    private const float BottomPadding = 6f;
 
     public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
     {
@@ -22,16 +23,21 @@ public sealed class CameraShakeHookDrawer : PropertyDrawer
 
         EditorGUI.BeginProperty(position, label, property);
 
-        Rect foldoutRect = new Rect(lineRect.x, lineRect.y, 14f, lineHeight);
-        Rect labelRect = new Rect(
-            foldoutRect.xMax,
+        Rect headerRect = new Rect(
+            lineRect.x,
             lineRect.y,
-            Mathf.Max(60f, lineRect.width - (TestButtonWidth + 6f)),
+            lineRect.width,
             lineHeight);
         Rect buttonRect = new Rect(lineRect.xMax - TestButtonWidth, lineRect.y, TestButtonWidth, lineHeight);
 
-        property.isExpanded = EditorGUI.Foldout(foldoutRect, property.isExpanded, GUIContent.none, true);
-        EditorGUI.LabelField(labelRect, BuildHeader(label.text, amplitudeProperty, amplitudeMultiplierProperty, maxAmplitudeProperty));
+        property.isExpanded = EditorGUI.Foldout(
+            headerRect,
+            property.isExpanded,
+            BuildHeader(label.text, amplitudeProperty, amplitudeMultiplierProperty, maxAmplitudeProperty),
+            true);
+
+        lineRect.y += lineHeight + spacing;
+        buttonRect = new Rect(lineRect.x, lineRect.y, lineRect.width, lineHeight);
 
         using (new EditorGUI.DisabledScope(!CanPreviewButton(amplitudeProperty, amplitudeMultiplierProperty, maxAmplitudeProperty)))
         {
@@ -75,7 +81,7 @@ public sealed class CameraShakeHookDrawer : PropertyDrawer
     {
         float lineHeight = EditorGUIUtility.singleLineHeight;
         float spacing = EditorGUIUtility.standardVerticalSpacing;
-        float height = lineHeight;
+        float height = (lineHeight * 2f) + spacing;
 
         if (!property.isExpanded)
             return height;
@@ -86,7 +92,7 @@ public sealed class CameraShakeHookDrawer : PropertyDrawer
         if ((CameraShakeDirectionMode)directionModeProperty.enumValueIndex == CameraShakeDirectionMode.UseCustom)
             height += lineHeight + spacing;
 
-        return height;
+        return height + BottomPadding;
     }
 
     private static string BuildHeader(

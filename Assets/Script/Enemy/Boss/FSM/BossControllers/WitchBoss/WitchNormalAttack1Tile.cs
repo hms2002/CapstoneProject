@@ -1,6 +1,8 @@
 using System.Collections;
 using CapstoneAudio;
+using CapstonePresentation;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityGAS;
 
 [DisallowMultipleComponent]
@@ -8,7 +10,6 @@ using UnityGAS;
 public class WitchNormalAttack1Tile : MonoBehaviour
 {
     private const float HitTime = 0.12f;
-    private const float DefaultPresentationLifetimeSeconds = 1f;
 
     private AttackTelegraphView telegraphView;
     private AttackTelegraphStyle warningStyle;
@@ -19,21 +20,37 @@ public class WitchNormalAttack1Tile : MonoBehaviour
     private float angleDeg;
 
     [Header("Hit Presentation")]
-    [SerializeField] private GameObject hitEffectPrefab;
-    [SerializeField] private Vector3 hitEffectLocalOffset = new Vector3(0f, 0f, -0.05f);
-    [SerializeField] [Min(0f)] private float hitEffectLifetimeSeconds = 0.35f;
-    [SerializeField] private GameObject hitParticlePrefab;
-    [SerializeField] private Vector3 hitParticleLocalOffset = new Vector3(0f, 0f, -0.02f);
-    [SerializeField] [Min(0f)] private float hitParticleLifetimeOverrideSeconds = 0f;
-    [SerializeField] private bool useUnscaledHitParticleTime;
-    [SerializeField] private SoundRef hitSound;
-    [SerializeField] private CameraShakeHook hitCameraShake = CameraShakeHook.Create(0.12f, 1f, 0.18f, 0.03f);
+    [SerializeField] private WorldPresentationHook hitPresentation;
+    [HideInInspector, FormerlySerializedAs("hitEffectPrefab")]
+    [SerializeField] private GameObject legacyHitEffectPrefab;
+    [HideInInspector, FormerlySerializedAs("hitEffectLocalOffset")]
+    [SerializeField] private Vector3 legacyHitEffectLocalOffset = new Vector3(0f, 0f, -0.05f);
+    [HideInInspector, FormerlySerializedAs("hitEffectLifetimeSeconds")]
+    [SerializeField] private float legacyHitEffectLifetimeSeconds = 0.35f;
+    [HideInInspector, FormerlySerializedAs("hitParticlePrefab")]
+    [SerializeField] private GameObject legacyHitParticlePrefab;
+    [HideInInspector, FormerlySerializedAs("hitParticleLocalOffset")]
+    [SerializeField] private Vector3 legacyHitParticleLocalOffset = new Vector3(0f, 0f, -0.02f);
+    [HideInInspector, FormerlySerializedAs("hitParticleLifetimeOverrideSeconds")]
+    [SerializeField] private float legacyHitParticleLifetimeOverrideSeconds;
+    [HideInInspector, FormerlySerializedAs("useUnscaledHitParticleTime")]
+    [SerializeField] private bool legacyUseUnscaledHitParticleTime;
+    [HideInInspector, FormerlySerializedAs("hitSound")]
+    [SerializeField] private SoundRef legacyHitSound;
+    [HideInInspector, FormerlySerializedAs("hitCameraShake")]
+    [SerializeField] private CameraShakeHook legacyHitCameraShake = CameraShakeHook.Create(0.12f, 1f, 0.18f, 0.03f);
 
     private void Awake()
     {
+        MigrateLegacyHitPresentation();
         telegraphView = GetComponent<AttackTelegraphView>();
         warningStyle = MakeWarningStyle();
         hitStyle = MakeHitStyle();
+    }
+
+    private void OnValidate()
+    {
+        MigrateLegacyHitPresentation();
     }
 
     private void OnDestroy()
@@ -180,42 +197,17 @@ public class WitchNormalAttack1Tile : MonoBehaviour
     private void PlayHitPresentation()
     {
         Vector3 hitDirection = ResolveHitDirection();
-        SpawnPresentationPrefab(hitEffectPrefab, hitEffectLocalOffset, hitEffectLifetimeSeconds, useUnscaledTime: false);
-        SpawnPresentationPrefab(hitParticlePrefab, hitParticleLocalOffset, hitParticleLifetimeOverrideSeconds, useUnscaledHitParticleTime);
-        SoundPlaybackUtility.Play(
-            hitSound,
-            instigator: hitPayload != null ? hitPayload.sourceSystem != null ? hitPayload.sourceSystem.gameObject : null : null,
-            causer: hitPayload != null ? hitPayload.causer : gameObject,
-            target: targetObject,
-            position: transform.position,
-            sourceObject: this);
-        hitCameraShake.TryPlay(gameObject, hitDirection, debugReason: "WitchNormalAttack1Tile.Hit");
-    }
-
-    private void SpawnPresentationPrefab(
-        GameObject prefab,
-        Vector3 localOffset,
-        float lifetimeOverrideSeconds,
-        bool useUnscaledTime)
-    {
-        if (prefab == null)
-            return;
-
-        Quaternion spawnRotation = Quaternion.Euler(0f, 0f, angleDeg) * prefab.transform.rotation;
-        GameObject instance = Instantiate(prefab, ResolvePresentationPosition(localOffset), spawnRotation);
-        if (instance == null)
-            return;
-
-        ConfigureSpawnedPresentation(instance, useUnscaledTime);
-
-        float lifetime = ResolvePresentationLifetime(instance, lifetimeOverrideSeconds);
-        if (lifetime > 0f)
-            Destroy(instance, lifetime);
-    }
-
-    private Vector3 ResolvePresentationPosition(Vector3 localOffset)
-    {
-        return transform.TransformPoint(localOffset);
+        Quaternion presentationRotation = Quaternion.Euler(0f, 0f, angleDeg);
+        WorldPresentationRuntime.Play(
+            hitPresentation,
+            WorldPresentationContext.AtWorld(
+                instigator: hitPayload != null && hitPayload.sourceSystem != null ? hitPayload.sourceSystem.gameObject : gameObject,
+                position: transform.position,
+                fallbackDirection: hitDirection,
+                target: targetObject,
+                sourceObject: this,
+                rotation: presentationRotation,
+                causer: hitPayload != null ? hitPayload.causer : gameObject));
     }
 
     private Vector3 ResolveHitDirection()
@@ -228,131 +220,28 @@ public class WitchNormalAttack1Tile : MonoBehaviour
         return direction.normalized;
     }
 
-    private static void ConfigureSpawnedPresentation(GameObject instance, bool useUnscaledTime)
+    private void MigrateLegacyHitPresentation()
     {
-        if (instance == null)
-            return;
-
-        instance.SetActive(true);
-
-        ParticleSystem[] particleSystems = instance.GetComponentsInChildren<ParticleSystem>(includeInactive: true);
-        for (int i = 0; i < particleSystems.Length; i++)
+        if (legacyHitEffectPrefab != null && !hitPresentation.effect.HasContent)
         {
-            ParticleSystem particleSystem = particleSystems[i];
-            if (particleSystem == null)
-                continue;
-
-            if (useUnscaledTime)
-            {
-                var main = particleSystem.main;
-                main.useUnscaledTime = true;
-            }
-
-            particleSystem.Play(withChildren: true);
+            hitPresentation.effect.prefab = legacyHitEffectPrefab;
+            hitPresentation.effect.localOffset = legacyHitEffectLocalOffset;
+            hitPresentation.effect.lifetimeOverrideSeconds = legacyHitEffectLifetimeSeconds;
         }
 
-        Animation[] animations = instance.GetComponentsInChildren<Animation>(includeInactive: true);
-        for (int i = 0; i < animations.Length; i++)
+        if (legacyHitParticlePrefab != null && !hitPresentation.particle.HasContent)
         {
-            Animation animationComponent = animations[i];
-            if (animationComponent == null)
-                continue;
-
-            animationComponent.Play();
-        }
-    }
-
-    private static float ResolvePresentationLifetime(GameObject instance, float lifetimeOverrideSeconds)
-    {
-        if (lifetimeOverrideSeconds > 0f)
-            return lifetimeOverrideSeconds;
-
-        float particleLifetime = ResolveParticleLifetime(instance);
-        if (particleLifetime > 0f)
-            return particleLifetime;
-
-        float animationLifetime = ResolveAnimatorLifetime(instance);
-        if (animationLifetime > 0f)
-            return animationLifetime;
-
-        return DefaultPresentationLifetimeSeconds;
-    }
-
-    private static float ResolveParticleLifetime(GameObject instance)
-    {
-        ParticleSystem[] particleSystems = instance.GetComponentsInChildren<ParticleSystem>(includeInactive: true);
-        if (particleSystems == null || particleSystems.Length == 0)
-            return 0f;
-
-        float maxLifetime = 0f;
-        for (int i = 0; i < particleSystems.Length; i++)
-        {
-            ParticleSystem particleSystem = particleSystems[i];
-            if (particleSystem == null)
-                continue;
-
-            var main = particleSystem.main;
-            if (main.loop)
-                return DefaultPresentationLifetimeSeconds;
-
-            float startDelay = ResolveCurveMax(main.startDelay);
-            float startLifetime = ResolveCurveMax(main.startLifetime);
-            maxLifetime = Mathf.Max(maxLifetime, startDelay + main.duration + startLifetime);
+            hitPresentation.particle.prefab = legacyHitParticlePrefab;
+            hitPresentation.particle.localOffset = legacyHitParticleLocalOffset;
+            hitPresentation.particle.lifetimeOverrideSeconds = legacyHitParticleLifetimeOverrideSeconds;
+            hitPresentation.particle.useUnscaledTime = legacyUseUnscaledHitParticleTime;
         }
 
-        return maxLifetime > 0f ? maxLifetime + 0.25f : 0f;
+        if (!hitPresentation.HasSound && legacyHitSound.IsSet)
+            hitPresentation.sound = legacyHitSound;
+
+        if (!hitPresentation.HasShake && legacyHitCameraShake.amplitude > 0f)
+            hitPresentation.cameraShake = legacyHitCameraShake;
     }
 
-    private static float ResolveAnimatorLifetime(GameObject instance)
-    {
-        float maxLifetime = 0f;
-
-        Animator[] animators = instance.GetComponentsInChildren<Animator>(includeInactive: true);
-        for (int i = 0; i < animators.Length; i++)
-        {
-            Animator animator = animators[i];
-            if (animator == null || animator.runtimeAnimatorController == null)
-                continue;
-
-            AnimationClip[] clips = animator.runtimeAnimatorController.animationClips;
-            for (int clipIndex = 0; clipIndex < clips.Length; clipIndex++)
-            {
-                AnimationClip clip = clips[clipIndex];
-                if (clip == null)
-                    continue;
-
-                maxLifetime = Mathf.Max(maxLifetime, clip.length);
-            }
-        }
-
-        Animation[] animations = instance.GetComponentsInChildren<Animation>(includeInactive: true);
-        for (int i = 0; i < animations.Length; i++)
-        {
-            Animation animationComponent = animations[i];
-            if (animationComponent == null)
-                continue;
-
-            foreach (AnimationState state in animationComponent)
-            {
-                if (state?.clip == null)
-                    continue;
-
-                maxLifetime = Mathf.Max(maxLifetime, state.clip.length);
-            }
-        }
-
-        return maxLifetime > 0f ? maxLifetime + 0.05f : 0f;
-    }
-
-    private static float ResolveCurveMax(ParticleSystem.MinMaxCurve curve)
-    {
-        return curve.mode switch
-        {
-            ParticleSystemCurveMode.Constant => curve.constant,
-            ParticleSystemCurveMode.TwoConstants => curve.constantMax,
-            ParticleSystemCurveMode.Curve => curve.curveMultiplier,
-            ParticleSystemCurveMode.TwoCurves => curve.curveMultiplier,
-            _ => Mathf.Max(curve.constant, curve.constantMax)
-        };
-    }
 }

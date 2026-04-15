@@ -17,6 +17,9 @@ public class GameplayCueDefinitionEditor : Editor
     private SerializedProperty cameraShakeOnExecute;
     private SerializedProperty cameraShakeWhileActive;
     private SerializedProperty cameraShakeOnRemove;
+    private SerializedProperty presentationOnExecute;
+    private SerializedProperty presentationWhileActive;
+    private SerializedProperty presentationOnRemove;
     private SerializedProperty attachToTarget;
     private SerializedProperty useExplicitHitPoint;
     private SerializedProperty spawnAnchorPolicy;
@@ -43,6 +46,9 @@ public class GameplayCueDefinitionEditor : Editor
         cameraShakeOnExecute = serializedObject.FindProperty("cameraShakeOnExecute");
         cameraShakeWhileActive = serializedObject.FindProperty("cameraShakeWhileActive");
         cameraShakeOnRemove = serializedObject.FindProperty("cameraShakeOnRemove");
+        presentationOnExecute = serializedObject.FindProperty("presentationOnExecute");
+        presentationWhileActive = serializedObject.FindProperty("presentationWhileActive");
+        presentationOnRemove = serializedObject.FindProperty("presentationOnRemove");
         attachToTarget = serializedObject.FindProperty("attachToTarget");
         useExplicitHitPoint = serializedObject.FindProperty("useExplicitHitPoint");
         spawnAnchorPolicy = serializedObject.FindProperty("spawnAnchorPolicy");
@@ -100,6 +106,12 @@ public class GameplayCueDefinitionEditor : Editor
         EditorGUILayout.PropertyField(cameraShakeOnExecute);
         EditorGUILayout.PropertyField(cameraShakeWhileActive);
         EditorGUILayout.PropertyField(cameraShakeOnRemove);
+
+        EditorGUILayout.Space();
+        EditorGUILayout.LabelField("Spawned Presentation", EditorStyles.boldLabel);
+        EditorGUILayout.PropertyField(presentationOnExecute, includeChildren: true);
+        EditorGUILayout.PropertyField(presentationWhileActive, includeChildren: true);
+        EditorGUILayout.PropertyField(presentationOnRemove, includeChildren: true);
 
         if (selectedMode == GameplayCueDefinition.ExecutionMode.SpawnPrefab)
         {

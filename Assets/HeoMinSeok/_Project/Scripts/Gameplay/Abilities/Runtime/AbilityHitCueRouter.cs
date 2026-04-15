@@ -1,6 +1,7 @@
 
 using System.Collections;
 using System.Collections.Generic;
+using CapstonePresentation;
 using UnityEngine;
 
 namespace UnityGAS
@@ -185,9 +186,19 @@ namespace UnityGAS
                 }
             }
 
-            definition.cameraShakeOnHitConfirmed.TryPlayFromCueParams(
-                cueParams,
-                debugReason: nameof(AbilityHitCueRouter));
+            Vector3 normal = cueParams.Normal.sqrMagnitude > 0.0001f ? cueParams.Normal : Vector3.up;
+            WorldPresentationRuntime.PlayMerged(
+                definition.presentationOnHitConfirmed,
+                default,
+                definition.cameraShakeOnHitConfirmed,
+                WorldPresentationContext.AtWorld(
+                    instigator: cueParams.Instigator,
+                    position: cueParams.Position,
+                    fallbackDirection: normal,
+                    target: cueParams.Target,
+                    sourceObject: cueParams.SourceObject,
+                    rotation: Quaternion.LookRotation(Vector3.forward, normal),
+                    causer: cueParams.Causer));
         }
     }
 }

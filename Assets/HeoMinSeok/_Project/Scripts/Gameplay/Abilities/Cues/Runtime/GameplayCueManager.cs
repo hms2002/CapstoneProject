@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using CapstoneAudio;
+using CapstonePresentation;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -259,7 +260,6 @@ namespace UnityGAS
             inst.Notify?.OnRemove(p);
             StopCueLoopAudio(inst);
             PlayCueRemoveAudio(def, p);
-            PlayCueRemoveShake(def, p);
 
             // Release TransformOnly state.
             if (inst.TransformStack != null)
@@ -325,7 +325,6 @@ namespace UnityGAS
         {
             var inst = SpawnInstance(def, p, isForAdd: false, layerKey: layerKey);
             PlayCueExecuteAudio(def, p);
-            PlayCueExecuteShake(def, p);
             if (inst == null) return;
 
             inst.Notify?.OnExecute(p);
@@ -671,8 +670,10 @@ namespace UnityGAS
 
             return isForAdd
                 ? def.audioWhileActive.IsSet || def.audioOnRemove.IsSet ||
-                  def.cameraShakeWhileActive.amplitude > 0f || def.cameraShakeOnRemove.amplitude > 0f
-                : def.audioOnExecute.IsSet || def.cameraShakeOnExecute.amplitude > 0f;
+                  def.cameraShakeWhileActive.amplitude > 0f || def.cameraShakeOnRemove.amplitude > 0f ||
+                  def.presentationWhileActive.HasAnyContent || def.presentationOnRemove.HasAnyContent
+                : def.audioOnExecute.IsSet || def.cameraShakeOnExecute.amplitude > 0f ||
+                  def.presentationOnExecute.HasAnyContent;
         }
 
         private static SoundPlaybackContext BuildSoundContext(GameplayCueParams p)
@@ -689,34 +690,26 @@ namespace UnityGAS
 
         private static void PlayCueExecuteAudio(GameplayCueDefinition def, GameplayCueParams p)
         {
-            if (def == null || !def.audioOnExecute.IsSet)
-                return;
-
-            SoundManager.EnsureInstance().Play(def.audioOnExecute, BuildSoundContext(p));
-        }
-
-        private static void PlayCueExecuteShake(GameplayCueDefinition def, in GameplayCueParams p)
-        {
             if (def == null)
                 return;
 
-            def.cameraShakeOnExecute.TryPlayFromCueParams(p, debugReason: nameof(GameplayCueManager));
+            WorldPresentationRuntime.PlayMerged(
+                def.presentationOnExecute,
+                def.audioOnExecute,
+                def.cameraShakeOnExecute,
+                BuildWorldPresentationContext(p));
         }
 
         private static void PlayCueRemoveAudio(GameplayCueDefinition def, GameplayCueParams p)
         {
-            if (def == null || !def.audioOnRemove.IsSet)
-                return;
-
-            SoundManager.EnsureInstance().Play(def.audioOnRemove, BuildSoundContext(p));
-        }
-
-        private static void PlayCueRemoveShake(GameplayCueDefinition def, in GameplayCueParams p)
-        {
             if (def == null)
                 return;
 
-            def.cameraShakeOnRemove.TryPlayFromCueParams(p, debugReason: nameof(GameplayCueManager));
+            WorldPresentationRuntime.PlayMerged(
+                def.presentationOnRemove,
+                def.audioOnRemove,
+                def.cameraShakeOnRemove,
+                BuildWorldPresentationContext(p));
         }
 
         private static void EnsureCueLoopAudio(ActiveCueInstance inst, GameplayCueParams p)
@@ -736,7 +729,24 @@ namespace UnityGAS
             if (def == null)
                 return;
 
-            def.cameraShakeWhileActive.TryPlayFromCueParams(p, debugReason: nameof(GameplayCueManager));
+            WorldPresentationRuntime.PlayMerged(
+                def.presentationWhileActive,
+                default,
+                def.cameraShakeWhileActive,
+                BuildWorldPresentationContext(p));
+        }
+
+        private static WorldPresentationContext BuildWorldPresentationContext(in GameplayCueParams cueParams)
+        {
+            Vector3 normal = cueParams.Normal.sqrMagnitude > 0.0001f ? cueParams.Normal : Vector3.up;
+            return WorldPresentationContext.AtWorld(
+                instigator: cueParams.Instigator,
+                position: cueParams.Position,
+                fallbackDirection: normal,
+                target: cueParams.Target,
+                sourceObject: cueParams.SourceObject,
+                rotation: Quaternion.LookRotation(Vector3.forward, normal),
+                causer: cueParams.Causer);
         }
 
         private static void StopCueLoopAudio(ActiveCueInstance inst)

@@ -1,4 +1,5 @@
 using CapstoneAudio;
+using CapstonePresentation;
 using UnityEngine;
 using System.Collections.Generic;
 
@@ -61,11 +62,18 @@ namespace UnityGAS
             GameplayCueParams executeParams = WithMagnitude(cueParams, definition.EffectiveExecuteCueMagnitude);
             GameplayCueParams activeParams = WithMagnitude(cueParams, definition.EffectiveWhileActiveCueMagnitude);
 
-            PlayOneShot(definition.audioOnExecute, executeParams);
-            PlayShake(definition.cameraShakeOnExecute, executeParams);
+            WorldPresentationRuntime.PlayMerged(
+                definition.presentationOnExecute,
+                definition.audioOnExecute,
+                definition.cameraShakeOnExecute,
+                BuildWorldPresentationContext(executeParams));
             ExecuteCues(definition.EnumerateCuesOnExecute(), executeParams);
             EnsureLoop(definition.audioWhileActive, activeParams);
-            PlayShake(definition.cameraShakeWhileActive, activeParams);
+            WorldPresentationRuntime.PlayMerged(
+                definition.presentationWhileActive,
+                default,
+                definition.cameraShakeWhileActive,
+                BuildWorldPresentationContext(activeParams));
             EnsureActiveCues(definition.EnumerateCuesWhileActive(), activeParams);
         }
 
@@ -75,8 +83,11 @@ namespace UnityGAS
                 return;
 
             GameplayCueParams executeParams = WithMagnitude(cueParams, definition.EffectiveExecuteCueMagnitude);
-            PlayOneShot(definition.audioOnExecute, executeParams);
-            PlayShake(definition.cameraShakeOnExecute, executeParams);
+            WorldPresentationRuntime.PlayMerged(
+                definition.presentationOnExecute,
+                definition.audioOnExecute,
+                definition.cameraShakeOnExecute,
+                BuildWorldPresentationContext(executeParams));
             ExecuteCues(definition.EnumerateCuesOnExecute(), executeParams);
         }
 
@@ -89,9 +100,24 @@ namespace UnityGAS
                 return;
 
             GameplayCueParams removeParams = WithMagnitude(cueParams, definition.EffectiveRemoveCueMagnitude);
-            PlayOneShot(definition.audioOnRemove, removeParams);
-            PlayShake(definition.cameraShakeOnRemove, removeParams);
+            WorldPresentationRuntime.PlayMerged(
+                definition.presentationOnRemove,
+                definition.audioOnRemove,
+                definition.cameraShakeOnRemove,
+                BuildWorldPresentationContext(removeParams));
             ExecuteCues(definition.EnumerateCuesOnRemove(), removeParams);
+        }
+
+        private static WorldPresentationContext BuildWorldPresentationContext(in GameplayCueParams cueParams)
+        {
+            return WorldPresentationContext.AtWorld(
+                instigator: cueParams.Instigator,
+                position: cueParams.Position,
+                fallbackDirection: cueParams.Normal.sqrMagnitude > 0.0001f ? cueParams.Normal : Vector3.up,
+                target: cueParams.Target,
+                sourceObject: cueParams.SourceObject,
+                rotation: Quaternion.LookRotation(Vector3.forward, cueParams.Normal.sqrMagnitude > 0.0001f ? cueParams.Normal : Vector3.up),
+                causer: cueParams.Causer);
         }
 
         private static SoundPlaybackContext BuildSoundContext(in GameplayCueParams cueParams)
@@ -104,19 +130,6 @@ namespace UnityGAS
                 Position = cueParams.Position,
                 SourceObject = cueParams.SourceObject
             };
-        }
-
-        private static void PlayOneShot(SoundRef soundRef, in GameplayCueParams cueParams)
-        {
-            if (!soundRef.IsSet)
-                return;
-
-            SoundManager.EnsureInstance().Play(soundRef, BuildSoundContext(cueParams));
-        }
-
-        private static void PlayShake(CameraShakeHook shake, in GameplayCueParams cueParams)
-        {
-            shake.TryPlayFromCueParams(cueParams, debugReason: nameof(GameplayPresentationRuntime));
         }
 
         private static GameplayCueParams WithMagnitude(in GameplayCueParams cueParams, float magnitude)

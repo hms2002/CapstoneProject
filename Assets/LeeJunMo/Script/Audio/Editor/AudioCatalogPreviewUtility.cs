@@ -19,6 +19,7 @@ namespace CapstoneAudio.EditorTools
         }
 
         public static bool CanPreview => true;
+        public static bool HasActivePreview => previewSource != null && previewSource.isPlaying;
 
         public static bool IsPreviewing(AudioClip clip)
         {
@@ -33,7 +34,8 @@ namespace CapstoneAudio.EditorTools
             float volume,
             float playbackSpeed,
             float pitchMin,
-            float pitchMax)
+            float pitchMax,
+            bool loop = false)
         {
             if (clip == null)
                 return;
@@ -44,7 +46,7 @@ namespace CapstoneAudio.EditorTools
 
             previewSource.Stop();
             previewSource.clip = clip;
-            previewSource.loop = false;
+            previewSource.loop = loop;
             previewSource.playOnAwake = false;
             previewSource.spatialBlend = 0f;
             previewSource.volume = Mathf.Clamp01(volume);

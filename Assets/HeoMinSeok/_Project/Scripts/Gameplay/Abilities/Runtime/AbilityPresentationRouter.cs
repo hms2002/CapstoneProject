@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using CapstoneAudio;
+using CapstonePresentation;
 using UnityEngine;
 using static UnityGAS.AbilityDefinition;
 
@@ -68,10 +69,17 @@ namespace UnityGAS
                 return;
 
             var p = BuildCueParamsForAbility(def, target);
-            PlayOneShot(def.audioOnCastStart, p);
             StartOrReplaceLoop(castingLoopHandles, spec, def.audioWhileCasting, p);
-            PlayShake(def.cameraShakeOnCastStart, p);
-            PlayShake(def.cameraShakeWhileCasting, p);
+            WorldPresentationRuntime.PlayMerged(
+                def.presentationOnCastStart,
+                def.audioOnCastStart,
+                def.cameraShakeOnCastStart,
+                BuildWorldPresentationContext(p));
+            WorldPresentationRuntime.PlayMerged(
+                def.presentationWhileCasting,
+                default,
+                def.cameraShakeWhileCasting,
+                BuildWorldPresentationContext(p));
 
             ExecuteCues(def.EnumerateCuesOnCastStart(), p);
             AddCues(def.EnumerateCuesWhileCasting(), p);
@@ -84,8 +92,11 @@ namespace UnityGAS
 
             var p = BuildCueParamsForAbility(def, target);
             StopLoop(castingLoopHandles, spec);
-            PlayOneShot(def.audioOnCommit, p);
-            PlayShake(def.cameraShakeOnCommit, p);
+            WorldPresentationRuntime.PlayMerged(
+                def.presentationOnCommit,
+                def.audioOnCommit,
+                def.cameraShakeOnCommit,
+                BuildWorldPresentationContext(p));
 
             RemoveCues(def.EnumerateCuesWhileCasting(), p);
             ExecuteCues(def.EnumerateCuesOnCommit(), p);
@@ -98,8 +109,11 @@ namespace UnityGAS
 
             var p = BuildCueParamsForAbility(def, target);
             StopLoop(castingLoopHandles, spec);
-            PlayOneShot(def.audioOnCastCancelled, p);
-            PlayShake(def.cameraShakeOnCastCancelled, p);
+            WorldPresentationRuntime.PlayMerged(
+                def.presentationOnCastCancelled,
+                def.audioOnCastCancelled,
+                def.cameraShakeOnCastCancelled,
+                BuildWorldPresentationContext(p));
 
             RemoveCues(def.EnumerateCuesWhileCasting(), p);
             ExecuteCues(def.EnumerateCuesOnCastCancelled(), p);
@@ -112,7 +126,11 @@ namespace UnityGAS
 
             var p = BuildCueParamsForAbility(def, target);
             StartOrReplaceLoop(activeLoopHandles, spec, def.audioWhileActive, p);
-            PlayShake(def.cameraShakeWhileActive, p);
+            WorldPresentationRuntime.PlayMerged(
+                def.presentationWhileActive,
+                default,
+                def.cameraShakeWhileActive,
+                BuildWorldPresentationContext(p));
 
             AddCues(def.EnumerateCuesWhileActive(), p);
         }
@@ -129,15 +147,21 @@ namespace UnityGAS
 
             if (cancelled)
             {
-                PlayOneShot(def.audioOnExecutionCancelled, p);
-                PlayShake(def.cameraShakeOnExecutionCancelled, p);
+                WorldPresentationRuntime.PlayMerged(
+                    def.presentationOnExecutionCancelled,
+                    def.audioOnExecutionCancelled,
+                    def.cameraShakeOnExecutionCancelled,
+                    BuildWorldPresentationContext(p));
 
                 ExecuteCues(def.EnumerateCuesOnExecutionCancelled(), p);
             }
             else
             {
-                PlayOneShot(def.audioOnEnd, p);
-                PlayShake(def.cameraShakeOnEnd, p);
+                WorldPresentationRuntime.PlayMerged(
+                    def.presentationOnEnd,
+                    def.audioOnEnd,
+                    def.cameraShakeOnEnd,
+                    BuildWorldPresentationContext(p));
 
                 ExecuteCues(def.EnumerateCuesOnEnd(), p);
             }
@@ -163,6 +187,19 @@ namespace UnityGAS
             };
         }
 
+        private static WorldPresentationContext BuildWorldPresentationContext(in GameplayCueParams cueParams)
+        {
+            Vector3 normal = cueParams.Normal.sqrMagnitude > 0.0001f ? cueParams.Normal : Vector3.up;
+            return WorldPresentationContext.AtWorld(
+                instigator: cueParams.Instigator,
+                position: cueParams.Position,
+                fallbackDirection: normal,
+                target: cueParams.Target,
+                sourceObject: cueParams.SourceObject,
+                rotation: Quaternion.LookRotation(Vector3.forward, normal),
+                causer: cueParams.Causer);
+        }
+
         private Animator ResolveAnimationTarget(AbilityDefinition def)
         {
             if (def != null && def.animationChannel == AnimationChannel.Weapon)
@@ -181,19 +218,6 @@ namespace UnityGAS
                 Position = p.Position,
                 SourceObject = p.SourceObject
             };
-        }
-
-        private static void PlayOneShot(SoundRef soundRef, GameplayCueParams p)
-        {
-            if (!soundRef.IsSet)
-                return;
-
-            SoundManager.EnsureInstance().Play(soundRef, BuildSoundContext(p));
-        }
-
-        private static void PlayShake(CameraShakeHook shake, in GameplayCueParams cueParams)
-        {
-            shake.TryPlayFromCueParams(cueParams, debugReason: nameof(AbilityPresentationRouter));
         }
 
         private static void StartOrReplaceLoop(
