@@ -1,6 +1,11 @@
 using UnityEngine;
 using UnityGAS;
 
+/// <summary>
+/// 책임 :
+/// - StrangeCandlestick의 발사 조건 판단과 발사 설정 데이터를 보관한다.
+/// - 실제 락온-발사 시퀀스 실행은 AD/runner에 위임하고, 본체는 상위 판단과 데이터 제공에 집중한다.
+/// </summary>
 public class StrangeCandlestick : Mob
 {
     private static readonly System.Collections.Generic.List<StrangeCandlestick> instances = new();
@@ -25,6 +30,10 @@ public class StrangeCandlestick : Mob
     [SerializeField] private float lockOnLineWidth = 0.28f;
     [SerializeField] private Color lockOnColor = new Color(1f, 0.15f, 0.15f, 1f);
     [SerializeField] private AttackTelegraphStyle lockOnStyleAsset;
+    [Header("Ability")]
+    [SerializeField] private AbilityDefinition attackAbilityDefinition;
+    [SerializeField] private MobAbilityCoordinator abilityCoordinator;
+    [SerializeField] private StrangeCandlestickAttackRunner attackRunner;
 
     private EnemyChaseIntent2D detectionSensor;
     private CandlestickSeal candlestickSeal;
@@ -32,8 +41,8 @@ public class StrangeCandlestick : Mob
     private AttackTelegraphStyle runtimeLockOnStyle;
     private float nextProjectileFireTime;
     private bool hasLoggedInvalidConfig;
-    private bool isLockingOn;
-    private float lockOnFinishTime;
+    private bool ownsRuntimeAbilityDefinition;
+    private AbilityLogic_StrangeCandlestickAttack runtimeAttackLogic;
 
     public static System.Collections.Generic.IReadOnlyList<StrangeCandlestick> Instances => instances;
     public bool IsSealed => candlestickSeal != null && candlestickSeal.IsSealed;
@@ -45,6 +54,22 @@ public class StrangeCandlestick : Mob
         candlestickSeal = GetComponent<CandlestickSeal>();
         telegraphService = GetComponent<AttackTelegraphService>();
         runtimeLockOnStyle = lockOnStyleAsset == null ? MakeLockOnStyle() : null;
+
+        if (abilityCoordinator == null)
+            abilityCoordinator = GetComponent<MobAbilityCoordinator>();
+        if (abilityCoordinator == null)
+            abilityCoordinator = gameObject.AddComponent<MobAbilityCoordinator>();
+
+        if (attackRunner == null)
+            attackRunner = GetComponent<StrangeCandlestickAttackRunner>();
+        if (attackRunner == null)
+            attackRunner = gameObject.AddComponent<StrangeCandlestickAttackRunner>();
+    }
+
+    protected override void Start()
+    {
+        base.Start();
+        EnsureAttackAbility();
     }
 
     private void OnEnable()
@@ -56,7 +81,7 @@ public class StrangeCandlestick : Mob
     private void OnDisable()
     {
         instances.Remove(this);
-        CancelLockOn();
+        attackRunner?.Cancel();
     }
 
     protected override void OnDestroy()
@@ -65,6 +90,14 @@ public class StrangeCandlestick : Mob
 
         if (runtimeLockOnStyle != null)
             Destroy(runtimeLockOnStyle);
+
+        if (ownsRuntimeAbilityDefinition)
+        {
+            if (runtimeAttackLogic != null)
+                Destroy(runtimeAttackLogic);
+            if (attackAbilityDefinition != null)
+                Destroy(attackAbilityDefinition);
+        }
     }
 
     public override bool CanUseChaseMovement()
@@ -79,16 +112,16 @@ public class StrangeCandlestick : Mob
 
     protected override void UpdateAttack()
     {
-        if (isLockingOn)
-        {
-            TickLockOn();
-            return;
-        }
-
-        if (!CanShoot())
+        if (abilityCoordinator == null || attackAbilityDefinition == null)
             return;
 
-        StartLockOn();
+        if (abilityCoordinator.IsAbilityExecutionBusy)
+            return;
+
+        if (!CanShoot(target != null ? target.gameObject : null))
+            return;
+
+        abilityCoordinator.TryStartAbility(attackAbilityDefinition, target != null ? target.gameObject : null);
     }
 
     /// <summary>촛대를 봉인 상태로 만듭니다.</summary>
@@ -117,7 +150,7 @@ public class StrangeCandlestick : Mob
 
     protected override void OnDeathStarted()
     {
-        CancelLockOn();
+        abilityCoordinator?.CancelActiveAbility(true);
         base.OnDeathStarted();
     }
 
@@ -129,7 +162,7 @@ public class StrangeCandlestick : Mob
     }
 
     /// <summary>지금 탄막을 발사할 수 있는지 확인합니다.</summary>
-    private bool CanShoot()
+    private bool CanShoot(GameObject explicitTarget)
     {
         if (isDead)
             return false;
@@ -140,10 +173,10 @@ public class StrangeCandlestick : Mob
         if (!HasShootData())
             return false;
 
-        if (target == null)
+        if (explicitTarget == null)
             return false;
 
-        return IsTargetInRange();
+        return IsTargetInRange(explicitTarget.transform);
     }
 
     /// <summary>발사에 필요한 참조가 있는지 확인합니다.</summary>
@@ -169,23 +202,53 @@ public class StrangeCandlestick : Mob
     }
 
     /// <summary>플레이어가 감지 범위 안에 있는지 확인합니다.</summary>
-    private bool IsTargetInRange()
+    private bool IsTargetInRange(Transform targetTransform)
     {
-        if (target == null || detectionSensor == null)
+        if (targetTransform == null || detectionSensor == null)
             return false;
 
         float detectionRange = Mathf.Max(0f, detectionSensor.DetectionRange);
         if (detectionRange <= 0f)
             return false;
 
-        Vector2 toTarget = (Vector2)(target.position - transform.position);
+        Vector2 toTarget = (Vector2)(targetTransform.position - transform.position);
         return toTarget.sqrMagnitude <= detectionRange * detectionRange;
     }
 
-    /// <summary>LightBead를 생성하고 발사 설정을 넘깁니다.</summary>
-    private bool Shoot()
+    /// <summary>runner가 사용할 공격 문맥을 구성합니다.</summary>
+    public bool TryCreateAttackContext(GameObject explicitTarget, out StrangeCandlestickAttackRunner.AttackContext context)
     {
-        Vector2 shotDirection = GetLaunchDirection();
+        context = default;
+
+        GameObject targetObject = explicitTarget != null
+            ? explicitTarget
+            : target != null ? target.gameObject : null;
+
+        if (!CanShoot(targetObject))
+            return false;
+
+        context = new StrangeCandlestickAttackRunner.AttackContext(
+            targetObject,
+            Mathf.Max(0f, lockOnDuration));
+        return true;
+    }
+
+    /// <summary>runner가 락온 도중 계속 공격을 유지할 수 있는지 확인합니다.</summary>
+    public bool CanContinueAttack(GameObject explicitTarget)
+    {
+        if (explicitTarget == null)
+            return false;
+
+        return HasShootData() && !isDead && IsTargetInRange(explicitTarget.transform);
+    }
+
+    /// <summary>LightBead를 생성하고 발사 설정을 넘깁니다.</summary>
+    public bool FireProjectile(GameObject explicitTarget)
+    {
+        if (explicitTarget == null)
+            return false;
+
+        Vector2 shotDirection = GetLaunchDirection(explicitTarget.transform);
 
         CombatHitPayload payload = MakeHitPayload();
         if (payload == null)
@@ -212,7 +275,7 @@ public class StrangeCandlestick : Mob
             ignoreTarget = gameObject,
             lifetime = float.MaxValue,
             wallLayers = 1 << WallLayer,
-            damageLayers = GetDamageMask(),
+            damageLayers = GetDamageMask(explicitTarget),
             hitPayload = payload,
             direction = shotDirection,
             speed = Mathf.Max(0f, projectileSpeed)
@@ -227,72 +290,16 @@ public class StrangeCandlestick : Mob
         return true;
     }
 
-    private void StartLockOn()
-    {
-        isLockingOn = true;
-        lockOnFinishTime = Time.time + Mathf.Max(0f, lockOnDuration);
-
-        if (telegraphService != null)
-            telegraphService.Show(MakeLockOnSpec());
-    }
-
-    private void TickLockOn()
-    {
-        if (!CanContinueLockOn())
-        {
-            CancelLockOn();
-            return;
-        }
-
-        if (telegraphService != null)
-        {
-            AttackTelegraphSpec spec = MakeLockOnSpec();
-
-            if (telegraphService.HasActiveTelegraph)
-                telegraphService.UpdateCurrentGeometry(spec);
-            else
-                telegraphService.Show(spec);
-        }
-
-        if (Time.time < lockOnFinishTime)
-            return;
-
-        HideLockOnTelegraph();
-        isLockingOn = false;
-        Shoot();
-    }
-
-    private bool CanContinueLockOn()
-    {
-        if (isDead)
-            return false;
-
-        if (!HasShootData())
-            return false;
-
-        if (target == null)
-            return false;
-
-        return IsTargetInRange();
-    }
-
-    private void CancelLockOn()
-    {
-        isLockingOn = false;
-        lockOnFinishTime = 0f;
-        HideLockOnTelegraph();
-    }
-
     private void HideLockOnTelegraph()
     {
         if (telegraphService != null)
             telegraphService.HideCurrent();
     }
 
-    private AttackTelegraphSpec MakeLockOnSpec()
+    public AttackTelegraphSpec MakeLockOnSpec(GameObject explicitTarget)
     {
         Vector2 start = transform.position;
-        Vector2 end = target != null ? (Vector2)target.position : start;
+        Vector2 end = explicitTarget != null ? (Vector2)explicitTarget.transform.position : start;
         Vector2 delta = end - start;
         float length = Mathf.Max(0.01f, delta.magnitude);
         Vector2 direction = delta.sqrMagnitude <= 0.0001f
@@ -346,12 +353,12 @@ public class StrangeCandlestick : Mob
     }
 
     /// <summary>발사 방향을 계산합니다.</summary>
-    private Vector2 GetLaunchDirection()
+    private Vector2 GetLaunchDirection(Transform targetTransform)
     {
-        if (target == null)
+        if (targetTransform == null)
             return sprite != null && sprite.flipX ? Vector2.left : Vector2.right;
 
-        Vector2 toTarget = (Vector2)(target.position - transform.position);
+        Vector2 toTarget = (Vector2)(targetTransform.position - transform.position);
 
         if (toTarget.sqrMagnitude <= 0.0001f)
             return sprite != null && sprite.flipX ? Vector2.left : Vector2.right;
@@ -360,10 +367,10 @@ public class StrangeCandlestick : Mob
     }
 
     /// <summary>플레이어 레이어를 데미지 마스크로 만듭니다.</summary>
-    private LayerMask GetDamageMask()
+    private LayerMask GetDamageMask(GameObject explicitTarget)
     {
-        return target != null
-            ? (LayerMask)(1 << target.gameObject.layer)
+        return explicitTarget != null
+            ? (LayerMask)(1 << explicitTarget.layer)
             : (LayerMask)0;
     }
 
@@ -385,5 +392,31 @@ public class StrangeCandlestick : Mob
             snapshot: snapshot,
             hitConfirmedTag: null,
             causer: gameObject);
+    }
+
+    private void EnsureAttackAbility()
+    {
+        if (abilitySystem == null)
+            return;
+
+        if (attackAbilityDefinition != null)
+        {
+            if (abilitySystem.FindSpec(attackAbilityDefinition) == null)
+                abilitySystem.GiveAbility(attackAbilityDefinition);
+
+            return;
+        }
+
+        runtimeAttackLogic = ScriptableObject.CreateInstance<AbilityLogic_StrangeCandlestickAttack>();
+        attackAbilityDefinition = ScriptableObject.CreateInstance<AbilityDefinition>();
+        attackAbilityDefinition.name = "AD_StrangeCandlestick_Attack_Runtime";
+        attackAbilityDefinition.abilityName = "AD_StrangeCandlestick_Attack_Runtime";
+        attackAbilityDefinition.castTime = 0f;
+        attackAbilityDefinition.recoveryTime = 0f;
+        attackAbilityDefinition.animationChannel = AbilityDefinition.AnimationChannel.Player;
+        attackAbilityDefinition.executionPolicy = AbilityDefinition.ExecutionPolicy.ExclusiveQueued;
+        attackAbilityDefinition.logic = runtimeAttackLogic;
+        abilitySystem.GiveAbility(attackAbilityDefinition);
+        ownsRuntimeAbilityDefinition = true;
     }
 }

@@ -2,16 +2,19 @@ using UnityEngine;
 
 public class WitchExtinguishPatternState : BossState
 {
+    // 이 클래스의 책임:
+    // 마녀의 촛불 끄기 패턴 실행 구간을 관리하고, 패턴 시작/완료/취소를 브리지 계약을 통해 조율한다.
+
     private const float WarningTime = 1.2f;
 
-    private readonly Witch witch;
+    private readonly IWitchPatternStateBridge patternBridge;
     private bool activationRequested;
     private float explodeTime;
     private bool isWaiting;
 
-    public WitchExtinguishPatternState(Witch witch) : base(witch)
+    public WitchExtinguishPatternState(BossControllerBase boss, IWitchPatternStateBridge patternBridge) : base(boss)
     {
-        this.witch = witch;
+        this.patternBridge = patternBridge;
     }
 
     public override void OnEnter()
@@ -36,7 +39,7 @@ public class WitchExtinguishPatternState : BossState
             return;
         }
 
-        if (!witch.StartExtinguish(WarningTime))
+        if (patternBridge == null || !patternBridge.TryBeginExtinguishPattern(WarningTime, out float resolvedDuration))
         {
             LogState("촛불 끄기 패턴을 시작하지 못했습니다.");
             boss.AbortCurrentPattern();
@@ -45,7 +48,7 @@ public class WitchExtinguishPatternState : BossState
         }
 
         isWaiting = true;
-        explodeTime = Time.time + WarningTime;
+        explodeTime = Time.time + resolvedDuration;
         LogState("가장 가까운 촛대에 경고를 표시했습니다.");
     }
 
@@ -57,7 +60,7 @@ public class WitchExtinguishPatternState : BossState
 
         if (Time.time < explodeTime) return;
 
-        witch.FinishExtinguish();
+        patternBridge?.CompleteExtinguishPattern();
         boss.FinishCurrentPattern();
         isWaiting = false;
         LogState("촛불 끄기 패턴이 끝났습니다.");
@@ -66,7 +69,7 @@ public class WitchExtinguishPatternState : BossState
 
     public override void OnExit()
     {
-        witch.HideExtinguishWarning();
+        patternBridge?.CancelExtinguishPattern();
         boss.PatternRuntime.ClearReservedPattern();
         activationRequested = false;
         isWaiting = false;

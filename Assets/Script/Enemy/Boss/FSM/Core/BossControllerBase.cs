@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityGAS;
 
-public abstract class BossControllerBase : Enemy
+public abstract class BossControllerBase : Enemy, IBossAbilityStateBridge
 {
     // 이 클래스의 책임:
     // Enemy의 공통 전투/사망 처리 위에 보스 전용 전투 상태, 페이즈, 반응 전환을 조율한다.
@@ -73,6 +73,7 @@ public abstract class BossControllerBase : Enemy
     public float CurrentHealthRatio => GetCurrentHpRatio();
     public float CurrentHealthValue => GetCurrentHealthValue();
     public float MaxHealthValue => GetCurrentMaxHealthValue();
+    public bool IsAbilityExecutionBusy => abilitySystem != null && abilitySystem.IsBusy;
 
     protected override void Awake()
     {
@@ -258,6 +259,50 @@ public abstract class BossControllerBase : Enemy
         return true;
     }
 
+    /// <summary>
+    /// 책임 :
+    /// - FSM state가 AbilitySystem 구체 구현을 직접 모르고도 능력 시작을 요청할 수 있게 한다.
+    /// - 명시 타깃이 없으면 현재 보스 타깃을 기본값으로 사용해 공통 실행 문맥을 맞춘다.
+    /// </summary>
+    public bool TryStartAbility(AbilityDefinition ability, GameObject explicitTarget = null)
+    {
+        if (abilitySystem == null || ability == null)
+            return false;
+
+        GameObject targetObject = explicitTarget != null
+            ? explicitTarget
+            : Target != null ? Target.gameObject : null;
+
+        return abilitySystem.TryActivateAbility(ability, targetObject);
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - FSM state가 현재 실행 중인 능력을 취소할 때 casting/execution 세부 API를 직접 몰라도 되게 한다.
+    /// - 취소 정책(force 여부)은 state가 전달하고, 실제 ASC 호출은 컨트롤러가 책임진다.
+    /// </summary>
+    public void CancelActiveAbility(bool force)
+    {
+        if (abilitySystem == null)
+            return;
+
+        if (abilitySystem.IsCasting)
+            abilitySystem.CancelCasting(force);
+
+        if (abilitySystem.IsExecuting)
+            abilitySystem.CancelExecution(force);
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - FSM state가 TagSystem 구현 세부사항 대신 공통 브리지를 통해 상태 태그를 조회하게 한다.
+    /// - 상태 전환 조건이 태그 시스템 교체에 덜 민감하도록 조회 경로를 한 곳으로 모은다.
+    /// </summary>
+    public bool HasStateTag(GameplayTag tag)
+    {
+        return tag != null && tagSystem != null && tagSystem.HasTag(tag);
+    }
+
     public void FinishCurrentPattern()
     {
         BossPatternEntry finishedPattern = patternRuntime != null ? patternRuntime.CurrentPattern : null;
@@ -268,12 +313,7 @@ public abstract class BossControllerBase : Enemy
     public void AbortCurrentPattern()
     {
         BossPatternEntry activePattern = patternRuntime != null ? patternRuntime.CurrentPattern ?? patternRuntime.ReservedPattern : null;
-
-        if (abilitySystem != null && abilitySystem.IsCasting)
-            abilitySystem.CancelCasting(true);
-
-        if (abilitySystem != null && abilitySystem.IsExecuting)
-            abilitySystem.CancelExecution(true);
+        CancelActiveAbility(true);
 
         OnPatternEnd(activePattern, true);
         patternRuntime?.ClearPatternContext();

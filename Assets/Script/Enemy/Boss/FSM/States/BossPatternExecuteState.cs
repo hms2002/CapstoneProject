@@ -1,5 +1,8 @@
 public class BossPatternExecuteState : BossState
 {
+    // 이 클래스의 책임:
+    // 예약된 보스 패턴을 실제로 실행하고, 능력 브리지를 통해 실행 완료 시점을 감지해 다음 상태로 넘긴다.
+
     private bool activationRequested;
 
     public BossPatternExecuteState(BossControllerBase boss) : base(boss) { }
@@ -33,7 +36,7 @@ public class BossPatternExecuteState : BossState
         if (!activationRequested)
             return;
 
-        if (boss.AbilitySystem != null && boss.AbilitySystem.IsBusy)
+        if (abilityBridge != null && abilityBridge.IsAbilityExecutionBusy)
             return;
 
         string currentPatternName = boss.PatternRuntime.CurrentPattern != null && boss.PatternRuntime.CurrentPattern.Ability != null

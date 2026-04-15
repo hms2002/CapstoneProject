@@ -8,6 +8,9 @@ using UnityGAS;
 [DisallowMultipleComponent]
 public sealed class PlayerHubSpawnPresentation2D : MonoBehaviour
 {
+    // 이 클래스의 책임:
+    // 허브 진입 시 플레이어 낙하/기상 연출을 재생하고, 연출 중 플레이어 표현·입력·카메라 상태를 안전하게 전환/복구한다.
+
     private static readonly InputActionId[] WakeInputActions =
     {
         InputActionId.Interact,
@@ -141,7 +144,7 @@ public sealed class PlayerHubSpawnPresentation2D : MonoBehaviour
         }
 
         if (presentationPrepared)
-            ForceRestorePresentationState();
+            ForceRestorePresentationState(allowHierarchyMutation: gameObject.activeInHierarchy);
     }
 
     private void HandleSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -283,7 +286,7 @@ public sealed class PlayerHubSpawnPresentation2D : MonoBehaviour
             interactor.SetInteractState(InteractState.Idle);
     }
 
-    private void ForceRestorePresentationState()
+    private void ForceRestorePresentationState(bool allowHierarchyMutation = true)
     {
         transform.position = landingPosition;
         transform.rotation = Quaternion.identity;
@@ -292,10 +295,14 @@ public sealed class PlayerHubSpawnPresentation2D : MonoBehaviour
         ApplyAwakeIdleSprite();
         RestoreAwakeShadowPresentation();
         RestorePhysicsParticipation();
-        ReattachShadow();
+        if (allowHierarchyMutation)
+        {
+            ReattachShadow();
+            RestoreCameraBindingToPlayer();
+            CleanupCameraAnchor();
+        }
+
         RestoreGameplayControl();
-        RestoreCameraBindingToPlayer();
-        CleanupCameraAnchor();
         ZeroAllRigidbodies();
         presentationRuntime?.Stop(gameplayPresentation, BuildPresentationParams(landingPosition, hasExplicitPosition: true), playRemove: false);
 

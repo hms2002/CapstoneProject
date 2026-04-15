@@ -33,6 +33,7 @@ GameObject:
   - component: {fileID: 344486096308046059}
   - component: {fileID: 8223012456081861757}
   - component: {fileID: 5188487318859962288}
+  - component: {fileID: 7001000000000000002}
   m_Layer: 31
   m_Name: ShadowMonster
   m_TagString: Enemy
@@ -572,3 +573,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UnityGAS.CombatHurtbox2D
   targetRoot: {fileID: 0}
+  ownedColliders: []
+--- !u!114 &7001000000000000002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 625522859161183429}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eab7ec7f6dd542f9bf26ce0e9f7f4d6f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maskedRenderer: {fileID: 1695031726951874086}
+  samplePointOverride: {fileID: 0}
+  sampleOffset: {x: 0, y: -0.5, z: 0}
+  spriteMaskRefreshInterval: 0.25

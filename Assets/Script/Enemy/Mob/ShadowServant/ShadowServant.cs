@@ -1,14 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using CapstoneAudio;
-using CapstonePresentation;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityGAS;
 
 public class ShadowServant : Mob
 {
-    private const float AttackDelay = 2f;
+    private const float DefaultPresentationLifetimeSeconds = 1f;
+
+    // 이 클래스의 책임:
+    // ShadowServant의 공격 조건 판단과 공격 설정 데이터 제공을 담당하고, 실제 시퀀스 실행은 AD/runner에 위임한다.
 
     [Header("Fog")]
     [Tooltip("안개를 생성할 때 사용할 안개 프리팹입니다.")]
@@ -21,77 +22,71 @@ public class ShadowServant : Mob
     [SerializeField] private float explosionDamage = 1f;
 
     [Header("Attack Presentation")]
-    [SerializeField] private WorldPresentationHook attackPresentation;
-    [HideInInspector, FormerlySerializedAs("attackEffectPrefab")]
-    [SerializeField] private GameObject legacyAttackEffectPrefab;
-    [HideInInspector, FormerlySerializedAs("attackEffectLocalOffset")]
-    [SerializeField] private Vector3 legacyAttackEffectLocalOffset = new Vector3(0f, 0f, -0.05f);
-    [HideInInspector, FormerlySerializedAs("attackEffectLifetimeSeconds")]
-    [SerializeField] private float legacyAttackEffectLifetimeSeconds = 0.35f;
-    [HideInInspector, FormerlySerializedAs("attackEffectScaleMultiplier")]
-    [SerializeField] private Vector3 legacyAttackEffectScaleMultiplier = Vector3.one;
-    [HideInInspector, FormerlySerializedAs("attackEffectRotationOffsetZ")]
-    [SerializeField] private float legacyAttackEffectRotationOffsetZ;
-    [HideInInspector, FormerlySerializedAs("attackParticlePrefab")]
-    [SerializeField] private GameObject legacyAttackParticlePrefab;
-    [HideInInspector, FormerlySerializedAs("attackParticleLocalOffset")]
-    [SerializeField] private Vector3 legacyAttackParticleLocalOffset = new Vector3(0f, 0f, -0.02f);
-    [HideInInspector, FormerlySerializedAs("attackParticleLifetimeOverrideSeconds")]
-    [SerializeField] private float legacyAttackParticleLifetimeOverrideSeconds;
-    [HideInInspector, FormerlySerializedAs("useUnscaledAttackParticleTime")]
-    [SerializeField] private bool legacyUseUnscaledAttackParticleTime;
-    [HideInInspector, FormerlySerializedAs("attackParticleScaleMultiplier")]
-    [SerializeField] private Vector3 legacyAttackParticleScaleMultiplier = Vector3.one;
-    [HideInInspector, FormerlySerializedAs("attackParticleRotationOffsetZ")]
-    [SerializeField] private float legacyAttackParticleRotationOffsetZ;
-    [HideInInspector, FormerlySerializedAs("attackSound")]
-    [SerializeField] private SoundRef legacyAttackSound;
-    [HideInInspector, FormerlySerializedAs("attackCameraShake")]
-    [SerializeField] private CameraShakeHook legacyAttackCameraShake = CameraShakeHook.Create(0.14f, 1f, 0.22f, 0.04f);
+    [SerializeField] private GameObject attackEffectPrefab;
+    [SerializeField] private Vector3 attackEffectLocalOffset = new Vector3(0f, 0f, -0.05f);
+    [SerializeField] [Min(0f)] private float attackEffectLifetimeSeconds = 0.35f;
+    [SerializeField] private Vector3 attackEffectScaleMultiplier = Vector3.one;
+    [SerializeField] private float attackEffectRotationOffsetZ;
+    [SerializeField] private GameObject attackParticlePrefab;
+    [SerializeField] private Vector3 attackParticleLocalOffset = new Vector3(0f, 0f, -0.02f);
+    [SerializeField] [Min(0f)] private float attackParticleLifetimeOverrideSeconds;
+    [SerializeField] private bool useUnscaledAttackParticleTime;
+    [SerializeField] private Vector3 attackParticleScaleMultiplier = Vector3.one;
+    [SerializeField] private float attackParticleRotationOffsetZ;
+    [SerializeField] private SoundRef attackSound;
+    [SerializeField] private CameraShakeHook attackCameraShake = CameraShakeHook.Create(0.14f, 1f, 0.22f, 0.04f);
+    [Header("Ability")]
+    [SerializeField] private AbilityDefinition attackAbilityDefinition;
+    [SerializeField] private MobAbilityCoordinator abilityCoordinator;
+    [SerializeField] private ShadowServantAttackRunner attackRunner;
 
-    private readonly HashSet<GameObject> damagedTargets = new();
-
-    private AttackTelegraphService telegraphService;
-    private AttackTelegraphStyle warningStyle;
-    private Coroutine attackRoutine;
-    private bool isAttacking;
     private bool hasLoggedInvalidConfig;
+    private bool ownsRuntimeAbilityDefinition;
+    private AbilityLogic_ShadowServantAttack runtimeAttackLogic;
 
     protected override void Awake()
     {
         base.Awake();
-        MigrateLegacyAttackPresentation();
-        telegraphService = GetComponent<AttackTelegraphService>();
-        warningStyle = MakeWarningStyle();
+
+        if (abilityCoordinator == null)
+            abilityCoordinator = GetComponent<MobAbilityCoordinator>();
+        if (abilityCoordinator == null)
+            abilityCoordinator = gameObject.AddComponent<MobAbilityCoordinator>();
+
+        if (attackRunner == null)
+            attackRunner = GetComponent<ShadowServantAttackRunner>();
+        if (attackRunner == null)
+            attackRunner = gameObject.AddComponent<ShadowServantAttackRunner>();
     }
 
-    private void OnValidate()
+    protected override void Start()
     {
-        MigrateLegacyAttackPresentation();
+        base.Start();
+        EnsureAttackAbility();
     }
 
     public override bool CanUseChaseMovement()
     {
-        return !isAttacking;
+        return attackRunner == null || !attackRunner.IsRunning;
     }
 
     protected override void UpdateAttack()
     {
-        if (attackRoutine != null)
+        if (abilityCoordinator == null || attackAbilityDefinition == null)
+            return;
+
+        if (abilityCoordinator.IsAbilityExecutionBusy)
             return;
 
         if (!CanAttack())
             return;
 
-        attackRoutine = StartCoroutine(RunAttack());
+        abilityCoordinator.TryStartAbility(attackAbilityDefinition, target != null ? target.gameObject : null);
     }
 
     protected override void OnDeathStarted()
     {
-        if (attackRoutine != null)
-            StopCoroutine(attackRoutine);
-
-        ClearAttack();
+        abilityCoordinator?.CancelActiveAbility(true);
         base.OnDeathStarted();
     }
 
@@ -114,13 +109,18 @@ public class ShadowServant : Mob
     {
         base.OnDestroy();
 
-        if (warningStyle != null)
-            Destroy(warningStyle);
+        if (ownsRuntimeAbilityDefinition)
+        {
+            if (runtimeAttackLogic != null)
+                Destroy(runtimeAttackLogic);
+            if (attackAbilityDefinition != null)
+                Destroy(attackAbilityDefinition);
+        }
     }
 
     private bool CanAttack()
     {
-        if (isDead || isAttacking)
+        if (isDead)
             return false;
 
         if (!HasAttackData())
@@ -137,7 +137,8 @@ public class ShadowServant : Mob
         bool isValid = fog != null &&
                        explosionDamageEffect != null &&
                        abilitySystem != null &&
-                       GetFogRadius() > 0f;
+                       GetFogRadius() > 0f &&
+                       attackRunner != null;
 
         if (isValid)
             return true;
@@ -167,109 +168,102 @@ public class ShadowServant : Mob
         return toTarget.sqrMagnitude <= attackRadius * attackRadius;
     }
 
-    private IEnumerator RunAttack()
+    private void EnsureAttackAbility()
     {
-        isAttacking = true;
+        if (abilitySystem == null)
+            return;
 
-        Vector3 targetPoint = target != null ? target.position : transform.position;
+        if (attackAbilityDefinition != null)
+        {
+            if (abilitySystem.FindSpec(attackAbilityDefinition) == null)
+                abilitySystem.GiveAbility(attackAbilityDefinition);
+
+            return;
+        }
+
+        runtimeAttackLogic = ScriptableObject.CreateInstance<AbilityLogic_ShadowServantAttack>();
+        attackAbilityDefinition = ScriptableObject.CreateInstance<AbilityDefinition>();
+        attackAbilityDefinition.name = "AD_ShadowServant_Attack_Runtime";
+        attackAbilityDefinition.abilityName = "AD_ShadowServant_Attack_Runtime";
+        attackAbilityDefinition.castTime = 0f;
+        attackAbilityDefinition.recoveryTime = 0f;
+        attackAbilityDefinition.animationChannel = AbilityDefinition.AnimationChannel.Player;
+        attackAbilityDefinition.executionPolicy = AbilityDefinition.ExecutionPolicy.ExclusiveQueued;
+        attackAbilityDefinition.logic = runtimeAttackLogic;
+        abilitySystem.GiveAbility(attackAbilityDefinition);
+        ownsRuntimeAbilityDefinition = true;
+    }
+
+    public bool TryCreateAttackContext(GameObject explicitTarget, float delaySeconds, out ShadowServantAttackRunner.AttackContext context)
+    {
+        context = default;
+
+        GameObject targetObject = explicitTarget != null
+            ? explicitTarget
+            : target != null ? target.gameObject : null;
+
+        if (targetObject == null || !HasAttackData())
+            return false;
+
+        Vector3 targetPoint = targetObject.transform.position;
         Vector3 hitPoint = GetHitPoint(targetPoint);
-        ShowWarning(hitPoint);
-
-        yield return new WaitForSeconds(AttackDelay);
-
-        if (isDead)
-        {
-            ClearAttack();
-            yield break;
-        }
-
-        if (animator != null)
-            animator.SetTrigger("attack");
-
-        PlayAttackPresentation(hitPoint);
-        Explode(hitPoint);
-        SpawnFog(targetPoint);
-        ClearAttack();
-    }
-
-    private void ShowWarning(Vector3 targetPoint)
-    {
-        if (telegraphService == null)
-            return;
-
-        AttackTelegraphSpec spec = AttackTelegraphSpec.CreateCircle(
+        context = new ShadowServantAttackRunner.AttackContext(
+            targetObject,
             targetPoint,
+            hitPoint,
             GetFogDiameter(),
-            AttackDelay,
-            warningStyle);
-
-        telegraphService.Show(spec);
+            Mathf.Max(0f, delaySeconds),
+            GetDamageMask(targetObject));
+        return true;
     }
 
-    private void ClearAttack()
-    {
-        attackRoutine = null;
-        isAttacking = false;
-
-        if (telegraphService != null)
-            telegraphService.HideCurrent();
-    }
-
-    private void Explode(Vector3 targetPoint)
-    {
-        CombatHitPayload payload = MakeHitPayload();
-        if (payload == null)
-            return;
-
-        Collider2D[] hits = Physics2D.OverlapCircleAll(
-            targetPoint,
-            GetFogRadius(),
-            GetDamageMask());
-
-        damagedTargets.Clear();
-
-        for (int i = 0; i < hits.Length; i++)
-        {
-            Collider2D hit = hits[i];
-            GameObject hitTarget = CombatTargetResolver2D.ResolveDamageTarget(hit);
-
-            if (hitTarget == null || hitTarget == gameObject)
-                continue;
-
-            if (!damagedTargets.Add(hitTarget))
-                continue;
-
-            CombatHitPayloadApplier.Apply(hitTarget, payload, hit.ClosestPoint(targetPoint));
-        }
-    }
-
-    private void SpawnFog(Vector3 targetPoint)
+    public void SpawnFog(Vector3 targetPoint)
     {
         Instantiate(fog, new Vector3(targetPoint.x, targetPoint.y, 0f), Quaternion.identity);
     }
 
-    private void PlayAttackPresentation(Vector3 targetPoint)
+    public void PlayAttackPresentation(Vector3 targetPoint)
     {
-        WorldPresentationRuntime.Play(
-            attackPresentation,
-            WorldPresentationContext.AtWorld(
-                instigator: gameObject,
-                position: targetPoint,
-                fallbackDirection: targetPoint - transform.position,
-                target: target != null ? target.gameObject : null,
-                sourceObject: this,
-                rotation: Quaternion.identity,
-                causer: gameObject));
+        if (animator != null)
+            animator.SetTrigger("attack");
+
+        SpawnPresentationPrefab(
+            attackEffectPrefab,
+            targetPoint + attackEffectLocalOffset,
+            attackEffectRotationOffsetZ,
+            attackEffectScaleMultiplier,
+            attackEffectLifetimeSeconds,
+            useUnscaledTime: false);
+        SpawnPresentationPrefab(
+            attackParticlePrefab,
+            targetPoint + attackParticleLocalOffset,
+            attackParticleRotationOffsetZ,
+            attackParticleScaleMultiplier,
+            attackParticleLifetimeOverrideSeconds,
+            useUnscaledAttackParticleTime);
+
+        SoundPlaybackUtility.Play(
+            attackSound,
+            instigator: gameObject,
+            causer: gameObject,
+            target: target != null ? target.gameObject : null,
+            position: targetPoint,
+            sourceObject: this);
+
+        attackCameraShake.TryPlay(
+            gameObject,
+            targetPoint - transform.position,
+            debugReason: "ShadowServant.Attack");
     }
 
-    private LayerMask GetDamageMask()
+    public LayerMask GetDamageMask(GameObject explicitTarget)
     {
-        return target != null
-            ? (LayerMask)(1 << target.gameObject.layer)
+        return explicitTarget != null
+            ? (LayerMask)(1 << explicitTarget.layer)
             : (LayerMask)0;
     }
 
-    private CombatHitPayload MakeHitPayload()
+    public CombatHitPayload MakeHitPayload(AbilitySystem sourceSystem, AbilitySpec spec)
     {
         CombatDamageSnapshot snapshot = new CombatDamageSnapshot(
             finalHpDamage: explosionDamage,
@@ -279,8 +273,8 @@ public class ShadowServant : Mob
             isCriticalHit: false);
 
         return CombatHitPayload.FromSnapshot(
-            sourceSystem: abilitySystem,
-            sourceSpec: null,
+            sourceSystem: sourceSystem != null ? sourceSystem : abilitySystem,
+            sourceSpec: spec,
             damageEffect: explosionDamageEffect,
             knockbackEffect: null,
             snapshot: snapshot,
@@ -295,7 +289,7 @@ public class ShadowServant : Mob
             : 0f;
     }
 
-    private float GetFogRadius()
+    public float GetFogRadius()
     {
         if (fog == null)
             return 0f;
@@ -307,7 +301,7 @@ public class ShadowServant : Mob
         return Mathf.Max(0f, fogCollider.radius);
     }
 
-    private float GetFogDiameter()
+    public float GetFogDiameter()
     {
         return GetFogRadius() * 2f;
     }
@@ -333,49 +327,155 @@ public class ShadowServant : Mob
             fogCollider.offset.y * scale.y);
     }
 
-    private AttackTelegraphStyle MakeWarningStyle()
+    private static void SpawnPresentationPrefab(
+        GameObject prefab,
+        Vector3 position,
+        float rotationOffsetZ,
+        Vector3 scaleMultiplier,
+        float lifetimeOverrideSeconds,
+        bool useUnscaledTime)
     {
-        AttackTelegraphStyle style = ScriptableObject.CreateInstance<AttackTelegraphStyle>();
-        style.fillColorStart = new Color(1f, 0f, 0f, 0.35f);
-        style.fillColorEnd = new Color(1f, 0f, 0f, 0.35f);
-        style.borderColorStart = new Color(1f, 0f, 0f, 1f);
-        style.borderColorEnd = new Color(1f, 0f, 0f, 1f);
-        style.progressCurve = AnimationCurve.Linear(0f, 0f, 1f, 1f);
-        style.blinkStartNormalized = 1f;
-        style.blinkFrequency = 0f;
-        style.blinkAlphaMin = 1f;
-        style.scaleFillWithProgress = false;
-        style.fillScaleStart = 1f;
-        style.fillScaleEnd = 1f;
-        return style;
+        if (prefab == null)
+            return;
+
+        Quaternion rotation = Quaternion.Euler(0f, 0f, rotationOffsetZ);
+        GameObject instance = Instantiate(prefab, position, rotation);
+        if (instance == null)
+            return;
+
+        instance.transform.localScale = Vector3.Scale(instance.transform.localScale, scaleMultiplier);
+        ConfigureSpawnedPresentation(instance, useUnscaledTime);
+
+        float lifetime = ResolvePresentationLifetime(instance, lifetimeOverrideSeconds);
+        if (lifetime > 0f)
+            Destroy(instance, lifetime);
     }
 
-    private void MigrateLegacyAttackPresentation()
+    private static void ConfigureSpawnedPresentation(GameObject instance, bool useUnscaledTime)
     {
-        if (legacyAttackEffectPrefab != null && !attackPresentation.effect.HasContent)
+        if (instance == null)
+            return;
+
+        instance.SetActive(true);
+
+        ParticleSystem[] particleSystems = instance.GetComponentsInChildren<ParticleSystem>(includeInactive: true);
+        for (int i = 0; i < particleSystems.Length; i++)
         {
-            attackPresentation.effect.prefab = legacyAttackEffectPrefab;
-            attackPresentation.effect.localOffset = legacyAttackEffectLocalOffset;
-            attackPresentation.effect.rotationOffsetZ = legacyAttackEffectRotationOffsetZ;
-            attackPresentation.effect.scaleMultiplier = legacyAttackEffectScaleMultiplier;
-            attackPresentation.effect.lifetimeOverrideSeconds = legacyAttackEffectLifetimeSeconds;
+            ParticleSystem particleSystem = particleSystems[i];
+            if (particleSystem == null)
+                continue;
+
+            if (useUnscaledTime)
+            {
+                ParticleSystem.MainModule main = particleSystem.main;
+                main.useUnscaledTime = true;
+            }
+
+            particleSystem.Play(withChildren: true);
         }
 
-        if (legacyAttackParticlePrefab != null && !attackPresentation.particle.HasContent)
+        Animation[] animations = instance.GetComponentsInChildren<Animation>(includeInactive: true);
+        for (int i = 0; i < animations.Length; i++)
         {
-            attackPresentation.particle.prefab = legacyAttackParticlePrefab;
-            attackPresentation.particle.localOffset = legacyAttackParticleLocalOffset;
-            attackPresentation.particle.rotationOffsetZ = legacyAttackParticleRotationOffsetZ;
-            attackPresentation.particle.scaleMultiplier = legacyAttackParticleScaleMultiplier;
-            attackPresentation.particle.lifetimeOverrideSeconds = legacyAttackParticleLifetimeOverrideSeconds;
-            attackPresentation.particle.useUnscaledTime = legacyUseUnscaledAttackParticleTime;
+            Animation animationComponent = animations[i];
+            if (animationComponent == null)
+                continue;
+
+            animationComponent.Play();
         }
-
-        if (!attackPresentation.HasSound && legacyAttackSound.IsSet)
-            attackPresentation.sound = legacyAttackSound;
-
-        if (!attackPresentation.HasShake && legacyAttackCameraShake.amplitude > 0f)
-            attackPresentation.cameraShake = legacyAttackCameraShake;
     }
 
+    private static float ResolvePresentationLifetime(GameObject instance, float lifetimeOverrideSeconds)
+    {
+        if (lifetimeOverrideSeconds > 0f)
+            return lifetimeOverrideSeconds;
+
+        float particleLifetime = ResolveParticleLifetime(instance);
+        if (particleLifetime > 0f)
+            return particleLifetime;
+
+        float animationLifetime = ResolveAnimatorLifetime(instance);
+        if (animationLifetime > 0f)
+            return animationLifetime;
+
+        return DefaultPresentationLifetimeSeconds;
+    }
+
+    private static float ResolveParticleLifetime(GameObject instance)
+    {
+        ParticleSystem[] particleSystems = instance.GetComponentsInChildren<ParticleSystem>(includeInactive: true);
+        if (particleSystems == null || particleSystems.Length == 0)
+            return 0f;
+
+        float maxLifetime = 0f;
+        for (int i = 0; i < particleSystems.Length; i++)
+        {
+            ParticleSystem particleSystem = particleSystems[i];
+            if (particleSystem == null)
+                continue;
+
+            ParticleSystem.MainModule main = particleSystem.main;
+            if (main.loop)
+                return DefaultPresentationLifetimeSeconds;
+
+            float startDelay = ResolveCurveMax(main.startDelay);
+            float startLifetime = ResolveCurveMax(main.startLifetime);
+            maxLifetime = Mathf.Max(maxLifetime, startDelay + main.duration + startLifetime);
+        }
+
+        return maxLifetime > 0f ? maxLifetime + 0.25f : 0f;
+    }
+
+    private static float ResolveAnimatorLifetime(GameObject instance)
+    {
+        float maxLifetime = 0f;
+
+        Animator[] animators = instance.GetComponentsInChildren<Animator>(includeInactive: true);
+        for (int i = 0; i < animators.Length; i++)
+        {
+            Animator animator = animators[i];
+            if (animator == null || animator.runtimeAnimatorController == null)
+                continue;
+
+            AnimationClip[] clips = animator.runtimeAnimatorController.animationClips;
+            for (int clipIndex = 0; clipIndex < clips.Length; clipIndex++)
+            {
+                AnimationClip clip = clips[clipIndex];
+                if (clip == null)
+                    continue;
+
+                maxLifetime = Mathf.Max(maxLifetime, clip.length);
+            }
+        }
+
+        Animation[] animations = instance.GetComponentsInChildren<Animation>(includeInactive: true);
+        for (int i = 0; i < animations.Length; i++)
+        {
+            Animation animationComponent = animations[i];
+            if (animationComponent == null)
+                continue;
+
+            foreach (AnimationState state in animationComponent)
+            {
+                if (state?.clip == null)
+                    continue;
+
+                maxLifetime = Mathf.Max(maxLifetime, state.clip.length);
+            }
+        }
+
+        return maxLifetime > 0f ? maxLifetime + 0.05f : 0f;
+    }
+
+    private static float ResolveCurveMax(ParticleSystem.MinMaxCurve curve)
+    {
+        return curve.mode switch
+        {
+            ParticleSystemCurveMode.Constant => curve.constant,
+            ParticleSystemCurveMode.TwoConstants => curve.constantMax,
+            ParticleSystemCurveMode.Curve => curve.curveMultiplier,
+            ParticleSystemCurveMode.TwoCurves => curve.curveMultiplier,
+            _ => Mathf.Max(curve.constant, curve.constantMax)
+        };
+    }
 }

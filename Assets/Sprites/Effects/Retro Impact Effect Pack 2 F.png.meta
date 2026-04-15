@@ -1958,10 +1958,10 @@ TextureImporter:
       name: Retro Impact Effect Pack 2 F_43
       rect:
         serializedVersion: 2
-        x: 64
-        y: 768
-        width: 64
-        height: 64
+        x: 80
+        y: 784
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}

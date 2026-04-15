@@ -1,10 +1,13 @@
 public class WitchRetreatToCandleState : BossState
 {
-    private readonly Witch witch;
+    // 이 클래스의 책임:
+    // 마녀의 촛대로 피난 패턴을 시작하고, 발동 실패/성공에 따른 상태 전환을 브리지 계약으로 정리한다.
 
-    public WitchRetreatToCandleState(Witch witch) : base(witch)
+    private readonly IWitchPatternStateBridge patternBridge;
+
+    public WitchRetreatToCandleState(BossControllerBase boss, IWitchPatternStateBridge patternBridge) : base(boss)
     {
-        this.witch = witch;
+        this.patternBridge = patternBridge;
     }
 
     public override void OnEnter()
@@ -27,7 +30,7 @@ public class WitchRetreatToCandleState : BossState
             return;
         }
 
-        if (!witch.StartRetreat())
+        if (patternBridge == null || !patternBridge.TryBeginRetreatPattern())
         {
             LogState("촛대로의 피난 패턴을 시작하지 못했습니다.");
             boss.AbortCurrentPattern();
