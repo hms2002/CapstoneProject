@@ -61,6 +61,10 @@ public class DeadsSkeleton : Mob, IDamageReceiver
 
     [Tooltip("자폭 시 재생할 카메라 셰이크입니다.")]
     [SerializeField] private CameraShakeHook explosionCameraShake = CameraShakeHook.Create(0.18f, 1f, 0.28f, 0.04f);
+    [Header("Ability")]
+    [SerializeField] private AbilityDefinition selfDestructAbilityDefinition;
+    [SerializeField] private MobAbilityCoordinator abilityCoordinator;
+    [SerializeField] private DeadsSkeletonSelfDestructPatternExecutor selfDestructExecutor;
 
     private readonly HashSet<GameObject> damagedTargets = new();
 
@@ -76,6 +80,8 @@ public class DeadsSkeleton : Mob, IDamageReceiver
     private float selfDestructIntroEndTime;
     private bool hasLoggedInvalidConfig;
     private bool suppressHealthRestore;
+    private bool ownsRuntimeAbilityDefinition;
+    private AbilityLogic_DeadsSkeletonSelfDestruct runtimeSelfDestructLogic;
 
     protected override void Awake()
     {
@@ -85,6 +91,16 @@ public class DeadsSkeleton : Mob, IDamageReceiver
         sightMask = GetComponentInChildren<SpriteMask>(true);
         sightMaskTransform = sightMask != null ? sightMask.transform : null;
 
+        if (abilityCoordinator == null)
+            abilityCoordinator = GetComponent<MobAbilityCoordinator>();
+        if (abilityCoordinator == null)
+            abilityCoordinator = gameObject.AddComponent<MobAbilityCoordinator>();
+
+        if (selfDestructExecutor == null)
+            selfDestructExecutor = GetComponent<DeadsSkeletonSelfDestructPatternExecutor>();
+        if (selfDestructExecutor == null)
+            selfDestructExecutor = gameObject.AddComponent<DeadsSkeletonSelfDestructPatternExecutor>();
+
         if (sightMaskTransform != null)
             defaultSightMaskScale = sightMaskTransform.localScale;
 
@@ -93,26 +109,24 @@ public class DeadsSkeleton : Mob, IDamageReceiver
         ApplyNormalDetectionRange();
     }
 
+    protected override void Start()
+    {
+        base.Start();
+        EnsureSelfDestructAbility();
+    }
+
     protected override void UpdateAttack()
     {
-        if (isSelfDestruct)
-        {
-            if (!IsPlayingSelfDestructIntro())
-                EnterArmedPhaseIfNeeded();
-
-            if (ShouldCancelSelfDestruct())
-            {
-                CancelSelfDestruct();
-                return;
-            }
-
-            TickSelfDestruct();
+        if (abilityCoordinator == null || selfDestructAbilityDefinition == null)
             return;
-        }
 
-        if (!CanStartSelfDestruct()) return;
+        if (abilityCoordinator.IsAbilityExecutionBusy)
+            return;
 
-        StartSelfDestruct();
+        if (!CanStartSelfDestruct())
+            return;
+
+        abilityCoordinator.TryStartAbility(selfDestructAbilityDefinition, target != null ? target.gameObject : null);
     }
 
     /// <summary>자폭 전환 애니메이션 중에는 추적 이동을 멈춥니다.</summary>
@@ -140,6 +154,7 @@ public class DeadsSkeleton : Mob, IDamageReceiver
 
     protected override void OnDeathStarted()
     {
+        abilityCoordinator?.CancelActiveAbility(true);
         HideWarning();
         ApplyNormalDetectionRange();
         base.OnDeathStarted();
@@ -282,13 +297,47 @@ public class DeadsSkeleton : Mob, IDamageReceiver
             animator.SetBool("selfDestructionMode", true);
 
         ApplyNormalChaseSpeed();
-        ApplyNormalDetectionRange();
+        ApplySelfDestructDetectionRange();
         ApplySelfDestructDetectionBypass(true);
         PlaySightMaskExpand();
         ShowIntroWarning(introDuration);
 
         if (IsInsideCandlestickLight())
             DieFromLight();
+    }
+
+    /// <summary>executor가 자폭 시퀀스를 시작할 수 있는지 확인하고 실행 문맥을 만든다.</summary>
+    public bool TryCreateSelfDestructContext(GameObject explicitTarget, out DeadsSkeletonSelfDestructPatternExecutor.SelfDestructContext context)
+    {
+        context = default;
+
+        GameObject targetObject = explicitTarget != null
+            ? explicitTarget
+            : target != null ? target.gameObject : null;
+
+        if (!CanStartSelfDestruct())
+            return false;
+
+        context = new DeadsSkeletonSelfDestructPatternExecutor.SelfDestructContext(targetObject);
+        return true;
+    }
+
+    /// <summary>executor가 공식 시작 시점에 타깃을 확정하고 기존 자폭 인트로 로직을 재사용한다.</summary>
+    public void BeginSelfDestructSequence(GameObject explicitTarget)
+    {
+        if (explicitTarget != null)
+            SetTarget(explicitTarget.transform);
+
+        StartSelfDestruct();
+    }
+
+    /// <summary>강제 취소나 씬 정리 시 자폭 패턴을 안전하게 원복한다.</summary>
+    public void CancelSelfDestructSequence()
+    {
+        if (!isSelfDestruct)
+            return;
+
+        CancelSelfDestruct();
     }
 
     /// <summary>자폭 유지 조건이 깨졌는지 확인합니다.</summary>
@@ -329,22 +378,39 @@ public class DeadsSkeleton : Mob, IDamageReceiver
         PlaySightMaskReset();
     }
 
-    /// <summary>자폭 대기 시간을 갱신합니다.</summary>
-    private void TickSelfDestruct()
+    /// <summary>executor가 자폭 시퀀스 한 프레임을 진행시키고 현재 결과를 반환합니다.</summary>
+    public SelfDestructSequenceStatus AdvanceSelfDestructSequence()
     {
+        if (!isSelfDestruct)
+            return SelfDestructSequenceStatus.Cancelled;
+
+        if (!IsPlayingSelfDestructIntro())
+            EnterArmedPhaseIfNeeded();
+
+        if (ShouldCancelSelfDestruct())
+        {
+            CancelSelfDestruct();
+            return SelfDestructSequenceStatus.Cancelled;
+        }
+
         if (IsInsideCandlestickLight())
         {
             DieFromLight();
-            return;
+            return SelfDestructSequenceStatus.Completed;
         }
 
         if (IsPlayingSelfDestructIntro())
-            return;
+            return SelfDestructSequenceStatus.Running;
 
-        EnterArmedPhaseIfNeeded();
+        UpdateArmedWarningGeometry();
 
         if (IsTargetInExplosionRange())
+        {
             Explode(target != null ? target.gameObject : null);
+            return SelfDestructSequenceStatus.Completed;
+        }
+
+        return SelfDestructSequenceStatus.Running;
     }
 
     /// <summary>자폭 인트로 동안 애니메이션 길이에 맞춰 채워지는 경고를 표시합니다.</summary>
@@ -713,6 +779,15 @@ public class DeadsSkeleton : Mob, IDamageReceiver
         ChaseIntent.SetDetectionRange(normalDetectionRange);
     }
 
+    /// <summary>자폭 시퀀스에 들어간 뒤 사용할 자폭 전용 추적 감지 범위를 즉시 적용합니다.</summary>
+    private void ApplySelfDestructDetectionRange()
+    {
+        if (ChaseIntent == null)
+            return;
+
+        ChaseIntent.SetDetectionRange(selfDestructDetectionRange);
+    }
+
     /// <summary>자폭 상태 동안에는 기본 추적 감지 규칙이 간섭하지 않도록 무시 모드를 켜거나 끕니다.</summary>
     private void ApplySelfDestructDetectionBypass(bool enabled)
     {
@@ -800,5 +875,51 @@ public class DeadsSkeleton : Mob, IDamageReceiver
 
         if (warningStyle != null)
             Destroy(warningStyle);
+
+        if (ownsRuntimeAbilityDefinition)
+        {
+            if (runtimeSelfDestructLogic != null)
+                Destroy(runtimeSelfDestructLogic);
+            if (selfDestructAbilityDefinition != null)
+                Destroy(selfDestructAbilityDefinition);
+        }
     }
+
+    private void EnsureSelfDestructAbility()
+    {
+        if (abilitySystem == null)
+            return;
+
+        if (selfDestructAbilityDefinition != null)
+        {
+            if (abilitySystem.FindSpec(selfDestructAbilityDefinition) == null)
+                abilitySystem.GiveAbility(selfDestructAbilityDefinition);
+
+            return;
+        }
+
+        runtimeSelfDestructLogic = ScriptableObject.CreateInstance<AbilityLogic_DeadsSkeletonSelfDestruct>();
+        selfDestructAbilityDefinition = ScriptableObject.CreateInstance<AbilityDefinition>();
+        selfDestructAbilityDefinition.name = "AD_DeadsSkeleton_SelfDestruct_Runtime";
+        selfDestructAbilityDefinition.abilityName = "AD_DeadsSkeleton_SelfDestruct_Runtime";
+        selfDestructAbilityDefinition.castTime = 0f;
+        selfDestructAbilityDefinition.recoveryTime = 0f;
+        selfDestructAbilityDefinition.animationChannel = AbilityDefinition.AnimationChannel.Player;
+        selfDestructAbilityDefinition.executionPolicy = AbilityDefinition.ExecutionPolicy.ExclusiveQueued;
+        selfDestructAbilityDefinition.logic = runtimeSelfDestructLogic;
+        abilitySystem.GiveAbility(selfDestructAbilityDefinition);
+        ownsRuntimeAbilityDefinition = true;
+    }
+}
+
+/// <summary>
+/// 책임 :
+/// - Dead'sSkeleton 자폭 시퀀스의 현재 진행 결과를 단순 상태값으로 표현한다.
+/// - executor가 진행/취소/완료를 명확하게 분기해 ASC 종료 타이밍을 일관되게 맞추게 돕는다.
+/// </summary>
+public enum SelfDestructSequenceStatus
+{
+    Running,
+    Cancelled,
+    Completed
 }

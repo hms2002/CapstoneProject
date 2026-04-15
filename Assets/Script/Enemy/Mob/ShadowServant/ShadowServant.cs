@@ -6,8 +6,10 @@ using UnityGAS;
 
 public class ShadowServant : Mob
 {
-    private const float AttackDelay = 2f;
     private const float DefaultPresentationLifetimeSeconds = 1f;
+
+    // 이 클래스의 책임:
+    // ShadowServant의 공격 조건 판단과 공격 설정 데이터 제공을 담당하고, 실제 시퀀스 실행은 AD/runner에 위임한다.
 
     [Header("Fog")]
     [Tooltip("안개를 생성할 때 사용할 안개 프리팹입니다.")]
@@ -33,44 +35,58 @@ public class ShadowServant : Mob
     [SerializeField] private float attackParticleRotationOffsetZ;
     [SerializeField] private SoundRef attackSound;
     [SerializeField] private CameraShakeHook attackCameraShake = CameraShakeHook.Create(0.14f, 1f, 0.22f, 0.04f);
+    [Header("Ability")]
+    [SerializeField] private AbilityDefinition attackAbilityDefinition;
+    [SerializeField] private MobAbilityCoordinator abilityCoordinator;
+    [SerializeField] private ShadowServantAttackRunner attackRunner;
 
-    private readonly HashSet<GameObject> damagedTargets = new();
-
-    private AttackTelegraphService telegraphService;
-    private AttackTelegraphStyle warningStyle;
-    private Coroutine attackRoutine;
-    private bool isAttacking;
     private bool hasLoggedInvalidConfig;
+    private bool ownsRuntimeAbilityDefinition;
+    private AbilityLogic_ShadowServantAttack runtimeAttackLogic;
 
     protected override void Awake()
     {
         base.Awake();
-        telegraphService = GetComponent<AttackTelegraphService>();
-        warningStyle = MakeWarningStyle();
+
+        if (abilityCoordinator == null)
+            abilityCoordinator = GetComponent<MobAbilityCoordinator>();
+        if (abilityCoordinator == null)
+            abilityCoordinator = gameObject.AddComponent<MobAbilityCoordinator>();
+
+        if (attackRunner == null)
+            attackRunner = GetComponent<ShadowServantAttackRunner>();
+        if (attackRunner == null)
+            attackRunner = gameObject.AddComponent<ShadowServantAttackRunner>();
+    }
+
+    protected override void Start()
+    {
+        base.Start();
+        EnsureAttackAbility();
     }
 
     public override bool CanUseChaseMovement()
     {
-        return !isAttacking;
+        return attackRunner == null || !attackRunner.IsRunning;
     }
 
     protected override void UpdateAttack()
     {
-        if (attackRoutine != null)
+        if (abilityCoordinator == null || attackAbilityDefinition == null)
+            return;
+
+        if (abilityCoordinator.IsAbilityExecutionBusy)
             return;
 
         if (!CanAttack())
             return;
 
-        attackRoutine = StartCoroutine(RunAttack());
+        abilityCoordinator.TryStartAbility(attackAbilityDefinition, target != null ? target.gameObject : null);
     }
 
     protected override void OnDeathStarted()
     {
-        if (attackRoutine != null)
-            StopCoroutine(attackRoutine);
-
-        ClearAttack();
+        abilityCoordinator?.CancelActiveAbility(true);
         base.OnDeathStarted();
     }
 
@@ -93,13 +109,18 @@ public class ShadowServant : Mob
     {
         base.OnDestroy();
 
-        if (warningStyle != null)
-            Destroy(warningStyle);
+        if (ownsRuntimeAbilityDefinition)
+        {
+            if (runtimeAttackLogic != null)
+                Destroy(runtimeAttackLogic);
+            if (attackAbilityDefinition != null)
+                Destroy(attackAbilityDefinition);
+        }
     }
 
     private bool CanAttack()
     {
-        if (isDead || isAttacking)
+        if (isDead)
             return false;
 
         if (!HasAttackData())
@@ -116,7 +137,8 @@ public class ShadowServant : Mob
         bool isValid = fog != null &&
                        explosionDamageEffect != null &&
                        abilitySystem != null &&
-                       GetFogRadius() > 0f;
+                       GetFogRadius() > 0f &&
+                       attackRunner != null;
 
         if (isValid)
             return true;
@@ -146,89 +168,65 @@ public class ShadowServant : Mob
         return toTarget.sqrMagnitude <= attackRadius * attackRadius;
     }
 
-    private IEnumerator RunAttack()
+    private void EnsureAttackAbility()
     {
-        isAttacking = true;
+        if (abilitySystem == null)
+            return;
 
-        Vector3 targetPoint = target != null ? target.position : transform.position;
+        if (attackAbilityDefinition != null)
+        {
+            if (abilitySystem.FindSpec(attackAbilityDefinition) == null)
+                abilitySystem.GiveAbility(attackAbilityDefinition);
+
+            return;
+        }
+
+        runtimeAttackLogic = ScriptableObject.CreateInstance<AbilityLogic_ShadowServantAttack>();
+        attackAbilityDefinition = ScriptableObject.CreateInstance<AbilityDefinition>();
+        attackAbilityDefinition.name = "AD_ShadowServant_Attack_Runtime";
+        attackAbilityDefinition.abilityName = "AD_ShadowServant_Attack_Runtime";
+        attackAbilityDefinition.castTime = 0f;
+        attackAbilityDefinition.recoveryTime = 0f;
+        attackAbilityDefinition.animationChannel = AbilityDefinition.AnimationChannel.Player;
+        attackAbilityDefinition.executionPolicy = AbilityDefinition.ExecutionPolicy.ExclusiveQueued;
+        attackAbilityDefinition.logic = runtimeAttackLogic;
+        abilitySystem.GiveAbility(attackAbilityDefinition);
+        ownsRuntimeAbilityDefinition = true;
+    }
+
+    public bool TryCreateAttackContext(GameObject explicitTarget, float delaySeconds, out ShadowServantAttackRunner.AttackContext context)
+    {
+        context = default;
+
+        GameObject targetObject = explicitTarget != null
+            ? explicitTarget
+            : target != null ? target.gameObject : null;
+
+        if (targetObject == null || !HasAttackData())
+            return false;
+
+        Vector3 targetPoint = targetObject.transform.position;
         Vector3 hitPoint = GetHitPoint(targetPoint);
-        ShowWarning(hitPoint);
-
-        yield return new WaitForSeconds(AttackDelay);
-
-        if (isDead)
-        {
-            ClearAttack();
-            yield break;
-        }
-
-        if (animator != null)
-            animator.SetTrigger("attack");
-
-        PlayAttackPresentation(hitPoint);
-        Explode(hitPoint);
-        SpawnFog(targetPoint);
-        ClearAttack();
-    }
-
-    private void ShowWarning(Vector3 targetPoint)
-    {
-        if (telegraphService == null)
-            return;
-
-        AttackTelegraphSpec spec = AttackTelegraphSpec.CreateCircle(
+        context = new ShadowServantAttackRunner.AttackContext(
+            targetObject,
             targetPoint,
+            hitPoint,
             GetFogDiameter(),
-            AttackDelay,
-            warningStyle);
-
-        telegraphService.Show(spec);
+            Mathf.Max(0f, delaySeconds),
+            GetDamageMask(targetObject));
+        return true;
     }
 
-    private void ClearAttack()
-    {
-        attackRoutine = null;
-        isAttacking = false;
-
-        if (telegraphService != null)
-            telegraphService.HideCurrent();
-    }
-
-    private void Explode(Vector3 targetPoint)
-    {
-        CombatHitPayload payload = MakeHitPayload();
-        if (payload == null)
-            return;
-
-        Collider2D[] hits = Physics2D.OverlapCircleAll(
-            targetPoint,
-            GetFogRadius(),
-            GetDamageMask());
-
-        damagedTargets.Clear();
-
-        for (int i = 0; i < hits.Length; i++)
-        {
-            Collider2D hit = hits[i];
-            GameObject hitTarget = CombatTargetResolver2D.ResolveDamageTarget(hit);
-
-            if (hitTarget == null || hitTarget == gameObject)
-                continue;
-
-            if (!damagedTargets.Add(hitTarget))
-                continue;
-
-            CombatHitPayloadApplier.Apply(hitTarget, payload, hit.ClosestPoint(targetPoint));
-        }
-    }
-
-    private void SpawnFog(Vector3 targetPoint)
+    public void SpawnFog(Vector3 targetPoint)
     {
         Instantiate(fog, new Vector3(targetPoint.x, targetPoint.y, 0f), Quaternion.identity);
     }
 
-    private void PlayAttackPresentation(Vector3 targetPoint)
+    public void PlayAttackPresentation(Vector3 targetPoint)
     {
+        if (animator != null)
+            animator.SetTrigger("attack");
+
         SpawnPresentationPrefab(
             attackEffectPrefab,
             targetPoint + attackEffectLocalOffset,
@@ -258,14 +256,14 @@ public class ShadowServant : Mob
             debugReason: "ShadowServant.Attack");
     }
 
-    private LayerMask GetDamageMask()
+    public LayerMask GetDamageMask(GameObject explicitTarget)
     {
-        return target != null
-            ? (LayerMask)(1 << target.gameObject.layer)
+        return explicitTarget != null
+            ? (LayerMask)(1 << explicitTarget.layer)
             : (LayerMask)0;
     }
 
-    private CombatHitPayload MakeHitPayload()
+    public CombatHitPayload MakeHitPayload(AbilitySystem sourceSystem, AbilitySpec spec)
     {
         CombatDamageSnapshot snapshot = new CombatDamageSnapshot(
             finalHpDamage: explosionDamage,
@@ -275,8 +273,8 @@ public class ShadowServant : Mob
             isCriticalHit: false);
 
         return CombatHitPayload.FromSnapshot(
-            sourceSystem: abilitySystem,
-            sourceSpec: null,
+            sourceSystem: sourceSystem != null ? sourceSystem : abilitySystem,
+            sourceSpec: spec,
             damageEffect: explosionDamageEffect,
             knockbackEffect: null,
             snapshot: snapshot,
@@ -291,7 +289,7 @@ public class ShadowServant : Mob
             : 0f;
     }
 
-    private float GetFogRadius()
+    public float GetFogRadius()
     {
         if (fog == null)
             return 0f;
@@ -303,7 +301,7 @@ public class ShadowServant : Mob
         return Mathf.Max(0f, fogCollider.radius);
     }
 
-    private float GetFogDiameter()
+    public float GetFogDiameter()
     {
         return GetFogRadius() * 2f;
     }
@@ -327,23 +325,6 @@ public class ShadowServant : Mob
         return new Vector2(
             fogCollider.offset.x * scale.x,
             fogCollider.offset.y * scale.y);
-    }
-
-    private AttackTelegraphStyle MakeWarningStyle()
-    {
-        AttackTelegraphStyle style = ScriptableObject.CreateInstance<AttackTelegraphStyle>();
-        style.fillColorStart = new Color(1f, 0f, 0f, 0.35f);
-        style.fillColorEnd = new Color(1f, 0f, 0f, 0.35f);
-        style.borderColorStart = new Color(1f, 0f, 0f, 1f);
-        style.borderColorEnd = new Color(1f, 0f, 0f, 1f);
-        style.progressCurve = AnimationCurve.Linear(0f, 0f, 1f, 1f);
-        style.blinkStartNormalized = 1f;
-        style.blinkFrequency = 0f;
-        style.blinkAlphaMin = 1f;
-        style.scaleFillWithProgress = false;
-        style.fillScaleStart = 1f;
-        style.fillScaleEnd = 1f;
-        return style;
     }
 
     private static void SpawnPresentationPrefab(

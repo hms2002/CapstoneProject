@@ -5,6 +5,9 @@ using UnityGAS;
 [RequireComponent(typeof(Collider2D))]
 public class FieldHealPickup2D : MonoBehaviour
 {
+    // 이 클래스의 책임:
+    // 월드에 떨어진 체력 회복 픽업을 관리하고, 유효한 PickupCollector2D와 접촉했을 때만 회복 후 자신을 제거한다.
+
     [Header("Heal")]
     [SerializeField] private AttributeDefinition healthAttribute;
     [SerializeField, Min(1)] private int healAmount = 1;
@@ -76,17 +79,11 @@ public class FieldHealPickup2D : MonoBehaviour
     {
         attributeSet = null;
 
-        PlayerInteractor2D playerInteractor = null;
-        if (other.attachedRigidbody != null)
-            playerInteractor = other.attachedRigidbody.GetComponent<PlayerInteractor2D>();
-
-        if (playerInteractor == null)
-            playerInteractor = other.GetComponentInParent<PlayerInteractor2D>();
-
-        if (playerInteractor == null)
+        PickupCollector2D pickupCollector = other.GetComponent<PickupCollector2D>();
+        if (pickupCollector == null)
             return false;
 
-        attributeSet = playerInteractor.GetComponent<AttributeSet>();
+        attributeSet = pickupCollector.AttributeSet;
         return attributeSet != null;
     }
 

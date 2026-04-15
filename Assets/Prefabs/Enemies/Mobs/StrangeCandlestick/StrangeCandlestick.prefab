@@ -32,6 +32,8 @@ GameObject:
   - component: {fileID: 3949865959590047275}
   - component: {fileID: 344486096308046059}
   - component: {fileID: 1033480238846917190}
+  - component: {fileID: 8154518470469117425}
+  - component: {fileID: 8154518470469117426}
   - component: {fileID: 8154518470469117427}
   m_Layer: 31
   m_Name: StrangeCandlestick
@@ -236,6 +238,9 @@ MonoBehaviour:
   lockOnLineWidth: 0.28
   lockOnColor: {r: 1, g: 0.15, b: 0.15, a: 1}
   lockOnStyleAsset: {fileID: 0}
+  attackAbilityDefinition: {fileID: 11400000, guid: 1d190055c2c24374b0c99774b34c4a17, type: 2}
+  abilityCoordinator: {fileID: 8154518470469117425}
+  attackRunner: {fileID: 8154518470469117426}
 --- !u!114 &6611337799001122334
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -263,8 +268,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f0bcf155a89d8e14db39a9f2416d691c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  initialAbilities:
-  - {fileID: 11400000, guid: 0114fc4ac57bcbe46b3d058d930e3a32, type: 2}
+  initialAbilities: []
   attributeSet: {fileID: 1535278931212011680}
   effectRunner: {fileID: 5052094422871209493}
   tagSystem: {fileID: 2310470610362802669}
@@ -565,6 +569,34 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   telegraphPrefab: {fileID: 788264263987448140, guid: 211dd09e2da9caf47ad8409c9e35b83d, type: 3}
   defaultStyle: {fileID: 0}
+--- !u!114 &8154518470469117425
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 625522859161183429}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 54e8f4b51b6346c3a7aa5121f617bce2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  abilitySystem: {fileID: 3790217430196525045}
+--- !u!114 &8154518470469117426
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 625522859161183429}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 04a6a4f6a0dc43779bec020c945e2be4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  owner: {fileID: 4785622051289123377}
+  abilityCoordinator: {fileID: 8154518470469117425}
+  telegraphService: {fileID: 1033480238846917190}
 --- !u!114 &8154518470469117427
 MonoBehaviour:
   m_ObjectHideFlags: 0

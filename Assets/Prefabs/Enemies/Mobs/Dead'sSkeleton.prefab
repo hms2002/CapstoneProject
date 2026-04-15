@@ -31,6 +31,8 @@ GameObject:
   - component: {fileID: 3949865959590047275}
   - component: {fileID: 344486096308046059}
   - component: {fileID: 1033480238846917190}
+  - component: {fileID: 2715241289973940211}
+  - component: {fileID: 2715241289973940212}
   - component: {fileID: 2715241289973940213}
   m_Layer: 31
   m_Name: Dead'sSkeleton
@@ -254,6 +256,9 @@ MonoBehaviour:
     directionMode: 0
     customDirection: {x: 0, y: 0, z: 0}
     ignoreScreenShakeSetting: 0
+  selfDestructAbilityDefinition: {fileID: 11400000, guid: a6b7d8d7626f416cb0dca7f4dca90fb3, type: 2}
+  abilityCoordinator: {fileID: 2715241289973940211}
+  selfDestructExecutor: {fileID: 2715241289973940212}
 --- !u!114 &3790217430196525045
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -567,6 +572,33 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   telegraphPrefab: {fileID: 788264263987448140, guid: 211dd09e2da9caf47ad8409c9e35b83d, type: 3}
   defaultStyle: {fileID: 0}
+--- !u!114 &2715241289973940211
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 625522859161183429}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 54e8f4b51b6346c3a7aa5121f617bce2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  abilitySystem: {fileID: 3790217430196525045}
+--- !u!114 &2715241289973940212
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 625522859161183429}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d6def42a37eb4bf5964c79eeb9e64e34, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  owner: {fileID: 7098643081786945513}
+  abilityCoordinator: {fileID: 2715241289973940211}
 --- !u!114 &2715241289973940213
 MonoBehaviour:
   m_ObjectHideFlags: 0

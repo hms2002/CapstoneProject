@@ -2,14 +2,17 @@ using UnityEngine;
 
 public class WitchNormalAttack1State : BossState
 {
-    private readonly Witch witch;
+    // 이 클래스의 책임:
+    // 마녀의 평타1 패턴 실행 구간을 관리하고, 브리지 계약을 통해 시작과 종료 타이밍을 조율한다.
+
+    private readonly IWitchPatternStateBridge patternBridge;
     private bool activationRequested;
     private float endTime;
     private bool isWaiting;
 
-    public WitchNormalAttack1State(Witch witch) : base(witch)
+    public WitchNormalAttack1State(BossControllerBase boss, IWitchPatternStateBridge patternBridge) : base(boss)
     {
-        this.witch = witch;
+        this.patternBridge = patternBridge;
     }
 
     public override void OnEnter()
@@ -34,7 +37,7 @@ public class WitchNormalAttack1State : BossState
             return;
         }
 
-        if (!witch.StartNormal1())
+        if (patternBridge == null || !patternBridge.TryBeginNormalAttack1Pattern(out float resolvedDuration))
         {
             LogState("평타1 패턴을 시작하지 못했습니다.");
             boss.AbortCurrentPattern();
@@ -43,7 +46,7 @@ public class WitchNormalAttack1State : BossState
         }
 
         isWaiting = true;
-        endTime = Time.time + witch.GetNormal1Time();
+        endTime = Time.time + resolvedDuration;
         LogState("평타1 장판 공격을 시작했습니다.");
     }
 

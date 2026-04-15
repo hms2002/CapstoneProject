@@ -31,6 +31,8 @@ GameObject:
   - component: {fileID: 3949865959590047275}
   - component: {fileID: 344486096308046059}
   - component: {fileID: 1033480238846917190}
+  - component: {fileID: 6723412345678901234}
+  - component: {fileID: 6723412345678901235}
   - component: {fileID: -9148724422999059419}
   m_Layer: 31
   m_Name: ShadowServant
@@ -252,6 +254,9 @@ MonoBehaviour:
     directionMode: 0
     customDirection: {x: 0, y: 0, z: 0}
     ignoreScreenShakeSetting: 0
+  attackAbilityDefinition: {fileID: 11400000, guid: 5e89eb95f23546e9bd1a9c08f9fdcb2c, type: 2}
+  abilityCoordinator: {fileID: 6723412345678901234}
+  attackRunner: {fileID: 6723412345678901235}
 --- !u!114 &3790217430196525045
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -565,6 +570,34 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   telegraphPrefab: {fileID: 788264263987448140, guid: 211dd09e2da9caf47ad8409c9e35b83d, type: 3}
   defaultStyle: {fileID: 0}
+--- !u!114 &6723412345678901234
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 625522859161183429}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 54e8f4b51b6346c3a7aa5121f617bce2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  abilitySystem: {fileID: 3790217430196525045}
+--- !u!114 &6723412345678901235
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 625522859161183429}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c3b51e6f7d2644828f2a0fb4fd6109fb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  owner: {fileID: -4044150001202669846}
+  abilityCoordinator: {fileID: 6723412345678901234}
+  telegraphService: {fileID: 1033480238846917190}
 --- !u!114 &-9148724422999059419
 MonoBehaviour:
   m_ObjectHideFlags: 0

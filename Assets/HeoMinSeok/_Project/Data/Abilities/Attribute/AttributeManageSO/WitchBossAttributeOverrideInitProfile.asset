@@ -17,3 +17,5 @@ MonoBehaviour:
     baseValue: 1000
   - attribute: {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
     baseValue: 1000
+  - attribute: {fileID: 11400000, guid: ddbd05a9b77349441a875c479e48212d, type: 2}
+    baseValue: 500

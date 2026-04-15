@@ -4,7 +4,7 @@ using CapstoneAudio;
 using UnityEngine;
 using UnityGAS;
 
-public class Witch : BossControllerBase
+public class Witch : BossControllerBase, IWitchPatternStateBridge
 {
     // 이 클래스의 책임:
     // 마녀 보스 전용 상태, 연출, 패턴 보조 동작을 조율하고 전용 런타임 데이터를 관리한다.
@@ -106,9 +106,9 @@ public class Witch : BossControllerBase
     protected override void CreateStates()
     {
         base.CreateStates();
-        extinguishState = new WitchExtinguishPatternState(this);
-        normalAttack1State = new WitchNormalAttack1State(this);
-        retreatState = new WitchRetreatToCandleState(this);
+        extinguishState = new WitchExtinguishPatternState(this, this);
+        normalAttack1State = new WitchNormalAttack1State(this, this);
+        retreatState = new WitchRetreatToCandleState(this, this);
     }
 
     protected override void OnPatternEnd(BossPatternEntry patternEntry, bool forced)
@@ -259,6 +259,17 @@ public class Witch : BossControllerBase
         return true;
     }
 
+    /// <summary>
+    /// 책임 :
+    /// - FSM state가 촛불 끄기 패턴 시작을 구체 Witch 구현 대신 브리지 계약으로 요청할 수 있게 한다.
+    /// - 실행 지속시간을 함께 반환해 state가 내부 계산 메서드에 직접 의존하지 않게 만든다.
+    /// </summary>
+    public bool TryBeginExtinguishPattern(float warningTimeSeconds, out float resolvedDurationSeconds)
+    {
+        resolvedDurationSeconds = Mathf.Max(0f, warningTimeSeconds);
+        return StartExtinguish(resolvedDurationSeconds);
+    }
+
     /// <summary>평타1 장판 공격을 시작합니다.</summary>
     public bool StartNormal1()
     {
@@ -295,6 +306,21 @@ public class Witch : BossControllerBase
         return true;
     }
 
+    /// <summary>
+    /// 책임 :
+    /// - FSM state가 평타1 패턴 시작과 대기 시간을 브리지 계약으로 받도록 돕는다.
+    /// - 패턴 내부 구현이 바뀌어도 state는 반환된 지속시간만 사용하게 만들어 결합을 줄인다.
+    /// </summary>
+    public bool TryBeginNormalAttack1Pattern(out float resolvedDurationSeconds)
+    {
+        resolvedDurationSeconds = 0f;
+        if (!StartNormal1())
+            return false;
+
+        resolvedDurationSeconds = GetNormal1Time();
+        return true;
+    }
+
     /// <summary>촛대로의 피난 패턴을 시작합니다.</summary>
     public bool StartRetreat()
     {
@@ -304,6 +330,16 @@ public class Witch : BossControllerBase
         bool spawnedLeft = SpawnRetreatSkeleton(RetreatLeftOffset);
         bool spawnedRight = SpawnRetreatSkeleton(RetreatRightOffset);
         return spawnedLeft || spawnedRight;
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - FSM state가 촛대로의 피난 패턴 시작을 브리지 계약으로 호출하게 한다.
+    /// - 이후 피난 패턴 구현이 runner나 다른 실행기로 바뀌어도 state 호출 형태를 유지하게 한다.
+    /// </summary>
+    public bool TryBeginRetreatPattern()
+    {
+        return StartRetreat();
     }
 
     /// <summary>촛불 끄기 패턴을 끝냅니다.</summary>
@@ -333,10 +369,30 @@ public class Witch : BossControllerBase
         HideExtinguishWarning();
     }
 
+    /// <summary>
+    /// 책임 :
+    /// - FSM state가 촛불 끄기 패턴 완료 시 필요한 연출/판정 정리를 브리지 계약으로 위임하게 한다.
+    /// - state가 선택 데이터나 경고 정리 절차를 직접 알지 않도록 완료 책임을 Witch 내부에 둔다.
+    /// </summary>
+    public void CompleteExtinguishPattern()
+    {
+        FinishExtinguish();
+    }
+
     public void HideExtinguishWarning()
     {
         HideWarning();
         runtimeData?.ClearExtinguishSelection();
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - FSM state가 촛불 끄기 패턴 취소 시 경고와 선택 상태 정리를 브리지 계약으로 요청하게 한다.
+    /// - 취소 정리 구현이 바뀌어도 state가 구체 절차를 직접 알지 않게 만든다.
+    /// </summary>
+    public void CancelExtinguishPattern()
+    {
+        HideExtinguishWarning();
     }
 
     /// <summary>마녀 보호막을 지정 단계수로 활성화합니다.</summary>
