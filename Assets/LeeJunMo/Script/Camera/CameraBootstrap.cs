@@ -9,6 +9,9 @@ using UnityEngine.SceneManagement;
 [DisallowMultipleComponent]
 public sealed class CameraBootstrap : MonoBehaviour
 {
+    // 이 클래스의 책임:
+    // 런타임 카메라 리그를 DDOL로 유지하고, 씬 전환 중에도 메인 카메라/플레이어 카메라/추적 바인딩을 일관되게 보장한다.
+
     public const int DefaultImpulseChannel = 1;
 
     public static CameraBootstrap Instance { get; private set; }
@@ -20,7 +23,7 @@ public sealed class CameraBootstrap : MonoBehaviour
     [SerializeField] private CinemachineCamera runtimePlayerCam;
     [SerializeField] private int persistentPlayerPriority = 100;
 
-    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
     private static void BootstrapBeforeFirstSceneLoad()
     {
         EnsureInstance();

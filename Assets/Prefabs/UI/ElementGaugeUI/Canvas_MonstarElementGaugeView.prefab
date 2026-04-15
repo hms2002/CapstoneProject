@@ -58,9 +58,10 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_VertexColorAlwaysGammaSpace: 0
+  m_UseReflectionProbes: 0
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
-  m_SortingLayerID: -1960815025
+  m_SortingLayerID: 119640197
   m_SortingOrder: 0
   m_TargetDisplay: 0
 --- !u!114 &7715321510049290355
