@@ -1,5 +1,6 @@
 using System.Collections;
 using CapstoneAudio;
+using CapstonePresentation;
 using UnityEngine;
 
 namespace UnityGAS.Sample
@@ -7,9 +8,6 @@ namespace UnityGAS.Sample
     [CreateAssetMenu(fileName = "AL_Witch_ExtinguishCandle", menuName = "GAS/Ability Logic/Witch Boss/AL_Witch_ExtinguishCandle")]
     public class AbilityLogic_WitchExtinguishCandle : AbilityLogic
     {
-        // 이 클래스의 책임:
-        // 마녀 보스의 촛불 끄기 패턴 진입점과 전용 튜닝 데이터를 제공한다.
-
         [Header("Explosion Presentation")]
         [SerializeField] private GameObject explosionVisualPrefab;
         [SerializeField] private GameObject explosionParticlePrefab;
@@ -34,6 +32,35 @@ namespace UnityGAS.Sample
         public CameraShakeHook ExplosionCameraShake => explosionCameraShake;
         public Vector3 FogSpawnScaleMultiplier => fogSpawnScaleMultiplier;
         public float AttackRadiusMultiplier => attackRadiusMultiplier;
+
+        public WorldPresentationHook GetExplosionPresentation()
+        {
+            return new WorldPresentationHook
+            {
+                sound = explosionSound,
+                cameraShake = explosionCameraShake,
+                effect = new SpawnedPresentationHook
+                {
+                    prefab = explosionVisualPrefab,
+                    localOffset = explosionVisualOffset,
+                    rotationOffsetZ = 0f,
+                    scaleMultiplier = explosionVisualScale,
+                    lifetimeMode = PresentationLifetimeMode.AutoDetect,
+                    lifetimeOverrideSeconds = 0f,
+                    useUnscaledTime = false
+                },
+                particle = new SpawnedPresentationHook
+                {
+                    prefab = explosionParticlePrefab,
+                    localOffset = explosionParticleOffset,
+                    rotationOffsetZ = 0f,
+                    scaleMultiplier = explosionParticleScale,
+                    lifetimeMode = PresentationLifetimeMode.AutoDetect,
+                    lifetimeOverrideSeconds = 0f,
+                    useUnscaledTime = false
+                }
+            };
+        }
 
         public override IEnumerator Activate(AbilitySystem system, AbilitySpec spec, GameObject initialTarget)
         {

@@ -26,3 +26,4 @@ MonoBehaviour:
     volumeMultiplier: 1
     anchorPolicy: 0
     localOffset: {x: 0, y: 0, z: 0}
+  loadManifest: {fileID: 11400000, guid: 0a12099ec1e865d4594ed26913b131fd, type: 2}

@@ -17,12 +17,16 @@ public sealed class CorridorBossRouteSetSO : ScriptableObject
     [SerializeField] private SoundRef corridorBgm;
     [SerializeField] private SoundRef bossCombatBgm;
 
+    [Header("Loading")]
+    [SerializeField] private RouteSetLoadManifestSO loadManifest;
+
     public string CorridorSceneName => corridorSceneName;
     public string CorridorEntryPointId => corridorEntryPointId;
     public string BossSceneName => bossSceneName;
     public string BossEntryPointId => bossEntryPointId;
     public SoundRef CorridorBgm => corridorBgm;
     public SoundRef BossCombatBgm => bossCombatBgm;
+    public RouteSetLoadManifestSO LoadManifest => loadManifest;
 
     public bool IsValid =>
         !string.IsNullOrWhiteSpace(corridorSceneName) &&

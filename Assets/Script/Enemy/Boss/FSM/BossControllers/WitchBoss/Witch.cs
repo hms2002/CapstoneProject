@@ -946,6 +946,12 @@ public class Witch : BossControllerBase, IWitchPatternStateBridge
         return config != null ? config.ExplosionSound : default;
     }
 
+    internal CapstonePresentation.WorldPresentationHook ResolveExtinguishExplosionPresentationValue()
+    {
+        AbilityLogic_WitchExtinguishCandle config = GetExtinguishLogicConfig();
+        return config != null ? config.GetExplosionPresentation() : default;
+    }
+
     /// <summary>촛불 끄기 패턴의 폭발 카메라 셰이크를 반환합니다.</summary>
     internal CameraShakeHook ResolveExtinguishExplosionCameraShakeValue()
     {
@@ -958,6 +964,20 @@ public class Witch : BossControllerBase, IWitchPatternStateBridge
     {
         AbilityLogic_WitchExtinguishCandle config = GetExtinguishLogicConfig();
         return config != null ? config.FogSpawnScaleMultiplier : Vector3.one;
+    }
+
+    internal CapstonePresentation.SpawnedPresentationHook ResolveExtinguishFogPresentationValue()
+    {
+        return new CapstonePresentation.SpawnedPresentationHook
+        {
+            prefab = fogPrefab,
+            localOffset = Vector3.zero,
+            rotationOffsetZ = 0f,
+            scaleMultiplier = ResolveExtinguishFogSpawnScaleMultiplierValue(),
+            lifetimeMode = CapstonePresentation.PresentationLifetimeMode.ManualRelease,
+            lifetimeOverrideSeconds = 0f,
+            useUnscaledTime = false
+        };
     }
 
     /// <summary>촛불 끄기 패턴의 실제 공격 반경 배율을 반환합니다.</summary>

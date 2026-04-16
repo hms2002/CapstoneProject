@@ -1,5 +1,5 @@
 {
-    "magicStone": 0,
+    "magicStone": 5,
     "upgradeData": {
         "purchasedIDs": [],
         "unlockedIDs": [
@@ -35,7 +35,13 @@
         "stageProgressList": [
             {
                 "mapID": "LEeJunmo",
-                "unlockedShortcuts": []
+                "unlockedShortcuts": [
+                    "AffectionDoor1_1658801a",
+                    "AffectionDoor2_5919d4ad",
+                    "OneWayDoor_83d5aea1",
+                    "OneWayDoor (1)_bff82005",
+                    "LeverDoor_9eb04296"
+                ]
             }
         ]
     },

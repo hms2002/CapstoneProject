@@ -16,3 +16,14 @@ MonoBehaviour:
   corridorEntryPointId: Default
   bossSceneName: ProtoTypeBoss 2
   bossEntryPointId: Default
+  corridorBgm:
+    key: 
+    volumeMultiplier: 0
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  bossCombatBgm:
+    key: 
+    volumeMultiplier: 0
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  loadManifest: {fileID: 11400000, guid: 4e6de1c25b78be9478e779a5f0d3809a, type: 2}

@@ -78,6 +78,24 @@ namespace CapstonePresentation
             service.ReleaseInternal(instance);
         }
 
+        public static void PrewarmPrefab(GameObject prefab, int count = 1)
+        {
+            if (prefab == null || count <= 0)
+                return;
+
+            PresentationSpawnService service = EnsureInstance();
+            service?.PrewarmInternal(prefab, count);
+        }
+
+        public static void TrimPrewarmedPrefab(GameObject prefab, int count = 1)
+        {
+            if (prefab == null || count <= 0)
+                return;
+
+            PresentationSpawnService service = EnsureInstance();
+            service?.TrimInternal(prefab, count);
+        }
+
         public static void InitializeExternalInstance(GameObject instance, bool useUnscaledTime)
         {
             if (instance == null)
@@ -169,6 +187,7 @@ namespace CapstonePresentation
 
         private PooledPresentationInstance Rent(GameObject prefab)
         {
+            prefab = PresentationAssetProvider.ResolvePrefab(prefab);
             if (prefab == null)
                 return null;
 
@@ -186,20 +205,7 @@ namespace CapstonePresentation
                 }
             }
 
-            GameObject instance = Instantiate(prefab);
-            if (instance == null)
-                return null;
-
-            PooledPresentationInstance created = instance.GetComponent<PooledPresentationInstance>();
-            if (created == null)
-                created = instance.AddComponent<PooledPresentationInstance>();
-
-            created.prefabId = prefabId;
-            created.initialScale = instance.transform.localScale == Vector3.zero
-                ? Vector3.one
-                : instance.transform.localScale;
-            created.activeVersion = 1;
-            return created;
+            return CreatePooledInstance(prefab, prefabId);
         }
 
         private void ReleaseInternal(GameObject instance)
@@ -250,6 +256,82 @@ namespace CapstonePresentation
             GameObject root = new GameObject("PooledVisuals");
             root.transform.SetParent(transform, worldPositionStays: false);
             pooledRoot = root.transform;
+        }
+
+        private void PrewarmInternal(GameObject prefab, int count)
+        {
+            prefab = PresentationAssetProvider.ResolvePrefab(prefab);
+            if (prefab == null || count <= 0)
+                return;
+
+            int prefabId = prefab.GetInstanceID();
+            if (!poolByPrefabId.TryGetValue(prefabId, out Queue<PooledPresentationInstance> pool))
+            {
+                pool = new Queue<PooledPresentationInstance>();
+                poolByPrefabId[prefabId] = pool;
+            }
+
+            EnsurePoolRoot();
+
+            for (int i = 0; i < count; i++)
+            {
+                PooledPresentationInstance created = CreatePooledInstance(prefab, prefabId);
+                if (created == null)
+                    break;
+
+                StopAndResetInstance(created.gameObject);
+                created.transform.SetParent(pooledRoot, worldPositionStays: false);
+                created.transform.localPosition = Vector3.zero;
+                created.transform.localRotation = Quaternion.identity;
+                created.transform.localScale = created.initialScale;
+                created.gameObject.SetActive(false);
+                pool.Enqueue(created);
+            }
+        }
+
+        private void TrimInternal(GameObject prefab, int count)
+        {
+            prefab = PresentationAssetProvider.ResolvePrefab(prefab);
+            if (prefab == null || count <= 0)
+                return;
+
+            int prefabId = prefab.GetInstanceID();
+            if (!poolByPrefabId.TryGetValue(prefabId, out Queue<PooledPresentationInstance> pool) || pool.Count == 0)
+                return;
+
+            int removedCount = 0;
+            int safety = pool.Count;
+
+            while (pool.Count > 0 && removedCount < count && safety-- > 0)
+            {
+                PooledPresentationInstance pooled = pool.Dequeue();
+                if (pooled == null)
+                    continue;
+
+                Destroy(pooled.gameObject);
+                removedCount++;
+            }
+
+            if (pool.Count == 0)
+                poolByPrefabId.Remove(prefabId);
+        }
+
+        private static PooledPresentationInstance CreatePooledInstance(GameObject prefab, int prefabId)
+        {
+            GameObject instance = Instantiate(prefab);
+            if (instance == null)
+                return null;
+
+            PooledPresentationInstance created = instance.GetComponent<PooledPresentationInstance>();
+            if (created == null)
+                created = instance.AddComponent<PooledPresentationInstance>();
+
+            created.prefabId = prefabId;
+            created.initialScale = instance.transform.localScale == Vector3.zero
+                ? Vector3.one
+                : instance.transform.localScale;
+            created.activeVersion = 1;
+            return created;
         }
 
         private static void InitializeSpawnedInstance(GameObject instance, bool useUnscaledTime)
