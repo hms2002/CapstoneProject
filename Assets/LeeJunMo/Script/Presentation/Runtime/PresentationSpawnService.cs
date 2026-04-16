@@ -9,6 +9,18 @@ namespace CapstonePresentation
     [DisallowMultipleComponent]
     public sealed class PresentationSpawnService : MonoBehaviour
     {
+        public readonly struct PoolDebugEntry
+        {
+            public PoolDebugEntry(string name, int pooledCount)
+            {
+                Name = name;
+                PooledCount = pooledCount;
+            }
+
+            public string Name { get; }
+            public int PooledCount { get; }
+        }
+
         private const float LoopingAutoReleaseFallbackSeconds = 1f;
 
         private sealed class PooledPresentationInstance : MonoBehaviour
@@ -23,6 +35,7 @@ namespace CapstonePresentation
         private static bool s_isQuitting;
 
         private readonly Dictionary<int, Queue<PooledPresentationInstance>> poolByPrefabId = new();
+        private readonly Dictionary<int, string> prefabNamesById = new();
         private Transform pooledRoot;
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
@@ -104,6 +117,24 @@ namespace CapstonePresentation
             InitializeSpawnedInstance(instance, useUnscaledTime);
         }
 
+        public static int GetPooledPrefabTypeCount()
+        {
+            PresentationSpawnService service = EnsureInstance();
+            return service != null ? service.poolByPrefabId.Count : 0;
+        }
+
+        public static int GetTotalPooledInstanceCount()
+        {
+            PresentationSpawnService service = EnsureInstance();
+            return service != null ? service.GetTotalPooledInstanceCountInternal() : 0;
+        }
+
+        public static PoolDebugEntry[] GetPoolSnapshot(int maxCount = 24)
+        {
+            PresentationSpawnService service = EnsureInstance();
+            return service != null ? service.BuildPoolSnapshot(maxCount) : System.Array.Empty<PoolDebugEntry>();
+        }
+
         private void Awake()
         {
             if (Instance != null && Instance != this)
@@ -136,7 +167,7 @@ namespace CapstonePresentation
             if (!hook.HasContent)
                 return null;
 
-            PooledPresentationInstance pooledInstance = Rent(hook.prefab);
+            PooledPresentationInstance pooledInstance = Rent(hook.prefab, out GameObject resolvedPrefab, out bool coldSpawn);
             if (pooledInstance == null)
                 return null;
 
@@ -151,6 +182,7 @@ namespace CapstonePresentation
             GameObject instance = pooledInstance.gameObject;
             instance.SetActive(true);
             InitializeSpawnedInstance(instance, hook.useUnscaledTime);
+            PrewarmTraceRuntime.RecordSpawn(resolvedPrefab, coldSpawn);
 
             if (scheduleAutoRelease && hook.ShouldAutoRelease)
             {
@@ -185,13 +217,15 @@ namespace CapstonePresentation
             ReleaseInternal(pooledInstance);
         }
 
-        private PooledPresentationInstance Rent(GameObject prefab)
+        private PooledPresentationInstance Rent(GameObject prefab, out GameObject resolvedPrefab, out bool coldSpawn)
         {
-            prefab = PresentationAssetProvider.ResolvePrefab(prefab);
-            if (prefab == null)
+            resolvedPrefab = PresentationAssetProvider.ResolvePrefab(prefab);
+            coldSpawn = false;
+            if (resolvedPrefab == null)
                 return null;
 
-            int prefabId = prefab.GetInstanceID();
+            int prefabId = resolvedPrefab.GetInstanceID();
+            prefabNamesById[prefabId] = resolvedPrefab.name;
             if (poolByPrefabId.TryGetValue(prefabId, out Queue<PooledPresentationInstance> pool))
             {
                 while (pool.Count > 0)
@@ -205,7 +239,8 @@ namespace CapstonePresentation
                 }
             }
 
-            return CreatePooledInstance(prefab, prefabId);
+            coldSpawn = true;
+            return CreatePooledInstance(resolvedPrefab, prefabId);
         }
 
         private void ReleaseInternal(GameObject instance)
@@ -265,6 +300,7 @@ namespace CapstonePresentation
                 return;
 
             int prefabId = prefab.GetInstanceID();
+            prefabNamesById[prefabId] = prefab.name;
             if (!poolByPrefabId.TryGetValue(prefabId, out Queue<PooledPresentationInstance> pool))
             {
                 pool = new Queue<PooledPresentationInstance>();
@@ -313,7 +349,10 @@ namespace CapstonePresentation
             }
 
             if (pool.Count == 0)
+            {
                 poolByPrefabId.Remove(prefabId);
+                prefabNamesById.Remove(prefabId);
+            }
         }
 
         private static PooledPresentationInstance CreatePooledInstance(GameObject prefab, int prefabId)
@@ -519,6 +558,35 @@ namespace CapstonePresentation
                 ParticleSystemCurveMode.TwoCurves => curve.curveMultiplier,
                 _ => Mathf.Max(curve.constant, curve.constantMax)
             };
+        }
+
+        private int GetTotalPooledInstanceCountInternal()
+        {
+            int total = 0;
+            foreach (KeyValuePair<int, Queue<PooledPresentationInstance>> pair in poolByPrefabId)
+                total += pair.Value != null ? pair.Value.Count : 0;
+
+            return total;
+        }
+
+        private PoolDebugEntry[] BuildPoolSnapshot(int maxCount)
+        {
+            int safeMaxCount = Mathf.Max(1, maxCount);
+            var results = new List<PoolDebugEntry>(poolByPrefabId.Count);
+            foreach (KeyValuePair<int, Queue<PooledPresentationInstance>> pair in poolByPrefabId)
+            {
+                int pooledCount = pair.Value != null ? pair.Value.Count : 0;
+                string name = prefabNamesById.TryGetValue(pair.Key, out string prefabName)
+                    ? prefabName
+                    : pair.Key.ToString();
+                results.Add(new PoolDebugEntry(name, pooledCount));
+            }
+
+            results.Sort((left, right) => right.PooledCount.CompareTo(left.PooledCount));
+            if (results.Count > safeMaxCount)
+                results.RemoveRange(safeMaxCount, results.Count - safeMaxCount);
+
+            return results.ToArray();
         }
     }
 }

@@ -5,7 +5,7 @@ using UnityEngine;
     menuName = "Capstone/Loading/Bootstrap Config")]
 public sealed class LoadingBootstrapConfigSO : ScriptableObject
 {
-    public const string DefaultResourcesPath = "Loading/LoadingBootstrapConfig";
+    public const string SourceAssetPath = "Assets/LeeJunMo/Datas/Loading/LoadingBootstrapConfig.asset";
 
     [SerializeField] private LoadManifestSO bootManifest;
 

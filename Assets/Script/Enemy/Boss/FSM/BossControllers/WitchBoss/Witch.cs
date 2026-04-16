@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using CapstoneAudio;
+using CapstonePresentation;
 using UnityEngine;
 using UnityGAS;
 using UnityGAS.Sample;
@@ -743,19 +744,20 @@ public class Witch : BossControllerBase, IWitchPatternStateBridge
         context = new WitchExtinguishPatternExecutor.PatternContext(
             resolvedDurationSeconds,
             warningStyle,
-            fogPrefab,
             damageEffect,
             config.DamageAmount,
-            config.FogSpawnScaleMultiplier,
+            new SpawnedPresentationHook
+            {
+                prefab = fogPrefab,
+                localOffset = Vector3.zero,
+                rotationOffsetZ = 0f,
+                scaleMultiplier = config.FogSpawnScaleMultiplier,
+                lifetimeMode = PresentationLifetimeMode.ManualRelease,
+                lifetimeOverrideSeconds = 0f,
+                useUnscaledTime = false
+            },
             Mathf.Max(0f, config.AttackRadiusMultiplier),
-            config.ExplosionVisualPrefab,
-            config.ExplosionParticlePrefab,
-            config.ExplosionVisualOffset,
-            config.ExplosionVisualScale,
-            config.ExplosionParticleOffset,
-            config.ExplosionParticleScale,
-            config.ExplosionSound,
-            config.ExplosionCameraShake);
+            config.GetExplosionPresentation());
         return true;
     }
 

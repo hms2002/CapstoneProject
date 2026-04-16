@@ -1,12 +1,13 @@
 using CapstoneRuntime;
 using UnityEngine;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 [DefaultExecutionOrder(-865)]
 [DisallowMultipleComponent]
 public sealed class PresentationPreloadService : MonoBehaviour
 {
-    private const string DefaultBootstrapConfigResourcesPath = LoadingBootstrapConfigSO.DefaultResourcesPath;
-
     public static PresentationPreloadService Instance { get; private set; }
 
     private static bool s_isQuitting;
@@ -18,6 +19,12 @@ public sealed class PresentationPreloadService : MonoBehaviour
     private LoadManifestSO activeRunCommonManifest;
     private RouteSetLoadManifestSO activeCurrentStageManifest;
     private RouteSetLoadManifestSO activeNextStageManifest;
+
+    public LoadManifestSO ActiveBootManifest => activeBootManifest;
+    public LoadManifestSO ActiveRunCommonManifest => activeRunCommonManifest;
+    public RouteSetLoadManifestSO ActiveCurrentStageManifest => activeCurrentStageManifest;
+    public RouteSetLoadManifestSO ActiveNextStageManifest => activeNextStageManifest;
+    public PortalRouteManager BoundRouteManager => boundRouteManager;
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     private static void AutoBootstrap()
@@ -146,9 +153,41 @@ public sealed class PresentationPreloadService : MonoBehaviour
 
     private void RefreshBootManifest()
     {
-        LoadingBootstrapConfigSO config = Resources.Load<LoadingBootstrapConfigSO>(DefaultBootstrapConfigResourcesPath);
+        LoadingBootstrapConfigSO config = LoadBootstrapConfig();
         LoadManifestSO desiredBootManifest = config != null ? config.BootManifest : null;
         ApplyManifest(ref activeBootManifest, desiredBootManifest);
+    }
+
+    private static LoadingBootstrapConfigSO LoadBootstrapConfig()
+    {
+        LoadingBootstrapConfigSO config = FindPreloadedBootstrapConfig();
+#if UNITY_EDITOR
+        if (config == null)
+            config = UnityEditor.AssetDatabase.LoadAssetAtPath<LoadingBootstrapConfigSO>(LoadingBootstrapConfigSO.SourceAssetPath);
+#endif
+        return config;
+    }
+
+    private static LoadingBootstrapConfigSO FindPreloadedBootstrapConfig()
+    {
+        LoadingBootstrapConfigSO[] loadedConfigs = Resources.FindObjectsOfTypeAll<LoadingBootstrapConfigSO>();
+        if (loadedConfigs == null || loadedConfigs.Length == 0)
+            return null;
+
+#if UNITY_EDITOR
+        for (int i = 0; i < loadedConfigs.Length; i++)
+        {
+            LoadingBootstrapConfigSO candidate = loadedConfigs[i];
+            if (candidate == null)
+                continue;
+
+            string assetPath = AssetDatabase.GetAssetPath(candidate);
+            if (string.Equals(assetPath, LoadingBootstrapConfigSO.SourceAssetPath, System.StringComparison.OrdinalIgnoreCase))
+                return candidate;
+        }
+#endif
+
+        return loadedConfigs[0];
     }
 
     private static void ApplyManifest(ref LoadManifestSO currentManifest, LoadManifestSO desiredManifest)

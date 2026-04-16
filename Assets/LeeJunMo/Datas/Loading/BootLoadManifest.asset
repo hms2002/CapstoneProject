@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 54a5ab6f6e2990e49baff1289a56ee26, type: 3}
   m_Name: BootLoadManifest
   m_EditorClassIdentifier: Assembly-CSharp::LoadManifestSO
-  scopeKind: 2
+  scopeKind: 0
   prefabAssets:
   - {fileID: 5162246622105999104, guid: f09848183e09c7742bef1b7b1deecdfd, type: 3}
   - {fileID: 7167532537742536217, guid: 2040afd46a4bf0a4eb8e6bf3c95f94cc, type: 3}

@@ -79,6 +79,7 @@ public sealed class PortalRouteManager : MonoBehaviour
 
     public int CurrentStageIndex => currentStageIndex;
     public int TotalStageCount => activeRouteStages?.Count ?? 0;
+    public RunRouteCatalogSO ActiveRouteCatalog => activeRouteCatalog;
     public CorridorBossRouteSetSO CurrentStageSet => HasActivePlan ? activeRouteStages[currentStageIndex] : null;
     public int NextStageIndex => HasActivePlan ? currentStageIndex + 1 : -1;
     public CorridorBossRouteSetSO NextStageSet =>

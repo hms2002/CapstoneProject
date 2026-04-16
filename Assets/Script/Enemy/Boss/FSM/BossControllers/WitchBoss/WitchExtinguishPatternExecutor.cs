@@ -1,69 +1,37 @@
 using System.Collections.Generic;
-using CapstoneAudio;
+using CapstonePresentation;
 using UnityEngine;
 using UnityGAS;
 
 public sealed class WitchExtinguishPatternExecutor : MonoBehaviour
 {
-    // 이 클래스의 책임:
-    // 마녀 보스의 촛불 끄기 패턴 1회 실행에서 촛대 선택, 경고, 폭발 판정, 안개/연출 생성을 전담한다.
-
-    /// <summary>
-    /// 책임 :
-    /// - 촛불 끄기 패턴 1회 실행에 필요한 순수 데이터와 연출 파라미터를 executor에 전달한다.
-    /// - executor가 Witch 내부 로직 캐스팅이나 개별 Get/Resolve 함수 없이도 패턴을 수행하게 만든다.
-    /// </summary>
     public readonly struct PatternContext
     {
         public PatternContext(
             float warningTimeSeconds,
             AttackTelegraphStyle warningStyle,
-            GameObject fogPrefab,
             GE_Damage_Spec damageEffect,
             float damageAmount,
-            Vector3 fogSpawnScaleMultiplier,
+            SpawnedPresentationHook fogPresentation,
             float attackRadiusMultiplier,
-            GameObject explosionVisualPrefab,
-            GameObject explosionParticlePrefab,
-            Vector3 explosionVisualOffset,
-            Vector3 explosionVisualScale,
-            Vector3 explosionParticleOffset,
-            Vector3 explosionParticleScale,
-            SoundRef explosionSound,
-            CameraShakeHook explosionCameraShake)
+            WorldPresentationHook explosionPresentation)
         {
             WarningTimeSeconds = warningTimeSeconds;
             WarningStyle = warningStyle;
-            FogPrefab = fogPrefab;
             DamageEffect = damageEffect;
             DamageAmount = damageAmount;
-            FogSpawnScaleMultiplier = fogSpawnScaleMultiplier;
+            FogPresentation = fogPresentation;
             AttackRadiusMultiplier = attackRadiusMultiplier;
-            ExplosionVisualPrefab = explosionVisualPrefab;
-            ExplosionParticlePrefab = explosionParticlePrefab;
-            ExplosionVisualOffset = explosionVisualOffset;
-            ExplosionVisualScale = explosionVisualScale;
-            ExplosionParticleOffset = explosionParticleOffset;
-            ExplosionParticleScale = explosionParticleScale;
-            ExplosionSound = explosionSound;
-            ExplosionCameraShake = explosionCameraShake;
+            ExplosionPresentation = explosionPresentation;
         }
 
         public float WarningTimeSeconds { get; }
         public AttackTelegraphStyle WarningStyle { get; }
-        public GameObject FogPrefab { get; }
         public GE_Damage_Spec DamageEffect { get; }
         public float DamageAmount { get; }
-        public Vector3 FogSpawnScaleMultiplier { get; }
+        public SpawnedPresentationHook FogPresentation { get; }
         public float AttackRadiusMultiplier { get; }
-        public GameObject ExplosionVisualPrefab { get; }
-        public GameObject ExplosionParticlePrefab { get; }
-        public Vector3 ExplosionVisualOffset { get; }
-        public Vector3 ExplosionVisualScale { get; }
-        public Vector3 ExplosionParticleOffset { get; }
-        public Vector3 ExplosionParticleScale { get; }
-        public SoundRef ExplosionSound { get; }
-        public CameraShakeHook ExplosionCameraShake { get; }
+        public WorldPresentationHook ExplosionPresentation { get; }
     }
 
     private readonly List<AttackTelegraphView> activeWarningViews = new();
@@ -74,7 +42,6 @@ public sealed class WitchExtinguishPatternExecutor : MonoBehaviour
         owner = GetComponent<Witch>();
     }
 
-    /// <summary>촛불 끄기 패턴 시작을 시도하고 경고 시간을 실행 지속시간으로 반환합니다.</summary>
     public bool TryBeginPattern(in PatternContext context, out float resolvedDurationSeconds)
     {
         resolvedDurationSeconds = Mathf.Max(0f, context.WarningTimeSeconds);
@@ -91,9 +58,9 @@ public sealed class WitchExtinguishPatternExecutor : MonoBehaviour
             return false;
         }
 
-        if (context.FogPrefab == null)
+        if (!context.FogPresentation.HasContent)
         {
-            Debug.LogWarning("[WitchExtinguishPatternExecutor] 시작 실패: FogPrefab이 없습니다.", owner);
+            Debug.LogWarning("[WitchExtinguishPatternExecutor] 시작 실패: FogPresentation이 없습니다.", owner);
             return false;
         }
 
@@ -106,11 +73,11 @@ public sealed class WitchExtinguishPatternExecutor : MonoBehaviour
             return false;
         }
 
-        float attackRadius = CalculateAttackRadius(context.FogPrefab, context.FogSpawnScaleMultiplier, context.AttackRadiusMultiplier);
+        float attackRadius = CalculateAttackRadius(context.FogPresentation, context.AttackRadiusMultiplier);
         if (attackRadius <= 0f)
         {
             Debug.LogWarning(
-                $"[WitchExtinguishPatternExecutor] 시작 실패: attackRadius가 유효하지 않습니다. radius={attackRadius}, multiplier={context.AttackRadiusMultiplier}, fogScale={context.FogSpawnScaleMultiplier}",
+                $"[WitchExtinguishPatternExecutor] 시작 실패: attackRadius가 유효하지 않습니다. radius={attackRadius}, multiplier={context.AttackRadiusMultiplier}",
                 owner);
             return false;
         }
@@ -122,13 +89,9 @@ public sealed class WitchExtinguishPatternExecutor : MonoBehaviour
         owner.RuntimeData.SetExtinguishSelections(selectedCandles, extinguishCenters);
         owner.PlayPatternAttackMotion();
         ShowWarnings(extinguishCenters, resolvedDurationSeconds, attackRadius, context.WarningStyle);
-        Debug.Log(
-            $"[WitchExtinguishPatternExecutor] 촛불 끄기 시작 성공: selected={selectedCandles.Count}, total={Candlestick.Instances.Count}, sealed={owner.GetSealedCandleCount()}, radius={attackRadius}",
-            owner);
         return true;
     }
 
-    /// <summary>현재 저장된 촛불 끄기 패턴 선택 데이터를 기반으로 폭발을 마무리합니다.</summary>
     public void CompletePattern(in PatternContext context)
     {
         if (owner == null || !owner.RuntimeData.HasActiveExtinguishSelection)
@@ -169,22 +132,13 @@ public sealed class WitchExtinguishPatternExecutor : MonoBehaviour
 
         Candlestick nearestCandle = owner.GetNearestCandle();
         if (nearestCandle == null)
-        {
-            Debug.LogWarning(
-                $"[WitchExtinguishPatternExecutor] nearest candle을 찾지 못했습니다. total={Candlestick.Instances.Count}, sealed={owner.GetSealedCandleCount()}",
-                owner);
             return selections;
-        }
 
         selections.Add(nearestCandle);
 
         Candlestick randomCandle = GetRandomAvailableCandleExcluding(nearestCandle);
         if (randomCandle != null)
             selections.Add(randomCandle);
-        else
-            Debug.Log(
-                "[WitchExtinguishPatternExecutor] 추가 랜덤 촛대가 없어 가장 가까운 촛대만 사용합니다.",
-                owner);
 
         return selections;
     }
@@ -209,7 +163,6 @@ public sealed class WitchExtinguishPatternExecutor : MonoBehaviour
         return availableCandles[randomIndex];
     }
 
-    /// <summary>촛불 끄기 패턴의 원형 경고를 여러 개 동시에 표시합니다.</summary>
     private void ShowWarnings(IReadOnlyList<Vector3> centers, float warningTime, float attackRadius, AttackTelegraphStyle warningStyle)
     {
         DestroyWarningViews();
@@ -246,13 +199,12 @@ public sealed class WitchExtinguishPatternExecutor : MonoBehaviour
         activeWarningViews.Clear();
     }
 
-    /// <summary>플레이어에게 폭발 피해를 적용합니다.</summary>
     private bool TryHitPlayer(Vector3 center, in PatternContext context)
     {
         if (owner == null || owner.CurrentTarget == null || owner.AbilitySystem == null || context.DamageEffect == null)
             return false;
 
-        float fogRadius = CalculateAttackRadius(context.FogPrefab, context.FogSpawnScaleMultiplier, context.AttackRadiusMultiplier);
+        float fogRadius = CalculateAttackRadius(context.FogPresentation, context.AttackRadiusMultiplier);
         Vector2 toTarget = (Vector2)(owner.CurrentTarget.position - center);
         if (toTarget.sqrMagnitude > fogRadius * fogRadius)
             return false;
@@ -276,64 +228,58 @@ public sealed class WitchExtinguishPatternExecutor : MonoBehaviour
         return CombatHitPayloadApplier.Apply(owner.CurrentTarget.gameObject, payload, center);
     }
 
-    /// <summary>촛대 위치에 Fog를 생성합니다.</summary>
     private bool SpawnFog(Vector3 center, in PatternContext context)
     {
-        if (context.FogPrefab == null)
+        if (!context.FogPresentation.HasContent)
             return false;
 
-        GameObject fogInstance = Instantiate(
-            context.FogPrefab,
-            center - GetFogOffset(context.FogPrefab, context.FogSpawnScaleMultiplier),
-            Quaternion.identity);
-        if (fogInstance == null)
+        GameObject fogInstance = PresentationSpawnService.SpawnPersistent(
+            context.FogPresentation,
+            WorldPresentationContext.AtWorld(
+                instigator: owner.gameObject,
+                position: GetFogSpawnPosition(context.FogPresentation, center),
+                fallbackDirection: Vector3.up,
+                target: owner.CurrentTarget != null ? owner.CurrentTarget.gameObject : null,
+                sourceObject: this,
+                rotation: Quaternion.identity,
+                causer: owner.gameObject));
+
+        return fogInstance != null;
+    }
+
+    private bool PlayExplosionPresentation(Vector3 center, in PatternContext context)
+    {
+        if (!context.ExplosionPresentation.HasAnyContent)
             return false;
 
-        fogInstance.transform.localScale = Vector3.Scale(fogInstance.transform.localScale, context.FogSpawnScaleMultiplier);
+        Vector3 shakeDirection = owner != null && owner.CurrentTarget != null
+            ? owner.CurrentTarget.position - center
+            : Vector3.up;
+        if (shakeDirection.sqrMagnitude <= 0.0001f)
+            shakeDirection = Vector3.up;
+
+        WorldPresentationRuntime.Play(
+            context.ExplosionPresentation,
+            WorldPresentationContext.AtWorld(
+                instigator: owner.gameObject,
+                position: center,
+                fallbackDirection: shakeDirection,
+                target: owner.CurrentTarget != null ? owner.CurrentTarget.gameObject : null,
+                sourceObject: this,
+                rotation: Quaternion.identity,
+                causer: owner.gameObject));
         return true;
     }
 
-    /// <summary>촛불 끄기 패턴의 폭발 비주얼/파티클/사운드/카메라 셰이크를 함께 재생합니다.</summary>
-    private bool PlayExplosionPresentation(Vector3 center, in PatternContext context)
+    private static float CalculateAttackRadius(SpawnedPresentationHook fogPresentation, float attackRadiusMultiplier)
     {
-        if (owner == null)
-            return false;
-
-        Transform parent = owner.ExtinguishExplosionVisualSocket;
-        bool hasSpawnedVisual = SpawnPresentationPrefab(
-            context.ExplosionVisualPrefab,
-            center + context.ExplosionVisualOffset,
-            context.ExplosionVisualScale,
-            parent);
-        bool hasSpawnedParticle = SpawnPresentationPrefab(
-            context.ExplosionParticlePrefab,
-            center + context.ExplosionParticleOffset,
-            context.ExplosionParticleScale,
-            parent);
-
-        SoundPlaybackUtility.Play(
-            context.ExplosionSound,
-            instigator: owner.gameObject,
-            causer: owner.gameObject,
-            target: owner.CurrentTarget != null ? owner.CurrentTarget.gameObject : null,
-            position: center,
-            sourceObject: this);
-
-        Vector3 shakeDirection = owner.CurrentTarget != null ? owner.CurrentTarget.position - center : Vector3.up;
-        context.ExplosionCameraShake.TryPlay(owner.gameObject, shakeDirection, debugReason: "Witch.ExtinguishExplosion");
-        return hasSpawnedVisual || hasSpawnedParticle;
-    }
-
-    /// <summary>지정한 Fog 프리팹 기준으로 촛불 끄기 패턴의 실제 공격 반경을 계산합니다.</summary>
-    private static float CalculateAttackRadius(GameObject fogPrefab, Vector3 fogSpawnScaleMultiplier, float attackRadiusMultiplier)
-    {
-        float fogRadius = GetFogRadius(fogPrefab, fogSpawnScaleMultiplier);
+        float fogRadius = GetFogRadius(fogPresentation);
         return fogRadius * Mathf.Max(0f, attackRadiusMultiplier);
     }
 
-    /// <summary>지정한 Fog 프리팹의 실반경을 배율 보정까지 포함해 반환합니다.</summary>
-    private static float GetFogRadius(GameObject fogPrefab, Vector3 fogSpawnScaleMultiplier)
+    private static float GetFogRadius(SpawnedPresentationHook fogPresentation)
     {
+        GameObject fogPrefab = fogPresentation.prefab;
         if (fogPrefab == null)
             return 0f;
 
@@ -341,15 +287,15 @@ public sealed class WitchExtinguishPatternExecutor : MonoBehaviour
         if (fogCollider == null)
             return 0f;
 
-        Vector3 scale = Vector3.Scale(fogPrefab.transform.localScale, fogSpawnScaleMultiplier);
+        Vector3 scale = Vector3.Scale(fogPrefab.transform.localScale, fogPresentation.EffectiveScaleMultiplier);
         float xRadius = fogCollider.radius * Mathf.Abs(scale.x);
         float yRadius = fogCollider.radius * Mathf.Abs(scale.y);
         return Mathf.Max(xRadius, yRadius);
     }
 
-    /// <summary>지정한 Fog 프리팹의 오프셋을 배율 보정까지 포함해 계산합니다.</summary>
-    private static Vector3 GetFogOffset(GameObject fogPrefab, Vector3 fogSpawnScaleMultiplier)
+    private static Vector3 GetFogOffset(SpawnedPresentationHook fogPresentation)
     {
+        GameObject fogPrefab = fogPresentation.prefab;
         if (fogPrefab == null)
             return Vector3.zero;
 
@@ -357,24 +303,15 @@ public sealed class WitchExtinguishPatternExecutor : MonoBehaviour
         if (fogCollider == null)
             return Vector3.zero;
 
-        Vector3 scale = Vector3.Scale(fogPrefab.transform.localScale, fogSpawnScaleMultiplier);
+        Vector3 scale = Vector3.Scale(fogPrefab.transform.localScale, fogPresentation.EffectiveScaleMultiplier);
         return new Vector3(
             fogCollider.offset.x * scale.x,
             fogCollider.offset.y * scale.y,
             0f);
     }
 
-    /// <summary>촛불 끄기 패턴용 연출 프리팹을 생성하고 배율 보정을 적용합니다.</summary>
-    private static bool SpawnPresentationPrefab(GameObject prefab, Vector3 position, Vector3 scaleMultiplier, Transform parent)
+    private static Vector3 GetFogSpawnPosition(SpawnedPresentationHook fogPresentation, Vector3 center)
     {
-        if (prefab == null)
-            return false;
-
-        GameObject instance = Instantiate(prefab, position, Quaternion.identity, parent);
-        if (instance == null)
-            return false;
-
-        instance.transform.localScale = Vector3.Scale(instance.transform.localScale, scaleMultiplier);
-        return true;
+        return center - GetFogOffset(fogPresentation);
     }
 }

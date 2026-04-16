@@ -18,18 +18,6 @@ public sealed class LoadManifestInspectorWindow : EditorWindow
         Other
     }
 
-    private enum ScopeAssetTab
-    {
-        All,
-        Prefab,
-        Audio,
-        Cue,
-        Data,
-        Material,
-        Font,
-        Other
-    }
-
     private enum Severity
     {
         Info,
@@ -96,7 +84,7 @@ public sealed class LoadManifestInspectorWindow : EditorWindow
     private readonly List<Issue> issues = new();
     private readonly List<ScopeSnapshot> scopes = new();
     private readonly Dictionary<string, bool> scopeExpandedStates = new();
-    private readonly Dictionary<string, ScopeAssetTab> scopeTabStates = new();
+    private readonly Dictionary<string, bool> categoryExpandedStates = new();
     private Vector2 leftScroll;
     private Vector2 rightScroll;
     private bool showAssets = true;
@@ -119,14 +107,10 @@ public sealed class LoadManifestInspectorWindow : EditorWindow
         using (new EditorGUILayout.HorizontalScope())
         {
             using (new EditorGUILayout.VerticalScope(GUILayout.Width(position.width * 0.38f)))
-            {
                 DrawSummary();
-            }
 
             using (new EditorGUILayout.VerticalScope())
-            {
                 DrawScopes();
-            }
         }
     }
 
@@ -155,8 +139,8 @@ public sealed class LoadManifestInspectorWindow : EditorWindow
                 Analyze();
             }
 
-            string showAssetsLabel = showAssets ? "Assets: On" : "Assets: Off";
-            showAssets = GUILayout.Toggle(showAssets, showAssetsLabel, EditorStyles.toolbarButton, GUILayout.Width(90f));
+            string assetsLabel = showAssets ? "Assets: On" : "Assets: Off";
+            showAssets = GUILayout.Toggle(showAssets, assetsLabel, EditorStyles.toolbarButton, GUILayout.Width(90f));
 
             GUILayout.FlexibleSpace();
         }
@@ -222,62 +206,102 @@ public sealed class LoadManifestInspectorWindow : EditorWindow
 
                 if (!showAssets)
                 {
-                    EditorGUILayout.HelpBox("Assets 목록이 숨겨져 있습니다. 상단 툴바의 'Assets: Off'를 눌러 표시하세요.", MessageType.None);
+                    EditorGUILayout.HelpBox("Asset list is hidden. Toggle 'Assets: Off' in the toolbar to show it.", MessageType.None);
                     continue;
                 }
 
-                ScopeAssetTab currentTab = DrawScopeTabs(scope.Label, scope);
-                scopeTabStates[scope.Label] = currentTab;
-
-                List<AssetEntry> filteredAssets = FilterAssets(scope.Assets, currentTab);
-                if (filteredAssets.Count == 0)
-                {
-                    EditorGUILayout.HelpBox("현재 탭에 표시할 asset이 없습니다.", MessageType.None);
-                    continue;
-                }
-
-                for (int assetIndex = 0; assetIndex < filteredAssets.Count; assetIndex++)
-                {
-                    AssetEntry entry = filteredAssets[assetIndex];
-                    using (new EditorGUILayout.HorizontalScope())
-                    {
-                        using (new EditorGUILayout.VerticalScope())
-                        {
-                            EditorGUILayout.LabelField(entry.Path, EditorStyles.wordWrappedMiniLabel);
-
-                            if (scope.SupportsPrewarmEditing && scope.EditableManifest != null && entry.Asset is GameObject prefab)
-                            {
-                                int currentWarmCount = GetPrewarmCount(scope.EditableManifest, prefab);
-                                using (new EditorGUILayout.HorizontalScope())
-                                {
-                                    EditorGUILayout.LabelField($"Prewarm: {currentWarmCount}", GUILayout.Width(80f));
-
-                                    if (GUILayout.Button("+1", GUILayout.Width(34f)))
-                                        SetPrewarmCount(scope.EditableManifest, prefab, currentWarmCount + 1);
-
-                                    if (GUILayout.Button("+2", GUILayout.Width(34f)))
-                                        SetPrewarmCount(scope.EditableManifest, prefab, currentWarmCount + 2);
-
-                                    if (GUILayout.Button("+3", GUILayout.Width(34f)))
-                                        SetPrewarmCount(scope.EditableManifest, prefab, currentWarmCount + 3);
-
-                                    using (new EditorGUI.DisabledScope(currentWarmCount <= 0))
-                                    {
-                                        if (GUILayout.Button("Clear", GUILayout.Width(48f)))
-                                            SetPrewarmCount(scope.EditableManifest, prefab, 0);
-                                    }
-                                }
-                            }
-                        }
-
-                        if (entry.Asset != null && GUILayout.Button("Ping", GUILayout.Width(46f)))
-                            EditorGUIUtility.PingObject(entry.Asset);
-                    }
-                }
+                DrawScopeCategories(scope);
             }
         }
 
         EditorGUILayout.EndScrollView();
+    }
+
+    private void DrawScopeCategories(ScopeSnapshot scope)
+    {
+        EditorGUILayout.Space(2f);
+        EditorGUILayout.LabelField("Categories", EditorStyles.boldLabel);
+
+        AssetCategory[] orderedCategories =
+        {
+            AssetCategory.Prefab,
+            AssetCategory.Audio,
+            AssetCategory.Cue,
+            AssetCategory.Data,
+            AssetCategory.Material,
+            AssetCategory.Font,
+            AssetCategory.Other
+        };
+
+        bool drewAnyCategory = false;
+        for (int i = 0; i < orderedCategories.Length; i++)
+        {
+            AssetCategory category = orderedCategories[i];
+            List<AssetEntry> categoryAssets = FilterAssets(scope.Assets, category);
+            if (categoryAssets.Count == 0)
+                continue;
+
+            drewAnyCategory = true;
+            DrawCategorySection(scope, category, categoryAssets);
+        }
+
+        if (!drewAnyCategory)
+            EditorGUILayout.HelpBox("There are no assets in this scope.", MessageType.None);
+    }
+
+    private void DrawCategorySection(ScopeSnapshot scope, AssetCategory category, List<AssetEntry> assets)
+    {
+        string categoryKey = $"{scope.Label}:{category}";
+        bool expanded = GetCategoryExpanded(categoryKey);
+        expanded = EditorGUILayout.Foldout(expanded, $"{category} ({assets.Count})", true);
+        categoryExpandedStates[categoryKey] = expanded;
+
+        if (!expanded)
+            return;
+
+        using (new EditorGUI.IndentLevelScope())
+        {
+            for (int i = 0; i < assets.Count; i++)
+                DrawAssetEntry(scope, assets[i]);
+        }
+    }
+
+    private void DrawAssetEntry(ScopeSnapshot scope, AssetEntry entry)
+    {
+        using (new EditorGUILayout.HorizontalScope())
+        {
+            using (new EditorGUILayout.VerticalScope())
+            {
+                EditorGUILayout.LabelField(entry.Path, EditorStyles.wordWrappedMiniLabel);
+
+                if (scope.SupportsPrewarmEditing && scope.EditableManifest != null && entry.Asset is GameObject prefab)
+                {
+                    int currentWarmCount = GetPrewarmCount(scope.EditableManifest, prefab);
+                    using (new EditorGUILayout.HorizontalScope())
+                    {
+                        EditorGUILayout.LabelField($"Prewarm: {currentWarmCount}", GUILayout.Width(80f));
+
+                        if (GUILayout.Button("+1", GUILayout.Width(34f)))
+                            SetPrewarmCount(scope.EditableManifest, prefab, currentWarmCount + 1);
+
+                        if (GUILayout.Button("+2", GUILayout.Width(34f)))
+                            SetPrewarmCount(scope.EditableManifest, prefab, currentWarmCount + 2);
+
+                        if (GUILayout.Button("+3", GUILayout.Width(34f)))
+                            SetPrewarmCount(scope.EditableManifest, prefab, currentWarmCount + 3);
+
+                        using (new EditorGUI.DisabledScope(currentWarmCount <= 0))
+                        {
+                            if (GUILayout.Button("Clear", GUILayout.Width(48f)))
+                                SetPrewarmCount(scope.EditableManifest, prefab, 0);
+                        }
+                    }
+                }
+            }
+
+            if (entry.Asset != null && GUILayout.Button("Ping", GUILayout.Width(46f)))
+                EditorGUIUtility.PingObject(entry.Asset);
+        }
     }
 
     private void Analyze()
@@ -287,7 +311,7 @@ public sealed class LoadManifestInspectorWindow : EditorWindow
 
         if (routeSet == null)
         {
-            issues.Add(new Issue { severity = Severity.Error, message = "RouteSet이 지정되지 않았습니다." });
+            issues.Add(new Issue { severity = Severity.Error, message = "No RouteSet selected." });
             return;
         }
 
@@ -298,22 +322,22 @@ public sealed class LoadManifestInspectorWindow : EditorWindow
         List<LoadManifestSO> runCommonManifests = FindRunCommonManifests(routeSet);
 
         if (bootstrapConfig == null)
-            issues.Add(new Issue { severity = Severity.Warning, message = "Bootstrap config를 찾지 못했습니다. Boot 검사 범위가 비어 있습니다." });
+            issues.Add(new Issue { severity = Severity.Warning, message = "Bootstrap config was not found. Boot scope will be empty." });
         else if (bootManifest == null)
-            issues.Add(new Issue { severity = Severity.Warning, message = "Bootstrap config에 Boot manifest가 연결되지 않았습니다." });
+            issues.Add(new Issue { severity = Severity.Warning, message = "Bootstrap config exists, but Boot manifest is not assigned." });
 
         if (routeManifest == null)
         {
-            issues.Add(new Issue { severity = Severity.Error, message = $"{routeSet.name}에 RouteSetLoadManifest가 없습니다." });
+            issues.Add(new Issue { severity = Severity.Error, message = $"{routeSet.name} has no RouteSetLoadManifest assigned." });
             return;
         }
 
         if (routeManifest.SharedManifest == null)
-            issues.Add(new Issue { severity = Severity.Warning, message = "Shared manifest가 비어 있습니다." });
+            issues.Add(new Issue { severity = Severity.Warning, message = "Shared manifest is empty." });
         if (routeManifest.CorridorManifest == null)
-            issues.Add(new Issue { severity = Severity.Warning, message = "Corridor manifest가 비어 있습니다." });
+            issues.Add(new Issue { severity = Severity.Warning, message = "Corridor manifest is empty." });
         if (routeManifest.BossManifest == null)
-            issues.Add(new Issue { severity = Severity.Warning, message = "Boss manifest가 비어 있습니다." });
+            issues.Add(new Issue { severity = Severity.Warning, message = "Boss manifest is empty." });
 
         Dictionary<string, AssetEntry> bootAssets = BuildAssetMap(bootManifest);
         Dictionary<string, AssetEntry> runCommonAssets = MergeManifests(runCommonManifests);
@@ -367,7 +391,7 @@ public sealed class LoadManifestInspectorWindow : EditorWindow
         AddOverlapIssue("Corridor", corridorAssets, "Boss", bossAssets);
 
         if (issues.Count == 0)
-            issues.Add(new Issue { severity = Severity.Info, message = "중복/누락 경고가 없습니다." });
+            issues.Add(new Issue { severity = Severity.Info, message = "No overlap or missing-asset issues were detected." });
     }
 
     private void AddOverlapIssue(
@@ -379,7 +403,7 @@ public sealed class LoadManifestInspectorWindow : EditorWindow
         if (left.Count == 0 || right.Count == 0)
             return;
 
-        var overlap = left.Keys.Intersect(right.Keys, StringComparer.Ordinal).Take(5).ToList();
+        List<string> overlap = left.Keys.Intersect(right.Keys, StringComparer.Ordinal).Take(5).ToList();
         if (overlap.Count == 0)
             return;
 
@@ -387,7 +411,7 @@ public sealed class LoadManifestInspectorWindow : EditorWindow
         issues.Add(new Issue
         {
             severity = Severity.Warning,
-            message = $"{leftLabel}과 {rightLabel}에 중복 asset이 있습니다. sample: {sample}"
+            message = $"{leftLabel} and {rightLabel} overlap. sample: {sample}"
         });
     }
 
@@ -567,139 +591,17 @@ public sealed class LoadManifestInspectorWindow : EditorWindow
         return true;
     }
 
-    private ScopeAssetTab GetScopeTab(string label)
+    private bool GetCategoryExpanded(string key)
     {
-        if (scopeTabStates.TryGetValue(label, out ScopeAssetTab tab))
-            return tab;
+        if (categoryExpandedStates.TryGetValue(key, out bool expanded))
+            return expanded;
 
-        scopeTabStates[label] = ScopeAssetTab.All;
-        return ScopeAssetTab.All;
+        categoryExpandedStates[key] = false;
+        return false;
     }
 
-    private ScopeAssetTab DrawScopeTabs(string label, ScopeSnapshot scope)
+    private static List<AssetEntry> FilterAssets(List<AssetEntry> assets, AssetCategory category)
     {
-        ScopeAssetTab currentTab = GetScopeTab(label);
-        EditorGUILayout.Space(2f);
-        EditorGUILayout.LabelField("Categories", EditorStyles.boldLabel);
-        ScopeAssetTab[] firstRowTabs =
-        {
-            ScopeAssetTab.All,
-            ScopeAssetTab.Prefab,
-            ScopeAssetTab.Audio,
-            ScopeAssetTab.Cue
-        };
-        ScopeAssetTab[] secondRowTabs =
-        {
-            ScopeAssetTab.Data,
-            ScopeAssetTab.Material,
-            ScopeAssetTab.Font,
-            ScopeAssetTab.Other
-        };
-
-        currentTab = DrawTabRow(scope, currentTab, firstRowTabs);
-        currentTab = DrawTabRow(scope, currentTab, secondRowTabs);
-        EditorGUILayout.LabelField($"Current Filter: {BuildTabLabel(scope, currentTab)}", EditorStyles.miniLabel);
-        EditorGUILayout.Space(2f);
-        return currentTab;
-    }
-
-    private ScopeAssetTab DrawTabRow(ScopeSnapshot scope, ScopeAssetTab currentTab, ScopeAssetTab[] rowTabs)
-    {
-        using (new EditorGUILayout.HorizontalScope())
-        {
-            for (int i = 0; i < rowTabs.Length; i++)
-            {
-                ScopeAssetTab rowTab = rowTabs[i];
-                bool isSelected = rowTab == currentTab;
-                GUIStyle style = GetTabButtonStyle(i, rowTabs.Length);
-                bool nextSelected = GUILayout.Toggle(isSelected, BuildTabLabel(scope, rowTab), style, GUILayout.Height(22f));
-                if (nextSelected)
-                    currentTab = rowTab;
-            }
-        }
-
-        return currentTab;
-    }
-
-    private static GUIStyle GetTabButtonStyle(int index, int length)
-    {
-        if (length <= 1)
-            return EditorStyles.miniButton;
-
-        if (index == 0)
-            return EditorStyles.miniButtonLeft;
-
-        if (index == length - 1)
-            return EditorStyles.miniButtonRight;
-
-        return EditorStyles.miniButtonMid;
-    }
-
-    private static string BuildTabLabel(ScopeSnapshot scope, ScopeAssetTab tab)
-    {
-        int count = tab == ScopeAssetTab.All
-            ? scope.Assets.Count
-            : CountAssets(scope.Assets, ToAssetCategory(tab));
-
-        return $"{tab} ({count})";
-    }
-
-    private static AssetCategory ToAssetCategory(ScopeAssetTab tab)
-    {
-        return tab switch
-        {
-            ScopeAssetTab.Prefab => AssetCategory.Prefab,
-            ScopeAssetTab.Audio => AssetCategory.Audio,
-            ScopeAssetTab.Cue => AssetCategory.Cue,
-            ScopeAssetTab.Data => AssetCategory.Data,
-            ScopeAssetTab.Material => AssetCategory.Material,
-            ScopeAssetTab.Font => AssetCategory.Font,
-            _ => AssetCategory.Other
-        };
-    }
-
-    private static string[] BuildTabLabels(ScopeSnapshot scope)
-    {
-        int prefabCount = CountAssets(scope.Assets, AssetCategory.Prefab);
-        int audioCount = CountAssets(scope.Assets, AssetCategory.Audio);
-        int cueCount = CountAssets(scope.Assets, AssetCategory.Cue);
-        int dataCount = CountAssets(scope.Assets, AssetCategory.Data);
-        int materialCount = CountAssets(scope.Assets, AssetCategory.Material);
-        int fontCount = CountAssets(scope.Assets, AssetCategory.Font);
-        int otherCount = CountAssets(scope.Assets, AssetCategory.Other);
-
-        return new[]
-        {
-            $"All ({scope.Assets.Count})",
-            $"Prefab ({prefabCount})",
-            $"Audio ({audioCount})",
-            $"Cue ({cueCount})",
-            $"Data ({dataCount})",
-            $"Material ({materialCount})",
-            $"Font ({fontCount})",
-            $"Other ({otherCount})"
-        };
-    }
-
-    private static int CountAssets(List<AssetEntry> assets, AssetCategory category)
-    {
-        int count = 0;
-        for (int i = 0; i < assets.Count; i++)
-        {
-            if (assets[i].Category == category)
-                count++;
-        }
-
-        return count;
-    }
-
-    private static List<AssetEntry> FilterAssets(List<AssetEntry> assets, ScopeAssetTab tab)
-    {
-        if (tab == ScopeAssetTab.All)
-            return assets;
-
-        AssetCategory category = ToAssetCategory(tab);
-
         var filtered = new List<AssetEntry>();
         for (int i = 0; i < assets.Count; i++)
         {

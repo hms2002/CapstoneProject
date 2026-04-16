@@ -10,8 +10,7 @@ using UnityEngine.SceneManagement;
 public sealed class RouteSetLoadManifestBuilderWindow : EditorWindow
 {
     private const string LoadingAssetDirectory = "Assets/LeeJunMo/Datas/Loading";
-    private const string LoadingResourcesDirectory = "Assets/LeeJunMo/Datas/Resources/Loading";
-    private const string BootstrapConfigAssetPath = LoadingResourcesDirectory + "/LoadingBootstrapConfig.asset";
+    private const string BootstrapConfigSourceAssetPath = LoadingBootstrapConfigSO.SourceAssetPath;
 
     private readonly struct AssetBuckets
     {
@@ -510,16 +509,27 @@ public sealed class RouteSetLoadManifestBuilderWindow : EditorWindow
 
     private void EnsureBootstrapConfigAsset()
     {
-        EnsureLoadingResourcesDirectory();
+        LoadingBootstrapConfigSO sourceConfig = EnsureBootstrapConfigAtPath(BootstrapConfigSourceAssetPath);
+        ApplyBootManifest(sourceConfig);
+        EnsureBootstrapConfigInPreloadedAssets(sourceConfig);
+    }
 
-        LoadingBootstrapConfigSO config =
-            AssetDatabase.LoadAssetAtPath<LoadingBootstrapConfigSO>(BootstrapConfigAssetPath);
+    private static LoadingBootstrapConfigSO EnsureBootstrapConfigAtPath(string assetPath)
+    {
+        LoadingBootstrapConfigSO config = AssetDatabase.LoadAssetAtPath<LoadingBootstrapConfigSO>(assetPath);
+        if (config != null)
+            return config;
+
+        config = CreateInstance<LoadingBootstrapConfigSO>();
+        config.name = "LoadingBootstrapConfig";
+        AssetDatabase.CreateAsset(config, assetPath);
+        return config;
+    }
+
+    private void ApplyBootManifest(LoadingBootstrapConfigSO config)
+    {
         if (config == null)
-        {
-            config = CreateInstance<LoadingBootstrapConfigSO>();
-            config.name = "LoadingBootstrapConfig";
-            AssetDatabase.CreateAsset(config, BootstrapConfigAssetPath);
-        }
+            return;
 
         SerializedObject configSerialized = new SerializedObject(config);
         configSerialized.FindProperty("bootManifest").objectReferenceValue = bootManifest;
@@ -539,20 +549,21 @@ public sealed class RouteSetLoadManifestBuilderWindow : EditorWindow
         AssetDatabase.CreateFolder(datasDirectory, "Loading");
     }
 
-    private static void EnsureLoadingResourcesDirectory()
+    private static void EnsureBootstrapConfigInPreloadedAssets(LoadingBootstrapConfigSO config)
     {
-        const string resourcesDirectory = "Assets/LeeJunMo/Datas/Resources";
-        if (!AssetDatabase.IsValidFolder(resourcesDirectory))
-        {
-            const string datasDirectory = "Assets/LeeJunMo/Datas";
-            if (!AssetDatabase.IsValidFolder(datasDirectory))
-                AssetDatabase.CreateFolder("Assets/LeeJunMo", "Datas");
+        if (config == null)
+            return;
 
-            AssetDatabase.CreateFolder(datasDirectory, "Resources");
+        UnityEngine.Object[] preloadedAssets = PlayerSettings.GetPreloadedAssets();
+        for (int i = 0; i < preloadedAssets.Length; i++)
+        {
+            if (preloadedAssets[i] == config)
+                return;
         }
 
-        if (!AssetDatabase.IsValidFolder(LoadingResourcesDirectory))
-            AssetDatabase.CreateFolder(resourcesDirectory, "Loading");
+        Array.Resize(ref preloadedAssets, preloadedAssets.Length + 1);
+        preloadedAssets[^1] = config;
+        PlayerSettings.SetPreloadedAssets(preloadedAssets);
     }
 
     private static LoadManifestSO EnsureChildManifest(

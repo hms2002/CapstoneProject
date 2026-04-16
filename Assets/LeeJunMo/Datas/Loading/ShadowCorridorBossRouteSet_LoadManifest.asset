@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-7240842937387875315
+--- !u!114 &-3012118900923189106
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -42,6 +42,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: af992dd323e918342ae0adff8855bbff, type: 2}
   - {fileID: 11400000, guid: a6b7d8d7626f416cb0dca7f4dca90fb3, type: 2}
   - {fileID: 11400000, guid: 8205271ee5fb4886a1be52f209910f74, type: 2}
+  - {fileID: 11400000, guid: b15f18602ec87284d80cbd57720425f1, type: 2}
   - {fileID: 11400000, guid: b52eb31537a3c0f4d9b909925745af72, type: 2}
   - {fileID: 11400000, guid: d85a59ea5ef7b6d488d8434610470f09, type: 2}
   - {fileID: 11400000, guid: 6d62ee5bebfab4543a4d42e4d00e4921, type: 2}
@@ -137,7 +138,8 @@ MonoBehaviour:
   - {fileID: 2180264, guid: 2e498d1c8094910479dc3e1b768306a4, type: 2}
   - {fileID: 28684132378477856, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   - {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
---- !u!114 &-1122723622223593393
+  prewarmPrefabs: []
+--- !u!114 &-2912509606493904885
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -291,6 +293,7 @@ MonoBehaviour:
   - {fileID: 21300072, guid: 1c9ed9d1200c29d4cbfd2071028c1cd5, type: 3}
   - {fileID: 21300120, guid: 1c9ed9d1200c29d4cbfd2071028c1cd5, type: 3}
   - {fileID: 3411045427079179176, guid: e75f469ea29530246a4a0543396316af, type: 3}
+  prewarmPrefabs: []
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -303,10 +306,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 301f57600f7db1f4bb96559621cfdd8c, type: 3}
   m_Name: ShadowCorridorBossRouteSet_LoadManifest
   m_EditorClassIdentifier: Assembly-CSharp::RouteSetLoadManifestSO
-  sharedManifest: {fileID: -7240842937387875315}
-  corridorManifest: {fileID: -1122723622223593393}
-  bossManifest: {fileID: 6953533428837641355}
---- !u!114 &6953533428837641355
+  sharedManifest: {fileID: -3012118900923189106}
+  corridorManifest: {fileID: -2912509606493904885}
+  bossManifest: {fileID: 8314578822879471918}
+--- !u!114 &8314578822879471918
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -353,6 +356,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 9ea88592791f4d3eb7051d5c2e9f9564, type: 2}
   - {fileID: 11400000, guid: 4ff0ebf2f97045f5ae20f7594b681f87, type: 2}
   - {fileID: 11400000, guid: 5c4c8108f36d4acbaa6dfaf6d6b3f6e7, type: 2}
+  - {fileID: 11400000, guid: 1a3ab0dc090843ed9c77ee62bddbd2bb, type: 2}
   - {fileID: 11400000, guid: bf5a0a54564a0a3418aa14ce4ee8470c, type: 2}
   extraAssets:
   - {fileID: 9100000, guid: b3cbf6478180162478fd48a8c2b75145, type: 2}
@@ -463,4 +467,15 @@ MonoBehaviour:
   - {fileID: 7377504505977769263, guid: 06b1d511484037b47bac2dbb2261bc92, type: 3}
   - {fileID: 2800000, guid: dec2f921fc151e641ab197e7601e9826, type: 3}
   - {fileID: -3202338430052374801, guid: dec2f921fc151e641ab197e7601e9826, type: 3}
+  - {fileID: -5465734763729507174, guid: f9ace373f298d0d439ce8e3ef9046d1d, type: 3}
+  - {fileID: 8963049532307679312, guid: f9ace373f298d0d439ce8e3ef9046d1d, type: 3}
+  - {fileID: -3389925196149674760, guid: f9ace373f298d0d439ce8e3ef9046d1d, type: 3}
+  - {fileID: -2306914338712588775, guid: f9ace373f298d0d439ce8e3ef9046d1d, type: 3}
+  - {fileID: -1246268805802875065, guid: f9ace373f298d0d439ce8e3ef9046d1d, type: 3}
+  - {fileID: 23041938471036288, guid: f9ace373f298d0d439ce8e3ef9046d1d, type: 3}
+  - {fileID: 289110826396805333, guid: f9ace373f298d0d439ce8e3ef9046d1d, type: 3}
+  - {fileID: -7518318991353426987, guid: f9ace373f298d0d439ce8e3ef9046d1d, type: 3}
+  - {fileID: 8711939763936270973, guid: f9ace373f298d0d439ce8e3ef9046d1d, type: 3}
+  - {fileID: 100100200, guid: f9ace373f298d0d439ce8e3ef9046d1d, type: 3}
   - {fileID: 21300054, guid: 9f8f114589864b6489859a58fbb6baf9, type: 3}
+  prewarmPrefabs: []
