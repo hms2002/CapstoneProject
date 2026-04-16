@@ -20,28 +20,39 @@ MonoBehaviour:
   projectileDamageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
   projectileDamageAmount: 1
   telegraphRadius: 0
-  telegraphStyle: {fileID: 0}
+  telegraphStyle: {fileID: 11400000, guid: b15f18602ec87284d80cbd57720425f1, type: 2}
   candleAttackPresentation:
-    vfxPrefab: {fileID: 0}
-    prefabScale: {x: 1, y: 1, z: 1}
-    offset: {x: 0, y: 0, z: 0}
-    lifetime: 0
-    attachToTarget: 0
-    followTarget: 0
     sound:
       key: 
-      volumeScale: 1
-      pitchScale: 1
+      volumeMultiplier: 0
+      anchorPolicy: 0
+      localOffset: {x: 0, y: 0, z: 0}
     cameraShake:
-      enabled: 0
       amplitude: 0
-      frequency: 0
-      duration: 0
-      distanceAttenuation: 0
+      amplitudeMultiplier: 0
+      maxAmplitude: 0
+      minIntervalSeconds: 0
       directionMode: 0
       customDirection: {x: 0, y: 1, z: 0}
-    destroyDelay: 0
+      ignoreScreenShakeSetting: 0
+    effect:
+      prefab: {fileID: 0}
+      localOffset: {x: 0, y: 0, z: 0}
+      rotationOffsetZ: 0
+      scaleMultiplier: {x: 0, y: 0, z: 0}
+      lifetimeMode: 0
+      lifetimeOverrideSeconds: 0
+      useUnscaledTime: 0
+    particle:
+      prefab: {fileID: 0}
+      localOffset: {x: 0, y: 0, z: 0}
+      rotationOffsetZ: 0
+      scaleMultiplier: {x: 0, y: 0, z: 0}
+      lifetimeMode: 0
+      lifetimeOverrideSeconds: 0
+      useUnscaledTime: 0
   legacyCandleAttackSound:
     key: 
-    volumeScale: 1
-    pitchScale: 1
+    volumeMultiplier: 0
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
