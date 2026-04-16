@@ -12,25 +12,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f3a0c2d5186e4c0a8b1f7d9e2c4b6a31, type: 3}
   m_Name: AL_Witch_ExtinguishCandle
   m_EditorClassIdentifier: 
-  warningTelegraphStyle: {fileID: 11400000, guid: c4fb86217c654880a4eb4bd9e3540f27, type: 2}
-  explosionVisualPrefab: {fileID: 0}
-  explosionParticlePrefab: {fileID: 0}
+  warningTelegraphStyle: {fileID: 11400000, guid: b15f18602ec87284d80cbd57720425f1, type: 2}
+  explosionVisualPrefab: {fileID: 4540458603196068083, guid: f3e6d674c38bfa3459b9aa0e37af577d, type: 3}
+  explosionParticlePrefab: {fileID: 2356285918434582956, guid: 7e3dd9b93aa3a5b498afc1b7b958ee42, type: 3}
   explosionVisualOffset: {x: 0, y: 0, z: 0}
-  explosionVisualScale: {x: 1, y: 1, z: 1}
+  explosionVisualScale: {x: 2, y: 2, z: 1}
   explosionParticleOffset: {x: 0, y: 0, z: 0}
   explosionParticleScale: {x: 1, y: 1, z: 1}
   explosionSound:
     key: 
-    volumeScale: 1
-    pitchScale: 1
+    volumeMultiplier: 0
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
   explosionCameraShake:
-    enabled: 1
     amplitude: 0.18
-    frequency: 1
-    duration: 0.28
-    distanceAttenuation: 0.04
+    amplitudeMultiplier: 1
+    maxAmplitude: 0.28
+    minIntervalSeconds: 0.04
     directionMode: 0
     customDirection: {x: 0, y: 1, z: 0}
+    ignoreScreenShakeSetting: 0
   damageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
   damageAmount: 1
   fogSpawnScaleMultiplier: {x: 1, y: 1, z: 1}

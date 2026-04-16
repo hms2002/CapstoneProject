@@ -15,8 +15,8 @@ MonoBehaviour:
   moveToCenterDuration: 0.45
   relightDeadlineSeconds: 8
   shieldBreakWaitGraceSeconds: 1.5
-  groggyStatusEffect: {fileID: 11400000, guid: 15f6ba95b1a76e145b4d8a19fb725eb8, type: 2}
-  mapWideWarningStyleAsset: {fileID: 11400000, guid: c8cdf77531ba43c7877ef0bbec405fc3, type: 2}
+  groggyStatusEffect: {fileID: 11400000, guid: fab1dd76add51c74db9dbb7b0f424204, type: 2}
+  mapWideWarningStyleAsset: {fileID: 11400000, guid: 5c4c8108f36d4acbaa6dfaf6d6b3f6e7, type: 2}
   mapWideDamageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
   mapWideDamageAmount: 1
   chargeOrbPrefab: {fileID: 7156570376058531874, guid: 503dfd491e32de84889c91ada7e82579, type: 3}
@@ -32,17 +32,72 @@ MonoBehaviour:
     anchorPolicy: 0
     localOffset: {x: 0, y: 0, z: 0}
   chargeLoopFadeOutSeconds: 0.1
-  orbLaunchSound:
+  chargePulsePresentation:
+    sound:
+      key: 
+      volumeMultiplier: 0
+      anchorPolicy: 0
+      localOffset: {x: 0, y: 0, z: 0}
+    cameraShake:
+      amplitude: 0.4
+      amplitudeMultiplier: 0
+      maxAmplitude: 1
+      minIntervalSeconds: 0.08
+      directionMode: 0
+      customDirection: {x: 0, y: 0, z: 0}
+      ignoreScreenShakeSetting: 0
+    effect:
+      prefab: {fileID: 0}
+      localOffset: {x: 0, y: 0, z: 0}
+      rotationOffsetZ: 0
+      scaleMultiplier: {x: 0, y: 0, z: 0}
+      lifetimeMode: 0
+      lifetimeOverrideSeconds: 0
+      useUnscaledTime: 0
+    particle:
+      prefab: {fileID: 0}
+      localOffset: {x: 0, y: 0, z: 0}
+      rotationOffsetZ: 0
+      scaleMultiplier: {x: 0, y: 0, z: 0}
+      lifetimeMode: 0
+      lifetimeOverrideSeconds: 0
+      useUnscaledTime: 0
+  orbLaunchPresentation:
+    sound:
+      key: chloe.pattern.normal1
+      volumeMultiplier: 1
+      anchorPolicy: 0
+      localOffset: {x: 0, y: 0, z: 0}
+    cameraShake:
+      amplitude: 0
+      amplitudeMultiplier: 0
+      maxAmplitude: 0
+      minIntervalSeconds: 0
+      directionMode: 0
+      customDirection: {x: 0, y: 0, z: 0}
+      ignoreScreenShakeSetting: 0
+    effect:
+      prefab: {fileID: 0}
+      localOffset: {x: 0, y: 0, z: 0}
+      rotationOffsetZ: 0
+      scaleMultiplier: {x: 0, y: 0, z: 0}
+      lifetimeMode: 0
+      lifetimeOverrideSeconds: 0
+      useUnscaledTime: 0
+    particle:
+      prefab: {fileID: 0}
+      localOffset: {x: 0, y: 0, z: 0}
+      rotationOffsetZ: 0
+      scaleMultiplier: {x: 0, y: 0, z: 0}
+      lifetimeMode: 0
+      lifetimeOverrideSeconds: 0
+      useUnscaledTime: 0
+  legacyOrbLaunchSound:
     key: chloe.pattern.normal1
     volumeMultiplier: 1
     anchorPolicy: 0
     localOffset: {x: 0, y: 0, z: 0}
-  orbImpactSound:
-    key: chloe.pattern.normal2
-    volumeMultiplier: 1
-    anchorPolicy: 0
-    localOffset: {x: 0, y: 0, z: 0}
-  chargeLoopCameraShake:
+  legacyChargeLoopCameraShake:
     amplitude: 0.4
     amplitudeMultiplier: 0
     maxAmplitude: 1
@@ -50,18 +105,53 @@ MonoBehaviour:
     directionMode: 0
     customDirection: {x: 0, y: 0, z: 0}
     ignoreScreenShakeSetting: 0
-  failureEffectPrefab: {fileID: 4788678428882809434, guid: 573e2c50fe0a61b42a1f503837ef1053, type: 3}
-  failureEffectLocalOffset: {x: 0, y: 0, z: -0.05}
-  failureEffectLifetimeSeconds: 0.35
-  failureEffectScaleMultiplier: {x: 1, y: 1, z: 1}
-  failureEffectRotationOffsetZ: 0
-  failureParticlePrefab: {fileID: 4402221444671133582, guid: bb13154b262064e419b705d221ebd3cb, type: 3}
-  failureParticleLocalOffset: {x: 0, y: 0, z: 0}
-  failureParticleLifetimeOverrideSeconds: 1
-  useUnscaledFailureParticleTime: 1
-  failureParticleScaleMultiplier: {x: 1, y: 1, z: 1}
-  failureParticleRotationOffsetZ: 0
-  failureCameraShake:
+  failureImpactPresentation:
+    sound:
+      key: chloe.pattern.normal2
+      volumeMultiplier: 1
+      anchorPolicy: 0
+      localOffset: {x: 0, y: 0, z: 0}
+    cameraShake:
+      amplitude: 6
+      amplitudeMultiplier: 0
+      maxAmplitude: 0
+      minIntervalSeconds: 0.05
+      directionMode: 0
+      customDirection: {x: 0, y: 0, z: 0}
+      ignoreScreenShakeSetting: 0
+    effect:
+      prefab: {fileID: 4788678428882809434, guid: 573e2c50fe0a61b42a1f503837ef1053, type: 3}
+      localOffset: {x: 0, y: 0, z: -0.05}
+      rotationOffsetZ: 0
+      scaleMultiplier: {x: 1, y: 1, z: 1}
+      lifetimeMode: 0
+      lifetimeOverrideSeconds: 0.35
+      useUnscaledTime: 0
+    particle:
+      prefab: {fileID: 4402221444671133582, guid: bb13154b262064e419b705d221ebd3cb, type: 3}
+      localOffset: {x: 0, y: 0, z: 0}
+      rotationOffsetZ: 0
+      scaleMultiplier: {x: 1, y: 1, z: 1}
+      lifetimeMode: 0
+      lifetimeOverrideSeconds: 1
+      useUnscaledTime: 1
+  legacyOrbImpactSound:
+    key: chloe.pattern.normal2
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  legacyFailureEffectPrefab: {fileID: 4788678428882809434, guid: 573e2c50fe0a61b42a1f503837ef1053, type: 3}
+  legacyFailureEffectLocalOffset: {x: 0, y: 0, z: -0.05}
+  legacyFailureEffectLifetimeSeconds: 0.35
+  legacyFailureEffectScaleMultiplier: {x: 1, y: 1, z: 1}
+  legacyFailureEffectRotationOffsetZ: 0
+  legacyFailureParticlePrefab: {fileID: 4402221444671133582, guid: bb13154b262064e419b705d221ebd3cb, type: 3}
+  legacyFailureParticleLocalOffset: {x: 0, y: 0, z: 0}
+  legacyFailureParticleLifetimeOverrideSeconds: 1
+  legacyUseUnscaledFailureParticleTime: 1
+  legacyFailureParticleScaleMultiplier: {x: 1, y: 1, z: 1}
+  legacyFailureParticleRotationOffsetZ: 0
+  legacyFailureCameraShake:
     amplitude: 6
     amplitudeMultiplier: 0
     maxAmplitude: 0

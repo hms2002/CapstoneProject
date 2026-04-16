@@ -518,4 +518,53 @@ public sealed class PrewarmRecommendationWindow : EditorWindow
 
         return lookup;
     }
+
+    /// <summary>
+    /// 책임 :
+    /// - 현재 RouteSet을 참조하는 RunRouteCatalogSO들을 찾아 RunCommon LoadManifest 후보를 수집한다.
+    /// - 추천 결과를 Shared/Corridor/Boss 외 RunCommon 범위까지 연결할 수 있게 한다.
+    /// </summary>
+    private static List<LoadManifestSO> FindRunCommonManifests(CorridorBossRouteSetSO targetRouteSet)
+    {
+        var manifests = new List<LoadManifestSO>();
+        if (targetRouteSet == null)
+            return manifests;
+
+        string[] guids = AssetDatabase.FindAssets("t:RunRouteCatalogSO");
+        for (int i = 0; i < guids.Length; i++)
+        {
+            string path = AssetDatabase.GUIDToAssetPath(guids[i]);
+            RunRouteCatalogSO catalog = AssetDatabase.LoadAssetAtPath<RunRouteCatalogSO>(path);
+            if (catalog == null || catalog.RunCommonLoadManifest == null)
+                continue;
+
+            if (ReferencesRouteSet(catalog, targetRouteSet) && !manifests.Contains(catalog.RunCommonLoadManifest))
+                manifests.Add(catalog.RunCommonLoadManifest);
+        }
+
+        return manifests;
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 특정 RunRouteCatalogSO가 분석 대상 RouteSet을 실제로 참조하는지 판별한다.
+    /// - FinalRouteSet과 NormalRouteSets 둘 다 검사해 RunCommon 연결 여부를 안정적으로 찾는다.
+    /// </summary>
+    private static bool ReferencesRouteSet(RunRouteCatalogSO catalog, CorridorBossRouteSetSO targetRouteSet)
+    {
+        if (catalog == null || targetRouteSet == null)
+            return false;
+
+        if (catalog.FinalRouteSet == targetRouteSet)
+            return true;
+
+        IReadOnlyList<CorridorBossRouteSetSO> normalRoutes = catalog.NormalRouteSets;
+        for (int i = 0; i < normalRoutes.Count; i++)
+        {
+            if (normalRoutes[i] == targetRouteSet)
+                return true;
+        }
+
+        return false;
+    }
 }
