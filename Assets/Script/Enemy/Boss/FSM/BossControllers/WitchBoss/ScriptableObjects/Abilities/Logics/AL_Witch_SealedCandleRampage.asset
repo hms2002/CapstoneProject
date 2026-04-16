@@ -12,3 +12,34 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80d7935f8f7c9704190b263d8f0fae5d, type: 3}
   m_Name: AL_Witch_SealedCandleRampage
   m_EditorClassIdentifier: 
+  windupSeconds: 0.5
+  burstRepeatCount: 2
+  burstIntervalSeconds: 0.45
+  projectileCountPerCandle: 5
+  spreadAngleDegrees: 52
+  telegraphRadius: 0
+  telegraphStyle: {fileID: 0}
+  candleAttackPresentation:
+    vfxPrefab: {fileID: 0}
+    prefabScale: {x: 1, y: 1, z: 1}
+    offset: {x: 0, y: 0, z: 0}
+    lifetime: 0
+    attachToTarget: 0
+    followTarget: 0
+    sound:
+      key: 
+      volumeScale: 1
+      pitchScale: 1
+    cameraShake:
+      enabled: 0
+      amplitude: 0
+      frequency: 0
+      duration: 0
+      distanceAttenuation: 0
+      directionMode: 0
+      customDirection: {x: 0, y: 1, z: 0}
+    destroyDelay: 0
+  legacyCandleAttackSound:
+    key: 
+    volumeScale: 1
+    pitchScale: 1

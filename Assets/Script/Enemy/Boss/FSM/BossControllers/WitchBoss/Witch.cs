@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using CapstoneAudio;
 using UnityEngine;
 using UnityGAS;
+using UnityGAS.Sample;
 
 public class Witch : BossControllerBase, IWitchPatternStateBridge
 {
@@ -12,16 +13,16 @@ public class Witch : BossControllerBase, IWitchPatternStateBridge
     private const string StaggerImmuneTagResourcePath = "Tags/State.Status.StaggerImmune";
     private const int WallLayer = 30;
     private const int ExtinguishCandleCount = 2;
-    private static readonly Vector3 RetreatLeftOffset = new Vector3(-0.5f, 0.2f, 0f);
-    private static readonly Vector3 RetreatRightOffset = new Vector3(0.5f, 0.2f, 0f);
-    private const int Normal1Count = 3;
-    private const float Normal1Interval = 0.3f;
-    private const float Normal1TileUnitSize = 1.7f;
-    private const float Normal1TileWidthInTiles = 3f;
-    private const float Normal1TileHeightInTiles = 6f;
-    private const float Normal1HitTime = 0.12f;
-    private const float RetreatExplosionDiameter = 6f;
-    private const float RetreatSpeedScale = 1f;
+    private static readonly Vector3 FallbackRetreatLeftOffset = new Vector3(-0.5f, 0.2f, 0f);
+    private static readonly Vector3 FallbackRetreatRightOffset = new Vector3(0.5f, 0.2f, 0f);
+    private const int FallbackNormal1Count = 3;
+    private const float FallbackNormal1Interval = 0.3f;
+    private const float FallbackNormal1TileUnitSize = 1.7f;
+    private const float FallbackNormal1TileWidthInTiles = 3f;
+    private const float FallbackNormal1TileHeightInTiles = 6f;
+    private const float FallbackNormal1HitTime = 0.12f;
+    private const float FallbackRetreatExplosionDiameter = 6f;
+    private const float FallbackRetreatSpeedScale = 1.5f;
 
     [Header("Pattern")]
     [Tooltip("촛대를 끄는 패턴에 사용할 Fog 프리팹입니다.")]
@@ -29,35 +30,31 @@ public class Witch : BossControllerBase, IWitchPatternStateBridge
     [SerializeField] private GameObject candlestickPrefab;
     [SerializeField] private GameObject lightBeadPrefab;
     [SerializeField] private GE_Damage_Spec extinguishDamageEffect;
-    [SerializeField] private GameplayEffect groggyStatusEffect;
-    [SerializeField] private AttackTelegraphStyle mapWideWarningStyleAsset;
     [SerializeField] private Transform phaseTransitionCenterPoint;
     [SerializeField] private float extinguishDamage = 1f;
     [SerializeField] private float projectileSpeed = 4f;
     [SerializeField] private bool useRuntimeDefaultPatternsWhenPhasesEmpty = true;
     [SerializeField] private float fallbackCandleSpawnRadius = 6f;
-    [SerializeField] private WitchNormalAttack1Tile normalAttack1TilePrefab;
-    [SerializeField] private GE_Damage_Spec normalAttack1DamageEffect;
-    [SerializeField] private float normalAttack1Damage = 1f;
-    [SerializeField] private DeadsSkeleton retreatSkeletonPrefab;
-    [Header("Extinguish Presentation")]
-    [SerializeField] private GameObject extinguishExplosionVisualPrefab;
-    [SerializeField] private GameObject extinguishExplosionParticlePrefab;
+
+    [Header("Pattern Logic Templates")]
+    [SerializeField] private AbilityLogic_WitchNormalAttack1 normalAttack1PatternLogicTemplate;
+    [SerializeField] private AbilityLogic_WitchExtinguishCandle extinguishPatternLogicTemplate;
+    [SerializeField] private AbilityLogic_WitchRetreatToCandle retreatPatternLogicTemplate;
+    [SerializeField] private AbilityLogic_WitchLightAllCandles lightAllCandlesPatternLogicTemplate;
+
+    [Header("Pattern Runtime References")]
     [SerializeField] private Transform extinguishExplosionVisualSocket;
-    [SerializeField] private Vector3 extinguishExplosionVisualOffset;
-    [SerializeField] private Vector3 extinguishExplosionVisualScale = Vector3.one;
-    [SerializeField] private Vector3 extinguishExplosionParticleOffset;
-    [SerializeField] private Vector3 extinguishExplosionParticleScale = Vector3.one;
-    [SerializeField] private SoundRef extinguishExplosionSound;
-    [SerializeField] private CameraShakeHook extinguishExplosionCameraShake = CameraShakeHook.Create(0.18f, 1f, 0.28f, 0.04f);
-    [SerializeField] private Vector3 extinguishFogSpawnScaleMultiplier = Vector3.one;
-    [SerializeField] private float extinguishAttackRadiusMultiplier = 6f;
 
     private BossDialogueRunner dialogueRunner;
     private Coroutine dialogueRoutine;
     private WitchExtinguishPatternState extinguishState;
     private WitchNormalAttack1State normalAttack1State;
     private WitchRetreatToCandleState retreatState;
+    private WitchExtinguishPatternExecutor extinguishPatternExecutor;
+    private WitchLightAllCandlesPatternExecutor lightAllCandlesPatternExecutor;
+    private WitchNormalAttack1PatternExecutor normalAttack1PatternExecutor;
+    private WitchRetreatPatternExecutor retreatPatternExecutor;
+    private WitchCandleService candleService;
     private AttackTelegraphService telegraphService;
     private AttackTelegraphStyle extinguishWarningStyle;
     private AttackTelegraphStyle mapWideWarningStyle;
@@ -68,7 +65,6 @@ public class Witch : BossControllerBase, IWitchPatternStateBridge
     private AbilityDefinition sealedCandleRampageAbility;
     private AbilityDefinition lightAllCandlesAbility;
     private readonly List<Candlestick> runtimeSpawnedCandles = new();
-    private readonly List<AttackTelegraphView> activeExtinguishWarningViews = new();
     private WitchShieldController shieldController;
     private WitchShieldVisualController shieldVisualController;
     private CameraPresentationDirector cameraPresentationDirector;
@@ -79,11 +75,24 @@ public class Witch : BossControllerBase, IWitchPatternStateBridge
     {
         base.Awake();
         runtimeData = new WitchRuntimeData();
+        extinguishPatternExecutor = GetComponent<WitchExtinguishPatternExecutor>();
+        if (extinguishPatternExecutor == null)
+            extinguishPatternExecutor = gameObject.AddComponent<WitchExtinguishPatternExecutor>();
+        lightAllCandlesPatternExecutor = GetComponent<WitchLightAllCandlesPatternExecutor>();
+        if (lightAllCandlesPatternExecutor == null)
+            lightAllCandlesPatternExecutor = gameObject.AddComponent<WitchLightAllCandlesPatternExecutor>();
+        normalAttack1PatternExecutor = GetComponent<WitchNormalAttack1PatternExecutor>();
+        if (normalAttack1PatternExecutor == null)
+            normalAttack1PatternExecutor = gameObject.AddComponent<WitchNormalAttack1PatternExecutor>();
+        retreatPatternExecutor = GetComponent<WitchRetreatPatternExecutor>();
+        if (retreatPatternExecutor == null)
+            retreatPatternExecutor = gameObject.AddComponent<WitchRetreatPatternExecutor>();
+        candleService = GetComponent<WitchCandleService>();
+        if (candleService == null)
+            candleService = gameObject.AddComponent<WitchCandleService>();
         telegraphService = GetComponent<AttackTelegraphService>();
         extinguishWarningStyle = MakeWarningStyle();
-        mapWideWarningStyle = mapWideWarningStyleAsset != null
-            ? mapWideWarningStyleAsset
-            : MakeMapWideWarningStyle();
+        mapWideWarningStyle = MakeMapWideWarningStyle();
         hasAttackTrigger = CheckAttackTrigger();
         shieldController = GetComponent<WitchShieldController>();
         if (shieldController == null)
@@ -147,6 +156,13 @@ public class Witch : BossControllerBase, IWitchPatternStateBridge
     public float ProjectileSpeed => projectileSpeed;
     public bool HasProjectilePatternConfig => lightBeadPrefab != null && extinguishDamageEffect != null;
     public WitchShieldController ShieldController => shieldController;
+    public AttackTelegraphService ExtinguishTelegraphService => telegraphService;
+    public AttackTelegraphStyle ExtinguishWarningStyle => extinguishWarningStyle;
+    public GameObject FogPrefab => fogPrefab;
+    public GE_Damage_Spec ExtinguishDamageEffect => extinguishDamageEffect;
+    public float ExtinguishDamage => extinguishDamage;
+    public Transform ExtinguishExplosionVisualSocket => extinguishExplosionVisualSocket;
+    public WitchLightAllCandlesPatternExecutor LightAllCandlesPatternExecutor => lightAllCandlesPatternExecutor;
 
     public CameraPresentationDirector GetCameraPresentationDirector()
     {
@@ -175,7 +191,7 @@ public class Witch : BossControllerBase, IWitchPatternStateBridge
         base.OnDestroy();
 
         if (extinguishWarningStyle != null) Destroy(extinguishWarningStyle);
-        if (mapWideWarningStyle != null && mapWideWarningStyle != mapWideWarningStyleAsset)
+        if (mapWideWarningStyle != null)
             Destroy(mapWideWarningStyle);
     }
 
@@ -242,21 +258,8 @@ public class Witch : BossControllerBase, IWitchPatternStateBridge
     /// <summary>촛불 끄기 패턴을 시작합니다.</summary>
     public bool StartExtinguish(float warningTime)
     {
-        if (telegraphService == null || fogPrefab == null) return false;
-
-        List<Candlestick> selectedCandles = BuildExtinguishSelectionBuffer();
-        if (selectedCandles.Count == 0) return false;
-
-        if (GetFogRadius() <= 0f) return false;
-
-        List<Vector3> extinguishCenters = new List<Vector3>(selectedCandles.Count);
-        for (int i = 0; i < selectedCandles.Count; i++)
-            extinguishCenters.Add(GetCandleCenter(selectedCandles[i]));
-
-        runtimeData.SetExtinguishSelections(selectedCandles, extinguishCenters);
-        PlayPatternAttackMotion();
-        ShowWarnings(extinguishCenters, warningTime);
-        return true;
+        return extinguishPatternExecutor != null &&
+               extinguishPatternExecutor.TryBeginPattern(warningTime, out _);
     }
 
     /// <summary>
@@ -266,44 +269,24 @@ public class Witch : BossControllerBase, IWitchPatternStateBridge
     /// </summary>
     public bool TryBeginExtinguishPattern(float warningTimeSeconds, out float resolvedDurationSeconds)
     {
-        resolvedDurationSeconds = Mathf.Max(0f, warningTimeSeconds);
-        return StartExtinguish(resolvedDurationSeconds);
+        if (extinguishPatternExecutor == null)
+        {
+            resolvedDurationSeconds = 0f;
+            return false;
+        }
+
+        return extinguishPatternExecutor.TryBeginPattern(warningTimeSeconds, out resolvedDurationSeconds);
     }
 
     /// <summary>평타1 장판 공격을 시작합니다.</summary>
     public bool StartNormal1()
     {
-        if (abilitySystem == null || Target == null) return false;
-        if (normalAttack1TilePrefab == null || normalAttack1DamageEffect == null) return false;
+        bool executorSucceeded = normalAttack1PatternExecutor != null && normalAttack1PatternExecutor.TryBeginPattern();
+        if (executorSucceeded)
+            return true;
 
-        Vector2 aimDir = GetAimDir();
-        if (aimDir == Vector2.zero) return false;
-
-        runtimeData.ClearNormal1Tiles();
-        PlayPatternAttackMotion();
-
-        float angle = Mathf.Atan2(aimDir.y, aimDir.x) * Mathf.Rad2Deg;
-        Vector2 tileSize = GetNormal1TileSize();
-        CombatHitPayload payload = MakeNormal1Payload();
-
-        for (int i = 0; i < Normal1Count; i++)
-        {
-            WitchNormalAttack1Tile tile = Instantiate(
-                normalAttack1TilePrefab,
-                GetTilePoint(aimDir, i),
-                Quaternion.Euler(0f, 0f, angle));
-
-            runtimeData.AddNormal1Tile(tile);
-            tile.Play(
-                Target.gameObject,
-                payload,
-                tileSize,
-                angle,
-                i * Normal1Interval,
-                GetNormal1StartTime() + (i * Normal1Interval));
-        }
-
-        return true;
+        Debug.LogWarning("[Witch] 평타1 executor 경로가 실패하여 inline fallback을 사용합니다.", this);
+        return TryBeginNormalAttack1InlineFallback();
     }
 
     /// <summary>
@@ -324,12 +307,12 @@ public class Witch : BossControllerBase, IWitchPatternStateBridge
     /// <summary>촛대로의 피난 패턴을 시작합니다.</summary>
     public bool StartRetreat()
     {
-        if (retreatSkeletonPrefab == null) return false;
+        bool executorSucceeded = retreatPatternExecutor != null && retreatPatternExecutor.TryBeginPattern();
+        if (executorSucceeded)
+            return true;
 
-        PlayPatternAttackMotion();
-        bool spawnedLeft = SpawnRetreatSkeleton(RetreatLeftOffset);
-        bool spawnedRight = SpawnRetreatSkeleton(RetreatRightOffset);
-        return spawnedLeft || spawnedRight;
+        Debug.LogWarning("[Witch] 피난 executor 경로가 실패하여 inline fallback을 사용합니다.", this);
+        return TryBeginRetreatInlineFallback();
     }
 
     /// <summary>
@@ -345,28 +328,7 @@ public class Witch : BossControllerBase, IWitchPatternStateBridge
     /// <summary>촛불 끄기 패턴을 끝냅니다.</summary>
     public void FinishExtinguish()
     {
-        if (!runtimeData.HasActiveExtinguishSelection)
-            return;
-
-        IReadOnlyList<Candlestick> extinguishCandles = runtimeData.SelectedCandles;
-        IReadOnlyList<Vector3> extinguishCenters = runtimeData.SelectedCenters;
-
-        for (int i = 0; i < extinguishCenters.Count; i++)
-        {
-            Vector3 extinguishCenter = extinguishCenters[i];
-            TryHitPlayer(extinguishCenter);
-            SpawnFog(extinguishCenter);
-            PlayExtinguishExplosionPresentation(extinguishCenter);
-        }
-
-        for (int i = 0; i < extinguishCandles.Count; i++)
-        {
-            Candlestick candle = extinguishCandles[i];
-            if (candle != null)
-                candle.Seal();
-        }
-
-        HideExtinguishWarning();
+        extinguishPatternExecutor?.CompletePattern();
     }
 
     /// <summary>
@@ -381,8 +343,7 @@ public class Witch : BossControllerBase, IWitchPatternStateBridge
 
     public void HideExtinguishWarning()
     {
-        HideWarning();
-        runtimeData?.ClearExtinguishSelection();
+        extinguishPatternExecutor?.CancelPattern();
     }
 
     /// <summary>
@@ -392,7 +353,7 @@ public class Witch : BossControllerBase, IWitchPatternStateBridge
     /// </summary>
     public void CancelExtinguishPattern()
     {
-        HideExtinguishWarning();
+        extinguishPatternExecutor?.CancelPattern();
     }
 
     /// <summary>마녀 보호막을 지정 단계수로 활성화합니다.</summary>
@@ -456,7 +417,7 @@ public class Witch : BossControllerBase, IWitchPatternStateBridge
     /// <summary>평타1 전체 시간을 돌려줍니다.</summary>
     public float GetNormal1Time()
     {
-        return GetNormal1StartTime() + ((Normal1Count - 1) * Normal1Interval) + Normal1HitTime;
+        return GetNormal1StartTimeValue() + ((GetNormal1CountValue() - 1) * GetNormal1IntervalValue()) + GetNormal1HitTimeValue();
     }
 
     /// <summary>대화 State 사용 여부를 정합니다.</summary>
@@ -483,68 +444,11 @@ public class Witch : BossControllerBase, IWitchPatternStateBridge
     /// <summary>가장 가까운 촛대를 구합니다.</summary>
     public Candlestick GetNearestCandle()
     {
-        float bestDistance = float.MaxValue;
-        Candlestick bestCandle = null;
-
-        for (int i = 0; i < Candlestick.Instances.Count; i++)
-        {
-            Candlestick candle = Candlestick.Instances[i];
-            if (candle == null || candle.IsSealed) continue;
-
-            float sqrDistance = (GetCandleCenter(candle) - transform.position).sqrMagnitude;
-            if (sqrDistance >= bestDistance)
-                continue;
-
-            bestDistance = sqrDistance;
-            bestCandle = candle;
-        }
-
-        return bestCandle;
+        return candleService != null ? candleService.GetNearestAvailableCandle() : null;
     }
 
-    /// <summary>가장 가까운 촛대와 랜덤 촛대 조합으로 촛불 끄기 대상을 구성합니다.</summary>
-    private List<Candlestick> BuildExtinguishSelectionBuffer()
-    {
-        List<Candlestick> selections = new List<Candlestick>(ExtinguishCandleCount);
-        Candlestick nearestCandle = GetNearestCandle();
-        if (nearestCandle == null)
-            return selections;
-
-        selections.Add(nearestCandle);
-
-        if (ExtinguishCandleCount <= 1)
-            return selections;
-
-        Candlestick randomCandle = GetRandomAvailableCandleExcluding(nearestCandle);
-        if (randomCandle != null)
-            selections.Add(randomCandle);
-
-        return selections;
-    }
-
-    /// <summary>지정한 촛대를 제외하고 미봉인 촛대 하나를 랜덤으로 고릅니다.</summary>
-    private Candlestick GetRandomAvailableCandleExcluding(Candlestick excludedCandle)
-    {
-        List<Candlestick> availableCandles = new List<Candlestick>();
-
-        for (int i = 0; i < Candlestick.Instances.Count; i++)
-        {
-            Candlestick candle = Candlestick.Instances[i];
-            if (candle == null || candle.IsSealed || candle == excludedCandle)
-                continue;
-
-            availableCandles.Add(candle);
-        }
-
-        if (availableCandles.Count == 0)
-            return null;
-
-        int randomIndex = Random.Range(0, availableCandles.Count);
-        return availableCandles[randomIndex];
-    }
-
-    /// <summary>플레이어를 향한 방향을 구합니다.</summary>
-    private Vector2 GetAimDir()
+    /// <summary>평타1 패턴이 사용할 조준 방향을 반환합니다.</summary>
+    internal Vector2 GetAimDirectionValue()
     {
         Vector2 toTarget = Target.position - transform.position;
         if (toTarget.sqrMagnitude <= 0.0001f) return Vector2.right;
@@ -552,110 +456,157 @@ public class Witch : BossControllerBase, IWitchPatternStateBridge
         return toTarget.normalized;
     }
 
-    /// <summary>평타1 장판 위치를 구합니다.</summary>
-    private Vector3 GetTilePoint(Vector2 aimDir, int index)
+    /// <summary>평타1 패턴이 사용할 장판 위치를 반환합니다.</summary>
+    internal Vector3 GetNormal1TilePointValue(Vector2 aimDir, int index)
     {
-        float forwardSize = GetNormal1TileSize().x;
+        float forwardSize = GetNormal1TileSizeValue().x;
         float distance = (forwardSize * 0.5f) + (forwardSize * index);
         Vector3 offset = new Vector3(aimDir.x, aimDir.y, 0f) * distance;
         return transform.position + offset;
     }
 
-    /// <summary>평타1 장판의 가로세로 크기를 반환합니다.</summary>
-    private Vector2 GetNormal1TileSize()
+    /// <summary>평타1 패턴이 사용할 장판 크기를 반환합니다.</summary>
+    internal Vector2 GetNormal1TileSizeValue()
     {
         return new Vector2(
-            Normal1TileUnitSize * Normal1TileWidthInTiles,
-            Normal1TileUnitSize * Normal1TileHeightInTiles);
+            GetNormal1TileUnitSizeValue() * GetNormal1TileWidthInTilesValue(),
+            GetNormal1TileUnitSizeValue() * GetNormal1TileHeightInTilesValue());
     }
 
-    /// <summary>강화된 망자의 해골 하나를 소환합니다.</summary>
-    private bool SpawnRetreatSkeleton(Vector3 localOffset)
+    /// <summary>평타1 executor가 실패했을 때 기존 인라인 경로로 장판 공격을 복구합니다.</summary>
+    private bool TryBeginNormalAttack1InlineFallback()
     {
+        if (abilitySystem == null || Target == null)
+        {
+            Debug.LogWarning(
+                $"[Witch] 평타1 inline fallback 실패: abilitySystem={(abilitySystem != null)}, target={(Target != null)}",
+                this);
+            return false;
+        }
+
+        WitchNormalAttack1Tile tilePrefab = ResolveNormal1TilePrefabValue();
+        GE_Damage_Spec damageEffect = ResolveNormal1DamageEffectValue();
+        if (tilePrefab == null || damageEffect == null)
+        {
+            Debug.LogWarning(
+                $"[Witch] 평타1 inline fallback 실패: tilePrefab={(tilePrefab != null)}, damageEffect={(damageEffect != null)}",
+                this);
+            return false;
+        }
+
+        Vector2 aimDir = GetAimDirectionValue();
+        if (aimDir == Vector2.zero)
+        {
+            Debug.LogWarning("[Witch] 평타1 inline fallback 실패: aimDir가 zero입니다.", this);
+            return false;
+        }
+
+        runtimeData.ClearNormal1Tiles();
+        PlayPatternAttackMotion();
+
+        float angle = Mathf.Atan2(aimDir.y, aimDir.x) * Mathf.Rad2Deg;
+        Vector2 tileSize = GetNormal1TileSizeValue();
+        CombatHitPayload payload = MakeNormal1PayloadValue();
+        int tileCount = GetNormal1CountValue();
+        float intervalSeconds = GetNormal1IntervalValue();
+        float startTime = GetNormal1StartTimeValue();
+
+        for (int i = 0; i < tileCount; i++)
+        {
+            WitchNormalAttack1Tile tile = Instantiate(
+                tilePrefab,
+                GetNormal1TilePointValue(aimDir, i),
+                Quaternion.Euler(0f, 0f, angle));
+
+            runtimeData.AddNormal1Tile(tile);
+            tile.Play(
+                Target.gameObject,
+                payload,
+                tileSize,
+                angle,
+                i * intervalSeconds,
+                startTime + (i * intervalSeconds));
+        }
+
+        Debug.Log($"[Witch] 평타1 inline fallback 실행 성공: tileCount={tileCount}, interval={intervalSeconds}", this);
+        return true;
+    }
+
+    /// <summary>피난 executor가 실패했을 때 기존 인라인 경로로 강화 해골 소환을 복구합니다.</summary>
+    private bool TryBeginRetreatInlineFallback()
+    {
+        DeadsSkeleton skeletonPrefab = ResolveRetreatSkeletonPrefabValue();
+        if (skeletonPrefab == null)
+        {
+            Debug.LogWarning("[Witch] 피난 inline fallback 실패: skeletonPrefab이 없습니다.", this);
+            return false;
+        }
+
+        PlayPatternAttackMotion();
+        bool spawnedLeft = SpawnRetreatSkeletonInlineFallback(skeletonPrefab, ResolveRetreatLeftOffsetValue());
+        bool spawnedRight = SpawnRetreatSkeletonInlineFallback(skeletonPrefab, ResolveRetreatRightOffsetValue());
+        Debug.Log($"[Witch] 피난 inline fallback 실행 결과: left={spawnedLeft}, right={spawnedRight}", this);
+        return spawnedLeft || spawnedRight;
+    }
+
+    /// <summary>기존 피난 패턴 방식으로 강화 해골 하나를 소환합니다.</summary>
+    private bool SpawnRetreatSkeletonInlineFallback(DeadsSkeleton skeletonPrefab, Vector3 localOffset)
+    {
+        if (skeletonPrefab == null)
+        {
+            Debug.LogWarning("[Witch] 피난 inline fallback 소환 실패: skeletonPrefab이 null입니다.", this);
+            return false;
+        }
+
         DeadsSkeleton skeleton = Instantiate(
-            retreatSkeletonPrefab,
+            skeletonPrefab,
             transform.TransformPoint(localOffset),
             Quaternion.identity);
 
-        if (skeleton == null) return false;
+        if (skeleton == null)
+        {
+            Debug.LogWarning("[Witch] 피난 inline fallback 소환 실패: Instantiate 결과가 null입니다.", this);
+            return false;
+        }
 
-        skeleton.SetBoost(Target, RetreatExplosionDiameter, RetreatSpeedScale, true);
+        skeleton.SetBoost(Target, ResolveRetreatExplosionDiameterValue(), ResolveRetreatSpeedScaleValue(), true);
         return true;
     }
 
     /// <summary>촛대 중심 위치를 구합니다.</summary>
     public Vector3 GetCandleCenter(Candlestick candle)
     {
-        if (candle == null) return transform.position;
-
-        Collider2D candleCollider = candle.GetComponent<Collider2D>();
-        if (candleCollider != null) return candleCollider.bounds.center;
-
-        SpriteRenderer candleSprite = candle.GetComponent<SpriteRenderer>();
-        if (candleSprite != null) return candleSprite.bounds.center;
-
-        return candle.transform.position;
+        return candleService != null ? candleService.GetCandleCenter(candle) : transform.position;
     }
 
     /// <summary>현재 봉인된 촛대 수를 구합니다.</summary>
     public int GetSealedCandleCount()
     {
-        int sealedCount = 0;
-
-        for (int i = 0; i < Candlestick.Instances.Count; i++)
-        {
-            Candlestick candle = Candlestick.Instances[i];
-            if (candle != null && candle.IsSealed)
-                sealedCount++;
-        }
-
-        return sealedCount;
+        return candleService != null ? candleService.GetSealedCandleCount() : 0;
     }
 
     /// <summary>봉인된 촛대가 하나라도 있는지 확인합니다.</summary>
     public bool HasAnySealedCandles()
     {
-        return GetSealedCandleCount() > 0;
+        return candleService != null && candleService.HasAnySealedCandles();
     }
 
     /// <summary>모든 촛대를 봉인 상태로 만듭니다.</summary>
     public void SealAllCandles()
     {
-        for (int i = 0; i < Candlestick.Instances.Count; i++)
-        {
-            Candlestick candle = Candlestick.Instances[i];
-            if (candle == null || candle.IsSealed)
-                continue;
-
-            candle.Seal();
-        }
+        candleService?.SealAllCandles();
     }
 
     /// <summary>현재 봉인된 촛대를 버퍼에 수집합니다.</summary>
     public void CollectSealedCandles(List<Candlestick> buffer)
     {
-        if (buffer == null)
-            return;
-
-        buffer.Clear();
-
-        for (int i = 0; i < Candlestick.Instances.Count; i++)
-        {
-            Candlestick candle = Candlestick.Instances[i];
-            if (candle != null && candle.IsSealed)
-                buffer.Add(candle);
-        }
+        candleService?.CollectSealedCandles(buffer);
     }
 
     /// <summary>테스트나 예외 상황에서 가장 가까운 미봉인 촛대 하나를 즉시 봉인합니다.</summary>
     public Candlestick SealNearestAvailableCandle()
     {
-        Candlestick candle = GetNearestCandle();
-        if (candle == null)
-            return null;
-
-        candle.Seal();
-        return candle;
+        return candleService != null ? candleService.SealNearestAvailableCandle() : null;
     }
 
     /// <summary>대상 방향이나 현재 바라보는 방향을 기반으로 투사체 방향을 구합니다.</summary>
@@ -675,10 +626,11 @@ public class Witch : BossControllerBase, IWitchPatternStateBridge
     /// <summary>그로기 상태 효과를 보스 자신에게 적용합니다.</summary>
     public void ApplyGroggyStatus()
     {
-        if (abilitySystem == null || groggyStatusEffect == null)
+        GameplayEffect resolvedGroggyStatusEffect = ResolveLightAllCandlesGroggyStatusEffect();
+        if (abilitySystem == null || resolvedGroggyStatusEffect == null)
             return;
 
-        abilitySystem.EffectRunner.ApplyEffect(groggyStatusEffect, gameObject, gameObject);
+        abilitySystem.EffectRunner.ApplyEffect(resolvedGroggyStatusEffect, gameObject, gameObject);
     }
 
     /// <summary>페이즈 전환 패턴의 중앙 위치를 구합니다.</summary>
@@ -687,42 +639,13 @@ public class Witch : BossControllerBase, IWitchPatternStateBridge
         if (phaseTransitionCenterPoint != null)
             return phaseTransitionCenterPoint.position;
 
-        int candleCount = 0;
-        Vector3 accumulatedCenter = Vector3.zero;
-        for (int i = 0; i < Candlestick.Instances.Count; i++)
-        {
-            Candlestick candle = Candlestick.Instances[i];
-            if (candle == null)
-                continue;
-
-            accumulatedCenter += GetCandleCenter(candle);
-            candleCount++;
-        }
-
-        if (candleCount > 0)
-            return accumulatedCenter / candleCount;
-
-        return transform.position;
+        return candleService != null ? candleService.GetCandlesCenter() : transform.position;
     }
 
     /// <summary>지정한 중심 기준으로 촛대들을 모두 덮는 반경을 구합니다.</summary>
     public float GetArenaRadiusFromCandles(Vector3 center, float fallbackRadius = 6f)
     {
-        float radius = 0f;
-
-        for (int i = 0; i < Candlestick.Instances.Count; i++)
-        {
-            Candlestick candle = Candlestick.Instances[i];
-            if (candle == null)
-                continue;
-
-            Vector3 candleCenter = GetCandleCenter(candle);
-            float candleDistance = Vector2.Distance(center, candleCenter);
-            float candleExtent = GetObjectExtentRadius(candle.gameObject);
-            radius = Mathf.Max(radius, candleDistance + candleExtent);
-        }
-
-        return Mathf.Max(fallbackRadius, radius);
+        return candleService != null ? candleService.GetArenaRadiusFromCandles(center, fallbackRadius) : fallbackRadius;
     }
 
     /// <summary>중앙 위치로 보스를 이동시킵니다.</summary>
@@ -751,13 +674,14 @@ public class Witch : BossControllerBase, IWitchPatternStateBridge
         if (telegraphService == null)
             return;
 
+        AttackTelegraphStyle warningStyle = ResolveMapWideWarningStyle();
         ResolveArenaRectangle(center, out Vector3 rectCenter, out Vector2 rectSize);
         AttackTelegraphSpec spec = AttackTelegraphSpec.CreateRectangle(
             rectCenter,
             rectSize,
             0f,
             Mathf.Max(0f, warningTime),
-            mapWideWarningStyle);
+            warningStyle);
 
         telegraphService.Show(spec);
     }
@@ -802,84 +726,11 @@ public class Witch : BossControllerBase, IWitchPatternStateBridge
         return CombatHitPayloadApplier.Apply(targetObject, payload, targetObject.transform.position);
     }
 
-    /// <summary>촛불 끄기 패턴의 원형 경고를 여러 개 동시에 표시합니다.</summary>
-    private void ShowWarnings(IReadOnlyList<Vector3> centers, float warningTime)
-    {
-        DestroyExtinguishWarningViews();
-
-        if (telegraphService == null || centers == null)
-            return;
-
-        float warningDiameter = GetExtinguishAttackRadius() * 2f;
-        float clampedWarningTime = Mathf.Max(0f, warningTime);
-
-        for (int i = 0; i < centers.Count; i++)
-        {
-            AttackTelegraphSpec spec = AttackTelegraphSpec.CreateCircle(
-                centers[i],
-                warningDiameter,
-                clampedWarningTime,
-                extinguishWarningStyle);
-
-            AttackTelegraphView view = telegraphService.SpawnDetachedView(spec);
-            if (view != null)
-                activeExtinguishWarningViews.Add(view);
-        }
-    }
-
-    /// <summary>폭발 경고를 숨깁니다.</summary>
-    private void HideWarning()
-    {
-        DestroyExtinguishWarningViews();
-    }
-
-    /// <summary>촛불 끄기 패턴에서 사용한 경고 뷰들을 정리합니다.</summary>
-    private void DestroyExtinguishWarningViews()
-    {
-        for (int i = 0; i < activeExtinguishWarningViews.Count; i++)
-        {
-            AttackTelegraphView view = activeExtinguishWarningViews[i];
-            if (view != null)
-                Destroy(view.gameObject);
-        }
-
-        activeExtinguishWarningViews.Clear();
-    }
-
-    /// <summary>플레이어에게 폭발 피해를 적용합니다.</summary>
-    private bool TryHitPlayer(Vector3 center)
-    {
-        if (Target == null || abilitySystem == null || extinguishDamageEffect == null) return false;
-
-        float fogRadius = GetExtinguishAttackRadius();
-        Vector2 toTarget = (Vector2)(Target.position - center);
-
-        if (toTarget.sqrMagnitude > fogRadius * fogRadius) return false;
-
-        CombatDamageSnapshot snapshot = new CombatDamageSnapshot(
-            finalHpDamage: extinguishDamage,
-            finalStaggerBuildUp: 0f,
-            finalKnockbackImpulse: 0f,
-            elementBuildUps: null,
-            isCriticalHit: false);
-
-        CombatHitPayload payload = CombatHitPayload.FromSnapshot(
-            sourceSystem: abilitySystem,
-            sourceSpec: null,
-            damageEffect: extinguishDamageEffect,
-            knockbackEffect: null,
-            snapshot: snapshot,
-            hitConfirmedTag: null,
-            causer: gameObject);
-
-        return CombatHitPayloadApplier.Apply(Target.gameObject, payload, center);
-    }
-
     /// <summary>평타1 공격 payload를 만듭니다.</summary>
-    private CombatHitPayload MakeNormal1Payload()
+    internal CombatHitPayload MakeNormal1PayloadValue()
     {
         CombatDamageSnapshot snapshot = new CombatDamageSnapshot(
-            finalHpDamage: normalAttack1Damage,
+            finalHpDamage: ResolveNormal1DamageAmountValue(),
             finalStaggerBuildUp: 0f,
             finalKnockbackImpulse: 0f,
             elementBuildUps: null,
@@ -888,81 +739,22 @@ public class Witch : BossControllerBase, IWitchPatternStateBridge
         return CombatHitPayload.FromSnapshot(
             sourceSystem: abilitySystem,
             sourceSpec: null,
-            damageEffect: normalAttack1DamageEffect,
+            damageEffect: ResolveNormal1DamageEffectValue(),
             knockbackEffect: null,
             snapshot: snapshot,
             hitConfirmedTag: null,
             causer: gameObject);
     }
 
-    /// <summary>촛대 위치에 Fog를 생성합니다.</summary>
-    private bool SpawnFog(Vector3 center)
-    {
-        if (fogPrefab == null) return false;
-
-        GameObject fogInstance = Instantiate(fogPrefab, GetFogSpawnPos(center), Quaternion.identity);
-        if (fogInstance == null)
-            return false;
-
-        fogInstance.transform.localScale = Vector3.Scale(fogInstance.transform.localScale, extinguishFogSpawnScaleMultiplier);
-        return true;
-    }
-
-    /// <summary>촛불 끄기 패턴의 폭발 비주얼/파티클/사운드/카메라 셰이크를 함께 재생합니다.</summary>
-    private bool PlayExtinguishExplosionPresentation(Vector3 center)
-    {
-        Transform parent = extinguishExplosionVisualSocket;
-        bool hasSpawnedVisual = SpawnExtinguishPresentationPrefab(
-            extinguishExplosionVisualPrefab,
-            center + extinguishExplosionVisualOffset,
-            extinguishExplosionVisualScale,
-            parent);
-        bool hasSpawnedParticle = SpawnExtinguishPresentationPrefab(
-            extinguishExplosionParticlePrefab,
-            center + extinguishExplosionParticleOffset,
-            extinguishExplosionParticleScale,
-            parent);
-
-        SoundPlaybackUtility.Play(
-            extinguishExplosionSound,
-            instigator: gameObject,
-            causer: gameObject,
-            target: Target != null ? Target.gameObject : null,
-            position: center,
-            sourceObject: this);
-
-        Vector3 shakeDirection = Target != null ? Target.position - center : Vector3.up;
-        extinguishExplosionCameraShake.TryPlay(gameObject, shakeDirection, debugReason: "Witch.ExtinguishExplosion");
-        return hasSpawnedVisual || hasSpawnedParticle;
-    }
-
-    /// <summary>촛불 끄기 패턴용 연출 프리팹을 생성하고 배율 보정을 적용합니다.</summary>
-    private static bool SpawnExtinguishPresentationPrefab(
-        GameObject prefab,
-        Vector3 position,
-        Vector3 scaleMultiplier,
-        Transform parent)
-    {
-        if (prefab == null)
-            return false;
-
-        GameObject instance = Instantiate(prefab, position, Quaternion.identity, parent);
-        if (instance == null)
-            return false;
-
-        instance.transform.localScale = Vector3.Scale(instance.transform.localScale, scaleMultiplier);
-        return true;
-    }
-
     /// <summary>Fog 생성 위치를 구합니다.</summary>
-    private Vector3 GetFogSpawnPos(Vector3 center)
+    internal Vector3 GetFogSpawnPosition(Vector3 center)
     {
         Vector2 fogOffset = GetFogOffset();
         return center - new Vector3(fogOffset.x, fogOffset.y, 0f);
     }
 
     /// <summary>Fog 반지름을 구합니다.</summary>
-    private float GetFogRadius()
+    internal float GetFogRadiusValue()
     {
         if (fogPrefab == null) return 0f;
 
@@ -976,9 +768,9 @@ public class Witch : BossControllerBase, IWitchPatternStateBridge
     }
 
     /// <summary>촛불 끄기 패턴의 실제 공격 반경을 반환합니다.</summary>
-    private float GetExtinguishAttackRadius()
+    internal float GetExtinguishAttackRadiusValue()
     {
-        return GetFogRadius() * Mathf.Max(0f, extinguishAttackRadiusMultiplier);
+        return GetFogRadiusValue() * Mathf.Max(0f, ResolveExtinguishAttackRadiusMultiplierValue());
     }
 
     /// <summary>Fog 오프셋을 구합니다.</summary>
@@ -989,16 +781,317 @@ public class Witch : BossControllerBase, IWitchPatternStateBridge
         CircleCollider2D fogCollider = fogPrefab.GetComponent<CircleCollider2D>();
         if (fogCollider == null) return Vector2.zero;
 
-        Vector3 scale = Vector3.Scale(fogPrefab.transform.localScale, extinguishFogSpawnScaleMultiplier);
+        Vector3 scale = Vector3.Scale(fogPrefab.transform.localScale, ResolveExtinguishFogSpawnScaleMultiplierValue());
         return new Vector2(
             fogCollider.offset.x * scale.x,
             fogCollider.offset.y * scale.y);
     }
 
     /// <summary>평타1 타격 시작 시점을 구합니다.</summary>
-    private float GetNormal1StartTime()
+    internal float GetNormal1StartTimeValue()
     {
-        return Normal1Count * Normal1Interval;
+        return GetNormal1CountValue() * GetNormal1IntervalValue();
+    }
+
+    /// <summary>현재 50% 패턴이 참조하는 logic asset을 반환합니다.</summary>
+    private AbilityLogic_WitchLightAllCandles GetLightAllCandlesLogicConfig()
+    {
+        AbilityLogic_WitchLightAllCandles currentLogic = PatternRuntime != null && PatternRuntime.CurrentPattern != null && PatternRuntime.CurrentPattern.Ability != null
+            ? PatternRuntime.CurrentPattern.Ability.logic as AbilityLogic_WitchLightAllCandles
+            : null;
+        if (currentLogic != null)
+            return currentLogic;
+
+        AbilityLogic_WitchLightAllCandles reservedLogic = PatternRuntime != null && PatternRuntime.ReservedPattern != null && PatternRuntime.ReservedPattern.Ability != null
+            ? PatternRuntime.ReservedPattern.Ability.logic as AbilityLogic_WitchLightAllCandles
+            : null;
+        return reservedLogic != null ? reservedLogic : lightAllCandlesPatternLogicTemplate;
+    }
+
+    /// <summary>50% 패턴이 사용할 그로기 상태 효과를 반환합니다.</summary>
+    private GameplayEffect ResolveLightAllCandlesGroggyStatusEffect()
+    {
+        AbilityLogic_WitchLightAllCandles config = GetLightAllCandlesLogicConfig();
+        return config != null ? config.GroggyStatusEffect : null;
+    }
+
+    /// <summary>50% 패턴이 사용할 맵 전체 경고 스타일을 반환합니다.</summary>
+    private AttackTelegraphStyle ResolveMapWideWarningStyle()
+    {
+        AbilityLogic_WitchLightAllCandles config = GetLightAllCandlesLogicConfig();
+        if (config != null && config.MapWideWarningStyleAsset != null)
+            return config.MapWideWarningStyleAsset;
+
+        return mapWideWarningStyle;
+    }
+
+    /// <summary>현재 촛대로의 피난 패턴이 참조하는 logic asset을 반환합니다.</summary>
+    private AbilityLogic_WitchRetreatToCandle GetRetreatLogicConfig()
+    {
+        AbilityLogic_WitchRetreatToCandle currentLogic = PatternRuntime != null && PatternRuntime.CurrentPattern != null && PatternRuntime.CurrentPattern.Ability != null
+            ? PatternRuntime.CurrentPattern.Ability.logic as AbilityLogic_WitchRetreatToCandle
+            : null;
+        if (currentLogic != null && currentLogic.SkeletonPrefab != null)
+            return currentLogic;
+
+        AbilityLogic_WitchRetreatToCandle reservedLogic = PatternRuntime != null && PatternRuntime.ReservedPattern != null && PatternRuntime.ReservedPattern.Ability != null
+            ? PatternRuntime.ReservedPattern.Ability.logic as AbilityLogic_WitchRetreatToCandle
+            : null;
+        if (reservedLogic != null && reservedLogic.SkeletonPrefab != null)
+            return reservedLogic;
+
+        AbilityLogic_WitchRetreatToCandle phaseLogic = FindConfiguredRetreatLogic();
+        if (phaseLogic != null && phaseLogic.SkeletonPrefab != null)
+            return phaseLogic;
+
+        return retreatPatternLogicTemplate;
+    }
+
+    /// <summary>촛대로의 피난 패턴이 사용할 해골 프리팹을 반환합니다.</summary>
+    internal DeadsSkeleton ResolveRetreatSkeletonPrefabValue()
+    {
+        AbilityLogic_WitchRetreatToCandle config = GetRetreatLogicConfig();
+        return config != null ? config.SkeletonPrefab : null;
+    }
+
+    /// <summary>촛대로의 피난 패턴이 사용할 좌측 소환 오프셋을 반환합니다.</summary>
+    internal Vector3 ResolveRetreatLeftOffsetValue()
+    {
+        AbilityLogic_WitchRetreatToCandle config = GetRetreatLogicConfig();
+        return config != null ? config.LeftOffset : FallbackRetreatLeftOffset;
+    }
+
+    /// <summary>촛대로의 피난 패턴이 사용할 우측 소환 오프셋을 반환합니다.</summary>
+    internal Vector3 ResolveRetreatRightOffsetValue()
+    {
+        AbilityLogic_WitchRetreatToCandle config = GetRetreatLogicConfig();
+        return config != null ? config.RightOffset : FallbackRetreatRightOffset;
+    }
+
+    /// <summary>촛대로의 피난 패턴이 사용할 해골 자폭 반경을 반환합니다.</summary>
+    internal float ResolveRetreatExplosionDiameterValue()
+    {
+        AbilityLogic_WitchRetreatToCandle config = GetRetreatLogicConfig();
+        return config != null ? Mathf.Max(0f, config.SkeletonExplosionDiameter) : FallbackRetreatExplosionDiameter;
+    }
+
+    /// <summary>촛대로의 피난 패턴이 사용할 해골 돌진 속도 배율을 반환합니다.</summary>
+    internal float ResolveRetreatSpeedScaleValue()
+    {
+        AbilityLogic_WitchRetreatToCandle config = GetRetreatLogicConfig();
+        return config != null ? Mathf.Max(0f, config.SkeletonSpeedScale) : FallbackRetreatSpeedScale;
+    }
+
+    /// <summary>현재 촛불 끄기 패턴이 참조하는 logic asset을 반환합니다.</summary>
+    private AbilityLogic_WitchExtinguishCandle GetExtinguishLogicConfig()
+    {
+        AbilityLogic_WitchExtinguishCandle currentLogic = PatternRuntime != null && PatternRuntime.CurrentPattern != null && PatternRuntime.CurrentPattern.Ability != null
+            ? PatternRuntime.CurrentPattern.Ability.logic as AbilityLogic_WitchExtinguishCandle
+            : null;
+        if (currentLogic != null)
+            return currentLogic;
+
+        AbilityLogic_WitchExtinguishCandle reservedLogic = PatternRuntime != null && PatternRuntime.ReservedPattern != null && PatternRuntime.ReservedPattern.Ability != null
+            ? PatternRuntime.ReservedPattern.Ability.logic as AbilityLogic_WitchExtinguishCandle
+            : null;
+        return reservedLogic != null ? reservedLogic : extinguishPatternLogicTemplate;
+    }
+
+    /// <summary>촛불 끄기 패턴의 폭발 비주얼 프리팹을 반환합니다.</summary>
+    internal GameObject ResolveExtinguishExplosionVisualPrefabValue()
+    {
+        AbilityLogic_WitchExtinguishCandle config = GetExtinguishLogicConfig();
+        return config != null ? config.ExplosionVisualPrefab : null;
+    }
+
+    /// <summary>촛불 끄기 패턴의 폭발 파티클 프리팹을 반환합니다.</summary>
+    internal GameObject ResolveExtinguishExplosionParticlePrefabValue()
+    {
+        AbilityLogic_WitchExtinguishCandle config = GetExtinguishLogicConfig();
+        return config != null ? config.ExplosionParticlePrefab : null;
+    }
+
+    /// <summary>촛불 끄기 패턴의 폭발 비주얼 오프셋을 반환합니다.</summary>
+    internal Vector3 ResolveExtinguishExplosionVisualOffsetValue()
+    {
+        AbilityLogic_WitchExtinguishCandle config = GetExtinguishLogicConfig();
+        return config != null ? config.ExplosionVisualOffset : Vector3.zero;
+    }
+
+    /// <summary>촛불 끄기 패턴의 폭발 비주얼 배율을 반환합니다.</summary>
+    internal Vector3 ResolveExtinguishExplosionVisualScaleValue()
+    {
+        AbilityLogic_WitchExtinguishCandle config = GetExtinguishLogicConfig();
+        return config != null ? config.ExplosionVisualScale : Vector3.one;
+    }
+
+    /// <summary>촛불 끄기 패턴의 폭발 파티클 오프셋을 반환합니다.</summary>
+    internal Vector3 ResolveExtinguishExplosionParticleOffsetValue()
+    {
+        AbilityLogic_WitchExtinguishCandle config = GetExtinguishLogicConfig();
+        return config != null ? config.ExplosionParticleOffset : Vector3.zero;
+    }
+
+    /// <summary>촛불 끄기 패턴의 폭발 파티클 배율을 반환합니다.</summary>
+    internal Vector3 ResolveExtinguishExplosionParticleScaleValue()
+    {
+        AbilityLogic_WitchExtinguishCandle config = GetExtinguishLogicConfig();
+        return config != null ? config.ExplosionParticleScale : Vector3.one;
+    }
+
+    /// <summary>촛불 끄기 패턴의 폭발 사운드를 반환합니다.</summary>
+    internal SoundRef ResolveExtinguishExplosionSoundValue()
+    {
+        AbilityLogic_WitchExtinguishCandle config = GetExtinguishLogicConfig();
+        return config != null ? config.ExplosionSound : default;
+    }
+
+    /// <summary>촛불 끄기 패턴의 폭발 카메라 셰이크를 반환합니다.</summary>
+    internal CameraShakeHook ResolveExtinguishExplosionCameraShakeValue()
+    {
+        AbilityLogic_WitchExtinguishCandle config = GetExtinguishLogicConfig();
+        return config != null ? config.ExplosionCameraShake : default;
+    }
+
+    /// <summary>촛불 끄기 패턴의 Fog 배율 보정을 반환합니다.</summary>
+    internal Vector3 ResolveExtinguishFogSpawnScaleMultiplierValue()
+    {
+        AbilityLogic_WitchExtinguishCandle config = GetExtinguishLogicConfig();
+        return config != null ? config.FogSpawnScaleMultiplier : Vector3.one;
+    }
+
+    /// <summary>촛불 끄기 패턴의 실제 공격 반경 배율을 반환합니다.</summary>
+    internal float ResolveExtinguishAttackRadiusMultiplierValue()
+    {
+        AbilityLogic_WitchExtinguishCandle config = GetExtinguishLogicConfig();
+        return config != null ? Mathf.Max(0f, config.AttackRadiusMultiplier) : 6f;
+    }
+
+    /// <summary>현재 평타1 패턴이 참조하는 logic asset을 반환합니다.</summary>
+    private AbilityLogic_WitchNormalAttack1 GetNormal1LogicConfig()
+    {
+        AbilityLogic_WitchNormalAttack1 currentLogic = PatternRuntime != null && PatternRuntime.CurrentPattern != null && PatternRuntime.CurrentPattern.Ability != null
+            ? PatternRuntime.CurrentPattern.Ability.logic as AbilityLogic_WitchNormalAttack1
+            : null;
+        if (currentLogic != null && currentLogic.TilePrefab != null && currentLogic.DamageEffect != null)
+            return currentLogic;
+
+        AbilityLogic_WitchNormalAttack1 reservedLogic = PatternRuntime != null && PatternRuntime.ReservedPattern != null && PatternRuntime.ReservedPattern.Ability != null
+            ? PatternRuntime.ReservedPattern.Ability.logic as AbilityLogic_WitchNormalAttack1
+            : null;
+        if (reservedLogic != null && reservedLogic.TilePrefab != null && reservedLogic.DamageEffect != null)
+            return reservedLogic;
+
+        AbilityLogic_WitchNormalAttack1 phaseLogic = FindConfiguredNormal1Logic();
+        if (phaseLogic != null && phaseLogic.TilePrefab != null && phaseLogic.DamageEffect != null)
+            return phaseLogic;
+
+        return normalAttack1PatternLogicTemplate;
+    }
+
+    /// <summary>현재 페이즈 구성에서 평타1 logic asset을 찾아 반환합니다.</summary>
+    private AbilityLogic_WitchNormalAttack1 FindConfiguredNormal1Logic()
+    {
+        BossPhaseConfig currentPhase = GetCurrentPhase();
+        if (currentPhase == null || currentPhase.Patterns == null)
+            return null;
+
+        for (int i = 0; i < currentPhase.Patterns.Count; i++)
+        {
+            BossPatternEntry pattern = currentPhase.Patterns[i];
+            AbilityLogic_WitchNormalAttack1 logic = pattern != null && pattern.Ability != null
+                ? pattern.Ability.logic as AbilityLogic_WitchNormalAttack1
+                : null;
+
+            if (logic != null)
+                return logic;
+        }
+
+        return null;
+    }
+
+    /// <summary>현재 페이즈 구성에서 촛대로의 피난 logic asset을 찾아 반환합니다.</summary>
+    private AbilityLogic_WitchRetreatToCandle FindConfiguredRetreatLogic()
+    {
+        BossPhaseConfig currentPhase = GetCurrentPhase();
+        if (currentPhase == null || currentPhase.Patterns == null)
+            return null;
+
+        for (int i = 0; i < currentPhase.Patterns.Count; i++)
+        {
+            BossPatternEntry pattern = currentPhase.Patterns[i];
+            AbilityLogic_WitchRetreatToCandle logic = pattern != null && pattern.Ability != null
+                ? pattern.Ability.logic as AbilityLogic_WitchRetreatToCandle
+                : null;
+
+            if (logic != null)
+                return logic;
+        }
+
+        return null;
+    }
+
+    /// <summary>평타1 타일 개수를 반환합니다.</summary>
+    internal int GetNormal1CountValue()
+    {
+        AbilityLogic_WitchNormalAttack1 config = GetNormal1LogicConfig();
+        return config != null ? Mathf.Max(1, config.TileCount) : FallbackNormal1Count;
+    }
+
+    /// <summary>평타1 타일 발사 간격을 반환합니다.</summary>
+    internal float GetNormal1IntervalValue()
+    {
+        AbilityLogic_WitchNormalAttack1 config = GetNormal1LogicConfig();
+        return config != null ? Mathf.Max(0f, config.IntervalSeconds) : FallbackNormal1Interval;
+    }
+
+    /// <summary>평타1 타일 단위 크기를 반환합니다.</summary>
+    internal float GetNormal1TileUnitSizeValue()
+    {
+        AbilityLogic_WitchNormalAttack1 config = GetNormal1LogicConfig();
+        return config != null ? Mathf.Max(0.01f, config.TileUnitSize) : FallbackNormal1TileUnitSize;
+    }
+
+    /// <summary>평타1 타일 가로 배율을 반환합니다.</summary>
+    internal float GetNormal1TileWidthInTilesValue()
+    {
+        AbilityLogic_WitchNormalAttack1 config = GetNormal1LogicConfig();
+        return config != null ? Mathf.Max(0.1f, config.TileWidthInTiles) : FallbackNormal1TileWidthInTiles;
+    }
+
+    /// <summary>평타1 타일 세로 배율을 반환합니다.</summary>
+    internal float GetNormal1TileHeightInTilesValue()
+    {
+        AbilityLogic_WitchNormalAttack1 config = GetNormal1LogicConfig();
+        return config != null ? Mathf.Max(0.1f, config.TileHeightInTiles) : FallbackNormal1TileHeightInTiles;
+    }
+
+    /// <summary>평타1 타격 유지 시간을 반환합니다.</summary>
+    internal float GetNormal1HitTimeValue()
+    {
+        AbilityLogic_WitchNormalAttack1 config = GetNormal1LogicConfig();
+        return config != null ? Mathf.Max(0f, config.HitDurationSeconds) : FallbackNormal1HitTime;
+    }
+
+    /// <summary>평타1 타일 프리팹을 반환합니다.</summary>
+    internal WitchNormalAttack1Tile ResolveNormal1TilePrefabValue()
+    {
+        AbilityLogic_WitchNormalAttack1 config = GetNormal1LogicConfig();
+        return config != null ? config.TilePrefab : null;
+    }
+
+    /// <summary>평타1 피해 이펙트를 반환합니다.</summary>
+    internal GE_Damage_Spec ResolveNormal1DamageEffectValue()
+    {
+        AbilityLogic_WitchNormalAttack1 config = GetNormal1LogicConfig();
+        return config != null ? config.DamageEffect : null;
+    }
+
+    /// <summary>평타1 피해량을 반환합니다.</summary>
+    internal float ResolveNormal1DamageAmountValue()
+    {
+        AbilityLogic_WitchNormalAttack1 config = GetNormal1LogicConfig();
+        return config != null ? config.DamageAmount : 1f;
     }
 
     /// <summary>attack 트리거 유무를 확인합니다.</summary>
@@ -1085,23 +1178,6 @@ public class Witch : BossControllerBase, IWitchPatternStateBridge
             : fallbackDistance;
     }
 
-    /// <summary>오브젝트의 시각 또는 충돌 반경을 구합니다.</summary>
-    private float GetObjectExtentRadius(GameObject gameObject)
-    {
-        if (gameObject == null)
-            return 0f;
-
-        Collider2D collider = gameObject.GetComponent<Collider2D>();
-        if (collider != null)
-            return Mathf.Max(collider.bounds.extents.x, collider.bounds.extents.y);
-
-        SpriteRenderer spriteRenderer = gameObject.GetComponent<SpriteRenderer>();
-        if (spriteRenderer != null)
-            return Mathf.Max(spriteRenderer.bounds.extents.x, spriteRenderer.bounds.extents.y);
-
-        return 0f;
-    }
-
     /// <summary>씬에 촛대가 하나도 없을 때 테스트용 기본 촛대를 생성합니다.</summary>
     private void EnsureRuntimeCandlesIfNeeded()
     {
@@ -1147,7 +1223,9 @@ public class Witch : BossControllerBase, IWitchPatternStateBridge
 
         lightAllCandlesAbility = CreateRuntimeAbility(
             "AD_Witch_LightAllCandles_Runtime",
-            ScriptableObject.CreateInstance<AbilityLogic_WitchLightAllCandles>(),
+            lightAllCandlesPatternLogicTemplate != null
+                ? Instantiate(lightAllCandlesPatternLogicTemplate)
+                : ScriptableObject.CreateInstance<AbilityLogic_WitchLightAllCandles>(),
             castTime: 0f,
             recoveryTime: 0.2f);
 

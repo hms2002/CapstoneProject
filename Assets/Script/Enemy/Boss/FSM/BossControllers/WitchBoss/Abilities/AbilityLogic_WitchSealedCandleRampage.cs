@@ -9,16 +9,18 @@ using UnityGAS;
 public class AbilityLogic_WitchSealedCandleRampage : AbilityLogic
 {
     // 이 클래스의 책임:
-    // 현재 봉인된 촛대들을 이용해 마녀 보스의 폭주 탄막 패턴을 실행한다.
+    // 현재 봉인된 촛대들을 이용해 마녀 보스의 폭주 탄막 패턴을 실행하고 전용 튜닝 데이터를 제공한다.
 
-    private const float WindupSeconds = 0.5f;
-    private const int BurstRepeatCount = 2;
-    private const float BurstIntervalSeconds = 0.45f;
-    private const int ProjectileCountPerCandle = 5;
-    private const float SpreadAngleDegrees = 52f;
-    private const float TelegraphTileUnitSize = 1.7f;
-    private const float TelegraphTileDepth = 3f;
-    private const float DefaultTelegraphRadius = TelegraphTileUnitSize * TelegraphTileDepth;
+    private const float FallbackTelegraphTileUnitSize = 1.7f;
+    private const float FallbackTelegraphTileDepth = 3f;
+    private const float FallbackDefaultTelegraphRadius = FallbackTelegraphTileUnitSize * FallbackTelegraphTileDepth;
+
+    [Header("Burst")]
+    [SerializeField] private float windupSeconds = 0.5f;
+    [SerializeField] private int burstRepeatCount = 2;
+    [SerializeField] private float burstIntervalSeconds = 0.45f;
+    [SerializeField] private int projectileCountPerCandle = 5;
+    [SerializeField] private float spreadAngleDegrees = 52f;
 
     [Header("Telegraph")]
     [SerializeField] private float telegraphRadius = 0f;
@@ -62,14 +64,20 @@ public class AbilityLogic_WitchSealedCandleRampage : AbilityLogic
         if (burstPlans.Count == 0)
             yield break;
 
-        SpawnBurstWarnings(telegraphService, burstPlans, WindupSeconds, warningViews, ResolveTelegraphRadius());
+        float resolvedWindupSeconds = ResolveWindupSeconds();
+        SpawnBurstWarnings(telegraphService, burstPlans, resolvedWindupSeconds, warningViews, ResolveTelegraphRadius());
 
-        if (WindupSeconds > 0f)
-            yield return new WaitForSeconds(WindupSeconds);
+        if (resolvedWindupSeconds > 0f)
+            yield return new WaitForSeconds(resolvedWindupSeconds);
 
         DestroyWarningViews(warningViews);
 
-        for (int burstIndex = 0; burstIndex < BurstRepeatCount; burstIndex++)
+        int resolvedBurstRepeatCount = ResolveBurstRepeatCount();
+        float resolvedBurstIntervalSeconds = ResolveBurstIntervalSeconds();
+        int resolvedProjectileCountPerCandle = ResolveProjectileCountPerCandle();
+        float resolvedSpreadAngleDegrees = ResolveSpreadAngleDegrees();
+
+        for (int burstIndex = 0; burstIndex < resolvedBurstRepeatCount; burstIndex++)
         {
             for (int i = 0; i < burstPlans.Count; i++)
             {
@@ -97,13 +105,13 @@ public class AbilityLogic_WitchSealedCandleRampage : AbilityLogic
                     witch.ProjectileSpeed,
                     plan.origin,
                     plan.direction,
-                    ProjectileCountPerCandle,
-                    SpreadAngleDegrees,
+                    resolvedProjectileCountPerCandle,
+                    resolvedSpreadAngleDegrees,
                     targetObject);
             }
 
-            if (burstIndex < BurstRepeatCount - 1 && BurstIntervalSeconds > 0f)
-                yield return new WaitForSeconds(BurstIntervalSeconds);
+            if (burstIndex < resolvedBurstRepeatCount - 1 && resolvedBurstIntervalSeconds > 0f)
+                yield return new WaitForSeconds(resolvedBurstIntervalSeconds);
         }
     }
 
@@ -158,7 +166,7 @@ public class AbilityLogic_WitchSealedCandleRampage : AbilityLogic
             AttackTelegraphSpec spec = AttackTelegraphSpec.CreateSector(
                 plan.origin,
                 radius,
-                SpreadAngleDegrees,
+                ResolveSpreadAngleDegrees(),
                 angle,
                 duration,
                 telegraphStyle);
@@ -174,7 +182,37 @@ public class AbilityLogic_WitchSealedCandleRampage : AbilityLogic
         if (telegraphRadius > 0f)
             return telegraphRadius;
 
-        return DefaultTelegraphRadius;
+        return FallbackDefaultTelegraphRadius;
+    }
+
+    /// <summary>봉인된 촛대 폭주의 경고 시간을 반환합니다.</summary>
+    private float ResolveWindupSeconds()
+    {
+        return Mathf.Max(0f, windupSeconds);
+    }
+
+    /// <summary>봉인된 촛대 폭주의 연속 발사 횟수를 반환합니다.</summary>
+    private int ResolveBurstRepeatCount()
+    {
+        return Mathf.Max(1, burstRepeatCount);
+    }
+
+    /// <summary>봉인된 촛대 폭주의 연속 발사 간격을 반환합니다.</summary>
+    private float ResolveBurstIntervalSeconds()
+    {
+        return Mathf.Max(0f, burstIntervalSeconds);
+    }
+
+    /// <summary>촛대 하나당 발사할 투사체 수를 반환합니다.</summary>
+    private int ResolveProjectileCountPerCandle()
+    {
+        return Mathf.Max(1, projectileCountPerCandle);
+    }
+
+    /// <summary>촛대 폭주의 부채꼴 발사 각도를 반환합니다.</summary>
+    private float ResolveSpreadAngleDegrees()
+    {
+        return Mathf.Max(0f, spreadAngleDegrees);
     }
 
     private static void DestroyWarningViews(List<AttackTelegraphView> warningViews)

@@ -305,39 +305,16 @@ MonoBehaviour:
   candlestickPrefab: {fileID: 625522859161183429, guid: 84e107a2d896c944b86df050ad0becb7, type: 3}
   lightBeadPrefab: {fileID: 8003320094034868151, guid: b1f8e58050cba114da8fe6380275e443, type: 3}
   extinguishDamageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
-  groggyStatusEffect: {fileID: 11400000, guid: fab1dd76add51c74db9dbb7b0f424204, type: 2}
-  mapWideWarningStyleAsset: {fileID: 11400000, guid: 5c4c8108f36d4acbaa6dfaf6d6b3f6e7, type: 2}
   phaseTransitionCenterPoint: {fileID: 0}
   extinguishDamage: 1
   projectileSpeed: 4
   useRuntimeDefaultPatternsWhenPhasesEmpty: 1
   fallbackCandleSpawnRadius: 6
-  normalAttack1TilePrefab: {fileID: 1000000000000000003, guid: cd6075224a63408383d85a752fb3d67a, type: 3}
-  normalAttack1DamageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
-  normalAttack1Damage: 1
-  retreatSkeletonPrefab: {fileID: 7098643081786945513, guid: b1f84c1064c662345a49453bf9a8fd34, type: 3}
-  extinguishExplosionVisualPrefab: {fileID: 0}
-  extinguishExplosionParticlePrefab: {fileID: 0}
+  normalAttack1PatternLogicTemplate: {fileID: 11400000, guid: f14a219b0d1f4df4a16f9bcf6cf1a027, type: 2}
+  extinguishPatternLogicTemplate: {fileID: 11400000, guid: 8c71a5f0e4db4aa6b3f24ce910d8b542, type: 2}
+  retreatPatternLogicTemplate: {fileID: 11400000, guid: 9ea88592791f4d3eb7051d5c2e9f9564, type: 2}
+  lightAllCandlesPatternLogicTemplate: {fileID: 11400000, guid: 198745b4e2f043d5a0f0c6e7bc7a6b99, type: 2}
   extinguishExplosionVisualSocket: {fileID: 0}
-  extinguishExplosionVisualOffset: {x: 0, y: 0, z: 0}
-  extinguishExplosionVisualScale: {x: 1, y: 1, z: 1}
-  extinguishExplosionParticleOffset: {x: 0, y: 0, z: 0}
-  extinguishExplosionParticleScale: {x: 1, y: 1, z: 1}
-  extinguishExplosionSound:
-    key: 
-    volumeMultiplier: 0
-    anchorPolicy: 0
-    localOffset: {x: 0, y: 0, z: 0}
-  extinguishExplosionCameraShake:
-    amplitude: 0.18
-    amplitudeMultiplier: 1
-    maxAmplitude: 0.28
-    minIntervalSeconds: 0.04
-    directionMode: 0
-    customDirection: {x: 0, y: 0, z: 0}
-    ignoreScreenShakeSetting: 0
-  extinguishFogSpawnScaleMultiplier: {x: 1, y: 1, z: 1}
-  extinguishAttackRadiusMultiplier: 6
 --- !u!114 &8462024867634775818
 MonoBehaviour:
   m_ObjectHideFlags: 0

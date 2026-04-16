@@ -12,3 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7a532bcf0d643159a5fdef2c5c4a7af, type: 3}
   m_Name: AL_Witch_RetreatToCandle
   m_EditorClassIdentifier: 
+  skeletonPrefab: {fileID: 7098643081786945513, guid: b1f84c1064c662345a49453bf9a8fd34, type: 3}
+  leftOffset: {x: -0.5, y: 0.2, z: 0}
+  rightOffset: {x: 0.5, y: 0.2, z: 0}
+  skeletonExplosionDiameter: 6
+  skeletonSpeedScale: 1.5

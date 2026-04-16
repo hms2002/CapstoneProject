@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using CapstoneAudio;
 using CapstonePresentation;
 using UnityEngine;
@@ -8,9 +7,17 @@ using UnityGAS;
 
 public class AbilityLogic_WitchLightAllCandles : AbilityLogic
 {
-    private const float MoveToCenterDuration = 0.45f;
-    private const float RelightDeadlineSeconds = 8f;
-    private const float ShieldBreakWaitGraceSeconds = 1.5f;
+    // 이 클래스의 책임:
+    // 마녀 보스의 50% 패턴(촛불을 켜라) 실행과 전용 튜닝 데이터를 제공한다.
+
+    [Header("Phase Transition Timing")]
+    [SerializeField] private float moveToCenterDuration = 0.45f;
+    [SerializeField] private float relightDeadlineSeconds = 8f;
+    [SerializeField] private float shieldBreakWaitGraceSeconds = 1.5f;
+
+    [Header("Phase Transition Data")]
+    [SerializeField] private GameplayEffect groggyStatusEffect;
+    [SerializeField] private AttackTelegraphStyle mapWideWarningStyleAsset;
 
     [Header("Charge Orb")]
     [SerializeField] private GameObject chargeOrbPrefab;
@@ -60,7 +67,23 @@ public class AbilityLogic_WitchLightAllCandles : AbilityLogic
     [HideInInspector, FormerlySerializedAs("failureCameraShake")]
     [SerializeField] private CameraShakeHook legacyFailureCameraShake = CameraShakeHook.Create(0.24f, 1f, 0.36f, 0.05f);
 
-    private readonly Dictionary<int, AudioHandle> activeChargeLoopHandles = new();
+    public float MoveToCenterDuration => Mathf.Max(0f, moveToCenterDuration);
+    public float RelightDeadlineSeconds => Mathf.Max(0f, relightDeadlineSeconds);
+    public float ShieldBreakWaitGraceSeconds => Mathf.Max(0f, shieldBreakWaitGraceSeconds);
+    public GameplayEffect GroggyStatusEffect => groggyStatusEffect;
+    public AttackTelegraphStyle MapWideWarningStyleAsset => mapWideWarningStyleAsset;
+    public GameObject ChargeOrbPrefab => chargeOrbPrefab;
+    public Vector3 ChargeOrbLocalOffset => chargeOrbLocalOffset;
+    public Vector3 ChargeOrbStartScale => chargeOrbStartScale;
+    public Vector3 ChargeOrbEndScale => chargeOrbEndScale;
+    public bool FollowWitchDuringCharge => followWitchDuringCharge;
+    public float ChargeOrbFailureDropDuration => Mathf.Max(0.01f, chargeOrbFailureDropDuration);
+    public Vector3 ChargeOrbImpactLocalOffset => chargeOrbImpactLocalOffset;
+    public SoundRef ChargeLoopSound => chargeLoopSound;
+    public float ChargeLoopFadeOutSeconds => Mathf.Max(0f, chargeLoopFadeOutSeconds);
+    public WorldPresentationHook ChargePulsePresentation => chargePulsePresentation;
+    public WorldPresentationHook OrbLaunchPresentation => orbLaunchPresentation;
+    public WorldPresentationHook FailureImpactPresentation => failureImpactPresentation;
 
     private void OnValidate()
     {
@@ -70,187 +93,18 @@ public class AbilityLogic_WitchLightAllCandles : AbilityLogic
 
     public override IEnumerator Activate(AbilitySystem system, AbilitySpec spec, GameObject initialTarget)
     {
+        Witch witch = system != null ? system.GetComponent<Witch>() : null;
+        if (witch == null || witch.LightAllCandlesPatternExecutor == null)
+            yield break;
+
         MigrateLegacyChargePresentations();
         MigrateLegacyFailurePresentation();
-
-        Witch witch = system != null ? system.GetComponent<Witch>() : null;
-        if (witch == null)
-            yield break;
-
-        witch.PlayPatternAttackMotion();
-        witch.MoveToPhaseTransitionCenter(MoveToCenterDuration);
-        witch.ActivateShield();
-        witch.EnableStaggerImmuneDuringPhaseTransition();
-        CameraPresentationDirector phaseCameraDirector = witch.GetCameraPresentationDirector();
-        bool shouldReturnPhaseCamera = false;
-        if (phaseCameraDirector != null)
-        {
-            phaseCameraDirector.BeginBossFocusWithPhaseLens();
-            shouldReturnPhaseCamera = true;
-        }
-
-        yield return new WaitForSeconds(MoveToCenterDuration);
-
-        Vector3 center = witch.GetPhaseTransitionCenter();
-        witch.SpeakSituation(BossSpeechSituationEnum.UltimateWarning);
-        witch.ShowMapWideWarning(center, RelightDeadlineSeconds);
-        witch.SealAllCandles();
-
-        GameObject chargeOrbInstance = SpawnChargeOrb(witch);
-        BeginChargeLoopSound(witch);
-        float chargeStartTime = Time.time;
-        float deadlineTime = chargeStartTime + RelightDeadlineSeconds;
-        bool allCandlesRelit = false;
-
-        while (Time.time < deadlineTime)
-        {
-            float chargeProgress = Mathf.InverseLerp(chargeStartTime, deadlineTime, Time.time);
-            UpdateChargeOrb(witch, chargeOrbInstance, chargeProgress);
-            WorldPresentationRuntime.PlaySignalOnly(
-                chargePulsePresentation,
-                WorldPresentationContext.AtWorld(
-                    instigator: witch.gameObject,
-                    position: witch.transform.position,
-                    fallbackDirection: Vector3.up,
-                    target: null,
-                    sourceObject: this,
-                    rotation: Quaternion.identity,
-                    causer: witch.gameObject));
-
-            if (!witch.HasAnySealedCandles())
-            {
-                allCandlesRelit = true;
-                break;
-            }
-
-            yield return null;
-        }
-
-        if (allCandlesRelit)
-        {
-            StopChargeLoopSound(witch);
-            CleanupChargeOrb(chargeOrbInstance);
-
-            float shieldBreakDeadline = Time.time + ShieldBreakWaitGraceSeconds;
-
-            while (witch.ShieldController != null && witch.ShieldController.HasShield && Time.time < shieldBreakDeadline)
-                yield return null;
-
-            if (witch.ShieldController != null && witch.ShieldController.HasShield)
-                witch.BreakShield();
-
-            witch.DisableStaggerImmuneDuringPhaseTransition();
-            witch.HideMapWideWarning();
-            witch.ApplyGroggyStatus();
-
-            if (shouldReturnPhaseCamera)
-                yield return phaseCameraDirector.ReturnToPlayerRoutine();
-
-            yield break;
-        }
-
-        if (witch.HasAnySealedCandles())
-        {
-            StopChargeLoopSound(witch);
-            yield return PlayFailurePresentation(witch, chargeOrbInstance);
-            witch.DisableStaggerImmuneDuringPhaseTransition();
-            witch.ClearShield();
-            witch.HideMapWideWarning();
-            witch.ApplyMapWideDamage(initialTarget);
-
-            if (shouldReturnPhaseCamera)
-                yield return phaseCameraDirector.ReturnToPlayerRoutine();
-
-            yield break;
-        }
-
-        StopChargeLoopSound(witch);
-        CleanupChargeOrb(chargeOrbInstance);
-        witch.HideMapWideWarning();
-
-        if (shouldReturnPhaseCamera)
-            yield return phaseCameraDirector.ReturnToPlayerRoutine();
-    }
-
-    private GameObject SpawnChargeOrb(Witch witch)
-    {
-        if (witch == null || chargeOrbPrefab == null)
-            return null;
-
-        Vector3 spawnPosition = ResolveChargeOrbPosition(witch);
-        GameObject instance = Object.Instantiate(chargeOrbPrefab, spawnPosition, chargeOrbPrefab.transform.rotation);
-        if (instance == null)
-            return null;
-
-        instance.transform.localScale = chargeOrbStartScale;
-        WorldPresentationRuntime.InitializeSpawnedPresentation(instance, useUnscaledTime: false);
-        return instance;
-    }
-
-    private void UpdateChargeOrb(Witch witch, GameObject chargeOrbInstance, float chargeProgress)
-    {
-        if (witch == null || chargeOrbInstance == null)
-            return;
-
-        if (followWitchDuringCharge)
-            chargeOrbInstance.transform.position = ResolveChargeOrbPosition(witch);
-
-        chargeOrbInstance.transform.localScale = Vector3.LerpUnclamped(
-            chargeOrbStartScale,
-            chargeOrbEndScale,
-            Mathf.Clamp01(chargeProgress));
-    }
-
-    private IEnumerator PlayFailurePresentation(Witch witch, GameObject chargeOrbInstance)
-    {
-        Vector3 impactPosition = ResolveChargeOrbImpactPosition(witch);
-
-        WorldPresentationRuntime.PlaySignalOnly(
-            orbLaunchPresentation,
-            WorldPresentationContext.AtWorld(
-                instigator: witch != null ? witch.gameObject : null,
-                position: chargeOrbInstance != null ? chargeOrbInstance.transform.position : impactPosition,
-                fallbackDirection: Vector3.down,
-                target: null,
-                sourceObject: this,
-                rotation: Quaternion.identity,
-                causer: witch != null ? witch.gameObject : null));
-
-        if (chargeOrbInstance != null)
-        {
-            Vector3 startPosition = chargeOrbInstance.transform.position;
-            Vector3 startScale = chargeOrbInstance.transform.localScale;
-            float elapsed = 0f;
-
-            while (elapsed < chargeOrbFailureDropDuration)
-            {
-                elapsed += Time.deltaTime;
-                float t = Mathf.Clamp01(elapsed / chargeOrbFailureDropDuration);
-                float eased = 1f - Mathf.Pow(1f - t, 3f);
-
-                chargeOrbInstance.transform.position = Vector3.Lerp(startPosition, impactPosition, eased);
-                chargeOrbInstance.transform.localScale = Vector3.LerpUnclamped(startScale, chargeOrbEndScale, eased);
-                yield return null;
-            }
-        }
-
-        CleanupChargeOrb(chargeOrbInstance);
-
-        WorldPresentationRuntime.Play(
-            failureImpactPresentation,
-            WorldPresentationContext.AtWorld(
-                instigator: witch != null ? witch.gameObject : null,
-                position: impactPosition,
-                fallbackDirection: Vector3.down,
-                target: null,
-                sourceObject: this,
-                rotation: Quaternion.identity,
-                causer: witch != null ? witch.gameObject : null));
+        yield return witch.LightAllCandlesPatternExecutor.RunPattern(this, initialTarget);
     }
 
     public void StopChargeLoopFor(Witch witch)
     {
-        StopChargeLoopSound(witch);
+        witch?.LightAllCandlesPatternExecutor?.StopChargeLoopFor(this);
     }
 
     public override void CleanupForSceneTransition(AbilitySystem system, AbilitySpec spec, GameObject target)
@@ -258,56 +112,7 @@ public class AbilityLogic_WitchLightAllCandles : AbilityLogic
         base.CleanupForSceneTransition(system, spec, target);
 
         Witch witch = system != null ? system.GetComponent<Witch>() : null;
-        StopChargeLoopSound(witch);
-        witch?.HideMapWideWarning();
-    }
-
-    private Vector3 ResolveChargeOrbPosition(Witch witch)
-    {
-        return witch != null
-            ? witch.transform.TransformPoint(chargeOrbLocalOffset)
-            : chargeOrbLocalOffset;
-    }
-
-    private Vector3 ResolveChargeOrbImpactPosition(Witch witch)
-    {
-        return witch != null
-            ? witch.transform.TransformPoint(chargeOrbImpactLocalOffset)
-            : chargeOrbImpactLocalOffset;
-    }
-
-    private static void CleanupChargeOrb(GameObject chargeOrbInstance)
-    {
-        if (chargeOrbInstance != null)
-            Object.Destroy(chargeOrbInstance);
-    }
-
-    private void BeginChargeLoopSound(Witch witch)
-    {
-        if (witch == null || !chargeLoopSound.IsSet)
-            return;
-
-        int key = witch.GetInstanceID();
-        StopChargeLoopSound(witch);
-        activeChargeLoopHandles[key] = SoundPlaybackUtility.Play(
-            chargeLoopSound,
-            instigator: witch.gameObject,
-            causer: witch.gameObject,
-            position: witch.transform.position,
-            sourceObject: this);
-    }
-
-    private void StopChargeLoopSound(Witch witch)
-    {
-        if (witch == null)
-            return;
-
-        int key = witch.GetInstanceID();
-        if (!activeChargeLoopHandles.TryGetValue(key, out AudioHandle handle))
-            return;
-
-        activeChargeLoopHandles.Remove(key);
-        SoundPlaybackUtility.Stop(handle, chargeLoopFadeOutSeconds);
+        witch?.LightAllCandlesPatternExecutor?.CleanupForSceneTransition(this);
     }
 
     private void MigrateLegacyFailurePresentation()

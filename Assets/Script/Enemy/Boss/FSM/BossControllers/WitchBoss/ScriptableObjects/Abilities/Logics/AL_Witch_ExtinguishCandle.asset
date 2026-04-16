@@ -12,3 +12,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f3a0c2d5186e4c0a8b1f7d9e2c4b6a31, type: 3}
   m_Name: AL_Witch_ExtinguishCandle
   m_EditorClassIdentifier: 
+  explosionVisualPrefab: {fileID: 0}
+  explosionParticlePrefab: {fileID: 0}
+  explosionVisualOffset: {x: 0, y: 0, z: 0}
+  explosionVisualScale: {x: 1, y: 1, z: 1}
+  explosionParticleOffset: {x: 0, y: 0, z: 0}
+  explosionParticleScale: {x: 1, y: 1, z: 1}
+  explosionSound:
+    key: 
+    volumeScale: 1
+    pitchScale: 1
+  explosionCameraShake:
+    enabled: 1
+    amplitude: 0.18
+    frequency: 1
+    duration: 0.28
+    distanceAttenuation: 0.04
+    directionMode: 0
+    customDirection: {x: 0, y: 1, z: 0}
+  fogSpawnScaleMultiplier: {x: 1, y: 1, z: 1}
+  attackRadiusMultiplier: 6
