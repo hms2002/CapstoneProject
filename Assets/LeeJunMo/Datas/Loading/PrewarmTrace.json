@@ -169,6 +169,136 @@
                     "lastSceneName": "HeoMinSeok_Boss"
                 }
             ]
+        },
+        {
+            "sessionId": "540a707e2d1b4a2e8b66351e98f50b6a",
+            "startedUtc": "2026-04-16T13:37:35.2521947Z",
+            "endedUtc": "2026-04-16T13:40:46.2244794Z",
+            "entries": [
+                {
+                    "prefabPath": "Assets/LeeJunMo/Prefab/Effect/Particle/WitchNormal1AttackTileParticle.prefab",
+                    "prefabName": "WitchNormal1AttackTileParticle",
+                    "totalSpawns": 12,
+                    "coldSpawns": 12,
+                    "firstSeenSeconds": 18.803295135498048,
+                    "lastSeenSeconds": 127.4300765991211,
+                    "firstSceneName": "HeoMinSeok_Boss",
+                    "lastSceneName": "HeoMinSeok_Boss"
+                },
+                {
+                    "prefabPath": "Assets/Prefabs/VFX/PF_DeadSkeletonExplosionPurple.prefab",
+                    "prefabName": "PF_DeadSkeletonExplosionPurple",
+                    "totalSpawns": 10,
+                    "coldSpawns": 10,
+                    "firstSeenSeconds": 17.202489852905275,
+                    "lastSeenSeconds": 190.9629364013672,
+                    "firstSceneName": "HeoMinSeok_Boss",
+                    "lastSceneName": "HeoMinSeok_Boss"
+                },
+                {
+                    "prefabPath": "Assets/LeeJunMo/Prefab/Effect/Particle/ExplosionParticle.prefab",
+                    "prefabName": "ExplosionParticle",
+                    "totalSpawns": 10,
+                    "coldSpawns": 10,
+                    "firstSeenSeconds": 17.203594207763673,
+                    "lastSeenSeconds": 190.96315002441407,
+                    "firstSceneName": "HeoMinSeok_Boss",
+                    "lastSceneName": "HeoMinSeok_Boss"
+                },
+                {
+                    "prefabPath": "Assets/LeeJunMo/Prefab/Effect/Particle/WitchNormal2AttackTileParticle.prefab",
+                    "prefabName": "WitchNormal2AttackTileParticle",
+                    "totalSpawns": 3,
+                    "coldSpawns": 3,
+                    "firstSeenSeconds": 32.490333557128909,
+                    "lastSeenSeconds": 48.57217025756836,
+                    "firstSceneName": "HeoMinSeok_Boss",
+                    "lastSceneName": "HeoMinSeok_Boss"
+                },
+                {
+                    "prefabPath": "Assets/LeeJunMo/Prefab/Effect/AnimEffect/SlashHit.prefab",
+                    "prefabName": "SlashHit",
+                    "totalSpawns": 12,
+                    "coldSpawns": 2,
+                    "firstSeenSeconds": 18.80301284790039,
+                    "lastSeenSeconds": 127.42984771728516,
+                    "firstSceneName": "HeoMinSeok_Boss",
+                    "lastSceneName": "HeoMinSeok_Boss"
+                },
+                {
+                    "prefabPath": "Assets/Prefabs/Enemies/Mobs/ShadowServant/Fog.prefab",
+                    "prefabName": "Fog",
+                    "totalSpawns": 10,
+                    "coldSpawns": 2,
+                    "firstSeenSeconds": 17.199764251708986,
+                    "lastSeenSeconds": 190.96258544921876,
+                    "firstSceneName": "HeoMinSeok_Boss",
+                    "lastSceneName": "HeoMinSeok_Boss"
+                },
+                {
+                    "prefabPath": "Assets/LeeJunMo/Prefab/Effect/AnimEffect/Boss1NormalAttack2Boom.prefab",
+                    "prefabName": "Boss1NormalAttack2Boom",
+                    "totalSpawns": 3,
+                    "coldSpawns": 1,
+                    "firstSeenSeconds": 32.490074157714847,
+                    "lastSeenSeconds": 48.57194137573242,
+                    "firstSceneName": "HeoMinSeok_Boss",
+                    "lastSceneName": "HeoMinSeok_Boss"
+                }
+            ]
+        },
+        {
+            "sessionId": "c2ed9e9c691b4471bc73ddffce1bc5a2",
+            "startedUtc": "2026-04-16T13:40:55.9272243Z",
+            "endedUtc": "2026-04-16T13:40:57.3849426Z",
+            "entries": []
+        },
+        {
+            "sessionId": "1d14be1e030c41399e7e7ddc3df794b0",
+            "startedUtc": "2026-04-16T13:41:26.0788909Z",
+            "endedUtc": "2026-04-16T13:42:02.2078231Z",
+            "entries": [
+                {
+                    "prefabPath": "Assets/LeeJunMo/Prefab/Effect/Particle/WitchNormal1AttackTileParticle.prefab",
+                    "prefabName": "WitchNormal1AttackTileParticle",
+                    "totalSpawns": 6,
+                    "coldSpawns": 6,
+                    "firstSeenSeconds": 31.225906372070314,
+                    "lastSeenSeconds": 35.720035552978519,
+                    "firstSceneName": "HeoMinSeok_Boss",
+                    "lastSceneName": "HeoMinSeok_Boss"
+                },
+                {
+                    "prefabPath": "Assets/LeeJunMo/Prefab/Effect/AnimEffect/SlashHit.prefab",
+                    "prefabName": "SlashHit",
+                    "totalSpawns": 6,
+                    "coldSpawns": 2,
+                    "firstSeenSeconds": 31.22570037841797,
+                    "lastSeenSeconds": 35.71976089477539,
+                    "firstSceneName": "HeoMinSeok_Boss",
+                    "lastSceneName": "HeoMinSeok_Boss"
+                },
+                {
+                    "prefabPath": "Assets/LeeJunMo/Prefab/Effect/Particle/WitchNormal2AttackTileParticle.prefab",
+                    "prefabName": "WitchNormal2AttackTileParticle",
+                    "totalSpawns": 2,
+                    "coldSpawns": 2,
+                    "firstSeenSeconds": 17.45383071899414,
+                    "lastSeenSeconds": 23.946636199951173,
+                    "firstSceneName": "HeoMinSeok_Boss",
+                    "lastSceneName": "HeoMinSeok_Boss"
+                },
+                {
+                    "prefabPath": "Assets/LeeJunMo/Prefab/Effect/AnimEffect/Boss1NormalAttack2Boom.prefab",
+                    "prefabName": "Boss1NormalAttack2Boom",
+                    "totalSpawns": 2,
+                    "coldSpawns": 1,
+                    "firstSeenSeconds": 17.453128814697267,
+                    "lastSeenSeconds": 23.946365356445314,
+                    "firstSceneName": "HeoMinSeok_Boss",
+                    "lastSceneName": "HeoMinSeok_Boss"
+                }
+            ]
         }
     ]
 }
