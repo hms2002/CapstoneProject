@@ -16,7 +16,9 @@ MonoBehaviour:
   relightDeadlineSeconds: 8
   shieldBreakWaitGraceSeconds: 1.5
   groggyStatusEffect: {fileID: 11400000, guid: 15f6ba95b1a76e145b4d8a19fb725eb8, type: 2}
-  mapWideWarningStyleAsset: {fileID: 0}
+  mapWideWarningStyleAsset: {fileID: 11400000, guid: c8cdf77531ba43c7877ef0bbec405fc3, type: 2}
+  mapWideDamageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
+  mapWideDamageAmount: 1
   chargeOrbPrefab: {fileID: 7156570376058531874, guid: 503dfd491e32de84889c91ada7e82579, type: 3}
   chargeOrbLocalOffset: {x: 0, y: 4, z: -0.05}
   chargeOrbStartScale: {x: 2, y: 2, z: 1}

@@ -21,6 +21,7 @@ public class AbilityLogic_WitchBasicAttack2 : AbilityLogic
     [SerializeField, Min(0f)] private float minimumInnerSafeRadius = 0.75f;
     [SerializeField] private GE_Damage_Spec damageEffect;
     [SerializeField] private float damageAmount = 1f;
+    [SerializeField] private AttackTelegraphStyle donutTelegraphStyle;
 
     [Header("Hit Presentation")]
     [SerializeField] [Min(1)] private int hitEffectCount = 8;
@@ -68,28 +69,46 @@ public class AbilityLogic_WitchBasicAttack2 : AbilityLogic
         if (witch == null || resolvedDamageEffect == null)
             yield break;
 
-        AttackTelegraphService telegraphService = witch.GetComponent<AttackTelegraphService>();
         Vector3 center = witch.transform.position;
         float outerRadius = ComputeOuterRadius(witch);
         float innerSafeRadius = ComputeInnerSafeRadius(initialTarget != null ? initialTarget.transform : witch.CurrentTarget);
         float resolvedWarningSeconds = GetWarningSeconds();
+        RingTelegraphView ringTelegraph = null;
 
         witch.PlayPatternAttackMotion();
-        if (telegraphService != null)
-        {
-            AttackTelegraphSpec warningSpec = AttackTelegraphSpec.CreateRing(
-                center,
-                outerRadius * 2f,
-                innerSafeRadius * 2f,
-                resolvedWarningSeconds);
-            telegraphService.Show(warningSpec);
-        }
+        ringTelegraph = SpawnRingTelegraph(witch, center, outerRadius, innerSafeRadius, resolvedWarningSeconds);
 
         yield return new WaitForSeconds(resolvedWarningSeconds);
-        telegraphService?.HideCurrent();
+        if (ringTelegraph != null)
+            Object.Destroy(ringTelegraph.gameObject);
 
         PlayHitPresentation(center, outerRadius, innerSafeRadius);
         DealRingDamage(witch, center, outerRadius, innerSafeRadius, initialTarget);
+    }
+
+    /// <summary>평타2 전용 도넛 텔레그래프를 생성하고 표시합니다.</summary>
+    private RingTelegraphView SpawnRingTelegraph(
+        Witch witch,
+        Vector3 center,
+        float outerRadius,
+        float innerSafeRadius,
+        float warningDuration)
+    {
+        if (witch == null)
+            return null;
+
+        GameObject telegraphObject = new GameObject("WitchBasicAttack2RingTelegraph");
+        telegraphObject.transform.SetParent(witch.transform, false);
+        RingTelegraphView telegraph = telegraphObject.AddComponent<RingTelegraphView>();
+        SpriteRenderer referenceRenderer = witch.GetComponent<SpriteRenderer>();
+        telegraph.Show(
+            center,
+            outerRadius * 2f,
+            innerSafeRadius * 2f,
+            warningDuration,
+            donutTelegraphStyle,
+            referenceRenderer);
+        return telegraph;
     }
 
     private void DealRingDamage(Witch witch, Vector3 center, float outerRadius, float innerSafeRadius, GameObject initialTarget)
@@ -309,14 +328,11 @@ public class AbilityLogic_WitchBasicAttack2 : AbilityLogic
 
     private GE_Damage_Spec ResolveDamageEffect(Witch witch)
     {
-        if (damageEffect != null)
-            return damageEffect;
-
-        return witch != null ? witch.ProjectileDamageEffect : null;
+        return damageEffect;
     }
 
     private float ResolveDamageAmount(Witch witch)
     {
-        return damageEffect != null ? damageAmount : witch != null ? witch.ProjectileDamage : damageAmount;
+        return damageAmount;
     }
 }

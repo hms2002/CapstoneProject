@@ -5,6 +5,11 @@ using CapstoneAudio;
 using UnityEngine;
 using UnityGAS;
 
+/// <summary>
+/// 책임 :
+/// - 보스 처치 시네마틱의 시작/종료를 조율하고 연출 순서를 실행한다.
+/// - 플레이어 보호 자체는 공용 PlayerCinematicProtection에 위임하고, 자신은 연출 시퀀스 오케스트레이션에 집중한다.
+/// </summary>
 [DisallowMultipleComponent]
 public sealed class BossDeathPresentation : MonoBehaviour
 {
@@ -73,24 +78,8 @@ public sealed class BossDeathPresentation : MonoBehaviour
     private Coroutine runningSequence;
     private BossDeathCinematicOverlay overlay;
     private readonly List<Renderer> cachedDeathRenderers = new();
-    private readonly List<ManagedBehaviourState> lockedPlayerBehaviourStates = new();
 
-    private PlayerInteractor2D lockedPlayer;
-    private MovementMotor2D lockedPlayerMovement;
-    private Rigidbody2D lockedPlayerBody;
-    private InteractState previousLockedPlayerState = InteractState.Idle;
-
-    private readonly struct ManagedBehaviourState
-    {
-        public ManagedBehaviourState(Behaviour behaviour, bool wasEnabled)
-        {
-            Behaviour = behaviour;
-            WasEnabled = wasEnabled;
-        }
-
-        public Behaviour Behaviour { get; }
-        public bool WasEnabled { get; }
-    }
+    private PlayerCinematicProtection lockedPlayerProtection;
 
     public bool HandlesDeathFlow => useDeathPresentation && isActiveAndEnabled;
     public bool ShouldDeferDeathAnimation => HandlesDeathFlow;
@@ -132,6 +121,7 @@ public sealed class BossDeathPresentation : MonoBehaviour
         if (runningSequence != null)
             return true;
 
+        LockPlayerControls();
         runningSequence = StartCoroutine(RunDeathPresentationRoutine());
         return true;
     }
@@ -209,69 +199,25 @@ public sealed class BossDeathPresentation : MonoBehaviour
 
     private void LockPlayerControls()
     {
-        if (lockedPlayer != null)
+        if (lockedPlayerProtection != null)
             return;
 
         Transform playerTransform = PlayerRuntimeRegistry.GetPlayerTransform();
         if (playerTransform == null)
             return;
 
-        lockedPlayer = playerTransform.GetComponent<PlayerInteractor2D>();
-        lockedPlayerMovement = playerTransform.GetComponent<MovementMotor2D>();
-        lockedPlayerBody = playerTransform.GetComponent<Rigidbody2D>();
-
-        if (lockedPlayer != null)
-        {
-            previousLockedPlayerState = NormalizePlayerRestoreState(lockedPlayer.CurrentState);
-            lockedPlayer.SetInteractState(InteractState.None);
-        }
-
-        CacheAndDisablePlayerBehaviour(playerTransform.GetComponent<PlayerIntentInput2D>());
-        CacheAndDisablePlayerBehaviour(playerTransform.GetComponent<PlayerCombatInput2D>());
-        CacheAndDisablePlayerBehaviour(playerTransform.GetComponent<PlayerAim2D>());
-        CacheAndDisablePlayerBehaviour(playerTransform.GetComponent<PlayerConsumableInput2D>());
-
-        lockedPlayerMovement?.StopAllMotion();
-
-        if (lockedPlayerBody != null)
-        {
-            lockedPlayerBody.linearVelocity = Vector2.zero;
-            lockedPlayerBody.angularVelocity = 0f;
-        }
+        lockedPlayerProtection = playerTransform.GetComponent<PlayerCinematicProtection>();
+        if (lockedPlayerProtection == null)
+            lockedPlayerProtection = playerTransform.gameObject.AddComponent<PlayerCinematicProtection>();
+        lockedPlayerProtection?.Acquire(this);
     }
 
     private void UnlockPlayerControls()
     {
-        for (int i = lockedPlayerBehaviourStates.Count - 1; i >= 0; i--)
-        {
-            ManagedBehaviourState state = lockedPlayerBehaviourStates[i];
-            if (state.Behaviour != null)
-                state.Behaviour.enabled = state.WasEnabled;
-        }
+        if (lockedPlayerProtection != null)
+            lockedPlayerProtection.Release(this);
 
-        lockedPlayerBehaviourStates.Clear();
-
-        if (lockedPlayer != null)
-            lockedPlayer.SetInteractState(previousLockedPlayerState);
-
-        lockedPlayer = null;
-        lockedPlayerMovement = null;
-        lockedPlayerBody = null;
-        previousLockedPlayerState = InteractState.Idle;
-    }
-
-    private void CacheAndDisablePlayerBehaviour(Behaviour behaviour)
-    {
-        if (behaviour == null)
-            return;
-
-        lockedPlayerBehaviourStates.Add(new ManagedBehaviourState(behaviour, behaviour.enabled));
-        behaviour.enabled = false;
-    }
-
-    private static InteractState NormalizePlayerRestoreState(InteractState state)
-    {
-        return state == InteractState.None ? InteractState.Idle : state;
+        lockedPlayerProtection = null;
     }
 
     private void HideBossVisuals()

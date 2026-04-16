@@ -41,7 +41,7 @@ public sealed class WitchLightAllCandlesPatternExecutor : MonoBehaviour
 
         Vector3 center = owner.GetPhaseTransitionCenter();
         owner.SpeakSituation(BossSpeechSituationEnum.UltimateWarning);
-        owner.ShowMapWideWarning(center, logic.RelightDeadlineSeconds);
+        owner.ShowMapWideWarning(center, logic.RelightDeadlineSeconds, logic.MapWideWarningStyleAsset);
         owner.SealAllCandles();
 
         GameObject chargeOrbInstance = SpawnChargeOrb(logic);
@@ -88,7 +88,7 @@ public sealed class WitchLightAllCandlesPatternExecutor : MonoBehaviour
 
             owner.DisableStaggerImmuneDuringPhaseTransition();
             owner.HideMapWideWarning();
-            owner.ApplyGroggyStatus();
+            owner.ApplyGroggyStatus(logic.GroggyStatusEffect);
 
             if (shouldReturnPhaseCamera)
                 yield return phaseCameraDirector.ReturnToPlayerRoutine();
@@ -103,7 +103,7 @@ public sealed class WitchLightAllCandlesPatternExecutor : MonoBehaviour
             owner.DisableStaggerImmuneDuringPhaseTransition();
             owner.ClearShield();
             owner.HideMapWideWarning();
-            owner.ApplyMapWideDamage(initialTarget);
+            owner.ApplyMapWideDamage(logic.MapWideDamageEffect, logic.MapWideDamageAmount, initialTarget);
 
             if (shouldReturnPhaseCamera)
                 yield return phaseCameraDirector.ReturnToPlayerRoutine();

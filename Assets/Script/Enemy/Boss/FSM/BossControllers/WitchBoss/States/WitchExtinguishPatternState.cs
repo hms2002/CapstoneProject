@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityGAS.Sample;
 
 public class WitchExtinguishPatternState : BossState
 {
@@ -39,9 +40,20 @@ public class WitchExtinguishPatternState : BossState
             return;
         }
 
-        if (patternBridge == null || !patternBridge.TryBeginExtinguishPattern(WarningTime, out float resolvedDuration))
+        AbilityLogic_WitchExtinguishCandle logic = reservedPattern.Ability != null
+            ? reservedPattern.Ability.logic as AbilityLogic_WitchExtinguishCandle
+            : null;
+        if (logic == null)
         {
-            LogState("촛불 끄기 패턴을 시작하지 못했습니다.");
+            LogState("촛불 끄기 패턴 logic을 찾지 못했습니다.");
+            boss.AbortCurrentPattern();
+            boss.ChangeState(boss.GetCombatIdleState());
+            return;
+        }
+
+        if (patternBridge == null || !patternBridge.TryBeginExtinguishPattern(logic, WarningTime, out float resolvedDuration))
+        {
+            LogState($"촛불 끄기 패턴을 시작하지 못했습니다. sealedCandles={((Witch)boss).GetSealedCandleCount()}");
             boss.AbortCurrentPattern();
             boss.ChangeState(boss.GetCombatIdleState());
             return;

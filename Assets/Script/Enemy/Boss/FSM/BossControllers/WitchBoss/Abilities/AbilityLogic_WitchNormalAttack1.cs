@@ -16,6 +16,9 @@ namespace UnityGAS.Sample
         [SerializeField, Min(0.1f)] private float tileWidthInTiles = 3f;
         [SerializeField, Min(0.1f)] private float tileHeightInTiles = 6f;
         [SerializeField, Min(0f)] private float hitDurationSeconds = 0.12f;
+        [Header("Telegraph Styles")]
+        [SerializeField] private AttackTelegraphStyle warningTelegraphStyle;
+        [SerializeField] private AttackTelegraphStyle hitTelegraphStyle;
         [SerializeField] private WitchNormalAttack1Tile tilePrefab;
         [SerializeField] private GE_Damage_Spec damageEffect;
         [SerializeField] private float damageAmount = 1f;
@@ -26,6 +29,8 @@ namespace UnityGAS.Sample
         public float TileWidthInTiles => tileWidthInTiles;
         public float TileHeightInTiles => tileHeightInTiles;
         public float HitDurationSeconds => hitDurationSeconds;
+        public AttackTelegraphStyle WarningTelegraphStyle => warningTelegraphStyle;
+        public AttackTelegraphStyle HitTelegraphStyle => hitTelegraphStyle;
         public WitchNormalAttack1Tile TilePrefab => tilePrefab;
         public GE_Damage_Spec DamageEffect => damageEffect;
         public float DamageAmount => damageAmount;

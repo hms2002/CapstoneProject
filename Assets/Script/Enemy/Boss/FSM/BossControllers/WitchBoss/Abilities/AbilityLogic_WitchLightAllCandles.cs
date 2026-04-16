@@ -18,6 +18,8 @@ public class AbilityLogic_WitchLightAllCandles : AbilityLogic
     [Header("Phase Transition Data")]
     [SerializeField] private GameplayEffect groggyStatusEffect;
     [SerializeField] private AttackTelegraphStyle mapWideWarningStyleAsset;
+    [SerializeField] private GE_Damage_Spec mapWideDamageEffect;
+    [SerializeField] private float mapWideDamageAmount = 1f;
 
     [Header("Charge Orb")]
     [SerializeField] private GameObject chargeOrbPrefab;
@@ -72,6 +74,8 @@ public class AbilityLogic_WitchLightAllCandles : AbilityLogic
     public float ShieldBreakWaitGraceSeconds => Mathf.Max(0f, shieldBreakWaitGraceSeconds);
     public GameplayEffect GroggyStatusEffect => groggyStatusEffect;
     public AttackTelegraphStyle MapWideWarningStyleAsset => mapWideWarningStyleAsset;
+    public GE_Damage_Spec MapWideDamageEffect => mapWideDamageEffect;
+    public float MapWideDamageAmount => mapWideDamageAmount;
     public GameObject ChargeOrbPrefab => chargeOrbPrefab;
     public Vector3 ChargeOrbLocalOffset => chargeOrbLocalOffset;
     public Vector3 ChargeOrbStartScale => chargeOrbStartScale;

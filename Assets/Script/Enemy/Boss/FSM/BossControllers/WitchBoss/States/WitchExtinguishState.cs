@@ -2,6 +2,9 @@ using UnityEngine;
 
 public class WitchExtinguishState : BossState
 {
+    // 이 클래스의 책임:
+    // 레거시 촛불 끄기 상태에서 마녀 보스의 촛불 끄기 패턴 시작/대기/종료 흐름을 유지한다.
+
     private const float WarningTime = 1.2f;
 
     private readonly Witch witch;
@@ -15,7 +18,7 @@ public class WitchExtinguishState : BossState
 
     public override void OnEnter()
     {
-        if (!witch.StartExtinguish(WarningTime))
+        if (!witch.StartExtinguish(null, WarningTime))
         {
             LogState("촛불 끄기 패턴을 시작하지 못했습니다.");
             boss.ChangeState(boss.GetCombatIdleState());

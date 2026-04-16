@@ -1,3 +1,5 @@
+using UnityGAS.Sample;
+
 public class WitchRetreatToCandleState : BossState
 {
     // 이 클래스의 책임:
@@ -30,7 +32,11 @@ public class WitchRetreatToCandleState : BossState
             return;
         }
 
-        if (patternBridge == null || !patternBridge.TryBeginRetreatPattern())
+        AbilityLogic_WitchRetreatToCandle logic = reservedPattern.Ability != null
+            ? reservedPattern.Ability.logic as AbilityLogic_WitchRetreatToCandle
+            : null;
+
+        if (patternBridge == null || logic == null || !patternBridge.TryBeginRetreatPattern(logic))
         {
             LogState("촛대로의 피난 패턴을 시작하지 못했습니다.");
             boss.AbortCurrentPattern();

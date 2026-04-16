@@ -44,8 +44,6 @@ public class WitchNormalAttack1Tile : MonoBehaviour
     {
         MigrateLegacyHitPresentation();
         telegraphView = GetComponent<AttackTelegraphView>();
-        warningStyle = MakeWarningStyle();
-        hitStyle = MakeHitStyle();
     }
 
     private void OnValidate()
@@ -53,19 +51,23 @@ public class WitchNormalAttack1Tile : MonoBehaviour
         MigrateLegacyHitPresentation();
     }
 
-    private void OnDestroy()
-    {
-        if (warningStyle != null) Destroy(warningStyle);
-        if (hitStyle != null) Destroy(hitStyle);
-    }
-
     /// <summary>장판 경고와 타격 순서를 시작합니다.</summary>
-    public void Play(GameObject target, CombatHitPayload payload, Vector2 size, float angle, float showDelay, float hitDelay)
+    public void Play(
+        GameObject target,
+        CombatHitPayload payload,
+        Vector2 size,
+        float angle,
+        float showDelay,
+        float hitDelay,
+        AttackTelegraphStyle warningTelegraphStyle,
+        AttackTelegraphStyle hitTelegraphStyle)
     {
         targetObject = target;
         hitPayload = payload;
         tileSize = size;
         angleDeg = angle;
+        warningStyle = warningTelegraphStyle;
+        hitStyle = hitTelegraphStyle;
 
         StopAllCoroutines();
         StartCoroutine(Run(showDelay, hitDelay));
@@ -156,42 +158,6 @@ public class WitchNormalAttack1Tile : MonoBehaviour
             return true;
 
         return hitCollider.GetComponentInParent<AttackBase>() != null;
-    }
-
-    /// <summary>경고 색상 스타일을 만듭니다.</summary>
-    private AttackTelegraphStyle MakeWarningStyle()
-    {
-        AttackTelegraphStyle style = ScriptableObject.CreateInstance<AttackTelegraphStyle>();
-        style.fillColorStart = new Color(1f, 0f, 0f, 0.2f);
-        style.fillColorEnd = new Color(1f, 0f, 0f, 0.2f);
-        style.borderColorStart = new Color(1f, 0f, 0f, 1f);
-        style.borderColorEnd = new Color(1f, 0f, 0f, 1f);
-        style.progressCurve = AnimationCurve.Linear(0f, 0f, 1f, 1f);
-        style.blinkStartNormalized = 1f;
-        style.blinkFrequency = 0f;
-        style.blinkAlphaMin = 1f;
-        style.scaleFillWithProgress = false;
-        style.fillScaleStart = 1f;
-        style.fillScaleEnd = 1f;
-        return style;
-    }
-
-    /// <summary>타격 색상 스타일을 만듭니다.</summary>
-    private AttackTelegraphStyle MakeHitStyle()
-    {
-        AttackTelegraphStyle style = ScriptableObject.CreateInstance<AttackTelegraphStyle>();
-        style.fillColorStart = new Color(0.95f, 0f, 1f, 0.8f);
-        style.fillColorEnd = new Color(0.95f, 0f, 1f, 0.8f);
-        style.borderColorStart = new Color(0.95f, 0f, 1f, 1f);
-        style.borderColorEnd = new Color(0.95f, 0f, 1f, 1f);
-        style.progressCurve = AnimationCurve.Linear(0f, 0f, 1f, 1f);
-        style.blinkStartNormalized = 1f;
-        style.blinkFrequency = 0f;
-        style.blinkAlphaMin = 1f;
-        style.scaleFillWithProgress = false;
-        style.fillScaleStart = 1f;
-        style.fillScaleEnd = 1f;
-        return style;
     }
 
     private void PlayHitPresentation()

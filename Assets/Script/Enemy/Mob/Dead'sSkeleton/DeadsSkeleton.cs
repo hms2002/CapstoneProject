@@ -69,7 +69,8 @@ public class DeadsSkeleton : Mob, IDamageReceiver
     private readonly HashSet<GameObject> damagedTargets = new();
 
     private AttackTelegraphService telegraphService;
-    private AttackTelegraphStyle warningStyle;
+    private AttackTelegraphStyle introWarningStyle;
+    private AttackTelegraphStyle armedWarningStyle;
     private SpriteMask sightMask;
     private Transform sightMaskTransform;
     private Vector3 defaultSightMaskScale = Vector3.one;
@@ -87,7 +88,8 @@ public class DeadsSkeleton : Mob, IDamageReceiver
     {
         base.Awake();
         telegraphService = GetComponent<AttackTelegraphService>();
-        warningStyle = MakeWarningStyle();
+        introWarningStyle = MakeIntroWarningStyle();
+        armedWarningStyle = MakeArmedWarningStyle();
         sightMask = GetComponentInChildren<SpriteMask>(true);
         sightMaskTransform = sightMask != null ? sightMask.transform : null;
 
@@ -422,7 +424,7 @@ public class DeadsSkeleton : Mob, IDamageReceiver
             transform.position,
             explosionDiameter,
             Mathf.Max(0f, introDuration),
-            warningStyle);
+            introWarningStyle);
 
         telegraphService.Show(spec);
     }
@@ -458,7 +460,7 @@ public class DeadsSkeleton : Mob, IDamageReceiver
             transform.position,
             explosionDiameter,
             0f,
-            warningStyle);
+            armedWarningStyle);
 
         telegraphService.Show(spec);
     }
@@ -473,7 +475,7 @@ public class DeadsSkeleton : Mob, IDamageReceiver
             transform.position,
             explosionDiameter,
             0f,
-            warningStyle);
+            armedWarningStyle);
 
         telegraphService.UpdateCurrentGeometry(spec);
     }
@@ -848,8 +850,8 @@ public class DeadsSkeleton : Mob, IDamageReceiver
             defaultSightMaskScale.z);
     }
 
-    /// <summary>해골 전용 경고 스타일을 만듭니다.</summary>
-    private AttackTelegraphStyle MakeWarningStyle()
+    /// <summary>자폭 인트로 동안 점점 채워지는 경고 스타일을 만듭니다.</summary>
+    private AttackTelegraphStyle MakeIntroWarningStyle()
     {
         AttackTelegraphStyle style = ScriptableObject.CreateInstance<AttackTelegraphStyle>();
         style.fillColorStart = new Color(1f, 0f, 0f, 0.45f);
@@ -866,6 +868,24 @@ public class DeadsSkeleton : Mob, IDamageReceiver
         return style;
     }
 
+    /// <summary>자폭 armed 상태에서 꽉 찬 경고를 유지하며 계속 점멸하는 스타일을 만듭니다.</summary>
+    private AttackTelegraphStyle MakeArmedWarningStyle()
+    {
+        AttackTelegraphStyle style = ScriptableObject.CreateInstance<AttackTelegraphStyle>();
+        style.fillColorStart = new Color(1f, 0f, 0f, 0.45f);
+        style.fillColorEnd = new Color(1f, 0f, 0f, 0.45f);
+        style.borderColorStart = new Color(1f, 0f, 0f, 1f);
+        style.borderColorEnd = new Color(1f, 0f, 0f, 1f);
+        style.progressCurve = AnimationCurve.Linear(0f, 0f, 1f, 1f);
+        style.blinkStartNormalized = 0f;
+        style.blinkFrequency = 8f;
+        style.blinkAlphaMin = 0.35f;
+        style.scaleFillWithProgress = false;
+        style.fillScaleStart = 1f;
+        style.fillScaleEnd = 1f;
+        return style;
+    }
+
     protected override void OnDestroy()
     {
         base.OnDestroy();
@@ -873,8 +893,11 @@ public class DeadsSkeleton : Mob, IDamageReceiver
         if (sightMaskScaleTween != null && sightMaskScaleTween.IsActive())
             sightMaskScaleTween.Kill();
 
-        if (warningStyle != null)
-            Destroy(warningStyle);
+        if (introWarningStyle != null)
+            Destroy(introWarningStyle);
+
+        if (armedWarningStyle != null)
+            Destroy(armedWarningStyle);
 
         if (ownsRuntimeAbilityDefinition)
         {

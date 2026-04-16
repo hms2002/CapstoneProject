@@ -43,6 +43,10 @@ public class ShadowServantAttackRunner : MonoBehaviour, IMobPatternRunner
     [SerializeField] private ShadowServant owner;
     [SerializeField] private MobAbilityCoordinator abilityCoordinator;
     [SerializeField] private AttackTelegraphService telegraphService;
+    [Header("Warning Telegraph")]
+    [SerializeField, Range(0f, 1f)] private float warningBlinkStartNormalized = 0.8f;
+    [SerializeField, Min(0f)] private float warningBlinkFrequency = 8f;
+    [SerializeField, Range(0f, 1f)] private float warningBlinkAlphaMin = 0.35f;
 
     private readonly HashSet<GameObject> damagedTargets = new();
     private AttackTelegraphStyle warningStyle;
@@ -171,9 +175,9 @@ public class ShadowServantAttackRunner : MonoBehaviour, IMobPatternRunner
         style.borderColorStart = new Color(1f, 0f, 0f, 1f);
         style.borderColorEnd = new Color(1f, 0f, 0f, 1f);
         style.progressCurve = AnimationCurve.Linear(0f, 0f, 1f, 1f);
-        style.blinkStartNormalized = 1f;
-        style.blinkFrequency = 0f;
-        style.blinkAlphaMin = 1f;
+        style.blinkStartNormalized = warningBlinkStartNormalized;
+        style.blinkFrequency = warningBlinkFrequency;
+        style.blinkAlphaMin = warningBlinkAlphaMin;
         style.scaleFillWithProgress = false;
         style.fillScaleStart = 1f;
         style.fillScaleEnd = 1f;

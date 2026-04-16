@@ -17,6 +17,8 @@ MonoBehaviour:
   burstIntervalSeconds: 0.45
   projectileCountPerCandle: 5
   spreadAngleDegrees: 52
+  projectileDamageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
+  projectileDamageAmount: 1
   telegraphRadius: 0
   telegraphStyle: {fileID: 0}
   candleAttackPresentation:

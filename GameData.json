@@ -1,5 +1,5 @@
 {
-    "magicStone": 0,
+    "magicStone": 10,
     "upgradeData": {
         "purchasedIDs": [],
         "unlockedIDs": [
@@ -35,7 +35,10 @@
         "stageProgressList": [
             {
                 "mapID": "LEeJunmo",
-                "unlockedShortcuts": []
+                "unlockedShortcuts": [
+                    "AffectionDoor2_5919d4ad",
+                    "AffectionDoor1_1658801a"
+                ]
             }
         ]
     },
@@ -43,7 +46,7 @@
         "affectionRecords": [
             {
                 "npcId": 1003,
-                "amount": 11
+                "amount": 33
             }
         ]
     },

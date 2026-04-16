@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityGAS.Sample;
 
 public class WitchNormalAttack1State : BossState
 {
@@ -37,7 +38,11 @@ public class WitchNormalAttack1State : BossState
             return;
         }
 
-        if (patternBridge == null || !patternBridge.TryBeginNormalAttack1Pattern(out float resolvedDuration))
+        AbilityLogic_WitchNormalAttack1 logic = reservedPattern.Ability != null
+            ? reservedPattern.Ability.logic as AbilityLogic_WitchNormalAttack1
+            : null;
+
+        if (patternBridge == null || logic == null || !patternBridge.TryBeginNormalAttack1Pattern(logic, out float resolvedDuration))
         {
             LogState("평타1 패턴을 시작하지 못했습니다.");
             boss.AbortCurrentPattern();

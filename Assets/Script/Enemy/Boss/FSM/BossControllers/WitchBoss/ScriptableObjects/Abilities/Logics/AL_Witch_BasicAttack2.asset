@@ -18,26 +18,57 @@ MonoBehaviour:
   minimumInnerSafeRadius: 2
   damageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
   damageAmount: 1
+  donutTelegraphStyle: {fileID: 11400000, guid: b15f18602ec87284d80cbd57720425f1, type: 2}
   hitEffectCount: 1
   hitParticleCount: 1
   hitPresentationRadiusLerp: 0
-  hitEffectPrefab: {fileID: 7283175124365028653, guid: 7b4c91ec38bc898439801eccdbc0701c, type: 3}
-  hitEffectLocalOffset: {x: 0, y: 0, z: -0.05}
-  hitEffectLifetimeSeconds: 0.35
-  hitEffectScaleMultiplier: {x: 0.4, y: 0.4, z: 1}
-  hitEffectRotationOffsetZ: 0
-  hitParticlePrefab: {fileID: 4255554260198325544, guid: 537be2dc596b9474e881fad5fbce523e, type: 3}
-  hitParticleLocalOffset: {x: 0, y: 0, z: -0.02}
-  hitParticleLifetimeOverrideSeconds: 0
-  useUnscaledHitParticleTime: 0
-  hitParticleScaleMultiplier: {x: 1, y: 1, z: 1}
-  hitParticleRotationOffsetZ: 0
-  hitSound:
+  hitPresentation:
+    sound:
+      key: chloe.pattern.normal2
+      volumeMultiplier: 1
+      anchorPolicy: 0
+      localOffset: {x: 0, y: 0, z: 0}
+    cameraShake:
+      amplitude: 3
+      amplitudeMultiplier: 0
+      maxAmplitude: 0
+      minIntervalSeconds: 2.07
+      directionMode: 1
+      customDirection: {x: 5, y: 5, z: 5}
+      ignoreScreenShakeSetting: 0
+    effect:
+      prefab: {fileID: 7283175124365028653, guid: 7b4c91ec38bc898439801eccdbc0701c, type: 3}
+      localOffset: {x: 0, y: 0, z: -0.05}
+      rotationOffsetZ: 0
+      scaleMultiplier: {x: 0.4, y: 0.4, z: 1}
+      lifetimeMode: 0
+      lifetimeOverrideSeconds: 0.35
+      useUnscaledTime: 0
+    particle:
+      prefab: {fileID: 4255554260198325544, guid: 537be2dc596b9474e881fad5fbce523e, type: 3}
+      localOffset: {x: 0, y: 0, z: -0.02}
+      rotationOffsetZ: 0
+      scaleMultiplier: {x: 1, y: 1, z: 1}
+      lifetimeMode: 0
+      lifetimeOverrideSeconds: 0
+      useUnscaledTime: 0
+  legacyHitEffectPrefab: {fileID: 7283175124365028653, guid: 7b4c91ec38bc898439801eccdbc0701c, type: 3}
+  legacyHitEffectLocalOffset: {x: 0, y: 0, z: -0.05}
+  legacyHitEffectLifetimeSeconds: 0.35
+  legacyHitEffectScaleMultiplier: {x: 0.4, y: 0.4, z: 1}
+  legacyHitEffectRotationOffsetZ: 0
+  legacyHitParticlePrefab: {fileID: 4255554260198325544, guid: 537be2dc596b9474e881fad5fbce523e, type: 3}
+  legacyHitParticleLocalOffset: {x: 0, y: 0, z: -0.02}
+  legacyHitParticleLifetimeOverrideSeconds: 0
+  legacyUseUnscaledHitParticleTime: 0
+  legacyHitParticleScaleMultiplier: {x: 1, y: 1, z: 1}
+  legacyHitParticleRotationOffsetZ: 0
+  legacyHitSound:
     key: chloe.pattern.normal2
     volumeMultiplier: 1
     anchorPolicy: 0
     localOffset: {x: 0, y: 0, z: 0}
-  hitCameraShake:
+  legacyHitCameraShake:
     amplitude: 3
     amplitudeMultiplier: 0
     maxAmplitude: 0

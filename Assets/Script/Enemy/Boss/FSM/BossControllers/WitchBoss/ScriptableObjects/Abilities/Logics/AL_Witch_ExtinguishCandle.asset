@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f3a0c2d5186e4c0a8b1f7d9e2c4b6a31, type: 3}
   m_Name: AL_Witch_ExtinguishCandle
   m_EditorClassIdentifier: 
+  warningTelegraphStyle: {fileID: 11400000, guid: c4fb86217c654880a4eb4bd9e3540f27, type: 2}
   explosionVisualPrefab: {fileID: 0}
   explosionParticlePrefab: {fileID: 0}
   explosionVisualOffset: {x: 0, y: 0, z: 0}
@@ -30,5 +31,7 @@ MonoBehaviour:
     distanceAttenuation: 0.04
     directionMode: 0
     customDirection: {x: 0, y: 1, z: 0}
+  damageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
+  damageAmount: 1
   fogSpawnScaleMultiplier: {x: 1, y: 1, z: 1}
   attackRadiusMultiplier: 6

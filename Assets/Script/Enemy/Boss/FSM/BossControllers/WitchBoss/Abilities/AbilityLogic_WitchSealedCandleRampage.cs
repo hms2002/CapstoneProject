@@ -21,6 +21,8 @@ public class AbilityLogic_WitchSealedCandleRampage : AbilityLogic
     [SerializeField] private float burstIntervalSeconds = 0.45f;
     [SerializeField] private int projectileCountPerCandle = 5;
     [SerializeField] private float spreadAngleDegrees = 52f;
+    [SerializeField] private GE_Damage_Spec projectileDamageEffect;
+    [SerializeField] private float projectileDamageAmount = 1f;
 
     [Header("Telegraph")]
     [SerializeField] private float telegraphRadius = 0f;
@@ -46,7 +48,7 @@ public class AbilityLogic_WitchSealedCandleRampage : AbilityLogic
         MigrateLegacyAttackPresentation();
 
         Witch witch = system != null ? system.GetComponent<Witch>() : null;
-        if (witch == null || !witch.HasProjectilePatternConfig)
+        if (witch == null || !witch.HasProjectilePatternConfig || !HasProjectileDamageConfig())
             yield break;
 
         witch.PlayPatternAttackMotion();
@@ -100,8 +102,8 @@ public class AbilityLogic_WitchSealedCandleRampage : AbilityLogic
                     witch.gameObject,
                     plan.candle.gameObject,
                     witch.LightBeadPrefab,
-                    witch.ProjectileDamageEffect,
-                    witch.ProjectileDamage,
+                    projectileDamageEffect,
+                    projectileDamageAmount,
                     witch.ProjectileSpeed,
                     plan.origin,
                     plan.direction,
@@ -213,6 +215,12 @@ public class AbilityLogic_WitchSealedCandleRampage : AbilityLogic
     private float ResolveSpreadAngleDegrees()
     {
         return Mathf.Max(0f, spreadAngleDegrees);
+    }
+
+    /// <summary>촛대 폭주에 사용할 피해 효과가 준비되어 있는지 확인합니다.</summary>
+    private bool HasProjectileDamageConfig()
+    {
+        return projectileDamageEffect != null;
     }
 
     private static void DestroyWarningViews(List<AttackTelegraphView> warningViews)

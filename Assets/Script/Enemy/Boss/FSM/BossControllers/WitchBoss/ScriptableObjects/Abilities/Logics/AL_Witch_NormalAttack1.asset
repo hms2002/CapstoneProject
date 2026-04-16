@@ -18,6 +18,8 @@ MonoBehaviour:
   tileWidthInTiles: 3
   tileHeightInTiles: 6
   hitDurationSeconds: 0.12
+  warningTelegraphStyle: {fileID: 11400000, guid: b15f18602ec87284d80cbd57720425f1, type: 2}
+  hitTelegraphStyle: {fileID: 11400000, guid: 1a3ab0dc090843ed9c77ee62bddbd2bb, type: 2}
   tilePrefab: {fileID: 1000000000000000003, guid: cd6075224a63408383d85a752fb3d67a, type: 3}
   damageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
   damageAmount: 1

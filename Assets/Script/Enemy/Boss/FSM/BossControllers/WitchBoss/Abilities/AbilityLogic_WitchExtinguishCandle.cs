@@ -1,6 +1,7 @@
 using System.Collections;
 using CapstoneAudio;
 using UnityEngine;
+using UnityGAS;
 
 namespace UnityGAS.Sample
 {
@@ -11,6 +12,7 @@ namespace UnityGAS.Sample
         // 마녀 보스의 촛불 끄기 패턴 진입점과 전용 튜닝 데이터를 제공한다.
 
         [Header("Explosion Presentation")]
+        [SerializeField] private AttackTelegraphStyle warningTelegraphStyle;
         [SerializeField] private GameObject explosionVisualPrefab;
         [SerializeField] private GameObject explosionParticlePrefab;
         [SerializeField] private Vector3 explosionVisualOffset;
@@ -21,9 +23,12 @@ namespace UnityGAS.Sample
         [SerializeField] private CameraShakeHook explosionCameraShake = CameraShakeHook.Create(0.18f, 1f, 0.28f, 0.04f);
 
         [Header("Fog / Attack")]
+        [SerializeField] private GE_Damage_Spec damageEffect;
+        [SerializeField] private float damageAmount = 1f;
         [SerializeField] private Vector3 fogSpawnScaleMultiplier = Vector3.one;
         [SerializeField] private float attackRadiusMultiplier = 6f;
 
+        public AttackTelegraphStyle WarningTelegraphStyle => warningTelegraphStyle;
         public GameObject ExplosionVisualPrefab => explosionVisualPrefab;
         public GameObject ExplosionParticlePrefab => explosionParticlePrefab;
         public Vector3 ExplosionVisualOffset => explosionVisualOffset;
@@ -32,6 +37,8 @@ namespace UnityGAS.Sample
         public Vector3 ExplosionParticleScale => explosionParticleScale;
         public SoundRef ExplosionSound => explosionSound;
         public CameraShakeHook ExplosionCameraShake => explosionCameraShake;
+        public GE_Damage_Spec DamageEffect => damageEffect;
+        public float DamageAmount => damageAmount;
         public Vector3 FogSpawnScaleMultiplier => fogSpawnScaleMultiplier;
         public float AttackRadiusMultiplier => attackRadiusMultiplier;
 

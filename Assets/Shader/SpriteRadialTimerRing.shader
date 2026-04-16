@@ -12,6 +12,8 @@ Shader "Custom/SpriteRadialTimerRing"
         _FillAmount ("Fill Amount", Range(0, 1)) = 1
         _StartAngleDegrees ("Start Angle Degrees", Range(0, 360)) = 90
         _InvertFill ("Invert Fill", Float) = 0
+        _FillMode ("Fill Mode", Float) = 0
+        _InnerRadiusNormalized ("Inner Radius Normalized", Range(0, 1)) = 0
     }
 
     SubShader
@@ -44,6 +46,8 @@ Shader "Custom/SpriteRadialTimerRing"
             float _FillAmount;
             float _StartAngleDegrees;
             float _InvertFill;
+            float _FillMode;
+            float _InnerRadiusNormalized;
 
             /// <summary>
             /// 책임 :
@@ -57,13 +61,26 @@ Shader "Custom/SpriteRadialTimerRing"
                     discard;
 
                 float2 centered = IN.texcoord - 0.5;
-                float angle = degrees(atan2(centered.y, centered.x));
-                angle = frac((angle - _StartAngleDegrees) / 360.0 + 1.0);
-
                 float fill = saturate(_FillAmount);
-                float visible = (_InvertFill > 0.5)
-                    ? step(fill, angle)
-                    : step(angle, fill);
+                float visible = 0.0;
+
+                if (_FillMode > 0.5)
+                {
+                    float radiusNormalized = saturate(length(centered) / 0.5);
+                    float innerRadius = saturate(_InnerRadiusNormalized);
+                    float visibleOuterRadius = lerp(innerRadius, 1.0, fill);
+
+                    visible = step(0.001, fill) * step(radiusNormalized, visibleOuterRadius);
+                }
+                else
+                {
+                    float angle = degrees(atan2(centered.y, centered.x));
+                    angle = frac((angle - _StartAngleDegrees) / 360.0 + 1.0);
+
+                    visible = (_InvertFill > 0.5)
+                        ? step(fill, angle)
+                        : step(angle, fill);
+                }
 
                 if (visible <= 0.0)
                     discard;

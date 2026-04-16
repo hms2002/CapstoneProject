@@ -6,6 +6,46 @@ public sealed class WitchNormalAttack1PatternExecutor : MonoBehaviour
     // 이 클래스의 책임:
     // 마녀 보스의 평타1 패턴 1회 실행에서 장판 배치, payload 생성, 타일 재생을 전담한다.
 
+    /// <summary>
+    /// 책임 :
+    /// - 평타1 executor가 실행에 필요한 데이터를 Witch 바깥에서 한 번에 전달받도록 묶는다.
+    /// - Witch가 패턴 로직을 캐스팅해 값 조회 허브처럼 동작하지 않게 하고, executor는 이 문맥만 보고 장판을 배치한다.
+    /// </summary>
+    public readonly struct PatternContext
+    {
+        public readonly WitchNormalAttack1Tile TilePrefab;
+        public readonly GE_Damage_Spec DamageEffect;
+        public readonly float DamageAmount;
+        public readonly int TileCount;
+        public readonly float IntervalSeconds;
+        public readonly float HitDurationSeconds;
+        public readonly Vector2 TileSize;
+        public readonly AttackTelegraphStyle WarningTelegraphStyle;
+        public readonly AttackTelegraphStyle HitTelegraphStyle;
+
+        public PatternContext(
+            WitchNormalAttack1Tile tilePrefab,
+            GE_Damage_Spec damageEffect,
+            float damageAmount,
+            int tileCount,
+            float intervalSeconds,
+            float hitDurationSeconds,
+            Vector2 tileSize,
+            AttackTelegraphStyle warningTelegraphStyle,
+            AttackTelegraphStyle hitTelegraphStyle)
+        {
+            TilePrefab = tilePrefab;
+            DamageEffect = damageEffect;
+            DamageAmount = damageAmount;
+            TileCount = tileCount;
+            IntervalSeconds = intervalSeconds;
+            HitDurationSeconds = hitDurationSeconds;
+            TileSize = tileSize;
+            WarningTelegraphStyle = warningTelegraphStyle;
+            HitTelegraphStyle = hitTelegraphStyle;
+        }
+    }
+
     private Witch owner;
 
     private void Awake()
@@ -14,7 +54,7 @@ public sealed class WitchNormalAttack1PatternExecutor : MonoBehaviour
     }
 
     /// <summary>평타1 장판 공격 실행을 시도합니다.</summary>
-    public bool TryBeginPattern()
+    public bool TryBeginPattern(in PatternContext context)
     {
         if (owner == null)
             owner = GetComponent<Witch>();
@@ -27,12 +67,10 @@ public sealed class WitchNormalAttack1PatternExecutor : MonoBehaviour
             return false;
         }
 
-        WitchNormalAttack1Tile tilePrefab = owner.ResolveNormal1TilePrefabValue();
-        GE_Damage_Spec damageEffect = owner.ResolveNormal1DamageEffectValue();
-        if (tilePrefab == null || damageEffect == null)
+        if (context.TilePrefab == null || context.DamageEffect == null)
         {
             Debug.LogWarning(
-                $"[WitchNormalAttack1PatternExecutor] 시작 실패: tilePrefab={(tilePrefab != null)}, damageEffect={(damageEffect != null)}",
+                $"[WitchNormalAttack1PatternExecutor] 시작 실패: tilePrefab={(context.TilePrefab != null)}, damageEffect={(context.DamageEffect != null)}",
                 this);
             return false;
         }
@@ -48,30 +86,31 @@ public sealed class WitchNormalAttack1PatternExecutor : MonoBehaviour
         owner.PlayPatternAttackMotion();
 
         float angle = Mathf.Atan2(aimDir.y, aimDir.x) * Mathf.Rad2Deg;
-        Vector2 tileSize = owner.GetNormal1TileSizeValue();
-        CombatHitPayload payload = owner.MakeNormal1PayloadValue();
-        int tileCount = owner.GetNormal1CountValue();
-        float intervalSeconds = owner.GetNormal1IntervalValue();
-        float startTime = owner.GetNormal1StartTimeValue();
+        CombatHitPayload payload = owner.MakeNormal1Payload(
+            context.DamageEffect,
+            context.DamageAmount);
+        float startTime = context.TileCount * context.IntervalSeconds;
 
-        for (int i = 0; i < tileCount; i++)
+        for (int i = 0; i < context.TileCount; i++)
         {
             WitchNormalAttack1Tile tile = Instantiate(
-                tilePrefab,
-                owner.GetNormal1TilePointValue(aimDir, i),
+                context.TilePrefab,
+                owner.GetNormal1TilePoint(aimDir, i, context.TileSize),
                 Quaternion.Euler(0f, 0f, angle));
 
             owner.RuntimeData.AddNormal1Tile(tile);
             tile.Play(
                 owner.Target.gameObject,
                 payload,
-                tileSize,
+                context.TileSize,
                 angle,
-                i * intervalSeconds,
-                startTime + (i * intervalSeconds));
+                i * context.IntervalSeconds,
+                startTime + (i * context.IntervalSeconds),
+                context.WarningTelegraphStyle,
+                context.HitTelegraphStyle);
         }
 
-        Debug.Log($"[WitchNormalAttack1PatternExecutor] 평타1 executor 경로 실행 성공: tileCount={tileCount}, interval={intervalSeconds}", this);
+        Debug.Log($"[WitchNormalAttack1PatternExecutor] 평타1 executor 경로 실행 성공: tileCount={context.TileCount}, interval={context.IntervalSeconds}", this);
         return true;
     }
 }
