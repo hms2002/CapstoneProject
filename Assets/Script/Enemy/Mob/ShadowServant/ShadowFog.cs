@@ -1,3 +1,4 @@
+using CapstonePresentation;
 using UnityEngine;
 
 [DisallowMultipleComponent]
@@ -128,7 +129,7 @@ public class ShadowFog : MonoBehaviour
         if (animator == null || string.IsNullOrWhiteSpace(endStateName))
         {
             if (Time.time >= endFallbackDestroyTime)
-                Destroy(gameObject);
+                PresentationSpawnService.Release(gameObject);
             return;
         }
 
@@ -137,12 +138,12 @@ public class ShadowFog : MonoBehaviour
             !animator.IsInTransition(BaseLayerIndex) &&
             stateInfo.normalizedTime >= 1f)
         {
-            Destroy(gameObject);
+            PresentationSpawnService.Release(gameObject);
             return;
         }
 
         if (Time.time >= endFallbackDestroyTime && !stateInfo.IsName(endStateName))
-            Destroy(gameObject);
+            PresentationSpawnService.Release(gameObject);
     }
 
     private bool HasAnimatorTrigger(string triggerName)

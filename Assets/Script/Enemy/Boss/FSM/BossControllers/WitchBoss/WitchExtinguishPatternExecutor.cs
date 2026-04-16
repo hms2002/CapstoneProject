@@ -155,14 +155,12 @@ public sealed class WitchExtinguishPatternExecutor : MonoBehaviour
         CancelPattern();
     }
 
-    /// <summary>촛불 끄기 패턴 경고와 선택 상태를 즉시 정리합니다.</summary>
     public void CancelPattern()
     {
         DestroyWarningViews();
         owner?.RuntimeData.ClearExtinguishSelection();
     }
 
-    /// <summary>가장 가까운 촛대와 추가 랜덤 촛대를 선택 버퍼로 구성합니다.</summary>
     private List<Candlestick> BuildSelectionBuffer()
     {
         List<Candlestick> selections = new();
@@ -191,7 +189,6 @@ public sealed class WitchExtinguishPatternExecutor : MonoBehaviour
         return selections;
     }
 
-    /// <summary>지정한 촛대를 제외하고 미봉인 촛대 하나를 랜덤으로 고릅니다.</summary>
     private Candlestick GetRandomAvailableCandleExcluding(Candlestick excludedCandle)
     {
         List<Candlestick> availableCandles = new();
@@ -237,7 +234,6 @@ public sealed class WitchExtinguishPatternExecutor : MonoBehaviour
         }
     }
 
-    /// <summary>촛불 끄기 패턴에서 사용한 경고 뷰들을 정리합니다.</summary>
     private void DestroyWarningViews()
     {
         for (int i = 0; i < activeWarningViews.Count; i++)

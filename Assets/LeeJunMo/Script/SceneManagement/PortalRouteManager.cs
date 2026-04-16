@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -17,6 +18,7 @@ public sealed class PortalRouteManager : MonoBehaviour
     }
 
     public static PortalRouteManager Instance { get; private set; }
+    public static event Action<PortalRouteManager> InstanceChanged;
 
     private static bool s_isQuitting;
 
@@ -27,6 +29,8 @@ public sealed class PortalRouteManager : MonoBehaviour
 
     private readonly Dictionary<string, PendingPortalPlan> pendingPlansByPortalId = new();
     private RunRouteCatalogSO activeRouteCatalog;
+
+    public event Action<PortalRouteManager> LoadWindowChanged;
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     private static void AutoBootstrap()
@@ -47,6 +51,7 @@ public sealed class PortalRouteManager : MonoBehaviour
         }
 
         Instance = this;
+        InstanceChanged?.Invoke(this);
 
         if (persistAcrossScenes)
             DontDestroyOnLoad(gameObject);
@@ -55,7 +60,10 @@ public sealed class PortalRouteManager : MonoBehaviour
     private void OnDestroy()
     {
         if (Instance == this)
+        {
             Instance = null;
+            InstanceChanged?.Invoke(null);
+        }
     }
 
     private void OnApplicationQuit()
@@ -72,6 +80,25 @@ public sealed class PortalRouteManager : MonoBehaviour
     public int CurrentStageIndex => currentStageIndex;
     public int TotalStageCount => activeRouteStages?.Count ?? 0;
     public CorridorBossRouteSetSO CurrentStageSet => HasActivePlan ? activeRouteStages[currentStageIndex] : null;
+    public int NextStageIndex => HasActivePlan ? currentStageIndex + 1 : -1;
+    public CorridorBossRouteSetSO NextStageSet =>
+        HasActivePlan && currentStageIndex + 1 >= 0 && currentStageIndex + 1 < activeRouteStages.Count
+            ? activeRouteStages[currentStageIndex + 1]
+            : null;
+    public RouteSetLoadManifestSO CurrentStageLoadManifest => CurrentStageSet != null ? CurrentStageSet.LoadManifest : null;
+    public RouteSetLoadManifestSO NextStageLoadManifest => NextStageSet != null ? NextStageSet.LoadManifest : null;
+    public LoadManifestSO ActiveRunCommonLoadManifest => activeRouteCatalog != null ? activeRouteCatalog.RunCommonLoadManifest : null;
+
+    public bool TryGetActiveLoadWindow(
+        out LoadManifestSO runCommonManifest,
+        out RouteSetLoadManifestSO currentStageManifest,
+        out RouteSetLoadManifestSO nextStageManifest)
+    {
+        runCommonManifest = ActiveRunCommonLoadManifest;
+        currentStageManifest = CurrentStageLoadManifest;
+        nextStageManifest = NextStageLoadManifest;
+        return HasActivePlan;
+    }
 
     public bool EnsurePendingPlan(ScenePortal portal)
     {
@@ -113,6 +140,8 @@ public sealed class PortalRouteManager : MonoBehaviour
         {
             Debug.Log("[PortalRouteManager] Cleared active and pending run plans.", this);
         }
+
+        RaiseLoadWindowChanged();
     }
 
     public bool CanResolveRoute(ScenePortal portal)
@@ -198,6 +227,8 @@ public sealed class PortalRouteManager : MonoBehaviour
                     $"[PortalRouteManager] Advanced to next stage. currentStageIndex={currentStageIndex}",
                     this);
             }
+
+            RaiseLoadWindowChanged();
         }
     }
 
@@ -275,6 +306,8 @@ public sealed class PortalRouteManager : MonoBehaviour
                 portal);
         }
 
+        RaiseLoadWindowChanged();
+
         return true;
     }
 
@@ -309,7 +342,7 @@ public sealed class PortalRouteManager : MonoBehaviour
         {
             for (int i = 0; i < catalog.NormalStageCount; i++)
             {
-                int randomIndex = Random.Range(0, validNormalRoutes.Count);
+                int randomIndex = UnityEngine.Random.Range(0, validNormalRoutes.Count);
                 stages.Add(validNormalRoutes[randomIndex]);
             }
         }
@@ -318,7 +351,7 @@ public sealed class PortalRouteManager : MonoBehaviour
             var candidates = new List<CorridorBossRouteSetSO>(validNormalRoutes);
             for (int i = 0; i < catalog.NormalStageCount; i++)
             {
-                int randomIndex = Random.Range(0, candidates.Count);
+                int randomIndex = UnityEngine.Random.Range(0, candidates.Count);
                 stages.Add(candidates[randomIndex]);
                 candidates.RemoveAt(randomIndex);
             }
@@ -364,5 +397,10 @@ public sealed class PortalRouteManager : MonoBehaviour
             $"[PortalRouteManager] Hub start portal is missing RunRouteCatalogSO. portal={portal.name}",
             portal);
         return false;
+    }
+
+    private void RaiseLoadWindowChanged()
+    {
+        LoadWindowChanged?.Invoke(this);
     }
 }

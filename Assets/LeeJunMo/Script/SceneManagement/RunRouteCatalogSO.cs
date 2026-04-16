@@ -19,6 +19,9 @@ public sealed class RunRouteCatalogSO : ScriptableObject
     [Header("BGM")]
     [SerializeField] private SoundRef hubBgm;
 
+    [Header("Loading")]
+    [SerializeField] private LoadManifestSO runCommonLoadManifest;
+
     [Header("Hub Return")]
     [SerializeField] private string hubSceneName;
     [SerializeField] private string hubEntryPointId = "Default";
@@ -28,6 +31,7 @@ public sealed class RunRouteCatalogSO : ScriptableObject
     public bool AllowDuplicateNormalRoutes => allowDuplicateNormalRoutes;
     public CorridorBossRouteSetSO FinalRouteSet => finalRouteSet;
     public SoundRef HubBgm => hubBgm;
+    public LoadManifestSO RunCommonLoadManifest => runCommonLoadManifest;
     public string HubSceneName => hubSceneName;
     public string HubEntryPointId => hubEntryPointId;
 
