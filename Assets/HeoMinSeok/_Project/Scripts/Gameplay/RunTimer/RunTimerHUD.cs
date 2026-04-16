@@ -9,6 +9,8 @@ using UnityEngine;
 [DisallowMultipleComponent]
 public sealed class RunTimerHUD : MonoBehaviour
 {
+    public static RunTimerHUD Instance { get; private set; }
+
     [Header("Binding")]
     [SerializeField] private RunTimeLimitSystem timeLimitSystem;
     [SerializeField] private TMP_Text timeText;
@@ -26,11 +28,33 @@ public sealed class RunTimerHUD : MonoBehaviour
 
     private void Awake()
     {
-        if (timeLimitSystem == null)
-            timeLimitSystem = FindAnyObjectByType<RunTimeLimitSystem>();
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        Instance = this;
 
         if (visibleRoot == null)
             visibleRoot = gameObject;
+    }
+
+    private void OnEnable()
+    {
+        RunTimeLimitSystem.InstanceChanged += HandleTimeLimitSystemChanged;
+        ResolveTimeLimitBinding();
+    }
+
+    private void OnDisable()
+    {
+        RunTimeLimitSystem.InstanceChanged -= HandleTimeLimitSystemChanged;
+    }
+
+    private void OnDestroy()
+    {
+        if (Instance == this)
+            Instance = null;
     }
 
     private void Update()
@@ -100,5 +124,53 @@ public sealed class RunTimerHUD : MonoBehaviour
     {
         if (visibleRoot != null && visibleRoot.activeSelf != isVisible)
             visibleRoot.SetActive(isVisible);
+    }
+
+    public void BindTimeLimitSystem(RunTimeLimitSystem system)
+    {
+        timeLimitSystem = system;
+    }
+
+    public void UnbindTimeLimitSystem(RunTimeLimitSystem system)
+    {
+        if (system == null || timeLimitSystem != system)
+            return;
+
+        timeLimitSystem = null;
+    }
+
+    private void HandleTimeLimitSystemChanged(RunTimeLimitSystem system)
+    {
+        if (system == null)
+        {
+            UnbindTimeLimitSystem(timeLimitSystem);
+            return;
+        }
+
+        BindTimeLimitSystem(system);
+    }
+
+    private void ResolveTimeLimitBinding()
+    {
+        if (timeLimitSystem != null)
+            return;
+
+        if (RunTimeLimitSystem.Instance != null)
+        {
+            BindTimeLimitSystem(RunTimeLimitSystem.Instance);
+            return;
+        }
+
+        if (ShouldUseAutoFindFallback())
+            timeLimitSystem = FindAnyObjectByType<RunTimeLimitSystem>();
+    }
+
+    private static bool ShouldUseAutoFindFallback()
+    {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        return true;
+#else
+        return false;
+#endif
     }
 }

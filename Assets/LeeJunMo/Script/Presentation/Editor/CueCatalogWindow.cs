@@ -106,7 +106,7 @@ namespace CapstonePresentation.EditorTools
         private void DrawEmptyState()
         {
             EditorGUILayout.HelpBox(
-                "CueCatalogSO asset is required. Create a default catalog so reusable Cue assets can be organized in one place.",
+                "CueCatalogSO asset is required. Create a default catalog to organize reusable cue assets.",
                 MessageType.Info);
 
             EditorGUILayout.BeginHorizontal();
@@ -139,7 +139,7 @@ namespace CapstonePresentation.EditorTools
             EditorGUILayout.EndHorizontal();
 
             EditorGUILayout.HelpBox(
-                "Cue는 재사용 가능한 완성형 연출 프리셋입니다. 내부 Presentation은 이 창에서 직접 수정할 수 있고, 프리뷰는 툴 내부 렌더 패널에서 재생됩니다.",
+                "Cue is a reusable finished presentation preset. You can edit its internal presentation here and preview it inside this tool window.",
                 MessageType.None);
         }
 
@@ -232,9 +232,6 @@ namespace CapstonePresentation.EditorTools
                     Selection.activeObject = cue;
             }
 
-            EditorGUILayout.HelpBox(
-                "툴 내부 프리뷰는 현재 선택된 Cue를 오프스크린으로 렌더합니다. 사운드는 같이 재생되고, 카메라 셰이크는 이 프리뷰 카메라에 적용됩니다.",
-                MessageType.None);
             EditorGUILayout.EndVertical();
         }
 
@@ -284,10 +281,6 @@ namespace CapstonePresentation.EditorTools
                 EditorUtility.SetDirty(cue);
                 selectedCatalog.MarkLookupDirty();
             }
-
-            EditorGUILayout.HelpBox(
-                "프리뷰에는 사운드, 카메라 셰이크, 이펙트, 파티클이 모두 포함됩니다. 사운드는 같이 재생되고, 비주얼과 셰이크는 툴 내부 프리뷰 패널에서 확인할 수 있습니다.",
-                MessageType.None);
         }
 
         private void AddEntry()

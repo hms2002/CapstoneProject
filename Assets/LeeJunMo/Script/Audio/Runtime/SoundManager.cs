@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using CapstoneRuntime;
 using DG.Tweening;
 using UnityEngine;
 
@@ -56,9 +57,9 @@ namespace CapstoneAudio
                 return Instance;
 
 #if UNITY_2023_1_OR_NEWER
-            SoundManager existing = FindAnyObjectByType<SoundManager>();
+            SoundManager existing = RuntimeServiceOwnership.FindExistingService<SoundManager>();
 #else
-            SoundManager existing = FindObjectOfType<SoundManager>();
+            SoundManager existing = RuntimeServiceOwnership.FindExistingService<SoundManager>();
 #endif
             if (existing != null)
             {
@@ -67,7 +68,7 @@ namespace CapstoneAudio
                 return existing;
             }
 
-            GameObject root = new GameObject("[SoundManager]");
+            GameObject root = RuntimeServiceOwnership.CreateServiceHost("[SoundManager]");
             return root.AddComponent<SoundManager>();
         }
 
@@ -260,7 +261,7 @@ namespace CapstoneAudio
             }
 
             Instance = this;
-            DontDestroyOnLoad(gameObject);
+            RuntimeServiceOwnership.Adopt(this);
             EnsureInitialized();
         }
 

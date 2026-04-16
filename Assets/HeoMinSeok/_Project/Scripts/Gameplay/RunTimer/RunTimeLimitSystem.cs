@@ -11,6 +11,7 @@ using UnityEngine;
 public sealed class RunTimeLimitSystem : MonoBehaviour
 {
     public static RunTimeLimitSystem Instance { get; private set; }
+    public static event Action<RunTimeLimitSystem> InstanceChanged;
 
     [Header("Binding")]
     [SerializeField] private RunTimeLimitConfig config;
@@ -45,6 +46,7 @@ public sealed class RunTimeLimitSystem : MonoBehaviour
         }
 
         Instance = this;
+        InstanceChanged?.Invoke(this);
         DontDestroyOnLoad(gameObject);
 
         stageTimerPolicy = stageTimerPolicySource as IStageTimerPolicy;
@@ -80,7 +82,10 @@ public sealed class RunTimeLimitSystem : MonoBehaviour
     private void OnDestroy()
     {
         if (Instance == this)
+        {
             Instance = null;
+            InstanceChanged?.Invoke(null);
+        }
     }
 
     private void Update()

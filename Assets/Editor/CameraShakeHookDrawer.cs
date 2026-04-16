@@ -48,30 +48,16 @@ public sealed class CameraShakeHookDrawer : PropertyDrawer
         if (property.isExpanded)
         {
             lineRect.y += lineHeight + spacing;
-
-            float halfWidth = (lineRect.width - 6f) * 0.5f;
-            Rect leftRect = new Rect(lineRect.x, lineRect.y, halfWidth, lineHeight);
-            Rect rightRect = new Rect(leftRect.xMax + 6f, lineRect.y, halfWidth, lineHeight);
-            EditorGUI.PropertyField(leftRect, amplitudeProperty);
-            EditorGUI.PropertyField(rightRect, amplitudeMultiplierProperty);
-
-            lineRect.y += lineHeight + spacing;
-            leftRect.y = lineRect.y;
-            rightRect.y = lineRect.y;
-            EditorGUI.PropertyField(leftRect, maxAmplitudeProperty);
-            EditorGUI.PropertyField(rightRect, minIntervalProperty);
-
-            lineRect.y += lineHeight + spacing;
-            EditorGUI.PropertyField(lineRect, directionModeProperty);
+            DrawPropertyLine(ref lineRect, amplitudeProperty, spacing);
+            DrawPropertyLine(ref lineRect, amplitudeMultiplierProperty, spacing);
+            DrawPropertyLine(ref lineRect, maxAmplitudeProperty, spacing);
+            DrawPropertyLine(ref lineRect, minIntervalProperty, spacing);
+            DrawPropertyLine(ref lineRect, directionModeProperty, spacing);
 
             if ((CameraShakeDirectionMode)directionModeProperty.enumValueIndex == CameraShakeDirectionMode.UseCustom)
-            {
-                lineRect.y += lineHeight + spacing;
-                EditorGUI.PropertyField(lineRect, customDirectionProperty);
-            }
+                DrawPropertyLine(ref lineRect, customDirectionProperty, spacing);
 
-            lineRect.y += lineHeight + spacing;
-            EditorGUI.PropertyField(lineRect, ignoreSettingProperty);
+            DrawPropertyLine(ref lineRect, ignoreSettingProperty, spacing);
         }
 
         EditorGUI.EndProperty();
@@ -86,13 +72,33 @@ public sealed class CameraShakeHookDrawer : PropertyDrawer
         if (!property.isExpanded)
             return height;
 
-        height += (lineHeight + spacing) * 4f;
+        height += GetExpandedPropertyHeight(property.FindPropertyRelative("amplitude"), spacing);
+        height += GetExpandedPropertyHeight(property.FindPropertyRelative("amplitudeMultiplier"), spacing);
+        height += GetExpandedPropertyHeight(property.FindPropertyRelative("maxAmplitude"), spacing);
+        height += GetExpandedPropertyHeight(property.FindPropertyRelative("minIntervalSeconds"), spacing);
+        height += GetExpandedPropertyHeight(property.FindPropertyRelative("directionMode"), spacing);
 
         SerializedProperty directionModeProperty = property.FindPropertyRelative("directionMode");
         if ((CameraShakeDirectionMode)directionModeProperty.enumValueIndex == CameraShakeDirectionMode.UseCustom)
-            height += lineHeight + spacing;
+            height += GetExpandedPropertyHeight(property.FindPropertyRelative("customDirection"), spacing);
+
+        height += GetExpandedPropertyHeight(property.FindPropertyRelative("ignoreScreenShakeSetting"), spacing);
 
         return height + BottomPadding;
+    }
+
+    private static void DrawPropertyLine(ref Rect lineRect, SerializedProperty property, float spacing)
+    {
+        float propertyHeight = EditorGUI.GetPropertyHeight(property, true);
+        lineRect.height = propertyHeight;
+        EditorGUI.PropertyField(lineRect, property, true);
+        lineRect.y += propertyHeight + spacing;
+        lineRect.height = EditorGUIUtility.singleLineHeight;
+    }
+
+    private static float GetExpandedPropertyHeight(SerializedProperty property, float spacing)
+    {
+        return EditorGUI.GetPropertyHeight(property, true) + spacing;
     }
 
     private static string BuildHeader(

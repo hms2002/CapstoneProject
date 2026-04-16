@@ -177,9 +177,10 @@ namespace UnityGAS
             if (definition == null)
                 return;
 
+            GameplayPresentationPhase hitConfirmedPhase = definition.GetHitConfirmedPhase();
             if (cueManager != null)
             {
-                foreach (GameplayTag tag in definition.EnumerateCuesOnHitConfirmed())
+                foreach (GameplayTag tag in hitConfirmedPhase.EnumerateCues())
                 {
                     if (tag != null)
                         cueManager.ExecuteCue(tag, cueParams);
@@ -188,9 +189,9 @@ namespace UnityGAS
 
             Vector3 normal = cueParams.Normal.sqrMagnitude > 0.0001f ? cueParams.Normal : Vector3.up;
             WorldPresentationRuntime.PlayMerged(
-                definition.presentationOnHitConfirmed,
+                hitConfirmedPhase.Presentation,
                 default,
-                definition.cameraShakeOnHitConfirmed,
+                hitConfirmedPhase.CameraShake,
                 WorldPresentationContext.AtWorld(
                     instigator: cueParams.Instigator,
                     position: cueParams.Position,

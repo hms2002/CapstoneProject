@@ -71,16 +71,21 @@ namespace UnityGAS
             if (effect == null)
                 return;
 
+            GameplayPresentationPhase executePhase = effect.GetExecutePhase();
             GameplayCueParams cueParams = BuildCueParams(instigator, causer, target, sourceObject, magnitude, ctx);
             WorldPresentationRuntime.PlayMerged(
-                effect.presentationOnExecute,
-                effect.audioOnExecute,
-                effect.cameraShakeOnExecute,
+                executePhase.Presentation,
+                executePhase.Sound,
+                executePhase.CameraShake,
                 BuildWorldPresentationContext(cueParams));
 
-            if (cueManager != null && effect.cueOnExecute != null)
+            if (cueManager != null)
             {
-                cueManager.ExecuteCue(effect.cueOnExecute, cueParams);
+                foreach (GameplayTag cue in executePhase.EnumerateCues())
+                {
+                    if (cue != null)
+                        cueManager.ExecuteCue(cue, cueParams);
+                }
             }
         }
 
@@ -96,17 +101,26 @@ namespace UnityGAS
             if (effect == null)
                 return;
 
+            GameplayPresentationPhase activePhase = effect.GetWhileActivePhase();
             GameplayCueParams cueParams = BuildCueParams(instigator, causer, target, sourceObject, magnitude, ctx);
-            StartLoop(MakeLoopKey(effect, target, sourceObject), effect.audioWhileActive, cueParams);
+            StartLoop(MakeLoopKey(effect, target, sourceObject), activePhase.Sound, cueParams);
+            // Sustained effect phase:
+            // - sound loops while the duration effect stays active
+            // - presentation / shake fire once on enter
+            // - cues are added here and removed in RemoveWhileActive(...)
             WorldPresentationRuntime.PlayMerged(
-                effect.presentationWhileActive,
+                activePhase.Presentation,
                 default,
-                effect.cameraShakeWhileActive,
+                activePhase.CameraShake,
                 BuildWorldPresentationContext(cueParams));
 
-            if (cueManager != null && effect.cueWhileActive != null)
+            if (cueManager != null)
             {
-                cueManager.AddCue(effect.cueWhileActive, cueParams);
+                foreach (GameplayTag cue in activePhase.EnumerateCues())
+                {
+                    if (cue != null)
+                        cueManager.AddCue(cue, cueParams);
+                }
             }
         }
 
@@ -122,12 +136,17 @@ namespace UnityGAS
             if (effect == null)
                 return;
 
+            GameplayPresentationPhase activePhase = effect.GetWhileActivePhase();
             GameplayCueParams cueParams = BuildCueParams(instigator, causer, target, sourceObject, magnitude, ctx);
             StopLoop(MakeLoopKey(effect, target, sourceObject));
 
-            if (cueManager != null && effect.cueWhileActive != null)
+            if (cueManager != null)
             {
-                cueManager.RemoveCue(effect.cueWhileActive, cueParams);
+                foreach (GameplayTag cue in activePhase.EnumerateCues())
+                {
+                    if (cue != null)
+                        cueManager.RemoveCue(cue, cueParams);
+                }
             }
         }
 
@@ -143,17 +162,22 @@ namespace UnityGAS
             if (effect == null)
                 return;
 
+            GameplayPresentationPhase removePhase = effect.GetRemovePhase();
             GameplayCueParams cueParams = BuildCueParams(instigator, causer, target, sourceObject, magnitude, ctx);
             StopLoop(MakeLoopKey(effect, target, sourceObject));
             WorldPresentationRuntime.PlayMerged(
-                effect.presentationOnRemove,
-                effect.audioOnRemove,
-                effect.cameraShakeOnRemove,
+                removePhase.Presentation,
+                removePhase.Sound,
+                removePhase.CameraShake,
                 BuildWorldPresentationContext(cueParams));
 
-            if (cueManager != null && effect.cueOnRemove != null)
+            if (cueManager != null)
             {
-                cueManager.ExecuteCue(effect.cueOnRemove, cueParams);
+                foreach (GameplayTag cue in removePhase.EnumerateCues())
+                {
+                    if (cue != null)
+                        cueManager.ExecuteCue(cue, cueParams);
+                }
             }
         }
 

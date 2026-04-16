@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using CapstoneRuntime;
 using UnityEngine;
 
 namespace CapstonePresentation
@@ -8,6 +9,8 @@ namespace CapstonePresentation
     [DisallowMultipleComponent]
     public sealed class PresentationSpawnService : MonoBehaviour
     {
+        private const float LoopingAutoReleaseFallbackSeconds = 1f;
+
         private sealed class PooledPresentationInstance : MonoBehaviour
         {
             public int prefabId;
@@ -37,9 +40,9 @@ namespace CapstonePresentation
                 return Instance;
 
 #if UNITY_2023_1_OR_NEWER
-            PresentationSpawnService existing = FindAnyObjectByType<PresentationSpawnService>();
+            PresentationSpawnService existing = RuntimeServiceOwnership.FindExistingService<PresentationSpawnService>();
 #else
-            PresentationSpawnService existing = FindObjectOfType<PresentationSpawnService>();
+            PresentationSpawnService existing = RuntimeServiceOwnership.FindExistingService<PresentationSpawnService>();
 #endif
             if (existing != null)
             {
@@ -47,7 +50,7 @@ namespace CapstonePresentation
                 return existing;
             }
 
-            GameObject root = new GameObject(nameof(PresentationSpawnService));
+            GameObject root = RuntimeServiceOwnership.CreateServiceHost(nameof(PresentationSpawnService));
             return root.AddComponent<PresentationSpawnService>();
         }
 
@@ -92,7 +95,7 @@ namespace CapstonePresentation
             }
 
             Instance = this;
-            DontDestroyOnLoad(gameObject);
+            RuntimeServiceOwnership.Adopt(this);
             EnsurePoolRoot();
         }
 
@@ -131,9 +134,9 @@ namespace CapstonePresentation
             instance.SetActive(true);
             InitializeSpawnedInstance(instance, hook.useUnscaledTime);
 
-            if (scheduleAutoRelease)
+            if (scheduleAutoRelease && hook.ShouldAutoRelease)
             {
-                float lifetime = ResolvePresentationLifetime(instance, hook.lifetimeOverrideSeconds);
+                float lifetime = ResolvePresentationLifetime(instance, hook);
                 if (lifetime > 0f)
                 {
                     int version = pooledInstance.activeVersion;
@@ -329,10 +332,19 @@ namespace CapstonePresentation
             }
         }
 
-        private static float ResolvePresentationLifetime(GameObject instance, float lifetimeOverrideSeconds)
+        private static float ResolvePresentationLifetime(GameObject instance, in SpawnedPresentationHook hook)
         {
-            if (lifetimeOverrideSeconds > 0f)
-                return lifetimeOverrideSeconds;
+            switch (hook.lifetimeMode)
+            {
+                case PresentationLifetimeMode.ManualRelease:
+                    return 0f;
+
+                case PresentationLifetimeMode.FixedSeconds:
+                    return Mathf.Max(0f, hook.lifetimeOverrideSeconds);
+            }
+
+            if (hook.lifetimeOverrideSeconds > 0f)
+                return hook.lifetimeOverrideSeconds;
 
             float particleLifetime = ResolveParticleLifetime(instance);
             if (particleLifetime > 0f)
@@ -360,7 +372,7 @@ namespace CapstonePresentation
 
                 ParticleSystem.MainModule main = particleSystem.main;
                 if (main.loop)
-                    return 1f;
+                    return LoopingAutoReleaseFallbackSeconds;
 
                 float startDelay = ResolveCurveMax(main.startDelay);
                 float startLifetime = ResolveCurveMax(main.startLifetime);
@@ -380,6 +392,10 @@ namespace CapstonePresentation
                 Animator animator = animators[i];
                 if (animator == null || animator.runtimeAnimatorController == null)
                     continue;
+
+                AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
+                if (stateInfo.length > 0f)
+                    maxLifetime = Mathf.Max(maxLifetime, stateInfo.length);
 
                 AnimationClip[] clips = animator.runtimeAnimatorController.animationClips;
                 for (int clipIndex = 0; clipIndex < clips.Length; clipIndex++)

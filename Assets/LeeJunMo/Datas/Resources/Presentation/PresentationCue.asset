@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CapstonePresentation.PresentationCueSO
   presentation:
     sound:
-      key: 
-      volumeMultiplier: 0
+      key: chloe.pattern.normal2
+      volumeMultiplier: 1
       anchorPolicy: 0
       localOffset: {x: 0, y: 0, z: 0}
     cameraShake:
@@ -27,14 +27,14 @@ MonoBehaviour:
       customDirection: {x: 0, y: 0, z: 0}
       ignoreScreenShakeSetting: 0
     effect:
-      prefab: {fileID: 0}
+      prefab: {fileID: 6877616746287651068, guid: 230cdfca747527646b1afc30748bbfcc, type: 3}
       localOffset: {x: 0, y: 0, z: 0}
       rotationOffsetZ: 0
       scaleMultiplier: {x: 0, y: 0, z: 0}
       lifetimeOverrideSeconds: 0
       useUnscaledTime: 0
     particle:
-      prefab: {fileID: 0}
+      prefab: {fileID: 1412473672868303488, guid: c257fcc31167b184e9a65f583e74626f, type: 3}
       localOffset: {x: 0, y: 0, z: 0}
       rotationOffsetZ: 0
       scaleMultiplier: {x: 0, y: 0, z: 0}

@@ -330,12 +330,14 @@ namespace UnityGAS
         public SoundRef audioOnCastStart;
 
         [Tooltip("캐스팅 중 유지되는 루프 사운드")]
+        [Tooltip("Starts once on cast enter and loops until cast commit or cast cancel. Not retriggered every frame.")]
         public SoundRef audioWhileCasting;
 
         [Tooltip("Commit 시점에 1회 재생되는 사운드")]
         public SoundRef audioOnCommit;
 
         [Tooltip("실행 중 유지되는 루프 사운드")]
+        [Tooltip("Starts once on execution enter and loops until execution ends or is cancelled. Not retriggered every frame.")]
         public SoundRef audioWhileActive;
 
         [Tooltip("정상 종료 시 1회 재생되는 사운드")]
@@ -352,8 +354,10 @@ namespace UnityGAS
 
         [Header("Camera Shake (Optional)")]
         public CameraShakeHook cameraShakeOnCastStart;
+        [Tooltip("Played once on cast enter. Use a custom sustained camera solution if a continuous shake is needed.")]
         public CameraShakeHook cameraShakeWhileCasting;
         public CameraShakeHook cameraShakeOnCommit;
+        [Tooltip("Played once on execution enter. Use a custom sustained camera solution if a continuous shake is needed.")]
         public CameraShakeHook cameraShakeWhileActive;
         public CameraShakeHook cameraShakeOnEnd;
         public CameraShakeHook cameraShakeOnCastCancelled;
@@ -362,8 +366,10 @@ namespace UnityGAS
 
         [Header("Spawned Presentation (Optional)")]
         public WorldPresentationHook presentationOnCastStart;
+        [Tooltip("Spawned once on cast enter. Use a looping prefab or ManualRelease lifetime when persistence is needed.")]
         public WorldPresentationHook presentationWhileCasting;
         public WorldPresentationHook presentationOnCommit;
+        [Tooltip("Spawned once on execution enter. Use a looping prefab or ManualRelease lifetime when persistence is needed.")]
         public WorldPresentationHook presentationWhileActive;
         public WorldPresentationHook presentationOnEnd;
         public WorldPresentationHook presentationOnCastCancelled;
@@ -375,12 +381,14 @@ namespace UnityGAS
         public List<GameplayTag> cuesOnCastStart = new List<GameplayTag>();
 
         [Tooltip("캐스팅 중 유지할 cue 목록")]
+        [Tooltip("Added once on cast enter and removed once on cast commit/cancel.")]
         public List<GameplayTag> cuesWhileCasting = new List<GameplayTag>();
 
         [Tooltip("Commit 시 실행할 cue 목록")]
         public List<GameplayTag> cuesOnCommit = new List<GameplayTag>();
 
         [Tooltip("실행 중 유지할 cue 목록")]
+        [Tooltip("Added once on execution enter and removed once on execution end/cancel.")]
         public List<GameplayTag> cuesWhileActive = new List<GameplayTag>();
 
         [Tooltip("정상 종료 시 실행할 cue 목록")]
@@ -579,6 +587,64 @@ namespace UnityGAS
             MigrateLegacyCueFields();
             _tagMasksCompiled = false;
         }
+
+        public GameplayPresentationPhase GetCastStartPhase() => GameplayPresentationPhase.Create(
+            audioOnCastStart,
+            cameraShakeOnCastStart,
+            presentationOnCastStart,
+            cuesOnCastStart,
+            cueOnCastStart);
+
+        public GameplayPresentationPhase GetWhileCastingPhase() => GameplayPresentationPhase.Create(
+            audioWhileCasting,
+            cameraShakeWhileCasting,
+            presentationWhileCasting,
+            cuesWhileCasting,
+            cueWhileCasting);
+
+        public GameplayPresentationPhase GetCommitPhase() => GameplayPresentationPhase.Create(
+            audioOnCommit,
+            cameraShakeOnCommit,
+            presentationOnCommit,
+            cuesOnCommit,
+            cueOnCommit);
+
+        public GameplayPresentationPhase GetWhileActivePhase() => GameplayPresentationPhase.Create(
+            audioWhileActive,
+            cameraShakeWhileActive,
+            presentationWhileActive,
+            cuesWhileActive,
+            cueWhileActive);
+
+        public GameplayPresentationPhase GetEndPhase() => GameplayPresentationPhase.Create(
+            audioOnEnd,
+            cameraShakeOnEnd,
+            presentationOnEnd,
+            cuesOnEnd,
+            cueOnEnd);
+
+        public GameplayPresentationPhase GetCastCancelledPhase() => GameplayPresentationPhase.Create(
+            audioOnCastCancelled,
+            cameraShakeOnCastCancelled,
+            presentationOnCastCancelled,
+            cuesOnCastCancelled,
+            cueOnCastCancelled);
+
+        public GameplayPresentationPhase GetExecutionCancelledPhase() => GameplayPresentationPhase.Create(
+            audioOnExecutionCancelled,
+            cameraShakeOnExecutionCancelled,
+            presentationOnExecutionCancelled,
+            cuesOnExecutionCancelled,
+            cueOnExecutionCancelled);
+
+        public GameplayPresentationPhase GetHitConfirmedPhase() => GameplayPresentationPhase.Create(
+            default,
+            cameraShakeOnHitConfirmed,
+            presentationOnHitConfirmed,
+            cuesOnHitConfirmed,
+            cueOnHitConfirmed,
+            additionalCuesOnHitConfirmed,
+            hitCueMagnitude);
 
         public IEnumerable<GameplayTag> EnumerateCuesOnCastStart() => EnumerateCueTags(cuesOnCastStart, cueOnCastStart);
         public IEnumerable<GameplayTag> EnumerateCuesWhileCasting() => EnumerateCueTags(cuesWhileCasting, cueWhileCasting);

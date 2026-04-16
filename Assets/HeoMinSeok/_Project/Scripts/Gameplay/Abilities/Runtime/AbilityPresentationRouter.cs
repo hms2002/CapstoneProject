@@ -68,21 +68,27 @@ namespace UnityGAS
             if (def == null)
                 return;
 
+            GameplayPresentationPhase castStartPhase = def.GetCastStartPhase();
+            GameplayPresentationPhase whileCastingPhase = def.GetWhileCastingPhase();
             var p = BuildCueParamsForAbility(def, target);
-            StartOrReplaceLoop(castingLoopHandles, spec, def.audioWhileCasting, p);
+            StartOrReplaceLoop(castingLoopHandles, spec, whileCastingPhase.Sound, p);
             WorldPresentationRuntime.PlayMerged(
-                def.presentationOnCastStart,
-                def.audioOnCastStart,
-                def.cameraShakeOnCastStart,
+                castStartPhase.Presentation,
+                castStartPhase.Sound,
+                castStartPhase.CameraShake,
                 BuildWorldPresentationContext(p));
+            // Sustained cast phase:
+            // - sound loops while casting
+            // - presentation / shake fire once on enter
+            // - cues are added here and removed on commit/cancel
             WorldPresentationRuntime.PlayMerged(
-                def.presentationWhileCasting,
+                whileCastingPhase.Presentation,
                 default,
-                def.cameraShakeWhileCasting,
+                whileCastingPhase.CameraShake,
                 BuildWorldPresentationContext(p));
 
-            ExecuteCues(def.EnumerateCuesOnCastStart(), p);
-            AddCues(def.EnumerateCuesWhileCasting(), p);
+            ExecuteCues(castStartPhase.EnumerateCues(), p);
+            AddCues(whileCastingPhase.EnumerateCues(), p);
         }
 
         public void PlayCastCommit(AbilityDefinition def, AbilitySpec spec, GameObject target)
@@ -90,16 +96,18 @@ namespace UnityGAS
             if (def == null)
                 return;
 
+            GameplayPresentationPhase commitPhase = def.GetCommitPhase();
+            GameplayPresentationPhase whileCastingPhase = def.GetWhileCastingPhase();
             var p = BuildCueParamsForAbility(def, target);
             StopLoop(castingLoopHandles, spec);
             WorldPresentationRuntime.PlayMerged(
-                def.presentationOnCommit,
-                def.audioOnCommit,
-                def.cameraShakeOnCommit,
+                commitPhase.Presentation,
+                commitPhase.Sound,
+                commitPhase.CameraShake,
                 BuildWorldPresentationContext(p));
 
-            RemoveCues(def.EnumerateCuesWhileCasting(), p);
-            ExecuteCues(def.EnumerateCuesOnCommit(), p);
+            RemoveCues(whileCastingPhase.EnumerateCues(), p);
+            ExecuteCues(commitPhase.EnumerateCues(), p);
         }
 
         public void PlayCastCancelled(AbilityDefinition def, AbilitySpec spec, GameObject target)
@@ -107,16 +115,18 @@ namespace UnityGAS
             if (def == null)
                 return;
 
+            GameplayPresentationPhase cancelledPhase = def.GetCastCancelledPhase();
+            GameplayPresentationPhase whileCastingPhase = def.GetWhileCastingPhase();
             var p = BuildCueParamsForAbility(def, target);
             StopLoop(castingLoopHandles, spec);
             WorldPresentationRuntime.PlayMerged(
-                def.presentationOnCastCancelled,
-                def.audioOnCastCancelled,
-                def.cameraShakeOnCastCancelled,
+                cancelledPhase.Presentation,
+                cancelledPhase.Sound,
+                cancelledPhase.CameraShake,
                 BuildWorldPresentationContext(p));
 
-            RemoveCues(def.EnumerateCuesWhileCasting(), p);
-            ExecuteCues(def.EnumerateCuesOnCastCancelled(), p);
+            RemoveCues(whileCastingPhase.EnumerateCues(), p);
+            ExecuteCues(cancelledPhase.EnumerateCues(), p);
         }
 
         public void PlayExecutionStart(AbilityDefinition def, AbilitySpec spec, GameObject target)
@@ -124,15 +134,20 @@ namespace UnityGAS
             if (def == null)
                 return;
 
+            GameplayPresentationPhase whileActivePhase = def.GetWhileActivePhase();
             var p = BuildCueParamsForAbility(def, target);
-            StartOrReplaceLoop(activeLoopHandles, spec, def.audioWhileActive, p);
+            StartOrReplaceLoop(activeLoopHandles, spec, whileActivePhase.Sound, p);
+            // Sustained execution phase:
+            // - sound loops while executing
+            // - presentation / shake fire once on enter
+            // - cues are added here and removed on end/cancel
             WorldPresentationRuntime.PlayMerged(
-                def.presentationWhileActive,
+                whileActivePhase.Presentation,
                 default,
-                def.cameraShakeWhileActive,
+                whileActivePhase.CameraShake,
                 BuildWorldPresentationContext(p));
 
-            AddCues(def.EnumerateCuesWhileActive(), p);
+            AddCues(whileActivePhase.EnumerateCues(), p);
         }
 
         public void PlayExecutionEnd(AbilityDefinition def, AbilitySpec spec, GameObject target, bool cancelled)
@@ -140,30 +155,33 @@ namespace UnityGAS
             if (def == null)
                 return;
 
+            GameplayPresentationPhase whileActivePhase = def.GetWhileActivePhase();
             var p = BuildCueParamsForAbility(def, target);
             StopLoop(activeLoopHandles, spec);
 
-            RemoveCues(def.EnumerateCuesWhileActive(), p);
+            RemoveCues(whileActivePhase.EnumerateCues(), p);
 
             if (cancelled)
             {
+                GameplayPresentationPhase cancelledPhase = def.GetExecutionCancelledPhase();
                 WorldPresentationRuntime.PlayMerged(
-                    def.presentationOnExecutionCancelled,
-                    def.audioOnExecutionCancelled,
-                    def.cameraShakeOnExecutionCancelled,
+                    cancelledPhase.Presentation,
+                    cancelledPhase.Sound,
+                    cancelledPhase.CameraShake,
                     BuildWorldPresentationContext(p));
 
-                ExecuteCues(def.EnumerateCuesOnExecutionCancelled(), p);
+                ExecuteCues(cancelledPhase.EnumerateCues(), p);
             }
             else
             {
+                GameplayPresentationPhase endPhase = def.GetEndPhase();
                 WorldPresentationRuntime.PlayMerged(
-                    def.presentationOnEnd,
-                    def.audioOnEnd,
-                    def.cameraShakeOnEnd,
+                    endPhase.Presentation,
+                    endPhase.Sound,
+                    endPhase.CameraShake,
                     BuildWorldPresentationContext(p));
 
-                ExecuteCues(def.EnumerateCuesOnEnd(), p);
+                ExecuteCues(endPhase.EnumerateCues(), p);
             }
         }
 

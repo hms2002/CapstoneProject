@@ -61,21 +61,18 @@ namespace CapstoneAudio.EditorTools
             if (property.isExpanded)
             {
                 lineRect.y += lineHeight + spacing;
-
-                Rect leftRect = new Rect(lineRect.x, lineRect.y, lineRect.width * 0.45f, lineHeight);
-                Rect rightRect = new Rect(leftRect.xMax + 6f, lineRect.y, lineRect.width - leftRect.width - 6f, lineHeight);
-                EditorGUI.PropertyField(leftRect, volumeMultiplierProperty);
-                EditorGUI.PropertyField(rightRect, anchorPolicyProperty);
-
-                lineRect.y += lineHeight + spacing;
-                EditorGUI.PropertyField(lineRect, localOffsetProperty);
+                DrawPropertyLine(ref lineRect, volumeMultiplierProperty, spacing);
+                DrawPropertyLine(ref lineRect, anchorPolicyProperty, spacing);
+                DrawPropertyLine(ref lineRect, localOffsetProperty, spacing);
             }
 
             if (!string.IsNullOrWhiteSpace(keyProperty.stringValue)
                 && !AudioCatalogEditorUtility.KeyExists(keyProperty.stringValue))
             {
-                lineRect.y += lineHeight + spacing;
-                EditorGUI.HelpBox(lineRect, $"Catalog key '{keyProperty.stringValue}' was not found.", MessageType.Warning);
+                lineRect.y += spacing;
+                float helpHeight = GetWarningHeight(keyProperty.stringValue, lineRect.width);
+                Rect helpRect = new Rect(lineRect.x, lineRect.y, lineRect.width, helpHeight);
+                EditorGUI.HelpBox(helpRect, $"Catalog key '{keyProperty.stringValue}' was not found.", MessageType.Warning);
             }
 
             EditorGUI.EndProperty();
@@ -88,16 +85,40 @@ namespace CapstoneAudio.EditorTools
             float height = (lineHeight * 3f) + (spacing * 2f);
 
             if (property.isExpanded)
-                height += (lineHeight * 2f) + (spacing * 2f);
+            {
+                height += GetExpandedPropertyHeight(property.FindPropertyRelative("volumeMultiplier"), spacing);
+                height += GetExpandedPropertyHeight(property.FindPropertyRelative("anchorPolicy"), spacing);
+                height += GetExpandedPropertyHeight(property.FindPropertyRelative("localOffset"), spacing);
+            }
 
             SerializedProperty keyProperty = property.FindPropertyRelative("key");
             if (!string.IsNullOrWhiteSpace(keyProperty.stringValue)
                 && !AudioCatalogEditorUtility.KeyExists(keyProperty.stringValue))
             {
-                height += lineHeight + spacing;
+                height += GetWarningHeight(keyProperty.stringValue, EditorGUIUtility.currentViewWidth) + spacing;
             }
 
             return height + BottomPadding;
+        }
+
+        private static void DrawPropertyLine(ref Rect lineRect, SerializedProperty property, float spacing)
+        {
+            float propertyHeight = EditorGUI.GetPropertyHeight(property, true);
+            lineRect.height = propertyHeight;
+            EditorGUI.PropertyField(lineRect, property, true);
+            lineRect.y += propertyHeight + spacing;
+            lineRect.height = EditorGUIUtility.singleLineHeight;
+        }
+
+        private static float GetExpandedPropertyHeight(SerializedProperty property, float spacing)
+        {
+            return EditorGUI.GetPropertyHeight(property, true) + spacing;
+        }
+
+        private static float GetWarningHeight(string key, float width)
+        {
+            string message = $"Catalog key '{key}' was not found.";
+            return EditorStyles.helpBox.CalcHeight(new GUIContent(message), Mathf.Max(120f, width));
         }
 
         private static void ShowKeyPicker(SerializedObject serializedObject, string keyPropertyPath, string volumeMultiplierPath)

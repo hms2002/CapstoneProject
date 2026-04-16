@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using CapstoneRuntime;
 using Unity.Cinemachine;
 using UnityEngine;
 
@@ -28,9 +29,9 @@ public sealed class CameraShakeService : MonoBehaviour
             return Instance;
 
 #if UNITY_2023_1_OR_NEWER
-        CameraShakeService existing = FindAnyObjectByType<CameraShakeService>();
+        CameraShakeService existing = RuntimeServiceOwnership.FindExistingService<CameraShakeService>();
 #else
-        CameraShakeService existing = FindObjectOfType<CameraShakeService>();
+        CameraShakeService existing = RuntimeServiceOwnership.FindExistingService<CameraShakeService>();
 #endif
         if (existing != null)
         {
@@ -38,7 +39,7 @@ public sealed class CameraShakeService : MonoBehaviour
             return existing;
         }
 
-        GameObject root = new GameObject(nameof(CameraShakeService));
+        GameObject root = RuntimeServiceOwnership.CreateServiceHost(nameof(CameraShakeService));
         return root.AddComponent<CameraShakeService>();
     }
 
@@ -74,7 +75,7 @@ public sealed class CameraShakeService : MonoBehaviour
         }
 
         Instance = this;
-        DontDestroyOnLoad(gameObject);
+        RuntimeServiceOwnership.Adopt(this);
     }
 
     private void OnDestroy()

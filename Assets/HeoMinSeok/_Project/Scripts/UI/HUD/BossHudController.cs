@@ -112,7 +112,7 @@ public sealed class BossHudController : MonoBehaviour
     {
         ResolveSlideRoot();
 
-        if (targetBoss == null && autoFindBossOnSceneLoad)
+        if (targetBoss == null && ShouldUseAutoFindFallback())
             targetBoss = FindAnyObjectByType<BossControllerBase>();
 
         if (targetBoss == null)
@@ -129,6 +129,18 @@ public sealed class BossHudController : MonoBehaviour
         SetHudVisible(true);
         ApplyStaticVisuals();
         RefreshAll();
+    }
+
+    private bool ShouldUseAutoFindFallback()
+    {
+        if (!autoFindBossOnSceneLoad)
+            return false;
+
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        return true;
+#else
+        return false;
+#endif
     }
 
     /// <summary>

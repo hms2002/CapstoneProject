@@ -4,6 +4,13 @@ using UnityEngine;
 
 namespace CapstonePresentation
 {
+    public enum PresentationLifetimeMode
+    {
+        AutoDetect,
+        FixedSeconds,
+        ManualRelease
+    }
+
     [Serializable]
     public struct SpawnedPresentationHook
     {
@@ -11,10 +18,12 @@ namespace CapstonePresentation
         public Vector3 localOffset;
         public float rotationOffsetZ;
         public Vector3 scaleMultiplier;
+        public PresentationLifetimeMode lifetimeMode;
         [Min(0f)] public float lifetimeOverrideSeconds;
         public bool useUnscaledTime;
 
         public bool HasContent => prefab != null;
+        public bool ShouldAutoRelease => lifetimeMode != PresentationLifetimeMode.ManualRelease;
 
         public Vector3 EffectiveScaleMultiplier =>
             scaleMultiplier == Vector3.zero ? Vector3.one : scaleMultiplier;

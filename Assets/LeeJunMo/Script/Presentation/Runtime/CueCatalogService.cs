@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using CapstoneRuntime;
 using UnityEngine;
 
 namespace CapstonePresentation
@@ -41,7 +42,7 @@ namespace CapstonePresentation
             }
 
             Instance = this;
-            DontDestroyOnLoad(gameObject);
+            RuntimeServiceOwnership.Adopt(this);
         }
 
         private void OnDestroy()
@@ -56,9 +57,9 @@ namespace CapstonePresentation
                 return Instance;
 
 #if UNITY_2023_1_OR_NEWER
-            Instance = FindAnyObjectByType<CueCatalogService>();
+            Instance = RuntimeServiceOwnership.FindExistingService<CueCatalogService>();
 #else
-            Instance = FindObjectOfType<CueCatalogService>();
+            Instance = RuntimeServiceOwnership.FindExistingService<CueCatalogService>();
 #endif
             return Instance;
         }

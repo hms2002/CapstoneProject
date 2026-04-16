@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CapstonePresentation.CueCatalogSO
   entries:
   - key: 
-    cue: {fileID: 0}
+    cue: {fileID: 11400000, guid: 5e6defda15ef9e44ba7d0391262d053f, type: 2}

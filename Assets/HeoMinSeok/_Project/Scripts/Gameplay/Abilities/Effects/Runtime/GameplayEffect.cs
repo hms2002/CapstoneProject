@@ -56,16 +56,19 @@ namespace UnityGAS
 
         [Header("Audio (Optional)")]
         public SoundRef audioOnExecute;
+        [Tooltip("Loops once when the effect becomes active and stops when the effect is removed.")]
         public SoundRef audioWhileActive;
         public SoundRef audioOnRemove;
 
         [Header("Camera Shake (Optional)")]
         public CameraShakeHook cameraShakeOnExecute;
+        [Tooltip("Played once on active enter. Not retriggered every frame while the effect remains active.")]
         public CameraShakeHook cameraShakeWhileActive;
         public CameraShakeHook cameraShakeOnRemove;
 
         [Header("Spawned Presentation (Optional)")]
         public WorldPresentationHook presentationOnExecute;
+        [Tooltip("Spawned once on active enter. Use a looping prefab or ManualRelease lifetime when persistence is needed.")]
         public WorldPresentationHook presentationWhileActive;
         public WorldPresentationHook presentationOnRemove;
 
@@ -74,6 +77,7 @@ namespace UnityGAS
         public GameplayTag cueOnExecute;
 
         [Tooltip("Duration 효과가 살아 있는 동안 유지되는 큐. Add/Remove 타이밍은 GameplayEffectRunner가 관리한다.")]
+        [Tooltip("Added once on active enter and removed once on active exit. GameplayEffectRunner owns the Add/Remove timing.")]
         public GameplayTag cueWhileActive;
 
         [Tooltip("Duration 효과가 종료되거나 제거될 때 1회 실행되는 큐.")]
@@ -81,6 +85,27 @@ namespace UnityGAS
 
         public bool IsInstant => duration <= 0f;
         public bool IsDuration => duration > 0f;
+
+        public GameplayPresentationPhase GetExecutePhase() => GameplayPresentationPhase.Create(
+            audioOnExecute,
+            cameraShakeOnExecute,
+            presentationOnExecute,
+            cues: null,
+            legacyCue: cueOnExecute);
+
+        public GameplayPresentationPhase GetWhileActivePhase() => GameplayPresentationPhase.Create(
+            audioWhileActive,
+            cameraShakeWhileActive,
+            presentationWhileActive,
+            cues: null,
+            legacyCue: cueWhileActive);
+
+        public GameplayPresentationPhase GetRemovePhase() => GameplayPresentationPhase.Create(
+            audioOnRemove,
+            cameraShakeOnRemove,
+            presentationOnRemove,
+            cues: null,
+            legacyCue: cueOnRemove);
 
         /// <summary>
         /// 효과 payload 적용 훅.

@@ -10,6 +10,11 @@ namespace UnityGAS
     /// - 비GAS 수동 연출도 GE/Ability와 같은 execute/whileActive/remove 구조로 오디오와 Cue를 재생한다.
     /// - 걷기, 허브 인트로처럼 직접 구현한 연출이더라도 같은 SoundRef / GameplayTag 규칙을 재사용하게 한다.
     /// </summary>
+    // Contract:
+    // - Execute / Remove phases are one-shot.
+    // - WhileActive sound is treated as a maintained loop.
+    // - WhileActive presentation and camera shake are enter pulses.
+    // - WhileActive cues are added on enter and removed on stop.
     public sealed class GameplayPresentationRuntime
     {
         private readonly GameObject ownerObject;
@@ -59,22 +64,30 @@ namespace UnityGAS
             if (!definition.HasAnyContent)
                 return;
 
-            GameplayCueParams executeParams = WithMagnitude(cueParams, definition.EffectiveExecuteCueMagnitude);
-            GameplayCueParams activeParams = WithMagnitude(cueParams, definition.EffectiveWhileActiveCueMagnitude);
+            GameplayPresentationPhase executePhase = definition.GetExecutePhase();
+            GameplayPresentationPhase activePhase = definition.GetWhileActivePhase();
+            GameplayCueParams executeParams = WithMagnitude(cueParams, executePhase.EffectiveCueMagnitude);
+            GameplayCueParams activeParams = WithMagnitude(cueParams, activePhase.EffectiveCueMagnitude);
 
+            // Execute content is always a one-shot pulse.
             WorldPresentationRuntime.PlayMerged(
-                definition.presentationOnExecute,
-                definition.audioOnExecute,
-                definition.cameraShakeOnExecute,
+                executePhase.Presentation,
+                executePhase.Sound,
+                executePhase.CameraShake,
                 BuildWorldPresentationContext(executeParams));
-            ExecuteCues(definition.EnumerateCuesOnExecute(), executeParams);
-            EnsureLoop(definition.audioWhileActive, activeParams);
+            ExecuteCues(executePhase.EnumerateCues(), executeParams);
+
+            // Sustained phase semantics:
+            // - sound loops while active
+            // - presentation / shake fire once on enter
+            // - cues stay added until Stop(...)
+            EnsureLoop(activePhase.Sound, activeParams);
             WorldPresentationRuntime.PlayMerged(
-                definition.presentationWhileActive,
+                activePhase.Presentation,
                 default,
-                definition.cameraShakeWhileActive,
+                activePhase.CameraShake,
                 BuildWorldPresentationContext(activeParams));
-            EnsureActiveCues(definition.EnumerateCuesWhileActive(), activeParams);
+            EnsureActiveCues(activePhase.EnumerateCues(), activeParams);
         }
 
         public void ExecuteOnly(in GameplayPresentationDefinition definition, in GameplayCueParams cueParams)
@@ -82,13 +95,14 @@ namespace UnityGAS
             if (!definition.HasAnyContent)
                 return;
 
-            GameplayCueParams executeParams = WithMagnitude(cueParams, definition.EffectiveExecuteCueMagnitude);
+            GameplayPresentationPhase executePhase = definition.GetExecutePhase();
+            GameplayCueParams executeParams = WithMagnitude(cueParams, executePhase.EffectiveCueMagnitude);
             WorldPresentationRuntime.PlayMerged(
-                definition.presentationOnExecute,
-                definition.audioOnExecute,
-                definition.cameraShakeOnExecute,
+                executePhase.Presentation,
+                executePhase.Sound,
+                executePhase.CameraShake,
                 BuildWorldPresentationContext(executeParams));
-            ExecuteCues(definition.EnumerateCuesOnExecute(), executeParams);
+            ExecuteCues(executePhase.EnumerateCues(), executeParams);
         }
 
         public void Stop(in GameplayPresentationDefinition definition, in GameplayCueParams cueParams, bool playRemove)
@@ -99,13 +113,14 @@ namespace UnityGAS
             if (!playRemove || !definition.HasAnyContent)
                 return;
 
-            GameplayCueParams removeParams = WithMagnitude(cueParams, definition.EffectiveRemoveCueMagnitude);
+            GameplayPresentationPhase removePhase = definition.GetRemovePhase();
+            GameplayCueParams removeParams = WithMagnitude(cueParams, removePhase.EffectiveCueMagnitude);
             WorldPresentationRuntime.PlayMerged(
-                definition.presentationOnRemove,
-                definition.audioOnRemove,
-                definition.cameraShakeOnRemove,
+                removePhase.Presentation,
+                removePhase.Sound,
+                removePhase.CameraShake,
                 BuildWorldPresentationContext(removeParams));
-            ExecuteCues(definition.EnumerateCuesOnRemove(), removeParams);
+            ExecuteCues(removePhase.EnumerateCues(), removeParams);
         }
 
         private static WorldPresentationContext BuildWorldPresentationContext(in GameplayCueParams cueParams)
