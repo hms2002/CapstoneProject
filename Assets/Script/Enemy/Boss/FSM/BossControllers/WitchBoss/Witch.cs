@@ -52,6 +52,8 @@ public class Witch : BossControllerBase, IWitchPatternStateBridge
     private AbilityDefinition sealedCandleRampageAbility;
     private AbilityDefinition lightAllCandlesAbility;
     private readonly List<Candlestick> runtimeSpawnedCandles = new();
+    private readonly List<LightBeadProjectile2D> activeRampageProjectiles = new();
+    private readonly List<DeadsSkeleton> activeRetreatSummons = new();
     private WitchShieldController shieldController;
     private WitchShieldVisualController shieldVisualController;
     private CameraPresentationDirector cameraPresentationDirector;
@@ -108,6 +110,11 @@ public class Witch : BossControllerBase, IWitchPatternStateBridge
     protected override void OnPatternEnd(BossPatternEntry patternEntry, bool forced)
     {
         HideExtinguishWarning();
+        if (forced || IsSealedCandleRampagePattern(patternEntry))
+            ClearActiveRampageProjectiles();
+        if (forced)
+            ClearActiveRetreatSummons();
+
         if (patternEntry != null && patternEntry.Ability != null && patternEntry.Ability.logic is AbilityLogic_WitchLightAllCandles)
         {
             if (patternEntry.Ability.logic is AbilityLogic_WitchLightAllCandles lightAllCandlesLogic)
@@ -167,6 +174,8 @@ public class Witch : BossControllerBase, IWitchPatternStateBridge
 
     protected override void OnDestroy()
     {
+        ClearActiveRetreatSummons();
+        ClearActiveRampageProjectiles();
         base.OnDestroy();
     }
 
@@ -223,6 +232,15 @@ public class Witch : BossControllerBase, IWitchPatternStateBridge
         if (patternEntry == null || patternEntry.Ability == null) return false;
 
         return patternEntry.Ability.logic is UnityGAS.Sample.AbilityLogic_WitchRetreatToCandle;
+    }
+
+    /// <summary>촛대 폭주 패턴인지 확인합니다.</summary>
+    private bool IsSealedCandleRampagePattern(BossPatternEntry patternEntry)
+    {
+        if (patternEntry == null || patternEntry.Ability == null)
+            return false;
+
+        return patternEntry.Ability.logic is AbilityLogic_WitchSealedCandleRampage;
     }
 
     /// <summary>촛불 끄기 패턴을 시작합니다.</summary>
@@ -322,6 +340,105 @@ public class Witch : BossControllerBase, IWitchPatternStateBridge
     public void HideExtinguishWarning()
     {
         extinguishPatternExecutor?.CancelPattern();
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 촛대 폭주 패턴이 생성한 투사체를 등록해 보스 사망/강제 종료 시 한 번에 회수할 수 있게 한다.
+    /// - 이미 파괴된 투사체 참조는 정리하면서 중복 등록을 막는다.
+    /// </summary>
+    public void RegisterRampageProjectile(LightBeadProjectile2D projectile)
+    {
+        if (projectile == null)
+            return;
+
+        CleanupNullRampageProjectiles();
+        if (activeRampageProjectiles.Contains(projectile))
+            return;
+
+        activeRampageProjectiles.Add(projectile);
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 촛대 폭주 투사체가 자연 소멸하거나 적중했을 때 등록 목록에서 빠지게 한다.
+    /// - 회수 목록에 이미 없는 투사체는 조용히 무시한다.
+    /// </summary>
+    public void UnregisterRampageProjectile(LightBeadProjectile2D projectile)
+    {
+        if (projectile == null)
+            return;
+
+        activeRampageProjectiles.Remove(projectile);
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 피난 패턴이 소환한 강화 해골을 등록해 보스 사망/강제 종료 때 Die 경로로 정리할 수 있게 한다.
+    /// - 이미 사라진 참조를 정리하면서 중복 등록을 막아 목록을 안정적으로 유지한다.
+    /// </summary>
+    public void RegisterRetreatSummon(DeadsSkeleton skeleton)
+    {
+        if (skeleton == null)
+            return;
+
+        CleanupNullRetreatSummons();
+        if (activeRetreatSummons.Contains(skeleton))
+            return;
+
+        activeRetreatSummons.Add(skeleton);
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 보스 사망/패턴 강제 종료 시 남아 있는 촛대 폭주 투사체를 즉시 제거한다.
+    /// - 다음 패턴이나 연출 중 lingering projectile이 플레이어를 계속 위협하지 않게 정리한다.
+    /// </summary>
+    public void ClearActiveRampageProjectiles()
+    {
+        for (int i = activeRampageProjectiles.Count - 1; i >= 0; i--)
+        {
+            LightBeadProjectile2D projectile = activeRampageProjectiles[i];
+            if (projectile != null)
+                CombatEntityCleanupUtil.Cleanup(projectile.gameObject, gameObject);
+        }
+
+        activeRampageProjectiles.Clear();
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 보스 사망/강제 종료 시 피난 패턴이 남긴 강화 해골들에게 Die 경로를 요청한다.
+    /// - 해골이 가진 드롭, 사망 연출, 내부 패턴 정리가 Destroy 대신 공통 사망 흐름을 타게 만든다.
+    /// </summary>
+    public void ClearActiveRetreatSummons()
+    {
+        for (int i = activeRetreatSummons.Count - 1; i >= 0; i--)
+        {
+            DeadsSkeleton skeleton = activeRetreatSummons[i];
+            if (skeleton != null)
+                CombatEntityCleanupUtil.Cleanup(skeleton.gameObject, gameObject);
+        }
+
+        activeRetreatSummons.Clear();
+    }
+
+    private void CleanupNullRampageProjectiles()
+    {
+        for (int i = activeRampageProjectiles.Count - 1; i >= 0; i--)
+        {
+            if (activeRampageProjectiles[i] == null)
+                activeRampageProjectiles.RemoveAt(i);
+        }
+    }
+
+    private void CleanupNullRetreatSummons()
+    {
+        for (int i = activeRetreatSummons.Count - 1; i >= 0; i--)
+        {
+            if (activeRetreatSummons[i] == null)
+                activeRetreatSummons.RemoveAt(i);
+        }
     }
 
     /// <summary>
@@ -530,6 +647,7 @@ public class Witch : BossControllerBase, IWitchPatternStateBridge
         }
 
         skeleton.SetBoost(Target, explosionDiameter, speedScale, true);
+        RegisterRetreatSummon(skeleton);
         return true;
     }
 

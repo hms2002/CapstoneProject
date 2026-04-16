@@ -10,7 +10,7 @@ using UnityGAS;
 [RequireComponent(typeof(TagSystem))]
 [RequireComponent(typeof(MovementMotor2D), typeof(AttributeStatSource), typeof(AbilityMotionController2D))]
 [RequireComponent(typeof(ExternalMovementController2D), typeof(KnockbackReceiver2D))]
-public class Enemy : MonoBehaviour
+public class Enemy : MonoBehaviour, ICombatDeathCommand
 {
     private const float DeathStateEnterTimeout = 1f;
     private const float DeathDestroyFailSafeTimeout = 5f;
@@ -115,6 +115,12 @@ public class Enemy : MonoBehaviour
         StopDeathGameplay();
         PlayDeathAnimation();
         DestroyAfterDelay();
+    }
+
+    /// <summary>외부 시스템이 적에게 안전한 사망 명령을 보낼 수 있는 공용 인터페이스 구현입니다.</summary>
+    public void RequestDeath(GameObject killer = null)
+    {
+        Die();
     }
 
     /// <summary>파생 클래스가 공통 사망 처리 시작 직전에 전용 정리를 끼워 넣는 훅입니다.</summary>

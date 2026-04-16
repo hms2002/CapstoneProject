@@ -87,6 +87,13 @@ public static class WitchProjectileAttackHelper
         };
 
         projectile.Setup(context);
+
+        Witch witchOwner = causer.GetComponent<Witch>();
+        if (witchOwner != null)
+        {
+            projectile.BindRampageOwner(witchOwner);
+            witchOwner.RegisterRampageProjectile(projectile);
+        }
     }
 
     private static CombatHitPayload BuildPayload(

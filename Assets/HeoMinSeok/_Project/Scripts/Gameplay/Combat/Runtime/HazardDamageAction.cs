@@ -20,6 +20,9 @@ namespace UnityGAS
             if (targetSystem == null || target == null || damageEffect == null)
                 return;
 
+            if (CombatInvulnerabilityUtil.IsDamageSuppressed(target, damageEffect))
+                return;
+
             if (CombatEvasionUtil.TryRollEvasion(target))
             {
                 DamagePopupService.ShowText("EVADE", target.transform.position);

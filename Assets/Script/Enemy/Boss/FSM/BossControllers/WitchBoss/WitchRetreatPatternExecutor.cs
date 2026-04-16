@@ -92,6 +92,7 @@ public sealed class WitchRetreatPatternExecutor : MonoBehaviour
             explosionDiameter,
             speedScale,
             true);
+        owner.RegisterRetreatSummon(skeleton);
         return true;
     }
 }
