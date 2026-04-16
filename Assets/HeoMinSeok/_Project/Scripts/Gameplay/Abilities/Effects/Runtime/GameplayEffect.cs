@@ -76,8 +76,7 @@ namespace UnityGAS
         [Tooltip("효과가 실행될 때 1회 실행되는 큐. Duration 효과는 Runner 정책에 따라 최초 적용/갱신 시 실행될 수 있다.")]
         public GameplayTag cueOnExecute;
 
-        [Tooltip("Duration 효과가 살아 있는 동안 유지되는 큐. Add/Remove 타이밍은 GameplayEffectRunner가 관리한다.")]
-        [Tooltip("Added once on active enter and removed once on active exit. GameplayEffectRunner owns the Add/Remove timing.")]
+        [Tooltip("Duration 효과가 살아 있는 동안 유지되는 큐. active enter 시 1회 추가되고 active exit 시 1회 제거된다.")]
         public GameplayTag cueWhileActive;
 
         [Tooltip("Duration 효과가 종료되거나 제거될 때 1회 실행되는 큐.")]

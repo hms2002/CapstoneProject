@@ -329,15 +329,13 @@ namespace UnityGAS
         [Tooltip("캐스팅 시작 시 1회 재생되는 사운드")]
         public SoundRef audioOnCastStart;
 
-        [Tooltip("캐스팅 중 유지되는 루프 사운드")]
-        [Tooltip("Starts once on cast enter and loops until cast commit or cast cancel. Not retriggered every frame.")]
+        [Tooltip("캐스팅 중 유지되는 루프 사운드. cast enter 시 1회 시작되고 commit 또는 cancel 때까지 유지된다.")]
         public SoundRef audioWhileCasting;
 
         [Tooltip("Commit 시점에 1회 재생되는 사운드")]
         public SoundRef audioOnCommit;
 
-        [Tooltip("실행 중 유지되는 루프 사운드")]
-        [Tooltip("Starts once on execution enter and loops until execution ends or is cancelled. Not retriggered every frame.")]
+        [Tooltip("실행 중 유지되는 루프 사운드. execution enter 시 1회 시작되고 종료 또는 취소 때까지 유지된다.")]
         public SoundRef audioWhileActive;
 
         [Tooltip("정상 종료 시 1회 재생되는 사운드")]
@@ -380,15 +378,13 @@ namespace UnityGAS
         [Tooltip("캐스트 시작 시 실행할 cue 목록")]
         public List<GameplayTag> cuesOnCastStart = new List<GameplayTag>();
 
-        [Tooltip("캐스팅 중 유지할 cue 목록")]
-        [Tooltip("Added once on cast enter and removed once on cast commit/cancel.")]
+        [Tooltip("캐스팅 중 유지할 cue 목록. cast enter 시 1회 추가되고 commit/cancel 시 제거된다.")]
         public List<GameplayTag> cuesWhileCasting = new List<GameplayTag>();
 
         [Tooltip("Commit 시 실행할 cue 목록")]
         public List<GameplayTag> cuesOnCommit = new List<GameplayTag>();
 
-        [Tooltip("실행 중 유지할 cue 목록")]
-        [Tooltip("Added once on execution enter and removed once on execution end/cancel.")]
+        [Tooltip("실행 중 유지할 cue 목록. execution enter 시 1회 추가되고 execution end/cancel 시 제거된다.")]
         public List<GameplayTag> cuesWhileActive = new List<GameplayTag>();
 
         [Tooltip("정상 종료 시 실행할 cue 목록")]
