@@ -40,7 +40,12 @@
         ]
     },
     "affectionData": {
-        "affectionRecords": []
+        "affectionRecords": [
+            {
+                "npcId": 1003,
+                "amount": 11
+            }
+        ]
     },
     "itemData": {
         "unlockedWeaponIDs": [

@@ -11,13 +11,16 @@ public class AbilityLogic_WitchBasicAttack2 : AbilityLogic
     // 이 클래스의 책임:
     // 마녀 보스의 평타2 패턴을 실행하고 마녀 중심 도넛 범위를 경고한 뒤 지연 피해를 적용한다.
 
-    private const float WarningSeconds = 1.4f;
+    private const float FallbackWarningSeconds = 1.4f;
     private readonly HashSet<GameObject> damagedTargets = new();
 
     [Header("Donut Range")]
+    [SerializeField, Min(0f)] private float warningSeconds = FallbackWarningSeconds;
     [SerializeField, Min(0.1f)] private float fallbackOuterRadius = 6f;
     [SerializeField, Min(0f)] private float innerSafeDiameterScale = 1.5f;
     [SerializeField, Min(0f)] private float minimumInnerSafeRadius = 0.75f;
+    [SerializeField] private GE_Damage_Spec damageEffect;
+    [SerializeField] private float damageAmount = 1f;
 
     [Header("Hit Presentation")]
     [SerializeField] [Min(1)] private int hitEffectCount = 8;
@@ -61,13 +64,15 @@ public class AbilityLogic_WitchBasicAttack2 : AbilityLogic
         MigrateLegacyHitPresentation();
 
         Witch witch = system != null ? system.GetComponent<Witch>() : null;
-        if (witch == null || witch.ProjectileDamageEffect == null)
+        GE_Damage_Spec resolvedDamageEffect = ResolveDamageEffect(witch);
+        if (witch == null || resolvedDamageEffect == null)
             yield break;
 
         AttackTelegraphService telegraphService = witch.GetComponent<AttackTelegraphService>();
         Vector3 center = witch.transform.position;
         float outerRadius = ComputeOuterRadius(witch);
         float innerSafeRadius = ComputeInnerSafeRadius(initialTarget != null ? initialTarget.transform : witch.CurrentTarget);
+        float resolvedWarningSeconds = GetWarningSeconds();
 
         witch.PlayPatternAttackMotion();
         if (telegraphService != null)
@@ -76,11 +81,11 @@ public class AbilityLogic_WitchBasicAttack2 : AbilityLogic
                 center,
                 outerRadius * 2f,
                 innerSafeRadius * 2f,
-                WarningSeconds);
+                resolvedWarningSeconds);
             telegraphService.Show(warningSpec);
         }
 
-        yield return new WaitForSeconds(WarningSeconds);
+        yield return new WaitForSeconds(resolvedWarningSeconds);
         telegraphService?.HideCurrent();
 
         PlayHitPresentation(center, outerRadius, innerSafeRadius);
@@ -125,7 +130,7 @@ public class AbilityLogic_WitchBasicAttack2 : AbilityLogic
     private CombatHitPayload MakeHitPayload(Witch witch)
     {
         CombatDamageSnapshot snapshot = new CombatDamageSnapshot(
-            finalHpDamage: witch.ProjectileDamage,
+            finalHpDamage: ResolveDamageAmount(witch),
             finalStaggerBuildUp: 0f,
             finalKnockbackImpulse: 0f,
             elementBuildUps: null,
@@ -134,7 +139,7 @@ public class AbilityLogic_WitchBasicAttack2 : AbilityLogic
         return CombatHitPayload.FromSnapshot(
             sourceSystem: witch.AbilitySystem,
             sourceSpec: null,
-            damageEffect: witch.ProjectileDamageEffect,
+            damageEffect: ResolveDamageEffect(witch),
             knockbackEffect: null,
             snapshot: snapshot,
             hitConfirmedTag: null,
@@ -295,5 +300,23 @@ public class AbilityLogic_WitchBasicAttack2 : AbilityLogic
 
         if (!hitPresentation.HasShake && legacyHitCameraShake.amplitude > 0f)
             hitPresentation.cameraShake = legacyHitCameraShake;
+    }
+
+    private float GetWarningSeconds()
+    {
+        return Mathf.Max(0f, warningSeconds);
+    }
+
+    private GE_Damage_Spec ResolveDamageEffect(Witch witch)
+    {
+        if (damageEffect != null)
+            return damageEffect;
+
+        return witch != null ? witch.ProjectileDamageEffect : null;
+    }
+
+    private float ResolveDamageAmount(Witch witch)
+    {
+        return damageEffect != null ? damageAmount : witch != null ? witch.ProjectileDamage : damageAmount;
     }
 }
