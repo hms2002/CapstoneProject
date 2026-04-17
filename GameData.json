@@ -1,5 +1,5 @@
 {
-    "magicStone": 10,
+    "magicStone": 15,
     "upgradeData": {
         "purchasedIDs": [],
         "unlockedIDs": [
@@ -49,7 +49,7 @@
         "affectionRecords": [
             {
                 "npcId": 1003,
-                "amount": 16
+                "amount": 22
             }
         ]
     },

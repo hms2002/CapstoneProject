@@ -14,10 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   attributeName: Stagger
   description: "\uBCF4\uC2A4\uC758 \uADF8\uB85C\uAE30 \uAC8C\uC774\uC9C0\uC785\uB2C8\uB2E4."
-  mutationPolicy: 1
+  mutationPolicy: 0
   defaultBaseValue: 0
   minValue: 0
-  maxValue: 100
+  maxValue: 100000
   hasRegeneration: 0
   regenerationRate: 5
   regenerationDelay: 2

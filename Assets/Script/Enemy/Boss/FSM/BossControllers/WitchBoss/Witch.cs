@@ -110,7 +110,7 @@ public class Witch : BossControllerBase, IWitchPatternStateBridge
     protected override void OnPatternEnd(BossPatternEntry patternEntry, bool forced)
     {
         HideExtinguishWarning();
-        if (forced || IsSealedCandleRampagePattern(patternEntry))
+        if (ShouldClearRampageProjectilesOnPatternEnd(forced))
             ClearActiveRampageProjectiles();
         if (forced)
             ClearActiveRetreatSummons();
@@ -241,6 +241,22 @@ public class Witch : BossControllerBase, IWitchPatternStateBridge
             return false;
 
         return patternEntry.Ability.logic is AbilityLogic_WitchSealedCandleRampage;
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 촛대 폭주 탄막은 일반 패턴 전환에서는 유지하고, 전투가 강하게 끊기는 사망/그로기 상황에서만 회수 여부를 판정한다.
+    /// - 패턴 종료 훅이 다양한 이유로 호출돼도 탄막 회수 타이밍을 한 곳에서 일관되게 유지한다.
+    /// </summary>
+    private bool ShouldClearRampageProjectilesOnPatternEnd(bool forced)
+    {
+        if (IsDead)
+            return true;
+
+        if (!forced)
+            return false;
+
+        return HasDeadTag() || HasGroggyTag();
     }
 
     /// <summary>촛불 끄기 패턴을 시작합니다.</summary>
@@ -506,7 +522,7 @@ public class Witch : BossControllerBase, IWitchPatternStateBridge
     /// <summary>평타1 장판을 모두 지웁니다.</summary>
     public void ClearNormal1()
     {
-        runtimeData.ClearNormal1Tiles();
+        RuntimeData.ClearNormal1Tiles();
     }
 
     /// <summary>대화 State 사용 여부를 정합니다.</summary>
