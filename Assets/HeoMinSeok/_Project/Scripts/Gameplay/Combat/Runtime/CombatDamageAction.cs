@@ -216,6 +216,10 @@ public static class CombatDamageAction
         bool isCriticalHit)
     {
         if (!Validate(system, damageEffect, target)) return;
+
+        if (CombatInvulnerabilityUtil.IsDamageSuppressed(target, damageEffect as GE_Damage_Spec))
+            return;
+
         if (CombatEvasionUtil.TryRollEvasion(target))
         {
             DamagePopupService.ShowText("EVADE", target.transform.position);

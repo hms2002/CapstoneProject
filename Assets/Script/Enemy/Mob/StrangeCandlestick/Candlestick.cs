@@ -9,6 +9,8 @@ public class Candlestick : MonoBehaviour, IDamageReceiver
     // 이 클래스의 책임:
     // 촛대의 봉인 상태와 피격 가능 레이어를 관리한다.
 
+    private const string IsLightOnAnimatorBoolName = "isLightOn";
+
     private static readonly List<Candlestick> instances = new();
 
     private CandlestickSeal candlestickSeal;
@@ -102,12 +104,6 @@ public class Candlestick : MonoBehaviour, IDamageReceiver
         if (animator == null)
             return;
 
-        if (isSealed)
-        {
-            animator.SetTrigger("die");
-            return;
-        }
-
-        animator.Play("StrangeCandlestick_Idle", 0, 0f);
+        animator.SetBool(IsLightOnAnimatorBoolName, !isSealed);
     }
 }

@@ -1,32 +1,30 @@
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 [DisallowMultipleComponent]
 public class CandlestickSeal : MonoBehaviour
 {
     // 이 클래스의 책임:
-    // 촛대 봉인 상태와 남은 해제 타격 수를 관리하고, 봉인 상태에 맞춰 빛 연출/판정 루트를 켜고 끈다.
+    // 촛대 봉인 상태와 남은 해제 타격 수를 관리하고, 봉인 상태 변화에 맞춰 빛 루트를 제어하며 연출 구현체에 상태만 통지한다.
 
     private const int SealHitCount = 3;
-
-    private static Sprite markSprite;
-
-    private readonly List<SpriteRenderer> marks = new();
 
     [SerializeField] private GameObject lightVisualRoot;
     [SerializeField] private SpriteMask sightMask;
     [SerializeField] private CandlestickLightZone lightZone;
-    private SpriteRenderer ownerSprite;
+    [SerializeField] private MonoBehaviour[] presentationBehaviours;
+    private ICandlestickSealPresentation[] presentations = Array.Empty<ICandlestickSealPresentation>();
     private int hitsLeft;
     private bool isSealed;
 
     public bool IsSealed => isSealed;
+    public int CurrentHitsLeft => hitsLeft;
+    public int MaxSealHits => SealHitCount;
     public event Action<bool> SealChanged;
+    public event Action<int, int> SealStacksChanged;
 
     private void Awake()
     {
-        ownerSprite = GetComponent<SpriteRenderer>();
         if (lightVisualRoot == null)
             lightVisualRoot = FindLightVisualRoot();
 
@@ -36,8 +34,8 @@ public class CandlestickSeal : MonoBehaviour
         if (lightZone == null)
             lightZone = GetComponentInChildren<CandlestickLightZone>(true);
 
-        BuildMarks();
-        HideMarks();
+        ResolvePresentations();
+        HideSealPresentations();
     }
 
     /// <summary>촛대를 봉인 상태로 바꿉니다.</summary>
@@ -48,8 +46,9 @@ public class CandlestickSeal : MonoBehaviour
         isSealed = true;
         hitsLeft = SealHitCount;
         ToggleLight(false);
-        ShowMarks();
+        ShowSealPresentations();
         SealChanged?.Invoke(true);
+        SealStacksChanged?.Invoke(hitsLeft, SealHitCount);
     }
 
     /// <summary>봉인 해제 타격을 처리합니다.</summary>
@@ -58,7 +57,8 @@ public class CandlestickSeal : MonoBehaviour
         if (!isSealed) return false;
 
         hitsLeft = Mathf.Max(0, hitsLeft - 1);
-        UpdateMarks();
+        UpdateSealPresentations();
+        SealStacksChanged?.Invoke(hitsLeft, SealHitCount);
 
         if (hitsLeft == 0)
             BreakSeal();
@@ -71,7 +71,7 @@ public class CandlestickSeal : MonoBehaviour
     {
         isSealed = false;
         ToggleLight(true);
-        HideMarks();
+        PlaySealBrokenPresentations();
         SealChanged?.Invoke(false);
     }
 
@@ -88,79 +88,63 @@ public class CandlestickSeal : MonoBehaviour
             lightZone.gameObject.SetActive(isOn);
     }
 
-    /// <summary>봉인 표식을 만듭니다.</summary>
-    private void BuildMarks()
+    private void ResolvePresentations()
     {
-        if (marks.Count > 0) return;
-
-        Sprite sprite = GetMarkSprite();
-        int sortingLayerId = ownerSprite != null ? ownerSprite.sortingLayerID : 0;
-        int sortingOrder = ownerSprite != null ? ownerSprite.sortingOrder + 1 : 1;
-
-        for (int i = 0; i < SealHitCount; i++)
+        if (presentationBehaviours == null || presentationBehaviours.Length == 0)
         {
-            GameObject markObject = new GameObject($"SealMark_{i + 1}");
-            markObject.transform.SetParent(transform, false);
-            markObject.transform.localPosition = GetMarkPos(i);
-            markObject.transform.localScale = new Vector3(0.14f, 0.14f, 1f);
+            var defaultPresentation = GetComponent<CandlestickSealPipPresentation>();
+            if (defaultPresentation == null)
+                defaultPresentation = gameObject.AddComponent<CandlestickSealPipPresentation>();
 
-            SpriteRenderer markRenderer = markObject.AddComponent<SpriteRenderer>();
-            markRenderer.sprite = sprite;
-            markRenderer.color = new Color(0.88f, 0.1f, 1f, 1f);
-            markRenderer.sortingLayerID = sortingLayerId;
-            markRenderer.sortingOrder = sortingOrder;
+            presentationBehaviours = new MonoBehaviour[] { defaultPresentation };
+        }
 
-            marks.Add(markRenderer);
+        int validCount = 0;
+        for (int i = 0; i < presentationBehaviours.Length; i++)
+        {
+            if (presentationBehaviours[i] is ICandlestickSealPresentation)
+                validCount++;
+        }
+
+        presentations = new ICandlestickSealPresentation[validCount];
+        int writeIndex = 0;
+        for (int i = 0; i < presentationBehaviours.Length; i++)
+        {
+            if (presentationBehaviours[i] is ICandlestickSealPresentation presentation)
+                presentations[writeIndex++] = presentation;
         }
     }
 
-    /// <summary>남은 봉인 수만큼 표식을 보여줍니다.</summary>
-    private void UpdateMarks()
+    private void ShowSealPresentations()
     {
-        for (int i = 0; i < marks.Count; i++)
+        for (int i = 0; i < presentations.Length; i++)
         {
-            if (marks[i] == null) continue;
-
-            marks[i].gameObject.SetActive(i < hitsLeft);
+            presentations[i]?.ShowSeal(hitsLeft, SealHitCount);
         }
     }
 
-    /// <summary>봉인 표식을 모두 켭니다.</summary>
-    private void ShowMarks()
+    private void UpdateSealPresentations()
     {
-        UpdateMarks();
-    }
-
-    /// <summary>봉인 표식을 모두 끕니다.</summary>
-    private void HideMarks()
-    {
-        for (int i = 0; i < marks.Count; i++)
+        for (int i = 0; i < presentations.Length; i++)
         {
-            if (marks[i] == null) continue;
-
-            marks[i].gameObject.SetActive(false);
+            presentations[i]?.UpdateSealStacks(hitsLeft, SealHitCount);
         }
     }
 
-    /// <summary>표식 위치를 구합니다.</summary>
-    private Vector3 GetMarkPos(int index)
+    private void PlaySealBrokenPresentations()
     {
-        return index switch
+        for (int i = 0; i < presentations.Length; i++)
         {
-            0 => new Vector3(-0.18f, 0.7f, 0f),
-            1 => new Vector3(0f, 0.8f, 0f),
-            _ => new Vector3(0.18f, 0.7f, 0f)
-        };
+            presentations[i]?.PlaySealBroken();
+        }
     }
 
-    /// <summary>표식에 쓸 스프라이트를 구합니다.</summary>
-    private Sprite GetMarkSprite()
+    private void HideSealPresentations()
     {
-        if (markSprite != null) return markSprite;
-
-        Rect rect = new Rect(0f, 0f, Texture2D.whiteTexture.width, Texture2D.whiteTexture.height);
-        markSprite = Sprite.Create(Texture2D.whiteTexture, rect, new Vector2(0.5f, 0.5f), 100f);
-        return markSprite;
+        for (int i = 0; i < presentations.Length; i++)
+        {
+            presentations[i]?.HideSeal();
+        }
     }
 
     /// <summary>촛대 빛 연출 루트 후보를 찾아 반환합니다.</summary>

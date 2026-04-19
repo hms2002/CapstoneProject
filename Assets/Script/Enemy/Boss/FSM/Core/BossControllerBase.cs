@@ -60,6 +60,7 @@ public abstract class BossControllerBase : Enemy, IBossAbilityStateBridge
     private bool combatActive;
     private bool hasCombatOverride;
     private bool encounterIntroFinished;
+    private bool hasInitializedBossRuntime;
 
     public AbilitySystem AbilitySystem => abilitySystem;
     public TagSystem TagSystem => tagSystem;
@@ -88,6 +89,7 @@ public abstract class BossControllerBase : Enemy, IBossAbilityStateBridge
         patternRuntime = CreatePatternRuntimeState();
         stateMachine = new BossStateMachine(blackboard);
         CreateStates();
+        hasInitializedBossRuntime = true;
     }
 
     protected override void Start()
@@ -144,7 +146,7 @@ public abstract class BossControllerBase : Enemy, IBossAbilityStateBridge
         combatActive = isActive;
         hasCombatOverride = true;
 
-        if (!isActive)
+        if (!isActive && hasInitializedBossRuntime)
             AbortCurrentPattern();
 
         SyncBossHudRegistration();
@@ -312,6 +314,9 @@ public abstract class BossControllerBase : Enemy, IBossAbilityStateBridge
 
     public void AbortCurrentPattern()
     {
+        if (!hasInitializedBossRuntime)
+            return;
+
         BossPatternEntry activePattern = patternRuntime != null ? patternRuntime.CurrentPattern ?? patternRuntime.ReservedPattern : null;
         CancelActiveAbility(true);
 

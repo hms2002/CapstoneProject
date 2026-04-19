@@ -154,7 +154,7 @@ GameObject:
   - component: {fileID: 2992899921198328162}
   - component: {fileID: 4619545861444706312}
   m_Layer: 0
-  m_Name: TresureChest
+  m_Name: TreasureChest
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -8,6 +8,7 @@ namespace UnityGAS
     {
         private Vector2 direction = Vector2.right;
         private float speed;
+        private Witch rampageOwner;
 
         /// <summary>발사 방향과 속도를 받아 초기화합니다.</summary>
         public void Setup(ProjectileAttackSpawnContext context)
@@ -26,6 +27,16 @@ namespace UnityGAS
             speed = Mathf.Max(0f, context.speed);
 
             SetupBase(context);
+        }
+
+        /// <summary>
+        /// 책임 :
+        /// - 마녀 보스 촛대 폭주가 생성한 투사체에 소유 보스를 연결해 종료 시 일괄 회수가 가능하게 한다.
+        /// - 일반 촛대가 사용하는 LightBead 경로에는 영향을 주지 않도록 선택적으로만 설정한다.
+        /// </summary>
+        public void BindRampageOwner(Witch owner)
+        {
+            rampageOwner = owner;
         }
 
         protected override void TickAttack(float deltaTime)
@@ -69,6 +80,12 @@ namespace UnityGAS
             }
 
             return true;
+        }
+
+        private void OnDestroy()
+        {
+            if (rampageOwner != null)
+                rampageOwner.UnregisterRampageProjectile(this);
         }
     }
 }

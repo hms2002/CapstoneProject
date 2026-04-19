@@ -1,0 +1,325 @@
+fileFormatVersion: 2
+guid: c60e12cbc56a90c4c8979d6af0ab36c5
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 7469782748363904751
+    second: StrangeCandlestick_Idle_TwoLight_0
+  - first:
+      213: 7139557741647448624
+    second: StrangeCandlestick_Idle_TwoLight_1
+  - first:
+      213: 2997624516644420915
+    second: StrangeCandlestick_Idle_TwoLight_2
+  - first:
+      213: -8206988521311528679
+    second: StrangeCandlestick_Idle_TwoLight_3
+  - first:
+      213: 7277487381846170237
+    second: StrangeCandlestick_Idle_TwoLight_4
+  - first:
+      213: 5807995262285567504
+    second: StrangeCandlestick_Idle_TwoLight_5
+  - first:
+      213: -2454700440504789474
+    second: StrangeCandlestick_Idle_TwoLight_6
+  - first:
+      213: 2647064457727280808
+    second: StrangeCandlestick_Idle_TwoLight_7
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: StrangeCandlestick_Idle_TwoLight_0
+      rect:
+        serializedVersion: 2
+        x: 20
+        y: 4
+        width: 23
+        height: 46
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fe6529145dff9a760800000000000000
+      internalID: 7469782748363904751
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StrangeCandlestick_Idle_TwoLight_1
+      rect:
+        serializedVersion: 2
+        x: 84
+        y: 4
+        width: 23
+        height: 47
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 03a494460fdc41360800000000000000
+      internalID: 7139557741647448624
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StrangeCandlestick_Idle_TwoLight_2
+      rect:
+        serializedVersion: 2
+        x: 148
+        y: 4
+        width: 23
+        height: 47
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 33db794ad93b99920800000000000000
+      internalID: 2997624516644420915
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StrangeCandlestick_Idle_TwoLight_3
+      rect:
+        serializedVersion: 2
+        x: 212
+        y: 4
+        width: 23
+        height: 46
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 919948f1c6bea1e80800000000000000
+      internalID: -8206988521311528679
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StrangeCandlestick_Idle_TwoLight_4
+      rect:
+        serializedVersion: 2
+        x: 276
+        y: 4
+        width: 23
+        height: 46
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d7a145c4734def460800000000000000
+      internalID: 7277487381846170237
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StrangeCandlestick_Idle_TwoLight_5
+      rect:
+        serializedVersion: 2
+        x: 340
+        y: 4
+        width: 23
+        height: 47
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 016dea14be42a9050800000000000000
+      internalID: 5807995262285567504
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StrangeCandlestick_Idle_TwoLight_6
+      rect:
+        serializedVersion: 2
+        x: 404
+        y: 4
+        width: 23
+        height: 47
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e1697b574f62fedd0800000000000000
+      internalID: -2454700440504789474
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: StrangeCandlestick_Idle_TwoLight_7
+      rect:
+        serializedVersion: 2
+        x: 468
+        y: 4
+        width: 23
+        height: 46
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8a6856c79134cb420800000000000000
+      internalID: 2647064457727280808
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      StrangeCandlestick_Idle_TwoLight_0: 7469782748363904751
+      StrangeCandlestick_Idle_TwoLight_1: 7139557741647448624
+      StrangeCandlestick_Idle_TwoLight_2: 2997624516644420915
+      StrangeCandlestick_Idle_TwoLight_3: -8206988521311528679
+      StrangeCandlestick_Idle_TwoLight_4: 7277487381846170237
+      StrangeCandlestick_Idle_TwoLight_5: 5807995262285567504
+      StrangeCandlestick_Idle_TwoLight_6: -2454700440504789474
+      StrangeCandlestick_Idle_TwoLight_7: 2647064457727280808
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
