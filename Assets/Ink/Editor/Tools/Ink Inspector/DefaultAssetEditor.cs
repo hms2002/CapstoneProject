@@ -26,6 +26,7 @@ namespace Ink.UnityIntegration {
 		}
 
 		protected override void OnHeaderGUI () {
+			if(Event.current == null || GUI.skin == null) return;
 			if(inspector != null) {
 				inspector.OnHeaderGUI();
 			}
@@ -34,6 +35,7 @@ namespace Ink.UnityIntegration {
 		}
 
 		public override void OnInspectorGUI () {
+			if(Event.current == null || GUI.skin == null) return;
 			if(inspector != null) {
 				GUI.enabled = true;
 				inspector.OnInspectorGUI();

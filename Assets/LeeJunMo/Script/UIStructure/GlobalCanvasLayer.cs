@@ -8,4 +8,5 @@ public enum GlobalCanvasLayer
     Reward = 5,
     DamagePopup = 6,
     BossHUD = 7,
+    Loading = 8,
 }

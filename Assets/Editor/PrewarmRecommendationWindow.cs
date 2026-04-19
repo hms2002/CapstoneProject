@@ -22,6 +22,8 @@ public sealed class PrewarmRecommendationWindow : EditorWindow
         public int coldSpawns;
         public float firstSeenSeconds = float.MaxValue;
         public float lastSeenSeconds;
+        public string firstSceneName;
+        public string lastSceneName;
         public int sessionHits;
     }
 
@@ -29,6 +31,7 @@ public sealed class PrewarmRecommendationWindow : EditorWindow
     {
         public RecommendationPriority priority;
         public int score;
+        public int currentCount;
         public int suggestedCount;
         public string targetScopeLabel;
         public string reason;
@@ -43,11 +46,18 @@ public sealed class PrewarmRecommendationWindow : EditorWindow
     private readonly List<Recommendation> recommendations = new();
     private readonly List<AggregatedTraceEntry> unmappedEntries = new();
     private Vector2 scrollPosition;
+    private int skippedCoveredCount;
 
     [MenuItem("Tools/Loading/Prewarm Recommendations")]
     public static void ShowWindow()
     {
         GetWindow<PrewarmRecommendationWindow>("Prewarm Recommendations");
+    }
+
+    [MenuItem("Tools/Loading/Open Prewarm Recommendations")]
+    public static void ShowWindowAlias()
+    {
+        ShowWindow();
     }
 
     private void OnEnable()
@@ -156,7 +166,7 @@ public sealed class PrewarmRecommendationWindow : EditorWindow
             EditorGUILayout.LabelField(recommendation.prefab != null ? recommendation.prefab.name : recommendation.trace.prefabName, EditorStyles.boldLabel);
             EditorGUILayout.LabelField(recommendation.trace.prefabPath, EditorStyles.wordWrappedMiniLabel);
             EditorGUILayout.LabelField(
-                $"Target: {recommendation.targetScopeLabel} | Suggested Count: {recommendation.suggestedCount} | Score: {recommendation.score}",
+                $"Target: {recommendation.targetScopeLabel} | Current: {recommendation.currentCount} | Suggested: {recommendation.suggestedCount} | Score: {recommendation.score}",
                 EditorStyles.miniLabel);
             EditorGUILayout.LabelField(recommendation.reason, EditorStyles.wordWrappedMiniLabel);
 
@@ -191,7 +201,7 @@ public sealed class PrewarmRecommendationWindow : EditorWindow
                 EditorGUILayout.LabelField(entry.prefabName, EditorStyles.boldLabel);
                 EditorGUILayout.LabelField(entry.prefabPath, EditorStyles.wordWrappedMiniLabel);
                 EditorGUILayout.LabelField(
-                    $"cold={entry.coldSpawns}, total={entry.totalSpawns}, first={entry.firstSeenSeconds:0.00}s, sessions={entry.sessionHits}",
+                    $"cold={entry.coldSpawns}, total={entry.totalSpawns}, first={entry.firstSeenSeconds:0.00}s ({NormalizeSceneName(entry.firstSceneName)}), sessions={entry.sessionHits}",
                     EditorStyles.miniLabel);
             }
         }
@@ -202,6 +212,7 @@ public sealed class PrewarmRecommendationWindow : EditorWindow
         notes.Clear();
         recommendations.Clear();
         unmappedEntries.Clear();
+        skippedCoveredCount = 0;
 
         if (routeSet == null)
         {
@@ -233,12 +244,15 @@ public sealed class PrewarmRecommendationWindow : EditorWindow
 
         foreach (AggregatedTraceEntry entry in aggregatedEntries.Values.OrderByDescending(item => item.coldSpawns).ThenByDescending(item => item.totalSpawns))
         {
-            Recommendation recommendation = BuildRecommendation(entry, lookup);
-            if (recommendation == null)
+            if (!lookup.CanResolveTarget(entry.prefabPath))
             {
                 unmappedEntries.Add(entry);
                 continue;
             }
+
+            Recommendation recommendation = BuildRecommendation(entry, lookup);
+            if (recommendation == null)
+                continue;
 
             recommendations.Add(recommendation);
         }
@@ -254,6 +268,8 @@ public sealed class PrewarmRecommendationWindow : EditorWindow
 
         notes.Add($"Loaded {history.sessions.Count} trace session(s).");
         notes.Add($"Mapped {recommendations.Count} prefab recommendation(s).");
+        if (skippedCoveredCount > 0)
+            notes.Add($"Skipped {skippedCoveredCount} prefab(s) already covered by current prewarm counts.");
         if (unmappedEntries.Count > 0)
             notes.Add($"Unmapped {unmappedEntries.Count} traced prefab(s).");
     }
@@ -295,6 +311,8 @@ public sealed class PrewarmRecommendationWindow : EditorWindow
                         coldSpawns = 0,
                         firstSeenSeconds = entry.firstSeenSeconds,
                         lastSeenSeconds = entry.lastSeenSeconds,
+                        firstSceneName = entry.firstSceneName,
+                        lastSceneName = entry.lastSceneName,
                         sessionHits = 0
                     };
                     aggregated.Add(entry.prefabPath, aggregate);
@@ -302,8 +320,18 @@ public sealed class PrewarmRecommendationWindow : EditorWindow
 
                 aggregate.totalSpawns += entry.totalSpawns;
                 aggregate.coldSpawns += entry.coldSpawns;
-                aggregate.firstSeenSeconds = Mathf.Min(aggregate.firstSeenSeconds, entry.firstSeenSeconds);
-                aggregate.lastSeenSeconds = Mathf.Max(aggregate.lastSeenSeconds, entry.lastSeenSeconds);
+                if (entry.firstSeenSeconds <= aggregate.firstSeenSeconds)
+                {
+                    aggregate.firstSeenSeconds = entry.firstSeenSeconds;
+                    aggregate.firstSceneName = entry.firstSceneName;
+                }
+
+                if (entry.lastSeenSeconds >= aggregate.lastSeenSeconds)
+                {
+                    aggregate.lastSeenSeconds = entry.lastSeenSeconds;
+                    aggregate.lastSceneName = entry.lastSceneName;
+                }
+
                 aggregate.sessionHits++;
             }
         }
@@ -320,16 +348,23 @@ public sealed class PrewarmRecommendationWindow : EditorWindow
         if (!lookup.TryResolveTarget(entry.prefabPath, out LoadManifestSO targetManifest, out string targetScopeLabel))
             return null;
 
-        int suggestedCount = SuggestWarmCount(entry);
-        RecommendationPriority priority = ResolvePriority(entry);
-        int score = BuildScore(entry);
-        string reason =
-            $"cold={entry.coldSpawns}, total={entry.totalSpawns}, first={entry.firstSeenSeconds:0.00}s, sessions={entry.sessionHits}";
+        int currentCount = GetPrewarmCount(targetManifest, prefab);
+        int suggestedCount = SuggestWarmCount(entry, targetScopeLabel);
+        if (currentCount >= suggestedCount)
+        {
+            skippedCoveredCount++;
+            return null;
+        }
+
+        RecommendationPriority priority = ResolvePriority(entry, targetScopeLabel, currentCount, suggestedCount);
+        int score = BuildScore(entry, targetScopeLabel, currentCount, suggestedCount);
+        string reason = BuildReason(entry, targetScopeLabel, currentCount, suggestedCount);
 
         return new Recommendation
         {
             priority = priority,
             score = score,
+            currentCount = currentCount,
             suggestedCount = suggestedCount,
             targetScopeLabel = targetScopeLabel,
             reason = reason,
@@ -339,39 +374,63 @@ public sealed class PrewarmRecommendationWindow : EditorWindow
         };
     }
 
-    private static int BuildScore(AggregatedTraceEntry entry)
+    private static int BuildScore(
+        AggregatedTraceEntry entry,
+        string targetScopeLabel,
+        int currentCount,
+        int suggestedCount)
     {
         int earlyBonus = entry.firstSeenSeconds switch
         {
-            <= 3f => 50,
-            <= 10f => 20,
-            <= 30f => 10,
+            <= 3f => 60,
+            <= 10f => 30,
+            <= 30f => 15,
             _ => 0
         };
 
-        return (entry.coldSpawns * 100) + (entry.totalSpawns * 10) + earlyBonus;
+        int sessionBonus = Mathf.Min(entry.sessionHits, 5) * 25;
+        int scopeBonus = GetScopeWeight(targetScopeLabel);
+        int upgradeBonus = Mathf.Max(0, suggestedCount - currentCount) * 20;
+        return (entry.coldSpawns * 100) +
+               (entry.totalSpawns * 10) +
+               earlyBonus +
+               sessionBonus +
+               scopeBonus +
+               upgradeBonus;
     }
 
-    private static RecommendationPriority ResolvePriority(AggregatedTraceEntry entry)
+    private static RecommendationPriority ResolvePriority(
+        AggregatedTraceEntry entry,
+        string targetScopeLabel,
+        int currentCount,
+        int suggestedCount)
     {
-        if (entry.coldSpawns > 0 && entry.firstSeenSeconds <= 5f)
+        if (entry.coldSpawns > 0 &&
+            (entry.firstSeenSeconds <= 5f ||
+             entry.sessionHits >= 2 ||
+             IsFrontLoadedScope(targetScopeLabel)))
             return RecommendationPriority.P1;
 
-        if (entry.coldSpawns > 0 || entry.totalSpawns >= 5)
+        if (entry.coldSpawns > 0 ||
+            entry.totalSpawns >= 5 ||
+            entry.sessionHits >= 2 ||
+            suggestedCount - currentCount >= 2)
             return RecommendationPriority.P2;
 
         return RecommendationPriority.P3;
     }
 
-    private static int SuggestWarmCount(AggregatedTraceEntry entry)
+    private static int SuggestWarmCount(AggregatedTraceEntry entry, string targetScopeLabel)
     {
-        if (entry.coldSpawns >= 4 || entry.totalSpawns >= 16)
-            return 3;
+        int scopeBias = IsFrontLoadedScope(targetScopeLabel) ? 1 : 0;
 
-        if (entry.coldSpawns >= 2 || entry.totalSpawns >= 8)
-            return 2;
+        if (entry.coldSpawns >= 4 || entry.totalSpawns >= 16 || entry.sessionHits >= 4)
+            return 3 + scopeBias;
 
-        return 1;
+        if (entry.coldSpawns >= 2 || entry.totalSpawns >= 8 || entry.sessionHits >= 2)
+            return 2 + scopeBias;
+
+        return 1 + scopeBias;
     }
 
     private void ApplyRecommendations(Func<Recommendation, bool> predicate)
@@ -396,8 +455,7 @@ public sealed class PrewarmRecommendationWindow : EditorWindow
         if (recommendation == null || recommendation.targetManifest == null || recommendation.prefab == null)
             return;
 
-        int currentCount = GetPrewarmCount(recommendation.targetManifest, recommendation.prefab);
-        int desiredCount = Mathf.Max(currentCount, recommendation.suggestedCount);
+        int desiredCount = Mathf.Max(recommendation.currentCount, recommendation.suggestedCount);
         SetPrewarmCount(recommendation.targetManifest, recommendation.prefab, desiredCount);
     }
 
@@ -496,6 +554,11 @@ public sealed class PrewarmRecommendationWindow : EditorWindow
             scopeLabel = null;
             return false;
         }
+
+        public bool CanResolveTarget(string prefabPath)
+        {
+            return !string.IsNullOrWhiteSpace(prefabPath) && manifestByPrefabPath.ContainsKey(prefabPath);
+        }
     }
 
     private static ManifestLookup BuildManifestLookup(CorridorBossRouteSetSO routeSet, LoadingBootstrapConfigSO bootstrapConfig)
@@ -506,8 +569,8 @@ public sealed class PrewarmRecommendationWindow : EditorWindow
             lookup.AddManifest("Boot", bootstrapConfig.BootManifest);
 
         List<LoadManifestSO> runCommonManifests = FindRunCommonManifests(routeSet);
-        if (runCommonManifests.Count == 1)
-            lookup.AddManifest("RunCommon", runCommonManifests[0]);
+        for (int i = 0; i < runCommonManifests.Count; i++)
+            lookup.AddManifest("RunCommon", runCommonManifests[i]);
 
         if (routeSet?.LoadManifest != null)
         {
@@ -519,11 +582,6 @@ public sealed class PrewarmRecommendationWindow : EditorWindow
         return lookup;
     }
 
-    /// <summary>
-    /// 책임 :
-    /// - 현재 RouteSet을 참조하는 RunRouteCatalogSO들을 찾아 RunCommon LoadManifest 후보를 수집한다.
-    /// - 추천 결과를 Shared/Corridor/Boss 외 RunCommon 범위까지 연결할 수 있게 한다.
-    /// </summary>
     private static List<LoadManifestSO> FindRunCommonManifests(CorridorBossRouteSetSO targetRouteSet)
     {
         var manifests = new List<LoadManifestSO>();
@@ -545,11 +603,6 @@ public sealed class PrewarmRecommendationWindow : EditorWindow
         return manifests;
     }
 
-    /// <summary>
-    /// 책임 :
-    /// - 특정 RunRouteCatalogSO가 분석 대상 RouteSet을 실제로 참조하는지 판별한다.
-    /// - FinalRouteSet과 NormalRouteSets 둘 다 검사해 RunCommon 연결 여부를 안정적으로 찾는다.
-    /// </summary>
     private static bool ReferencesRouteSet(RunRouteCatalogSO catalog, CorridorBossRouteSetSO targetRouteSet)
     {
         if (catalog == null || targetRouteSet == null)
@@ -566,5 +619,47 @@ public sealed class PrewarmRecommendationWindow : EditorWindow
         }
 
         return false;
+    }
+
+    private static string BuildReason(
+        AggregatedTraceEntry entry,
+        string targetScopeLabel,
+        int currentCount,
+        int suggestedCount)
+    {
+        return
+            $"cold={entry.coldSpawns}, total={entry.totalSpawns}, first={entry.firstSeenSeconds:0.00}s in {NormalizeSceneName(entry.firstSceneName)}, " +
+            $"sessions={entry.sessionHits}, scope={targetScopeLabel}, prewarm {currentCount} -> {suggestedCount}";
+    }
+
+    private static bool IsFrontLoadedScope(string targetScopeLabel)
+    {
+        return string.Equals(targetScopeLabel, "Boot", StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(targetScopeLabel, "RunCommon", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static int GetScopeWeight(string targetScopeLabel)
+    {
+        if (string.Equals(targetScopeLabel, "Boot", StringComparison.OrdinalIgnoreCase))
+            return 80;
+
+        if (string.Equals(targetScopeLabel, "RunCommon", StringComparison.OrdinalIgnoreCase))
+            return 60;
+
+        if (string.Equals(targetScopeLabel, "Shared", StringComparison.OrdinalIgnoreCase))
+            return 35;
+
+        if (string.Equals(targetScopeLabel, "Corridor", StringComparison.OrdinalIgnoreCase))
+            return 20;
+
+        if (string.Equals(targetScopeLabel, "Boss", StringComparison.OrdinalIgnoreCase))
+            return 10;
+
+        return 0;
+    }
+
+    private static string NormalizeSceneName(string sceneName)
+    {
+        return string.IsNullOrWhiteSpace(sceneName) ? "<unknown>" : sceneName;
     }
 }

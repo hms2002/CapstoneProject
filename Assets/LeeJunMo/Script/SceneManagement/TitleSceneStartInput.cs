@@ -10,6 +10,9 @@ public sealed class TitleSceneStartInput : MonoBehaviour
     [Header("Target Scene")]
     [SerializeField] private string targetSceneName = "ProtoTypeHub";
 
+    [Header("Quick Start")]
+    [SerializeField] private bool enableQuickStartShortcut;
+
     [Header("Input")]
     [SerializeField] private KeyCode startKey = KeyCode.Space;
 
@@ -17,6 +20,9 @@ public sealed class TitleSceneStartInput : MonoBehaviour
 
     private void Update()
     {
+        if (!enableQuickStartShortcut)
+            return;
+
         if (isLoading || !WasStartPressed())
             return;
 

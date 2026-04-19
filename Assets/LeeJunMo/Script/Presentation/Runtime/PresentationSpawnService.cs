@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using CapstoneRuntime;
@@ -77,6 +78,36 @@ namespace CapstonePresentation
         {
             PresentationSpawnService service = EnsureInstance();
             return service != null ? service.SpawnInternal(hook, context, scheduleAutoRelease: false) : null;
+        }
+
+        public static IEnumerator SpawnOneShotAsync(
+            SpawnedPresentationHook hook,
+            WorldPresentationContext context,
+            Action<GameObject> onSpawned = null)
+        {
+            PresentationSpawnService service = EnsureInstance();
+            if (service == null)
+            {
+                onSpawned?.Invoke(null);
+                yield break;
+            }
+
+            yield return service.SpawnInternalAsync(hook, context, scheduleAutoRelease: true, onSpawned);
+        }
+
+        public static IEnumerator SpawnPersistentAsync(
+            SpawnedPresentationHook hook,
+            WorldPresentationContext context,
+            Action<GameObject> onSpawned = null)
+        {
+            PresentationSpawnService service = EnsureInstance();
+            if (service == null)
+            {
+                onSpawned?.Invoke(null);
+                yield break;
+            }
+
+            yield return service.SpawnInternalAsync(hook, context, scheduleAutoRelease: false, onSpawned);
         }
 
         public static void Release(GameObject instance)
@@ -167,10 +198,64 @@ namespace CapstonePresentation
             if (!hook.HasContent)
                 return null;
 
-            PooledPresentationInstance pooledInstance = Rent(hook.prefab, out GameObject resolvedPrefab, out bool coldSpawn);
+            GameObject resolvedPrefab = ResolvePrefab(hook.prefab);
+            if (resolvedPrefab == null)
+                return null;
+
+            return SpawnResolvedInternal(hook, context, scheduleAutoRelease, resolvedPrefab);
+        }
+
+        private IEnumerator SpawnInternalAsync(
+            SpawnedPresentationHook hook,
+            WorldPresentationContext context,
+            bool scheduleAutoRelease,
+            Action<GameObject> onSpawned)
+        {
+            if (!hook.HasContent)
+            {
+                onSpawned?.Invoke(null);
+                yield break;
+            }
+
+            AssetResolveOperation<GameObject> resolveOperation = PresentationAssetProvider.ResolvePrefabAsync(hook.prefab);
+            if (resolveOperation != null && !resolveOperation.IsDone)
+                yield return resolveOperation;
+
+            GameObject resolvedPrefab = resolveOperation != null ? resolveOperation.Asset : hook.prefab;
+            GameObject instance = resolvedPrefab != null
+                ? SpawnResolvedInternal(hook, context, scheduleAutoRelease, resolvedPrefab)
+                : null;
+
+            onSpawned?.Invoke(instance);
+        }
+
+        private GameObject SpawnResolvedInternal(
+            in SpawnedPresentationHook hook,
+            in WorldPresentationContext context,
+            bool scheduleAutoRelease,
+            GameObject resolvedPrefab)
+        {
+            PooledPresentationInstance pooledInstance = RentResolvedPrefab(resolvedPrefab, out bool coldSpawn);
             if (pooledInstance == null)
                 return null;
 
+            return ActivatePooledInstance(
+                pooledInstance,
+                resolvedPrefab,
+                hook,
+                context,
+                scheduleAutoRelease,
+                coldSpawn);
+        }
+
+        private GameObject ActivatePooledInstance(
+            PooledPresentationInstance pooledInstance,
+            GameObject resolvedPrefab,
+            in SpawnedPresentationHook hook,
+            in WorldPresentationContext context,
+            bool scheduleAutoRelease,
+            bool coldSpawn)
+        {
             Transform instanceTransform = pooledInstance.transform;
             instanceTransform.SetParent(null, worldPositionStays: false);
 
@@ -217,9 +302,14 @@ namespace CapstonePresentation
             ReleaseInternal(pooledInstance);
         }
 
-        private PooledPresentationInstance Rent(GameObject prefab, out GameObject resolvedPrefab, out bool coldSpawn)
+        private static GameObject ResolvePrefab(GameObject prefab)
         {
-            resolvedPrefab = PresentationAssetProvider.ResolvePrefab(prefab);
+            IAssetProvider assetProvider = PresentationAssetProvider.CurrentProvider;
+            return assetProvider != null ? assetProvider.ResolvePrefab(prefab) : prefab;
+        }
+
+        private PooledPresentationInstance RentResolvedPrefab(GameObject resolvedPrefab, out bool coldSpawn)
+        {
             coldSpawn = false;
             if (resolvedPrefab == null)
                 return null;
@@ -295,7 +385,7 @@ namespace CapstonePresentation
 
         private void PrewarmInternal(GameObject prefab, int count)
         {
-            prefab = PresentationAssetProvider.ResolvePrefab(prefab);
+            prefab = ResolvePrefab(prefab);
             if (prefab == null || count <= 0)
                 return;
 
@@ -327,7 +417,7 @@ namespace CapstonePresentation
 
         private void TrimInternal(GameObject prefab, int count)
         {
-            prefab = PresentationAssetProvider.ResolvePrefab(prefab);
+            prefab = ResolvePrefab(prefab);
             if (prefab == null || count <= 0)
                 return;
 

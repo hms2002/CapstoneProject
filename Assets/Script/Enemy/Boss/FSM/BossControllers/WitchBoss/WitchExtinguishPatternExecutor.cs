@@ -258,7 +258,7 @@ public sealed class WitchExtinguishPatternExecutor : MonoBehaviour
         if (shakeDirection.sqrMagnitude <= 0.0001f)
             shakeDirection = Vector3.up;
 
-        WorldPresentationRuntime.Play(
+        WorldPresentationRuntime.PlayDeferredAsync(
             context.ExplosionPresentation,
             WorldPresentationContext.AtWorld(
                 instigator: owner.gameObject,

@@ -18,6 +18,7 @@ public sealed class GlobalUIRoot : MonoBehaviour
     [SerializeField] private Canvas rewardCanvas;
     [SerializeField] private Canvas damagePopupCanvas;
     [SerializeField] private Canvas bossHudCanvas;
+    [SerializeField] private Canvas loadingCanvas;
 
     private readonly Dictionary<GlobalCanvasLayer, Canvas> canvases = new();
 
@@ -111,6 +112,7 @@ public sealed class GlobalUIRoot : MonoBehaviour
         rewardCanvas ??= FindChildCanvas(GetCanvasName(GlobalCanvasLayer.Reward));
         damagePopupCanvas ??= FindChildCanvas(GetCanvasName(GlobalCanvasLayer.DamagePopup));
         bossHudCanvas ??= FindChildCanvas(GetCanvasName(GlobalCanvasLayer.BossHUD));
+        loadingCanvas ??= FindChildCanvas(GetCanvasName(GlobalCanvasLayer.Loading));
 
         canvases.Clear();
         RegisterCanvas(GlobalCanvasLayer.GameplayHUD, gameplayHudCanvas);
@@ -121,6 +123,7 @@ public sealed class GlobalUIRoot : MonoBehaviour
         RegisterCanvas(GlobalCanvasLayer.Reward, rewardCanvas);
         RegisterCanvas(GlobalCanvasLayer.DamagePopup, damagePopupCanvas);
         RegisterCanvas(GlobalCanvasLayer.BossHUD, bossHudCanvas);
+        RegisterCanvas(GlobalCanvasLayer.Loading, loadingCanvas);
     }
 
     private void RegisterCanvas(GlobalCanvasLayer layer, Canvas canvas)
@@ -173,6 +176,7 @@ public sealed class GlobalUIRoot : MonoBehaviour
             GlobalCanvasLayer.Reward => "RewardCanvas",
             GlobalCanvasLayer.DamagePopup => "DamagePopupCanvas",
             GlobalCanvasLayer.BossHUD => "BossHUDCanvas",
+            GlobalCanvasLayer.Loading => "LoadingCanvas",
             _ => "UICanvas"
         };
     }

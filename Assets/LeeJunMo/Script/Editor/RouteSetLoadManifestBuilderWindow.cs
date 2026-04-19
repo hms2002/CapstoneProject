@@ -11,6 +11,26 @@ public sealed class RouteSetLoadManifestBuilderWindow : EditorWindow
 {
     private const string LoadingAssetDirectory = "Assets/LeeJunMo/Datas/Loading";
     private const string BootstrapConfigSourceAssetPath = LoadingBootstrapConfigSO.SourceAssetPath;
+    private static readonly string[] IgnoredPathFragments =
+    {
+        "/Editor/",
+        "/Tests/",
+        "/Test/",
+        "/Gizmos/",
+        "/Resources/Loading/"
+    };
+
+    private static readonly string[] IgnoredBootPathFragments =
+    {
+        "/Datas/Looting/GraveLootTable.asset",
+        "/Datas/Looting/Table_Stage",
+        "/Datas/Dialogue/SpeechData/",
+        "/Datas/Dialogue/NPC/DialogueTheme/ShadowBoss",
+        "/Audio/BGM/Boss",
+        "/Audio/BGM/ShadowCorridor",
+        "/Sprites/Characters/Boss/",
+        "/Sprites/UI/Dialogue/Boss1"
+    };
 
     private readonly struct AssetBuckets
     {
@@ -190,6 +210,7 @@ public sealed class RouteSetLoadManifestBuilderWindow : EditorWindow
                 throw new InvalidOperationException($"Boot seed scene '{bootSeedSceneName}' 경로를 찾지 못했습니다.");
 
             Dictionary<string, UnityEngine.Object> sceneAssets = CollectSceneAssets(scenePath);
+            ApplyBootSpecificExclusions(sceneAssets);
             EnsureBootManifest();
             EnsureBootstrapConfigAsset();
             WriteManifest(bootManifest, CategorizeAssets(new List<UnityEngine.Object>(sceneAssets.Values)));
@@ -394,6 +415,22 @@ public sealed class RouteSetLoadManifestBuilderWindow : EditorWindow
         return results;
     }
 
+    private static void ApplyBootSpecificExclusions(Dictionary<string, UnityEngine.Object> assets)
+    {
+        if (assets == null || assets.Count == 0)
+            return;
+
+        var keysToRemove = new List<string>();
+        foreach (KeyValuePair<string, UnityEngine.Object> pair in assets)
+        {
+            if (ShouldExcludeBootAsset(pair.Value))
+                keysToRemove.Add(pair.Key);
+        }
+
+        for (int i = 0; i < keysToRemove.Count; i++)
+            assets.Remove(keysToRemove[i]);
+    }
+
     private static bool ShouldIncludeAsset(UnityEngine.Object asset)
     {
         if (asset == null)
@@ -406,6 +443,9 @@ public sealed class RouteSetLoadManifestBuilderWindow : EditorWindow
         if (string.IsNullOrEmpty(assetPath) || !assetPath.StartsWith("Assets/", StringComparison.Ordinal))
             return false;
 
+        if (IsIgnoredAssetPath(assetPath))
+            return false;
+
         if (asset is MonoScript || asset is SceneAsset || asset is DefaultAsset)
             return false;
 
@@ -415,7 +455,65 @@ public sealed class RouteSetLoadManifestBuilderWindow : EditorWindow
         if (asset is Component)
             return false;
 
+        if (asset is Texture || asset is Shader || asset is ComputeShader)
+            return false;
+
+        string typeName = asset.GetType().Name;
+        if (IsIgnoredAssetTypeName(typeName))
+            return false;
+
         return true;
+    }
+
+    private static bool ShouldExcludeBootAsset(UnityEngine.Object asset)
+    {
+        if (asset == null)
+            return false;
+
+        string assetPath = AssetDatabase.GetAssetPath(asset);
+        if (string.IsNullOrEmpty(assetPath))
+            return false;
+
+        string normalizedPath = assetPath.Replace('\\', '/');
+        for (int i = 0; i < IgnoredBootPathFragments.Length; i++)
+        {
+            if (normalizedPath.IndexOf(IgnoredBootPathFragments[i], StringComparison.OrdinalIgnoreCase) >= 0)
+                return true;
+        }
+
+        string typeName = asset.GetType().Name;
+        return string.Equals(typeName, "CorridorBossRouteSetSO", StringComparison.Ordinal) ||
+               string.Equals(typeName, "RouteSetLoadManifestSO", StringComparison.Ordinal) ||
+               string.Equals(typeName, "LoadManifestSO", StringComparison.Ordinal) ||
+               string.Equals(typeName, "StageLootTable", StringComparison.Ordinal) ||
+               string.Equals(typeName, "GraveLootTable", StringComparison.Ordinal) ||
+               string.Equals(typeName, "BossSpeechData", StringComparison.Ordinal) ||
+               string.Equals(typeName, "PlayerSpeechData", StringComparison.Ordinal);
+    }
+
+    private static bool IsIgnoredAssetPath(string assetPath)
+    {
+        if (string.IsNullOrEmpty(assetPath))
+            return true;
+
+        string normalizedPath = assetPath.Replace('\\', '/');
+        if (normalizedPath.StartsWith("Assets/Editor Default Resources/", StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        for (int i = 0; i < IgnoredPathFragments.Length; i++)
+        {
+            if (normalizedPath.IndexOf(IgnoredPathFragments[i], StringComparison.OrdinalIgnoreCase) >= 0)
+                return true;
+        }
+
+        return false;
+    }
+
+    private static bool IsIgnoredAssetTypeName(string typeName)
+    {
+        return string.Equals(typeName, "LightingDataAsset", StringComparison.Ordinal) ||
+               string.Equals(typeName, "LightingSettings", StringComparison.Ordinal) ||
+               string.Equals(typeName, "SpriteAtlas", StringComparison.Ordinal);
     }
 
     private static AssetBuckets CategorizeAssets(List<UnityEngine.Object> assets)

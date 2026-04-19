@@ -19,6 +19,10 @@ public sealed class SceneFadeTransitionService : MonoBehaviour
     [SerializeField, Min(0)] private int postLoadBlackFrames = 2;
     [SerializeField, Min(0f)] private float postLoadBlackHoldSeconds = 0.1f;
 
+    [Header("Corridor Loading Handoff")]
+    [SerializeField] private bool delayRevealForCorridorLoading = true;
+    [SerializeField, Min(0f)] private float corridorRevealTimeoutSeconds = 8f;
+
     [Header("Overlay Refs")]
     [SerializeField] private GameObject overlayRoot;
     [SerializeField] private CanvasGroup overlayCanvasGroup;
@@ -173,6 +177,9 @@ public sealed class SceneFadeTransitionService : MonoBehaviour
         yield return WaitForPostLoadSettle();
         LockCurrentPlayer();
 
+        if (ShouldDelayRevealForCorridorLoading())
+            yield return WaitForCorridorLoadingOverlayToFinish();
+
         yield return FadeCanvasGroup(toAlpha: 0f, duration: fadeInDuration);
 
         FinishTransition();
@@ -228,6 +235,40 @@ public sealed class SceneFadeTransitionService : MonoBehaviour
         float elapsed = 0f;
         while (elapsed < holdSeconds)
         {
+            elapsed += Time.unscaledDeltaTime;
+            yield return null;
+        }
+    }
+
+    private bool ShouldDelayRevealForCorridorLoading()
+    {
+        if (!delayRevealForCorridorLoading)
+            return false;
+
+        PortalRouteManager routeManager = PortalRouteManager.Instance;
+        return routeManager != null &&
+               PortalRouteManager.IsCorridorEntryTransition(routeManager.LastLoadPresentationTransitionType);
+    }
+
+    private IEnumerator WaitForCorridorLoadingOverlayToFinish()
+    {
+        float timeoutSeconds = Mathf.Max(0f, corridorRevealTimeoutSeconds);
+        float elapsed = 0f;
+
+        while (true)
+        {
+            LoadingOverlayController overlay = LoadingOverlayController.Instance;
+            if (overlay == null || !overlay.IsActiveLoadingPresentation)
+                yield break;
+
+            if (timeoutSeconds > 0f && elapsed >= timeoutSeconds)
+            {
+                Debug.LogWarning(
+                    "[SceneFadeTransitionService] Timed out waiting for corridor loading overlay to finish. Revealing scene anyway.",
+                    this);
+                yield break;
+            }
+
             elapsed += Time.unscaledDeltaTime;
             yield return null;
         }

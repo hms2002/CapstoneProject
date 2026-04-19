@@ -72,13 +72,19 @@ public sealed class SettingsPanelUI : MonoBehaviour, IStackableUI
 
     [Header("Common")]
     [SerializeField] private Button closeButton;
+    [SerializeField] private UIChainDropPresentation dropPresentation;
+    [SerializeField] private CanvasGroup temporaryHiddenCanvasGroup;
 
     private bool listenersBound;
+    private bool isClosing;
     private bool suppressCallbacks;
+    private bool hasStoredTemporaryCanvasState;
+    private bool storedCanvasInteractable = true;
+    private bool storedCanvasBlocksRaycasts = true;
     private int pendingWindowModeIndex;
     private int pendingResolutionIndex;
 
-    public bool IsActive => gameObject.activeSelf;
+    public bool IsActive => gameObject.activeSelf && !isClosing;
     public bool CanCloseOnEscape => true;
     public UIOpenGroup OpenGroup => UIOpenGroup.Overlay;
     public UIOpenGroup BlockedOpenGroups => UIOpenGroup.None;
@@ -113,6 +119,7 @@ public sealed class SettingsPanelUI : MonoBehaviour, IStackableUI
         }
 
         Instance = this;
+        ResolveReferences();
         BindListeners();
         RefreshCanvasParent();
         gameObject.SetActive(false);
@@ -133,20 +140,43 @@ public sealed class SettingsPanelUI : MonoBehaviour, IStackableUI
 
     private void OnDisable()
     {
+        ApplyTemporaryHiddenState(false);
+        isClosing = false;
         MouseCursorService.Instance?.ClearDomain(this);
     }
 
     public void OpenUI()
     {
+        isClosing = false;
+        ResolveReferences();
+        ApplyTemporaryHiddenState(false);
         RefreshCanvasParent();
         BindListeners();
         RefreshBindings();
         gameObject.SetActive(true);
+        dropPresentation?.PlayOpen();
     }
 
     public void CloseUI()
     {
-        gameObject.SetActive(false);
+        if (isClosing)
+            return;
+
+        if (!gameObject.activeSelf)
+        {
+            isClosing = false;
+            return;
+        }
+
+        if (dropPresentation == null)
+        {
+            gameObject.SetActive(false);
+            isClosing = false;
+            return;
+        }
+
+        isClosing = true;
+        dropPresentation.PlayClose(FinalizeClose);
     }
 
     public void RefreshCanvasParent()
@@ -156,14 +186,68 @@ public sealed class SettingsPanelUI : MonoBehaviour, IStackableUI
 
     public void SetTemporarilyHidden(bool hidden)
     {
+        ResolveReferences();
+
         if (hidden)
         {
-            gameObject.SetActive(false);
+            isClosing = false;
+            dropPresentation?.SnapOpen();
+            ApplyTemporaryHiddenState(true);
             return;
         }
 
+        isClosing = false;
+        ApplyTemporaryHiddenState(false);
         RefreshBindings();
-        gameObject.SetActive(true);
+    }
+
+    private void FinalizeClose()
+    {
+        ApplyTemporaryHiddenState(false);
+        gameObject.SetActive(false);
+        isClosing = false;
+    }
+
+    private void ResolveReferences()
+    {
+        if (dropPresentation == null)
+            dropPresentation = GetComponent<UIChainDropPresentation>();
+
+        if (dropPresentation == null)
+            dropPresentation = GetComponentInChildren<UIChainDropPresentation>(true);
+
+        if (temporaryHiddenCanvasGroup == null && dropPresentation != null)
+            temporaryHiddenCanvasGroup = dropPresentation.GetComponent<CanvasGroup>();
+
+        if (temporaryHiddenCanvasGroup == null)
+            temporaryHiddenCanvasGroup = GetComponentInChildren<CanvasGroup>(true);
+    }
+
+    private void ApplyTemporaryHiddenState(bool hidden)
+    {
+        if (temporaryHiddenCanvasGroup == null)
+            return;
+
+        if (hidden)
+        {
+            if (!hasStoredTemporaryCanvasState)
+            {
+                storedCanvasInteractable = temporaryHiddenCanvasGroup.interactable;
+                storedCanvasBlocksRaycasts = temporaryHiddenCanvasGroup.blocksRaycasts;
+                hasStoredTemporaryCanvasState = true;
+            }
+
+            temporaryHiddenCanvasGroup.interactable = false;
+            temporaryHiddenCanvasGroup.blocksRaycasts = false;
+            return;
+        }
+
+        if (!hasStoredTemporaryCanvasState)
+            return;
+
+        temporaryHiddenCanvasGroup.interactable = storedCanvasInteractable;
+        temporaryHiddenCanvasGroup.blocksRaycasts = storedCanvasBlocksRaycasts;
+        hasStoredTemporaryCanvasState = false;
     }
 
     public void RefreshBindings()

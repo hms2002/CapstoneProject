@@ -1,3 +1,4 @@
+using System.Collections;
 using CapstoneAudio;
 using UnityEngine;
 
@@ -61,6 +62,75 @@ namespace CapstonePresentation
             SpawnVisual(hook.particle, context);
         }
 
+        public static IEnumerator PlayAsync(WorldPresentationHook hook, WorldPresentationContext context)
+        {
+            if (!hook.HasAnyContent)
+                yield break;
+
+            PlaySignalOnly(hook, context);
+            yield return SpawnVisualAsync(hook.effect, context);
+            yield return SpawnVisualAsync(hook.particle, context);
+        }
+
+        public static IEnumerator PlayAsync(CueRef cueRef, WorldPresentationContext context)
+        {
+            AssetResolveOperation<PresentationCueSO> cueOperation = CueCatalogService.ResolveAsync(cueRef);
+            if (cueOperation == null)
+                yield break;
+
+            if (!cueOperation.IsDone)
+                yield return cueOperation;
+
+            PresentationCueSO cue = cueOperation.Asset;
+            if (cue == null || !cue.HasAnyContent)
+                yield break;
+
+            yield return PlayAsync(cue.Presentation, context);
+        }
+
+        public static IEnumerator PlayAsync(PresentationReference reference, WorldPresentationContext context)
+        {
+            switch (reference.mode)
+            {
+                case PresentationReferenceMode.Cue:
+                    yield return PlayAsync(reference.cue, context);
+                    yield break;
+
+                case PresentationReferenceMode.InlineThenCue:
+                    if (reference.inlinePresentation.HasAnyContent)
+                    {
+                        yield return PlayAsync(reference.inlinePresentation, context);
+                        yield break;
+                    }
+
+                    yield return PlayAsync(reference.cue, context);
+                    yield break;
+
+                case PresentationReferenceMode.Inline:
+                default:
+                    if (!reference.inlinePresentation.HasAnyContent)
+                        yield break;
+
+                    yield return PlayAsync(reference.inlinePresentation, context);
+                    yield break;
+            }
+        }
+
+        public static Coroutine PlayDeferredAsync(in WorldPresentationHook hook, in WorldPresentationContext context)
+        {
+            return PresentationRoutineRunner.Run(PlayAsync(hook, context));
+        }
+
+        public static Coroutine PlayDeferredAsync(in CueRef cueRef, in WorldPresentationContext context)
+        {
+            return PresentationRoutineRunner.Run(PlayAsync(cueRef, context));
+        }
+
+        public static Coroutine PlayDeferredAsync(in PresentationReference reference, in WorldPresentationContext context)
+        {
+            return PresentationRoutineRunner.Run(PlayAsync(reference, context));
+        }
+
         public static bool TryResolveCue(in CueRef cueRef, out WorldPresentationHook presentation)
         {
             return CueCatalogService.TryResolve(cueRef, out presentation);
@@ -122,6 +192,19 @@ namespace CapstonePresentation
         public static void SpawnVisual(in SpawnedPresentationHook hook, in WorldPresentationContext context)
         {
             PresentationSpawnService.SpawnOneShot(hook, context);
+        }
+
+        public static IEnumerator SpawnVisualAsync(SpawnedPresentationHook hook, WorldPresentationContext context)
+        {
+            if (!hook.HasContent)
+                yield break;
+
+            yield return PresentationSpawnService.SpawnOneShotAsync(hook, context);
+        }
+
+        public static Coroutine SpawnVisualDeferredAsync(in SpawnedPresentationHook hook, in WorldPresentationContext context)
+        {
+            return PresentationRoutineRunner.Run(SpawnVisualAsync(hook, context));
         }
 
         public static void InitializeSpawnedPresentation(GameObject instance, bool useUnscaledTime)

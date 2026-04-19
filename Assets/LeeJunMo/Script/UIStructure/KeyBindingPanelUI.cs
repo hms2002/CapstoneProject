@@ -29,6 +29,9 @@ public sealed class KeyBindingPanelUI : MonoBehaviour, IStackableUI, ICloseReque
     [SerializeField] private Button resetAllButton;
     [SerializeField] private Button closeButton;
 
+    [Header("Common")]
+    [SerializeField] private UIChainDropPresentation dropPresentation;
+
     private readonly List<KeyBindingRowUI> spawnedRows = new();
     private readonly Dictionary<InputActionId, InputBinding> workingBindings = new();
     private readonly Dictionary<InputActionId, InputBinding> savedBindings = new();
@@ -43,8 +46,9 @@ public sealed class KeyBindingPanelUI : MonoBehaviour, IStackableUI, ICloseReque
     private bool awaitingCloseConfirmation;
     private bool resumeListeningOnConflictCancel;
     private Dictionary<InputActionId, InputBinding> pendingPreviewBindings;
+    private bool isClosing;
 
-    public bool IsActive => gameObject.activeSelf;
+    public bool IsActive => gameObject.activeSelf && !isClosing;
     public bool CanCloseOnEscape => listeningRow == null;
     public UIOpenGroup OpenGroup => UIOpenGroup.Overlay;
     public UIOpenGroup BlockedOpenGroups => UIOpenGroup.None;
@@ -79,6 +83,7 @@ public sealed class KeyBindingPanelUI : MonoBehaviour, IStackableUI, ICloseReque
         }
 
         Instance = this;
+        ResolveReferences();
         BindListeners();
         RefreshCanvasParent();
         HideGuide();
@@ -155,11 +160,14 @@ public sealed class KeyBindingPanelUI : MonoBehaviour, IStackableUI, ICloseReque
 
     private void OnDisable()
     {
+        isClosing = false;
         MouseCursorService.Instance?.ClearDomain(this);
     }
 
     public void OpenUI()
     {
+        isClosing = false;
+        ResolveReferences();
         RefreshCanvasParent();
         BindListeners();
         LoadWorkingBindingsFromService();
@@ -167,19 +175,47 @@ public sealed class KeyBindingPanelUI : MonoBehaviour, IStackableUI, ICloseReque
         RefreshRows();
         HideGuide();
         gameObject.SetActive(true);
+        dropPresentation?.PlayOpen();
     }
 
     public void CloseUI()
     {
+        if (isClosing)
+            return;
+
+        if (!gameObject.activeSelf)
+        {
+            isClosing = false;
+            return;
+        }
+
         CancelRebind();
         HideGuide();
-        ClearWorkingState();
-        gameObject.SetActive(false);
+        ResolveReferences();
+        if (dropPresentation == null)
+        {
+            ClearWorkingState();
+            gameObject.SetActive(false);
+            isClosing = false;
+            return;
+        }
+
+        isClosing = true;
+        dropPresentation.PlayClose(FinalizeClose);
     }
 
     public void RefreshCanvasParent()
     {
         GlobalUIRoot.AdoptToCanvas(GlobalCanvasLayer.Popup, transform, false);
+    }
+
+    private void ResolveReferences()
+    {
+        if (dropPresentation == null)
+            dropPresentation = GetComponent<UIChainDropPresentation>();
+
+        if (dropPresentation == null)
+            dropPresentation = GetComponentInChildren<UIChainDropPresentation>(true);
     }
 
     public bool TryHandleCloseRequest()
@@ -797,5 +833,12 @@ public sealed class KeyBindingPanelUI : MonoBehaviour, IStackableUI, ICloseReque
             UIManager.Instance.PopUI(this);
         else
             CloseUI();
+    }
+
+    private void FinalizeClose()
+    {
+        ClearWorkingState();
+        gameObject.SetActive(false);
+        isClosing = false;
     }
 }

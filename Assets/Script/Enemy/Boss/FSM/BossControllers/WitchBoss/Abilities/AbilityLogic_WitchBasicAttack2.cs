@@ -262,7 +262,7 @@ public class AbilityLogic_WitchBasicAttack2 : AbilityLogic
 
         if (spawnCount <= 1)
         {
-            WorldPresentationRuntime.SpawnVisual(
+            WorldPresentationRuntime.SpawnVisualDeferredAsync(
                 visualHook,
                 WorldPresentationContext.AtWorld(
                     instigator: null,
@@ -281,7 +281,7 @@ public class AbilityLogic_WitchBasicAttack2 : AbilityLogic
             Vector3 direction = Quaternion.Euler(0f, 0f, angleDeg) * Vector3.right;
             Vector3 ringPoint = center + (direction * spawnRadius);
 
-            WorldPresentationRuntime.SpawnVisual(
+            WorldPresentationRuntime.SpawnVisualDeferredAsync(
                 visualHook,
                 WorldPresentationContext.AtWorld(
                     instigator: null,

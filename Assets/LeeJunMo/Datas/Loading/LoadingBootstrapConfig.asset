@@ -13,3 +13,5 @@ MonoBehaviour:
   m_Name: LoadingBootstrapConfig
   m_EditorClassIdentifier: Assembly-CSharp::LoadingBootstrapConfigSO
   bootManifest: {fileID: 11400000, guid: 46906141dfc26c54481ed3afc78fff8d, type: 2}
+  assetProviderMode: 1
+  addressableRegistry: {fileID: 11400000, guid: 71c74798328058e489990b344078a59e, type: 2}

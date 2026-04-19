@@ -29,7 +29,7 @@ namespace DG.DOTweenEditor
         {
             if (EditorApplication.isPlaying) return false;
 
-            Styles.Init();
+            if (!Styles.TryInit()) return false;
 
             bool isPreviewing = _AnimationToTween.Count > 0;
             bool isPreviewingThis = isPreviewing && _AnimationToTween.ContainsKey(src);
@@ -247,18 +247,25 @@ namespace DG.DOTweenEditor
 
             public static GUIStyle previewBox, previewLabel, btOption, btPreview, previewStatusLabel;
 
-            public static void Init()
+            public static bool TryInit()
             {
-                if (_initialized) return;
+                if (_initialized) return true;
+                if (GUI.skin == null) return false;
 
-                _initialized = true;
+                try {
+                    previewBox = new GUIStyle(GUI.skin.box).Clone().Padding(1, 1, 0, 3)
+                        .Background(DeStylePalette.squareBorderCurved_darkBorders).Border(7, 7, 7, 7);
+                    previewLabel = new GUIStyle(GUI.skin.label).Clone(10, FontStyle.Bold).Padding(1, 0, 3, 0).Margin(3, 6, 0, 0).StretchWidth(false);
+                    btOption = DeGUI.styles.button.bBlankBorderCompact.MarginBottom(2).MarginRight(4);
+                    btPreview = EditorStyles.miniButton.Clone(Format.RichText);
+                    previewStatusLabel = EditorStyles.miniLabel.Clone().Padding(4, 0, 0, 0).Margin(0);
+                    _initialized = true;
+                } catch {
+                    previewBox = previewLabel = btOption = btPreview = previewStatusLabel = null;
+                    _initialized = false;
+                }
 
-                previewBox = new GUIStyle(GUI.skin.box).Clone().Padding(1, 1, 0, 3)
-                    .Background(DeStylePalette.squareBorderCurved_darkBorders).Border(7, 7, 7, 7);
-                previewLabel = new GUIStyle(GUI.skin.label).Clone(10, FontStyle.Bold).Padding(1, 0, 3, 0).Margin(3, 6, 0, 0).StretchWidth(false);
-                btOption = DeGUI.styles.button.bBlankBorderCompact.MarginBottom(2).MarginRight(4);
-                btPreview = EditorStyles.miniButton.Clone(Format.RichText);
-                previewStatusLabel = EditorStyles.miniLabel.Clone().Padding(4, 0, 0, 0).Margin(0);
+                return _initialized;
             }
         }
     }

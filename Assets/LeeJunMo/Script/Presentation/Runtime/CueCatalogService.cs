@@ -20,7 +20,11 @@ namespace CapstonePresentation
                 return false;
 
             CueCatalogService service = ResolveInstance();
-            return service != null && service.TryResolveInternal(cueRef.key, out cue);
+            if (service == null || !service.TryResolveInternal(cueRef.key, out cue) || cue == null)
+                return false;
+
+            cue = PresentationAssetProvider.ResolveCue(cue);
+            return cue != null;
         }
 
         public static bool TryResolve(in CueRef cueRef, out WorldPresentationHook presentation)
@@ -31,6 +35,31 @@ namespace CapstonePresentation
 
             presentation = cue.Presentation;
             return true;
+        }
+
+        public static AssetResolveOperation<PresentationCueSO> ResolveAsync(in CueRef cueRef)
+        {
+            if (!cueRef.IsSet)
+                return AssetResolveOperation<PresentationCueSO>.Failed(
+                    "Cue key is not set.",
+                    label: "ResolveCue <empty>");
+
+            CueCatalogService service = ResolveInstance();
+            if (service == null)
+            {
+                return AssetResolveOperation<PresentationCueSO>.Failed(
+                    "CueCatalogService is unavailable.",
+                    label: $"ResolveCue {cueRef}");
+            }
+
+            if (!service.TryResolveInternal(cueRef.key, out PresentationCueSO cue) || cue == null)
+            {
+                return AssetResolveOperation<PresentationCueSO>.Failed(
+                    $"Cue not found: {cueRef}",
+                    label: $"ResolveCue {cueRef}");
+            }
+
+            return PresentationAssetProvider.ResolveCueAsync(cue);
         }
 
         private void Awake()

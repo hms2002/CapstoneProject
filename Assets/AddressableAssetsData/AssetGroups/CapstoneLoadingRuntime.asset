@@ -1,0 +1,2808 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: CapstoneLoadingRuntime
+  m_EditorClassIdentifier: Unity.Addressables.Editor::UnityEditor.AddressableAssets.Settings.AddressableAssetGroup
+  m_GroupName: CapstoneLoadingRuntime
+  m_GUID: c70f8634cd69f6242b82abfd44b48b48
+  m_SerializeEntries:
+  - m_GUID: 005b1b02437e0a2448572090dc3c55c1
+    m_Address: Assets/Sprites/Effects/Attack/Combat_FX_1.1/Combat 1.1.aseprite
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 007577c97ef474d4f8d190d280eeafce
+    m_Address: Assets/Sprites/UI/Dialogue/NameBox.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 03890d76bd563a14e8a419c7685dbab3
+    m_Address: Assets/Resources/Upgrades/Nodes/Node_639065978670872090.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 047ed15abad27984b88db2a1103fc278
+    m_Address: Assets/HeoMinSeok/_Project/Data/Combat/Damage/SF_ATKx2.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 06b1d511484037b47bac2dbb2261bc92
+    m_Address: Assets/Sprites/Characters/Boss/WitchBoss_Idle8.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 06fb955e1ce9a9c41abb914e2af4dd01
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Resources/Tags/Event.Input.Attack.Pressed.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 07b58f92405b23544b048c3ed60ad67f
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Resources/Tags/Cue.Trap.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 07d5bfddcd3e17e4d81dd44eedd5989b
+    m_Address: Assets/Sprites/Characters/Boss/WitchBoss_Idle6.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 07e2e0377cda6d94eb4680ca1b68ab8c
+    m_Address: Assets/Sprites/Items/RelicIcon/Icon_FeatherOrbit.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0833ee326876db2469b3ed49ab5ab5d0
+    m_Address: Assets/Resources/Upgrades/Nodes/Node_639065978588726897.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 09cf2a7744186794dbb618d28fc887df
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Attribute/DamageCalcAttribute/SkillAddAttribute.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 09d1becf347fddc46a5b5087987932a2
+    m_Address: Assets/Audio/Weapon/SwordAtkSound1.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0bd69b2b4237473ead517a6bb31f0ab1
+    m_Address: Assets/HeoMinSeok/_Project/Data/Items/Relics/Definitions/RD_CounterKick.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0c89c5f9457540d6a5d0c393c44b0c7e
+    m_Address: Assets/Script/Enemy/Boss/FSM/BossControllers/WitchBoss/ScriptableObjects/Abilities/Definitions/AD_Witch_NormalAttack1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0cb9748ff72f7c74ab513387ceba11ad
+    m_Address: Assets/Sprites/ThirdParty/WeaponAndSandBack/Pixel Art Top Down - Basic/Tile
+      Palette/TP Grass/TX Tileset Grass Flower 2.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0d09aba533d2fa84da4a54832b741dc2
+    m_Address: Assets/Resources/OutlineMaterial.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0d0e35eb0d664d64a12a7994d8fd7c31
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Resources/Tags/Cue.Ability.Dash.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0d850588fc24715418aa394a9ea22c8b
+    m_Address: Assets/Sprites/Effects/Retro Impact Effect Pack 2 F_46.controller
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0e177e1d15e428745b5859fac08ce203
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Attribute/MaxHealthAttribute.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0fefa61e5f457d94e828a895b4ddfa2a
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Definitions/AD_SwordSkill1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 108ed5884c0e5294fb2bc08d259e53f5
+    m_Address: Assets/LeeJunMo/Prefab/Looting/MagicStonePrefab.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 10c7d7bbe8e71244c8b78798cddf6484
+    m_Address: Assets/Sprites/Environment/Level/ChestOpen.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 11045d46d80e1ce41b2cbfe4f6ce9b4d
+    m_Address: Assets/Audio/Cele/1_1.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 11fe976bca44ca04996308bdbaf83e5c
+    m_Address: Assets/LeeJunMo/Datas/Dialogue/NPC/SpriteLibrary/New Sprite Library
+      Asset.spriteLib
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 120636a7de76b144c88aaf6f02ac5b1f
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Resources/Tags/Data.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 122086249f809784c84b56e9b99e367e
+    m_Address: Assets/Script/Enemy/Boss/FSM/BossControllers/WitchBoss/ScriptableObjects/Attributes/CurStagger.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 12c600f6573c75e4093e37d3a1147021
+    m_Address: Assets/Sprites/UI/Dialogue/Boss1EffectLoop.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 13c397bf609bfd6419f58cb78f10326a
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Resources/Tags/State.Status.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 149e958a559e67e4cbe8b2c10926aa47
+    m_Address: Assets/Audio/PlayerActing/OpenInventorySound.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 14dc4aac306a3a34ca5a10eb1e2395d2
+    m_Address: Assets/Audio/Combat/DefaultHitSound.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1585d72a2e7a6574bbdafcb2f8a24b41
+    m_Address: Assets/LeeJunMo/Prefab/Effect/Particle/ZZZParticle.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 159416ccba97abb43b4cd1fc49a0d026
+    m_Address: Assets/HeoMinSeok/_Project/Data/Items/Relics/Logics/Relic Logic_Speed
+      Mul Bonus.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 15c3fc02f729d6e45bb8bd5c0d326296
+    m_Address: Assets/LeeJunMo/Prefab/UI/EmoteUIPrefab.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 162b2c3c7ed3c8240995ad1799a0339a
+    m_Address: Assets/Sprites/ThirdParty/WeaponAndSandBack/Pixel Art Top Down - Basic/Tile
+      Palette/TP Grass/TX Tileset Grass Flower 6.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 165fc11102fdbfb40b1ce7b341ecc8bb
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Resources/Tags/Event.KillConfirmed.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 16dd768bf5974ab46b7374f36e182a90
+    m_Address: Assets/Audio/BGM/ShadowCorridorBGM.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 16f1eeaaef50b1143884b22e4da54a5f
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Attribute/KnockbackAttribute/KnockBackPowerMulAttribute.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 185fe7a2d371a914e9f2a7db7ca5129a
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Resources/Tags/Element.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 189a65479cfa48145a8528d1d882e875
+    m_Address: Assets/Sprites/Characters/Boss/WitchBoss_Idle2.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 198745b4e2f043d5a0f0c6e7bc7a6b99
+    m_Address: Assets/Script/Enemy/Boss/FSM/BossControllers/WitchBoss/ScriptableObjects/Abilities/Logics/AL_Witch_LightAllCandles.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1a3ab0dc090843ed9c77ee62bddbd2bb
+    m_Address: Assets/Script/Enemy/Boss/FSM/BossControllers/WitchBoss/ScriptableObjects/AttackTelegraphStyle_WitchNormalAttack1Hit.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1a515275e1ca5604a87f1ce3d65e3d83
+    m_Address: Assets/LeeJunMo/Prefab/UI/PopupUI/PlayerInventoryUI/InventoryElementPannel.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1ae37c64e6ecc29439546aa867fdb36e
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Resources/Tags/TagSet/AllTagSet.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1b74491ac05767b4e9e93bc5a9910555
+    m_Address: Assets/LeeJunMo/Datas/Inks/AffectionFlowTest.json
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1c748446d88e6e345b09cba95fad4e23
+    m_Address: Assets/HeoMinSeok/_Project/Data/Items/Weapons/AbilityLogics/AL_RW_Attack1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1c9ed9d1200c29d4cbfd2071028c1cd5
+    m_Address: Assets/Sprites/ThirdParty/WeaponAndSandBack/Pixel Art Top Down - Basic/Texture/TX
+      Tileset Grass.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1d28e4ac11e90704bacd7e64f1a0b8df
+    m_Address: Assets/HeoMinSeok/_Project/Data/Items/Weapons/LogicData/ALData_RW_Attack1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1d56a304110f63a4fbab81eeacf6910a
+    m_Address: Assets/Sprites/UI/Cursor/_whiteGloveCursor32x32.aseprite
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1dbc79edf8ae42f42b0eada618231847
+    m_Address: Assets/Sprites/UI/Chest/UI Chest inventory.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1de22204e41f9f249bb62be52ae950f0
+    m_Address: Assets/Sprites/Characters/Player/Pixel_Plains_Premium_Pack/Characters
+      24x24/Gato 3 v1.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1df4d6f6ce1f47e090ef5b50eef465e4
+    m_Address: Assets/Resources/DefaultMouseCursorTheme.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1f2641bce49c9884eaec41adfdfa29f3
+    m_Address: Assets/HeoMinSeok/_Project/Data/Items/Relics/Definitions/RD_AttackBonusRelic.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1f472dc67709f4248953a0bf39255567
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Definitions/AD_SwordCombo2D.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1f774045e4d72664996fab05fc0e1308
+    m_Address: Assets/HeoMinSeok/_Project/Data/Items/Relics/Definitions/RD_LightningRelic.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2040afd46a4bf0a4eb8e6bf3c95f94cc
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Cues/PF_Cue_GroggyBreak.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 20da04b1990b4014aabe5a3dba750160
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Attribute/ElementAttribute/MaxPoisonElementGaugeAttribute.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2199820cb676dbc4692f5aca1000cb22
+    m_Address: Assets/LeeJunMo/Datas/Scene/RunRouteCatalog.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2264b2f6e65af3b41a9a7d89aa77ac0e
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Resources/Tags/Event.Input.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 22abce9be96413640aed9d47f89c4130
+    m_Address: Assets/LeeJunMo/Prefab/UI/Upgrade/line.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 230cdfca747527646b1afc30748bbfcc
+    m_Address: Assets/HeoMinSeok/_Project/Prefabs/Attack/Hitbox_WindWeapon_NormalAtk_HardSlash.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2367cb1fa5ebd9d4d9082b473634a906
+    m_Address: Assets/Sprites/ThirdParty/WeaponAndSandBack/Pixel Art Top Down - Basic/Tile
+      Palette/TP Grass/TX Tileset Grass Flower 9.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 23db6468e859c6f42b0230a5af7ca81c
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Attribute/MoveSpeedMulAttribute.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 24511839b2f251343810bc33ff5c54fc
+    m_Address: Assets/Sprites/Characters/Boss/Shadow/CombatSprite/EffectSprite/Boss1Shield.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 24602c35b51a9f64f8622e1094c8f5b2
+    m_Address: Assets/HeoMinSeok/_Project/Data/Items/Relics/Logics/Relic Logic_Move
+      Speed On Kill_Managed.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 24c3fdd0c9a4e0041aee9bca223e95d9
+    m_Address: Assets/Sprites/Characters/Player/Player_Walk.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 263932648b6500e4ebb68fa18a23483d
+    m_Address: Assets/Sprites/ThirdParty/WeaponAndSandBack/WeaponSkill/FeatherSword_Skill2.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 265b276ebb1e5ba47afa0d99ea0822ed
+    m_Address: Assets/HeoMinSeok/_Project/Prefabs/UI/Inventory/Common/ItemSlotUI_Consumable.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 27ab8ed529a1dc8489075e262f52eab4
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Resources/Tags/State.Attacking.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2870c5d0c51a4f8d94cc374194c787b1
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Cues/Def_Cue_Hit_CameraShake.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2903e043ebd252a42b711835ac01484e
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Cues/Def_Cue_Falling.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 296eaa6f1547cb74e990055ce1319470
+    m_Address: Assets/HeoMinSeok/_Project/Prefabs/Gameplay/Items/TresureChest.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 29c9cded5e558164aaf8c9bf08aa1510
+    m_Address: Assets/Sprites/ThirdParty/WeaponAndSandBack/Pixel Art Top Down - Basic/Texture/TX
+      Props.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2a195b84427e14a4ba63fe519397dd8e
+    m_Address: Assets/Sprites/UI/Cursor/light_cursor_spritesheet.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2a2133b4854b68e4eb9a420c0bb3e215
+    m_Address: Assets/HeoMinSeok/_Project/Data/Items/Relics/Definitions/RD_SpeedMedal.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2a8769d92a7d9e545aca68636c882ebe
+    m_Address: Assets/Sprites/Characters/Player/Player_Damaged.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2af854022baea474ba380cc6be59d552
+    m_Address: Assets/Sprites/ThirdParty/WeaponAndSandBack/Pixel Art Top Down - Basic/Tile
+      Palette/TP Wall/TX Tileset Wall_22.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2bcd85edc5475484393b3817272724af
+    m_Address: Assets/LeeJunMo/Prefab/UI/PopupUI/PlayerStatUI/PlayerStatRowView.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2c00d5ea8f6f74c469dbe5d147c0f7e4
+    m_Address: Assets/HeoMinSeok/_Project/Data/Items/Weapons/LogicData/ALData_RW_Skill2_SpeedStrike.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2c670dc28da29e54da4c78aac2caebe8
+    m_Address: Assets/Sprites/ThirdParty/WeaponAndSandBack/Pixel Art Top Down - Basic/Tile
+      Palette/TP Grass/TX Tileset Grass Flower 11.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2c8e2b555f632824fbc8a39cd7bcfc86
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Attribute/DamageCalcAttribute/AttackMulAttribute.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2ca58749ac84f62498bc976d942cac64
+    m_Address: Assets/Sprites/Characters/Boss/Shadow/CombatSprite/EffectSprite/Boss1ShieldIdleAnim.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2cb469fb0ae741d6a0baf4970b8f2c44
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Cues/Def_Cue_Dash_Dust.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2d4bfbc8021d90e4d9401d28ae1b1d53
+    m_Address: Assets/Sprites/Characters/Boss/Shadow/CombatSprite/EffectSprite/Boss1NormalAttack2Anim.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2da8cf5534b74c6180f74f116299e203
+    m_Address: Assets/HeoMinSeok/_Project/Data/Combat/Damage/SSF_SpeedStrikeDamage.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2df553bfa70756f4c8272d84231479aa
+    m_Address: Assets/LeeJunMo/Datas/Dialogue/NPC/DialogueTheme/NpcDialogueTheme.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2e2e8bd1bde4f78429bf913fa737505c
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Resources/Tags/Data.Damage.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2ec52fe02fb80f44da3a9107bd08a99a
+    m_Address: Assets/Sprites/Characters/Boss/Shadow/CombatSprite/EffectSprite/Boss1ShieldAnim.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2f5faaf6bd840544cb59f6d23905c40d
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Effects/GE_Knockback_Spec.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2f7c848c99f5ffc4b83d852b0107c7b2
+    m_Address: Assets/Sprites/Characters/Player/Pixel_Plains_Premium_Pack/Spark (White
+      Ver.) 7x5.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2fa45d25bb8e0e945912cde04492e6d1
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Attribute/ElementAttribute/BloodElementBaseAttribute.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2ff288bb12839d4418fc069dc0fefbd5
+    m_Address: Assets/HeoMinSeok/_Project/Data/AL_Dash2D.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3101241e7fb201a47b74f696a9d89bc2
+    m_Address: Assets/Sprites/ThirdParty/WeaponAndSandBack/WeaponAnimation/AM_Idle.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 31156f12e65316e409d9858201c3ab8b
+    m_Address: Assets/HeoMinSeok/_Project/Data/Combat/Damage/StatTypeBindings.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3176a6ca3d2df1f4d8f3770d42b8457f
+    m_Address: Assets/HeoMinSeok/_Project/Data/Items/Relics/Definitions/RD_WindTablet.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 31a959dc9c12f43438e29eb3fbf19a8b
+    m_Address: Assets/Sprites/Effects/Retro Impact Effect Pack 2 F.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 31f9ab79b532ed047b05bfe7604ef236
+    m_Address: Assets/HeoMinSeok/_Project/Data/Items/Weapons/LogicData/ALData_RW_Skill1_Rush.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 322ce106973d4c84caffc452cc427eb9
+    m_Address: Assets/Resources/Upgrades/Nodes/Node_639065978592567735.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 34303d25145ab104f8fabf97fe65552d
+    m_Address: Assets/Sprites/ThirdParty/WeaponAndSandBack/Pixel Art Top Down - Basic/Tile
+      Palette/TP Grass/TX Tileset Grass Flower 4.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 346240656be14604eae7042e8d087594
+    m_Address: Assets/Sprites/Characters/Boss/Shadow/CombatSprite/BossDeath.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 36cc70fede5948a49bd1041f9e99fb5e
+    m_Address: Assets/Sprites/UI/Dialogue/BossEffectCnt.controller
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 37a636e5284f2204fb1bf5d0e415073d
+    m_Address: Assets/Sprites/Anim/Emote Anim/AngryIconAnim.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 38bb5596a5afb1849a019e3bd04fe708
+    m_Address: Assets/LeeJunMo/Datas/Dialogue/Upgrade/New Upgrade Database.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 38fff8b5f0a464f4fa7dd878114bb1b2
+    m_Address: Assets/Sprites/Environment/Level/All Chest Sheet.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3903a30b290836e4bb4413a07b019990
+    m_Address: Assets/LeeJunMo/Datas/Looting/Table_Stage1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3b7c58c25137bb847a4b3ff4e06fed18
+    m_Address: Assets/LeeJunMo/Prefab/Camera/Main Camera.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3c0b5083d360d9f4fab9b49ddfbc6134
+    m_Address: Assets/LeeJunMo/Datas/Resources/Audio/DefaultAudioCatalog.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3cc7769716d9efa46a3c163d7375237e
+    m_Address: Assets/Sprites/UI/Common/Keyboard Letters and Symbols.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3cf73420df1732240b7c90837ff7efab
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Attribute/ElementAttribute/FireElementAddAttribute.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3d7d2ab34d724604b4063276897c4eb0
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Resources/Tags/Cue.Status.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3d9f7b2e6c4a4fd5a18be7f0c3d2a941
+    m_Address: Assets/Script/Enemy/Boss/FSM/BossControllers/WitchBoss/ScriptableObjects/Abilities/Definitions/AD_Witch_ExtinguishCandle.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3dbb80240a8ddb744a0525322aad2b6f
+    m_Address: Assets/HeoMinSeok/_Project/Data/Items/Relics/Logics/Relic Logic_SpeedMedalBonus.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3e9a1f42bc7d4c6499153f8e6ba2d071
+    m_Address: Assets/HeoMinSeok/_Project/Data/Items/Relics/Logics/Relic Logic_One
+      Drop Of Swiftness_Managed.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3ef1664fdf0dac148a47091038acdfd9
+    m_Address: Assets/LeeJunMo/Datas/Dialogue/NPC/DialogueTheme/ShadowBossDialogueTheme.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3f0da48f2a0acc843a80f20a370f3678
+    m_Address: Assets/LeeJunMo/Datas/Looting/ItemDatabase.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3f863387c4de5994c824e5bbb54b01ab
+    m_Address: Assets/Sprites/Characters/Boss/Shadow/CombatSprite/BossBreakdown.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3ff045849daafe84d97370c69cd17747
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Attribute/HealthAttribute.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 40277bede661488094dd09d158341e30
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Attribute/DamageCalcAttribute/AttackSpeedBaseAttribute.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 43083cfa6d5da894d84ebadea120a909
+    m_Address: Assets/HeoMinSeok/_Project/Data/Items/Weapons/LogicData/ALData_SwordSkill1_ProjectileData.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 432c5930f160f794287b829f1c2b0ab0
+    m_Address: Assets/HeoMinSeok/_Project/Prefabs/VFX/Skill/WindWeapon/RushEffect.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 434cc32abf8345d19696a284b8f3ddfd
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Attribute/DamageCalcAttribute/EvasionBaseAttribute.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 435e2a2f9ed451c41a980402201d90f8
+    m_Address: Assets/LeeJunMo/Prefab/UI/Choice0.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 43e97a0900edf3844b6f95b1486fe62f
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Attribute/DamageCalcAttribute/NormalBaseAttribute.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 43f174d55bdb17848bfb4809e9220797
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Resources/Tags/Event.Anim.SwordSkill2.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 459ea25ccbc709b44bfc9dcce46138d9
+    m_Address: Assets/HeoMinSeok/_Project/Data/Items/Relics/Logics/Relic Logic_Crit
+      From Bonus Move Speed_Managed.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 463040bb33823754e9e159a83e20321a
+    m_Address: Assets/Sprites/ThirdParty/WeaponAndSandBack/Pixel Art Top Down - Basic/Tile
+      Palette/TP Grass/TX Tileset Grass 6.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 464b82c4380e99c45a839f32f32511a8
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Resources/Tags/State.Attacking.Blocked.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 465249853d3321e47b796f8e8c787f64
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Resources/Tags/Event.HitConfirm.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 467ab97574ea03a469a2633a51aae8a3
+    m_Address: Assets/HeoMinSeok/_Project/Data/Items/Relics/Logics/Relic Logic_Fire
+      Flat Bonus.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 46edeb50a3c50454ebceca0f0822b6ad
+    m_Address: Assets/Font/Galmuri9 SDF WhiteOutline.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 47d328b88c893e241a4c084d550218b7
+    m_Address: Assets/LeeJunMo/Prefab/Effect/Particle/FallingDust.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 482f111f39d0bb54587ed8f02772d8d6
+    m_Address: Assets/Sprites/ThirdParty/WeaponAndSandBack/Pixel Art Top Down - Basic/Tile
+      Palette/TP Wall/TX Tileset Wall_26.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4a2fd65cb07d41d2b4925014a094b1fe
+    m_Address: Assets/LeeJunMo/Datas/Dialogue/NPC/MSBossNpc.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4adb10bcc016dff4996f0cdd28a8e57c
+    m_Address: Assets/HeoMinSeok/_Project/Prefabs/UI/Inventory/Common/ItemSlotUI_Weapon.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4af3438a19a9ff54683d8233bd993349
+    m_Address: Assets/Sprites/Items/RelicIcon/Icon_OneDropOfSwiftness.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4af7daafb91813e4985c8a1c393c77c1
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Resources/Tags/Cue.Ability.Sword.Hit.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4b0e3c35f3acd0441a039c0489db1967
+    m_Address: Assets/HeoMinSeok/_Project/Data/Combat/Damage/SF_Bleedx1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4b6e7cdf4c89b0b44adad24835703fdc
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Attribute/DamageCalcAttribute/NormalAddAttribute.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4be5e4c30ae21ca4d979927cb057f981
+    m_Address: Assets/HeoMinSeok/_Project/Prefabs/Attack/MeleeAttack.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4c48059ab2744ea42b818114a7133039
+    m_Address: Assets/Sprites/Environment/Level/TopDown_Total.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4c8943e2da4e8964bb3eb170c1aaba9f
+    m_Address: Assets/Sprites/ThirdParty/WeaponAndSandBack/Pixel Art Top Down - Basic/Tile
+      Palette/TP Grass/TX Tileset Grass Flower 0.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4cf98b7d858f198459256a03d954c0d2
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Attribute/DamageCalcAttribute/CritMultiplierAttribute.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4e1c3565f6c57e34c811431616670c8d
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Resources/Tags/State.Aim.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4e1e2fa91134aaf47a8d4022b0d0a6ac
+    m_Address: Assets/Sprites/ThirdParty/WeaponAndSandBack/Pixel Art Top Down - Basic/Tile
+      Palette/TP Wall/TX Tileset Wall_5.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4e35d4699f5d4db0a66010eb126c4ee1
+    m_Address: Assets/HeoMinSeok/_Project/Data/Items/Relics/Logics/Relic Logic_Move
+      Speed By Current Health_Managed.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4e4d801731fe93046b5adf65c9b432f7
+    m_Address: Assets/Shader/M_UIPulseGlow.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4f5d1e3ffdcf18e4bbef58f59b785760
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Attribute/StaggerAttribute/StaggerAddAttribute.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4ff0ebf2f97045f5ae20f7594b681f87
+    m_Address: Assets/Script/Enemy/Boss/FSM/BossControllers/WitchBoss/ScriptableObjects/Abilities/Logics/AL_Witch_SealedCandleRampage.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5030382eb4c06ff479325888be7e06c1
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Resources/Tags/State.Move.Intent.Blocked.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 503914639ae436b4e82c313961715c35
+    m_Address: Assets/Sprites/ThirdParty/WeaponAndSandBack/Pixel Art Top Down - Basic/Tile
+      Palette/TP Wall/TX Tileset Wall_16.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 503dfd491e32de84889c91ada7e82579
+    m_Address: Assets/LeeJunMo/Prefab/Effect/AnimEffect/Boss1PhaseAttackFireBall.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 504085a73b191cb41be6b18bbc36a522
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Resources/Tags/Event.Damaged.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 508e8a7b9bd177a4db23556497bbf018
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Attribute/DamageCalcAttribute/FinalMulAttribute.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 50a51f5bbc6eb564a8e720c21efba2a4
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Attribute/MoveSpeedAddAttribute.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 511311c3404bd3848af628d6d06f5f7a
+    m_Address: Assets/Sprites/Characters/Boss/Shadow/CombatSprite/EffectSprite/Boss1PhaseAttackFireBall.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5192708970719ca4eb72f1abbd93f598
+    m_Address: Assets/LeeJunMo/Prefab/Looting/RelicGrave.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 524aa038954a7df43802c7db33bb312b
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Definitions/AD_RW_Skill1_Rush.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 52bf00f30a94f0643acd12753bf2ddca
+    m_Address: Assets/HeoMinSeok/_Project/Prefabs/Gameplay/Items/Weapons/Equip/WeaponPrefabVriantOrigin.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 537be2dc596b9474e881fad5fbce523e
+    m_Address: Assets/LeeJunMo/Prefab/Effect/Particle/WitchNormal2AttackTileParticle.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 53bdedc3d917f83458902716124fcc3c
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Resources/Tags/Element.Poison.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 53c44760e96f40b4859c04a3cab84d83
+    m_Address: Assets/HeoMinSeok/_Project/Data/Items/Relics/Logics/Relic Logic_Evasion
+      From Bonus Move Speed_Managed.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5424fec8c2d9a7642b05de83d75a9df7
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Resources/Tags/Cue.Ability.Sword.End.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5451d01092d6a0947a1059da45c09ebe
+    m_Address: Assets/Sprites/ThirdParty/WeaponAndSandBack/Pixel Art Top Down - Basic/Tile
+      Palette/TP Grass/TX Tileset Grass 8.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 54aa8954a6c38fd47a47b10da541a0be
+    m_Address: Assets/Sprites/AttackEffects/WindWeapon/AttackEffect_Hardslash.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 54afb36f0c9a5b347b44945f7a8e0f78
+    m_Address: Assets/Sprites/Characters/Player/Pixel_Plains_Premium_Pack/Characters
+      24x24/Character 1 v1.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 54b6893f2afe6354ebdccde3f53a6a65
+    m_Address: Assets/Sprites/ThirdParty/WeaponAndSandBack/Pixel Art Top Down - Basic/Tile
+      Palette/TP Grass/TX Tileset Grass 5.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 54b7224b39ab4c9f838f4f4df4198cc6
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Attribute/DamageCalcAttribute/CritChanceBaseAttribute.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 54d49fcb5010f7c4fba7b7db5af57ab4
+    m_Address: Assets/Sprites/Environment/Tilemap_WitchBOSS/2D_Dungeon_Asset_Pack_v5.2/2D
+      Dungeon Asset Pack_v5.2/character and tileset/Dungeon_item_props_v2.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5589d56a2ad7cb24b854d45ddeafffd6
+    m_Address: Assets/LeeJunMo/Prefab/Effect/AnimEffect/Boss1Shield.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 567fb769f1a0604458f4f84132a1ffa3
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Attribute/MoveSpeedAttribute.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 569735bea2d74c244af7abcc12728b5f
+    m_Address: Assets/Sprites/Characters/Boss/Shadow/CombatSprite/Boss1BreakdownAnim.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 573e2c50fe0a61b42a1f503837ef1053
+    m_Address: Assets/LeeJunMo/Prefab/Effect/AnimEffect/Boss1PhaseAttackBoom.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 57824cd7e1612d14090d617a256eca53
+    m_Address: Assets/Sprites/ThirdParty/WeaponAndSandBack/Pixel Art Top Down - Basic/Tile
+      Palette/TP Grass/TX Tileset Grass Flower 13.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 57b6fab8e8adf24478f260a85ba4fa71
+    m_Address: Assets/Sprites/ThirdParty/WeaponAndSandBack/Pixel Art Top Down - Basic/Tile
+      Palette/TP Grass/TX Tileset Grass Flower 12.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 593e9d35d4ade4041a13ab33b9a1040f
+    m_Address: Assets/Sprites/ThirdParty/WeaponAndSandBack/Pixel Art Top Down - Basic/Tile
+      Palette/TP Wall/TX Tileset Wall_19.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 594473e198894c54988fe51c84b79d3f
+    m_Address: Assets/HeoMinSeok/_Project/Data/Items/Weapons/AbilityLogics/AL_SwordCombo2D.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 59d6807f0592ec142818217a50ff2733
+    m_Address: Assets/HeoMinSeok/_Project/Data/Combat/ElementDamage/ElementBuildUpFormulaProfile.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 59d97656334f2de45acd0fdc888e2eb5
+    m_Address: Assets/Audio/InUI/ItemGrabSound.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5a58aea09f086d5479967bb72876337e
+    m_Address: Assets/Resources/Upgrades/Nodes/Node_639065978597393688.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5b0fa72a7621582478a135416a07cddb
+    m_Address: Assets/Sprites/ThirdParty/WeaponAndSandBack/Pixel Art Top Down - Basic/Tile
+      Palette/TP Grass/TX Tileset Grass Flower 10.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5b1bfa9c0e7024d4f8f5549b8eca2f3c
+    m_Address: Assets/Sprites/Environment/Level/Portal.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5c4c8108f36d4acbaa6dfaf6d6b3f6e7
+    m_Address: Assets/Script/Enemy/Boss/FSM/BossControllers/WitchBoss/ScriptableObjects/AttackTelegraphStyle_WitchMapWideWarning.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5c6cbc85ca649e6428489e9939c28342
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Attribute/AttributeManageSO/WitchBossAttributeOverrideInitProfile.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5cb2a964a4d75134d94a70d8c8aa34ee
+    m_Address: Assets/Font/Galmuri9 SDF BlackOutline.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5cc86fef14fe49c49b193dfb4cae2c42
+    m_Address: Assets/HeoMinSeok/_Project/Data/Items/Relics/Logics/Relic Logic_Move
+      Speed Stack On Critical Hit_Managed.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5cf721fa8c11ac54e929a85ec8975e8e
+    m_Address: Assets/Audio/InUI/ItemLevelUpSound.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5e0412bd8f40af44c9249edbe58db140
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Attribute/KnockbackAttribute/KnockBackPowerBaseAttribute.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5e15651ae66572d459df089d6e5dc0b4
+    m_Address: Assets/LeeJunMo/Prefab/UI/GlobalUIRoot.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5f784222cb78bf545b1c2072c6f551a9
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Attribute/ElementAttribute/MaxBloodElementGaugeAttribute.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5fab027f93fec854e85c80601d149d18
+    m_Address: Assets/HeoMinSeok/_Project/Data/Items/Weapons/Definitions/WD_NewWeapon
+      1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5ff5686693ff031498bc5b23c9551947
+    m_Address: Assets/Audio/PlayerActing/FallHitSound.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 618d006e7af394a4db0798cfa63b2660
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Attribute/ElementAttribute/FireElementMulAttribute.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6206e93e74546c04fa766fecb2bdc218
+    m_Address: Assets/Sprites/Characters/Boss/Shadow/CombatSprite/EffectSprite/Boss1PhaseAttackFireBall_0.controller
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 62252f9a0ec433649a7688898956f179
+    m_Address: Assets/HeoMinSeok/_Project/Data/Items/Relics/Logics/Relic Logic_WindTablet.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 62446638c99411c4c9669c3f3efc113d
+    m_Address: Assets/LeeJunMo/Prefab/SpeechBubble/SpeechBubblePrefab.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 62b7b95dad0f7a243bd347214b4206e7
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Attribute/ElementAttribute/PoisonElementAddAttribute.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 62f5eb603cb04309a0b2b370b4152ea4
+    m_Address: Assets/Script/Enemy/Boss/FSM/BossControllers/WitchBoss/ScriptableObjects/Abilities/Logics/AL_Witch_BasicAttack2.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 63b24e16c571da04c8e94a1cbe5cadb6
+    m_Address: Assets/LeeJunMo/Prefab/UI/Upgrade/MS_Slot.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 64a49098e3c02fd4eb8d1d2ab7bb04a0
+    m_Address: Assets/HeoMinSeok/_Project/Data/ALData_Dash2D.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 66dc6cbb5247f4842b2db3329d25bcaa
+    m_Address: Assets/Sprites/Characters/Player/Pixel_Plains_Premium_Pack/Characters
+      24x24/PlayerSleep.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 670b570d06ab5f3419acbe3e7370e3a3
+    m_Address: Assets/HeoMinSeok/_Project/Data/Items/Weapons/AbilityLogics/AL_SwordSkill1_Projectile.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 677f4d8a13b7dcd429cbf7ecd016c40a
+    m_Address: Assets/HeoMinSeok/_Project/Data/Items/Weapons/AbilityLogics/AL_SwordSkill2_BigSlash.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6896844baeba3b347b2fbd5bf032e0cc
+    m_Address: Assets/Sprites/UI/Dialogue/SpeechBubble.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 69802d2b0927e2d4fab626854e4de785
+    m_Address: Assets/Sprites/AttackEffects/WindWeapon/AttackEffect_Hardslash.controller
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 698a407b32ed1874bb4cb7324dfddce2
+    m_Address: Assets/Font/Galmuri9 SDF.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6a381fd96b3c05d4cbcbd73fbf173f4e
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Resources/Tags/State.Status.Groggy.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6a4066ccc344a5c4786ef690fc267d6d
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Resources/Tags/State.Skill.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6a513faa0e54c5147a1942958fe1a540
+    m_Address: Assets/Sprites/Items/RelicIcon/Icon_RotatingIornBall.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6a5be8683b2bb5c4cafdd9a8407e5654
+    m_Address: Assets/Sprites/ThirdParty/WeaponAndSandBack/Pixel Art Top Down - Basic/Tile
+      Palette/TP Grass/TX Tileset Grass 3.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6a6fb06d5cc584a439a98e23f532f0b2
+    m_Address: Assets/Sprites/Characters/Boss/Shadow/CombatSprite/Boss1Stagger.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6a8181eecc5ab3a4988f9089d46607b0
+    m_Address: Assets/HeoMinSeok/_Project/Data/Items/Weapons/Definitions/WD_NewWeapon.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6a88dccc70fd08841a7484539aec65c1
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Resources/Tags/State.Move.Blocked.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6aec6aee9fb3108408336c542f14dbaf
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Resources/Tags/Data.Knockback.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6aeec263bafe92149b0d79e763d58f3c
+    m_Address: Assets/Font/Galmuri9 SDF Material_WhiteOutline.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6af3ae26591b05548b82024e5520c670
+    m_Address: Assets/Sprites/ThirdParty/WeaponAndSandBack/Pixel Art Top Down - Basic/Tile
+      Palette/TP Grass/TX Tileset Grass Flower 14.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6b22cb4e0ab0a194b968acb6b169cbfb
+    m_Address: Assets/HeoMinSeok/_Project/Data/Items/Consumable/CD_HealPotion.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6ba41f593a391b34e9c0038f24d19413
+    m_Address: Assets/Sprites/Characters/Boss/Shadow/DialogueSprite/Boss1Surprise.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6bc2fd7ae3b74a6f8e6de53d6f89ca42
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Resources/Tags/Cue.Ability.Sword.Hit.Spark.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6c1118ae2aa440f692b692b537fc4e3d
+    m_Address: Assets/Prefabs/Enemies/Mobs/StrangeCandlestick/WitchShieldBreakerProjectile.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6cb7d8cb1e575f646af0f880b06e502e
+    m_Address: Assets/Resources/Upgrades/Nodes/Node_639065978584483029.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6cd59cbf386c7134c99727cb4cdc3f83
+    m_Address: Assets/Sprites/Items/RelicIcon/Icon_RunningLedger.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6d6265d8b2c18cc43889c32ca36e5bec
+    m_Address: Assets/Sprites/Effects/SlashHitAnim.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6d6df76fc9d3303439e502a62b2d1797
+    m_Address: Assets/Sprites/UI/Dialogue/bubble_emotes_july_update.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6da925407638afc4db4e37eb2ec98c76
+    m_Address: Assets/Sprites/ThirdParty/WeaponAndSandBack/Pixel Art Top Down - Basic/Tile
+      Palette/TP Grass/TX Tileset Grass 2.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6dc1a3778de56b845acf38c7f0f83706
+    m_Address: Assets/Sprites/Characters/Boss/WitchBoss_Idle3.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6dd146133f44c4e45a1839cbed6f7ec4
+    m_Address: Assets/HeoMinSeok/_Project/Prefabs/UI/Combat/DamagePopupUI_World.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6e5063279097f8b4abb904145fd23e7c
+    m_Address: Assets/Sprites/Items/RelicIcon/Icon_Stenographer.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6ea20d07febe74d4cb33b3b14cbf442f
+    m_Address: Assets/Sprites/Characters/Boss/FirstBossImage.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7004043f5e95cb44f80c3dfaf4a0a81e
+    m_Address: Assets/Sprites/UI/Inventory/WeaponSlotIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 70b8e49e6af191c4c987c778977a5dba
+    m_Address: Assets/Sprites/ThirdParty/WeaponAndSandBack/Pixel Art Top Down - Basic/Tile
+      Palette/TP Grass/TX Tileset Grass Flower 15.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 70e3081d2e7ce8d42b1ef6388590eece
+    m_Address: Assets/Resources/Upgrades/Nodes/Node_639065978569194025.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 711aa880d087e7947a08c111610ea4da
+    m_Address: Assets/Audio/Cele/1_5.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 713cfeb5710be48478cd9b4ae8f324a4
+    m_Address: Assets/LeeJunMo/Prefab/UI/Upgrade/UpgradeTreePanel.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 71c1c19bf70cce34281f4b44cabbed2f
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Attribute/ElementAttribute/PoisonElementBaseAttribute.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 72547bb206ac6a449a94e3b609e673f6
+    m_Address: Assets/HeoMinSeok/_Project/Data/Items/Relics/Logics/Relic Logic_Lightning
+      On Hit Confirmed_Managed.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7282429da9b7468f9340e1de621d2d3c
+    m_Address: Assets/Script/Enemy/Boss/FSM/BossControllers/WitchBoss/ScriptableObjects/Abilities/Definitions/AD_Witch_BasicAttack2.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 72a9e1dccd20cec4a94b05267400bf54
+    m_Address: Assets/HeoMinSeok/_Project/Prefabs/Attack/Hitbox_WindWeapon_NormalAtk_Slash.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 73286b2f835b74848bc1fef47d7f1294
+    m_Address: Assets/HeoMinSeok/_Project/Prefabs/UI/HUD/HeartTokenUI.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 736a27640b1e92243903f03bd369e986
+    m_Address: Assets/LeeJunMo/Datas/Looting/Table_Stage3.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 738ea2b6f57bf694db5e21fc9908bf2d
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Resources/Tags/Cooldown.Weapon.WingOfIllusion.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 73a2f316e747fb34295975176d2c180c
+    m_Address: Assets/Sprites/Anim/Emote Anim/HeartIconAnim.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 73f94fed09a844d4fa580676170cabb7
+    m_Address: Assets/LeeJunMo/Datas/Looting/Table_Stage2.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 742335e24e5afea4e9516fd89252b06c
+    m_Address: Assets/Sprites/UI/Common/Heart.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 74bcbc64a07fc854ca2dade608e8c24c
+    m_Address: Assets/HeoMinSeok/_Project/Data/Items/Relics/Logics/Relic Logic_Feather
+      Orbit_Managed.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 755ab3c630663d744a96650d8384220b
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Resources/Tags/State.Move.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7581b7a341e835d4aa57ed227c82ebdc
+    m_Address: Assets/Sprites/Characters/Player/Player_Die.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7622d9a6fe4961c418bf668395b473e5
+    m_Address: Assets/Resources/Upgrades/Nodes/Node_639065978655258990.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 764f4ff81eb2ac34faa4a420f70de20c
+    m_Address: Assets/Sprites/Environment/Level/ChestAnimCnt.controller
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 766ca51564fbc2149953760a712f78c3
+    m_Address: Assets/HeoMinSeok/_Project/Data/Items/Weapons/AbilityLogics/AL_RW_Skill1_Rush.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 76a0eb89921157e448ea699f93e95564
+    m_Address: Assets/Sprites/ThirdParty/WeaponAndSandBack/Pixel Art Top Down - Basic/Tile
+      Palette/TP Grass/TX Tileset Grass 10.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7723cbde1f92ec645b739f6a2756ed85
+    m_Address: Assets/Sprites/UI/Dialogue/TextBox 1.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 77a0a96f4aec927419dcb7815cb7e38b
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Resources/Tags/Event.Input.Attack.Released.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 77a3db6579cf45940a7dae4896dde0db
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Attribute/ElementAttribute/BloodElementAddAttribute.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 78357bde4dab3464886f927c077dc765
+    m_Address: Assets/Sprites/ThirdParty/WeaponAndSandBack/Pixel Art Top Down - Basic/Tile
+      Palette/TP Grass/TX Tileset Grass Flower 3.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 79413769ccdaf76459c9a65b806decda
+    m_Address: Assets/LeeJunMo/Prefab/UI/PopupUI/PlayerStatUI/PlayerStatSectionView.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7a20d7037a7448feb9f3cc6d910e6b24
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Attribute/DamageCalcAttribute/CritChanceMulAttribute.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7aa90a5c75e6f3949bfe16a0c1bd2926
+    m_Address: Assets/Sprites/Characters/Boss/Shadow/CombatSprite/EffectSprite/Boss1NormalAttack2AnimCnt.controller
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7b4c91ec38bc898439801eccdbc0701c
+    m_Address: Assets/LeeJunMo/Prefab/Effect/AnimEffect/Boss1NormalAttack2Boom.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7b59fac30d8fb9f419829886f5ac309e
+    m_Address: Assets/Sprites/Anim/Emote Anim/IconAnimCtr.controller
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7b6e368fc0ee90b4ca09e0f71344589a
+    m_Address: Assets/Sprites/ThirdParty/WeaponAndSandBack/Pixel Art Top Down - Basic/Tile
+      Palette/TP Grass/TX Tileset Grass 0.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7b7fd4d273ca49739198391f6ed4d309
+    m_Address: Assets/HeoMinSeok/_Project/Data/Items/Relics/Definitions/RD_DrunkenRush.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7c21e56d0f854d95b4ac9ef71d603f28
+    m_Address: Assets/HeoMinSeok/_Project/Data/Items/Relics/Definitions/RD_OneDropOfSwiftness.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7c6c3be9150a4ddca3d22e1f132adc31
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Cues/Def_Cue_Sword_Hit_Spark.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7c73dc1304784f1fa6485f08922031cc
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Attribute/DamageCalcAttribute/EvasionAddAttribute.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7c8af04be6bcbb84794e303f3f4c401c
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Resources/Tags/Element.Fire.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7d7ef88dcbf743f7b79623379d0cd8c6
+    m_Address: Assets/HeoMinSeok/_Project/Data/Items/Relics/Definitions/RD_HawkEmblem.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7db914fcd0934ab4bfeef776fb3f8c96
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Resources/Tags/Cue.Ability.Hit.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7dbe5cb279be60444a10b69b118c95d4
+    m_Address: Assets/Resources/Upgrades/Nodes/Node_639065978688058679.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7e11de47ebfa53a42a94e5fb92a94f06
+    m_Address: Assets/Sprites/ThirdParty/WeaponAndSandBack/Weapon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7e22f8c4c945fdf499118edcb8c4fca3
+    m_Address: Assets/Sprites/UI/Common/item ui.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7e342b954b6721a409232120275d693a
+    m_Address: Assets/HeoMinSeok/_Project/Prefabs/Items/Weapons/Sword/Projectiles/PF_SwordSkill1_Projectile.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7efd10f62effd664a95182d779aecf9b
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Resources/Tags/Cue.Ability.Sword.CastStart.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7f05ba52410c80d4c9412975211c0224
+    m_Address: Assets/Sprites/UI/Chest/examples.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7f270a471d0074a4cb5cae87b3df06bc
+    m_Address: Assets/Sprites/Characters/Boss/WitchBoss_Idle1.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7f3731180b19dfd49a133ce75c58992a
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Attribute/DamageCalcAttribute/SkillBaseAttribute.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7f8daebda9cc15040b30448f36e61996
+    m_Address: Assets/Audio/PlayerActing/EatPotionSound.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 80b68e124be07824ab07f867bfbdb2c4
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Attribute/AttributeManageSO/PlayerAttributeOverrideProfile.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 80e2cdbbf23063546b08b1f0741c8b17
+    m_Address: Assets/Sprites/Characters/NPC1.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8143e435c2ff5f342951e4e9991c11ea
+    m_Address: Assets/Sprites/ThirdParty/WeaponAndSandBack/Pixel Art Top Down - Basic/Tile
+      Palette/TP Grass/TX Tileset Grass 13.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 81ebe564c6bd7d54a92e1093c59a8161
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Attribute/DamageCalcAttribute/AttackAddAttribute.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 821b55706e125c542a0af2b20113b8d3
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Attribute/ElementAttribute/MaxFireElementGaugeAttribute.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 82578c30453dcb04a88dce3cd193db5b
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Resources/Tags/Element.Blood.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 82db8eb2a55ef8042bf6fe4691fdc778
+    m_Address: Assets/Sprites/ThirdParty/WeaponAndSandBack/WeaponAnimation/AM_Skill2.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 833da6051a098464bae9f36c56bf02a8
+    m_Address: Assets/Audio/Cele/4_5.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 837c3c3beac45de458f179f50c7d7500
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Resources/Tags/State.Move.ForceMove.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 84a4eef749e7f5a4ba2a18524b6ee7a4
+    m_Address: Assets/Audio/Combat/SmallBoom.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 84e107a2d896c944b86df050ad0becb7
+    m_Address: Assets/Prefabs/Enemies/Mobs/StrangeCandlestick/Candlestick.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 851fface87e33534281fcbb17a5fc4ae
+    m_Address: Assets/Sprites/ThirdParty/WeaponAndSandBack/WeaponAnimation/AC_GreenWeapon.controller
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 86ac2dc98d52fc54c830b39098a898e1
+    m_Address: Assets/Sprites/Characters/NPC2.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 86f606da826554b40b2d47660998aa30
+    m_Address: Assets/HeoMinSeok/_Project/Data/Items/Weapons/Definitions/WD_WindWeapon.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8743c8559250174429e1d0c2e08b2e77
+    m_Address: Assets/Sprites/ThirdParty/WeaponAndSandBack/Pixel Art Top Down - Basic/Tile
+      Palette/TP Grass/TX Tileset Grass Flower 7.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 87470a9667fda0046a5b54d8ab511e54
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Effects/GE_Relic_MoveSpeedOnKill.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 87c7f3b44e6f74a49ad8cfcb49dae1de
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Resources/Tags/Cue.HubSpawn.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 87c8d9c5305f3f94f9e2d2f0faa14727
+    m_Address: Assets/LeeJunMo/Prefab/Effect/Particle/WitchShieldBreakParticle.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 886233d2a5002ae4facf46de4cb4864d
+    m_Address: Assets/HeoMinSeok/_Project/Data/Combat/Damage/SF_KNOCKBACKx1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 88c91c7701d6a4241abc1bff8cbbe657
+    m_Address: Assets/Material/FlashMat.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 890fb9878d634ba4396f0dfdbd8251b8
+    m_Address: Assets/Sprites/Characters/Boss/WitchBoss_Idle7.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 89163a8e6b579e14c874528367814f0c
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Definitions/AD_RW_Attack1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8962ffe16144980439939f691764cb69
+    m_Address: Assets/Sprites/Items/RelicIcon/Icon_HawkEmblem.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 896d94bed10b79948bf89421f189a9d3
+    m_Address: Assets/Sprites/Anim/Emote Anim/NoteIconAnim.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8988a66d6fcecdc4d96e726824a7ed18
+    m_Address: Assets/LeeJunMo/Prefab/UI/EffectSlotUI.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 89e1aa74278e3db47bd54e4c8ed475a6
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Resources/Tags/Cue.Ability.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8a8da380732f4d2f9554e8383e64b37e
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Resources/Tags/Cue.Status.GroggyBreak.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8ad7b5c5d6768774fa6941a9100743ea
+    m_Address: Assets/Sprites/Characters/Boss/Shadow/CombatSprite/BossStaggerAnim.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8c61616c46285ce45bf4f065a1b21062
+    m_Address: Assets/Sprites/UI/Common/carpet.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8c71a5f0e4db4aa6b3f24ce910d8b542
+    m_Address: Assets/Script/Enemy/Boss/FSM/BossControllers/WitchBoss/ScriptableObjects/Abilities/Logics/AL_Witch_ExtinguishCandle.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8ce30451b3d0c4e44972a52bea991e52
+    m_Address: Assets/Sprites/UI/Common/KeyBoardMap.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8cef9fe746e9a704cb20026789b6fba7
+    m_Address: Assets/LeeJunMo/Prefab/Camera/PlayerCam.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8d9cfe574b7f1974a9648f6707eba155
+    m_Address: Assets/Sprites/UI/Inventory/ConsumableSlotIcon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8db82f4787b62ca4091d3ae9b71b58ef
+    m_Address: Assets/Sprites/ThirdParty/WeaponAndSandBack/Pixel Art Top Down - Basic/Tile
+      Palette/TP Wall/TX Tileset Wall_1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8dbccf3ca7da42d88efb39ed3d1d2f20
+    m_Address: Assets/Script/Enemy/Boss/FSM/BossControllers/WitchBoss/ScriptableObjects/Abilities/Definitions/AD_Witch_RetreatToCandle.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8eb2c7b462a64b63b892ef122f730b2d
+    m_Address: Assets/LeeJunMo/Prefab/Effect/HitCameraShake.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8ec96225056f3a345a2a97b2e4430efb
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Definitions/AD_SwordSkill2.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8efa07c22f5a3b44bb66f9cc3068cfa1
+    m_Address: Assets/Sprites/Characters/Boss/Shadow/CombatSprite/EffectSprite/Boss1ShieldAnimCnt.controller
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8fb95c16fb825134f8ce24efb528fe19
+    m_Address: Assets/HeoMinSeok/_Project/Data/Combat/Damage/SF_STAGGERx1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 900e8eeac487b5b41b95ccbd78628ce3
+    m_Address: Assets/Prefabs/Enemies/Bosses/Witch/Witch.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 90cc853a47e809d4e8baa4fbcd354709
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Resources/Tags/State.Invulnerable.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9124215d19b903340846f4f994ea8ea5
+    m_Address: Assets/Sprites/ThirdParty/WeaponAndSandBack/WeaponSkill/FeatherSword_Skill1.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 91cb03f8c22d3984389f65d131eeb946
+    m_Address: Assets/Sprites/ThirdParty/WeaponAndSandBack/Pixel Art Top Down - Basic/Tile
+      Palette/TP Wall/TX Tileset Wall_17.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 93f3aef01a8be844499543c43fca86f6
+    m_Address: Assets/Resources/Upgrades/Nodes/Node_639065978555872323.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 94479dde93479a146a9bd51a982b12ca
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Attribute/DamageCalcAttribute/SkillMulAttribute.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 947f52c2a34d008428c105cd897d5efd
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Attribute/DamageCalcAttribute/AttackBaseAttribute.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 948a8aa49eb52f948a3a75538eff2b9e
+    m_Address: Assets/LeeJunMo/Prefab/Effect/Particle/WitchNormal1AttackTileParticle.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 94d47d4a2c1a4cc6b8468d8f45a5ea31
+    m_Address: Assets/HeoMinSeok/_Project/Data/Items/Relics/Logics/Relic Logic_Move
+      Speed On Damaged_Managed.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 95003843f7bfa0044a97337f6276e936
+    m_Address: Assets/Sprites/Characters/Boss/Shadow/CombatSprite/BossDeathAnim.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 95081fedc29af6044801e50a4e2d73fb
+    m_Address: Assets/LeeJunMo/Datas/Dialogue/SpeechData/NewPlayerSpeechData.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 95ce5a36e2ecd1e48b524dbfa0c9c74d
+    m_Address: Assets/Sprites/UI/ToolTipFrame/ToolTipBox.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9633c494dceff2f4d805e5c414651a93
+    m_Address: Assets/Resources/Upgrades/Nodes/Node_639065978659284755.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 965ec98195bcbe34f9512acce3712973
+    m_Address: Assets/HeoMinSeok/_Project/Prefabs/Gameplay/Items/PF_WorldItemPickup2D.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 96d23f4b8cfcd894c895a2cebb4402fa
+    m_Address: Assets/Material/SpeechBubbleOutLine.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 975a892d9fe6436429967aba3bd0a5dc
+    m_Address: Assets/Sprites/UI/Dialogue/Boss1Effect.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 98f6e924c8c17394db1e7efbce94cf4c
+    m_Address: Assets/Audio/GoldSound.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 99755bd56436bac4eb944a96f1317059
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Attribute/ElementAttribute/FireElementBaseAttribute.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 997f455d3df4c814bb80f597bb01a21f
+    m_Address: Assets/Sprites/Environment/Level/ChestIdle.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 99cbc2ac87ece95438542ebfa0c2692e
+    m_Address: Assets/Sprites/AttackEffects/WindWeapon/AttackEffect_Slash.controller
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 99cd9d723ba00e14e8bf7327129f4aae
+    m_Address: Assets/LeeJunMo/Prefab/Map/Portal/ScenePortal.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9cfe2171135f120429c700c27662a5d0
+    m_Address: Assets/Sprites/ThirdParty/WeaponAndSandBack/Pixel Art Top Down - Basic/Tile
+      Palette/TP Wall/TX Tileset Wall_6.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9d165f8b57d39174c9634091c1bad251
+    m_Address: Assets/LeeJunMo/Datas/Dialogue/Upgrade/Effect/GraveRunModifierEffect.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9d3ba752f6f13344aa64a97eade9e9cd
+    m_Address: Assets/Sprites/UI/Dialogue/Boss1.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9d6f4b2a1c3641e59f8ab2d87ec41f73
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Resources/Tags/State.Relic.OneDropOfSwiftness.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9de8ce10bc35dcc4b8303cf7c074028a
+    m_Address: Assets/LeeJunMo/Datas/Dialogue/AffectionEffect/Effect_Affection_Unlock.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9ea88592791f4d3eb7051d5c2e9f9564
+    m_Address: Assets/Script/Enemy/Boss/FSM/BossControllers/WitchBoss/ScriptableObjects/Abilities/Logics/AL_Witch_RetreatToCandle.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9eb4d42439a761946a5375b3f3a69f4e
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Resources/Tags/State.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9f02e6a3dd4d8b44b9e0b65ad7dd51d0
+    m_Address: Assets/Sprites/Effects/PixelZ.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9f8f114589864b6489859a58fbb6baf9
+    m_Address: Assets/Sprites/ThirdParty/WeaponAndSandBack/Pixel Art Top Down - Basic/Texture/TX
+      Tileset Wall.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9fc66f236befece4b817fa14c255282f
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Resources/Tags/Cooldown.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9fde1aac665d3cb48a2f3227bf0c5e5a
+    m_Address: Assets/LeeJunMo/Datas/Looting/GraveLootTable.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a02e72789b581484299cecea7ba9d4cd
+    m_Address: Assets/Sprites/Environment/Level/ChestOpened.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a07ae8e7f7a349a9a9d79a5c4af4ab96
+    m_Address: Assets/Script/Enemy/Boss/FSM/BossControllers/WitchBoss/ScriptableObjects/Abilities/Definitions/AD_Witch_SealedCandleRampage.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a102f2899d85b5e40b5dbb4cc8aa7919
+    m_Address: Assets/Sprites/ThirdParty/WeaponAndSandBack/WeaponAnimation/AM_Swing1.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a18c5da0a9e3ce74bb0699bed51accde
+    m_Address: Assets/LeeJunMo/Prefab/Effect/Particle/GraveDust.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a1995babf3c4e3248bd2cb2878367096
+    m_Address: Assets/Resources/Upgrades/Nodes/Node_639065978682121833.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a1a1c58fa8202454e90a9b2bf22fbb7b
+    m_Address: Assets/Audio/BGM/HubBGM.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a1b2c3d4e5f60718293a4b5c6d7e8f90
+    m_Address: Assets/HeoMinSeok/_Project/Data/UI/PlayerStat/PS_StatInfo_HP.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a23fffd2b25f3824fb678b34be8c8d8b
+    m_Address: Assets/Sprites/Items/RelicIcon/Icon_DrunkenRush.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a2b3c4d5e6f708192a3b4c5d6e7f8091
+    m_Address: Assets/HeoMinSeok/_Project/Data/UI/PlayerStat/PS_StatInfo_BleedDamage.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a31592d8dbff15843b1f9a68265681de
+    m_Address: Assets/LeeJunMo/Datas/Inks/AffectionUpgradeFlowTest.json
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a377460fdf422a74f98915cf652001d4
+    m_Address: Assets/LeeJunMo/Prefab/Effect/Particle/DashDust.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a3de9d9dc10987d4ca90defb86d72c0b
+    m_Address: Assets/Sprites/ThirdParty/WeaponAndSandBack/Pixel Art Top Down - Basic/Tile
+      Palette/TP Wall/TX Tileset Wall_9.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a614422f03de7ff40b35c8b5f4ca74af
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Attribute/ElementAttribute/BloodElementMulAttribute.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a662487d2287ffc41bbb39a39b6d8bcf
+    m_Address: Assets/Audio/PlayerActing/ChangeWeaponSound.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a6f960d35c215d741a5fa4c9d995bc41
+    m_Address: Assets/Sprites/UI/ToolTipFrame/SlotFrame.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a703341cc9a31ff4aaf1c6e131d61055
+    m_Address: Assets/LeeJunMo/Datas/Dialogue/NPC/SpriteLibrary/New Sprite Library
+      Asset 1.spriteLib
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a73c39a704801a1488033afff3b7f340
+    m_Address: Assets/HeoMinSeok/_Project/Data/Items/Relics/Definitions/RD_SpeedBoots.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a7522a6003348184eafe95ccbb16e5fb
+    m_Address: Assets/Resources/Upgrades/Nodes/Node_639065978627947690.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a901646dacf2764408f638b7cdbb3663
+    m_Address: Assets/HeoMinSeok/_Project/Data/Items/Relics/Definitions/RD_BloodBonusRelic.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a92865e26d3cf354ba841c7845806b14
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Resources/Tags/State.Move.External.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a9932c56762082e42ae3a877f0c79f7d
+    m_Address: Assets/Sprites/ThirdParty/WeaponAndSandBack/Pixel Art Top Down - Basic/Tile
+      Palette/TP Grass/TX Tileset Grass Flower 8.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a9d545fc5072ee3419e47fc9ff0e650c
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Resources/Tags/Event.Anim.SwordCombo.Hit.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ab12cd34ef56ab78cd90ef12ab34cd56
+    m_Address: Assets/HeoMinSeok/_Project/Data/UI/PlayerStat/PS_Section_BasicStats.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ab3da0d16c8c0bb4db636386a1b79068
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Resources/Tags/Cooldown.Weapon.WingOfIllusion.Skill1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ab73d3ec979561b4680d6746b4c7f4c6
+    m_Address: Assets/Sprites/ThirdParty/WeaponAndSandBack/Pixel Art Top Down - Basic/Tile
+      Palette/TP Wall/TX Tileset Wall_21.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: aba3607b5b3d7854ab8de4bb1cf5027c
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Resources/Tags/Cooldown.Weapon.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: abe9370c58435f244a894542a9d0f78d
+    m_Address: Assets/Sprites/ThirdParty/WeaponAndSandBack/Pixel Art Top Down - Basic/Tile
+      Palette/TP Grass/TX Tileset Grass Flower 1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ac5ff33387b8e384ea5c5452dcc2efcc
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Attribute/AttributeManageSO/BASEAttributeInitProfile.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: adf1e302fb349784ba09184eb69dfd8f
+    m_Address: Assets/Sprites/ThirdParty/WeaponAndSandBack/Pixel Art Top Down - Basic/Tile
+      Palette/TP Wall/TX Tileset Wall_0.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ae68d965a4218a94ca2134f0ae2007c4
+    m_Address: Assets/Sprites/ThirdParty/WeaponAndSandBack/Pixel Art Top Down - Basic/Tile
+      Palette/TP Grass/TX Tileset Grass 1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: aef34e203f982094b814e11d115a65ed
+    m_Address: Assets/LeeJunMo/Datas/Inks/New Ink.json
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: af6e0283fb2d02842bcc305d6a1d1482
+    m_Address: Assets/Sprites/UI/Common/play_icon.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: af8714fe101cd5448b037104d6b9846e
+    m_Address: Assets/Sprites/ThirdParty/WeaponAndSandBack/Pixel Art Top Down - Basic/Tile
+      Palette/TP Wall/TX Tileset Wall_10.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: af947b29830563940a12b445167b2452
+    m_Address: Assets/Sprites/Characters/Boss/Shadow/CombatSprite/EffectSprite/BossPhaseAttackBoom1Anim.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b1c2d3e4f5061728394a5b6c7d8e9f01
+    m_Address: Assets/HeoMinSeok/_Project/Data/UI/PlayerStat/PS_StatInfo_Attack.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b1e4bbe0b0f7c8c4cb99add0caacaeb9
+    m_Address: Assets/LeeJunMo/Prefab/Looting/WeaponGrave.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b1f6e8fa2c2b48cc925e3f5ac1ffd2cb
+    m_Address: Assets/LeeJunMo/Datas/Dialogue/SpeechData/WitchBossSpeechData.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b21ecde7f4efbae44b88a07fc7a7610e
+    m_Address: Assets/Sprites/Items/RelicIcon/Icon_TonicGombangdae.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b251156f213121b499ab9513f1692f66
+    m_Address: Assets/LeeJunMo/Prefab/UI/PopupUI/WarningPopupUI.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b34279c6353a8ef47bee1424ebf22a0f
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Resources/Tags/State.Skill.Blocked.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b3c096dac376348438c1c20063da80dd
+    m_Address: Assets/Sprites/Characters/Boss/Shadow/DialogueSprite/Boss1Smile.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b3c4d5e6f708192a3b4c5d6e7f8091a2
+    m_Address: Assets/HeoMinSeok/_Project/Data/UI/PlayerStat/PS_StatInfo_PoisonDamage.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b3cbf6478180162478fd48a8c2b75145
+    m_Address: Assets/Script/Enemy/Boss/FSM/BossControllers/WitchBoss/Witch_Boss.controller
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b4adac4ab1e50df42904d86f7c028d59
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Cues/Def_Cue_GroggyBreak.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b5241a76782b44ec892e9bff62fbeb80
+    m_Address: Assets/Script/Enemy/Boss/FSM/BossControllers/WitchBoss/ScriptableObjects/Abilities/Definitions/AD_Witch_LightAllCandles.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b5eaeac079f751342ba74d3465688636
+    m_Address: Assets/LeeJunMo/Prefab/UI/KeyMapRow.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b672abd66c281c247b0398c5d30a73a8
+    m_Address: Assets/Sprites/UI/Dialogue/Boss1EffectIntro.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b6bf52d8442ce1847a688215b6ba04da
+    m_Address: Assets/Sprites/ThirdParty/WeaponAndSandBack/Pixel Art Top Down - Basic/Tile
+      Palette/TP Wall/TX Tileset Wall_4.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b6d023793bc803444983040e2003b1b9
+    m_Address: Assets/LeeJunMo/Datas/Dialogue/NPC/NPC Database.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b6d21e4c9f5a41f1a8c3e7d2b4f690ab
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Resources/Tags/State.Relic.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b7df738cfdc784e45bf7c1f2aeb87dc3
+    m_Address: Assets/Sprites/Characters/Boss/Shadow/CombatSprite/EffectSprite/BossPhaseAttackFireBall.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b8dd2c5f74ef2b842be9a4918464dd0c
+    m_Address: Assets/Sprites/Characters/Boss/Shadow/DialogueSprite/Boss1Default.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b9c79b9448814f2408077eff50c01aeb
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Attribute/AttributeManageSO/AttributeCatalog.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b9fa83c903647d743a6b1bb8eb64fd54
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Definitions/AD_RW_Skill2_SpeedStrike.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bab38f133773b06409ea581236ed7215
+    m_Address: Assets/Sprites/AttackEffects/WindWeapon/Hardslash-Sheet.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bb13154b262064e419b705d221ebd3cb
+    m_Address: Assets/LeeJunMo/Prefab/Effect/Particle/WitchPhasePatternAttackPaticle.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bbd975929047220439cd6ddd4e04cfe2
+    m_Address: Assets/Sprites/UI/image_4_1.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bc23de45f067bc89de01f234bc45de67
+    m_Address: Assets/HeoMinSeok/_Project/Data/UI/PlayerStat/PS_Section_CombatStats.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bc5dc7440ad16f045b3a71f996721562
+    m_Address: Assets/Font/Galmuri9 SDF Material_blackOutline.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bd078173c9092104dbc43ac575e1d092
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Attribute/StaggerAttribute/StaggerMulAttribute.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bd1117e312879d84593b0fa7207a79a5
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Resources/Tags/State.Equip.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: beac3d8a478eebb45a9cbef082420e8f
+    m_Address: Assets/LeeJunMo/Prefab/Effect/Particle/ChestDust.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bf5a0a54564a0a3418aa14ce4ee8470c
+    m_Address: Assets/Sprites/ThirdParty/WeaponAndSandBack/Pixel Art Top Down - Basic/Tile
+      Palette/TP Wall/TX Tileset Wall_27.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bfbcc141a5a884144935180804e6da89
+    m_Address: Assets/Sprites/Characters/Boss/WitchBoss_Idle4.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c07430ea0d8e54c4f830c55f686d9224
+    m_Address: Assets/Sprites/Characters/Boss/WitchBoss_Idle5.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c086a6521210eb943b1188d8edf40d54
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Resources/Tags/Event.Anim.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c0e9e82eb0ce4caa9efb337cb57764ff
+    m_Address: Assets/HeoMinSeok/_Project/Data/Items/Relics/Definitions/RD_RunningLedger.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c0f664a74aa88e144b91be61242700c8
+    m_Address: Assets/Sprites/ThirdParty/WeaponAndSandBack/Pixel Art Top Down - Basic/Tile
+      Palette/TP Wall/TX Tileset Wall_15.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c11e55e5307a4f61b594d95d8ff8fafe
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Attribute/DamageCalcAttribute/EvasionMulAttribute.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c1d2e3f40516273849a5b6c7d8e9f012
+    m_Address: Assets/HeoMinSeok/_Project/Data/UI/PlayerStat/PS_StatInfo_MoveSpeed.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c257fcc31167b184e9a65f583e74626f
+    m_Address: Assets/LeeJunMo/Prefab/Effect/AnimEffect/SlashHit.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c30a836c12b5ca046b8850c5500adff0
+    m_Address: Assets/Sprites/ThirdParty/WeaponAndSandBack/Pixel Art Top Down - Basic/Tile
+      Palette/TP Wall/TX Tileset Wall_2.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c38b14802b2feef43b8a8ded46ca41af
+    m_Address: Assets/Sprites/Characters/Player/Animator_Player.controller
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c3de3ee75aa4a994999bb6cb80f1bb8b
+    m_Address: Assets/Sprites/AttackEffects/WindWeapon/slash-Sheet.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c403c38a14141a14c87f16fea1037ddc
+    m_Address: Assets/Material/TextBoxOutLine.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c4d6c74817ae3b945b20c041f24f86b0
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Resources/Tags/State.Move.Dash.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c533138d8146e6a4ca87047a09f1c04d
+    m_Address: Assets/HeoMinSeok/_Project/Data/RunTimeLimitConfig.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c5f49a747dd5b3f43987795bc4ad7771
+    m_Address: Assets/HeoMinSeok/_Project/Data/Items/Weapons/LogicData/ALData_SwordCombo2D.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c6ca284bf24f50f4e87d590518b3e47c
+    m_Address: Assets/HeoMinSeok/_Project/Prefabs/UI/Inventory/Common/ItemDetailSectionView.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c76c42f74b78f454eb5915c451e0ba5c
+    m_Address: Assets/Audio/InteractableObject/OpenDoorSound.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c7e6d4f3fa724348af1ff1ad85b7df41
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Resources/Tags/Cue.Ability.Dash.Dust.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c91e5a6f24b94ef0a2d6c4b8f93e7a12
+    m_Address: Assets/HeoMinSeok/_Project/Data/Items/Relics/Logics/Relic Logic_Stenographer_Managed.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ca3a4e3bd00880e46a1e1d71945dc893
+    m_Address: Assets/Sprites/Characters/Boss/WitchBoss_Idle.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cac1046499d28814a91fcb2631757240
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Resources/Tags/State.Equip.Weapon.Sword.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cac88c9620b50844baf46e203a9d222c
+    m_Address: Assets/HeoMinSeok/_Project/Data/Items/Relics/Definitions/RD_FireBonusRelic.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cb642d633f60d7244a4da020444aced1
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Effects/GE_Element_Bleed_TriggerSpec_CurrentHP10Pct.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cbaae2b0499dc794fa21f6aeced25a93
+    m_Address: Assets/HeoMinSeok/_Project/Data/DataRestore/player/PlayerRuntimeRestoreCatalog.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cc05db3731cb2e447b06a5902cb16b6c
+    m_Address: Assets/Sprites/Items/RelicIcon/Icon_SpeedMedal.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cc2ee25fb5fad054db466fb3b5704b02
+    m_Address: Assets/Resources/Upgrades/Nodes/Node_639065978674849345.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ccf4e2da310e69d40a23555382491107
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Resources/Tags/Cue.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cd34ef560178cd90ef12a345cd56ef78
+    m_Address: Assets/HeoMinSeok/_Project/Data/UI/PlayerStat/PS_PlayerStatPanel.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cd6075224a63408383d85a752fb3d67a
+    m_Address: Assets/Prefabs/Enemies/Bosses/Witch/WitchNormalAttack1Tile.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cd739c4b4eb31934494017ea1d34324b
+    m_Address: Assets/Sprites/ThirdParty/WeaponAndSandBack/Pixel Art Top Down - Basic/Tile
+      Palette/TP Grass/TX Tileset Grass 15.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ce2c877b10aec4742943ec6aeacef6da
+    m_Address: Assets/Sprites/ThirdParty/WeaponAndSandBack/MonsterSprite/ToxicFrog/SourceFile.aseprite
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ceac7d882133b0e4f8d2cc9704e63b44
+    m_Address: Assets/HeoMinSeok/_Project/Data/Items/Weapons/LogicData/ALData_SwordSkill2_BigSlashData.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cf0fd416c24b3fe47951011efb5f02a4
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Resources/Tags/Cue.Ability.Sword.Commit.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cf4d0651b3b837749a70c8d695207226
+    m_Address: Assets/Sprites/Effects/Attack/Combat_FX_1.1/Square.controller
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cf6b59b7c1dad88438263b3160222715
+    m_Address: Assets/Sprites/ThirdParty/WeaponAndSandBack/Pixel Art Top Down - Basic/Tile
+      Palette/TP Grass/TX Tileset Grass 7.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cfa34818bb06a9849821f87eacbe6130
+    m_Address: Assets/Sprites/Characters/Boss/Shadow/CombatSprite/EffectSprite/BosePhaseAttackBoom1AnimCnt.controller
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d1158f72c909d4d4c8e74047e7ea8cf0
+    m_Address: Assets/HeoMinSeok/_Project/Data/Items/Relics/Logics/Relic Logic_Blood
+      Flat Bonus.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d1e2f3041526374859a6b7c8d9e0f123
+    m_Address: Assets/HeoMinSeok/_Project/Data/UI/PlayerStat/PS_StatInfo_ElementDamage.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d1fe14c7b12d9f64fac5f81b12c5aa28
+    m_Address: Assets/HeoMinSeok/_Project/Prefabs/Gameplay/Items/Weapons/Equip/WeaponPrefab_WindWeapon.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d20f7b3816162be4c9148511e7e45ae6
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Attribute/KnockbackAttribute/KnockBackPowerAddAttribute.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d2373b45df9230f40b4aef0e7fb4d969
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Resources/Tags/State.Equip.Weapon.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d2be3469c5cf9c849b948eb616f7f868
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Resources/Tags/State.Aim.Blocked.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d316fb229e8ff724cb3d949eae7d3a00
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Resources/Tags/Event.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d33ba53bc7c01b74fa58cbc93bba9593
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Resources/Tags/Event.Anim.SwordCombo.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d35e3630a31b6ef42a9a2b03d2afa4e3
+    m_Address: Assets/LeeJunMo/Datas/Scene/ShadowCorridorBossRouteSet.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d492a6f1c1a7fc84bb3b44a619dcfd4f
+    m_Address: Assets/HeoMinSeok/_Project/Data/Items/Relics/Definitions/RD_RotatingIornBall.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d4d6195a317245c2a40ea5e3fd767750
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Resources/Tags/Cue.Ability.Hit.CameraShake.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d52e56b3618f0a6409f0327c512b094b
+    m_Address: Assets/Audio/Weapon/SwordAtkSound2.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d58941eb8c2553941940e2880efb81f0
+    m_Address: Assets/Sprites/Characters/Boss/Shadow/DialogueSprite/Boss1Panic.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d6166634a6742dd4d803a6c11fa777ed
+    m_Address: Assets/Audio/Cele/3_7.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d6d5d20cf545ee347a035dd2929d6f00
+    m_Address: Assets/LeeJunMo/Datas/Dialogue/NPC/DialogueTheme/New Animator Override
+      Controller.overrideController
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d77199b41d2e31b4a8236dd92440d8d4
+    m_Address: Assets/Resources/Upgrades/Nodes/Node_639065978678803571.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d7e3a9156bf24fa6a1c8d2e47b9f0c53
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Resources/Tags/State.Relic.Stenographer.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d808a1e0c7ccc7e48abc50b9a9884b61
+    m_Address: Assets/HeoMinSeok/_Project/Data/Items/Relics/Definitions/RD_TonicGombangdae.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d8b1bcc7606500d48a89ebd8803f0518
+    m_Address: Assets/Sprites/Characters/Player/Player_LookAround.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d923279fb7e24aa19162adcd29a3c67e
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Attribute/DamageCalcAttribute/CritChanceAddAttribute.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d950f06d53ce11c41b1f7b2cb791c628
+    m_Address: Assets/Sprites/Items/RelicIcon/Icon_SpeedBoots.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d9ef2aea03d3ddf4488a762102786dde
+    m_Address: Assets/LeeJunMo/Datas/Dialogue/NPC/MSShopNpc.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dadc84cd2fffcae45905741575af20c3
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Definitions/AD_Dash.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: db618625c22a5504ba785650bdc0df2b
+    m_Address: Assets/HeoMinSeok/_Project/Prefabs/Gameplay/Items/Weapons/Equip/WeaponPrefab_ExampleSowrd.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dd15661f9001539489e34950b030994a
+    m_Address: Assets/Audio/InteractableObject/ChestOpenSound.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ddbd05a9b77349441a875c479e48212d
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Attribute/StaggerAttribute/MaxStaggerAttribute.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ddd8b96de81528845828895d9bb33042
+    m_Address: Assets/HeoMinSeok/_Project/Data/Combat/Damage/DamageProfile.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dde112729dec0bb4a9d2238ee7ee6dcc
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Attribute/StaggerAttribute/StaggerBaseAttribute.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: de09623bb2f0a174f9f172cd4b527d99
+    m_Address: Assets/Audio/Cele/beep_2.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: de17a1cff7186dc4e81bd03c2256da56
+    m_Address: Assets/Sprites/ThirdParty/WeaponAndSandBack/Pixel Art Top Down - Basic/Tile
+      Palette/TP Wall/TX Tileset Wall_18.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dec2f921fc151e641ab197e7601e9826
+    m_Address: Assets/Sprites/Characters/Boss/WitchBoss_Idle9.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: deefe42969a307d40a31e42bcf4d065b
+    m_Address: Assets/LeeJunMo/Prefab/UI/PopupUI/PlayerWeaponInfoUI/weaponstatLineview.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: df42ce14627662f429494f90dfef377a
+    m_Address: Assets/Audio/PlayerActing/PlayerDashSound.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dff3afb21b2d360409497e3857198481
+    m_Address: Assets/HeoMinSeok/_Project/Prefabs/VFX/Relics/Lightning/LightningEffect.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e0cdcda9b86374b4c99ad2e948fcfd26
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Effects/GE_Cooldown.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e1e606887d9fb724ba034154e4f6b533
+    m_Address: Assets/LeeJunMo/Prefab/UI/PopupUI/PlayerStatUI/PlayerStatUI.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e1f203142536475869a7b8c9d0e1f234
+    m_Address: Assets/HeoMinSeok/_Project/Data/UI/PlayerStat/PS_StatInfo_CritChance.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e2d83cdcfb9485d499433d3acc5bad5e
+    m_Address: Assets/HeoMinSeok/_Project/Prefabs/UI/Inventory/Common/ItemSlotUI.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e34e5e0069ffa9b4c9e1479b3e577f46
+    m_Address: Assets/Resources/Upgrades/Nodes/Node_639065978578317460.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e38cbdbca708f8b42a0a20747681ddc5
+    m_Address: Assets/Resources/Upgrades/Nodes/Node_639065978666816650.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e4a0c190c04336e4699962b2ee02f9a1
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Effects/GE_Damage_Spec.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e56da427db9e7c147b3012603805adf9
+    m_Address: Assets/Sprites/ThirdParty/WeaponAndSandBack/Pixel Art Top Down - Basic/Tile
+      Palette/TP Wall/TX Tileset Wall_3.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e5cecbb3818189442a0ef55f409e8324
+    m_Address: Assets/Sprites/UI/Dialogue/ChoiceBox.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e658b351294cef44b8a5c823d1fdcb73
+    m_Address: Assets/Sprites/ThirdParty/WeaponAndSandBack/FeatherSwordImage.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e6cf7f0dfc7a4f0ab23e38d2b55ccf91
+    m_Address: Assets/LeeJunMo/Prefab/Effect/Particle/HitSpark.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e75f469ea29530246a4a0543396316af
+    m_Address: Assets/Sprites/UI/HeartUIAsset/Free Version 1.1/SpriteSheet/Spritesheet.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e7c57860bd90b7b428e2c99a0ce96b27
+    m_Address: Assets/HeoMinSeok/_Project/Data/Items/Relics/Logics/Relic Logic_Attack
+      Flat Bonus.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e809d100ca0f64b49b908914afeaf7eb
+    m_Address: Assets/Sprites/ThirdParty/WeaponAndSandBack/WeaponAnimation/AM_Swing3.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e8c66adacdbd18041b772666332adb28
+    m_Address: Assets/LeeJunMo/Prefab/UI/PopupUI/PlayerWeaponInfoUI/Panel_AbilityBlock.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e95c5487f5580c546a1d71eb0adad7b3
+    m_Address: Assets/LeeJunMo/Prefab/UI/UnlockSlotUI.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e9f09b62f1bcb1c4a90a88d19e15a81c
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Resources/Tags/Cue.Ability.Sword.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: eb057c0a7b239b742a001ee568ef4027
+    m_Address: Assets/HeoMinSeok/_Project/Data/Items/Relics/Definitions/RD_FeatherOrbit.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ecb4afd3a51ad454698847ffd2ecb649
+    m_Address: Assets/LeeJunMo/Prefab/Effect/Particle/WalkDust.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ecf3ef1f54c629e40a9659ab9afec7e8
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Resources/Tags/Event.Anim.SwordSkill2.Hit.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ed1c6e3092702b346adb6270c8db1a87
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Resources/Tags/State.Move.External.Blocked.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ed50a80c6ba59cf428ffc19f53876b01
+    m_Address: Assets/Sprites/ThirdParty/WeaponAndSandBack/Pixel Art Top Down - Basic/Tile
+      Palette/TP Wall/TX Tileset Wall_20.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ed7554aeefd5da44a9fe1ee9b93afe77
+    m_Address: Assets/Sprites/ThirdParty/WeaponAndSandBack/Pixel Art Top Down - Basic/Texture/TX
+      Shadow.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ed8219cd3d34d944f8d0e56158a36f75
+    m_Address: Assets/Sprites/AttackEffects/WindWeapon/AttackEffect_Slash.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: eda71161947bc124aa945c189b07d07a
+    m_Address: Assets/LeeJunMo/Prefab/UI/Portraitlmage.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ee23507593c8458478ff5faf964a13e7
+    m_Address: Assets/HeoMinSeok/_Project/Data/Items/Weapons/AbilityLogics/AL_RW_Skill2_SpeedStrike.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ef16b2ddeb64123459076c2c8a541a63
+    m_Address: Assets/Sprites/UI/Dialogue/bubble emotes july update.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: efe5594aca34f2745a57662f43377928
+    m_Address: Assets/Sprites/ThirdParty/WeaponAndSandBack/Pixel Art Top Down - Basic/Tile
+      Palette/TP Wall/TX Tileset Wall_7.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: effc80c402c4f67469668bb55f62e5b5
+    m_Address: Assets/Sprites/Characters/Boss/Shadow/CombatSprite/EffectSprite/376.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f00a57048949c144aa81962abca2d7c0
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Resources/Tags/Event.Input.Attack.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f09848183e09c7742bef1b7b1deecdfd
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Cues/PF_Cue_Falling.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f0d893d6e4da4b5d8c9750caef9ba43a
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Cues/Def_Cue_Sword_Hit.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f10213243546576879a8b9cad1e2f345
+    m_Address: Assets/HeoMinSeok/_Project/Data/UI/PlayerStat/PS_StatInfo_Evasion.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f14a219b0d1f4df4a16f9bcf6cf1a027
+    m_Address: Assets/Script/Enemy/Boss/FSM/BossControllers/WitchBoss/ScriptableObjects/Abilities/Logics/AL_Witch_NormalAttack1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f1b00e97d4b97d94dbd5d9df27c64099
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Attribute/ElementAttribute/PoisonElementMulAttribute.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f2946074f70ad1a4194e0ab20873422b
+    m_Address: Assets/HeoMinSeok/_Project/Prefabs/Gameplay/Player/PF Player.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f2a47c8de19b4d8d9e67a31f5b2c4e90
+    m_Address: Assets/HeoMinSeok/_Project/Data/Items/Relics/Definitions/RD_Stenographer.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f2a53daef5d041c43a1e8126f90a0bb6
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Cues/Def_Cue_HubSpawnDust.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f3033dc69e9708347a58b0f11d0759c7
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Effects/GE_Trap_Falling.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f36c0e7c42383ef478d9227fe3cf8030
+    m_Address: Assets/HeoMinSeok/_Project/Prefabs/Items/RelicProps/FeatherRelic_Prop.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f389dfdf760f49646a8d71035f3e7f24
+    m_Address: Assets/Audio/BGM/Boss1BGM.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f412c7da2733d71489ec2687fd2f7134
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Attribute/DamageCalcAttribute/NormalMulAttribute.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f466dc1481454c2da49e416aa7749743
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Attribute/DamageCalcAttribute/AttackSpeedAddAttribute.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f530435cca44b78408eb1124cd71450d
+    m_Address: Assets/Sprites/Characters/Boss/Shadow/CombatSprite/EffectSprite/396.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f54e8cb58b4f7c64292067442e9286c7
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Resources/Tags/Cue.Trap.Falling.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f569d34990ab7514fa546779656d80cb
+    m_Address: Assets/LeeJunMo/Datas/Dialogue/NPC/MSUpgradeNpc.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f5bce4b9585a8514e81572c61b5b6460
+    m_Address: Assets/Sprites/ThirdParty/WeaponAndSandBack/Pixel Art Top Down - Basic/Tile
+      Palette/TP Wall/TX Tileset Wall_14.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f705d9780fd6a6847a33cc62a5c4b9ac
+    m_Address: Assets/Sprites/ThirdParty/WeaponAndSandBack/Pixel Art Top Down - Basic/Tile
+      Palette/TP Grass/TX Tileset Grass 14.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f78d3b0600533dc48a3e084721856508
+    m_Address: Assets/Audio/Combat/BigBoom.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f7d51401451185841b66a213c785ee31
+    m_Address: Assets/Shader/SpriteGroggyBreak.mat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f836f4795e60fd54f9a4e401de9d7dd9
+    m_Address: Assets/HeoMinSeok/_Project/Data/Combat/Damage/SF_ATKx1.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f891dbf6eb980e447b2d7d8a74a386fd
+    m_Address: Assets/Sprites/Items/RelicIcon/Icon_WindTablet.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f913bf663f3b49c4999d2d84ce2b0cbe
+    m_Address: Assets/LeeJunMo/Prefab/UI/WeaponHUDUI/Skill1UI.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f9d3659cd88f4be428be66ebef6620fd
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Resources/Tags/State.Move.Intent.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fa2677d26089ff24ea9a2e3ea658779b
+    m_Address: Assets/Sprites/ThirdParty/WeaponAndSandBack/WeaponAnimation/AM_Swing2.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fa8b6b434d94db3409637361f3eff591
+    m_Address: Assets/Sprites/UI/ToolTipFrame/InventoryBox_9_Sliced.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fab1dd76add51c74db9dbb7b0f424204
+    m_Address: Assets/Script/Enemy/Boss/FSM/BossControllers/WitchBoss/ScriptableObjects/Effects/GE_Groggy_Status.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fcaf34bd4750eb5438fc71d6b7cadc05
+    m_Address: Assets/HeoMinSeok/_Project/Prefabs/Gameplay/Items/Weapons/Drops/DroppedWeapon.prefab
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fde966f9052442118618165742e0c459
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Resources/Tags/State.Move.Dash.Blocked.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fe26a83a4ededf64ba867c2d5e1863f8
+    m_Address: Assets/Sprites/Items/RelicIcon/Icon_CounterKick.png
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fe870b89ed1647b498ac223352a6be5e
+    m_Address: Assets/Sprites/Characters/Player/Player_Idle.anim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fedd651a42c94b044bf92e0da3bb53df
+    m_Address: Assets/Sprites/ThirdParty/WeaponAndSandBack/Pixel Art Top Down - Basic/Tile
+      Palette/TP Grass/TX Tileset Grass Flower 5.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ff2cf50821484d47804f40dd530f2c77
+    m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Resources/Cues/GameplayCueDatabase.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 3149fdef92a09bf4c81270057070d851, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: d31d957b377188f479722274f5ce92a6, type: 2}
+    - {fileID: 11400000, guid: 109bb0b6453f1c349bdcbbd014eb56c1, type: 2}
