@@ -89,6 +89,10 @@ public sealed class LightningStrikeProc2D : IRelicProc
             nextReadyTime = Time.time + cooldownSeconds;
     }
 
+    public void Tick(float deltaTime)
+    {
+    }
+
     private Vector3 ResolveStrikePosition(AbilityEventData data)
     {
         if (data.Target != null)

@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef5c78dfa3734da39ff20eead7e36815, type: 3}
+  m_Name: WAL_SunBlade
+  m_EditorClassIdentifier: 
+  baseAttack: {fileID: 11400000, guid: 89163a8e6b579e14c874528367814f0c, type: 2}
+  heatedAttack: {fileID: 11400000, guid: 97d28da877fe43b1b05497fb32aa8cc7, type: 2}
+  defaultSkill1: {fileID: 11400000, guid: 44d1891ec03e4d3fba4417bc54973518, type: 2}
+  solarFinishStarter: {fileID: 11400000, guid: 49bc00a0291549df8764958d9622cdc1, type: 2}
+  maxHeatStacks: 3
+  heatDecaySeconds: 5
+  requiredMoonColdForHeatedAttack: 2
+  requiredHeatForSolarFinish: 3
+  requiredMoonColdForSolarFinish: 3
+  selectionStrategy: {fileID: 11400000, guid: 9e5a39f56b0e4d00bb85bf3e43bd5dff, type: 2}

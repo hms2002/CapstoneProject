@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5686dc461c9b6a546991383454aa181f, type: 3}
+  m_Name: WD_MoonBlade
+  m_EditorClassIdentifier: 
+  weaponId: Weapon.MoonBlade
+  displayName: Moon Blade
+  icon: {fileID: 1791324355, guid: 7e11de47ebfa53a42a94e5fb92a94f06, type: 3}
+  storyText: A paired blade that accumulates lunar frost and resonates with its sun
+    counterpart.
+  statModifiers: []
+  attackInputHint: Mouse1
+  skill1InputHint: Q
+  skill2InputHint: E
+  weaponPrefab: {fileID: 4875326805764407255, guid: aee28aa459824136940a26c725875cb7, type: 3}
+  equippedTag: {fileID: 11400000, guid: cac1046499d28814a91fcb2631757240, type: 2}
+  attack: {fileID: 11400000, guid: 89163a8e6b579e14c874528367814f0c, type: 2}
+  skill1: {fileID: 11400000, guid: acdf5ee1e6a044049bdfab62b04db5e6, type: 2}
+  skill2: {fileID: 0}
+  abilityLoadout: {fileID: 11400000, guid: bd016422e3e54b78988385f3bf3ee1d6, type: 2}

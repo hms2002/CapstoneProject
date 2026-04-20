@@ -53,6 +53,9 @@ public class WeaponInventory2D : MonoBehaviour
     // -----------------------
     [Header("Slots (2)")]
     [SerializeField] private WeaponDefinition[] slots = new WeaponDefinition[2];
+    [NonSerialized] private WeaponRuntimeData[] runtimeSlots;
+    [NonSerialized] private WeaponRuntimeCoordinator runtimeCoordinator;
+    [NonSerialized] private IWeaponInteractionLayer interactionLayer;
 
     [Tooltip("장착 중인 슬롯 인덱스. 장착 없음이면 -1")]
     [SerializeField] private int activeIndex = -1;
@@ -76,11 +79,81 @@ public class WeaponInventory2D : MonoBehaviour
     // -----------------------
     public int ActiveIndex => equipRuntime != null ? equipRuntime.ActiveIndex : activeIndex;
     public WeaponDefinition ActiveWeapon => IsValidSlot(ActiveIndex) ? slots[ActiveIndex] : null;
+    public WeaponRuntimeData ActiveRuntimeData => GetRuntimeDataInSlot(ActiveIndex);
+    public IWeaponInteractionLayer InteractionLayer => interactionLayer;
     public bool HasEquippedWeapon => ActiveIndex >= 0 && ActiveWeapon != null;
     public int SlotCount => slots.Length;
+    public WeaponEquipController EquipController => equipController;
 
     public WeaponDefinition GetWeaponInSlot(int slotIndex)
         => IsValidSlot(slotIndex) ? slots[slotIndex] : null;
+
+    /// <summary>
+    /// 책임 :
+    /// - 지정 슬롯 무기의 persistent runtime data를 반환한다.
+    /// - 선택 전략, 저장/복원, 장착 중 live adapter가 같은 슬롯 상태를 공유하게 하는 공식 창구다.
+    /// </summary>
+    public WeaponRuntimeData GetRuntimeDataInSlot(int slotIndex)
+    {
+        EnsureRuntimeSlotCapacity();
+        return IsValidSlot(slotIndex) ? runtimeSlots[slotIndex] : null;
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 현재 슬롯과 짝을 이루는 반대 슬롯 인덱스를 계산한다.
+    /// - 쌍무기 전략과 런타임 processor가 인벤토리 배치 규칙을 직접 몰라도 다른 무기 상태를 조회하게 한다.
+    /// </summary>
+    public int GetOtherSlotIndex(int slotIndex)
+    {
+        if (!IsValidSlot(slotIndex))
+            return -1;
+
+        if (slots.Length == 2)
+            return slotIndex == 0 ? 1 : 0;
+
+        for (int i = 0; i < slots.Length; i++)
+        {
+            if (i != slotIndex)
+                return i;
+        }
+
+        return -1;
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 지정 슬롯과 짝을 이루는 반대 슬롯 무기 정의를 반환한다.
+    /// - 쌍무기 선택 규칙이 다른 슬롯 weaponId나 loadout을 읽을 공식 창구를 제공한다.
+    /// </summary>
+    public WeaponDefinition GetOtherWeaponInSlot(int slotIndex)
+    {
+        int otherSlotIndex = GetOtherSlotIndex(slotIndex);
+        return GetWeaponInSlot(otherSlotIndex);
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 지정 슬롯과 짝을 이루는 반대 슬롯 persistent runtime data를 반환한다.
+    /// - 비활성 무기 상태를 읽는 선택 전략, processor, live adapter가 같은 조회 규칙을 공유하게 한다.
+    /// </summary>
+    public WeaponRuntimeData GetOtherRuntimeData(int slotIndex)
+    {
+        int otherSlotIndex = GetOtherSlotIndex(slotIndex);
+        return GetRuntimeDataInSlot(otherSlotIndex);
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 지정 슬롯 무기에 연결된 runtime processor를 반환한다.
+    /// - 인벤토리 바깥 계층이 processor 수명주기를 직접 소유하지 않고도 현재 구성 상태를 조회하게 한다.
+    /// </summary>
+    public WeaponRuntimeProcessor GetRuntimeProcessorInSlot(int slotIndex)
+    {
+        return runtimeCoordinator != null
+            ? runtimeCoordinator.GetProcessorInSlot(slotIndex)
+            : null;
+    }
 
     public bool HasWeapon(int slotIndex)
         => GetWeaponInSlot(slotIndex) != null;
@@ -141,9 +214,25 @@ public class WeaponInventory2D : MonoBehaviour
         statBinder = new WeaponStatBinder(attributeSet);
         presentationBinder = new WeaponPresentationBinder(tagSystem, equipController);
         equipRuntime = new WeaponEquipRuntime(statBinder, presentationBinder);
+        runtimeCoordinator = new WeaponRuntimeCoordinator(this);
+        interactionLayer = new WeaponInteractionLayer(runtimeCoordinator);
 
+        EnsureRuntimeSlotCapacity();
+        RebuildRuntimeDataState();
         RebuildAbilityOwnershipState();
         equipRuntime.Initialize(activeIndex, ActiveWeapon);
+
+        if (ActiveWeapon != null)
+        {
+            // 시작 시 이미 활성 무기 정의가 있는 경우, equipRuntime 상태와 실제 장착 프리팹 인스턴스를 먼저 맞춘다.
+            // 그래야 WeaponAbilityRuntimeState를 가진 무기 프리팹이 selector 단계에서 정상적으로 조회된다.
+            presentationBinder.ApplyVisualOnly(ActiveWeapon);
+        }
+    }
+
+    private void Update()
+    {
+        runtimeCoordinator?.Tick(Time.deltaTime);
     }
 
     //private void Start()
@@ -382,9 +471,14 @@ public class WeaponInventory2D : MonoBehaviour
 
         var wa = slots[a];
         var wb = slots[b];
+        var ra = GetRuntimeDataInSlot(a);
+        var rb = GetRuntimeDataInSlot(b);
 
         slots[a] = wb;
         slots[b] = wa;
+        runtimeSlots[a] = rb;
+        runtimeSlots[b] = ra;
+        runtimeCoordinator?.Rebuild(slots, runtimeSlots);
 
         OnSlotChanged?.Invoke(a, wa, slots[a]);
         OnSlotChanged?.Invoke(b, wb, slots[b]);
@@ -430,7 +524,10 @@ public class WeaponInventory2D : MonoBehaviour
         presentationBinder?.ClearVisualOnly();
 
         for (int i = 0; i < slots.Length; i++)
+        {
             slots[i] = null;
+            runtimeSlots[i] = null;
+        }
 
         if (state.slotWeaponIds != null)
         {
@@ -449,6 +546,7 @@ public class WeaponInventory2D : MonoBehaviour
                 }
 
                 slots[i] = resolved;
+                runtimeSlots[i] = CreateRuntimeDataForWeapon(resolved);
             }
         }
 
@@ -463,6 +561,7 @@ public class WeaponInventory2D : MonoBehaviour
 
         activeIndex = restoredActiveIndex;
         equipRuntime.Initialize(restoredActiveIndex, restoredActiveWeapon);
+        runtimeCoordinator?.Rebuild(slots, runtimeSlots);
 
         if (applyActiveVisual)
             presentationBinder?.ApplyVisualOnly(restoredActiveWeapon);
@@ -583,6 +682,8 @@ public class WeaponInventory2D : MonoBehaviour
         if (prev == newWeapon) return;
 
         slots[slotIndex] = newWeapon;
+        runtimeSlots[slotIndex] = CreateRuntimeDataForWeapon(newWeapon);
+        runtimeCoordinator?.Rebuild(slots, runtimeSlots);
         OnSlotChanged?.Invoke(slotIndex, prev, newWeapon);
     }
 
@@ -673,11 +774,68 @@ public class WeaponInventory2D : MonoBehaviour
             weaponId = weapon.weaponId
         };
 
-        AddAbilityPersistentState(payload.abilities, weapon.attack);
-        AddAbilityPersistentState(payload.abilities, weapon.skill1);
-        AddAbilityPersistentState(payload.abilities, weapon.skill2);
+        foreach (var ability in weapon.EnumerateGrantedAbilities())
+            AddAbilityPersistentState(payload.abilities, ability);
+
+        if (payload.abilities.Count == 0)
+            return null;
 
         return payload;
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 슬롯 배열 길이와 같은 runtime data 배열이 항상 준비되게 보장한다.
+    /// - 인벤토리 코드가 슬롯별 지속 상태를 null 참조 없이 다루게 하는 최소 안전망이다.
+    /// </summary>
+    private void EnsureRuntimeSlotCapacity()
+    {
+        if (runtimeSlots != null && runtimeSlots.Length == slots.Length)
+            return;
+
+        var previous = runtimeSlots;
+        runtimeSlots = new WeaponRuntimeData[slots.Length];
+
+        if (previous == null)
+            return;
+
+        int copyCount = Mathf.Min(previous.Length, runtimeSlots.Length);
+        for (int i = 0; i < copyCount; i++)
+            runtimeSlots[i] = previous[i];
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 현재 슬롯 배치를 기준으로 slot data가 없는 무기에 기본 WeaponRuntimeData를 생성한다.
+    /// - 월식도처럼 전용 data가 필요한 무기도 인벤토리 시작 시점부터 persistent owner를 갖게 만든다.
+    /// </summary>
+    private void RebuildRuntimeDataState()
+    {
+        EnsureRuntimeSlotCapacity();
+
+        for (int i = 0; i < slots.Length; i++)
+        {
+            if (slots[i] == null)
+            {
+                runtimeSlots[i] = null;
+                continue;
+            }
+
+            if (runtimeSlots[i] == null)
+                runtimeSlots[i] = CreateRuntimeDataForWeapon(slots[i]);
+        }
+
+        runtimeCoordinator?.Rebuild(slots, runtimeSlots);
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 슬롯에 새 무기가 배치될 때 그 무기가 사용할 persistent runtime data 구현체를 생성한다.
+    /// - 무기별 상태 클래스 선택 규칙은 factory에 위임해 인벤토리가 구체 타입 분기를 직접 알지 않게 한다.
+    /// </summary>
+    private static WeaponRuntimeData CreateRuntimeDataForWeapon(WeaponDefinition weapon)
+    {
+        return WeaponRuntimeDataFactory.CreateForWeapon(weapon);
     }
 
     /// <summary>
@@ -738,14 +896,11 @@ public class WeaponInventory2D : MonoBehaviour
         if (weapon == null || string.IsNullOrEmpty(abilityId))
             return null;
 
-        if (weapon.attack != null && weapon.attack.name == abilityId)
-            return weapon.attack;
-
-        if (weapon.skill1 != null && weapon.skill1.name == abilityId)
-            return weapon.skill1;
-
-        if (weapon.skill2 != null && weapon.skill2.name == abilityId)
-            return weapon.skill2;
+        foreach (var ability in weapon.EnumerateGrantedAbilities())
+        {
+            if (ability != null && ability.name == abilityId)
+                return ability;
+        }
 
         return null;
     }

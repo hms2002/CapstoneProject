@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4452e5e0a3aa4c7f903ab32dce0d2116, type: 3}
+  m_Name: WAL_ExecutionGun
+  m_EditorClassIdentifier: 
+  baseShot: {fileID: 11400000, guid: 3130d51f11124642a61e1e4ac4003007, type: 2}
+  executionShot: {fileID: 11400000, guid: 40cfa372d59a45f4a9a6316cc4003008, type: 2}
+  requiredMarksForExecutionShot: 3
+  reboundWindowSeconds: 6
+  selectionStrategy: {fileID: 11400000, guid: 7ec115cff74e405098533b8dc4003010, type: 2}

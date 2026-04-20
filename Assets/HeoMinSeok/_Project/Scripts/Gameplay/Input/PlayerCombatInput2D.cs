@@ -7,7 +7,7 @@ using UnityGAS;
 /// - block tag 상태를 확인해 UI나 특수 상태에서 전투 조작이 들어가지 않도록 차단한다.
 /// </summary>
 [DisallowMultipleComponent]
-public sealed class PlayerCombatInput2D : MonoBehaviour
+public sealed class PlayerCombatInput2D : MonoBehaviour, IAbilityGameplayEventListener
 {
     private const string AttackBlockedTagResourcePath = "Tags/State.Attacking.Blocked";
     private const string SkillBlockedTagResourcePath = "Tags/State.Skill.Blocked";
@@ -15,8 +15,11 @@ public sealed class PlayerCombatInput2D : MonoBehaviour
     [Header("Refs")]
     [SerializeField] private AbilitySystem abilitySystem;
     [SerializeField] private WeaponInventory2D weaponInventory;
+    [SerializeField] private WeaponEquipController weaponEquipController;
+    [SerializeField] private WeaponExecutorRunner weaponExecutorRunner;
     [SerializeField] private PlayerInteractor2D player;
     [SerializeField] private TagSystem tagSystem;
+    [SerializeField] private AbilityGameplayEventRelay gameplayEventRelay;
 
     [Header("Movement Ability")]
     [SerializeField] private AbilityDefinition dash;
@@ -36,27 +39,42 @@ public sealed class PlayerCombatInput2D : MonoBehaviour
     private float nextAutoAttackTime;
     private bool wasBusyLastFrame;
     private bool isHoldingAttack;
+    private WeaponAbilitySelector weaponAbilitySelector;
+    private WeaponAbilityBridge weaponAbilityBridge;
 
     private void Awake()
     {
         if (abilitySystem == null) abilitySystem = GetComponent<AbilitySystem>();
         if (weaponInventory == null) weaponInventory = GetComponent<WeaponInventory2D>();
+        if (weaponEquipController == null) weaponEquipController = GetComponentInChildren<WeaponEquipController>(true);
+        if (weaponEquipController == null && weaponInventory != null) weaponEquipController = weaponInventory.EquipController;
+        if (weaponExecutorRunner == null) weaponExecutorRunner = GetComponent<WeaponExecutorRunner>();
         if (player == null) player = GetComponent<PlayerInteractor2D>();
         if (tagSystem == null) tagSystem = GetComponent<TagSystem>();
+        if (gameplayEventRelay == null) gameplayEventRelay = GetComponent<AbilityGameplayEventRelay>();
+        if (gameplayEventRelay == null && abilitySystem != null) gameplayEventRelay = gameObject.AddComponent<AbilityGameplayEventRelay>();
+        if (weaponExecutorRunner == null) weaponExecutorRunner = gameObject.AddComponent<WeaponExecutorRunner>();
         if (attackBlockedTag == null) attackBlockedTag = Resources.Load<GameplayTag>(AttackBlockedTagResourcePath);
         if (skillBlockedTag == null) skillBlockedTag = Resources.Load<GameplayTag>(SkillBlockedTagResourcePath);
+
+        weaponAbilitySelector = new WeaponAbilitySelector(weaponInventory, weaponEquipController);
+        weaponAbilityBridge = new WeaponAbilityBridge(abilitySystem, weaponExecutorRunner);
     }
 
     private void OnEnable()
     {
         if (weaponInventory != null)
             weaponInventory.OnEquippedChanged += HandleEquippedChanged;
+
+        gameplayEventRelay?.Register(this);
     }
 
     private void OnDisable()
     {
         if (weaponInventory != null)
             weaponInventory.OnEquippedChanged -= HandleEquippedChanged;
+
+        gameplayEventRelay?.Unregister(this);
     }
 
     private void Update()
@@ -88,7 +106,7 @@ public sealed class PlayerCombatInput2D : MonoBehaviour
             nextAutoAttackTime = 0f;
 
             if (atk != null)
-                TryActivateSafe(atk);
+                TryActivateSafe(WeaponAbilitySlot.Attack, atk);
         }
 
         if (input.WasReleasedThisFrame(InputActionId.PrimaryAttack))
@@ -97,9 +115,9 @@ public sealed class PlayerCombatInput2D : MonoBehaviour
             SendGameplayEventSafe(attackReleasedEvent);
         }
 
-        if (abilitySystem != null)
+        if (weaponAbilityBridge != null)
         {
-            bool busyNow = abilitySystem.IsBusy;
+            bool busyNow = weaponAbilityBridge.IsBusy;
 
             if (wasBusyLastFrame && !busyNow)
                 nextAutoAttackTime = Time.time + reAimGapAfterAttackEnd;
@@ -107,17 +125,17 @@ public sealed class PlayerCombatInput2D : MonoBehaviour
             wasBusyLastFrame = busyNow;
         }
 
-        if (isHoldingAttack && atk != null && abilitySystem != null)
+        if (isHoldingAttack && atk != null && weaponAbilityBridge != null)
         {
-            if (!abilitySystem.IsBusy && Time.time >= nextAutoAttackTime)
+            if (!weaponAbilityBridge.IsBusy && Time.time >= nextAutoAttackTime)
             {
-                if (TryActivateSafe(atk))
+                if (TryActivateSafe(WeaponAbilitySlot.Attack, atk))
                 {
                     nextAutoAttackTime = 0f;
                 }
                 else
                 {
-                    float nextActivationRemaining = abilitySystem.GetNextActivationRemaining(atk);
+                    float nextActivationRemaining = weaponAbilityBridge.GetNextActivationRemaining(atk);
                     nextAutoAttackTime = Time.time + (
                         nextActivationRemaining > 0f
                             ? nextActivationRemaining
@@ -126,9 +144,9 @@ public sealed class PlayerCombatInput2D : MonoBehaviour
             }
         }
 
-        if (input.WasPressedThisFrame(InputActionId.Skill1)) TryActivateSafe(GetSkill1());
-        if (input.WasPressedThisFrame(InputActionId.Skill2)) TryActivateSafe(GetSkill2());
-        if (input.WasPressedThisFrame(InputActionId.Dash)) TryActivateSafe(dash);
+        if (input.WasPressedThisFrame(InputActionId.Skill1)) TryActivateSafe(WeaponAbilitySlot.Skill1, GetSkill1());
+        if (input.WasPressedThisFrame(InputActionId.Skill2)) TryActivateSafe(WeaponAbilitySlot.Skill2, GetSkill2());
+        if (input.WasPressedThisFrame(InputActionId.Dash)) TryActivateSafe(default, dash);
 
         if (weaponInventory != null && input.WasPressedThisFrame(InputActionId.SwapWeapon))
             weaponInventory.Swap();
@@ -178,36 +196,95 @@ public sealed class PlayerCombatInput2D : MonoBehaviour
     /// </summary>
     private void HandleEquippedChanged(int previousIndex, int newIndex, WeaponDefinition previousWeapon, WeaponDefinition newWeapon)
     {
+        if (weaponEquipController == null && weaponInventory != null)
+            weaponEquipController = weaponInventory.EquipController;
+
+        weaponAbilityBridge?.ForceStopActiveExecutor(WeaponExecutorEndReason.WeaponSwapped);
+
+        WeaponAbilityRuntimeState runtimeState = weaponEquipController != null
+            ? weaponEquipController.GetCurrentWeaponRuntimeState()
+            : null;
+
+        if (runtimeState != null)
+            runtimeState.HandleEquippedWeaponChanged(previousWeapon, newWeapon);
+
         ReleaseAttackHoldIfNeeded();
     }
 
-    private bool TryActivateSafe(AbilityDefinition def)
+    private bool TryActivateSafe(WeaponAbilitySlot slot, AbilityDefinition def)
     {
-        if (def == null || abilitySystem == null) return false;
-        return abilitySystem.TryActivateAbility(def, null);
+        if (def == null || weaponAbilityBridge == null) return false;
+
+        bool activated = weaponAbilityBridge.TryActivate(def, null);
+        if (activated)
+            NotifyCurrentWeaponAbilityActivated(slot, def);
+
+        return activated;
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 현재 장착 무기의 WeaponAbilityRuntimeState에 성공 발동 사실을 전달한다.
+    /// - 선택 토글, 콤보 진전 같은 무기 내부 상태를 ASC 세부사항과 분리된 경계에서 갱신한다.
+    /// </summary>
+    private void NotifyCurrentWeaponAbilityActivated(WeaponAbilitySlot slot, AbilityDefinition activatedAbility)
+    {
+        if (weaponInventory == null || weaponEquipController == null)
+            return;
+
+        WeaponDefinition activeWeapon = weaponInventory.ActiveWeapon;
+        if (activeWeapon == null)
+            return;
+
+        WeaponAbilityRuntimeState runtimeState = weaponEquipController.GetCurrentWeaponRuntimeState();
+        if (runtimeState == null)
+            return;
+
+        runtimeState.HandleAbilityActivated(activeWeapon, slot, activatedAbility);
     }
 
     private void SendGameplayEventSafe(GameplayTag tag)
     {
-        if (abilitySystem == null || tag == null) return;
-        abilitySystem.SendGameplayEvent(tag);
+        if (weaponAbilityBridge == null || tag == null) return;
+        weaponAbilityBridge.SendGameplayEvent(tag);
     }
 
     private AbilityDefinition GetBasicAttack()
     {
-        if (weaponInventory == null) return null;
-        return weaponInventory.GetActiveAbility(WeaponAbilitySlot.Attack);
+        if (weaponAbilitySelector == null) return null;
+        return weaponAbilitySelector.ResolveAbility(WeaponAbilitySlot.Attack);
     }
 
     private AbilityDefinition GetSkill1()
     {
-        if (weaponInventory == null) return null;
-        return weaponInventory.GetActiveAbility(WeaponAbilitySlot.Skill1);
+        if (weaponAbilitySelector == null) return null;
+        return weaponAbilitySelector.ResolveAbility(WeaponAbilitySlot.Skill1);
     }
 
     private AbilityDefinition GetSkill2()
     {
-        if (weaponInventory == null) return null;
-        return weaponInventory.GetActiveAbility(WeaponAbilitySlot.Skill2);
+        if (weaponAbilitySelector == null) return null;
+        return weaponAbilitySelector.ResolveAbility(WeaponAbilitySlot.Skill2);
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - ASC 이벤트 relay가 전달한 gameplay event를 현재 장착 무기의 runtime state로 넘긴다.
+    /// - 입력 계층은 현재 무기 경계를 알고 있으므로, runtime state가 직접 ASC를 구독하지 않도록 브리지 역할을 맡는다.
+    /// </summary>
+    public void HandleGameplayEvent(GameplayTag tag, in AbilityEventData data)
+    {
+        if (weaponInventory == null || weaponEquipController == null)
+            return;
+
+        WeaponDefinition activeWeapon = weaponInventory.ActiveWeapon;
+        if (activeWeapon == null)
+            return;
+
+        WeaponAbilityRuntimeState runtimeState = weaponEquipController.GetCurrentWeaponRuntimeState();
+        if (runtimeState == null)
+            return;
+
+        runtimeState.HandleGameplayEvent(activeWeapon, tag, data);
     }
 }

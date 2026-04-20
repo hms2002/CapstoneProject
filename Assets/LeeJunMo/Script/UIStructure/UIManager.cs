@@ -396,6 +396,37 @@ public class UIManager : MonoBehaviour
         return popupStack.HasAny();
     }
 
+    /// <summary>
+    /// 책임 :
+    /// - 현재 popup stack에 올라온 UI 중 특정 canvas 아래에 실제로 열린 항목이 있는지 판별한다.
+    /// - canvas raycast gate가 상시 활성 매니저 오브젝트가 아니라 열린 stackable UI를 기준으로 입력 차단 여부를 결정하게 만든다.
+    /// </summary>
+    public bool HasActivePopupInCanvas(Canvas canvas)
+    {
+        if (canvas == null)
+            return false;
+
+        var snapshot = popupStack.Snapshot();
+        if (snapshot == null || snapshot.Count == 0)
+            return false;
+
+        Transform canvasTransform = canvas.transform;
+        for (int i = 0; i < snapshot.Count; i++)
+        {
+            IStackableUI openedUi = snapshot[i];
+            if (openedUi == null || !openedUi.IsActive)
+                continue;
+
+            if (openedUi is not MonoBehaviour behaviour || behaviour == null)
+                continue;
+
+            if (behaviour.transform.IsChildOf(canvasTransform))
+                return true;
+        }
+
+        return false;
+    }
+
     public bool HasBlockingUI()
     {
         return HasActivePopup() || (DialogueService.Instance != null && DialogueService.Instance.IsPlaying);
@@ -675,3 +706,4 @@ public class UIManager : MonoBehaviour
     }
 
 }
+

@@ -16,11 +16,15 @@ public class HoverUIController : MonoBehaviour
     [SerializeField] private bool delayHideOneFrame = true;
     [SerializeField] private float extraHideDelay = 0f;
 
+    [Header("Debug")]
+    [SerializeField] private bool logPositioningDebug;
+
     private IHoverView _currentView;
     private RectTransform _targetSlotRect;
     private bool _isHovering;
 
     private Coroutine _hideRoutine;
+    private Coroutine _repositionRoutine;
     private int _serial;
 
     private void Awake()
@@ -67,6 +71,7 @@ public class HoverUIController : MonoBehaviour
 
         _currentView.ShowHover(data, context);
         PositionNextToTarget(_targetSlotRect);
+        ScheduleDeferredReposition();
     }
 
     public void HideHover(IHoverView view, RectTransform targetRect)
@@ -80,6 +85,7 @@ public class HoverUIController : MonoBehaviour
     public void HideImmediate()
     {
         CancelHide();
+        CancelDeferredReposition();
         _isHovering = false;
         _targetSlotRect = null;
 
@@ -156,6 +162,40 @@ public class HoverUIController : MonoBehaviour
         _hideRoutine = null;
     }
 
+    private void ScheduleDeferredReposition()
+    {
+        CancelDeferredReposition();
+        _repositionRoutine = StartCoroutine(CoDeferredReposition(_serial));
+    }
+
+    private void CancelDeferredReposition()
+    {
+        if (_repositionRoutine == null)
+            return;
+
+        StopCoroutine(_repositionRoutine);
+        _repositionRoutine = null;
+    }
+
+    private IEnumerator CoDeferredReposition(int serialAtStart)
+    {
+        yield return null;
+
+        if (_serial != serialAtStart)
+            yield break;
+
+        if (!RefreshCanvasReference(_targetSlotRect, _currentView))
+            yield break;
+
+        if (_currentView == null || _targetSlotRect == null)
+            yield break;
+
+        Canvas.ForceUpdateCanvases();
+        LayoutRebuilder.ForceRebuildLayoutImmediate(_currentView.Rect);
+        PositionNextToTarget(_targetSlotRect);
+        _repositionRoutine = null;
+    }
+
     private void PositionNextToTarget(RectTransform targetRect)
     {
         if (!RefreshCanvasReference(targetRect, _currentView))
@@ -203,6 +243,18 @@ public class HoverUIController : MonoBehaviour
         float chosenX = chosen.x;
         float y = ChooseYAlignSlot(canvasLocalRect, targetLocalRect, size, pivot, chosenX);
         viewRect.anchoredPosition = new Vector2(chosenX, y);
+
+        if (logPositioningDebug)
+        {
+            Debug.Log(
+                $"[HoverUIController] Positioned hover view. " +
+                $"canvas={canvas.name}, canvasRect={canvasLocalRect}, " +
+                $"target={targetRect.name}, targetRect={targetLocalRect}, " +
+                $"view={viewRect.name}, viewSize={size}, pivot={pivot}, " +
+                $"rightCandidate={posRight}, leftCandidate={posLeft}, chosen={new Vector2(chosenX, y)}, " +
+                $"offset={offset}, edgePadding={edgePadding}",
+                this);
+        }
     }
 
     private Vector2 ChoosePosAvoidOverlap(Rect canvasLocalRect, Rect targetRect, Vector2 panelSize, Vector2 pivot, Vector2 rightPos, Vector2 leftPos)

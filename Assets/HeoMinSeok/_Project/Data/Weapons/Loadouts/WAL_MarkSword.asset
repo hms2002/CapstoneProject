@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78466558c5f44355a9fbf8caa5db2115, type: 3}
+  m_Name: WAL_MarkSword
+  m_EditorClassIdentifier: 
+  baseAttack: {fileID: 11400000, guid: 89163a8e6b579e14c874528367814f0c, type: 2}
+  defaultSkill1: {fileID: 11400000, guid: 1c9178a578d94e62a3baf565c4003005, type: 2}
+  reboundSlash: {fileID: 11400000, guid: 2d27b29ab2ab4a7cb4314476c4003006, type: 2}
+  maxMarkStacks: 3
+  markDecaySeconds: 5
+  selectionStrategy: {fileID: 11400000, guid: 4204fd559ef9442695cedd8bc4003009, type: 2}

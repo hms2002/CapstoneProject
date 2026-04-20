@@ -28,6 +28,10 @@ public class RelicLogic_MoveSpeedOnKill_Managed : RelicLogic
     [Tooltip("true면 처치 시 기존 버프를 제거하고 남은시간을 갱신합니다. false면 중첩됩니다(여러 개가 곱해짐).")]
     public bool refreshDuration = true;
 
+    [Header("Status HUD")]
+    [Tooltip("이 유물 버프를 상태 HUD로 보여줄 때 사용할 표시 정의.")]
+    public StatusHudDefinition statusDefinition;
+
     public override void OnEquipped(RelicContext ctx)
     {
         RegisterProc(ctx);
@@ -61,7 +65,8 @@ public class RelicLogic_MoveSpeedOnKill_Managed : RelicLogic
             moveSpeedAttribute,
             percentBonus,
             durationSeconds,
-            refreshDuration
+            refreshDuration,
+            statusDefinition
         );
 
         mgr.Register(proc);

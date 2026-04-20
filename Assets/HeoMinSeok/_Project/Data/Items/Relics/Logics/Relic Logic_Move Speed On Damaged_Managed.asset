@@ -12,8 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 547145081c9e97d46aa974966f855dd0, type: 3}
   m_Name: Relic Logic_Move Speed On Damaged_Managed
   m_EditorClassIdentifier: 
+  effectTemplate: "\u25CF [[\uD53C\uD574\uB97C \uBC1B\uC73C\uBA74]] {duration} \uB3D9\uC548
+    [[\uC774\uB3D9\uC18D\uB3C4]] {move_speed_bonus}"
   triggerTag: {fileID: 11400000, guid: 504085a73b191cb41be6b18bbc36a522, type: 2}
   moveSpeedAttribute: {fileID: 11400000, guid: 23db6468e859c6f42b0230a5af7ca81c, type: 2}
   percentBonus: 0.5
   durationSeconds: 15
   refreshDuration: 1
+  statusDefinition: {fileID: 11400000, guid: 709b8b58140c46c9914fcf8129a22fd7, type: 2}

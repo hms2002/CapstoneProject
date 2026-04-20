@@ -1852,6 +1852,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -2626,7 +2627,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3955792757290455501, guid: 1a515275e1ca5604a87f1ce3d65e3d83, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 37
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3955792757290455501, guid: 1a515275e1ca5604a87f1ce3d65e3d83, type: 3}
       propertyPath: m_SizeDelta.y
@@ -2742,7 +2743,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8186074111262439667, guid: 1a515275e1ca5604a87f1ce3d65e3d83, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 360
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8186074111262439667, guid: 1a515275e1ca5604a87f1ce3d65e3d83, type: 3}
       propertyPath: m_SizeDelta.y

@@ -688,7 +688,7 @@ MonoBehaviour:
   cueManager: {fileID: 0}
   autoExecuteCueWhenGameplayEventTagExists: 1
   killConfirmedTag: {fileID: 11400000, guid: 165fc11102fdbfb40b1ce7b341ecc8bb, type: 2}
-  damagedTag: {fileID: 0}
+  damagedTag: {fileID: 11400000, guid: 504085a73b191cb41be6b18bbc36a522, type: 2}
   animator: {fileID: 0}
   playerAnimator: {fileID: 0}
   initialWeaponAnimator: {fileID: 0}

@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d8f3b7b0879f4661acd56b78a4c1e3f2, type: 3}
+  m_Name: SHD_Relic_MoveSpeedOnDamaged
+  m_EditorClassIdentifier: 
+  statusId: relic_move_speed_on_damaged
+  group: 3
+  priority: 92
+  icon: {fileID: 21300000, guid: fe26a83a4ededf64ba867c2d5e1863f8, type: 3}
+  nameText: "\uBC18\uACA9 \uC900\uBE44"
+  storyText: "\uAC00\uACA9\uB41C \uC21C\uAC04 \uB2E4\uB9AC\uC5D0 \uC2DC\uB044\uB7EC\uC6B4 \uBC18\uC0AC \uAC10\uAC01\uC774 \uC2A4\uBA70\uB4ED\uB2C8\uB2E4."
+  effectText: "\uD53C\uD574\uB97C \uBC1B\uC73C\uBA74 \uC7A0\uC2DC \uC774\uB3D9\uC18D\uB3C4\uAC00 \uC99D\uAC00\uD569\uB2C8\uB2E4."
+  showStacksByDefault: 0
+  showDurationByDefault: 1

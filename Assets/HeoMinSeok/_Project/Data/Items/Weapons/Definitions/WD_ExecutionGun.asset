@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5686dc461c9b6a546991383454aa181f, type: 3}
+  m_Name: WD_ExecutionGun
+  m_EditorClassIdentifier: 
+  weaponId: Weapon.ExecutionGun
+  displayName: Execution Gun
+  icon: {fileID: -4725637515032661049, guid: 2a195b84427e14a4ba63fe519397dd8e, type: 3}
+  storyText: Experimental paired weapon that consumes sword marks and opens a rebound
+    slash.
+  statModifiers: []
+  attackInputHint: Mouse1
+  skill1InputHint: Q
+  skill2InputHint: E
+  weaponPrefab: {fileID: 4875326805764407255, guid: 0d32f474fd7c4d4cba6d451fc4003016, type: 3}
+  equippedTag: {fileID: 11400000, guid: cac1046499d28814a91fcb2631757240, type: 2}
+  attack: {fileID: 11400000, guid: 3130d51f11124642a61e1e4ac4003007, type: 2}
+  skill1: {fileID: 0}
+  skill2: {fileID: 0}
+  abilityLoadout: {fileID: 11400000, guid: b997a83409d0444ca236f68cc4003012, type: 2}

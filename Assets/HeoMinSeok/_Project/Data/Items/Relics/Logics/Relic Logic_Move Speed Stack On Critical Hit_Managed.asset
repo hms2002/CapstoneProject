@@ -17,3 +17,4 @@ MonoBehaviour:
   moveSpeedAttribute: {fileID: 11400000, guid: 23db6468e859c6f42b0230a5af7ca81c, type: 2}
   percentPerCritical: 0.02
   maxPercentBonus: 0.5
+  statusDefinition: {fileID: 11400000, guid: 2bb8e243fd06444ebd62bbf51567ee7c, type: 2}

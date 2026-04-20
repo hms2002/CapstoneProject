@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 808910561e593534f9ea3637c00cc255, type: 3}
+  m_Name: AD_EclipseBloomFinish
+  m_EditorClassIdentifier: 
+  abilityName: AD_EclipseBloomFinish
+  description: Eclipse sword bloom finish debug ability.
+  logic: {fileID: 11400000, guid: 4e3f863af86b4f9da9ecf93c8c146302, type: 2}

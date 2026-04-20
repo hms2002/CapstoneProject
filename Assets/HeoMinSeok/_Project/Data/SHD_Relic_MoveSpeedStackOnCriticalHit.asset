@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d8f3b7b0879f4661acd56b78a4c1e3f2, type: 3}
+  m_Name: SHD_Relic_MoveSpeedStackOnCriticalHit
+  m_EditorClassIdentifier: 
+  statusId: relic_move_speed_stack_on_critical_hit
+  group: 3
+  priority: 95
+  icon: {fileID: 21300000, guid: 6cd59cbf386c7134c99727cb4cdc3f83, type: 3}
+  nameText: "\uB2EC\uB9AC\uB294 \uC7A5\uBD80"
+  storyText: "\uC9C0\uC6CC\uC9C0\uB294 \uC22B\uC790\uB9CC\uD07C \uBC1C\uAC78\uC74C\uC774 \uAC00\uBCBC\uC6CC\uC9D1\uB2C8\uB2E4."
+  effectText: "\uCE58\uBA85\uD0C0 \uC2DC \uC774\uB3D9\uC18D\uB3C4 \uC2A4\uD0DD\uC774 \uC313\uC774\uACE0, \uD53C\uD574\uB97C \uBC1B\uC73C\uBA74 \uCD08\uAE30\uD654\uB429\uB2C8\uB2E4."
+  showStacksByDefault: 1
+  showDurationByDefault: 0

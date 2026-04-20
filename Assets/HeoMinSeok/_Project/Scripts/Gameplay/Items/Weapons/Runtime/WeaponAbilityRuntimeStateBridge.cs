@@ -69,6 +69,8 @@ public sealed class WeaponAbilityRuntimeStateBridge : MonoBehaviour, IWeaponRunt
                 json = JsonUtility.ToJson(payload)
             });
         }
+
+        CaptureCustomRuntimeState(weaponInventory, output);
     }
 
     /// <summary>
@@ -83,7 +85,24 @@ public sealed class WeaponAbilityRuntimeStateBridge : MonoBehaviour, IWeaponRunt
         if (weaponInventory == null || state == null || abilitySystem == null)
             return;
 
-        if (!string.Equals(state.stateType, StateTypeKey, StringComparison.Ordinal))
+        if (string.Equals(state.stateType, StateTypeKey, StringComparison.Ordinal))
+        {
+            RestoreAbilityRuntimeState(weaponInventory, state);
+            return;
+        }
+
+        RestoreCustomRuntimeState(weaponInventory, state);
+    }
+
+    /// <summary>
+    /// 책임 : 저장된 무기 ability payload를 읽어 해당 슬롯 무기의 ability spec 상태를 복원한다.
+    /// weaponInventory shell restore 이후 호출되어야 하며, weapon slot과 weaponId를 함께 검증한다.
+    /// </summary>
+    private void RestoreAbilityRuntimeState(
+        WeaponInventory2D weaponInventory,
+        WeaponRuntimeState state)
+    {
+        if (weaponInventory == null || state == null)
             return;
 
         var weapon = weaponInventory.GetWeaponInSlot(state.slotIndex);
@@ -122,6 +141,72 @@ public sealed class WeaponAbilityRuntimeStateBridge : MonoBehaviour, IWeaponRunt
     }
 
     /// <summary>
+    /// 책임 : 슬롯별 persistent runtime data가 저장 계약을 구현한 경우 weaponRuntimeStates에 추가 저장한다.
+    /// 활성/비활성 여부와 무관하게 인벤토리가 소유한 data를 기준으로 custom runtime state를 저장한다.
+    /// </summary>
+    private void CaptureCustomRuntimeState(
+        WeaponInventory2D runtimeWeaponInventory,
+        List<WeaponRuntimeState> output)
+    {
+        if (runtimeWeaponInventory == null || output == null)
+            return;
+
+        for (int slotIndex = 0; slotIndex < runtimeWeaponInventory.SlotCount; slotIndex++)
+        {
+            WeaponDefinition weapon = runtimeWeaponInventory.GetWeaponInSlot(slotIndex);
+            if (weapon == null)
+                continue;
+
+            WeaponRuntimeData runtimeData = runtimeWeaponInventory.GetRuntimeDataInSlot(slotIndex);
+            if (runtimeData is not IWeaponRuntimeStatePersistence persistence)
+                continue;
+
+            string json = persistence.CaptureStateJson();
+            if (string.IsNullOrWhiteSpace(json))
+                continue;
+
+            output.Add(new WeaponRuntimeState
+            {
+                slotIndex = slotIndex,
+                weaponId = weapon.weaponId,
+                stateType = persistence.StateType,
+                json = json
+            });
+        }
+    }
+
+    /// <summary>
+    /// 책임 : 저장된 커스텀 runtime state payload를 슬롯이 소유한 persistent runtime data 구현체에 직접 복원한다.
+    /// 프리팹 인스턴스 유무와 무관하게 inventory slot data를 진실한 상태 저장소로 유지한다.
+    /// </summary>
+    private void RestoreCustomRuntimeState(
+        WeaponInventory2D runtimeWeaponInventory,
+        WeaponRuntimeState state)
+    {
+        if (runtimeWeaponInventory == null || state == null)
+            return;
+
+        var weapon = runtimeWeaponInventory.GetWeaponInSlot(state.slotIndex);
+        if (weapon == null)
+            return;
+
+        if (!string.IsNullOrEmpty(state.weaponId) &&
+            !string.Equals(state.weaponId, weapon.weaponId, StringComparison.Ordinal))
+        {
+            return;
+        }
+
+        WeaponRuntimeData runtimeData = runtimeWeaponInventory.GetRuntimeDataInSlot(state.slotIndex);
+        if (runtimeData is not IWeaponRuntimeStatePersistence persistence)
+            return;
+
+        if (!string.Equals(persistence.StateType, state.stateType, StringComparison.Ordinal))
+            return;
+
+        persistence.RestoreStateJson(state.json);
+    }
+
+    /// <summary>
     /// 책임 : 특정 무기가 가진 attack / skill1 / skill2의 persistent state를 payload로 묶는다.
     /// 무기 소유 능력만 저장하며, 플레이어 고유 ability는 포함하지 않는다.
     /// </summary>
@@ -135,9 +220,11 @@ public sealed class WeaponAbilityRuntimeStateBridge : MonoBehaviour, IWeaponRunt
             weaponId = weapon.weaponId
         };
 
-        AddAbilityState(payload.abilities, weapon.attack);
-        AddAbilityState(payload.abilities, weapon.skill1);
-        AddAbilityState(payload.abilities, weapon.skill2);
+        foreach (var ability in weapon.EnumerateGrantedAbilities())
+            AddAbilityState(payload.abilities, ability);
+
+        if (payload.abilities.Count == 0)
+            return null;
 
         return payload;
     }
@@ -172,14 +259,11 @@ public sealed class WeaponAbilityRuntimeStateBridge : MonoBehaviour, IWeaponRunt
         if (weapon == null || string.IsNullOrEmpty(abilityId))
             return null;
 
-        if (weapon.attack != null && weapon.attack.name == abilityId)
-            return weapon.attack;
-
-        if (weapon.skill1 != null && weapon.skill1.name == abilityId)
-            return weapon.skill1;
-
-        if (weapon.skill2 != null && weapon.skill2.name == abilityId)
-            return weapon.skill2;
+        foreach (var ability in weapon.EnumerateGrantedAbilities())
+        {
+            if (ability != null && ability.name == abilityId)
+                return ability;
+        }
 
         return null;
     }
