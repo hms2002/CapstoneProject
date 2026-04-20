@@ -987,12 +987,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 5fab027f93fec854e85c80601d149d18
-    m_Address: Assets/HeoMinSeok/_Project/Data/Items/Weapons/Definitions/WD_NewWeapon
-      1.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 5ff5686693ff031498bc5b23c9551947
     m_Address: Assets/Audio/PlayerActing/FallHitSound.wav
     m_ReadOnly: 0
@@ -1092,11 +1086,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 6a6fb06d5cc584a439a98e23f532f0b2
     m_Address: Assets/Sprites/Characters/Boss/Shadow/CombatSprite/Boss1Stagger.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 6a8181eecc5ab3a4988f9089d46607b0
-    m_Address: Assets/HeoMinSeok/_Project/Data/Items/Weapons/Definitions/WD_NewWeapon.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -2418,11 +2407,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: dadc84cd2fffcae45905741575af20c3
     m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Definitions/AD_Dash.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: db618625c22a5504ba785650bdc0df2b
-    m_Address: Assets/HeoMinSeok/_Project/Prefabs/Gameplay/Items/Weapons/Equip/WeaponPrefab_ExampleSowrd.prefab
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
