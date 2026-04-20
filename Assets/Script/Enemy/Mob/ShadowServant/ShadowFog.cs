@@ -5,6 +5,10 @@ using UnityEngine;
 [RequireComponent(typeof(Collider2D), typeof(Animator))]
 public class ShadowFog : MonoBehaviour
 {
+    // 이 클래스의 책임:
+    // - 그림자 안개 구역의 수명과 애니메이션 단계를 관리한다.
+    // - 플레이어 접촉 시 공통 버프/디버프 적용기를 통해 시야 제한 GE를 적용하고, 시야 연출도 함께 갱신한다.
+
     private enum FogPhase
     {
         Starting,
@@ -20,6 +24,10 @@ public class ShadowFog : MonoBehaviour
     [SerializeField] [Min(0.01f)] private float fogDebuffDuration = 3f;
     [SerializeField] [Min(0.01f)] private float endFallbackDestroyDelay = 0.35f;
 
+    [Header("Debuff")]
+    [SerializeField] private CombatBuffDebuffApplicationDefinition restrictedVisionDebuffDefinition;
+    [SerializeField] private bool logFogSightStatusFlow = true;
+
     [Header("Animator")]
     [SerializeField] private string startStateName = "FogStartAnim";
     [SerializeField] private string idleStateName = "FogIdleAnim";
@@ -32,6 +40,7 @@ public class ShadowFog : MonoBehaviour
     private float idleEndTime;
     private float endFallbackDestroyTime = -1f;
     private bool hasEndTrigger;
+    private string sourceKey;
 
     private void Awake()
     {
@@ -41,6 +50,7 @@ public class ShadowFog : MonoBehaviour
             triggerZone.isTrigger = true;
 
         hasEndTrigger = HasAnimatorTrigger(endTriggerName);
+        sourceKey = $"enemy.shadowFog.{GetInstanceID()}";
     }
 
     private void Update()
@@ -77,15 +87,74 @@ public class ShadowFog : MonoBehaviour
         if (phase != FogPhase.Idle || other == null)
             return;
 
+        PlayerInteractor2D player = ResolvePlayer(other);
         GameObject targetObject = UnityGAS.CombatTargetResolver2D.ResolveDamageTarget(other);
-        if (targetObject == null || !targetObject.CompareTag(PlayerTag))
-            return;
+        if (player == null && targetObject != null)
+            player = targetObject.GetComponentInParent<PlayerInteractor2D>();
+        if (player == null && targetObject != null)
+            player = targetObject.GetComponentInChildren<PlayerInteractor2D>(true);
 
-        FogSightLock sightLock = targetObject.GetComponent<FogSightLock>();
+        if (logFogSightStatusFlow)
+        {
+            Debug.Log(
+                $"[ShadowFog] HandleTouch. other={other.name}, targetObject={(targetObject != null ? targetObject.name : "null")}, " +
+                $"playerRoot={(player != null ? player.name : "null")}, definition={(restrictedVisionDebuffDefinition != null && restrictedVisionDebuffDefinition.StatusHudDefinition != null ? restrictedVisionDebuffDefinition.StatusHudDefinition.StatusId : "null")}",
+                this);
+        }
+
+        if (player == null)
+        {
+            if (logFogSightStatusFlow)
+                Debug.LogWarning("[ShadowFog] Skipped fog application because no PlayerInteractor2D root was found.", this);
+            return;
+        }
+
+        GameObject playerRoot = player.gameObject;
+        if (!playerRoot.CompareTag(PlayerTag))
+        {
+            if (logFogSightStatusFlow)
+                Debug.LogWarning($"[ShadowFog] Skipped fog application because player root tag was '{playerRoot.tag}', expected '{PlayerTag}'.", this);
+            return;
+        }
+
+        RestrictedVisionVisualController sightLock = playerRoot.GetComponent<RestrictedVisionVisualController>();
         if (sightLock == null)
-            sightLock = targetObject.AddComponent<FogSightLock>();
+        {
+            sightLock = playerRoot.AddComponent<RestrictedVisionVisualController>();
+            if (logFogSightStatusFlow)
+                Debug.Log($"[ShadowFog] Added RestrictedVisionVisualController to player root '{playerRoot.name}'.", this);
+        }
 
         sightLock.ApplyFog(fogDebuffDuration);
+
+        if (restrictedVisionDebuffDefinition == null)
+        {
+            if (logFogSightStatusFlow)
+            {
+                Debug.LogWarning(
+                    "[ShadowFog] Skipped debuff apply because restrictedVisionDebuffDefinition was not assigned.",
+                    this);
+            }
+            return;
+        }
+
+        CombatBuffDebuffApplier debuffApplier = CombatBuffDebuffApplier.GetOrAdd(playerRoot);
+        if (debuffApplier == null)
+        {
+            if (logFogSightStatusFlow)
+                Debug.LogWarning("[ShadowFog] Skipped debuff apply because CombatBuffDebuffApplier was missing.", this);
+            return;
+        }
+
+        bool applied = debuffApplier.ApplyFromSource(gameObject, playerRoot, restrictedVisionDebuffDefinition, sourceKey, fogDebuffDuration);
+
+        if (logFogSightStatusFlow)
+        {
+            Debug.Log(
+                $"[ShadowFog] Applied fog debuff to '{playerRoot.name}' for {fogDebuffDuration:0.00}s. " +
+                $"sourceKey={sourceKey}, applyResult={applied}",
+                this);
+        }
     }
 
     private void TryEnterIdlePhase()
@@ -172,5 +241,32 @@ public class ShadowFog : MonoBehaviour
 
         AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(BaseLayerIndex);
         return stateInfo.IsName(stateName) && !animator.IsInTransition(BaseLayerIndex);
+    }
+
+    private PlayerInteractor2D ResolvePlayer(Collider2D other)
+    {
+        if (other == null)
+            return null;
+
+        PlayerInteractor2D player = other.GetComponentInParent<PlayerInteractor2D>();
+        if (player != null)
+            return player;
+
+        if (other.attachedRigidbody != null)
+        {
+            player = other.attachedRigidbody.GetComponentInParent<PlayerInteractor2D>();
+            if (player != null)
+                return player;
+        }
+
+        Transform root = other.transform.root;
+        if (root != null)
+        {
+            player = root.GetComponentInChildren<PlayerInteractor2D>(true);
+            if (player != null)
+                return player;
+        }
+
+        return null;
     }
 }

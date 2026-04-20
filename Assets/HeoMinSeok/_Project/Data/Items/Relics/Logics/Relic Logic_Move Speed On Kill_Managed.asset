@@ -17,3 +17,4 @@ MonoBehaviour:
   percentBonus: 0.18
   durationSeconds: 4
   refreshDuration: 1
+  statusDefinition: {fileID: 11400000, guid: 5f57fda0cc124357a17c37e5d2c09b1a, type: 2}

@@ -24,7 +24,7 @@ MonoBehaviour:
   collisionCancelRadius: 0.35
   collisionCancelLayers:
     serializedVersion: 2
-    m_Bits: 1073741824
+    m_Bits: 0
   cancelOnAttackOrSkillInput: 1
   deferSkill2CancelTag: {fileID: 11400000, guid: 9d6f4b2a1c3641e59f8ab2d87ec41f73, type: 2}
   skill2KillConfirmWindowSeconds: 0.35

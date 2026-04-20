@@ -103,6 +103,10 @@ public class RelicLogic_EvasionFromBonusMoveSpeed_Managed : RelicLogic
         {
         }
 
+        public void Tick(float deltaTime)
+        {
+        }
+
         public void Dispose()
         {
             if (_ctx.attributeSet != null)

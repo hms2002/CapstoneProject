@@ -9,7 +9,7 @@ using UnityGAS;
 /// - 무기 회전 자체는 Hand/PlayerAim2D가 맡고, 이 컨트롤러는 배치 소켓 선택과 비주얼 수명,
 ///   그리고 WeaponVisualSetup을 통한 좌/우 손별 비주얼 포즈 적용을 담당한다.
 /// </summary>
-public class WeaponEquipController : MonoBehaviour
+public class WeaponEquipController : MonoBehaviour, IWeaponRuntimeStateProvider
 {
     private enum HandSide
     {
@@ -39,6 +39,7 @@ public class WeaponEquipController : MonoBehaviour
     private GameObject currentPrefab;
     private GameObject currentWeaponGO;
     private WeaponVisualSetup currentVisualSetup;
+    private WeaponAbilityRuntimeState currentRuntimeState;
     private HandSide currentSide = HandSide.Right;
     private int currentAttackSideSign = 1;
 
@@ -94,6 +95,9 @@ public class WeaponEquipController : MonoBehaviour
         currentVisualSetup = currentWeaponGO != null
             ? currentWeaponGO.GetComponentInChildren<WeaponVisualSetup>(true)
             : null;
+        currentRuntimeState = currentWeaponGO != null
+            ? currentWeaponGO.GetComponentInChildren<WeaponAbilityRuntimeState>(true)
+            : null;
 
         ActivateInstance(currentWeaponGO, weaponPrefab);
         RegisterAnimatorAndRelays(currentWeaponGO);
@@ -111,6 +115,7 @@ public class WeaponEquipController : MonoBehaviour
         DeactivateCurrent();
         currentPrefab = null;
         currentWeaponGO = null;
+        currentRuntimeState = null;
         currentAttackSideSign = 1;
 
         abilitySystem.RegisterWeaponAnimator(null);
@@ -147,6 +152,7 @@ public class WeaponEquipController : MonoBehaviour
         currentWeaponGO = null;
         currentPrefab = null;
         currentVisualSetup = null;
+        currentRuntimeState = null;
         currentSide = HandSide.Right;
         currentAttackSideSign = 1;
 
@@ -290,6 +296,19 @@ public class WeaponEquipController : MonoBehaviour
 
         var relays = weaponGO.GetComponentsInChildren<AbilityAnimationEventRelay>(true);
         foreach (var r in relays) r.Bind(abilitySystem);
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 현재 활성 무기 인스턴스가 제공하는 WeaponAbilityRuntimeState를 선택 계층에 노출한다.
+    /// - 상태 컴포넌트가 없는 무기는 null을 반환해 기본 슬롯 ability 선택으로 자연스럽게 fallback 하게 만든다.
+    /// </summary>
+    public WeaponAbilityRuntimeState GetCurrentWeaponRuntimeState()
+    {
+        if (currentRuntimeState == null && currentWeaponGO != null)
+            currentRuntimeState = currentWeaponGO.GetComponentInChildren<WeaponAbilityRuntimeState>(true);
+
+        return currentRuntimeState;
     }
 
     private void Touch(GameObject prefab)

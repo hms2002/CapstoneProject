@@ -167,6 +167,8 @@ MonoBehaviour:
   idleDuration: 3
   fogDebuffDuration: 3
   endFallbackDestroyDelay: 0.35
+  restrictedVisionDebuffDefinition: {fileID: 11400000, guid: 4429a472918e4189afc5e29e85f1b122, type: 2}
+  logFogSightStatusFlow: 1
   startStateName: FogStartAnim
   idleStateName: FogIdleAnim
   endStateName: FogEndAnim

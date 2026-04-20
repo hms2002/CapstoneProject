@@ -85,6 +85,26 @@ namespace UnityGAS
             return repository.GetRemainingTime(effect, target);
         }
 
+        /// <summary>
+        /// 책임 :
+        /// - 특정 effect/target 조합으로 현재 활성화된 effect 인스턴스를 조회한다.
+        /// - HUD나 공통 버프/디버프 적용기가 실제 남은 시간과 스택 결과를 읽을 때 사용한다.
+        /// </summary>
+        public ActiveGameplayEffect FindActiveEffect(GameplayEffect effect, GameObject target)
+        {
+            return repository.FindFirst(effect, target);
+        }
+
+        /// <summary>
+        /// 책임 :
+        /// - 특정 sourceObject까지 포함한 exact match 기준으로 활성 effect 인스턴스를 조회한다.
+        /// - cooldown 전용 규칙과 별개로 source 구분이 필요한 버프/디버프 동기화 경로에서 사용한다.
+        /// </summary>
+        public ActiveGameplayEffect FindActiveEffect(GameplayEffect effect, GameObject target, Object sourceObject)
+        {
+            return repository.FindFirst(effect, target, sourceObject);
+        }
+
         #endregion
 
         #region Apply - Non Spec

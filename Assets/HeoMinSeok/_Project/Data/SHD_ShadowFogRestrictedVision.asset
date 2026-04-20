@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d8f3b7b0879f4661acd56b78a4c1e3f2, type: 3}
+  m_Name: SHD_ShadowFogRestrictedVision
+  m_EditorClassIdentifier: 
+  statusId: shadow_fog_restricted_vision
+  group: 2
+  priority: 120
+  icon: {fileID: 6737240518485340932, guid: f530435cca44b78408eb1124cd71450d, type: 3}
+  nameText: "\uC2DC\uC57C \uCC28\uB2E8"
+  storyText: "\uADF8\uB9BC\uC790 \uC548\uAC1C\uAC00 \uB208\uC55E\uC744 \uB35C\uC5B4 \uB0B4, \uC8FC\uBCC0\uC744 \uBD84\uAC04\uD558\uAE30 \uC5B4\uB835\uAC8C \uB9CC\uB4ED\uB2C8\uB2E4."
+  effectText: "\uADF8\uB9BC\uC790 \uC548\uAC1C\uC5D0 \uC811\uCD09\uD55C \uB3D9\uC548 \uD50C\uB808\uC774\uC5B4\uC758 \uC2DC\uC57C\uAC00 \uC77C\uC2DC\uC801\uC73C\uB85C \uCC28\uB2E8\uB429\uB2C8\uB2E4."
+  showStacksByDefault: 0
+  showDurationByDefault: 1

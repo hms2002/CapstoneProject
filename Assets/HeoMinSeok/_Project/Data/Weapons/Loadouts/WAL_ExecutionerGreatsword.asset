@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d2ef5a0c7f643c99f14f4afb9bd2461, type: 3}
+  m_Name: WAL_ExecutionerGreatsword
+  m_EditorClassIdentifier: 
+  selectionStrategy: {fileID: 11400000, guid: f4daaa683fe9429f985e6d6d1ce5bd8d, type: 2}
+  baseAttack: {fileID: 11400000, guid: 1f472dc67709f4248953a0bf39255567, type: 2}
+  executionReadyAttack: {fileID: 11400000, guid: 2f6f0f705ecd4d50a7168ae9daec96c5, type: 2}
+  executionFinish: {fileID: 11400000, guid: 1d8dbb39a40a4134a7b4c0c7c2848434, type: 2}
+  executionFallback: {fileID: 11400000, guid: 10a5df694e00479dad7c2501847215d6, type: 2}
+  skill2DefaultAbility: {fileID: 0}

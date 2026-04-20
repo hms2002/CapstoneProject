@@ -19,6 +19,10 @@ public sealed class GlobalUIRoot : MonoBehaviour
     [SerializeField] private Canvas damagePopupCanvas;
     [SerializeField] private Canvas bossHudCanvas;
 
+    [Header("Status UI")]
+    [SerializeField] private StatusHudPresenter statusHudPresenterPrefab;
+    [SerializeField] private StatusHudTooltipView statusTooltipPrefab;
+
     private readonly Dictionary<GlobalCanvasLayer, Canvas> canvases = new();
 
     private void Awake()
@@ -74,6 +78,26 @@ public sealed class GlobalUIRoot : MonoBehaviour
     public static Canvas GetCanvas(GlobalCanvasLayer layer)
     {
         return TryResolveInstance(out var root) ? root.GetCanvasInternal(layer) : null;
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 상태 HUD 표시용 presenter 프리팹 참조를 UI composition root에서 제공한다.
+    /// - 상태 HUD 초기화 계층이 Resources 경로 문자열 대신 명시적 UI 자산 참조를 사용하게 만든다.
+    /// </summary>
+    public static StatusHudPresenter GetStatusHudPresenterPrefab()
+    {
+        return TryResolveInstance(out var root) ? root.statusHudPresenterPrefab : null;
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 상태 HUD hover 상세 정보를 그릴 tooltip 프리팹 참조를 UI composition root에서 제공한다.
+    /// - 상태 툴팁이 HUD와 분리된 hover 계층 자산으로 관리되게 만든다.
+    /// </summary>
+    public static StatusHudTooltipView GetStatusTooltipPrefab()
+    {
+        return TryResolveInstance(out var root) ? root.statusTooltipPrefab : null;
     }
 
     private static bool TryResolveInstance(out GlobalUIRoot root)

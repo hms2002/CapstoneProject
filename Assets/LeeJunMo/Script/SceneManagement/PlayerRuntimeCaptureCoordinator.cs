@@ -173,9 +173,8 @@ public static class PlayerRuntimeCaptureCoordinator
             if (weapon == null)
                 continue;
 
-            AddAbilityId(result, weapon.attack);
-            AddAbilityId(result, weapon.skill1);
-            AddAbilityId(result, weapon.skill2);
+            foreach (var ability in weapon.EnumerateGrantedAbilities())
+                AddAbilityId(result, ability);
         }
 
         return result;

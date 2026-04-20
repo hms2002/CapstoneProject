@@ -34,6 +34,10 @@ public class RelicLogic_MoveSpeedStackOnCriticalHit_Managed : RelicLogic, IRelic
     [Tooltip("누적 가능한 최대 이동속도 증가량. 0.50 = +50%")]
     public float maxPercentBonus = 0.50f;
 
+    [Header("Status HUD")]
+    [Tooltip("이 유물 스택을 상태 HUD로 보여줄 때 사용할 표시 정의.")]
+    public StatusHudDefinition statusDefinition;
+
     public override void OnEquipped(RelicContext ctx)
     {
         RegisterProc(ctx);
@@ -134,7 +138,8 @@ public class RelicLogic_MoveSpeedStackOnCriticalHit_Managed : RelicLogic, IRelic
             healthAttribute,
             moveSpeedAttribute,
             Mathf.Max(0f, percentPerCritical),
-            Mathf.Max(0f, maxPercentBonus)));
+            Mathf.Max(0f, maxPercentBonus),
+            statusDefinition));
     }
 
     /// <summary>
@@ -153,8 +158,12 @@ public class RelicLogic_MoveSpeedStackOnCriticalHit_Managed : RelicLogic, IRelic
         private readonly AttributeDefinition _moveSpeedAttribute;
         private readonly float _percentPerCritical;
         private readonly float _maxPercentBonus;
+        private readonly StatusHudDefinition _statusDefinition;
         private readonly MoveSpeedStackRuntimeToken _buffSource;
         private readonly Action<string> _restoreHandler;
+        private readonly PlayerStatusRuntime _playerStatusRuntime;
+        private readonly string _ownerKey;
+        private StatusHandle _statusHandle;
 
         private int _stackCount;
         private float _currentBonus;
@@ -166,7 +175,8 @@ public class RelicLogic_MoveSpeedStackOnCriticalHit_Managed : RelicLogic, IRelic
             AttributeDefinition healthAttribute,
             AttributeDefinition moveSpeedAttribute,
             float percentPerCritical,
-            float maxPercentBonus)
+            float maxPercentBonus,
+            StatusHudDefinition statusDefinition)
         {
             _ctx = ctx;
             _hub = hub;
@@ -176,15 +186,21 @@ public class RelicLogic_MoveSpeedStackOnCriticalHit_Managed : RelicLogic, IRelic
             _moveSpeedAttribute = moveSpeedAttribute;
             _percentPerCritical = percentPerCritical;
             _maxPercentBonus = maxPercentBonus;
+            _statusDefinition = statusDefinition;
 
             _buffSource = ScriptableObject.CreateInstance<MoveSpeedStackRuntimeToken>();
             _buffSource.hideFlags = HideFlags.HideAndDontSave;
 
             _restoreHandler = ApplyRestoredStateJson;
+            _playerStatusRuntime = ctx.owner != null ? PlayerStatusRuntime.GetOrAdd(ctx.owner) : null;
+            string relicId = ctx.relicDef != null ? ctx.relicDef.relicId : "relic";
+            int tokenId = Token != null ? Token.GetInstanceID() : 0;
+            _ownerKey = $"relic.move_speed_stack_on_critical_hit.{relicId}.{tokenId}";
 
             _ctx.attributeSet.OnAttributeChanged += OnAttributeChanged;
             _hub?.Bind(Token, _restoreHandler);
             PublishState();
+            PublishStatusHud();
         }
 
         public void Handle(GameplayTag tag, AbilityEventData data)
@@ -200,8 +216,14 @@ public class RelicLogic_MoveSpeedStackOnCriticalHit_Managed : RelicLogic, IRelic
             AddCriticalStack();
         }
 
+        public void Tick(float deltaTime)
+        {
+        }
+
         public void Dispose()
         {
+            ReleaseStatusHud();
+
             if (_ctx.attributeSet != null)
                 _ctx.attributeSet.OnAttributeChanged -= OnAttributeChanged;
 
@@ -235,6 +257,7 @@ public class RelicLogic_MoveSpeedStackOnCriticalHit_Managed : RelicLogic, IRelic
             _currentBonus = nextBonus;
             ApplyCurrentModifier();
             PublishState();
+            PublishStatusHud();
         }
 
         private void ResetStacks()
@@ -246,6 +269,7 @@ public class RelicLogic_MoveSpeedStackOnCriticalHit_Managed : RelicLogic, IRelic
             _currentBonus = 0f;
             RemoveCurrentModifier();
             PublishState();
+            PublishStatusHud();
         }
 
         private void ApplyRestoredStateJson(string json)
@@ -261,6 +285,7 @@ public class RelicLogic_MoveSpeedStackOnCriticalHit_Managed : RelicLogic, IRelic
             _currentBonus = Mathf.Min(_maxPercentBonus, _stackCount * _percentPerCritical);
             ApplyCurrentModifier();
             PublishState();
+            PublishStatusHud();
         }
 
         private void ApplyCurrentModifier()
@@ -304,6 +329,45 @@ public class RelicLogic_MoveSpeedStackOnCriticalHit_Managed : RelicLogic, IRelic
             };
 
             _hub.SetJson(Token, JsonUtility.ToJson(payload));
+        }
+
+        private void PublishStatusHud()
+        {
+            if (_statusDefinition == null || _playerStatusRuntime == null)
+                return;
+
+            if (_stackCount <= 0)
+            {
+                ReleaseStatusHud();
+                return;
+            }
+
+            StatusApplyRequest request = new(
+                _statusDefinition,
+                _ownerKey,
+                stackCount: _stackCount,
+                remainingTime: 0f,
+                maxTime: 0f,
+                isVisible: true,
+                showStacksOverride: true,
+                showDurationOverride: false);
+
+            if (_statusHandle.IsValid)
+            {
+                _playerStatusRuntime.UpdateStatus(_statusHandle, request);
+                return;
+            }
+
+            _statusHandle = _playerStatusRuntime.Apply(request);
+        }
+
+        private void ReleaseStatusHud()
+        {
+            if (!_statusHandle.IsValid)
+                return;
+
+            _statusHandle.Release();
+            _statusHandle = default;
         }
     }
 

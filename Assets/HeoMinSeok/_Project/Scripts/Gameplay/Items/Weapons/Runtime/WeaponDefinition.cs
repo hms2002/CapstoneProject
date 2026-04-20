@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 public enum WeaponAbilitySlot { Attack, Skill1, Skill2 }
 
-[CreateAssetMenu(fileName = "WD_NewWeapon", menuName = "Game/Weapon Definition")]
+[CreateAssetMenu(fileName = "WD_Weapon", menuName = "Game/Weapon Definition")]
 public class WeaponDefinition : ScriptableObject, IInventoryItemDefinition
 {
     /// <summary>
@@ -59,6 +59,29 @@ public class WeaponDefinition : ScriptableObject, IInventoryItemDefinition
     public AbilityDefinition attack;
     public AbilityDefinition skill1;
     public AbilityDefinition skill2;
+
+    [Header("Optional Ability Loadout")]
+    public WeaponAbilityLoadout abilityLoadout;
+
+    /// <summary>
+    /// 책임 :
+    /// - 무기가 공식적으로 grant 받아야 하는 AbilityDefinition 집합을 반환한다.
+    /// - 새 loadout 구조가 있으면 loadout의 후보 집합을 우선 사용하고, 없으면 기존 attack/skill1/skill2 구조로 fallback 한다.
+    /// </summary>
+    public IEnumerable<AbilityDefinition> EnumerateGrantedAbilities()
+    {
+        if (abilityLoadout != null)
+        {
+            foreach (AbilityDefinition ability in abilityLoadout.EnumerateGrantedAbilities())
+                yield return ability;
+
+            yield break;
+        }
+
+        if (attack != null) yield return attack;
+        if (skill1 != null) yield return skill1;
+        if (skill2 != null) yield return skill2;
+    }
 
     public AbilityDefinition GetAbility(WeaponAbilitySlot slot) => slot switch
     {

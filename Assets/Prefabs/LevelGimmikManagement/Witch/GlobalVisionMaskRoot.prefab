@@ -10,6 +10,8 @@ GameObject:
   m_Component:
   - component: {fileID: 3240306113368821918}
   - component: {fileID: 4103823357851846825}
+  - component: {fileID: 8706275501419315156}
+  - component: {fileID: 6992375173791257638}
   m_Layer: 0
   m_Name: GlobalVisionMaskRoot
   m_TagString: Untagged
@@ -52,6 +54,39 @@ MonoBehaviour:
   playerVisionMaskOffset: {x: 0, y: 0.5, z: 0}
   defaultOverlayAlpha: 0.78431374
   fogOverlayAlpha: 1
+  enterFogFadeDuration: 0.3
+  exitFogFadeDuration: 0.2
+  useUnscaledOverlayFadeTime: 1
+  fogOverlaySortingOrderBoost: 1
+--- !u!114 &8706275501419315156
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4868167822977025523}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 52570a4e5b5942d59b4c108bf5dd0b90, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RestrictedVisionVisualController
+  logStatusUiFlow: 1
+  visionMaskController: {fileID: 4103823357851846825}
+--- !u!114 &6992375173791257638
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4868167822977025523}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d8bc8d492b5aa84fa8a54276b58dca8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SceneRestrictedVisionController
+  restrictedVisionDefinition: {fileID: 11400000, guid: ee7005012672461fa93d7839b0e8eb8d, type: 2}
+  logFlow: 1
+  visionMaskController: {fileID: 4103823357851846825}
 --- !u!1 &5393127281608536469
 GameObject:
   m_ObjectHideFlags: 0
@@ -129,9 +164,9 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: -1960815025
+  m_SortingLayerID: -1417877795
   m_SortingLayer: 5
-  m_SortingOrder: 0
+  m_SortingOrder: -10
   m_MaskInteraction: 2
   m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
   m_Color: {r: 0, g: 0, b: 0, a: 0.78431374}

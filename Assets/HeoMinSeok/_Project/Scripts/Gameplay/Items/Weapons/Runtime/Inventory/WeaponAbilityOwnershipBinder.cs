@@ -20,18 +20,16 @@ public sealed class WeaponAbilityOwnershipBinder
     {
         if (weapon == null) return;
 
-        GiveRef(weapon.attack);
-        GiveRef(weapon.skill1);
-        GiveRef(weapon.skill2);
+        foreach (AbilityDefinition ability in weapon.EnumerateGrantedAbilities())
+            GiveRef(ability);
     }
 
     public void OnWeaponRemoved(WeaponDefinition weapon)
     {
         if (weapon == null) return;
 
-        TakeRef(weapon.attack);
-        TakeRef(weapon.skill1);
-        TakeRef(weapon.skill2);
+        foreach (AbilityDefinition ability in weapon.EnumerateGrantedAbilities())
+            TakeRef(ability);
     }
 
     /// <summary>
@@ -50,9 +48,8 @@ public sealed class WeaponAbilityOwnershipBinder
         {
             if (weapon == null) continue;
 
-            AddRefAndEnsureGranted(weapon.attack);
-            AddRefAndEnsureGranted(weapon.skill1);
-            AddRefAndEnsureGranted(weapon.skill2);
+            foreach (AbilityDefinition ability in weapon.EnumerateGrantedAbilities())
+                AddRefAndEnsureGranted(ability);
         }
     }
 
