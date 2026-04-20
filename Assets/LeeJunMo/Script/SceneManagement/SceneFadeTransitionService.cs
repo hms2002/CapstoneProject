@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 [DisallowMultipleComponent]
 public sealed class SceneFadeTransitionService : MonoBehaviour
@@ -32,6 +33,7 @@ public sealed class SceneFadeTransitionService : MonoBehaviour
     private bool isTransitionActive;
     private float savedTimeScale = 1f;
     private bool isInitialized;
+    private bool ownsRuntimeOverlay;
     private readonly Dictionary<int, Object> externalPlayerUnlockBlockers = new();
 
     public bool IsTransitionActive => isTransitionActive;
@@ -51,17 +53,30 @@ public sealed class SceneFadeTransitionService : MonoBehaviour
         externalPlayerUnlockBlockers.Remove(ownerId);
     }
 
-    public static SceneFadeTransitionService EnsureInstance()
+    public static SceneFadeTransitionService EnsureInstance(bool allowRuntimeFallback = false)
     {
         if (Instance != null)
+        {
+            Instance.EnsureOverlaySetup(allowRuntimeFallback);
             return Instance;
+        }
 
         SceneFadeTransitionService existing = FindFirstObjectByType<SceneFadeTransitionService>();
         if (existing != null)
         {
             Instance = existing;
+            existing.EnsureOverlaySetup(allowRuntimeFallback);
             existing.Initialize();
             return existing;
+        }
+
+        if (allowRuntimeFallback)
+        {
+            GameObject host = new GameObject(nameof(SceneFadeTransitionService));
+            SceneFadeTransitionService created = host.AddComponent<SceneFadeTransitionService>();
+            created.CreateRuntimeOverlayIfNeeded();
+            created.Initialize();
+            return created;
         }
 
         return null;
@@ -71,8 +86,19 @@ public sealed class SceneFadeTransitionService : MonoBehaviour
     {
         if (Instance != null && Instance != this)
         {
-            Destroy(gameObject);
-            return;
+            ResolveOverlayReferences();
+            if (ShouldReplaceExistingInstance(Instance))
+            {
+                SceneFadeTransitionService previousInstance = Instance;
+                Instance = this;
+                previousInstance.transitionRoutine = null;
+                Destroy(previousInstance.gameObject);
+            }
+            else
+            {
+                Destroy(gameObject);
+                return;
+            }
         }
 
         Instance = this;
@@ -127,10 +153,14 @@ public sealed class SceneFadeTransitionService : MonoBehaviour
 
     private void Initialize()
     {
+        EnsureOverlaySetup(allowRuntimeFallback: false);
+
         if (isInitialized)
         {
             ResolveOverlayReferences();
             ConfigureOverlayVisuals();
+            if (!isTransitionActive)
+                ApplyOverlayVisualState(alpha: 0f, active: !deactivateOverlayWhenIdle);
             return;
         }
 
@@ -141,11 +171,23 @@ public sealed class SceneFadeTransitionService : MonoBehaviour
         isInitialized = true;
     }
 
+    private void EnsureOverlaySetup(bool allowRuntimeFallback)
+    {
+        ResolveOverlayReferences();
+        if (!allowRuntimeFallback || HasValidOverlaySetup())
+            return;
+
+        CreateRuntimeOverlayIfNeeded();
+        ResolveOverlayReferences();
+        ConfigureOverlayVisuals();
+    }
+
     private IEnumerator CoLoadSceneWithFade(string targetSceneName)
     {
         isTransitionActive = true;
 
         PrepareTransitionUi();
+        LoadingOverlayController.EnsureInstance();
         LockCurrentPlayer();
         savedTimeScale = Time.timeScale;
         Time.timeScale = 0f;
@@ -258,13 +300,16 @@ public sealed class SceneFadeTransitionService : MonoBehaviour
         while (true)
         {
             LoadingOverlayController overlay = LoadingOverlayController.Instance;
-            if (overlay == null || !overlay.IsActiveLoadingPresentation)
+            if (overlay != null && overlay.IsActiveLoadingPresentation)
+            {
+                yield return null;
                 yield break;
+            }
 
             if (timeoutSeconds > 0f && elapsed >= timeoutSeconds)
             {
                 Debug.LogWarning(
-                    "[SceneFadeTransitionService] Timed out waiting for corridor loading overlay to finish. Revealing scene anyway.",
+                    "[SceneFadeTransitionService] Timed out waiting for corridor loading overlay to appear. Revealing scene anyway.",
                     this);
                 yield break;
             }
@@ -385,6 +430,86 @@ public sealed class SceneFadeTransitionService : MonoBehaviour
             else if (overlayImage != null)
                 overlayRoot = overlayImage.gameObject;
         }
+    }
+
+    private void CreateRuntimeOverlayIfNeeded()
+    {
+        if (HasValidOverlaySetup())
+            return;
+
+        var canvasObject = new GameObject(
+            "RuntimeFadeCanvas",
+            typeof(RectTransform),
+            typeof(Canvas),
+            typeof(CanvasScaler),
+            typeof(GraphicRaycaster));
+
+        canvasObject.transform.SetParent(transform, false);
+
+        Canvas canvas = canvasObject.GetComponent<Canvas>();
+        canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+        canvas.sortingOrder = short.MaxValue;
+        canvas.pixelPerfect = false;
+
+        CanvasScaler scaler = canvasObject.GetComponent<CanvasScaler>();
+        scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+        scaler.referenceResolution = new Vector2(1920f, 1080f);
+        scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
+        scaler.matchWidthOrHeight = 0.5f;
+
+        var overlayObject = new GameObject(
+            "Overlay",
+            typeof(RectTransform),
+            typeof(CanvasGroup),
+            typeof(Image));
+
+        overlayObject.transform.SetParent(canvasObject.transform, false);
+
+        RectTransform overlayRect = overlayObject.GetComponent<RectTransform>();
+        overlayRect.anchorMin = Vector2.zero;
+        overlayRect.anchorMax = Vector2.one;
+        overlayRect.offsetMin = Vector2.zero;
+        overlayRect.offsetMax = Vector2.zero;
+
+        overlayRoot = overlayObject;
+        overlayCanvasGroup = overlayObject.GetComponent<CanvasGroup>();
+        overlayImage = overlayObject.GetComponent<Image>();
+        overlayImage.raycastTarget = true;
+        overlayImage.color = fadeColor;
+        overlayCanvasGroup.alpha = 0f;
+        overlayCanvasGroup.blocksRaycasts = true;
+        overlayCanvasGroup.interactable = false;
+        ownsRuntimeOverlay = true;
+
+        EnsureRuntimeEventSystemExists();
+    }
+
+    private bool ShouldReplaceExistingInstance(SceneFadeTransitionService existingInstance)
+    {
+        if (existingInstance == null || existingInstance == this)
+            return false;
+
+        if (!existingInstance.ownsRuntimeOverlay)
+            return false;
+
+        bool currentHasSerializedOverlay = HasValidOverlaySetup() && !ownsRuntimeOverlay;
+        return currentHasSerializedOverlay;
+    }
+
+    private void EnsureRuntimeEventSystemExists()
+    {
+        EventSystem existing = FindFirstObjectByType<EventSystem>(FindObjectsInactive.Include);
+        if (existing != null)
+            return;
+
+        GameObject eventSystemObject = new GameObject("EventSystem");
+        eventSystemObject.AddComponent<EventSystem>();
+#if ENABLE_INPUT_SYSTEM
+        eventSystemObject.AddComponent<UnityEngine.InputSystem.UI.InputSystemUIInputModule>();
+#else
+        eventSystemObject.AddComponent<StandaloneInputModule>();
+#endif
+        DontDestroyOnLoad(eventSystemObject);
     }
 
     private void ConfigureOverlayVisuals()

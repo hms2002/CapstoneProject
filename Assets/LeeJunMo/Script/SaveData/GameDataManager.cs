@@ -7,6 +7,7 @@ public class GameDataManager : MonoBehaviour
     private static bool s_isQuitting;
 
     public GameData Data { get; private set; }
+    public int ActiveSlotIndex { get; private set; }
 
     private GameDataRepository repository;
 
@@ -31,7 +32,7 @@ public class GameDataManager : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(gameObject);
 
-        repository = new GameDataRepository();
+        repository = new GameDataRepository(ActiveSlotIndex);
         LoadData();
     }
 
@@ -43,9 +44,32 @@ public class GameDataManager : MonoBehaviour
 
     public void LoadData()
     {
-        repository ??= new GameDataRepository();
+        LoadData(ActiveSlotIndex);
+    }
+
+    public void LoadData(int slotIndex)
+    {
+        ActiveSlotIndex = Mathf.Max(0, slotIndex);
+        repository = new GameDataRepository(ActiveSlotIndex);
         Data = repository.LoadOrCreate();
-        Debug.Log("[GameDataManager] Game data loaded.");
+        Debug.Log($"[GameDataManager] Game data loaded for slot {ActiveSlotIndex + 1}.");
+    }
+
+    public bool LoadSlot(int slotIndex)
+    {
+        int normalizedSlotIndex = Mathf.Max(0, slotIndex);
+        LoadData(normalizedSlotIndex);
+        return true;
+    }
+
+    public void ResetLoadedSlotIfActive(int slotIndex)
+    {
+        int normalizedSlotIndex = Mathf.Max(0, slotIndex);
+        if (normalizedSlotIndex != ActiveSlotIndex)
+            return;
+
+        repository = new GameDataRepository(ActiveSlotIndex);
+        Data = new GameData();
     }
 
     public GameData EnsureData()
@@ -69,7 +93,13 @@ public class GameDataManager : MonoBehaviour
             Data.itemData.unlockedRelicIDs = ItemManager.Instance.GetUnlockedRelicIDs();
         }
 
-        repository ??= new GameDataRepository();
+        if (UpgradeManager.Instance != null)
+        {
+            var allUpgrades = UpgradeManager.Instance.GetAllUpgrades();
+            Data.knownTotalUpgradeCount = allUpgrades != null ? Mathf.Max(0, allUpgrades.Count) : 0;
+        }
+
+        repository ??= new GameDataRepository(ActiveSlotIndex);
         repository.Save(Data);
         Debug.Log(
             $"[GameDataManager] Save complete. Persistent: {repository.SavePath}, Inspectable: {repository.InspectableSavePath}");

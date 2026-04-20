@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public enum SettingsPanelChainBottomEndpointMode
@@ -56,6 +57,8 @@ public sealed class SettingsPanelFakeChainPresentation : MonoBehaviour
 
     [Header("Visual Overrides")]
     [SerializeField] private Vector2 lastLinkLocalOffset;
+    [SerializeField, HideInInspector] private float[] authoredSegmentLengths;
+    [SerializeField, HideInInspector] private float authoredEndpointDistance;
 
     private Vector2[] jointPositions;
     private Vector2[] previousJointPositions;
@@ -67,6 +70,11 @@ public sealed class SettingsPanelFakeChainPresentation : MonoBehaviour
     private bool hasPreviousSupportMotionSourcePosition;
     private Vector2 previousSupportMotionSourcePosition;
     private Vector2 smoothedSupportMotionLocalDelta;
+    private bool hasLayoutSignature;
+    private Vector2 lastContainerRectSize;
+    private float lastCanvasScaleFactor;
+    private Vector2Int lastScreenSize;
+    private bool layoutRefreshPending;
 
     public float TotalChainLength
     {
@@ -77,9 +85,67 @@ public sealed class SettingsPanelFakeChainPresentation : MonoBehaviour
         }
     }
 
+    public void CaptureAuthoredSegmentLengths()
+    {
+        ResolveReferences();
+        if (chainLinks == null || chainLinks.Length == 0)
+        {
+            authoredSegmentLengths = null;
+            authoredEndpointDistance = 0f;
+            return;
+        }
+
+        if (authoredSegmentLengths == null || authoredSegmentLengths.Length != chainLinks.Length)
+            authoredSegmentLengths = new float[chainLinks.Length];
+
+        if (TryGetEndpointLocalPositions(out Vector2 topLocal, out Vector2 bottomLocal))
+        {
+            float authoredReach = Vector2.Distance(topLocal, bottomLocal);
+            if (authoredReach > 0.001f)
+            {
+                authoredEndpointDistance = authoredReach;
+                float uniformSegmentLength = Mathf.Max(1f, authoredReach / chainLinks.Length);
+                for (int i = 0; i < authoredSegmentLengths.Length; i++)
+                    authoredSegmentLengths[i] = uniformSegmentLength;
+
+                return;
+            }
+        }
+
+        authoredEndpointDistance = 0f;
+
+        float fallbackLength = 32f;
+        for (int i = 0; i < chainLinks.Length; i++)
+        {
+            RectTransform link = chainLinks[i];
+            float length = link != null ? MeasureLinkLength(link) : fallbackLength;
+            length = Mathf.Max(1f, length);
+            authoredSegmentLengths[i] = length;
+            fallbackLength = length;
+        }
+    }
+
     private void Reset()
     {
         chainContainer = transform as RectTransform;
+        CaptureAuthoredSegmentLengths();
+    }
+
+    private void OnValidate()
+    {
+        if (Application.isPlaying)
+            return;
+
+        ResolveReferences();
+        if (chainLinks == null || chainLinks.Length == 0)
+        {
+            authoredSegmentLengths = null;
+            authoredEndpointDistance = 0f;
+            return;
+        }
+
+        if (!HasValidAuthoredSegmentLengths() || authoredEndpointDistance <= 0f)
+            CaptureAuthoredSegmentLengths();
     }
 
     private void OnEnable()
@@ -108,6 +174,8 @@ public sealed class SettingsPanelFakeChainPresentation : MonoBehaviour
 
     private void LateUpdate()
     {
+        RefreshLayoutIfNeeded();
+
         if (!TryGetEndpointLocalPositions(out Vector2 topLocal, out Vector2 bottomLocal))
             return;
 
@@ -155,6 +223,11 @@ public sealed class SettingsPanelFakeChainPresentation : MonoBehaviour
         }
 
         ApplyLinkTransforms();
+    }
+
+    private void OnRectTransformDimensionsChange()
+    {
+        RefreshLayoutIfNeeded();
     }
 
     public void SnapToCurrentPose()
@@ -207,7 +280,7 @@ public sealed class SettingsPanelFakeChainPresentation : MonoBehaviour
         if (!TryGetTopAnchorWorldPosition(out Vector2 topWorldPosition))
             return targetWorldPosition;
 
-        float maxReach = TotalChainLength;
+        float maxReach = GetWorldReachLength();
         if (maxReach <= 0f)
             return targetWorldPosition;
 
@@ -217,6 +290,21 @@ public sealed class SettingsPanelFakeChainPresentation : MonoBehaviour
             return targetWorldPosition;
 
         return topWorldPosition + toTarget / distance * maxReach;
+    }
+
+    private float GetWorldReachLength()
+    {
+        float localReach = TotalChainLength;
+        if (localReach <= 0f)
+            return 0f;
+
+        if (chainContainer == null)
+            return localReach;
+
+        float xScale = chainContainer.TransformVector(Vector3.right).magnitude;
+        float yScale = chainContainer.TransformVector(Vector3.up).magnitude;
+        float worldUnitsPerLocalUnit = Mathf.Max(xScale, yScale, 0.0001f);
+        return localReach * worldUnitsPerLocalUnit;
     }
 
     public bool TryGetLastLinkHandleWorldPosition(out Vector2 worldPosition)
@@ -252,6 +340,204 @@ public sealed class SettingsPanelFakeChainPresentation : MonoBehaviour
     {
         if (chainContainer == null)
             chainContainer = transform as RectTransform;
+
+        RectTransform resolvedTopAnchor = ResolveTopAnchorReference();
+        if (resolvedTopAnchor != null)
+            topAnchor = resolvedTopAnchor;
+    }
+
+    private RectTransform ResolveTopAnchorReference()
+    {
+        if (chainContainer == null)
+            return topAnchor;
+
+        if (topAnchor != null && !IsDescendantOf(topAnchor, chainContainer))
+            return topAnchor;
+
+        Vector3 referenceWorldPosition = bottomAnchor != null ? bottomAnchor.position : chainContainer.position;
+        string preferredRootName = BuildPreferredTopAnchorRootName(chainContainer.name);
+
+        RectTransform resolvedTopAnchor = FindBestTopAnchorInScope(
+            chainContainer.parent as RectTransform,
+            preferredRootName,
+            referenceWorldPosition);
+        if (resolvedTopAnchor != null)
+            return resolvedTopAnchor;
+
+        Transform parent = chainContainer.parent;
+        if (parent != null)
+        {
+            resolvedTopAnchor = FindBestTopAnchorInScope(
+                parent.parent as RectTransform,
+                "TopAnchorRoot",
+                referenceWorldPosition);
+            if (resolvedTopAnchor != null)
+                return resolvedTopAnchor;
+        }
+
+        return topAnchor;
+    }
+
+    private RectTransform FindBestTopAnchorInScope(
+        RectTransform scope,
+        string preferredRootName,
+        Vector3 referenceWorldPosition)
+    {
+        if (scope == null)
+            return null;
+
+        RectTransform preferredRoot = null;
+        List<RectTransform> fallbackRoots = null;
+        int childCount = scope.childCount;
+        for (int i = 0; i < childCount; i++)
+        {
+            RectTransform child = scope.GetChild(i) as RectTransform;
+            if (child == null || child == chainContainer)
+                continue;
+
+            if (!string.IsNullOrEmpty(preferredRootName) && child.name == preferredRootName)
+                preferredRoot = child;
+
+            if (child.name == "TopAnchorRoot" || child.name.EndsWith("TopAnchorRoot"))
+            {
+                fallbackRoots ??= new List<RectTransform>();
+                fallbackRoots.Add(child);
+            }
+        }
+
+        RectTransform resolvedTopAnchor = FindBestTopAnchorChild(preferredRoot, referenceWorldPosition);
+        if (resolvedTopAnchor != null)
+            return resolvedTopAnchor;
+
+        if (fallbackRoots == null)
+            return null;
+
+        for (int i = 0; i < fallbackRoots.Count; i++)
+        {
+            RectTransform candidateRoot = fallbackRoots[i];
+            if (candidateRoot == preferredRoot)
+                continue;
+
+            resolvedTopAnchor = FindBestTopAnchorChild(candidateRoot, referenceWorldPosition);
+            if (resolvedTopAnchor != null)
+                return resolvedTopAnchor;
+        }
+
+        return null;
+    }
+
+    private static RectTransform FindBestTopAnchorChild(RectTransform root, Vector3 referenceWorldPosition)
+    {
+        if (root == null)
+            return null;
+
+        RectTransform[] rects = root.GetComponentsInChildren<RectTransform>(true);
+        RectTransform best = null;
+        float bestDistanceSquared = float.MaxValue;
+        for (int i = 0; i < rects.Length; i++)
+        {
+            RectTransform rect = rects[i];
+            if (rect == null || rect == root || !rect.name.StartsWith("TopAnchor"))
+                continue;
+
+            float distanceSquared = ((Vector2)rect.position - (Vector2)referenceWorldPosition).sqrMagnitude;
+            if (distanceSquared >= bestDistanceSquared)
+                continue;
+
+            best = rect;
+            bestDistanceSquared = distanceSquared;
+        }
+
+        return best;
+    }
+
+    private static string BuildPreferredTopAnchorRootName(string chainContainerName)
+    {
+        if (string.IsNullOrEmpty(chainContainerName))
+            return "TopAnchorRoot";
+
+        const string chainRootSuffix = "ChainRoot";
+        if (chainContainerName.EndsWith(chainRootSuffix))
+            return chainContainerName.Substring(0, chainContainerName.Length - chainRootSuffix.Length) + "TopAnchorRoot";
+
+        return "TopAnchorRoot";
+    }
+
+    private static bool IsDescendantOf(Transform candidate, Transform potentialAncestor)
+    {
+        if (candidate == null || potentialAncestor == null)
+            return false;
+
+        Transform current = candidate;
+        while (current != null)
+        {
+            if (current == potentialAncestor)
+                return true;
+
+            current = current.parent;
+        }
+
+        return false;
+    }
+
+    private void RefreshLayoutIfNeeded(bool force = false)
+    {
+        ResolveReferences();
+        if (chainContainer == null)
+            return;
+
+        if (!hasLayoutSignature)
+        {
+            UpdateLayoutSignature();
+            return;
+        }
+
+        if (layoutRefreshPending)
+        {
+            ApplyLayoutRefresh();
+            return;
+        }
+
+        if (!force && !HasLayoutSignatureChanged())
+            return;
+
+        UpdateLayoutSignature();
+        ApplyLayoutRefresh();
+    }
+
+    private bool HasLayoutSignatureChanged()
+    {
+        Vector2 containerRectSize = chainContainer != null ? chainContainer.rect.size : Vector2.zero;
+        float canvasScaleFactor = GetCanvasScaleFactor();
+        Vector2Int screenSize = new Vector2Int(Screen.width, Screen.height);
+
+        return lastContainerRectSize != containerRectSize
+            || !Mathf.Approximately(lastCanvasScaleFactor, canvasScaleFactor)
+            || lastScreenSize != screenSize;
+    }
+
+    private void UpdateLayoutSignature()
+    {
+        lastContainerRectSize = chainContainer != null ? chainContainer.rect.size : Vector2.zero;
+        lastCanvasScaleFactor = GetCanvasScaleFactor();
+        lastScreenSize = new Vector2Int(Screen.width, Screen.height);
+        hasLayoutSignature = true;
+    }
+
+    private void ApplyLayoutRefresh()
+    {
+        layoutRefreshPending = false;
+        initialized = false;
+        SyncCachedInputState();
+
+        if (isActiveAndEnabled)
+            SnapToCurrentPose();
+    }
+
+    private float GetCanvasScaleFactor()
+    {
+        Canvas canvas = chainContainer != null ? chainContainer.GetComponentInParent<Canvas>() : null;
+        return canvas != null ? canvas.scaleFactor : 1f;
     }
 
     private bool TryGetEndpointLocalPositions(out Vector2 topLocal, out Vector2 bottomLocal)
@@ -506,20 +792,95 @@ public sealed class SettingsPanelFakeChainPresentation : MonoBehaviour
             return;
         }
 
+        if (!HasValidAuthoredSegmentLengths() || authoredEndpointDistance <= 0f)
+            CaptureAuthoredSegmentLengths();
+
         if (segmentLengths == null || segmentLengths.Length != chainLinks.Length)
             segmentLengths = new float[chainLinks.Length];
+
+        bool useAuthoredLengths = HasValidAuthoredSegmentLengths();
+        if (UsesAnchoredBottomEndpoint()
+            && TryGetEndpointLocalPositions(out Vector2 anchoredTopLocal, out Vector2 anchoredBottomLocal))
+        {
+            totalChainLength = 0f;
+            float currentEndpointDistance = Mathf.Max(1f, Vector2.Distance(anchoredTopLocal, anchoredBottomLocal));
+            float authoredTotalLength = GetAuthoredTotalLength();
+            float anchoredFallbackLength = Mathf.Max(1f, currentEndpointDistance / Mathf.Max(1, chainLinks.Length));
+
+            for (int i = 0; i < chainLinks.Length; i++)
+            {
+                float authoredLength = GetAuthoredSegmentLength(i, anchoredFallbackLength);
+                float length = useAuthoredLengths && authoredTotalLength > 0.001f
+                    ? Mathf.Max(1f, authoredLength)
+                    : anchoredFallbackLength;
+                segmentLengths[i] = length;
+                totalChainLength += length;
+                anchoredFallbackLength = authoredLength;
+            }
+
+            return;
+        }
 
         totalChainLength = 0f;
         float fallbackLength = 32f;
         for (int i = 0; i < chainLinks.Length; i++)
         {
-            RectTransform link = chainLinks[i];
-            float length = link != null ? MeasureLinkLength(link) : fallbackLength;
-            length = Mathf.Max(1f, length * segmentLengthMultiplier + segmentLengthPadding);
+            float authoredLength = GetAuthoredSegmentLength(i, fallbackLength);
+            float length = useAuthoredLengths
+                ? Mathf.Max(1f, authoredLength)
+                : Mathf.Max(1f, authoredLength * segmentLengthMultiplier + segmentLengthPadding);
             segmentLengths[i] = length;
             totalChainLength += length;
-            fallbackLength = length;
+            fallbackLength = authoredLength;
         }
+    }
+
+    private float GetAuthoredTotalLength()
+    {
+        if (!HasValidAuthoredSegmentLengths())
+            return 0f;
+
+        float totalLength = 0f;
+        for (int i = 0; i < authoredSegmentLengths.Length; i++)
+            totalLength += authoredSegmentLengths[i];
+
+        return totalLength;
+    }
+
+    private bool HasValidAuthoredSegmentLengths()
+    {
+        if (authoredSegmentLengths == null || chainLinks == null)
+            return false;
+
+        if (authoredSegmentLengths.Length != chainLinks.Length)
+            return false;
+
+        for (int i = 0; i < authoredSegmentLengths.Length; i++)
+        {
+            if (authoredSegmentLengths[i] <= 0f)
+                return false;
+        }
+
+        return true;
+    }
+
+    private float GetAuthoredSegmentLength(int index, float fallbackLength)
+    {
+        if (authoredSegmentLengths != null
+            && index >= 0
+            && index < authoredSegmentLengths.Length
+            && authoredSegmentLengths[index] > 0f)
+        {
+            return authoredSegmentLengths[index];
+        }
+
+        RectTransform link = chainLinks != null && index >= 0 && index < chainLinks.Length
+            ? chainLinks[index]
+            : null;
+        if (link == null)
+            return fallbackLength;
+
+        return Mathf.Max(1f, MeasureLinkLength(link));
     }
 
     private float MeasureLinkLength(RectTransform link)
@@ -761,7 +1122,10 @@ public sealed class SettingsPanelFakeChainPresentation : MonoBehaviour
             if (i == chainLinks.Length - 1)
                 center += lastLinkLocalOffset;
 
-            link.localPosition = new Vector3(center.x, center.y, link.localPosition.z);
+            if (link.parent == chainContainer)
+                link.anchoredPosition = center;
+            else
+                link.localPosition = new Vector3(center.x, center.y, link.localPosition.z);
             link.localRotation = Quaternion.Euler(0f, 0f, angle);
         }
     }

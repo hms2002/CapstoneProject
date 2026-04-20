@@ -8,6 +8,8 @@ using UnityEngine.UI;
 public sealed class KeyBindingPanelUI : MonoBehaviour, IStackableUI, ICloseRequestHandler
 {
     private const int SystemCursorPriority = 300;
+    private const string DontDestroyOnLoadSceneName = "DontDestroyOnLoad";
+    private const string TitleSceneName = "TitleScene";
 
     public static KeyBindingPanelUI Instance { get; private set; }
 
@@ -47,6 +49,7 @@ public sealed class KeyBindingPanelUI : MonoBehaviour, IStackableUI, ICloseReque
     private bool resumeListeningOnConflictCancel;
     private Dictionary<InputActionId, InputBinding> pendingPreviewBindings;
     private bool isClosing;
+    private SettingsPanelUI ownerSettingsPanel;
 
     public bool IsActive => gameObject.activeSelf && !isClosing;
     public bool CanCloseOnEscape => listeningRow == null;
@@ -60,26 +63,51 @@ public sealed class KeyBindingPanelUI : MonoBehaviour, IStackableUI, ICloseReque
             return Instance;
 
         KeyBindingPanelUI[] existing = Resources.FindObjectsOfTypeAll<KeyBindingPanelUI>();
+        KeyBindingPanelUI titleSceneFallback = null;
         for (int i = 0; i < existing.Length; i++)
         {
             KeyBindingPanelUI candidate = existing[i];
             if (candidate == null || !candidate.gameObject.scene.IsValid())
                 continue;
 
+            if (candidate.IsTitleSceneLocalPanel)
+            {
+                titleSceneFallback ??= candidate;
+                continue;
+            }
+
             Instance = candidate;
             candidate.RefreshCanvasParent();
             return candidate;
         }
 
-        return null;
+        return titleSceneFallback;
     }
 
     private void Awake()
     {
+        if (IsTitleSceneLocalPanel)
+        {
+            ResolveReferences();
+            BindListeners();
+            RefreshCanvasParent();
+            HideGuide();
+            gameObject.SetActive(false);
+            return;
+        }
+
         if (Instance != null && Instance != this)
         {
-            Destroy(gameObject);
-            return;
+            if (ShouldReplaceExistingInstance(Instance))
+            {
+                Destroy(Instance.gameObject);
+                Instance = null;
+            }
+            else
+            {
+                Destroy(gameObject);
+                return;
+            }
         }
 
         Instance = this;
@@ -88,6 +116,22 @@ public sealed class KeyBindingPanelUI : MonoBehaviour, IStackableUI, ICloseReque
         RefreshCanvasParent();
         HideGuide();
         gameObject.SetActive(false);
+    }
+
+    private bool ShouldReplaceExistingInstance(KeyBindingPanelUI existingInstance)
+    {
+        if (existingInstance == null)
+            return true;
+
+        bool existingIsPersistent = IsPersistent(existingInstance.gameObject);
+        bool currentIsPersistent = IsPersistent(gameObject);
+        return existingIsPersistent && !currentIsPersistent;
+    }
+
+    private static bool IsPersistent(GameObject target)
+    {
+        return target != null &&
+               string.Equals(target.scene.name, DontDestroyOnLoadSceneName, StringComparison.Ordinal);
     }
 
     private void Update()
@@ -153,6 +197,9 @@ public sealed class KeyBindingPanelUI : MonoBehaviour, IStackableUI, ICloseReque
             Instance = null;
     }
 
+    private bool IsTitleSceneLocalPanel =>
+        string.Equals(gameObject.scene.name, TitleSceneName, StringComparison.Ordinal);
+
     private void OnEnable()
     {
         MouseCursorService.EnsureInstance().SetDomain(this, MouseCursorDomain.SystemUi, priority: SystemCursorPriority);
@@ -176,6 +223,13 @@ public sealed class KeyBindingPanelUI : MonoBehaviour, IStackableUI, ICloseReque
         HideGuide();
         gameObject.SetActive(true);
         dropPresentation?.PlayOpen();
+    }
+
+    public void OpenFromSettings(SettingsPanelUI ownerPanel)
+    {
+        ownerSettingsPanel = ownerPanel;
+        ownerSettingsPanel?.SetTemporarilyHidden(true);
+        OpenUI();
     }
 
     public void CloseUI()
@@ -206,6 +260,9 @@ public sealed class KeyBindingPanelUI : MonoBehaviour, IStackableUI, ICloseReque
 
     public void RefreshCanvasParent()
     {
+        if (IsTitleSceneLocalPanel)
+            return;
+
         GlobalUIRoot.AdoptToCanvas(GlobalCanvasLayer.Popup, transform, false);
     }
 
@@ -838,6 +895,8 @@ public sealed class KeyBindingPanelUI : MonoBehaviour, IStackableUI, ICloseReque
     private void FinalizeClose()
     {
         ClearWorkingState();
+        ownerSettingsPanel?.SetTemporarilyHidden(false);
+        ownerSettingsPanel = null;
         gameObject.SetActive(false);
         isClosing = false;
     }

@@ -96,6 +96,9 @@ public class UIManager : MonoBehaviour
         popupStack.PruneDeadEntries();
         RefreshDialogueDrivenGameplayLock();
 
+        if (IsInputBlockedByLoading())
+            return;
+
         if (Input.GetKeyDown(KeyCode.Escape))
             HandleEscapeInput();
     }
@@ -196,6 +199,9 @@ public class UIManager : MonoBehaviour
 
     private void HandleEscapeInput()
     {
+        if (IsInputBlockedByLoading())
+            return;
+
         if (popupStack.TryGetTop(out IStackableUI topUI))
         {
             if (topUI is ICloseRequestHandler closeHandler && closeHandler.TryHandleCloseRequest())
@@ -215,6 +221,9 @@ public class UIManager : MonoBehaviour
 
     private void TogglePauseMenu()
     {
+        if (IsInputBlockedByLoading())
+            return;
+
         PauseMenuUI panel = ResolvePauseMenu();
         if (panel == null)
             return;
@@ -232,6 +241,9 @@ public class UIManager : MonoBehaviour
 
     public bool OpenSettingsPanel()
     {
+        if (IsInputBlockedByLoading())
+            return false;
+
         SettingsPanelUI panel = ResolveSettingsPanel();
         if (panel == null || panel.IsActive)
             return false;
@@ -243,6 +255,9 @@ public class UIManager : MonoBehaviour
 
     public bool OpenKeyBindingPanel()
     {
+        if (IsInputBlockedByLoading())
+            return false;
+
         KeyBindingPanelUI panel = ResolveKeyBindingPanel();
         if (panel == null || panel.IsActive)
             return false;
@@ -279,6 +294,10 @@ public class UIManager : MonoBehaviour
 
         if (GamePlayDataManager.Instance != null)
             GamePlayDataManager.Instance.EndRun(RunEndReason.None);
+
+        SceneFadeTransitionService transitionService = SceneFadeTransitionService.EnsureInstance(allowRuntimeFallback: true);
+        if (transitionService != null && transitionService.TryLoadScene(sceneName))
+            return;
 
         SceneManager.LoadScene(sceneName);
     }
@@ -339,6 +358,18 @@ public class UIManager : MonoBehaviour
             return Path.GetFileNameWithoutExtension(firstBuildScenePath);
 
         return null;
+    }
+
+    private static bool IsInputBlockedByLoading()
+    {
+        if (SceneFadeTransitionService.Instance != null &&
+            SceneFadeTransitionService.Instance.IsTransitionActive)
+        {
+            return true;
+        }
+
+        return LoadingOverlayController.Instance != null &&
+               LoadingOverlayController.Instance.IsActiveLoadingPresentation;
     }
 
     public void CloseAllPopups(bool force = true)

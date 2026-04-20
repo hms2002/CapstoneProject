@@ -9,11 +9,11 @@ public static class ScenePortalTravelService
         if (portal == null)
             return false;
 
-        var transitionService = SceneFadeTransitionService.EnsureInstance();
+        var transitionService = SceneFadeTransitionService.EnsureInstance(allowRuntimeFallback: true);
         if (transitionService == null)
         {
             Debug.LogError(
-                "[ScenePortalTravelService] SceneFadeTransitionService is missing. Attach it manually under GlobalUIRoot/Services before using ScenePortal.",
+                "[ScenePortalTravelService] SceneFadeTransitionService could not be created for scene travel.",
                 portal);
             return false;
         }
@@ -28,7 +28,7 @@ public static class ScenePortalTravelService
             return false;
         }
 
-        var gameplay = GamePlayDataManager.Instance;
+        var gameplay = GamePlayDataManager.EnsureInstance();
         if (gameplay == null)
         {
             Debug.LogError($"[ScenePortalTravelService] GamePlayDataManager is null. portal={portal.name}", portal);
@@ -54,18 +54,20 @@ public static class ScenePortalTravelService
 
         gameplay.PrepareTransition(context);
 
-        if (PortalRouteManager.Instance != null)
-            PortalRouteManager.Instance.NotifyTransitionConsumed(route.TransitionType);
+        PortalRouteManager notifyRouteManager = PortalRouteManager.EnsureInstance();
+        if (notifyRouteManager != null)
+            notifyRouteManager.NotifyTransitionConsumed(route.TransitionType);
 
         return transitionService.TryLoadScene(route.TargetSceneName);
     }
 
     private static PortalRouteDecision ResolveRoute(ScenePortal portal)
     {
-        if (PortalRouteManager.Instance == null)
+        PortalRouteManager routeManager = PortalRouteManager.EnsureInstance();
+        if (routeManager == null)
             return default;
 
-        return PortalRouteManager.Instance.TryResolveRoute(portal, out var route)
+        return routeManager.TryResolveRoute(portal, out var route)
             ? route
             : default;
     }

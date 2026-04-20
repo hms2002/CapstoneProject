@@ -9,6 +9,8 @@ using UnityEngine.SceneManagement;
 [DisallowMultipleComponent]
 public sealed class CameraBootstrap : MonoBehaviour
 {
+    private const string TitleSceneName = "TitleScene";
+
     // 이 클래스의 책임:
     // 런타임 카메라 리그를 DDOL로 유지하고, 씬 전환 중에도 메인 카메라/플레이어 카메라/추적 바인딩을 일관되게 보장한다.
 
@@ -26,6 +28,9 @@ public sealed class CameraBootstrap : MonoBehaviour
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
     private static void BootstrapBeforeFirstSceneLoad()
     {
+        if (IsTitleScene(SceneManager.GetActiveScene()))
+            return;
+
         EnsureInstance();
     }
 
@@ -223,6 +228,12 @@ public sealed class CameraBootstrap : MonoBehaviour
     {
         Scene activeScene = SceneManager.GetActiveScene();
 
+        if (IsTitleScene(activeScene))
+        {
+            ReleaseRuntimeRigForTitleScene(activeScene);
+            return;
+        }
+
         runtimeMainCamera = ResolveOrCreateMainCamera(activeScene);
         runtimeBrain = runtimeMainCamera != null ? runtimeMainCamera.GetComponent<CinemachineBrain>() : null;
         runtimeLegacyFollow = runtimeMainCamera != null ? runtimeMainCamera.GetComponent<CameraFollow>() : null;
@@ -245,7 +256,12 @@ public sealed class CameraBootstrap : MonoBehaviour
     private Camera ResolveOrCreateMainCamera(Scene scene)
     {
         if (runtimeMainCamera != null)
+        {
+            if (!runtimeMainCamera.gameObject.activeSelf)
+                runtimeMainCamera.gameObject.SetActive(true);
+
             return runtimeMainCamera;
+        }
 
         Camera candidate = Camera.main;
         if (candidate == null || candidate.GetComponent<CinemachineBrain>() == null)
@@ -267,7 +283,12 @@ public sealed class CameraBootstrap : MonoBehaviour
     private CinemachineCamera ResolveOrCreatePlayerCamera(Scene scene)
     {
         if (runtimePlayerCam != null)
+        {
+            if (!runtimePlayerCam.gameObject.activeSelf)
+                runtimePlayerCam.gameObject.SetActive(true);
+
             return runtimePlayerCam;
+        }
 
         CinemachineCamera candidate = FindObjectsByType<CinemachineCamera>(FindObjectsInactive.Include, FindObjectsSortMode.None)
             .FirstOrDefault(camera =>
@@ -397,6 +418,31 @@ public sealed class CameraBootstrap : MonoBehaviour
 
             camera.gameObject.SetActive(false);
         }
+    }
+
+    private void ReleaseRuntimeRigForTitleScene(Scene scene)
+    {
+        if (runtimePlayerCam != null)
+            runtimePlayerCam.gameObject.SetActive(false);
+
+        if (runtimeMainCamera != null)
+            runtimeMainCamera.gameObject.SetActive(false);
+
+        Camera[] sceneCameras = FindSceneComponents<Camera>(scene, includeInactive: true);
+        for (int i = 0; i < sceneCameras.Length; i++)
+        {
+            Camera sceneCamera = sceneCameras[i];
+            if (sceneCamera == null)
+                continue;
+
+            sceneCamera.gameObject.SetActive(true);
+        }
+    }
+
+    private static bool IsTitleScene(Scene scene)
+    {
+        return scene.IsValid() &&
+               string.Equals(scene.name, TitleSceneName, StringComparison.OrdinalIgnoreCase);
     }
 
     private static T[] FindSceneComponents<T>(Scene scene, bool includeInactive) where T : Component

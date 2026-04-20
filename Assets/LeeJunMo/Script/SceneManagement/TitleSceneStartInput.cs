@@ -56,7 +56,7 @@ public sealed class TitleSceneStartInput : MonoBehaviour
 
         isLoading = true;
 
-        SceneFadeTransitionService transitionService = SceneFadeTransitionService.EnsureInstance();
+        SceneFadeTransitionService transitionService = SceneFadeTransitionService.EnsureInstance(allowRuntimeFallback: true);
         if (transitionService != null && transitionService.TryLoadScene(targetSceneName))
             return;
 

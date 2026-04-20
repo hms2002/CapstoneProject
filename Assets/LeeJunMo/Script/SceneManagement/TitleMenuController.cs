@@ -1,13 +1,18 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
+#if ENABLE_INPUT_SYSTEM
+using UnityEngine.InputSystem.UI;
+#endif
 
 [DisallowMultipleComponent]
 public sealed class TitleMenuController : MonoBehaviour
 {
+    private const string DontDestroyOnLoadSceneName = "DontDestroyOnLoad";
+
     [Header("Main Menu")]
     [SerializeField] private Button newGameButton;
-    [SerializeField] private Button continueButton;
     [SerializeField] private Button settingsButton;
     [SerializeField] private Button quitButton;
     [SerializeField] private CanvasGroup mainMenuCanvasGroup;
@@ -16,31 +21,47 @@ public sealed class TitleMenuController : MonoBehaviour
     [Header("Panels")]
     [SerializeField] private TitleProfileSlotPanelUI profileSlotPanel;
     [SerializeField] private SettingsPanelUI settingsPanel;
+    [SerializeField] private KeyBindingPanelUI keyBindingPanel;
 
     [Header("Flow")]
     [SerializeField] private bool openMainMenuOnStart = true;
     [SerializeField] private bool lockMainMenuWhileSlotPanelOpen = true;
+    [SerializeField, Min(0f)] private float mainMenuInputUnlockDelay = 0.18f;
 
     private bool listenersBound;
     private bool isLoading;
-    private TitleProfileSlotPanelMode currentSlotMode = TitleProfileSlotPanelMode.Continue;
+    private Coroutine mainMenuUnlockCoroutine;
 
     private void Awake()
     {
+        SceneDomainCoordinator.EnsureInstance();
         ResolveReferences();
+        EnsureUiInputReady();
         BindListeners();
         TitleProfileSlotService.EnsureInstance();
-
-        if (profileSlotPanel != null)
-            profileSlotPanel.gameObject.SetActive(false);
+        TitleProfileLaunchContext.Clear();
     }
 
     private void Start()
     {
-        RefreshMainMenuState();
+        ResolveReferences();
+
+        if (profileSlotPanel != null && profileSlotPanel.gameObject.activeSelf)
+            profileSlotPanel.gameObject.SetActive(false);
+
+        EnsureUiInputReady();
+        SetMainMenuInteractable(true);
 
         if (openMainMenuOnStart)
+        {
             mainMenuPresentation?.PlayOpen();
+            StartMainMenuUnlockLead();
+        }
+    }
+
+    private void OnDisable()
+    {
+        StopMainMenuUnlockLead();
     }
 
     private void Update()
@@ -48,7 +69,12 @@ public sealed class TitleMenuController : MonoBehaviour
         if (!Input.GetKeyDown(KeyCode.Escape) || isLoading)
             return;
 
+        ResolveReferences();
+
         if (profileSlotPanel != null && profileSlotPanel.TryHandleCloseRequest())
+            return;
+
+        if (keyBindingPanel != null && keyBindingPanel.TryHandleCloseRequest())
             return;
 
         if (settingsPanel != null && settingsPanel.IsActive)
@@ -57,6 +83,17 @@ public sealed class TitleMenuController : MonoBehaviour
 
     private void ResolveReferences()
     {
+        Scene activeScene = SceneManager.GetActiveScene();
+
+        if (profileSlotPanel == null || profileSlotPanel.gameObject.scene != activeScene)
+            profileSlotPanel = FindSceneComponent<TitleProfileSlotPanelUI>(activeScene);
+
+        if (settingsPanel == null || settingsPanel.gameObject.scene != activeScene)
+            settingsPanel = FindSceneComponent<SettingsPanelUI>(activeScene);
+
+        if (keyBindingPanel == null || keyBindingPanel.gameObject.scene != activeScene)
+            keyBindingPanel = FindSceneComponent<KeyBindingPanelUI>(activeScene);
+
         if (mainMenuCanvasGroup == null)
             mainMenuCanvasGroup = GetComponentInChildren<CanvasGroup>(true);
 
@@ -72,9 +109,6 @@ public sealed class TitleMenuController : MonoBehaviour
         if (newGameButton != null)
             newGameButton.onClick.AddListener(HandleNewGamePressed);
 
-        if (continueButton != null)
-            continueButton.onClick.AddListener(HandleContinuePressed);
-
         if (settingsButton != null)
             settingsButton.onClick.AddListener(HandleSettingsPressed);
 
@@ -86,16 +120,13 @@ public sealed class TitleMenuController : MonoBehaviour
 
     private void HandleNewGamePressed()
     {
-        OpenSlotPanel(TitleProfileSlotPanelMode.NewGame);
-    }
-
-    private void HandleContinuePressed()
-    {
-        OpenSlotPanel(TitleProfileSlotPanelMode.Continue);
+        ResolveReferences();
+        OpenSlotPanel();
     }
 
     private void HandleSettingsPressed()
     {
+        ResolveReferences();
         settingsPanel?.OpenUI();
     }
 
@@ -104,20 +135,21 @@ public sealed class TitleMenuController : MonoBehaviour
         Application.Quit();
     }
 
-    private void OpenSlotPanel(TitleProfileSlotPanelMode mode)
+    private void OpenSlotPanel()
     {
+        ResolveReferences();
         if (profileSlotPanel == null)
             return;
 
-        currentSlotMode = mode;
+        StopMainMenuUnlockLead();
         SetMainMenuInteractable(!lockMainMenuWhileSlotPanelOpen);
-        profileSlotPanel.Open(mode, HandleSlotSelected, HandleSlotPanelClosed);
+        profileSlotPanel.Open(HandleSlotSelected, HandleSlotPanelClosed);
     }
 
     private void HandleSlotPanelClosed()
     {
         SetMainMenuInteractable(true);
-        RefreshMainMenuState();
+        StartMainMenuUnlockLead();
     }
 
     private void HandleSlotSelected(int slotIndex)
@@ -126,15 +158,15 @@ public sealed class TitleMenuController : MonoBehaviour
         if (service == null)
             return;
 
-        if (currentSlotMode == TitleProfileSlotPanelMode.NewGame &&
-            service.NeedsOverwriteConfirmationForNewGame(slotIndex))
-        {
-            Debug.Log($"[TitleMenuController] Slot {slotIndex + 1} already has an active run. Add overwrite confirmation UI here.", this);
+        if (!service.TryCreateLaunchRequest(slotIndex, out TitleProfileLaunchRequest request))
             return;
-        }
 
-        if (!service.TryCreateLaunchRequest(currentSlotMode, slotIndex, out TitleProfileLaunchRequest request))
-            return;
+        if (GameDataManager.Instance != null)
+        {
+            GameDataManager.Instance.LoadSlot(slotIndex);
+            GameDataManager.Instance.EnsureData().hasInitializedProfile = true;
+            GameDataManager.Instance.SaveData();
+        }
 
         TitleProfileLaunchContext.SetPendingRequest(request);
         LoadScene(request.TargetSceneName);
@@ -147,18 +179,11 @@ public sealed class TitleMenuController : MonoBehaviour
 
         isLoading = true;
 
-        SceneFadeTransitionService transitionService = SceneFadeTransitionService.EnsureInstance();
+        SceneFadeTransitionService transitionService = SceneFadeTransitionService.EnsureInstance(allowRuntimeFallback: true);
         if (transitionService != null && transitionService.TryLoadScene(targetSceneName))
             return;
 
         SceneManager.LoadScene(targetSceneName);
-    }
-
-    private void RefreshMainMenuState()
-    {
-        TitleProfileSlotService service = TitleProfileSlotService.EnsureInstance();
-        if (continueButton != null && service != null)
-            continueButton.interactable = service.HasAnyContinuableRun();
     }
 
     private void SetMainMenuInteractable(bool enabled)
@@ -168,5 +193,141 @@ public sealed class TitleMenuController : MonoBehaviour
 
         mainMenuCanvasGroup.interactable = enabled;
         mainMenuCanvasGroup.blocksRaycasts = enabled;
+    }
+
+    private void EnsureUiInputReady()
+    {
+        EnsureEventSystemExists();
+        EnsureCanvasRaycasterExists();
+    }
+
+    private void EnsureEventSystemExists()
+    {
+        Scene activeScene = SceneManager.GetActiveScene();
+        EventSystem[] existingEventSystems =
+            FindObjectsByType<EventSystem>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+
+        EventSystem activeSceneEventSystem = null;
+        for (int i = 0; i < existingEventSystems.Length; i++)
+        {
+            EventSystem candidate = existingEventSystems[i];
+            if (candidate == null)
+                continue;
+
+            if (candidate.gameObject.scene == activeScene)
+            {
+                activeSceneEventSystem = candidate;
+                break;
+            }
+        }
+
+        if (activeSceneEventSystem == null)
+        {
+            for (int i = 0; i < existingEventSystems.Length; i++)
+            {
+                EventSystem candidate = existingEventSystems[i];
+                if (candidate == null)
+                    continue;
+
+                if (!string.Equals(candidate.gameObject.scene.name, DontDestroyOnLoadSceneName, System.StringComparison.Ordinal))
+                    continue;
+
+                Destroy(candidate.gameObject);
+            }
+
+            GameObject eventSystemObject = new GameObject("EventSystem");
+            SceneManager.MoveGameObjectToScene(eventSystemObject, activeScene);
+            activeSceneEventSystem = eventSystemObject.AddComponent<EventSystem>();
+        }
+
+        if (!activeSceneEventSystem.gameObject.activeSelf)
+            activeSceneEventSystem.gameObject.SetActive(true);
+
+#if ENABLE_INPUT_SYSTEM
+        if (activeSceneEventSystem.GetComponent<InputSystemUIInputModule>() == null)
+            activeSceneEventSystem.gameObject.AddComponent<InputSystemUIInputModule>();
+#else
+        if (activeSceneEventSystem.GetComponent<StandaloneInputModule>() == null)
+            activeSceneEventSystem.gameObject.AddComponent<StandaloneInputModule>();
+#endif
+    }
+
+    private void EnsureCanvasRaycasterExists()
+    {
+        Scene activeScene = SceneManager.GetActiveScene();
+        Canvas[] sceneCanvases = FindObjectsByType<Canvas>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        for (int i = 0; i < sceneCanvases.Length; i++)
+        {
+            Canvas canvas = sceneCanvases[i];
+            if (canvas == null || canvas.gameObject.scene != activeScene)
+                continue;
+
+            if (canvas.GetComponent<GraphicRaycaster>() != null)
+                continue;
+
+            canvas.gameObject.AddComponent<GraphicRaycaster>();
+        }
+    }
+
+    private void StartMainMenuUnlockLead()
+    {
+        if (mainMenuInputUnlockDelay <= 0f)
+        {
+            ForceUnlockMainMenuIfPossible();
+            return;
+        }
+
+        StopMainMenuUnlockLead();
+        mainMenuUnlockCoroutine = StartCoroutine(MainMenuUnlockRoutine());
+    }
+
+    private void StopMainMenuUnlockLead()
+    {
+        if (mainMenuUnlockCoroutine == null)
+            return;
+
+        StopCoroutine(mainMenuUnlockCoroutine);
+        mainMenuUnlockCoroutine = null;
+    }
+
+    private System.Collections.IEnumerator MainMenuUnlockRoutine()
+    {
+        float elapsed = 0f;
+        while (elapsed < mainMenuInputUnlockDelay)
+        {
+            elapsed += Time.unscaledDeltaTime;
+            yield return null;
+        }
+
+        mainMenuUnlockCoroutine = null;
+        ForceUnlockMainMenuIfPossible();
+    }
+
+    private void ForceUnlockMainMenuIfPossible()
+    {
+        if (isLoading)
+            return;
+
+        if (profileSlotPanel != null && profileSlotPanel.IsActive)
+            return;
+
+        if (settingsPanel != null && settingsPanel.IsActive)
+            return;
+
+        SetMainMenuInteractable(true);
+    }
+    private static T FindSceneComponent<T>(Scene scene) where T : Component
+    {
+        T[] candidates = FindObjectsByType<T>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        for (int i = 0; i < candidates.Length; i++)
+        {
+            T candidate = candidates[i];
+            if (candidate == null || candidate.gameObject.scene != scene)
+                continue;
+
+            return candidate;
+        }
+
+        return null;
     }
 }

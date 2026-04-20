@@ -2,6 +2,9 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityGAS;
+#if UNITY_EDITOR
+using UnityEngine.SceneManagement;
+#endif
 
 /// <summary>
 /// 책임 : 플레이어 상호작용을 받아 포탈 이동을 요청하는 진입점이다.
@@ -32,6 +35,11 @@ public sealed class ScenePortal : InteractableBase
 
     private MaterialPropertyBlock propBlock;
     private static readonly int OutlineEnabledID = Shader.PropertyToID("_OutlineEnabled");
+
+#if UNITY_EDITOR
+    private float nextEditorDiagnosticLogTime;
+    private string lastEditorDiagnosticMessage;
+#endif
 
     public string PortalId => portalId;
     public TransitionType PortalTransitionType => transitionType;
@@ -90,14 +98,23 @@ public sealed class ScenePortal : InteractableBase
 
     public override bool CanInteract(IPlayerInteractor player)
     {
-        bool canResolve = PortalRouteManager.Instance != null &&
-                          PortalRouteManager.Instance.CanResolveRoute(this);
+        bool hasPlayer = player != null;
+        bool isIdle = hasPlayer && player.CurrentState == InteractState.Idle;
+        PortalRouteManager routeManager = PortalRouteManager.EnsureInstance();
+        bool canResolve = routeManager != null &&
+                          routeManager.CanResolveRoute(this);
 
-        return
+        bool canInteract =
             !isTransitioning &&
-            player != null &&
-            player.CurrentState == InteractState.Idle &&
+            hasPlayer &&
+            isIdle &&
             canResolve;
+
+#if UNITY_EDITOR
+        EmitEditorDiagnosticIfBlocked(player, hasPlayer, isIdle, canResolve, canInteract);
+#endif
+
+        return canInteract;
     }
 
     public override void OnPlayerInteract(IPlayerInteractor player)
@@ -142,10 +159,11 @@ public sealed class ScenePortal : InteractableBase
         if (transitionType != TransitionType.HubToRunStart)
             return;
 
-        if (PortalRouteManager.Instance == null)
+        PortalRouteManager routeManager = PortalRouteManager.EnsureInstance();
+        if (routeManager == null)
             return;
 
-        PortalRouteManager.Instance.EnsurePendingPlan(this);
+        routeManager.EnsurePendingPlan(this);
     }
 
     private bool HasDuplicatePortalId()
@@ -169,4 +187,46 @@ public sealed class ScenePortal : InteractableBase
 
         return false;
     }
+
+#if UNITY_EDITOR
+    private void EmitEditorDiagnosticIfBlocked(
+        IPlayerInteractor player,
+        bool hasPlayer,
+        bool isIdle,
+        bool canResolve,
+        bool canInteract)
+    {
+        if (canInteract || !Application.isPlaying || transitionType != TransitionType.HubToRunStart)
+            return;
+
+        Scene activeScene = SceneManager.GetActiveScene();
+        if (!string.Equals(activeScene.name, "ProtoTypeHub", StringComparison.OrdinalIgnoreCase))
+            return;
+
+        float now = Time.unscaledTime;
+        if (now < nextEditorDiagnosticLogTime)
+            return;
+
+        PortalRouteManager routeManager = PortalRouteManager.EnsureInstance();
+        string routeDebug = routeManager != null
+            ? routeManager.GetDebugResolveStatus(this)
+            : "manager=null";
+
+        string message =
+            $"[ScenePortal] Hub start portal blocked. portal={name}, " +
+            $"isTransitioning={isTransitioning}, hasPlayer={hasPlayer}, " +
+            $"playerState={(hasPlayer ? player.CurrentState.ToString() : "<none>")}, " +
+            $"isIdle={isIdle}, canResolve={canResolve}, route={routeDebug}";
+
+        if (string.Equals(lastEditorDiagnosticMessage, message, StringComparison.Ordinal))
+        {
+            nextEditorDiagnosticLogTime = now + 1f;
+            return;
+        }
+
+        lastEditorDiagnosticMessage = message;
+        nextEditorDiagnosticLogTime = now + 1f;
+        Debug.LogWarning(message, this);
+    }
+#endif
 }
