@@ -61,7 +61,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 247254393
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_TargetDisplay: 0
 --- !u!225 &6042541081144591544
 CanvasGroup:
@@ -94,6 +94,8 @@ MonoBehaviour:
   defaultFillColor: {r: 1, g: 1, b: 1, a: 0.52}
   defaultFontColor: {r: 0, g: 0, b: 0, a: 1}
   backgroundTextureInfluence: 0
+  playTypingSound: 1
+  typingSoundInterval: 0.035
 --- !u!1 &7187667657728760616
 GameObject:
   m_ObjectHideFlags: 0

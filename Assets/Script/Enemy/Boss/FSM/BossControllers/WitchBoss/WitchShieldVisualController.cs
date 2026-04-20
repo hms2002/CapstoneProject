@@ -216,7 +216,7 @@ public class WitchShieldVisualController : MonoBehaviour
             position: transform.position,
             sourceObject: this);
         Transform presentationAnchor = ResolveVisualTransform();
-        WorldPresentationRuntime.Play(
+        WorldPresentationRuntime.PlayDeferredAsync(
             shieldBreakPresentation,
             WorldPresentationContext.AtAnchor(
                 instigator: gameObject,

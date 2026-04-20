@@ -12,10 +12,12 @@ public sealed class PauseMenuUI : MonoBehaviour, IStackableUI
     [SerializeField] private Button optionsButton;
     [SerializeField] private Button titleSceneButton;
     [SerializeField] private Button quitGameButton;
+    [SerializeField] private UIChainDropPresentation dropPresentation;
 
     private bool listenersBound;
+    private bool isClosing;
 
-    public bool IsActive => gameObject.activeSelf;
+    public bool IsActive => gameObject.activeSelf && !isClosing;
     public bool CanCloseOnEscape => true;
     public UIOpenGroup OpenGroup => UIOpenGroup.ExclusiveModal;
     public UIOpenGroup BlockedOpenGroups => UIOpenGroup.ExclusiveModal;
@@ -50,6 +52,7 @@ public sealed class PauseMenuUI : MonoBehaviour, IStackableUI
         }
 
         Instance = this;
+        ResolveReferences();
         BindListeners();
         RefreshCanvasParent();
         gameObject.SetActive(false);
@@ -70,24 +73,61 @@ public sealed class PauseMenuUI : MonoBehaviour, IStackableUI
 
     private void OnDisable()
     {
+        isClosing = false;
         MouseCursorService.Instance?.ClearDomain(this);
     }
 
     public void OpenUI()
     {
+        isClosing = false;
+        ResolveReferences();
         RefreshCanvasParent();
         BindListeners();
         gameObject.SetActive(true);
+        dropPresentation?.PlayOpen();
     }
 
     public void CloseUI()
     {
-        gameObject.SetActive(false);
+        if (isClosing)
+            return;
+
+        if (!gameObject.activeSelf)
+        {
+            isClosing = false;
+            return;
+        }
+
+        ResolveReferences();
+        if (dropPresentation == null)
+        {
+            gameObject.SetActive(false);
+            isClosing = false;
+            return;
+        }
+
+        isClosing = true;
+        dropPresentation.PlayClose(FinalizeClose);
     }
 
     public void RefreshCanvasParent()
     {
         GlobalUIRoot.AdoptToCanvas(GlobalCanvasLayer.Popup, transform, false);
+    }
+
+    private void ResolveReferences()
+    {
+        if (dropPresentation == null)
+            dropPresentation = GetComponent<UIChainDropPresentation>();
+
+        if (dropPresentation == null)
+            dropPresentation = GetComponentInChildren<UIChainDropPresentation>(true);
+    }
+
+    private void FinalizeClose()
+    {
+        gameObject.SetActive(false);
+        isClosing = false;
     }
 
     private void BindListeners()

@@ -87,7 +87,7 @@ public class AbilityLogic_WitchSealedCandleRampage : AbilityLogic
                 if (plan.candle == null)
                     continue;
 
-                WorldPresentationRuntime.Play(
+                WorldPresentationRuntime.PlayDeferredAsync(
                     candleAttackPresentation,
                     WorldPresentationContext.AtWorld(
                         instigator: witch.gameObject,

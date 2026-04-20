@@ -164,7 +164,7 @@ public class WitchNormalAttack1Tile : MonoBehaviour
     {
         Vector3 hitDirection = ResolveHitDirection();
         Quaternion presentationRotation = Quaternion.Euler(0f, 0f, angleDeg);
-        WorldPresentationRuntime.Play(
+        WorldPresentationRuntime.PlayDeferredAsync(
             hitPresentation,
             WorldPresentationContext.AtWorld(
                 instigator: hitPayload != null && hitPayload.sourceSystem != null ? hitPayload.sourceSystem.gameObject : gameObject,

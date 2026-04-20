@@ -204,7 +204,7 @@ public sealed class WitchLightAllCandlesPatternExecutor : MonoBehaviour
 
         CleanupChargeOrb(chargeOrbInstance);
 
-        WorldPresentationRuntime.Play(
+        WorldPresentationRuntime.PlayDeferredAsync(
             logic.FailureImpactPresentation,
             WorldPresentationContext.AtWorld(
                 instigator: owner != null ? owner.gameObject : null,

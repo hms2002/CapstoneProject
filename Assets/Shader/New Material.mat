@@ -41,11 +41,11 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _AlphaThreshold: 0.209
+    - _AlphaThreshold: 0.196
     - _CenterX: 0.762
     - _CenterY: 0.497
     - _EdgeThreshold: 0.152
-    - _EmissionStrength: 0.35
+    - _EmissionStrength: 3.12
     - _EnableExternalAlpha: 0
     - _GlowIntensity: 1.71
     - _GlowRadiusTexels: 1.18
@@ -57,7 +57,7 @@ Material:
     - _OuterRadius: 1.37
     - _OuterThreshold: 1
     - _OutlineAlpha: 1
-    - _OutlineThickness: 1
+    - _OutlineThickness: 3.42
     - _PreserveOriginal: 1
     - _Softness: 2.94
     - _SpriteHeight: 100

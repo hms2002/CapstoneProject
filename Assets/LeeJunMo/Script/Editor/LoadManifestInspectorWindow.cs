@@ -92,7 +92,7 @@ public sealed class LoadManifestInspectorWindow : EditorWindow
     [MenuItem("Tools/Loading/Load Manifest Inspector")]
     public static void ShowWindow()
     {
-        GetWindow<LoadManifestInspectorWindow>("Manifest Inspector");
+        GetWindow<LoadManifestInspectorWindow>("Manifest Inspector v2");
     }
 
     private void OnEnable()
@@ -139,8 +139,14 @@ public sealed class LoadManifestInspectorWindow : EditorWindow
                 Analyze();
             }
 
+            if (GUILayout.Button("Prewarm Recs", EditorStyles.toolbarButton, GUILayout.Width(95f)))
+                OpenPrewarmRecommendationsWindow();
+
             string assetsLabel = showAssets ? "Assets: On" : "Assets: Off";
             showAssets = GUILayout.Toggle(showAssets, assetsLabel, EditorStyles.toolbarButton, GUILayout.Width(90f));
+
+            GUILayout.Space(6f);
+            GUILayout.Label("Category View v2", EditorStyles.miniLabel);
 
             GUILayout.FlexibleSpace();
         }
@@ -219,8 +225,8 @@ public sealed class LoadManifestInspectorWindow : EditorWindow
 
     private void DrawScopeCategories(ScopeSnapshot scope)
     {
-        EditorGUILayout.Space(2f);
-        EditorGUILayout.LabelField("Categories", EditorStyles.boldLabel);
+        EditorGUILayout.Space(4f);
+        EditorGUILayout.HelpBox("Categories", MessageType.None);
 
         AssetCategory[] orderedCategories =
         {
@@ -596,8 +602,8 @@ public sealed class LoadManifestInspectorWindow : EditorWindow
         if (categoryExpandedStates.TryGetValue(key, out bool expanded))
             return expanded;
 
-        categoryExpandedStates[key] = false;
-        return false;
+        categoryExpandedStates[key] = true;
+        return true;
     }
 
     private static List<AssetEntry> FilterAssets(List<AssetEntry> assets, AssetCategory category)
@@ -610,5 +616,54 @@ public sealed class LoadManifestInspectorWindow : EditorWindow
         }
 
         return filtered;
+    }
+
+    private static void OpenPrewarmRecommendationsWindow()
+    {
+        Type windowType = Type.GetType("PrewarmRecommendationWindow")
+            ?? AppDomain.CurrentDomain.GetAssemblies()
+                .Select(assembly => assembly.GetType("PrewarmRecommendationWindow"))
+                .FirstOrDefault(type => type != null);
+
+        if (windowType == null)
+        {
+            EditorUtility.DisplayDialog(
+                "Prewarm Recommendations",
+                "PrewarmRecommendationWindow type was not found. Check for editor compile errors.",
+                "OK");
+            return;
+        }
+
+        var showWindowMethod = windowType.GetMethod(
+            "ShowWindow",
+            System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static);
+
+        if (showWindowMethod != null)
+        {
+            showWindowMethod.Invoke(null, null);
+            EditorApplication.delayCall += () =>
+            {
+                EditorWindow window = EditorWindow.GetWindow(windowType, false, "Prewarm Recommendations");
+                if (window != null)
+                {
+                    window.Show();
+                    window.Focus();
+                }
+            };
+            return;
+        }
+
+        EditorWindow fallbackWindow = EditorWindow.GetWindow(windowType, false, "Prewarm Recommendations");
+        if (fallbackWindow != null)
+        {
+            fallbackWindow.Show();
+            fallbackWindow.Focus();
+            return;
+        }
+
+        EditorUtility.DisplayDialog(
+            "Prewarm Recommendations",
+            "The window type was found, but Unity did not open the editor window.",
+            "OK");
     }
 }

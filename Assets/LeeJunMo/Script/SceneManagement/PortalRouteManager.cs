@@ -5,6 +5,18 @@ using UnityEngine;
 [DisallowMultipleComponent]
 public sealed class PortalRouteManager : MonoBehaviour
 {
+    public readonly struct DebugTransitionEntry
+    {
+        public DebugTransitionEntry(float realtimeSeconds, string message)
+        {
+            RealtimeSeconds = realtimeSeconds;
+            Message = message;
+        }
+
+        public float RealtimeSeconds { get; }
+        public string Message { get; }
+    }
+
     private sealed class PendingPortalPlan
     {
         public PendingPortalPlan(RunRouteCatalogSO catalog, List<CorridorBossRouteSetSO> stages)
@@ -21,6 +33,7 @@ public sealed class PortalRouteManager : MonoBehaviour
     public static event Action<PortalRouteManager> InstanceChanged;
 
     private static bool s_isQuitting;
+    private const int MaxTransitionHistoryEntries = 32;
 
     [SerializeField] private bool persistAcrossScenes = true;
     [SerializeField] private bool verboseLogging;
@@ -28,6 +41,7 @@ public sealed class PortalRouteManager : MonoBehaviour
     [SerializeField, Min(0)] private int currentStageIndex;
 
     private readonly Dictionary<string, PendingPortalPlan> pendingPlansByPortalId = new();
+    private readonly List<DebugTransitionEntry> transitionHistory = new();
     private RunRouteCatalogSO activeRouteCatalog;
 
     public event Action<PortalRouteManager> LoadWindowChanged;
@@ -89,6 +103,12 @@ public sealed class PortalRouteManager : MonoBehaviour
     public RouteSetLoadManifestSO CurrentStageLoadManifest => CurrentStageSet != null ? CurrentStageSet.LoadManifest : null;
     public RouteSetLoadManifestSO NextStageLoadManifest => NextStageSet != null ? NextStageSet.LoadManifest : null;
     public LoadManifestSO ActiveRunCommonLoadManifest => activeRouteCatalog != null ? activeRouteCatalog.RunCommonLoadManifest : null;
+    public string LastTransitionEvent =>
+        transitionHistory.Count > 0 ? transitionHistory[transitionHistory.Count - 1].Message : "<none>";
+    public TransitionType LastLoadPresentationTransitionType { get; private set; }
+    public string LastLoadPresentationTargetSceneName { get; private set; }
+    public string LastLoadPresentationEntryPointId { get; private set; }
+    public float LastLoadPresentationRealtimeSeconds { get; private set; }
 
     public bool TryGetActiveLoadWindow(
         out LoadManifestSO runCommonManifest,
@@ -99,6 +119,26 @@ public sealed class PortalRouteManager : MonoBehaviour
         currentStageManifest = CurrentStageLoadManifest;
         nextStageManifest = NextStageLoadManifest;
         return HasActivePlan;
+    }
+
+    public DebugTransitionEntry[] GetTransitionHistorySnapshot(int maxCount = 16)
+    {
+        int safeMaxCount = Mathf.Max(1, maxCount);
+        int resultCount = Mathf.Min(safeMaxCount, transitionHistory.Count);
+        var results = new DebugTransitionEntry[resultCount];
+        for (int i = 0; i < resultCount; i++)
+        {
+            int sourceIndex = transitionHistory.Count - 1 - i;
+            results[i] = transitionHistory[sourceIndex];
+        }
+
+        return results;
+    }
+
+    public static bool IsCorridorEntryTransition(TransitionType transitionType)
+    {
+        return transitionType == TransitionType.HubToRunStart ||
+               transitionType == TransitionType.BossToCorridor;
     }
 
     public bool EnsurePendingPlan(ScenePortal portal)
@@ -119,6 +159,8 @@ public sealed class PortalRouteManager : MonoBehaviour
             return false;
 
         pendingPlansByPortalId[portal.PortalId] = new PendingPortalPlan(catalog, stages);
+        RecordTransitionEvent(
+            $"Prepared pending plan. portal={portal.name}, catalog={catalog.name}, stages={stages.Count}");
 
         if (verboseLogging)
         {
@@ -142,6 +184,8 @@ public sealed class PortalRouteManager : MonoBehaviour
             Debug.Log("[PortalRouteManager] Cleared active and pending run plans.", this);
         }
 
+        ClearLoadPresentationContext();
+        RecordTransitionEvent("Cleared active and pending run plans.");
         RaiseLoadWindowChanged();
     }
 
@@ -171,6 +215,7 @@ public sealed class PortalRouteManager : MonoBehaviour
         switch (portal.PortalTransitionType)
         {
             case TransitionType.HubToRunStart:
+                SetLoadPresentationContext(portal.PortalTransitionType, null, null);
                 if (!TryActivatePendingPlan(portal))
                     return false;
 
@@ -202,6 +247,8 @@ public sealed class PortalRouteManager : MonoBehaviour
         if (!route.IsValid)
             return false;
 
+        SetLoadPresentationContext(route.TransitionType, route.TargetSceneName, route.EntryPointId);
+
         if (verboseLogging)
         {
             Debug.Log(
@@ -209,6 +256,8 @@ public sealed class PortalRouteManager : MonoBehaviour
                 this);
         }
 
+        RecordTransitionEvent(
+            $"Resolved {portal.PortalTransitionType}. stage={currentStageIndex + 1}/{Mathf.Max(1, activeRouteStages.Count)}, target={route.TargetSceneName}, entry={route.EntryPointId}");
         return true;
     }
 
@@ -229,8 +278,14 @@ public sealed class PortalRouteManager : MonoBehaviour
                     this);
             }
 
+            RecordTransitionEvent(
+                $"Consumed {transitionType}. advanced to stage {currentStageIndex + 1}/{activeRouteStages.Count}.");
             RaiseLoadWindowChanged();
+            return;
         }
+
+        RecordTransitionEvent(
+            $"Consumed {transitionType}. stage={currentStageIndex + 1}/{Mathf.Max(1, activeRouteStages.Count)}.");
     }
 
     private PortalRouteDecision ResolveHubToRunStart()
@@ -307,6 +362,8 @@ public sealed class PortalRouteManager : MonoBehaviour
                 portal);
         }
 
+        RecordTransitionEvent(
+            $"Activated run plan. portal={portal.name}, catalog={activeRouteCatalog.name}, stages={activeRouteStages.Count}");
         RaiseLoadWindowChanged();
 
         return true;
@@ -403,5 +460,35 @@ public sealed class PortalRouteManager : MonoBehaviour
     private void RaiseLoadWindowChanged()
     {
         LoadWindowChanged?.Invoke(this);
+    }
+
+    private void ClearLoadPresentationContext()
+    {
+        SetLoadPresentationContext(TransitionType.None, null, null);
+    }
+
+    private void SetLoadPresentationContext(
+        TransitionType transitionType,
+        string targetSceneName,
+        string entryPointId)
+    {
+        LastLoadPresentationTransitionType = transitionType;
+        LastLoadPresentationTargetSceneName = string.IsNullOrWhiteSpace(targetSceneName)
+            ? null
+            : targetSceneName;
+        LastLoadPresentationEntryPointId = string.IsNullOrWhiteSpace(entryPointId)
+            ? null
+            : entryPointId;
+        LastLoadPresentationRealtimeSeconds = Time.realtimeSinceStartup;
+    }
+
+    private void RecordTransitionEvent(string message)
+    {
+        if (string.IsNullOrWhiteSpace(message))
+            return;
+
+        transitionHistory.Add(new DebugTransitionEntry(Time.realtimeSinceStartup, message));
+        if (transitionHistory.Count > MaxTransitionHistoryEntries)
+            transitionHistory.RemoveRange(0, transitionHistory.Count - MaxTransitionHistoryEntries);
     }
 }
