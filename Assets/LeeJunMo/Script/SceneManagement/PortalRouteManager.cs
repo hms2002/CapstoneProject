@@ -353,7 +353,8 @@ public sealed class PortalRouteManager : MonoBehaviour
 
             RecordTransitionEvent(
                 $"Consumed {transitionType}. advanced to stage {currentStageIndex + 1}/{activeRouteStages.Count}.");
-            RaiseLoadWindowChanged();
+            // SceneTransitionCoordinator refreshes the preload window after fade-out so
+            // corridor loading is presented once, in the managed transition sequence.
             return;
         }
 
@@ -439,7 +440,8 @@ public sealed class PortalRouteManager : MonoBehaviour
 
         RecordTransitionEvent(
             $"Activated run plan. portal={portal.name}, catalog={activeRouteCatalog.name}, stages={activeRouteStages.Count}");
-        RaiseLoadWindowChanged();
+        // SceneTransitionCoordinator refreshes the preload window after fade-out so
+        // run-start loading does not begin before the loading presentation is visible.
 
         return true;
     }

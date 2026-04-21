@@ -5,10 +5,6 @@ using UnityEngine.UI;
 [DisallowMultipleComponent]
 public sealed class GamePresentationController : MonoBehaviour
 {
-    private const int DefaultWindowWidth = 1280;
-    private const int DefaultWindowHeight = 720;
-    private const float BasePresentationAspectRatio = 16f / 9f;
-    private const float AspectRatioTolerance = 0.0001f;
     private const int LetterboxSortingOrder = 32767;
 
     private static readonly GlobalCanvasLayer[] UiPresentationLayers =
@@ -44,7 +40,7 @@ public sealed class GamePresentationController : MonoBehaviour
     {
         Camera presentationCamera = ResolvePresentationCamera();
         int presentationCameraInstanceId = presentationCamera != null ? presentationCamera.GetInstanceID() : 0;
-        Vector2Int containerSize = GetPresentationContainerSize(windowMode);
+        Vector2Int containerSize = PresentationViewportUtility.GetPresentationContainerSize(windowMode);
         if (lastContainerWidth == containerSize.x &&
             lastContainerHeight == containerSize.y &&
             lastWindowMode == windowMode &&
@@ -59,9 +55,8 @@ public sealed class GamePresentationController : MonoBehaviour
     public void ApplyPresentation(GameWindowMode windowMode, int resolutionWidth, int resolutionHeight)
     {
         Camera presentationCamera = ResolvePresentationCamera();
-        Vector2Int containerSize = GetPresentationContainerSize(windowMode);
-        float contentAspectRatio = BasePresentationAspectRatio;
-        Rect viewportRect = CalculateViewportRect(containerSize.x, containerSize.y, contentAspectRatio);
+        Vector2Int containerSize = PresentationViewportUtility.GetPresentationContainerSize(windowMode);
+        Rect viewportRect = PresentationViewportUtility.CalculateViewportRect(containerSize.x, containerSize.y);
         ApplyCameraViewport(viewportRect);
         ApplyUiCanvasPresentation(viewportRect, presentationCamera);
         ApplyLetterboxOverlay(viewportRect);
@@ -93,51 +88,6 @@ public sealed class GamePresentationController : MonoBehaviour
         return null;
     }
 
-    private static Rect CalculateViewportRect(int containerWidth, int containerHeight, float targetAspectRatio)
-    {
-        if (containerWidth <= 0 || containerHeight <= 0 || targetAspectRatio <= 0f)
-            return new Rect(0f, 0f, 1f, 1f);
-
-        float currentAspectRatio = containerWidth / (float)containerHeight;
-        if (Mathf.Abs(currentAspectRatio - targetAspectRatio) <= AspectRatioTolerance)
-            return new Rect(0f, 0f, 1f, 1f);
-
-        if (currentAspectRatio > targetAspectRatio)
-        {
-            float normalizedWidth = targetAspectRatio / currentAspectRatio;
-            float insetX = (1f - normalizedWidth) * 0.5f;
-            return new Rect(insetX, 0f, normalizedWidth, 1f);
-        }
-
-        float normalizedHeight = currentAspectRatio / targetAspectRatio;
-        float insetY = (1f - normalizedHeight) * 0.5f;
-        return new Rect(0f, insetY, 1f, normalizedHeight);
-    }
-
-    private static Vector2Int GetPresentationContainerSize(GameWindowMode windowMode)
-    {
-        if (windowMode == GameWindowMode.Windowed)
-        {
-            if (Screen.width > 0 && Screen.height > 0)
-                return new Vector2Int(Screen.width, Screen.height);
-
-            return new Vector2Int(DefaultWindowWidth, DefaultWindowHeight);
-        }
-
-        Resolution currentResolution = Screen.currentResolution;
-        if (currentResolution.width > 0 && currentResolution.height > 0)
-            return new Vector2Int(currentResolution.width, currentResolution.height);
-
-        Display mainDisplay = Display.main;
-        if (mainDisplay != null && mainDisplay.systemWidth > 0 && mainDisplay.systemHeight > 0)
-            return new Vector2Int(mainDisplay.systemWidth, mainDisplay.systemHeight);
-
-        if (Screen.width > 0 && Screen.height > 0)
-            return new Vector2Int(Screen.width, Screen.height);
-
-        return new Vector2Int(DefaultWindowWidth, DefaultWindowHeight);
-    }
-
     private static void ApplyCameraViewport(Rect viewportRect)
     {
         Camera[] cameras = Camera.allCameras;
@@ -153,10 +103,7 @@ public sealed class GamePresentationController : MonoBehaviour
 
     private void ApplyUiCanvasPresentation(Rect viewportRect, Camera presentationCamera)
     {
-        bool useFullScreen = Mathf.Approximately(viewportRect.x, 0f) &&
-                             Mathf.Approximately(viewportRect.y, 0f) &&
-                             Mathf.Approximately(viewportRect.width, 1f) &&
-                             Mathf.Approximately(viewportRect.height, 1f);
+        bool useFullScreen = PresentationViewportUtility.IsFullViewport(viewportRect);
 
         for (int i = 0; i < UiPresentationLayers.Length; i++)
         {
@@ -193,10 +140,7 @@ public sealed class GamePresentationController : MonoBehaviour
         if (letterboxRoot == null)
             return;
 
-        bool useFullScreen = Mathf.Approximately(viewportRect.x, 0f) &&
-                             Mathf.Approximately(viewportRect.y, 0f) &&
-                             Mathf.Approximately(viewportRect.width, 1f) &&
-                             Mathf.Approximately(viewportRect.height, 1f);
+        bool useFullScreen = PresentationViewportUtility.IsFullViewport(viewportRect);
 
         SetLetterboxBar(topLetterboxBar, Vector2.zero, Vector2.zero, !useFullScreen && viewportRect.y > 0f);
         SetLetterboxBar(bottomLetterboxBar, Vector2.zero, Vector2.zero, !useFullScreen && viewportRect.y > 0f);
@@ -240,7 +184,9 @@ public sealed class GamePresentationController : MonoBehaviour
 
         CanvasScaler scaler = root.GetComponent<CanvasScaler>();
         scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-        scaler.referenceResolution = new Vector2(DefaultWindowWidth, DefaultWindowHeight);
+        scaler.referenceResolution = new Vector2(
+            PresentationViewportUtility.DefaultWindowWidth,
+            PresentationViewportUtility.DefaultWindowHeight);
         scaler.matchWidthOrHeight = 0.5f;
 
         GraphicRaycaster raycaster = root.GetComponent<GraphicRaycaster>();

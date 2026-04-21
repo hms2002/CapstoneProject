@@ -1,7 +1,7 @@
 {
     "hasInitializedProfile": true,
     "magicStone": 1000,
-    "totalPlaySeconds": 0.0,
+    "totalPlaySeconds": 0.8853309154510498,
     "clearCount": 0,
     "knownTotalUpgradeCount": 16,
     "upgradeData": {
@@ -70,26 +70,7 @@
         ]
     },
     "itemData": {
-        "unlockedWeaponIDs": [
-            "Weapon.WindWeapon"
-        ],
-        "unlockedRelicIDs": [
-            "AttackBonusRelic",
-            "RD_BloodBonusRelic",
-            "RD_DrunkenRush",
-            "RD_FeatherOrbit",
-            "RD_FireBonusRelic",
-            "RD_HawkEmblem",
-            "Relic.New2",
-            "RD_OneDropOfSwiftness",
-            "RD_RotatingIornBall",
-            "RD_RunningLedger",
-            "Relic.New1",
-            "RD_SpeedMedal",
-            "RD_Stenographer",
-            "RD_TonicGombangdae",
-            "RD_WindTablet",
-            "RD_CounterKick"
-        ]
+        "unlockedWeaponIDs": [],
+        "unlockedRelicIDs": []
     }
 }
