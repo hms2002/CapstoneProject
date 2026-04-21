@@ -295,8 +295,8 @@ public class UIManager : MonoBehaviour
         if (GamePlayDataManager.Instance != null)
             GamePlayDataManager.Instance.EndRun(RunEndReason.None);
 
-        SceneFadeTransitionService transitionService = SceneFadeTransitionService.EnsureInstance(allowRuntimeFallback: true);
-        if (transitionService != null && transitionService.TryLoadScene(sceneName))
+        SceneTransitionCoordinator transitionCoordinator = SceneTransitionCoordinator.EnsureInstance();
+        if (transitionCoordinator != null && transitionCoordinator.TryLoadScene(sceneName))
             return;
 
         SceneManager.LoadScene(sceneName);
@@ -362,8 +362,8 @@ public class UIManager : MonoBehaviour
 
     private static bool IsInputBlockedByLoading()
     {
-        if (SceneFadeTransitionService.Instance != null &&
-            SceneFadeTransitionService.Instance.IsTransitionActive)
+        if (SceneTransitionCoordinator.Instance != null &&
+            SceneTransitionCoordinator.Instance.IsTransitionActive)
         {
             return true;
         }

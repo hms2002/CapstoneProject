@@ -168,10 +168,13 @@ public sealed class AddressableAssetProvider : MonoBehaviour, IAssetProvider, IA
             () =>
             {
                 if (!IsManifestRetained(manifest))
-                    return;
+                    return null;
 
+                var prewarmOperations = new List<AssetProviderOperation>();
                 foreach (PrewarmPrefabEntry prewarmEntry in manifest.EnumeratePrewarmEntries())
-                    RetainPrewarm(prewarmEntry);
+                    prewarmOperations.Add(RetainPrewarm(prewarmEntry));
+
+                return prewarmOperations;
             });
     }
 
@@ -525,14 +528,14 @@ public sealed class AddressableAssetProvider : MonoBehaviour, IAssetProvider, IA
         resolveOperation.Complete(resolvedAsset, baseOperation != null ? baseOperation.ErrorMessage : null);
     }
 
-    private void RetainPrewarm(PrewarmPrefabEntry entry)
+    private AssetProviderOperation RetainPrewarm(PrewarmPrefabEntry entry)
     {
         if (!entry.IsValid)
-            return;
+            return AssetProviderOperation.Completed("Prewarm <invalid>");
 
         GameObject resolvedPrefab = ResolveLoadedAsset(entry.prefab);
         if (resolvedPrefab == null)
-            return;
+            return AssetProviderOperation.Completed("Prewarm <missing prefab>");
 
         int prefabId = resolvedPrefab.GetInstanceID();
         prewarmRefCounts.TryGetValue(prefabId, out int currentCount);
@@ -540,7 +543,7 @@ public sealed class AddressableAssetProvider : MonoBehaviour, IAssetProvider, IA
         prewarmRefCounts[prefabId] = nextCount;
         trackedAssets[prefabId] = resolvedPrefab;
         RecordDebugEvent($"Prewarm + {resolvedPrefab.name} ({currentCount}->{nextCount})");
-        PresentationSpawnService.PrewarmPrefab(resolvedPrefab, entry.EffectiveCount);
+        return PresentationSpawnService.PrewarmPrefabAsync(resolvedPrefab, entry.EffectiveCount);
     }
 
     private void ReleasePrewarm(PrewarmPrefabEntry entry)
@@ -586,20 +589,12 @@ public sealed class AddressableAssetProvider : MonoBehaviour, IAssetProvider, IA
     private AssetProviderOperation StartCombinedOperation(
         string label,
         List<AssetProviderOperation> operations,
-        Action onCompleted = null)
+        Func<List<AssetProviderOperation>> onCompleted = null)
     {
-        if (operations == null || operations.Count == 0)
+        operations ??= new List<AssetProviderOperation>();
+        if (operations.Count == 0 && onCompleted == null)
         {
-            try
-            {
-                onCompleted?.Invoke();
-                return AssetProviderOperation.Completed(label);
-            }
-            catch (Exception ex)
-            {
-                Debug.LogException(ex, this);
-                return AssetProviderOperation.Failed(ex.Message, label);
-            }
+            return AssetProviderOperation.Completed(label);
         }
 
         var combinedOperation = new AssetProviderOperation(label);
@@ -611,7 +606,41 @@ public sealed class AddressableAssetProvider : MonoBehaviour, IAssetProvider, IA
     private IEnumerator CompleteCombinedOperation(
         AssetProviderOperation combinedOperation,
         List<AssetProviderOperation> operations,
-        Action onCompleted)
+        Func<List<AssetProviderOperation>> onCompleted)
+    {
+        yield return WaitForOperations(combinedOperation, operations);
+
+        string errorMessage = FindFirstOperationError(operations);
+
+        List<AssetProviderOperation> followUpOperations = null;
+        try
+        {
+            followUpOperations = onCompleted?.Invoke();
+        }
+        catch (Exception ex)
+        {
+            Debug.LogException(ex, this);
+            if (string.IsNullOrEmpty(errorMessage))
+                errorMessage = ex.Message;
+        }
+
+        if (followUpOperations != null && followUpOperations.Count > 0)
+        {
+            operations.AddRange(followUpOperations);
+            combinedOperation.SetProgressUnits(CalculateOperationUnits(operations));
+            yield return WaitForOperations(combinedOperation, operations);
+
+            if (string.IsNullOrEmpty(errorMessage))
+                errorMessage = FindFirstOperationError(operations);
+        }
+
+        combinedOperation.ReportProgress(1f);
+        combinedOperation.Complete(errorMessage);
+    }
+
+    private static IEnumerator WaitForOperations(
+        AssetProviderOperation combinedOperation,
+        List<AssetProviderOperation> operations)
     {
         while (true)
         {
@@ -633,31 +662,23 @@ public sealed class AddressableAssetProvider : MonoBehaviour, IAssetProvider, IA
 
             yield return null;
         }
+    }
 
-        string errorMessage = null;
+    private static string FindFirstOperationError(List<AssetProviderOperation> operations)
+    {
+        if (operations == null)
+            return null;
+
         for (int i = 0; i < operations.Count; i++)
         {
             AssetProviderOperation operation = operations[i];
             if (operation == null || operation.Succeeded)
                 continue;
 
-            errorMessage = operation.ErrorMessage;
-            break;
+            return operation.ErrorMessage;
         }
 
-        try
-        {
-            onCompleted?.Invoke();
-        }
-        catch (Exception ex)
-        {
-            Debug.LogException(ex, this);
-            if (string.IsNullOrEmpty(errorMessage))
-                errorMessage = ex.Message;
-        }
-
-        combinedOperation.ReportProgress(1f);
-        combinedOperation.Complete(errorMessage);
+        return null;
     }
 
     private static float CalculateCombinedProgress(List<AssetProviderOperation> operations)

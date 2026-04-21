@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using CapstoneRuntime;
 using TMPro;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 [DefaultExecutionOrder(-858)]
@@ -12,11 +11,17 @@ public sealed class LoadingOverlayController : MonoBehaviour
 {
     public static LoadingOverlayController Instance { get; private set; }
     public bool IsActiveLoadingPresentation { get; private set; }
+    public bool IsPresentationVisible =>
+        overlayRoot != null &&
+        canvasGroup != null &&
+        overlayRoot.gameObject.activeSelf &&
+        canvasGroup.alpha > 0.001f;
 
     private static bool s_isQuitting;
     private const int DebugPreviewBatchId = -7001;
     private const float FallbackTrackWidth = 560f;
     private const float TravelRange = 172f;
+    private bool ownsRuntimeInstance;
 
     [Header("Policy")]
     [SerializeField] private bool showOnlyForCorridorEntry = true;
@@ -31,6 +36,9 @@ public sealed class LoadingOverlayController : MonoBehaviour
     [SerializeField, Min(0.01f)] private float activeProgressFollowSpeed = 9f;
     [SerializeField, Min(0.01f)] private float completionProgressFollowSpeed = 22f;
     [SerializeField, Min(1f)] private float tipCycleSeconds = 5.5f;
+
+    [Header("Managed Presentation")]
+    [SerializeField, Min(0f)] private float managedBatchAppearanceGraceSeconds = 0.75f;
 
     [Header("Stall Recovery")]
     [SerializeField, Min(0f)] private float stalledBatchTimeoutSeconds = 2.5f;
@@ -88,6 +96,9 @@ public sealed class LoadingOverlayController : MonoBehaviour
     private int trackedRealBatchId;
     private float lastObservedRealBatchProgress;
     private float lastObservedRealBatchRealtime;
+    private bool managedPresentationActive;
+    private bool managedPresentationObservedRealBatch;
+    private float managedPresentationStartedRealtime;
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     private static void AutoBootstrap()
@@ -114,7 +125,9 @@ public sealed class LoadingOverlayController : MonoBehaviour
             return null;
 
         GameObject host = RuntimeServiceOwnership.CreateServiceHost(nameof(LoadingOverlayController));
-        return host.AddComponent<LoadingOverlayController>();
+        LoadingOverlayController created = host.AddComponent<LoadingOverlayController>();
+        created.ownsRuntimeInstance = true;
+        return created;
     }
 
     public void ForceHidePresentation()
@@ -128,6 +141,9 @@ public sealed class LoadingOverlayController : MonoBehaviour
         trackedRealBatchId = 0;
         lastObservedRealBatchProgress = 0f;
         lastObservedRealBatchRealtime = 0f;
+        managedPresentationActive = false;
+        managedPresentationObservedRealBatch = false;
+        managedPresentationStartedRealtime = 0f;
 
         if (canvasGroup != null)
         {
@@ -140,17 +156,70 @@ public sealed class LoadingOverlayController : MonoBehaviour
             overlayRoot.gameObject.SetActive(false);
     }
 
+    public void BeginManagedPresentation(bool showImmediately = false)
+    {
+        ResolveViewIfNeeded(allowRuntimeFallback: true);
+        BindTravelVisual();
+        debugPreviewActive = false;
+        managedPresentationActive = true;
+        managedPresentationObservedRealBatch = false;
+        managedPresentationStartedRealtime = Time.realtimeSinceStartup;
+        targetVisible = true;
+        visibleSinceRealtime = managedPresentationStartedRealtime;
+        displayedProgress = 0f;
+        shimmerPhase = 0f;
+
+        if (!showImmediately || overlayRoot == null || canvasGroup == null)
+            return;
+
+        overlayRoot.gameObject.SetActive(true);
+        canvasGroup.alpha = 1f;
+        canvasGroup.blocksRaycasts = true;
+        canvasGroup.interactable = false;
+        UpdateCopy(PortalRouteManager.Instance, 0, batchActive: false, previewActive: false);
+    }
+
+    public bool IsManagedPresentationReadyToComplete()
+    {
+        if (!managedPresentationActive)
+            return true;
+
+        if (PresentationPreloadService.GetCurrentBatchPendingProviderOperationCount() > 0)
+            return false;
+
+        if (managedPresentationObservedRealBatch)
+            return true;
+
+        return Time.realtimeSinceStartup - managedPresentationStartedRealtime >=
+               Mathf.Max(0f, managedBatchAppearanceGraceSeconds);
+    }
+
+    public void EndManagedPresentation()
+    {
+        managedPresentationActive = false;
+        targetVisible = false;
+    }
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
         {
-            Destroy(gameObject);
-            return;
+            if (Instance.ownsRuntimeInstance && !ownsRuntimeInstance)
+            {
+                LoadingOverlayController previousInstance = Instance;
+                Instance = this;
+                Destroy(previousInstance.gameObject);
+            }
+            else
+            {
+                Destroy(gameObject);
+                return;
+            }
         }
 
         Instance = this;
         RuntimeServiceOwnership.Adopt(this);
-        ResolveViewIfNeeded();
+        ResolveViewIfNeeded(allowRuntimeFallback: false);
         ForceHidePresentation();
         BindTravelVisual();
         debugPreviewActive = startWithDebugPreview;
@@ -177,23 +246,17 @@ public sealed class LoadingOverlayController : MonoBehaviour
 
     private void Update()
     {
-        ResolveViewIfNeeded();
-        BindTravelVisual();
         UpdateDebugPreviewToggle();
 
         PortalRouteManager routeManager = PortalRouteManager.Instance;
-        if (ShouldSuppressPresentationForReadyGameplay(routeManager))
-        {
-            routeManager.CompleteLoadPresentationContext("Gameplay became ready; cleared corridor loading presentation.");
-            ForceHidePresentation();
-            return;
-        }
-
         int batchId = PresentationPreloadService.GetCurrentProviderBatchId();
         int pendingCount = PresentationPreloadService.GetCurrentBatchPendingProviderOperationCount();
         float providerProgress = PresentationPreloadService.GetCurrentProviderProgress01();
-        bool realBatchActive = batchId > 0 && (pendingCount > 0 || providerProgress < 0.999f);
-        bool allowedRealBatch = realBatchActive && ShouldShowRealBatch(routeManager);
+        bool realBatchActive = batchId > 0 && pendingCount > 0;
+        bool allowedRealBatch =
+            realBatchActive &&
+            managedPresentationActive &&
+            ShouldShowRealBatch(routeManager);
         bool previewBatch = debugPreviewActive;
         bool batchActive = previewBatch || allowedRealBatch;
         int effectiveBatchId = previewBatch
@@ -216,13 +279,31 @@ public sealed class LoadingOverlayController : MonoBehaviour
             effectiveProgress = 1f;
         }
 
+        bool wantsPresentationView =
+            debugPreviewActive ||
+            batchActive ||
+            managedPresentationActive ||
+            targetVisible ||
+            canvasGroup != null && canvasGroup.alpha > 0.001f;
+        ResolveViewIfNeeded(allowRuntimeFallback: wantsPresentationView);
+        BindTravelVisual();
+
+        if (allowedRealBatch)
+            managedPresentationObservedRealBatch = true;
+
         if (batchActive && effectiveBatchId != observedBatchId)
             BeginBatch(effectiveBatchId);
 
-        if (batchActive)
+        if (batchActive || managedPresentationActive)
             targetVisible = true;
 
-        float targetProgress = batchActive ? effectiveProgress : 1f;
+        float targetProgress = batchActive
+            ? effectiveProgress
+            : managedPresentationActive && managedPresentationObservedRealBatch
+                ? 1f
+                : managedPresentationActive
+                    ? displayedProgress
+                    : 1f;
         if (effectiveBatchId != 0 && observedBatchId == effectiveBatchId)
             targetProgress = Mathf.Max(displayedProgress, targetProgress);
 
@@ -233,7 +314,7 @@ public sealed class LoadingOverlayController : MonoBehaviour
         displayedProgress = SmoothTowards(displayedProgress, targetProgress, followSpeed);
         displayedProgress = Mathf.Clamp01(displayedProgress);
 
-        if (!batchActive && targetVisible)
+        if (!batchActive && targetVisible && !managedPresentationActive)
         {
             bool visibleLongEnough = Time.realtimeSinceStartup - visibleSinceRealtime >= minimumVisibleSeconds;
             if (visibleLongEnough && displayedProgress >= 0.999f)
@@ -242,12 +323,14 @@ public sealed class LoadingOverlayController : MonoBehaviour
 
         UpdateCopy(routeManager, effectivePendingCount, batchActive, previewBatch);
         UpdateVisualState();
+        bool corridorLoadingContext =
+            routeManager != null &&
+            PortalRouteManager.IsCorridorEntryTransition(routeManager.LastLoadPresentationTransitionType);
         IsActiveLoadingPresentation =
             !previewBatch &&
             overlayRoot != null &&
             canvasGroup != null &&
-            routeManager != null &&
-            PortalRouteManager.IsCorridorEntryTransition(routeManager.LastLoadPresentationTransitionType) &&
+            (managedPresentationActive || corridorLoadingContext) &&
             (targetVisible || canvasGroup.alpha > 0.001f);
     }
 
@@ -260,34 +343,6 @@ public sealed class LoadingOverlayController : MonoBehaviour
                PortalRouteManager.IsCorridorEntryTransition(routeManager.LastLoadPresentationTransitionType);
     }
 
-    private bool ShouldSuppressPresentationForReadyGameplay(PortalRouteManager routeManager)
-    {
-        if (!showOnlyForCorridorEntry || routeManager == null)
-            return false;
-
-        if (!PortalRouteManager.IsCorridorEntryTransition(routeManager.LastLoadPresentationTransitionType))
-            return false;
-
-        SceneFadeTransitionService transitionService = SceneFadeTransitionService.Instance;
-        if (transitionService != null && transitionService.IsTransitionActive)
-            return false;
-
-        PlayerInteractor2D player = PlayerRuntimeRegistry.CurrentPlayer != null
-            ? PlayerRuntimeRegistry.CurrentPlayer
-            : PlayerInteractor2D.Instance;
-        if (player == null)
-            return false;
-
-        string targetSceneName = routeManager.LastLoadPresentationTargetSceneName;
-        if (!string.IsNullOrWhiteSpace(targetSceneName) &&
-            !string.Equals(SceneManager.GetActiveScene().name, targetSceneName, StringComparison.Ordinal))
-        {
-            return false;
-        }
-
-        return true;
-    }
-
     private void BeginBatch(int batchId)
     {
         observedBatchId = batchId;
@@ -297,9 +352,9 @@ public sealed class LoadingOverlayController : MonoBehaviour
         shimmerPhase = 0f;
     }
 
-    private void ResolveViewIfNeeded()
+    private void ResolveViewIfNeeded(bool allowRuntimeFallback)
     {
-        LoadingOverlayView desiredView = ResolveDesiredView();
+        LoadingOverlayView desiredView = ResolveDesiredView(allowRuntimeFallback);
 
         if (desiredView == null)
         {
@@ -344,7 +399,7 @@ public sealed class LoadingOverlayController : MonoBehaviour
         }
     }
 
-    private LoadingOverlayView ResolveDesiredView()
+    private LoadingOverlayView ResolveDesiredView(bool allowRuntimeFallback)
     {
         LoadingOverlayView preferredCanvasView = null;
         Canvas loadingCanvas = GlobalUIRoot.GetCanvas(GlobalCanvasLayer.Loading);
@@ -355,18 +410,16 @@ public sealed class LoadingOverlayController : MonoBehaviour
 
         bool keepCurrentView = boundOverlayView != null && (targetVisible || (canvasGroup != null && canvasGroup.alpha > 0.001f));
         if (keepCurrentView)
-        {
-            if (boundOverlayView == runtimeFallbackView && preferredCanvasView != null)
-                return preferredCanvasView;
-
             return boundOverlayView;
-        }
 
         if (overlayView != null)
             return overlayView;
 
         if (preferredCanvasView != null)
             return preferredCanvasView;
+
+        if (!allowRuntimeFallback)
+            return GetComponentInChildren<LoadingOverlayView>(includeInactive: true);
 
         CreateRuntimeFallbackViewIfNeeded();
         if (runtimeFallbackView != null)

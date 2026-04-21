@@ -24,11 +24,33 @@ namespace CapstonePresentation
 
         private const float LoopingAutoReleaseFallbackSeconds = 1f;
 
+        [Header("Prewarm Budget")]
+        [SerializeField, Min(1)] private int prewarmInstancesPerFrame = 2;
+        [SerializeField, Min(0f)] private float prewarmFrameBudgetMilliseconds = 2f;
+
         private sealed class PooledPresentationInstance : MonoBehaviour
         {
             public int prefabId;
             public Vector3 initialScale = Vector3.one;
             public int activeVersion;
+        }
+
+        private sealed class PendingPrewarmRequest
+        {
+            public PendingPrewarmRequest(GameObject prefab, int count, AssetProviderOperation operation)
+            {
+                Prefab = prefab;
+                Count = count;
+                Operation = operation;
+            }
+
+            public GameObject Prefab { get; }
+            public int Count { get; }
+            public AssetProviderOperation Operation { get; }
+            public int PrefabId { get; set; }
+            public int CreatedCount { get; set; }
+            public Queue<PooledPresentationInstance> Pool { get; set; }
+            public bool IsInitialized { get; set; }
         }
 
         public static PresentationSpawnService Instance { get; private set; }
@@ -37,7 +59,9 @@ namespace CapstonePresentation
 
         private readonly Dictionary<int, Queue<PooledPresentationInstance>> poolByPrefabId = new();
         private readonly Dictionary<int, string> prefabNamesById = new();
+        private readonly Queue<PendingPrewarmRequest> pendingPrewarmRequests = new();
         private Transform pooledRoot;
+        private Coroutine prewarmQueueRoutine;
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void AutoBootstrap()
@@ -131,6 +155,17 @@ namespace CapstonePresentation
             service?.PrewarmInternal(prefab, count);
         }
 
+        public static AssetProviderOperation PrewarmPrefabAsync(GameObject prefab, int count = 1)
+        {
+            if (prefab == null || count <= 0)
+                return AssetProviderOperation.Completed("PrewarmPrefab <none>");
+
+            PresentationSpawnService service = EnsureInstance();
+            return service != null
+                ? service.PrewarmInternalAsync(prefab, count)
+                : AssetProviderOperation.Completed(BuildPrewarmLabel(prefab, count));
+        }
+
         public static void TrimPrewarmedPrefab(GameObject prefab, int count = 1)
         {
             if (prefab == null || count <= 0)
@@ -181,6 +216,8 @@ namespace CapstonePresentation
 
         private void OnDestroy()
         {
+            CompletePendingPrewarmRequests("PresentationSpawnService was destroyed.");
+
             if (Instance == this)
                 Instance = null;
         }
@@ -330,7 +367,7 @@ namespace CapstonePresentation
             }
 
             coldSpawn = true;
-            return CreatePooledInstance(resolvedPrefab, prefabId);
+            return CreatePooledInstance(resolvedPrefab, prefabId, deactivateAfterCreate: false);
         }
 
         private void ReleaseInternal(GameObject instance)
@@ -405,14 +442,129 @@ namespace CapstonePresentation
                 if (created == null)
                     break;
 
-                StopAndResetInstance(created.gameObject);
-                created.transform.SetParent(pooledRoot, worldPositionStays: false);
-                created.transform.localPosition = Vector3.zero;
-                created.transform.localRotation = Quaternion.identity;
-                created.transform.localScale = created.initialScale;
-                created.gameObject.SetActive(false);
-                pool.Enqueue(created);
+                EnqueuePrewarmedInstance(created, pool);
             }
+        }
+
+        private AssetProviderOperation PrewarmInternalAsync(GameObject prefab, int count)
+        {
+            prefab = ResolvePrefab(prefab);
+            if (prefab == null || count <= 0)
+                return AssetProviderOperation.Completed("PrewarmPrefab <none>");
+
+            var operation = new AssetProviderOperation(BuildPrewarmLabel(prefab, count));
+            operation.SetProgressUnits(Mathf.Max(1, count));
+            pendingPrewarmRequests.Enqueue(new PendingPrewarmRequest(prefab, count, operation));
+            if (prewarmQueueRoutine == null)
+                prewarmQueueRoutine = StartCoroutine(CoRunPrewarmQueue());
+
+            return operation;
+        }
+
+        private IEnumerator CoRunPrewarmQueue()
+        {
+            EnsurePoolRoot();
+
+            while (pendingPrewarmRequests.Count > 0)
+            {
+                int maxPerFrame = Mathf.Max(1, prewarmInstancesPerFrame);
+                long budgetTicks = prewarmFrameBudgetMilliseconds > 0f
+                    ? (long)(System.Diagnostics.Stopwatch.Frequency * prewarmFrameBudgetMilliseconds / 1000f)
+                    : 0L;
+                int createdThisFrame = 0;
+                long frameStartTicks = System.Diagnostics.Stopwatch.GetTimestamp();
+
+                while (pendingPrewarmRequests.Count > 0)
+                {
+                    PendingPrewarmRequest request = pendingPrewarmRequests.Peek();
+                    if (!request.IsInitialized)
+                        InitializePrewarmRequest(request);
+
+                    if (request.Prefab == null || request.Pool == null)
+                    {
+                        request.Operation.Complete("Prewarm request target is missing.");
+                        pendingPrewarmRequests.Dequeue();
+                        continue;
+                    }
+
+                    PooledPresentationInstance created = CreatePooledInstance(request.Prefab, request.PrefabId);
+                    if (created == null)
+                    {
+                        request.Operation.Complete($"Failed to prewarm {request.Prefab.name}.");
+                        pendingPrewarmRequests.Dequeue();
+                        continue;
+                    }
+
+                    EnqueuePrewarmedInstance(created, request.Pool);
+
+                    request.CreatedCount++;
+                    createdThisFrame++;
+                    request.Operation.ReportProgress(request.CreatedCount / (float)request.Count);
+
+                    if (request.CreatedCount >= request.Count)
+                    {
+                        request.Operation.Complete();
+                        pendingPrewarmRequests.Dequeue();
+                    }
+
+                    bool reachedCountBudget = createdThisFrame >= maxPerFrame;
+                    bool reachedTimeBudget =
+                        budgetTicks > 0L &&
+                        System.Diagnostics.Stopwatch.GetTimestamp() - frameStartTicks >= budgetTicks;
+                    if (reachedCountBudget || reachedTimeBudget)
+                        break;
+                }
+
+                if (pendingPrewarmRequests.Count > 0)
+                    yield return null;
+            }
+
+            prewarmQueueRoutine = null;
+        }
+
+        private void InitializePrewarmRequest(PendingPrewarmRequest request)
+        {
+            request.IsInitialized = true;
+            if (request.Prefab == null)
+                return;
+
+            int prefabId = request.Prefab.GetInstanceID();
+            request.PrefabId = prefabId;
+            prefabNamesById[prefabId] = request.Prefab.name;
+            if (!poolByPrefabId.TryGetValue(prefabId, out Queue<PooledPresentationInstance> pool))
+            {
+                pool = new Queue<PooledPresentationInstance>();
+                poolByPrefabId[prefabId] = pool;
+            }
+
+            request.Pool = pool;
+        }
+
+        private void EnqueuePrewarmedInstance(
+            PooledPresentationInstance created,
+            Queue<PooledPresentationInstance> pool)
+        {
+            if (created == null || pool == null)
+                return;
+
+            EnsurePoolRoot();
+            created.transform.SetParent(pooledRoot, worldPositionStays: false);
+            created.transform.localPosition = Vector3.zero;
+            created.transform.localRotation = Quaternion.identity;
+            created.transform.localScale = created.initialScale;
+            created.gameObject.SetActive(false);
+            pool.Enqueue(created);
+        }
+
+        private void CompletePendingPrewarmRequests(string errorMessage)
+        {
+            while (pendingPrewarmRequests.Count > 0)
+            {
+                PendingPrewarmRequest request = pendingPrewarmRequests.Dequeue();
+                request.Operation?.Complete(errorMessage);
+            }
+
+            prewarmQueueRoutine = null;
         }
 
         private void TrimInternal(GameObject prefab, int count)
@@ -445,11 +597,19 @@ namespace CapstonePresentation
             }
         }
 
-        private static PooledPresentationInstance CreatePooledInstance(GameObject prefab, int prefabId)
+        private PooledPresentationInstance CreatePooledInstance(
+            GameObject prefab,
+            int prefabId,
+            bool deactivateAfterCreate = true)
         {
-            GameObject instance = Instantiate(prefab);
+            EnsurePoolRoot();
+
+            GameObject instance = Instantiate(prefab, pooledRoot, worldPositionStays: false);
             if (instance == null)
                 return null;
+
+            if (deactivateAfterCreate)
+                instance.SetActive(false);
 
             PooledPresentationInstance created = instance.GetComponent<PooledPresentationInstance>();
             if (created == null)
@@ -461,6 +621,12 @@ namespace CapstonePresentation
                 : instance.transform.localScale;
             created.activeVersion = 1;
             return created;
+        }
+
+        private static string BuildPrewarmLabel(GameObject prefab, int count)
+        {
+            string prefabName = prefab != null ? prefab.name : "<none>";
+            return $"PrewarmPrefab {prefabName} x{Mathf.Max(0, count)}";
         }
 
         private static void InitializeSpawnedInstance(GameObject instance, bool useUnscaledTime)

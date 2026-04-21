@@ -65,8 +65,8 @@ public sealed class RunTimeOverReturnToHub : MonoBehaviour
 
         if (useFadeTransitionService)
         {
-            var transitionService = SceneFadeTransitionService.EnsureInstance();
-            if (transitionService != null && transitionService.TryLoadScene(hubSceneName))
+            var transitionCoordinator = SceneTransitionCoordinator.EnsureInstance();
+            if (transitionCoordinator != null && transitionCoordinator.TryLoadScene(hubSceneName))
                 return;
         }
 

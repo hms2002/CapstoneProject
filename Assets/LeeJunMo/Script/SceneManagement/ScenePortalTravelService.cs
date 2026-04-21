@@ -9,16 +9,16 @@ public static class ScenePortalTravelService
         if (portal == null)
             return false;
 
-        var transitionService = SceneFadeTransitionService.EnsureInstance(allowRuntimeFallback: true);
-        if (transitionService == null)
+        var transitionCoordinator = SceneTransitionCoordinator.EnsureInstance();
+        if (transitionCoordinator == null)
         {
             Debug.LogError(
-                "[ScenePortalTravelService] SceneFadeTransitionService could not be created for scene travel.",
+                "[ScenePortalTravelService] SceneTransitionCoordinator could not be created for scene travel.",
                 portal);
             return false;
         }
 
-        if (transitionService.IsTransitionActive)
+        if (transitionCoordinator.IsTransitionActive)
             return false;
 
         var route = ResolveRoute(portal);
@@ -58,7 +58,7 @@ public static class ScenePortalTravelService
         if (notifyRouteManager != null)
             notifyRouteManager.NotifyTransitionConsumed(route.TransitionType);
 
-        return transitionService.TryLoadScene(route.TargetSceneName);
+        return transitionCoordinator.TryLoadScene(route.TargetSceneName);
     }
 
     private static PortalRouteDecision ResolveRoute(ScenePortal portal)

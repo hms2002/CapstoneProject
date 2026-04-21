@@ -142,6 +142,7 @@ public sealed class SceneDomainCoordinator : MonoBehaviour
 
     private static void EnsureAppScopeServices()
     {
+        SceneTransitionCoordinator.EnsureInstance();
         SceneFadeTransitionService.EnsureInstance(allowRuntimeFallback: true);
         LoadingOverlayController.EnsureInstance();
         PresentationPreloadService.EnsureInstance();

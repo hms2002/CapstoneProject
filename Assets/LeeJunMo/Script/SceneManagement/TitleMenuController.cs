@@ -28,6 +28,10 @@ public sealed class TitleMenuController : MonoBehaviour
     [SerializeField] private bool lockMainMenuWhileSlotPanelOpen = true;
     [SerializeField, Min(0f)] private float mainMenuInputUnlockDelay = 0.18f;
 
+    [Header("Presentation")]
+    [SerializeField] private bool adaptSceneCanvasToPresentationViewport = true;
+    [SerializeField] private PresentationCanvasAdapter presentationCanvasAdapter;
+
     private bool listenersBound;
     private bool isLoading;
     private Coroutine mainMenuUnlockCoroutine;
@@ -36,6 +40,7 @@ public sealed class TitleMenuController : MonoBehaviour
     {
         SceneDomainCoordinator.EnsureInstance();
         ResolveReferences();
+        EnsurePresentationCanvasAdapter();
         EnsureUiInputReady();
         BindListeners();
         TitleProfileSlotService.EnsureInstance();
@@ -45,6 +50,7 @@ public sealed class TitleMenuController : MonoBehaviour
     private void Start()
     {
         ResolveReferences();
+        EnsurePresentationCanvasAdapter();
 
         if (profileSlotPanel != null && profileSlotPanel.gameObject.activeSelf)
             profileSlotPanel.gameObject.SetActive(false);
@@ -179,8 +185,8 @@ public sealed class TitleMenuController : MonoBehaviour
 
         isLoading = true;
 
-        SceneFadeTransitionService transitionService = SceneFadeTransitionService.EnsureInstance(allowRuntimeFallback: true);
-        if (transitionService != null && transitionService.TryLoadScene(targetSceneName))
+        SceneTransitionCoordinator transitionCoordinator = SceneTransitionCoordinator.EnsureInstance();
+        if (transitionCoordinator != null && transitionCoordinator.TryLoadScene(targetSceneName))
             return;
 
         SceneManager.LoadScene(targetSceneName);
@@ -197,8 +203,47 @@ public sealed class TitleMenuController : MonoBehaviour
 
     private void EnsureUiInputReady()
     {
+        EnsurePresentationCanvasAdapter();
         EnsureEventSystemExists();
         EnsureCanvasRaycasterExists();
+    }
+
+    private void EnsurePresentationCanvasAdapter()
+    {
+        if (!adaptSceneCanvasToPresentationViewport)
+            return;
+
+        Canvas sceneCanvas = ResolveSceneCanvas();
+        if (sceneCanvas == null)
+            return;
+
+        if (presentationCanvasAdapter == null || presentationCanvasAdapter.gameObject != sceneCanvas.gameObject)
+            presentationCanvasAdapter = sceneCanvas.GetComponent<PresentationCanvasAdapter>();
+
+        if (presentationCanvasAdapter == null)
+            presentationCanvasAdapter = sceneCanvas.gameObject.AddComponent<PresentationCanvasAdapter>();
+
+        presentationCanvasAdapter.ApplyNow(true);
+    }
+
+    private Canvas ResolveSceneCanvas()
+    {
+        Canvas ownCanvas = GetComponentInParent<Canvas>();
+        if (ownCanvas != null)
+            return ownCanvas;
+
+        Scene activeScene = SceneManager.GetActiveScene();
+        Canvas[] sceneCanvases = FindObjectsByType<Canvas>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        for (int i = 0; i < sceneCanvases.Length; i++)
+        {
+            Canvas canvas = sceneCanvases[i];
+            if (canvas == null || canvas.gameObject.scene != activeScene)
+                continue;
+
+            return canvas;
+        }
+
+        return null;
     }
 
     private void EnsureEventSystemExists()
