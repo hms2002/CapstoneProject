@@ -43,10 +43,10 @@ Material:
     m_Floats:
     - _AlphaThreshold: 0.1
     - _ColorMask: 15
-    - _CoreAlpha: 0.2
+    - _CoreAlpha: 0.119
     - _EnableExternalAlpha: 0
-    - _GlowAlpha: 0.9
-    - _GlowSize: 1
+    - _GlowAlpha: 0.43
+    - _GlowSize: 1.57
     - _PulseMax: 1
     - _PulseMin: 0.5
     - _PulseSpeed: 8

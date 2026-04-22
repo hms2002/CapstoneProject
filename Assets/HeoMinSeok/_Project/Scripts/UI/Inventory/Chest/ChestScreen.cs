@@ -23,6 +23,9 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
     [SerializeField] private Button closeButton;
     [SerializeField] private DropZoneUI dropZone;
 
+    [Header("Presentation")]
+    [SerializeField] private InventorySlideFadePresentation slideFadePresentation;
+
     [Header("Runtime Refs")]
     [SerializeField] private PlayerConsumableInventory playerConsumableInventory;
     [SerializeField] private WeaponInventory2D playerWeaponInventory;
@@ -42,6 +45,7 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
     private IDisposable consumableAdapterDisposer;
     private IDisposable weaponAdapterDisposer;
     private IDisposable relicAdapterDisposer;
+    private bool playPresentationOnNextOpen = true;
 
     // =========================================================
     // IStackableUI 규약
@@ -53,18 +57,51 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
     public UIGameplayLockProfile GameplayLockProfile => UIGameplayLockProfile.FreezeAndBlockControl;
     public MouseCursorDomain CursorDomain => MouseCursorDomain.Inventory;
 
+    public void SetPresentationForNextOpen(bool playPresentation)
+    {
+        playPresentationOnNextOpen = playPresentation;
+    }
+
     public void OpenUI()
     {
-        gameObject.SetActive(true);
+        ResolvePresentation();
+
+        bool shouldAnimate = playPresentationOnNextOpen;
+        playPresentationOnNextOpen = true;
+
+        if (slideFadePresentation == null)
+        {
+            gameObject.SetActive(true);
+            return;
+        }
+
+        if (shouldAnimate)
+            slideFadePresentation.PlayOpen();
+        else
+            slideFadePresentation.SnapOpen();
     }
 
     public void CloseUI()
     {
-        gameObject.SetActive(false);
+        ItemDragContext.CancelActiveDragSession();
 
         // 창이 닫힐 때 허공에 뜬 Hover UI(툴팁) 강제 제거
         if (UIManager.Instance != null) UIManager.Instance.HideHoverImmediate();
 
+        ResolvePresentation();
+
+        if (slideFadePresentation != null)
+        {
+            slideFadePresentation.PlayClose(NotifyChestClosed);
+            return;
+        }
+
+        gameObject.SetActive(false);
+        NotifyChestClosed();
+    }
+
+    private void NotifyChestClosed()
+    {
         // [핵심] UIManager에 의해 창이 닫히면 매니저에게 알려서 시간과 플레이어 상태를 복구합니다.
         if (ChestUIManager.Instance != null)
         {
@@ -75,6 +112,8 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
 
     private void Awake()
     {
+        ResolvePresentation();
+
         if (closeButton != null)
         {
             // 직접 끄지 않고 사령탑(UIManager)에게 닫아달라고(Pop) 요청
@@ -84,6 +123,16 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
             });
         }
 
+    }
+
+    private void ResolvePresentation()
+    {
+        if (slideFadePresentation != null)
+            return;
+
+        slideFadePresentation = GetComponent<InventorySlideFadePresentation>();
+        if (slideFadePresentation == null)
+            slideFadePresentation = gameObject.AddComponent<InventorySlideFadePresentation>();
     }
 
     private void OnEnable()
