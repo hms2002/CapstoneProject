@@ -217,6 +217,8 @@ public class WeaponInventory2D : MonoBehaviour
         runtimeCoordinator = new WeaponRuntimeCoordinator(this);
         interactionLayer = new WeaponInteractionLayer(runtimeCoordinator);
 
+        EnsureStatusHudSource();
+
         EnsureRuntimeSlotCapacity();
         RebuildRuntimeDataState();
         RebuildAbilityOwnershipState();
@@ -228,6 +230,16 @@ public class WeaponInventory2D : MonoBehaviour
             // 그래야 WeaponAbilityRuntimeState를 가진 무기 프리팹이 selector 단계에서 정상적으로 조회된다.
             presentationBinder.ApplyVisualOnly(ActiveWeapon);
         }
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 무기 인벤토리 owner에 태양도/월영도 상태 HUD source를 직접 부착해 별도 bootstrap 없이도 무기 상태 HUD가 등록되게 한다.
+    /// - 특정 무기마다 별도 bootstrap을 늘리지 않고, 실제 runtime data를 소유한 인벤토리만 공통 HUD 파이프라인에 참여하게 만든다.
+    /// </summary>
+    private void EnsureStatusHudSource()
+    {
+        SunMoonStatusHudSource.GetOrAdd(gameObject);
     }
 
     private void Update()

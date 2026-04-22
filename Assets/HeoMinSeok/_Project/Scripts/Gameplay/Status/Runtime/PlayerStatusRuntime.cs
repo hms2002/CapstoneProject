@@ -22,6 +22,7 @@ public sealed class PlayerStatusRuntime : MonoBehaviour
     private void Awake()
     {
         tagSystem ??= GetComponent<TagSystem>();
+        EnsureHudSource();
     }
 
     public static PlayerStatusRuntime GetOrAdd(GameObject owner)
@@ -30,7 +31,25 @@ public sealed class PlayerStatusRuntime : MonoBehaviour
             return null;
 
         PlayerStatusRuntime existing = owner.GetComponent<PlayerStatusRuntime>();
-        return existing != null ? existing : owner.AddComponent<PlayerStatusRuntime>();
+        if (existing != null)
+        {
+            existing.EnsureHudSource();
+            return existing;
+        }
+
+        PlayerStatusRuntime created = owner.AddComponent<PlayerStatusRuntime>();
+        created.EnsureHudSource();
+        return created;
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 일반 상태 HUD source를 PlayerStatusRuntime owner에 직접 귀속시켜 bootstrap 없이도 상태 HUD 수집 경로가 열리게 한다.
+    /// - 타이틀 씬처럼 플레이어가 없는 구간에서 전역 bootstrap 오브젝트가 빈 껍데기로 생성되는 구조를 제거한다.
+    /// </summary>
+    private void EnsureHudSource()
+    {
+        PlayerStatusHudSource.GetOrAdd(gameObject);
     }
 
     public StatusHandle Apply(in StatusApplyRequest request)
