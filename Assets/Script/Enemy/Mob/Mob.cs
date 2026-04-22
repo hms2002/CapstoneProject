@@ -8,6 +8,9 @@ public class Mob : Enemy
     [SerializeField] private EnemyChaseIntent2D chaseIntent;
 
     private bool hasMoveBool;
+    private MobStateMachine stateMachine;
+    private MobAIContext aiContext;
+    private bool triedInitializeStateMachine;
 
     protected EnemyChaseIntent2D ChaseIntent => chaseIntent;
 
@@ -25,13 +28,10 @@ public class Mob : Enemy
     {
         if (isDead) return;
 
-        UpdateAttack();
-        UpdateAnimation();
-    }
+        if (TryInitializeStateMachine())
+            stateMachine?.Tick(aiContext);
 
-    /// <summary>필요한 공격 로직을 갱신합니다.</summary>
-    protected virtual void UpdateAttack()
-    {
+        UpdateAnimation();
     }
 
     /// <summary>이 몬스터가 추적 이동을 사용할지 정합니다.</summary>
@@ -96,7 +96,143 @@ public class Mob : Enemy
 
     protected override void OnDeathStarted()
     {
+        EnterDeathState();
         LootManager.Instance?.SpawnMonsterLoot(transform.position);
+    }
+
+    private void OnDisable()
+    {
+        aiContext?.PerformFailSafeCleanup();
+        ShutdownStateMachine();
+    }
+
+    /// <summary>FSM 기반 공격 판단을 지원하는 몬스터면 공통 상태 기계를 초기화합니다.</summary>
+    private bool TryInitializeStateMachine()
+    {
+        if (stateMachine != null && aiContext != null)
+            return true;
+
+        if (triedInitializeStateMachine)
+            return false;
+
+        triedInitializeStateMachine = true;
+
+        if (!TryResolveMobAbilityBridge(out IMobAbilityBridge abilityBridge))
+            return false;
+
+        if (!TryResolveAttackDecisionSource(out IMobAttackDecisionSource attackDecisionSource))
+            return false;
+
+        aiContext = new MobAIContext(
+            this,
+            chaseIntent,
+            abilityBridge,
+            attackDecisionSource,
+            ResolvePatternRunnerTargets(),
+            ResolvePresentationCleanupTargets());
+        stateMachine = new MobStateMachine();
+        stateMachine.SetInitialState(new MobIdleState(), aiContext);
+        return true;
+    }
+
+    /// <summary>현재 오브젝트에 붙은 pattern runner cleanup 대상을 수집합니다.</summary>
+    private IMobPatternRunner[] ResolvePatternRunnerTargets()
+    {
+        MonoBehaviour[] behaviours = GetComponents<MonoBehaviour>();
+        System.Collections.Generic.List<IMobPatternRunner> targets = null;
+
+        for (int i = 0; i < behaviours.Length; i++)
+        {
+            if (behaviours[i] is not IMobPatternRunner runner)
+                continue;
+
+            targets ??= new System.Collections.Generic.List<IMobPatternRunner>();
+            targets.Add(runner);
+        }
+
+        return targets != null
+            ? targets.ToArray()
+            : System.Array.Empty<IMobPatternRunner>();
+    }
+
+    /// <summary>현재 오브젝트에 붙은 presentation cleanup provider를 수집합니다.</summary>
+    private IMobPresentationCleanup[] ResolvePresentationCleanupTargets()
+    {
+        MonoBehaviour[] behaviours = GetComponents<MonoBehaviour>();
+        System.Collections.Generic.List<IMobPresentationCleanup> targets = null;
+
+        for (int i = 0; i < behaviours.Length; i++)
+        {
+            if (behaviours[i] is not IMobPresentationCleanup cleanupTarget)
+                continue;
+
+            targets ??= new System.Collections.Generic.List<IMobPresentationCleanup>();
+            targets.Add(cleanupTarget);
+        }
+
+        return targets != null
+            ? targets.ToArray()
+            : System.Array.Empty<IMobPresentationCleanup>();
+    }
+
+    /// <summary>현재 오브젝트에 붙은 일반 몬스터 bridge를 해석합니다.</summary>
+    private bool TryResolveMobAbilityBridge(out IMobAbilityBridge abilityBridge)
+    {
+        abilityBridge = null;
+
+        MonoBehaviour[] behaviours = GetComponents<MonoBehaviour>();
+        for (int i = 0; i < behaviours.Length; i++)
+        {
+            if (behaviours[i] is IMobAbilityBridge resolvedBridge)
+            {
+                abilityBridge = resolvedBridge;
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /// <summary>현재 오브젝트에 붙은 몬스터별 공격 결정 source를 해석합니다.</summary>
+    private bool TryResolveAttackDecisionSource(out IMobAttackDecisionSource attackDecisionSource)
+    {
+        attackDecisionSource = null;
+
+        MonoBehaviour[] behaviours = GetComponents<MonoBehaviour>();
+        for (int i = 0; i < behaviours.Length; i++)
+        {
+            if (behaviours[i] is IMobAttackDecisionSource resolvedSource)
+            {
+                attackDecisionSource = resolvedSource;
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /// <summary>공통 상태 기계를 안전하게 종료합니다.</summary>
+    private void ShutdownStateMachine()
+    {
+        if (stateMachine == null || aiContext == null)
+            return;
+
+        stateMachine.Shutdown(aiContext);
+        stateMachine = null;
+        aiContext = null;
+        triedInitializeStateMachine = false;
+    }
+
+    /// <summary>사망 시 공통 FSM을 명시적인 터미널 상태로 전이시킵니다.</summary>
+    private void EnterDeathState()
+    {
+        if (stateMachine == null || aiContext == null)
+        {
+            aiContext?.PerformFailSafeCleanup();
+            return;
+        }
+
+        stateMachine.ChangeState(new MobDeathState(), aiContext);
     }
 
     private void OnDrawGizmos()

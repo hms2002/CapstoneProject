@@ -41,6 +41,9 @@
 
 - 패턴 데이터는 가능한 한 AL/AD 자산이 들고,
 - 보스 본체는 월드 행위 host 쪽으로 남기는 방향이 좋습니다.
+- pattern-specific presentation도 같은 기준을 따르는 편이 좋습니다.
+  - `AbilityLogic_Witch*`처럼 warning / hit / failure / charge presentation은 가능한 한 AL이 소유합니다.
+  - phase intro / death / cinematic처럼 상태 리듬 자체에 묶인 presentation은 controller / state / encounter director 쪽에 남습니다.
 
 - 사망/그로기/연출 진입 시 남는 패턴 오브젝트 정리는 보스 쪽 cleanup 규칙으로 봐야 합니다.
 

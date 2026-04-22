@@ -8,14 +8,28 @@ using UnityGAS;
 /// 이 클래스의 책임: 
 /// 플레이어 추적 중 자폭 조건을 판단하고, 자폭 모드에서만 폭발/광원 사망 규칙이 적용되며 일반 피해는 무시하는 해골 몬스터의 전투 흐름을 관리한다.
 /// </summary>
-public class DeadsSkeleton : Mob, IDamageReceiver
+public class DeadsSkeleton : Mob, IDamageReceiver, IMobAttackDecisionSource, IMobAttackStateResolver, IMobPresentationCleanup
 {
+    // 이 클래스의 책임:
+    // Dead'sSkeleton의 자폭 상태 전이와 추적 리듬을 관리하고, 순수 폭발 패턴 실행 데이터는 AL에서 읽어 사용한다.
+
+    /// <summary>
+    /// 책임 :
+    /// - Dead'sSkeleton이 공통 FSM 엔진 위에서 사용할 몬스터 전용 상태 식별자를 정의한다.
+    /// - 자폭처럼 공통 AttackState로 표현하기 어색한 전투 리듬을 해골 전용 상태 집합으로 구분하게 한다.
+    /// </summary>
+    private enum DeadsSkeletonStateId
+    {
+        Idle,
+        Chase,
+        SelfDestruct,
+        Recover,
+        Stagger
+    }
+
     [Header("자폭 모드")]
     [Tooltip("플레이어가 이 범위에 들어오면 자폭 시퀀스 인트로를 시작하는 지름입니다.")]
     [SerializeField] private float selfDestructTriggerDiameter = 7f;
-
-    [Tooltip("자폭 경고와 실제 폭발 범위의 지름입니다.")]
-    [SerializeField] private float explosionDiameter = 5f;
 
     [Tooltip("자폭 모드로 완전히 전환된 뒤 플레이어를 추격할 때 사용할 속도 배율입니다.")]
     [SerializeField] private float selfDestructChaseSpeedScale = 1.5f;
@@ -29,38 +43,8 @@ public class DeadsSkeleton : Mob, IDamageReceiver
     [Tooltip("자폭 모드로 완전히 전환된 뒤 사용할 추적 감지 범위 반지름입니다.")]
     [SerializeField] private float selfDestructDetectionRange = 8f;
 
-    [Tooltip("폭발에 사용할 데미지 이펙트입니다.")]
-    [SerializeField] private GE_Damage_Spec explosionDamageEffect;
-
-    [Tooltip("폭발 피해량입니다.")]
-    [SerializeField] private float explosionDamage = 1f;
-
-    [Tooltip("자폭 시 한 번 재생할 폭발 비주얼 프리팹입니다.")]
-    [SerializeField] private GameObject explosionVisualPrefab;
-
-    [Tooltip("자폭 시 추가로 재생할 폭발 파티클 프리팹입니다.")]
-    [SerializeField] private GameObject explosionParticlePrefab;
-
     [Tooltip("폭발 비주얼을 생성할 기준점입니다. 비어 있으면 자기 자신 위치를 사용합니다.")]
     [SerializeField] private Transform explosionVisualAnchor;
-
-    [Tooltip("폭발 비주얼에 적용할 추가 월드 오프셋입니다.")]
-    [SerializeField] private Vector3 explosionVisualOffset = Vector3.zero;
-
-    [Tooltip("폭발 파티클에 적용할 추가 월드 오프셋입니다.")]
-    [SerializeField] private Vector3 explosionParticleOffset = Vector3.zero;
-
-    [Tooltip("폭발 비주얼 배율 보정값입니다.")]
-    [SerializeField] private Vector3 explosionVisualScale = Vector3.one;
-
-    [Tooltip("폭발 파티클 배율 보정값입니다.")]
-    [SerializeField] private Vector3 explosionParticleScale = Vector3.one;
-
-    [Tooltip("자폭 시 재생할 사운드입니다.")]
-    [SerializeField] private SoundRef explosionSound;
-
-    [Tooltip("자폭 시 재생할 카메라 셰이크입니다.")]
-    [SerializeField] private CameraShakeHook explosionCameraShake = CameraShakeHook.Create(0.18f, 1f, 0.28f, 0.04f);
     [Header("Ability")]
     [SerializeField] private AbilityDefinition selfDestructAbilityDefinition;
     [SerializeField] private MobAbilityCoordinator abilityCoordinator;
@@ -81,8 +65,7 @@ public class DeadsSkeleton : Mob, IDamageReceiver
     private float selfDestructIntroEndTime;
     private bool hasLoggedInvalidConfig;
     private bool suppressHealthRestore;
-    private bool ownsRuntimeAbilityDefinition;
-    private AbilityLogic_DeadsSkeletonSelfDestruct runtimeSelfDestructLogic;
+    private float runtimeExplosionDiameterOverride = -1f;
 
     protected override void Awake()
     {
@@ -117,18 +100,35 @@ public class DeadsSkeleton : Mob, IDamageReceiver
         EnsureSelfDestructAbility();
     }
 
-    protected override void UpdateAttack()
+    /// <summary>
+    /// 책임 :
+    /// - Dead'sSkeleton 자폭 패턴 데이터의 현재 공식 소유자를 AL로 통일해 상태, helper, presentation이 같은 설정을 보게 한다.
+    /// - AL asset이 없거나 잘못 연결된 경우를 바로 드러내고, 패턴 실행 데이터가 owner fallback로 되돌아가지 않게 한다.
+    /// </summary>
+    public AbilityLogic_DeadsSkeletonSelfDestruct.PatternData GetSelfDestructPatternData()
     {
-        if (abilityCoordinator == null || selfDestructAbilityDefinition == null)
-            return;
+        AbilityLogic_DeadsSkeletonSelfDestruct logic = GetSelfDestructLogic();
+        return logic != null ? logic.Data : default;
+    }
 
-        if (abilityCoordinator.IsAbilityExecutionBusy)
-            return;
+    private AbilityLogic_DeadsSkeletonSelfDestruct GetSelfDestructLogic()
+    {
+        return selfDestructAbilityDefinition != null
+            ? selfDestructAbilityDefinition.logic as AbilityLogic_DeadsSkeletonSelfDestruct
+            : null;
+    }
 
-        if (!CanStartSelfDestruct())
-            return;
+    /// <summary>
+    /// 책임 :
+    /// - 자폭 패턴 데이터의 기본 폭발 반경 위에 전투 중 일시 강화/변형을 얹는 런타임 오버라이드를 제공한다.
+    /// - asset 데이터는 보존하면서도 패턴 실행 중 필요한 동적 폭발 반경 변경을 허용한다.
+    /// </summary>
+    private float GetConfiguredExplosionDiameter()
+    {
+        if (runtimeExplosionDiameterOverride >= 0f)
+            return runtimeExplosionDiameterOverride;
 
-        abilityCoordinator.TryStartAbility(selfDestructAbilityDefinition, target != null ? target.gameObject : null);
+        return Mathf.Max(0f, GetSelfDestructPatternData().explosionDiameter);
     }
 
     /// <summary>자폭 전환 애니메이션 중에는 추적 이동을 멈춥니다.</summary>
@@ -223,7 +223,8 @@ public class DeadsSkeleton : Mob, IDamageReceiver
     /// <summary>폭발에 필요한 참조가 있는지 확인합니다.</summary>
     private bool HasExplodeData()
     {
-        bool isValid = explosionDamageEffect != null &&
+        AbilityLogic_DeadsSkeletonSelfDestruct.PatternData data = GetSelfDestructPatternData();
+        bool isValid = data.damageEffect != null &&
                        abilitySystem != null &&
                        target != null;
 
@@ -324,6 +325,42 @@ public class DeadsSkeleton : Mob, IDamageReceiver
         return true;
     }
 
+    /// <summary>FSM AttackState가 사용할 자폭 요청을 구성합니다.</summary>
+    public bool TryBuildAttackRequest(out MobAttackRequest request)
+    {
+        request = default;
+
+        GameObject targetObject = target != null ? target.gameObject : null;
+        if (!TryCreateSelfDestructContext(targetObject, out _))
+            return false;
+
+        request = new MobAttackRequest(selfDestructAbilityDefinition, targetObject);
+        return request.IsValid;
+    }
+
+    /// <summary>Dead'sSkeleton은 공통 AttackState 대신 자폭 전용 상태를 반환합니다.</summary>
+    public bool TryCreateAttackState(MobAttackRequest request, out IMobState attackState)
+    {
+        attackState = request.IsValid
+            ? CreateState(DeadsSkeletonStateId.SelfDestruct, request)
+            : null;
+        return attackState != null;
+    }
+
+    /// <summary>자폭은 executor가 공식 시작 시점을 관리하므로 FSM 진입 훅에서는 추가 처리하지 않습니다.</summary>
+    public void OnAttackStateEntered(MobAttackRequest request)
+    {
+    }
+
+    /// <summary>자폭 상태가 비정상 종료되면 진행 중인 자폭 시퀀스를 안전하게 정리합니다.</summary>
+    public void OnAttackStateExited(MobAttackRequest request, bool wasCancelled)
+    {
+        if (!wasCancelled)
+            return;
+
+        CancelSelfDestructSequence();
+    }
+
     /// <summary>executor가 공식 시작 시점에 타깃을 확정하고 기존 자폭 인트로 로직을 재사용한다.</summary>
     public void BeginSelfDestructSequence(GameObject explicitTarget)
     {
@@ -331,6 +368,18 @@ public class DeadsSkeleton : Mob, IDamageReceiver
             SetTarget(explicitTarget.transform);
 
         StartSelfDestruct();
+    }
+
+    /// <summary>자폭 인트로가 아직 끝나지 않았는지 전용 상태가 확인할 수 있게 노출합니다.</summary>
+    public bool IsSelfDestructIntroActive()
+    {
+        return IsPlayingSelfDestructIntro();
+    }
+
+    /// <summary>자폭 armed phase 진입 시 필요한 추적 속도/범위 전환을 전용 상태가 요청할 수 있게 노출합니다.</summary>
+    public void EnterSelfDestructArmedChasePhase()
+    {
+        EnterArmedPhaseIfNeeded();
     }
 
     /// <summary>강제 취소나 씬 정리 시 자폭 패턴을 안전하게 원복한다.</summary>
@@ -369,6 +418,7 @@ public class DeadsSkeleton : Mob, IDamageReceiver
         isSelfDestruct = false;
         hasEnteredArmedPhase = false;
         selfDestructIntroEndTime = 0f;
+        runtimeExplosionDiameterOverride = -1f;
 
         if (animator != null)
             animator.SetBool("selfDestructionMode", false);
@@ -422,7 +472,7 @@ public class DeadsSkeleton : Mob, IDamageReceiver
 
         AttackTelegraphSpec spec = AttackTelegraphSpec.CreateCircle(
             transform.position,
-            explosionDiameter,
+            GetConfiguredExplosionDiameter(),
             Mathf.Max(0f, introDuration),
             introWarningStyle);
 
@@ -458,7 +508,7 @@ public class DeadsSkeleton : Mob, IDamageReceiver
 
         AttackTelegraphSpec spec = AttackTelegraphSpec.CreateCircle(
             transform.position,
-            explosionDiameter,
+            GetConfiguredExplosionDiameter(),
             0f,
             armedWarningStyle);
 
@@ -473,7 +523,7 @@ public class DeadsSkeleton : Mob, IDamageReceiver
 
         AttackTelegraphSpec spec = AttackTelegraphSpec.CreateCircle(
             transform.position,
-            explosionDiameter,
+            GetConfiguredExplosionDiameter(),
             0f,
             armedWarningStyle);
 
@@ -485,6 +535,17 @@ public class DeadsSkeleton : Mob, IDamageReceiver
     {
         if (telegraphService != null)
             telegraphService.HideCurrent();
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - Dead'sSkeleton 자폭 경고 원과 시야 마스크처럼 남기기 쉬운 전용 presentation을 전역 종료 경로에서 일괄 정리한다.
+    /// - suppression / death / disable이 들어와도 자폭용 경고와 시야 확장 연출이 다음 상태까지 남지 않게 보장한다.
+    /// </summary>
+    public void CleanupPresentation()
+    {
+        HideWarning();
+        ResetSightMaskScale();
     }
 
     /// <summary>자폭 전환과 동시에 시야 마스크를 폭발 지름만큼 확장합니다.</summary>
@@ -655,7 +716,7 @@ public class DeadsSkeleton : Mob, IDamageReceiver
     private CombatHitPayload MakeHitPayload()
     {
         CombatDamageSnapshot snapshot = new CombatDamageSnapshot(
-            finalHpDamage: explosionDamage,
+            finalHpDamage: GetSelfDestructPatternData().damageAmount,
             finalStaggerBuildUp: 0f,
             finalKnockbackImpulse: 0f,
             elementBuildUps: null,
@@ -664,7 +725,7 @@ public class DeadsSkeleton : Mob, IDamageReceiver
         return CombatHitPayload.FromSnapshot(
             sourceSystem: abilitySystem,
             sourceSpec: null,
-            damageEffect: explosionDamageEffect,
+            damageEffect: GetSelfDestructPatternData().damageEffect,
             knockbackEffect: null,
             snapshot: snapshot,
             hitConfirmedTag: null,
@@ -686,7 +747,7 @@ public class DeadsSkeleton : Mob, IDamageReceiver
     /// <summary>폭발 반경을 돌려줍니다.</summary>
     private float GetExplosionRadius()
     {
-        return Mathf.Max(0f, explosionDiameter * 0.5f);
+        return Mathf.Max(0f, GetConfiguredExplosionDiameter() * 0.5f);
     }
 
     /// <summary>
@@ -696,30 +757,31 @@ public class DeadsSkeleton : Mob, IDamageReceiver
     /// </summary>
     private void PlayExplosionPresentation()
     {
+        AbilityLogic_DeadsSkeletonSelfDestruct.PatternData data = GetSelfDestructPatternData();
         Transform anchor = explosionVisualAnchor != null ? explosionVisualAnchor : transform;
         Vector3 origin = anchor.position;
         Vector3 direction = target != null ? target.position - origin : Vector3.up;
 
         SpawnExplosionPresentationPrefab(
-            explosionVisualPrefab,
+            data.explosionVisualPrefab,
             anchor,
-            explosionVisualOffset,
-            explosionVisualScale);
+            data.explosionVisualOffset,
+            data.explosionVisualScale);
         SpawnExplosionPresentationPrefab(
-            explosionParticlePrefab,
+            data.explosionParticlePrefab,
             anchor,
-            explosionParticleOffset,
-            explosionParticleScale);
+            data.explosionParticleOffset,
+            data.explosionParticleScale);
 
         SoundPlaybackUtility.Play(
-            explosionSound,
+            data.explosionSound,
             instigator: gameObject,
             causer: gameObject,
             target: target != null ? target.gameObject : null,
             position: origin,
             sourceObject: this);
 
-        explosionCameraShake.TryPlay(gameObject, direction, debugReason: "DeadsSkeleton.Explode");
+        data.explosionCameraShake.TryPlay(gameObject, direction, debugReason: "DeadsSkeleton.Explode");
     }
 
     /// <summary>자폭 연출 프리팹을 기준점 기준으로 생성하고 배율 보정을 적용합니다.</summary>
@@ -754,7 +816,7 @@ public class DeadsSkeleton : Mob, IDamageReceiver
         if (combatTarget != null)
             SetTarget(combatTarget);
 
-        explosionDiameter = Mathf.Max(0f, boostedExplosionDiameter);
+        runtimeExplosionDiameterOverride = Mathf.Max(0f, boostedExplosionDiameter);
         canCancelSelfDestruct = !ignoreRange;
         selfDestructChaseSpeedScale = Mathf.Max(0f, boostedSpeedScale);
 
@@ -805,6 +867,20 @@ public class DeadsSkeleton : Mob, IDamageReceiver
         return isSelfDestruct && Time.time < selfDestructIntroEndTime;
     }
 
+    /// <summary>Dead'sSkeleton 전용 상태 식별자를 실제 상태 인스턴스로 매핑합니다.</summary>
+    private IMobState CreateState(DeadsSkeletonStateId stateId, MobAttackRequest request = default)
+    {
+        return stateId switch
+        {
+            DeadsSkeletonStateId.Idle => new MobIdleState(),
+            DeadsSkeletonStateId.Chase => new MobChaseState(),
+            DeadsSkeletonStateId.SelfDestruct => new DeadsSkeletonSelfDestructState(request),
+            DeadsSkeletonStateId.Recover => new MobRecoverState(request.RecoverSeconds),
+            DeadsSkeletonStateId.Stagger => new MobStaggerState(),
+            _ => null
+        };
+    }
+
     /// <summary>자폭 전환 애니메이션 길이를 반환합니다.</summary>
     private float GetSelfDestructIntroDuration()
     {
@@ -843,7 +919,7 @@ public class DeadsSkeleton : Mob, IDamageReceiver
         if (spriteSize.x <= 0f || spriteSize.y <= 0f)
             return defaultSightMaskScale;
 
-        float explosionWorldDiameter = explosionDiameter;
+        float explosionWorldDiameter = GetConfiguredExplosionDiameter();
         return new Vector3(
             explosionWorldDiameter / spriteSize.x,
             explosionWorldDiameter / spriteSize.y,
@@ -898,40 +974,15 @@ public class DeadsSkeleton : Mob, IDamageReceiver
 
         if (armedWarningStyle != null)
             Destroy(armedWarningStyle);
-
-        if (ownsRuntimeAbilityDefinition)
-        {
-            if (runtimeSelfDestructLogic != null)
-                Destroy(runtimeSelfDestructLogic);
-            if (selfDestructAbilityDefinition != null)
-                Destroy(selfDestructAbilityDefinition);
-        }
     }
 
     private void EnsureSelfDestructAbility()
     {
-        if (abilitySystem == null)
+        if (abilitySystem == null || selfDestructAbilityDefinition == null)
             return;
 
-        if (selfDestructAbilityDefinition != null)
-        {
-            if (abilitySystem.FindSpec(selfDestructAbilityDefinition) == null)
-                abilitySystem.GiveAbility(selfDestructAbilityDefinition);
-
-            return;
-        }
-
-        runtimeSelfDestructLogic = ScriptableObject.CreateInstance<AbilityLogic_DeadsSkeletonSelfDestruct>();
-        selfDestructAbilityDefinition = ScriptableObject.CreateInstance<AbilityDefinition>();
-        selfDestructAbilityDefinition.name = "AD_DeadsSkeleton_SelfDestruct_Runtime";
-        selfDestructAbilityDefinition.abilityName = "AD_DeadsSkeleton_SelfDestruct_Runtime";
-        selfDestructAbilityDefinition.castTime = 0f;
-        selfDestructAbilityDefinition.recoveryTime = 0f;
-        selfDestructAbilityDefinition.animationChannel = AbilityDefinition.AnimationChannel.Player;
-        selfDestructAbilityDefinition.executionPolicy = AbilityDefinition.ExecutionPolicy.ExclusiveQueued;
-        selfDestructAbilityDefinition.logic = runtimeSelfDestructLogic;
-        abilitySystem.GiveAbility(selfDestructAbilityDefinition);
-        ownsRuntimeAbilityDefinition = true;
+        if (abilitySystem.FindSpec(selfDestructAbilityDefinition) == null)
+            abilitySystem.GiveAbility(selfDestructAbilityDefinition);
     }
 }
 
@@ -945,4 +996,84 @@ public enum SelfDestructSequenceStatus
     Running,
     Cancelled,
     Completed
+}
+
+/// <summary>
+/// 책임 :
+/// - Dead'sSkeleton의 자폭 인트로와 armed chase를 하나의 몬스터 전용 공격 상태로 관리한다.
+/// - 공통 FSM 엔진 위에서 intro 구간 정지와 armed 구간 추적 생명주기를 직접 소유해, 자폭이 일반 AttackState 밖의 전용 리듬으로 보이게 한다.
+/// </summary>
+public sealed class DeadsSkeletonSelfDestructState : IMobState
+{
+    private readonly MobAttackRequest request;
+    private bool startSucceeded;
+    private bool chaseStarted;
+    private bool completed;
+
+    public DeadsSkeletonSelfDestructState(MobAttackRequest request)
+    {
+        this.request = request;
+    }
+
+    public void Enter(MobStateMachine stateMachine, MobAIContext context)
+    {
+        if (context == null || context.AttackDecisionSource == null || context.AbilityBridge == null)
+        {
+            startSucceeded = false;
+            return;
+        }
+
+        context.AttackDecisionSource.OnAttackStateEntered(request);
+        startSucceeded = context.AbilityBridge.TryStartAbility(request.Ability, request.ExplicitTarget);
+
+        if (!startSucceeded)
+            stateMachine.ChangeState(MobStateTransitionUtility.CreatePostAttackState(context), context);
+    }
+
+    public void Tick(MobStateMachine stateMachine, MobAIContext context)
+    {
+        if (!startSucceeded || context == null || context.Owner == null || context.Owner.IsDead)
+            return;
+
+        if (context.IsInStaggerState())
+        {
+            stateMachine.ChangeState(new MobStaggerState(), context);
+            return;
+        }
+
+        if (context.Owner is not DeadsSkeleton owner)
+        {
+            if (!context.AbilityBridge.IsAbilityExecutionBusy)
+            {
+                completed = true;
+                stateMachine.ChangeState(MobStateTransitionUtility.CreatePostAttackState(context), context);
+            }
+
+            return;
+        }
+
+        if (!owner.IsSelfDestructIntroActive())
+        {
+            owner.EnterSelfDestructArmedChasePhase();
+            if (!chaseStarted)
+            {
+                context.ChaseIntent?.StartChase();
+                chaseStarted = true;
+            }
+        }
+
+        if (context.AbilityBridge.IsAbilityExecutionBusy)
+            return;
+
+        completed = true;
+        stateMachine.ChangeState(MobStateTransitionUtility.CreatePostAttackState(context), context);
+    }
+
+    public void Exit(MobStateMachine stateMachine, MobAIContext context)
+    {
+        if (chaseStarted)
+            context?.ChaseIntent?.StopChase();
+
+        context?.AttackDecisionSource?.OnAttackStateExited(request, !startSucceeded || !completed);
+    }
 }

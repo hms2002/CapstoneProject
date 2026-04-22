@@ -5,87 +5,102 @@ using UnityGAS;
 using Action = Unity.Behavior.Action;
 
 /// <summary>
+/// 책임 :
+/// - BT Action 노드가 공통 AI-ASC bridge만 통해 능력 실행 문맥에 접근하게 만든다.
+/// - BT Action 구현이 AbilitySystem, TagSystem 직접 참조 대신 bridge 해석 결과만 쓰도록 강제하는 최소 기반을 제공한다.
+/// </summary>
+public abstract class AIAbilityBridgeActionBase : Action
+{
+    protected bool TryResolveBridge(GameObject owner, out IAIAbilityBridge bridge)
+    {
+        bridge = AIAbilityBridgeResolver.Resolve(owner);
+        return bridge != null;
+    }
+}
+
+/// <summary>
+/// 책임 :
+/// - BT Condition 노드가 공통 AI-ASC bridge만 통해 상태 질의를 수행하게 만든다.
+/// - BT Condition 구현이 AbilitySystem, TagSystem 직접 접근 없이 얕은 bridge 질의만 쓰도록 강제하는 최소 기반을 제공한다.
+/// </summary>
+public abstract class AIAbilityBridgeConditionBase : Condition
+{
+    protected bool TryResolveBridge(GameObject owner, out IAIAbilityBridge bridge)
+    {
+        bridge = AIAbilityBridgeResolver.Resolve(owner);
+        return bridge != null;
+    }
+}
+
+/// <summary>
+/// 책임 :
+/// - BT 노드가 대상 오브젝트에서 공통 AI-ASC bridge를 일관된 방식으로 찾도록 돕는다.
+/// - BT가 AbilitySystem, TagSystem 구현 세부를 직접 알지 않게 만드는 최소 해석 규칙을 제공한다.
+/// </summary>
+internal static class AIAbilityBridgeResolver
+{
+    public static IAIAbilityBridge Resolve(GameObject owner)
+    {
+        if (owner == null)
+            return null;
+
+        MonoBehaviour[] behaviours = owner.GetComponents<MonoBehaviour>();
+        for (int i = 0; i < behaviours.Length; i++)
+        {
+            if (behaviours[i] is IAIAbilityBridge bridge)
+                return bridge;
+        }
+
+        return null;
+    }
+}
+
+/// <summary>
 /// Action Node: GAS 스킬 실행 (비동기 대기 포함)
 /// </summary>
 [Serializable, Unity.Properties.GeneratePropertyBag]
 [NodeDescription(name: "Activate GAS Ability", story: "Use [Ability] on [Target]", category: "GAS", id: "GAS_ActivateAbility")]
-public class ActivateGASAbilityAction : Action
+public class ActivateGASAbilityAction : AIAbilityBridgeActionBase
 {
     [SerializeReference] public  BlackboardVariable<AbilityDefinition>  Ability;
     [SerializeReference] public BlackboardVariable<GameObject>          Target;
 
-    private AbilitySystem       abilitySystem;
-    private bool                isRunning;
-    private bool                isSuccess;
-    private AbilityDefinition   cachedDef; //없애도 될듯
+    private IAIAbilityBridge aiAbilityBridge;
+    private bool isRunning;
+    private bool isSuccess;
 
     protected override Status OnStart()
     {
         if (Ability.Value == null) return Status.Failure;
 
-        abilitySystem = this.GameObject.GetComponent<AbilitySystem>();
-        if (abilitySystem == null) return Status.Failure;
+        if (!TryResolveBridge(this.GameObject, out aiAbilityBridge)) return Status.Failure;
 
-        cachedDef = Ability.Value;
-
-        // 스킬 쿨타임/비용 등을 체크하고 실행 시도
-        if (abilitySystem.TryActivateAbility(cachedDef, Target.Value))
+        if (aiAbilityBridge.TryStartAbility(Ability.Value, Target.Value))
         {
             isRunning = true;
-            isSuccess = false;
-
-            // 스킬이 끝날 때까지 결과를 기다리기 위해 이벤트 구독
-            abilitySystem.OnAbilityCastCompleted += OnCompleted;
-            abilitySystem.OnAbilityCastCancelled += OnCancelled;
-
-            // "아직 실행 중입니다"라고 시스템에 보고 (-> 다음 프레임에 OnUpdate 호출됨)
+            isSuccess = true;
             return Status.Running;
         }
 
-        // 쿨타임 중이거나 실행 불가
         return Status.Failure;
     }
 
     protected override Status OnUpdate()
     {
-        // 이벤트가 와서 _isRunning이 false가 될 때까지 계속 Running 반환
-        if (isRunning) return Status.Running;
+        if (!isRunning)
+            return isSuccess ? Status.Success : Status.Failure;
 
-        // 이벤트 수신 후 결과 반환
+        if (aiAbilityBridge != null && aiAbilityBridge.IsAbilityExecutionBusy)
+            return Status.Running;
+
+        isRunning = false;
         return isSuccess ? Status.Success : Status.Failure;
     }
 
     protected override void OnEnd()
     {
-        // 노드 종료 시 이벤트 구독 해제 (안전장치)
-        if (abilitySystem != null)
-        {
-            abilitySystem.OnAbilityCastCompleted -= OnCompleted;
-            abilitySystem.OnAbilityCastCancelled -= OnCancelled;
-        }
-
-        isRunning       = false;
-        abilitySystem   = null;
-        cachedDef       = null;
-    }
-
-    // GAS 시스템에서 호출해주는 콜백
-    private void OnCompleted(AbilityDefinition def)
-    {
-        if (def == cachedDef)
-        {
-            isSuccess = true;
-            isRunning = false;
-        }
-    }
-
-    private void OnCancelled(AbilityDefinition def)
-    {
-        if (def == cachedDef)
-        {
-            isSuccess = false; // 취소됨 = 실패 처리
-            isRunning = false;
-        }
+        isRunning = false;
+        aiAbilityBridge = null;
     }
 }
 
@@ -94,7 +109,7 @@ public class ActivateGASAbilityAction : Action
 
 [Serializable, Unity.Properties.GeneratePropertyBag]
 [NodeDescription(name: "Has GAS Tag", story: "Self has tag [TagName]", category: "GAS", id: "GAS_HasTag")]
-public class HasGASTagCondition : Condition
+public class HasGASTagCondition : AIAbilityBridgeConditionBase
 {
     [SerializeReference] public BlackboardVariable<string>      TagName;
     [SerializeReference] public BlackboardVariable<GameObject>  Self;
@@ -103,15 +118,13 @@ public class HasGASTagCondition : Condition
     {
         if (Self.Value == null || string.IsNullOrEmpty(TagName.Value)) return false;
 
-        TagSystem tagSystem = Self.Value.GetComponent<TagSystem>();
-        if (tagSystem == null) return false;
-
         int id = TagRegistry.GetIdByPath(TagName.Value);
         if (id == -1) return false;
 
         GameplayTag tag = TagRegistry.GetTag(id);
+        if (!TryResolveBridge(Self.Value, out IAIAbilityBridge aiAbilityBridge)) return false;
 
-        return tagSystem.HasTag(tag);
+        return aiAbilityBridge.HasStateTag(tag);
     }
 }
 

@@ -194,3 +194,6 @@
 - RouteSet manifest가 `Boot` 자산을 `Shared`로 다시 들고 오지 않는가
 - `Prewarm Recommendations` 창이 메뉴나 inspector에서 열리는가
 - `Witch Extinguish`가 다시 presentation runtime 경로를 타는가
+> Legacy / Notes  
+> 이 문서는 다음 작업 스레드로 넘기기 위한 핸드오프 메모입니다.  
+> 현재 표준 문서가 아니며, 당시 작업 인수인계 기록으로만 봅니다.

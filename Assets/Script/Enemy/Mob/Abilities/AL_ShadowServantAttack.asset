@@ -12,3 +12,35 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f3d9ae2d4cb4fbd8d4b98c447a44c11, type: 3}
   m_Name: AL_ShadowServantAttack
   m_EditorClassIdentifier: 
+  patternData:
+    fogPrefab: {fileID: 4201956065249926095, guid: 983d63dce5dc9454a9a74287a2ed4d94, type: 3}
+    damageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
+    damageAmount: 1
+    warningDuration: 2
+    warningBlinkStartNormalized: 0.8
+    warningBlinkFrequency: 8
+    warningBlinkAlphaMin: 0.35
+    attackEffectPrefab: {fileID: 4540458603196068083, guid: f3e6d674c38bfa3459b9aa0e37af577d, type: 3}
+    attackEffectLocalOffset: {x: 0, y: 0, z: -0.05}
+    attackEffectLifetimeSeconds: 0.35
+    attackEffectScaleMultiplier: {x: 0.7, y: 0.7, z: 1}
+    attackEffectRotationOffsetZ: 0
+    attackParticlePrefab: {fileID: 2356285918434582956, guid: 7e3dd9b93aa3a5b498afc1b7b958ee42, type: 3}
+    attackParticleLocalOffset: {x: 0, y: 0, z: -0.02}
+    attackParticleLifetimeOverrideSeconds: 0
+    useUnscaledAttackParticleTime: 0
+    attackParticleScaleMultiplier: {x: 0.7, y: 0.7, z: 1}
+    attackParticleRotationOffsetZ: 0
+    attackSound:
+      key: chloe.pattern.phasepatternorblunch
+      volumeMultiplier: 1
+      anchorPolicy: 0
+      localOffset: {x: 0, y: 0, z: 0}
+    attackCameraShake:
+      amplitude: 1
+      amplitudeMultiplier: 1
+      maxAmplitude: 0
+      minIntervalSeconds: 0.04
+      directionMode: 0
+      customDirection: {x: 0, y: 0, z: 0}
+      ignoreScreenShakeSetting: 0

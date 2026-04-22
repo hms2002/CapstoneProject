@@ -1,11 +1,23 @@
 using UnityEngine;
 using UnityGAS;
 
+public interface IEnemyChaseIntent
+{
+    // 이 인터페이스의 책임:
+    // 일반 몬스터 FSM이 추적 상태의 생명주기만 제어할 수 있게 최소 추적 제어 표면을 제공한다.
+    // 구체 추적 구현 세부는 숨기고, 상태 기계가 Start/Stop/Detection 판단만 의존하게 만든다.
+
+    void StartChase();
+    void StopChase();
+    bool IsTargetWithinDetectionRange();
+}
+
 [DisallowMultipleComponent]
-public sealed class EnemyChaseIntent2D : MonoBehaviour, IIntentMovementSource2D
+public sealed class EnemyChaseIntent2D : MonoBehaviour, IIntentMovementSource2D, IEnemyChaseIntent
 {
     // 이 클래스의 책임:
     // 평소에는 플레이어 추적 의도 이동을 만들고, 복귀 상태일 때는 집으로 돌아가는 의도 이동을 우선 제공한다.
+    // 일반 몬스터 FSM이 Chase 상태 생명주기에 맞춰 추적 시작/정지를 명시적으로 제어할 수 있는 창구를 제공한다.
 
     [Header("Refs")]
     [Tooltip("추적 대상 정보를 제공하는 Enemy 컴포넌트입니다.")]
@@ -27,6 +39,7 @@ public sealed class EnemyChaseIntent2D : MonoBehaviour, IIntentMovementSource2D
 
     private IntentMovementData lastIntent;
     private bool ignoreDetectionRange;
+    private bool chaseEnabled = true;
     private MonsterReturnHome2D returnHome;
 
     public float DetectionRange => detectionRange;
@@ -58,6 +71,12 @@ public sealed class EnemyChaseIntent2D : MonoBehaviour, IIntentMovementSource2D
 
         Mob mob = enemy as Mob;
         if (mob != null && !mob.CanUseChaseMovement())
+        {
+            lastIntent = IntentMovementData.None;
+            return lastIntent;
+        }
+
+        if (!chaseEnabled)
         {
             lastIntent = IntentMovementData.None;
             return lastIntent;
@@ -99,6 +118,19 @@ public sealed class EnemyChaseIntent2D : MonoBehaviour, IIntentMovementSource2D
     public void SetIgnoreDetectionRange(bool value)
     {
         ignoreDetectionRange = value;
+    }
+
+    /// <summary>FSM Chase 상태 진입 시 추적 의도 이동을 다시 허용합니다.</summary>
+    public void StartChase()
+    {
+        chaseEnabled = true;
+    }
+
+    /// <summary>FSM이 Chase 상태를 벗어날 때 추적 의도 이동을 즉시 멈춥니다.</summary>
+    public void StopChase()
+    {
+        chaseEnabled = false;
+        lastIntent = IntentMovementData.None;
     }
 
     /// <summary>현재 플레이어 추적 조건이 유효한지 반환합니다.</summary>

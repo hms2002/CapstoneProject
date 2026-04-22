@@ -9,7 +9,7 @@ using UnityGAS;
 /// </summary>
 [DisallowMultipleComponent]
 [RequireComponent(typeof(StrangeCandlestick))]
-public class StrangeCandlestickAttackRunner : MonoBehaviour, IMobPatternRunner
+public class StrangeCandlestickAttackRunner : MonoBehaviour, IMobPatternRunner, IMobPresentationCleanup
 {
     /// <summary>
     /// 책임 :
@@ -73,7 +73,7 @@ public class StrangeCandlestickAttackRunner : MonoBehaviour, IMobPatternRunner
         {
             while (elapsed < context.DelaySeconds)
             {
-                if (IsCancelled(spec) || cancelRequested || !owner.CanContinueAttack(context.TargetObject))
+                if (IsCancelled(spec) || cancelRequested || IsSuppressed() || !owner.CanContinueAttack(context.TargetObject))
                     yield break;
 
                 UpdateWarning(context);
@@ -81,7 +81,7 @@ public class StrangeCandlestickAttackRunner : MonoBehaviour, IMobPatternRunner
                 yield return null;
             }
 
-            if (IsCancelled(spec) || cancelRequested || !owner.CanContinueAttack(context.TargetObject))
+            if (IsCancelled(spec) || cancelRequested || IsSuppressed() || !owner.CanContinueAttack(context.TargetObject))
                 yield break;
 
             HideWarning();
@@ -100,6 +100,11 @@ public class StrangeCandlestickAttackRunner : MonoBehaviour, IMobPatternRunner
     {
         cancelRequested = true;
         HideWarning();
+    }
+
+    private bool IsSuppressed()
+    {
+        return abilityCoordinator != null && abilityCoordinator.IsAbilityExecutionSuppressed;
     }
 
     private void ShowWarning(AttackContext context)
@@ -126,6 +131,16 @@ public class StrangeCandlestickAttackRunner : MonoBehaviour, IMobPatternRunner
     {
         if (telegraphService != null)
             telegraphService.HideCurrent();
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - StrangeCandlestick 락온 경고 telegraph가 suppression / death / disable 뒤에도 남지 않게 공통 presentation cleanup 계약으로 정리한다.
+    /// - 전투 객체가 runner 구체 타입을 몰라도 시각 자원을 일괄 정리하게 돕는다.
+    /// </summary>
+    public void CleanupPresentation()
+    {
+        HideWarning();
     }
 
     private static bool IsCancelled(AbilitySpec spec)

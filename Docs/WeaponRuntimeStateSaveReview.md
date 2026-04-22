@@ -1,5 +1,9 @@
 # Weapon Runtime State Save Review
 
+> Legacy / Review  
+> 이 문서는 무기 런타임 상태 저장/복원 범위를 검토하기 위해 작성된 리뷰 문서입니다.  
+> 현재 표준 문서가 아니라, 저장 정책 판단과 전환 이력을 보관하는 용도로 봅니다.
+
 이 문서는 `WeaponAbilityRuntimeState` 자체를 저장/복원해야 하는지 판단하고, 1차 구현 범위를 기록하기 위한 메모입니다.
 
 ## 현재 상태

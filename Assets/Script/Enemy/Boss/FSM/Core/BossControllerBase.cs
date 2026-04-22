@@ -75,6 +75,12 @@ public abstract class BossControllerBase : Enemy, IBossAbilityStateBridge
     public float CurrentHealthValue => GetCurrentHealthValue();
     public float MaxHealthValue => GetCurrentMaxHealthValue();
     public bool IsAbilityExecutionBusy => abilitySystem != null && abilitySystem.IsBusy;
+    /// <summary>
+    /// 책임 :
+    /// - 보스가 그로기처럼 전역 제압 상태에 들어가 능력 실행 커밋이 막혀야 하는지를 공통 bridge 계약으로 노출한다.
+    /// - 몬스터/보스가 같은 AI-ASC 상호작용 규칙을 공유해도 각자 기존 reactive tag 구조를 유지하게 돕는다.
+    /// </summary>
+    public bool IsAbilityExecutionSuppressed => HasGroggyTag();
 
     protected override void Awake()
     {
@@ -305,6 +311,63 @@ public abstract class BossControllerBase : Enemy, IBossAbilityStateBridge
         return tag != null && tagSystem != null && tagSystem.HasTag(tag);
     }
 
+    /// <summary>
+    /// 책임 :
+    /// - 보스 파생 구현이 TagSystem 구체 API를 직접 모르고도 상태 태그를 추가하게 한다.
+    /// - 보호막/면역처럼 보스 전용 규칙이 태그 표현을 쓰더라도 공통 컨트롤러가 태그 적용 책임을 가진다.
+    /// </summary>
+    protected bool TryAddStateTag(GameplayTag tag, int count = 1)
+    {
+        if (tagSystem == null || tag == null || count <= 0)
+            return false;
+
+        tagSystem.AddTag(tag, count);
+        return true;
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 보스 파생 구현이 TagSystem 구체 API를 직접 모르고도 상태 태그를 회수하게 한다.
+    /// - 전투 종료/패턴 종료 시 보스 전용 태그 정리 경로를 공통 컨트롤러로 모은다.
+    /// </summary>
+    protected bool TryRemoveStateTag(GameplayTag tag, int count = 1)
+    {
+        if (tagSystem == null || tag == null || count <= 0)
+            return false;
+
+        tagSystem.RemoveTag(tag, count);
+        return true;
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 보스 파생 구현이 EffectRunner 구체 경로 대신 공통 컨트롤러를 통해 자기 자신에게 GE를 적용하게 한다.
+    /// - 그로기/보호막 같은 보스 전용 반응 효과의 적용 실패 여부를 한 곳에서 판정하게 한다.
+    /// </summary>
+    protected bool TryApplySelfEffect(GameplayEffect effect, GameObject sourceObject = null)
+    {
+        if (effectRunner == null || effect == null)
+            return false;
+
+        GameObject source = sourceObject != null ? sourceObject : gameObject;
+        effectRunner.ApplyEffect(effect, source, gameObject);
+        return true;
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 보스가 런타임/설정 phase에서 쓰는 ability 등록을 공통 컨트롤러를 통해 수행하게 한다.
+    /// - 파생 구현이 AbilitySystem.GiveAbility 세부 호출을 직접 알지 않도록 등록 표면을 통일한다.
+    /// </summary>
+    protected bool TryRegisterAbility(AbilityDefinition ability)
+    {
+        if (abilitySystem == null || ability == null)
+            return false;
+
+        abilitySystem.GiveAbility(ability);
+        return true;
+    }
+
     public void FinishCurrentPattern()
     {
         BossPatternEntry finishedPattern = patternRuntime != null ? patternRuntime.CurrentPattern : null;
@@ -370,12 +433,12 @@ public abstract class BossControllerBase : Enemy, IBossAbilityStateBridge
 
     public bool HasDeadTag()
     {
-        return deadTag != null && tagSystem != null && tagSystem.HasTag(deadTag);
+        return HasStateTag(deadTag);
     }
 
     public bool HasGroggyTag()
     {
-        return groggyTag != null && tagSystem != null && tagSystem.HasTag(groggyTag);
+        return HasStateTag(groggyTag);
     }
 
     protected virtual void OnEnterSpawn()
@@ -639,7 +702,7 @@ public abstract class BossControllerBase : Enemy, IBossAbilityStateBridge
                 if (ability == null)
                     continue;
 
-                abilitySystem.GiveAbility(ability);
+                TryRegisterAbility(ability);
             }
         }
     }

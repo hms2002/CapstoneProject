@@ -65,7 +65,7 @@ public class DeadsSkeletonSelfDestructPatternExecutor : MonoBehaviour, IMobPatte
         {
             while (true)
             {
-                if (IsCancelled(spec) || cancelRequested)
+                if (IsCancelled(spec) || cancelRequested || IsSuppressed())
                 {
                     owner.CancelSelfDestructSequence();
                     yield break;
@@ -93,6 +93,16 @@ public class DeadsSkeletonSelfDestructPatternExecutor : MonoBehaviour, IMobPatte
     {
         cancelRequested = true;
         owner?.CancelSelfDestructSequence();
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 자폭 executor가 그로기 같은 전역 제압 상태를 개별 태그 경로 대신 공통 bridge 규칙으로 해석하게 한다.
+    /// - 실행 중 패턴도 suppression 상태에서는 다음 프레임 커밋을 중단하고 안전하게 취소되도록 돕는다.
+    /// </summary>
+    private bool IsSuppressed()
+    {
+        return abilityCoordinator != null && abilityCoordinator.IsAbilityExecutionSuppressed;
     }
 
     private static bool IsCancelled(AbilitySpec spec)

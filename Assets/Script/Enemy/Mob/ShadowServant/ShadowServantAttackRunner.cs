@@ -10,8 +10,11 @@ using UnityGAS;
 /// </summary>
 [DisallowMultipleComponent]
 [RequireComponent(typeof(ShadowServant))]
-public class ShadowServantAttackRunner : MonoBehaviour, IMobPatternRunner
+public class ShadowServantAttackRunner : MonoBehaviour, IMobPatternRunner, IMobPresentationCleanup
 {
+    // 이 클래스의 책임:
+    // ShadowServant 공격 1회의 경고-대기-폭발 실행을 담당하고, 경고 연출 설정은 owner의 AL 패턴 데이터에서 읽어 사용한다.
+
     public readonly struct AttackContext
     {
         public readonly GameObject TargetObject;
@@ -38,15 +41,11 @@ public class ShadowServantAttackRunner : MonoBehaviour, IMobPatternRunner
         }
     }
 
-    private const float DefaultAttackDelay = 2f;
+    public const float DefaultAttackDelay = 2f;
 
     [SerializeField] private ShadowServant owner;
     [SerializeField] private MobAbilityCoordinator abilityCoordinator;
     [SerializeField] private AttackTelegraphService telegraphService;
-    [Header("Warning Telegraph")]
-    [SerializeField, Range(0f, 1f)] private float warningBlinkStartNormalized = 0.8f;
-    [SerializeField, Min(0f)] private float warningBlinkFrequency = 8f;
-    [SerializeField, Range(0f, 1f)] private float warningBlinkAlphaMin = 0.35f;
 
     private readonly HashSet<GameObject> damagedTargets = new();
     private AttackTelegraphStyle warningStyle;
@@ -77,7 +76,7 @@ public class ShadowServantAttackRunner : MonoBehaviour, IMobPatternRunner
         if (abilityCoordinator != null && !abilityCoordinator.TryBeginRunner(this))
             yield break;
 
-        if (!owner.TryCreateAttackContext(initialTarget, DefaultAttackDelay, out AttackContext context))
+        if (!owner.TryCreateAttackContext(initialTarget, owner.GetAttackPatternData().warningDuration, out AttackContext context))
         {
             abilityCoordinator?.EndRunner(this);
             yield break;
@@ -92,7 +91,7 @@ public class ShadowServantAttackRunner : MonoBehaviour, IMobPatternRunner
             if (context.DelaySeconds > 0f)
                 yield return AbilityTasks.WaitDelay(system, spec, context.DelaySeconds);
 
-            if (IsCancelled(spec) || cancelRequested || owner.IsDead)
+            if (IsCancelled(spec) || cancelRequested || owner.IsDead || IsSuppressed())
                 yield break;
 
             owner.PlayAttackPresentation(context.HitPoint);
@@ -114,6 +113,11 @@ public class ShadowServantAttackRunner : MonoBehaviour, IMobPatternRunner
         HideWarning();
     }
 
+    private bool IsSuppressed()
+    {
+        return abilityCoordinator != null && abilityCoordinator.IsAbilityExecutionSuppressed;
+    }
+
     private void ShowWarning(AttackContext context)
     {
         if (telegraphService == null)
@@ -132,6 +136,16 @@ public class ShadowServantAttackRunner : MonoBehaviour, IMobPatternRunner
     {
         if (telegraphService != null)
             telegraphService.HideCurrent();
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - ShadowServant 공격 경고 telegraph가 suppression / death / disable 뒤에도 남지 않게 공통 presentation cleanup 계약으로 정리한다.
+    /// - 전투 객체가 runner 구체 타입을 몰라도 시각 자원을 일괄 정리하게 돕는다.
+    /// </summary>
+    public void CleanupPresentation()
+    {
+        HideWarning();
     }
 
     private void Explode(AbilitySystem system, AbilitySpec spec, AttackContext context)
@@ -169,15 +183,19 @@ public class ShadowServantAttackRunner : MonoBehaviour, IMobPatternRunner
 
     private AttackTelegraphStyle MakeWarningStyle()
     {
+        AbilityLogic_ShadowServantAttack.PatternData data = owner != null
+            ? owner.GetAttackPatternData()
+            : default;
+
         AttackTelegraphStyle style = ScriptableObject.CreateInstance<AttackTelegraphStyle>();
         style.fillColorStart = new Color(1f, 0f, 0f, 0.35f);
         style.fillColorEnd = new Color(1f, 0f, 0f, 0.35f);
         style.borderColorStart = new Color(1f, 0f, 0f, 1f);
         style.borderColorEnd = new Color(1f, 0f, 0f, 1f);
         style.progressCurve = AnimationCurve.Linear(0f, 0f, 1f, 1f);
-        style.blinkStartNormalized = warningBlinkStartNormalized;
-        style.blinkFrequency = warningBlinkFrequency;
-        style.blinkAlphaMin = warningBlinkAlphaMin;
+        style.blinkStartNormalized = data.warningBlinkStartNormalized;
+        style.blinkFrequency = data.warningBlinkFrequency;
+        style.blinkAlphaMin = data.warningBlinkAlphaMin;
         style.scaleFillWithProgress = false;
         style.fillScaleStart = 1f;
         style.fillScaleEnd = 1f;

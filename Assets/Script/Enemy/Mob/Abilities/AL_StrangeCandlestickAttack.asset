@@ -12,3 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7273a307f5084d3b819a1d4ec9d50881, type: 3}
   m_Name: AL_StrangeCandlestickAttack
   m_EditorClassIdentifier: 
+  patternData:
+    projectilePrefab: {fileID: 8003320094034868151, guid: b1f8e58050cba114da8fe6380275e443, type: 3}
+    projectileSpeed: 8
+    damageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
+    damageAmount: 1
+    attackIntervalSeconds: 2
+    lockOnDuration: 0.8
+    lockOnLineWidth: 0.28
+    lockOnColor: {r: 1, g: 0.15, b: 0.15, a: 1}
+    lockOnStyleAsset: {fileID: 0}

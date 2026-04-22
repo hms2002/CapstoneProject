@@ -246,6 +246,7 @@ MonoBehaviour:
   telegraphWidth: 1
   blockMoveTag: {fileID: 0}
   telegraph: {fileID: 0}
+  abilityCoordinator: {fileID: 0}
 --- !u!114 &3790217430196525045
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -291,7 +292,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attributeCatalog: {fileID: 11400000, guid: b9c79b9448814f2408077eff50c01aeb, type: 2}
-  baseInitProfile: {fileID: 11400000, guid: 78214cbbca9b4804ba1be48157d5657e, type: 2}
+  baseInitProfile: {fileID: 11400000, guid: ac5ff33387b8e384ea5c5452dcc2efcc, type: 2}
   overrideInitProfiles: []
   maxLinks:
   - value: {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
@@ -350,10 +351,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e232de7843f92745a254698e2054f4e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentGaugeAttribute: {fileID: 0}
-  maxGaugeAttribute: {fileID: 0}
+  currentGaugeAttribute: {fileID: 11400000, guid: 122086249f809784c84b56e9b99e367e, type: 2}
+  maxGaugeAttribute: {fileID: 11400000, guid: ddbd05a9b77349441a875c479e48212d, type: 2}
   resistancePercentAttribute: {fileID: 0}
-  staggeredEffect: {fileID: 0}
+  staggeredEffect: {fileID: 11400000, guid: fab1dd76add51c74db9dbb7b0f424204, type: 2}
   allowOverflow: 1
   allowPresentationOffset: 0
   presentationWorldOffset: {x: 0, y: 1.6, z: 0}

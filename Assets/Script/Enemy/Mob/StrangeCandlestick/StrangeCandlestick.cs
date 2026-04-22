@@ -6,43 +6,22 @@ using UnityGAS;
 /// - StrangeCandlestick의 발사 조건 판단과 발사 설정 데이터를 보관한다.
 /// - 실제 락온-발사 시퀀스 실행은 AD/runner에 위임하고, 본체는 상위 판단과 데이터 제공에 집중한다.
 /// </summary>
-public class StrangeCandlestick : Mob
+public class StrangeCandlestick : Mob, IMobAttackDecisionSource
 {
     private static readonly System.Collections.Generic.List<StrangeCandlestick> instances = new();
-    private const float ProjectileAttackInterval = 2f;
     private const int WallLayer = 30;
-
-    [Header("LightBead")]
-    [Tooltip("발사할 LightBead 프리팹입니다.")]
-    [SerializeField] private GameObject lightBeadPrefab;
-
-    [Tooltip("LightBead 이동 속도입니다.")]
-    [SerializeField] private float projectileSpeed = 3f;
-
-    [Tooltip("플레이어 적중 시 적용할 데미지 이펙트입니다.")]
-    [SerializeField] private GE_Damage_Spec projectileDamageEffect;
-
-    [Tooltip("LightBead 한 발의 피해량입니다.")]
-    [SerializeField] private float projectileDamage = 1f;
-
-    [Header("Lock On Warning")]
-    [SerializeField] private float lockOnDuration = 0.8f;
-    [SerializeField] private float lockOnLineWidth = 0.28f;
-    [SerializeField] private Color lockOnColor = new Color(1f, 0.15f, 0.15f, 1f);
-    [SerializeField] private AttackTelegraphStyle lockOnStyleAsset;
     [Header("Ability")]
     [SerializeField] private AbilityDefinition attackAbilityDefinition;
     [SerializeField] private MobAbilityCoordinator abilityCoordinator;
     [SerializeField] private StrangeCandlestickAttackRunner attackRunner;
 
     private EnemyChaseIntent2D detectionSensor;
+    private IMobAbilityHelperAccess helperAccess;
     private CandlestickSeal candlestickSeal;
     private AttackTelegraphService telegraphService;
     private AttackTelegraphStyle runtimeLockOnStyle;
     private float nextProjectileFireTime;
     private bool hasLoggedInvalidConfig;
-    private bool ownsRuntimeAbilityDefinition;
-    private AbilityLogic_StrangeCandlestickAttack runtimeAttackLogic;
 
     public static System.Collections.Generic.IReadOnlyList<StrangeCandlestick> Instances => instances;
     public bool IsSealed => candlestickSeal != null && candlestickSeal.IsSealed;
@@ -53,12 +32,13 @@ public class StrangeCandlestick : Mob
         detectionSensor = GetComponent<EnemyChaseIntent2D>();
         candlestickSeal = GetComponent<CandlestickSeal>();
         telegraphService = GetComponent<AttackTelegraphService>();
-        runtimeLockOnStyle = lockOnStyleAsset == null ? MakeLockOnStyle() : null;
+        runtimeLockOnStyle = null;
 
         if (abilityCoordinator == null)
             abilityCoordinator = GetComponent<MobAbilityCoordinator>();
         if (abilityCoordinator == null)
             abilityCoordinator = gameObject.AddComponent<MobAbilityCoordinator>();
+        helperAccess = abilityCoordinator as IMobAbilityHelperAccess;
 
         if (attackRunner == null)
             attackRunner = GetComponent<StrangeCandlestickAttackRunner>();
@@ -70,6 +50,24 @@ public class StrangeCandlestick : Mob
     {
         base.Start();
         EnsureAttackAbility();
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - StrangeCandlestick 공격 패턴 데이터의 현재 공식 소유자를 AL로 통일해 helper와 runner가 같은 설정을 보게 한다.
+    /// - AL asset이 없거나 잘못 연결된 경우를 바로 드러내고, 패턴 실행 데이터가 owner fallback로 되돌아가지 않게 한다.
+    /// </summary>
+    public AbilityLogic_StrangeCandlestickAttack.PatternData GetAttackPatternData()
+    {
+        AbilityLogic_StrangeCandlestickAttack logic = GetAttackLogic();
+        return logic != null ? logic.Data : default;
+    }
+
+    private AbilityLogic_StrangeCandlestickAttack GetAttackLogic()
+    {
+        return attackAbilityDefinition != null
+            ? attackAbilityDefinition.logic as AbilityLogic_StrangeCandlestickAttack
+            : null;
     }
 
     private void OnEnable()
@@ -90,14 +88,6 @@ public class StrangeCandlestick : Mob
 
         if (runtimeLockOnStyle != null)
             Destroy(runtimeLockOnStyle);
-
-        if (ownsRuntimeAbilityDefinition)
-        {
-            if (runtimeAttackLogic != null)
-                Destroy(runtimeAttackLogic);
-            if (attackAbilityDefinition != null)
-                Destroy(attackAbilityDefinition);
-        }
     }
 
     public override bool CanUseChaseMovement()
@@ -108,20 +98,6 @@ public class StrangeCandlestick : Mob
     /// <summary>고정형 촛대 몬스터는 타겟을 따라 방향을 바꾸지 않습니다.</summary>
     protected override void UpdateFacing()
     {
-    }
-
-    protected override void UpdateAttack()
-    {
-        if (abilityCoordinator == null || attackAbilityDefinition == null)
-            return;
-
-        if (abilityCoordinator.IsAbilityExecutionBusy)
-            return;
-
-        if (!CanShoot(target != null ? target.gameObject : null))
-            return;
-
-        abilityCoordinator.TryStartAbility(attackAbilityDefinition, target != null ? target.gameObject : null);
     }
 
     /// <summary>촛대를 봉인 상태로 만듭니다.</summary>
@@ -162,12 +138,17 @@ public class StrangeCandlestick : Mob
     }
 
     /// <summary>지금 탄막을 발사할 수 있는지 확인합니다.</summary>
-    private bool CanShoot(GameObject explicitTarget)
+    public bool CanTryProjectileAttack(GameObject explicitTarget)
     {
         if (isDead)
             return false;
 
         if (Time.time < nextProjectileFireTime)
+            return false;
+
+        if (helperAccess != null &&
+            attackAbilityDefinition != null &&
+            helperAccess.GetCooldownRemaining(attackAbilityDefinition) > 0f)
             return false;
 
         if (!HasShootData())
@@ -182,8 +163,10 @@ public class StrangeCandlestick : Mob
     /// <summary>발사에 필요한 참조가 있는지 확인합니다.</summary>
     private bool HasShootData()
     {
-        bool isValid = lightBeadPrefab != null &&
-                       projectileDamageEffect != null &&
+        AbilityLogic_StrangeCandlestickAttack.PatternData data = GetAttackPatternData();
+
+        bool isValid = data.projectilePrefab != null &&
+                       data.damageEffect != null &&
                        abilitySystem != null;
 
         if (isValid)
@@ -216,7 +199,7 @@ public class StrangeCandlestick : Mob
     }
 
     /// <summary>runner가 사용할 공격 문맥을 구성합니다.</summary>
-    public bool TryCreateAttackContext(GameObject explicitTarget, out StrangeCandlestickAttackRunner.AttackContext context)
+    public bool TryBuildProjectileAttackContext(GameObject explicitTarget, out StrangeCandlestickAttackRunner.AttackContext context)
     {
         context = default;
 
@@ -224,13 +207,62 @@ public class StrangeCandlestick : Mob
             ? explicitTarget
             : target != null ? target.gameObject : null;
 
-        if (!CanShoot(targetObject))
+        if (!CanTryProjectileAttack(targetObject))
             return false;
 
+        AbilityLogic_StrangeCandlestickAttack.PatternData data = GetAttackPatternData();
         context = new StrangeCandlestickAttackRunner.AttackContext(
             targetObject,
-            Mathf.Max(0f, lockOnDuration));
+            Mathf.Max(0f, data.lockOnDuration));
         return true;
+    }
+
+    /// <summary>발사 가능 여부를 평가하고, 가능하면 bridge를 통해 발사 어빌리티를 요청합니다.</summary>
+    public bool TryRequestProjectileAttack(GameObject explicitTarget)
+    {
+        if (abilityCoordinator == null || attackAbilityDefinition == null)
+            return false;
+
+        GameObject targetObject = explicitTarget != null
+            ? explicitTarget
+            : target != null ? target.gameObject : null;
+
+        if (!CanTryProjectileAttack(targetObject))
+            return false;
+
+        if (!TryBuildProjectileAttackContext(targetObject, out _))
+            return false;
+
+        return abilityCoordinator.TryStartAbility(attackAbilityDefinition, targetObject);
+    }
+
+    /// <summary>FSM AttackState가 사용할 발사 요청을 구성합니다.</summary>
+    public bool TryBuildAttackRequest(out MobAttackRequest request)
+    {
+        request = default;
+
+        GameObject targetObject = target != null ? target.gameObject : null;
+        if (!TryBuildProjectileAttackContext(targetObject, out _))
+            return false;
+
+        request = new MobAttackRequest(attackAbilityDefinition, targetObject);
+        return request.IsValid;
+    }
+
+    /// <summary>공격 상태 진입 시 StrangeCandlestick이 추가로 처리할 것이 없어 비워 둡니다.</summary>
+    public void OnAttackStateEntered(MobAttackRequest request)
+    {
+    }
+
+    /// <summary>공격 상태 종료 시 StrangeCandlestick이 추가로 정리할 것이 없어 비워 둡니다.</summary>
+    public void OnAttackStateExited(MobAttackRequest request, bool wasCancelled)
+    {
+    }
+
+    /// <summary>기존 runner 경로 호환을 위해 공격 문맥 생성 API를 유지합니다.</summary>
+    public bool TryCreateAttackContext(GameObject explicitTarget, out StrangeCandlestickAttackRunner.AttackContext context)
+    {
+        return TryBuildProjectileAttackContext(explicitTarget, out context);
     }
 
     /// <summary>runner가 락온 도중 계속 공격을 유지할 수 있는지 확인합니다.</summary>
@@ -248,19 +280,20 @@ public class StrangeCandlestick : Mob
         if (explicitTarget == null)
             return false;
 
+        AbilityLogic_StrangeCandlestickAttack.PatternData data = GetAttackPatternData();
         Vector2 shotDirection = GetLaunchDirection(explicitTarget.transform);
 
         CombatHitPayload payload = MakeHitPayload();
         if (payload == null)
             return false;
 
-        GameObject lightBeadObject = Instantiate(lightBeadPrefab, transform.position, Quaternion.identity);
+        GameObject lightBeadObject = Instantiate(data.projectilePrefab, transform.position, Quaternion.identity);
         LightBeadProjectile2D lightBead = lightBeadObject.GetComponent<LightBeadProjectile2D>();
 
         if (lightBead == null)
         {
             Debug.LogError(
-                $"[{nameof(StrangeCandlestick)}] {lightBeadPrefab.name}에 {nameof(LightBeadProjectile2D)}가 없습니다.",
+                $"[{nameof(StrangeCandlestick)}] {data.projectilePrefab.name}에 {nameof(LightBeadProjectile2D)}가 없습니다.",
                 lightBeadObject);
 
             Destroy(lightBeadObject);
@@ -278,7 +311,7 @@ public class StrangeCandlestick : Mob
             damageLayers = GetDamageMask(explicitTarget),
             hitPayload = payload,
             direction = shotDirection,
-            speed = Mathf.Max(0f, projectileSpeed)
+            speed = Mathf.Max(0f, data.projectileSpeed)
         };
 
         lightBead.Setup(context);
@@ -298,6 +331,7 @@ public class StrangeCandlestick : Mob
 
     public AttackTelegraphSpec MakeLockOnSpec(GameObject explicitTarget)
     {
+        AbilityLogic_StrangeCandlestickAttack.PatternData data = GetAttackPatternData();
         Vector2 start = transform.position;
         Vector2 end = explicitTarget != null ? (Vector2)explicitTarget.transform.position : start;
         Vector2 delta = end - start;
@@ -311,16 +345,17 @@ public class StrangeCandlestick : Mob
 
         return AttackTelegraphSpec.CreateRectangle(
             center,
-            new Vector2(length, Mathf.Max(0.01f, lockOnLineWidth)),
+            new Vector2(length, Mathf.Max(0.01f, data.lockOnLineWidth)),
             angle,
-            Mathf.Max(0.01f, lockOnDuration),
+            Mathf.Max(0.01f, data.lockOnDuration),
             GetLockOnStyle());
     }
 
     private AttackTelegraphStyle GetLockOnStyle()
     {
-        if (lockOnStyleAsset != null)
-            return lockOnStyleAsset;
+        AbilityLogic_StrangeCandlestickAttack.PatternData data = GetAttackPatternData();
+        if (data.lockOnStyleAsset != null)
+            return data.lockOnStyleAsset;
 
         if (runtimeLockOnStyle == null)
             runtimeLockOnStyle = MakeLockOnStyle();
@@ -330,13 +365,14 @@ public class StrangeCandlestick : Mob
 
     private AttackTelegraphStyle MakeLockOnStyle()
     {
+        AbilityLogic_StrangeCandlestickAttack.PatternData data = GetAttackPatternData();
         AttackTelegraphStyle style = ScriptableObject.CreateInstance<AttackTelegraphStyle>();
-        Color transparent = new Color(lockOnColor.r, lockOnColor.g, lockOnColor.b, 0f);
+        Color transparent = new Color(data.lockOnColor.r, data.lockOnColor.g, data.lockOnColor.b, 0f);
 
         style.fillColorStart = transparent;
-        style.fillColorEnd = lockOnColor;
+        style.fillColorEnd = data.lockOnColor;
         style.borderColorStart = transparent;
-        style.borderColorEnd = lockOnColor;
+        style.borderColorEnd = data.lockOnColor;
         style.progressCurve = AnimationCurve.Linear(0f, 0f, 1f, 1f);
         style.blinkStartNormalized = 1f;
         style.blinkFrequency = 0f;
@@ -349,7 +385,8 @@ public class StrangeCandlestick : Mob
 
     private float GetPostShotCooldown()
     {
-        return Mathf.Max(0f, ProjectileAttackInterval - Mathf.Max(0f, lockOnDuration));
+        AbilityLogic_StrangeCandlestickAttack.PatternData data = GetAttackPatternData();
+        return Mathf.Max(0f, data.attackIntervalSeconds - Mathf.Max(0f, data.lockOnDuration));
     }
 
     /// <summary>발사 방향을 계산합니다.</summary>
@@ -377,8 +414,9 @@ public class StrangeCandlestick : Mob
     /// <summary>탄막이 사용할 피격 정보를 만듭니다.</summary>
     private CombatHitPayload MakeHitPayload()
     {
+        AbilityLogic_StrangeCandlestickAttack.PatternData data = GetAttackPatternData();
         CombatDamageSnapshot snapshot = new CombatDamageSnapshot(
-            finalHpDamage: projectileDamage,
+            finalHpDamage: data.damageAmount,
             finalStaggerBuildUp: 0f,
             finalKnockbackImpulse: 0f,
             elementBuildUps: null,
@@ -387,7 +425,7 @@ public class StrangeCandlestick : Mob
         return CombatHitPayload.FromSnapshot(
             sourceSystem: abilitySystem,
             sourceSpec: null,
-            damageEffect: projectileDamageEffect,
+            damageEffect: data.damageEffect,
             knockbackEffect: null,
             snapshot: snapshot,
             hitConfirmedTag: null,
@@ -396,27 +434,10 @@ public class StrangeCandlestick : Mob
 
     private void EnsureAttackAbility()
     {
-        if (abilitySystem == null)
+        if (abilitySystem == null || attackAbilityDefinition == null)
             return;
 
-        if (attackAbilityDefinition != null)
-        {
-            if (abilitySystem.FindSpec(attackAbilityDefinition) == null)
-                abilitySystem.GiveAbility(attackAbilityDefinition);
-
-            return;
-        }
-
-        runtimeAttackLogic = ScriptableObject.CreateInstance<AbilityLogic_StrangeCandlestickAttack>();
-        attackAbilityDefinition = ScriptableObject.CreateInstance<AbilityDefinition>();
-        attackAbilityDefinition.name = "AD_StrangeCandlestick_Attack_Runtime";
-        attackAbilityDefinition.abilityName = "AD_StrangeCandlestick_Attack_Runtime";
-        attackAbilityDefinition.castTime = 0f;
-        attackAbilityDefinition.recoveryTime = 0f;
-        attackAbilityDefinition.animationChannel = AbilityDefinition.AnimationChannel.Player;
-        attackAbilityDefinition.executionPolicy = AbilityDefinition.ExecutionPolicy.ExclusiveQueued;
-        attackAbilityDefinition.logic = runtimeAttackLogic;
-        abilitySystem.GiveAbility(attackAbilityDefinition);
-        ownsRuntimeAbilityDefinition = true;
+        if (abilitySystem.FindSpec(attackAbilityDefinition) == null)
+            abilitySystem.GiveAbility(attackAbilityDefinition);
     }
 }

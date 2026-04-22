@@ -501,7 +501,9 @@ public class Witch : BossControllerBase, IWitchPatternStateBridge
         if (hasAppliedStaggerImmuneTag || staggerImmuneTag == null || TagSystem == null)
             return;
 
-        TagSystem.AddTag(staggerImmuneTag, 1);
+        if (!TryAddStateTag(staggerImmuneTag, 1))
+            return;
+
         hasAppliedStaggerImmuneTag = true;
     }
 
@@ -515,7 +517,9 @@ public class Witch : BossControllerBase, IWitchPatternStateBridge
         if (!hasAppliedStaggerImmuneTag || staggerImmuneTag == null || TagSystem == null)
             return;
 
-        TagSystem.RemoveTag(staggerImmuneTag, 1);
+        if (!TryRemoveStateTag(staggerImmuneTag, 1))
+            return;
+
         hasAppliedStaggerImmuneTag = false;
     }
 
@@ -720,10 +724,7 @@ public class Witch : BossControllerBase, IWitchPatternStateBridge
     /// <summary>그로기 상태 효과를 보스 자신에게 적용합니다.</summary>
     public void ApplyGroggyStatus(GameplayEffect groggyStatusEffect)
     {
-        if (abilitySystem == null || groggyStatusEffect == null)
-            return;
-
-        abilitySystem.EffectRunner.ApplyEffect(groggyStatusEffect, gameObject, gameObject);
+        TryApplySelfEffect(groggyStatusEffect);
     }
 
     /// <summary>페이즈 전환 패턴의 중앙 위치를 구합니다.</summary>
@@ -1129,7 +1130,7 @@ public class Witch : BossControllerBase, IWitchPatternStateBridge
         if (runtimeGrantedTags != null && runtimeGrantedTags.Count > 0)
             definition.grantedTagsWhileActive = new List<GameplayTag>(runtimeGrantedTags);
 
-        abilitySystem.GiveAbility(definition);
+        TryRegisterAbility(definition);
         return definition;
     }
 

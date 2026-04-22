@@ -4,45 +4,23 @@ using CapstoneAudio;
 using UnityEngine;
 using UnityGAS;
 
-public class ShadowServant : Mob
+public class ShadowServant : Mob, IMobAttackDecisionSource
 {
     private const float DefaultPresentationLifetimeSeconds = 1f;
 
     // 이 클래스의 책임:
     // ShadowServant의 공격 조건 판단과 공격 설정 데이터 제공을 담당하고, 실제 시퀀스 실행은 AD/runner에 위임한다.
 
-    [Header("Fog")]
-    [Tooltip("안개를 생성할 때 사용할 안개 프리팹입니다.")]
-    [SerializeField] private GameObject fog;
-
-    [Tooltip("안개에 사용할 데미지 이펙트입니다.")]
-    [SerializeField] private GE_Damage_Spec explosionDamageEffect;
-
-    [Tooltip("안개 피해량입니다.")]
-    [SerializeField] private float explosionDamage = 1f;
-
-    [Header("Attack Presentation")]
-    [SerializeField] private GameObject attackEffectPrefab;
-    [SerializeField] private Vector3 attackEffectLocalOffset = new Vector3(0f, 0f, -0.05f);
-    [SerializeField] [Min(0f)] private float attackEffectLifetimeSeconds = 0.35f;
-    [SerializeField] private Vector3 attackEffectScaleMultiplier = Vector3.one;
-    [SerializeField] private float attackEffectRotationOffsetZ;
-    [SerializeField] private GameObject attackParticlePrefab;
-    [SerializeField] private Vector3 attackParticleLocalOffset = new Vector3(0f, 0f, -0.02f);
-    [SerializeField] [Min(0f)] private float attackParticleLifetimeOverrideSeconds;
-    [SerializeField] private bool useUnscaledAttackParticleTime;
-    [SerializeField] private Vector3 attackParticleScaleMultiplier = Vector3.one;
-    [SerializeField] private float attackParticleRotationOffsetZ;
-    [SerializeField] private SoundRef attackSound;
-    [SerializeField] private CameraShakeHook attackCameraShake = CameraShakeHook.Create(0.14f, 1f, 0.22f, 0.04f);
     [Header("Ability")]
     [SerializeField] private AbilityDefinition attackAbilityDefinition;
     [SerializeField] private MobAbilityCoordinator abilityCoordinator;
     [SerializeField] private ShadowServantAttackRunner attackRunner;
+    [Header("FSM")]
+    [Tooltip("공격이 끝난 뒤 다음 상태 전이를 잠깐 늦춰 전투 리듬을 만드는 AI 후딜 시간입니다.")]
+    [SerializeField] [Min(0f)] private float postAttackRecoverSeconds = 0.35f;
 
     private bool hasLoggedInvalidConfig;
-    private bool ownsRuntimeAbilityDefinition;
-    private AbilityLogic_ShadowServantAttack runtimeAttackLogic;
+    private IMobAbilityHelperAccess helperAccess;
 
     protected override void Awake()
     {
@@ -52,6 +30,7 @@ public class ShadowServant : Mob
             abilityCoordinator = GetComponent<MobAbilityCoordinator>();
         if (abilityCoordinator == null)
             abilityCoordinator = gameObject.AddComponent<MobAbilityCoordinator>();
+        helperAccess = abilityCoordinator as IMobAbilityHelperAccess;
 
         if (attackRunner == null)
             attackRunner = GetComponent<ShadowServantAttackRunner>();
@@ -65,23 +44,27 @@ public class ShadowServant : Mob
         EnsureAttackAbility();
     }
 
+    /// <summary>
+    /// 책임 :
+    /// - ShadowServant 공격 패턴 데이터의 현재 공식 소유자를 AL로 통일해 helper와 runner가 같은 설정을 보게 한다.
+    /// - AL asset이 없거나 잘못 연결된 경우를 바로 드러내고, 패턴 실행 데이터가 owner fallback로 되돌아가지 않게 한다.
+    /// </summary>
+    public AbilityLogic_ShadowServantAttack.PatternData GetAttackPatternData()
+    {
+        AbilityLogic_ShadowServantAttack logic = GetAttackLogic();
+        return logic != null ? logic.Data : default;
+    }
+
+    private AbilityLogic_ShadowServantAttack GetAttackLogic()
+    {
+        return attackAbilityDefinition != null
+            ? attackAbilityDefinition.logic as AbilityLogic_ShadowServantAttack
+            : null;
+    }
+
     public override bool CanUseChaseMovement()
     {
         return attackRunner == null || !attackRunner.IsRunning;
-    }
-
-    protected override void UpdateAttack()
-    {
-        if (abilityCoordinator == null || attackAbilityDefinition == null)
-            return;
-
-        if (abilityCoordinator.IsAbilityExecutionBusy)
-            return;
-
-        if (!CanAttack())
-            return;
-
-        abilityCoordinator.TryStartAbility(attackAbilityDefinition, target != null ? target.gameObject : null);
     }
 
     protected override void OnDeathStarted()
@@ -108,17 +91,9 @@ public class ShadowServant : Mob
     protected override void OnDestroy()
     {
         base.OnDestroy();
-
-        if (ownsRuntimeAbilityDefinition)
-        {
-            if (runtimeAttackLogic != null)
-                Destroy(runtimeAttackLogic);
-            if (attackAbilityDefinition != null)
-                Destroy(attackAbilityDefinition);
-        }
     }
 
-    private bool CanAttack()
+    public bool CanTryAttack(GameObject explicitTarget = null)
     {
         if (isDead)
             return false;
@@ -126,16 +101,24 @@ public class ShadowServant : Mob
         if (!HasAttackData())
             return false;
 
-        if (target == null)
+        GameObject targetObject = explicitTarget != null
+            ? explicitTarget
+            : target != null ? target.gameObject : null;
+
+        if (targetObject == null)
             return false;
 
-        return IsTargetInRange();
+        if (ChaseIntent != null && !ChaseIntent.IsTargetWithinDetectionRange())
+            return false;
+
+        return IsTargetInRange(targetObject.transform);
     }
 
     private bool HasAttackData()
     {
-        bool isValid = fog != null &&
-                       explosionDamageEffect != null &&
+        AbilityLogic_ShadowServantAttack.PatternData data = GetAttackPatternData();
+        bool isValid = data.fogPrefab != null &&
+                       data.damageEffect != null &&
                        abilitySystem != null &&
                        GetFogRadius() > 0f &&
                        attackRunner != null;
@@ -155,46 +138,29 @@ public class ShadowServant : Mob
         return false;
     }
 
-    private bool IsTargetInRange()
+    private bool IsTargetInRange(Transform targetTransform)
     {
-        if (target == null)
+        if (targetTransform == null)
             return false;
 
         float attackRadius = GetAttackRadius();
         if (attackRadius <= 0f)
             return false;
 
-        Vector2 toTarget = (Vector2)(target.position - transform.position);
+        Vector2 toTarget = (Vector2)(targetTransform.position - transform.position);
         return toTarget.sqrMagnitude <= attackRadius * attackRadius;
     }
 
     private void EnsureAttackAbility()
     {
-        if (abilitySystem == null)
+        if (abilitySystem == null || attackAbilityDefinition == null)
             return;
 
-        if (attackAbilityDefinition != null)
-        {
-            if (abilitySystem.FindSpec(attackAbilityDefinition) == null)
-                abilitySystem.GiveAbility(attackAbilityDefinition);
-
-            return;
-        }
-
-        runtimeAttackLogic = ScriptableObject.CreateInstance<AbilityLogic_ShadowServantAttack>();
-        attackAbilityDefinition = ScriptableObject.CreateInstance<AbilityDefinition>();
-        attackAbilityDefinition.name = "AD_ShadowServant_Attack_Runtime";
-        attackAbilityDefinition.abilityName = "AD_ShadowServant_Attack_Runtime";
-        attackAbilityDefinition.castTime = 0f;
-        attackAbilityDefinition.recoveryTime = 0f;
-        attackAbilityDefinition.animationChannel = AbilityDefinition.AnimationChannel.Player;
-        attackAbilityDefinition.executionPolicy = AbilityDefinition.ExecutionPolicy.ExclusiveQueued;
-        attackAbilityDefinition.logic = runtimeAttackLogic;
-        abilitySystem.GiveAbility(attackAbilityDefinition);
-        ownsRuntimeAbilityDefinition = true;
+        if (abilitySystem.FindSpec(attackAbilityDefinition) == null)
+            abilitySystem.GiveAbility(attackAbilityDefinition);
     }
 
-    public bool TryCreateAttackContext(GameObject explicitTarget, float delaySeconds, out ShadowServantAttackRunner.AttackContext context)
+    public bool TryBuildAttackContext(GameObject explicitTarget, float delaySeconds, out ShadowServantAttackRunner.AttackContext context)
     {
         context = default;
 
@@ -202,7 +168,7 @@ public class ShadowServant : Mob
             ? explicitTarget
             : target != null ? target.gameObject : null;
 
-        if (targetObject == null || !HasAttackData())
+        if (!CanTryAttack(targetObject))
             return false;
 
         Vector3 targetPoint = targetObject.transform.position;
@@ -217,40 +183,95 @@ public class ShadowServant : Mob
         return true;
     }
 
+    public bool TryRequestAttack(GameObject explicitTarget)
+    {
+        if (abilityCoordinator == null || attackAbilityDefinition == null)
+            return false;
+
+        if (helperAccess != null && helperAccess.GetCooldownRemaining(attackAbilityDefinition) > 0f)
+            return false;
+
+        GameObject targetObject = explicitTarget != null
+            ? explicitTarget
+            : target != null ? target.gameObject : null;
+
+        if (!CanTryAttack(targetObject))
+            return false;
+
+        if (!TryBuildAttackContext(targetObject, Mathf.Max(0f, GetAttackPatternData().warningDuration), out _))
+            return false;
+
+        return abilityCoordinator.TryStartAbility(attackAbilityDefinition, targetObject);
+    }
+
+    /// <summary>FSM AttackState가 사용할 공격 요청을 구성합니다.</summary>
+    public bool TryBuildAttackRequest(out MobAttackRequest request)
+    {
+        request = default;
+
+        GameObject targetObject = target != null ? target.gameObject : null;
+        if (!TryBuildAttackContext(targetObject, Mathf.Max(0f, GetAttackPatternData().warningDuration), out _))
+            return false;
+
+        request = new MobAttackRequest(attackAbilityDefinition, targetObject, postAttackRecoverSeconds);
+        return request.IsValid;
+    }
+
+    /// <summary>공격 상태 진입 시 ShadowServant가 추가로 처리할 것이 없어 비워 둡니다.</summary>
+    public void OnAttackStateEntered(MobAttackRequest request)
+    {
+    }
+
+    /// <summary>공격 상태 종료 시 ShadowServant가 추가로 정리할 것이 없어 비워 둡니다.</summary>
+    public void OnAttackStateExited(MobAttackRequest request, bool wasCancelled)
+    {
+    }
+
+    public bool TryCreateAttackContext(GameObject explicitTarget, float delaySeconds, out ShadowServantAttackRunner.AttackContext context)
+    {
+        return TryBuildAttackContext(explicitTarget, delaySeconds, out context);
+    }
+
     public void SpawnFog(Vector3 targetPoint)
     {
-        Instantiate(fog, new Vector3(targetPoint.x, targetPoint.y, 0f), Quaternion.identity);
+        GameObject fogPrefab = GetAttackPatternData().fogPrefab;
+        if (fogPrefab == null)
+            return;
+
+        Instantiate(fogPrefab, new Vector3(targetPoint.x, targetPoint.y, 0f), Quaternion.identity);
     }
 
     public void PlayAttackPresentation(Vector3 targetPoint)
     {
+        AbilityLogic_ShadowServantAttack.PatternData data = GetAttackPatternData();
+
         if (animator != null)
             animator.SetTrigger("attack");
 
         SpawnPresentationPrefab(
-            attackEffectPrefab,
-            targetPoint + attackEffectLocalOffset,
-            attackEffectRotationOffsetZ,
-            attackEffectScaleMultiplier,
-            attackEffectLifetimeSeconds,
+            data.attackEffectPrefab,
+            targetPoint + data.attackEffectLocalOffset,
+            data.attackEffectRotationOffsetZ,
+            data.attackEffectScaleMultiplier,
+            data.attackEffectLifetimeSeconds,
             useUnscaledTime: false);
         SpawnPresentationPrefab(
-            attackParticlePrefab,
-            targetPoint + attackParticleLocalOffset,
-            attackParticleRotationOffsetZ,
-            attackParticleScaleMultiplier,
-            attackParticleLifetimeOverrideSeconds,
-            useUnscaledAttackParticleTime);
+            data.attackParticlePrefab,
+            targetPoint + data.attackParticleLocalOffset,
+            data.attackParticleRotationOffsetZ,
+            data.attackParticleScaleMultiplier,
+            data.attackParticleLifetimeOverrideSeconds,
+            data.useUnscaledAttackParticleTime);
 
         SoundPlaybackUtility.Play(
-            attackSound,
+            data.attackSound,
             instigator: gameObject,
             causer: gameObject,
             target: target != null ? target.gameObject : null,
             position: targetPoint,
             sourceObject: this);
 
-        attackCameraShake.TryPlay(
+        data.attackCameraShake.TryPlay(
             gameObject,
             targetPoint - transform.position,
             debugReason: "ShadowServant.Attack");
@@ -266,7 +287,7 @@ public class ShadowServant : Mob
     public CombatHitPayload MakeHitPayload(AbilitySystem sourceSystem, AbilitySpec spec)
     {
         CombatDamageSnapshot snapshot = new CombatDamageSnapshot(
-            finalHpDamage: explosionDamage,
+            finalHpDamage: GetAttackPatternData().damageAmount,
             finalStaggerBuildUp: 0f,
             finalKnockbackImpulse: 0f,
             elementBuildUps: null,
@@ -275,7 +296,7 @@ public class ShadowServant : Mob
         return CombatHitPayload.FromSnapshot(
             sourceSystem: sourceSystem != null ? sourceSystem : abilitySystem,
             sourceSpec: spec,
-            damageEffect: explosionDamageEffect,
+            damageEffect: GetAttackPatternData().damageEffect,
             knockbackEffect: null,
             snapshot: snapshot,
             hitConfirmedTag: null,
@@ -291,10 +312,11 @@ public class ShadowServant : Mob
 
     public float GetFogRadius()
     {
-        if (fog == null)
+        GameObject fogPrefab = GetAttackPatternData().fogPrefab;
+        if (fogPrefab == null)
             return 0f;
 
-        CircleCollider2D fogCollider = fog.GetComponent<CircleCollider2D>();
+        CircleCollider2D fogCollider = fogPrefab.GetComponent<CircleCollider2D>();
         if (fogCollider == null)
             return 0f;
 
@@ -314,14 +336,15 @@ public class ShadowServant : Mob
 
     private Vector2 GetFogOffset()
     {
-        if (fog == null)
+        GameObject fogPrefab = GetAttackPatternData().fogPrefab;
+        if (fogPrefab == null)
             return Vector2.zero;
 
-        CircleCollider2D fogCollider = fog.GetComponent<CircleCollider2D>();
+        CircleCollider2D fogCollider = fogPrefab.GetComponent<CircleCollider2D>();
         if (fogCollider == null)
             return Vector2.zero;
 
-        Vector3 scale = fog.transform.localScale;
+        Vector3 scale = fogPrefab.transform.localScale;
         return new Vector2(
             fogCollider.offset.x * scale.x,
             fogCollider.offset.y * scale.y);

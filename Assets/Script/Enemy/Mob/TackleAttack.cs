@@ -3,10 +3,10 @@ using UnityGAS;
 
 [DisallowMultipleComponent]
 [RequireComponent(typeof(Mob))]
-public class TackleAttack : MonoBehaviour
+public class TackleAttack : MonoBehaviour, IMobAttackDecisionSource, IMobPresentationCleanup
 {
     // 이 클래스의 책임:
-    // 태클 발동 가능 여부를 판단하고, 태클 경고/돌진에 필요한 문맥을 준비하며, 태클 중 이동 차단 상태를 관리한다.
+    // 태클 발동 가능 여부를 판단하고, 태클 경고/돌진에 필요한 문맥을 준비하며, bridge를 통한 태클 실행 요청과 태클 중 이동 차단 상태를 관리한다.
 
     private const int WallLayer = 30;
 
@@ -31,10 +31,10 @@ public class TackleAttack : MonoBehaviour
 
     [Tooltip("태클 경고를 표시할 서비스입니다.")]
     [SerializeField] private AttackTelegraphService telegraph;
+    [SerializeField] private MobAbilityCoordinator abilityCoordinator;
 
     private Mob mob;
-    private AbilitySystem abilitySystem;
-    private TagSystem tagSystem;
+    private IMobAbilityHelperAccess helperAccess;
     private float delayTime;
     private bool blockMoveApplied;
     private bool hasContext;
@@ -56,8 +56,11 @@ public class TackleAttack : MonoBehaviour
     private void Awake()
     {
         mob = GetComponent<Mob>();
-        abilitySystem = GetComponent<AbilitySystem>();
-        tagSystem = GetComponent<TagSystem>();
+        if (abilityCoordinator == null)
+            abilityCoordinator = GetComponent<MobAbilityCoordinator>();
+        if (abilityCoordinator == null)
+            abilityCoordinator = gameObject.AddComponent<MobAbilityCoordinator>();
+        helperAccess = abilityCoordinator as IMobAbilityHelperAccess;
 
         if (telegraph == null)
             telegraph = GetComponent<AttackTelegraphService>();
@@ -76,14 +79,25 @@ public class TackleAttack : MonoBehaviour
             return;
         }
 
+        if (abilityCoordinator != null && abilityCoordinator.IsAbilityExecutionSuppressed)
+        {
+            ClearContext();
+            HideTelegraph();
+            SetTag(blockMoveTag, false, ref blockMoveApplied);
+            return;
+        }
+
         TickDelay();
         UpdateTags();
-        TryAttack();
+        TryRequestTackle();
     }
 
     private void OnTriggerStay2D(Collider2D other)
     {
         if (mob == null || mob.IsDead)
+            return;
+
+        if (abilityCoordinator != null && abilityCoordinator.IsAbilityExecutionSuppressed)
             return;
 
         if (other == null)
@@ -126,40 +140,71 @@ public class TackleAttack : MonoBehaviour
     /// <summary>태클 상태에 맞춰 이동 차단 태그를 맞춥니다.</summary>
     private void UpdateTags()
     {
-        bool shouldBlock = HasDelay || (abilitySystem != null && abilitySystem.IsBusy);
+        bool shouldBlock = HasDelay || (abilityCoordinator != null && abilityCoordinator.IsAbilityExecutionBusy);
         SetTag(blockMoveTag, shouldBlock, ref blockMoveApplied);
     }
 
-    /// <summary>태클 발동 조건을 확인하고 어빌리티를 실행합니다.</summary>
-    private void TryAttack()
+    /// <summary>태클 실행 가능 여부를 평가하고, 가능하면 bridge를 통해 실행을 요청합니다.</summary>
+    public bool TryRequestTackle()
     {
-        if (!CanAttack()) return;
+        if (!CanTryTackle())
+            return false;
 
-        MakeContext();
+        if (!TryBuildTackleContext(out _))
+            return false;
 
-        bool isActivated = abilitySystem.TryActivateAbility(tackleAbility, mob.Target.gameObject);
+        bool isActivated = abilityCoordinator != null &&
+                           abilityCoordinator.TryStartAbility(tackleAbility, mob.Target.gameObject);
         if (!isActivated)
         {
             ClearContext();
-            return;
+            return false;
         }
 
         UpdateTags();
+        return true;
+    }
+
+    /// <summary>FSM AttackState가 사용할 태클 요청을 구성합니다.</summary>
+    public bool TryBuildAttackRequest(out MobAttackRequest request)
+    {
+        request = default;
+
+        if (!TryBuildTackleContext(out TackleContext context))
+            return false;
+
+        request = new MobAttackRequest(tackleAbility, context.Target);
+        return request.IsValid;
+    }
+
+    /// <summary>공격 상태 진입 시 태클 helper가 추가로 처리할 것이 없어 비워 둡니다.</summary>
+    public void OnAttackStateEntered(MobAttackRequest request)
+    {
+    }
+
+    /// <summary>공격 상태 종료 시 남은 태클 문맥과 경고를 정리합니다.</summary>
+    public void OnAttackStateExited(MobAttackRequest request, bool wasCancelled)
+    {
+        ClearContext();
+        HideTelegraph();
     }
 
     /// <summary>지금 태클을 시작할 수 있는지 확인합니다.</summary>
-    private bool CanAttack()
+    public bool CanTryTackle()
     {
         if (mob == null || mob.Target == null)
             return false;
 
-        if (abilitySystem == null || tackleAbility == null)
+        if (abilityCoordinator == null || tackleAbility == null)
             return false;
 
-        if (HasDelay || abilitySystem.IsBusy)
+        if (abilityCoordinator.IsAbilityExecutionSuppressed)
             return false;
 
-        if (abilitySystem.GetCooldownRemaining(tackleAbility) > 0f)
+        if (HasDelay || abilityCoordinator.IsAbilityExecutionBusy)
+            return false;
+
+        if (helperAccess != null && helperAccess.GetCooldownRemaining(tackleAbility) > 0f)
             return false;
 
         return InRange() && HasClearPathToTarget();
@@ -204,9 +249,14 @@ public class TackleAttack : MonoBehaviour
         return hit.collider == null;
     }
 
-    /// <summary>태클에 쓸 방향과 범위를 저장합니다.</summary>
-    private void MakeContext()
+    /// <summary>태클 실행에 필요한 문맥을 만들고 내부 저장소에 보관합니다.</summary>
+    public bool TryBuildTackleContext(out TackleContext context)
     {
+        context = default;
+
+        if (mob == null || mob.Target == null)
+            return false;
+
         Vector2 startPos = transform.position;
         Vector2 targetPos = mob.Target != null ? (Vector2)mob.Target.position : startPos;
         Vector2 direction = targetPos - startPos;
@@ -226,6 +276,8 @@ public class TackleAttack : MonoBehaviour
         };
 
         hasContext = true;
+        context = tackleContext;
+        return true;
     }
 
     /// <summary>저장한 태클 정보를 꺼내고 비웁니다.</summary>
@@ -245,6 +297,16 @@ public class TackleAttack : MonoBehaviour
     {
         if (telegraph != null)
             telegraph.HideCurrent();
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 태클 helper가 생성한 telegraph를 suppression / death / disable 같은 전역 종료 경로에서 정리한다.
+    /// - 전투 객체가 helper 구현 세부를 몰라도 presentation cleanup을 공통 계약으로 호출하게 한다.
+    /// </summary>
+    public void CleanupPresentation()
+    {
+        HideTelegraph();
     }
 
     /// <summary>태클 경고를 화면에 표시합니다.</summary>
@@ -271,8 +333,8 @@ public class TackleAttack : MonoBehaviour
     {
         delayTime = Mathf.Max(0f, hitDelay);
 
-        if (abilitySystem != null && tackleAbility != null)
-            abilitySystem.TrySetCooldownRemaining(tackleAbility, delayTime);
+        if (helperAccess != null && tackleAbility != null)
+            helperAccess.TrySetCooldownRemaining(tackleAbility, delayTime);
 
         UpdateTags();
     }
@@ -280,20 +342,26 @@ public class TackleAttack : MonoBehaviour
     /// <summary>플레이어 접촉 시 태클 피해를 적용합니다.</summary>
     private bool HitPlayer(GameObject target)
     {
-        if (abilitySystem == null || tackleAbility == null || target == null)
+        if (abilityCoordinator == null || tackleAbility == null || target == null)
+            return false;
+
+        if (abilityCoordinator.IsAbilityExecutionSuppressed)
             return false;
 
         AL_Tackle logic = tackleAbility.logic as AL_Tackle;
         if (logic == null)
         {
-            if (abilitySystem.IsBusy)
+            if (abilityCoordinator.IsAbilityExecutionBusy)
                 return false;
 
-            return abilitySystem.TryActivateAbility(tackleAbility, target);
+            return abilityCoordinator.TryStartAbility(tackleAbility, target);
         }
 
-        AbilitySpec spec = abilitySystem.FindSpec(tackleAbility);
-        return logic.TryApplyContactDamage(abilitySystem, spec, target);
+        if (helperAccess == null ||
+            !helperAccess.TryGetAbilityExecutionContext(tackleAbility, out AbilitySystem system, out AbilitySpec spec))
+            return false;
+
+        return logic.TryApplyContactDamage(system, spec, target);
     }
 
     /// <summary>저장한 태클 정보를 비웁니다.</summary>
@@ -328,21 +396,20 @@ public class TackleAttack : MonoBehaviour
     /// <summary>태그를 켜거나 끕니다.</summary>
     private void SetTag(GameplayTag tag, bool active, ref bool applied)
     {
-        if (tagSystem == null || tag == null) return;
+        if (helperAccess == null || tag == null) return;
 
         if (active)
         {
             if (applied) return;
 
-            tagSystem.AddTag(tag);
-            applied = true;
+            applied = helperAccess.TryAddStateTag(tag);
             return;
         }
 
         if (!applied) return;
 
-        tagSystem.RemoveTag(tag);
-        applied = false;
+        if (helperAccess.TryRemoveStateTag(tag))
+            applied = false;
     }
 
     /// <summary>태클 원형 범위를 그립니다.</summary>

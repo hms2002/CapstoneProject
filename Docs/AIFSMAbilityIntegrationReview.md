@@ -1,5 +1,9 @@
 # AI / FSM Ability Integration Review
 
+> Legacy / Review  
+> 이 문서는 구조 검토와 연결 상태 조사를 위해 작성된 리뷰 문서입니다.  
+> 현재 표준은 관련 아키텍처 문서를 우선하고, 이 문서는 판단 근거와 이력 확인 용도로 봅니다.
+
 이 문서는 현재 프로젝트에서 AI/FSM가 `AbilitySystem`, `TagSystem`, 버프/디버프 구조와 어떻게 연결되어 있는지 조사한 결과를 정리합니다.
 
 목표는 두 가지입니다.
@@ -15,12 +19,14 @@
   - `BossControllerBase`
   - `IBossAbilityStateBridge`
   - `BossPatternRuntimeState`
-- **일반 몬스터 쪽은 coordinator 기반 공식 경로가 있지만, 일부 특수 공격 스크립트와 BT 액션이 직접 호출을 섞고 있습니다.**
+- **일반 몬스터 쪽도 coordinator 기반 공식 경로가 코어 계약으로 올라오기 시작했습니다.**
   - `MobAbilityCoordinator`
   - `IMobAbilityBridge`
+- **공통 AI-ASC 최소 계약이 추가됐습니다.**
+  - `IAIAbilityBridge`
 - 따라서 다음 단계는
-  - 보스 쪽 표준을 문서상으로 고정하고
-  - 일반 몬스터/BT 쪽 direct call을 coordinator/bridge 쪽으로 정리하는 것입니다.
+  - 이 공통 계약을 더 풍부하게 만들지
+  - BT/FSM가 결과를 어떻게 해석할지 확장하는 것입니다.
 
 ---
 
@@ -44,6 +50,130 @@
 - [StrangeCandlestick.cs](C:/HMS/AboutCapstoneProject/CapstoneProject/CapstoneProject/Assets/Script/Enemy/Mob/StrangeCandlestick/StrangeCandlestick.cs)
 - [GAS_Actions.cs](C:/HMS/AboutCapstoneProject/CapstoneProject/CapstoneProject/Assets/Script/Enemy/Boss/Behavior/GAS_Actions.cs)
 - [TackleAttack.cs](C:/HMS/AboutCapstoneProject/CapstoneProject/CapstoneProject/Assets/Script/Enemy/Mob/TackleAttack.cs)
+
+---
+
+## 최근 반영 사항
+
+이번 정리로 실제 코드 기준이 다음처럼 바뀌었습니다.
+
+- 공통 AI-ASC 최소 계약 추가
+  - [IMobAbilityBridge.cs](C:/HMS/AboutCapstoneProject/CapstoneProject/CapstoneProject/Assets/Script/Enemy/Mob/IMobAbilityBridge.cs)
+    - `IAIAbilityBridge`
+- BT의 direct call 제거
+  - [GAS_Actions.cs](C:/HMS/AboutCapstoneProject/CapstoneProject/CapstoneProject/Assets/Script/Enemy/Boss/Behavior/GAS_Actions.cs)
+    - `AbilitySystem` / `TagSystem` 직접 접근 제거
+    - `IAIAbilityBridge` resolve 후 경유
+- 특수 공격의 direct call 1차 축소
+  - [TackleAttack.cs](C:/HMS/AboutCapstoneProject/CapstoneProject/CapstoneProject/Assets/Script/Enemy/Mob/TackleAttack.cs)
+    - `AbilitySystem`, `TagSystem` 직접 캐시 제거
+    - `MobAbilityCoordinator` 경유로 실행/쿨다운/tag 처리
+- 일반 몹 coordinator 보강
+  - [MobAbilityCoordinator.cs](C:/HMS/AboutCapstoneProject/CapstoneProject/CapstoneProject/Assets/Script/Enemy/Mob/MobAbilityCoordinator.cs)
+    - `HasStateTag(...)`
+    - 쿨다운 helper
+    - 태그 add/remove helper
+    - ability execution context 조회 helper
+
+즉 이 문서는 이제 “조사 결과”를 넘어서, **현재 채택된 1차 표준**을 같이 기록합니다.
+
+---
+
+## 현재 구조 그래프
+
+### 1. BT -> Action -> AI bridge -> ASC
+
+현재 BT에서 능력 실행과 상태 질의는 아래 흐름으로 연결됩니다.
+
+```mermaid
+flowchart LR
+    A["Behavior Tree"] --> B["ActivateGASAbilityAction / HasGASTagCondition"]
+    B --> C["AIAbilityBridgeResolver"]
+    C --> D["IAIAbilityBridge"]
+    D --> E["IBossAbilityStateBridge"]
+    D --> F["IMobAbilityBridge"]
+    E --> G["BossControllerBase"]
+    F --> H["MobAbilityCoordinator"]
+    G --> I["AbilitySystem"]
+    G --> J["TagSystem"]
+    H --> I
+    H --> J
+```
+
+이 그래프의 의미는 단순합니다.
+
+- BT 노드는 더 이상 `AbilitySystem`, `TagSystem`을 직접 모릅니다.
+- BT 노드는 `IAIAbilityBridge`만 바라봅니다.
+- 실제 ASC 접근은 보스면 `BossControllerBase`, 일반 몹이면 `MobAbilityCoordinator`가 맡습니다.
+
+---
+
+### 2. 보스 FSM -> pattern state -> boss bridge -> ASC
+
+보스 FSM은 BT보다 더 일찍 bridge 구조가 정리되어 있었고, 현재도 그 축을 유지합니다.
+
+```mermaid
+flowchart LR
+    A["BossStateMachine"] --> B["BossState / BossPatternExecuteState"]
+    B --> C["IBossAbilityStateBridge"]
+    C --> D["BossControllerBase"]
+    D --> E["BossPatternRuntimeState"]
+    D --> F["AbilitySystem"]
+    D --> G["TagSystem"]
+```
+
+이 흐름에서는:
+
+- FSM state가 `AbilitySystem.TryActivateAbility(...)`를 직접 호출하지 않습니다.
+- `BossControllerBase`가 패턴 runtime과 ASC 실행의 접점을 잡습니다.
+
+---
+
+### 3. 일반 몹 공격 루프 -> coordinator -> ASC
+
+일반 몹 쪽은 Update 기반 공격 루프와 runner가 `MobAbilityCoordinator`를 통해 ASC와 연결됩니다.
+
+```mermaid
+flowchart LR
+    A["Mob.UpdateAttack / 특수 공격 스크립트"] --> B["IMobAbilityBridge"]
+    B --> C["MobAbilityCoordinator"]
+    C --> D["AbilitySystem"]
+    C --> E["TagSystem"]
+    C --> F["Runner Busy State"]
+    F --> C
+```
+
+이 흐름에서는:
+
+- 일반 몹이 능력 실행 가능 여부를 볼 때
+  - ASC busy
+  - runner busy
+  를 coordinator가 합쳐서 제공합니다.
+- 특수 공격 스크립트도 가능하면 여기로 정리하는 것이 현재 방향입니다.
+
+---
+
+### 4. 현재 `TackleAttack`의 과도기 흐름
+
+`TackleAttack`은 direct call을 많이 걷어냈지만, 아직 특수 공격 문맥을 많이 가진 과도기 사례입니다.
+
+```mermaid
+flowchart LR
+    A["TackleAttack"]
+    A --> B["사거리 / 벽 / 타겟 / 경고 판단"]
+    A --> C["MobAbilityCoordinator helper"]
+    C --> D["AbilitySystem"]
+    C --> E["TagSystem"]
+    C --> F["AbilitySpec 조회"]
+    F --> G["AbilityLogic_Tackle"]
+```
+
+즉 `TackleAttack`는 지금:
+
+- 직접 ASC를 두드리는 문제는 줄었지만
+- 여전히 특수 공격 문맥과 helper 호출이 함께 있는 상태입니다.
+
+그래서 이 케이스는 “비공식 direct call”보다는 **과도기 특수 공격 구조**로 보는 게 맞습니다.
 
 ---
 
@@ -108,52 +238,59 @@ flowchart LR
 
 ---
 
-## 현재 비공식 연결 경로
+### 3. BT -> IAIAbilityBridge -> Boss / Mob bridge
 
-### 1. Behavior Tree GAS 액션이 AbilitySystem / TagSystem을 직접 호출
+BT 쪽은 과거 direct call 기반이었지만, 현재는 `IAIAbilityBridge`를 통해 표준 경로를 타기 시작했습니다.
 
-[GAS_Actions.cs](C:/HMS/AboutCapstoneProject/CapstoneProject/CapstoneProject/Assets/Script/Enemy/Boss/Behavior/GAS_Actions.cs)는 현재 다음을 직접 수행합니다.
+대표 흐름:
 
-- `GetComponent<AbilitySystem>()`
-- `abilitySystem.TryActivateAbility(...)`
-- `OnAbilityCastCompleted / Cancelled` 직접 구독
-- `GetComponent<TagSystem>()`
-- `tagSystem.HasTag(...)`
+```mermaid
+flowchart LR
+    A["BT Node"] --> B["IAIAbilityBridge"]
+    B --> C["IBossAbilityStateBridge"]
+    B --> D["IMobAbilityBridge"]
+    C --> E["BossControllerBase"]
+    D --> F["MobAbilityCoordinator"]
+```
 
-이 구조의 문제:
+현재 [GAS_Actions.cs](C:/HMS/AboutCapstoneProject/CapstoneProject/CapstoneProject/Assets/Script/Enemy/Boss/Behavior/GAS_Actions.cs)는:
 
-- BT 액션 노드가 ASC/태그 시스템의 구체 구현에 직접 결합됩니다.
-- 보스 FSM 쪽처럼 bridge 경계가 없습니다.
-- 같은 프로젝트 안에서 보스 FSM은 bridge를 쓰고, BT는 direct call을 쓰는 **이중 규칙**이 됩니다.
+- `AbilitySystem.TryActivateAbility(...)` direct call 제거
+- `TagSystem.HasTag(...)` direct call 제거
+- `IAIAbilityBridge` resolve 후
+  - `TryStartAbility(...)`
+  - `IsAbilityExecutionBusy`
+  - `HasStateTag(...)`
+  만 사용합니다
 
 판단:
 
-- **비공식 경로**
-- 향후 정리 우선순위가 높은 영역
+- **BT도 이제 공식 경로에 편입되기 시작한 상태입니다.**
 
 ---
 
-### 2. 특수 공격 스크립트가 AbilitySystem / TagSystem을 직접 조작
+## 현재 남아 있는 비공식 연결 경로
 
-[TackleAttack.cs](C:/HMS/AboutCapstoneProject/CapstoneProject/CapstoneProject/Assets/Script/Enemy/Mob/TackleAttack.cs)는 현재 다음을 직접 수행합니다.
+### 1. 특수 공격 스크립트가 ASC helper 없이 자기 문맥에서 너무 많은 일을 하는 경우
 
-- `abilitySystem.TryActivateAbility(...)`
-- `abilitySystem.GetCooldownRemaining(...)`
-- `abilitySystem.TrySetCooldownRemaining(...)`
-- `abilitySystem.FindSpec(...)`
-- `tagSystem.AddTag(...)`
-- `tagSystem.RemoveTag(...)`
+[TackleAttack.cs](C:/HMS/AboutCapstoneProject/CapstoneProject/CapstoneProject/Assets/Script/Enemy/Mob/TackleAttack.cs)는 direct call은 많이 줄었지만, 여전히 아래 문맥을 함께 들고 있습니다.
+
+- 공격 가능 여부 판단
+- 태클 문맥 생성
+- 경고 표시
+- 접촉 피해 타이밍 판단
+- mob 전용 helper 호출
 
 이 구조의 문제:
 
-- 공격 가능 여부 판단, 경고, 능력 실행, 쿨다운, 태그 부여가 한 스크립트에 모입니다.
-- `MobAbilityCoordinator`가 이미 있는데도 busy/실행 경로가 우회됩니다.
-- 일반 몬스터 표준 경로와 다른 예외 규칙이 생깁니다.
+- direct call 문제는 줄었지만, 여전히 일반 공격보다 더 큰 책임을 가진 특수 사례입니다.
+- `AbilityLogic_Tackle`과의 결합도도 높습니다.
+- 따라서 “ASC 직접 호출 문제”는 1차 해결됐지만, “특수 공격 정리”는 아직 완전히 끝난 상태는 아닙니다.
 
 판단:
 
-- **비공식 경로**
-- 추후 `IMobAbilityBridge` / 별도 state bridge / coordinator helper 쪽으로 정리할 후보
+- **과도기 경로**
+- direct call보다는 훨씬 좋아졌지만, 장기적으로는 더 얇아질 수 있습니다
 
 ---
 
@@ -189,8 +326,8 @@ flowchart LR
 | --- | --- | --- |
 | 보스 FSM -> GAS | `BossControllerBase` / `IBossAbilityStateBridge` | 공식 |
 | 일반 몬스터 AI -> GAS | `MobAbilityCoordinator` / `IMobAbilityBridge` | 공식 |
-| BT Action -> GAS | `GAS_Actions.cs` direct call | 비공식 |
-| 특수 공격 MonoBehaviour -> GAS | `TackleAttack.cs` direct call | 비공식 |
+| BT Action -> GAS | `IAIAbilityBridge` 경유 | 공식화 진행 중 |
+| 특수 공격 MonoBehaviour -> GAS | `TackleAttack.cs` -> `MobAbilityCoordinator` helper 경유 | 과도기 |
 | 런타임 능력 등록 | 각 몬스터 init 시 `GiveAbility(...)` | 조건부 허용 |
 
 ---
@@ -199,23 +336,49 @@ flowchart LR
 
 현재 프로젝트는 “AI/FSM와 GAS 연결”이 완전히 비정리 상태는 아닙니다.
 
-문제는 오히려:
+현재 남은 문제는 오히려:
 
 - **표준 경로가 이미 일부 존재하는데**
-- 그 바깥에서 direct call이 섞여 있다는 점입니다.
+- 특수 공격/결과 해석 규칙이 아직 완전히 공통화되진 않았다는 점입니다.
 
 즉 지금 필요한 건 완전한 신규 발명이 아니라,
 
 - 이미 있는 `BossControllerBase`
 - 이미 있는 `MobAbilityCoordinator`
+- 이미 추가한 `IAIAbilityBridge`
 
-이 두 축을 **공식 코어 계약으로 승격**시키고, direct call 영역을 점진적으로 흡수하는 일입니다.
+이 세 축을 **공식 코어 계약으로 굳히고**, 결과 해석과 특수 공격 보조 계층을 다듬는 일입니다.
 
 ---
 
 ## 추천 방향
 
-### 1. “직접 ASC 호출 가능 범위”를 문서로 고정
+### 0. 공통 AI-ASC 계약을 먼저 고정한다
+
+1차 기준으로는 `IAIAbilityBridge` 같은 공통 계약을 두는 것이 좋습니다.
+
+공통 최소 계약 예:
+
+- `IsAbilityExecutionBusy`
+- `TryStartAbility(...)`
+- `CancelActiveAbility(...)`
+- `HasStateTag(...)`
+
+의도는 이렇습니다.
+
+- 보스는 `BossControllerBase`가 이 계약을 구현하거나 상속된 bridge를 제공한다.
+- 일반 몬스터는 `MobAbilityCoordinator`가 이 계약을 구현하거나 상속된 bridge를 제공한다.
+- BT / FSM / 특수 AI 스크립트는 이 공통 계약만 바라본다.
+
+즉 다음 단계의 기준은:
+
+- **AI가 ASC를 직접 만지는 대신 `IAIAbilityBridge`만 보게 만든다**
+
+입니다.
+
+---
+
+### 1. “직접 ASC 호출 가능 범위”를 계속 좁힌다
 
 다음 원칙을 기준으로 삼는 것이 좋습니다.
 
@@ -229,22 +392,23 @@ flowchart LR
 
 ---
 
-### 2. BT 전용 bridge/coordinator 경로를 열어준다
+### 2. BT는 `IAIAbilityBridge`만 본다
 
-`GAS_Actions.cs`는 당장 제거하기보다, 다음 같은 경로로 옮기는 게 좋아 보입니다.
+이건 현재 1차 반영이 끝난 상태입니다.
 
-- BT node -> `IBossAbilityStateBridge`
-- 또는 BT node -> 별도 `IAIAbilityBridge`
+기준은 단순합니다.
 
-핵심은:
+- BT 노드는 `AbilitySystem`, `TagSystem`을 직접 모르면 된다
+- BT 노드는 `IAIAbilityBridge`만 사용한다
 
-- BT 노드가 `AbilitySystem`을 직접 만지지 않게 하는 것
+다음 확장 포인트:
 
-입니다.
+- 성공/실패/취소 이유를 더 풍부하게 받을지
+- boss BT와 mob BT가 같은 resolver를 계속 써도 되는지
 
 ---
 
-### 3. 특수 공격 스크립트는 “문맥 생성”과 “실행 요청”을 분리
+### 3. 특수 공격 스크립트는 “문맥 생성”과 “실행 요청”을 더 분리한다
 
 `TackleAttack.cs` 같은 스크립트는 다음처럼 역할을 줄이는 쪽이 좋습니다.
 
@@ -260,14 +424,23 @@ flowchart LR
 
 는 bridge/coordinator/helper가 맡도록 옮겨가는 방식입니다.
 
+현재는 1차로:
+
+- 실행 요청
+- 쿨다운 조회/설정
+- tag add/remove
+- `AbilitySpec` 조회
+
+가 `MobAbilityCoordinator` helper 쪽으로 옮겨진 상태입니다.
+
 ---
 
 ## 다음 설계 질문
 
 다음 단계에서 꼭 결정해야 할 질문은 이겁니다.
 
-1. BT는 boss bridge를 재사용할 것인가, 별도 AI bridge를 둘 것인가?
-2. 일반 몬스터 특수 공격 스크립트는 coordinator만으로 충분한가, 추가 helper가 필요한가?
+1. `IAIAbilityBridge`에 결과 해석 계약까지 넣을 것인가?
+2. 일반 몬스터 특수 공격 스크립트는 coordinator helper만으로 충분한가, 별도 executor가 필요한가?
 3. “능력 등록 초기화”와 “능력 실행 요청”은 어떤 클래스가 각각 책임져야 하는가?
 4. AI/FSM가 읽는 상태는 tag를 직접 볼 것인가, bridge 질의 API로 제한할 것인가?
 
@@ -279,11 +452,12 @@ flowchart LR
 
 - **보스 FSM 경로는 이미 공식화되어 있다.**
 - **일반 몬스터도 coordinator 경로가 있다.**
-- 하지만 **BT 액션과 일부 특수 공격 스크립트는 아직 direct call 기반 비공식 연결**이다.
+- **BT는 이제 `IAIAbilityBridge`를 통해 공식 경로에 올라왔다.**
+- **특수 공격 스크립트는 direct call을 많이 걷어냈지만, 아직 과도기 helper 구조가 남아 있다.**
 
 다음 작업의 목표는:
 
-- 이미 있는 공식 경로를 코어 계약으로 명시하고
-- 비공식 direct call을 그 계약 안으로 점진적으로 흡수하는 것
+- 이미 있는 공식 경로를 코어 계약으로 유지하고
+- 결과 해석과 특수 공격 executor/helper 층을 더 다듬는 것
 
 입니다.
