@@ -22,6 +22,8 @@ public sealed class SettingsPanelUI : MonoBehaviour, IStackableUI
     private const float DisabledStepperAlpha = 0.45f;
     private const float EnabledStepperAlpha = 1f;
     private const int SystemCursorPriority = 300;
+    private const string DontDestroyOnLoadSceneName = "DontDestroyOnLoad";
+    private const string TitleSceneName = "TitleScene";
 
     private static readonly GameWindowMode[] WindowModeOptions =
     {
@@ -96,26 +98,50 @@ public sealed class SettingsPanelUI : MonoBehaviour, IStackableUI
             return Instance;
 
         SettingsPanelUI[] existing = Resources.FindObjectsOfTypeAll<SettingsPanelUI>();
+        SettingsPanelUI titleSceneFallback = null;
         for (int i = 0; i < existing.Length; i++)
         {
             SettingsPanelUI candidate = existing[i];
             if (candidate == null || !candidate.gameObject.scene.IsValid())
                 continue;
 
+            if (candidate.IsTitleSceneLocalPanel)
+            {
+                titleSceneFallback ??= candidate;
+                continue;
+            }
+
             Instance = candidate;
             candidate.RefreshCanvasParent();
             return candidate;
         }
 
-        return null;
+        return titleSceneFallback;
     }
 
     private void Awake()
     {
+        if (IsTitleSceneLocalPanel)
+        {
+            ResolveReferences();
+            BindListeners();
+            RefreshCanvasParent();
+            gameObject.SetActive(false);
+            return;
+        }
+
         if (Instance != null && Instance != this)
         {
-            Destroy(gameObject);
-            return;
+            if (ShouldReplaceExistingInstance(Instance))
+            {
+                Destroy(Instance.gameObject);
+                Instance = null;
+            }
+            else
+            {
+                Destroy(gameObject);
+                return;
+            }
         }
 
         Instance = this;
@@ -132,6 +158,9 @@ public sealed class SettingsPanelUI : MonoBehaviour, IStackableUI
         if (Instance == this)
             Instance = null;
     }
+
+    private bool IsTitleSceneLocalPanel =>
+        string.Equals(gameObject.scene.name, TitleSceneName, StringComparison.Ordinal);
 
     private void OnEnable()
     {
@@ -181,6 +210,9 @@ public sealed class SettingsPanelUI : MonoBehaviour, IStackableUI
 
     public void RefreshCanvasParent()
     {
+        if (IsTitleSceneLocalPanel)
+            return;
+
         GlobalUIRoot.AdoptToCanvas(GlobalCanvasLayer.Popup, transform, false);
     }
 
@@ -221,6 +253,22 @@ public sealed class SettingsPanelUI : MonoBehaviour, IStackableUI
 
         if (temporaryHiddenCanvasGroup == null)
             temporaryHiddenCanvasGroup = GetComponentInChildren<CanvasGroup>(true);
+    }
+
+    private bool ShouldReplaceExistingInstance(SettingsPanelUI existingInstance)
+    {
+        if (existingInstance == null)
+            return true;
+
+        bool existingIsPersistent = IsPersistent(existingInstance.gameObject);
+        bool currentIsPersistent = IsPersistent(gameObject);
+        return existingIsPersistent && !currentIsPersistent;
+    }
+
+    private static bool IsPersistent(GameObject target)
+    {
+        return target != null &&
+               string.Equals(target.scene.name, DontDestroyOnLoadSceneName, StringComparison.Ordinal);
     }
 
     private void ApplyTemporaryHiddenState(bool hidden)
@@ -584,7 +632,14 @@ public sealed class SettingsPanelUI : MonoBehaviour, IStackableUI
             return;
         }
 
-        UIManager.Instance?.OpenKeyBindingPanel();
+        if (UIManager.Instance != null && UIManager.Instance.OpenKeyBindingPanel())
+            return;
+
+        KeyBindingPanelUI localPanel = KeyBindingPanelUI.EnsureInstance();
+        if (localPanel == null || localPanel.IsActive)
+            return;
+
+        localPanel.OpenFromSettings(this);
     }
 
     private void RequestClose()

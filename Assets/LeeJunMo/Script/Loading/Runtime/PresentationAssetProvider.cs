@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using CapstonePresentation;
 using CapstoneRuntime;
@@ -348,8 +349,7 @@ public sealed class PresentationAssetProvider : MonoBehaviour, IAssetProvider, I
 
     AssetProviderOperation IAssetProvider.PreloadManifestAsync(LoadManifestSO manifest)
     {
-        AcquireManifest(manifest);
-        return AssetProviderOperation.Completed(BuildOperationLabel("PreloadManifest", manifest));
+        return AcquireManifestAsync(manifest);
     }
 
     AssetProviderOperation IAssetProvider.ReleaseManifestAsync(LoadManifestSO manifest)
@@ -365,8 +365,7 @@ public sealed class PresentationAssetProvider : MonoBehaviour, IAssetProvider, I
 
     AssetProviderOperation IAssetProvider.PreloadRouteSetManifestAsync(RouteSetLoadManifestSO manifest)
     {
-        AcquireRouteSetManifest(manifest);
-        return AssetProviderOperation.Completed(BuildOperationLabel("PreloadRouteSetManifest", manifest));
+        return AcquireRouteSetManifestAsync(manifest);
     }
 
     void IAssetProvider.ReleaseRouteSetManifest(RouteSetLoadManifestSO manifest)
@@ -464,6 +463,31 @@ public sealed class PresentationAssetProvider : MonoBehaviour, IAssetProvider, I
         }
     }
 
+    private AssetProviderOperation AcquireManifestAsync(LoadManifestSO manifest)
+    {
+        if (manifest == null)
+            return AssetProviderOperation.Completed("PreloadManifest <null>");
+
+        int manifestId = manifest.GetInstanceID();
+        manifestRefCounts.TryGetValue(manifestId, out int currentCount);
+        int nextCount = currentCount + 1;
+        manifestRefCounts[manifestId] = nextCount;
+        trackedManifests[manifestId] = manifest;
+        RecordDebugEvent(
+            $"Manifest + {manifest.name} ({currentCount}->{nextCount}, assets={CountReferencedAssets(manifest)}, prewarm={CountPrewarmEntries(manifest)})");
+        if (currentCount > 0)
+            return AssetProviderOperation.Completed(BuildOperationLabel("PreloadManifest", manifest));
+
+        foreach (Object asset in manifest.EnumerateReferencedAssets())
+            RetainAsset(asset);
+
+        var operations = new List<AssetProviderOperation>();
+        foreach (PrewarmPrefabEntry prewarmEntry in manifest.EnumeratePrewarmEntries())
+            operations.Add(RetainPrewarmAsync(prewarmEntry));
+
+        return StartCombinedOperation(BuildOperationLabel("PreloadManifest", manifest), operations);
+    }
+
     private void ReleaseManifestInternal(LoadManifestSO manifest)
     {
         if (manifest == null)
@@ -515,6 +539,28 @@ public sealed class PresentationAssetProvider : MonoBehaviour, IAssetProvider, I
         {
             AcquireManifest(childManifest);
         }
+    }
+
+    private AssetProviderOperation AcquireRouteSetManifestAsync(RouteSetLoadManifestSO manifest)
+    {
+        if (manifest == null)
+            return AssetProviderOperation.Completed("PreloadRouteSetManifest <null>");
+
+        int manifestId = manifest.GetInstanceID();
+        routeManifestRefCounts.TryGetValue(manifestId, out int currentCount);
+        int nextCount = currentCount + 1;
+        routeManifestRefCounts[manifestId] = nextCount;
+        trackedRouteManifests[manifestId] = manifest;
+        RecordDebugEvent(
+            $"Route manifest + {manifest.name} ({currentCount}->{nextCount}, children={CountChildManifests(manifest)})");
+        if (currentCount > 0)
+            return AssetProviderOperation.Completed(BuildOperationLabel("PreloadRouteSetManifest", manifest));
+
+        var operations = new List<AssetProviderOperation>();
+        foreach (LoadManifestSO childManifest in manifest.EnumerateManifests())
+            operations.Add(AcquireManifestAsync(childManifest));
+
+        return StartCombinedOperation(BuildOperationLabel("PreloadRouteSetManifest", manifest), operations);
     }
 
     private void ReleaseRouteSetManifestInternal(RouteSetLoadManifestSO manifest)
@@ -607,6 +653,21 @@ public sealed class PresentationAssetProvider : MonoBehaviour, IAssetProvider, I
         PresentationSpawnService.PrewarmPrefab(entry.prefab, entry.EffectiveCount);
     }
 
+    private AssetProviderOperation RetainPrewarmAsync(PrewarmPrefabEntry entry)
+    {
+        if (!entry.IsValid)
+            return AssetProviderOperation.Completed("Prewarm <invalid>");
+
+        int prefabId = entry.prefab.GetInstanceID();
+        prewarmRefCounts.TryGetValue(prefabId, out int currentCount);
+        int nextCount = currentCount + entry.EffectiveCount;
+        prewarmRefCounts[prefabId] = nextCount;
+        trackedAssets[prefabId] = entry.prefab;
+        RecordDebugEvent(
+            $"Prewarm + {entry.prefab.name} ({currentCount}->{nextCount})");
+        return PresentationSpawnService.PrewarmPrefabAsync(entry.prefab, entry.EffectiveCount);
+    }
+
     private void ReleasePrewarm(PrewarmPrefabEntry entry)
     {
         if (!entry.IsValid)
@@ -626,6 +687,91 @@ public sealed class PresentationAssetProvider : MonoBehaviour, IAssetProvider, I
         RecordDebugEvent(
             $"Prewarm - {entry.prefab.name} ({currentCount}->{nextCount})");
         PresentationSpawnService.TrimPrewarmedPrefab(entry.prefab, releaseCount);
+    }
+
+    private AssetProviderOperation StartCombinedOperation(string label, List<AssetProviderOperation> operations)
+    {
+        if (operations == null || operations.Count == 0)
+            return AssetProviderOperation.Completed(label);
+
+        var combinedOperation = new AssetProviderOperation(label);
+        combinedOperation.SetProgressUnits(CalculateOperationUnits(operations));
+        StartCoroutine(CompleteCombinedOperation(combinedOperation, operations));
+        return combinedOperation;
+    }
+
+    private static IEnumerator CompleteCombinedOperation(
+        AssetProviderOperation combinedOperation,
+        List<AssetProviderOperation> operations)
+    {
+        while (true)
+        {
+            bool hasPendingOperation = false;
+            combinedOperation.ReportProgress(CalculateCombinedProgress(operations));
+
+            for (int i = 0; i < operations.Count; i++)
+            {
+                AssetProviderOperation operation = operations[i];
+                if (operation != null && !operation.IsDone)
+                {
+                    hasPendingOperation = true;
+                    break;
+                }
+            }
+
+            if (!hasPendingOperation)
+                break;
+
+            yield return null;
+        }
+
+        string errorMessage = null;
+        for (int i = 0; i < operations.Count; i++)
+        {
+            AssetProviderOperation operation = operations[i];
+            if (operation == null || operation.Succeeded)
+                continue;
+
+            errorMessage = operation.ErrorMessage;
+            break;
+        }
+
+        combinedOperation.ReportProgress(1f);
+        combinedOperation.Complete(errorMessage);
+    }
+
+    private static float CalculateCombinedProgress(List<AssetProviderOperation> operations)
+    {
+        if (operations == null || operations.Count == 0)
+            return 1f;
+
+        float totalUnits = 0f;
+        float totalProgress = 0f;
+        for (int i = 0; i < operations.Count; i++)
+        {
+            AssetProviderOperation operation = operations[i];
+            float units = operation != null ? operation.ProgressUnits : 1f;
+            float progress = operation != null ? operation.Progress01 : 1f;
+            totalUnits += units;
+            totalProgress += units * progress;
+        }
+
+        return totalUnits > 0f ? Mathf.Clamp01(totalProgress / totalUnits) : 1f;
+    }
+
+    private static float CalculateOperationUnits(List<AssetProviderOperation> operations)
+    {
+        if (operations == null || operations.Count == 0)
+            return 1f;
+
+        float totalUnits = 0f;
+        for (int i = 0; i < operations.Count; i++)
+        {
+            AssetProviderOperation operation = operations[i];
+            totalUnits += operation != null ? operation.ProgressUnits : 1f;
+        }
+
+        return totalUnits > 0f ? totalUnits : 1f;
     }
 
     private DebugCountEntry[] BuildManifestSnapshot()

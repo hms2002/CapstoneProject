@@ -37,6 +37,32 @@ public sealed class LoadingOverlayView : MonoBehaviour
     public Image TravelTrackFillImage => travelTrackFillImage;
     public RectTransform TravelWalkerRect => travelWalkerRect;
 
+    public void AssignRuntimeReferences(
+        RectTransform runtimeRoot,
+        CanvasGroup runtimeCanvasGroup,
+        TMP_Text runtimeTitleText,
+        TMP_Text runtimeStatusText,
+        TMP_Text runtimeDetailText,
+        TMP_Text runtimePercentText,
+        Image runtimeProgressFillImage)
+    {
+        root = runtimeRoot;
+        canvasGroup = runtimeCanvasGroup;
+        titleText = runtimeTitleText;
+        statusText = runtimeStatusText;
+        detailText = runtimeDetailText;
+        percentText = runtimePercentText;
+        progressFillImage = runtimeProgressFillImage;
+        tipLabelText = null;
+        tipText = null;
+        progressGlowRect = null;
+        travelHost = null;
+        defaultTravelRoot = null;
+        travelTrackBoundsRect = null;
+        travelTrackFillImage = null;
+        travelWalkerRect = null;
+    }
+
     private void Reset()
     {
         root = transform as RectTransform;

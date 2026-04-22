@@ -52,8 +52,26 @@ public sealed class PortalRouteManager : MonoBehaviour
         if (s_isQuitting || Instance != null)
             return;
 
+        EnsureInstance();
+    }
+
+    public static PortalRouteManager EnsureInstance()
+    {
+        if (Instance != null)
+            return Instance;
+
+        PortalRouteManager existing = FindFirstObjectByType<PortalRouteManager>(FindObjectsInactive.Include);
+        if (existing != null)
+        {
+            Instance = existing;
+            return existing;
+        }
+
+        if (s_isQuitting)
+            return null;
+
         var go = new GameObject(nameof(PortalRouteManager));
-        go.AddComponent<PortalRouteManager>();
+        return go.AddComponent<PortalRouteManager>();
     }
 
     private void Awake()
@@ -189,6 +207,37 @@ public sealed class PortalRouteManager : MonoBehaviour
         RaiseLoadWindowChanged();
     }
 
+    public void CompleteLoadPresentationContext(string reason = null)
+    {
+        if (LastLoadPresentationTransitionType == TransitionType.None &&
+            string.IsNullOrWhiteSpace(LastLoadPresentationTargetSceneName) &&
+            string.IsNullOrWhiteSpace(LastLoadPresentationEntryPointId))
+        {
+            return;
+        }
+
+        ClearLoadPresentationContext();
+
+        if (!string.IsNullOrWhiteSpace(reason))
+            RecordTransitionEvent(reason);
+    }
+
+    public void SeedDevelopmentPlan(RunRouteCatalogSO catalog, CorridorBossRouteSetSO currentStageSet, string sourceSceneName = null)
+    {
+        activeRouteStages.Clear();
+        pendingPlansByPortalId.Clear();
+        activeRouteCatalog = catalog;
+        currentStageIndex = 0;
+
+        if (currentStageSet != null)
+            activeRouteStages.Add(currentStageSet);
+
+        ClearLoadPresentationContext();
+        RecordTransitionEvent(
+            $"Seeded development plan. scene={sourceSceneName ?? "<unknown>"}, stage={(currentStageSet != null ? currentStageSet.name : "<none>")}, catalog={(catalog != null ? catalog.name : "<none>")}");
+        RaiseLoadWindowChanged();
+    }
+
     public bool CanResolveRoute(ScenePortal portal)
     {
         if (portal == null)
@@ -196,14 +245,37 @@ public sealed class PortalRouteManager : MonoBehaviour
 
         if (portal.PortalTransitionType == TransitionType.HubToRunStart)
         {
-            if (HasActivePlan)
-                return false;
-
-            return EnsurePendingPlan(portal);
+            return TryPrepareHubStartPlan(portal);
         }
 
         return TryResolveRoute(portal, out _);
     }
+
+#if UNITY_EDITOR
+    public string GetDebugResolveStatus(ScenePortal portal)
+    {
+        if (portal == null)
+            return "portal=null";
+
+        bool hasManager = Instance != null;
+        bool hasActivePlan = HasActivePlan;
+        bool hasPendingPlan = pendingPlansByPortalId.ContainsKey(portal.PortalId);
+        bool isRunActive = GamePlayDataManager.Instance != null &&
+                           GamePlayDataManager.Instance.Data != null &&
+                           GamePlayDataManager.Instance.Data.isRunActive;
+
+        bool validStartPortal = TryValidateStartPortal(portal, out var catalog);
+        List<CorridorBossRouteSetSO> stages = null;
+        bool canBuildRunPlan = validStartPortal && TryBuildRunPlan(catalog, out stages);
+        int stageCount = canBuildRunPlan && stages != null ? stages.Count : 0;
+
+        return
+            $"manager={hasManager}, transition={portal.PortalTransitionType}, validStartPortal={validStartPortal}, " +
+            $"catalog={(catalog != null ? catalog.name : "<none>")}, hasActivePlan={hasActivePlan}, " +
+            $"hasPendingPlan={hasPendingPlan}, isRunActive={isRunActive}, canBuildRunPlan={canBuildRunPlan}, " +
+            $"stageCount={stageCount}, currentStageIndex={currentStageIndex}, totalStageCount={TotalStageCount}";
+    }
+#endif
 
     public bool TryResolveRoute(ScenePortal portal, out PortalRouteDecision route)
     {
@@ -215,6 +287,7 @@ public sealed class PortalRouteManager : MonoBehaviour
         switch (portal.PortalTransitionType)
         {
             case TransitionType.HubToRunStart:
+                ClearStaleHubStartPlanIfNeeded();
                 SetLoadPresentationContext(portal.PortalTransitionType, null, null);
                 if (!TryActivatePendingPlan(portal))
                     return false;
@@ -280,7 +353,8 @@ public sealed class PortalRouteManager : MonoBehaviour
 
             RecordTransitionEvent(
                 $"Consumed {transitionType}. advanced to stage {currentStageIndex + 1}/{activeRouteStages.Count}.");
-            RaiseLoadWindowChanged();
+            // SceneTransitionCoordinator refreshes the preload window after fade-out so
+            // corridor loading is presented once, in the managed transition sequence.
             return;
         }
 
@@ -337,12 +411,14 @@ public sealed class PortalRouteManager : MonoBehaviour
         if (!TryValidateStartPortal(portal, out _))
             return false;
 
+        ClearStaleHubStartPlanIfNeeded();
+
         if (HasActivePlan)
             return false;
 
         if (!pendingPlansByPortalId.TryGetValue(portal.PortalId, out var pendingPlan))
         {
-            if (!EnsurePendingPlan(portal))
+            if (!TryPrepareHubStartPlan(portal))
                 return false;
 
             if (!pendingPlansByPortalId.TryGetValue(portal.PortalId, out pendingPlan))
@@ -364,9 +440,66 @@ public sealed class PortalRouteManager : MonoBehaviour
 
         RecordTransitionEvent(
             $"Activated run plan. portal={portal.name}, catalog={activeRouteCatalog.name}, stages={activeRouteStages.Count}");
-        RaiseLoadWindowChanged();
+        // SceneTransitionCoordinator refreshes the preload window after fade-out so
+        // run-start loading does not begin before the loading presentation is visible.
 
         return true;
+    }
+
+    private bool TryPrepareHubStartPlan(ScenePortal portal)
+    {
+        ClearStaleHubStartPlanIfNeeded();
+
+        if (!TryValidateStartPortal(portal, out var catalog))
+            return false;
+
+        if (HasActivePlan)
+            return false;
+
+        if (pendingPlansByPortalId.TryGetValue(portal.PortalId, out var existingPlan) &&
+            existingPlan.Catalog == catalog)
+        {
+            return true;
+        }
+
+        if (EnsurePendingPlan(portal))
+            return true;
+
+        if (!TryBuildRunPlan(catalog, out var stages))
+            return false;
+
+        pendingPlansByPortalId[portal.PortalId] = new PendingPortalPlan(catalog, stages);
+
+        if (verboseLogging)
+        {
+            Debug.Log(
+                $"[PortalRouteManager] Rebuilt pending run plan from start portal fallback. portal={portal.name}, catalog={catalog.name}, stages={stages.Count}",
+                portal);
+        }
+
+        RecordTransitionEvent(
+            $"Fallback prepared pending plan. portal={portal.name}, catalog={catalog.name}, stages={stages.Count}");
+        return true;
+    }
+
+    private void ClearStaleHubStartPlanIfNeeded()
+    {
+        if (!HasActivePlan)
+            return;
+
+        GamePlayDataManager gameplay = GamePlayDataManager.Instance;
+        bool isRunActive = gameplay != null && gameplay.Data != null && gameplay.Data.isRunActive;
+        if (isRunActive)
+            return;
+
+        if (verboseLogging)
+        {
+            Debug.Log(
+                "[PortalRouteManager] Cleared stale hub-start plan because no run is active.",
+                this);
+        }
+
+        ClearPlan();
     }
 
     private bool TryBuildRunPlan(RunRouteCatalogSO catalog, out List<CorridorBossRouteSetSO> stages)

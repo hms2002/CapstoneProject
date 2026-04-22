@@ -39,6 +39,9 @@ public sealed class SettingsPanelFakeChainPresentationEditor : Editor
             if (GUILayout.Button("Auto Assign"))
                 AutoAssignReferences();
 
+            if (GUILayout.Button("Capture Lengths"))
+                CaptureAuthoredLengths();
+
             if (GUILayout.Button("Snap Preview"))
                 SnapPreview();
         }
@@ -187,8 +190,13 @@ public sealed class SettingsPanelFakeChainPresentationEditor : Editor
             return;
         }
 
-        if (topAnchorProperty.objectReferenceValue == null)
-            topAnchorProperty.objectReferenceValue = FindByName(container, "TopAnchor");
+        RectTransform currentTopAnchor = topAnchorProperty.objectReferenceValue as RectTransform;
+        if (currentTopAnchor == null || IsDescendantOf(currentTopAnchor, container))
+        {
+            RectTransform resolvedTopAnchor = FindPreferredTopAnchor(container, bottomAnchorProperty.objectReferenceValue as RectTransform);
+            if (resolvedTopAnchor != null)
+                topAnchorProperty.objectReferenceValue = resolvedTopAnchor;
+        }
 
         if (UsesAnchoredBottomEndpoint() && bottomAnchorProperty.objectReferenceValue == null)
             bottomAnchorProperty.objectReferenceValue = FindByName(container.root, "PanelTopAnchor");
@@ -200,6 +208,7 @@ public sealed class SettingsPanelFakeChainPresentationEditor : Editor
             chainLinksProperty.GetArrayElementAtIndex(i).objectReferenceValue = links[i];
 
         serializedObject.ApplyModifiedProperties();
+        presentation.CaptureAuthoredSegmentLengths();
         presentation.SnapToCurrentPose();
         EditorUtility.SetDirty(presentation);
     }
@@ -217,6 +226,25 @@ public sealed class SettingsPanelFakeChainPresentationEditor : Editor
             EditorUtility.SetDirty(presentation);
         }
 
+        SceneView.RepaintAll();
+    }
+
+    private void CaptureAuthoredLengths()
+    {
+        serializedObject.ApplyModifiedProperties();
+        foreach (Object currentTarget in targets)
+        {
+            SettingsPanelFakeChainPresentation presentation = currentTarget as SettingsPanelFakeChainPresentation;
+            if (presentation == null)
+                continue;
+
+            Undo.RecordObject(presentation, "Capture Authored Chain Lengths");
+            presentation.CaptureAuthoredSegmentLengths();
+            presentation.SnapToCurrentPose();
+            EditorUtility.SetDirty(presentation);
+        }
+
+        serializedObject.Update();
         SceneView.RepaintAll();
     }
 
@@ -240,6 +268,132 @@ public sealed class SettingsPanelFakeChainPresentationEditor : Editor
         }
 
         return null;
+    }
+
+    private static RectTransform FindPreferredTopAnchor(RectTransform chainContainer, RectTransform bottomAnchor)
+    {
+        if (chainContainer == null)
+            return null;
+
+        Vector3 referenceWorldPosition = bottomAnchor != null ? bottomAnchor.position : chainContainer.position;
+        string preferredRootName = BuildPreferredTopAnchorRootName(chainContainer.name);
+
+        RectTransform resolvedTopAnchor = FindBestTopAnchorInScope(chainContainer.parent as RectTransform, preferredRootName, referenceWorldPosition, chainContainer);
+        if (resolvedTopAnchor != null)
+            return resolvedTopAnchor;
+
+        Transform parent = chainContainer.parent;
+        if (parent != null)
+        {
+            resolvedTopAnchor = FindBestTopAnchorInScope(parent.parent as RectTransform, "TopAnchorRoot", referenceWorldPosition, chainContainer);
+            if (resolvedTopAnchor != null)
+                return resolvedTopAnchor;
+        }
+
+        return FindByName(chainContainer, "TopAnchor");
+    }
+
+    private static RectTransform FindBestTopAnchorInScope(
+        RectTransform scope,
+        string preferredRootName,
+        Vector3 referenceWorldPosition,
+        RectTransform excludedRoot)
+    {
+        if (scope == null)
+            return null;
+
+        RectTransform preferredRoot = null;
+        List<RectTransform> fallbackRoots = null;
+        int childCount = scope.childCount;
+        for (int i = 0; i < childCount; i++)
+        {
+            RectTransform child = scope.GetChild(i) as RectTransform;
+            if (child == null || child == excludedRoot)
+                continue;
+
+            if (!string.IsNullOrEmpty(preferredRootName) && child.name == preferredRootName)
+                preferredRoot = child;
+
+            if (child.name == "TopAnchorRoot" || child.name.EndsWith("TopAnchorRoot"))
+            {
+                fallbackRoots ??= new List<RectTransform>();
+                fallbackRoots.Add(child);
+            }
+        }
+
+        RectTransform best = FindBestTopAnchorChild(preferredRoot, referenceWorldPosition);
+        if (best != null)
+            return best;
+
+        if (fallbackRoots == null)
+            return null;
+
+        for (int i = 0; i < fallbackRoots.Count; i++)
+        {
+            RectTransform candidateRoot = fallbackRoots[i];
+            if (candidateRoot == preferredRoot)
+                continue;
+
+            best = FindBestTopAnchorChild(candidateRoot, referenceWorldPosition);
+            if (best != null)
+                return best;
+        }
+
+        return null;
+    }
+
+    private static RectTransform FindBestTopAnchorChild(RectTransform root, Vector3 referenceWorldPosition)
+    {
+        if (root == null)
+            return null;
+
+        RectTransform[] rects = root.GetComponentsInChildren<RectTransform>(true);
+        RectTransform best = null;
+        float bestDistanceSquared = float.MaxValue;
+        for (int i = 0; i < rects.Length; i++)
+        {
+            RectTransform rect = rects[i];
+            if (rect == null || rect == root || !rect.name.StartsWith("TopAnchor"))
+                continue;
+
+            float distanceSquared = ((Vector2)rect.position - (Vector2)referenceWorldPosition).sqrMagnitude;
+            if (distanceSquared >= bestDistanceSquared)
+                continue;
+
+            best = rect;
+            bestDistanceSquared = distanceSquared;
+        }
+
+        return best;
+    }
+
+    private static string BuildPreferredTopAnchorRootName(string chainContainerName)
+    {
+        if (string.IsNullOrEmpty(chainContainerName))
+            return "TopAnchorRoot";
+
+        const string chainRootSuffix = "ChainRoot";
+        if (chainContainerName.EndsWith(chainRootSuffix))
+            return chainContainerName.Substring(0, chainContainerName.Length - chainRootSuffix.Length) + "TopAnchorRoot";
+
+        return "TopAnchorRoot";
+    }
+
+    private static bool IsDescendantOf(Transform candidate, Transform potentialAncestor)
+    {
+        if (candidate == null || potentialAncestor == null)
+            return false;
+
+        Transform current = candidate;
+        while (current != null)
+        {
+            if (current == potentialAncestor)
+                return true;
+
+            current = current.parent;
+        }
+
+        return false;
     }
 
     private static void CollectLinkRects(RectTransform root, List<RectTransform> results)

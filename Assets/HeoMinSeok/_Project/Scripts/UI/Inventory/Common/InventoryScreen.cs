@@ -24,6 +24,9 @@ public class InventoryScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSo
     [SerializeField] private Button closeButton;
     [SerializeField] private DropZoneUI dropZone;
 
+    [Header("Presentation")]
+    [SerializeField] private InventorySlideFadePresentation slideFadePresentation;
+
     private IItemContainer consumableContainer;
     private IItemContainer weaponContainer;
     private IItemContainer relicContainer;
@@ -48,19 +51,33 @@ public class InventoryScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSo
 
     public void OpenUI()
     {
-        gameObject.SetActive(true);
+        ResolvePresentation();
+
+        if (slideFadePresentation != null)
+            slideFadePresentation.PlayOpen();
+        else
+            gameObject.SetActive(true);
     }
 
     public void CloseUI()
     {
-        gameObject.SetActive(false);
+        ItemDragContext.CancelActiveDragSession();
         // 창이 닫힐 때 허공에 남은 툴팁 즉시 해제
         if (UIManager.Instance != null) UIManager.Instance.HideHoverImmediate();
+
+        ResolvePresentation();
+
+        if (slideFadePresentation != null)
+            slideFadePresentation.PlayClose();
+        else
+            gameObject.SetActive(false);
     }
     // =========================================================
 
     private void Awake()
     {
+        ResolvePresentation();
+
         if (closeButton != null)
         {
             // [수정] 직접 끄지 않고 UIManager에게 닫아달라고(Pop) 요청
@@ -69,6 +86,16 @@ public class InventoryScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSo
                 else CloseUI();
             });
         }
+    }
+
+    private void ResolvePresentation()
+    {
+        if (slideFadePresentation != null)
+            return;
+
+        slideFadePresentation = GetComponent<InventorySlideFadePresentation>();
+        if (slideFadePresentation == null)
+            slideFadePresentation = gameObject.AddComponent<InventorySlideFadePresentation>();
     }
 
     private void OnEnable()

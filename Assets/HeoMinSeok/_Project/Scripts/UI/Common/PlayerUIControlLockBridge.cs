@@ -62,6 +62,23 @@ public sealed class PlayerUIControlLockBridge : MonoBehaviour
         return true;
     }
 
+    public void ForceReleaseAll(GameplayTagSet tagSet)
+    {
+        ownerLockCounts.Clear();
+        activeLockCount = 0;
+
+        if (tagSet == null)
+            return;
+
+        if (tagSystem == null)
+            tagSystem = GetComponent<TagSystem>();
+
+        if (tagSystem == null)
+            return;
+
+        ApplyTagSet(tagSet, add: false);
+    }
+
     /// <summary>
     /// 책임 :
     /// - 플레이어 Transform에서 UI 잠금 브리지를 찾아 반환하고, 없으면 즉시 생성해 UI 흐름이 끊기지 않게 한다.

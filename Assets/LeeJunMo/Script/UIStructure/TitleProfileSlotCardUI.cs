@@ -7,16 +7,30 @@ using UnityEngine.UI;
 public sealed class TitleProfileSlotCardUI : MonoBehaviour
 {
     [Header("Binding")]
+    [SerializeField] private UIChainDropPresentation[] closePresentations;
     [SerializeField] private Button selectButton;
+    [SerializeField] private TMP_Text selectButtonLabelText;
+    [SerializeField] private Button deleteButton;
+    [SerializeField] private GameObject deleteButtonChainRoot;
     [SerializeField] private TMP_Text slotLabelText;
     [SerializeField] private TMP_Text stateLabelText;
-    [SerializeField] private TMP_Text runLabelText;
-    [SerializeField] private TMP_Text metaProgressLabelText;
-    [SerializeField] private TMP_Text lastPlayedLabelText;
+    [SerializeField] private GameObject playTimeGroup;
+    [SerializeField] private TMP_Text playTimeTitleText;
+    [SerializeField] private TMP_Text playTimeValueText;
+    [SerializeField] private GameObject upgradeProgressGroup;
+    [SerializeField] private TMP_Text upgradeProgressTitleText;
+    [SerializeField] private TMP_Text upgradeProgressValueText;
+    [SerializeField] private GameObject magicStoneGroup;
+    [SerializeField] private TMP_Text magicStoneTitleText;
+    [SerializeField] private TMP_Text magicStoneValueText;
+    [SerializeField] private GameObject clearCountGroup;
+    [SerializeField] private TMP_Text clearCountTitleText;
+    [SerializeField] private TMP_Text clearCountValueText;
     [SerializeField] private TMP_Text actionLabelText;
     [SerializeField] private CanvasGroup canvasGroup;
 
     private Action<int> onSelected;
+    private Action<int> onDeleteRequested;
     private int slotIndex = -1;
 
     private void Awake()
@@ -25,44 +39,73 @@ public sealed class TitleProfileSlotCardUI : MonoBehaviour
         BindListeners();
     }
 
-    public void Bind(TitleProfileSlotSummary summary, TitleProfileSlotPanelMode mode, Action<int> onSelected)
+    public void Bind(
+        TitleProfileSlotSummary summary,
+        Action<int> onSelected,
+        Action<int> onDeleteRequested)
     {
         ResolveReferences();
+        BindListeners();
 
         this.onSelected = onSelected;
+        this.onDeleteRequested = onDeleteRequested;
         slotIndex = summary.SlotIndex;
-
-        bool canSelect = CanSelect(summary, mode);
+        bool hasProfile = summary.HasProfile;
 
         if (slotLabelText != null)
+        {
+            slotLabelText.gameObject.SetActive(hasProfile);
             slotLabelText.text = summary.SlotLabel;
+        }
 
         if (stateLabelText != null)
-            stateLabelText.text = ResolveStateLabel(summary);
+        {
+            bool showStateLabel = !hasProfile;
+            stateLabelText.gameObject.SetActive(showStateLabel);
+            if (showStateLabel)
+                stateLabelText.text = ResolveStateLabel(summary);
+        }
 
-        if (runLabelText != null)
-            runLabelText.text = summary.RunLabel;
-
-        if (metaProgressLabelText != null)
-            metaProgressLabelText.text = summary.MetaProgressLabel;
-
-        if (lastPlayedLabelText != null)
-            lastPlayedLabelText.text = summary.LastPlayedLabel;
+        BindGroupedText(playTimeGroup, playTimeTitleText, playTimeValueText, hasProfile, PlayTimeTitle, summary.PlayTimeLabel);
+        BindGroupedText(upgradeProgressGroup, upgradeProgressTitleText, upgradeProgressValueText, hasProfile, UpgradeProgressTitle, summary.UpgradeProgressLabel);
+        BindGroupedText(magicStoneGroup, magicStoneTitleText, magicStoneValueText, hasProfile, MagicStoneTitle, summary.MagicStoneLabel);
+        BindGroupedText(clearCountGroup, clearCountTitleText, clearCountValueText, hasProfile, ClearCountTitle, summary.ClearCountLabel);
 
         if (actionLabelText != null)
-            actionLabelText.text = ResolveActionLabel(summary, mode, canSelect);
+            actionLabelText.gameObject.SetActive(false);
+
+        if (selectButtonLabelText != null)
+            selectButtonLabelText.text = hasProfile
+                ? "\uACC4\uC18D\uD558\uAE30"
+                : "\uC2DC\uC791\uD558\uAE30";
 
         if (selectButton != null)
-            selectButton.interactable = canSelect;
+            selectButton.interactable = true;
+
+        if (deleteButton != null)
+        {
+            bool canDelete = hasProfile;
+            deleteButton.gameObject.SetActive(canDelete);
+            deleteButton.interactable = canDelete;
+        }
+
+        if (deleteButtonChainRoot != null)
+            deleteButtonChainRoot.SetActive(hasProfile);
 
         if (canvasGroup != null)
-            canvasGroup.alpha = canSelect ? 1f : 0.55f;
+            canvasGroup.alpha = 1f;
     }
 
     private void ResolveReferences()
     {
+        if (closePresentations == null || closePresentations.Length == 0)
+            closePresentations = GetComponentsInChildren<UIChainDropPresentation>(true);
+
         if (selectButton == null)
             selectButton = GetComponent<Button>();
+
+        if (selectButtonLabelText == null && selectButton != null)
+            selectButtonLabelText = selectButton.GetComponentInChildren<TMP_Text>(true);
 
         if (canvasGroup == null)
             canvasGroup = GetComponent<CanvasGroup>();
@@ -75,6 +118,12 @@ public sealed class TitleProfileSlotCardUI : MonoBehaviour
 
         selectButton.onClick.RemoveListener(HandleClicked);
         selectButton.onClick.AddListener(HandleClicked);
+
+        if (deleteButton != null)
+        {
+            deleteButton.onClick.RemoveListener(HandleDeleteClicked);
+            deleteButton.onClick.AddListener(HandleDeleteClicked);
+        }
     }
 
     private void HandleClicked()
@@ -85,38 +134,96 @@ public sealed class TitleProfileSlotCardUI : MonoBehaviour
         onSelected?.Invoke(slotIndex);
     }
 
-    private static bool CanSelect(TitleProfileSlotSummary summary, TitleProfileSlotPanelMode mode)
+    private void HandleDeleteClicked()
     {
-        return mode switch
+        if (slotIndex < 0)
+            return;
+
+        onDeleteRequested?.Invoke(slotIndex);
+    }
+
+    public void SetInteractable(bool enabled)
+    {
+        if (selectButton != null)
+            selectButton.interactable = enabled;
+
+        if (deleteButton != null && deleteButton.gameObject.activeSelf)
+            deleteButton.interactable = enabled;
+    }
+
+    public void PlayClosePresentations(Action onCompleted = null)
+    {
+        ResolveReferences();
+
+        if (closePresentations == null || closePresentations.Length == 0)
         {
-            TitleProfileSlotPanelMode.NewGame => true,
-            TitleProfileSlotPanelMode.Continue => summary.HasActiveRun,
-            _ => false
-        };
+            onCompleted?.Invoke();
+            return;
+        }
+
+        int activePresentationCount = 0;
+        for (int i = 0; i < closePresentations.Length; i++)
+        {
+            UIChainDropPresentation presentation = closePresentations[i];
+            if (presentation == null || !presentation.gameObject.activeInHierarchy)
+                continue;
+
+            activePresentationCount++;
+        }
+
+        if (activePresentationCount == 0)
+        {
+            onCompleted?.Invoke();
+            return;
+        }
+
+        int remainingCallbacks = activePresentationCount;
+        for (int i = 0; i < closePresentations.Length; i++)
+        {
+            UIChainDropPresentation presentation = closePresentations[i];
+            if (presentation == null || !presentation.gameObject.activeInHierarchy)
+                continue;
+
+            presentation.PlayClose(() =>
+            {
+                remainingCallbacks--;
+                if (remainingCallbacks <= 0)
+                    onCompleted?.Invoke();
+            });
+        }
     }
 
     private static string ResolveStateLabel(TitleProfileSlotSummary summary)
     {
         if (!summary.HasProfile)
-            return "빈 슬롯";
+            return "\uBE48 \uC2AC\uB86F";
 
-        return summary.HasActiveRun ? "진행 중" : "대기 중";
+        return summary.HasActiveRun ? "\uC9C4\uD589 \uC911" : "\uB300\uAE30 \uC911";
     }
 
-    private static string ResolveActionLabel(
-        TitleProfileSlotSummary summary,
-        TitleProfileSlotPanelMode mode,
-        bool canSelect)
+    private static void BindGroupedText(
+        GameObject groupRoot,
+        TMP_Text titleText,
+        TMP_Text valueText,
+        bool visible,
+        string title,
+        string value)
     {
-        if (!canSelect)
-            return mode == TitleProfileSlotPanelMode.Continue ? "이어할 런 없음" : "선택 불가";
+        if (groupRoot != null)
+            groupRoot.SetActive(visible);
 
-        if (mode == TitleProfileSlotPanelMode.Continue)
-            return "이어하기";
+        if (!visible)
+            return;
 
-        if (!summary.HasProfile)
-            return "새 프로필 생성";
+        if (titleText != null)
+            titleText.text = title;
 
-        return summary.HasActiveRun ? "새 런 시작" : "새 런 시작";
+        if (valueText != null)
+            valueText.text = value;
     }
+
+    private const string PlayTimeTitle = "\uD50C\uB808\uC774 \uD0C0\uC784";
+    private const string UpgradeProgressTitle = "\uC5C5\uADF8\uB808\uC774\uB4DC \uC9C4\uD589\uB3C4";
+    private const string MagicStoneTitle = "\uBCF4\uC720 \uB9C8\uC815\uC11D";
+    private const string ClearCountTitle = "\uD074\uB9AC\uC5B4 \uD69F\uC218";
 }

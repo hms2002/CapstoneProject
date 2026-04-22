@@ -234,6 +234,11 @@ public sealed class PresentationPreloadService : MonoBehaviour
         RefreshLoadWindow("Load window changed");
     }
 
+    public void RefreshActiveLoadWindow(string reason = null)
+    {
+        RefreshLoadWindow(string.IsNullOrWhiteSpace(reason) ? "Explicit load window refresh" : reason);
+    }
+
     private void BindRouteManager(PortalRouteManager manager)
     {
         if (boundRouteManager == manager)

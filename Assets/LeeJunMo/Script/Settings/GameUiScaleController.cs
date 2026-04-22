@@ -15,7 +15,6 @@ public sealed class GameUiScaleController : MonoBehaviour
         GlobalCanvasLayer.Reward,
         GlobalCanvasLayer.DamagePopup,
         GlobalCanvasLayer.BossHUD,
-        GlobalCanvasLayer.Loading,
     };
 
     private readonly Dictionary<CanvasScaler, Vector2> baseReferenceResolutions = new();

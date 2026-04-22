@@ -16,11 +16,29 @@ public sealed class GamePlayDataManager : MonoBehaviour
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     private static void AutoBootstrap()
     {
-        if (s_isQuitting) return;
-        if (Instance != null) return;
+        if (s_isQuitting)
+            return;
+
+        EnsureInstance();
+    }
+
+    public static GamePlayDataManager EnsureInstance()
+    {
+        if (Instance != null)
+            return Instance;
+
+        GamePlayDataManager existing = FindFirstObjectByType<GamePlayDataManager>(FindObjectsInactive.Include);
+        if (existing != null)
+        {
+            Instance = existing;
+            return existing;
+        }
+
+        if (s_isQuitting)
+            return null;
 
         var go = new GameObject(nameof(GamePlayDataManager));
-        go.AddComponent<GamePlayDataManager>();
+        return go.AddComponent<GamePlayDataManager>();
     }
 
     private void Awake()
@@ -195,6 +213,18 @@ public sealed class GamePlayDataManager : MonoBehaviour
         return state;
     }
 
+    public void ResetForDevelopmentStart()
+    {
+        Data ??= new GamePlayData();
+        Data.isRunActive = false;
+        Data.runElapsedSeconds = 0f;
+        Data.runRemainingSeconds = 0f;
+        Data.lastRunEndReason = RunEndReason.None;
+        Data.pendingTransition = null;
+        Data.pendingPlayerState = null;
+        ClearPendingRunProgress();
+    }
+
     private void CommitPendingRunProgress()
     {
         if (Data == null || GameDataManager.Instance == null)
@@ -207,6 +237,12 @@ public sealed class GamePlayDataManager : MonoBehaviour
 
         if (Data.pendingRunMagicStoneDelta != 0)
             gameData.magicStone += Data.pendingRunMagicStoneDelta;
+
+        if (Data.runElapsedSeconds > 0f)
+            gameData.totalPlaySeconds += Mathf.Max(0f, Data.runElapsedSeconds);
+
+        if (Data.lastRunEndReason == RunEndReason.Victory)
+            gameData.clearCount += 1;
 
         CommitPendingAffectionChanges(gameData);
         CommitPendingShortcutUnlocks(gameData);

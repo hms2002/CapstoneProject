@@ -1,8 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 [DisallowMultipleComponent]
 public sealed class SceneFadeTransitionService : MonoBehaviour
@@ -19,19 +19,15 @@ public sealed class SceneFadeTransitionService : MonoBehaviour
     [SerializeField, Min(0)] private int postLoadBlackFrames = 2;
     [SerializeField, Min(0f)] private float postLoadBlackHoldSeconds = 0.1f;
 
-    [Header("Corridor Loading Handoff")]
-    [SerializeField] private bool delayRevealForCorridorLoading = true;
-    [SerializeField, Min(0f)] private float corridorRevealTimeoutSeconds = 8f;
-
     [Header("Overlay Refs")]
     [SerializeField] private GameObject overlayRoot;
     [SerializeField] private CanvasGroup overlayCanvasGroup;
     [SerializeField] private Image overlayImage;
 
-    private Coroutine transitionRoutine;
     private bool isTransitionActive;
     private float savedTimeScale = 1f;
     private bool isInitialized;
+    private bool ownsRuntimeOverlay;
     private readonly Dictionary<int, Object> externalPlayerUnlockBlockers = new();
 
     public bool IsTransitionActive => isTransitionActive;
@@ -51,17 +47,30 @@ public sealed class SceneFadeTransitionService : MonoBehaviour
         externalPlayerUnlockBlockers.Remove(ownerId);
     }
 
-    public static SceneFadeTransitionService EnsureInstance()
+    public static SceneFadeTransitionService EnsureInstance(bool allowRuntimeFallback = false)
     {
         if (Instance != null)
+        {
+            Instance.EnsureOverlaySetup(allowRuntimeFallback);
             return Instance;
+        }
 
         SceneFadeTransitionService existing = FindFirstObjectByType<SceneFadeTransitionService>();
         if (existing != null)
         {
             Instance = existing;
+            existing.EnsureOverlaySetup(allowRuntimeFallback);
             existing.Initialize();
             return existing;
+        }
+
+        if (allowRuntimeFallback)
+        {
+            GameObject host = new GameObject(nameof(SceneFadeTransitionService));
+            SceneFadeTransitionService created = host.AddComponent<SceneFadeTransitionService>();
+            created.CreateRuntimeOverlayIfNeeded();
+            created.Initialize();
+            return created;
         }
 
         return null;
@@ -71,8 +80,18 @@ public sealed class SceneFadeTransitionService : MonoBehaviour
     {
         if (Instance != null && Instance != this)
         {
-            Destroy(gameObject);
-            return;
+            ResolveOverlayReferences();
+            if (ShouldReplaceExistingInstance(Instance))
+            {
+                SceneFadeTransitionService previousInstance = Instance;
+                Instance = this;
+                Destroy(previousInstance.gameObject);
+            }
+            else
+            {
+                Destroy(gameObject);
+                return;
+            }
         }
 
         Instance = this;
@@ -106,10 +125,44 @@ public sealed class SceneFadeTransitionService : MonoBehaviour
 
     public bool TryLoadScene(string targetSceneName)
     {
-        if (string.IsNullOrWhiteSpace(targetSceneName))
-            return false;
+        SceneTransitionCoordinator coordinator = SceneTransitionCoordinator.EnsureInstance();
+        return coordinator != null && coordinator.TryLoadScene(targetSceneName);
+    }
 
-        if (transitionRoutine != null)
+    private void Initialize()
+    {
+        EnsureOverlaySetup(allowRuntimeFallback: false);
+
+        if (isInitialized)
+        {
+            ResolveOverlayReferences();
+            ConfigureOverlayVisuals();
+            if (!isTransitionActive)
+                ApplyOverlayVisualState(alpha: 0f, active: !deactivateOverlayWhenIdle);
+            return;
+        }
+
+        EnsurePersistence();
+        ResolveOverlayReferences();
+        ConfigureOverlayVisuals();
+        ApplyOverlayVisualState(alpha: 0f, active: !deactivateOverlayWhenIdle);
+        isInitialized = true;
+    }
+
+    private void EnsureOverlaySetup(bool allowRuntimeFallback)
+    {
+        ResolveOverlayReferences();
+        if (!allowRuntimeFallback || HasValidOverlaySetup())
+            return;
+
+        CreateRuntimeOverlayIfNeeded();
+        ResolveOverlayReferences();
+        ConfigureOverlayVisuals();
+    }
+
+    public bool TryBeginTransitionSession()
+    {
+        if (isTransitionActive)
             return false;
 
         Initialize();
@@ -121,76 +174,46 @@ public sealed class SceneFadeTransitionService : MonoBehaviour
             return false;
         }
 
-        transitionRoutine = StartCoroutine(CoLoadSceneWithFade(targetSceneName));
-        return true;
-    }
-
-    private void Initialize()
-    {
-        if (isInitialized)
-        {
-            ResolveOverlayReferences();
-            ConfigureOverlayVisuals();
-            return;
-        }
-
-        EnsurePersistence();
-        ResolveOverlayReferences();
-        ConfigureOverlayVisuals();
-        ApplyOverlayVisualState(alpha: 0f, active: !deactivateOverlayWhenIdle);
-        isInitialized = true;
-    }
-
-    private IEnumerator CoLoadSceneWithFade(string targetSceneName)
-    {
         isTransitionActive = true;
-
         PrepareTransitionUi();
         LockCurrentPlayer();
         savedTimeScale = Time.timeScale;
         Time.timeScale = 0f;
-
         ApplyOverlayVisualState(alpha: overlayCanvasGroup != null ? overlayCanvasGroup.alpha : 0f, active: true);
-
-        yield return FadeCanvasGroup(toAlpha: 1f, duration: fadeOutDuration);
-
-        AsyncOperation loadOperation = null;
-        try
-        {
-            loadOperation = SceneManager.LoadSceneAsync(targetSceneName, LoadSceneMode.Single);
-        }
-        catch (System.Exception ex)
-        {
-            Debug.LogError($"[SceneFadeTransitionService] Failed to load scene '{targetSceneName}': {ex.Message}", this);
-        }
-
-        if (loadOperation == null)
-        {
-            yield return FadeCanvasGroup(toAlpha: 0f, duration: fadeInDuration);
-            FinishTransition();
-            yield break;
-        }
-
-        while (!loadOperation.isDone)
-            yield return null;
-
-        yield return WaitForPostLoadSettle();
-        LockCurrentPlayer();
-
-        if (ShouldDelayRevealForCorridorLoading())
-            yield return WaitForCorridorLoadingOverlayToFinish();
-
-        yield return FadeCanvasGroup(toAlpha: 0f, duration: fadeInDuration);
-
-        FinishTransition();
+        return true;
     }
 
-    private void FinishTransition()
+    public IEnumerator FadeOutAsync()
+    {
+        yield return FadeCanvasGroup(toAlpha: 1f, duration: fadeOutDuration);
+    }
+
+    public IEnumerator FadeInAsync()
+    {
+        yield return FadeCanvasGroup(toAlpha: 0f, duration: fadeInDuration);
+    }
+
+    public void ShowBlackImmediately()
+    {
+        ApplyOverlayVisualState(alpha: 1f, active: true);
+    }
+
+    public void HideOverlayImmediately()
+    {
+        ApplyOverlayVisualState(alpha: 0f, active: !deactivateOverlayWhenIdle);
+    }
+
+    public IEnumerator WaitForPostLoadSettleAsync()
+    {
+        yield return WaitForPostLoadSettle();
+        LockCurrentPlayer();
+    }
+
+    public void EndTransitionSession()
     {
         UnlockCurrentPlayer();
         RestoreTimeScaleImmediately();
         isTransitionActive = false;
-        transitionRoutine = null;
 
         if (deactivateOverlayWhenIdle && overlayRoot != null)
             overlayRoot.SetActive(false);
@@ -235,40 +258,6 @@ public sealed class SceneFadeTransitionService : MonoBehaviour
         float elapsed = 0f;
         while (elapsed < holdSeconds)
         {
-            elapsed += Time.unscaledDeltaTime;
-            yield return null;
-        }
-    }
-
-    private bool ShouldDelayRevealForCorridorLoading()
-    {
-        if (!delayRevealForCorridorLoading)
-            return false;
-
-        PortalRouteManager routeManager = PortalRouteManager.Instance;
-        return routeManager != null &&
-               PortalRouteManager.IsCorridorEntryTransition(routeManager.LastLoadPresentationTransitionType);
-    }
-
-    private IEnumerator WaitForCorridorLoadingOverlayToFinish()
-    {
-        float timeoutSeconds = Mathf.Max(0f, corridorRevealTimeoutSeconds);
-        float elapsed = 0f;
-
-        while (true)
-        {
-            LoadingOverlayController overlay = LoadingOverlayController.Instance;
-            if (overlay == null || !overlay.IsActiveLoadingPresentation)
-                yield break;
-
-            if (timeoutSeconds > 0f && elapsed >= timeoutSeconds)
-            {
-                Debug.LogWarning(
-                    "[SceneFadeTransitionService] Timed out waiting for corridor loading overlay to finish. Revealing scene anyway.",
-                    this);
-                yield break;
-            }
-
             elapsed += Time.unscaledDeltaTime;
             yield return null;
         }
@@ -385,6 +374,86 @@ public sealed class SceneFadeTransitionService : MonoBehaviour
             else if (overlayImage != null)
                 overlayRoot = overlayImage.gameObject;
         }
+    }
+
+    private void CreateRuntimeOverlayIfNeeded()
+    {
+        if (HasValidOverlaySetup())
+            return;
+
+        var canvasObject = new GameObject(
+            "RuntimeFadeCanvas",
+            typeof(RectTransform),
+            typeof(Canvas),
+            typeof(CanvasScaler),
+            typeof(GraphicRaycaster));
+
+        canvasObject.transform.SetParent(transform, false);
+
+        Canvas canvas = canvasObject.GetComponent<Canvas>();
+        canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+        canvas.sortingOrder = short.MaxValue;
+        canvas.pixelPerfect = false;
+
+        CanvasScaler scaler = canvasObject.GetComponent<CanvasScaler>();
+        scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+        scaler.referenceResolution = new Vector2(1920f, 1080f);
+        scaler.screenMatchMode = CanvasScaler.ScreenMatchMode.MatchWidthOrHeight;
+        scaler.matchWidthOrHeight = 0.5f;
+
+        var overlayObject = new GameObject(
+            "Overlay",
+            typeof(RectTransform),
+            typeof(CanvasGroup),
+            typeof(Image));
+
+        overlayObject.transform.SetParent(canvasObject.transform, false);
+
+        RectTransform overlayRect = overlayObject.GetComponent<RectTransform>();
+        overlayRect.anchorMin = Vector2.zero;
+        overlayRect.anchorMax = Vector2.one;
+        overlayRect.offsetMin = Vector2.zero;
+        overlayRect.offsetMax = Vector2.zero;
+
+        overlayRoot = overlayObject;
+        overlayCanvasGroup = overlayObject.GetComponent<CanvasGroup>();
+        overlayImage = overlayObject.GetComponent<Image>();
+        overlayImage.raycastTarget = true;
+        overlayImage.color = fadeColor;
+        overlayCanvasGroup.alpha = 0f;
+        overlayCanvasGroup.blocksRaycasts = true;
+        overlayCanvasGroup.interactable = false;
+        ownsRuntimeOverlay = true;
+
+        EnsureRuntimeEventSystemExists();
+    }
+
+    private bool ShouldReplaceExistingInstance(SceneFadeTransitionService existingInstance)
+    {
+        if (existingInstance == null || existingInstance == this)
+            return false;
+
+        if (!existingInstance.ownsRuntimeOverlay)
+            return false;
+
+        bool currentHasSerializedOverlay = HasValidOverlaySetup() && !ownsRuntimeOverlay;
+        return currentHasSerializedOverlay;
+    }
+
+    private void EnsureRuntimeEventSystemExists()
+    {
+        EventSystem existing = FindFirstObjectByType<EventSystem>(FindObjectsInactive.Include);
+        if (existing != null)
+            return;
+
+        GameObject eventSystemObject = new GameObject("EventSystem");
+        eventSystemObject.AddComponent<EventSystem>();
+#if ENABLE_INPUT_SYSTEM
+        eventSystemObject.AddComponent<UnityEngine.InputSystem.UI.InputSystemUIInputModule>();
+#else
+        eventSystemObject.AddComponent<StandaloneInputModule>();
+#endif
+        DontDestroyOnLoad(eventSystemObject);
     }
 
     private void ConfigureOverlayVisuals()

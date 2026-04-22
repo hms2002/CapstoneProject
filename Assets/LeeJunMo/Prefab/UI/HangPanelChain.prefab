@@ -849,7 +849,7 @@ MonoBehaviour:
   topAnchor: {fileID: 2284621715944078298}
   bottomEndpointMode: 0
   bottomAnchor: {fileID: 0}
-  bottomAnchorLocalOffset: {x: 0, y: 0}
+  bottomAnchorLocalOffset: {x: 0, y: -13}
   freeEndLocalOffset: {x: 0, y: -220}
   chainLinks:
   - {fileID: 3585327308634405497}
@@ -889,7 +889,20 @@ MonoBehaviour:
   linkAngleOffset: 90
   reachMultiplier: 1
   reachPadding: 0
-  lastLinkLocalOffset: {x: 0, y: -13}
+  lastLinkLocalOffset: {x: 0, y: 0}
+  authoredSegmentLengths:
+  - 48.63689
+  - 48.63689
+  - 48.63689
+  - 48.63689
+  - 48.63689
+  - 48.63689
+  - 48.63689
+  - 48.63689
+  - 48.63689
+  - 48.63689
+  - 48.63689
+  authoredEndpointDistance: 535.0058
 --- !u!1 &9037509848770091862
 GameObject:
   m_ObjectHideFlags: 0

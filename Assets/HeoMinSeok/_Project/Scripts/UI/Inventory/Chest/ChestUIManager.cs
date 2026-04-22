@@ -27,7 +27,7 @@ public class ChestUIManager : MonoBehaviour
         if (chestScreen != null) chestScreen.gameObject.SetActive(false);
     }
 
-    public bool OpenChest(TreasureChest chest)
+    public bool OpenChest(TreasureChest chest, bool playPresentation = true)
     {
         if (chest == null)
             return false;
@@ -43,6 +43,7 @@ public class ChestUIManager : MonoBehaviour
 
         // 1. 데이터 바인딩
         chestScreen.Bind(chest.GetInventory());
+        chestScreen.SetPresentationForNextOpen(playPresentation);
 
         // 2. [핵심] 직접 켜지 않고 UIManager의 스택 명부에 정식 등록 요청! (이제 ESC가 먹힙니다)
         bool opened = true;

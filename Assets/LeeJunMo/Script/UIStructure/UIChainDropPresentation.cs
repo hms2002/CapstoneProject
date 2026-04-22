@@ -80,6 +80,11 @@ public sealed class UIChainDropPresentation : MonoBehaviour
     private Vector2 previousSupportMotionSourcePosition;
     private Vector2 smoothedSupportMotionLocalDelta;
     private System.Action onCloseAnimationFinished;
+    private bool hasLayoutSignature;
+    private Vector2 lastParentRectSize;
+    private float lastCanvasScaleFactor;
+    private Vector2Int lastScreenSize;
+    private bool layoutRefreshPending;
 
     private void Reset()
     {
@@ -134,6 +139,7 @@ public sealed class UIChainDropPresentation : MonoBehaviour
 
     private void Update()
     {
+        RefreshLayoutIfNeeded();
         UpdateOpenMotion();
         UpdateCloseMotion();
 
@@ -152,6 +158,11 @@ public sealed class UIChainDropPresentation : MonoBehaviour
             return;
 
         ApplyChainReachConstraint();
+    }
+
+    private void OnRectTransformDimensionsChange()
+    {
+        RefreshLayoutIfNeeded();
     }
 
     public void PlayOpen()
@@ -270,6 +281,107 @@ public sealed class UIChainDropPresentation : MonoBehaviour
             openLocalZRotation = NormalizeSignedAngle(panelRoot.localEulerAngles.z);
             hasOpenLocalZRotation = true;
         }
+    }
+
+    private void RefreshLayoutIfNeeded(bool force = false)
+    {
+        ResolveReferences();
+        if (panelRoot == null)
+            return;
+
+        if (!hasLayoutSignature)
+        {
+            UpdateLayoutSignature();
+            return;
+        }
+
+        if (layoutRefreshPending && !isAnimatingOpen && !isAnimatingClose)
+        {
+            ApplyLayoutRefresh();
+            return;
+        }
+
+        if (!force && !HasLayoutSignatureChanged())
+            return;
+
+        UpdateLayoutSignature();
+
+        if (isAnimatingOpen || isAnimatingClose)
+        {
+            layoutRefreshPending = true;
+            return;
+        }
+
+        ApplyLayoutRefresh();
+    }
+
+    private bool HasLayoutSignatureChanged()
+    {
+        Vector2 parentRectSize = GetParentRectSize();
+        float canvasScaleFactor = GetCanvasScaleFactor();
+        Vector2Int screenSize = new Vector2Int(Screen.width, Screen.height);
+
+        return lastParentRectSize != parentRectSize
+            || !Mathf.Approximately(lastCanvasScaleFactor, canvasScaleFactor)
+            || lastScreenSize != screenSize;
+    }
+
+    private void UpdateLayoutSignature()
+    {
+        lastParentRectSize = GetParentRectSize();
+        lastCanvasScaleFactor = GetCanvasScaleFactor();
+        lastScreenSize = new Vector2Int(Screen.width, Screen.height);
+        hasLayoutSignature = true;
+    }
+
+    private void ApplyLayoutRefresh()
+    {
+        layoutRefreshPending = false;
+        ResetSupportMotionCache();
+        RestorePresentationStateAfterLayoutRefresh();
+        SnapAllChainPresentations();
+
+        if (constrainPanelByChainReach && isOpen && !isAnimatingOpen && !isAnimatingClose)
+            ApplyChainReachConstraint();
+    }
+
+    private void RestorePresentationStateAfterLayoutRefresh()
+    {
+        if (panelRoot == null)
+            return;
+
+        CaptureOpenAnchoredPosition();
+
+        if (isOpen)
+        {
+            panelRoot.anchoredPosition = openAnchoredPosition;
+            hasUnlockedInteractionForCurrentOpen = true;
+        }
+        else
+        {
+            panelRoot.anchoredPosition = openAnchoredPosition + closedLocalOffset;
+            hasUnlockedInteractionForCurrentOpen = false;
+        }
+
+        currentVelocity = Vector2.zero;
+        hasImpactedConstraint = false;
+        SnapRotationToOpen();
+        SetInteractionEnabled(true);
+    }
+
+    private Vector2 GetParentRectSize()
+    {
+        if (panelRoot == null)
+            return Vector2.zero;
+
+        RectTransform parentRect = panelRoot.parent as RectTransform;
+        return parentRect != null ? parentRect.rect.size : Vector2.zero;
+    }
+
+    private float GetCanvasScaleFactor()
+    {
+        Canvas canvas = panelRoot != null ? panelRoot.GetComponentInParent<Canvas>() : null;
+        return canvas != null ? canvas.scaleFactor : 1f;
     }
 
     private void StopActiveMotion()
@@ -698,7 +810,7 @@ public sealed class UIChainDropPresentation : MonoBehaviour
         {
             for (int i = 0; i < chainConstraints.Length; i++)
             {
-            UIChainConstraintBinding binding = chainConstraints[i];
+                UIChainConstraintBinding binding = chainConstraints[i];
                 if (binding == null || !binding.IsValid)
                     continue;
 

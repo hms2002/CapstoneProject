@@ -109,7 +109,11 @@ public class RunModifierSaveData
 [System.Serializable]
 public class GameData
 {
+    public bool hasInitializedProfile;
     public int magicStone;
+    public float totalPlaySeconds;
+    public int clearCount;
+    public int knownTotalUpgradeCount;
 
     public UpgradeSaveData upgradeData = new UpgradeSaveData();
     public MapSaveData mapData = new MapSaveData();

@@ -1,14 +1,25 @@
 {
-    "magicStone": 0,
+    "magicStone": 1000,
     "upgradeData": {
-        "purchasedIDs": [],
+        "purchasedIDs": [
+            -1492335095,
+            -1202585465,
+            -1366435874,
+            902021092,
+            1951734588,
+            1635850305,
+            63367897,
+            1561159433,
+            -22355715
+        ],
         "unlockedIDs": [
             0,
-            -1492335095,
             -993005279,
             538693343,
             674725477,
-            101998596
+            101998596,
+            -246972205,
+            1430980967
         ],
         "runModifierData": {
             "extraWeaponGraveCount": 0,
@@ -49,31 +60,12 @@
         "affectionRecords": [
             {
                 "npcId": 1003,
-                "amount": 11
+                "amount": 12
             }
         ]
     },
     "itemData": {
-        "unlockedWeaponIDs": [
-            "Weapon.WindWeapon"
-        ],
-        "unlockedRelicIDs": [
-            "AttackBonusRelic",
-            "RD_BloodBonusRelic",
-            "RD_DrunkenRush",
-            "RD_FeatherOrbit",
-            "RD_FireBonusRelic",
-            "RD_HawkEmblem",
-            "Relic.New2",
-            "RD_OneDropOfSwiftness",
-            "RD_RotatingIornBall",
-            "RD_RunningLedger",
-            "Relic.New1",
-            "RD_SpeedMedal",
-            "RD_Stenographer",
-            "RD_TonicGombangdae",
-            "RD_WindTablet",
-            "RD_CounterKick"
-        ]
+        "unlockedWeaponIDs": [],
+        "unlockedRelicIDs": []
     }
 }
