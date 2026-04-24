@@ -1,47 +1,44 @@
-using System;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-/// <summary>
-/// Standalone inventory screen:
-/// - Consumable (4)
-/// - Weapon equip (2)
-/// - Relic equip (18)
-/// - Drop zone to discard items to the world
-/// </summary>
-// [핵심] IStackableUI를 상속받아 UIManager의 통제를 받습니다!
 public class InventoryScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
 {
-    [Header("UI Refs")]
-    [SerializeField] private Transform consumableGridRoot;
-    [SerializeField] private Transform weaponGridRoot;
-    [SerializeField] private Transform relicGridRoot;
+    private enum OpenMode
+    {
+        PlayerOnly,
+        Chest
+    }
+
+    [Header("Player Inventory")]
+    [SerializeField] private PlayerInventoryPanelView playerInventoryPanel;
+    [SerializeField] private RectTransform playerInventoryPanelRect;
+
+    [Header("Player Stat")]
     [SerializeField] private PlayerStatPanelView playerStatPanel;
-    [SerializeField] private ItemSlotUI consumableSlotPrefab;
-    [SerializeField] private ItemSlotUI weaponSlotPrefab;
-    [SerializeField] private ItemSlotUI relicSlotPrefab;
+
+    [Header("Chest Inventory")]
+    [SerializeField] private ChestScreen chestInventoryScreen;
+
+    [Header("UI Refs")]
     [SerializeField] private Button closeButton;
-    [SerializeField] private DropZoneUI dropZone;
 
     [Header("Presentation")]
     [SerializeField] private InventorySlideFadePresentation slideFadePresentation;
 
-    private IItemContainer consumableContainer;
-    private IItemContainer weaponContainer;
-    private IItemContainer relicContainer;
+    [SerializeField, HideInInspector] private Transform consumableGridRoot;
+    [SerializeField, HideInInspector] private Transform weaponGridRoot;
+    [SerializeField, HideInInspector] private Transform relicGridRoot;
+    [SerializeField, HideInInspector] private ItemSlotUI consumableSlotPrefab;
+    [SerializeField, HideInInspector] private ItemSlotUI weaponSlotPrefab;
+    [SerializeField, HideInInspector] private ItemSlotUI relicSlotPrefab;
+    [SerializeField, HideInInspector] private DropZoneUI dropZone;
 
-    private readonly List<ItemSlotUI> spawned = new();
+    private PlayerConsumableInventory playerConsumableInventory;
+    private WeaponInventory2D playerWeaponInventory;
+    private RelicInventory playerRelicInventory;
+    private OpenMode openMode;
+    private bool playSlideFadePresentationOnNextOpen = true;
 
-    private IDisposable consumableDisposer;
-    private IDisposable weaponDisposer;
-    private IDisposable relicDisposer;
-
-    private Transform lootOrigin;
-
-    // =========================================================
-    // IStackableUI 규약
-    // =========================================================
     public bool IsActive => gameObject.activeSelf;
     public bool CanCloseOnEscape => true;
     public UIOpenGroup OpenGroup => UIOpenGroup.ExclusiveModal;
@@ -52,6 +49,120 @@ public class InventoryScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSo
     public void OpenUI()
     {
         ResolvePresentation();
+        ResolvePlayerInventoryPanel();
+
+        if (openMode == OpenMode.Chest)
+            OpenChestMode();
+        else
+            OpenPlayerOnlyMode();
+    }
+
+    public void CloseUI()
+    {
+        ItemDragContext.CancelActiveDragSession();
+        UIManager.Instance?.HideHoverImmediate();
+
+        bool notifyChestClosed = openMode == OpenMode.Chest;
+        ResolvePresentation();
+
+        if (slideFadePresentation != null)
+        {
+            slideFadePresentation.PlayClose(() => FinishClose(notifyChestClosed));
+            return;
+        }
+
+        gameObject.SetActive(false);
+        FinishClose(notifyChestClosed);
+    }
+
+    private void Awake()
+    {
+        ResolvePresentation();
+        ResolveChestInventoryScreen();
+
+        if (closeButton != null)
+        {
+            closeButton.onClick.AddListener(() =>
+            {
+                if (UIManager.Instance != null)
+                    UIManager.Instance.PopUI(this);
+                else
+                    CloseUI();
+            });
+        }
+    }
+
+    private void OnEnable()
+    {
+        MouseCursorService.EnsureInstance().SetDomain(this, MouseCursorDomain.Inventory, priority: 100);
+    }
+
+    private void OnDisable()
+    {
+        ItemDragContext.CancelActiveDragSession();
+        MouseCursorService.Instance?.ClearDomain(this);
+        playerInventoryPanel?.ClearBinding();
+        chestInventoryScreen?.ClearChestBinding();
+        ItemContainerGroupRegistry.Clear();
+
+        UIManager.Instance?.HideHoverImmediate();
+    }
+
+    public void Bind(
+        PlayerConsumableInventory consumableInventory,
+        WeaponInventory2D weaponInventory,
+        RelicInventory relicInventory,
+        Transform lootOrigin,
+        Transform playerRoot)
+    {
+        openMode = OpenMode.PlayerOnly;
+        playSlideFadePresentationOnNextOpen = true;
+
+        ResolvePlayerInventoryPanel();
+        SetChestInventoryVisible(false);
+
+        BindPlayerInventory(consumableInventory, weaponInventory, relicInventory, lootOrigin, playerRoot);
+        ItemContainerGroupRegistry.SetGroup(
+            null,
+            playerInventoryPanel != null ? playerInventoryPanel.ConsumableContainer : null,
+            playerInventoryPanel != null ? playerInventoryPanel.WeaponContainer : null,
+            playerInventoryPanel != null ? playerInventoryPanel.RelicContainer : null);
+    }
+
+    public void BindChest(ChestInventory chestInventory, bool playSlideFadePresentation)
+    {
+        openMode = OpenMode.Chest;
+        playSlideFadePresentationOnNextOpen = playSlideFadePresentation;
+
+        ResolvePlayerInventoryPanel();
+        ResolveChestInventoryScreen();
+        ResolvePlayerInventories();
+
+        Transform playerRoot = ResolveCurrentPlayerRoot();
+        Transform dropOrigin = ResolveDropOrigin(playerRoot);
+        BindPlayerInventory(playerConsumableInventory, playerWeaponInventory, playerRelicInventory, dropOrigin, playerRoot);
+
+        if (chestInventoryScreen != null)
+        {
+            chestInventoryScreen.gameObject.SetActive(true);
+            chestInventoryScreen.SetRootOwner(this);
+            chestInventoryScreen.BindChestOnly(chestInventory, playerInventoryPanel);
+        }
+    }
+
+    public void CancelPreparedOpen()
+    {
+        ItemDragContext.CancelActiveDragSession();
+        playerInventoryPanel?.ClearBinding();
+        chestInventoryScreen?.ClearChestBinding();
+        SetChestInventoryVisible(false);
+        ItemContainerGroupRegistry.Clear();
+        UIManager.Instance?.HideHoverImmediate();
+    }
+
+    private void OpenPlayerOnlyMode()
+    {
+        SetChestInventoryVisible(false);
 
         if (slideFadePresentation != null)
             slideFadePresentation.PlayOpen();
@@ -59,33 +170,50 @@ public class InventoryScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSo
             gameObject.SetActive(true);
     }
 
-    public void CloseUI()
+    private void OpenChestMode()
     {
-        ItemDragContext.CancelActiveDragSession();
-        // 창이 닫힐 때 허공에 남은 툴팁 즉시 해제
-        if (UIManager.Instance != null) UIManager.Instance.HideHoverImmediate();
+        ResolveChestInventoryScreen();
+        if (chestInventoryScreen != null)
+            chestInventoryScreen.gameObject.SetActive(true);
 
-        ResolvePresentation();
+        bool shouldPlaySlideFade = playSlideFadePresentationOnNextOpen;
+        playSlideFadePresentationOnNextOpen = true;
 
-        if (slideFadePresentation != null)
-            slideFadePresentation.PlayClose();
-        else
-            gameObject.SetActive(false);
-    }
-    // =========================================================
-
-    private void Awake()
-    {
-        ResolvePresentation();
-
-        if (closeButton != null)
+        if (slideFadePresentation == null)
         {
-            // [수정] 직접 끄지 않고 UIManager에게 닫아달라고(Pop) 요청
-            closeButton.onClick.AddListener(() => {
-                if (UIManager.Instance != null) UIManager.Instance.PopUI(this);
-                else CloseUI();
-            });
+            gameObject.SetActive(true);
+            chestInventoryScreen?.SnapOpenForInventoryRoot(playerInventoryPanel);
+            return;
         }
+
+        if (shouldPlaySlideFade)
+        {
+            chestInventoryScreen?.SnapOpenForInventoryRoot(playerInventoryPanel);
+            slideFadePresentation.PlayOpen();
+            return;
+        }
+
+        slideFadePresentation.SnapOpen();
+        chestInventoryScreen?.PlayRevealForInventoryRoot(playerInventoryPanel);
+    }
+
+    private void FinishClose(bool notifyChestClosed)
+    {
+        if (notifyChestClosed && ChestUIManager.Instance != null)
+            ChestUIManager.Instance.HandleChestClosed();
+    }
+
+    private void BindPlayerInventory(
+        PlayerConsumableInventory consumableInventory,
+        WeaponInventory2D weaponInventory,
+        RelicInventory relicInventory,
+        Transform dropOrigin,
+        Transform playerRoot)
+    {
+        if (playerInventoryPanel == null)
+            return;
+
+        playerInventoryPanel.Bind(consumableInventory, weaponInventory, relicInventory, dropOrigin, playerRoot);
     }
 
     private void ResolvePresentation()
@@ -98,238 +226,148 @@ public class InventoryScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSo
             slideFadePresentation = gameObject.AddComponent<InventorySlideFadePresentation>();
     }
 
-    private void OnEnable()
+    private void ResolvePlayerInventoryPanel()
     {
-        MouseCursorService.EnsureInstance().SetDomain(this, MouseCursorDomain.Inventory, priority: 100);
-    }
-
-    private void OnDisable()
-    {
-        ItemDragContext.CancelActiveDragSession();
-        MouseCursorService.Instance?.ClearDomain(this);
-        ClearUI();
-        ItemContainerGroupRegistry.Clear();
-        dropZone?.Hide();
-
-        consumableDisposer?.Dispose();
-        weaponDisposer?.Dispose();
-        relicDisposer?.Dispose();
-
-        consumableDisposer = null;
-        weaponDisposer = null;
-        relicDisposer = null;
-
-        lootOrigin = null;
-
-        if (UIManager.Instance != null) UIManager.Instance.HideHoverImmediate();
-    }
-
-    public void Bind(PlayerConsumableInventory consumableInv, WeaponInventory2D weaponInv, RelicInventory relicInv, Transform lootOrigin, Transform playerRoot)
-    {
-        this.lootOrigin = lootOrigin;
-
-        consumableContainer = new PlayerConsumableContainerAdapter(consumableInv);
-        weaponContainer = new PlayerWeaponContainerAdapter(weaponInv);
-        relicContainer = new PlayerRelicContainerAdapter(relicInv);
-
-        if (playerStatPanel != null)
-            playerStatPanel.Bind(playerRoot);
-
-        ItemContainerGroupRegistry.SetGroup(null, consumableContainer, weaponContainer, relicContainer);
-
-        if (dropZone != null)
+        if (playerInventoryPanel == null)
         {
-            dropZone.SetDropOrigin(this.lootOrigin);
-            dropZone.Hide();
+            playerInventoryPanel = GetComponent<PlayerInventoryPanelView>();
+            if (playerInventoryPanel == null)
+                playerInventoryPanel = GetComponentInChildren<PlayerInventoryPanelView>(true);
+            if (playerInventoryPanel == null)
+                playerInventoryPanel = gameObject.AddComponent<PlayerInventoryPanelView>();
         }
 
-        BuildUI();
+        PlayerStatPanelView sharedStatPanel = ResolvePlayerStatPanel();
+        playerInventoryPanel.Configure(
+            consumableGridRoot,
+            weaponGridRoot,
+            relicGridRoot,
+            sharedStatPanel,
+            consumableSlotPrefab,
+            weaponSlotPrefab,
+            relicSlotPrefab,
+            dropZone,
+            ResolvePlayerInventoryPanelRect());
+        playerInventoryPanel.SetPlayerStatPanel(sharedStatPanel);
     }
 
-    private void BuildUI()
+    private void ResolveChestInventoryScreen()
     {
-        ClearUI();
-        BuildSlots(consumableContainer, consumableGridRoot, consumableSlotPrefab);
-        BuildSlots(weaponContainer, weaponGridRoot, weaponSlotPrefab);
-        BuildSlots(relicContainer, relicGridRoot, relicSlotPrefab);
-    }
+        if (chestInventoryScreen == null)
+            chestInventoryScreen = GetComponentInChildren<ChestScreen>(true);
 
-    /// <summary>
-    /// 책임 : 지정된 인벤토리 컨테이너를 대응하는 슬롯 프리팹으로 시각화한다.
-    /// </summary>
-    private void BuildSlots(IItemContainer container, Transform gridRoot, ItemSlotUI slotPrefab)
-    {
-        if (container == null || gridRoot == null || slotPrefab == null)
+        if (chestInventoryScreen == null)
+            chestInventoryScreen = FindFirstObjectByType<ChestScreen>(FindObjectsInactive.Include);
+
+        if (chestInventoryScreen == null)
             return;
 
-        for (int i = 0; i < container.SlotCount; i++)
-        {
-            var ui = Instantiate(slotPrefab, gridRoot);
-            ui.Bind(container, i);
-            spawned.Add(ui);
-        }
+        chestInventoryScreen.SetRootOwner(this);
+
+        RectTransform chestRect = chestInventoryScreen.transform as RectTransform;
+        RectTransform rootRect = transform as RectTransform;
+        if (Application.isPlaying && chestRect != null && rootRect != null && chestRect.parent != rootRect)
+            chestRect.SetParent(rootRect, false);
     }
 
-    private void ClearUI()
+    private RectTransform ResolvePlayerInventoryPanelRect()
     {
-        for (int i = 0; i < spawned.Count; i++)
-            if (spawned[i] != null) Destroy(spawned[i].gameObject);
-        spawned.Clear();
+        if (playerInventoryPanelRect != null)
+            return playerInventoryPanelRect;
+
+        playerInventoryPanelRect = ResolveDirectChildContaining(consumableGridRoot);
+        if (playerInventoryPanelRect != null)
+            return playerInventoryPanelRect;
+
+        if (playerInventoryPanel != null && playerInventoryPanel.transform != transform)
+            playerInventoryPanelRect = playerInventoryPanel.transform as RectTransform;
+
+        return playerInventoryPanelRect;
     }
 
-    // -----------------------
-    // Adapters (public logic copied from ChestScreen)
-    // -----------------------
-    private class PlayerConsumableContainerAdapter : IItemContainer, IDisposable
+    private PlayerStatPanelView ResolvePlayerStatPanel()
     {
-        private readonly PlayerConsumableInventory inv;
-        public event Action OnChanged;
+        if (playerStatPanel != null)
+            return playerStatPanel;
 
-        public PlayerConsumableContainerAdapter(PlayerConsumableInventory inv)
+        ChestScreen chestScreen = chestInventoryScreen != null
+            ? chestInventoryScreen
+            : GetComponentInChildren<ChestScreen>(true);
+        PlayerStatPanelView[] statPanels = GetComponentsInChildren<PlayerStatPanelView>(true);
+        for (int i = 0; i < statPanels.Length; i++)
         {
-            this.inv = inv;
-            if (this.inv != null) this.inv.OnChanged += HandleChanged;
+            PlayerStatPanelView candidate = statPanels[i];
+            if (candidate == null)
+                continue;
+
+            if (chestScreen != null && candidate.transform.IsChildOf(chestScreen.transform))
+                continue;
+
+            playerStatPanel = candidate;
+            return playerStatPanel;
         }
 
-        public int SlotCount => inv != null ? inv.SlotCount : 0;
+        if (statPanels != null && statPanels.Length > 0)
+            playerStatPanel = statPanels[0];
 
-        public ScriptableObject Get(int index) => inv != null ? inv.GetConsumableInSlot(index) : null;
-
-        public bool CanPlace(ScriptableObject item, int index, int ignoreIndex = -1)
-        {
-            if (inv == null) return false;
-            if (item == null) return true;
-
-            var consumable = item as ConsumableDefinition;
-            if (consumable == null) return false;
-
-            return inv.CanPlaceConsumableInSlot(index, consumable);
-        }
-
-        public bool TrySet(int index, ScriptableObject item)
-        {
-            if (inv == null) return false;
-            if (item == null) return inv.TrySetConsumableSlot(index, null);
-
-            var consumable = item as ConsumableDefinition;
-            if (consumable == null) return false;
-
-            return inv.TrySetConsumableSlot(index, consumable);
-        }
-
-        public bool TrySwap(int a, int b) => inv != null && inv.TrySwapConsumableSlots(a, b);
-
-        private void HandleChanged() => OnChanged?.Invoke();
-
-        public void Dispose()
-        {
-            if (inv != null) inv.OnChanged -= HandleChanged;
-        }
+        return playerStatPanel;
     }
 
-    private class PlayerWeaponContainerAdapter : IItemContainer, IDisposable
+    private RectTransform ResolveDirectChildContaining(Transform child)
     {
-        private readonly WeaponInventory2D inv;
-        public event Action OnChanged;
+        if (child == null)
+            return null;
 
-        public PlayerWeaponContainerAdapter(WeaponInventory2D inv)
-        {
-            this.inv = inv;
-            if (this.inv != null) this.inv.OnInventoryChanged += HandleChanged;
-        }
+        Transform current = child;
+        while (current != null && current.parent != transform)
+            current = current.parent;
 
-        public int SlotCount => inv != null ? inv.SlotCount : 0;
-
-        public ScriptableObject Get(int index) => inv != null ? inv.GetWeaponInSlot(index) : null;
-
-        public bool CanPlace(ScriptableObject item, int index, int ignoreIndex = -1)
-        {
-            if (inv == null) return false;
-            if (item == null) return true;
-
-            var w = item as WeaponDefinition;
-            if (w == null) return false;
-
-            return inv.CanPlaceWeaponInSlot(index, w);
-        }
-
-        public bool TrySet(int index, ScriptableObject item)
-        {
-            if (inv == null) return false;
-            if (item == null) return inv.TrySetWeaponSlot(index, null);
-
-            var w = item as WeaponDefinition;
-            if (w == null) return false;
-
-            return inv.TrySetWeaponSlot(index, w);
-        }
-
-        public bool TrySwap(int a, int b) => inv != null && inv.TrySwapWeaponSlots(a, b);
-
-        private void HandleChanged() => OnChanged?.Invoke();
-
-        public void Dispose()
-        {
-            if (inv != null) inv.OnInventoryChanged -= HandleChanged;
-        }
+        return current as RectTransform;
     }
 
-    private class PlayerRelicContainerAdapter : IItemContainer, IDisposable, IRelicLevelProvider, IRelicSlotReceiver
+    private void ResolvePlayerInventories()
     {
-        private readonly RelicInventory inv;
-        public event Action OnChanged;
+        Transform currentPlayer = ResolveCurrentPlayerRoot();
 
-        public PlayerRelicContainerAdapter(RelicInventory inv)
+        if (currentPlayer != null)
         {
-            this.inv = inv;
-            if (this.inv != null) this.inv.OnChanged += HandleChanged;
+            playerWeaponInventory = currentPlayer.GetComponent<WeaponInventory2D>();
+            playerRelicInventory = currentPlayer.GetComponent<RelicInventory>();
+            playerConsumableInventory = currentPlayer.GetComponent<PlayerConsumableInventory>();
         }
 
-        public int SlotCount => inv != null ? inv.Capacity : 0;
+        if (playerConsumableInventory == null)
+            playerConsumableInventory = FindFirstObjectByType<PlayerConsumableInventory>();
+        if (playerWeaponInventory == null)
+            playerWeaponInventory = FindFirstObjectByType<WeaponInventory2D>();
+        if (playerRelicInventory == null)
+            playerRelicInventory = FindFirstObjectByType<RelicInventory>();
+    }
 
-        public ScriptableObject Get(int index) => inv != null ? inv.GetRelicInSlot(index) : null;
+    private void SetChestInventoryVisible(bool visible)
+    {
+        ResolveChestInventoryScreen();
+        if (chestInventoryScreen != null)
+            chestInventoryScreen.gameObject.SetActive(visible);
+    }
 
-        public bool CanPlace(ScriptableObject item, int index, int ignoreIndex = -1)
-        {
-            if (inv == null) return false;
-            if (item == null) return true;
+    private static Transform ResolveCurrentPlayerRoot()
+    {
+        if (PlayerRuntimeRegistry.CurrentPlayer != null)
+            return PlayerRuntimeRegistry.CurrentPlayer.transform;
+        if (PlayerInteractor2D.Instance != null)
+            return PlayerInteractor2D.Instance.transform;
 
-            var r = item as RelicDefinition;
-            if (r == null) return false;
+        return PlayerRuntimeRegistry.GetPlayerTransform();
+    }
 
-            return inv.CanPlaceRelicInSlot(index, r, ignoreIndex);
-        }
+    private static Transform ResolveDropOrigin(Transform playerRoot)
+    {
+        if (playerRoot != null)
+            return playerRoot;
+        if (PlayerInteractor2D.Instance != null)
+            return PlayerInteractor2D.Instance.transform;
 
-        public bool TrySet(int index, ScriptableObject item)
-        {
-            if (inv == null) return false;
-            if (item == null) return inv.TrySetRelicSlot(index, null);
-
-            var r = item as RelicDefinition;
-            if (r == null) return false;
-
-            return inv.TrySetRelicSlot(index, r);
-        }
-
-        public bool TrySwap(int a, int b) => inv != null && inv.TrySwapRelicSlots(a, b);
-
-        private void HandleChanged() => OnChanged?.Invoke();
-
-        public void Dispose()
-        {
-            if (inv != null) inv.OnChanged -= HandleChanged;
-        }
-        public bool TryGetRelicLevel(int index, out int level)
-        {
-            level = inv != null ? inv.GetRelicLevelInSlot(index) : 0;
-            return level > 0;
-        }
-
-        public bool TrySetRelicWithLevel(int index, RelicDefinition relic, int level)
-        {
-            if (inv == null) return false;
-            if (relic == null) return inv.TrySetRelicSlot(index, null);
-            return inv.TrySetRelicSlotWithLevel(index, relic, level);
-        }
+        return PlayerRuntimeRegistry.GetPlayerTransform();
     }
 }

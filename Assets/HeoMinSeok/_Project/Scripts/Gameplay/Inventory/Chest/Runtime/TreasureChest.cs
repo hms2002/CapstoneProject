@@ -100,19 +100,19 @@ public class TreasureChest : MonoBehaviour
         HoldOpenedVisualState();
         RestorePreludeTimeIfNeeded();
 
-        bool opened = TryOpenUi(playPresentation: false);
+        bool opened = TryOpenUi(playSlideFadePresentation: false);
         if (!opened && PlayerInteractor2D.Instance != null)
             PlayerInteractor2D.Instance.SetInteractState(InteractState.Idle);
 
         isOpening = false;
     }
 
-    private bool TryOpenUi(bool playPresentation = true)
+    private bool TryOpenUi(bool playSlideFadePresentation = true)
     {
         if (ChestUIManager.Instance == null)
             return false;
 
-        return ChestUIManager.Instance.OpenChest(this, playPresentation);
+        return ChestUIManager.Instance.OpenChest(this, playSlideFadePresentation);
     }
 
     private void GenerateSelfLoot()

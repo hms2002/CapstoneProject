@@ -118,6 +118,22 @@ public sealed class InventorySlideFadePresentation : MonoBehaviour
         SetInteractionEnabled(true);
     }
 
+    public void SnapClosed(bool deactivate = true)
+    {
+        ResolveReferences();
+
+        if (!gameObject.activeSelf)
+            gameObject.SetActive(true);
+
+        StopActiveRoutine();
+        CaptureOpenPosition();
+        ApplyPose(openAnchoredPosition + openOffset, closedAlpha);
+        SetInteractionEnabled(false);
+
+        if (deactivate)
+            gameObject.SetActive(false);
+    }
+
     private void ResolveReferences()
     {
         if (targetRoot == null)
