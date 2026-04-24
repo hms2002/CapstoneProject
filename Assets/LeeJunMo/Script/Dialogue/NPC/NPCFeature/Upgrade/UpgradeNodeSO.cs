@@ -10,6 +10,9 @@ public enum LockType { Locked, UnLocked, Purchased }
 [CreateAssetMenu(fileName = "NewUpgradeNode", menuName = "Game/Upgrade Node")]
 public class UpgradeNodeSO : ScriptableObject
 {
+    public const float DefaultGridCellWidth = 160f;
+    public const float DefaultGridCellHeight = 140f;
+
     [Header("Basic Info")]
     public int nodeID;
     public string upgradeName;
@@ -29,15 +32,18 @@ public class UpgradeNodeSO : ScriptableObject
     public List<UpgradeNodeSO> requiredParents = new List<UpgradeNodeSO>();
 
     [Header("UI Layout")]
-    [Min(0)] public int gridX = 0;
-    [Range(-1, 1)] public int gridY = 0;
+    public int gridX = 0;
+    public int gridY = 0;
 
     public Vector2 GetUiPosition()
     {
-        float startX = 250f;
-        float startY = -50f;
-        float x = startX + (gridX * 360f);
-        float y = startY + (gridY * 240f);
+        return GetUiPosition(new Vector2(DefaultGridCellWidth, DefaultGridCellHeight));
+    }
+
+    public Vector2 GetUiPosition(Vector2 gridCellSize)
+    {
+        float x = gridX * gridCellSize.x;
+        float y = gridY * gridCellSize.y;
         return new Vector2(x, y);
     }
 

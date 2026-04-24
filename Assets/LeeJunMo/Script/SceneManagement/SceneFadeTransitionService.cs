@@ -188,9 +188,57 @@ public sealed class SceneFadeTransitionService : MonoBehaviour
         yield return FadeCanvasGroup(toAlpha: 1f, duration: fadeOutDuration);
     }
 
+    public IEnumerator FadeOutAsync(float duration)
+    {
+        yield return FadeCanvasGroup(toAlpha: 1f, duration: duration);
+    }
+
     public IEnumerator FadeInAsync()
     {
         yield return FadeCanvasGroup(toAlpha: 0f, duration: fadeInDuration);
+    }
+
+    public IEnumerator FadeInAsync(float duration)
+    {
+        yield return FadeCanvasGroup(toAlpha: 0f, duration: duration);
+    }
+
+    public bool TryBeginOverlayFadeSession(float initialAlpha = 0f)
+    {
+        if (isTransitionActive)
+            return false;
+
+        Initialize();
+        if (!HasValidOverlaySetup())
+        {
+            Debug.LogError(
+                "[SceneFadeTransitionService] Missing overlay references. Attach the service manually and assign a full-screen overlay root, CanvasGroup, and Image.",
+                this);
+            return false;
+        }
+
+        ApplyOverlayVisualState(alpha: initialAlpha, active: true);
+        if (overlayCanvasGroup != null)
+        {
+            overlayCanvasGroup.blocksRaycasts = true;
+            overlayCanvasGroup.interactable = false;
+        }
+
+        return true;
+    }
+
+    public void EndOverlayFadeSession()
+    {
+        if (isTransitionActive)
+            return;
+
+        if (overlayCanvasGroup != null)
+            overlayCanvasGroup.alpha = 0f;
+
+        if (deactivateOverlayWhenIdle && overlayRoot != null)
+            overlayRoot.SetActive(false);
+        else
+            ApplyOverlayVisualState(alpha: 0f, active: true);
     }
 
     public void ShowBlackImmediately()

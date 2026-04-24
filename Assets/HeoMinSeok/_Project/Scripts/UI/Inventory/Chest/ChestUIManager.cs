@@ -1,14 +1,10 @@
 using UnityEngine;
 
-/// <summary>
-/// 책임 :
-/// - 상자 UI의 열기/닫기 수명주기를 관리하고, 열림/닫힘에 따라 플레이어 상호작용 상태를 정리한다.
-/// - ChestScreen이 닫힐 때 상자 상호작용 상태를 안전하게 복구한다.
-/// </summary>
 public class ChestUIManager : MonoBehaviour
 {
     public static ChestUIManager Instance { get; private set; }
 
+    [SerializeField] private InventoryScreen inventoryRoot;
     [SerializeField] private ChestScreen chestScreen;
 
     private TreasureChest openedChest;
@@ -22,36 +18,42 @@ public class ChestUIManager : MonoBehaviour
         }
 
         Instance = this;
+        ResolveInventoryRootReference();
         ResolveChestScreenReference();
-        // 씬 시작 시 상자 UI가 꺼져 있도록 보장
-        if (chestScreen != null) chestScreen.gameObject.SetActive(false);
+
+        if (chestScreen != null)
+            chestScreen.gameObject.SetActive(false);
     }
 
-    public bool OpenChest(TreasureChest chest, bool playPresentation = true)
+    public bool OpenChest(TreasureChest chest, bool playSlideFadePresentation = true)
     {
         if (chest == null)
             return false;
 
+        ResolveInventoryRootReference();
         ResolveChestScreenReference();
-        if (chestScreen == null)
+        if (inventoryRoot == null)
         {
-            Debug.LogError("[ChestUIManager] ChestScreen reference is missing.");
+            Debug.LogError("[ChestUIManager] Inventory root reference is missing.");
             return false;
         }
 
         openedChest = chest;
+        inventoryRoot.BindChest(chest.GetInventory(), playSlideFadePresentation);
 
-        // 1. 데이터 바인딩
-        chestScreen.Bind(chest.GetInventory());
-        chestScreen.SetPresentationForNextOpen(playPresentation);
-
-        // 2. [핵심] 직접 켜지 않고 UIManager의 스택 명부에 정식 등록 요청! (이제 ESC가 먹힙니다)
         bool opened = true;
-        if (UIManager.Instance != null) opened = UIManager.Instance.TryPushUI(chestScreen);
-        else chestScreen.OpenUI(); // UIManager가 없을 때를 대비한 방어 코드
+        if (UIManager.Instance != null)
+            opened = UIManager.Instance.TryPushUI(inventoryRoot);
+        else
+            inventoryRoot.OpenUI();
 
-        if (!opened && PlayerInteractor2D.Instance != null)
-            PlayerInteractor2D.Instance.SetInteractState(InteractState.Idle);
+        if (!opened)
+        {
+            inventoryRoot.CancelPreparedOpen();
+            openedChest = null;
+            if (PlayerInteractor2D.Instance != null)
+                PlayerInteractor2D.Instance.SetInteractState(InteractState.Idle);
+        }
 
         return opened;
     }
@@ -59,16 +61,25 @@ public class ChestUIManager : MonoBehaviour
     public void HandleChestClosed()
     {
         if (PlayerInteractor2D.Instance != null)
-        {
             PlayerInteractor2D.Instance.SetInteractState(InteractState.Idle);
-        }
 
         openedChest = null;
     }
+
     private void OnDestroy()
     {
         if (Instance == this)
             Instance = null;
+    }
+
+    private void ResolveInventoryRootReference()
+    {
+        if (inventoryRoot != null)
+            return;
+
+        inventoryRoot = GetComponentInChildren<InventoryScreen>(true);
+        if (inventoryRoot == null)
+            inventoryRoot = FindFirstObjectByType<InventoryScreen>(FindObjectsInactive.Include);
     }
 
     private void ResolveChestScreenReference()
@@ -77,5 +88,9 @@ public class ChestUIManager : MonoBehaviour
             return;
 
         chestScreen = GetComponentInChildren<ChestScreen>(true);
+        if (chestScreen == null && inventoryRoot != null)
+            chestScreen = inventoryRoot.GetComponentInChildren<ChestScreen>(true);
+        if (chestScreen == null)
+            chestScreen = FindFirstObjectByType<ChestScreen>(FindObjectsInactive.Include);
     }
 }
