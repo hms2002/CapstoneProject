@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -10,12 +11,18 @@ public class UpgradeManager : MonoBehaviour
     [SerializeField] private UpgradeTreeUI upgradeTreeUI;
     [SerializeField] private UpgradeDatabase upgradeDatabase;
 
+    [Header("Open Presentation")]
+    [SerializeField] private bool useFadePresentationOnOpen = true;
+    [SerializeField, Min(0f)] private float openFadeOutDuration = 0.18f;
+    [SerializeField, Min(0f)] private float openFadeInDuration = 0.22f;
+
     public Action OnDataChanged;
     public Action OnUIClosed;
 
     private UpgradeProgressService progressService;
     private UpgradeEffectApplier effectApplier;
     private PlayerInteractor2D appliedPlayer;
+    private Coroutine openPresentationRoutine;
 
     private void Awake()
     {
@@ -35,6 +42,13 @@ public class UpgradeManager : MonoBehaviour
 
     private void OnDestroy()
     {
+        if (openPresentationRoutine != null)
+        {
+            StopCoroutine(openPresentationRoutine);
+            openPresentationRoutine = null;
+            SceneFadeTransitionService.Instance?.EndOverlayFadeSession();
+        }
+
         if (Instance == this)
             Instance = null;
     }
@@ -182,22 +196,23 @@ public class UpgradeManager : MonoBehaviour
 
         if (!upgradeTreeUI.IsActive)
         {
-            if (UIManager.Instance != null)
-                UIManager.Instance.TryPushUI(upgradeTreeUI);
-            else
-                upgradeTreeUI.OpenUI();
+            OpenUI();
         }
         else
         {
-            if (UIManager.Instance != null)
-                UIManager.Instance.PopUI(upgradeTreeUI);
-            else
-                upgradeTreeUI.CloseUI();
+            CloseUI();
         }
     }
 
     public void CloseUI()
     {
+        if (openPresentationRoutine != null)
+        {
+            StopCoroutine(openPresentationRoutine);
+            openPresentationRoutine = null;
+            SceneFadeTransitionService.Instance?.EndOverlayFadeSession();
+        }
+
         ResolveUpgradeTreeUiReference();
         if (upgradeTreeUI == null)
             return;
@@ -206,6 +221,63 @@ public class UpgradeManager : MonoBehaviour
             UIManager.Instance.PopUI(upgradeTreeUI);
         else
             upgradeTreeUI.CloseUI();
+    }
+
+    private void OpenUI()
+    {
+        ResolveUpgradeTreeUiReference();
+        if (upgradeTreeUI == null || upgradeTreeUI.IsActive)
+            return;
+
+        if (UIManager.Instance != null && !UIManager.Instance.CanOpenUI(upgradeTreeUI))
+            return;
+
+        if (!useFadePresentationOnOpen)
+        {
+            OpenUIImmediate();
+            return;
+        }
+
+        if (openPresentationRoutine != null)
+            return;
+
+        openPresentationRoutine = StartCoroutine(OpenUIWithFadePresentation());
+    }
+
+    private IEnumerator OpenUIWithFadePresentation()
+    {
+        SceneFadeTransitionService fadeService = SceneFadeTransitionService.EnsureInstance(allowRuntimeFallback: true);
+        bool hasFadeOverlay = fadeService != null && fadeService.TryBeginOverlayFadeSession(initialAlpha: 0f);
+
+        if (hasFadeOverlay)
+            yield return fadeService.FadeOutAsync(openFadeOutDuration);
+
+        bool opened = OpenUIImmediate();
+
+        if (hasFadeOverlay)
+        {
+            yield return null;
+            yield return fadeService.FadeInAsync(opened ? openFadeInDuration : openFadeOutDuration);
+            fadeService.EndOverlayFadeSession();
+        }
+
+        openPresentationRoutine = null;
+    }
+
+    private bool OpenUIImmediate()
+    {
+        ResolveUpgradeTreeUiReference();
+        if (upgradeTreeUI == null)
+            return false;
+
+        if (upgradeTreeUI.IsActive)
+            return true;
+
+        if (UIManager.Instance != null)
+            return UIManager.Instance.TryPushUI(upgradeTreeUI);
+
+        upgradeTreeUI.OpenUI();
+        return true;
     }
 
     public LockType GetNodeStatus(int id)

@@ -80,6 +80,9 @@ public class InventoryUIManager : MonoBehaviour
             opened = true;
         }
 
+        if (!opened)
+            inventoryScreen.CancelPreparedOpen();
+
         if (opened)
             PlayOpenInventorySound(currentPlayer != null ? currentPlayer.gameObject : null);
     }

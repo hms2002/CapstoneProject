@@ -107,10 +107,6 @@ public sealed class CameraShakeService : MonoBehaviour
         if (camera == null)
             return false;
 
-        CinemachineImpulseSource impulseSource = CameraBootstrap.EnsureImpulseSource(camera.gameObject);
-        if (impulseSource == null)
-            return false;
-
         Vector3 direction = request.Direction;
         direction.z = 0f;
         if (direction.sqrMagnitude <= 0.0001f)
@@ -118,8 +114,42 @@ public sealed class CameraShakeService : MonoBehaviour
         else
             direction.Normalize();
 
+        CameraManualShakeSettings manualSettings = request.HasManualShakeSettingsOverride
+            ? request.ManualShakeSettingsOverride
+            : CameraManualShakeSettings.Default;
+
+        if (Time.timeScale <= 0.0001f &&
+            TryPlayManualShake(camera.gameObject, request.Amplitude, direction, manualSettings))
+        {
+            RecordEmit(request, now);
+            return true;
+        }
+
+        CinemachineImpulseSource impulseSource = CameraBootstrap.EnsureImpulseSource(camera.gameObject);
+        if (impulseSource == null)
+            return false;
+
         impulseSource.GenerateImpulse(direction * request.Amplitude);
         RecordEmit(request, now);
+        return true;
+    }
+
+    private static bool TryPlayManualShake(
+        GameObject cameraObject,
+        float amplitude,
+        Vector3 direction,
+        in CameraManualShakeSettings shakeSettings)
+    {
+        if (cameraObject == null || amplitude <= 0f)
+            return false;
+
+        CameraManualShakeDriver driver = cameraObject.GetComponent<CameraManualShakeDriver>();
+        if (driver == null)
+            driver = cameraObject.AddComponent<CameraManualShakeDriver>();
+        if (driver == null)
+            return false;
+
+        driver.Play(amplitude, direction, shakeSettings);
         return true;
     }
 

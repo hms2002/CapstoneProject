@@ -25860,7 +25860,7 @@ GameObject:
   - component: {fileID: 1031922640116191210}
   - component: {fileID: 3390088308878757587}
   m_Layer: 0
-  m_Name: GlobalUIRoot
+  m_Name: GlobalUIRoot_Deafiso
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

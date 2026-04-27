@@ -178,6 +178,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -320,7 +321,7 @@ RectTransform:
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: 0, y: 0.5}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &5073481014327593277
 GameObject:
   m_ObjectHideFlags: 0
@@ -578,6 +579,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -679,10 +681,10 @@ RectTransform:
   - {fileID: 6655215246736916158}
   m_Father: {fileID: 4269367918088619916}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 2200, y: 1400}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &7679110130678569659
 GameObject:
@@ -721,11 +723,11 @@ RectTransform:
   - {fileID: 3722162362049451777}
   m_Father: {fileID: 3295569520514700847}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 800, y: 0}
-  m_SizeDelta: {x: 1600, y: 900}
-  m_Pivot: {x: 1, y: 0.5}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4181187256986549393
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -812,7 +814,7 @@ RectTransform:
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: 0, y: 0.5}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &8387815879120152561
 GameObject:
   m_ObjectHideFlags: 0
@@ -1031,7 +1033,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Content: {fileID: 4282084342169548477}
   m_Horizontal: 1
-  m_Vertical: 0
+  m_Vertical: 1
   m_MovementType: 2
   m_Elasticity: 0.1
   m_Inertia: 0
@@ -1062,8 +1064,17 @@ MonoBehaviour:
   contentRect: {fileID: 4282084342169548477}
   slotParent: {fileID: 6655215246736916158}
   lineParent: {fileID: 5871647170108041163}
+  scrollRect: {fileID: 5098673633545487994}
+  viewportRect: {fileID: 4269367918088619916}
   slotPrefab: {fileID: 1218891522635525296, guid: 63b24e16c571da04c8e94a1cbe5cadb6, type: 3}
   linePrefab: {fileID: 6168995425261207534, guid: 22abce9be96413640aed9d47f89c4130, type: 3}
+  gridCellSize: {x: 300, y: 300}
+  contentPadding: {x: 520, y: 360}
+  minimumContentSize: {x: 2200, y: 1400}
+  lineThickness: 5
+  rebuildOnOpen: 1
+  centerOnOpen: 1
+  forceFullScreenLayout: 1
 --- !u!1 &9067810519093051185
 GameObject:
   m_ObjectHideFlags: 0
