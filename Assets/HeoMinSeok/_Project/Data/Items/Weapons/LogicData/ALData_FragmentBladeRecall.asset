@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c121a73e98554aa79b51f0717ff58107, type: 3}
+  m_Name: ALData_FragmentBladeRecall
+  m_EditorClassIdentifier: 
+  damageConfig:
+    includeStaggerBuildUp: 1
+    includeElementBuildUp: 1
+    staggerFormula: {fileID: 11400000, guid: 8fb95c16fb825134f8ce24efb528fe19, type: 2}
+    elementFormulas: []
+    critAffectsElement: 1
+  damageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
+  knockbackEffect: {fileID: 11400000, guid: 2f5faaf6bd840544cb59f6d23905c40d, type: 2}
+  damageFormula: {fileID: 11400000, guid: f836f4795e60fd54f9a4e401de9d7dd9, type: 2}
+  knockbackFormula: {fileID: 0}
+  legacyDamage: 8
+  legacyStaggerDamage: 0
+  hitLayers:
+    serializedVersion: 2
+    m_Bits: 2147483648

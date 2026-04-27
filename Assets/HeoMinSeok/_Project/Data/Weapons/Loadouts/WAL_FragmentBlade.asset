@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e57e1b3819ac405e8279298e0df87846, type: 3}
+  m_Name: WAL_FragmentBlade
+  m_EditorClassIdentifier: 
+  selectionStrategy: {fileID: 11400000, guid: 3cf9afb03dcf45339d71e3ffc0193724, type: 2}
+  baseAttack: {fileID: 11400000, guid: c8f9dc717def4ee4a7ecad9188a1bb4d, type: 2}
+  recallSkill: {fileID: 11400000, guid: 30da1f4821fb4dd9ab2e55775e8e42fc, type: 2}
+  bindEnhanceSkill: {fileID: 11400000, guid: 1345384e943c4fb0bd61636642a05e3b, type: 2}
+  maxShardCount: 6
+  skill2DurationSeconds: 10

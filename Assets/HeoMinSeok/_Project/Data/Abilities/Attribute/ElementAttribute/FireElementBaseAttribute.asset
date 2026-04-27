@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d98d22e39756b5842ab9e6a8750ac815, type: 3}
   m_Name: FireElementBaseAttribute
   m_EditorClassIdentifier: 
-  attributeName: FireElementAddAttribute
+  attributeName: FireElementBaseAttribute
   description: Attribute description.
   defaultBaseValue: 0
   minValue: 0

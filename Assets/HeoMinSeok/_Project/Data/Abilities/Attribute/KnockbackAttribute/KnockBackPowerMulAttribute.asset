@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d98d22e39756b5842ab9e6a8750ac815, type: 3}
   m_Name: KnockBackPowerMulAttribute
   m_EditorClassIdentifier: 
-  attributeName: NormalMulAttribute
-  description: Attribute description.
+  attributeName: KnockBackPowerMulAttribute
+  description: Multiplicative knockback impulse bonus used by knockback formulas.
   defaultBaseValue: 1
   minValue: 1
   maxValue: 100

@@ -32,6 +32,9 @@ public static class WeaponRuntimeDataFactory
         if (weapon.abilityLoadout is EclipseSwordLoadout)
             return typeof(EclipseSwordRuntimeData);
 
+        if (weapon.abilityLoadout is FragmentBladeLoadout)
+            return typeof(FragmentBladeRuntimeData);
+
         return typeof(WeaponRuntimeData);
     }
 
@@ -72,6 +75,13 @@ public static class WeaponRuntimeDataFactory
         {
             var data = new EclipseSwordRuntimeData();
             data.ApplyDefaults(eclipseLoadout);
+            return data;
+        }
+
+        if (weapon.abilityLoadout is FragmentBladeLoadout fragmentBladeLoadout)
+        {
+            var data = new FragmentBladeRuntimeData();
+            data.ApplyDefaults(fragmentBladeLoadout);
             return data;
         }
 

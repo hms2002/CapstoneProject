@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b7a8aa4f312949c696a9a1325ad598e6, type: 3}
+  m_Name: AL_DrunkenDragonAlcoholThrow
+  m_EditorClassIdentifier: 
+  alcoholPuddlePrefab: {fileID: 4193140718140302002, guid: 063a1b5ad44412642b105047dd0a3a9d, type: 3}
+  thrownKegPrefab: {fileID: 100002, guid: 89bb6f5066de4f58b67868061d73acfd, type: 3}
+  puddleCount: 1
+  targetScatterRadius: 1.2
+  spawnIntervalSeconds: 0.18
+  kegTravelSeconds: 0.45
+  kegSpinDegrees: 540
+  launchForwardOffset: 0.4
+  launchUpOffset: 0.8
+  kegDamageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
+  kegDamageAmount: 1
+  kegKnockbackImpulse: 0
+  missedImpactDamageRadius: 1.35
+  prepareSeconds: 0.45
+  impactWarningSeconds: 0.45
+  impactTelegraphStyle: {fileID: 11400000, guid: b15f18602ec87284d80cbd57720425f1, type: 2}
+  telegraphDiameter: 2.7

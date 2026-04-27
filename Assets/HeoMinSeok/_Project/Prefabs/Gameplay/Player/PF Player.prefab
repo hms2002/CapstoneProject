@@ -109,7 +109,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -1039746825
-  m_SortingLayer: 3
+  m_SortingLayer: 4
   m_SortingOrder: -1
   m_MaskInteraction: 0
   m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
@@ -467,7 +467,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -1039746825
-  m_SortingLayer: 3
+  m_SortingLayer: 4
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: -720365038908779728, guid: 54afb36f0c9a5b347b44945f7a8e0f78, type: 3}
@@ -858,6 +858,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   abilitySystem: {fileID: 1832372497922031110}
+  gameplayEventRelay: {fileID: 0}
 --- !u!114 &3936464590184144143
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -962,10 +963,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26c9fe53bdef53947bbf6f41db722013, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  externalMovement: {fileID: 0}
+  externalMovement: {fileID: 7359355598128478682}
   knockbackImmuneTag: {fileID: 0}
-  resistancePctAttribute: {fileID: 0}
+  resistancePctAttribute: {fileID: 11400000, guid: cd582b58892249e4a6ef8ae28bd345e3, type: 2}
   knockbackDominanceTime: 0.12
+  debugKnockback: 1
 --- !u!114 &689952884117774573
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1012,8 +1014,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   abilitySystem: {fileID: 1832372497922031110}
   weaponInventory: {fileID: 963026585117413559}
+  weaponEquipController: {fileID: 0}
+  weaponExecutorRunner: {fileID: 0}
   player: {fileID: 4913808379797790544}
   tagSystem: {fileID: 0}
+  gameplayEventRelay: {fileID: 0}
   dash: {fileID: 11400000, guid: dadc84cd2fffcae45905741575af20c3, type: 2}
   attackRepeatInterval: 0.06
   reAimGapAfterAttackEnd: 0.06
@@ -1088,7 +1093,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   knockbackDamping: 18
   defaultKnockbackDominanceTime: 0.12
-  maxKnockbackMagnitude: 25
+  maxKnockbackMagnitude: 150
   maxCombinedPersistentVelocityMagnitude: 25
 --- !u!114 &3865359879035668891
 MonoBehaviour:

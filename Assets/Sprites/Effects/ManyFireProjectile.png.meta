@@ -1,0 +1,6747 @@
+fileFormatVersion: 2
+guid: 68d471bd638efcb46873796071d022b2
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -8639819068613305168
+    second: ManyFireProjectile_0
+  - first:
+      213: 338703208007091061
+    second: ManyFireProjectile_1
+  - first:
+      213: -3266485113970290153
+    second: ManyFireProjectile_2
+  - first:
+      213: 8846741365966802107
+    second: ManyFireProjectile_3
+  - first:
+      213: 2523414223029047877
+    second: ManyFireProjectile_4
+  - first:
+      213: -3786651391562909712
+    second: ManyFireProjectile_5
+  - first:
+      213: 1680077264706588514
+    second: ManyFireProjectile_6
+  - first:
+      213: -689597628291540377
+    second: ManyFireProjectile_7
+  - first:
+      213: -8966861558434461578
+    second: ManyFireProjectile_8
+  - first:
+      213: -6968952596710562090
+    second: ManyFireProjectile_9
+  - first:
+      213: -4787702133672542906
+    second: ManyFireProjectile_10
+  - first:
+      213: 8634457998498223594
+    second: ManyFireProjectile_11
+  - first:
+      213: 3835362663773365415
+    second: ManyFireProjectile_12
+  - first:
+      213: -7911007187601909070
+    second: ManyFireProjectile_13
+  - first:
+      213: -603987352519324877
+    second: ManyFireProjectile_14
+  - first:
+      213: 5668624439521009399
+    second: ManyFireProjectile_15
+  - first:
+      213: -6283786024958749632
+    second: ManyFireProjectile_16
+  - first:
+      213: 5313871581127672511
+    second: ManyFireProjectile_17
+  - first:
+      213: -423067232538359213
+    second: ManyFireProjectile_18
+  - first:
+      213: -9114364566200374790
+    second: ManyFireProjectile_19
+  - first:
+      213: 6788919838087360601
+    second: ManyFireProjectile_20
+  - first:
+      213: -1378999432578665331
+    second: ManyFireProjectile_21
+  - first:
+      213: -4366919498871741682
+    second: ManyFireProjectile_22
+  - first:
+      213: 9061735838604640064
+    second: ManyFireProjectile_23
+  - first:
+      213: 7906376924414793869
+    second: ManyFireProjectile_24
+  - first:
+      213: 7367068932445921150
+    second: ManyFireProjectile_25
+  - first:
+      213: -3921069648212391016
+    second: ManyFireProjectile_26
+  - first:
+      213: 3728360884220145465
+    second: ManyFireProjectile_27
+  - first:
+      213: -1911611999332772531
+    second: ManyFireProjectile_28
+  - first:
+      213: -7204887304977396225
+    second: ManyFireProjectile_29
+  - first:
+      213: 1736802750666642639
+    second: ManyFireProjectile_30
+  - first:
+      213: -4504723875706113433
+    second: ManyFireProjectile_31
+  - first:
+      213: 4414114664385636331
+    second: ManyFireProjectile_32
+  - first:
+      213: -1088986108712918604
+    second: ManyFireProjectile_33
+  - first:
+      213: -5442149883120448967
+    second: ManyFireProjectile_34
+  - first:
+      213: 191055849428400202
+    second: ManyFireProjectile_35
+  - first:
+      213: 8837980371667881230
+    second: ManyFireProjectile_36
+  - first:
+      213: -8046064917662053283
+    second: ManyFireProjectile_37
+  - first:
+      213: 8708583219545205798
+    second: ManyFireProjectile_38
+  - first:
+      213: 6475988553396579180
+    second: ManyFireProjectile_39
+  - first:
+      213: -4821056542293629279
+    second: ManyFireProjectile_40
+  - first:
+      213: 4842604425528847382
+    second: ManyFireProjectile_41
+  - first:
+      213: -6587696578958928988
+    second: ManyFireProjectile_42
+  - first:
+      213: -9195625889404886346
+    second: ManyFireProjectile_43
+  - first:
+      213: 5428204802672841049
+    second: ManyFireProjectile_44
+  - first:
+      213: 700163254556318325
+    second: ManyFireProjectile_45
+  - first:
+      213: -7629067715014832354
+    second: ManyFireProjectile_46
+  - first:
+      213: 9214589613129828899
+    second: ManyFireProjectile_47
+  - first:
+      213: 6026808679959280614
+    second: ManyFireProjectile_48
+  - first:
+      213: -4798396800799450016
+    second: ManyFireProjectile_49
+  - first:
+      213: -933085278075108402
+    second: ManyFireProjectile_50
+  - first:
+      213: -1887811736797795317
+    second: ManyFireProjectile_51
+  - first:
+      213: 5743425000439957689
+    second: ManyFireProjectile_52
+  - first:
+      213: -7628287110857398555
+    second: ManyFireProjectile_53
+  - first:
+      213: 2773415101651766348
+    second: ManyFireProjectile_54
+  - first:
+      213: -8359543633204763726
+    second: ManyFireProjectile_55
+  - first:
+      213: 1666783589703157201
+    second: ManyFireProjectile_56
+  - first:
+      213: -4279890087310032502
+    second: ManyFireProjectile_57
+  - first:
+      213: -3485700775018962000
+    second: ManyFireProjectile_58
+  - first:
+      213: 3879806657850713423
+    second: ManyFireProjectile_59
+  - first:
+      213: 7458463616473029892
+    second: ManyFireProjectile_60
+  - first:
+      213: 558269540821489020
+    second: ManyFireProjectile_61
+  - first:
+      213: 8403231563783774096
+    second: ManyFireProjectile_62
+  - first:
+      213: 8183148168543605635
+    second: ManyFireProjectile_63
+  - first:
+      213: 6597782985487247236
+    second: ManyFireProjectile_64
+  - first:
+      213: -5357540246951544577
+    second: ManyFireProjectile_65
+  - first:
+      213: 4036480170644444304
+    second: ManyFireProjectile_66
+  - first:
+      213: 7603468084013072751
+    second: ManyFireProjectile_67
+  - first:
+      213: -4049202987358033707
+    second: ManyFireProjectile_68
+  - first:
+      213: 7448559280173669455
+    second: ManyFireProjectile_69
+  - first:
+      213: 2000905032549244130
+    second: ManyFireProjectile_70
+  - first:
+      213: 9217712992240137296
+    second: ManyFireProjectile_71
+  - first:
+      213: 8237491550999760085
+    second: ManyFireProjectile_72
+  - first:
+      213: -3157741889807088023
+    second: ManyFireProjectile_73
+  - first:
+      213: -6676544655484866090
+    second: ManyFireProjectile_74
+  - first:
+      213: -7132680677096965349
+    second: ManyFireProjectile_75
+  - first:
+      213: -377015784082811297
+    second: ManyFireProjectile_76
+  - first:
+      213: 32265941456468670
+    second: ManyFireProjectile_77
+  - first:
+      213: 6738133074120570646
+    second: ManyFireProjectile_78
+  - first:
+      213: 3707087145078567758
+    second: ManyFireProjectile_79
+  - first:
+      213: -7866808729301902645
+    second: ManyFireProjectile_80
+  - first:
+      213: 4364361460271157154
+    second: ManyFireProjectile_81
+  - first:
+      213: -4538562992676618319
+    second: ManyFireProjectile_82
+  - first:
+      213: -1825850005896338923
+    second: ManyFireProjectile_83
+  - first:
+      213: -3958887170396125858
+    second: ManyFireProjectile_84
+  - first:
+      213: -4104450740208399966
+    second: ManyFireProjectile_85
+  - first:
+      213: 5134260451802440620
+    second: ManyFireProjectile_86
+  - first:
+      213: 4830992549467788133
+    second: ManyFireProjectile_87
+  - first:
+      213: -4739229108717656281
+    second: ManyFireProjectile_88
+  - first:
+      213: 7525812265324342596
+    second: ManyFireProjectile_89
+  - first:
+      213: -1006801073959658104
+    second: ManyFireProjectile_90
+  - first:
+      213: 4537297083191976783
+    second: ManyFireProjectile_91
+  - first:
+      213: -4574420323551184398
+    second: ManyFireProjectile_92
+  - first:
+      213: 6560467698148540972
+    second: ManyFireProjectile_93
+  - first:
+      213: 2764754749490473577
+    second: ManyFireProjectile_94
+  - first:
+      213: 9095328015409603486
+    second: ManyFireProjectile_95
+  - first:
+      213: -476825095848064547
+    second: ManyFireProjectile_96
+  - first:
+      213: 7672061560548112930
+    second: ManyFireProjectile_97
+  - first:
+      213: -1588555614155131439
+    second: ManyFireProjectile_98
+  - first:
+      213: -8707858324403138893
+    second: ManyFireProjectile_99
+  - first:
+      213: -5083840344539626676
+    second: ManyFireProjectile_100
+  - first:
+      213: -7867096669937277171
+    second: ManyFireProjectile_101
+  - first:
+      213: -432118977442340888
+    second: ManyFireProjectile_102
+  - first:
+      213: -4444047822581523006
+    second: ManyFireProjectile_103
+  - first:
+      213: -7749651251778311130
+    second: ManyFireProjectile_104
+  - first:
+      213: -820883948316451727
+    second: ManyFireProjectile_105
+  - first:
+      213: -3855757886903543432
+    second: ManyFireProjectile_106
+  - first:
+      213: -3628773345039871995
+    second: ManyFireProjectile_107
+  - first:
+      213: 3146789723186700285
+    second: ManyFireProjectile_108
+  - first:
+      213: 3294171565971615375
+    second: ManyFireProjectile_109
+  - first:
+      213: -2987288492330555279
+    second: ManyFireProjectile_110
+  - first:
+      213: -7324576686759325783
+    second: ManyFireProjectile_111
+  - first:
+      213: -1892917554602560308
+    second: ManyFireProjectile_112
+  - first:
+      213: 561284464275021516
+    second: ManyFireProjectile_113
+  - first:
+      213: -4812628734461276425
+    second: ManyFireProjectile_114
+  - first:
+      213: -4101485656721193531
+    second: ManyFireProjectile_115
+  - first:
+      213: 8944051458041996617
+    second: ManyFireProjectile_116
+  - first:
+      213: 2797979121012434184
+    second: ManyFireProjectile_117
+  - first:
+      213: -6525065793201073652
+    second: ManyFireProjectile_118
+  - first:
+      213: 5349309852551079847
+    second: ManyFireProjectile_119
+  - first:
+      213: 6042764587819170963
+    second: ManyFireProjectile_120
+  - first:
+      213: -4719717377276604058
+    second: ManyFireProjectile_121
+  - first:
+      213: 6136795173092803629
+    second: ManyFireProjectile_122
+  - first:
+      213: -5935941217686815693
+    second: ManyFireProjectile_123
+  - first:
+      213: 2279268173288222113
+    second: ManyFireProjectile_124
+  - first:
+      213: -2842313878725830899
+    second: ManyFireProjectile_125
+  - first:
+      213: -7827591497507435350
+    second: ManyFireProjectile_126
+  - first:
+      213: 6165701621648124845
+    second: ManyFireProjectile_127
+  - first:
+      213: -1012076219819207722
+    second: ManyFireProjectile_128
+  - first:
+      213: 5885999577412703989
+    second: ManyFireProjectile_129
+  - first:
+      213: 3101890500918263227
+    second: ManyFireProjectile_130
+  - first:
+      213: 5678157892697795176
+    second: ManyFireProjectile_131
+  - first:
+      213: 1746704528828402852
+    second: ManyFireProjectile_132
+  - first:
+      213: -2219407555226965963
+    second: ManyFireProjectile_133
+  - first:
+      213: -371711208451419751
+    second: ManyFireProjectile_134
+  - first:
+      213: -2699406144054526965
+    second: ManyFireProjectile_135
+  - first:
+      213: -2090561281533955833
+    second: ManyFireProjectile_136
+  - first:
+      213: 5597438379422181552
+    second: ManyFireProjectile_137
+  - first:
+      213: -2624886711548289258
+    second: ManyFireProjectile_138
+  - first:
+      213: -7400565721254761996
+    second: ManyFireProjectile_139
+  - first:
+      213: -3215998475886900452
+    second: ManyFireProjectile_140
+  - first:
+      213: -8359131887926900617
+    second: ManyFireProjectile_141
+  - first:
+      213: 6318329020780430664
+    second: ManyFireProjectile_142
+  - first:
+      213: -3022708169695204131
+    second: ManyFireProjectile_143
+  - first:
+      213: 7202054481242403307
+    second: ManyFireProjectile_144
+  - first:
+      213: 5993344221492765268
+    second: ManyFireProjectile_145
+  - first:
+      213: -8669279942600683666
+    second: ManyFireProjectile_146
+  - first:
+      213: 3387941548599819557
+    second: ManyFireProjectile_147
+  - first:
+      213: -6376040394313400027
+    second: ManyFireProjectile_148
+  - first:
+      213: 8841302982112214231
+    second: ManyFireProjectile_149
+  - first:
+      213: 8290146692090274686
+    second: ManyFireProjectile_150
+  - first:
+      213: -5803599820391526429
+    second: ManyFireProjectile_151
+  - first:
+      213: 2034185364431945127
+    second: ManyFireProjectile_152
+  - first:
+      213: -6473600030031568213
+    second: ManyFireProjectile_153
+  - first:
+      213: -3570266581343640767
+    second: ManyFireProjectile_154
+  - first:
+      213: -8939746086341209317
+    second: ManyFireProjectile_155
+  - first:
+      213: -5709099938952818076
+    second: ManyFireProjectile_156
+  - first:
+      213: 2558461347208377090
+    second: ManyFireProjectile_157
+  - first:
+      213: 6863272478777013556
+    second: ManyFireProjectile_158
+  - first:
+      213: 2464677618200586935
+    second: ManyFireProjectile_159
+  - first:
+      213: -7687969286681208975
+    second: ManyFireProjectile_160
+  - first:
+      213: 6753425429977140975
+    second: ManyFireProjectile_161
+  - first:
+      213: -7344703691700147364
+    second: ManyFireProjectile_162
+  - first:
+      213: -5244121499451321402
+    second: ManyFireProjectile_163
+  - first:
+      213: 9126350400027111259
+    second: ManyFireProjectile_164
+  - first:
+      213: -6047487733815720492
+    second: ManyFireProjectile_165
+  - first:
+      213: -8856004380810405546
+    second: ManyFireProjectile_166
+  - first:
+      213: 698242902037212352
+    second: ManyFireProjectile_167
+  - first:
+      213: -1446082799674236425
+    second: ManyFireProjectile_168
+  - first:
+      213: -1242228133821965068
+    second: ManyFireProjectile_169
+  - first:
+      213: -1122099944833416863
+    second: ManyFireProjectile_170
+  - first:
+      213: -4259840486734006647
+    second: ManyFireProjectile_171
+  - first:
+      213: 8547300175879096722
+    second: ManyFireProjectile_172
+  - first:
+      213: -5150526061561232155
+    second: ManyFireProjectile_173
+  - first:
+      213: -904473554233060475
+    second: ManyFireProjectile_174
+  - first:
+      213: 1981284378324997513
+    second: ManyFireProjectile_175
+  - first:
+      213: 1137057816992040906
+    second: ManyFireProjectile_176
+  - first:
+      213: -4422912824531685732
+    second: ManyFireProjectile_177
+  - first:
+      213: -4217771590031791209
+    second: ManyFireProjectile_178
+  - first:
+      213: 4989842770980052551
+    second: ManyFireProjectile_179
+  - first:
+      213: 386768484517611806
+    second: ManyFireProjectile_180
+  - first:
+      213: -3884900125996289209
+    second: ManyFireProjectile_181
+  - first:
+      213: -5254622853018840593
+    second: ManyFireProjectile_182
+  - first:
+      213: -4688022490810952293
+    second: ManyFireProjectile_183
+  - first:
+      213: -7289119916397791491
+    second: ManyFireProjectile_184
+  - first:
+      213: -2016239257221156090
+    second: ManyFireProjectile_185
+  - first:
+      213: 6878354858598085671
+    second: ManyFireProjectile_186
+  - first:
+      213: 3662393705275629172
+    second: ManyFireProjectile_187
+  - first:
+      213: 5743808822492265282
+    second: ManyFireProjectile_188
+  - first:
+      213: 8626313166338560186
+    second: ManyFireProjectile_189
+  - first:
+      213: 9147769554532238625
+    second: ManyFireProjectile_190
+  - first:
+      213: -1926024410217352701
+    second: ManyFireProjectile_191
+  - first:
+      213: 8590847643282707169
+    second: ManyFireProjectile_192
+  - first:
+      213: -8492935627231440658
+    second: ManyFireProjectile_193
+  - first:
+      213: -4661295377606897853
+    second: ManyFireProjectile_194
+  - first:
+      213: -6686737060898817487
+    second: ManyFireProjectile_195
+  - first:
+      213: -3740896085633339958
+    second: ManyFireProjectile_196
+  - first:
+      213: -600659192049359780
+    second: ManyFireProjectile_197
+  - first:
+      213: -1285664045930193029
+    second: ManyFireProjectile_198
+  - first:
+      213: 7245348222139692091
+    second: ManyFireProjectile_199
+  - first:
+      213: 4464239626496264677
+    second: ManyFireProjectile_200
+  - first:
+      213: 7363558287080043959
+    second: ManyFireProjectile_201
+  - first:
+      213: 2673413073940609789
+    second: ManyFireProjectile_202
+  - first:
+      213: 7674671645487887760
+    second: ManyFireProjectile_203
+  - first:
+      213: 8189973198562819824
+    second: ManyFireProjectile_204
+  - first:
+      213: -2791792038096434683
+    second: ManyFireProjectile_205
+  - first:
+      213: 6916927087713765484
+    second: ManyFireProjectile_206
+  - first:
+      213: -1971775361409820277
+    second: ManyFireProjectile_207
+  - first:
+      213: 842344469695769092
+    second: ManyFireProjectile_208
+  - first:
+      213: -3310810585634078551
+    second: ManyFireProjectile_209
+  - first:
+      213: -6596048843872997167
+    second: ManyFireProjectile_210
+  - first:
+      213: 1201755311325853665
+    second: ManyFireProjectile_211
+  - first:
+      213: 4935417206881699091
+    second: ManyFireProjectile_212
+  - first:
+      213: 3480772561503382353
+    second: ManyFireProjectile_213
+  - first:
+      213: -3551354354794195863
+    second: ManyFireProjectile_214
+  - first:
+      213: 4771233584180745119
+    second: ManyFireProjectile_215
+  - first:
+      213: -517739488750783638
+    second: ManyFireProjectile_216
+  - first:
+      213: 8127896341618444440
+    second: ManyFireProjectile_217
+  - first:
+      213: 9164471253434762472
+    second: ManyFireProjectile_218
+  - first:
+      213: -1956075537181118696
+    second: ManyFireProjectile_219
+  - first:
+      213: 7432728248510195659
+    second: ManyFireProjectile_220
+  - first:
+      213: -2500772570841804896
+    second: ManyFireProjectile_221
+  - first:
+      213: -233360487756584580
+    second: ManyFireProjectile_222
+  - first:
+      213: -8539610771401863089
+    second: ManyFireProjectile_223
+  - first:
+      213: 5296699481312605578
+    second: ManyFireProjectile_224
+  - first:
+      213: -7396685991574158269
+    second: ManyFireProjectile_225
+  - first:
+      213: -6186168188125705402
+    second: ManyFireProjectile_226
+  - first:
+      213: -2285159525160398262
+    second: ManyFireProjectile_227
+  - first:
+      213: -5434245454254676510
+    second: ManyFireProjectile_228
+  - first:
+      213: -196531887938189957
+    second: ManyFireProjectile_229
+  - first:
+      213: -7370255982542854887
+    second: ManyFireProjectile_230
+  - first:
+      213: 2332300437467020847
+    second: ManyFireProjectile_231
+  - first:
+      213: -4321300734186714596
+    second: ManyFireProjectile_232
+  - first:
+      213: -7390282201782709240
+    second: ManyFireProjectile_233
+  - first:
+      213: 9207423716646347305
+    second: ManyFireProjectile_234
+  - first:
+      213: -7872598819394575305
+    second: ManyFireProjectile_235
+  - first:
+      213: -5339482553570746104
+    second: ManyFireProjectile_236
+  - first:
+      213: 2206164954295217380
+    second: ManyFireProjectile_237
+  - first:
+      213: 260791296824955052
+    second: ManyFireProjectile_238
+  - first:
+      213: 4116084473894952779
+    second: ManyFireProjectile_239
+  - first:
+      213: 2844276463897920084
+    second: ManyFireProjectile_240
+  - first:
+      213: 8276990373335050311
+    second: ManyFireProjectile_241
+  - first:
+      213: -7016979544502121598
+    second: ManyFireProjectile_242
+  - first:
+      213: 7354301017871105003
+    second: ManyFireProjectile_243
+  - first:
+      213: -6930302131397994166
+    second: ManyFireProjectile_244
+  - first:
+      213: 6517678640895280482
+    second: ManyFireProjectile_245
+  - first:
+      213: 3284966864449605816
+    second: ManyFireProjectile_246
+  - first:
+      213: 7785052184898052954
+    second: ManyFireProjectile_247
+  - first:
+      213: -7970776584397536653
+    second: ManyFireProjectile_248
+  - first:
+      213: -2793120170485263117
+    second: ManyFireProjectile_249
+  - first:
+      213: -921174033723526458
+    second: ManyFireProjectile_250
+  - first:
+      213: -1471968432806048503
+    second: ManyFireProjectile_251
+  - first:
+      213: -3919915397097418019
+    second: ManyFireProjectile_252
+  - first:
+      213: 8729201152969170461
+    second: ManyFireProjectile_253
+  - first:
+      213: -8477048290358418707
+    second: ManyFireProjectile_254
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: ManyFireProjectile_0
+      rect:
+        serializedVersion: 2
+        x: 6
+        y: 1038
+        width: 7
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0bc58a33552391880800000000000000
+      internalID: -8639819068613305168
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_1
+      rect:
+        serializedVersion: 2
+        x: 23
+        y: 1038
+        width: 7
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5734c8de5c053b400800000000000000
+      internalID: 338703208007091061
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_2
+      rect:
+        serializedVersion: 2
+        x: 40
+        y: 1038
+        width: 7
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 71213bd681d1ba2d0800000000000000
+      internalID: -3266485113970290153
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_3
+      rect:
+        serializedVersion: 2
+        x: 57
+        y: 1038
+        width: 6
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bbc843a7660f5ca70800000000000000
+      internalID: 8846741365966802107
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_4
+      rect:
+        serializedVersion: 2
+        x: 74
+        y: 1038
+        width: 6
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 54290d0cdd7f40320800000000000000
+      internalID: 2523414223029047877
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_5
+      rect:
+        serializedVersion: 2
+        x: 91
+        y: 1038
+        width: 6
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0f777a53f9c137bc0800000000000000
+      internalID: -3786651391562909712
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_6
+      rect:
+        serializedVersion: 2
+        x: 107
+        y: 1038
+        width: 7
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 26fcb0eee55d05710800000000000000
+      internalID: 1680077264706588514
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_7
+      rect:
+        serializedVersion: 2
+        x: 124
+        y: 1038
+        width: 7
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 76a1bb75c9e0e66f0800000000000000
+      internalID: -689597628291540377
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_8
+      rect:
+        serializedVersion: 2
+        x: 141
+        y: 1038
+        width: 7
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 678886bcbee4f8380800000000000000
+      internalID: -8966861558434461578
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_9
+      rect:
+        serializedVersion: 2
+        x: 158
+        y: 1038
+        width: 7
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6d6e780598e494f90800000000000000
+      internalID: -6968952596710562090
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_10
+      rect:
+        serializedVersion: 2
+        x: 176
+        y: 1038
+        width: 6
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 64d7118964aae8db0800000000000000
+      internalID: -4787702133672542906
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_11
+      rect:
+        serializedVersion: 2
+        x: 193
+        y: 1038
+        width: 7
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ae554846dc1c3d770800000000000000
+      internalID: 8634457998498223594
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_12
+      rect:
+        serializedVersion: 2
+        x: 6
+        y: 1023
+        width: 7
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7a4e107a502f93530800000000000000
+      internalID: 3835362663773365415
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_13
+      rect:
+        serializedVersion: 2
+        x: 23
+        y: 1023
+        width: 7
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2ba1d6f80e4763290800000000000000
+      internalID: -7911007187601909070
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_14
+      rect:
+        serializedVersion: 2
+        x: 40
+        y: 1023
+        width: 7
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 33bc144f3b43e97f0800000000000000
+      internalID: -603987352519324877
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_15
+      rect:
+        serializedVersion: 2
+        x: 57
+        y: 1023
+        width: 7
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7fe5fb2e4effaae40800000000000000
+      internalID: 5668624439521009399
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_16
+      rect:
+        serializedVersion: 2
+        x: 74
+        y: 1023
+        width: 7
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 04415c937e18bc8a0800000000000000
+      internalID: -6283786024958749632
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_17
+      rect:
+        serializedVersion: 2
+        x: 91
+        y: 1023
+        width: 7
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fb288278c0aaeb940800000000000000
+      internalID: 5313871581127672511
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_18
+      rect:
+        serializedVersion: 2
+        x: 108
+        y: 1023
+        width: 7
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 35a8170f796f02af0800000000000000
+      internalID: -423067232538359213
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_19
+      rect:
+        serializedVersion: 2
+        x: 125
+        y: 1023
+        width: 7
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: af9283e87b5438180800000000000000
+      internalID: -9114364566200374790
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_20
+      rect:
+        serializedVersion: 2
+        x: 142
+        y: 1023
+        width: 7
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 950bccd9f96173e50800000000000000
+      internalID: 6788919838087360601
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_21
+      rect:
+        serializedVersion: 2
+        x: 159
+        y: 1022
+        width: 7
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d84fea3825fccdce0800000000000000
+      internalID: -1378999432578665331
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_22
+      rect:
+        serializedVersion: 2
+        x: 176
+        y: 1022
+        width: 7
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e03e50b4ad59563c0800000000000000
+      internalID: -4366919498871741682
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_23
+      rect:
+        serializedVersion: 2
+        x: 193
+        y: 1023
+        width: 7
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 04fb47cebb0c1cd70800000000000000
+      internalID: 9061735838604640064
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_24
+      rect:
+        serializedVersion: 2
+        x: 11
+        y: 991
+        width: 11
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d88d6184ce719bd60800000000000000
+      internalID: 7906376924414793869
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_25
+      rect:
+        serializedVersion: 2
+        x: 44
+        y: 991
+        width: 11
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e7f514269261d3660800000000000000
+      internalID: 7367068932445921150
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_26
+      rect:
+        serializedVersion: 2
+        x: 77
+        y: 991
+        width: 11
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 89b0cbefdef8599c0800000000000000
+      internalID: -3921069648212391016
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_27
+      rect:
+        serializedVersion: 2
+        x: 110
+        y: 991
+        width: 11
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 93f2762787ccdb330800000000000000
+      internalID: 3728360884220145465
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_28
+      rect:
+        serializedVersion: 2
+        x: 143
+        y: 991
+        width: 11
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d455567c3079875e0800000000000000
+      internalID: -1911611999332772531
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_29
+      rect:
+        serializedVersion: 2
+        x: 176
+        y: 991
+        width: 11
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ffdc9145b29130c90800000000000000
+      internalID: -7204887304977396225
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_30
+      rect:
+        serializedVersion: 2
+        x: 209
+        y: 991
+        width: 11
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fc4186656ec5a1810800000000000000
+      internalID: 1736802750666642639
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_31
+      rect:
+        serializedVersion: 2
+        x: 242
+        y: 991
+        width: 11
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 762f05980810c71c0800000000000000
+      internalID: -4504723875706113433
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_32
+      rect:
+        serializedVersion: 2
+        x: 275
+        y: 991
+        width: 11
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: be76c8876e5124d30800000000000000
+      internalID: 4414114664385636331
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_33
+      rect:
+        serializedVersion: 2
+        x: 308
+        y: 990
+        width: 11
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4b1e4d067e423e0f0800000000000000
+      internalID: -1088986108712918604
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_34
+      rect:
+        serializedVersion: 2
+        x: 341
+        y: 990
+        width: 11
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 93a0c2ad3899974b0800000000000000
+      internalID: -5442149883120448967
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_35
+      rect:
+        serializedVersion: 2
+        x: 374
+        y: 991
+        width: 11
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a48b0756844c6a200800000000000000
+      internalID: 191055849428400202
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_36
+      rect:
+        serializedVersion: 2
+        x: 11
+        y: 955
+        width: 10
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e0d83298250d6aa70800000000000000
+      internalID: 8837980371667881230
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_37
+      rect:
+        serializedVersion: 2
+        x: 44
+        y: 955
+        width: 10
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d5c45075692a65090800000000000000
+      internalID: -8046064917662053283
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_38
+      rect:
+        serializedVersion: 2
+        x: 77
+        y: 955
+        width: 10
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 62c6be15c4a1bd870800000000000000
+      internalID: 8708583219545205798
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_39
+      rect:
+        serializedVersion: 2
+        x: 110
+        y: 955
+        width: 11
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c6be2be27455fd950800000000000000
+      internalID: 6475988553396579180
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_40
+      rect:
+        serializedVersion: 2
+        x: 143
+        y: 955
+        width: 11
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1a6e38a2e9a281db0800000000000000
+      internalID: -4821056542293629279
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_41
+      rect:
+        serializedVersion: 2
+        x: 175
+        y: 955
+        width: 12
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 61ca16b5113643340800000000000000
+      internalID: 4842604425528847382
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_42
+      rect:
+        serializedVersion: 2
+        x: 209
+        y: 955
+        width: 11
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4a3d8135ddcc394a0800000000000000
+      internalID: -6587696578958928988
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_43
+      rect:
+        serializedVersion: 2
+        x: 241
+        y: 956
+        width: 12
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6b2e2ae59f2926080800000000000000
+      internalID: -9195625889404886346
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_44
+      rect:
+        serializedVersion: 2
+        x: 274
+        y: 956
+        width: 12
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9515267128bd45b40800000000000000
+      internalID: 5428204802672841049
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_45
+      rect:
+        serializedVersion: 2
+        x: 307
+        y: 955
+        width: 12
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 57a5c9835ca77b900800000000000000
+      internalID: 700163254556318325
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_46
+      rect:
+        serializedVersion: 2
+        x: 3
+        y: 925
+        width: 26
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e1fc32f655b102690800000000000000
+      internalID: -7629067715014832354
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_47
+      rect:
+        serializedVersion: 2
+        x: 33
+        y: 925
+        width: 29
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 32a8b91ae6cc0ef70800000000000000
+      internalID: 9214589613129828899
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_48
+      rect:
+        serializedVersion: 2
+        x: 67
+        y: 925
+        width: 29
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6ebb632209683a350800000000000000
+      internalID: 6026808679959280614
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_49
+      rect:
+        serializedVersion: 2
+        x: 100
+        y: 925
+        width: 30
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 06c5afc588ba86db0800000000000000
+      internalID: -4798396800799450016
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_50
+      rect:
+        serializedVersion: 2
+        x: 134
+        y: 925
+        width: 28
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ec3cf2f12e30d03f0800000000000000
+      internalID: -933085278075108402
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_51
+      rect:
+        serializedVersion: 2
+        x: 168
+        y: 925
+        width: 27
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b0caa593a352dc5e0800000000000000
+      internalID: -1887811736797795317
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_52
+      rect:
+        serializedVersion: 2
+        x: 200
+        y: 925
+        width: 28
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9b84251ab9eb4bf40800000000000000
+      internalID: 5743425000439957689
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_53
+      rect:
+        serializedVersion: 2
+        x: 232
+        y: 925
+        width: 30
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5e667a00a41e22690800000000000000
+      internalID: -7628287110857398555
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_54
+      rect:
+        serializedVersion: 2
+        x: 266
+        y: 925
+        width: 29
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c4c48ac37562d7620800000000000000
+      internalID: 2773415101651766348
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_55
+      rect:
+        serializedVersion: 2
+        x: 299
+        y: 925
+        width: 29
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2b3a37a3b5fecfb80800000000000000
+      internalID: -8359543633204763726
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_56
+      rect:
+        serializedVersion: 2
+        x: 332
+        y: 925
+        width: 28
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1d505b508da912710800000000000000
+      internalID: 1666783589703157201
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_57
+      rect:
+        serializedVersion: 2
+        x: 365
+        y: 925
+        width: 28
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a818b2434a6ca94c0800000000000000
+      internalID: -4279890087310032502
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_58
+      rect:
+        serializedVersion: 2
+        x: 398
+        y: 925
+        width: 30
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0b3e0b7fc9d40afc0800000000000000
+      internalID: -3485700775018962000
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_59
+      rect:
+        serializedVersion: 2
+        x: 432
+        y: 925
+        width: 28
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f4523666997d7d530800000000000000
+      internalID: 3879806657850713423
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_60
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 892
+        width: 32
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 40ddc0e7429c18760800000000000000
+      internalID: 7458463616473029892
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_61
+      rect:
+        serializedVersion: 2
+        x: 34
+        y: 892
+        width: 30
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c75d595803f5fb700800000000000000
+      internalID: 558269540821489020
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_62
+      rect:
+        serializedVersion: 2
+        x: 63
+        y: 892
+        width: 33
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 09f9ea4c5964e9470800000000000000
+      internalID: 8403231563783774096
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_63
+      rect:
+        serializedVersion: 2
+        x: 91
+        y: 905
+        width: 8
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3831e6237e1609170800000000000000
+      internalID: 8183148168543605635
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_64
+      rect:
+        serializedVersion: 2
+        x: 101
+        y: 892
+        width: 29
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 48765133ba8009b50800000000000000
+      internalID: 6597782985487247236
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_65
+      rect:
+        serializedVersion: 2
+        x: 135
+        y: 892
+        width: 27
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ff83896e78136a5b0800000000000000
+      internalID: -5357540246951544577
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_66
+      rect:
+        serializedVersion: 2
+        x: 170
+        y: 892
+        width: 28
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0949b2a3455740830800000000000000
+      internalID: 4036480170644444304
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_67
+      rect:
+        serializedVersion: 2
+        x: 200
+        y: 892
+        width: 30
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f618e9000f1f48960800000000000000
+      internalID: 7603468084013072751
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_68
+      rect:
+        serializedVersion: 2
+        x: 216
+        y: 906
+        width: 6
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5d8e21b26575ec7c0800000000000000
+      internalID: -4049202987358033707
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_69
+      rect:
+        serializedVersion: 2
+        x: 232
+        y: 892
+        width: 32
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f4cd03f73399e5760800000000000000
+      internalID: 7448559280173669455
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_70
+      rect:
+        serializedVersion: 2
+        x: 266
+        y: 892
+        width: 31
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2ec936e9684a4cb10800000000000000
+      internalID: 2000905032549244130
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_71
+      rect:
+        serializedVersion: 2
+        x: 299
+        y: 892
+        width: 30
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 054f9fff025ebef70800000000000000
+      internalID: 9217712992240137296
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_72
+      rect:
+        serializedVersion: 2
+        x: 332
+        y: 892
+        width: 31
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5dc4f99ebe2715270800000000000000
+      internalID: 8237491550999760085
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_73
+      rect:
+        serializedVersion: 2
+        x: 367
+        y: 892
+        width: 29
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9668dad4b727d24d0800000000000000
+      internalID: -3157741889807088023
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_74
+      rect:
+        serializedVersion: 2
+        x: 385
+        y: 907
+        width: 6
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6d1baca72062853a0800000000000000
+      internalID: -6676544655484866090
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_75
+      rect:
+        serializedVersion: 2
+        x: 398
+        y: 892
+        width: 31
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b1bb759f6b0a30d90800000000000000
+      internalID: -7132680677096965349
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_76
+      rect:
+        serializedVersion: 2
+        x: 431
+        y: 892
+        width: 30
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f565703542294caf0800000000000000
+      internalID: -377015784082811297
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_77
+      rect:
+        serializedVersion: 2
+        x: 125
+        y: 892
+        width: 6
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: eba3bdae3b1a27000800000000000000
+      internalID: 32265941456468670
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_78
+      rect:
+        serializedVersion: 2
+        x: 159
+        y: 895
+        width: 6
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 617744ca458a28d50800000000000000
+      internalID: 6738133074120570646
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_79
+      rect:
+        serializedVersion: 2
+        x: 9
+        y: 857
+        width: 15
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e4333d11e18327330800000000000000
+      internalID: 3707087145078567758
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_80
+      rect:
+        serializedVersion: 2
+        x: 41
+        y: 857
+        width: 14
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bca940e042b73d290800000000000000
+      internalID: -7866808729301902645
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_81
+      rect:
+        serializedVersion: 2
+        x: 73
+        y: 857
+        width: 17
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2af0edeef93519c30800000000000000
+      internalID: 4364361460271157154
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_82
+      rect:
+        serializedVersion: 2
+        x: 77
+        y: 873
+        width: 7
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1bfb6c62109c301c0800000000000000
+      internalID: -4538562992676618319
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_83
+      rect:
+        serializedVersion: 2
+        x: 107
+        y: 857
+        width: 17
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5126769e71749a6e0800000000000000
+      internalID: -1825850005896338923
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_84
+      rect:
+        serializedVersion: 2
+        x: 141
+        y: 857
+        width: 15
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e5500b6f7153f09c0800000000000000
+      internalID: -3958887170396125858
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_85
+      rect:
+        serializedVersion: 2
+        x: 173
+        y: 857
+        width: 14
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2a90acf4ccf0a07c0800000000000000
+      internalID: -4104450740208399966
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_86
+      rect:
+        serializedVersion: 2
+        x: 205
+        y: 857
+        width: 17
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ca3650eadae804740800000000000000
+      internalID: 5134260451802440620
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_87
+      rect:
+        serializedVersion: 2
+        x: 209
+        y: 872
+        width: 7
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5631697c0222b0340800000000000000
+      internalID: 4830992549467788133
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_88
+      rect:
+        serializedVersion: 2
+        x: 239
+        y: 857
+        width: 17
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 72761b13c30ea3eb0800000000000000
+      internalID: -4739229108717656281
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_89
+      rect:
+        serializedVersion: 2
+        x: 6
+        y: 824
+        width: 20
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 44d6fe0c16e017860800000000000000
+      internalID: 7525812265324342596
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_90
+      rect:
+        serializedVersion: 2
+        x: 39
+        y: 824
+        width: 20
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 88d172be1cf1702f0800000000000000
+      internalID: -1006801073959658104
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_91
+      rect:
+        serializedVersion: 2
+        x: 73
+        y: 824
+        width: 18
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f43e21458a7b7fe30800000000000000
+      internalID: 4537297083191976783
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_92
+      rect:
+        serializedVersion: 2
+        x: 106
+        y: 824
+        width: 18
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2f97769b3f46480c0800000000000000
+      internalID: -4574420323551184398
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_93
+      rect:
+        serializedVersion: 2
+        x: 142
+        y: 844
+        width: 7
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c228194dc967b0b50800000000000000
+      internalID: 6560467698148540972
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_94
+      rect:
+        serializedVersion: 2
+        x: 175
+        y: 847
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 96a247edbc16e5620800000000000000
+      internalID: 2764754749490473577
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_95
+      rect:
+        serializedVersion: 2
+        x: 204
+        y: 824
+        width: 19
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e93e52214a8193e70800000000000000
+      internalID: 9095328015409603486
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_96
+      rect:
+        serializedVersion: 2
+        x: 237
+        y: 824
+        width: 19
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dd90cf50a1af169f0800000000000000
+      internalID: -476825095848064547
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_97
+      rect:
+        serializedVersion: 2
+        x: 271
+        y: 824
+        width: 19
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 22a366b4753a87a60800000000000000
+      internalID: 7672061560548112930
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_98
+      rect:
+        serializedVersion: 2
+        x: 304
+        y: 824
+        width: 19
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1d5b450e51154f9e0800000000000000
+      internalID: -1588555614155131439
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_99
+      rect:
+        serializedVersion: 2
+        x: 337
+        y: 824
+        width: 18
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3bec58b7df8772780800000000000000
+      internalID: -8707858324403138893
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_100
+      rect:
+        serializedVersion: 2
+        x: 369
+        y: 824
+        width: 19
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c438ae854229279b0800000000000000
+      internalID: -5083840344539626676
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_101
+      rect:
+        serializedVersion: 2
+        x: 407
+        y: 846
+        width: 6
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d07eab6a24572d290800000000000000
+      internalID: -7867096669937277171
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_102
+      rect:
+        serializedVersion: 2
+        x: 435
+        y: 824
+        width: 18
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8ef18d8541ec00af0800000000000000
+      internalID: -432118977442340888
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_103
+      rect:
+        serializedVersion: 2
+        x: 469
+        y: 824
+        width: 18
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2cd1e2a0d029352c0800000000000000
+      internalID: -4444047822581523006
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_104
+      rect:
+        serializedVersion: 2
+        x: 502
+        y: 824
+        width: 18
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 62ca794fe35b37490800000000000000
+      internalID: -7749651251778311130
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_105
+      rect:
+        serializedVersion: 2
+        x: 535
+        y: 824
+        width: 19
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 17c17c2f562ab94f0800000000000000
+      internalID: -820883948316451727
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_106
+      rect:
+        serializedVersion: 2
+        x: 567
+        y: 824
+        width: 20
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 879143b61a89d7ac0800000000000000
+      internalID: -3855757886903543432
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_107
+      rect:
+        serializedVersion: 2
+        x: 600
+        y: 824
+        width: 19
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5001e766ed104adc0800000000000000
+      internalID: -3628773345039871995
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_108
+      rect:
+        serializedVersion: 2
+        x: 633
+        y: 824
+        width: 19
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dff9461b494abab20800000000000000
+      internalID: 3146789723186700285
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_109
+      rect:
+        serializedVersion: 2
+        x: 667
+        y: 824
+        width: 17
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f8e2ee2069f37bd20800000000000000
+      internalID: 3294171565971615375
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_110
+      rect:
+        serializedVersion: 2
+        x: 700
+        y: 824
+        width: 17
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 178660d81f40b86d0800000000000000
+      internalID: -2987288492330555279
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_111
+      rect:
+        serializedVersion: 2
+        x: 733
+        y: 824
+        width: 18
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9af4a978f40e95a90800000000000000
+      internalID: -7324576686759325783
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_112
+      rect:
+        serializedVersion: 2
+        x: 139
+        y: 824
+        width: 17
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cc430d063810bb5e0800000000000000
+      internalID: -1892917554602560308
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_113
+      rect:
+        serializedVersion: 2
+        x: 171
+        y: 824
+        width: 18
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ccede071f351ac700800000000000000
+      internalID: 561284464275021516
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_114
+      rect:
+        serializedVersion: 2
+        x: 402
+        y: 824
+        width: 18
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7fe09961aab163db0800000000000000
+      internalID: -4812628734461276425
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_115
+      rect:
+        serializedVersion: 2
+        x: 5
+        y: 798
+        width: 26
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5c506cb96889417c0800000000000000
+      internalID: -4101485656721193531
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_116
+      rect:
+        serializedVersion: 2
+        x: 36
+        y: 798
+        width: 28
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9456869d967af1c70800000000000000
+      internalID: 8944051458041996617
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_117
+      rect:
+        serializedVersion: 2
+        x: 67
+        y: 798
+        width: 30
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 805e7ecaf2b64d620800000000000000
+      internalID: 2797979121012434184
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_118
+      rect:
+        serializedVersion: 2
+        x: 100
+        y: 798
+        width: 30
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c02923c7b3f4275a0800000000000000
+      internalID: -6525065793201073652
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_119
+      rect:
+        serializedVersion: 2
+        x: 139
+        y: 798
+        width: 24
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7a7edc218f09c3a40800000000000000
+      internalID: 5349309852551079847
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_120
+      rect:
+        serializedVersion: 2
+        x: 170
+        y: 798
+        width: 26
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 39c754e60663cd350800000000000000
+      internalID: 6042764587819170963
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_121
+      rect:
+        serializedVersion: 2
+        x: 201
+        y: 798
+        width: 28
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 661903f2d02308eb0800000000000000
+      internalID: -4719717377276604058
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_122
+      rect:
+        serializedVersion: 2
+        x: 232
+        y: 804
+        width: 10
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d24478f12b64a2550800000000000000
+      internalID: 6136795173092803629
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_123
+      rect:
+        serializedVersion: 2
+        x: 240
+        y: 798
+        width: 22
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 33c7d2899ec4f9da0800000000000000
+      internalID: -5935941217686815693
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_124
+      rect:
+        serializedVersion: 2
+        x: 265
+        y: 798
+        width: 30
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1ada2b8d35691af10800000000000000
+      internalID: 2279268173288222113
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_125
+      rect:
+        serializedVersion: 2
+        x: 304
+        y: 798
+        width: 24
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d07526626921e88d0800000000000000
+      internalID: -2842313878725830899
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_126
+      rect:
+        serializedVersion: 2
+        x: 5
+        y: 761
+        width: 22
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: aac8330610fce5390800000000000000
+      internalID: -7827591497507435350
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_127
+      rect:
+        serializedVersion: 2
+        x: 37
+        y: 761
+        width: 23
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dabe26525f8f09550800000000000000
+      internalID: 6165701621648124845
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_128
+      rect:
+        serializedVersion: 2
+        x: 69
+        y: 761
+        width: 24
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6d35e005a0264f1f0800000000000000
+      internalID: -1012076219819207722
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_129
+      rect:
+        serializedVersion: 2
+        x: 103
+        y: 761
+        width: 23
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5f698c72e654fa150800000000000000
+      internalID: 5885999577412703989
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_130
+      rect:
+        serializedVersion: 2
+        x: 138
+        y: 761
+        width: 21
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bbd346fd9f02c0b20800000000000000
+      internalID: 3101890500918263227
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_131
+      rect:
+        serializedVersion: 2
+        x: 170
+        y: 761
+        width: 22
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 86a25dce48edcce40800000000000000
+      internalID: 5678157892697795176
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_132
+      rect:
+        serializedVersion: 2
+        x: 201
+        y: 761
+        width: 24
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4ac0268b38a8d3810800000000000000
+      internalID: 1746704528828402852
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_133
+      rect:
+        serializedVersion: 2
+        x: 234
+        y: 778
+        width: 9
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 538e0e266941331e0800000000000000
+      internalID: -2219407555226965963
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_134
+      rect:
+        serializedVersion: 2
+        x: 267
+        y: 780
+        width: 8
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 991d83510aa67daf0800000000000000
+      internalID: -371711208451419751
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_135
+      rect:
+        serializedVersion: 2
+        x: 268
+        y: 761
+        width: 23
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b0c7f1ff968c98ad0800000000000000
+      internalID: -2699406144054526965
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_136
+      rect:
+        serializedVersion: 2
+        x: 303
+        y: 761
+        width: 21
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 701bbf83795dcf2e0800000000000000
+      internalID: -2090561281533955833
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_137
+      rect:
+        serializedVersion: 2
+        x: 237
+        y: 761
+        width: 21
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0b8e891bc881ead40800000000000000
+      internalID: 5597438379422181552
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_138
+      rect:
+        serializedVersion: 2
+        x: 156
+        y: 734
+        width: 12
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 61f558e6177829bd0800000000000000
+      internalID: -2624886711548289258
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_139
+      rect:
+        serializedVersion: 2
+        x: 222
+        y: 738
+        width: 8
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4f96da7bfa8eb4990800000000000000
+      internalID: -7400565721254761996
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_140
+      rect:
+        serializedVersion: 2
+        x: 289
+        y: 742
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c1b409edc6a7e53d0800000000000000
+      internalID: -3215998475886900452
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_141
+      rect:
+        serializedVersion: 2
+        x: 347
+        y: 693
+        width: 21
+        height: 57
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7780a7526d56efb80800000000000000
+      internalID: -8359131887926900617
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_142
+      rect:
+        serializedVersion: 2
+        x: 418
+        y: 736
+        width: 8
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 845c8a9b4c63fa750800000000000000
+      internalID: 6318329020780430664
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_143
+      rect:
+        serializedVersion: 2
+        x: 483
+        y: 739
+        width: 8
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ddc65a54fee2d06d0800000000000000
+      internalID: -3022708169695204131
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_144
+      rect:
+        serializedVersion: 2
+        x: 550
+        y: 739
+        width: 6
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: be1b67f7466d2f360800000000000000
+      internalID: 7202054481242403307
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_145
+      rect:
+        serializedVersion: 2
+        x: 23
+        y: 683
+        width: 33
+        height: 54
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 45267bab0d2ac2350800000000000000
+      internalID: 5993344221492765268
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_146
+      rect:
+        serializedVersion: 2
+        x: 88
+        y: 693
+        width: 19
+        height: 47
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e6f0ed2f2d780b780800000000000000
+      internalID: -8669279942600683666
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_147
+      rect:
+        serializedVersion: 2
+        x: 153
+        y: 693
+        width: 19
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 52d341c63e2640f20800000000000000
+      internalID: 3387941548599819557
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_148
+      rect:
+        serializedVersion: 2
+        x: 218
+        y: 693
+        width: 20
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 52188670b01c387a0800000000000000
+      internalID: -6376040394313400027
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_149
+      rect:
+        serializedVersion: 2
+        x: 283
+        y: 693
+        width: 20
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7dc7660183e92ba70800000000000000
+      internalID: 8841302982112214231
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_150
+      rect:
+        serializedVersion: 2
+        x: 413
+        y: 693
+        width: 20
+        height: 43
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e73abed4e748c0370800000000000000
+      internalID: 8290146692090274686
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_151
+      rect:
+        serializedVersion: 2
+        x: 477
+        y: 694
+        width: 21
+        height: 43
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3efca0f46b8757fa0800000000000000
+      internalID: -5803599820391526429
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_152
+      rect:
+        serializedVersion: 2
+        x: 541
+        y: 694
+        width: 22
+        height: 41
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7adb346bfc0ea3c10800000000000000
+      internalID: 2034185364431945127
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_153
+      rect:
+        serializedVersion: 2
+        x: 606
+        y: 687
+        width: 25
+        height: 46
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ba2a20042172926a0800000000000000
+      internalID: -6473600030031568213
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_154
+      rect:
+        serializedVersion: 2
+        x: 29
+        y: 594
+        width: 38
+        height: 92
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1436099d57dd37ec0800000000000000
+      internalID: -3570266581343640767
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_155
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 598
+        width: 34
+        height: 92
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b13917d9c44afe380800000000000000
+      internalID: -8939746086341209317
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_156
+      rect:
+        serializedVersion: 2
+        x: 225
+        y: 599
+        width: 34
+        height: 82
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 46253878ad335c0b0800000000000000
+      internalID: -5709099938952818076
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_157
+      rect:
+        serializedVersion: 2
+        x: 238
+        y: 674
+        width: 10
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2033ceb3a0b718320800000000000000
+      internalID: 2558461347208377090
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_158
+      rect:
+        serializedVersion: 2
+        x: 324
+        y: 606
+        width: 35
+        height: 79
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 435f73ec4fd3f3f50800000000000000
+      internalID: 6863272478777013556
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_159
+      rect:
+        serializedVersion: 2
+        x: 333
+        y: 668
+        width: 7
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7baa3be3c3b443220800000000000000
+      internalID: 2464677618200586935
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_160
+      rect:
+        serializedVersion: 2
+        x: 419
+        y: 597
+        width: 36
+        height: 86
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 177d0479aa8de4590800000000000000
+      internalID: -7687969286681208975
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_161
+      rect:
+        serializedVersion: 2
+        x: 433
+        y: 670
+        width: 12
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fee80eab5acf8bd50800000000000000
+      internalID: 6753425429977140975
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_162
+      rect:
+        serializedVersion: 2
+        x: 518
+        y: 600
+        width: 33
+        height: 91
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c5b66b308ee521a90800000000000000
+      internalID: -7344703691700147364
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_163
+      rect:
+        serializedVersion: 2
+        x: 614
+        y: 598
+        width: 34
+        height: 90
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6c31732e7432937b0800000000000000
+      internalID: -5244121499451321402
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_164
+      rect:
+        serializedVersion: 2
+        x: 710
+        y: 594
+        width: 38
+        height: 91
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b5f2c59d55f47ae70800000000000000
+      internalID: 9126350400027111259
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_165
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 641
+        width: 7
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4d5c16272f1031ca0800000000000000
+      internalID: -6047487733815720492
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_166
+      rect:
+        serializedVersion: 2
+        x: 156
+        y: 637
+        width: 10
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6591e70dfe6291580800000000000000
+      internalID: -8856004380810405546
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_167
+      rect:
+        serializedVersion: 2
+        x: 255
+        y: 650
+        width: 8
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0ccadde4838a0b900800000000000000
+      internalID: 698242902037212352
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_168
+      rect:
+        serializedVersion: 2
+        x: 322
+        y: 641
+        width: 7
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7f16d99fa5b7eebe0800000000000000
+      internalID: -1446082799674236425
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_169
+      rect:
+        serializedVersion: 2
+        x: 516
+        y: 640
+        width: 7
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4fc9b890818b2cee0800000000000000
+      internalID: -1242228133821965068
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_170
+      rect:
+        serializedVersion: 2
+        x: 253
+        y: 617
+        width: 6
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 16108b99b008d60f0800000000000000
+      internalID: -1122099944833416863
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_171
+      rect:
+        serializedVersion: 2
+        x: 328
+        y: 604
+        width: 9
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 986746c95a102e4c0800000000000000
+      internalID: -4259840486734006647
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_172
+      rect:
+        serializedVersion: 2
+        x: 336
+        y: 599
+        width: 6
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 29948e3793c1e9670800000000000000
+      internalID: 8547300175879096722
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_173
+      rect:
+        serializedVersion: 2
+        x: 341
+        y: 600
+        width: 6
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5e4404ee5d7a588b0800000000000000
+      internalID: -5150526061561232155
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_174
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 569
+        width: 94
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5831433381aa273f0800000000000000
+      internalID: -904473554233060475
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_175
+      rect:
+        serializedVersion: 2
+        x: 98
+        y: 571
+        width: 94
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 985971115afee7b10800000000000000
+      internalID: 1981284378324997513
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_176
+      rect:
+        serializedVersion: 2
+        x: 194
+        y: 571
+        width: 93
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ac744e66f04a7cf00800000000000000
+      internalID: 1137057816992040906
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_177
+      rect:
+        serializedVersion: 2
+        x: 291
+        y: 571
+        width: 94
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c9ee44d3838ae92c0800000000000000
+      internalID: -4422912824531685732
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_178
+      rect:
+        serializedVersion: 2
+        x: 389
+        y: 570
+        width: 92
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 79bab68e5177775c0800000000000000
+      internalID: -4217771590031791209
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_179
+      rect:
+        serializedVersion: 2
+        x: 485
+        y: 569
+        width: 94
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 74e1159109b7f3540800000000000000
+      internalID: 4989842770980052551
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_180
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 542
+        width: 95
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e190df133e31e5500800000000000000
+      internalID: 386768484517611806
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_181
+      rect:
+        serializedVersion: 2
+        x: 97
+        y: 541
+        width: 97
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 743fe122bef061ac0800000000000000
+      internalID: -3884900125996289209
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_182
+      rect:
+        serializedVersion: 2
+        x: 194
+        y: 542
+        width: 92
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fe19929fa54d317b0800000000000000
+      internalID: -5254622853018840593
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_183
+      rect:
+        serializedVersion: 2
+        x: 292
+        y: 544
+        width: 91
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b95db20026cc0feb0800000000000000
+      internalID: -4688022490810952293
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_184
+      rect:
+        serializedVersion: 2
+        x: 388
+        y: 543
+        width: 94
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: df672e13e08d7da90800000000000000
+      internalID: -7289119916397791491
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_185
+      rect:
+        serializedVersion: 2
+        x: 486
+        y: 541
+        width: 92
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 603b22bf311e404e0800000000000000
+      internalID: -2016239257221156090
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_186
+      rect:
+        serializedVersion: 2
+        x: 6
+        y: 478
+        width: 23
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 72432d10d43d47f50800000000000000
+      internalID: 6878354858598085671
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_187
+      rect:
+        serializedVersion: 2
+        x: 200
+        y: 481
+        width: 65
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 47e9496bbaf63d230800000000000000
+      internalID: 3662393705275629172
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_188
+      rect:
+        serializedVersion: 2
+        x: 257
+        y: 493
+        width: 9
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 24bf76a21bb16bf40800000000000000
+      internalID: 5743808822492265282
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_189
+      rect:
+        serializedVersion: 2
+        x: 394
+        y: 479
+        width: 88
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ab092e0ee12d6b770800000000000000
+      internalID: 8626313166338560186
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_190
+      rect:
+        serializedVersion: 2
+        x: 588
+        y: 479
+        width: 117
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 125070161f763fe70800000000000000
+      internalID: 9147769554532238625
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_191
+      rect:
+        serializedVersion: 2
+        x: 782
+        y: 477
+        width: 144
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3027340e0036545e0800000000000000
+      internalID: -1926024410217352701
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_192
+      rect:
+        serializedVersion: 2
+        x: 976
+        y: 479
+        width: 167
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1e21e515a62d83770800000000000000
+      internalID: 8590847643282707169
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_193
+      rect:
+        serializedVersion: 2
+        x: 6
+        y: 407
+        width: 183
+        height: 39
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ee05c966b08032a80800000000000000
+      internalID: -8492935627231440658
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_194
+      rect:
+        serializedVersion: 2
+        x: 164
+        y: 442
+        width: 6
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 34f0298fc80cf4fb0800000000000000
+      internalID: -4661295377606897853
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_195
+      rect:
+        serializedVersion: 2
+        x: 200
+        y: 408
+        width: 182
+        height: 38
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 13abfaa2210f333a0800000000000000
+      internalID: -6686737060898817487
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_196
+      rect:
+        serializedVersion: 2
+        x: 394
+        y: 407
+        width: 177
+        height: 38
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: acdec2a84daa51cc0800000000000000
+      internalID: -3740896085633339958
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_197
+      rect:
+        serializedVersion: 2
+        x: 559
+        y: 444
+        width: 12
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c5423d2b5a70aa7f0800000000000000
+      internalID: -600659192049359780
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_198
+      rect:
+        serializedVersion: 2
+        x: 588
+        y: 407
+        width: 179
+        height: 52
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b7fd6d9ac57682ee0800000000000000
+      internalID: -1285664045930193029
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_199
+      rect:
+        serializedVersion: 2
+        x: 782
+        y: 409
+        width: 185
+        height: 43
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b34f4ae02d5ac8460800000000000000
+      internalID: 7245348222139692091
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_200
+      rect:
+        serializedVersion: 2
+        x: 976
+        y: 408
+        width: 183
+        height: 46
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5e94889a94a24fd30800000000000000
+      internalID: 4464239626496264677
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_201
+      rect:
+        serializedVersion: 2
+        x: 1170
+        y: 409
+        width: 179
+        height: 41
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7b53a409f3d903660800000000000000
+      internalID: 7363558287080043959
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_202
+      rect:
+        serializedVersion: 2
+        x: 1338
+        y: 437
+        width: 11
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dfa7d12c60fd91520800000000000000
+      internalID: 2673413073940609789
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_203
+      rect:
+        serializedVersion: 2
+        x: 1364
+        y: 408
+        width: 178
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 095711d0339e18a60800000000000000
+      internalID: 7674671645487887760
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_204
+      rect:
+        serializedVersion: 2
+        x: 6
+        y: 338
+        width: 179
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0fe7e445b31a8a170800000000000000
+      internalID: 8189973198562819824
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_205
+      rect:
+        serializedVersion: 2
+        x: 155
+        y: 365
+        width: 11
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 50a8f72deef8149d0800000000000000
+      internalID: -2791792038096434683
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_206
+      rect:
+        serializedVersion: 2
+        x: 200
+        y: 338
+        width: 179
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c68c470f98cddff50800000000000000
+      internalID: 6916927087713765484
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_207
+      rect:
+        serializedVersion: 2
+        x: 394
+        y: 337
+        width: 179
+        height: 41
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b89dc4671c8d2a4e0800000000000000
+      internalID: -1971775361409820277
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_208
+      rect:
+        serializedVersion: 2
+        x: 588
+        y: 337
+        width: 182
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 40a2bbe05db90bb00800000000000000
+      internalID: 842344469695769092
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_209
+      rect:
+        serializedVersion: 2
+        x: 741
+        y: 367
+        width: 12
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9a08da45053ad02d0800000000000000
+      internalID: -3310810585634078551
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_210
+      rect:
+        serializedVersion: 2
+        x: 763
+        y: 368
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1d0f2db16802674a0800000000000000
+      internalID: -6596048843872997167
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_211
+      rect:
+        serializedVersion: 2
+        x: 53
+        y: 268
+        width: 132
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1e73486a61e7da010800000000000000
+      internalID: 1201755311325853665
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_212
+      rect:
+        serializedVersion: 2
+        x: 279
+        y: 269
+        width: 98
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 315c88afccf1e7440800000000000000
+      internalID: 4935417206881699091
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_213
+      rect:
+        serializedVersion: 2
+        x: 502
+        y: 267
+        width: 70
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 15be558e3303e4030800000000000000
+      internalID: 3480772561503382353
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_214
+      rect:
+        serializedVersion: 2
+        x: 732
+        y: 270
+        width: 36
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 96494fab70e07bec0800000000000000
+      internalID: -3551354354794195863
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_215
+      rect:
+        serializedVersion: 2
+        x: 951
+        y: 290
+        width: 12
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f93d18d6aa3d63240800000000000000
+      internalID: 4771233584180745119
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_216
+      rect:
+        serializedVersion: 2
+        x: 719
+        y: 268
+        width: 12
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a6331d69dae90d8f0800000000000000
+      internalID: -517739488750783638
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_217
+      rect:
+        serializedVersion: 2
+        x: 916
+        y: 271
+        width: 10
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8984d55c8a61cc070800000000000000
+      internalID: 8127896341618444440
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_218
+      rect:
+        serializedVersion: 2
+        x: 929
+        y: 272
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8e4024fac0ebe2f70800000000000000
+      internalID: 9164471253434762472
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_219
+      rect:
+        serializedVersion: 2
+        x: 938
+        y: 273
+        width: 8
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 81fec74a9af9ad4e0800000000000000
+      internalID: -1956075537181118696
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_220
+      rect:
+        serializedVersion: 2
+        x: 949
+        y: 274
+        width: 11
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bc7267436fa562760800000000000000
+      internalID: 7432728248510195659
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_221
+      rect:
+        serializedVersion: 2
+        x: 2
+        y: 239
+        width: 19
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0af0fe2b8987b4dd0800000000000000
+      internalID: -2500772570841804896
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_222
+      rect:
+        serializedVersion: 2
+        x: 163
+        y: 213
+        width: 50
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c7928ae6fdfe2ccf0800000000000000
+      internalID: -233360487756584580
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_223
+      rect:
+        serializedVersion: 2
+        x: 324
+        y: 195
+        width: 70
+        height: 62
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f401e7a8f353d7980800000000000000
+      internalID: -8539610771401863089
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_224
+      rect:
+        serializedVersion: 2
+        x: 485
+        y: 176
+        width: 89
+        height: 81
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a8532a97d18a18940800000000000000
+      internalID: 5296699481312605578
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_225
+      rect:
+        serializedVersion: 2
+        x: 646
+        y: 159
+        width: 110
+        height: 98
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3444d1da741b95990800000000000000
+      internalID: -7396685991574158269
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_226
+      rect:
+        serializedVersion: 2
+        x: 807
+        y: 146
+        width: 131
+        height: 111
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 64b02f10fc0562aa0800000000000000
+      internalID: -6186168188125705402
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_227
+      rect:
+        serializedVersion: 2
+        x: 968
+        y: 135
+        width: 146
+        height: 122
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a42d6b7e48b7940e0800000000000000
+      internalID: -2285159525160398262
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_228
+      rect:
+        serializedVersion: 2
+        x: 1129
+        y: 133
+        width: 144
+        height: 124
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2e56edc1d8ea594b0800000000000000
+      internalID: -5434245454254676510
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_229
+      rect:
+        serializedVersion: 2
+        x: 1290
+        y: 138
+        width: 138
+        height: 119
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b7548680a47c54df0800000000000000
+      internalID: -196531887938189957
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_230
+      rect:
+        serializedVersion: 2
+        x: 1451
+        y: 136
+        width: 145
+        height: 121
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 915e5d0bb3797b990800000000000000
+      internalID: -7370255982542854887
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_231
+      rect:
+        serializedVersion: 2
+        x: 1612
+        y: 133
+        width: 144
+        height: 124
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f2eb5bc04eefd5020800000000000000
+      internalID: 2332300437467020847
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_232
+      rect:
+        serializedVersion: 2
+        x: 212
+        y: 217
+        width: 6
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c1a8a23a0e7a704c0800000000000000
+      internalID: -4321300734186714596
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_233
+      rect:
+        serializedVersion: 2
+        x: 1429
+        y: 155
+        width: 8
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 80499dc2e71707990800000000000000
+      internalID: -7390282201782709240
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_234
+      rect:
+        serializedVersion: 2
+        x: 2
+        y: 8
+        width: 147
+        height: 120
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9226637561757cf70800000000000000
+      internalID: 9207423716646347305
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_235
+      rect:
+        serializedVersion: 2
+        x: 163
+        y: 4
+        width: 139
+        height: 124
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 734a3d6a519eeb290800000000000000
+      internalID: -7872598819394575305
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_236
+      rect:
+        serializedVersion: 2
+        x: 324
+        y: 8
+        width: 141
+        height: 120
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 801250648e856e5b0800000000000000
+      internalID: -5339482553570746104
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_237
+      rect:
+        serializedVersion: 2
+        x: 485
+        y: 6
+        width: 138
+        height: 122
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4ecaea0565fdd9e10800000000000000
+      internalID: 2206164954295217380
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_238
+      rect:
+        serializedVersion: 2
+        x: 646
+        y: 11
+        width: 140
+        height: 117
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ca0d3cf7d448e9300800000000000000
+      internalID: 260791296824955052
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_239
+      rect:
+        serializedVersion: 2
+        x: 807
+        y: 6
+        width: 141
+        height: 122
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b4f520465054f1930800000000000000
+      internalID: 4116084473894952779
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_240
+      rect:
+        serializedVersion: 2
+        x: 968
+        y: 4
+        width: 145
+        height: 124
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 452c3a1df56e87720800000000000000
+      internalID: 2844276463897920084
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_241
+      rect:
+        serializedVersion: 2
+        x: 1163
+        y: 4
+        width: 101
+        height: 92
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 748a6f324e6cdd270800000000000000
+      internalID: 8276990373335050311
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_242
+      rect:
+        serializedVersion: 2
+        x: 1344
+        y: 64
+        width: 11
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 28bc4c5284eae9e90800000000000000
+      internalID: -7016979544502121598
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_243
+      rect:
+        serializedVersion: 2
+        x: 1353
+        y: 2
+        width: 66
+        height: 65
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: beb308d9fc9bf0660800000000000000
+      internalID: 7354301017871105003
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_244
+      rect:
+        serializedVersion: 2
+        x: 1527
+        y: 46
+        width: 6
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a49d3e70eee92df90800000000000000
+      internalID: -6930302131397994166
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_245
+      rect:
+        serializedVersion: 2
+        x: 1532
+        y: 4
+        width: 55
+        height: 49
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 265c6b61132737a50800000000000000
+      internalID: 6517678640895280482
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_246
+      rect:
+        serializedVersion: 2
+        x: 297
+        y: 20
+        width: 13
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8b0927e65fb869d20800000000000000
+      internalID: 3284966864449605816
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_247
+      rect:
+        serializedVersion: 2
+        x: 1701
+        y: 26
+        width: 13
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a532ab617bf0a0c60800000000000000
+      internalID: 7785052184898052954
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_248
+      rect:
+        serializedVersion: 2
+        x: 1710
+        y: 4
+        width: 42
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 372cbfe6dec126190800000000000000
+      internalID: -7970776584397536653
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_249
+      rect:
+        serializedVersion: 2
+        x: 1868
+        y: 26
+        width: 8
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3f45f37e008dc39d0800000000000000
+      internalID: -2793120170485263117
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_250
+      rect:
+        serializedVersion: 2
+        x: 1873
+        y: 19
+        width: 11
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6c2789fc8155733f0800000000000000
+      internalID: -921174033723526458
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_251
+      rect:
+        serializedVersion: 2
+        x: 1880
+        y: 15
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 90dc10a5284829be0800000000000000
+      internalID: -1471968432806048503
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_252
+      rect:
+        serializedVersion: 2
+        x: 1903
+        y: 14
+        width: 11
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dd29c6607b9a999c0800000000000000
+      internalID: -3919915397097418019
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_253
+      rect:
+        serializedVersion: 2
+        x: 764
+        y: 6
+        width: 9
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d1e58a7033a542970800000000000000
+      internalID: 8729201152969170461
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: ManyFireProjectile_254
+      rect:
+        serializedVersion: 2
+        x: 1892
+        y: 5
+        width: 8
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: de2aa554e797b5a80800000000000000
+      internalID: -8477048290358418707
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      ManyFireProjectile_0: -8639819068613305168
+      ManyFireProjectile_1: 338703208007091061
+      ManyFireProjectile_10: -4787702133672542906
+      ManyFireProjectile_100: -5083840344539626676
+      ManyFireProjectile_101: -7867096669937277171
+      ManyFireProjectile_102: -432118977442340888
+      ManyFireProjectile_103: -4444047822581523006
+      ManyFireProjectile_104: -7749651251778311130
+      ManyFireProjectile_105: -820883948316451727
+      ManyFireProjectile_106: -3855757886903543432
+      ManyFireProjectile_107: -3628773345039871995
+      ManyFireProjectile_108: 3146789723186700285
+      ManyFireProjectile_109: 3294171565971615375
+      ManyFireProjectile_11: 8634457998498223594
+      ManyFireProjectile_110: -2987288492330555279
+      ManyFireProjectile_111: -7324576686759325783
+      ManyFireProjectile_112: -1892917554602560308
+      ManyFireProjectile_113: 561284464275021516
+      ManyFireProjectile_114: -4812628734461276425
+      ManyFireProjectile_115: -4101485656721193531
+      ManyFireProjectile_116: 8944051458041996617
+      ManyFireProjectile_117: 2797979121012434184
+      ManyFireProjectile_118: -6525065793201073652
+      ManyFireProjectile_119: 5349309852551079847
+      ManyFireProjectile_12: 3835362663773365415
+      ManyFireProjectile_120: 6042764587819170963
+      ManyFireProjectile_121: -4719717377276604058
+      ManyFireProjectile_122: 6136795173092803629
+      ManyFireProjectile_123: -5935941217686815693
+      ManyFireProjectile_124: 2279268173288222113
+      ManyFireProjectile_125: -2842313878725830899
+      ManyFireProjectile_126: -7827591497507435350
+      ManyFireProjectile_127: 6165701621648124845
+      ManyFireProjectile_128: -1012076219819207722
+      ManyFireProjectile_129: 5885999577412703989
+      ManyFireProjectile_13: -7911007187601909070
+      ManyFireProjectile_130: 3101890500918263227
+      ManyFireProjectile_131: 5678157892697795176
+      ManyFireProjectile_132: 1746704528828402852
+      ManyFireProjectile_133: -2219407555226965963
+      ManyFireProjectile_134: -371711208451419751
+      ManyFireProjectile_135: -2699406144054526965
+      ManyFireProjectile_136: -2090561281533955833
+      ManyFireProjectile_137: 5597438379422181552
+      ManyFireProjectile_138: -2624886711548289258
+      ManyFireProjectile_139: -7400565721254761996
+      ManyFireProjectile_14: -603987352519324877
+      ManyFireProjectile_140: -3215998475886900452
+      ManyFireProjectile_141: -8359131887926900617
+      ManyFireProjectile_142: 6318329020780430664
+      ManyFireProjectile_143: -3022708169695204131
+      ManyFireProjectile_144: 7202054481242403307
+      ManyFireProjectile_145: 5993344221492765268
+      ManyFireProjectile_146: -8669279942600683666
+      ManyFireProjectile_147: 3387941548599819557
+      ManyFireProjectile_148: -6376040394313400027
+      ManyFireProjectile_149: 8841302982112214231
+      ManyFireProjectile_15: 5668624439521009399
+      ManyFireProjectile_150: 8290146692090274686
+      ManyFireProjectile_151: -5803599820391526429
+      ManyFireProjectile_152: 2034185364431945127
+      ManyFireProjectile_153: -6473600030031568213
+      ManyFireProjectile_154: -3570266581343640767
+      ManyFireProjectile_155: -8939746086341209317
+      ManyFireProjectile_156: -5709099938952818076
+      ManyFireProjectile_157: 2558461347208377090
+      ManyFireProjectile_158: 6863272478777013556
+      ManyFireProjectile_159: 2464677618200586935
+      ManyFireProjectile_16: -6283786024958749632
+      ManyFireProjectile_160: -7687969286681208975
+      ManyFireProjectile_161: 6753425429977140975
+      ManyFireProjectile_162: -7344703691700147364
+      ManyFireProjectile_163: -5244121499451321402
+      ManyFireProjectile_164: 9126350400027111259
+      ManyFireProjectile_165: -6047487733815720492
+      ManyFireProjectile_166: -8856004380810405546
+      ManyFireProjectile_167: 698242902037212352
+      ManyFireProjectile_168: -1446082799674236425
+      ManyFireProjectile_169: -1242228133821965068
+      ManyFireProjectile_17: 5313871581127672511
+      ManyFireProjectile_170: -1122099944833416863
+      ManyFireProjectile_171: -4259840486734006647
+      ManyFireProjectile_172: 8547300175879096722
+      ManyFireProjectile_173: -5150526061561232155
+      ManyFireProjectile_174: -904473554233060475
+      ManyFireProjectile_175: 1981284378324997513
+      ManyFireProjectile_176: 1137057816992040906
+      ManyFireProjectile_177: -4422912824531685732
+      ManyFireProjectile_178: -4217771590031791209
+      ManyFireProjectile_179: 4989842770980052551
+      ManyFireProjectile_18: -423067232538359213
+      ManyFireProjectile_180: 386768484517611806
+      ManyFireProjectile_181: -3884900125996289209
+      ManyFireProjectile_182: -5254622853018840593
+      ManyFireProjectile_183: -4688022490810952293
+      ManyFireProjectile_184: -7289119916397791491
+      ManyFireProjectile_185: -2016239257221156090
+      ManyFireProjectile_186: 6878354858598085671
+      ManyFireProjectile_187: 3662393705275629172
+      ManyFireProjectile_188: 5743808822492265282
+      ManyFireProjectile_189: 8626313166338560186
+      ManyFireProjectile_19: -9114364566200374790
+      ManyFireProjectile_190: 9147769554532238625
+      ManyFireProjectile_191: -1926024410217352701
+      ManyFireProjectile_192: 8590847643282707169
+      ManyFireProjectile_193: -8492935627231440658
+      ManyFireProjectile_194: -4661295377606897853
+      ManyFireProjectile_195: -6686737060898817487
+      ManyFireProjectile_196: -3740896085633339958
+      ManyFireProjectile_197: -600659192049359780
+      ManyFireProjectile_198: -1285664045930193029
+      ManyFireProjectile_199: 7245348222139692091
+      ManyFireProjectile_2: -3266485113970290153
+      ManyFireProjectile_20: 6788919838087360601
+      ManyFireProjectile_200: 4464239626496264677
+      ManyFireProjectile_201: 7363558287080043959
+      ManyFireProjectile_202: 2673413073940609789
+      ManyFireProjectile_203: 7674671645487887760
+      ManyFireProjectile_204: 8189973198562819824
+      ManyFireProjectile_205: -2791792038096434683
+      ManyFireProjectile_206: 6916927087713765484
+      ManyFireProjectile_207: -1971775361409820277
+      ManyFireProjectile_208: 842344469695769092
+      ManyFireProjectile_209: -3310810585634078551
+      ManyFireProjectile_21: -1378999432578665331
+      ManyFireProjectile_210: -6596048843872997167
+      ManyFireProjectile_211: 1201755311325853665
+      ManyFireProjectile_212: 4935417206881699091
+      ManyFireProjectile_213: 3480772561503382353
+      ManyFireProjectile_214: -3551354354794195863
+      ManyFireProjectile_215: 4771233584180745119
+      ManyFireProjectile_216: -517739488750783638
+      ManyFireProjectile_217: 8127896341618444440
+      ManyFireProjectile_218: 9164471253434762472
+      ManyFireProjectile_219: -1956075537181118696
+      ManyFireProjectile_22: -4366919498871741682
+      ManyFireProjectile_220: 7432728248510195659
+      ManyFireProjectile_221: -2500772570841804896
+      ManyFireProjectile_222: -233360487756584580
+      ManyFireProjectile_223: -8539610771401863089
+      ManyFireProjectile_224: 5296699481312605578
+      ManyFireProjectile_225: -7396685991574158269
+      ManyFireProjectile_226: -6186168188125705402
+      ManyFireProjectile_227: -2285159525160398262
+      ManyFireProjectile_228: -5434245454254676510
+      ManyFireProjectile_229: -196531887938189957
+      ManyFireProjectile_23: 9061735838604640064
+      ManyFireProjectile_230: -7370255982542854887
+      ManyFireProjectile_231: 2332300437467020847
+      ManyFireProjectile_232: -4321300734186714596
+      ManyFireProjectile_233: -7390282201782709240
+      ManyFireProjectile_234: 9207423716646347305
+      ManyFireProjectile_235: -7872598819394575305
+      ManyFireProjectile_236: -5339482553570746104
+      ManyFireProjectile_237: 2206164954295217380
+      ManyFireProjectile_238: 260791296824955052
+      ManyFireProjectile_239: 4116084473894952779
+      ManyFireProjectile_24: 7906376924414793869
+      ManyFireProjectile_240: 2844276463897920084
+      ManyFireProjectile_241: 8276990373335050311
+      ManyFireProjectile_242: -7016979544502121598
+      ManyFireProjectile_243: 7354301017871105003
+      ManyFireProjectile_244: -6930302131397994166
+      ManyFireProjectile_245: 6517678640895280482
+      ManyFireProjectile_246: 3284966864449605816
+      ManyFireProjectile_247: 7785052184898052954
+      ManyFireProjectile_248: -7970776584397536653
+      ManyFireProjectile_249: -2793120170485263117
+      ManyFireProjectile_25: 7367068932445921150
+      ManyFireProjectile_250: -921174033723526458
+      ManyFireProjectile_251: -1471968432806048503
+      ManyFireProjectile_252: -3919915397097418019
+      ManyFireProjectile_253: 8729201152969170461
+      ManyFireProjectile_254: -8477048290358418707
+      ManyFireProjectile_26: -3921069648212391016
+      ManyFireProjectile_27: 3728360884220145465
+      ManyFireProjectile_28: -1911611999332772531
+      ManyFireProjectile_29: -7204887304977396225
+      ManyFireProjectile_3: 8846741365966802107
+      ManyFireProjectile_30: 1736802750666642639
+      ManyFireProjectile_31: -4504723875706113433
+      ManyFireProjectile_32: 4414114664385636331
+      ManyFireProjectile_33: -1088986108712918604
+      ManyFireProjectile_34: -5442149883120448967
+      ManyFireProjectile_35: 191055849428400202
+      ManyFireProjectile_36: 8837980371667881230
+      ManyFireProjectile_37: -8046064917662053283
+      ManyFireProjectile_38: 8708583219545205798
+      ManyFireProjectile_39: 6475988553396579180
+      ManyFireProjectile_4: 2523414223029047877
+      ManyFireProjectile_40: -4821056542293629279
+      ManyFireProjectile_41: 4842604425528847382
+      ManyFireProjectile_42: -6587696578958928988
+      ManyFireProjectile_43: -9195625889404886346
+      ManyFireProjectile_44: 5428204802672841049
+      ManyFireProjectile_45: 700163254556318325
+      ManyFireProjectile_46: -7629067715014832354
+      ManyFireProjectile_47: 9214589613129828899
+      ManyFireProjectile_48: 6026808679959280614
+      ManyFireProjectile_49: -4798396800799450016
+      ManyFireProjectile_5: -3786651391562909712
+      ManyFireProjectile_50: -933085278075108402
+      ManyFireProjectile_51: -1887811736797795317
+      ManyFireProjectile_52: 5743425000439957689
+      ManyFireProjectile_53: -7628287110857398555
+      ManyFireProjectile_54: 2773415101651766348
+      ManyFireProjectile_55: -8359543633204763726
+      ManyFireProjectile_56: 1666783589703157201
+      ManyFireProjectile_57: -4279890087310032502
+      ManyFireProjectile_58: -3485700775018962000
+      ManyFireProjectile_59: 3879806657850713423
+      ManyFireProjectile_6: 1680077264706588514
+      ManyFireProjectile_60: 7458463616473029892
+      ManyFireProjectile_61: 558269540821489020
+      ManyFireProjectile_62: 8403231563783774096
+      ManyFireProjectile_63: 8183148168543605635
+      ManyFireProjectile_64: 6597782985487247236
+      ManyFireProjectile_65: -5357540246951544577
+      ManyFireProjectile_66: 4036480170644444304
+      ManyFireProjectile_67: 7603468084013072751
+      ManyFireProjectile_68: -4049202987358033707
+      ManyFireProjectile_69: 7448559280173669455
+      ManyFireProjectile_7: -689597628291540377
+      ManyFireProjectile_70: 2000905032549244130
+      ManyFireProjectile_71: 9217712992240137296
+      ManyFireProjectile_72: 8237491550999760085
+      ManyFireProjectile_73: -3157741889807088023
+      ManyFireProjectile_74: -6676544655484866090
+      ManyFireProjectile_75: -7132680677096965349
+      ManyFireProjectile_76: -377015784082811297
+      ManyFireProjectile_77: 32265941456468670
+      ManyFireProjectile_78: 6738133074120570646
+      ManyFireProjectile_79: 3707087145078567758
+      ManyFireProjectile_8: -8966861558434461578
+      ManyFireProjectile_80: -7866808729301902645
+      ManyFireProjectile_81: 4364361460271157154
+      ManyFireProjectile_82: -4538562992676618319
+      ManyFireProjectile_83: -1825850005896338923
+      ManyFireProjectile_84: -3958887170396125858
+      ManyFireProjectile_85: -4104450740208399966
+      ManyFireProjectile_86: 5134260451802440620
+      ManyFireProjectile_87: 4830992549467788133
+      ManyFireProjectile_88: -4739229108717656281
+      ManyFireProjectile_89: 7525812265324342596
+      ManyFireProjectile_9: -6968952596710562090
+      ManyFireProjectile_90: -1006801073959658104
+      ManyFireProjectile_91: 4537297083191976783
+      ManyFireProjectile_92: -4574420323551184398
+      ManyFireProjectile_93: 6560467698148540972
+      ManyFireProjectile_94: 2764754749490473577
+      ManyFireProjectile_95: 9095328015409603486
+      ManyFireProjectile_96: -476825095848064547
+      ManyFireProjectile_97: 7672061560548112930
+      ManyFireProjectile_98: -1588555614155131439
+      ManyFireProjectile_99: -8707858324403138893
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

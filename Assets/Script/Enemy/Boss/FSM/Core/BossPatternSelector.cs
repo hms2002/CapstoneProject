@@ -15,6 +15,7 @@ public static class BossPatternSelector
         {
             BossPatternEntry patternEntry = phaseConfig.Patterns[i];
             if (patternEntry == null) continue;
+            if (!patternEntry.SelectableByAi) continue;
 
             BossPatternEvalResult result = boss.EvaluatePattern(patternEntry);
             int weight = result.GetWeight(patternEntry.SelectionWeight);

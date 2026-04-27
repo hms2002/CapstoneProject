@@ -25,3 +25,4 @@ MonoBehaviour:
   cueOnRemove: {fileID: 0}
   knockbackKey: {fileID: 11400000, guid: 6aec6aee9fb3108408336c542f14dbaf, type: 2}
   fallbackKnockback: 0
+  debugKnockback: 1

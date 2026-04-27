@@ -7,6 +7,8 @@ public abstract class BossControllerBase : Enemy, IBossAbilityStateBridge
     // 이 클래스의 책임:
     // Enemy의 공통 전투/사망 처리 위에 보스 전용 전투 상태, 페이즈, 반응 전환을 조율한다.
 
+    private const float TargetRefreshRetryIntervalSeconds = 0.25f;
+
     [Header("Encounter")]
     [SerializeField] private bool startCombatOnStart = true;
 
@@ -61,6 +63,7 @@ public abstract class BossControllerBase : Enemy, IBossAbilityStateBridge
     private bool hasCombatOverride;
     private bool encounterIntroFinished;
     private bool hasInitializedBossRuntime;
+    private float nextTargetRefreshTime;
 
     public AbilitySystem AbilitySystem => abilitySystem;
     public TagSystem TagSystem => tagSystem;
@@ -125,6 +128,7 @@ public abstract class BossControllerBase : Enemy, IBossAbilityStateBridge
                                    (stateMachine != null && stateMachine.CurrentState == encounterIntroState);
         if (!canTickStateMachine) return;
 
+        EnsureCombatTarget();
         blackboard.Tick(Time.deltaTime, Target, GetCurrentHpRatio());
 
         EvaluatePhaseChange();
@@ -235,7 +239,30 @@ public abstract class BossControllerBase : Enemy, IBossAbilityStateBridge
 
     public virtual BossPatternEntry SelectNextPattern()
     {
+        EnsureCombatTarget(forceRefresh: true);
+        blackboard.Tick(0f, Target, GetCurrentHpRatio());
+
+        BossPatternEntry followUpPattern = TrySelectQueuedFollowUpPattern();
+        if (followUpPattern != null)
+            return followUpPattern;
+
         return BossPatternSelector.Select(this, blackboard, GetCurrentPhase());
+    }
+
+    /// <summary>
+    /// 책임:
+    /// 보스가 Start 시점에 플레이어를 찾지 못했더라도 전투 루프 중 필요한 순간에 타겟을 재획득한다.
+    /// </summary>
+    private void EnsureCombatTarget(bool forceRefresh = false)
+    {
+        if (Target != null)
+            return;
+
+        if (!forceRefresh && Time.time < nextTargetRefreshTime)
+            return;
+
+        nextTargetRefreshTime = Time.time + TargetRefreshRetryIntervalSeconds;
+        TryRefreshTarget(logWarning: false);
     }
 
     /// <summary>패턴 평가 결과를 반환합니다.</summary>
@@ -254,7 +281,11 @@ public abstract class BossControllerBase : Enemy, IBossAbilityStateBridge
 
         if (abilitySystem.IsBusy) return false;
 
-        BossPatternEvalResult result = EvaluatePattern(patternEntry);
+        BossPatternEvalResult result = patternRuntime != null &&
+                                       patternRuntime.ReservedPattern == patternEntry &&
+                                       patternRuntime.ReservedPatternIsForcedFollowUp
+            ? EvaluateForcedFollowUpPattern(patternEntry)
+            : EvaluatePattern(patternEntry);
         if (!result.CanUse) return false;
 
         GameObject targetObject = Target != null ? Target.gameObject : null;
@@ -372,6 +403,7 @@ public abstract class BossControllerBase : Enemy, IBossAbilityStateBridge
     {
         BossPatternEntry finishedPattern = patternRuntime != null ? patternRuntime.CurrentPattern : null;
         OnPatternEnd(finishedPattern, false);
+        QueueFollowUpPattern(finishedPattern);
         patternRuntime?.EndPattern(finishedPattern);
     }
 
@@ -385,6 +417,26 @@ public abstract class BossControllerBase : Enemy, IBossAbilityStateBridge
 
         OnPatternEnd(activePattern, true);
         patternRuntime?.ClearPatternContext();
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - GroggyState가 보스 구체 타입을 몰라도 그로기 진입 연출을 요청할 수 있게 한다.
+    /// - 패턴 cleanup과 상태 연출을 분리해 보스별 애니메이션 정책을 파생 컨트롤러에 맡긴다.
+    /// </summary>
+    public void NotifyGroggyStateEntered()
+    {
+        OnGroggyStateEntered();
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - GroggyState가 보스 구체 타입을 몰라도 그로기 종료 연출을 요청할 수 있게 한다.
+    /// - 그로기 회복/복귀 애니메이션이 필요한 보스만 파생 구현에서 선택적으로 처리하게 한다.
+    /// </summary>
+    public void NotifyGroggyStateExited()
+    {
+        OnGroggyStateExited();
     }
 
     protected override void OnEnemyAttributeChanged(AttributeDefinition attribute, float oldValue, float newValue)
@@ -456,6 +508,24 @@ public abstract class BossControllerBase : Enemy, IBossAbilityStateBridge
     {
         AbortCurrentPattern();
         ChangeState(combatIdleState);
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 보스별 그로기 진입 연출 hook을 제공한다.
+    /// - 기본 보스는 별도 애니메이션이 없어도 FSM 동작을 유지하도록 비워둔다.
+    /// </summary>
+    protected virtual void OnGroggyStateEntered()
+    {
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 보스별 그로기 종료 연출 hook을 제공한다.
+    /// - 기본 보스는 별도 회복 애니메이션이 없어도 FSM 동작을 유지하도록 비워둔다.
+    /// </summary>
+    protected virtual void OnGroggyStateExited()
+    {
     }
 
     protected virtual int EvaluatePhaseIndexByHealthRatio(float hpRatio)
@@ -703,6 +773,10 @@ public abstract class BossControllerBase : Enemy, IBossAbilityStateBridge
                     continue;
 
                 TryRegisterAbility(ability);
+
+                AbilityDefinition followUpAbility = pattern.FollowUpAbility;
+                if (followUpAbility != null)
+                    TryRegisterAbility(followUpAbility);
             }
         }
     }
@@ -746,6 +820,104 @@ public abstract class BossControllerBase : Enemy, IBossAbilityStateBridge
     protected virtual BossPatternEvalResult AdjustPatternEval(BossPatternEntry patternEntry, BossPatternEvalResult result)
     {
         return result;
+    }
+
+    /// <summary>
+    /// 책임:
+    /// 후속 연계 패턴 실행 시 일반 선택 조건 대신 실제 실행 가능성 중심으로 평가한다.
+    /// </summary>
+    protected virtual BossPatternEvalResult EvaluateForcedFollowUpPattern(BossPatternEntry patternEntry)
+    {
+        if (patternEntry == null)
+            return BossPatternEvalResult.HardFail("후속 패턴이 없습니다.");
+
+        BossPatternEvalContext context = new BossPatternEvalContext(this, blackboard, patternRuntime);
+        return patternEntry.EvaluateForcedFollowUp(context);
+    }
+
+    /// <summary>
+    /// 책임:
+    /// 패턴 정상 종료 후 authoring된 후속 Ability를 런타임 큐에 올려 다음 선택 사이클을 강제 연계로 전환한다.
+    /// </summary>
+    private void QueueFollowUpPattern(BossPatternEntry finishedPattern)
+    {
+        if (patternRuntime == null || finishedPattern == null || finishedPattern.FollowUpAbility == null)
+            return;
+
+        patternRuntime.QueueFollowUpAbility(finishedPattern.FollowUpAbility);
+    }
+
+    /// <summary>
+    /// 책임:
+    /// 큐에 쌓인 후속 Ability를 현재 phase의 패턴 엔트리로 해석하고, 일반 가중치 선택보다 우선 반환한다.
+    /// </summary>
+    private BossPatternEntry TrySelectQueuedFollowUpPattern()
+    {
+        if (patternRuntime == null || !patternRuntime.TryConsumeQueuedFollowUpAbility(out AbilityDefinition followUpAbility))
+            return null;
+
+        BossPatternEntry followUpPattern = FindPatternEntryByAbility(followUpAbility);
+        if (followUpPattern == null)
+        {
+            Debug.LogWarning(
+                $"[BossFSM] {name}: 후속 패턴 Ability '{followUpAbility.name}'를 현재 phase 설정에서 찾지 못했습니다.",
+                this);
+            return null;
+        }
+
+        BossPatternEvalResult result = EvaluateForcedFollowUpPattern(followUpPattern);
+        if (!result.CanUse)
+        {
+            Debug.Log(
+                $"[BossFSM] {name}: 후속 패턴 '{followUpAbility.name}' 실행 보류. state={result.State}, reason={result.Reason ?? "없음"}",
+                this);
+            return null;
+        }
+
+        patternRuntime.MarkSelectedPatternAsForcedFollowUp(followUpPattern);
+        return followUpPattern;
+    }
+
+    /// <summary>
+    /// 책임:
+    /// Ability 참조로 authoring된 후속 패턴을 실제 phase 패턴 엔트리로 되찾는다.
+    /// </summary>
+    private BossPatternEntry FindPatternEntryByAbility(AbilityDefinition ability)
+    {
+        if (ability == null)
+            return null;
+
+        BossPatternEntry currentPhasePattern = FindPatternEntryByAbility(GetCurrentPhase(), ability);
+        if (currentPhasePattern != null)
+            return currentPhasePattern;
+
+        if (phases == null)
+            return null;
+
+        for (int i = 0; i < phases.Count; i++)
+        {
+            BossPatternEntry pattern = FindPatternEntryByAbility(phases[i], ability);
+            if (pattern != null)
+                return pattern;
+        }
+
+        return null;
+    }
+
+    private static BossPatternEntry FindPatternEntryByAbility(BossPhaseConfig phase, AbilityDefinition ability)
+    {
+        IReadOnlyList<BossPatternEntry> patterns = phase != null ? phase.Patterns : null;
+        if (patterns == null)
+            return null;
+
+        for (int i = 0; i < patterns.Count; i++)
+        {
+            BossPatternEntry pattern = patterns[i];
+            if (pattern != null && pattern.Ability == ability)
+                return pattern;
+        }
+
+        return null;
     }
 
     /// <summary>패턴 종료 후 정리 작업을 처리합니다.</summary>

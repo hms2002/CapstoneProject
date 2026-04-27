@@ -6,8 +6,11 @@ using UnityEngine.Serialization;
 public class BossDialogueRunner : MonoBehaviour
 {
     [SerializeField] private NPCData npcData;
+    [SerializeField] private MonoBehaviour startKnotSelectorBehaviour;
     [FormerlySerializedAs("inkJSON")]
     [SerializeField, HideInInspector] private TextAsset legacyInkJSON;
+
+    private IDialogueStartKnotSelector startKnotSelector;
 
     public void ApplyLegacyDialogueData(NPCData data, TextAsset legacyInk)
     {
@@ -37,7 +40,8 @@ public class BossDialogueRunner : MonoBehaviour
         }
 
         List<NPCData> participants = new List<NPCData> { npcData };
-        if (!DialogueService.Instance.TryStartDialogue(dialogueInk, participants))
+        string startKnot = ResolveStartKnot(dialogueInk);
+        if (!DialogueService.Instance.TryStartDialogue(dialogueInk, participants, startKnot))
             yield break;
 
         yield return new WaitUntil(() =>
@@ -60,5 +64,18 @@ public class BossDialogueRunner : MonoBehaviour
         }
 
         return legacyInkJSON;
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 보스별 대화 선택자가 있으면 이번 대화의 Ink 시작 knot을 위임받는다.
+    /// - 선택자가 없거나 비어 있으면 기존처럼 Ink 루트에서 시작한다.
+    /// </summary>
+    private string ResolveStartKnot(TextAsset dialogueInk)
+    {
+        if (startKnotSelector == null && startKnotSelectorBehaviour != null)
+            startKnotSelector = startKnotSelectorBehaviour as IDialogueStartKnotSelector;
+
+        return startKnotSelector?.SelectStartKnot(npcData, dialogueInk);
     }
 }

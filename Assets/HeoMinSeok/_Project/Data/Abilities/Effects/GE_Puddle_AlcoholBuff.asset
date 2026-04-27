@@ -1,0 +1,71 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b3ab6b7e89c4d12b1bbadc34e86a0f2, type: 3}
+  m_Name: GE_Puddle_AlcoholBuff
+  m_EditorClassIdentifier: 
+  effectName: GE_Puddle_AlcoholBuff
+  description: Alcohol puddle movement speed and attack speed buff.
+  icon: {fileID: 0}
+  duration: 0.35
+  canStack: 0
+  maxStacks: 1
+  grantedTags: []
+  grantedTagSets: []
+  audioOnExecute:
+    Id: 
+  audioWhileActive:
+    Id: 
+  audioOnRemove:
+    Id: 
+  cameraShakeOnExecute:
+    Use: 0
+    Preset: {fileID: 0}
+    Runtime: {fileID: 0}
+  cameraShakeWhileActive:
+    Use: 0
+    Preset: {fileID: 0}
+    Runtime: {fileID: 0}
+  cameraShakeOnRemove:
+    Use: 0
+    Preset: {fileID: 0}
+    Runtime: {fileID: 0}
+  presentationOnExecute:
+    Use: 0
+    Prefab: {fileID: 0}
+    SocketId: 
+    ParentToSocket: 0
+    ReleaseOnPhaseEnd: 1
+    LifetimeSeconds: 0
+  presentationWhileActive:
+    Use: 0
+    Prefab: {fileID: 0}
+    SocketId: 
+    ParentToSocket: 0
+    ReleaseOnPhaseEnd: 1
+    LifetimeSeconds: 0
+  presentationOnRemove:
+    Use: 0
+    Prefab: {fileID: 0}
+    SocketId: 
+    ParentToSocket: 0
+    ReleaseOnPhaseEnd: 1
+    LifetimeSeconds: 0
+  cueOnExecute: {fileID: 0}
+  cueWhileActive: {fileID: 0}
+  cueOnRemove: {fileID: 0}
+  modifiers:
+  - attribute: {fileID: 11400000, guid: 23db6468e859c6f42b0230a5af7ca81c, type: 2}
+    type: 1
+    value: 0.25
+  - attribute: {fileID: 11400000, guid: f466dc1481454c2da49e416aa7749743, type: 2}
+    type: 0
+    value: 0.4

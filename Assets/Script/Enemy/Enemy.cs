@@ -5,7 +5,7 @@ using UnityGAS;
 /// 이 클래스의 책임: 
 /// 모든 적이 공유하는 공통 사망 진입 상태와 사망 연출 재생/제거 흐름의 단일 진실 원천이 된다.
 /// </summary>
-[RequireComponent(typeof(Rigidbody2D), typeof(Collider2D), typeof(Animator))]
+[RequireComponent(typeof(Rigidbody2D))]
 [RequireComponent(typeof(AbilitySystem), typeof(AttributeSet), typeof(GameplayEffectRunner))]
 [RequireComponent(typeof(TagSystem))]
 [RequireComponent(typeof(MovementMotor2D), typeof(AttributeStatSource), typeof(AbilityMotionController2D))]
@@ -18,8 +18,10 @@ public class Enemy : MonoBehaviour, ICombatDeathCommand
     // Components =============================
     protected Rigidbody2D       rigid2D;
     protected Collider2D        collision;
-    protected SpriteRenderer    sprite;
-    protected Animator          animator;
+    protected EntityCollisionProfile2D collisionProfile;
+    [Header("Enemy Visual")]
+    [SerializeField] protected SpriteRenderer sprite;
+    [SerializeField] protected Animator animator;
 
     protected AbilitySystem         abilitySystem;
     protected AttributeSet          attributeSet;
@@ -51,9 +53,9 @@ public class Enemy : MonoBehaviour, ICombatDeathCommand
     protected virtual void Awake()
     {
         rigid2D     = GetComponent<Rigidbody2D>();
-        collision   = GetComponent<Collider2D>();
-        sprite      = GetComponent<SpriteRenderer>();
-        animator    = GetComponent<Animator>();
+        collisionProfile = GetComponent<EntityCollisionProfile2D>();
+        collision   = ResolvePrimaryBodyCollider();
+        CacheVisualComponents();
 
         abilitySystem   = GetComponent<AbilitySystem>();
         attributeSet    = GetComponent<AttributeSet>();
@@ -74,6 +76,53 @@ public class Enemy : MonoBehaviour, ICombatDeathCommand
         RefreshTarget();
     }
 
+    /// <summary>
+    /// 책임 :
+    /// - 적의 본체 visual이 root 또는 child 어디에 있든 공통 sprite/animator 참조를 해결한다.
+    /// - root는 물리/전투 좌표를 유지하고 visual child는 높이 연출을 받을 수 있도록 결합을 낮춘다.
+    /// </summary>
+    private void CacheVisualComponents()
+    {
+        if (animator == null)
+            animator = GetComponent<Animator>();
+
+        if (animator == null)
+            animator = GetComponentInChildren<Animator>(true);
+
+        if (sprite == null)
+            sprite = GetComponent<SpriteRenderer>();
+
+        if (sprite == null && animator != null)
+            sprite = animator.GetComponentInChildren<SpriteRenderer>(true);
+
+        if (sprite == null)
+            sprite = GetComponentInChildren<SpriteRenderer>(true);
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - root 또는 child에 배치된 이동 방해용 body collider 대표값을 찾는다.
+    /// - hurtbox/hitbox trigger는 피해 판정용이므로 Enemy의 기본 물리 충돌 대표로 사용하지 않는다.
+    /// </summary>
+    private Collider2D ResolvePrimaryBodyCollider()
+    {
+        Collider2D rootCollider = GetComponent<Collider2D>();
+        if (rootCollider != null && !rootCollider.isTrigger)
+            return rootCollider;
+
+        Collider2D[] colliders = GetComponentsInChildren<Collider2D>(true);
+        for (int i = 0; i < colliders.Length; i++)
+        {
+            Collider2D candidate = colliders[i];
+            if (candidate == null || candidate.isTrigger)
+                continue;
+
+            return candidate;
+        }
+
+        return rootCollider;
+    }
+
     protected virtual void OnDestroy()
     {
         if (attributeSet != null)
@@ -85,14 +134,22 @@ public class Enemy : MonoBehaviour, ICombatDeathCommand
     /// <summary>타겟 태그로 현재 추적 대상을 갱신합니다.</summary>
     protected void RefreshTarget()
     {
+        TryRefreshTarget(logWarning: true);
+    }
+
+    /// <summary>타겟 태그로 현재 추적 대상을 갱신하고 성공 여부를 반환합니다.</summary>
+    protected bool TryRefreshTarget(bool logWarning = true)
+    {
         if (string.IsNullOrWhiteSpace(targetTag))
-            return;
+            return false;
 
         GameObject found = GameObject.FindWithTag(targetTag);
         target = found != null ? found.transform : null;
 
-        if (target == null)
+        if (target == null && logWarning)
             Debug.LogWarning($"{enemyName}: No target found with tag '{targetTag}'");
+
+        return target != null;
     }
 
     /// <summary>현재 추적 대상을 지정한 Transform으로 교체합니다.</summary>
@@ -132,7 +189,9 @@ public class Enemy : MonoBehaviour, ICombatDeathCommand
         if (movementMotor != null)
             movementMotor.StopAllMotion();
 
-        if (collision != null)
+        if (collisionProfile != null)
+            collisionProfile.SetBodyCollisionMode(EntityCollisionProfile2D.BodyCollisionMode.Disabled);
+        else if (collision != null)
             collision.enabled = false;
 
         if (rigid2D != null)

@@ -83,7 +83,11 @@ public class DialogueController : MonoBehaviour
         ContinueStory();
     }
 
-    public void EnterDialogueMode(TextAsset inkJSON, List<NPCData> participants, NPCFeatureController featureController = null)
+    public void EnterDialogueMode(
+        TextAsset inkJSON,
+        List<NPCData> participants,
+        NPCFeatureController featureController = null,
+        string startPath = null)
     {
         ResolveRuntimeReferences();
 
@@ -120,6 +124,7 @@ public class DialogueController : MonoBehaviour
         }
 
         currentStory = new Story(inkJSON.text);
+        TryApplyStartPath(startPath);
 
         DialoguePresentationSequencer.PlayOpening(
             view,
@@ -174,6 +179,28 @@ public class DialogueController : MonoBehaviour
         }
 
         ExitDialogueMode();
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 외부 선택자가 지정한 Ink knot/stitch 시작점을 현재 Story에 적용한다.
+    /// - 잘못된 시작점이 들어와도 대화 전체가 죽지 않도록 기본 루트 진행으로 복구한다.
+    /// </summary>
+    private void TryApplyStartPath(string startPath)
+    {
+        if (currentStory == null || string.IsNullOrWhiteSpace(startPath))
+            return;
+
+        try
+        {
+            currentStory.ChoosePathString(startPath.Trim());
+        }
+        catch (System.Exception exception)
+        {
+            Debug.LogWarning(
+                $"[DialogueController] Failed to start dialogue at path '{startPath}'. Falling back to default root. {exception.Message}",
+                this);
+        }
     }
 
     private void DisplayChoicesIfNeeded()

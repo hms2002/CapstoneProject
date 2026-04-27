@@ -45,11 +45,17 @@ TagManager:
   - name: Background
     uniqueID: 292562947
     locked: 0
+  - name: GroundAOE
+    uniqueID: 673162585
+    locked: 0
   - name: AttackTelegraph
     uniqueID: 1817924167
     locked: 0
   - name: Entity
     uniqueID: 3255220471
+    locked: 0
+  - name: FloatingAOE
+    uniqueID: 3311570059
     locked: 0
   - name: Projectile
     uniqueID: 119640197

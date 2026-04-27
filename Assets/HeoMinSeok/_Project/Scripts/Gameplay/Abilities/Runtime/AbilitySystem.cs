@@ -273,8 +273,7 @@ namespace UnityGAS
 
         private void Awake()
         {
-            CacheRequiredComponents();
-            CreateControllers();
+            EnsureRuntimeServicesReady();
             InitializeInitialAbilities();
         }
 
@@ -311,7 +310,7 @@ namespace UnityGAS
             if (attributeSet == null) attributeSet = GetComponent<AttributeSet>();
             if (effectRunner == null) effectRunner = GetComponent<GameplayEffectRunner>();
             if (tagSystem == null) tagSystem = GetComponent<TagSystem>();
-            if (damageProfile == null) damageProfile = GetComponent<DamageProfileDefinition>();
+            // DamageProfileDefinition은 컴포넌트가 아니라 ScriptableObject 에셋이므로 명시 참조로만 주입한다.
 
 #if UNITY_2023_1_OR_NEWER
             if (cueManager == null) cueManager = UnityEngine.Object.FindAnyObjectByType<GameplayCueManager>();
@@ -352,6 +351,25 @@ namespace UnityGAS
                 minCooldownSeconds);
 
             executionCoordinator = new AbilityExecutionCoordinator();
+        }
+
+        /// <summary>
+        /// 책임 :
+        /// AbilitySystem이 실행 요청을 처리하기 전에 런타임 서비스와 컴포넌트 캐시가 준비되어 있음을 보장한다.
+        /// </summary>
+        private void EnsureRuntimeServicesReady()
+        {
+            CacheRequiredComponents();
+
+            if (presentationRouter == null ||
+                visualRouter == null ||
+                gameplayEventChannel == null ||
+                hitCueRouter == null ||
+                cooldownController == null ||
+                executionCoordinator == null)
+            {
+                CreateControllers();
+            }
         }
 
         private void InitializeInitialAbilities()
@@ -589,6 +607,8 @@ namespace UnityGAS
 
         public bool TryActivateAbility(AbilityDefinition ability, GameObject target = null)
         {
+            EnsureRuntimeServicesReady();
+
             var spec = FindSpec(ability);
             if (spec == null)
                 return false;
@@ -598,6 +618,8 @@ namespace UnityGAS
 
         public bool TryActivateAbility(AbilitySpec spec, GameObject target = null)
         {
+            EnsureRuntimeServicesReady();
+
             var def = spec?.Definition;
             if (def == null)
                 return false;
@@ -792,6 +814,8 @@ namespace UnityGAS
 
         private void StartAbilityExecution(AbilitySpec spec, GameObject target)
         {
+            EnsureRuntimeServicesReady();
+
             if (activeExecution != null)
                 StopCoroutine(activeExecution);
 
@@ -803,6 +827,8 @@ namespace UnityGAS
         /// </summary>
         private void StartParallelAbilityExecution(AbilitySpec spec, GameObject target)
         {
+            EnsureRuntimeServicesReady();
+
             var coroutine = StartCoroutine(executionCoordinator.RunParallel(this, spec, target));
             AttachParallelExecutionCoroutine(spec, coroutine);
         }

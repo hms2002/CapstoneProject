@@ -1,0 +1,71 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: M_PuddleShaderVisual
+  m_Shader: {fileID: 4800000, guid: 6a0f6a25f5e04b2e9d0b8d7c2f6a4c31, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _MainTex:
+        m_Texture: {fileID: 2800000, guid: c9245a9cf7a84a978b3c58781d0164cb, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _NoiseTex:
+        m_Texture: {fileID: 2800000, guid: d16d57ca42be4e39a4c9bb4bb238fd4c, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _FireProjectileTex:
+        m_Texture: {fileID: 2800000, guid: e8e4a6cf59ec4f119da65ea2f092035d, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _AlcoholProjectileTex:
+        m_Texture: {fileID: 2800000, guid: f6c94a3566e6410f8c0622be97f5dd61, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - _AbsorbProgress: 0
+    - _BlobNoiseAmount: 0.16
+    - _EdgeWidth: 0.08
+    - _ElementType: 0
+    - _InnerHighlightAmount: 0.55
+    - _IgnitionProgress: 0
+    - _Mode: 0
+    - _PixelDensity: 42
+    - _CondensePullStrength: 1.25
+    - _CondenseShrinkStrength: 0.32
+    - _ProjectileBlendStart: 0.78
+    - _ProjectileLength: 2.35
+    - _ProjectileWidth: 0.85
+    - _Radius: 1
+    - _TimeOffset: 0
+    m_Colors:
+    - _AbsorbDirection: {r: 0, g: 1, b: 0, a: 0}
+    - _AlcoholDark: {r: 0.48, g: 0.28, b: 0.06, a: 0.92}
+    - _AlcoholFoam: {r: 1, g: 0.92, b: 0.72, a: 0.98}
+    - _AlcoholHot: {r: 1, g: 0.84, b: 0.38, a: 0.95}
+    - _AlcoholMid: {r: 0.95, g: 0.62, b: 0.18, a: 0.92}
+    - _FireDark: {r: 0.72, g: 0.08, b: 0.02, a: 0.96}
+    - _FireHot: {r: 1, g: 0.78, b: 0.12, a: 1}
+    - _FireMid: {r: 1, g: 0.24, b: 0.02, a: 0.98}
+    - _FireOutline: {r: 0.32, g: 0.07, b: 0.025, a: 1}
+    - _FireWhite: {r: 1, g: 0.96, b: 0.62, a: 1}
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1

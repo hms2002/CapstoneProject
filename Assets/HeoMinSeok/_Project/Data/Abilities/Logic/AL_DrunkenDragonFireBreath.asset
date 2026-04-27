@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b41bd8d4e404d5db263042e56aadf60, type: 3}
+  m_Name: AL_DrunkenDragonFireBreath
+  m_EditorClassIdentifier: 
+  prepareSeconds: 1.8
+  preFireDelaySeconds: 0.2
+  activeSeconds: 1.4
+  repeatCount: 3
+  damageIntervalSeconds: 0.65
+  puddleIgniteIntervalSeconds: 0.2
+  range: 5
+  angleDegrees: 55
+  originForwardOffset: 0.45
+  puddleIgniteRadiusPadding: -0.25
+  puddleIgniteRangePadding: -0.15
+  puddleIgniteAnglePadding: -4
+  damageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
+  damageAmount: 1
+  warningTelegraphStyle: {fileID: 11400000, guid: b15f18602ec87284d80cbd57720425f1, type: 2}
+  fireBreathVisualPrefab: {fileID: 4251223848648810675, guid: fc620d7fcc12f9e4e8acfdd983cc69ce, type: 3}

@@ -9,7 +9,12 @@ public enum BossSpeechSituationEnum
     Death,
     Phase2Start,
     UltimateWarning,
-    PlayerDetected
+    PlayerDetected,
+    AbsorbStart,
+    AbsorbAlcoholOnly,
+    AbsorbFireAny,
+    GroggyStart,
+    AlcoholThrowPrepare
 }
 
 [System.Serializable]

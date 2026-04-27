@@ -14,8 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   allWeapons:
   - {fileID: 11400000, guid: 86f606da826554b40b2d47660998aa30, type: 2}
+  - {fileID: 11400000, guid: 4d258aba25a64b5e8c2a1925edd571d6, type: 2}
   defaultUnlockedWeapons:
   - {fileID: 11400000, guid: 86f606da826554b40b2d47660998aa30, type: 2}
+  - {fileID: 11400000, guid: 4d258aba25a64b5e8c2a1925edd571d6, type: 2}
   allRelics:
   - {fileID: 11400000, guid: 1f2641bce49c9884eaec41adfdfa29f3, type: 2}
   - {fileID: 11400000, guid: a901646dacf2764408f638b7cdbb3663, type: 2}

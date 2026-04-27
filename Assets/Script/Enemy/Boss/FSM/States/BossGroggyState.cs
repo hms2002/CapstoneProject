@@ -6,6 +6,7 @@ public class BossGroggyState : BossState
     {
         LogState("그로기 상태에 들어갑니다.");
         boss.AbortCurrentPattern();
+        boss.NotifyGroggyStateEntered();
     }
 
     public override void OnUpdate()
@@ -14,6 +15,7 @@ public class BossGroggyState : BossState
             return;
 
         LogState("그로기가 끝나 다시 전투를 고릅니다.");
+        boss.NotifyGroggyStateExited();
         boss.ChangeState(boss.GetCombatIdleState());
     }
 }

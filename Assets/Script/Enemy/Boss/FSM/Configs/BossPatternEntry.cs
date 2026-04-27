@@ -63,8 +63,14 @@ public sealed class BossPatternEntry
     [Tooltip("이 패턴이 실제로 실행할 GAS Ability입니다.")]
     [SerializeField] private AbilityDefinition ability;
 
+    [Tooltip("이 패턴이 정상 종료된 직후 일반 선택을 건너뛰고 강제로 이어 실행할 Ability입니다.")]
+    [SerializeField] private AbilityDefinition followUpAbility;
+
     [Space(8)]
     [Header("AI Selection")]
+    [Tooltip("꺼두면 일반 가중치 선택에서는 제외되고, follow-up 같은 강제 연계로만 실행됩니다.")]
+    [SerializeField] private bool selectableByAi = true;
+
     [Tooltip("가중치 기반 패턴 선택 시 사용합니다.")]
     [SerializeField] private int selectionWeight = 100;
 
@@ -104,6 +110,8 @@ public sealed class BossPatternEntry
     [SerializeField] private BossPatternCondition[] additionalConditions;
 
     public AbilityDefinition Ability => ability;
+    public AbilityDefinition FollowUpAbility => followUpAbility;
+    public bool SelectableByAi => selectableByAi;
     public int SelectionWeight => Mathf.Max(1, selectionWeight);
     public int MaxConsecutiveUseCount => Mathf.Max(0, maxConsecutiveUseCount);
     public int MaxUseCount => Mathf.Max(0, maxUseCount);
@@ -130,6 +138,7 @@ public sealed class BossPatternEntry
     {
         BossPatternEntry entry = new BossPatternEntry();
         entry.ability = runtimeAbility;
+        entry.selectableByAi = true;
         entry.selectionWeight = runtimeSelectionWeight;
         entry.maxConsecutiveUseCount = runtimeMaxConsecutiveUseCount;
         entry.maxUseCount = runtimeMaxUseCount;
@@ -141,6 +150,15 @@ public sealed class BossPatternEntry
         entry.maxHpRatio = runtimeMaxHpRatio;
         entry.additionalConditions = runtimeAdditionalConditions;
         return entry;
+    }
+
+    /// <summary>
+    /// 책임:
+    /// 런타임에서 생성한 패턴에 후속 연계 Ability를 연결해 일반 선택표 밖의 패턴 시퀀스를 표현한다.
+    /// </summary>
+    public void SetRuntimeFollowUpAbility(AbilityDefinition runtimeFollowUpAbility)
+    {
+        followUpAbility = runtimeFollowUpAbility;
     }
 
     /// <summary>기존 런타임 패턴 생성 경로와의 하위 호환을 유지합니다.</summary>
@@ -182,6 +200,9 @@ public sealed class BossPatternEntry
 
         if (ability == null) return BossPatternEvalResult.HardFail("어빌리티가 없습니다.");
 
+        if (!selectableByAi)
+            return BossPatternEvalResult.HardFail("일반 선택이 비활성화된 패턴입니다.");
+
         if (blackboard.CurrentHpRatio < minHpRatio || blackboard.CurrentHpRatio > maxHpRatio)
             return BossPatternEvalResult.HardFail("체력 조건이 맞지 않습니다.");
 
@@ -210,6 +231,28 @@ public sealed class BossPatternEntry
             return extraConditionResult;
 
         return BossPatternEvalResult.Pass();
+    }
+
+    /// <summary>
+    /// 책임:
+    /// 후속 연계 패턴 실행 직전, 거리/가중치/연속 제한 같은 선택 조건은 건너뛰고 실제 Ability 실행 가능성만 검증한다.
+    /// </summary>
+    public BossPatternEvalResult EvaluateForcedFollowUp(BossPatternEvalContext context)
+    {
+        BossControllerBase boss = context.Boss;
+        BossBlackboard blackboard = context.Blackboard;
+
+        if (boss == null || blackboard == null)
+            return BossPatternEvalResult.HardFail("평가 대상이 없습니다.");
+
+        if (ability == null)
+            return BossPatternEvalResult.HardFail("어빌리티가 없습니다.");
+
+        GameObject targetObject = blackboard.CurrentTarget != null ? blackboard.CurrentTarget.gameObject : null;
+        if (!ability.CanActivate(boss.gameObject, targetObject))
+            return BossPatternEvalResult.HardFail("GAS 활성화 조건을 만족하지 않습니다.");
+
+        return BossPatternEvalResult.Pass("후속 연계 패턴입니다.");
     }
 
     private BossPatternEvalResult EvaluateAdditionalConditions(BossPatternEvalContext context)

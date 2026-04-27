@@ -73,13 +73,22 @@ public sealed class DialogueService : MonoBehaviour
 
     public bool TryStartDialogue(TextAsset inkJSON, List<NPCData> participants, NPCFeatureController featureController = null)
     {
+        return TryStartDialogue(inkJSON, participants, null, featureController);
+    }
+
+    public bool TryStartDialogue(
+        TextAsset inkJSON,
+        List<NPCData> participants,
+        string startPath,
+        NPCFeatureController featureController = null)
+    {
         if (activeController == null)
         {
             Debug.LogError("[DialogueService] 현재 씬에 등록된 DialogueController가 없어 대화를 시작할 수 없습니다.");
             return false;
         }
 
-        activeController.EnterDialogueMode(inkJSON, participants, featureController);
+        activeController.EnterDialogueMode(inkJSON, participants, featureController, startPath);
         SyncRunTimerPauseState();
         return true;
     }

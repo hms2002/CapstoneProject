@@ -115,6 +115,42 @@ namespace UnityGAS
             }
         }
 
+        /// <summary>
+        /// 책임 :
+        /// - 외부 패턴 보상이나 특수 상호작용이 현재 스태거 누적치를 안전하게 낮출 수 있는 공용 회복 창구를 제공한다.
+        /// - 게이지 변경 이벤트를 동일하게 발행해 HUD/Presentation이 별도 연결 없이 갱신되도록 한다.
+        /// </summary>
+        public float ReduceBuildUp(float amount)
+        {
+            if (_attr == null || currentGaugeAttribute == null)
+                return 0f;
+            if (amount <= 0f)
+                return 0f;
+
+            float old = GetCurrentGauge();
+            float next = Mathf.Max(0f, old - amount);
+            if (Mathf.Approximately(old, next))
+                return 0f;
+
+            SetCurrentGauge(next);
+            OnGaugeChanged?.Invoke(old, next);
+            return old - next;
+        }
+
+        /// <summary>
+        /// 책임 :
+        /// - 최대 스태거 게이지 비율을 기준으로 현재 누적치를 회복한다.
+        /// - 기획에서 "최대치의 N%"처럼 표현되는 회복량을 호출부가 Attribute 세부를 몰라도 적용하게 한다.
+        /// </summary>
+        public float ReduceBuildUpByMaxRatio(float ratio)
+        {
+            if (_attr == null || maxGaugeAttribute == null)
+                return 0f;
+
+            float max = Mathf.Max(0f, _attr.GetAttributeValue(maxGaugeAttribute));
+            return max > 0f ? ReduceBuildUp(max * Mathf.Clamp01(ratio)) : 0f;
+        }
+
         private float GetCurrentGauge()
         {
             return _attr != null && currentGaugeAttribute != null

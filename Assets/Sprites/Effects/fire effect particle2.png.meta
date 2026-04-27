@@ -1,0 +1,845 @@
+fileFormatVersion: 2
+guid: 7fdf8b6faedeac74b8239c034f938dee
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 6943959265438603279
+    second: fire effect particle2_0
+  - first:
+      213: -6494862754859461851
+    second: fire effect particle2_1
+  - first:
+      213: 2237282084102339192
+    second: fire effect particle2_2
+  - first:
+      213: -1004969706580201374
+    second: fire effect particle2_3
+  - first:
+      213: -4166088410897448453
+    second: fire effect particle2_4
+  - first:
+      213: 695804945017485256
+    second: fire effect particle2_5
+  - first:
+      213: -4491962859031477113
+    second: fire effect particle2_6
+  - first:
+      213: -3406662462550878472
+    second: fire effect particle2_7
+  - first:
+      213: 517455583826724629
+    second: fire effect particle2_8
+  - first:
+      213: 7566737060557909056
+    second: fire effect particle2_9
+  - first:
+      213: -9194920610635638264
+    second: fire effect particle2_10
+  - first:
+      213: 98863125181319597
+    second: fire effect particle2_11
+  - first:
+      213: 1678866362291848272
+    second: fire effect particle2_12
+  - first:
+      213: -5181860027533414295
+    second: fire effect particle2_13
+  - first:
+      213: -5139562401206076354
+    second: fire effect particle2_14
+  - first:
+      213: -3900469737432769956
+    second: fire effect particle2_15
+  - first:
+      213: 766280479384264849
+    second: fire effect particle2_16
+  - first:
+      213: -2393776549446106033
+    second: fire effect particle2_17
+  - first:
+      213: -6343592173092577108
+    second: fire effect particle2_18
+  - first:
+      213: -657832119938209640
+    second: fire effect particle2_19
+  - first:
+      213: 181328113804817633
+    second: fire effect particle2_20
+  - first:
+      213: 1467383872280707701
+    second: fire effect particle2_21
+  - first:
+      213: -1112098228932759083
+    second: fire effect particle2_22
+  - first:
+      213: 1953648595606104796
+    second: fire effect particle2_23
+  - first:
+      213: 4038434122190803351
+    second: fire effect particle2_24
+  - first:
+      213: -503562937572886735
+    second: fire effect particle2_25
+  - first:
+      213: -7923044457097435700
+    second: fire effect particle2_26
+  - first:
+      213: 4978818902370391493
+    second: fire effect particle2_27
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: fire effect particle2_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 124
+        width: 36
+        height: 38
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f0810474926ed5060800000000000000
+      internalID: 6943959265438603279
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: fire effect particle2_1
+      rect:
+        serializedVersion: 2
+        x: 39
+        y: 124
+        width: 36
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 523dfa75cbc9dd5a0800000000000000
+      internalID: -6494862754859461851
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: fire effect particle2_2
+      rect:
+        serializedVersion: 2
+        x: 77
+        y: 124
+        width: 36
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 87af34da33c6c0f10800000000000000
+      internalID: 2237282084102339192
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: fire effect particle2_3
+      rect:
+        serializedVersion: 2
+        x: 114
+        y: 124
+        width: 36
+        height: 36
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 260324d5061ad02f0800000000000000
+      internalID: -1004969706580201374
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: fire effect particle2_4
+      rect:
+        serializedVersion: 2
+        x: 152
+        y: 124
+        width: 36
+        height: 41
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bf10695c9a41f26c0800000000000000
+      internalID: -4166088410897448453
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: fire effect particle2_5
+      rect:
+        serializedVersion: 2
+        x: 189
+        y: 124
+        width: 31
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8c73ab439eef7a900800000000000000
+      internalID: 695804945017485256
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: fire effect particle2_6
+      rect:
+        serializedVersion: 2
+        x: 222
+        y: 124
+        width: 30
+        height: 36
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7844e23449759a1c0800000000000000
+      internalID: -4491962859031477113
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: fire effect particle2_7
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 84
+        width: 36
+        height: 35
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8f65ff12a8a19b0d0800000000000000
+      internalID: -3406662462550878472
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: fire effect particle2_8
+      rect:
+        serializedVersion: 2
+        x: 38
+        y: 83
+        width: 37
+        height: 35
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 517c805ac1f5e2700800000000000000
+      internalID: 517455583826724629
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: fire effect particle2_9
+      rect:
+        serializedVersion: 2
+        x: 77
+        y: 84
+        width: 36
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 04c665b2443720960800000000000000
+      internalID: 7566737060557909056
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: fire effect particle2_10
+      rect:
+        serializedVersion: 2
+        x: 113
+        y: 84
+        width: 38
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 80a1521eb64156080800000000000000
+      internalID: -9194920610635638264
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: fire effect particle2_11
+      rect:
+        serializedVersion: 2
+        x: 152
+        y: 81
+        width: 36
+        height: 38
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: da941d11d7b3f5100800000000000000
+      internalID: 98863125181319597
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: fire effect particle2_12
+      rect:
+        serializedVersion: 2
+        x: 188
+        y: 85
+        width: 32
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 05402cdbf088c4710800000000000000
+      internalID: 1678866362291848272
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: fire effect particle2_13
+      rect:
+        serializedVersion: 2
+        x: 222
+        y: 84
+        width: 30
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 960331772c55618b0800000000000000
+      internalID: -5181860027533414295
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: fire effect particle2_14
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 46
+        width: 33
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e3c78270a3b9ca8b0800000000000000
+      internalID: -5139562401206076354
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: fire effect particle2_15
+      rect:
+        serializedVersion: 2
+        x: 39
+        y: 46
+        width: 31
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c5a982b707fbed9c0800000000000000
+      internalID: -3900469737432769956
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: fire effect particle2_16
+      rect:
+        serializedVersion: 2
+        x: 79
+        y: 45
+        width: 32
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 190e30c390062aa00800000000000000
+      internalID: 766280479384264849
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: fire effect particle2_17
+      rect:
+        serializedVersion: 2
+        x: 116
+        y: 45
+        width: 33
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f44ca9a39e897ced0800000000000000
+      internalID: -2393776549446106033
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: fire effect particle2_18
+      rect:
+        serializedVersion: 2
+        x: 154
+        y: 33
+        width: 34
+        height: 43
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ca06ed2478807f7a0800000000000000
+      internalID: -6343592173092577108
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: fire effect particle2_19
+      rect:
+        serializedVersion: 2
+        x: 190
+        y: 46
+        width: 28
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 898ad391c29eed6f0800000000000000
+      internalID: -657832119938209640
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: fire effect particle2_20
+      rect:
+        serializedVersion: 2
+        x: 224
+        y: 45
+        width: 25
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1e4b02375f4348200800000000000000
+      internalID: 181328113804817633
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: fire effect particle2_21
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 27
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 572cd687bd13d5410800000000000000
+      internalID: 1467383872280707701
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: fire effect particle2_22
+      rect:
+        serializedVersion: 2
+        x: 43
+        y: 0
+        width: 22
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5d13f1d8d880190f0800000000000000
+      internalID: -1112098228932759083
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: fire effect particle2_23
+      rect:
+        serializedVersion: 2
+        x: 83
+        y: 0
+        width: 21
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cdaea0dfb01cc1b10800000000000000
+      internalID: 1953648595606104796
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: fire effect particle2_24
+      rect:
+        serializedVersion: 2
+        x: 119
+        y: 0
+        width: 22
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 791dff500766b0830800000000000000
+      internalID: 4038434122190803351
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: fire effect particle2_25
+      rect:
+        serializedVersion: 2
+        x: 157
+        y: 0
+        width: 31
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1377aef1d2cf209f0800000000000000
+      internalID: -503562937572886735
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: fire effect particle2_26
+      rect:
+        serializedVersion: 2
+        x: 194
+        y: 0
+        width: 23
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cc5641b5b01bb0290800000000000000
+      internalID: -7923044457097435700
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: fire effect particle2_27
+      rect:
+        serializedVersion: 2
+        x: 225
+        y: 0
+        width: 20
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5c599cca961581540800000000000000
+      internalID: 4978818902370391493
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      fire effect particle2_0: 6943959265438603279
+      fire effect particle2_1: -6494862754859461851
+      fire effect particle2_10: -9194920610635638264
+      fire effect particle2_11: 98863125181319597
+      fire effect particle2_12: 1678866362291848272
+      fire effect particle2_13: -5181860027533414295
+      fire effect particle2_14: -5139562401206076354
+      fire effect particle2_15: -3900469737432769956
+      fire effect particle2_16: 766280479384264849
+      fire effect particle2_17: -2393776549446106033
+      fire effect particle2_18: -6343592173092577108
+      fire effect particle2_19: -657832119938209640
+      fire effect particle2_2: 2237282084102339192
+      fire effect particle2_20: 181328113804817633
+      fire effect particle2_21: 1467383872280707701
+      fire effect particle2_22: -1112098228932759083
+      fire effect particle2_23: 1953648595606104796
+      fire effect particle2_24: 4038434122190803351
+      fire effect particle2_25: -503562937572886735
+      fire effect particle2_26: -7923044457097435700
+      fire effect particle2_27: 4978818902370391493
+      fire effect particle2_3: -1004969706580201374
+      fire effect particle2_4: -4166088410897448453
+      fire effect particle2_5: 695804945017485256
+      fire effect particle2_6: -4491962859031477113
+      fire effect particle2_7: -3406662462550878472
+      fire effect particle2_8: 517455583826724629
+      fire effect particle2_9: 7566737060557909056
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

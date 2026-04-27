@@ -29,6 +29,7 @@ namespace UnityGAS
         private Vector2 moveToEnd;
         private float moveToDuration;
         private float moveToElapsed;
+        private float moveToEaseOutPower = 2f;
 
         public bool HasActiveMotion => activeKind != MotionKind.None;
 
@@ -61,6 +62,7 @@ namespace UnityGAS
             moveToEnd = Vector2.zero;
             moveToDuration = 0f;
             moveToElapsed = 0f;
+            moveToEaseOutPower = 2f;
         }
 
         /// <summary>
@@ -88,6 +90,7 @@ namespace UnityGAS
             moveToEnd = Vector2.zero;
             moveToDuration = 0f;
             moveToElapsed = 0f;
+            moveToEaseOutPower = 2f;
         }
 
         /// <summary>
@@ -95,6 +98,15 @@ namespace UnityGAS
         /// 예: 런지, 지정 거리 슬라이드
         /// </summary>
         public void StartLunge(Vector2 start, Vector2 direction, float distance, float duration)
+        {
+            StartLunge(start, direction, distance, duration, 2f);
+        }
+
+        /// <summary>
+        /// 일정 시간 동안 시작점에서 끝점까지 보간 이동하되 ease-out 강도를 지정한다.
+        /// 예: 보스 도약처럼 초반 가속감과 후반 착지감을 더 강하게 줘야 하는 특수이동.
+        /// </summary>
+        public void StartLunge(Vector2 start, Vector2 direction, float distance, float duration, float easeOutPower)
         {
             if (duration <= 0f || distance <= 0f)
                 return;
@@ -112,6 +124,7 @@ namespace UnityGAS
             moveToEnd = start + direction * distance;
             moveToDuration = duration;
             moveToElapsed = 0f;
+            moveToEaseOutPower = Mathf.Max(1f, easeOutPower);
 
             motionVelocity = Vector2.zero;
             motionRemainingTime = duration;
@@ -128,6 +141,7 @@ namespace UnityGAS
             moveToEnd = Vector2.zero;
             moveToDuration = 0f;
             moveToElapsed = 0f;
+            moveToEaseOutPower = 2f;
         }
 
         /// <summary>
@@ -135,11 +149,11 @@ namespace UnityGAS
         /// - MoveToPoint 계열 특수이동의 시간 진행도를 이동 진행도로 변환한다.
         /// - 런지 시작은 빠르게, 끝은 천천히 감속되는 ease-out 감각을 공통으로 제공한다.
         /// </summary>
-        private static float EvaluateMoveToProgress(float normalizedTime)
+        private float EvaluateMoveToProgress(float normalizedTime)
         {
             float t = Mathf.Clamp01(normalizedTime);
             float inv = 1f - t;
-            return 1f - (inv * inv);
+            return 1f - Mathf.Pow(inv, moveToEaseOutPower);
         }
 
         /// <summary>
