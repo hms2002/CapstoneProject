@@ -33,7 +33,6 @@ GameObject:
   - component: {fileID: 344486096308046059}
   - component: {fileID: 8223012456081861757}
   - component: {fileID: 5188487318859962288}
-  - component: {fileID: 7001000000000000002}
   m_Layer: 31
   m_Name: BeerMonster
   m_TagString: Enemy
@@ -102,7 +101,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -1039746825
-  m_SortingLayer: 3
+  m_SortingLayer: 4
   m_SortingOrder: 0
   m_MaskInteraction: 1
   m_Sprite: {fileID: -101365722, guid: 0d366a34caa3bee4ba89bd536ddacd96, type: 3}
@@ -222,11 +221,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1538d8ce5fdb41d8a2cf1dfdf66fda0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sprite: {fileID: 1695031726951874086}
+  animator: {fileID: 6906640129251997176}
   maxHealthDef: {fileID: 11400000, guid: 0e177e1d15e428745b5859fac08ce203, type: 2}
   healthDef: {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
   enemyName: Beer Monster
   targetTag: Player
-  chaseIntent: {fileID: 0}
+  chaseIntent: {fileID: 4498329263665203074}
   alcoholPuddlePrefab: {fileID: 4193140718140302002, guid: 063a1b5ad44412642b105047dd0a3a9d, type: 3}
   puddleSpawnOffset: {x: 0, y: 0}
   spawnPuddleOnDeath: 1
@@ -416,6 +417,7 @@ MonoBehaviour:
   knockbackImmuneTag: {fileID: 0}
   resistancePctAttribute: {fileID: 11400000, guid: cd582b58892249e4a6ef8ae28bd345e3, type: 2}
   knockbackDominanceTime: 0.12
+  debugKnockback: 0
 --- !u!114 &8526413885200350815
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -578,19 +580,3 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UnityGAS.CombatHurtbox2D
   targetRoot: {fileID: 0}
   ownedColliders: []
---- !u!114 &7001000000000000002
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 625522859161183429}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: eab7ec7f6dd542f9bf26ce0e9f7f4d6f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maskedRenderer: {fileID: 1695031726951874086}
-  samplePointOverride: {fileID: 0}
-  sampleOffset: {x: 0, y: -0.5, z: 0}
-  spriteMaskRefreshInterval: 0.25
