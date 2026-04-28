@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class UpgradeTreeUI : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
@@ -34,10 +35,29 @@ public class UpgradeTreeUI : MonoBehaviour, IStackableUI, IMouseCursorDomainSour
     [SerializeField] private Vector2 gridCellSize = new Vector2(UpgradeNodeSO.DefaultGridCellWidth, UpgradeNodeSO.DefaultGridCellHeight);
     [SerializeField] private Vector2 contentPadding = new Vector2(520f, 360f);
     [SerializeField] private Vector2 minimumContentSize = new Vector2(2200f, 1400f);
+    [SerializeField, Tooltip("If assigned, this node is placed at the center of the initial viewport when the tree opens. If empty or unavailable, the graph bounds center is used.")]
+    private UpgradeNodeSO initialFocusNode;
     [SerializeField] private float lineThickness = 4f;
     [SerializeField] private bool rebuildOnOpen = true;
     [SerializeField] private bool centerOnOpen = true;
     [SerializeField] private bool forceFullScreenLayout = true;
+
+    [Header("Lake Presentation")]
+    [Tooltip("Optional explicit Image that receives the lake material. Leave empty to use the hidden internal lake surface layer.")]
+    [SerializeField] private Image lakeSurfaceImage;
+    [Tooltip("Visual tuning material for the lake background. Edit this asset directly for the fastest preview workflow.")]
+    [SerializeField] private Material lakeSurfaceMaterial;
+    [Tooltip("When enabled, static lake surface values come from the material. Runtime-only interaction values still come from the settings below.")]
+    [SerializeField] private bool useLakeSurfaceMaterialSettings = true;
+    [Tooltip("When enabled, changing this component in Edit Mode refreshes the lake surface preview target.")]
+    [SerializeField] private bool previewLakeSurfaceInEditMode = true;
+    [Tooltip("Allows the lake surface Test Preview buttons to animate in Edit Mode.")]
+    [SerializeField] private bool animateLakeSurfaceInEditMode = true;
+    [SerializeField] private UpgradeLakePresentationSettings lakePresentationSettings = UpgradeLakePresentationSettings.CreateDefault();
+    [SerializeField] private UpgradeLakePresentation lakePresentation;
+#if UNITY_EDITOR
+    [System.NonSerialized] private bool lakePreviewTestActiveInEditor;
+#endif
 
     private readonly List<UpgradeSlotUI> allSlots = new List<UpgradeSlotUI>();
     private readonly List<GameObject> allLines = new List<GameObject>();
@@ -52,10 +72,17 @@ public class UpgradeTreeUI : MonoBehaviour, IStackableUI, IMouseCursorDomainSour
     public UIGameplayLockProfile GameplayLockProfile => UIGameplayLockProfile.FreezeAndBlockControl;
     public MouseCursorDomain CursorDomain => MouseCursorDomain.NpcUi;
 
+    private void Awake()
+    {
+        ResolveReferences();
+        EnsureLakePresentation();
+    }
+
     public void OpenUI()
     {
         gameObject.SetActive(true);
         PrepareLayout();
+        EnsureLakePresentation();
 
         if (rebuildOnOpen || !hasBuilt)
             BuildUI();
@@ -64,6 +91,7 @@ public class UpgradeTreeUI : MonoBehaviour, IStackableUI, IMouseCursorDomainSour
             CenterContent();
 
         RefreshAll();
+        lakePresentation?.PlayOpen();
     }
 
     public void CloseUI()
@@ -77,6 +105,7 @@ public class UpgradeTreeUI : MonoBehaviour, IStackableUI, IMouseCursorDomainSour
     private void Start()
     {
         PrepareLayout();
+        EnsureLakePresentation();
 
         if (!hasBuilt)
             BuildUI();
@@ -160,7 +189,13 @@ public class UpgradeTreeUI : MonoBehaviour, IStackableUI, IMouseCursorDomainSour
                 rect.anchoredPosition = position;
 
             slotUI.assignedNode = node;
-            slotUI.InitSlot(n => UpgradeManager.Instance.TryBuyUpgrade(n.nodeID));
+            UpgradeSlotUI capturedSlot = slotUI;
+            slotUI.InitSlot(n =>
+            {
+                EmitPurchaseRipple(capturedSlot);
+                UpgradeManager.Instance.TryBuyUpgrade(n.nodeID);
+            });
+            slotUI.SetPresentationCallbacks(HandleSlotPointerEnter, HandleSlotPointerExit);
 
             allSlots.Add(slotUI);
             if (!slotDict.ContainsKey(node.nodeID))
@@ -237,6 +272,7 @@ public class UpgradeTreeUI : MonoBehaviour, IStackableUI, IMouseCursorDomainSour
         ResolveReferences();
         ConfigureFullScreenLayout();
         ConfigureScrollRect();
+        EnsureLakePresentation();
 
         if (contentRect != null)
         {
@@ -248,6 +284,268 @@ public class UpgradeTreeUI : MonoBehaviour, IStackableUI, IMouseCursorDomainSour
         StretchLayer(slotParent as RectTransform);
         StretchLayer(lineParent as RectTransform);
     }
+
+    private void EnsureLakePresentation()
+    {
+        ResolveReferences();
+        if (viewportRect == null)
+            return;
+
+        if (lakePresentation == null)
+            lakePresentation = GetComponent<UpgradeLakePresentation>();
+
+        if (lakePresentation == null && lakePresentationSettings.enabled)
+            lakePresentation = gameObject.AddComponent<UpgradeLakePresentation>();
+
+        if (lakePresentation != null)
+        {
+            Image surfaceTarget = lakeSurfaceImage;
+            if (surfaceTarget != null && surfaceTarget.rectTransform == viewportRect)
+                surfaceTarget = null;
+
+            lakePresentation.Initialize(
+                viewportRect,
+                contentRect,
+                surfaceTarget,
+                lakePresentationSettings,
+                lakeSurfaceMaterial,
+                useLakeSurfaceMaterialSettings,
+                ShouldUseAnimatedLakePreview());
+        }
+    }
+
+    private bool ShouldUseAnimatedLakePreview()
+    {
+#if UNITY_EDITOR
+        return !Application.isPlaying &&
+               previewLakeSurfaceInEditMode &&
+               animateLakeSurfaceInEditMode &&
+               lakePreviewTestActiveInEditor &&
+               lakePresentationSettings.enabled;
+#else
+        return false;
+#endif
+    }
+
+#if UNITY_EDITOR
+    public bool IsLakePreviewTestActiveInEditor => lakePreviewTestActiveInEditor;
+
+    public bool ShouldAnimateLakePreviewInEditor =>
+        ShouldUseAnimatedLakePreview();
+
+    private void OnValidate()
+    {
+        lakePresentationSettings.Sanitize();
+
+        if (!Application.isPlaying && previewLakeSurfaceInEditMode)
+            UnityEditor.EditorApplication.delayCall += RefreshLakePreviewInEditor;
+    }
+
+    public void RefreshLakePreviewInEditor()
+    {
+        if (this == null || Application.isPlaying || !gameObject.scene.IsValid())
+            return;
+
+        ResolveLakeSurfaceMaterialAssetInEditor();
+        PrepareLayout();
+        EnsureLakePresentation();
+        lakePresentation?.TickEditorPreview();
+        UnityEditor.EditorUtility.SetDirty(this);
+    }
+
+    public void TickLakePreviewInEditor()
+    {
+        if (this == null ||
+            Application.isPlaying ||
+            !gameObject.scene.IsValid() ||
+            !ShouldAnimateLakePreviewInEditor)
+        {
+            return;
+        }
+
+        ResolveReferences();
+        if (lakeSurfaceMaterial != null && !UnityEditor.EditorUtility.IsPersistent(lakeSurfaceMaterial))
+            ResolveLakeSurfaceMaterialAssetInEditor();
+
+        EnsureLakePresentation();
+        lakePresentation?.TickEditorPreview();
+    }
+
+    public void StartLakePreviewTestInEditor()
+    {
+        if (this == null || Application.isPlaying || !gameObject.scene.IsValid())
+            return;
+
+        UnityEditor.Undo.RecordObject(this, "Start Lake Test Preview");
+        previewLakeSurfaceInEditMode = true;
+        animateLakeSurfaceInEditMode = true;
+        lakePreviewTestActiveInEditor = true;
+        ResolveLakeSurfaceMaterialAssetInEditor();
+        PrepareLayout();
+        EnsureLakePresentation();
+        lakePresentation?.TickEditorPreview();
+        UnityEditor.EditorUtility.SetDirty(this);
+        UnityEditor.EditorApplication.QueuePlayerLoopUpdate();
+        UnityEditor.SceneView.RepaintAll();
+    }
+
+    public void StopLakePreviewTestInEditor()
+    {
+        if (this == null || Application.isPlaying)
+            return;
+
+        lakePreviewTestActiveInEditor = false;
+        Material restoredMaterial = ResolveLakeSurfaceMaterialAssetInEditor();
+        EnsureLakePresentation();
+        lakePresentation?.ClearEditorInteractionPreview();
+        lakePresentation?.RestoreEditorPreviewMaterial(restoredMaterial);
+        UnityEditor.EditorUtility.SetDirty(this);
+        UnityEditor.EditorApplication.QueuePlayerLoopUpdate();
+        UnityEditor.SceneView.RepaintAll();
+    }
+
+    public void TestLakeRippleInEditor()
+    {
+        if (this == null || Application.isPlaying || !gameObject.scene.IsValid())
+            return;
+
+        RefreshLakePreviewInEditor();
+        lakePresentation?.EmitEditorRipplePreview();
+    }
+
+    public void TestLakeWakeInEditor()
+    {
+        if (this == null || Application.isPlaying || !gameObject.scene.IsValid())
+            return;
+
+        RefreshLakePreviewInEditor();
+        lakePresentation?.EmitEditorWakePreview();
+    }
+
+    public void ClearLakeInteractionPreviewInEditor()
+    {
+        if (this == null || Application.isPlaying || !gameObject.scene.IsValid())
+            return;
+
+        RefreshLakePreviewInEditor();
+        lakePresentation?.ClearEditorInteractionPreview();
+    }
+
+    public void RestoreLakePreviewMaterialInEditor()
+    {
+        RestoreLakePreviewMaterialInEditor(disableAnimation: false);
+    }
+
+    public void RestoreLakePreviewMaterialInEditor(bool disableAnimation)
+    {
+        if (this == null || Application.isPlaying)
+            return;
+
+        if (disableAnimation)
+        {
+            UnityEditor.Undo.RecordObject(this, "Disable Lake Preview Animation");
+            animateLakeSurfaceInEditMode = false;
+            UnityEditor.EditorUtility.SetDirty(this);
+        }
+
+        Material restoredMaterial = ResolveLakeSurfaceMaterialAssetInEditor();
+        EnsureLakePresentation();
+        lakePresentation?.RestoreEditorPreviewMaterial(restoredMaterial);
+    }
+
+    public void ApplyLakeSettingsToMaterial()
+    {
+        Material targetMaterial = ResolveLakeSurfaceMaterialAssetInEditor();
+        if (targetMaterial == null)
+            return;
+
+        UnityEditor.Undo.RecordObject(targetMaterial, "Apply Lake Settings To Material");
+        lakePresentationSettings.ApplySurfaceSettingsTo(targetMaterial);
+        UnityEditor.EditorUtility.SetDirty(targetMaterial);
+        RefreshLakePreviewInEditor();
+    }
+
+    public void ReadLakeSettingsFromMaterial()
+    {
+        Material sourceMaterial = ResolveLakeSurfaceMaterialAssetInEditor();
+        if (sourceMaterial == null)
+            return;
+
+        UnityEditor.Undo.RecordObject(this, "Read Lake Settings From Material");
+        lakePresentationSettings.ReadSurfaceSettingsFrom(sourceMaterial);
+        lakePresentationSettings.Sanitize();
+        UnityEditor.EditorUtility.SetDirty(this);
+        RefreshLakePreviewInEditor();
+    }
+
+    private Material ResolveLakeSurfaceMaterialAssetInEditor()
+    {
+        Material resolvedMaterial = ResolvePersistentMaterialAsset(lakeSurfaceMaterial);
+        if (resolvedMaterial == lakeSurfaceMaterial)
+            return lakeSurfaceMaterial;
+
+        UnityEditor.Undo.RecordObject(this, "Restore Lake Surface Material Asset");
+        lakeSurfaceMaterial = resolvedMaterial;
+        UnityEditor.EditorUtility.SetDirty(this);
+        return lakeSurfaceMaterial;
+    }
+
+    private static Material ResolvePersistentMaterialAsset(Material material)
+    {
+        if (material == null)
+            return FindMaterialAssetByName("M_UpgradeLakeSurface");
+
+        if (UnityEditor.EditorUtility.IsPersistent(material))
+            return material;
+
+        string materialName = NormalizePreviewMaterialName(material.name);
+        Material resolvedMaterial = FindMaterialAssetByName(materialName);
+        if (resolvedMaterial != null)
+            return resolvedMaterial;
+
+        return FindMaterialAssetByName("M_UpgradeLakeSurface");
+    }
+
+    private static string NormalizePreviewMaterialName(string materialName)
+    {
+        if (string.IsNullOrEmpty(materialName))
+            return string.Empty;
+
+        string normalizedName = materialName.Replace(" (Instance)", string.Empty);
+        while (normalizedName.StartsWith("M_EditorPreview", System.StringComparison.Ordinal))
+            normalizedName = normalizedName.Substring("M_EditorPreview".Length);
+
+        while (normalizedName.StartsWith("M_Runtime", System.StringComparison.Ordinal))
+            normalizedName = normalizedName.Substring("M_Runtime".Length);
+
+        return normalizedName;
+    }
+
+    private static Material FindMaterialAssetByName(string materialName)
+    {
+        if (string.IsNullOrEmpty(materialName))
+            return null;
+
+        if (materialName == "M_UpgradeLakeSurface")
+        {
+            Material defaultLakeMaterial =
+                UnityEditor.AssetDatabase.LoadAssetAtPath<Material>("Assets/Shader/M_UpgradeLakeSurface.mat");
+            if (defaultLakeMaterial != null)
+                return defaultLakeMaterial;
+        }
+
+        string[] guids = UnityEditor.AssetDatabase.FindAssets($"{materialName} t:Material");
+        foreach (string guid in guids)
+        {
+            string path = UnityEditor.AssetDatabase.GUIDToAssetPath(guid);
+            Material candidate = UnityEditor.AssetDatabase.LoadAssetAtPath<Material>(path);
+            if (candidate != null && candidate.name == materialName)
+                return candidate;
+        }
+
+        return null;
+    }
+#endif
 
     private void ResolveReferences()
     {
@@ -265,6 +563,7 @@ public class UpgradeTreeUI : MonoBehaviour, IStackableUI, IMouseCursorDomainSour
 
         if (viewportRect == null && contentRect != null)
             viewportRect = contentRect.parent as RectTransform;
+
     }
 
     private void ConfigureFullScreenLayout()
@@ -355,20 +654,32 @@ public class UpgradeTreeUI : MonoBehaviour, IStackableUI, IMouseCursorDomainSour
             return positions;
         }
 
-        Vector2 graphSize = max - min;
-        Vector2 requiredSize = graphSize + (contentPadding * 2f);
+        Vector2 layoutCenter = ResolveInitialLayoutCenter(allUpgrades, min, max);
+        Vector2 minFromCenter = min - layoutCenter;
+        Vector2 maxFromCenter = max - layoutCenter;
+        Vector2 requiredHalfSize = new Vector2(
+            Mathf.Max(Mathf.Abs(minFromCenter.x), Mathf.Abs(maxFromCenter.x)),
+            Mathf.Max(Mathf.Abs(minFromCenter.y), Mathf.Abs(maxFromCenter.y)));
+        Vector2 requiredSize = (requiredHalfSize * 2f) + (contentPadding * 2f);
         ApplyContentSize(requiredSize);
 
-        Vector2 graphCenter = (min + max) * 0.5f;
         foreach (UpgradeNodeSO node in allUpgrades)
         {
             if (node == null)
                 continue;
 
-            positions[node] = node.GetUiPosition(gridCellSize) - graphCenter;
+            positions[node] = node.GetUiPosition(gridCellSize) - layoutCenter;
         }
 
         return positions;
+    }
+
+    private Vector2 ResolveInitialLayoutCenter(List<UpgradeNodeSO> allUpgrades, Vector2 min, Vector2 max)
+    {
+        if (initialFocusNode != null && allUpgrades != null && allUpgrades.Contains(initialFocusNode))
+            return initialFocusNode.GetUiPosition(gridCellSize);
+
+        return (min + max) * 0.5f;
     }
 
     private void ApplyContentSize(Vector2 requiredSize)
@@ -449,6 +760,26 @@ public class UpgradeTreeUI : MonoBehaviour, IStackableUI, IMouseCursorDomainSour
             return canvas.worldCamera;
 
         return Camera.main;
+    }
+
+    private void HandleSlotPointerEnter(UpgradeSlotUI slot, PointerEventData eventData)
+    {
+        if (lakePresentation == null || eventData == null)
+            return;
+
+        lakePresentation.EmitHoverRipple(eventData.position, eventData.enterEventCamera ?? GetEventCamera());
+    }
+
+    private void HandleSlotPointerExit(UpgradeSlotUI slot, PointerEventData eventData)
+    {
+    }
+
+    private void EmitPurchaseRipple(UpgradeSlotUI slot)
+    {
+        if (lakePresentation == null || slot == null)
+            return;
+
+        lakePresentation.EmitPurchaseRipple(slot.transform as RectTransform);
     }
 
     private void ClampContentPosition()

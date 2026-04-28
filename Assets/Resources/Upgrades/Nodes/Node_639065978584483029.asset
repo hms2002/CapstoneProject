@@ -18,12 +18,12 @@ MonoBehaviour:
   icon: {fileID: 0}
   price: 0
   effects: []
-  unlockedNodeIDs: d9eac60304601406
-  requiredParentIDs: 870052b8
+  unlockedNodeIDs: fb344e12
+  requiredParentIDs: 6fbd0de9cf5e1d89
   nextNodes:
-  - {fileID: 11400000, guid: 0833ee326876db2469b3ed49ab5ab5d0, type: 2}
-  - {fileID: 11400000, guid: 7dbe5cb279be60444a10b69b118c95d4, type: 2}
+  - {fileID: 11400000, guid: 21b6dd90d20bac846bfd428b7ea94651, type: 2}
   requiredParents:
-  - {fileID: 11400000, guid: 70e3081d2e7ce8d42b1ef6388590eece, type: 2}
+  - {fileID: 11400000, guid: cf7c65c9843448d44be51b387b4ec6bf, type: 2}
+  - {fileID: 11400000, guid: 2514a6273363e2c4bbde10d26631f4f9, type: 2}
   gridX: 1
   gridY: -1

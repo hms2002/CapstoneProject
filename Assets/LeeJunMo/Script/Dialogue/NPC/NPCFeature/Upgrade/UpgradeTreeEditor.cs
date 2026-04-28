@@ -27,6 +27,7 @@ public class UpgradeTreeEditor : EditorWindow
         public Vector2 minimumContentSize;
         public Vector2 viewportSize;
         public Vector2 slotSize;
+        public UpgradeNodeSO initialFocusNode;
         public GameObject slotPrefab;
         public GameObject linePrefab;
         public float lineThickness;
@@ -67,6 +68,7 @@ public class UpgradeTreeEditor : EditorWindow
     private Vector2 previewGridCellSize = CellSize;
     private Vector2 previewContentPadding = new Vector2(520f, 360f);
     private Vector2 previewMinimumContentSize = new Vector2(2200f, 1400f);
+    private UpgradeNodeSO previewInitialFocusNode;
     private Vector2 previewSlotSize = new Vector2(70f, 70f);
     private float previewLineThickness = 4f;
 
@@ -468,6 +470,7 @@ public class UpgradeTreeEditor : EditorWindow
 
         GUILayout.Label($"Selected: {GetDisplayName(selectedNode)}", EditorStyles.boldLabel);
         DrawPositionEditor();
+        DrawInitialFocusControls();
         GUILayout.Space(8f);
 
         GUI.backgroundColor = new Color(1f, 0.55f, 0.55f);
@@ -514,6 +517,24 @@ public class UpgradeTreeEditor : EditorWindow
         if (GUILayout.Button("Up")) TryMoveNode(selectedNode, selectedNode.gridX, selectedNode.gridY + 1);
         if (GUILayout.Button("Down")) TryMoveNode(selectedNode, selectedNode.gridX, selectedNode.gridY - 1);
         EditorGUILayout.EndHorizontal();
+    }
+
+    private void DrawInitialFocusControls()
+    {
+        GUILayout.Space(6f);
+        EditorGUILayout.LabelField("Initial Viewport", EditorStyles.boldLabel);
+
+        PreviewLayoutSettings settings = ResolvePreviewLayoutSettings();
+        string focusName = settings.initialFocusNode != null
+            ? GetDisplayName(settings.initialFocusNode)
+            : "Graph Center";
+        EditorGUILayout.LabelField("Focus Node", focusName);
+
+        using (new EditorGUI.DisabledScope(selectedNode == null))
+        {
+            if (GUILayout.Button("Set Selected As Initial Focus"))
+                SetInitialFocusNode(selectedNode);
+        }
     }
 
     private void DrawConnectionManager()
@@ -707,7 +728,8 @@ public class UpgradeTreeEditor : EditorWindow
         EditorGUILayout.LabelField("Content Size", FormatVector(layout.contentSize));
         EditorGUILayout.LabelField("Graph Min", layout.hasNode ? FormatVector(layout.graphMin) : "None");
         EditorGUILayout.LabelField("Graph Max", layout.hasNode ? FormatVector(layout.graphMax) : "None");
-        EditorGUILayout.LabelField("Graph Center", layout.hasNode ? FormatVector(layout.graphCenter) : "None");
+        EditorGUILayout.LabelField("Layout Center", layout.hasNode ? FormatVector(layout.graphCenter) : "None");
+        EditorGUILayout.LabelField("Initial Focus", settings.initialFocusNode != null ? GetDisplayName(settings.initialFocusNode) : "Graph Center");
 
         GUILayout.Space(8f);
         EditorGUILayout.LabelField("Selected Node", EditorStyles.boldLabel);
@@ -749,6 +771,7 @@ public class UpgradeTreeEditor : EditorWindow
         DrawVector2Property(serializedTree, "gridCellSize", "Grid Cell Size", Vector2.one);
         DrawVector2Property(serializedTree, "contentPadding", "Content Padding", Vector2.zero);
         DrawVector2Property(serializedTree, "minimumContentSize", "Minimum Content", Vector2.one);
+        DrawObjectProperty(serializedTree, "initialFocusNode", "Initial Focus Node");
         DrawFloatProperty(serializedTree, "lineThickness", "Line Thickness", 1f);
 
         if (EditorGUI.EndChangeCheck())
@@ -778,6 +801,7 @@ public class UpgradeTreeEditor : EditorWindow
         previewGridCellSize = MaxVector(EditorGUILayout.Vector2Field("Grid Cell Size", previewGridCellSize), Vector2.one);
         previewContentPadding = MaxVector(EditorGUILayout.Vector2Field("Content Padding", previewContentPadding), Vector2.zero);
         previewMinimumContentSize = MaxVector(EditorGUILayout.Vector2Field("Minimum Content", previewMinimumContentSize), Vector2.one);
+        previewInitialFocusNode = (UpgradeNodeSO)EditorGUILayout.ObjectField("Initial Focus Node", previewInitialFocusNode, typeof(UpgradeNodeSO), false);
         previewSlotSize = MaxVector(EditorGUILayout.Vector2Field("Slot Size", previewSlotSize), Vector2.one);
         previewLineThickness = Mathf.Max(1f, EditorGUILayout.FloatField("Line Thickness", previewLineThickness));
 
@@ -824,6 +848,7 @@ public class UpgradeTreeEditor : EditorWindow
             minimumContentSize = previewMinimumContentSize,
             viewportSize = previewViewportSize,
             slotSize = previewSlotSize,
+            initialFocusNode = previewInitialFocusNode,
             slotPrefab = previewSlotPrefab,
             linePrefab = previewLinePrefab,
             lineThickness = Mathf.Max(1f, previewLineThickness)
@@ -842,6 +867,11 @@ public class UpgradeTreeEditor : EditorWindow
         settings.contentPadding = ReadVector2(serializedTree, "contentPadding", settings.contentPadding);
         settings.minimumContentSize = ReadVector2(serializedTree, "minimumContentSize", settings.minimumContentSize);
         settings.lineThickness = Mathf.Max(1f, ReadFloat(serializedTree, "lineThickness", settings.lineThickness));
+
+        SerializedProperty initialFocusNodeProperty = serializedTree.FindProperty("initialFocusNode");
+        settings.initialFocusNode = initialFocusNodeProperty != null
+            ? initialFocusNodeProperty.objectReferenceValue as UpgradeNodeSO
+            : settings.initialFocusNode;
 
         SerializedProperty slotPrefabProperty = serializedTree.FindProperty("slotPrefab");
         settings.slotPrefab = slotPrefabProperty != null ? slotPrefabProperty.objectReferenceValue as GameObject : settings.slotPrefab;
@@ -936,10 +966,14 @@ public class UpgradeTreeEditor : EditorWindow
             return layout;
         }
 
-        Vector2 graphSize = layout.graphMax - layout.graphMin;
-        Vector2 requiredSize = graphSize + (settings.contentPadding * 2f);
+        layout.graphCenter = ResolveInitialLayoutCenter(nodes, settings, layout.graphMin, layout.graphMax);
+        Vector2 minFromCenter = layout.graphMin - layout.graphCenter;
+        Vector2 maxFromCenter = layout.graphMax - layout.graphCenter;
+        Vector2 requiredHalfSize = new Vector2(
+            Mathf.Max(Mathf.Abs(minFromCenter.x), Mathf.Abs(maxFromCenter.x)),
+            Mathf.Max(Mathf.Abs(minFromCenter.y), Mathf.Abs(maxFromCenter.y)));
+        Vector2 requiredSize = (requiredHalfSize * 2f) + (settings.contentPadding * 2f);
         layout.contentSize = Vector2.Max(Vector2.Max(requiredSize, settings.minimumContentSize), settings.viewportSize);
-        layout.graphCenter = (layout.graphMin + layout.graphMax) * 0.5f;
 
         foreach (UpgradeNodeSO node in nodes)
         {
@@ -950,6 +984,18 @@ public class UpgradeTreeEditor : EditorWindow
         }
 
         return layout;
+    }
+
+    private Vector2 ResolveInitialLayoutCenter(
+        List<UpgradeNodeSO> nodes,
+        PreviewLayoutSettings settings,
+        Vector2 graphMin,
+        Vector2 graphMax)
+    {
+        if (settings.initialFocusNode != null && nodes != null && nodes.Contains(settings.initialFocusNode))
+            return settings.initialFocusNode.GetUiPosition(settings.gridCellSize);
+
+        return (graphMin + graphMax) * 0.5f;
     }
 
     private void DrawRuntimePreview(Rect rect, PreviewLayout layout, PreviewLayoutSettings settings, bool enableEditing)
@@ -1250,6 +1296,38 @@ public class UpgradeTreeEditor : EditorWindow
             SetPreviewHideFlags(child.gameObject);
     }
 
+    private void SetInitialFocusNode(UpgradeNodeSO node)
+    {
+        if (node == null)
+            return;
+
+        if (previewUsePrefabSettings)
+        {
+            UpgradeTreeUI treeUI = ResolvePreviewTreeUI();
+            if (treeUI != null)
+            {
+                SerializedObject serializedTree = new SerializedObject(treeUI);
+                SerializedProperty property = serializedTree.FindProperty("initialFocusNode");
+                if (property != null)
+                {
+                    property.objectReferenceValue = node;
+                    serializedTree.ApplyModifiedProperties();
+                    EditorUtility.SetDirty(treeUI);
+                    if (previewTreePrefab != null)
+                        EditorUtility.SetDirty(previewTreePrefab);
+                }
+            }
+        }
+        else
+        {
+            previewInitialFocusNode = node;
+        }
+
+        runtimePreviewHash = 0;
+        previewPan = Vector2.zero;
+        Repaint();
+    }
+
     private void ReleaseRuntimePrefabPreview()
     {
         if (runtimePreviewRoot != null)
@@ -1280,6 +1358,7 @@ public class UpgradeTreeEditor : EditorWindow
             hash = (hash * 31) + HashVector(settings.minimumContentSize);
             hash = (hash * 31) + HashVector(settings.viewportSize);
             hash = (hash * 31) + HashVector(settings.slotSize);
+            hash = (hash * 31) + GetInstanceHash(settings.initialFocusNode);
             hash = (hash * 31) + Mathf.RoundToInt(settings.lineThickness * 100f);
             hash = (hash * 31) + (int)previewSlotState;
             hash = (hash * 31) + HashVector(layout.contentSize);
