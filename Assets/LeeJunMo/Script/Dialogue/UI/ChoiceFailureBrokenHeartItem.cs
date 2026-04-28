@@ -12,11 +12,14 @@ public sealed class ChoiceFailureBrokenHeartItem : MonoBehaviour
     [SerializeField] private Image rightImage;
 
     private Sequence activeSequence;
+    private bool suppressAwakeReset;
 
     private void Awake()
     {
         ResolveReferences();
-        ResetState();
+
+        if (!suppressAwakeReset)
+            ResetState();
     }
 
     private void OnDisable()
@@ -48,7 +51,7 @@ public sealed class ChoiceFailureBrokenHeartItem : MonoBehaviour
             return;
         }
 
-        gameObject.SetActive(true);
+        ActivateForPresentation();
         ApplySprite(sprite);
         SetColorAlpha(heartColor, 0f);
 
@@ -108,7 +111,7 @@ public sealed class ChoiceFailureBrokenHeartItem : MonoBehaviour
         if (root == null || leftPiece == null || rightPiece == null || leftImage == null || rightImage == null)
             return;
 
-        gameObject.SetActive(true);
+        ActivateForPresentation();
         ApplySprite(sprite);
         SetColorAlpha(heartColor, heartColor.a);
 
@@ -203,6 +206,13 @@ public sealed class ChoiceFailureBrokenHeartItem : MonoBehaviour
 
         if (rightImage != null)
             rightImage.color = color;
+    }
+
+    private void ActivateForPresentation()
+    {
+        suppressAwakeReset = true;
+        gameObject.SetActive(true);
+        suppressAwakeReset = false;
     }
 
     private static void ResetPieceTransform(RectTransform piece)

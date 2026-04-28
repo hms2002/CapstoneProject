@@ -50,7 +50,7 @@ Material:
     m_Ints: []
     m_Floats:
     - _Alpha: 1
-    - _BackgroundDistortion: 0.01
+    - _BackgroundDistortion: 0.015
     - _BottomStrength: 1
     - _BottomTiling: 1
     - _CausticStrength: 0.009
@@ -63,8 +63,8 @@ Material:
     - _FoamStrength: 0.121
     - _FoamThreshold: 0.59
     - _FoamTiling: 8.9
-    - _HeightTexStrength: 0.4
-    - _HeightTexTiling: 0.8
+    - _HeightTexStrength: 0.1
+    - _HeightTexTiling: 0.1
     - _InteractionCompression: 0.445
     - _InteractionDistortion: 0.12
     - _InteractionStrength: 2
