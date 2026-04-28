@@ -7,6 +7,10 @@ public class BossDialogueRunner : MonoBehaviour
 {
     [SerializeField] private NPCData npcData;
     [SerializeField] private MonoBehaviour startKnotSelectorBehaviour;
+    [SerializeField] private bool playEncounterDialogue = true;
+    [SerializeField] private bool playPrimaryDialogueAfterEncounter = true;
+    [SerializeField] private bool recordEncounterProgress = true;
+
     [FormerlySerializedAs("inkJSON")]
     [SerializeField, HideInInspector] private TextAsset legacyInkJSON;
 
@@ -26,13 +30,6 @@ public class BossDialogueRunner : MonoBehaviour
             yield break;
         }
 
-        TextAsset dialogueInk = ResolveDialogueInk();
-        if (dialogueInk == null)
-        {
-            Debug.LogError("[BossDialogueRunner] No dialogue ink is assigned on NPCData.", this);
-            yield break;
-        }
-
         if (DialogueService.Instance == null)
         {
             Debug.LogError("[BossDialogueRunner] DialogueService instance was not found.", this);
@@ -40,12 +37,66 @@ public class BossDialogueRunner : MonoBehaviour
         }
 
         List<NPCData> participants = new List<NPCData> { npcData };
-        string startKnot = ResolveStartKnot(dialogueInk);
-        if (!DialogueService.Instance.TryStartDialogue(dialogueInk, participants, startKnot))
+        TextAsset primaryInk = ResolveDialogueInk();
+        TextAsset encounterInk = ResolveEncounterInk(out BossEncounterDialogueEntry encounterEntry);
+        string encounterStartPath = encounterEntry != null ? encounterEntry.StartPath : null;
+        string primaryStartPath = ResolveStartKnot(primaryInk);
+        List<DialogueStorySegment> storySegments = BuildStorySegments(
+            primaryInk,
+            primaryStartPath,
+            encounterInk,
+            encounterStartPath);
+        if (storySegments.Count == 0)
+        {
+            Debug.LogError("[BossDialogueRunner] No encounter or primary dialogue ink is assigned on NPCData.", this);
+            yield break;
+        }
+
+        if (!DialogueService.Instance.TryStartDialogueSequence(storySegments, participants))
             yield break;
 
+        yield return WaitForDialogueToFinish();
+
+        if (recordEncounterProgress)
+            BossDialogueProgressStore.RegisterEncounter(npcData);
+    }
+
+    private List<DialogueStorySegment> BuildStorySegments(
+        TextAsset primaryInk,
+        string primaryStartPath,
+        TextAsset encounterInk,
+        string encounterStartPath)
+    {
+        List<DialogueStorySegment> storySegments = new List<DialogueStorySegment>();
+
+        if (encounterInk != null)
+            storySegments.Add(new DialogueStorySegment(encounterInk, encounterStartPath));
+
+        if (playPrimaryDialogueAfterEncounter && primaryInk != null)
+            storySegments.Add(new DialogueStorySegment(primaryInk, primaryStartPath));
+
+        return storySegments;
+    }
+
+    private IEnumerator WaitForDialogueToFinish()
+    {
         yield return new WaitUntil(() =>
             DialogueService.Instance == null || !DialogueService.Instance.IsPlaying);
+    }
+
+    private TextAsset ResolveEncounterInk(out BossEncounterDialogueEntry entry)
+    {
+        entry = null;
+
+        if (!playEncounterDialogue)
+            return null;
+
+        if (!BossEncounterDialogueSelector.TrySelect(npcData, out entry))
+            return null;
+
+        return npcData.BossEncounterInk != null
+            ? npcData.BossEncounterInk
+            : entry.InkOverride;
     }
 
     private TextAsset ResolveDialogueInk()
@@ -73,6 +124,9 @@ public class BossDialogueRunner : MonoBehaviour
     /// </summary>
     private string ResolveStartKnot(TextAsset dialogueInk)
     {
+        if (dialogueInk == null)
+            return null;
+
         if (startKnotSelector == null && startKnotSelectorBehaviour != null)
             startKnotSelector = startKnotSelectorBehaviour as IDialogueStartKnotSelector;
 

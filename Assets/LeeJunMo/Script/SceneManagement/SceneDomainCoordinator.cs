@@ -138,6 +138,8 @@ public sealed class SceneDomainCoordinator : MonoBehaviour
         CameraBootstrap.EnsureRuntimeRigForCurrentScene();
         CameraShakeService.EnsureInstance();
         RunRouteBgmService.EnsureInstance();
+        AffectionGainScreenEffect.PrepareSceneInstance();
+        ChoiceFailureScreenEffect.PrepareSceneInstance();
     }
 
     private static void EnsureAppScopeServices()
