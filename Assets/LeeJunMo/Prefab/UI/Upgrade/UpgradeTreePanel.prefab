@@ -1072,10 +1072,12 @@ MonoBehaviour:
   gridCellSize: {x: 300, y: 300}
   contentPadding: {x: 520, y: 360}
   minimumContentSize: {x: 2200, y: 1400}
+  initialFocusNode: {fileID: 11400000, guid: 93f3aef01a8be844499543c43fca86f6, type: 2}
   lineThickness: 5
   rebuildOnOpen: 1
   centerOnOpen: 1
   forceFullScreenLayout: 1
+  lakeSurfaceImage: {fileID: 0}
   lakeSurfaceMaterial: {fileID: 2100000, guid: a7f89c4cb2e6d9742a81af669b7bfb2d, type: 2}
   useLakeSurfaceMaterialSettings: 1
   previewLakeSurfaceInEditMode: 1

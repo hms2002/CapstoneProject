@@ -10,19 +10,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7c5e5c40c008e4f4db4131950a6c37e4, type: 3}
-  m_Name: Node_639065978688058679
-  m_EditorClassIdentifier: 
-  nodeID: 101998596
-  upgradeName: Up_5_1
+  m_Name: Node_639129975907694531
+  m_EditorClassIdentifier: Assembly-CSharp::UpgradeNodeSO
+  nodeID: 43901178
+  upgradeName: Upgrade 0,0
   description: 
   icon: {fileID: 0}
   price: 0
   effects: []
   unlockedNodeIDs: 
-  requiredParentIDs: 3ee427f6e4bfc335
+  requiredParentIDs: 6fbd0de9
   nextNodes: []
   requiredParents:
-  - {fileID: 11400000, guid: 03890d76bd563a14e8a419c7685dbab3, type: 2}
-  - {fileID: 11400000, guid: 6cb7d8cb1e575f646af0f880b06e502e, type: 2}
-  gridX: 5
-  gridY: 1
+  - {fileID: 11400000, guid: cf7c65c9843448d44be51b387b4ec6bf, type: 2}
+  gridX: 0
+  gridY: 0

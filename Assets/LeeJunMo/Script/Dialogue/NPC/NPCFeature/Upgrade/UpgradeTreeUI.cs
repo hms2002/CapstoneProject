@@ -35,6 +35,8 @@ public class UpgradeTreeUI : MonoBehaviour, IStackableUI, IMouseCursorDomainSour
     [SerializeField] private Vector2 gridCellSize = new Vector2(UpgradeNodeSO.DefaultGridCellWidth, UpgradeNodeSO.DefaultGridCellHeight);
     [SerializeField] private Vector2 contentPadding = new Vector2(520f, 360f);
     [SerializeField] private Vector2 minimumContentSize = new Vector2(2200f, 1400f);
+    [SerializeField, Tooltip("If assigned, this node is placed at the center of the initial viewport when the tree opens. If empty or unavailable, the graph bounds center is used.")]
+    private UpgradeNodeSO initialFocusNode;
     [SerializeField] private float lineThickness = 4f;
     [SerializeField] private bool rebuildOnOpen = true;
     [SerializeField] private bool centerOnOpen = true;
@@ -652,20 +654,32 @@ public class UpgradeTreeUI : MonoBehaviour, IStackableUI, IMouseCursorDomainSour
             return positions;
         }
 
-        Vector2 graphSize = max - min;
-        Vector2 requiredSize = graphSize + (contentPadding * 2f);
+        Vector2 layoutCenter = ResolveInitialLayoutCenter(allUpgrades, min, max);
+        Vector2 minFromCenter = min - layoutCenter;
+        Vector2 maxFromCenter = max - layoutCenter;
+        Vector2 requiredHalfSize = new Vector2(
+            Mathf.Max(Mathf.Abs(minFromCenter.x), Mathf.Abs(maxFromCenter.x)),
+            Mathf.Max(Mathf.Abs(minFromCenter.y), Mathf.Abs(maxFromCenter.y)));
+        Vector2 requiredSize = (requiredHalfSize * 2f) + (contentPadding * 2f);
         ApplyContentSize(requiredSize);
 
-        Vector2 graphCenter = (min + max) * 0.5f;
         foreach (UpgradeNodeSO node in allUpgrades)
         {
             if (node == null)
                 continue;
 
-            positions[node] = node.GetUiPosition(gridCellSize) - graphCenter;
+            positions[node] = node.GetUiPosition(gridCellSize) - layoutCenter;
         }
 
         return positions;
+    }
+
+    private Vector2 ResolveInitialLayoutCenter(List<UpgradeNodeSO> allUpgrades, Vector2 min, Vector2 max)
+    {
+        if (initialFocusNode != null && allUpgrades != null && allUpgrades.Contains(initialFocusNode))
+            return initialFocusNode.GetUiPosition(gridCellSize);
+
+        return (min + max) * 0.5f;
     }
 
     private void ApplyContentSize(Vector2 requiredSize)
