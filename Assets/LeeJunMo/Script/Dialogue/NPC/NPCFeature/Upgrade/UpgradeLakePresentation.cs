@@ -650,8 +650,10 @@ public sealed class UpgradeLakePresentation : MonoBehaviour
 
     private void OnDisable()
     {
+#if UNITY_EDITOR
         if (!Application.isPlaying)
             RestoreEditorPreviewMaterial();
+#endif
     }
 
     private bool CanPlay()

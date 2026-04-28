@@ -182,6 +182,8 @@ public sealed class PlayerCinematicProtection : MonoBehaviour
 
     private static InteractState NormalizeRestoreState(InteractState state)
     {
-        return state == InteractState.None ? InteractState.Idle : state;
+        return state == InteractState.None || state == InteractState.Talking
+            ? InteractState.Idle
+            : state;
     }
 }

@@ -12,8 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 636dab40de92d174c9a3c2d736773018, type: 3}
   m_Name: RunRouteCatalog
   m_EditorClassIdentifier: 
-  normalStageCount: 0
-  normalRouteSets: []
+  normalStageCount: 1
+  normalRouteSets:
+  - {fileID: 11400000, guid: 946aaf6b94713064e9f547584fa3e2e3, type: 2}
   allowDuplicateNormalRoutes: 0
   finalRouteSet: {fileID: 11400000, guid: d35e3630a31b6ef42a9a2b03d2afa4e3, type: 2}
   hubBgm:
@@ -21,5 +22,6 @@ MonoBehaviour:
     volumeMultiplier: 1
     anchorPolicy: 0
     localOffset: {x: 0, y: 0, z: 0}
+  runCommonLoadManifest: {fileID: 0}
   hubSceneName: ProtoTypeHub
   hubEntryPointId: Default

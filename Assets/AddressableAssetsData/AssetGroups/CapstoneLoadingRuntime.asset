@@ -25,11 +25,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 03890d76bd563a14e8a419c7685dbab3
-    m_Address: Assets/Resources/Upgrades/Nodes/Node_639065978670872090.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 047ed15abad27984b88db2a1103fc278
     m_Address: Assets/HeoMinSeok/_Project/Data/Combat/Damage/SF_ATKx2.asset
     m_ReadOnly: 0
@@ -57,11 +52,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 07e2e0377cda6d94eb4680ca1b68ab8c
     m_Address: Assets/Sprites/Items/RelicIcon/Icon_FeatherOrbit.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 0833ee326876db2469b3ed49ab5ab5d0
-    m_Address: Assets/Resources/Upgrades/Nodes/Node_639065978588726897.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -507,11 +497,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 322ce106973d4c84caffc452cc427eb9
-    m_Address: Assets/Resources/Upgrades/Nodes/Node_639065978592567735.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 34303d25145ab104f8fabf97fe65552d
     m_Address: Assets/Sprites/ThirdParty/WeaponAndSandBack/Pixel Art Top Down - Basic/Tile
       Palette/TP Grass/TX Tileset Grass Flower 4.asset
@@ -930,11 +915,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 5a58aea09f086d5479967bb72876337e
-    m_Address: Assets/Resources/Upgrades/Nodes/Node_639065978597393688.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 5b0fa72a7621582478a135416a07cddb
     m_Address: Assets/Sprites/ThirdParty/WeaponAndSandBack/Pixel Art Top Down - Basic/Tile
       Palette/TP Grass/TX Tileset Grass Flower 10.asset
@@ -1187,11 +1167,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 70e3081d2e7ce8d42b1ef6388590eece
-    m_Address: Assets/Resources/Upgrades/Nodes/Node_639065978569194025.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 711aa880d087e7947a08c111610ea4da
     m_Address: Assets/Audio/Cele/1_5.wav
     m_ReadOnly: 0
@@ -1266,11 +1241,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 7581b7a341e835d4aa57ed227c82ebdc
     m_Address: Assets/Sprites/Characters/Player/Player_Die.anim
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 7622d9a6fe4961c418bf668395b473e5
-    m_Address: Assets/Resources/Upgrades/Nodes/Node_639065978655258990.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -1374,11 +1344,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 7db914fcd0934ab4bfeef776fb3f8c96
     m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Resources/Tags/Cue.Ability.Hit.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 7dbe5cb279be60444a10b69b118c95d4
-    m_Address: Assets/Resources/Upgrades/Nodes/Node_639065978688058679.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -1679,11 +1644,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 95ce5a36e2ecd1e48b524dbfa0c9c74d
     m_Address: Assets/Sprites/UI/ToolTipFrame/ToolTipBox.png
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: 9633c494dceff2f4d805e5c414651a93
-    m_Address: Assets/Resources/Upgrades/Nodes/Node_639065978659284755.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -2236,11 +2196,6 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: cc2ee25fb5fad054db466fb3b5704b02
-    m_Address: Assets/Resources/Upgrades/Nodes/Node_639065978674849345.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: ccf4e2da310e69d40a23555382491107
     m_Address: Assets/HeoMinSeok/_Project/Data/Abilities/Resources/Tags/Cue.asset
     m_ReadOnly: 0
@@ -2478,16 +2433,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e2d83cdcfb9485d499433d3acc5bad5e
     m_Address: Assets/HeoMinSeok/_Project/Prefabs/UI/Inventory/Common/ItemSlotUI.prefab
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: e34e5e0069ffa9b4c9e1479b3e577f46
-    m_Address: Assets/Resources/Upgrades/Nodes/Node_639065978578317460.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: e38cbdbca708f8b42a0a20747681ddc5
-    m_Address: Assets/Resources/Upgrades/Nodes/Node_639065978666816650.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

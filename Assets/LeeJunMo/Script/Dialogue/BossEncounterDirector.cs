@@ -56,8 +56,8 @@ public class BossEncounterDirector : MonoBehaviour
         }
 
         shouldHoldPlayerLock = false;
-        RestorePlayerState();
         ReleasePlayerCinematicProtection();
+        RestorePlayerState();
 
         if (cameraDirector != null)
             cameraDirector.RestoreDefaultState();
@@ -91,8 +91,8 @@ public class BossEncounterDirector : MonoBehaviour
         AcquireTransitionPlayerLock();
         AcquireRunTimerPause();
         shouldHoldPlayerLock = true;
-        TryCacheAndLockPlayer(player);
         AcquirePlayerCinematicProtection(player);
+        TryCacheAndLockPlayer(player);
         MaintainPlayerLock();
         BeginSequence();
     }
@@ -119,8 +119,8 @@ public class BossEncounterDirector : MonoBehaviour
             Debug.LogError("[BossEncounterDirector] cameraDirector is missing.", this);
             ReleaseTransitionPlayerLock();
             shouldHoldPlayerLock = false;
-            RestorePlayerState();
             ReleasePlayerCinematicProtection();
+            RestorePlayerState();
             ReleaseRunTimerPause();
             runningSequence = null;
             yield break;
@@ -131,16 +131,16 @@ public class BossEncounterDirector : MonoBehaviour
             Debug.LogError("[BossEncounterDirector] dialogueRunner is missing.", this);
             ReleaseTransitionPlayerLock();
             shouldHoldPlayerLock = false;
-            RestorePlayerState();
             ReleasePlayerCinematicProtection();
+            RestorePlayerState();
             ReleaseRunTimerPause();
             runningSequence = null;
             yield break;
         }
 
         yield return new WaitUntil(() => PlayerRuntimeRegistry.GetPlayerTransform() != null);
-        TryCacheAndLockPlayer();
         AcquirePlayerCinematicProtection();
+        TryCacheAndLockPlayer();
         MaintainPlayerLock();
         yield return new WaitUntil(IsSceneTransitionReady);
         ReleaseTransitionPlayerLock();
@@ -150,8 +150,8 @@ public class BossEncounterDirector : MonoBehaviour
         yield return cameraDirector.ReturnToPlayerRoutine();
 
         shouldHoldPlayerLock = false;
-        RestorePlayerState();
         ReleasePlayerCinematicProtection();
+        RestorePlayerState();
         StartBossCombat();
         ReleaseRunTimerPause();
 
@@ -170,10 +170,7 @@ public class BossEncounterDirector : MonoBehaviour
             return;
 
         if (player == null)
-        {
-            Transform playerTransform = PlayerRuntimeRegistry.GetPlayerTransform();
-            player = playerTransform != null ? playerTransform.GetComponent<PlayerInteractor2D>() : null;
-        }
+            player = ResolvePlayerInteractor();
 
         cachedPlayer = player;
 
@@ -239,11 +236,13 @@ public class BossEncounterDirector : MonoBehaviour
     /// </summary>
     private void MaintainPlayerLock()
     {
-        if (cachedPlayer == null)
-            TryCacheAndLockPlayer();
+        PlayerInteractor2D player = cachedPlayer != null ? cachedPlayer : ResolvePlayerInteractor();
 
         if (lockedPlayerProtection == null)
-            AcquirePlayerCinematicProtection();
+            AcquirePlayerCinematicProtection(player);
+
+        if (cachedPlayer == null)
+            TryCacheAndLockPlayer(player);
 
         if (cachedPlayer == null)
             return;
@@ -252,6 +251,12 @@ public class BossEncounterDirector : MonoBehaviour
             return;
 
         cachedPlayer.SetInteractState(InteractState.Talking);
+    }
+
+    private static PlayerInteractor2D ResolvePlayerInteractor()
+    {
+        Transform playerTransform = PlayerRuntimeRegistry.GetPlayerTransform();
+        return playerTransform != null ? playerTransform.GetComponent<PlayerInteractor2D>() : null;
     }
 
     private static InteractState NormalizeRestoredPlayerState(InteractState state)
