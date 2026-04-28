@@ -23,6 +23,7 @@ public sealed class GameDataRepository
 
     public static string GetInspectableSavePath(int slotIndex = 0)
     {
+#if UNITY_EDITOR
         string dataPath = Application.dataPath;
         if (string.IsNullOrWhiteSpace(dataPath))
             return null;
@@ -33,6 +34,9 @@ public sealed class GameDataRepository
 
         int normalizedSlotIndex = NormalizeSlotIndex(slotIndex);
         return Path.Combine(rootPath, $"GameData_Slot{normalizedSlotIndex + 1}.json");
+#else
+        return null;
+#endif
     }
 
     public bool Exists()
@@ -81,6 +85,10 @@ public sealed class GameDataRepository
             throw new ArgumentNullException(nameof(data));
 
         string json = JsonUtility.ToJson(data, true);
+        string directory = Path.GetDirectoryName(SavePath);
+        if (!string.IsNullOrWhiteSpace(directory))
+            Directory.CreateDirectory(directory);
+
         File.WriteAllText(SavePath, json);
         TryWriteInspectableCopy(json);
     }
@@ -101,12 +109,6 @@ public sealed class GameDataRepository
 
     private bool TryGetReadablePath(out string readablePath)
     {
-        if (File.Exists(InspectableSavePath))
-        {
-            readablePath = InspectableSavePath;
-            return true;
-        }
-
         if (File.Exists(SavePath))
         {
             readablePath = SavePath;
@@ -115,13 +117,6 @@ public sealed class GameDataRepository
 
         if (SlotIndex == 0)
         {
-            string legacyInspectablePath = GetLegacyInspectableSavePath();
-            if (!string.IsNullOrWhiteSpace(legacyInspectablePath) && File.Exists(legacyInspectablePath))
-            {
-                readablePath = legacyInspectablePath;
-                return true;
-            }
-
             string legacySavePath = GetLegacyDefaultSavePath();
             if (!string.IsNullOrWhiteSpace(legacySavePath) && File.Exists(legacySavePath))
             {
@@ -187,6 +182,7 @@ public sealed class GameDataRepository
 
     private static string GetLegacyInspectableSavePath()
     {
+#if UNITY_EDITOR
         string dataPath = Application.dataPath;
         if (string.IsNullOrWhiteSpace(dataPath))
             return null;
@@ -196,6 +192,9 @@ public sealed class GameDataRepository
             return null;
 
         return Path.Combine(rootPath, "GameData.json");
+#else
+        return null;
+#endif
     }
 
     private static void TryDeleteFile(string path)

@@ -13,6 +13,7 @@ public class DialogueTagHandler : MonoBehaviour
 
     public Action<string, Action> OnFeatureRequested;
     public Action<NPCData, int, Action> OnAffectionRequested;
+    public Action<Action> OnChoiceFailureRequested;
 
     public bool ProcessTags(List<string> tags, NPCData currentNPC, Action onComplete)
     {
@@ -24,11 +25,15 @@ public class DialogueTagHandler : MonoBehaviour
         foreach (string tag in tags)
         {
             string[] split = tag.Split(':');
-            if (split.Length < 2) continue;
+            if (split.Length < 1) continue;
 
             string command = split[0].Trim().ToLower();
             string targetId = defaultNpcId;
             string value = "";
+            bool hasValue = split.Length >= 2;
+
+            if (!hasValue && command != "speaker" && command != "choice_fail" && command != "aff_fail" && command != "fail_aff")
+                continue;
 
             if (split.Length == 2)
             {
@@ -77,6 +82,19 @@ public class DialogueTagHandler : MonoBehaviour
                         OnAffectionRequested?.Invoke(currentNPC, amount, onComplete);
                         isBlocking = true;
                     }
+                    break;
+
+                case "choice_fail":
+                case "aff_fail":
+                case "fail_aff":
+                    if (isBlocking)
+                    {
+                        Debug.LogWarning($"[TagHandler] 이미 blocking 태그를 처리 중이어서 추가 choice_fail 태그를 무시합니다: {tag}");
+                        break;
+                    }
+
+                    OnChoiceFailureRequested?.Invoke(onComplete);
+                    isBlocking = true;
                     break;
 
                 default:

@@ -52,6 +52,7 @@ public class GameDataManager : MonoBehaviour
         ActiveSlotIndex = Mathf.Max(0, slotIndex);
         repository = new GameDataRepository(ActiveSlotIndex);
         Data = repository.LoadOrCreate();
+        NormalizeLoadedData();
         Debug.Log($"[GameDataManager] Game data loaded for slot {ActiveSlotIndex + 1}.");
     }
 
@@ -87,6 +88,10 @@ public class GameDataManager : MonoBehaviour
         if (Data.itemData == null)
             Data.itemData = new ItemSaveData();
 
+        if (Data.bossDialogueData == null)
+            Data.bossDialogueData = new BossDialogueSaveData();
+        Data.bossDialogueData.bossRecords ??= new System.Collections.Generic.List<BossDialogueRecord>();
+
         if (ItemManager.Instance != null)
         {
             Data.itemData.unlockedWeaponIDs = ItemManager.Instance.GetUnlockedWeaponIDs();
@@ -103,6 +108,16 @@ public class GameDataManager : MonoBehaviour
         repository.Save(Data);
         Debug.Log(
             $"[GameDataManager] Save complete. Persistent: {repository.SavePath}, Inspectable: {repository.InspectableSavePath}");
+    }
+
+    private void NormalizeLoadedData()
+    {
+        EnsureData();
+
+        Data.itemData ??= new ItemSaveData();
+        Data.affectionData ??= new AffectionSaveData();
+        Data.bossDialogueData ??= new BossDialogueSaveData();
+        Data.bossDialogueData.bossRecords ??= new System.Collections.Generic.List<BossDialogueRecord>();
     }
 
     private void OnApplicationQuit()

@@ -23,7 +23,7 @@ public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
 
     [Header("Post Reveal Presentation")]
     [SerializeField] private RectTransform postRevealSlideFadeTarget;
-    [SerializeField] private InventorySlideFadePresentation postRevealSlideFadePresentation;
+    [SerializeField] private UISlideFadePresentation postRevealSlideFadePresentation;
     [SerializeField] private bool playPostRevealSlideFade = true;
 
     [Header("Layout References")]
@@ -1032,7 +1032,7 @@ public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
         if (!playPostRevealSlideFade)
             return;
 
-        InventorySlideFadePresentation presentation = ResolvePostRevealSlideFadePresentation(createIfMissing: true);
+        UISlideFadePresentation presentation = ResolvePostRevealSlideFadePresentation(createIfMissing: true);
         if (presentation == null)
             return;
 
@@ -1044,7 +1044,7 @@ public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
         if (!playPostRevealSlideFade)
             return;
 
-        InventorySlideFadePresentation presentation = ResolvePostRevealSlideFadePresentation(createIfMissing: true);
+        UISlideFadePresentation presentation = ResolvePostRevealSlideFadePresentation(createIfMissing: true);
         if (presentation != null)
             presentation.PlayOpen();
     }
@@ -1054,7 +1054,7 @@ public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
         if (!playPostRevealSlideFade)
             return;
 
-        InventorySlideFadePresentation presentation = ResolvePostRevealSlideFadePresentation(createIfMissing: true);
+        UISlideFadePresentation presentation = ResolvePostRevealSlideFadePresentation(createIfMissing: true);
         if (presentation != null)
         {
             presentation.SnapOpen();
@@ -1065,7 +1065,7 @@ public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
             postRevealSlideFadeTarget.gameObject.SetActive(true);
     }
 
-    private InventorySlideFadePresentation ResolvePostRevealSlideFadePresentation(bool createIfMissing)
+    private UISlideFadePresentation ResolvePostRevealSlideFadePresentation(bool createIfMissing)
     {
         if (postRevealSlideFadePresentation != null)
             return postRevealSlideFadePresentation;
@@ -1076,9 +1076,9 @@ public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
         if (postRevealSlideFadeTarget == null)
             return null;
 
-        postRevealSlideFadePresentation = postRevealSlideFadeTarget.GetComponent<InventorySlideFadePresentation>();
+        postRevealSlideFadePresentation = postRevealSlideFadeTarget.GetComponent<UISlideFadePresentation>();
         if (postRevealSlideFadePresentation == null && createIfMissing && Application.isPlaying)
-            postRevealSlideFadePresentation = postRevealSlideFadeTarget.gameObject.AddComponent<InventorySlideFadePresentation>();
+            postRevealSlideFadePresentation = postRevealSlideFadeTarget.gameObject.AddComponent<UISlideFadePresentation>();
 
         return postRevealSlideFadePresentation;
     }

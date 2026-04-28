@@ -21,7 +21,7 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
     [SerializeField] private Button closeButton;
 
     [Header("Presentation")]
-    [SerializeField] private InventorySlideFadePresentation slideFadePresentation;
+    [SerializeField] private UISlideFadePresentation slideFadePresentation;
     [SerializeField] private ChestFirstOpenRevealPresentation firstOpenRevealPresentation;
 
     [Header("Runtime Refs")]
@@ -259,9 +259,9 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
     {
         if (slideFadePresentation == null)
         {
-            slideFadePresentation = GetComponent<InventorySlideFadePresentation>();
+            slideFadePresentation = GetComponent<UISlideFadePresentation>();
             if (slideFadePresentation == null)
-                slideFadePresentation = gameObject.AddComponent<InventorySlideFadePresentation>();
+                slideFadePresentation = gameObject.AddComponent<UISlideFadePresentation>();
         }
 
         if (firstOpenRevealPresentation == null)

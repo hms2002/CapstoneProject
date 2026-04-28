@@ -60,6 +60,43 @@ public class AffectionSaveData
 }
 
 // =========================================================
+// Boss encounter dialogue state
+// =========================================================
+[System.Serializable]
+public class BossDialogueRecord
+{
+    public int npcId;
+    public int encounterCount;
+    public int victoryCount;
+    public int defeatCount;
+    public float lastEncounterTotalPlaySeconds;
+
+    public BossDialogueRecord(int id)
+    {
+        npcId = id;
+    }
+}
+
+[System.Serializable]
+public class BossDialogueSaveData
+{
+    public List<BossDialogueRecord> bossRecords = new List<BossDialogueRecord>();
+
+    public BossDialogueRecord GetOrCreateRecord(int npcId)
+    {
+        bossRecords ??= new List<BossDialogueRecord>();
+
+        BossDialogueRecord record = bossRecords.Find(x => x != null && x.npcId == npcId);
+        if (record != null)
+            return record;
+
+        record = new BossDialogueRecord(npcId);
+        bossRecords.Add(record);
+        return record;
+    }
+}
+
+// =========================================================
 // [기존] 업그레이드 데이터
 // =========================================================
 [System.Serializable]
@@ -118,6 +155,7 @@ public class GameData
     public UpgradeSaveData upgradeData = new UpgradeSaveData();
     public MapSaveData mapData = new MapSaveData();
     public AffectionSaveData affectionData = new AffectionSaveData();
+    public BossDialogueSaveData bossDialogueData = new BossDialogueSaveData();
 
     // [New] 아이템 해금 데이터 포함
     public ItemSaveData itemData = new ItemSaveData();
