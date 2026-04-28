@@ -48,6 +48,7 @@ Shader "UI/Lake Surface"
         _OuterRippleDuration ("Outer Ripple Duration", Range(0, 10)) = 6.2
         _OuterRippleStrength ("Outer Ripple Strength", Range(0, 1)) = 0.16
         _OuterRippleSpeed ("Outer Ripple Speed", Range(0, 3)) = 0.94
+        _RippleFadeOutDuration ("Ripple Fade Out Duration", Range(0, 3)) = 0.85
         _SurfaceAspect ("Surface Aspect", Float) = 1
         _UnscaledTime ("Unscaled Time", Float) = 0
         _ContentOffset ("Content Offset", Vector) = (0,0,0,0)
@@ -168,6 +169,7 @@ Shader "UI/Lake Surface"
             float _OuterRippleDuration;
             float _OuterRippleStrength;
             float _OuterRippleSpeed;
+            float _RippleFadeOutDuration;
             float _SurfaceAspect;
             float _UnscaledTime;
             float4 _ContentOffset;
@@ -365,13 +367,25 @@ Shader "UI/Lake Surface"
                     float backDelta = frontDelta + frontWidth * 1.16;
                     float backMask = exp(-(backDelta * backDelta) / max(frontWidth * frontWidth * 1.45, 0.000001));
                     float waveProfile = frontMask - (backMask * 0.42);
+                    float fadeOutDuration = max(_RippleFadeOutDuration, 0.0);
+                    float mainFadeDuration = min(fadeOutDuration, duration);
+                    float outerFadeDuration = min(fadeOutDuration, max(outerDuration, 0.0));
                     float startFade = smoothstep(0.0, 0.055, totalT);
-                    float endFade = 1.0 - smoothstep(0.94, 1.0, totalT);
-                    float travelFade = lerp(1.0, _OuterRippleStrength, pow(totalT, 0.78));
+                    float outerLevel = outerDuration > 0.0001 ? saturate(_OuterRippleStrength) : 0.0;
+                    float mainFadeT = mainFadeDuration <= 0.0001
+                        ? step(duration, age)
+                        : smoothstep(0.0, 1.0, saturate((age - (duration - mainFadeDuration)) / mainFadeDuration));
+                    float mainEnvelope = lerp(1.0, outerLevel, mainFadeT);
+                    float outerAge = max(age - duration, 0.0);
+                    float outerEndFade = outerFadeDuration <= 0.0001
+                        ? 1.0
+                        : smoothstep(0.0, 1.0, saturate((outerDuration - outerAge) / outerFadeDuration));
+                    float outerEnvelope = outerLevel * outerEndFade;
+                    float travelFade = age <= duration ? mainEnvelope : outerEnvelope;
                     float impactBoost = 1.0 + (1.0 - smoothstep(0.0, 0.18, totalT)) * 0.32;
                     float centerDip = -0.26 * exp(-(dist * dist) / max(thickness * thickness * 10.0, 0.000001)) * pow(1.0 - impactT, 2.2);
 
-                    height += ((waveProfile * startFade * endFade * travelFade * impactBoost) + centerDip) * data.w;
+                    height += ((waveProfile * startFade * travelFade * impactBoost) + centerDip) * data.w;
                 }
 
                 return height;

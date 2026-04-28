@@ -1126,6 +1126,7 @@ MonoBehaviour:
     surfaceOuterRippleDuration: 6.2
     surfaceOuterRippleStrength: 0.16
     surfaceOuterRippleSpeed: 0.94
+    surfaceRippleFadeOutDuration: 0.85
     surfaceRippleMinInterval: 0.28
     rippleDuration: 1.05
     rippleStartRadius: 14

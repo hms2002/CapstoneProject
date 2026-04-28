@@ -28,8 +28,8 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _CausticTex:
-        m_Texture: {fileID: 2800000, guid: f6a2916d0d3244d0a15f9268b091d7ce, type: 3}
-        m_Scale: {x: 1, y: 1}
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 0, y: 0}
         m_Offset: {x: 0, y: 0}
     - _FoamTex:
         m_Texture: {fileID: 2800000, guid: a12dcf80d9df47d4bac19ce4bb684328, type: 3}
@@ -50,46 +50,47 @@ Material:
     m_Ints: []
     m_Floats:
     - _Alpha: 1
-    - _BackgroundDistortion: 0.025
+    - _BackgroundDistortion: 0.01
     - _BottomStrength: 1
     - _BottomTiling: 1
-    - _CausticStrength: 0
-    - _CausticTextureSharpness: 5.62
-    - _CausticTextureStrength: 1.65
-    - _CausticTextureTiling: 0.55
+    - _CausticStrength: 0.009
+    - _CausticTextureSharpness: 0.58
+    - _CausticTextureStrength: 0.25
+    - _CausticTextureTiling: 1
     - _ColorMask: 15
-    - _DepthNoiseStrength: 0.5
+    - _DepthNoiseStrength: 0.445
     - _EdgeDarkening: 0
     - _FoamStrength: 0.121
-    - _FoamThreshold: 0.453
+    - _FoamThreshold: 0.59
     - _FoamTiling: 8.9
-    - _HeightTexStrength: 0.442
+    - _HeightTexStrength: 0.4
     - _HeightTexTiling: 0.8
+    - _InteractionCompression: 0.445
     - _InteractionDistortion: 0.12
-    - _InteractionCompression: 0.25
     - _InteractionStrength: 2
     - _OuterRippleDuration: 6.2
     - _OuterRippleSpeed: 0.94
     - _OuterRippleStrength: 0.16
-    - _Parallax: 0.22
-    - _SpecularStrength: 0.8
+    - _Parallax: 0.15
+    - _RippleFadeOutDuration: 0.85
+    - _SpecularStrength: 1
     - _Stencil: 0
     - _StencilComp: 8
     - _StencilOp: 0
     - _StencilReadMask: 255
     - _StencilWriteMask: 255
     - _SurfaceAspect: 1
-    - _SurfaceNormalStrength: 0.4
-    - _TopDownDepthBias: 0.137
+    - _SurfaceNormalStrength: 0.5
+    - _TopDownDepthBias: 0.244
     - _UnscaledTime: 0
     - _UseUIAlphaClip: 0
     - _WakeTextureStrength: 1.15
-    - _WaveScale: 7
-    - _WaveSpeed: 1
-    - _WaveStrength: 0.102
+    - _WaveScale: 4.1
+    - _WaveSpeed: 0.5
+    - _WaveStrength: 0.071
     m_Colors:
     - _BottomDrift: {r: 0, g: 0, b: 0, a: 0}
-    - _BottomTint: {r: 1, g: 1, b: 1, a: 1}
+    - _BottomTint: {r: 0.78113204, g: 0.78113204, b: 0.78113204, a: 1}
     - _CausticColor: {r: 1, g: 1, b: 1, a: 0.7372549}
     - _CausticTextureSpeed: {r: 0, g: 0, b: 0, a: 0}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
@@ -97,7 +98,7 @@ Material:
     - _DeepColor: {r: 0, g: 0.4577872, b: 0.5849056, a: 1}
     - _FoamColor: {r: 0.72, g: 1, b: 0.92, a: 0.62}
     - _FoamSpeed: {r: 0.018, g: 0.012, b: -0.021, a: 0.015}
-    - _HeightTexDrift: {r: 1, g: 1, b: 1, a: 1}
+    - _HeightTexDrift: {r: 0, g: 0, b: 0, a: 0}
     - _ShallowColor: {r: 0, g: 0.45882353, b: 0.58431375, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

@@ -12,6 +12,7 @@ public sealed class UILakeRippleGraphic : MaskableGraphic
     [SerializeField, Min(0f)] private float defaultStartRadius = 14f;
     [SerializeField, Min(1f)] private float defaultEndRadius = 210f;
     [SerializeField, Min(0.5f)] private float defaultThickness = 5.5f;
+    [SerializeField, Min(0f)] private float defaultFadeOutDuration = 0.85f;
 
     private readonly List<Ripple> ripples = new List<Ripple>();
 
@@ -23,6 +24,7 @@ public sealed class UILakeRippleGraphic : MaskableGraphic
         public float StartRadius;
         public float EndRadius;
         public float Thickness;
+        public float FadeOutDuration;
         public float Intensity;
         public Color Color;
     }
@@ -64,7 +66,8 @@ public sealed class UILakeRippleGraphic : MaskableGraphic
         float duration,
         float startRadius,
         float endRadius,
-        float thickness)
+        float thickness,
+        float fadeOutDuration)
     {
         useUnscaledTime = useUnscaled;
         defaultRippleColor = rippleColor;
@@ -72,6 +75,7 @@ public sealed class UILakeRippleGraphic : MaskableGraphic
         defaultStartRadius = Mathf.Max(0f, startRadius);
         defaultEndRadius = Mathf.Max(defaultStartRadius + 1f, endRadius);
         defaultThickness = Mathf.Max(0.5f, thickness);
+        defaultFadeOutDuration = Mathf.Max(0f, fadeOutDuration);
         SetVerticesDirty();
     }
 
@@ -88,6 +92,7 @@ public sealed class UILakeRippleGraphic : MaskableGraphic
             StartRadius = defaultStartRadius,
             EndRadius = defaultEndRadius,
             Thickness = defaultThickness,
+            FadeOutDuration = defaultFadeOutDuration,
             Intensity = Mathf.Max(0f, intensity),
             Color = defaultRippleColor,
         });
@@ -121,7 +126,12 @@ public sealed class UILakeRippleGraphic : MaskableGraphic
         float thickness = Mathf.Max(0.5f, ripple.Thickness * Mathf.Lerp(1f, 0.36f, t));
         float innerRadius = Mathf.Max(0f, radius - thickness);
         float outerRadius = radius + thickness;
-        float alpha = Mathf.Pow(Mathf.Sin(t * Mathf.PI), 0.7f) * (1f - t * 0.18f) * ripple.Intensity;
+        float fadeOutDuration = Mathf.Min(Mathf.Max(0f, ripple.FadeOutDuration), ripple.Duration);
+        float startFade = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(t / 0.055f));
+        float endFade = fadeOutDuration <= 0.0001f
+            ? 1f
+            : Mathf.SmoothStep(0f, 1f, Mathf.Clamp01((ripple.Duration - ripple.Age) / fadeOutDuration));
+        float alpha = startFade * endFade * (1f - t * 0.12f) * ripple.Intensity;
 
         if (alpha <= 0.001f || outerRadius <= 0.001f)
             return;

@@ -96,6 +96,8 @@ public struct UpgradeLakePresentationSettings
     [Range(0f, 1f)] public float surfaceOuterRippleStrength;
     [FormerlySerializedAs("surfaceRippleResidualSpeed")]
     [Min(0f)] public float surfaceOuterRippleSpeed;
+    [Tooltip("Seconds used to fade the main ripple into the outer ripple and fade the outer ripple before it ends.")]
+    [Min(0f)] public float surfaceRippleFadeOutDuration;
     [Min(0f)] public float surfaceRippleMinInterval;
     [Min(0.05f)] public float rippleDuration;
     [Min(0f)] public float rippleStartRadius;
@@ -164,6 +166,7 @@ public struct UpgradeLakePresentationSettings
             surfaceOuterRippleDuration = 6.2f,
             surfaceOuterRippleStrength = 0.16f,
             surfaceOuterRippleSpeed = 0.94f,
+            surfaceRippleFadeOutDuration = 0.85f,
             surfaceRippleMinInterval = 0.28f,
             rippleDuration = 1.05f,
             rippleStartRadius = 14f,
@@ -302,6 +305,7 @@ public struct UpgradeLakePresentationSettings
         surfaceOuterRippleDuration = Mathf.Max(0f, surfaceOuterRippleDuration);
         surfaceOuterRippleStrength = Mathf.Clamp01(surfaceOuterRippleStrength);
         surfaceOuterRippleSpeed = Mathf.Max(0f, surfaceOuterRippleSpeed);
+        surfaceRippleFadeOutDuration = Mathf.Max(0f, surfaceRippleFadeOutDuration);
         surfaceRippleMinInterval = Mathf.Max(0f, surfaceRippleMinInterval);
         rippleDuration = Mathf.Max(0.05f, rippleDuration);
         rippleStartRadius = Mathf.Max(0f, rippleStartRadius);
@@ -486,6 +490,7 @@ public sealed class UpgradeLakePresentation : MonoBehaviour
     private static readonly int OuterRippleDurationId = Shader.PropertyToID("_OuterRippleDuration");
     private static readonly int OuterRippleStrengthId = Shader.PropertyToID("_OuterRippleStrength");
     private static readonly int OuterRippleSpeedId = Shader.PropertyToID("_OuterRippleSpeed");
+    private static readonly int RippleFadeOutDurationId = Shader.PropertyToID("_RippleFadeOutDuration");
     private static readonly int SurfaceAspectId = Shader.PropertyToID("_SurfaceAspect");
     private static readonly int UnscaledTimeId = Shader.PropertyToID("_UnscaledTime");
     private static readonly int ContentOffsetId = Shader.PropertyToID("_ContentOffset");
@@ -863,7 +868,8 @@ public sealed class UpgradeLakePresentation : MonoBehaviour
             settings.rippleDuration,
             settings.rippleStartRadius,
             settings.rippleEndRadius,
-            settings.rippleThickness);
+            settings.rippleThickness,
+            settings.surfaceRippleFadeOutDuration);
     }
 
     private void ApplyLayerVisibility()
@@ -896,6 +902,7 @@ public sealed class UpgradeLakePresentation : MonoBehaviour
         surfaceMaterial.SetFloat(OuterRippleDurationId, settings.surfaceOuterRippleDuration);
         surfaceMaterial.SetFloat(OuterRippleStrengthId, settings.surfaceOuterRippleStrength);
         surfaceMaterial.SetFloat(OuterRippleSpeedId, settings.surfaceOuterRippleSpeed);
+        surfaceMaterial.SetFloat(RippleFadeOutDurationId, settings.surfaceRippleFadeOutDuration);
         surfaceMaterial.SetFloat(SurfaceAspectId, GetSurfaceAspect());
         surfaceMaterial.SetFloat(UnscaledTimeId, now);
         surfaceMaterial.SetInt(SurfaceRippleCountId, settings.surfaceInteractionEnabled ? Mathf.Min(surfaceRipples.Count, MaxSurfaceRipples) : 0);
