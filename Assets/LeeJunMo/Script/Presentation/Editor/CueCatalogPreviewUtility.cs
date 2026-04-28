@@ -45,6 +45,8 @@ namespace CapstonePresentation.EditorTools
         private static readonly List<PreviewInstance> activeInstances = new();
         private static PreviewRenderUtility previewUtility;
         private static PresentationCueSO currentCue;
+        private static UnityEngine.Object currentOwner;
+        private static string currentPreviewLabel;
         private static ShakePreviewState activeShake;
         private static double lastUpdateTime = -1d;
 
@@ -64,6 +66,11 @@ namespace CapstonePresentation.EditorTools
             return cue != null && currentCue == cue;
         }
 
+        public static bool IsPreviewing(UnityEngine.Object owner)
+        {
+            return owner != null && currentOwner == owner;
+        }
+
         public static bool PlayCue(PresentationCueSO cue)
         {
             if (cue == null || !cue.HasAnyContent)
@@ -71,8 +78,82 @@ namespace CapstonePresentation.EditorTools
 
             StopPreview();
             currentCue = cue;
+            currentOwner = cue;
+            currentPreviewLabel = cue.name;
 
             WorldPresentationHook presentation = cue.Presentation;
+            PreviewPose pose = ResolvePreviewPose();
+            bool playedAny = false;
+
+            playedAny |= AddWorldPresentation(presentation);
+
+            if (!playedAny)
+            {
+                currentCue = null;
+                currentOwner = null;
+                currentPreviewLabel = null;
+            }
+
+            UnityEditorInternal.InternalEditorUtility.RepaintAllViews();
+            return playedAny;
+        }
+
+        public static bool PlayWorldPresentation(
+            WorldPresentationHook presentation,
+            UnityEngine.Object owner = null,
+            string label = null)
+        {
+            BeginCompositePreview(owner, label);
+            bool playedAny = AddWorldPresentation(presentation);
+            EndCompositePreview(playedAny);
+            return playedAny;
+        }
+
+        public static bool PlaySpawnedPresentation(
+            SpawnedPresentationHook hook,
+            UnityEngine.Object owner = null,
+            string label = null)
+        {
+            BeginCompositePreview(owner, label);
+            bool playedAny = AddSpawnedPresentation(hook);
+            EndCompositePreview(playedAny);
+            return playedAny;
+        }
+
+        public static bool PlayPrefab(GameObject prefab, UnityEngine.Object owner = null, string label = null)
+        {
+            BeginCompositePreview(owner, label);
+            bool playedAny = AddPrefab(prefab);
+            EndCompositePreview(playedAny);
+            return playedAny;
+        }
+
+        public static bool PlaySound(SoundRef sound, UnityEngine.Object owner = null, string label = null)
+        {
+            BeginCompositePreview(owner, label);
+            bool playedAny = AddSound(sound);
+            EndCompositePreview(playedAny);
+            return playedAny;
+        }
+
+        public static bool PlayCameraShake(CameraShakeHook shake, UnityEngine.Object owner = null, string label = null)
+        {
+            BeginCompositePreview(owner, label);
+            bool playedAny = AddCameraShake(shake);
+            EndCompositePreview(playedAny);
+            return playedAny;
+        }
+
+        public static void BeginCompositePreview(UnityEngine.Object owner = null, string label = null)
+        {
+            StopPreview();
+            currentCue = owner as PresentationCueSO;
+            currentOwner = owner;
+            currentPreviewLabel = label;
+        }
+
+        public static bool AddWorldPresentation(WorldPresentationHook presentation)
+        {
             PreviewPose pose = ResolvePreviewPose();
             bool playedAny = false;
 
@@ -88,11 +169,49 @@ namespace CapstonePresentation.EditorTools
             if (presentation.particle.HasContent)
                 playedAny |= PreviewVisual(presentation.particle, pose);
 
+            return playedAny;
+        }
+
+        public static bool AddSpawnedPresentation(SpawnedPresentationHook hook)
+        {
+            return PreviewVisual(hook, ResolvePreviewPose());
+        }
+
+        public static bool AddPrefab(GameObject prefab)
+        {
+            if (prefab == null)
+                return false;
+
+            SpawnedPresentationHook hook = new SpawnedPresentationHook
+            {
+                prefab = prefab,
+                scaleMultiplier = Vector3.one,
+                lifetimeMode = PresentationLifetimeMode.AutoDetect
+            };
+
+            return AddSpawnedPresentation(hook);
+        }
+
+        public static bool AddSound(SoundRef sound)
+        {
+            return PreviewSound(sound);
+        }
+
+        public static bool AddCameraShake(CameraShakeHook shake)
+        {
+            return PreviewShake(shake, ResolvePreviewPose().fallbackDirection);
+        }
+
+        public static void EndCompositePreview(bool playedAny)
+        {
             if (!playedAny)
+            {
                 currentCue = null;
+                currentOwner = null;
+                currentPreviewLabel = null;
+            }
 
             UnityEditorInternal.InternalEditorUtility.RepaintAllViews();
-            return playedAny;
         }
 
         public static void DrawPreview(Rect rect, PresentationCueSO cue)
@@ -131,6 +250,36 @@ namespace CapstonePresentation.EditorTools
             DrawRenderedPreview(rect, cue);
         }
 
+        public static void DrawPreview(Rect rect, UnityEngine.Object owner, string idleMessage)
+        {
+            if (rect.width <= 0f || rect.height <= 0f)
+                return;
+
+            EditorGUI.DrawRect(rect, new Color(0.14f, 0.14f, 0.16f, 1f));
+            DrawPreviewBorder(rect);
+
+            if (owner == null)
+            {
+                DrawCenteredLabel(rect, "Preview target is missing.");
+                return;
+            }
+
+            if (!IsPreviewing(owner))
+            {
+                DrawCenteredLabel(rect, string.IsNullOrWhiteSpace(idleMessage) ? "Preview" : idleMessage);
+                return;
+            }
+
+            EnsurePreviewUtility();
+            if (previewUtility == null)
+            {
+                DrawCenteredLabel(rect, "Failed to create preview renderer.");
+                return;
+            }
+
+            DrawRenderedPreview(rect, currentPreviewLabel ?? owner.name);
+        }
+
         public static void StopPreview()
         {
             AudioCatalogPreviewUtility.StopPreview();
@@ -141,6 +290,8 @@ namespace CapstonePresentation.EditorTools
             activeInstances.Clear();
             activeShake = null;
             currentCue = null;
+            currentOwner = null;
+            currentPreviewLabel = null;
             lastUpdateTime = -1d;
 
             if (previewUtility != null)
@@ -163,6 +314,8 @@ namespace CapstonePresentation.EditorTools
                 if (!hasAudioPreview && !hasShakePreview)
                 {
                     currentCue = null;
+                    currentOwner = null;
+                    currentPreviewLabel = null;
                     lastUpdateTime = -1d;
                 }
 
@@ -195,7 +348,11 @@ namespace CapstonePresentation.EditorTools
             if (activeInstances.Count == 0)
             {
                 if (!AudioCatalogPreviewUtility.HasActivePreview && activeShake == null)
+                {
                     currentCue = null;
+                    currentOwner = null;
+                    currentPreviewLabel = null;
+                }
 
                 lastUpdateTime = -1d;
             }
@@ -238,6 +395,47 @@ namespace CapstonePresentation.EditorTools
             GUI.DrawTexture(rect, previewTexture, ScaleMode.StretchToFill, false);
             DrawPreviewBorder(rect);
             DrawPreviewOverlay(rect, cue);
+        }
+
+        private static void DrawRenderedPreview(Rect rect, string overlay)
+        {
+            Bounds bounds = CalculatePreviewBounds();
+            float aspect = Mathf.Max(1f, rect.width / Mathf.Max(1f, rect.height));
+            Vector3 center = bounds.center;
+
+            Vector3 shakeOffset = CalculateShakeOffset(bounds.extents.magnitude);
+
+            previewUtility.BeginPreview(rect, GUIStyle.none);
+
+            Camera previewCamera = previewUtility.camera;
+            previewCamera.clearFlags = CameraClearFlags.Color;
+            previewCamera.backgroundColor = new Color(0.12f, 0.12f, 0.14f, 1f);
+            previewCamera.orthographic = true;
+            previewCamera.nearClipPlane = 0.01f;
+            previewCamera.farClipPlane = 100f;
+
+            float orthoSize = Mathf.Max(
+                1.25f,
+                Mathf.Max(bounds.extents.y * 1.25f, bounds.extents.x * 1.25f / aspect));
+
+            previewCamera.orthographicSize = orthoSize;
+            previewCamera.transform.position = center + shakeOffset + new Vector3(0f, 0f, -10f);
+            previewCamera.transform.rotation = Quaternion.identity;
+
+            previewUtility.lights[0].intensity = 1.1f;
+            previewUtility.lights[0].transform.rotation = Quaternion.Euler(30f, 30f, 0f);
+            previewUtility.lights[1].intensity = 1.1f;
+
+            previewCamera.Render();
+
+            Texture previewTexture = previewUtility.EndPreview();
+            GUI.DrawTexture(rect, previewTexture, ScaleMode.StretchToFill, false);
+            DrawPreviewBorder(rect);
+
+            GUI.Label(
+                new Rect(rect.x + 8f, rect.y + 6f, rect.width - 16f, 20f),
+                string.IsNullOrWhiteSpace(overlay) ? "Preview" : overlay,
+                EditorStyles.miniBoldLabel);
         }
 
         private static void DrawIdlePreview(Rect rect, PresentationCueSO cue)
