@@ -7,12 +7,17 @@ public class Mob : Enemy
     [Tooltip("플레이어 추적 범위를 가진 컴포넌트입니다.")]
     [SerializeField] private EnemyChaseIntent2D chaseIntent;
 
+    [Header("Debug")]
+    [Tooltip("켜두면 일반 몬스터 FSM 초기화와 상태 전이 판단 로그를 출력합니다.")]
+    [SerializeField] private bool logMobFsmDebug;
+
     private bool hasMoveBool;
     private MobStateMachine stateMachine;
     private MobAIContext aiContext;
     private bool triedInitializeStateMachine;
 
     protected EnemyChaseIntent2D ChaseIntent => chaseIntent;
+    public bool LogMobFsmDebug => logMobFsmDebug;
 
     protected override void Awake()
     {
@@ -28,10 +33,24 @@ public class Mob : Enemy
     {
         if (isDead) return;
 
+        EnsureTargetResolved();
+
         if (TryInitializeStateMachine())
             stateMachine?.Tick(aiContext);
 
         UpdateAnimation();
+    }
+
+    /// <summary>
+    /// 책임:
+    /// 플레이어가 몬스터보다 늦게 생성되는 씬/스폰 순서에서도 일반 몬스터가 추적 타깃을 회복하게 한다.
+    /// </summary>
+    private void EnsureTargetResolved()
+    {
+        if (Target != null)
+            return;
+
+        TryRefreshTarget(logWarning: false);
     }
 
     /// <summary>이 몬스터가 추적 이동을 사용할지 정합니다.</summary>
@@ -118,10 +137,16 @@ public class Mob : Enemy
         triedInitializeStateMachine = true;
 
         if (!TryResolveMobAbilityBridge(out IMobAbilityBridge abilityBridge))
+        {
+            LogFsmDebug("FSM 초기화 실패: IMobAbilityBridge를 찾지 못했습니다.");
             return false;
+        }
 
         if (!TryResolveAttackDecisionSource(out IMobAttackDecisionSource attackDecisionSource))
+        {
+            LogFsmDebug("FSM 초기화 실패: IMobAttackDecisionSource를 찾지 못했습니다.");
             return false;
+        }
 
         aiContext = new MobAIContext(
             this,
@@ -132,6 +157,7 @@ public class Mob : Enemy
             ResolvePresentationCleanupTargets());
         stateMachine = new MobStateMachine();
         stateMachine.SetInitialState(new MobIdleState(), aiContext);
+        LogFsmDebug($"FSM 초기화 완료. chaseIntent={(chaseIntent != null ? chaseIntent.name : "null")}, bridge={abilityBridge.GetType().Name}, decisionSource={attackDecisionSource.GetType().Name}");
         return true;
     }
 
@@ -217,10 +243,20 @@ public class Mob : Enemy
         if (stateMachine == null || aiContext == null)
             return;
 
+        LogFsmDebug("FSM 종료 cleanup 수행.");
         stateMachine.Shutdown(aiContext);
         stateMachine = null;
         aiContext = null;
         triedInitializeStateMachine = false;
+    }
+
+    /// <summary>FSM 디버그 스위치가 켜진 몬스터만 추적/전이 진단 로그를 남깁니다.</summary>
+    public void LogFsmDebug(string message)
+    {
+        if (!logMobFsmDebug)
+            return;
+
+        Debug.Log($"[MobFSM] {name}: {message}", this);
     }
 
     /// <summary>사망 시 공통 FSM을 명시적인 터미널 상태로 전이시킵니다.</summary>

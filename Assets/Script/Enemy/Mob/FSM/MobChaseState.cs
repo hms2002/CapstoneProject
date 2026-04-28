@@ -7,6 +7,7 @@ public sealed class MobChaseState : IMobState
 {
     public void Enter(MobStateMachine stateMachine, MobAIContext context)
     {
+        context?.Owner?.LogFsmDebug("Chase Enter.");
         context?.ChaseIntent?.StartChase();
     }
 
@@ -19,11 +20,15 @@ public sealed class MobChaseState : IMobState
             return;
 
         if (context == null || !context.HasDetectedTarget())
+        {
+            context?.Owner?.LogFsmDebug("Chase -> Idle 전이. 타겟 감지 실패.");
             stateMachine.ChangeState(new MobIdleState(), context);
+        }
     }
 
     public void Exit(MobStateMachine stateMachine, MobAIContext context)
     {
+        context?.Owner?.LogFsmDebug("Chase Exit.");
         context?.ChaseIntent?.StopChase();
     }
 }

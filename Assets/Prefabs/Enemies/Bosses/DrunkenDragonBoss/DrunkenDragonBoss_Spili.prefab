@@ -581,6 +581,9 @@ MonoBehaviour:
   healthDef: {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
   enemyName: Drunken Dragon
   targetTag: Player
+  targetSearchLayers:
+    serializedVersion: 2
+    m_Bits: 4294967291
   startCombatOnStart: 1
   initialTarget: {fileID: 0}
   healthAttribute: {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}

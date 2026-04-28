@@ -37,10 +37,22 @@ public sealed class EnemyChaseIntent2D : MonoBehaviour, IIntentMovementSource2D,
     [Tooltip("집으로 돌아갈 때 사용할 속도 배율입니다.")]
     [SerializeField] private float returnSpeedScale = 0.9f;
 
+    [Header("Debug")]
+    [Tooltip("켜두면 추적 감지/이동 의도 로그를 출력합니다.")]
+    [SerializeField] private bool logChaseDebug;
+
+    [Tooltip("추적 의도 로그가 너무 많이 찍히지 않도록 제한하는 간격입니다.")]
+    [SerializeField] private float logInterval = 0.35f;
+
+    [Tooltip("target이 비어 있을 때 주변 감지 범위에서 target을 다시 찾는 간격입니다.")]
+    [SerializeField] private float targetAcquireInterval = 0.25f;
+
     private IntentMovementData lastIntent;
     private bool ignoreDetectionRange;
     private bool chaseEnabled = true;
     private MonsterReturnHome2D returnHome;
+    private float nextLogTime;
+    private float nextTargetAcquireTime;
 
     public float DetectionRange => detectionRange;
     public float StopRange => stopRange;
@@ -65,6 +77,12 @@ public sealed class EnemyChaseIntent2D : MonoBehaviour, IIntentMovementSource2D,
 
         if (enemy == null || enemy.Target == null)
         {
+            TryAcquireMissingTarget();
+        }
+
+        if (enemy == null || enemy.Target == null)
+        {
+            LogChaseThrottled("이동 의도 없음: enemy 또는 target이 없습니다.");
             lastIntent = IntentMovementData.None;
             return lastIntent;
         }
@@ -72,12 +90,14 @@ public sealed class EnemyChaseIntent2D : MonoBehaviour, IIntentMovementSource2D,
         Mob mob = enemy as Mob;
         if (mob != null && !mob.CanUseChaseMovement())
         {
+            LogChaseThrottled("이동 의도 없음: Mob.CanUseChaseMovement()가 false입니다.");
             lastIntent = IntentMovementData.None;
             return lastIntent;
         }
 
         if (!chaseEnabled)
         {
+            LogChaseThrottled("이동 의도 없음: FSM이 chase를 정지한 상태입니다.");
             lastIntent = IntentMovementData.None;
             return lastIntent;
         }
@@ -87,18 +107,21 @@ public sealed class EnemyChaseIntent2D : MonoBehaviour, IIntentMovementSource2D,
 
         if (!ignoreDetectionRange && sqrDistance > detectionRange * detectionRange)
         {
+            LogChaseThrottled($"이동 의도 없음: 감지 범위 밖입니다. distance={Mathf.Sqrt(sqrDistance):0.00}, detectionRange={detectionRange:0.00}");
             lastIntent = IntentMovementData.None;
             return lastIntent;
         }
 
         if (sqrDistance <= stopRange * stopRange)
         {
+            LogChaseThrottled($"이동 의도 없음: stopRange 안입니다. distance={Mathf.Sqrt(sqrDistance):0.00}, stopRange={stopRange:0.00}");
             lastIntent = IntentMovementData.None;
             return lastIntent;
         }
 
         Vector2 dir = toTarget.normalized;
         lastIntent = IntentMovementData.FromDirection(dir, speedScale);
+        LogChaseThrottled($"추적 이동 의도 생성. distance={Mathf.Sqrt(sqrDistance):0.00}, dir={dir}, speedScale={speedScale:0.00}");
         return lastIntent;
     }
 
@@ -124,6 +147,7 @@ public sealed class EnemyChaseIntent2D : MonoBehaviour, IIntentMovementSource2D,
     public void StartChase()
     {
         chaseEnabled = true;
+        LogChase("StartChase 호출.");
     }
 
     /// <summary>FSM이 Chase 상태를 벗어날 때 추적 의도 이동을 즉시 멈춥니다.</summary>
@@ -131,19 +155,32 @@ public sealed class EnemyChaseIntent2D : MonoBehaviour, IIntentMovementSource2D,
     {
         chaseEnabled = false;
         lastIntent = IntentMovementData.None;
+        LogChase("StopChase 호출.");
     }
 
     /// <summary>현재 플레이어 추적 조건이 유효한지 반환합니다.</summary>
     public bool IsTargetWithinDetectionRange()
     {
         if (enemy == null || enemy.Target == null)
+        {
+            TryAcquireMissingTarget();
+        }
+
+        if (enemy == null || enemy.Target == null)
+        {
+            LogChaseThrottled("감지 실패: enemy 또는 target이 없습니다.");
             return false;
+        }
 
         Vector2 toTarget = (Vector2)(enemy.Target.position - transform.position);
         float sqrDistance = toTarget.sqrMagnitude;
         if (!ignoreDetectionRange && sqrDistance > detectionRange * detectionRange)
+        {
+            LogChaseThrottled($"감지 실패: 범위 밖입니다. distance={Mathf.Sqrt(sqrDistance):0.00}, detectionRange={detectionRange:0.00}");
             return false;
+        }
 
+        LogChaseThrottled($"감지 성공. distance={Mathf.Sqrt(sqrDistance):0.00}, detectionRange={detectionRange:0.00}");
         return true;
     }
 
@@ -154,6 +191,48 @@ public sealed class EnemyChaseIntent2D : MonoBehaviour, IIntentMovementSource2D,
             return;
 
         returnHome = GetComponent<MonsterReturnHome2D>();
+    }
+
+    /// <summary>
+    /// 책임:
+    /// target 캐시가 비었을 때 추적 감지 범위 안에서 낮은 빈도로 target을 회복한다.
+    /// </summary>
+    private void TryAcquireMissingTarget()
+    {
+        if (enemy == null || enemy.Target != null)
+            return;
+
+        if (Time.time < nextTargetAcquireTime)
+            return;
+
+        nextTargetAcquireTime = Time.time + Mathf.Max(0.05f, targetAcquireInterval);
+
+        if (enemy.TryAcquireTargetInRange(detectionRange))
+            LogChase("감지 범위 검색으로 target을 획득했습니다.");
+        else
+            LogChaseThrottled($"감지 범위 검색 실패. detectionRange={detectionRange:0.00}");
+    }
+
+    /// <summary>추적 디버그 스위치가 켜진 인스턴스만 즉시 로그를 남깁니다.</summary>
+    private void LogChase(string message)
+    {
+        if (!logChaseDebug)
+            return;
+
+        Debug.Log($"[EnemyChaseIntent2D] {name}: {message}", this);
+    }
+
+    /// <summary>추적 디버그 스위치가 켜진 인스턴스만 제한된 주기로 로그를 남깁니다.</summary>
+    private void LogChaseThrottled(string message)
+    {
+        if (!logChaseDebug)
+            return;
+
+        if (Time.time < nextLogTime)
+            return;
+
+        nextLogTime = Time.time + Mathf.Max(0.05f, logInterval);
+        LogChase(message);
     }
 
     private void OnDrawGizmosSelected()

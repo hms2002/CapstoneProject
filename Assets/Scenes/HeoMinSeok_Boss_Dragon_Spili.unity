@@ -3827,63 +3827,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 098d94856215da74dbbf50659196d131, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1001 &1627752938
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 625522859161183429, guid: 3f5ff6b5c99e4e5da8df23347c49d472, type: 3}
-      propertyPath: m_Name
-      value: BeerMonster
-      objectReference: {fileID: 0}
-    - target: {fileID: 2826825829709561300, guid: 3f5ff6b5c99e4e5da8df23347c49d472, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -18.53832
-      objectReference: {fileID: 0}
-    - target: {fileID: 2826825829709561300, guid: 3f5ff6b5c99e4e5da8df23347c49d472, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 1.7842617
-      objectReference: {fileID: 0}
-    - target: {fileID: 2826825829709561300, guid: 3f5ff6b5c99e4e5da8df23347c49d472, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2826825829709561300, guid: 3f5ff6b5c99e4e5da8df23347c49d472, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2826825829709561300, guid: 3f5ff6b5c99e4e5da8df23347c49d472, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2826825829709561300, guid: 3f5ff6b5c99e4e5da8df23347c49d472, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2826825829709561300, guid: 3f5ff6b5c99e4e5da8df23347c49d472, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2826825829709561300, guid: 3f5ff6b5c99e4e5da8df23347c49d472, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2826825829709561300, guid: 3f5ff6b5c99e4e5da8df23347c49d472, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2826825829709561300, guid: 3f5ff6b5c99e4e5da8df23347c49d472, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 3f5ff6b5c99e4e5da8df23347c49d472, type: 3}
 --- !u!1001 &1639202269
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6692,6 +6635,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4534635432436675738, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 900
+      objectReference: {fileID: 0}
+    - target: {fileID: 4534635432436675738, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
@@ -8822,4 +8769,3 @@ SceneRoots:
   - {fileID: 1639202269}
   - {fileID: 6787846962178461537}
   - {fileID: 455765621}
-  - {fileID: 1627752938}

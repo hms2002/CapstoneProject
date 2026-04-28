@@ -40,6 +40,8 @@ public static class MobStateTransitionUtility
         if (!request.IsValid)
             return false;
 
+        context.Owner.LogFsmDebug($"공격 요청 생성 성공. ability={(request.Ability != null ? request.Ability.name : "null")}, explicitTarget={(request.ExplicitTarget != null ? request.ExplicitTarget.name : "null")}");
+
         if (context.AttackDecisionSource is IMobAttackStateResolver resolver &&
             resolver.TryCreateAttackState(request, out IMobState customAttackState) &&
             customAttackState != null)

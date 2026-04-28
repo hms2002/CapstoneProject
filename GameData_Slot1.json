@@ -1,8 +1,8 @@
 {
     "hasInitializedProfile": true,
-    "magicStone": 970,
-    "totalPlaySeconds": 20.20490264892578,
-    "clearCount": 0,
+    "magicStone": 975,
+    "totalPlaySeconds": 70.30419158935547,
+    "clearCount": 1,
     "knownTotalUpgradeCount": 16,
     "upgradeData": {
         "purchasedIDs": [
@@ -65,7 +65,7 @@
         "affectionRecords": [
             {
                 "npcId": 1003,
-                "amount": 12
+                "amount": 13
             }
         ]
     },
