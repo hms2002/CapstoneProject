@@ -71,7 +71,22 @@ public sealed class DialogueService : MonoBehaviour
             activeController = null;
     }
 
-    public bool TryStartDialogue(TextAsset inkJSON, List<NPCData> participants, NPCFeatureController featureController = null)
+    public bool TryStartDialogue(
+        TextAsset inkJSON,
+        List<NPCData> participants,
+        NPCFeatureController featureController = null,
+        string startPath = null)
+    {
+        return TryStartDialogueSequence(
+            new List<DialogueStorySegment> { new DialogueStorySegment(inkJSON, startPath) },
+            participants,
+            featureController);
+    }
+
+    public bool TryStartDialogueSequence(
+        IReadOnlyList<DialogueStorySegment> storySegments,
+        List<NPCData> participants,
+        NPCFeatureController featureController = null)
     {
         if (activeController == null)
         {
@@ -79,7 +94,7 @@ public sealed class DialogueService : MonoBehaviour
             return false;
         }
 
-        activeController.EnterDialogueMode(inkJSON, participants, featureController);
+        activeController.EnterDialogueSequence(storySegments, participants, featureController);
         SyncRunTimerPauseState();
         return true;
     }

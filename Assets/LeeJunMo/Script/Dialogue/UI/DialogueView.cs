@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using CapstoneAudio;
 
@@ -12,6 +13,10 @@ public class DialogueView : MonoBehaviour
     [Header("UI Groups (CanvasGroup required)")]
     [SerializeField] private CanvasGroup textBoxGroup;
     [SerializeField] private CanvasGroup affectionGroup;
+
+    [Header("UI Presentation")]
+    [SerializeField] private UISlideFadePresentation textBoxPresentation;
+    [SerializeField] private UISlideFadePresentation affectionPresentation;
 
     [Header("Text Components")]
     [SerializeField] private TextMeshProUGUI nameText;
@@ -54,6 +59,7 @@ public class DialogueView : MonoBehaviour
     private Color defaultNameTextColor;
     private float defaultDimPanelAlpha;
     private bool isUiVisible;
+    private bool choiceInputEnabled;
     private int currentChoiceIndex;
     private Action<int> onChoiceSelectedCallback;
     private int lastTypedCharacterCount;
@@ -75,17 +81,9 @@ public class DialogueView : MonoBehaviour
         if (dialogueEffectAnimator != null)
             dialogueEffectAnimator.updateMode = AnimatorUpdateMode.UnscaledTime;
 
-        if (textBoxGroup != null)
-        {
-            textBoxGroup.alpha = 0f;
-            textBoxGroup.gameObject.SetActive(false);
-        }
-
-        if (affectionGroup != null)
-        {
-            affectionGroup.alpha = 0f;
-            affectionGroup.gameObject.SetActive(false);
-        }
+        ResolveGroupPresentations();
+        SnapGroupClosed(textBoxGroup, textBoxPresentation);
+        SnapGroupClosed(affectionGroup, affectionPresentation);
 
         if (continueIcon != null)
         {
@@ -164,30 +162,47 @@ public class DialogueView : MonoBehaviour
     {
         isUiVisible = true;
         RefreshThemePresentation(false);
+        ResolveGroupPresentations();
+
+        int pendingAnimations = 0;
+        bool didComplete = false;
+        bool startedAllAnimations = false;
+
+        void RegisterAnimation()
+        {
+            pendingAnimations++;
+        }
+
+        void CompleteAnimation()
+        {
+            pendingAnimations--;
+            if (pendingAnimations > 0 || didComplete || !startedAllAnimations)
+                return;
+
+            didComplete = true;
+            onComplete?.Invoke();
+        }
 
         if (textBoxGroup != null)
         {
-            textBoxGroup.gameObject.SetActive(true);
+            RegisterAnimation();
+            PlayGroupOpen(textBoxGroup, textBoxPresentation, CompleteAnimation);
+        }
 
-            Sequence seq = DOTween.Sequence();
-            seq.SetUpdate(true);
-            seq.Append(textBoxGroup.DOFade(1f, 0.25f).SetUpdate(true));
-
-            if (isBoss && affectionGroup != null)
-            {
-                affectionGroup.gameObject.SetActive(true);
-                seq.Join(affectionGroup.DOFade(1f, 0.25f).SetUpdate(true));
-            }
-            else if (!isBoss && affectionGroup != null)
-            {
-                affectionGroup.gameObject.SetActive(false);
-                affectionGroup.alpha = 0f;
-            }
-
-            seq.OnComplete(() => onComplete?.Invoke());
+        if (isBoss && affectionGroup != null)
+        {
+            RegisterAnimation();
+            PlayGroupOpen(affectionGroup, affectionPresentation, CompleteAnimation);
         }
         else
         {
+            SnapGroupClosed(affectionGroup, affectionPresentation);
+        }
+
+        startedAllAnimations = true;
+        if (pendingAnimations == 0 && !didComplete)
+        {
+            didComplete = true;
             onComplete?.Invoke();
         }
     }
@@ -277,7 +292,9 @@ public class DialogueView : MonoBehaviour
         }
 
         onChoiceSelectedCallback = onChoiceSelected;
-        currentChoiceIndex = 0;
+        choiceInputEnabled = false;
+        currentChoiceIndex = -1;
+        EventSystem.current?.SetSelectedGameObject(null);
 
         foreach (Ink.Runtime.Choice choice in choices)
         {
@@ -286,20 +303,41 @@ public class DialogueView : MonoBehaviour
                 btnObj.SetActive(true);
 
             activeChoiceButtons.Add(btnObj);
+            int listIndex = activeChoiceButtons.Count - 1;
 
             TextMeshProUGUI btnText = btnObj.GetComponentInChildren<TextMeshProUGUI>();
             if (btnText != null)
                 btnText.text = choice.text;
 
+            DialogueChoiceHighlightPresentation choiceHighlight = btnObj.GetComponent<DialogueChoiceHighlightPresentation>();
+            if (choiceHighlight != null)
+                choiceHighlight.SetSelected(false, true);
+
+            DialogueChoiceInputRelay inputRelay = btnObj.GetComponent<DialogueChoiceInputRelay>();
+            if (inputRelay != null)
+                inputRelay.Bind(this, listIndex);
+
+            DialogueChoiceKeyGlyph keyGlyph = btnObj.GetComponent<DialogueChoiceKeyGlyph>();
+            if (keyGlyph != null)
+                keyGlyph.Bind(listIndex);
+
             Button btn = btnObj.GetComponent<Button>();
             if (btn != null)
             {
                 btn.onClick = new Button.ButtonClickedEvent();
+                Navigation navigation = btn.navigation;
+                navigation.mode = Navigation.Mode.None;
+                btn.navigation = navigation;
+
                 int index = choice.index;
                 btn.onClick.AddListener(() =>
                 {
+                    if (!choiceInputEnabled)
+                        return;
+
+                    Action<int> callback = onChoiceSelectedCallback;
                     ClearChoices();
-                    onChoiceSelectedCallback?.Invoke(index);
+                    callback?.Invoke(index);
                 });
             }
         }
@@ -313,6 +351,13 @@ public class DialogueView : MonoBehaviour
         if (activeChoiceButtons.Count == 0)
             return;
 
+        if (currentChoiceIndex < 0)
+        {
+            currentChoiceIndex = direction < 0 ? 0 : Mathf.Min(1, activeChoiceButtons.Count - 1);
+            HighlightChoice(currentChoiceIndex);
+            return;
+        }
+
         currentChoiceIndex += direction;
 
         if (currentChoiceIndex < 0)
@@ -325,22 +370,71 @@ public class DialogueView : MonoBehaviour
 
     public void ConfirmChoice()
     {
-        if (activeChoiceButtons.Count <= 0)
+        if (!choiceInputEnabled || activeChoiceButtons.Count <= 0)
+            return;
+
+        if (currentChoiceIndex < 0 || currentChoiceIndex >= activeChoiceButtons.Count)
             return;
 
         Button selectedBtn = activeChoiceButtons[currentChoiceIndex].GetComponent<Button>();
         selectedBtn?.onClick.Invoke();
     }
 
+    public void ConfirmChoiceAt(int index)
+    {
+        if (!choiceInputEnabled || index < 0 || index >= activeChoiceButtons.Count)
+            return;
+
+        currentChoiceIndex = index;
+        HighlightChoice(currentChoiceIndex);
+
+        Button selectedBtn = activeChoiceButtons[currentChoiceIndex].GetComponent<Button>();
+        selectedBtn?.onClick.Invoke();
+    }
+
+    public void SetChoiceInputEnabled(bool enabled)
+    {
+        choiceInputEnabled = enabled;
+    }
+
+    public void SelectChoiceFromPointer(int index)
+    {
+        if (!choiceInputEnabled)
+            return;
+
+        SelectChoice(index);
+    }
+
+    private void SelectChoice(int index)
+    {
+        if (index < 0 || index >= activeChoiceButtons.Count)
+            return;
+
+        currentChoiceIndex = index;
+        HighlightChoice(currentChoiceIndex);
+    }
+
     public void ClearChoices()
     {
+        choiceInputEnabled = false;
+        currentChoiceIndex = -1;
+
         foreach (GameObject btn in activeChoiceButtons)
         {
             if (btn != null)
+            {
+                DialogueChoiceHighlightPresentation choiceHighlight =
+                    btn.GetComponent<DialogueChoiceHighlightPresentation>();
+                if (choiceHighlight != null)
+                    choiceHighlight.SetSelected(false, true);
+
                 Destroy(btn);
+            }
         }
 
         activeChoiceButtons.Clear();
+        onChoiceSelectedCallback = null;
+        EventSystem.current?.SetSelectedGameObject(null);
     }
 
     public void HideUI(Action onComplete = null)
@@ -350,49 +444,157 @@ public class DialogueView : MonoBehaviour
         if (continueIcon != null)
             continueIcon.SetActive(false);
 
-        Sequence seq = DOTween.Sequence();
-        seq.SetUpdate(true);
+        ResolveGroupPresentations();
 
-        if (textBoxGroup != null)
-            seq.Append(textBoxGroup.DOFade(0f, 0.25f).SetUpdate(true));
+        int pendingAnimations = 0;
+        bool didComplete = false;
+        bool startedAllAnimations = false;
 
-        if (affectionGroup != null && affectionGroup.gameObject.activeSelf)
-            seq.Join(affectionGroup.DOFade(0f, 0.25f).SetUpdate(true));
-
-        seq.OnComplete(() =>
+        void FinishHide()
         {
             isUiVisible = false;
-
-            if (textBoxGroup != null)
-                textBoxGroup.gameObject.SetActive(false);
-
-            if (affectionGroup != null)
-                affectionGroup.gameObject.SetActive(false);
 
             SetDimPanelVisible(false, true);
             ResetDialogueEffectToHiddenIdle();
             onComplete?.Invoke();
-        });
+        }
+
+        void RegisterAnimation()
+        {
+            pendingAnimations++;
+        }
+
+        void CompleteAnimation()
+        {
+            pendingAnimations--;
+            if (pendingAnimations > 0 || didComplete || !startedAllAnimations)
+                return;
+
+            didComplete = true;
+            FinishHide();
+        }
+
+        if (textBoxGroup != null && textBoxGroup.gameObject.activeSelf)
+        {
+            RegisterAnimation();
+            PlayGroupClose(textBoxGroup, textBoxPresentation, CompleteAnimation);
+        }
+
+        if (affectionGroup != null && affectionGroup.gameObject.activeSelf)
+        {
+            RegisterAnimation();
+            PlayGroupClose(affectionGroup, affectionPresentation, CompleteAnimation);
+        }
+
+        startedAllAnimations = true;
+        if (pendingAnimations == 0 && !didComplete)
+        {
+            didComplete = true;
+            FinishHide();
+        }
+    }
+
+    private void PlayGroupOpen(CanvasGroup group, UISlideFadePresentation presentation, Action onComplete)
+    {
+        if (presentation != null)
+        {
+            presentation.PlayOpen(onComplete);
+            return;
+        }
+
+        if (group == null)
+        {
+            onComplete?.Invoke();
+            return;
+        }
+
+        group.DOKill();
+        group.gameObject.SetActive(true);
+        group.alpha = 0f;
+        group.DOFade(1f, 0.25f)
+            .SetUpdate(true)
+            .OnComplete(() => onComplete?.Invoke());
+    }
+
+    private void PlayGroupClose(CanvasGroup group, UISlideFadePresentation presentation, Action onComplete)
+    {
+        if (presentation != null)
+        {
+            presentation.PlayClose(onComplete);
+            return;
+        }
+
+        if (group == null || !group.gameObject.activeSelf)
+        {
+            onComplete?.Invoke();
+            return;
+        }
+
+        group.DOKill();
+        group.DOFade(0f, 0.25f)
+            .SetUpdate(true)
+            .OnComplete(() =>
+            {
+                group.gameObject.SetActive(false);
+                onComplete?.Invoke();
+            });
+    }
+
+    private void SnapGroupClosed(CanvasGroup group, UISlideFadePresentation presentation)
+    {
+        if (presentation != null)
+        {
+            presentation.SnapClosed();
+            return;
+        }
+
+        if (group == null)
+            return;
+
+        group.DOKill();
+        group.alpha = 0f;
+        group.interactable = false;
+        group.blocksRaycasts = false;
+        group.gameObject.SetActive(false);
+    }
+
+    private void ResolveGroupPresentations()
+    {
+        if (textBoxPresentation == null)
+            textBoxPresentation = ResolveGroupPresentation(textBoxGroup);
+
+        if (affectionPresentation == null)
+            affectionPresentation = ResolveGroupPresentation(affectionGroup);
+    }
+
+    private UISlideFadePresentation ResolveGroupPresentation(CanvasGroup group)
+    {
+        if (group == null)
+            return null;
+
+        return group.GetComponent<UISlideFadePresentation>();
     }
 
     private void HighlightChoice(int index)
     {
         for (int i = 0; i < activeChoiceButtons.Count; i++)
         {
-            TextMeshProUGUI btnText = activeChoiceButtons[i].GetComponentInChildren<TextMeshProUGUI>();
-            if (btnText == null)
+            GameObject choiceButton = activeChoiceButtons[i];
+            if (choiceButton == null)
                 continue;
 
-            if (i == index)
-            {
-                btnText.color = selectedChoiceColor;
-                activeChoiceButtons[i].transform.DOScale(1.05f, 0.1f).SetUpdate(true);
-            }
-            else
-            {
-                btnText.color = normalChoiceColor;
-                activeChoiceButtons[i].transform.DOScale(1.0f, 0.1f).SetUpdate(true);
-            }
+            bool isSelected = index >= 0 && i == index;
+
+            TextMeshProUGUI btnText = choiceButton.GetComponentInChildren<TextMeshProUGUI>();
+            if (btnText != null)
+                btnText.color = isSelected ? selectedChoiceColor : normalChoiceColor;
+
+            DialogueChoiceHighlightPresentation choiceHighlight =
+                choiceButton.GetComponent<DialogueChoiceHighlightPresentation>();
+            if (choiceHighlight != null)
+                choiceHighlight.SetSelected(isSelected);
+
+            choiceButton.transform.DOScale(isSelected ? 1.05f : 1.0f, 0.1f).SetUpdate(true);
         }
     }
 

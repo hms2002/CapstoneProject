@@ -10,6 +10,7 @@ public class AffectionUI : MonoBehaviour
     [SerializeField] private Slider affectionSlider;
     [SerializeField] private TextMeshProUGUI affectionText;
     [SerializeField] private CanvasGroup uiCanvasGroup;
+    [SerializeField] private AffectionGainScreenEffect gainScreenEffect;
 
     [Header("연출 설정")]
     [SerializeField] private float fillDuration = 0.5f;
@@ -17,6 +18,8 @@ public class AffectionUI : MonoBehaviour
 
     private void Awake()
     {
+        ResolveGainScreenEffect();
+
         if (affectionSlider != null) affectionSlider.value = 0f;
         if (uiCanvasGroup != null) uiCanvasGroup.alpha = 1f;
     }
@@ -47,10 +50,19 @@ public class AffectionUI : MonoBehaviour
 
         if (affectionText != null) affectionText.text = prevAffection.ToString();
 
+        if (newAffection > prevAffection)
+        {
+            ResolveGainScreenEffect();
+            gainScreenEffect?.Play();
+        }
+
         Sequence seq = DOTween.Sequence();
         seq.SetUpdate(true);
 
-        seq.Append(affectionSlider.DOValue(1f, fillDuration).SetUpdate(true).SetEase(Ease.OutQuad));
+        if (affectionSlider != null)
+            seq.Append(affectionSlider.DOValue(1f, fillDuration).SetUpdate(true).SetEase(Ease.OutQuad));
+        else
+            seq.AppendInterval(fillDuration);
 
         seq.AppendCallback(() => {
             if (affectionText != null)
@@ -62,10 +74,32 @@ public class AffectionUI : MonoBehaviour
 
         seq.AppendInterval(0.4f);
 
-        seq.Append(affectionSlider.DOValue(0f, resetDuration).SetUpdate(true).SetEase(Ease.InQuad));
+        if (affectionSlider != null)
+            seq.Append(affectionSlider.DOValue(0f, resetDuration).SetUpdate(true).SetEase(Ease.InQuad));
+        else
+            seq.AppendInterval(resetDuration);
 
         seq.OnComplete(() => {
             onComplete?.Invoke();
         });
+    }
+
+    private void ResolveGainScreenEffect()
+    {
+        if (gainScreenEffect != null)
+            return;
+
+        gainScreenEffect = GetComponent<AffectionGainScreenEffect>();
+        if (gainScreenEffect != null)
+            return;
+
+        gainScreenEffect = GetComponentInChildren<AffectionGainScreenEffect>(true);
+        if (gainScreenEffect != null)
+            return;
+
+        AffectionGainScreenEffect[] sceneEffects =
+            FindObjectsByType<AffectionGainScreenEffect>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        if (sceneEffects != null && sceneEffects.Length > 0)
+            gainScreenEffect = sceneEffects[0];
     }
 }

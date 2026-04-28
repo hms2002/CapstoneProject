@@ -13,14 +13,23 @@ public class DialogueController : MonoBehaviour
     [SerializeField] private CinematicDirector director;
     [SerializeField] private PortraitController portraitController;
     [SerializeField] private DialogueTagHandler tagHandler;
+    [SerializeField] private ChoiceFailureScreenEffect choiceFailureEffect;
+
+    [Header("Choice Input")]
+    [SerializeField, Min(0f)] private float choiceInputGuardDuration = 0.18f;
 
     public bool isPlaying => sessionState.IsPlaying;
 
     private readonly DialogueSessionState sessionState = new DialogueSessionState();
     private readonly DialogueParticipantRegistry participantRegistry = new DialogueParticipantRegistry();
+    private readonly Queue<DialogueStorySegment> pendingStorySegments = new Queue<DialogueStorySegment>();
 
     private Story currentStory;
     private NPCFeatureController currentFeatureController;
+    private bool pendingBossChoiceAffectionCheck;
+    private float choiceInputGuardUntil;
+    private bool waitingForChoiceConfirmRelease;
+    private bool choiceInputReady;
 
     private void Awake()
     {
@@ -83,16 +92,32 @@ public class DialogueController : MonoBehaviour
         ContinueStory();
     }
 
-    public void EnterDialogueMode(TextAsset inkJSON, List<NPCData> participants, NPCFeatureController featureController = null)
+    public void EnterDialogueMode(
+        TextAsset inkJSON,
+        List<NPCData> participants,
+        NPCFeatureController featureController = null,
+        string startPath = null)
+    {
+        EnterDialogueSequence(
+            new List<DialogueStorySegment> { new DialogueStorySegment(inkJSON, startPath) },
+            participants,
+            featureController);
+    }
+
+    public void EnterDialogueSequence(
+        IReadOnlyList<DialogueStorySegment> storySegments,
+        List<NPCData> participants,
+        NPCFeatureController featureController = null)
     {
         ResolveRuntimeReferences();
 
         if (sessionState.IsPlaying)
             return;
 
-        if (!ValidateDialogueSetup(inkJSON, participants))
+        if (!ValidateDialogueSetup(storySegments, participants))
             return;
 
+        DialogueStorySegment firstSegment = GetFirstValidSegment(storySegments);
         List<NPCData> validParticipants = BuildValidParticipants(participants);
         if (validParticipants.Count == 0)
         {
@@ -102,6 +127,8 @@ public class DialogueController : MonoBehaviour
 
         participantRegistry.Initialize(validParticipants);
         sessionState.BeginSession();
+        pendingBossChoiceAffectionCheck = false;
+        QueuePendingStorySegments(storySegments, firstSegment);
 
         UIManager.Instance?.HideWorldPrompt();
         UIManager.Instance?.HideHoverImmediate();
@@ -119,7 +146,11 @@ public class DialogueController : MonoBehaviour
             currentFeatureController.RequestDialogueExit += ExitDialogueMode;
         }
 
-        currentStory = new Story(inkJSON.text);
+        if (!TryLoadStorySegment(firstSegment))
+        {
+            AbortDialogueStart();
+            return;
+        }
 
         DialoguePresentationSequencer.PlayOpening(
             view,
@@ -131,6 +162,45 @@ public class DialogueController : MonoBehaviour
                 sessionState.EndTransition();
                 ContinueStory();
             });
+    }
+
+    private bool TryLoadStorySegment(DialogueStorySegment segment)
+    {
+        if (!segment.IsValid)
+            return false;
+
+        currentStory = new Story(segment.InkJSON.text);
+        return TryApplyStartPath(segment.StartPath);
+    }
+
+    private bool TryApplyStartPath(string startPath)
+    {
+        if (currentStory == null || string.IsNullOrWhiteSpace(startPath))
+            return true;
+
+        try
+        {
+            currentStory.ChoosePathString(startPath);
+            return true;
+        }
+        catch (Exception exception)
+        {
+            Debug.LogError($"[DialogueController] Failed to start Ink at path '{startPath}'. {exception.Message}", this);
+            return false;
+        }
+    }
+
+    private void AbortDialogueStart()
+    {
+        if (currentFeatureController != null)
+            currentFeatureController.RequestDialogueExit -= ExitDialogueMode;
+
+        view.ResetTheme();
+        currentStory = null;
+        currentFeatureController = null;
+        pendingStorySegments.Clear();
+        participantRegistry.Clear();
+        sessionState.EndSession();
     }
 
     public void ResumeDialogue()
@@ -158,6 +228,8 @@ public class DialogueController : MonoBehaviour
                 portraitController.HighlightSpeaker(participantRegistry.CurrentSpeakerId);
 
             sessionState.BeginWaiting();
+            ResolvePendingBossChoiceFailure(currentText, currentStory.currentTags);
+
             bool isBlocking = tagHandler != null &&
                               tagHandler.ProcessTags(currentStory.currentTags, participantRegistry.CurrentNPCData, ResumeDialogue);
 
@@ -173,7 +245,32 @@ public class DialogueController : MonoBehaviour
             return;
         }
 
+        if (TryContinueQueuedStory())
+            return;
+
         ExitDialogueMode();
+    }
+
+    private bool TryContinueQueuedStory()
+    {
+        while (pendingStorySegments.Count > 0)
+        {
+            DialogueStorySegment nextSegment = pendingStorySegments.Dequeue();
+            if (!nextSegment.IsValid)
+                continue;
+
+            sessionState.ResetInteractionFlags();
+            ResetChoiceInputGate();
+            pendingBossChoiceAffectionCheck = false;
+
+            if (!TryLoadStorySegment(nextSegment))
+                return false;
+
+            ContinueStory();
+            return true;
+        }
+
+        return false;
     }
 
     private void DisplayChoicesIfNeeded()
@@ -183,6 +280,7 @@ public class DialogueController : MonoBehaviour
 
         bool didShowChoices = view != null && view.ShowChoices(currentStory.currentChoices, choiceIndex =>
         {
+            pendingBossChoiceAffectionCheck = ShouldCheckBossChoiceFailure();
             currentStory.ChooseChoiceIndex(choiceIndex);
             sessionState.EndChoosing();
             ContinueStory();
@@ -191,6 +289,7 @@ public class DialogueController : MonoBehaviour
         if (didShowChoices)
         {
             sessionState.BeginChoosing();
+            BeginChoiceInputGate();
             return;
         }
 
@@ -206,6 +305,8 @@ public class DialogueController : MonoBehaviour
 
         sessionState.BeginTransition();
         sessionState.ResetInteractionFlags();
+        ResetChoiceInputGate();
+        pendingBossChoiceAffectionCheck = false;
 
         if (currentFeatureController != null)
             currentFeatureController.RequestDialogueExit -= ExitDialogueMode;
@@ -215,6 +316,7 @@ public class DialogueController : MonoBehaviour
             view.ResetTheme();
             currentStory = null;
             currentFeatureController = null;
+            pendingStorySegments.Clear();
             participantRegistry.Clear();
             sessionState.EndSession();
         });
@@ -229,11 +331,11 @@ public class DialogueController : MonoBehaviour
         view.ApplyTheme(themeOwner != null ? themeOwner.DialogueTheme : null, false);
     }
 
-    private bool ValidateDialogueSetup(TextAsset inkJSON, List<NPCData> participants)
+    private bool ValidateDialogueSetup(IReadOnlyList<DialogueStorySegment> storySegments, List<NPCData> participants)
     {
         ResolveRuntimeReferences();
 
-        if (inkJSON == null)
+        if (GetFirstValidSegment(storySegments).InkJSON == null)
         {
             Debug.LogError("[DialogueController] inkJSON is missing. Dialogue cannot start.", this);
             return false;
@@ -260,6 +362,47 @@ public class DialogueController : MonoBehaviour
         return true;
     }
 
+    private static DialogueStorySegment GetFirstValidSegment(IReadOnlyList<DialogueStorySegment> storySegments)
+    {
+        if (storySegments == null)
+            return default;
+
+        for (int i = 0; i < storySegments.Count; i++)
+        {
+            DialogueStorySegment segment = storySegments[i];
+            if (segment.IsValid)
+                return segment;
+        }
+
+        return default;
+    }
+
+    private void QueuePendingStorySegments(
+        IReadOnlyList<DialogueStorySegment> storySegments,
+        DialogueStorySegment firstSegment)
+    {
+        pendingStorySegments.Clear();
+
+        if (storySegments == null)
+            return;
+
+        bool skippedFirst = false;
+        for (int i = 0; i < storySegments.Count; i++)
+        {
+            DialogueStorySegment segment = storySegments[i];
+            if (!segment.IsValid)
+                continue;
+
+            if (!skippedFirst && segment.InkJSON == firstSegment.InkJSON && segment.StartPath == firstSegment.StartPath)
+            {
+                skippedFirst = true;
+                continue;
+            }
+
+            pendingStorySegments.Enqueue(segment);
+        }
+    }
+
     private List<NPCData> BuildValidParticipants(List<NPCData> participants)
     {
         List<NPCData> validParticipants = new List<NPCData>();
@@ -280,12 +423,103 @@ public class DialogueController : MonoBehaviour
 
     private void HandleChoiceInput(InputBindingService input)
     {
+        if (!UpdateChoiceInputGate(input))
+            return;
+
+        if (TryHandleChoiceShortcutInput())
+            return;
+
         if (input.WasPressedThisFrame(InputActionId.MoveUp))
             view.ChangeChoiceSelection(-1);
         else if (input.WasPressedThisFrame(InputActionId.MoveDown))
             view.ChangeChoiceSelection(1);
         else if (input.WasPressedThisFrame(InputActionId.DialogueAdvance))
             view.ConfirmChoice();
+    }
+
+    private bool TryHandleChoiceShortcutInput()
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            if (!WasChoiceShortcutPressed(i))
+                continue;
+
+            view.ConfirmChoiceAt(i);
+            return true;
+        }
+
+        return false;
+    }
+
+    private bool WasChoiceShortcutPressed(int zeroBasedIndex)
+    {
+        return InputKeyCompatibility.WasPressedThisFrame(GetChoiceNumberKey(zeroBasedIndex)) ||
+               InputKeyCompatibility.WasPressedThisFrame(GetChoiceKeypadNumberKey(zeroBasedIndex));
+    }
+
+    private static KeyCode GetChoiceNumberKey(int zeroBasedIndex)
+    {
+        return zeroBasedIndex switch
+        {
+            0 => KeyCode.Alpha1,
+            1 => KeyCode.Alpha2,
+            2 => KeyCode.Alpha3,
+            _ => KeyCode.None,
+        };
+    }
+
+    private static KeyCode GetChoiceKeypadNumberKey(int zeroBasedIndex)
+    {
+        return zeroBasedIndex switch
+        {
+            0 => KeyCode.Keypad1,
+            1 => KeyCode.Keypad2,
+            2 => KeyCode.Keypad3,
+            _ => KeyCode.None,
+        };
+    }
+
+    private void BeginChoiceInputGate()
+    {
+        choiceInputReady = false;
+        waitingForChoiceConfirmRelease = true;
+        choiceInputGuardUntil = Time.unscaledTime + choiceInputGuardDuration;
+        view?.SetChoiceInputEnabled(false);
+    }
+
+    private bool UpdateChoiceInputGate(InputBindingService input)
+    {
+        if (choiceInputReady)
+            return true;
+
+        if (Time.unscaledTime < choiceInputGuardUntil)
+            return false;
+
+        if (waitingForChoiceConfirmRelease)
+        {
+            if (IsChoiceConfirmInputHeld(input))
+                return false;
+
+            waitingForChoiceConfirmRelease = false;
+        }
+
+        choiceInputReady = true;
+        view?.SetChoiceInputEnabled(true);
+        return true;
+    }
+
+    private void ResetChoiceInputGate()
+    {
+        choiceInputReady = false;
+        waitingForChoiceConfirmRelease = false;
+        choiceInputGuardUntil = 0f;
+        view?.SetChoiceInputEnabled(false);
+    }
+
+    private bool IsChoiceConfirmInputHeld(InputBindingService input)
+    {
+        return Input.GetMouseButton(0) ||
+               (input != null && input.IsPressed(InputActionId.DialogueAdvance));
     }
 
     private void PlayCurrentLine(string currentText)
@@ -355,10 +589,140 @@ public class DialogueController : MonoBehaviour
     private void HandleAffection(NPCData npcData, int amount, Action onComplete)
     {
         NPCData targetNpc = npcData != null ? npcData : participantRegistry.CurrentNPCData;
+        if (targetNpc != null && targetNpc.isBoss && amount <= 0)
+        {
+            pendingBossChoiceAffectionCheck = false;
+            PlayChoiceFailureEffect(onComplete);
+            return;
+        }
+
+        if (amount > 0)
+            pendingBossChoiceAffectionCheck = false;
+
         if (AffectionManager.Instance != null)
             AffectionManager.Instance.AddAffection(targetNpc, amount, onComplete);
         else
             onComplete?.Invoke();
+    }
+
+    private bool ShouldCheckBossChoiceFailure()
+    {
+        NPCData currentNpc = participantRegistry.CurrentNPCData;
+        return currentNpc != null && currentNpc.isBoss;
+    }
+
+    private void ResolvePendingBossChoiceFailure(string currentText, List<string> tags)
+    {
+        if (!pendingBossChoiceAffectionCheck)
+            return;
+
+        AffectionChoiceTagState tagState = EvaluateAffectionChoiceTags(tags);
+        if (tagState.HasPositiveAffection || tagState.HasNonPositiveAffection || tagState.HasExplicitFailure)
+        {
+            pendingBossChoiceAffectionCheck = false;
+            return;
+        }
+
+        if (!HasChoiceResultContent(currentText, tags))
+            return;
+
+        pendingBossChoiceAffectionCheck = false;
+        PlayChoiceFailureEffect();
+    }
+
+    private void HandleChoiceFailure(Action onComplete)
+    {
+        pendingBossChoiceAffectionCheck = false;
+        PlayChoiceFailureEffect(onComplete);
+    }
+
+    private void PlayChoiceFailureEffect(Action onComplete = null)
+    {
+        ResolveChoiceFailureEffect();
+
+        if (choiceFailureEffect != null)
+        {
+            choiceFailureEffect.Play(onComplete);
+            return;
+        }
+
+        onComplete?.Invoke();
+    }
+
+    private void ResolveChoiceFailureEffect()
+    {
+        if (choiceFailureEffect != null)
+            return;
+
+        choiceFailureEffect = ChoiceFailureScreenEffect.PrepareSceneInstance();
+    }
+
+    private static bool HasChoiceResultContent(string currentText, List<string> tags)
+    {
+        if (!string.IsNullOrWhiteSpace(currentText))
+            return true;
+
+        return tags != null && tags.Count > 0;
+    }
+
+    private static AffectionChoiceTagState EvaluateAffectionChoiceTags(List<string> tags)
+    {
+        AffectionChoiceTagState state = default;
+        if (tags == null)
+            return state;
+
+        for (int i = 0; i < tags.Count; i++)
+        {
+            if (!TryReadTagCommand(tags[i], out string command, out string value))
+                continue;
+
+            switch (command)
+            {
+                case "add_aff":
+                    if (int.TryParse(value, out int amount))
+                    {
+                        if (amount > 0)
+                            state.HasPositiveAffection = true;
+                        else
+                            state.HasNonPositiveAffection = true;
+                    }
+                    break;
+
+                case "choice_fail":
+                case "aff_fail":
+                case "fail_aff":
+                    state.HasExplicitFailure = true;
+                    break;
+            }
+        }
+
+        return state;
+    }
+
+    private static bool TryReadTagCommand(string tag, out string command, out string value)
+    {
+        command = string.Empty;
+        value = string.Empty;
+
+        if (string.IsNullOrWhiteSpace(tag))
+            return false;
+
+        string[] split = tag.Split(':');
+        if (split.Length == 0)
+            return false;
+
+        command = split[0].Trim().ToLowerInvariant();
+        if (split.Length >= 2)
+            value = split[split.Length - 1].Trim();
+
+        return !string.IsNullOrWhiteSpace(command);
+    }
+
+    private struct AffectionChoiceTagState
+    {
+        public bool HasPositiveAffection;
+        public bool HasNonPositiveAffection;
+        public bool HasExplicitFailure;
     }
 
     private void HandleSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -391,6 +755,7 @@ public class DialogueController : MonoBehaviour
             previousTagHandler.OnPortraitExitRequested -= HandlePortraitExit;
             previousTagHandler.OnFeatureRequested -= HandleFeature;
             previousTagHandler.OnAffectionRequested -= HandleAffection;
+            previousTagHandler.OnChoiceFailureRequested -= HandleChoiceFailure;
         }
 
         tagHandler = newTagHandler;
@@ -405,6 +770,7 @@ public class DialogueController : MonoBehaviour
         tagHandler.OnPortraitExitRequested -= HandlePortraitExit;
         tagHandler.OnFeatureRequested -= HandleFeature;
         tagHandler.OnAffectionRequested -= HandleAffection;
+        tagHandler.OnChoiceFailureRequested -= HandleChoiceFailure;
 
         tagHandler.OnPortraitEnterRequested += HandlePortraitEnter;
         tagHandler.OnPortraitFaceRequested += HandlePortraitFace;
@@ -414,5 +780,6 @@ public class DialogueController : MonoBehaviour
         tagHandler.OnPortraitExitRequested += HandlePortraitExit;
         tagHandler.OnFeatureRequested += HandleFeature;
         tagHandler.OnAffectionRequested += HandleAffection;
+        tagHandler.OnChoiceFailureRequested += HandleChoiceFailure;
     }
 }

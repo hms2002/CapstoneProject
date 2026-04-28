@@ -16,6 +16,48 @@ MonoBehaviour:
   npcName: "\uD074\uB85C\uC5D0"
   isBoss: 1
   primaryInk: {fileID: 4900000, guid: aef34e203f982094b814e11d115a65ed, type: 3}
+  bossEncounterInk: {fileID: 4900000, guid: 30cb64b0ab23601498a11512f2d78cd4, type: 3}
+  bossEncounterDialogues:
+  - label: 
+    startPath: first_encounter
+    inkJSON: {fileID: 0}
+    priority: 100
+    conditions:
+    - type: 1
+      comparison: 0
+      expectedBool: 0
+      intValue: 0
+      minIntValue: 0
+      maxIntValue: 0
+      floatValue: 0
+      minFloatValue: 0
+      maxFloatValue: 0
+      stringValue: 
+      targetNpcOverride: {fileID: 11400000}
+      attribute: {fileID: 0}
+      maxAttribute: {fileID: 0}
+      runEndReason: 0
+      invert: 0
+  - label: 
+    startPath: low_affection
+    inkJSON: {fileID: 0}
+    priority: 30
+    conditions:
+    - type: 5
+      comparison: 2
+      expectedBool: 0
+      intValue: 5
+      minIntValue: 0
+      maxIntValue: 0
+      floatValue: 0
+      minFloatValue: 0
+      maxFloatValue: 0
+      stringValue: 
+      targetNpcOverride: {fileID: 11400000}
+      attribute: {fileID: 0}
+      maxAttribute: {fileID: 0}
+      runEndReason: 0
+      invert: 0
   dialogueTheme: {fileID: 11400000, guid: 3ef1664fdf0dac148a47091038acdfd9, type: 2}
   affectionRewards:
   - targetLevel: 2

@@ -23,7 +23,7 @@ public class InventoryScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSo
     [SerializeField] private Button closeButton;
 
     [Header("Presentation")]
-    [SerializeField] private InventorySlideFadePresentation slideFadePresentation;
+    [SerializeField] private UISlideFadePresentation slideFadePresentation;
 
     [SerializeField, HideInInspector] private Transform consumableGridRoot;
     [SerializeField, HideInInspector] private Transform weaponGridRoot;
@@ -221,9 +221,9 @@ public class InventoryScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSo
         if (slideFadePresentation != null)
             return;
 
-        slideFadePresentation = GetComponent<InventorySlideFadePresentation>();
+        slideFadePresentation = GetComponent<UISlideFadePresentation>();
         if (slideFadePresentation == null)
-            slideFadePresentation = gameObject.AddComponent<InventorySlideFadePresentation>();
+            slideFadePresentation = gameObject.AddComponent<UISlideFadePresentation>();
     }
 
     private void ResolvePlayerInventoryPanel()
