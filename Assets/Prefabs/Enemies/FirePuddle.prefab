@@ -24601,7 +24601,7 @@ MonoBehaviour:
   blobVisual: {fileID: 5464356217682287179}
   logDebugMessages: 0
   lifetimeSeconds: 10
-  damageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
+  damageEffect: {fileID: 11400000, guid: b9d37f5a2c1e4ef2a6d9b3c4810f762e, type: 2}
   maxHealthAttribute: {fileID: 11400000, guid: 0e177e1d15e428745b5859fac08ce203, type: 2}
   damageIntervalSeconds: 1.5
   playerDamage: 1

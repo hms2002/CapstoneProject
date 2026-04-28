@@ -161,15 +161,9 @@ namespace UnityGAS
             if (other == null)
                 return null;
 
-            CombatHurtbox2D hurtbox = other.GetComponent<CombatHurtbox2D>();
-            if (hurtbox != null)
-                return hurtbox.ResolveTargetRoot();
-
-            PlayerInteractor2D player = other.GetComponentInParent<PlayerInteractor2D>();
-            if (player != null)
-                return player.gameObject;
-
-            return null;
+            // 장판 피해는 실제 피격 허트박스만 대상으로 삼는다.
+            // 플레이어 자식으로 붙은 공격 이펙트/히트박스 콜라이더가 부모 플레이어로 승격되는 것을 막는다.
+            return CombatTargetResolver2D.ResolveDamageTarget(other);
         }
 
         protected static bool CanApplyGroundEffectTo(GameObject target)

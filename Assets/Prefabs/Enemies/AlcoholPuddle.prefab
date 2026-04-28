@@ -9766,7 +9766,7 @@ MonoBehaviour:
   alcoholBuffDefinition: {fileID: 11400000, guid: c43ff3a0386243e6a31be32978c1b875, type: 2}
   buffRefreshIntervalSeconds: 0.2
   buffDurationSeconds: 0.35
-  projectileDamageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
+  projectileDamageEffect: {fileID: 11400000, guid: b9d37f5a2c1e4ef2a6d9b3c4810f762e, type: 2}
   projectilePlayerDamage: 1
   firePuddlePrefab: {fileID: 6445434061359251313, guid: e1c1813b39c39fe4fbf8a71730e056eb, type: 3}
   alcoholColor: {r: 0.72, g: 0.34, b: 0.12, a: 0.72}
