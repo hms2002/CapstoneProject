@@ -15,6 +15,9 @@ public class UpgradeSlotUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     public Image lockIcon;
     public GameObject purchasedCheckMark;
 
+    private System.Action<UpgradeSlotUI, PointerEventData> pointerEnterPresentation;
+    private System.Action<UpgradeSlotUI, PointerEventData> pointerExitPresentation;
+
     public void InitSlot(System.Action<UpgradeNodeSO> onBuy)
     {
         if (assignedNode == null)
@@ -27,6 +30,14 @@ public class UpgradeSlotUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
         buyButton.onClick.RemoveAllListeners();
         buyButton.onClick.AddListener(() => onBuy?.Invoke(assignedNode));
+    }
+
+    public void SetPresentationCallbacks(
+        System.Action<UpgradeSlotUI, PointerEventData> onPointerEnter,
+        System.Action<UpgradeSlotUI, PointerEventData> onPointerExit)
+    {
+        pointerEnterPresentation = onPointerEnter;
+        pointerExitPresentation = onPointerExit;
     }
 
     public void RefreshUI()
@@ -69,6 +80,8 @@ public class UpgradeSlotUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
     public void OnPointerEnter(PointerEventData eventData)
     {
+        pointerEnterPresentation?.Invoke(this, eventData);
+
         MouseCursorService.EnsureInstance().SetInteractable(this, assignedNode != null);
 
         if (assignedNode == null || UIManager.Instance == null || UpgradeTooltip.Instance == null)
@@ -83,6 +96,8 @@ public class UpgradeSlotUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
     public void OnPointerExit(PointerEventData eventData)
     {
+        pointerExitPresentation?.Invoke(this, eventData);
+
         MouseCursorService.EnsureInstance().SetInteractable(this, false);
 
         if (UIManager.Instance == null || UpgradeTooltip.Instance == null)

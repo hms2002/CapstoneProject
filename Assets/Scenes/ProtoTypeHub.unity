@@ -7430,6 +7430,41 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1.5, y: 1.5}
   m_EdgeRadius: 0
+--- !u!1 &1290561814 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4969926320460397034, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+  m_PrefabInstance: {fileID: 8345541588293432014}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1290561815
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1290561814}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ebf4d195e9240c4f9680943e334f48b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UILakeSurfaceImage
+  m_Material: {fileID: 2100000, guid: a7f89c4cb2e6d9742a81af669b7bfb2d, type: 2}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 0
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
 --- !u!1 &1339857237
 GameObject:
   m_ObjectHideFlags: 0
@@ -8531,6 +8566,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   portraitController: {fileID: 8345541588293432015}
+--- !u!1 &2041961481 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6125201180481339017, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+  m_PrefabInstance: {fileID: 8345541588293432014}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2041961487
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2041961481}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4810967c6d2ae7c4594a70de9f6dffe0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UpgradeLakePresentation
 --- !u!1 &2134974029
 GameObject:
   m_ObjectHideFlags: 0
@@ -9734,6 +9786,22 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2892530070260984316, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 2892530070260984316, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 2892530070260984316, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -85
+      objectReference: {fileID: 0}
+    - target: {fileID: 2892530070260984316, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -85
+      objectReference: {fileID: 0}
     - target: {fileID: 2910126394700923099, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -10042,6 +10110,18 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4484993595577944141, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0.8727273
+      objectReference: {fileID: 0}
+    - target: {fileID: 4484993595577944141, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4484993595577944141, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0.000000027743253
+      objectReference: {fileID: 0}
     - target: {fileID: 4496572870649930010, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -10218,6 +10298,14 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4876042048777502431, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_Size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4876042048777502431, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_Value
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4944368382761257632, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -10233,6 +10321,18 @@ PrefabInstance:
     - target: {fileID: 4944368382761257632, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4990932269819797760, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_Spacing
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4990932269819797760, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_Padding.m_Right
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 4990932269819797760, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_Padding.m_Bottom
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 5025893253400614979, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_AnchorMax.y
@@ -10408,6 +10508,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6111780990473329105, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6125201180481339017, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6144581908307395543, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
@@ -10794,6 +10898,14 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -442.6913
       objectReference: {fileID: 0}
+    - target: {fileID: 7405233426988329736, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_Type
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7405233426988329736, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: a5139c90a7cc6234aa8b17afafe9a505, type: 3}
     - target: {fileID: 7408512426857226274, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -10893,6 +11005,230 @@ PrefabInstance:
     - target: {fileID: 7702195701456742697, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7771956981108941483, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: lakePresentation
+      value: 
+      objectReference: {fileID: 2041961487}
+    - target: {fileID: 7771956981108941483, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: lakeSurfaceImage
+      value: 
+      objectReference: {fileID: 1290561815}
+    - target: {fileID: 7771956981108941483, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: lakePresentationSettings.enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7771956981108941483, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: lakePresentationSettings.waveSpeed
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7771956981108941483, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: lakePresentationSettings.deepColor.b
+      value: 0.5849056
+      objectReference: {fileID: 0}
+    - target: {fileID: 7771956981108941483, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: lakePresentationSettings.deepColor.g
+      value: 0.4577872
+      objectReference: {fileID: 0}
+    - target: {fileID: 7771956981108941483, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: lakePresentationSettings.deepColor.r
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7771956981108941483, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: lakePresentationSettings.bottomTiling
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7771956981108941483, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: lakePresentationSettings.surfaceAlpha
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7771956981108941483, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: lakePresentationSettings.waveStrength
+      value: 0.102
+      objectReference: {fileID: 0}
+    - target: {fileID: 7771956981108941483, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: lakePresentationSettings.edgeDarkening
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7771956981108941483, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: lakePresentationSettings.rippleColor.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7771956981108941483, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: lakePresentationSettings.rippleColor.b
+      value: 0.9901749
+      objectReference: {fileID: 0}
+    - target: {fileID: 7771956981108941483, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: lakePresentationSettings.rippleColor.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7771956981108941483, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: lakePresentationSettings.rippleColor.r
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7771956981108941483, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: lakePresentationSettings.causticColor.a
+      value: 0.92156863
+      objectReference: {fileID: 0}
+    - target: {fileID: 7771956981108941483, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: lakePresentationSettings.causticColor.b
+      value: 0.6226901
+      objectReference: {fileID: 0}
+    - target: {fileID: 7771956981108941483, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: lakePresentationSettings.causticColor.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7771956981108941483, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: lakePresentationSettings.causticColor.r
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7771956981108941483, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: lakePresentationSettings.rippleDuration
+      value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7771956981108941483, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: lakePresentationSettings.shallowColor.b
+      value: 0.58431375
+      objectReference: {fileID: 0}
+    - target: {fileID: 7771956981108941483, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: lakePresentationSettings.shallowColor.g
+      value: 0.45882353
+      objectReference: {fileID: 0}
+    - target: {fileID: 7771956981108941483, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: lakePresentationSettings.shallowColor.r
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7771956981108941483, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: lakePresentationSettings.causticStrength
+      value: 0.202
+      objectReference: {fileID: 0}
+    - target: {fileID: 7771956981108941483, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: lakePresentationSettings.rippleEndRadius
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 7771956981108941483, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: lakePresentationSettings.rippleThickness
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7771956981108941483, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: lakePresentationSettings.useUnscaledTime
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7771956981108941483, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: lakePresentationSettings.pointerWakeWidth
+      value: 40
+      objectReference: {fileID: 0}
+    - target: {fileID: 7771956981108941483, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: lakePresentationSettings.specularStrength
+      value: 0.195
+      objectReference: {fileID: 0}
+    - target: {fileID: 7771956981108941483, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: lakePresentationSettings.topDownDepthBias
+      value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7771956981108941483, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: lakePresentationSettings.pointerWakeLength
+      value: 40
+      objectReference: {fileID: 0}
+    - target: {fileID: 7771956981108941483, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: lakePresentationSettings.rippleStartRadius
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7771956981108941483, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: lakePresentationSettings.depthNoiseStrength
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7771956981108941483, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: lakePresentationSettings.drawOverlayRipples
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7771956981108941483, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: lakePresentationSettings.pointerWakeEnabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7771956981108941483, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: lakePresentationSettings.openRippleIntensity
+      value: 1.081
+      objectReference: {fileID: 0}
+    - target: {fileID: 7771956981108941483, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: lakePresentationSettings.pointerWakeDuration
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 7771956981108941483, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: lakePresentationSettings.surfaceRippleRadius
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 7771956981108941483, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: lakePresentationSettings.backgroundDistortion
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7771956981108941483, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: lakePresentationSettings.hoverRippleIntensity
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7771956981108941483, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: lakePresentationSettings.pointerWakeIntensity
+      value: 0.6
+      objectReference: {fileID: 0}
+    - target: {fileID: 7771956981108941483, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: lakePresentationSettings.ambientRippleInterval
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7771956981108941483, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: lakePresentationSettings.interactionDistortion
+      value: 0.05
+      objectReference: {fileID: 0}
+    - target: {fileID: 7771956981108941483, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: lakePresentationSettings.surfaceNormalStrength
+      value: 0.424
+      objectReference: {fileID: 0}
+    - target: {fileID: 7771956981108941483, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: lakePresentationSettings.ambientRippleIntensity
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7771956981108941483, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: lakePresentationSettings.pointerWakeMinDistance
+      value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: 7771956981108941483, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: lakePresentationSettings.surfaceRippleThickness
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7771956981108941483, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: lakePresentationSettings.purchaseRippleIntensity
+      value: 1.598
+      objectReference: {fileID: 0}
+    - target: {fileID: 7771956981108941483, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: lakePresentationSettings.surfaceOuterRippleSpeed
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7771956981108941483, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: lakePresentationSettings.surfaceInteractionEnabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7771956981108941483, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: lakePresentationSettings.surfaceCompressionStrength
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7771956981108941483, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: lakePresentationSettings.surfaceInteractionStrength
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7771956981108941483, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: lakePresentationSettings.surfaceOuterRippleDuration
+      value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7771956981108941483, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: lakePresentationSettings.surfaceOuterRippleStrength
+      value: 0.133
+      objectReference: {fileID: 0}
+    - target: {fileID: 7771956981108941483, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: lakePresentationSettings.surfaceClickRippleIntensity
+      value: 1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7771956981108941483, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: lakePresentationSettings.surfaceRippleFadeOutDuration
+      value: 0.3
       objectReference: {fileID: 0}
     - target: {fileID: 7821199182450576335, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_AnchorMax.y
@@ -11174,6 +11510,22 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8844996237204842549, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8844996237204842549, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8844996237204842549, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 1805
+      objectReference: {fileID: 0}
+    - target: {fileID: 8844996237204842549, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -1020
+      objectReference: {fileID: 0}
     - target: {fileID: 8890807246758718817, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -11250,10 +11602,17 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 2539455790977538004, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6125201180481339017, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2041961487}
+    - targetCorrespondingSourceObject: {fileID: 4969926320460397034, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1290561815}
   m_SourcePrefab: {fileID: 100100000, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
 --- !u!114 &8345541588293432015 stripped
 MonoBehaviour:

@@ -954,6 +954,7 @@ GameObject:
   - component: {fileID: 8294229833680041268}
   - component: {fileID: 5098673633545487994}
   - component: {fileID: 5022250120612758010}
+  - component: {fileID: 8328608360986866949}
   m_Layer: 5
   m_Name: UpgradeTreePanel
   m_TagString: Untagged
@@ -1075,6 +1076,86 @@ MonoBehaviour:
   rebuildOnOpen: 1
   centerOnOpen: 1
   forceFullScreenLayout: 1
+  lakeSurfaceMaterial: {fileID: 2100000, guid: a7f89c4cb2e6d9742a81af669b7bfb2d, type: 2}
+  useLakeSurfaceMaterialSettings: 1
+  previewLakeSurfaceInEditMode: 1
+  animateLakeSurfaceInEditMode: 1
+  lakePresentationSettings:
+    enabled: 1
+    useUnscaledTime: 1
+    deepColor: {r: 0.025, g: 0.07, b: 0.11, a: 1}
+    shallowColor: {r: 0.07, g: 0.23, b: 0.28, a: 1}
+    causticColor: {r: 0.62, g: 0.95, b: 0.87, a: 0.75}
+    surfaceAlpha: 0.94
+    waveScale: 5.5
+    waveSpeed: 0.32
+    waveStrength: 0.055
+    causticStrength: 0.18
+    topDownDepthBias: 0.18
+    contentParallax: 0.22
+    backgroundDistortion: 0.018
+    interactionDistortion: 0.045
+    bottomTint: {r: 0.18, g: 0.75, b: 0.82, a: 1}
+    foamColor: {r: 0.72, g: 1, b: 0.92, a: 0.62}
+    bottomStrength: 0.22
+    bottomTiling: 3.2
+    bottomDrift: {x: 0.012, y: -0.007}
+    heightTextureStrength: 0.18
+    heightTextureTiling: 5.8
+    heightTextureDrift: {x: -0.028, y: 0.018}
+    causticTextureStrength: 0.38
+    causticTextureTiling: 4.6
+    causticTextureSpeed: {x: 0.05, y: -0.032, z: -0.038, w: 0.044}
+    causticTextureSharpness: 2.6
+    foamStrength: 0.13
+    foamTiling: 8.5
+    foamSpeed: {x: 0.018, y: 0.012, z: -0.021, w: 0.015}
+    foamThreshold: 0.52
+    depthNoiseStrength: 0.28
+    surfaceNormalStrength: 0.46
+    specularStrength: 0.26
+    edgeDarkening: 0.22
+    rippleColor: {r: 0.72, g: 0.95, b: 1, a: 0.5}
+    surfaceInteractionEnabled: 1
+    drawOverlayRipples: 0
+    surfaceInteractionStrength: 0.72
+    surfaceCompressionStrength: 0.25
+    surfaceClickRippleIntensity: 0.72
+    surfaceRippleRadius: 230
+    surfaceRippleThickness: 22
+    surfaceOuterRippleDuration: 6.2
+    surfaceOuterRippleStrength: 0.16
+    surfaceOuterRippleSpeed: 0.94
+    surfaceRippleFadeOutDuration: 0.85
+    surfaceRippleMinInterval: 0.28
+    rippleDuration: 1.05
+    rippleStartRadius: 14
+    rippleEndRadius: 210
+    rippleThickness: 5.5
+    openRippleIntensity: 1.15
+    hoverRippleIntensity: 0
+    purchaseRippleIntensity: 1.35
+    ambientRippleInterval: 0
+    ambientRippleIntensity: 0
+    pointerWakeEnabled: 1
+    pointerWakeIntensity: 0.18
+    pointerWakeMinDistance: 8
+    pointerWakeDuration: 1
+    pointerWakeLength: 46
+    pointerWakeWidth: 30
+  lakePresentation: {fileID: 8328608360986866949}
+--- !u!114 &8328608360986866949
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8892360037678210520}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4810967c6d2ae7c4594a70de9f6dffe0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UpgradeLakePresentation
 --- !u!1 &9067810519093051185
 GameObject:
   m_ObjectHideFlags: 0
