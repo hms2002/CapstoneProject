@@ -454,7 +454,7 @@ MonoBehaviour:
   - value: {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
     max: {fileID: 11400000, guid: 0e177e1d15e428745b5859fac08ce203, type: 2}
     fillToMaxOnInitialize: 1
-  - value: {fileID: 11400000, guid: dde112729dec0bb4a9d2238ee7ee6dcc, type: 2}
+  - value: {fileID: 11400000, guid: 122086249f809784c84b56e9b99e367e, type: 2}
     max: {fileID: 11400000, guid: ddbd05a9b77349441a875c479e48212d, type: 2}
     fillToMaxOnInitialize: 0
 --- !u!114 &4300921420937928377
@@ -579,7 +579,7 @@ MonoBehaviour:
   animator: {fileID: 8843251595749694780}
   maxHealthDef: {fileID: 11400000, guid: 0e177e1d15e428745b5859fac08ce203, type: 2}
   healthDef: {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
-  enemyName: Drunken Dragon
+  enemyName: "\uCDE8\uB8E1 \uC2A4\uD53C\uB9AC"
   targetTag: Player
   targetSearchLayers:
     serializedVersion: 2
@@ -873,6 +873,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   npcData: {fileID: 11400000, guid: 5bcbe73d9f694da4b971d02f13b9d8e1, type: 2}
   startKnotSelectorBehaviour: {fileID: 6824159300182253415}
+  playEncounterDialogue: 1
+  playPrimaryDialogueAfterEncounter: 1
+  recordEncounterProgress: 1
   legacyInkJSON: {fileID: 4900000, guid: 0ea3c7635ba34a0b82c5b552cf9ff0e3, type: 3}
 --- !u!114 &6824159300182253413
 MonoBehaviour:
@@ -1199,7 +1202,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d042fc4d06e89994badb8bc741dda69a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MirroredLocalSocket2D
-  referenceTransform: {fileID: 7430654471959025258}
+  referenceTransform: {fileID: 289992003612041814}
   facingSprite: {fileID: 5569021315184123239}
   useTransformPositionAsRightFacingOffset: 1
   rightFacingLocalOffset: {x: 0, y: 0}
