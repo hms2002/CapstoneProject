@@ -40,6 +40,7 @@ public class Enemy : MonoBehaviour, ICombatDeathCommand
     [Header("Enemy's Settings")]
     [SerializeField] protected string enemyName;
     [SerializeField] private string targetTag = "Player";
+    [SerializeField] private LayerMask targetSearchLayers = Physics2D.DefaultRaycastLayers;
 
     protected bool isDead;
     private Coroutine deathDestroyRoutine;
@@ -156,6 +157,66 @@ public class Enemy : MonoBehaviour, ICombatDeathCommand
     protected void SetTarget(Transform newTarget)
     {
         target = newTarget;
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// 스폰 순서나 일시적인 target 누락 상황에서 적이 자기 주변 감지 범위 안의 유효 target을 다시 획득하게 한다.
+    /// </summary>
+    public bool TryAcquireTargetInRange(float range)
+    {
+        if (Target != null)
+            return true;
+
+        float searchRange = Mathf.Max(0f, range);
+        Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, searchRange, targetSearchLayers);
+        Transform nearestTarget = null;
+        float nearestSqrDistance = float.PositiveInfinity;
+
+        for (int i = 0; i < hits.Length; i++)
+        {
+            Collider2D hit = hits[i];
+            if (hit == null)
+                continue;
+
+            Transform candidate = ResolveTargetCandidate(hit);
+            if (candidate == null)
+                continue;
+
+            float sqrDistance = ((Vector2)(candidate.position - transform.position)).sqrMagnitude;
+            if (sqrDistance >= nearestSqrDistance)
+                continue;
+
+            nearestTarget = candidate;
+            nearestSqrDistance = sqrDistance;
+        }
+
+        if (nearestTarget == null)
+            return false;
+
+        SetTarget(nearestTarget);
+        return true;
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// 범위 검색에 걸린 collider가 실제 추적 대상인지 태그 기준으로 확인하고 대표 Transform을 반환한다.
+    /// </summary>
+    private Transform ResolveTargetCandidate(Collider2D hit)
+    {
+        if (hit.CompareTag(targetTag))
+            return hit.transform;
+
+        Transform current = hit.transform.parent;
+        while (current != null)
+        {
+            if (current.CompareTag(targetTag))
+                return current;
+
+            current = current.parent;
+        }
+
+        return null;
     }
 
     /// <summary>적 Attribute 값이 바뀔 때 파생 클래스가 반응할 수 있는 훅입니다.</summary>

@@ -33,8 +33,9 @@ GameObject:
   - component: {fileID: 344486096308046059}
   - component: {fileID: 8223012456081861757}
   - component: {fileID: 5188487318859962288}
+  - component: {fileID: 7001000000000000002}
   m_Layer: 31
-  m_Name: BeerMonster
+  m_Name: CorridorCandlestickMonster
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -104,8 +105,8 @@ SpriteRenderer:
   m_SortingLayer: 4
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 21300000, guid: 8c986b1f3b95de84ab7761514d059f24, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Sprite: {fileID: -101365722, guid: 0d366a34caa3bee4ba89bd536ddacd96, type: 3}
+  m_Color: {r: 0.5622641, g: 0.5622641, b: 0.5622641, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -178,8 +179,8 @@ BoxCollider2D:
   m_Offset: {x: 0, y: 0.35}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0}
-    oldSize: {x: 0.84, y: 0.92}
+    pivot: {x: 0.5, y: 0.18}
+    oldSize: {x: 2, y: 1.1666666}
     newSize: {x: 0.48, y: 0.28}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -197,7 +198,7 @@ Animator:
   m_GameObject: {fileID: 625522859161183429}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 4447e3852753aa94b8d59963e1f180da, type: 2}
+  m_Controller: {fileID: 9100000, guid: 9b65ee6e75d0033428caa554d8241d11, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -218,23 +219,25 @@ MonoBehaviour:
   m_GameObject: {fileID: 625522859161183429}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1538d8ce5fdb41d8a2cf1dfdf66fda0c, type: 3}
+  m_Script: {fileID: 11500000, guid: 6be8c293bf804f6e9367654284929f50, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sprite: {fileID: 1695031726951874086}
-  animator: {fileID: 6906640129251997176}
+  sprite: {fileID: 0}
+  animator: {fileID: 0}
   maxHealthDef: {fileID: 11400000, guid: 0e177e1d15e428745b5859fac08ce203, type: 2}
   healthDef: {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
-  enemyName: Beer Monster
+  enemyName: Corridor Candlestick Monster
   targetTag: Player
   targetSearchLayers:
     serializedVersion: 2
     m_Bits: 4294967295
   chaseIntent: {fileID: 4498329263665203074}
-  logMobFsmDebug: 1
-  alcoholPuddlePrefab: {fileID: 4193140718140302002, guid: 063a1b5ad44412642b105047dd0a3a9d, type: 3}
-  puddleSpawnOffset: {x: 0, y: 0}
-  spawnPuddleOnDeath: 1
+  logMobFsmDebug: 0
+  deathIgnitionRadius: 1.5
+  igniteAlcoholPuddlesOnDeath: 1
+  deathIgnitionStartDelay: 0.02
+  deathIgnitionScanDuration: 0.2
+  deathIgnitionScanInterval: 0.03
 --- !u!114 &7001000000000000001
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -491,7 +494,7 @@ MonoBehaviour:
   stopRange: 0.2
   speedScale: 0.5
   returnSpeedScale: 0.9
-  logChaseDebug: 1
+  logChaseDebug: 0
   logInterval: 0.35
   targetAcquireInterval: 0.25
 --- !u!114 &1202927576409601092
@@ -587,3 +590,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UnityGAS.CombatHurtbox2D
   targetRoot: {fileID: 0}
   ownedColliders: []
+--- !u!114 &7001000000000000002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 625522859161183429}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eab7ec7f6dd542f9bf26ce0e9f7f4d6f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maskedRenderer: {fileID: 1695031726951874086}
+  samplePointOverride: {fileID: 0}
+  sampleOffset: {x: 0, y: -0.5, z: 0}
+  spriteMaskRefreshInterval: 0.25

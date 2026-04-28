@@ -17,7 +17,10 @@ public sealed class MobIdleState : IMobState
         if (!MobStateTransitionUtility.TryHandleAttackTransition(stateMachine, context))
         {
             if (context != null && context.CanUseChaseState())
+            {
+                context.Owner?.LogFsmDebug("Idle -> Chase 전이. 타겟 감지 성공.");
                 stateMachine.ChangeState(new MobChaseState(), context);
+            }
         }
     }
 
