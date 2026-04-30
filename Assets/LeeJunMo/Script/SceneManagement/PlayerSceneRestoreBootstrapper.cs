@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityGAS;
 
 /// <summary>
@@ -189,6 +190,9 @@ public sealed class PlayerSceneRestoreBootstrapper : MonoBehaviour
         if (player == null)
             return false;
 
+        if (!IsRestoreAllowedForCurrentScene(gameplay))
+            return false;
+
         if (!IsItemRestoreReady())
             return false;
 
@@ -227,6 +231,19 @@ public sealed class PlayerSceneRestoreBootstrapper : MonoBehaviour
         isRestoreConfirmationPending = true;
         restoreConfirmRoutine = StartCoroutine(ConfirmRestoreNextFrame(gameplay, pendingState, player));
         return true;
+    }
+
+    private bool IsRestoreAllowedForCurrentScene(GamePlayDataManager gameplay)
+    {
+        if (gameplay == null)
+            return false;
+
+        SceneTransitionContext transition = gameplay.PeekPendingTransition();
+        if (transition == null || string.IsNullOrEmpty(transition.toScene))
+            return true;
+
+        string activeSceneName = SceneManager.GetActiveScene().name;
+        return string.Equals(activeSceneName, transition.toScene, System.StringComparison.OrdinalIgnoreCase);
     }
 
     /// <summary>

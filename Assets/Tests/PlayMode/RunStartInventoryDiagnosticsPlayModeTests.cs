@@ -12,10 +12,9 @@ using UnityEngine.TestTools;
 public sealed class RunStartInventoryDiagnosticsPlayModeTests
 {
     private const string HubSceneName = "ProtoTypeHub";
-    private const string FallbackWeaponId = "Weapon.New1";
-    private const string FallbackRelicId = "AttackBonusRelic";
     private const int RepetitionCount = 30;
     private const int SettleFrameCount = 5;
+    private const int RestoreObservationFrameLimit = 120;
     private const int WaitFrameLimit = 240;
 
     [UnityTest]
@@ -42,6 +41,10 @@ public sealed class RunStartInventoryDiagnosticsPlayModeTests
             Assert.That(weaponInventory, Is.Not.Null, $"Iteration {iteration}: WeaponInventory2D is missing on the player.");
             Assert.That(relicInventory, Is.Not.Null, $"Iteration {iteration}: RelicInventory is missing on the player.");
             Assert.That(consumableInventory, Is.Not.Null, $"Iteration {iteration}: PlayerConsumableInventory is missing on the player.");
+
+            yield return WaitForCondition(
+                IsItemManagerReady,
+                $"Iteration {iteration}: ItemManager was not ready for inventory seeding.");
 
             SeedResult seed = SeedPlayerInventory(weaponInventory, relicInventory, consumableInventory);
             InventorySnapshot beforeTravel = CaptureSnapshot(weaponInventory, relicInventory, consumableInventory);
@@ -83,31 +86,40 @@ public sealed class RunStartInventoryDiagnosticsPlayModeTests
                 $"Iteration {iteration}: PlayerSceneRestoreBootstrapper was not found in run scene '{loadedRunScene}'.");
 
             MonoBehaviour restoredPlayer = null;
+            InventorySnapshot firstRunPlayerSnapshot = null;
             yield return WaitForCondition(
-                () => TryGetCurrentPlayer(out restoredPlayer),
-                $"Iteration {iteration}: restored player was not found in run scene '{loadedRunScene}'.");
+                () => TryCaptureCurrentPlayerSnapshot(out restoredPlayer, out firstRunPlayerSnapshot),
+                () =>
+                    $"Iteration {iteration}: current player inventory could not be captured in run scene '{loadedRunScene}'.\n" +
+                    $"Players:\n{DescribeAllPlayers()}");
 
-            Assert.That(restoredPlayer, Is.Not.Null, $"Iteration {iteration}: restored player reference is null in run scene '{loadedRunScene}'.");
+            yield return WaitForRestoreObservationWindow(gameplayManager);
 
-            MonoBehaviour restoredWeaponInventory = GetComponentByTypeName(restoredPlayer.gameObject, "WeaponInventory2D");
-            MonoBehaviour restoredRelicInventory = GetComponentByTypeName(restoredPlayer.gameObject, "RelicInventory");
-            MonoBehaviour restoredConsumableInventory = GetComponentByTypeName(restoredPlayer.gameObject, "PlayerConsumableInventory");
+            for (int i = 0; i < SettleFrameCount; i++)
+                yield return null;
 
-            Assert.That(restoredWeaponInventory, Is.Not.Null, $"Iteration {iteration}: restored player is missing WeaponInventory2D.");
-            Assert.That(restoredRelicInventory, Is.Not.Null, $"Iteration {iteration}: restored player is missing RelicInventory.");
-            Assert.That(restoredConsumableInventory, Is.Not.Null, $"Iteration {iteration}: restored player is missing PlayerConsumableInventory.");
+            object pendingStateAfterRestoreWindow = gameplayManager != null
+                ? InvokeInstance(gameplayManager, "PeekPendingPlayerState")
+                : null;
+            bool pendingStateConsumed = pendingStateAfterRestoreWindow == null;
+            InventorySnapshot pendingSnapshotAfterRestoreWindow = InventorySnapshot.FromRuntimeState(pendingStateAfterRestoreWindow);
 
-            InventorySnapshot afterTravel = CaptureSnapshot(
-                restoredWeaponInventory,
-                restoredRelicInventory,
-                restoredConsumableInventory);
+            InventorySnapshot afterTravel = null;
+            yield return WaitForCondition(
+                () => TryCaptureCurrentPlayerSnapshot(out restoredPlayer, out afterTravel),
+                () =>
+                    $"Iteration {iteration}: current player inventory could not be captured after restore settled in run scene '{loadedRunScene}'.\n" +
+                    $"Players:\n{DescribeAllPlayers()}");
 
             if (!beforeTravel.EqualsTo(afterTravel))
             {
                 bool captureMatchesSeed = beforeTravel.EqualsTo(pendingSnapshot);
-                string inference = captureMatchesSeed
-                    ? "pendingPlayerState는 정상적으로 저장됐지만, 새 씬에서 복원되거나 스폰 직후 유지되는 과정에서 인벤토리가 달라졌습니다. restore/bootstrapper/spawn policy 쪽을 먼저 보세요."
-                    : "ScenePortalTravelService가 저장한 pendingPlayerState 자체가 이미 시드 상태와 달랐습니다. capture bridge 또는 travel 직전 캡처 경로를 먼저 보세요.";
+                bool anyPlayerMatchesSeed = AnyPlayerMatchesSnapshot(beforeTravel);
+                string inference = BuildFailureInference(
+                    captureMatchesSeed,
+                    pendingStateConsumed,
+                    anyPlayerMatchesSeed,
+                    afterTravel);
 
                 Assert.Fail(BuildFailureMessage(
                     iteration,
@@ -115,9 +127,14 @@ public sealed class RunStartInventoryDiagnosticsPlayModeTests
                     inference,
                     beforeTravel,
                     pendingSnapshot,
+                    firstRunPlayerSnapshot,
                     afterTravel,
+                    pendingStateConsumed,
+                    pendingSnapshotAfterRestoreWindow,
+                    anyPlayerMatchesSeed,
                     seed,
-                    restoreBootstrapper != null));
+                    restoreBootstrapper != null,
+                    DescribeAllPlayers()));
             }
 
             if (gameplayManager != null)
@@ -146,6 +163,11 @@ public sealed class RunStartInventoryDiagnosticsPlayModeTests
 
     private static IEnumerator WaitForCondition(Func<bool> predicate, string failureMessage)
     {
+        return WaitForCondition(predicate, () => failureMessage);
+    }
+
+    private static IEnumerator WaitForCondition(Func<bool> predicate, Func<string> failureMessageFactory)
+    {
         for (int frame = 0; frame < WaitFrameLimit; frame++)
         {
             if (predicate())
@@ -154,13 +176,64 @@ public sealed class RunStartInventoryDiagnosticsPlayModeTests
             yield return null;
         }
 
-        Assert.Fail(failureMessage);
+        Assert.Fail(failureMessageFactory != null ? failureMessageFactory() : "Condition was not satisfied.");
+    }
+
+    private static IEnumerator WaitForRestoreObservationWindow(MonoBehaviour gameplayManager)
+    {
+        for (int frame = 0; frame < RestoreObservationFrameLimit; frame++)
+        {
+            if (gameplayManager != null && InvokeInstance(gameplayManager, "PeekPendingPlayerState") == null)
+                yield break;
+
+            yield return null;
+        }
     }
 
     private static bool TryGetCurrentPlayer(out MonoBehaviour player)
     {
-        player = FindBehaviourByTypeName("PlayerInteractor2D");
+        player = FindCurrentPlayerInteractor();
         return player != null;
+    }
+
+    private static bool TryCaptureCurrentPlayerSnapshot(out MonoBehaviour player, out InventorySnapshot snapshot)
+    {
+        snapshot = null;
+
+        if (!TryGetCurrentPlayer(out player))
+            return false;
+
+        return TryCapturePlayerSnapshot(player, out snapshot);
+    }
+
+    private static bool TryCapturePlayerSnapshot(MonoBehaviour player, out InventorySnapshot snapshot)
+    {
+        snapshot = null;
+
+        if (player == null)
+            return false;
+
+        MonoBehaviour weaponInventory = GetComponentByTypeName(player.gameObject, "WeaponInventory2D");
+        MonoBehaviour relicInventory = GetComponentByTypeName(player.gameObject, "RelicInventory");
+        MonoBehaviour consumableInventory = GetComponentByTypeName(player.gameObject, "PlayerConsumableInventory");
+
+        if (weaponInventory == null || relicInventory == null || consumableInventory == null)
+            return false;
+
+        snapshot = CaptureSnapshot(weaponInventory, relicInventory, consumableInventory);
+        return true;
+    }
+
+    private static bool IsItemManagerReady()
+    {
+        MonoBehaviour itemManager = FindSingletonBehaviourByTypeName("ItemManager");
+        return IsReady(itemManager);
+    }
+
+    private static bool IsReady(object target)
+    {
+        object value = GetMemberValue(target, "IsReady");
+        return value is bool isReady && isReady;
     }
 
     private static SeedResult SeedPlayerInventory(
@@ -172,19 +245,26 @@ public sealed class RunStartInventoryDiagnosticsPlayModeTests
         ClearRelicInventory(relicInventory);
         ClearConsumableInventory(consumableInventory);
 
-        MonoBehaviour itemManager = FindBehaviourByTypeName("ItemManager");
+        MonoBehaviour itemManager = FindSingletonBehaviourByTypeName("ItemManager");
         Assert.That(itemManager, Is.Not.Null, "ItemManager.Instance is required for diagnostic inventory seeding.");
+        Assert.That(IsReady(itemManager), Is.True, "ItemManager.Instance was found but is not ready for diagnostic inventory seeding.");
 
-        object weapon = InvokeInstance(itemManager, "GetWeaponData", FallbackWeaponId);
-        object relic = InvokeInstance(itemManager, "GetRelicData", FallbackRelicId);
-        object consumable = null;
+        object weapon = ResolveFirstAvailableDefinition(
+            itemManager,
+            "GetUnlockedWeaponIDs",
+            "GetWeaponData",
+            "weapon");
 
-        object consumables = InvokeInstance(itemManager, "GetAllConsumables");
-        if (consumables is IList list && list.Count > 0)
-            consumable = list[0];
+        object relic = ResolveFirstAvailableDefinition(
+            itemManager,
+            "GetUnlockedRelicIDs",
+            "GetRelicData",
+            "relic");
 
-        Assert.That(weapon, Is.Not.Null, $"Could not resolve weapon definition '{FallbackWeaponId}' from ItemManager.");
-        Assert.That(relic, Is.Not.Null, $"Could not resolve relic definition '{FallbackRelicId}' from ItemManager.");
+        object consumable = ResolveFirstAvailableConsumable(itemManager);
+
+        Assert.That(weapon, Is.Not.Null, "Could not resolve any unlocked weapon definition from ItemManager.");
+        Assert.That(relic, Is.Not.Null, "Could not resolve any unlocked relic definition from ItemManager.");
         Assert.That(consumable, Is.Not.Null, "Could not resolve any consumable definition from ItemManager.");
 
         bool weaponSeeded = InvokeBool(weaponInventory, "TrySetWeaponSlot", 0, weapon, false);
@@ -199,6 +279,68 @@ public sealed class RunStartInventoryDiagnosticsPlayModeTests
             GetStringMember(weapon, "weaponId"),
             GetStringMember(relic, "relicId"),
             GetStringMember(consumable, "consumableId"));
+    }
+
+    private static object ResolveFirstAvailableDefinition(
+        MonoBehaviour itemManager,
+        string idListMethodName,
+        string resolveMethodName,
+        string label)
+    {
+        object ids = InvokeInstance(itemManager, idListMethodName);
+        Assert.That(ids, Is.InstanceOf<IList>(), $"ItemManager.{idListMethodName} did not return an IList.");
+
+        var idList = (IList)ids;
+        var attemptedIds = new List<string>();
+
+        for (int i = 0; i < idList.Count; i++)
+        {
+            string id = idList[i] as string;
+            if (string.IsNullOrEmpty(id))
+                continue;
+
+            attemptedIds.Add(id);
+            object definition = InvokeInstance(itemManager, resolveMethodName, id);
+            if (definition != null)
+                return definition;
+        }
+
+        Assert.Fail(
+            $"Could not resolve any unlocked {label} definition from ItemManager. " +
+            $"Attempted IDs: {JoinAttemptedIds(attemptedIds)}");
+        return null;
+    }
+
+    private static object ResolveFirstAvailableConsumable(MonoBehaviour itemManager)
+    {
+        object consumables = InvokeInstance(itemManager, "GetAllConsumables");
+        Assert.That(consumables, Is.InstanceOf<IList>(), "ItemManager.GetAllConsumables did not return an IList.");
+
+        var list = (IList)consumables;
+        for (int i = 0; i < list.Count; i++)
+        {
+            if (list[i] != null)
+                return list[i];
+        }
+
+        return null;
+    }
+
+    private static string JoinAttemptedIds(IList<string> attemptedIds)
+    {
+        if (attemptedIds == null || attemptedIds.Count == 0)
+            return "(none)";
+
+        var builder = new StringBuilder();
+        for (int i = 0; i < attemptedIds.Count; i++)
+        {
+            if (i > 0)
+                builder.Append(", ");
+
+            builder.Append(attemptedIds[i]);
+        }
+
+        return builder.ToString();
     }
 
     private static void ClearWeaponInventory(MonoBehaviour weaponInventory)
@@ -326,15 +468,22 @@ public sealed class RunStartInventoryDiagnosticsPlayModeTests
         string inference,
         InventorySnapshot beforeTravel,
         InventorySnapshot pendingSnapshot,
+        InventorySnapshot firstRunPlayerSnapshot,
         InventorySnapshot afterTravel,
+        bool pendingStateConsumed,
+        InventorySnapshot pendingSnapshotAfterRestoreWindow,
+        bool anyPlayerMatchesSeed,
         SeedResult seed,
-        bool hasRestoreBootstrapper)
+        bool hasRestoreBootstrapper,
+        string playerDiagnostics)
     {
         var builder = new StringBuilder();
         builder.AppendLine($"Iteration {iteration}: inventory changed after Hub -> RunStart transition.");
         builder.AppendLine($"Run scene: {loadedRunScene}");
         builder.AppendLine($"Restore bootstrapper found: {hasRestoreBootstrapper}");
         builder.AppendLine($"Seed: {seed.ToSummary()}");
+        builder.AppendLine($"Pending consumed after restore window: {pendingStateConsumed}");
+        builder.AppendLine($"Any player currently matches seeded inventory: {anyPlayerMatchesSeed}");
         builder.AppendLine($"Inference: {inference}");
         builder.AppendLine();
         builder.AppendLine("Before travel:");
@@ -343,9 +492,46 @@ public sealed class RunStartInventoryDiagnosticsPlayModeTests
         builder.AppendLine("Stored pendingPlayerState:");
         builder.AppendLine(pendingSnapshot.ToMultilineString());
         builder.AppendLine();
+        builder.AppendLine("First run-scene current player snapshot:");
+        builder.AppendLine(firstRunPlayerSnapshot != null ? firstRunPlayerSnapshot.ToMultilineString() : "(unavailable)");
+        builder.AppendLine();
+        builder.AppendLine("PendingPlayerState after restore observation window:");
+        builder.AppendLine(pendingStateConsumed
+            ? "(consumed)"
+            : pendingSnapshotAfterRestoreWindow.ToMultilineString());
+        builder.AppendLine();
         builder.AppendLine("After travel:");
         builder.AppendLine(afterTravel.ToMultilineString());
+
+        if (!string.IsNullOrEmpty(playerDiagnostics))
+        {
+            builder.AppendLine();
+            builder.AppendLine("Player diagnostics:");
+            builder.AppendLine(playerDiagnostics);
+        }
+
         return builder.ToString();
+    }
+
+    private static string BuildFailureInference(
+        bool captureMatchesSeed,
+        bool pendingStateConsumed,
+        bool anyPlayerMatchesSeed,
+        InventorySnapshot afterTravel)
+    {
+        if (!captureMatchesSeed)
+            return "pendingPlayerState did not match the seeded inventory, so the loss happened before or during ScenePortalTravelService capture. Check PlayerRuntimeCaptureBridge and pre-capture cleanup.";
+
+        if (!pendingStateConsumed)
+            return "pendingPlayerState still matched the seeded inventory, but it was not consumed within the restore observation window. Restore did not complete, was not attempted on the active player, or restore confirmation failed. Check PlayerSceneRestoreBootstrapper readiness, resolver availability, and PlayerSpawner registration order.";
+
+        if (anyPlayerMatchesSeed)
+            return "pendingPlayerState was consumed and at least one Player still has the seeded inventory, but the current Player snapshot differs. This points to duplicate Player objects or PlayerRuntimeRegistry/PlayerInteractor2D.Instance selecting the wrong player after run entry.";
+
+        if (afterTravel == null || !afterTravel.HasAnyItem)
+            return "pendingPlayerState was consumed, but the observed current Player inventory is empty. Restore likely succeeded on an object that was later replaced/destroyed, or another startup path cleared the inventory immediately after restore. Check PlayerSpawner, PlayerRuntimeRegistry, and inventory Awake/restore ordering.";
+
+        return "pendingPlayerState was consumed, but the current Player inventory differs from the seeded inventory. Check restore slot mapping and inventory startup code that may partially overwrite restored equipment.";
     }
 
     private static void InvokeEndRunNone(MonoBehaviour gameplayManager)
@@ -445,6 +631,126 @@ public sealed class RunStartInventoryDiagnosticsPlayModeTests
         }
 
         return null;
+    }
+
+    private static MonoBehaviour FindSingletonBehaviourByTypeName(string typeName)
+    {
+        Type type = FindTypeByName(typeName);
+        if (type != null)
+        {
+            PropertyInfo property = type.GetProperty("Instance", BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
+            if (property != null)
+            {
+                object value = property.GetValue(null);
+                if (value is MonoBehaviour behaviour && behaviour != null)
+                    return behaviour;
+            }
+        }
+
+        return FindBehaviourByTypeName(typeName);
+    }
+
+    private static MonoBehaviour FindCurrentPlayerInteractor()
+    {
+        Type registryType = FindTypeByName("PlayerRuntimeRegistry");
+        if (registryType != null)
+        {
+            PropertyInfo currentPlayerProperty = registryType.GetProperty(
+                "CurrentPlayer",
+                BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
+
+            object currentPlayer = currentPlayerProperty != null
+                ? currentPlayerProperty.GetValue(null)
+                : null;
+
+            if (currentPlayer is MonoBehaviour registryPlayer && registryPlayer != null)
+                return registryPlayer;
+        }
+
+        return FindSingletonBehaviourByTypeName("PlayerInteractor2D");
+    }
+
+    private static string DescribeAllPlayers()
+    {
+        MonoBehaviour[] players = FindBehavioursByTypeName("PlayerInteractor2D");
+        if (players.Length == 0)
+            return "(none)";
+
+        var builder = new StringBuilder();
+        for (int i = 0; i < players.Length; i++)
+        {
+            if (i > 0)
+                builder.AppendLine();
+
+            builder.AppendLine(DescribePlayer(players[i]));
+        }
+
+        return builder.ToString().TrimEnd();
+    }
+
+    private static bool AnyPlayerMatchesSnapshot(InventorySnapshot expected)
+    {
+        if (expected == null)
+            return false;
+
+        MonoBehaviour[] players = FindBehavioursByTypeName("PlayerInteractor2D");
+        for (int i = 0; i < players.Length; i++)
+        {
+            if (TryCapturePlayerSnapshot(players[i], out InventorySnapshot snapshot) &&
+                expected.EqualsTo(snapshot))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static string DescribePlayer(MonoBehaviour player)
+    {
+        if (player == null)
+            return "(null player)";
+
+        GameObject gameObject = player.gameObject;
+        string sceneName = gameObject.scene.IsValid() ? gameObject.scene.name : "(invalid)";
+
+        var builder = new StringBuilder();
+        builder.AppendLine(
+            $"name={gameObject.name}, instanceId={gameObject.GetInstanceID()}, scene={sceneName}, " +
+            $"activeInHierarchy={gameObject.activeInHierarchy}, isCurrent={IsCurrentPlayer(player)}");
+
+        if (TryCapturePlayerSnapshot(player, out InventorySnapshot snapshot))
+            builder.Append(snapshot.ToMultilineString());
+        else
+            builder.Append("(inventory snapshot unavailable)");
+
+        return builder.ToString();
+    }
+
+    private static bool IsCurrentPlayer(MonoBehaviour player)
+    {
+        if (player == null)
+            return false;
+
+        MonoBehaviour currentPlayer = FindCurrentPlayerInteractor();
+        return currentPlayer == player;
+    }
+
+    private static MonoBehaviour[] FindBehavioursByTypeName(string typeName)
+    {
+        MonoBehaviour[] behaviours = UnityEngine.Object.FindObjectsByType<MonoBehaviour>(
+            FindObjectsInactive.Include,
+            FindObjectsSortMode.None);
+
+        var matches = new List<MonoBehaviour>();
+        for (int i = 0; i < behaviours.Length; i++)
+        {
+            MonoBehaviour behaviour = behaviours[i];
+            if (behaviour != null && behaviour.GetType().Name == typeName)
+                matches.Add(behaviour);
+        }
+
+        return matches.ToArray();
     }
 
     private static MonoBehaviour GetComponentByTypeName(GameObject target, string typeName)
