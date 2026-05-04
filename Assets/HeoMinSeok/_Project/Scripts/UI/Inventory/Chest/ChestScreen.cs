@@ -233,8 +233,11 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
         RectTransform playerStatRect = sharedPlayerInventoryPanel != null
             ? sharedPlayerInventoryPanel.PlayerStatPanelRect
             : null;
+        RectTransform playerCollisionRect = sharedPlayerInventoryPanel != null
+            ? sharedPlayerInventoryPanel.CollisionBoundsRect
+            : inventoryPanelRect;
 
-        firstOpenRevealPresentation?.ConfigurePanels(chestPanelRect, playerPanelRect, playerStatRect);
+        firstOpenRevealPresentation?.ConfigurePanels(chestPanelRect, playerPanelRect, playerStatRect, playerCollisionRect);
     }
 
     public void SnapOpenForInventoryRoot(PlayerInventoryPanelView sharedPlayerInventoryPanel)
@@ -376,6 +379,7 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
     private void BuildChestSlots()
     {
         BuildSlots(chestContainer, chestGridRoot, chestSlotPrefab);
+        firstOpenRevealPresentation?.ConfigureItemRevealSlots(spawnedChestSlots);
     }
 
     private void BuildSlots(IItemContainer container, Transform gridRoot, ItemSlotUI slotPrefab)
@@ -405,6 +409,7 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
         }
 
         spawnedChestSlots.Clear();
+        firstOpenRevealPresentation?.ConfigureItemRevealSlots(null);
     }
 
     private void DisposeChestAdapter()

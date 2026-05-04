@@ -1,0 +1,749 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>마왕 패턴</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+/* Override strong tags inside headings to maintain consistent weight */
+h1 strong,
+h2 strong,
+h3 strong {
+	font-weight: 600;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 10px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+
+	table.collection-content {
+		width: 100%;
+		table-layout: fixed;
+	}
+
+	table.collection-content th,
+	table.collection-content td {
+		overflow-wrap: anywhere;
+	}
+
+	table.collection-content td > .user,
+	table.collection-content td > time {
+		white-space: pre-wrap;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content-wrapper {
+	overflow-x: auto;
+}
+
+@media only print {
+	.collection-content-wrapper {
+		overflow-x: visible;
+	}
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.collection-content td {
+	white-space: pre-wrap;
+	word-break: break-word;
+}
+
+.column-list {
+	display: flex;
+	gap: 46px;
+}
+
+.column {
+	min-width: 0;
+	overflow: hidden;
+}
+
+.column > *:first-child {
+	margin-top: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+table {
+	border-collapse: collapse;
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol.numbered-list.numbered-list-digits-2 {
+	padding-inline-start: 2em;
+}
+
+ol.numbered-list.numbered-list-digits-3plus {
+	padding-inline-start: 2.4em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+	margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.callout img.notion-static-icon {
+	width: 1em;
+	height: 1em;
+}
+
+.callout p {
+	margin: 0;
+}
+
+.callout h1,
+.callout h2,
+.callout h3 {
+	margin: 0 0 0.6rem;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+blockquote.quote-large {
+	font-size: 1.25em;
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", "Noto Sans Arabic", "Noto Sans Hebrew", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(44, 44, 43, 1);
+}
+.highlight-gray {
+	color: rgba(125, 122, 117, 1);
+	fill: rgba(125, 122, 117, 1);
+}
+.highlight-brown {
+	color: rgba(159, 118, 90, 1);
+	fill: rgba(159, 118, 90, 1);
+}
+.highlight-orange {
+	color: rgba(210, 123, 45, 1);
+	fill: rgba(210, 123, 45, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 148, 52, 1);
+	fill: rgba(203, 148, 52, 1);
+}
+.highlight-teal {
+	color: rgba(80, 148, 110, 1);
+	fill: rgba(80, 148, 110, 1);
+}
+.highlight-blue {
+	color: rgba(56, 125, 201, 1);
+	fill: rgba(56, 125, 201, 1);
+}
+.highlight-purple {
+	color: rgba(154, 107, 180, 1);
+	fill: rgba(154, 107, 180, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(207, 81, 72, 1);
+	fill: rgba(207, 81, 72, 1);
+}
+.highlight-default_background {
+	color: rgba(44, 44, 43, 1);
+}
+.highlight-gray_background {
+	background: rgba(42, 28, 0, 0.07);
+}
+.highlight-brown_background {
+	background: rgba(139, 46, 0, 0.086);
+}
+.highlight-orange_background {
+	background: rgba(224, 101, 1, 0.129);
+}
+.highlight-yellow_background {
+	background: rgba(211, 168, 0, 0.137);
+}
+.highlight-teal_background {
+	background: rgba(0, 100, 45, 0.09);
+}
+.highlight-blue_background {
+	background: rgba(0, 124, 215, 0.094);
+}
+.highlight-purple_background {
+	background: rgba(102, 0, 178, 0.078);
+}
+.highlight-pink_background {
+	background: rgba(197, 0, 93, 0.086);
+}
+.highlight-red_background {
+	background: rgba(223, 22, 0, 0.094);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(125, 122, 117, 1);
+	fill: rgba(125, 122, 117, 1);
+}
+.block-color-brown {
+	color: rgba(159, 118, 90, 1);
+	fill: rgba(159, 118, 90, 1);
+}
+.block-color-orange {
+	color: rgba(210, 123, 45, 1);
+	fill: rgba(210, 123, 45, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 148, 52, 1);
+	fill: rgba(203, 148, 52, 1);
+}
+.block-color-teal {
+	color: rgba(80, 148, 110, 1);
+	fill: rgba(80, 148, 110, 1);
+}
+.block-color-blue {
+	color: rgba(56, 125, 201, 1);
+	fill: rgba(56, 125, 201, 1);
+}
+.block-color-purple {
+	color: rgba(154, 107, 180, 1);
+	fill: rgba(154, 107, 180, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(207, 81, 72, 1);
+	fill: rgba(207, 81, 72, 1);
+}
+.block-color-default_background {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray_background {
+	background: rgba(240, 239, 237, 1);
+}
+.block-color-brown_background {
+	background: rgba(245, 237, 233, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 235, 222, 1);
+}
+.block-color-yellow_background {
+	background: rgba(249, 243, 220, 1);
+}
+.block-color-teal_background {
+	background: rgba(232, 241, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(229, 242, 252, 1);
+}
+.block-color-purple_background {
+	background: rgba(243, 235, 249, 1);
+}
+.block-color-pink_background {
+	background: rgba(250, 233, 241, 1);
+}
+.block-color-red_background {
+	background: rgba(252, 233, 231, 1);
+}
+.select-value-color-default { background-color: rgba(42, 28, 0, 0.07); }
+.select-value-color-gray { background-color: rgba(28, 19, 1, 0.11); }
+.select-value-color-brown { background-color: rgba(127, 51, 0, 0.156); }
+.select-value-color-orange { background-color: rgba(196, 88, 0, 0.203); }
+.select-value-color-yellow { background-color: rgba(209, 156, 0, 0.282); }
+.select-value-color-green { background-color: rgba(0, 96, 38, 0.156); }
+.select-value-color-blue { background-color: rgba(0, 118, 217, 0.203); }
+.select-value-color-purple { background-color: rgba(92, 0, 163, 0.141); }
+.select-value-color-pink { background-color: rgba(183, 0, 78, 0.152); }
+.select-value-color-red { background-color: rgba(206, 24, 0, 0.164); }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="0329ca20-53b3-8346-aad0-0140df404bd9" class="page sans"><header><div class="page-header-icon undefined"><span class="icon">👑</span></div><h1 class="page-title" dir="auto">마왕 패턴</h1><p class="page-description" dir="auto"></p></header><div class="page-body"><div style="display:contents" dir="auto"><hr id="6e69ca20-53b3-8211-82d5-814d8fce69a3"/></div><div style="display:contents" dir="ltr"><figure id="77e9ca20-53b3-837e-98d0-814174e42270" class="image"><a href="image.png"><img style="width:704px" src="image.png"/></a></figure></div><div style="display:contents" dir="auto"><hr id="2279ca20-53b3-8201-bfc7-01d466c46122"/></div><div style="display:contents" dir="auto"><h2 id="2449ca20-53b3-83af-804e-0175ca7a7b4f" class="">⭐필독⭐</h2></div><div style="display:contents" dir="auto"><ul id="8309ca20-53b3-83b1-8bc6-813099895a81" class="bulleted-list"><li style="list-style-type:disc">마왕은 <code><strong>에고 소드 Hold</strong></code>, 으로 상태가 분류됨.<div style="display:contents" dir="auto"><ul id="e529ca20-53b3-83f2-a37b-01099b94b34d" class="bulleted-list"><li style="list-style-type:circle">각 상태 별로 사용할 수 있는 패턴이 다름.</li></ul></div><div style="display:contents" dir="auto"><ul id="2089ca20-53b3-826b-8257-013cbee9638c" class="bulleted-list"><li style="list-style-type:circle">각 상태는 <code><strong>투척 패턴</strong></code>과 <code><strong>회수 패턴</strong></code>을 패턴을 통해 전환됨.<div style="display:contents" dir="auto"><ul id="9209ca20-53b3-83c8-9290-01f21524dac4" class="bulleted-list"><li style="list-style-type:square"><strong>이 패턴은 ‘</strong><code><strong>사용 우선 순위</strong></code><strong>’를 지닐 때가 있으니 개발 시 주의 필요.</strong></li></ul></div></li></ul></div></li></ul></div><div style="display:contents" dir="auto"><ul id="6489ca20-53b3-8369-a4c0-017f2386fc57" class="bulleted-list"><li style="list-style-type:disc"><code><strong>에고 소드 Drop</strong></code>시 <code><strong>에고 소드</strong></code>는 별개의 오브젝트로 기능.</li></ul></div><div style="display:contents" dir="auto"><h2 id="c7e9ca20-53b3-83fd-9b21-0195998ace4c" class="">❓페이즈 전환은 없는가</h2></div><div style="display:contents" dir="auto"><ul id="4459ca20-53b3-830b-a219-8191440bc4e5" class="bulleted-list"><li style="list-style-type:disc">본래는 페이즈 2개로 나누어서 개발을 하려 했지만, 에고 소드를 들 때 안들 때, HP 감소 시, 발악, 무력화 해제 시 발동 등 다양한 패턴이 있고, 추후 밸런스 및 퀄리티 유지를 위해서 일단은 페이즈 1개만 개발<div style="display:contents" dir="auto"><ul id="a889ca20-53b3-8320-b037-811eb60aa7f3" class="bulleted-list"><li style="list-style-type:circle"><strong>추후 개발 안정 시, 아마도 방학 즈음. 페이즈 2 추가 예정</strong></li></ul></div></li></ul></div><div style="display:contents" dir="auto"><h2 id="84d9ca20-53b3-83cb-89a6-01b871604019" class="">📝 기타</h2></div><div style="display:contents" dir="auto"><ul id="7bc9ca20-53b3-8293-bc06-01e5530a8ca4" class="bulleted-list"><li style="list-style-type:disc">몇몇 패턴 별로 다음 패턴까지 주기(대기)나 패턴 우선 순위를 정해두려 하는데 이는 각 패턴에 적어둠.</li></ul></div><div style="display:contents" dir="auto"><ul id="7449ca20-53b3-8208-a155-81e95e176e89" class="bulleted-list"><li style="list-style-type:disc">경고/공격 범위, 속도는 개발 후 세부 조정 예정. 일단은 임시로 작업할 것.</li></ul></div><div style="display:contents" dir="auto"><ul id="dd49ca20-53b3-82e9-a3fb-01af615d6586" class="bulleted-list"><li style="list-style-type:disc">완성본을 보고 패턴이 너무 반복되는 것으로 보일 시 각 상태마다 패턴 1개 씩 추가 고려</li></ul></div><div style="display:contents" dir="auto"><h3 id="7079ca20-53b3-83f1-b391-0137c7f60eda" class="">🎥 임시 연출</h3></div><div style="display:contents" dir="auto"><ul id="4ac9ca20-53b3-8303-88b3-0193ff7bf0b9" class="bulleted-list"><li style="list-style-type:disc">돌진을 제외한 경고 범위 내 피해는 의 해골, 마법사의 폭파와 동일한 폭파 애니메이션 사용</li></ul></div><div style="display:contents" dir="auto"><hr id="ba99ca20-53b3-83f9-ac0e-81a0c0842927"/></div><div style="display:contents" dir="auto"><h2 id="87d9ca20-53b3-82fd-9c9c-014b279d9100" class="">보스 레벨</h2></div><div style="display:contents" dir="auto"><ul id="c029ca20-53b3-836c-8954-018ccfb9d13a" class="bulleted-list"><li style="list-style-type:disc">마녀 보스와 동일한 정사각형의 맵을 사용</li></ul></div><div style="display:contents" dir="auto"><hr id="19d9ca20-53b3-829e-8318-8172fffe7b72"/></div><div style="display:contents" dir="auto"><h2 id="20c9ca20-53b3-83f7-b7c3-012a9f7d1def" class="">이미지</h2></div><div style="display:contents" dir="auto"><ul id="72b9ca20-53b3-8221-b09e-01a1015f25ff" class="bulleted-list"><li style="list-style-type:disc">지금 이미지가 없는데. 이건 나중에 되면 만듬</li></ul></div><div style="display:contents" dir="auto"><ul id="fe69ca20-53b3-8389-9182-81e7c83ab2fa" class="bulleted-list"><li style="list-style-type:disc">일단은 아무 이미지로만 부탁드림. 굽신굽신</li></ul></div><div style="display:contents" dir="auto"><hr id="8629ca20-53b3-82be-927a-013df3adb728"/></div><div style="display:contents" dir="auto"><h2 id="e079ca20-53b3-8248-b304-01fa4cdf53ee" class="">[연속 찌르기] - <code><strong>에고 소드 Hold</strong></code></h2></div><div style="display:contents" dir="auto"><ul id="4579ca20-53b3-8398-a31a-81f51c5a3ba7" class="bulleted-list"><li style="list-style-type:disc">돌진 패턴의 일종</li></ul></div><div style="display:contents" dir="auto"><div id="61b9ca20-53b3-835b-ad64-812ea2c13f82" class="column-list"><div style="display:contents" dir="auto"><div id="b859ca20-53b3-823a-b979-010d03efbf04" style="width:100%" class="column"><div style="display:contents" dir="ltr"><figure id="e7f9ca20-53b3-823e-82e5-81d30af2649c" class="image"><a href="image%201.png"><img style="width:321px" src="image%201.png"/></a></figure></div></div></div><div style="display:contents" dir="auto"><div id="b479ca20-53b3-828a-a04c-018b59ea55ac" style="width:100%" class="column"><div style="display:contents" dir="ltr"><figure id="8929ca20-53b3-833e-86a8-81dec49d1615" class="image"><a href="image%202.png"><img style="width:320.9921875px" src="image%202.png"/></a></figure></div></div></div></div></div><div style="display:contents" dir="auto"><div id="5b29ca20-53b3-8218-9ece-01ab9396903a" class="column-list"><div style="display:contents" dir="auto"><div id="0ec9ca20-53b3-8264-b0d3-8167a1684866" style="width:100%" class="column"><div style="display:contents" dir="ltr"><figure id="3729ca20-53b3-82fc-aaa4-01c72a44bf83" class="image"><a href="image%203.png"><img style="width:320.9921875px" src="image%203.png"/></a></figure></div></div></div><div style="display:contents" dir="auto"><div id="4109ca20-53b3-838a-9ba3-81793448571e" style="width:100%" class="column"><div style="display:contents" dir="ltr"><figure id="5d29ca20-53b3-8246-a1cb-012cd4e61c01" class="image"><a href="image%204.png"><img style="width:320.9921875px" src="image%204.png"/></a></figure></div></div></div></div></div><div style="display:contents" dir="auto"><div id="6579ca20-53b3-8378-ba00-811dbe5d6c25" class="column-list"><div style="display:contents" dir="auto"><div id="1ce9ca20-53b3-8298-82c2-01b56546c11f" style="width:100%" class="column"><div style="display:contents" dir="ltr"><figure id="1539ca20-53b3-83fc-a443-01daff9d9b1e" class="image"><a href="image%205.png"><img style="width:320.9921875px" src="image%205.png"/></a></figure></div></div></div><div style="display:contents" dir="auto"><div id="cd29ca20-53b3-8315-9ef9-01334c30e981" style="width:100%" class="column"><div style="display:contents" dir="auto"><p id="3b79ca20-53b3-824c-a4cb-01a8e5691875" class="">
+</p></div></div></div></div></div><div style="display:contents" dir="auto"><h3 id="0459ca20-53b3-83d3-8065-01ae7b47aac3" class="">[1] 조준 및 경고</h3></div><div style="display:contents" dir="auto"><ul id="4df9ca20-53b3-82e8-9466-01eb7bab38c6" class="bulleted-list"><li style="list-style-type:disc">유저의 방향으로 <code><strong>1초</strong></code> 동안 경고<div style="display:contents" dir="auto"><ul id="5629ca20-53b3-830e-a279-0141d69aa065" class="bulleted-list"><li style="list-style-type:circle"><code><strong>경고 동안 조준선은 유저를 추적</strong></code></li></ul></div></li></ul></div><div style="display:contents" dir="auto"><h3 id="3a19ca20-53b3-83fe-b116-8176b19d6c25" class="">[2] 공격 시도 = 경고 후</h3></div><div style="display:contents" dir="auto"><ul id="3079ca20-53b3-826f-8ec5-81975a90ed6b" class="bulleted-list"><li style="list-style-type:disc">경고 종료 시, 유저의 마지막 위치를 지정</li></ul></div><div style="display:contents" dir="auto"><ul id="8cb9ca20-53b3-82e8-8cbd-818495fb13aa" class="bulleted-list"><li style="list-style-type:disc">지정한 위치로 보스 이동.<div style="display:contents" dir="auto"><ul id="6799ca20-53b3-8299-aaab-01ef2b544169" class="bulleted-list"><li style="list-style-type:circle">이동 중 유저와 충돌 시 피해를 입힘</li></ul></div></li></ul></div><div style="display:contents" dir="auto"><h4 id="3649ca20-53b3-8311-8411-810708e42406" class=""><strong>[2-1] 속도</strong></h4></div><div style="display:contents" dir="auto"><ul id="2449ca20-53b3-827a-887c-0179eb1ea593" class="bulleted-list"><li style="list-style-type:disc"><strong>순간 이동으로 보일 정도로 매우 빠른 속도로 임의 설정 바람</strong></li></ul></div><div style="display:contents" dir="auto"><ul id="1c69ca20-53b3-8230-834f-0184ce258827" class="bulleted-list"><li style="list-style-type:disc">잔상 효과 가능하면 추가 바람</li></ul></div><div style="display:contents" dir="auto"><h3 id="7a69ca20-53b3-82fc-848e-016c2f6ee7ac" class="">[3] 후퇴 = 공격 위치에 도달한 직후</h3></div><div style="display:contents" dir="auto"><ul id="eed9ca20-53b3-8364-af3a-81142712959f" class="bulleted-list"><li style="list-style-type:disc">마왕은 공격 시도 전 위치로 이동</li></ul></div><div style="display:contents" dir="auto"><ul id="d209ca20-53b3-83da-9847-81eb3b4a9b39" class="bulleted-list"><li style="list-style-type:disc">속도는 공격 속도와 같음</li></ul></div><div style="display:contents" dir="auto"><h3 id="7fe9ca20-53b3-82d4-ba35-81c8e3f3c1a3" class="">[4] 반복</h3></div><div style="display:contents" dir="auto"><ul id="0249ca20-53b3-8297-b92b-01723ea677e4" class="bulleted-list"><li style="list-style-type:disc">[1]에서 [3]의 과정을 (이전의 일격 포함) <code><strong>총합 3회 반복</strong></code> </li></ul></div><div style="display:contents" dir="auto"><ul id="e2a9ca20-53b3-8239-a4be-816ac9b0e9a8" class="bulleted-list"><li style="list-style-type:disc">각 횟수마다 [1]의 경고 시간을 <code><strong>0.2초</strong></code> 감소.<div style="display:contents" dir="auto"><ul id="0239ca20-53b3-82da-977b-812a1cae4585" class="bulleted-list"><li style="list-style-type:circle">1회: 경고 시간 1초</li></ul></div><div style="display:contents" dir="auto"><ul id="d4b9ca20-53b3-83e1-842b-81af5719a915" class="bulleted-list"><li style="list-style-type:circle">2회: 경고 시간 0.8초</li></ul></div><div style="display:contents" dir="auto"><ul id="4409ca20-53b3-820a-a7f4-01a14998ea38" class="bulleted-list"><li style="list-style-type:circle">3회: 경고 시간 0.6초</li></ul></div></li></ul></div><div style="display:contents" dir="auto"><h3 id="4c19ca20-53b3-8329-af6b-01a87f5eb568" class="">[5] 패턴 종료</h3></div><div style="display:contents" dir="auto"><ul id="0319ca20-53b3-821f-be5d-81002d7f120b" class="bulleted-list"><li style="list-style-type:disc">마지막 공격의 경우 [3] 후퇴 과정 없이 마지막 돌진 위치에서 패턴 사용 종료</li></ul></div><div style="display:contents" dir="auto"><hr id="f4c9ca20-53b3-8242-be23-8190de8a0cb2"/></div><div style="display:contents" dir="auto"><h2 id="ae59ca20-53b3-8301-8e21-8156c8d9472a" class="">[강력한 휘두르기] - <code><strong>에고 소드 Hold</strong></code></h2></div><div style="display:contents" dir="auto"><div id="adf9ca20-53b3-8369-a466-8103ebc81689" class="column-list"><div style="display:contents" dir="auto"><div id="2c39ca20-53b3-83ff-adc3-81d6e15f3ea1" style="width:100%" class="column"><div style="display:contents" dir="ltr"><figure id="9ab9ca20-53b3-83c5-b46f-013373c8ad89" class="image"><a href="image%206.png"><img style="width:320.9921875px" src="image%206.png"/></a></figure></div></div></div><div style="display:contents" dir="auto"><div id="9959ca20-53b3-8373-ba04-017c297b411b" style="width:100%" class="column"><div style="display:contents" dir="ltr"><figure id="6f19ca20-53b3-82d8-9ddb-01e4192274aa" class="image"><a href="image%207.png"><img style="width:321px" src="image%207.png"/></a></figure></div></div></div></div></div><div style="display:contents" dir="auto"><div id="88c9ca20-53b3-83de-965f-811589570ff3" class="column-list"><div style="display:contents" dir="auto"><div id="2859ca20-53b3-83cb-a993-01011ee0471e" style="width:100%" class="column"><div style="display:contents" dir="ltr"><figure id="0f69ca20-53b3-823f-b34c-81230a7b651c" class="image"><a href="image%208.png"><img style="width:321px" src="image%208.png"/></a></figure></div></div></div><div style="display:contents" dir="auto"><div id="20c9ca20-53b3-82d1-b8eb-81ba301aca52" style="width:100%" class="column"><div style="display:contents" dir="auto"><p id="fa59ca20-53b3-83f9-843c-010ee81c6d52" class="">
+</p></div></div></div></div></div><div style="display:contents" dir="auto"><h3 id="5ca9ca20-53b3-83db-a384-019336f869e6" class="">[1] 이동</h3></div><div style="display:contents" dir="auto"><ul id="8ab9ca20-53b3-8272-a0f1-018b439c86f7" class="bulleted-list"><li style="list-style-type:disc">유저의 위치로 <code><strong>유저의 이동속도 4배</strong></code>의 속도로 이동</li></ul></div><div style="display:contents" dir="auto"><ul id="4a09ca20-53b3-820b-b671-01d46645b944" class="bulleted-list"><li style="list-style-type:disc">잔상 효과 추가</li></ul></div><div style="display:contents" dir="auto"><h3 id="62b9ca20-53b3-83d3-884d-01a34310e421" class="">[2] 경고 표기</h3></div><div style="display:contents" dir="auto"><ul id="82a9ca20-53b3-8306-a690-013105a8a0cb" class="bulleted-list"><li style="list-style-type:disc">유저의 방향으로 부채꼴과 실선 경고 생성</li></ul></div><div style="display:contents" dir="auto"><h4 id="2899ca20-53b3-82de-93e1-8134a2f01660" class="">[2-1] 부채꼴 경고</h4></div><div style="display:contents" dir="auto"><ul id="b219ca20-53b3-8268-a1f9-81dfd77690e1" class="bulleted-list"><li style="list-style-type:disc">일단 유저의 공격 범위와 동일한 수준으로 임의 설정</li></ul></div><div style="display:contents" dir="auto"><h4 id="0359ca20-53b3-82a8-810f-810068815182" class=""><strong>[2-2] 실선 경고</strong></h4></div><div style="display:contents" dir="ltr"><figure id="6679ca20-53b3-8316-8ef3-01b360586609" class="image" style="text-align:left"><a href="image%209.png"><img style="width:240px" src="image%209.png"/></a></figure></div><div style="display:contents" dir="auto"><ul id="3919ca20-53b3-83fc-9d71-81d4ec717a0f" class="bulleted-list"><li style="list-style-type:disc">가운데를 중심으로 좌우 30도 만큼 퍼짐</li></ul></div><div style="display:contents" dir="auto"><ul id="be39ca20-53b3-8210-b81f-81802ce3b55c" class="bulleted-list"><li style="list-style-type:disc">실선은 맴 끝까지 이어짐</li></ul></div><div style="display:contents" dir="auto"><h3 id="de29ca20-53b3-8346-ab08-0180a0c9985f" class="">[3] 공격</h3></div><div style="display:contents" dir="auto"><ul id="1669ca20-53b3-8271-95c6-01fa5980d7b6" class="bulleted-list"><li style="list-style-type:disc">부채꼴 경고 범위 내 유저에게 피해를 줌</li></ul></div><div style="display:contents" dir="auto"><ul id="8cc9ca20-53b3-83d3-979c-0124a00cf048" class="bulleted-list"><li style="list-style-type:disc">실선의 경우 하단 연출을 참고. 빠르게 퍼지는 유사 탄막 공격<div style="display:contents" dir="auto"><ul id="1139ca20-53b3-82e6-a6d1-014c9ea89171" class="bulleted-list"><li style="list-style-type:circle">임시로 탄막으로 해도 가능.</li></ul></div></li></ul></div><div style="display:contents" dir="auto"><h4 id="e609ca20-53b3-83de-9f5c-812273f419ab" class="">[3-1] 부채꼴 공격의 연출</h4></div><div style="display:contents" dir="auto"><ul id="1939ca20-53b3-8275-9552-0136b9b23331" class="bulleted-list"><li style="list-style-type:disc">유저의 공격과 같이 참격(베기) 이펙트</li></ul></div><div style="display:contents" dir="auto"><h4 id="5869ca20-53b3-8335-a490-01fc26988f83" class="">[3-2] 실선 공격의 연출</h4></div><div style="display:contents" dir="auto"><div id="bf49ca20-53b3-82b1-b972-019d0bdc0206" class="column-list"><div style="display:contents" dir="auto"><div id="3ac9ca20-53b3-828e-9442-81a3cc458887" style="width:100%" class="column"><div style="display:contents" dir="ltr"><figure id="0c09ca20-53b3-8373-91ea-01b76dbe9488" class="image"><a href="2081C01.jpg"><img style="width:2880px" src="2081C01.jpg"/></a></figure></div></div></div><div style="display:contents" dir="auto"><div id="6a99ca20-53b3-82c2-9490-816ef27ffd1d" style="width:100%" class="column"><div style="display:contents" dir="ltr"><figure id="dfc9ca20-53b3-830c-afcc-01f25bde868a" class="image" style="text-align:left"><a href="209AB51.jpg"><img style="width:480px" src="209AB51.jpg"/></a></figure></div></div></div></div></div><div style="display:contents" dir="auto"><ul id="b8a9ca20-53b3-826b-beef-01ed1e6e9185" class="bulleted-list"><li style="list-style-type:disc">세피리아 2번째 보스처럼 실선을 따라서, 안쪽에서 바깥쪽으로 물수제비 하듯 이펙트가 퍼짐</li></ul></div><div style="display:contents" dir="auto"><hr id="8c59ca20-53b3-83c3-bbcb-810dbd12e71d"/></div><div style="display:contents" dir="auto"><h2 id="6599ca20-53b3-8359-aec6-815988793b85" class="">[에고 소드 투척] - <code><strong>에고 소드 Hold</strong></code>, <code><strong>에고 소드 투척</strong></code></h2></div><div style="display:contents" dir="auto"><ul id="e2e9ca20-53b3-8322-9a6f-01adc83a16f8" class="bulleted-list"><li style="list-style-type:disc">보스가 에고 소드 보유 시 사용 가능.</li></ul></div><div style="display:contents" dir="auto"><ul id="44f9ca20-53b3-8211-a039-81e7a54963db" class="bulleted-list"><li style="list-style-type:disc">보스가 <code><strong>에고 소드 Hold</strong></code> 상태에서 패턴 <code><strong>3회</strong></code> 사용 시. 이후 패턴은 투척을 <code><strong>우선 발동</strong></code></li></ul></div><div style="display:contents" dir="auto"><div id="f8f9ca20-53b3-8236-9a65-011419ce0a15" class="column-list"><div style="display:contents" dir="auto"><div id="48a9ca20-53b3-839c-b30c-813620094db0" style="width:100%" class="column"><div style="display:contents" dir="ltr"><figure id="58f9ca20-53b3-82d1-95ce-01130c1d09bd" class="image"><a href="image%2010.png"><img style="width:320.9921875px" src="image%2010.png"/></a></figure></div></div></div><div style="display:contents" dir="auto"><div id="db49ca20-53b3-82b3-a179-01a8ebfcad6b" style="width:100%" class="column"><div style="display:contents" dir="ltr"><figure id="9d09ca20-53b3-832b-8d17-01c8c35ab018" class="image"><a href="image%2011.png"><img style="width:320.9921875px" src="image%2011.png"/></a></figure></div></div></div></div></div><div style="display:contents" dir="auto"><div id="fd19ca20-53b3-82ea-b356-8126babcb9e8" class="column-list"><div style="display:contents" dir="auto"><div id="ff59ca20-53b3-8384-a46e-81e3bacf451d" style="width:100%" class="column"><div style="display:contents" dir="ltr"><figure id="c0d9ca20-53b3-8291-8496-81f40da8c894" class="image"><a href="image%2012.png"><img style="width:336px" src="image%2012.png"/></a></figure></div></div></div><div style="display:contents" dir="auto"><div id="5889ca20-53b3-8382-94f7-01ac0475650c" style="width:100%" class="column"><div style="display:contents" dir="ltr"><figure id="2f69ca20-53b3-82e9-91a5-01d563710798" class="image"><a href="image%2013.png"><img style="width:320.9921875px" src="image%2013.png"/></a></figure></div></div></div></div></div><div style="display:contents" dir="auto"><h3 id="9389ca20-53b3-82a9-bd49-0110047b20e3" class="">[1] 조준 및 경고</h3></div><div style="display:contents" dir="auto"><ul id="67a9ca20-53b3-839c-a46f-814f096fc260" class="bulleted-list"><li style="list-style-type:disc">특정 경고 없이 오직 스프라이트 변경을 통해 경고<div style="display:contents" dir="auto"><ul id="b6a9ca20-53b3-83a6-ae35-01ab1c9d9618" class="bulleted-list"><li style="list-style-type:circle">이런 식의 따로 경고 없는 패턴들도 테스트 해보고 싶음.</li></ul></div></li></ul></div><div style="display:contents" dir="auto"><ul id="65b9ca20-53b3-828d-a14f-812daab3e6e1" class="bulleted-list"><li style="list-style-type:disc"><code><strong>1.4초</strong></code> 동안 경고</li></ul></div><div style="display:contents" dir="auto"><h3 id="d539ca20-53b3-82e4-97e2-81c564b883d4" class="">[2] 투척 및 패턴 종료</h3></div><div style="display:contents" dir="auto"><ul id="93a9ca20-53b3-8253-9be8-01c81d591f65" class="bulleted-list"><li style="list-style-type:disc">유저의 방향으로 에고 소드 투척</li></ul></div><div style="display:contents" dir="auto"><ul id="f149ca20-53b3-82b1-b1fe-011e37e4d0c6" class="bulleted-list"><li style="list-style-type:disc">보스는 <code><strong>에고 소드 Drop</strong></code> 상태로 전환</li></ul></div><div style="display:contents" dir="auto"><ul id="8f99ca20-53b3-83be-b405-8149b86a86bc" class="bulleted-list"><li style="list-style-type:disc">해당 투척 후 <code><strong>패턴 종료</strong></code> 판정<div style="display:contents" dir="auto"><ul id="91f9ca20-53b3-8291-8678-01fce320be07" class="bulleted-list"><li style="list-style-type:circle">다른 패턴과 엮이는 것이 핵심</li></ul></div></li></ul></div><div style="display:contents" dir="auto"><h3 id="15b9ca20-53b3-82d8-a1d6-0197c5827a55" class="">[3] 투척 된 에고 소드</h3></div><div style="display:contents" dir="auto"><ul id="e0d9ca20-53b3-82b6-8e3a-81acc22b5480" class="bulleted-list"><li style="list-style-type:disc">벽에 닿은 에고 소드는 총 <code>5회</code> 튕김</li></ul></div><div style="display:contents" dir="auto"><ul id="9139ca20-53b3-82b8-a4bf-016038927997" class="bulleted-list"><li style="list-style-type:disc">이동 중 에고 소드는 계속 시계 방향으로 회전.<div style="display:contents" dir="auto"><ul id="3319ca20-53b3-820c-8209-81967d079d34" class="bulleted-list"><li style="list-style-type:circle">따로 연출이나 스프라이트가 완성되면 그것으로 변경.</li></ul></div><div style="display:contents" dir="auto"><ul id="9799ca20-53b3-8330-b309-81ea1c9f52be" class="bulleted-list"><li style="list-style-type:circle">공격 범위를 크게 할 것이라 어떤 식이든 연출이 필요할 듯.</li></ul></div></li></ul></div><div style="display:contents" dir="auto"><h4 id="f6b9ca20-53b3-82ff-bc43-01819fed9bac" class=""><strong>[3-1] 튕기는 방식</strong></h4></div><div style="display:contents" dir="auto"><ul id="8f79ca20-53b3-82bd-bdd2-81d70c8afbf7" class="bulleted-list"><li style="list-style-type:disc"><strong>당구, 벽돌 깨기처럼 튕기는</strong> 방식을 생각하는데 이 부분에 문제가 있으면 언질 바람</li></ul></div><div style="display:contents" dir="auto"><h4 id="5ec9ca20-53b3-82fb-9f20-8190e4524286" class=""><strong>[3-2] 속도</strong></h4></div><div style="display:contents" dir="auto"><ul id="a3e9ca20-53b3-8343-99ae-0143f632c462" class="bulleted-list"><li style="list-style-type:disc"><code>유저의 기본 이동 속도</code>의 <code>5배</code>의 속도</li></ul></div><div style="display:contents" dir="auto"><h3 id="9659ca20-53b3-823b-90fc-81dbdd9c7b45" class="">[4] 고정</h3></div><div style="display:contents" dir="auto"><ul id="a8c9ca20-53b3-82c7-b3c5-81dc63244205" class="bulleted-list"><li style="list-style-type:disc">5번째 벽에 부딧친 위치에 에고 소드 고정<div style="display:contents" dir="auto"><p id="1779ca20-53b3-82bf-9d44-817ff97fdf19" class="">⭐ 이때부터 에고 소드는 <code><strong>독립 오브젝트</strong></code>로 기능 </p></div></li></ul></div><div style="display:contents" dir="auto"><hr id="9a99ca20-53b3-82f6-8477-81d8e4a46fd8"/></div><div style="display:contents" dir="auto"><h2 id="3ab9ca20-53b3-82b0-8a71-8133f00afa29" class="">[유도 마법] - <code><strong>에고 소드 Drop</strong></code></h2></div><div style="display:contents" dir="auto"><ul id="ba69ca20-53b3-821b-ad21-01d4cf2e012e" class="bulleted-list"><li style="list-style-type:disc">마구 이동하며 쏘는 패턴.</li></ul></div><div style="display:contents" dir="auto"><div id="e189ca20-53b3-83e6-b5a8-01fa330dd813" class="column-list"><div style="display:contents" dir="auto"><div id="8789ca20-53b3-8274-be41-01100d8bacd3" style="width:100%" class="column"><div style="display:contents" dir="ltr"><figure id="c5a9ca20-53b3-8333-abe6-81894ca96718" class="image"><a href="image%2014.png"><img style="width:320.9921875px" src="image%2014.png"/></a></figure></div></div></div><div style="display:contents" dir="auto"><div id="05f9ca20-53b3-82b2-a4e3-01ad41072478" style="width:100%" class="column"><div style="display:contents" dir="ltr"><figure id="2139ca20-53b3-836c-b2f6-019ebbcb8100" class="image"><a href="image%2015.png"><img style="width:320.9921875px" src="image%2015.png"/></a></figure></div></div></div></div></div><div style="display:contents" dir="auto"><div id="9ea9ca20-53b3-82a3-a3aa-012e576d0b5a" class="column-list"><div style="display:contents" dir="auto"><div id="52b9ca20-53b3-8220-8cec-814995bfdf6c" style="width:100%" class="column"><div style="display:contents" dir="ltr"><figure id="a749ca20-53b3-8305-8edc-01bdd44d7f8c" class="image"><a href="image%2016.png"><img style="width:320.9921875px" src="image%2016.png"/></a></figure></div></div></div><div style="display:contents" dir="auto"><div id="9c49ca20-53b3-8352-9c1f-01d1d36816e4" style="width:100%" class="column"><div style="display:contents" dir="auto"><p id="3a39ca20-53b3-8243-b34e-81fb294bb4d1" class="">
+</p></div></div></div></div></div><div style="display:contents" dir="auto"><h3 id="2439ca20-53b3-8283-9fe7-810507491b58" class="">[1] 탄막 생성</h3></div><div style="display:contents" dir="auto"><ul id="2c89ca20-53b3-8345-a5e1-813f99682fb2" class="bulleted-list"><li style="list-style-type:disc">보스를 중심으로 퍼지듯 5개의 탄막이 생성.</li></ul></div><div style="display:contents" dir="auto"><h4 id="f569ca20-53b3-832d-8efe-015eb06c0b56" class="">[생성 위치]</h4></div><div style="display:contents" dir="ltr"><figure id="66c9ca20-53b3-830a-8c7a-01574ee8e8ea" class="image" style="text-align:left"><a href="image%2017.png"><img style="width:432px" src="image%2017.png"/></a></figure></div><div style="display:contents" dir="auto"><ul id="0379ca20-53b3-8286-b3af-01dba28f4eda" class="bulleted-list"><li style="list-style-type:disc">다크소울 시리즈 유도 소울 덩어리와 생성 위치/방식 동일</li></ul></div><div style="display:contents" dir="auto"><h3 id="1049ca20-53b3-83b5-b8b5-8112c001b8da" class="">[2] 이동 위치 결정</h3></div><div style="display:contents" dir="auto"><ul id="1e09ca20-53b3-828f-913f-81a4d0dd20df" class="bulleted-list"><li style="list-style-type:disc">보스를 중심으로 십자 형태 4방향 중 하나를 선택</li></ul></div><div style="display:contents" dir="auto"><h3 id="4159ca20-53b3-8335-bc53-8160e042628a" class="">[3] 이동 및 발사</h3></div><div style="display:contents" dir="auto"><ul id="cdc9ca20-53b3-8399-b2cf-010f3f161b4c" class="bulleted-list"><li style="list-style-type:disc">탄막을 유저의 방향을 향해 발사</li></ul></div><div style="display:contents" dir="auto"><ul id="0f79ca20-53b3-8368-aac6-8178379070b6" class="bulleted-list"><li style="list-style-type:disc">탄막 발사 후 [2]에서 정해진 방향으로 이동<div style="display:contents" dir="auto"><ul id="9189ca20-53b3-8361-965d-01b44a28d4a9" class="bulleted-list"><li style="list-style-type:circle">이동 시 잔상 효과 추가</li></ul></div></li></ul></div><div style="display:contents" dir="auto"><ul id="7c69ca20-53b3-8365-b227-013b84558d7b" class="bulleted-list"><li style="list-style-type:disc"><code>0.4초</code> 후 다시 발사 및 이동을 하며 탄막이 떨어질 때까지 반복.<div style="display:contents" dir="auto"><ul id="95d9ca20-53b3-8332-99cc-81af9bec0570" class="bulleted-list"><li style="list-style-type:circle">모든 탄막 발사 후 이동까지 마치면 <code><strong>패턴 종료</strong></code></li></ul></div></li></ul></div><div style="display:contents" dir="auto"><h4 id="c0e9ca20-53b3-8362-8bb8-81bd52630ecc" class=""><strong>[3-1] 이동 거리</strong></h4></div><div style="display:contents" dir="auto"><ul id="6f89ca20-53b3-8240-a41f-81aa57b1866a" class="bulleted-list"><li style="list-style-type:disc"><code>유저의 대쉬 거리</code>와 동일</li></ul></div><div style="display:contents" dir="auto"><ul id="b5c9ca20-53b3-82d1-a6a7-010c68286552" class="bulleted-list"><li style="list-style-type:disc">연출도 유저의 대쉬와 동일</li></ul></div><div style="display:contents" dir="auto"><h4 id="c669ca20-53b3-836a-a748-815a2ea7adee" class=""><strong>[3-2] 탄막 속도</strong></h4></div><div style="display:contents" dir="auto"><ul id="6839ca20-53b3-82eb-b7f3-01254011a661" class="bulleted-list"><li style="list-style-type:disc"><code>유저의 이동 속도의 5배</code></li></ul></div><div style="display:contents" dir="auto"><h4 id="3ad9ca20-53b3-82a9-9388-018c4eb77c8a" class="">[🤔 고민, 연구 필요]</h4></div><div style="display:contents" dir="auto"><ul id="e249ca20-53b3-83d0-9693-81ef511cab39" class="bulleted-list"><li style="list-style-type:disc">4방향 중 랜덤 위치 이동 시, 이동 위치에 벽이 있다면 다른 방향으로 이동하게 하고 싶은데 이부분이 가능한지 언급 바람. 안된다면 패턴 변경 예정</li></ul></div><div style="display:contents" dir="auto"><hr id="3219ca20-53b3-8329-89c2-8184e4e14c7f"/></div><div style="display:contents" dir="auto"><h2 id="0b69ca20-53b3-8342-a6a2-81e4bb2a90ec" class="">[폭격] - <code><strong>에고 소드 Drop</strong></code></h2></div><div style="display:contents" dir="auto"><div id="a329ca20-53b3-8366-9d23-01ef62a485e3" class="column-list"><div style="display:contents" dir="auto"><div id="fb09ca20-53b3-822e-a048-01c53e9c1e81" style="width:100%" class="column"><div style="display:contents" dir="ltr"><figure id="21e9ca20-53b3-83bd-a255-8153ec86684d" class="image"><a href="image%2018.png"><img style="width:321px" src="image%2018.png"/></a></figure></div></div></div><div style="display:contents" dir="auto"><div id="0b19ca20-53b3-8376-962a-01523d353167" style="width:100%" class="column"><div style="display:contents" dir="ltr"><figure id="dc99ca20-53b3-83b8-b315-81b5cb9d3ad0" class="image"><a href="image%2019.png"><img style="width:320.9921875px" src="image%2019.png"/></a></figure></div></div></div></div></div><div style="display:contents" dir="auto"><h3 id="8f29ca20-53b3-82a1-8e0f-0170f8b5c1c2" class="">[유사 패턴] 세피리아  모그디 패턴</h3></div><div style="display:contents" dir="ltr"><figure id="e4b9ca20-53b3-82be-bc16-81122dfa06f9" class="image" style="text-align:left"><a href="2018AE1.jpg"><img style="width:480px" src="2018AE1.jpg"/></a></figure></div><div style="display:contents" dir="auto"><ul id="6619ca20-53b3-8346-825d-011a35d07d6f" class="bulleted-list"><li style="list-style-type:disc">사실상 동일한 패턴</li></ul></div><div style="display:contents" dir="auto"><ul id="7179ca20-53b3-834b-ba79-8147013b19f3" class="bulleted-list"><li style="list-style-type:disc">연출 또한 현재는 사각형 경고지만 사이즈나 세부적인 것이 정해지면 원형으로 수정될 수 있음</li></ul></div><div style="display:contents" dir="auto"><h3 id="55e9ca20-53b3-83f2-80b3-01b9fe48b573" class="">[1] 이동</h3></div><div style="display:contents" dir="auto"><ul id="ca79ca20-53b3-8269-a4ae-8131c49dc883" class="bulleted-list"><li style="list-style-type:disc">보스는 중앙 좌측, 혹은 중앙 우측으로 이동</li></ul></div><div style="display:contents" dir="auto"><ul id="59b9ca20-53b3-826d-900a-01da0688fcd4" class="bulleted-list"><li style="list-style-type:disc">이는 유저 위치에 따라서 결정.<div style="display:contents" dir="auto"><ul id="1619ca20-53b3-8364-bc48-812db5d38cb6" class="bulleted-list"><li style="list-style-type:circle">유저가 맵 중앙을 기준으로 좌측에 있다면 우측으로 이동하는 식</li></ul></div></li></ul></div><div style="display:contents" dir="auto"><ul id="9009ca20-53b3-8399-bb31-01bf0ab5816d" class="bulleted-list"><li style="list-style-type:disc">어느 위치에 있든 <code><strong>0.5초</strong></code> 내로 도달</li></ul></div><div style="display:contents" dir="auto"><h3 id="d1b9ca20-53b3-83c7-83e6-0108e6259b88" class="">[2] 경고 생성 및 폭파</h3></div><div style="display:contents" dir="auto"><ul id="c0d9ca20-53b3-83bd-805b-0138a6c7b3e4" class="bulleted-list"><li style="list-style-type:disc">보스 위치의 반대 방향부터 경고 생성<div style="display:contents" dir="auto"><ul id="c6b9ca20-53b3-829d-b9ec-81faee16655d" class="bulleted-list"><li style="list-style-type:circle">좌측에 있다면 우측에서 좌측으로 순서대로 생성</li></ul></div></li></ul></div><div style="display:contents" dir="auto"><ul id="3cf9ca20-53b3-8289-a675-818decf5c7c7" class="bulleted-list"><li style="list-style-type:disc"><code><strong>0.3초</strong></code> 단위로 순차적으로 생성</li></ul></div><div style="display:contents" dir="auto"><ul id="b7f9ca20-53b3-822d-a148-810fa5ff06ee" class="bulleted-list"><li style="list-style-type:disc">경고 수는 총 <code><strong>6개</strong></code>로 구성되며 보스의 바로 앞까지로 사이즈 임의 조정</li></ul></div><div style="display:contents" dir="auto"><h4 id="4929ca20-53b3-8337-a7ce-81257e2f352d" class="">[폭파]</h4></div><div style="display:contents" dir="auto"><ul id="c8c9ca20-53b3-8355-97aa-81cbfa1d9151" class="bulleted-list"><li style="list-style-type:disc">경고는 생성 후 <code><strong>0.6초</strong></code> 후 범위 내 피해를 입힘</li></ul></div><div style="display:contents" dir="auto"><ul id="a419ca20-53b3-8322-b858-015de0014003" class="bulleted-list"><li style="list-style-type:disc">마지막 경보가 폭파 시 <code><strong>패턴 종료</strong></code></li></ul></div><div style="display:contents" dir="auto"><h3 id="3bf9ca20-53b3-82c5-950e-81f8e55e07b8" class="">[기타] 연속 사용 통제</h3></div><div style="display:contents" dir="auto"><ul id="2339ca20-53b3-829a-a2b5-811c51d85874" class="bulleted-list"><li style="list-style-type:disc">해당 패턴을 연속해서 사용하지 않게 통제 필요</li></ul></div><div style="display:contents" dir="auto"><hr id="0619ca20-53b3-836e-afd9-8179f5d9ab3e"/></div><div style="display:contents" dir="auto"><h2 id="e189ca20-53b3-82d9-a4f8-01e027814ee9" class="">[폭파] - <code><strong>에고 소드 Drop</strong></code></h2></div><div style="display:contents" dir="auto"><div id="dab9ca20-53b3-820e-b999-013a62d7b8e1" class="column-list"><div style="display:contents" dir="auto"><div id="2079ca20-53b3-83fb-826f-01430b344067" style="width:100%" class="column"><div style="display:contents" dir="ltr"><figure id="81d9ca20-53b3-828a-91c5-01fb82766096" class="image"><a href="image%2020.png"><img style="width:320.9921875px" src="image%2020.png"/></a></figure></div></div></div><div style="display:contents" dir="auto"><div id="7a59ca20-53b3-8274-b939-0118de15d298" style="width:100%" class="column"><div style="display:contents" dir="ltr"><figure id="73b9ca20-53b3-8289-b525-01226f5d637d" class="image"><a href="image%2021.png"><img style="width:320.9921875px" src="image%2021.png"/></a></figure></div></div></div></div></div><div style="display:contents" dir="auto"><div id="e959ca20-53b3-8380-84f3-81be4ec0a049" class="column-list"><div style="display:contents" dir="auto"><div id="b479ca20-53b3-8371-b5c5-81d73ab3ed09" style="width:100%" class="column"><div style="display:contents" dir="ltr"><figure id="78d9ca20-53b3-827a-860b-0136a52c358e" class="image"><a href="image%2022.png"><img style="width:320.9921875px" src="image%2022.png"/></a></figure></div></div></div><div style="display:contents" dir="auto"><div id="a9a9ca20-53b3-83b6-bb7a-8195e077659f" style="width:100%" class="column"><div style="display:contents" dir="ltr"><figure id="e349ca20-53b3-82a7-8fbb-8114b2a1cbff" class="image"><a href="image%2023.png"><img style="width:320.9921875px" src="image%2023.png"/></a></figure></div></div></div></div></div><div style="display:contents" dir="auto"><h3 id="e829ca20-53b3-82b1-84e5-81af38bc3dad" class="">[1] 도약</h3></div><div style="display:contents" dir="auto"><ul id="7f99ca20-53b3-8269-85aa-814dff743546" class="bulleted-list"><li style="list-style-type:disc">유저 위치에 원형 경보 생성. 생성과 동시에 보스는 경보 위치로 도약</li></ul></div><div style="display:contents" dir="auto"><h3 id="a0d9ca20-53b3-82ef-91c4-818a627201bd" class="">[2] 착지</h3></div><div style="display:contents" dir="auto"><ul id="7309ca20-53b3-82bc-81e8-813d21991419" class="bulleted-list"><li style="list-style-type:disc">어떤 위치든 <code><strong>0.7초</strong></code>에 걸쳐 도달.</li></ul></div><div style="display:contents" dir="auto"><ul id="4429ca20-53b3-83ca-bc8c-01bac2c76427" class="bulleted-list"><li style="list-style-type:disc">도달 시 범위 내 피해를 입힘</li></ul></div><div style="display:contents" dir="auto"><h3 id="8aa9ca20-53b3-829a-868d-014f90c756b7" class="">[3] 경고 표시 - 착지 완료 후 바로 진행</h3></div><div style="display:contents" dir="auto"><ul id="be89ca20-53b3-8365-b29e-01ec32982304" class="bulleted-list"><li style="list-style-type:disc">착지와 동시에 8방향으로 사각형 경고 생성</li></ul></div><div style="display:contents" dir="auto"><ul id="fad9ca20-53b3-83ec-ad1f-818d67742af8" class="bulleted-list"><li style="list-style-type:disc">경고는 동안 <code><strong>0.6초</strong></code> 동안 지속</li></ul></div><div style="display:contents" dir="auto"><h4 id="4e89ca20-53b3-8348-98c8-0170c3c42cb5" class="">[3-1] 경고 범위</h4></div><div style="display:contents" dir="ltr"><figure id="a579ca20-53b3-83e7-bd81-817ea9a80697" class="image" style="text-align:left"><a href="image%2024.png"><img style="width:288px" src="image%2024.png"/></a></figure></div><div style="display:contents" dir="auto"><ul id="5aa9ca20-53b3-821b-a105-0102c6484e34" class="bulleted-list"><li style="list-style-type:disc">8방향, 맵의 끝까지 닿는 방식</li></ul></div><div style="display:contents" dir="auto"><ul id="6739ca20-53b3-8230-992f-81ef293edb55" class="bulleted-list"><li style="list-style-type:disc">세부적인 너비는 추후 조정<div style="display:contents" dir="auto"><ul id="5089ca20-53b3-8221-ab65-81ba3204a8ea" class="bulleted-list"><li style="list-style-type:circle">일단 무식하게 크게 부탁함</li></ul></div></li></ul></div><div style="display:contents" dir="auto"><h3 id="dbf9ca20-53b3-82d2-8303-8177dc85c248" class="">[4] 공격 및 패턴 종료</h3></div><div style="display:contents" dir="auto"><ul id="42d9ca20-53b3-8383-8772-81adac0d84f6" class="bulleted-list"><li style="list-style-type:disc">경고 종료와 함께 범위 내에 피해를 입힘</li></ul></div><div style="display:contents" dir="auto"><ul id="e999ca20-53b3-8212-b4eb-0165e5353d9a" class="bulleted-list"><li style="list-style-type:disc"><code><strong>패턴 종료</strong></code></li></ul></div><div style="display:contents" dir="auto"><h4 id="a879ca20-53b3-83fe-a981-0147a0044943" class="">[4-1] 연출</h4></div><div style="display:contents" dir="auto"><ul id="2a89ca20-53b3-826d-beaf-8112e32a81f0" class="bulleted-list"><li style="list-style-type:disc">폭파 같은 것보다는 바닥이 보라색으로 한번 반짝이고 돌아오는 느낌</li></ul></div><div style="display:contents" dir="auto"><ul id="9ba9ca20-53b3-8296-8b08-01d86d22d72e" class="bulleted-list"><li style="list-style-type:disc">관련된 거 찾으면 전달.</li></ul></div><div style="display:contents" dir="auto"><h3 id="4d99ca20-53b3-8270-bc47-01d8f563d4a3" class="">❓이게 왜 <code><strong>에고 소드 Drop</strong></code> 패턴임?</h3></div><div style="display:contents" dir="auto"><ul id="6169ca20-53b3-82c1-89c5-81f78c22ede0" class="bulleted-list"><li style="list-style-type:disc">손에 마법 에너지를 모으고 덩크슛 하듯 내려치는 컨셉</li></ul></div><div style="display:contents" dir="auto"><hr id="33f9ca20-53b3-829f-bf3a-8186ea792593"/></div><div style="display:contents" dir="auto"><h2 id="ece9ca20-53b3-82cc-ac5a-01536756627e" class="">[에고 소드 패턴]</h2></div><div style="display:contents" dir="auto"><ul id="fd99ca20-53b3-8355-8e9a-016ec9d9b11f" class="bulleted-list"><li style="list-style-type:disc">에고 소드는 보스의 패턴 주기와 별개로 작동하는 독립적인 존재</li></ul></div><div style="display:contents" dir="auto"><ul id="c559ca20-53b3-831a-baf5-012d8f3bf061" class="bulleted-list"><li style="list-style-type:disc">에고 소드의 패턴 주기는 <code><strong>1.5초</strong></code></li></ul></div><div style="display:contents" dir="auto"><ul id="e389ca20-53b3-83d8-bd8d-0186ce937b52" class="bulleted-list"><li style="list-style-type:disc">에고 소드가 패턴을 <code><strong>5회</strong></code> 사용 시 마왕은 다음 패턴에서 <code><strong>회수 패턴</strong></code>을 우선 사용<div style="display:contents" dir="auto"><ul id="a129ca20-53b3-837e-9885-81f36c2965a8" class="bulleted-list"><li style="list-style-type:circle">패턴은 패턴 1, 패턴 2, 다시 패턴 1 순으로 사용</li></ul></div><div style="display:contents" dir="auto"><ul id="2599ca20-53b3-82d4-8377-0119ddcb70f2" class="bulleted-list"><li style="list-style-type:circle">이는 추후 패턴이 추가될 예정</li></ul></div></li></ul></div><div style="display:contents" dir="auto"><h2 id="89e9ca20-53b3-82d3-9944-01a970152a2b" class="">[에고 소드 패턴 1]</h2></div><div style="display:contents" dir="auto"><div id="e929ca20-53b3-82ae-ba62-016cb034897a" class="column-list"><div style="display:contents" dir="auto"><div id="f839ca20-53b3-8243-b7cc-01f85c5667c0" style="width:100%" class="column"><div style="display:contents" dir="ltr"><figure id="b459ca20-53b3-8231-b139-010e50dc1bc8" class="image"><a href="image%2025.png"><img style="width:320.9921875px" src="image%2025.png"/></a></figure></div></div></div><div style="display:contents" dir="auto"><div id="3db9ca20-53b3-83fd-87a8-819c54484d73" style="width:100%" class="column"><div style="display:contents" dir="ltr"><figure id="f959ca20-53b3-82bb-bb0a-817864590218" class="image"><a href="image%2026.png"><img style="width:320.9921875px" src="image%2026.png"/></a></figure></div></div></div></div></div><div style="display:contents" dir="auto"><div id="6bb9ca20-53b3-82c7-889d-01fe6f9bdd93" class="column-list"><div style="display:contents" dir="auto"><div id="9989ca20-53b3-8349-a456-016acb5f561a" style="width:100%" class="column"><div style="display:contents" dir="ltr"><figure id="3529ca20-53b3-82d1-9f41-01c9d6c5ea27" class="image"><a href="image%2027.png"><img style="width:321px" src="image%2027.png"/></a></figure></div></div></div><div style="display:contents" dir="auto"><div id="2909ca20-53b3-8373-ab21-01e19c15e98b" style="width:100%" class="column"><div style="display:contents" dir="ltr"><figure id="3ae9ca20-53b3-82a6-8772-011e78fbe296" class="image"><a href="image%2028.png"><img style="width:320.9921875px" src="image%2028.png"/></a></figure></div></div></div></div></div><div style="display:contents" dir="auto"><h3 id="2879ca20-53b3-831a-90ec-812979533253" class="">[1] 경고 ➕</h3></div><div style="display:contents" dir="auto"><ul id="ee79ca20-53b3-838a-8b77-81bb7ba1696d" class="bulleted-list"><li style="list-style-type:disc">에고 소드 중심으로 십자, 선 형태 경고 생성</li></ul></div><div style="display:contents" dir="auto"><ul id="dc59ca20-53b3-8279-9da6-017e2f07e2e8" class="bulleted-list"><li style="list-style-type:disc">경고는 <code><strong>1초</strong></code> 동안 지속</li></ul></div><div style="display:contents" dir="auto"><h3 id="1c49ca20-53b3-8399-b20f-812ef9a132f4" class="">[2] 발사 ➕</h3></div><div style="display:contents" dir="auto"><ul id="9839ca20-53b3-82a2-8e56-81a69d1ae94a" class="bulleted-list"><li style="list-style-type:disc">경보 위치에 레이저 발사</li></ul></div><div style="display:contents" dir="auto"><h3 id="afe9ca20-53b3-8256-a9fa-81193d81dacb" class="">[3] 경고 ✖️</h3></div><div style="display:contents" dir="auto"><ul id="9b39ca20-53b3-82a1-bba4-0107362a040b" class="bulleted-list"><li style="list-style-type:disc">에고 소드 중심으로 엑스, 선 형태 경고 생성</li></ul></div><div style="display:contents" dir="auto"><ul id="9819ca20-53b3-83a8-b3bf-81aec7d3b984" class="bulleted-list"><li style="list-style-type:disc">경고는 <code><strong>1초</strong></code> 동안 지속</li></ul></div><div style="display:contents" dir="auto"><h3 id="af99ca20-53b3-83ef-ad55-01f7abbce724" class="">[4] 발사 ✖️</h3></div><div style="display:contents" dir="auto"><ul id="1b59ca20-53b3-82af-b050-01a93e5937be" class="bulleted-list"><li style="list-style-type:disc">경보 위치에 레이저 발사</li></ul></div><div style="display:contents" dir="auto"><ul id="1e99ca20-53b3-83ce-b893-0171f4a8cf3e" class="bulleted-list"><li style="list-style-type:disc"><code><strong>패턴 종료</strong></code></li></ul></div><div style="display:contents" dir="auto"><h4 id="d3a9ca20-53b3-83e6-a40a-0138cbac9fbf" class="">[경고 범위/방식]</h4></div><div style="display:contents" dir="auto"><div id="2ab9ca20-53b3-83b7-8cda-818cb9046003" class="column-list"><div style="display:contents" dir="auto"><div id="b529ca20-53b3-83a4-8519-0189f20b38ca" style="width:100%" class="column"><div style="display:contents" dir="ltr"><figure id="9329ca20-53b3-8371-97d9-81172e575332" class="image"><a href="image%2029.png"><img style="width:321px" src="image%2029.png"/></a></figure></div></div></div><div style="display:contents" dir="auto"><div id="9539ca20-53b3-83cd-a784-819b1e8555c1" style="width:100%" class="column"><div style="display:contents" dir="ltr"><figure id="bb39ca20-53b3-82d5-8f68-8169283d78c3" class="image"><a href="image%2030.png"><img style="width:320.9921875px" src="image%2030.png"/></a></figure></div></div></div></div></div><div style="display:contents" dir="auto"><ul id="6459ca20-53b3-83a0-8bad-81ff1ec1937f" class="bulleted-list"><li style="list-style-type:disc">맵 끝까지 닿는 ➕, ✖️ 형 경고</li></ul></div><div style="display:contents" dir="auto"><h3 id="8fe9ca20-53b3-831a-9956-01d88ff29457" class="">연출 - 레이저</h3></div><div style="display:contents" dir="ltr"><figure id="c409ca20-53b3-838b-a2fa-019ca0187d25" class="image" style="text-align:left"><a href="173181-FA375936-90AD-4EC9-BDC9-2A7A3CFB1697-0-1599669495.gif"><img style="width:336px" src="173181-FA375936-90AD-4EC9-BDC9-2A7A3CFB1697-0-1599669495.gif"/></a><figcaption>가스터 블래스터와 같은 느낌</figcaption></figure></div><div style="display:contents" dir="auto"><hr id="ad89ca20-53b3-8366-9ae1-814b041dc606"/></div><div style="display:contents" dir="auto"><h2 id="6b09ca20-53b3-82b3-9bdb-816245b0c937" class="">[에고 소드 패턴 2]</h2></div><div style="display:contents" dir="auto"><div id="bc59ca20-53b3-83e2-9010-815f1af2f2cd" class="column-list"><div style="display:contents" dir="auto"><div id="9699ca20-53b3-83dd-80dc-8143e8a476d8" style="width:100%" class="column"><div style="display:contents" dir="ltr"><figure id="2519ca20-53b3-8322-86f2-018aae377df0" class="image"><a href="image%2031.png"><img style="width:321px" src="image%2031.png"/></a></figure></div></div></div><div style="display:contents" dir="auto"><div id="9e49ca20-53b3-8380-9297-0105c843af0e" style="width:100%" class="column"><div style="display:contents" dir="ltr"><figure id="e689ca20-53b3-82de-a05f-81be365996bf" class="image"><a href="image%2032.png"><img style="width:320.9921875px" src="image%2032.png"/></a></figure></div></div></div></div></div><div style="display:contents" dir="auto"><h3 id="1a79ca20-53b3-83f8-99f2-01008aefa586" class="">[1] 에고 소드 이동</h3></div><div style="display:contents" dir="auto"><ul id="dc49ca20-53b3-839e-a2c0-816bc775ed2d" class="bulleted-list"><li style="list-style-type:disc">에고 소드가 유저의 머리 위로 이동<div style="display:contents" dir="auto"><ul id="dc09ca20-53b3-8313-8ffa-8183f28376f5" class="bulleted-list"><li style="list-style-type:circle">검 끝이 유저를 겨누게 각도 조정</li></ul></div></li></ul></div><div style="display:contents" dir="auto"><ul id="56e9ca20-53b3-822c-92a3-01a430a6a001" class="bulleted-list"><li style="list-style-type:disc">유저를 중심으로 원형 경고 생성<div style="display:contents" dir="auto"><ul id="5889ca20-53b3-82ac-bd23-814a391c6449" class="bulleted-list"><li style="list-style-type:circle">경고는 <code><strong>1.5초</strong></code> 동안 지속</li></ul></div></li></ul></div><div style="display:contents" dir="auto"><h3 id="8799ca20-53b3-8328-8ac5-0197400974db" class="">[2] 공격 - 경고 종료 후</h3></div><div style="display:contents" dir="auto"><ul id="2d69ca20-53b3-82f7-b203-012460b1a1c4" class="bulleted-list"><li style="list-style-type:disc">검이 지면에 박히듯 연출</li></ul></div><div style="display:contents" dir="auto"><ul id="e159ca20-53b3-82a5-a215-018c0c302244" class="bulleted-list"><li style="list-style-type:disc">검이 지면에 닿는 순간 피해가 발생</li></ul></div><div style="display:contents" dir="auto"><ul id="18b9ca20-53b3-82ab-a940-8145c6b07197" class="bulleted-list"><li style="list-style-type:disc">검이 떨어지는 것을 보고 대쉬를 누르는 순간 피할 수 있는 범위</li></ul></div><div style="display:contents" dir="auto"><ul id="4109ca20-53b3-83ea-924e-017d14f16aeb" class="bulleted-list"><li style="list-style-type:disc"><code><strong>패턴 종료</strong></code></li></ul></div><div style="display:contents" dir="auto"><p id="6839ca20-53b3-82db-9ae0-815792aa7c5a" class="">
+</p></div><div style="display:contents" dir="auto"><hr id="3f79ca20-53b3-82e0-93bb-01ec8ce6d620"/></div><div style="display:contents" dir="auto"><h2 id="8e89ca20-53b3-835a-b378-811bab7da057" class="">[에고 소드 회수] - <code><strong>에고 소드 Drop</strong></code>, <code><strong>에고 소드 회수</strong></code></h2></div><div style="display:contents" dir="auto"><div id="ca79ca20-53b3-82ec-9992-811aee031e6b" class="column-list"><div style="display:contents" dir="auto"><div id="44d9ca20-53b3-83bb-918e-010b70bc6415" style="width:100%" class="column"><div style="display:contents" dir="ltr"><figure id="f689ca20-53b3-83da-836e-8127fac11011" class="image"><a href="image%2033.png"><img style="width:320.9921875px" src="image%2033.png"/></a></figure></div></div></div><div style="display:contents" dir="auto"><div id="1dd9ca20-53b3-829a-9932-017f7a45402f" style="width:100%" class="column"><div style="display:contents" dir="ltr"><figure id="04a9ca20-53b3-82d2-9d31-81ad3e7a589a" class="image"><a href="image%2034.png"><img style="width:321px" src="image%2034.png"/></a></figure></div></div></div></div></div><div style="display:contents" dir="auto"><div id="9c59ca20-53b3-824d-bd19-010105fd9f90" class="column-list"><div style="display:contents" dir="auto"><div id="8cd9ca20-53b3-820c-9dbb-811929c83fe1" style="width:100%" class="column"><div style="display:contents" dir="ltr"><figure id="ddb9ca20-53b3-82bb-9c45-01ba22e5f7e6" class="image"><a href="image%2035.png"><img style="width:320.9921875px" src="image%2035.png"/></a></figure></div></div></div><div style="display:contents" dir="auto"><div id="8cb9ca20-53b3-8360-a360-812e16247ac8" style="width:100%" class="column"><div style="display:contents" dir="auto"><p id="0fb9ca20-53b3-821b-ad85-8154b1084ffd" class="">
+</p></div></div></div></div></div><div style="display:contents" dir="auto"><h3 id="3689ca20-53b3-83f5-9a89-816b4f3a53a7" class="">[1] 경고</h3></div><div style="display:contents" dir="auto"><ul id="a739ca20-53b3-8313-a565-81405f354285" class="bulleted-list"><li style="list-style-type:disc">보스가 제자리에서 스프라이트(회수 동작)으로 변경</li></ul></div><div style="display:contents" dir="auto"><h3 id="7869ca20-53b3-822e-bbd7-01ae67614237" class="">[2] 에고 소드 이동 및 회수</h3></div><div style="display:contents" dir="auto"><ul id="25f9ca20-53b3-83ba-9be5-815683b7bb7d" class="bulleted-list"><li style="list-style-type:disc">에고 소드가 투척과 마찬가지로 회전하며 유저와 충돌 시 피해를 입힘</li></ul></div><div style="display:contents" dir="auto"><ul id="cb89ca20-53b3-83d1-915e-01bf71d80af3" class="bulleted-list"><li style="list-style-type:disc">패턴 진행 중 보스가 그로기에 빠져도 검은 계속 이동. 접촉 시 회수로 취급</li></ul></div><div style="display:contents" dir="auto"><h4 id="0bf9ca20-53b3-820e-a8ca-01af0b596db4" class=""><strong>[2-1] 에고 소드 속도</strong></h4></div><div style="display:contents" dir="auto"><ul id="5ba9ca20-53b3-828e-b96e-019a5028e238" class="bulleted-list"><li style="list-style-type:disc"><code>유저의 기본 이동 속도</code>의 <code>5배</code>의 속도</li></ul></div><div style="display:contents" dir="auto"><h3 id="b179ca20-53b3-83b2-9cb4-818f752b9deb" class="">[3] 회수 완료 및 피해 발생</h3></div><div style="display:contents" dir="auto"><ul id="6c29ca20-53b3-8201-b84b-01ea85df78ec" class="bulleted-list"><li style="list-style-type:disc">에고 소드와 마왕 충돌 시 원형으로 피해 발생<div style="display:contents" dir="auto"><ul id="bcc9ca20-53b3-8225-948c-815f199e0993" class="bulleted-list"><li style="list-style-type:circle"><strong>임시 범위</strong>: 유저의 대쉬로 벗어날 수 있는 정도의 범위</li></ul></div><div style="display:contents" dir="auto"><ul id="11e9ca20-53b3-8356-906c-01b14ff67cb4" class="bulleted-list"><li style="list-style-type:circle">범위는 추후 수정 예정</li></ul></div></li></ul></div><div style="display:contents" dir="auto"><ul id="ca99ca20-53b3-83e7-8d40-8187a7c9a265" class="bulleted-list"><li style="list-style-type:disc">보스 상태를 <code><strong>에고 소드 Hold</strong></code>로 변경</li></ul></div><div style="display:contents" dir="auto"><ul id="eee9ca20-53b3-8346-8afb-01c7dea6cec8" class="bulleted-list"><li style="list-style-type:disc"><code><strong>패턴 종료</strong></code></li></ul></div><div style="display:contents" dir="auto"><hr id="3b69ca20-53b3-82a6-bbc3-81a5a0088609"/></div><div style="display:contents" dir="auto"><h2 id="2ec9ca20-53b3-83db-88e8-018142de28a3" class="">[그로기 해제 시 발동 패턴]</h2></div><div style="display:contents" dir="auto"><div id="4b59ca20-53b3-8253-83ff-01a4be8d8017" class="column-list"><div style="display:contents" dir="auto"><div id="1269ca20-53b3-83f6-8edc-8144ba7d5fdc" style="width:100%" class="column"><div style="display:contents" dir="ltr"><figure id="2239ca20-53b3-83d2-b8de-01570768c169" class="image"><a href="image%2036.png"><img style="width:320.9921875px" src="image%2036.png"/></a></figure></div></div></div><div style="display:contents" dir="auto"><div id="f609ca20-53b3-8342-89df-81dff13c8d93" style="width:100%" class="column"><div style="display:contents" dir="ltr"><figure id="f619ca20-53b3-82cf-99bf-0146ec2a3ddb" class="image"><a href="image%2037.png"><img style="width:320.9921875px" src="image%2037.png"/></a></figure></div></div></div></div></div><div style="display:contents" dir="auto"><h3 id="63b9ca20-53b3-8202-82fc-8157608dd563" class="">[1] 경고</h3></div><div style="display:contents" dir="auto"><ul id="f059ca20-53b3-82eb-969b-81e4e465be82" class="bulleted-list"><li style="list-style-type:disc">무력화 상태에서 해제와 동시에 발동</li></ul></div><div style="display:contents" dir="auto"><ul id="9289ca20-53b3-8280-a901-8171a6159f40" class="bulleted-list"><li style="list-style-type:disc">사운드가 재생</li></ul></div><div style="display:contents" dir="auto"><h3 id="3af9ca20-53b3-836a-b136-811d238da946" class="">[2] 공격 → [1]의 사운드 재생 완료 후</h3></div><div style="display:contents" dir="auto"><ul id="9449ca20-53b3-833b-8b85-01773cc9933f" class="bulleted-list"><li style="list-style-type:disc"><code><strong>0.4초</strong></code> 후에 보스 중심으로 참격 이펙트 발생.<div style="display:contents" dir="auto"><ul id="f259ca20-53b3-82ba-8ce7-81cf108fc412" class="bulleted-list"><li style="list-style-type:circle">이펙트와 충돌 시 유저는 피해를 입음</li></ul></div></li></ul></div><div style="display:contents" dir="auto"><ul id="4859ca20-53b3-82cf-a926-019cc6ed72d5" class="bulleted-list"><li style="list-style-type:disc">따로 범위 표기 X</li></ul></div><div style="display:contents" dir="auto"><ul id="5939ca20-53b3-83f8-8cfb-814b34f52dbe" class="bulleted-list"><li style="list-style-type:disc"><code><strong>패턴 종료</strong></code></li></ul></div><div style="display:contents" dir="auto"><h4 id="8f69ca20-53b3-823e-a076-010be4ee7efc" class="">[공격 범위]</h4></div><div style="display:contents" dir="auto"><ul id="7cc9ca20-53b3-8310-8a21-01d86735e90b" class="bulleted-list"><li style="list-style-type:disc">보스를 중심으로 원형 범위</li></ul></div><div style="display:contents" dir="auto"><ul id="d9a9ca20-53b3-828c-a87f-81e3e987976f" class="bulleted-list"><li style="list-style-type:disc">유저가 대쉬로 피할 수 있는 범위</li></ul></div><div style="display:contents" dir="auto"><h4 id="96c9ca20-53b3-8272-a280-010e858e805c" class="">[연출]</h4></div><div style="display:contents" dir="ltr"><figure id="42a9ca20-53b3-82d2-815a-819967b3e52d" class="image" style="text-align:left"><a href="18.gif"><img style="width:192px" src="18.gif"/></a></figure></div><div style="display:contents" dir="auto"><ul id="d5d9ca20-53b3-82c6-9866-010647c1bfcb" class="bulleted-list"><li style="list-style-type:disc">이것과 유사. 문제는 참격이 안쪽으로 향하는 문제가 있다만, 일단은 이를 제공<div style="display:contents" dir="auto"><ul id="2cb9ca20-53b3-8213-874d-81d0f0746d51" class="bulleted-list"><li style="list-style-type:circle">추후 수정 버전 제공</li></ul></div></li></ul></div><div style="display:contents" dir="auto"><hr id="b8a9ca20-53b3-8355-94da-01641602a7ed"/></div><div style="display:contents" dir="auto"><h2 id="8169ca20-53b3-8200-bab7-81799963524a" class="">[HP 50% 이하 시 우선 사용 패턴]</h2></div><div style="display:contents" dir="auto"><div id="b289ca20-53b3-820b-8581-815976fe0b63" class="column-list"><div style="display:contents" dir="auto"><div id="8a29ca20-53b3-83e6-8efb-0156aa7ae5cc" style="width:100%" class="column"><div style="display:contents" dir="ltr"><figure id="fc69ca20-53b3-8201-a9ed-0187b3bd6de0" class="image"><a href="image%2038.png"><img style="width:321px" src="image%2038.png"/></a></figure></div></div></div><div style="display:contents" dir="auto"><div id="5309ca20-53b3-825a-b333-8165ec8cea6f" style="width:100%" class="column"><div style="display:contents" dir="ltr"><figure id="a899ca20-53b3-830c-b58e-8184d29a0103" class="image"><a href="image%2039.png"><img style="width:320.9921875px" src="image%2039.png"/></a></figure></div></div></div></div></div><div style="display:contents" dir="auto"><div id="1329ca20-53b3-83d6-9d63-0157139cdc40" class="column-list"><div style="display:contents" dir="auto"><div id="a089ca20-53b3-8282-a53a-816f34d874ca" style="width:100%" class="column"><div style="display:contents" dir="ltr"><figure id="31e9ca20-53b3-8360-83b8-81f265465bc0" class="image"><a href="image%2040.png"><img style="width:321px" src="image%2040.png"/></a></figure></div></div></div><div style="display:contents" dir="auto"><div id="40c9ca20-53b3-839b-958b-811b65456703" style="width:100%" class="column"><div style="display:contents" dir="ltr"><figure id="0859ca20-53b3-82a8-b3fe-8150d3f684ad" class="image"><a href="image%2041.png"><img style="width:320.9921875px" src="image%2041.png"/></a></figure></div></div></div></div></div><div style="display:contents" dir="auto"><div id="d2f9ca20-53b3-8208-af8c-01816eb13179" class="column-list"><div style="display:contents" dir="auto"><div id="6819ca20-53b3-83be-aec7-818504be42c4" style="width:100%" class="column"><div style="display:contents" dir="ltr"><figure id="2039ca20-53b3-8370-80fe-017c0ceaabca" class="image"><a href="image%2042.png"><img style="width:321px" src="image%2042.png"/></a></figure></div></div></div><div style="display:contents" dir="auto"><div id="6629ca20-53b3-835e-b8be-81eb04496d4e" style="width:100%" class="column"><div style="display:contents" dir="ltr"><figure id="5359ca20-53b3-82c1-92a5-8123c2fbf04d" class="image"><a href="image%2043.png"><img style="width:320.9921875px" src="image%2043.png"/></a></figure></div></div></div></div></div><div style="display:contents" dir="auto"><h3 id="57b9ca20-53b3-8256-83e7-011f64895f45" class="">[1] 경고</h3></div><div style="display:contents" dir="auto"><ul id="b7d9ca20-53b3-8305-bd4b-8134e165f07b" class="bulleted-list"><li style="list-style-type:disc">유저의 반대 방향으로 <code><strong>유저의 대쉬거리 만큼</strong></code>만큼 후퇴</li></ul></div><div style="display:contents" dir="auto"><ul id="f869ca20-53b3-832b-b0e4-81d45980fe96" class="bulleted-list"><li style="list-style-type:disc">유저의 방향으로 사각 경보 범위 생성<div style="display:contents" dir="auto"><ul id="b6f9ca20-53b3-82fa-bfb1-81224e206d92" class="bulleted-list"><li style="list-style-type:circle">경고는 <code><strong>0.6초</strong></code> 동안 유지.</li></ul></div><div style="display:contents" dir="auto"><ul id="71c9ca20-53b3-8297-bc44-01d875b5fbee" class="bulleted-list"><li style="list-style-type:circle">해당 경고는 지속 시간 중 유저를 추적</li></ul></div></li></ul></div><div style="display:contents" dir="auto"><h3 id="44a9ca20-53b3-83a4-be6e-81b561ad28ee" class="">[2] 경고 - 경고 시간 종료 후</h3></div><div style="display:contents" dir="auto"><ul id="de19ca20-53b3-82b6-853e-01b98a5cec91" class="bulleted-list"><li style="list-style-type:disc">경고 방향으로 돌진</li></ul></div><div style="display:contents" dir="auto"><ul id="6299ca20-53b3-834f-828d-0118ad4f3ea2" class="bulleted-list"><li style="list-style-type:disc">충돌한 유저에게 피해를 입힘</li></ul></div><div style="display:contents" dir="auto"><h4 id="a709ca20-53b3-8258-ae71-0141d7663bf5" class="">[2-1] 이동 속도 및 연출</h4></div><div style="display:contents" dir="auto"><ul id="acc9ca20-53b3-8261-b7a8-8140079d664a" class="bulleted-list"><li style="list-style-type:disc"><code><strong>유저의 기본 이동속도의 5배 만큼</strong></code>의 속도로 돌진</li></ul></div><div style="display:contents" dir="auto"><ul id="0129ca20-53b3-839e-bad6-811d280372a0" class="bulleted-list"><li style="list-style-type:disc">이동 시 잔상 효과 추가</li></ul></div><div style="display:contents" dir="auto"><h3 id="73b9ca20-53b3-8239-92c7-8144c6d0660f" class="">[3] 경로 변경</h3></div><div style="display:contents" dir="auto"><ul id="8e19ca20-53b3-83e0-894c-8149d4e38900" class="bulleted-list"><li style="list-style-type:disc">보스가 <code><strong>벽과 충돌</strong></code>시 유저 방향으로 방향 전환</li></ul></div><div style="display:contents" dir="auto"><ul id="1579ca20-53b3-82bd-b791-81471b9b8644" class="bulleted-list"><li style="list-style-type:disc">이때 추가 경고 표기 X</li></ul></div><div style="display:contents" dir="auto"><h4 id="b3e9ca20-53b3-8235-9234-01a2f1eae588" class="">[3-1] 연출</h4></div><div style="display:contents" dir="auto"><ul id="6949ca20-53b3-83dc-bb24-81f78fb7537f" class="bulleted-list"><li style="list-style-type:disc">충돌 시 화면 흔들림 연출 추가</li></ul></div><div style="display:contents" dir="auto"><ul id="ed89ca20-53b3-8251-a099-01acb8f2f295" class="bulleted-list"><li style="list-style-type:disc">유저가 피해를 받았을 때보다 덜 흔들리는 정도</li></ul></div><div style="display:contents" dir="auto"><h3 id="71b9ca20-53b3-83fd-a650-014d5d280ffb" class="">[4] 반복</h3></div><div style="display:contents" dir="auto"><ul id="9e89ca20-53b3-828d-8278-81def1e2ae68" class="bulleted-list"><li style="list-style-type:disc">[2], [3]의 과정을 벽에 4번 튕길 때까지 반복</li></ul></div><div style="display:contents" dir="auto"><h3 id="b549ca20-53b3-8368-b8a6-81824d7d323a" class="">[5] 도약</h3></div><div style="display:contents" dir="auto"><ul id="6fc9ca20-53b3-8233-a86c-816a4aef1c26" class="bulleted-list"><li style="list-style-type:disc">4번째 벽에 튕기는 순간 유저 위치에 원형 경보 생성</li></ul></div><div style="display:contents" dir="auto"><ul id="dba9ca20-53b3-8272-86ad-015041ffcaa6" class="bulleted-list"><li style="list-style-type:disc">보스는 유저의 위치로 <code><strong>0.5초</strong></code>에 걸쳐 이동.<div style="display:contents" dir="auto"><ul id="0019ca20-53b3-833d-b9b7-017d4173e2d3" class="bulleted-list"><li style="list-style-type:circle">연출은 취룡이나 슬라임과 동일</li></ul></div></li></ul></div><div style="display:contents" dir="auto"><h3 id="a929ca20-53b3-8279-a04c-8182425d82fa" class="">[6] 피해 및 패턴 종료</h3></div><div style="display:contents" dir="auto"><ul id="a6c9ca20-53b3-83d1-ba9e-810f9a26d7d9" class="bulleted-list"><li style="list-style-type:disc">보스가 도약 위치에 도달 시 피해 발생</li></ul></div><div style="display:contents" dir="auto"><ul id="d9a9ca20-53b3-8275-85c7-011b1954c615" class="bulleted-list"><li style="list-style-type:disc"><code><strong>패턴 종료</strong></code></li></ul></div><div style="display:contents" dir="auto"><ul id="7ce9ca20-53b3-837c-b652-01cb722fe074" class="bulleted-list"><li style="list-style-type:disc">해당 패턴은 다음 패턴 사용까지 <code><strong>2.3초</strong></code> 동안 추가 대기</li></ul></div><div style="display:contents" dir="auto"><hr id="7c29ca20-53b3-826e-a80a-013d49e35e7c"/></div><div style="display:contents" dir="auto"><h2 id="f149ca20-53b3-82de-8c09-81f10fa6a746" class="">[최후의 발악]</h2></div><div style="display:contents" dir="auto"><ul id="aa29ca20-53b3-821d-8199-019d3d36e871" class="bulleted-list"><li style="list-style-type:disc">죽을 때까지 멈추지 않는 공격</li></ul></div><div style="display:contents" dir="auto"><ul id="e719ca20-53b3-82c5-846e-0187e45aeece" class="bulleted-list"><li style="list-style-type:disc">공격을 뚫고 마왕을 때리면 승리하는 방식. 일종의 터치 다운</li></ul></div><div style="display:contents" dir="auto"><div id="43a9ca20-53b3-8284-b44d-01964d64c124" class="column-list"><div style="display:contents" dir="auto"><div id="c759ca20-53b3-832a-a734-01b7330687a8" style="width:100%" class="column"><div style="display:contents" dir="ltr"><figure id="49d9ca20-53b3-8316-81ff-013284d1f395" class="image"><a href="image%2044.png"><img style="width:320.9921875px" src="image%2044.png"/></a></figure></div></div></div><div style="display:contents" dir="auto"><div id="d4e9ca20-53b3-83e4-ab8f-01dadb29a81e" style="width:100%" class="column"><div style="display:contents" dir="ltr"><figure id="3309ca20-53b3-83c4-8da5-81eafb0f9311" class="image"><a href="image%2045.png"><img style="width:320.9921875px" src="image%2045.png"/></a></figure></div></div></div></div></div><div style="display:contents" dir="auto"><div id="81f9ca20-53b3-8247-89d9-81d9cbd11ec7" class="column-list"><div style="display:contents" dir="auto"><div id="f789ca20-53b3-8379-9962-812393c949b7" style="width:100%" class="column"><div style="display:contents" dir="ltr"><figure id="a6f9ca20-53b3-834c-82be-8107c2e74200" class="image"><a href="image%2046.png"><img style="width:320.9921875px" src="image%2046.png"/></a></figure></div></div></div><div style="display:contents" dir="auto"><div id="1779ca20-53b3-824f-a1c5-0172d1e85f52" style="width:100%" class="column"><div style="display:contents" dir="ltr"><figure id="6c89ca20-53b3-8200-9edd-8101ee1d6e21" class="image"><a href="image%2047.png"><img style="width:320.9921875px" src="image%2047.png"/></a></figure></div></div></div></div></div><div style="display:contents" dir="auto"><h3 id="7b79ca20-53b3-835b-a3d3-0104d96d7803" class="">[0] 발동 조건</h3></div><div style="display:contents" dir="auto"><ul id="f219ca20-53b3-8248-b05b-0125b86c01f1" class="bulleted-list"><li style="list-style-type:disc">보스의 <code><strong>HP가 10% 이하</strong></code>가 되면 <code><strong>강제 발동</strong></code></li></ul></div><div style="display:contents" dir="auto"><p id="ffa9ca20-53b3-82c1-b475-8193b79c6445" class="">[강제 발생?]</p></div><div style="display:contents" dir="auto"><ul id="a289ca20-53b3-83dd-80cc-0137325bf9ed" class="bulleted-list"><li style="list-style-type:disc">무력화, 패턴 사용 중, 디버프 등을 모두 무시한 채로 즉각 사용</li></ul></div><div style="display:contents" dir="auto"><h3 id="0109ca20-53b3-82dd-8915-017f90f46870" class="">[1] 넉백</h3></div><div style="display:contents" dir="auto"><ul id="6799ca20-53b3-834f-868e-819447ee4c2d" class="bulleted-list"><li style="list-style-type:disc">유저를 맵 끝으로 밀어버린 정도의 넉백</li></ul></div><div style="display:contents" dir="auto"><h3 id="9859ca20-53b3-8271-acc5-814f4f1eb5c1" class="">[2] 이동</h3></div><div style="display:contents" dir="auto"><ul id="ccc9ca20-53b3-82e6-8423-0162177e86a2" class="bulleted-list"><li style="list-style-type:disc">보스가 맵 중앙으로 이동</li></ul></div><div style="display:contents" dir="auto"><h3 id="fba9ca20-53b3-8313-8364-8119f1eebf01" class="">[3-1] 폭격 개시</h3></div><div style="display:contents" dir="auto"><ul id="4389ca20-53b3-8342-87b7-815d2ef081ca" class="bulleted-list"><li style="list-style-type:disc">유저를 중심으로 <code><strong>0.2초</strong></code> 마다, ±50에 내 랜덤 위치에 경보 생성.<div style="display:contents" dir="auto"><ul id="fd59ca20-53b3-8373-a4c0-811cd096ce4b" class="bulleted-list"><li style="list-style-type:circle">유저를 중심으로 랜덤한 곳에 경보를 생성하는 것에 가까움.</li></ul></div></li></ul></div><div style="display:contents" dir="auto"><ul id="9f89ca20-53b3-829c-9d9e-01fdfc04d0e1" class="bulleted-list"><li style="list-style-type:disc">각 경고는 생성 직후 <code><strong>0.4초</strong></code> 후 폭파</li></ul></div><div style="display:contents" dir="auto"><h3 id="b149ca20-53b3-83b9-8a9a-8168aeb191b2" class="">[3-2] 레이저 쇼</h3></div><div style="display:contents" dir="auto"><ul id="3119ca20-53b3-8252-a8c3-017bc50b66eb" class="bulleted-list"><li style="list-style-type:disc">[에고 소드 패턴 1]과 동일</li></ul></div><div style="display:contents" dir="auto"><ul id="f9a9ca20-53b3-83cc-a84d-019ff5cff16a" class="bulleted-list"><li style="list-style-type:disc">1초 단위로 경고와 발사를 반복</li></ul></div><div style="display:contents" dir="auto"><h4 id="a539ca20-53b3-82d4-877d-81c1277b7324" class="">[지속 시간]</h4></div><div style="display:contents" dir="auto"><ul id="fbc9ca20-53b3-82ba-bfc4-01b16d7cd1d4" class="bulleted-list"><li style="list-style-type:disc">[3-1]과 [3-2]는 마왕이 처치되기 전까지 무한 지속</li></ul></div><div style="display:contents" dir="auto"><ul id="19b9ca20-53b3-825c-8382-81f09375d2a4" class="bulleted-list"><li style="list-style-type:disc">지속 동안 마왕은 패턴을 사용하지 않음</li></ul></div><div style="display:contents" dir="auto"><p id="4ef9ca20-53b3-8280-a92f-817513251ad2" class="">
+</p></div></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span></body></html>

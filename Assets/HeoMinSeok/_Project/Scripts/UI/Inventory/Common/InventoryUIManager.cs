@@ -19,7 +19,7 @@ public class InventoryUIManager : MonoBehaviour
     [SerializeField] private InventoryScreen inventoryScreen;
 
     [Header("(Optional) Player reference")]
-    [Tooltip("If null, will fallback to PlayerInteractor2D.Instance")]
+    [Tooltip("If null, uses the current PlayerRuntimeRegistry player as the loot origin.")]
     [SerializeField] private Transform lootOriginOverride;
 
     private void Awake()
@@ -55,18 +55,19 @@ public class InventoryUIManager : MonoBehaviour
     {
         if (inventoryScreen == null) return;
 
-        var playerTransform = lootOriginOverride != null
-            ? lootOriginOverride
-            : PlayerRuntimeRegistry.GetPlayerTransform();
+        if (!TryResolveCurrentPlayerInventories(
+                out PlayerInteractor2D currentPlayer,
+                out PlayerConsumableInventory consumableInv,
+                out WeaponInventory2D weaponInv,
+                out RelicInventory relicInv,
+                out Transform playerRoot,
+                out Transform lootOrigin))
+        {
+            inventoryScreen.CancelPreparedOpen();
+            return;
+        }
 
-        var currentPlayer = PlayerRuntimeRegistry.CurrentPlayer != null
-            ? PlayerRuntimeRegistry.CurrentPlayer
-            : PlayerInteractor2D.Instance;
-
-        var consumableInv = currentPlayer != null ? PlayerConsumableInventory.GetOrAdd(currentPlayer.transform) : FindFirstObjectByType<PlayerConsumableInventory>();
-        var weaponInv = currentPlayer != null ? currentPlayer.GetComponent<WeaponInventory2D>() : FindFirstObjectByType<WeaponInventory2D>();
-        var relicInv = currentPlayer != null ? currentPlayer.GetComponent<RelicInventory>() : FindFirstObjectByType<RelicInventory>();
-        inventoryScreen.Bind(consumableInv, weaponInv, relicInv, playerTransform, currentPlayer != null ? currentPlayer.transform : null);
+        inventoryScreen.Bind(consumableInv, weaponInv, relicInv, lootOrigin, playerRoot);
 
         if (UIManager.Instance != null) UIManager.Instance.HideHoverImmediate();
 
@@ -100,6 +101,40 @@ public class InventoryUIManager : MonoBehaviour
     {
         if (Instance == this)
             Instance = null;
+    }
+
+    private bool TryResolveCurrentPlayerInventories(
+        out PlayerInteractor2D currentPlayer,
+        out PlayerConsumableInventory consumableInventory,
+        out WeaponInventory2D weaponInventory,
+        out RelicInventory relicInventory,
+        out Transform playerRoot,
+        out Transform lootOrigin)
+    {
+        currentPlayer = PlayerRuntimeRegistry.CurrentPlayer;
+        consumableInventory = null;
+        weaponInventory = null;
+        relicInventory = null;
+        playerRoot = currentPlayer != null ? currentPlayer.transform : null;
+        lootOrigin = lootOriginOverride != null ? lootOriginOverride : playerRoot;
+
+        if (currentPlayer == null)
+        {
+            Debug.LogWarning("[InventoryUIManager] Cannot open inventory because PlayerRuntimeRegistry.CurrentPlayer is missing.", this);
+            return false;
+        }
+
+        consumableInventory = currentPlayer.GetComponent<PlayerConsumableInventory>();
+        weaponInventory = currentPlayer.GetComponent<WeaponInventory2D>();
+        relicInventory = currentPlayer.GetComponent<RelicInventory>();
+
+        if (consumableInventory != null && weaponInventory != null && relicInventory != null)
+            return true;
+
+        Debug.LogWarning(
+            "[InventoryUIManager] Cannot open inventory because the current player is missing one or more inventory components.",
+            currentPlayer);
+        return false;
     }
 
     /// <summary>

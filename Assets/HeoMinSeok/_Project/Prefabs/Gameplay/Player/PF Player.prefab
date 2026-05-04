@@ -519,6 +519,8 @@ GameObject:
   - component: {fileID: 7878539558719410035}
   - component: {fileID: 890615227393700347}
   - component: {fileID: 4913808379797790544}
+  - component: {fileID: 771234567890123456}
+  - component: {fileID: 771234567890123457}
   - component: {fileID: 3517715623297123696}
   - component: {fileID: 963026585117413559}
   - component: {fileID: 4885150337275956111}
@@ -772,6 +774,38 @@ MonoBehaviour:
   targetResolver: {fileID: 0}
   promptPresenter: {fileID: 0}
   speechController: {fileID: 0}
+--- !u!114 &771234567890123456
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8883617028798182002}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0125920acee723a4ebd339d55e482402, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  slots:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+--- !u!114 &771234567890123457
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8883617028798182002}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbbb78207c3663545a856679c2f756dc, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  consumableInventory: {fileID: 771234567890123456}
+  tagSystem: {fileID: 7887873875085709242}
+  skillBlockedTag: {fileID: 0}
 --- !u!114 &3517715623297123696
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1161,7 +1195,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e28afe12b236964eac1a1dc67c7c43d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  consumableInventory: {fileID: 0}
+  consumableInventory: {fileID: 771234567890123456}
   weaponInventory: {fileID: 963026585117413559}
   relicInventory: {fileID: 4885150337275956111}
   attributeSet: {fileID: 1414767285602429285}

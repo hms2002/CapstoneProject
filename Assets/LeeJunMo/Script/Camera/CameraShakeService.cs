@@ -118,6 +118,13 @@ public sealed class CameraShakeService : MonoBehaviour
             ? request.ManualShakeSettingsOverride
             : CameraManualShakeSettings.Default;
 
+        if (request.HasManualShakeSettingsOverride &&
+            TryPlayManualShake(camera.gameObject, request.Amplitude, direction, manualSettings))
+        {
+            RecordEmit(request, now);
+            return true;
+        }
+
         if (Time.timeScale <= 0.0001f &&
             TryPlayManualShake(camera.gameObject, request.Amplitude, direction, manualSettings))
         {
