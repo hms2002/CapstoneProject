@@ -1,133 +1,6 @@
 {
     "sessions": [
         {
-            "sessionId": "a62eec5e4bc7409abfda1054a124214b",
-            "startedUtc": "2026-04-28T09:16:28.0982320Z",
-            "endedUtc": "2026-04-28T09:16:29.8376960Z",
-            "entries": []
-        },
-        {
-            "sessionId": "82fc6d3c3564416284dcd6c5f9bdd701",
-            "startedUtc": "2026-04-28T09:28:08.2096258Z",
-            "endedUtc": "2026-04-28T09:28:09.6939903Z",
-            "entries": []
-        },
-        {
-            "sessionId": "706f524ae8854701b22ac8878f4f3ecb",
-            "startedUtc": "2026-04-28T09:45:16.8891778Z",
-            "endedUtc": "2026-04-28T09:46:19.8320288Z",
-            "entries": [
-                {
-                    "prefabPath": "Assets/Prefabs/VFX/PF_DeadSkeletonExplosionPurple.prefab",
-                    "prefabName": "PF_DeadSkeletonExplosionPurple",
-                    "totalSpawns": 4,
-                    "coldSpawns": 4,
-                    "firstSeenSeconds": 36.043060302734378,
-                    "lastSeenSeconds": 45.674781799316409,
-                    "firstSceneName": "HeoMinSeok_Boss",
-                    "lastSceneName": "HeoMinSeok_Boss"
-                },
-                {
-                    "prefabPath": "Assets/LeeJunMo/Prefab/Effect/Particle/ExplosionParticle.prefab",
-                    "prefabName": "ExplosionParticle",
-                    "totalSpawns": 4,
-                    "coldSpawns": 1,
-                    "firstSeenSeconds": 36.09590530395508,
-                    "lastSeenSeconds": 45.70281219482422,
-                    "firstSceneName": "HeoMinSeok_Boss",
-                    "lastSceneName": "HeoMinSeok_Boss"
-                },
-                {
-                    "prefabPath": "Assets/LeeJunMo/Prefab/Effect/Particle/WitchNormal1AttackTileParticle.prefab",
-                    "prefabName": "WitchNormal1AttackTileParticle",
-                    "totalSpawns": 4,
-                    "coldSpawns": 1,
-                    "firstSeenSeconds": 38.37788009643555,
-                    "lastSeenSeconds": 61.933284759521487,
-                    "firstSceneName": "HeoMinSeok_Boss",
-                    "lastSceneName": "HeoMinSeok_Boss"
-                },
-                {
-                    "prefabPath": "Assets/Prefabs/Enemies/Mobs/ShadowServant/Fog.prefab",
-                    "prefabName": "Fog",
-                    "totalSpawns": 4,
-                    "coldSpawns": 0,
-                    "firstSeenSeconds": 36.031654357910159,
-                    "lastSeenSeconds": 45.67396545410156,
-                    "firstSceneName": "HeoMinSeok_Boss",
-                    "lastSceneName": "HeoMinSeok_Boss"
-                },
-                {
-                    "prefabPath": "Assets/LeeJunMo/Prefab/Effect/AnimEffect/SlashHit.prefab",
-                    "prefabName": "SlashHit",
-                    "totalSpawns": 4,
-                    "coldSpawns": 0,
-                    "firstSeenSeconds": 38.35368728637695,
-                    "lastSeenSeconds": 61.90748977661133,
-                    "firstSceneName": "HeoMinSeok_Boss",
-                    "lastSceneName": "HeoMinSeok_Boss"
-                },
-                {
-                    "prefabPath": "Assets/LeeJunMo/Prefab/Effect/Particle/HitSpark.prefab",
-                    "prefabName": "HitSpark",
-                    "totalSpawns": 1,
-                    "coldSpawns": 0,
-                    "firstSeenSeconds": 57.26060104370117,
-                    "lastSeenSeconds": 57.2606086730957,
-                    "firstSceneName": "HeoMinSeok_Boss",
-                    "lastSceneName": "HeoMinSeok_Boss"
-                }
-            ]
-        },
-        {
-            "sessionId": "8060e09a2d3047bebad315c66a03ca78",
-            "startedUtc": "2026-04-28T09:53:30.4969175Z",
-            "endedUtc": "2026-04-28T09:53:31.7294545Z",
-            "entries": []
-        },
-        {
-            "sessionId": "6a17d15e61c04642b7cf06b8159bfc4c",
-            "startedUtc": "2026-04-28T10:00:56.7277417Z",
-            "endedUtc": "2026-04-28T10:00:58.0136726Z",
-            "entries": []
-        },
-        {
-            "sessionId": "5a07ae0e64a842e4ae954df26754f395",
-            "startedUtc": "2026-04-28T10:03:59.1583397Z",
-            "endedUtc": "2026-04-28T10:04:00.7388869Z",
-            "entries": []
-        },
-        {
-            "sessionId": "dd978dc072ca4a1486e0a4c2f4171630",
-            "startedUtc": "2026-04-28T10:05:14.7375918Z",
-            "endedUtc": "2026-04-28T10:05:17.0703213Z",
-            "entries": []
-        },
-        {
-            "sessionId": "921b8c01f6f14ef898e5013f4e38fe8c",
-            "startedUtc": "2026-04-28T10:05:50.3636603Z",
-            "endedUtc": "2026-04-28T10:05:51.8939534Z",
-            "entries": []
-        },
-        {
-            "sessionId": "8b31a532ecc749709b43f7171d6d8b07",
-            "startedUtc": "2026-04-28T10:06:13.3097553Z",
-            "endedUtc": "2026-04-28T10:06:15.1758734Z",
-            "entries": []
-        },
-        {
-            "sessionId": "2d9762d40fa545209bed5c6a8a7d0a09",
-            "startedUtc": "2026-04-28T10:07:11.1957760Z",
-            "endedUtc": "2026-04-28T10:07:12.4700137Z",
-            "entries": []
-        },
-        {
-            "sessionId": "7b3ee83ba1b744bc92b6ea24f9556a5f",
-            "startedUtc": "2026-04-28T10:14:17.8250070Z",
-            "endedUtc": "2026-04-28T10:14:19.6899366Z",
-            "entries": []
-        },
-        {
             "sessionId": "cfc76cf636ee4c2195664cec296a1904",
             "startedUtc": "2026-04-28T10:15:11.2669441Z",
             "endedUtc": "2026-04-28T10:15:12.7142557Z",
@@ -179,6 +52,72 @@
             "sessionId": "e8f83ceecf844004b58e33b77f8c94f3",
             "startedUtc": "2026-04-29T09:23:33.3684505Z",
             "endedUtc": "2026-04-29T09:23:35.2759067Z",
+            "entries": []
+        },
+        {
+            "sessionId": "9cdd25d1525a44d38748aec9afe19325",
+            "startedUtc": "2026-05-02T13:21:46.8489301Z",
+            "endedUtc": "2026-05-02T13:21:48.4088740Z",
+            "entries": []
+        },
+        {
+            "sessionId": "78c580901b584f46b2aa9d22b2cf63d6",
+            "startedUtc": "2026-05-02T13:38:18.5055484Z",
+            "endedUtc": "2026-05-02T13:38:20.1973562Z",
+            "entries": []
+        },
+        {
+            "sessionId": "96659b84582a4cd79c34fff427b03408",
+            "startedUtc": "2026-05-02T18:49:02.0146626Z",
+            "endedUtc": "2026-05-02T18:49:03.0290891Z",
+            "entries": []
+        },
+        {
+            "sessionId": "ae75063af3ee419c8525d1942ddc426f",
+            "startedUtc": "2026-05-02T18:51:41.9005422Z",
+            "endedUtc": "2026-05-02T18:51:43.3600978Z",
+            "entries": []
+        },
+        {
+            "sessionId": "0fbc4bebfe1944108f355e88aa80e23a",
+            "startedUtc": "2026-05-02T18:52:44.0922246Z",
+            "endedUtc": "2026-05-02T18:52:45.1705013Z",
+            "entries": []
+        },
+        {
+            "sessionId": "bb70811453074ec798535a99547817d4",
+            "startedUtc": "2026-05-02T18:54:41.8845642Z",
+            "endedUtc": "2026-05-02T18:54:42.9603408Z",
+            "entries": []
+        },
+        {
+            "sessionId": "47905a6d50fc43abaa9567962e2cde8e",
+            "startedUtc": "2026-05-03T12:42:52.3197684Z",
+            "endedUtc": "2026-05-03T12:42:53.5127627Z",
+            "entries": []
+        },
+        {
+            "sessionId": "235d7e2dfee944d1b3e60f202d0a19a5",
+            "startedUtc": "2026-05-03T15:50:09.2490911Z",
+            "endedUtc": "2026-05-03T15:50:10.3107909Z",
+            "entries": []
+        },
+        {
+            "sessionId": "a2a2474e2df14b13af6f659af6685bc6",
+            "startedUtc": "2026-05-03T16:15:03.6864743Z",
+            "endedUtc": "2026-05-03T16:15:04.7892171Z",
+            "entries": []
+        },
+        {
+            "sessionId": "7f7504e5e02744a4931140f4637c56f8",
+            "startedUtc": "2026-05-03T16:52:16.5670861Z",
+            "endedUtc": "2026-05-03T16:52:17.6461545Z",
+            "entries": []
+        },
+        {
+            "sessionId": "5321a559b49b482e9d0b5c6f60a22af9",
+            "startedUtc": "2026-05-03T16:52:40.3231232Z",
+            "endedUtc": "2026-05-03T16:52:41.5094422Z",
             "entries": []
         }
     ]

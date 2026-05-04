@@ -156,32 +156,35 @@ namespace UnityGAS
 
         protected virtual void OnTriggerEnter2D(Collider2D other)
         {
-            if (!isInitialized || other == null)
+            if (!isInitialized || other == null) return;
+
+            int wallLayerBit = 1 << other.gameObject.layer;
+            if ((WallLayers.value & wallLayerBit) != 0)
+            {
+                if (!CanHitWall(other.gameObject, other)) return;
+
+                OnHitWall(other.gameObject, other);
                 return;
+            }
 
             var targetRoot = CombatTargetResolver2D.ResolveDamageTarget(other);
-            if (targetRoot == null || IsIgnoredTarget(targetRoot))
-                return;
+            if (targetRoot == null || IsIgnoredTarget(targetRoot)) return;
 
             int layerBit = 1 << targetRoot.layer;
 
             if ((WallLayers.value & layerBit) != 0)
             {
-                if (!CanHitWall(targetRoot, other))
-                    return;
+                if (!CanHitWall(targetRoot, other)) return;
 
                 OnHitWall(targetRoot, other);
                 return;
             }
 
-            if ((DamageLayers.value & layerBit) == 0)
-                return;
+            if ((DamageLayers.value & layerBit) == 0) return;
 
-            if (!CanHitTarget(targetRoot))
-                return;
+            if (!CanHitTarget(targetRoot)) return;
 
-            if (!TryApplyHit(targetRoot, other))
-                return;
+            if (!TryApplyHit(targetRoot, other)) return;
 
             OnHitTarget(targetRoot, other);
         }
