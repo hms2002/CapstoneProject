@@ -1,6 +1,10 @@
 using System.Collections;
+using System.Collections.Generic;
 using CapstonePresentation;
+using DG.Tweening;
 using UnityEngine;
+using UnityEngine.Pool;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 /// <summary>
@@ -11,10 +15,19 @@ using UnityEngine.UI;
 [DisallowMultipleComponent]
 public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
 {
+    private enum EditModePreviewPose
+    {
+        Closed,
+        Opened,
+        Custom
+    }
+
     [Header("References")]
     [SerializeField] private RectTransform chestPanel;
     [SerializeField] private RectTransform inventoryPanel;
     [SerializeField] private RectTransform motionBounds;
+    [SerializeField] private RectTransform chestCollisionBounds;
+    [SerializeField] private RectTransform inventoryCollisionBounds;
     [SerializeField] private RectTransform topAnimRoot;
     [SerializeField] private RectTransform middleRevealSlot;
     [SerializeField] private RectTransform middleViewport;
@@ -35,7 +48,7 @@ public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
 
     [Header("Motion")]
     [SerializeField, Min(0f)] private float revealDuration = 0.34f;
-    [SerializeField, Min(0f)] private float topLiftDistance = 86f;
+    [SerializeField] private float topLiftDistance = 86f;
     [SerializeField] private bool useUnscaledTime = true;
     [SerializeField] private bool blockInteractionDuringReveal = true;
 
@@ -54,14 +67,40 @@ public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
     [SerializeField] private WorldPresentationHook impactPresentation;
     [SerializeField, Min(0f)] private float impactCameraShakeAmplitude = 0.08f;
     [SerializeField, Min(0f)] private float impactCameraShakeDuration = 0.12f;
+    [SerializeField, Min(0f)] private float impactCameraShakePositionScale = 2f;
     [SerializeField] private RectTransform impactPresentationAnchor;
     [SerializeField] private ParticleSystem[] impactParticleSystems;
     [SerializeField] private RectTransform impactShakeRoot;
+
+    [Header("Impact Chest Shake")]
+    [SerializeField] private bool playImpactChestShake = true;
+    [SerializeField, Min(0f)] private float impactChestShakeDuration = 0.18f;
+    [SerializeField] private Vector2 impactChestShakeStrength = new(16f, 6f);
+    [SerializeField, Min(1)] private int impactChestShakeVibrato = 18;
+    [SerializeField, Range(0f, 180f)] private float impactChestShakeRandomness = 60f;
 
     [Header("Impact UI Particles")]
     [SerializeField] private bool playImpactUiParticles = true;
     [SerializeField] private UIParticleEmitter impactUiParticleEmitter;
     [SerializeField] private Vector2 impactUiParticleOffset;
+
+    [Header("Open UI Particles")]
+    [SerializeField] private bool playOpenUiParticles = true;
+    [SerializeField] private UIParticleEmitter openUiParticleEmitter;
+    [SerializeField] private RectTransform openUiParticleAnchor;
+    [SerializeField] private RectTransform openUiParticleRenderRoot;
+    [SerializeField] private Vector2 openUiParticleOffset;
+    [FormerlySerializedAs("forceOpenUiParticleCanvasOnTop")]
+    [SerializeField] private bool forceOpenUiParticleRenderRootOnTop = true;
+
+    [Header("Slot Reveal UI Particles")]
+    [SerializeField] private bool playSlotRevealUiParticles = true;
+    [SerializeField] private UIParticleEmitter slotRevealUiParticleEmitterPrefab;
+    [SerializeField] private RectTransform slotRevealUiParticlePoolRoot;
+    [SerializeField, Min(0)] private int slotRevealUiParticlePrewarmCount = 3;
+    [SerializeField, Min(1)] private int slotRevealUiParticleMaxPoolSize = 8;
+    [SerializeField] private Vector2 slotRevealUiParticleOffset;
+    [SerializeField, Min(0f)] private float slotRevealVisibilityPadding = 2f;
 
     [Header("Impact UI Shake")]
     [SerializeField, Min(0f)] private float uiImpactShakeDuration = 0.16f;
@@ -74,6 +113,24 @@ public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
     [SerializeField, Min(1)] private int previewSlotCount = 6;
     [SerializeField, Min(0f)] private float fallbackTopHeight = 84.55f;
     [SerializeField, Min(0f)] private float fallbackDownHeight = 84.55f;
+    [FormerlySerializedAs("manualChestWidth")]
+    [SerializeField, Min(1f)] private float chestWidth = 431f;
+    [InspectorName("Override Top Frame Height")]
+    [SerializeField] private bool overrideTopFrameSize;
+    [FormerlySerializedAs("topFrameSize")]
+    [SerializeField, Min(1f)] private float topFrameHeight = 84.55f;
+    [InspectorName("Override Down Frame Height")]
+    [SerializeField] private bool overrideDownFrameSize;
+    [FormerlySerializedAs("downFrameSize")]
+    [SerializeField, Min(1f)] private float downFrameHeight = 84.55f;
+
+    [Header("Layering")]
+    [SerializeField] private bool forceTopSlotAsLastSibling;
+
+    [Header("Editor Preview")]
+    [SerializeField] private EditModePreviewPose editModePreviewPose = EditModePreviewPose.Opened;
+    [SerializeField, Range(0f, 1f)] private float customPreviewRevealProgress = 1f;
+    [SerializeField] private Vector2 closedTopFrameOffset;
 
     [Header("Fallback Search Names")]
     [SerializeField] private string chestPanelName = "ChestPanel";
@@ -94,23 +151,47 @@ public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
 
     private Coroutine activeRoutine;
     private Coroutine impactShakeRoutine;
+    private Tween impactChestShakeTween;
+    private Vector2 impactChestShakeRestorePosition;
+    private bool hasImpactChestShakeRestorePosition;
     private Vector2 chestPanelOpenPosition;
     private Vector2 inventoryPanelOpenPosition;
-    private Vector2 impactShakeRootOpenPosition;
     private bool hasCapturedPanelOpenPositions;
     private bool hasCapturedImpactShakeRootPosition;
+    private bool hasPlayedOpenUiParticles;
+    private ObjectPool<UIParticleEmitter> slotRevealParticlePool;
+    private readonly List<ItemSlotUI> itemRevealSlots = new();
+    private readonly HashSet<ItemSlotUI> playedSlotRevealParticleSlots = new();
+    private readonly HashSet<UIParticleEmitter> activeSlotRevealParticleEmitters = new();
+    private readonly List<UIParticleEmitter> slotRevealParticleBuffer = new();
+    private readonly List<RectTransform> impactShakeTargets = new();
+    private readonly List<Vector2> impactShakeTargetBasePositions = new();
 
     private readonly struct LayoutMetrics
     {
         public readonly float Width;
+        public readonly float TopWidth;
+        public readonly float MiddleWidth;
+        public readonly float DownWidth;
         public readonly float TopHeight;
         public readonly float MiddleHeight;
         public readonly float DownHeight;
         public readonly Vector2 GridSize;
 
-        public LayoutMetrics(float width, float topHeight, float middleHeight, float downHeight, Vector2 gridSize)
+        public LayoutMetrics(
+            float width,
+            float topWidth,
+            float middleWidth,
+            float downWidth,
+            float topHeight,
+            float middleHeight,
+            float downHeight,
+            Vector2 gridSize)
         {
             Width = width;
+            TopWidth = topWidth;
+            MiddleWidth = middleWidth;
+            DownWidth = downWidth;
             TopHeight = topHeight;
             MiddleHeight = middleHeight;
             DownHeight = downHeight;
@@ -121,12 +202,15 @@ public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
     private void Reset()
     {
         ResolveReferences();
-        ApplyOpenedPose();
+        ApplyEditModePreviewPose();
     }
 
     private void Awake()
     {
         ResolveReferences();
+
+        if (Application.isPlaying)
+            EnsureSlotRevealParticlePool();
     }
 
     private void OnEnable()
@@ -134,15 +218,18 @@ public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
         ResolveReferences();
 
         if (!Application.isPlaying && applyLayoutInEditMode)
-            ApplyOpenedPose();
+            ApplyEditModePreviewPose();
     }
 
     private void OnValidate()
     {
+        customPreviewRevealProgress = Mathf.Clamp01(customPreviewRevealProgress);
+        topFrameHeight = Mathf.Max(1f, topFrameHeight);
+        downFrameHeight = Mathf.Max(1f, downFrameHeight);
         ResolveReferences();
 
         if (!Application.isPlaying && applyLayoutInEditMode)
-            ApplyOpenedPose();
+            ApplyEditModePreviewPose();
     }
 
 #if UNITY_EDITOR
@@ -152,13 +239,18 @@ public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
             return;
 
         ResolveReferences();
-        ApplyOpenedPose();
+        ApplyEditModePreviewPose();
     }
 #endif
 
     private void OnDisable()
     {
         StopActiveRoutine();
+    }
+
+    private void OnDestroy()
+    {
+        ClearSlotRevealParticlePool();
     }
 
     public void PlayOpen()
@@ -172,6 +264,7 @@ public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
         CaptureImpactShakeRootPosition(force: false);
         PreparePostRevealSlideFade();
         ApplyRevealPose(0f);
+        ResetRevealParticleState();
 
         if (!CanPlaySideEntry())
         {
@@ -200,13 +293,19 @@ public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
     public void ConfigurePanels(
         RectTransform chestPanelOverride,
         RectTransform inventoryPanelOverride,
-        RectTransform postRevealTargetOverride = null)
+        RectTransform postRevealTargetOverride = null,
+        RectTransform inventoryCollisionBoundsOverride = null)
     {
         if (chestPanelOverride != null)
             chestPanel = chestPanelOverride;
 
         if (inventoryPanelOverride != null)
             inventoryPanel = inventoryPanelOverride;
+
+        if (inventoryCollisionBoundsOverride != null)
+            inventoryCollisionBounds = inventoryCollisionBoundsOverride;
+        else if (inventoryPanelOverride != null && !IsUsableCollisionBounds(inventoryPanelOverride, inventoryCollisionBounds))
+            inventoryCollisionBounds = null;
 
         if (postRevealTargetOverride != null)
         {
@@ -215,6 +314,22 @@ public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
         }
 
         hasCapturedPanelOpenPositions = false;
+    }
+
+    public void ConfigureItemRevealSlots(IList<ItemSlotUI> slots)
+    {
+        itemRevealSlots.Clear();
+        playedSlotRevealParticleSlots.Clear();
+
+        if (slots == null)
+            return;
+
+        for (int i = 0; i < slots.Count; i++)
+        {
+            ItemSlotUI slot = slots[i];
+            if (slot != null)
+                itemRevealSlots.Add(slot);
+        }
     }
 
     private IEnumerator PlaySideEntryRevealRoutine()
@@ -235,41 +350,61 @@ public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
 
         PlayImpactFeedback();
 
-        if (impactPauseDuration > 0f)
+        float impactHoldDuration = ResolveImpactHoldDuration();
+        if (impactHoldDuration > 0f)
         {
             if (useUnscaledTime)
-                yield return new WaitForSecondsRealtime(impactPauseDuration);
+                yield return new WaitForSecondsRealtime(impactHoldDuration);
             else
-                yield return new WaitForSeconds(impactPauseDuration);
+                yield return new WaitForSeconds(impactHoldDuration);
         }
 
-        float duration = Mathf.Max(settleDuration, revealDuration);
-        if (duration <= 0f)
+        if (settleDuration <= 0f)
         {
             ApplyPanelPositions(pose.ChestFinal, pose.InventoryFinal);
+        }
+        else
+        {
+            float settleElapsed = 0f;
+            while (settleElapsed < settleDuration)
+            {
+                settleElapsed += useUnscaledTime ? Time.unscaledDeltaTime : Time.deltaTime;
+                float settleT = Mathf.Clamp01(settleElapsed / settleDuration);
+                float easedSettle = EaseOutCubic(settleT);
+
+                ApplyPanelPositions(
+                    Vector2.LerpUnclamped(pose.ChestCollision, pose.ChestFinal, easedSettle),
+                    Vector2.LerpUnclamped(pose.InventoryCollision, pose.InventoryFinal, easedSettle));
+                ApplyRevealPose(0f);
+                yield return null;
+            }
+
+            ApplyPanelPositions(pose.ChestFinal, pose.InventoryFinal);
+        }
+
+        yield return PlayPostSettleImpactShake(pose.ChestFinal);
+        PlayOpenUiParticles();
+
+        if (revealDuration <= 0f)
+        {
             ApplyOpenedPose();
+            PlayVisibleSlotRevealParticles(forceVisible: true);
             PlayPostRevealSlideFadeOpen();
             activeRoutine = null;
             yield break;
         }
 
-        float elapsed = 0f;
-        while (elapsed < duration)
+        float revealElapsed = 0f;
+        while (revealElapsed < revealDuration)
         {
-            elapsed += useUnscaledTime ? Time.unscaledDeltaTime : Time.deltaTime;
-            float settleT = settleDuration <= 0f ? 1f : Mathf.Clamp01(elapsed / settleDuration);
-            float revealT = revealDuration <= 0f ? 1f : Mathf.Clamp01(elapsed / revealDuration);
-            float easedSettle = EaseOutCubic(settleT);
-
-            ApplyPanelPositions(
-                Vector2.LerpUnclamped(pose.ChestCollision, pose.ChestFinal, easedSettle),
-                Vector2.LerpUnclamped(pose.InventoryCollision, pose.InventoryFinal, easedSettle));
+            revealElapsed += useUnscaledTime ? Time.unscaledDeltaTime : Time.deltaTime;
+            float revealT = Mathf.Clamp01(revealElapsed / revealDuration);
             ApplyRevealPose(SmoothStep(revealT));
             yield return null;
         }
 
-        ApplyPanelPositions(pose.ChestFinal, pose.InventoryFinal);
         ApplyOpenedPose();
+        PlayVisibleSlotRevealParticles(forceVisible: true);
         PlayPostRevealSlideFadeOpen();
         activeRoutine = null;
     }
@@ -277,6 +412,7 @@ public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
     private IEnumerator PlayRevealRoutine()
     {
         float elapsed = 0f;
+        PlayOpenUiParticles();
 
         while (elapsed < revealDuration)
         {
@@ -287,6 +423,7 @@ public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
         }
 
         ApplyOpenedPose();
+        PlayVisibleSlotRevealParticles(forceVisible: true);
         PlayPostRevealSlideFadeOpen();
         activeRoutine = null;
     }
@@ -302,6 +439,7 @@ public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
         if (duration <= 0f)
         {
             ApplyPanelPositions(chestTo, inventoryTo);
+            ApplyRevealPose(0f);
             yield break;
         }
 
@@ -319,6 +457,7 @@ public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
         }
 
         ApplyPanelPositions(chestTo, inventoryTo);
+        ApplyRevealPose(0f);
     }
 
     private void ResolveReferences()
@@ -361,6 +500,7 @@ public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
 
         ResolvePostRevealSlideFadePresentation(createIfMissing: false);
         ConfigureOuterLayoutDrivers();
+        ConfigureOpenUiParticleRenderRoot();
     }
 
     private void ConfigureOuterLayoutDrivers()
@@ -376,6 +516,7 @@ public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
         DisableComponent<LayoutGroup>(middleViewport);
         DisableComponent<LayoutGroup>(middleContent);
         DisableComponent<LayoutGroup>(topFrame);
+        DisableChildLayoutGroups(topFrame);
         DisableComponent<LayoutGroup>(middleFrame);
         DisableComponent<LayoutGroup>(downFrame);
         DisableComponent<LayoutElement>(downFrame);
@@ -387,11 +528,30 @@ public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
         SetInteractionEnabled(true);
     }
 
+    private void ApplyEditModePreviewPose()
+    {
+        ApplyRevealPose(ResolveEditModePreviewProgress());
+        SetInteractionEnabled(true);
+    }
+
+    private float ResolveEditModePreviewProgress()
+    {
+        return editModePreviewPose switch
+        {
+            EditModePreviewPose.Closed => 0f,
+            EditModePreviewPose.Opened => 1f,
+            EditModePreviewPose.Custom => customPreviewRevealProgress,
+            _ => 1f
+        };
+    }
+
     private void PlayRevealOnly()
     {
         if (revealDuration <= 0f)
         {
+            PlayOpenUiParticles();
             ApplyOpenedPose();
+            PlayVisibleSlotRevealParticles(forceVisible: true);
             PlayPostRevealSlideFadeOpen();
             return;
         }
@@ -411,9 +571,9 @@ public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
 
         if (chestPanel != null)
         {
-            SetStackChild(middleRevealSlot, metrics.Width, revealedMiddleHeight, totalHeight, metrics.TopHeight);
-            SetStackChild(downFrame, metrics.Width, metrics.DownHeight, totalHeight, metrics.TopHeight + revealedMiddleHeight);
-            SetStackChild(topSlot, metrics.Width, metrics.TopHeight, totalHeight, 0f);
+            SetStackChild(middleRevealSlot, metrics.MiddleWidth, revealedMiddleHeight, totalHeight, metrics.TopHeight);
+            SetStackChild(downFrame, metrics.DownWidth, metrics.DownHeight, totalHeight, metrics.TopHeight + revealedMiddleHeight);
+            SetStackChild(topSlot, metrics.TopWidth, metrics.TopHeight, totalHeight, 0f);
         }
 
         SetStretch(topAnimRoot);
@@ -422,20 +582,28 @@ public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
         SetStretch(topFrame);
         SetStretch(middleFrame);
 
-        SetSize(topFrame, metrics.Width, metrics.TopHeight);
-        SetSize(middleContent, metrics.Width, metrics.MiddleHeight);
-        SetSize(middleFrame, metrics.Width, metrics.MiddleHeight);
-        SetSize(downFrame, metrics.Width, metrics.DownHeight);
+        SetSize(topFrame, metrics.TopWidth, metrics.TopHeight);
+        SetSize(middleContent, metrics.MiddleWidth, metrics.MiddleHeight);
+        SetSize(middleFrame, metrics.MiddleWidth, metrics.MiddleHeight);
+        SetSize(downFrame, metrics.DownWidth, metrics.DownHeight);
         SetSize(gridRoot, metrics.GridSize.x, metrics.GridSize.y);
-        ArrangeThreePartFrame(topFrame, metrics.Width, metrics.TopHeight, null, Vector2.zero);
-        ArrangeThreePartFrame(middleFrame, metrics.Width, metrics.MiddleHeight, gridRoot, metrics.GridSize);
-        ArrangeThreePartFrame(downFrame, metrics.Width, metrics.DownHeight, null, Vector2.zero);
+        ArrangeTopFrame(topFrame, metrics.TopWidth, metrics.TopHeight);
+        ArrangeThreePartFrame(middleFrame, metrics.MiddleWidth, metrics.MiddleHeight, gridRoot, metrics.GridSize);
+        ArrangeThreePartFrame(downFrame, metrics.DownWidth, metrics.DownHeight, null, Vector2.zero);
 
         if (topAnimRoot != null)
-            topAnimRoot.anchoredPosition = new Vector2(0f, topLiftDistance * t);
+        {
+            Vector2 openedTopFrameOffset = new Vector2(0f, topLiftDistance);
+            topAnimRoot.anchoredPosition = Vector2.LerpUnclamped(
+                closedTopFrameOffset,
+                openedTopFrameOffset,
+                t);
+        }
 
-        if (topSlot != null)
+        if (forceTopSlotAsLastSibling && topSlot != null)
             topSlot.SetAsLastSibling();
+        if (forceOpenUiParticleRenderRootOnTop && openUiParticleRenderRoot != null)
+            openUiParticleRenderRoot.SetAsLastSibling();
 
         ForceRebuild(gridRoot);
         ForceRebuild(middleFrame);
@@ -447,15 +615,32 @@ public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
     private LayoutMetrics ResolveLayoutMetrics()
     {
         Vector2 gridSize = ResolveGridSize();
-        float middleWidth = ResolveHorizontalFrameWidth(middleFrame, gridRoot, gridSize.x);
+        float naturalMiddleWidth = ResolveHorizontalFrameWidth(middleFrame, gridRoot, gridSize.x);
         float middleHeight = ResolveHorizontalFrameHeight(middleFrame, gridRoot, gridSize.y);
-        float topHeight = ResolveFrameHeight(topSlot, topFrame, fallbackTopHeight);
-        float downHeight = ResolveFrameHeight(downFrame, null, fallbackDownHeight);
-        float topMinimumWidth = ResolveHorizontalFrameWidth(topFrame, null, 0f);
-        float downMinimumWidth = ResolveHorizontalFrameWidth(downFrame, null, 0f);
-        float width = Mathf.Max(middleWidth, topMinimumWidth, downMinimumWidth, 1f);
+        float middleWidth = Mathf.Max(1f, chestWidth, naturalMiddleWidth);
+        float naturalTopHeight = ResolveFrameHeight(topSlot, topFrame, fallbackTopHeight);
+        float naturalDownHeight = ResolveFrameHeight(downFrame, null, fallbackDownHeight);
+        Vector2 resolvedTopSize = ResolveFrameSize(
+            overrideTopFrameSize,
+            topFrameHeight,
+            middleWidth,
+            naturalTopHeight);
+        Vector2 resolvedDownSize = ResolveFrameSize(
+            overrideDownFrameSize,
+            downFrameHeight,
+            middleWidth,
+            naturalDownHeight);
+        float width = middleWidth;
 
-        return new LayoutMetrics(width, topHeight, middleHeight, downHeight, gridSize);
+        return new LayoutMetrics(
+            width,
+            resolvedTopSize.x,
+            middleWidth,
+            resolvedDownSize.x,
+            resolvedTopSize.y,
+            middleHeight,
+            resolvedDownSize.y,
+            gridSize);
     }
 
     private bool CanPlaySideEntry()
@@ -485,11 +670,43 @@ public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
         if (impactShakeRoot == null)
             impactShakeRoot = ResolveDefaultImpactShakeRoot();
 
-        if (impactShakeRoot == null)
+        impactShakeTargets.Clear();
+        impactShakeTargetBasePositions.Clear();
+
+        AddImpactShakeTarget(impactShakeRoot);
+        AddImpactShakeTarget(chestPanel);
+        AddImpactShakeTarget(inventoryPanel);
+
+        hasCapturedImpactShakeRootPosition = impactShakeTargets.Count > 0;
+    }
+
+    private void AddImpactShakeTarget(RectTransform target)
+    {
+        if (target == null)
             return;
 
-        impactShakeRootOpenPosition = impactShakeRoot.anchoredPosition;
-        hasCapturedImpactShakeRootPosition = true;
+        for (int i = impactShakeTargets.Count - 1; i >= 0; i--)
+        {
+            RectTransform existing = impactShakeTargets[i];
+            if (existing == null)
+            {
+                impactShakeTargets.RemoveAt(i);
+                impactShakeTargetBasePositions.RemoveAt(i);
+                continue;
+            }
+
+            if (target == existing || target.IsChildOf(existing))
+                return;
+
+            if (existing.IsChildOf(target))
+            {
+                impactShakeTargets.RemoveAt(i);
+                impactShakeTargetBasePositions.RemoveAt(i);
+            }
+        }
+
+        impactShakeTargets.Add(target);
+        impactShakeTargetBasePositions.Add(target.anchoredPosition);
     }
 
     private void ApplyPanelPositions(Vector2 chestPosition, Vector2 inventoryPosition)
@@ -504,29 +721,34 @@ public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
     private SideEntryPose ResolveSideEntryPose()
     {
         ForceRebuild(transform as RectTransform);
+        ForceRebuild(chestPanel);
+        ForceRebuild(inventoryPanel);
         Canvas.ForceUpdateCanvases();
 
-        float chestWidth = ResolveElementWidth(chestPanel);
-        float inventoryWidth = ResolveElementWidth(inventoryPanel);
-        RectTransform chestParent = chestPanel != null ? chestPanel.parent as RectTransform : null;
-        RectTransform inventoryParent = inventoryPanel != null ? inventoryPanel.parent as RectTransform : null;
+        RectTransform chestEdgeSource = ResolveCollisionBounds(chestPanel, chestCollisionBounds);
+        RectTransform inventoryEdgeSource = ResolveCollisionBounds(inventoryPanel, inventoryCollisionBounds);
+        ForceRebuild(chestEdgeSource);
+        ForceRebuild(inventoryEdgeSource);
+        Canvas.ForceUpdateCanvases();
 
-        float chestStartRightEdge = ResolveBoundsX(motionBounds, chestParent, motionBounds.rect.xMin) - offscreenPadding;
-        float chestCollisionRightEdge = ResolveBoundsX(motionBounds, chestParent, motionBounds.rect.center.x);
-        float inventoryStartLeftEdge = ResolveBoundsX(motionBounds, inventoryParent, motionBounds.rect.xMax) + offscreenPadding;
-        float inventoryCollisionLeftEdge = ResolveBoundsX(motionBounds, inventoryParent, motionBounds.rect.center.x);
+        float chestPanelWidth = ResolveElementWidth(chestPanel);
+        float inventoryWidth = ResolveElementWidth(inventoryPanel);
+        float chestStartRightEdge = motionBounds.rect.xMin - offscreenPadding;
+        float chestCollisionRightEdge = motionBounds.rect.center.x;
+        float inventoryStartLeftEdge = motionBounds.rect.xMax + offscreenPadding;
+        float inventoryCollisionLeftEdge = motionBounds.rect.center.x;
 
         Vector2 chestStart = new Vector2(
-            AnchoredXForRightEdge(chestPanel, chestStartRightEdge, chestWidth),
+            AnchoredXForRightEdge(chestPanel, chestEdgeSource, motionBounds, chestStartRightEdge, chestPanelWidth),
             chestPanelOpenPosition.y);
         Vector2 chestCollision = new Vector2(
-            AnchoredXForRightEdge(chestPanel, chestCollisionRightEdge, chestWidth),
+            AnchoredXForRightEdge(chestPanel, chestEdgeSource, motionBounds, chestCollisionRightEdge, chestPanelWidth),
             chestPanelOpenPosition.y);
         Vector2 inventoryStart = new Vector2(
-            AnchoredXForLeftEdge(inventoryPanel, inventoryStartLeftEdge, inventoryWidth),
+            AnchoredXForLeftEdge(inventoryPanel, inventoryEdgeSource, motionBounds, inventoryStartLeftEdge, inventoryWidth),
             inventoryPanelOpenPosition.y);
         Vector2 inventoryCollision = new Vector2(
-            AnchoredXForLeftEdge(inventoryPanel, inventoryCollisionLeftEdge, inventoryWidth),
+            AnchoredXForLeftEdge(inventoryPanel, inventoryEdgeSource, motionBounds, inventoryCollisionLeftEdge, inventoryWidth),
             inventoryPanelOpenPosition.y);
         Vector2 chestResistance = Vector2.LerpUnclamped(chestStart, chestCollision, resistanceTravelFraction);
         Vector2 inventoryResistance = Vector2.LerpUnclamped(inventoryStart, inventoryCollision, resistanceTravelFraction);
@@ -547,6 +769,7 @@ public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
         if (sideApproachDuration <= 0f)
         {
             ApplyPanelPositions(pose.ChestResistance, pose.InventoryResistance);
+            ApplyRevealPose(0f);
             yield break;
         }
 
@@ -568,6 +791,7 @@ public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
         }
 
         ApplyPanelPositions(pose.ChestResistance, pose.InventoryResistance);
+        ApplyRevealPose(0f);
     }
 
     private Vector2 ApplyResistancePullback(Vector2 basePosition, Vector2 start, Vector2 collision, float t)
@@ -638,8 +862,8 @@ public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
         int count = 0;
         for (int i = 0; i < root.childCount; i++)
         {
-            Transform child = root.GetChild(i);
-            if (child != null && child.gameObject.activeSelf)
+            RectTransform child = root.GetChild(i) as RectTransform;
+            if (child != null && child.gameObject.activeSelf && !ShouldIgnoreLayoutChild(child))
                 count++;
         }
 
@@ -659,7 +883,7 @@ public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
         for (int i = 0; i < frame.childCount; i++)
         {
             RectTransform child = frame.GetChild(i) as RectTransform;
-            if (child == null || !child.gameObject.activeSelf)
+            if (child == null || !child.gameObject.activeSelf || ShouldIgnoreLayoutChild(child))
                 continue;
 
             activeChildCount++;
@@ -685,7 +909,7 @@ public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
         for (int i = 0; i < frame.childCount; i++)
         {
             RectTransform child = frame.GetChild(i) as RectTransform;
-            if (child == null || !child.gameObject.activeSelf)
+            if (child == null || !child.gameObject.activeSelf || ShouldIgnoreLayoutChild(child))
                 continue;
 
             float resolvedHeight = child == measuredChild ? measuredChildHeight : ResolveElementHeight(child);
@@ -712,6 +936,49 @@ public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
         return Mathf.Max(1f, fallback);
     }
 
+    private static Vector2 ResolveFrameSize(bool overrideHeight, float heightOverride, float width, float fallbackHeight)
+    {
+        float height = overrideHeight && heightOverride > 0f ? heightOverride : fallbackHeight;
+        return new Vector2(Mathf.Max(1f, width), Mathf.Max(1f, height));
+    }
+
+    private static void ArrangeTopFrame(RectTransform frame, float width, float height)
+    {
+        if (!TryGetThreePartChildren(frame, out RectTransform left, out RectTransform topMiddle, out RectTransform right))
+            return;
+
+        float leftWidth = ResolveElementWidth(left);
+        float rightWidth = ResolveElementWidth(right);
+        float middleWidth = Mathf.Max(0f, width - leftWidth - rightWidth);
+
+        SetLeftAnchored(left, 0f, leftWidth, height);
+        SetLeftAnchored(topMiddle, leftWidth, middleWidth, height);
+        SetLeftAnchored(right, Mathf.Max(0f, width - rightWidth), rightWidth, height);
+        ArrangeEqualWidthChildren(topMiddle, middleWidth, height);
+    }
+
+    private static void ArrangeEqualWidthChildren(RectTransform frame, float width, float height)
+    {
+        if (frame == null)
+            return;
+
+        int count = CountLayoutChildren(frame);
+        if (count <= 0)
+            return;
+
+        float childWidth = Mathf.Max(0f, width / count);
+        int arrangedIndex = 0;
+        for (int i = 0; i < frame.childCount; i++)
+        {
+            RectTransform child = frame.GetChild(i) as RectTransform;
+            if (child == null || !child.gameObject.activeSelf || ShouldIgnoreLayoutChild(child))
+                continue;
+
+            SetLeftAnchored(child, childWidth * arrangedIndex, childWidth, height);
+            arrangedIndex++;
+        }
+    }
+
     private static void ArrangeThreePartFrame(RectTransform frame, float width, float height, RectTransform fixedCenter, Vector2 fixedCenterSize)
     {
         if (!TryGetThreePartChildren(frame, out RectTransform left, out RectTransform center, out RectTransform right))
@@ -725,10 +992,32 @@ public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
         float centerHeight = center == fixedCenter
             ? fixedCenterSize.y
             : height;
+        float centerX = ResolveFrameCenterX(width, leftWidth, centerWidth, rightWidth, center == fixedCenter);
 
         SetLeftAnchored(left, 0f, leftWidth, height);
-        SetLeftAnchored(center, leftWidth, centerWidth, centerHeight);
+        SetLeftAnchored(center, centerX, centerWidth, centerHeight);
         SetLeftAnchored(right, Mathf.Max(0f, width - rightWidth), rightWidth, height);
+    }
+
+    private static float ResolveFrameCenterX(
+        float width,
+        float leftWidth,
+        float centerWidth,
+        float rightWidth,
+        bool fixedCenter)
+    {
+        if (!fixedCenter)
+            return leftWidth;
+
+        float naturalWidth = leftWidth + centerWidth + rightWidth;
+        if (width <= naturalWidth)
+            return leftWidth;
+
+        float maxX = width - rightWidth - centerWidth;
+        if (maxX <= leftWidth)
+            return leftWidth;
+
+        return Mathf.Clamp((width - centerWidth) * 0.5f, leftWidth, maxX);
     }
 
     private static bool TryGetThreePartChildren(
@@ -747,7 +1036,7 @@ public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
         for (int i = 0; i < frame.childCount; i++)
         {
             RectTransform child = frame.GetChild(i) as RectTransform;
-            if (child == null || !child.gameObject.activeSelf)
+            if (child == null || !child.gameObject.activeSelf || ShouldIgnoreLayoutChild(child))
                 continue;
 
             if (left == null)
@@ -762,6 +1051,34 @@ public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
         }
 
         return false;
+    }
+
+    private static bool ShouldIgnoreLayoutChild(RectTransform child)
+    {
+        if (child == null)
+            return false;
+
+        LayoutElement layoutElement = child.GetComponent<LayoutElement>();
+        if (layoutElement != null && layoutElement.ignoreLayout)
+            return true;
+
+        return child.GetComponent<UIParticleEmitter>() != null;
+    }
+
+    private static int CountLayoutChildren(RectTransform root)
+    {
+        if (root == null)
+            return 0;
+
+        int count = 0;
+        for (int i = 0; i < root.childCount; i++)
+        {
+            RectTransform child = root.GetChild(i) as RectTransform;
+            if (child != null && child.gameObject.activeSelf && !ShouldIgnoreLayoutChild(child))
+                count++;
+        }
+
+        return count;
     }
 
     private static float ResolveElementWidth(RectTransform rect)
@@ -788,16 +1105,158 @@ public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
         return targetParent.InverseTransformPoint(worldPoint).x;
     }
 
-    private static float AnchoredXForRightEdge(RectTransform rect, float rightEdgeX, float width)
+    private static float AnchoredXForRightEdge(
+        RectTransform movingRect,
+        RectTransform edgeSource,
+        RectTransform targetBounds,
+        float targetBoundsLocalX,
+        float fallbackWidth)
     {
-        float pivotX = rect != null ? rect.pivot.x : 0.5f;
-        return rightEdgeX - (1f - pivotX) * width;
+        if (movingRect == null)
+            return 0f;
+
+        if (TryResolveEdgeWorldX(edgeSource, useRightEdge: true, out float currentRightEdgeWorldX)
+            && TryResolveTargetWorldX(targetBounds, targetBoundsLocalX, out float targetWorldX))
+        {
+            return ResolveAnchoredXAfterWorldDelta(movingRect, targetWorldX - currentRightEdgeWorldX);
+        }
+
+        RectTransform targetParent = movingRect.parent as RectTransform;
+        float rightEdgeX = ResolveBoundsX(targetBounds, targetParent, targetBoundsLocalX);
+
+        float pivotX = movingRect.pivot.x;
+        return rightEdgeX - (1f - pivotX) * fallbackWidth;
     }
 
-    private static float AnchoredXForLeftEdge(RectTransform rect, float leftEdgeX, float width)
+    private static float AnchoredXForLeftEdge(
+        RectTransform movingRect,
+        RectTransform edgeSource,
+        RectTransform targetBounds,
+        float targetBoundsLocalX,
+        float fallbackWidth)
     {
-        float pivotX = rect != null ? rect.pivot.x : 0.5f;
-        return leftEdgeX + pivotX * width;
+        if (movingRect == null)
+            return 0f;
+
+        if (TryResolveEdgeWorldX(edgeSource, useRightEdge: false, out float currentLeftEdgeWorldX)
+            && TryResolveTargetWorldX(targetBounds, targetBoundsLocalX, out float targetWorldX))
+        {
+            return ResolveAnchoredXAfterWorldDelta(movingRect, targetWorldX - currentLeftEdgeWorldX);
+        }
+
+        RectTransform targetParent = movingRect.parent as RectTransform;
+        float leftEdgeX = ResolveBoundsX(targetBounds, targetParent, targetBoundsLocalX);
+
+        float pivotX = movingRect.pivot.x;
+        return leftEdgeX + pivotX * fallbackWidth;
+    }
+
+    private static bool TryResolveEdgeWorldX(RectTransform rect, bool useRightEdge, out float edgeX)
+    {
+        edgeX = 0f;
+
+        if (rect == null)
+            return false;
+
+        Vector3[] corners = new Vector3[4];
+        rect.GetWorldCorners(corners);
+
+        float resolvedEdge = useRightEdge ? float.NegativeInfinity : float.PositiveInfinity;
+        float minX = float.PositiveInfinity;
+        float maxX = float.NegativeInfinity;
+        for (int i = 0; i < corners.Length; i++)
+        {
+            float worldX = corners[i].x;
+            minX = Mathf.Min(minX, worldX);
+            maxX = Mathf.Max(maxX, worldX);
+            resolvedEdge = useRightEdge
+                ? Mathf.Max(resolvedEdge, worldX)
+                : Mathf.Min(resolvedEdge, worldX);
+        }
+
+        if (!float.IsInfinity(resolvedEdge) && Mathf.Abs(maxX - minX) > 0.01f)
+        {
+            edgeX = resolvedEdge;
+            return true;
+        }
+
+        Bounds childBounds = RectTransformUtility.CalculateRelativeRectTransformBounds(rect);
+        if (childBounds.size.x > 0.01f)
+        {
+            Vector3 localEdge = new Vector3(useRightEdge ? childBounds.max.x : childBounds.min.x, childBounds.center.y, childBounds.center.z);
+            edgeX = rect.TransformPoint(localEdge).x;
+            return true;
+        }
+
+        return false;
+    }
+
+    private static bool TryResolveTargetWorldX(RectTransform targetBounds, float targetBoundsLocalX, out float worldX)
+    {
+        worldX = 0f;
+
+        if (targetBounds == null)
+            return false;
+
+        Vector3 worldPoint = targetBounds.TransformPoint(new Vector3(
+            targetBoundsLocalX,
+            targetBounds.rect.center.y,
+            0f));
+        worldX = worldPoint.x;
+        return true;
+    }
+
+    private static float ResolveAnchoredXAfterWorldDelta(RectTransform movingRect, float deltaWorldX)
+    {
+        Vector2 previousAnchoredPosition = movingRect.anchoredPosition;
+        Vector3 previousWorldPosition = movingRect.position;
+
+        movingRect.position = new Vector3(
+            previousWorldPosition.x + deltaWorldX,
+            previousWorldPosition.y,
+            previousWorldPosition.z);
+        float resolvedX = movingRect.anchoredPosition.x;
+        movingRect.anchoredPosition = previousAnchoredPosition;
+        return resolvedX;
+    }
+
+    private static RectTransform ResolveCollisionBounds(RectTransform movingRect, RectTransform preferredBounds)
+    {
+        if (IsUsableCollisionBounds(movingRect, preferredBounds) && HasUsableHorizontalBounds(preferredBounds))
+            return preferredBounds;
+
+        return movingRect;
+    }
+
+    private static bool IsUsableCollisionBounds(RectTransform movingRect, RectTransform preferredBounds)
+    {
+        if (preferredBounds == null || movingRect == null)
+            return false;
+
+        return preferredBounds == movingRect || preferredBounds.IsChildOf(movingRect);
+    }
+
+    private static bool HasUsableHorizontalBounds(RectTransform rect)
+    {
+        if (rect == null)
+            return false;
+
+        Vector3[] corners = new Vector3[4];
+        rect.GetWorldCorners(corners);
+        float minX = float.PositiveInfinity;
+        float maxX = float.NegativeInfinity;
+
+        for (int i = 0; i < corners.Length; i++)
+        {
+            minX = Mathf.Min(minX, corners[i].x);
+            maxX = Mathf.Max(maxX, corners[i].x);
+        }
+
+        if (Mathf.Abs(maxX - minX) > 0.01f)
+            return true;
+
+        Bounds childBounds = RectTransformUtility.CalculateRelativeRectTransformBounds(rect);
+        return childBounds.size.x > 0.01f;
     }
 
     private static float ResolveElementHeight(RectTransform rect)
@@ -887,7 +1346,64 @@ public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
         PlayImpactCameraShakeIfNeeded();
         PlayImpactParticleSystems();
         PlayImpactUiParticles();
+    }
+
+    private float ResolveImpactHoldDuration()
+    {
+        float holdDuration = impactPauseDuration;
+
+        if (playImpactCameraShake && impactCameraShakeAmplitude > 0f && impactCameraShakeDuration > 0f)
+            holdDuration = Mathf.Max(holdDuration, impactCameraShakeDuration);
+
+        return holdDuration;
+    }
+
+    private IEnumerator PlayPostSettleImpactShake(Vector2 chestRestorePosition)
+    {
         PlayUiImpactShake();
+
+        yield return PlayImpactChestShake(chestRestorePosition);
+
+        if (impactShakeRoutine != null)
+            yield return impactShakeRoutine;
+    }
+
+    private IEnumerator PlayImpactChestShake(Vector2 restorePosition)
+    {
+        if (!playImpactChestShake
+            || chestPanel == null
+            || impactChestShakeDuration <= 0f
+            || impactChestShakeStrength.sqrMagnitude <= 0f)
+            yield break;
+
+        StopImpactChestShake(resetPosition: false);
+        impactChestShakeRestorePosition = restorePosition;
+        hasImpactChestShakeRestorePosition = true;
+        chestPanel.anchoredPosition = restorePosition;
+
+        impactChestShakeTween = chestPanel
+            .DOShakeAnchorPos(
+                impactChestShakeDuration,
+                impactChestShakeStrength,
+                impactChestShakeVibrato,
+                impactChestShakeRandomness,
+                snapping: false,
+                fadeOut: true)
+            .SetUpdate(useUnscaledTime)
+            .OnComplete(() =>
+            {
+                if (chestPanel != null)
+                    chestPanel.anchoredPosition = restorePosition;
+                impactChestShakeTween = null;
+                hasImpactChestShakeRestorePosition = false;
+            });
+
+        yield return impactChestShakeTween.WaitForCompletion();
+
+        if (chestPanel != null)
+            chestPanel.anchoredPosition = restorePosition;
+        impactChestShakeTween = null;
+        hasImpactChestShakeRestorePosition = false;
     }
 
     private void PlayImpactPresentationHook()
@@ -923,7 +1439,9 @@ public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
             debugReason: nameof(ChestFirstOpenRevealPresentation),
             ignoreScreenShakeSetting: false,
             hasManualShakeSettingsOverride: true,
-            manualShakeSettingsOverride: CameraManualShakeSettings.Create(impactCameraShakeDuration)));
+            manualShakeSettingsOverride: CameraManualShakeSettings.Create(
+                impactCameraShakeDuration,
+                positionAmplitudeScale: impactCameraShakePositionScale)));
     }
 
     private Vector3 ResolveImpactWorldPosition()
@@ -976,15 +1494,233 @@ public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
         if (emitter == null)
             return;
 
-        RectTransform emitterRect = emitter.transform as RectTransform;
-        if (emitterRect == null)
-        {
-            emitter.PlayAtWorldPosition(ResolveImpactWorldPosition());
+        PlayUiParticleAtWorldPosition(emitter, ResolveImpactWorldPosition(), impactUiParticleOffset, clearExisting: true);
+    }
+
+    private void PlayOpenUiParticles()
+    {
+        if (!Application.isPlaying || !playOpenUiParticles || hasPlayedOpenUiParticles)
             return;
+
+        if (openUiParticleEmitter == null)
+            return;
+
+        ConfigureOpenUiParticleRenderRoot();
+        hasPlayedOpenUiParticles = true;
+        PlayUiParticleAtWorldPosition(openUiParticleEmitter, ResolveOpenUiParticleWorldPosition(), openUiParticleOffset, clearExisting: true);
+    }
+
+    private void ConfigureOpenUiParticleRenderRoot()
+    {
+        if (openUiParticleEmitter == null)
+            return;
+
+        if (openUiParticleRenderRoot != null)
+        {
+            openUiParticleEmitter.SetParticleRoot(openUiParticleRenderRoot, clearExisting: false);
+            SetStretch(openUiParticleRenderRoot);
+
+            LayoutElement layoutElement = openUiParticleRenderRoot.GetComponent<LayoutElement>();
+            if (layoutElement != null)
+                layoutElement.ignoreLayout = true;
+
+            if (forceOpenUiParticleRenderRootOnTop)
+                openUiParticleRenderRoot.SetAsLastSibling();
+        }
+    }
+
+    private void PlayVisibleSlotRevealParticles(bool forceVisible = false)
+    {
+        if (!Application.isPlaying || !playSlotRevealUiParticles || itemRevealSlots.Count == 0)
+            return;
+
+        EnsureSlotRevealParticlePool();
+        if (slotRevealParticlePool == null)
+            return;
+
+        for (int i = 0; i < itemRevealSlots.Count; i++)
+        {
+            ItemSlotUI slot = itemRevealSlots[i];
+            if (slot == null || playedSlotRevealParticleSlots.Contains(slot))
+                continue;
+
+            if (!slot.HasEpicItem)
+                continue;
+
+            if (!forceVisible && !IsSlotVisibleInReveal(slot))
+                continue;
+
+            UIParticleEmitter emitter = GetSlotRevealUiParticleEmitter();
+            if (emitter == null)
+                return;
+
+            PlayUiParticleAtWorldPosition(
+                emitter,
+                ResolveSlotWorldCenter(slot),
+                slotRevealUiParticleOffset,
+                clearExisting: true);
+            StartCoroutine(ReleaseSlotRevealParticleWhenFinished(emitter));
+            playedSlotRevealParticleSlots.Add(slot);
+        }
+    }
+
+    private void ResetRevealParticleState()
+    {
+        hasPlayedOpenUiParticles = false;
+        playedSlotRevealParticleSlots.Clear();
+    }
+
+    private void EnsureSlotRevealParticlePool()
+    {
+        if (slotRevealParticlePool != null || slotRevealUiParticleEmitterPrefab == null)
+            return;
+
+        int maxSize = Mathf.Max(1, slotRevealUiParticleMaxPoolSize);
+        int defaultCapacity = Mathf.Clamp(slotRevealUiParticlePrewarmCount, 0, maxSize);
+        slotRevealParticlePool = new ObjectPool<UIParticleEmitter>(
+            createFunc: CreateSlotRevealParticleEmitter,
+            actionOnGet: OnGetSlotRevealParticleEmitter,
+            actionOnRelease: OnReleaseSlotRevealParticleEmitter,
+            actionOnDestroy: DestroySlotRevealParticleEmitter,
+            collectionCheck: true,
+            defaultCapacity: defaultCapacity,
+            maxSize: maxSize);
+
+        if (defaultCapacity <= 0)
+            return;
+
+        slotRevealParticleBuffer.Clear();
+        for (int i = 0; i < defaultCapacity; i++)
+            slotRevealParticleBuffer.Add(slotRevealParticlePool.Get());
+
+        for (int i = 0; i < slotRevealParticleBuffer.Count; i++)
+            slotRevealParticlePool.Release(slotRevealParticleBuffer[i]);
+
+        slotRevealParticleBuffer.Clear();
+    }
+
+    private UIParticleEmitter GetSlotRevealUiParticleEmitter()
+    {
+        if (slotRevealParticlePool == null)
+            return null;
+
+        int maxSize = Mathf.Max(1, slotRevealUiParticleMaxPoolSize);
+        if (slotRevealParticlePool.CountInactive == 0 && activeSlotRevealParticleEmitters.Count >= maxSize)
+            return null;
+
+        return slotRevealParticlePool.Get();
+    }
+
+    private UIParticleEmitter CreateSlotRevealParticleEmitter()
+    {
+        Transform parent = slotRevealUiParticlePoolRoot != null ? slotRevealUiParticlePoolRoot : transform;
+        UIParticleEmitter emitter = Instantiate(slotRevealUiParticleEmitterPrefab, parent, false);
+        emitter.name = $"{slotRevealUiParticleEmitterPrefab.name}_Pooled";
+        return emitter;
+    }
+
+    private void OnGetSlotRevealParticleEmitter(UIParticleEmitter emitter)
+    {
+        if (emitter == null)
+            return;
+
+        activeSlotRevealParticleEmitters.Add(emitter);
+        emitter.gameObject.SetActive(true);
+    }
+
+    private void OnReleaseSlotRevealParticleEmitter(UIParticleEmitter emitter)
+    {
+        if (emitter == null)
+            return;
+
+        emitter.Stop(clear: true);
+        activeSlotRevealParticleEmitters.Remove(emitter);
+        emitter.gameObject.SetActive(false);
+    }
+
+    private static void DestroySlotRevealParticleEmitter(UIParticleEmitter emitter)
+    {
+        if (emitter == null)
+            return;
+
+        if (Application.isPlaying)
+            Destroy(emitter.gameObject);
+        else
+            DestroyImmediate(emitter.gameObject);
+    }
+
+    private IEnumerator ReleaseSlotRevealParticleWhenFinished(UIParticleEmitter emitter)
+    {
+        if (emitter == null)
+            yield break;
+
+        yield return null;
+        while (emitter != null && emitter.IsPlaying)
+            yield return null;
+
+        ReleaseSlotRevealParticleEmitter(emitter);
+    }
+
+    private void ReleaseSlotRevealParticleEmitter(UIParticleEmitter emitter)
+    {
+        if (slotRevealParticlePool == null || emitter == null || !activeSlotRevealParticleEmitters.Contains(emitter))
+            return;
+
+        slotRevealParticlePool.Release(emitter);
+    }
+
+    private Vector3 ResolveOpenUiParticleWorldPosition()
+    {
+        if (openUiParticleAnchor != null)
+            return openUiParticleAnchor.TransformPoint(openUiParticleAnchor.rect.center);
+
+        RectTransform fallback = topFrame != null ? topFrame : topAnimRoot != null ? topAnimRoot : topSlot;
+        if (fallback != null)
+            return fallback.TransformPoint(fallback.rect.center);
+
+        return ResolveImpactWorldPosition();
+    }
+
+    private static Vector3 ResolveSlotWorldCenter(ItemSlotUI slot)
+    {
+        RectTransform slotRect = slot != null ? slot.SlotRect : null;
+        return slotRect != null ? slotRect.TransformPoint(slotRect.rect.center) : Vector3.zero;
+    }
+
+    private bool IsSlotVisibleInReveal(ItemSlotUI slot)
+    {
+        RectTransform slotRect = slot != null ? slot.SlotRect : null;
+        if (slotRect == null)
+            return false;
+
+        if (middleRevealSlot == null)
+            return true;
+
+        Vector2 localCenter = middleRevealSlot.InverseTransformPoint(ResolveSlotWorldCenter(slot));
+        Rect visibleRect = middleRevealSlot.rect;
+        visibleRect.xMin -= slotRevealVisibilityPadding;
+        visibleRect.xMax += slotRevealVisibilityPadding;
+        visibleRect.yMin -= slotRevealVisibilityPadding;
+        visibleRect.yMax += slotRevealVisibilityPadding;
+        return visibleRect.Contains(localCenter);
+    }
+
+    private static void PlayUiParticleAtWorldPosition(
+        UIParticleEmitter emitter,
+        Vector3 worldPosition,
+        Vector2 localOffset,
+        bool clearExisting)
+    {
+        if (emitter == null)
+            return;
+
+        if (localOffset != Vector2.zero && emitter.transform is RectTransform emitterRect)
+        {
+            Vector2 localPosition = emitterRect.InverseTransformPoint(worldPosition);
+            worldPosition = emitterRect.TransformPoint(localPosition + localOffset);
         }
 
-        Vector2 localPosition = emitterRect.InverseTransformPoint(ResolveImpactWorldPosition());
-        emitter.PlayAt(localPosition + impactUiParticleOffset);
+        emitter.PlayAtWorldPosition(worldPosition, clearExisting);
     }
 
     private void PlayUiImpactShake()
@@ -992,13 +1728,11 @@ public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
         if (uiImpactShakeDuration <= 0f || uiImpactShakeAmplitude <= 0f)
             return;
 
-        if (impactShakeRoot == null)
-            impactShakeRoot = ResolveDefaultImpactShakeRoot();
-        if (impactShakeRoot == null)
+        StopImpactShake(resetPosition: true);
+        CaptureImpactShakeRootPosition(force: true);
+        if (impactShakeTargets.Count == 0)
             return;
 
-        StopImpactShake(resetPosition: true);
-        CaptureImpactShakeRootPosition(force: false);
         impactShakeRoutine = StartCoroutine(PlayUiImpactShakeRoutine());
     }
 
@@ -1015,16 +1749,41 @@ public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
                 Mathf.Sin(cycle) * uiImpactShakeAmplitude,
                 Mathf.Cos(cycle * 1.37f) * uiImpactShakeAmplitude * 0.35f) * fade;
 
-            if (impactShakeRoot != null)
-                impactShakeRoot.anchoredPosition = impactShakeRootOpenPosition + offset;
+            ApplyImpactShakeOffset(offset);
 
             yield return null;
         }
 
-        if (impactShakeRoot != null)
-            impactShakeRoot.anchoredPosition = impactShakeRootOpenPosition;
-
+        RestoreImpactShakeTargets();
+        ClearImpactShakeTargets();
         impactShakeRoutine = null;
+    }
+
+    private void ApplyImpactShakeOffset(Vector2 offset)
+    {
+        for (int i = 0; i < impactShakeTargets.Count; i++)
+        {
+            RectTransform target = impactShakeTargets[i];
+            if (target != null)
+                target.anchoredPosition = impactShakeTargetBasePositions[i] + offset;
+        }
+    }
+
+    private void RestoreImpactShakeTargets()
+    {
+        for (int i = 0; i < impactShakeTargets.Count; i++)
+        {
+            RectTransform target = impactShakeTargets[i];
+            if (target != null)
+                target.anchoredPosition = impactShakeTargetBasePositions[i];
+        }
+    }
+
+    private void ClearImpactShakeTargets()
+    {
+        impactShakeTargets.Clear();
+        impactShakeTargetBasePositions.Clear();
+        hasCapturedImpactShakeRootPosition = false;
     }
 
     private void PreparePostRevealSlideFade()
@@ -1132,6 +1891,22 @@ public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
             component.enabled = false;
     }
 
+    private static void DisableChildLayoutGroups(RectTransform root)
+    {
+        if (root == null)
+            return;
+
+        for (int i = 0; i < root.childCount; i++)
+        {
+            RectTransform child = root.GetChild(i) as RectTransform;
+            if (child == null)
+                continue;
+
+            DisableComponent<LayoutGroup>(child);
+            DisableChildLayoutGroups(child);
+        }
+    }
+
     private static void ForceRebuild(RectTransform rect)
     {
         if (rect != null)
@@ -1167,15 +1942,47 @@ public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
     {
         if (activeRoutine == null)
         {
-            impactUiParticleEmitter?.Stop(clear: true);
+            StopPresentationParticles();
             StopImpactShake(resetPosition: true);
+            StopImpactChestShake(resetPosition: true);
             return;
         }
 
         StopCoroutine(activeRoutine);
         activeRoutine = null;
-        impactUiParticleEmitter?.Stop(clear: true);
+        StopPresentationParticles();
         StopImpactShake(resetPosition: true);
+        StopImpactChestShake(resetPosition: true);
+    }
+
+    private void StopPresentationParticles()
+    {
+        impactUiParticleEmitter?.Stop(clear: true);
+        openUiParticleEmitter?.Stop(clear: true);
+        StopSlotRevealUiParticles();
+        ResetRevealParticleState();
+    }
+
+    private void StopSlotRevealUiParticles()
+    {
+        if (activeSlotRevealParticleEmitters.Count == 0)
+            return;
+
+        slotRevealParticleBuffer.Clear();
+        foreach (UIParticleEmitter emitter in activeSlotRevealParticleEmitters)
+            slotRevealParticleBuffer.Add(emitter);
+
+        for (int i = 0; i < slotRevealParticleBuffer.Count; i++)
+            ReleaseSlotRevealParticleEmitter(slotRevealParticleBuffer[i]);
+
+        slotRevealParticleBuffer.Clear();
+    }
+
+    private void ClearSlotRevealParticlePool()
+    {
+        StopSlotRevealUiParticles();
+        slotRevealParticlePool?.Clear();
+        slotRevealParticlePool = null;
     }
 
     private void StopImpactShake(bool resetPosition)
@@ -1186,8 +1993,24 @@ public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
             impactShakeRoutine = null;
         }
 
-        if (resetPosition && impactShakeRoot != null && hasCapturedImpactShakeRootPosition)
-            impactShakeRoot.anchoredPosition = impactShakeRootOpenPosition;
+        if (resetPosition && hasCapturedImpactShakeRootPosition)
+            RestoreImpactShakeTargets();
+
+        ClearImpactShakeTargets();
+    }
+
+    private void StopImpactChestShake(bool resetPosition)
+    {
+        if (impactChestShakeTween != null)
+        {
+            impactChestShakeTween.Kill(complete: false);
+            impactChestShakeTween = null;
+        }
+
+        if (resetPosition && chestPanel != null && hasImpactChestShakeRestorePosition)
+            chestPanel.anchoredPosition = impactChestShakeRestorePosition;
+
+        hasImpactChestShakeRestorePosition = false;
     }
 
     private static float SmoothStep(float t)

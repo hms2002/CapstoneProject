@@ -37,9 +37,25 @@ public class ItemSlotUI : MonoBehaviour,
     private int index;
     [SerializeField] private RectTransform slotRect;
 
+    public RectTransform SlotRect
+    {
+        get
+        {
+            if (slotRect == null)
+                slotRect = transform as RectTransform;
+
+            return slotRect;
+        }
+    }
+
+    public ScriptableObject CurrentItem => container != null ? container.Get(index) : null;
+    public bool HasItem => CurrentItem != null;
+    public bool HasEpicItem => CurrentItem is RelicDefinition relic && relic.rarity == ItemRarity.Epic;
+
     private void Awake()
     {
-        if (slotRect == null) slotRect = transform as RectTransform;
+        if (slotRect == null)
+            slotRect = transform as RectTransform;
     }
     private void OnDisable()
     {

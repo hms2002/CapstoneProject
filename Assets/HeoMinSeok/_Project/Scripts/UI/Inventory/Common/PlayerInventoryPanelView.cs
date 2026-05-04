@@ -11,6 +11,9 @@ public sealed class PlayerInventoryPanelView : MonoBehaviour
     [SerializeField] private Transform weaponGridRoot;
     [SerializeField] private Transform relicGridRoot;
 
+    [Header("Presentation Bounds")]
+    [SerializeField] private RectTransform collisionBounds;
+
     [Header("Support Views")]
     [SerializeField] private PlayerStatPanelView playerStatPanel;
     [SerializeField] private DropZoneUI dropZone;
@@ -30,6 +33,7 @@ public sealed class PlayerInventoryPanelView : MonoBehaviour
     public IItemContainer WeaponContainer { get; private set; }
     public IItemContainer RelicContainer { get; private set; }
     public RectTransform RectTransform => panelRoot != null ? panelRoot : transform as RectTransform;
+    public RectTransform CollisionBoundsRect => ResolveCollisionBoundsRect();
     public PlayerStatPanelView PlayerStatPanel => playerStatPanel;
     public RectTransform PlayerStatPanelRect => playerStatPanel != null
         ? playerStatPanel.transform as RectTransform
@@ -65,6 +69,14 @@ public sealed class PlayerInventoryPanelView : MonoBehaviour
     public void SetPlayerStatPanel(PlayerStatPanelView statPanel)
     {
         playerStatPanel = statPanel;
+    }
+
+    private RectTransform ResolveCollisionBoundsRect()
+    {
+        if (collisionBounds != null)
+            return collisionBounds;
+
+        return RectTransform;
     }
 
     public void Bind(

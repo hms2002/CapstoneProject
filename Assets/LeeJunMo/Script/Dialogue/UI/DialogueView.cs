@@ -47,6 +47,10 @@ public class DialogueView : MonoBehaviour
     [SerializeField, Min(0f)] private float typingSoundInterval = 0.035f;
 
     private Tween typingTween;
+    private Tween continueIconTween;
+    private RectTransform continueIconRect;
+    private Vector2 continueIconBaseAnchoredPosition;
+    private bool hasContinueIconBasePosition;
     private readonly List<GameObject> activeChoiceButtons = new List<GameObject>();
     private readonly Dictionary<Graphic, Material> originalThemeMaterials = new Dictionary<Graphic, Material>();
     private readonly Dictionary<Graphic, Color> originalThemeColors = new Dictionary<Graphic, Color>();
@@ -88,22 +92,27 @@ public class DialogueView : MonoBehaviour
         if (continueIcon != null)
         {
             continueIcon.SetActive(false);
-            RectTransform iconRect = continueIcon.GetComponent<RectTransform>();
-            if (iconRect != null)
-            {
-                iconRect.DOAnchorPosY(iconRect.anchoredPosition.y - 10f, 0.5f)
-                    .SetUpdate(true)
-                    .SetLoops(-1, LoopType.Yoyo)
-                    .SetEase(Ease.InOutSine);
-            }
+            CacheContinueIconTransform();
         }
 
         ClearChoices();
         ClearText();
     }
 
+    private void OnEnable()
+    {
+        StartContinueIconMotion();
+    }
+
+    private void OnDisable()
+    {
+        StopContinueIconMotion(true);
+    }
+
     private void OnDestroy()
     {
+        StopRuntimeTweens();
+
         foreach (Material runtimeMaterial in runtimeThemeMaterials.Values)
         {
             if (runtimeMaterial != null)
@@ -435,6 +444,73 @@ public class DialogueView : MonoBehaviour
         activeChoiceButtons.Clear();
         onChoiceSelectedCallback = null;
         EventSystem.current?.SetSelectedGameObject(null);
+    }
+
+    private void CacheContinueIconTransform()
+    {
+        if (continueIcon == null)
+            return;
+
+        continueIconRect = continueIcon.GetComponent<RectTransform>();
+        if (continueIconRect == null)
+            return;
+
+        continueIconBaseAnchoredPosition = continueIconRect.anchoredPosition;
+        hasContinueIconBasePosition = true;
+    }
+
+    private void StartContinueIconMotion()
+    {
+        if (continueIconRect == null)
+            CacheContinueIconTransform();
+
+        if (continueIconRect == null)
+            return;
+
+        StopContinueIconMotion(true);
+        continueIconTween = continueIconRect
+            .DOAnchorPosY(continueIconBaseAnchoredPosition.y - 10f, 0.5f)
+            .SetUpdate(true)
+            .SetLoops(-1, LoopType.Yoyo)
+            .SetEase(Ease.InOutSine);
+    }
+
+    private void StopContinueIconMotion(bool resetPosition)
+    {
+        continueIconTween?.Kill();
+        continueIconTween = null;
+
+        if (continueIconRect != null)
+            continueIconRect.DOKill();
+
+        if (resetPosition && continueIconRect != null && hasContinueIconBasePosition)
+            continueIconRect.anchoredPosition = continueIconBaseAnchoredPosition;
+    }
+
+    private void StopRuntimeTweens()
+    {
+        typingTween?.Kill();
+        typingTween = null;
+
+        StopContinueIconMotion(true);
+
+        if (dialogueText != null)
+            dialogueText.DOKill();
+
+        if (textBoxGroup != null)
+            textBoxGroup.DOKill();
+
+        if (affectionGroup != null)
+            affectionGroup.DOKill();
+
+        if (dimPanelGraphic != null)
+            dimPanelGraphic.DOKill();
+
+        foreach (GameObject choiceButton in activeChoiceButtons)
+        {
+            if (choiceButton != null)
+                choiceButton.transform.DOKill();
+        }
     }
 
     public void HideUI(Action onComplete = null)

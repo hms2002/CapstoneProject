@@ -80,6 +80,7 @@
 
 ## Legacy / Review
 
+- [Codebase Review Guidelines](./CodebaseReviewGuidelines.md)
 - [AI / FSM Ability Integration Review](./AIFSMAbilityIntegrationReview.md)
 - [Mob AI Architecture Direction Review](./MobAIArchitectureDirectionReview.md)
 - [Pattern Data Ownership Review](./PatternDataOwnershipReview.md)

@@ -154,7 +154,7 @@ public sealed class PlayerSceneRestoreBootstrapper : MonoBehaviour
         ctx = new PlayerSystemContext
         {
             weaponInventory = player.GetComponent<WeaponInventory2D>(),
-            consumableInventory = PlayerConsumableInventory.GetOrAdd(player.transform),
+            consumableInventory = player.GetComponent<PlayerConsumableInventory>(),
             relicInventory = player.GetComponent<RelicInventory>(),
             attributeSet = player.GetComponent<AttributeSet>(),
             effectRunner = player.GetComponent<GameplayEffectRunner>(),
@@ -162,7 +162,14 @@ public sealed class PlayerSceneRestoreBootstrapper : MonoBehaviour
             abilitySystem = player.GetComponent<AbilitySystem>()
         };
 
-        // 필수 컴포넌트 누락 여부 등 검증이 필요하다면 여기서 추가 가능합니다.
+        if (ctx.weaponInventory == null || ctx.consumableInventory == null || ctx.relicInventory == null)
+        {
+            Debug.LogWarning(
+                "[PlayerSceneRestoreBootstrapper] Player inventory components are missing. Pending PlayerRuntimeState restore will wait.",
+                this);
+            return false;
+        }
+
         return true;
     }
 
