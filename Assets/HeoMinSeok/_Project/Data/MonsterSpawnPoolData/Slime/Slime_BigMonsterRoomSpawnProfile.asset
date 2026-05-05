@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d26164ce00041742a35f6fcac85bde1, type: 3}
+  m_Name: Slime_BigMonsterRoomSpawnProfile
+  m_EditorClassIdentifier: Assembly-CSharp::MonsterRoomSpawnProfileSO
+  spawnTables:
+  - tableName: OpA
+    spawnCount: 10
+    entries:
+    - monsterPrefab: {fileID: 625522859161183429, guid: 4a7ea9f5e4df4e39877c3818b6700007, type: 3}
+      weight: 1
+    - monsterPrefab: {fileID: 100000, guid: 4c120d14b57b4436a325443f7b0caa3f, type: 3}
+      weight: 1
+  - tableName: OpB
+    spawnCount: 10
+    entries:
+    - monsterPrefab: {fileID: 625522859161183429, guid: 4a7ea9f5e4df4e39877c3818b6700007, type: 3}
+      weight: 1
+    - monsterPrefab: {fileID: 100000, guid: 4c120d14b57b4436a325443f7b0caa3f, type: 3}
+      weight: 1
