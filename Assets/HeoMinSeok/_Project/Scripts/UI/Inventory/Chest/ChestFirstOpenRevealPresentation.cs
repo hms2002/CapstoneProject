@@ -150,22 +150,19 @@ public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
     [SerializeField] private string impactUiParticleEmitterName = "ImpactUiParticleEmitter";
 
     private Coroutine activeRoutine;
-    private Coroutine impactShakeRoutine;
     private Tween impactChestShakeTween;
     private Vector2 impactChestShakeRestorePosition;
     private bool hasImpactChestShakeRestorePosition;
     private Vector2 chestPanelOpenPosition;
     private Vector2 inventoryPanelOpenPosition;
     private bool hasCapturedPanelOpenPositions;
-    private bool hasCapturedImpactShakeRootPosition;
     private bool hasPlayedOpenUiParticles;
     private ObjectPool<UIParticleEmitter> slotRevealParticlePool;
     private readonly List<ItemSlotUI> itemRevealSlots = new();
     private readonly HashSet<ItemSlotUI> playedSlotRevealParticleSlots = new();
     private readonly HashSet<UIParticleEmitter> activeSlotRevealParticleEmitters = new();
     private readonly List<UIParticleEmitter> slotRevealParticleBuffer = new();
-    private readonly List<RectTransform> impactShakeTargets = new();
-    private readonly List<Vector2> impactShakeTargetBasePositions = new();
+    private readonly ChestRevealPanelMotion panelMotion = new();
 
     private readonly struct LayoutMetrics
     {
@@ -255,13 +252,15 @@ public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
 
     public void PlayOpen()
     {
+        if (Application.isPlaying && activeRoutine != null)
+            return;
+
         if (!gameObject.activeSelf)
             gameObject.SetActive(true);
 
         StopActiveRoutine();
         ResolveReferences();
         CapturePanelOpenPositions(force: false);
-        CaptureImpactShakeRootPosition(force: false);
         PreparePostRevealSlideFade();
         ApplyRevealPose(0f);
         ResetRevealParticleState();
@@ -284,7 +283,6 @@ public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
         StopActiveRoutine();
         ResolveReferences();
         CapturePanelOpenPositions(force: false);
-        CaptureImpactShakeRootPosition(force: false);
         ApplyPanelPositions(chestPanelOpenPosition, inventoryPanelOpenPosition);
         ApplyOpenedPose();
         SnapPostRevealSlideFadeOpen();
@@ -335,78 +333,60 @@ public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
     private IEnumerator PlaySideEntryRevealRoutine()
     {
         SideEntryPose pose = ResolveSideEntryPose();
-        ApplyPanelPositions(pose.ChestStart, pose.InventoryStart);
-        ApplyRevealPose(0f);
-
-        yield return AnimateResistanceEntry(pose);
-
-        yield return AnimatePanels(
-            pose.ChestResistance,
-            pose.ChestCollision,
-            pose.InventoryResistance,
-            pose.InventoryCollision,
-            impactRushDuration,
-            EaseInCubic);
-
-        PlayImpactFeedback();
-
-        float impactHoldDuration = ResolveImpactHoldDuration();
-        if (impactHoldDuration > 0f)
+        bool completedSideEntryReveal = false;
+        BeginPanelMotionOwnership();
+        try
         {
-            if (useUnscaledTime)
-                yield return new WaitForSecondsRealtime(impactHoldDuration);
-            else
-                yield return new WaitForSeconds(impactHoldDuration);
-        }
+            ApplyPanelPositions(pose.ChestStart, pose.InventoryStart);
+            ApplyRevealPose(0f);
 
-        if (settleDuration <= 0f)
-        {
-            ApplyPanelPositions(pose.ChestFinal, pose.InventoryFinal);
-        }
-        else
-        {
-            float settleElapsed = 0f;
-            while (settleElapsed < settleDuration)
+            yield return AnimateResistanceEntry(pose);
+
+            yield return AnimatePanels(
+                pose.ChestResistance,
+                pose.ChestCollision,
+                pose.InventoryResistance,
+                pose.InventoryCollision,
+                impactRushDuration,
+                EaseInCubic);
+
+            PanelPairPosition collisionPose = ApplyImpactCollisionPose(pose);
+            PlayImpactFeedback();
+            yield return HoldImpactCollisionPose(collisionPose);
+            yield return SettlePanelsFromImpact(collisionPose, pose);
+
+            yield return PlaySeparateImpactChestShakeIfNeeded(pose.ChestFinal);
+            PlayOpenUiParticles();
+
+            if (revealDuration <= 0f)
             {
-                settleElapsed += useUnscaledTime ? Time.unscaledDeltaTime : Time.deltaTime;
-                float settleT = Mathf.Clamp01(settleElapsed / settleDuration);
-                float easedSettle = EaseOutCubic(settleT);
+                ApplyOpenedPose();
+                PlayVisibleSlotRevealParticles(forceVisible: true);
+                PlayPostRevealSlideFadeOpen();
+                completedSideEntryReveal = true;
+                activeRoutine = null;
+                yield break;
+            }
 
-                ApplyPanelPositions(
-                    Vector2.LerpUnclamped(pose.ChestCollision, pose.ChestFinal, easedSettle),
-                    Vector2.LerpUnclamped(pose.InventoryCollision, pose.InventoryFinal, easedSettle));
-                ApplyRevealPose(0f);
+            float revealElapsed = 0f;
+            while (revealElapsed < revealDuration)
+            {
+                revealElapsed += useUnscaledTime ? Time.unscaledDeltaTime : Time.deltaTime;
+                float revealT = Mathf.Clamp01(revealElapsed / revealDuration);
+                ApplyRevealPose(SmoothStep(revealT));
                 yield return null;
             }
 
-            ApplyPanelPositions(pose.ChestFinal, pose.InventoryFinal);
-        }
-
-        yield return PlayPostSettleImpactShake(pose.ChestFinal);
-        PlayOpenUiParticles();
-
-        if (revealDuration <= 0f)
-        {
             ApplyOpenedPose();
             PlayVisibleSlotRevealParticles(forceVisible: true);
             PlayPostRevealSlideFadeOpen();
+            completedSideEntryReveal = true;
             activeRoutine = null;
-            yield break;
         }
-
-        float revealElapsed = 0f;
-        while (revealElapsed < revealDuration)
+        finally
         {
-            revealElapsed += useUnscaledTime ? Time.unscaledDeltaTime : Time.deltaTime;
-            float revealT = Mathf.Clamp01(revealElapsed / revealDuration);
-            ApplyRevealPose(SmoothStep(revealT));
-            yield return null;
+            EndPanelMotionOwnership(completedSideEntryReveal ? new PanelPairPosition(pose.ChestFinal, pose.InventoryFinal) : null);
         }
-
-        ApplyOpenedPose();
-        PlayVisibleSlotRevealParticles(forceVisible: true);
-        PlayPostRevealSlideFadeOpen();
-        activeRoutine = null;
     }
 
     private IEnumerator PlayRevealRoutine()
@@ -662,60 +642,105 @@ public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
         hasCapturedPanelOpenPositions = chestPanel != null || inventoryPanel != null;
     }
 
-    private void CaptureImpactShakeRootPosition(bool force)
-    {
-        if (hasCapturedImpactShakeRootPosition && !force)
-            return;
-
-        if (impactShakeRoot == null)
-            impactShakeRoot = ResolveDefaultImpactShakeRoot();
-
-        impactShakeTargets.Clear();
-        impactShakeTargetBasePositions.Clear();
-
-        AddImpactShakeTarget(impactShakeRoot);
-        AddImpactShakeTarget(chestPanel);
-        AddImpactShakeTarget(inventoryPanel);
-
-        hasCapturedImpactShakeRootPosition = impactShakeTargets.Count > 0;
-    }
-
-    private void AddImpactShakeTarget(RectTransform target)
-    {
-        if (target == null)
-            return;
-
-        for (int i = impactShakeTargets.Count - 1; i >= 0; i--)
-        {
-            RectTransform existing = impactShakeTargets[i];
-            if (existing == null)
-            {
-                impactShakeTargets.RemoveAt(i);
-                impactShakeTargetBasePositions.RemoveAt(i);
-                continue;
-            }
-
-            if (target == existing || target.IsChildOf(existing))
-                return;
-
-            if (existing.IsChildOf(target))
-            {
-                impactShakeTargets.RemoveAt(i);
-                impactShakeTargetBasePositions.RemoveAt(i);
-            }
-        }
-
-        impactShakeTargets.Add(target);
-        impactShakeTargetBasePositions.Add(target.anchoredPosition);
-    }
-
     private void ApplyPanelPositions(Vector2 chestPosition, Vector2 inventoryPosition)
     {
-        if (chestPanel != null)
-            chestPanel.anchoredPosition = chestPosition;
+        panelMotion.Configure(chestPanel, inventoryPanel);
+        panelMotion.ApplyPositions(chestPosition, inventoryPosition);
+    }
 
-        if (inventoryPanel != null)
-            inventoryPanel.anchoredPosition = inventoryPosition;
+    private void BeginPanelMotionOwnership()
+    {
+        panelMotion.Configure(chestPanel, inventoryPanel);
+        panelMotion.BeginOwnership();
+    }
+
+    private void EndPanelMotionOwnership(PanelPairPosition? finalPose = null)
+    {
+        panelMotion.EndOwnership();
+
+        if (finalPose.HasValue)
+        {
+            PanelPairPosition pose = finalPose.Value;
+            panelMotion.ApplyPositions(pose.Chest, pose.Inventory);
+        }
+    }
+
+    private PanelPairPosition ApplyImpactCollisionPose(SideEntryPose pose)
+    {
+        return ApplyImpactCollisionPose(new PanelPairPosition(pose.ChestCollision, pose.InventoryCollision));
+    }
+
+    private PanelPairPosition ApplyImpactCollisionPose(PanelPairPosition pose)
+    {
+        Vector2 chestCollision = pose.Chest;
+        Vector2 inventoryCollision = pose.Inventory;
+
+        ApplyPanelPositions(chestCollision, inventoryCollision);
+        AlignImpactCollisionEdges(ref chestCollision, ref inventoryCollision);
+        return new PanelPairPosition(chestCollision, inventoryCollision);
+    }
+
+    private IEnumerator HoldImpactCollisionPose(PanelPairPosition collisionPose)
+    {
+        float impactHoldDuration = ResolveImpactHoldDuration();
+        float elapsed = 0f;
+        while (elapsed < impactHoldDuration)
+        {
+            elapsed += useUnscaledTime ? Time.unscaledDeltaTime : Time.deltaTime;
+            PanelPairPosition shakenPose = ApplyImpactShakeOffset(collisionPose, ResolveImpactShakeOffset(elapsed));
+            ApplyPanelPositions(shakenPose.Chest, shakenPose.Inventory);
+            ApplyRevealPose(0f);
+            yield return null;
+        }
+
+        ApplyPanelPositions(collisionPose.Chest, collisionPose.Inventory);
+        ApplyRevealPose(0f);
+    }
+
+    private IEnumerator SettlePanelsFromImpact(PanelPairPosition collisionPose, SideEntryPose pose)
+    {
+        if (settleDuration <= 0f)
+        {
+            ApplyPanelPositions(pose.ChestFinal, pose.InventoryFinal);
+            yield break;
+        }
+
+        float settleElapsed = 0f;
+        while (settleElapsed < settleDuration)
+        {
+            settleElapsed += useUnscaledTime ? Time.unscaledDeltaTime : Time.deltaTime;
+            float settleT = Mathf.Clamp01(settleElapsed / settleDuration);
+            float easedSettle = EaseOutCubic(settleT);
+
+            ApplyPanelPositions(
+                Vector2.LerpUnclamped(collisionPose.Chest, pose.ChestFinal, easedSettle),
+                Vector2.LerpUnclamped(collisionPose.Inventory, pose.InventoryFinal, easedSettle));
+            ApplyRevealPose(0f);
+            yield return null;
+        }
+
+        ApplyPanelPositions(pose.ChestFinal, pose.InventoryFinal);
+    }
+
+    private void AlignImpactCollisionEdges(ref Vector2 chestCollision, ref Vector2 inventoryCollision)
+    {
+        if (motionBounds == null || chestPanel == null || inventoryPanel == null)
+            return;
+
+        RectTransform chestEdgeSource = ResolveCollisionBounds(chestPanel, chestCollisionBounds);
+        RectTransform inventoryEdgeSource = ResolveCollisionBounds(inventoryPanel, inventoryCollisionBounds);
+        Canvas.ForceUpdateCanvases();
+
+        if (!TryResolveTargetWorldX(motionBounds, motionBounds.rect.center.x, out float targetWorldX))
+            return;
+
+        bool alignedChest = TranslatePanelEdgeToWorldX(chestPanel, chestEdgeSource, useRightEdge: true, targetWorldX);
+        bool alignedInventory = TranslatePanelEdgeToWorldX(inventoryPanel, inventoryEdgeSource, useRightEdge: false, targetWorldX);
+
+        if (alignedChest)
+            chestCollision = chestPanel.anchoredPosition;
+        if (alignedInventory)
+            inventoryCollision = inventoryPanel.anchoredPosition;
     }
 
     private SideEntryPose ResolveSideEntryPose()
@@ -1220,6 +1245,31 @@ public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
         return resolvedX;
     }
 
+    private static bool TranslatePanelEdgeToWorldX(
+        RectTransform movingRect,
+        RectTransform edgeSource,
+        bool useRightEdge,
+        float targetWorldX)
+    {
+        if (movingRect == null || edgeSource == null)
+            return false;
+
+        if (!TryResolveEdgeWorldX(edgeSource, useRightEdge, out float currentWorldX))
+            return false;
+
+        TranslateRectWorldX(movingRect, targetWorldX - currentWorldX);
+        return true;
+    }
+
+    private static void TranslateRectWorldX(RectTransform rect, float deltaWorldX)
+    {
+        if (rect == null || Mathf.Abs(deltaWorldX) <= 0.0001f)
+            return;
+
+        Vector3 position = rect.position;
+        rect.position = new Vector3(position.x + deltaWorldX, position.y, position.z);
+    }
+
     private static RectTransform ResolveCollisionBounds(RectTransform movingRect, RectTransform preferredBounds)
     {
         if (IsUsableCollisionBounds(movingRect, preferredBounds) && HasUsableHorizontalBounds(preferredBounds))
@@ -1352,20 +1402,63 @@ public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
     {
         float holdDuration = impactPauseDuration;
 
-        if (playImpactCameraShake && impactCameraShakeAmplitude > 0f && impactCameraShakeDuration > 0f)
-            holdDuration = Mathf.Max(holdDuration, impactCameraShakeDuration);
+        if (uiImpactShakeDuration > 0f && uiImpactShakeAmplitude > 0f)
+            holdDuration = Mathf.Max(holdDuration, uiImpactShakeDuration);
 
         return holdDuration;
     }
 
-    private IEnumerator PlayPostSettleImpactShake(Vector2 chestRestorePosition)
+    private Vector2 ResolveImpactShakeOffset(float elapsed)
     {
-        PlayUiImpactShake();
+        if (uiImpactShakeDuration <= 0f || uiImpactShakeAmplitude <= 0f || elapsed > uiImpactShakeDuration)
+            return Vector2.zero;
 
-        yield return PlayImpactChestShake(chestRestorePosition);
+        float t = Mathf.Clamp01(elapsed / uiImpactShakeDuration);
+        float fade = 1f - SmoothStep(t);
+        float cycle = t * uiImpactShakeFrequency * Mathf.PI * 2f;
+        return new Vector2(
+            Mathf.Sin(cycle) * uiImpactShakeAmplitude,
+            Mathf.Cos(cycle * 1.37f) * uiImpactShakeAmplitude * 0.35f) * fade;
+    }
 
-        if (impactShakeRoutine != null)
-            yield return impactShakeRoutine;
+    private PanelPairPosition ApplyImpactShakeOffset(PanelPairPosition pose, Vector2 localOffset)
+    {
+        if (localOffset == Vector2.zero)
+            return pose;
+
+        Vector3 worldOffset = ResolveImpactShakeWorldOffset(localOffset);
+        return new PanelPairPosition(
+            OffsetAnchoredPositionByWorldOffset(chestPanel, pose.Chest, worldOffset),
+            OffsetAnchoredPositionByWorldOffset(inventoryPanel, pose.Inventory, worldOffset));
+    }
+
+    private Vector3 ResolveImpactShakeWorldOffset(Vector2 localOffset)
+    {
+        if (impactShakeRoot == null)
+            impactShakeRoot = ResolveDefaultImpactShakeRoot();
+
+        RectTransform reference = impactShakeRoot != null ? impactShakeRoot : transform as RectTransform;
+        if (reference == null)
+            return new Vector3(localOffset.x, localOffset.y, 0f);
+
+        return reference.TransformVector(new Vector3(localOffset.x, localOffset.y, 0f));
+    }
+
+    private static Vector2 OffsetAnchoredPositionByWorldOffset(RectTransform rect, Vector2 anchoredPosition, Vector3 worldOffset)
+    {
+        if (rect == null || rect.parent == null)
+            return anchoredPosition + new Vector2(worldOffset.x, worldOffset.y);
+
+        Vector3 parentLocalOffset = rect.parent.InverseTransformVector(worldOffset);
+        return anchoredPosition + new Vector2(parentLocalOffset.x, parentLocalOffset.y);
+    }
+
+    private IEnumerator PlaySeparateImpactChestShakeIfNeeded(Vector2 restorePosition)
+    {
+        if (uiImpactShakeDuration > 0f && uiImpactShakeAmplitude > 0f)
+            yield break;
+
+        yield return PlayImpactChestShake(restorePosition);
     }
 
     private IEnumerator PlayImpactChestShake(Vector2 restorePosition)
@@ -1723,69 +1816,6 @@ public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
         emitter.PlayAtWorldPosition(worldPosition, clearExisting);
     }
 
-    private void PlayUiImpactShake()
-    {
-        if (uiImpactShakeDuration <= 0f || uiImpactShakeAmplitude <= 0f)
-            return;
-
-        StopImpactShake(resetPosition: true);
-        CaptureImpactShakeRootPosition(force: true);
-        if (impactShakeTargets.Count == 0)
-            return;
-
-        impactShakeRoutine = StartCoroutine(PlayUiImpactShakeRoutine());
-    }
-
-    private IEnumerator PlayUiImpactShakeRoutine()
-    {
-        float elapsed = 0f;
-        while (elapsed < uiImpactShakeDuration)
-        {
-            elapsed += useUnscaledTime ? Time.unscaledDeltaTime : Time.deltaTime;
-            float t = Mathf.Clamp01(elapsed / uiImpactShakeDuration);
-            float fade = 1f - SmoothStep(t);
-            float cycle = t * uiImpactShakeFrequency * Mathf.PI * 2f;
-            Vector2 offset = new Vector2(
-                Mathf.Sin(cycle) * uiImpactShakeAmplitude,
-                Mathf.Cos(cycle * 1.37f) * uiImpactShakeAmplitude * 0.35f) * fade;
-
-            ApplyImpactShakeOffset(offset);
-
-            yield return null;
-        }
-
-        RestoreImpactShakeTargets();
-        ClearImpactShakeTargets();
-        impactShakeRoutine = null;
-    }
-
-    private void ApplyImpactShakeOffset(Vector2 offset)
-    {
-        for (int i = 0; i < impactShakeTargets.Count; i++)
-        {
-            RectTransform target = impactShakeTargets[i];
-            if (target != null)
-                target.anchoredPosition = impactShakeTargetBasePositions[i] + offset;
-        }
-    }
-
-    private void RestoreImpactShakeTargets()
-    {
-        for (int i = 0; i < impactShakeTargets.Count; i++)
-        {
-            RectTransform target = impactShakeTargets[i];
-            if (target != null)
-                target.anchoredPosition = impactShakeTargetBasePositions[i];
-        }
-    }
-
-    private void ClearImpactShakeTargets()
-    {
-        impactShakeTargets.Clear();
-        impactShakeTargetBasePositions.Clear();
-        hasCapturedImpactShakeRootPosition = false;
-    }
-
     private void PreparePostRevealSlideFade()
     {
         if (!playPostRevealSlideFade)
@@ -1940,10 +1970,11 @@ public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
 
     private void StopActiveRoutine()
     {
+        EndPanelMotionOwnership();
+
         if (activeRoutine == null)
         {
             StopPresentationParticles();
-            StopImpactShake(resetPosition: true);
             StopImpactChestShake(resetPosition: true);
             return;
         }
@@ -1951,7 +1982,6 @@ public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
         StopCoroutine(activeRoutine);
         activeRoutine = null;
         StopPresentationParticles();
-        StopImpactShake(resetPosition: true);
         StopImpactChestShake(resetPosition: true);
     }
 
@@ -1985,20 +2015,6 @@ public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
         slotRevealParticlePool = null;
     }
 
-    private void StopImpactShake(bool resetPosition)
-    {
-        if (impactShakeRoutine != null)
-        {
-            StopCoroutine(impactShakeRoutine);
-            impactShakeRoutine = null;
-        }
-
-        if (resetPosition && hasCapturedImpactShakeRootPosition)
-            RestoreImpactShakeTargets();
-
-        ClearImpactShakeTargets();
-    }
-
     private void StopImpactChestShake(bool resetPosition)
     {
         if (impactChestShakeTween != null)
@@ -2029,6 +2045,18 @@ public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
     {
         t = Mathf.Clamp01(t);
         return t * t * t;
+    }
+
+    private readonly struct PanelPairPosition
+    {
+        public readonly Vector2 Chest;
+        public readonly Vector2 Inventory;
+
+        public PanelPairPosition(Vector2 chest, Vector2 inventory)
+        {
+            Chest = chest;
+            Inventory = inventory;
+        }
     }
 
     private readonly struct SideEntryPose

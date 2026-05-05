@@ -38,6 +38,9 @@ public class ChestUIManager : MonoBehaviour
             return false;
         }
 
+        if (openedChest == chest && inventoryRoot.IsActive)
+            return true;
+
         openedChest = chest;
         inventoryRoot.BindChest(chest.GetInventory(), playSlideFadePresentation);
 

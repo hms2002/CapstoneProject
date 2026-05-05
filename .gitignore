@@ -77,3 +77,6 @@ crashlytics-build.properties
 # Local runtime/debug data
 /GameData.json
 /GameData_Slot*.json
+
+# Obsidian local settings
+Docs/.obsidian/

@@ -26,7 +26,7 @@ RectTransform:
   m_GameObject: {fileID: 8423953599515520982}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 2.25, y: 2.25, z: 2.25}
+  m_LocalScale: {x: 3.375, y: 3.375, z: 3.375}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -73,7 +73,7 @@ MonoBehaviour:
   distributeBurstEvenly: 1
   burstAngleJitter: 0
   startLifetime: {x: 1, y: 2}
-  startSpeed: {x: 70, y: 70}
+  startSpeed: {x: 80, y: 80}
   startSize: {x: 7, y: 7}
   startLength: {x: 1, y: 1}
   startThickness: {x: 1, y: 1}
