@@ -63,9 +63,17 @@ public sealed class RunTimeOverReturnToHub : MonoBehaviour
             UIManager.Instance.HideWorldPrompt();
         }
 
+        var request = GameOverPresentationRequest.TimeOver(
+            PlayerRuntimeRegistry.GetPlayerTransform(),
+            hubSceneName,
+            useFadeTransitionService);
+
+        if (GameOverPresentationController.TryShow(request))
+            return;
+
         if (useFadeTransitionService)
         {
-            var transitionCoordinator = SceneTransitionCoordinator.EnsureInstance();
+            var transitionCoordinator = SceneTransitionCoordinator.Instance;
             if (transitionCoordinator != null && transitionCoordinator.TryLoadScene(hubSceneName))
                 return;
         }
