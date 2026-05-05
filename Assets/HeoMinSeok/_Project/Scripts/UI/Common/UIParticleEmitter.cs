@@ -8,6 +8,13 @@ public enum UIParticleShape
     Point,
     Circle,
     Ring,
+    Line,
+    Rectangle,
+    RectangleEdge,
+    Arc,
+    ArcFilled,
+    Ellipse,
+    EllipseEdge,
 }
 
 public enum UIParticleStartColorMode
@@ -15,6 +22,12 @@ public enum UIParticleStartColorMode
     Color,
     [InspectorName("Between Two Value")]
     RandomBetweenTwoColors,
+}
+
+public enum UIParticleSimulationSpace
+{
+    Local,
+    World,
 }
 
 [Serializable]
@@ -42,6 +55,7 @@ public sealed class UIParticleEmitter : MonoBehaviour
 {
     [Header("Renderer")]
     [SerializeField] private RectTransform particleRoot;
+    [SerializeField] private UIParticleSimulationSpace simulationSpace;
     [SerializeField] private Texture particleTexture;
     [SerializeField] private Material particleMaterial;
     [SerializeField] private bool useUnscaledTime = true;
@@ -58,6 +72,7 @@ public sealed class UIParticleEmitter : MonoBehaviour
     [Header("Shape")]
     [SerializeField] private UIParticleShape shape = UIParticleShape.Point;
     [SerializeField, Min(0f)] private float shapeRadius = 20f;
+    [SerializeField] private Vector2 shapeSize = new(80f, 40f);
     [SerializeField] private Vector2 emitterOffset;
     [SerializeField, Range(-180f, 180f)] private float directionAngle;
     [SerializeField, Range(0f, 360f)] private float spreadAngle = 360f;
@@ -67,6 +82,7 @@ public sealed class UIParticleEmitter : MonoBehaviour
     [Header("Start Lifetime")]
     [SerializeField] private Vector2 startLifetime = new(0.18f, 0.28f);
     [SerializeField] private Vector2 startSpeed = new(360f, 520f);
+    [SerializeField] private Vector2 startSize = Vector2.one;
     [SerializeField] private Vector2 startLength = new(22f, 34f);
     [SerializeField] private Vector2 startThickness = new(3f, 5f);
     [SerializeField] private Vector2 startRotation = Vector2.zero;
@@ -76,8 +92,10 @@ public sealed class UIParticleEmitter : MonoBehaviour
     [SerializeField] private Color startColorB = new(1f, 0.35f, 0.1f, 0.95f);
 
     [Header("Gizmos")]
+#pragma warning disable CS0414 // Read by UIParticleEmitterEditor through SerializedObject.
     [SerializeField] private bool showGizmos = true;
     [SerializeField] private bool showGizmosOnlyWhenSelected;
+#pragma warning restore CS0414
 
     [Header("Velocity Over Lifetime")]
     [SerializeField] private bool velocityOverLifetime;
@@ -86,8 +104,15 @@ public sealed class UIParticleEmitter : MonoBehaviour
 
     [Header("Limit Velocity Over Lifetime")]
     [SerializeField] private bool limitVelocityOverLifetime;
+    [SerializeField] private bool separateAxes;
     [SerializeField, Min(0f)] private float maxSpeed = 520f;
+    [SerializeField] private Vector2 maxSpeedAxes = new(520f, 520f);
+    [SerializeField, InspectorName("Limit Multiplier")] private AnimationCurve maxSpeedMultiplier = AnimationCurve.Linear(0f, 1f, 1f, 1f);
     [SerializeField, Range(0f, 1f)] private float velocityDampen = 0.7f;
+    [SerializeField, Min(0f)] private float drag;
+    [SerializeField, InspectorName("Drag Multiplier")] private AnimationCurve dragMultiplier = AnimationCurve.Linear(0f, 1f, 1f, 1f);
+    [SerializeField] private bool multiplyDragBySize;
+    [SerializeField] private bool multiplyDragByVelocity;
 
     [Header("Gravity")]
     [SerializeField] private bool gravityEnabled;
@@ -100,6 +125,7 @@ public sealed class UIParticleEmitter : MonoBehaviour
 
     [Header("Size Over Lifetime")]
     [SerializeField] private bool sizeOverLifetime = true;
+    [SerializeField] private AnimationCurve sizeOverLifetimeMultiplier = AnimationCurve.Linear(0f, 1f, 1f, 1f);
     [SerializeField] private AnimationCurve lengthOverLifetime = AnimationCurve.EaseInOut(0f, 1f, 1f, 0f);
     [SerializeField] private AnimationCurve thicknessOverLifetime = AnimationCurve.EaseInOut(0f, 1f, 1f, 0f);
 
@@ -116,8 +142,31 @@ public sealed class UIParticleEmitter : MonoBehaviour
     private float emissionAccumulator;
     private Vector2 localOrigin;
     private bool isPlaying;
+    private bool isEmitting;
+#if UNITY_EDITOR
+    private bool editorPreviewMode;
+#endif
 
     public bool IsPlaying => isPlaying;
+    public bool IsEmitting => isEmitting;
+
+    public void SetParticleRoot(RectTransform root, bool clearExisting = true)
+    {
+        if (particleRoot == root)
+            return;
+
+        if (clearExisting)
+            Stop(clear: true);
+
+#if UNITY_EDITOR
+        if (!Application.isPlaying)
+            DestroyEditorPreviewObjects();
+#endif
+
+        particles.Clear();
+        particleRoot = root;
+        EnsurePool();
+    }
 
     private sealed class Particle
     {
@@ -131,11 +180,13 @@ public sealed class UIParticleEmitter : MonoBehaviour
         public Vector2 Velocity;
         public float Age;
         public float Lifetime;
+        public float Size;
         public float Length;
         public float Thickness;
         public float Rotation;
         public float AngularVelocity;
         public Color Color;
+        public Vector3 WorldPosition;
     }
 
     private void Awake()
@@ -155,22 +206,6 @@ public sealed class UIParticleEmitter : MonoBehaviour
         Stop(clear: true);
     }
 
-    private void OnDrawGizmos()
-    {
-        if (!showGizmos || showGizmosOnlyWhenSelected)
-            return;
-
-        DrawEmitterGizmos();
-    }
-
-    private void OnDrawGizmosSelected()
-    {
-        if (!showGizmos || !showGizmosOnlyWhenSelected)
-            return;
-
-        DrawEmitterGizmos();
-    }
-
     private void Update()
     {
         float deltaTime = useUnscaledTime ? Time.unscaledDeltaTime : Time.deltaTime;
@@ -184,29 +219,43 @@ public sealed class UIParticleEmitter : MonoBehaviour
 
         previousPlaybackTime = playbackTime;
         playbackTime += deltaTime;
-        EmitScheduledBursts();
-        EmitRate(deltaTime);
+
+        if (isEmitting)
+        {
+            EmitScheduledBursts();
+            EmitRate(deltaTime);
+
+            if (!looping && playbackTime >= duration)
+                isEmitting = false;
+        }
+
         UpdateParticles(deltaTime);
 
-        if (!looping && playbackTime >= duration && !HasActiveParticles())
+        if (!isEmitting && !HasActiveParticles())
             isPlaying = false;
     }
 
     public void Play()
     {
-        PlayAt(Vector2.zero);
+        PlayAtWorldPosition(transform.position);
     }
 
     public void PlayAt(Vector2 anchoredPosition)
+    {
+        PlayAt(anchoredPosition, clearExisting: clearOnPlay);
+    }
+
+    public void PlayAt(Vector2 anchoredPosition, bool clearExisting)
     {
         localOrigin = anchoredPosition + emitterOffset;
         playbackTime = 0f;
         previousPlaybackTime = -0.0001f;
         emissionAccumulator = 0f;
         isPlaying = true;
+        isEmitting = true;
 
         EnsurePool();
-        if (clearOnPlay)
+        if (clearExisting)
             HideAll();
 
         EmitScheduledBursts();
@@ -215,11 +264,16 @@ public sealed class UIParticleEmitter : MonoBehaviour
 
     public void PlayAtWorldPosition(Vector3 worldPosition)
     {
+        PlayAtWorldPosition(worldPosition, clearExisting: clearOnPlay);
+    }
+
+    public void PlayAtWorldPosition(Vector3 worldPosition, bool clearExisting)
+    {
         RectTransform root = ResolveParticleRoot();
         Vector2 localPosition = root != null
             ? root.InverseTransformPoint(worldPosition)
             : Vector2.zero;
-        PlayAt(localPosition);
+        PlayAt(localPosition, clearExisting);
     }
 
     public void EmitBurst(int count)
@@ -230,7 +284,14 @@ public sealed class UIParticleEmitter : MonoBehaviour
 
     public void Stop(bool clear = true)
     {
+        if (!clear)
+        {
+            StopEmitting();
+            return;
+        }
+
         isPlaying = false;
+        isEmitting = false;
         playbackTime = 0f;
         emissionAccumulator = 0f;
 
@@ -238,7 +299,34 @@ public sealed class UIParticleEmitter : MonoBehaviour
             HideAll();
     }
 
+    public void StopEmitting()
+    {
+        isEmitting = false;
+        emissionAccumulator = 0f;
+
+        if (!HasActiveParticles())
+            isPlaying = false;
+    }
+
 #if UNITY_EDITOR
+    public void PrepareEditorPreview()
+    {
+        if (Application.isPlaying)
+            return;
+
+        Stop(clear: true);
+        DestroyEditorPreviewObjects();
+        editorPreviewMode = true;
+    }
+
+    public void EndEditorPreview()
+    {
+        if (Application.isPlaying)
+            return;
+
+        editorPreviewMode = false;
+    }
+
     public void DestroyEditorPreviewObjects()
     {
         if (Application.isPlaying)
@@ -262,6 +350,31 @@ public sealed class UIParticleEmitter : MonoBehaviour
         }
 
         particles.Clear();
+        DestroyOrphanEditorPreviewObjects();
+    }
+
+    private void DestroyOrphanEditorPreviewObjects()
+    {
+        RectTransform root = ResolveParticleRoot();
+        DestroyOrphanEditorPreviewObjects(root);
+
+        if (transform is RectTransform emitterRect && emitterRect != root)
+            DestroyOrphanEditorPreviewObjects(emitterRect);
+    }
+
+    private static void DestroyOrphanEditorPreviewObjects(RectTransform root)
+    {
+        if (root == null)
+            return;
+
+        for (int i = root.childCount - 1; i >= 0; i--)
+        {
+            Transform child = root.GetChild(i);
+            if (child == null || !child.name.StartsWith("UIParticle_", StringComparison.Ordinal))
+                continue;
+
+            DestroyImmediate(child.gameObject);
+        }
     }
 #endif
 
@@ -323,12 +436,16 @@ public sealed class UIParticleEmitter : MonoBehaviour
         Vector2 direction = AngleToVector(angle);
         Vector2 spawnOffset = ResolveShapeOffset(direction);
         float speed = RandomRange(startSpeed);
+        RectTransform root = ResolveParticleRoot();
+        Vector2 position = localOrigin + spawnOffset;
 
         particle.Active = true;
         particle.Age = 0f;
         particle.Lifetime = Mathf.Max(0.001f, RandomRange(startLifetime));
-        particle.Position = localOrigin + spawnOffset;
+        particle.Position = position;
+        particle.WorldPosition = root != null ? root.TransformPoint(position) : (Vector3)position;
         particle.Velocity = direction * speed;
+        particle.Size = Mathf.Max(0f, RandomRange(startSize));
         particle.Length = Mathf.Max(0f, RandomRange(startLength));
         particle.Thickness = Mathf.Max(0f, RandomRange(startThickness));
         particle.Rotation = angle + RandomRange(startRotation);
@@ -366,37 +483,112 @@ public sealed class UIParticleEmitter : MonoBehaviour
             if (gravityEnabled)
                 velocity += gravity * gravityScale * deltaTime;
 
-            if (limitVelocityOverLifetime && maxSpeed > 0f)
-            {
-                float speed = velocity.magnitude;
-                if (speed > maxSpeed)
-                    velocity = Vector2.Lerp(velocity, velocity.normalized * maxSpeed, velocityDampen);
-            }
+            velocity = ApplyLimitVelocityOverLifetime(particle, velocity, deltaTime, t);
 
             particle.Velocity = velocity;
-            particle.Position += velocity * deltaTime;
+            if (simulationSpace == UIParticleSimulationSpace.World)
+            {
+                RectTransform root = ResolveParticleRoot();
+                Vector3 worldVelocity = root != null ? root.TransformVector(velocity) : (Vector3)velocity;
+                particle.WorldPosition += worldVelocity * deltaTime;
+            }
+            else
+            {
+                particle.Position += velocity * deltaTime;
+            }
+
             particle.Rotation += particle.AngularVelocity * deltaTime;
             ApplyParticleVisual(particle, t);
         }
     }
 
+    private Vector2 ApplyLimitVelocityOverLifetime(Particle particle, Vector2 velocity, float deltaTime, float lifetimeProgress)
+    {
+        if (!limitVelocityOverLifetime)
+            return velocity;
+
+        float limitMultiplier = EvaluateNonNegative(maxSpeedMultiplier, lifetimeProgress);
+        Vector2 limitedVelocity = separateAxes
+            ? LimitVelocityByAxes(velocity, limitMultiplier)
+            : LimitVelocityByMagnitude(velocity, limitMultiplier);
+
+        velocity = Vector2.Lerp(velocity, limitedVelocity, Mathf.Clamp01(velocityDampen));
+        return ApplyVelocityDrag(particle, velocity, deltaTime, lifetimeProgress);
+    }
+
+    private Vector2 LimitVelocityByMagnitude(Vector2 velocity, float limitMultiplier)
+    {
+        float speed = velocity.magnitude;
+        float limit = Mathf.Max(0f, maxSpeed) * Mathf.Max(0f, limitMultiplier);
+
+        if (speed <= limit)
+            return velocity;
+
+        if (limit <= 0f || speed <= 0f)
+            return Vector2.zero;
+
+        return velocity / speed * limit;
+    }
+
+    private Vector2 LimitVelocityByAxes(Vector2 velocity, float limitMultiplier)
+    {
+        Vector2 axisLimits = ResolvePositiveVector(maxSpeedAxes) * Mathf.Max(0f, limitMultiplier);
+        return new Vector2(
+            ClampSignedMagnitude(velocity.x, axisLimits.x),
+            ClampSignedMagnitude(velocity.y, axisLimits.y));
+    }
+
+    private Vector2 ApplyVelocityDrag(Particle particle, Vector2 velocity, float deltaTime, float lifetimeProgress)
+    {
+        float effectiveDrag = Mathf.Max(0f, drag) * EvaluateNonNegative(dragMultiplier, lifetimeProgress);
+        if (effectiveDrag <= 0f || deltaTime <= 0f)
+            return velocity;
+
+        if (multiplyDragBySize && particle != null)
+            effectiveDrag *= Mathf.Max(0f, particle.Size);
+
+        if (multiplyDragByVelocity)
+            effectiveDrag *= velocity.magnitude;
+
+        float dragFactor = Mathf.Clamp01(effectiveDrag * deltaTime);
+        return Vector2.Lerp(velocity, Vector2.zero, dragFactor);
+    }
+
     private void ApplyParticleVisual(Particle particle, float t)
     {
+        float sizeScale = particle.Size * (sizeOverLifetime ? Mathf.Max(0f, sizeOverLifetimeMultiplier.Evaluate(t)) : 1f);
         float lengthScale = sizeOverLifetime ? Mathf.Max(0f, lengthOverLifetime.Evaluate(t)) : 1f;
         float thicknessScale = sizeOverLifetime ? Mathf.Max(0f, thicknessOverLifetime.Evaluate(t)) : 1f;
         Color color = colorOverLifetime ? lifetimeColor.Evaluate(t) * particle.Color : particle.Color;
+        Vector2 visualPosition = ResolveVisualPosition(particle);
 
-        particle.Rect.anchoredPosition = particle.Position;
+        particle.Rect.anchoredPosition = visualPosition;
         particle.Rect.localRotation = Quaternion.Euler(0f, 0f, particle.Rotation);
         particle.Rect.sizeDelta = new Vector2(
-            particle.Length * lengthScale,
-            particle.Thickness * thicknessScale);
+            particle.Length * sizeScale * lengthScale,
+            particle.Thickness * sizeScale * thicknessScale);
         particle.Image.color = color;
 
-        ApplyTrailVisual(particle, t, color, lengthScale, thicknessScale);
+        ApplyTrailVisual(particle, t, color, sizeScale, lengthScale, thicknessScale, visualPosition);
     }
 
-    private void ApplyTrailVisual(Particle particle, float t, Color color, float lengthScale, float thicknessScale)
+    private Vector2 ResolveVisualPosition(Particle particle)
+    {
+        if (simulationSpace != UIParticleSimulationSpace.World)
+            return particle.Position;
+
+        RectTransform root = ResolveParticleRoot();
+        return root != null ? root.InverseTransformPoint(particle.WorldPosition) : particle.Position;
+    }
+
+    private void ApplyTrailVisual(
+        Particle particle,
+        float t,
+        Color color,
+        float sizeScale,
+        float lengthScale,
+        float thicknessScale,
+        Vector2 visualPosition)
     {
         EnsureTrailPool(particle);
 
@@ -418,11 +610,11 @@ public sealed class UIParticleEmitter : MonoBehaviour
             RectTransform rect = particle.TrailRects[i];
 
             image.gameObject.SetActive(true);
-            rect.anchoredPosition = particle.Position - direction * (trailSpacing * (i + 1));
+            rect.anchoredPosition = visualPosition - direction * (trailSpacing * (i + 1));
             rect.localRotation = Quaternion.Euler(0f, 0f, rotation);
             rect.sizeDelta = new Vector2(
-                particle.Length * lengthScale * Mathf.Lerp(1f, trailSizeScale, segmentT),
-                particle.Thickness * thicknessScale * Mathf.Lerp(1f, trailSizeScale, segmentT));
+                particle.Length * sizeScale * lengthScale * Mathf.Lerp(1f, trailSizeScale, segmentT),
+                particle.Thickness * sizeScale * thicknessScale * Mathf.Lerp(1f, trailSizeScale, segmentT));
 
             Color trailColor = color;
             trailColor.a *= trailAlpha * (1f - segmentT) * (1f - t);
@@ -462,7 +654,7 @@ public sealed class UIParticleEmitter : MonoBehaviour
         image.material = particleMaterial;
 #if UNITY_EDITOR
         if (!Application.isPlaying)
-            particleObject.hideFlags = HideFlags.HideAndDontSave;
+            particleObject.hideFlags = ResolveEditorPreviewHideFlags();
 #endif
         particleObject.SetActive(false);
 
@@ -503,7 +695,7 @@ public sealed class UIParticleEmitter : MonoBehaviour
             image.material = particleMaterial;
 #if UNITY_EDITOR
             if (!Application.isPlaying)
-                trailObject.hideFlags = HideFlags.HideAndDontSave;
+                trailObject.hideFlags = ResolveEditorPreviewHideFlags();
 #endif
             trailObject.SetActive(false);
 
@@ -517,8 +709,13 @@ public sealed class UIParticleEmitter : MonoBehaviour
         if (particleRoot != null)
             return particleRoot;
 
-        particleRoot = transform as RectTransform;
-        return particleRoot;
+        if (transform is RectTransform rectTransform)
+        {
+            particleRoot = rectTransform;
+            return particleRoot;
+        }
+
+        return GetComponentInParent<RectTransform>();
     }
 
     private Color ResolveStartColor()
@@ -526,138 +723,6 @@ public sealed class UIParticleEmitter : MonoBehaviour
         return startColorMode == UIParticleStartColorMode.RandomBetweenTwoColors
             ? Color.Lerp(startColor, startColorB, UnityEngine.Random.value)
             : startColor;
-    }
-
-    private void DrawEmitterGizmos()
-    {
-        RectTransform root = particleRoot != null
-            ? particleRoot
-            : transform as RectTransform;
-        if (root == null)
-            return;
-
-        Vector3 origin = root.TransformPoint(emitterOffset);
-        float rootScale = ResolveRootScale(root);
-        float radius = Mathf.Max(0f, shapeRadius * rootScale);
-        float speedPreviewLength = Mathf.Max(24f, Mathf.Max(startSpeed.x, startSpeed.y) * 0.16f * rootScale);
-
-        Gizmos.color = new Color(0.35f, 0.85f, 1f, 0.45f);
-        DrawRectGizmo(root);
-
-        Gizmos.color = new Color(1f, 0.76f, 0.2f, 1f);
-        DrawShapeGizmo(root, origin, radius);
-
-        Gizmos.color = new Color(1f, 0.35f, 0.08f, 1f);
-        DrawDirectionGizmo(root, origin, directionAngle, spreadAngle, speedPreviewLength);
-
-        Gizmos.color = new Color(1f, 0.92f, 0.2f, 1f);
-        Gizmos.DrawSphere(origin, ResolveHandleSize(origin) * 0.025f);
-    }
-
-    private void DrawShapeGizmo(RectTransform root, Vector3 origin, float radius)
-    {
-        switch (shape)
-        {
-            case UIParticleShape.Circle:
-            case UIParticleShape.Ring:
-                DrawCircleGizmo(root, origin, radius, 64);
-                break;
-
-            case UIParticleShape.Point:
-            default:
-                float size = ResolveHandleSize(origin) * 0.12f;
-                Gizmos.DrawLine(origin - root.right * size, origin + root.right * size);
-                Gizmos.DrawLine(origin - root.up * size, origin + root.up * size);
-                break;
-        }
-    }
-
-    private static void DrawRectGizmo(RectTransform root)
-    {
-        Vector3[] corners = new Vector3[4];
-        root.GetWorldCorners(corners);
-        Gizmos.DrawLine(corners[0], corners[1]);
-        Gizmos.DrawLine(corners[1], corners[2]);
-        Gizmos.DrawLine(corners[2], corners[3]);
-        Gizmos.DrawLine(corners[3], corners[0]);
-    }
-
-    private static void DrawCircleGizmo(RectTransform root, Vector3 origin, float radius, int segments)
-    {
-        if (radius <= 0f)
-            return;
-
-        segments = Mathf.Max(8, segments);
-        Vector3 previous = origin + root.right * radius;
-        for (int i = 1; i <= segments; i++)
-        {
-            float radians = (i / (float)segments) * Mathf.PI * 2f;
-            Vector3 point = origin
-                + root.right * (Mathf.Cos(radians) * radius)
-                + root.up * (Mathf.Sin(radians) * radius);
-            Gizmos.DrawLine(previous, point);
-            previous = point;
-        }
-    }
-
-    private static void DrawDirectionGizmo(
-        RectTransform root,
-        Vector3 origin,
-        float angle,
-        float spread,
-        float length)
-    {
-        Vector3 centerDirection = AngleToWorldVector(angle, root);
-        DrawArrowGizmo(origin, centerDirection, length);
-
-        float halfSpread = spread * 0.5f;
-        if (spread > 0.1f && spread < 359.9f)
-        {
-            Vector3 leftDirection = AngleToWorldVector(angle - halfSpread, root);
-            Vector3 rightDirection = AngleToWorldVector(angle + halfSpread, root);
-            float spreadLength = Mathf.Max(18f, length * 0.78f);
-            Gizmos.DrawLine(origin, origin + leftDirection * spreadLength);
-            Gizmos.DrawLine(origin, origin + rightDirection * spreadLength);
-        }
-        else if (spread >= 359.9f)
-        {
-            DrawCircleGizmo(root, origin, Mathf.Max(16f, length * 0.55f), 48);
-        }
-    }
-
-    private static void DrawArrowGizmo(Vector3 origin, Vector3 direction, float length)
-    {
-        Vector3 end = origin + direction * length;
-        Gizmos.DrawLine(origin, end);
-
-        float headSize = Mathf.Max(length * 0.16f, 8f);
-        Vector3 left = Quaternion.Euler(0f, 0f, 150f) * direction;
-        Vector3 right = Quaternion.Euler(0f, 0f, -150f) * direction;
-        Gizmos.DrawLine(end, end + left * headSize);
-        Gizmos.DrawLine(end, end + right * headSize);
-    }
-
-    private static Vector3 AngleToWorldVector(float angleDegrees, RectTransform root)
-    {
-        float radians = angleDegrees * Mathf.Deg2Rad;
-        Vector3 direction = root.right * Mathf.Cos(radians) + root.up * Mathf.Sin(radians);
-        return direction.sqrMagnitude > 0.0001f ? direction.normalized : root.right;
-    }
-
-    private static float ResolveRootScale(RectTransform root)
-    {
-        Vector3 lossyScale = root.lossyScale;
-        return Mathf.Max(0.0001f, (Mathf.Abs(lossyScale.x) + Mathf.Abs(lossyScale.y)) * 0.5f);
-    }
-
-    private static float ResolveHandleSize(Vector3 worldPosition)
-    {
-        Camera camera = Camera.current;
-        if (camera == null)
-            return 24f;
-
-        float distance = Vector3.Distance(camera.transform.position, worldPosition);
-        return Mathf.Max(12f, distance * 0.04f);
     }
 
     private Particle GetFreeParticle()
@@ -780,10 +845,152 @@ public sealed class UIParticleEmitter : MonoBehaviour
             case UIParticleShape.Ring:
                 return direction * shapeRadius;
 
+            case UIParticleShape.Line:
+                return RandomPointOnLine(ResolveShapeSize().x);
+
+            case UIParticleShape.Rectangle:
+                return RandomPointInRect(ResolveShapeSize());
+
+            case UIParticleShape.RectangleEdge:
+                return PointOnRectEdge(ResolveShapeSize(), direction);
+
+            case UIParticleShape.Ellipse:
+                return RandomPointInEllipse(ResolveShapeSize());
+
+            case UIParticleShape.EllipseEdge:
+                return PointOnEllipseEdge(ResolveShapeSize(), direction);
+
+            case UIParticleShape.Arc:
+                return direction * shapeRadius;
+
+            case UIParticleShape.ArcFilled:
+                return direction * (Mathf.Sqrt(UnityEngine.Random.value) * shapeRadius);
+
             case UIParticleShape.Point:
             default:
                 return Vector2.zero;
         }
+    }
+
+    private Vector2 ResolveShapeSize()
+    {
+        return new Vector2(
+            Mathf.Max(0f, shapeSize.x),
+            Mathf.Max(0f, shapeSize.y));
+    }
+
+    private static Vector2 RandomPointOnLine(float length)
+    {
+        if (length <= 0f)
+            return Vector2.zero;
+
+        return new Vector2(UnityEngine.Random.Range(length * -0.5f, length * 0.5f), 0f);
+    }
+
+    private static Vector2 RandomPointInRect(Vector2 size)
+    {
+        if (size.x <= 0f && size.y <= 0f)
+            return Vector2.zero;
+
+        return new Vector2(
+            UnityEngine.Random.Range(size.x * -0.5f, size.x * 0.5f),
+            UnityEngine.Random.Range(size.y * -0.5f, size.y * 0.5f));
+    }
+
+    private static Vector2 PointOnRectEdge(Vector2 size, Vector2 direction)
+    {
+        if (size.x <= 0f && size.y <= 0f)
+            return Vector2.zero;
+
+        if (size.y <= 0f)
+            return direction.x >= 0f
+                ? Vector2.right * size.x * 0.5f
+                : Vector2.left * size.x * 0.5f;
+
+        if (size.x <= 0f)
+            return direction.y >= 0f
+                ? Vector2.up * size.y * 0.5f
+                : Vector2.down * size.y * 0.5f;
+
+        if (direction.sqrMagnitude <= 0.0001f)
+            return Vector2.right * size.x * 0.5f;
+
+        direction.Normalize();
+        Vector2 halfSize = size * 0.5f;
+        float scaleX = Mathf.Abs(direction.x) > 0.0001f
+            ? halfSize.x / Mathf.Abs(direction.x)
+            : float.PositiveInfinity;
+        float scaleY = Mathf.Abs(direction.y) > 0.0001f
+            ? halfSize.y / Mathf.Abs(direction.y)
+            : float.PositiveInfinity;
+        float scale = Mathf.Min(scaleX, scaleY);
+
+        if (float.IsInfinity(scale) || scale <= 0f)
+            return Vector2.zero;
+
+        return direction * scale;
+    }
+
+    private static Vector2 RandomPointInEllipse(Vector2 size)
+    {
+        if (size.x <= 0f && size.y <= 0f)
+            return Vector2.zero;
+
+        if (size.y <= 0f)
+            return RandomPointOnLine(size.x);
+
+        if (size.x <= 0f)
+            return new Vector2(0f, UnityEngine.Random.Range(size.y * -0.5f, size.y * 0.5f));
+
+        Vector2 point = UnityEngine.Random.insideUnitCircle;
+        return new Vector2(point.x * size.x * 0.5f, point.y * size.y * 0.5f);
+    }
+
+    private static Vector2 RandomPointOnEllipse(Vector2 size)
+    {
+        if (size.x <= 0f && size.y <= 0f)
+            return Vector2.zero;
+
+        if (size.y <= 0f)
+            return RandomPointOnLine(size.x);
+
+        if (size.x <= 0f)
+            return new Vector2(0f, UnityEngine.Random.Range(size.y * -0.5f, size.y * 0.5f));
+
+        float radians = UnityEngine.Random.Range(0f, Mathf.PI * 2f);
+        return new Vector2(
+            Mathf.Cos(radians) * size.x * 0.5f,
+            Mathf.Sin(radians) * size.y * 0.5f);
+    }
+
+    private static Vector2 PointOnEllipseEdge(Vector2 size, Vector2 direction)
+    {
+        if (size.x <= 0f && size.y <= 0f)
+            return Vector2.zero;
+
+        if (size.y <= 0f)
+            return direction.x >= 0f
+                ? Vector2.right * size.x * 0.5f
+                : Vector2.left * size.x * 0.5f;
+
+        if (size.x <= 0f)
+            return direction.y >= 0f
+                ? Vector2.up * size.y * 0.5f
+                : Vector2.down * size.y * 0.5f;
+
+        if (direction.sqrMagnitude <= 0.0001f)
+            return Vector2.right * size.x * 0.5f;
+
+        direction.Normalize();
+        Vector2 halfSize = size * 0.5f;
+        float denominator = Mathf.Sqrt(
+            direction.x * direction.x / (halfSize.x * halfSize.x)
+            + direction.y * direction.y / (halfSize.y * halfSize.y));
+
+        if (denominator <= 0.0001f)
+            return Vector2.zero;
+
+        return direction / denominator;
     }
 
     private static Vector2 AngleToVector(float angleDegrees)
@@ -792,12 +999,42 @@ public sealed class UIParticleEmitter : MonoBehaviour
         return new Vector2(Mathf.Cos(radians), Mathf.Sin(radians));
     }
 
+    private static Vector2 ResolvePositiveVector(Vector2 value)
+    {
+        return new Vector2(
+            Mathf.Max(0f, value.x),
+            Mathf.Max(0f, value.y));
+    }
+
+    private static float ClampSignedMagnitude(float value, float limit)
+    {
+        limit = Mathf.Max(0f, limit);
+        if (limit <= 0f)
+            return 0f;
+
+        return Mathf.Clamp(value, -limit, limit);
+    }
+
+    private static float EvaluateNonNegative(AnimationCurve curve, float time)
+    {
+        return Mathf.Max(0f, curve != null ? curve.Evaluate(time) : 1f);
+    }
+
     private static float RandomRange(Vector2 range)
     {
         float min = Mathf.Min(range.x, range.y);
         float max = Mathf.Max(range.x, range.y);
         return Mathf.Approximately(min, max) ? min : UnityEngine.Random.Range(min, max);
     }
+
+#if UNITY_EDITOR
+    private HideFlags ResolveEditorPreviewHideFlags()
+    {
+        return editorPreviewMode
+            ? HideFlags.HideInHierarchy | HideFlags.DontSaveInEditor | HideFlags.DontSaveInBuild
+            : HideFlags.HideAndDontSave;
+    }
+#endif
 
     private static Gradient CreateDefaultColorGradient()
     {

@@ -144,7 +144,7 @@ Transform:
   m_GameObject: {fileID: 35865592}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -22.5, y: 7, z: -0.0824432}
+  m_LocalPosition: {x: -22.02, y: 3.72, z: -0.0824432}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4168,7 +4168,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4531407902860154786, guid: 99cd9d723ba00e14e8bf7327129f4aae, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5909209640859858232, guid: 99cd9d723ba00e14e8bf7327129f4aae, type: 3}
       propertyPath: portalId
@@ -4593,10 +4593,6 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 621976137746154060, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
-      propertyPath: m_AnchorMin.y
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 640639114492237553, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -4832,10 +4828,6 @@ PrefabInstance:
     - target: {fileID: 1156508343739884859, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_SizeDelta.y
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1156508343739884859, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: 79.99997
       objectReference: {fileID: 0}
     - target: {fileID: 1165851139027104352, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_AnchorMax.y
@@ -5580,10 +5572,6 @@ PrefabInstance:
     - target: {fileID: 3634885326194228066, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3663918867365301306, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
-      propertyPath: m_Value
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3797854229084120178, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_AnchorMax.y
@@ -7225,8 +7213,35 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 5055118451258413439, guid: 69f361477ab13cb469045903bed6a96e, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6787846962178461539}
   m_SourcePrefab: {fileID: 100100000, guid: 69f361477ab13cb469045903bed6a96e, type: 3}
+--- !u!1 &6787846962178461538 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5055118451258413439, guid: 69f361477ab13cb469045903bed6a96e, type: 3}
+  m_PrefabInstance: {fileID: 6787846962178461537}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &6787846962178461539
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6787846962178461538}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42667dfbf3529e6489882ac43545fe3b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BossDrop
+  chestPrefab: {fileID: 7530156284439312542, guid: 296eaa6f1547cb74e990055ce1319470, type: 3}
+  chestSpawnPoint: {fileID: 35865593}
+  portalObj: {fileID: 1987507146}
+  portalSpawnPoint: {fileID: 1987507145}
+  portalSpawnOffset: {x: 0, y: 0, z: 0}
+  bossUniqueLoots: []
+  magicStonePrefab: {fileID: 5809627508243328825, guid: 108ed5884c0e5294fb2bc08d259e53f5, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

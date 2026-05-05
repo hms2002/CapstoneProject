@@ -89,7 +89,7 @@ public sealed class GameDataRepository
         if (!string.IsNullOrWhiteSpace(directory))
             Directory.CreateDirectory(directory);
 
-        File.WriteAllText(SavePath, json);
+        WriteAllTextAtomic(SavePath, json);
         TryWriteInspectableCopy(json);
     }
 
@@ -143,7 +143,7 @@ public sealed class GameDataRepository
             if (!string.IsNullOrWhiteSpace(directory))
                 Directory.CreateDirectory(directory);
 
-            File.WriteAllText(InspectableSavePath, json);
+            WriteAllTextAtomic(InspectableSavePath, json);
         }
         catch (Exception e)
         {
@@ -173,6 +173,60 @@ public sealed class GameDataRepository
     private static int NormalizeSlotIndex(int slotIndex)
     {
         return Mathf.Max(0, slotIndex);
+    }
+
+    private static void WriteAllTextAtomic(string path, string contents)
+    {
+        if (string.IsNullOrWhiteSpace(path))
+            throw new ArgumentException("Save path is null or empty.", nameof(path));
+
+        string directory = Path.GetDirectoryName(path);
+        if (!string.IsNullOrWhiteSpace(directory))
+            Directory.CreateDirectory(directory);
+
+        string tempDirectory = string.IsNullOrWhiteSpace(directory) ? "." : directory;
+        string tempPath = Path.Combine(
+            tempDirectory,
+            $"{Path.GetFileName(path)}.{Guid.NewGuid():N}.tmp");
+        string backupPath = path + ".bak";
+
+        try
+        {
+            File.WriteAllText(tempPath, contents);
+
+            if (!File.Exists(path))
+            {
+                File.Move(tempPath, path);
+                return;
+            }
+
+            TryDeleteFile(backupPath);
+
+            try
+            {
+                File.Replace(tempPath, path, backupPath);
+            }
+            catch (Exception e) when (IsAtomicReplaceFallbackException(e))
+            {
+                File.Copy(path, backupPath, true);
+                File.Delete(path);
+                File.Move(tempPath, path);
+            }
+
+            TryDeleteFile(backupPath);
+        }
+        finally
+        {
+            TryDeleteFile(tempPath);
+        }
+    }
+
+    private static bool IsAtomicReplaceFallbackException(Exception e)
+    {
+        return e is IOException
+               || e is UnauthorizedAccessException
+               || e is PlatformNotSupportedException
+               || e is NotSupportedException;
     }
 
     private static string GetLegacyDefaultSavePath()
