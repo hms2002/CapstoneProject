@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using CapstonePresentation;
 using UnityEngine;
 using UnityGAS;
 
@@ -26,6 +27,9 @@ public sealed class AbilityLogic_DrunkenDragonAlcoholThrow : AbilityLogic
     [SerializeField, Min(0f)] private float kegDamageAmount = 1f;
     [SerializeField, Min(0f)] private float kegKnockbackImpulse;
     [SerializeField, Min(0f)] private float missedImpactDamageRadius = 1.35f;
+
+    [Header("Impact Presentation")]
+    [SerializeField] private WorldPresentationHook kegImpactPresentation;
 
     [Header("Timing")]
     [SerializeField, Min(0f)] private float prepareSeconds = 0.45f;
@@ -251,6 +255,7 @@ public sealed class AbilityLogic_DrunkenDragonAlcoholThrow : AbilityLogic
                 else
                     ApplyMissedImpactAreaDamage(sourceSystem, dragon, resolvedImpactPosition);
 
+                PlayKegImpactPresentation(dragon, hitTarget, resolvedImpactPosition, impactPosition);
                 SpawnAlcoholPuddle(resolvedImpactPosition);
             });
 
@@ -301,6 +306,34 @@ public sealed class AbilityLogic_DrunkenDragonAlcoholThrow : AbilityLogic
             causer: dragon.gameObject);
 
         CombatHitPayloadApplier.Apply(hitTarget, payload, hitPosition);
+    }
+
+    /// <summary>
+    /// 책임:
+    /// 술통이 플레이어 또는 바닥에 충돌한 순간의 월드 VFX를 재생한다.
+    /// </summary>
+    private void PlayKegImpactPresentation(
+        DrunkenDragonController dragon,
+        GameObject hitTarget,
+        Vector3 impactPosition,
+        Vector3 intendedImpactPosition)
+    {
+        if (!kegImpactPresentation.HasVisuals)
+            return;
+
+        Vector3 fallbackDirection = intendedImpactPosition - (dragon != null ? dragon.transform.position : impactPosition);
+        if (fallbackDirection.sqrMagnitude <= 0.0001f)
+            fallbackDirection = Vector3.up;
+
+        WorldPresentationRuntime.Play(
+            kegImpactPresentation,
+            WorldPresentationContext.AtWorld(
+                instigator: dragon != null ? dragon.gameObject : null,
+                position: impactPosition,
+                fallbackDirection: fallbackDirection.normalized,
+                target: hitTarget,
+                sourceObject: this,
+                causer: dragon != null ? dragon.gameObject : null));
     }
 
     private void ApplyMissedImpactAreaDamage(

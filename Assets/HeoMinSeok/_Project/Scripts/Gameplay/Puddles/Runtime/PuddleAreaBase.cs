@@ -35,6 +35,7 @@ namespace UnityGAS
         private Coroutine absorbRoutine;
         private Action<PuddleAreaBase> onAbsorbArrived;
         private readonly HashSet<GameObject> projectileHitTargets = new();
+        private PuddleAreaMode modeBeforeAbsorb = PuddleAreaMode.Ground;
 
         public event Action<PuddleAreaBase> Consumed;
 
@@ -102,6 +103,7 @@ namespace UnityGAS
 
             StopAbsorbMotion();
             onAbsorbArrived = onArrived;
+            modeBeforeAbsorb = IsGroundActive ? Mode : PuddleAreaMode.Ground;
             shaderVisual?.SetAbsorbAnchor(absorbAnchor);
             SetMode(PuddleAreaMode.AbsorbPreparing);
 
@@ -139,6 +141,25 @@ namespace UnityGAS
             StopAbsorbMotion();
             SetMode(PuddleAreaMode.Consumed);
             Consumed?.Invoke(this);
+        }
+
+        /// <summary>
+        /// 책임 :
+        /// - 흡수 패턴이 그로기 등으로 중단될 때 장판 탄막을 소비하지 않고 다시 장판 후보 상태로 복구한다.
+        /// - 도착 콜백을 끊어 취소 후 보스 흡수 결과가 뒤늦게 적용되지 않도록 보장한다.
+        /// </summary>
+        public void CancelAbsorbToGround()
+        {
+            if (Mode == PuddleAreaMode.Consumed)
+                return;
+
+            onAbsorbArrived = null;
+            StopAbsorbMotion();
+
+            PuddleAreaMode restoreMode = modeBeforeAbsorb == PuddleAreaMode.Igniting
+                ? PuddleAreaMode.Igniting
+                : PuddleAreaMode.Ground;
+            SetMode(restoreMode);
         }
 
         protected void SetIgnitingMode()

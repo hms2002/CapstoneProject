@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using CapstonePresentation;
 using UnityEngine;
 using UnityGAS;
 
@@ -42,6 +43,10 @@ public sealed class AbilityLogic_DrunkenDragonAbsorbPuddles : AbilityLogic
     [SerializeField, Min(0.1f)] private float maxAbsorbSeconds = 12f;
     [SerializeField] private bool logAbsorbResult = true;
 
+    [Header("Presentation")]
+    [SerializeField] private WorldPresentationHook inhalePresentation;
+    [SerializeField] private WorldPresentationHook centerLandingPresentation;
+
     [Header("Player Pull")]
     [SerializeField] private bool pullTargetDuringAbsorb = true;
     [SerializeField, Min(0f)] private float pullSpeed = 1.6f;
@@ -64,11 +69,12 @@ public sealed class AbilityLogic_DrunkenDragonAbsorbPuddles : AbilityLogic
 
             dragon.SpeakSituation(BossSpeechSituationEnum.AbsorbStart);
             dragon.PlayPatternTrigger(DrunkenDragonAnimationKeys.Inhale);
+            PlayInhalePresentation(dragon);
             yield return RunAbsorb(dragon, spec);
         }
         finally
         {
-            ClearTrackedPuddles(consumeActiveProjectiles: IsAbilityCancelled(spec));
+            ClearTrackedPuddles(restoreActiveProjectiles: IsAbilityCancelled(spec));
             RemoveTargetPull(dragon);
             dragon.PopFaceTargetLock();
             dragon.PlayPatternTrigger(DrunkenDragonAnimationKeys.Idle);
@@ -126,7 +132,51 @@ public sealed class AbilityLogic_DrunkenDragonAbsorbPuddles : AbilityLogic
 
         dragon.transform.position = target;
         dragon.PlayPatternTrigger(DrunkenDragonAnimationKeys.Landing);
+        PlayCenterLandingPresentation(dragon, target);
         ApplyCenterImpactDamage(dragon, target);
+    }
+
+    /// <summary>
+    /// 책임:
+    /// 흡입 패턴의 시작 연출을 기존 브레스 입 소켓 위치와 바라보는 방향을 기준으로 재생한다.
+    /// </summary>
+    private void PlayInhalePresentation(DrunkenDragonController dragon)
+    {
+        if (dragon == null || !inhalePresentation.HasAnyContent)
+            return;
+
+        Vector2 direction = dragon.GetDirectionToTargetOrFacing();
+        Vector2 origin = dragon.ResolveFireBreathMouthPosition(direction, fallbackForwardOffset: 0f);
+        float angleDeg = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+
+        WorldPresentationRuntime.Play(
+            inhalePresentation,
+            WorldPresentationContext.AtWorld(
+                instigator: dragon.gameObject,
+                position: origin,
+                fallbackDirection: direction,
+                target: dragon.CurrentTarget != null ? dragon.CurrentTarget.gameObject : null,
+                sourceObject: this,
+                rotation: Quaternion.Euler(0f, 0f, angleDeg)));
+    }
+
+    /// <summary>
+    /// 책임:
+    /// 흡수 패턴의 중앙 점프 착지 순간에 AL이 지정한 월드 연출을 재생한다.
+    /// </summary>
+    private void PlayCenterLandingPresentation(DrunkenDragonController dragon, Vector2 landingPosition)
+    {
+        if (dragon == null || !centerLandingPresentation.HasAnyContent)
+            return;
+
+        WorldPresentationRuntime.Play(
+            centerLandingPresentation,
+            WorldPresentationContext.AtWorld(
+                instigator: dragon.gameObject,
+                position: landingPosition,
+                fallbackDirection: Vector3.up,
+                target: dragon.CurrentTarget != null ? dragon.CurrentTarget.gameObject : null,
+                sourceObject: this));
     }
 
     private static CombatHeightState2D EnsureHeightState(DrunkenDragonController dragon)
@@ -391,7 +441,7 @@ public sealed class AbilityLogic_DrunkenDragonAbsorbPuddles : AbilityLogic
         externalMovement?.RemoveTimedVelocitiesFromSource(this);
     }
 
-    private void ClearTrackedPuddles(bool consumeActiveProjectiles = false)
+    private void ClearTrackedPuddles(bool restoreActiveProjectiles = false)
     {
         List<PuddleAreaBase> snapshot = new(activeAbsorbProjectiles);
         for (int i = 0; i < snapshot.Count; i++)
@@ -401,8 +451,8 @@ public sealed class AbilityLogic_DrunkenDragonAbsorbPuddles : AbilityLogic
             {
                 puddle.Consumed -= HandleTrackedPuddleConsumed;
 
-                if (consumeActiveProjectiles)
-                    puddle.CancelAbsorbAsConsumed();
+                if (restoreActiveProjectiles)
+                    puddle.CancelAbsorbToGround();
             }
         }
 
