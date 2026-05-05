@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   patternData:
     explosionDiameter: 5
-    damageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
+    damageEffect: {fileID: 11400000, guid: a7c21e5f6a1f4d0d8f4c2b3a19e8d725, type: 2}
     damageAmount: 1
     explosionVisualPrefab: {fileID: 4540458603196068083, guid: f3e6d674c38bfa3459b9aa0e37af577d, type: 3}
     explosionParticlePrefab: {fileID: 2356285918434582956, guid: 7e3dd9b93aa3a5b498afc1b7b958ee42, type: 3}

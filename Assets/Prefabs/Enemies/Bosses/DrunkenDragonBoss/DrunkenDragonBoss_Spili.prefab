@@ -350,6 +350,7 @@ GameObject:
   - component: {fileID: 6824159300182253413}
   - component: {fileID: 6824159300182253414}
   - component: {fileID: 6824159300182253415}
+  - component: {fileID: 1075835644330693649}
   m_Layer: 31
   m_Name: DrunkenDragonBoss_Spili
   m_TagString: Enemy
@@ -846,12 +847,12 @@ MonoBehaviour:
   deathEffectAnchor: {fileID: 1894937225346969611}
   speechController: {fileID: 3750611596770769795}
   breakdownAnimation:
-    triggerName: 
+    triggerName: dead1
     stateName: 
     crossFadeDuration: 0.05
     fallbackDuration: 0
   deathAnimation:
-    triggerName: dead
+    triggerName: dead2
     stateName: 
     crossFadeDuration: 0.05
     fallbackDuration: 1.2
@@ -931,6 +932,27 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   defaultStartKnot: DRUNK_01
+--- !u!114 &1075835644330693649
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5055118451258413439}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42667dfbf3529e6489882ac43545fe3b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  chestPrefab: {fileID: 7530156284439312542, guid: 296eaa6f1547cb74e990055ce1319470, type: 3}
+  chestSpawnPoint: {fileID: 0}
+  portalObj: {fileID: 0}
+  portalSpawnPoint: {fileID: 0}
+  portalSpawnOffset: {x: 0, y: 0, z: 0}
+  bossUniqueLoots:
+  - item: {fileID: 11400000, guid: 6a8181eecc5ab3a4988f9089d46607b0, type: 2}
+    dropChance: 100
+  magicStonePrefab: {fileID: 5809627508243328825, guid: 108ed5884c0e5294fb2bc08d259e53f5, type: 3}
 --- !u!1 &5151103204004599664
 GameObject:
   m_ObjectHideFlags: 0

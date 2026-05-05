@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using CapstoneAudio;
+using CapstonePresentation;
 using UnityEngine;
 using UnityGAS;
 
@@ -42,6 +43,10 @@ public sealed class AbilityLogic_DrunkenDragonSlam : AbilityLogic
     [SerializeField] private Vector3 impactVisualScale = Vector3.one;
     [SerializeField, Min(0f)] private float impactVisualLifetime = 1.2f;
 
+    [Header("Jump Presentation")]
+    [SerializeField] private WorldPresentationHook jumpStartPresentation;
+    [SerializeField] private WorldPresentationHook landingPresentation;
+
     [Header("Keg Scatter")]
     [SerializeField] private AlcoholPuddleArea alcoholPuddlePrefab;
     [SerializeField] private DrunkenDragonThrownKegActor thrownKegPrefab;
@@ -53,6 +58,9 @@ public sealed class AbilityLogic_DrunkenDragonSlam : AbilityLogic
     [SerializeField] private float scatteredKegSpinDegrees = 420f;
     [SerializeField, Min(0.1f)] private float scatteredKegTelegraphDiameter = 2.4f;
     [SerializeField, Min(0f)] private float scatteredKegMissedDamageRadius = 1.2f;
+
+    [Header("Scattered Keg Presentation")]
+    [SerializeField] private WorldPresentationHook scatteredKegImpactPresentation;
 
     [Header("Telegraph")]
     [SerializeField] private AttackTelegraphStyle impactTelegraphStyle;
@@ -78,6 +86,7 @@ public sealed class AbilityLogic_DrunkenDragonSlam : AbilityLogic
 
         try
         {
+            PlayJumpStartPresentation(dragon, start);
             dragon.PlayPatternTrigger(DrunkenDragonAnimationKeys.Jump);
             MoveToImpactPosition(motion, dragon, start, impactPosition, duration);
 
@@ -99,6 +108,7 @@ public sealed class AbilityLogic_DrunkenDragonSlam : AbilityLogic
             yield break;
 
         dragon.PlayPatternTrigger(DrunkenDragonAnimationKeys.Landing);
+        PlayLandingPresentation(dragon, impactPosition);
         PlayImpactPresentation(dragon, impactPosition);
         ApplyImpactDamage(dragon, impactPosition);
         yield return ScatterKegsAfterImpact(dragon, system, telegraphService, impactPosition, spec);
@@ -262,6 +272,48 @@ public sealed class AbilityLogic_DrunkenDragonSlam : AbilityLogic
             Object.Destroy(visual, impactVisualLifetime);
     }
 
+    /// <summary>
+    /// 책임:
+    /// 취룡이 도약을 시작하는 발밑 위치에 먼지/압력 이펙트를 재생한다.
+    /// </summary>
+    private void PlayJumpStartPresentation(DrunkenDragonController dragon, Vector2 startPosition)
+    {
+        if (!jumpStartPresentation.HasVisuals)
+            return;
+
+        Vector3 position = new(startPosition.x, startPosition.y, dragon != null ? dragon.transform.position.z : 0f);
+        WorldPresentationRuntime.Play(
+            jumpStartPresentation,
+            WorldPresentationContext.AtWorld(
+                instigator: dragon != null ? dragon.gameObject : null,
+                position: position,
+                fallbackDirection: Vector3.down,
+                target: dragon != null && dragon.CurrentTarget != null ? dragon.CurrentTarget.gameObject : null,
+                sourceObject: this,
+                causer: dragon != null ? dragon.gameObject : null));
+    }
+
+    /// <summary>
+    /// 책임:
+    /// 취룡이 착지하는 발밑 위치에 먼지/충격 이펙트를 재생한다.
+    /// </summary>
+    private void PlayLandingPresentation(DrunkenDragonController dragon, Vector2 impactPosition)
+    {
+        if (!landingPresentation.HasVisuals)
+            return;
+
+        Vector3 position = new(impactPosition.x, impactPosition.y, dragon != null ? dragon.transform.position.z : 0f);
+        WorldPresentationRuntime.Play(
+            landingPresentation,
+            WorldPresentationContext.AtWorld(
+                instigator: dragon != null ? dragon.gameObject : null,
+                position: position,
+                fallbackDirection: Vector3.down,
+                target: dragon != null && dragon.CurrentTarget != null ? dragon.CurrentTarget.gameObject : null,
+                sourceObject: this,
+                causer: dragon != null ? dragon.gameObject : null));
+    }
+
     private IEnumerator ScatterKegsAfterImpact(
         DrunkenDragonController dragon,
         AbilitySystem sourceSystem,
@@ -381,6 +433,7 @@ public sealed class AbilityLogic_DrunkenDragonSlam : AbilityLogic
         else
             ApplyScatteredKegMissedAreaDamage(sourceSystem, dragon, impactPosition);
 
+        PlayScatteredKegImpactPresentation(dragon, hitTarget, impactPosition);
         SpawnAlcoholPuddle(impactPosition);
     }
 
@@ -404,6 +457,36 @@ public sealed class AbilityLogic_DrunkenDragonSlam : AbilityLogic
 
         CombatHitPayload payload = MakeHitPayload(dragon);
         CombatHitPayloadApplier.Apply(hitTarget, payload, hitPosition);
+    }
+
+    /// <summary>
+    /// 책임:
+    /// 내려찍기 후 수직 낙하한 술통이 터지는 순간의 월드 VFX를 재생한다.
+    /// </summary>
+    private void PlayScatteredKegImpactPresentation(
+        DrunkenDragonController dragon,
+        GameObject hitTarget,
+        Vector3 impactPosition)
+    {
+        if (!scatteredKegImpactPresentation.HasVisuals)
+            return;
+
+        Vector3 fallbackDirection = dragon != null
+            ? impactPosition - dragon.transform.position
+            : Vector3.up;
+
+        if (fallbackDirection.sqrMagnitude <= 0.0001f)
+            fallbackDirection = Vector3.up;
+
+        WorldPresentationRuntime.Play(
+            scatteredKegImpactPresentation,
+            WorldPresentationContext.AtWorld(
+                instigator: dragon != null ? dragon.gameObject : null,
+                position: impactPosition,
+                fallbackDirection: fallbackDirection.normalized,
+                target: hitTarget,
+                sourceObject: this,
+                causer: dragon != null ? dragon.gameObject : null));
     }
 
     private void ApplyScatteredKegMissedAreaDamage(

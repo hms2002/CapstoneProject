@@ -35,6 +35,7 @@ namespace UnityGAS
         private Coroutine absorbRoutine;
         private Action<PuddleAreaBase> onAbsorbArrived;
         private readonly HashSet<GameObject> projectileHitTargets = new();
+        private PuddleAreaMode modeBeforeAbsorb = PuddleAreaMode.Ground;
 
         public event Action<PuddleAreaBase> Consumed;
 
@@ -102,6 +103,7 @@ namespace UnityGAS
 
             StopAbsorbMotion();
             onAbsorbArrived = onArrived;
+            modeBeforeAbsorb = IsGroundActive ? Mode : PuddleAreaMode.Ground;
             shaderVisual?.SetAbsorbAnchor(absorbAnchor);
             SetMode(PuddleAreaMode.AbsorbPreparing);
 
@@ -141,6 +143,25 @@ namespace UnityGAS
             Consumed?.Invoke(this);
         }
 
+        /// <summary>
+        /// 책임 :
+        /// - 흡수 패턴이 그로기 등으로 중단될 때 장판 탄막을 소비하지 않고 다시 장판 후보 상태로 복구한다.
+        /// - 도착 콜백을 끊어 취소 후 보스 흡수 결과가 뒤늦게 적용되지 않도록 보장한다.
+        /// </summary>
+        public void CancelAbsorbToGround()
+        {
+            if (Mode == PuddleAreaMode.Consumed)
+                return;
+
+            onAbsorbArrived = null;
+            StopAbsorbMotion();
+
+            PuddleAreaMode restoreMode = modeBeforeAbsorb == PuddleAreaMode.Igniting
+                ? PuddleAreaMode.Igniting
+                : PuddleAreaMode.Ground;
+            SetMode(restoreMode);
+        }
+
         protected void SetIgnitingMode()
         {
             if (Mode == PuddleAreaMode.Ground)
@@ -161,15 +182,9 @@ namespace UnityGAS
             if (other == null)
                 return null;
 
-            CombatHurtbox2D hurtbox = other.GetComponent<CombatHurtbox2D>();
-            if (hurtbox != null)
-                return hurtbox.ResolveTargetRoot();
-
-            PlayerInteractor2D player = other.GetComponentInParent<PlayerInteractor2D>();
-            if (player != null)
-                return player.gameObject;
-
-            return null;
+            // 장판 피해는 실제 피격 허트박스만 대상으로 삼는다.
+            // 플레이어 자식으로 붙은 공격 이펙트/히트박스 콜라이더가 부모 플레이어로 승격되는 것을 막는다.
+            return CombatTargetResolver2D.ResolveDamageTarget(other);
         }
 
         protected static bool CanApplyGroundEffectTo(GameObject target)

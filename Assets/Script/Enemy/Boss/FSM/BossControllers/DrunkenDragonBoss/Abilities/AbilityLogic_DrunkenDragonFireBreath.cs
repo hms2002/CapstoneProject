@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using CapstonePresentation;
 using UnityEngine;
 using UnityGAS;
 
@@ -36,6 +37,7 @@ public sealed class AbilityLogic_DrunkenDragonFireBreath : AbilityLogic
     [SerializeField] private AttackTelegraphStyle warningTelegraphStyle;
 
     [Header("Presentation")]
+    [SerializeField] private WorldPresentationHook inhalePreparePresentation;
     [SerializeField] private GameObject fireBreathVisualPrefab;
 
     public override IEnumerator Activate(AbilitySystem system, AbilitySpec spec, GameObject initialTarget)
@@ -71,17 +73,26 @@ public sealed class AbilityLogic_DrunkenDragonFireBreath : AbilityLogic
     {
         dragon.PlayPatternTrigger(DrunkenDragonAnimationKeys.FirePrepare);
         ConeAimSnapshot aim = default;
+        List<FollowedPresentationVisual> inhalePrepareVisuals = SpawnInhalePreparePresentation(dragon);
 
-        float elapsed = 0f;
-        while (elapsed < prepareSeconds)
+        try
         {
-            if (IsAbilityCancelled(spec))
-                yield break;
+            float elapsed = 0f;
+            while (elapsed < prepareSeconds)
+            {
+                if (IsAbilityCancelled(spec))
+                    yield break;
 
-            aim = ResolveAimSnapshot(dragon, syncFacing: true);
-            ShowOrUpdateWarningTelegraph(telegraphService, aim, prepareSeconds);
-            elapsed += Time.deltaTime;
-            yield return null;
+                aim = ResolveAimSnapshot(dragon, syncFacing: true);
+                UpdateFollowedPresentationVisuals(inhalePrepareVisuals, dragon, aim.Direction);
+                ShowOrUpdateWarningTelegraph(telegraphService, aim, prepareSeconds);
+                elapsed += Time.deltaTime;
+                yield return null;
+            }
+        }
+        finally
+        {
+            ReleaseFollowedPresentationVisuals(inhalePrepareVisuals);
         }
 
         if (IsAbilityCancelled(spec))
@@ -192,6 +203,93 @@ public sealed class AbilityLogic_DrunkenDragonFireBreath : AbilityLogic
         Debug.LogWarning("[DrunkenDragonFireBreath] Fire breath visual prefab does not contain an IConePatternVisual2D component.", dragon);
         Destroy(visualObject);
         return null;
+    }
+
+    /// <summary>
+    /// 책임:
+    /// 화염 방사 준비 동작의 들이쉬는 연출을 기존 브레스 입 소켓 위치와 조준 방향을 기준으로 재생한다.
+    /// </summary>
+    private List<FollowedPresentationVisual> SpawnInhalePreparePresentation(DrunkenDragonController dragon)
+    {
+        List<FollowedPresentationVisual> visuals = new();
+        if (dragon == null || !inhalePreparePresentation.HasAnyContent)
+            return visuals;
+
+        Vector2 direction = dragon.GetDirectionToTargetOrFacing();
+        WorldPresentationContext context = BuildInhalePresentationContext(dragon, direction);
+
+        WorldPresentationRuntime.PlaySignalOnly(inhalePreparePresentation, context);
+        AddFollowedPresentationVisual(visuals, inhalePreparePresentation.effect, context);
+        AddFollowedPresentationVisual(visuals, inhalePreparePresentation.particle, context);
+        return visuals;
+    }
+
+    /// <summary>
+    /// 책임:
+    /// 준비 이펙트가 좌우 반전으로 변하는 브레스 입 위치를 따라가도록 현재 소켓 위치로 갱신한다.
+    /// </summary>
+    private void UpdateFollowedPresentationVisuals(
+        List<FollowedPresentationVisual> visuals,
+        DrunkenDragonController dragon,
+        Vector2 direction)
+    {
+        if (visuals == null || visuals.Count == 0 || dragon == null)
+            return;
+
+        WorldPresentationContext context = BuildInhalePresentationContext(dragon, direction);
+        for (int i = visuals.Count - 1; i >= 0; i--)
+        {
+            if (!visuals[i].IsValid)
+            {
+                visuals.RemoveAt(i);
+                continue;
+            }
+
+            visuals[i].Apply(context);
+        }
+    }
+
+    /// <summary>
+    /// 책임:
+    /// 화염 방사 준비 시간이 끝나거나 취소될 때 소켓 추적용 준비 이펙트를 정리한다.
+    /// </summary>
+    private static void ReleaseFollowedPresentationVisuals(List<FollowedPresentationVisual> visuals)
+    {
+        if (visuals == null)
+            return;
+
+        for (int i = 0; i < visuals.Count; i++)
+            visuals[i].Release();
+
+        visuals.Clear();
+    }
+
+    private static void AddFollowedPresentationVisual(
+        List<FollowedPresentationVisual> visuals,
+        SpawnedPresentationHook hook,
+        WorldPresentationContext context)
+    {
+        if (visuals == null || !hook.HasContent)
+            return;
+
+        GameObject instance = PresentationSpawnService.SpawnPersistent(hook, context);
+        if (instance != null)
+            visuals.Add(new FollowedPresentationVisual(instance, hook));
+    }
+
+    private WorldPresentationContext BuildInhalePresentationContext(DrunkenDragonController dragon, Vector2 direction)
+    {
+        Vector2 safeDirection = direction.sqrMagnitude > 0.0001f ? direction.normalized : Vector2.right;
+        Vector2 origin = ResolveOrigin(dragon, safeDirection);
+        float angleDeg = Mathf.Atan2(safeDirection.y, safeDirection.x) * Mathf.Rad2Deg;
+
+        return WorldPresentationContext.AtWorld(
+            instigator: dragon.gameObject,
+            position: origin,
+            fallbackDirection: safeDirection,
+            target: dragon.CurrentTarget != null ? dragon.CurrentTarget.gameObject : null,
+            sourceObject: this,
+            rotation: Quaternion.Euler(0f, 0f, angleDeg));
     }
 
     private static IConePatternVisual2D ResolveConeVisual(GameObject visualObject)
@@ -403,5 +501,40 @@ public sealed class AbilityLogic_DrunkenDragonFireBreath : AbilityLogic
 
         public Vector2 Origin { get; }
         public Vector2 Direction { get; }
+    }
+
+    /// <summary>
+    /// 책임:
+    /// PresentationSpawnService로 생성된 준비 이펙트 인스턴스를 특정 월드 프레젠테이션 문맥에 맞춰 갱신하고 해제한다.
+    /// </summary>
+    private readonly struct FollowedPresentationVisual
+    {
+        private readonly GameObject instance;
+        private readonly SpawnedPresentationHook hook;
+
+        public FollowedPresentationVisual(GameObject instance, SpawnedPresentationHook hook)
+        {
+            this.instance = instance;
+            this.hook = hook;
+        }
+
+        public bool IsValid => instance != null;
+
+        public void Apply(in WorldPresentationContext context)
+        {
+            if (instance == null)
+                return;
+
+            Transform instanceTransform = instance.transform;
+            Quaternion rotation = context.Rotation * Quaternion.Euler(0f, 0f, hook.rotationOffsetZ);
+            Vector3 position = context.Position + (context.Rotation * hook.localOffset);
+            instanceTransform.SetPositionAndRotation(position, rotation);
+        }
+
+        public void Release()
+        {
+            if (instance != null)
+                PresentationSpawnService.Release(instance);
+        }
     }
 }

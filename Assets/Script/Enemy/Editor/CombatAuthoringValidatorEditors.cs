@@ -46,10 +46,16 @@ public static class CombatAuthoringValidationUtility
         if (root == null)
             return results;
 
+        bool looksLikeAttackObject = IsAttackAuthoringObject(root);
         bool looksLikeCombatObject =
             root.GetComponent<Enemy>() != null ||
             root.GetComponent<AbilitySystem>() != null ||
             root.GetComponent<PlayerInteractor2D>() != null;
+
+        if (!looksLikeCombatObject && !looksLikeAttackObject)
+            return results;
+
+        ValidateAttackObjectHurtboxRules(root, results);
 
         if (!looksLikeCombatObject)
             return results;
@@ -62,8 +68,12 @@ public static class CombatAuthoringValidationUtility
         if (root.GetComponentInChildren<CombatHurtbox2D>(true) == null)
         {
             results.Add(new AuthoringValidationMessage(
-                AuthoringValidationSeverity.Info,
-                "CombatHurtbox2D가 없습니다 -> 현재 구조에선 자동 해석 fallback이 가능하지만, 명시 허트박스를 두는 편이 더 안전합니다."));
+                AuthoringValidationSeverity.Error,
+                "CombatHurtbox2D가 없습니다 -> 피해 판정 시스템은 더 이상 부모 Player/Enemy를 추측하지 않으므로 명시 허트박스가 필수입니다."));
+        }
+        else
+        {
+            ValidateCombatHurtboxRules(root, results);
         }
 
         return results;
@@ -143,6 +153,72 @@ public static class CombatAuthoringValidationUtility
         }
 
         return false;
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 선택된 authoring 루트가 피해를 주는 공격 actor인지 판정한다.
+    /// - 공격 actor 아래에 허트박스가 들어가는 잘못된 프리팹 구성을 validator가 잡을 수 있게 한다.
+    /// </summary>
+    private static bool IsAttackAuthoringObject(GameObject root)
+    {
+        if (root == null)
+            return false;
+
+        return root.GetComponentInChildren<AttackBase>(true) != null ||
+               root.GetComponentInChildren<FragmentShardActor>(true) != null ||
+               root.name.Contains("Hitbox") ||
+               root.name.Contains("AttackEffect");
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 공격 actor/이펙트 계층이 피해 수신용 허트박스를 함께 들고 있는지 검사한다.
+    /// - 플레이어 자식으로 붙은 공격 이펙트가 장판 피해 대상으로 오인되는 authoring을 사전에 차단한다.
+    /// </summary>
+    private static void ValidateAttackObjectHurtboxRules(GameObject root, List<AuthoringValidationMessage> results)
+    {
+        if (!IsAttackAuthoringObject(root))
+            return;
+
+        CombatHurtbox2D[] hurtboxes = root.GetComponentsInChildren<CombatHurtbox2D>(true);
+        if (hurtboxes == null || hurtboxes.Length == 0)
+            return;
+
+        results.Add(new AuthoringValidationMessage(
+            AuthoringValidationSeverity.Error,
+            "공격 actor/이펙트 계층에 CombatHurtbox2D가 있습니다 -> 공격체는 피해를 주는 객체이며, 피해를 받는 허트박스를 소유하면 안 됩니다."));
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 전투 객체의 허트박스가 실제 피해 수신용 콜라이더로 authoring 되었는지 검사한다.
+    /// - 허트박스가 공격 actor 하위로 섞이는 구조적 실수를 제작 단계에서 드러낸다.
+    /// </summary>
+    private static void ValidateCombatHurtboxRules(GameObject root, List<AuthoringValidationMessage> results)
+    {
+        CombatHurtbox2D[] hurtboxes = root.GetComponentsInChildren<CombatHurtbox2D>(true);
+        for (int i = 0; i < hurtboxes.Length; i++)
+        {
+            CombatHurtbox2D hurtbox = hurtboxes[i];
+            if (hurtbox == null)
+                continue;
+
+            if (hurtbox.GetComponent<Collider2D>() == null)
+            {
+                results.Add(new AuthoringValidationMessage(
+                    AuthoringValidationSeverity.Error,
+                    $"'{hurtbox.name}' CombatHurtbox2D와 같은 GameObject에 Collider2D가 없습니다 -> resolver가 이 허트박스를 직접 피해 대상으로 인식할 수 없습니다."));
+            }
+
+            if (hurtbox.GetComponentInParent<AttackBase>() != null ||
+                hurtbox.GetComponentInParent<FragmentShardActor>() != null)
+            {
+                results.Add(new AuthoringValidationMessage(
+                    AuthoringValidationSeverity.Error,
+                    $"'{hurtbox.name}' CombatHurtbox2D가 공격 actor 하위에 있습니다 -> 피해 수신 허트박스와 공격 이펙트/히트박스를 분리하세요."));
+            }
+        }
     }
 }
 

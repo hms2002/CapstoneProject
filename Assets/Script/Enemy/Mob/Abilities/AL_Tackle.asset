@@ -12,12 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01a934f4782b4954aa0a5ce21760ea73, type: 3}
   m_Name: AL_Tackle
   m_EditorClassIdentifier: 
-  damageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
+  damageEffect: {fileID: 11400000, guid: a7c21e5f6a1f4d0d8f4c2b3a19e8d725, type: 2}
   damageAmount: 1
-  attackReadyTime: 0.5
+  readyTime: 0.5
   tackleSpeed: 20
   tackleDamping: 3
-  lungeDuration: 0.5
+  lungeTime: 0.5
   knockbackEffect: {fileID: 11400000, guid: 2f5faaf6bd840544cb59f6d23905c40d, type: 2}
   knockbackImpulse: 100
   hitConfirmedTag: {fileID: 0}

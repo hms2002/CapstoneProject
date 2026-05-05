@@ -27,4 +27,34 @@ MonoBehaviour:
   damageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
   damageAmount: 1
   warningTelegraphStyle: {fileID: 11400000, guid: b15f18602ec87284d80cbd57720425f1, type: 2}
+  inhalePreparePresentation:
+    sound:
+      key: 
+      volumeMultiplier: 0
+      anchorPolicy: 0
+      localOffset: {x: 0, y: 0, z: 0}
+    cameraShake:
+      amplitude: 0
+      amplitudeMultiplier: 0
+      maxAmplitude: 0
+      minIntervalSeconds: 0
+      directionMode: 0
+      customDirection: {x: 0, y: 0, z: 0}
+      ignoreScreenShakeSetting: 0
+    effect:
+      prefab: {fileID: 0}
+      localOffset: {x: 0, y: 0, z: 0}
+      rotationOffsetZ: 0
+      scaleMultiplier: {x: 1, y: 1, z: 1}
+      lifetimeMode: 0
+      lifetimeOverrideSeconds: 0
+      useUnscaledTime: 0
+    particle:
+      prefab: {fileID: 5995120758952185937, guid: 54bb3194d9aabe345a630c4f7b004158, type: 3}
+      localOffset: {x: 0, y: 0, z: 0}
+      rotationOffsetZ: 0
+      scaleMultiplier: {x: 0.3, y: 0.3, z: 0.3}
+      lifetimeMode: 0
+      lifetimeOverrideSeconds: 0
+      useUnscaledTime: 0
   fireBreathVisualPrefab: {fileID: 4251223848648810675, guid: fc620d7fcc12f9e4e8acfdd983cc69ce, type: 3}

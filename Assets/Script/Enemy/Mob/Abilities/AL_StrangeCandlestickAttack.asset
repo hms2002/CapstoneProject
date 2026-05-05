@@ -15,7 +15,7 @@ MonoBehaviour:
   patternData:
     projectilePrefab: {fileID: 8003320094034868151, guid: b1f8e58050cba114da8fe6380275e443, type: 3}
     projectileSpeed: 8
-    damageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
+    damageEffect: {fileID: 11400000, guid: a7c21e5f6a1f4d0d8f4c2b3a19e8d725, type: 2}
     damageAmount: 1
     attackIntervalSeconds: 2
     lockOnDuration: 0.8

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using CapstonePresentation;
 using UnityEngine;
 using UnityGAS;
 
@@ -38,6 +39,10 @@ public sealed class AbilityLogic_DrunkenDragonDashCombo : AbilityLogic
 
     [Header("Telegraph")]
     [SerializeField] private AttackTelegraphStyle warningTelegraphStyle;
+
+    [Header("Presentation")]
+    [SerializeField] private WorldPresentationHook dashAttackPresentation;
+    [SerializeField] private WorldPresentationHook dashHitPresentation;
 
     public override IEnumerator Activate(AbilitySystem system, AbilitySpec spec, GameObject initialTarget)
     {
@@ -78,6 +83,7 @@ public sealed class AbilityLogic_DrunkenDragonDashCombo : AbilityLogic
 
                     telegraphService?.HideCurrent();
                     dragon.PlayPatternTrigger(DrunkenDragonAnimationKeys.DashAttack);
+                    PlayDashAttackPresentation(dragon, start, direction, resolvedDistance, resolvedHitWidth);
 
                     damagedTargets.Clear();
                     yield return RunDashWithActorPassThrough(
@@ -257,8 +263,85 @@ public sealed class AbilityLogic_DrunkenDragonDashCombo : AbilityLogic
             if (!damagedTargets.Add(targetRoot))
                 continue;
 
-            CombatHitPayloadApplier.Apply(targetRoot, payload, hits[i].ClosestPoint(center));
+            Vector2 hitPoint = hits[i].ClosestPoint(center);
+            CombatHitPayloadApplier.Apply(targetRoot, payload, hitPoint);
+            PlayDashHitPresentation(dragon, targetRoot, hitPoint, direction);
         }
+    }
+
+    /// <summary>
+    /// 책임:
+    /// 돌진 콤보의 실제 공격 범위를 맞았는지와 무관하게 월드 연출로 출력한다.
+    /// </summary>
+    private void PlayDashAttackPresentation(
+        DrunkenDragonController dragon,
+        Vector2 start,
+        Vector2 direction,
+        float distance,
+        float resolvedHitWidth)
+    {
+        if (dragon == null || !dashAttackPresentation.HasAnyContent)
+            return;
+
+        Vector2 safeDirection = direction.sqrMagnitude > 0.0001f ? direction.normalized : Vector2.right;
+        float length = Mathf.Max(0.1f, distance + hitForwardPadding);
+        Vector3 center = start + (safeDirection * (length * 0.5f));
+        float angleDeg = Mathf.Atan2(safeDirection.y, safeDirection.x) * Mathf.Rad2Deg;
+        Vector3 presentationScale = new(length, Mathf.Max(0.1f, resolvedHitWidth), 1f);
+
+        WorldPresentationContext context = WorldPresentationContext.AtWorld(
+            instigator: dragon.gameObject,
+            position: center,
+            fallbackDirection: safeDirection,
+            target: dragon.CurrentTarget != null ? dragon.CurrentTarget.gameObject : null,
+            sourceObject: this,
+            rotation: Quaternion.Euler(0f, 0f, angleDeg));
+
+        WorldPresentationRuntime.PlaySignalOnly(dashAttackPresentation, context);
+        SpawnScaledDashAttackVisual(dashAttackPresentation.effect, context, presentationScale);
+        SpawnScaledDashAttackVisual(dashAttackPresentation.particle, context, presentationScale);
+    }
+
+    private static void SpawnScaledDashAttackVisual(
+        SpawnedPresentationHook hook,
+        WorldPresentationContext context,
+        Vector3 presentationScale)
+    {
+        if (!hook.HasContent)
+            return;
+
+        GameObject instance = PresentationSpawnService.SpawnOneShot(hook, context);
+        if (instance == null)
+            return;
+
+        instance.transform.localScale = Vector3.Scale(instance.transform.localScale, presentationScale);
+    }
+
+    /// <summary>
+    /// 책임:
+    /// 돌진 콤보 중 피해가 확정된 위치에 AL이 지정한 공격 적중 연출을 재생한다.
+    /// </summary>
+    private void PlayDashHitPresentation(
+        DrunkenDragonController dragon,
+        GameObject targetRoot,
+        Vector2 hitPoint,
+        Vector2 direction)
+    {
+        if (dragon == null || !dashHitPresentation.HasAnyContent)
+            return;
+
+        Vector2 safeDirection = direction.sqrMagnitude > 0.0001f ? direction.normalized : Vector2.right;
+        float angleDeg = Mathf.Atan2(safeDirection.y, safeDirection.x) * Mathf.Rad2Deg;
+
+        WorldPresentationRuntime.Play(
+            dashHitPresentation,
+            WorldPresentationContext.AtWorld(
+                instigator: dragon.gameObject,
+                position: hitPoint,
+                fallbackDirection: safeDirection,
+                target: targetRoot,
+                sourceObject: this,
+                rotation: Quaternion.Euler(0f, 0f, angleDeg)));
     }
 
     private LayerMask ResolveTargetMask(DrunkenDragonController dragon)
