@@ -17,6 +17,7 @@ public sealed class GamePresentationController : MonoBehaviour
         GlobalCanvasLayer.Reward,
         GlobalCanvasLayer.DamagePopup,
         GlobalCanvasLayer.BossHUD,
+        GlobalCanvasLayer.GameOver,
     };
 
     private readonly Dictionary<Canvas, RenderMode> baseCanvasRenderModes = new();

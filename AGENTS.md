@@ -57,6 +57,9 @@ When documents conflict, follow this authority order:
 
 - Runtime state ownership must stay explicit.
 - UI and tooltip code should project current state, not own gameplay state.
+- UI screens, popups, HUD, buttons, text, fade overlays, and authored presentation objects should normally be placed and reviewed in Unity scenes or prefabs, then driven through serialized references.
+- Avoid runtime creation of UI hierarchy, `Canvas`, `EventSystem`, buttons, TMP text, sprites, or presentation objects unless the user explicitly asks for a prototype/fallback or approves that design first.
+- If runtime UI/object creation is unavoidable, call it out before implementation and report the reason, ownership, cleanup path, and prefab/scene migration follow-up.
 - Presentation logic should follow `Docs/Contracts/PresentationAuthoringContract.md`.
 - Cleanup behavior should follow the relevant contract document before code changes.
 

@@ -35,6 +35,8 @@ public sealed class PlayerDeathReturnToHub2D : MonoBehaviour
     [SerializeField] private Collider2D[] collidersToDisable;
 
     private bool isDeathSequenceRunning;
+    private string lastDamageSourceName;
+    private GameOverCauseKind lastDamageCauseKind = GameOverCauseKind.Monster;
     private readonly HashSet<GameplayTag> deathTagsBuffer = new();
 
     private void Awake()
@@ -57,6 +59,9 @@ public sealed class PlayerDeathReturnToHub2D : MonoBehaviour
         if (attributeSet != null)
             attributeSet.OnAttributeChanged += HandleAttributeChanged;
 
+        if (abilitySystem != null)
+            abilitySystem.GameplayEventRaised += HandleGameplayEvent;
+
         TryStartDeathSequenceFromCurrentHp();
     }
 
@@ -64,6 +69,20 @@ public sealed class PlayerDeathReturnToHub2D : MonoBehaviour
     {
         if (attributeSet != null)
             attributeSet.OnAttributeChanged -= HandleAttributeChanged;
+
+        if (abilitySystem != null)
+            abilitySystem.GameplayEventRaised -= HandleGameplayEvent;
+    }
+
+    private void HandleGameplayEvent(GameplayTag tag, AbilityEventData data)
+    {
+        if (abilitySystem == null || tag != abilitySystem.DamagedTag)
+            return;
+
+        if (data.Target != null && data.Target != gameObject)
+            return;
+
+        CaptureDamageSource(data.Causer, data.Instigator);
     }
 
     private void HandleAttributeChanged(AttributeDefinition attribute, float oldValue, float newValue)
@@ -86,6 +105,49 @@ public sealed class PlayerDeathReturnToHub2D : MonoBehaviour
             StartCoroutine(CoDeathSequence());
     }
 
+#if UNITY_EDITOR
+    [ContextMenu("Editor/Set Health To 1")]
+    private void EditorSetHealthToOneContextMenu()
+    {
+        EditorTrySetHealthToOne();
+    }
+
+    public bool EditorTrySetHealthToOne()
+    {
+        if (!Application.isPlaying)
+        {
+            Debug.LogWarning("[PlayerDeathReturnToHub2D] Set Health To 1 is only available in Play Mode.", this);
+            return false;
+        }
+
+        if (attributeSet == null)
+            attributeSet = GetComponent<AttributeSet>();
+
+        if (attributeSet == null)
+        {
+            Debug.LogWarning("[PlayerDeathReturnToHub2D] AttributeSet is missing.", this);
+            return false;
+        }
+
+        if (hpDef == null)
+        {
+            Debug.LogWarning("[PlayerDeathReturnToHub2D] HP AttributeDefinition is missing.", this);
+            return false;
+        }
+
+        float previousHealth = attributeSet.GetAttributeValue(hpDef);
+        if (!attributeSet.TrySetCurrentValue(hpDef, 1f, this))
+        {
+            Debug.LogWarning("[PlayerDeathReturnToHub2D] Failed to set player health to 1.", this);
+            return false;
+        }
+
+        float currentHealth = attributeSet.GetAttributeValue(hpDef);
+        Debug.Log($"[PlayerDeathReturnToHub2D] Player health changed {previousHealth:0.##} -> {currentHealth:0.##}.", this);
+        return true;
+    }
+#endif
+
     private IEnumerator CoDeathSequence()
     {
         if (isDeathSequenceRunning)
@@ -94,6 +156,7 @@ public sealed class PlayerDeathReturnToHub2D : MonoBehaviour
         isDeathSequenceRunning = true;
 
         BlockPlayerControl();
+        CenterCameraOnDeath();
 
         if (deathPresentation != null)
         {
@@ -103,6 +166,9 @@ public sealed class PlayerDeathReturnToHub2D : MonoBehaviour
         {
             yield return new WaitForSeconds(fallbackDelaySeconds);
         }
+
+        if (TryShowGameOverPresentation())
+            yield break;
 
         ReturnToHub();
     }
@@ -126,6 +192,9 @@ public sealed class PlayerDeathReturnToHub2D : MonoBehaviour
             abilitySystem.CancelExecution(force: true);
             abilitySystem.enabled = false;
         }
+
+        WeaponEquipController weaponEquipController = GetComponentInChildren<WeaponEquipController>(true);
+        weaponEquipController?.Clear();
 
         if (player != null)
             player.SetInteractState(InteractState.None);
@@ -154,6 +223,120 @@ public sealed class PlayerDeathReturnToHub2D : MonoBehaviour
                     additionalBehavioursToDisable[i].enabled = false;
             }
         }
+    }
+
+    private void CenterCameraOnDeath()
+    {
+        CameraBootstrap.CenterGameplayCameraOn(transform);
+    }
+
+    private bool TryShowGameOverPresentation()
+    {
+        string causeName = string.IsNullOrWhiteSpace(lastDamageSourceName)
+            ? (lastDamageCauseKind == GameOverCauseKind.Trap ? "구덩이" : "알 수 없는 적")
+            : lastDamageSourceName;
+
+        var request = GameOverPresentationRequest.Defeat(
+            transform,
+            causeName,
+            lastDamageCauseKind,
+            hubSceneName,
+            useSceneTransitionService: true);
+
+        return GameOverPresentationController.TryShow(request);
+    }
+
+    private void CaptureDamageSource(object causer, object instigator)
+    {
+        string resolvedName = ResolveEnemyCauseName(causer) ??
+                              ResolveEnemyCauseName(instigator) ??
+                              ResolveCauseName(causer) ??
+                              ResolveCauseName(instigator);
+        if (string.IsNullOrWhiteSpace(resolvedName))
+            return;
+
+        lastDamageSourceName = resolvedName;
+        lastDamageCauseKind = ResolveCauseKind(resolvedName);
+    }
+
+    private static string ResolveCauseName(object causer)
+    {
+        switch (causer)
+        {
+            case GameObject go when go != null:
+                return ResolveGameObjectCauseName(go);
+
+            case Component component when component != null:
+                return ResolveGameObjectCauseName(component.gameObject);
+
+            case UnityEngine.Object unityObject when unityObject != null:
+                return SanitizeObjectName(unityObject.name);
+
+            default:
+                return null;
+        }
+    }
+
+    private static string ResolveGameObjectCauseName(GameObject source)
+    {
+        if (source == null)
+            return null;
+
+        string enemyName = ResolveEnemyCauseName(source);
+        return !string.IsNullOrWhiteSpace(enemyName)
+            ? enemyName
+            : SanitizeObjectName(source.name);
+    }
+
+    private static string ResolveEnemyCauseName(object source)
+    {
+        switch (source)
+        {
+            case GameObject go when go != null:
+                return ResolveEnemyCauseName(go);
+
+            case Component component when component != null:
+                return ResolveEnemyCauseName(component.gameObject);
+
+            default:
+                return null;
+        }
+    }
+
+    private static string ResolveEnemyCauseName(GameObject source)
+    {
+        if (source == null)
+            return null;
+
+        Enemy enemy = source.GetComponentInParent<Enemy>();
+        return enemy != null ? SanitizeObjectName(enemy.EnemyName) : null;
+    }
+
+    private static string SanitizeObjectName(string objectName)
+    {
+        if (string.IsNullOrWhiteSpace(objectName))
+            return null;
+
+        return objectName
+            .Replace("(Clone)", string.Empty)
+            .Trim();
+    }
+
+    private static GameOverCauseKind ResolveCauseKind(string causeName)
+    {
+        if (string.IsNullOrWhiteSpace(causeName))
+            return GameOverCauseKind.Monster;
+
+        string normalized = causeName.ToLowerInvariant();
+        return normalized.Contains("pit") ||
+               normalized.Contains("hole") ||
+               normalized.Contains("trap") ||
+               normalized.Contains("hazard") ||
+               normalized.Contains("puddle") ||
+               normalized.Contains("구덩") ||
+               normalized.Contains("함정")
+            ? GameOverCauseKind.Trap
+            : GameOverCauseKind.Monster;
     }
 
     private void ReturnToHub()

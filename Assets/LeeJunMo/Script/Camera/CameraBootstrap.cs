@@ -78,6 +78,15 @@ public sealed class CameraBootstrap : MonoBehaviour
         return EnsureRuntimeRigForCurrentScene().runtimePlayerCam;
     }
 
+    public static void CenterGameplayCameraOn(Transform target, int priority = 10000)
+    {
+        if (target == null)
+            return;
+
+        CameraBootstrap bootstrap = EnsureRuntimeRigForCurrentScene();
+        bootstrap.CenterRuntimeCameraOn(target, priority);
+    }
+
     public static CinemachineImpulseSource EnsureImpulseSource(GameObject owner)
     {
         if (owner == null)
@@ -251,6 +260,60 @@ public sealed class CameraBootstrap : MonoBehaviour
 
         DisableDuplicateScenePlayerCams(activeScene);
         DisableDuplicateSceneMainCameras(activeScene);
+    }
+
+    private void CenterRuntimeCameraOn(Transform target, int priority)
+    {
+        if (target == null)
+            return;
+
+        EnsureRuntimeRig();
+
+        if (runtimePlayerCam != null)
+        {
+            int focusPriority = Mathf.Max(priority, persistentPlayerPriority);
+            if (runtimePlayerCam.Priority < focusPriority)
+                runtimePlayerCam.Priority = focusPriority;
+
+            runtimePlayerCam.Follow = target;
+            runtimePlayerCam.LookAt = target;
+        }
+
+        if (runtimeLegacyFollow != null)
+        {
+            runtimeLegacyFollow.BindTarget(target, snap: true);
+        }
+        else if (runtimePlayerCam != null)
+        {
+            Vector3 cameraPosition = ResolveCenteredCameraPosition(target.position);
+            runtimePlayerCam.ForceCameraPosition(cameraPosition, runtimePlayerCam.transform.rotation);
+        }
+
+        if (runtimeMainCamera != null)
+        {
+            Vector3 mainPosition = runtimeMainCamera.transform.position;
+            mainPosition.x = target.position.x;
+            mainPosition.y = target.position.y;
+            runtimeMainCamera.transform.position = mainPosition;
+        }
+    }
+
+    private Vector3 ResolveCenteredCameraPosition(Vector3 targetPosition)
+    {
+        if (runtimePlayerCam != null)
+        {
+            CinemachineFollow follow = runtimePlayerCam.GetComponent<CinemachineFollow>();
+            if (follow != null)
+                return targetPosition + follow.FollowOffset;
+        }
+
+        if (runtimeMainCamera != null)
+        {
+            Vector3 mainPosition = runtimeMainCamera.transform.position;
+            return new Vector3(targetPosition.x, targetPosition.y, mainPosition.z);
+        }
+
+        return targetPosition + new Vector3(0f, 0f, -10f);
     }
 
     private Camera ResolveOrCreateMainCamera(Scene scene)
