@@ -13,10 +13,14 @@ MonoBehaviour:
   m_Name: GraveRunModifierEffect
   m_EditorClassIdentifier: 
   rewardText: 
-  rewardIcon: {fileID: 21300142, guid: 29c9cded5e558164aaf8c9bf08aa1510, type: 3}
-  extraWeaponGraveCount: 0
-  extraRelicGraveCount: 1
-  extraWeaponDropCount: 0
-  extraRelicDropCount: 1
+  rewardIcon: {fileID: 21300066, guid: 29c9cded5e558164aaf8c9bf08aa1510, type: 3}
+  weaponGraveMinBonus: 0
+  weaponGraveMaxBonus: 0
+  relicGraveMinBonus: 0
+  relicGraveMaxBonus: 1
+  weaponDropMinBonus: 0
+  weaponDropMaxBonus: 0
+  relicDropMinBonus: 0
+  relicDropMaxBonus: 1
   extraRareChance: 0
   extraEpicChance: 0

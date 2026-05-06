@@ -69,6 +69,16 @@ public class ChestUIManager : MonoBehaviour
         openedChest = null;
     }
 
+    public bool CanRefreshOpenedChest()
+    {
+        return openedChest != null && openedChest.CanRefreshLoot();
+    }
+
+    public bool TryRefreshOpenedChest()
+    {
+        return openedChest != null && openedChest.TryRefreshLoot();
+    }
+
     private void OnDestroy()
     {
         if (Instance == this)

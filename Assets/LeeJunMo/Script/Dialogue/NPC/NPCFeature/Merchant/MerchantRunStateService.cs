@@ -3,31 +3,33 @@ using System.Collections.Generic;
 
 public sealed class MerchantRunStateService
 {
+    public delegate List<MerchantStockEntryState> StockFactory(
+        int slotCount,
+        IReadOnlyCollection<MerchantStockEntryState> excludedEntries);
+
     public MerchantRuntimeState GetOrCreateState(
         string merchantId,
         int slotCount,
-        Func<List<MerchantStockEntryState>> stockFactory)
+        StockFactory stockFactory)
     {
-        List<MerchantStockEntryState> generatedStock = CreateEntries(slotCount, stockFactory);
-
         if (string.IsNullOrWhiteSpace(merchantId))
-            return new MerchantRuntimeState(string.Empty, generatedStock);
+            return new MerchantRuntimeState(string.Empty, CreateEntries(slotCount, stockFactory, null));
 
         GamePlayData data = GamePlayDataManager.Instance != null ? GamePlayDataManager.Instance.Data : null;
         if (data == null)
-            return new MerchantRuntimeState(merchantId, generatedStock);
+            return new MerchantRuntimeState(merchantId, CreateEntries(slotCount, stockFactory, null));
 
         data.merchantStates ??= new List<MerchantRuntimeState>();
 
         MerchantRuntimeState state = data.merchantStates.Find(x => x != null && x.merchantId == merchantId);
         if (state == null)
         {
-            state = new MerchantRuntimeState(merchantId, generatedStock);
+            state = new MerchantRuntimeState(merchantId, CreateEntries(slotCount, stockFactory, null));
             data.merchantStates.Add(state);
             return state;
         }
 
-        NormalizeStateSlots(state, slotCount, generatedStock);
+        EnsureMinimumStateSlots(state, slotCount, stockFactory);
         return state;
     }
 
@@ -40,29 +42,46 @@ public sealed class MerchantRunStateService
         runtimeState.slots[slotIndex].isSold = true;
     }
 
-    private static void NormalizeStateSlots(
+    public bool TryRefreshState(
+        MerchantRuntimeState runtimeState,
+        int maxRefreshCount,
+        int slotCount,
+        StockFactory stockFactory)
+    {
+        if (runtimeState == null || runtimeState.refreshCountUsed >= Math.Max(0, maxRefreshCount))
+            return false;
+
+        runtimeState.slots = CreateEntries(slotCount, stockFactory, null);
+        runtimeState.refreshCountUsed++;
+        return true;
+    }
+
+    private static void EnsureMinimumStateSlots(
         MerchantRuntimeState state,
         int slotCount,
-        List<MerchantStockEntryState> fallbackEntries)
+        StockFactory stockFactory)
     {
         state.slots ??= new List<MerchantStockEntryState>();
 
-        if (state.slots.Count == slotCount)
-        {
-            for (int i = 0; i < state.slots.Count; i++)
-                state.slots[i] ??= MerchantStockEntryState.Empty();
-            return;
-        }
+        for (int i = 0; i < state.slots.Count; i++)
+            state.slots[i] ??= MerchantStockEntryState.Empty();
 
-        state.slots = fallbackEntries ?? new List<MerchantStockEntryState>();
+        if (state.slots.Count >= slotCount)
+            return;
+
+        int missingCount = slotCount - state.slots.Count;
+        List<MerchantStockEntryState> newEntries = CreateEntries(missingCount, stockFactory, state.slots);
+        state.slots.AddRange(newEntries);
     }
 
     private static List<MerchantStockEntryState> CreateEntries(
         int slotCount,
-        Func<List<MerchantStockEntryState>> stockFactory)
+        StockFactory stockFactory,
+        IReadOnlyCollection<MerchantStockEntryState> excludedEntries)
     {
+        slotCount = Math.Max(0, slotCount);
         List<MerchantStockEntryState> entries = stockFactory != null
-            ? stockFactory.Invoke()
+            ? stockFactory.Invoke(slotCount, excludedEntries)
             : new List<MerchantStockEntryState>();
 
         entries ??= new List<MerchantStockEntryState>();
@@ -74,7 +93,9 @@ public sealed class MerchantRunStateService
             entries.Add(MerchantStockEntryState.Empty());
 
         for (int i = 0; i < entries.Count; i++)
+        {
             entries[i] ??= MerchantStockEntryState.Empty();
+        }
 
         return entries;
     }

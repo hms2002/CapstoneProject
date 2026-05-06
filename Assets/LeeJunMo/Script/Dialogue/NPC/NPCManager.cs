@@ -25,6 +25,7 @@ public class NPCManager : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
+            RunModifierService.Instance?.RebuildFromPurchasedUpgrades();
             return;
         }
 
@@ -53,6 +54,7 @@ public class NPCManager : MonoBehaviour
         }
 
         database = incomingDatabase;
+        RunModifierService.Instance?.RebuildFromPurchasedUpgrades();
     }
 
     private void OnApplicationQuit()

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public sealed class MerchantNPC : MonoBehaviour
@@ -6,14 +7,21 @@ public sealed class MerchantNPC : MonoBehaviour
     [SerializeField] private string merchantId;
 
     [Header("Shop Setup")]
+    [SerializeField] private ShopDefinitionSO shopDefinition;
     [SerializeField] private ShopSlot[] shopSlots;
-    [SerializeField] private ShopStockRollWeights stockRollWeights = new ShopStockRollWeights
+
+    [Header("Presentation")]
+    [SerializeField] private GameObject[] activationTargets;
+
+    [Header("Legacy Shop Setup (Unused)")]
+#pragma warning disable 0414
+    [SerializeField, HideInInspector] private ShopStockRollWeights stockRollWeights = new ShopStockRollWeights
     {
         weaponWeight = 1,
         relicWeight = 1,
         consumableWeight = 1
     };
-    [SerializeField] private MerchantPriceSettings priceSettings = new MerchantPriceSettings
+    [SerializeField, HideInInspector] private MerchantPriceSettings priceSettings = new MerchantPriceSettings
     {
         weaponPrice = 120,
         commonRelicPrice = 100,
@@ -21,6 +29,9 @@ public sealed class MerchantNPC : MonoBehaviour
         epicRelicPrice = 260,
         consumablePrice = 40
     };
+    [SerializeField, HideInInspector] private bool requireShopUpgrade;
+    [SerializeField, HideInInspector, Min(0)] private int baseVisibleSlotCount;
+#pragma warning restore 0414
 
     [Header("Speech Bubble")]
     [SerializeField] private SpeechBubbleComponent speechBubble;
@@ -32,6 +43,7 @@ public sealed class MerchantNPC : MonoBehaviour
     private readonly MerchantPurchaseService purchaseService = new MerchantPurchaseService();
 
     private MerchantRuntimeState runtimeState;
+    private bool hasLoggedMissingDefinition;
 
 #if UNITY_EDITOR
     private void OnValidate()
@@ -75,6 +87,18 @@ public sealed class MerchantNPC : MonoBehaviour
         BindSlots();
     }
 
+    private void OnEnable()
+    {
+        if (RunModifierService.Instance != null)
+            RunModifierService.Instance.OnModifiersChanged += HandleRunModifiersChanged;
+    }
+
+    private void OnDisable()
+    {
+        if (RunModifierService.Instance != null)
+            RunModifierService.Instance.OnModifiersChanged -= HandleRunModifiersChanged;
+    }
+
     private void Start()
     {
         InitializeStock();
@@ -82,6 +106,10 @@ public sealed class MerchantNPC : MonoBehaviour
 
     public void TryPurchase(int slotIndex, IPlayerInteractor player)
     {
+        MerchantShopPolicySnapshot policy = ResolveShopPolicy();
+        if (!policy.IsAvailable || slotIndex < 0 || slotIndex >= policy.VisibleSlotCount)
+            return;
+
         if (!TryGetSlotEntry(slotIndex, out MerchantStockEntryState slotEntry, out ScriptableObject itemDefinition))
             return;
 
@@ -99,14 +127,83 @@ public sealed class MerchantNPC : MonoBehaviour
 
     private void InitializeStock()
     {
-        int slotCount = shopSlots != null ? shopSlots.Length : 0;
+        MerchantShopPolicySnapshot policy = ResolveShopPolicy();
+        if (!policy.HasDefinition)
+        {
+            WarnMissingDefinitionOnce();
+            ApplyShopAvailability(false, 0);
+            runtimeState = null;
+            return;
+        }
+
+        ApplyShopAvailability(policy.IsAvailable, policy.VisibleSlotCount);
+        if (!policy.IsAvailable)
+        {
+            runtimeState = null;
+            return;
+        }
+
         runtimeState = runStateService.GetOrCreateState(
             merchantId,
-            slotCount,
-            () => inventoryRoll.RollStock(slotCount, stockRollWeights, priceSettings));
+            policy.VisibleSlotCount,
+            (slotCount, excludedEntries) => RollStock(slotCount, policy.EffectivePriceSettings, excludedEntries));
+        ApplyEffectivePrices(runtimeState, policy.EffectivePriceSettings);
 
         BindSlots();
         RefreshAllSlots();
+    }
+
+    public bool CanRefreshStock()
+    {
+        MerchantShopPolicySnapshot policy = ResolveShopPolicy();
+        return policy.HasDefinition &&
+               policy.IsAvailable &&
+               runtimeState != null &&
+               runtimeState.refreshCountUsed < policy.RefreshLimit;
+    }
+
+    public bool TryRefreshStock()
+    {
+        MerchantShopPolicySnapshot policy = ResolveShopPolicy();
+        if (!policy.HasDefinition)
+        {
+            WarnMissingDefinitionOnce();
+            ApplyShopAvailability(false, 0);
+            runtimeState = null;
+            return false;
+        }
+
+        if (!policy.IsAvailable)
+        {
+            ApplyShopAvailability(false, 0);
+            return false;
+        }
+
+        if (runtimeState == null)
+            InitializeStock();
+
+        if (runtimeState == null)
+            return false;
+
+        bool refreshed = runStateService.TryRefreshState(
+            runtimeState,
+            policy.RefreshLimit,
+            policy.VisibleSlotCount,
+            (slotCount, excludedEntries) => RollStock(slotCount, policy.EffectivePriceSettings, excludedEntries));
+
+        if (!refreshed)
+            return false;
+
+        ApplyShopAvailability(true, policy.VisibleSlotCount);
+        ApplyEffectivePrices(runtimeState, policy.EffectivePriceSettings);
+        BindSlots();
+        RefreshAllSlots();
+        return true;
+    }
+
+    private void HandleRunModifiersChanged()
+    {
+        InitializeStock();
     }
 
     private bool TryGetSlotEntry(
@@ -132,6 +229,73 @@ public sealed class MerchantNPC : MonoBehaviour
 
         for (int i = 0; i < shopSlots.Length; i++)
             RefreshSlot(i);
+    }
+
+    private static void ApplyEffectivePrices(
+        MerchantRuntimeState state,
+        MerchantPriceSettings effectivePriceSettings)
+    {
+        if (state?.slots == null)
+            return;
+
+        for (int i = 0; i < state.slots.Count; i++)
+        {
+            MerchantStockEntryState entry = state.slots[i];
+            ScriptableObject definition = entry != null ? entry.ResolveDefinition() : null;
+            if (definition == null)
+                continue;
+
+            entry.price = effectivePriceSettings.ResolvePrice(definition);
+        }
+    }
+
+    private ShopRunModifierDelta ResolveShopModifiers()
+    {
+        return RunModifierService.Instance != null
+            ? RunModifierService.Instance.ShopModifiers
+            : default;
+    }
+
+    private MerchantShopPolicySnapshot ResolveShopPolicy()
+    {
+        int authoredSlotCount = shopSlots != null ? shopSlots.Length : 0;
+        return MerchantShopPolicy.Resolve(shopDefinition, ResolveShopModifiers(), authoredSlotCount);
+    }
+
+    private List<MerchantStockEntryState> RollStock(
+        int slotCount,
+        MerchantPriceSettings effectivePriceSettings,
+        IReadOnlyCollection<MerchantStockEntryState> excludedEntries)
+    {
+        return shopDefinition != null
+            ? inventoryRoll.RollStock(slotCount, shopDefinition.StockRollWeights, effectivePriceSettings, excludedEntries)
+            : new List<MerchantStockEntryState>();
+    }
+
+    private void ApplyShopAvailability(bool isAvailable, int activeSlotCount)
+    {
+        if (activationTargets != null)
+        {
+            for (int i = 0; i < activationTargets.Length; i++)
+            {
+                if (activationTargets[i] != null)
+                    activationTargets[i].SetActive(isAvailable);
+            }
+        }
+
+        ApplySlotVisibility(isAvailable ? activeSlotCount : 0);
+    }
+
+    private void ApplySlotVisibility(int activeSlotCount)
+    {
+        if (shopSlots == null)
+            return;
+
+        for (int i = 0; i < shopSlots.Length; i++)
+        {
+            if (shopSlots[i] != null)
+                shopSlots[i].gameObject.SetActive(i < activeSlotCount);
+        }
     }
 
     private void RefreshSlot(int slotIndex)
@@ -203,5 +367,16 @@ public sealed class MerchantNPC : MonoBehaviour
         ShopSlot[] childSlots = GetComponentsInChildren<ShopSlot>(true);
         if (childSlots != null && childSlots.Length > 0)
             shopSlots = childSlots;
+    }
+
+    private void WarnMissingDefinitionOnce()
+    {
+        if (hasLoggedMissingDefinition)
+            return;
+
+        hasLoggedMissingDefinition = true;
+        Debug.LogWarning(
+            $"[MerchantNPC] ShopDefinitionSO is not assigned. Shop is disabled. merchantId={merchantId}",
+            this);
     }
 }

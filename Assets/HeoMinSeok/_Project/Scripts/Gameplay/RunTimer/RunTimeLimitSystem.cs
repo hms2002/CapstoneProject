@@ -198,10 +198,7 @@ public sealed class RunTimeLimitSystem : MonoBehaviour
         OnTimeExpired?.Invoke();
 
         if (verboseLogging)
-            Debug.Log("[RunTimeLimitSystem] Time expired. Ending run.", this);
-
-        if (GamePlayDataManager.Instance != null && GamePlayDataManager.Instance.Data.isRunActive)
-            GamePlayDataManager.Instance.EndRun(config.TimeoutReason);
+            Debug.Log("[RunTimeLimitSystem] Time expired. Raised time-over event.", this);
     }
 
     private void SetRemainingTimeInternal(float seconds, bool persistToGamePlayData)
