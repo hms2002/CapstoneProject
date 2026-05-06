@@ -142,6 +142,15 @@ namespace UnityGAS
             DestroySelf();
         }
 
+        /// <summary>
+        /// 책임 :
+        /// - 공격체 수명이 다해 제거되기 직전 파생형이 만료 연출이나 정리 정책을 실행할 수 있게 한다.
+        /// - 적중/벽 충돌이 아닌 자연 소멸도 같은 공격체 생명주기 안에서 다루게 하는 확장 지점이다.
+        /// </summary>
+        protected virtual void OnLifetimeExpired()
+        {
+        }
+
         protected virtual void Update()
         {
             if (!isInitialized)
@@ -151,7 +160,10 @@ namespace UnityGAS
 
             lifeRemaining -= Time.deltaTime;
             if (lifeRemaining <= 0f)
+            {
+                OnLifetimeExpired();
                 DestroySelf();
+            }
         }
 
         protected virtual void OnTriggerEnter2D(Collider2D other)

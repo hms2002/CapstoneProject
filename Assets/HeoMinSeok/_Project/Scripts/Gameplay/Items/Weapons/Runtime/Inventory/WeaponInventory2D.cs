@@ -381,6 +381,48 @@ public class WeaponInventory2D : MonoBehaviour
         NotifyInventoryChanged();
     }
 
+    /// <summary>
+    /// 책임 :
+    /// - 현재 활성 슬롯 무기를 월드 드롭 없이 영구 제거한다.
+    /// - 기묘한 쇳덩이 투척처럼 무기 자체가 파괴되는 스킬이 DropActive의 드롭 생성 정책을 우회하게 한다.
+    /// </summary>
+    public bool DestroyActiveWeaponWithoutDrop(bool equipFallback = true)
+    {
+        if (!HasEquippedWeapon)
+            return false;
+
+        int destroyingIndex = ActiveIndex;
+        WeaponDefinition destroyingWeapon = ActiveWeapon;
+
+        CleanupTransientAbilitiesForWeaponChange();
+
+        var unequipResult = equipRuntime.Unequip();
+        if (unequipResult.Changed)
+        {
+            SyncActiveStateFromRuntime();
+            OnEquippedChanged?.Invoke(
+                unequipResult.PreviousIndex,
+                unequipResult.NewIndex,
+                unequipResult.PreviousWeapon,
+                unequipResult.NewWeapon);
+        }
+
+        if (destroyingWeapon != null)
+            abilityBinder.OnWeaponRemoved(destroyingWeapon);
+
+        ClearSlot(destroyingIndex);
+
+        if (equipFallback)
+        {
+            int fallbackIndex = FindFirstFilledSlot();
+            if (fallbackIndex >= 0)
+                Equip(fallbackIndex);
+        }
+
+        NotifyInventoryChanged();
+        return true;
+    }
+
     public AbilityDefinition GetActiveAbility(WeaponAbilitySlot slot)
         => ActiveWeapon != null ? ActiveWeapon.GetAbility(slot) : null;
 

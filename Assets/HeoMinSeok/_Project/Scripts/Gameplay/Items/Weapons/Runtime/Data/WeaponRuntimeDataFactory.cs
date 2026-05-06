@@ -35,6 +35,9 @@ public static class WeaponRuntimeDataFactory
         if (weapon.abilityLoadout is FragmentBladeLoadout)
             return typeof(FragmentBladeRuntimeData);
 
+        if (weapon.abilityLoadout is OddIronLoadout)
+            return typeof(OddIronRuntimeData);
+
         return typeof(WeaponRuntimeData);
     }
 
@@ -82,6 +85,13 @@ public static class WeaponRuntimeDataFactory
         {
             var data = new FragmentBladeRuntimeData();
             data.ApplyDefaults(fragmentBladeLoadout);
+            return data;
+        }
+
+        if (weapon.abilityLoadout is OddIronLoadout oddIronLoadout)
+        {
+            var data = new OddIronRuntimeData();
+            data.ApplyDefaults(oddIronLoadout);
             return data;
         }
 
