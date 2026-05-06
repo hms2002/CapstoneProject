@@ -17,7 +17,7 @@ MonoBehaviour:
   lifetime: 1.2
   angularSpeedDegrees: 720
   spawnOffset: {x: 0.8, y: 0.15, z: 0}
-  projectileScale: {x: 1, y: 1, z: 1}
+  projectileScale: {x: 0.5, y: 0.5, z: 1}
   wallLayers:
     serializedVersion: 2
     m_Bits: 1073741824

@@ -7194,6 +7194,10 @@ PrefabInstance:
       propertyPath: portalSpawnPoint
       value: 
       objectReference: {fileID: 1987507145}
+    - target: {fileID: 2033901595698624408, guid: 69f361477ab13cb469045903bed6a96e, type: 3}
+      propertyPath: m_Mass
+      value: 1000
+      objectReference: {fileID: 0}
     - target: {fileID: 5055118451258413439, guid: 69f361477ab13cb469045903bed6a96e, type: 3}
       propertyPath: m_Name
       value: DrunkenDragonBoss_Spili
