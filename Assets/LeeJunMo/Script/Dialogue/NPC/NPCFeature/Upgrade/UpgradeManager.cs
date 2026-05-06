@@ -6,6 +6,9 @@ using UnityEngine.SceneManagement;
 
 public class UpgradeManager : MonoBehaviour
 {
+    private const string TitleSceneName = "TitleScene";
+    private const string HubSceneName = "ProtoTypeHub";
+
     public static UpgradeManager Instance { get; private set; }
 
     [SerializeField] private UpgradeTreeUI upgradeTreeUI;
@@ -22,6 +25,9 @@ public class UpgradeManager : MonoBehaviour
     private UpgradeProgressService progressService;
     private UpgradeEffectApplier effectApplier;
     private PlayerInteractor2D appliedPlayer;
+    private readonly HashSet<int> appliedPlayerEffectNodeIds = new HashSet<int>();
+    private bool hasAppliedRunStartEffectsForCurrentRun;
+    private bool hasObservedSceneLoadForCurrentRun;
     private Coroutine openPresentationRoutine;
 
     private void Awake()
@@ -57,31 +63,65 @@ public class UpgradeManager : MonoBehaviour
     {
         PlayerRuntimeRegistry.PlayerRegistered += HandlePlayerRegistered;
         SceneManager.sceneLoaded += HandleSceneLoaded;
+
+        GamePlayDataManager gameplay = GamePlayDataManager.EnsureInstance();
+        if (gameplay != null)
+        {
+            gameplay.OnRunStarted += HandleRunStarted;
+            gameplay.OnRunEnded += HandleRunEnded;
+        }
     }
 
     private void Start()
     {
+        hasObservedSceneLoadForCurrentRun = IsRunActive();
         CheckAndUnlockNodes();
+        RunModifierService.Instance?.RebuildFromPurchasedUpgrades();
         TryReapplyAllEffects();
+        TryApplyRunStartEffects();
     }
 
     private void OnDisable()
     {
         PlayerRuntimeRegistry.PlayerRegistered -= HandlePlayerRegistered;
         SceneManager.sceneLoaded -= HandleSceneLoaded;
+
+        if (GamePlayDataManager.Instance != null)
+        {
+            GamePlayDataManager.Instance.OnRunStarted -= HandleRunStarted;
+            GamePlayDataManager.Instance.OnRunEnded -= HandleRunEnded;
+        }
     }
 
     private void HandlePlayerRegistered(PlayerInteractor2D player)
     {
         TryReapplyAllEffects();
+        TryApplyRunStartEffects();
     }
 
     private void HandleSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         ResolveUpgradeTreeUiReference();
         CheckAndUnlockNodes(false);
-        appliedPlayer = null;
+        RunModifierService.Instance?.RebuildFromPurchasedUpgrades();
+        ResetAppliedPlayerEffects();
+        if (IsRunActive())
+            hasObservedSceneLoadForCurrentRun = true;
         TryReapplyAllEffects();
+        TryApplyRunStartEffects();
+    }
+
+    private void HandleRunStarted()
+    {
+        hasAppliedRunStartEffectsForCurrentRun = false;
+        hasObservedSceneLoadForCurrentRun = IsActiveSceneRunContent();
+        TryApplyRunStartEffects();
+    }
+
+    private void HandleRunEnded(RunEndReason reason)
+    {
+        hasAppliedRunStartEffectsForCurrentRun = false;
+        hasObservedSceneLoadForCurrentRun = false;
     }
 
     private void MarkPersistent()
@@ -115,11 +155,14 @@ public class UpgradeManager : MonoBehaviour
         if (player == null)
             return;
 
-        if (appliedPlayer == player)
-            return;
+        if (appliedPlayer != player)
+        {
+            appliedPlayer = player;
+            appliedPlayerEffectNodeIds.Clear();
+        }
 
         ReapplyAllEffects(player);
-        appliedPlayer = player;
+        TryApplyHubTargetStates(player);
     }
 
     public void CheckAndUnlockNodes(bool requestSaveOnChange = true)
@@ -166,10 +209,13 @@ public class UpgradeManager : MonoBehaviour
 
         PlayerInteractor2D player = ResolveCurrentPlayer();
         effectApplier.ApplyUpgrade(node, player);
+        MarkNodeAppliedForCurrentPlayer(node.nodeID, player);
+        TryApplyHubTargetStates(player);
 
         if (RewardDisplayService.Instance != null)
             RewardDisplayService.Instance.ShowReward(node.effects, null);
 
+        RunModifierService.Instance?.RebuildFromPurchasedUpgrades();
         CheckAndUnlockNodes(false);
         GameDataSaveCoordinator.RequestImmediateSave(this);
         OnDataChanged?.Invoke();
@@ -185,7 +231,90 @@ public class UpgradeManager : MonoBehaviour
             return;
 
         data.upgradeData ??= new UpgradeSaveData();
-        effectApplier.ReapplyPurchasedEffects(data.upgradeData.purchasedIDs, progressService, player);
+        effectApplier.ReapplyPurchasedEffects(
+            data.upgradeData.purchasedIDs,
+            progressService,
+            player,
+            appliedPlayerEffectNodeIds);
+    }
+
+    private void TryApplyRunStartEffects()
+    {
+        if (hasAppliedRunStartEffectsForCurrentRun)
+            return;
+
+        if (!IsRunActive())
+            return;
+
+        if (!hasObservedSceneLoadForCurrentRun && !IsActiveSceneRunContent())
+            return;
+
+        PlayerInteractor2D player = ResolveCurrentPlayer();
+        if (player == null || GameDataManager.Instance == null || progressService == null || effectApplier == null)
+            return;
+
+        GameData data = GameDataManager.Instance.EnsureData();
+        if (data?.upgradeData?.purchasedIDs == null)
+            return;
+
+        effectApplier.ApplyRunStartEffects(data.upgradeData.purchasedIDs, progressService, player);
+        hasAppliedRunStartEffectsForCurrentRun = true;
+    }
+
+    private void TryApplyHubTargetStates(PlayerInteractor2D player)
+    {
+        if (IsRunActive())
+            return;
+
+        if (player == null)
+            player = ResolveCurrentPlayer();
+
+        if (player == null || GameDataManager.Instance == null || progressService == null || effectApplier == null)
+            return;
+
+        GameData data = GameDataManager.Instance.EnsureData();
+        if (data?.upgradeData?.purchasedIDs == null)
+            return;
+
+        effectApplier.ApplyImmediateTargetStates(data.upgradeData.purchasedIDs, progressService, player);
+    }
+
+    private void MarkNodeAppliedForCurrentPlayer(int nodeId, PlayerInteractor2D player)
+    {
+        if (player == null)
+            return;
+
+        if (appliedPlayer != player)
+        {
+            appliedPlayer = player;
+            appliedPlayerEffectNodeIds.Clear();
+        }
+
+        appliedPlayerEffectNodeIds.Add(nodeId);
+    }
+
+    private void ResetAppliedPlayerEffects()
+    {
+        appliedPlayer = null;
+        appliedPlayerEffectNodeIds.Clear();
+    }
+
+    private static bool IsRunActive()
+    {
+        return GamePlayDataManager.Instance != null
+            && GamePlayDataManager.Instance.Data != null
+            && GamePlayDataManager.Instance.Data.isRunActive;
+    }
+
+    private static bool IsActiveSceneRunContent()
+    {
+        Scene activeScene = SceneManager.GetActiveScene();
+        if (!activeScene.IsValid() || !activeScene.isLoaded)
+            return false;
+
+        string sceneName = activeScene.name;
+        return !string.Equals(sceneName, TitleSceneName, StringComparison.OrdinalIgnoreCase)
+            && !string.Equals(sceneName, HubSceneName, StringComparison.OrdinalIgnoreCase);
     }
 
     public void ToggleUI()

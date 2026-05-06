@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef1dce67083f43d3bb433607dc07d628, type: 3}
+  m_Name: ShopRunModifierEffect
+  m_EditorClassIdentifier: 
+  rewardText: "\uC0C1\uC810 \uD65C\uC131\uD654"
+  rewardIcon: {fileID: 21300000, guid: 80e2cdbbf23063546b08b1f0741c8b17, type: 3}
+  shopEnabled: 1
+  shopSlotBonus: 0
+  shopRefreshCount: 0
+  discountRate: 0

@@ -55,13 +55,16 @@ public class RelicInventory : MonoBehaviour
 
     private Entry[] slots;
     private RelicContext baseCtx;
+    private int authoredCapacity;
+    private int runtimeMinimumCapacity;
+    private readonly Dictionary<Object, int> runtimeCapacityBonuses = new();
 
     public event Action OnChanged;
 
     private void Awake()
     {
-        slots = new Entry[Mathf.Max(0, capacity)];
-        for (int i = 0; i < slots.Length; i++) slots[i] = new Entry();
+        authoredCapacity = Mathf.Max(0, capacity);
+        ResizeSlots(ResolveRuntimeCapacity(), notify: false);
 
         debugView = new List<RelicDefinition>(capacity);
         for (int i = 0; i < capacity; i++) debugView.Add(null);
@@ -336,6 +339,15 @@ public class RelicInventory : MonoBehaviour
         return true;
     }
 
+    public void SetRuntimeCapacityBonus(Object source, int slotBonus)
+    {
+        if (source == null)
+            return;
+
+        runtimeCapacityBonuses[source] = Mathf.Max(0, slotBonus);
+        ResizeSlots(ResolveRuntimeCapacity());
+    }
+
     public AcquireResult PreviewAcquireOrUpgrade(RelicDefinition relic, int gainedLevel = -1)
     {
         if (relic == null)
@@ -423,6 +435,12 @@ public class RelicInventory : MonoBehaviour
         {
             Debug.LogError("[RelicInventory] relicResolver가 null입니다.");
             return;
+        }
+
+        if (state.slots != null && state.slots.Length > runtimeMinimumCapacity)
+        {
+            runtimeMinimumCapacity = state.slots.Length;
+            ResizeSlots(ResolveRuntimeCapacity(), notify: false);
         }
 
         for (int i = 0; i < slots.Length; i++)
@@ -654,6 +672,54 @@ public class RelicInventory : MonoBehaviour
     }
 
     private bool IsValidSlot(int idx) => idx >= 0 && idx < slots.Length;
+
+    private int ResolveRuntimeCapacity()
+    {
+        int resolved = Mathf.Max(0, authoredCapacity);
+
+        foreach (int bonus in runtimeCapacityBonuses.Values)
+            resolved += Mathf.Max(0, bonus);
+
+        return Mathf.Max(resolved, runtimeMinimumCapacity);
+    }
+
+    private void ResizeSlots(int newCapacity, bool notify = true)
+    {
+        newCapacity = Mathf.Max(0, newCapacity);
+        capacity = newCapacity;
+
+        if (slots == null)
+        {
+            slots = new Entry[newCapacity];
+            for (int i = 0; i < slots.Length; i++)
+                slots[i] = new Entry();
+
+            RefreshDebugView();
+            if (notify)
+                OnChanged?.Invoke();
+            return;
+        }
+
+        if (slots.Length == newCapacity)
+        {
+            RefreshDebugView();
+            return;
+        }
+
+        Entry[] oldSlots = slots;
+        slots = new Entry[newCapacity];
+
+        int copyCount = Mathf.Min(oldSlots.Length, slots.Length);
+        for (int i = 0; i < copyCount; i++)
+            slots[i] = oldSlots[i] ?? new Entry();
+
+        for (int i = copyCount; i < slots.Length; i++)
+            slots[i] = new Entry();
+
+        RefreshDebugView();
+        if (notify)
+            OnChanged?.Invoke();
+    }
 
     private void RefreshDebugView()
     {

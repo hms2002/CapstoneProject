@@ -11,12 +11,18 @@ public class ChestRunModifierUpgradeEffect : RunModifierUpgradeEffectSO
     [SerializeField] private int chestRelicMinBonus;
     [SerializeField] private int chestRelicMaxBonus;
 
+    [Header("Chest Utility")]
+    [SerializeField, Min(0)] private int chestRefreshCount;
+    [SerializeField, Range(0f, 1f)] private float relicLevelBonusChance;
+
     public ChestRunModifierDelta Delta => new ChestRunModifierDelta
     {
         chestWeaponMinBonus = chestWeaponMinBonus,
         chestWeaponMaxBonus = chestWeaponMaxBonus,
         chestRelicMinBonus = chestRelicMinBonus,
-        chestRelicMaxBonus = chestRelicMaxBonus
+        chestRelicMaxBonus = chestRelicMaxBonus,
+        chestRefreshCount = chestRefreshCount,
+        relicLevelBonusChance = relicLevelBonusChance
     };
 
     protected override void ApplyModifier()

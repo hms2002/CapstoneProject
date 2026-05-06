@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   consumableId: Consumable.HealPotion
   displayName: HealPotion
-  icon: {fileID: 244056041600906683, guid: e75f469ea29530246a4a0543396316af, type: 3}
+  icon: {fileID: -3985568134984187906, guid: 2cbef7ab0cb99eb478cd968370d645f2, type: 3}
   description: "\uCCB4\uB825\uC744 1 \uD68C\uBCF5\uD569\uB2C8\uB2E4."
   targetAttribute: {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
   restoreAmount: 1

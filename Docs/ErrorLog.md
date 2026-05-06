@@ -25,4 +25,16 @@ Prevention:
 
 ## Active Entries
 
-No recurring project errors have been recorded in this log yet.
+## 2026-05-06 - CurrentTask Drift
+
+Context:
+Feature implementation continued while `Docs/CurrentTask.md` still described the old project memory system task.
+
+Cause:
+The document was treated as required reading but not as an actively maintained task contract.
+
+Fix:
+Update `Docs/CurrentTask.md` at the start of each active task change, and keep detailed progress in `Docs/SessionLogs/`.
+
+Prevention:
+Before implementation, confirm `CurrentTask.md` matches the user's current requested work. If it does not, update it first.

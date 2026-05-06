@@ -47,6 +47,6 @@ MonoBehaviour:
   cameraShakeKey: {fileID: 0}
   fallbackCameraShake: 0.1
   oneHitShieldTag: {fileID: 0}
-  absorbShieldAttribute: {fileID: 0}
+  absorbShieldAttribute: {fileID: 11400000, guid: dfd6b6d2319c46acb6a5564fe8798a21, type: 2}
   tokenDamageKey: {fileID: 0}
   fallbackTokenDamage: 1

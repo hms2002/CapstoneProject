@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -57,6 +58,8 @@ public struct ChestRunModifierDelta
     public int chestWeaponMaxBonus;
     public int chestRelicMinBonus;
     public int chestRelicMaxBonus;
+    public int chestRefreshCount;
+    public float relicLevelBonusChance;
 
     public static ChestRunModifierDelta FromSave(RunModifierSaveData data)
     {
@@ -78,6 +81,55 @@ public struct ChestRunModifierDelta
         chestWeaponMaxBonus += other.chestWeaponMaxBonus;
         chestRelicMinBonus += other.chestRelicMinBonus;
         chestRelicMaxBonus += other.chestRelicMaxBonus;
+        chestRefreshCount += other.chestRefreshCount;
+        relicLevelBonusChance += other.relicLevelBonusChance;
+    }
+}
+
+[System.Serializable]
+public struct ShopRunModifierDelta
+{
+    public bool shopEnabled;
+    public int shopSlotBonus;
+    public float discountRate;
+    public int shopRefreshCount;
+
+    public void Add(ShopRunModifierDelta other)
+    {
+        shopEnabled |= other.shopEnabled;
+        shopSlotBonus += other.shopSlotBonus;
+        discountRate += other.discountRate;
+        shopRefreshCount += other.shopRefreshCount;
+    }
+}
+
+[System.Serializable]
+public struct BossRunModifierDelta
+{
+    public int bossFieldHealPickupBonus;
+    public int bossChestWeaponMinBonus;
+    public int bossChestWeaponMaxBonus;
+    public int bossChestRelicMinBonus;
+    public int bossChestRelicMaxBonus;
+
+    public ChestRunModifierDelta ToChestModifierDelta()
+    {
+        return new ChestRunModifierDelta
+        {
+            chestWeaponMinBonus = bossChestWeaponMinBonus,
+            chestWeaponMaxBonus = bossChestWeaponMaxBonus,
+            chestRelicMinBonus = bossChestRelicMinBonus,
+            chestRelicMaxBonus = bossChestRelicMaxBonus
+        };
+    }
+
+    public void Add(BossRunModifierDelta other)
+    {
+        bossFieldHealPickupBonus += other.bossFieldHealPickupBonus;
+        bossChestWeaponMinBonus += other.bossChestWeaponMinBonus;
+        bossChestWeaponMaxBonus += other.bossChestWeaponMaxBonus;
+        bossChestRelicMinBonus += other.bossChestRelicMinBonus;
+        bossChestRelicMaxBonus += other.bossChestRelicMaxBonus;
     }
 }
 
@@ -85,11 +137,15 @@ public class RunModifierService : MonoBehaviour
 {
     public static RunModifierService Instance { get; private set; }
 
+    public event System.Action OnModifiersChanged;
+
     private static bool s_isQuitting;
     private const string UpgradeNodeResourcesPath = "Upgrades/Nodes";
 
     private GraveRunModifierDelta graveModifiers;
     private ChestRunModifierDelta chestModifiers;
+    private ShopRunModifierDelta shopModifiers;
+    private BossRunModifierDelta bossModifiers;
     private bool hasLoadedFromSave;
     private UpgradeNodeSO[] cachedUpgradeNodes;
 
@@ -108,6 +164,24 @@ public class RunModifierService : MonoBehaviour
         {
             EnsureLoadedFromPurchases();
             return chestModifiers;
+        }
+    }
+
+    public ShopRunModifierDelta ShopModifiers
+    {
+        get
+        {
+            EnsureLoadedFromPurchases();
+            return shopModifiers;
+        }
+    }
+
+    public BossRunModifierDelta BossModifiers
+    {
+        get
+        {
+            EnsureLoadedFromPurchases();
+            return bossModifiers;
         }
     }
 
@@ -142,12 +216,14 @@ public class RunModifierService : MonoBehaviour
     {
         hasLoadedFromSave = false;
         EnsureLoadedFromPurchases();
+        OnModifiersChanged?.Invoke();
     }
 
     public void RebuildFromPurchasedUpgrades()
     {
         hasLoadedFromSave = false;
         EnsureLoadedFromPurchases();
+        OnModifiersChanged?.Invoke();
     }
 
     private void EnsureLoadedFromPurchases()
@@ -157,45 +233,112 @@ public class RunModifierService : MonoBehaviour
 
         graveModifiers = default;
         chestModifiers = default;
+        shopModifiers = default;
+        bossModifiers = default;
 
         UpgradeSaveData saveData = TryGetUpgradeSaveData();
-        if (saveData == null || saveData.purchasedIDs == null || saveData.purchasedIDs.Count == 0)
+        if (saveData == null)
         {
+            ApplyAffectionModifiers();
             hasLoadedFromSave = true;
             return;
         }
 
-        UpgradeNodeSO[] nodes = LoadUpgradeNodes();
-        if (nodes == null || nodes.Length == 0)
+        if (saveData.purchasedIDs != null && saveData.purchasedIDs.Count > 0)
         {
-            hasLoadedFromSave = true;
-            return;
-        }
-
-        foreach (int purchasedId in saveData.purchasedIDs)
-        {
-            UpgradeNodeSO node = FindNodeById(nodes, purchasedId);
-            if (node == null || node.effects == null)
-                continue;
-
-            foreach (UpgradeEffectSO effect in node.effects)
+            UpgradeNodeSO[] nodes = LoadUpgradeNodes();
+            if (nodes != null && nodes.Length > 0)
             {
-                if (effect is GraveRunModifierUpgradeEffect graveEffect)
+                foreach (int purchasedId in saveData.purchasedIDs)
                 {
-                    GraveRunModifierDelta delta = graveEffect.Delta;
-                    graveModifiers.Add(delta);
-                    continue;
-                }
+                    UpgradeNodeSO node = FindNodeById(nodes, purchasedId);
+                    if (node == null || node.effects == null)
+                        continue;
 
-                if (effect is ChestRunModifierUpgradeEffect chestEffect)
-                {
-                    ChestRunModifierDelta delta = chestEffect.Delta;
-                    chestModifiers.Add(delta);
+                    foreach (UpgradeEffectSO effect in node.effects)
+                    {
+                        ApplyUpgradeModifier(effect);
+                    }
                 }
             }
         }
 
+        ApplyAffectionModifiers();
         hasLoadedFromSave = true;
+    }
+
+    private void ApplyUpgradeModifier(UpgradeEffectSO effect)
+    {
+        if (effect is GraveRunModifierUpgradeEffect graveEffect)
+        {
+            graveModifiers.Add(graveEffect.Delta);
+            return;
+        }
+
+        if (effect is ChestRunModifierUpgradeEffect chestEffect)
+        {
+            chestModifiers.Add(chestEffect.Delta);
+            return;
+        }
+
+        if (effect is ShopRunModifierUpgradeEffect shopEffect)
+        {
+            shopModifiers.Add(shopEffect.Delta);
+        }
+    }
+
+    private void ApplyAffectionModifiers()
+    {
+        NPCManager npcManager = NPCManager.Instance;
+        if (npcManager == null)
+            return;
+
+        Dictionary<int, int> affectionAmounts = BuildAffectionAmountMap();
+        foreach (KeyValuePair<int, int> entry in affectionAmounts)
+        {
+            NPCData npcData = npcManager.GetNPCData(entry.Key);
+            if (npcData?.affectionRewards == null)
+                continue;
+
+            foreach (AffectionReward reward in npcData.affectionRewards)
+            {
+                if (reward.effect == null || reward.targetLevel > entry.Value)
+                    continue;
+
+                if (reward.effect is BossAffectionRunModifierEffect bossEffect)
+                    bossModifiers.Add(bossEffect.Delta);
+            }
+        }
+    }
+
+    private static Dictionary<int, int> BuildAffectionAmountMap()
+    {
+        var amounts = new Dictionary<int, int>();
+
+        GameData data = GameDataManager.Instance != null ? GameDataManager.Instance.Data : null;
+        if (data?.affectionData?.affectionRecords != null)
+        {
+            foreach (AffectionRecord record in data.affectionData.affectionRecords)
+            {
+                if (record != null)
+                    amounts[record.npcId] = record.amount;
+            }
+        }
+
+        GamePlayData runData = GamePlayDataManager.Instance != null ? GamePlayDataManager.Instance.Data : null;
+        if (runData?.pendingRunAffectionChanges != null)
+        {
+            foreach (PendingRunAffectionChange change in runData.pendingRunAffectionChanges)
+            {
+                if (change == null)
+                    continue;
+
+                amounts.TryGetValue(change.npcId, out int currentAmount);
+                amounts[change.npcId] = currentAmount + change.delta;
+            }
+        }
+
+        return amounts;
     }
 
     private UpgradeNodeSO[] LoadUpgradeNodes()

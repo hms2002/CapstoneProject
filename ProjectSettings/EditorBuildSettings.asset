@@ -51,11 +51,17 @@ EditorBuildSettings:
     path: Assets/Scenes/HeoMinSeok_Boss.unity
     guid: f24251656cc0b71449518198fb0423b0
   - enabled: 1
+    path: Assets/Scenes/LeeJunmo_Boss_DemonKing.unity
+    guid: 0c24345d0b1badb4981f9aa3e94f0faa
+  - enabled: 1
     path: Assets/Scenes/SpiliCorridor.unity
     guid: bfd9d6b641331574e9884c3f75f00f11
   - enabled: 1
     path: Assets/Scenes/HeoMinSeok_Boss_Dragon_Spili.unity
     guid: a12f8757a34e86041902dbfa6e583af7
+  - enabled: 1
+    path: Assets/Scenes/DemonkingCorridor.unity
+    guid: 2b9ae993eb2d68a4bac3df3d12e7e164
   m_configObjects:
     com.unity.addressableassets: {fileID: 11400000, guid: 0e3962ceda711e54f95a96b5e9a5393b, type: 2}
     com.unity.dt.app-ui: {fileID: 11400000, guid: 99f9c9493070a9d4c979a8fec7c5a8d3, type: 2}

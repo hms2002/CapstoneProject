@@ -30,6 +30,19 @@ public struct MerchantPriceSettings
         };
     }
 
+    public MerchantPriceSettings WithDiscount(float discountRate)
+    {
+        discountRate = Mathf.Clamp01(discountRate);
+        return new MerchantPriceSettings
+        {
+            weaponPrice = ApplyDiscount(weaponPrice, discountRate),
+            commonRelicPrice = ApplyDiscount(commonRelicPrice, discountRate),
+            rareRelicPrice = ApplyDiscount(rareRelicPrice, discountRate),
+            epicRelicPrice = ApplyDiscount(epicRelicPrice, discountRate),
+            consumablePrice = ApplyDiscount(consumablePrice, discountRate)
+        };
+    }
+
     private int ResolveRelicPrice(ItemRarity rarity)
     {
         return rarity switch
@@ -39,6 +52,11 @@ public struct MerchantPriceSettings
             ItemRarity.Epic => epicRelicPrice,
             _ => commonRelicPrice
         };
+    }
+
+    private static int ApplyDiscount(int price, float discountRate)
+    {
+        return Mathf.Max(0, Mathf.RoundToInt(Mathf.Max(0, price) * (1f - discountRate)));
     }
 }
 
@@ -66,7 +84,8 @@ public sealed class ShopInventoryRoll
     public List<MerchantStockEntryState> RollStock(
         int slotCount,
         ShopStockRollWeights rollWeights,
-        MerchantPriceSettings priceSettings)
+        MerchantPriceSettings priceSettings,
+        IReadOnlyCollection<MerchantStockEntryState> excludedEntries = null)
     {
         var entries = new List<MerchantStockEntryState>(Mathf.Max(0, slotCount));
         if (slotCount <= 0 || ItemManager.Instance == null)
@@ -75,6 +94,11 @@ public sealed class ShopInventoryRoll
         List<WeaponDefinition> weaponPool = BuildWeaponPool();
         List<RelicDefinition> relicPool = BuildRelicPool();
         List<ConsumableDefinition> consumablePool = BuildConsumablePool();
+        HashSet<string> excludedKeys = BuildExcludedKeys(excludedEntries);
+
+        RemoveExcludedDefinitions(weaponPool, excludedKeys);
+        RemoveExcludedDefinitions(relicPool, excludedKeys);
+        RemoveExcludedDefinitions(consumablePool, excludedKeys);
 
         for (int i = 0; i < slotCount; i++)
         {
@@ -147,6 +171,43 @@ public sealed class ShopInventoryRoll
     {
         List<ConsumableDefinition> consumables = ItemManager.Instance.GetAllConsumables();
         return consumables ?? new List<ConsumableDefinition>();
+    }
+
+    private static HashSet<string> BuildExcludedKeys(IReadOnlyCollection<MerchantStockEntryState> excludedEntries)
+    {
+        if (excludedEntries == null || excludedEntries.Count == 0)
+            return null;
+
+        var excludedKeys = new HashSet<string>();
+        foreach (MerchantStockEntryState entry in excludedEntries)
+        {
+            if (entry == null || !entry.HasItem)
+                continue;
+
+            excludedKeys.Add(BuildItemKey(entry.kind, entry.itemId));
+        }
+
+        return excludedKeys;
+    }
+
+    private static void RemoveExcludedDefinitions<T>(
+        List<T> pool,
+        HashSet<string> excludedKeys) where T : ScriptableObject
+    {
+        if (pool == null || excludedKeys == null || excludedKeys.Count == 0)
+            return;
+
+        for (int i = pool.Count - 1; i >= 0; i--)
+        {
+            IInventoryItemDefinition definition = pool[i] != null ? pool[i].AsDef() : null;
+            if (definition != null && excludedKeys.Contains(BuildItemKey(definition.Kind, definition.ItemId)))
+                pool.RemoveAt(i);
+        }
+    }
+
+    private static string BuildItemKey(InventoryItemKind kind, string itemId)
+    {
+        return $"{kind}:{itemId}";
     }
 
     private static List<WeightedKind> BuildAvailableKinds(

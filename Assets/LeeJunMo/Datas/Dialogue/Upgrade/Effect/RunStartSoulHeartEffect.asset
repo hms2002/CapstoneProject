@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6cd6406a1e5b47a4821ad24900dc16c3, type: 3}
+  m_Name: RunStartSoulHeartEffect
+  m_EditorClassIdentifier: 
+  rewardText: "\uC77C\uD68C\uC131 \uCD94\uAC00 \uCCB4\uB825 \uBD80\uC5EC"
+  rewardIcon: {fileID: 763030817999491006, guid: e75f469ea29530246a4a0543396316af, type: 3}
+  soulHeartAttribute: {fileID: 11400000, guid: dfd6b6d2319c46acb6a5564fe8798a21, type: 2}
+  amount: 1
