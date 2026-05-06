@@ -1,0 +1,48 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a34032e22df4e849bec469c9b4cf4ef, type: 3}
+  m_Name: ALData_OddIronThrow
+  m_EditorClassIdentifier: 
+  projectilePrefab: {fileID: 100000, guid: f1f1670222c14e3c803bfd26b214a38f, type: 3}
+  throwSpeed: 15
+  lifetime: 1.2
+  angularSpeedDegrees: 720
+  spawnOffset: {x: 0.8, y: 0.15, z: 0}
+  projectileScale: {x: 1, y: 1, z: 1}
+  wallLayers:
+    serializedVersion: 2
+    m_Bits: 1073741824
+  damageLayers:
+    serializedVersion: 2
+    m_Bits: 2147483648
+  damageConfig:
+    includeStaggerBuildUp: 1
+    includeElementBuildUp: 1
+    staggerFormula: {fileID: 0}
+    elementFormulas: []
+    critAffectsElement: 1
+  damageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
+  knockbackEffect: {fileID: 11400000, guid: 2f5faaf6bd840544cb59f6d23905c40d, type: 2}
+  fixedDamage: 60
+  fixedStaggerDamage: 0
+  fixedKnockbackImpulse: 8
+  impactVfxPrefab: {fileID: 0}
+  throwSound:
+    key: 
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  impactSound:
+    key: 
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}

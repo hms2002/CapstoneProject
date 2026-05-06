@@ -62,8 +62,8 @@ MonoBehaviour:
       localOffset: {x: 0, y: 0, z: 0}
       rotationOffsetZ: 0
       scaleMultiplier: {x: 0.3, y: 0.3, z: 0}
-      lifetimeMode: 0
-      lifetimeOverrideSeconds: 0
+      lifetimeMode: 1
+      lifetimeOverrideSeconds: 0.1
       useUnscaledTime: 0
     particle:
       prefab: {fileID: 0}
