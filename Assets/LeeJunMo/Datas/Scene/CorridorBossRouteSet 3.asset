@@ -16,3 +16,5 @@ MonoBehaviour:
   corridorEntryPointId: Default
   bossSceneName: ProtoTypeBoss 4
   bossEntryPointId: Default
+  corridorLocationName: 슬라임 왕국
+  bossLocationName: 멜타의 방

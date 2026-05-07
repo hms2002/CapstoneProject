@@ -16,6 +16,8 @@ MonoBehaviour:
   corridorEntryPointId: Default
   bossSceneName: ProtoTypeBoss 2
   bossEntryPointId: Default
+  corridorLocationName: 보물창고
+  bossLocationName: 스피리의 방
   corridorBgm:
     key: 
     volumeMultiplier: 0

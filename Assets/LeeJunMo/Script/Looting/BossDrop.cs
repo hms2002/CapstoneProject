@@ -38,6 +38,7 @@ public class BossDrop : MonoBehaviour
 
         // 2. 마정석 낱개 드롭
         TryRunDeathRewardStep(SpawnBossCurrency, "SpawnBossCurrency");
+        TryRunDeathRewardStep(SpawnBossFieldHeals, "SpawnBossFieldHeals");
 
         TryRunDeathRewardStep(ActivePortal, "ActivePortal");
     }
@@ -60,11 +61,21 @@ public class BossDrop : MonoBehaviour
         if (LootManager.Instance != null)
         {
             // 매개변수 없이 깔끔하게 호출만 합니다.
-            List<ScriptableObject> randomLoots = LootManager.Instance.GenerateChestLoot();
+            ChestRunModifierDelta extraBossChestModifiers = RunModifierService.Instance != null
+                ? RunModifierService.Instance.BossModifiers.ToChestModifierDelta()
+                : default;
+
+            List<ScriptableObject> randomLoots = LootManager.Instance.GenerateChestLoot(extraBossChestModifiers);
             if (randomLoots != null)
             {
                 finalLoots.AddRange(randomLoots);
             }
+        }
+
+        if (bossUniqueLoots == null)
+        {
+            chest.InitializeWithLoot(finalLoots);
+            return;
         }
 
         foreach (var entry in bossUniqueLoots)
@@ -100,6 +111,19 @@ public class BossDrop : MonoBehaviour
             {
                 pickup.amount = 1;
             }
+        }
+    }
+
+    private void SpawnBossFieldHeals()
+    {
+        if (LootManager.Instance == null || RunModifierService.Instance == null)
+            return;
+
+        int count = Mathf.Max(0, RunModifierService.Instance.BossModifiers.bossFieldHealPickupBonus);
+        for (int i = 0; i < count; i++)
+        {
+            Vector3 spawnPos = transform.position + (Vector3)(Random.insideUnitCircle * 1.5f);
+            LootManager.Instance.SpawnFieldHealPickup(spawnPos);
         }
     }
 

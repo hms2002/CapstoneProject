@@ -60,7 +60,7 @@ public struct GameOverPresentationRequest
             LocationName = ResolveCurrentLocationName(),
             HubSceneName = hubSceneName,
             PlayerTransform = playerTransform,
-            EndRunOnReturn = false,
+            EndRunOnReturn = true,
             EndRunReason = RunEndReason.TimeOver,
             UseSceneTransitionService = useSceneTransitionService
         };
@@ -84,6 +84,9 @@ public struct GameOverPresentationRequest
 
         string normalized = sceneName.ToLowerInvariant();
         bool isBossRoom = normalized.Contains("boss");
+
+        if (TryResolveRouteSetLocationName(sceneName, out string routeLocationName))
+            return routeLocationName;
 
         if (normalized.Contains("demon") || normalized.Contains("king"))
             return "마왕의 알현실";
@@ -113,6 +116,15 @@ public struct GameOverPresentationRequest
             return "보스룸";
 
         return sceneName;
+    }
+
+    private static bool TryResolveRouteSetLocationName(string sceneName, out string locationName)
+    {
+        locationName = null;
+
+        PortalRouteManager routeManager = PortalRouteManager.Instance;
+        CorridorBossRouteSetSO currentStageSet = routeManager != null ? routeManager.CurrentStageSet : null;
+        return currentStageSet != null && currentStageSet.TryResolveLocationName(sceneName, out locationName);
     }
 }
 

@@ -29,12 +29,14 @@ public class TreasureChest : MonoBehaviour
     private bool isPreludeTimeFrozen;
     private float preludePreviousTimeScale = 1f;
     private WorldObjectPresentationRuntime openPresentationRuntime;
+    private readonly List<ChestLootSnapshot> refreshGuard = new List<ChestLootSnapshot>();
+    private int refreshCountUsed;
     public int Capacity => capacity;
     public bool IsOpened => isOpened;
 
     private void Awake()
     {
-        inventory = new ChestInventory();
+        inventory = new ChestInventory(capacity);
 
         if (chestAnimator == null)
             chestAnimator = GetComponentInChildren<Animator>();
@@ -57,13 +59,11 @@ public class TreasureChest : MonoBehaviour
     public void InitializeWithLoot(List<ScriptableObject> loots)
     {
         if (inventory == null)
-            inventory = new ChestInventory();
+            inventory = new ChestInventory(capacity);
 
-        foreach (var item in loots)
-        {
-            if (item != null)
-                inventory.TryAdd(item);
-        }
+        inventory.Clear();
+        FillInventoryWithLoot(loots);
+        RecordRefreshGuard();
 
         isGenerated = true;
     }
@@ -124,14 +124,110 @@ public class TreasureChest : MonoBehaviour
         if (loots == null)
             return;
 
-        foreach (var item in loots)
-        {
-            if (item != null)
-                inventory.TryAdd(item);
-        }
+        FillInventoryWithLoot(loots);
+        RecordRefreshGuard();
     }
 
     public ChestInventory GetInventory() => inventory;
+
+    public bool CanRefreshLoot()
+    {
+        if (!isGenerated || inventory == null || LootManager.Instance == null)
+            return false;
+
+        ChestRunModifierDelta modifiers = RunModifierService.Instance != null
+            ? RunModifierService.Instance.ChestModifiers
+            : default;
+
+        if (refreshCountUsed >= Mathf.Max(0, modifiers.chestRefreshCount))
+            return false;
+
+        return MatchesRefreshGuard();
+    }
+
+    public bool TryRefreshLoot()
+    {
+        if (!CanRefreshLoot())
+            return false;
+
+        List<ScriptableObject> loots = LootManager.Instance.GenerateChestLoot();
+        if (loots == null)
+            return false;
+
+        inventory.Clear();
+        FillInventoryWithLoot(loots);
+        refreshCountUsed++;
+        RecordRefreshGuard();
+        return true;
+    }
+
+    private void FillInventoryWithLoot(List<ScriptableObject> loots)
+    {
+        if (inventory == null || loots == null)
+            return;
+
+        foreach (ScriptableObject item in loots)
+        {
+            if (item != null)
+                TryAddLootItem(item);
+        }
+    }
+
+    private bool TryAddLootItem(ScriptableObject item)
+    {
+        if (item is RelicDefinition relic)
+            return inventory.TryAddRelicWithLevel(relic, ResolveChestRelicLevel(relic));
+
+        return inventory.TryAdd(item);
+    }
+
+    private int ResolveChestRelicLevel(RelicDefinition relic)
+    {
+        if (relic == null)
+            return 0;
+
+        int level = relic.dropLevel > 0 ? relic.dropLevel : 1;
+        ChestRunModifierDelta modifiers = RunModifierService.Instance != null
+            ? RunModifierService.Instance.ChestModifiers
+            : default;
+
+        float chance = Mathf.Clamp01(modifiers.relicLevelBonusChance);
+        if (chance > 0f && Random.value < chance)
+            level++;
+
+        return relic.ClampLevel(level);
+    }
+
+    private void RecordRefreshGuard()
+    {
+        refreshGuard.Clear();
+        if (inventory == null)
+            return;
+
+        for (int i = 0; i < inventory.Capacity; i++)
+        {
+            ScriptableObject item = inventory.Get(i);
+            refreshGuard.Add(new ChestLootSnapshot(item, inventory.GetRelicLevelInSlot(i)));
+        }
+    }
+
+    private bool MatchesRefreshGuard()
+    {
+        if (inventory == null || refreshGuard.Count != inventory.Capacity)
+            return false;
+
+        for (int i = 0; i < inventory.Capacity; i++)
+        {
+            ChestLootSnapshot snapshot = refreshGuard[i];
+            if (inventory.Get(i) != snapshot.Item)
+                return false;
+
+            if (inventory.GetRelicLevelInSlot(i) != snapshot.RelicLevel)
+                return false;
+        }
+
+        return true;
+    }
 
     private void PlayOpenPresentation(GameObject instigator)
     {
@@ -311,5 +407,17 @@ public class TreasureChest : MonoBehaviour
             return chestSpriteRenderer.transform;
 
         return transform;
+    }
+
+    private readonly struct ChestLootSnapshot
+    {
+        public readonly ScriptableObject Item;
+        public readonly int RelicLevel;
+
+        public ChestLootSnapshot(ScriptableObject item, int relicLevel)
+        {
+            Item = item;
+            RelicLevel = relicLevel;
+        }
     }
 }

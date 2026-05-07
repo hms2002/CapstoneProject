@@ -22,6 +22,15 @@ public class HeartTokenUI : MonoBehaviour
         emptyHeartSprite = emptySprite;
     }
 
+    public void SetTint(Color color)
+    {
+        if (heartImage == null)
+            heartImage = GetComponent<Image>();
+
+        if (heartImage != null)
+            heartImage.color = color;
+    }
+
     public void SetFilled(bool isFilled)
     {
         if (heartImage == null)

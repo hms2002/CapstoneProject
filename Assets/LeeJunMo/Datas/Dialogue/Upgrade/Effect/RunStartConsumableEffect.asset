@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f3540bf383824b09ac79de76dff75438, type: 3}
+  m_Name: RunStartConsumableEffect
+  m_EditorClassIdentifier: 
+  rewardText: 
+  rewardIcon: {fileID: 1160938838206758964, guid: 2cbef7ab0cb99eb478cd968370d645f2, type: 3}
+  consumable: {fileID: 11400000, guid: 6b22cb4e0ab0a194b968acb6b169cbfb, type: 2}
+  count: 1

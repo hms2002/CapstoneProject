@@ -9710,7 +9710,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 0}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -26101,7 +26101,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 198867570609411190}
   m_HandleRect: {fileID: 621976137746154060}
   m_Direction: 2
-  m_Value: 1
+  m_Value: 0
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -35302,10 +35302,14 @@ MonoBehaviour:
   player: {fileID: 0}
   hpDef: {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
   maxHpDef: {fileID: 11400000, guid: 0e177e1d15e428745b5859fac08ce203, type: 2}
+  soulHeartDef: {fileID: 11400000, guid: dfd6b6d2319c46acb6a5564fe8798a21, type: 2}
   heartTokenPrefab: {fileID: 7286775436942910812, guid: 73286b2f835b74848bc1fef47d7f1294, type: 3}
   heartContainer: {fileID: 7933390349864068690}
   filledHeartSprite: {fileID: 6435912432560062591, guid: e75f469ea29530246a4a0543396316af, type: 3}
   emptyHeartSprite: {fileID: 2501108752766977309, guid: e75f469ea29530246a4a0543396316af, type: 3}
+  soulHeartSprite: {fileID: 763030817999491006, guid: e75f469ea29530246a4a0543396316af, type: 3}
+  normalHeartColor: {r: 1, g: 1, b: 1, a: 1}
+  soulHeartColor: {r: 1, g: 1, b: 1, a: 1}
   healthPerHeart: 1
 --- !u!114 &2990190548105504199
 MonoBehaviour:

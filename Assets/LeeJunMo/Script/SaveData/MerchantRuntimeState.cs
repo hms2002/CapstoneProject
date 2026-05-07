@@ -51,6 +51,7 @@ public sealed class MerchantRuntimeState
 {
     public string merchantId;
     public List<MerchantStockEntryState> slots = new List<MerchantStockEntryState>();
+    public int refreshCountUsed;
 
     public MerchantRuntimeState() { }
 

@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ae305f1101243b6aaf75a137466dc48, type: 3}
+  m_Name: ShopDefinition_DefaultLocked
+  m_EditorClassIdentifier: 
+  requireShopUpgrade: 1
+  baseVisibleSlotCount: 4
+  stockRollWeights:
+    weaponWeight: 1
+    relicWeight: 1
+    consumableWeight: 1
+  priceSettings:
+    weaponPrice: 120
+    commonRelicPrice: 100
+    rareRelicPrice: 180
+    epicRelicPrice: 260
+    consumablePrice: 40

@@ -22,6 +22,11 @@ public abstract class UpgradeEffectSO : ScriptableObject
     public virtual void ReapplyForPlayer(PlayerInteractor2D player) { }
 }
 
+public interface IRunStartUpgradeEffect
+{
+    void ApplyAtRunStart(PlayerInteractor2D player);
+}
+
 public abstract class PlayerUpgradeEffectSO : UpgradeEffectSO
 {
     public sealed override UpgradeEffectKind EffectKind => UpgradeEffectKind.Player;

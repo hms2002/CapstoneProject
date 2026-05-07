@@ -1,3 +1,4 @@
+using System;
 using CapstoneAudio;
 using UnityEngine;
 
@@ -13,6 +14,10 @@ public sealed class CorridorBossRouteSetSO : ScriptableObject
     [SerializeField] private string bossSceneName;
     [SerializeField] private string bossEntryPointId = "Default";
 
+    [Header("Display Names")]
+    [SerializeField] private string corridorLocationName;
+    [SerializeField] private string bossLocationName;
+
     [Header("BGM")]
     [SerializeField] private SoundRef corridorBgm;
     [SerializeField] private SoundRef bossCombatBgm;
@@ -24,6 +29,8 @@ public sealed class CorridorBossRouteSetSO : ScriptableObject
     public string CorridorEntryPointId => corridorEntryPointId;
     public string BossSceneName => bossSceneName;
     public string BossEntryPointId => bossEntryPointId;
+    public string CorridorLocationName => corridorLocationName;
+    public string BossLocationName => bossLocationName;
     public SoundRef CorridorBgm => corridorBgm;
     public SoundRef BossCombatBgm => bossCombatBgm;
     public RouteSetLoadManifestSO LoadManifest => loadManifest;
@@ -31,6 +38,33 @@ public sealed class CorridorBossRouteSetSO : ScriptableObject
     public bool IsValid =>
         !string.IsNullOrWhiteSpace(corridorSceneName) &&
         !string.IsNullOrWhiteSpace(bossSceneName);
+
+    public bool TryResolveLocationName(string sceneName, out string locationName)
+    {
+        locationName = null;
+        if (string.IsNullOrWhiteSpace(sceneName))
+            return false;
+
+        if (string.Equals(sceneName, corridorSceneName, StringComparison.OrdinalIgnoreCase))
+        {
+            if (string.IsNullOrWhiteSpace(corridorLocationName))
+                return false;
+
+            locationName = corridorLocationName;
+            return true;
+        }
+
+        if (string.Equals(sceneName, bossSceneName, StringComparison.OrdinalIgnoreCase))
+        {
+            if (string.IsNullOrWhiteSpace(bossLocationName))
+                return false;
+
+            locationName = bossLocationName;
+            return true;
+        }
+
+        return false;
+    }
 
     public bool TryCreateCorridorRoute(TransitionType transitionType, out PortalRouteDecision route)
     {

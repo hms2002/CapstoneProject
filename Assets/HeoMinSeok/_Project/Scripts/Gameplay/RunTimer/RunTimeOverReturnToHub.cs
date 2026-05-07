@@ -1,11 +1,6 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-/// <summary>
-/// 책임 :
-/// - 런 종료 사유가 TimeOver일 때 허브 복귀 경로를 실행한다.
-/// - 연출이 아직 없더라도 시간 초과 실패가 실제 씬 전환으로 이어지도록 최소 동작을 보장한다.
-/// </summary>
 [DisallowMultipleComponent]
 public sealed class RunTimeOverReturnToHub : MonoBehaviour
 {
@@ -14,38 +9,53 @@ public sealed class RunTimeOverReturnToHub : MonoBehaviour
     [SerializeField] private bool useFadeTransitionService = true;
 
     private bool isHandlingTransition;
+    private RunTimeLimitSystem boundTimeLimitSystem;
 
     private void OnEnable()
     {
         if (GamePlayDataManager.Instance != null)
-        {
             GamePlayDataManager.Instance.OnRunStarted += HandleRunStarted;
-            GamePlayDataManager.Instance.OnRunEnded += HandleRunEnded;
-        }
+
+        RunTimeLimitSystem.InstanceChanged += HandleTimeLimitSystemChanged;
+        BindTimeLimitSystem(RunTimeLimitSystem.Instance);
     }
 
     private void OnDisable()
     {
         if (GamePlayDataManager.Instance != null)
-        {
             GamePlayDataManager.Instance.OnRunStarted -= HandleRunStarted;
-            GamePlayDataManager.Instance.OnRunEnded -= HandleRunEnded;
-        }
+
+        RunTimeLimitSystem.InstanceChanged -= HandleTimeLimitSystemChanged;
+        BindTimeLimitSystem(null);
     }
 
-    /// <summary>
-    /// 책임 :
-    /// - 새 런이 시작될 때 시간 초과 전환 가드를 초기화한다.
-    /// - 이전 런의 TimeOver 처리 상태가 다음 런까지 남지 않게 보장한다.
-    /// </summary>
     private void HandleRunStarted()
     {
         isHandlingTransition = false;
     }
 
-    private void HandleRunEnded(RunEndReason reason)
+    private void HandleTimeLimitSystemChanged(RunTimeLimitSystem system)
     {
-        if (reason != RunEndReason.TimeOver || isHandlingTransition)
+        BindTimeLimitSystem(system);
+    }
+
+    private void BindTimeLimitSystem(RunTimeLimitSystem system)
+    {
+        if (boundTimeLimitSystem == system)
+            return;
+
+        if (boundTimeLimitSystem != null)
+            boundTimeLimitSystem.OnTimeExpired -= HandleTimeExpired;
+
+        boundTimeLimitSystem = system;
+
+        if (boundTimeLimitSystem != null)
+            boundTimeLimitSystem.OnTimeExpired += HandleTimeExpired;
+    }
+
+    private void HandleTimeExpired()
+    {
+        if (isHandlingTransition)
             return;
 
         if (string.IsNullOrWhiteSpace(hubSceneName))
@@ -56,6 +66,30 @@ public sealed class RunTimeOverReturnToHub : MonoBehaviour
 
         isHandlingTransition = true;
 
+        Transform playerTransform = PlayerRuntimeRegistry.GetPlayerTransform();
+        PlayerDeathReturnToHub2D deathReturn = playerTransform != null
+            ? playerTransform.GetComponent<PlayerDeathReturnToHub2D>()
+            : null;
+
+        if (deathReturn != null)
+        {
+            if (deathReturn.TryStartTimeOverSequence(hubSceneName, useFadeTransitionService))
+                return;
+
+            Debug.LogWarning(
+                "[RunTimeOverReturnToHub] Player death return sequence is already running. TimeOver fallback was skipped.",
+                this);
+            return;
+        }
+
+        Debug.LogWarning(
+            "[RunTimeOverReturnToHub] Player death return component is missing. Falling back to immediate TimeOver return.",
+            this);
+        FallbackReturnToHub();
+    }
+
+    private void FallbackReturnToHub()
+    {
         if (UIManager.Instance != null)
         {
             UIManager.Instance.CloseAllPopups();
@@ -63,17 +97,12 @@ public sealed class RunTimeOverReturnToHub : MonoBehaviour
             UIManager.Instance.HideWorldPrompt();
         }
 
-        var request = GameOverPresentationRequest.TimeOver(
-            PlayerRuntimeRegistry.GetPlayerTransform(),
-            hubSceneName,
-            useFadeTransitionService);
-
-        if (GameOverPresentationController.TryShow(request))
-            return;
+        if (GamePlayDataManager.Instance != null)
+            GamePlayDataManager.Instance.EndRun(RunEndReason.TimeOver);
 
         if (useFadeTransitionService)
         {
-            var transitionCoordinator = SceneTransitionCoordinator.Instance;
+            SceneTransitionCoordinator transitionCoordinator = SceneTransitionCoordinator.Instance;
             if (transitionCoordinator != null && transitionCoordinator.TryLoadScene(hubSceneName))
                 return;
         }

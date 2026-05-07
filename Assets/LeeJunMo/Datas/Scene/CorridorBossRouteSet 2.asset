@@ -16,3 +16,5 @@ MonoBehaviour:
   corridorEntryPointId: Default
   bossSceneName: ProtoTypeBoss 3
   bossEntryPointId: Default
+  corridorLocationName: 그림자 감옥
+  bossLocationName: 클로에의 방

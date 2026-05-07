@@ -117,6 +117,11 @@ public class LootManager : MonoBehaviour
 
     public List<ScriptableObject> GenerateChestLoot()
     {
+        return GenerateChestLoot(default);
+    }
+
+    public List<ScriptableObject> GenerateChestLoot(ChestRunModifierDelta extraModifiers)
+    {
         var drops = new List<ScriptableObject>();
         StageLootTable table = GetCurrentTable();
         if (table == null)
@@ -127,7 +132,7 @@ public class LootManager : MonoBehaviour
         HashSet<string> banList = poolService.BuildPlayerWeaponExclusionSet();
         
         // 싱글톤 직접 참조 대신 외부에서 주입된 Provider를 통해 업그레이드 보너스 수치를 받아옵니다.
-        ChestRunModifierDelta chestModifiers = ChestModifierProvider != null ? ChestModifierProvider.Invoke() : default;
+        ChestRunModifierDelta chestModifiers = ResolveChestModifiers(extraModifiers);
 
         int weaponCount = rollService.PickCountInProfile(
             table.ChestWeaponCountProfile,
@@ -163,6 +168,16 @@ public class LootManager : MonoBehaviour
         }
 
         return drops;
+    }
+
+    private ChestRunModifierDelta ResolveChestModifiers(ChestRunModifierDelta extraModifiers)
+    {
+        ChestRunModifierDelta modifiers = ChestModifierProvider != null
+            ? ChestModifierProvider.Invoke()
+            : (RunModifierService.Instance != null ? RunModifierService.Instance.ChestModifiers : default);
+
+        modifiers.Add(extraModifiers);
+        return modifiers;
     }
 
     public void SpawnMonsterLoot(Vector3 position)
@@ -217,6 +232,12 @@ public class LootManager : MonoBehaviour
     {
         EnsureServices();
         spawnService.SpawnLootObject(position, itemData);
+    }
+
+    public void SpawnFieldHealPickup(Vector3 position)
+    {
+        EnsureServices();
+        spawnService.SpawnFieldHealPickup(position);
     }
 
     public int GetBossMagicStoneCount()

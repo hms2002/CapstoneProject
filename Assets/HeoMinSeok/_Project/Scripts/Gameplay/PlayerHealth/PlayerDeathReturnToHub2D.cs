@@ -14,6 +14,9 @@ using UnityGAS;
 public sealed class PlayerDeathReturnToHub2D : MonoBehaviour
 {
     private const string DeadStateTagSetResourcePath = "Tags/TagSet/TS_PlayerDeadState";
+    private const string DefaultTrapCauseName = "구덩이";
+    private const string DefaultMonsterCauseName = "알 수 없는 적";
+    private const string TimeOverCauseName = "마왕의 인내심";
 
     [Header("Refs")]
     [SerializeField] private AttributeSet attributeSet;
@@ -93,7 +96,7 @@ public sealed class PlayerDeathReturnToHub2D : MonoBehaviour
         if (newValue > 0f)
             return;
 
-        StartCoroutine(CoDeathSequence());
+        TryStartDefeatSequence();
     }
 
     private void TryStartDeathSequenceFromCurrentHp()
@@ -102,7 +105,17 @@ public sealed class PlayerDeathReturnToHub2D : MonoBehaviour
             return;
 
         if (attributeSet.GetAttributeValue(hpDef) <= 0f)
-            StartCoroutine(CoDeathSequence());
+            TryStartDefeatSequence();
+    }
+
+    public bool TryStartTimeOverSequence(string targetHubSceneName = null, bool useSceneTransitionService = true)
+    {
+        return TryStartGameOverSequence(
+            GameOverCauseKind.TimeOver,
+            TimeOverCauseName,
+            RunEndReason.TimeOver,
+            ResolveHubSceneName(targetHubSceneName),
+            useSceneTransitionService);
     }
 
 #if UNITY_EDITOR
@@ -148,13 +161,45 @@ public sealed class PlayerDeathReturnToHub2D : MonoBehaviour
     }
 #endif
 
-    private IEnumerator CoDeathSequence()
+    private bool TryStartDefeatSequence()
     {
         if (isDeathSequenceRunning)
-            yield break;
+            return false;
+
+        string causeName = string.IsNullOrWhiteSpace(lastDamageSourceName)
+            ? (lastDamageCauseKind == GameOverCauseKind.Trap ? DefaultTrapCauseName : DefaultMonsterCauseName)
+            : lastDamageSourceName;
+
+        return TryStartGameOverSequence(
+            lastDamageCauseKind,
+            causeName,
+            RunEndReason.Defeat,
+            ResolveHubSceneName(null),
+            useSceneTransitionService: true);
+    }
+
+    private bool TryStartGameOverSequence(
+        GameOverCauseKind causeKind,
+        string causeName,
+        RunEndReason endRunReason,
+        string targetHubSceneName,
+        bool useSceneTransitionService)
+    {
+        if (isDeathSequenceRunning)
+            return false;
 
         isDeathSequenceRunning = true;
+        StartCoroutine(CoDeathSequence(causeKind, causeName, endRunReason, targetHubSceneName, useSceneTransitionService));
+        return true;
+    }
 
+    private IEnumerator CoDeathSequence(
+        GameOverCauseKind causeKind,
+        string causeName,
+        RunEndReason endRunReason,
+        string targetHubSceneName,
+        bool useSceneTransitionService)
+    {
         BlockPlayerControl();
         CenterCameraOnDeath();
 
@@ -167,10 +212,10 @@ public sealed class PlayerDeathReturnToHub2D : MonoBehaviour
             yield return new WaitForSeconds(fallbackDelaySeconds);
         }
 
-        if (TryShowGameOverPresentation())
+        if (TryShowGameOverPresentation(causeKind, causeName, endRunReason, targetHubSceneName, useSceneTransitionService))
             yield break;
 
-        ReturnToHub();
+        ReturnToHub(endRunReason, targetHubSceneName, useSceneTransitionService);
     }
 
     private void BlockPlayerControl()
@@ -230,18 +275,20 @@ public sealed class PlayerDeathReturnToHub2D : MonoBehaviour
         CameraBootstrap.CenterGameplayCameraOn(transform);
     }
 
-    private bool TryShowGameOverPresentation()
+    private bool TryShowGameOverPresentation(
+        GameOverCauseKind causeKind,
+        string causeName,
+        RunEndReason endRunReason,
+        string targetHubSceneName,
+        bool useSceneTransitionService)
     {
-        string causeName = string.IsNullOrWhiteSpace(lastDamageSourceName)
-            ? (lastDamageCauseKind == GameOverCauseKind.Trap ? "구덩이" : "알 수 없는 적")
-            : lastDamageSourceName;
+        GameOverPresentationRequest request = causeKind == GameOverCauseKind.TimeOver
+            ? GameOverPresentationRequest.TimeOver(transform, targetHubSceneName, useSceneTransitionService)
+            : GameOverPresentationRequest.Defeat(transform, causeName, causeKind, targetHubSceneName, useSceneTransitionService);
 
-        var request = GameOverPresentationRequest.Defeat(
-            transform,
-            causeName,
-            lastDamageCauseKind,
-            hubSceneName,
-            useSceneTransitionService: true);
+        request.CauseName = string.IsNullOrWhiteSpace(causeName) ? request.CauseName : causeName;
+        request.EndRunOnReturn = true;
+        request.EndRunReason = endRunReason;
 
         return GameOverPresentationController.TryShow(request);
     }
@@ -339,12 +386,26 @@ public sealed class PlayerDeathReturnToHub2D : MonoBehaviour
             : GameOverCauseKind.Monster;
     }
 
-    private void ReturnToHub()
+    private string ResolveHubSceneName(string targetHubSceneName)
+    {
+        return string.IsNullOrWhiteSpace(targetHubSceneName) ? hubSceneName : targetHubSceneName;
+    }
+
+    private void ReturnToHub(RunEndReason endRunReason, string targetHubSceneName, bool useSceneTransitionService)
     {
         if (GamePlayDataManager.Instance != null)
-            GamePlayDataManager.Instance.EndRun(RunEndReason.Defeat);
+            GamePlayDataManager.Instance.EndRun(endRunReason);
 
-        SceneManager.LoadScene(hubSceneName);
+        string resolvedHubSceneName = ResolveHubSceneName(targetHubSceneName);
+
+        if (useSceneTransitionService)
+        {
+            SceneTransitionCoordinator transitionCoordinator = SceneTransitionCoordinator.Instance;
+            if (transitionCoordinator != null && transitionCoordinator.TryLoadScene(resolvedHubSceneName))
+                return;
+        }
+
+        SceneManager.LoadScene(resolvedHubSceneName);
     }
 
     /// <summary>

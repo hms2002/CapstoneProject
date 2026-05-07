@@ -2,7 +2,7 @@
 status: active
 authority: project-log
 category: decision-log
-last_reviewed: 2026-05-08
+last_reviewed: 2026-05-05
 ---
 
 # Decision Log
@@ -44,15 +44,29 @@ Implications:
 - Current implementation decisions should prefer `Contracts` and `Architecture`.
 - Review documents can explain why a decision exists, but should not override active rules.
 
-## 2026-05-08 - Slime Queen Phase 2 Twin Shares Boss HP and HUD Ownership
+## 2026-05-06 - Update CurrentTask on Active Work Changes
 
 Decision:
-Slime Queen phase 2 uses a spawned twin for independent phase 2 pattern execution, but the original boss remains the owner of HP, HUD binding, rewards, and death cleanup.
+Update `Docs/CurrentTask.md` whenever the active implementation task changes.
 
 Reason:
-The two phase 2 bodies should behave independently in combat, but the encounter is still one boss fight. Keeping one authoritative HP owner prevents duplicated rewards, duplicated death handling, and HUD ownership drift.
+The file was being read but not updated, so it no longer represented the actual task in progress.
 
 Implications:
-- Damage received by the twin is redirected to the original boss HP.
-- The original Slime Queen exposes split health presentation data through `IBossSplitHealthPresentation`.
-- The current split health bar divider is a fallback until the authored UI is added to `GlobalUIRoot` and wired through serialized references.
+- `CurrentTask.md` should hold the current goal, scope, and done criteria.
+- Detailed implementation notes belong in `Docs/SessionLogs/`.
+- Durable design choices still belong in `Docs/DecisionLog.md`.
+
+## 2026-05-06 - Shop v2 Uses Definition-Driven Runtime Policy
+
+Decision:
+Use `ShopDefinitionSO` as the source of truth for merchant shop settings, and combine it with `RunModifierService.ShopModifiers` through a shop policy layer.
+
+Reason:
+Upgrade effects now modify shop availability, slot count, discounts, and refresh count. Keeping those policies inside `MerchantNPC` would make scene presentation, stock state, and upgrade logic too tightly coupled.
+
+Implications:
+- Merchant stock remains run/session scoped in `GamePlayData.merchantStates`.
+- Existing stock is preserved when discounts change.
+- Existing slots are preserved when slot count expands; only newly opened slots are rolled.
+- Scene and prefab references must be manually wired to a `ShopDefinitionSO`.

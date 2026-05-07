@@ -18,6 +18,34 @@ public class ChestInventory
     public int Capacity => capacity;
     public event Action OnChanged;
 
+    public ChestInventory()
+    {
+        capacity = Mathf.Max(0, capacity);
+        EnsureSize();
+    }
+
+    public ChestInventory(int capacity)
+    {
+        this.capacity = Mathf.Max(0, capacity);
+        EnsureSize();
+    }
+
+    public int Count
+    {
+        get
+        {
+            EnsureSize();
+            int count = 0;
+            for (int i = 0; i < slots.Count; i++)
+            {
+                if (slots[i].item != null)
+                    count++;
+            }
+
+            return count;
+        }
+    }
+
     private void EnsureSize()
     {
         if (slots == null) slots = new List<Slot>();
@@ -93,6 +121,26 @@ public class ChestInventory
 
         OnChanged?.Invoke();
         return true;
+    }
+
+    public bool TryAddRelicWithLevel(RelicDefinition relic, int level)
+    {
+        if (relic == null)
+            return false;
+
+        return TryFindEmpty(out int idx) && SetRelicWithLevel(idx, relic, level);
+    }
+
+    public void Clear()
+    {
+        EnsureSize();
+        for (int i = 0; i < slots.Count; i++)
+        {
+            slots[i].item = null;
+            slots[i].relicLevel = 0;
+        }
+
+        OnChanged?.Invoke();
     }
 
     // =========================================================

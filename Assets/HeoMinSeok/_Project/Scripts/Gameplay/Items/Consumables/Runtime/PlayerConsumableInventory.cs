@@ -72,6 +72,41 @@ public class PlayerConsumableInventory : MonoBehaviour
         return TryAcquireDetailed(consumable) == AcquireResult.Success;
     }
 
+    public int CountConsumable(ConsumableDefinition consumable)
+    {
+        if (consumable == null || slots == null)
+            return 0;
+
+        int count = 0;
+        for (int i = 0; i < slots.Length; i++)
+        {
+            if (slots[i] == consumable)
+                count++;
+        }
+
+        return count;
+    }
+
+    public int EnsureMinimumConsumableCount(ConsumableDefinition consumable, int minimumCount)
+    {
+        if (consumable == null || minimumCount <= 0)
+            return 0;
+
+        int currentCount = CountConsumable(consumable);
+        int addedCount = 0;
+
+        while (currentCount < minimumCount)
+        {
+            if (!TryAcquire(consumable))
+                break;
+
+            currentCount++;
+            addedCount++;
+        }
+
+        return addedCount;
+    }
+
     public bool TryUseAt(int slotIndex)
     {
         if (!IsValidSlot(slotIndex))
