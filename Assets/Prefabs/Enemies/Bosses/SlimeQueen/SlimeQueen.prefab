@@ -256,20 +256,26 @@ MonoBehaviour:
   callSlimeSpeechText: "\uBAA8\uB450 \uBAA8\uC5EC\uB77C!!"
   callSlimeSpeechSeconds: 1.4
   callSlimeSpawnDelaySeconds: 0.35
-  bishopLineWarningStyle: {fileID: 11400000, guid: b15f18602ec87284d80cbd57720425f1, type: 2}
-  bishopLineBlastStyle: {fileID: 11400000, guid: b15f18602ec87284d80cbd57720425f1, type: 2}
-  bishopLineWarningSeconds: 1.4
-  bishopLineWarningWidth: 0.35
-  bishopLineBlastInterval: 1.2
-  bishopLineBlastDiameter: 1.25
-  bishopLineBlastViewSeconds: 0.2
-  bishopLineBlastDamage: 1.5
-  bishopLineBlastDamageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
-  bishopLineObstacleLayers:
-    serializedVersion: 2
-    m_Bits: 1073741824
-  bishopLineRaycastDistance: 64
-  bishopLineFallbackLength: 8
+  bodyInflateWarningStyle: {fileID: 11400000, guid: b15f18602ec87284d80cbd57720425f1, type: 2}
+  bodyInflateWarningDiameter: 4
+  bodyInflateWarningSeconds: 1.4
+  bodyInflateImpactDiameter: 4
+  bodyInflateImpactDamage: 1.5
+  bodyInflateImpactDamageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
+  bodyInflateImpactKnockbackEffect: {fileID: 11400000, guid: 2f5faaf6bd840544cb59f6d23905c40d, type: 2}
+  bodyInflateImpactKnockbackImpulse: 8
+  phase2EnterHealthRatio: 0.5
+  phase2ContactDamage: 1
+  phase2ContactDamageCooldownSeconds: 1
+  phase2ContactDamageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
+  phase2SlamWarningStyle: {fileID: 11400000, guid: b15f18602ec87284d80cbd57720425f1, type: 2}
+  phase2SlamWarningDiameter: 2.8
+  phase2SlamDamageDiameter: 2.8
+  phase2SlamIntervalSeconds: 1
+  phase2SlamCount: 3
+  phase2SlamArcHeight: 2.8
+  phase2SlamDamage: 1
+  phase2SlamDamageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
 --- !u!114 &1007000
 MonoBehaviour:
   m_ObjectHideFlags: 0

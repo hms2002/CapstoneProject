@@ -20,12 +20,15 @@ public sealed class AbilityLogic_SlimeQueenRandomJump : AbilityLogic
         Vector3 startPosition = slimeQueen.transform.position;
         startPosition.z = landingPosition.z;
 
+        slimeQueen.SetPatternMoveDamageBlocked(true);
+
         float elapsedSeconds = 0f;
         while (elapsedSeconds < slimeQueen.JumpDurationSeconds)
         {
             if (IsAbilityCancelled(spec))
             {
                 slimeQueen.SnapToJumpLanding(startPosition);
+                slimeQueen.SetPatternMoveDamageBlocked(false);
                 yield break;
             }
 
@@ -36,6 +39,7 @@ public sealed class AbilityLogic_SlimeQueenRandomJump : AbilityLogic
         }
 
         slimeQueen.SnapToJumpLanding(landingPosition);
+        slimeQueen.SetPatternMoveDamageBlocked(false);
         slimeQueen.ApplyJumpLandingDamage(spec, landingPosition);
         slimeQueen.FaceCurrentTarget();
     }

@@ -2,7 +2,7 @@
 status: active
 authority: project-log
 category: decision-log
-last_reviewed: 2026-05-05
+last_reviewed: 2026-05-08
 ---
 
 # Decision Log
@@ -43,3 +43,16 @@ Older reviews and handoff notes are valuable context, but they can conflict with
 Implications:
 - Current implementation decisions should prefer `Contracts` and `Architecture`.
 - Review documents can explain why a decision exists, but should not override active rules.
+
+## 2026-05-08 - Slime Queen Phase 2 Twin Shares Boss HP and HUD Ownership
+
+Decision:
+Slime Queen phase 2 uses a spawned twin for independent phase 2 pattern execution, but the original boss remains the owner of HP, HUD binding, rewards, and death cleanup.
+
+Reason:
+The two phase 2 bodies should behave independently in combat, but the encounter is still one boss fight. Keeping one authoritative HP owner prevents duplicated rewards, duplicated death handling, and HUD ownership drift.
+
+Implications:
+- Damage received by the twin is redirected to the original boss HP.
+- The original Slime Queen exposes split health presentation data through `IBossSplitHealthPresentation`.
+- The current split health bar divider is a fallback until the authored UI is added to `GlobalUIRoot` and wired through serialized references.
