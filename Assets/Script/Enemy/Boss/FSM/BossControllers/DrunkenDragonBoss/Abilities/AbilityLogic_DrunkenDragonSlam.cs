@@ -51,6 +51,7 @@ public sealed class AbilityLogic_DrunkenDragonSlam : AbilityLogic
     [SerializeField] private AlcoholPuddleArea alcoholPuddlePrefab;
     [SerializeField] private DrunkenDragonThrownKegActor thrownKegPrefab;
     [SerializeField, Min(0)] private int scatteredKegCount = 4;
+    [SerializeField, Min(1)] private int scatteredKegArenaSampleAttempts = 80;
     [SerializeField, Min(0f)] private float scatteredKegRadius = 3f;
     [SerializeField, Min(0f)] private float scatteredKegWarningSeconds = 1f;
     [SerializeField, Min(0.01f)] private float scatteredKegTravelSeconds = 0.35f;
@@ -324,7 +325,7 @@ public sealed class AbilityLogic_DrunkenDragonSlam : AbilityLogic
         if (dragon == null || alcoholPuddlePrefab == null || scatteredKegCount <= 0)
             yield break;
 
-        List<Vector3> kegTargets = BuildScatteredKegTargets(impactPosition);
+        List<Vector3> kegTargets = BuildScatteredKegTargets(dragon, impactPosition);
         ShowScatteredKegTelegraphs(telegraphService, kegTargets);
 
         yield return WaitForSecondsUnlessCancelled(scatteredKegWarningSeconds, spec);
@@ -378,13 +379,45 @@ public sealed class AbilityLogic_DrunkenDragonSlam : AbilityLogic
         }
     }
 
-    private List<Vector3> BuildScatteredKegTargets(Vector2 impactPosition)
+    /// <summary>
+    /// 책임:
+    /// 내려찍기 후 수직 낙하 술통의 목표 지점을 arena bounds 안에서 고르고, bounds가 없으면 기존 착지 주변 산포로 대체한다.
+    /// </summary>
+    private List<Vector3> BuildScatteredKegTargets(DrunkenDragonController dragon, Vector2 impactPosition)
     {
         int count = Mathf.Max(0, scatteredKegCount);
         List<Vector3> results = new(count);
         if (count <= 0)
             return results;
 
+        if (TryBuildArenaRandomKegTargets(dragon, count, results))
+            return results;
+
+        return BuildFallbackScatteredKegTargets(impactPosition, count);
+    }
+
+    private bool TryBuildArenaRandomKegTargets(
+        DrunkenDragonController dragon,
+        int count,
+        List<Vector3> results)
+    {
+        if (dragon == null || results == null)
+            return false;
+
+        for (int i = 0; i < count; i++)
+        {
+            if (!dragon.TryGetRandomArenaPoint(scatteredKegArenaSampleAttempts, out Vector2 point))
+                return false;
+
+            results.Add(point);
+        }
+
+        return results.Count == count;
+    }
+
+    private List<Vector3> BuildFallbackScatteredKegTargets(Vector2 impactPosition, int count)
+    {
+        List<Vector3> results = new(count);
         if (scatteredKegRadius <= 0f)
         {
             for (int i = 0; i < count; i++)
