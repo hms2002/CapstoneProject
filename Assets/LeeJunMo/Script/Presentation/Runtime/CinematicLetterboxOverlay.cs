@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public sealed class BossDeathCinematicOverlay
+public sealed class CinematicLetterboxOverlay
 {
     private static readonly GlobalCanvasLayer[] FadedLayers =
     {
@@ -154,7 +154,7 @@ public sealed class BossDeathCinematicOverlay
         if (overlayRoot != null)
             return;
 
-        overlayRoot = new GameObject("BossDeathCinematicOverlay", typeof(RectTransform), typeof(Canvas));
+        overlayRoot = new GameObject("CinematicLetterboxOverlay", typeof(RectTransform), typeof(Canvas));
         rootRect = overlayRoot.GetComponent<RectTransform>();
 
         Canvas canvas = overlayRoot.GetComponent<Canvas>();

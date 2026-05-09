@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 808910561e593534f9ea3637c00cc255, type: 3}
+  m_Name: AD_LightningSpearSkill1
+  m_EditorClassIdentifier:
+  abilityName: AD_LightningSpearSkill1
+  icon: {fileID: -6255143421326930151, guid: e658b351294cef44b8a5c823d1fdcb73, type: 3}
+  description: Rush to a cursor-near lightning spear mark, or sweep forward if no valid mark exists.
+  cooldown: 3
+  executionPolicy: 0
+  useCharges: 0
+  maxCharges: 1
+  cooldownEffect: {fileID: 0}
+  cooldownTag: {fileID: 0}
+  startCooldownOnEnd: 0
+  castTime: 0
+  recoveryTime: 0.1
+  canCastWhileMoving: 1
+  interruptible: 1
+  requireTargetObject: 0
+  cost: 0
+  costAttribute: {fileID: 0}
+  animationChannel: 1
+  animationTrigger:
+  animationTriggerHash: 0
+  abilityTags: []
+  requiredTags: []
+  blockedByTags: []
+  cancelCastingOnTags: []
+  cancelExecutionOnTags: []
+  requiredTagSets: []
+  blockedByTagSets: []
+  targetRequiredTagSets: []
+  targetBlockedByTagSets: []
+  grantedTagsWhileActive:
+  - {fileID: 11400000, guid: d2be3469c5cf9c849b948eb616f7f868, type: 2}
+  targetRequiredTags: []
+  targetBlockedByTags: []
+  logic: {fileID: 11400000, guid: c8d9774047104fc88e98b71ecb3638b3, type: 2}
+  sourceObject: {fileID: 11400000, guid: 9d6f84052a5d453e915f8a543d32ba77, type: 2}
+  containers: []

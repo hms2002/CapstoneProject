@@ -10,3 +10,8 @@ public interface IHoverView : IUIView
     void ShowHover(object data, object context = null);
     void HideHover();
 }
+
+public interface IHoverPositionOffsetProvider
+{
+    Vector2 HoverPositionOffset { get; }
+}

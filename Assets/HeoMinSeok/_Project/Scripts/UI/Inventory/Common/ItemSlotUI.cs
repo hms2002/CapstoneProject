@@ -2,6 +2,7 @@ using UnityEngine.EventSystems;
 using UnityEngine;
 using UnityEngine.UI;
 using System;
+using System.Collections;
 using TMPro;
 
 public interface IItemContainer
@@ -28,14 +29,29 @@ public interface IRelicSlotReceiver
 /// </summary>
 public class ItemSlotUI : MonoBehaviour,
     IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler,
-    IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
+    IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler,
+    IPointerDownHandler, IPointerUpHandler
 {
     [Header("UI")]
     [SerializeField] private Image icon;
     [SerializeField] private TextMeshProUGUI levelText;
+    [SerializeField] private GameObject hoverHighlightRoot;
+
+    [Header("Highlight Presentation")]
+    [SerializeField, Range(0f, 1f)] private float hoverHighlightAlpha = 0.65f;
+    [SerializeField, Range(0f, 1f)] private float actionHighlightAlpha = 1f;
+    [SerializeField, Min(0f)] private float highlightFadeInDuration = 0.08f;
+    [SerializeField, Min(0f)] private float highlightFadeOutDuration = 0.08f;
+    [SerializeField] private bool useUnscaledHighlightTime = true;
+
     private IItemContainer container;
     private int index;
     [SerializeField] private RectTransform slotRect;
+    private CanvasGroup hoverHighlightCanvasGroup;
+    private Coroutine hoverHighlightRoutine;
+    private bool isPointerOver;
+    private bool isPointerPressed;
+    private bool isDraggingThisSlot;
 
     public RectTransform SlotRect
     {
@@ -56,9 +72,15 @@ public class ItemSlotUI : MonoBehaviour,
     {
         if (slotRect == null)
             slotRect = transform as RectTransform;
+
+        SetHoverHighlightImmediate(false);
     }
     private void OnDisable()
     {
+        isPointerOver = false;
+        isPointerPressed = false;
+        isDraggingThisSlot = false;
+        SetHoverHighlightImmediate(false);
         ItemDragContext.CancelActiveDragSession();
         MouseCursorService.Instance?.SetDragging(this, false);
         MouseCursorService.Instance?.SetInteractable(this, false);
@@ -74,6 +96,10 @@ public class ItemSlotUI : MonoBehaviour,
 
         this.container = container;
         this.index = index;
+        isPointerOver = false;
+        isPointerPressed = false;
+        isDraggingThisSlot = false;
+        SetHoverHighlightImmediate(false);
 
         if (this.container != null)
             this.container.OnChanged += Refresh;
@@ -83,9 +109,17 @@ public class ItemSlotUI : MonoBehaviour,
 
     public void Refresh()
     {
-        if (container == null || icon == null) return;
+        if (container == null)
+        {
+            SetHoverHighlight(false);
+            return;
+        }
 
         var so = container.Get(index);
+        RefreshHoverHighlight(so);
+
+        if (icon == null) return;
+
         var def = so.AsDef();
 
         if (def == null || def.Icon == null)
@@ -100,10 +134,16 @@ public class ItemSlotUI : MonoBehaviour,
         }
         if (so is RelicDefinition && container is IRelicLevelProvider p && p.TryGetRelicLevel(index, out var lvl))
         {
-            levelText.gameObject.SetActive(true);
-            levelText.text = $"Lv {lvl}";
+            if (levelText != null)
+            {
+                levelText.gameObject.SetActive(true);
+                levelText.text = $"Lv {lvl}";
+            }
         }
-        else levelText.gameObject.SetActive(false);
+        else if (levelText != null)
+        {
+            levelText.gameObject.SetActive(false);
+        }
     }
 
     public void OnBeginDrag(PointerEventData eventData)
@@ -114,10 +154,22 @@ public class ItemSlotUI : MonoBehaviour,
         if (UIManager.Instance != null) UIManager.Instance.HideHoverImmediate();
 
         var so = container.Get(index);
-        if (so == null) return;
+        if (so == null)
+        {
+            SetHoverHighlight(false);
+            return;
+        }
 
         var def = so.AsDef();
-        if (def == null) return;
+        if (def == null)
+        {
+            SetHoverHighlight(false);
+            return;
+        }
+
+        isPointerPressed = false;
+        isDraggingThisSlot = true;
+        RefreshHoverHighlight(so);
 
         int relicLevel = 0;
         if (so is RelicDefinition && container is IRelicLevelProvider p)
@@ -140,8 +192,11 @@ public class ItemSlotUI : MonoBehaviour,
 
     public void OnEndDrag(PointerEventData eventData)
     {
+        isPointerPressed = false;
+        isDraggingThisSlot = false;
         ItemDragContext.CancelActiveDragSession();
         MouseCursorService.EnsureInstance().SetDragging(this, false);
+        Refresh();
     }
 
     public void OnDrop(PointerEventData eventData)
@@ -159,8 +214,30 @@ public class ItemSlotUI : MonoBehaviour,
         if (eventData.button == PointerEventData.InputButton.Right)
         {
             TryQuickMove();
+            Refresh();
             return;
         }
+    }
+
+    public void OnPointerDown(PointerEventData eventData)
+    {
+        if (container == null || ItemDragContext.Active)
+            return;
+
+        if (container.Get(index) == null)
+            return;
+
+        isPointerPressed = true;
+        RefreshHoverHighlight();
+    }
+
+    public void OnPointerUp(PointerEventData eventData)
+    {
+        if (!isPointerPressed)
+            return;
+
+        isPointerPressed = false;
+        RefreshHoverHighlight();
     }
 
     // 책임 : 우클릭 빠른 이동 시 아이템 종류와 현재 컨테이너에 따라
@@ -339,17 +416,30 @@ public class ItemSlotUI : MonoBehaviour,
     }
     public void OnPointerEnter(PointerEventData eventData)
     {
-        if (container == null) return;
-        if (ItemDragContext.Active) return;
+        isPointerOver = true;
+
+        if (container == null)
+        {
+            SetHoverHighlight(false);
+            return;
+        }
+
+        if (ItemDragContext.Active)
+        {
+            RefreshHoverHighlight();
+            return;
+        }
 
         var so = container.Get(index);
         if (so == null)
         {
+            SetHoverHighlight(false);
             MouseCursorService.EnsureInstance().SetInteractable(this, false);
             if (UIManager.Instance != null) UIManager.Instance.HideHoverImmediate();
             return;
         }
 
+        RefreshHoverHighlight(so);
         MouseCursorService.EnsureInstance().SetInteractable(this, true);
 
         // [수정] HoverController에게 띄우라고 요청
@@ -361,6 +451,11 @@ public class ItemSlotUI : MonoBehaviour,
 
     public void OnPointerExit(PointerEventData eventData)
     {
+        isPointerOver = false;
+        if (!isDraggingThisSlot)
+            isPointerPressed = false;
+
+        RefreshHoverHighlight();
         MouseCursorService.EnsureInstance().SetInteractable(this, false);
 
         if (ItemDragContext.Active) return;
@@ -370,5 +465,146 @@ public class ItemSlotUI : MonoBehaviour,
         {
             ItemHoverController.Instance.UnhoverSlot(slotRect);
         }
+    }
+
+    private void RefreshHoverHighlight()
+    {
+        ScriptableObject item = container != null ? container.Get(index) : null;
+        RefreshHoverHighlight(item);
+    }
+
+    private void RefreshHoverHighlight(ScriptableObject item)
+    {
+        bool shouldShow = ShouldShowHoverHighlight(item);
+        SetHoverHighlight(shouldShow, GetHoverHighlightTargetAlpha());
+    }
+
+    private bool ShouldShowHoverHighlight(ScriptableObject item)
+    {
+        if (item == null)
+            return false;
+
+        if (isDraggingThisSlot)
+            return true;
+
+        if (ItemDragContext.Active)
+            return false;
+
+        return isPointerOver;
+    }
+
+    private float GetHoverHighlightTargetAlpha()
+    {
+        return isPointerPressed || isDraggingThisSlot
+            ? actionHighlightAlpha
+            : hoverHighlightAlpha;
+    }
+
+    private void SetHoverHighlight(bool active)
+    {
+        SetHoverHighlight(active, GetHoverHighlightTargetAlpha());
+    }
+
+    private void SetHoverHighlight(bool active, float targetAlpha)
+    {
+        if (hoverHighlightRoot == null)
+            return;
+
+        ResolveHoverHighlightCanvasGroup();
+
+        if (active)
+        {
+            if (!hoverHighlightRoot.activeSelf)
+                hoverHighlightRoot.SetActive(true);
+
+            PlayHoverHighlightFade(targetAlpha, highlightFadeInDuration, false);
+            return;
+        }
+
+        if (!hoverHighlightRoot.activeSelf)
+        {
+            SetHoverHighlightAlpha(0f);
+            return;
+        }
+
+        PlayHoverHighlightFade(0f, highlightFadeOutDuration, true);
+    }
+
+    private void SetHoverHighlightImmediate(bool active)
+    {
+        StopHoverHighlightRoutine();
+
+        if (hoverHighlightRoot == null)
+            return;
+
+        ResolveHoverHighlightCanvasGroup();
+        hoverHighlightRoot.SetActive(active);
+        SetHoverHighlightAlpha(active ? GetHoverHighlightTargetAlpha() : 0f);
+    }
+
+    private void ResolveHoverHighlightCanvasGroup()
+    {
+        if (hoverHighlightRoot == null)
+            return;
+
+        if (hoverHighlightCanvasGroup == null || hoverHighlightCanvasGroup.gameObject != hoverHighlightRoot)
+            hoverHighlightCanvasGroup = hoverHighlightRoot.GetComponent<CanvasGroup>();
+
+        if (hoverHighlightCanvasGroup == null)
+            hoverHighlightCanvasGroup = hoverHighlightRoot.AddComponent<CanvasGroup>();
+
+        hoverHighlightCanvasGroup.interactable = false;
+        hoverHighlightCanvasGroup.blocksRaycasts = false;
+    }
+
+    private void PlayHoverHighlightFade(float targetAlpha, float duration, bool deactivateOnComplete)
+    {
+        StopHoverHighlightRoutine();
+
+        if (duration <= 0f)
+        {
+            SetHoverHighlightAlpha(targetAlpha);
+            if (deactivateOnComplete)
+                hoverHighlightRoot.SetActive(false);
+            return;
+        }
+
+        hoverHighlightRoutine = StartCoroutine(CoHoverHighlightFade(targetAlpha, duration, deactivateOnComplete));
+    }
+
+    private IEnumerator CoHoverHighlightFade(float targetAlpha, float duration, bool deactivateOnComplete)
+    {
+        float startAlpha = hoverHighlightCanvasGroup != null ? hoverHighlightCanvasGroup.alpha : targetAlpha;
+        float elapsed = 0f;
+
+        while (elapsed < duration)
+        {
+            elapsed += useUnscaledHighlightTime ? Time.unscaledDeltaTime : Time.deltaTime;
+            float t = Mathf.Clamp01(elapsed / duration);
+            SetHoverHighlightAlpha(Mathf.Lerp(startAlpha, targetAlpha, t));
+            yield return null;
+        }
+
+        SetHoverHighlightAlpha(targetAlpha);
+
+        if (deactivateOnComplete && hoverHighlightRoot != null)
+            hoverHighlightRoot.SetActive(false);
+
+        hoverHighlightRoutine = null;
+    }
+
+    private void SetHoverHighlightAlpha(float alpha)
+    {
+        if (hoverHighlightCanvasGroup != null)
+            hoverHighlightCanvasGroup.alpha = alpha;
+    }
+
+    private void StopHoverHighlightRoutine()
+    {
+        if (hoverHighlightRoutine == null)
+            return;
+
+        StopCoroutine(hoverHighlightRoutine);
+        hoverHighlightRoutine = null;
     }
 }

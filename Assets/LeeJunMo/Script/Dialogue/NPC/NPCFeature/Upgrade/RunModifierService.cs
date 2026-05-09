@@ -215,6 +215,7 @@ public class RunModifierService : MonoBehaviour
     public void ReloadFromSave()
     {
         hasLoadedFromSave = false;
+        cachedUpgradeNodes = null;
         EnsureLoadedFromPurchases();
         OnModifiersChanged?.Invoke();
     }
@@ -222,6 +223,7 @@ public class RunModifierService : MonoBehaviour
     public void RebuildFromPurchasedUpgrades()
     {
         hasLoadedFromSave = false;
+        cachedUpgradeNodes = null;
         EnsureLoadedFromPurchases();
         OnModifiersChanged?.Invoke();
     }
@@ -346,15 +348,38 @@ public class RunModifierService : MonoBehaviour
         if (cachedUpgradeNodes != null && cachedUpgradeNodes.Length > 0)
             return cachedUpgradeNodes;
 
-        cachedUpgradeNodes = Resources.LoadAll<UpgradeNodeSO>(UpgradeNodeResourcesPath);
+        var mergedNodes = new Dictionary<int, UpgradeNodeSO>();
 
-        if ((cachedUpgradeNodes == null || cachedUpgradeNodes.Length == 0) && UpgradeManager.Instance != null)
+        if (UpgradeManager.Instance != null)
         {
             var upgrades = UpgradeManager.Instance.GetAllUpgrades();
             if (upgrades != null && upgrades.Count > 0)
-                cachedUpgradeNodes = upgrades.ToArray();
+            {
+                for (int i = 0; i < upgrades.Count; i++)
+                {
+                    UpgradeNodeSO node = upgrades[i];
+                    if (node == null)
+                        continue;
+
+                    mergedNodes[node.nodeID] = node;
+                }
+            }
         }
 
+        UpgradeNodeSO[] resourceNodes = Resources.LoadAll<UpgradeNodeSO>(UpgradeNodeResourcesPath);
+        if (resourceNodes != null)
+        {
+            for (int i = 0; i < resourceNodes.Length; i++)
+            {
+                UpgradeNodeSO node = resourceNodes[i];
+                if (node == null || mergedNodes.ContainsKey(node.nodeID))
+                    continue;
+
+                mergedNodes.Add(node.nodeID, node);
+            }
+        }
+
+        cachedUpgradeNodes = mergedNodes.Values.ToArray();
         return cachedUpgradeNodes;
     }
 

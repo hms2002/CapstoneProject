@@ -76,7 +76,7 @@ public sealed class BossDeathPresentation : MonoBehaviour
     private BossControllerBase owner;
     private BossDrop bossDrop;
     private Coroutine runningSequence;
-    private BossDeathCinematicOverlay overlay;
+    private CinematicLetterboxOverlay overlay;
     private readonly List<Renderer> cachedDeathRenderers = new();
 
     private PlayerCinematicProtection lockedPlayerProtection;
@@ -130,7 +130,7 @@ public sealed class BossDeathPresentation : MonoBehaviour
     {
         SoundManager.EnsureInstance().StopMusic(deathBgmFadeOutDuration);
         LockPlayerControls();
-        overlay = new BossDeathCinematicOverlay();
+        overlay = new CinematicLetterboxOverlay();
 
         Coroutine overlayIntroRoutine = StartCoroutine(
             overlay.PlayIn(

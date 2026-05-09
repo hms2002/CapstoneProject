@@ -11,6 +11,7 @@ public sealed class LoadingOverlayView : MonoBehaviour
     [SerializeField] private TMP_Text statusText;
     [SerializeField] private TMP_Text detailText;
     [SerializeField] private TMP_Text percentText;
+    [SerializeField] private TMP_Text loadingText;
     [SerializeField] private TMP_Text tipLabelText;
     [SerializeField] private TMP_Text tipText;
     [SerializeField] private Image progressFillImage;
@@ -27,6 +28,7 @@ public sealed class LoadingOverlayView : MonoBehaviour
     public TMP_Text StatusText => statusText;
     public TMP_Text DetailText => detailText;
     public TMP_Text PercentText => percentText;
+    public TMP_Text LoadingText => loadingText != null ? loadingText : statusText;
     public TMP_Text TipLabelText => tipLabelText;
     public TMP_Text TipText => tipText;
     public Image ProgressFillImage => progressFillImage;
@@ -44,6 +46,7 @@ public sealed class LoadingOverlayView : MonoBehaviour
         TMP_Text runtimeStatusText,
         TMP_Text runtimeDetailText,
         TMP_Text runtimePercentText,
+        TMP_Text runtimeLoadingText,
         Image runtimeProgressFillImage)
     {
         root = runtimeRoot;
@@ -52,6 +55,7 @@ public sealed class LoadingOverlayView : MonoBehaviour
         statusText = runtimeStatusText;
         detailText = runtimeDetailText;
         percentText = runtimePercentText;
+        loadingText = runtimeLoadingText;
         progressFillImage = runtimeProgressFillImage;
         tipLabelText = null;
         tipText = null;

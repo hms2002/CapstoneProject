@@ -12,19 +12,22 @@ public readonly struct MonsterSpawnRequest
     public readonly Quaternion Rotation;
     public readonly MonsterRoomArea2D RoomArea;
     public readonly ChestMonsterKillLock LinkedChestKillLock;
+    public readonly MonsterSpawnRoomGroup SourceRoomGroup;
 
     public MonsterSpawnRequest(
         GameObject monsterPrefab,
         Vector3 position,
         Quaternion rotation,
         MonsterRoomArea2D roomArea,
-        ChestMonsterKillLock linkedChestKillLock)
+        ChestMonsterKillLock linkedChestKillLock,
+        MonsterSpawnRoomGroup sourceRoomGroup = null)
     {
         MonsterPrefab = monsterPrefab;
         Position = position;
         Rotation = rotation;
         RoomArea = roomArea;
         LinkedChestKillLock = linkedChestKillLock;
+        SourceRoomGroup = sourceRoomGroup;
     }
 
     public bool IsValid => MonsterPrefab != null;

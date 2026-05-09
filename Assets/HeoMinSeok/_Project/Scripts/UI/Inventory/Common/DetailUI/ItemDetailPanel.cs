@@ -1,3 +1,4 @@
+using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -7,7 +8,7 @@ using UnityEngine.UI;
 /// - 공용 상세 패널의 헤더와 각 아이템 타입별 상세 뷰를 연결한다.
 /// - 유물 프리뷰 가이드와 헤더 제목 병합처럼 공통 헤더 렌더링 규칙을 관리한다.
 /// </summary>
-public class ItemDetailPanel : MonoBehaviour, IHoverView
+public class ItemDetailPanel : MonoBehaviour, IHoverView, IHoverPositionOffsetProvider
 {
     public static ItemDetailPanel Instance { get; private set; }
 
@@ -37,12 +38,25 @@ public class ItemDetailPanel : MonoBehaviour, IHoverView
     [SerializeField] private TooltipColorPalette tooltipColorPalette;
     [SerializeField] private string glossaryLinkColorHex = "5EC8FF";
 
+    [Header("Presentation")]
+    [SerializeField] private Vector2 openOffset = new Vector2(0f, -24f);
+    [SerializeField, Min(0f)] private float openDuration = 0.12f;
+    [SerializeField, Min(0f)] private float closeDuration = 0.1f;
+    [SerializeField, Range(0f, 1f)] private float closedAlpha = 0f;
+    [SerializeField] private bool useUnscaledTime = true;
+
     private ItemDetailPanelServices _services;
     private object currentDefinition;
     private string currentHeaderLevelSuffix = string.Empty;
+    private CanvasGroup canvasGroup;
+    private Coroutine presentationRoutine;
+    private Vector2 hoverPositionOffset;
+    private bool isAnimating;
+    private int presentationSerial;
 
     public RectTransform Rect => transform as RectTransform;
-    public bool IsActive => gameObject.activeSelf;
+    public Vector2 HoverPositionOffset => hoverPositionOffset;
+    public bool IsActive => gameObject.activeSelf && (isAnimating || (canvasGroup != null && canvasGroup.alpha > 0.01f));
 
     public void OpenUI()
     {
@@ -64,6 +78,7 @@ public class ItemDetailPanel : MonoBehaviour, IHoverView
 
         Instance = this;
         GlobalUIRoot.AdoptToCanvas(GlobalCanvasLayer.Hover, transform);
+        ResolvePresentationReferences();
         _services = new ItemDetailPanelServices
         {
             formatText = raw => DetailTextFormatter.Format(raw, tooltipColorPalette, glossaryLinkColorHex),
@@ -71,11 +86,14 @@ public class ItemDetailPanel : MonoBehaviour, IHoverView
             setHeaderLevelText = SetHeaderLevelSuffix
         };
 
+        SnapHiddenPresentation();
         gameObject.SetActive(false);
     }
 
     private void OnDestroy()
     {
+        StopPresentationRoutine();
+
         if (Instance == this)
             Instance = null;
     }
@@ -96,6 +114,9 @@ public class ItemDetailPanel : MonoBehaviour, IHoverView
             return;
         }
 
+        ResolvePresentationReferences();
+        int serial = ++presentationSerial;
+        bool animateOpen = !IsActive;
         var ctx = context as ItemDetailContext;
         currentDefinition = definition;
         currentHeaderLevelSuffix = string.Empty;
@@ -191,9 +212,25 @@ public class ItemDetailPanel : MonoBehaviour, IHoverView
         }
 
         Canvas.ForceUpdateCanvases();
+        PlayOpenPresentation(animateOpen, serial);
     }
 
     public void HideHover()
+    {
+        ResolvePresentationReferences();
+        int serial = ++presentationSerial;
+
+        if (canvasGroup != null && (gameObject.activeSelf || isAnimating))
+        {
+            PlayClosePresentation(serial);
+            return;
+        }
+
+        CleanupHiddenContent();
+        gameObject.SetActive(false);
+    }
+
+    private void CleanupHiddenContent()
     {
         if (weaponView != null)
             weaponView.Hide();
@@ -214,7 +251,163 @@ public class ItemDetailPanel : MonoBehaviour, IHoverView
         currentDefinition = null;
         currentHeaderLevelSuffix = string.Empty;
         SetHeaderTitle(string.Empty);
-        gameObject.SetActive(false);
+    }
+
+    private void ResolvePresentationReferences()
+    {
+        if (canvasGroup == null)
+            canvasGroup = GetComponent<CanvasGroup>();
+
+        if (canvasGroup == null)
+            canvasGroup = gameObject.AddComponent<CanvasGroup>();
+
+        ForceNonInteractive();
+    }
+
+    private void PlayOpenPresentation(bool animate, int serial)
+    {
+        StopPresentationRoutine();
+        ResolvePresentationReferences();
+
+        if (!gameObject.activeSelf)
+            gameObject.SetActive(true);
+
+        if (serial != presentationSerial)
+            return;
+
+        bool alreadyVisible = canvasGroup.alpha > 0.99f && hoverPositionOffset.sqrMagnitude < 0.01f;
+        if (!animate || alreadyVisible || openDuration <= 0f)
+        {
+            ApplyPresentation(Vector2.zero, 1f);
+            isAnimating = false;
+            ForceNonInteractive();
+            return;
+        }
+
+        Vector2 fromOffset = canvasGroup.alpha > 0.01f ? hoverPositionOffset : openOffset;
+        presentationRoutine = StartCoroutine(CoPresentation(fromOffset, Vector2.zero, canvasGroup.alpha, 1f, openDuration, false, null));
+    }
+
+    private void PlayClosePresentation(int serial)
+    {
+        StopPresentationRoutine();
+        ResolvePresentationReferences();
+
+        if (!gameObject.activeSelf || (canvasGroup.alpha <= 0.01f && !isAnimating))
+        {
+            SnapHiddenPresentation();
+            if (serial == presentationSerial)
+                CleanupHiddenContent();
+            gameObject.SetActive(false);
+            return;
+        }
+
+        presentationRoutine = StartCoroutine(CoPresentation(
+            hoverPositionOffset,
+            openOffset,
+            canvasGroup.alpha,
+            closedAlpha,
+            closeDuration,
+            true,
+            () =>
+            {
+                if (serial != presentationSerial)
+                    return;
+
+                CleanupHiddenContent();
+                gameObject.SetActive(false);
+            }));
+    }
+
+    private IEnumerator CoPresentation(
+        Vector2 fromOffset,
+        Vector2 toOffset,
+        float fromAlpha,
+        float toAlpha,
+        float duration,
+        bool driveRectPosition,
+        System.Action onComplete)
+    {
+        isAnimating = true;
+        RectTransform rectTransform = Rect;
+        Vector2 baseAnchoredPosition = rectTransform != null
+            ? rectTransform.anchoredPosition - fromOffset
+            : Vector2.zero;
+
+        if (duration <= 0f)
+        {
+            ApplyPresentation(toOffset, toAlpha, driveRectPosition, baseAnchoredPosition);
+            FinishPresentation(onComplete);
+            yield break;
+        }
+
+        float elapsed = 0f;
+        while (elapsed < duration)
+        {
+            elapsed += useUnscaledTime ? Time.unscaledDeltaTime : Time.deltaTime;
+            float t = Mathf.Clamp01(elapsed / duration);
+            float eased = EaseOutCubic(t);
+            ApplyPresentation(
+                Vector2.LerpUnclamped(fromOffset, toOffset, eased),
+                Mathf.LerpUnclamped(fromAlpha, toAlpha, eased),
+                driveRectPosition,
+                baseAnchoredPosition);
+            yield return null;
+        }
+
+        ApplyPresentation(toOffset, toAlpha, driveRectPosition, baseAnchoredPosition);
+        FinishPresentation(onComplete);
+    }
+
+    private void FinishPresentation(System.Action onComplete)
+    {
+        presentationRoutine = null;
+        isAnimating = false;
+        ForceNonInteractive();
+        onComplete?.Invoke();
+    }
+
+    private void ApplyPresentation(Vector2 offset, float alpha, bool driveRectPosition = false, Vector2 baseAnchoredPosition = default)
+    {
+        hoverPositionOffset = offset;
+
+        if (canvasGroup != null)
+            canvasGroup.alpha = alpha;
+
+        if (driveRectPosition && Rect != null)
+            Rect.anchoredPosition = baseAnchoredPosition + offset;
+    }
+
+    private void SnapHiddenPresentation()
+    {
+        StopPresentationRoutine();
+        ApplyPresentation(openOffset, closedAlpha);
+        ForceNonInteractive();
+    }
+
+    private void ForceNonInteractive()
+    {
+        if (canvasGroup == null)
+            return;
+
+        canvasGroup.interactable = false;
+        canvasGroup.blocksRaycasts = false;
+    }
+
+    private void StopPresentationRoutine()
+    {
+        if (presentationRoutine == null)
+            return;
+
+        StopCoroutine(presentationRoutine);
+        presentationRoutine = null;
+        isAnimating = false;
+    }
+
+    private static float EaseOutCubic(float t)
+    {
+        t = 1f - Mathf.Clamp01(t);
+        return 1f - t * t * t;
     }
 
     /// <summary>

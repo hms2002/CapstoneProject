@@ -49,6 +49,7 @@ public class UpgradeTreeEditor : EditorWindow
     private Vector2 previewPan;
     private UpgradeNodeSO selectedNode;
     private Editor cachedNodeEditor;
+    private readonly Dictionary<UpgradeEffectSO, Editor> cachedEffectEditors = new Dictionary<UpgradeEffectSO, Editor>();
     private EditorTab currentTab;
     private GameObject previewTreePrefab;
     private GameObject previewSlotPrefab;
@@ -62,6 +63,7 @@ public class UpgradeTreeEditor : EditorWindow
     private bool previewShowContentRect = true;
     private bool previewShowViewportRect = true;
     private bool previewShowNodeIds;
+    private bool showSelectedNodeEffects = true;
     private LockType previewSlotState = LockType.UnLocked;
     private float previewZoom = 1f;
     private Vector2 previewViewportSize = new Vector2(1600f, 900f);
@@ -93,6 +95,7 @@ public class UpgradeTreeEditor : EditorWindow
     private void OnDisable()
     {
         ReleaseCachedNodeEditor();
+        ReleaseCachedEffectEditors();
         ReleaseRuntimePrefabPreview();
     }
 
@@ -183,6 +186,7 @@ public class UpgradeTreeEditor : EditorWindow
         selectedNode = null;
         isConnecting = false;
         ReleaseCachedNodeEditor();
+        ReleaseCachedEffectEditors();
         graphScrollPos = Vector2.zero;
     }
 
@@ -626,7 +630,115 @@ public class UpgradeTreeEditor : EditorWindow
 
         inspectorScrollPos = EditorGUILayout.BeginScrollView(inspectorScrollPos);
         cachedNodeEditor.OnInspectorGUI();
+        GUILayout.Space(10f);
+        DrawSelectedNodeEffects();
         EditorGUILayout.EndScrollView();
+    }
+
+    private void DrawSelectedNodeEffects()
+    {
+        showSelectedNodeEffects = EditorGUILayout.Foldout(showSelectedNodeEffects, "Linked Upgrade Effects", true);
+        if (!showSelectedNodeEffects)
+            return;
+
+        if (selectedNode.effects == null || selectedNode.effects.Count == 0)
+        {
+            ReleaseCachedEffectEditors();
+            EditorGUILayout.HelpBox("This node has no linked UpgradeEffectSO assets.", MessageType.Info);
+            return;
+        }
+
+        PruneCachedEffectEditorsForSelectedNode();
+
+        EditorGUI.indentLevel++;
+        for (int i = 0; i < selectedNode.effects.Count; i++)
+        {
+            UpgradeEffectSO effect = selectedNode.effects[i];
+            if (effect == null)
+            {
+                EditorGUILayout.HelpBox($"Effect {i}: None", MessageType.Info);
+                continue;
+            }
+
+            DrawEffectInspector(i, effect);
+            GUILayout.Space(4f);
+        }
+        EditorGUI.indentLevel--;
+    }
+
+    private void DrawEffectInspector(int index, UpgradeEffectSO effect)
+    {
+        EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+        EditorGUILayout.BeginHorizontal();
+        EditorGUILayout.LabelField($"Effect {index}: {effect.name}", EditorStyles.boldLabel);
+
+        if (GUILayout.Button("Ping", GUILayout.Width(44f)))
+            EditorGUIUtility.PingObject(effect);
+
+        if (GUILayout.Button("Select", GUILayout.Width(52f)))
+            Selection.activeObject = effect;
+
+        EditorGUILayout.EndHorizontal();
+        EditorGUILayout.LabelField(effect.GetType().Name, EditorStyles.miniLabel);
+
+        Editor effectEditor = GetOrCreateEffectEditor(effect);
+        if (effectEditor != null)
+        {
+            EditorGUI.BeginChangeCheck();
+            effectEditor.OnInspectorGUI();
+            if (EditorGUI.EndChangeCheck())
+            {
+                EditorUtility.SetDirty(effect);
+                runtimePreviewHash = 0;
+            }
+        }
+
+        EditorGUILayout.EndVertical();
+    }
+
+    private Editor GetOrCreateEffectEditor(UpgradeEffectSO effect)
+    {
+        if (effect == null)
+            return null;
+
+        if (cachedEffectEditors.TryGetValue(effect, out Editor editor) && editor != null && editor.target == effect)
+            return editor;
+
+        if (editor != null)
+            DestroyImmediate(editor);
+
+        editor = Editor.CreateEditor(effect);
+        cachedEffectEditors[effect] = editor;
+        return editor;
+    }
+
+    private void PruneCachedEffectEditorsForSelectedNode()
+    {
+        HashSet<UpgradeEffectSO> liveEffects = new HashSet<UpgradeEffectSO>();
+        if (selectedNode != null && selectedNode.effects != null)
+        {
+            foreach (UpgradeEffectSO effect in selectedNode.effects)
+            {
+                if (effect != null)
+                    liveEffects.Add(effect);
+            }
+        }
+
+        List<UpgradeEffectSO> staleEffects = new List<UpgradeEffectSO>();
+        foreach (KeyValuePair<UpgradeEffectSO, Editor> entry in cachedEffectEditors)
+        {
+            if (entry.Key == null || !liveEffects.Contains(entry.Key))
+                staleEffects.Add(entry.Key);
+        }
+
+        foreach (UpgradeEffectSO effect in staleEffects)
+        {
+            Editor editor = cachedEffectEditors[effect];
+            if (editor != null)
+                DestroyImmediate(editor);
+
+            cachedEffectEditors.Remove(effect);
+        }
     }
 
     private void DrawRuntimePreviewTab()
@@ -1730,6 +1842,7 @@ public class UpgradeTreeEditor : EditorWindow
         selectedNode = null;
         isConnecting = false;
         ReleaseCachedNodeEditor();
+        ReleaseCachedEffectEditors();
 
         AssetDatabase.DeleteAsset(path);
         AssetDatabase.SaveAssets();
@@ -1742,6 +1855,7 @@ public class UpgradeTreeEditor : EditorWindow
         Selection.activeObject = node;
         GUI.FocusControl(null);
         ReleaseCachedNodeEditor();
+        ReleaseCachedEffectEditors();
     }
 
     private void CompleteConnection(UpgradeNodeSO target)
@@ -1972,6 +2086,17 @@ public class UpgradeTreeEditor : EditorWindow
 
         DestroyImmediate(cachedNodeEditor);
         cachedNodeEditor = null;
+    }
+
+    private void ReleaseCachedEffectEditors()
+    {
+        foreach (Editor editor in cachedEffectEditors.Values)
+        {
+            if (editor != null)
+                DestroyImmediate(editor);
+        }
+
+        cachedEffectEditors.Clear();
     }
 }
 #endif

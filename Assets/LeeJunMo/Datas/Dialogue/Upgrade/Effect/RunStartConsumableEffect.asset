@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f3540bf383824b09ac79de76dff75438, type: 3}
   m_Name: RunStartConsumableEffect
   m_EditorClassIdentifier: 
-  rewardText: 
+  rewardText: "\uC2DC\uC791 \uC2DC \uD3EC\uC158 1\uAC1C \uC9C0\uAE09 "
   rewardIcon: {fileID: 1160938838206758964, guid: 2cbef7ab0cb99eb478cd968370d645f2, type: 3}
   consumable: {fileID: 11400000, guid: 6b22cb4e0ab0a194b968acb6b169cbfb, type: 2}
   count: 1

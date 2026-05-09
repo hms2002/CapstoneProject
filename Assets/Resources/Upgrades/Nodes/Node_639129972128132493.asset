@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Node_639129972128132493
   m_EditorClassIdentifier: Assembly-CSharp::UpgradeNodeSO
   nodeID: -2012628389
-  upgradeName: Upgrade 3,-2
+  upgradeName: "\uC2DC\uC791 \uD45C\uC158 \uC9C0\uAE09"
   description: "\uC2DC\uC791 \uC2DC \uD3EC\uC158 \uC9C0\uAE09"
   icon: {fileID: 1160938838206758964, guid: 2cbef7ab0cb99eb478cd968370d645f2, type: 3}
   price: 0

@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6fbbba4d8b1917443934fbdd5b59aa5d, type: 3}
   m_Name: GraveRunModifierEffect
   m_EditorClassIdentifier: 
-  rewardText: 
+  rewardText: "\uC7A1\uB3D9\uC0AC\uB2C8\uC5D0\uC11C \uB098\uC624\uB294 \uC720\uBB3C
+    \uC218  \uC99D\uAC00"
   rewardIcon: {fileID: 21300066, guid: 29c9cded5e558164aaf8c9bf08aa1510, type: 3}
   weaponGraveMinBonus: 0
   weaponGraveMaxBonus: 0

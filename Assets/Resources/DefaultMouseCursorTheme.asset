@@ -18,8 +18,8 @@ MonoBehaviour:
       hotspotPixels: {x: 8, y: 8}
       scale: 1
     interactableCursor:
-      sprite: {fileID: 0}
-      hotspotPixels: {x: 0, y: 0}
+      sprite: {fileID: -7471702657182670391, guid: 2a195b84427e14a4ba63fe519397dd8e, type: 3}
+      hotspotPixels: {x: 8, y: 8}
       scale: 1
     pressedCursor:
       sprite: {fileID: 0}

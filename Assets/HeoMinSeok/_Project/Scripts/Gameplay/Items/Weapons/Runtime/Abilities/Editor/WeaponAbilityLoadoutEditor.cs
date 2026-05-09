@@ -52,6 +52,10 @@ public sealed class WeaponAbilityLoadoutEditor : Editor
         {
             DrawChainSpearSections();
         }
+        else if (target is LightningSpearLoadout)
+        {
+            DrawLightningSpearSections();
+        }
         else
         {
             DrawPropertiesExcluding(serializedObject, "m_Script", "selectionStrategy");
@@ -214,6 +218,58 @@ public sealed class WeaponAbilityLoadoutEditor : Editor
         EditorGUILayout.PropertyField(serializedObject.FindProperty("chainPull"), new GUIContent("Chain Pull"));
         EditorGUILayout.PropertyField(serializedObject.FindProperty("chainRecall"), new GUIContent("Chain Recall"));
         EditorGUILayout.HelpBox("Skill1은 기본 상태에서 Throw, 연결 상태에선 Pull로 해석되고 Skill2는 연결 상태에서만 Recall로 활성화됩니다. Throw는 executor가 링크 대기 시간을 운영합니다.", MessageType.None);
+        EditorGUILayout.Space(4f);
+    }
+
+    private void DrawLightningSpearSections()
+    {
+        EditorGUILayout.LabelField("Core Actions", EditorStyles.boldLabel);
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("baseAttack"), new GUIContent("Base Attack"));
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("markRushOrSweep"), new GUIContent("Q / Skill1 Mark Rush Or Sweep"));
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("markRain"), new GUIContent("E / Skill2 Mark Rain"));
+        EditorGUILayout.Space(4f);
+
+        EditorGUILayout.LabelField("Mark Authoring", EditorStyles.boldLabel);
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("markPrefab"), new GUIContent("Mark Prefab"));
+        EditorGUILayout.Space(4f);
+
+        EditorGUILayout.LabelField("Q - Mark Rush", EditorStyles.boldLabel);
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("cursorSelectRadius"), new GUIContent("Cursor Select Radius"));
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("markRushRange"), new GUIContent("Mark Rush Range"));
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("markRushDuration"), new GUIContent("Mark Rush Duration"));
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("markRushBodyRadius"), new GUIContent("Rush Body Radius"));
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("markRushArrivalHitDelay"), new GUIContent("Arrival Hit Delay"));
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("markRushInternalDelay"), new GUIContent("Internal Input Delay"));
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("markRushHit"), new GUIContent("Rush Hit"), includeChildren: true);
+        EditorGUILayout.Space(4f);
+
+        EditorGUILayout.LabelField("Q - No Mark Sweep", EditorStyles.boldLabel);
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("noMarkSweepHit"), new GUIContent("No Mark Sweep Hit"), includeChildren: true);
+        EditorGUILayout.Space(4f);
+
+        EditorGUILayout.LabelField("E - Mark Rain", EditorStyles.boldLabel);
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("markLifetimeSeconds"), new GUIContent("Mark Lifetime Seconds"));
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("markRainCount"), new GUIContent("Mark Rain Count"));
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("markRainDelay"), new GUIContent("Mark Rain Delay"));
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("fallbackCombatRadius"), new GUIContent("Fallback Combat Radius"));
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("minPlayerDistance"), new GUIContent("Min Player Distance"));
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("minMarkSpacing"), new GUIContent("Min Mark Spacing"));
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("landingProbeRadius"), new GUIContent("Landing Probe Radius"));
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("candidateSamples"), new GUIContent("Candidate Samples"));
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("landingHit"), new GUIContent("Landing Hit"), includeChildren: true);
+        EditorGUILayout.Space(4f);
+
+        EditorGUILayout.LabelField("Placement / Movement Layers", EditorStyles.boldLabel);
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("hardBlockLayers"), new GUIContent("Hard Block Layers"));
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("softBlockLayers"), new GUIContent("Soft Block Layers"));
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("landingBlockedLayers"), new GUIContent("Landing Blocked Layers"));
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("requiredGroundLayers"), new GUIContent("Required Ground Layers"));
+        EditorGUILayout.HelpBox("Same-room Q rush ignores Soft Block Layers only for the path check. Landing and fallback placement still reject Hard/Soft blocked positions.", MessageType.None);
+        EditorGUILayout.Space(4f);
+
+        EditorGUILayout.LabelField("Feedback Prefabs", EditorStyles.boldLabel);
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("rushRangeIndicatorPrefab"), new GUIContent("Rush Range Indicator Prefab"));
+        EditorGUILayout.PropertyField(serializedObject.FindProperty("selectedMarkIndicatorPrefab"), new GUIContent("Selected Mark Indicator Prefab"));
         EditorGUILayout.Space(4f);
     }
 
