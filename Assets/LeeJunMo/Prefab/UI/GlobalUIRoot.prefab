@@ -25234,6 +25234,14 @@ MonoBehaviour:
   delayedHealthSlider: {fileID: 4852871006630446966}
   delayedStartDelay: 0.5
   delayedSmoothTime: 0.2
+  splitHealthRoot: {fileID: 0}
+  splitDividerImage: {fileID: 0}
+  splitLeftLabelText: {fileID: 0}
+  splitRightLabelText: {fileID: 0}
+  createFallbackSplitHealthPresentation: 1
+  fallbackSplitDividerColor: {r: 1, g: 1, b: 1, a: 0.9}
+  fallbackSplitDividerWidth: 4
+  fallbackSplitDividerHeight: 36
 --- !u!1 &5566508865052831855
 GameObject:
   m_ObjectHideFlags: 0
