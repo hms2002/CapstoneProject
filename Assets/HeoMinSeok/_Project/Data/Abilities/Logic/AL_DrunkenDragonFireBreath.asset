@@ -18,7 +18,7 @@ MonoBehaviour:
   repeatCount: 3
   damageIntervalSeconds: 0.65
   puddleIgniteIntervalSeconds: 0.2
-  range: 5
+  range: 15
   angleDegrees: 55
   originForwardOffset: 0.45
   puddleIgniteRadiusPadding: -0.25

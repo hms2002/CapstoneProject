@@ -86,6 +86,9 @@ public sealed class BossHudController : MonoBehaviour
     {
         if (targetBoss == null)
         {
+            if (healthBarUI != null)
+                healthBarUI.SetSplitHealthPresentation(false, null, null);
+
             SetHudVisible(false);
             return;
         }
@@ -199,7 +202,10 @@ public sealed class BossHudController : MonoBehaviour
         ApplyGroggyLabel(targetBoss != null && targetBoss.HasGroggyTag());
 
         if (healthBarUI != null)
+        {
             healthBarUI.SetHealthRatio(targetBoss.CurrentHealthRatio);
+            ApplySplitHealthPresentation();
+        }
 
         if (groggyBarUI != null)
         {
@@ -208,6 +214,25 @@ public sealed class BossHudController : MonoBehaviour
             groggyBarUI.SetGroggyMode(isGroggy);
             groggyBarUI.SetGroggyRatio(GetGroggyRatio());
         }
+    }
+
+    /// <summary>분리형 보스 체력 표시 정보를 현재 보스에서 읽어 체력바 뷰에 반영합니다.</summary>
+    private void ApplySplitHealthPresentation()
+    {
+        if (healthBarUI == null)
+            return;
+
+        IBossSplitHealthPresentation splitHealthPresentation = targetBoss as IBossSplitHealthPresentation;
+        if (splitHealthPresentation == null || !splitHealthPresentation.ShowSplitHealthPresentation)
+        {
+            healthBarUI.SetSplitHealthPresentation(false, null, null);
+            return;
+        }
+
+        healthBarUI.SetSplitHealthPresentation(
+            true,
+            splitHealthPresentation.SplitHealthLeftLabel,
+            splitHealthPresentation.SplitHealthRightLabel);
     }
 
     /// <summary>

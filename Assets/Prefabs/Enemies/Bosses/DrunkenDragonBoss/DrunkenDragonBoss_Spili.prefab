@@ -676,6 +676,7 @@ MonoBehaviour:
       maxHpRatio: 1
       additionalConditions: []
   arenaCenterPoint: {fileID: 0}
+  arenaBounds: {fileID: 0}
   patternMotionRoot: {fileID: 2050668872176693337}
   patternShadowMotionRoot: {fileID: 4313995309474416445}
   fireBreathMouthSocket: {fileID: 6467952144724724379}

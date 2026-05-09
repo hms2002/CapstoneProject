@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -23,6 +24,31 @@ public sealed class BossHealthBarUI : MonoBehaviour
 
     [Tooltip("잔상 슬라이더가 실제 체력 슬라이더를 따라오는 부드러움 시간입니다.")]
     [SerializeField] private float delayedSmoothTime = 0.2f;
+
+    [Header("Split Health Presentation")]
+    [Tooltip("분리형 보스 체력 표시 루트입니다. 비워두면 런타임에 중앙 분리선만 자동 생성합니다.")]
+    [SerializeField] private RectTransform splitHealthRoot;
+
+    [Tooltip("분리형 보스 체력바의 중앙 구분선 이미지입니다.")]
+    [SerializeField] private Image splitDividerImage;
+
+    [Tooltip("분리형 보스 체력바 왼쪽 라벨입니다. 선택 사항입니다.")]
+    [SerializeField] private TMP_Text splitLeftLabelText;
+
+    [Tooltip("분리형 보스 체력바 오른쪽 라벨입니다. 선택 사항입니다.")]
+    [SerializeField] private TMP_Text splitRightLabelText;
+
+    [Tooltip("분리형 보스 표시용 오브젝트가 없을 때 중앙 분리선을 자동 생성합니다.")]
+    [SerializeField] private bool createFallbackSplitHealthPresentation = true;
+
+    [Tooltip("자동 생성 중앙 분리선 색상입니다.")]
+    [SerializeField] private Color fallbackSplitDividerColor = new Color(1f, 1f, 1f, 0.9f);
+
+    [Tooltip("자동 생성 중앙 분리선의 너비입니다.")]
+    [SerializeField, Min(1f)] private float fallbackSplitDividerWidth = 4f;
+
+    [Tooltip("자동 생성 중앙 분리선의 높이입니다.")]
+    [SerializeField, Min(1f)] private float fallbackSplitDividerHeight = 36f;
 
     private float targetHealthRatio = 1f;
     private float previousHealthRatio = 1f;
@@ -114,6 +140,16 @@ public sealed class BossHealthBarUI : MonoBehaviour
         targetHealthRatio = nextRatio;
     }
 
+    /// <summary>분리형 보스 체력 표시 상태와 라벨을 갱신합니다.</summary>
+    public void SetSplitHealthPresentation(bool visible, string leftLabel, string rightLabel)
+    {
+        if (visible && splitHealthRoot == null && splitDividerImage == null && createFallbackSplitHealthPresentation)
+            CreateFallbackSplitHealthPresentation();
+
+        ApplySplitPresentationVisible(visible);
+        ApplySplitPresentationLabels(leftLabel, rightLabel);
+    }
+
     private void ApplyImmediate(float ratio)
     {
         if (immediateHealthSlider == null)
@@ -133,5 +169,55 @@ public sealed class BossHealthBarUI : MonoBehaviour
         delayedHealthSlider.maxValue = 1f;
         delayedHealthSlider.value = ratio;
         delayedVelocity = 0f;
+    }
+
+    /// <summary>분리형 보스 체력 표시 오브젝트 활성 상태를 반영합니다.</summary>
+    private void ApplySplitPresentationVisible(bool visible)
+    {
+        if (splitHealthRoot != null && splitHealthRoot.gameObject.activeSelf != visible)
+            splitHealthRoot.gameObject.SetActive(visible);
+
+        if (splitHealthRoot == null && splitDividerImage != null && splitDividerImage.gameObject.activeSelf != visible)
+            splitDividerImage.gameObject.SetActive(visible);
+    }
+
+    /// <summary>분리형 보스 체력 표시 라벨을 반영합니다.</summary>
+    private void ApplySplitPresentationLabels(string leftLabel, string rightLabel)
+    {
+        if (splitLeftLabelText != null)
+            splitLeftLabelText.text = string.IsNullOrWhiteSpace(leftLabel) ? string.Empty : leftLabel;
+
+        if (splitRightLabelText != null)
+            splitRightLabelText.text = string.IsNullOrWhiteSpace(rightLabel) ? string.Empty : rightLabel;
+    }
+
+    /// <summary>인스펙터 참조가 없을 때 최소 중앙 분리선을 생성합니다.</summary>
+    private void CreateFallbackSplitHealthPresentation()
+    {
+        RectTransform parentRect = transform as RectTransform;
+        if (parentRect == null)
+            return;
+
+        GameObject rootObject = new GameObject("SplitHealthPresentation", typeof(RectTransform));
+        splitHealthRoot = rootObject.GetComponent<RectTransform>();
+        splitHealthRoot.SetParent(parentRect, false);
+        splitHealthRoot.anchorMin = Vector2.zero;
+        splitHealthRoot.anchorMax = Vector2.one;
+        splitHealthRoot.anchoredPosition = Vector2.zero;
+        splitHealthRoot.sizeDelta = Vector2.zero;
+        splitHealthRoot.pivot = new Vector2(0.5f, 0.5f);
+
+        GameObject dividerObject = new GameObject("CenterDivider", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
+        RectTransform dividerRect = dividerObject.GetComponent<RectTransform>();
+        dividerRect.SetParent(splitHealthRoot, false);
+        dividerRect.anchorMin = new Vector2(0.5f, 0.5f);
+        dividerRect.anchorMax = new Vector2(0.5f, 0.5f);
+        dividerRect.anchoredPosition = Vector2.zero;
+        dividerRect.sizeDelta = new Vector2(fallbackSplitDividerWidth, fallbackSplitDividerHeight);
+        dividerRect.pivot = new Vector2(0.5f, 0.5f);
+
+        splitDividerImage = dividerObject.GetComponent<Image>();
+        splitDividerImage.color = fallbackSplitDividerColor;
+        splitDividerImage.raycastTarget = false;
     }
 }

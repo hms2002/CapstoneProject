@@ -9,6 +9,7 @@ public sealed class DrunkenDragonController : BossControllerBase
 {
     [Header("Drunken Dragon")]
     [SerializeField] private Transform arenaCenterPoint;
+    [SerializeField] private DrunkenDragonArenaBounds2D arenaBounds;
     [SerializeField] private Transform patternMotionRoot;
     [SerializeField] private Transform patternShadowMotionRoot;
     [SerializeField] private MirroredLocalSocket2D fireBreathMouthSocket;
@@ -30,6 +31,7 @@ public sealed class DrunkenDragonController : BossControllerBase
     public Transform BodyVisualRoot => sprite != null ? sprite.transform : transform;
     public Transform PatternMotionRoot => patternMotionRoot != null ? patternMotionRoot : BodyVisualRoot;
     public Transform PatternShadowMotionRoot => patternShadowMotionRoot;
+    public DrunkenDragonArenaBounds2D ArenaBounds => ResolveArenaBounds();
 
     protected override void Awake()
     {
@@ -128,6 +130,30 @@ public sealed class DrunkenDragonController : BossControllerBase
         return (Vector2)transform.position + (direction.normalized * fallbackForwardOffset);
     }
 
+    /// <summary>취룡 전투 공간에서 무작위 유효 지점을 요청한다.</summary>
+    public bool TryGetRandomArenaPoint(out Vector2 point)
+    {
+        point = default;
+        DrunkenDragonArenaBounds2D bounds = ResolveArenaBounds();
+        return bounds != null && bounds.TryGetRandomPoint(out point);
+    }
+
+    /// <summary>취룡 전투 공간에서 지정한 재시도 횟수로 무작위 유효 지점을 요청한다.</summary>
+    public bool TryGetRandomArenaPoint(int maxAttempts, out Vector2 point)
+    {
+        point = default;
+        DrunkenDragonArenaBounds2D bounds = ResolveArenaBounds();
+        return bounds != null && bounds.TryGetRandomPoint(maxAttempts, out point);
+    }
+
+    /// <summary>취룡 전투 공간에서 특정 지점과 최소 거리 이상 떨어진 무작위 유효 지점을 요청한다.</summary>
+    public bool TryGetRandomArenaPointAwayFrom(Vector2 avoidPoint, float minDistance, int maxAttempts, out Vector2 point)
+    {
+        point = default;
+        DrunkenDragonArenaBounds2D bounds = ResolveArenaBounds();
+        return bounds != null && bounds.TryGetRandomPointAwayFrom(avoidPoint, minDistance, maxAttempts, out point);
+    }
+
     /// <summary>패턴 연출 중 자동 좌우 반전이 공격 방향을 덮어쓰지 못하도록 잠근다.</summary>
     public void PushFaceTargetLock()
     {
@@ -207,5 +233,22 @@ public sealed class DrunkenDragonController : BossControllerBase
             sprite.flipX = true;
         else if (transform.position.x < Target.position.x)
             sprite.flipX = false;
+    }
+
+    private DrunkenDragonArenaBounds2D ResolveArenaBounds()
+    {
+        if (arenaBounds != null)
+            return arenaBounds;
+
+        arenaBounds = GetComponentInParent<DrunkenDragonArenaBounds2D>();
+        if (arenaBounds != null)
+            return arenaBounds;
+
+        arenaBounds = GetComponentInChildren<DrunkenDragonArenaBounds2D>();
+        if (arenaBounds != null)
+            return arenaBounds;
+
+        arenaBounds = FindAnyObjectByType<DrunkenDragonArenaBounds2D>();
+        return arenaBounds;
     }
 }

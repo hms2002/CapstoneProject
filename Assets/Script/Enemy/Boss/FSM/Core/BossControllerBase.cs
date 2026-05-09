@@ -620,6 +620,16 @@ public abstract class BossControllerBase : Enemy, IBossAbilityStateBridge
         return attributeSet.GetAttributeValue(currentHealthAttribute);
     }
 
+    /// <summary>파생 보스가 현재 체력 Attribute를 공통 해석 규칙으로 수정하게 합니다.</summary>
+    protected bool TryModifyCurrentHealthValue(float amount, Object source)
+    {
+        AttributeDefinition currentHealthAttribute = ResolveHealthAttribute();
+        if (attributeSet == null || currentHealthAttribute == null)
+            return false;
+
+        return attributeSet.TryModifyAttributeValue(currentHealthAttribute, amount, source != null ? source : this);
+    }
+
     /// <summary>
     /// 책임 :
     /// - 보스 UI/HUD 같은 외부 표시 계층이 최대 체력 값을 안전하게 읽을 수 있게 제공한다.
