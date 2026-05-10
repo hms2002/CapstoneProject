@@ -13,8 +13,11 @@ MonoBehaviour:
   m_Name: ALData_LightningSpearSkill2
   m_EditorClassIdentifier: 
   markRainAnimationTrigger: Skill2
+  markRainAimPresentation:
+    mode: 1
+    minimumHoldTime: 0
   markRainSpawnEventTag: {fileID: 11400000, guid: 21b3c9bc67714cb8a2ea651f8af7c7b6, type: 2}
-  markRainSpawnEventTimeout: 0.5
+  markRainSpawnEventTimeout: 2
   markRainFallbackSpawnDelay: 0
   markPrefab: {fileID: 8200123456789012345, guid: 085e3652176349ef82a32deb8f71af92, type: 3}
   markLifetimeSeconds: 7

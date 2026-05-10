@@ -7,6 +7,8 @@ public sealed class LightningSpearSkill1Data : ScriptableObject
     [Header("Animation")]
     [SerializeField] private string markRushAnimationTrigger;
     [SerializeField] private string noMarkSweepAnimationTrigger;
+    [SerializeField] private WeaponAimPresentationSettings markRushAimPresentation = new WeaponAimPresentationSettings();
+    [SerializeField] private WeaponAimPresentationSettings noMarkSweepAimPresentation = new WeaponAimPresentationSettings();
     [SerializeField] private GameplayTag noMarkSweepHitEventTag;
     [SerializeField, Min(0f)] private float noMarkSweepHitEventTimeout = 0.35f;
     [SerializeField, Min(0f)] private float noMarkSweepFallbackHitDelay;
@@ -25,6 +27,8 @@ public sealed class LightningSpearSkill1Data : ScriptableObject
 
     public string MarkRushAnimationTrigger => markRushAnimationTrigger;
     public string NoMarkSweepAnimationTrigger => noMarkSweepAnimationTrigger;
+    public WeaponAimPresentationSettings MarkRushAimPresentation => markRushAimPresentation;
+    public WeaponAimPresentationSettings NoMarkSweepAimPresentation => noMarkSweepAimPresentation;
     public GameplayTag NoMarkSweepHitEventTag => noMarkSweepHitEventTag;
     public float NoMarkSweepHitEventTimeout => Mathf.Max(0f, noMarkSweepHitEventTimeout);
     public float NoMarkSweepFallbackHitDelay => Mathf.Max(0f, noMarkSweepFallbackHitDelay);

@@ -74,19 +74,40 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState
         {
             Vector2 direction = ResolveAimDirection(system);
             int facingSideSign = ResolveFacingSideSign(system, direction);
-            TryPlayAnimationTrigger(system, spec.Definition, GetNoMarkSweepAnimationTrigger(data));
-            yield return WaitForAnimationEventOrDelay(
-                system,
-                spec,
-                GetNoMarkSweepHitEventTag(data),
-                GetNoMarkSweepHitEventTimeout(data),
-                GetNoMarkSweepFallbackHitDelay(data));
-            SpawnHitbox(GetNoMarkSweepHit(loadout, data), system, spec, ownerPosition, direction, facingSideSign);
+            int aimOverrideToken = BeginAimPresentationOverride(GetNoMarkSweepAimPresentation(data), direction);
+            try
+            {
+                TryPlayAnimationTrigger(system, spec.Definition, GetNoMarkSweepAnimationTrigger(data));
+                yield return WaitForAnimationEventOrDelay(
+                    system,
+                    spec,
+                    GetNoMarkSweepHitEventTag(data),
+                    GetNoMarkSweepHitEventTimeout(data),
+                    GetNoMarkSweepFallbackHitDelay(data));
+                SpawnHitbox(GetNoMarkSweepHit(loadout, data), system, spec, ownerPosition, direction, facingSideSign);
+            }
+            finally
+            {
+                EndAimPresentationOverride(aimOverrideToken);
+            }
+
             yield break;
         }
 
-        TryPlayAnimationTrigger(system, spec.Definition, GetMarkRushAnimationTrigger(data));
-        yield return ExecuteMarkRush(system, spec, loadout, data, selectedMark);
+        Vector2 rushDirection = (Vector2)selectedMark.transform.position - ownerPosition;
+        if (rushDirection.sqrMagnitude <= 0.0001f)
+            rushDirection = ResolveAimDirection(system);
+
+        int markRushAimOverrideToken = BeginAimPresentationOverride(GetMarkRushAimPresentation(data), rushDirection);
+        try
+        {
+            TryPlayAnimationTrigger(system, spec.Definition, GetMarkRushAnimationTrigger(data));
+            yield return ExecuteMarkRush(system, spec, loadout, data, selectedMark);
+        }
+        finally
+        {
+            EndAimPresentationOverride(markRushAimOverrideToken);
+        }
     }
 
     public IEnumerator ExecuteSkill2(
@@ -100,20 +121,28 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState
         if (system == null || spec == null || loadout == null || GetMarkPrefab(loadout, data) == null)
             yield break;
 
-        TryPlayAnimationTrigger(system, spec.Definition, GetMarkRainAnimationTrigger(data));
-        yield return WaitForAnimationEventOrDelay(
-            system,
-            spec,
-            GetMarkRainSpawnEventTag(data),
-            GetMarkRainSpawnEventTimeout(data),
-            GetMarkRainFallbackSpawnDelay(data));
+        int aimOverrideToken = BeginAimPresentationOverride(GetMarkRainAimPresentation(data), ResolveAimDirection(system));
+        try
+        {
+            TryPlayAnimationTrigger(system, spec.Definition, GetMarkRainAnimationTrigger(data));
+            yield return WaitForAnimationEventOrDelay(
+                system,
+                spec,
+                GetMarkRainSpawnEventTag(data),
+                GetMarkRainSpawnEventTimeout(data),
+                GetMarkRainFallbackSpawnDelay(data));
 
-        Vector2 ownerPosition = system.transform.position;
-        MonsterRoomArea2D room = FindRoomContaining(ownerPosition);
-        List<Vector2> positions = GenerateMarkPositions(loadout, data, ownerPosition, room);
+            Vector2 ownerPosition = system.transform.position;
+            MonsterRoomArea2D room = FindRoomContaining(ownerPosition);
+            List<Vector2> positions = GenerateMarkPositions(loadout, data, ownerPosition, room);
 
-        for (int i = 0; i < positions.Count; i++)
-            SpawnMark(loadout, data, positions[i], room, system, spec);
+            for (int i = 0; i < positions.Count; i++)
+                SpawnMark(loadout, data, positions[i], room, system, spec);
+        }
+        finally
+        {
+            EndAimPresentationOverride(aimOverrideToken);
+        }
     }
 
     public void RegisterMark(LightningSpearMarkActor mark)
@@ -442,6 +471,16 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState
         return data != null ? data.NoMarkSweepAnimationTrigger : null;
     }
 
+    private static WeaponAimPresentationSettings GetMarkRushAimPresentation(LightningSpearSkill1Data data)
+    {
+        return data != null ? data.MarkRushAimPresentation : null;
+    }
+
+    private static WeaponAimPresentationSettings GetNoMarkSweepAimPresentation(LightningSpearSkill1Data data)
+    {
+        return data != null ? data.NoMarkSweepAimPresentation : null;
+    }
+
     private static GameplayTag GetNoMarkSweepHitEventTag(LightningSpearSkill1Data data)
     {
         return data != null ? data.NoMarkSweepHitEventTag : null;
@@ -515,6 +554,11 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState
     private static string GetMarkRainAnimationTrigger(LightningSpearSkill2Data data)
     {
         return data != null ? data.MarkRainAnimationTrigger : null;
+    }
+
+    private static WeaponAimPresentationSettings GetMarkRainAimPresentation(LightningSpearSkill2Data data)
+    {
+        return data != null ? data.MarkRainAimPresentation : null;
     }
 
     private static GameplayTag GetMarkRainSpawnEventTag(LightningSpearSkill2Data data)
@@ -956,6 +1000,30 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState
             Vector2.right);
 
         return direction.sqrMagnitude > 0.0001f ? direction.normalized : Vector2.right;
+    }
+
+    private int BeginAimPresentationOverride(WeaponAimPresentationSettings settings, Vector2 direction)
+    {
+        if (settings == null || settings.Mode == WeaponAimPresentationMode.FollowAim)
+            return 0;
+
+        CacheOwnerReferences(ownerSystem);
+
+        if (presentationRig == null)
+            return 0;
+
+        return presentationRig.BeginAimPresentationOverride(
+            settings.Mode,
+            direction,
+            settings.MinimumHoldTime);
+    }
+
+    private void EndAimPresentationOverride(int token)
+    {
+        if (token == 0 || presentationRig == null)
+            return;
+
+        presentationRig.EndAimPresentationOverride(token);
     }
 
     private int ResolveFacingSideSign(AbilitySystem system, Vector2 fallbackDirection)

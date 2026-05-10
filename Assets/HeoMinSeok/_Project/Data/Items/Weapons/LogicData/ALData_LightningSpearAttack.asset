@@ -34,6 +34,7 @@ MonoBehaviour:
     forwardOffset: 2
     sideOffset: -0.1
     sideSign: 1
+    visualMirrorMode: 3
     lungeDistance: 1
     lungeDuration: 0.3
   - hitboxPrefab: {fileID: 6902002014408514032, guid: 72a9e1dccd20cec4a94b05267400bf54, type: 3}
@@ -56,6 +57,7 @@ MonoBehaviour:
     forwardOffset: 2
     sideOffset: 0.15
     sideSign: -1
+    visualMirrorMode: 3
     lungeDistance: 1
     lungeDuration: 0.3
   - hitboxPrefab: {fileID: 6902002014408514032, guid: 230cdfca747527646b1afc30748bbfcc, type: 3}
@@ -78,6 +80,7 @@ MonoBehaviour:
     forwardOffset: 2
     sideOffset: -0.1
     sideSign: 1
+    visualMirrorMode: 3
     lungeDistance: 2
     lungeDuration: 0.4
   damageConfig:

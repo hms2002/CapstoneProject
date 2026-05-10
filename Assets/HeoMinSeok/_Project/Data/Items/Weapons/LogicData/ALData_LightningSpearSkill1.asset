@@ -14,6 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   markRushAnimationTrigger: Skill1_Mark
   noMarkSweepAnimationTrigger: Skill1_NoMark
+  markRushAimPresentation:
+    mode: 0
+    minimumHoldTime: 0
+  noMarkSweepAimPresentation:
+    mode: 0
+    minimumHoldTime: 0
   noMarkSweepHitEventTag: {fileID: 11400000, guid: 0ca34cffae954c929a2f40220a8b0284, type: 2}
   noMarkSweepHitEventTimeout: 0.5
   noMarkSweepFallbackHitDelay: 0
@@ -24,7 +30,7 @@ MonoBehaviour:
   markRushInternalDelay: 0.15
   markRushTrailEffectPrefab: {fileID: 9102123456789012345, guid: 9537f6a61c484881b61d0da5c6b03dd3, type: 3}
   markRushHit:
-    hitboxPrefab: {fileID: 2444049802110501220, guid: 2d297b1bcdf6733489edbb3cc6a848d6, type: 3}
+    hitboxPrefab: {fileID: 3757316550685754543, guid: b6baaa776b4630343b03436c2e45c464, type: 3}
     activeTime: 0.2
     hitboxSize: {x: 1.6, y: 0.9}
     forwardOffset: 0.45

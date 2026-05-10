@@ -6,6 +6,7 @@ public sealed class LightningSpearSkill2Data : ScriptableObject
 {
     [Header("Animation")]
     [SerializeField] private string markRainAnimationTrigger;
+    [SerializeField] private WeaponAimPresentationSettings markRainAimPresentation = new WeaponAimPresentationSettings();
     [SerializeField] private GameplayTag markRainSpawnEventTag;
     [SerializeField, Min(0f)] private float markRainSpawnEventTimeout = 0.5f;
     [SerializeField, Min(0f)] private float markRainFallbackSpawnDelay;
@@ -25,6 +26,7 @@ public sealed class LightningSpearSkill2Data : ScriptableObject
     [SerializeField] private LightningSpearHitConfig landingHit = new LightningSpearHitConfig();
 
     public string MarkRainAnimationTrigger => markRainAnimationTrigger;
+    public WeaponAimPresentationSettings MarkRainAimPresentation => markRainAimPresentation;
     public GameplayTag MarkRainSpawnEventTag => markRainSpawnEventTag;
     public float MarkRainSpawnEventTimeout => Mathf.Max(0f, markRainSpawnEventTimeout);
     public float MarkRainFallbackSpawnDelay => Mathf.Max(0f, markRainFallbackSpawnDelay);
