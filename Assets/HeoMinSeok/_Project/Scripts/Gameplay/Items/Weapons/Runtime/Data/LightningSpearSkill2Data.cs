@@ -1,6 +1,9 @@
 using UnityEngine;
 using UnityGAS;
 
+/// <summary>
+/// 번개 창 E의 표식 비 생성 위치, 타이밍, 착지 피해 데이터를 보관할 책임을 가집니다.
+/// </summary>
 [CreateAssetMenu(fileName = "ALData_LightningSpearSkill2", menuName = "GAS/Weapon/Lightning Spear/Skill2 Data")]
 public sealed class LightningSpearSkill2Data : ScriptableObject
 {

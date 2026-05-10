@@ -1,6 +1,9 @@
 using System.Collections;
 using UnityEngine;
 
+/// <summary>
+/// 번개 창 표식 돌진 경로와 도착 충격의 짧은 시각 효과를 재생하고 정리할 책임을 가집니다.
+/// </summary>
 [DisallowMultipleComponent]
 public sealed class LightningSpearDashStabTrailEffect : MonoBehaviour
 {

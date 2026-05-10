@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityGAS;
 
+/// <summary>
+/// 장착 중인 번개 창의 live 표식 목록, Q/E 실행, 표식 선택 피드백, cleanup을 관리할 책임을 가집니다.
+/// </summary>
 public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState
 {
     private readonly List<LightningSpearMarkActor> activeMarks = new List<LightningSpearMarkActor>();

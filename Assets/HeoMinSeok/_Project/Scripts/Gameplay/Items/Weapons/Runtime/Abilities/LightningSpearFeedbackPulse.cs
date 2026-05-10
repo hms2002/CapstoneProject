@@ -1,5 +1,8 @@
 using UnityEngine;
 
+/// <summary>
+/// 번개 창 표식 피드백 오브젝트의 크기와 투명도 펄스를 표시할 책임을 가집니다.
+/// </summary>
 [DisallowMultipleComponent]
 public sealed class LightningSpearFeedbackPulse : MonoBehaviour
 {

@@ -2,6 +2,9 @@ using System;
 using UnityEngine;
 using UnityGAS;
 
+/// <summary>
+/// 번개 창 입력 슬롯을 Attack, Q, E 전용 AbilityDefinition으로 선택할 책임을 가집니다.
+/// </summary>
 [CreateAssetMenu(fileName = "WAS_LightningSpear", menuName = "Game/Weapon Ability Strategy/Lightning Spear")]
 public sealed class LightningSpearSelectionStrategy : WeaponAbilitySelectionStrategy
 {

@@ -2,6 +2,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityGAS;
 
+/// <summary>
+/// 번개 창 무기의 Attack, Q, E 능력 참조와 표식/판정/피드백 저작 설정을 제공할 책임을 가집니다.
+/// </summary>
 [CreateAssetMenu(fileName = "WAL_LightningSpear", menuName = "Game/Weapon Ability Loadout/Lightning Spear")]
 public sealed class LightningSpearLoadout : WeaponAbilityLoadout
 {

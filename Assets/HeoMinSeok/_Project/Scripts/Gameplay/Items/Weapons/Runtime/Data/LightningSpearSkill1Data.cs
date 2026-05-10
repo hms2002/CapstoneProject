@@ -1,6 +1,9 @@
 using UnityEngine;
 using UnityGAS;
 
+/// <summary>
+/// 번개 창 Q의 표식 돌진과 표식 없음 sweep 실행 데이터를 보관할 책임을 가집니다.
+/// </summary>
 [CreateAssetMenu(fileName = "ALData_LightningSpearSkill1", menuName = "GAS/Weapon/Lightning Spear/Skill1 Data")]
 public sealed class LightningSpearSkill1Data : ScriptableObject
 {

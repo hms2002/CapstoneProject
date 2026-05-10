@@ -1,73 +1,6 @@
 {
     "sessions": [
         {
-            "sessionId": "34d130a06a024f199391a14e711e19d7",
-            "startedUtc": "2026-05-09T09:33:15.0572272Z",
-            "endedUtc": "2026-05-09T09:35:27.1446331Z",
-            "entries": [
-                {
-                    "prefabPath": "Assets/LeeJunMo/Prefab/Effect/Particle/DashDust.prefab",
-                    "prefabName": "DashDust",
-                    "totalSpawns": 6,
-                    "coldSpawns": 6,
-                    "firstSeenSeconds": 12.818230628967286,
-                    "lastSeenSeconds": 99.38727569580078,
-                    "firstSceneName": "HeoMinSeok_Boss_Dragon_Spili",
-                    "lastSceneName": "HeoMinSeok_Boss_Dragon_Spili"
-                },
-                {
-                    "prefabPath": "Assets/Prefabs/VFX/PF_DrunkenDragon_KegImpactSplash.prefab",
-                    "prefabName": "PF_DrunkenDragon_KegImpactSplash",
-                    "totalSpawns": 28,
-                    "coldSpawns": 4,
-                    "firstSeenSeconds": 15.55651569366455,
-                    "lastSeenSeconds": 102.14380645751953,
-                    "firstSceneName": "HeoMinSeok_Boss_Dragon_Spili",
-                    "lastSceneName": "HeoMinSeok_Boss_Dragon_Spili"
-                },
-                {
-                    "prefabPath": "Assets/Prefabs/VFX/PF_DeadSkeletonExplosionPurple.prefab",
-                    "prefabName": "PF_DeadSkeletonExplosionPurple",
-                    "totalSpawns": 4,
-                    "coldSpawns": 4,
-                    "firstSeenSeconds": 93.37454223632813,
-                    "lastSeenSeconds": 130.17323303222657,
-                    "firstSceneName": "HeoMinSeok_Boss_Dragon_Spili",
-                    "lastSceneName": "HeoMinSeok_Boss_Dragon_Spili"
-                },
-                {
-                    "prefabPath": "Assets/Prefabs/VFX/PF_DrunkenDragon_InhaleWind.prefab",
-                    "prefabName": "PF_DrunkenDragon_InhaleWind",
-                    "totalSpawns": 12,
-                    "coldSpawns": 1,
-                    "firstSeenSeconds": 36.25354766845703,
-                    "lastSeenSeconds": 115.4207534790039,
-                    "firstSceneName": "HeoMinSeok_Boss_Dragon_Spili",
-                    "lastSceneName": "HeoMinSeok_Boss_Dragon_Spili"
-                },
-                {
-                    "prefabPath": "Assets/HeoMinSeok/_Project/Prefabs/Attack/Hitbox_WindWeapon_NormalAtk_HardSlash.prefab",
-                    "prefabName": "Hitbox_WindWeapon_NormalAtk_HardSlash",
-                    "totalSpawns": 10,
-                    "coldSpawns": 1,
-                    "firstSeenSeconds": 17.618228912353517,
-                    "lastSeenSeconds": 131.43260192871095,
-                    "firstSceneName": "HeoMinSeok_Boss_Dragon_Spili",
-                    "lastSceneName": "HeoMinSeok_Boss_Dragon_Spili"
-                },
-                {
-                    "prefabPath": "Assets/Prefabs/VFX/PF_DrunkenDragon_LandingDust.prefab",
-                    "prefabName": "PF_DrunkenDragon_LandingDust",
-                    "totalSpawns": 9,
-                    "coldSpawns": 1,
-                    "firstSeenSeconds": 14.200730323791504,
-                    "lastSeenSeconds": 115.4205551147461,
-                    "firstSceneName": "HeoMinSeok_Boss_Dragon_Spili",
-                    "lastSceneName": "HeoMinSeok_Boss_Dragon_Spili"
-                }
-            ]
-        },
-        {
             "sessionId": "d6d08f7962ba47afb8e86569d8fadec1",
             "startedUtc": "2026-05-09T09:49:57.2134282Z",
             "endedUtc": "2026-05-09T09:50:45.8017908Z",
@@ -872,6 +805,12 @@
             "sessionId": "85da3c949ec84ec7a6ec2f4168fe5726",
             "startedUtc": "2026-05-10T10:00:10.2683307Z",
             "endedUtc": "2026-05-10T10:00:11.8921017Z",
+            "entries": []
+        },
+        {
+            "sessionId": "8bbd5f3895d84622a42055a109165189",
+            "startedUtc": "2026-05-10T11:34:38.7214164Z",
+            "endedUtc": "2026-05-10T11:34:40.9348748Z",
             "entries": []
         }
     ]

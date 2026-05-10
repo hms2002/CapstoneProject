@@ -3,6 +3,9 @@ using UnityEngine;
 
 namespace UnityGAS.Sample
 {
+    /// <summary>
+    /// 번개 창 Q AD를 현재 장착된 RuntimeState의 표식 돌진 또는 sweep 실행으로 연결할 책임을 가집니다.
+    /// </summary>
     [CreateAssetMenu(fileName = "AL_LightningSpear_Skill1", menuName = "GAS/Weapon/Lightning Spear/Logic Skill1")]
     public sealed class AbilityLogic_LightningSpearSkill1 : AbilityLogic
     {

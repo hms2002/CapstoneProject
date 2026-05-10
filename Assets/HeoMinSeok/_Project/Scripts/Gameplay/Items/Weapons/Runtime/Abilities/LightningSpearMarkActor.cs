@@ -1,6 +1,9 @@
 using UnityEngine;
 using UnityGAS;
 
+/// <summary>
+/// 번개 창 표식의 활성화, 피드백, 소모, 수명 만료를 관리할 책임을 가집니다.
+/// </summary>
 [DisallowMultipleComponent]
 public sealed class LightningSpearMarkActor : MonoBehaviour
 {

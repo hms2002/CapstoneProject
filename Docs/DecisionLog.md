@@ -70,3 +70,16 @@ Implications:
 - Existing stock is preserved when discounts change.
 - Existing slots are preserved when slot count expands; only newly opened slots are rolled.
 - Scene and prefab references must be manually wired to a `ShopDefinitionSO`.
+
+## 2026-05-10 - Keep Lightning Spear Basic Attack Weapon-Specific
+
+Decision:
+Do not keep the temporary `WeaponComboAttack2D` shared layer. Lightning Spear basic attack owns its combo data and execution logic, while `SwordCombo2D` remains a legacy/sample ability.
+
+Reason:
+The shared layer only had one active consumer and made it unclear whether Sword combo behavior had become project-wide weapon policy.
+
+Implications:
+- Lightning Spear attack tuning stays in `LightningSpearAttackData`.
+- New weapon combo logic should not depend on the removed shared runner by default.
+- `SwordCombo2D` assets and logic remain untouched unless a separate task targets them.

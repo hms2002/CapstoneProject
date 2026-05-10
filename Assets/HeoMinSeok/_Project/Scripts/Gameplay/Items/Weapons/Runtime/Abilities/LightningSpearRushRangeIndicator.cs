@@ -1,5 +1,8 @@
 using UnityEngine;
 
+/// <summary>
+/// 번개 창 Q 돌진 가능 범위를 원형 메시 표시기로 시각화할 책임을 가집니다.
+/// </summary>
 [DisallowMultipleComponent]
 [RequireComponent(typeof(MeshFilter))]
 [RequireComponent(typeof(MeshRenderer))]

@@ -3,6 +3,9 @@ using UnityEngine;
 using UnityGAS;
 using UnityGAS.Sample;
 
+/// <summary>
+/// 번개 창 스킬이 생성할 히트박스와 전투 피해 페이로드 설정을 보관할 책임을 가집니다.
+/// </summary>
 [Serializable]
 public sealed class LightningSpearHitConfig
 {
