@@ -105,6 +105,9 @@ internal sealed class SceneMonsterSpawnDirector
         if (request.LinkedChestKillLock != null)
             request.LinkedChestKillLock.RegisterMonster(monster);
 
+        if (request.SourceRoomGroup != null)
+            request.SourceRoomGroup.NotifyMonsterSpawned(monster);
+
         spawnedMonsters.Add(monster);
         return monster;
     }

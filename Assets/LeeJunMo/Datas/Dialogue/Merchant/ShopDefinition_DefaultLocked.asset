@@ -19,8 +19,8 @@ MonoBehaviour:
     relicWeight: 1
     consumableWeight: 1
   priceSettings:
-    weaponPrice: 120
-    commonRelicPrice: 100
-    rareRelicPrice: 180
-    epicRelicPrice: 260
-    consumablePrice: 40
+    weaponPrice: 6
+    commonRelicPrice: 2
+    rareRelicPrice: 4
+    epicRelicPrice: 8
+    consumablePrice: 1

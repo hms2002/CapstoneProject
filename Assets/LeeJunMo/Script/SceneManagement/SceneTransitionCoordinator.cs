@@ -95,16 +95,25 @@ public sealed class SceneTransitionCoordinator : MonoBehaviour
         yield return fadeService.FadeOutAsync();
 
         LoadingOverlayController loadingOverlay = null;
+        float loadingPhaseStartedRealtime = 0f;
+        bool loadingPresentationRevealed = false;
         if (useLoadingPresentation)
         {
             PresentationPreloadService preloadService = PresentationPreloadService.EnsureInstance();
             loadingOverlay = LoadingOverlayController.EnsureInstance();
-            loadingOverlay?.BeginManagedPresentation(showImmediately: true);
+            loadingOverlay?.BeginManagedPresentation(showImmediately: false);
             preloadService?.RefreshActiveLoadWindow("Managed transition loading window");
-            fadeService.HideOverlayImmediately();
+            loadingPhaseStartedRealtime = Time.realtimeSinceStartup;
 
             if (completePresentationPreloadBeforeSceneLoad && loadingOverlay != null)
-                yield return WaitForManagedLoadingReady(loadingOverlay);
+            {
+                yield return WaitForManagedLoadingReady(
+                    loadingOverlay,
+                    fadeService,
+                    loadingPhaseStartedRealtime,
+                    () => loadingPresentationRevealed,
+                    value => loadingPresentationRevealed = value);
+            }
         }
 
         AsyncOperation loadOperation = null;
@@ -132,14 +141,28 @@ public sealed class SceneTransitionCoordinator : MonoBehaviour
         }
 
         while (!loadOperation.isDone)
+        {
+            TryRevealDelayedLoadingPresentation(
+                loadingOverlay,
+                fadeService,
+                loadingPhaseStartedRealtime,
+                ref loadingPresentationRevealed);
             yield return null;
+        }
 
         yield return fadeService.WaitForPostLoadSettleAsync();
 
         if (loadingOverlay != null)
         {
             if (!completePresentationPreloadBeforeSceneLoad)
-                yield return WaitForManagedLoadingReady(loadingOverlay);
+            {
+                yield return WaitForManagedLoadingReady(
+                    loadingOverlay,
+                    fadeService,
+                    loadingPhaseStartedRealtime,
+                    () => loadingPresentationRevealed,
+                    value => loadingPresentationRevealed = value);
+            }
 
             routeManager?.CompleteLoadPresentationContext("Managed loading presentation completed.");
             fadeService.ShowBlackImmediately();
@@ -155,13 +178,28 @@ public sealed class SceneTransitionCoordinator : MonoBehaviour
         transitionRoutine = null;
     }
 
-    private IEnumerator WaitForManagedLoadingReady(LoadingOverlayController loadingOverlay)
+    private IEnumerator WaitForManagedLoadingReady(
+        LoadingOverlayController loadingOverlay,
+        SceneFadeTransitionService fadeService,
+        float loadingPhaseStartedRealtime,
+        System.Func<bool> getLoadingPresentationRevealed,
+        System.Action<bool> setLoadingPresentationRevealed)
     {
         float timeoutSeconds = Mathf.Max(0f, loadingCompletionTimeoutSeconds);
         float elapsed = 0f;
 
         while (loadingOverlay != null && !loadingOverlay.IsManagedPresentationReadyToComplete())
         {
+            bool revealed = getLoadingPresentationRevealed != null && getLoadingPresentationRevealed();
+            if (TryRevealDelayedLoadingPresentation(
+                    loadingOverlay,
+                    fadeService,
+                    loadingPhaseStartedRealtime,
+                    ref revealed))
+            {
+                setLoadingPresentationRevealed?.Invoke(revealed);
+            }
+
             if (timeoutSeconds > 0f && elapsed >= timeoutSeconds)
             {
                 Debug.LogWarning(
@@ -173,5 +211,24 @@ public sealed class SceneTransitionCoordinator : MonoBehaviour
             elapsed += Time.unscaledDeltaTime;
             yield return null;
         }
+    }
+
+    private static bool TryRevealDelayedLoadingPresentation(
+        LoadingOverlayController loadingOverlay,
+        SceneFadeTransitionService fadeService,
+        float loadingPhaseStartedRealtime,
+        ref bool loadingPresentationRevealed)
+    {
+        if (loadingPresentationRevealed || loadingOverlay == null || loadingPhaseStartedRealtime <= 0f)
+            return false;
+
+        float elapsed = Time.realtimeSinceStartup - loadingPhaseStartedRealtime;
+        if (elapsed < loadingOverlay.DelayedRevealSeconds)
+            return false;
+
+        loadingOverlay.RevealManagedPresentation();
+        fadeService?.HideOverlayImmediately();
+        loadingPresentationRevealed = true;
+        return true;
     }
 }

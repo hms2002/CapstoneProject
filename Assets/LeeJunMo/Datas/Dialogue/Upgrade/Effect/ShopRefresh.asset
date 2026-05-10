@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ef1dce67083f43d3bb433607dc07d628, type: 3}
-  m_Name: ShopRunModifierEffect
+  m_Name: ShopRefresh
   m_EditorClassIdentifier: 
-  rewardText: "\uC0C1\uC810 \uD65C\uC131\uD654"
+  rewardText: "\uC0C1\uC810 \uC0C8\uB85C\uACE0\uCE68 1\uD68C \uAC00\uB2A5"
   rewardIcon: {fileID: 21300000, guid: 80e2cdbbf23063546b08b1f0741c8b17, type: 3}
-  shopEnabled: 1
+  shopEnabled: 0
   shopSlotBonus: 0
-  shopRefreshCount: 0
+  shopRefreshCount: 1
   discountRate: 0

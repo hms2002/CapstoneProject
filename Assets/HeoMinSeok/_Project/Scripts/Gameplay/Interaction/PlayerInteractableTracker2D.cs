@@ -63,7 +63,7 @@ public sealed class PlayerInteractableTracker2D : MonoBehaviour
 
             MonoBehaviour interactableBehaviour = (MonoBehaviour)interactable;
             float distance = Vector2.Distance(origin, interactableBehaviour.transform.position);
-            if (distance < closestDistance && interactable.CanInteract(player))
+            if (distance < closestDistance && CanBeInteractionTarget(interactable, player))
             {
                 closestDistance = distance;
                 closest = interactable;
@@ -71,6 +71,17 @@ public sealed class PlayerInteractableTracker2D : MonoBehaviour
         }
 
         return closest;
+    }
+
+    private static bool CanBeInteractionTarget(IInteractable interactable, IPlayerInteractor player)
+    {
+        if (interactable == null)
+            return false;
+
+        if (interactable is IInteractionTargetCandidate targetCandidate)
+            return targetCandidate.CanBeInteractionTarget(player);
+
+        return interactable.CanInteract(player);
     }
 
     private void RemoveDestroyedInteractableAt(int index, IInteractable interactable)

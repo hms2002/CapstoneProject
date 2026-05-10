@@ -1,0 +1,120 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 579f92a62aa54fb8a5ce763378d13d4f, type: 3}
+  m_Name: WAL_LightningSpear
+  m_EditorClassIdentifier: 
+  selectionStrategy: {fileID: 11400000, guid: c824dc537858464fab47177e164559c3, type: 2}
+  baseAttack: {fileID: 11400000, guid: 6bbd25ec46de40f1ab275317be703086, type: 2}
+  markRushOrSweep: {fileID: 11400000, guid: 4290d464953142ffb00a0c0946a5eb3a, type: 2}
+  markRain: {fileID: 11400000, guid: 178b0d121243485ea74ea0b937c51928, type: 2}
+  markPrefab: {fileID: 8200123456789012345, guid: 085e3652176349ef82a32deb8f71af92, type: 3}
+  cursorSelectRadius: 2.4
+  markRushRange: 7
+  markRushDuration: 0
+  markRushBodyRadius: 0.25
+  markRushArrivalHitDelay: 0.05
+  markRushInternalDelay: 0.15
+  markRushTrailEffectPrefab: {fileID: 9102123456789012345, guid: 9537f6a61c484881b61d0da5c6b03dd3, type: 3}
+  markRushHit:
+    hitboxPrefab: {fileID: 6902002014408514032, guid: 230cdfca747527646b1afc30748bbfcc, type: 3}
+    activeTime: 0.12
+    hitboxSize: {x: 1.6, y: 0.9}
+    forwardOffset: 0.45
+    hitLayers:
+      serializedVersion: 2
+      m_Bits: 2147483648
+    wallLayers:
+      serializedVersion: 2
+      m_Bits: 1073741824
+    damageConfig:
+      includeStaggerBuildUp: 1
+      includeElementBuildUp: 1
+      staggerFormula: {fileID: 11400000, guid: 8fb95c16fb825134f8ce24efb528fe19, type: 2}
+      elementFormulas: []
+      critAffectsElement: 1
+    damageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
+    knockbackEffect: {fileID: 11400000, guid: 2f5faaf6bd840544cb59f6d23905c40d, type: 2}
+    damageFormula: {fileID: 11400000, guid: f836f4795e60fd54f9a4e401de9d7dd9, type: 2}
+    knockbackFormula: {fileID: 11400000, guid: 886233d2a5002ae4facf46de4cb4864d, type: 2}
+    legacyDamage: 16
+    legacyStaggerDamage: 0
+    hitConfirmedTag: {fileID: 11400000, guid: 465249853d3321e47b796f8e8c787f64, type: 2}
+  noMarkSweepHit:
+    hitboxPrefab: {fileID: 2444049802110501220, guid: 2d297b1bcdf6733489edbb3cc6a848d6, type: 3}
+    activeTime: 0.18
+    hitboxSize: {x: 2.2, y: 1.15}
+    forwardOffset: 1
+    hitLayers:
+      serializedVersion: 2
+      m_Bits: 2147483648
+    wallLayers:
+      serializedVersion: 2
+      m_Bits: 1073741824
+    damageConfig:
+      includeStaggerBuildUp: 1
+      includeElementBuildUp: 1
+      staggerFormula: {fileID: 11400000, guid: 8fb95c16fb825134f8ce24efb528fe19, type: 2}
+      elementFormulas: []
+      critAffectsElement: 1
+    damageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
+    knockbackEffect: {fileID: 11400000, guid: 2f5faaf6bd840544cb59f6d23905c40d, type: 2}
+    damageFormula: {fileID: 11400000, guid: f836f4795e60fd54f9a4e401de9d7dd9, type: 2}
+    knockbackFormula: {fileID: 11400000, guid: 886233d2a5002ae4facf46de4cb4864d, type: 2}
+    legacyDamage: 12
+    legacyStaggerDamage: 0
+    hitConfirmedTag: {fileID: 11400000, guid: 465249853d3321e47b796f8e8c787f64, type: 2}
+  markLifetimeSeconds: 7
+  markRainCount: 6
+  markRainDelay: 0.25
+  fallbackCombatRadius: 7
+  minPlayerDistance: 1.2
+  minMarkSpacing: 2
+  landingProbeRadius: 0.35
+  candidateSamples: 96
+  landingHit:
+    hitboxPrefab: {fileID: 0}
+    activeTime: 0.08
+    hitboxSize: {x: 1.2, y: 1.2}
+    forwardOffset: 0
+    hitLayers:
+      serializedVersion: 2
+      m_Bits: 2147483648
+    wallLayers:
+      serializedVersion: 2
+      m_Bits: 1073741824
+    damageConfig:
+      includeStaggerBuildUp: 1
+      includeElementBuildUp: 1
+      staggerFormula: {fileID: 11400000, guid: 8fb95c16fb825134f8ce24efb528fe19, type: 2}
+      elementFormulas: []
+      critAffectsElement: 1
+    damageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
+    knockbackEffect: {fileID: 11400000, guid: 2f5faaf6bd840544cb59f6d23905c40d, type: 2}
+    damageFormula: {fileID: 11400000, guid: f836f4795e60fd54f9a4e401de9d7dd9, type: 2}
+    knockbackFormula: {fileID: 0}
+    legacyDamage: 6
+    legacyStaggerDamage: 0
+    hitConfirmedTag: {fileID: 11400000, guid: 465249853d3321e47b796f8e8c787f64, type: 2}
+  hardBlockLayers:
+    serializedVersion: 2
+    m_Bits: 1073741824
+  softBlockLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  landingBlockedLayers:
+    serializedVersion: 2
+    m_Bits: 1073741824
+  requiredGroundLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  rushRangeIndicatorPrefab: {fileID: 5600123456789012345, guid: 62a2f887f4974f44a63a42d96c410d1c, type: 3}
+  selectedMarkIndicatorPrefab: {fileID: 5700123456789012345, guid: b670e855e83c42a09e2d07ad24de058b, type: 3}

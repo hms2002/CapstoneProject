@@ -132,7 +132,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1039683468636035782}
   m_Layer: 0
-  m_Name: RHand
+  m_Name: RightWeaponSocketMarker
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -152,6 +152,154 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8969203147945012884}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &771900000000010001
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 771900000000010002}
+  - component: {fileID: 771900000000010003}
+  m_Layer: 0
+  m_Name: WeaponPresentationRig
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &771900000000010002
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 771900000000010001}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 771900000000010011}
+  m_Father: {fileID: 8969203147945012884}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &771900000000010003
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 771900000000010001}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5cba16a9d4334faaa1fe9e7ef1f01234, type: 3}
+  m_Name:
+  m_EditorClassIdentifier:
+  aimSource: {fileID: 1353302521333203863}
+  ownerTransform: {fileID: 8969203147945012884}
+  leftWeaponSocketMarker: {fileID: 3164067117474922781}
+  rightWeaponSocketMarker: {fileID: 1039683468636035782}
+  sideOffsetRoot: {fileID: 771900000000010011}
+  aimRoot: {fileID: 771900000000010021}
+  weaponMount: {fileID: 771900000000010031}
+  sideSwitchDeadZone: 0.1
+--- !u!1 &771900000000010010
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 771900000000010011}
+  m_Layer: 0
+  m_Name: SideOffsetRoot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &771900000000010011
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 771900000000010010}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.2, y: 0.2, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 771900000000010021}
+  m_Father: {fileID: 771900000000010002}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &771900000000010020
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 771900000000010021}
+  m_Layer: 0
+  m_Name: AimRoot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &771900000000010021
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 771900000000010020}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 771900000000010031}
+  m_Father: {fileID: 771900000000010011}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &771900000000010030
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 771900000000010031}
+  m_Layer: 0
+  m_Name: WeaponMount
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &771900000000010031
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 771900000000010030}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 771900000000010021}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2618890920394167917
 GameObject:
@@ -367,7 +515,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3164067117474922781}
   m_Layer: 0
-  m_Name: LHand
+  m_Name: LeftWeaponSocketMarker
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -585,6 +733,7 @@ Transform:
   - {fileID: 2923963001084614867}
   - {fileID: 3164067117474922781}
   - {fileID: 1039683468636035782}
+  - {fileID: 771900000000010002}
   - {fileID: 3534864477184363294}
   - {fileID: 6118371081096453659}
   - {fileID: 4115971267136633410}
@@ -774,12 +923,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   abilitySystem: {fileID: 1832372497922031110}
-  weaponSocket: {fileID: 3164067117474922781}
-  leftWeaponSocket: {fileID: 3164067117474922781}
-  rightWeaponSocket: {fileID: 1039683468636035782}
-  ownerTransform: {fileID: 8969203147945012884}
-  aimSource: {fileID: 1353302521333203863}
-  sideSwitchDeadZone: 0.1
+  presentationRig: {fileID: 771900000000010003}
+  weaponSocket: {fileID: 771900000000010031}
   useCache: 1
   cacheLimit: 2
 --- !u!114 &963026585117413559
@@ -1030,9 +1175,6 @@ MonoBehaviour:
   mainCamera: {fileID: 0}
   tagSystem: {fileID: 7887873875085709242}
   aimLockedTag: {fileID: 11400000, guid: 4e1c3565f6c57e34c811431616670c8d, type: 2}
-  hand: {fileID: 3164067117474922781}
-  secondaryHand: {fileID: 1039683468636035782}
-  weaponZOffset: 90
 --- !u!114 &5848849639195397612
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1642,7 +1784,7 @@ MonoBehaviour:
   lyingShadowLocalRotationZ: -90
   lyingShadowScaleMultiplier: {x: 2.2, y: 1, z: 1}
   awakeIdleSpriteOverride: {fileID: -720365038908779728, guid: 54afb36f0c9a5b347b44945f7a8e0f78, type: 3}
-  sleepSprite: {fileID: -3282638300470552162, guid: 66dc6cbb5247f4842b2db3329d25bcaa, type: 3}
+  sleepSprite: {fileID: 17380629475235115, guid: 54afb36f0c9a5b347b44945f7a8e0f78, type: 3}
   sleepEffectAnchor: {fileID: 4115971267136633410}
   sleepEffectPrefab: {fileID: 5901972143961512537, guid: 1585d72a2e7a6574bbdafcb2f8a24b41, type: 3}
   sleepEffectLocalOffset: {x: 0, y: 0, z: 0}

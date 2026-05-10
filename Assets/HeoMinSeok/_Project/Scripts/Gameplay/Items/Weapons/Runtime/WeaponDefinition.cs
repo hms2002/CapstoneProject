@@ -83,13 +83,23 @@ public class WeaponDefinition : ScriptableObject, IInventoryItemDefinition
         if (skill2 != null) yield return skill2;
     }
 
-    public AbilityDefinition GetAbility(WeaponAbilitySlot slot) => slot switch
+    public AbilityDefinition GetAbility(WeaponAbilitySlot slot)
     {
-        WeaponAbilitySlot.Attack => attack,
-        WeaponAbilitySlot.Skill1 => skill1,
-        WeaponAbilitySlot.Skill2 => skill2,
-        _ => null
-    };
+        AbilityDefinition directAbility = slot switch
+        {
+            WeaponAbilitySlot.Attack => attack,
+            WeaponAbilitySlot.Skill1 => skill1,
+            WeaponAbilitySlot.Skill2 => skill2,
+            _ => null
+        };
+
+        if (directAbility != null)
+            return directAbility;
+
+        return abilityLoadout != null
+            ? abilityLoadout.GetDefaultAbility(slot)
+            : null;
+    }
 
     // IInventoryItemDefinition
     public InventoryItemKind Kind => InventoryItemKind.Weapon;

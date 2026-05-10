@@ -15,8 +15,12 @@ public sealed class MonsterSpawnRoomGroup : MonoBehaviour
 
     private readonly List<MonsterSpawnContainer> reusableContainers = new();
     private readonly List<GameObject> reusableSpawnPlan = new();
+    private readonly List<RoomDoorMonsterKillLock> runtimeDoorLocks = new();
+    private readonly List<GameObject> runtimeSpawnedMonsters = new();
+    private bool playerEncounterEntered;
 
     public MonsterRoomSpawnProfileSO SpawnProfile => spawnProfile;
+    public bool PlayerEncounterEntered => playerEncounterEntered;
 
     /// <summary>현재 방 그룹이 관리하는 스폰 포인트들을 반환합니다.</summary>
     public IReadOnlyList<MonsterSpawnContainer> GetSpawnContainers()
@@ -56,6 +60,77 @@ public sealed class MonsterSpawnRoomGroup : MonoBehaviour
     }
 
     /// <summary>자식 스폰 포인트 자동 수집 설정에 맞춰 캐시를 갱신합니다.</summary>
+    public void RegisterDoorLock(RoomDoorMonsterKillLock doorLock)
+    {
+        if (doorLock == null || runtimeDoorLocks.Contains(doorLock))
+            return;
+
+        runtimeDoorLocks.Add(doorLock);
+        CompactRuntimeLists();
+
+        for (int i = 0; i < runtimeSpawnedMonsters.Count; i++)
+        {
+            GameObject monster = runtimeSpawnedMonsters[i];
+            if (monster != null)
+                doorLock.RegisterMonster(monster);
+        }
+
+        if (playerEncounterEntered)
+            doorLock.NotifyRoomEncounterEntered();
+    }
+
+    public void UnregisterDoorLock(RoomDoorMonsterKillLock doorLock)
+    {
+        if (doorLock == null)
+            return;
+
+        runtimeDoorLocks.Remove(doorLock);
+    }
+
+    public void NotifyMonsterSpawned(GameObject monster)
+    {
+        if (monster == null)
+            return;
+
+        CompactRuntimeLists();
+
+        if (!runtimeSpawnedMonsters.Contains(monster))
+            runtimeSpawnedMonsters.Add(monster);
+
+        for (int i = runtimeDoorLocks.Count - 1; i >= 0; i--)
+        {
+            RoomDoorMonsterKillLock doorLock = runtimeDoorLocks[i];
+            if (doorLock == null)
+            {
+                runtimeDoorLocks.RemoveAt(i);
+                continue;
+            }
+
+            doorLock.RegisterMonster(monster);
+        }
+    }
+
+    public void NotifyPlayerEnteredEncounter()
+    {
+        if (playerEncounterEntered)
+            return;
+
+        playerEncounterEntered = true;
+        CompactRuntimeLists();
+
+        for (int i = runtimeDoorLocks.Count - 1; i >= 0; i--)
+        {
+            RoomDoorMonsterKillLock doorLock = runtimeDoorLocks[i];
+            if (doorLock == null)
+            {
+                runtimeDoorLocks.RemoveAt(i);
+                continue;
+            }
+
+            doorLock.NotifyRoomEncounterEntered();
+        }
+    }
+
     private void RefreshContainersIfNeeded()
     {
         reusableContainers.Clear();
@@ -93,6 +168,12 @@ public sealed class MonsterSpawnRoomGroup : MonoBehaviour
             int j = Random.Range(i, list.Count);
             (list[i], list[j]) = (list[j], list[i]);
         }
+    }
+
+    private void CompactRuntimeLists()
+    {
+        runtimeDoorLocks.RemoveAll(doorLock => doorLock == null);
+        runtimeSpawnedMonsters.RemoveAll(monster => monster == null);
     }
 
 #if UNITY_EDITOR

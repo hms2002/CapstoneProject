@@ -26,6 +26,7 @@ public class UpgradeManager : MonoBehaviour
     private UpgradeEffectApplier effectApplier;
     private PlayerInteractor2D appliedPlayer;
     private readonly HashSet<int> appliedPlayerEffectNodeIds = new HashSet<int>();
+    private readonly Queue<UpgradeCinematicRequest> pendingCinematics = new Queue<UpgradeCinematicRequest>();
     private bool hasAppliedRunStartEffectsForCurrentRun;
     private bool hasObservedSceneLoadForCurrentRun;
     private Coroutine openPresentationRoutine;
@@ -211,11 +212,12 @@ public class UpgradeManager : MonoBehaviour
         effectApplier.ApplyUpgrade(node, player);
         MarkNodeAppliedForCurrentPlayer(node.nodeID, player);
         TryApplyHubTargetStates(player);
+        QueueUpgradeCinematics(node);
+        RunModifierService.Instance?.RebuildFromPurchasedUpgrades();
 
         if (RewardDisplayService.Instance != null)
             RewardDisplayService.Instance.ShowReward(node.effects, null);
 
-        RunModifierService.Instance?.RebuildFromPurchasedUpgrades();
         CheckAndUnlockNodes(false);
         GameDataSaveCoordinator.RequestImmediateSave(this);
         OnDataChanged?.Invoke();
@@ -422,5 +424,40 @@ public class UpgradeManager : MonoBehaviour
     public List<UpgradeNodeSO> GetAllUpgrades()
     {
         return progressService != null ? progressService.GetAllUpgrades() : null;
+    }
+
+    public bool TryDequeuePendingCinematic(out UpgradeCinematicRequest request)
+    {
+        if (pendingCinematics.Count > 0)
+        {
+            request = pendingCinematics.Dequeue();
+            return true;
+        }
+
+        request = default;
+        return false;
+    }
+
+    private void QueueUpgradeCinematics(UpgradeNodeSO node)
+    {
+        if (IsShopActivationCinematicUpgrade(node))
+            pendingCinematics.Enqueue(new UpgradeCinematicRequest(UpgradeCinematicType.ShopActivated, node.nodeID));
+    }
+
+    private static bool IsShopActivationCinematicUpgrade(UpgradeNodeSO node)
+    {
+        if (node?.effects == null)
+            return false;
+
+        for (int i = 0; i < node.effects.Count; i++)
+        {
+            if (node.effects[i] is ShopRunModifierUpgradeEffect shopEffect &&
+                shopEffect.Delta.shopEnabled)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
