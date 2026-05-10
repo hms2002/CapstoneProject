@@ -73,6 +73,7 @@ public sealed class AbilityLogic_DrunkenDragonSlam : AbilityLogic
             yield break;
 
         AbilityMotionController2D motion = dragon.GetComponent<AbilityMotionController2D>();
+        EntityCollisionProfile2D collisionProfile = dragon.GetComponent<EntityCollisionProfile2D>();
         AttackTelegraphService telegraphService = dragon.GetComponent<AttackTelegraphService>();
         CombatHeightState2D heightState = EnsureHeightState(dragon);
 
@@ -81,38 +82,46 @@ public sealed class AbilityLogic_DrunkenDragonSlam : AbilityLogic
         float duration = Mathf.Max(0.01f, travelSeconds);
 
         AttackTelegraphView impactTelegraph = ShowImpactTelegraph(telegraphService, impactPosition, duration);
+        collisionProfile?.SetBodyCollisionMode(EntityCollisionProfile2D.BodyCollisionMode.PassThroughActors);
         heightState?.SetAirborne(0f, airborneBodyZHeight);
         dragon.FacePatternDirection(impactPosition - start);
         dragon.PushFaceTargetLock();
 
         try
         {
-            PlayJumpStartPresentation(dragon, start);
-            dragon.PlayPatternTrigger(DrunkenDragonAnimationKeys.Jump);
-            MoveToImpactPosition(motion, dragon, start, impactPosition, duration);
+            try
+            {
+                PlayJumpStartPresentation(dragon, start);
+                dragon.PlayPatternTrigger(DrunkenDragonAnimationKeys.Jump);
+                MoveToImpactPosition(motion, dragon, start, impactPosition, duration);
 
-            yield return TweenJumpHeight(heightState, duration, spec);
+                yield return TweenJumpHeight(heightState, duration, spec);
+            }
+            finally
+            {
+                if (IsAbilityCancelled(spec))
+                    motion?.CancelMotion();
+
+                heightState?.SetGrounded();
+                if (impactTelegraph != null)
+                    impactTelegraph.HideImmediate();
+
+                dragon.PopFaceTargetLock();
+            }
+
+            if (IsAbilityCancelled(spec))
+                yield break;
+
+            dragon.PlayPatternTrigger(DrunkenDragonAnimationKeys.Landing);
+            PlayLandingPresentation(dragon, impactPosition);
+            PlayImpactPresentation(dragon, impactPosition);
+            ApplyImpactDamage(dragon, impactPosition);
+            yield return ScatterKegsAfterImpact(dragon, system, telegraphService, impactPosition, spec);
         }
         finally
         {
-            if (IsAbilityCancelled(spec))
-                motion?.CancelMotion();
-
-            heightState?.SetGrounded();
-            if (impactTelegraph != null)
-                impactTelegraph.HideImmediate();
-
-            dragon.PopFaceTargetLock();
+            collisionProfile?.RestoreDefaultMode();
         }
-
-        if (IsAbilityCancelled(spec))
-            yield break;
-
-        dragon.PlayPatternTrigger(DrunkenDragonAnimationKeys.Landing);
-        PlayLandingPresentation(dragon, impactPosition);
-        PlayImpactPresentation(dragon, impactPosition);
-        ApplyImpactDamage(dragon, impactPosition);
-        yield return ScatterKegsAfterImpact(dragon, system, telegraphService, impactPosition, spec);
     }
 
     private static CombatHeightState2D EnsureHeightState(DrunkenDragonController dragon)

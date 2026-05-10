@@ -12,6 +12,12 @@ namespace UnityGAS
         [SerializeField] private AttackTelegraphView telegraphPrefab;
         [SerializeField] private AttackTelegraphStyle defaultStyle;
 
+        [Header("Wall Clipping")]
+        [SerializeField] private bool useDefaultWallClipping;
+        [SerializeField] private LayerMask defaultWallClipLayers;
+        [SerializeField, Min(3)] private int defaultWallClipSampleCount = 48;
+        [SerializeField, Min(0f)] private float defaultWallClipSkinWidth = 0.03f;
+
         private AttackTelegraphView activeView;
         public bool HasActiveTelegraph => activeView != null && activeView.IsVisible;
 
@@ -25,6 +31,7 @@ namespace UnityGAS
             if (view == null)
                 return;
 
+            spec = ApplyDefaultWallClipping(spec);
             view.Show(spec, defaultStyle);
         }
 
@@ -38,6 +45,7 @@ namespace UnityGAS
             if (activeView == null || !activeView.IsVisible)
                 return;
 
+            spec = ApplyDefaultWallClipping(spec);
             activeView.UpdateGeometry(spec);
         }
 
@@ -63,11 +71,23 @@ namespace UnityGAS
             if (telegraphPrefab == null)
                 return null;
 
+            spec = ApplyDefaultWallClipping(spec);
             AttackTelegraphView view = Instantiate(telegraphPrefab, parent);
             view.HideImmediate();
             view.Show(spec, defaultStyle);
             StartCoroutine(DestroyDetachedViewAfter(view, spec.duration));
             return view;
+        }
+
+        private AttackTelegraphSpec ApplyDefaultWallClipping(AttackTelegraphSpec spec)
+        {
+            if (spec.useWallClipping || !useDefaultWallClipping || defaultWallClipLayers.value == 0)
+                return spec;
+
+            return spec.WithWallClipping(
+                defaultWallClipLayers,
+                defaultWallClipSampleCount,
+                defaultWallClipSkinWidth);
         }
 
         private AttackTelegraphView GetOrCreateView()

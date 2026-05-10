@@ -21,6 +21,17 @@ namespace UnityGAS.Sample
             return system != null ? system.GetComponent<WeaponInventory2D>() : null;
         }
 
+        public static OddIronRuntimeState ResolveRuntimeState(AbilitySystem system)
+        {
+            WeaponEquipController equipController = system != null
+                ? system.GetComponent<WeaponEquipController>()
+                : null;
+
+            return equipController != null
+                ? equipController.GetCurrentWeaponRuntimeState() as OddIronRuntimeState
+                : null;
+        }
+
         public static CombatHitPayload BuildFixedPayload(
             AbilitySystem system,
             AbilitySpec spec,
@@ -79,6 +90,31 @@ namespace UnityGAS.Sample
             return system.transform.position + (Vector3)offset + Vector3.forward * localOffset.z;
         }
 
+        public static Vector3 ResolveMuzzlePosition(AbilitySystem system, Vector2 direction, Vector3 localOffset)
+        {
+            OddIronRuntimeState runtimeState = ResolveRuntimeState(system);
+            return runtimeState != null
+                ? runtimeState.ResolveMuzzlePosition(system, direction, localOffset)
+                : ResolveSpawnPosition(system, direction, localOffset);
+        }
+
+        public static Quaternion ResolveMuzzleRotation(AbilitySystem system, Vector2 direction)
+        {
+            OddIronRuntimeState runtimeState = ResolveRuntimeState(system);
+            if (runtimeState != null)
+                return runtimeState.ResolveMuzzleRotation(direction);
+
+            float angle = direction.sqrMagnitude > 0.0001f
+                ? Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg
+                : 0f;
+            return Quaternion.Euler(0f, 0f, angle);
+        }
+
+        public static void PlayFireRecoil(AbilitySystem system, Vector2 direction)
+        {
+            ResolveRuntimeState(system)?.PlayFireRecoil(direction);
+        }
+
         public static void ApplyProjectileScale(GameObject projectileObject, Vector3 projectileScale)
         {
             if (projectileObject == null)
@@ -98,7 +134,15 @@ namespace UnityGAS.Sample
             float angle = direction.sqrMagnitude > 0.0001f
                 ? Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg
                 : 0f;
-            Object.Instantiate(prefab, position, Quaternion.Euler(0f, 0f, angle));
+            SpawnMuzzleFlash(prefab, position, Quaternion.Euler(0f, 0f, angle));
+        }
+
+        public static void SpawnMuzzleFlash(GameObject prefab, Vector3 position, Quaternion rotation)
+        {
+            if (prefab == null)
+                return;
+
+            Object.Instantiate(prefab, position, rotation);
         }
     }
 }

@@ -27,6 +27,12 @@ MonoBehaviour:
   damageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
   damageAmount: 1
   warningTelegraphStyle: {fileID: 11400000, guid: b15f18602ec87284d80cbd57720425f1, type: 2}
+  useWallClippedWarningTelegraph: 1
+  warningTelegraphWallLayers:
+    serializedVersion: 2
+    m_Bits: 1073741824
+  warningTelegraphSampleCount: 48
+  warningTelegraphWallSkinWidth: 0.03
   inhalePreparePresentation:
     sound:
       key: 

@@ -1,6 +1,10 @@
 using UnityEngine;
 using UnityGAS;
 
+/// <summary>
+/// 이 클래스의 책임:
+/// 일반 몬스터의 현재 바라보는 방향을 타깃/이동 의도에서 계산하고, 스프라이트 flipX를 초기 authoring 기준에 맞춰 적용한다.
+/// </summary>
 [DisallowMultipleComponent]
 public sealed class EnemyFacing2D : MonoBehaviour, IFacingDirectionSource2D
 {
@@ -13,6 +17,7 @@ public sealed class EnemyFacing2D : MonoBehaviour, IFacingDirectionSource2D
     [SerializeField] private bool flipSpriteX = true;
 
     private Vector2 lastFacing = Vector2.right;
+    private bool rightFacingFlipX;
 
     private void Awake()
     {
@@ -22,8 +27,13 @@ public sealed class EnemyFacing2D : MonoBehaviour, IFacingDirectionSource2D
         if (sprite == null)
             sprite = GetComponent<SpriteRenderer>();
 
+        if (sprite == null)
+            sprite = GetComponentInChildren<SpriteRenderer>(true);
+
         if (movementMotor == null)
             movementMotor = GetComponent<MovementMotor2D>();
+
+        rightFacingFlipX = sprite != null && sprite.flipX;
     }
 
     private void LateUpdate()
@@ -34,8 +44,8 @@ public sealed class EnemyFacing2D : MonoBehaviour, IFacingDirectionSource2D
 
         if (flipSpriteX && sprite != null)
         {
-            if (lastFacing.x < -0.001f) sprite.flipX = true;
-            else if (lastFacing.x > 0.001f) sprite.flipX = false;
+            if (lastFacing.x < -0.001f) sprite.flipX = !rightFacingFlipX;
+            else if (lastFacing.x > 0.001f) sprite.flipX = rightFacingFlipX;
         }
     }
 

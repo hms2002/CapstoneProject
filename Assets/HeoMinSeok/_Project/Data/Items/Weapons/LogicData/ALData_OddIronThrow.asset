@@ -17,7 +17,7 @@ MonoBehaviour:
   lifetime: 1.2
   angularSpeedDegrees: 720
   spawnOffset: {x: 0.8, y: 0.15, z: 0}
-  projectileScale: {x: 0.5, y: 0.5, z: 1}
+  projectileScale: {x: 0.3, y: 0.3, z: 1}
   wallLayers:
     serializedVersion: 2
     m_Bits: 1073741824
@@ -35,7 +35,7 @@ MonoBehaviour:
   fixedDamage: 60
   fixedStaggerDamage: 0
   fixedKnockbackImpulse: 8
-  impactVfxPrefab: {fileID: 0}
+  impactVfxPrefab: {fileID: 5782972530972772327, guid: 545e937c0e631794289077d16108df59, type: 3}
   throwSound:
     key: 
     volumeMultiplier: 1

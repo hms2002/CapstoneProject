@@ -7327,35 +7327,8 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 5055118451258413439, guid: 69f361477ab13cb469045903bed6a96e, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 6787846962178461539}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 69f361477ab13cb469045903bed6a96e, type: 3}
---- !u!1 &6787846962178461538 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5055118451258413439, guid: 69f361477ab13cb469045903bed6a96e, type: 3}
-  m_PrefabInstance: {fileID: 6787846962178461537}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &6787846962178461539
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6787846962178461538}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 42667dfbf3529e6489882ac43545fe3b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::BossDrop
-  chestPrefab: {fileID: 7530156284439312542, guid: 296eaa6f1547cb74e990055ce1319470, type: 3}
-  chestSpawnPoint: {fileID: 35865593}
-  portalObj: {fileID: 1987507146}
-  portalSpawnPoint: {fileID: 1987507145}
-  portalSpawnOffset: {x: 0, y: 0, z: 0}
-  bossUniqueLoots: []
-  magicStonePrefab: {fileID: 5809627508243328825, guid: 108ed5884c0e5294fb2bc08d259e53f5, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

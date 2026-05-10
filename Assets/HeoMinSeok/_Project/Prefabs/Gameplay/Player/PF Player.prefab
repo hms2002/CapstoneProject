@@ -659,7 +659,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8969203147945012884}
-  - component: {fileID: 4526646571639922450}
   - component: {fileID: 288432539280398367}
   - component: {fileID: 1832372497922031110}
   - component: {fileID: 7887873875085709242}
@@ -705,9 +704,11 @@ GameObject:
   - component: {fileID: 7764125724508558370}
   - component: {fileID: 6601192358712345678}
   - component: {fileID: 8470790143729662828}
+  - component: {fileID: 2244668801357902468}
   - component: {fileID: 829412313411764659}
   - component: {fileID: 4862088633919268698}
   - component: {fileID: -6179936427583040154}
+  - component: {fileID: 4715618300808129061}
   m_Layer: 3
   m_Name: PF Player
   m_TagString: Player
@@ -738,52 +739,6 @@ Transform:
   - {fileID: 4115971267136633410}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!61 &4526646571639922450
-BoxCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8883617028798182002}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_CompositeOperation: 0
-  m_CompositeOrder: 0
-  m_Offset: {x: 0.004547298, y: 0.04397222}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0}
-    oldSize: {x: 0.14, y: 0.22}
-    newSize: {x: 0.65625, y: 1.4}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  m_Size: {x: 0.12403774, y: 0.06740985}
-  m_EdgeRadius: 0
 --- !u!50 &288432539280398367
 Rigidbody2D:
   serializedVersion: 5
@@ -933,8 +888,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0125920acee723a4ebd339d55e482402, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   slots:
   - {fileID: 0}
   - {fileID: 0}
@@ -950,8 +905,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bbbb78207c3663545a856679c2f756dc, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   consumableInventory: {fileID: 771234567890123456}
   tagSystem: {fileID: 7887873875085709242}
   skillBlockedTag: {fileID: 0}
@@ -1248,6 +1203,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   body: {fileID: 288432539280398367}
   enforceContinuousCollision: 1
+  preventWallTunneling: 1
+  wallCollisionLayers:
+    serializedVersion: 2
+    m_Bits: 1073741824
+  wallSafetyMinSpeed: 8
+  wallCastSkinWidth: 0.03
+  depenetrationSkinWidth: 0.01
+  maxDepenetrationIterations: 3
   intentSourceBehaviour: {fileID: 5727091237041186888}
   statProviderBehaviour: {fileID: 689952884117774573}
   externalMovement: {fileID: 7359355598128478682}
@@ -1968,6 +1931,31 @@ MonoBehaviour:
     cueOnExecute: {fileID: 0}
     cueWhileActive: {fileID: 0}
     cueOnRemove: {fileID: 0}
+--- !u!114 &2244668801357902468
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8883617028798182002}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f91c6f777744985b46d03508b0db52a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bodyCollider: {fileID: 0}
+  body: {fileID: 288432539280398367}
+  externalMovement: {fileID: 7359355598128478682}
+  actorLayers:
+    serializedVersion: 2
+    m_Bits: 2147483648
+  wallLayers:
+    serializedVersion: 2
+    m_Bits: 1073741824
+  pushSpeed: 2.8
+  pushDurationSeconds: 0.08
+  wallProbeDistance: 0.08
+  maxActorsPerTick: 8
 --- !u!114 &829412313411764659
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2013,3 +2001,40 @@ MonoBehaviour:
   tagSystem: {fileID: 7887873875085709242}
   movementMotor: {fileID: 310578829752974272}
   rigidbody2D: {fileID: 288432539280398367}
+--- !u!70 &4715618300808129061
+CapsuleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8883617028798182002}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: 0.09039581}
+  m_Size: {x: 0.18862104, y: 0.18862128}
+  m_Direction: 0

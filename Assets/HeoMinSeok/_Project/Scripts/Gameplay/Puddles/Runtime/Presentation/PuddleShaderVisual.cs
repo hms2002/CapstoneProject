@@ -25,6 +25,13 @@ namespace UnityGAS
         [SerializeField] private int sortingOrder = -2;
         [SerializeField, Min(1f)] private float quadScale = 2.2f;
 
+        [Header("Wall Clipping")]
+        [SerializeField] private bool useWallClipping;
+        [SerializeField] private LayerMask wallClipLayers;
+        [SerializeField, Min(3)] private int wallClipSampleCount = 48;
+        [SerializeField, Min(0f)] private float wallClipSkinWidth = 0.03f;
+        [SerializeField] private bool wallClipGroundModesOnly = true;
+
         [Header("Absorb")]
         [SerializeField, Min(0.01f)] private float absorbVisualDurationSeconds = 0.75f;
         [SerializeField, Min(0f)] private float preparingRenderPaddingScale = 0.75f;
@@ -39,6 +46,19 @@ namespace UnityGAS
         private Mesh quadMesh;
         private Vector3[] quadVertices;
         private Vector2[] quadUvs;
+        private readonly int[] quadTriangles = { 0, 1, 2, 0, 2, 3 };
+        private Vector3[] wallClipVertices;
+        private Vector2[] wallClipUvs;
+        private int[] wallClipTriangles;
+        private bool wallClipMeshDirty = true;
+        private bool wallClipMeshActive;
+        private Vector3 lastWallClipPosition;
+        private float lastWallClipVisualRadius = -1f;
+        private float lastWallClipQuadScale = -1f;
+        private PuddleAreaMode lastWallClipMode;
+        private int lastWallClipLayerMask;
+        private int lastWallClipSampleCount;
+        private float lastWallClipSkinWidth = -1f;
         private Transform absorbAnchor;
         private PuddleElementType elementType = PuddleElementType.Alcohol;
         private PuddleAreaMode mode = PuddleAreaMode.Ground;
@@ -83,6 +103,8 @@ namespace UnityGAS
             preparingRadiusShrinkStart = Mathf.Clamp01(preparingRadiusShrinkStart);
             projectileFrontPaddingScale = Mathf.Max(0f, projectileFrontPaddingScale);
             projectileTailPaddingScale = Mathf.Max(0f, projectileTailPaddingScale);
+            wallClipSampleCount = Mathf.Max(3, wallClipSampleCount);
+            wallClipSkinWidth = Mathf.Max(0f, wallClipSkinWidth);
             CacheComponents();
             EnsureMesh();
             ApplyRendererSettings();
@@ -104,6 +126,7 @@ namespace UnityGAS
                     absorbElapsedSeconds = 0f;
                 if (newMode != PuddleAreaMode.Igniting)
                     ignitionProgress = newMode == PuddleAreaMode.Ground && elementType == PuddleElementType.Fire ? 1f : 0f;
+                MarkWallClipDirty();
             }
 
             ApplyVisualScale();
@@ -123,8 +146,16 @@ namespace UnityGAS
 
         public void SetRadii(float newGroundRadius, float newProjectileRadius)
         {
-            groundRadius = Mathf.Max(0.01f, newGroundRadius);
-            projectileRadius = Mathf.Max(0.01f, newProjectileRadius);
+            float resolvedGroundRadius = Mathf.Max(0.01f, newGroundRadius);
+            float resolvedProjectileRadius = Mathf.Max(0.01f, newProjectileRadius);
+            if (!Mathf.Approximately(groundRadius, resolvedGroundRadius) ||
+                !Mathf.Approximately(projectileRadius, resolvedProjectileRadius))
+            {
+                MarkWallClipDirty();
+            }
+
+            groundRadius = resolvedGroundRadius;
+            projectileRadius = resolvedProjectileRadius;
             ApplyVisualScale();
             ApplyProperties();
         }
@@ -172,7 +203,7 @@ namespace UnityGAS
                     name = "Puddle Shader Visual Quad",
                     vertices = quadVertices,
                     uv = quadUvs,
-                    triangles = new[] { 0, 1, 2, 0, 2, 3 }
+                    triangles = quadTriangles
                 };
                 quadMesh.RecalculateBounds();
             }
@@ -226,6 +257,15 @@ namespace UnityGAS
             if (quadMesh == null)
                 return;
 
+            if (ShouldUseWallClippedGroundMesh())
+            {
+                ApplyWallClippedGroundMeshIfNeeded();
+                return;
+            }
+
+            bool wasWallClipMeshActive = wallClipMeshActive;
+            wallClipMeshActive = false;
+
             float progress = ResolveAbsorbProgress();
             float frontPadding = mode == PuddleAreaMode.AbsorbPreparing
                 ? progress * preparingRenderPaddingScale
@@ -264,8 +304,7 @@ namespace UnityGAS
                 max.y -= tailPadding * direction.y;
             }
 
-            quadVertices ??= new Vector3[4];
-            quadUvs ??= new Vector2[4];
+            EnsureQuadBuffers();
             quadVertices[0] = new Vector3(min.x, min.y, 0f);
             quadVertices[1] = new Vector3(max.x, min.y, 0f);
             quadVertices[2] = new Vector3(max.x, max.y, 0f);
@@ -277,9 +316,146 @@ namespace UnityGAS
             quadUvs[2] = new Vector2(max.x + 0.5f, max.y + 0.5f);
             quadUvs[3] = new Vector2(min.x + 0.5f, max.y + 0.5f);
 
+            if (wasWallClipMeshActive || quadMesh.vertexCount != quadVertices.Length)
+                quadMesh.Clear();
+
             quadMesh.vertices = quadVertices;
             quadMesh.uv = quadUvs;
+            quadMesh.triangles = quadTriangles;
             quadMesh.RecalculateBounds();
+        }
+
+        /// <summary>
+        /// 책임:
+        /// PuddleShaderVisual의 기본 quad 렌더링이 항상 4개 정점/UV 버퍼를 사용하도록 보장한다.
+        /// </summary>
+        private void EnsureQuadBuffers()
+        {
+            if (quadVertices == null || quadVertices.Length != 4)
+                quadVertices = new Vector3[4];
+
+            if (quadUvs == null || quadUvs.Length != 4)
+                quadUvs = new Vector2[4];
+        }
+
+        private bool ShouldUseWallClippedGroundMesh()
+        {
+            if (!useWallClipping || wallClipLayers.value == 0)
+                return false;
+
+            if (!wallClipGroundModesOnly)
+                return true;
+
+            return mode == PuddleAreaMode.Ground || mode == PuddleAreaMode.Igniting;
+        }
+
+        private void ApplyWallClippedGroundMeshIfNeeded()
+        {
+            if (!wallClipMeshActive || wallClipMeshDirty || HasWallClipContextChanged())
+                ApplyWallClippedGroundMesh();
+        }
+
+        private bool HasWallClipContextChanged()
+        {
+            return transform.position != lastWallClipPosition ||
+                   !Mathf.Approximately(visualRadius, lastWallClipVisualRadius) ||
+                   !Mathf.Approximately(quadScale, lastWallClipQuadScale) ||
+                   mode != lastWallClipMode ||
+                   wallClipLayers.value != lastWallClipLayerMask ||
+                   wallClipSampleCount != lastWallClipSampleCount ||
+                   !Mathf.Approximately(wallClipSkinWidth, lastWallClipSkinWidth);
+        }
+
+        private void ApplyWallClippedGroundMesh()
+        {
+            int sampleCount = Mathf.Max(3, wallClipSampleCount);
+            int vertexCount = sampleCount + 1;
+            EnsureWallClipBuffers(vertexCount, sampleCount);
+
+            wallClipVertices[0] = Vector3.zero;
+            wallClipUvs[0] = new Vector2(0.5f, 0.5f);
+
+            float worldUnitsPerLocalUnit = Mathf.Max(0.0001f, visualRadius * quadScale);
+            float maxLocalRadius = 0.5f;
+            float maxWorldDistance = worldUnitsPerLocalUnit * maxLocalRadius;
+            Vector2 origin = transform.position;
+
+            for (int i = 0; i < sampleCount; i++)
+            {
+                float angle = i / (float)sampleCount * 360f;
+                Vector2 direction = Rotate(Vector2.right, angle);
+                float visibleWorldDistance = ResolveVisibleDistance(origin, direction, maxWorldDistance);
+                float localDistance = Mathf.Clamp(visibleWorldDistance / worldUnitsPerLocalUnit, 0f, maxLocalRadius);
+                Vector2 localVertex = direction * localDistance;
+
+                wallClipVertices[i + 1] = localVertex;
+                wallClipUvs[i + 1] = localVertex + new Vector2(0.5f, 0.5f);
+            }
+
+            int triangleIndex = 0;
+            for (int i = 0; i < sampleCount; i++)
+            {
+                int next = i + 1;
+                if (next >= sampleCount)
+                    next = 0;
+
+                wallClipTriangles[triangleIndex++] = 0;
+                wallClipTriangles[triangleIndex++] = i + 1;
+                wallClipTriangles[triangleIndex++] = next + 1;
+            }
+
+            quadMesh.Clear();
+            quadMesh.vertices = wallClipVertices;
+            quadMesh.uv = wallClipUvs;
+            quadMesh.triangles = wallClipTriangles;
+            quadMesh.RecalculateBounds();
+
+            wallClipMeshActive = true;
+            wallClipMeshDirty = false;
+            lastWallClipPosition = transform.position;
+            lastWallClipVisualRadius = visualRadius;
+            lastWallClipQuadScale = quadScale;
+            lastWallClipMode = mode;
+            lastWallClipLayerMask = wallClipLayers.value;
+            lastWallClipSampleCount = wallClipSampleCount;
+            lastWallClipSkinWidth = wallClipSkinWidth;
+        }
+
+        private void EnsureWallClipBuffers(int vertexCount, int triangleFanCount)
+        {
+            if (wallClipVertices == null || wallClipVertices.Length != vertexCount)
+                wallClipVertices = new Vector3[vertexCount];
+
+            if (wallClipUvs == null || wallClipUvs.Length != vertexCount)
+                wallClipUvs = new Vector2[vertexCount];
+
+            int triangleCount = Mathf.Max(0, triangleFanCount) * 3;
+            if (wallClipTriangles == null || wallClipTriangles.Length != triangleCount)
+                wallClipTriangles = new int[triangleCount];
+        }
+
+        private float ResolveVisibleDistance(Vector2 origin, Vector2 direction, float maxDistance)
+        {
+            RaycastHit2D hit = Physics2D.Raycast(origin, direction, maxDistance, wallClipLayers);
+            if (hit.collider == null)
+                return maxDistance;
+
+            return Mathf.Clamp(hit.distance - wallClipSkinWidth, 0f, maxDistance);
+        }
+
+        private static Vector2 Rotate(Vector2 vector, float degrees)
+        {
+            float radians = degrees * Mathf.Deg2Rad;
+            float cos = Mathf.Cos(radians);
+            float sin = Mathf.Sin(radians);
+            return new Vector2(
+                vector.x * cos - vector.y * sin,
+                vector.x * sin + vector.y * cos);
+        }
+
+        private void MarkWallClipDirty()
+        {
+            wallClipMeshDirty = true;
         }
 
         private float ResolveVisualRadius()

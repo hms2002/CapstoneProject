@@ -36,6 +36,10 @@ public sealed class AbilityLogic_DrunkenDragonFireBreath : AbilityLogic
 
     [Header("Telegraph")]
     [SerializeField] private AttackTelegraphStyle warningTelegraphStyle;
+    [SerializeField] private bool useWallClippedWarningTelegraph = true;
+    [SerializeField] private LayerMask warningTelegraphWallLayers;
+    [SerializeField, Min(2)] private int warningTelegraphSampleCount = 48;
+    [SerializeField, Min(0f)] private float warningTelegraphWallSkinWidth = 0.03f;
 
     [Header("Presentation")]
     [SerializeField] private WorldPresentationHook inhalePreparePresentation;
@@ -337,7 +341,10 @@ public sealed class AbilityLogic_DrunkenDragonFireBreath : AbilityLogic
         return dragon.ResolveFireBreathMouthPosition(direction, mouthFallbackForwardOffset);
     }
 
-    private void ShowOrUpdateWarningTelegraph(AttackTelegraphService telegraphService, ConeAimSnapshot aim, float duration)
+    private void ShowOrUpdateWarningTelegraph(
+        AttackTelegraphService telegraphService,
+        ConeAimSnapshot aim,
+        float duration)
     {
         if (telegraphService == null)
             return;
@@ -350,6 +357,11 @@ public sealed class AbilityLogic_DrunkenDragonFireBreath : AbilityLogic
             rotationDeg,
             duration,
             warningTelegraphStyle);
+        if (useWallClippedWarningTelegraph)
+            spec = spec.WithWallClipping(
+                warningTelegraphWallLayers,
+                warningTelegraphSampleCount,
+                warningTelegraphWallSkinWidth);
 
         if (telegraphService.HasActiveTelegraph)
             telegraphService.UpdateCurrentGeometry(spec);

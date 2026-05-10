@@ -10060,6 +10060,13 @@ MonoBehaviour:
   sortingLayerName: GroundAOE
   sortingOrder: -2
   quadScale: 2.2
+  useWallClipping: 1
+  wallClipLayers:
+    serializedVersion: 2
+    m_Bits: 1073741824
+  wallClipSampleCount: 48
+  wallClipSkinWidth: 0.03
+  wallClipGroundModesOnly: 1
   absorbVisualDurationSeconds: 0.75
   preparingRenderPaddingScale: 0.75
   preparingEndRadiusScale: 0.42
