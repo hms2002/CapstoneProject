@@ -18,6 +18,17 @@ namespace UnityGAS
         [Tooltip("빠른 이동에서 벽 관통 가능성을 줄이기 위해 Rigidbody2D 충돌 검출을 Continuous로 강제합니다.")]
         [SerializeField] private bool enforceContinuousCollision = true;
 
+        [Header("Wall Safety")]
+        [Tooltip("최종 속도를 적용하기 전에 벽 레이어를 캐스트하여 강한 넉백/강제 이동의 벽 관통을 방지합니다.")]
+        [SerializeField] private bool preventWallTunneling = true;
+        [Tooltip("비워두면 Awake에서 Wall 레이어를 자동으로 사용합니다.")]
+        [SerializeField] private LayerMask wallCollisionLayers;
+        [Tooltip("이 속도 이상일 때만 벽 캐스트/끼임 복구를 수행합니다. 일반 이동은 Unity 물리 충돌에 맡깁니다.")]
+        [SerializeField, Min(0f)] private float wallSafetyMinSpeed = 8f;
+        [SerializeField, Min(0f)] private float wallCastSkinWidth = 0.03f;
+        [SerializeField, Min(0f)] private float depenetrationSkinWidth = 0.01f;
+        [SerializeField, Range(1, 6)] private int maxDepenetrationIterations = 3;
+
         [Header("Sources")]
         [Tooltip("IIntentMovementSource2D를 구현한 컴포넌트")]
         [SerializeField] private MonoBehaviour intentSourceBehaviour;
@@ -43,6 +54,10 @@ namespace UnityGAS
         private IIntentMovementSource2D intentSource;
         private IStatProvider statProvider;
         private TagSystem tagSystem;
+        private Collider2D[] bodyColliders;
+        private readonly RaycastHit2D[] wallCastHits = new RaycastHit2D[16];
+        private readonly Collider2D[] wallOverlapHits = new Collider2D[16];
+        private ContactFilter2D wallContactFilter;
 
         private bool hasPendingWarp;
         private Vector2 pendingWarpPosition;
@@ -70,6 +85,8 @@ namespace UnityGAS
             if (body == null)
                 body = GetComponent<Rigidbody2D>();
 
+            CacheBodyColliders();
+            ConfigureWallContactFilter();
             EnsureCollisionDetectionMode();
 
             if (externalMovement == null)
@@ -111,6 +128,38 @@ namespace UnityGAS
 
             if (body.collisionDetectionMode != CollisionDetectionMode2D.Continuous)
                 body.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
+        }
+
+        /// <summary>
+        /// 책임 :
+        /// - MovementMotor2D가 실제 물리 이동을 대표하는 비트리거 콜라이더 목록을 캐시한다.
+        /// - 최종 속도 벽 캐스트/끼임 복구가 hitbox 트리거가 아닌 물리 box 기준으로 동작하게 한다.
+        /// </summary>
+        private void CacheBodyColliders()
+        {
+            bodyColliders = GetComponents<Collider2D>();
+        }
+
+        /// <summary>
+        /// 책임 :
+        /// - MovementMotor2D의 벽 안전장치가 사용할 ContactFilter2D를 구성한다.
+        /// - 인스펙터 값이 비어 있으면 프로젝트 표준 Wall 레이어를 자동으로 사용한다.
+        /// </summary>
+        private void ConfigureWallContactFilter()
+        {
+            if (wallCollisionLayers.value == 0)
+            {
+                int wallLayer = LayerMask.NameToLayer("Wall");
+                if (wallLayer >= 0)
+                    wallCollisionLayers = 1 << wallLayer;
+            }
+
+            wallContactFilter = new ContactFilter2D
+            {
+                useLayerMask = true,
+                layerMask = wallCollisionLayers,
+                useTriggers = false
+            };
         }
 
         private void FixedUpdate()
@@ -282,8 +331,110 @@ namespace UnityGAS
             LastExternalVelocity = externalVelocity;
             LastMotionVelocity = motionVelocity;
             LastFinalVelocity = SanitizeVelocity(intentVelocity + externalVelocity + motionVelocity, nameof(LastFinalVelocity));
+            LastFinalVelocity = ResolveWallSafeVelocity(LastFinalVelocity);
             if (body != null)
                 body.linearVelocity = LastFinalVelocity;
+        }
+
+        /// <summary>
+        /// 책임 :
+        /// - 최종 이동 속도가 이번 FixedUpdate에서 벽 콜라이더를 관통하지 않도록 이동량을 제한한다.
+        /// - 이미 벽과 겹친 상태라면 짧은 depenetration을 먼저 수행해 벽 내부 고착을 완화한다.
+        /// </summary>
+        private Vector2 ResolveWallSafeVelocity(Vector2 velocity)
+        {
+            if (!preventWallTunneling || body == null || wallCollisionLayers.value == 0)
+                return velocity;
+
+            float speed = velocity.magnitude;
+            if (speed <= 0.0001f)
+                return velocity;
+
+            if (speed < wallSafetyMinSpeed)
+                return velocity;
+
+            if (bodyColliders == null || bodyColliders.Length == 0)
+                CacheBodyColliders();
+
+            ResolveWallPenetration();
+
+            float dt = Mathf.Max(Time.fixedDeltaTime, 0.0001f);
+            float moveDistance = speed * dt;
+            if (moveDistance <= 0.0001f)
+                return velocity;
+
+            Vector2 direction = velocity / speed;
+            float allowedDistance = moveDistance;
+
+            for (int i = 0; i < bodyColliders.Length; i++)
+            {
+                Collider2D bodyCollider = bodyColliders[i];
+                if (!IsUsableBodyCollider(bodyCollider))
+                    continue;
+
+                int hitCount = bodyCollider.Cast(direction, wallContactFilter, wallCastHits, moveDistance + wallCastSkinWidth);
+                for (int hitIndex = 0; hitIndex < hitCount; hitIndex++)
+                {
+                    RaycastHit2D hit = wallCastHits[hitIndex];
+                    if (hit.collider == null || hit.collider.attachedRigidbody == body)
+                        continue;
+
+                    allowedDistance = Mathf.Min(allowedDistance, Mathf.Max(0f, hit.distance - wallCastSkinWidth));
+                }
+            }
+
+            if (allowedDistance >= moveDistance)
+                return velocity;
+
+            float safeSpeed = allowedDistance / dt;
+            return direction * safeSpeed;
+        }
+
+        /// <summary>
+        /// 책임 :
+        /// - 물리 콜라이더가 벽 콜라이더와 이미 겹친 상태를 감지하고 최소 이동 벡터에 가깝게 밀어낸다.
+        /// - 강한 넉백이 타일맵 벽 내부에 플레이어를 남기는 상황을 다음 프레임부터 복구한다.
+        /// </summary>
+        private void ResolveWallPenetration()
+        {
+            for (int iteration = 0; iteration < maxDepenetrationIterations; iteration++)
+            {
+                bool resolvedAny = false;
+
+                for (int i = 0; i < bodyColliders.Length; i++)
+                {
+                    Collider2D bodyCollider = bodyColliders[i];
+                    if (!IsUsableBodyCollider(bodyCollider))
+                        continue;
+
+                    int overlapCount = bodyCollider.Overlap(wallContactFilter, wallOverlapHits);
+                    for (int overlapIndex = 0; overlapIndex < overlapCount; overlapIndex++)
+                    {
+                        Collider2D wallCollider = wallOverlapHits[overlapIndex];
+                        if (wallCollider == null || wallCollider.attachedRigidbody == body)
+                            continue;
+
+                        ColliderDistance2D distance = bodyCollider.Distance(wallCollider);
+                        if (!distance.isOverlapped)
+                            continue;
+
+                        Vector2 correction = distance.normal * (distance.distance - depenetrationSkinWidth);
+                        if (!float.IsFinite(correction.x) || !float.IsFinite(correction.y) || correction.sqrMagnitude <= 0.000001f)
+                            continue;
+
+                        body.position += correction;
+                        resolvedAny = true;
+                    }
+                }
+
+                if (!resolvedAny)
+                    return;
+            }
+        }
+
+        private static bool IsUsableBodyCollider(Collider2D bodyCollider)
+        {
+            return bodyCollider != null && bodyCollider.enabled && !bodyCollider.isTrigger;
         }
 
         /// <summary>

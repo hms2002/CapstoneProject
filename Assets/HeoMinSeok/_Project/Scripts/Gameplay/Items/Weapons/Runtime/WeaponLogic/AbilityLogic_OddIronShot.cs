@@ -31,7 +31,8 @@ namespace UnityGAS.Sample
         {
             Vector2 baseDirection = AbilityAimResolver2D.Resolve(system.gameObject, Vector2.right);
             Vector2 direction = OddIronAbilityUtility.ApplySpread(baseDirection, spreadAngle);
-            Vector3 spawnPosition = OddIronAbilityUtility.ResolveSpawnPosition(system, direction, data.spawnOffset);
+            Vector3 spawnPosition = OddIronAbilityUtility.ResolveMuzzlePosition(system, direction, data.spawnOffset);
+            Quaternion muzzleRotation = OddIronAbilityUtility.ResolveMuzzleRotation(system, direction);
 
             CombatHitPayload payload = OddIronAbilityUtility.BuildFixedPayload(
                 system,
@@ -72,7 +73,8 @@ namespace UnityGAS.Sample
                 speed = data.projectileSpeed
             });
 
-            OddIronAbilityUtility.SpawnMuzzleFlash(data.muzzleFlashPrefab, spawnPosition, direction);
+            OddIronAbilityUtility.PlayFireRecoil(system, direction);
+            OddIronAbilityUtility.SpawnMuzzleFlash(data.muzzleFlashPrefab, spawnPosition, muzzleRotation);
             AbilityAudioRouter.PlayOneShot(data.fireSound, system, spec, sourceObjectOverride: data);
         }
     }
