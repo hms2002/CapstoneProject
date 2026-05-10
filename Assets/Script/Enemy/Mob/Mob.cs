@@ -1,6 +1,10 @@
 using UnityEngine;
 using UnityGAS;
 
+/// <summary>
+/// 이 클래스의 책임:
+/// 일반 몬스터의 공통 FSM 실행, 추적 타깃 회복, 이동 애니메이션과 기본 방향 전환을 관리한다.
+/// </summary>
 public class Mob : Enemy
 {
     [Header("참조")]
@@ -71,10 +75,9 @@ public class Mob : Enemy
     /// <summary>타겟 기준으로 스프라이트 방향을 갱신합니다.</summary>
     protected virtual void UpdateFacing()
     {
-        if (Target == null || sprite == null) return;
+        if (Target == null) return;
 
-        if      (transform.position.x > Target.position.x) sprite.flipX = true;
-        else if (transform.position.x < Target.position.x) sprite.flipX = false;
+        TryApplySpriteFacingTargetX(Target.position.x);
     }
 
     /// <summary>이동 Bool 파라미터가 있는지 확인합니다.</summary>

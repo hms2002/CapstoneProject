@@ -45,6 +45,7 @@ public class Enemy : MonoBehaviour, ICombatDeathCommand
     protected bool isDead;
     private Coroutine deathDestroyRoutine;
     private int deathStartStateHash;
+    private bool rightFacingFlipX;
 
     protected Transform target;
     public virtual Transform Target => target;
@@ -57,6 +58,7 @@ public class Enemy : MonoBehaviour, ICombatDeathCommand
         collisionProfile = GetComponent<EntityCollisionProfile2D>();
         collision   = ResolvePrimaryBodyCollider();
         CacheVisualComponents();
+        CacheInitialFacingFlipX();
 
         abilitySystem   = GetComponent<AbilitySystem>();
         attributeSet    = GetComponent<AttributeSet>();
@@ -98,6 +100,34 @@ public class Enemy : MonoBehaviour, ICombatDeathCommand
 
         if (sprite == null)
             sprite = GetComponentInChildren<SpriteRenderer>(true);
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 프리팹이 가진 기본 flipX 값을 "오른쪽을 바라보는 기준값"으로 저장한다.
+    /// - 몬스터별 스프라이트 원본 방향이 달라도 공통 방향 전환 로직이 authoring 값을 보존하게 한다.
+    /// </summary>
+    private void CacheInitialFacingFlipX()
+    {
+        rightFacingFlipX = sprite != null && sprite.flipX;
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 타겟의 X 위치에 따라 스프라이트 방향을 바꾸되, 초기 flipX 기준값을 유지한다.
+    /// - 프리팹에서 flipX로 기본 방향을 보정한 몬스터가 런타임 방향 전환에서 다시 뒤집히지 않게 한다.
+    /// </summary>
+    protected bool TryApplySpriteFacingTargetX(float targetX, float deadZone = 0.001f)
+    {
+        if (sprite == null)
+            return false;
+
+        float deltaX = targetX - transform.position.x;
+        if (Mathf.Abs(deltaX) <= deadZone)
+            return false;
+
+        sprite.flipX = deltaX > 0f ? rightFacingFlipX : !rightFacingFlipX;
+        return true;
     }
 
     /// <summary>
