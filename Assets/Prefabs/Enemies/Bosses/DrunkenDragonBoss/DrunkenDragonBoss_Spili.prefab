@@ -497,6 +497,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UnityGAS.MovementMotor2D
   body: {fileID: 0}
   enforceContinuousCollision: 1
+  preventWallTunneling: 1
+  wallCollisionLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  wallSafetyMinSpeed: 8
+  wallCastSkinWidth: 0.03
+  depenetrationSkinWidth: 0.01
+  maxDepenetrationIterations: 3
   intentSourceBehaviour: {fileID: 0}
   statProviderBehaviour: {fileID: 0}
   externalMovement: {fileID: 0}
@@ -676,6 +684,7 @@ MonoBehaviour:
       maxHpRatio: 1
       additionalConditions: []
   arenaCenterPoint: {fileID: 0}
+  arenaBounds: {fileID: 0}
   patternMotionRoot: {fileID: 2050668872176693337}
   patternShadowMotionRoot: {fileID: 4313995309474416445}
   fireBreathMouthSocket: {fileID: 6467952144724724379}
@@ -694,6 +703,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UnityGAS.AttackTelegraphService
   telegraphPrefab: {fileID: 788264263987448140, guid: 211dd09e2da9caf47ad8409c9e35b83d, type: 3}
   defaultStyle: {fileID: 11400000, guid: b15f18602ec87284d80cbd57720425f1, type: 2}
+  useDefaultWallClipping: 1
+  defaultWallClipLayers:
+    serializedVersion: 2
+    m_Bits: 1073741824
+  defaultWallClipSampleCount: 48
+  defaultWallClipSkinWidth: 0.03
 --- !u!114 &7149764901070497529
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -748,7 +763,7 @@ MonoBehaviour:
   actorLayers:
     serializedVersion: 2
     m_Bits: 2147483656
-  defaultMode: 0
+  defaultMode: 1
 --- !u!114 &1372317291228162320
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -763,7 +778,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UnityGAS.CombatHeightCollisionBinder2D
   heightState: {fileID: 5037083305729046494}
   collisionProfile: {fileID: 8032819372621698076}
-  groundedMode: 0
+  groundedMode: 1
   airborneMode: 1
   restoreProfileDefaultWhenGrounded: 1
 --- !u!114 &8912314080984615041
@@ -1150,7 +1165,7 @@ BoxCollider2D:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 2147483656
   m_LayerOverridePriority: 0
   m_ForceSendLayers:
     serializedVersion: 2

@@ -51,6 +51,7 @@ public sealed class AbilityLogic_DrunkenDragonSlam : AbilityLogic
     [SerializeField] private AlcoholPuddleArea alcoholPuddlePrefab;
     [SerializeField] private DrunkenDragonThrownKegActor thrownKegPrefab;
     [SerializeField, Min(0)] private int scatteredKegCount = 4;
+    [SerializeField, Min(1)] private int scatteredKegArenaSampleAttempts = 80;
     [SerializeField, Min(0f)] private float scatteredKegRadius = 3f;
     [SerializeField, Min(0f)] private float scatteredKegWarningSeconds = 1f;
     [SerializeField, Min(0.01f)] private float scatteredKegTravelSeconds = 0.35f;
@@ -72,6 +73,7 @@ public sealed class AbilityLogic_DrunkenDragonSlam : AbilityLogic
             yield break;
 
         AbilityMotionController2D motion = dragon.GetComponent<AbilityMotionController2D>();
+        EntityCollisionProfile2D collisionProfile = dragon.GetComponent<EntityCollisionProfile2D>();
         AttackTelegraphService telegraphService = dragon.GetComponent<AttackTelegraphService>();
         CombatHeightState2D heightState = EnsureHeightState(dragon);
 
@@ -80,38 +82,46 @@ public sealed class AbilityLogic_DrunkenDragonSlam : AbilityLogic
         float duration = Mathf.Max(0.01f, travelSeconds);
 
         AttackTelegraphView impactTelegraph = ShowImpactTelegraph(telegraphService, impactPosition, duration);
+        collisionProfile?.SetBodyCollisionMode(EntityCollisionProfile2D.BodyCollisionMode.PassThroughActors);
         heightState?.SetAirborne(0f, airborneBodyZHeight);
         dragon.FacePatternDirection(impactPosition - start);
         dragon.PushFaceTargetLock();
 
         try
         {
-            PlayJumpStartPresentation(dragon, start);
-            dragon.PlayPatternTrigger(DrunkenDragonAnimationKeys.Jump);
-            MoveToImpactPosition(motion, dragon, start, impactPosition, duration);
+            try
+            {
+                PlayJumpStartPresentation(dragon, start);
+                dragon.PlayPatternTrigger(DrunkenDragonAnimationKeys.Jump);
+                MoveToImpactPosition(motion, dragon, start, impactPosition, duration);
 
-            yield return TweenJumpHeight(heightState, duration, spec);
+                yield return TweenJumpHeight(heightState, duration, spec);
+            }
+            finally
+            {
+                if (IsAbilityCancelled(spec))
+                    motion?.CancelMotion();
+
+                heightState?.SetGrounded();
+                if (impactTelegraph != null)
+                    impactTelegraph.HideImmediate();
+
+                dragon.PopFaceTargetLock();
+            }
+
+            if (IsAbilityCancelled(spec))
+                yield break;
+
+            dragon.PlayPatternTrigger(DrunkenDragonAnimationKeys.Landing);
+            PlayLandingPresentation(dragon, impactPosition);
+            PlayImpactPresentation(dragon, impactPosition);
+            ApplyImpactDamage(dragon, impactPosition);
+            yield return ScatterKegsAfterImpact(dragon, system, telegraphService, impactPosition, spec);
         }
         finally
         {
-            if (IsAbilityCancelled(spec))
-                motion?.CancelMotion();
-
-            heightState?.SetGrounded();
-            if (impactTelegraph != null)
-                impactTelegraph.HideImmediate();
-
-            dragon.PopFaceTargetLock();
+            collisionProfile?.RestoreDefaultMode();
         }
-
-        if (IsAbilityCancelled(spec))
-            yield break;
-
-        dragon.PlayPatternTrigger(DrunkenDragonAnimationKeys.Landing);
-        PlayLandingPresentation(dragon, impactPosition);
-        PlayImpactPresentation(dragon, impactPosition);
-        ApplyImpactDamage(dragon, impactPosition);
-        yield return ScatterKegsAfterImpact(dragon, system, telegraphService, impactPosition, spec);
     }
 
     private static CombatHeightState2D EnsureHeightState(DrunkenDragonController dragon)
@@ -324,7 +334,7 @@ public sealed class AbilityLogic_DrunkenDragonSlam : AbilityLogic
         if (dragon == null || alcoholPuddlePrefab == null || scatteredKegCount <= 0)
             yield break;
 
-        List<Vector3> kegTargets = BuildScatteredKegTargets(impactPosition);
+        List<Vector3> kegTargets = BuildScatteredKegTargets(dragon, impactPosition);
         ShowScatteredKegTelegraphs(telegraphService, kegTargets);
 
         yield return WaitForSecondsUnlessCancelled(scatteredKegWarningSeconds, spec);
@@ -378,13 +388,45 @@ public sealed class AbilityLogic_DrunkenDragonSlam : AbilityLogic
         }
     }
 
-    private List<Vector3> BuildScatteredKegTargets(Vector2 impactPosition)
+    /// <summary>
+    /// 책임:
+    /// 내려찍기 후 수직 낙하 술통의 목표 지점을 arena bounds 안에서 고르고, bounds가 없으면 기존 착지 주변 산포로 대체한다.
+    /// </summary>
+    private List<Vector3> BuildScatteredKegTargets(DrunkenDragonController dragon, Vector2 impactPosition)
     {
         int count = Mathf.Max(0, scatteredKegCount);
         List<Vector3> results = new(count);
         if (count <= 0)
             return results;
 
+        if (TryBuildArenaRandomKegTargets(dragon, count, results))
+            return results;
+
+        return BuildFallbackScatteredKegTargets(impactPosition, count);
+    }
+
+    private bool TryBuildArenaRandomKegTargets(
+        DrunkenDragonController dragon,
+        int count,
+        List<Vector3> results)
+    {
+        if (dragon == null || results == null)
+            return false;
+
+        for (int i = 0; i < count; i++)
+        {
+            if (!dragon.TryGetRandomArenaPoint(scatteredKegArenaSampleAttempts, out Vector2 point))
+                return false;
+
+            results.Add(point);
+        }
+
+        return results.Count == count;
+    }
+
+    private List<Vector3> BuildFallbackScatteredKegTargets(Vector2 impactPosition, int count)
+    {
+        List<Vector3> results = new(count);
         if (scatteredKegRadius <= 0f)
         {
             for (int i = 0; i < count; i++)

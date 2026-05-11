@@ -3,6 +3,21 @@ using UnityEngine;
 
 namespace UnityGAS
 {
+    public enum MeleeHitboxSizingMode
+    {
+        UsePrefabAuthoredShape = 0,
+        LegacyContextSizeWithAuthoredScale = 1,
+        OverrideWorldSize = 2
+    }
+
+    public enum MeleeHitboxVisualMirrorMode
+    {
+        FlipLocalYWhenRequested = 0,
+        DoNotMirror = 1,
+        FlipLocalXWhenRequested = 2,
+        PreserveWorldUpWhenFacingLeft = 3
+    }
+
     /// <summary>
     /// 책임 :
     /// - 근접 히트박스 공격체가 추가로 필요로 하는 생성 문맥을 보관한다.
@@ -16,6 +31,10 @@ namespace UnityGAS
         public bool destroyOnFirstHit = false;
         public Vector2 direction = Vector2.right;
         public bool flipVisualX;
+        public MeleeHitboxVisualMirrorMode visualMirrorMode = MeleeHitboxVisualMirrorMode.FlipLocalYWhenRequested;
+        public Vector2 hitboxScaleMultiplier = Vector2.one;
+        public bool overrideSizingMode = false;
+        public MeleeHitboxSizingMode sizingMode = MeleeHitboxSizingMode.UsePrefabAuthoredShape;
     }
 
     /// <summary>
@@ -34,6 +53,7 @@ namespace UnityGAS
         [SerializeField] private float actorAngleOffsetDeg = 0f;
         [SerializeField] private float visualLocalAngleOffsetDeg = 0f;
         [SerializeField] private bool attachToOwnerOnSetup = false;
+        [SerializeField] private MeleeHitboxSizingMode sizingMode = MeleeHitboxSizingMode.LegacyContextSizeWithAuthoredScale;
 
         private BoxCollider2D hitboxCollider;
         private readonly HashSet<int> hitTargetIds = new();
@@ -66,7 +86,10 @@ namespace UnityGAS
             CacheAuthoredShapeIfNeeded();
 
             transform.position = context.worldPosition;
-            ApplyActorScale(context.hitboxSize);
+            ApplyActorScale(
+                context.hitboxSize,
+                context.hitboxScaleMultiplier,
+                ResolveSizingMode(context));
             ApplyActorRotation(context.direction);
 
             hitboxCollider.size = authoredColliderSize;
@@ -76,7 +99,7 @@ namespace UnityGAS
             destroyOnFirstHit = context.destroyOnFirstHit;
 
             CacheVisualShapeIfNeeded();
-            ApplyVisualLocalRotation(context.flipVisualX);
+            ApplyVisualLocalRotation(context.flipVisualX, context.visualMirrorMode, context.direction);
             SetupBase(context);
             ApplyOwnerAttachment(context);
 
@@ -130,21 +153,57 @@ namespace UnityGAS
         /// - 원하는 월드 히트박스 크기를 프리팹의 기본 콜라이더 크기 기준 transform scale로 변환한다.
         /// - 비주얼과 BoxCollider2D가 같은 transform scale을 공유하게 만들어 판정과 연출 크기를 일치시킨다.
         /// </summary>
-        private void ApplyActorScale(Vector2 desiredWorldSize)
+        private MeleeHitboxSizingMode ResolveSizingMode(MeleeHitboxSpawnContext context)
+        {
+            return context != null && context.overrideSizingMode
+                ? context.sizingMode
+                : sizingMode;
+        }
+
+        private void ApplyActorScale(
+            Vector2 desiredWorldSize,
+            Vector2 scaleMultiplier,
+            MeleeHitboxSizingMode resolvedSizingMode)
         {
             if (!authoredShapeCached)
                 return;
+
+            Vector2 safeMultiplier = SanitizeScaleMultiplier(scaleMultiplier);
+
+            if (resolvedSizingMode == MeleeHitboxSizingMode.UsePrefabAuthoredShape)
+            {
+                transform.localScale = new Vector3(
+                    authoredLocalScale.x * safeMultiplier.x,
+                    authoredLocalScale.y * safeMultiplier.y,
+                    authoredLocalScale.z);
+                return;
+            }
 
             float baseWidth = Mathf.Abs(authoredColliderSize.x) > 0.0001f ? Mathf.Abs(authoredColliderSize.x) : 1f;
             float baseHeight = Mathf.Abs(authoredColliderSize.y) > 0.0001f ? Mathf.Abs(authoredColliderSize.y) : 1f;
 
             float scaleX = Mathf.Max(0.0001f, desiredWorldSize.x) / baseWidth;
             float scaleY = Mathf.Max(0.0001f, desiredWorldSize.y) / baseHeight;
+            bool includeAuthoredScale = resolvedSizingMode == MeleeHitboxSizingMode.LegacyContextSizeWithAuthoredScale;
+            float baseScaleX = includeAuthoredScale ? authoredLocalScale.x : NonZeroSign(authoredLocalScale.x);
+            float baseScaleY = includeAuthoredScale ? authoredLocalScale.y : NonZeroSign(authoredLocalScale.y);
 
             transform.localScale = new Vector3(
-                authoredLocalScale.x * scaleX,
-                authoredLocalScale.y * scaleY,
+                baseScaleX * scaleX * safeMultiplier.x,
+                baseScaleY * scaleY * safeMultiplier.y,
                 authoredLocalScale.z);
+        }
+
+        private static Vector2 SanitizeScaleMultiplier(Vector2 scaleMultiplier)
+        {
+            float x = Mathf.Abs(scaleMultiplier.x) > 0.0001f ? Mathf.Abs(scaleMultiplier.x) : 1f;
+            float y = Mathf.Abs(scaleMultiplier.y) > 0.0001f ? Mathf.Abs(scaleMultiplier.y) : 1f;
+            return new Vector2(x, y);
+        }
+
+        private static float NonZeroSign(float value)
+        {
+            return value < 0f ? -1f : 1f;
         }
 
         /// <summary>
@@ -192,20 +251,49 @@ namespace UnityGAS
         /// - visualRoot가 있을 경우, 공격체 회전 위에 추가 로컬 보정 회전과 좌우 반전을 적용한다.
         /// - 이펙트 프리팹의 기본 정면 축이 다르거나 콤보 단계별 좌우 이미지를 뒤집어야 할 때 사용한다.
         /// </summary>
-        private void ApplyVisualLocalRotation(bool flipVisualX)
+        private void ApplyVisualLocalRotation(
+            bool flipVisualX,
+            MeleeHitboxVisualMirrorMode mirrorMode,
+            Vector2 direction)
         {
             if (visualRoot == null)
                 return;
 
             visualRoot.localRotation = Quaternion.Euler(0f, 0f, visualLocalAngleOffsetDeg);
-            if (authoredVisualCached)
+            if (!authoredVisualCached)
+                return;
+
+            if (mirrorMode == MeleeHitboxVisualMirrorMode.DoNotMirror)
             {
-                float signY = flipVisualX ? -1f : 1f;
+                visualRoot.localScale = authoredVisualLocalScale;
+                return;
+            }
+
+            if (mirrorMode == MeleeHitboxVisualMirrorMode.FlipLocalXWhenRequested)
+            {
+                float signX = flipVisualX ? -1f : 1f;
+                visualRoot.localScale = new Vector3(
+                    Mathf.Abs(authoredVisualLocalScale.x) * signX,
+                    authoredVisualLocalScale.y,
+                    authoredVisualLocalScale.z);
+                return;
+            }
+
+            if (mirrorMode == MeleeHitboxVisualMirrorMode.PreserveWorldUpWhenFacingLeft)
+            {
+                float preserveWorldUpSignY = direction.x < -0.0001f ? -1f : 1f;
                 visualRoot.localScale = new Vector3(
                     authoredVisualLocalScale.x,
-                    Mathf.Abs(authoredVisualLocalScale.y) * signY,
+                    Mathf.Abs(authoredVisualLocalScale.y) * preserveWorldUpSignY,
                     authoredVisualLocalScale.z);
+                return;
             }
+
+            float signY = flipVisualX ? -1f : 1f;
+            visualRoot.localScale = new Vector3(
+                authoredVisualLocalScale.x,
+                Mathf.Abs(authoredVisualLocalScale.y) * signY,
+                authoredVisualLocalScale.z);
         }
 
         /// <summary>

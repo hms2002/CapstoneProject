@@ -8,6 +8,7 @@ public sealed class WorldInteractionPromptController : MonoBehaviour
 {
     private const InputActionId PromptAction = InputActionId.Interact;
     private const string RuntimeCanvasName = "PromptLayout";
+    private static readonly Color DisabledPromptColor = new Color(0.55f, 0.55f, 0.55f, 1f);
 
     public static WorldInteractionPromptController Instance { get; private set; }
 
@@ -42,6 +43,13 @@ public sealed class WorldInteractionPromptController : MonoBehaviour
     private LayoutElement runtimeIconLayoutElement;
     private TextMeshProUGUI runtimeDescriptionText;
 
+    private Color runtimeDescriptionDefaultColor = Color.white;
+    private Color legacyDescriptionDefaultColor = Color.white;
+    private Color runtimeIconDefaultColor = Color.white;
+    private Color legacyIconDefaultColor = Color.white;
+    private Color spriteIconDefaultColor = Color.white;
+    private bool hasCapturedDefaultVisualColors;
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -57,6 +65,7 @@ public sealed class WorldInteractionPromptController : MonoBehaviour
             promptRoot = transform;
 
         EnsurePromptLayout();
+        CaptureDefaultVisualColors();
         Hide();
     }
 
@@ -193,6 +202,7 @@ public sealed class WorldInteractionPromptController : MonoBehaviour
 
         SetDescription(description);
         ApplyIcon(icon);
+        ApplyPromptState(target);
     }
 
     private void SetDescription(string description)
@@ -242,6 +252,63 @@ public sealed class WorldInteractionPromptController : MonoBehaviour
             promptIconSpriteRenderer.sprite = icon;
             promptIconSpriteRenderer.enabled = icon != null && !useWorldSpaceCanvasLayout;
         }
+    }
+
+    private void ApplyPromptState(IInteractable target)
+    {
+        if (!hasCapturedDefaultVisualColors)
+            CaptureDefaultVisualColors();
+
+        bool isDisabled = target is IInteractionPromptState promptState &&
+                          promptState.IsInteractPromptDisabled;
+
+        Color descriptionColor = isDisabled ? DisabledPromptColor : ResolveDescriptionDefaultColor();
+        Color iconColor = isDisabled ? DisabledPromptColor : ResolveIconDefaultColor();
+
+        if (runtimeDescriptionText != null)
+            runtimeDescriptionText.color = descriptionColor;
+        else if (descriptionText != null)
+            descriptionText.color = descriptionColor;
+
+        if (runtimePromptIconImage != null)
+            runtimePromptIconImage.color = iconColor;
+        else if (promptIconImage != null)
+            promptIconImage.color = iconColor;
+
+        if (promptIconSpriteRenderer != null)
+            promptIconSpriteRenderer.color = isDisabled ? DisabledPromptColor : spriteIconDefaultColor;
+    }
+
+    private void CaptureDefaultVisualColors()
+    {
+        if (runtimeDescriptionText != null)
+            runtimeDescriptionDefaultColor = runtimeDescriptionText.color;
+        else if (descriptionText != null)
+            legacyDescriptionDefaultColor = descriptionText.color;
+
+        if (runtimePromptIconImage != null)
+            runtimeIconDefaultColor = runtimePromptIconImage.color;
+        else if (promptIconImage != null)
+            legacyIconDefaultColor = promptIconImage.color;
+
+        if (promptIconSpriteRenderer != null)
+            spriteIconDefaultColor = promptIconSpriteRenderer.color;
+
+        hasCapturedDefaultVisualColors = true;
+    }
+
+    private Color ResolveDescriptionDefaultColor()
+    {
+        return runtimeDescriptionText != null
+            ? runtimeDescriptionDefaultColor
+            : legacyDescriptionDefaultColor;
+    }
+
+    private Color ResolveIconDefaultColor()
+    {
+        return runtimePromptIconImage != null
+            ? runtimeIconDefaultColor
+            : legacyIconDefaultColor;
     }
 
     private void UpdatePosition()

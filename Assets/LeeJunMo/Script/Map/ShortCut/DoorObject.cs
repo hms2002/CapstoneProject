@@ -8,6 +8,11 @@ using UnityEditor;
 
 public class DoorObject : InteractableBase
 {
+    private const string OpenAnimatorTriggerName = "Open";
+    private const string CloseAnimatorTriggerName = "Close";
+    private const string OpenAnimatorStateName = "Open";
+    private const string ClosedAnimatorStateName = "Idle";
+
     public enum DoorType
     {
         Normal,
@@ -247,12 +252,13 @@ public class DoorObject : InteractableBase
         {
             if (immediate)
             {
-                animator.Play("Open", 0, 1.0f);
+                animator.Play(OpenAnimatorStateName, 0, 1.0f);
                 DisableObstacle();
             }
             else
             {
-                animator.SetTrigger("Open");
+                ResetAnimatorTriggerIfExists(CloseAnimatorTriggerName);
+                animator.SetTrigger(OpenAnimatorTriggerName);
             }
         }
         else
@@ -269,12 +275,57 @@ public class DoorObject : InteractableBase
         }
     }
 
+    public void ForceClose(bool immediate = false)
+    {
+        if (!IsOpen)
+        {
+            EnableObstacle();
+            return;
+        }
+
+        IsOpen = false;
+        EnableObstacle();
+        KillShakeTween();
+
+        if (animator != null && animator.runtimeAnimatorController != null)
+        {
+            ResetClosedModelPosition();
+            ResetAnimatorTriggerIfExists(OpenAnimatorTriggerName);
+
+            if (!immediate && HasAnimatorTrigger(CloseAnimatorTriggerName))
+            {
+                animator.SetTrigger(CloseAnimatorTriggerName);
+                return;
+            }
+
+            animator.Play(ClosedAnimatorStateName, 0, 0f);
+            return;
+        }
+
+        if (model == null || !hasClosedModelLocalPosition)
+            return;
+
+        if (immediate)
+        {
+            model.localPosition = closedModelLocalPosition;
+            return;
+        }
+
+        model.DOLocalMove(closedModelLocalPosition, 0.5f).SetEase(Ease.OutQuart);
+    }
+
     public void OnOpenAnimationComplete() => DisableObstacle();
 
     private void DisableObstacle()
     {
         if (obstacleCollider != null)
             obstacleCollider.enabled = false;
+    }
+
+    private void EnableObstacle()
+    {
+        if (obstacleCollider != null)
+            obstacleCollider.enabled = true;
     }
 
     private void PlayOpenPresentation(GameObject instigator)
@@ -693,15 +744,48 @@ public class DoorObject : InteractableBase
 
     private void ResetModelAfterShake()
     {
-        if (shakeTween != null && shakeTween.IsActive())
-            shakeTween.Kill(false);
+        KillShakeTween();
+        ResetClosedModelPosition();
+    }
 
-        shakeTween = null;
-
+    private void ResetClosedModelPosition()
+    {
         if (model == null || !hasClosedModelLocalPosition)
             return;
 
         model.localPosition = closedModelLocalPosition;
+    }
+
+    private void KillShakeTween()
+    {
+        if (shakeTween != null && shakeTween.IsActive())
+            shakeTween.Kill(false);
+
+        shakeTween = null;
+    }
+
+    private bool HasAnimatorTrigger(string triggerName)
+    {
+        if (animator == null || animator.runtimeAnimatorController == null)
+            return false;
+
+        AnimatorControllerParameter[] parameters = animator.parameters;
+        for (int i = 0; i < parameters.Length; i++)
+        {
+            AnimatorControllerParameter parameter = parameters[i];
+            if (parameter.type == AnimatorControllerParameterType.Trigger && parameter.name == triggerName)
+                return true;
+        }
+
+        return false;
+    }
+
+    private void ResetAnimatorTriggerIfExists(string triggerName)
+    {
+        if (!HasAnimatorTrigger(triggerName))
+            return;
+
+        animator.ResetTrigger(triggerName);
     }
 
     private Transform ResolvePresentationAnchor()

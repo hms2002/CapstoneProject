@@ -243,7 +243,8 @@ public sealed class PortalRouteManager : MonoBehaviour
         if (portal == null)
             return false;
 
-        if (portal.PortalTransitionType == TransitionType.HubToRunStart)
+        TransitionType effectiveTransitionType = ResolveEffectiveTransitionType(portal);
+        if (effectiveTransitionType == TransitionType.HubToRunStart)
         {
             return TryPrepareHubStartPlan(portal);
         }
@@ -269,8 +270,10 @@ public sealed class PortalRouteManager : MonoBehaviour
         bool canBuildRunPlan = validStartPortal && TryBuildRunPlan(catalog, out stages);
         int stageCount = canBuildRunPlan && stages != null ? stages.Count : 0;
 
+        TransitionType effectiveTransitionType = ResolveEffectiveTransitionType(portal);
+
         return
-            $"manager={hasManager}, transition={portal.PortalTransitionType}, validStartPortal={validStartPortal}, " +
+            $"manager={hasManager}, transition={portal.PortalTransitionType}, effectiveTransition={effectiveTransitionType}, validStartPortal={validStartPortal}, " +
             $"catalog={(catalog != null ? catalog.name : "<none>")}, hasActivePlan={hasActivePlan}, " +
             $"hasPendingPlan={hasPendingPlan}, isRunActive={isRunActive}, canBuildRunPlan={canBuildRunPlan}, " +
             $"stageCount={stageCount}, currentStageIndex={currentStageIndex}, totalStageCount={TotalStageCount}";
@@ -284,11 +287,13 @@ public sealed class PortalRouteManager : MonoBehaviour
         if (portal == null)
             return false;
 
-        switch (portal.PortalTransitionType)
+        TransitionType effectiveTransitionType = ResolveEffectiveTransitionType(portal);
+
+        switch (effectiveTransitionType)
         {
             case TransitionType.HubToRunStart:
                 ClearStaleHubStartPlanIfNeeded();
-                SetLoadPresentationContext(portal.PortalTransitionType, null, null);
+                SetLoadPresentationContext(effectiveTransitionType, null, null);
                 if (!TryActivatePendingPlan(portal))
                     return false;
 
@@ -325,12 +330,12 @@ public sealed class PortalRouteManager : MonoBehaviour
         if (verboseLogging)
         {
             Debug.Log(
-                $"[PortalRouteManager] Resolved route. transitionType={portal.PortalTransitionType}, stageIndex={currentStageIndex}, target={route.TargetSceneName}, entry={route.EntryPointId}",
+                $"[PortalRouteManager] Resolved route. configuredTransitionType={portal.PortalTransitionType}, effectiveTransitionType={effectiveTransitionType}, stageIndex={currentStageIndex}, target={route.TargetSceneName}, entry={route.EntryPointId}",
                 this);
         }
 
         RecordTransitionEvent(
-            $"Resolved {portal.PortalTransitionType}. stage={currentStageIndex + 1}/{Mathf.Max(1, activeRouteStages.Count)}, target={route.TargetSceneName}, entry={route.EntryPointId}");
+            $"Resolved {effectiveTransitionType}. configured={portal.PortalTransitionType}, stage={currentStageIndex + 1}/{Mathf.Max(1, activeRouteStages.Count)}, target={route.TargetSceneName}, entry={route.EntryPointId}");
         return true;
     }
 
@@ -404,6 +409,46 @@ public sealed class PortalRouteManager : MonoBehaviour
         return activeRouteCatalog.TryCreateHubReturnRoute(TransitionType.ReturnToHubAfterRun, out var route)
             ? route
             : default;
+    }
+
+    private TransitionType ResolveEffectiveTransitionType(ScenePortal portal)
+    {
+        if (portal == null)
+            return TransitionType.None;
+
+        TransitionType configuredTransitionType = portal.PortalTransitionType;
+        if (configuredTransitionType == TransitionType.HubToRunStart)
+            return configuredTransitionType;
+
+        if (!HasActivePlan)
+            return configuredTransitionType;
+
+        CorridorBossRouteSetSO currentStageSet = CurrentStageSet;
+        if (currentStageSet == null)
+            return configuredTransitionType;
+
+        string portalSceneName = ResolvePortalSceneName(portal);
+        if (string.IsNullOrWhiteSpace(portalSceneName))
+            return configuredTransitionType;
+
+        if (string.Equals(portalSceneName, currentStageSet.CorridorSceneName, StringComparison.OrdinalIgnoreCase))
+            return TransitionType.CorridorToBoss;
+
+        if (!string.Equals(portalSceneName, currentStageSet.BossSceneName, StringComparison.OrdinalIgnoreCase))
+            return configuredTransitionType;
+
+        return currentStageIndex + 1 < activeRouteStages.Count
+            ? TransitionType.BossToCorridor
+            : TransitionType.ReturnToHubAfterRun;
+    }
+
+    private static string ResolvePortalSceneName(ScenePortal portal)
+    {
+        if (portal == null)
+            return null;
+
+        var scene = portal.gameObject.scene;
+        return scene.IsValid() ? scene.name : null;
     }
 
     private bool TryActivatePendingPlan(ScenePortal portal)

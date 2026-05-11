@@ -1,0 +1,79 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 836d97862a0e41b0978ce88739cc4d70, type: 3}
+  m_Name: ALData_LightningSpearSkill1
+  m_EditorClassIdentifier: 
+  markRushAnimationTrigger: Skill1_Mark
+  noMarkSweepAnimationTrigger: Skill1_NoMark
+  markRushAimPresentation:
+    mode: 0
+    minimumHoldTime: 0
+  noMarkSweepAimPresentation:
+    mode: 0
+    minimumHoldTime: 0
+  noMarkSweepHitEventTag: {fileID: 11400000, guid: 0ca34cffae954c929a2f40220a8b0284, type: 2}
+  noMarkSweepHitEventTimeout: 0.5
+  noMarkSweepFallbackHitDelay: 0
+  cursorSelectRadius: 2.4
+  markRushRange: 7
+  markRushBodyRadius: 0.25
+  markRushArrivalHitDelay: 0.05
+  markRushInternalDelay: 0.15
+  markRushTrailEffectPrefab: {fileID: 9102123456789012345, guid: 9537f6a61c484881b61d0da5c6b03dd3, type: 3}
+  markRushHit:
+    hitboxPrefab: {fileID: 3757316550685754543, guid: b6baaa776b4630343b03436c2e45c464, type: 3}
+    activeTime: 0.2
+    hitboxSize: {x: 1.6, y: 0.9}
+    forwardOffset: 0.45
+    hitLayers:
+      serializedVersion: 2
+      m_Bits: 2147483648
+    wallLayers:
+      serializedVersion: 2
+      m_Bits: 0
+    damageConfig:
+      includeStaggerBuildUp: 1
+      includeElementBuildUp: 1
+      staggerFormula: {fileID: 11400000, guid: 8fb95c16fb825134f8ce24efb528fe19, type: 2}
+      elementFormulas: []
+      critAffectsElement: 1
+    damageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
+    knockbackEffect: {fileID: 11400000, guid: 2f5faaf6bd840544cb59f6d23905c40d, type: 2}
+    damageFormula: {fileID: 11400000, guid: f836f4795e60fd54f9a4e401de9d7dd9, type: 2}
+    knockbackFormula: {fileID: 11400000, guid: 886233d2a5002ae4facf46de4cb4864d, type: 2}
+    legacyDamage: 16
+    legacyStaggerDamage: 0
+    hitConfirmedTag: {fileID: 11400000, guid: 465249853d3321e47b796f8e8c787f64, type: 2}
+  noMarkSweepHit:
+    hitboxPrefab: {fileID: 2444049802110501220, guid: 2d297b1bcdf6733489edbb3cc6a848d6, type: 3}
+    activeTime: 0.2
+    hitboxSize: {x: 2.2, y: 1.15}
+    forwardOffset: 1
+    hitLayers:
+      serializedVersion: 2
+      m_Bits: 2147483648
+    wallLayers:
+      serializedVersion: 2
+      m_Bits: 0
+    damageConfig:
+      includeStaggerBuildUp: 1
+      includeElementBuildUp: 1
+      staggerFormula: {fileID: 11400000, guid: 8fb95c16fb825134f8ce24efb528fe19, type: 2}
+      elementFormulas: []
+      critAffectsElement: 1
+    damageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
+    knockbackEffect: {fileID: 11400000, guid: 2f5faaf6bd840544cb59f6d23905c40d, type: 2}
+    damageFormula: {fileID: 11400000, guid: f836f4795e60fd54f9a4e401de9d7dd9, type: 2}
+    knockbackFormula: {fileID: 11400000, guid: 886233d2a5002ae4facf46de4cb4864d, type: 2}
+    legacyDamage: 12
+    legacyStaggerDamage: 0
+    hitConfirmedTag: {fileID: 11400000, guid: 465249853d3321e47b796f8e8c787f64, type: 2}

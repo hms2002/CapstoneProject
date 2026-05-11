@@ -1,0 +1,513 @@
+fileFormatVersion: 2
+guid: f8ded1404e6ccc0479befd0c09bf6e2b
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -3424551480627173531
+    second: LightningSpearBasicAttack_1_And_2_0
+  - first:
+      213: 3209857226914490832
+    second: LightningSpearBasicAttack_1_And_2_1
+  - first:
+      213: -6064981202925282959
+    second: LightningSpearBasicAttack_1_And_2_2
+  - first:
+      213: 5913651094584755369
+    second: LightningSpearBasicAttack_1_And_2_3
+  - first:
+      213: 8940185427796173430
+    second: LightningSpearBasicAttack_1_And_2_4
+  - first:
+      213: -1950591117765217982
+    second: LightningSpearBasicAttack_1_And_2_5
+  - first:
+      213: 611239329389965444
+    second: LightningSpearBasicAttack_1_And_2_6
+  - first:
+      213: 4387299508885738803
+    second: LightningSpearBasicAttack_1_And_2_7
+  - first:
+      213: 6403938001102376396
+    second: LightningSpearBasicAttack_1_And_2_8
+  - first:
+      213: 7633150803406032757
+    second: LightningSpearBasicAttack_1_And_2_9
+  - first:
+      213: -3276298292545124564
+    second: LightningSpearBasicAttack_1_And_2_10
+  - first:
+      213: -1293997894466908409
+    second: LightningSpearBasicAttack_1_And_2_11
+  - first:
+      213: 8882253149503484596
+    second: LightningSpearBasicAttack_1_And_2_12
+  - first:
+      213: -4390623124093648225
+    second: LightningSpearBasicAttack_1_And_2_13
+  - first:
+      213: 8896218036470792572
+    second: LightningSpearBasicAttack_1_And_2_14
+  - first:
+      213: -1400212527319734425
+    second: LightningSpearBasicAttack_1_And_2_15
+  - first:
+      213: 5764873729880473637
+    second: LightningSpearBasicAttack_1_And_2_16
+  - first:
+      213: 8465185488751069150
+    second: LightningSpearBasicAttack_1_And_2_17
+  - first:
+      213: -8972680190698765751
+    second: LightningSpearBasicAttack_1_And_2_18
+  - first:
+      213: -1905018045897200309
+    second: LightningSpearBasicAttack_1_And_2_19
+  - first:
+      213: -8421712437630587664
+    second: LightningSpearBasicAttack_1_And_2_20
+  - first:
+      213: -8643524492622339284
+    second: LightningSpearBasicAttack_1_And_2_21
+  - first:
+      213: 2095745696793843233
+    second: LightningSpearBasicAttack_1_And_2_22
+  - first:
+      213: -199367525092034810
+    second: LightningSpearBasicAttack_1_And_2_23
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 32
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: LightningSpearBasicAttack_1_And_2_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 192
+        width: 96
+        height: 96
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 567ed2a829c8970d0800000000000000
+      internalID: -3424551480627173531
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LightningSpearBasicAttack_1_And_2_1
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 192
+        width: 96
+        height: 96
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0d965fd2424bb8c20800000000000000
+      internalID: 3209857226914490832
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LightningSpearBasicAttack_1_And_2_2
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 192
+        width: 96
+        height: 96
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1799736cabbd4dba0800000000000000
+      internalID: -6064981202925282959
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LightningSpearBasicAttack_1_And_2_3
+      rect:
+        serializedVersion: 2
+        x: 288
+        y: 192
+        width: 96
+        height: 96
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9a40352b652811250800000000000000
+      internalID: 5913651094584755369
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LightningSpearBasicAttack_1_And_2_4
+      rect:
+        serializedVersion: 2
+        x: 384
+        y: 192
+        width: 96
+        height: 96
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6722ae9874be11c70800000000000000
+      internalID: 8940185427796173430
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LightningSpearBasicAttack_1_And_2_5
+      rect:
+        serializedVersion: 2
+        x: 480
+        y: 192
+        width: 96
+        height: 96
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 241729b86bb1ee4e0800000000000000
+      internalID: -1950591117765217982
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LightningSpearBasicAttack_1_And_2_6
+      rect:
+        serializedVersion: 2
+        x: 576
+        y: 192
+        width: 96
+        height: 96
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 480790d7eee8b7800800000000000000
+      internalID: 611239329389965444
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LightningSpearBasicAttack_1_And_2_7
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 96
+        height: 96
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 335516e88a1d2ec30800000000000000
+      internalID: 4387299508885738803
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LightningSpearBasicAttack_1_And_2_8
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 0
+        width: 96
+        height: 96
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ccd0557beab5fd850800000000000000
+      internalID: 6403938001102376396
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LightningSpearBasicAttack_1_And_2_9
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 0
+        width: 96
+        height: 96
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 57f010aa6366ee960800000000000000
+      internalID: 7633150803406032757
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LightningSpearBasicAttack_1_And_2_10
+      rect:
+        serializedVersion: 2
+        x: 288
+        y: 0
+        width: 96
+        height: 96
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c2701aebf004882d0800000000000000
+      internalID: -3276298292545124564
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LightningSpearBasicAttack_1_And_2_11
+      rect:
+        serializedVersion: 2
+        x: 384
+        y: 0
+        width: 96
+        height: 96
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 70f423855cbca0ee0800000000000000
+      internalID: -1293997894466908409
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LightningSpearBasicAttack_1_And_2_12
+      rect:
+        serializedVersion: 2
+        x: 480
+        y: 0
+        width: 96
+        height: 96
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4b2ff35ed2a144b70800000000000000
+      internalID: 8882253149503484596
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LightningSpearBasicAttack_1_And_2_13
+      rect:
+        serializedVersion: 2
+        x: 576
+        y: 0
+        width: 96
+        height: 96
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f9248c9f78f5113c0800000000000000
+      internalID: -4390623124093648225
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: e97bdfbb145878f4bb458a3eb300caa7
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":7.0,"y":3.0},"gridSpriteSize":{"x":96.0,"y":96.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":2,"keepEmptyRects":false,"isAlternate":false}'
+    nameFileIdTable:
+      LightningSpearBasicAttack_1_And_2_0: -3424551480627173531
+      LightningSpearBasicAttack_1_And_2_1: 3209857226914490832
+      LightningSpearBasicAttack_1_And_2_10: -3276298292545124564
+      LightningSpearBasicAttack_1_And_2_11: -1293997894466908409
+      LightningSpearBasicAttack_1_And_2_12: 8882253149503484596
+      LightningSpearBasicAttack_1_And_2_13: -4390623124093648225
+      LightningSpearBasicAttack_1_And_2_2: -6064981202925282959
+      LightningSpearBasicAttack_1_And_2_3: 5913651094584755369
+      LightningSpearBasicAttack_1_And_2_4: 8940185427796173430
+      LightningSpearBasicAttack_1_And_2_5: -1950591117765217982
+      LightningSpearBasicAttack_1_And_2_6: 611239329389965444
+      LightningSpearBasicAttack_1_And_2_7: 4387299508885738803
+      LightningSpearBasicAttack_1_And_2_8: 6403938001102376396
+      LightningSpearBasicAttack_1_And_2_9: 7633150803406032757
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

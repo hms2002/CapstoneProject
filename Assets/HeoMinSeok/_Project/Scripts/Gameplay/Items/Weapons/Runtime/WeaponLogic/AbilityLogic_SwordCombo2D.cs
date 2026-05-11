@@ -310,7 +310,8 @@ namespace UnityGAS.Sample
                 hitOncePerTarget = true,
                 destroyOnFirstHit = false,
                 direction = dir,
-                flipVisualX = step.sideSign < 0
+                flipVisualX = step.sideSign < 0,
+                visualMirrorMode = step.visualMirrorMode
             };
 
             hitbox.Setup(context);

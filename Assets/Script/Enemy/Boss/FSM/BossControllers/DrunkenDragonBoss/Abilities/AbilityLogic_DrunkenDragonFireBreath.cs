@@ -25,6 +25,7 @@ public sealed class AbilityLogic_DrunkenDragonFireBreath : AbilityLogic
     [SerializeField, Min(0.1f)] private float range = 5f;
     [SerializeField, Range(1f, 180f)] private float angleDegrees = 55f;
     [SerializeField, Min(0f)] private float originForwardOffset = 0.45f;
+    [SerializeField, Min(0f)] private float mouthFallbackForwardOffset = 0.45f;
     [SerializeField] private float puddleIgniteRadiusPadding = -0.25f;
     [SerializeField] private float puddleIgniteRangePadding = -0.15f;
     [SerializeField] private float puddleIgniteAnglePadding = -4f;
@@ -35,6 +36,10 @@ public sealed class AbilityLogic_DrunkenDragonFireBreath : AbilityLogic
 
     [Header("Telegraph")]
     [SerializeField] private AttackTelegraphStyle warningTelegraphStyle;
+    [SerializeField] private bool useWallClippedWarningTelegraph = true;
+    [SerializeField] private LayerMask warningTelegraphWallLayers;
+    [SerializeField, Min(2)] private int warningTelegraphSampleCount = 48;
+    [SerializeField, Min(0f)] private float warningTelegraphWallSkinWidth = 0.03f;
 
     [Header("Presentation")]
     [SerializeField] private WorldPresentationHook inhalePreparePresentation;
@@ -84,7 +89,7 @@ public sealed class AbilityLogic_DrunkenDragonFireBreath : AbilityLogic
                     yield break;
 
                 aim = ResolveAimSnapshot(dragon, syncFacing: true);
-                UpdateFollowedPresentationVisuals(inhalePrepareVisuals, dragon, aim.Direction);
+                UpdateFollowedPresentationVisuals(inhalePrepareVisuals, dragon, aim.FireDirection);
                 ShowOrUpdateWarningTelegraph(telegraphService, aim, prepareSeconds);
                 elapsed += Time.deltaTime;
                 yield return null;
@@ -109,7 +114,7 @@ public sealed class AbilityLogic_DrunkenDragonFireBreath : AbilityLogic
             if (IsAbilityCancelled(spec))
                 yield break;
 
-            dragon.FacePatternDirection(aim.Direction);
+            dragon.FacePatternDirection(aim.WarningDirection);
             dragon.PlayPatternTrigger(DrunkenDragonAnimationKeys.Fire);
             yield return RunFixedFireBreath(dragon, aim, spec);
         }
@@ -126,15 +131,15 @@ public sealed class AbilityLogic_DrunkenDragonFireBreath : AbilityLogic
 
         try
         {
-            fireBreathVisualObject = CreateFireBreathVisual(dragon, aim.Origin, out fireBreathVisual);
+            fireBreathVisualObject = CreateFireBreathVisual(dragon, aim.FireOrigin, out fireBreathVisual);
             fireBreathVisual?.Play(new ConePatternVisualSpec2D(
-                aim.Origin,
-                aim.Direction,
-                range,
+                aim.FireOrigin,
+                aim.FireDirection,
+                aim.FireRange,
                 angleDegrees,
                 activeSeconds));
 
-            yield return RunFireBreath(dragon, aim.Origin, aim.Direction, spec);
+            yield return RunFireBreath(dragon, aim.WarningOrigin, aim.WarningDirection, spec);
         }
         finally
         {
@@ -185,8 +190,20 @@ public sealed class AbilityLogic_DrunkenDragonFireBreath : AbilityLogic
         if (syncFacing)
             dragon.FacePatternDirection(direction);
 
-        Vector2 origin = ResolveOrigin(dragon, direction);
-        return new ConeAimSnapshot(origin, direction);
+        Vector2 warningOrigin = ResolveWarningOrigin(dragon, direction);
+        Vector2 fireOrigin = ResolveFireOrigin(dragon, direction);
+        Vector2 warningCenterEnd = warningOrigin + direction.normalized * range;
+        Vector2 fireDirection = warningCenterEnd - fireOrigin;
+        float fireRange = fireDirection.magnitude;
+        if (fireDirection.sqrMagnitude <= 0.0001f)
+            fireDirection = direction;
+
+        return new ConeAimSnapshot(
+            warningOrigin,
+            direction,
+            fireOrigin,
+            fireDirection,
+            fireRange);
     }
 
     private GameObject CreateFireBreathVisual(DrunkenDragonController dragon, Vector2 origin, out IConePatternVisual2D visual)
@@ -280,7 +297,7 @@ public sealed class AbilityLogic_DrunkenDragonFireBreath : AbilityLogic
     private WorldPresentationContext BuildInhalePresentationContext(DrunkenDragonController dragon, Vector2 direction)
     {
         Vector2 safeDirection = direction.sqrMagnitude > 0.0001f ? direction.normalized : Vector2.right;
-        Vector2 origin = ResolveOrigin(dragon, safeDirection);
+        Vector2 origin = ResolveFireOrigin(dragon, safeDirection);
         float angleDeg = Mathf.Atan2(safeDirection.y, safeDirection.x) * Mathf.Rad2Deg;
 
         return WorldPresentationContext.AtWorld(
@@ -307,27 +324,44 @@ public sealed class AbilityLogic_DrunkenDragonFireBreath : AbilityLogic
         return null;
     }
 
-    private Vector2 ResolveOrigin(DrunkenDragonController dragon, Vector2 direction)
+    private Vector2 ResolveWarningOrigin(DrunkenDragonController dragon, Vector2 direction)
     {
         if (dragon == null)
             return Vector2.zero;
 
-        return dragon.ResolveFireBreathMouthPosition(direction, originForwardOffset);
+        Vector2 safeDirection = direction.sqrMagnitude > 0.0001f ? direction.normalized : Vector2.right;
+        return (Vector2)dragon.transform.position + safeDirection * originForwardOffset;
     }
 
-    private void ShowOrUpdateWarningTelegraph(AttackTelegraphService telegraphService, ConeAimSnapshot aim, float duration)
+    private Vector2 ResolveFireOrigin(DrunkenDragonController dragon, Vector2 direction)
+    {
+        if (dragon == null)
+            return Vector2.zero;
+
+        return dragon.ResolveFireBreathMouthPosition(direction, mouthFallbackForwardOffset);
+    }
+
+    private void ShowOrUpdateWarningTelegraph(
+        AttackTelegraphService telegraphService,
+        ConeAimSnapshot aim,
+        float duration)
     {
         if (telegraphService == null)
             return;
 
-        float rotationDeg = Mathf.Atan2(aim.Direction.y, aim.Direction.x) * Mathf.Rad2Deg;
+        float rotationDeg = Mathf.Atan2(aim.WarningDirection.y, aim.WarningDirection.x) * Mathf.Rad2Deg;
         AttackTelegraphSpec spec = AttackTelegraphSpec.CreateSector(
-            aim.Origin,
+            aim.WarningOrigin,
             range,
             angleDegrees,
             rotationDeg,
             duration,
             warningTelegraphStyle);
+        if (useWallClippedWarningTelegraph)
+            spec = spec.WithWallClipping(
+                warningTelegraphWallLayers,
+                warningTelegraphSampleCount,
+                warningTelegraphWallSkinWidth);
 
         if (telegraphService.HasActiveTelegraph)
             telegraphService.UpdateCurrentGeometry(spec);
@@ -489,18 +523,29 @@ public sealed class AbilityLogic_DrunkenDragonFireBreath : AbilityLogic
 
     /// <summary>
     /// 책임:
-    /// 화염 방사 한 회차가 사용할 조준 원점과 방향을 스냅샷으로 고정한다.
+    /// 화염 방사 한 회차가 사용할 경고/판정 원뿔과 실제 입 연출 원뿔 정보를 스냅샷으로 고정한다.
     /// </summary>
     private readonly struct ConeAimSnapshot
     {
-        public ConeAimSnapshot(Vector2 origin, Vector2 direction)
+        public ConeAimSnapshot(
+            Vector2 warningOrigin,
+            Vector2 warningDirection,
+            Vector2 fireOrigin,
+            Vector2 fireDirection,
+            float fireRange)
         {
-            Origin = origin;
-            Direction = direction.sqrMagnitude > 0.0001f ? direction.normalized : Vector2.right;
+            WarningOrigin = warningOrigin;
+            WarningDirection = warningDirection.sqrMagnitude > 0.0001f ? warningDirection.normalized : Vector2.right;
+            FireOrigin = fireOrigin;
+            FireDirection = fireDirection.sqrMagnitude > 0.0001f ? fireDirection.normalized : WarningDirection;
+            FireRange = Mathf.Max(0.01f, fireRange);
         }
 
-        public Vector2 Origin { get; }
-        public Vector2 Direction { get; }
+        public Vector2 WarningOrigin { get; }
+        public Vector2 WarningDirection { get; }
+        public Vector2 FireOrigin { get; }
+        public Vector2 FireDirection { get; }
+        public float FireRange { get; }
     }
 
     /// <summary>

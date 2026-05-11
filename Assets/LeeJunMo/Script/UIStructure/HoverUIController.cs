@@ -242,7 +242,10 @@ public class HoverUIController : MonoBehaviour
 
         float chosenX = chosen.x;
         float y = ChooseYAlignSlot(canvasLocalRect, targetLocalRect, size, pivot, chosenX);
-        viewRect.anchoredPosition = new Vector2(chosenX, y);
+        Vector2 presentationOffset = _currentView is IHoverPositionOffsetProvider offsetProvider
+            ? offsetProvider.HoverPositionOffset
+            : Vector2.zero;
+        viewRect.anchoredPosition = new Vector2(chosenX, y) + presentationOffset;
 
         if (logPositioningDebug)
         {
@@ -252,6 +255,7 @@ public class HoverUIController : MonoBehaviour
                 $"target={targetRect.name}, targetRect={targetLocalRect}, " +
                 $"view={viewRect.name}, viewSize={size}, pivot={pivot}, " +
                 $"rightCandidate={posRight}, leftCandidate={posLeft}, chosen={new Vector2(chosenX, y)}, " +
+                $"presentationOffset={presentationOffset}, " +
                 $"offset={offset}, edgePadding={edgePadding}",
                 this);
         }

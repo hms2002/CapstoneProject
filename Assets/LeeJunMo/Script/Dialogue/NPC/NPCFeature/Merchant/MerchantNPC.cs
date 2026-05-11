@@ -43,6 +43,8 @@ public sealed class MerchantNPC : MonoBehaviour
     private readonly MerchantPurchaseService purchaseService = new MerchantPurchaseService();
 
     private MerchantRuntimeState runtimeState;
+    private MerchantRefreshInteractable[] refreshInteractables;
+    private RunModifierService subscribedRunModifierService;
     private bool hasLoggedMissingDefinition;
 
 #if UNITY_EDITOR
@@ -57,11 +59,13 @@ public sealed class MerchantNPC : MonoBehaviour
 
                 GenerateID();
                 CollectSlotsFromChildren();
+                CollectRefreshInteractablesFromChildren();
             };
             return;
         }
 
         CollectSlotsFromChildren();
+        CollectRefreshInteractablesFromChildren();
     }
 
     public void GenerateID()
@@ -76,6 +80,7 @@ public sealed class MerchantNPC : MonoBehaviour
     private void Reset()
     {
         CollectSlotsFromChildren();
+        CollectRefreshInteractablesFromChildren();
     }
 
     private void Awake()
@@ -84,24 +89,33 @@ public sealed class MerchantNPC : MonoBehaviour
             speechBubble = GetComponent<SpeechBubbleComponent>();
 
         CollectSlotsFromChildren();
+        CollectRefreshInteractablesFromChildren();
         BindSlots();
+        BindRefreshInteractables();
+        RefreshRefreshInteractables();
     }
 
     private void OnEnable()
     {
-        if (RunModifierService.Instance != null)
-            RunModifierService.Instance.OnModifiersChanged += HandleRunModifiersChanged;
+        SubscribeToRunModifierService();
+        RefreshRefreshInteractables();
     }
 
     private void OnDisable()
     {
-        if (RunModifierService.Instance != null)
-            RunModifierService.Instance.OnModifiersChanged -= HandleRunModifiersChanged;
+        UnsubscribeFromRunModifierService();
     }
 
     private void Start()
     {
+        SubscribeToRunModifierService();
         InitializeStock();
+    }
+
+    private void Update()
+    {
+        if (subscribedRunModifierService == null && SubscribeToRunModifierService())
+            InitializeStock();
     }
 
     public void TryPurchase(int slotIndex, IPlayerInteractor player)
@@ -133,6 +147,7 @@ public sealed class MerchantNPC : MonoBehaviour
             WarnMissingDefinitionOnce();
             ApplyShopAvailability(false, 0);
             runtimeState = null;
+            RefreshRefreshInteractables();
             return;
         }
 
@@ -140,6 +155,7 @@ public sealed class MerchantNPC : MonoBehaviour
         if (!policy.IsAvailable)
         {
             runtimeState = null;
+            RefreshRefreshInteractables();
             return;
         }
 
@@ -151,6 +167,7 @@ public sealed class MerchantNPC : MonoBehaviour
 
         BindSlots();
         RefreshAllSlots();
+        RefreshRefreshInteractables();
     }
 
     public bool CanRefreshStock()
@@ -162,6 +179,24 @@ public sealed class MerchantNPC : MonoBehaviour
                runtimeState.refreshCountUsed < policy.RefreshLimit;
     }
 
+    public bool CanShowRefreshInteractable()
+    {
+        MerchantShopPolicySnapshot policy = ResolveShopPolicy();
+        return policy.HasDefinition &&
+               policy.IsAvailable &&
+               policy.RefreshLimit > 0;
+    }
+
+    public int GetRemainingRefreshCount()
+    {
+        MerchantShopPolicySnapshot policy = ResolveShopPolicy();
+        if (!policy.HasDefinition || !policy.IsAvailable || policy.RefreshLimit <= 0)
+            return 0;
+
+        int usedCount = runtimeState != null ? runtimeState.refreshCountUsed : 0;
+        return Mathf.Max(0, policy.RefreshLimit - usedCount);
+    }
+
     public bool TryRefreshStock()
     {
         MerchantShopPolicySnapshot policy = ResolveShopPolicy();
@@ -170,12 +205,14 @@ public sealed class MerchantNPC : MonoBehaviour
             WarnMissingDefinitionOnce();
             ApplyShopAvailability(false, 0);
             runtimeState = null;
+            RefreshRefreshInteractables();
             return false;
         }
 
         if (!policy.IsAvailable)
         {
             ApplyShopAvailability(false, 0);
+            RefreshRefreshInteractables();
             return false;
         }
 
@@ -198,12 +235,34 @@ public sealed class MerchantNPC : MonoBehaviour
         ApplyEffectivePrices(runtimeState, policy.EffectivePriceSettings);
         BindSlots();
         RefreshAllSlots();
+        RefreshRefreshInteractables();
         return true;
     }
 
     private void HandleRunModifiersChanged()
     {
         InitializeStock();
+    }
+
+    private bool SubscribeToRunModifierService()
+    {
+        if (subscribedRunModifierService != null)
+            return false;
+
+        if (RunModifierService.Instance == null)
+            return false;
+
+        subscribedRunModifierService = RunModifierService.Instance;
+        subscribedRunModifierService.OnModifiersChanged += HandleRunModifiersChanged;
+        return true;
+    }
+
+    private void UnsubscribeFromRunModifierService()
+    {
+        if (subscribedRunModifierService != null)
+            subscribedRunModifierService.OnModifiersChanged -= HandleRunModifiersChanged;
+
+        subscribedRunModifierService = null;
     }
 
     private bool TryGetSlotEntry(
@@ -324,6 +383,34 @@ public sealed class MerchantNPC : MonoBehaviour
         }
     }
 
+    private void BindRefreshInteractables()
+    {
+        if (refreshInteractables == null)
+            return;
+
+        for (int i = 0; i < refreshInteractables.Length; i++)
+        {
+            if (refreshInteractables[i] != null)
+                refreshInteractables[i].AssignOwner(this);
+        }
+    }
+
+    private void RefreshRefreshInteractables()
+    {
+        CollectRefreshInteractablesFromChildren();
+
+        BindRefreshInteractables();
+
+        if (refreshInteractables == null)
+            return;
+
+        for (int i = 0; i < refreshInteractables.Length; i++)
+        {
+            if (refreshInteractables[i] != null)
+                refreshInteractables[i].RefreshPresentation();
+        }
+    }
+
     private void SpeakFailure(MerchantPurchaseResultType resultType)
     {
         if (speechBubble == null)
@@ -367,6 +454,64 @@ public sealed class MerchantNPC : MonoBehaviour
         ShopSlot[] childSlots = GetComponentsInChildren<ShopSlot>(true);
         if (childSlots != null && childSlots.Length > 0)
             shopSlots = childSlots;
+    }
+
+    private void CollectRefreshInteractablesFromChildren()
+    {
+        List<MerchantRefreshInteractable> collectedInteractables = new List<MerchantRefreshInteractable>();
+        HashSet<MerchantRefreshInteractable> seenInteractables = new HashSet<MerchantRefreshInteractable>();
+
+        CollectRefreshInteractablesFromRoot(transform, collectedInteractables, seenInteractables);
+
+        if (transform.parent != null)
+            CollectRefreshInteractablesFromRoot(transform.parent, collectedInteractables, seenInteractables);
+
+        CollectExplicitlyOwnedRefreshInteractables(collectedInteractables, seenInteractables);
+
+        refreshInteractables = collectedInteractables.ToArray();
+    }
+
+    private void CollectRefreshInteractablesFromRoot(
+        Transform root,
+        List<MerchantRefreshInteractable> collectedInteractables,
+        HashSet<MerchantRefreshInteractable> seenInteractables)
+    {
+        if (root == null)
+            return;
+
+        MerchantRefreshInteractable[] candidates = root.GetComponentsInChildren<MerchantRefreshInteractable>(true);
+        if (candidates == null)
+            return;
+
+        for (int i = 0; i < candidates.Length; i++)
+        {
+            MerchantRefreshInteractable candidate = candidates[i];
+            if (candidate == null || !candidate.CanAssignOwner(this) || !seenInteractables.Add(candidate))
+                continue;
+
+            collectedInteractables.Add(candidate);
+        }
+    }
+
+    private void CollectExplicitlyOwnedRefreshInteractables(
+        List<MerchantRefreshInteractable> collectedInteractables,
+        HashSet<MerchantRefreshInteractable> seenInteractables)
+    {
+        MerchantRefreshInteractable[] candidates = FindObjectsByType<MerchantRefreshInteractable>(
+            FindObjectsInactive.Include,
+            FindObjectsSortMode.None);
+
+        if (candidates == null)
+            return;
+
+        for (int i = 0; i < candidates.Length; i++)
+        {
+            MerchantRefreshInteractable candidate = candidates[i];
+            if (candidate == null || !candidate.IsAssignedOwner(this) || !seenInteractables.Add(candidate))
+                continue;
+
+            collectedInteractables.Add(candidate);
+        }
     }
 
     private void WarnMissingDefinitionOnce()

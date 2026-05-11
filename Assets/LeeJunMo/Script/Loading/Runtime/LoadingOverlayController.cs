@@ -33,6 +33,8 @@ public sealed class LoadingOverlayController : MonoBehaviour
     [SerializeField, Min(0.01f)] private float fadeInSeconds = 0.1f;
     [SerializeField, Min(0.01f)] private float fadeOutSeconds = 0.1f;
     [SerializeField, Min(0f)] private float minimumVisibleSeconds = 0.12f;
+    [SerializeField, Min(0f)] private float delayedRevealSeconds = 1.5f;
+    [SerializeField, Min(0.05f)] private float loadingDotStepSeconds = 0.35f;
     [SerializeField, Min(0.01f)] private float activeProgressFollowSpeed = 9f;
     [SerializeField, Min(0.01f)] private float completionProgressFollowSpeed = 22f;
     [SerializeField, Min(1f)] private float tipCycleSeconds = 5.5f;
@@ -72,6 +74,7 @@ public sealed class LoadingOverlayController : MonoBehaviour
     private TMP_Text statusText;
     private TMP_Text detailText;
     private TMP_Text percentText;
+    private TMP_Text loadingText;
     private TMP_Text tipLabelText;
     private TMP_Text tipText;
     private RectTransform travelHost;
@@ -97,8 +100,11 @@ public sealed class LoadingOverlayController : MonoBehaviour
     private float lastObservedRealBatchProgress;
     private float lastObservedRealBatchRealtime;
     private bool managedPresentationActive;
+    private bool managedPresentationRevealed;
     private bool managedPresentationObservedRealBatch;
     private float managedPresentationStartedRealtime;
+
+    public float DelayedRevealSeconds => Mathf.Max(0f, delayedRevealSeconds);
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     private static void AutoBootstrap()
@@ -142,6 +148,7 @@ public sealed class LoadingOverlayController : MonoBehaviour
         lastObservedRealBatchProgress = 0f;
         lastObservedRealBatchRealtime = 0f;
         managedPresentationActive = false;
+        managedPresentationRevealed = false;
         managedPresentationObservedRealBatch = false;
         managedPresentationStartedRealtime = 0f;
 
@@ -162,21 +169,41 @@ public sealed class LoadingOverlayController : MonoBehaviour
         BindTravelVisual();
         debugPreviewActive = false;
         managedPresentationActive = true;
+        managedPresentationRevealed = false;
         managedPresentationObservedRealBatch = false;
         managedPresentationStartedRealtime = Time.realtimeSinceStartup;
-        targetVisible = true;
+        targetVisible = false;
         visibleSinceRealtime = managedPresentationStartedRealtime;
         displayedProgress = 0f;
         shimmerPhase = 0f;
 
-        if (!showImmediately || overlayRoot == null || canvasGroup == null)
+        if (!showImmediately)
+            return;
+
+        RevealManagedPresentation(immediate: true);
+    }
+
+    public void RevealManagedPresentation(bool immediate = false)
+    {
+        if (!managedPresentationActive && !debugPreviewActive)
+            return;
+
+        ResolveViewIfNeeded(allowRuntimeFallback: true);
+        BindTravelVisual();
+        managedPresentationRevealed = true;
+        targetVisible = true;
+        visibleSinceRealtime = Time.realtimeSinceStartup;
+
+        if (overlayRoot == null || canvasGroup == null)
             return;
 
         overlayRoot.gameObject.SetActive(true);
-        canvasGroup.alpha = 1f;
+        if (immediate)
+            canvasGroup.alpha = 1f;
         canvasGroup.blocksRaycasts = true;
         canvasGroup.interactable = false;
-        UpdateCopy(PortalRouteManager.Instance, 0, batchActive: false, previewActive: false);
+        ApplyCompactViewVisibility();
+        UpdateCompactLoadingText(Time.realtimeSinceStartup);
     }
 
     public bool IsManagedPresentationReadyToComplete()
@@ -197,6 +224,7 @@ public sealed class LoadingOverlayController : MonoBehaviour
     public void EndManagedPresentation()
     {
         managedPresentationActive = false;
+        managedPresentationRevealed = false;
         targetVisible = false;
     }
 
@@ -282,7 +310,7 @@ public sealed class LoadingOverlayController : MonoBehaviour
         bool wantsPresentationView =
             debugPreviewActive ||
             batchActive ||
-            managedPresentationActive ||
+            managedPresentationRevealed ||
             targetVisible ||
             canvasGroup != null && canvasGroup.alpha > 0.001f;
         ResolveViewIfNeeded(allowRuntimeFallback: wantsPresentationView);
@@ -292,9 +320,13 @@ public sealed class LoadingOverlayController : MonoBehaviour
             managedPresentationObservedRealBatch = true;
 
         if (batchActive && effectiveBatchId != observedBatchId)
+        {
             BeginBatch(effectiveBatchId);
+            if (!previewBatch && !managedPresentationRevealed)
+                targetVisible = false;
+        }
 
-        if (batchActive || managedPresentationActive)
+        if (previewBatch || managedPresentationRevealed)
             targetVisible = true;
 
         float targetProgress = batchActive
@@ -330,7 +362,7 @@ public sealed class LoadingOverlayController : MonoBehaviour
             !previewBatch &&
             overlayRoot != null &&
             canvasGroup != null &&
-            (managedPresentationActive || corridorLoadingContext) &&
+            (managedPresentationRevealed || corridorLoadingContext) &&
             (targetVisible || canvasGroup.alpha > 0.001f);
     }
 
@@ -374,6 +406,7 @@ public sealed class LoadingOverlayController : MonoBehaviour
         statusText = desiredView.StatusText;
         detailText = desiredView.DetailText;
         percentText = desiredView.PercentText;
+        loadingText = desiredView.LoadingText;
         tipLabelText = desiredView.TipLabelText;
         tipText = desiredView.TipText;
         progressFillImage = desiredView.ProgressFillImage;
@@ -397,6 +430,8 @@ public sealed class LoadingOverlayController : MonoBehaviour
             canvasGroup.interactable = false;
             overlayRoot.gameObject.SetActive(false);
         }
+
+        ApplyCompactViewVisibility();
     }
 
     private LoadingOverlayView ResolveDesiredView(bool allowRuntimeFallback)
@@ -444,6 +479,7 @@ public sealed class LoadingOverlayController : MonoBehaviour
         statusText = null;
         detailText = null;
         percentText = null;
+        loadingText = null;
         tipLabelText = null;
         tipText = null;
         progressFillImage = null;
@@ -457,6 +493,60 @@ public sealed class LoadingOverlayController : MonoBehaviour
     }
 
     private void UpdateCopy(
+        PortalRouteManager routeManager,
+        int pendingCount,
+        bool batchActive,
+        bool previewActive)
+    {
+        ApplyCompactViewVisibility();
+        UpdateCompactLoadingText(previewActive ? debugPreviewStartedRealtime : visibleSinceRealtime);
+    }
+
+    private void ApplyCompactViewVisibility()
+    {
+        SetTextActive(titleText, titleText == loadingText);
+        SetTextActive(statusText, statusText == loadingText);
+        SetTextActive(detailText, detailText == loadingText);
+        SetTextActive(percentText, percentText == loadingText);
+        SetTextActive(tipLabelText, tipLabelText == loadingText);
+        SetTextActive(tipText, tipText == loadingText);
+
+        if (loadingText != null)
+            loadingText.gameObject.SetActive(true);
+
+        if (progressFillImage != null)
+            progressFillImage.gameObject.SetActive(false);
+
+        if (progressGlowRect != null)
+            progressGlowRect.gameObject.SetActive(false);
+
+        if (travelTrackFillImage != null)
+            travelTrackFillImage.gameObject.SetActive(false);
+
+        if (travelTrackBoundsRect != null)
+            travelTrackBoundsRect.gameObject.SetActive(false);
+
+        if (travelWalkerRect != null)
+            travelWalkerRect.gameObject.SetActive(true);
+    }
+
+    private static void SetTextActive(TMP_Text text, bool active)
+    {
+        if (text != null)
+            text.gameObject.SetActive(active);
+    }
+
+    private void UpdateCompactLoadingText(float startedRealtime)
+    {
+        if (loadingText == null)
+            return;
+
+        float elapsed = Mathf.Max(0f, Time.realtimeSinceStartup - startedRealtime);
+        int dotCount = Mathf.FloorToInt(elapsed / Mathf.Max(0.05f, loadingDotStepSeconds)) % 3 + 1;
+        loadingText.text = "Loading" + new string('.', dotCount);
+    }
+
+    private void UpdateLegacyCopy(
         PortalRouteManager routeManager,
         int pendingCount,
         bool batchActive,
@@ -639,37 +729,21 @@ public sealed class LoadingOverlayController : MonoBehaviour
         rootGroup.blocksRaycasts = false;
         rootGroup.interactable = false;
 
-        RectTransform panelRect = CreateRect("Panel", rootRect);
-        panelRect.anchorMin = panelRect.anchorMax = new Vector2(0.5f, 0.5f);
-        panelRect.pivot = new Vector2(0.5f, 0.5f);
-        panelRect.sizeDelta = new Vector2(720f, 260f);
-        Image panelImage = panelRect.gameObject.AddComponent<Image>();
-        panelImage.color = new Color(0.09f, 0.09f, 0.12f, 0.96f);
-
-        TextMeshProUGUI title = CreateText(panelRect, "TitleText", "LOADING", 52f, FontStyles.Bold, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -28f), new Vector2(640f, 60f));
-        TextMeshProUGUI status = CreateText(panelRect, "StatusText", "Preparing scene", 30f, FontStyles.Bold, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -92f), new Vector2(620f, 42f));
-        TextMeshProUGUI detail = CreateText(panelRect, "DetailText", string.Empty, 22f, FontStyles.Normal, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -130f), new Vector2(620f, 34f));
-        TextMeshProUGUI percent = CreateText(panelRect, "PercentText", "0%", 42f, FontStyles.Bold, new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0.5f, 0f), new Vector2(0f, 32f), new Vector2(220f, 48f));
-
-        RectTransform progressBackgroundRect = CreateRect("ProgressBackground", panelRect);
-        progressBackgroundRect.anchorMin = progressBackgroundRect.anchorMax = new Vector2(0.5f, 0f);
-        progressBackgroundRect.pivot = new Vector2(0.5f, 0f);
-        progressBackgroundRect.anchoredPosition = new Vector2(0f, 92f);
-        progressBackgroundRect.sizeDelta = new Vector2(560f, 18f);
-        Image progressBackground = progressBackgroundRect.gameObject.AddComponent<Image>();
-        progressBackground.color = new Color(0.18f, 0.18f, 0.24f, 1f);
-
-        RectTransform progressFillRect = CreateRect("ProgressFill", progressBackgroundRect);
-        Stretch(progressFillRect);
-        Image progressFill = progressFillRect.gameObject.AddComponent<Image>();
-        progressFill.type = Image.Type.Filled;
-        progressFill.fillMethod = Image.FillMethod.Horizontal;
-        progressFill.fillOrigin = 0;
-        progressFill.fillAmount = 0f;
-        progressFill.color = new Color(0.35f, 0.78f, 1f, 1f);
+        TextMeshProUGUI loading = CreateText(
+            rootRect,
+            "LoadingText",
+            "Loading...",
+            34f,
+            FontStyles.Bold,
+            new Vector2(1f, 0f),
+            new Vector2(1f, 0f),
+            new Vector2(1f, 0f),
+            new Vector2(-72f, 32f),
+            new Vector2(220f, 44f));
+        loading.alignment = TextAlignmentOptions.Right;
 
         runtimeFallbackView = rootRect.gameObject.AddComponent<LoadingOverlayView>();
-        runtimeFallbackView.AssignRuntimeReferences(rootRect, rootGroup, title, status, detail, percent, progressFill);
+        runtimeFallbackView.AssignRuntimeReferences(rootRect, rootGroup, null, null, null, null, loading, null);
         runtimeFallbackCanvas.SetActive(true);
         rootRect.gameObject.SetActive(false);
     }
@@ -736,21 +810,8 @@ public sealed class LoadingOverlayController : MonoBehaviour
         canvasGroup.blocksRaycasts = canvasGroup.alpha > 0.01f;
         canvasGroup.interactable = false;
 
-        if (progressFillImage != null)
-            progressFillImage.fillAmount = displayedProgress;
-
-        if (progressGlowRect != null)
-        {
-            RectTransform glowParent = progressGlowRect.parent as RectTransform;
-            float trackWidth = glowParent != null ? Mathf.Max(48f, glowParent.rect.width) : FallbackTrackWidth;
-            shimmerPhase = (shimmerPhase + Time.unscaledDeltaTime * 1.8f) % 1f;
-            float width = Mathf.Max(48f, progressGlowRect.sizeDelta.x);
-            float visibleWidth = Mathf.Max(48f, trackWidth * displayedProgress);
-            float x = Mathf.Lerp(-width, Mathf.Max(-width, visibleWidth - width), shimmerPhase);
-            progressGlowRect.anchoredPosition = new Vector2(x, progressGlowRect.anchoredPosition.y);
-        }
-
-        UpdateDefaultTravelVisual();
+        ApplyCompactViewVisibility();
+        UpdateCompactLoadingText(debugPreviewActive ? debugPreviewStartedRealtime : visibleSinceRealtime);
     }
 
     private void BindTravelVisual()

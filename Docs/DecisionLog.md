@@ -2,7 +2,7 @@
 status: active
 authority: project-log
 category: decision-log
-last_reviewed: 2026-05-11
+last_reviewed: 2026-05-05
 ---
 
 # Decision Log
@@ -71,30 +71,15 @@ Implications:
 - Existing slots are preserved when slot count expands; only newly opened slots are rolled.
 - Scene and prefab references must be manually wired to a `ShopDefinitionSO`.
 
-## 2026-05-11 - Slime Queen Phase 2 Uses Separate Boss Prefabs
+## 2026-05-10 - Keep Lightning Spear Basic Attack Weapon-Specific
 
 Decision:
-Slime Queen phase 2 should be represented by two independent boss prefabs, `SlimeQueenP2Short` and `SlimeQueenP2Long`, spawned after the phase 1 `SlimeQueen` dies.
+Do not keep the temporary `WeaponComboAttack2D` shared layer. Lightning Spear basic attack owns its combo data and execution logic, while `SwordCombo2D` remains a legacy/sample ability.
 
 Reason:
-The corridor slime gimmick is based on slime splitting after death. Splitting at 50% HP while the original queen remains alive contradicts that rule and makes shared-health UI misleading.
+The shared layer only had one active consumer and made it unclear whether Sword combo behavior had become project-wide weapon policy.
 
 Implications:
-- `SlimeQueen` no longer owns a 50% HP shared-health twin transition.
-- Phase 2 queens should have their own HP and should die as normal enemies/bosses.
-- The final HUD should show two independent full health bars after phase 2 starts, not a single shared ratio split visually.
-- A later coordinator or HUD extension is still needed to resolve encounter completion when both phase 2 queens die.
-
-## 2026-05-11 - Slime Queen Phase 2 HUD Splits Existing Bar Width
-
-Decision:
-Display `SlimeQueenP2Short` and `SlimeQueenP2Long` as independent health ratios inside the current boss health bar area, split into left and right halves with a small center gap.
-
-Reason:
-Two separate phase 2 bosses need separate remaining HP readability. Using one shared health bar hides which queen took damage, while two full-width bars would consume more HUD space than the current boss presentation allows.
-
-Implications:
-- The left phase 2 health bar represents `SlimeQueenP2Short`.
-- The right phase 2 health bar represents `SlimeQueenP2Long`.
-- The single-boss HUD path remains unchanged for phase 1 and other bosses.
-- The current implementation supports authored dual slider references but can temporarily clone the existing sliders at runtime until the HUD prefab is explicitly wired.
+- Lightning Spear attack tuning stays in `LightningSpearAttackData`.
+- New weapon combo logic should not depend on the removed shared runner by default.
+- `SwordCombo2D` assets and logic remain untouched unless a separate task targets them.

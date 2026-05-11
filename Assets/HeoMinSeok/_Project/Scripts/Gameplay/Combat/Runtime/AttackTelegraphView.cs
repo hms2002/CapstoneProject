@@ -45,6 +45,11 @@ namespace UnityGAS
         private float startTime;
         private float duration;
         private bool isVisible;
+        private AttackTelegraphWallClippedMeshView wallClippedMeshView;
+        private bool activeUseWallClipping;
+        private LayerMask activeWallClipLayers;
+        private int activeWallClipSampleCount;
+        private float activeWallClipSkinWidth;
 
         public bool IsVisible => isVisible;
 
@@ -82,11 +87,19 @@ namespace UnityGAS
             isVisible = true;
             activeInnerDiameter = Mathf.Max(0f, spec.innerDiameter);
             activeSectorAngleDeg = Mathf.Clamp(spec.sectorAngleDeg, 0.1f, 360f);
+            CacheActiveWallClipping(spec);
 
             gameObject.SetActive(true);
+            if (TryApplyWallClippedMesh(spec, 0f))
+            {
+                SetSpriteRenderersEnabled(false);
+                return;
+            }
+
             transform.position = spec.center;
             transform.rotation = Quaternion.Euler(0f, 0f, spec.rotationDeg);
 
+            HideWallClippedMesh();
             ApplyShapeScale(spec.shape, spec.size);
             ApplyStyle(0f);
         }
@@ -101,13 +114,22 @@ namespace UnityGAS
             if (!isVisible)
                 return;
 
+            spec = InheritActiveWallClipping(spec);
             activeInnerDiameter = Mathf.Max(0f, spec.innerDiameter);
             activeSectorAngleDeg = Mathf.Clamp(spec.sectorAngleDeg, 0.1f, 360f);
+            float normalizedProgress = GetCurrentNormalizedProgress();
+            if (TryApplyWallClippedMesh(spec, normalizedProgress))
+            {
+                SetSpriteRenderersEnabled(false);
+                return;
+            }
+
             transform.position = spec.center;
             transform.rotation = Quaternion.Euler(0f, 0f, spec.rotationDeg);
 
+            HideWallClippedMesh();
             ApplyShapeScale(spec.shape, spec.size);
-            ApplyStyle(GetCurrentNormalizedProgress());
+            ApplyStyle(normalizedProgress);
         }
 
         /// <summary>
@@ -122,6 +144,9 @@ namespace UnityGAS
                 fillRenderer.enabled = false;
             if (borderRenderer != null)
                 borderRenderer.enabled = false;
+
+            HideWallClippedMesh();
+            ClearActiveWallClipping();
         }
 
         /// <summary>
@@ -157,6 +182,85 @@ namespace UnityGAS
             return duration <= 0f
                 ? 1f
                 : Mathf.Clamp01((Time.time - startTime) / duration);
+        }
+
+        private bool TryApplyWallClippedMesh(AttackTelegraphSpec spec, float normalizedProgress)
+        {
+            if (!CanUseWallClippedMesh(spec))
+                return false;
+
+            AttackTelegraphWallClippedMeshView meshView = GetOrCreateWallClippedMeshView();
+            meshView.ShowOrUpdate(spec, activeStyle, fillRenderer != null ? fillRenderer : borderRenderer, normalizedProgress);
+            return meshView.IsVisible;
+        }
+
+        private static bool CanUseWallClippedMesh(AttackTelegraphSpec spec)
+        {
+            if (!spec.useWallClipping || spec.wallClipLayers.value == 0)
+                return false;
+
+            return spec.shape == AttackTelegraphShape.Sector ||
+                   spec.shape == AttackTelegraphShape.Circle;
+        }
+
+        private AttackTelegraphWallClippedMeshView GetOrCreateWallClippedMeshView()
+        {
+            if (wallClippedMeshView != null)
+                return wallClippedMeshView;
+
+            wallClippedMeshView = GetComponent<AttackTelegraphWallClippedMeshView>();
+            if (wallClippedMeshView == null)
+                wallClippedMeshView = gameObject.AddComponent<AttackTelegraphWallClippedMeshView>();
+
+            return wallClippedMeshView;
+        }
+
+        private void HideWallClippedMesh()
+        {
+            if (wallClippedMeshView != null)
+                wallClippedMeshView.HideImmediate();
+        }
+
+        private void SetSpriteRenderersEnabled(bool enabled)
+        {
+            if (fillRenderer != null)
+                fillRenderer.enabled = enabled;
+
+            if (borderRenderer != null)
+                borderRenderer.enabled = enabled;
+        }
+
+        private void CacheActiveWallClipping(AttackTelegraphSpec spec)
+        {
+            activeUseWallClipping = spec.useWallClipping;
+            activeWallClipLayers = spec.wallClipLayers;
+            activeWallClipSampleCount = spec.wallClipSampleCount;
+            activeWallClipSkinWidth = spec.wallClipSkinWidth;
+        }
+
+        private AttackTelegraphSpec InheritActiveWallClipping(AttackTelegraphSpec spec)
+        {
+            if (spec.useWallClipping)
+            {
+                CacheActiveWallClipping(spec);
+                return spec;
+            }
+
+            if (!activeUseWallClipping || activeWallClipLayers.value == 0)
+                return spec;
+
+            return spec.WithWallClipping(
+                activeWallClipLayers,
+                activeWallClipSampleCount,
+                activeWallClipSkinWidth);
+        }
+
+        private void ClearActiveWallClipping()
+        {
+            activeUseWallClipping = false;
+            activeWallClipLayers = default;
+            activeWallClipSampleCount = 0;
+            activeWallClipSkinWidth = 0f;
         }
 
         private void CaptureBaseScaleIfNeeded()
@@ -476,6 +580,13 @@ namespace UnityGAS
 
         private void ApplyStyle(float normalized)
         {
+            if (wallClippedMeshView != null && wallClippedMeshView.IsVisible)
+            {
+                wallClippedMeshView.ApplyStyle(activeStyle, normalized);
+                SetSpriteRenderersEnabled(false);
+                return;
+            }
+
             if (fillRenderer == null && borderRenderer == null)
                 return;
 

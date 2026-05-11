@@ -33,7 +33,7 @@ GameObject:
   - component: {fileID: 344486096308046059}
   - component: {fileID: 8223012456081861757}
   - component: {fileID: 5188487318859962288}
-  - component: {fileID: 7001000000000000002}
+  - component: {fileID: 4627516709666046419}
   m_Layer: 31
   m_Name: TreasureMonster
   m_TagString: Enemy
@@ -105,9 +105,9 @@ SpriteRenderer:
   m_SortingLayer: 4
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: -101365722, guid: 0d366a34caa3bee4ba89bd536ddacd96, type: 3}
-  m_Color: {r: 0.5622641, g: 0.5622641, b: 0.5622641, a: 1}
-  m_FlipX: 0
+  m_Sprite: {fileID: -2987867392972033973, guid: 15c91a5b134cee44185165d194272923, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_FlipX: 1
   m_FlipY: 0
   m_DrawMode: 0
   m_Size: {x: 0.48, y: 0.28}
@@ -179,8 +179,8 @@ BoxCollider2D:
   m_Offset: {x: 0, y: 0.35}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.18}
-    oldSize: {x: 2, y: 1.1666666}
+    pivot: {x: 0.5, y: 0}
+    oldSize: {x: 0.65625, y: 0.71875}
     newSize: {x: 0.48, y: 0.28}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -434,6 +434,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   body: {fileID: 0}
   enforceContinuousCollision: 1
+  preventWallTunneling: 1
+  wallCollisionLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  wallSafetyMinSpeed: 8
+  wallCastSkinWidth: 0.03
+  depenetrationSkinWidth: 0.01
+  maxDepenetrationIterations: 3
   intentSourceBehaviour: {fileID: 0}
   statProviderBehaviour: {fileID: 0}
   externalMovement: {fileID: 3341026293018187748}
@@ -571,6 +579,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UnityGAS.AttackTelegraphService
   telegraphPrefab: {fileID: 788264263987448140, guid: 211dd09e2da9caf47ad8409c9e35b83d, type: 3}
   defaultStyle: {fileID: 11400000, guid: b15f18602ec87284d80cbd57720425f1, type: 2}
+  useDefaultWallClipping: 0
+  defaultWallClipLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  defaultWallClipSampleCount: 48
+  defaultWallClipSkinWidth: 0.03
 --- !u!114 &5188487318859962288
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -585,7 +599,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UnityGAS.CombatHurtbox2D
   targetRoot: {fileID: 0}
   ownedColliders: []
---- !u!114 &7001000000000000002
+--- !u!114 &4627516709666046419
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -594,10 +608,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 625522859161183429}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: eab7ec7f6dd542f9bf26ce0e9f7f4d6f, type: 3}
+  m_Script: {fileID: 11500000, guid: 54e8f4b51b6346c3a7aa5121f617bce2, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: 
-  maskedRenderer: {fileID: 1695031726951874086}
-  samplePointOverride: {fileID: 0}
-  sampleOffset: {x: 0, y: -0.5, z: 0}
-  spriteMaskRefreshInterval: 0.25
+  m_EditorClassIdentifier: Assembly-CSharp::MobAbilityCoordinator
+  abilitySystem: {fileID: 0}
+  tagSystem: {fileID: 0}

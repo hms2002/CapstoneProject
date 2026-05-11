@@ -44,6 +44,7 @@ namespace UnityGAS.Sample
             public readonly float forwardOffset;
             public readonly float sideOffset;
             public readonly int sideSign;
+            public readonly MeleeHitboxVisualMirrorMode visualMirrorMode;
             public readonly float lungeDistance;
             public readonly float lungeDuration;
 
@@ -63,6 +64,7 @@ namespace UnityGAS.Sample
                 float forwardOffset,
                 float sideOffset,
                 int sideSign,
+                MeleeHitboxVisualMirrorMode visualMirrorMode,
                 float lungeDistance,
                 float lungeDuration)
             {
@@ -81,6 +83,7 @@ namespace UnityGAS.Sample
                 this.forwardOffset = forwardOffset;
                 this.sideOffset = sideOffset;
                 this.sideSign = sideSign;
+                this.visualMirrorMode = visualMirrorMode;
                 this.lungeDistance = lungeDistance;
                 this.lungeDuration = lungeDuration;
             }
@@ -109,6 +112,7 @@ namespace UnityGAS.Sample
             public float forwardOffset;
             public float sideOffset;
             public int sideSign;
+            public MeleeHitboxVisualMirrorMode visualMirrorMode;
             public float lungeDistance;
             public float lungeDuration;
 
@@ -141,6 +145,7 @@ namespace UnityGAS.Sample
                     forwardOffset,
                     sideOffset,
                     sideSign,
+                    visualMirrorMode,
                     lungeDistance,
                     scaledLungeDuration);
             }

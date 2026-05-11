@@ -45,7 +45,8 @@ public class MonsterSpawnContainer : MonoBehaviour
             SpawnPosition,
             SpawnRotation,
             roomArea,
-            linkedChestKillLock);
+            linkedChestKillLock,
+            RoomGroup);
     }
 
 #if UNITY_EDITOR

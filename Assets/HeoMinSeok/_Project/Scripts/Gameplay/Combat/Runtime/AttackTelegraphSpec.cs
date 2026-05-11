@@ -16,6 +16,11 @@ namespace UnityGAS
         public float rotationDeg;
         public float duration;
         public AttackTelegraphStyle style;
+        public Vector3 origin;
+        public bool useWallClipping;
+        public LayerMask wallClipLayers;
+        public int wallClipSampleCount;
+        public float wallClipSkinWidth;
 
         public static AttackTelegraphSpec CreateRectangle(
             Vector3 center,
@@ -33,7 +38,8 @@ namespace UnityGAS
                 sectorAngleDeg = 0f,
                 rotationDeg = rotationDeg,
                 duration = duration,
-                style = style
+                style = style,
+                origin = center
             };
         }
 
@@ -52,7 +58,8 @@ namespace UnityGAS
                 sectorAngleDeg = 0f,
                 rotationDeg = 0f,
                 duration = duration,
-                style = style
+                style = style,
+                origin = center
             };
         }
 
@@ -76,7 +83,8 @@ namespace UnityGAS
                 sectorAngleDeg = 0f,
                 rotationDeg = 0f,
                 duration = duration,
-                style = style
+                style = style,
+                origin = center
             };
         }
 
@@ -105,8 +113,26 @@ namespace UnityGAS
                 sectorAngleDeg = Mathf.Clamp(angleDeg, 0.1f, 360f),
                 rotationDeg = rotationDeg,
                 duration = duration,
-                style = style
+                style = style,
+                origin = origin
             };
+        }
+
+        /// <summary>
+        /// 책임 :
+        /// - 텔레그래프 렌더링만 벽 레이어 기준으로 잘리게 하는 표시 옵션을 추가한다.
+        /// - 실제 공격 판정 차단 여부는 각 ability/pattern의 판정 로직이 별도로 결정한다.
+        /// </summary>
+        public AttackTelegraphSpec WithWallClipping(
+            LayerMask wallLayers,
+            int sampleCount = 48,
+            float skinWidth = 0.03f)
+        {
+            useWallClipping = wallLayers.value != 0;
+            wallClipLayers = wallLayers;
+            wallClipSampleCount = Mathf.Max(3, sampleCount);
+            wallClipSkinWidth = Mathf.Max(0f, skinWidth);
+            return this;
         }
     }
 }

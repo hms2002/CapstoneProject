@@ -38,6 +38,9 @@ public static class WeaponRuntimeDataFactory
         if (weapon.abilityLoadout is OddIronLoadout)
             return typeof(OddIronRuntimeData);
 
+        if (weapon.abilityLoadout is LightningSpearLoadout)
+            return typeof(LightningSpearRuntimeData);
+
         return typeof(WeaponRuntimeData);
     }
 
@@ -94,6 +97,9 @@ public static class WeaponRuntimeDataFactory
             data.ApplyDefaults(oddIronLoadout);
             return data;
         }
+
+        if (weapon.abilityLoadout is LightningSpearLoadout)
+            return new LightningSpearRuntimeData();
 
         return new WeaponRuntimeData();
     }

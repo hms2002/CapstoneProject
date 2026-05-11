@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5686dc461c9b6a546991383454aa181f, type: 3}
+  m_Name: WD_LightningSpear
+  m_EditorClassIdentifier: 
+  weaponId: Weapon.LightningSpear
+  displayName: "\uBC88\uAC1C \uCC3D"
+  icon: {fileID: -6255143421326930151, guid: e658b351294cef44b8a5c823d1fdcb73, type: 3}
+  storyText: Lightning Spear V1 placeholder weapon.
+  statModifiers: []
+  attackInputHint: Mouse1
+  skill1InputHint: Q
+  skill2InputHint: E
+  weaponPrefab: {fileID: 916365682996460394, guid: bf1d70bd58b747e9855a82d836fa4857, type: 3}
+  equippedTag: {fileID: 11400000, guid: cac1046499d28814a91fcb2631757240, type: 2}
+  attack: {fileID: 11400000, guid: 6bbd25ec46de40f1ab275317be703086, type: 2}
+  skill1: {fileID: 11400000, guid: 4290d464953142ffb00a0c0946a5eb3a, type: 2}
+  skill2: {fileID: 11400000, guid: 178b0d121243485ea74ea0b937c51928, type: 2}
+  abilityLoadout: {fileID: 11400000, guid: 1e20c7c1fac645358adb9d2fcc93aa75, type: 2}

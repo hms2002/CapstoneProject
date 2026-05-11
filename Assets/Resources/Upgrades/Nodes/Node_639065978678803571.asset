@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Node_639065978678803571
   m_EditorClassIdentifier: 
   nodeID: 538693343
-  upgradeName: Up_4_-1
+  upgradeName: "\uC77C\uD68C\uC131 \uCCB4\uB825 \uC9C0\uAE09"
   description: "\uC2DC\uC791 \uC2DC \uC77C\uD68C\uC131 \uCCB4\uB825 \uBD80\uC5EC"
   icon: {fileID: -7889450384318309907, guid: e75f469ea29530246a4a0543396316af, type: 3}
   price: 0

@@ -21,6 +21,16 @@ public interface IInteractable
     Transform GetPromptAnchor();
 }
 
+public interface IInteractionTargetCandidate
+{
+    bool CanBeInteractionTarget(IPlayerInteractor player);
+}
+
+public interface IInteractionPromptState
+{
+    bool IsInteractPromptDisabled { get; }
+}
+
 public enum InteractState
 {
     Idle,

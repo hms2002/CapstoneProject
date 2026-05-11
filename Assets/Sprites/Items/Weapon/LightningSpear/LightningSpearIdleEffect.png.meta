@@ -1,0 +1,470 @@
+fileFormatVersion: 2
+guid: 83293455ecb91124c9bc194003c5c338
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 689240622604461016
+    second: LightningSpearIdleEffect_0
+  - first:
+      213: 1907989899925927475
+    second: LightningSpearIdleEffect_1
+  - first:
+      213: -7063605545976446596
+    second: LightningSpearIdleEffect_2
+  - first:
+      213: 5703027725733489900
+    second: LightningSpearIdleEffect_3
+  - first:
+      213: -5539928595233662906
+    second: LightningSpearIdleEffect_4
+  - first:
+      213: 5503914106268580191
+    second: LightningSpearIdleEffect_5
+  - first:
+      213: 7107541663923105628
+    second: LightningSpearIdleEffect_6
+  - first:
+      213: -6268268295159218660
+    second: LightningSpearIdleEffect_7
+  - first:
+      213: 580440985964989714
+    second: LightningSpearIdleEffect_8
+  - first:
+      213: -5615313210281148552
+    second: LightningSpearIdleEffect_9
+  - first:
+      213: -3919913691340432489
+    second: LightningSpearIdleEffect_10
+  - first:
+      213: 8465858601276299584
+    second: LightningSpearIdleEffect_11
+  - first:
+      213: 6126375437216848634
+    second: LightningSpearIdleEffect_12
+  - first:
+      213: -4026821708963328140
+    second: LightningSpearIdleEffect_13
+  - first:
+      213: -3345444920897115364
+    second: LightningSpearIdleEffect_14
+  - first:
+      213: 8346066563414898066
+    second: LightningSpearIdleEffect_15
+  - first:
+      213: 8868852636392231600
+    second: LightningSpearIdleEffect_16
+  - first:
+      213: 5731121596816547637
+    second: LightningSpearIdleEffect_17
+  - first:
+      213: 6401231402827403525
+    second: LightningSpearIdleEffect_18
+  - first:
+      213: 7236009344111206886
+    second: LightningSpearIdleEffect_19
+  - first:
+      213: -5926622830029901826
+    second: LightningSpearIdleEffect_20
+  - first:
+      213: -5309689474785404060
+    second: LightningSpearIdleEffect_21
+  - first:
+      213: 2131486020322604535
+    second: LightningSpearIdleEffect_22
+  - first:
+      213: -7533116494566329804
+    second: LightningSpearIdleEffect_23
+  - first:
+      213: 8774251452858588484
+    second: LightningSpearIdleEffect_24
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 32
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: LightningSpearIdleEffect_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 77
+        height: 83
+      alignment: 9
+      pivot: {x: 0.5, y: 0.1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8d3ab1bc1bca09900800000000000000
+      internalID: 689240622604461016
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LightningSpearIdleEffect_1
+      rect:
+        serializedVersion: 2
+        x: 77
+        y: 0
+        width: 77
+        height: 83
+      alignment: 9
+      pivot: {x: 0.5, y: 0.1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3363e1c74ba8a7a10800000000000000
+      internalID: 1907989899925927475
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LightningSpearIdleEffect_2
+      rect:
+        serializedVersion: 2
+        x: 154
+        y: 0
+        width: 77
+        height: 83
+      alignment: 9
+      pivot: {x: 0.5, y: 0.1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c7148963e2809fd90800000000000000
+      internalID: -7063605545976446596
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LightningSpearIdleEffect_3
+      rect:
+        serializedVersion: 2
+        x: 231
+        y: 0
+        width: 77
+        height: 83
+      alignment: 9
+      pivot: {x: 0.5, y: 0.1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cec6c882089352f40800000000000000
+      internalID: 5703027725733489900
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LightningSpearIdleEffect_4
+      rect:
+        serializedVersion: 2
+        x: 308
+        y: 0
+        width: 77
+        height: 83
+      alignment: 9
+      pivot: {x: 0.5, y: 0.1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 64891106b483e13b0800000000000000
+      internalID: -5539928595233662906
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LightningSpearIdleEffect_5
+      rect:
+        serializedVersion: 2
+        x: 385
+        y: 0
+        width: 77
+        height: 83
+      alignment: 9
+      pivot: {x: 0.5, y: 0.1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f59766af7b4d16c40800000000000000
+      internalID: 5503914106268580191
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LightningSpearIdleEffect_6
+      rect:
+        serializedVersion: 2
+        x: 462
+        y: 0
+        width: 77
+        height: 83
+      alignment: 9
+      pivot: {x: 0.5, y: 0.1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5518bff7e930a1e469210dd5880acef7
+      internalID: 7107541663923105628
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LightningSpearIdleEffect_7
+      rect:
+        serializedVersion: 2
+        x: 539
+        y: 0
+        width: 77
+        height: 83
+      alignment: 9
+      pivot: {x: 0.5, y: 0.1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6c3206e8ab0f543489918a5cdb97112b
+      internalID: -6268268295159218660
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LightningSpearIdleEffect_8
+      rect:
+        serializedVersion: 2
+        x: 616
+        y: 0
+        width: 77
+        height: 83
+      alignment: 9
+      pivot: {x: 0.5, y: 0.1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9d859c4978d52ba4f9da960bb0c2b663
+      internalID: 580440985964989714
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LightningSpearIdleEffect_9
+      rect:
+        serializedVersion: 2
+        x: 693
+        y: 0
+        width: 77
+        height: 83
+      alignment: 9
+      pivot: {x: 0.5, y: 0.1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ae860e6ab309c8f408850a69d44ecd1c
+      internalID: -5615313210281148552
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LightningSpearIdleEffect_10
+      rect:
+        serializedVersion: 2
+        x: 770
+        y: 0
+        width: 77
+        height: 83
+      alignment: 9
+      pivot: {x: 0.5, y: 0.1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2eb4e8824a58b7f45b3ae1254429d433
+      internalID: -3919913691340432489
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LightningSpearIdleEffect_11
+      rect:
+        serializedVersion: 2
+        x: 847
+        y: 0
+        width: 77
+        height: 83
+      alignment: 9
+      pivot: {x: 0.5, y: 0.1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 31da49b01fe49804889ee1e82546ee4a
+      internalID: 8465858601276299584
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: c1e0179204687304ca390e2abccbbf36
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":12.0,"y":1.0},"gridSpriteSize":{"x":77.0,"y":83.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.10000000149011612},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":9,"pivotUnitMode":0,"slicingType":2,"keepEmptyRects":true,"isAlternate":false}'
+    nameFileIdTable:
+      LightningSpearIdleEffect_0: 689240622604461016
+      LightningSpearIdleEffect_1: 1907989899925927475
+      LightningSpearIdleEffect_10: -3919913691340432489
+      LightningSpearIdleEffect_11: 8465858601276299584
+      LightningSpearIdleEffect_2: -7063605545976446596
+      LightningSpearIdleEffect_3: 5703027725733489900
+      LightningSpearIdleEffect_4: -5539928595233662906
+      LightningSpearIdleEffect_5: 5503914106268580191
+      LightningSpearIdleEffect_6: 7107541663923105628
+      LightningSpearIdleEffect_7: -6268268295159218660
+      LightningSpearIdleEffect_8: 580440985964989714
+      LightningSpearIdleEffect_9: -5615313210281148552
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

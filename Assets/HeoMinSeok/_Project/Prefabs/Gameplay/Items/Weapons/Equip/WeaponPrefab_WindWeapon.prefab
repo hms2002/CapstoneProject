@@ -64,6 +64,30 @@ PrefabInstance:
       propertyPath: rightHandPose.localEulerAngles.z
       value: 136.15
       objectReference: {fileID: 0}
+    - target: {fileID: 3601937121086785918, guid: 52bf00f30a94f0643acd12753bf2ddca, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3601937121086785918, guid: 52bf00f30a94f0643acd12753bf2ddca, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.38268325
+      objectReference: {fileID: 0}
+    - target: {fileID: 3601937121086785918, guid: 52bf00f30a94f0643acd12753bf2ddca, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.9238796
+      objectReference: {fileID: 0}
+    - target: {fileID: 3601937121086785918, guid: 52bf00f30a94f0643acd12753bf2ddca, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3601937121086785918, guid: 52bf00f30a94f0643acd12753bf2ddca, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 180
+      objectReference: {fileID: 0}
+    - target: {fileID: 3601937121086785918, guid: 52bf00f30a94f0643acd12753bf2ddca, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 225
+      objectReference: {fileID: 0}
     - target: {fileID: 8490881910473165802, guid: 52bf00f30a94f0643acd12753bf2ddca, type: 3}
       propertyPath: m_Name
       value: WeaponPrefab_WindWeapon
