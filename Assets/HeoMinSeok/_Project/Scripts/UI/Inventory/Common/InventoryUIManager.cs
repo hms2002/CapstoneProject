@@ -22,6 +22,12 @@ public class InventoryUIManager : MonoBehaviour
     [Tooltip("If null, uses the current PlayerRuntimeRegistry player as the loot origin.")]
     [SerializeField] private Transform lootOriginOverride;
 
+    public bool CanOpen =>
+        inventoryScreen != null &&
+        !IsInputBlockedByLoadingOrTransition() &&
+        HasCurrentPlayerInventoryContext();
+    public bool IsOpen => inventoryScreen != null && inventoryScreen.IsActive;
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -47,7 +53,7 @@ public class InventoryUIManager : MonoBehaviour
             if (inventoryScreen != null && inventoryScreen.IsActive)
                 Close();
             else
-                Open();
+                TryOpen();
         }
     }
 
@@ -86,6 +92,23 @@ public class InventoryUIManager : MonoBehaviour
 
         if (opened)
             PlayOpenInventorySound(currentPlayer != null ? currentPlayer.gameObject : null);
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 외부 HUD/버튼 계층이 중복 열림을 직접 판단하지 않고 안전하게 인벤토리 열기를 요청할 수 있게 한다.
+    /// - 이미 열린 상태, 참조 누락, UI push 실패를 하나의 bool 결과로 감싼다.
+    /// </summary>
+    public bool TryOpen()
+    {
+        if (IsOpen)
+            return false;
+
+        if (!CanOpen)
+            return false;
+
+        Open();
+        return IsOpen;
     }
 
     public void Close()
@@ -135,6 +158,39 @@ public class InventoryUIManager : MonoBehaviour
             "[InventoryUIManager] Cannot open inventory because the current player is missing one or more inventory components.",
             currentPlayer);
         return false;
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - HUD 안내 버튼이 경고 로그 없이 인벤토리 열기 가능 여부만 확인할 수 있게 한다.
+    /// - 플레이어 생성/해제 타이밍에 따라 버튼 표시 상태가 자연스럽게 따라가도록 현재 플레이어 문맥을 얕게 검사한다.
+    /// </summary>
+    private bool HasCurrentPlayerInventoryContext()
+    {
+        PlayerInteractor2D currentPlayer = PlayerRuntimeRegistry.CurrentPlayer;
+        if (currentPlayer == null)
+            return false;
+
+        return currentPlayer.GetComponent<PlayerConsumableInventory>() != null
+            && currentPlayer.GetComponent<WeaponInventory2D>() != null
+            && currentPlayer.GetComponent<RelicInventory>() != null;
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 인벤토리 단축키와 HUD 버튼이 씬 전환/로딩 중 같은 기준으로 열림을 거부하게 한다.
+    /// - 전환 중 UI 스택이 흔들리거나 플레이어 문맥이 사라진 상태에서 인벤토리가 열리는 것을 방지한다.
+    /// </summary>
+    private static bool IsInputBlockedByLoadingOrTransition()
+    {
+        if (SceneTransitionCoordinator.Instance != null &&
+            SceneTransitionCoordinator.Instance.IsTransitionActive)
+        {
+            return true;
+        }
+
+        return LoadingOverlayController.Instance != null &&
+               LoadingOverlayController.Instance.IsActiveLoadingPresentation;
     }
 
     /// <summary>
