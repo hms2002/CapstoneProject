@@ -31,7 +31,7 @@ GameObject:
   - component: {fileID: 1021000}
   - component: {fileID: 1022000}
   m_Layer: 31
-  m_Name: SlimeQueen
+  m_Name: SlimeQueenP2Short
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -47,7 +47,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.7, y: 0.7, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -98,10 +98,10 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -1039746825
-  m_SortingLayer: 3
+  m_SortingLayer: 4
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: -4440558313513636609, guid: d54fff3e12c49874187daf6b1d0a27f2, type: 3}
+  m_Sprite: {fileID: -5415332250580998433, guid: fe7928f602c8bc440b66e4e3de4f2ed2, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -185,7 +185,7 @@ Animator:
   m_GameObject: {fileID: 1000000}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: dc0f51c738a5c4b4483711fc70afe272, type: 2}
+  m_Controller: {fileID: 9100000, guid: 3e6989b159152494da4fa82598b7f471, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -206,14 +206,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 1000000}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d3014b7037964d04ba4a6b79c5e2a0f9, type: 3}
+  m_Script: {fileID: 11500000, guid: 1609ab57bae44b0e8b911976c3e867c1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   sprite: {fileID: 1002000}
   animator: {fileID: 1005000}
   maxHealthDef: {fileID: 11400000, guid: 0e177e1d15e428745b5859fac08ce203, type: 2}
   healthDef: {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
-  enemyName: SlimeQueen
+  enemyName: SlimeQueenP2Short
   targetTag: Player
   targetSearchLayers:
     serializedVersion: 2
@@ -224,38 +224,62 @@ MonoBehaviour:
   maxHealthAttribute: {fileID: 11400000, guid: 0e177e1d15e428745b5859fac08ce203, type: 2}
   deadTag: {fileID: 0}
   groggyTag: {fileID: 11400000, guid: 6a381fd96b3c05d4cbcbd73fbf173f4e, type: 2}
-  phases: []
-  configureRuntimePatternsOnStart: 1
-  knightPrefab: {fileID: 100000, guid: a1365e9c0af9480b9dc3169f803a951d, type: 3}
-  wizardPrefab: {fileID: 100000, guid: d18966565254432a82dc5a7b4acdb6cb, type: 3}
-  summonWarningStyle: {fileID: 11400000, guid: b15f18602ec87284d80cbd57720425f1, type: 2}
-  summonWarningSeconds: 1.4
-  summonWarningDiameter: 1.7
-  fallStartHeight: 5
-  fallSpeed: 8
-  postLandingWaitSeconds: 1
-  fallingContactDamage: 1
-  fallingContactDamageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
-  patternSelectionLockSeconds: 0.5
-  postPatternDelaySeconds: 0.35
-  randomMoveBounds: {fileID: 0}
-  jumpWarningStyle: {fileID: 11400000, guid: b15f18602ec87284d80cbd57720425f1, type: 2}
-  jumpWarningDiameter: 2.4
-  jumpDurationSeconds: 1.6
-  jumpArcHeight: 2.5
-  jumpLandingDamageDiameter: 2.4
-  jumpLandingDamage: 1
-  jumpLandingDamageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
-  bishopPrefab: {fileID: 100000, guid: 4c120d14b57b4436a325443f7b0caa3f, type: 3}
-  rookPrefab: {fileID: 100000, guid: 4a7ea9f5e4df4e39877c3818b6700007, type: 3}
-  callSlimeSpawnPositions:
-  - {x: -22, y: 9.5}
-  - {x: -22, y: -1.5}
-  - {x: -26.5, y: 4}
-  - {x: -17.5, y: 4}
-  callSlimeSpeechText: "\uBAA8\uB450 \uBAA8\uC5EC\uB77C!!"
-  callSlimeSpeechSeconds: 1.4
-  callSlimeSpawnDelaySeconds: 0.35
+  phases:
+  - phaseName: Slime Queen P2 Short
+    enterHpRatioBelowOrEqual: 1
+    thinkDelayMin: 0.4
+    thinkDelayMax: 0.8
+    patterns:
+    - ability: {fileID: 11400000, guid: 7c32a5e8d1f64ea0b1b296f3d74391ac, type: 2}
+      followUpAbility: {fileID: 0}
+      selectableByAi: 1
+      selectionWeight: 100
+      maxConsecutiveUseCount: 0
+      maxUseCount: 0
+      aiSelectionLockTime: 0.5
+      postPatternDelay: 0.35
+      minDistanceToTarget: 0
+      maxDistanceToTarget: 999
+      minHpRatio: 0
+      maxHpRatio: 1
+      additionalConditions: []
+    - ability: {fileID: 11400000, guid: cf12d26d19bc4f30ba32dea4e586847b, type: 2}
+      followUpAbility: {fileID: 0}
+      selectableByAi: 1
+      selectionWeight: 100
+      maxConsecutiveUseCount: 1
+      maxUseCount: 0
+      aiSelectionLockTime: 0.5
+      postPatternDelay: 0.35
+      minDistanceToTarget: 0
+      maxDistanceToTarget: 999
+      minHpRatio: 0
+      maxHpRatio: 1
+      additionalConditions: []
+    - ability: {fileID: 11400000, guid: 0df316e3ac6d4d60b65070e8a01c4b4d, type: 2}
+      followUpAbility: {fileID: 0}
+      selectableByAi: 1
+      selectionWeight: 100
+      maxConsecutiveUseCount: 1
+      maxUseCount: 0
+      aiSelectionLockTime: 0.5
+      postPatternDelay: 0.35
+      minDistanceToTarget: 0
+      maxDistanceToTarget: 999
+      minHpRatio: 0
+      maxHpRatio: 1
+      additionalConditions: []
+  contactDamage: 1
+  contactDamageCooldownSeconds: 1
+  contactDamageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
+  slamWarningStyle: {fileID: 11400000, guid: b15f18602ec87284d80cbd57720425f1, type: 2}
+  slamWarningDiameter: 2.8
+  slamDamageDiameter: 2.8
+  slamIntervalSeconds: 1
+  slamCount: 3
+  slamArcHeight: 2.8
+  slamDamage: 1
+  slamDamageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
   bodyInflateWarningStyle: {fileID: 11400000, guid: b15f18602ec87284d80cbd57720425f1, type: 2}
   bodyInflateWarningDiameter: 4
   bodyInflateWarningSeconds: 1.4
@@ -264,10 +288,25 @@ MonoBehaviour:
   bodyInflateImpactDamageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
   bodyInflateImpactKnockbackEffect: {fileID: 11400000, guid: 2f5faaf6bd840544cb59f6d23905c40d, type: 2}
   bodyInflateImpactKnockbackImpulse: 8
-  phase2ShortPrefab: {fileID: 1006000, guid: f8460f5e737a48218760688ff5643ca3, type: 3}
-  phase2LongPrefab: {fileID: 1006000, guid: a18e617b0b1f4ce4b730c4d1d950f627, type: 3}
-  phase2ShortSpawnOffset: {x: -2.5, y: 0}
-  phase2LongSpawnOffset: {x: 2.5, y: 0}
+  toxicRushWarningStyle: {fileID: 11400000, guid: b15f18602ec87284d80cbd57720425f1, type: 2}
+  toxicRushWarningSeconds: 1.4
+  toxicRushRepeatCount: 3
+  toxicRushSpeed: 9
+  toxicRushDistance: 7
+  toxicRushWarningWidth: 2.2
+  toxicRushWallLayers:
+    serializedVersion: 2
+    m_Bits: 1073741824
+  toxicRushWallStopPadding: 0.1
+  toxicRushIntervalSeconds: 0.15
+  poisonCloudPrefab: {fileID: 5142040213262106245, guid: e7647f3f3a20430db99f72fb47dd1c0d, type: 3}
+  poisonCloudSpawnSpacing: 1.4
+  poisonCloudRadius: 0.75
+  poisonCloudActiveSeconds: 4
+  poisonCloudFadeSeconds: 1
+  poisonCloudDamage: 1
+  poisonCloudDamageIntervalSeconds: 1
+  poisonCloudDamageEffect: {fileID: 11400000, guid: b9d37f5a2c1e4ef2a6d9b3c4810f762e, type: 2}
 --- !u!114 &1007000
 MonoBehaviour:
   m_ObjectHideFlags: 0

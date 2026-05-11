@@ -25232,6 +25232,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BossHealthBarUI
   immediateHealthSlider: {fileID: 7838629889540356179}
   delayedHealthSlider: {fileID: 4852871006630446966}
+  dualHealthRoot: {fileID: 0}
+  leftImmediateHealthSlider: {fileID: 0}
+  leftDelayedHealthSlider: {fileID: 0}
+  rightImmediateHealthSlider: {fileID: 0}
+  rightDelayedHealthSlider: {fileID: 0}
+  dualHealthGap: 10
+  createFallbackDualHealthPresentation: 1
   delayedStartDelay: 0.5
   delayedSmoothTime: 0.2
   splitHealthRoot: {fileID: 0}
@@ -31723,6 +31730,7 @@ MonoBehaviour:
   targetBoss: {fileID: 0}
   autoFindBossOnSceneLoad: 1
   displayNameOverride: 
+  dualBossDisplayName: Slime Queen
   visibleRoot: {fileID: 0}
   healthBarUI: {fileID: 1938255669122893353}
   groggyBarUI: {fileID: 231952700181240352}
