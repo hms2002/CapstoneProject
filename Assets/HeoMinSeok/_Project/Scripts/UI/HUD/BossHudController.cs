@@ -23,6 +23,10 @@ public sealed class BossHudController : MonoBehaviour
     [Tooltip("비어 있으면 보스 오브젝트 이름을 그대로 사용합니다.")]
     [SerializeField] private string displayNameOverride;
 
+    [Header("Dual Boss Binding")]
+    [Tooltip("2체 보스 체력바를 표시할 때 사용할 보스 이름입니다.")]
+    [SerializeField] private string dualBossDisplayName = "Slime Queen";
+
     [Header("Views")]
     [SerializeField] private GameObject visibleRoot;
     [SerializeField] private BossHealthBarUI healthBarUI;
@@ -46,6 +50,8 @@ public sealed class BossHudController : MonoBehaviour
     private Coroutine _slideRoutine;
     private bool _hasAppliedInitialSlideState;
     private bool _lastSlideVisibleState;
+    private SlimeQueenP2Short phaseTwoShortBoss;
+    private SlimeQueenP2Long phaseTwoLongBoss;
 
     private void Awake()
     {
@@ -84,10 +90,16 @@ public sealed class BossHudController : MonoBehaviour
 
     private void Update()
     {
+        if (RefreshSlimeQueenPhaseTwoHudIfAvailable())
+            return;
+
         if (targetBoss == null)
         {
             if (healthBarUI != null)
+            {
+                healthBarUI.SetDualHealthRatios(false, 0f, 0f);
                 healthBarUI.SetSplitHealthPresentation(false, null, null);
+            }
 
             SetHudVisible(false);
             return;
@@ -114,9 +126,20 @@ public sealed class BossHudController : MonoBehaviour
     private void ResolveBossBinding()
     {
         ResolveSlideRoot();
+        ClearDestroyedPhaseTwoReferences();
+
+        if (RefreshSlimeQueenPhaseTwoHudIfAvailable())
+            return;
 
         if (targetBoss == null && ShouldUseAutoFindFallback())
             targetBoss = FindAnyObjectByType<BossControllerBase>();
+
+        if (CacheSlimeQueenPhaseTwoBoss(targetBoss))
+        {
+            targetBoss = null;
+            RefreshSlimeQueenPhaseTwoHudIfAvailable();
+            return;
+        }
 
         if (targetBoss == null)
         {
@@ -153,6 +176,15 @@ public sealed class BossHudController : MonoBehaviour
     /// </summary>
     public void BindBoss(BossControllerBase boss)
     {
+        if (CacheSlimeQueenPhaseTwoBoss(boss))
+        {
+            targetBoss = null;
+            RefreshSlimeQueenPhaseTwoHudIfAvailable();
+            return;
+        }
+
+        phaseTwoShortBoss = null;
+        phaseTwoLongBoss = null;
         targetBoss = boss;
         ResolveBossBinding();
     }
@@ -164,6 +196,20 @@ public sealed class BossHudController : MonoBehaviour
     /// </summary>
     public void UnbindBoss(BossControllerBase boss)
     {
+        if (boss != null && boss == phaseTwoShortBoss)
+        {
+            phaseTwoShortBoss = null;
+            HideHudIfPhaseTwoEnded();
+            return;
+        }
+
+        if (boss != null && boss == phaseTwoLongBoss)
+        {
+            phaseTwoLongBoss = null;
+            HideHudIfPhaseTwoEnded();
+            return;
+        }
+
         if (boss == null || targetBoss != boss)
             return;
 
@@ -171,6 +217,110 @@ public sealed class BossHudController : MonoBehaviour
         _staggerGaugeSystem = null;
         _effectRunner = null;
         SetHudVisible(false);
+    }
+
+    /// <summary>2페이즈 슬라임 퀸 HUD를 표시할 수 있으면 갱신합니다.</summary>
+    private bool RefreshSlimeQueenPhaseTwoHudIfAvailable()
+    {
+        ClearDestroyedPhaseTwoReferences();
+        FindSlimeQueenPhaseTwoBosses();
+
+        if (phaseTwoShortBoss == null && phaseTwoLongBoss == null)
+            return false;
+
+        targetBoss = null;
+        _staggerGaugeSystem = null;
+        _effectRunner = null;
+
+        SetHudVisible(true);
+        ApplySlimeQueenPhaseTwoStaticVisuals();
+
+        if (healthBarUI != null)
+        {
+            healthBarUI.SetSplitHealthPresentation(false, null, null);
+            healthBarUI.SetDualHealthRatios(
+                true,
+                GetBossHealthRatioOrZero(phaseTwoShortBoss),
+                GetBossHealthRatioOrZero(phaseTwoLongBoss));
+        }
+
+        if (groggyBarUI != null)
+            groggyBarUI.SetVisible(false);
+
+        return true;
+    }
+
+    /// <summary>2페이즈 보스가 모두 사라졌으면 HUD를 숨기고, 남아 있으면 갱신합니다.</summary>
+    private void HideHudIfPhaseTwoEnded()
+    {
+        if (RefreshSlimeQueenPhaseTwoHudIfAvailable())
+            return;
+
+        if (healthBarUI != null)
+        {
+            healthBarUI.SetDualHealthRatios(false, 0f, 0f);
+            healthBarUI.SetSplitHealthPresentation(false, null, null);
+        }
+
+        SetHudVisible(false);
+    }
+
+    /// <summary>2페이즈 슬라임 퀸 이름 표시를 갱신합니다.</summary>
+    private void ApplySlimeQueenPhaseTwoStaticVisuals()
+    {
+        if (bossNameText != null)
+            bossNameText.text = string.IsNullOrWhiteSpace(dualBossDisplayName) ? "Slime Queen" : dualBossDisplayName;
+
+        ApplyGroggyLabel(false);
+    }
+
+    /// <summary>2페이즈 슬라임 퀸 타입이면 HUD 캐시에 저장합니다.</summary>
+    private bool CacheSlimeQueenPhaseTwoBoss(BossControllerBase boss)
+    {
+        SlimeQueenP2Short shortBoss = boss as SlimeQueenP2Short;
+        if (shortBoss != null)
+        {
+            phaseTwoShortBoss = shortBoss;
+            return true;
+        }
+
+        SlimeQueenP2Long longBoss = boss as SlimeQueenP2Long;
+        if (longBoss != null)
+        {
+            phaseTwoLongBoss = longBoss;
+            return true;
+        }
+
+        return false;
+    }
+
+    /// <summary>씬에 존재하는 2페이즈 슬라임 퀸 보스를 찾습니다.</summary>
+    private void FindSlimeQueenPhaseTwoBosses()
+    {
+        if (phaseTwoShortBoss != null || phaseTwoLongBoss != null)
+            return;
+
+        if (phaseTwoShortBoss == null)
+            phaseTwoShortBoss = FindAnyObjectByType<SlimeQueenP2Short>();
+
+        if (phaseTwoLongBoss == null)
+            phaseTwoLongBoss = FindAnyObjectByType<SlimeQueenP2Long>();
+    }
+
+    /// <summary>파괴된 2페이즈 슬라임 퀸 참조를 비웁니다.</summary>
+    private void ClearDestroyedPhaseTwoReferences()
+    {
+        if (phaseTwoShortBoss == null)
+            phaseTwoShortBoss = null;
+
+        if (phaseTwoLongBoss == null)
+            phaseTwoLongBoss = null;
+    }
+
+    /// <summary>보스 참조가 없으면 0, 있으면 현재 체력 비율을 반환합니다.</summary>
+    private float GetBossHealthRatioOrZero(BossControllerBase boss)
+    {
+        return boss == null ? 0f : boss.CurrentHealthRatio;
     }
 
     /// <summary>

@@ -1,7 +1,8 @@
+using System.Collections;
 using UnityEngine;
 using UnityGAS;
 
-public sealed class SlimeQueen : BossControllerBase, IIntentMovementSource2D, IDamageReceiver, IBossSplitHealthPresentation
+public sealed class SlimeQueen : SlimeQueenBossBase, ISlimeQueenBodyInflateHost, ISlimeQueenRandomJumpHost
 {
     [Header("Slime Queen Runtime")]
     [Tooltip("켜두면 Phase 1 Pattern 1을 런타임 보스 FSM 패턴으로 자동 구성합니다.")]
@@ -129,64 +130,22 @@ public sealed class SlimeQueen : BossControllerBase, IIntentMovementSource2D, ID
 
     [Space(8)]
 
-    [Header("Phase 2")]
-    [Tooltip("현재 HP 비율이 이 값 이하가 되면 페이즈 2로 전환합니다.")]
-    [SerializeField, Range(0.01f, 1f)] private float phase2EnterHealthRatio = 0.5f;
+    [Header("Phase 2 Split")]
+    [Tooltip("1페이즈 사망 후 생성할 2페이즈 근거리 퀸 프리팹입니다.")]
+    [SerializeField] private SlimeQueenP2Short phase2ShortPrefab;
 
-    [Tooltip("페이즈 2 진입 시 생성할 분신 프리팹입니다. 비워두면 현재 보스 오브젝트를 복제합니다.")]
-    [SerializeField] private SlimeQueen phase2TwinPrefab;
+    [Tooltip("1페이즈 사망 후 생성할 2페이즈 원거리 퀸 프리팹입니다.")]
+    [SerializeField] private SlimeQueenP2Long phase2LongPrefab;
 
-    [Tooltip("페이즈 2 분신을 원본 위치 기준으로 생성할 오프셋입니다.")]
-    [SerializeField] private Vector2 phase2TwinSpawnOffset = new Vector2(2.5f, 0f);
+    [Tooltip("2페이즈 근거리 퀸을 1페이즈 사망 위치 기준으로 생성할 오프셋입니다.")]
+    [SerializeField] private Vector2 phase2ShortSpawnOffset = new Vector2(-2.5f, 0f);
 
-    [Tooltip("페이즈 2에서 플레이어와 접촉했을 때 적용할 피해량입니다.")]
-    [SerializeField, Min(0f)] private float phase2ContactDamage = 1f;
+    [Tooltip("2페이즈 원거리 퀸을 1페이즈 사망 위치 기준으로 생성할 오프셋입니다.")]
+    [SerializeField] private Vector2 phase2LongSpawnOffset = new Vector2(2.5f, 0f);
 
-    [Tooltip("페이즈 2 접촉 피해를 다시 적용할 수 있는 최소 간격입니다.")]
-    [SerializeField, Min(0f)] private float phase2ContactDamageCooldownSeconds = 1f;
-
-    [Tooltip("페이즈 2 접촉 피해에 사용할 GAS Damage Effect입니다. 비워두면 패턴 1 낙하 피해 Effect를 사용합니다.")]
-    [SerializeField] private GE_Damage_Spec phase2ContactDamageEffect;
-
-    [Space(8)]
-
-    [Header("Phase 2 - Pattern 1")]
-    [Tooltip("연속 내려찍기 경고 표시에 사용할 AttackTelegraph 스타일입니다.")]
-    [SerializeField] private AttackTelegraphStyle phase2SlamWarningStyle;
-
-    [Tooltip("연속 내려찍기 경고 원의 지름입니다.")]
-    [SerializeField, Min(0.1f)] private float phase2SlamWarningDiameter = 2.8f;
-
-    [Tooltip("연속 내려찍기 피해 판정 원의 지름입니다.")]
-    [SerializeField, Min(0.1f)] private float phase2SlamDamageDiameter = 2.8f;
-
-    [Tooltip("연속 내려찍기 사이의 텀입니다.")]
-    [SerializeField, Min(0.1f)] private float phase2SlamIntervalSeconds = 1f;
-
-    [Tooltip("연속 내려찍기를 반복할 횟수입니다.")]
-    [SerializeField, Min(1)] private int phase2SlamCount = 3;
-
-    [Tooltip("연속 내려찍기 점프 중간 지점에서 올라갈 포물선 높이입니다.")]
-    [SerializeField, Min(0f)] private float phase2SlamArcHeight = 2.8f;
-
-    [Tooltip("연속 내려찍기 착지 시 플레이어에게 적용할 피해량입니다.")]
-    [SerializeField, Min(0f)] private float phase2SlamDamage = 1f;
-
-    [Tooltip("연속 내려찍기 피해에 사용할 GAS Damage Effect입니다. 비워두면 패턴 1 낙하 피해 Effect를 사용합니다.")]
-    [SerializeField] private GE_Damage_Spec phase2SlamDamageEffect;
-
-    private AttackTelegraphService telegraphService;
     private SpeechBubbleComponent speechBubble;
     private bool runtimePatternsConfigured;
-    private bool isPhase2Active;
-    private bool isPatternMoveDamageBlocked;
-    private bool hasAppliedPatternMoveInvulnerableTag;
-    private bool hasSpawnedPhase2Twin;
-    private bool isPhase2Twin;
-    private float nextPhase2ContactDamageTime;
-    private GameplayTag patternMoveInvulnerableTag;
-    private SlimeQueen phase2Original;
-    private SlimeQueen phase2Twin;
+    private bool hasSpawnedPhaseTwoQueens;
 
     public float SummonWarningSeconds => summonWarningSeconds;
 
@@ -208,25 +167,10 @@ public sealed class SlimeQueen : BossControllerBase, IIntentMovementSource2D, ID
 
     public float BodyInflateWarningSeconds => bodyInflateWarningSeconds;
 
-    public int Phase2SlamCount => Mathf.Max(1, phase2SlamCount);
-
-    public float Phase2SlamIntervalSeconds => Mathf.Max(0.1f, phase2SlamIntervalSeconds);
-
-    /// <summary>보스 HUD가 페이즈 2 분리 체력 표시 여부를 읽습니다.</summary>
-    public bool ShowSplitHealthPresentation => isPhase2Active && !isPhase2Twin && phase2Twin != null;
-
-    /// <summary>보스 HUD의 왼쪽 분리 체력 라벨입니다.</summary>
-    public string SplitHealthLeftLabel => "본체";
-
-    /// <summary>보스 HUD의 오른쪽 분리 체력 라벨입니다.</summary>
-    public string SplitHealthRightLabel => "분신";
-
     protected override void Awake()
     {
         base.Awake();
-        telegraphService = GetComponent<AttackTelegraphService>();
         speechBubble = GetComponent<SpeechBubbleComponent>();
-        patternMoveInvulnerableTag = Resources.Load<GameplayTag>("Tags/State.Invulnerable");
     }
 
     protected override void Start()
@@ -235,51 +179,6 @@ public sealed class SlimeQueen : BossControllerBase, IIntentMovementSource2D, ID
             ConfigureRuntimePatternsIfNeeded();
 
         base.Start();
-        SetPhase2Active(Blackboard != null && Blackboard.CurrentPhaseIndex >= 1);
-
-        if (isPhase2Twin && phase2Original != null && BossHudController.Instance != null)
-        {
-            BossHudController.Instance.UnbindBoss(this);
-            BossHudController.Instance.BindBoss(phase2Original);
-        }
-    }
-
-    protected override void Update()
-    {
-        base.Update();
-        FaceCurrentTarget();
-    }
-
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        TryApplyPhase2ContactDamage(other);
-    }
-
-    private void OnTriggerStay2D(Collider2D other)
-    {
-        TryApplyPhase2ContactDamage(other);
-    }
-
-    /// <summary>페이즈 전환 시 SlimeQueen 전용 페이즈 상태를 먼저 갱신합니다.</summary>
-    protected override void OnPhaseChanged(int previousPhaseIndex, int nextPhaseIndex)
-    {
-        SetPhase2Active(nextPhaseIndex >= 1);
-        base.OnPhaseChanged(previousPhaseIndex, nextPhaseIndex);
-    }
-
-    /// <summary>분신으로 피격된 피해를 원본 체력으로 전달합니다.</summary>
-    public bool TryApplyDamage(DamageRequest request)
-    {
-        if (!isPhase2Twin || phase2Original == null || phase2Original.IsDead)
-            return false;
-
-        return phase2Original.TryApplySharedPhase2Damage(request, gameObject);
-    }
-
-    /// <summary>보스가 기본 의도 이동을 하지 않도록 빈 이동값을 제공합니다.</summary>
-    public IntentMovementData GetIntent()
-    {
-        return IntentMovementData.None;
     }
 
     /// <summary>소환 위치 경고 원을 AttackTelegraph로 표시합니다.</summary>
@@ -298,22 +197,6 @@ public sealed class SlimeQueen : BossControllerBase, IIntentMovementSource2D, ID
         service.SpawnDetachedView(spec);
     }
 
-    /// <summary>페이즈 2 연속 내려찍기 경고 원을 표시합니다.</summary>
-    public void ShowPhase2SlamWarning(Vector3 landingPosition)
-    {
-        AttackTelegraphService service = GetTelegraphService();
-        if (service == null)
-            return;
-
-        AttackTelegraphSpec spec = AttackTelegraphSpec.CreateCircle(
-            landingPosition,
-            phase2SlamWarningDiameter,
-            Phase2SlamIntervalSeconds,
-            phase2SlamWarningStyle);
-
-        service.SpawnDetachedView(spec);
-    }
-
     /// <summary>패턴 2의 랜덤 점프 착지 경고 원을 표시합니다.</summary>
     public void ShowJumpWarning(Vector3 landingPosition)
     {
@@ -328,26 +211,6 @@ public sealed class SlimeQueen : BossControllerBase, IIntentMovementSource2D, ID
             jumpWarningStyle);
 
         service.SpawnDetachedView(spec);
-    }
-
-    /// <summary>이동형 패턴 중 보스 피격과 페이즈2 접촉 피해를 임시로 막습니다.</summary>
-    public void SetPatternMoveDamageBlocked(bool isBlocked)
-    {
-        if (isPatternMoveDamageBlocked == isBlocked)
-            return;
-
-        isPatternMoveDamageBlocked = isBlocked;
-
-        if (isBlocked)
-        {
-            if (!hasAppliedPatternMoveInvulnerableTag && TryAddStateTag(patternMoveInvulnerableTag))
-                hasAppliedPatternMoveInvulnerableTag = true;
-
-            return;
-        }
-
-        if (hasAppliedPatternMoveInvulnerableTag && TryRemoveStateTag(patternMoveInvulnerableTag))
-            hasAppliedPatternMoveInvulnerableTag = false;
     }
 
     /// <summary>Knight와 Wizard 중 현재 사용 가능한 중형 슬라임 프리팹을 무작위로 반환합니다.</summary>
@@ -590,132 +453,61 @@ public sealed class SlimeQueen : BossControllerBase, IIntentMovementSource2D, ID
             gameObject);
     }
 
-    /// <summary>페이즈 2 내려찍기 착지 위치를 현재 타겟 위치로 계산합니다.</summary>
-    public bool TryGetPhase2SlamLandingPosition(GameObject explicitTarget, out Vector3 landingPosition)
-    {
-        Transform targetTransform = explicitTarget != null ? explicitTarget.transform : CurrentTarget;
-        if (targetTransform == null)
-        {
-            landingPosition = transform.position;
-            return false;
-        }
-
-        landingPosition = targetTransform.position;
-        landingPosition.z = transform.position.z;
-        return true;
-    }
-
-    /// <summary>페이즈 2 내려찍기 포물선 진행도에 맞춰 보스 위치를 이동시킵니다.</summary>
-    public void SetPhase2SlamPose(Vector3 startPosition, Vector3 landingPosition, float normalizedTime)
-    {
-        float clampedTime = Mathf.Clamp01(normalizedTime);
-        Vector3 groundPosition = Vector3.Lerp(startPosition, landingPosition, clampedTime);
-        float arcOffset = Mathf.Sin(clampedTime * Mathf.PI) * phase2SlamArcHeight;
-
-        if (movementMotor != null)
-            movementMotor.StopAllMotion();
-
-        transform.position = groundPosition + Vector3.up * arcOffset;
-    }
-
-    /// <summary>페이즈 2 내려찍기 종료 위치로 보스 좌표를 확정합니다.</summary>
-    public void SnapToPhase2SlamLanding(Vector3 landingPosition)
-    {
-        if (movementMotor != null)
-            movementMotor.StopAllMotion();
-
-        transform.position = landingPosition;
-    }
-
-    /// <summary>페이즈 2 내려찍기 범위 안의 현재 타겟에게 GAS Damage Effect를 적용합니다.</summary>
-    public void ApplyPhase2SlamDamage(AbilitySpec sourceSpec, Vector3 landingPosition)
-    {
-        if (phase2SlamDamage <= 0f || CurrentTarget == null)
-            return;
-
-        float damageRadius = Mathf.Max(0.1f, phase2SlamDamageDiameter * 0.5f);
-        float sqrDistance = ((Vector2)(CurrentTarget.position - landingPosition)).sqrMagnitude;
-        if (sqrDistance > damageRadius * damageRadius)
-            return;
-
-        GE_Damage_Spec damageEffect = phase2SlamDamageEffect != null
-            ? phase2SlamDamageEffect
-            : fallingContactDamageEffect;
-
-        if (damageEffect == null)
-            return;
-
-        CombatDamageAction.ApplyDamageAndEmitHit(
-            AbilitySystem,
-            sourceSpec,
-            damageEffect,
-            null,
-            CurrentTarget.gameObject,
-            phase2SlamDamage,
-            0f,
-            null,
-            0f,
-            null,
-            landingPosition,
-            gameObject);
-    }
-
-    /// <summary>현재 타겟 방향에 맞춰 보스 스프라이트 방향을 갱신합니다.</summary>
-    public void FaceCurrentTarget()
-    {
-        if (sprite == null || CurrentTarget == null)
-            return;
-
-        if (transform.position.x > CurrentTarget.position.x)
-            sprite.flipX = true;
-        else if (transform.position.x < CurrentTarget.position.x)
-            sprite.flipX = false;
-    }
-
-    /// <summary>패턴 종료 시 이동형 패턴 피해 차단 상태를 정리합니다.</summary>
-    protected override void OnPatternEnd(BossPatternEntry patternEntry, bool forced)
-    {
-        SetPatternMoveDamageBlocked(false);
-    }
-
-    /// <summary>사망 시작 시 원본이 보유한 분신을 함께 정리합니다.</summary>
-    protected override void OnDeathStarted()
-    {
-        if (!isPhase2Twin)
-            DestroyPhase2Twin();
-
-        base.OnDeathStarted();
-    }
-
-    protected override void OnDestroy()
-    {
-        if (!isPhase2Twin)
-            DestroyPhase2Twin();
-        else if (phase2Original != null && phase2Original.phase2Twin == this)
-            phase2Original.phase2Twin = null;
-
-        base.OnDestroy();
-    }
-
-    /// <summary>분신은 보상/포탈 생성 없이 제거하고 원본만 보스 사망 보상을 처리합니다.</summary>
+    /// <summary>1페이즈 사망 애니메이션 이후 2페이즈 근거리/원거리 퀸을 생성합니다.</summary>
     protected override void DestroyAfterDelay()
     {
-        if (isPhase2Twin)
-        {
-            Destroy(gameObject);
-            return;
-        }
-
-        base.DestroyAfterDelay();
+        StartCoroutine(WaitForDeathAnimationAndSplit());
     }
 
-    /// <summary>분신은 체력 비율과 무관하게 페이즈 2 패턴만 평가하게 합니다.</summary>
-    protected override int EvaluatePhaseIndexByHealthRatio(float hpRatio)
+    /// <summary>사망 애니메이션 대기 후 2페이즈 프리팹을 생성하고 1페이즈 본체를 제거합니다.</summary>
+    private IEnumerator WaitForDeathAnimationAndSplit()
     {
-        if (isPhase2Twin)
-            return 1;
+        float elapsedSeconds = 0f;
+        float waitSeconds = ResolveDeathSplitDelay();
 
-        return base.EvaluatePhaseIndexByHealthRatio(hpRatio);
+        while (elapsedSeconds < waitSeconds)
+        {
+            elapsedSeconds += Time.deltaTime;
+            yield return null;
+        }
+
+        SpawnPhaseTwoQueens();
+        Destroy(gameObject);
+    }
+
+    /// <summary>설정된 근거리/원거리 2페이즈 퀸 프리팹을 각각 생성합니다.</summary>
+    private void SpawnPhaseTwoQueens()
+    {
+        if (hasSpawnedPhaseTwoQueens)
+            return;
+
+        hasSpawnedPhaseTwoQueens = true;
+        SpawnPhaseTwoQueen(phase2ShortPrefab, phase2ShortSpawnOffset, "SlimeQueenP2Short");
+        SpawnPhaseTwoQueen(phase2LongPrefab, phase2LongSpawnOffset, "SlimeQueenP2Long");
+    }
+
+    /// <summary>2페이즈 퀸 프리팹 하나를 지정 오프셋에 생성하고 타겟을 공유합니다.</summary>
+    private TQueen SpawnPhaseTwoQueen<TQueen>(TQueen prefab, Vector2 spawnOffset, string fallbackName)
+        where TQueen : SlimeQueenPhaseTwoBase
+    {
+        if (prefab == null)
+        {
+            Debug.LogWarning($"[BossFSM] SlimeQueen: {fallbackName} 프리팹이 비어 있어 2페이즈 개체를 생성하지 못했습니다.", this);
+            return null;
+        }
+
+        Vector3 worldOffset = new Vector3(spawnOffset.x, spawnOffset.y, 0f);
+        TQueen spawnedQueen = Instantiate(prefab, transform.position + worldOffset, transform.rotation);
+        spawnedQueen.name = fallbackName;
+        spawnedQueen.SetCombatTarget(CurrentTarget);
+        return spawnedQueen;
+    }
+
+    /// <summary>사망 애니메이션 클립 길이를 기준으로 분열 생성 대기 시간을 계산합니다.</summary>
+    private float ResolveDeathSplitDelay()
+    {
+        float clipLength = FindAnimationClipLength($"{EnemyName}_Die", "die");
+        return clipLength > 0f ? clipLength + 0.05f : 0.35f;
     }
 
     /// <summary>SlimeQueen 기본 페이즈와 패턴 구성을 런타임으로 생성합니다.</summary>
@@ -762,15 +554,6 @@ public sealed class SlimeQueen : BossControllerBase, IIntentMovementSource2D, ID
             minDistance: 0f,
             maxDistance: 999f);
 
-        BossPatternEntry repeatedSlam = CreatePattern<AbilityLogic_SlimeQueenRepeatedSlam>(
-            "SlimeQueen_RepeatedSlam",
-            weight: 100,
-            maxConsecutive: 0,
-            lockTime: patternSelectionLockSeconds,
-            postDelay: postPatternDelaySeconds,
-            minDistance: 0f,
-            maxDistance: 999f);
-
         SetRuntimePhases(new[]
         {
             BossPhaseConfig.CreateRuntime(
@@ -781,13 +564,7 @@ public sealed class SlimeQueen : BossControllerBase, IIntentMovementSource2D, ID
                 dropMediumSlime,
                 randomJump,
                 callSlimes,
-                bodyInflateImpact),
-            BossPhaseConfig.CreateRuntime(
-                "Slime Queen Phase 2",
-                phase2EnterHealthRatio,
-                0.25f,
-                0.5f,
-                repeatedSlam)
+                bodyInflateImpact)
         });
     }
 
@@ -826,153 +603,6 @@ public sealed class SlimeQueen : BossControllerBase, IIntentMovementSource2D, ID
             maxDistance,
             0f,
             1f);
-    }
-
-    /// <summary>AttackTelegraphService 참조를 반환합니다.</summary>
-    private AttackTelegraphService GetTelegraphService()
-    {
-        if (telegraphService == null)
-            telegraphService = GetComponent<AttackTelegraphService>();
-
-        return telegraphService;
-    }
-
-    /// <summary>페이즈 2 접촉 피해 활성 상태를 갱신합니다.</summary>
-    private void SetPhase2Active(bool active)
-    {
-        if (isPhase2Active == active)
-            return;
-
-        isPhase2Active = active;
-        nextPhase2ContactDamageTime = 0f;
-
-        if (isPhase2Active)
-        {
-            Debug.Log("[BossFSM] SlimeQueen: 페이즈 2에 진입합니다.", this);
-
-            if (!isPhase2Twin)
-                SpawnPhase2TwinIfNeeded();
-        }
-    }
-
-    /// <summary>원본 보스가 페이즈 2 분신을 한 번만 생성합니다.</summary>
-    private void SpawnPhase2TwinIfNeeded()
-    {
-        if (hasSpawnedPhase2Twin || phase2Twin != null || IsDead)
-            return;
-
-        hasSpawnedPhase2Twin = true;
-
-        SlimeQueen sourcePrefab = phase2TwinPrefab != null ? phase2TwinPrefab : this;
-        SlimeQueen twin = Instantiate(sourcePrefab, ResolvePhase2TwinSpawnPosition(), transform.rotation);
-        if (twin == null)
-            return;
-
-        twin.ConfigureAsPhase2Twin(this, CurrentTarget);
-        phase2Twin = twin;
-    }
-
-    /// <summary>분신 런타임 역할과 타겟을 원본 기준으로 초기화합니다.</summary>
-    private void ConfigureAsPhase2Twin(SlimeQueen originalBoss, Transform sharedTarget)
-    {
-        isPhase2Twin = true;
-        phase2Original = originalBoss;
-        phase2Twin = null;
-        hasSpawnedPhase2Twin = true;
-        SetCombatTarget(sharedTarget);
-    }
-
-    /// <summary>페이즈 2 분신 생성 위치를 계산합니다.</summary>
-    private Vector3 ResolvePhase2TwinSpawnPosition()
-    {
-        Vector3 spawnOffset = new Vector3(phase2TwinSpawnOffset.x, phase2TwinSpawnOffset.y, 0f);
-        return transform.position + spawnOffset;
-    }
-
-    /// <summary>분신에게 들어온 HP 피해를 원본 체력 Attribute에 적용합니다.</summary>
-    private bool TryApplySharedPhase2Damage(DamageRequest request, Object damageSource)
-    {
-        if (IsDead)
-            return true;
-
-        float hpDamage = Mathf.Max(0f, request.HpDamage);
-        if (hpDamage <= 0f)
-            return true;
-
-        bool applied = TryModifyCurrentHealthValue(-hpDamage, damageSource != null ? damageSource : this);
-        if (!applied)
-            Debug.LogWarning("[BossFSM] SlimeQueen: 분신 피해를 원본 체력에 적용하지 못했습니다.", this);
-
-        return true;
-    }
-
-    /// <summary>원본 보스가 보유 중인 페이즈 2 분신 오브젝트를 제거합니다.</summary>
-    private void DestroyPhase2Twin()
-    {
-        if (phase2Twin == null)
-            return;
-
-        SlimeQueen twin = phase2Twin;
-        phase2Twin = null;
-
-        if (twin != null)
-            Destroy(twin.gameObject);
-    }
-
-    /// <summary>페이즈 2에서 플레이어와 접촉 중이면 GAS 피해를 적용합니다.</summary>
-    private void TryApplyPhase2ContactDamage(Collider2D other)
-    {
-        if (!isPhase2Active || isPatternMoveDamageBlocked || IsDead || other == null)
-            return;
-
-        if (phase2ContactDamage <= 0f || Time.time < nextPhase2ContactDamageTime)
-            return;
-
-        if (!HasPlayerTagInHierarchy(other.transform))
-            return;
-
-        GameObject contactTarget = CombatTargetResolver2D.ResolveDamageTarget(other);
-        if (contactTarget == null || !contactTarget.CompareTag("Player"))
-            return;
-
-        GE_Damage_Spec damageEffect = phase2ContactDamageEffect != null
-            ? phase2ContactDamageEffect
-            : fallingContactDamageEffect;
-
-        if (damageEffect == null)
-            return;
-
-        Vector3 hitWorldPosition = other.ClosestPoint(transform.position);
-        CombatDamageAction.ApplyDamageAndEmitHit(
-            AbilitySystem,
-            null,
-            damageEffect,
-            null,
-            contactTarget,
-            phase2ContactDamage,
-            0f,
-            null,
-            0f,
-            null,
-            hitWorldPosition,
-            gameObject);
-
-        nextPhase2ContactDamageTime = Time.time + Mathf.Max(0f, phase2ContactDamageCooldownSeconds);
-    }
-
-    /// <summary>충돌한 콜라이더의 계층에 Player 태그가 있는지 확인합니다.</summary>
-    private bool HasPlayerTagInHierarchy(Transform hitTransform)
-    {
-        Transform current = hitTransform;
-        while (current != null)
-        {
-            if (current.CompareTag("Player"))
-                return true;
-
-            current = current.parent;
-        }
-
-        return false;
     }
 
     /// <summary>패턴 2 바운더리 참조를 인스펙터 또는 씬 자동 탐색으로 해결합니다.</summary>
