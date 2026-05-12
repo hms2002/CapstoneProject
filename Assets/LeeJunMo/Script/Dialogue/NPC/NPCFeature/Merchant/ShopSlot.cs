@@ -44,6 +44,7 @@ public sealed class ShopSlot : InteractableBase
 
     [Header("View")]
     [SerializeField] private GameObject itemVisualRoot;
+    [SerializeField] private ItemDisplayVisualPresenter2D itemDisplayPresenter;
     [SerializeField] private SpriteRenderer itemSpriteRenderer;
     [SerializeField] private TMP_Text priceText;
 
@@ -185,7 +186,17 @@ public sealed class ShopSlot : InteractableBase
         if (itemVisualRoot != null)
             itemVisualRoot.SetActive(hasActiveItem);
 
-        ApplyItemSprite(hasActiveItem && commonDefinition != null ? commonDefinition.Icon : null);
+        if (itemDisplayPresenter != null)
+        {
+            if (hasActiveItem)
+                itemDisplayPresenter.Apply(currentDefinition);
+            else
+                itemDisplayPresenter.ClearVisual();
+        }
+        else
+        {
+            ApplyItemSprite(hasActiveItem && commonDefinition != null ? commonDefinition.Icon : null);
+        }
 
         if (priceText != null)
         {
@@ -285,6 +296,12 @@ public sealed class ShopSlot : InteractableBase
         if (owner == null)
             owner = GetComponentInParent<MerchantNPC>();
 
+        if (itemDisplayPresenter == null)
+            itemDisplayPresenter = GetComponentInChildren<ItemDisplayVisualPresenter2D>(includeInactive: true);
+
+        if (itemDisplayPresenter != null)
+            itemSpriteRenderer = itemDisplayPresenter.FallbackRenderer;
+
         if (itemSpriteRenderer == null)
             itemSpriteRenderer = GetComponentInChildren<SpriteRenderer>();
 
@@ -361,6 +378,12 @@ public sealed class ShopSlot : InteractableBase
 
     private void SetOutline(bool enabled)
     {
+        if (itemDisplayPresenter != null)
+        {
+            itemDisplayPresenter.SetOutline(enabled);
+            return;
+        }
+
         if (itemSpriteRenderer == null)
             return;
 

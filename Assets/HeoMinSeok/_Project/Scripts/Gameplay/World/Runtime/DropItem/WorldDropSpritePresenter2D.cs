@@ -11,7 +11,8 @@ public sealed class WorldDropSpritePresenter2D : MonoBehaviour
     private enum NormalizeMode
     {
         Height,
-        FitBox
+        FitBox,
+        RawSpriteSize
     }
 
     [SerializeField] private SpriteRenderer spriteRenderer;
@@ -37,6 +38,11 @@ public sealed class WorldDropSpritePresenter2D : MonoBehaviour
     /// </summary>
     public void Apply(Sprite sprite)
     {
+        Apply(sprite, false);
+    }
+
+    public void Apply(Sprite sprite, bool forceRawSpriteSize)
+    {
         ResolveRenderer();
         if (spriteRenderer == null)
             return;
@@ -47,7 +53,7 @@ public sealed class WorldDropSpritePresenter2D : MonoBehaviour
         if (sprite == null)
             return;
 
-        ApplyNormalizedTransform(sprite);
+        ApplyNormalizedTransform(sprite, forceRawSpriteSize);
     }
 
     private void Reset()
@@ -69,7 +75,7 @@ public sealed class WorldDropSpritePresenter2D : MonoBehaviour
         ResolveRenderer();
 
         if (!Application.isPlaying && spriteRenderer != null && spriteRenderer.sprite != null)
-            ApplyNormalizedTransform(spriteRenderer.sprite);
+            ApplyNormalizedTransform(spriteRenderer.sprite, false);
     }
 
     private void ResolveRenderer()
@@ -85,13 +91,13 @@ public sealed class WorldDropSpritePresenter2D : MonoBehaviour
     /// - sprite 자체 bounds를 사용해 렌더러 Transform이 목표 높이 또는 목표 박스 크기를 만족하도록 계산한다.
     /// - x축 중앙 정렬 옵션을 통해 pivot이 치우친 icon도 드롭 중심에 맞춰 보이게 한다.
     /// </summary>
-    private void ApplyNormalizedTransform(Sprite sprite)
+    private void ApplyNormalizedTransform(Sprite sprite, bool forceRawSpriteSize)
     {
         Bounds bounds = sprite.bounds;
         if (bounds.size.x <= 0f || bounds.size.y <= 0f)
             return;
 
-        float uniformScale = ResolveUniformScale(bounds);
+        float uniformScale = forceRawSpriteSize ? 1f : ResolveUniformScale(bounds);
         Vector3 localScale = spriteRenderer.transform.localScale;
         spriteRenderer.transform.localScale = new Vector3(uniformScale, uniformScale, localScale.z);
 
@@ -105,6 +111,9 @@ public sealed class WorldDropSpritePresenter2D : MonoBehaviour
 
     private float ResolveUniformScale(Bounds bounds)
     {
+        if (normalizeMode == NormalizeMode.RawSpriteSize)
+            return 1f;
+
         if (normalizeMode == NormalizeMode.FitBox)
         {
             float widthScale = targetBoxSize.x / bounds.size.x;

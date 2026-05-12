@@ -1,0 +1,47 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 450220cfe9a64186934d55f938cf1376, type: 3}
+  m_Name: IDV_LightningSpear
+  m_EditorClassIdentifier: ""
+  sharedVisualPrefab: {fileID: 100100000, guid: a12e48c4ede64ef78f312e633c892b21, type: 3}
+  sharedSpriteOverride: {fileID: 0}
+  overrideSharedSpriteSettings: 0
+  sharedSpriteSettings:
+    normalize: 1
+    normalizeMode: 2
+    targetHeight: 0.65
+    targetBoxSize: {x: 1, y: 1}
+    anchorMode: 1
+    centerX: 1
+    anchorOffset: {x: 0, y: 0.08}
+  shopVisualPrefab: {fileID: 0}
+  shopSpriteOverride: {fileID: 0}
+  overrideShopSpriteSettings: 0
+  shopSpriteSettings:
+    normalize: 1
+    normalizeMode: 2
+    targetHeight: 0.65
+    targetBoxSize: {x: 1, y: 1}
+    anchorMode: 0
+    centerX: 1
+    anchorOffset: {x: 0, y: 0}
+  worldDropVisualPrefab: {fileID: 0}
+  worldDropSpriteOverride: {fileID: 0}
+  overrideWorldDropSpriteSettings: 0
+  worldDropSpriteSettings:
+    normalize: 1
+    normalizeMode: 2
+    targetHeight: 0.65
+    targetBoxSize: {x: 1, y: 1}
+    anchorMode: 1
+    centerX: 1
+    anchorOffset: {x: 0, y: 0.08}

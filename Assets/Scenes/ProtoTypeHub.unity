@@ -5428,6 +5428,7 @@ GameObject:
   - component: {fileID: 337216492}
   - component: {fileID: 337216491}
   - component: {fileID: 337216490}
+  - component: {fileID: 337216493}
   m_Layer: 0
   m_Name: ShopSlot (1)
   m_TagString: Untagged
@@ -5454,6 +5455,7 @@ MonoBehaviour:
   interactPromptText: "\uAD6C\uB9E4"
   soldLabel: SOLD
   itemVisualRoot: {fileID: 1121215460}
+  itemDisplayPresenter: {fileID: 337216493}
   itemSpriteRenderer: {fileID: 1121215461}
   priceText: {fileID: 1418412134}
   priceIconRenderer: {fileID: 537769971}
@@ -5464,6 +5466,22 @@ MonoBehaviour:
   priceCharacterWidth: 0.28
   priceIconFixedDistance: 0.32
   priceIconLocalScale: {x: 0.6, y: 0.6, z: 1}
+--- !u!114 &337216493
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 337216489}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 052d06ab8f8942abadb4574c9330c75e, type: 3}
+  m_Name: ""
+  m_EditorClassIdentifier: ""
+  context: 0
+  visualRoot: {fileID: 1121215460}
+  fallbackSpriteRenderer: {fileID: 1121215461}
+  copyHostSortingToCustomVisual: 1
 --- !u!61 &337216491
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -7446,6 +7464,7 @@ GameObject:
   - component: {fileID: 1286598063}
   - component: {fileID: 1286598065}
   - component: {fileID: 1286598064}
+  - component: {fileID: 1286598066}
   m_Layer: 0
   m_Name: ShopSlot (3)
   m_TagString: Untagged
@@ -7492,6 +7511,7 @@ MonoBehaviour:
   interactPromptText: "\uAD6C\uB9E4"
   soldLabel: SOLD
   itemVisualRoot: {fileID: 674947900}
+  itemDisplayPresenter: {fileID: 1286598066}
   itemSpriteRenderer: {fileID: 674947902}
   priceText: {fileID: 232920238}
   priceIconRenderer: {fileID: 230432576}
@@ -7502,6 +7522,22 @@ MonoBehaviour:
   priceCharacterWidth: 0.28
   priceIconFixedDistance: 0.32
   priceIconLocalScale: {x: 0.6, y: 0.6, z: 1}
+--- !u!114 &1286598066
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1286598062}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 052d06ab8f8942abadb4574c9330c75e, type: 3}
+  m_Name: ""
+  m_EditorClassIdentifier: ""
+  context: 0
+  visualRoot: {fileID: 674947900}
+  fallbackSpriteRenderer: {fileID: 674947902}
+  copyHostSortingToCustomVisual: 1
 --- !u!61 &1286598065
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -8017,6 +8053,7 @@ GameObject:
   - component: {fileID: 1472148100}
   - component: {fileID: 1472148102}
   - component: {fileID: 1472148101}
+  - component: {fileID: 1472148103}
   m_Layer: 0
   m_Name: ShopSlot
   m_TagString: Untagged
@@ -8063,6 +8100,7 @@ MonoBehaviour:
   interactPromptText: "\uAD6C\uB9E4"
   soldLabel: SOLD
   itemVisualRoot: {fileID: 1258005897}
+  itemDisplayPresenter: {fileID: 1472148103}
   itemSpriteRenderer: {fileID: 1258005899}
   priceText: {fileID: 983406618}
   priceIconRenderer: {fileID: 1339857238}
@@ -8073,6 +8111,22 @@ MonoBehaviour:
   priceCharacterWidth: 0.28
   priceIconFixedDistance: 0.32
   priceIconLocalScale: {x: 0.6, y: 0.6, z: 1}
+--- !u!114 &1472148103
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1472148099}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 052d06ab8f8942abadb4574c9330c75e, type: 3}
+  m_Name: ""
+  m_EditorClassIdentifier: ""
+  context: 0
+  visualRoot: {fileID: 1258005897}
+  fallbackSpriteRenderer: {fileID: 1258005899}
+  copyHostSortingToCustomVisual: 1
 --- !u!61 &1472148102
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -8941,6 +8995,7 @@ GameObject:
   - component: {fileID: 2134974032}
   - component: {fileID: 2134974031}
   - component: {fileID: 2134974030}
+  - component: {fileID: 2134974033}
   m_Layer: 0
   m_Name: ShopSlot (2)
   m_TagString: Untagged
@@ -8967,6 +9022,7 @@ MonoBehaviour:
   interactPromptText: "\uAD6C\uB9E4"
   soldLabel: SOLD
   itemVisualRoot: {fileID: 518435056}
+  itemDisplayPresenter: {fileID: 2134974033}
   itemSpriteRenderer: {fileID: 518435057}
   priceText: {fileID: 871617541}
   priceIconRenderer: {fileID: 843793687}
@@ -8977,6 +9033,22 @@ MonoBehaviour:
   priceCharacterWidth: 0.28
   priceIconFixedDistance: 0.32
   priceIconLocalScale: {x: 0.6, y: 0.6, z: 1}
+--- !u!114 &2134974033
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2134974029}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 052d06ab8f8942abadb4574c9330c75e, type: 3}
+  m_Name: ""
+  m_EditorClassIdentifier: ""
+  context: 0
+  visualRoot: {fileID: 518435056}
+  fallbackSpriteRenderer: {fileID: 518435057}
+  copyHostSortingToCustomVisual: 1
 --- !u!61 &2134974031
 BoxCollider2D:
   m_ObjectHideFlags: 0

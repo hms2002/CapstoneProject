@@ -29,6 +29,7 @@ public sealed class WorldItemDropTweenAnimator : MonoBehaviour
         transform.position = startPosition;
         transform.rotation = Quaternion.identity;
 
+        Vector3 visualCenterLocal = ResolveVisualCenterLocal();
         float distance = Vector2.Distance(startPosition, landingPosition);
         float duration = Mathf.Clamp(minDuration + distance * durationPerUnit, minDuration, maxDuration);
         float arcHeight = Mathf.Clamp(minArcHeight + distance * arcHeightPerUnit, minArcHeight, maxArcHeight);
@@ -41,12 +42,15 @@ public sealed class WorldItemDropTweenAnimator : MonoBehaviour
 
         travelTween = DOVirtual.Float(0f, 1f, duration, t =>
             {
-                transform.position = EvaluateParabolicPosition(startPosition, landingPosition, arcHeight, t);
+                Vector3 basePosition = EvaluateParabolicPosition(startPosition, landingPosition, arcHeight, t);
+                Quaternion rotation = Quaternion.Euler(0f, 0f, spinDegrees * EaseOutQuad(t));
+                transform.SetPositionAndRotation(
+                    basePosition + ResolveCenterPivotOffset(visualCenterLocal, rotation),
+                    rotation);
             })
             .SetEase(Ease.Linear);
 
         activeSequence.Append(travelTween);
-        activeSequence.Join(transform.DORotate(new Vector3(0f, 0f, spinDegrees), duration, RotateMode.FastBeyond360).SetEase(Ease.OutQuad));
         activeSequence.OnComplete(() =>
         {
             activeSequence = null;
@@ -88,5 +92,54 @@ public sealed class WorldItemDropTweenAnimator : MonoBehaviour
         float arcOffset = 4f * arcHeight * t * (1f - t);
         linearPosition.y += arcOffset;
         return linearPosition;
+    }
+
+    private Vector3 ResolveVisualCenterLocal()
+    {
+        ItemDisplayVisualPresenter2D presenter = GetComponentInChildren<ItemDisplayVisualPresenter2D>(includeInactive: true);
+        if (presenter != null && presenter.TryResolveVisualBoundsWorld(out Bounds presenterBounds))
+        {
+            Vector3 presenterCenter = transform.InverseTransformPoint(presenterBounds.center);
+            presenterCenter.z = 0f;
+            return presenterCenter;
+        }
+
+        SpriteRenderer[] renderers = GetComponentsInChildren<SpriteRenderer>(includeInactive: true);
+        bool hasBounds = false;
+        Bounds visualBounds = default;
+
+        for (int i = 0; i < renderers.Length; i++)
+        {
+            SpriteRenderer renderer = renderers[i];
+            if (renderer == null || !renderer.enabled || renderer.sprite == null)
+                continue;
+
+            if (!hasBounds)
+            {
+                visualBounds = renderer.bounds;
+                hasBounds = true;
+                continue;
+            }
+
+            visualBounds.Encapsulate(renderer.bounds);
+        }
+
+        if (!hasBounds)
+            return Vector3.zero;
+
+        Vector3 localCenter = transform.InverseTransformPoint(visualBounds.center);
+        localCenter.z = 0f;
+        return localCenter;
+    }
+
+    private static Vector3 ResolveCenterPivotOffset(Vector3 visualCenterLocal, Quaternion rotation)
+    {
+        return visualCenterLocal - rotation * visualCenterLocal;
+    }
+
+    private static float EaseOutQuad(float t)
+    {
+        t = Mathf.Clamp01(t);
+        return 1f - (1f - t) * (1f - t);
     }
 }

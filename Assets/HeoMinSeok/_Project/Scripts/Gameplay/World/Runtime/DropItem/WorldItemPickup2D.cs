@@ -14,6 +14,7 @@ public class WorldItemPickup2D : InteractableBase
     [SerializeField] private string interactPromptText = "획득하기";
 
     [Header("Visual (optional)")]
+    [SerializeField] private ItemDisplayVisualPresenter2D itemDisplayPresenter;
     [SerializeField] private SpriteRenderer spriteRenderer;
     [SerializeField] private WorldDropSpritePresenter2D dropSpritePresenter;
     private MaterialPropertyBlock outlinePropertyBlock;
@@ -70,7 +71,11 @@ public class WorldItemPickup2D : InteractableBase
         if (item == null || interactionLocked)
             return;
 
-        if (spriteRenderer != null)
+        if (itemDisplayPresenter != null)
+        {
+            itemDisplayPresenter.SetOutline(true);
+        }
+        else if (spriteRenderer != null)
         {
             spriteRenderer.GetPropertyBlock(outlinePropertyBlock);
             outlinePropertyBlock.SetFloat(OutlineEnabledID, 1f);
@@ -82,7 +87,11 @@ public class WorldItemPickup2D : InteractableBase
 
     public override void OnUnHighlight()
     {
-        if (spriteRenderer != null)
+        if (itemDisplayPresenter != null)
+        {
+            itemDisplayPresenter.SetOutline(false);
+        }
+        else if (spriteRenderer != null)
         {
             spriteRenderer.GetPropertyBlock(outlinePropertyBlock);
             outlinePropertyBlock.SetFloat(OutlineEnabledID, 0f);
@@ -237,12 +246,19 @@ public class WorldItemPickup2D : InteractableBase
 
     private void RefreshVisual()
     {
+        if (itemDisplayPresenter != null)
+        {
+            itemDisplayPresenter.Apply(item);
+            spriteRenderer = itemDisplayPresenter.FallbackRenderer;
+            return;
+        }
+
         var def = item != null ? item.AsDef() : null;
         Sprite sprite = def != null ? def.Icon : null;
 
         if (dropSpritePresenter != null)
         {
-            dropSpritePresenter.Apply(sprite);
+            dropSpritePresenter.Apply(sprite, item is WeaponDefinition);
             spriteRenderer = dropSpritePresenter.Renderer;
             return;
         }
@@ -260,10 +276,16 @@ public class WorldItemPickup2D : InteractableBase
     /// </summary>
     private void ResolveVisualRefs()
     {
+        if (itemDisplayPresenter == null)
+            itemDisplayPresenter = GetComponentInChildren<ItemDisplayVisualPresenter2D>(includeInactive: true);
+
+        if (itemDisplayPresenter != null)
+            spriteRenderer = itemDisplayPresenter.FallbackRenderer;
+
         if (dropSpritePresenter == null)
             dropSpritePresenter = GetComponentInChildren<WorldDropSpritePresenter2D>(includeInactive: true);
 
-        if (dropSpritePresenter != null)
+        if (itemDisplayPresenter == null && dropSpritePresenter != null)
             spriteRenderer = dropSpritePresenter.Renderer;
 
         if (spriteRenderer == null)

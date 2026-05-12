@@ -40,6 +40,7 @@ public sealed class MerchantNPC : MonoBehaviour
 
     private readonly MerchantRunStateService runStateService = new MerchantRunStateService();
     private readonly ShopInventoryRoll inventoryRoll = new ShopInventoryRoll();
+    private readonly LootPoolService lootPoolService = new LootPoolService();
     private readonly MerchantPurchaseService purchaseService = new MerchantPurchaseService();
 
     private MerchantRuntimeState runtimeState;
@@ -333,6 +334,7 @@ public sealed class MerchantNPC : MonoBehaviour
                 shopDefinition.MaxWeaponSlots,
                 shopDefinition.MaxConsumableSlots,
                 effectivePriceSettings,
+                lootPoolService.BuildShopWeaponExclusionSet(),
                 excludedEntries)
             : new List<MerchantStockEntryState>();
     }

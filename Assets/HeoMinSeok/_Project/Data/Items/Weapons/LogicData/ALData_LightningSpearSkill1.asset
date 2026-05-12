@@ -23,7 +23,7 @@ MonoBehaviour:
   noMarkSweepHitEventTag: {fileID: 11400000, guid: 0ca34cffae954c929a2f40220a8b0284, type: 2}
   noMarkSweepHitEventTimeout: 0.5
   noMarkSweepFallbackHitDelay: 0
-  markRushHudIcon: {fileID: 126146356221838157, guid: 8f73d125f9ad32b42998ae39f6c83873, type: 3}
+  markRushHudIcon: {fileID: 21300000, guid: 8f73d125f9ad32b42998ae39f6c83873, type: 3}
   cursorSelectRadius: 2.4
   markRushRange: 7
   markRushBodyRadius: 0.25

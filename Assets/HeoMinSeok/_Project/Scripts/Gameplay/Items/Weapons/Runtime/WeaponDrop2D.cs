@@ -16,6 +16,7 @@ public class WeaponDrop2D : InteractableBase
     [SerializeField] private WeaponPersistentStatePayload payload;
 
     [Header("Visual (optional)")]
+    [SerializeField] private ItemDisplayVisualPresenter2D itemDisplayPresenter;
     [SerializeField] private SpriteRenderer spriteRenderer;
     [SerializeField] private WorldDropSpritePresenter2D dropSpritePresenter;
 
@@ -74,7 +75,11 @@ public class WeaponDrop2D : InteractableBase
 
     public override void OnHighlight()
     {
-        if (spriteRenderer != null)
+        if (itemDisplayPresenter != null)
+        {
+            itemDisplayPresenter.SetOutline(true);
+        }
+        else if (spriteRenderer != null)
         {
             spriteRenderer.GetPropertyBlock(outlinePropertyBlock);
             outlinePropertyBlock.SetFloat(OutlineEnabledID, 1f);
@@ -86,7 +91,11 @@ public class WeaponDrop2D : InteractableBase
 
     public override void OnUnHighlight()
     {
-        if (spriteRenderer != null)
+        if (itemDisplayPresenter != null)
+        {
+            itemDisplayPresenter.SetOutline(false);
+        }
+        else if (spriteRenderer != null)
         {
             spriteRenderer.GetPropertyBlock(outlinePropertyBlock);
             outlinePropertyBlock.SetFloat(OutlineEnabledID, 0f);
@@ -117,6 +126,13 @@ public class WeaponDrop2D : InteractableBase
 
     private void RefreshVisual()
     {
+        if (itemDisplayPresenter != null)
+        {
+            itemDisplayPresenter.Apply(weapon);
+            spriteRenderer = itemDisplayPresenter.FallbackRenderer;
+            return;
+        }
+
         Sprite sprite = weapon != null ? weapon.Icon : null;
 
         if (dropSpritePresenter != null)
@@ -140,10 +156,16 @@ public class WeaponDrop2D : InteractableBase
     /// </summary>
     private void ResolveVisualRefs()
     {
+        if (itemDisplayPresenter == null)
+            itemDisplayPresenter = GetComponentInChildren<ItemDisplayVisualPresenter2D>(includeInactive: true);
+
+        if (itemDisplayPresenter != null)
+            spriteRenderer = itemDisplayPresenter.FallbackRenderer;
+
         if (dropSpritePresenter == null)
             dropSpritePresenter = GetComponentInChildren<WorldDropSpritePresenter2D>(includeInactive: true);
 
-        if (dropSpritePresenter != null)
+        if (itemDisplayPresenter == null && dropSpritePresenter != null)
             spriteRenderer = dropSpritePresenter.Renderer;
 
         if (spriteRenderer == null)

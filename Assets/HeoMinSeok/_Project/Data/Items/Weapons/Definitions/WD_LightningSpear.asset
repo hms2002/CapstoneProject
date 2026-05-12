@@ -13,14 +13,17 @@ MonoBehaviour:
   m_Name: WD_LightningSpear
   m_EditorClassIdentifier: 
   weaponId: Weapon.LightningSpear
-  displayName: "\uBC88\uAC1C \uCC3D"
+  displayName: "\uB1CC\uCC3D \uAC08\uB77C\uB860"
   icon: {fileID: 21300000, guid: 10552735fdb1e6e42a67dd8f5e1ae667, type: 3}
-  storyText: Lightning Spear V1 placeholder weapon.
+  storyText: "\"\uBC88\uB729\uC774\uB294 \uC12C\uAD11\uC774 \uC2DC\uC57C\uB97C \uC2A4\uCE58\uAE30
+    \uC804, \uC801\uC758 \uC804\uC5F4\uC740 \uC774\uBBF8 \uAFF0\uB6AB\uB824 \uC788\uC744
+    \uAC83\uC774\uB2E4.\u201D"
   statModifiers: []
   attackInputHint: Mouse1
   skill1InputHint: Q
   skill2InputHint: E
   weaponPrefab: {fileID: 916365682996460394, guid: bf1d70bd58b747e9855a82d836fa4857, type: 3}
+  displayVisualProfile: {fileID: 11400000, guid: e5fc8afae8f143beb43ab33712a1937c, type: 2}
   equippedTag: {fileID: 11400000, guid: cac1046499d28814a91fcb2631757240, type: 2}
   attack: {fileID: 11400000, guid: 6bbd25ec46de40f1ab275317be703086, type: 2}
   skill1: {fileID: 11400000, guid: 4290d464953142ffb00a0c0946a5eb3a, type: 2}

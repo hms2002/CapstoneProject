@@ -21,6 +21,14 @@ public sealed class LootPoolService
         return exclusionList;
     }
 
+    public HashSet<string> BuildShopWeaponExclusionSet()
+    {
+        HashSet<string> exclusionList = BuildPlayerWeaponExclusionSet();
+        AddWorldItemWeaponExclusions(exclusionList);
+        AddWeaponDropExclusions(exclusionList);
+        return exclusionList;
+    }
+
     public HashSet<string> BuildMerchantWeaponExclusionSet()
     {
         var exclusionList = new HashSet<string>();
@@ -49,6 +57,45 @@ public sealed class LootPoolService
         }
 
         return exclusionList;
+    }
+
+    private static void AddWorldItemWeaponExclusions(HashSet<string> exclusionList)
+    {
+        if (exclusionList == null)
+            return;
+
+        IReadOnlyList<WorldItemPickup2D> worldItems = WorldItemRegistry.Items;
+        if (worldItems == null)
+            return;
+
+        for (int i = 0; i < worldItems.Count; i++)
+        {
+            if (worldItems[i] != null && worldItems[i].Item is WeaponDefinition weapon)
+                AddWeaponId(exclusionList, weapon.weaponId);
+        }
+    }
+
+    private static void AddWeaponDropExclusions(HashSet<string> exclusionList)
+    {
+        if (exclusionList == null)
+            return;
+
+        WeaponDrop2D[] drops = Object.FindObjectsByType<WeaponDrop2D>(
+            FindObjectsInactive.Exclude,
+            FindObjectsSortMode.None);
+
+        for (int i = 0; i < drops.Length; i++)
+        {
+            WeaponDefinition weapon = drops[i] != null ? drops[i].Weapon : null;
+            if (weapon != null)
+                AddWeaponId(exclusionList, weapon.weaponId);
+        }
+    }
+
+    private static void AddWeaponId(HashSet<string> exclusionList, string weaponId)
+    {
+        if (!string.IsNullOrWhiteSpace(weaponId))
+            exclusionList.Add(weaponId);
     }
 
     public WeaponDefinition GetRandomWeapon(HashSet<string> exclusionList)

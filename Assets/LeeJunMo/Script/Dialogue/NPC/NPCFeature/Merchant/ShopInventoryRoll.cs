@@ -87,6 +87,7 @@ public sealed class ShopInventoryRoll
         int maxWeaponSlots,
         int maxConsumableSlots,
         MerchantPriceSettings priceSettings,
+        IReadOnlyCollection<string> excludedWeaponIds = null,
         IReadOnlyCollection<MerchantStockEntryState> excludedEntries = null)
     {
         var entries = new List<MerchantStockEntryState>(Mathf.Max(0, slotCount));
@@ -104,6 +105,7 @@ public sealed class ShopInventoryRoll
         RemoveExcludedDefinitions(weaponPool, excludedKeys);
         RemoveExcludedDefinitions(relicPool, excludedKeys);
         RemoveExcludedDefinitions(consumablePool, excludedKeys);
+        RemoveExcludedWeapons(weaponPool, excludedWeaponIds);
 
         int weaponSlotCount = 0;
         int consumableSlotCount = 0;
@@ -220,6 +222,35 @@ public sealed class ShopInventoryRoll
             if (definition != null && excludedKeys.Contains(BuildItemKey(definition.Kind, definition.ItemId)))
                 pool.RemoveAt(i);
         }
+    }
+
+    private static void RemoveExcludedWeapons(
+        List<WeaponDefinition> pool,
+        IReadOnlyCollection<string> excludedWeaponIds)
+    {
+        if (pool == null || excludedWeaponIds == null || excludedWeaponIds.Count == 0)
+            return;
+
+        for (int i = pool.Count - 1; i >= 0; i--)
+        {
+            WeaponDefinition weapon = pool[i];
+            if (weapon != null && IsExcludedWeaponId(excludedWeaponIds, weapon.weaponId))
+                pool.RemoveAt(i);
+        }
+    }
+
+    private static bool IsExcludedWeaponId(IReadOnlyCollection<string> excludedWeaponIds, string weaponId)
+    {
+        if (string.IsNullOrWhiteSpace(weaponId))
+            return false;
+
+        foreach (string excludedWeaponId in excludedWeaponIds)
+        {
+            if (string.Equals(excludedWeaponId, weaponId, StringComparison.Ordinal))
+                return true;
+        }
+
+        return false;
     }
 
     private static string BuildItemKey(InventoryItemKind kind, string itemId)
