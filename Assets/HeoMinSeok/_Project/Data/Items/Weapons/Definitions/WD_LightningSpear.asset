@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weaponId: Weapon.LightningSpear
   displayName: "\uBC88\uAC1C \uCC3D"
-  icon: {fileID: -6255143421326930151, guid: e658b351294cef44b8a5c823d1fdcb73, type: 3}
+  icon: {fileID: 21300000, guid: 10552735fdb1e6e42a67dd8f5e1ae667, type: 3}
   storyText: Lightning Spear V1 placeholder weapon.
   statModifiers: []
   attackInputHint: Mouse1

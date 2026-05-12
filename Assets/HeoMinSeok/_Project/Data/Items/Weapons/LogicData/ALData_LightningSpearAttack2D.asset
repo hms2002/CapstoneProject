@@ -17,7 +17,7 @@ MonoBehaviour:
     steps:
     - attackPrefab:
         hitboxPrefab: {fileID: 2863281621525748656, guid: cb623b7a720dbc545976c41dc1411c46, type: 3}
-        activeTime: 0.2
+        activeTime: 0.3
         hitboxSize: {x: 3, y: 3}
         hitboxScaleMultiplier: {x: 1, y: 1}
         overrideSizingMode: 1
@@ -48,7 +48,7 @@ MonoBehaviour:
       lungeDuration: 0.3
     - attackPrefab:
         hitboxPrefab: {fileID: 4378792591283189822, guid: 34638060c75b50c498fd2bb862e0b49b, type: 3}
-        activeTime: 0.2
+        activeTime: 0.3
         hitboxSize: {x: 3, y: 3}
         hitboxScaleMultiplier: {x: 1, y: 1}
         overrideSizingMode: 1
@@ -79,7 +79,7 @@ MonoBehaviour:
       lungeDuration: 0.3
     - attackPrefab:
         hitboxPrefab: {fileID: 5857545739176268363, guid: f1b05c4cc7b35c9478f97e80fa87562b, type: 3}
-        activeTime: 0.2
+        activeTime: 0.3
         hitboxSize: {x: 8.28125, y: 4.84375}
         hitboxScaleMultiplier: {x: 1, y: 1}
         overrideSizingMode: 1

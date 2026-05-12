@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: AD_LightningSpearSkill1
   m_EditorClassIdentifier:
   abilityName: AD_LightningSpearSkill1
-  icon: {fileID: -6255143421326930151, guid: e658b351294cef44b8a5c823d1fdcb73, type: 3}
+  icon: {fileID: 1065455293627697323, guid: 340af4cfb3b1848419310b98a964e9eb, type: 3}
   description: Rush to a cursor-near lightning spear mark, or sweep forward if no valid mark exists.
   cooldown: 3
   executionPolicy: 0

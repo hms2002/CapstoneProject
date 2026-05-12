@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: AD_LightningSpearSkill2
   m_EditorClassIdentifier:
   abilityName: AD_LightningSpearSkill2
-  icon: {fileID: -6255143421326930151, guid: e658b351294cef44b8a5c823d1fdcb73, type: 3}
+  icon: {fileID: -8536812241292253894, guid: 0adc7957cb62497438400e9e92f01b19, type: 3}
   description: Spawn constrained-random lightning spear marks in the current combat area.
   cooldown: 10
   executionPolicy: 0

@@ -327,7 +327,13 @@ public sealed class MerchantNPC : MonoBehaviour
         IReadOnlyCollection<MerchantStockEntryState> excludedEntries)
     {
         return shopDefinition != null
-            ? inventoryRoll.RollStock(slotCount, shopDefinition.StockRollWeights, effectivePriceSettings, excludedEntries)
+            ? inventoryRoll.RollStock(
+                slotCount,
+                shopDefinition.StockRollWeights,
+                shopDefinition.MaxWeaponSlots,
+                shopDefinition.MaxConsumableSlots,
+                effectivePriceSettings,
+                excludedEntries)
             : new List<MerchantStockEntryState>();
     }
 

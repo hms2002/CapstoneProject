@@ -8,6 +8,8 @@ public sealed class ShopDefinitionSO : ScriptableObject
 
     [Header("Stock")]
     [SerializeField, Min(0)] private int baseVisibleSlotCount = 3;
+    [SerializeField, Min(0)] private int maxWeaponSlots = 1;
+    [SerializeField, Min(0)] private int maxConsumableSlots = 1;
     [SerializeField] private ShopStockRollWeights stockRollWeights = new ShopStockRollWeights
     {
         weaponWeight = 1,
@@ -27,6 +29,8 @@ public sealed class ShopDefinitionSO : ScriptableObject
 
     public bool RequireShopUpgrade => requireShopUpgrade;
     public int BaseVisibleSlotCount => Mathf.Max(0, baseVisibleSlotCount);
+    public int MaxWeaponSlots => Mathf.Max(0, maxWeaponSlots);
+    public int MaxConsumableSlots => Mathf.Max(0, maxConsumableSlots);
     public ShopStockRollWeights StockRollWeights => stockRollWeights;
     public MerchantPriceSettings PriceSettings => priceSettings;
 }

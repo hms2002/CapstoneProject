@@ -21,6 +21,7 @@ public sealed class HitboxVisualAnimatorPlayer : MonoBehaviour
     private Coroutine destroyRoutine;
 
     public bool DestroyOnComplete => destroyOnComplete;
+    public float CurrentClipDuration => clip != null ? clip.length / Mathf.Max(0.01f, speed) : 0f;
 
     private void Awake()
     {
@@ -66,6 +67,16 @@ public sealed class HitboxVisualAnimatorPlayer : MonoBehaviour
 
             destroyRoutine = StartCoroutine(CoDestroyAfterClip());
         }
+    }
+
+    public void PlayClip(AnimationClip nextClip)
+    {
+        if (nextClip != null)
+            clip = nextClip;
+
+        ResolveReferences();
+        ApplyClipOverride();
+        Play();
     }
 
     private void ResolveReferences()

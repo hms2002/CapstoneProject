@@ -29,7 +29,7 @@ MonoBehaviour:
   landingProbeRadius: 0.35
   candidateSamples: 96
   landingHit:
-    hitboxPrefab: {fileID: 0}
+    hitboxPrefab: {fileID: 510000000000000003, guid: f80c9a9d4ef14f7d963ce7aa871b9a21, type: 3}
     activeTime: 0.08
     hitboxSize: {x: 1.2, y: 1.2}
     forwardOffset: 0
@@ -38,7 +38,7 @@ MonoBehaviour:
       m_Bits: 2147483648
     wallLayers:
       serializedVersion: 2
-      m_Bits: 1073741824
+      m_Bits: 0
     damageConfig:
       includeStaggerBuildUp: 1
       includeElementBuildUp: 1
