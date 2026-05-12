@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 450220cfe9a64186934d55f938cf1376, type: 3}
   m_Name: IDV_LightningSpear
   m_EditorClassIdentifier: ""
-  sharedVisualPrefab: {fileID: 100100000, guid: a12e48c4ede64ef78f312e633c892b21, type: 3}
+  sharedVisualPrefab: {fileID: 7801000000000000000, guid: a12e48c4ede64ef78f312e633c892b21, type: 3}
   sharedSpriteOverride: {fileID: 0}
   overrideSharedSpriteSettings: 0
   sharedSpriteSettings:

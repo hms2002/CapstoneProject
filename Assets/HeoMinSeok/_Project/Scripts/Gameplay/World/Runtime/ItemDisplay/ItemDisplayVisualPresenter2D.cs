@@ -112,12 +112,15 @@ public sealed class ItemDisplayVisualPresenter2D : MonoBehaviour
 
     private void ApplyCustomPrefab(GameObject prefab)
     {
+        if (prefab == null)
+            return;
+
         ClearCustomVisual();
 
         if (fallbackSpriteRenderer != null)
             fallbackSpriteRenderer.enabled = false;
 
-        Transform parent = visualRoot != null ? visualRoot : transform;
+        Transform parent = ResolveVisualParent();
         activeCustomVisual = Instantiate(prefab, parent, false);
         activeCustomVisual.transform.localPosition = Vector3.zero;
         activeCustomVisual.transform.localRotation = Quaternion.identity;
@@ -268,13 +271,38 @@ public sealed class ItemDisplayVisualPresenter2D : MonoBehaviour
 
     private void ResolveReferences()
     {
-        if (visualRoot == null)
+        if (!IsUsableTransform(visualRoot))
             visualRoot = transform;
 
         if (fallbackSpriteRenderer == null)
             fallbackSpriteRenderer = GetComponentInChildren<SpriteRenderer>(includeInactive: true);
 
         CaptureFallbackBaseLocalPosition();
+    }
+
+    private Transform ResolveVisualParent()
+    {
+        if (IsUsableTransform(visualRoot))
+            return visualRoot;
+
+        visualRoot = transform;
+        return transform;
+    }
+
+    private static bool IsUsableTransform(Transform candidate)
+    {
+        if (candidate == null)
+            return false;
+
+        try
+        {
+            _ = candidate.gameObject;
+            return true;
+        }
+        catch (MissingReferenceException)
+        {
+            return false;
+        }
     }
 
     private static bool TryResolveRendererBounds(SpriteRenderer[] renderers, out Bounds bounds)

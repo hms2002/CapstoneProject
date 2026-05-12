@@ -8,7 +8,7 @@
 이 근처를 도는 자들에게 필요한 건 대체로 준비해 두고 있네.
 
 + [오늘은 뭐가 있나요?]
-    # face: 1001: Smile
+    # face: 1001: Normal
     급하게 쓸 만한 도구와 전투에 도움 되는 물건들이 있지.
     너무 오래 망설이면 다른 누가 먼저 집어 갈지도 모르네.
     -> merchant_end
@@ -20,6 +20,6 @@
     -> merchant_end
 
 = merchant_end
-# face: 1001: Smile
+# face: 1001: Normal
 필요한 게 생기면 다시 찾아오게.
 -> END
