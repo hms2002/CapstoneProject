@@ -4,43 +4,44 @@ using UnityGAS;
 
 public sealed class AbilityLogic_SlimeQueenRandomJump : AbilityLogic
 {
-    /// <summary>SlimeQueen이 바운더리 안의 랜덤 위치로 포물선 점프 이동합니다.</summary>
+    /// <summary>슬라임 여왕 계열 보스가 바운더리 안의 랜덤 위치로 포물선 점프 이동합니다.</summary>
     public override IEnumerator Activate(AbilitySystem system, AbilitySpec spec, GameObject initialTarget)
     {
-        SlimeQueen slimeQueen = system != null ? system.GetComponent<SlimeQueen>() : null;
-        if (slimeQueen == null)
+        ISlimeQueenRandomJumpHost randomJumpHost = system != null ? system.GetComponent<ISlimeQueenRandomJumpHost>() : null;
+        Component hostComponent = randomJumpHost as Component;
+        if (randomJumpHost == null || hostComponent == null)
             yield break;
 
-        if (!slimeQueen.TryGetRandomJumpLandingPosition(out Vector3 landingPosition))
+        if (!randomJumpHost.TryGetRandomJumpLandingPosition(out Vector3 landingPosition))
             yield break;
 
-        slimeQueen.FaceCurrentTarget();
-        slimeQueen.ShowJumpWarning(landingPosition);
+        randomJumpHost.FaceCurrentTarget();
+        randomJumpHost.ShowJumpWarning(landingPosition);
 
-        Vector3 startPosition = slimeQueen.transform.position;
+        Vector3 startPosition = hostComponent.transform.position;
         startPosition.z = landingPosition.z;
 
-        slimeQueen.SetPatternMoveDamageBlocked(true);
+        randomJumpHost.SetPatternMoveDamageBlocked(true);
 
         float elapsedSeconds = 0f;
-        while (elapsedSeconds < slimeQueen.JumpDurationSeconds)
+        while (elapsedSeconds < randomJumpHost.JumpDurationSeconds)
         {
             if (IsAbilityCancelled(spec))
             {
-                slimeQueen.SnapToJumpLanding(startPosition);
-                slimeQueen.SetPatternMoveDamageBlocked(false);
+                randomJumpHost.SnapToJumpLanding(startPosition);
+                randomJumpHost.SetPatternMoveDamageBlocked(false);
                 yield break;
             }
 
             elapsedSeconds += Time.deltaTime;
-            float normalizedTime = Mathf.Clamp01(elapsedSeconds / slimeQueen.JumpDurationSeconds);
-            slimeQueen.SetJumpPose(startPosition, landingPosition, normalizedTime);
+            float normalizedTime = Mathf.Clamp01(elapsedSeconds / randomJumpHost.JumpDurationSeconds);
+            randomJumpHost.SetJumpPose(startPosition, landingPosition, normalizedTime);
             yield return null;
         }
 
-        slimeQueen.SnapToJumpLanding(landingPosition);
-        slimeQueen.SetPatternMoveDamageBlocked(false);
-        slimeQueen.ApplyJumpLandingDamage(spec, landingPosition);
-        slimeQueen.FaceCurrentTarget();
+        randomJumpHost.SnapToJumpLanding(landingPosition);
+        randomJumpHost.SetPatternMoveDamageBlocked(false);
+        randomJumpHost.ApplyJumpLandingDamage(spec, landingPosition);
+        randomJumpHost.FaceCurrentTarget();
     }
 }

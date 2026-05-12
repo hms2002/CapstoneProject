@@ -4,10 +4,10 @@ using UnityGAS;
 
 public sealed class AbilityLogic_SlimeQueenRepeatedSlam : AbilityLogic
 {
-    /// <summary>SlimeQueen이 플레이어 위치를 연속 조준해 포물선 내려찍기를 반복합니다.</summary>
+    /// <summary>슬라임 여왕 2페이즈 개체가 플레이어 위치를 연속 조준해 포물선 내려찍기를 반복합니다.</summary>
     public override IEnumerator Activate(AbilitySystem system, AbilitySpec spec, GameObject initialTarget)
     {
-        SlimeQueen slimeQueen = system != null ? system.GetComponent<SlimeQueen>() : null;
+        SlimeQueenPhaseTwoBase slimeQueen = system != null ? system.GetComponent<SlimeQueenPhaseTwoBase>() : null;
         if (slimeQueen == null)
             yield break;
 

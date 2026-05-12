@@ -264,18 +264,10 @@ MonoBehaviour:
   bodyInflateImpactDamageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
   bodyInflateImpactKnockbackEffect: {fileID: 11400000, guid: 2f5faaf6bd840544cb59f6d23905c40d, type: 2}
   bodyInflateImpactKnockbackImpulse: 8
-  phase2EnterHealthRatio: 0.5
-  phase2ContactDamage: 1
-  phase2ContactDamageCooldownSeconds: 1
-  phase2ContactDamageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
-  phase2SlamWarningStyle: {fileID: 11400000, guid: b15f18602ec87284d80cbd57720425f1, type: 2}
-  phase2SlamWarningDiameter: 2.8
-  phase2SlamDamageDiameter: 2.8
-  phase2SlamIntervalSeconds: 1
-  phase2SlamCount: 3
-  phase2SlamArcHeight: 2.8
-  phase2SlamDamage: 1
-  phase2SlamDamageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
+  phase2ShortPrefab: {fileID: 1006000, guid: f8460f5e737a48218760688ff5643ca3, type: 3}
+  phase2LongPrefab: {fileID: 1006000, guid: a18e617b0b1f4ce4b730c4d1d950f627, type: 3}
+  phase2ShortSpawnOffset: {x: -2.5, y: 0}
+  phase2LongSpawnOffset: {x: 2.5, y: 0}
 --- !u!114 &1007000
 MonoBehaviour:
   m_ObjectHideFlags: 0
