@@ -16,6 +16,9 @@ public sealed class LightningSpearSkill1Data : ScriptableObject
     [SerializeField, Min(0f)] private float noMarkSweepHitEventTimeout = 0.35f;
     [SerializeField, Min(0f)] private float noMarkSweepFallbackHitDelay;
 
+    [Header("HUD")]
+    [SerializeField] private Sprite markRushHudIcon;
+
     [Header("Q - Mark Rush")]
     [SerializeField, Min(0.01f)] private float cursorSelectRadius = 1.5f;
     [SerializeField, Min(0.01f)] private float markRushRange = 9f;
@@ -28,6 +31,42 @@ public sealed class LightningSpearSkill1Data : ScriptableObject
     [Header("Q - No Mark Sweep")]
     [SerializeField] private LightningSpearHitConfig noMarkSweepHit = new LightningSpearHitConfig();
 
+    [Header("Recovered Spears")]
+    [SerializeField] private LightningSpearRecoveredSpearActor recoveredSpearPrefab;
+    [SerializeField] private LightningSpearRecoveredSpearProjectile2D recoveredSpearProjectilePrefab;
+    [SerializeField] private LightningSpearRecoverShotTrailEffect recoveredShotTrailEffectPrefab;
+    [SerializeField, Min(0)] private int recoveredSpearMaxCount = 6;
+    [SerializeField] private Vector2 recoveredSpearBaseOffset = new Vector2(0f, 1.2f);
+    [SerializeField, Min(0f)] private float recoveredSpearSpacing = 0.18f;
+    [SerializeField, Min(0f)] private float recoveredSpearStockAngleStep = 8f;
+    [SerializeField, Min(0f)] private float recoveredSpearStockMaxFanAngle = 50f;
+    [SerializeField, Min(0f)] private float recoveredSpearStockVisualForwardOffset = 0.45f;
+    [SerializeField, Min(0f)] private float recoveredSpearMoveTweenSeconds = 0.12f;
+    [SerializeField, Min(0f)] private float recoveredSpearFollowSmoothTime = 0.08f;
+    [SerializeField, Min(0f)] private float recoveredSpearWarpSnapDistance = 3f;
+    [SerializeField, Min(0f)] private float recoveredSpearBackOffset = 0.75f;
+    [SerializeField, Min(0f)] private float recoveredSpearFloatAmplitude = 0.12f;
+    [SerializeField, Min(0.01f)] private float recoveredSpearFloatDuration = 0.8f;
+    [SerializeField, Min(0f)] private float recoveredSpearSpawnFallbackSeconds = 0.12f;
+    [SerializeField, Min(0f)] private float recoveredSpearDespawnFallbackSeconds = 0.12f;
+
+    [Header("Recovered Spear Projectile")]
+    [SerializeField, Min(0f)] private float recoveredSpearShotReleaseDelay = 0.12f;
+    [SerializeField] private float recoveredSpearShotPivotForwardOffset = 0.85f;
+    [SerializeField, Min(0f)] private float recoveredSpearShotInnerRadius = 0.45f;
+    [SerializeField] private GameObject recoveredSpearShotSpawnEffectPrefab;
+    [SerializeField, Min(0f)] private float recoveredSpearShotSpawnEffectLifetimeFallback = 0.25f;
+    [SerializeField, Min(0f)] private float recoveredShotSliceMaxDistance = 2.5f;
+    [SerializeField, Min(0f)] private float recoveredSpearProjectileSpeed = 14f;
+    [SerializeField, Min(0.01f)] private float recoveredSpearProjectileLifetime = 0.75f;
+    [SerializeField, Min(0f)] private float recoveredSpearProjectileStuckLifetime = 0.35f;
+    [SerializeField, Min(0f)] private float recoveredSpearProjectileSpawnFallbackSeconds;
+    [SerializeField, Min(0f)] private float recoveredSpearProjectileDespawnFallbackSeconds = 0.12f;
+    [SerializeField, Min(0f)] private float recoveredSpearAngleStep = 10f;
+    [SerializeField, Min(0f)] private float recoveredSpearMaxFanAngle = 50f;
+    [SerializeField, Min(0f)] private float recoveredSpearShotInterval = 0.04f;
+    [SerializeField] private LightningSpearHitConfig recoveredSpearProjectileHit = new LightningSpearHitConfig();
+
     public string MarkRushAnimationTrigger => markRushAnimationTrigger;
     public string NoMarkSweepAnimationTrigger => noMarkSweepAnimationTrigger;
     public WeaponAimPresentationSettings MarkRushAimPresentation => markRushAimPresentation;
@@ -35,6 +74,7 @@ public sealed class LightningSpearSkill1Data : ScriptableObject
     public GameplayTag NoMarkSweepHitEventTag => noMarkSweepHitEventTag;
     public float NoMarkSweepHitEventTimeout => Mathf.Max(0f, noMarkSweepHitEventTimeout);
     public float NoMarkSweepFallbackHitDelay => Mathf.Max(0f, noMarkSweepFallbackHitDelay);
+    public Sprite MarkRushHudIcon => markRushHudIcon;
 
     public float CursorSelectRadius => Mathf.Max(0.01f, cursorSelectRadius);
     public float MarkRushRange => Mathf.Max(0.01f, markRushRange);
@@ -44,4 +84,37 @@ public sealed class LightningSpearSkill1Data : ScriptableObject
     public LightningSpearDashStabTrailEffect MarkRushTrailEffectPrefab => markRushTrailEffectPrefab;
     public LightningSpearHitConfig MarkRushHit => markRushHit;
     public LightningSpearHitConfig NoMarkSweepHit => noMarkSweepHit;
+
+    public LightningSpearRecoveredSpearActor RecoveredSpearPrefab => recoveredSpearPrefab;
+    public LightningSpearRecoveredSpearProjectile2D RecoveredSpearProjectilePrefab => recoveredSpearProjectilePrefab;
+    public LightningSpearRecoverShotTrailEffect RecoveredShotTrailEffectPrefab => recoveredShotTrailEffectPrefab;
+    public int RecoveredSpearMaxCount => Mathf.Max(0, recoveredSpearMaxCount);
+    public Vector2 RecoveredSpearBaseOffset => recoveredSpearBaseOffset;
+    public float RecoveredSpearSpacing => Mathf.Max(0f, recoveredSpearSpacing);
+    public float RecoveredSpearStockAngleStep => Mathf.Max(0f, recoveredSpearStockAngleStep);
+    public float RecoveredSpearStockMaxFanAngle => Mathf.Max(0f, recoveredSpearStockMaxFanAngle);
+    public float RecoveredSpearStockVisualForwardOffset => Mathf.Max(0f, recoveredSpearStockVisualForwardOffset);
+    public float RecoveredSpearMoveTweenSeconds => Mathf.Max(0f, recoveredSpearMoveTweenSeconds);
+    public float RecoveredSpearFollowSmoothTime => Mathf.Max(0f, recoveredSpearFollowSmoothTime);
+    public float RecoveredSpearWarpSnapDistance => Mathf.Max(0f, recoveredSpearWarpSnapDistance);
+    public float RecoveredSpearBackOffset => Mathf.Max(0f, recoveredSpearBackOffset);
+    public float RecoveredSpearFloatAmplitude => Mathf.Max(0f, recoveredSpearFloatAmplitude);
+    public float RecoveredSpearFloatDuration => Mathf.Max(0.01f, recoveredSpearFloatDuration);
+    public float RecoveredSpearSpawnFallbackSeconds => Mathf.Max(0f, recoveredSpearSpawnFallbackSeconds);
+    public float RecoveredSpearDespawnFallbackSeconds => Mathf.Max(0f, recoveredSpearDespawnFallbackSeconds);
+    public float RecoveredSpearShotReleaseDelay => Mathf.Max(0f, recoveredSpearShotReleaseDelay);
+    public float RecoveredSpearShotPivotForwardOffset => recoveredSpearShotPivotForwardOffset;
+    public float RecoveredSpearShotInnerRadius => Mathf.Max(0f, recoveredSpearShotInnerRadius);
+    public GameObject RecoveredSpearShotSpawnEffectPrefab => recoveredSpearShotSpawnEffectPrefab;
+    public float RecoveredSpearShotSpawnEffectLifetimeFallback => Mathf.Max(0f, recoveredSpearShotSpawnEffectLifetimeFallback);
+    public float RecoveredShotSliceMaxDistance => Mathf.Max(0f, recoveredShotSliceMaxDistance);
+    public float RecoveredSpearProjectileSpeed => Mathf.Max(0f, recoveredSpearProjectileSpeed);
+    public float RecoveredSpearProjectileLifetime => Mathf.Max(0.01f, recoveredSpearProjectileLifetime);
+    public float RecoveredSpearProjectileStuckLifetime => Mathf.Max(0f, recoveredSpearProjectileStuckLifetime);
+    public float RecoveredSpearProjectileSpawnFallbackSeconds => Mathf.Max(0f, recoveredSpearProjectileSpawnFallbackSeconds);
+    public float RecoveredSpearProjectileDespawnFallbackSeconds => Mathf.Max(0f, recoveredSpearProjectileDespawnFallbackSeconds);
+    public float RecoveredSpearAngleStep => Mathf.Max(0f, recoveredSpearAngleStep);
+    public float RecoveredSpearMaxFanAngle => Mathf.Max(0f, recoveredSpearMaxFanAngle);
+    public float RecoveredSpearShotInterval => Mathf.Max(0f, recoveredSpearShotInterval);
+    public LightningSpearHitConfig RecoveredSpearProjectileHit => recoveredSpearProjectileHit;
 }

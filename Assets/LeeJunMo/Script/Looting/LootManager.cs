@@ -275,12 +275,18 @@ public class LootManager : MonoBehaviour
             bonusMinCount,
             bonusMaxCount);
         List<Vector3> landingPositions = spawnService.GetHorizontalGroundPositions(position, 1);
+        HashSet<string> banList = poolService.BuildPlayerWeaponExclusionSet();
+        banList.UnionWith(poolService.BuildMerchantWeaponExclusionSet());
 
         for (int i = 0; i < totalCount; i++)
         {
-            WeaponDefinition weapon = poolService.GetRandomWeapon(new HashSet<string>());
+            WeaponDefinition weapon = poolService.GetRandomWeapon(banList);
             if (weapon != null)
+            {
                 SpawnAnimatedGraveLoot(position, landingPositions, i, weapon);
+                if (!string.IsNullOrWhiteSpace(weapon.weaponId))
+                    banList.Add(weapon.weaponId);
+            }
         }
     }
 

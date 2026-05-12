@@ -23,6 +23,7 @@ MonoBehaviour:
   noMarkSweepHitEventTag: {fileID: 11400000, guid: 0ca34cffae954c929a2f40220a8b0284, type: 2}
   noMarkSweepHitEventTimeout: 0.5
   noMarkSweepFallbackHitDelay: 0
+  markRushHudIcon: {fileID: 126146356221838157, guid: 8f73d125f9ad32b42998ae39f6c83873, type: 3}
   cursorSelectRadius: 2.4
   markRushRange: 7
   markRushBodyRadius: 0.25
@@ -31,7 +32,7 @@ MonoBehaviour:
   markRushTrailEffectPrefab: {fileID: 9102123456789012345, guid: 9537f6a61c484881b61d0da5c6b03dd3, type: 3}
   markRushHit:
     hitboxPrefab: {fileID: 3757316550685754543, guid: b6baaa776b4630343b03436c2e45c464, type: 3}
-    activeTime: 0.2
+    activeTime: 0.3
     hitboxSize: {x: 1.6, y: 0.9}
     forwardOffset: 0.45
     hitLayers:
@@ -55,7 +56,7 @@ MonoBehaviour:
     hitConfirmedTag: {fileID: 11400000, guid: 465249853d3321e47b796f8e8c787f64, type: 2}
   noMarkSweepHit:
     hitboxPrefab: {fileID: 2444049802110501220, guid: 2d297b1bcdf6733489edbb3cc6a848d6, type: 3}
-    activeTime: 0.2
+    activeTime: 0.3
     hitboxSize: {x: 2.2, y: 1.15}
     forwardOffset: 1
     hitLayers:
@@ -75,5 +76,60 @@ MonoBehaviour:
     damageFormula: {fileID: 11400000, guid: f836f4795e60fd54f9a4e401de9d7dd9, type: 2}
     knockbackFormula: {fileID: 11400000, guid: 886233d2a5002ae4facf46de4cb4864d, type: 2}
     legacyDamage: 12
+    legacyStaggerDamage: 0
+    hitConfirmedTag: {fileID: 11400000, guid: 465249853d3321e47b796f8e8c787f64, type: 2}
+  recoveredSpearPrefab: {fileID: 7100000000000000003, guid: b5a7de5cde874ab0a517a030f2e6503e, type: 3}
+  recoveredSpearProjectilePrefab: {fileID: 7200000000000000005, guid: e1758fe267194397b02d9a22e0a4d1c2, type: 3}
+  recoveredShotTrailEffectPrefab: {fileID: 7300000000000000003, guid: a8b1a52047dd4cb79e80bdb2ba06e97d, type: 3}
+  recoveredSpearMaxCount: 6
+  recoveredSpearBaseOffset: {x: 0.4, y: 0.5}
+  recoveredSpearSpacing: 0.18
+  recoveredSpearStockAngleStep: 8
+  recoveredSpearStockMaxFanAngle: 50
+  recoveredSpearStockVisualForwardOffset: 0.45
+  recoveredSpearMoveTweenSeconds: 0.12
+  recoveredSpearFollowSmoothTime: 0.08
+  recoveredSpearWarpSnapDistance: 3
+  recoveredSpearBackOffset: 0.75
+  recoveredSpearFloatAmplitude: 0.12
+  recoveredSpearFloatDuration: 0.8
+  recoveredSpearSpawnFallbackSeconds: 0.12
+  recoveredSpearDespawnFallbackSeconds: 0.34
+  recoveredSpearShotReleaseDelay: 0.03
+  recoveredSpearShotPivotForwardOffset: 0
+  recoveredSpearShotInnerRadius: 3
+  recoveredSpearShotSpawnEffectPrefab: {fileID: 7600000000000000001, guid: 7363eb05f34541d4b7aa78e332715e7a, type: 3}
+  recoveredSpearShotSpawnEffectLifetimeFallback: 0.25
+  recoveredShotSliceMaxDistance: 2.5
+  recoveredSpearProjectileSpeed: 200
+  recoveredSpearProjectileLifetime: 0.75
+  recoveredSpearProjectileStuckLifetime: 0.35
+  recoveredSpearProjectileSpawnFallbackSeconds: 0
+  recoveredSpearProjectileDespawnFallbackSeconds: 0.12
+  recoveredSpearAngleStep: 10
+  recoveredSpearMaxFanAngle: 50
+  recoveredSpearShotInterval: 0.04
+  recoveredSpearProjectileHit:
+    hitboxPrefab: {fileID: 0}
+    activeTime: 0.75
+    hitboxSize: {x: 1, y: 0.35}
+    forwardOffset: 0
+    hitLayers:
+      serializedVersion: 2
+      m_Bits: 2147483648
+    wallLayers:
+      serializedVersion: 2
+      m_Bits: 1073741824
+    damageConfig:
+      includeStaggerBuildUp: 1
+      includeElementBuildUp: 1
+      staggerFormula: {fileID: 11400000, guid: 8fb95c16fb825134f8ce24efb528fe19, type: 2}
+      elementFormulas: []
+      critAffectsElement: 1
+    damageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
+    knockbackEffect: {fileID: 11400000, guid: 2f5faaf6bd840544cb59f6d23905c40d, type: 2}
+    damageFormula: {fileID: 11400000, guid: f836f4795e60fd54f9a4e401de9d7dd9, type: 2}
+    knockbackFormula: {fileID: 11400000, guid: 886233d2a5002ae4facf46de4cb4864d, type: 2}
+    legacyDamage: 8
     legacyStaggerDamage: 0
     hitConfirmedTag: {fileID: 11400000, guid: 465249853d3321e47b796f8e8c787f64, type: 2}

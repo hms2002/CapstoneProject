@@ -32,7 +32,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 9129507203395623023}
+  m_Father: {fileID: 7100010000000000012}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &7418937038707333783
 SpriteRenderer:
@@ -83,7 +83,7 @@ SpriteRenderer:
   m_SortingLayer: 6
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 4387299508885738803, guid: f8ded1404e6ccc0479befd0c09bf6e2b, type: 3}
+  m_Sprite: {fileID: 7969121286922648827, guid: 108a3165563930c46b76ae27bc311481, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -130,7 +130,7 @@ MonoBehaviour:
   animator: {fileID: 3464066246461949183}
   baseController: {fileID: 9100000, guid: 9b44bb187c274c91841e9442b7b3f6a0, type: 2}
   placeholderClip: {fileID: 7400000, guid: d0ee99a3788a4ac8a7058c7e81090a44, type: 2}
-  clip: {fileID: 7400000, guid: 42f454e5381786146b85be106380bf89, type: 2}
+  clip: {fileID: 7400000, guid: 98af6bdee356356458c659bfcb1feddf, type: 2}
   stateName: Play
   speed: 1
   playOnEnable: 1
@@ -168,7 +168,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 4300669043608542966}
+  - {fileID: 7100010000000000012}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!61 &3934191629424911860
@@ -205,7 +205,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: -1.8071213, y: 0.54633784}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -215,7 +215,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 3, y: 3}
+  m_Size: {x: 4.933201, y: 4.9331965}
   m_EdgeRadius: 0
 --- !u!114 &4378792591283189822
 MonoBehaviour:
@@ -229,8 +229,41 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a9a6e715a8be584d8a6daae6d57508a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  visualRoot: {fileID: 4300669043608542966}
+  visualRoot: {fileID: 7100010000000000012}
   actorAngleOffsetDeg: 0
   visualLocalAngleOffsetDeg: 0
   attachToOwnerOnSetup: 1
   sizingMode: 0
+  colliderLifetimeMode: 1
+--- !u!1 &7100010000000000011
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7100010000000000012}
+  m_Layer: 0
+  m_Name: VisualRoot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7100010000000000012
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7100010000000000011}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -1.2, y: 0.7, z: 0}
+  m_LocalScale: {x: 0.8, y: 0.8, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 4300669043608542966}
+  m_Father: {fileID: 9129507203395623023}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

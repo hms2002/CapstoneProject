@@ -1,5 +1,8 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
+using UnityGAS;
 
 /// <summary>
 /// 번개 창 표식 돌진 경로와 도착 충격의 짧은 시각 효과를 재생하고 정리할 책임을 가집니다.
@@ -7,24 +10,41 @@ using UnityEngine;
 [DisallowMultipleComponent]
 public sealed class LightningSpearDashStabTrailEffect : MonoBehaviour
 {
-    [Header("Renderers")]
-    [SerializeField] private SpriteRenderer startCapRenderer;
-    [SerializeField] private SpriteRenderer middleRenderer;
-    [SerializeField] private SpriteRenderer endCapRenderer;
-    [SerializeField] private SpriteRenderer impactRenderer;
-    [SerializeField] private SpriteRenderer[] fadeRenderers;
+    [Header("Renderer")]
+    [SerializeField] private Transform visualRoot;
+    [SerializeField] private SpriteRenderer trailRenderer;
+    [SerializeField] private SpriteMask trailMask;
+    [SerializeField] private HitboxVisualAnimatorPlayer visualPlayer;
+    [SerializeField] private AnimationClip visualClip;
+
+    [Header("Hitboxes")]
+    [SerializeField] private MeleeHitboxActor trailHitbox;
+    [SerializeField] private MeleeHitboxActor impactHitbox;
 
     [Header("Layout")]
-    [SerializeField, Min(0f)] private float middleHeight = 0.38f;
-    [SerializeField, Min(0f)] private float capInset = 0.14f;
-    [SerializeField, Min(0f)] private float impactOffset = 0.08f;
+    [FormerlySerializedAs("sliceMaxDistance")]
+    [SerializeField, Min(0f)] private float maskMaxDistance = 2.5f;
+    [SerializeField, Min(0.01f)] private float height = 0.45f;
+    [Tooltip("Applied only to the dash trail visual and trail hitbox. X follows rush direction, Y is local perpendicular.")]
+    [SerializeField] private Vector2 trailLocalOffset;
 
-    [Header("Lifetime")]
+    [Header("Fallback Lifetime")]
+    [Tooltip("Used only when no animation clip duration can be resolved.")]
     [SerializeField, Min(0.01f)] private float lifetimeSeconds = 0.16f;
-    [SerializeField, Min(0f)] private float fadeStartDelay = 0.035f;
+
+#if UNITY_EDITOR
+    [Header("Authoring Preview")]
+    [SerializeField] private bool drawAuthoringGizmo = true;
+    [SerializeField, Min(0.01f)] private float gizmoPreviewDistance = 2.5f;
+    [SerializeField] private Color gizmoTrailColor = new Color(0f, 0.85f, 1f, 0.85f);
+    [SerializeField] private Color gizmoMaskColor = new Color(1f, 0.92f, 0.2f, 0.85f);
+#endif
 
     private Coroutine lifetimeRoutine;
-    private Color[] baseColors;
+    private Coroutine trailVisualRoutine;
+    private Coroutine impactRoutine;
+    private float trailLifetimeSeconds;
+    private float rootCleanupSeconds;
 
     public void Play(Vector2 start, Vector2 end)
     {
@@ -34,108 +54,467 @@ public sealed class LightningSpearDashStabTrailEffect : MonoBehaviour
             return;
         }
 
+        Vector2 direction = ResolveDirection(start, end);
+        Vector2 trailOffset = CalculateTrailWorldOffset(direction);
+        PlayInternal(start + trailOffset, end + trailOffset, direction);
+    }
+
+    public bool PlayMarkRush(
+        Vector2 start,
+        Vector2 end,
+        LightningSpearHitConfig hitConfig,
+        AbilitySystem system,
+        AbilitySpec spec,
+        Vector2 direction,
+        int facingSideSign,
+        float impactDelaySeconds)
+    {
+        Vector2 safeDirection = direction.sqrMagnitude > 0.0001f
+            ? direction.normalized
+            : ResolveDirection(start, end);
+        Vector2 trailOffset = CalculateTrailWorldOffset(safeDirection);
+        Vector2 trailStart = start + trailOffset;
+        Vector2 trailEnd = end + trailOffset;
+        PlayInternal(trailStart, trailEnd, safeDirection);
+
+        if (hitConfig == null || system == null || spec == null)
+            return false;
+
+        CombatHitPayload payload = hitConfig.BuildPayload(system, spec);
+        if (payload == null)
+            return false;
+
+        float safeImpactDelay = Mathf.Max(0f, impactDelaySeconds);
+        var sharedHitTargetIds = new HashSet<int>();
+        bool configuredAnyHitbox = false;
+
+        if (impactHitbox != null)
+            EnsureRootCleanupAtLeast(safeImpactDelay + ResolveImpactLifetimeSeconds(hitConfig));
+
+        configuredAnyHitbox |= SetupTrailHitbox(
+            hitConfig,
+            system,
+            spec,
+            payload,
+            sharedHitTargetIds,
+            trailStart,
+            trailEnd,
+            safeDirection);
+
+        if (impactHitbox != null)
+        {
+            if (impactRoutine != null)
+                StopCoroutine(impactRoutine);
+
+            impactRoutine = StartCoroutine(CoSetupImpactHitbox(
+                hitConfig,
+                system,
+                spec,
+                payload,
+                sharedHitTargetIds,
+                end,
+                safeDirection,
+                facingSideSign,
+                safeImpactDelay));
+            configuredAnyHitbox = true;
+        }
+
+        return configuredAnyHitbox;
+    }
+
+    private void ResolveReferences()
+    {
+        if (trailRenderer == null)
+            trailRenderer = GetComponentInChildren<SpriteRenderer>(true);
+
+        if (visualRoot == null && trailRenderer != null)
+            visualRoot = trailRenderer.transform;
+
+        if (trailMask == null)
+            trailMask = GetComponentInChildren<SpriteMask>(true);
+
+        if (visualPlayer == null)
+            visualPlayer = GetComponentInChildren<HitboxVisualAnimatorPlayer>(true);
+    }
+
+    private void PlayInternal(Vector2 start, Vector2 end, Vector2 direction)
+    {
+        if (!IsFinite(start) || !IsFinite(end))
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        ResolveReferences();
+        if (trailRenderer == null)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        if (visualRoot != null && visualRoot != transform)
+            visualRoot.gameObject.SetActive(true);
+
         Vector2 delta = end - start;
         float distance = delta.magnitude;
-        Vector2 direction = distance > 0.0001f ? delta / distance : Vector2.right;
-        Vector2 midpoint = (start + end) * 0.5f;
+        Vector2 safeDirection = direction.sqrMagnitude > 0.0001f
+            ? direction.normalized
+            : ResolveDirection(start, end);
 
-        transform.position = new Vector3(midpoint.x, midpoint.y, transform.position.z);
-        transform.rotation = Quaternion.Euler(0f, 0f, Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg);
+        transform.position = new Vector3(start.x, start.y, transform.position.z);
+        transform.rotation = Quaternion.Euler(0f, 0f, Mathf.Atan2(safeDirection.y, safeDirection.x) * Mathf.Rad2Deg);
 
+        float visualDuration = PlayVisual();
         ApplyLayout(Mathf.Max(0.01f, distance));
-        CacheFadeRenderers();
-        CaptureBaseColors();
-        ApplyAlphaMultiplier(1f);
+        trailLifetimeSeconds = ResolveLifetimeSeconds(visualDuration);
+        StartTrailVisualLifetime(trailLifetimeSeconds);
+        StartRootCleanupAfter(trailLifetimeSeconds);
+    }
 
-        if (lifetimeRoutine != null)
-            StopCoroutine(lifetimeRoutine);
+    private Vector2 CalculateTrailWorldOffset(Vector2 direction)
+    {
+        Vector2 safeDirection = direction.sqrMagnitude > 0.0001f ? direction.normalized : Vector2.right;
+        Vector2 localUp = new Vector2(-safeDirection.y, safeDirection.x);
+        return safeDirection * trailLocalOffset.x + localUp * trailLocalOffset.y;
+    }
 
-        lifetimeRoutine = StartCoroutine(CoLifetime());
+    private bool SetupTrailHitbox(
+        LightningSpearHitConfig hitConfig,
+        AbilitySystem system,
+        AbilitySpec spec,
+        CombatHitPayload payload,
+        HashSet<int> sharedHitTargetIds,
+        Vector2 start,
+        Vector2 end,
+        Vector2 direction)
+    {
+        if (trailHitbox == null)
+            return false;
+
+        Vector2 delta = end - start;
+        float distance = delta.magnitude;
+        if (distance <= 0.01f)
+            return false;
+
+        trailHitbox.gameObject.SetActive(true);
+        Vector2 center = start + direction * (distance * 0.5f);
+        var context = new MeleeHitboxSpawnContext
+        {
+            ownerSystem = system,
+            sourceSpec = spec,
+            causer = system.gameObject,
+            ignoreTarget = system.gameObject,
+            lifetime = Mathf.Max(0.01f, trailLifetimeSeconds),
+            wallLayers = hitConfig.WallLayers,
+            damageLayers = hitConfig.HitLayers,
+            hitPayload = payload,
+            worldPosition = center,
+            hitboxSize = new Vector2(distance, Mathf.Max(0.01f, height)),
+            hitOncePerTarget = true,
+            destroyOnFirstHit = false,
+            direction = direction,
+            overrideSizingMode = true,
+            sizingMode = MeleeHitboxSizingMode.OverrideColliderWorldSizeKeepVisualScale,
+            overrideAttachToOwnerOnSetup = true,
+            attachToOwnerOnSetup = false,
+            sharedHitTargetIds = sharedHitTargetIds
+        };
+
+        trailHitbox.Setup(context);
+        return true;
+    }
+
+    private IEnumerator CoSetupImpactHitbox(
+        LightningSpearHitConfig hitConfig,
+        AbilitySystem system,
+        AbilitySpec spec,
+        CombatHitPayload payload,
+        HashSet<int> sharedHitTargetIds,
+        Vector2 end,
+        Vector2 direction,
+        int facingSideSign,
+        float delaySeconds)
+    {
+        if (impactHitbox == null)
+            yield break;
+
+        impactHitbox.gameObject.SetActive(false);
+
+        if (delaySeconds > 0f)
+            yield return new WaitForSeconds(delaySeconds);
+
+        if (impactHitbox == null || system == null)
+            yield break;
+
+        impactHitbox.gameObject.SetActive(true);
+        Vector2 center = end + direction * hitConfig.ForwardOffset;
+        int visualSideSign = facingSideSign < 0 ? -1 : 1;
+        var context = new MeleeHitboxSpawnContext
+        {
+            ownerSystem = system,
+            sourceSpec = spec,
+            causer = system.gameObject,
+            ignoreTarget = system.gameObject,
+            lifetime = hitConfig.ActiveTime,
+            wallLayers = hitConfig.WallLayers,
+            damageLayers = hitConfig.HitLayers,
+            hitPayload = payload,
+            worldPosition = center,
+            hitboxSize = hitConfig.HitboxSize,
+            hitOncePerTarget = true,
+            destroyOnFirstHit = false,
+            direction = direction,
+            flipVisualX = visualSideSign < 0,
+            overrideAttachToOwnerOnSetup = true,
+            attachToOwnerOnSetup = false,
+            sharedHitTargetIds = sharedHitTargetIds
+        };
+
+        impactHitbox.Setup(context);
     }
 
     private void ApplyLayout(float distance)
     {
-        float halfDistance = distance * 0.5f;
-        float safeInset = Mathf.Min(capInset, halfDistance);
+        Sprite trailSprite = trailRenderer.sprite;
+        Vector2 trailSize = trailSprite != null ? trailSprite.bounds.size : Vector2.one;
+        float trailWidth = Mathf.Max(0.01f, trailSize.x);
+        float trailHeight = Mathf.Max(0.01f, trailSize.y);
 
-        SetLocalPosition(startCapRenderer, -halfDistance + safeInset);
-        SetLocalPosition(endCapRenderer, halfDistance - safeInset);
-        SetLocalPosition(impactRenderer, halfDistance + impactOffset);
-
-        if (middleRenderer != null)
+        if (trailMask != null && maskMaxDistance > 0f && distance <= maskMaxDistance)
         {
-            middleRenderer.transform.localPosition = Vector3.zero;
-            middleRenderer.size = new Vector2(Mathf.Max(0.01f, distance - safeInset * 2f), middleHeight);
+            ApplyMaskedCrop(distance, trailWidth, trailHeight);
+            return;
         }
+
+        ApplyStretch(distance, trailWidth, trailHeight);
     }
 
-    private static void SetLocalPosition(SpriteRenderer renderer, float x)
+    private void ApplyMaskedCrop(float distance, float trailWidth, float trailHeight)
     {
-        if (renderer == null)
+        trailMask.enabled = true;
+        ConfigureMaskSortingRange();
+        trailRenderer.maskInteraction = SpriteMaskInteraction.VisibleInsideMask;
+        trailRenderer.drawMode = SpriteDrawMode.Simple;
+        trailRenderer.size = Vector2.one;
+
+        Transform rendererTransform = visualRoot != null ? visualRoot : trailRenderer.transform;
+        rendererTransform.localPosition = new Vector3(trailWidth * 0.5f, 0f, 0f);
+        rendererTransform.localRotation = Quaternion.identity;
+        rendererTransform.localScale = new Vector3(1f, height / trailHeight, 1f);
+
+        Transform maskTransform = trailMask.transform;
+        Sprite maskSprite = trailMask.sprite;
+        Vector2 maskSize = maskSprite != null ? maskSprite.bounds.size : Vector2.one;
+        float maskWidth = Mathf.Max(0.01f, maskSize.x);
+        float maskHeight = Mathf.Max(0.01f, maskSize.y);
+        maskTransform.localPosition = new Vector3(distance * 0.5f, 0f, 0f);
+        maskTransform.localRotation = Quaternion.identity;
+        maskTransform.localScale = new Vector3(distance / maskWidth, height / maskHeight, 1f);
+    }
+
+    private void ApplyStretch(float distance, float trailWidth, float trailHeight)
+    {
+        if (trailMask != null)
+            trailMask.enabled = false;
+
+        trailRenderer.maskInteraction = SpriteMaskInteraction.None;
+        trailRenderer.drawMode = SpriteDrawMode.Simple;
+        trailRenderer.size = Vector2.one;
+
+        Transform rendererTransform = visualRoot != null ? visualRoot : trailRenderer.transform;
+        rendererTransform.localPosition = new Vector3(distance * 0.5f, 0f, 0f);
+        rendererTransform.localRotation = Quaternion.identity;
+        rendererTransform.localScale = new Vector3(distance / trailWidth, height / trailHeight, 1f);
+    }
+
+    private void ConfigureMaskSortingRange()
+    {
+        if (trailMask == null || trailRenderer == null)
             return;
 
-        renderer.transform.localPosition = new Vector3(x, 0f, 0f);
+        int sortingOrder = LightningSpearTrailMaskSortingOrder.Allocate(trailRenderer.sortingOrder);
+        trailRenderer.sortingOrder = sortingOrder;
+        trailMask.isCustomRangeActive = true;
+        trailMask.frontSortingLayerID = trailRenderer.sortingLayerID;
+        trailMask.backSortingLayerID = trailRenderer.sortingLayerID;
+        trailMask.frontSortingOrder = sortingOrder;
+        trailMask.backSortingOrder = sortingOrder;
     }
 
-    private IEnumerator CoLifetime()
+    private float PlayVisual()
     {
-        float delay = Mathf.Min(fadeStartDelay, lifetimeSeconds);
-        if (delay > 0f)
-            yield return new WaitForSeconds(delay);
-
-        float fadeDuration = Mathf.Max(0.01f, lifetimeSeconds - delay);
-        float elapsed = 0f;
-        while (elapsed < fadeDuration)
+        if (visualPlayer != null)
         {
-            elapsed += Time.deltaTime;
-            float normalized = Mathf.Clamp01(elapsed / fadeDuration);
-            ApplyAlphaMultiplier(1f - normalized);
-            yield return null;
+            if (visualClip != null)
+                visualPlayer.PlayClip(visualClip);
+            else
+                visualPlayer.Play();
+
+            if (visualPlayer.CurrentClipDuration > 0f)
+                return visualPlayer.CurrentClipDuration;
         }
+
+        return visualClip != null ? visualClip.length : 0f;
+    }
+
+    private float ResolveLifetimeSeconds(float visualDuration)
+    {
+        return visualDuration > 0f
+            ? visualDuration
+            : Mathf.Max(0.01f, lifetimeSeconds);
+    }
+
+    private void StartTrailVisualLifetime(float seconds)
+    {
+        if (trailVisualRoutine != null)
+            StopCoroutine(trailVisualRoutine);
+
+        trailVisualRoutine = StartCoroutine(CoDisableTrailVisualAfterAnimation(Mathf.Max(0.01f, seconds)));
+    }
+
+    private void StartRootCleanupAfter(float seconds)
+    {
+        rootCleanupSeconds = Mathf.Max(0.01f, seconds);
+        if (lifetimeRoutine != null)
+            StopCoroutine(lifetimeRoutine);
+
+        lifetimeRoutine = StartCoroutine(CoDestroyAfterAnimation(rootCleanupSeconds));
+    }
+
+    private void EnsureRootCleanupAtLeast(float requiredSeconds)
+    {
+        if (requiredSeconds <= rootCleanupSeconds)
+            return;
+
+        StartRootCleanupAfter(requiredSeconds);
+    }
+
+    private IEnumerator CoDisableTrailVisualAfterAnimation(float duration)
+    {
+        if (duration > 0f)
+            yield return new WaitForSeconds(duration);
+
+        trailVisualRoutine = null;
+        if (visualRoot != null && visualRoot != transform)
+            visualRoot.gameObject.SetActive(false);
+    }
+
+    private IEnumerator CoDestroyAfterAnimation(float duration)
+    {
+        if (duration > 0f)
+            yield return new WaitForSeconds(duration);
 
         Destroy(gameObject);
     }
 
-    private void CacheFadeRenderers()
+    private float ResolveImpactLifetimeSeconds(LightningSpearHitConfig hitConfig)
     {
-        if (fadeRenderers == null || fadeRenderers.Length == 0)
-            fadeRenderers = GetComponentsInChildren<SpriteRenderer>(true);
-    }
-
-    private void CaptureBaseColors()
-    {
-        if (fadeRenderers == null)
+        float duration = hitConfig != null ? hitConfig.ActiveTime : 0f;
+        if (impactHitbox != null)
         {
-            baseColors = null;
-            return;
+            HitboxVisualAnimatorPlayer impactVisualPlayer =
+                impactHitbox.GetComponentInChildren<HitboxVisualAnimatorPlayer>(true);
+            if (impactVisualPlayer != null)
+                duration = Mathf.Max(duration, impactVisualPlayer.CurrentClipDuration);
         }
 
-        if (baseColors == null || baseColors.Length != fadeRenderers.Length)
-            baseColors = new Color[fadeRenderers.Length];
-
-        for (int i = 0; i < fadeRenderers.Length; i++)
-            baseColors[i] = fadeRenderers[i] != null ? fadeRenderers[i].color : Color.clear;
+        return Mathf.Max(0.01f, duration);
     }
 
-    private void ApplyAlphaMultiplier(float multiplier)
+    private void OnDestroy()
     {
-        if (fadeRenderers == null || baseColors == null)
-            return;
-
-        for (int i = 0; i < fadeRenderers.Length && i < baseColors.Length; i++)
+        if (trailVisualRoutine != null)
         {
-            SpriteRenderer renderer = fadeRenderers[i];
-            if (renderer == null)
-                continue;
+            StopCoroutine(trailVisualRoutine);
+            trailVisualRoutine = null;
+        }
 
-            Color color = baseColors[i];
-            color.a *= Mathf.Clamp01(multiplier);
-            renderer.color = color;
+        if (lifetimeRoutine != null)
+        {
+            StopCoroutine(lifetimeRoutine);
+            lifetimeRoutine = null;
+        }
+
+        if (impactRoutine != null)
+        {
+            StopCoroutine(impactRoutine);
+            impactRoutine = null;
         }
     }
 
     private static bool IsFinite(Vector2 value)
     {
         return float.IsFinite(value.x) && float.IsFinite(value.y);
+    }
+
+    private static Vector2 ResolveDirection(Vector2 start, Vector2 end)
+    {
+        Vector2 delta = end - start;
+        float distance = delta.magnitude;
+        return distance > 0.0001f ? delta / distance : Vector2.right;
+    }
+
+#if UNITY_EDITOR
+    private void OnDrawGizmosSelected()
+    {
+        if (!drawAuthoringGizmo)
+            return;
+
+        float previewDistance = Mathf.Max(0.01f, gizmoPreviewDistance);
+        float previewHeight = Mathf.Max(0.01f, height);
+
+        Matrix4x4 previousMatrix = Gizmos.matrix;
+        Color previousColor = Gizmos.color;
+        Gizmos.matrix = transform.localToWorldMatrix;
+
+        Vector3 trailOffset = new Vector3(trailLocalOffset.x, trailLocalOffset.y, 0f);
+
+        Gizmos.color = gizmoTrailColor;
+        DrawLocalRect(trailOffset, previewDistance, previewHeight);
+        Gizmos.DrawLine(trailOffset, trailOffset + Vector3.right * previewDistance);
+
+        if (maskMaxDistance > 0f)
+        {
+            float maskPreviewDistance = Mathf.Min(maskMaxDistance, previewDistance);
+            Gizmos.color = gizmoMaskColor;
+            DrawLocalRect(trailOffset, maskPreviewDistance, previewHeight);
+            Gizmos.DrawLine(
+                trailOffset + new Vector3(maskPreviewDistance, -previewHeight * 0.6f, 0f),
+                trailOffset + new Vector3(maskPreviewDistance, previewHeight * 0.6f, 0f));
+        }
+
+        Gizmos.matrix = previousMatrix;
+        Gizmos.color = previousColor;
+    }
+
+    private static void DrawLocalRect(Vector3 origin, float distance, float previewHeight)
+    {
+        if (distance <= 0f || previewHeight <= 0f)
+            return;
+
+        float halfHeight = previewHeight * 0.5f;
+        Vector3 leftTop = origin + new Vector3(0f, halfHeight, 0f);
+        Vector3 rightTop = origin + new Vector3(distance, halfHeight, 0f);
+        Vector3 rightBottom = origin + new Vector3(distance, -halfHeight, 0f);
+        Vector3 leftBottom = origin + new Vector3(0f, -halfHeight, 0f);
+
+        Gizmos.DrawLine(leftTop, rightTop);
+        Gizmos.DrawLine(rightTop, rightBottom);
+        Gizmos.DrawLine(rightBottom, leftBottom);
+        Gizmos.DrawLine(leftBottom, leftTop);
+    }
+#endif
+}
+
+internal static class LightningSpearTrailMaskSortingOrder
+{
+    private const int Cycle = 200;
+    private static int nextOffset;
+
+    public static int Allocate(int baseOrder)
+    {
+        int offset = 1 + nextOffset;
+        nextOffset = (nextOffset + 1) % Cycle;
+        return baseOrder + offset;
     }
 }

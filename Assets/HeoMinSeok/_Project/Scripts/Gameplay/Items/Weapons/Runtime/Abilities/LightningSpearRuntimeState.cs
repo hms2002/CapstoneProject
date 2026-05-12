@@ -6,10 +6,40 @@ using UnityGAS;
 /// <summary>
 /// 장착 중인 번개 창의 live 표식 목록, Q/E 실행, 표식 선택 피드백, cleanup을 관리할 책임을 가집니다.
 /// </summary>
-public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState
+public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWeaponAbilityHudIconOverrideProvider
 {
+    private readonly struct RecoveredSpearShotRequest
+    {
+        public readonly Vector2 direction;
+
+        public RecoveredSpearShotRequest(Vector2 direction)
+        {
+            this.direction = direction;
+        }
+    }
+
+    private sealed class RecoveredSpearVolleyContext
+    {
+        public readonly Vector2 baseDirection;
+        public readonly List<RecoveredSpearShotRequest> shots;
+
+        public RecoveredSpearVolleyContext(Vector2 baseDirection, List<RecoveredSpearShotRequest> shots)
+        {
+            this.baseDirection = baseDirection;
+            this.shots = shots;
+        }
+
+        public bool HasShots => shots != null && shots.Count > 0;
+    }
+
     private readonly List<LightningSpearMarkActor> activeMarks = new List<LightningSpearMarkActor>();
     private readonly List<Vector2> pendingPositions = new List<Vector2>();
+    private readonly List<LightningSpearRecoveredSpearActor> recoveredSpears = new List<LightningSpearRecoveredSpearActor>();
+    private readonly List<LightningSpearRecoveredSpearActor> transientRecoveredSpears = new List<LightningSpearRecoveredSpearActor>();
+    private readonly List<LightningSpearRecoveredSpearProjectile2D> recoveredProjectiles = new List<LightningSpearRecoveredSpearProjectile2D>();
+    private readonly List<LightningSpearRecoverShotTrailEffect> recoveredShotTrails = new List<LightningSpearRecoverShotTrailEffect>();
+    private readonly List<GameObject> recoveredShotSpawnEffects = new List<GameObject>();
+    private readonly List<Coroutine> recoveredSpearFireRoutines = new List<Coroutine>();
 
     private AbilitySystem ownerSystem;
     private WeaponInventory2D weaponInventory;
@@ -19,6 +49,8 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState
     private GameObject rushRangeIndicatorInstance;
     private GameObject selectedMarkIndicatorInstance;
     private bool cursorInteractableSet;
+    private bool skill1MarkRushHudOverrideActive;
+    private int recoveredSpearLayoutSideSign = 1;
 
     private void Awake()
     {
@@ -33,12 +65,15 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState
             return;
         }
 
-        RefreshMarkFeedback(loadout, ResolveSkill1Data(loadout));
+        LightningSpearSkill1Data skill1Data = ResolveSkill1Data(loadout);
+        RefreshMarkFeedback(loadout, skill1Data);
+        RefreshRecoveredSpearLayout(skill1Data);
     }
 
     private void OnDisable()
     {
         ClearAllMarks();
+        ClearRecoveredSpearState();
         ClearFeedback();
         DestroyFeedbackObjects();
     }
@@ -46,6 +81,7 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState
     private void OnDestroy()
     {
         ClearAllMarks();
+        ClearRecoveredSpearState();
         ClearFeedback();
         DestroyFeedbackObjects();
     }
@@ -55,7 +91,10 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState
         CacheOwnerReferences(null);
 
         if (previousWeapon != newWeapon && previousWeapon?.abilityLoadout is LightningSpearLoadout)
+        {
             ClearAllMarks();
+            ClearRecoveredSpearState();
+        }
     }
 
     public IEnumerator ExecuteSkill1(
@@ -81,13 +120,17 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState
             try
             {
                 TryPlayAnimationTrigger(system, spec.Definition, GetNoMarkSweepAnimationTrigger(data));
+                RecoveredSpearVolleyContext recoveredVolley =
+                    BeginRecoveredSpearVolleyDespawn(data, system, direction);
                 yield return WaitForAnimationEventOrDelay(
                     system,
                     spec,
                     GetNoMarkSweepHitEventTag(data),
                     GetNoMarkSweepHitEventTimeout(data),
                     GetNoMarkSweepFallbackHitDelay(data));
-                SpawnHitbox(GetNoMarkSweepHit(loadout, data), system, spec, ownerPosition, direction, facingSideSign);
+                Vector2 hitOrigin = system.transform.position;
+                SpawnHitbox(GetNoMarkSweepHit(loadout, data), system, spec, hitOrigin, direction, facingSideSign);
+                StartRecoveredSpearShotSequence(data, system, spec, recoveredVolley);
             }
             finally
             {
@@ -136,11 +179,10 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState
                 GetMarkRainFallbackSpawnDelay(data));
 
             Vector2 ownerPosition = system.transform.position;
-            MonsterRoomArea2D room = FindRoomContaining(ownerPosition);
-            List<Vector2> positions = GenerateMarkPositions(loadout, data, ownerPosition, room);
+            List<Vector2> positions = GenerateMarkPositions(loadout, data, ownerPosition);
 
             for (int i = 0; i < positions.Count; i++)
-                SpawnMark(loadout, data, positions[i], room, system, spec);
+                SpawnMark(loadout, data, positions[i], null, system, spec);
         }
         finally
         {
@@ -174,7 +216,25 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState
             return;
 
         LightningSpearSkill2Data data = ResolveSkill2Data(loadout);
-        SpawnHitbox(GetLandingHit(loadout, data), system, spec, mark.transform.position, ResolveAimDirection(system));
+        SpawnHitbox(GetLandingHit(loadout, data), system, spec, mark.transform.position, Vector2.right, 1);
+    }
+
+    public bool TryGetHudIconOverride(WeaponAbilitySlot slot, AbilityDefinition ability, out Sprite icon)
+    {
+        icon = null;
+
+        if (slot != WeaponAbilitySlot.Skill1 || ability == null || !skill1MarkRushHudOverrideActive)
+            return false;
+
+        if (!TryResolveActiveLoadout(out LightningSpearLoadout loadout) ||
+            loadout.MarkRushOrSweep != ability)
+        {
+            return false;
+        }
+
+        LightningSpearSkill1Data data = ResolveSkill1Data(loadout);
+        icon = data != null ? data.MarkRushHudIcon : null;
+        return icon != null;
     }
 
     private IEnumerator ExecuteMarkRush(
@@ -194,14 +254,27 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState
         try
         {
             mark.Consume();
-            SpawnMarkRushTrail(loadout, data, start, destination);
+            LightningSpearHitConfig markRushHit = GetMarkRushHit(loadout, data);
+            bool markRushEffectHandlesHitboxes = SpawnMarkRushEffect(
+                loadout,
+                data,
+                system,
+                spec,
+                markRushHit,
+                start,
+                destination,
+                direction,
+                facingSideSign);
             MoveOwnerToMark(system, destination);
+            AddRecoveredSpear(data, system.transform);
 
             float hitDelay = GetMarkRushArrivalHitDelay(loadout, data);
             if (hitDelay > 0f)
                 yield return new WaitForSeconds(hitDelay);
 
-            SpawnHitbox(GetMarkRushHit(loadout, data), system, spec, destination, direction, facingSideSign);
+            if (!markRushEffectHandlesHitboxes)
+                SpawnHitbox(markRushHit, system, spec, destination, direction, facingSideSign);
+
             RefreshMarkFeedback(loadout, data);
         }
         finally
@@ -264,22 +337,354 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState
         system.transform.position = new Vector3(destination.x, destination.y, system.transform.position.z);
     }
 
-    private static void SpawnMarkRushTrail(
+    private bool SpawnMarkRushEffect(
         LightningSpearLoadout loadout,
         LightningSpearSkill1Data data,
+        AbilitySystem system,
+        AbilitySpec spec,
+        LightningSpearHitConfig hitConfig,
         Vector2 start,
-        Vector2 destination)
+        Vector2 destination,
+        Vector2 direction,
+        int facingSideSign)
     {
         LightningSpearDashStabTrailEffect prefab = GetMarkRushTrailEffectPrefab(loadout, data);
         if (prefab == null)
-            return;
+            return false;
 
         LightningSpearDashStabTrailEffect effect =
             UnityEngine.Object.Instantiate(prefab);
         if (effect == null)
+            return false;
+
+        return effect.PlayMarkRush(
+            start,
+            destination,
+            hitConfig,
+            system,
+            spec,
+            direction,
+            facingSideSign,
+            GetMarkRushArrivalHitDelay(loadout, data));
+    }
+
+    private void AddRecoveredSpear(LightningSpearSkill1Data data, Transform ownerTransform)
+    {
+        if (data == null || ownerTransform == null || data.RecoveredSpearPrefab == null)
             return;
 
-        effect.Play(start, destination);
+        int maxCount = data.RecoveredSpearMaxCount;
+        if (maxCount <= 0)
+            return;
+
+        PruneRecoveredSpears();
+
+        while (recoveredSpears.Count >= maxCount)
+            RemoveRecoveredSpearAt(0, data);
+
+        int newIndex = recoveredSpears.Count;
+        int newCount = recoveredSpears.Count + 1;
+        int sideSign = ResolveFacingSideSign(ownerSystem, ResolveAimDirection(ownerSystem));
+        recoveredSpearLayoutSideSign = sideSign;
+        Vector2 spawnOffset = CalculateRecoveredSpearOffset(data, newIndex, newCount, sideSign);
+        Vector2 spawnPosition = (Vector2)ownerTransform.position + spawnOffset;
+
+        LightningSpearRecoveredSpearActor actor = Instantiate(
+            data.RecoveredSpearPrefab,
+            new Vector3(spawnPosition.x, spawnPosition.y, ownerTransform.position.z),
+            Quaternion.identity);
+        if (actor == null)
+            return;
+
+        actor.Initialize(
+            ownerTransform,
+            spawnOffset,
+            CalculateRecoveredSpearStockAngle(data, newIndex, newCount, sideSign),
+            data.RecoveredSpearStockVisualForwardOffset,
+            data.RecoveredSpearSpawnFallbackSeconds,
+            data.RecoveredSpearDespawnFallbackSeconds,
+            data.RecoveredSpearMoveTweenSeconds,
+            data.RecoveredSpearFloatAmplitude,
+            data.RecoveredSpearFloatDuration,
+            data.RecoveredSpearFollowSmoothTime,
+            data.RecoveredSpearWarpSnapDistance);
+        recoveredSpears.Add(actor);
+        ApplyRecoveredSpearLayout(data);
+    }
+
+    private RecoveredSpearVolleyContext BeginRecoveredSpearVolleyDespawn(
+        LightningSpearSkill1Data data,
+        AbilitySystem system,
+        Vector2 aimDirection)
+    {
+        if (data == null || system == null || data.RecoveredSpearProjectilePrefab == null)
+            return null;
+
+        PruneRecoveredSpears();
+        if (recoveredSpears.Count == 0)
+            return null;
+
+        List<LightningSpearRecoveredSpearActor> volleySpears =
+            new List<LightningSpearRecoveredSpearActor>(recoveredSpears);
+        recoveredSpears.Clear();
+        for (int i = 0; i < volleySpears.Count; i++)
+            TrackTransientRecoveredSpear(volleySpears[i]);
+
+        Vector2 baseDirection = aimDirection.sqrMagnitude > 0.0001f
+            ? aimDirection.normalized
+            : ResolveAimDirection(system);
+        int sideSign = ResolveFacingSideSign(system, baseDirection);
+        SortRecoveredSpearVolleyForDespawn(volleySpears, sideSign);
+        int shotCount = CountValidRecoveredSpears(volleySpears);
+        if (shotCount == 0)
+            return null;
+
+        int shotIndex = 0;
+        var shots = new List<RecoveredSpearShotRequest>(shotCount);
+        for (int i = 0; i < volleySpears.Count; i++)
+        {
+            LightningSpearRecoveredSpearActor actor = volleySpears[i];
+            if (actor == null)
+                continue;
+
+            float angle = CalculateRecoveredSpearShotAngle(data, shotIndex, shotCount, sideSign);
+            Vector2 shotDirection = RotateDirection(baseDirection, angle);
+            shots.Add(new RecoveredSpearShotRequest(shotDirection));
+            shotIndex++;
+        }
+
+        Coroutine routine = null;
+        routine = StartCoroutine(CoDespawnRecoveredSpears(
+            data,
+            volleySpears,
+            () => recoveredSpearFireRoutines.Remove(routine)));
+        recoveredSpearFireRoutines.Add(routine);
+
+        return new RecoveredSpearVolleyContext(baseDirection, shots);
+    }
+
+    private IEnumerator CoDespawnRecoveredSpears(
+        LightningSpearSkill1Data data,
+        List<LightningSpearRecoveredSpearActor> volleySpears,
+        System.Action onComplete)
+    {
+        if (volleySpears == null || volleySpears.Count == 0)
+        {
+            onComplete?.Invoke();
+            yield break;
+        }
+
+        float interval = data != null ? data.RecoveredSpearShotInterval : 0f;
+        int startedCount = 0;
+        int totalCount = CountValidRecoveredSpears(volleySpears);
+        for (int i = 0; i < volleySpears.Count; i++)
+        {
+            LightningSpearRecoveredSpearActor actor = volleySpears[i];
+            if (actor == null)
+                continue;
+
+            float despawnFallbackSeconds = data != null ? data.RecoveredSpearDespawnFallbackSeconds : 0f;
+            actor.PlayDespawnAndDestroy(despawnFallbackSeconds);
+            startedCount++;
+
+            if (interval > 0f && startedCount < totalCount)
+                yield return new WaitForSeconds(interval);
+        }
+
+        onComplete?.Invoke();
+    }
+
+    private void StartRecoveredSpearShotSequence(
+        LightningSpearSkill1Data data,
+        AbilitySystem system,
+        AbilitySpec spec,
+        RecoveredSpearVolleyContext volley)
+    {
+        if (data == null || system == null || spec == null || volley == null || !volley.HasShots)
+            return;
+
+        Coroutine routine = null;
+        routine = StartCoroutine(CoFireRecoveredSpearShots(
+            data,
+            system,
+            spec,
+            volley,
+            () => recoveredSpearFireRoutines.Remove(routine)));
+        recoveredSpearFireRoutines.Add(routine);
+    }
+
+    private IEnumerator CoFireRecoveredSpearShots(
+        LightningSpearSkill1Data data,
+        AbilitySystem system,
+        AbilitySpec spec,
+        RecoveredSpearVolleyContext volley,
+        System.Action onComplete)
+    {
+        float interval = data != null ? data.RecoveredSpearShotInterval : 0f;
+        float releaseDelay = data != null ? data.RecoveredSpearShotReleaseDelay : 0f;
+        List<RecoveredSpearShotRequest> shots = volley != null ? volley.shots : null;
+        if (shots == null || shots.Count == 0)
+        {
+            onComplete?.Invoke();
+            yield break;
+        }
+
+        for (int i = 0; i < shots.Count; i++)
+        {
+            RecoveredSpearShotRequest shot = shots[i];
+            Vector2 spawnPosition = CalculateRecoveredSpearShotSpawnPosition(
+                data,
+                system,
+                volley.baseDirection,
+                shot.direction);
+            SpawnRecoveredSpearShotSpawnEffect(data, spawnPosition, shot.direction);
+
+            if (releaseDelay > 0f)
+                yield return new WaitForSeconds(releaseDelay);
+
+            SpawnRecoveredShotTrail(data, spawnPosition, shot.direction);
+            SpawnRecoveredSpearProjectile(data, system, spec, spawnPosition, shot.direction);
+
+            if (interval > 0f && i < shots.Count - 1)
+                yield return new WaitForSeconds(interval);
+        }
+
+        onComplete?.Invoke();
+    }
+
+    private void SpawnRecoveredSpearShotSpawnEffect(
+        LightningSpearSkill1Data data,
+        Vector2 spawnPosition,
+        Vector2 direction)
+    {
+        if (data == null || data.RecoveredSpearShotSpawnEffectPrefab == null)
+            return;
+
+        Vector2 safeDirection = direction.sqrMagnitude > 0.0001f ? direction.normalized : Vector2.right;
+        float angle = Mathf.Atan2(safeDirection.y, safeDirection.x) * Mathf.Rad2Deg;
+        GameObject effect = Instantiate(
+            data.RecoveredSpearShotSpawnEffectPrefab,
+            spawnPosition,
+            Quaternion.Euler(0f, 0f, angle));
+        if (effect == null)
+            return;
+
+        recoveredShotSpawnEffects.Add(effect);
+        HitboxVisualAnimatorPlayer player = effect.GetComponentInChildren<HitboxVisualAnimatorPlayer>(true);
+        bool playerDestroysRoot = false;
+        if (player != null)
+        {
+            player.Play();
+            playerDestroysRoot = player.DestroyOnComplete && player.gameObject == effect;
+        }
+
+        float animationDuration = player != null ? player.CurrentClipDuration : 0f;
+        float fallback = Mathf.Max(data.RecoveredSpearShotSpawnEffectLifetimeFallback, animationDuration);
+        if (!playerDestroysRoot && fallback > 0f)
+            Destroy(effect, fallback);
+    }
+
+    private void SpawnRecoveredShotTrail(
+        LightningSpearSkill1Data data,
+        Vector2 spawnPosition,
+        Vector2 direction)
+    {
+        if (data == null || data.RecoveredShotTrailEffectPrefab == null)
+            return;
+
+        Vector2 safeDirection = direction.sqrMagnitude > 0.0001f ? direction.normalized : Vector2.right;
+        Vector2 endPosition = PredictRecoveredShotEnd(data, spawnPosition, safeDirection);
+
+        LightningSpearRecoverShotTrailEffect trail = Instantiate(
+            data.RecoveredShotTrailEffectPrefab,
+            spawnPosition,
+            Quaternion.identity);
+        if (trail == null)
+            return;
+
+        recoveredShotTrails.Add(trail);
+        trail.Destroyed += HandleRecoveredShotTrailDestroyed;
+        trail.Configure(data.RecoveredShotSliceMaxDistance);
+        trail.Play(spawnPosition, endPosition);
+    }
+
+    private Vector2 PredictRecoveredShotEnd(
+        LightningSpearSkill1Data data,
+        Vector2 spawnPosition,
+        Vector2 direction)
+    {
+        float maxDistance = Mathf.Max(
+            0.01f,
+            data.RecoveredSpearProjectileSpeed * data.RecoveredSpearProjectileLifetime);
+        LightningSpearHitConfig hitConfig = data.RecoveredSpearProjectileHit;
+        LayerMask wallLayers = hitConfig != null ? hitConfig.WallLayers : default;
+
+        if (wallLayers.value != 0)
+        {
+            RaycastHit2D hit = Physics2D.Raycast(spawnPosition, direction, maxDistance, wallLayers);
+            if (hit.collider != null)
+                return hit.point;
+        }
+
+        return spawnPosition + direction * maxDistance;
+    }
+
+    private void SpawnRecoveredSpearProjectile(
+        LightningSpearSkill1Data data,
+        AbilitySystem system,
+        AbilitySpec spec,
+        Vector2 spawnPosition,
+        Vector2 direction)
+    {
+        if (data == null || system == null || spec == null || data.RecoveredSpearProjectilePrefab == null)
+            return;
+
+        LightningSpearHitConfig hitConfig = data.RecoveredSpearProjectileHit;
+        if (hitConfig == null)
+            return;
+
+        CombatHitPayload payload = hitConfig.BuildPayload(system, spec);
+        if (payload == null)
+            return;
+
+        Vector2 safeDirection = direction.sqrMagnitude > 0.0001f ? direction.normalized : ResolveAimDirection(system);
+        float safetyLifetime =
+            data.RecoveredSpearProjectileSpawnFallbackSeconds +
+            data.RecoveredSpearProjectileLifetime +
+            data.RecoveredSpearProjectileStuckLifetime +
+            data.RecoveredSpearProjectileDespawnFallbackSeconds +
+            1f;
+
+        var context = new ProjectileAttackSpawnContext
+        {
+            ownerSystem = system,
+            sourceSpec = spec,
+            causer = system.gameObject,
+            ignoreTarget = system.gameObject,
+            lifetime = Mathf.Max(0.1f, safetyLifetime),
+            wallLayers = hitConfig.WallLayers,
+            damageLayers = hitConfig.HitLayers,
+            hitPayload = payload,
+            direction = safeDirection,
+            speed = data.RecoveredSpearProjectileSpeed
+        };
+
+        LightningSpearRecoveredSpearProjectile2D projectile = Instantiate(
+            data.RecoveredSpearProjectilePrefab,
+            spawnPosition,
+            Quaternion.identity);
+        if (projectile == null)
+            return;
+
+        recoveredProjectiles.Add(projectile);
+        projectile.Destroyed += HandleRecoveredProjectileDestroyed;
+        projectile.Setup(
+            context,
+            spawnPosition,
+            data.RecoveredSpearProjectileLifetime,
+            data.RecoveredSpearProjectileSpawnFallbackSeconds,
+            data.RecoveredSpearProjectileStuckLifetime,
+            data.RecoveredSpearProjectileDespawnFallbackSeconds);
     }
 
     private void SpawnMark(
@@ -309,8 +714,7 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState
     private List<Vector2> GenerateMarkPositions(
         LightningSpearLoadout loadout,
         LightningSpearSkill2Data data,
-        Vector2 ownerPosition,
-        MonsterRoomArea2D room)
+        Vector2 ownerPosition)
     {
         pendingPositions.Clear();
 
@@ -321,29 +725,15 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState
         int sampleCount = Mathf.Max(GetCandidateSamples(loadout, data), targetCount * 12);
         for (int i = 0; i < sampleCount && pendingPositions.Count < targetCount; i++)
         {
-            Vector2 candidate = room != null
-                ? SampleRoomCandidate(room)
-                : SampleFallbackCandidate(ownerPosition, GetFallbackCombatRadius(loadout, data));
+            Vector2 candidate = SampleFallbackCandidate(ownerPosition, GetFallbackCombatRadius(loadout, data));
 
-            if (!ValidateMarkCandidate(loadout, data, ownerPosition, room, candidate))
+            if (!ValidateMarkCandidate(loadout, data, ownerPosition, candidate))
                 continue;
 
             pendingPositions.Add(candidate);
         }
 
         return pendingPositions;
-    }
-
-    private Vector2 SampleRoomCandidate(MonsterRoomArea2D room)
-    {
-        Collider2D areaCollider = room != null ? room.AreaCollider : null;
-        if (areaCollider == null)
-            return transform.position;
-
-        Bounds bounds = areaCollider.bounds;
-        return new Vector2(
-            Random.Range(bounds.min.x, bounds.max.x),
-            Random.Range(bounds.min.y, bounds.max.y));
     }
 
     private static Vector2 SampleFallbackCandidate(Vector2 origin, float radius)
@@ -355,25 +745,16 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState
         LightningSpearLoadout loadout,
         LightningSpearSkill2Data data,
         Vector2 ownerPosition,
-        MonsterRoomArea2D room,
         Vector2 candidate)
     {
         if (!float.IsFinite(candidate.x) || !float.IsFinite(candidate.y))
             return false;
 
-        if (room != null)
-        {
-            if (!room.Contains(candidate))
-                return false;
-        }
-        else
-        {
-            if (Vector2.Distance(ownerPosition, candidate) > GetFallbackCombatRadius(loadout, data))
-                return false;
+        if (Vector2.Distance(ownerPosition, candidate) > GetFallbackCombatRadius(loadout, data))
+            return false;
 
-            if (HasBlocker(ownerPosition, candidate, loadout.MarkRushBodyRadius, loadout.StrictRushBlockMask))
-                return false;
-        }
+        if (HasBlocker(ownerPosition, candidate, loadout.MarkRushBodyRadius, loadout.StrictRushBlockMask))
+            return false;
 
         if (Vector2.Distance(ownerPosition, candidate) < GetMinPlayerDistance(loadout, data))
             return false;
@@ -645,7 +1026,8 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState
         AbilitySpec spec,
         Vector2 origin,
         Vector2 direction,
-        int facingSideSignOverride = 0)
+        int facingSideSignOverride = 0,
+        HashSet<int> sharedHitTargetIds = null)
     {
         if (hitConfig == null || !hitConfig.HasHitbox || system == null || spec == null)
             return;
@@ -681,7 +1063,8 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState
             hitOncePerTarget = true,
             destroyOnFirstHit = false,
             direction = safeDirection,
-            flipVisualX = visualSideSign < 0
+            flipVisualX = visualSideSign < 0,
+            sharedHitTargetIds = sharedHitTargetIds
         };
 
         hitbox.Setup(context);
@@ -726,10 +1109,13 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState
         UpdateRangeIndicator(loadout, data, skillReady && hasActiveMark);
         UpdateSelectedMarkIndicator(loadout, selected);
         UpdateCursorFeedback(selected != null);
+        skill1MarkRushHudOverrideActive = selected != null;
     }
 
     private void ClearFeedback()
     {
+        skill1MarkRushHudOverrideActive = false;
+
         for (int i = activeMarks.Count - 1; i >= 0; i--)
         {
             LightningSpearMarkActor mark = activeMarks[i];
@@ -1096,5 +1482,329 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState
         }
 
         activeMarks.Clear();
+    }
+
+    private void ClearRecoveredSpearState()
+    {
+        StopRecoveredSpearFireRoutines();
+        ClearRecoveredSpears();
+        ClearRecoveredProjectiles();
+        ClearRecoveredShotTrails();
+        ClearRecoveredShotSpawnEffects();
+    }
+
+    private void StopRecoveredSpearFireRoutines()
+    {
+        for (int i = 0; i < recoveredSpearFireRoutines.Count; i++)
+        {
+            Coroutine routine = recoveredSpearFireRoutines[i];
+            if (routine != null)
+                StopCoroutine(routine);
+        }
+
+        recoveredSpearFireRoutines.Clear();
+    }
+
+    private void ClearRecoveredSpears()
+    {
+        for (int i = recoveredSpears.Count - 1; i >= 0; i--)
+        {
+            LightningSpearRecoveredSpearActor actor = recoveredSpears[i];
+            DestroyRecoveredSpearActor(actor);
+        }
+
+        recoveredSpears.Clear();
+
+        for (int i = transientRecoveredSpears.Count - 1; i >= 0; i--)
+        {
+            LightningSpearRecoveredSpearActor actor = transientRecoveredSpears[i];
+            DestroyRecoveredSpearActor(actor);
+        }
+
+        transientRecoveredSpears.Clear();
+    }
+
+    private void ClearRecoveredProjectiles()
+    {
+        for (int i = recoveredProjectiles.Count - 1; i >= 0; i--)
+        {
+            LightningSpearRecoveredSpearProjectile2D projectile = recoveredProjectiles[i];
+            if (projectile != null)
+            {
+                projectile.Destroyed -= HandleRecoveredProjectileDestroyed;
+                Destroy(projectile.gameObject);
+            }
+        }
+
+        recoveredProjectiles.Clear();
+    }
+
+    private void ClearRecoveredShotTrails()
+    {
+        for (int i = recoveredShotTrails.Count - 1; i >= 0; i--)
+        {
+            LightningSpearRecoverShotTrailEffect trail = recoveredShotTrails[i];
+            if (trail != null)
+            {
+                trail.Destroyed -= HandleRecoveredShotTrailDestroyed;
+                Destroy(trail.gameObject);
+            }
+        }
+
+        recoveredShotTrails.Clear();
+    }
+
+    private void ClearRecoveredShotSpawnEffects()
+    {
+        for (int i = recoveredShotSpawnEffects.Count - 1; i >= 0; i--)
+        {
+            GameObject effect = recoveredShotSpawnEffects[i];
+            if (effect != null)
+                Destroy(effect);
+        }
+
+        recoveredShotSpawnEffects.Clear();
+    }
+
+    private void PruneRecoveredSpears()
+    {
+        for (int i = recoveredSpears.Count - 1; i >= 0; i--)
+        {
+            if (recoveredSpears[i] == null)
+                recoveredSpears.RemoveAt(i);
+        }
+    }
+
+    private void TrackTransientRecoveredSpear(LightningSpearRecoveredSpearActor actor)
+    {
+        if (actor == null || transientRecoveredSpears.Contains(actor))
+            return;
+
+        transientRecoveredSpears.Add(actor);
+        actor.Destroyed += HandleRecoveredSpearDestroyed;
+    }
+
+    private void HandleRecoveredSpearDestroyed(LightningSpearRecoveredSpearActor actor)
+    {
+        if (actor == null)
+            return;
+
+        actor.Destroyed -= HandleRecoveredSpearDestroyed;
+        recoveredSpears.Remove(actor);
+        transientRecoveredSpears.Remove(actor);
+    }
+
+    private void DestroyRecoveredSpearActor(LightningSpearRecoveredSpearActor actor)
+    {
+        if (actor == null)
+            return;
+
+        actor.Destroyed -= HandleRecoveredSpearDestroyed;
+        Destroy(actor.gameObject);
+    }
+
+    private void RemoveRecoveredSpearAt(int index, LightningSpearSkill1Data data)
+    {
+        if (index < 0 || index >= recoveredSpears.Count)
+            return;
+
+        LightningSpearRecoveredSpearActor actor = recoveredSpears[index];
+        recoveredSpears.RemoveAt(index);
+
+        if (actor != null)
+        {
+            TrackTransientRecoveredSpear(actor);
+            float fallback = data != null ? data.RecoveredSpearDespawnFallbackSeconds : 0f;
+            actor.PlayDespawnAndDestroy(fallback);
+        }
+
+        ApplyRecoveredSpearLayout(data);
+    }
+
+    private void ApplyRecoveredSpearLayout(LightningSpearSkill1Data data)
+    {
+        if (data == null)
+            return;
+
+        PruneRecoveredSpears();
+        int count = recoveredSpears.Count;
+        int sideSign = ResolveFacingSideSign(ownerSystem, ResolveAimDirection(ownerSystem));
+        recoveredSpearLayoutSideSign = sideSign;
+        for (int i = 0; i < count; i++)
+        {
+            LightningSpearRecoveredSpearActor actor = recoveredSpears[i];
+            if (actor == null)
+                continue;
+
+            actor.SetFollowSettings(data.RecoveredSpearFollowSmoothTime, data.RecoveredSpearWarpSnapDistance);
+            actor.SetLayout(
+                CalculateRecoveredSpearOffset(data, i, count, sideSign),
+                CalculateRecoveredSpearStockAngle(data, i, count, sideSign),
+                data.RecoveredSpearStockVisualForwardOffset,
+                data.RecoveredSpearMoveTweenSeconds);
+        }
+    }
+
+    private void RefreshRecoveredSpearLayout(LightningSpearSkill1Data data)
+    {
+        if (data == null || recoveredSpears.Count == 0)
+            return;
+
+        int sideSign = ResolveFacingSideSign(ownerSystem, ResolveAimDirection(ownerSystem));
+        if (sideSign == recoveredSpearLayoutSideSign)
+            return;
+
+        ApplyRecoveredSpearLayout(data);
+    }
+
+    private void HandleRecoveredProjectileDestroyed(LightningSpearRecoveredSpearProjectile2D projectile)
+    {
+        if (projectile == null)
+            return;
+
+        projectile.Destroyed -= HandleRecoveredProjectileDestroyed;
+        recoveredProjectiles.Remove(projectile);
+    }
+
+    private void HandleRecoveredShotTrailDestroyed(LightningSpearRecoverShotTrailEffect trail)
+    {
+        if (trail == null)
+            return;
+
+        trail.Destroyed -= HandleRecoveredShotTrailDestroyed;
+        recoveredShotTrails.Remove(trail);
+    }
+
+    private static Vector2 CalculateRecoveredSpearOffset(
+        LightningSpearSkill1Data data,
+        int index,
+        int count,
+        int sideSign)
+    {
+        if (data == null || count <= 0)
+            return Vector2.zero;
+
+        float centeredIndex = index - (count - 1) * 0.5f;
+        int safeSideSign = sideSign < 0 ? -1 : 1;
+        Vector2 baseOffset = data.RecoveredSpearBaseOffset;
+        baseOffset.x *= safeSideSign;
+        float backX = -safeSideSign * data.RecoveredSpearBackOffset;
+        float spreadX = centeredIndex * data.RecoveredSpearSpacing * safeSideSign;
+        return baseOffset + Vector2.right * (backX + spreadX);
+    }
+
+    private static float CalculateRecoveredSpearStockAngle(
+        LightningSpearSkill1Data data,
+        int index,
+        int count,
+        int sideSign)
+    {
+        if (data == null)
+            return 0f;
+
+        int safeSideSign = sideSign < 0 ? -1 : 1;
+        return -CalculateRecoveredSpearFanAngle(
+            index,
+            count,
+            data.RecoveredSpearStockAngleStep,
+            data.RecoveredSpearStockMaxFanAngle) * safeSideSign;
+    }
+
+    private static float CalculateRecoveredSpearFanAngle(
+        int index,
+        int count,
+        float angleStep,
+        float maxSpread)
+    {
+        if (count <= 1)
+            return 0f;
+
+        float unclampedSpread = Mathf.Max(0f, angleStep) * (count - 1);
+        float spread = maxSpread > 0f ? Mathf.Min(unclampedSpread, maxSpread) : unclampedSpread;
+        float step = spread / (count - 1);
+        return (index - (count - 1) * 0.5f) * step;
+    }
+
+    private static float CalculateRecoveredSpearShotAngle(
+        LightningSpearSkill1Data data,
+        int index,
+        int count,
+        int sideSign)
+    {
+        if (data == null)
+            return 0f;
+
+        int safeSideSign = sideSign < 0 ? -1 : 1;
+        return -CalculateRecoveredSpearFanAngle(
+            index,
+            count,
+            data.RecoveredSpearAngleStep,
+            data.RecoveredSpearMaxFanAngle) * safeSideSign;
+    }
+
+    private static Vector2 CalculateRecoveredSpearShotSpawnPosition(
+        LightningSpearSkill1Data data,
+        AbilitySystem system,
+        Vector2 baseDirection,
+        Vector2 shotDirection)
+    {
+        Vector2 ownerPosition = system != null ? (Vector2)system.transform.position : Vector2.zero;
+        Vector2 safeBaseDirection = baseDirection.sqrMagnitude > 0.0001f ? baseDirection.normalized : Vector2.right;
+        Vector2 safeShotDirection = shotDirection.sqrMagnitude > 0.0001f ? shotDirection.normalized : safeBaseDirection;
+        float pivotForwardOffset = data != null ? data.RecoveredSpearShotPivotForwardOffset : 0f;
+        float innerRadius = data != null ? data.RecoveredSpearShotInnerRadius : 0f;
+        Vector2 pivot = ownerPosition + safeBaseDirection * pivotForwardOffset;
+        return pivot + safeShotDirection * innerRadius;
+    }
+
+    private static void SortRecoveredSpearVolleyForDespawn(
+        List<LightningSpearRecoveredSpearActor> volleySpears,
+        int sideSign)
+    {
+        if (volleySpears == null || volleySpears.Count <= 1)
+            return;
+
+        int safeSideSign = sideSign < 0 ? -1 : 1;
+        volleySpears.Sort((left, right) =>
+        {
+            if (left == right)
+                return 0;
+            if (left == null)
+                return 1;
+            if (right == null)
+                return -1;
+
+            float leftX = left.CurrentPosition.x;
+            float rightX = right.CurrentPosition.x;
+            return safeSideSign > 0
+                ? rightX.CompareTo(leftX)
+                : leftX.CompareTo(rightX);
+        });
+    }
+
+    private static int CountValidRecoveredSpears(List<LightningSpearRecoveredSpearActor> volleySpears)
+    {
+        if (volleySpears == null)
+            return 0;
+
+        int count = 0;
+        for (int i = 0; i < volleySpears.Count; i++)
+        {
+            if (volleySpears[i] != null)
+                count++;
+        }
+
+        return count;
+    }
+
+    private static Vector2 RotateDirection(Vector2 direction, float angleDegrees)
+    {
+        Vector2 safeDirection = direction.sqrMagnitude > 0.0001f ? direction.normalized : Vector2.right;
+        float radians = angleDegrees * Mathf.Deg2Rad;
+        float cos = Mathf.Cos(radians);
+        float sin = Mathf.Sin(radians);
+        return new Vector2(
+            safeDirection.x * cos - safeDirection.y * sin,
+            safeDirection.x * sin + safeDirection.y * cos).normalized;
     }
 }

@@ -1,185 +1,124 @@
 {
     "sessions": [
         {
-            "sessionId": "90728f0f5da448658a5534186d3247de",
-            "startedUtc": "2026-05-10T09:44:32.3330681Z",
-            "endedUtc": "2026-05-10T09:44:33.3630234Z",
+            "sessionId": "5b438228052b4cc1855cb13233955809",
+            "startedUtc": "2026-05-11T23:03:26.2345532Z",
+            "endedUtc": "2026-05-11T23:03:28.3917741Z",
             "entries": []
         },
         {
-            "sessionId": "9d903416687443a59f1faf2eb0010106",
-            "startedUtc": "2026-05-10T09:55:44.6324514Z",
-            "endedUtc": "2026-05-10T09:55:45.7819282Z",
+            "sessionId": "438c0fe8d2f74fde8cff9a4d18b2ad8e",
+            "startedUtc": "2026-05-11T23:05:10.1697472Z",
+            "endedUtc": "2026-05-11T23:05:12.0970898Z",
             "entries": []
         },
         {
-            "sessionId": "0b377883feda422f8e5de9982017b4fa",
-            "startedUtc": "2026-05-10T09:58:10.0721416Z",
-            "endedUtc": "2026-05-10T09:58:11.7057762Z",
+            "sessionId": "4f96c132af6d4008afac0939d901c622",
+            "startedUtc": "2026-05-11T23:06:18.6817058Z",
+            "endedUtc": "2026-05-11T23:06:20.5943626Z",
             "entries": []
         },
         {
-            "sessionId": "85da3c949ec84ec7a6ec2f4168fe5726",
-            "startedUtc": "2026-05-10T10:00:10.2683307Z",
-            "endedUtc": "2026-05-10T10:00:11.8921017Z",
+            "sessionId": "1128a056771b4de7a1f23af4a7689b15",
+            "startedUtc": "2026-05-11T23:16:32.3231207Z",
+            "endedUtc": "2026-05-11T23:16:34.8358807Z",
             "entries": []
         },
         {
-            "sessionId": "8bbd5f3895d84622a42055a109165189",
-            "startedUtc": "2026-05-10T11:34:38.7214164Z",
-            "endedUtc": "2026-05-10T11:34:40.9348748Z",
+            "sessionId": "7776caa84f1a4b678704322480616792",
+            "startedUtc": "2026-05-11T23:25:13.0343104Z",
+            "endedUtc": "2026-05-11T23:25:15.0587802Z",
             "entries": []
         },
         {
-            "sessionId": "096ddc39735241dd8c026260db8eec79",
-            "startedUtc": "2026-05-10T13:31:48.7845053Z",
-            "endedUtc": "2026-05-10T13:31:50.7082227Z",
+            "sessionId": "6b7f4c3b714c4288aeb1dfedbea66312",
+            "startedUtc": "2026-05-11T23:28:03.3952279Z",
+            "endedUtc": "2026-05-11T23:28:05.8060753Z",
             "entries": []
         },
         {
-            "sessionId": "f5f2265e5d304cf9879dec610b45e658",
-            "startedUtc": "2026-05-10T13:33:17.3532049Z",
-            "endedUtc": "2026-05-10T13:33:18.9073121Z",
+            "sessionId": "c6bbd2c02b3d4bd2bff9d7c4084deeeb",
+            "startedUtc": "2026-05-11T23:40:41.9901445Z",
+            "endedUtc": "2026-05-11T23:40:43.8583577Z",
             "entries": []
         },
         {
-            "sessionId": "7c433c871b2d4a30ad4c3e12e6c55b20",
-            "startedUtc": "2026-05-12T06:00:02.4021634Z",
-            "endedUtc": "2026-05-12T06:00:03.8365498Z",
+            "sessionId": "235e72fe6dd743f6a83fe31d114f0bab",
+            "startedUtc": "2026-05-12T00:24:12.6416580Z",
+            "endedUtc": "2026-05-12T00:24:15.0420275Z",
             "entries": []
         },
         {
-            "sessionId": "3a5420bbc3a54019a62f9c7b5b63eb5b",
-            "startedUtc": "2026-05-12T06:19:47.9656161Z",
-            "endedUtc": "2026-05-12T06:19:50.0885618Z",
+            "sessionId": "60096cba30004489b2cffe01535e01ad",
+            "startedUtc": "2026-05-12T00:25:26.8098978Z",
+            "endedUtc": "2026-05-12T00:25:28.6393897Z",
             "entries": []
         },
         {
-            "sessionId": "e2ca3a8fe61b4d438541a186494c9a15",
-            "startedUtc": "2026-05-12T06:28:20.5718851Z",
-            "endedUtc": "2026-05-12T06:28:22.7422641Z",
+            "sessionId": "ce758b23aa5f44e08ecf729cbaa1c285",
+            "startedUtc": "2026-05-12T00:27:11.7841968Z",
+            "endedUtc": "2026-05-12T00:27:13.5676559Z",
             "entries": []
         },
         {
-            "sessionId": "b1218d9c96364f32a76cc39b997ba16c",
-            "startedUtc": "2026-05-12T06:38:17.0392606Z",
-            "endedUtc": "2026-05-12T06:38:18.9144049Z",
+            "sessionId": "f937a6fb771d4dec9b6ed6cdfe0f2d7d",
+            "startedUtc": "2026-05-12T01:02:36.6819943Z",
+            "endedUtc": "2026-05-12T01:02:38.7194311Z",
             "entries": []
         },
         {
-            "sessionId": "9648dc696fa74e888dad3c9be475968e",
-            "startedUtc": "2026-05-12T06:57:56.9105913Z",
-            "endedUtc": "2026-05-12T06:57:58.8047756Z",
+            "sessionId": "067aa4d525d5457aa185d708363a39d7",
+            "startedUtc": "2026-05-12T01:12:07.4666603Z",
+            "endedUtc": "2026-05-12T01:12:10.3049387Z",
             "entries": []
         },
         {
-            "sessionId": "ed101fb6e3c5492699c5536b0162d396",
-            "startedUtc": "2026-05-12T07:01:32.1264643Z",
-            "endedUtc": "2026-05-12T07:01:34.0233376Z",
+            "sessionId": "1f93fa94cc7e4b41b487e5ed6ac64d27",
+            "startedUtc": "2026-05-12T01:14:47.8473160Z",
+            "endedUtc": "2026-05-12T01:14:49.5579817Z",
             "entries": []
         },
         {
-            "sessionId": "f1162963d86d4d7ebd3fea6906364673",
-            "startedUtc": "2026-05-12T07:06:01.6486005Z",
-            "endedUtc": "2026-05-12T07:06:03.8042932Z",
+            "sessionId": "841006e7e7f641d79a2dc0c1354be224",
+            "startedUtc": "2026-05-12T01:25:52.9019079Z",
+            "endedUtc": "2026-05-12T01:25:54.9076271Z",
             "entries": []
         },
         {
-            "sessionId": "dd6ed3a1f07e427ca52798a6879c7aae",
-            "startedUtc": "2026-05-12T07:43:17.6168263Z",
-            "endedUtc": "2026-05-12T07:43:19.4934681Z",
+            "sessionId": "3e7e0eff5dec48af8229b878da4d87ca",
+            "startedUtc": "2026-05-12T05:32:02.4100849Z",
+            "endedUtc": "2026-05-12T05:32:05.0748359Z",
             "entries": []
         },
         {
-            "sessionId": "b1ce6b91c0564d5b8880d2e3155f82af",
-            "startedUtc": "2026-05-12T09:51:52.5590371Z",
-            "endedUtc": "2026-05-12T09:51:54.6327368Z",
+            "sessionId": "8f28ae2ad2a546cea57df7d25608c5c0",
+            "startedUtc": "2026-05-12T07:10:34.4164981Z",
+            "endedUtc": "2026-05-12T07:10:36.5479399Z",
             "entries": []
         },
         {
-            "sessionId": "086adb3a0f7044a29b64944c2157a97b",
-            "startedUtc": "2026-05-12T09:53:17.3980990Z",
-            "endedUtc": "2026-05-12T09:53:19.2527614Z",
+            "sessionId": "3fdb7fe05b704b12a0c027a48b30f42b",
+            "startedUtc": "2026-05-12T07:47:56.3991951Z",
+            "endedUtc": "2026-05-12T07:47:58.3419419Z",
             "entries": []
         },
         {
-            "sessionId": "30ad0d16bb014b7c8f5e8178ae76a405",
-            "startedUtc": "2026-05-12T09:53:36.6282013Z",
-            "endedUtc": "2026-05-12T09:53:38.5082788Z",
+            "sessionId": "b4f7b9f269c1435b818fceeebac19023",
+            "startedUtc": "2026-05-12T07:57:58.8038381Z",
+            "endedUtc": "2026-05-12T07:58:00.5758800Z",
             "entries": []
         },
         {
-            "sessionId": "8b02f06a3da44e21a1acf195ec53024c",
-            "startedUtc": "2026-05-12T09:53:50.9612202Z",
-            "endedUtc": "2026-05-12T09:53:52.6467747Z",
+            "sessionId": "21864f0f68134bf6afb5d5a539a8d3be",
+            "startedUtc": "2026-05-12T07:58:31.1176931Z",
+            "endedUtc": "2026-05-12T07:58:32.6821956Z",
             "entries": []
         },
         {
-            "sessionId": "394fefb8ef38466b82261ff5ff2dc9c4",
-            "startedUtc": "2026-05-12T09:56:50.9586217Z",
-            "endedUtc": "2026-05-12T10:00:48.0789759Z",
-            "entries": [
-                {
-                    "prefabPath": "Assets/Prefabs/VFX/PF_DrunkenDragon_KegImpactSplash.prefab",
-                    "prefabName": "PF_DrunkenDragon_KegImpactSplash",
-                    "totalSpawns": 10,
-                    "coldSpawns": 4,
-                    "firstSeenSeconds": 65.69834899902344,
-                    "lastSeenSeconds": 234.23130798339845,
-                    "firstSceneName": "HeoMinSeok_Boss_Dragon_Spili",
-                    "lastSceneName": "HeoMinSeok_Boss_Dragon_Spili"
-                },
-                {
-                    "prefabPath": "Assets/LeeJunMo/Prefab/Effect/Particle/DashDust.prefab",
-                    "prefabName": "DashDust",
-                    "totalSpawns": 3,
-                    "coldSpawns": 3,
-                    "firstSeenSeconds": 23.93183708190918,
-                    "lastSeenSeconds": 237.1163787841797,
-                    "firstSceneName": "HeoMinSeok_Boss_Dragon_Spili",
-                    "lastSceneName": "HeoMinSeok_Boss_Dragon_Spili"
-                },
-                {
-                    "prefabPath": "Assets/Prefabs/VFX/PF_DrunkenDragon_InhaleWind.prefab",
-                    "prefabName": "PF_DrunkenDragon_InhaleWind",
-                    "totalSpawns": 8,
-                    "coldSpawns": 1,
-                    "firstSeenSeconds": 73.63673400878906,
-                    "lastSeenSeconds": 229.97177124023438,
-                    "firstSceneName": "HeoMinSeok_Boss_Dragon_Spili",
-                    "lastSceneName": "HeoMinSeok_Boss_Dragon_Spili"
-                },
-                {
-                    "prefabPath": "Assets/Prefabs/VFX/PF_DrunkenDragon_LandingDust.prefab",
-                    "prefabName": "PF_DrunkenDragon_LandingDust",
-                    "totalSpawns": 4,
-                    "coldSpawns": 1,
-                    "firstSeenSeconds": 64.33343505859375,
-                    "lastSeenSeconds": 229.97154235839845,
-                    "firstSceneName": "HeoMinSeok_Boss_Dragon_Spili",
-                    "lastSceneName": "HeoMinSeok_Boss_Dragon_Spili"
-                },
-                {
-                    "prefabPath": "Assets/HeoMinSeok/_Project/Prefabs/Attack/Hitbox_WindWeapon_NormalAtk_HardSlash.prefab",
-                    "prefabName": "Hitbox_WindWeapon_NormalAtk_HardSlash",
-                    "totalSpawns": 2,
-                    "coldSpawns": 1,
-                    "firstSeenSeconds": 72.64715576171875,
-                    "lastSeenSeconds": 236.06246948242188,
-                    "firstSceneName": "HeoMinSeok_Boss_Dragon_Spili",
-                    "lastSceneName": "HeoMinSeok_Boss_Dragon_Spili"
-                },
-                {
-                    "prefabPath": "Assets/Prefabs/VFX/PF_DeadSkeletonExplosionPurple.prefab",
-                    "prefabName": "PF_DeadSkeletonExplosionPurple",
-                    "totalSpawns": 1,
-                    "coldSpawns": 1,
-                    "firstSeenSeconds": 72.71575927734375,
-                    "lastSeenSeconds": 72.71577453613281,
-                    "firstSceneName": "HeoMinSeok_Boss_Dragon_Spili",
-                    "lastSceneName": "HeoMinSeok_Boss_Dragon_Spili"
-                }
-            ]
+            "sessionId": "f48e09794ecd45f0a0bbd77a2f9f313f",
+            "startedUtc": "2026-05-12T07:58:56.3523406Z",
+            "endedUtc": "2026-05-12T07:58:57.9517995Z",
+            "entries": []
         }
     ]
 }

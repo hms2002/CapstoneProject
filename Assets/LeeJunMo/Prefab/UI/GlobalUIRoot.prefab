@@ -8858,7 +8858,7 @@ MonoBehaviour:
   applyRandomStartZRotation: 1
   randomStartZRotationRange: {x: -10, y: 10}
   rotationRecoveryDegreesPerSecond: 5
-  chainAttachPoint: {fileID: 0}
+  chainAttachPoint: {fileID: 7082507058177501540}
   fakeChainPresentation: {fileID: 0}
   chainConstraints:
   - chainAttachPoint: {fileID: 5237015575252394071}
@@ -20954,6 +20954,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   inventory: {fileID: 0}
   abilitySystem: {fileID: 0}
+  weaponEquipController: {fileID: 0}
   hudRoot: {fileID: 0}
   attackUI:
     root: {fileID: 0}

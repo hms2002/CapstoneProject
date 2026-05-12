@@ -21,6 +21,36 @@ public sealed class LootPoolService
         return exclusionList;
     }
 
+    public HashSet<string> BuildMerchantWeaponExclusionSet()
+    {
+        var exclusionList = new HashSet<string>();
+        GamePlayData data = GamePlayDataManager.Instance != null ? GamePlayDataManager.Instance.Data : null;
+        if (data?.merchantStates == null)
+            return exclusionList;
+
+        for (int i = 0; i < data.merchantStates.Count; i++)
+        {
+            MerchantRuntimeState merchantState = data.merchantStates[i];
+            if (merchantState?.slots == null)
+                continue;
+
+            for (int j = 0; j < merchantState.slots.Count; j++)
+            {
+                MerchantStockEntryState entry = merchantState.slots[j];
+                if (entry == null ||
+                    entry.kind != InventoryItemKind.Weapon ||
+                    string.IsNullOrWhiteSpace(entry.itemId))
+                {
+                    continue;
+                }
+
+                exclusionList.Add(entry.itemId);
+            }
+        }
+
+        return exclusionList;
+    }
+
     public WeaponDefinition GetRandomWeapon(HashSet<string> exclusionList)
     {
         if (ItemManager.Instance == null)

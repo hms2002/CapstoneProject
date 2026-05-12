@@ -1,5 +1,37 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &7100010000000000021
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7100010000000000022}
+  m_Layer: 0
+  m_Name: VisualRoot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7100010000000000022
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7100010000000000021}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.5, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 3777864556064669952}
+  m_Father: {fileID: 682906769859987156}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7143149767352407429
 GameObject:
   m_ObjectHideFlags: 0
@@ -31,7 +63,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 3777864556064669952}
+  - {fileID: 7100010000000000022}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!61 &2881767663859181931
@@ -68,7 +100,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: -0.22688484, y: 0.9737072}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -78,7 +110,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 8.28125, y: 4.84375}
+  m_Size: {x: 6.5040054, y: 4.673586}
   m_EdgeRadius: 0
 --- !u!114 &5857545739176268363
 MonoBehaviour:
@@ -92,11 +124,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a9a6e715a8be584d8a6daae6d57508a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  visualRoot: {fileID: 3777864556064669952}
+  visualRoot: {fileID: 7100010000000000022}
   actorAngleOffsetDeg: 0
   visualLocalAngleOffsetDeg: 0
   attachToOwnerOnSetup: 1
   sizingMode: 0
+  colliderLifetimeMode: 1
 --- !u!1 &8673372928987967272
 GameObject:
   m_ObjectHideFlags: 0
@@ -129,7 +162,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 682906769859987156}
+  m_Father: {fileID: 7100010000000000022}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &3568407036155676220
 SpriteRenderer:
@@ -180,7 +213,7 @@ SpriteRenderer:
   m_SortingLayer: 6
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 5573237984557682785, guid: 6ab9139dcd7aa984c94efe5895cb211b, type: 3}
+  m_Sprite: {fileID: 480956111784525803, guid: eba261e4e4d0e1f438a432dff7f27a10, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -227,7 +260,7 @@ MonoBehaviour:
   animator: {fileID: 6159446243228350999}
   baseController: {fileID: 9100000, guid: 9b44bb187c274c91841e9442b7b3f6a0, type: 2}
   placeholderClip: {fileID: 7400000, guid: d0ee99a3788a4ac8a7058c7e81090a44, type: 2}
-  clip: {fileID: 7400000, guid: 5d754358164b9914499b2a729be6aea1, type: 2}
+  clip: {fileID: 7400000, guid: 9cae1fec0e02167468a16162d3900b29, type: 2}
   stateName: Play
   speed: 1
   playOnEnable: 1

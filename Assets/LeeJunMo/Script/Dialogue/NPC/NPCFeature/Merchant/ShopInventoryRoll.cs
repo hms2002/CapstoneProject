@@ -84,12 +84,17 @@ public sealed class ShopInventoryRoll
     public List<MerchantStockEntryState> RollStock(
         int slotCount,
         ShopStockRollWeights rollWeights,
+        int maxWeaponSlots,
+        int maxConsumableSlots,
         MerchantPriceSettings priceSettings,
         IReadOnlyCollection<MerchantStockEntryState> excludedEntries = null)
     {
         var entries = new List<MerchantStockEntryState>(Mathf.Max(0, slotCount));
         if (slotCount <= 0 || ItemManager.Instance == null)
             return entries;
+
+        maxWeaponSlots = Mathf.Max(0, maxWeaponSlots);
+        maxConsumableSlots = Mathf.Max(0, maxConsumableSlots);
 
         List<WeaponDefinition> weaponPool = BuildWeaponPool();
         List<RelicDefinition> relicPool = BuildRelicPool();
@@ -100,13 +105,20 @@ public sealed class ShopInventoryRoll
         RemoveExcludedDefinitions(relicPool, excludedKeys);
         RemoveExcludedDefinitions(consumablePool, excludedKeys);
 
+        int weaponSlotCount = 0;
+        int consumableSlotCount = 0;
+
         for (int i = 0; i < slotCount; i++)
         {
             List<WeightedKind> availableKinds = BuildAvailableKinds(
                 weaponPool,
                 relicPool,
                 consumablePool,
-                rollWeights);
+                rollWeights,
+                weaponSlotCount,
+                maxWeaponSlots,
+                consumableSlotCount,
+                maxConsumableSlots);
 
             if (availableKinds.Count == 0)
                 break;
@@ -129,6 +141,11 @@ public sealed class ShopInventoryRoll
                 commonDefinition.Kind,
                 commonDefinition.ItemId,
                 priceSettings.ResolvePrice(pickedDefinition)));
+
+            if (commonDefinition.Kind == InventoryItemKind.Weapon)
+                weaponSlotCount++;
+            else if (commonDefinition.Kind == InventoryItemKind.Consumable)
+                consumableSlotCount++;
         }
 
         while (entries.Count < slotCount)
@@ -214,18 +231,32 @@ public sealed class ShopInventoryRoll
         List<WeaponDefinition> weaponPool,
         List<RelicDefinition> relicPool,
         List<ConsumableDefinition> consumablePool,
-        ShopStockRollWeights rollWeights)
+        ShopStockRollWeights rollWeights,
+        int weaponSlotCount,
+        int maxWeaponSlots,
+        int consumableSlotCount,
+        int maxConsumableSlots)
     {
         var availableKinds = new List<WeightedKind>(3);
 
-        if (weaponPool != null && weaponPool.Count > 0 && rollWeights.weaponWeight > 0)
+        if (weaponSlotCount < maxWeaponSlots &&
+            weaponPool != null &&
+            weaponPool.Count > 0 &&
+            rollWeights.weaponWeight > 0)
+        {
             availableKinds.Add(new WeightedKind(ShopPoolKind.Weapon, rollWeights.weaponWeight));
+        }
 
         if (relicPool != null && relicPool.Count > 0 && rollWeights.relicWeight > 0)
             availableKinds.Add(new WeightedKind(ShopPoolKind.Relic, rollWeights.relicWeight));
 
-        if (consumablePool != null && consumablePool.Count > 0 && rollWeights.consumableWeight > 0)
+        if (consumableSlotCount < maxConsumableSlots &&
+            consumablePool != null &&
+            consumablePool.Count > 0 &&
+            rollWeights.consumableWeight > 0)
+        {
             availableKinds.Add(new WeightedKind(ShopPoolKind.Consumable, rollWeights.consumableWeight));
+        }
 
         return availableKinds;
     }
