@@ -20,6 +20,7 @@ MonoBehaviour:
   hitConfirmedTag: {fileID: 11400000, guid: 465249853d3321e47b796f8e8c787f64, type: 2}
   featherCount: 1
   radius: 1.2
+  orbitCenterLocalOffset: {x: 0, y: 0.55}
   baseAngularSpeedDegPerSec: 360
   basePerTargetHitCooldown: 0.25
   moveSpeedFinalStatId: 142

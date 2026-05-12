@@ -15,6 +15,7 @@ public class WorldItemPickup2D : InteractableBase
 
     [Header("Visual (optional)")]
     [SerializeField] private SpriteRenderer spriteRenderer;
+    [SerializeField] private WorldDropSpritePresenter2D dropSpritePresenter;
     private MaterialPropertyBlock outlinePropertyBlock;
     private Collider2D triggerCollider;
 
@@ -37,7 +38,7 @@ public class WorldItemPickup2D : InteractableBase
 
     private void Awake()
     {
-        if (spriteRenderer == null) spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+        ResolveVisualRefs();
         outlinePropertyBlock = new MaterialPropertyBlock();
 
         triggerCollider = GetComponent<Collider2D>();
@@ -236,11 +237,36 @@ public class WorldItemPickup2D : InteractableBase
 
     private void RefreshVisual()
     {
-        if (spriteRenderer == null) return;
         var def = item != null ? item.AsDef() : null;
+        Sprite sprite = def != null ? def.Icon : null;
+
+        if (dropSpritePresenter != null)
+        {
+            dropSpritePresenter.Apply(sprite);
+            spriteRenderer = dropSpritePresenter.Renderer;
+            return;
+        }
 
         // Uses UI icon as a simple world sprite (good enough for prototyping).
-        spriteRenderer.sprite = def != null ? def.Icon : null;
+        if (spriteRenderer == null) return;
+        spriteRenderer.sprite = sprite;
         spriteRenderer.enabled = spriteRenderer.sprite != null;
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 월드 드롭 표시와 outline 처리가 같은 SpriteRenderer를 바라보도록 presenter/renderer 참조를 동기화한다.
+    /// - 구형 프리팹처럼 presenter가 없는 경우에도 기존 자식 SpriteRenderer fallback을 유지한다.
+    /// </summary>
+    private void ResolveVisualRefs()
+    {
+        if (dropSpritePresenter == null)
+            dropSpritePresenter = GetComponentInChildren<WorldDropSpritePresenter2D>(includeInactive: true);
+
+        if (dropSpritePresenter != null)
+            spriteRenderer = dropSpritePresenter.Renderer;
+
+        if (spriteRenderer == null)
+            spriteRenderer = GetComponentInChildren<SpriteRenderer>(includeInactive: true);
     }
 }

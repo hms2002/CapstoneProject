@@ -1,10 +1,27 @@
 using TMPro;
 using UnityEngine;
 
+/// <summary>
+/// 책임 :
+/// - 상점 슬롯의 구매 상호작용, 가격 표시, 진열 아이템 표시를 관리한다.
+/// - 아이템 icon의 원본 크기와 pivot 차이를 슬롯 기준 표시 규칙에 맞춰 정규화한다.
+/// </summary>
 [RequireComponent(typeof(Collider2D))]
 public sealed class ShopSlot : InteractableBase
 {
     private static readonly int OutlineEnabledID = Shader.PropertyToID("_OutlineEnabled");
+
+    private enum ItemSpriteNormalizeMode
+    {
+        Height,
+        FitBox
+    }
+
+    private enum ItemSpriteAnchorMode
+    {
+        Center,
+        Bottom
+    }
 
     private enum PriceIconPositionMode
     {
@@ -30,6 +47,15 @@ public sealed class ShopSlot : InteractableBase
     [SerializeField] private SpriteRenderer itemSpriteRenderer;
     [SerializeField] private TMP_Text priceText;
 
+    [Header("Item Sprite Normalization")]
+    [SerializeField] private bool normalizeItemSprite = true;
+    [SerializeField] private ItemSpriteNormalizeMode itemSpriteNormalizeMode = ItemSpriteNormalizeMode.FitBox;
+    [SerializeField, Min(0.01f)] private float itemSpriteTargetHeight = 0.65f;
+    [SerializeField] private Vector2 itemSpriteTargetBoxSize = new(1f, 1f);
+    [SerializeField] private ItemSpriteAnchorMode itemSpriteAnchorMode = ItemSpriteAnchorMode.Center;
+    [SerializeField] private bool itemSpriteCenterX = true;
+    [SerializeField] private Vector2 itemSpriteAnchorOffset = Vector2.zero;
+
     [Header("Price Icon")]
     [SerializeField] private SpriteRenderer priceIconRenderer;
     [SerializeField] private Sprite currencyIconSprite;
@@ -43,10 +69,13 @@ public sealed class ShopSlot : InteractableBase
     private MaterialPropertyBlock outlinePropertyBlock;
     private MerchantStockEntryState currentState;
     private ScriptableObject currentDefinition;
+    private Vector3 itemSpriteBaseLocalPosition;
+    private bool hasItemSpriteBaseLocalPosition;
 
     private void Awake()
     {
         CacheReferences();
+        CaptureItemSpriteBaseLocalPosition();
 
         outlinePropertyBlock = new MaterialPropertyBlock();
 
@@ -62,6 +91,15 @@ public sealed class ShopSlot : InteractableBase
     {
         CacheReferences();
         ApplyPriceIconScale();
+
+        if (itemSpriteTargetHeight <= 0f)
+            itemSpriteTargetHeight = 0.65f;
+
+        if (itemSpriteTargetBoxSize.x <= 0f)
+            itemSpriteTargetBoxSize.x = 1f;
+
+        if (itemSpriteTargetBoxSize.y <= 0f)
+            itemSpriteTargetBoxSize.y = 1f;
     }
 
     private void OnDisable()
@@ -147,11 +185,7 @@ public sealed class ShopSlot : InteractableBase
         if (itemVisualRoot != null)
             itemVisualRoot.SetActive(hasActiveItem);
 
-        if (itemSpriteRenderer != null)
-        {
-            itemSpriteRenderer.sprite = hasActiveItem && commonDefinition != null ? commonDefinition.Icon : null;
-            itemSpriteRenderer.enabled = itemSpriteRenderer.sprite != null;
-        }
+        ApplyItemSprite(hasActiveItem && commonDefinition != null ? commonDefinition.Icon : null);
 
         if (priceText != null)
         {
@@ -162,6 +196,64 @@ public sealed class ShopSlot : InteractableBase
         }
 
         RefreshPriceIcon(hasActiveItem && currentState != null && !currentState.isSold);
+    }
+
+    private void ApplyItemSprite(Sprite sprite)
+    {
+        if (itemSpriteRenderer == null)
+            return;
+
+        itemSpriteRenderer.sprite = sprite;
+        itemSpriteRenderer.enabled = sprite != null;
+
+        if (sprite == null || !normalizeItemSprite)
+            return;
+
+        ApplyNormalizedItemSpriteTransform(sprite);
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 상점 진열 icon의 원본 pivot과 sprite bounds 차이가 슬롯 안 표시 위치를 흔들지 않도록 보정한다.
+    /// - 슬롯마다 다른 기준 위치는 유지하면서 sprite만 공통 높이/박스와 기준점에 맞춘다.
+    /// </summary>
+    private void ApplyNormalizedItemSpriteTransform(Sprite sprite)
+    {
+        if (itemSpriteRenderer == null || sprite == null)
+            return;
+
+        CaptureItemSpriteBaseLocalPosition();
+
+        Bounds bounds = sprite.bounds;
+        if (bounds.size.x <= 0f || bounds.size.y <= 0f)
+            return;
+
+        float uniformScale = ResolveItemSpriteUniformScale(bounds);
+        Transform rendererTransform = itemSpriteRenderer.transform;
+        Vector3 localScale = rendererTransform.localScale;
+        rendererTransform.localScale = new Vector3(uniformScale, uniformScale, localScale.z);
+
+        Vector3 localPosition = itemSpriteBaseLocalPosition + (Vector3)itemSpriteAnchorOffset;
+        if (itemSpriteCenterX)
+            localPosition.x += -bounds.center.x * uniformScale;
+
+        localPosition.y += itemSpriteAnchorMode == ItemSpriteAnchorMode.Bottom
+            ? -bounds.min.y * uniformScale
+            : -bounds.center.y * uniformScale;
+
+        rendererTransform.localPosition = localPosition;
+    }
+
+    private float ResolveItemSpriteUniformScale(Bounds bounds)
+    {
+        if (itemSpriteNormalizeMode == ItemSpriteNormalizeMode.FitBox)
+        {
+            float widthScale = itemSpriteTargetBoxSize.x / bounds.size.x;
+            float heightScale = itemSpriteTargetBoxSize.y / bounds.size.y;
+            return Mathf.Min(widthScale, heightScale);
+        }
+
+        return itemSpriteTargetHeight / bounds.size.y;
     }
 
     private void RefreshPriceIcon(bool showCurrencyIcon)
@@ -202,6 +294,15 @@ public sealed class ShopSlot : InteractableBase
             if (iconTransform != null)
                 priceIconRenderer = iconTransform.GetComponent<SpriteRenderer>();
         }
+    }
+
+    private void CaptureItemSpriteBaseLocalPosition()
+    {
+        if (hasItemSpriteBaseLocalPosition || itemSpriteRenderer == null)
+            return;
+
+        itemSpriteBaseLocalPosition = itemSpriteRenderer.transform.localPosition;
+        hasItemSpriteBaseLocalPosition = true;
     }
 
     private void ApplyPriceIconScale()

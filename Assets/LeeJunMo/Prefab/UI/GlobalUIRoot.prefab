@@ -9315,6 +9315,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::InventoryOpenHudButton
   button: {fileID: 8083857636480268370}
   openRequestHandlerSource: {fileID: 5360231386028813442}
+  hudRoot: {fileID: 0}
+  hideWhenUnavailable: 1
 --- !u!1 &1537232383850694837
 GameObject:
   m_ObjectHideFlags: 0
@@ -18332,6 +18334,7 @@ GameObject:
   - component: {fileID: 1154454684269716880}
   - component: {fileID: 397884030258712787}
   - component: {fileID: 7382164195295403074}
+  - component: {fileID: 9700000000000144}
   m_Layer: 0
   m_Name: KeyGlyph
   m_TagString: Untagged
@@ -18396,6 +18399,23 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &9700000000000144
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3805710419605766938}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a5d0f72c3e64e648a7f1d2f4e43b9c1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::InputActionGlyphPresenter
+  action: 14
+  useSecondaryBinding: 0
+  keyIconImage: {fileID: 7382164195295403074}
+  fallbackLabel: {fileID: 0}
+  fallbackIcon: {fileID: 5871290587228101311, guid: 8ce30451b3d0c4e44972a52bea991e52, type: 3}
 --- !u!1 &3825229836042664260
 GameObject:
   m_ObjectHideFlags: 0

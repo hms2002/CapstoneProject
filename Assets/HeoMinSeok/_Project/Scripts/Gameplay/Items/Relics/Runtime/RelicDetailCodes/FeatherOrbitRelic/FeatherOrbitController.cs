@@ -27,6 +27,7 @@ public class FeatherOrbitController : MonoBehaviour
         public FeatherOrbitFeather featherPrefab;
         public int featherCount;
         public float radius;
+        public Vector2 orbitCenterLocalOffset;
         public float baseAngularSpeedDegPerSec;
         public float basePerTargetHitCooldown;
 
@@ -115,6 +116,7 @@ public class FeatherOrbitController : MonoBehaviour
             _angleDeg -= 360f;
 
         int count = _feathers.Count;
+        Vector3 orbitCenter = ResolveOrbitCenter();
         for (int i = 0; i < count; i++)
         {
             var feather = _feathers[i];
@@ -124,8 +126,20 @@ public class FeatherOrbitController : MonoBehaviour
             float rad = angle * Mathf.Deg2Rad;
 
             Vector3 offset = new Vector3(Mathf.Cos(rad), Mathf.Sin(rad), 0f) * _cfg.radius;
-            feather.transform.position = transform.position + offset;
+            feather.transform.position = orbitCenter + offset;
         }
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 플레이어 루트 피벗이 발밑에 있어도 깃털이 의도한 몸 중앙을 기준으로 공전하도록 중심점을 계산한다.
+    /// - 유물 데이터의 local offset을 owner/컨트롤러 Transform 기준 월드 좌표로 변환한다.
+    /// </summary>
+    private Vector3 ResolveOrbitCenter()
+    {
+        Transform ownerTransform = _cfg.owner != null ? _cfg.owner.transform : transform;
+        Vector3 localOffset = new Vector3(_cfg.orbitCenterLocalOffset.x, _cfg.orbitCenterLocalOffset.y, 0f);
+        return ownerTransform.TransformPoint(localOffset);
     }
 
     public AbilitySystem System => _system;

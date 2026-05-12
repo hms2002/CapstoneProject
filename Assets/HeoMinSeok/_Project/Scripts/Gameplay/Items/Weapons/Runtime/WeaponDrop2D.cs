@@ -17,6 +17,7 @@ public class WeaponDrop2D : InteractableBase
 
     [Header("Visual (optional)")]
     [SerializeField] private SpriteRenderer spriteRenderer;
+    [SerializeField] private WorldDropSpritePresenter2D dropSpritePresenter;
 
     private MaterialPropertyBlock outlinePropertyBlock;
 
@@ -27,7 +28,7 @@ public class WeaponDrop2D : InteractableBase
     {
         weapon = def;
         payload = runtimePayload;
-        // 필요하면 여기서 아이콘/스프라이트 갱신
+        RefreshVisual();
     }
 
     private void Reset()
@@ -38,8 +39,8 @@ public class WeaponDrop2D : InteractableBase
 
     private void Awake()
     {
-        if (spriteRenderer == null)
-            spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+        ResolveVisualRefs();
+        RefreshVisual();
 
         outlinePropertyBlock = new MaterialPropertyBlock();
         OnUnHighlight();
@@ -112,5 +113,40 @@ public class WeaponDrop2D : InteractableBase
             return component.GetComponent<WeaponInventory2D>();
 
         return null;
+    }
+
+    private void RefreshVisual()
+    {
+        Sprite sprite = weapon != null ? weapon.Icon : null;
+
+        if (dropSpritePresenter != null)
+        {
+            dropSpritePresenter.Apply(sprite);
+            spriteRenderer = dropSpritePresenter.Renderer;
+            return;
+        }
+
+        if (spriteRenderer == null)
+            return;
+
+        spriteRenderer.sprite = sprite;
+        spriteRenderer.enabled = sprite != null;
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 무기 드롭의 실제 아이콘 렌더러와 outline 대상 렌더러를 같은 참조로 맞춘다.
+    /// - presenter가 없는 기존 프리팹도 자식 SpriteRenderer fallback으로 계속 표시되게 한다.
+    /// </summary>
+    private void ResolveVisualRefs()
+    {
+        if (dropSpritePresenter == null)
+            dropSpritePresenter = GetComponentInChildren<WorldDropSpritePresenter2D>(includeInactive: true);
+
+        if (dropSpritePresenter != null)
+            spriteRenderer = dropSpritePresenter.Renderer;
+
+        if (spriteRenderer == null)
+            spriteRenderer = GetComponentInChildren<SpriteRenderer>(includeInactive: true);
     }
 }

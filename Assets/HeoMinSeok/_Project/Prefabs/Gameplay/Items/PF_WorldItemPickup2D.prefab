@@ -98,6 +98,7 @@ GameObject:
   - component: {fileID: 4109501763104211257}
   - component: {fileID: 5406097912294776231}
   - component: {fileID: 1539908470390498243}
+  - component: {fileID: 6135419274083002146}
   m_Layer: 0
   m_Name: PF_WorldItemPickup2D
   m_TagString: Untagged
@@ -172,5 +173,24 @@ MonoBehaviour:
   item: {fileID: 0}
   promptAnchor: {fileID: 0}
   interactPromptText: "\uD68D\uB4DD\uD558\uAE30"
-  spriteRenderer: {fileID: 0}
+  spriteRenderer: {fileID: 9003696209070177760}
+  dropSpritePresenter: {fileID: 6135419274083002146}
   relicLevel: 0
+--- !u!114 &6135419274083002146
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4439982264372595963}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b3d4d8a9283f4f9f9bde6b1b9f0c2a71, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spriteRenderer: {fileID: 9003696209070177760}
+  normalizeMode: 1
+  targetHeight: 0.65
+  targetBoxSize: {x: 1, y: 1}
+  bottomPadding: 0.08
+  centerX: 1

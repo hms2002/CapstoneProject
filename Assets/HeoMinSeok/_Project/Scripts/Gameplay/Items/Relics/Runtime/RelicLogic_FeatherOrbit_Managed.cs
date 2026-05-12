@@ -25,6 +25,8 @@ public class RelicLogic_FeatherOrbit_Managed : RelicLogic
     [Header("Orbit")]
     public int featherCount = 1;
     public float radius = 1.2f;
+    [Tooltip("플레이어 루트 기준 공전 중심 local offset. 루트 피벗이 발밑이면 Y를 올려 몸 중앙으로 맞춥니다.")]
+    public Vector2 orbitCenterLocalOffset = new(0f, 0.55f);
     [Tooltip("이속 100%(x1)일 때의 회전 속도(도/초). 360이면 1초 1회전.")]
     public float baseAngularSpeedDegPerSec = 360f;
 
@@ -80,6 +82,7 @@ public class RelicLogic_FeatherOrbit_Managed : RelicLogic
             featherPrefab = featherPrefab,
             featherCount = Mathf.Max(1, featherCount),
             radius = radius,
+            orbitCenterLocalOffset = orbitCenterLocalOffset,
             baseAngularSpeedDegPerSec = baseAngularSpeedDegPerSec,
             basePerTargetHitCooldown = Mathf.Max(0.01f, basePerTargetHitCooldown),
 
