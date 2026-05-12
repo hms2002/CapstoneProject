@@ -44,6 +44,7 @@ GameObject:
   - component: {fileID: 6485200795856883912}
   - component: {fileID: 6646660493896688327}
   - component: {fileID: 7981328087791962207}
+  - component: {fileID: 663300000000020001}
   - component: {fileID: 2360314702165940082}
   m_Layer: 20
   m_Name: WeaponPrefab_OddIron
@@ -125,6 +126,22 @@ MonoBehaviour:
     localPosition: {x: 0, y: 0, z: 0}
     localEulerAngles: {x: 0, y: 180, z: -90}
     localScale: {x: 0.3, y: 0.3, z: 1}
+--- !u!114 &663300000000020001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 916365682996460394}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a49d1b4f3de0479fa1a77f1d31c61234, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  weaponVisualRoot: {fileID: 7324657136119683892}
+  mirrorRoot: {fileID: 7324657136119683892}
+  motionRoot: {fileID: 1142820288922253256}
+  renderRoot: {fileID: 5232794767736994302}
 --- !u!114 &2360314702165940082
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -315,7 +332,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4270056279445131133}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0, y: 0, z: 0}
   m_LocalScale: {x: 0.5, y: 0.5, z: 1}
   m_ConstrainProportionsScale: 0
