@@ -1,10 +1,16 @@
 using UnityEngine;
 
+/// <summary>
+/// 책임 :
+/// - 월드 드롭/상점 진열 등 아이템 표시 지점에 맞는 커스텀 비주얼 또는 sprite fallback을 출력한다.
+/// - 표시 비주얼의 정규화, sorting, outline 대상 갱신을 한 곳에서 관리한다.
+/// </summary>
 [DisallowMultipleComponent]
 public sealed class ItemDisplayVisualPresenter2D : MonoBehaviour
 {
     private static readonly int OutlineEnabledID = Shader.PropertyToID("_OutlineEnabled");
     private static readonly SpriteRenderer[] EmptyRenderers = new SpriteRenderer[0];
+    private const string RuntimeVisualRootName = "__ItemDisplayVisualRoot";
 
     [SerializeField] private ItemDisplayContext context = ItemDisplayContext.WorldDrop;
     [SerializeField] private Transform visualRoot;
@@ -127,7 +133,7 @@ public sealed class ItemDisplayVisualPresenter2D : MonoBehaviour
             fallbackSpriteRenderer.enabled = false;
         }
 
-        Transform parent = ResolveVisualParent();
+        Transform parent = ResolveVisualRoot();
         activeCustomVisual = Instantiate(prefab, parent, false);
         activeCustomVisual.transform.localPosition = Vector3.zero;
         activeCustomVisual.transform.localRotation = Quaternion.identity;
@@ -259,8 +265,11 @@ public sealed class ItemDisplayVisualPresenter2D : MonoBehaviour
 
     private void ClearCustomVisual()
     {
-        if (activeCustomVisual == null)
+        if (!IsAlive(activeCustomVisual))
+        {
+            activeCustomVisual = null;
             return;
+        }
 
         activeCustomVisual.SetActive(false);
 
@@ -297,8 +306,7 @@ public sealed class ItemDisplayVisualPresenter2D : MonoBehaviour
 
     private void ResolveReferences()
     {
-        if (!IsUsableTransform(visualRoot))
-            visualRoot = transform;
+        visualRoot = ResolveVisualRoot();
 
         if (fallbackSpriteRenderer == null)
             fallbackSpriteRenderer = GetComponentInChildren<SpriteRenderer>(includeInactive: true);
@@ -306,36 +314,43 @@ public sealed class ItemDisplayVisualPresenter2D : MonoBehaviour
         CaptureFallbackBaseTransform();
     }
 
-    private Transform ResolveVisualParent()
+    private ItemDisplayContext ResolveEffectiveContext()
     {
-        if (IsUsableTransform(visualRoot))
-            return visualRoot;
-
-        visualRoot = transform;
-        return transform;
+        return context == ItemDisplayContext.ShopDisplay
+            ? ItemDisplayContext.WorldDrop
+            : context;
     }
 
-    private static bool IsUsableTransform(Transform candidate)
+    private Transform ResolveVisualRoot()
     {
-        if (candidate == null)
+        if (IsAlive(visualRoot))
+            return visualRoot;
+
+        Transform existingRuntimeRoot = transform.Find(RuntimeVisualRootName);
+        if (existingRuntimeRoot != null)
+        {
+            visualRoot = existingRuntimeRoot;
+            return visualRoot;
+        }
+
+        visualRoot = transform;
+        return visualRoot;
+    }
+
+    private static bool IsAlive(Object unityObject)
+    {
+        if (unityObject == null)
             return false;
 
         try
         {
-            _ = candidate.gameObject;
+            _ = unityObject.name;
             return true;
         }
         catch (MissingReferenceException)
         {
             return false;
         }
-    }
-
-    private ItemDisplayContext ResolveEffectiveContext()
-    {
-        return context == ItemDisplayContext.ShopDisplay
-            ? ItemDisplayContext.WorldDrop
-            : context;
     }
 
     private static bool TryResolveRendererBounds(SpriteRenderer[] renderers, out Bounds bounds)
