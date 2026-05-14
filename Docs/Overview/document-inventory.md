@@ -2,7 +2,7 @@
 status: active
 authority: reference
 category: overview
-last_reviewed: 2026-05-05
+last_reviewed: 2026-05-14
 ---
 
 # Document Inventory
@@ -47,6 +47,20 @@ This inventory records the role assigned to each project Markdown document durin
 | `Guides/DualWeaponPatternGuide.md` | Dual weapon authoring pattern |
 | `Guides/CodebaseReviewGuidelines.md` | Review and refactor guidance |
 | `Guides/playtest-smoke-checklist.md` | Playtest smoke checklist |
+
+## Structure Memory
+
+| Document | Role |
+| --- | --- |
+| `StructureMemory/README.md` | Structure memory operating rules and index |
+| `StructureMemory/UIFlowInputBlocking.md` | Game-flow UI input blocking structure map |
+
+## Refactor Backlog
+
+| Document | Role |
+| --- | --- |
+| `RefactorBacklog/README.md` | Refactor backlog operating rules and index |
+| `RefactorBacklog/BossDropResponsibilitySplit.md` | BossDrop responsibility split refactor candidate |
 
 ## Reviews
 

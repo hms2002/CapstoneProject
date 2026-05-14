@@ -47,6 +47,7 @@ public class ItemSlotUI : MonoBehaviour,
     private IItemContainer container;
     private int index;
     [SerializeField] private RectTransform slotRect;
+    private ItemDisplayIconDefaultState iconDefaultState;
     private CanvasGroup hoverHighlightCanvasGroup;
     private Coroutine hoverHighlightRoutine;
     private bool isPointerOver;
@@ -73,6 +74,7 @@ public class ItemSlotUI : MonoBehaviour,
         if (slotRect == null)
             slotRect = transform as RectTransform;
 
+        iconDefaultState = ItemDisplayIconDefaultState.Stretch(icon);
         SetHoverHighlightImmediate(false);
     }
     private void OnDisable()
@@ -80,6 +82,7 @@ public class ItemSlotUI : MonoBehaviour,
         isPointerOver = false;
         isPointerPressed = false;
         isDraggingThisSlot = false;
+        ClearIconAndLevel();
         SetHoverHighlightImmediate(false);
         ItemDragContext.CancelActiveDragSession();
         MouseCursorService.Instance?.SetDragging(this, false);
@@ -111,6 +114,7 @@ public class ItemSlotUI : MonoBehaviour,
     {
         if (container == null)
         {
+            ClearIconAndLevel();
             SetHoverHighlight(false);
             return;
         }
@@ -118,20 +122,9 @@ public class ItemSlotUI : MonoBehaviour,
         var so = container.Get(index);
         RefreshHoverHighlight(so);
 
-        if (icon == null) return;
+        if (icon != null)
+            ItemDisplayIconUtility.Apply(icon, so, ItemDisplayIconContext.InventorySlot, iconDefaultState);
 
-        var def = so.AsDef();
-
-        if (def == null || def.Icon == null)
-        {
-            icon.enabled = false;
-            icon.sprite = null;
-        }
-        else
-        {
-            icon.enabled = true;
-            icon.sprite = def.Icon;
-        }
         if (so is RelicDefinition && container is IRelicLevelProvider p && p.TryGetRelicLevel(index, out var lvl))
         {
             if (levelText != null)
@@ -144,6 +137,15 @@ public class ItemSlotUI : MonoBehaviour,
         {
             levelText.gameObject.SetActive(false);
         }
+    }
+
+    private void ClearIconAndLevel()
+    {
+        if (icon != null)
+            ItemDisplayIconUtility.Clear(icon, iconDefaultState);
+
+        if (levelText != null)
+            levelText.gameObject.SetActive(false);
     }
 
     public void OnBeginDrag(PointerEventData eventData)
@@ -180,7 +182,7 @@ public class ItemSlotUI : MonoBehaviour,
         MouseCursorService.EnsureInstance().SetDragging(this, true);
 
         DropZoneUI.ActiveInstance?.Show();
-        DragIcon.Instance?.Show(def.Icon);
+        DragIcon.Instance?.Show(so);
         DragIcon.Instance?.Follow(eventData.position);
     }
 
@@ -205,6 +207,7 @@ public class ItemSlotUI : MonoBehaviour,
         if (!ItemDragContext.Active) return;
 
         ItemDragContext.TryDrop(container, index);
+        Refresh();
     }
 
     public void OnPointerClick(PointerEventData eventData)

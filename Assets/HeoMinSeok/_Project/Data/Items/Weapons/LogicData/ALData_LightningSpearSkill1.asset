@@ -29,6 +29,7 @@ MonoBehaviour:
   markRushBodyRadius: 0.25
   markRushArrivalHitDelay: 0.05
   markRushInternalDelay: 0.15
+  markRushInputBufferSeconds: 0.35
   markRushTrailEffectPrefab: {fileID: 9102123456789012345, guid: 9537f6a61c484881b61d0da5c6b03dd3, type: 3}
   markRushHit:
     hitboxPrefab: {fileID: 3757316550685754543, guid: b6baaa776b4630343b03436c2e45c464, type: 3}
@@ -95,8 +96,8 @@ MonoBehaviour:
   recoveredSpearFloatDuration: 0.8
   recoveredSpearSpawnFallbackSeconds: 0.12
   recoveredSpearDespawnFallbackSeconds: 0.34
-  recoveredSpearShotReleaseDelay: 0.03
-  recoveredSpearShotPivotForwardOffset: 0
+  recoveredSpearShotReleaseDelay: 0.02
+  recoveredSpearShotPivotForwardOffset: -2
   recoveredSpearShotInnerRadius: 3
   recoveredSpearShotSpawnEffectPrefab: {fileID: 7600000000000000001, guid: 7363eb05f34541d4b7aa78e332715e7a, type: 3}
   recoveredSpearShotSpawnEffectLifetimeFallback: 0.25

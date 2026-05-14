@@ -107,6 +107,7 @@ public struct ShopRunModifierDelta
 public struct BossRunModifierDelta
 {
     public int bossFieldHealPickupBonus;
+    public int bossMagicStoneBonus;
     public int bossChestWeaponMinBonus;
     public int bossChestWeaponMaxBonus;
     public int bossChestRelicMinBonus;
@@ -126,6 +127,7 @@ public struct BossRunModifierDelta
     public void Add(BossRunModifierDelta other)
     {
         bossFieldHealPickupBonus += other.bossFieldHealPickupBonus;
+        bossMagicStoneBonus += other.bossMagicStoneBonus;
         bossChestWeaponMinBonus += other.bossChestWeaponMinBonus;
         bossChestWeaponMaxBonus += other.bossChestWeaponMaxBonus;
         bossChestRelicMinBonus += other.bossChestRelicMinBonus;
@@ -145,7 +147,7 @@ public class RunModifierService : MonoBehaviour
     private GraveRunModifierDelta graveModifiers;
     private ChestRunModifierDelta chestModifiers;
     private ShopRunModifierDelta shopModifiers;
-    private BossRunModifierDelta bossModifiers;
+    private BossRewardModifierAggregate bossRewardModifiers;
     private bool hasLoadedFromSave;
     private UpgradeNodeSO[] cachedUpgradeNodes;
 
@@ -181,7 +183,16 @@ public class RunModifierService : MonoBehaviour
         get
         {
             EnsureLoadedFromPurchases();
-            return bossModifiers;
+            return bossRewardModifiers.ToBossRunModifierDelta();
+        }
+    }
+
+    public BossRewardModifierAggregate BossRewardModifiers
+    {
+        get
+        {
+            EnsureLoadedFromPurchases();
+            return bossRewardModifiers;
         }
     }
 
@@ -236,7 +247,7 @@ public class RunModifierService : MonoBehaviour
         graveModifiers = default;
         chestModifiers = default;
         shopModifiers = default;
-        bossModifiers = default;
+        bossRewardModifiers = default;
 
         UpgradeSaveData saveData = TryGetUpgradeSaveData();
         if (saveData == null)
@@ -308,7 +319,7 @@ public class RunModifierService : MonoBehaviour
                     continue;
 
                 if (reward.effect is BossAffectionRunModifierEffect bossEffect)
-                    bossModifiers.Add(bossEffect.Delta);
+                    bossRewardModifiers.Add(bossEffect.ModifierAggregate);
             }
         }
     }

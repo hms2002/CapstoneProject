@@ -157,12 +157,16 @@ public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
     private Vector2 inventoryPanelOpenPosition;
     private bool hasCapturedPanelOpenPositions;
     private bool hasPlayedOpenUiParticles;
+    private GameFlowInputBlocker inputBlocker;
     private ObjectPool<UIParticleEmitter> slotRevealParticlePool;
     private readonly List<ItemSlotUI> itemRevealSlots = new();
     private readonly HashSet<ItemSlotUI> playedSlotRevealParticleSlots = new();
     private readonly HashSet<UIParticleEmitter> activeSlotRevealParticleEmitters = new();
     private readonly List<UIParticleEmitter> slotRevealParticleBuffer = new();
     private readonly ChestRevealPanelMotion panelMotion = new();
+
+    public bool IsOpenPresentationPlaying =>
+        activeRoutine != null || (inputBlocker != null && inputBlocker.IsBlocking);
 
     private readonly struct LayoutMetrics
     {
@@ -264,6 +268,8 @@ public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
         PreparePostRevealSlideFade();
         ApplyRevealPose(0f);
         ResetRevealParticleState();
+        AcquireExternalUiInputBlockIfNeeded();
+        SetInteractionEnabled(false);
 
         if (!CanPlaySideEntry())
         {
@@ -271,7 +277,6 @@ public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
             return;
         }
 
-        SetInteractionEnabled(false);
         activeRoutine = StartCoroutine(PlaySideEntryRevealRoutine());
     }
 
@@ -360,9 +365,10 @@ public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
 
             if (revealDuration <= 0f)
             {
-                ApplyOpenedPose();
+                ApplyOpenedPose(enableInteraction: false);
                 PlayVisibleSlotRevealParticles(forceVisible: true);
-                PlayPostRevealSlideFadeOpen();
+                yield return PlayPostRevealSlideFadeOpenAndWait();
+                CompleteOpenPresentation();
                 completedSideEntryReveal = true;
                 activeRoutine = null;
                 yield break;
@@ -377,9 +383,10 @@ public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
                 yield return null;
             }
 
-            ApplyOpenedPose();
+            ApplyOpenedPose(enableInteraction: false);
             PlayVisibleSlotRevealParticles(forceVisible: true);
-            PlayPostRevealSlideFadeOpen();
+            yield return PlayPostRevealSlideFadeOpenAndWait();
+            CompleteOpenPresentation();
             completedSideEntryReveal = true;
             activeRoutine = null;
         }
@@ -402,9 +409,10 @@ public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
             yield return null;
         }
 
-        ApplyOpenedPose();
+        ApplyOpenedPose(enableInteraction: false);
         PlayVisibleSlotRevealParticles(forceVisible: true);
-        PlayPostRevealSlideFadeOpen();
+        yield return PlayPostRevealSlideFadeOpenAndWait();
+        CompleteOpenPresentation();
         activeRoutine = null;
     }
 
@@ -502,10 +510,11 @@ public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
         DisableComponent<LayoutElement>(downFrame);
     }
 
-    private void ApplyOpenedPose()
+    private void ApplyOpenedPose(bool enableInteraction = true)
     {
         ApplyRevealPose(1f);
-        SetInteractionEnabled(true);
+        if (enableInteraction)
+            SetInteractionEnabled(true);
     }
 
     private void ApplyEditModePreviewPose()
@@ -530,9 +539,9 @@ public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
         if (revealDuration <= 0f)
         {
             PlayOpenUiParticles();
-            ApplyOpenedPose();
+            ApplyOpenedPose(enableInteraction: false);
             PlayVisibleSlotRevealParticles(forceVisible: true);
-            PlayPostRevealSlideFadeOpen();
+            activeRoutine = StartCoroutine(CompleteOpenPresentationAfterPostRevealRoutine());
             return;
         }
 
@@ -1390,6 +1399,20 @@ public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
         interactionCanvasGroup.blocksRaycasts = enabled;
     }
 
+    private void AcquireExternalUiInputBlockIfNeeded()
+    {
+        if (!Application.isPlaying || (inputBlocker != null && inputBlocker.IsBlocking))
+            return;
+
+        inputBlocker = GameFlowInputBlocker.GetOrAdd(this);
+        inputBlocker?.Acquire();
+    }
+
+    private void ReleaseExternalUiInputBlockIfNeeded()
+    {
+        inputBlocker?.Release();
+    }
+
     private void PlayImpactFeedback()
     {
         PlayImpactPresentationHook();
@@ -1838,6 +1861,34 @@ public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
             presentation.PlayOpen();
     }
 
+    private IEnumerator PlayPostRevealSlideFadeOpenAndWait()
+    {
+        if (!playPostRevealSlideFade)
+            yield break;
+
+        UISlideFadePresentation presentation = ResolvePostRevealSlideFadePresentation(createIfMissing: true);
+        if (presentation == null)
+            yield break;
+
+        bool completed = false;
+        presentation.PlayOpen(() => completed = true);
+        while (!completed && presentation != null && presentation.IsAnimating)
+            yield return null;
+    }
+
+    private IEnumerator CompleteOpenPresentationAfterPostRevealRoutine()
+    {
+        yield return PlayPostRevealSlideFadeOpenAndWait();
+        CompleteOpenPresentation();
+        activeRoutine = null;
+    }
+
+    private void CompleteOpenPresentation()
+    {
+        SetInteractionEnabled(true);
+        ReleaseExternalUiInputBlockIfNeeded();
+    }
+
     private void SnapPostRevealSlideFadeOpen()
     {
         if (!playPostRevealSlideFade)
@@ -1971,6 +2022,7 @@ public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
     private void StopActiveRoutine()
     {
         EndPanelMotionOwnership();
+        ReleaseExternalUiInputBlockIfNeeded();
 
         if (activeRoutine == null)
         {

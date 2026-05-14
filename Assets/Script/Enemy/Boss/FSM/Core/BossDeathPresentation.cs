@@ -75,6 +75,7 @@ public sealed class BossDeathPresentation : MonoBehaviour
 
     private BossControllerBase owner;
     private BossDrop bossDrop;
+    private BossExitPortalActivator portalActivator;
     private Coroutine runningSequence;
     private CinematicLetterboxOverlay overlay;
     private readonly List<Renderer> cachedDeathRenderers = new();
@@ -149,7 +150,7 @@ public sealed class BossDeathPresentation : MonoBehaviour
 
         HideBossVisuals();
         SpawnDeathVanishEffect();
-        bossDrop?.OnBossDead();
+        NotifyRewardsReady();
 
         yield return WaitForPresentationSeconds(deathPostVanishHoldSeconds);
 
@@ -192,6 +193,9 @@ public sealed class BossDeathPresentation : MonoBehaviour
 
         if (speechController == null)
             speechController = GetComponent<BossSpeechController>();
+
+        if (portalActivator == null)
+            portalActivator = GetComponent<BossExitPortalActivator>();
 
         if (deathEffectAnchor == null)
             deathEffectAnchor = transform;
@@ -420,11 +424,35 @@ public sealed class BossDeathPresentation : MonoBehaviour
 
     private bool ShouldPreserveRenderer(Renderer renderer)
     {
-        if (renderer == null || bossDrop == null || bossDrop.portalObj == null)
+        GameObject portalRoot = ResolvePortalObjectForPreservation();
+        if (renderer == null || portalRoot == null)
             return false;
 
-        Transform portalTransform = bossDrop.portalObj.transform;
+        Transform portalTransform = portalRoot.transform;
         return renderer.transform == portalTransform || renderer.transform.IsChildOf(portalTransform);
+    }
+
+    private GameObject ResolvePortalObjectForPreservation()
+    {
+        if (portalActivator != null)
+        {
+            GameObject portalObject = portalActivator.ResolvePortalObject();
+            if (portalObject != null)
+                return portalObject;
+        }
+
+        return bossDrop != null ? bossDrop.portalObj : null;
+    }
+
+    private void NotifyRewardsReady()
+    {
+        if (owner != null)
+        {
+            RunProgressCoordinator.EnsureInstance()?.NotifyBossRewardsReady(owner);
+            return;
+        }
+
+        bossDrop?.OnBossDead();
     }
 
     private void SpawnDeathVanishEffect()

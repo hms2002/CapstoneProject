@@ -25,7 +25,10 @@ public class ChestUIManager : MonoBehaviour
             chestScreen.gameObject.SetActive(false);
     }
 
-    public bool OpenChest(TreasureChest chest, bool playSlideFadePresentation = true)
+    public bool OpenChest(
+        TreasureChest chest,
+        bool playSlideFadePresentation = true,
+        GameFlowInputBlocker inputBlocker = null)
     {
         if (chest == null)
             return false;
@@ -45,10 +48,18 @@ public class ChestUIManager : MonoBehaviour
         inventoryRoot.BindChest(chest.GetInventory(), playSlideFadePresentation);
 
         bool opened = true;
-        if (UIManager.Instance != null)
+        if (inputBlocker != null)
+        {
+            opened = inputBlocker.TryPushOwnedUI(inventoryRoot);
+        }
+        else if (UIManager.Instance != null)
+        {
             opened = UIManager.Instance.TryPushUI(inventoryRoot);
+        }
         else
+        {
             inventoryRoot.OpenUI();
+        }
 
         if (!opened)
         {

@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 808910561e593534f9ea3637c00cc255, type: 3}
   m_Name: AD_LightningSpearAttack
   m_EditorClassIdentifier:
-  abilityName: AD_LightningSpearAttack
+  abilityName: 뇌창 연격
   icon: {fileID: -6255143421326930151, guid: e658b351294cef44b8a5c823d1fdcb73, type: 3}
-  description: Lightning Spear V1 three-hit placeholder combo.
+  description: 번개 창으로 3연속 공격한다. 마지막 공격은 내려찍기이며, V1에서는 표식을 생성하지 않는다.
   cooldown: 0
   executionPolicy: 0
   useCharges: 0

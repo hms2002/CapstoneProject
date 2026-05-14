@@ -187,6 +187,8 @@ public class DragIcon : MonoBehaviour
     [SerializeField] private CanvasGroup canvasGroup;
     [SerializeField] private Image image;
     [SerializeField] private RectTransform rectTransform;
+    private ItemDisplayIconDefaultState iconDefaultState;
+    private RectTransformDefaultState rootDefaultState;
 
     private void Awake()
     {
@@ -198,6 +200,10 @@ public class DragIcon : MonoBehaviour
 
         Instance = this;
         if (rectTransform == null) rectTransform = transform as RectTransform;
+        iconDefaultState = CanApplyIconTransform()
+            ? ItemDisplayIconDefaultState.Stretch(image)
+            : new ItemDisplayIconDefaultState(image);
+        rootDefaultState = new RectTransformDefaultState(rectTransform);
         Hide();
     }
 
@@ -209,12 +215,22 @@ public class DragIcon : MonoBehaviour
 
     public void Show(Sprite sprite)
     {
+        ResetRootPresentation();
         if (canvasGroup != null) canvasGroup.alpha = 1f;
-        if (image != null)
-        {
-            image.enabled = true;
-            image.sprite = sprite;
-        }
+        ItemDisplayIconUtility.ApplyRaw(image, sprite, iconDefaultState);
+    }
+
+    public void Show(ScriptableObject item)
+    {
+        ResetRootPresentation();
+        if (canvasGroup != null) canvasGroup.alpha = 1f;
+        ItemDisplayIconUtility.Apply(
+            image,
+            item,
+            ItemDisplayIconContext.DragIcon,
+            iconDefaultState,
+            applyAnchoredPosition: true,
+            applyCustomTransform: CanApplyIconTransform());
     }
 
     public void Follow(Vector2 screenPos)
@@ -226,7 +242,60 @@ public class DragIcon : MonoBehaviour
     public void Hide()
     {
         if (canvasGroup != null) canvasGroup.alpha = 0f;
-        if (image != null) image.enabled = false;
+        ItemDisplayIconUtility.Clear(image, iconDefaultState);
+        ResetRootPresentation();
     }
 
+    private void OnDisable()
+    {
+        Hide();
+    }
+
+    private void ResetRootPresentation()
+    {
+        rootDefaultState.ApplyTo(rectTransform);
+    }
+
+    private bool CanApplyIconTransform()
+    {
+        return image != null && image.rectTransform != null && image.rectTransform != rectTransform;
+    }
+
+    private readonly struct RectTransformDefaultState
+    {
+        private readonly bool hasValue;
+        private readonly Vector2 anchorMin;
+        private readonly Vector2 anchorMax;
+        private readonly Vector2 anchoredPosition;
+        private readonly Vector2 sizeDelta;
+        private readonly Vector2 pivot;
+        private readonly Quaternion localRotation;
+        private readonly Vector3 localScale;
+
+        public RectTransformDefaultState(RectTransform rect)
+        {
+            hasValue = rect != null;
+            anchorMin = rect != null ? rect.anchorMin : Vector2.zero;
+            anchorMax = rect != null ? rect.anchorMax : Vector2.zero;
+            anchoredPosition = rect != null ? rect.anchoredPosition : Vector2.zero;
+            sizeDelta = rect != null ? rect.sizeDelta : Vector2.zero;
+            pivot = rect != null ? rect.pivot : new Vector2(0.5f, 0.5f);
+            localRotation = rect != null ? rect.localRotation : Quaternion.identity;
+            localScale = rect != null ? rect.localScale : Vector3.one;
+        }
+
+        public void ApplyTo(RectTransform rect)
+        {
+            if (!hasValue || rect == null)
+                return;
+
+            rect.anchorMin = anchorMin;
+            rect.anchorMax = anchorMax;
+            rect.anchoredPosition = anchoredPosition;
+            rect.sizeDelta = sizeDelta;
+            rect.pivot = pivot;
+            rect.localRotation = localRotation;
+            rect.localScale = localScale;
+        }
+    }
 }

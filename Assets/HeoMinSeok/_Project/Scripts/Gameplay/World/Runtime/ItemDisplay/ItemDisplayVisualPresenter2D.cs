@@ -15,7 +15,9 @@ public sealed class ItemDisplayVisualPresenter2D : MonoBehaviour
     private SpriteRenderer[] outlineRenderers = EmptyRenderers;
     private MaterialPropertyBlock outlinePropertyBlock;
     private Vector3 fallbackBaseLocalPosition;
-    private bool hasFallbackBaseLocalPosition;
+    private Quaternion fallbackBaseLocalRotation;
+    private Vector3 fallbackBaseLocalScale;
+    private bool hasFallbackBaseTransform;
     private bool outlineEnabled;
 
     public SpriteRenderer FallbackRenderer
@@ -43,14 +45,15 @@ public sealed class ItemDisplayVisualPresenter2D : MonoBehaviour
 
         if (profile != null)
         {
-            GameObject customPrefab = profile.GetVisualPrefab(context);
+            ItemDisplayContext effectiveContext = ResolveEffectiveContext();
+            GameObject customPrefab = profile.GetVisualPrefab(effectiveContext);
             if (customPrefab != null)
             {
                 ApplyCustomPrefab(customPrefab);
                 return;
             }
 
-            Sprite spriteOverride = profile.GetSpriteOverride(context);
+            Sprite spriteOverride = profile.GetSpriteOverride(effectiveContext);
             if (spriteOverride != null)
                 sprite = spriteOverride;
         }
@@ -84,6 +87,7 @@ public sealed class ItemDisplayVisualPresenter2D : MonoBehaviour
 
         if (fallbackSpriteRenderer != null)
         {
+            ResetFallbackTransform();
             fallbackSpriteRenderer.sprite = null;
             fallbackSpriteRenderer.enabled = false;
         }
@@ -118,7 +122,10 @@ public sealed class ItemDisplayVisualPresenter2D : MonoBehaviour
         ClearCustomVisual();
 
         if (fallbackSpriteRenderer != null)
+        {
+            ResetFallbackTransform();
             fallbackSpriteRenderer.enabled = false;
+        }
 
         Transform parent = ResolveVisualParent();
         activeCustomVisual = Instantiate(prefab, parent, false);
@@ -146,6 +153,7 @@ public sealed class ItemDisplayVisualPresenter2D : MonoBehaviour
         if (fallbackSpriteRenderer == null)
             return;
 
+        ResetFallbackTransform();
         fallbackSpriteRenderer.sprite = sprite;
         fallbackSpriteRenderer.enabled = sprite != null;
         outlineRenderers = new[] { fallbackSpriteRenderer };
@@ -161,7 +169,8 @@ public sealed class ItemDisplayVisualPresenter2D : MonoBehaviour
         if (sprite == null || fallbackSpriteRenderer == null || settings == null)
             return;
 
-        CaptureFallbackBaseLocalPosition();
+        CaptureFallbackBaseTransform();
+        ResetFallbackTransform();
 
         Bounds bounds = sprite.bounds;
         if (bounds.size.x <= 0f || bounds.size.y <= 0f)
@@ -203,10 +212,11 @@ public sealed class ItemDisplayVisualPresenter2D : MonoBehaviour
         ItemDisplayVisualProfileSO profile,
         IInventoryItemDefinition definition)
     {
-        if (profile != null && profile.TryGetSpriteSettings(context, out ItemDisplaySpriteSettings profileSettings))
+        ItemDisplayContext effectiveContext = ResolveEffectiveContext();
+        if (profile != null && profile.TryGetSpriteSettings(effectiveContext, out ItemDisplaySpriteSettings profileSettings))
             return profileSettings;
 
-        return ItemDisplaySpriteSettings.DefaultFor(context, definition != null ? definition.Kind : (InventoryItemKind?)null);
+        return ItemDisplaySpriteSettings.DefaultFor(effectiveContext, definition != null ? definition.Kind : (InventoryItemKind?)null);
     }
 
     private static ItemDisplayVisualProfileSO ResolveProfile(ScriptableObject item)
@@ -252,6 +262,8 @@ public sealed class ItemDisplayVisualPresenter2D : MonoBehaviour
         if (activeCustomVisual == null)
             return;
 
+        activeCustomVisual.SetActive(false);
+
         if (Application.isPlaying)
             Destroy(activeCustomVisual);
         else
@@ -260,13 +272,27 @@ public sealed class ItemDisplayVisualPresenter2D : MonoBehaviour
         activeCustomVisual = null;
     }
 
-    private void CaptureFallbackBaseLocalPosition()
+    private void CaptureFallbackBaseTransform()
     {
-        if (hasFallbackBaseLocalPosition || fallbackSpriteRenderer == null)
+        if (hasFallbackBaseTransform || fallbackSpriteRenderer == null)
             return;
 
-        fallbackBaseLocalPosition = fallbackSpriteRenderer.transform.localPosition;
-        hasFallbackBaseLocalPosition = true;
+        Transform rendererTransform = fallbackSpriteRenderer.transform;
+        fallbackBaseLocalPosition = rendererTransform.localPosition;
+        fallbackBaseLocalRotation = rendererTransform.localRotation;
+        fallbackBaseLocalScale = rendererTransform.localScale;
+        hasFallbackBaseTransform = true;
+    }
+
+    private void ResetFallbackTransform()
+    {
+        if (!hasFallbackBaseTransform || fallbackSpriteRenderer == null)
+            return;
+
+        Transform rendererTransform = fallbackSpriteRenderer.transform;
+        rendererTransform.localPosition = fallbackBaseLocalPosition;
+        rendererTransform.localRotation = fallbackBaseLocalRotation;
+        rendererTransform.localScale = fallbackBaseLocalScale;
     }
 
     private void ResolveReferences()
@@ -277,7 +303,7 @@ public sealed class ItemDisplayVisualPresenter2D : MonoBehaviour
         if (fallbackSpriteRenderer == null)
             fallbackSpriteRenderer = GetComponentInChildren<SpriteRenderer>(includeInactive: true);
 
-        CaptureFallbackBaseLocalPosition();
+        CaptureFallbackBaseTransform();
     }
 
     private Transform ResolveVisualParent()
@@ -303,6 +329,13 @@ public sealed class ItemDisplayVisualPresenter2D : MonoBehaviour
         {
             return false;
         }
+    }
+
+    private ItemDisplayContext ResolveEffectiveContext()
+    {
+        return context == ItemDisplayContext.ShopDisplay
+            ? ItemDisplayContext.WorldDrop
+            : context;
     }
 
     private static bool TryResolveRendererBounds(SpriteRenderer[] renderers, out Bounds bounds)

@@ -30,6 +30,7 @@ public class UpgradeManager : MonoBehaviour
     private bool hasAppliedRunStartEffectsForCurrentRun;
     private bool hasObservedSceneLoadForCurrentRun;
     private Coroutine openPresentationRoutine;
+    private GameFlowInputBlocker openPresentationInputBlocker;
 
     private void Awake()
     {
@@ -55,6 +56,8 @@ public class UpgradeManager : MonoBehaviour
             openPresentationRoutine = null;
             SceneFadeTransitionService.Instance?.EndOverlayFadeSession();
         }
+
+        ReleaseOpenPresentationInputBlock();
 
         if (Instance == this)
             Instance = null;
@@ -84,6 +87,14 @@ public class UpgradeManager : MonoBehaviour
 
     private void OnDisable()
     {
+        if (openPresentationRoutine != null)
+        {
+            StopCoroutine(openPresentationRoutine);
+            openPresentationRoutine = null;
+            SceneFadeTransitionService.Instance?.EndOverlayFadeSession();
+        }
+
+        ReleaseOpenPresentationInputBlock();
         PlayerRuntimeRegistry.PlayerRegistered -= HandlePlayerRegistered;
         SceneManager.sceneLoaded -= HandleSceneLoaded;
 
@@ -342,6 +353,7 @@ public class UpgradeManager : MonoBehaviour
             StopCoroutine(openPresentationRoutine);
             openPresentationRoutine = null;
             SceneFadeTransitionService.Instance?.EndOverlayFadeSession();
+            ReleaseOpenPresentationInputBlock();
         }
 
         ResolveUpgradeTreeUiReference();
@@ -377,25 +389,35 @@ public class UpgradeManager : MonoBehaviour
 
     private IEnumerator OpenUIWithFadePresentation()
     {
+        AcquireOpenPresentationInputBlock();
+
         SceneFadeTransitionService fadeService = SceneFadeTransitionService.EnsureInstance(allowRuntimeFallback: true);
         bool hasFadeOverlay = fadeService != null && fadeService.TryBeginOverlayFadeSession(initialAlpha: 0f);
 
-        if (hasFadeOverlay)
-            yield return fadeService.FadeOutAsync(openFadeOutDuration);
-
-        bool opened = OpenUIImmediate();
-
-        if (hasFadeOverlay)
+        try
         {
-            yield return null;
-            yield return fadeService.FadeInAsync(opened ? openFadeInDuration : openFadeOutDuration);
-            fadeService.EndOverlayFadeSession();
-        }
+            if (hasFadeOverlay)
+                yield return fadeService.FadeOutAsync(openFadeOutDuration);
 
-        openPresentationRoutine = null;
+            bool opened = OpenUIImmediate(openPresentationInputBlocker);
+
+            if (hasFadeOverlay)
+            {
+                yield return null;
+                yield return fadeService.FadeInAsync(opened ? openFadeInDuration : openFadeOutDuration);
+            }
+        }
+        finally
+        {
+            if (hasFadeOverlay)
+                fadeService.EndOverlayFadeSession();
+
+            ReleaseOpenPresentationInputBlock();
+            openPresentationRoutine = null;
+        }
     }
 
-    private bool OpenUIImmediate()
+    private bool OpenUIImmediate(GameFlowInputBlocker inputBlocker = null)
     {
         ResolveUpgradeTreeUiReference();
         if (upgradeTreeUI == null)
@@ -405,10 +427,28 @@ public class UpgradeManager : MonoBehaviour
             return true;
 
         if (UIManager.Instance != null)
-            return UIManager.Instance.TryPushUI(upgradeTreeUI);
+        {
+            return inputBlocker != null
+                ? inputBlocker.TryPushOwnedUI(upgradeTreeUI)
+                : UIManager.Instance.TryPushUI(upgradeTreeUI);
+        }
 
         upgradeTreeUI.OpenUI();
         return true;
+    }
+
+    private void AcquireOpenPresentationInputBlock()
+    {
+        if (openPresentationInputBlocker != null && openPresentationInputBlocker.IsBlocking)
+            return;
+
+        openPresentationInputBlocker = GameFlowInputBlocker.GetOrAdd(this);
+        openPresentationInputBlocker?.Acquire();
+    }
+
+    private void ReleaseOpenPresentationInputBlock()
+    {
+        openPresentationInputBlocker?.Release();
     }
 
     public LockType GetNodeStatus(int id)

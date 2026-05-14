@@ -27,6 +27,7 @@ public class TreasureChest : MonoBehaviour
     private bool isGenerated;
     private bool isOpening;
     private bool isPreludeTimeFrozen;
+    private GameFlowInputBlocker openingInputBlocker;
     private float preludePreviousTimeScale = 1f;
     private WorldObjectPresentationRuntime openPresentationRuntime;
     private readonly List<ChestLootSnapshot> refreshGuard = new List<ChestLootSnapshot>();
@@ -53,7 +54,9 @@ public class TreasureChest : MonoBehaviour
 
     private void OnDisable()
     {
+        ReleaseOpeningUiInputBlockIfNeeded();
         RestorePreludeTimeIfNeeded();
+        isOpening = false;
     }
 
     public void InitializeWithLoot(List<ScriptableObject> loots)
@@ -88,31 +91,43 @@ public class TreasureChest : MonoBehaviour
 
     private IEnumerator OpenRoutine(GameObject instigator)
     {
+        bool opened = false;
         isOpening = true;
-        FreezePreludeTimeIfNeeded();
-        PlayOpenPresentation(instigator);
+        try
+        {
+            AcquireOpeningUiInputBlockIfNeeded();
+            FreezePreludeTimeIfNeeded();
+            PlayOpenPresentation(instigator);
 
-        float duration = GetOpenPreludeDuration();
-        if (duration > 0f)
-            yield return new WaitForSecondsRealtime(duration);
+            float duration = GetOpenPreludeDuration();
+            if (duration > 0f)
+                yield return new WaitForSecondsRealtime(duration);
 
-        isOpened = true;
-        HoldOpenedVisualState();
-        RestorePreludeTimeIfNeeded();
+            isOpened = true;
+            HoldOpenedVisualState();
+            RestorePreludeTimeIfNeeded();
 
-        bool opened = TryOpenUi(playSlideFadePresentation: false);
+            opened = TryOpenUi(playSlideFadePresentation: false, inputBlocker: openingInputBlocker);
+        }
+        finally
+        {
+            ReleaseOpeningUiInputBlockIfNeeded();
+            RestorePreludeTimeIfNeeded();
+            isOpening = false;
+        }
+
         if (!opened && PlayerInteractor2D.Instance != null)
             PlayerInteractor2D.Instance.SetInteractState(InteractState.Idle);
-
-        isOpening = false;
     }
 
-    private bool TryOpenUi(bool playSlideFadePresentation = true)
+    private bool TryOpenUi(
+        bool playSlideFadePresentation = true,
+        GameFlowInputBlocker inputBlocker = null)
     {
         if (ChestUIManager.Instance == null)
             return false;
 
-        return ChestUIManager.Instance.OpenChest(this, playSlideFadePresentation);
+        return ChestUIManager.Instance.OpenChest(this, playSlideFadePresentation, inputBlocker);
     }
 
     private void GenerateSelfLoot()
@@ -351,6 +366,20 @@ public class TreasureChest : MonoBehaviour
         Time.timeScale = preludePreviousTimeScale;
         preludePreviousTimeScale = 1f;
         isPreludeTimeFrozen = false;
+    }
+
+    private void AcquireOpeningUiInputBlockIfNeeded()
+    {
+        if (openingInputBlocker != null && openingInputBlocker.IsBlocking)
+            return;
+
+        openingInputBlocker = GameFlowInputBlocker.GetOrAdd(this);
+        openingInputBlocker?.Acquire();
+    }
+
+    private void ReleaseOpeningUiInputBlockIfNeeded()
+    {
+        openingInputBlocker?.Release();
     }
 
     private void ConfigureOpenEffects()

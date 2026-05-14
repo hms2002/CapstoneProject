@@ -40,6 +40,12 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWea
     private readonly List<LightningSpearRecoverShotTrailEffect> recoveredShotTrails = new List<LightningSpearRecoverShotTrailEffect>();
     private readonly List<GameObject> recoveredShotSpawnEffects = new List<GameObject>();
     private readonly List<Coroutine> recoveredSpearFireRoutines = new List<Coroutine>();
+    private readonly Dictionary<LightningSpearMarkActor, GameObject> markHoverRangeIndicators =
+        new Dictionary<LightningSpearMarkActor, GameObject>();
+    private readonly List<LightningSpearMarkActor> visibleMarkHoverRangeMarks =
+        new List<LightningSpearMarkActor>();
+    private readonly List<LightningSpearMarkActor> staleMarkHoverRangeMarks =
+        new List<LightningSpearMarkActor>();
 
     private AbilitySystem ownerSystem;
     private WeaponInventory2D weaponInventory;
@@ -50,6 +56,18 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWea
     private GameObject selectedMarkIndicatorInstance;
     private bool cursorInteractableSet;
     private bool skill1MarkRushHudOverrideActive;
+    private bool hasBufferedMarkRushInput;
+    private bool isExecutingMarkRush;
+    private bool hasCurrentMarkRushDestination;
+    private Vector2 currentMarkRushDestination;
+    private float currentMarkRushDestinationExpiresAt = -1f;
+    private bool hasBufferedMarkRushOrigin;
+    private Vector2 bufferedMarkRushOrigin;
+    private LightningSpearMarkActor bufferedMarkRushTarget;
+    private LightningSpearMarkActor forcedBufferedMarkRushTarget;
+    private bool hasForcedBufferedMarkRushOrigin;
+    private Vector2 forcedBufferedMarkRushOrigin;
+    private float markRushInputBufferExpiresAt = -1f;
     private int recoveredSpearLayoutSideSign = 1;
 
     private void Awake()
@@ -61,17 +79,27 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWea
     {
         if (!TryResolveActiveLoadout(out LightningSpearLoadout loadout))
         {
+            forcedBufferedMarkRushTarget = null;
+            ClearForcedMarkRushOrigin();
+            ClearMarkRushInputBuffer();
             ClearFeedback();
             return;
         }
 
         LightningSpearSkill1Data skill1Data = ResolveSkill1Data(loadout);
+        ClearExpiredMarkRushDestination();
+        TryConsumeBufferedMarkRush(loadout, skill1Data);
         RefreshMarkFeedback(loadout, skill1Data);
         RefreshRecoveredSpearLayout(skill1Data);
     }
 
     private void OnDisable()
     {
+        isExecutingMarkRush = false;
+        ClearMarkRushDestinationOrigin();
+        forcedBufferedMarkRushTarget = null;
+        ClearForcedMarkRushOrigin();
+        ClearMarkRushInputBuffer();
         ClearAllMarks();
         ClearRecoveredSpearState();
         ClearFeedback();
@@ -80,6 +108,11 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWea
 
     private void OnDestroy()
     {
+        isExecutingMarkRush = false;
+        ClearMarkRushDestinationOrigin();
+        forcedBufferedMarkRushTarget = null;
+        ClearForcedMarkRushOrigin();
+        ClearMarkRushInputBuffer();
         ClearAllMarks();
         ClearRecoveredSpearState();
         ClearFeedback();
@@ -92,8 +125,126 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWea
 
         if (previousWeapon != newWeapon && previousWeapon?.abilityLoadout is LightningSpearLoadout)
         {
+            isExecutingMarkRush = false;
+            ClearMarkRushDestinationOrigin();
+            forcedBufferedMarkRushTarget = null;
+            ClearForcedMarkRushOrigin();
+            ClearMarkRushInputBuffer();
             ClearAllMarks();
             ClearRecoveredSpearState();
+        }
+    }
+
+    public override bool TryHandleAbilityInput(
+        WeaponDefinition weapon,
+        WeaponAbilitySlot slot,
+        AbilityDefinition ability)
+    {
+        if (slot != WeaponAbilitySlot.Skill1 || ability == null)
+        {
+            return false;
+        }
+
+        CacheOwnerReferences(null);
+        if (!TryResolveActiveLoadout(out LightningSpearLoadout loadout) ||
+            loadout.MarkRushOrSweep != ability)
+        {
+            return false;
+        }
+
+        bool hasMarkRushOrigin = HasMarkRushDestinationOrigin();
+        bool isBasicAttackBusy = IsExecutingBasicAttack(loadout);
+        if (!hasMarkRushOrigin && !isBasicAttackBusy)
+            return false;
+
+        bool buffered = TryBufferMarkRushInput(slot, ability);
+        if (buffered)
+        {
+            if (isBasicAttackBusy)
+                CancelBasicAttack(loadout);
+
+            TryConsumeBufferedMarkRush(loadout, ResolveSkill1Data(loadout));
+            return true;
+        }
+
+        return hasMarkRushOrigin || isBasicAttackBusy || isExecutingMarkRush || ownerSystem != null && ownerSystem.IsBusy;
+    }
+
+    public override void HandleAbilityActivationRejected(
+        WeaponDefinition weapon,
+        WeaponAbilitySlot slot,
+        AbilityDefinition rejectedAbility)
+    {
+        TryBufferMarkRushInput(slot, rejectedAbility);
+    }
+
+    private bool TryBufferMarkRushInput(WeaponAbilitySlot slot, AbilityDefinition ability)
+    {
+        if (slot != WeaponAbilitySlot.Skill1 || ability == null)
+            return false;
+
+        CacheOwnerReferences(null);
+
+        if (!TryResolveActiveLoadout(out LightningSpearLoadout loadout) ||
+            loadout.MarkRushOrSweep != ability ||
+            ownerSystem == null)
+        {
+            return false;
+        }
+
+        LightningSpearSkill1Data data = ResolveSkill1Data(loadout);
+        Vector2 cursorWorld = ResolveCursorWorld(ownerSystem);
+        Vector2 origin = ResolveMarkRushInputOrigin();
+        LightningSpearMarkActor target = FindSelectableMark(loadout, data, origin, cursorWorld);
+        if (target == null)
+            return false;
+
+        float bufferSeconds = GetMarkRushInputBufferSeconds(data);
+        if (bufferSeconds <= 0f)
+            return false;
+
+        hasBufferedMarkRushInput = true;
+        hasBufferedMarkRushOrigin = true;
+        bufferedMarkRushOrigin = origin;
+        bufferedMarkRushTarget = target;
+        markRushInputBufferExpiresAt = CalculateMarkRushInputBufferExpiresAt(bufferSeconds);
+        return true;
+    }
+
+    private bool IsExecutingBasicAttack(LightningSpearLoadout loadout)
+    {
+        if (ownerSystem == null || loadout == null || loadout.BaseAttack == null)
+            return false;
+
+        if (ownerSystem.IsCasting &&
+            ownerSystem.CurrentCastSpec != null &&
+            ownerSystem.CurrentCastSpec.Definition == loadout.BaseAttack)
+        {
+            return true;
+        }
+
+        return ownerSystem.IsExecuting &&
+               ownerSystem.CurrentExecSpec != null &&
+               ownerSystem.CurrentExecSpec.Definition == loadout.BaseAttack;
+    }
+
+    private void CancelBasicAttack(LightningSpearLoadout loadout)
+    {
+        if (ownerSystem == null || loadout == null || loadout.BaseAttack == null)
+            return;
+
+        if (ownerSystem.IsCasting &&
+            ownerSystem.CurrentCastSpec != null &&
+            ownerSystem.CurrentCastSpec.Definition == loadout.BaseAttack)
+        {
+            ownerSystem.CancelCasting(force: true);
+        }
+
+        if (ownerSystem.IsExecuting &&
+            ownerSystem.CurrentExecSpec != null &&
+            ownerSystem.CurrentExecSpec.Definition == loadout.BaseAttack)
+        {
+            ownerSystem.CancelExecution(force: true);
         }
     }
 
@@ -110,7 +261,10 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWea
 
         Vector2 ownerPosition = system.transform.position;
         Vector2 cursorWorld = ResolveCursorWorld(system);
-        LightningSpearMarkActor selectedMark = FindSelectableMark(loadout, data, ownerPosition, cursorWorld);
+        LightningSpearMarkActor selectedMark =
+            ConsumeForcedBufferedMarkRushTarget(loadout, data, ownerPosition);
+        if (selectedMark == null)
+            selectedMark = FindSelectableMark(loadout, data, ownerPosition, cursorWorld);
 
         if (selectedMark == null)
         {
@@ -147,11 +301,14 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWea
         int markRushAimOverrideToken = BeginAimPresentationOverride(GetMarkRushAimPresentation(data), rushDirection);
         try
         {
+            isExecutingMarkRush = true;
+            SetMarkRushDestinationOrigin(selectedMark.transform.position, loadout, data);
             TryPlayAnimationTrigger(system, spec.Definition, GetMarkRushAnimationTrigger(data));
             yield return ExecuteMarkRush(system, spec, loadout, data, selectedMark);
         }
         finally
         {
+            isExecutingMarkRush = false;
             EndAimPresentationOverride(markRushAimOverrideToken);
         }
     }
@@ -204,6 +361,144 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWea
             return;
 
         activeMarks.Remove(mark);
+        DestroyMarkHoverRangeIndicator(mark);
+    }
+
+    private void TryConsumeBufferedMarkRush(LightningSpearLoadout loadout, LightningSpearSkill1Data data)
+    {
+        if (!hasBufferedMarkRushInput)
+            return;
+
+        if (Time.time > markRushInputBufferExpiresAt)
+        {
+            ClearMarkRushInputBuffer();
+            return;
+        }
+
+        if (ownerSystem == null || ownerSystem.IsBusy || loadout == null || loadout.MarkRushOrSweep == null)
+            return;
+
+        if (!IsSkill1Ready(loadout))
+            return;
+
+        Vector2 ownerPosition = ownerSystem.transform.position;
+        if (bufferedMarkRushTarget == null || !bufferedMarkRushTarget.IsActive)
+        {
+            ClearMarkRushInputBuffer();
+            return;
+        }
+
+        Vector2 origin = hasBufferedMarkRushOrigin ? bufferedMarkRushOrigin : ownerPosition;
+        if (!CanRushToMark(loadout, data, bufferedMarkRushTarget, origin))
+        {
+            ClearMarkRushInputBuffer();
+            return;
+        }
+
+        forcedBufferedMarkRushTarget = bufferedMarkRushTarget;
+        hasForcedBufferedMarkRushOrigin = true;
+        forcedBufferedMarkRushOrigin = origin;
+        if (ownerSystem.TryActivateAbility(loadout.MarkRushOrSweep))
+        {
+            ClearMarkRushInputBuffer();
+        }
+        else
+        {
+            forcedBufferedMarkRushTarget = null;
+            ClearForcedMarkRushOrigin();
+        }
+    }
+
+    private void ClearMarkRushInputBuffer()
+    {
+        hasBufferedMarkRushInput = false;
+        hasBufferedMarkRushOrigin = false;
+        bufferedMarkRushOrigin = Vector2.zero;
+        bufferedMarkRushTarget = null;
+        markRushInputBufferExpiresAt = -1f;
+    }
+
+    private float CalculateMarkRushInputBufferExpiresAt(float bufferSeconds)
+    {
+        float expiresAt = Time.time + bufferSeconds;
+        if (HasMarkRushDestinationOrigin())
+            expiresAt = Mathf.Max(expiresAt, currentMarkRushDestinationExpiresAt);
+
+        return expiresAt;
+    }
+
+    private Vector2 ResolveMarkRushInputOrigin()
+    {
+        if (HasMarkRushDestinationOrigin())
+            return currentMarkRushDestination;
+
+        return ownerSystem != null
+            ? (Vector2)ownerSystem.transform.position
+            : Vector2.zero;
+    }
+
+    private void SetMarkRushDestinationOrigin(
+        Vector2 destination,
+        LightningSpearLoadout loadout,
+        LightningSpearSkill1Data data)
+    {
+        hasCurrentMarkRushDestination = true;
+        currentMarkRushDestination = destination;
+        currentMarkRushDestinationExpiresAt =
+            Time.time +
+            GetMarkRushInputBufferSeconds(data) +
+            GetMarkRushInternalDelay(loadout, data) +
+            0.25f;
+    }
+
+    private bool HasMarkRushDestinationOrigin()
+    {
+        return hasCurrentMarkRushDestination &&
+               (isExecutingMarkRush || Time.time <= currentMarkRushDestinationExpiresAt);
+    }
+
+    private void ClearExpiredMarkRushDestination()
+    {
+        if (!hasCurrentMarkRushDestination || isExecutingMarkRush)
+            return;
+
+        if (Time.time <= currentMarkRushDestinationExpiresAt)
+            return;
+
+        ClearMarkRushDestinationOrigin();
+    }
+
+    private void ClearMarkRushDestinationOrigin()
+    {
+        hasCurrentMarkRushDestination = false;
+        currentMarkRushDestination = Vector2.zero;
+        currentMarkRushDestinationExpiresAt = -1f;
+    }
+
+    private LightningSpearMarkActor ConsumeForcedBufferedMarkRushTarget(
+        LightningSpearLoadout loadout,
+        LightningSpearSkill1Data data,
+        Vector2 ownerPosition)
+    {
+        LightningSpearMarkActor target = forcedBufferedMarkRushTarget;
+        forcedBufferedMarkRushTarget = null;
+        Vector2 validationOrigin = hasForcedBufferedMarkRushOrigin
+            ? forcedBufferedMarkRushOrigin
+            : ownerPosition;
+        ClearForcedMarkRushOrigin();
+
+        if (target == null || !target.IsActive)
+            return null;
+
+        return CanRushToMark(loadout, data, target, validationOrigin)
+            ? target
+            : null;
+    }
+
+    private void ClearForcedMarkRushOrigin()
+    {
+        hasForcedBufferedMarkRushOrigin = false;
+        forcedBufferedMarkRushOrigin = Vector2.zero;
     }
 
     public void HandleMarkActivated(
@@ -753,7 +1048,7 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWea
         if (Vector2.Distance(ownerPosition, candidate) > GetFallbackCombatRadius(loadout, data))
             return false;
 
-        if (HasBlocker(ownerPosition, candidate, loadout.MarkRushBodyRadius, loadout.StrictRushBlockMask))
+        if (HasPlacementBlocker(ownerPosition, candidate, loadout.MarkRushBodyRadius, loadout.StrictRushBlockMask))
             return false;
 
         if (Vector2.Distance(ownerPosition, candidate) < GetMinPlayerDistance(loadout, data))
@@ -903,6 +1198,11 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWea
     private static float GetMarkRushInternalDelay(LightningSpearLoadout loadout, LightningSpearSkill1Data data)
     {
         return data != null ? data.MarkRushInternalDelay : loadout.MarkRushInternalDelay;
+    }
+
+    private static float GetMarkRushInputBufferSeconds(LightningSpearSkill1Data data)
+    {
+        return data != null ? data.MarkRushInputBufferSeconds : 0.35f;
     }
 
     private static LightningSpearDashStabTrailEffect GetMarkRushTrailEffectPrefab(
@@ -1080,11 +1380,18 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWea
 
         bool skillReady = IsSkill1Ready(loadout);
         Vector2 ownerPosition = ownerSystem.transform.position;
+        bool keepRushRangeVisible = HasMarkRushDestinationOrigin() || hasBufferedMarkRushInput;
+        Vector2 rushRangeOrigin = hasBufferedMarkRushInput && hasBufferedMarkRushOrigin
+            ? bufferedMarkRushOrigin
+            : keepRushRangeVisible
+                ? ResolveMarkRushInputOrigin()
+                : ownerPosition;
         Vector2 cursorWorld = ResolveCursorWorld(ownerSystem);
         LightningSpearMarkActor selected = skillReady
             ? FindSelectableMark(loadout, data, ownerPosition, cursorWorld)
             : null;
         bool hasActiveMark = false;
+        visibleMarkHoverRangeMarks.Clear();
 
         for (int i = activeMarks.Count - 1; i >= 0; i--)
         {
@@ -1102,11 +1409,16 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWea
             }
 
             hasActiveMark = true;
-            bool inRushRange = skillReady && IsMarkInsideRushRange(loadout, data, mark, ownerPosition);
+            visibleMarkHoverRangeMarks.Add(mark);
+            UpdateMarkHoverRangeIndicator(loadout, data, mark, true);
+            bool inRushRange =
+                (skillReady || keepRushRangeVisible) &&
+                IsMarkInsideRushRange(loadout, data, mark, rushRangeOrigin);
             mark.SetFeedback(inRushRange, mark == selected);
         }
 
-        UpdateRangeIndicator(loadout, data, skillReady && hasActiveMark);
+        PruneMarkHoverRangeIndicators();
+        UpdateRangeIndicator(loadout, data, (skillReady || keepRushRangeVisible) && hasActiveMark);
         UpdateSelectedMarkIndicator(loadout, selected);
         UpdateCursorFeedback(selected != null);
         skill1MarkRushHudOverrideActive = selected != null;
@@ -1134,10 +1446,14 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWea
         if (selectedMarkIndicatorInstance != null)
             selectedMarkIndicatorInstance.SetActive(false);
 
+        SetAllMarkHoverRangeIndicatorsActive(false);
         UpdateCursorFeedback(false);
     }
 
-    private void UpdateRangeIndicator(LightningSpearLoadout loadout, LightningSpearSkill1Data data, bool active)
+    private void UpdateRangeIndicator(
+        LightningSpearLoadout loadout,
+        LightningSpearSkill1Data data,
+        bool active)
     {
         if (!active || loadout == null || ownerSystem == null || loadout.RushRangeIndicatorPrefab == null)
         {
@@ -1160,6 +1476,88 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWea
             rushRangeIndicatorInstance.transform.localScale = Vector3.one * (GetMarkRushRange(loadout, data) * 2f);
 
         rushRangeIndicatorInstance.SetActive(true);
+    }
+
+    private void UpdateMarkHoverRangeIndicator(
+        LightningSpearLoadout loadout,
+        LightningSpearSkill1Data data,
+        LightningSpearMarkActor mark,
+        bool active)
+    {
+        if (!active || loadout == null || mark == null || loadout.MarkHoverRangeIndicatorPrefab == null)
+        {
+            DestroyMarkHoverRangeIndicator(mark);
+            return;
+        }
+
+        if (!markHoverRangeIndicators.TryGetValue(mark, out GameObject indicator) || indicator == null)
+        {
+            indicator = Instantiate(loadout.MarkHoverRangeIndicatorPrefab);
+            markHoverRangeIndicators[mark] = indicator;
+        }
+
+        indicator.transform.SetParent(null, true);
+        indicator.transform.position = mark.transform.position;
+        indicator.transform.rotation = Quaternion.identity;
+        indicator.transform.localScale = Vector3.one;
+
+        float radius = GetCursorSelectRadius(loadout, data);
+        if (indicator.TryGetComponent(out LightningSpearRushRangeIndicator rangeIndicator))
+            rangeIndicator.SetRadius(radius);
+        else
+            indicator.transform.localScale = Vector3.one * (radius * 2f);
+
+        indicator.SetActive(true);
+    }
+
+    private void PruneMarkHoverRangeIndicators()
+    {
+        staleMarkHoverRangeMarks.Clear();
+
+        foreach (KeyValuePair<LightningSpearMarkActor, GameObject> entry in markHoverRangeIndicators)
+        {
+            LightningSpearMarkActor mark = entry.Key;
+            if (mark == null || !mark.IsActive || !visibleMarkHoverRangeMarks.Contains(mark))
+                staleMarkHoverRangeMarks.Add(mark);
+        }
+
+        for (int i = 0; i < staleMarkHoverRangeMarks.Count; i++)
+            DestroyMarkHoverRangeIndicator(staleMarkHoverRangeMarks[i]);
+
+        staleMarkHoverRangeMarks.Clear();
+        visibleMarkHoverRangeMarks.Clear();
+    }
+
+    private void SetAllMarkHoverRangeIndicatorsActive(bool active)
+    {
+        foreach (KeyValuePair<LightningSpearMarkActor, GameObject> entry in markHoverRangeIndicators)
+        {
+            if (entry.Value != null)
+                entry.Value.SetActive(active);
+        }
+    }
+
+    private void DestroyMarkHoverRangeIndicator(LightningSpearMarkActor mark)
+    {
+        if (ReferenceEquals(mark, null) || !markHoverRangeIndicators.TryGetValue(mark, out GameObject indicator))
+            return;
+
+        markHoverRangeIndicators.Remove(mark);
+        if (indicator != null)
+            Destroy(indicator);
+    }
+
+    private void DestroyAllMarkHoverRangeIndicators()
+    {
+        foreach (KeyValuePair<LightningSpearMarkActor, GameObject> entry in markHoverRangeIndicators)
+        {
+            if (entry.Value != null)
+                Destroy(entry.Value);
+        }
+
+        markHoverRangeIndicators.Clear();
+        visibleMarkHoverRangeMarks.Clear();
+        staleMarkHoverRangeMarks.Clear();
     }
 
     private void UpdateSelectedMarkIndicator(LightningSpearLoadout loadout, LightningSpearMarkActor selected)
@@ -1200,6 +1598,8 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWea
             Destroy(selectedMarkIndicatorInstance);
             selectedMarkIndicatorInstance = null;
         }
+
+        DestroyAllMarkHoverRangeIndicators();
     }
 
     private LightningSpearMarkActor FindSelectableMark(
@@ -1337,6 +1737,53 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWea
         return Physics2D.Linecast(start, end, layerMask).collider != null;
     }
 
+    private static bool HasPlacementBlocker(Vector2 start, Vector2 end, float radius, int layerMask)
+    {
+        if (layerMask == 0)
+            return false;
+
+        Vector2 delta = end - start;
+        float distance = delta.magnitude;
+        if (distance <= 0.0001f)
+            return false;
+
+        Vector2 direction = delta / distance;
+        if (radius <= 0f)
+            return Physics2D.Linecast(start, end, layerMask).collider != null;
+
+        RaycastHit2D[] hits = Physics2D.CircleCastAll(start, radius, direction, distance, layerMask);
+        for (int i = 0; i < hits.Length; i++)
+        {
+            Collider2D collider = hits[i].collider;
+            if (collider == null)
+                continue;
+
+            if (IsInitialPlacementOverlapMovingAway(start, direction, collider, hits[i]))
+                continue;
+
+            return true;
+        }
+
+        return false;
+    }
+
+    private static bool IsInitialPlacementOverlapMovingAway(
+        Vector2 start,
+        Vector2 direction,
+        Collider2D collider,
+        RaycastHit2D hit)
+    {
+        if (hit.distance > 0.001f && hit.fraction > 0.0001f)
+            return false;
+
+        Vector2 closest = collider.ClosestPoint(start);
+        Vector2 awayFromCollider = start - closest;
+        if (awayFromCollider.sqrMagnitude <= 0.000001f)
+            return false;
+
+        return Vector2.Dot(direction, awayFromCollider.normalized) >= -0.05f;
+    }
+
     private MonsterRoomArea2D FindRoomContaining(Vector2 position)
     {
         MonsterRoomArea2D[] rooms = FindRooms();
@@ -1372,12 +1819,12 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWea
 
     private Vector2 ResolveCursorWorld(AbilitySystem system)
     {
-        if (aimSource != null)
-            return aimSource.MouseWorld;
-
         Camera camera = Camera.main;
         if (camera != null)
             return InputBindingService.EnsureInstance().GetPointerWorldPosition(camera, 0f);
+
+        if (aimSource != null)
+            return aimSource.MouseWorld;
 
         return system != null ? (Vector2)system.transform.position : Vector2.zero;
     }
@@ -1474,6 +1921,8 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWea
 
     private void ClearAllMarks()
     {
+        DestroyAllMarkHoverRangeIndicators();
+
         for (int i = activeMarks.Count - 1; i >= 0; i--)
         {
             LightningSpearMarkActor mark = activeMarks[i];

@@ -118,3 +118,4 @@ MonoBehaviour:
     m_Bits: 0
   rushRangeIndicatorPrefab: {fileID: 5600123456789012345, guid: 62a2f887f4974f44a63a42d96c410d1c, type: 3}
   selectedMarkIndicatorPrefab: {fileID: 5700123456789012345, guid: b670e855e83c42a09e2d07ad24de058b, type: 3}
+  markHoverRangeIndicatorPrefab: {fileID: 5800123456789012345, guid: 8e861bb72f93412d9d271b245c4d9a7f, type: 3}

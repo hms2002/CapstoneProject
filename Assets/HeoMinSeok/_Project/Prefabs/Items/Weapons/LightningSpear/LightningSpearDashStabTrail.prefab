@@ -51,12 +51,13 @@ MonoBehaviour:
   trailRenderer: {fileID: 9106223456789012345}
   trailMask: {fileID: 9107223456789012345}
   visualPlayer: {fileID: 9106423456789012345}
-  visualClip: {fileID: 7400000, guid: e1fe641076b2fe84e83aa99cb33bdb0f, type: 2}
+  visualClip: {fileID: 7400000, guid: a344968ffff9abb43bb3bc0ffb7a86ae, type: 2}
   trailHitbox: {fileID: 9107423456789012345}
   impactHitbox: {fileID: 9110323456789012345}
-  maskMaxDistance: 2
+  maskMaxDistance: 3
   height: 4
-  trailLocalOffset: {x: 2, y: 0}
+  startLocalOffset: {x: -2, y: 0}
+  endLocalOffset: {x: 2, y: 0}
   lifetimeSeconds: 1
   drawAuthoringGizmo: 1
   gizmoPreviewDistance: 10.34

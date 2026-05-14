@@ -17,7 +17,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1116465694369968991
 RectTransform:
   m_ObjectHideFlags: 0
@@ -109,12 +109,8 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3942084822626802930, guid: e2d83cdcfb9485d499433d3acc5bad5e, type: 3}
       propertyPath: m_Name
-      value: BackgroundImage
+      value: itemImage
       objectReference: {fileID: 0}
-    - target: {fileID: 5002783160473160607, guid: e2d83cdcfb9485d499433d3acc5bad5e, type: 3}
-      propertyPath: icon
-      value: 
-      objectReference: {fileID: 240689765815570223}
     - target: {fileID: 9194517275236479812, guid: e2d83cdcfb9485d499433d3acc5bad5e, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -196,8 +192,7 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects:
-    - {fileID: 3942084822626802930, guid: e2d83cdcfb9485d499433d3acc5bad5e, type: 3}
+    m_RemovedGameObjects: []
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 9194517275236479812, guid: e2d83cdcfb9485d499433d3acc5bad5e, type: 3}
       insertIndex: 1

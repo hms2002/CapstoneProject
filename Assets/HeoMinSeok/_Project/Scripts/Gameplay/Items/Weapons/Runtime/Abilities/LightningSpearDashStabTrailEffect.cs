@@ -25,8 +25,11 @@ public sealed class LightningSpearDashStabTrailEffect : MonoBehaviour
     [FormerlySerializedAs("sliceMaxDistance")]
     [SerializeField, Min(0f)] private float maskMaxDistance = 2.5f;
     [SerializeField, Min(0.01f)] private float height = 0.45f;
-    [Tooltip("Applied only to the dash trail visual and trail hitbox. X follows rush direction, Y is local perpendicular.")]
-    [SerializeField] private Vector2 trailLocalOffset;
+    [Tooltip("Moves only the trail start point. X follows rush direction, Y is local perpendicular.")]
+    [SerializeField] private Vector2 startLocalOffset;
+    [Tooltip("Moves only the trail end point. X follows rush direction, Y is local perpendicular.")]
+    [FormerlySerializedAs("trailLocalOffset")]
+    [SerializeField] private Vector2 endLocalOffset;
 
     [Header("Fallback Lifetime")]
     [Tooltip("Used only when no animation clip duration can be resolved.")]
@@ -55,8 +58,9 @@ public sealed class LightningSpearDashStabTrailEffect : MonoBehaviour
         }
 
         Vector2 direction = ResolveDirection(start, end);
-        Vector2 trailOffset = CalculateTrailWorldOffset(direction);
-        PlayInternal(start + trailOffset, end + trailOffset, direction);
+        Vector2 trailStart = start + CalculateTrailWorldOffset(direction, startLocalOffset);
+        Vector2 trailEnd = end + CalculateTrailWorldOffset(direction, endLocalOffset);
+        PlayInternal(trailStart, trailEnd, ResolveDirection(trailStart, trailEnd));
     }
 
     public bool PlayMarkRush(
@@ -72,10 +76,10 @@ public sealed class LightningSpearDashStabTrailEffect : MonoBehaviour
         Vector2 safeDirection = direction.sqrMagnitude > 0.0001f
             ? direction.normalized
             : ResolveDirection(start, end);
-        Vector2 trailOffset = CalculateTrailWorldOffset(safeDirection);
-        Vector2 trailStart = start + trailOffset;
-        Vector2 trailEnd = end + trailOffset;
-        PlayInternal(trailStart, trailEnd, safeDirection);
+        Vector2 trailStart = start + CalculateTrailWorldOffset(safeDirection, startLocalOffset);
+        Vector2 trailEnd = end + CalculateTrailWorldOffset(safeDirection, endLocalOffset);
+        Vector2 trailDirection = ResolveDirection(trailStart, trailEnd);
+        PlayInternal(trailStart, trailEnd, trailDirection);
 
         if (hitConfig == null || system == null || spec == null)
             return false;
@@ -99,7 +103,7 @@ public sealed class LightningSpearDashStabTrailEffect : MonoBehaviour
             sharedHitTargetIds,
             trailStart,
             trailEnd,
-            safeDirection);
+            trailDirection);
 
         if (impactHitbox != null)
         {
@@ -171,11 +175,11 @@ public sealed class LightningSpearDashStabTrailEffect : MonoBehaviour
         StartRootCleanupAfter(trailLifetimeSeconds);
     }
 
-    private Vector2 CalculateTrailWorldOffset(Vector2 direction)
+    private static Vector2 CalculateTrailWorldOffset(Vector2 direction, Vector2 localOffset)
     {
         Vector2 safeDirection = direction.sqrMagnitude > 0.0001f ? direction.normalized : Vector2.right;
         Vector2 localUp = new Vector2(-safeDirection.y, safeDirection.x);
-        return safeDirection * trailLocalOffset.x + localUp * trailLocalOffset.y;
+        return safeDirection * localOffset.x + localUp * localOffset.y;
     }
 
     private bool SetupTrailHitbox(
@@ -467,41 +471,56 @@ public sealed class LightningSpearDashStabTrailEffect : MonoBehaviour
         Color previousColor = Gizmos.color;
         Gizmos.matrix = transform.localToWorldMatrix;
 
-        Vector3 trailOffset = new Vector3(trailLocalOffset.x, trailLocalOffset.y, 0f);
+        Vector3 previewStart = new Vector3(startLocalOffset.x, startLocalOffset.y, 0f);
+        Vector3 previewEnd = new Vector3(previewDistance + endLocalOffset.x, endLocalOffset.y, 0f);
+        Vector3 previewDelta = previewEnd - previewStart;
+        float previewTrailDistance = Mathf.Max(0.01f, previewDelta.magnitude);
+        Vector3 previewDirection = previewDelta.sqrMagnitude > 0.0001f
+            ? previewDelta.normalized
+            : Vector3.right;
 
         Gizmos.color = gizmoTrailColor;
-        DrawLocalRect(trailOffset, previewDistance, previewHeight);
-        Gizmos.DrawLine(trailOffset, trailOffset + Vector3.right * previewDistance);
+        DrawLocalRect(previewStart, previewEnd, previewHeight);
+        Gizmos.DrawLine(previewStart, previewEnd);
 
         if (maskMaxDistance > 0f)
         {
-            float maskPreviewDistance = Mathf.Min(maskMaxDistance, previewDistance);
+            float maskPreviewDistance = Mathf.Min(maskMaxDistance, previewTrailDistance);
+            Vector3 maskPreviewEnd = previewStart + previewDirection * maskPreviewDistance;
             Gizmos.color = gizmoMaskColor;
-            DrawLocalRect(trailOffset, maskPreviewDistance, previewHeight);
+            DrawLocalRect(previewStart, maskPreviewEnd, previewHeight);
             Gizmos.DrawLine(
-                trailOffset + new Vector3(maskPreviewDistance, -previewHeight * 0.6f, 0f),
-                trailOffset + new Vector3(maskPreviewDistance, previewHeight * 0.6f, 0f));
+                maskPreviewEnd + Perpendicular(previewDirection) * (-previewHeight * 0.6f),
+                maskPreviewEnd + Perpendicular(previewDirection) * (previewHeight * 0.6f));
         }
 
         Gizmos.matrix = previousMatrix;
         Gizmos.color = previousColor;
     }
 
-    private static void DrawLocalRect(Vector3 origin, float distance, float previewHeight)
+    private static void DrawLocalRect(Vector3 start, Vector3 end, float previewHeight)
     {
-        if (distance <= 0f || previewHeight <= 0f)
+        Vector3 delta = end - start;
+        if (delta.sqrMagnitude <= 0.0001f || previewHeight <= 0f)
             return;
 
+        Vector3 direction = delta.normalized;
+        Vector3 up = Perpendicular(direction);
         float halfHeight = previewHeight * 0.5f;
-        Vector3 leftTop = origin + new Vector3(0f, halfHeight, 0f);
-        Vector3 rightTop = origin + new Vector3(distance, halfHeight, 0f);
-        Vector3 rightBottom = origin + new Vector3(distance, -halfHeight, 0f);
-        Vector3 leftBottom = origin + new Vector3(0f, -halfHeight, 0f);
+        Vector3 leftTop = start + up * halfHeight;
+        Vector3 rightTop = end + up * halfHeight;
+        Vector3 rightBottom = end - up * halfHeight;
+        Vector3 leftBottom = start - up * halfHeight;
 
         Gizmos.DrawLine(leftTop, rightTop);
         Gizmos.DrawLine(rightTop, rightBottom);
         Gizmos.DrawLine(rightBottom, leftBottom);
         Gizmos.DrawLine(leftBottom, leftTop);
+    }
+
+    private static Vector3 Perpendicular(Vector3 direction)
+    {
+        return new Vector3(-direction.y, direction.x, 0f);
     }
 #endif
 }

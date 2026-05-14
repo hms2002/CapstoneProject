@@ -24,7 +24,11 @@ public sealed class LightningSpearRecoveredSpearProjectile2D : AttackBase
     [SerializeField, Min(0f)] private float stuckLifetimeSeconds = 0.35f;
     [SerializeField, Min(0f)] private float despawnFallbackSeconds = 0.12f;
 
+    [Header("Continuous Collision")]
+    [SerializeField, Min(0f)] private float wallSweepSkin = 0.02f;
+
     private readonly HashSet<int> hitTargets = new HashSet<int>();
+    private readonly RaycastHit2D[] wallCastHits = new RaycastHit2D[8];
 
     private Collider2D ownCollider;
     private Vector2 direction = Vector2.right;
@@ -103,7 +107,89 @@ public sealed class LightningSpearRecoveredSpearProjectile2D : AttackBase
         if (!moving || despawning)
             return;
 
-        transform.position += (Vector3)(direction * speed * deltaTime);
+        float travelDistance = speed * deltaTime;
+        if (travelDistance <= 0f)
+            return;
+
+        if (TryFindWallBeforeMove(travelDistance, out Collider2D wallCollider, out Vector2 stopPosition))
+        {
+            transform.position = new Vector3(stopPosition.x, stopPosition.y, transform.position.z);
+            OnHitWall(wallCollider != null ? wallCollider.gameObject : null, wallCollider);
+            return;
+        }
+
+        transform.position += (Vector3)(direction * travelDistance);
+    }
+
+    private bool TryFindWallBeforeMove(float travelDistance, out Collider2D wallCollider, out Vector2 stopPosition)
+    {
+        wallCollider = null;
+        stopPosition = transform.position;
+
+        if (WallLayers.value == 0 || direction.sqrMagnitude <= 0.0001f)
+            return false;
+
+        float castDistance = travelDistance + wallSweepSkin;
+        if (ownCollider != null && ownCollider.enabled && ownCollider.gameObject.activeInHierarchy)
+        {
+            ContactFilter2D filter = new ContactFilter2D
+            {
+                useTriggers = true
+            };
+            filter.SetLayerMask(WallLayers);
+
+            int hitCount = ownCollider.Cast(direction, filter, wallCastHits, castDistance);
+            int bestHitIndex = -1;
+            float bestDistance = float.PositiveInfinity;
+
+            for (int i = 0; i < hitCount; i++)
+            {
+                RaycastHit2D hit = wallCastHits[i];
+                Collider2D hitCollider = hit.collider;
+                if (hitCollider == null)
+                    continue;
+
+                if (!CanHitWall(hitCollider.gameObject, hitCollider))
+                    continue;
+
+                if (hit.distance < bestDistance)
+                {
+                    bestDistance = hit.distance;
+                    bestHitIndex = i;
+                }
+            }
+
+            if (bestHitIndex >= 0)
+            {
+                RaycastHit2D hit = wallCastHits[bestHitIndex];
+                wallCollider = hit.collider;
+                stopPosition = ResolveColliderCastStopPosition(hit, travelDistance);
+                return true;
+            }
+        }
+
+        RaycastHit2D rayHit = Physics2D.Raycast(transform.position, direction, castDistance, WallLayers);
+        if (rayHit.collider == null || !CanHitWall(rayHit.collider.gameObject, rayHit.collider))
+            return false;
+
+        wallCollider = rayHit.collider;
+        float stopDistance = Mathf.Max(0f, Mathf.Min(travelDistance, rayHit.distance - wallSweepSkin));
+        stopPosition = (Vector2)transform.position + direction * stopDistance;
+        return true;
+    }
+
+    private Vector2 ResolveColliderCastStopPosition(RaycastHit2D hit, float travelDistance)
+    {
+        if (IsFinite(hit.centroid))
+            return hit.centroid;
+
+        float stopDistance = Mathf.Max(0f, Mathf.Min(travelDistance, hit.distance - wallSweepSkin));
+        return (Vector2)transform.position + direction * stopDistance;
+    }
+
+    private static bool IsFinite(Vector2 value)
+    {
+        return float.IsFinite(value.x) && float.IsFinite(value.y);
     }
 
     protected override bool CanHitTarget(GameObject target)

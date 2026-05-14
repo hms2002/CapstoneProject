@@ -29,12 +29,14 @@ public sealed class RunTimeLimitSystem : MonoBehaviour
     public bool IsLowTime => config != null && remainingSeconds <= config.LowTimeWarningSeconds;
     public bool IsExternallyPaused => HasExternalPauseBlockers();
     public bool IsPausedByStagePolicy => ShouldPauseByStagePolicy();
-    public bool IsVisuallyPaused => IsExternallyPaused || IsPausedByStagePolicy;
+    public bool IsRunCompletionPaused => isRunCompletionPaused;
+    public bool IsVisuallyPaused => IsExternallyPaused || IsPausedByStagePolicy || isRunCompletionPaused;
 
     private IStageTimerPolicy stageTimerPolicy;
     private float remainingSeconds;
     private bool isRunning;
     private bool hasInitializedFromRun;
+    private bool isRunCompletionPaused;
     private readonly Dictionary<int, UnityEngine.Object> externalPauseOwners = new();
 
     private void Awake()
@@ -93,6 +95,9 @@ public sealed class RunTimeLimitSystem : MonoBehaviour
         if (!isRunning || config == null)
             return;
 
+        if (isRunCompletionPaused)
+            return;
+
         if (HasExternalPauseBlockers())
             return;
 
@@ -120,6 +125,17 @@ public sealed class RunTimeLimitSystem : MonoBehaviour
         }
 
         externalPauseOwners.Remove(ownerId);
+    }
+
+    public void SetRunCompletionPaused(bool paused)
+    {
+        if (isRunCompletionPaused == paused)
+            return;
+
+        isRunCompletionPaused = paused;
+
+        if (verboseLogging)
+            Debug.Log($"[RunTimeLimitSystem] Run completion pause changed. paused={paused}", this);
     }
 
     /// <summary>
@@ -150,6 +166,8 @@ public sealed class RunTimeLimitSystem : MonoBehaviour
 
     private void HandleRunStarted()
     {
+        SetRunCompletionPaused(false);
+
         if (config == null)
         {
             Debug.LogWarning("[RunTimeLimitSystem] RunTimeLimitConfig is missing. Timer will not start.", this);
@@ -161,6 +179,7 @@ public sealed class RunTimeLimitSystem : MonoBehaviour
 
     private void HandleRunEnded(RunEndReason reason)
     {
+        SetRunCompletionPaused(false);
         isRunning = false;
         hasInitializedFromRun = false;
         SetRemainingTimeInternal(0f, persistToGamePlayData: false);

@@ -3,6 +3,9 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "BossAffectionRunModifierEffect", menuName = "Affection/Effect/Boss Run Modifier")]
 public sealed class BossAffectionRunModifierEffect : AffectionEffect
 {
+    [Header("Boss Reward Modifier Profile")]
+    [SerializeField] private BossRewardModifierSO rewardModifier;
+
     [Header("Boss Field Heal Drop")]
     [SerializeField, Min(0)] private int bossFieldHealPickupBonus;
 
@@ -22,6 +25,19 @@ public sealed class BossAffectionRunModifierEffect : AffectionEffect
         bossChestRelicMinBonus = bossChestRelicMinBonus,
         bossChestRelicMaxBonus = bossChestRelicMaxBonus
     };
+
+    public BossRewardModifierAggregate ModifierAggregate
+    {
+        get
+        {
+            var aggregate = new BossRewardModifierAggregate();
+            if (rewardModifier != null)
+                aggregate.Add(rewardModifier.ToAggregate());
+
+            aggregate.Add(BossRewardModifierAggregate.FromBossRunModifierDelta(Delta));
+            return aggregate;
+        }
+    }
 
     public override void Execute()
     {

@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UI;
 
-public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
+public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource, ICloseRequestHandler
 {
     [Header("Layout Refs")]
     [SerializeField] private RectTransform inventoryPanelRect;
@@ -53,6 +53,8 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
     public UIOpenGroup BlockedOpenGroups => UIOpenGroup.ExclusiveModal;
     public UIGameplayLockProfile GameplayLockProfile => UIGameplayLockProfile.FreezeAndBlockControl;
     public MouseCursorDomain CursorDomain => MouseCursorDomain.Inventory;
+    public bool IsFirstOpenRevealPlaying =>
+        firstOpenRevealPresentation != null && firstOpenRevealPresentation.IsOpenPresentationPlaying;
 
     public void SetSlideFadePresentationForNextOpen(bool playPresentation)
     {
@@ -117,6 +119,11 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
         NotifyChestClosed();
     }
 
+    public bool TryHandleCloseRequest()
+    {
+        return IsFirstOpenRevealPlaying;
+    }
+
     private void Awake()
     {
         ResolvePresentation();
@@ -127,6 +134,9 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
             closeButton.onClick.AddListener(() =>
             {
                 IStackableUI closeTarget = rootOwner ?? this;
+                if (closeTarget is ICloseRequestHandler closeHandler && closeHandler.TryHandleCloseRequest())
+                    return;
+
                 if (UIManager.Instance != null)
                     UIManager.Instance.PopUI(closeTarget);
                 else

@@ -2,7 +2,7 @@
 status: active
 authority: docs-router
 category: router
-last_reviewed: 2026-05-05
+last_reviewed: 2026-05-14
 ---
 
 # Project Docs Guide
@@ -25,9 +25,22 @@ last_reviewed: 2026-05-05
 3. [`Contracts/`](./Contracts/)
 4. [`Architecture/`](./Architecture/)
 5. [`Guides/`](./Guides/)
-6. [`Reviews/`](./Reviews/)
-7. [`Notes/`](./Notes/)
-8. [`Handoffs/`](./Handoffs/)
+6. [`StructureMemory/`](./StructureMemory/)
+7. [`RefactorBacklog/`](./RefactorBacklog/)
+8. [`Reviews/`](./Reviews/)
+9. [`Notes/`](./Notes/)
+10. [`Handoffs/`](./Handoffs/)
+
+`StructureMemory` and `RefactorBacklog` are context/planning documents. They help future work start faster, but they do not override `Contracts` or `Architecture`.
+
+## Memory Document Types
+
+- [`SessionLogs/`](./SessionLogs/) records dated task outcomes, verification, manual checks, and remaining risks.
+- [`StructureMemory/`](./StructureMemory/) stores feature-level structure maps for fast context reconstruction.
+- [`RefactorBacklog/`](./RefactorBacklog/) tracks intentional structural debt and refactor candidates with target shape and triggers.
+- [`ErrorLog.md`](./ErrorLog.md) records recurring mistakes and prevention rules.
+- [`DecisionLog.md`](./DecisionLog.md) records durable design decisions.
+- [`Architecture/`](./Architecture/) and [`Contracts/`](./Contracts/) remain the official source-of-truth layers when a structure is stable enough to promote.
 
 `Reviews`, `Notes`, `Handoffs`는 참고용입니다. 최신 구현 기준은 `Contracts`와 `Architecture`를 우선합니다.
 
@@ -45,6 +58,12 @@ last_reviewed: 2026-05-05
 - [Current Project Context](./Overview/current-project-context.md)
 - [Decision Log](./DecisionLog.md)
 - [Error Log](./ErrorLog.md)
+- [Structure Memory](./StructureMemory/README.md)
+- [Refactor Backlog](./RefactorBacklog/README.md)
+
+### 빠른 구조 맥락 또는 리팩토링 후보를 확인하고 싶다
+- [Structure Memory](./StructureMemory/README.md)
+- [Refactor Backlog](./RefactorBacklog/README.md)
 
 ### 게임오버, 보스 결과, 등장/처치 연출을 수정하고 싶다
 - [Boss Encounter Architecture](./Architecture/BossEncounterArchitecture.md)

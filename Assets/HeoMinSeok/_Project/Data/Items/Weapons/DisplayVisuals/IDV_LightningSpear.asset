@@ -11,7 +11,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 450220cfe9a64186934d55f938cf1376, type: 3}
   m_Name: IDV_LightningSpear
-  m_EditorClassIdentifier: ""
+  m_EditorClassIdentifier: 
   sharedVisualPrefab: {fileID: 7801000000000000000, guid: a12e48c4ede64ef78f312e633c892b21, type: 3}
   sharedSpriteOverride: {fileID: 0}
   overrideSharedSpriteSettings: 0
@@ -45,3 +45,19 @@ MonoBehaviour:
     anchorMode: 1
     centerX: 1
     anchorOffset: {x: 0, y: 0.08}
+  overrideInventorySlotIconSettings: 1
+  inventorySlotIconSettings:
+    spriteOverride: {fileID: 0}
+    preserveAspect: 1
+    anchoredPosition: {x: -16, y: -16}
+    pivot: {x: 0.5, y: 0.5}
+    rotationDegrees: -45
+    localScale: {x: 1.7, y: 1.7, z: 1}
+  overrideDragIconSettings: 1
+  dragIconSettings:
+    spriteOverride: {fileID: 0}
+    preserveAspect: 1
+    anchoredPosition: {x: -16, y: -16}
+    pivot: {x: 0.5, y: 0.5}
+    rotationDegrees: -45
+    localScale: {x: 1.7, y: 1.7, z: 1}
