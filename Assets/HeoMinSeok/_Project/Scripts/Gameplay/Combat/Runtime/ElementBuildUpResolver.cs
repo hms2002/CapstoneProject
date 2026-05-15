@@ -5,6 +5,14 @@ namespace UnityGAS
 {
     public static class ElementBuildUpResolver
     {
+        public static List<ElementDamageResult> ResolveForApplication(
+            GameObject attacker,
+            GameObject target,
+            List<ElementDamageResult> buffer)
+        {
+            return Evaluate(attacker, target, buffer);
+        }
+
         public static List<ElementDamageResult> Evaluate(
             GameObject attacker,
             GameObject target,

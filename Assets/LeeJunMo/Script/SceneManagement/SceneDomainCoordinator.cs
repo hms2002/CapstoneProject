@@ -13,13 +13,6 @@ using UnityEditor;
 [DisallowMultipleComponent]
 public sealed class SceneDomainCoordinator : MonoBehaviour
 {
-    private const string TitleSceneName = "TitleScene";
-    private const string HubSceneName = "ProtoTypeHub";
-    private const string DontDestroyOnLoadSceneName = "DontDestroyOnLoad";
-    private const int DevelopmentDefaultSlotIndex = 0;
-    private const string BlockControlByUiTagSetResourcePath = "Tags/TagSet/TS_BlockControlByUI";
-    private const string InteractBlockedTagResourcePath = "Tags/State.Interact.Blocked";
-
 #if UNITY_EDITOR
     private static bool s_editorDirectStartDecisionMade;
     private static bool s_editorDirectGameplayStartActive;
@@ -39,7 +32,7 @@ public sealed class SceneDomainCoordinator : MonoBehaviour
         ResetEditorDirectStartState();
 #endif
         EnsureInstance();
-        EnsureAppScopeServices();
+        SceneDomainAppScopeServices.Ensure();
     }
 
     public static SceneDomainCoordinator EnsureInstance()
@@ -69,7 +62,7 @@ public sealed class SceneDomainCoordinator : MonoBehaviour
 
         Instance = this;
         DontDestroyOnLoad(gameObject);
-        EnsureAppScopeServices();
+        SceneDomainAppScopeServices.Ensure();
     }
 
     private void OnEnable()
@@ -90,67 +83,32 @@ public sealed class SceneDomainCoordinator : MonoBehaviour
 
     private void HandleSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        if (!scene.IsValid())
+        SceneDomainLoadDecision decision = SceneDomainScenePolicy.CreateLoadDecision(scene);
+        if (!decision.ShouldProcess)
             return;
 
-        EnsureAppScopeServices();
+        SceneDomainAppScopeServices.Ensure();
 
 #if UNITY_EDITOR
-        DetectEditorDirectSceneStart(scene);
+        DetectEditorDirectSceneStart(decision.SceneInfo);
 #endif
 
-        if (IsTitleScene(scene))
+        if (decision.RequiresTitleCleanup)
         {
-            CleanupGameplaySessionScope();
+            SceneDomainTitleCleanupScope.Cleanup();
             return;
         }
 
-        EnsureGameplaySessionScope(scene);
+        if (decision.RequiresGameplaySessionScope)
+            SceneDomainGameplaySessionScope.Ensure(decision.SceneInfo);
 
 #if UNITY_EDITOR
-        ApplyEditorDirectSceneBootstrap(scene);
+        ApplyEditorDirectSceneBootstrap(decision.SceneInfo);
 
         if (editorPostSceneBootstrapRoutine != null)
             StopCoroutine(editorPostSceneBootstrapRoutine);
-        editorPostSceneBootstrapRoutine = StartCoroutine(EditorPostSceneBootstrapRoutine(scene));
+        editorPostSceneBootstrapRoutine = StartCoroutine(EditorPostSceneBootstrapRoutine(decision.SceneInfo));
 #endif
-    }
-
-    private void CleanupGameplaySessionScope()
-    {
-        SoundManager.Instance?.StopMusic(0.2f);
-        LoadingOverlayController.Instance?.ForceHidePresentation();
-        PortalRouteManager.Instance?.ClearPlan();
-
-        DestroyPersistentOfType<PauseMenuUI>();
-        DestroyPersistentOfType<SettingsPanelUI>();
-        DestroyPersistentOfType<KeyBindingPanelUI>();
-        DestroyPersistentOfType<UIManager>();
-        DestroyPersistentOfType<GlobalUIRoot>();
-        DestroyPersistentOfType<CameraBootstrap>();
-    }
-
-    private static void EnsureGameplaySessionScope(Scene scene)
-    {
-        if (IsTitleScene(scene))
-            return;
-
-        CameraBootstrap.EnsureRuntimeRigForCurrentScene();
-        CameraShakeService.EnsureInstance();
-        RunRouteBgmService.EnsureInstance();
-        AffectionGainScreenEffect.PrepareSceneInstance();
-        ChoiceFailureScreenEffect.PrepareSceneInstance();
-    }
-
-    private static void EnsureAppScopeServices()
-    {
-        SceneTransitionCoordinator.EnsureInstance();
-        SceneFadeTransitionService.EnsureInstance(allowRuntimeFallback: true);
-        LoadingOverlayController.EnsureInstance();
-        PresentationPreloadService.EnsureInstance();
-        PortalRouteManager.EnsureInstance();
-        GamePlayDataManager.EnsureInstance();
-        MouseCursorService.EnsureInstance();
     }
 
     public static bool ConsumeHubSpawnPresentationSkip()
@@ -166,31 +124,12 @@ public sealed class SceneDomainCoordinator : MonoBehaviour
 #endif
     }
 
-    private static void DestroyPersistentOfType<T>() where T : Component
-    {
-        T[] instances = FindObjectsByType<T>(FindObjectsInactive.Include, FindObjectsSortMode.None);
-        for (int i = 0; i < instances.Length; i++)
-        {
-            T instance = instances[i];
-            if (instance == null)
-                continue;
-
-            if (!string.Equals(instance.gameObject.scene.name, DontDestroyOnLoadSceneName, StringComparison.Ordinal))
-                continue;
-
-            Destroy(instance.gameObject);
-        }
-    }
-
-    private static bool IsTitleScene(Scene scene)
-    {
-        return string.Equals(scene.name, TitleSceneName, StringComparison.OrdinalIgnoreCase);
-    }
-
 #if UNITY_EDITOR
-    private IEnumerator EditorPostSceneBootstrapRoutine(Scene scene)
+    private IEnumerator EditorPostSceneBootstrapRoutine(SceneDomainSceneInfo sceneInfo)
     {
-        if (!s_editorDirectGameplayStartActive || !scene.IsValid() || IsTitleScene(scene))
+        if (!SceneDomainEditorDirectStartPolicy.ShouldRunPostSceneBootstrap(
+                s_editorDirectGameplayStartActive,
+                sceneInfo))
         {
             editorPostSceneBootstrapRoutine = null;
             yield break;
@@ -215,7 +154,7 @@ public sealed class SceneDomainCoordinator : MonoBehaviour
         // then normalize direct-start interaction state for editor iteration.
         yield return null;
 
-        bool isHubScene = IsHubSceneName(scene.name);
+        bool isHubScene = sceneInfo.IsHubScene;
         for (int attempt = 0; attempt < 6; attempt++)
         {
             if (player != null)
@@ -248,32 +187,31 @@ public sealed class SceneDomainCoordinator : MonoBehaviour
         s_skipHubSpawnPresentationOnNextSpawn = false;
     }
 
-    private static void DetectEditorDirectSceneStart(Scene scene)
+    private static void DetectEditorDirectSceneStart(SceneDomainSceneInfo sceneInfo)
     {
         if (s_editorDirectStartDecisionMade || !Application.isPlaying)
             return;
 
         s_editorDirectStartDecisionMade = true;
-        s_editorDirectGameplayStartActive = !IsTitleScene(scene);
-        s_editorDirectStartSceneName = s_editorDirectGameplayStartActive ? scene.name : null;
+        s_editorDirectGameplayStartActive = SceneDomainEditorDirectStartPolicy.IsDirectGameplayStart(sceneInfo);
+        s_editorDirectStartSceneName = s_editorDirectGameplayStartActive ? sceneInfo.SceneName : null;
         s_skipHubSpawnPresentationOnNextSpawn = false;
         s_editorDirectBootstrapApplied = false;
     }
 
-    private static void ApplyEditorDirectSceneBootstrap(Scene scene)
+    private static void ApplyEditorDirectSceneBootstrap(SceneDomainSceneInfo sceneInfo)
     {
         if (!s_editorDirectGameplayStartActive || s_editorDirectBootstrapApplied)
             return;
 
         s_editorDirectBootstrapApplied = true;
-        TitleProfileLaunchContext.Clear();
 
         GameDataManager gameDataManager =
             GameDataManager.Instance ??
             FindFirstObjectByType<GameDataManager>(FindObjectsInactive.Include);
         if (gameDataManager != null)
         {
-            gameDataManager.LoadSlot(DevelopmentDefaultSlotIndex);
+            gameDataManager.LoadSlot(SceneDomainEditorDirectStartPolicy.DevelopmentDefaultSlotIndex);
             gameDataManager.EnsureData().hasInitializedProfile = true;
         }
 
@@ -286,7 +224,7 @@ public sealed class SceneDomainCoordinator : MonoBehaviour
         PortalRouteManager routeManager = PortalRouteManager.Instance;
         routeManager?.ClearPlan();
 
-        if (IsHubSceneName(scene.name))
+        if (sceneInfo.IsHubScene)
         {
             s_skipHubSpawnPresentationOnNextSpawn = true;
             return;
@@ -295,7 +233,7 @@ public sealed class SceneDomainCoordinator : MonoBehaviour
         if (gameplayManager != null)
             gameplayManager.StartRun();
 
-        SeedDevelopmentRouteContext(scene.name, routeManager);
+        SeedDevelopmentRouteContext(sceneInfo.SceneName, routeManager);
     }
 
     private static void SeedDevelopmentRouteContext(string sceneName, PortalRouteManager routeManager)
@@ -361,11 +299,6 @@ public sealed class SceneDomainCoordinator : MonoBehaviour
         return null;
     }
 
-    private static bool IsHubSceneName(string sceneName)
-    {
-        return string.Equals(sceneName, HubSceneName, StringComparison.OrdinalIgnoreCase);
-    }
-
     private static void NormalizeDevelopmentPlayerState(PlayerInteractor2D player)
     {
         if (player == null)
@@ -374,12 +307,14 @@ public sealed class SceneDomainCoordinator : MonoBehaviour
         PlayerCinematicProtection protection = player.GetComponent<PlayerCinematicProtection>();
         protection?.ForceReleaseAll();
 
-        GameplayTagSet blockControlTagSet = Resources.Load<GameplayTagSet>(BlockControlByUiTagSetResourcePath);
+        GameplayTagSet blockControlTagSet =
+            Resources.Load<GameplayTagSet>(SceneDomainEditorDirectStartPolicy.BlockControlByUiTagSetResourcePath);
         PlayerUIControlLockBridge uiLockBridge = player.GetComponent<PlayerUIControlLockBridge>();
         if (uiLockBridge != null && blockControlTagSet != null)
             uiLockBridge.ForceReleaseAll(blockControlTagSet);
 
-        GameplayTag interactBlockedTag = Resources.Load<GameplayTag>(InteractBlockedTagResourcePath);
+        GameplayTag interactBlockedTag =
+            Resources.Load<GameplayTag>(SceneDomainEditorDirectStartPolicy.InteractBlockedTagResourcePath);
         TagSystem tagSystem = player.GetComponent<TagSystem>();
         if (tagSystem != null && interactBlockedTag != null)
         {

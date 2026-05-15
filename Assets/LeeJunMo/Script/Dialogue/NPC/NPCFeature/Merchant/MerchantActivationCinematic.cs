@@ -253,10 +253,7 @@ public sealed class MerchantActivationCinematic : MonoBehaviour
 
     private void ApplyShopActivationState()
     {
-        bool isShopEnabled = RunModifierService.Instance != null &&
-                             RunModifierService.Instance.ShopModifiers.shopEnabled;
-
-        ApplyShopActivationState(isShopEnabled);
+        ApplyShopActivationState(RunModifierService.CurrentRewardSnapshot.ShopModifiers.shopEnabled);
     }
 
     private void ApplyShopActivationState(bool isShopEnabled)

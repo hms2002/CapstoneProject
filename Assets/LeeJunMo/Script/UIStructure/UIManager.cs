@@ -312,25 +312,17 @@ public class UIManager : MonoBehaviour
 
     public void ReturnToTitleScreen()
     {
-        string sceneName = ResolveTitleSceneName();
-        if (string.IsNullOrWhiteSpace(sceneName))
+        TitleReturnRequest request = new TitleReturnRequest(
+            this,
+            ResolveTitleSceneName(),
+            GamePlayDataManager.Instance);
+        if (!request.IsValid)
         {
             Debug.LogWarning("[UIManager] Title scene name could not be resolved.", this);
             return;
         }
 
-        CloseAllPopups();
-        HideHoverImmediate();
-        HideWorldPrompt();
-
-        if (GamePlayDataManager.Instance != null)
-            GamePlayDataManager.Instance.EndRun(RunEndReason.None);
-
-        SceneTransitionCoordinator transitionCoordinator = SceneTransitionCoordinator.EnsureInstance();
-        if (transitionCoordinator != null && transitionCoordinator.TryLoadScene(sceneName))
-            return;
-
-        SceneManager.LoadScene(sceneName);
+        TitleReturnService.Execute(request);
     }
 
     public void QuitGame()
@@ -381,14 +373,7 @@ public class UIManager : MonoBehaviour
 
     private string ResolveTitleSceneName()
     {
-        if (!string.IsNullOrWhiteSpace(titleSceneNameOverride))
-            return titleSceneNameOverride;
-
-        string firstBuildScenePath = SceneUtility.GetScenePathByBuildIndex(0);
-        if (!string.IsNullOrWhiteSpace(firstBuildScenePath))
-            return Path.GetFileNameWithoutExtension(firstBuildScenePath);
-
-        return null;
+        return TitleSceneNameResolver.Resolve(titleSceneNameOverride);
     }
 
     private static bool IsInputBlockedByLoading()

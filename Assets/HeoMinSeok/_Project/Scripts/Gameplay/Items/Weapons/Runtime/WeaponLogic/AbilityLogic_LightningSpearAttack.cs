@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using CapstoneAudio;
 using UnityEngine;
 using UnityGAS;
@@ -189,8 +188,7 @@ namespace UnityGAS.Sample
                 step.legacyDamage,
                 step.legacyStaggerDamage,
                 1f,
-                combo.HitConfirmedTag,
-                step.elementDamages);
+                combo.HitConfirmedTag);
 
             if (payload == null)
                 return;
@@ -251,8 +249,7 @@ namespace UnityGAS.Sample
             float legacyDamage,
             float legacyStaggerDamage,
             float damageScale,
-            GameplayTag hitConfirmedTag,
-            LightningSpearAttackElementDamageGroup fallbackElementDamages = null)
+            GameplayTag hitConfirmedTag)
         {
             if (system == null || system.AttributeSet == null || damageEffect == null)
                 return null;
@@ -275,20 +272,12 @@ namespace UnityGAS.Sample
                 : legacyStaggerDamage;
             baseStagger *= safeScale;
 
-            List<ElementDamageInput> elementInputs = BuildElementInputs(
-                system,
-                statProvider,
-                config,
-                safeScale,
-                fallbackElementDamages);
-
             CombatDamageSnapshot snapshot = DamageSnapshotBuilder.BuildFromBaseValues(
                 statProvider: statProvider,
                 config: config,
                 baseHp: baseHp,
                 baseStagger: config != null && config.includeStaggerBuildUp ? baseStagger : 0f,
-                baseKnockback: baseKnockback,
-                elementInputs: elementInputs);
+                baseKnockback: baseKnockback);
 
             if (snapshot.FinalHpDamage <= 0f)
                 return null;
@@ -301,56 +290,6 @@ namespace UnityGAS.Sample
                 snapshot: snapshot,
                 hitConfirmedTag: hitConfirmedTag,
                 causer: system.gameObject);
-        }
-
-        private static List<ElementDamageInput> BuildElementInputs(
-            AbilitySystem system,
-            IStatProvider statProvider,
-            DamagePayloadConfig config,
-            float scale,
-            LightningSpearAttackElementDamageGroup fallbackElementDamages)
-        {
-            if (system == null || statProvider == null || config == null || !config.includeElementBuildUp)
-                return null;
-
-            if (config.HasElementFormulas)
-            {
-                List<ElementDamageInput> elementInputs = new(config.elementFormulas.Length);
-                for (int i = 0; i < config.elementFormulas.Length; i++)
-                {
-                    ElementFormulaEntry entry = config.elementFormulas[i];
-                    if (entry == null || entry.elementType == null || entry.formula == null)
-                        continue;
-
-                    float value = entry.formula.Evaluate(system.AttributeSet, statProvider, defaultIfEmpty: 0f) * scale;
-                    if (value <= 0f)
-                        continue;
-
-                    elementInputs.Add(new ElementDamageInput
-                    {
-                        elementType = entry.elementType,
-                        baseDamage = value
-                    });
-                }
-
-                return elementInputs.Count > 0 ? elementInputs : null;
-            }
-
-            if (fallbackElementDamages?.elements == null || fallbackElementDamages.elements.Count == 0)
-                return null;
-
-            List<ElementDamageInput> fallbackInputs = new(fallbackElementDamages.elements.Count);
-            for (int i = 0; i < fallbackElementDamages.elements.Count; i++)
-            {
-                ElementDamageInput input = fallbackElementDamages.elements[i];
-                if (input.elementType == null || input.baseDamage <= 0f)
-                    continue;
-
-                input.baseDamage *= scale;
-                fallbackInputs.Add(input);
-            }
-
-            return fallbackInputs.Count > 0 ? fallbackInputs : null;
         }
 
         private static MeleeHitboxActor ResolveHitboxPrefab(

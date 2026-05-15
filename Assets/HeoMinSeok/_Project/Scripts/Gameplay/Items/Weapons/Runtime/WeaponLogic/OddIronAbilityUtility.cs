@@ -50,8 +50,7 @@ namespace UnityGAS.Sample
                 config: config,
                 baseHp: fixedDamage,
                 baseStagger: fixedStaggerDamage,
-                baseKnockback: fixedKnockbackImpulse,
-                elementInputs: null);
+                baseKnockback: fixedKnockbackImpulse);
 
             return CombatHitPayload.FromSnapshot(
                 sourceSystem: system,

@@ -804,7 +804,6 @@ public class Witch : BossControllerBase, IWitchPatternStateBridge
             finalHpDamage: damageAmount,
             finalStaggerBuildUp: 0f,
             finalKnockbackImpulse: 0f,
-            elementBuildUps: null,
             isCriticalHit: false);
 
         CombatHitPayload payload = CombatHitPayload.FromSnapshot(
@@ -826,7 +825,6 @@ public class Witch : BossControllerBase, IWitchPatternStateBridge
             finalHpDamage: damageAmount,
             finalStaggerBuildUp: 0f,
             finalKnockbackImpulse: 0f,
-            elementBuildUps: null,
             isCriticalHit: false);
 
         return CombatHitPayload.FromSnapshot(

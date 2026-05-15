@@ -44,7 +44,6 @@ public sealed class TitleMenuController : MonoBehaviour
         EnsureUiInputReady();
         BindListeners();
         TitleProfileSlotService.EnsureInstance();
-        TitleProfileLaunchContext.Clear();
     }
 
     private void Start()
@@ -167,15 +166,12 @@ public sealed class TitleMenuController : MonoBehaviour
         if (!service.TryCreateLaunchRequest(slotIndex, out TitleProfileLaunchRequest request))
             return;
 
-        if (GameDataManager.Instance != null)
-        {
-            GameDataManager.Instance.LoadSlot(slotIndex);
-            GameDataManager.Instance.EnsureData().hasInitializedProfile = true;
-            GameDataManager.Instance.SaveData();
-        }
+        TitleProfileLaunchResult launchResult =
+            TitleProfileLaunchService.PrepareLaunch(request, GameDataManager.Instance);
+        if (!launchResult.Succeeded)
+            return;
 
-        TitleProfileLaunchContext.SetPendingRequest(request);
-        LoadScene(request.TargetSceneName);
+        LoadScene(launchResult.TargetSceneName);
     }
 
     private void LoadScene(string targetSceneName)

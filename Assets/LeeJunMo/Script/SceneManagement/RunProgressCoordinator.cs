@@ -1,45 +1,6 @@
 using System;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
 using UnityEngine;
-
-public sealed class BossRewardContext
-{
-    public BossRewardContext(
-        BossControllerBase boss,
-        BossDrop legacyBossDrop,
-        CorridorBossRouteSetSO routeSet,
-        int routeSetKey,
-        bool isFinalRouteSet,
-        BossRewardModifierAggregate rewardModifiers)
-    {
-        Boss = boss;
-        LegacyBossDrop = legacyBossDrop;
-        RouteSet = routeSet;
-        RouteSetKey = routeSetKey;
-        IsFinalRouteSet = isFinalRouteSet;
-        RewardModifiers = rewardModifiers;
-    }
-
-    public BossControllerBase Boss { get; }
-    public BossDrop LegacyBossDrop { get; }
-    public CorridorBossRouteSetSO RouteSet { get; }
-    public int RouteSetKey { get; }
-    public bool IsFinalRouteSet { get; }
-    public BossRewardModifierAggregate RewardModifiers { get; }
-    public bool RewardsHandled { get; private set; }
-    public bool PortalHandled { get; private set; }
-
-    public void MarkRewardsHandled()
-    {
-        RewardsHandled = true;
-    }
-
-    public void MarkPortalHandled()
-    {
-        PortalHandled = true;
-    }
-}
 
 [DisallowMultipleComponent]
 public sealed class RunProgressCoordinator : MonoBehaviour
@@ -134,10 +95,14 @@ public sealed class RunProgressCoordinator : MonoBehaviour
 
     public void NotifyBossCombatStarted(BossControllerBase boss)
     {
-        if (boss == null || !IsCurrentRouteFinalBoss())
+        if (boss == null)
             return;
 
-        finalBossCombatOwners.Add(GetObjectIdentityKey(boss));
+        BossRunProgressResult progress = BuildProgressResult(boss, null);
+        if (!BossRunProgressPolicy.ShouldTrackFinalBossCombat(progress))
+            return;
+
+        finalBossCombatOwners.Add(progress.BossIdentityKey);
         UpdateFinalBossCombatTimerPause();
     }
 
@@ -146,7 +111,7 @@ public sealed class RunProgressCoordinator : MonoBehaviour
         if (boss == null)
             return;
 
-        finalBossCombatOwners.Remove(GetObjectIdentityKey(boss));
+        finalBossCombatOwners.Remove(BossRunProgressPolicy.GetObjectIdentityKey(boss));
         UpdateFinalBossCombatTimerPause();
     }
 
@@ -155,8 +120,8 @@ public sealed class RunProgressCoordinator : MonoBehaviour
         NotifyBossCombatEnded(boss);
 
         BossDrop legacyDrop = boss != null ? boss.GetComponent<BossDrop>() : null;
-        int routeKey = ResolveRouteSetKey(boss, legacyDrop);
-        if (!defeatedRouteKeys.Add(routeKey))
+        BossRunProgressResult progress = BuildProgressResult(boss, legacyDrop);
+        if (!defeatedRouteKeys.Add(progress.RouteSetKey))
             return;
 
         RunTimeLimitSystem.Instance?.SetRunCompletionPaused(true);
@@ -180,8 +145,8 @@ public sealed class RunProgressCoordinator : MonoBehaviour
         }
         else
         {
-            int routeKey = ResolveRouteSetKey(null, legacyDrop);
-            if (defeatedRouteKeys.Add(routeKey))
+            BossRunProgressResult progress = BuildProgressResult(null, legacyDrop);
+            if (defeatedRouteKeys.Add(progress.RouteSetKey))
                 RunTimeLimitSystem.Instance?.SetRunCompletionPaused(true);
         }
 
@@ -208,41 +173,26 @@ public sealed class RunProgressCoordinator : MonoBehaviour
 
     private BossRewardContext BuildContext(BossControllerBase boss, BossDrop legacyDrop)
     {
-        PortalRouteManager routeManager = PortalRouteManager.Instance;
-        CorridorBossRouteSetSO routeSet = routeManager != null ? routeManager.CurrentStageSet : null;
-        int routeKey = ResolveRouteSetKey(boss, legacyDrop);
-        bool isFinalRouteSet = IsCurrentRouteFinalBoss(routeManager, routeSet);
-        BossRewardModifierAggregate modifiers = RunModifierService.Instance != null
-            ? RunModifierService.Instance.BossRewardModifiers
-            : default;
-
-        return new BossRewardContext(boss, legacyDrop, routeSet, routeKey, isFinalRouteSet, modifiers);
+        BossRewardModifierAggregate modifiers = RunModifierService.CurrentRewardSnapshot.BossRewardModifiers;
+        return BuildProgressResult(boss, legacyDrop, modifiers).ToRewardContext();
     }
 
-    private static int ResolveRouteSetKey(BossControllerBase boss, BossDrop legacyDrop)
+    private BossRunProgressResult BuildProgressResult(BossControllerBase boss, BossDrop legacyDrop)
     {
-        PortalRouteManager routeManager = PortalRouteManager.Instance;
-        if (routeManager != null && routeManager.HasActivePlan)
-        {
-            CorridorBossRouteSetSO routeSet = routeManager.CurrentStageSet;
-            if (routeSet != null)
-                return GetObjectIdentityKey(routeSet);
-
-            return routeManager.CurrentStageIndex + 1;
-        }
-
-        if (boss != null)
-            return GetObjectIdentityKey(boss);
-
-        if (legacyDrop != null)
-            return GetObjectIdentityKey(legacyDrop);
-
-        return 0;
+        return BuildProgressResult(boss, legacyDrop, default);
     }
 
-    private static int GetObjectIdentityKey(UnityEngine.Object unityObject)
+    private BossRunProgressResult BuildProgressResult(
+        BossControllerBase boss,
+        BossDrop legacyDrop,
+        BossRewardModifierAggregate modifiers)
     {
-        return unityObject != null ? RuntimeHelpers.GetHashCode(unityObject) : 0;
+        return BossRunProgressPolicy.Evaluate(
+            new BossRunProgressRequest(
+                boss,
+                legacyDrop,
+                PortalRouteManager.Instance,
+                modifiers));
     }
 
     private void HandleRunStarted()
@@ -292,24 +242,5 @@ public sealed class RunProgressCoordinator : MonoBehaviour
             RunTimeLimitSystem.Instance.SetExternalPause(this, false);
 
         holdsFinalBossCombatTimerPause = false;
-    }
-
-    private static bool IsCurrentRouteFinalBoss()
-    {
-        PortalRouteManager routeManager = PortalRouteManager.Instance;
-        return IsCurrentRouteFinalBoss(routeManager, routeManager != null ? routeManager.CurrentStageSet : null);
-    }
-
-    private static bool IsCurrentRouteFinalBoss(PortalRouteManager routeManager, CorridorBossRouteSetSO currentStage)
-    {
-        if (routeManager == null || !routeManager.HasActivePlan)
-            return false;
-
-        RunRouteCatalogSO activeCatalog = routeManager.ActiveRouteCatalog;
-        if (activeCatalog != null && currentStage != null)
-            return ReferenceEquals(activeCatalog.FinalRouteSet, currentStage);
-
-        return routeManager.TotalStageCount > 0 &&
-               routeManager.CurrentStageIndex == routeManager.TotalStageCount - 1;
     }
 }

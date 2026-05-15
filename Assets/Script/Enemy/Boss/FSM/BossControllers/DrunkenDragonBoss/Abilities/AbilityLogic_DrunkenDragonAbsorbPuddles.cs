@@ -260,7 +260,6 @@ public sealed class AbilityLogic_DrunkenDragonAbsorbPuddles : AbilityLogic
             finalHpDamage: centerImpactDamageAmount,
             finalStaggerBuildUp: 0f,
             finalKnockbackImpulse: centerImpactKnockbackImpulse,
-            elementBuildUps: null,
             isCriticalHit: false);
 
         return CombatHitPayload.FromSnapshot(

@@ -27,8 +27,11 @@ namespace UnityGAS
 
         [Header("Optional Formulas")]
         public ScaledStatFormula staggerFormula;
+
+        [Tooltip("Legacy per-hit element formulas. Applied build-up is resolved from ElementOffenseSource.")]
         public ElementFormulaEntry[] elementFormulas;
 
+        [Tooltip("Legacy flag for per-hit element formulas. Ignored by the applied build-up path.")]
         public bool critAffectsElement = true;
 
         public bool HasElementFormulas => elementFormulas != null && elementFormulas.Length > 0;
@@ -47,10 +50,10 @@ public sealed class DamagePayloadConfig
     [Tooltip("Optional stagger formula. If null, stagger build-up is treated as 0.")]
     public ScaledStatFormula staggerFormula;
 
-    [Tooltip("Optional element formulas. Each formula outputs FINAL build-up value for its element.")]
+    [Tooltip("Legacy per-hit element formulas. Applied build-up is resolved from ElementOffenseSource.")]
     public ElementFormulaEntry[] elementFormulas;
 
-    [Tooltip("If true, crit factor applies to element build-up as well.")]
+    [Tooltip("Legacy flag for per-hit element formulas. Ignored by the applied build-up path.")]
     public bool critAffectsElement = true;
 
     public bool HasElementFormulas => elementFormulas != null && elementFormulas.Length > 0;

@@ -110,6 +110,8 @@ Create or update one when a task leaves a legacy adapter, temporary fallback, re
 
 - If Unity Editor or CLI tests cannot be run, explicitly say verification was not executed.
 - Do not claim compile success unless Unity compilation or an equivalent project build/test command was actually run.
+- For Unity script file splits or new `.cs` helper files, do not block source-only refactors solely because Unity-generated `.csproj` files have not refreshed, when the user has accepted Editor compile handoff. In that mode, verify source structure instead: duplicate type definitions, removed original helper blocks, call-site references, namespace/assembly risks, and whitespace. Report Unity compile/import as user-confirmed or not executed.
+- Run MSBuild for C# changes when the generated project file includes the relevant source files. If new files are not yet in the `.csproj`, do not manually edit the generated project file and do not claim MSBuild coverage for those files.
 - For C# changes, check namespace, assembly definition, serialized references, and Unity lifecycle method risks.
 - For documentation-only changes, verify Markdown links and folder paths.
 

@@ -508,7 +508,6 @@ public sealed class AbilityLogic_DrunkenDragonFireBreath : AbilityLogic
             finalHpDamage: damageAmount,
             finalStaggerBuildUp: 0f,
             finalKnockbackImpulse: 0f,
-            elementBuildUps: null,
             isCriticalHit: false);
 
         return CombatHitPayload.FromSnapshot(

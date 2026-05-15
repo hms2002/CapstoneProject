@@ -5,9 +5,8 @@ namespace UnityGAS
     /// 한 번의 공격/피격 계산에서 사용되는 속성 피해 입력값.
     /// 공식 계산 전 authored base value를 담는다.
     /// <summary>
-    /// A single element damage channel for one hit.
-    /// - elementType: e.g. Element.Fire / Element.Bleed / Element.Poison (GameplayTag)
-    /// - baseDamage: the base value authored on the attack/relic/etc.
+    /// Legacy serialized per-hit element input kept so old weapon data can still load.
+    /// Applied element build-up is resolved from ElementOffenseSource instead.
     /// </summary>
     [Serializable]
     public struct ElementDamageInput
@@ -19,8 +18,7 @@ namespace UnityGAS
     /// 한 번의 공격/피격 계산에서 사용되는 속성 피해 입력값.
     /// 공식 계산 전 authored base value를 담는다.
     /// <summary>
-    /// Final computed element damage for one hit.
-    /// (Still "delivered" only; application can be implemented later.)
+    /// Resolved element build-up channel used by ElementBuildUpResolver and ElementGaugeSystem.
     /// </summary>
     [Serializable]
     public struct ElementDamageResult

@@ -2,7 +2,7 @@
 status: active
 authority: docs-router
 category: router
-last_reviewed: 2026-05-14
+last_reviewed: 2026-05-15
 ---
 
 # Project Docs Guide
@@ -63,7 +63,18 @@ last_reviewed: 2026-05-14
 
 ### 빠른 구조 맥락 또는 리팩토링 후보를 확인하고 싶다
 - [Structure Memory](./StructureMemory/README.md)
+- [Script System Map](./StructureMemory/ScriptSystemMap.md)
+- [Script Systems](./StructureMemory/ScriptSystems/README.md)
 - [Refactor Backlog](./RefactorBacklog/README.md)
+
+### Review title/game scene bootstrap and session boundary
+- [Scene Domain Bootstrap Architecture](./Architecture/SceneDomainBootstrapArchitecture.md)
+- [Scene Runtime Save Structure](./StructureMemory/ScriptSystems/SceneRuntimeSaveStructure.md)
+- [Scene Domain Bootstrap Boundary Split](./RefactorBacklog/SceneDomainBootstrapBoundarySplit.md)
+
+### 새 전투 콘텐츠를 제작 파이프라인 기준으로 만들고 싶다
+- [Content Authoring Pipelines](./Guides/ContentAuthoring/README.md)
+  - 무기, 일반 몬스터, 보스, 유물, 소모품, 루트/보상 연결 순서 포함
 
 ### 게임오버, 보스 결과, 등장/처치 연출을 수정하고 싶다
 - [Boss Encounter Architecture](./Architecture/BossEncounterArchitecture.md)
@@ -98,6 +109,7 @@ last_reviewed: 2026-05-14
 - legacy 연결/검토 문서는 아래 `Reviews` 섹션을 보세요.
 
 ### 새 일반 몬스터를 현재 FSM 표준 구조로 만들고 싶다
+- [Mob Authoring Pipeline](./Guides/ContentAuthoring/MobAuthoringPipeline.md)
 - [General Mob FSM Authoring Guide](./Guides/GeneralMobFSMAuthoringGuide.md)
   - 인스펙터 validator와 제작 체크리스트 포함
 - 패턴 실행 데이터가 어디에 있어야 하는지 점검하고 싶으면
@@ -119,8 +131,15 @@ last_reviewed: 2026-05-14
 - legacy 검토 문서는 아래 `Reviews` 섹션을 보세요.
 
 ### 새 무기를 같은 구조로 만들고 싶다
+- [Weapon Authoring Pipeline](./Guides/ContentAuthoring/WeaponAuthoringPipeline.md)
 - [Gameplay Ability Weapon Architecture](./Architecture/GameplayAbilityWeaponArchitecture.md)
 - [Eclipse Sword Pattern Guide](../Assets/HeoMinSeok/_Project/Scripts/Gameplay/Items/Weapons/Runtime/Abilities/EclipseSwordPatternGuide.md)
+
+### 새 보스, 유물, 소모품, 보상 연결을 만들고 싶다
+- [Boss Authoring Pipeline](./Guides/ContentAuthoring/BossAuthoringPipeline.md)
+- [Relic Authoring Pipeline](./Guides/ContentAuthoring/RelicAuthoringPipeline.md)
+- [Consumable Authoring Pipeline](./Guides/ContentAuthoring/ConsumableAuthoringPipeline.md)
+- [Loot Reward Integration Pipeline](./Guides/ContentAuthoring/LootRewardIntegrationPipeline.md)
 
 ### 두 무기가 서로 상태를 읽고 능력이 바뀌는 구조를 만들고 싶다
 - [Gameplay Ability Weapon Architecture](./Architecture/GameplayAbilityWeaponArchitecture.md)

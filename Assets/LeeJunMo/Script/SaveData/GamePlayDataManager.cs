@@ -94,9 +94,9 @@ public sealed class GamePlayDataManager : MonoBehaviour
     }
 
     /// <summary>
-    /// 책임 :
-    /// - 런 진행 중 남은 제한 시간을 GamePlayData에 동기화한다.
-    /// - 씬 전환 이후에도 런 타이머 상태가 이어지도록 중앙 저장소 역할을 맡는다.
+    /// 梨낆엫 :
+    /// - ??吏꾪뻾 以??⑥? ?쒗븳 ?쒓컙??GamePlayData???숆린?뷀븳??
+    /// - ???꾪솚 ?댄썑?먮룄 ????대㉧ ?곹깭媛 ?댁뼱吏?꾨줉 以묒븰 ??μ냼 ??븷??留〓뒗??
     /// </summary>
     public void SetRunRemainingSeconds(float remainingSeconds)
     {
@@ -107,9 +107,9 @@ public sealed class GamePlayDataManager : MonoBehaviour
     }
 
     /// <summary>
-    /// 책임 :
-    /// - 현재 런에 저장된 남은 제한 시간을 조회한다.
-    /// - 런 타이머 시스템이 씬 전환 후 복원할 기준값을 읽을 수 있게 한다.
+    /// 梨낆엫 :
+    /// - ?꾩옱 ?곗뿉 ??λ맂 ?⑥? ?쒗븳 ?쒓컙??議고쉶?쒕떎.
+    /// - ????대㉧ ?쒖뒪?쒖씠 ???꾪솚 ??蹂듭썝??湲곗?媛믪쓣 ?쎌쓣 ???덇쾶 ?쒕떎.
     /// </summary>
     public float GetRunRemainingSeconds()
     {
@@ -234,71 +234,11 @@ public sealed class GamePlayDataManager : MonoBehaviour
         }
 
         GameData gameData = GameDataManager.Instance.EnsureData();
-
-        if (Data.pendingRunMagicStoneDelta != 0)
-            gameData.magicStone += Data.pendingRunMagicStoneDelta;
-
-        if (Data.runElapsedSeconds > 0f)
-            gameData.totalPlaySeconds += Mathf.Max(0f, Data.runElapsedSeconds);
-
-        if (Data.lastRunEndReason == RunEndReason.Victory)
-            gameData.clearCount += 1;
-
-        CommitPendingAffectionChanges(gameData);
-        CommitPendingShortcutUnlocks(gameData);
-        ClearPendingRunProgress();
-    }
-
-    private void CommitPendingAffectionChanges(GameData gameData)
-    {
-        if (Data?.pendingRunAffectionChanges == null || Data.pendingRunAffectionChanges.Count == 0)
-            return;
-
-        gameData.affectionData ??= new AffectionSaveData();
-        gameData.affectionData.affectionRecords ??= new List<AffectionRecord>();
-
-        foreach (PendingRunAffectionChange change in Data.pendingRunAffectionChanges)
-        {
-            if (change == null || change.delta == 0)
-                continue;
-
-            AffectionRecord record = gameData.affectionData.affectionRecords.Find(x => x.npcId == change.npcId);
-            if (record != null)
-                record.amount += change.delta;
-            else
-                gameData.affectionData.affectionRecords.Add(new AffectionRecord(change.npcId, change.delta));
-        }
-    }
-
-    private void CommitPendingShortcutUnlocks(GameData gameData)
-    {
-        if (Data?.pendingRunShortcutUnlocks == null || Data.pendingRunShortcutUnlocks.Count == 0)
-            return;
-
-        gameData.mapData ??= new MapSaveData();
-
-        foreach (PendingRunShortcutUnlock unlock in Data.pendingRunShortcutUnlocks)
-        {
-            if (unlock == null || string.IsNullOrWhiteSpace(unlock.mapID) || string.IsNullOrWhiteSpace(unlock.doorID))
-                continue;
-
-            StageProgress stageData = gameData.mapData.GetStageData(unlock.mapID);
-            if (!stageData.unlockedShortcuts.Contains(unlock.doorID))
-                stageData.unlockedShortcuts.Add(unlock.doorID);
-        }
+        RunSessionProgressCommitPolicy.Commit(new RunSessionProgressCommitRequest(Data, gameData));
     }
 
     private void ClearPendingRunProgress()
     {
-        if (Data == null)
-            return;
-
-        Data.pendingRunMagicStoneDelta = 0;
-        Data.pendingRunAffectionChanges ??= new List<PendingRunAffectionChange>();
-        Data.pendingRunAffectionChanges.Clear();
-        Data.pendingRunShortcutUnlocks ??= new List<PendingRunShortcutUnlock>();
-        Data.pendingRunShortcutUnlocks.Clear();
-        Data.merchantStates ??= new List<MerchantRuntimeState>();
-        Data.merchantStates.Clear();
+        RunSessionProgressCommitPolicy.ClearPendingRunProgress(Data);
     }
 }

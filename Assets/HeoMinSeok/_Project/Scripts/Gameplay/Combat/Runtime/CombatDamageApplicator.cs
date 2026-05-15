@@ -32,7 +32,6 @@ namespace UnityGAS
                     target: target,
                     finalHpDamage: snapshot.FinalHpDamage,
                     finalStaggerBuildUp: snapshot.FinalStaggerBuildUp,
-                    elementBuildUps: snapshot.ElementBuildUps,
                     finalKnockbackImpulse: snapshot.FinalKnockbackImpulse,
                     hitConfirmedTag: hitConfirmedTag,
                     hitWorldPosition: target.transform.position,

@@ -3,32 +3,28 @@ using UnityEngine;
 using UnityGAS;
 
 /// <summary>
-/// Centralized "apply damage result" utility.
-/// - HP damage: applied via GameplayEffect(Spec) + SetByCaller damageKey (GE_Damage_Spec)
-/// - Knockback: applied via separate GE_Knockback_Spec
-/// - Stagger build-up: applied to StaggerGaugeSystem on target (if present)
-/// - Element build-up: applied to ElementGaugeSystem on target (if present)
-/// - hit confirm 태그가 비어 있을 때 공용 기본 태그를 fallback으로 공급한다.
-///
-/// NOTE: In this project, "element damage" is treated as "element gauge build-up".
+/// Centralized damage application utility.
+/// HP damage is applied through GameplayEffect, while stagger and element build-up are routed to
+/// their target-side gauge systems. Element build-up is resolved from the attacker's
+/// ElementOffenseSource at application time.
 /// </summary>
 public static class CombatDamageAction
 {
     private const string DefaultHitConfirmTagResourcePath = "Tags/Event.HitConfirm";
     private const string GroggyTagResourcePath = "Tags/State.Status.Groggy";
     private const string StaggerImmuneTagResourcePath = "Tags/State.Status.StaggerImmune";
+
     private static GameplayTag s_defaultHitConfirmTag;
     private static GameplayTag s_groggyTag;
     private static GameplayTag s_staggerImmuneTag;
+    private static readonly List<ElementDamageResult> s_resolvedElements = new(8);
 
-    // Backward-compatible overload (no stagger / no knockback effect)
     public static void ApplyDamageAndEmitHit(
         AbilitySystem system,
         AbilitySpec spec,
         GameplayEffect damageEffect,
         GameObject target,
         float finalHpDamage,
-        IReadOnlyList<ElementDamageResult> elementDamages,
         GameplayTag hitConfirmedTag,
         GameObject causer,
         bool isCriticalHit = false)
@@ -39,7 +35,6 @@ public static class CombatDamageAction
             damageEffect,
             target,
             finalHpDamage,
-            elementDamages,
             hitConfirmedTag,
             target != null ? target.transform.position : Vector3.zero,
             causer,
@@ -52,7 +47,6 @@ public static class CombatDamageAction
         GameplayEffect damageEffect,
         GameObject target,
         float finalHpDamage,
-        IReadOnlyList<ElementDamageResult> elementDamages,
         GameplayTag hitConfirmedTag,
         Vector3 hitWorldPosition,
         GameObject causer,
@@ -66,7 +60,6 @@ public static class CombatDamageAction
             target: target,
             finalHpDamage: finalHpDamage,
             finalStaggerBuildUp: 0f,
-            elementBuildUps: elementDamages,
             finalKnockbackImpulse: 0f,
             hitConfirmedTag: hitConfirmedTag,
             hitWorldPosition: hitWorldPosition,
@@ -74,7 +67,6 @@ public static class CombatDamageAction
             isCriticalHit: isCriticalHit);
     }
 
-    // New overload: includes knockback effect + impulse
     public static void ApplyDamageAndEmitHit(
         AbilitySystem system,
         AbilitySpec spec,
@@ -83,8 +75,6 @@ public static class CombatDamageAction
         GameObject target,
         float finalHpDamage,
         float finalStaggerBuildUp,
-        IReadOnlyList<ElementDamageResult> elementBuildUps,
-        float finalKnockbackImpulse,
         GameplayTag hitConfirmedTag,
         GameObject causer,
         bool isCriticalHit = false)
@@ -97,8 +87,7 @@ public static class CombatDamageAction
             target,
             finalHpDamage,
             finalStaggerBuildUp,
-            elementBuildUps,
-            finalKnockbackImpulse,
+            finalKnockbackImpulse: 0f,
             hitConfirmedTag,
             target != null ? target.transform.position : Vector3.zero,
             causer,
@@ -113,43 +102,8 @@ public static class CombatDamageAction
         GameObject target,
         float finalHpDamage,
         float finalStaggerBuildUp,
-        IReadOnlyList<ElementDamageResult> elementBuildUps,
-        float finalKnockbackImpulse,
         GameplayTag hitConfirmedTag,
         Vector3 hitWorldPosition,
-        GameObject causer,
-        bool isCriticalHit = false)
-    {
-        ApplyDamageAndEmitHit_Internal(
-            system,
-            spec,
-            damageEffect,
-            knockbackEffect,
-            target,
-            finalHpDamage,
-            finalStaggerBuildUp,
-            elementBuildUps,
-            finalKnockbackImpulse,
-            hitConfirmedTag,
-            hitWorldPosition,
-            causer,
-            isCriticalHit);
-    }
-
-    /// <summary>
-    /// Apply HP damage + knockback + stagger build-up + element build-up,
-    /// then optionally emit hit-confirmed event.
-    /// </summary>
-    public static void ApplyDamageAndEmitHit(
-        AbilitySystem system,
-        AbilitySpec spec,
-        GameplayEffect damageEffect,
-        GE_Knockback_Spec knockbackEffect,
-        GameObject target,
-        float finalHpDamage,
-        float finalStaggerBuildUp,
-        IReadOnlyList<ElementDamageResult> elementBuildUps,
-        GameplayTag hitConfirmedTag,
         GameObject causer,
         bool isCriticalHit = false)
     {
@@ -161,36 +115,6 @@ public static class CombatDamageAction
             target,
             finalHpDamage,
             finalStaggerBuildUp,
-            elementBuildUps,
-            hitConfirmedTag,
-            target != null ? target.transform.position : Vector3.zero,
-            causer,
-            isCriticalHit);
-    }
-
-    public static void ApplyDamageAndEmitHit(
-        AbilitySystem system,
-        AbilitySpec spec,
-        GameplayEffect damageEffect,
-        GE_Knockback_Spec knockbackEffect,
-        GameObject target,
-        float finalHpDamage,
-        float finalStaggerBuildUp,
-        IReadOnlyList<ElementDamageResult> elementBuildUps,
-        GameplayTag hitConfirmedTag,
-        Vector3 hitWorldPosition,
-        GameObject causer,
-        bool isCriticalHit = false)
-    {
-        ApplyDamageAndEmitHit_Internal(
-            system,
-            spec,
-            damageEffect,
-            knockbackEffect,
-            target,
-            finalHpDamage,
-            finalStaggerBuildUp,
-            elementBuildUps,
             finalKnockbackImpulse: 0f,
             hitConfirmedTag,
             hitWorldPosition,
@@ -198,9 +122,7 @@ public static class CombatDamageAction
             isCriticalHit);
     }
 
-    // ---- Internal orchestration -------------------------------------------------------------
-
-    private static void ApplyDamageAndEmitHit_Internal(
+    public static void ApplyDamageAndEmitHit(
         AbilitySystem system,
         AbilitySpec spec,
         GameplayEffect damageEffect,
@@ -208,14 +130,71 @@ public static class CombatDamageAction
         GameObject target,
         float finalHpDamage,
         float finalStaggerBuildUp,
-        IReadOnlyList<ElementDamageResult> elementBuildUps,
+        float finalKnockbackImpulse,
+        GameplayTag hitConfirmedTag,
+        GameObject causer,
+        bool isCriticalHit = false)
+    {
+        ApplyDamageAndEmitHit(
+            system,
+            spec,
+            damageEffect,
+            knockbackEffect,
+            target,
+            finalHpDamage,
+            finalStaggerBuildUp,
+            finalKnockbackImpulse,
+            hitConfirmedTag,
+            target != null ? target.transform.position : Vector3.zero,
+            causer,
+            isCriticalHit);
+    }
+
+    public static void ApplyDamageAndEmitHit(
+        AbilitySystem system,
+        AbilitySpec spec,
+        GameplayEffect damageEffect,
+        GE_Knockback_Spec knockbackEffect,
+        GameObject target,
+        float finalHpDamage,
+        float finalStaggerBuildUp,
+        float finalKnockbackImpulse,
+        GameplayTag hitConfirmedTag,
+        Vector3 hitWorldPosition,
+        GameObject causer,
+        bool isCriticalHit = false)
+    {
+        ApplyDamageAndEmitHitInternal(
+            system,
+            spec,
+            damageEffect,
+            knockbackEffect,
+            target,
+            finalHpDamage,
+            finalStaggerBuildUp,
+            finalKnockbackImpulse,
+            hitConfirmedTag,
+            hitWorldPosition,
+            causer,
+            isCriticalHit);
+    }
+
+    private static void ApplyDamageAndEmitHitInternal(
+        AbilitySystem system,
+        AbilitySpec spec,
+        GameplayEffect damageEffect,
+        GE_Knockback_Spec knockbackEffect,
+        GameObject target,
+        float finalHpDamage,
+        float finalStaggerBuildUp,
         float finalKnockbackImpulse,
         GameplayTag hitConfirmedTag,
         Vector3 hitWorldPosition,
         GameObject causer,
         bool isCriticalHit)
     {
-        if (!Validate(system, damageEffect, target)) return;
+        if (!Validate(system, damageEffect, target))
+            return;
 
         if (CombatInvulnerabilityUtil.IsDamageSuppressed(target, damageEffect as GE_Damage_Spec))
             return;
@@ -227,30 +206,21 @@ public static class CombatDamageAction
         }
 
         var runner = system.EffectRunner;
+        var geDamage = damageEffect as GE_Damage_Spec;
+        var hpCheck = CaptureHpCheck(target, geDamage);
 
-        // 0) Extract GE_Damage_Spec once
-        var geDmg = damageEffect as GE_Damage_Spec;
-
-        // 1) capture pre-HP for KillConfirmed / Damaged check
-        var hpCheck = CaptureHpCheck(target, geDmg);
-
-        // 2) Apply damage effect
         var damageSpec = BuildDamageSpec(
             system,
             spec,
             damageEffect,
-            geDmg,
+            geDamage,
             finalHpDamage,
-            elementBuildUps,
             causer);
 
         runner.ApplyEffectSpec(damageSpec, target);
 
-        // 3) target-side damaged event
         EmitDamagedTaken(system, damageEffect, target, spec, causer, hpCheck);
-        
 
-        // 4) Apply knockback effect separately
         ApplyKnockbackEffect(
             system,
             spec,
@@ -259,14 +229,11 @@ public static class CombatDamageAction
             finalKnockbackImpulse,
             causer);
 
-        // 5) KillConfirmed
         TryEmitKillConfirmed(system, spec, target, causer, hpCheck);
 
-        // 6) Post systems
         ApplyStagger(target, finalStaggerBuildUp, system.gameObject, causer);
-        ApplyElements(target, elementBuildUps, system.gameObject, causer);
+        ApplyElements(target, system.gameObject, causer);
 
-        // 7) Hit confirmed event
         EmitHitConfirmed(system, spec, target, causer, hitConfirmedTag, hitWorldPosition, isCriticalHit);
     }
 
@@ -277,15 +244,12 @@ public static class CombatDamageAction
         return true;
     }
 
-    // ---- Spec building ----------------------------------------------------------------------
-
     private static GameplayEffectSpec BuildDamageSpec(
         AbilitySystem system,
         AbilitySpec spec,
         GameplayEffect damageEffect,
-        GE_Damage_Spec geDmg,
+        GE_Damage_Spec geDamage,
         float finalHpDamage,
-        IReadOnlyList<ElementDamageResult> elementBuildUps,
         GameObject causer)
     {
         var geSpec = system.MakeSpec(
@@ -293,18 +257,8 @@ public static class CombatDamageAction
             causer: causer,
             sourceObject: spec != null ? spec.Definition : null);
 
-        // HP damage via SetByCaller
-        if (geDmg != null && geDmg.damageKey != null)
-            geSpec.SetSetByCallerMagnitude(geDmg.damageKey, finalHpDamage);
-
-        // Keep element breakdown in context as payload
-        if (elementBuildUps != null && elementBuildUps.Count > 0)
-        {
-            var dst = geSpec.Context.ElementDamages;
-            dst.Clear();
-            for (int i = 0; i < elementBuildUps.Count; i++)
-                dst.Add(elementBuildUps[i]);
-        }
+        if (geDamage != null && geDamage.damageKey != null)
+            geSpec.SetSetByCallerMagnitude(geDamage.damageKey, finalHpDamage);
 
         return geSpec;
     }
@@ -335,8 +289,6 @@ public static class CombatDamageAction
         system.EffectRunner.ApplyEffectSpec(knockbackSpec, target);
     }
 
-    // ---- Kill confirmed ---------------------------------------------------------------------
-
     private readonly struct HpCheckData
     {
         public readonly float PreHp;
@@ -352,12 +304,13 @@ public static class CombatDamageAction
 
         public bool IsValid => TargetAttrs != null && HpAttr != null && PreHp >= 0f;
     }
-    private static HpCheckData CaptureHpCheck(GameObject target, GE_Damage_Spec geDmg)
+
+    private static HpCheckData CaptureHpCheck(GameObject target, GE_Damage_Spec geDamage)
     {
-        if (geDmg == null || geDmg.healthAttribute == null)
+        if (geDamage == null || geDamage.healthAttribute == null)
             return default;
 
-        var hpAttr = geDmg.healthAttribute;
+        var hpAttr = geDamage.healthAttribute;
         var targetAttrs = target.GetComponent<AttributeSet>();
         if (targetAttrs == null)
             return new HpCheckData(preHp: -1f, hpAttr, targetAttrs: null);
@@ -365,6 +318,7 @@ public static class CombatDamageAction
         float preHp = targetAttrs.GetAttributeValue(hpAttr);
         return new HpCheckData(preHp, hpAttr, targetAttrs);
     }
+
     private static void EmitDamagedTaken(
         AbilitySystem sourceSystem,
         GameplayEffect damageEffect,
@@ -376,7 +330,7 @@ public static class CombatDamageAction
         if (!hpCheck.IsValid) return;
 
         float postHp = hpCheck.TargetAttrs.GetAttributeValue(hpCheck.HpAttr);
-        if (postHp >= hpCheck.PreHp) return; // 실제 감소 없으면 발행 안 함
+        if (postHp >= hpCheck.PreHp) return;
 
         CombatHitAudioRouter.PlayImpact(
             sourceSystem,
@@ -399,6 +353,7 @@ public static class CombatDamageAction
             Causer = causer
         });
     }
+
     private static void TryEmitKillConfirmed(
         AbilitySystem system,
         AbilitySpec spec,
@@ -423,8 +378,6 @@ public static class CombatDamageAction
         });
     }
 
-    // ---- Post systems -----------------------------------------------------------------------
-
     private static void ApplyStagger(
         GameObject target,
         float finalStaggerBuildUp,
@@ -440,11 +393,6 @@ public static class CombatDamageAction
         stagger.AddBuildUp(finalStaggerBuildUp, instigator: instigator, causer: causer);
     }
 
-    /// <summary>
-    /// 책임 :
-    /// - 대상이 현재 stagger buildup을 무시해야 하는 상태인지 판정한다.
-    /// - 패턴 전용 stagger 면역과 그로기 진행 중 상태를 함께 처리해 중복 buildup을 막는다.
-    /// </summary>
     private static bool IsStaggerSuppressed(GameObject target)
     {
         if (target == null)
@@ -469,62 +417,33 @@ public static class CombatDamageAction
         return false;
     }
 
-    private static readonly List<ElementDamageResult> s_AutoResolvedElements = new(8);
-#if UNITY_EDITOR
-    private static bool s_warnedLegacyElementBuildUpsIgnored;
-#endif
-
-    private static readonly List<ElementDamageResult> s_resolvedElements = new(8);
-    private static void ApplyElements(
-        GameObject target,
-        IReadOnlyList<ElementDamageResult> elementBuildUps,
-        GameObject instigator,
-        GameObject causer)
+    private static void ApplyElements(GameObject target, GameObject instigator, GameObject causer)
     {
         if (target == null) return;
 
         var gaugeSystem = target.GetComponent<ElementGaugeSystem>();
         if (gaugeSystem == null) return;
 
-        // Legacy path intentionally ignored.
-        // 과거에는 스킬/투사체가 elementBuildUps 파라미터로 속성 누적량을 직접 전달했지만,
-        // 현재는 공격자의 AttributeSet + ElementOffenseSource 를 기준으로
-        // CombatDamageAction 에서 속성 누적량을 일괄 계산한다.
-        // 따라서 전달된 elementBuildUps 는 의도적으로 무시한다.
-        // 레거시 생산자(ability/projcetile 쪽 element formula 생성 코드) 정리 후
-        // 이 파라미터 자체를 API 에서 제거할 예정.
-#if UNITY_EDITOR
-        if (!s_warnedLegacyElementBuildUpsIgnored &&
-            elementBuildUps != null &&
-            elementBuildUps.Count > 0)
-        {
-            s_warnedLegacyElementBuildUpsIgnored = true;
-            Debug.LogWarning(
-                "[CombatDamageAction] Legacy elementBuildUps parameter was provided but is ignored. " +
-                "Element build-up is now resolved centrally from attacker attributes. " +
-                "Remove old element formula producers from ability / projectile code.",
-                causer != null ? causer : target);
-        }
-#endif
+        var resolved = ElementBuildUpResolver.ResolveForApplication(
+            instigator,
+            target,
+            s_resolvedElements);
 
-        var resolved = ElementBuildUpResolver.Evaluate(instigator, target, s_resolvedElements);
         if (resolved == null || resolved.Count == 0) return;
 
         for (int i = 0; i < resolved.Count; i++)
         {
-            var e = resolved[i];
-            if (e.elementType == null) continue;
-            if (e.damage <= 0f) continue;
+            var element = resolved[i];
+            if (element.elementType == null) continue;
+            if (element.damage <= 0f) continue;
 
             gaugeSystem.AddBuildUp(
-                e.elementType,
-                e.damage,
+                element.elementType,
+                element.damage,
                 instigator: instigator,
                 causer: causer);
         }
     }
-
-    // ---- Hit confirmed ----------------------------------------------------------------------
 
     private static void EmitHitConfirmed(
         AbilitySystem system,
@@ -551,11 +470,6 @@ public static class CombatDamageAction
         });
     }
 
-    /// <summary>
-    /// 책임 :
-    /// - 개별 공격/스킬이 hit confirm 태그를 지정하지 않은 경우 공용 Event.HitConfirm 태그를 기본값으로 해석한다.
-    /// - 개별 자식 태그가 지정된 경우에는 그 태그를 그대로 유지해 세부 분기를 허용한다.
-    /// </summary>
     private static GameplayTag ResolveHitConfirmedTag(GameplayTag hitConfirmedTag)
     {
         if (hitConfirmedTag != null)

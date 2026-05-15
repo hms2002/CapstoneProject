@@ -1,0 +1,103 @@
+---
+status: active
+authority: structure-memory
+category: script-system-map
+last_reviewed: 2026-05-16
+---
+
+# Scene Runtime Save Structure
+
+## Purpose
+
+Map scene/run transition, title-to-game bootstrap, player runtime capture/restore, save data, run timer, map, and shortcut scripts.
+
+## Current Structure
+
+| Area | Count | Responsibility |
+| --- | ---: | --- |
+| Scene / Run Transition | 39 | Scene domain, player runtime capture/restore, portals, run progress, transition policies, route catalogs, title profile flow. |
+| Save Data | 8 | Game/profile/run data managers, repositories, runtime state DTOs, merchant/shortcut progress. |
+| Run Timer | 6 | Run timer HUD, timer policy/config, time limit system, time-over return flow. |
+| Map / Shortcuts | 10 | Shortcut doors, door ID helpers, map gimmicks, legacy map interaction object. |
+
+### Scene / Run Transition Breakdown
+
+| Area | Count | Responsibility |
+| --- | ---: | --- |
+| Scene Transition / Fade | 11 | Scene transition services/policies, fade transition, scene domain/loader support, and transition flow helpers. |
+| Player Runtime Snapshot / Restore | 10 | Player runtime state capture/restore, restore catalog/coordinator, spawn runtime policy, spawner, spawn point, and restore bootstrap. |
+| Run Progress / Route | 7 | Run progress coordinator, portal route manager/catalog, route set plan, and route support data. |
+| SceneManagement Other | 4 | Miscellaneous scene management helpers that do not yet justify a narrower responsibility area. |
+| Title / Profile Entry | 3 | Title menu/controller and profile slot service flow. |
+| Portal / Scene Entry Points | 3 | Scene portal and scene entry/exit point helpers. |
+| Scene Runtime Services | 1 | Scene runtime service owner. |
+
+### Save Data Breakdown
+
+| Area | Count | Responsibility |
+| --- | ---: | --- |
+| Game Data Core | 4 | Game data model, manager, repository, and save coordinator. |
+| Gameplay Data | 2 | Gameplay data model and manager. |
+| Shortcut Progress | 1 | Shortcut progress service. |
+| Merchant Runtime State | 1 | Merchant runtime state data. |
+
+## Key Files
+
+- `Assets/LeeJunMo/Script/SceneManagement/ScenePortalTravelService.cs`
+- `Assets/LeeJunMo/Script/SceneManagement/SceneDomainCoordinator.cs`
+- `Assets/LeeJunMo/Script/SceneManagement/TitleMenuController.cs`
+- `Assets/LeeJunMo/Script/SceneManagement/TitleProfileSlotService.cs`
+- `Assets/LeeJunMo/Script/SceneManagement/SceneTransitionCoordinator.cs`
+- `Assets/LeeJunMo/Script/SceneManagement/PlayerSceneRestoreBootstrapper.cs`
+- `Assets/LeeJunMo/Script/SceneManagement/PlayerRuntimeState.cs`
+- `Assets/LeeJunMo/Script/SceneManagement/PlayerRuntimeRestoreCoordinator.cs`
+- `Assets/LeeJunMo/Script/SceneManagement/RunProgressCoordinator.cs`
+- `Assets/LeeJunMo/Script/SaveData/GamePlayDataManager.cs`
+- `Assets/LeeJunMo/Script/SaveData/GameDataSaveCoordinator.cs`
+
+## Ownership And Lifecycle
+
+- Scene transition should coordinate route/portal flow without owning player runtime state semantics.
+- Title/game scene bootstrap rules should follow `Docs/Architecture/SceneDomainBootstrapArchitecture.md`: `TitleScene` is the app entry scene and gameplay session boundary.
+- `SceneDomainCoordinator` is the current app-scope/gameplay-scope bootstrap lifecycle owner. It owns singleton lifecycle, Unity scene-loaded subscription, and editor direct-start orchestration, while helper files now own loaded-scene classification (`SceneDomainScenePolicy`), app-scope service ensure (`SceneDomainAppScopeServices`), gameplay session service ensure (`SceneDomainGameplaySessionScope`), title cleanup (`SceneDomainTitleCleanupScope`), and editor direct-start constants/eligibility (`SceneDomainEditorDirectStartPolicy`).
+- `TitleMenuController` owns title-local menu flow and scene load request. `TitleProfileSlotService` resolves the launch request target and slot action, while `TitleProfileLaunchService` prepares the selected durable profile through `GameDataManager`.
+- `UIManager.ReturnToTitleScreen()` remains the stack UI compatibility entry point for gameplay-to-title return. Same-file `TitleSceneNameResolver` and `TitleReturnService` now own title scene name resolution, UI prompt/popup cleanup handoff, run end, `SceneTransitionCoordinator` scene load request, and direct `SceneManager.LoadScene(...)` fallback.
+- Player runtime capture/restore should follow `Docs/Architecture/RuntimeSaveArchitecture.md`.
+- Save data managers/repositories own persistence; UI and scene objects should not become persistence owners.
+- Run timer pause/complete behavior is progression-sensitive and should be coordinated through run progress/timer owners.
+- Treat `ScenePortalTravelService.TryTravel(...)` as the portal travel compatibility wrapper. Route resolution, run transition directive selection, transition policy resolution, and transition context construction sit in `ScenePortalTravelPlanner`. Travel execution sits in `ScenePortalTravelExecutor`, and player runtime capture/transition cleanup sits in `ScenePortalPlayerRuntimeCaptureService`.
+- Treat `GamePlayDataManager` as run-session state, not durable save ownership. Pending run progress commit/clear policy sits in `RunSessionProgressCommitPolicy`, while the manager still owns singleton lifecycle, volatile state APIs, run events, and save flush orchestration.
+- Treat `RunProgressCoordinator` as a boss battle-end/run-progress bridge when reviewing boss reward, portal, and timer behavior. Boss reward modifier data is read through `RunRewardModifierSnapshot`, and route-key/final-boss/context policy sits in `BossRunProgressPolicy`.
+- Treat `PlayerSceneRestoreBootstrapper` as the player runtime restore lifecycle and handoff owner. Player lookup, scene eligibility, item database readiness, and post-restore equipment matching sit in `PlayerSceneRestorePlanner`. Pending equipment resolvability, player component gathering, and restore result creation now sit behind `PlayerSceneRestoreExecutionService`.
+
+## Refactor Candidates
+
+- `Docs/RefactorBacklog/SceneRunStateBoundarySplit.md` records the resolved P1 helper/file split between portal travel orchestration, run-session state, persistent save data, player runtime capture/restore, and boss battle-end/run-progress bridging.
+- `Docs/RefactorBacklog/SceneRunStateLifecycleOwnershipSplit.md` tracks the remaining P2 lifecycle/naming ownership debt for scene-facing contracts.
+- `Docs/RefactorBacklog/SceneDomainBootstrapBoundarySplit.md` records the resolved title/game bootstrap boundary split. Reopen that area only when adding new title entry modes, continue-run semantics, return-to-title behavior, app/gameplay bootstrap services, or camera title behavior.
+- `ScenePortalTravelService` remains the portal travel compatibility entry point. Route/run-policy/context decisions live in `ScenePortalTravelPlanner`, and execution/capture details live in dedicated helper files. Static entry ownership is tracked in the P2 lifecycle backlog.
+- `GamePlayDataManager` is documented as volatile run-session state. It holds pending transition, pending player runtime state, run timer values, pending run rewards, affection deltas, shortcut unlocks, and merchant state before durable save commit. Pending progress commit/clear mutation is isolated in `RunSessionProgressCommitPolicy`; naming/lifecycle debt is tracked in the P2 lifecycle backlog.
+- `RunProgressCoordinator` remains cross-linked with boss battle-end structure because it handles boss defeat, reward readiness, portal fallback, final boss timer pause, and boss reward modifier snapshot consumption. It delegates route-key resolution, final-route detection, identity-key resolution, and reward-context construction to `BossRunProgressPolicy` helpers.
+- `PlayerSceneRestoreBootstrapper` remains the restore lifecycle owner around registry subscription, retry coroutine timing, warning/error reporting, runtime restorer rebinding, ordered restore handoff, confirmation coroutine, and pending-state consumption. Restore planning and execution validation live in dedicated helper files; remaining lifecycle debt is tracked in the P2 lifecycle backlog.
+
+## Extension Entry Points
+
+- Add scene transition behavior through transition/fade and portal/route buckets.
+- Add title/game bootstrap behavior through the scene-domain architecture, not through ad hoc title UI or camera/audio services.
+- Add runtime state restoration through player runtime snapshot/restore buckets.
+- Add save data only through save coordinator/repository/data model patterns.
+
+## Known Pitfalls
+
+- Scene, portal, and spawn scripts are prefab/scene-facing; moving or renaming them needs Unity reference review.
+- Runtime state restore can silently break if ownership shifts between player, weapon, relic, and save data.
+- Title return can silently break if run end, route clear, gameplay UI cleanup, and title scene transition drift apart.
+- Title launch currently prepares profile data directly before target scene load; a future continue-run persistence model would need explicit runtime state and target-scene restore rules.
+- Do not treat pending run data in `GamePlayDataManager` as already-persisted profile data.
+- Scene/run/save helper boundaries have been moved to dedicated helper files. Unity Editor import/compile confirmation remains the final verification path for those new files.
+- Do not split boss progress/reward/portal behavior without checking `Docs/RefactorBacklog/BossDropResponsibilitySplit.md`.
+- Do not claim compile/import safety without Unity verification after schema or MonoBehaviour changes.
+
+## Promotion Candidate
+
+Runtime save rules already belong to `Docs/Architecture/RuntimeSaveArchitecture.md`. Title/game bootstrap rules now belong to `Docs/Architecture/SceneDomainBootstrapArchitecture.md`. Keep this map as current script topology for the related scripts.

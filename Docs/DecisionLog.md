@@ -2,7 +2,7 @@
 status: active
 authority: project-log
 category: decision-log
-last_reviewed: 2026-05-14
+last_reviewed: 2026-05-15
 ---
 
 # Decision Log
@@ -139,3 +139,73 @@ Implications:
 - `RefactorBacklog` tracks intentional structural debt with target shape, risks, and refactor triggers; it is not a generic TODO list.
 - Small edits usually update only `SessionLogs`; reusable structure, known debt, durable decisions, and recurring mistakes update the narrower matching memory document.
 - Stable structure can be proposed for promotion from `StructureMemory` to `Architecture` or `Contracts`, but those official documents still require explicit approval before editing.
+
+## 2026-05-15 - Prototype Runtime UI Creation Is Temporary
+
+Decision:
+Runtime creation of UI or presentation objects is acceptable for first-pass prototyping, debug fallback, or emergency fallback, but production-facing UI and presentation should be promoted to scene- or prefab-authored objects before build-facing use.
+
+Reason:
+Runtime-created UI is useful for quickly checking feel and avoiding blocked iteration. Keeping it as the final structure hides sorting, raycast, scaling, animation, and serialized-reference choices in code, making Unity authoring, inspection, and prefab/scene verification harder.
+
+Implications:
+- Gameplay-facing UI should normally live under scene/prefab-authored objects, often through `GlobalUIRoot` canvas layers or explicit serialized references.
+- Runtime-created `Canvas`, `EventSystem`, button, TMP, image, overlay, and hierarchy fallbacks must be clearly treated as prototype/debug/fallback paths, not silent production defaults.
+- Any runtime-created UI that remains beyond prototype should have explicit owner, cleanup, and a prefab/scene migration follow-up.
+- Pooled gameplay presentation objects may still be instantiated from authored prefabs; the prefab is the authored unit, while the runtime service owns spawning and cleanup.
+- Existing runtime fallback presentation debt is tracked through `Docs/RefactorBacklog/RuntimePresentationFallbackAuthoringSplit.md`.
+
+## 2026-05-15 - Use ContentAuthoring Guides for Repeatable Content Pipelines
+
+Decision:
+Manage repeatable combat-content production through a `Docs/Guides/ContentAuthoring/` hub and focused type-level pipeline guides.
+
+Reason:
+Weapons, mobs, bosses, relics, consumables, and reward links will keep growing. A single structure map is useful for code review, but content creators need a production-order guide that starts from authored data and ends at loot, inventory, presentation, save, and verification.
+
+Implications:
+- `ContentAuthoring` guides are production entry points, not replacements for `Contracts` or `Architecture`.
+- Stable rules still belong in `Docs/Contracts/` or `Docs/Architecture/` after explicit approval.
+- Structure-specific context remains in `Docs/StructureMemory/`, and concrete structural debt remains in `Docs/RefactorBacklog/`.
+- New content pipelines should link to source-of-truth documents instead of copying their full rules.
+
+## 2026-05-15 - Treat TitleScene as App And Gameplay Session Boundary
+
+Decision:
+Use `Docs/Architecture/SceneDomainBootstrapArchitecture.md` as the source-of-truth document for title-to-game scene bootstrap ownership. `TitleScene` is both the app entry scene and the gameplay session boundary.
+
+Reason:
+Title, profile selection, return-to-title, gameplay runtime presentation, camera rig behavior, and run-session cleanup were implemented across several services without a single documented boundary.
+
+Implications:
+- App-scope services may exist on title, but gameplay-scope runtime presentation should not treat title as active gameplay.
+- Title-local UI/camera presentation stays scene-authored unless an explicit fallback/prototype path is documented.
+- Return-to-title changes must preserve run/session cleanup before or during the title scene transition.
+- Code refactors in this area should start from `Docs/RefactorBacklog/SceneDomainBootstrapBoundarySplit.md`.
+
+## 2026-05-15 - Use Source-Structure Verification For Unity Script File Splits
+
+Decision:
+For source-only Unity script file splits, proceed with helper `.cs` file extraction when behavior and APIs are unchanged, even if Unity-generated `.csproj` files have not refreshed yet.
+
+Reason:
+Unity Editor import/compile is the reliable final check for new `Assets/` scripts, while generated `.csproj` files can lag behind the filesystem and block otherwise safe source-only refactors.
+
+Implications:
+- Do not manually edit generated `.csproj` files.
+- Verify moved helpers by source structure: duplicate definitions, original helper removal, call-site references, namespace/global-scope compatibility, and whitespace.
+- Run MSBuild only when generated project files include the relevant source files.
+- Do not claim Unity compile or MSBuild success for new files unless that verification actually ran.
+
+## 2026-05-15 - Element Build-Up Applies From ElementOffenseSource
+
+Decision:
+Applied elemental build-up is resolved from the attacker's `ElementOffenseSource` through `ElementBuildUpResolver`, not from per-hit `DamagePayloadConfig.elementFormulas` or `elementBuildUps` payloads.
+
+Reason:
+The combat application path already used attacker-wide elemental build-up, while legacy per-hit fields made weapon tuning intent ambiguous.
+
+Implications:
+- `DamagePayloadConfig.elementFormulas`, `CombatDamageSnapshot.ElementBuildUps`, and `elementBuildUps` / `elementInputs` API parameters are compatibility debt until serialized data and call sites are migrated.
+- Future per-hit elemental tuning must be introduced as a named merge/override policy instead of reviving the old implicit payload path.
+- Elemental weapon tuning should verify attacker `ElementOffenseSource`, stat provider wiring, and `ElementBuildUpFormulaProfile` rather than per-hit payload formulas.

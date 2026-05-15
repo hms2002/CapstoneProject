@@ -28,6 +28,7 @@ This is a fast context map, not the final UI architecture source of truth.
 - `Assets/HeoMinSeok/_Project/Scripts/Gameplay/Inventory/Chest/Runtime/TreasureChest.cs`
 - `Assets/HeoMinSeok/_Project/Scripts/UI/Inventory/Chest/ChestFirstOpenRevealPresentation.cs`
 - `Assets/LeeJunMo/Script/Dialogue/NPC/NPCFeature/Upgrade/UpgradeManager.cs`
+- `Assets/LeeJunMo/Script/Dialogue/NPC/NPCFeature/Upgrade/UpgradeUiOpenFlow.cs`
 - `Assets/LeeJunMo/Script/UIStructure/RewardDisplayUI.cs`
 
 ## Ownership And Lifecycle
@@ -43,7 +44,7 @@ This is a fast context map, not the final UI architecture source of truth.
 
 - Chest first open starts blocking from `TreasureChest` interaction and hands off through the inventory/chest reveal presentation.
 - Dialogue blocking is owned by `DialogueService` while dialogue is playing.
-- Upgrade open fade blocks unrelated UI input, then opens `UpgradeTreeUI` through the owned push path.
+- Upgrade open fade is executed by `UpgradeUiOpenFlow`; it blocks unrelated UI input, then opens `UpgradeTreeUI` through the owned push path.
 - Reward open presentation blocks unrelated UI input until the open presentation finishes.
 
 ## Extension Entry Points
@@ -63,7 +64,7 @@ This is a fast context map, not the final UI architecture source of truth.
 ## Verification Notes
 
 - Visual Studio MSBuild successfully compiled the implementation after the blocker refactor.
-- Manual play verification confirmed the blocker behavior and the Upgrade UI dialogue handoff work without observed issues.
+- Manual play verification previously confirmed the blocker behavior and the Upgrade UI dialogue handoff work without observed issues. The later `UpgradeUiOpenFlow` split was source-verified by Codex and user-confirmed through Editor/import/play verification.
 - Unity batchmode was not run during the original work because Unity Editor processes were open.
 
 ## Promotion Candidate

@@ -68,103 +68,22 @@ public static class ItemDragContext
     /// </summary>
     public static bool TryDrop(IItemContainer target, int targetIndex)
     {
-        if (!Active) return false;
-        if (target == null) return false;
-
-        // 같은 컨테이너 내 스왑
-        if (target == Source)
-        {
-            bool ok = Source.TrySwap(SourceIndex, targetIndex);
-            Clear();
-            return ok;
-        }
-
-        var srcItem = Source.Get(SourceIndex);
-        if (srcItem == null)
-        {
-            Clear();
-            return false;
-        }
-
-        // 책임 : 같은 유물 슬롯 위에 드롭한 경우 merge가 일어나도록 내부 targetIndex를 보정한다.
-        int resolvedTargetIndex = ResolveRelicDropTargetIndex(target, targetIndex, srcItem);
-
-        var dstItem = target.Get(resolvedTargetIndex);
-
-        int srcLvl = ItemDragContext.RelicLevel;
-        if (srcLvl <= 0 && srcItem is RelicDefinition && Source is IRelicLevelProvider sp)
-            sp.TryGetRelicLevel(SourceIndex, out srcLvl);
-
-        int dstLvl = 0;
-        if (dstItem is RelicDefinition && target is IRelicLevelProvider tp)
-            tp.TryGetRelicLevel(resolvedTargetIndex, out dstLvl);
-
-        if (!target.CanPlace(srcItem, resolvedTargetIndex, ignoreIndex: -1)) { Clear(); return false; }
-        if (!Source.CanPlace(dstItem, SourceIndex, ignoreIndex: -1)) { Clear(); return false; }
-
-        bool ok1;
-        if (srcItem is RelicDefinition sr && target is IRelicSlotReceiver tr && srcLvl > 0)
-            ok1 = tr.TrySetRelicWithLevel(resolvedTargetIndex, sr, srcLvl);
-        else
-            ok1 = target.TrySet(resolvedTargetIndex, srcItem);
-
-        if (!ok1) { Clear(); return false; }
-
-        if (ok1 && srcItem is RelicDefinition && target is IRelicSlotReceiver)
-        {
-            var after = target.Get(resolvedTargetIndex);
-            if (after != srcItem)
-            {
-                bool consumed = Source.TrySet(SourceIndex, null);
-                Clear();
-                return consumed;
-            }
-        }
-
-        bool ok2;
-        if (dstItem is RelicDefinition dr && Source is IRelicSlotReceiver sr2 && dstLvl > 0)
-            ok2 = sr2.TrySetRelicWithLevel(SourceIndex, dr, dstLvl);
-        else
-            ok2 = Source.TrySet(SourceIndex, dstItem);
-
-        if (!ok2)
-        {
-            if (dstItem is RelicDefinition drb && target is IRelicSlotReceiver trb && dstLvl > 0)
-                trb.TrySetRelicWithLevel(resolvedTargetIndex, drb, dstLvl);
-            else
-                target.TrySet(resolvedTargetIndex, dstItem);
-
-            Clear();
-            return false;
-        }
-
-        Clear();
-        return true;
+        return TryDropWithResult(target, targetIndex).Succeeded;
     }
-    // 책임 : 유물 drag&drop 시 "같은 유물 슬롯 위에 직접 드롭"한 경우,
-         // merge 로직이 자연스럽게 타도록 대체 대상 슬롯을 찾아준다.
-    private static int ResolveRelicDropTargetIndex(IItemContainer target, int requestedIndex, ScriptableObject srcItem)
+
+    public static InventoryTransferResult TryDropWithResult(IItemContainer target, int targetIndex)
     {
-        if (target == null) return requestedIndex;
+        if (!Active)
+            return InventoryTransferResult.Failed(InventoryTransferFailureReason.NoActiveDrag);
 
-        var movingRelic = srcItem as RelicDefinition;
-        if (movingRelic == null) return requestedIndex;
+        if (target == null)
+            return InventoryTransferResult.Failed(InventoryTransferFailureReason.MissingTarget);
 
-        var dstRelic = target.Get(requestedIndex) as RelicDefinition;
-        if (dstRelic == null) return requestedIndex;
-
-        if (dstRelic.relicId != movingRelic.relicId) return requestedIndex;
-
-        for (int i = 0; i < target.SlotCount; i++)
-        {
-            if (i == requestedIndex) continue;
-            if (!target.CanPlace(srcItem, i, ignoreIndex: -1)) continue;
-            return i;
-        }
-
-        return requestedIndex;
+        var request = new InventoryTransferRequest(Source, SourceIndex, target, targetIndex, RelicLevel);
+        InventoryTransferResult result = InventoryTransferService.TryTransfer(request);
+        Clear();
+        return result;
     }
-
     /// <summary>
     /// 책임 :
     /// - 인벤토리 UI에서 아이템을 집어 drag를 시작하는 순간 그랩 사운드를 재생한다.

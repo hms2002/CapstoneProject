@@ -356,7 +356,6 @@ public sealed class AbilityLogic_DrunkenDragonDashCombo : AbilityLogic
             finalHpDamage: damageAmount,
             finalStaggerBuildUp: 0f,
             finalKnockbackImpulse: knockbackImpulse,
-            elementBuildUps: null,
             isCriticalHit: false);
 
         return CombatHitPayload.FromSnapshot(

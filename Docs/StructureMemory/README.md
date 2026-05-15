@@ -39,4 +39,6 @@ Each feature document should include:
 
 ## Current Documents
 
+- [Script System Map](./ScriptSystemMap.md)
+- [Script Systems](./ScriptSystems/README.md)
 - [UI Flow Input Blocking](./UIFlowInputBlocking.md)

@@ -290,7 +290,6 @@ public class ShadowServant : Mob, IMobAttackDecisionSource
             finalHpDamage: GetAttackPatternData().damageAmount,
             finalStaggerBuildUp: 0f,
             finalKnockbackImpulse: 0f,
-            elementBuildUps: null,
             isCriticalHit: false);
 
         return CombatHitPayload.FromSnapshot(
