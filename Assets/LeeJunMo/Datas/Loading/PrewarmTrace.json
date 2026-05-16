@@ -1,12 +1,6 @@
 {
     "sessions": [
         {
-            "sessionId": "067aa4d525d5457aa185d708363a39d7",
-            "startedUtc": "2026-05-12T01:12:07.4666603Z",
-            "endedUtc": "2026-05-12T01:12:10.3049387Z",
-            "entries": []
-        },
-        {
             "sessionId": "1f93fa94cc7e4b41b487e5ed6ac64d27",
             "startedUtc": "2026-05-12T01:14:47.8473160Z",
             "endedUtc": "2026-05-12T01:14:49.5579817Z",
@@ -211,6 +205,12 @@
                     "lastSceneName": "HeoMinSeok_Boss_Dragon_Spili"
                 }
             ]
+        },
+        {
+            "sessionId": "c32d41ad208f488d8c4556b560c2c904",
+            "startedUtc": "2026-05-13T06:32:40.9889856Z",
+            "endedUtc": "2026-05-13T06:32:42.5893491Z",
+            "entries": []
         }
     ]
 }
