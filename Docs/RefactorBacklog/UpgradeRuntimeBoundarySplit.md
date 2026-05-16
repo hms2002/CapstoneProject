@@ -2,7 +2,7 @@
 status: partially-refactored
 authority: refactor-backlog
 category: refactor-candidate
-last_reviewed: 2026-05-15
+last_reviewed: 2026-05-16
 ---
 
 # Upgrade Runtime Boundary Split
@@ -18,7 +18,7 @@ last_reviewed: 2026-05-15
 - upgrade tree UI open/close orchestration
 - upgrade tree open fade/input-blocker execution through a helper
 
-The purchase transaction preconditions, currency spend, and rollback-on-spend-failure policy now live in `UpgradePurchaseService`. Purchase success side-effect ordering now lives in `UpgradePurchaseCompletionService`. Runtime effect reapply/run-start/hub-target handoff now lives in `UpgradeRuntimeEffectService`. Run-start effect eligibility/timing checks now live in `UpgradeRunStartEffectPolicy`. Upgrade UI open fade, owned UI push, `GameFlowInputBlocker`, and interrupted-open cleanup now live in `UpgradeUiOpenFlow`. Scene/run/player lifecycle subscriptions and run-start guard state now live in `UpgradeRuntimeLifecycleService`. Unlock-check save request and data-change notification execution now live in `UpgradeProgressSaveService`. These helper types now live in dedicated source files. Singleton/persistence ownership, purchase wiring, and public orchestration still sit in `UpgradeManager`.
+The purchase transaction preconditions, currency spend, and rollback-on-spend-failure policy now live in `UpgradePurchaseService`. Purchase success side-effect ordering now lives in `UpgradePurchaseCompletionService`. Runtime effect reapply/run-start/hub-target handoff now lives in `UpgradeRuntimeEffectService`. Run-start effect eligibility/timing checks now live in `UpgradeRunStartEffectPolicy`. Upgrade UI open fade, owned UI push, `GameFlowInputBlocker`, interrupted-open cleanup, and toggle open/close selection now live in `UpgradeUiOpenFlow`. Scene/run/player lifecycle subscriptions and run-start guard state now live in `UpgradeRuntimeLifecycleService`. Unlock-check save request and data-change notification execution now live in `UpgradeProgressSaveService`. Singleton/persistent root adoption now lives in `UpgradeManagerLifetimeService`. These helper types now live in dedicated source files. Purchase completion callback wiring, event surface, and public orchestration still sit in `UpgradeManager`.
 
 The code works, but future upgrade features can easily add more policy, presentation, and run lifecycle behavior to the same class.
 
@@ -126,9 +126,22 @@ Ninth implementation slice complete:
 - Added matching Unity `.meta` files for the new helper source files so their asset GUIDs stay stable after import.
 - `Assembly-CSharp.csproj` had not refreshed to include the two new helper files during Codex verification, so MSBuild was intentionally not treated as valid coverage for this file-split slice.
 
+Tenth implementation slice complete:
+
+- Added `UpgradeManagerLifetimeService.cs`.
+- Moved singleton claim/release, `GlobalUIRoot.AdoptService(...)`, and persistent-root adoption out of the `UpgradeManager` MonoBehaviour body.
+- Moved UI active-state toggle selection into `UpgradeUiOpenFlow.Toggle(...)`, leaving `UpgradeManager.ToggleUI()` as the compatibility entry point.
+- Changed `OnDataChanged` and `OnUIClosed` from public `Action` fields to public events, and routed UI-close notification through `UpgradeManager.NotifyUIClosed()`.
+- Preserved `UpgradeManager.Instance`, public purchase/status/query/UI methods, serialized fields, save timing, purchase ordering, UI open fade/input blocker behavior, and subscriber call sites.
+
+Verification refresh:
+
+- The generated `Assembly-CSharp.csproj` now includes the extracted Upgrade helper files, including `UpgradeProgressSaveService.cs`, `UpgradeRuntimeLifecycleService.cs`, and `UpgradeManagerLifetimeService.cs`.
+- Visual Studio MSBuild errors-only verification passed for `Assembly-CSharp.csproj` on 2026-05-16. Existing project warnings remain, but no Upgrade helper missing-type errors remain in the generated project file.
+
 Remaining debt:
 
-- `UpgradeManager` still owns singleton lifecycle, persistence root adoption, purchase completion callback wiring, public `OnDataChanged`/`OnUIClosed` events, and public UI open/close entry points.
+- `UpgradeManager` still owns purchase completion callback wiring, public `OnDataChanged`/`OnUIClosed` event surface, and public compatibility UI open/close entry points.
 - `UpgradeEffectApplier` still owns actual purchased effect reapplication, run-start effect application, and immediate target-state application; `UpgradeRuntimeEffectService` only owns the handoff and player/save-data guard flow.
 - Upgrade UI flow helper must continue to preserve the dialogue handoff and `GameFlowInputBlocker` rules recorded in `Docs/ErrorLog.md` and `Docs/StructureMemory/UIFlowInputBlocking.md`.
-- Any further split should be scoped around `UpgradeManager` persistence ownership, singleton lifecycle, callback wiring, and public entry-point ownership rather than purchase/run-start/lifecycle policy placement.
+- Any further split should be scoped around callback wiring, public event/API ownership, or `UpgradeEffectApplier` effect-application ownership rather than purchase/run-start/lifecycle policy placement.

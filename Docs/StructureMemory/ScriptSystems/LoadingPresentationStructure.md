@@ -2,7 +2,7 @@
 status: active
 authority: structure-memory
 category: script-system-map
-last_reviewed: 2026-05-15
+last_reviewed: 2026-05-16
 ---
 
 # Loading Presentation Structure
@@ -76,12 +76,12 @@ Map loading, presentation runtime, global UI, camera, audio, input binding, sett
 | Title-local vs global runtime UI | Title menu/panels are scene-local authored UI. Gameplay `GlobalUIRoot`, runtime camera rig, and stack UI services are cleaned or avoided on title through the scene-domain bootstrap policy; title-side persistent UI/camera cleanup now executes through `SceneDomainTitleCleanupScope`, and camera title guards now route through `CameraBootstrapScenePolicy`. |
 | Loading / preload | `PresentationPreloadService` follows `LoadingScopes.md`: it reads the active route load window and delegates manifest preload/release to asset providers. |
 | Presentation runtime | `WorldPresentationRuntime` and `PresentationSpawnService` execute sound, shake, visual spawn, pooling, and cleanup. They are runtime consumers, not authoring owners. |
-| Runtime-created UI / overlay | Loading overlay fallback, cursor canvas, cinematic letterbox, and display letterbox create UI hierarchy at runtime. This is acceptable for prototype/debug/fallback, but production-facing UI should be authored in scenes or prefabs. |
+| Runtime-created UI / overlay | Loading overlay fallback, cursor canvas, cinematic letterbox, display letterbox, status HUD entry/tooltip fallback, and Boss HUD dual/split fallback can create UI hierarchy at runtime. These paths now report through `RuntimePresentationFallbackAudit` in editor/development builds, and Scene Setup Validator reports the main missing authored reference risks. This is acceptable for prototype/debug/fallback, but production-facing UI should be authored in scenes or prefabs. |
 | Camera / audio route support | Camera and route BGM bridge scene, boss, and route context for presentation. This is acceptable as support code, but new progression rules should stay outside these services. |
 
 ## Refactor Candidates
 
-- `Docs/RefactorBacklog/RuntimePresentationFallbackAuthoringSplit.md` tracks runtime-created UI and presentation fallbacks that should be promoted to authored scene/prefab objects before build-facing use.
+- `Docs/RefactorBacklog/RuntimePresentationFallbackAuthoringSplit.md` tracks runtime-created UI and presentation fallbacks that should be promoted to authored scene/prefab objects before build-facing use. `RuntimePresentationFallbackAudit` and Scene Setup Validator warnings make the current fallback paths visible during editor/development testing but do not replace prefab/scene authoring.
 - `Docs/RefactorBacklog/SceneDomainBootstrapBoundarySplit.md` records the resolved title/game bootstrap boundary split for title-local UI, gameplay global UI cleanup, camera title guards, and return-to-title flow.
 - `Docs/RefactorBacklog/SceneRunStateBoundarySplit.md` remains related because `UIManager.ReturnToTitleScreen()` connects pause/title UI to run end and scene transition.
 
@@ -93,7 +93,8 @@ Map loading, presentation runtime, global UI, camera, audio, input binding, sett
 
 ## Known Pitfalls
 
-- Runtime UI object creation can be useful for first-pass feel checks, debug fallback, or emergency fallback, but it should not silently become the build-facing structure.
+- Runtime UI object creation can be useful for first-pass feel checks, debug fallback, or emergency fallback, but it should not silently become the build-facing structure. New runtime hierarchy fallback paths should call `RuntimePresentationFallbackAudit.Record(...)`.
+- Run `Tools/Validation/Scene Setup Validator` after global UI/presentation edits to catch missing loading/status/Boss HUD authored references before play verification.
 - Title-local presentation should stay scene-authored; adding runtime fallback UI or camera objects for title needs explicit owner, cleanup, and migration notes.
 - Production-facing global UI and presentation overlays should be scene- or prefab-authored where possible, then driven through serialized references or `GlobalUIRoot` layers.
 - Runtime-created fallback paths need explicit owner, cleanup, and a migration follow-up before they are treated as final UI.

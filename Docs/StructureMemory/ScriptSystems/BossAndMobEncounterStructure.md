@@ -2,7 +2,7 @@
 status: active
 authority: structure-memory
 category: script-system-map
-last_reviewed: 2026-05-15
+last_reviewed: 2026-05-16
 ---
 
 # Boss And Mob Encounter Structure
@@ -30,7 +30,7 @@ Bosses use an `Encounter -> Battle -> BattleEnd` flow. General mobs use `Populat
 | --- | --- | --- |
 | Boss Encounter | Boss encounter intro, dialogue, target activation, combat entry hooks. | Prepare the boss fight and start combat. It should not own rewards, portals, or persistent run result processing. |
 | Boss Battle | Boss FSM core/states/configs, boss-specific controllers, boss abilities, pattern actors, BT/GAS bridge. | Run the fight: phase evaluation, pattern selection/execution, damage/status interaction, groggy, and attack presentation. |
-| Boss BattleEnd | Boss death presentation, `RunProgressCoordinator`, boss rewards, portal activation, `BossDrop` legacy adapter. | Convert boss defeat into run/world results. This is connected to `Docs/RefactorBacklog/BossDropResponsibilitySplit.md`. |
+| Boss BattleEnd | Boss death presentation, `RunProgressCoordinator`, route-linked `BossSpecialRewardPresetSO`, `BossBattleEndPrefabCatalogSO`, `BossBattleEndAnchors`, `BossRewardFallbackService`, boss rewards, and portal activation. | Convert boss defeat into run/world results. The former `BossDrop` adapter has been removed; authoring gaps are checked by `Docs/RefactorBacklog/BossDropResponsibilitySplit.md` and the validator. |
 | Mob Population / Spawn | `MonsterSpawner`, `SceneMonsterSpawnDirector`, spawn containers, room groups/profiles, difficulty/context/pathfinding injection. | Instantiate and configure general mobs. This is the normal placement entry point for mobs, not a boss-style encounter. |
 | Mob Battle Runtime | `Mob`, mob FSM, chase/facing/home return, attack decision source, `MobAbilityCoordinator`, pattern runners, mob ability logic. | Keep spawned mobs battle-ready, run chase/attack behavior, and perform cleanup according to `Docs/Contracts/MobCleanupContract.md`. |
 | Mob Death Result | `Mob.OnDeathStarted`, monster loot spawn, spawned-monster tracking cleanup. | Convert mob death into immediate results. Long-term clear/lock semantics should not be assumed from root GameObject destruction alone. |
@@ -131,6 +131,7 @@ Track the concrete candidate in `Docs/RefactorBacklog/BossHudSpecialCaseSourceSp
 - `Assets/HeoMinSeok/_Project/Scripts/Gameplay/MonsterSpawn/RoomDoorMonsterKillLock.cs`
 - `Assets/HeoMinSeok/_Project/Scripts/Gameplay/Inventory/Chest/Runtime/LockedChest/ChestMonsterKillLock.cs`
 - `Assets/HeoMinSeok/_Project/Scripts/Gameplay/Puddles/Runtime/FirePuddleArea.cs`
+- `Assets/LeeJunMo/Script/Editor/BossBattleEndMigrationValidatorWindow.cs`
 
 ## Ownership And Lifecycle
 
@@ -144,7 +145,8 @@ Track the concrete candidate in `Docs/RefactorBacklog/BossHudSpecialCaseSourceSp
 
 - Add new boss encounter setup through encounter/dialogue/director hooks, not reward or portal systems.
 - Add new boss battle behavior through boss-specific controller/state/ability buckets.
-- Add new boss battle-end behavior through reward/progress/portal components and the existing `BossDrop` split backlog.
+- Add new boss battle-end behavior through route-linked special reward presets, the common prefab catalog, scene/prefab anchors, reward/progress/portal components, and the resolved `BossDrop` split backlog.
+- Use `Tools/Validation/Boss Battle-End Migration Validator` when relying on boss battle-end data for a boss scene/prefab. Its Auto Fix buttons are a first wiring pass, not final authoring.
 - Add new mob behavior through mob FSM, ability logic, and pattern runner patterns.
 - Add mob population behavior through MonsterSpawn context/profile/director rather than individual enemies.
 - Add lock overlay behavior with explicit design rules for which combatants count toward unlocking.
@@ -163,7 +165,8 @@ Until these are answered, do not create a lock-tracking refactor plan that assum
 
 - Boss-specific states, actors, and ability logic are mixed by boss; do not move them without prefab/scene reference checks.
 - Pattern presentation ownership should follow `Docs/Contracts/PresentationAuthoringContract.md`.
-- `BossDrop` legacy reward flow is tracked separately in `Docs/RefactorBacklog/BossDropResponsibilitySplit.md`.
+- The former `BossDrop` legacy reward flow is resolved in `Docs/RefactorBacklog/BossDropResponsibilitySplit.md`; unhandled reward/portal authoring now reports editor/development warnings through `BossRewardFallbackService` instead of running a dynamic fallback.
+- The boss battle-end migration validator can find missing common catalog data, optional RouteSet special reward presets, reward/portal components, stale definition/profile fields, and anchors. Its Auto Fix buttons can create placeholder wiring, but final correctness still needs Inspector review and Unity play verification for reward-once and portal-once behavior.
 - `RoomDoorMonsterKillLock` and `ChestMonsterKillLock` currently track registered root GameObjects. Split, summon, transform, or delayed-destroy behavior can make this rule ambiguous.
 - `FirePuddleArea` has boss-specific target exclusion logic. If more hazard actors learn boss policy, move the rule toward a combat target policy instead of spreading concrete boss checks.
 - Do not add new concrete boss type branches to common Boss HUD for split or multi-body bosses. Add a boss-specific HUD source/adapter instead.

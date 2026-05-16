@@ -41,6 +41,10 @@ public sealed class StatusHudPresenter : MonoBehaviour
         }
 
         GameObject root = new("StatusHudPresenter");
+        RuntimePresentationFallbackAudit.Record(
+            root,
+            "Status HUD presenter fallback",
+            "a GlobalUIRoot status HUD presenter prefab");
         instance = root.AddComponent<StatusHudPresenter>();
         return instance;
     }
@@ -134,6 +138,11 @@ public sealed class StatusHudPresenter : MonoBehaviour
             }
             else
             {
+                RuntimePresentationFallbackAudit.Record(
+                    this,
+                    "Status HUD entry fallback",
+                    "a StatusHudEntryView prefab assigned on StatusHudPresenter");
+
                 GameObject child = new($"StatusHudEntry_{entryViews.Count}");
                 child.transform.SetParent(container, false);
                 view = child.AddComponent<StatusHudEntryView>();

@@ -22,6 +22,17 @@ public class StageLootTable : ScriptableObject
         }
     };
 
+    [Header("Boss Chest Weapon Count")]
+    [SerializeField] private CountRangeWeightProfile bossWeaponCountProfile = new CountRangeWeightProfile();
+
+    [Header("Boss Chest Relic Count")]
+    [SerializeField] private CountRangeWeightProfile bossRelicCountProfile = new CountRangeWeightProfile();
+
+    [Header("Boss Relic Rarity Weights")]
+    [SerializeField, Min(0)] private int bossCommonWeight = 60;
+    [SerializeField, Min(0)] private int bossRareWeight = 30;
+    [SerializeField, Min(0)] private int bossEpicWeight = 10;
+
     [Header("Relic Rarity Weights")]
     public int commonWeight = 60;
     public int rareWeight = 30;
@@ -37,6 +48,7 @@ public class StageLootTable : ScriptableObject
 
     [Header("Boss Reward")]
     public int bossStoneCount = 5;
+    [SerializeField, Min(0)] private int bossFieldHealBaseCount;
 
     [FormerlySerializedAs("chestWeaponMinCount")]
     [SerializeField, HideInInspector] private int legacyChestWeaponMinCount = 1;
@@ -55,15 +67,31 @@ public class StageLootTable : ScriptableObject
     public CountRangeWeightProfile ChestWeaponCountProfile => chestWeaponCountProfile;
     public CountRangeWeightProfile ChestRelicCountProfile => chestRelicCountProfile;
     public CountRangeWeightProfile ChestConsumableCountProfile => chestConsumableCountProfile;
+    public CountRangeWeightProfile BossWeaponCountProfile => bossWeaponCountProfile;
+    public CountRangeWeightProfile BossRelicCountProfile => bossRelicCountProfile;
+    public int BossCommonWeight => bossCommonWeight;
+    public int BossRareWeight => bossRareWeight;
+    public int BossEpicWeight => bossEpicWeight;
+    public int BossFieldHealBaseCount => bossFieldHealBaseCount;
 
     private void OnValidate()
     {
         chestWeaponCountProfile ??= new CountRangeWeightProfile();
         chestRelicCountProfile ??= new CountRangeWeightProfile();
         chestConsumableCountProfile ??= new CountRangeWeightProfile();
+        bossWeaponCountProfile ??= new CountRangeWeightProfile();
+        bossRelicCountProfile ??= new CountRangeWeightProfile();
 
         chestWeaponCountProfile.TryInitializeFromLegacy(legacyChestWeaponMinCount, legacyChestWeaponMaxCount, legacyChestWeaponCounts);
         chestRelicCountProfile.TryInitializeFromLegacy(legacyChestRelicMinCount, legacyChestRelicMaxCount, legacyChestRelicCounts);
         chestConsumableCountProfile.EnsureDefaults(0, 0);
+        bossWeaponCountProfile.EnsureDefaults(1, 1);
+        bossRelicCountProfile.EnsureDefaults(1, 1);
+
+        bossCommonWeight = Mathf.Max(0, bossCommonWeight);
+        bossRareWeight = Mathf.Max(0, bossRareWeight);
+        bossEpicWeight = Mathf.Max(0, bossEpicWeight);
+        bossStoneCount = Mathf.Max(0, bossStoneCount);
+        bossFieldHealBaseCount = Mathf.Max(0, bossFieldHealBaseCount);
     }
 }

@@ -2,7 +2,7 @@
 status: active
 authority: project-log
 category: decision-log
-last_reviewed: 2026-05-15
+last_reviewed: 2026-05-16
 ---
 
 # Decision Log
@@ -93,10 +93,11 @@ Reason:
 Affection should change extra boss rewards without bypassing stage progression reward rules. Keeping base rewards and modifiers separate prevents NPC Affection assets from becoming an alternate reward table system.
 
 Implications:
-- Boss chest base loot still comes from `LootManager.GenerateChestLoot(...)`.
+- Boss chest base loot comes from `LootManager.GenerateBossChestLoot(...)`, which reads boss-specific count and rarity defaults from `StageLootTable`.
 - Boss magic stone base count still comes from `LootManager.GetBossMagicStoneCount()`.
+- Boss field heal base count comes from `StageLootTable`, while extra field heals remain additive modifiers.
 - Boss-specific extra items, extra magic stones, extra field heals, and boss chest count deltas are additive modifiers.
-- `BossDrop` remains only as a prefab-safe legacy adapter until boss scene/prefab references are migrated to dedicated reward and portal components.
+- The former `BossDrop` adapter was temporary and has since been deleted; dedicated reward and portal components are the supported path.
 
 ## 2026-05-14 - Treat Markdown as Structure Memory
 
@@ -209,3 +210,60 @@ Implications:
 - `DamagePayloadConfig.elementFormulas`, `CombatDamageSnapshot.ElementBuildUps`, and `elementBuildUps` / `elementInputs` API parameters are compatibility debt until serialized data and call sites are migrated.
 - Future per-hit elemental tuning must be introduced as a named merge/override policy instead of reviving the old implicit payload path.
 - Elemental weapon tuning should verify attacker `ElementOffenseSource`, stat provider wiring, and `ElementBuildUpFormulaProfile` rather than per-hit payload formulas.
+
+## 2026-05-16 - RouteSets Reference Boss Special Reward Presets
+
+Decision:
+Let `CorridorBossRouteSetSO` reference only an optional `BossSpecialRewardPresetSO` for boss-specific special loot candidates. Common reward/portal prefabs live in `BossBattleEndPrefabCatalogSO`, all reward/portal positions live in scene/prefab-authored `BossBattleEndAnchors`, and reward amount changes remain runtime modifier overlays.
+
+Reason:
+Route sets already compose the corridor/boss scene, BGM, and loading context for a run stage, so linking a boss-specific special loot preset there is acceptable. Putting common chest, magic stone, portal prefabs, portal offsets, placement policy, magic stone bonuses, field-heal bonuses, or chest-count deltas on route data mixes content composition with shared prefab catalogs and runtime reward effects.
+
+Implications:
+- `CorridorBossRouteSetSO` may reference `BossSpecialRewardPresetSO`, but should not own common prefabs, portal objects, spawn positions, offsets, magic stone bonuses, field-heal bonuses, or chest-count deltas.
+- `BossSpecialRewardPresetSO` owns only boss-specific special loot candidates.
+- `BossBattleEndPrefabCatalogSO` owns common chest, magic stone, and portal prefab references, but no placement policy.
+- Upgrade, Affection, and future runtime effects should keep contributing `BossRewardModifierAggregate` overlays instead of mutating preset or catalog SO assets.
+- Scene/prefab-owned `BossBattleEndAnchors` should provide reward, scatter, and portal positions.
+- `BossBattleEndDefinitionSO` and `BossRewardProfileSO` are deleted; route special reward preset, common catalog, anchors, reward spawner, and portal activator are the supported authoring path.
+
+## 2026-05-16 - Remove BossDrop Legacy Adapter
+
+Decision:
+Delete the `BossDrop` legacy adapter instead of keeping it as a prefab-safe fallback.
+
+Reason:
+Boss battle-end ownership is now split across route-linked special reward presets, the common prefab catalog, scene/prefab anchors, reward spawners, portal activators, and run-progress coordination. Keeping `BossDrop` would preserve a second reward/portal authoring path and hide missing RouteSet or anchor wiring.
+
+Implications:
+- Serialized scene/prefab references to the old `BossDrop` script GUID must be removed during the migration.
+- `BossRewardSpawner`, `BossExitPortalActivator`, `BossBattleEndAnchors`, and `BossRewardFallbackService` must not read `BossDrop` fields.
+- Unity Editor verification must run the boss battle-end validator and play-check boss death reward/portal behavior because deleted `BossDrop` field values are no longer available as fallback data.
+
+## 2026-05-16 - Remove BossRewardModifierSO Authoring Layer
+
+Decision:
+Do not keep a separate `BossRewardModifierSO` asset layer. Boss-specific special loot candidates can live in a RouteSet-linked `BossSpecialRewardPresetSO`, while Affection, upgrades, and future runtime effects expose their own fields and project them into `BossRewardModifierAggregate` at runtime.
+
+Reason:
+The modifier SO duplicated boss reward authoring responsibility and made runtime-changing effects look like mutable asset state. Runtime effects need additive overlays without mutating ScriptableObject reward presets.
+
+Implications:
+- `BossRewardModifierAggregate` remains the runtime value type for combining boss reward deltas.
+- Affection and upgrade effects should author their own relevant values directly, then emit aggregates during run modifier rebuild.
+- Existing assets that referenced `BossRewardModifierSO` need migration to direct effect fields or RouteSet special reward preset data.
+- New boss-specific base special loot candidates should be configured through route-linked special reward presets, not modifier assets.
+
+## 2026-05-16 - StageLootTable Owns Boss Base Reward Defaults
+
+Decision:
+Keep boss base reward defaults in `StageLootTable`: boss weapon count profile, boss relic count profile, boss Common/Rare/Epic relic rarity weights, boss magic stone count, and boss field heal base count.
+
+Reason:
+These values are stage progression defaults, not boss prefab wiring and not RouteSet composition. RouteSets should only identify the optional boss-specific special loot preset for the selected boss route, while runtime systems such as Affection and Upgrade should add overlays through `BossRewardModifierAggregate` without mutating ScriptableObjects.
+
+Implications:
+- Normal chest rewards use normal chest profiles; boss chests use the boss-specific generation path.
+- RouteSet `BossSpecialRewardPresetSO` entries are only additional boss-specific special loot candidates.
+- `BossRewardModifierAggregate` remains the only runtime overlay path for boss magic stone bonuses, field heal bonuses, boss chest count deltas, and runtime bonus loot.
+- Boss reward base values should be reviewed in the StageLootTable Inspector, not on boss prefabs or RouteSet assets.

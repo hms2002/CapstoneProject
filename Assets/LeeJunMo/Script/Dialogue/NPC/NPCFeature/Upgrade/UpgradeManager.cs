@@ -14,8 +14,8 @@ public class UpgradeManager : MonoBehaviour
     [SerializeField, Min(0f)] private float openFadeOutDuration = 0.18f;
     [SerializeField, Min(0f)] private float openFadeInDuration = 0.22f;
 
-    public Action OnDataChanged;
-    public Action OnUIClosed;
+    public event Action OnDataChanged;
+    public event Action OnUIClosed;
 
     private UpgradeProgressService progressService;
     private UpgradeEffectApplier effectApplier;
@@ -28,21 +28,15 @@ public class UpgradeManager : MonoBehaviour
 
     private void Awake()
     {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
+        if (!UpgradeManagerLifetimeService.TryClaimInstance(this, () => Instance, value => Instance = value))
             return;
-        }
 
-        Instance = this;
-        GlobalUIRoot.AdoptService(transform);
-        MarkPersistent();
         ResolveUpgradeTreeUiReference();
         uiOpenFlow = new UpgradeUiOpenFlow(this, ResolveUpgradeTreeUiForFlow);
         progressService = new UpgradeProgressService(upgradeDatabase);
         progressSaveService = new UpgradeProgressSaveService(
             progressService,
-            () => OnDataChanged?.Invoke(),
+            NotifyDataChanged,
             this);
         effectApplier = new UpgradeEffectApplier();
         runtimeEffectService = new UpgradeRuntimeEffectService(
@@ -75,7 +69,7 @@ public class UpgradeManager : MonoBehaviour
         uiOpenFlow?.Cleanup();
 
         if (Instance == this)
-            Instance = null;
+            UpgradeManagerLifetimeService.ReleaseInstance(this, () => Instance, value => Instance = value);
     }
 
     private void OnEnable()
@@ -92,15 +86,6 @@ public class UpgradeManager : MonoBehaviour
     {
         uiOpenFlow?.Cleanup();
         runtimeLifecycleService?.Unsubscribe();
-    }
-
-    private void MarkPersistent()
-    {
-        Transform persistentRoot = transform.root;
-        if (persistentRoot == null || persistentRoot.parent != null)
-            return;
-
-        DontDestroyOnLoad(persistentRoot.gameObject);
     }
 
     private void ResolveUpgradeTreeUiReference()
@@ -149,28 +134,12 @@ public class UpgradeManager : MonoBehaviour
 
     public void ToggleUI()
     {
-        ResolveUpgradeTreeUiReference();
-        if (upgradeTreeUI == null)
-            return;
-
-        if (!upgradeTreeUI.IsActive)
-        {
-            OpenUI();
-        }
-        else
-        {
-            CloseUI();
-        }
+        EnsureUiOpenFlow().Toggle(useFadePresentationOnOpen, openFadeOutDuration, openFadeInDuration);
     }
 
     public void CloseUI()
     {
         EnsureUiOpenFlow().Close();
-    }
-
-    private void OpenUI()
-    {
-        EnsureUiOpenFlow().Open(useFadePresentationOnOpen, openFadeOutDuration, openFadeInDuration);
     }
 
     private UpgradeUiOpenFlow EnsureUiOpenFlow()
@@ -179,6 +148,16 @@ public class UpgradeManager : MonoBehaviour
             uiOpenFlow = new UpgradeUiOpenFlow(this, ResolveUpgradeTreeUiForFlow);
 
         return uiOpenFlow;
+    }
+
+    public void NotifyUIClosed()
+    {
+        OnUIClosed?.Invoke();
+    }
+
+    private void NotifyDataChanged()
+    {
+        OnDataChanged?.Invoke();
     }
 
     public LockType GetNodeStatus(int id)

@@ -264,6 +264,7 @@ public sealed class SceneSetupValidatorWindow : EditorWindow
         ValidateCinematicDirectors(scene);
         ValidateDialogueViews(scene);
         ValidateUpgradeTrees(scene);
+        ValidateRuntimePresentationFallbacks(scene);
     }
 
     private void AutoFixScene(Scene scene)
@@ -313,6 +314,9 @@ public sealed class SceneSetupValidatorWindow : EditorWindow
         ValidateSerializedReference(scene.path, primaryRoot, serializedRoot, "rewardCanvas", "GlobalUIRoot.rewardCanvas is not assigned.");
         ValidateSerializedReference(scene.path, primaryRoot, serializedRoot, "damagePopupCanvas", "GlobalUIRoot.damagePopupCanvas is not assigned.");
         ValidateSerializedReference(scene.path, primaryRoot, serializedRoot, "bossHudCanvas", "GlobalUIRoot.bossHudCanvas is not assigned.");
+        ValidateOptionalPresentationReference(scene.path, primaryRoot, serializedRoot, "loadingCanvas", "GlobalUIRoot.loadingCanvas is not assigned. LoadingOverlayController can create a runtime fallback canvas.");
+        ValidateOptionalPresentationReference(scene.path, primaryRoot, serializedRoot, "statusHudPresenterPrefab", "GlobalUIRoot.statusHudPresenterPrefab is not assigned. Status HUD can create a runtime fallback presenter.");
+        ValidateOptionalPresentationReference(scene.path, primaryRoot, serializedRoot, "statusTooltipPrefab", "GlobalUIRoot.statusTooltipPrefab is not assigned. Status HUD tooltip can create a runtime fallback view.");
 
         SerializedProperty promptCanvasProperty = serializedRoot.FindProperty("promptCanvas");
         if (promptCanvasProperty == null || promptCanvasProperty.objectReferenceValue == null)
@@ -664,6 +668,83 @@ public sealed class SceneSetupValidatorWindow : EditorWindow
         }
     }
 
+    private void ValidateRuntimePresentationFallbacks(Scene scene)
+    {
+        foreach (LoadingOverlayController controller in FindSceneObjects<LoadingOverlayController>(scene, includeInactive: true))
+        {
+            SerializedObject serializedController = new SerializedObject(controller);
+            ValidateOptionalPresentationReference(scene.path, controller, serializedController, "overlayView", "LoadingOverlayController.overlayView is not assigned. It can use GlobalUIRoot.loadingCanvas or create a runtime fallback canvas.");
+        }
+
+        foreach (MouseCursorService cursorService in FindSceneObjects<MouseCursorService>(scene, includeInactive: true))
+        {
+            Transform canvasTransform = cursorService.transform.Find("MouseCursorCanvas");
+            Image cursorImage = canvasTransform != null
+                ? canvasTransform.Find("CursorImage")?.GetComponent<Image>()
+                : null;
+
+            if (canvasTransform == null || cursorImage == null)
+            {
+                AddResult(scene.path, Severity.Warning, "MouseCursorService has no authored MouseCursorCanvas/CursorImage. Sprite cursor mode can create runtime UI fallback.", cursorService, GetObjectPath(cursorService.transform));
+            }
+        }
+
+        foreach (GamePresentationController controller in FindSceneObjects<GamePresentationController>(scene, includeInactive: true))
+        {
+            AddResult(scene.path, Severity.Info, "GamePresentationController still creates the display letterbox overlay at runtime. Keep this only until an authored letterbox overlay is introduced.", controller, GetObjectPath(controller.transform));
+        }
+
+        foreach (StatusHudPresenter presenter in FindSceneObjects<StatusHudPresenter>(scene, includeInactive: true))
+        {
+            SerializedObject serializedPresenter = new SerializedObject(presenter);
+            ValidateOptionalPresentationReference(scene.path, presenter, serializedPresenter, "container", "StatusHudPresenter.container is not assigned. Status HUD can configure its runtime fallback layout.");
+            ValidateOptionalPresentationReference(scene.path, presenter, serializedPresenter, "entryViewPrefab", "StatusHudPresenter.entryViewPrefab is not assigned. Status HUD can create runtime entry views.");
+        }
+
+        foreach (StatusHudEntryView entryView in FindSceneObjects<StatusHudEntryView>(scene, includeInactive: true))
+        {
+            SerializedObject serializedEntry = new SerializedObject(entryView);
+            ValidateOptionalPresentationReference(scene.path, entryView, serializedEntry, "backgroundImage", "StatusHudEntryView.backgroundImage is not assigned. Entry view can create runtime fallback visuals.");
+            ValidateOptionalPresentationReference(scene.path, entryView, serializedEntry, "iconImage", "StatusHudEntryView.iconImage is not assigned. Entry view can create runtime fallback visuals.");
+            ValidateOptionalPresentationReference(scene.path, entryView, serializedEntry, "durationFillImage", "StatusHudEntryView.durationFillImage is not assigned. Entry view can create runtime fallback visuals.");
+            ValidateOptionalPresentationReference(scene.path, entryView, serializedEntry, "stackText", "StatusHudEntryView.stackText is not assigned. Entry view can create runtime fallback visuals.");
+            ValidateOptionalPresentationReference(scene.path, entryView, serializedEntry, "durationText", "StatusHudEntryView.durationText is not assigned. Entry view can create runtime fallback visuals.");
+        }
+
+        foreach (StatusHudTooltipView tooltipView in FindSceneObjects<StatusHudTooltipView>(scene, includeInactive: true))
+        {
+            SerializedObject serializedTooltip = new SerializedObject(tooltipView);
+            ValidateOptionalPresentationReference(scene.path, tooltipView, serializedTooltip, "backgroundImage", "StatusHudTooltipView.backgroundImage is not assigned. Tooltip view can create runtime fallback visuals.");
+            ValidateOptionalPresentationReference(scene.path, tooltipView, serializedTooltip, "iconImage", "StatusHudTooltipView.iconImage is not assigned. Tooltip view can create runtime fallback visuals.");
+            ValidateOptionalPresentationReference(scene.path, tooltipView, serializedTooltip, "nameText", "StatusHudTooltipView.nameText is not assigned. Tooltip view can create runtime fallback visuals.");
+            ValidateOptionalPresentationReference(scene.path, tooltipView, serializedTooltip, "storyText", "StatusHudTooltipView.storyText is not assigned. Tooltip view can create runtime fallback visuals.");
+            ValidateOptionalPresentationReference(scene.path, tooltipView, serializedTooltip, "effectText", "StatusHudTooltipView.effectText is not assigned. Tooltip view can create runtime fallback visuals.");
+        }
+
+        foreach (BossHealthBarUI bossHud in FindSceneObjects<BossHealthBarUI>(scene, includeInactive: true))
+        {
+            SerializedObject serializedHud = new SerializedObject(bossHud);
+            bool canCreateDualFallback = GetSerializedBool(serializedHud, "createFallbackDualHealthPresentation");
+            bool canCreateSplitFallback = GetSerializedBool(serializedHud, "createFallbackSplitHealthPresentation");
+
+            if (canCreateDualFallback && HasAnyMissingSerializedReference(
+                    serializedHud,
+                    "dualHealthRoot",
+                    "leftImmediateHealthSlider",
+                    "leftDelayedHealthSlider",
+                    "rightImmediateHealthSlider",
+                    "rightDelayedHealthSlider"))
+            {
+                AddResult(scene.path, Severity.Warning, "BossHealthBarUI dual-health references are incomplete while createFallbackDualHealthPresentation is enabled. Dual boss HUD can be created at runtime.", bossHud, GetObjectPath(bossHud.transform));
+            }
+
+            if (canCreateSplitFallback && HasAnyMissingSerializedReference(serializedHud, "splitHealthRoot", "splitDividerImage"))
+            {
+                AddResult(scene.path, Severity.Warning, "BossHealthBarUI split-health references are incomplete while createFallbackSplitHealthPresentation is enabled. Split boss HUD can be created at runtime.", bossHud, GetObjectPath(bossHud.transform));
+            }
+        }
+    }
+
     private void AutoFixUpgradeTrees(Scene scene)
     {
         UpgradeTreeUI[] trees = FindSceneObjects<UpgradeTreeUI>(scene, includeInactive: false);
@@ -791,6 +872,33 @@ public sealed class SceneSetupValidatorWindow : EditorWindow
             return;
 
         AddResult(scenePath, Severity.Error, message, owner, GetObjectPath(owner.transform));
+    }
+
+    private void ValidateOptionalPresentationReference(string scenePath, Component owner, SerializedObject serializedObject, string propertyName, string message)
+    {
+        SerializedProperty property = serializedObject.FindProperty(propertyName);
+        if (property == null || property.objectReferenceValue != null)
+            return;
+
+        AddResult(scenePath, Severity.Warning, message, owner, GetObjectPath(owner.transform));
+    }
+
+    private static bool HasAnyMissingSerializedReference(SerializedObject serializedObject, params string[] propertyNames)
+    {
+        foreach (string propertyName in propertyNames)
+        {
+            SerializedProperty property = serializedObject.FindProperty(propertyName);
+            if (property != null && property.objectReferenceValue == null)
+                return true;
+        }
+
+        return false;
+    }
+
+    private static bool GetSerializedBool(SerializedObject serializedObject, string propertyName)
+    {
+        SerializedProperty property = serializedObject.FindProperty(propertyName);
+        return property != null && property.propertyType == SerializedPropertyType.Boolean && property.boolValue;
     }
 
     private static T GetSerializedObjectReference<T>(SerializedObject serializedObject, string propertyName) where T : UnityEngine.Object

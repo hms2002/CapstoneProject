@@ -239,26 +239,18 @@ public sealed class PlayerSceneRestoreBootstrapper : MonoBehaviour
             yield break;
         }
 
-        if (gameplay == null || pendingState == null || player == null)
+        bool confirmed = PlayerSceneRestoreConfirmationService.TryConfirm(
+            gameplay,
+            pendingState,
+            player,
+            this);
+
+        if (!confirmed)
         {
             isRestoreConfirmationPending = false;
             yield break;
         }
 
-        if (!PlayerSceneRestorePlanner.TryGatherPlayerComponents(player, this, out var ctx))
-        {
-            isRestoreConfirmationPending = false;
-            yield break;
-        }
-
-        if (!PlayerSceneRestorePlanner.MatchesPendingEquipmentState(pendingState, ctx))
-        {
-            isRestoreConfirmationPending = false;
-            Debug.LogWarning("[PlayerSceneRestoreBootstrapper] 蹂듭썝 吏곹썑 ?λ퉬 ?곹깭媛 ??λ낯怨??쇱튂?섏? ?딆븘 pending state ?뚮퉬瑜?蹂대쪟?⑸땲??", this);
-            yield break;
-        }
-
-        gameplay.ConsumePendingPlayerState();
         hasRestored = true;
         isRestoreConfirmationPending = false;
 

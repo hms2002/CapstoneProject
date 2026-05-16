@@ -53,7 +53,6 @@ public abstract class BossControllerBase : Enemy, IBossAbilityStateBridge
     private BossDeadState deadState;
 
     // 보스 전용 드롭 처리의 책임을 이 컨트롤러에서 맡기 위한 참조입니다.
-    private BossDrop bossDrop;
     private BossEncounterDirector encounterDirector;
     private BossTalkManager bossTalkManager;
     private BossDeathPresentation deathPresentation;
@@ -90,7 +89,6 @@ public abstract class BossControllerBase : Enemy, IBossAbilityStateBridge
         base.Awake();
 
         CacheComponents();
-        bossDrop = GetComponent<BossDrop>();
         speechController = GetComponent<BossSpeechController>();
         ResolveDeathPresentation();
 
@@ -971,7 +969,7 @@ public abstract class BossControllerBase : Enemy, IBossAbilityStateBridge
         if (deathPresentation == null)
             deathPresentation = GetComponent<BossDeathPresentation>();
 
-        deathPresentation?.Bind(this, bossDrop);
+        deathPresentation?.Bind(this);
     }
 
     private void ResolveSpeechController()

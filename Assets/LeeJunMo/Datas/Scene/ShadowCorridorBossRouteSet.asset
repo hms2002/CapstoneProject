@@ -16,8 +16,8 @@ MonoBehaviour:
   corridorEntryPointId: Default
   bossSceneName: HeoMinSeok_Boss
   bossEntryPointId: Default
-  corridorLocationName: 그림자 감옥
-  bossLocationName: 클로에의 방
+  corridorLocationName: "\uADF8\uB9BC\uC790 \uAC10\uC625"
+  bossLocationName: "\uD074\uB85C\uC5D0\uC758 \uBC29"
   corridorBgm:
     key: bgm.shadow_corridor
     volumeMultiplier: 1
@@ -29,3 +29,4 @@ MonoBehaviour:
     anchorPolicy: 0
     localOffset: {x: 0, y: 0, z: 0}
   loadManifest: {fileID: 11400000, guid: 0a12099ec1e865d4594ed26913b131fd, type: 2}
+  bossSpecialRewardPreset: {fileID: 0}

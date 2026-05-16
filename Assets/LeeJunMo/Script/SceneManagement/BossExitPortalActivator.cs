@@ -3,24 +3,22 @@ using UnityEngine;
 [DisallowMultipleComponent]
 public sealed class BossExitPortalActivator : MonoBehaviour
 {
+    [Header("Prefabs")]
+    [SerializeField] private BossBattleEndPrefabCatalogSO prefabCatalog;
+
     [Header("Portal")]
     [SerializeField] private GameObject portalObj;
-    [SerializeField] private Transform portalSpawnPoint;
-    [SerializeField] private Vector3 portalSpawnOffset;
 
     [Header("Behavior")]
     [SerializeField] private bool hidePortalOnStart = true;
     [SerializeField] private bool detachPortalFromBoss = true;
-    [SerializeField] private bool useBossDropReferencesIfMissing = true;
 
     private BossControllerBase owner;
-    private BossDrop legacyDrop;
     private bool hasActivated;
 
     private void Awake()
     {
         owner = GetComponentInParent<BossControllerBase>();
-        legacyDrop = GetComponentInParent<BossDrop>();
     }
 
     private void Start()
@@ -47,29 +45,18 @@ public sealed class BossExitPortalActivator : MonoBehaviour
         if (!CanHandle(context))
             return;
 
-        BossDrop referenceDrop = useBossDropReferencesIfMissing ? ResolveLegacyDrop(context) : null;
-        GameObject resolvedPortal = portalObj != null ? portalObj : referenceDrop != null ? referenceDrop.portalObj : null;
-        Transform resolvedSpawnPoint = portalSpawnPoint != null ? portalSpawnPoint : referenceDrop != null ? referenceDrop.portalSpawnPoint : null;
-        Vector3 resolvedOffset = portalSpawnOffset != Vector3.zero
-            ? portalSpawnOffset
-            : referenceDrop != null ? referenceDrop.portalSpawnOffset : Vector3.zero;
-        Vector3 spawnPosition = ResolvePortalSpawnPosition(context, resolvedSpawnPoint, referenceDrop, resolvedOffset);
+        BossBattleEndAnchors anchors = BossBattleEndAnchors.Resolve(context, this);
+        Transform resolvedSpawnPoint = anchors != null ? anchors.PortalSpawnPoint : null;
 
-        if (!ActivatePortal(resolvedPortal, spawnPosition, detachPortalFromBoss, ResolveOwnerTransform(context, referenceDrop), this))
+        bool activated = portalObj != null
+            ? ActivatePortal(portalObj, resolvedSpawnPoint, detachPortalFromBoss, ResolveOwnerTransform(context), this)
+            : InstantiatePortal(prefabCatalog != null ? prefabCatalog.PortalPrefab : null, resolvedSpawnPoint, this);
+
+        if (!activated)
             return;
 
         hasActivated = true;
         context.MarkPortalHandled();
-    }
-
-    public static bool ActivateFromLegacyDrop(BossDrop legacyDrop, BossRewardContext context)
-    {
-        if (legacyDrop == null)
-            return false;
-
-        Vector3 spawnPosition = ResolveLegacyPortalSpawnPosition(legacyDrop);
-        Transform ownerTransform = context != null && context.Boss != null ? context.Boss.transform : legacyDrop.transform;
-        return ActivatePortal(legacyDrop.portalObj, spawnPosition, true, ownerTransform, legacyDrop);
     }
 
     public static void RestorePortalVisibilityAndInteraction(GameObject portalRoot)
@@ -104,7 +91,7 @@ public sealed class BossExitPortalActivator : MonoBehaviour
         if (portalObj != null)
             return portalObj;
 
-        return useBossDropReferencesIfMissing && legacyDrop != null ? legacyDrop.portalObj : null;
+        return null;
     }
 
     private bool CanHandle(BossRewardContext context)
@@ -115,30 +102,13 @@ public sealed class BossExitPortalActivator : MonoBehaviour
         if (owner != null && context.Boss != null && !ReferenceEquals(owner, context.Boss))
             return false;
 
-        if (owner != null && context.Boss == null && legacyDrop != null && context.LegacyBossDrop != legacyDrop)
-            return false;
-
         return true;
     }
 
-    private BossDrop ResolveLegacyDrop(BossRewardContext context)
-    {
-        if (legacyDrop != null)
-            return legacyDrop;
-
-        if (context != null && context.LegacyBossDrop != null)
-            return context.LegacyBossDrop;
-
-        return context != null && context.Boss != null ? context.Boss.GetComponent<BossDrop>() : null;
-    }
-
-    private Transform ResolveOwnerTransform(BossRewardContext context, BossDrop referenceDrop)
+    private Transform ResolveOwnerTransform(BossRewardContext context)
     {
         if (context != null && context.Boss != null)
             return context.Boss.transform;
-
-        if (referenceDrop != null)
-            return referenceDrop.transform;
 
         return transform;
     }
@@ -152,7 +122,7 @@ public sealed class BossExitPortalActivator : MonoBehaviour
 
     private static bool ActivatePortal(
         GameObject resolvedPortal,
-        Vector3 spawnPosition,
+        Transform spawnPoint,
         bool detachFromOwner,
         Transform ownerTransform,
         Object logContext)
@@ -167,46 +137,34 @@ public sealed class BossExitPortalActivator : MonoBehaviour
         if (portalTransform != null && detachFromOwner && ownerTransform != null && portalTransform.IsChildOf(ownerTransform))
             portalTransform.SetParent(null, true);
 
-        if (portalTransform != null)
-            portalTransform.position = spawnPosition;
+        if (portalTransform != null && spawnPoint != null)
+            portalTransform.position = spawnPoint.position;
 
         resolvedPortal.SetActive(true);
         RestorePortalVisibilityAndInteraction(resolvedPortal);
         return true;
     }
 
-    private static Vector3 ResolvePortalSpawnPosition(
-        BossRewardContext context,
-        Transform resolvedSpawnPoint,
-        BossDrop referenceDrop,
-        Vector3 resolvedOffset)
+    private static bool InstantiatePortal(
+        GameObject portalPrefab,
+        Transform spawnPoint,
+        Object logContext)
     {
-        if (resolvedSpawnPoint != null)
-            return resolvedSpawnPoint.position + resolvedOffset;
+        if (portalPrefab == null)
+        {
+            Debug.LogWarning("[BossExitPortalActivator] Portal object is not assigned.", logContext);
+            return false;
+        }
 
-        if (referenceDrop != null && referenceDrop.chestSpawnPoint != null)
-            return referenceDrop.chestSpawnPoint.position + resolvedOffset;
+        if (spawnPoint == null)
+        {
+            Debug.LogWarning("[BossExitPortalActivator] Portal spawn anchor is not assigned.", logContext);
+            return false;
+        }
 
-        if (context != null && context.Boss != null)
-            return context.Boss.transform.position + resolvedOffset;
-
-        if (referenceDrop != null)
-            return referenceDrop.transform.position + resolvedOffset;
-
-        return resolvedOffset;
-    }
-
-    private static Vector3 ResolveLegacyPortalSpawnPosition(BossDrop legacyDrop)
-    {
-        if (legacyDrop == null)
-            return Vector3.zero;
-
-        if (legacyDrop.portalSpawnPoint != null)
-            return legacyDrop.portalSpawnPoint.position + legacyDrop.portalSpawnOffset;
-
-        if (legacyDrop.chestSpawnPoint != null)
-            return legacyDrop.chestSpawnPoint.position + legacyDrop.portalSpawnOffset;
-
-        return legacyDrop.transform.position + legacyDrop.portalSpawnOffset;
+        GameObject portalInstance = Object.Instantiate(portalPrefab, spawnPoint.position, Quaternion.identity);
+        portalInstance.SetActive(true);
+        RestorePortalVisibilityAndInteraction(portalInstance);
+        return true;
     }
 }

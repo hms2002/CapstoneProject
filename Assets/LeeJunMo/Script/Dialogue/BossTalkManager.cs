@@ -25,9 +25,6 @@ public class BossTalkManager : MonoBehaviour
     [SerializeField] private BossControllerBase bossController;
     [SerializeField] private bool startBossCombatAfterDialogue = true;
 
-    [Header("Legacy Post Sequence")]
-    [SerializeField] private BossDrop bossDrop;
-
     private Coroutine runningSequence;
     private PlayerInteractor2D cachedPlayer;
     private InteractState previousPlayerState = InteractState.Idle;

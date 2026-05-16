@@ -26,7 +26,7 @@ The P1 refactor resolved the behavior-preserving helper/file boundary work:
 
 - Scene travel was the natural place to connect portal routes, run lifecycle, player capture, and scene loading.
 - Runtime restore needs a temporary cross-scene store, and `GamePlayDataManager` became the central pending-state holder.
-- Boss clear flow needs to bridge battle-end events to run progress, rewards, portals, and timer pause while legacy `BossDrop` references still exist.
+- Boss clear flow needs to bridge battle-end events to run progress, rewards, portals, and timer pause while route-linked battle-end authoring remains scene/prefab-sensitive.
 - The original structure worked, but helper/file boundaries were not explicit enough for future scene/run/save refactors.
 
 ## Target Shape
@@ -48,7 +48,7 @@ The P1 refactor resolved the behavior-preserving helper/file boundary work:
 
 - Moving MonoBehaviours, scene-facing services, or serialized fields risks broken Unity references.
 - Run start/end timing, pending player state consumption, and portal route advancement can regress if ownership is split without play verification.
-- Boss reward and portal fallback can duplicate behavior if it diverges from `BossDropResponsibilitySplit`.
+- Boss reward and portal handling can duplicate behavior if it diverges from `BossDropResponsibilitySplit`.
 - Save behavior can become inconsistent if run-session pending data is mistaken for durable profile data.
 
 ## Refactor Trigger
@@ -61,7 +61,7 @@ Create a new focused implementation when one of these happens:
 - Changing run start/end behavior, time-over return, boss clear return, or portal route progression.
 - Adding new run-scoped pending data to `GamePlayDataManager`.
 - Editing player runtime capture/restore flow, pending-state consumption, or restore timing.
-- Continuing the `BossDrop` migration or changing boss reward/portal/timer behavior.
+- Changing boss reward/portal/timer behavior or route-linked boss battle-end authoring.
 
 ## Related Documents
 

@@ -249,6 +249,11 @@ public sealed class MouseCursorService : MonoBehaviour
         Transform canvasTransform = transform.Find("MouseCursorCanvas");
         if (canvasTransform == null)
         {
+            RuntimePresentationFallbackAudit.Record(
+                this,
+                "Mouse cursor canvas fallback",
+                "an authored cursor canvas/image under the cursor service prefab or global UI root");
+
             GameObject canvasObject = new GameObject("MouseCursorCanvas", typeof(RectTransform), typeof(Canvas));
             canvasTransform = canvasObject.transform;
             canvasTransform.SetParent(transform, false);

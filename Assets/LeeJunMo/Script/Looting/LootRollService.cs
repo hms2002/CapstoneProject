@@ -91,6 +91,29 @@ public sealed class LootRollService
         return ItemRarity.Epic;
     }
 
+    public ItemRarity RollBossRelicRarity(StageLootTable table)
+    {
+        if (table == null)
+            return ItemRarity.Common;
+
+        int total = table.BossCommonWeight + table.BossRareWeight + table.BossEpicWeight;
+        if (total <= 0)
+            return ItemRarity.Common;
+
+        int rand = Random.Range(0, total);
+        int sum = 0;
+
+        sum += table.BossCommonWeight;
+        if (rand < sum)
+            return ItemRarity.Common;
+
+        sum += table.BossRareWeight;
+        if (rand < sum)
+            return ItemRarity.Rare;
+
+        return ItemRarity.Epic;
+    }
+
     public MonsterLootType RollMonsterLootType(StageLootTable table)
     {
         if (table == null)

@@ -702,6 +702,11 @@ public sealed class LoadingOverlayController : MonoBehaviour
         if (runtimeFallbackView != null)
             return;
 
+        RuntimePresentationFallbackAudit.Record(
+            this,
+            "Loading overlay fallback",
+            "a scene-authored LoadingOverlayView or GlobalUIRoot loading overlay prefab");
+
         runtimeFallbackCanvas = new GameObject(
             "RuntimeLoadingCanvas",
             typeof(RectTransform),

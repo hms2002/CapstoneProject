@@ -30,6 +30,21 @@ MonoBehaviour:
     weights:
     - count: 1
       weight: 100
+  bossWeaponCountProfile:
+    minCount: 1
+    maxCount: 1
+    weights:
+    - count: 5
+      weight: 100
+  bossRelicCountProfile:
+    minCount: 1
+    maxCount: 1
+    weights:
+    - count: 7
+      weight: 100
+  bossCommonWeight: 60
+  bossRareWeight: 30
+  bossEpicWeight: 10
   commonWeight: 60
   rareWeight: 30
   epicWeight: 10
@@ -40,6 +55,7 @@ MonoBehaviour:
   mobConsumableWeight: 0
   mobFieldItemWeight: 20
   bossStoneCount: 5
+  bossFieldHealBaseCount: 0
   legacyChestWeaponMinCount: 1
   legacyChestWeaponMaxCount: 1
   legacyChestWeaponCounts:

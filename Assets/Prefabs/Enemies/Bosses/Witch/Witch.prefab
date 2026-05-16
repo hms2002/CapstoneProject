@@ -1,5 +1,67 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &266692346368291065
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2386513943276245587}
+  m_Layer: 0
+  m_Name: BossRewardSpawnPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2386513943276245587
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 266692346368291065}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7124681143442968898}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1733428811728376977
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2556438504014702768}
+  m_Layer: 0
+  m_Name: BossPortalSpawnPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2556438504014702768
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1733428811728376977}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7124681143442968898}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4104743717894493410
 GameObject:
   m_ObjectHideFlags: 0
@@ -33,13 +95,15 @@ GameObject:
   - component: {fileID: 5724109387412903854}
   - component: {fileID: 4097123456789012345}
   - component: {fileID: 8412503971642095334}
-  - component: {fileID: 5675224341811256986}
   - component: {fileID: 3836901854821853225}
   - component: {fileID: 2539260762478503238}
   - component: {fileID: 8439794030914778521}
   - component: {fileID: 2108456829143765123}
   - component: {fileID: 2108456829143765124}
   - component: {fileID: 5477811146804509481}
+  - component: {fileID: 8068020155619111614}
+  - component: {fileID: 9072031939385557587}
+  - component: {fileID: 7484413520276996022}
   m_Layer: 31
   m_Name: Witch
   m_TagString: Enemy
@@ -59,7 +123,9 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 2386513943276245587}
+  - {fileID: 2556438504014702768}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &8897721723054304330
@@ -108,7 +174,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -1039746825
-  m_SortingLayer: 3
+  m_SortingLayer: 5
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: 739828523011928573, guid: 7f270a471d0074a4cb5cae87b3df06bc, type: 3}
@@ -202,7 +268,7 @@ Animator:
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
   m_AnimatePhysics: 0
-  m_WarningMessage: 
+  m_WarningMessage:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
@@ -217,12 +283,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 464a6e8a33336a842b70b6c9764abb1c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
+  sprite: {fileID: 0}
+  animator: {fileID: 0}
   maxHealthDef: {fileID: 11400000, guid: 0e177e1d15e428745b5859fac08ce203, type: 2}
   healthDef: {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
   enemyName: "\uADF8\uB9BC\uC790 \uC815\uB839 \uD074\uB85C\uC5D0"
   targetTag: Player
+  targetSearchLayers:
+    serializedVersion: 2
+    m_Bits: 4294967291
   startCombatOnStart: 1
   initialTarget: {fileID: 0}
   healthAttribute: {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
@@ -236,6 +307,8 @@ MonoBehaviour:
     thinkDelayMax: 3
     patterns:
     - ability: {fileID: 11400000, guid: 0c89c5f9457540d6a5d0c393c44b0c7e, type: 2}
+      followUpAbility: {fileID: 0}
+      selectableByAi: 1
       selectionWeight: 1
       maxConsecutiveUseCount: 0
       maxUseCount: 0
@@ -247,6 +320,8 @@ MonoBehaviour:
       maxHpRatio: 1
       additionalConditions: []
     - ability: {fileID: 11400000, guid: 7282429da9b7468f9340e1de621d2d3c, type: 2}
+      followUpAbility: {fileID: 0}
+      selectableByAi: 1
       selectionWeight: 1
       maxConsecutiveUseCount: 0
       maxUseCount: 0
@@ -258,6 +333,8 @@ MonoBehaviour:
       maxHpRatio: 1
       additionalConditions: []
     - ability: {fileID: 11400000, guid: 8dbccf3ca7da42d88efb39ed3d1d2f20, type: 2}
+      followUpAbility: {fileID: 0}
+      selectableByAi: 1
       selectionWeight: 1
       maxConsecutiveUseCount: 0
       maxUseCount: 0
@@ -269,6 +346,8 @@ MonoBehaviour:
       maxHpRatio: 1
       additionalConditions: []
     - ability: {fileID: 11400000, guid: a07ae8e7f7a349a9a9d79a5c4af4ab96, type: 2}
+      followUpAbility: {fileID: 0}
+      selectableByAi: 1
       selectionWeight: 1
       maxConsecutiveUseCount: 0
       maxUseCount: 0
@@ -280,6 +359,8 @@ MonoBehaviour:
       maxHpRatio: 1
       additionalConditions: []
     - ability: {fileID: 11400000, guid: 3d9f7b2e6c4a4fd5a18be7f0c3d2a941, type: 2}
+      followUpAbility: {fileID: 0}
+      selectableByAi: 1
       selectionWeight: 1
       maxConsecutiveUseCount: 0
       maxUseCount: 0
@@ -291,6 +372,8 @@ MonoBehaviour:
       maxHpRatio: 1
       additionalConditions: []
     - ability: {fileID: 11400000, guid: b5241a76782b44ec892e9bff62fbeb80, type: 2}
+      followUpAbility: {fileID: 0}
+      selectableByAi: 1
       selectionWeight: 1000
       maxConsecutiveUseCount: 0
       maxUseCount: 1
@@ -304,9 +387,7 @@ MonoBehaviour:
   fogPrefab: {fileID: 4201956065249926095, guid: 983d63dce5dc9454a9a74287a2ed4d94, type: 3}
   candlestickPrefab: {fileID: 625522859161183429, guid: 84e107a2d896c944b86df050ad0becb7, type: 3}
   lightBeadPrefab: {fileID: 8003320094034868151, guid: b1f8e58050cba114da8fe6380275e443, type: 3}
-  extinguishDamageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
   phaseTransitionCenterPoint: {fileID: 0}
-  extinguishDamage: 1
   projectileSpeed: 4
   useRuntimeDefaultPatternsWhenPhasesEmpty: 1
   fallbackCandleSpawnRadius: 6
@@ -325,8 +406,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f0bcf155a89d8e14db39a9f2416d691c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
   initialAbilities:
   - {fileID: 11400000, guid: 8dbccf3ca7da42d88efb39ed3d1d2f20, type: 2}
   - {fileID: 11400000, guid: 0c89c5f9457540d6a5d0c393c44b0c7e, type: 2}
@@ -359,8 +440,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8910a2e22aa25664cb9b2709778e44dd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
   attributeCatalog: {fileID: 11400000, guid: b9c79b9448814f2408077eff50c01aeb, type: 2}
   baseInitProfile: {fileID: 11400000, guid: 78214cbbca9b4804ba1be48157d5657e, type: 2}
   overrideInitProfiles: []
@@ -378,8 +459,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8ecfb7b101eaca847b0dadf898f6fb19, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
   cueManager: {fileID: 0}
 --- !u!114 &4477728599806979434
 MonoBehaviour:
@@ -391,8 +472,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6675ab8ab5253d745b73cb4b3b1f9345, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
 --- !u!114 &1985583645530484325
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -403,8 +484,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c08b6f09684607641a1ee3070d5f8273, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
   popupPrefab: {fileID: 0}
   canvasRoot: {fileID: 0}
   worldCamera: {fileID: 0}
@@ -421,8 +502,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6f0ae6e32d91e0f45a4b821a03209428, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
   healthAttribute: {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
   worldAnchor: {fileID: 0}
   extraWorldOffset: {x: 0, y: 0, z: 0}
@@ -437,8 +518,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2e232de7843f92745a254698e2054f4e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
   currentGaugeAttribute: {fileID: 11400000, guid: 122086249f809784c84b56e9b99e367e, type: 2}
   maxGaugeAttribute: {fileID: 11400000, guid: ddbd05a9b77349441a875c479e48212d, type: 2}
   resistancePercentAttribute: {fileID: 0}
@@ -460,8 +541,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f1d4aa4b27d4ffd45b29291c3673f422, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
   catalog: {fileID: 11400000, guid: 170c93a1a1f812a4998120c119fcd1e0, type: 2}
   useDecay: 1
   decayDelaySeconds: 3
@@ -480,10 +561,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 82ae4624ea26de741ba8bc236cf3108b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
   body: {fileID: 5310030812964765969}
   enforceContinuousCollision: 1
+  preventWallTunneling: 1
+  wallCollisionLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  wallSafetyMinSpeed: 8
+  wallCastSkinWidth: 0.03
+  depenetrationSkinWidth: 0.01
+  maxDepenetrationIterations: 3
   intentSourceBehaviour: {fileID: 0}
   statProviderBehaviour: {fileID: 0}
   externalMovement: {fileID: 0}
@@ -501,8 +590,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 526f8835b2c4eeb4593ade78758d3986, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
   attributeSet: {fileID: 0}
   abilitySystem: {fileID: 0}
   statBindingsOverride: {fileID: 0}
@@ -516,8 +605,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b5ebf9fcd76f27f4f874c8853b167522, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
   knockbackDamping: 18
   defaultKnockbackDominanceTime: 0.12
   maxKnockbackMagnitude: 25
@@ -532,12 +621,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 26c9fe53bdef53947bbf6f41db722013, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
   externalMovement: {fileID: 0}
   knockbackImmuneTag: {fileID: 0}
   resistancePctAttribute: {fileID: 11400000, guid: cd582b58892249e4a6ef8ae28bd345e3, type: 2}
   knockbackDominanceTime: 0.12
+  debugKnockback: 0
 --- !u!114 &6288342579342210011
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -548,13 +638,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cbeb54d2db10da14b8076a6745dad316, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
   hitEnterSeconds: 0.2
   hitActiveSeconds: 0.4
   animator: {fileID: 0}
-  hitEnterTrigger: 
-  hitLoopBool: 
+  hitEnterTrigger:
+  hitLoopBool:
   hitFlashController: {fileID: 6288342579342210012}
   hitReactStateTag: {fileID: 0}
   attackingBlockedTag: {fileID: 0}
@@ -570,8 +660,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6014e026c86c11f4385811e5bf185269, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
   targetRenderers:
   - {fileID: 8897721723054304330}
   flashColor: {r: 1, g: 1, b: 1, a: 1}
@@ -587,10 +677,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e976ed306a130c94db8843af68333d15, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
   telegraphPrefab: {fileID: 788264263987448140, guid: 211dd09e2da9caf47ad8409c9e35b83d, type: 3}
   defaultStyle: {fileID: 11400000, guid: 5c4c8108f36d4acbaa6dfaf6d6b3f6e7, type: 2}
+  useDefaultWallClipping: 0
+  defaultWallClipLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  defaultWallClipSampleCount: 48
+  defaultWallClipSkinWidth: 0.03
 --- !u!114 &1699081613814899334
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -601,7 +697,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c721f3a2f874aa14ea14c5bc2261cc39, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::UnityGAS.AbilityMotionController2D
 --- !u!114 &5724109387412903854
 MonoBehaviour:
@@ -613,8 +709,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d58f7ddaaeeb3da489b8e9fbafa66102, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
   bubblePrefab: {fileID: 8482697653009772348, guid: 62446638c99411c4c9669c3f3efc113d, type: 3}
   bubbleOffset: {x: 0.3, y: 1.3, z: 0}
   showBubbleOffsetGizmo: 1
@@ -632,8 +728,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8d47b449fb5f4f14a1b8be7e114d7b29, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
   speechBubble: {fileID: 5724109387412903854}
   speechData: {fileID: 11400000, guid: b1f6e8fa2c2b48cc925e3f5ac1ffd2cb, type: 2}
 --- !u!114 &8412503971642095334
@@ -646,8 +742,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1fb35ba1d82842c4b4d58b07af4f7081, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
   useDeathPresentation: 1
   deathCinematicIntroDuration: 0.45
   deathLetterboxScreenHeightRatio: 0.14
@@ -661,12 +757,12 @@ MonoBehaviour:
   deathEffectAnchor: {fileID: 7124681143442968898}
   speechController: {fileID: 4097123456789012345}
   breakdownAnimation:
-    triggerName: 
+    triggerName:
     stateName: Boss1BreakdownAnim
     crossFadeDuration: 0.05
     fallbackDuration: 0
   deathAnimation:
-    triggerName: 
+    triggerName:
     stateName: BossDeathAnim
     crossFadeDuration: 0.05
     fallbackDuration: 0
@@ -674,27 +770,6 @@ MonoBehaviour:
   deathVanishEffectOffset: {x: 0, y: 0, z: 0}
   deathSpeechSituation: 2
   deathBgmFadeOutDuration: 0
---- !u!114 &5675224341811256986
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4104743717894493410}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 42667dfbf3529e6489882ac43545fe3b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  chestPrefab: {fileID: 7530156284439312542, guid: 296eaa6f1547cb74e990055ce1319470, type: 3}
-  chestSpawnPoint: {fileID: 0}
-  portalObj: {fileID: 0}
-  portalSpawnPoint: {fileID: 0}
-  portalSpawnOffset: {x: 0, y: 0, z: 0}
-  bossUniqueLoots:
-  - item: {fileID: 11400000, guid: 6a8181eecc5ab3a4988f9089d46607b0, type: 2}
-    dropChance: 100
-  magicStonePrefab: {fileID: 5809627508243328825, guid: 108ed5884c0e5294fb2bc08d259e53f5, type: 3}
 --- !u!114 &3836901854821853225
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -705,9 +780,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2eae5b7f38d512841bb3d472aa68139c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
   npcData: {fileID: 11400000, guid: 4a2fd65cb07d41d2b4925014a094b1fe, type: 2}
+  startKnotSelectorBehaviour: {fileID: 0}
+  playEncounterDialogue: 1
+  playPrimaryDialogueAfterEncounter: 1
+  recordEncounterProgress: 1
   legacyInkJSON: {fileID: 4900000, guid: aef34e203f982094b814e11d115a65ed, type: 3}
 --- !u!114 &2539260762478503238
 MonoBehaviour:
@@ -719,8 +798,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9f6527ad7c611aa41ac5e2b94666620e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
   cameraDirector: {fileID: 8439794030914778521}
   dialogueRunner: {fileID: 3836901854821853225}
   bossController: {fileID: 669182791067580952}
@@ -737,8 +816,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 928775a6a95adc64a9a5a0bd430fa85a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
   playerCam: {fileID: 0}
   bossCam: {fileID: 0}
   normalPriority: 10
@@ -760,8 +839,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 16b5dced38ff4ce1a6994a142f29e24a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
   tagSystem: {fileID: 0}
   shieldedTag: {fileID: 0}
   invulnerableTag: {fileID: 0}
@@ -776,8 +855,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0730508b2089443bb5296176c0329ab5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
   shieldController: {fileID: 2108456829143765123}
   ownerSpriteRenderer: {fileID: 8897721723054304330}
   shieldVisualPrefab: {fileID: 0}
@@ -791,30 +870,60 @@ MonoBehaviour:
   tintShieldVisualWithStageColor: 1
   shieldVisualAlphaMultiplier: 0.72
   shieldActivateSound:
-    key: 
+    key:
     volumeMultiplier: 0
     anchorPolicy: 0
     localOffset: {x: 0, y: 0, z: 0}
   shieldBreakSound:
-    key: 
+    key:
     volumeMultiplier: 0
     anchorPolicy: 0
     localOffset: {x: 0, y: 0, z: 0}
   activateAnimation:
-    triggerName: 
+    triggerName:
     stateName: Boss1ShieldAnim
     crossFadeDuration: 0.05
   breakAnimation:
-    triggerName: 
-    stateName: 
+    triggerName:
+    stateName:
     crossFadeDuration: 0.05
-  shieldBreakParticlePrefab: {fileID: 6821349489537912191, guid: e6cf7f0dfc7a4f0ab23e38d2b55ccf91, type: 3}
-  shieldBreakParticleLocalOffset: {x: 0, y: 0.15, z: -0.02}
-  shieldBreakParticleLifetimeOverrideSeconds: 0
-  useUnscaledShieldBreakParticleTime: 0
-  shieldBreakParticleScaleMultiplier: {x: 1.2, y: 1.2, z: 1}
-  shieldBreakParticleRotationOffsetZ: 0
-  shieldBreakCameraShake:
+  shieldBreakPresentation:
+    sound:
+      key:
+      volumeMultiplier: 0
+      anchorPolicy: 0
+      localOffset: {x: 0, y: 0, z: 0}
+    cameraShake:
+      amplitude: 0.2
+      amplitudeMultiplier: 1
+      maxAmplitude: 0.32
+      minIntervalSeconds: 0.05
+      directionMode: 0
+      customDirection: {x: 0, y: 0, z: 0}
+      ignoreScreenShakeSetting: 0
+    effect:
+      prefab: {fileID: 0}
+      localOffset: {x: 0, y: 0, z: 0}
+      rotationOffsetZ: 0
+      scaleMultiplier: {x: 0, y: 0, z: 0}
+      lifetimeMode: 0
+      lifetimeOverrideSeconds: 0
+      useUnscaledTime: 0
+    particle:
+      prefab: {fileID: 6821349489537912191, guid: e6cf7f0dfc7a4f0ab23e38d2b55ccf91, type: 3}
+      localOffset: {x: 0, y: 0.15, z: -0.02}
+      rotationOffsetZ: 0
+      scaleMultiplier: {x: 1.2, y: 1.2, z: 1}
+      lifetimeMode: 0
+      lifetimeOverrideSeconds: 0
+      useUnscaledTime: 0
+  legacyShieldBreakParticlePrefab: {fileID: 6821349489537912191, guid: e6cf7f0dfc7a4f0ab23e38d2b55ccf91, type: 3}
+  legacyShieldBreakParticleLocalOffset: {x: 0, y: 0.15, z: -0.02}
+  legacyShieldBreakParticleLifetimeOverrideSeconds: 0
+  legacyUseUnscaledShieldBreakParticleTime: 0
+  legacyShieldBreakParticleScaleMultiplier: {x: 1.2, y: 1.2, z: 1}
+  legacyShieldBreakParticleRotationOffsetZ: 0
+  legacyShieldBreakCameraShake:
     amplitude: 0.2
     amplitudeMultiplier: 1
     maxAmplitude: 0.32
@@ -832,6 +941,52 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cbc9a19645b6c8f458d6e368d5e1dabc, type: 3}
-  m_Name: 
+  m_Name:
   m_EditorClassIdentifier: Assembly-CSharp::UnityGAS.CombatHurtbox2D
   targetRoot: {fileID: 0}
+  ownedColliders: []
+--- !u!114 &8068020155619111614
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4104743717894493410}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 73a45414134245b49d9f61de3dff0e94, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::BossRewardSpawner
+  prefabCatalog: {fileID: 11400000, guid: a38103ce9c534763ba870c9573d7df68, type: 2}
+  scatterRadius: 1.5
+--- !u!114 &9072031939385557587
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4104743717894493410}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 58b385d66ce4413a802c458a0e883b5e, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::BossExitPortalActivator
+  prefabCatalog: {fileID: 11400000, guid: a38103ce9c534763ba870c9573d7df68, type: 2}
+  portalObj: {fileID: 0}
+  hidePortalOnStart: 1
+  detachPortalFromBoss: 1
+--- !u!114 &7484413520276996022
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4104743717894493410}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b06f9366df614c44ab34d56e96a94e63, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::BossBattleEndAnchors
+  rewardSpawnPoint: {fileID: 2386513943276245587}
+  scatterOrigin: {fileID: 7124681143442968898}
+  portalSpawnPoint: {fileID: 2556438504014702768}
