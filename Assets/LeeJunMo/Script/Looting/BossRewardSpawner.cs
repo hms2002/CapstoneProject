@@ -1,28 +1,20 @@
-using System.Collections.Generic;
 using UnityEngine;
 
 [DisallowMultipleComponent]
 public sealed class BossRewardSpawner : MonoBehaviour
 {
-    [Header("Chest")]
-    [SerializeField] private GameObject chestPrefab;
-    [SerializeField] private Transform chestSpawnPoint;
+    [Header("Prefabs")]
+    [SerializeField] private BossBattleEndPrefabCatalogSO prefabCatalog;
 
-    [Header("Currency")]
-    [SerializeField] private GameObject magicStonePrefab;
+    [Header("Scatter")]
     [SerializeField, Min(0f)] private float scatterRadius = 1.5f;
 
-    [Header("Compatibility")]
-    [SerializeField] private bool useBossDropReferencesIfMissing = true;
-
     private BossControllerBase owner;
-    private BossDrop legacyDrop;
     private bool hasSpawned;
 
     private void Awake()
     {
         owner = GetComponentInParent<BossControllerBase>();
-        legacyDrop = GetComponentInParent<BossDrop>();
     }
 
     private void OnEnable()
@@ -43,20 +35,16 @@ public sealed class BossRewardSpawner : MonoBehaviour
         if (!CanHandle(context))
             return;
 
-        BossDrop referenceDrop = useBossDropReferencesIfMissing ? ResolveLegacyDrop(context) : null;
-        GameObject resolvedChestPrefab = chestPrefab != null ? chestPrefab : referenceDrop != null ? referenceDrop.chestPrefab : null;
-        Transform resolvedChestSpawnPoint = chestSpawnPoint != null ? chestSpawnPoint : referenceDrop != null ? referenceDrop.chestSpawnPoint : null;
-        GameObject resolvedMagicStonePrefab = magicStonePrefab != null ? magicStonePrefab : referenceDrop != null ? referenceDrop.magicStonePrefab : null;
-        Transform scatterOrigin = ResolveScatterOrigin(context, referenceDrop);
+        BossBattleEndAnchors anchors = BossBattleEndAnchors.Resolve(context, this);
 
         BossRewardSpawnResult result = BossRewardSpawnService.Spawn(new BossRewardSpawnRequest(
             context,
-            resolvedChestPrefab,
-            resolvedChestSpawnPoint,
-            resolvedMagicStonePrefab,
-            scatterOrigin,
+            context.SpecialRewardPreset,
+            prefabCatalog != null ? prefabCatalog.TreasureChestPrefab : null,
+            ResolveChestSpawnPoint(anchors),
+            prefabCatalog != null ? prefabCatalog.MagicStonePrefab : null,
+            ResolveScatterOrigin(anchors),
             scatterRadius,
-            referenceDrop != null ? referenceDrop.bossUniqueLoots : null,
             this));
 
         if (!result.SpawnedAny)
@@ -64,23 +52,6 @@ public sealed class BossRewardSpawner : MonoBehaviour
 
         hasSpawned = true;
         context.MarkRewardsHandled();
-    }
-
-    public static bool SpawnFromLegacyDrop(BossDrop legacyDrop, BossRewardContext context)
-    {
-        if (legacyDrop == null)
-            return false;
-
-        BossRewardSpawnResult result = BossRewardSpawnService.Spawn(new BossRewardSpawnRequest(
-            context,
-            legacyDrop.chestPrefab,
-            legacyDrop.chestSpawnPoint,
-            legacyDrop.magicStonePrefab,
-            legacyDrop.transform,
-            1.5f,
-            legacyDrop.bossUniqueLoots,
-            legacyDrop));
-        return result.SpawnedAny;
     }
 
     private bool CanHandle(BossRewardContext context)
@@ -91,32 +62,20 @@ public sealed class BossRewardSpawner : MonoBehaviour
         if (owner != null && context.Boss != null && !ReferenceEquals(owner, context.Boss))
             return false;
 
-        if (owner != null && context.Boss == null && legacyDrop != null && context.LegacyBossDrop != legacyDrop)
-            return false;
-
         return true;
     }
 
-    private BossDrop ResolveLegacyDrop(BossRewardContext context)
+    private Transform ResolveChestSpawnPoint(BossBattleEndAnchors anchors)
     {
-        if (legacyDrop != null)
-            return legacyDrop;
-
-        if (context != null && context.LegacyBossDrop != null)
-            return context.LegacyBossDrop;
-
-        return context != null && context.Boss != null ? context.Boss.GetComponent<BossDrop>() : null;
+        return anchors != null ? anchors.RewardSpawnPoint : null;
     }
 
-    private Transform ResolveScatterOrigin(BossRewardContext context, BossDrop referenceDrop)
+    private Transform ResolveScatterOrigin(BossBattleEndAnchors anchors)
     {
-        if (context != null && context.Boss != null)
-            return context.Boss.transform;
+        if (anchors != null && anchors.ScatterOrigin != null)
+            return anchors.ScatterOrigin;
 
-        if (referenceDrop != null)
-            return referenceDrop.transform;
-
-        return transform;
+        return anchors != null ? anchors.RewardSpawnPoint : null;
     }
 
 }

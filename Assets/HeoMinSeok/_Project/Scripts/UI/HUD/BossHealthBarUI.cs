@@ -339,6 +339,11 @@ public sealed class BossHealthBarUI : MonoBehaviour
     /// <summary>기존 체력 슬라이더를 복제해 좌우 반분 체력바를 만듭니다.</summary>
     private void CreateFallbackDualHealthPresentation()
     {
+        RuntimePresentationFallbackAudit.Record(
+            this,
+            "Boss dual health fallback",
+            "authored dual-health BossHealthBarUI references");
+
         if (dualHealthRoot == null)
         {
             GameObject rootObject = new GameObject("DualBossHealthRoot", typeof(RectTransform));
@@ -475,6 +480,11 @@ public sealed class BossHealthBarUI : MonoBehaviour
         RectTransform parentRect = transform as RectTransform;
         if (parentRect == null)
             return;
+
+        RuntimePresentationFallbackAudit.Record(
+            this,
+            "Boss split health fallback",
+            "authored split-health BossHealthBarUI references");
 
         GameObject rootObject = new GameObject("SplitHealthPresentation", typeof(RectTransform));
         splitHealthRoot = rootObject.GetComponent<RectTransform>();

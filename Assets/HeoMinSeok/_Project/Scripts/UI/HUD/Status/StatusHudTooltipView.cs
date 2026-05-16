@@ -136,6 +136,19 @@ public sealed class StatusHudTooltipView : MonoBehaviour, IHoverView
     /// </summary>
     private void EnsureVisualTree()
     {
+        if (gameObject.GetComponent<RectTransform>() == null ||
+            backgroundImage == null ||
+            transform.Find("Icon") == null ||
+            transform.Find("Name") == null ||
+            transform.Find("Story") == null ||
+            transform.Find("Effect") == null)
+        {
+            RuntimePresentationFallbackAudit.Record(
+                this,
+                "Status HUD tooltip visual fallback",
+                "an authored StatusHudTooltipView prefab with background, icon, name, story, and effect references");
+        }
+
         bool createdRectTransform = false;
         rectTransform = gameObject.GetComponent<RectTransform>();
         if (rectTransform == null)

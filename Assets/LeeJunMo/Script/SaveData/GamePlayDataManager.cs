@@ -66,30 +66,18 @@ public sealed class GamePlayDataManager : MonoBehaviour
 
     public void StartRun()
     {
-        ClearPendingRunProgress();
-        Data.isRunActive = true;
-        Data.runElapsedSeconds = 0f;
-        Data.runRemainingSeconds = 0f;
+        RunSessionLifecycleService.StartRun(Data, ClearPendingRunProgress);
         OnRunStarted?.Invoke();
     }
 
     public void EndRun(RunEndReason reason)
     {
-        Data.lastRunEndReason = reason;
-        if (Data.isRunActive)
-        {
-            CommitPendingRunProgress();
-            GameDataSaveCoordinator.FlushNow(this);
-        }
-
-        Data.isRunActive = false;
-        Data.runRemainingSeconds = 0f;
-        Data.pendingTransition = null;
-        Data.pendingPlayerState = null;
-
-        if (PortalRouteManager.Instance != null)
-            PortalRouteManager.Instance.ClearPlan();
-
+        RunSessionLifecycleService.EndRun(
+            Data,
+            reason,
+            CommitPendingRunProgress,
+            () => PortalRouteManager.Instance?.ClearPlan(),
+            this);
         OnRunEnded?.Invoke(reason);
     }
 

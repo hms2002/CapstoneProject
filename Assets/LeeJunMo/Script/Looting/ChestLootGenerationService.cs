@@ -7,15 +7,18 @@ internal sealed class ChestLootGenerationService
     private readonly LootPoolService poolService;
     private readonly LootRollService rollService;
     private readonly Func<RelicDefinition> randomRelicProvider;
+    private readonly Func<ItemRarity, RelicDefinition> relicByRarityProvider;
 
     public ChestLootGenerationService(
         LootPoolService poolService,
         LootRollService rollService,
-        Func<RelicDefinition> randomRelicProvider)
+        Func<RelicDefinition> randomRelicProvider,
+        Func<ItemRarity, RelicDefinition> relicByRarityProvider)
     {
         this.poolService = poolService;
         this.rollService = rollService;
         this.randomRelicProvider = randomRelicProvider;
+        this.relicByRarityProvider = relicByRarityProvider;
     }
 
     public ChestLootResult Generate(
@@ -26,11 +29,49 @@ internal sealed class ChestLootGenerationService
         if (table == null || poolService == null || rollService == null)
             return ChestLootResult.Empty;
 
+        return GenerateCore(
+            table.ChestWeaponCountProfile,
+            table.ChestRelicCountProfile,
+            table.ChestConsumableCountProfile,
+            request,
+            chestModifiers,
+            () => randomRelicProvider != null ? randomRelicProvider.Invoke() : null);
+    }
+
+    public ChestLootResult GenerateBoss(
+        StageLootTable table,
+        ChestLootRequest request,
+        ChestRunModifierDelta bossChestModifiers)
+    {
+        if (table == null || poolService == null || rollService == null)
+            return ChestLootResult.Empty;
+
+        return GenerateCore(
+            table.BossWeaponCountProfile,
+            table.BossRelicCountProfile,
+            null,
+            request,
+            bossChestModifiers,
+            () =>
+            {
+                ItemRarity rarity = rollService.RollBossRelicRarity(table);
+                return relicByRarityProvider != null ? relicByRarityProvider.Invoke(rarity) : null;
+            });
+    }
+
+    private ChestLootResult GenerateCore(
+        CountRangeWeightProfile weaponCountProfile,
+        CountRangeWeightProfile relicCountProfile,
+        CountRangeWeightProfile consumableCountProfile,
+        ChestLootRequest request,
+        ChestRunModifierDelta chestModifiers,
+        Func<RelicDefinition> relicProvider)
+    {
         var drops = new List<ScriptableObject>();
         HashSet<string> banList = poolService.BuildWeaponExclusionSet(request.WeaponExclusionContext);
 
         int weaponCount = rollService.PickCountInProfile(
-            table.ChestWeaponCountProfile,
+            weaponCountProfile,
             chestModifiers.chestWeaponMinBonus,
             chestModifiers.chestWeaponMaxBonus);
         for (int i = 0; i < weaponCount; i++)
@@ -44,17 +85,17 @@ internal sealed class ChestLootGenerationService
         }
 
         int relicCount = rollService.PickCountInProfile(
-            table.ChestRelicCountProfile,
+            relicCountProfile,
             chestModifiers.chestRelicMinBonus,
             chestModifiers.chestRelicMaxBonus);
         for (int i = 0; i < relicCount; i++)
         {
-            RelicDefinition relic = randomRelicProvider != null ? randomRelicProvider.Invoke() : null;
+            RelicDefinition relic = relicProvider != null ? relicProvider.Invoke() : null;
             if (relic != null)
                 drops.Add(relic);
         }
 
-        int consumableCount = rollService.PickCountInProfile(table.ChestConsumableCountProfile);
+        int consumableCount = rollService.PickCountInProfile(consumableCountProfile);
         for (int i = 0; i < consumableCount; i++)
         {
             ConsumableDefinition consumable = poolService.GetRandomConsumable();

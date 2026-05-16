@@ -16,8 +16,8 @@ MonoBehaviour:
   corridorEntryPointId: Default
   bossSceneName: HeoMinSeok_Boss_Dragon_Spili
   bossEntryPointId: Default
-  corridorLocationName: 보물창고
-  bossLocationName: 스피리의 방
+  corridorLocationName: "\uBCF4\uBB3C\uCC3D\uACE0"
+  bossLocationName: "\uC2A4\uD53C\uB9AC\uC758 \uBC29"
   corridorBgm:
     key: bgm.shadow_corridor
     volumeMultiplier: 1
@@ -29,3 +29,4 @@ MonoBehaviour:
     anchorPolicy: 0
     localOffset: {x: 0, y: 0, z: 0}
   loadManifest: {fileID: 11400000, guid: 0a12099ec1e865d4594ed26913b131fd, type: 2}
+  bossSpecialRewardPreset: {fileID: 0}

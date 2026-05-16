@@ -2,14 +2,12 @@ public sealed class BossRewardContext
 {
     public BossRewardContext(
         BossControllerBase boss,
-        BossDrop legacyBossDrop,
         CorridorBossRouteSetSO routeSet,
         int routeSetKey,
         bool isFinalRouteSet,
         BossRewardModifierAggregate rewardModifiers)
     {
         Boss = boss;
-        LegacyBossDrop = legacyBossDrop;
         RouteSet = routeSet;
         RouteSetKey = routeSetKey;
         IsFinalRouteSet = isFinalRouteSet;
@@ -17,8 +15,9 @@ public sealed class BossRewardContext
     }
 
     public BossControllerBase Boss { get; }
-    public BossDrop LegacyBossDrop { get; }
     public CorridorBossRouteSetSO RouteSet { get; }
+    public BossSpecialRewardPresetSO SpecialRewardPreset =>
+        RouteSet != null ? RouteSet.BossSpecialRewardPreset : null;
     public int RouteSetKey { get; }
     public bool IsFinalRouteSet { get; }
     public BossRewardModifierAggregate RewardModifiers { get; }

@@ -105,6 +105,19 @@ public sealed class StatusHudEntryView : MonoBehaviour, IPointerEnterHandler, IP
     /// </summary>
     private void EnsureVisualTree()
     {
+        if (rectTransform == null ||
+            backgroundImage == null ||
+            transform.Find("Icon") == null ||
+            transform.Find("DurationFill") == null ||
+            transform.Find("StackText") == null ||
+            transform.Find("DurationText") == null)
+        {
+            RuntimePresentationFallbackAudit.Record(
+                this,
+                "Status HUD entry visual fallback",
+                "an authored StatusHudEntryView prefab with icon, duration, stack, and text references");
+        }
+
         rectTransform ??= gameObject.GetComponent<RectTransform>() ?? gameObject.AddComponent<RectTransform>();
         if (rectTransform.sizeDelta == Vector2.zero)
             rectTransform.sizeDelta = new Vector2(48f, 48f);

@@ -142,6 +142,26 @@ public class LootManager : MonoBehaviour
         return chestLootGenerationService.Generate(table, request, chestModifiers);
     }
 
+    public List<ScriptableObject> GenerateBossChestLoot()
+    {
+        return GenerateBossChestLoot(default);
+    }
+
+    public List<ScriptableObject> GenerateBossChestLoot(ChestRunModifierDelta extraModifiers)
+    {
+        return GenerateBossChestLootResult(new ChestLootRequest(extraModifiers)).ToList();
+    }
+
+    public ChestLootResult GenerateBossChestLootResult(ChestLootRequest request)
+    {
+        StageLootTable table = GetCurrentTable();
+        if (table == null)
+            return ChestLootResult.Empty;
+
+        EnsureServices();
+        return chestLootGenerationService.GenerateBoss(table, request, request.ExtraModifiers);
+    }
+
     private ChestRunModifierDelta ResolveChestModifiers(ChestRunModifierDelta extraModifiers)
     {
         ChestRunModifierDelta modifiers = ChestModifierProvider != null
@@ -178,6 +198,12 @@ public class LootManager : MonoBehaviour
     {
         StageLootTable table = GetCurrentTable();
         return table != null ? table.bossStoneCount : 0;
+    }
+
+    public int GetBossFieldHealBaseCount()
+    {
+        StageLootTable table = GetCurrentTable();
+        return table != null ? Mathf.Max(0, table.BossFieldHealBaseCount) : 0;
     }
 
     public void SpawnGraveLoot(Vector3 position, GraveType type, int bonusMinCount = 0, int bonusMaxCount = 0, float bonusRareChance = 0f, float bonusEpicChance = 0f)
@@ -220,7 +246,7 @@ public class LootManager : MonoBehaviour
         poolService = new LootPoolService();
         rollService = new LootRollService();
         spawnService = new LootSpawnService(worldItemPrefab, ResolveFieldItemPrefab(editorSafe));
-        chestLootGenerationService = new ChestLootGenerationService(poolService, rollService, GetRandomRelic);
+        chestLootGenerationService = new ChestLootGenerationService(poolService, rollService, GetRandomRelic, GetRandomRelicByRarity);
         monsterLootDropService = new MonsterLootDropService(poolService, rollService, spawnService, GetRandomRelic);
         graveLootDropService = new GraveLootDropService(poolService, rollService, spawnService, GetRandomRelicByRarity);
     }

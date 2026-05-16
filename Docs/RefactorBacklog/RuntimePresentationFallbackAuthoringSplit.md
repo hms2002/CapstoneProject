@@ -1,15 +1,15 @@
 ---
-status: proposed
+status: partially-refactored
 authority: refactor-backlog
 category: refactor-item
-last_reviewed: 2026-05-15
+last_reviewed: 2026-05-16
 ---
 
 # Runtime Presentation Fallback Authoring Split
 
 ## Status
 
-proposed
+partially-refactored
 
 ## Current Problem
 
@@ -27,6 +27,8 @@ The main pressure points are:
 Runtime creation is useful during first implementation and feel checks, but these paths are easy to leave in the build path as hidden UI structure.
 
 Dynamic tooltip content, dynamic status entries, and pooled presentation prefabs are acceptable. The debt is full visual template construction in code when a prefab or scene-authored object should own the base layout, sorting, raycast, font, spacing, and animation choices.
+
+The current source now routes the known runtime-created hierarchy paths through `RuntimePresentationFallbackAudit`, which emits development/editor warnings when fallback presentation hierarchy is created. `Tools/Validation/Scene Setup Validator` also reports missing authored references for the main fallback-prone scene/prefab components. These checks make the fallback path visible during testing, but they do not replace the required authored prefab/scene migration.
 
 ## Why It Exists
 
@@ -54,6 +56,7 @@ Dynamic tooltip content, dynamic status entries, and pooled presentation prefabs
 - Letterbox and loading overlays are input- and visibility-sensitive, so migration needs manual Unity review.
 - Status HUD and tooltip migration touches `GlobalUIRoot` layers, hover routing, TMP layout, pointer behavior, and existing status definition assets.
 - Boss health fallback migration touches serialized Boss HUD references, Slime Queen phase-two display behavior, health animation timing, and split-health labels.
+- Validator warnings can identify missing references, but they cannot prove visual sorting, layout, input blocking, or animation quality without Unity scene/prefab review and play checks.
 
 ## Refactor Trigger
 
@@ -81,5 +84,12 @@ Dynamic tooltip content, dynamic status entries, and pooled presentation prefabs
 - `Docs/StructureMemory/ScriptSystems/InventoryAndChestUIStructure.md`
 
 ## Next Refactor Step
+
+Current source-only slice complete:
+
+- Added `RuntimePresentationFallbackAudit`.
+- Added audit calls to loading overlay fallback creation, mouse cursor canvas fallback creation, cinematic letterbox overlay fallback creation, display letterbox overlay fallback creation, status HUD presenter/entry/tooltip fallback creation, and Boss HUD dual/split health fallback creation.
+- Added Scene Setup Validator checks for `GlobalUIRoot` loading/status prefabs, `LoadingOverlayController`, `MouseCursorService`, `GamePresentationController`, `StatusHudPresenter`, `StatusHudEntryView`, `StatusHudTooltipView`, and `BossHealthBarUI` fallback-prone references.
+- No scene, prefab, serialized field, Canvas sorting, TMP style, animation, or authored visual reference migration was performed.
 
 When one of the runtime-created presentation paths is next edited, first decide whether it is still a prototype/debug fallback. If it is build-facing, move the visual hierarchy into an authored prefab or scene object and keep runtime code as the owner that drives references and cleanup.

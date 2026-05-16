@@ -42,6 +42,24 @@ internal sealed class UpgradeUiOpenFlow
             OpenWithFadePresentation(openFadeOutDuration, openFadeInDuration));
     }
 
+    public void Toggle(
+        bool useFadePresentationOnOpen,
+        float openFadeOutDuration,
+        float openFadeInDuration)
+    {
+        UpgradeTreeUI upgradeTreeUI = ResolveUpgradeTreeUi();
+        if (upgradeTreeUI == null)
+            return;
+
+        if (upgradeTreeUI.IsActive)
+        {
+            Close();
+            return;
+        }
+
+        Open(useFadePresentationOnOpen, openFadeOutDuration, openFadeInDuration);
+    }
+
     public void Close()
     {
         StopOpenPresentation();

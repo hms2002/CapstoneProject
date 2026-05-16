@@ -16,7 +16,7 @@ General loot and reward behavior is split across runtime objects in a way that h
 - `TreasureChest` delegates chest refresh eligibility, refresh guard snapshots/comparison, and relic level bonus calculation to a same-file `ChestRewardPolicy`, but that helper still reads `RunModifierService` directly and remains colocated with the world chest component.
 - `WorldItemPickup2D` presents a world item, handles interaction, displays delivery warnings/speech, and destroys itself after successful pickup. `WorldPickupDeliveryService` now grants items to player inventories and uses shared inventory delivery warning mapping for relic/consumable failures.
 
-The boss reward path is tracked separately: `BossRewardSpawner` follows the additive modifier decision and delegates chest/currency/field-heal spawn execution through a request/result helper. The remaining legacy adapter risk is tracked by `BossDropResponsibilitySplit`.
+The boss reward path is tracked separately: `BossRewardSpawner` follows the additive modifier decision and delegates chest/currency/field-heal spawn execution through a request/result helper. The former legacy adapter risk is resolved by `BossDropResponsibilitySplit`.
 
 ## Why It Exists
 
@@ -33,7 +33,7 @@ As reward sources expand, the same coupling makes it hard to tell which rules ap
 - `RewardDelivery` or `WorldPickupDelivery` owns final inventory/currency/world-object delivery and returns success/failure results.
 - `WorldItemPickup2D` focuses on world presentation and interaction request forwarding.
 - Inventory delivery warning mapping is shared between quick-move, player relic adapters, and world pickup delivery.
-- Boss reward migration continues through `BossDropResponsibilitySplit` instead of a duplicate backlog item.
+- Future boss battle-end authoring issues should continue through `BossDropResponsibilitySplit` instead of a duplicate backlog item.
 
 ## Risks
 
@@ -81,7 +81,7 @@ Start this split when one of the following happens:
 - Added same-file `MonsterLootDropRequest`, `MonsterLootDropResult`, `MonsterLootDropService`, `GraveLootDropRequest`, `GraveLootDropResult`, and `GraveLootDropService` in `LootManager.cs`.
 - Routed monster loot type roll/drop execution and grave weapon/relic roll/drop execution through those helpers while keeping `LootManager` public spawn APIs intact.
 - Added same-file `BossRewardSpawnRequest`, `BossRewardSpawnResult`, and `BossRewardSpawnService` in `BossRewardSpawner.cs`.
-- Routed boss treasure chest, base loot, bonus loot, magic stone, field heal, scatter, and exception-logged reward spawn execution through `BossRewardSpawnService` while keeping `BossRewardSpawner` event handling and `SpawnFromLegacyDrop(...)` API intact.
+- Routed boss treasure chest, base loot, bonus loot, magic stone, field heal, scatter, and exception-logged reward spawn execution through `BossRewardSpawnService` while keeping `BossRewardSpawner` event handling intact. The later `BossDrop` deletion removed the old legacy spawn API.
 - Moved `LootPoolContext`, loot pool provider/selection helpers, chest loot generation, monster/grave drop services, boss reward spawn service, chest reward policy, and world pickup delivery helpers into dedicated `.cs` files during the P1 helper file split.
 - Added shared `InventoryDeliveryWarningResolver` in `InventoryTransferService.cs`.
 - Routed quick-move full-inventory warning mapping, world pickup relic/consumable warning mapping, and player relic adapter warning mapping through the shared resolver.
@@ -94,4 +94,4 @@ Start this split when one of the following happens:
 
 `resolved`
 
-The chest loot request/result slice, weapon-exclusion context slice, chest policy/generation helper slice, world pickup delivery helper slice, loot pool provider/selection helper slice, monster/grave drop execution helper slice, boss reward spawn execution helper slice, inventory delivery warning resolver slice, and live loot pool source provider split are implemented. World pickup and inventory transfer now share warning-code mapping for the current overlapping failure cases; delivery result types remain source-specific unless future UX needs a common result model. No prefab, scene, namespace, asmdef, serialized field, `MonoBehaviour` serialized contract, or `ScriptableObject` schema changes have been made for this backlog item. Any future `BossDrop` prefab-reference migration remains in `BossDropResponsibilitySplit`.
+The chest loot request/result slice, weapon-exclusion context slice, chest policy/generation helper slice, world pickup delivery helper slice, loot pool provider/selection helper slice, monster/grave drop execution helper slice, boss reward spawn execution helper slice, inventory delivery warning resolver slice, and live loot pool source provider split are implemented. World pickup and inventory transfer now share warning-code mapping for the current overlapping failure cases; delivery result types remain source-specific unless future UX needs a common result model. No prefab, scene, namespace, asmdef, serialized field, `MonoBehaviour` serialized contract, or `ScriptableObject` schema changes were made for this backlog item. The later BossDrop adapter deletion is tracked in `BossDropResponsibilitySplit`.

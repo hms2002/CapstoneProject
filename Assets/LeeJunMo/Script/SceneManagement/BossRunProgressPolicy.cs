@@ -3,18 +3,15 @@ using System.Runtime.CompilerServices;
 internal readonly struct BossRunProgressRequest
 {
     public BossControllerBase Boss { get; }
-    public BossDrop LegacyBossDrop { get; }
     public PortalRouteManager RouteManager { get; }
     public BossRewardModifierAggregate RewardModifiers { get; }
 
     public BossRunProgressRequest(
         BossControllerBase boss,
-        BossDrop legacyBossDrop,
         PortalRouteManager routeManager,
         BossRewardModifierAggregate rewardModifiers)
     {
         Boss = boss;
-        LegacyBossDrop = legacyBossDrop;
         RouteManager = routeManager;
         RewardModifiers = rewardModifiers;
     }
@@ -23,7 +20,6 @@ internal readonly struct BossRunProgressRequest
 internal readonly struct BossRunProgressResult
 {
     public BossControllerBase Boss { get; }
-    public BossDrop LegacyBossDrop { get; }
     public CorridorBossRouteSetSO RouteSet { get; }
     public int RouteSetKey { get; }
     public bool IsFinalRouteSet { get; }
@@ -32,7 +28,6 @@ internal readonly struct BossRunProgressResult
 
     public BossRunProgressResult(
         BossControllerBase boss,
-        BossDrop legacyBossDrop,
         CorridorBossRouteSetSO routeSet,
         int routeSetKey,
         bool isFinalRouteSet,
@@ -40,7 +35,6 @@ internal readonly struct BossRunProgressResult
         BossRewardModifierAggregate rewardModifiers)
     {
         Boss = boss;
-        LegacyBossDrop = legacyBossDrop;
         RouteSet = routeSet;
         RouteSetKey = routeSetKey;
         IsFinalRouteSet = isFinalRouteSet;
@@ -52,7 +46,6 @@ internal readonly struct BossRunProgressResult
     {
         return new BossRewardContext(
             Boss,
-            LegacyBossDrop,
             RouteSet,
             RouteSetKey,
             IsFinalRouteSet,
@@ -66,13 +59,12 @@ internal static class BossRunProgressPolicy
     {
         PortalRouteManager routeManager = request.RouteManager;
         CorridorBossRouteSetSO routeSet = routeManager != null ? routeManager.CurrentStageSet : null;
-        int routeSetKey = ResolveRouteSetKey(request.Boss, request.LegacyBossDrop, routeManager);
+        int routeSetKey = ResolveRouteSetKey(request.Boss, routeManager);
         bool isFinalRouteSet = IsCurrentRouteFinalBoss(routeManager, routeSet);
         int bossIdentityKey = GetObjectIdentityKey(request.Boss);
 
         return new BossRunProgressResult(
             request.Boss,
-            request.LegacyBossDrop,
             routeSet,
             routeSetKey,
             isFinalRouteSet,
@@ -107,7 +99,6 @@ internal static class BossRunProgressPolicy
 
     private static int ResolveRouteSetKey(
         BossControllerBase boss,
-        BossDrop legacyDrop,
         PortalRouteManager routeManager)
     {
         if (routeManager != null && routeManager.HasActivePlan)
@@ -121,9 +112,6 @@ internal static class BossRunProgressPolicy
 
         if (boss != null)
             return GetObjectIdentityKey(boss);
-
-        if (legacyDrop != null)
-            return GetObjectIdentityKey(legacyDrop);
 
         return 0;
     }

@@ -99,7 +99,7 @@ public class UpgradeTreeUI : MonoBehaviour, IStackableUI, IMouseCursorDomainSour
         gameObject.SetActive(false);
 
         if (UpgradeManager.Instance != null)
-            UpgradeManager.Instance.OnUIClosed?.Invoke();
+            UpgradeManager.Instance.NotifyUIClosed();
     }
 
     private void Start()
@@ -336,9 +336,8 @@ public class UpgradeTreeUI : MonoBehaviour, IStackableUI, IMouseCursorDomainSour
     private void OnValidate()
     {
         lakePresentationSettings.Sanitize();
-
-        if (!Application.isPlaying && previewLakeSurfaceInEditMode)
-            UnityEditor.EditorApplication.delayCall += RefreshLakePreviewInEditor;
+        // Unity invokes OnValidate while opening scenes; preview refresh marks scene instances dirty.
+        // Inspector changes still refresh through UpgradeTreeUIEditor.DrawDefaultInspector().
     }
 
     public void RefreshLakePreviewInEditor()

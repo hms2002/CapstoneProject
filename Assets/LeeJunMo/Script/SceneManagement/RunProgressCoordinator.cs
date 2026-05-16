@@ -98,7 +98,7 @@ public sealed class RunProgressCoordinator : MonoBehaviour
         if (boss == null)
             return;
 
-        BossRunProgressResult progress = BuildProgressResult(boss, null);
+        BossRunProgressResult progress = BuildProgressResult(boss);
         if (!BossRunProgressPolicy.ShouldTrackFinalBossCombat(progress))
             return;
 
@@ -119,8 +119,7 @@ public sealed class RunProgressCoordinator : MonoBehaviour
     {
         NotifyBossCombatEnded(boss);
 
-        BossDrop legacyDrop = boss != null ? boss.GetComponent<BossDrop>() : null;
-        BossRunProgressResult progress = BuildProgressResult(boss, legacyDrop);
+        BossRunProgressResult progress = BuildProgressResult(boss);
         if (!defeatedRouteKeys.Add(progress.RouteSetKey))
             return;
 
@@ -129,28 +128,7 @@ public sealed class RunProgressCoordinator : MonoBehaviour
 
     public void NotifyBossRewardsReady(BossControllerBase boss)
     {
-        BossDrop legacyDrop = boss != null ? boss.GetComponent<BossDrop>() : null;
-        DispatchBossRewardsReady(BuildContext(boss, legacyDrop));
-    }
-
-    public void NotifyLegacyBossRewardsReady(BossDrop legacyDrop)
-    {
-        if (legacyDrop == null)
-            return;
-
-        BossControllerBase boss = legacyDrop.GetComponent<BossControllerBase>();
-        if (boss != null)
-        {
-            NotifyBossDefeated(boss);
-        }
-        else
-        {
-            BossRunProgressResult progress = BuildProgressResult(null, legacyDrop);
-            if (defeatedRouteKeys.Add(progress.RouteSetKey))
-                RunTimeLimitSystem.Instance?.SetRunCompletionPaused(true);
-        }
-
-        DispatchBossRewardsReady(BuildContext(boss, legacyDrop));
+        DispatchBossRewardsReady(BuildContext(boss));
     }
 
     private void DispatchBossRewardsReady(BossRewardContext context)
@@ -159,38 +137,27 @@ public sealed class RunProgressCoordinator : MonoBehaviour
             return;
 
         BossRewardsReady?.Invoke(context);
-
-        BossDrop legacyDrop = context.LegacyBossDrop;
-        if (legacyDrop == null && context.Boss != null)
-            legacyDrop = context.Boss.GetComponent<BossDrop>();
-
-        if (!context.RewardsHandled && BossRewardSpawner.SpawnFromLegacyDrop(legacyDrop, context))
-            context.MarkRewardsHandled();
-
-        if (!context.PortalHandled && BossExitPortalActivator.ActivateFromLegacyDrop(legacyDrop, context))
-            context.MarkPortalHandled();
+        BossRewardFallbackService.HandleUnhandledFallbacks(context);
     }
 
-    private BossRewardContext BuildContext(BossControllerBase boss, BossDrop legacyDrop)
+    private BossRewardContext BuildContext(BossControllerBase boss)
     {
         BossRewardModifierAggregate modifiers = RunModifierService.CurrentRewardSnapshot.BossRewardModifiers;
-        return BuildProgressResult(boss, legacyDrop, modifiers).ToRewardContext();
+        return BuildProgressResult(boss, modifiers).ToRewardContext();
     }
 
-    private BossRunProgressResult BuildProgressResult(BossControllerBase boss, BossDrop legacyDrop)
+    private BossRunProgressResult BuildProgressResult(BossControllerBase boss)
     {
-        return BuildProgressResult(boss, legacyDrop, default);
+        return BuildProgressResult(boss, default);
     }
 
     private BossRunProgressResult BuildProgressResult(
         BossControllerBase boss,
-        BossDrop legacyDrop,
         BossRewardModifierAggregate modifiers)
     {
         return BossRunProgressPolicy.Evaluate(
             new BossRunProgressRequest(
                 boss,
-                legacyDrop,
                 PortalRouteManager.Instance,
                 modifiers));
     }

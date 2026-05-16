@@ -78,25 +78,3 @@ public struct BossRewardModifierAggregate
         };
     }
 }
-
-[CreateAssetMenu(fileName = "BossRewardModifier", menuName = "Loot/Boss Reward Modifier")]
-public sealed class BossRewardModifierSO : ScriptableObject
-{
-    [Header("Boss Chest Delta")]
-    [SerializeField] private ChestRunModifierDelta bossChestDelta;
-
-    [Header("Boss Bonus Drops")]
-    [SerializeField, Min(0)] private int bonusMagicStoneCount;
-    [SerializeField, Min(0)] private int bonusFieldHealPickupCount;
-    [SerializeField] private List<BossSpecificLoot> bonusLoots = new List<BossSpecificLoot>();
-
-    public BossRewardModifierAggregate ToAggregate()
-    {
-        var aggregate = new BossRewardModifierAggregate();
-        aggregate.AddChestDelta(bossChestDelta);
-        aggregate.AddMagicStoneBonus(bonusMagicStoneCount);
-        aggregate.AddFieldHealPickupBonus(bonusFieldHealPickupCount);
-        aggregate.AddBonusLoots(bonusLoots);
-        return aggregate;
-    }
-}

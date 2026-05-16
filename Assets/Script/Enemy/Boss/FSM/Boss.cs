@@ -13,14 +13,6 @@ public class Boss : Enemy
     [Header("Boss's Effects")]
     [SerializeField] private GameplayEffect groggyEffect;
 
-    private BossDrop bossDrop;
-
-    protected override void Awake()
-    {
-        base.Awake();
-        bossDrop = GetComponent<BossDrop>();
-    }
-
     /// <summary>보스 Attribute 변화에 따라 그로기와 사망 처리를 실행합니다.</summary>
     protected override void OnEnemyAttributeChanged(AttributeDefinition attribute, float oldValue, float newValue)
     {
@@ -47,10 +39,7 @@ public class Boss : Enemy
     /// <summary>보스 사망 보상을 처리하고 공통 사망 처리를 실행합니다.</summary>
     protected override void OnDeathStarted()
     {
-        if (bossDrop != null)
-        {
-            bossDrop.OnBossDead();
-        }
+        RunProgressCoordinator.EnsureInstance()?.NotifyBossRewardsReady(null);
     }
 
     /// <summary>보스가 현재 그로기 상태인지 반환합니다.</summary>

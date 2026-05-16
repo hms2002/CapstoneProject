@@ -1,5 +1,5 @@
 ---
-status: active
+status: resolved
 authority: refactor-backlog
 category: refactor-item
 last_reviewed: 2026-05-16
@@ -9,63 +9,64 @@ last_reviewed: 2026-05-16
 
 ## Status
 
-partially-refactored
+resolved
 
-## Current Problem
+## Original Problem
 
 `BossDrop` historically held boss reward, portal, timer/progress, and boss-specific bonus loot responsibilities in one prefab-facing component.
 
-The current code has split most runtime behavior into dedicated components, and `BossRewardSpawner` now delegates actual reward spawn execution to dedicated-file `BossRewardSpawnService` request/result helpers. `BossDrop` remains as a legacy adapter and reference holder for prefab compatibility.
+This debt is resolved in source. `BossDrop.cs` and its `.meta` were deleted, runtime/editor source dependencies on the `BossDrop` type were removed, and serialized scene/prefab references to the old script GUID were removed so the deleted script does not become a missing-script component.
 
-## Why It Exists
+The supported boss battle-end path is now split across route-linked special reward presets, a common prefab catalog, scene/prefab anchors, reward spawning, portal activation, and run-progress coordination. `Tools/Validation/Boss Battle-End Migration Validator` remains useful as an authoring validator for stale definition/profile data, missing catalog references, missing components, and missing anchors.
 
-- Existing boss prefabs/scenes may still reference `BossDrop` fields for chest prefab, portal object, spawn points, magic stone prefab, and boss unique loot.
-- Removing the component immediately would risk broken serialized references.
-- Boss reward and portal behavior needed to keep working while the new split components are introduced gradually.
-- Reward-spawn helper boundaries are already in a dedicated file. The remaining blocker is scene/prefab reference migration, not same-file helper placement.
+## Why It Existed
 
-## Target Shape
+- Existing boss prefabs/scenes referenced `BossDrop` fields for chest prefab, portal object, spawn points, magic stone prefab, and boss unique loot.
+- Boss reward and portal behavior needed to keep working while the split components, special reward preset path, common prefab catalog, and anchors were introduced.
+- RouteSet special reward preset references, common reward/portal prefab catalog data, and anchors needed a migration/validation path before the legacy component could be deleted.
+- Reward-spawn helper boundaries were already moved to dedicated files; the final blocker was prefab/scene serialized reference migration.
+
+## Resolved Shape
 
 - `RunProgressCoordinator` owns boss progress events, route-set dedupe, boss defeat handling, and timer pause behavior.
-- `BossRewardSpawner` owns boss reward spawning from base `StageLootTable`/`LootManager` rewards plus additive boss reward modifiers.
+- `CorridorBossRouteSetSO` references an optional `BossSpecialRewardPresetSO`, but does not own common prefabs, portal objects, spawn positions, offsets, magic stone bonuses, field-heal bonuses, or chest-count deltas.
+- `BossSpecialRewardPresetSO` owns boss-specific special loot candidates only.
+- `BossBattleEndPrefabCatalogSO` owns common treasure chest, magic stone, and portal prefab references.
+- `BossBattleEndAnchors` owns reward, scatter, and portal positions on the scene/prefab side.
+- `BossRewardSpawner` owns boss reward spawning from `StageLootTable` boss defaults via `LootManager.GenerateBossChestLoot(...)`, route-linked special loot candidates, and additive runtime boss reward modifiers.
 - `BossRewardSpawnService` owns actual chest/currency/field-heal spawn execution behind request/result data.
-- `BossExitPortalActivator` owns portal activation and portal visibility/interaction restoration.
-- `BossDrop` is removed or reduced to a temporary migration-only component once scenes/prefabs are rewired.
+- `BossExitPortalActivator` owns portal activation/instantiation and portal visibility/interaction restoration.
+- No runtime path reads `BossDrop` fields. Missing reward/portal authoring is surfaced through validators and editor/development fallback warnings instead of being hidden by the old adapter.
 
-## Risks
+## Remaining Risks
 
-- Duplicate reward or portal handling if legacy and new components are both wired incorrectly.
-- Prefab reference breakage if `BossDrop` is removed before serialized references are migrated.
-- Boss-specific bonus loot may be confused with base stage reward rules if modifier ownership is not kept clear.
+- A boss that previously relied only on deleted `BossDrop` field values can lose reward/portal data until its special reward preset, common catalog reference, portal prefab/reference, and anchors are authored.
+- Duplicate reward or portal handling is still possible if multiple scene components are wired to handle the same boss incorrectly.
+- Boss-specific bonus loot may be confused with StageLootTable boss defaults if preset/modifier ownership is not kept clear.
 - Timer/progress behavior could diverge if boss death paths bypass `RunProgressCoordinator`.
+- Auto Fix can create placeholder anchors at the boss position. Those anchors preserve a safe default position but still need manual placement review.
 
-## Refactor Trigger
+## Reopen Trigger
 
-- Boss scene or prefab wiring is already being edited.
-- A new boss reward modifier or boss-specific reward rule is added.
+- A new boss reward modifier, boss-specific reward rule, or boss base reward field is added.
 - Boss portal activation behavior changes.
-- The team is ready to remove legacy `BossDrop` serialized references from prefabs.
+- The boss battle-end validator or Unity import reports missing components, missing anchors, stale definition/profile data, or catalog/preset gaps that require another structural change rather than normal Inspector authoring.
 
 ## Related Documents
 
 - `Docs/DecisionLog.md` - `Boss Rewards Use Additive Modifier Aggregates`
 - `Docs/SessionLogs/2026-05-14.md` - BossDrop split implementation notes
-- `Assets/LeeJunMo/Script/Looting/BossDrop.cs`
+- `Assets/LeeJunMo/Script/Looting/BossDrop.cs` - deleted legacy adapter
 - `Assets/LeeJunMo/Script/Looting/BossRewardSpawner.cs`
+- `Assets/LeeJunMo/Script/Looting/BossSpecialRewardPresetSO.cs`
+- `Assets/LeeJunMo/Script/SceneManagement/BossBattleEndPrefabCatalogSO.cs`
 - `Assets/LeeJunMo/Script/SceneManagement/BossExitPortalActivator.cs`
 - `Assets/LeeJunMo/Script/SceneManagement/RunProgressCoordinator.cs`
 
-## Next Refactor Step
+## Resolution Notes
 
-Current run-progress note: `RunProgressCoordinator` now keeps route-key, final-route, identity-key, and reward-context construction policy in `BossRunProgressPolicy.cs`, while still owning event dispatch, timer calls, and legacy reward/portal fallback execution.
-
-Current reward-spawn note: `BossRewardSpawner` now owns event subscription, owner matching, legacy reference resolution, and reward-handled marking, while `BossRewardSpawnService.cs` owns chest, base loot, bonus loot, magic stone, field heal, scatter, and exception-logged spawn execution.
-
-Current remaining debt:
-
-- Boss prefabs/scenes may still rely on `BossDrop` public fields for chest prefab, portal object, spawn points, magic stone prefab, and boss unique loot.
-- `BossRewardSpawner` and `BossExitPortalActivator` still support `BossDrop` fallback references so existing prefabs keep working.
-- `RunProgressCoordinator` still has legacy fallback calls to `BossRewardSpawner.SpawnFromLegacyDrop(...)` and `BossExitPortalActivator.ActivateFromLegacyDrop(...)` when no dedicated handler marks the context handled.
-- Removing or shrinking `BossDrop` now requires a planned scene/prefab reference pass and manual play verification, not another code-only helper split.
-
-When boss prefabs are next touched, wire `BossRewardSpawner` and `BossExitPortalActivator` directly, confirm rewards/portal fire once, then remove fallback reliance on `BossDrop` references for that prefab.
+- `RunProgressCoordinator` keeps route-key, final-route, identity-key, and reward-context construction policy in `BossRunProgressPolicy.cs`, while still owning event dispatch and timer calls.
+- `BossRewardFallbackService` now only reports unhandled reward/portal authoring through editor/development warnings after reward-ready event dispatch. It does not dynamically spawn rewards or portals from a route definition.
+- `BossRewardSpawner` owns event subscription, owner matching, catalog/preset/anchor resolution, and reward-handled marking, while `BossRewardSpawnService.cs` owns boss chest generation, bonus loot, magic stone, field heal, scatter, and exception-logged spawn execution.
+- `BossBattleEndMigrationValidatorWindow` reports stale deleted battle-end/profile data, missing common catalog data, missing boss reward/portal components, optional RouteSet special reward preset state, and missing anchors. Its Auto Fix buttons can create the common catalog, add missing reward/portal/anchor components, assign catalog references, and create placeholder anchor children.
+- Manual Unity Editor verification is still required: run the validator, review presets/catalog/anchors in the Inspector, then confirm boss rewards and portals fire once after boss death.
