@@ -43,6 +43,14 @@ When documents conflict, follow this authority order:
 - You may update `Docs/SessionLogs/`, `Docs/StructureMemory/`, `Docs/RefactorBacklog/`, `Docs/ErrorLog.md`, and `Docs/DecisionLog.md` when the task outcome requires it.
 - Update `Docs/CurrentTask.md` only when the user explicitly asks to change the active task scope.
 
+## Implementation Discipline
+
+- For non-trivial work, state the relevant assumptions, risk-bearing unknowns, and success criteria before editing. If the answer can be discovered from local files, inspect first; ask only when a reasonable assumption would be risky.
+- Prefer the simplest change that satisfies the user's request and the project contracts. Do not add speculative flexibility, configurability, abstraction, or fallback behavior.
+- Every changed line should trace directly to the user's current request, a verified bug, or cleanup made necessary by your own change.
+- If a smaller or safer approach exists than the requested shape, call out the tradeoff clearly before implementing it.
+- For refactors, define the behavior-preserving boundary and verification path before editing, and do not bundle unrelated cleanup into the same slice.
+
 ## Project Memory Rules
 
 Markdown files are not only task receipts. They are project memory used to reduce future context reconstruction time, speed up work on previously touched systems, and avoid wasting tokens re-discovering structure.
