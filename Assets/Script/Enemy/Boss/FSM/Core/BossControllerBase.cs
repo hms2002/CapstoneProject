@@ -159,6 +159,12 @@ public abstract class BossControllerBase : Enemy, IBossAbilityStateBridge
         if (!isActive && hasInitializedBossRuntime)
             AbortCurrentPattern();
 
+        RunProgressCoordinator coordinator = RunProgressCoordinator.EnsureInstance();
+        if (isActive)
+            coordinator?.NotifyBossCombatStarted(this);
+        else
+            coordinator?.NotifyBossCombatEnded(this);
+
         SyncBossHudRegistration();
     }
 
@@ -454,12 +460,14 @@ public abstract class BossControllerBase : Enemy, IBossAbilityStateBridge
             ChangeState(deadState);
 
         SetCombatActive(false);
+        RunProgressCoordinator.EnsureInstance()?.NotifyBossDefeated(this);
         ResolveDeathPresentation();
         deathPresentation?.NotifyDeathStarted();
     }
 
     protected override void OnDestroy()
     {
+        RunProgressCoordinator.Instance?.NotifyBossCombatEnded(this);
         SyncBossHudRegistration(forceUnbind: true);
         base.OnDestroy();
     }
@@ -470,7 +478,7 @@ public abstract class BossControllerBase : Enemy, IBossAbilityStateBridge
         if (deathPresentation != null && deathPresentation.TryBeginDeathSequence())
             return;
 
-        SpawnDeathRewards();
+        RunProgressCoordinator.EnsureInstance()?.NotifyBossRewardsReady(this);
         base.DestroyAfterDelay();
     }
 
@@ -951,12 +959,6 @@ public abstract class BossControllerBase : Enemy, IBossAbilityStateBridge
     protected virtual bool CanUseDialogue()
     {
         return false;
-    }
-
-    private void SpawnDeathRewards()
-    {
-        if (bossDrop != null)
-            bossDrop.OnBossDead();
     }
 
     internal void PlayDeferredDeathAnimationFromPresentation()

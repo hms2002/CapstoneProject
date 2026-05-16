@@ -7120,7 +7120,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2eae5b7f38d512841bb3d472aa68139c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  npcData: {fileID: 11400000, guid: 4a2fd65cb07d41d2b4925014a094b1fe, type: 2}
+  npcData: {fileID: 11400000, guid: 47d475aabd71d0245a47a8fa56c6546a, type: 2}
   startKnotSelectorBehaviour: {fileID: 0}
   playEncounterDialogue: 1
   playPrimaryDialogueAfterEncounter: 1
@@ -10773,6 +10773,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   telegraphPrefab: {fileID: 788264263987448140, guid: 211dd09e2da9caf47ad8409c9e35b83d, type: 3}
   defaultStyle: {fileID: 11400000, guid: 5c4c8108f36d4acbaa6dfaf6d6b3f6e7, type: 2}
+  useDefaultWallClipping: 0
+  defaultWallClipLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  defaultWallClipSampleCount: 48
+  defaultWallClipSkinWidth: 0.03
 --- !u!114 &5675224340446027930
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11065,6 +11071,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   body: {fileID: 5310030814883626769}
   enforceContinuousCollision: 1
+  preventWallTunneling: 1
+  wallCollisionLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  wallSafetyMinSpeed: 8
+  wallCastSkinWidth: 0.03
+  depenetrationSkinWidth: 0.01
+  maxDepenetrationIterations: 3
   intentSourceBehaviour: {fileID: 0}
   statProviderBehaviour: {fileID: 0}
   externalMovement: {fileID: 0}

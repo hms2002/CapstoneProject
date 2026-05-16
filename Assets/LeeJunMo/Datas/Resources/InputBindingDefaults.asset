@@ -1,0 +1,63 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 094af4e6fb4143b69640e0e6d33fde5b, type: 3}
+  m_Name: InputBindingDefaults
+  m_EditorClassIdentifier: 
+  defaultBindings:
+  - action: 0
+    primary: 119
+    secondary: 273
+  - action: 1
+    primary: 115
+    secondary: 274
+  - action: 2
+    primary: 97
+    secondary: 276
+  - action: 3
+    primary: 100
+    secondary: 275
+  - action: 4
+    primary: 323
+    secondary: 0
+  - action: 5
+    primary: 102
+    secondary: 0
+  - action: 6
+    primary: 32
+    secondary: 0
+  - action: 7
+    primary: 324
+    secondary: 0
+  - action: 8
+    primary: 113
+    secondary: 0
+  - action: 9
+    primary: 9
+    secondary: 0
+  - action: 10
+    primary: 49
+    secondary: 0
+  - action: 11
+    primary: 50
+    secondary: 0
+  - action: 12
+    primary: 51
+    secondary: 0
+  - action: 13
+    primary: 52
+    secondary: 0
+  - action: 14
+    primary: 118
+    secondary: 0
+  - action: 15
+    primary: 32
+    secondary: 0

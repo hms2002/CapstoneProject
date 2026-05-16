@@ -311,9 +311,7 @@ public sealed class MerchantNPC : MonoBehaviour
 
     private ShopRunModifierDelta ResolveShopModifiers()
     {
-        return RunModifierService.Instance != null
-            ? RunModifierService.Instance.ShopModifiers
-            : default;
+        return RunModifierService.CurrentRewardSnapshot.ShopModifiers;
     }
 
     private MerchantShopPolicySnapshot ResolveShopPolicy()
@@ -334,7 +332,7 @@ public sealed class MerchantNPC : MonoBehaviour
                 shopDefinition.MaxWeaponSlots,
                 shopDefinition.MaxConsumableSlots,
                 effectivePriceSettings,
-                lootPoolService.BuildShopWeaponExclusionSet(),
+                lootPoolService.BuildWeaponExclusionSet(LootPoolContext.ShopStock),
                 excludedEntries)
             : new List<MerchantStockEntryState>();
     }

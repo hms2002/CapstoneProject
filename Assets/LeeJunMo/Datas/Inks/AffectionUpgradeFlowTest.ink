@@ -8,7 +8,7 @@
 필요한 재화만 준비되어 있다면 바로 업그레이드를 진행해 줄 수 있다.
 
 + [업그레이드를 부탁한다.]
-    # face: 1002: Smile
+    # face: 1002: Normal
     좋아. 지금 바로 업그레이드 경로를 열어 주지.
     -> open_upgrade
 
@@ -19,7 +19,7 @@
     -> upgrade_end
 
 = open_upgrade
-# face: 1002: Smile
+# face: 1002: Normal
 잘 보고 신중하게 고르도록 해라.
 # feature: Upgrade
 -> END

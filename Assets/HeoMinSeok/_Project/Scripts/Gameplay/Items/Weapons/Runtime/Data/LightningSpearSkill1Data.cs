@@ -5,7 +5,7 @@ using UnityGAS;
 /// 번개 창 Q의 표식 돌진과 표식 없음 sweep 실행 데이터를 보관할 책임을 가집니다.
 /// </summary>
 [CreateAssetMenu(fileName = "ALData_LightningSpearSkill1", menuName = "GAS/Weapon/Lightning Spear/Skill1 Data")]
-public sealed class LightningSpearSkill1Data : ScriptableObject
+public sealed class LightningSpearSkill1Data : ScriptableObject, IAbilityTooltipVariantProvider
 {
     [Header("Animation")]
     [SerializeField] private string markRushAnimationTrigger;
@@ -25,6 +25,7 @@ public sealed class LightningSpearSkill1Data : ScriptableObject
     [SerializeField, Min(0f)] private float markRushBodyRadius = 0.25f;
     [SerializeField, Min(0f)] private float markRushArrivalHitDelay = 0.05f;
     [SerializeField, Min(0f)] private float markRushInternalDelay = 0.15f;
+    [SerializeField, Min(0f)] private float markRushInputBufferSeconds = 0.35f;
     [SerializeField] private LightningSpearDashStabTrailEffect markRushTrailEffectPrefab;
     [SerializeField] private LightningSpearHitConfig markRushHit = new LightningSpearHitConfig();
 
@@ -81,6 +82,7 @@ public sealed class LightningSpearSkill1Data : ScriptableObject
     public float MarkRushBodyRadius => Mathf.Max(0f, markRushBodyRadius);
     public float MarkRushArrivalHitDelay => Mathf.Max(0f, markRushArrivalHitDelay);
     public float MarkRushInternalDelay => Mathf.Max(0f, markRushInternalDelay);
+    public float MarkRushInputBufferSeconds => Mathf.Max(0f, markRushInputBufferSeconds);
     public LightningSpearDashStabTrailEffect MarkRushTrailEffectPrefab => markRushTrailEffectPrefab;
     public LightningSpearHitConfig MarkRushHit => markRushHit;
     public LightningSpearHitConfig NoMarkSweepHit => noMarkSweepHit;
@@ -117,4 +119,38 @@ public sealed class LightningSpearSkill1Data : ScriptableObject
     public float RecoveredSpearMaxFanAngle => Mathf.Max(0f, recoveredSpearMaxFanAngle);
     public float RecoveredSpearShotInterval => Mathf.Max(0f, recoveredSpearShotInterval);
     public LightningSpearHitConfig RecoveredSpearProjectileHit => recoveredSpearProjectileHit;
+
+    public int GetAbilityTooltipVariantCount(AbilityDefinition ability, ItemDetailContext ctx)
+    {
+        return 2;
+    }
+
+    public AbilityTooltipVariant BuildAbilityTooltipVariant(AbilityDefinition ability, int variantIndex, ItemDetailContext ctx)
+    {
+        int normalizedIndex = Mathf.Abs(variantIndex) % 2;
+        return normalizedIndex == 0
+            ? BuildNoMarkTooltipVariant(ability)
+            : BuildMarkRushTooltipVariant(ability);
+    }
+
+    private AbilityTooltipVariant BuildNoMarkTooltipVariant(AbilityDefinition ability)
+    {
+        return new AbilityTooltipVariant(
+            "NoMark",
+            "뇌창 휩쓸기",
+            ability != null ? ability.icon : null,
+            "표식이 없을 때 이동하지 않고 전방을 휩쓴다.\n회수 창이 있으면 조준 방향 앞쪽에서 아치형 부채꼴로 순차 사출한다.",
+            ability != null ? (float?)ability.cooldown : null);
+    }
+
+    private AbilityTooltipVariant BuildMarkRushTooltipVariant(AbilityDefinition ability)
+    {
+        Sprite icon = markRushHudIcon != null || ability == null ? markRushHudIcon : ability.icon;
+        return new AbilityTooltipVariant(
+            "MarkRush",
+            "뇌창 돌격",
+            icon,
+            "커서 주변의 번개 표식으로 즉시 돌진해 궤적과 도착 지점을 공격한다.\n표식을 소모하면 Skill1 쿨타임이 초기화되고 회수 창을 1개 얻는다.",
+            ability != null ? (float?)ability.cooldown : null);
+    }
 }

@@ -44,6 +44,21 @@ public abstract class WeaponAbilityRuntimeState : MonoBehaviour
     {
     }
 
+    public virtual bool TryHandleAbilityInput(
+        WeaponDefinition weapon,
+        WeaponAbilitySlot slot,
+        AbilityDefinition ability)
+    {
+        return false;
+    }
+
+    public virtual void HandleAbilityActivationRejected(
+        WeaponDefinition weapon,
+        WeaponAbilitySlot slot,
+        AbilityDefinition rejectedAbility)
+    {
+    }
+
     /// <summary>
     /// 책임 :
     /// - 현재 장착 무기에 연관된 GameplayEvent를 무기 런타임 상태가 소비할 수 있게 하는 공식 훅을 제공한다.

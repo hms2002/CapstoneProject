@@ -1,7 +1,8 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class InventoryScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
+public class InventoryScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource, ICloseRequestHandler
 {
     private enum OpenMode
     {
@@ -38,6 +39,8 @@ public class InventoryScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSo
     private RelicInventory playerRelicInventory;
     private OpenMode openMode;
     private bool playSlideFadePresentationOnNextOpen = true;
+    private Coroutine chestRevealInputBlockRoutine;
+    private GameFlowInputBlocker chestRevealInputBlocker;
 
     public bool IsActive => gameObject.activeSelf;
     public bool CanCloseOnEscape => true;
@@ -45,6 +48,10 @@ public class InventoryScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSo
     public UIOpenGroup BlockedOpenGroups => UIOpenGroup.ExclusiveModal;
     public UIGameplayLockProfile GameplayLockProfile => UIGameplayLockProfile.FreezeAndBlockControl;
     public MouseCursorDomain CursorDomain => MouseCursorDomain.Inventory;
+    public bool IsChestFirstOpenRevealPlaying =>
+        openMode == OpenMode.Chest &&
+        chestInventoryScreen != null &&
+        chestInventoryScreen.IsFirstOpenRevealPlaying;
 
     public void OpenUI()
     {
@@ -75,6 +82,11 @@ public class InventoryScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSo
         FinishClose(notifyChestClosed);
     }
 
+    public bool TryHandleCloseRequest()
+    {
+        return IsChestFirstOpenRevealPlaying;
+    }
+
     private void Awake()
     {
         ResolvePresentation();
@@ -84,6 +96,9 @@ public class InventoryScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSo
         {
             closeButton.onClick.AddListener(() =>
             {
+                if (TryHandleCloseRequest())
+                    return;
+
                 if (UIManager.Instance != null)
                     UIManager.Instance.PopUI(this);
                 else
@@ -99,6 +114,7 @@ public class InventoryScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSo
 
     private void OnDisable()
     {
+        ReleaseChestRevealInputBlock();
         ItemDragContext.CancelActiveDragSession();
         MouseCursorService.Instance?.ClearDomain(this);
         playerInventoryPanel?.ClearBinding();
@@ -194,13 +210,59 @@ public class InventoryScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSo
         }
 
         slideFadePresentation.SnapOpen();
+        AcquireChestRevealInputBlock();
         chestInventoryScreen?.PlayRevealForInventoryRoot(playerInventoryPanel);
+        TrackChestRevealInputBlockRelease();
     }
 
     private void FinishClose(bool notifyChestClosed)
     {
+        ReleaseChestRevealInputBlock();
+
         if (notifyChestClosed && ChestUIManager.Instance != null)
             ChestUIManager.Instance.HandleChestClosed();
+    }
+
+    private void AcquireChestRevealInputBlock()
+    {
+        if (chestRevealInputBlocker != null && chestRevealInputBlocker.IsBlocking)
+            return;
+
+        chestRevealInputBlocker = GameFlowInputBlocker.GetOrAdd(this);
+        chestRevealInputBlocker?.Acquire();
+    }
+
+    private void TrackChestRevealInputBlockRelease()
+    {
+        if (chestRevealInputBlocker == null || !chestRevealInputBlocker.IsBlocking)
+            return;
+
+        if (chestRevealInputBlockRoutine != null)
+            StopCoroutine(chestRevealInputBlockRoutine);
+
+        chestRevealInputBlockRoutine = StartCoroutine(ReleaseChestRevealInputBlockWhenReady());
+    }
+
+    private IEnumerator ReleaseChestRevealInputBlockWhenReady()
+    {
+        yield return null;
+
+        while (IsChestFirstOpenRevealPlaying)
+            yield return null;
+
+        chestRevealInputBlockRoutine = null;
+        ReleaseChestRevealInputBlock();
+    }
+
+    private void ReleaseChestRevealInputBlock()
+    {
+        if (chestRevealInputBlockRoutine != null)
+        {
+            StopCoroutine(chestRevealInputBlockRoutine);
+            chestRevealInputBlockRoutine = null;
+        }
+
+        chestRevealInputBlocker?.Release();
     }
 
     private void BindPlayerInventory(

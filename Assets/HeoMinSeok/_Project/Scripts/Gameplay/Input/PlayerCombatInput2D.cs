@@ -87,6 +87,7 @@ public sealed class PlayerCombatInput2D : MonoBehaviour, IAbilityGameplayEventLi
 
         if (IsCombatBlocked())
         {
+            TryHandleBlockedWeaponAbilityInput(input);
             ReleaseAttackHoldIfNeeded();
             return;
         }
@@ -152,6 +153,15 @@ public sealed class PlayerCombatInput2D : MonoBehaviour, IAbilityGameplayEventLi
             weaponInventory.Swap();
     }
 
+    private void TryHandleBlockedWeaponAbilityInput(InputBindingService input)
+    {
+        if (input == null)
+            return;
+
+        if (input.WasPressedThisFrame(InputActionId.Skill1))
+            TryHandleCurrentWeaponAbilityInput(WeaponAbilitySlot.Skill1, GetSkill1());
+    }
+
     private bool IsCombatBlocked()
     {
         if (tagSystem == null)
@@ -215,11 +225,29 @@ public sealed class PlayerCombatInput2D : MonoBehaviour, IAbilityGameplayEventLi
     {
         if (def == null || weaponAbilityBridge == null) return false;
 
+        if (TryHandleCurrentWeaponAbilityInput(slot, def))
+            return true;
+
         bool activated = weaponAbilityBridge.TryActivate(def, null);
         if (activated)
             NotifyCurrentWeaponAbilityActivated(slot, def);
+        else
+            NotifyCurrentWeaponAbilityActivationRejected(slot, def);
 
         return activated;
+    }
+
+    private bool TryHandleCurrentWeaponAbilityInput(WeaponAbilitySlot slot, AbilityDefinition ability)
+    {
+        if (weaponInventory == null || weaponEquipController == null)
+            return false;
+
+        WeaponDefinition activeWeapon = weaponInventory.ActiveWeapon;
+        if (activeWeapon == null)
+            return false;
+
+        WeaponAbilityRuntimeState runtimeState = weaponEquipController.GetCurrentWeaponRuntimeState();
+        return runtimeState != null && runtimeState.TryHandleAbilityInput(activeWeapon, slot, ability);
     }
 
     /// <summary>
@@ -241,6 +269,22 @@ public sealed class PlayerCombatInput2D : MonoBehaviour, IAbilityGameplayEventLi
             return;
 
         runtimeState.HandleAbilityActivated(activeWeapon, slot, activatedAbility);
+    }
+
+    private void NotifyCurrentWeaponAbilityActivationRejected(WeaponAbilitySlot slot, AbilityDefinition rejectedAbility)
+    {
+        if (weaponInventory == null || weaponEquipController == null)
+            return;
+
+        WeaponDefinition activeWeapon = weaponInventory.ActiveWeapon;
+        if (activeWeapon == null)
+            return;
+
+        WeaponAbilityRuntimeState runtimeState = weaponEquipController.GetCurrentWeaponRuntimeState();
+        if (runtimeState == null)
+            return;
+
+        runtimeState.HandleAbilityActivationRejected(activeWeapon, slot, rejectedAbility);
     }
 
     private void SendGameplayEventSafe(GameplayTag tag)

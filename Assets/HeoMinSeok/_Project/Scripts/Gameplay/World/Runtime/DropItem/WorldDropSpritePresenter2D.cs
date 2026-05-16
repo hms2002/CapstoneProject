@@ -73,9 +73,6 @@ public sealed class WorldDropSpritePresenter2D : MonoBehaviour
             targetBoxSize.y = 1f;
 
         ResolveRenderer();
-
-        if (!Application.isPlaying && spriteRenderer != null && spriteRenderer.sprite != null)
-            ApplyNormalizedTransform(spriteRenderer.sprite, false);
     }
 
     private void ResolveRenderer()

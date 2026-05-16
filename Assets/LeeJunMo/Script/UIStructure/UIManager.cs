@@ -17,7 +17,7 @@ public class UIManager : MonoBehaviour
 
     [Header("Gameplay Lock")]
     [SerializeField] private GameplayTagSet blockControlByUiTagSet;
-    [SerializeField] private UIGameplayLockProfile dialogueGameplayLockProfile = UIGameplayLockProfile.BlockControlOnly;
+    [SerializeField, HideInInspector] private UIGameplayLockProfile dialogueGameplayLockProfile;
 
     [Header("Pause Menu")]
     [SerializeField] private string titleSceneNameOverride = string.Empty;
@@ -25,6 +25,7 @@ public class UIManager : MonoBehaviour
     private readonly PopupStackState popupStack = new PopupStackState();
     private readonly WorldPromptCoordinator worldPromptCoordinator = new WorldPromptCoordinator();
     private readonly HashSet<int> gameplayHudCurrencyHideOwners = new HashSet<int>();
+    private readonly HashSet<Object> externalUiInputBlockOwners = new HashSet<Object>();
     private CurrencyUI gameplayHudCurrencyUI;
     private PauseMenuUI pauseMenu;
     private SettingsPanelUI settingsPanel;
@@ -34,9 +35,10 @@ public class UIManager : MonoBehaviour
     private PlayerUIControlLockBridge activeControlLockBridge;
     private bool isControlLockApplied;
     private bool isTimeFrozenByUi;
-    private bool wasDialoguePlaying;
     private float frozenPreviousTimeScale = 1f;
     private const string BlockControlByUiTagSetResourcePath = "Tags/TagSet/TS_BlockControlByUI";
+
+    public bool IsExternalUiInputBlocked => HasExternalUiInputBlockers();
 
     private void Awake()
     {
@@ -94,7 +96,6 @@ public class UIManager : MonoBehaviour
     private void Update()
     {
         popupStack.PruneDeadEntries();
-        RefreshDialogueDrivenGameplayLock();
 
         if (IsInputBlockedByLoading())
             return;
@@ -113,7 +114,7 @@ public class UIManager : MonoBehaviour
         keyBindingPanel?.RefreshCanvasParent();
         keyBindingPanel?.CloseUI();
         settingsHiddenByKeyBinding = false;
-        wasDialoguePlaying = false;
+        externalUiInputBlockOwners.Clear();
         ReleaseControlLock();
         RestoreTimeScaleIfNeeded();
         HideHoverImmediate();
@@ -126,7 +127,15 @@ public class UIManager : MonoBehaviour
 
     public bool CanOpenUI(IStackableUI ui)
     {
+        return CanOpenUI(ui, null);
+    }
+
+    private bool CanOpenUI(IStackableUI ui, Object allowedExternalBlockOwner)
+    {
         if (ui == null)
+            return false;
+
+        if (IsNewUiOpeningBlocked(allowedExternalBlockOwner))
             return false;
 
         var snapshot = popupStack.Snapshot();
@@ -152,12 +161,29 @@ public class UIManager : MonoBehaviour
         return true;
     }
 
+    public bool TryPushUIForExternalBlockOwner(Object owner, IStackableUI ui)
+    {
+        if (owner == null)
+            return TryPushUI(ui);
+
+        if (!CanOpenUI(ui, owner))
+            return false;
+
+        PushUI(ui, owner);
+        return true;
+    }
+
     public void PushUI(IStackableUI ui)
+    {
+        PushUI(ui, null);
+    }
+
+    private void PushUI(IStackableUI ui, Object allowedExternalBlockOwner)
     {
         if (ui == null)
             return;
 
-        if (!CanOpenUI(ui))
+        if (!CanOpenUI(ui, allowedExternalBlockOwner))
             return;
 
         popupStack.Push(ui);
@@ -166,6 +192,14 @@ public class UIManager : MonoBehaviour
     }
 
     public void PopUI(IStackableUI ui)
+    {
+        if (ui is ICloseRequestHandler closeHandler && closeHandler.TryHandleCloseRequest())
+            return;
+
+        PopUIImmediate(ui);
+    }
+
+    private void PopUIImmediate(IStackableUI ui)
     {
         if (ui == null)
             return;
@@ -199,7 +233,7 @@ public class UIManager : MonoBehaviour
 
     private void HandleEscapeInput()
     {
-        if (IsInputBlockedByLoading())
+        if (IsInputBlockedByLoading() || IsExternalUiInputBlocked)
             return;
 
         if (popupStack.TryGetTop(out IStackableUI topUI))
@@ -213,15 +247,12 @@ public class UIManager : MonoBehaviour
             return;
         }
 
-        if (DialogueService.Instance != null && DialogueService.Instance.IsPlaying)
-            return;
-
         TogglePauseMenu();
     }
 
     private void TogglePauseMenu()
     {
-        if (IsInputBlockedByLoading())
+        if (IsInputBlockedByLoading() || IsExternalUiInputBlocked)
             return;
 
         PauseMenuUI panel = ResolvePauseMenu();
@@ -241,7 +272,7 @@ public class UIManager : MonoBehaviour
 
     public bool OpenSettingsPanel()
     {
-        if (IsInputBlockedByLoading())
+        if (IsInputBlockedByLoading() || IsExternalUiInputBlocked)
             return false;
 
         SettingsPanelUI panel = ResolveSettingsPanel();
@@ -255,7 +286,7 @@ public class UIManager : MonoBehaviour
 
     public bool OpenKeyBindingPanel()
     {
-        if (IsInputBlockedByLoading())
+        if (IsInputBlockedByLoading() || IsExternalUiInputBlocked)
             return false;
 
         KeyBindingPanelUI panel = ResolveKeyBindingPanel();
@@ -281,25 +312,17 @@ public class UIManager : MonoBehaviour
 
     public void ReturnToTitleScreen()
     {
-        string sceneName = ResolveTitleSceneName();
-        if (string.IsNullOrWhiteSpace(sceneName))
+        TitleReturnRequest request = new TitleReturnRequest(
+            this,
+            ResolveTitleSceneName(),
+            GamePlayDataManager.Instance);
+        if (!request.IsValid)
         {
             Debug.LogWarning("[UIManager] Title scene name could not be resolved.", this);
             return;
         }
 
-        CloseAllPopups();
-        HideHoverImmediate();
-        HideWorldPrompt();
-
-        if (GamePlayDataManager.Instance != null)
-            GamePlayDataManager.Instance.EndRun(RunEndReason.None);
-
-        SceneTransitionCoordinator transitionCoordinator = SceneTransitionCoordinator.EnsureInstance();
-        if (transitionCoordinator != null && transitionCoordinator.TryLoadScene(sceneName))
-            return;
-
-        SceneManager.LoadScene(sceneName);
+        TitleReturnService.Execute(request);
     }
 
     public void QuitGame()
@@ -350,14 +373,7 @@ public class UIManager : MonoBehaviour
 
     private string ResolveTitleSceneName()
     {
-        if (!string.IsNullOrWhiteSpace(titleSceneNameOverride))
-            return titleSceneNameOverride;
-
-        string firstBuildScenePath = SceneUtility.GetScenePathByBuildIndex(0);
-        if (!string.IsNullOrWhiteSpace(firstBuildScenePath))
-            return Path.GetFileNameWithoutExtension(firstBuildScenePath);
-
-        return null;
+        return TitleSceneNameResolver.Resolve(titleSceneNameOverride);
     }
 
     private static bool IsInputBlockedByLoading()
@@ -387,7 +403,7 @@ public class UIManager : MonoBehaviour
             if (!force && !ui.CanCloseOnEscape)
                 continue;
 
-            PopUI(ui);
+            PopUIImmediate(ui);
         }
     }
 
@@ -429,7 +445,7 @@ public class UIManager : MonoBehaviour
 
     public bool HasBlockingUI()
     {
-        return HasActivePopup() || (DialogueService.Instance != null && DialogueService.Instance.IsPlaying);
+        return HasActivePopup() || IsExternalUiInputBlocked;
     }
 
     public void ShowWorldPrompt(IInteractable target)
@@ -516,6 +532,24 @@ public class UIManager : MonoBehaviour
         ApplyGameplayHudCurrencyVisibility();
     }
 
+    public void SetExternalUiInputBlocked(Object owner, bool blocked)
+    {
+        if (owner == null)
+            return;
+
+        if (blocked)
+        {
+            externalUiInputBlockOwners.Add(owner);
+            HideHoverImmediate();
+            HideWorldPrompt();
+            ApplyGameplayLockState();
+            return;
+        }
+
+        externalUiInputBlockOwners.Remove(owner);
+        ApplyGameplayLockState();
+    }
+
     private void ApplyGameplayHudCurrencyVisibility()
     {
         CurrencyUI hudCurrency = ResolveGameplayHudCurrencyUI();
@@ -585,17 +619,48 @@ public class UIManager : MonoBehaviour
     }
 
     /// <summary>
-    /// 책임 :
-    /// - 대화 시작/종료처럼 팝업 스택 변경 없이 발생하는 UI 상태 변화를 감지해 gameplay lock을 재평가한다.
+    /// Blocks new stack UI openings while loading or an explicit external game flow blocker is active.
     /// </summary>
-    private void RefreshDialogueDrivenGameplayLock()
+    private bool IsNewUiOpeningBlocked(Object allowedExternalBlockOwner = null)
     {
-        bool isDialoguePlaying = DialogueService.Instance != null && DialogueService.Instance.IsPlaying;
-        if (isDialoguePlaying == wasDialoguePlaying)
-            return;
+        return IsInputBlockedByLoading() ||
+               HasExternalUiInputBlockersExcept(allowedExternalBlockOwner);
+    }
 
-        wasDialoguePlaying = isDialoguePlaying;
-        ApplyGameplayLockState();
+    private bool HasExternalUiInputBlockers()
+    {
+        return HasExternalUiInputBlockersExcept(null);
+    }
+
+    private bool HasExternalUiInputBlockersExcept(Object allowedOwner)
+    {
+        if (externalUiInputBlockOwners.Count == 0)
+            return false;
+
+        bool hasBlockingOwner = false;
+        List<Object> deadOwners = null;
+        foreach (Object owner in externalUiInputBlockOwners)
+        {
+            if (owner == null)
+            {
+                deadOwners ??= new List<Object>();
+                deadOwners.Add(owner);
+                continue;
+            }
+
+            if (allowedOwner != null && owner == allowedOwner)
+                continue;
+
+            hasBlockingOwner = true;
+        }
+
+        if (deadOwners != null)
+        {
+            for (int i = 0; i < deadOwners.Count; i++)
+                externalUiInputBlockOwners.Remove(deadOwners[i]);
+        }
+
+        return hasBlockingOwner;
     }
 
     /// <summary>
@@ -631,11 +696,10 @@ public class UIManager : MonoBehaviour
                 highestProfile = ui.GameplayLockProfile;
         }
 
-        if (DialogueService.Instance != null &&
-            DialogueService.Instance.IsPlaying &&
-            dialogueGameplayLockProfile > highestProfile)
+        if (HasExternalUiInputBlockers() &&
+            UIGameplayLockProfile.BlockControlOnly > highestProfile)
         {
-            highestProfile = dialogueGameplayLockProfile;
+            highestProfile = UIGameplayLockProfile.BlockControlOnly;
         }
 
         return highestProfile;

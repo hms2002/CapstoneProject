@@ -1,9 +1,11 @@
-using System.Collections.Generic;
-
 namespace UnityGAS
 {
     public static class DamageSnapshotBuilder
     {
+#if UNITY_EDITOR
+        private static bool s_warnedLegacyElementFormulasIgnored;
+#endif
+
         public static CombatDamageSnapshot Build(
             AttributeSet attributeSet,
             IStatProvider statProvider,
@@ -12,7 +14,7 @@ namespace UnityGAS
             ScaledStatFormula knockbackFormula)
         {
             if (attributeSet == null)
-                return new CombatDamageSnapshot(0f, 0f, 0f, null, false);
+                return new CombatDamageSnapshot(0f, 0f, 0f, false);
 
             float baseHp = 0f;
             if (damageFormula != null)
@@ -26,36 +28,12 @@ namespace UnityGAS
             if (config != null && config.includeStaggerBuildUp && config.staggerFormula != null)
                 baseStagger = config.staggerFormula.Evaluate(attributeSet, statProvider, defaultIfEmpty: 0f);
 
-            List<ElementDamageInput> elementInputs = null;
-            if (config != null && config.includeElementBuildUp && config.HasElementFormulas)
-            {
-                elementInputs = new List<ElementDamageInput>(config.elementFormulas.Length);
-
-                for (int i = 0; i < config.elementFormulas.Length; i++)
-                {
-                    var e = config.elementFormulas[i];
-                    if (e == null || e.elementType == null || e.formula == null)
-                        continue;
-
-                    float v = e.formula.Evaluate(attributeSet, statProvider, defaultIfEmpty: 0f);
-                    if (v <= 0f)
-                        continue;
-
-                    elementInputs.Add(new ElementDamageInput
-                    {
-                        elementType = e.elementType,
-                        baseDamage = v
-                    });
-                }
-            }
-
             return BuildFromBaseValues(
                 statProvider: statProvider,
                 config: config,
                 baseHp: baseHp,
                 baseStagger: baseStagger,
-                baseKnockback: baseKnockback,
-                elementInputs: elementInputs
+                baseKnockback: baseKnockback
             );
         }
 
@@ -64,29 +42,39 @@ namespace UnityGAS
             DamagePayloadConfig config,
             float baseHp,
             float baseStagger,
-            float baseKnockback,
-            List<ElementDamageInput> elementInputs)
+            float baseKnockback)
         {
-            List<ElementDamageResult> elementResults = null;
-            if (elementInputs != null && elementInputs.Count > 0)
-                elementResults = new List<ElementDamageResult>(elementInputs.Count);
+            WarnLegacyElementFormulasIgnored(config);
 
-            var r = DamageFormulaUtil.PostProcess(
+            var result = DamageFormulaUtil.PostProcess(
                 statProvider,
                 baseHpDamage: baseHp,
-                baseStaggerDamage: baseStagger,
-                elementInputs: elementInputs,
-                outElementResults: elementResults,
-                critAffectsElement: (config == null ? true : config.critAffectsElement)
+                baseStaggerDamage: baseStagger
             );
 
             return new CombatDamageSnapshot(
-                finalHpDamage: r.hpDamage,
-                finalStaggerBuildUp: r.staggerDamage,
+                finalHpDamage: result.hpDamage,
+                finalStaggerBuildUp: result.staggerDamage,
                 finalKnockbackImpulse: baseKnockback,
-                elementBuildUps: elementResults,
-                isCriticalHit: r.isCrit
+                isCriticalHit: result.isCrit
             );
+        }
+
+        private static void WarnLegacyElementFormulasIgnored(DamagePayloadConfig config)
+        {
+#if UNITY_EDITOR
+            if (s_warnedLegacyElementFormulasIgnored)
+                return;
+
+            if (config == null || !config.includeElementBuildUp || !config.HasElementFormulas)
+                return;
+
+            s_warnedLegacyElementFormulasIgnored = true;
+            UnityEngine.Debug.LogWarning(
+                "[DamageSnapshotBuilder] DamagePayloadConfig.elementFormulas is legacy and no longer " +
+                "produces applied element build-up. Element build-up is resolved from the attacker's " +
+                "ElementOffenseSource at CombatDamageAction application time.");
+#endif
         }
     }
 }

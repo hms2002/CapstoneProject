@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine;
 
@@ -29,6 +30,10 @@ public sealed class WorldItemDropTweenAnimator : MonoBehaviour
         transform.position = startPosition;
         transform.rotation = Quaternion.identity;
 
+        IWorldItemDropLandingVisual[] landingVisuals = ResolveLandingVisuals();
+        for (int i = 0; i < landingVisuals.Length; i++)
+            landingVisuals[i]?.OnDropTravelStarted();
+
         Vector3 visualCenterLocal = ResolveVisualCenterLocal();
         float distance = Vector2.Distance(startPosition, landingPosition);
         float duration = Mathf.Clamp(minDuration + distance * durationPerUnit, minDuration, maxDuration);
@@ -51,12 +56,17 @@ public sealed class WorldItemDropTweenAnimator : MonoBehaviour
             .SetEase(Ease.Linear);
 
         activeSequence.Append(travelTween);
+        activeSequence.AppendCallback(() =>
+        {
+            travelTween = null;
+            transform.SetPositionAndRotation(landingPosition, Quaternion.identity);
+        });
+        AppendLandingTweens(activeSequence, landingVisuals);
         activeSequence.OnComplete(() =>
         {
             activeSequence = null;
             travelTween = null;
-            transform.position = landingPosition;
-            transform.rotation = Quaternion.identity;
+            transform.SetPositionAndRotation(landingPosition, Quaternion.identity);
             onCompleted?.Invoke();
         });
     }
@@ -135,6 +145,52 @@ public sealed class WorldItemDropTweenAnimator : MonoBehaviour
     private static Vector3 ResolveCenterPivotOffset(Vector3 visualCenterLocal, Quaternion rotation)
     {
         return visualCenterLocal - rotation * visualCenterLocal;
+    }
+
+    private IWorldItemDropLandingVisual[] ResolveLandingVisuals()
+    {
+        MonoBehaviour[] behaviours = GetComponentsInChildren<MonoBehaviour>(includeInactive: true);
+        List<IWorldItemDropLandingVisual> visuals = null;
+
+        for (int i = 0; i < behaviours.Length; i++)
+        {
+            if (behaviours[i] is not IWorldItemDropLandingVisual landingVisual)
+                continue;
+
+            visuals ??= new List<IWorldItemDropLandingVisual>();
+            visuals.Add(landingVisual);
+        }
+
+        return visuals != null
+            ? visuals.ToArray()
+            : Array.Empty<IWorldItemDropLandingVisual>();
+    }
+
+    private static void AppendLandingTweens(Sequence sequence, IWorldItemDropLandingVisual[] landingVisuals)
+    {
+        if (sequence == null || landingVisuals == null || landingVisuals.Length == 0)
+            return;
+
+        Sequence landingSequence = DOTween.Sequence();
+        bool hasTween = false;
+
+        for (int i = 0; i < landingVisuals.Length; i++)
+        {
+            Tween landingTween = landingVisuals[i]?.CreateDropLandingTween();
+            if (landingTween == null)
+                continue;
+
+            landingSequence.Join(landingTween);
+            hasTween = true;
+        }
+
+        if (hasTween)
+        {
+            sequence.Append(landingSequence);
+            return;
+        }
+
+        landingSequence.Kill();
     }
 
     private static float EaseOutQuad(float t)

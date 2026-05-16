@@ -27,6 +27,7 @@ public class TreasureChest : MonoBehaviour
     private bool isGenerated;
     private bool isOpening;
     private bool isPreludeTimeFrozen;
+    private GameFlowInputBlocker openingInputBlocker;
     private float preludePreviousTimeScale = 1f;
     private WorldObjectPresentationRuntime openPresentationRuntime;
     private readonly List<ChestLootSnapshot> refreshGuard = new List<ChestLootSnapshot>();
@@ -53,7 +54,9 @@ public class TreasureChest : MonoBehaviour
 
     private void OnDisable()
     {
+        ReleaseOpeningUiInputBlockIfNeeded();
         RestorePreludeTimeIfNeeded();
+        isOpening = false;
     }
 
     public void InitializeWithLoot(List<ScriptableObject> loots)
@@ -88,31 +91,43 @@ public class TreasureChest : MonoBehaviour
 
     private IEnumerator OpenRoutine(GameObject instigator)
     {
+        bool opened = false;
         isOpening = true;
-        FreezePreludeTimeIfNeeded();
-        PlayOpenPresentation(instigator);
+        try
+        {
+            AcquireOpeningUiInputBlockIfNeeded();
+            FreezePreludeTimeIfNeeded();
+            PlayOpenPresentation(instigator);
 
-        float duration = GetOpenPreludeDuration();
-        if (duration > 0f)
-            yield return new WaitForSecondsRealtime(duration);
+            float duration = GetOpenPreludeDuration();
+            if (duration > 0f)
+                yield return new WaitForSecondsRealtime(duration);
 
-        isOpened = true;
-        HoldOpenedVisualState();
-        RestorePreludeTimeIfNeeded();
+            isOpened = true;
+            HoldOpenedVisualState();
+            RestorePreludeTimeIfNeeded();
 
-        bool opened = TryOpenUi(playSlideFadePresentation: false);
+            opened = TryOpenUi(playSlideFadePresentation: false, inputBlocker: openingInputBlocker);
+        }
+        finally
+        {
+            ReleaseOpeningUiInputBlockIfNeeded();
+            RestorePreludeTimeIfNeeded();
+            isOpening = false;
+        }
+
         if (!opened && PlayerInteractor2D.Instance != null)
             PlayerInteractor2D.Instance.SetInteractState(InteractState.Idle);
-
-        isOpening = false;
     }
 
-    private bool TryOpenUi(bool playSlideFadePresentation = true)
+    private bool TryOpenUi(
+        bool playSlideFadePresentation = true,
+        GameFlowInputBlocker inputBlocker = null)
     {
         if (ChestUIManager.Instance == null)
             return false;
 
-        return ChestUIManager.Instance.OpenChest(this, playSlideFadePresentation);
+        return ChestUIManager.Instance.OpenChest(this, playSlideFadePresentation, inputBlocker);
     }
 
     private void GenerateSelfLoot()
@@ -120,11 +135,8 @@ public class TreasureChest : MonoBehaviour
         if (LootManager.Instance == null)
             return;
 
-        List<ScriptableObject> loots = LootManager.Instance.GenerateChestLoot();
-        if (loots == null)
-            return;
-
-        FillInventoryWithLoot(loots);
+        ChestLootResult result = LootManager.Instance.GenerateChestLootResult(ChestLootRequest.Default);
+        FillInventoryWithLoot(result.Items);
         RecordRefreshGuard();
     }
 
@@ -132,17 +144,12 @@ public class TreasureChest : MonoBehaviour
 
     public bool CanRefreshLoot()
     {
-        if (!isGenerated || inventory == null || LootManager.Instance == null)
-            return false;
-
-        ChestRunModifierDelta modifiers = RunModifierService.Instance != null
-            ? RunModifierService.Instance.ChestModifiers
-            : default;
-
-        if (refreshCountUsed >= Mathf.Max(0, modifiers.chestRefreshCount))
-            return false;
-
-        return MatchesRefreshGuard();
+        return ChestRewardPolicy.CanRefreshLoot(
+            isGenerated,
+            inventory,
+            LootManager.Instance != null,
+            refreshCountUsed,
+            refreshGuard);
     }
 
     public bool TryRefreshLoot()
@@ -150,24 +157,27 @@ public class TreasureChest : MonoBehaviour
         if (!CanRefreshLoot())
             return false;
 
-        List<ScriptableObject> loots = LootManager.Instance.GenerateChestLoot();
-        if (loots == null)
+        LootManager lootManager = LootManager.Instance;
+        if (lootManager == null)
             return false;
 
+        ChestLootResult result = lootManager.GenerateChestLootResult(ChestLootRequest.Default);
+
         inventory.Clear();
-        FillInventoryWithLoot(loots);
+        FillInventoryWithLoot(result.Items);
         refreshCountUsed++;
         RecordRefreshGuard();
         return true;
     }
 
-    private void FillInventoryWithLoot(List<ScriptableObject> loots)
+    private void FillInventoryWithLoot(IReadOnlyList<ScriptableObject> loots)
     {
         if (inventory == null || loots == null)
             return;
 
-        foreach (ScriptableObject item in loots)
+        for (int i = 0; i < loots.Count; i++)
         {
+            ScriptableObject item = loots[i];
             if (item != null)
                 TryAddLootItem(item);
         }
@@ -176,57 +186,14 @@ public class TreasureChest : MonoBehaviour
     private bool TryAddLootItem(ScriptableObject item)
     {
         if (item is RelicDefinition relic)
-            return inventory.TryAddRelicWithLevel(relic, ResolveChestRelicLevel(relic));
+            return inventory.TryAddRelicWithLevel(relic, ChestRewardPolicy.ResolveChestRelicLevel(relic));
 
         return inventory.TryAdd(item);
     }
 
-    private int ResolveChestRelicLevel(RelicDefinition relic)
-    {
-        if (relic == null)
-            return 0;
-
-        int level = relic.dropLevel > 0 ? relic.dropLevel : 1;
-        ChestRunModifierDelta modifiers = RunModifierService.Instance != null
-            ? RunModifierService.Instance.ChestModifiers
-            : default;
-
-        float chance = Mathf.Clamp01(modifiers.relicLevelBonusChance);
-        if (chance > 0f && Random.value < chance)
-            level++;
-
-        return relic.ClampLevel(level);
-    }
-
     private void RecordRefreshGuard()
     {
-        refreshGuard.Clear();
-        if (inventory == null)
-            return;
-
-        for (int i = 0; i < inventory.Capacity; i++)
-        {
-            ScriptableObject item = inventory.Get(i);
-            refreshGuard.Add(new ChestLootSnapshot(item, inventory.GetRelicLevelInSlot(i)));
-        }
-    }
-
-    private bool MatchesRefreshGuard()
-    {
-        if (inventory == null || refreshGuard.Count != inventory.Capacity)
-            return false;
-
-        for (int i = 0; i < inventory.Capacity; i++)
-        {
-            ChestLootSnapshot snapshot = refreshGuard[i];
-            if (inventory.Get(i) != snapshot.Item)
-                return false;
-
-            if (inventory.GetRelicLevelInSlot(i) != snapshot.RelicLevel)
-                return false;
-        }
-
-        return true;
+        ChestRewardPolicy.RecordRefreshGuard(inventory, refreshGuard);
     }
 
     private void PlayOpenPresentation(GameObject instigator)
@@ -353,6 +320,20 @@ public class TreasureChest : MonoBehaviour
         isPreludeTimeFrozen = false;
     }
 
+    private void AcquireOpeningUiInputBlockIfNeeded()
+    {
+        if (openingInputBlocker != null && openingInputBlocker.IsBlocking)
+            return;
+
+        openingInputBlocker = GameFlowInputBlocker.GetOrAdd(this);
+        openingInputBlocker?.Acquire();
+    }
+
+    private void ReleaseOpeningUiInputBlockIfNeeded()
+    {
+        openingInputBlocker?.Release();
+    }
+
     private void ConfigureOpenEffects()
     {
         if (openEffects == null)
@@ -409,15 +390,4 @@ public class TreasureChest : MonoBehaviour
         return transform;
     }
 
-    private readonly struct ChestLootSnapshot
-    {
-        public readonly ScriptableObject Item;
-        public readonly int RelicLevel;
-
-        public ChestLootSnapshot(ScriptableObject item, int relicLevel)
-        {
-            Item = item;
-            RelicLevel = relicLevel;
-        }
-    }
 }

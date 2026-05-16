@@ -9,7 +9,7 @@ public sealed class ItemDisplayVisualProfileSO : ScriptableObject
     [SerializeField] private bool overrideSharedSpriteSettings;
     [SerializeField] private ItemDisplaySpriteSettings sharedSpriteSettings = ItemDisplaySpriteSettings.Raw(ItemDisplayAnchorMode.Bottom, new Vector2(0f, 0.08f));
 
-    [Header("Shop Override")]
+    [Header("Shop Override (Legacy - shop uses World Drop visual policy)")]
     [SerializeField] private GameObject shopVisualPrefab;
     [SerializeField] private Sprite shopSpriteOverride;
     [SerializeField] private bool overrideShopSpriteSettings;
@@ -21,33 +21,29 @@ public sealed class ItemDisplayVisualProfileSO : ScriptableObject
     [SerializeField] private bool overrideWorldDropSpriteSettings;
     [SerializeField] private ItemDisplaySpriteSettings worldDropSpriteSettings = ItemDisplaySpriteSettings.Raw(ItemDisplayAnchorMode.Bottom, new Vector2(0f, 0.08f));
 
+    [Header("Inventory Slot Icon Override")]
+    [SerializeField] private bool overrideInventorySlotIconSettings;
+    [SerializeField] private ItemDisplayIconSettings inventorySlotIconSettings = ItemDisplayIconSettings.Default();
+
+    [Header("Drag Icon Override")]
+    [SerializeField] private bool overrideDragIconSettings;
+    [SerializeField] private ItemDisplayIconSettings dragIconSettings = ItemDisplayIconSettings.Default();
+
     public GameObject GetVisualPrefab(ItemDisplayContext context)
     {
-        GameObject contextPrefab = context == ItemDisplayContext.ShopDisplay
-            ? shopVisualPrefab
-            : worldDropVisualPrefab;
-
-        return contextPrefab != null ? contextPrefab : sharedVisualPrefab;
+        return worldDropVisualPrefab != null ? worldDropVisualPrefab : sharedVisualPrefab;
     }
 
     public Sprite GetSpriteOverride(ItemDisplayContext context)
     {
-        Sprite contextSprite = context == ItemDisplayContext.ShopDisplay
-            ? shopSpriteOverride
-            : worldDropSpriteOverride;
-
-        return contextSprite != null ? contextSprite : sharedSpriteOverride;
+        return worldDropSpriteOverride != null ? worldDropSpriteOverride : sharedSpriteOverride;
     }
 
     public bool TryGetSpriteSettings(ItemDisplayContext context, out ItemDisplaySpriteSettings settings)
     {
-        if (context == ItemDisplayContext.ShopDisplay && overrideShopSpriteSettings && shopSpriteSettings != null)
-        {
-            settings = shopSpriteSettings;
-            return true;
-        }
-
-        if (context == ItemDisplayContext.WorldDrop && overrideWorldDropSpriteSettings && worldDropSpriteSettings != null)
+        if ((context == ItemDisplayContext.ShopDisplay || context == ItemDisplayContext.WorldDrop) &&
+            overrideWorldDropSpriteSettings &&
+            worldDropSpriteSettings != null)
         {
             settings = worldDropSpriteSettings;
             return true;
@@ -63,10 +59,30 @@ public sealed class ItemDisplayVisualProfileSO : ScriptableObject
         return false;
     }
 
+    public bool TryGetIconSettings(ItemDisplayIconContext context, out ItemDisplayIconSettings settings)
+    {
+        if (context == ItemDisplayIconContext.InventorySlot && overrideInventorySlotIconSettings && inventorySlotIconSettings != null)
+        {
+            settings = inventorySlotIconSettings;
+            return true;
+        }
+
+        if (context == ItemDisplayIconContext.DragIcon && overrideDragIconSettings && dragIconSettings != null)
+        {
+            settings = dragIconSettings;
+            return true;
+        }
+
+        settings = null;
+        return false;
+    }
+
     private void OnValidate()
     {
         sharedSpriteSettings?.OnValidate();
         shopSpriteSettings?.OnValidate();
         worldDropSpriteSettings?.OnValidate();
+        inventorySlotIconSettings?.OnValidate();
+        dragIconSettings?.OnValidate();
     }
 }

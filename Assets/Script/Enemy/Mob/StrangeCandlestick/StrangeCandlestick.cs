@@ -419,7 +419,6 @@ public class StrangeCandlestick : Mob, IMobAttackDecisionSource
             finalHpDamage: data.damageAmount,
             finalStaggerBuildUp: 0f,
             finalKnockbackImpulse: 0f,
-            elementBuildUps: null,
             isCriticalHit: false);
 
         return CombatHitPayload.FromSnapshot(

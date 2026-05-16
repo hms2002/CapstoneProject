@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityGAS;
 using CapstoneAudio;
@@ -240,39 +239,12 @@ namespace UnityGAS.Sample
                     defaultIfEmpty: 0f);
             }
 
-            List<ElementDamageInput> elementInputs = null;
-            if (cfg != null && cfg.includeElementBuildUp && cfg.HasElementFormulas)
-            {
-                elementInputs = new List<ElementDamageInput>(cfg.elementFormulas.Length);
-                for (int i = 0; i < cfg.elementFormulas.Length; i++)
-                {
-                    var e = cfg.elementFormulas[i];
-                    if (e == null || e.elementType == null || e.formula == null) continue;
-
-                    float v = e.formula.Evaluate(system.AttributeSet, statProvider, defaultIfEmpty: 0f);
-                    if (v <= 0f) continue;
-
-                    elementInputs.Add(new ElementDamageInput
-                    {
-                        elementType = e.elementType,
-                        baseDamage = v
-                    });
-                }
-            }
-            else
-            {
-                var grp = step.elementDamages;
-                if (grp != null && grp.elements != null && grp.elements.Count > 0)
-                    elementInputs = new List<ElementDamageInput>(grp.elements);
-            }
-
             var snapshot = DamageSnapshotBuilder.BuildFromBaseValues(
                 statProvider: statProvider,
                 config: cfg,
                 baseHp: baseHp,
                 baseStagger: includeStagger ? baseStagger : 0f,
-                baseKnockback: baseKnockback,
-                elementInputs: elementInputs
+                baseKnockback: baseKnockback
             );
 
             if (snapshot.FinalHpDamage <= 0f)

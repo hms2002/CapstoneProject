@@ -195,7 +195,6 @@ public class Bishop : Slime
                 target: context.Target,
                 finalHpDamage: DamageAmount,
                 finalStaggerBuildUp: 0f,
-                elementBuildUps: null,
                 finalKnockbackImpulse: 0f,
                 hitConfirmedTag: null,
                 hitWorldPosition: points[i],

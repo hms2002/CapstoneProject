@@ -20,6 +20,12 @@ public enum ItemDisplayAnchorMode
     Bottom
 }
 
+public enum ItemDisplayIconContext
+{
+    InventorySlot,
+    DragIcon
+}
+
 [Serializable]
 public sealed class ItemDisplaySpriteSettings
 {
@@ -42,11 +48,10 @@ public sealed class ItemDisplaySpriteSettings
     public static ItemDisplaySpriteSettings DefaultFor(ItemDisplayContext context, InventoryItemKind? kind)
     {
         bool isWeapon = kind == InventoryItemKind.Weapon;
-        bool isShop = context == ItemDisplayContext.ShopDisplay;
 
         return isWeapon
-            ? Raw(isShop ? ItemDisplayAnchorMode.Center : ItemDisplayAnchorMode.Bottom, isShop ? Vector2.zero : new Vector2(0f, 0.08f))
-            : FitBox(isShop ? ItemDisplayAnchorMode.Center : ItemDisplayAnchorMode.Bottom, isShop ? Vector2.zero : new Vector2(0f, 0.08f));
+            ? Raw(ItemDisplayAnchorMode.Bottom, new Vector2(0f, 0.08f))
+            : FitBox(ItemDisplayAnchorMode.Bottom, new Vector2(0f, 0.08f));
     }
 
     public static ItemDisplaySpriteSettings Raw(ItemDisplayAnchorMode anchorMode, Vector2 anchorOffset)
@@ -87,5 +92,57 @@ public sealed class ItemDisplaySpriteSettings
 
         if (targetBoxSize.y <= 0f)
             targetBoxSize.y = 1f;
+    }
+}
+
+[Serializable]
+public sealed class ItemDisplayIconSettings
+{
+    [SerializeField] private Sprite spriteOverride;
+    [SerializeField] private bool preserveAspect = true;
+    [SerializeField] private Vector2 anchoredPosition;
+    [SerializeField] private Vector2 pivot = new(0.5f, 0.5f);
+    [SerializeField] private float rotationDegrees;
+    [SerializeField] private Vector3 localScale = Vector3.one;
+
+    public Sprite SpriteOverride => spriteOverride;
+    public bool PreserveAspect => preserveAspect;
+    public Vector2 AnchoredPosition => anchoredPosition;
+    public Vector2 Pivot => pivot;
+    public float RotationDegrees => rotationDegrees;
+    public Vector3 LocalScale => SanitizeScale(localScale);
+
+    public static ItemDisplayIconSettings Default()
+    {
+        return new ItemDisplayIconSettings
+        {
+            spriteOverride = null,
+            preserveAspect = true,
+            anchoredPosition = Vector2.zero,
+            pivot = new Vector2(0.5f, 0.5f),
+            rotationDegrees = 0f,
+            localScale = Vector3.one
+        };
+    }
+
+    public void OnValidate()
+    {
+        pivot.x = Mathf.Clamp01(pivot.x);
+        pivot.y = Mathf.Clamp01(pivot.y);
+        localScale = SanitizeScale(localScale);
+    }
+
+    private static Vector3 SanitizeScale(Vector3 scale)
+    {
+        if (Mathf.Approximately(scale.x, 0f))
+            scale.x = 1f;
+
+        if (Mathf.Approximately(scale.y, 0f))
+            scale.y = 1f;
+
+        if (Mathf.Approximately(scale.z, 0f))
+            scale.z = 1f;
+
+        return scale;
     }
 }

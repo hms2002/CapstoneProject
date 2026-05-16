@@ -279,30 +279,7 @@ public sealed class InputBindingService : MonoBehaviour
 {
     private const string PrefKeyPrefix = "settings.input.";
 
-    private static readonly InputActionId[] RemappableActions =
-    {
-        InputActionId.MoveUp,
-        InputActionId.MoveDown,
-        InputActionId.MoveLeft,
-        InputActionId.MoveRight,
-        InputActionId.PrimaryAttack,
-        InputActionId.Interact,
-        InputActionId.Dash,
-        InputActionId.Skill1,
-        InputActionId.Skill2,
-        InputActionId.SwapWeapon,
-        InputActionId.ConsumableSlot1,
-        InputActionId.ConsumableSlot2,
-        InputActionId.ConsumableSlot3,
-        InputActionId.ConsumableSlot4,
-        InputActionId.InventoryToggle,
-        InputActionId.DialogueAdvance,
-    };
-
     public static InputBindingService Instance { get; private set; }
-
-    [Header("Default Bindings")]
-    [SerializeField] private List<InputBindingEntry> defaultBindings = new();
 
     private readonly Dictionary<InputActionId, InputBinding> bindings = new();
     private bool initialized;
@@ -337,6 +314,11 @@ public sealed class InputBindingService : MonoBehaviour
     public bool WasPressedThisFrame(InputActionId action)
     {
         return Matches(action, InputKeyCompatibility.WasPressedThisFrame);
+    }
+
+    public bool WasPressedThisFrame(InputContextShortcutId shortcut)
+    {
+        return InputContextShortcutDefaultsSO.LoadOrCreate().WasPressedThisFrame(shortcut);
     }
 
     public bool WasReleasedThisFrame(InputActionId action)
@@ -423,7 +405,7 @@ public sealed class InputBindingService : MonoBehaviour
 
     public bool SupportsSecondaryBinding(InputActionId action)
     {
-        return action != InputActionId.DialogueAdvance;
+        return InputBindingDefaultsSO.SupportsSecondaryBinding(action);
     }
 
     public string GetBindingDisplayLabel(InputActionId action, bool secondary = false)
@@ -480,6 +462,11 @@ public sealed class InputBindingService : MonoBehaviour
         return GetKeyGlyph(GetKey(action, secondary));
     }
 
+    public InputGlyphPresentation GetContextShortcutGlyph(InputContextShortcutId shortcut)
+    {
+        return InputContextShortcutDefaultsSO.LoadOrCreate().GetGlyph(shortcut);
+    }
+
     public InputGlyphPresentation GetKeyGlyph(KeyCode key)
     {
         return InputGlyphDatabase.Resolve(key);
@@ -488,6 +475,11 @@ public sealed class InputBindingService : MonoBehaviour
     public Sprite GetBindingIcon(InputActionId action, bool secondary = false)
     {
         return GetBindingGlyph(action, secondary).Icon;
+    }
+
+    public Sprite GetContextShortcutIcon(InputContextShortcutId shortcut)
+    {
+        return GetContextShortcutGlyph(shortcut).Icon;
     }
 
     public Sprite GetKeyIcon(KeyCode key)
@@ -548,13 +540,14 @@ public sealed class InputBindingService : MonoBehaviour
     public void ResetAllBindings()
     {
         EnsureInitialized();
-        for (int i = 0; i < RemappableActions.Length; i++)
-            SetBindingInternal(RemappableActions[i], GetConfiguredDefaultBinding(RemappableActions[i]));
+        IReadOnlyList<InputActionId> actions = GetRemappableActions();
+        for (int i = 0; i < actions.Count; i++)
+            SetBindingInternal(actions[i], GetConfiguredDefaultBinding(actions[i]));
     }
 
     public IReadOnlyList<InputActionId> GetRemappableActions()
     {
-        return RemappableActions;
+        return InputBindingDefaultsSO.LoadOrCreate().GetRemappableActions();
     }
 
     public bool TryFindConflict(
@@ -573,9 +566,10 @@ public sealed class InputBindingService : MonoBehaviour
             return false;
         }
 
-        for (int i = 0; i < RemappableActions.Length; i++)
+        IReadOnlyList<InputActionId> actions = GetRemappableActions();
+        for (int i = 0; i < actions.Count; i++)
         {
-            InputActionId action = RemappableActions[i];
+            InputActionId action = actions[i];
             InputBinding binding = GetBinding(action);
 
             if (binding.primary == key && (!Equals(action, targetAction) || targetSecondary))
@@ -645,7 +639,6 @@ public sealed class InputBindingService : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(gameObject);
         ApplyImePolicy();
-        EnsureDefaultBindingEntries();
         EnsureInitialized();
     }
 
@@ -653,16 +646,6 @@ public sealed class InputBindingService : MonoBehaviour
     {
         if (hasFocus)
             ApplyImePolicy();
-    }
-
-    private void Reset()
-    {
-        EnsureDefaultBindingEntries();
-    }
-
-    private void OnValidate()
-    {
-        EnsureDefaultBindingEntries();
     }
 
     private void OnDestroy()
@@ -677,7 +660,6 @@ public sealed class InputBindingService : MonoBehaviour
             return;
 
         initialized = true;
-        EnsureDefaultBindingEntries();
         LoadBindings();
     }
 
@@ -723,9 +705,10 @@ public sealed class InputBindingService : MonoBehaviour
     private void LoadBindings()
     {
         bindings.Clear();
-        for (int i = 0; i < RemappableActions.Length; i++)
+        IReadOnlyList<InputActionId> actions = GetRemappableActions();
+        for (int i = 0; i < actions.Count; i++)
         {
-            InputActionId action = RemappableActions[i];
+            InputActionId action = actions[i];
             InputBinding defaultBinding = GetConfiguredDefaultBinding(action);
             InputBinding loaded = new InputBinding(
                 PlayerPrefs.HasKey(GetPrimaryPrefKey(action))
@@ -758,106 +741,23 @@ public sealed class InputBindingService : MonoBehaviour
         return $"{PrefKeyPrefix}{action}.secondary";
     }
 
-    private void EnsureDefaultBindingEntries()
-    {
-        if (defaultBindings == null)
-            defaultBindings = new List<InputBindingEntry>();
-
-        List<InputBindingEntry> normalized = new(RemappableActions.Length);
-        for (int i = 0; i < RemappableActions.Length; i++)
-        {
-            InputActionId action = RemappableActions[i];
-            if (TryGetSerializedEntry(action, out InputBindingEntry existing))
-                normalized.Add(NormalizeEntry(existing));
-            else
-                normalized.Add(GetBuiltInDefaultEntry(action));
-        }
-
-        defaultBindings = normalized;
-    }
-
-    private bool TryGetSerializedEntry(InputActionId action, out InputBindingEntry entry)
-    {
-        if (defaultBindings != null)
-        {
-            for (int i = 0; i < defaultBindings.Count; i++)
-            {
-                if (defaultBindings[i].action == action)
-                {
-                    entry = defaultBindings[i];
-                    return true;
-                }
-            }
-        }
-
-        entry = default;
-        return false;
-    }
-
     private InputBinding GetConfiguredDefaultBinding(InputActionId action)
     {
-        return TryGetSerializedEntry(action, out InputBindingEntry entry)
-            ? NormalizeEntry(entry).ToBinding()
-            : GetBuiltInDefaultBinding(action);
-    }
-
-    [ContextMenu("Reset Default Binding Entries")]
-    private void ResetDefaultBindingEntries()
-    {
-        defaultBindings = new List<InputBindingEntry>(RemappableActions.Length);
-        for (int i = 0; i < RemappableActions.Length; i++)
-            defaultBindings.Add(GetBuiltInDefaultEntry(RemappableActions[i]));
+        return InputBindingDefaultsSO.LoadOrCreate().GetDefaultBinding(action);
     }
 
     [ContextMenu("Clear Saved Binding Overrides")]
     private void ClearSavedBindingOverrides()
     {
-        for (int i = 0; i < RemappableActions.Length; i++)
+        IReadOnlyList<InputActionId> actions = GetRemappableActions();
+        for (int i = 0; i < actions.Count; i++)
         {
-            InputActionId action = RemappableActions[i];
+            InputActionId action = actions[i];
             PlayerPrefs.DeleteKey(GetPrimaryPrefKey(action));
             PlayerPrefs.DeleteKey(GetSecondaryPrefKey(action));
         }
 
         initialized = false;
         EnsureInitialized();
-    }
-
-    private InputBindingEntry NormalizeEntry(InputBindingEntry entry)
-    {
-        if (!SupportsSecondaryBinding(entry.action))
-            entry.secondary = KeyCode.None;
-
-        return entry;
-    }
-
-    private static InputBindingEntry GetBuiltInDefaultEntry(InputActionId action)
-    {
-        InputBinding binding = GetBuiltInDefaultBinding(action);
-        return new InputBindingEntry(action, binding.primary, binding.secondary);
-    }
-
-    private static InputBinding GetBuiltInDefaultBinding(InputActionId action)
-    {
-        return action switch
-        {
-            InputActionId.MoveUp => new InputBinding(KeyCode.W, KeyCode.UpArrow),
-            InputActionId.MoveDown => new InputBinding(KeyCode.S, KeyCode.DownArrow),
-            InputActionId.MoveLeft => new InputBinding(KeyCode.A, KeyCode.LeftArrow),
-            InputActionId.MoveRight => new InputBinding(KeyCode.D, KeyCode.RightArrow),
-            InputActionId.PrimaryAttack => new InputBinding(KeyCode.Mouse0),
-            InputActionId.Interact => new InputBinding(KeyCode.F),
-            InputActionId.Dash => new InputBinding(KeyCode.Space),
-            InputActionId.Skill1 => new InputBinding(KeyCode.Q),
-            InputActionId.Skill2 => new InputBinding(KeyCode.E),
-            InputActionId.SwapWeapon => new InputBinding(KeyCode.Tab),
-            InputActionId.ConsumableSlot1 => new InputBinding(KeyCode.Alpha1),
-            InputActionId.ConsumableSlot2 => new InputBinding(KeyCode.Alpha2),
-            InputActionId.ConsumableSlot3 => new InputBinding(KeyCode.Alpha3),
-            InputActionId.ConsumableSlot4 => new InputBinding(KeyCode.Alpha4),
-            InputActionId.InventoryToggle => new InputBinding(KeyCode.I),
-            InputActionId.DialogueAdvance => new InputBinding(KeyCode.Space),
-            _ => new InputBinding(KeyCode.None),
-        };
     }
 }

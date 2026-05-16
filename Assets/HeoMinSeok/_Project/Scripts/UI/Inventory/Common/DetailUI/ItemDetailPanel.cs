@@ -452,8 +452,8 @@ public class ItemDetailPanel : MonoBehaviour, IHoverView, IHoverPositionOffsetPr
 
     /// <summary>
     /// 책임 :
-    /// - 현재 바인딩된 Skill1/Skill2 키에 맞춰 유물 프리뷰 가이드 아이콘을 동기화한다.
-    /// - 입력 리매핑이 바뀌어도 상세 패널은 InputBindingService를 통해 같은 아이콘 규칙을 재사용한다.
+    /// - 유물 프리뷰 전용 context shortcut에 맞춰 가이드 아이콘을 동기화한다.
+    /// - 플레이어 스킬 입력 리매핑과 별개로 InputBindingService를 통해 같은 아이콘 규칙을 재사용한다.
     /// </summary>
     private void SyncRelicPreviewGuideIcons()
     {
@@ -461,14 +461,14 @@ public class ItemDetailPanel : MonoBehaviour, IHoverView, IHoverPositionOffsetPr
 
         if (relicPreviewPreviousGuideIcon != null)
         {
-            Sprite icon = input.GetBindingIcon(InputActionId.Skill1);
+            Sprite icon = input.GetContextShortcutIcon(InputContextShortcutId.RelicPreviewPrevious);
             relicPreviewPreviousGuideIcon.sprite = icon;
             relicPreviewPreviousGuideIcon.enabled = icon != null;
         }
 
         if (relicPreviewNextGuideIcon != null)
         {
-            Sprite icon = input.GetBindingIcon(InputActionId.Skill2);
+            Sprite icon = input.GetContextShortcutIcon(InputContextShortcutId.RelicPreviewNext);
             relicPreviewNextGuideIcon.sprite = icon;
             relicPreviewNextGuideIcon.enabled = icon != null;
         }

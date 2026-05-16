@@ -1,119 +1,17 @@
 {
     "sessions": [
         {
-            "sessionId": "1f93fa94cc7e4b41b487e5ed6ac64d27",
-            "startedUtc": "2026-05-12T01:14:47.8473160Z",
-            "endedUtc": "2026-05-12T01:14:49.5579817Z",
-            "entries": []
-        },
-        {
-            "sessionId": "841006e7e7f641d79a2dc0c1354be224",
-            "startedUtc": "2026-05-12T01:25:52.9019079Z",
-            "endedUtc": "2026-05-12T01:25:54.9076271Z",
-            "entries": []
-        },
-        {
-            "sessionId": "3e7e0eff5dec48af8229b878da4d87ca",
-            "startedUtc": "2026-05-12T05:32:02.4100849Z",
-            "endedUtc": "2026-05-12T05:32:05.0748359Z",
-            "entries": []
-        },
-        {
-            "sessionId": "8f28ae2ad2a546cea57df7d25608c5c0",
-            "startedUtc": "2026-05-12T07:10:34.4164981Z",
-            "endedUtc": "2026-05-12T07:10:36.5479399Z",
-            "entries": []
-        },
-        {
-            "sessionId": "3fdb7fe05b704b12a0c027a48b30f42b",
-            "startedUtc": "2026-05-12T07:47:56.3991951Z",
-            "endedUtc": "2026-05-12T07:47:58.3419419Z",
-            "entries": []
-        },
-        {
-            "sessionId": "b4f7b9f269c1435b818fceeebac19023",
-            "startedUtc": "2026-05-12T07:57:58.8038381Z",
-            "endedUtc": "2026-05-12T07:58:00.5758800Z",
-            "entries": []
-        },
-        {
-            "sessionId": "21864f0f68134bf6afb5d5a539a8d3be",
-            "startedUtc": "2026-05-12T07:58:31.1176931Z",
-            "endedUtc": "2026-05-12T07:58:32.6821956Z",
-            "entries": []
-        },
-        {
-            "sessionId": "f48e09794ecd45f0a0bbd77a2f9f313f",
-            "startedUtc": "2026-05-12T07:58:56.3523406Z",
-            "endedUtc": "2026-05-12T07:58:57.9517995Z",
-            "entries": []
-        },
-        {
-            "sessionId": "052d37b808ee4f4c98122e72dd4f535d",
-            "startedUtc": "2026-05-12T08:03:11.8505885Z",
-            "endedUtc": "2026-05-12T08:03:13.4512288Z",
-            "entries": []
-        },
-        {
-            "sessionId": "9d58de6782f64adcb7c6eefa928cb8b9",
-            "startedUtc": "2026-05-12T08:24:57.1879137Z",
-            "endedUtc": "2026-05-12T08:24:58.8787439Z",
-            "entries": []
-        },
-        {
-            "sessionId": "bb2f9dbd7aa1452c9c5402536797d658",
-            "startedUtc": "2026-05-12T08:32:45.0350946Z",
-            "endedUtc": "2026-05-12T08:32:47.4752619Z",
-            "entries": []
-        },
-        {
-            "sessionId": "fb50f7078555404fa748538c3053cd41",
-            "startedUtc": "2026-05-12T08:52:30.9593666Z",
-            "endedUtc": "2026-05-12T08:52:33.5807992Z",
-            "entries": []
-        },
-        {
-            "sessionId": "4d87a0aee583499a83e78d21dcd5f7a4",
-            "startedUtc": "2026-05-12T09:00:20.5490740Z",
-            "endedUtc": "2026-05-12T09:00:22.2796558Z",
-            "entries": []
-        },
-        {
-            "sessionId": "2f0e32ae218340c5852327af6889fad0",
-            "startedUtc": "2026-05-12T09:16:12.7499773Z",
-            "endedUtc": "2026-05-12T09:16:14.4758891Z",
-            "entries": []
-        },
-        {
-            "sessionId": "6abfe6756a1c4ac8814ea40cdb2bd1be",
-            "startedUtc": "2026-05-12T10:07:10.1555231Z",
-            "endedUtc": "2026-05-12T10:07:11.5893064Z",
-            "entries": []
-        },
-        {
-            "sessionId": "c051de5549e040fa9392f50bf5ddb1d6",
-            "startedUtc": "2026-05-12T10:07:41.3570956Z",
-            "endedUtc": "2026-05-12T10:07:42.9419684Z",
-            "entries": []
-        },
-        {
-            "sessionId": "e5de0a7f0fe14c59b1e105f1884f9455",
-            "startedUtc": "2026-05-12T10:11:25.0541822Z",
-            "endedUtc": "2026-05-12T10:11:27.2128101Z",
-            "entries": []
-        },
-        {
-            "sessionId": "adaf679d6dcf4c4186859ac8996b20b5",
-            "startedUtc": "2026-05-12T10:31:40.9912668Z",
-            "endedUtc": "2026-05-12T10:32:04.5963444Z",
+            "sessionId": "5a82e42da7e74fde84db7e113dae6306",
+            "startedUtc": "2026-05-14T23:42:31.7995324Z",
+            "endedUtc": "2026-05-14T23:43:49.5207598Z",
             "entries": [
                 {
                     "prefabPath": "Assets/Prefabs/VFX/PF_DrunkenDragon_KegImpactSplash.prefab",
                     "prefabName": "PF_DrunkenDragon_KegImpactSplash",
                     "totalSpawns": 4,
                     "coldSpawns": 4,
-                    "firstSeenSeconds": 23.586124420166017,
-                    "lastSeenSeconds": 23.592199325561525,
+                    "firstSeenSeconds": 77.67701721191406,
+                    "lastSeenSeconds": 77.68760681152344,
                     "firstSceneName": "HeoMinSeok_Boss_Dragon_Spili",
                     "lastSceneName": "HeoMinSeok_Boss_Dragon_Spili"
                 },
@@ -122,8 +20,8 @@
                     "prefabName": "Hitbox_WindWeapon_NormalAtk_HardSlash",
                     "totalSpawns": 3,
                     "coldSpawns": 1,
-                    "firstSeenSeconds": 17.0435848236084,
-                    "lastSeenSeconds": 19.768606185913087,
+                    "firstSeenSeconds": 70.8671875,
+                    "lastSeenSeconds": 73.60680389404297,
                     "firstSceneName": "HeoMinSeok_Boss_Dragon_Spili",
                     "lastSceneName": "HeoMinSeok_Boss_Dragon_Spili"
                 },
@@ -132,8 +30,8 @@
                     "prefabName": "DashDust",
                     "totalSpawns": 1,
                     "coldSpawns": 1,
-                    "firstSeenSeconds": 20.83086395263672,
-                    "lastSeenSeconds": 20.830867767333986,
+                    "firstSeenSeconds": 74.91681671142578,
+                    "lastSeenSeconds": 74.91681671142578,
                     "firstSceneName": "HeoMinSeok_Boss_Dragon_Spili",
                     "lastSceneName": "HeoMinSeok_Boss_Dragon_Spili"
                 },
@@ -142,35 +40,70 @@
                     "prefabName": "PF_DrunkenDragon_LandingDust",
                     "totalSpawns": 1,
                     "coldSpawns": 1,
-                    "firstSeenSeconds": 22.229040145874025,
-                    "lastSeenSeconds": 22.22904396057129,
+                    "firstSeenSeconds": 76.30465698242188,
+                    "lastSeenSeconds": 76.3046646118164,
                     "firstSceneName": "HeoMinSeok_Boss_Dragon_Spili",
                     "lastSceneName": "HeoMinSeok_Boss_Dragon_Spili"
                 }
             ]
         },
         {
-            "sessionId": "af03ceb7329a4f23b8f020ea3dfa7169",
-            "startedUtc": "2026-05-12T10:32:26.5723568Z",
-            "endedUtc": "2026-05-12T10:32:53.1165805Z",
+            "sessionId": "de8acffff38d46c9a8daed280442fb2d",
+            "startedUtc": "2026-05-14T23:57:53.0915194Z",
+            "endedUtc": "2026-05-14T23:57:55.4601425Z",
+            "entries": []
+        },
+        {
+            "sessionId": "7ec8b78dcd6a4e999d0c001b94ca0fd4",
+            "startedUtc": "2026-05-14T23:58:23.9229371Z",
+            "endedUtc": "2026-05-14T23:58:26.1043006Z",
+            "entries": []
+        },
+        {
+            "sessionId": "d0e8b2d17fb640b4bc5f61423f73539f",
+            "startedUtc": "2026-05-15T00:09:49.7094096Z",
+            "endedUtc": "2026-05-15T00:10:58.6115980Z",
             "entries": [
                 {
-                    "prefabPath": "Assets/Prefabs/VFX/PF_DrunkenDragon_KegImpactSplash.prefab",
-                    "prefabName": "PF_DrunkenDragon_KegImpactSplash",
-                    "totalSpawns": 4,
-                    "coldSpawns": 4,
-                    "firstSeenSeconds": 23.309261322021486,
-                    "lastSeenSeconds": 23.314943313598634,
+                    "prefabPath": "Assets/HeoMinSeok/_Project/Prefabs/Attack/Hitbox_WindWeapon_NormalAtk_HardSlash.prefab",
+                    "prefabName": "Hitbox_WindWeapon_NormalAtk_HardSlash",
+                    "totalSpawns": 3,
+                    "coldSpawns": 1,
+                    "firstSeenSeconds": 66.095703125,
+                    "lastSeenSeconds": 68.87580871582031,
+                    "firstSceneName": "HeoMinSeok_Boss_Dragon_Spili",
+                    "lastSceneName": "HeoMinSeok_Boss_Dragon_Spili"
+                }
+            ]
+        },
+        {
+            "sessionId": "920e74efe56141558c4cce4c31698178",
+            "startedUtc": "2026-05-15T00:33:22.0915420Z",
+            "endedUtc": "2026-05-15T00:33:24.2742832Z",
+            "entries": []
+        },
+        {
+            "sessionId": "3768561aded146b9aac41292829b23a6",
+            "startedUtc": "2026-05-15T00:34:18.8748365Z",
+            "endedUtc": "2026-05-15T00:35:36.6164560Z",
+            "entries": [
+                {
+                    "prefabPath": "Assets/Prefabs/VFX/PF_DrunkenDragon_InhaleWind.prefab",
+                    "prefabName": "PF_DrunkenDragon_InhaleWind",
+                    "totalSpawns": 2,
+                    "coldSpawns": 1,
+                    "firstSeenSeconds": 66.25904846191406,
+                    "lastSeenSeconds": 69.65177154541016,
                     "firstSceneName": "HeoMinSeok_Boss_Dragon_Spili",
                     "lastSceneName": "HeoMinSeok_Boss_Dragon_Spili"
                 },
                 {
                     "prefabPath": "Assets/HeoMinSeok/_Project/Prefabs/Attack/Hitbox_WindWeapon_NormalAtk_HardSlash.prefab",
                     "prefabName": "Hitbox_WindWeapon_NormalAtk_HardSlash",
-                    "totalSpawns": 4,
+                    "totalSpawns": 1,
                     "coldSpawns": 1,
-                    "firstSeenSeconds": 16.76944923400879,
-                    "lastSeenSeconds": 25.208980560302736,
+                    "firstSeenSeconds": 65.134521484375,
+                    "lastSeenSeconds": 65.13510131835938,
                     "firstSceneName": "HeoMinSeok_Boss_Dragon_Spili",
                     "lastSceneName": "HeoMinSeok_Boss_Dragon_Spili"
                 },
@@ -179,8 +112,8 @@
                     "prefabName": "DashDust",
                     "totalSpawns": 1,
                     "coldSpawns": 1,
-                    "firstSeenSeconds": 20.557767868041993,
-                    "lastSeenSeconds": 20.55777359008789,
+                    "firstSeenSeconds": 76.2548599243164,
+                    "lastSeenSeconds": 76.25486755371094,
                     "firstSceneName": "HeoMinSeok_Boss_Dragon_Spili",
                     "lastSceneName": "HeoMinSeok_Boss_Dragon_Spili"
                 },
@@ -189,28 +122,118 @@
                     "prefabName": "PF_DrunkenDragon_LandingDust",
                     "totalSpawns": 1,
                     "coldSpawns": 1,
-                    "firstSeenSeconds": 21.954404830932618,
-                    "lastSeenSeconds": 21.954408645629884,
-                    "firstSceneName": "HeoMinSeok_Boss_Dragon_Spili",
-                    "lastSceneName": "HeoMinSeok_Boss_Dragon_Spili"
-                },
-                {
-                    "prefabPath": "Assets/Prefabs/VFX/PF_DrunkenDragon_InhaleWind.prefab",
-                    "prefabName": "PF_DrunkenDragon_InhaleWind",
-                    "totalSpawns": 1,
-                    "coldSpawns": 1,
-                    "firstSeenSeconds": 26.535120010375978,
-                    "lastSeenSeconds": 26.535123825073243,
+                    "firstSeenSeconds": 77.64994049072266,
+                    "lastSeenSeconds": 77.64994812011719,
                     "firstSceneName": "HeoMinSeok_Boss_Dragon_Spili",
                     "lastSceneName": "HeoMinSeok_Boss_Dragon_Spili"
                 }
             ]
         },
         {
-            "sessionId": "c32d41ad208f488d8c4556b560c2c904",
-            "startedUtc": "2026-05-13T06:32:40.9889856Z",
-            "endedUtc": "2026-05-13T06:32:42.5893491Z",
+            "sessionId": "75e28a49044840da930c6e7528d92990",
+            "startedUtc": "2026-05-15T05:41:31.7770950Z",
+            "endedUtc": "2026-05-15T05:41:33.5020582Z",
             "entries": []
+        },
+        {
+            "sessionId": "e1ab4eb0a0244e88b1bcb6284d84332e",
+            "startedUtc": "2026-05-15T05:55:22.7460320Z",
+            "endedUtc": "2026-05-15T05:55:24.1859811Z",
+            "entries": []
+        },
+        {
+            "sessionId": "2c927023b1664ac180388f32b7025771",
+            "startedUtc": "2026-05-15T06:20:22.4973543Z",
+            "endedUtc": "2026-05-15T06:20:24.1178738Z",
+            "entries": []
+        },
+        {
+            "sessionId": "9f76798facf0451caff4829b33777d0d",
+            "startedUtc": "2026-05-15T06:20:57.7893387Z",
+            "endedUtc": "2026-05-15T06:20:58.8284015Z",
+            "entries": []
+        },
+        {
+            "sessionId": "df24008573b34ede92a5e58274feef6a",
+            "startedUtc": "2026-05-15T06:41:42.9547136Z",
+            "endedUtc": "2026-05-15T06:41:44.3227689Z",
+            "entries": []
+        },
+        {
+            "sessionId": "2e7dca76f9f4471baea06f4a3a3d3ef7",
+            "startedUtc": "2026-05-15T06:59:17.2428763Z",
+            "endedUtc": "2026-05-15T06:59:20.6854325Z",
+            "entries": []
+        },
+        {
+            "sessionId": "e11c82d0a0e844ffa7b4caea20188fdb",
+            "startedUtc": "2026-05-15T07:24:40.8509171Z",
+            "endedUtc": "2026-05-15T07:24:41.8969910Z",
+            "entries": []
+        },
+        {
+            "sessionId": "620c3acbd37c4175afce4438de5b5f36",
+            "startedUtc": "2026-05-15T07:58:50.1341088Z",
+            "endedUtc": "2026-05-15T07:58:51.5058339Z",
+            "entries": []
+        },
+        {
+            "sessionId": "fb492f366dc840b8841a2ed0439d2e86",
+            "startedUtc": "2026-05-15T08:51:26.8616049Z",
+            "endedUtc": "2026-05-15T08:52:29.7712583Z",
+            "entries": [
+                {
+                    "prefabPath": "Assets/Prefabs/VFX/PF_DrunkenDragon_KegImpactSplash.prefab",
+                    "prefabName": "PF_DrunkenDragon_KegImpactSplash",
+                    "totalSpawns": 1,
+                    "coldSpawns": 1,
+                    "firstSeenSeconds": 62.89228439331055,
+                    "lastSeenSeconds": 62.89272689819336,
+                    "firstSceneName": "HeoMinSeok_Boss_Dragon_Spili",
+                    "lastSceneName": "HeoMinSeok_Boss_Dragon_Spili"
+                }
+            ]
+        },
+        {
+            "sessionId": "e4d9def6c60a4c7c90e29607bd1dab8c",
+            "startedUtc": "2026-05-15T10:03:23.9410944Z",
+            "endedUtc": "2026-05-15T10:03:25.3474819Z",
+            "entries": []
+        },
+        {
+            "sessionId": "f3c23ad8c2a24ef4a43b67d52935b091",
+            "startedUtc": "2026-05-15T10:27:13.3920126Z",
+            "endedUtc": "2026-05-15T10:27:14.5294182Z",
+            "entries": []
+        },
+        {
+            "sessionId": "2636478966364ca38a58684506d054e7",
+            "startedUtc": "2026-05-15T10:39:59.1040894Z",
+            "endedUtc": "2026-05-15T10:40:00.3382127Z",
+            "entries": []
+        },
+        {
+            "sessionId": "48148a0b31484c34896297431ccea168",
+            "startedUtc": "2026-05-15T12:41:47.6124019Z",
+            "endedUtc": "2026-05-15T12:41:49.3059658Z",
+            "entries": []
+        },
+        {
+            "sessionId": "84fda97b84754c3d9159d5600e10a036",
+            "startedUtc": "2026-05-15T18:50:33.6582002Z",
+            "endedUtc": "2026-05-15T18:52:00.6904972Z",
+            "entries": [
+                {
+                    "prefabPath": "Assets/Prefabs/VFX/PF_DrunkenDragon_KegImpactSplash.prefab",
+                    "prefabName": "PF_DrunkenDragon_KegImpactSplash",
+                    "totalSpawns": 1,
+                    "coldSpawns": 1,
+                    "firstSeenSeconds": 87.02037048339844,
+                    "lastSeenSeconds": 87.02062225341797,
+                    "firstSceneName": "HeoMinSeok_Boss_Dragon_Spili",
+                    "lastSceneName": "HeoMinSeok_Boss_Dragon_Spili"
+                }
+            ]
         }
     ]
 }

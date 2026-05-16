@@ -48,14 +48,14 @@ public sealed class ShopSlot : InteractableBase
     [SerializeField] private SpriteRenderer itemSpriteRenderer;
     [SerializeField] private TMP_Text priceText;
 
-    [Header("Item Sprite Normalization")]
-    [SerializeField] private bool normalizeItemSprite = true;
-    [SerializeField] private ItemSpriteNormalizeMode itemSpriteNormalizeMode = ItemSpriteNormalizeMode.FitBox;
-    [SerializeField, Min(0.01f)] private float itemSpriteTargetHeight = 0.65f;
-    [SerializeField] private Vector2 itemSpriteTargetBoxSize = new(1f, 1f);
-    [SerializeField] private ItemSpriteAnchorMode itemSpriteAnchorMode = ItemSpriteAnchorMode.Center;
-    [SerializeField] private bool itemSpriteCenterX = true;
-    [SerializeField] private Vector2 itemSpriteAnchorOffset = Vector2.zero;
+    [Header("Legacy Item Sprite Normalization")]
+    [SerializeField, HideInInspector] private bool normalizeItemSprite = true;
+    [SerializeField, HideInInspector] private ItemSpriteNormalizeMode itemSpriteNormalizeMode = ItemSpriteNormalizeMode.FitBox;
+    [SerializeField, HideInInspector, Min(0.01f)] private float itemSpriteTargetHeight = 0.65f;
+    [SerializeField, HideInInspector] private Vector2 itemSpriteTargetBoxSize = new(1f, 1f);
+    [SerializeField, HideInInspector] private ItemSpriteAnchorMode itemSpriteAnchorMode = ItemSpriteAnchorMode.Center;
+    [SerializeField, HideInInspector] private bool itemSpriteCenterX = true;
+    [SerializeField, HideInInspector] private Vector2 itemSpriteAnchorOffset = Vector2.zero;
 
     [Header("Price Icon")]
     [SerializeField] private SpriteRenderer priceIconRenderer;
@@ -181,7 +181,6 @@ public sealed class ShopSlot : InteractableBase
     private void RefreshView()
     {
         bool hasActiveItem = currentState != null && currentState.HasItem && !currentState.isSold && currentDefinition != null;
-        IInventoryItemDefinition commonDefinition = currentDefinition != null ? currentDefinition.AsDef() : null;
 
         if (itemVisualRoot != null)
             itemVisualRoot.SetActive(hasActiveItem);
@@ -195,7 +194,7 @@ public sealed class ShopSlot : InteractableBase
         }
         else
         {
-            ApplyItemSprite(hasActiveItem && commonDefinition != null ? commonDefinition.Icon : null);
+            ApplyItemSprite(hasActiveItem ? currentDefinition : null);
         }
 
         if (priceText != null)
@@ -209,18 +208,22 @@ public sealed class ShopSlot : InteractableBase
         RefreshPriceIcon(hasActiveItem && currentState != null && !currentState.isSold);
     }
 
-    private void ApplyItemSprite(Sprite sprite)
+    private void ApplyItemSprite(ScriptableObject item)
     {
         if (itemSpriteRenderer == null)
             return;
 
+        IInventoryItemDefinition definition = item != null ? item.AsDef() : null;
+        Sprite sprite = ResolveWorldDropSprite(item, definition);
         itemSpriteRenderer.sprite = sprite;
         itemSpriteRenderer.enabled = sprite != null;
 
-        if (sprite == null || !normalizeItemSprite)
+        if (sprite == null)
             return;
 
-        ApplyNormalizedItemSpriteTransform(sprite);
+        ItemDisplayVisualProfileSO profile = ResolveProfile(item);
+        ItemDisplaySpriteSettings settings = ResolveWorldDropSpriteSettings(profile, definition);
+        ApplyNormalizedItemSpriteTransform(sprite, settings);
     }
 
     /// <summary>
@@ -228,9 +231,9 @@ public sealed class ShopSlot : InteractableBase
     /// - 상점 진열 icon의 원본 pivot과 sprite bounds 차이가 슬롯 안 표시 위치를 흔들지 않도록 보정한다.
     /// - 슬롯마다 다른 기준 위치는 유지하면서 sprite만 공통 높이/박스와 기준점에 맞춘다.
     /// </summary>
-    private void ApplyNormalizedItemSpriteTransform(Sprite sprite)
+    private void ApplyNormalizedItemSpriteTransform(Sprite sprite, ItemDisplaySpriteSettings settings)
     {
-        if (itemSpriteRenderer == null || sprite == null)
+        if (itemSpriteRenderer == null || sprite == null || settings == null)
             return;
 
         CaptureItemSpriteBaseLocalPosition();
@@ -239,32 +242,58 @@ public sealed class ShopSlot : InteractableBase
         if (bounds.size.x <= 0f || bounds.size.y <= 0f)
             return;
 
-        float uniformScale = ResolveItemSpriteUniformScale(bounds);
+        float uniformScale = ResolveItemSpriteUniformScale(bounds, settings);
         Transform rendererTransform = itemSpriteRenderer.transform;
         Vector3 localScale = rendererTransform.localScale;
         rendererTransform.localScale = new Vector3(uniformScale, uniformScale, localScale.z);
 
-        Vector3 localPosition = itemSpriteBaseLocalPosition + (Vector3)itemSpriteAnchorOffset;
-        if (itemSpriteCenterX)
+        Vector3 localPosition = itemSpriteBaseLocalPosition + (Vector3)settings.AnchorOffset;
+        if (settings.CenterX)
             localPosition.x += -bounds.center.x * uniformScale;
 
-        localPosition.y += itemSpriteAnchorMode == ItemSpriteAnchorMode.Bottom
+        localPosition.y += settings.AnchorMode == ItemDisplayAnchorMode.Bottom
             ? -bounds.min.y * uniformScale
             : -bounds.center.y * uniformScale;
 
         rendererTransform.localPosition = localPosition;
     }
 
-    private float ResolveItemSpriteUniformScale(Bounds bounds)
+    private float ResolveItemSpriteUniformScale(Bounds bounds, ItemDisplaySpriteSettings settings)
     {
-        if (itemSpriteNormalizeMode == ItemSpriteNormalizeMode.FitBox)
+        if (!settings.Normalize || settings.NormalizeMode == ItemDisplayNormalizeMode.RawSpriteSize)
+            return 1f;
+
+        if (settings.NormalizeMode == ItemDisplayNormalizeMode.FitBox)
         {
-            float widthScale = itemSpriteTargetBoxSize.x / bounds.size.x;
-            float heightScale = itemSpriteTargetBoxSize.y / bounds.size.y;
+            Vector2 targetBox = settings.TargetBoxSize;
+            float widthScale = targetBox.x / bounds.size.x;
+            float heightScale = targetBox.y / bounds.size.y;
             return Mathf.Min(widthScale, heightScale);
         }
 
-        return itemSpriteTargetHeight / bounds.size.y;
+        return settings.TargetHeight / bounds.size.y;
+    }
+
+    private static Sprite ResolveWorldDropSprite(ScriptableObject item, IInventoryItemDefinition definition)
+    {
+        ItemDisplayVisualProfileSO profile = ResolveProfile(item);
+        Sprite profileSprite = profile != null ? profile.GetSpriteOverride(ItemDisplayContext.WorldDrop) : null;
+        return profileSprite != null ? profileSprite : definition?.Icon;
+    }
+
+    private static ItemDisplaySpriteSettings ResolveWorldDropSpriteSettings(
+        ItemDisplayVisualProfileSO profile,
+        IInventoryItemDefinition definition)
+    {
+        if (profile != null && profile.TryGetSpriteSettings(ItemDisplayContext.WorldDrop, out ItemDisplaySpriteSettings settings))
+            return settings;
+
+        return ItemDisplaySpriteSettings.DefaultFor(ItemDisplayContext.WorldDrop, definition != null ? definition.Kind : (InventoryItemKind?)null);
+    }
+
+    private static ItemDisplayVisualProfileSO ResolveProfile(ScriptableObject item)
+    {
+        return item is WeaponDefinition weapon ? weapon.DisplayVisualProfile : null;
     }
 
     private void RefreshPriceIcon(bool showCurrencyIcon)

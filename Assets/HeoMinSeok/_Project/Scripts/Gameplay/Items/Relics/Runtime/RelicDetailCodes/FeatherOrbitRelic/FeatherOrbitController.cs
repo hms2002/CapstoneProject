@@ -201,7 +201,6 @@ public class FeatherOrbitController : MonoBehaviour
             knockbackEffect = _cfg.knockbackEffect,
             finalHpDamage = hpDamage,
             finalStaggerBuildUp = 0f,
-            elementBuildUps = null,
             finalKnockbackImpulse = KnockbackImpulse,
             hitConfirmedTag = _cfg.hitConfirmedTag,
             causer = causer != null ? causer : gameObject

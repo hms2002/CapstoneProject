@@ -106,7 +106,6 @@ public static class WitchProjectileAttackHelper
             finalHpDamage: damage,
             finalStaggerBuildUp: 0f,
             finalKnockbackImpulse: 0f,
-            elementBuildUps: null,
             isCriticalHit: false);
 
         return CombatHitPayload.FromSnapshot(
