@@ -202,7 +202,7 @@ namespace UnityGAS
             {
                 if (ctx.Hit3D.HasValue)
                 {
-                    var h = ctx.Hit3D.Value;
+                    RaycastHit h = ctx.Hit3D.Value;
                     p.Position = h.point;
                     p.HasExplicitPosition = true;
                     p.Normal = h.normal;
@@ -211,10 +211,18 @@ namespace UnityGAS
 
                 if (ctx.Hit2D.HasValue)
                 {
-                    var h2 = ctx.Hit2D.Value;
+                    RaycastHit2D h2 = ctx.Hit2D.Value;
                     p.Position = h2.point;
                     p.HasExplicitPosition = true;
                     p.Normal = h2.normal;
+                    return p;
+                }
+
+                if (ctx.HasWorldPosition)
+                {
+                    p.Position = ctx.WorldPosition;
+                    p.HasExplicitPosition = true;
+                    p.Normal = ctx.WorldNormal.sqrMagnitude > 0.0001f ? ctx.WorldNormal : Vector3.up;
                     return p;
                 }
             }

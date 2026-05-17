@@ -37,63 +37,50 @@ public class HoleTrap : MonoBehaviour
     private void CheckAndActivateTrap(Collider2D collision)
     {
         if (isTriggered) return;
-        if (!collision.CompareTag("Player")) return;
 
-        var abilitySystem = collision.GetComponent<AbilitySystem>();
+        if (!TryBuildFallContext(collision, out PitFallContext context))
+            return;
 
-        if (ignoreTag != null && abilitySystem != null)
-        {
-            if (abilitySystem.TagSystem.HasTag(ignoreTag))
-                return;
-        }
-
-        var safetyTracker = collision.GetComponent<SafetyTracker>();
-        if (abilitySystem != null && safetyTracker != null)
-        {
-            StartCoroutine(ApplyTrapRoutine(abilitySystem, safetyTracker, collision.transform));
-        }
+        StartCoroutine(ApplyTrapRoutine(context));
     }
 
-    private IEnumerator ApplyTrapRoutine(AbilitySystem asc, SafetyTracker tracker, Transform playerTransform)
+    private bool TryBuildFallContext(Collider2D collision, out PitFallContext context)
+    {
+        context = default;
+
+        if (!PitFallTarget.TryCreatePlayer(collision, out PitFallTarget target))
+            return false;
+
+        if (ignoreTag != null)
+        {
+            if (target.AbilitySystem.TagSystem.HasTag(ignoreTag))
+                return false;
+        }
+
+        Vector3 fallCenter = PitFallPositionResolver.ResolveFallCenter(target.Transform.position, gameObject);
+        Vector3 respawnPosition = target.SafetyTracker.GetRespawnPosition();
+
+        context = new PitFallContext(
+            target.AbilitySystem,
+            target.SafetyTracker,
+            target.Transform,
+            gameObject,
+            damageEffect,
+            fallingEffect,
+            trapDamage,
+            trapDuration,
+            fallCenter,
+            respawnPosition,
+            this);
+
+        return context.IsValid;
+    }
+
+    private IEnumerator ApplyTrapRoutine(PitFallContext context)
     {
         isTriggered = true;
 
-        // 1. 상태 이상 적용
-        if (fallingEffect != null)
-        {
-            var statusSpec = asc.MakeSpec(fallingEffect, this.gameObject);
-            asc.EffectRunner.ApplyEffectSpec(statusSpec, asc.gameObject);
-        }
-
-        // 2. 물리 속도 초기화
-        var rb = playerTransform.GetComponent<Rigidbody2D>();
-        if (rb != null)
-            rb.linearVelocity = Vector2.zero;
-
-        // 3. 연출 대기
-        yield return new WaitForSeconds(trapDuration);
-
-        // 4. 환경 피해 적용
-        if (damageEffect != null)
-        {
-            HazardDamageAction.ApplyDamage(
-                targetSystem: asc,
-                target: asc.gameObject,
-                damageEffect: damageEffect,
-                finalHpDamage: trapDamage,
-                causer: gameObject,
-                sourceObject: this
-            );
-        }
-
-        // 5. 리스폰
-        playerTransform.position = tracker.GetRespawnPosition();
-
-        // 6. 상태 이상 해제
-        if (fallingEffect != null)
-        {
-            asc.EffectRunner.RemoveEffect(fallingEffect, asc.gameObject);
-        }
+        yield return PitFallExecutor.Execute(context);
 
         isTriggered = false;
     }

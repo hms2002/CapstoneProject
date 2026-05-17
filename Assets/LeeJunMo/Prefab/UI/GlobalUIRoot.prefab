@@ -9315,6 +9315,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::InventoryOpenHudButton
   button: {fileID: 8083857636480268370}
   openRequestHandlerSource: {fileID: 5360231386028813442}
+  hudRoot: {fileID: 0}
+  hideWhenUnavailable: 1
 --- !u!1 &1537232383850694837
 GameObject:
   m_ObjectHideFlags: 0

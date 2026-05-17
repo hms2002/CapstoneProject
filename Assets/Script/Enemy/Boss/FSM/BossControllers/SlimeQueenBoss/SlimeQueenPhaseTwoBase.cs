@@ -71,12 +71,19 @@ public abstract class SlimeQueenPhaseTwoBase : SlimeQueenBossBase, ISlimeQueenBo
     [SerializeField, Min(0f)] private float bodyInflateImpactKnockbackImpulse = 8f;
 
     private float nextContactDamageTime;
+    private bool isPassiveContactDamageBlocked;
 
     public int Phase2SlamCount => Mathf.Max(1, slamCount);
 
     public float Phase2SlamIntervalSeconds => Mathf.Max(0.1f, slamIntervalSeconds);
 
     public float BodyInflateWarningSeconds => bodyInflateWarningSeconds;
+
+    /// <summary>패턴 피해가 우선 적용되어야 하는 동안 상시 접촉 피해를 막습니다.</summary>
+    public void SetPassiveContactDamageBlocked(bool isBlocked)
+    {
+        isPassiveContactDamageBlocked = isBlocked;
+    }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
@@ -231,7 +238,7 @@ public abstract class SlimeQueenPhaseTwoBase : SlimeQueenBossBase, ISlimeQueenBo
     /// <summary>플레이어와 접촉 중이면 GAS 피해를 적용합니다.</summary>
     private void TryApplyContactDamage(Collider2D other)
     {
-        if (IsPatternMoveDamageBlocked || IsDead || other == null)
+        if (IsPatternMoveDamageBlocked || isPassiveContactDamageBlocked || IsDead || other == null)
             return;
 
         if (contactDamage <= 0f || contactDamageEffect == null || Time.time < nextContactDamageTime)

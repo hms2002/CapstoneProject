@@ -15,12 +15,13 @@ namespace UnityGAS
             GE_Damage_Spec damageEffect,
             float finalHpDamage,
             GameObject causer,
-            Object sourceObject = null)
+            Object sourceObject = null,
+            bool ignoreInvulnerability = false)
         {
             if (targetSystem == null || target == null || damageEffect == null)
                 return;
 
-            if (CombatInvulnerabilityUtil.IsDamageSuppressed(target, damageEffect))
+            if (!ignoreInvulnerability && CombatInvulnerabilityUtil.IsDamageSuppressed(target, damageEffect))
                 return;
 
             if (CombatEvasionUtil.TryRollEvasion(target))

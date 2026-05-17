@@ -68,6 +68,9 @@ namespace UnityGAS
         public Object SourceObject { get; set; }  // 무기 데이터/유물 데이터 등
         public RaycastHit? Hit3D { get; set; }
         public RaycastHit2D? Hit2D { get; set; }
+        public bool HasWorldPosition { get; private set; }
+        public Vector3 WorldPosition { get; private set; }
+        public Vector3 WorldNormal { get; private set; } = Vector3.up;
 
         /// <summary>
         /// Optional: per-hit element damages calculated by DamageFormulaUtil.
@@ -79,6 +82,13 @@ namespace UnityGAS
         {
             Instigator = instigator;
             Causer = causer;
+        }
+
+        public void SetWorldPosition(Vector3 position, Vector3 normal)
+        {
+            HasWorldPosition = true;
+            WorldPosition = position;
+            WorldNormal = normal.sqrMagnitude > 0.0001f ? normal : Vector3.up;
         }
     }
 
