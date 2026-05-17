@@ -42,7 +42,15 @@ last_reviewed: 2026-05-15
 | state-owned presentation cleanup | state exit와 fail-safe cleanup |
 | population/spawn context | `MonsterSpawner` / scene spawn director |
 | death loot | `Mob.OnDeathStarted`와 `LootManager` |
-| room/chest lock overlay | lock overlay 컴포넌트, 단 분열/소환 기준은 pending design |
+| room/chest lock overlay | lock overlay component; see Lock Count Authoring Rule below |
+
+## Lock Count Authoring Rule
+
+- Room/chest locks count only enemies that enter the lock through spawn registration, plus Slime split descendants that inherit a registered parent's lock context.
+- General direct summons do not count toward room/chest clear. Do not rely on `Instantiate(...)` alone to add a summoned enemy to a lock.
+- Transform or phase changes on the same GameObject stay one tracked enemy.
+- Death presentation remains locked while the tracked GameObject still exists; lock release follows destruction/null compaction, not explicit death start.
+- No-loot or gimmick enemies count only if they use the same spawn registration or Slime split inheritance path.
 
 ## Checklist
 

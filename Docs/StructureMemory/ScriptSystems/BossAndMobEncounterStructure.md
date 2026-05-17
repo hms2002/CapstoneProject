@@ -34,7 +34,7 @@ Bosses use an `Encounter -> Battle -> BattleEnd` flow. General mobs use `Populat
 | Mob Population / Spawn | `MonsterSpawner`, `SceneMonsterSpawnDirector`, spawn containers, room groups/profiles, difficulty/context/pathfinding injection. | Instantiate and configure general mobs. This is the normal placement entry point for mobs, not a boss-style encounter. |
 | Mob Battle Runtime | `Mob`, mob FSM, chase/facing/home return, attack decision source, `MobAbilityCoordinator`, pattern runners, mob ability logic. | Keep spawned mobs battle-ready, run chase/attack behavior, and perform cleanup according to `Docs/Contracts/MobCleanupContract.md`. |
 | Mob Death Result | `Mob.OnDeathStarted`, monster loot spawn, spawned-monster tracking cleanup. | Convert mob death into immediate results. Long-term clear/lock semantics should not be assumed from root GameObject destruction alone. |
-| Room / Chest Lock Overlay | `RoomDoorMonsterKillLock`, `ChestMonsterKillLock`, `ChestMonsterKillLockNavigationView`, spawn-time lock registration. | Observe registered combatants, unlock doors/chests, and show local chest guidance presentation. Split/summon/transform semantics are pending design decisions. |
+| Room / Chest Lock Overlay | `RoomDoorMonsterKillLock`, `ChestMonsterKillLock`, `ChestMonsterKillLockNavigationView`, spawn-time lock registration. | Observe registered combatants, unlock doors/chests, and show local chest guidance presentation. Count spawn-registered roots and Slime split descendants; do not count general direct summons. |
 | Hazards / Puddles | Puddle runtime, conversion service, hazard damage, puddle visuals, boss-specific puddle interaction triggers. | Battle environment. Boss-specific triggers can live in boss ability logic, but hazard actors should avoid accumulating boss-specific policy. |
 | Enemy Shared Combat | `Enemy`, death command, shared cleanup utility. | Shared enemy combat base, cleanup helpers, and canonical player target resolution for player-owned child/orbit colliders. |
 
@@ -153,17 +153,16 @@ Track the concrete candidate in `Docs/RefactorBacklog/BossHudSpecialCaseSourceSp
 - Use `Tools/Validation/Boss Battle-End Migration Validator` when relying on boss battle-end data for a boss scene. Prefab scans are stale-component checks only; scene Auto Fix buttons are a first wiring pass, not final authoring.
 - Add new mob behavior through mob FSM, ability logic, and pattern runner patterns.
 - Add mob population behavior through MonsterSpawn context/profile/director rather than individual enemies.
-- Add lock overlay behavior with explicit design rules for which combatants count toward unlocking.
+- Add lock overlay behavior only through explicit registration. Spawn-registered roots count, Slime split descendants inherit the same lock context, general direct summons do not count, and death presentation keeps counting until the tracked root is destroyed.
 
-## Pending Design Questions
+## Lock Count Policy
 
-- Do split mobs, such as Slime split children, count toward room/chest unlock conditions?
-- Do summoned mobs count toward room/chest unlock conditions, and does that differ for boss summons vs general mob summons?
-- Do transformed or phase-replaced enemies count as the same tracked combatant or a new combatant?
-- Does a death-presentation delay still count as alive for lock conditions, or is explicit death enough?
-- Do no-loot or gimmick enemies count toward lock clear conditions?
-
-Until these are answered, do not create a lock-tracking refactor plan that assumes one clear rule.
+- Spawn-registered combatant roots count toward room/chest unlock conditions.
+- Slime split descendants are the special split exception: they inherit the parent's room/chest lock context and keep the lock closed while alive.
+- General direct summons are not lock targets. This includes boss/local summons that instantiate enemies without the room spawn registration path.
+- Transform or phase changes on the same tracked GameObject are the same enemy for lock purposes.
+- Death presentation still counts as alive while the tracked GameObject exists. The lock releases only after the tracked root is destroyed and compacted from the lock list.
+- No-loot/gimmick enemies count only when they entered the lock through the spawn registration path or an explicit Slime split inheritance path.
 
 ## Known Pitfalls
 
@@ -171,8 +170,8 @@ Until these are answered, do not create a lock-tracking refactor plan that assum
 - Pattern presentation ownership should follow `Docs/Contracts/PresentationAuthoringContract.md`.
 - The former `BossDrop` legacy reward flow is resolved in `Docs/RefactorBacklog/BossDropResponsibilitySplit.md`; unhandled reward/portal authoring now reports editor/development warnings through `BossRewardFallbackService` instead of running a dynamic fallback.
 - The boss battle-end migration validator can find missing scene `BossBattleEndHandler` coverage, missing authored chest/portal references, optional RouteSet special reward presets, stale deleted component/catalog GUIDs, stale definition/profile fields, and boss exit portal semantic mistakes. Scene Auto Fix can create first-pass handler/boss wiring, but final chest and portal objects must be placed and assigned in the Inspector.
-- `RoomDoorMonsterKillLock` and `ChestMonsterKillLock` currently track registered root GameObjects. Split, summon, transform, or delayed-destroy behavior can make this rule ambiguous.
-- KillLock chest navigation arrows follow the same registered root GameObject lifetime rule, so delayed destruction can keep arrows visible until the tracked root becomes null.
+- `RoomDoorMonsterKillLock` and `ChestMonsterKillLock` track registered root GameObjects. Do not infer lock participation from enemy type alone; use spawn registration or Slime split inheritance.
+- KillLock chest navigation arrows follow the same registered root GameObject lifetime rule, so delayed destruction keeps arrows visible until the tracked root becomes null.
 - `FirePuddleArea` has boss-specific target exclusion logic. If more hazard actors learn boss policy, move the rule toward a combat target policy instead of spreading concrete boss checks.
 - Do not add new concrete boss type branches to common Boss HUD for split or multi-body bosses. Add a boss-specific HUD source/adapter instead.
 - Player-attached relic/effect objects should avoid unintended `Player` tags, hurtboxes, or blocking body colliders. The shared `Enemy` target resolver maps player-owned child colliders and assigned child transforms back to the player root, but collision/hurtbox authoring still needs separate review.

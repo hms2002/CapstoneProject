@@ -101,6 +101,7 @@ internal sealed class SceneMonsterSpawnDirector
         ApplyDifficulty(monster, difficultyModifiers);
         InstallViews(monster);
         ApplySpawnContext(monster, request);
+        ApplyLockTrackingContext(monster, request);
 
         if (request.LinkedChestKillLock != null)
             request.LinkedChestKillLock.RegisterMonster(monster);
@@ -255,6 +256,18 @@ internal sealed class SceneMonsterSpawnDirector
         IMonsterSpawnContextReceiver[] receivers = monster.GetComponentsInChildren<IMonsterSpawnContextReceiver>(true);
         for (int i = 0; i < receivers.Length; i++)
             receivers[i].ApplySpawnContext(context);
+    }
+
+    private static void ApplyLockTrackingContext(GameObject monster, MonsterSpawnRequest request)
+    {
+        if (monster == null)
+            return;
+
+        Mob mob = monster.GetComponent<Mob>();
+        if (mob == null)
+            return;
+
+        mob.ApplyLockTrackingContext(request.LinkedChestKillLock, request.SourceRoomGroup);
     }
 
     private T ResolveSceneObject<T>(T current, Scene activeScene) where T : Component

@@ -5,6 +5,7 @@ using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Tilemaps;
 using Object = UnityEngine.Object;
 
 public sealed class LevelDesignEditorWindow : EditorWindow
@@ -19,6 +20,9 @@ public sealed class LevelDesignEditorWindow : EditorWindow
     private const string MonsterPrefabDragKey = "LevelDesignEditor.MonsterPrefab";
     private const string ObjectPlacementDragKey = "LevelDesignEditor.ObjectPlacement";
     private const string LevelDesignRootName = "LevelDesignRoot";
+    private const float PolygonEdgeInsertPixelThreshold = 14f;
+    private const float PolygonVertexClickExclusionPixels = 13f;
+    private const float PolygonVertexSelectionPixelThreshold = 16f;
 
     private enum ToolMode
     {
@@ -45,6 +49,19 @@ public sealed class LevelDesignEditorWindow : EditorWindow
         KillLockChest,
         Portal,
         MonsterSpawn
+    }
+
+    private enum RoomDrawShape
+    {
+        Rectangle,
+        Polygon
+    }
+
+    private enum DoorPlacementOrientation
+    {
+        Auto,
+        Horizontal,
+        Vertical
     }
 
     private enum Severity
@@ -87,6 +104,7 @@ public sealed class LevelDesignEditorWindow : EditorWindow
     private MonsterSpawnRoomGroup linkingRoomGroup;
     private DoorObject linkingDoor;
     private MonsterSpawnRoomGroup selectedRoomGroup;
+    private PolygonCollider2D selectedPolygonVertexCollider;
     private GameObject selectedMonsterPrefab;
     private GameObject doorPrefab;
     private GameObject leverPrefab;
@@ -104,8 +122,14 @@ public sealed class LevelDesignEditorWindow : EditorWindow
     private bool showPlacementPrefabSettings;
     private bool drawRoomMode;
     private bool isDraggingRoom;
+    private bool editRoomGridMode;
+    private int selectedPolygonVertexIndex = -1;
+    private RoomDrawShape roomDrawShape;
+    private DoorPlacementOrientation doorPlacementOrientation;
     private Vector3 roomDragStart;
     private Vector3 roomDragCurrent;
+    private readonly List<Vector3> roomPolygonPoints = new();
+    private Vector3 roomPolygonPreviewPoint;
     private Vector2 defaultRoomSize = new(12f, 8f);
 
     [MenuItem("Tools/Level Design/Level Design Editor")]
@@ -858,10 +882,25 @@ public sealed class LevelDesignEditorWindow : EditorWindow
 
         selectedRoomGroup = EditorGUILayout.ObjectField("선택된 방", selectedRoomGroup, typeof(MonsterSpawnRoomGroup), true) as MonsterSpawnRoomGroup;
         defaultRoomSize = EditorGUILayout.Vector2Field("기본 방 크기", defaultRoomSize);
+        EditorGUI.BeginChangeCheck();
+        roomDrawShape = (RoomDrawShape)EditorGUILayout.Popup(
+            "방 그리기 방식",
+            (int)roomDrawShape,
+            new[] { "사각형 드래그", "다각형 점 찍기" });
+        if (EditorGUI.EndChangeCheck())
+            ClearRoomDrawingState();
 
         using (new EditorGUILayout.HorizontalScope())
         {
-            drawRoomMode = GUILayout.Toggle(drawRoomMode, drawRoomMode ? "방 그리는 중..." : "SceneView에서 방 그리기", EditorStyles.miniButton);
+            bool nextDrawRoomMode = GUILayout.Toggle(drawRoomMode, drawRoomMode ? "방 그리는 중..." : "SceneView에서 방 그리기", EditorStyles.miniButton);
+            if (drawRoomMode && !nextDrawRoomMode)
+                ClearRoomDrawingState();
+            if (!drawRoomMode && nextDrawRoomMode)
+            {
+                editRoomGridMode = false;
+                ClearSelectedPolygonVertex();
+            }
+            drawRoomMode = nextDrawRoomMode;
 
             if (GUILayout.Button("씬 중앙에 생성"))
                 CreateBattleRoomAtSceneCenter();
@@ -869,6 +908,28 @@ public sealed class LevelDesignEditorWindow : EditorWindow
 
         using (new EditorGUI.DisabledScope(selectedRoomGroup == null))
         {
+            bool nextEditRoomGridMode = GUILayout.Toggle(
+                editRoomGridMode,
+                editRoomGridMode ? "방 그리드 수정 중..." : "선택 방 그리드 수정",
+                EditorStyles.miniButton);
+            if (nextEditRoomGridMode != editRoomGridMode)
+            {
+                editRoomGridMode = nextEditRoomGridMode;
+                if (editRoomGridMode)
+                {
+                    drawRoomMode = false;
+                    ClearRoomDrawingState();
+                }
+                else
+                {
+                    ClearSelectedPolygonVertex();
+                }
+
+                SceneView.RepaintAll();
+            }
+
+            DrawSelectedRoomGridEditActions();
+
             if (GUILayout.Button("선택 방 안의 오브젝트 자동 연결"))
                 AutoWireRoom(selectedRoomGroup);
 
@@ -902,6 +963,44 @@ public sealed class LevelDesignEditorWindow : EditorWindow
         }
     }
 
+    private void DrawSelectedRoomGridEditActions()
+    {
+        MonsterRoomArea2D area = ResolveRoomArea(selectedRoomGroup);
+        Collider2D collider = ResolveAreaCollider(area);
+        if (collider == null)
+        {
+            EditorGUILayout.HelpBox("선택된 방에 수정할 Room Area Collider가 없습니다.", MessageType.Warning);
+            return;
+        }
+
+        if (collider is BoxCollider2D)
+        {
+            if (GUILayout.Button("선택 방을 다각형으로 변환"))
+                ConvertSelectedRoomBoxToPolygon();
+        }
+        else if (collider is PolygonCollider2D polygonCollider)
+        {
+            List<Vector3> polygonWorldPoints = GetPolygonWorldPoints(polygonCollider);
+            int selectedVertexIndex = GetSelectedPolygonVertexIndex(polygonCollider, polygonWorldPoints.Count);
+            string selectedLabel = selectedVertexIndex >= 0
+                ? $"{selectedVertexIndex + 1} / {polygonWorldPoints.Count}"
+                : "없음";
+
+            EditorGUILayout.LabelField("선택 꼭짓점", selectedLabel);
+            EditorGUILayout.HelpBox("SceneView에서 다각형 꼭짓점을 클릭하면 선택됩니다. Delete/Backspace로 선택 꼭짓점을 삭제합니다.", MessageType.Info);
+
+            using (new EditorGUI.DisabledScope(selectedVertexIndex < 0 || polygonWorldPoints.Count <= 3))
+            {
+                if (GUILayout.Button("선택 꼭짓점 삭제"))
+                    DeleteSelectedPolygonRoomPoint(polygonCollider);
+            }
+        }
+        else
+        {
+            EditorGUILayout.HelpBox($"{collider.GetType().Name} 방은 그리드 핸들 수정 대상이 아닙니다.", MessageType.Info);
+        }
+    }
+
     private void DrawPlaceTab()
     {
         EditorGUILayout.LabelField("배치", EditorStyles.boldLabel);
@@ -913,6 +1012,10 @@ public sealed class LevelDesignEditorWindow : EditorWindow
         EditorGUILayout.LabelField($"현재 배치: {GetPlacementKindLabel(placementKind)}", EditorStyles.boldLabel);
         snapToGrid = EditorGUILayout.Toggle("그리드 스냅", snapToGrid);
         gridSize = Mathf.Max(0.1f, EditorGUILayout.FloatField("그리드 크기", gridSize));
+        doorPlacementOrientation = (DoorPlacementOrientation)EditorGUILayout.Popup(
+            "문 배치 방향",
+            (int)doorPlacementOrientation,
+            new[] { "자동", "가로", "세로" });
 
         EditorGUILayout.Space(6f);
         showPlacementPrefabSettings = EditorGUILayout.Foldout(showPlacementPrefabSettings, "배치 프리팹 설정", true);
@@ -1166,6 +1269,12 @@ public sealed class LevelDesignEditorWindow : EditorWindow
         DrawSceneMarkers();
         DrawSceneConnections();
 
+        if (mode == ToolMode.BattleRoom && editRoomGridMode)
+            HandleRoomGridEditPreInput(e);
+
+        if (mode == ToolMode.BattleRoom && editRoomGridMode)
+            DrawSelectedRoomGridEditor();
+
         if (showValidationMarkers)
             DrawValidationMarkers();
 
@@ -1203,15 +1312,7 @@ public sealed class LevelDesignEditorWindow : EditorWindow
             if (area == null)
                 continue;
 
-            Collider2D collider = ResolveAreaCollider(area);
-            if (collider != null)
-            {
-                Handles.color = new Color(0.2f, 0.7f, 1f, 0.22f);
-                Handles.DrawSolidRectangleWithOutline(
-                    BuildRectangle(collider.bounds),
-                    new Color(0.2f, 0.7f, 1f, 0.08f),
-                    new Color(0.2f, 0.9f, 1f, 0.6f));
-            }
+            DrawRoomArea(area);
         }
 
         foreach (DoorObject door in doors)
@@ -1242,6 +1343,401 @@ public sealed class LevelDesignEditorWindow : EditorWindow
             DrawMarker(portal, new Color(0.5f, 0.45f, 1f, 1f), $"포탈 {portal.PortalTransitionType}");
     }
 
+    private void DrawRoomArea(MonsterRoomArea2D area)
+    {
+        Collider2D collider = ResolveAreaCollider(area);
+        if (collider == null)
+            return;
+
+        if (collider is PolygonCollider2D polygonCollider)
+        {
+            Handles.color = new Color(0.2f, 0.9f, 1f, 0.85f);
+            for (int pathIndex = 0; pathIndex < polygonCollider.pathCount; pathIndex++)
+            {
+                Vector2[] path = polygonCollider.GetPath(pathIndex);
+                if (path == null || path.Length < 2)
+                    continue;
+
+                Vector3[] points = BuildClosedWorldPath(polygonCollider.transform, path);
+                Handles.DrawAAPolyLine(2.5f, points);
+            }
+
+            return;
+        }
+
+        Handles.color = new Color(0.2f, 0.7f, 1f, 0.22f);
+        Handles.DrawSolidRectangleWithOutline(
+            BuildRectangle(collider.bounds),
+            new Color(0.2f, 0.7f, 1f, 0.08f),
+            new Color(0.2f, 0.9f, 1f, 0.6f));
+    }
+
+    private void DrawSelectedRoomGridEditor()
+    {
+        Collider2D collider = ResolveSelectedRoomAreaCollider();
+        if (collider == null)
+            return;
+
+        if (collider is BoxCollider2D boxCollider)
+        {
+            DrawBoxRoomGridEditor(boxCollider);
+            return;
+        }
+
+        if (collider is PolygonCollider2D polygonCollider)
+        {
+            DrawPolygonRoomGridEditor(polygonCollider);
+            return;
+        }
+
+        Handles.Label(collider.transform.position, $"{collider.GetType().Name} 수정 미지원");
+    }
+
+    private void DrawBoxRoomGridEditor(BoxCollider2D boxCollider)
+    {
+        Vector3[] corners = GetBoxWorldCorners(boxCollider);
+        Handles.color = new Color(1f, 0.85f, 0.2f, 1f);
+        Handles.DrawAAPolyLine(3f, BuildClosedWorldPath(corners));
+
+        for (int i = 0; i < corners.Length; i++)
+        {
+            Vector3 corner = corners[i];
+            float handleSize = HandleUtility.GetHandleSize(corner) * 0.08f;
+
+            EditorGUI.BeginChangeCheck();
+            Vector3 moved = Handles.FreeMoveHandle(corner, handleSize, Vector3.zero, Handles.DotHandleCap);
+            if (!EditorGUI.EndChangeCheck())
+                continue;
+
+            ApplyBoxRoomCornerMove(boxCollider, i, Snap(moved));
+            return;
+        }
+    }
+
+    private void DrawPolygonRoomGridEditor(PolygonCollider2D polygonCollider)
+    {
+        List<Vector3> worldPoints = GetPolygonWorldPoints(polygonCollider);
+        if (worldPoints.Count < 2)
+            return;
+
+        ValidateSelectedPolygonVertex(polygonCollider, worldPoints.Count);
+
+        Handles.color = new Color(1f, 0.85f, 0.2f, 1f);
+        Handles.DrawAAPolyLine(3f, BuildClosedWorldPath(worldPoints));
+
+        for (int i = 0; i < worldPoints.Count; i++)
+        {
+            Vector3 point = worldPoints[i];
+            float handleSize = HandleUtility.GetHandleSize(point) * 0.075f;
+            bool selected = GetSelectedPolygonVertexIndex(polygonCollider, worldPoints.Count) == i;
+
+            DrawPolygonVertexSelectionVisual(point, handleSize, i, selected);
+
+            EditorGUI.BeginChangeCheck();
+            Vector3 moved = Handles.FreeMoveHandle(point, handleSize, Vector3.zero, Handles.DotHandleCap);
+            if (!EditorGUI.EndChangeCheck())
+                continue;
+
+            TryApplyPolygonVertexMove(polygonCollider, i, Snap(moved));
+            return;
+        }
+
+        for (int i = 0; i < worldPoints.Count; i++)
+        {
+            int nextIndex = (i + 1) % worldPoints.Count;
+            Vector3 midpoint = Snap((worldPoints[i] + worldPoints[nextIndex]) * 0.5f);
+            float handleSize = HandleUtility.GetHandleSize(midpoint) * 0.05f;
+
+            Handles.color = new Color(0.2f, 1f, 0.35f, 0.9f);
+            if (!Handles.Button(midpoint, Quaternion.identity, handleSize, handleSize * 1.45f, Handles.CircleHandleCap))
+                continue;
+
+            InsertPolygonRoomPoint(polygonCollider, i + 1, midpoint);
+            Event.current.Use();
+            return;
+        }
+    }
+
+    private void DrawPolygonVertexSelectionVisual(Vector3 point, float handleSize, int vertexIndex, bool selected)
+    {
+        float ringRadius = handleSize * (selected ? 2.1f : 1.35f);
+        Handles.color = selected
+            ? new Color(1f, 0.25f, 0.12f, 0.24f)
+            : new Color(1f, 1f, 1f, 0.08f);
+        Handles.DrawSolidDisc(point, Vector3.forward, ringRadius);
+
+        Handles.color = selected
+            ? new Color(1f, 0.95f, 0.2f, 1f)
+            : new Color(1f, 1f, 1f, 0.35f);
+        Handles.DrawWireDisc(point, Vector3.forward, ringRadius);
+
+        GUIStyle labelStyle = new(EditorStyles.boldLabel);
+        labelStyle.normal.textColor = selected
+            ? new Color(1f, 0.95f, 0.2f, 1f)
+            : new Color(1f, 1f, 1f, 0.6f);
+        Handles.Label(point + Vector3.up * (handleSize * 2.5f), selected ? $"#{vertexIndex + 1} 선택" : $"#{vertexIndex + 1}", labelStyle);
+    }
+
+    private void ApplyBoxRoomCornerMove(BoxCollider2D boxCollider, int cornerIndex, Vector3 movedCorner)
+    {
+        if (!IsAxisAlignedRoomTransform(boxCollider.transform))
+        {
+            ShowNotification(new GUIContent("회전된 BoxCollider 방은 그리드 수정이 지원되지 않습니다."));
+            return;
+        }
+
+        Vector3[] corners = GetBoxWorldCorners(boxCollider);
+        Vector3 opposite = corners[(cornerIndex + 2) % corners.Length];
+        Rect rect = CreateRect(opposite, movedCorner);
+        if (rect.width < Mathf.Max(0.1f, gridSize * 0.5f) || rect.height < Mathf.Max(0.1f, gridSize * 0.5f))
+        {
+            ShowNotification(new GUIContent("방 크기가 너무 작습니다."));
+            return;
+        }
+
+        Undo.RecordObjects(new Object[] { boxCollider, boxCollider.transform }, "Edit Room Grid");
+
+        Vector3 center = rect.center;
+        center.z = boxCollider.transform.position.z;
+        boxCollider.transform.position = center;
+        boxCollider.offset = Vector2.zero;
+
+        Vector3 scale = boxCollider.transform.lossyScale;
+        float scaleX = Mathf.Max(0.0001f, Mathf.Abs(scale.x));
+        float scaleY = Mathf.Max(0.0001f, Mathf.Abs(scale.y));
+        boxCollider.size = new Vector2(rect.width / scaleX, rect.height / scaleY);
+
+        EditorUtility.SetDirty(boxCollider);
+        EditorUtility.SetDirty(boxCollider.transform);
+        EditorSceneManager.MarkSceneDirty(boxCollider.gameObject.scene);
+        SceneView.RepaintAll();
+    }
+
+    private void TryApplyPolygonVertexMove(PolygonCollider2D polygonCollider, int vertexIndex, Vector3 movedPoint)
+    {
+        List<Vector3> worldPoints = GetPolygonWorldPoints(polygonCollider);
+        if (vertexIndex < 0 || vertexIndex >= worldPoints.Count)
+            return;
+
+        worldPoints[vertexIndex] = movedPoint;
+        if (TryApplyPolygonWorldPoints(polygonCollider, worldPoints, "Edit Room Polygon Vertex"))
+            SetSelectedPolygonVertex(polygonCollider, vertexIndex);
+    }
+
+    private void InsertPolygonRoomPoint(PolygonCollider2D polygonCollider, int insertIndex, Vector3 point)
+    {
+        List<Vector3> worldPoints = GetPolygonWorldPoints(polygonCollider);
+        insertIndex = Mathf.Clamp(insertIndex, 0, worldPoints.Count);
+        worldPoints.Insert(insertIndex, point);
+        if (TryApplyPolygonWorldPoints(polygonCollider, worldPoints, "Insert Room Polygon Vertex"))
+            SetSelectedPolygonVertex(polygonCollider, insertIndex);
+    }
+
+    private bool TryInsertPolygonPointFromMouse(PolygonCollider2D polygonCollider, Vector2 mousePosition)
+    {
+        List<Vector3> worldPoints = GetPolygonWorldPoints(polygonCollider);
+        if (worldPoints.Count < 3)
+            return false;
+
+        if (IsMouseNearPolygonVertex(worldPoints, mousePosition, PolygonVertexClickExclusionPixels))
+            return false;
+
+        int bestEdgeIndex = -1;
+        float bestEdgeT = 0f;
+        float bestDistance = PolygonEdgeInsertPixelThreshold;
+
+        for (int i = 0; i < worldPoints.Count; i++)
+        {
+            int nextIndex = (i + 1) % worldPoints.Count;
+            Vector2 guiA = HandleUtility.WorldToGUIPoint(worldPoints[i]);
+            Vector2 guiB = HandleUtility.WorldToGUIPoint(worldPoints[nextIndex]);
+            if ((guiB - guiA).sqrMagnitude <= 0.0001f)
+                continue;
+
+            float edgeT = ClosestPointOnSegment01(mousePosition, guiA, guiB);
+            Vector2 closest = Vector2.Lerp(guiA, guiB, edgeT);
+            float distance = Vector2.Distance(mousePosition, closest);
+            if (distance > bestDistance)
+                continue;
+
+            bestDistance = distance;
+            bestEdgeIndex = i;
+            bestEdgeT = edgeT;
+        }
+
+        if (bestEdgeIndex < 0)
+            return false;
+
+        int bestNextIndex = (bestEdgeIndex + 1) % worldPoints.Count;
+        Vector3 insertPoint = Snap(Vector3.Lerp(worldPoints[bestEdgeIndex], worldPoints[bestNextIndex], bestEdgeT));
+        if (IsSameGridPoint(insertPoint, worldPoints[bestEdgeIndex]) ||
+            IsSameGridPoint(insertPoint, worldPoints[bestNextIndex]))
+        {
+            ShowNotification(new GUIContent("새 꼭짓점이 기존 꼭짓점과 겹칩니다."));
+            return true;
+        }
+
+        InsertPolygonRoomPoint(polygonCollider, bestEdgeIndex + 1, insertPoint);
+        return true;
+    }
+
+    private bool TrySelectPolygonVertexFromMouse(PolygonCollider2D polygonCollider, Vector2 mousePosition)
+    {
+        List<Vector3> worldPoints = GetPolygonWorldPoints(polygonCollider);
+        int vertexIndex = FindClosestPolygonVertexIndex(worldPoints, mousePosition, PolygonVertexSelectionPixelThreshold);
+        if (vertexIndex < 0)
+            return false;
+
+        SetSelectedPolygonVertex(polygonCollider, vertexIndex);
+        SceneView.RepaintAll();
+        return true;
+    }
+
+    private void SetSelectedPolygonVertex(PolygonCollider2D polygonCollider, int vertexIndex)
+    {
+        if (polygonCollider == null)
+        {
+            ClearSelectedPolygonVertex();
+            return;
+        }
+
+        List<Vector3> worldPoints = GetPolygonWorldPoints(polygonCollider);
+        if (vertexIndex < 0 || vertexIndex >= worldPoints.Count)
+        {
+            ClearSelectedPolygonVertex();
+            return;
+        }
+
+        selectedPolygonVertexCollider = polygonCollider;
+        selectedPolygonVertexIndex = vertexIndex;
+    }
+
+    private void ClearSelectedPolygonVertex()
+    {
+        selectedPolygonVertexCollider = null;
+        selectedPolygonVertexIndex = -1;
+    }
+
+    private int GetSelectedPolygonVertexIndex(PolygonCollider2D polygonCollider, int vertexCount)
+    {
+        if (polygonCollider == null ||
+            selectedPolygonVertexCollider == null ||
+            selectedPolygonVertexCollider != polygonCollider ||
+            selectedPolygonVertexIndex < 0 ||
+            selectedPolygonVertexIndex >= vertexCount)
+        {
+            return -1;
+        }
+
+        return selectedPolygonVertexIndex;
+    }
+
+    private void ValidateSelectedPolygonVertex(PolygonCollider2D polygonCollider, int vertexCount)
+    {
+        if (GetSelectedPolygonVertexIndex(polygonCollider, vertexCount) < 0)
+            ClearSelectedPolygonVertex();
+    }
+
+    private void DeleteLastPolygonRoomPoint(PolygonCollider2D polygonCollider)
+    {
+        List<Vector3> worldPoints = GetPolygonWorldPoints(polygonCollider);
+        if (worldPoints.Count <= 3)
+        {
+            ShowNotification(new GUIContent("다각형 방은 꼭짓점이 3개 이상 필요합니다."));
+            return;
+        }
+
+        worldPoints.RemoveAt(worldPoints.Count - 1);
+        TryApplyPolygonWorldPoints(polygonCollider, worldPoints, "Delete Room Polygon Vertex");
+    }
+
+    private void DeleteSelectedPolygonRoomPoint(PolygonCollider2D polygonCollider)
+    {
+        List<Vector3> worldPoints = GetPolygonWorldPoints(polygonCollider);
+        int vertexIndex = GetSelectedPolygonVertexIndex(polygonCollider, worldPoints.Count);
+        if (vertexIndex < 0)
+        {
+            ShowNotification(new GUIContent("삭제할 꼭짓점을 먼저 선택하세요."));
+            return;
+        }
+
+        if (worldPoints.Count <= 3)
+        {
+            ShowNotification(new GUIContent("다각형 방은 꼭짓점이 3개 이상 필요합니다."));
+            return;
+        }
+
+        worldPoints.RemoveAt(vertexIndex);
+        if (!TryApplyPolygonWorldPoints(polygonCollider, worldPoints, "Delete Selected Room Polygon Vertex"))
+            return;
+
+        int nextSelectedIndex = Mathf.Min(vertexIndex, worldPoints.Count - 1);
+        SetSelectedPolygonVertex(polygonCollider, nextSelectedIndex);
+    }
+
+    private bool TryApplyPolygonWorldPoints(PolygonCollider2D polygonCollider, List<Vector3> worldPoints, string undoName)
+    {
+        if (worldPoints.Count < 3)
+        {
+            ShowNotification(new GUIContent("다각형 방은 꼭짓점이 3개 이상 필요합니다."));
+            return false;
+        }
+
+        if (HasDuplicatePolygonPoints(worldPoints))
+        {
+            ShowNotification(new GUIContent("다각형 방에 중복 꼭짓점이 있습니다."));
+            return false;
+        }
+
+        if (HasSelfIntersection(worldPoints))
+        {
+            ShowNotification(new GUIContent("자기 교차 다각형 방은 적용할 수 없습니다."));
+            return false;
+        }
+
+        Bounds bounds = CalculateBounds(worldPoints);
+        Vector3 center = bounds.center;
+        center.z = polygonCollider.transform.position.z;
+
+        Undo.RecordObjects(new Object[] { polygonCollider, polygonCollider.transform }, undoName);
+        polygonCollider.transform.position = center;
+        polygonCollider.pathCount = 1;
+        polygonCollider.SetPath(0, BuildLocalPolygonPath(worldPoints, polygonCollider.transform));
+
+        EditorUtility.SetDirty(polygonCollider);
+        EditorUtility.SetDirty(polygonCollider.transform);
+        EditorSceneManager.MarkSceneDirty(polygonCollider.gameObject.scene);
+        SceneView.RepaintAll();
+        return true;
+    }
+
+    private void ConvertSelectedRoomBoxToPolygon()
+    {
+        MonsterRoomArea2D area = ResolveRoomArea(selectedRoomGroup);
+        BoxCollider2D boxCollider = ResolveAreaCollider(area) as BoxCollider2D;
+        if (area == null || boxCollider == null)
+            return;
+
+        Undo.IncrementCurrentGroup();
+        int undoGroup = Undo.GetCurrentGroup();
+        Undo.SetCurrentGroupName("Convert Room To Polygon");
+
+        Vector3[] worldCorners = GetBoxWorldCorners(boxCollider);
+        PolygonCollider2D polygonCollider = Undo.AddComponent<PolygonCollider2D>(boxCollider.gameObject);
+        polygonCollider.isTrigger = boxCollider.isTrigger;
+        polygonCollider.pathCount = 1;
+        polygonCollider.SetPath(0, BuildLocalPolygonPath(worldCorners, polygonCollider.transform));
+
+        AssignReference(area, "areaCollider", polygonCollider);
+        Undo.DestroyObjectImmediate(boxCollider);
+
+        EditorUtility.SetDirty(area);
+        EditorUtility.SetDirty(polygonCollider);
+        EditorSceneManager.MarkSceneDirty(polygonCollider.gameObject.scene);
+        Undo.CollapseUndoOperations(undoGroup);
+        RefreshAll();
+    }
+
     private void DrawMarker(Component component, Color color, string label)
     {
         if (component == null)
@@ -1258,8 +1754,9 @@ public sealed class LevelDesignEditorWindow : EditorWindow
         Handles.color = new Color(color.r, color.g, color.b, 0.18f);
         Handles.DrawSolidDisc(position, Vector3.forward, size * 1.55f);
 
+        bool markerClickEnabled = mode != ToolMode.Place && !(mode == ToolMode.BattleRoom && editRoomGridMode);
         Handles.color = color;
-        if (Handles.Button(position, Quaternion.identity, size, size * 1.35f, Handles.CircleHandleCap))
+        if (markerClickEnabled && Handles.Button(position, Quaternion.identity, size, size * 1.35f, Handles.CircleHandleCap))
         {
             NavigateFromSceneComponent(component, allowLinking: true);
             Event.current.Use();
@@ -1366,7 +1863,11 @@ public sealed class LevelDesignEditorWindow : EditorWindow
         else if (mode == ToolMode.Link)
             GUILayout.Label("연결할 점을 먼저 클릭하세요.");
         else if (mode == ToolMode.BattleRoom && drawRoomMode)
-            GUILayout.Label("SceneView에서 드래그해 BattleRoom을 생성합니다.");
+            GUILayout.Label(roomDrawShape == RoomDrawShape.Polygon
+                ? "점을 찍어 방을 만들고 Enter/첫 점 클릭으로 확정, Esc로 취소합니다."
+                : "SceneView에서 드래그해 BattleRoom을 생성합니다.");
+        else if (mode == ToolMode.BattleRoom && editRoomGridMode)
+            GUILayout.Label("꼭짓점 클릭으로 선택, 드래그로 이동, Delete로 삭제합니다. 선분 클릭/edge 점 클릭으로 꼭짓점을 추가합니다.");
         else if (mode == ToolMode.Place)
             GUILayout.Label($"배치: {placementKind}");
         else
@@ -1395,7 +1896,10 @@ public sealed class LevelDesignEditorWindow : EditorWindow
         if (mode == ToolMode.BattleRoom && drawRoomMode)
             HandleBattleRoomDrawingInput(e);
 
-        if (autoNavigateFromScene && mode != ToolMode.Place && !(mode == ToolMode.BattleRoom && drawRoomMode))
+        if (mode == ToolMode.BattleRoom && editRoomGridMode)
+            HandleRoomGridEditInput(e);
+
+        if (autoNavigateFromScene && mode != ToolMode.Place && !(mode == ToolMode.BattleRoom && (drawRoomMode || editRoomGridMode)))
             HandleSceneNavigationInput(e);
     }
 
@@ -1408,6 +1912,56 @@ public sealed class LevelDesignEditorWindow : EditorWindow
         ShowNotification(new GUIContent("연결을 취소했습니다."));
         e.Use();
         return true;
+    }
+
+    private void HandleRoomGridEditPreInput(Event e)
+    {
+        if (e == null || e.type == EventType.Used || e.alt)
+            return;
+
+        if (e.type != EventType.MouseDown || e.button != 0)
+            return;
+
+        PolygonCollider2D polygonCollider = ResolveSelectedRoomAreaCollider() as PolygonCollider2D;
+        if (polygonCollider == null)
+            return;
+
+        TrySelectPolygonVertexFromMouse(polygonCollider, e.mousePosition);
+    }
+
+    private void HandleRoomGridEditInput(Event e)
+    {
+        HandleUtility.AddDefaultControl(GUIUtility.GetControlID(FocusType.Passive));
+
+        if (e.type == EventType.KeyDown && e.keyCode == KeyCode.Escape)
+        {
+            editRoomGridMode = false;
+            ClearSelectedPolygonVertex();
+            ShowNotification(new GUIContent("방 그리드 수정을 종료했습니다."));
+            e.Use();
+            SceneView.RepaintAll();
+            return;
+        }
+
+        if (e.type == EventType.MouseDown && e.button == 0)
+        {
+            PolygonCollider2D targetPolygonCollider = ResolveSelectedRoomAreaCollider() as PolygonCollider2D;
+            if (targetPolygonCollider != null && TryInsertPolygonPointFromMouse(targetPolygonCollider, e.mousePosition))
+            {
+                e.Use();
+                return;
+            }
+        }
+
+        if (e.type != EventType.KeyDown || (e.keyCode != KeyCode.Backspace && e.keyCode != KeyCode.Delete))
+            return;
+
+        PolygonCollider2D polygonCollider = ResolveSelectedRoomAreaCollider() as PolygonCollider2D;
+        if (polygonCollider == null)
+            return;
+
+        DeleteSelectedPolygonRoomPoint(polygonCollider);
+        e.Use();
     }
 
     private void HandleLinkInput(Event e)
@@ -1444,6 +1998,8 @@ public sealed class LevelDesignEditorWindow : EditorWindow
 
     private void HandlePlacementInput(Event e)
     {
+        HandleUtility.AddDefaultControl(GUIUtility.GetControlID(FocusType.Passive));
+
         object draggedPlacement = DragAndDrop.GetGenericData(ObjectPlacementDragKey);
         if (draggedPlacement is PlacementKind draggedPlacementKind &&
             (e.type == EventType.DragUpdated || e.type == EventType.DragPerform))
@@ -1487,6 +2043,14 @@ public sealed class LevelDesignEditorWindow : EditorWindow
     }
 
     private void HandleBattleRoomDrawingInput(Event e)
+    {
+        if (roomDrawShape == RoomDrawShape.Polygon)
+            HandlePolygonRoomDrawingInput(e);
+        else
+            HandleRectangleRoomDrawingInput(e);
+    }
+
+    private void HandleRectangleRoomDrawingInput(Event e)
     {
         HandleUtility.AddDefaultControl(GUIUtility.GetControlID(FocusType.Passive));
 
@@ -1532,12 +2096,72 @@ public sealed class LevelDesignEditorWindow : EditorWindow
         e.Use();
     }
 
+    private void HandlePolygonRoomDrawingInput(Event e)
+    {
+        HandleUtility.AddDefaultControl(GUIUtility.GetControlID(FocusType.Passive));
+
+        if (e.type == EventType.KeyDown && e.keyCode == KeyCode.Escape)
+        {
+            ClearRoomDrawingState();
+            drawRoomMode = false;
+            ShowNotification(new GUIContent("다각형 방 생성을 취소했습니다."));
+            e.Use();
+            return;
+        }
+
+        if (e.type == EventType.KeyDown && (e.keyCode == KeyCode.Backspace || e.keyCode == KeyCode.Delete))
+        {
+            if (roomPolygonPoints.Count > 0)
+            {
+                roomPolygonPoints.RemoveAt(roomPolygonPoints.Count - 1);
+                SceneView.RepaintAll();
+            }
+
+            e.Use();
+            return;
+        }
+
+        if (e.type == EventType.KeyDown && (e.keyCode == KeyCode.Return || e.keyCode == KeyCode.KeypadEnter))
+        {
+            TryCreatePolygonBattleRoom();
+            e.Use();
+            return;
+        }
+
+        roomPolygonPreviewPoint = Snap(GetMouseWorldPosition(e));
+
+        if (e.type == EventType.Repaint)
+            DrawPolygonRoomPreview();
+
+        if (e.type != EventType.MouseDown || e.button != 0)
+            return;
+
+        Vector3 point = Snap(GetMouseWorldPosition(e));
+        if (ShouldCloseRoomPolygon(e.mousePosition, point))
+        {
+            TryCreatePolygonBattleRoom();
+            e.Use();
+            return;
+        }
+
+        if (ContainsRoomPolygonPoint(point))
+        {
+            ShowNotification(new GUIContent("이미 찍은 방 꼭짓점입니다."));
+            e.Use();
+            return;
+        }
+
+        roomPolygonPoints.Add(point);
+        SceneView.RepaintAll();
+        e.Use();
+    }
+
     private void CreatePlacementAt(Vector3 position)
     {
         switch (placementKind)
         {
             case PlacementKind.Door:
-                InstantiatePrefabAt(doorPrefab, "Doors", position);
+                CreateDoorAt(position);
                 break;
             case PlacementKind.Lever:
                 InstantiatePrefabAt(leverPrefab, "Shortcuts", position);
@@ -1558,6 +2182,19 @@ public sealed class LevelDesignEditorWindow : EditorWindow
                 CreateMonsterSpawnAt(position, selectedMonsterPrefab);
                 break;
         }
+    }
+
+    private void CreateDoorAt(Vector3 position)
+    {
+        (Vector3 doorPosition, Quaternion doorRotation) = ResolveDoorPlacementPose(position);
+        GameObject instance = InstantiatePrefabAt(doorPrefab, "Doors", doorPosition);
+        if (instance == null)
+            return;
+
+        Undo.RecordObject(instance.transform, "Rotate Door");
+        instance.transform.rotation = doorRotation;
+        EditorUtility.SetDirty(instance.transform);
+        EditorSceneManager.MarkSceneDirty(instance.scene);
     }
 
     private GameObject InstantiatePrefabAt(GameObject prefab, string parentName, Vector3 position)
@@ -1644,6 +2281,36 @@ public sealed class LevelDesignEditorWindow : EditorWindow
         BoxCollider2D collider = Undo.AddComponent<BoxCollider2D>(roomObject);
         collider.isTrigger = true;
         collider.size = new Vector2(roomRect.width, roomRect.height);
+
+        MonsterRoomArea2D area = Undo.AddComponent<MonsterRoomArea2D>(roomObject);
+        AssignReference(area, "areaCollider", collider);
+
+        RoomEncounterEntryTrigger2D trigger = Undo.AddComponent<RoomEncounterEntryTrigger2D>(roomObject);
+        AssignReference(trigger, "targetRoomGroup", group);
+
+        EditorUtility.SetDirty(roomObject);
+        EditorSceneManager.MarkSceneDirty(scene);
+        Selection.activeObject = roomObject;
+        return group;
+    }
+
+    private MonsterSpawnRoomGroup CreateBattleRoom(IReadOnlyList<Vector3> polygonPoints)
+    {
+        Scene scene = SceneManager.GetActiveScene();
+        Bounds bounds = CalculateBounds(polygonPoints);
+        Vector3 center = bounds.center;
+        center.z = 0f;
+
+        GameObject roomObject = new(BuildUniqueName("BattleRoom"));
+        Undo.RegisterCreatedObjectUndo(roomObject, "Create Battle Room");
+        roomObject.transform.position = center;
+        SetParent(roomObject.transform, FindOrCreateLevelRootChild("BattleRooms"));
+
+        MonsterSpawnRoomGroup group = Undo.AddComponent<MonsterSpawnRoomGroup>(roomObject);
+        PolygonCollider2D collider = Undo.AddComponent<PolygonCollider2D>(roomObject);
+        collider.isTrigger = true;
+        collider.pathCount = 1;
+        collider.SetPath(0, BuildLocalPolygonPath(polygonPoints, center));
 
         MonsterRoomArea2D area = Undo.AddComponent<MonsterRoomArea2D>(roomObject);
         AssignReference(area, "areaCollider", collider);
@@ -1927,7 +2594,10 @@ public sealed class LevelDesignEditorWindow : EditorWindow
         portals = FindSceneObjects<ScenePortal>();
 
         if (selectedRoomGroup != null && !roomGroups.Contains(selectedRoomGroup))
+        {
             selectedRoomGroup = null;
+            editRoomGridMode = false;
+        }
     }
 
     private void RefreshMonsterPalette()
@@ -2303,6 +2973,245 @@ public sealed class LevelDesignEditorWindow : EditorWindow
         return fallback;
     }
 
+    private void ClearRoomDrawingState()
+    {
+        isDraggingRoom = false;
+        roomPolygonPoints.Clear();
+        roomPolygonPreviewPoint = Vector3.zero;
+    }
+
+    private void DrawPolygonRoomPreview()
+    {
+        if (roomPolygonPoints.Count == 0)
+            return;
+
+        Vector3[] points = BuildPolygonPreviewPath();
+        Handles.color = new Color(0.2f, 0.9f, 1f, 0.95f);
+        Handles.DrawAAPolyLine(3f, points);
+
+        for (int i = 0; i < roomPolygonPoints.Count; i++)
+        {
+            Vector3 point = roomPolygonPoints[i];
+            float size = HandleUtility.GetHandleSize(point) * 0.06f;
+            Handles.color = i == 0
+                ? new Color(0.2f, 1f, 0.35f, 1f)
+                : new Color(0.2f, 0.9f, 1f, 1f);
+            Handles.DrawSolidDisc(point, Vector3.forward, size);
+        }
+    }
+
+    private Vector3[] BuildPolygonPreviewPath()
+    {
+        int pointCount = roomPolygonPoints.Count;
+        bool canClose = pointCount >= 3;
+        int extraPointCount = canClose ? 2 : 1;
+        Vector3[] points = new Vector3[pointCount + extraPointCount];
+
+        for (int i = 0; i < pointCount; i++)
+            points[i] = roomPolygonPoints[i];
+
+        points[pointCount] = roomPolygonPreviewPoint;
+        if (canClose)
+            points[pointCount + 1] = roomPolygonPoints[0];
+
+        return points;
+    }
+
+    private bool ShouldCloseRoomPolygon(Vector2 mousePosition, Vector3 point)
+    {
+        if (roomPolygonPoints.Count < 3)
+            return false;
+
+        Vector3 firstPoint = roomPolygonPoints[0];
+        if (IsSameGridPoint(firstPoint, point))
+            return true;
+
+        return Vector2.Distance(mousePosition, HandleUtility.WorldToGUIPoint(firstPoint)) <= 18f;
+    }
+
+    private bool ContainsRoomPolygonPoint(Vector3 point)
+    {
+        for (int i = 0; i < roomPolygonPoints.Count; i++)
+        {
+            if (IsSameGridPoint(roomPolygonPoints[i], point))
+                return true;
+        }
+
+        return false;
+    }
+
+    private void TryCreatePolygonBattleRoom()
+    {
+        if (roomPolygonPoints.Count < 3)
+        {
+            ShowNotification(new GUIContent("다각형 방은 꼭짓점이 3개 이상 필요합니다."));
+            return;
+        }
+
+        if (HasDuplicatePolygonPoints(roomPolygonPoints))
+        {
+            ShowNotification(new GUIContent("다각형 방에 중복 꼭짓점이 있습니다."));
+            return;
+        }
+
+        if (HasSelfIntersection(roomPolygonPoints))
+        {
+            ShowNotification(new GUIContent("자기 교차 다각형 방은 생성할 수 없습니다."));
+            return;
+        }
+
+        selectedRoomGroup = CreateBattleRoom(roomPolygonPoints);
+        ClearRoomDrawingState();
+        drawRoomMode = false;
+        RefreshAll();
+    }
+
+    private (Vector3 Position, Quaternion Rotation) ResolveDoorPlacementPose(Vector3 position)
+    {
+        Vector3 resolvedPosition = Snap(position);
+        DoorPlacementOrientation resolvedOrientation = doorPlacementOrientation;
+
+        if (TryResolveWallTilePlacement(position, out Vector3 wallPosition, out DoorPlacementOrientation wallOrientation))
+        {
+            resolvedPosition = wallPosition;
+            if (resolvedOrientation == DoorPlacementOrientation.Auto)
+                resolvedOrientation = wallOrientation;
+        }
+
+        if (resolvedOrientation == DoorPlacementOrientation.Auto &&
+            TryResolveWallColliderOrientation(resolvedPosition, out DoorPlacementOrientation colliderOrientation))
+        {
+            resolvedOrientation = colliderOrientation;
+        }
+
+        if (resolvedOrientation == DoorPlacementOrientation.Auto)
+            resolvedOrientation = DoorPlacementOrientation.Horizontal;
+
+        float zRotation = resolvedOrientation == DoorPlacementOrientation.Vertical ? 90f : 0f;
+        return (resolvedPosition, Quaternion.Euler(0f, 0f, zRotation));
+    }
+
+    private bool TryResolveWallTilePlacement(Vector3 position, out Vector3 snappedPosition, out DoorPlacementOrientation orientation)
+    {
+        snappedPosition = Snap(position);
+        orientation = DoorPlacementOrientation.Auto;
+
+        Tilemap[] tilemaps = FindSceneObjects<Tilemap>();
+        float maxDistance = Mathf.Max(0.75f, gridSize * 1.25f);
+        float maxDistanceSqr = maxDistance * maxDistance;
+        float bestDistanceSqr = maxDistanceSqr;
+        Tilemap bestTilemap = null;
+        Vector3Int bestCell = default;
+        Vector3 bestPosition = snappedPosition;
+
+        foreach (Tilemap tilemap in tilemaps)
+        {
+            if (!IsWallTilemap(tilemap))
+                continue;
+
+            Vector3Int baseCell = tilemap.WorldToCell(position);
+            for (int y = -1; y <= 1; y++)
+            {
+                for (int x = -1; x <= 1; x++)
+                {
+                    Vector3Int cell = baseCell + new Vector3Int(x, y, 0);
+                    if (!tilemap.HasTile(cell))
+                        continue;
+
+                    Vector3 cellCenter = tilemap.GetCellCenterWorld(cell);
+                    cellCenter.z = 0f;
+                    float distanceSqr = (cellCenter - position).sqrMagnitude;
+                    if (distanceSqr > bestDistanceSqr)
+                        continue;
+
+                    bestDistanceSqr = distanceSqr;
+                    bestTilemap = tilemap;
+                    bestCell = cell;
+                    bestPosition = cellCenter;
+                }
+            }
+        }
+
+        if (bestTilemap == null)
+            return false;
+
+        snappedPosition = bestPosition;
+        orientation = ResolveWallTileOrientation(bestTilemap, bestCell);
+        return true;
+    }
+
+    private DoorPlacementOrientation ResolveWallTileOrientation(Tilemap tilemap, Vector3Int cell)
+    {
+        int horizontal = CountWallNeighbor(tilemap, cell, Vector3Int.left) +
+                         CountWallNeighbor(tilemap, cell, Vector3Int.right);
+        int vertical = CountWallNeighbor(tilemap, cell, Vector3Int.up) +
+                       CountWallNeighbor(tilemap, cell, Vector3Int.down);
+
+        if (vertical > horizontal)
+            return DoorPlacementOrientation.Vertical;
+
+        if (horizontal > vertical)
+            return DoorPlacementOrientation.Horizontal;
+
+        return DoorPlacementOrientation.Auto;
+    }
+
+    private static int CountWallNeighbor(Tilemap tilemap, Vector3Int cell, Vector3Int offset)
+    {
+        return tilemap != null && tilemap.HasTile(cell + offset) ? 1 : 0;
+    }
+
+    private static bool IsWallTilemap(Tilemap tilemap)
+    {
+        if (tilemap == null)
+            return false;
+
+        int wallLayer = LayerMask.NameToLayer("Wall");
+        return (wallLayer >= 0 && tilemap.gameObject.layer == wallLayer) ||
+               tilemap.name.IndexOf("Wall", StringComparison.OrdinalIgnoreCase) >= 0;
+    }
+
+    private bool TryResolveWallColliderOrientation(Vector3 position, out DoorPlacementOrientation orientation)
+    {
+        orientation = DoorPlacementOrientation.Auto;
+        float step = Mathf.Max(0.25f, gridSize);
+        int horizontal = CountWallColliderAt(position + Vector3.left * step) +
+                         CountWallColliderAt(position + Vector3.right * step);
+        int vertical = CountWallColliderAt(position + Vector3.up * step) +
+                       CountWallColliderAt(position + Vector3.down * step);
+
+        if (vertical > horizontal)
+        {
+            orientation = DoorPlacementOrientation.Vertical;
+            return true;
+        }
+
+        if (horizontal > vertical)
+        {
+            orientation = DoorPlacementOrientation.Horizontal;
+            return true;
+        }
+
+        return false;
+    }
+
+    private int CountWallColliderAt(Vector3 position)
+    {
+        int wallLayer = LayerMask.NameToLayer("Wall");
+        if (wallLayer < 0)
+            return 0;
+
+        Collider2D collider = Physics2D.OverlapPoint(position, 1 << wallLayer);
+        if (collider == null)
+            return 0;
+
+        Scene activeScene = SceneManager.GetActiveScene();
+        if (searchScope == SearchScope.ActiveScene && collider.gameObject.scene.handle != activeScene.handle)
+            return 0;
+
+        return 1;
+    }
+
     private Component PickLevelDesignComponent(Vector2 guiPosition)
     {
         const float MaxDistance = 28f;
@@ -2387,6 +3296,214 @@ public sealed class LevelDesignEditorWindow : EditorWindow
             new Vector3(bounds.max.x, bounds.max.y, 0f),
             new Vector3(bounds.max.x, bounds.min.y, 0f)
         };
+    }
+
+    private static Vector3[] GetBoxWorldCorners(BoxCollider2D boxCollider)
+    {
+        Vector2 offset = boxCollider.offset;
+        Vector2 halfSize = boxCollider.size * 0.5f;
+        return new[]
+        {
+            boxCollider.transform.TransformPoint(new Vector3(offset.x - halfSize.x, offset.y - halfSize.y, 0f)),
+            boxCollider.transform.TransformPoint(new Vector3(offset.x - halfSize.x, offset.y + halfSize.y, 0f)),
+            boxCollider.transform.TransformPoint(new Vector3(offset.x + halfSize.x, offset.y + halfSize.y, 0f)),
+            boxCollider.transform.TransformPoint(new Vector3(offset.x + halfSize.x, offset.y - halfSize.y, 0f))
+        };
+    }
+
+    private static List<Vector3> GetPolygonWorldPoints(PolygonCollider2D polygonCollider)
+    {
+        List<Vector3> points = new();
+        if (polygonCollider == null || polygonCollider.pathCount == 0)
+            return points;
+
+        Vector2[] path = polygonCollider.GetPath(0);
+        for (int i = 0; i < path.Length; i++)
+        {
+            Vector2 localPoint = path[i];
+            points.Add(polygonCollider.transform.TransformPoint(new Vector3(localPoint.x, localPoint.y, 0f)));
+        }
+
+        return points;
+    }
+
+    private static bool IsMouseNearPolygonVertex(IReadOnlyList<Vector3> worldPoints, Vector2 mousePosition, float pixelThreshold)
+    {
+        return FindClosestPolygonVertexIndex(worldPoints, mousePosition, pixelThreshold) >= 0;
+    }
+
+    private static int FindClosestPolygonVertexIndex(IReadOnlyList<Vector3> worldPoints, Vector2 mousePosition, float pixelThreshold)
+    {
+        int bestIndex = -1;
+        float bestDistance = pixelThreshold;
+        for (int i = 0; i < worldPoints.Count; i++)
+        {
+            Vector2 vertexPosition = HandleUtility.WorldToGUIPoint(worldPoints[i]);
+            float distance = Vector2.Distance(mousePosition, vertexPosition);
+            if (distance > bestDistance)
+                continue;
+
+            bestIndex = i;
+            bestDistance = distance;
+        }
+
+        return bestIndex;
+    }
+
+    private static float ClosestPointOnSegment01(Vector2 point, Vector2 segmentStart, Vector2 segmentEnd)
+    {
+        Vector2 segment = segmentEnd - segmentStart;
+        float lengthSqr = segment.sqrMagnitude;
+        if (lengthSqr <= 0.0001f)
+            return 0f;
+
+        return Mathf.Clamp01(Vector2.Dot(point - segmentStart, segment) / lengthSqr);
+    }
+
+    private static Vector3[] BuildClosedWorldPath(IReadOnlyList<Vector3> worldPoints)
+    {
+        Vector3[] points = new Vector3[worldPoints.Count + 1];
+        for (int i = 0; i < worldPoints.Count; i++)
+            points[i] = worldPoints[i];
+
+        points[worldPoints.Count] = points[0];
+        return points;
+    }
+
+    private static Vector3[] BuildClosedWorldPath(Transform transform, IReadOnlyList<Vector2> localPoints)
+    {
+        Vector3[] points = new Vector3[localPoints.Count + 1];
+        for (int i = 0; i < localPoints.Count; i++)
+        {
+            Vector2 localPoint = localPoints[i];
+            points[i] = transform.TransformPoint(new Vector3(localPoint.x, localPoint.y, 0f));
+        }
+
+        points[localPoints.Count] = points[0];
+        return points;
+    }
+
+    private static Vector2[] BuildLocalPolygonPath(IReadOnlyList<Vector3> worldPoints, Vector3 center)
+    {
+        Vector2[] localPoints = new Vector2[worldPoints.Count];
+        for (int i = 0; i < worldPoints.Count; i++)
+        {
+            Vector3 localPoint = worldPoints[i] - center;
+            localPoints[i] = new Vector2(localPoint.x, localPoint.y);
+        }
+
+        return localPoints;
+    }
+
+    private static Vector2[] BuildLocalPolygonPath(IReadOnlyList<Vector3> worldPoints, Transform targetTransform)
+    {
+        Vector2[] localPoints = new Vector2[worldPoints.Count];
+        for (int i = 0; i < worldPoints.Count; i++)
+        {
+            Vector3 localPoint = targetTransform.InverseTransformPoint(worldPoints[i]);
+            localPoints[i] = new Vector2(localPoint.x, localPoint.y);
+        }
+
+        return localPoints;
+    }
+
+    private static Bounds CalculateBounds(IReadOnlyList<Vector3> points)
+    {
+        Bounds bounds = new(points[0], Vector3.zero);
+        for (int i = 1; i < points.Count; i++)
+            bounds.Encapsulate(points[i]);
+
+        return bounds;
+    }
+
+    private static bool HasDuplicatePolygonPoints(IReadOnlyList<Vector3> points)
+    {
+        for (int i = 0; i < points.Count; i++)
+        {
+            for (int j = i + 1; j < points.Count; j++)
+            {
+                if (IsSameGridPoint(points[i], points[j]))
+                    return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static bool HasSelfIntersection(IReadOnlyList<Vector3> points)
+    {
+        for (int i = 0; i < points.Count; i++)
+        {
+            Vector2 a = points[i];
+            Vector2 b = points[(i + 1) % points.Count];
+
+            for (int j = i + 1; j < points.Count; j++)
+            {
+                if (Mathf.Abs(i - j) <= 1 || (i == 0 && j == points.Count - 1))
+                    continue;
+
+                Vector2 c = points[j];
+                Vector2 d = points[(j + 1) % points.Count];
+                if (SegmentsIntersect(a, b, c, d))
+                    return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static bool SegmentsIntersect(Vector2 a, Vector2 b, Vector2 c, Vector2 d)
+    {
+        float abC = Cross(a, b, c);
+        float abD = Cross(a, b, d);
+        float cdA = Cross(c, d, a);
+        float cdB = Cross(c, d, b);
+
+        if (((abC > 0f && abD < 0f) || (abC < 0f && abD > 0f)) &&
+            ((cdA > 0f && cdB < 0f) || (cdA < 0f && cdB > 0f)))
+        {
+            return true;
+        }
+
+        return IsPointOnSegment(a, b, c) ||
+               IsPointOnSegment(a, b, d) ||
+               IsPointOnSegment(c, d, a) ||
+               IsPointOnSegment(c, d, b);
+    }
+
+    private static float Cross(Vector2 a, Vector2 b, Vector2 c)
+    {
+        Vector2 ab = b - a;
+        Vector2 ac = c - a;
+        return (ab.x * ac.y) - (ab.y * ac.x);
+    }
+
+    private static bool IsPointOnSegment(Vector2 a, Vector2 b, Vector2 point)
+    {
+        const float Epsilon = 0.0001f;
+        if (Mathf.Abs(Cross(a, b, point)) > Epsilon)
+            return false;
+
+        return point.x >= Mathf.Min(a.x, b.x) - Epsilon &&
+               point.x <= Mathf.Max(a.x, b.x) + Epsilon &&
+               point.y >= Mathf.Min(a.y, b.y) - Epsilon &&
+               point.y <= Mathf.Max(a.y, b.y) + Epsilon;
+    }
+
+    private static bool IsSameGridPoint(Vector3 a, Vector3 b)
+    {
+        return ((Vector2)a - (Vector2)b).sqrMagnitude <= 0.0001f;
+    }
+
+    private static bool IsAxisAlignedRoomTransform(Transform targetTransform)
+    {
+        if (targetTransform == null)
+            return false;
+
+        Vector3 euler = targetTransform.eulerAngles;
+        return Mathf.Abs(Mathf.DeltaAngle(0f, euler.x)) <= 0.1f &&
+               Mathf.Abs(Mathf.DeltaAngle(0f, euler.y)) <= 0.1f &&
+               Mathf.Abs(Mathf.DeltaAngle(0f, euler.z)) <= 0.1f;
     }
 
     private static Color ResolveShortcutColor(ShortcutBase shortcut)
@@ -2570,6 +3687,12 @@ public sealed class LevelDesignEditorWindow : EditorWindow
     private MonsterRoomArea2D ResolveRoomArea(MonsterSpawnRoomGroup group)
     {
         return group != null ? group.GetComponentInChildren<MonsterRoomArea2D>(true) : null;
+    }
+
+    private Collider2D ResolveSelectedRoomAreaCollider()
+    {
+        MonsterRoomArea2D area = ResolveRoomArea(selectedRoomGroup);
+        return ResolveAreaCollider(area);
     }
 
     private MonsterSpawnRoomGroup ResolveRoomGroup(MonsterSpawnContainer spawn)

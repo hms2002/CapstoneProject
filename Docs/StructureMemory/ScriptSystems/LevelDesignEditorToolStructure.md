@@ -19,7 +19,7 @@ This document is project memory only. Runtime contracts remain in `Docs/Architec
 - The tool works against active-scene or loaded-scene objects without introducing runtime scripts or serialized schema changes.
 - It draws an editor grid, labels, link lines, selected-room bounds, and problem markers directly in `SceneView`.
 - It groups workflows into Review, Link, Rooms, Place, and Options modes.
-- SceneView marker dots are actionable buttons. Clicking them selects the object and navigates to the relevant workflow.
+- SceneView marker dots are actionable buttons outside placement mode and room grid edit mode. In Place or room grid edit mode they render as visual markers only so placement and polygon edit clicks are not intercepted.
 - Marker navigation falls back to Unity SceneView object picking, then resolves known parent level-design components.
 - Validation scans existing runtime components:
   - `DoorObject`
@@ -41,9 +41,14 @@ This document is project memory only. Runtime contracts remain in `Docs/Architec
   - `DoorObject` marker then `MonsterSpawnRoomGroup` marker resolves the same lock wiring.
 - Completed marker links must clear all pending link-source fields. `Esc` also cancels the active link from both the editor window and SceneView.
 - If the click lands on the rendered object instead of the marker, the same navigation path is attempted through `HandleUtility.PickGameObject`.
-- Rooms mode can create a battle-room object with `MonsterSpawnRoomGroup`, `BoxCollider2D`, `MonsterRoomArea2D`, and `RoomEncounterEntryTrigger2D`, then assign nearby spawns and locks.
+- Rooms mode can create rectangle battle rooms with `BoxCollider2D` or grid-snapped polygon battle rooms with `PolygonCollider2D`. Both shapes use `MonsterRoomArea2D.areaCollider`, `MonsterSpawnRoomGroup`, and `RoomEncounterEntryTrigger2D`, so existing room membership and auto-linking continue through `Collider2D.OverlapPoint`.
+- Rooms mode can edit the selected room grid in SceneView:
+  - `BoxCollider2D` rooms resize from grid-snapped corner handles.
+  - `PolygonCollider2D` rooms move vertices from grid-snapped handles, insert vertices from edge midpoint handles or by clicking directly near a polygon edge, and select vertices for targeted Delete/Backspace deletion.
+  - A rectangle room can be converted to a polygon collider when irregular shape editing is needed.
 - Place mode uses an object placement palette for Door, Lever, Statue, Chest, KillLock Chest, Portal, and Monster Spawn.
 - Object palette cards can be clicked to select a placement type or dragged into SceneView to place through the same Undo-backed placement path.
+- Door placement has an Auto/Horizontal/Vertical orientation control. Auto snaps to nearby Wall tilemap cell centers when possible and chooses horizontal or vertical rotation from neighboring Wall tiles or Wall collider probes.
 - The monster palette is grouped by prefab folder with foldouts.
 - Options mode edits selected door, shortcut, statue, spawn, room-door lock, chest lock, and portal serialized fields from one panel.
 - The top context panel mirrors the selected marker/object and exposes common next actions without requiring manual tab hunting.
@@ -62,6 +67,8 @@ This document is project memory only. Runtime contracts remain in `Docs/Architec
 - Add new placement types by reusing the existing prefab field and `PlacePrefab`/Undo pattern.
 - Add new palette placement types through the object placement palette item list and `CreatePlacementAt(...)`.
 - Add new selected-object editors through Options mode with serialized property fields.
+- Room shape creation should keep using the existing `MonsterRoomArea2D.areaCollider` contract so room lookup, chest lock linking, spawn linking, and door lock linking do not branch by collider type.
+- Room shape editing should also mutate the collider referenced by `MonsterRoomArea2D.areaCollider` instead of adding parallel room state.
 - Wall leak detection is intentionally not implemented yet; add it only if the tilemap/collider ownership model is clear enough to avoid noisy false positives.
 
 ## Known Pitfalls
@@ -73,6 +80,10 @@ This document is project memory only. Runtime contracts remain in `Docs/Architec
 - Spawn clicks now start a pending Spawn-to-ChestLock link when no chest link source is active; use the context panel's property action when the intent is only inspection.
 - `DoorObject.GenerateID()` can repair duplicates, but changing existing door IDs may break saved shortcut data that references the old IDs.
 - Room-based chest and door kill-lock linking is inferred from room bounds, so designers still need to inspect final scene wiring.
+- Polygon rooms are single-path `PolygonCollider2D` shapes. Multi-path rooms, holes, and separated islands are not represented by the current tool.
+- Polygon vertex deletion is still validated after removal; if the remaining ordered path would self-intersect, the delete is rejected and the selected vertex remains selected.
+- Rectangle room grid editing assumes an unrotated room transform. Convert or recreate unusual room colliders rather than silently rewriting rotated collider geometry.
+- Door Wall auto-orientation is heuristic and depends on nearby objects being authored as Wall tilemaps/colliders on the `Wall` layer or with Wall in the tilemap name. Ambiguous corners should use the manual horizontal/vertical override.
 
 ## Promotion Candidate
 

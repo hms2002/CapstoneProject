@@ -388,3 +388,17 @@ Implications:
 - Final boss physical drops such as magic stones and field-heal pickups still spawn from the boss death position.
 - Do not add a final-boss chest fallback unless final-route reward policy changes.
 - Non-final boss reward behavior remains unchanged.
+
+## 2026-05-17 - Room And Chest Locks Count Registered Combatants Plus Slime Splits
+
+Decision:
+Room and chest monster-kill locks count spawn-registered enemy roots and Slime split descendants that inherit a registered parent's lock context. General direct summons are excluded from lock conditions. Transform or phase changes on the same tracked GameObject remain the same enemy. Death presentation remains lock-active until the tracked root GameObject is destroyed.
+
+Reason:
+Lock state should follow explicit room/chest participation instead of every enemy instantiation. Slime splitting is the intended exception because the split children replace the parent's combat presence and must keep doors/chests locked while alive.
+
+Implications:
+- `RoomDoorMonsterKillLock` and `ChestMonsterKillLock` continue using tracked root GameObject lifetime.
+- Slime split code must register valid split children into the same lock context as the parent.
+- Boss/local summons and other direct `Instantiate(...)` enemies do not affect room/chest clear unless a future design explicitly registers them.
+- No-loot or gimmick enemies count only when they enter through the same spawn registration or Slime split inheritance path.

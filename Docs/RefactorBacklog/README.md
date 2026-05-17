@@ -71,11 +71,11 @@ Priority is about execution order, not severity of current bugs.
 | P2 | [BossDrop Responsibility Split](./BossDropResponsibilitySplit.md) | resolved | `BossDrop`, split reward/portal components, anchor component, prefab catalog, and serialized scene/prefab references are removed. Boss battle-end now uses route-linked special reward presets, a scene `BossBattleEndHandler`, authored chest/portal objects, and validator-backed authoring checks. | Reopen only if the boss battle-end validator or Unity import reveals a structural migration issue that cannot be fixed by normal Inspector authoring. |
 | P3 | [Boss HUD Special-Case Source Split](./BossHudSpecialCaseSourceSplit.md) | proposed | The Slime Queen split-health exception leaks into common Boss HUD, but it is localized and should not drive a standalone refactor unless HUD work resumes. | Another multi-body/shared-health boss, Slime Queen phase-two HUD edit, or Boss HUD health-channel rework. |
 
-## Blocked / Not Backlog Yet
+## Recently Unblocked / Design Decided
 
-| Topic | Current Location | Why Blocked |
+| Topic | Current Location | Decision |
 | --- | --- | --- |
-| Room/chest lock overlay count semantics | [Boss And Mob Encounter Structure](../StructureMemory/ScriptSystems/BossAndMobEncounterStructure.md) | Split mobs, summons, transforms, delayed death presentation, and gimmick/no-loot enemies need a design rule before a lock-tracking refactor can be scoped. |
+| Room/chest lock overlay count semantics | [Boss And Mob Encounter Structure](../StructureMemory/ScriptSystems/BossAndMobEncounterStructure.md) | Count spawn-registered roots and Slime split descendants. Exclude general direct summons. Treat same-root transform/phase changes as the same enemy. Keep death-presentation objects counted until destroyed. |
 
 ## Recommended Next Work
 
@@ -84,7 +84,7 @@ Priority is about execution order, not severity of current bugs.
 - If the next goal is scene/save/run transition work, use resolved P1 `SceneRunStateBoundarySplit` for current helper boundaries and scope lifecycle work through P2 `SceneRunStateLifecycleOwnershipSplit`.
 - If the next goal is title/profile/bootstrap or return-to-title work, use resolved P1 `SceneDomainBootstrapBoundarySplit` as context and create a new focused backlog item only if new debt appears.
 - If the next goal is UI or presentation polish, use P2 `RuntimePresentationFallbackAuthoringSplit`.
-- Do not start the blocked lock overlay topic until split/summon/transform/death-delay counting rules are decided.
+- Room/chest lock overlay count rules are decided; future work should preserve the registration-based boundary instead of inferring lock targets from every spawned enemy.
 
 ## Current Documents
 
