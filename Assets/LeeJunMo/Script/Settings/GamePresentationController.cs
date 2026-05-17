@@ -170,11 +170,6 @@ public sealed class GamePresentationController : MonoBehaviour
         if (letterboxCanvas != null)
             return;
 
-        RuntimePresentationFallbackAudit.Record(
-            this,
-            "Display letterbox overlay fallback",
-            "an authored display letterbox overlay under the presentation settings service or GlobalUIRoot");
-
         GameObject root = new GameObject("LetterboxOverlay", typeof(RectTransform), typeof(Canvas), typeof(CanvasScaler), typeof(GraphicRaycaster));
         root.transform.SetParent(transform, false);
 

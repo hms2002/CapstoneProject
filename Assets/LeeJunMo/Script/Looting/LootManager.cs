@@ -8,6 +8,7 @@ using UnityEditor;
 public class LootManager : MonoBehaviour
 {
     private const string DefaultFieldItemPrefabResourcePath = "PF_FieldHealPickup2D";
+    private const string DefaultMagicStonePrefabResourcePath = "MagicStonePrefab";
 
     public static LootManager Instance { get; private set; }
 
@@ -17,6 +18,7 @@ public class LootManager : MonoBehaviour
     [Header("Settings")]
     [SerializeField] private GameObject worldItemPrefab;
     [SerializeField] private GameObject fieldItemPrefab;
+    [SerializeField] private GameObject magicStonePrefab;
 
     [Header("References")]
     [SerializeField] private List<StageLootTable> stageTables = new List<StageLootTable>();
@@ -194,10 +196,16 @@ public class LootManager : MonoBehaviour
         spawnService.SpawnFieldHealPickup(position);
     }
 
+    public void SpawnMagicStonePickup(Vector3 position, int amount = 1)
+    {
+        EnsureServices();
+        spawnService.SpawnMagicStonePickup(position, amount);
+    }
+
     public int GetBossMagicStoneCount()
     {
         StageLootTable table = GetCurrentTable();
-        return table != null ? table.bossStoneCount : 0;
+        return table != null ? Mathf.Max(0, table.bossStoneCount) : 0;
     }
 
     public int GetBossFieldHealBaseCount()
@@ -245,7 +253,10 @@ public class LootManager : MonoBehaviour
         tableResolver = new LootTableResolver(stageTables, graveLootTable);
         poolService = new LootPoolService();
         rollService = new LootRollService();
-        spawnService = new LootSpawnService(worldItemPrefab, ResolveFieldItemPrefab(editorSafe));
+        spawnService = new LootSpawnService(
+            worldItemPrefab,
+            ResolveFieldItemPrefab(editorSafe),
+            ResolveMagicStonePrefab(editorSafe));
         chestLootGenerationService = new ChestLootGenerationService(poolService, rollService, GetRandomRelic, GetRandomRelicByRarity);
         monsterLootDropService = new MonsterLootDropService(poolService, rollService, spawnService, GetRandomRelic);
         graveLootDropService = new GraveLootDropService(poolService, rollService, spawnService, GetRandomRelicByRarity);
@@ -262,6 +273,19 @@ public class LootManager : MonoBehaviour
 #endif
 
         return Resources.Load<GameObject>(DefaultFieldItemPrefabResourcePath);
+    }
+
+    private GameObject ResolveMagicStonePrefab(bool editorSafe = false)
+    {
+        if (magicStonePrefab != null)
+            return magicStonePrefab;
+
+#if UNITY_EDITOR
+        if (editorSafe && !Application.isPlaying)
+            return null;
+#endif
+
+        return Resources.Load<GameObject>(DefaultMagicStonePrefabResourcePath);
     }
 
     private StageLootTable GetCurrentTable()

@@ -168,7 +168,7 @@ MonoBehaviour:
   allowExtraSpawn: 1
   spawnAnchor: {fileID: 465782}
   roomArea: {fileID: 943851734}
-  roomGroup: {fileID: 0}
+  roomGroup: {fileID: 1674352267}
   linkedChestKillLock: {fileID: 491675584}
 --- !u!1 &13218095
 GameObject:
@@ -218,8 +218,8 @@ MonoBehaviour:
   spawnByDefault: 1
   allowExtraSpawn: 1
   spawnAnchor: {fileID: 13218096}
-  roomArea: {fileID: 943851734}
-  roomGroup: {fileID: 0}
+  roomArea: {fileID: 117457808}
+  roomGroup: {fileID: 797160240}
   linkedChestKillLock: {fileID: 1293756967}
 --- !u!1 &23973813
 GameObject:
@@ -821,7 +821,7 @@ MonoBehaviour:
   allowExtraSpawn: 1
   spawnAnchor: {fileID: 158101515}
   roomArea: {fileID: 943851734}
-  roomGroup: {fileID: 0}
+  roomGroup: {fileID: 1378529153}
   linkedChestKillLock: {fileID: 629269943}
 --- !u!1 &161455600
 GameObject:
@@ -856,6 +856,7 @@ MonoBehaviour:
   verboseLogging: 0
   worldItemPrefab: {fileID: 4439982264372595963, guid: 965ec98195bcbe34f9512acce3712973, type: 3}
   fieldItemPrefab: {fileID: 0}
+  magicStonePrefab: {fileID: 5809627508243328825, guid: 108ed5884c0e5294fb2bc08d259e53f5, type: 3}
   stageTables:
   - {fileID: 11400000, guid: 3903a30b290836e4bb4413a07b019990, type: 2}
   - {fileID: 11400000, guid: 14918d38c644fad49bf378e4043c465d, type: 2}
@@ -23763,7 +23764,6 @@ MonoBehaviour:
   dialogueRunner: {fileID: 0}
   bossController: {fileID: 0}
   startBossCombatAfterDialogue: 1
-  bossDrop: {fileID: 0}
 --- !u!4 &197106469
 Transform:
   m_ObjectHideFlags: 0
@@ -23980,6 +23980,37 @@ Transform:
   - {fileID: 1832085385}
   - {fileID: 1256855429}
   m_Father: {fileID: 188255820}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &222666571
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 222666572}
+  m_Layer: 0
+  m_Name: Chests
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &222666572
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 222666571}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1479578845}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &231597493
 GameObject:
@@ -32711,7 +32742,7 @@ MonoBehaviour:
   allowExtraSpawn: 1
   spawnAnchor: {fileID: 313507251}
   roomArea: {fileID: 943851734}
-  roomGroup: {fileID: 0}
+  roomGroup: {fileID: 1674352267}
   linkedChestKillLock: {fileID: 491675584}
 --- !u!114 &361708142 stripped
 MonoBehaviour:
@@ -32872,8 +32903,8 @@ MonoBehaviour:
   spawnByDefault: 1
   allowExtraSpawn: 1
   spawnAnchor: {fileID: 444722931}
-  roomArea: {fileID: 943851734}
-  roomGroup: {fileID: 0}
+  roomArea: {fileID: 117457808}
+  roomGroup: {fileID: 797160240}
   linkedChestKillLock: {fileID: 1293756967}
 --- !u!1 &457929347
 GameObject:
@@ -33555,7 +33586,7 @@ MonoBehaviour:
   allowExtraSpawn: 1
   spawnAnchor: {fileID: 613553481}
   roomArea: {fileID: 943851734}
-  roomGroup: {fileID: 0}
+  roomGroup: {fileID: 1674352267}
   linkedChestKillLock: {fileID: 491675584}
 --- !u!1001 &629269940
 PrefabInstance:
@@ -33926,6 +33957,37 @@ MonoBehaviour:
   roomArea: {fileID: 943851734}
   roomGroup: {fileID: 0}
   linkedChestKillLock: {fileID: 1909995624}
+--- !u!1 &754331083
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 754331084}
+  m_Layer: 0
+  m_Name: Shortcuts
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &754331084
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 754331083}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1479578845}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &755463458
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -34195,8 +34257,8 @@ MonoBehaviour:
   spawnByDefault: 1
   allowExtraSpawn: 1
   spawnAnchor: {fileID: 784185020}
-  roomArea: {fileID: 943851734}
-  roomGroup: {fileID: 0}
+  roomArea: {fileID: 117457808}
+  roomGroup: {fileID: 797160240}
   linkedChestKillLock: {fileID: 1293756967}
 --- !u!1 &790760345
 GameObject:
@@ -35023,8 +35085,8 @@ MonoBehaviour:
   spawnByDefault: 1
   allowExtraSpawn: 1
   spawnAnchor: {fileID: 996026717}
-  roomArea: {fileID: 943851734}
-  roomGroup: {fileID: 0}
+  roomArea: {fileID: 117457808}
+  roomGroup: {fileID: 797160240}
   linkedChestKillLock: {fileID: 1293756967}
 --- !u!1001 &1004915103
 PrefabInstance:
@@ -35214,8 +35276,8 @@ MonoBehaviour:
   spawnByDefault: 1
   allowExtraSpawn: 1
   spawnAnchor: {fileID: 1026324008}
-  roomArea: {fileID: 943851734}
-  roomGroup: {fileID: 0}
+  roomArea: {fileID: 117457808}
+  roomGroup: {fileID: 797160240}
   linkedChestKillLock: {fileID: 1293756967}
 --- !u!1 &1032229108
 GameObject:
@@ -35488,8 +35550,8 @@ MonoBehaviour:
   spawnByDefault: 1
   allowExtraSpawn: 1
   spawnAnchor: {fileID: 1058487411}
-  roomArea: {fileID: 943851734}
-  roomGroup: {fileID: 0}
+  roomArea: {fileID: 117457808}
+  roomGroup: {fileID: 797160240}
   linkedChestKillLock: {fileID: 1293756967}
 --- !u!1 &1065567748
 GameObject:
@@ -36477,7 +36539,7 @@ MonoBehaviour:
   allowExtraSpawn: 1
   spawnAnchor: {fileID: 1338442288}
   roomArea: {fileID: 943851734}
-  roomGroup: {fileID: 0}
+  roomGroup: {fileID: 1378529153}
   linkedChestKillLock: {fileID: 629269943}
 --- !u!1 &1345456807
 GameObject:
@@ -36530,6 +36592,37 @@ MonoBehaviour:
   roomArea: {fileID: 943851734}
   roomGroup: {fileID: 0}
   linkedChestKillLock: {fileID: 491675584}
+--- !u!1 &1359969355
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1359969356}
+  m_Layer: 0
+  m_Name: MonsterSpawns
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1359969356
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1359969355}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1479578845}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1365857463
 GameObject:
   m_ObjectHideFlags: 0
@@ -36680,8 +36773,8 @@ MonoBehaviour:
   spawnByDefault: 1
   allowExtraSpawn: 1
   spawnAnchor: {fileID: 1374504433}
-  roomArea: {fileID: 943851734}
-  roomGroup: {fileID: 0}
+  roomArea: {fileID: 117457808}
+  roomGroup: {fileID: 797160240}
   linkedChestKillLock: {fileID: 1293756967}
 --- !u!1 &1378529151
 GameObject:
@@ -36835,6 +36928,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1447083561
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1447083562}
+  m_Layer: 0
+  m_Name: Doors
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1447083562
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1447083561}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1479578845}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1467094061
 GameObject:
   m_ObjectHideFlags: 0
@@ -36978,6 +37102,41 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterRoomArea2D
   areaCollider: {fileID: 1467713559}
+--- !u!1 &1479578844
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1479578845}
+  m_Layer: 0
+  m_Name: LevelDesignRoot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1479578845
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1479578844}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1359969356}
+  - {fileID: 222666572}
+  - {fileID: 1447083562}
+  - {fileID: 754331084}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1519883447
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -41028,7 +41187,7 @@ MonoBehaviour:
   allowExtraSpawn: 1
   spawnAnchor: {fileID: 1869528952}
   roomArea: {fileID: 943851734}
-  roomGroup: {fileID: 0}
+  roomGroup: {fileID: 1378529153}
   linkedChestKillLock: {fileID: 629269943}
 --- !u!1 &1889657301
 GameObject:
@@ -41078,8 +41237,8 @@ MonoBehaviour:
   spawnByDefault: 1
   allowExtraSpawn: 1
   spawnAnchor: {fileID: 1889657302}
-  roomArea: {fileID: 943851734}
-  roomGroup: {fileID: 0}
+  roomArea: {fileID: 117457808}
+  roomGroup: {fileID: 797160240}
   linkedChestKillLock: {fileID: 1293756967}
 --- !u!1 &1897876399
 GameObject:
@@ -42035,3 +42194,4 @@ SceneRoots:
   - {fileID: 2073217018}
   - {fileID: 1138330085}
   - {fileID: 3672581027963229683}
+  - {fileID: 1479578845}

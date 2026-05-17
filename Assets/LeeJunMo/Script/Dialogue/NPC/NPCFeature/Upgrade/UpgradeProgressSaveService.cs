@@ -3,17 +3,14 @@ using System;
 internal sealed class UpgradeProgressSaveService
 {
     private readonly UpgradeProgressService progressService;
-    private readonly Action notifyDataChanged;
-    private readonly UnityEngine.Object saveRequester;
+    private readonly UpgradeNotificationService notifications;
 
     public UpgradeProgressSaveService(
         UpgradeProgressService progressService,
-        Action notifyDataChanged,
-        UnityEngine.Object saveRequester)
+        UpgradeNotificationService notifications)
     {
         this.progressService = progressService;
-        this.notifyDataChanged = notifyDataChanged;
-        this.saveRequester = saveRequester;
+        this.notifications = notifications;
     }
 
     public void CheckAndUnlockNodes(bool requestSaveOnChange = true)
@@ -38,11 +35,39 @@ internal sealed class UpgradeProgressSaveService
 
     public void RequestImmediateSave()
     {
+        notifications?.RequestImmediateSave();
+    }
+
+    public void NotifyDataChanged()
+    {
+        notifications?.NotifyDataChanged();
+    }
+}
+
+internal sealed class UpgradeNotificationService
+{
+    private readonly UnityEngine.Object saveRequester;
+
+    public event Action DataChanged;
+    public event Action UIClosed;
+
+    public UpgradeNotificationService(UnityEngine.Object saveRequester)
+    {
+        this.saveRequester = saveRequester;
+    }
+
+    public void RequestImmediateSave()
+    {
         GameDataSaveCoordinator.RequestImmediateSave(saveRequester);
     }
 
     public void NotifyDataChanged()
     {
-        notifyDataChanged?.Invoke();
+        DataChanged?.Invoke();
+    }
+
+    public void NotifyUIClosed()
+    {
+        UIClosed?.Invoke();
     }
 }

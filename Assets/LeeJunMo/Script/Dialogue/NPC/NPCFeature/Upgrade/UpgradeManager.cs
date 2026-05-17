@@ -14,8 +14,17 @@ public class UpgradeManager : MonoBehaviour
     [SerializeField, Min(0f)] private float openFadeOutDuration = 0.18f;
     [SerializeField, Min(0f)] private float openFadeInDuration = 0.22f;
 
-    public event Action OnDataChanged;
-    public event Action OnUIClosed;
+    public event Action OnDataChanged
+    {
+        add => EnsureNotifications().DataChanged += value;
+        remove => EnsureNotifications().DataChanged -= value;
+    }
+
+    public event Action OnUIClosed
+    {
+        add => EnsureNotifications().UIClosed += value;
+        remove => EnsureNotifications().UIClosed -= value;
+    }
 
     private UpgradeProgressService progressService;
     private UpgradeEffectApplier effectApplier;
@@ -25,6 +34,7 @@ public class UpgradeManager : MonoBehaviour
     private UpgradePurchaseCompletionService purchaseCompletionService;
     private UpgradeRuntimeLifecycleService runtimeLifecycleService;
     private UpgradeProgressSaveService progressSaveService;
+    private UpgradeNotificationService notifications;
 
     private void Awake()
     {
@@ -32,12 +42,12 @@ public class UpgradeManager : MonoBehaviour
             return;
 
         ResolveUpgradeTreeUiReference();
+        notifications = new UpgradeNotificationService(this);
         uiOpenFlow = new UpgradeUiOpenFlow(this, ResolveUpgradeTreeUiForFlow);
         progressService = new UpgradeProgressService(upgradeDatabase);
         progressSaveService = new UpgradeProgressSaveService(
             progressService,
-            NotifyDataChanged,
-            this);
+            notifications);
         effectApplier = new UpgradeEffectApplier();
         runtimeEffectService = new UpgradeRuntimeEffectService(
             ResolveCurrentPlayer,
@@ -59,8 +69,7 @@ public class UpgradeManager : MonoBehaviour
             runtimeEffectService.TryApplyHubTargetStates,
             EnqueueUpgradeCinematic,
             progressSaveService.CheckAndUnlockNodesAfterPurchase,
-            progressSaveService.RequestImmediateSave,
-            progressSaveService.NotifyDataChanged);
+            notifications);
     }
 
     private void OnDestroy()
@@ -120,9 +129,30 @@ public class UpgradeManager : MonoBehaviour
         var purchaseResult = UpgradePurchaseService.TryPurchase(
             new UpgradePurchaseRequest(id, progressService, CurrencyManager.Instance));
         if (!purchaseResult.Succeeded)
+        {
+            ShowPurchaseWarning(purchaseResult.FailureReason);
             return;
+        }
 
         purchaseCompletionService.Complete(purchaseResult.Node);
+    }
+
+    private static void ShowPurchaseWarning(UpgradePurchaseFailureReason failureReason)
+    {
+        WarningPopupCode warningCode = failureReason switch
+        {
+            UpgradePurchaseFailureReason.NotEnoughMagicStone => WarningPopupCode.UpgradeNotEnoughMagicStone,
+            UpgradePurchaseFailureReason.CurrencySpendFailed => WarningPopupCode.UpgradeNotEnoughMagicStone,
+            UpgradePurchaseFailureReason.NotUnlocked => WarningPopupCode.UpgradeLocked,
+            UpgradePurchaseFailureReason.MissingProgressService => WarningPopupCode.UpgradeUnavailable,
+            UpgradePurchaseFailureReason.MissingNode => WarningPopupCode.UpgradeUnavailable,
+            UpgradePurchaseFailureReason.MissingCurrencyManager => WarningPopupCode.UpgradeUnavailable,
+            UpgradePurchaseFailureReason.PurchaseRejected => WarningPopupCode.UpgradeUnavailable,
+            _ => WarningPopupCode.None
+        };
+
+        if (warningCode != WarningPopupCode.None)
+            UIManager.Instance?.ShowWarning(warningCode);
     }
 
     private static bool IsRunActive()
@@ -152,12 +182,13 @@ public class UpgradeManager : MonoBehaviour
 
     public void NotifyUIClosed()
     {
-        OnUIClosed?.Invoke();
+        EnsureNotifications().NotifyUIClosed();
     }
 
-    private void NotifyDataChanged()
+    private UpgradeNotificationService EnsureNotifications()
     {
-        OnDataChanged?.Invoke();
+        notifications ??= new UpgradeNotificationService(this);
+        return notifications;
     }
 
     public LockType GetNodeStatus(int id)

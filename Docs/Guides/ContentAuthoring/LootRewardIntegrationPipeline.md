@@ -28,7 +28,7 @@ last_reviewed: 2026-05-15
 | 4. Exclusion context 확인 | 무기는 player inventory, world pickup, scene drop, merchant stock 제외 기준이 source별로 맞는지 확인합니다. | `LootPoolService`, `LootRewardPolicyBoundarySplit.md`. |
 | 5. Chest reward 확인 | chest modifier, refresh, relic level bonus, first-open UI handoff를 `TreasureChest`와 loot policy 관점에서 확인합니다. | `TreasureChest.cs`, `LootManager.cs`. |
 | 6. Monster death reward 확인 | 일반 몬스터 사망 보상이 `Mob.OnDeathStarted`와 `LootManager.SpawnMonsterLoot` 흐름을 타는지 확인합니다. | `Mob.cs`, `LootManager.cs`. |
-| 7. Boss reward 확인 | base reward는 stage loot 기준을 유지하고 extra reward는 additive modifier 또는 boss-specific extra item으로 연결합니다. | `BossRewardSpawner.cs`, `BossDrop`. |
+| 7. Boss reward 확인 | base reward는 stage loot 기준을 유지하고 extra reward는 additive modifier 또는 boss-specific extra item으로 연결합니다. | `BossBattleEndHandler.cs`, `BossRewardSpawnService.cs`. |
 | 8. World pickup delivery 확인 | pickup presentation, inventory 지급, 실패 warning, destroy timing이 의도와 맞는지 확인합니다. | `WorldItemPickup2D.cs`. |
 
 ## Ownership Rules
@@ -39,7 +39,7 @@ last_reviewed: 2026-05-15
 | reward roll orchestration | `LootManager` |
 | loot pool exclusion | `LootPoolService` |
 | chest-specific refresh/modifier/level bonus | currently `TreasureChest`, future `ChestRewardPolicy` candidate |
-| boss base reward와 modifier aggregation | `LootManager` / `BossRewardSpawner` |
+| boss base reward와 modifier aggregation | `LootManager` / `BossBattleEndHandler` / `BossRewardSpawnService` |
 | world object presentation과 pickup request | `WorldItemPickup2D` |
 | final inventory transfer policy | inventory transfer boundary candidate |
 

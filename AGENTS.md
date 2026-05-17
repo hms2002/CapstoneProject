@@ -43,6 +43,59 @@ When documents conflict, follow this authority order:
 - You may update `Docs/SessionLogs/`, `Docs/StructureMemory/`, `Docs/RefactorBacklog/`, `Docs/ErrorLog.md`, and `Docs/DecisionLog.md` when the task outcome requires it.
 - Update `Docs/CurrentTask.md` only when the user explicitly asks to change the active task scope.
 
+## Presentation HTML Rules
+
+- Markdown remains the source of truth.
+- Presentation HTML files are human-readable overview documents.
+- Do not convert every Markdown file into HTML.
+- Do not copy full Markdown content into HTML.
+- HTML should summarize, group, explain, visualize, and link back to Markdown.
+- Use plain HTML, shared CSS, and small vanilla JS only.
+- Put shared styles in `Docs/Presentation/_shared/docs-style.css`.
+- Put shared document metadata in `Docs/Presentation/_shared/docs-data.js`.
+- Put shared rendering helpers in `Docs/Presentation/_shared/docs-render.js`.
+- Prefer editing `docs-data.js` for content updates instead of rewriting HTML structure.
+- Use small Mermaid UML-like diagrams only when they improve human understanding.
+- Session logs, `CurrentTask`, `DecisionLog`, and `ErrorLog` remain Markdown-first.
+- Do not create one HTML file per Markdown document unless explicitly requested.
+
+## Presentation HTML Approval Policy
+
+Presentation HTML files are human-readable derived overview documents. Markdown files remain the source of truth.
+
+### Authorized HTML Maintainer
+
+Only the following GitHub user is allowed to approve or directly request Presentation HTML updates:
+
+- `nadoman354`
+
+### Rules For Codex
+
+When working on Markdown architecture docs, guides, contracts, refactor notes, or other project structure documents:
+
+1. Codex may edit Markdown source documents normally.
+2. Codex must not automatically edit files under `Docs/Presentation/`.
+3. Codex must not update Presentation HTML as a side effect of Markdown changes.
+4. If Codex detects that Presentation HTML may now be stale, Codex must report it instead of editing it.
+5. The report must clearly say which HTML page may need an update and why.
+6. The report must ask for approval from the authorized HTML maintainer.
+7. Codex may update Presentation HTML only when the current requester is the authorized maintainer or when the authorized maintainer explicitly asks for it.
+
+Required response when HTML may need an update:
+
+```txt
+Presentation HTML update may be needed.
+
+Affected page:
+- Docs/Presentation/architecture-overview.html
+
+Reason:
+- CombatArchitecture.md changed the Combat / Weapon responsibility boundary.
+
+Action required:
+- Ask `nadoman354` to approve or perform the Presentation HTML update.
+```
+
 ## Implementation Discipline
 
 - For non-trivial work, state the relevant assumptions, risk-bearing unknowns, and success criteria before editing. If the answer can be discovered from local files, inspect first; ask only when a reasonable assumption would be risky.

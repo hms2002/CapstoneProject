@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 internal static class RunSessionLifecycleService
@@ -36,5 +37,147 @@ internal static class RunSessionLifecycleService
         data.pendingTransition = null;
         data.pendingPlayerState = null;
         clearRoutePlan?.Invoke();
+    }
+}
+
+internal static class RunSessionStateService
+{
+    public static void SetRunRemainingSeconds(GamePlayData data, float remainingSeconds)
+    {
+        if (data == null)
+            return;
+
+        data.runRemainingSeconds = Mathf.Max(0f, remainingSeconds);
+    }
+
+    public static float GetRunRemainingSeconds(GamePlayData data)
+    {
+        return data != null ? Mathf.Max(0f, data.runRemainingSeconds) : 0f;
+    }
+
+    public static int GetPendingRunMagicStoneDelta(GamePlayData data)
+    {
+        return data != null ? data.pendingRunMagicStoneDelta : 0;
+    }
+
+    public static void AddPendingRunMagicStoneDelta(GamePlayData data, int delta)
+    {
+        if (data == null || delta == 0)
+            return;
+
+        data.pendingRunMagicStoneDelta += delta;
+    }
+
+    public static void AddPendingAffectionDelta(GamePlayData data, int npcId, int delta)
+    {
+        if (data == null || delta == 0)
+            return;
+
+        data.pendingRunAffectionChanges ??= new List<PendingRunAffectionChange>();
+
+        PendingRunAffectionChange existing = data.pendingRunAffectionChanges.Find(x => x.npcId == npcId);
+        if (existing != null)
+        {
+            existing.delta += delta;
+            return;
+        }
+
+        data.pendingRunAffectionChanges.Add(new PendingRunAffectionChange(npcId, delta));
+    }
+
+    public static void AddPendingShortcutUnlock(GamePlayData data, string mapID, string doorID)
+    {
+        if (data == null || string.IsNullOrWhiteSpace(mapID) || string.IsNullOrWhiteSpace(doorID))
+            return;
+
+        data.pendingRunShortcutUnlocks ??= new List<PendingRunShortcutUnlock>();
+        if (HasPendingShortcutUnlock(data, mapID, doorID))
+            return;
+
+        data.pendingRunShortcutUnlocks.Add(new PendingRunShortcutUnlock(mapID, doorID));
+    }
+
+    public static bool HasPendingShortcutUnlock(GamePlayData data, string mapID, string doorID)
+    {
+        if (data?.pendingRunShortcutUnlocks == null)
+            return false;
+
+        return data.pendingRunShortcutUnlocks.Exists(x => x.mapID == mapID && x.doorID == doorID);
+    }
+
+    public static void TickRunTimer(GamePlayData data, float deltaTime)
+    {
+        if (data == null || !data.isRunActive)
+            return;
+
+        data.runElapsedSeconds += Mathf.Max(0f, deltaTime);
+    }
+
+    public static void PrepareTransition(GamePlayData data, SceneTransitionContext context)
+    {
+        if (data == null)
+            return;
+
+        data.pendingTransition = context;
+    }
+
+    public static SceneTransitionContext PeekPendingTransition(GamePlayData data)
+    {
+        return data != null ? data.pendingTransition : null;
+    }
+
+    public static SceneTransitionContext ConsumePendingTransition(GamePlayData data)
+    {
+        if (data == null)
+            return null;
+
+        var ctx = data.pendingTransition;
+        data.pendingTransition = null;
+        return ctx;
+    }
+
+    public static void PreparePlayerState(GamePlayData data, PlayerRuntimeState state)
+    {
+        if (data == null)
+            return;
+
+        data.pendingPlayerState = state;
+    }
+
+    public static void ClearPendingPlayerState(GamePlayData data)
+    {
+        if (data == null)
+            return;
+
+        data.pendingPlayerState = null;
+    }
+
+    public static PlayerRuntimeState PeekPendingPlayerState(GamePlayData data)
+    {
+        return data != null ? data.pendingPlayerState : null;
+    }
+
+    public static PlayerRuntimeState ConsumePendingPlayerState(GamePlayData data)
+    {
+        if (data == null)
+            return null;
+
+        var state = data.pendingPlayerState;
+        data.pendingPlayerState = null;
+        return state;
+    }
+
+    public static void ResetForDevelopmentStart(GamePlayData data, Action clearPendingRunProgress)
+    {
+        if (data == null)
+            return;
+
+        data.isRunActive = false;
+        data.runElapsedSeconds = 0f;
+        data.runRemainingSeconds = 0f;
+        data.lastRunEndReason = RunEndReason.None;
+        data.pendingTransition = null;
+        data.pendingPlayerState = null;
+        clearPendingRunProgress?.Invoke();
     }
 }

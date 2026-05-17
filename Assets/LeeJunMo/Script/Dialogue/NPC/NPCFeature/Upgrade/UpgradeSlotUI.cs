@@ -70,7 +70,7 @@ public class UpgradeSlotUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
                 break;
 
             case LockType.Locked:
-                buyButton.interactable = false;
+                buyButton.interactable = true;
                 if (lockIcon) lockIcon.enabled = true;
                 if (purchasedCheckMark) purchasedCheckMark.SetActive(false);
                 iconImage.color = new Color(0.3f, 0.3f, 0.3f);

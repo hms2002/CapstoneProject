@@ -109,42 +109,11 @@ Animator:
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
   m_AnimatePhysics: 0
-  m_WarningMessage:
+  m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!1 &389666620742342502
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2153460072833210465}
-  m_Layer: 0
-  m_Name: BossPortalSpawnPoint
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &2153460072833210465
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 389666620742342502}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 289992003612041814}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &995930129114536224
 GameObject:
   m_ObjectHideFlags: 0
@@ -247,7 +216,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8b8f30f33e704d66ad23cc5fe2a27a0c, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UnityGAS.ShadowFacingOffsetMirror2D
   facingSprite: {fileID: 5569021315184123239}
   shadowRoot: {fileID: 3231640008702004774}
@@ -348,37 +317,6 @@ Transform:
   - {fileID: 4313995309474416445}
   m_Father: {fileID: 6647991641573689653}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &3861770236225435510
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 4577796166903176877}
-  m_Layer: 0
-  m_Name: BossRewardSpawnPoint
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &4577796166903176877
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3861770236225435510}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 289992003612041814}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5055118451258413439
 GameObject:
   m_ObjectHideFlags: 0
@@ -412,9 +350,6 @@ GameObject:
   - component: {fileID: 6824159300182253413}
   - component: {fileID: 6824159300182253414}
   - component: {fileID: 6824159300182253415}
-  - component: {fileID: 4821331758262804988}
-  - component: {fileID: 8832651452530487903}
-  - component: {fileID: 6375746038064232015}
   m_Layer: 31
   m_Name: DrunkenDragonBoss_Spili
   m_TagString: Enemy
@@ -439,8 +374,6 @@ Transform:
   - {fileID: 3367446406404327446}
   - {fileID: 8035289504571953555}
   - {fileID: 6647991641573689653}
-  - {fileID: 4577796166903176877}
-  - {fileID: 2153460072833210465}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &2033901595698624408
@@ -480,7 +413,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f0bcf155a89d8e14db39a9f2416d691c, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UnityGAS.AbilitySystem
   initialAbilities: []
   attributeSet: {fileID: 2271889682606178052}
@@ -511,7 +444,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8910a2e22aa25664cb9b2709778e44dd, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UnityGAS.AttributeSet
   attributeCatalog: {fileID: 11400000, guid: b9c79b9448814f2408077eff50c01aeb, type: 2}
   baseInitProfile: {fileID: 11400000, guid: ac5ff33387b8e384ea5c5452dcc2efcc, type: 2}
@@ -534,7 +467,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8ecfb7b101eaca847b0dadf898f6fb19, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UnityGAS.GameplayEffectRunner
   cueManager: {fileID: 0}
 --- !u!114 &1729563628708060527
@@ -547,7 +480,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6675ab8ab5253d745b73cb4b3b1f9345, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UnityGAS.TagSystem
 --- !u!114 &3275919451376918051
 MonoBehaviour:
@@ -559,7 +492,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 82ae4624ea26de741ba8bc236cf3108b, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UnityGAS.MovementMotor2D
   body: {fileID: 0}
   enforceContinuousCollision: 1
@@ -588,7 +521,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 526f8835b2c4eeb4593ade78758d3986, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UnityGAS.AttributeStatSource
   attributeSet: {fileID: 2271889682606178052}
   abilitySystem: {fileID: 1519490370696769276}
@@ -603,7 +536,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c721f3a2f874aa14ea14c5bc2261cc39, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UnityGAS.AbilityMotionController2D
 --- !u!114 &7513611809573969283
 MonoBehaviour:
@@ -615,7 +548,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b5ebf9fcd76f27f4f874c8853b167522, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UnityGAS.ExternalMovementController2D
   knockbackDamping: 18
   defaultKnockbackDominanceTime: 0.12
@@ -631,7 +564,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 26c9fe53bdef53947bbf6f41db722013, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UnityGAS.KnockbackReceiver2D
   externalMovement: {fileID: 7513611809573969283}
   knockbackImmuneTag: {fileID: 0}
@@ -648,7 +581,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cec0e7f482ae4eb49b917a55e1bb779c, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DrunkenDragonController
   sprite: {fileID: 5569021315184123239}
   animator: {fileID: 8843251595749694780}
@@ -765,7 +698,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e976ed306a130c94db8843af68333d15, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UnityGAS.AttackTelegraphService
   telegraphPrefab: {fileID: 788264263987448140, guid: 211dd09e2da9caf47ad8409c9e35b83d, type: 3}
   defaultStyle: {fileID: 11400000, guid: b15f18602ec87284d80cbd57720425f1, type: 2}
@@ -785,7 +718,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5ca367bf1fc24df9b9fc2c65bf58031b, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UnityGAS.CombatHeightPresentation2D
   heightState: {fileID: 5037083305729046494}
   visualRoot: {fileID: 3436686884577097596}
@@ -804,7 +737,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a8b83194c15a4011a83e96446c51b87b, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UnityGAS.CombatHeightState2D
   mode: 0
   visualHeight: 0
@@ -819,8 +752,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6ff4ff08e39f49319d1e0414b9985957, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   bodyColliders:
   - {fileID: 5037244466471634069}
   baseExcludedLayers:
@@ -840,7 +773,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4746e930aa0546e7a63dc942f37d1d42, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UnityGAS.CombatHeightCollisionBinder2D
   heightState: {fileID: 5037083305729046494}
   collisionProfile: {fileID: 8032819372621698076}
@@ -857,7 +790,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2e232de7843f92745a254698e2054f4e, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UnityGAS.StaggerGaugeSystem
   currentGaugeAttribute: {fileID: 11400000, guid: dde112729dec0bb4a9d2238ee7ee6dcc, type: 2}
   maxGaugeAttribute: {fileID: 11400000, guid: ddbd05a9b77349441a875c479e48212d, type: 2}
@@ -880,8 +813,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d58f7ddaaeeb3da489b8e9fbafa66102, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   bubblePrefab: {fileID: 8482697653009772348, guid: 62446638c99411c4c9669c3f3efc113d, type: 3}
   bubbleOffset: {x: 0.3, y: 1.3, z: 0}
   showBubbleOffsetGizmo: 1
@@ -899,8 +832,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8d47b449fb5f4f14a1b8be7e114d7b29, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   speechBubble: {fileID: 6969754958341642168}
   speechData: {fileID: 11400000, guid: 5f57d0cf6cc24a40a9d65b165fbc4e2f, type: 2}
 --- !u!114 &6824159300182253411
@@ -913,8 +846,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1fb35ba1d82842c4b4d58b07af4f7081, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   useDeathPresentation: 1
   deathCinematicIntroDuration: 0.35
   deathLetterboxScreenHeightRatio: 0.14
@@ -929,12 +862,12 @@ MonoBehaviour:
   speechController: {fileID: 3750611596770769795}
   breakdownAnimation:
     triggerName: dead1
-    stateName:
+    stateName: 
     crossFadeDuration: 0.05
     fallbackDuration: 0
   deathAnimation:
     triggerName: dead2
-    stateName:
+    stateName: 
     crossFadeDuration: 0.05
     fallbackDuration: 1.2
   deathVanishEffectPrefab: {fileID: 6718438523550872990, guid: a18c5da0a9e3ce74bb0699bed51accde, type: 3}
@@ -951,8 +884,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2eae5b7f38d512841bb3d472aa68139c, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   npcData: {fileID: 11400000, guid: 5bcbe73d9f694da4b971d02f13b9d8e1, type: 2}
   startKnotSelectorBehaviour: {fileID: 6824159300182253415}
   playEncounterDialogue: 1
@@ -969,8 +902,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9f6527ad7c611aa41ac5e2b94666620e, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   cameraDirector: {fileID: 6824159300182253414}
   dialogueRunner: {fileID: 6824159300182253412}
   bossController: {fileID: 5708815224463359826}
@@ -987,8 +920,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 928775a6a95adc64a9a5a0bd430fa85a, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   playerCam: {fileID: 0}
   bossCam: {fileID: 0}
   normalPriority: 10
@@ -1010,54 +943,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: aea6a60425194e9aa235f735bcf3b357, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   defaultStartKnot: DRUNK_01
---- !u!114 &4821331758262804988
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5055118451258413439}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 73a45414134245b49d9f61de3dff0e94, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: Assembly-CSharp::BossRewardSpawner
-  prefabCatalog: {fileID: 11400000, guid: a38103ce9c534763ba870c9573d7df68, type: 2}
-  scatterRadius: 1.5
---- !u!114 &8832651452530487903
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5055118451258413439}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 58b385d66ce4413a802c458a0e883b5e, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: Assembly-CSharp::BossExitPortalActivator
-  prefabCatalog: {fileID: 11400000, guid: a38103ce9c534763ba870c9573d7df68, type: 2}
-  portalObj: {fileID: 0}
-  hidePortalOnStart: 1
-  detachPortalFromBoss: 1
---- !u!114 &6375746038064232015
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5055118451258413439}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b06f9366df614c44ab34d56e96a94e63, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: Assembly-CSharp::BossBattleEndAnchors
-  rewardSpawnPoint: {fileID: 4577796166903176877}
-  scatterOrigin: {fileID: 289992003612041814}
-  portalSpawnPoint: {fileID: 2153460072833210465}
 --- !u!1 &5151103204004599664
 GameObject:
   m_ObjectHideFlags: 0
@@ -1133,7 +1021,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cbc9a19645b6c8f458d6e368d5e1dabc, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UnityGAS.CombatHurtbox2D
   targetRoot: {fileID: 0}
   ownedColliders:
@@ -1327,7 +1215,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d042fc4d06e89994badb8bc741dda69a, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MirroredLocalSocket2D
   referenceTransform: {fileID: 289992003612041814}
   facingSprite: {fileID: 5569021315184123239}

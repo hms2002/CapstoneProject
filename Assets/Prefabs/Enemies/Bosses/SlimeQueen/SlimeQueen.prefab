@@ -30,9 +30,6 @@ GameObject:
   - component: {fileID: 1020000}
   - component: {fileID: 1021000}
   - component: {fileID: 1022000}
-  - component: {fileID: 2657025780287603243}
-  - component: {fileID: 780357732954642288}
-  - component: {fileID: 7443657674768277935}
   m_Layer: 31
   m_Name: SlimeQueen
   m_TagString: Enemy
@@ -52,9 +49,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 8891933590005897639}
-  - {fileID: 3079133148804043993}
+  m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &1002000
@@ -565,110 +560,3 @@ MonoBehaviour:
   bubbleOffsetGizmoRadius: 0.12
   defaultUseTyping: 1
   defaultTypingSpeed: 0.05
---- !u!114 &2657025780287603243
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1000000}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 73a45414134245b49d9f61de3dff0e94, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: Assembly-CSharp::BossRewardSpawner
-  prefabCatalog: {fileID: 11400000, guid: a38103ce9c534763ba870c9573d7df68, type: 2}
-  scatterRadius: 1.5
---- !u!114 &780357732954642288
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1000000}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 58b385d66ce4413a802c458a0e883b5e, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: Assembly-CSharp::BossExitPortalActivator
-  prefabCatalog: {fileID: 11400000, guid: a38103ce9c534763ba870c9573d7df68, type: 2}
-  portalObj: {fileID: 0}
-  hidePortalOnStart: 1
-  detachPortalFromBoss: 1
---- !u!114 &7443657674768277935
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1000000}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b06f9366df614c44ab34d56e96a94e63, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: Assembly-CSharp::BossBattleEndAnchors
-  rewardSpawnPoint: {fileID: 8891933590005897639}
-  scatterOrigin: {fileID: 1001000}
-  portalSpawnPoint: {fileID: 3079133148804043993}
---- !u!1 &2866566419206427494
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 8891933590005897639}
-  m_Layer: 0
-  m_Name: BossRewardSpawnPoint
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &8891933590005897639
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2866566419206427494}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1001000}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &8156848353731561727
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 3079133148804043993}
-  m_Layer: 0
-  m_Name: BossPortalSpawnPoint
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &3079133148804043993
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8156848353731561727}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1001000}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

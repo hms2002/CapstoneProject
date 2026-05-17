@@ -132,3 +132,10 @@ This inventory records the role assigned to each project Markdown document durin
 | Document | Role |
 | --- | --- |
 | `DemonKingPattern_NotionHTML/README.md` | Demon King pattern Notion HTML export artifact index |
+| `Presentation/index.html` | Human-readable project docs dashboard |
+| `Presentation/architecture-overview.html` | Human-readable UML-focused project architecture overview |
+| `Presentation/authoring-guide.html` | Human-readable content authoring and balancing handbook |
+| `Presentation/refactor-board.html` | Human-readable refactor backlog priority board |
+| `Presentation/_shared/docs-style.css` | Shared presentation dashboard styling |
+| `Presentation/_shared/docs-data.js` | Thin dashboard metadata and source Markdown links |
+| `Presentation/_shared/docs-render.js` | Shared dashboard rendering helpers |

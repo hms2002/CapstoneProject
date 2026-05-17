@@ -34,6 +34,9 @@ public sealed class ShopSlot : InteractableBase
     [SerializeField] private MerchantNPC owner;
     [SerializeField] private int slotIndex = -1;
 
+    [Header("Stock Filter")]
+    [SerializeField] private ShopSlotItemFilter itemFilter = ShopSlotItemFilter.Any;
+
     [Header("Anchors")]
     [SerializeField] private Transform promptAnchor;
     [SerializeField] private Transform detailAnchor;
@@ -108,10 +111,17 @@ public sealed class ShopSlot : InteractableBase
         OnUnHighlight();
     }
 
+    public ShopSlotItemFilter ItemFilter => itemFilter;
+
     public void AssignOwner(MerchantNPC merchant, int assignedSlotIndex)
     {
         owner = merchant;
         slotIndex = assignedSlotIndex;
+    }
+
+    public void ApplyRuntimeItemFilter(ShopSlotItemFilter filter)
+    {
+        itemFilter = filter;
     }
 
     public void ApplyState(MerchantStockEntryState state)

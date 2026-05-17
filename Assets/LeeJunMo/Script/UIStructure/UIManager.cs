@@ -609,6 +609,9 @@ public class UIManager : MonoBehaviour
             WarningPopupCode.WeaponInventoryFull => "무기 인벤토리가 가득 찼습니다.",
             WarningPopupCode.ConsumableInventoryFull => "일회용 아이템 인벤토리가 가득 찼습니다.",
             WarningPopupCode.CannotDropHere => "여기에는 버릴 수 없습니다.",
+            WarningPopupCode.UpgradeNotEnoughMagicStone => "\uB9C8\uC815\uC11D\uC774 \uBD80\uC871\uD569\uB2C8\uB2E4.",
+            WarningPopupCode.UpgradeLocked => "\uC544\uC9C1 \uD574\uAE08\uB418\uC9C0 \uC54A\uC740 \uC5C5\uADF8\uB808\uC774\uB4DC\uC785\uB2C8\uB2E4.",
+            WarningPopupCode.UpgradeUnavailable => "\uD604\uC7AC \uAD6C\uB9E4\uD560 \uC218 \uC5C6\uB294 \uC5C5\uADF8\uB808\uC774\uB4DC\uC785\uB2C8\uB2E4.",
             _ => string.Empty,
         };
     }

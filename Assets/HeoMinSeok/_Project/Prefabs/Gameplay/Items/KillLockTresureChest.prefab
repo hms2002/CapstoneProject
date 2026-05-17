@@ -103,6 +103,7 @@ MonoBehaviour:
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -4894,7 +4895,7 @@ ParticleSystem:
     vectorLabel1_3: W
 --- !u!199 &5299544519236944040
 ParticleSystemRenderer:
-  serializedVersion: 6
+  serializedVersion: 7
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -4913,6 +4914,8 @@ ParticleSystemRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -4934,9 +4937,11 @@ ParticleSystemRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 119640197
-  m_SortingLayer: 3
+  m_SortingLayer: 7
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_RenderMode: 0
   m_MeshDistribution: 0
   m_SortMode: 0
@@ -4968,7 +4973,6 @@ ParticleSystemRenderer:
   m_MeshWeighting1: 1
   m_MeshWeighting2: 1
   m_MeshWeighting3: 1
-  m_MaskInteraction: 0
 --- !u!1 &6096852445927574832
 GameObject:
   m_ObjectHideFlags: 0
@@ -5026,6 +5030,7 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_VertexColorAlwaysGammaSpace: 0
+  m_UseReflectionProbes: 0
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: -1960815025
@@ -5139,6 +5144,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 7530156284439312542, guid: 296eaa6f1547cb74e990055ce1319470, type: 3}
       insertIndex: -1
       addedObject: {fileID: 5757594863695819826}
+    - targetCorrespondingSourceObject: {fileID: 7530156284439312542, guid: 296eaa6f1547cb74e990055ce1319470, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6987234509876123456}
   m_SourcePrefab: {fileID: 100100000, guid: 296eaa6f1547cb74e990055ce1319470, type: 3}
 --- !u!4 &6066747848749373809 stripped
 Transform:
@@ -5180,6 +5188,120 @@ MonoBehaviour:
         volumeMultiplier: 0
         anchorPolicy: 0
         localOffset: {x: 0, y: 0, z: 0}
+      cameraShakeOnExecute:
+        amplitude: 0
+        amplitudeMultiplier: 0
+        maxAmplitude: 0
+        minIntervalSeconds: 0
+        directionMode: 0
+        customDirection: {x: 0, y: 0, z: 0}
+        ignoreScreenShakeSetting: 0
+      cameraShakeWhileActive:
+        amplitude: 0
+        amplitudeMultiplier: 0
+        maxAmplitude: 0
+        minIntervalSeconds: 0
+        directionMode: 0
+        customDirection: {x: 0, y: 0, z: 0}
+        ignoreScreenShakeSetting: 0
+      cameraShakeOnRemove:
+        amplitude: 0
+        amplitudeMultiplier: 0
+        maxAmplitude: 0
+        minIntervalSeconds: 0
+        directionMode: 0
+        customDirection: {x: 0, y: 0, z: 0}
+        ignoreScreenShakeSetting: 0
+      presentationOnExecute:
+        sound:
+          key: 
+          volumeMultiplier: 0
+          anchorPolicy: 0
+          localOffset: {x: 0, y: 0, z: 0}
+        cameraShake:
+          amplitude: 0
+          amplitudeMultiplier: 0
+          maxAmplitude: 0
+          minIntervalSeconds: 0
+          directionMode: 0
+          customDirection: {x: 0, y: 0, z: 0}
+          ignoreScreenShakeSetting: 0
+        effect:
+          prefab: {fileID: 0}
+          localOffset: {x: 0, y: 0, z: 0}
+          rotationOffsetZ: 0
+          scaleMultiplier: {x: 0, y: 0, z: 0}
+          lifetimeMode: 0
+          lifetimeOverrideSeconds: 0
+          useUnscaledTime: 0
+        particle:
+          prefab: {fileID: 0}
+          localOffset: {x: 0, y: 0, z: 0}
+          rotationOffsetZ: 0
+          scaleMultiplier: {x: 0, y: 0, z: 0}
+          lifetimeMode: 0
+          lifetimeOverrideSeconds: 0
+          useUnscaledTime: 0
+      presentationWhileActive:
+        sound:
+          key: 
+          volumeMultiplier: 0
+          anchorPolicy: 0
+          localOffset: {x: 0, y: 0, z: 0}
+        cameraShake:
+          amplitude: 0
+          amplitudeMultiplier: 0
+          maxAmplitude: 0
+          minIntervalSeconds: 0
+          directionMode: 0
+          customDirection: {x: 0, y: 0, z: 0}
+          ignoreScreenShakeSetting: 0
+        effect:
+          prefab: {fileID: 0}
+          localOffset: {x: 0, y: 0, z: 0}
+          rotationOffsetZ: 0
+          scaleMultiplier: {x: 0, y: 0, z: 0}
+          lifetimeMode: 0
+          lifetimeOverrideSeconds: 0
+          useUnscaledTime: 0
+        particle:
+          prefab: {fileID: 0}
+          localOffset: {x: 0, y: 0, z: 0}
+          rotationOffsetZ: 0
+          scaleMultiplier: {x: 0, y: 0, z: 0}
+          lifetimeMode: 0
+          lifetimeOverrideSeconds: 0
+          useUnscaledTime: 0
+      presentationOnRemove:
+        sound:
+          key: 
+          volumeMultiplier: 0
+          anchorPolicy: 0
+          localOffset: {x: 0, y: 0, z: 0}
+        cameraShake:
+          amplitude: 0
+          amplitudeMultiplier: 0
+          maxAmplitude: 0
+          minIntervalSeconds: 0
+          directionMode: 0
+          customDirection: {x: 0, y: 0, z: 0}
+          ignoreScreenShakeSetting: 0
+        effect:
+          prefab: {fileID: 0}
+          localOffset: {x: 0, y: 0, z: 0}
+          rotationOffsetZ: 0
+          scaleMultiplier: {x: 0, y: 0, z: 0}
+          lifetimeMode: 0
+          lifetimeOverrideSeconds: 0
+          useUnscaledTime: 0
+        particle:
+          prefab: {fileID: 0}
+          localOffset: {x: 0, y: 0, z: 0}
+          rotationOffsetZ: 0
+          scaleMultiplier: {x: 0, y: 0, z: 0}
+          lifetimeMode: 0
+          lifetimeOverrideSeconds: 0
+          useUnscaledTime: 0
       cuesOnExecute: []
       cuesWhileActive: []
       cuesOnRemove: []
@@ -5212,3 +5334,22 @@ MonoBehaviour:
   unlockedText: 
   hideCountTextWhenUnlocked: 1
   hideLockEffectWhenUnlocked: 1
+--- !u!114 &6987234509876123456
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8398461225799451672}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fd2106177ccd43a1943bed4d5d07a220, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetLock: {fileID: 3675793086032016732}
+  anchor: {fileID: 6066747848749373809}
+  arrowPrefab: {fileID: 6100123456789012345, guid: 397712dcf285471895fbf9ddca3073e0, type: 3}
+  showThreshold: 4
+  arrowDistance: 1.5
+  additionalOffset: {x: 0, y: 0}
+  arrowVisualForward: {x: -1, y: 0}

@@ -28,8 +28,8 @@ last_reviewed: 2026-05-15
 | 4. Pattern data 작성 | `BossPatternEntry`, condition, executor, ability logic, boss-specific actor를 만듭니다. 보스 고유 로직은 말단 구현부에 둡니다. | `BossPatternCondition`, `AbilityLogic_*`, pattern actors. |
 | 5. Presentation 작성 | pattern warning/hit/projectile은 AL-owned, state rhythm은 state/owner-owned, 임시 handle cleanup은 runner/helper-owned로 둡니다. | `PresentationAuthoringContract.md`. |
 | 6. HUD 특수성 처리 | 분열 보스, 다중 body, phase-two bind 같은 특수성은 `BossHud` 공용 구조를 바꾸기보다 boss-local adapter/source에 둡니다. | [Boss HUD Special Case Source Split](../../RefactorBacklog/BossHudSpecialCaseSourceSplit.md) 후보. |
-| 7. BattleEnd 작성 | death presentation, run progress, reward spawn, portal activation을 전투 종료 흐름으로 연결합니다. | `BossDeathPresentation`, `RunProgressCoordinator`, `BossRewardSpawner`, `BossDrop`. |
-| 8. Loot / reward 연결 | base reward는 `LootManager` 기준을 따르고, 추가 보상은 additive modifier나 boss-specific extra reward로 둡니다. | `BossRewardSpawner.cs`, `LootManager.cs`. |
+| 7. BattleEnd 작성 | death presentation, run progress, authored chest activation, portal activation을 전투 종료 흐름으로 연결합니다. | `BossDeathPresentation`, `RunProgressCoordinator`, `BossBattleEndHandler`. |
+| 8. Loot / reward 연결 | base reward는 `LootManager` 기준을 따르고, 추가 보상은 additive modifier나 boss-specific extra reward로 둡니다. | `BossBattleEndHandler.cs`, `BossRewardSpawnService.cs`, `LootManager.cs`. |
 
 ## Ownership Rules
 

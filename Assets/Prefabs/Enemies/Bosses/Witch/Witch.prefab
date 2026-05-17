@@ -1,67 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &266692346368291065
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2386513943276245587}
-  m_Layer: 0
-  m_Name: BossRewardSpawnPoint
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &2386513943276245587
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 266692346368291065}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 7124681143442968898}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1733428811728376977
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2556438504014702768}
-  m_Layer: 0
-  m_Name: BossPortalSpawnPoint
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &2556438504014702768
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1733428811728376977}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 7124681143442968898}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4104743717894493410
 GameObject:
   m_ObjectHideFlags: 0
@@ -101,9 +39,6 @@ GameObject:
   - component: {fileID: 2108456829143765123}
   - component: {fileID: 2108456829143765124}
   - component: {fileID: 5477811146804509481}
-  - component: {fileID: 8068020155619111614}
-  - component: {fileID: 9072031939385557587}
-  - component: {fileID: 7484413520276996022}
   m_Layer: 31
   m_Name: Witch
   m_TagString: Enemy
@@ -123,9 +58,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 2386513943276245587}
-  - {fileID: 2556438504014702768}
+  m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &8897721723054304330
@@ -945,48 +878,3 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UnityGAS.CombatHurtbox2D
   targetRoot: {fileID: 0}
   ownedColliders: []
---- !u!114 &8068020155619111614
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4104743717894493410}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 73a45414134245b49d9f61de3dff0e94, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: Assembly-CSharp::BossRewardSpawner
-  prefabCatalog: {fileID: 11400000, guid: a38103ce9c534763ba870c9573d7df68, type: 2}
-  scatterRadius: 1.5
---- !u!114 &9072031939385557587
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4104743717894493410}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 58b385d66ce4413a802c458a0e883b5e, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: Assembly-CSharp::BossExitPortalActivator
-  prefabCatalog: {fileID: 11400000, guid: a38103ce9c534763ba870c9573d7df68, type: 2}
-  portalObj: {fileID: 0}
-  hidePortalOnStart: 1
-  detachPortalFromBoss: 1
---- !u!114 &7484413520276996022
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4104743717894493410}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b06f9366df614c44ab34d56e96a94e63, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: Assembly-CSharp::BossBattleEndAnchors
-  rewardSpawnPoint: {fileID: 2386513943276245587}
-  scatterOrigin: {fileID: 7124681143442968898}
-  portalSpawnPoint: {fileID: 2556438504014702768}

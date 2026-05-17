@@ -33315,6 +33315,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   themeOverride: {fileID: 11400000, guid: 1df4d6f6ce1f47e090ef5b50eef465e4, type: 2}
+  authoredCursorCanvas: {fileID: 0}
+  authoredCursorRect: {fileID: 0}
+  authoredCursorImage: {fileID: 0}
   hideSystemCursorWhileSpriteActive: 1
   overlaySortingOrder: 32767
 --- !u!1 &7718402600183217301

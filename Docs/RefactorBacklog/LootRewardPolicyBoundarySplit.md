@@ -16,7 +16,7 @@ General loot and reward behavior is split across runtime objects in a way that h
 - `TreasureChest` delegates chest refresh eligibility, refresh guard snapshots/comparison, and relic level bonus calculation to a same-file `ChestRewardPolicy`, but that helper still reads `RunModifierService` directly and remains colocated with the world chest component.
 - `WorldItemPickup2D` presents a world item, handles interaction, displays delivery warnings/speech, and destroys itself after successful pickup. `WorldPickupDeliveryService` now grants items to player inventories and uses shared inventory delivery warning mapping for relic/consumable failures.
 
-The boss reward path is tracked separately: `BossRewardSpawner` follows the additive modifier decision and delegates chest/currency/field-heal spawn execution through a request/result helper. The former legacy adapter risk is resolved by `BossDropResponsibilitySplit`.
+The boss reward path is tracked separately: scene `BossBattleEndHandler` follows the additive modifier decision and delegates authored chest activation through a helper. The former legacy adapter risk is resolved by `BossDropResponsibilitySplit`.
 
 ## Why It Exists
 
@@ -80,8 +80,8 @@ Start this split when one of the following happens:
 - Routed player inventory, world pickup, scene weapon drop, merchant stock, and `ItemManager.Instance` reads through those helpers while keeping the existing `LootPoolService` public compatibility APIs.
 - Added same-file `MonsterLootDropRequest`, `MonsterLootDropResult`, `MonsterLootDropService`, `GraveLootDropRequest`, `GraveLootDropResult`, and `GraveLootDropService` in `LootManager.cs`.
 - Routed monster loot type roll/drop execution and grave weapon/relic roll/drop execution through those helpers while keeping `LootManager` public spawn APIs intact.
-- Added same-file `BossRewardSpawnRequest`, `BossRewardSpawnResult`, and `BossRewardSpawnService` in `BossRewardSpawner.cs`.
-- Routed boss treasure chest, base loot, bonus loot, magic stone, field heal, scatter, and exception-logged reward spawn execution through `BossRewardSpawnService` while keeping `BossRewardSpawner` event handling intact. The later `BossDrop` deletion removed the old legacy spawn API.
+- Added `BossRewardSpawnService` for boss chest reward activation.
+- Routed boss treasure chest base loot and bonus loot through `BossRewardSpawnService`. The later `BossDrop` and split-component deletion removed the old legacy spawn API.
 - Moved `LootPoolContext`, loot pool provider/selection helpers, chest loot generation, monster/grave drop services, boss reward spawn service, chest reward policy, and world pickup delivery helpers into dedicated `.cs` files during the P1 helper file split.
 - Added shared `InventoryDeliveryWarningResolver` in `InventoryTransferService.cs`.
 - Routed quick-move full-inventory warning mapping, world pickup relic/consumable warning mapping, and player relic adapter warning mapping through the shared resolver.

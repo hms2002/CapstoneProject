@@ -51,6 +51,7 @@ Use these documents instead of expanding this index further.
 | [SceneRuntimeSaveStructure.md](./ScriptSystems/SceneRuntimeSaveStructure.md) | Scene/run transition, player runtime capture/restore, save data, run timer, map/shortcuts. | Work touches scene transitions, portals, runtime persistence, run progress, save data, or shortcut/map progression. |
 | [LootRewardStructure.md](./ScriptSystems/LootRewardStructure.md) | Loot manager, boss rewards, grave/stage loot, pickups, reward presentation boundary. | Work touches reward generation, loot tables, boss reward modifiers, currency, or pickup spawning. |
 | [LoadingPresentationStructure.md](./ScriptSystems/LoadingPresentationStructure.md) | Loading, presentation runtime, global UI, camera/audio/input/settings/speech bubbles. | Work touches loading scopes, asset providers, presentation services, global UI, camera/audio presentation, or settings/input binding UI. |
+| [LevelDesignEditorToolStructure.md](./ScriptSystems/LevelDesignEditorToolStructure.md) | Editor-only level-design validation, SceneView overlay, door/shortcut linking, battle-room authoring, placement helpers. | Work touches level-design authoring tools, map object validation, room/spawn/lock wiring helpers, or editor-only scene placement workflows. |
 
 ## Boundaries
 

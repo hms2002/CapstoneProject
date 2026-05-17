@@ -8,8 +8,7 @@ internal sealed class UpgradePurchaseCompletionService
     private readonly Action<PlayerInteractor2D> applyHubTargetStates;
     private readonly Action<UpgradeCinematicRequest> enqueueCinematic;
     private readonly Action checkAndUnlockNodesAfterPurchase;
-    private readonly Action requestSave;
-    private readonly Action notifyDataChanged;
+    private readonly UpgradeNotificationService notifications;
 
     public UpgradePurchaseCompletionService(
         Func<PlayerInteractor2D> resolveCurrentPlayer,
@@ -18,8 +17,7 @@ internal sealed class UpgradePurchaseCompletionService
         Action<PlayerInteractor2D> applyHubTargetStates,
         Action<UpgradeCinematicRequest> enqueueCinematic,
         Action checkAndUnlockNodesAfterPurchase,
-        Action requestSave,
-        Action notifyDataChanged)
+        UpgradeNotificationService notifications)
     {
         this.resolveCurrentPlayer = resolveCurrentPlayer;
         this.effectApplier = effectApplier;
@@ -27,8 +25,7 @@ internal sealed class UpgradePurchaseCompletionService
         this.applyHubTargetStates = applyHubTargetStates;
         this.enqueueCinematic = enqueueCinematic;
         this.checkAndUnlockNodesAfterPurchase = checkAndUnlockNodesAfterPurchase;
-        this.requestSave = requestSave;
-        this.notifyDataChanged = notifyDataChanged;
+        this.notifications = notifications;
     }
 
     public void Complete(UpgradeNodeSO node)
@@ -44,8 +41,8 @@ internal sealed class UpgradePurchaseCompletionService
             RewardDisplayService.Instance.ShowReward(node.effects, null);
 
         checkAndUnlockNodesAfterPurchase();
-        requestSave();
-        notifyDataChanged();
+        notifications?.RequestImmediateSave();
+        notifications?.NotifyDataChanged();
     }
 
     private void QueueUpgradeCinematics(UpgradeNodeSO node)

@@ -174,8 +174,14 @@ public class Enemy : MonoBehaviour, ICombatDeathCommand
         if (string.IsNullOrWhiteSpace(targetTag))
             return false;
 
+        if (UsesPlayerTargetTag() && TryResolveRegisteredPlayerTarget(out Transform playerTarget))
+        {
+            target = playerTarget;
+            return true;
+        }
+
         GameObject found = GameObject.FindWithTag(targetTag);
-        target = found != null ? found.transform : null;
+        target = found != null ? ResolveTaggedTargetTransform(found.transform) : null;
 
         if (target == null && logWarning)
             Debug.LogWarning($"{enemyName}: No target found with tag '{targetTag}'");
@@ -186,7 +192,23 @@ public class Enemy : MonoBehaviour, ICombatDeathCommand
     /// <summary>현재 추적 대상을 지정한 Transform으로 교체합니다.</summary>
     protected void SetTarget(Transform newTarget)
     {
-        target = newTarget;
+        target = NormalizeAssignedTarget(newTarget);
+    }
+
+    private Transform NormalizeAssignedTarget(Transform newTarget)
+    {
+        if (newTarget == null || !UsesPlayerTargetTag())
+            return newTarget;
+
+        Transform registeredPlayer = PlayerRuntimeRegistry.GetPlayerTransform();
+        if (registeredPlayer != null &&
+            (newTarget == registeredPlayer || newTarget.IsChildOf(registeredPlayer)))
+        {
+            return registeredPlayer;
+        }
+
+        PlayerInteractor2D player = newTarget.GetComponentInParent<PlayerInteractor2D>();
+        return player != null ? player.transform : newTarget;
     }
 
     /// <summary>
@@ -234,6 +256,9 @@ public class Enemy : MonoBehaviour, ICombatDeathCommand
     /// </summary>
     private Transform ResolveTargetCandidate(Collider2D hit)
     {
+        if (UsesPlayerTargetTag())
+            return ResolvePlayerTargetCandidate(hit);
+
         if (hit.CompareTag(targetTag))
             return hit.transform;
 
@@ -247,6 +272,59 @@ public class Enemy : MonoBehaviour, ICombatDeathCommand
         }
 
         return null;
+    }
+
+    private bool UsesPlayerTargetTag()
+    {
+        return string.Equals(targetTag, "Player", System.StringComparison.Ordinal);
+    }
+
+    private Transform ResolveTaggedTargetTransform(Transform foundTransform)
+    {
+        if (!UsesPlayerTargetTag() || foundTransform == null)
+            return foundTransform;
+
+        PlayerInteractor2D player = foundTransform.GetComponentInParent<PlayerInteractor2D>();
+        if (player != null)
+            return player.transform;
+
+        return foundTransform;
+    }
+
+    private static bool TryResolveRegisteredPlayerTarget(out Transform playerTarget)
+    {
+        playerTarget = PlayerRuntimeRegistry.GetPlayerTransform();
+        return playerTarget != null;
+    }
+
+    private Transform ResolvePlayerTargetCandidate(Collider2D hit)
+    {
+        if (hit == null)
+            return null;
+
+        Transform registeredPlayer = PlayerRuntimeRegistry.GetPlayerTransform();
+        if (registeredPlayer != null && IsColliderOwnedByTransform(hit, registeredPlayer))
+            return registeredPlayer;
+
+        PlayerInteractor2D player = hit.GetComponentInParent<PlayerInteractor2D>();
+        if (player != null)
+            return player.transform;
+
+        return hit.CompareTag(targetTag) ? hit.transform : null;
+    }
+
+    private static bool IsColliderOwnedByTransform(Collider2D hit, Transform owner)
+    {
+        if (hit == null || owner == null)
+            return false;
+
+        Transform hitTransform = hit.transform;
+        if (hitTransform == owner || hitTransform.IsChildOf(owner))
+            return true;
+
+        Rigidbody2D attachedBody = hit.attachedRigidbody;
+        return attachedBody != null &&
+               (attachedBody.transform == owner || attachedBody.transform.IsChildOf(owner));
     }
 
     /// <summary>적 Attribute 값이 바뀔 때 파생 클래스가 반응할 수 있는 훅입니다.</summary>

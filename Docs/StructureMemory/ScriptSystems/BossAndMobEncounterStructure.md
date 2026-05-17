@@ -2,7 +2,7 @@
 status: active
 authority: structure-memory
 category: script-system-map
-last_reviewed: 2026-05-16
+last_reviewed: 2026-05-17
 ---
 
 # Boss And Mob Encounter Structure
@@ -30,13 +30,13 @@ Bosses use an `Encounter -> Battle -> BattleEnd` flow. General mobs use `Populat
 | --- | --- | --- |
 | Boss Encounter | Boss encounter intro, dialogue, target activation, combat entry hooks. | Prepare the boss fight and start combat. It should not own rewards, portals, or persistent run result processing. |
 | Boss Battle | Boss FSM core/states/configs, boss-specific controllers, boss abilities, pattern actors, BT/GAS bridge. | Run the fight: phase evaluation, pattern selection/execution, damage/status interaction, groggy, and attack presentation. |
-| Boss BattleEnd | Boss death presentation, `RunProgressCoordinator`, route-linked `BossSpecialRewardPresetSO`, `BossBattleEndPrefabCatalogSO`, `BossBattleEndAnchors`, `BossRewardFallbackService`, boss rewards, and portal activation. | Convert boss defeat into run/world results. The former `BossDrop` adapter has been removed; authoring gaps are checked by `Docs/RefactorBacklog/BossDropResponsibilitySplit.md` and the validator. |
+| Boss BattleEnd | Boss death presentation, `RunProgressCoordinator`, route-linked `BossSpecialRewardPresetSO`, scene-authored `BossBattleEndHandler`, authored `TreasureChest`/`ScenePortal` references, physical magic stone/field-heal drops, and `BossRewardFallbackService`. | Convert boss defeat into run/world results. The former `BossDrop` adapter and split reward/portal/anchor components have been removed; final-route contexts skip chest activation; authoring gaps are checked by `Docs/RefactorBacklog/BossDropResponsibilitySplit.md` and the validator. |
 | Mob Population / Spawn | `MonsterSpawner`, `SceneMonsterSpawnDirector`, spawn containers, room groups/profiles, difficulty/context/pathfinding injection. | Instantiate and configure general mobs. This is the normal placement entry point for mobs, not a boss-style encounter. |
 | Mob Battle Runtime | `Mob`, mob FSM, chase/facing/home return, attack decision source, `MobAbilityCoordinator`, pattern runners, mob ability logic. | Keep spawned mobs battle-ready, run chase/attack behavior, and perform cleanup according to `Docs/Contracts/MobCleanupContract.md`. |
 | Mob Death Result | `Mob.OnDeathStarted`, monster loot spawn, spawned-monster tracking cleanup. | Convert mob death into immediate results. Long-term clear/lock semantics should not be assumed from root GameObject destruction alone. |
-| Room / Chest Lock Overlay | `RoomDoorMonsterKillLock`, `ChestMonsterKillLock`, spawn-time lock registration. | Observe registered combatants and unlock doors/chests. Split/summon/transform semantics are pending design decisions. |
+| Room / Chest Lock Overlay | `RoomDoorMonsterKillLock`, `ChestMonsterKillLock`, `ChestMonsterKillLockNavigationView`, spawn-time lock registration. | Observe registered combatants, unlock doors/chests, and show local chest guidance presentation. Split/summon/transform semantics are pending design decisions. |
 | Hazards / Puddles | Puddle runtime, conversion service, hazard damage, puddle visuals, boss-specific puddle interaction triggers. | Battle environment. Boss-specific triggers can live in boss ability logic, but hazard actors should avoid accumulating boss-specific policy. |
-| Enemy Shared Combat | `Enemy`, death command, shared cleanup utility. | Shared enemy combat base and cleanup helpers. |
+| Enemy Shared Combat | `Enemy`, death command, shared cleanup utility. | Shared enemy combat base, cleanup helpers, and canonical player target resolution for player-owned child/orbit colliders. |
 
 ### Boss Battle Implementation Breakdown
 
@@ -96,7 +96,7 @@ Bosses use an `Encounter -> Battle -> BattleEnd` flow. General mobs use `Populat
 | --- | ---: | --- |
 | Spawn Core / Request / Profile | 9 | Scene spawn director/policy, spawner/container/context/request, spawn profile, and spawn context receiver. This is mob population, not boss-style encounter flow. |
 | Room / Door Lock Overlay | 3 | Room area/group, entry trigger, and door monster-kill lock. Treat as an overlay that observes spawned mobs. |
-| Chest Lock Bridge | planned boundary | `MonsterSpawnContainer` and `SceneMonsterSpawnDirector` currently bridge spawned mobs to `ChestMonsterKillLock`. Keep this boundary visible when reviewing spawn code. |
+| Chest Lock Bridge | planned boundary | `MonsterSpawnContainer` and `SceneMonsterSpawnDirector` currently bridge spawned mobs to `ChestMonsterKillLock`. `ChestMonsterKillLockNavigationView` reads the lock's alive registered monsters for presentation only. Keep this boundary visible when reviewing spawn code. |
 | Difficulty Receivers | 3 | Difficulty modifier and difficulty receiver contracts/components. |
 | Pathfinding | 1 | Tilemap pathfinder helper. |
 | Puddle Presentation | 3 | Shader, particle, and blob visuals. |
@@ -130,6 +130,8 @@ Track the concrete candidate in `Docs/RefactorBacklog/BossHudSpecialCaseSourceSp
 - `Assets/HeoMinSeok/_Project/Scripts/Gameplay/MonsterSpawn/SceneMonsterSpawnDirector.cs`
 - `Assets/HeoMinSeok/_Project/Scripts/Gameplay/MonsterSpawn/RoomDoorMonsterKillLock.cs`
 - `Assets/HeoMinSeok/_Project/Scripts/Gameplay/Inventory/Chest/Runtime/LockedChest/ChestMonsterKillLock.cs`
+- `Assets/HeoMinSeok/_Project/Scripts/Gameplay/Inventory/Chest/Runtime/LockedChest/ChestMonsterKillLockNavigationView.cs`
+- `Assets/HeoMinSeok/_Project/Prefabs/Gameplay/Items/KillLockMonsterNavigationArrow.prefab`
 - `Assets/HeoMinSeok/_Project/Scripts/Gameplay/Puddles/Runtime/FirePuddleArea.cs`
 - `Assets/LeeJunMo/Script/Editor/BossBattleEndMigrationValidatorWindow.cs`
 
@@ -138,15 +140,17 @@ Track the concrete candidate in `Docs/RefactorBacklog/BossHudSpecialCaseSourceSp
 - Boss controllers own boss battle runtime; boss encounter setup and boss battle-end results should remain visible as separate flow boundaries.
 - General mobs are spawned through population systems, then stay battle-ready through their own runtime FSM. Do not treat all mob work as encounter work.
 - Spawn systems own instantiation/configuration and may bridge to lock overlays, but lock semantics are not the same as spawn semantics.
+- `ChestMonsterKillLockNavigationView` is presentation-only: it reads alive registered monsters from `ChestMonsterKillLock`, spawns authored arrow prefabs locally, and must not decide unlock, spawn, or combatant counting rules. The authored arrow prefab is SpriteRenderer-only; avoid renderer-driving scripts and MeshRenderer/MeshFilter presentation for this 2D guidance. Its selected-object gizmos are authoring/debug visualization only.
 - Puddles/hazards are battle environment systems and should stay separate from boss-specific policy unless the boss ability owns only a trigger.
 - Enemy cleanup rules should follow `Docs/Contracts/MobCleanupContract.md` when general mobs are involved.
+- Shared enemy player targeting should resolve to the canonical player root through `PlayerRuntimeRegistry`/`PlayerInteractor2D`; player-attached orbit/effect colliders or directly assigned child transforms should not become the boss target transform.
 
 ## Extension Entry Points
 
 - Add new boss encounter setup through encounter/dialogue/director hooks, not reward or portal systems.
 - Add new boss battle behavior through boss-specific controller/state/ability buckets.
-- Add new boss battle-end behavior through route-linked special reward presets, the common prefab catalog, scene/prefab anchors, reward/progress/portal components, and the resolved `BossDrop` split backlog.
-- Use `Tools/Validation/Boss Battle-End Migration Validator` when relying on boss battle-end data for a boss scene/prefab. Its Auto Fix buttons are a first wiring pass, not final authoring.
+- Add new boss battle-end behavior through route-linked special reward presets, a scene-authored `BossBattleEndHandler`, authored chest/portal references, and the resolved `BossDrop` split backlog.
+- Use `Tools/Validation/Boss Battle-End Migration Validator` when relying on boss battle-end data for a boss scene. Prefab scans are stale-component checks only; scene Auto Fix buttons are a first wiring pass, not final authoring.
 - Add new mob behavior through mob FSM, ability logic, and pattern runner patterns.
 - Add mob population behavior through MonsterSpawn context/profile/director rather than individual enemies.
 - Add lock overlay behavior with explicit design rules for which combatants count toward unlocking.
@@ -166,10 +170,12 @@ Until these are answered, do not create a lock-tracking refactor plan that assum
 - Boss-specific states, actors, and ability logic are mixed by boss; do not move them without prefab/scene reference checks.
 - Pattern presentation ownership should follow `Docs/Contracts/PresentationAuthoringContract.md`.
 - The former `BossDrop` legacy reward flow is resolved in `Docs/RefactorBacklog/BossDropResponsibilitySplit.md`; unhandled reward/portal authoring now reports editor/development warnings through `BossRewardFallbackService` instead of running a dynamic fallback.
-- The boss battle-end migration validator can find missing common catalog data, optional RouteSet special reward presets, reward/portal components, stale definition/profile fields, and anchors. Its Auto Fix buttons can create placeholder wiring, but final correctness still needs Inspector review and Unity play verification for reward-once and portal-once behavior.
+- The boss battle-end migration validator can find missing scene `BossBattleEndHandler` coverage, missing authored chest/portal references, optional RouteSet special reward presets, stale deleted component/catalog GUIDs, stale definition/profile fields, and boss exit portal semantic mistakes. Scene Auto Fix can create first-pass handler/boss wiring, but final chest and portal objects must be placed and assigned in the Inspector.
 - `RoomDoorMonsterKillLock` and `ChestMonsterKillLock` currently track registered root GameObjects. Split, summon, transform, or delayed-destroy behavior can make this rule ambiguous.
+- KillLock chest navigation arrows follow the same registered root GameObject lifetime rule, so delayed destruction can keep arrows visible until the tracked root becomes null.
 - `FirePuddleArea` has boss-specific target exclusion logic. If more hazard actors learn boss policy, move the rule toward a combat target policy instead of spreading concrete boss checks.
 - Do not add new concrete boss type branches to common Boss HUD for split or multi-body bosses. Add a boss-specific HUD source/adapter instead.
+- Player-attached relic/effect objects should avoid unintended `Player` tags, hurtboxes, or blocking body colliders. The shared `Enemy` target resolver maps player-owned child colliders and assigned child transforms back to the player root, but collision/hurtbox authoring still needs separate review.
 
 ## Promotion Candidate
 

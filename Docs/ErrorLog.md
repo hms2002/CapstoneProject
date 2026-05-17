@@ -2,7 +2,7 @@
 status: active
 authority: project-log
 category: error-log
-last_reviewed: 2026-05-05
+last_reviewed: 2026-05-17
 ---
 
 # Error Log
@@ -80,3 +80,104 @@ Request dialogue exit first, then wait until dialogue playback and external UI i
 
 Prevention:
 NPC features that open stack UI after dialogue should not open the UI while dialogue is still the active game-flow blocker. End or hand off the dialogue flow first, then open the feature UI.
+
+## 2026-05-16 - Shared Portal Prefab Carried Start-Run Semantics
+
+Context:
+After boss battle-end portals began using the common `BossBattleEndPrefabCatalogSO.portalPrefab`, runtime-spawned boss exit portals could not move to the next corridor.
+
+Cause:
+The shared `ScenePortal.prefab` carried `TransitionType.HubToRunStart` and a `RunRouteCatalogSO`. Boss exit portal instances inherited that start-run semantic instead of letting `PortalRouteManager` resolve `BossToCorridor` or `ReturnToHubAfterRun` from the active route.
+
+Fix:
+Keep shared portal prefabs semantic-neutral (`TransitionType.None`, no catalog), and put `HubToRunStart` plus `RunRouteCatalogSO` only on hub start portal scene instances. Boss battle-end now uses authored portal instances rather than catalog portal prefab creation.
+
+Prevention:
+Do not put route-start, boss-exit, or scene-specific transition semantics on a shared portal prefab that is used by multiple travel contexts. Author the semantic at the scene instance or through the active route resolver.
+
+## 2026-05-17 - Boss BattleEnd Position Was Solved In Code Instead Of Authoring
+
+Context:
+Boss reward chest and exit portal placement needed fixed final positions after boss death.
+
+Cause:
+The implementation tried to solve fixed placement through runtime chest/portal spawning and anchor world-position capture. That kept placement policy in code and still depended on where helper anchors lived.
+
+Fix:
+Make chest and portal authored inactive scene objects. `BossBattleEndHandler` initializes/activates the authored chest and activates the authored portal. The object transforms are the placement source of truth.
+
+Prevention:
+For boss battle-end chest/portal placement, do not add spawn offsets, boss-position fallback, anchor capture, runtime prefab creation, or boss-prefab-owned placement components. Author the final objects in Unity and wire a scene `BossBattleEndHandler`.
+
+## 2026-05-17 - Boss Physical Drops Were Removed With Placement Cleanup
+
+Context:
+While simplifying boss BattleEnd so chest and portal use authored inactive scene objects, the runtime magic stone and field-heal pickup spawning path was also removed.
+
+Cause:
+The cleanup treated every BattleEnd-created object as the same placement problem. Chest and portal are fixed authored objects, but magic stones and field heals are variable-count physical drops driven by `StageLootTable` and runtime modifiers.
+
+Fix:
+Keep chest and portal activation-only, but spawn boss magic stones and field heals as runtime physical pickups from the boss death position.
+
+Prevention:
+When removing runtime placement helpers, separate fixed authored result objects from variable-count physical rewards. Do not move magic stones or field heals into chest loot, and do not use authored chest/portal placement as the pickup origin unless the reward policy explicitly changes.
+
+Follow-up:
+Final-route chest suppression must follow the same split. Skipping the authored final-boss chest must not skip boss physical drops; only the chest activation/contents path is suppressed.
+
+## 2026-05-17 - Player-Attached Objects Were Treated As Player Targets
+
+Context:
+Boss movement could react to a player-owned orbiting feather object even when the actual player was stationary.
+
+Cause:
+Shared enemy target acquisition and direct target assignment accepted child transforms as movement targets. Player-attached relic/effect colliders could therefore influence the target center used by boss movement.
+
+Fix:
+For `Player` targets, shared `Enemy` target acquisition and target assignment now resolve through `PlayerRuntimeRegistry`/`PlayerInteractor2D` and map player-owned child colliders/transforms back to the player root.
+
+Prevention:
+Player-attached objects should not carry unintended `Player` tags, hurtboxes, or body-blocking colliders. Movement targeting, damage targeting, and physics collision authoring must be reviewed separately for new player-attached relic/effect objects.
+
+## 2026-05-17 - Shop Layout Duplicated Live Slot Objects
+
+Context:
+Shop maintenance was difficult because multiple scene `ShopSlot` objects were copied into layouts directly.
+
+Cause:
+The scene layout owned both slot positions and live slot behavior instances. A presentation change to `ShopSlot` could require duplicated scene updates.
+
+Fix:
+`MerchantNPC` can now use authored slot anchors plus a `ShopSlot` prefab reference, instantiate/reuse slots at runtime, and apply per-anchor stock filters.
+
+Prevention:
+For new shop layouts, author anchor transforms and slot filters instead of duplicating live `ShopSlot` objects. Keep the slot prefab as the central presentation/interaction source.
+
+## 2026-05-17 - Locked Upgrade Nodes Could Not Explain Failure
+
+Context:
+Locked upgrade nodes had no click feedback for why the upgrade could not be purchased.
+
+Cause:
+`UpgradeSlotUI` disabled the button for locked nodes, so the click never reached `UpgradeManager.TryBuyUpgrade(...)` and the purchase failure reason could not be mapped to a warning popup.
+
+Fix:
+Locked upgrade buttons remain interactable while keeping the locked visual state. `UpgradeManager` maps purchase failure reasons to shared warning popup codes.
+
+Prevention:
+If a disabled-looking UI element needs to explain failure, keep a click path to the shared warning/tooltip system or add a separate explicit explanation trigger. Do not rely on `Button.interactable = false` when the user needs feedback.
+
+## 2026-05-17 - Legacy Upgrade Panels Kept Horizontal Scrollbar State
+
+Context:
+The current upgrade panel prefab moved to overflow arrow navigation, but older scene instances still carried a serialized `ScrollRect.horizontalScrollbar` reference and a `Scrollbar Horizontal` object.
+
+Cause:
+The prefab was updated, but scene-level prefab overrides and old missing-prefab instances can preserve obsolete serialized UI references outside the representative prefab.
+
+Fix:
+`UpgradeTreeUI.ConfigureScrollRect()` now disables any legacy horizontal scrollbar before clearing the reference. `Tools/Validation/Scene Setup Validator` now checks inactive upgrade panels, reports missing overflow arrows, reports stale horizontal scrollbar references, and Auto Fix can detach/disable the stale scrollbar.
+
+Prevention:
+When replacing UI navigation authoring, validate both the representative prefab and scene instances. Do not treat a prefab-only serialized check as proof that old scene overrides were migrated.

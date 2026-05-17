@@ -1,0 +1,576 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>문서 인벤토리 미리보기</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --page: #f5f7f8;
+      --surface: #ffffff;
+      --surface-muted: #eef2f3;
+      --ink: #172026;
+      --muted: #63717a;
+      --line: #d8e0e4;
+      --accent: #187f77;
+      --accent-soft: #dff2ef;
+      --amber: #a96713;
+      --amber-soft: #fff2dc;
+      --blue: #2d66a7;
+      --blue-soft: #e5eef8;
+      --rose: #a7475f;
+      --rose-soft: #fae8ed;
+      --shadow: 0 18px 45px rgba(20, 32, 38, 0.08);
+      font-family: "Segoe UI", Roboto, Arial, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--page);
+      color: var(--ink);
+      line-height: 1.5;
+    }
+
+    a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    code {
+      padding: 0.12rem 0.32rem;
+      border: 1px solid var(--line);
+      border-radius: 5px;
+      background: var(--surface-muted);
+      color: #26343b;
+      font-size: 0.92em;
+    }
+
+    .shell {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 32px 24px 56px;
+    }
+
+    .masthead {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 320px;
+      gap: 24px;
+      align-items: stretch;
+      margin-bottom: 24px;
+    }
+
+    .title-panel,
+    .meta-panel,
+    .section,
+    .metric {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+    }
+
+    .title-panel {
+      padding: 30px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow::before {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--accent);
+      content: "";
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin-top: 0;
+    }
+
+    h1 {
+      margin-bottom: 12px;
+      font-size: 2.25rem;
+      line-height: 1.1;
+      letter-spacing: 0;
+    }
+
+    .lede {
+      max-width: 760px;
+      margin-bottom: 0;
+      color: var(--muted);
+      font-size: 1rem;
+    }
+
+    .meta-panel {
+      display: grid;
+      gap: 12px;
+      padding: 22px;
+    }
+
+    .meta-row {
+      display: grid;
+      gap: 4px;
+    }
+
+    .meta-label {
+      color: var(--muted);
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+    }
+
+    .meta-value {
+      overflow-wrap: anywhere;
+      font-weight: 650;
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+
+    .metric {
+      padding: 18px;
+    }
+
+    .metric strong {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 1.7rem;
+      line-height: 1;
+    }
+
+    .metric span {
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    .section {
+      margin-bottom: 18px;
+      overflow: hidden;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 18px 22px;
+      border-bottom: 1px solid var(--line);
+      background: linear-gradient(180deg, #ffffff 0%, #f8fafb 100%);
+    }
+
+    .section-header h2 {
+      margin-bottom: 0;
+      font-size: 1.05rem;
+      letter-spacing: 0;
+    }
+
+    .badge {
+      align-self: flex-start;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: #0d5e58;
+      font-size: 0.78rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .badge.amber {
+      background: var(--amber-soft);
+      color: var(--amber);
+    }
+
+    .badge.blue {
+      background: var(--blue-soft);
+      color: var(--blue);
+    }
+
+    .badge.rose {
+      background: var(--rose-soft);
+      color: var(--rose);
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 640px;
+    }
+
+    th,
+    td {
+      padding: 12px 22px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      color: var(--muted);
+      font-size: 0.76rem;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      background: #fbfcfd;
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    td:first-child {
+      width: 38%;
+      font-weight: 650;
+    }
+
+    .token-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      padding: 20px 22px 22px;
+    }
+
+    .token-card {
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fbfcfd;
+    }
+
+    .token-card strong {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 1.2rem;
+    }
+
+    .token-card p {
+      margin-bottom: 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .note {
+      padding: 0 22px 22px;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    @media (max-width: 900px) {
+      .masthead,
+      .metrics,
+      .token-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .shell {
+        padding: 20px 14px 40px;
+      }
+
+      h1 {
+        font-size: 1.8rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header class="masthead">
+      <section class="title-panel">
+        <div class="eyebrow">Markdown 변환 미리보기</div>
+        <h1>문서 인벤토리</h1>
+        <p class="lede">이 단일 HTML 파일은 프로젝트 Markdown 문서 하나를 사람이 보기 쉬운 참고 페이지로 변환한 샘플입니다. 원본 문서의 역할은 유지하면서 문서 그룹, 개수, 토큰 비용을 빠르게 훑어볼 수 있게 정리합니다.</p>
+      </section>
+
+      <aside class="meta-panel" aria-label="원본 메타데이터">
+        <div class="meta-row">
+          <span class="meta-label">원본</span>
+          <span class="meta-value"><a href="../Overview/document-inventory.md">Docs/Overview/document-inventory.md</a></span>
+        </div>
+        <div class="meta-row">
+          <span class="meta-label">상태</span>
+          <span class="meta-value">active</span>
+        </div>
+        <div class="meta-row">
+          <span class="meta-label">권위</span>
+          <span class="meta-value">reference</span>
+        </div>
+        <div class="meta-row">
+          <span class="meta-label">마지막 검토</span>
+          <span class="meta-value">2026-05-16</span>
+        </div>
+      </aside>
+    </header>
+
+    <section class="metrics" aria-label="인벤토리 요약">
+      <div class="metric"><strong>74</strong><span>목록화된 문서와 산출물</span></div>
+      <div class="metric"><strong>10</strong><span>인벤토리 그룹</span></div>
+      <div class="metric"><strong>135</strong><span>원본 Markdown 라인</span></div>
+      <div class="metric"><strong>~1.8k</strong><span>원본 추정 토큰</span></div>
+    </section>
+
+    <section class="section" id="token-usage">
+      <div class="section-header">
+        <h2>토큰 사용량 스냅샷</h2>
+        <span class="badge amber">추정값</span>
+      </div>
+      <div class="token-grid">
+        <div class="token-card">
+          <strong>Markdown 원본</strong>
+          <p>7,299자, 공백 기준 858단어이며, 1토큰을 약 4자로 보는 단순 기준으로 약 1,825토큰입니다.</p>
+        </div>
+        <div class="token-card">
+          <strong>HTML 보기</strong>
+          <p>HTML 구조와 내장 CSS를 더한 뒤 25,797자, 공백 기준 1,411단어이며 약 6,450토큰입니다.</p>
+        </div>
+        <div class="token-card">
+          <strong>실무 결론</strong>
+          <p>HTML 미리보기는 LLM 원시 컨텍스트로는 약 3.5배 무겁습니다. 에이전트 입력은 Markdown을 쓰고, HTML은 시각 검토나 공유에 사용합니다.</p>
+        </div>
+      </div>
+      <p class="note">이 워크스페이스에는 tokenizer 패키지가 없어 정확한 모델별 토큰화는 수행하지 않았습니다. 이 수치는 과금용이 아니라 상대 비교용 추정치입니다.</p>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <h2>Overview</h2>
+        <span class="badge">7 docs</span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Document</th><th>Role</th></tr></thead>
+          <tbody>
+            <tr><td><a href="../README.md"><code>README.md</code></a></td><td>Primary documentation router</td></tr>
+            <tr><td><a href="../CurrentTask.md"><code>CurrentTask.md</code></a></td><td>Active task scope and done criteria</td></tr>
+            <tr><td><a href="../DecisionLog.md"><code>DecisionLog.md</code></a></td><td>Durable project decisions</td></tr>
+            <tr><td><a href="../ErrorLog.md"><code>ErrorLog.md</code></a></td><td>Recurring mistakes and prevention rules</td></tr>
+            <tr><td><a href="../Overview/document-inventory.md"><code>Overview/document-inventory.md</code></a></td><td>Documentation inventory and role map</td></tr>
+            <tr><td><a href="../Overview/game-overview.md"><code>Overview/game-overview.md</code></a></td><td>Project identity and high-level game structure</td></tr>
+            <tr><td><a href="../Overview/current-project-context.md"><code>Overview/current-project-context.md</code></a></td><td>Current project scope and recent context</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <h2>Architecture</h2>
+        <span class="badge blue">9 docs</span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Document</th><th>Role</th></tr></thead>
+          <tbody>
+            <tr><td><a href="../Architecture/BossEncounterArchitecture.md"><code>Architecture/BossEncounterArchitecture.md</code></a></td><td>Boss FSM and encounter flow</td></tr>
+            <tr><td><a href="../Architecture/CombatArchitecture.md"><code>Architecture/CombatArchitecture.md</code></a></td><td>Combat damage and hit flow</td></tr>
+            <tr><td><a href="../Architecture/DialogueArchitecture.md"><code>Architecture/DialogueArchitecture.md</code></a></td><td>Dialogue, NPC, and affinity systems</td></tr>
+            <tr><td><a href="../Architecture/GameplayAbilityWeaponArchitecture.md"><code>Architecture/GameplayAbilityWeaponArchitecture.md</code></a></td><td>Weapon and GAS boundary</td></tr>
+            <tr><td><a href="../Architecture/GameplayStatusArchitecture.md"><code>Architecture/GameplayStatusArchitecture.md</code></a></td><td>Player status runtime and HUD projection</td></tr>
+            <tr><td><a href="../Architecture/GameplayBuffDebuffArchitecture.md"><code>Architecture/GameplayBuffDebuffArchitecture.md</code></a></td><td>Buff/debuff structure</td></tr>
+            <tr><td><a href="../Architecture/GameplayDebuffApplicationArchitecture.md"><code>Architecture/GameplayDebuffApplicationArchitecture.md</code></a></td><td>Debuff application path</td></tr>
+            <tr><td><a href="../Architecture/RuntimeSaveArchitecture.md"><code>Architecture/RuntimeSaveArchitecture.md</code></a></td><td>Runtime state save/restore</td></tr>
+            <tr><td><a href="../Architecture/LoadingScopes.md"><code>Architecture/LoadingScopes.md</code></a></td><td>Loading scope policy</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <h2>Contracts</h2>
+        <span class="badge rose">4 docs</span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Document</th><th>Role</th></tr></thead>
+          <tbody>
+            <tr><td><a href="../Contracts/WeaponCleanupContract.md"><code>Contracts/WeaponCleanupContract.md</code></a></td><td>Weapon cleanup rules</td></tr>
+            <tr><td><a href="../Contracts/MobCleanupContract.md"><code>Contracts/MobCleanupContract.md</code></a></td><td>General mob cleanup rules</td></tr>
+            <tr><td><a href="../Contracts/PresentationAuthoringContract.md"><code>Contracts/PresentationAuthoringContract.md</code></a></td><td>Presentation authoring rules</td></tr>
+            <tr><td><a href="../Contracts/display-presentation-rules.md"><code>Contracts/display-presentation-rules.md</code></a></td><td>Display and presentation rules</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <h2>Guides</h2>
+        <span class="badge">11 docs</span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Document</th><th>Role</th></tr></thead>
+          <tbody>
+            <tr><td><a href="../Guides/GeneralMobFSMAuthoringGuide.md"><code>Guides/GeneralMobFSMAuthoringGuide.md</code></a></td><td>General mob FSM authoring checklist</td></tr>
+            <tr><td><a href="../Guides/DualWeaponPatternGuide.md"><code>Guides/DualWeaponPatternGuide.md</code></a></td><td>Dual weapon authoring pattern</td></tr>
+            <tr><td><a href="../Guides/CodebaseReviewGuidelines.md"><code>Guides/CodebaseReviewGuidelines.md</code></a></td><td>Review and refactor guidance</td></tr>
+            <tr><td><a href="../Guides/playtest-smoke-checklist.md"><code>Guides/playtest-smoke-checklist.md</code></a></td><td>Playtest smoke checklist</td></tr>
+            <tr><td><a href="../Guides/ContentAuthoring/README.md"><code>Guides/ContentAuthoring/README.md</code></a></td><td>Repeatable combat-content authoring pipeline hub</td></tr>
+            <tr><td><a href="../Guides/ContentAuthoring/WeaponAuthoringPipeline.md"><code>Guides/ContentAuthoring/WeaponAuthoringPipeline.md</code></a></td><td>Weapon and GAS authoring pipeline</td></tr>
+            <tr><td><a href="../Guides/ContentAuthoring/MobAuthoringPipeline.md"><code>Guides/ContentAuthoring/MobAuthoringPipeline.md</code></a></td><td>General mob population, FSM, battle, and death-result authoring pipeline</td></tr>
+            <tr><td><a href="../Guides/ContentAuthoring/BossAuthoringPipeline.md"><code>Guides/ContentAuthoring/BossAuthoringPipeline.md</code></a></td><td>Boss encounter, battle, and battle-end authoring pipeline</td></tr>
+            <tr><td><a href="../Guides/ContentAuthoring/RelicAuthoringPipeline.md"><code>Guides/ContentAuthoring/RelicAuthoringPipeline.md</code></a></td><td>Relic definition, logic, proc, inventory, and loot authoring pipeline</td></tr>
+            <tr><td><a href="../Guides/ContentAuthoring/ConsumableAuthoringPipeline.md"><code>Guides/ContentAuthoring/ConsumableAuthoringPipeline.md</code></a></td><td>Consumable definition, use-effect, inventory, and loot authoring pipeline</td></tr>
+            <tr><td><a href="../Guides/ContentAuthoring/LootRewardIntegrationPipeline.md"><code>Guides/ContentAuthoring/LootRewardIntegrationPipeline.md</code></a></td><td>Loot, reward, database, chest, boss reward, and world pickup integration pipeline</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <h2>Structure Memory</h2>
+        <span class="badge blue">11 docs</span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Document</th><th>Role</th></tr></thead>
+          <tbody>
+            <tr><td><a href="../StructureMemory/README.md"><code>StructureMemory/README.md</code></a></td><td>Structure memory operating rules and index</td></tr>
+            <tr><td><a href="../StructureMemory/ScriptSystemMap.md"><code>StructureMemory/ScriptSystemMap.md</code></a></td><td>Top-level project script responsibility map</td></tr>
+            <tr><td><a href="../StructureMemory/ScriptSystems/README.md"><code>StructureMemory/ScriptSystems/README.md</code></a></td><td>Focused script system map index</td></tr>
+            <tr><td><a href="../StructureMemory/ScriptSystems/WeaponAndGASStructure.md"><code>StructureMemory/ScriptSystems/WeaponAndGASStructure.md</code></a></td><td>Weapon, GAS, combat, and player-adjacent runtime script map</td></tr>
+            <tr><td><a href="../StructureMemory/ScriptSystems/BossAndMobEncounterStructure.md"><code>StructureMemory/ScriptSystems/BossAndMobEncounterStructure.md</code></a></td><td>Boss, mob, spawn, hazard, and enemy cleanup script map</td></tr>
+            <tr><td><a href="../StructureMemory/ScriptSystems/InventoryAndChestUIStructure.md"><code>StructureMemory/ScriptSystems/InventoryAndChestUIStructure.md</code></a></td><td>Inventory, chest UI, HUD, world drop, and interaction script map</td></tr>
+            <tr><td><a href="../StructureMemory/ScriptSystems/DialogueNpcAffectionStructure.md"><code>StructureMemory/ScriptSystems/DialogueNpcAffectionStructure.md</code></a></td><td>Dialogue, NPC feature, affection, merchant, and upgrade script map</td></tr>
+            <tr><td><a href="../StructureMemory/ScriptSystems/SceneRuntimeSaveStructure.md"><code>StructureMemory/ScriptSystems/SceneRuntimeSaveStructure.md</code></a></td><td>Scene transition, runtime restore, save data, run timer, and map shortcut script map</td></tr>
+            <tr><td><a href="../StructureMemory/ScriptSystems/LootRewardStructure.md"><code>StructureMemory/ScriptSystems/LootRewardStructure.md</code></a></td><td>Loot, reward, boss reward, pickup, and currency script map</td></tr>
+            <tr><td><a href="../StructureMemory/ScriptSystems/LoadingPresentationStructure.md"><code>StructureMemory/ScriptSystems/LoadingPresentationStructure.md</code></a></td><td>Loading, presentation, global UI, camera, audio, input, and settings script map</td></tr>
+            <tr><td><a href="../StructureMemory/UIFlowInputBlocking.md"><code>StructureMemory/UIFlowInputBlocking.md</code></a></td><td>Game-flow UI input blocking structure map</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <h2>Refactor Backlog</h2>
+        <span class="badge amber">11 docs</span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Document</th><th>Role</th></tr></thead>
+          <tbody>
+            <tr><td><a href="../RefactorBacklog/README.md"><code>RefactorBacklog/README.md</code></a></td><td>Refactor backlog operating rules and index</td></tr>
+            <tr><td><a href="../RefactorBacklog/BossDropResponsibilitySplit.md"><code>RefactorBacklog/BossDropResponsibilitySplit.md</code></a></td><td>BossDrop responsibility split refactor candidate</td></tr>
+            <tr><td><a href="../RefactorBacklog/InventoryTransferResponsibilitySplit.md"><code>RefactorBacklog/InventoryTransferResponsibilitySplit.md</code></a></td><td>Inventory transfer policy responsibility split candidate</td></tr>
+            <tr><td><a href="../RefactorBacklog/LootRewardPolicyBoundarySplit.md"><code>RefactorBacklog/LootRewardPolicyBoundarySplit.md</code></a></td><td>Loot roll, reward policy, and delivery boundary split candidate</td></tr>
+            <tr><td><a href="../RefactorBacklog/SceneRunStateBoundarySplit.md"><code>RefactorBacklog/SceneRunStateBoundarySplit.md</code></a></td><td>Scene travel, run session state, runtime restore, and boss battle-end boundary split candidate</td></tr>
+            <tr><td><a href="../RefactorBacklog/SceneRunStateLifecycleOwnershipSplit.md"><code>RefactorBacklog/SceneRunStateLifecycleOwnershipSplit.md</code></a></td><td>Scene/run/save lifecycle and naming ownership follow-up</td></tr>
+            <tr><td><a href="../RefactorBacklog/UpgradeRuntimeBoundarySplit.md"><code>RefactorBacklog/UpgradeRuntimeBoundarySplit.md</code></a></td><td>Upgrade runtime, effect, save, and UI flow boundary split candidate</td></tr>
+            <tr><td><a href="../RefactorBacklog/RunModifierAggregationBoundarySplit.md"><code>RefactorBacklog/RunModifierAggregationBoundarySplit.md</code></a></td><td>Run modifier aggregation ownership split candidate</td></tr>
+            <tr><td><a href="../RefactorBacklog/RuntimePresentationFallbackAuthoringSplit.md"><code>RefactorBacklog/RuntimePresentationFallbackAuthoringSplit.md</code></a></td><td>Runtime-created UI and presentation fallback authoring split candidate</td></tr>
+            <tr><td><a href="../RefactorBacklog/CombatElementBuildUpSourceUnification.md"><code>RefactorBacklog/CombatElementBuildUpSourceUnification.md</code></a></td><td>Combat elemental build-up source-of-truth refactor candidate</td></tr>
+            <tr><td><a href="../RefactorBacklog/BossHudSpecialCaseSourceSplit.md"><code>RefactorBacklog/BossHudSpecialCaseSourceSplit.md</code></a></td><td>Boss HUD special-case source/adapter split candidate</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <h2>Reviews</h2>
+        <span class="badge rose">7 docs</span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Document</th><th>Role</th></tr></thead>
+          <tbody>
+            <tr><td><a href="../Reviews/AIFSMAbilityIntegrationReview.md"><code>Reviews/AIFSMAbilityIntegrationReview.md</code></a></td><td>AI/FSM integration review</td></tr>
+            <tr><td><a href="../Reviews/MobAIArchitectureDirectionReview.md"><code>Reviews/MobAIArchitectureDirectionReview.md</code></a></td><td>Mob AI direction review</td></tr>
+            <tr><td><a href="../Reviews/PatternDataOwnershipReview.md"><code>Reviews/PatternDataOwnershipReview.md</code></a></td><td>Pattern data ownership review</td></tr>
+            <tr><td><a href="../Reviews/PersonalizedBTAbilityStructureProposal.md"><code>Reviews/PersonalizedBTAbilityStructureProposal.md</code></a></td><td>Personalized BT proposal</td></tr>
+            <tr><td><a href="../Reviews/PlayerStatusDirectionReview.md"><code>Reviews/PlayerStatusDirectionReview.md</code></a></td><td>Player status direction review</td></tr>
+            <tr><td><a href="../Reviews/WeaponGASAssessment.md"><code>Reviews/WeaponGASAssessment.md</code></a></td><td>Weapon GAS assessment</td></tr>
+            <tr><td><a href="../Reviews/WeaponRuntimeStateSaveReview.md"><code>Reviews/WeaponRuntimeStateSaveReview.md</code></a></td><td>Weapon runtime state save review</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <h2>Notes And Handoffs</h2>
+        <span class="badge">4 docs</span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Document</th><th>Role</th></tr></thead>
+          <tbody>
+            <tr><td><a href="../Notes/global-services-plan.md"><code>Notes/global-services-plan.md</code></a></td><td>Global services planning note</td></tr>
+            <tr><td><a href="../Notes/prototype-notes.md"><code>Notes/prototype-notes.md</code></a></td><td>Prototype note</td></tr>
+            <tr><td><a href="../Notes/system-notes.md"><code>Notes/system-notes.md</code></a></td><td>System note</td></tr>
+            <tr><td><a href="../Handoffs/next-thread-handoff-loading-presentation.md"><code>Handoffs/next-thread-handoff-loading-presentation.md</code></a></td><td>Loading/presentation handoff</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <h2>Session Logs</h2>
+        <span class="badge blue">9 docs</span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Document</th><th>Role</th></tr></thead>
+          <tbody>
+            <tr><td><a href="../SessionLogs/2026-05-05.md"><code>SessionLogs/2026-05-05.md</code></a></td><td>Dated task outcome log</td></tr>
+            <tr><td><a href="../SessionLogs/2026-05-06.md"><code>SessionLogs/2026-05-06.md</code></a></td><td>Dated task outcome log</td></tr>
+            <tr><td><a href="../SessionLogs/2026-05-07.md"><code>SessionLogs/2026-05-07.md</code></a></td><td>Dated task outcome log</td></tr>
+            <tr><td><a href="../SessionLogs/2026-05-08.md"><code>SessionLogs/2026-05-08.md</code></a></td><td>Dated task outcome log</td></tr>
+            <tr><td><a href="../SessionLogs/2026-05-10.md"><code>SessionLogs/2026-05-10.md</code></a></td><td>Dated task outcome log</td></tr>
+            <tr><td><a href="../SessionLogs/2026-05-11.md"><code>SessionLogs/2026-05-11.md</code></a></td><td>Dated task outcome log</td></tr>
+            <tr><td><a href="../SessionLogs/2026-05-12.md"><code>SessionLogs/2026-05-12.md</code></a></td><td>Dated task outcome log</td></tr>
+            <tr><td><a href="../SessionLogs/2026-05-14.md"><code>SessionLogs/2026-05-14.md</code></a></td><td>Dated task outcome log</td></tr>
+            <tr><td><a href="../SessionLogs/2026-05-15.md"><code>SessionLogs/2026-05-15.md</code></a></td><td>Dated task outcome log</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-header">
+        <h2>Artifacts</h2>
+        <span class="badge amber">1 doc</span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Document</th><th>Role</th></tr></thead>
+          <tbody>
+            <tr><td><a href="../DemonKingPattern_NotionHTML/README.md"><code>DemonKingPattern_NotionHTML/README.md</code></a></td><td>Demon King pattern Notion HTML export artifact index</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

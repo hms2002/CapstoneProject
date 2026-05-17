@@ -1,5 +1,5 @@
 ---
-status: partially-refactored
+status: resolved
 authority: refactor-backlog
 category: refactor-candidate
 last_reviewed: 2026-05-16
@@ -20,7 +20,7 @@ last_reviewed: 2026-05-16
 
 The purchase transaction preconditions, currency spend, and rollback-on-spend-failure policy now live in `UpgradePurchaseService`. Purchase success side-effect ordering now lives in `UpgradePurchaseCompletionService`. Runtime effect reapply/run-start/hub-target handoff now lives in `UpgradeRuntimeEffectService`. Run-start effect eligibility/timing checks now live in `UpgradeRunStartEffectPolicy`. Upgrade UI open fade, owned UI push, `GameFlowInputBlocker`, interrupted-open cleanup, and toggle open/close selection now live in `UpgradeUiOpenFlow`. Scene/run/player lifecycle subscriptions and run-start guard state now live in `UpgradeRuntimeLifecycleService`. Unlock-check save request and data-change notification execution now live in `UpgradeProgressSaveService`. Singleton/persistent root adoption now lives in `UpgradeManagerLifetimeService`. These helper types now live in dedicated source files. Purchase completion callback wiring, event surface, and public orchestration still sit in `UpgradeManager`.
 
-The code works, but future upgrade features can easily add more policy, presentation, and run lifecycle behavior to the same class.
+The P2 boundary now treats `UpgradeManager` as a compatibility facade. New policy, presentation, run lifecycle, save, and notification behavior should continue to land in helper services instead of expanding the MonoBehaviour body.
 
 ## Why It Exists
 
@@ -65,7 +65,7 @@ Start this refactor when one of these becomes true:
 
 ## Status
 
-`partially-refactored`
+`resolved`
 
 First implementation slice complete:
 
@@ -139,9 +139,15 @@ Verification refresh:
 - The generated `Assembly-CSharp.csproj` now includes the extracted Upgrade helper files, including `UpgradeProgressSaveService.cs`, `UpgradeRuntimeLifecycleService.cs`, and `UpgradeManagerLifetimeService.cs`.
 - Visual Studio MSBuild errors-only verification passed for `Assembly-CSharp.csproj` on 2026-05-16. Existing project warnings remain, but no Upgrade helper missing-type errors remain in the generated project file.
 
-Remaining debt:
+Eleventh implementation slice complete:
 
-- `UpgradeManager` still owns purchase completion callback wiring, public `OnDataChanged`/`OnUIClosed` event surface, and public compatibility UI open/close entry points.
+- Added `UpgradeNotificationService` as the notification/save boundary for upgrade runtime changes.
+- Changed `UpgradeProgressSaveService` and `UpgradePurchaseCompletionService` so data changed, save request, and UI close notifications go through the notification helper instead of raw callbacks.
+- Kept `UpgradeManager.OnDataChanged`, `OnUIClosed`, `ToggleUI()`, `CloseUI()`, `TryBuyUpgrade(...)`, and `CheckAndUnlockNodes(...)` as public compatibility surfaces.
+- Chose the compatibility facade shape as the P2 target instead of renaming the scene-facing `UpgradeManager` MonoBehaviour.
+
+Residual follow-up:
+
 - `UpgradeEffectApplier` still owns actual purchased effect reapplication, run-start effect application, and immediate target-state application; `UpgradeRuntimeEffectService` only owns the handoff and player/save-data guard flow.
 - Upgrade UI flow helper must continue to preserve the dialogue handoff and `GameFlowInputBlocker` rules recorded in `Docs/ErrorLog.md` and `Docs/StructureMemory/UIFlowInputBlocking.md`.
-- Any further split should be scoped around callback wiring, public event/API ownership, or `UpgradeEffectApplier` effect-application ownership rather than purchase/run-start/lifecycle policy placement.
+- Any future split should be scoped around `UpgradeEffectApplier` effect-application ownership or a planned scene/prefab migration, not around the now-closed callback/event compatibility boundary.

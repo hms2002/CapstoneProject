@@ -74,7 +74,6 @@ public sealed class BossDeathPresentation : MonoBehaviour
     [SerializeField, Min(0f)] private float deathBgmFadeOutDuration = 0f;
 
     private BossControllerBase owner;
-    private BossExitPortalActivator portalActivator;
     private Coroutine runningSequence;
     private CinematicLetterboxOverlay overlay;
     private readonly List<Renderer> cachedDeathRenderers = new();
@@ -191,9 +190,6 @@ public sealed class BossDeathPresentation : MonoBehaviour
 
         if (speechController == null)
             speechController = GetComponent<BossSpeechController>();
-
-        if (portalActivator == null)
-            portalActivator = GetComponent<BossExitPortalActivator>();
 
         if (deathEffectAnchor == null)
             deathEffectAnchor = transform;
@@ -422,24 +418,7 @@ public sealed class BossDeathPresentation : MonoBehaviour
 
     private bool ShouldPreserveRenderer(Renderer renderer)
     {
-        GameObject portalRoot = ResolvePortalObjectForPreservation();
-        if (renderer == null || portalRoot == null)
-            return false;
-
-        Transform portalTransform = portalRoot.transform;
-        return renderer.transform == portalTransform || renderer.transform.IsChildOf(portalTransform);
-    }
-
-    private GameObject ResolvePortalObjectForPreservation()
-    {
-        if (portalActivator != null)
-        {
-            GameObject portalObject = portalActivator.ResolvePortalObject();
-            if (portalObject != null)
-                return portalObject;
-        }
-
-        return null;
+        return false;
     }
 
     private void NotifyRewardsReady()

@@ -42,6 +42,16 @@ public class UpgradeTreeUI : MonoBehaviour, IStackableUI, IMouseCursorDomainSour
     [SerializeField] private bool centerOnOpen = true;
     [SerializeField] private bool forceFullScreenLayout = true;
 
+    [Header("Overflow Navigation")]
+    [SerializeField] private Button leftOverflowArrow;
+    [SerializeField] private Button rightOverflowArrow;
+    [SerializeField] private Button upOverflowArrow;
+    [SerializeField] private Button downOverflowArrow;
+    [SerializeField, Min(1f)] private float overflowArrowBlockCells = 2f;
+    [SerializeField, Min(0f)] private float overflowArrowMotionAmplitude = 8f;
+    [SerializeField, Min(0f)] private float overflowArrowMotionFrequency = 2.5f;
+    [SerializeField, Min(0f)] private float overflowArrowVisibilityEpsilon = 1f;
+
     [Header("Lake Presentation")]
     [Tooltip("Optional explicit Image that receives the lake material. Leave empty to use the hidden internal lake surface layer.")]
     [SerializeField] private Image lakeSurfaceImage;
@@ -64,6 +74,14 @@ public class UpgradeTreeUI : MonoBehaviour, IStackableUI, IMouseCursorDomainSour
     private bool hasBuilt;
     private bool isRightMousePanning;
     private Vector2 lastPointerLocalPosition;
+    private Vector2 leftOverflowArrowBasePosition;
+    private Vector2 rightOverflowArrowBasePosition;
+    private Vector2 upOverflowArrowBasePosition;
+    private Vector2 downOverflowArrowBasePosition;
+    private bool hasLeftOverflowArrowBasePosition;
+    private bool hasRightOverflowArrowBasePosition;
+    private bool hasUpOverflowArrowBasePosition;
+    private bool hasDownOverflowArrowBasePosition;
 
     public bool IsActive => gameObject.activeSelf;
     public bool CanCloseOnEscape => true;
@@ -76,6 +94,9 @@ public class UpgradeTreeUI : MonoBehaviour, IStackableUI, IMouseCursorDomainSour
     {
         ResolveReferences();
         EnsureLakePresentation();
+        CaptureOverflowArrowBasePositions();
+        BindOverflowArrowButtons();
+        RefreshOverflowArrows();
     }
 
     public void OpenUI()
@@ -117,11 +138,14 @@ public class UpgradeTreeUI : MonoBehaviour, IStackableUI, IMouseCursorDomainSour
     private void Update()
     {
         HandleRightMousePan();
+        AnimateOverflowArrows();
+        RefreshOverflowArrows();
     }
 
     private void LateUpdate()
     {
         ClampContentPosition();
+        RefreshOverflowArrows();
     }
 
     private void OnRectTransformDimensionsChange()
@@ -132,6 +156,9 @@ public class UpgradeTreeUI : MonoBehaviour, IStackableUI, IMouseCursorDomainSour
     private void OnEnable()
     {
         MouseCursorService.EnsureInstance().SetDomain(this, MouseCursorDomain.NpcUi, priority: 100);
+        BindOverflowArrowButtons();
+        CaptureOverflowArrowBasePositions();
+        RefreshOverflowArrows();
 
         if (UpgradeManager.Instance != null)
             UpgradeManager.Instance.OnDataChanged += RefreshAll;
@@ -227,6 +254,7 @@ public class UpgradeTreeUI : MonoBehaviour, IStackableUI, IMouseCursorDomainSour
         }
 
         ClampContentPosition();
+        RefreshOverflowArrows();
     }
 
     private void DrawLine(RectTransform start, RectTransform end)
@@ -588,6 +616,18 @@ public class UpgradeTreeUI : MonoBehaviour, IStackableUI, IMouseCursorDomainSour
         scrollRect.vertical = true;
         scrollRect.movementType = ScrollRect.MovementType.Clamped;
         scrollRect.inertia = false;
+        DisableLegacyHorizontalScrollbar(scrollRect.horizontalScrollbar);
+        scrollRect.horizontalScrollbar = null;
+        scrollRect.horizontalScrollbarVisibility = ScrollRect.ScrollbarVisibility.AutoHide;
+    }
+
+    private static void DisableLegacyHorizontalScrollbar(Scrollbar scrollbar)
+    {
+        if (scrollbar == null)
+            return;
+
+        scrollbar.interactable = false;
+        scrollbar.gameObject.SetActive(false);
     }
 
     private void StretchLayer(RectTransform rect)
@@ -714,6 +754,183 @@ public class UpgradeTreeUI : MonoBehaviour, IStackableUI, IMouseCursorDomainSour
         contentRect.anchoredPosition = Vector2.zero;
         if (scrollRect != null)
             scrollRect.StopMovement();
+
+        RefreshOverflowArrows();
+    }
+
+    private void BindOverflowArrowButtons()
+    {
+        BindOverflowArrowButton(leftOverflowArrow, HandleLeftOverflowArrowClicked);
+        BindOverflowArrowButton(rightOverflowArrow, HandleRightOverflowArrowClicked);
+        BindOverflowArrowButton(upOverflowArrow, HandleUpOverflowArrowClicked);
+        BindOverflowArrowButton(downOverflowArrow, HandleDownOverflowArrowClicked);
+    }
+
+    private static void BindOverflowArrowButton(Button button, UnityEngine.Events.UnityAction action)
+    {
+        if (button == null || action == null)
+            return;
+
+        button.onClick.RemoveListener(action);
+        button.onClick.AddListener(action);
+    }
+
+    private void CaptureOverflowArrowBasePositions()
+    {
+        CaptureOverflowArrowBasePosition(leftOverflowArrow, ref leftOverflowArrowBasePosition, ref hasLeftOverflowArrowBasePosition);
+        CaptureOverflowArrowBasePosition(rightOverflowArrow, ref rightOverflowArrowBasePosition, ref hasRightOverflowArrowBasePosition);
+        CaptureOverflowArrowBasePosition(upOverflowArrow, ref upOverflowArrowBasePosition, ref hasUpOverflowArrowBasePosition);
+        CaptureOverflowArrowBasePosition(downOverflowArrow, ref downOverflowArrowBasePosition, ref hasDownOverflowArrowBasePosition);
+    }
+
+    private static void CaptureOverflowArrowBasePosition(Button button, ref Vector2 basePosition, ref bool hasBasePosition)
+    {
+        if (hasBasePosition || button == null)
+            return;
+
+        RectTransform rect = button.transform as RectTransform;
+        if (rect == null)
+            return;
+
+        basePosition = rect.anchoredPosition;
+        hasBasePosition = true;
+    }
+
+    private void RefreshOverflowArrows()
+    {
+        if (contentRect == null || viewportRect == null)
+        {
+            SetOverflowArrowVisible(leftOverflowArrow, false, leftOverflowArrowBasePosition, hasLeftOverflowArrowBasePosition);
+            SetOverflowArrowVisible(rightOverflowArrow, false, rightOverflowArrowBasePosition, hasRightOverflowArrowBasePosition);
+            SetOverflowArrowVisible(upOverflowArrow, false, upOverflowArrowBasePosition, hasUpOverflowArrowBasePosition);
+            SetOverflowArrowVisible(downOverflowArrow, false, downOverflowArrowBasePosition, hasDownOverflowArrowBasePosition);
+            return;
+        }
+
+        Vector2 limits = GetContentPositionLimits();
+        Vector2 position = contentRect.anchoredPosition;
+        float epsilon = Mathf.Max(0f, overflowArrowVisibilityEpsilon);
+
+        SetOverflowArrowVisible(
+            leftOverflowArrow,
+            limits.x > epsilon && position.x < limits.x - epsilon,
+            leftOverflowArrowBasePosition,
+            hasLeftOverflowArrowBasePosition);
+        SetOverflowArrowVisible(
+            rightOverflowArrow,
+            limits.x > epsilon && position.x > -limits.x + epsilon,
+            rightOverflowArrowBasePosition,
+            hasRightOverflowArrowBasePosition);
+        SetOverflowArrowVisible(
+            upOverflowArrow,
+            limits.y > epsilon && position.y > -limits.y + epsilon,
+            upOverflowArrowBasePosition,
+            hasUpOverflowArrowBasePosition);
+        SetOverflowArrowVisible(
+            downOverflowArrow,
+            limits.y > epsilon && position.y < limits.y - epsilon,
+            downOverflowArrowBasePosition,
+            hasDownOverflowArrowBasePosition);
+    }
+
+    private static void SetOverflowArrowVisible(Button button, bool visible, Vector2 basePosition, bool hasBasePosition)
+    {
+        if (button == null)
+            return;
+
+        if (!visible)
+            ResetOverflowArrowPosition(button, basePosition, hasBasePosition);
+
+        if (button.gameObject.activeSelf != visible)
+            button.gameObject.SetActive(visible);
+    }
+
+    private void AnimateOverflowArrows()
+    {
+        if (overflowArrowMotionAmplitude <= 0f || overflowArrowMotionFrequency <= 0f)
+            return;
+
+        float offset = Mathf.Sin(Time.unscaledTime * overflowArrowMotionFrequency * Mathf.PI * 2f) *
+                       overflowArrowMotionAmplitude;
+
+        ApplyOverflowArrowMotion(leftOverflowArrow, leftOverflowArrowBasePosition, hasLeftOverflowArrowBasePosition, Vector2.left, offset);
+        ApplyOverflowArrowMotion(rightOverflowArrow, rightOverflowArrowBasePosition, hasRightOverflowArrowBasePosition, Vector2.right, offset);
+        ApplyOverflowArrowMotion(upOverflowArrow, upOverflowArrowBasePosition, hasUpOverflowArrowBasePosition, Vector2.up, offset);
+        ApplyOverflowArrowMotion(downOverflowArrow, downOverflowArrowBasePosition, hasDownOverflowArrowBasePosition, Vector2.down, offset);
+    }
+
+    private static void ApplyOverflowArrowMotion(
+        Button button,
+        Vector2 basePosition,
+        bool hasBasePosition,
+        Vector2 direction,
+        float offset)
+    {
+        if (button == null || !button.gameObject.activeInHierarchy || !hasBasePosition)
+            return;
+
+        RectTransform rect = button.transform as RectTransform;
+        if (rect != null)
+            rect.anchoredPosition = basePosition + direction * offset;
+    }
+
+    private static void ResetOverflowArrowPosition(Button button, Vector2 basePosition, bool hasBasePosition)
+    {
+        if (button == null || !hasBasePosition)
+            return;
+
+        RectTransform rect = button.transform as RectTransform;
+        if (rect != null)
+            rect.anchoredPosition = basePosition;
+    }
+
+    private Vector2 GetContentPositionLimits()
+    {
+        if (contentRect == null || viewportRect == null)
+            return Vector2.zero;
+
+        Vector2 contentSize = contentRect.rect.size;
+        Vector2 viewportSize = viewportRect.rect.size;
+        return new Vector2(
+            Mathf.Max(0f, (contentSize.x - viewportSize.x) * 0.5f),
+            Mathf.Max(0f, (contentSize.y - viewportSize.y) * 0.5f));
+    }
+
+    private void HandleLeftOverflowArrowClicked()
+    {
+        MoveContentByOverflowBlock(new Vector2(1f, 0f));
+    }
+
+    private void HandleRightOverflowArrowClicked()
+    {
+        MoveContentByOverflowBlock(new Vector2(-1f, 0f));
+    }
+
+    private void HandleUpOverflowArrowClicked()
+    {
+        MoveContentByOverflowBlock(new Vector2(0f, -1f));
+    }
+
+    private void HandleDownOverflowArrowClicked()
+    {
+        MoveContentByOverflowBlock(new Vector2(0f, 1f));
+    }
+
+    private void MoveContentByOverflowBlock(Vector2 direction)
+    {
+        if (contentRect == null)
+            return;
+
+        Vector2 step = new Vector2(
+            Mathf.Max(1f, gridCellSize.x) * overflowArrowBlockCells,
+            Mathf.Max(1f, gridCellSize.y) * overflowArrowBlockCells);
+        contentRect.anchoredPosition += new Vector2(direction.x * step.x, direction.y * step.y);
+
+        if (scrollRect != null)
+            scrollRect.StopMovement();
+
+        ClampContentPosition();
+        RefreshOverflowArrows();
     }
 
     private void HandleRightMousePan()

@@ -2,7 +2,7 @@
 status: active
 authority: project-log
 category: decision-log
-last_reviewed: 2026-05-16
+last_reviewed: 2026-05-17
 ---
 
 # Decision Log
@@ -214,7 +214,7 @@ Implications:
 ## 2026-05-16 - RouteSets Reference Boss Special Reward Presets
 
 Decision:
-Let `CorridorBossRouteSetSO` reference only an optional `BossSpecialRewardPresetSO` for boss-specific special loot candidates. Common reward/portal prefabs live in `BossBattleEndPrefabCatalogSO`, all reward/portal positions live in scene/prefab-authored `BossBattleEndAnchors`, and reward amount changes remain runtime modifier overlays.
+Let `CorridorBossRouteSetSO` reference only an optional `BossSpecialRewardPresetSO` for boss-specific special loot candidates. Authored chest/portal objects live in boss scenes, and reward amount changes remain runtime modifier overlays.
 
 Reason:
 Route sets already compose the corridor/boss scene, BGM, and loading context for a run stage, so linking a boss-specific special loot preset there is acceptable. Putting common chest, magic stone, portal prefabs, portal offsets, placement policy, magic stone bonuses, field-heal bonuses, or chest-count deltas on route data mixes content composition with shared prefab catalogs and runtime reward effects.
@@ -222,10 +222,9 @@ Route sets already compose the corridor/boss scene, BGM, and loading context for
 Implications:
 - `CorridorBossRouteSetSO` may reference `BossSpecialRewardPresetSO`, but should not own common prefabs, portal objects, spawn positions, offsets, magic stone bonuses, field-heal bonuses, or chest-count deltas.
 - `BossSpecialRewardPresetSO` owns only boss-specific special loot candidates.
-- `BossBattleEndPrefabCatalogSO` owns common chest, magic stone, and portal prefab references, but no placement policy.
-- Upgrade, Affection, and future runtime effects should keep contributing `BossRewardModifierAggregate` overlays instead of mutating preset or catalog SO assets.
-- Scene/prefab-owned `BossBattleEndAnchors` should provide reward, scatter, and portal positions.
-- `BossBattleEndDefinitionSO` and `BossRewardProfileSO` are deleted; route special reward preset, common catalog, anchors, reward spawner, and portal activator are the supported authoring path.
+- Upgrade, Affection, and future runtime effects should keep contributing `BossRewardModifierAggregate` overlays instead of mutating preset SO assets.
+- Scene/prefab-owned `TreasureChest` and `ScenePortal` objects provide chest and portal positions through their own transforms.
+- `BossBattleEndDefinitionSO`, `BossRewardProfileSO`, `BossBattleEndPrefabCatalogSO`, and `BossBattleEndAnchors` are deleted; route special reward preset and scene `BossBattleEndHandler` are the supported authoring path.
 
 ## 2026-05-16 - Remove BossDrop Legacy Adapter
 
@@ -233,11 +232,11 @@ Decision:
 Delete the `BossDrop` legacy adapter instead of keeping it as a prefab-safe fallback.
 
 Reason:
-Boss battle-end ownership is now split across route-linked special reward presets, the common prefab catalog, scene/prefab anchors, reward spawners, portal activators, and run-progress coordination. Keeping `BossDrop` would preserve a second reward/portal authoring path and hide missing RouteSet or anchor wiring.
+Boss battle-end ownership is now split across route-linked special reward presets, scene `BossBattleEndHandler`, and run-progress coordination. Keeping `BossDrop` would preserve a second reward/portal authoring path and hide missing RouteSet or handler wiring.
 
 Implications:
 - Serialized scene/prefab references to the old `BossDrop` script GUID must be removed during the migration.
-- `BossRewardSpawner`, `BossExitPortalActivator`, `BossBattleEndAnchors`, and `BossRewardFallbackService` must not read `BossDrop` fields.
+- `BossRewardFallbackService` must not read `BossDrop` fields.
 - Unity Editor verification must run the boss battle-end validator and play-check boss death reward/portal behavior because deleted `BossDrop` field values are no longer available as fallback data.
 
 ## 2026-05-16 - Remove BossRewardModifierSO Authoring Layer
@@ -267,3 +266,125 @@ Implications:
 - RouteSet `BossSpecialRewardPresetSO` entries are only additional boss-specific special loot candidates.
 - `BossRewardModifierAggregate` remains the only runtime overlay path for boss magic stone bonuses, field heal bonuses, boss chest count deltas, and runtime bonus loot.
 - Boss reward base values should be reviewed in the StageLootTable Inspector, not on boss prefabs or RouteSet assets.
+
+## 2026-05-16 - Keep Scene-Facing Compatibility Facades For P2 Closure
+
+Decision:
+Keep `UpgradeManager`, `GamePlayDataManager`, and `ScenePortalTravelService.TryTravel(...)` as the public/scene-facing compatibility surfaces while moving more ownership into helpers.
+
+Reason:
+These names and entry points are already referenced by scenes, prefabs, runtime bootstrap, portal interaction, upgrade UI flows, and save/run lifecycle code. Renaming them would create serialized reference and static call-site risk without improving the current player-facing behavior.
+
+Implications:
+- `UpgradeManager` remains the public upgrade facade, but data-change/save/UI-close notification ownership goes through `UpgradeNotificationService`.
+- `GamePlayDataManager` remains the scene-facing run/session holder, but volatile timer, pending transition, pending player state, pending reward, affection, and shortcut mutations go through `RunSessionStateService`.
+- `ScenePortalTravelService.TryTravel(...)` remains the static portal entry point, but route resolution, transition lock, manager resolution, and execution handoff live behind `ScenePortalTravelCoordinator` and existing planner/executor helpers.
+- Future refactors should not reopen MonoBehaviour or static entry naming unless a scene/prefab migration pass is explicitly planned.
+
+## 2026-05-16 - Treat Representative GlobalUIRoot As Build-Facing Presentation Root
+
+Decision:
+Use `Assets/LeeJunMo/Prefab/UI/GlobalUIRoot.prefab` as the representative build-facing runtime presentation root for loading, cursor, status HUD, and Boss HUD authored-reference validation. Keep the display letterbox runtime-generated by `GamePresentationController`.
+
+Reason:
+Runtime presentation fallbacks are useful as emergency/debug paths, but build-facing UI structure needs a single prefab target that can be inspected, auto-fixed, validated, and reused by scene setup.
+
+Implications:
+- Other GlobalUIRoot variants are warning/follow-up targets unless they are promoted to build-facing roots.
+- `MouseCursorService` must prefer authored references before creating fallback presentation hierarchy.
+- `GamePresentationController` owns display letterbox runtime hierarchy because the overlay is resolution/window-mode policy rather than prefab layout.
+- `Tools/Validation/Scene Setup Validator` should report missing representative prefab references and offers an auto-fix path for cursor authoring.
+- Unity Editor validation/play checks remain required because code validation cannot prove canvas order, input behavior, or visual layout.
+
+## 2026-05-16 - Keep Shared ScenePortal Prefab Semantic-Neutral
+
+Decision:
+Keep the shared `ScenePortal.prefab` at `TransitionType.None` with no `RunRouteCatalogSO` reference. Hub start portals must carry `HubToRunStart` and the run route catalog on their scene instance, while boss exit portals rely on the active `PortalRouteManager` plan to resolve `BossToCorridor` or `ReturnToHubAfterRun`.
+
+Reason:
+The same portal prefab can be reused by hub, corridor, and authored boss exit portal instances. Letting the prefab carry `HubToRunStart` made boss exit portals behave like run-start portals and bypassed the intended active route semantics.
+
+Implications:
+- Boss battle-end no longer reads `BossBattleEndPrefabCatalogSO.portalPrefab`; authored boss exit portals should use semantic-neutral `ScenePortal` instances.
+- Hub start portals are the only supported owners of `RunRouteCatalogSO` references.
+- Boss exit portal placement is authored by the portal object's own transform.
+- Runtime boss portal creation is not supported; missing `portalObj` is an authoring error.
+
+## 2026-05-17 - Boss BattleEnd Chest And Portal Are Authored Activation Objects
+
+Decision:
+Boss battle-end `TreasureChest` and `ScenePortal` objects are authored in the scene and toggled inactive/active by a scene-authored `BossBattleEndHandler`. Runtime chest/portal prefab creation, anchor-driven portal movement, boss-position fallback, and boss-prefab-owned battle-end placement are not supported.
+
+Reason:
+The required behavior is simple: after boss death, a chest and a portal appear at predetermined positions and the portal routes through the active `RunRouteCatalogSO` plan. Authoring the objects directly makes their transforms the source of truth and avoids code-side spawn offsets, captured positions, or boss-child transform ambiguity. The handler belongs with the scene's battle-end placement setup, not with the reusable boss actor prefab.
+
+Implications:
+- `BossBattleEndHandler` references the `BossControllerBase`, authored `TreasureChest`, and authored exit portal.
+- `BossBattleEndHandler` initializes the authored chest with generated boss loot and activates it.
+- Boss magic stones and field heals remain physical runtime drops. Their counts come from `StageLootTable` plus `BossRewardModifierAggregate`, and their drop origin is the boss death position rather than the authored chest/portal position or a separate anchor.
+- `BossBattleEndHandler` activates the authored exit portal without moving it.
+- `BossRewardSpawner`, `BossExitPortalActivator`, `BossBattleEndAnchors`, and `BossBattleEndPrefabCatalogSO` are deleted; new authoring should not add replacement spawn/anchor components for this flow.
+- Boss exit portals should not carry `RunRouteCatalogSO`; hub start portals remain the route catalog owner.
+
+## 2026-05-17 - Keep Markdown As Source And Use Presentation HTML As Human Dashboard
+
+Decision:
+Keep Markdown documents as the project documentation source of truth, and use `Docs/Presentation/` HTML/CSS/JS only as human-readable navigation dashboards.
+
+Reason:
+Markdown is cheaper for Codex context, easier to diff, and better for source edits. HTML is better for human scanning but adds presentation markup and should not duplicate full source document content.
+
+Implications:
+- Codex should continue reading Markdown documents first.
+- Presentation HTML should stay thin and source-linked rather than copying full Markdown bodies.
+- Routine dashboard updates should usually touch `_shared/docs-data.js`; HTML shells, shared CSS, and render JS should change rarely.
+- If duplicated content drifts, update the Markdown source first and regenerate or adjust the presentation view from that source.
+- Presentation HTML may be updated only when requested or approved by the authorized HTML maintainer `nadoman354`.
+- When Markdown changes may make Presentation HTML stale, Codex should report the affected HTML page and required summary/diagram update instead of editing it automatically.
+- `refactor-board.html` may exist as an approved thin overview page, but it must remain a risk/trigger board that links back to `RefactorBacklog`.
+- `session-summary.html` is not kept as a Presentation entry by default because session logs remain Markdown-first history rather than a regular human decision surface.
+- `authoring-guide.html` may be more detailed than the other Presentation pages when it works as a production handbook, but it should still link back to Markdown source documents instead of copying full pipeline bodies.
+- `architecture-overview.html` should prefer focused UML-like ownership and runtime-flow diagrams over exhaustive component listings.
+- Mermaid diagrams may be rendered from CDN for human-readable pages; if CDN rendering is unavailable, the Mermaid source text should remain readable rather than blocking the document.
+
+## 2026-05-17 - Shop Slots Are Prefab-Instantiated From Typed Anchors
+
+Decision:
+Prefer authored slot anchor transforms plus a `ShopSlot` prefab reference for merchant shop layouts. Each anchor can specify the stock type filter (`Any`, `Weapon`, `Relic`, or `Consumable`) used by shop stock rolling.
+
+Reason:
+Scene-copied shop slot objects made layout maintenance repetitive and mixed visual placement with live slot behavior. Anchors keep scene authoring focused on position, while the prefab keeps slot presentation/interaction changes centralized.
+
+Implications:
+- `MerchantNPC` may instantiate or reuse `ShopSlot` instances under configured anchors during play.
+- Existing child `ShopSlot` objects remain a compatibility fallback when prefab-slot authoring is not configured.
+- `ShopDefinitionSO` still owns visible slot count, stock weights, and max weapon/consumable caps.
+- Typed slot layouts must keep `ShopDefinitionSO.MaxWeaponSlots` and `MaxConsumableSlots` aligned with the intended display.
+
+## 2026-05-17 - Enemy Player Targeting Uses Canonical Player Root
+
+Decision:
+For enemies targeting the `Player` tag, resolve the target transform through `PlayerRuntimeRegistry`/`PlayerInteractor2D` and map player-owned child colliders or directly assigned child transforms back to the player root.
+
+Reason:
+Player-attached relic/effect objects such as orbiting feathers can have colliders near the player. If boss encounter or combat movement targets those child objects, the boss appears to move even when the actual player is stationary.
+
+Implications:
+- Shared `Enemy` target acquisition should not use a player-owned child collider transform as the movement target.
+- Explicit boss/enemy target assignment should normalize player-owned child transforms before the blackboard or movement code reads target position.
+- Future player-attached objects should still avoid unintended `Player` tags, hurtboxes, or body-blocking colliders.
+- Collision and damage target authoring remain separate from movement targeting and should be reviewed independently when new attached objects are added.
+
+## 2026-05-17 - Final Boss Route Skips Chest Activation
+
+Decision:
+When `BossRewardContext.IsFinalRouteSet` is true, `BossBattleEndHandler` keeps the authored `TreasureChest` inactive, still spawns boss physical drops, marks rewards handled, and lets portal activation continue through the existing path.
+
+Reason:
+The final route ends the run sequence, so a post-boss reward chest is not needed. Physical drops are not chest presentation and should keep behaving like other boss death drops. Keeping portal handling unchanged preserves the existing final-route exit flow.
+
+Implications:
+- Final boss scenes can keep the common `BossBattleEndHandler` wiring without spawning/showing a chest.
+- Final boss physical drops such as magic stones and field-heal pickups still spawn from the boss death position.
+- Do not add a final-boss chest fallback unless final-route reward policy changes.
+- Non-final boss reward behavior remains unchanged.

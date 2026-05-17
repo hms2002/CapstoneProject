@@ -1,103 +1,65 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-internal readonly struct BossRewardSpawnRequest
+internal readonly struct BossRewardActivationRequest
 {
     public BossRewardContext Context { get; }
     public BossSpecialRewardPresetSO SpecialRewardPreset { get; }
-    public GameObject ChestPrefab { get; }
-    public Transform ChestSpawnPoint { get; }
-    public GameObject MagicStonePrefab { get; }
-    public Transform ScatterOrigin { get; }
-    public float ScatterRadius { get; }
+    public TreasureChest TreasureChest { get; }
+    public Vector3 DropOrigin { get; }
     public Object LogContext { get; }
 
-    public BossRewardSpawnRequest(
+    public BossRewardActivationRequest(
         BossRewardContext context,
         BossSpecialRewardPresetSO specialRewardPreset,
-        GameObject chestPrefab,
-        Transform chestSpawnPoint,
-        GameObject magicStonePrefab,
-        Transform scatterOrigin,
-        float scatterRadius,
+        TreasureChest treasureChest,
+        Vector3 dropOrigin,
         Object logContext)
     {
         Context = context;
         SpecialRewardPreset = specialRewardPreset;
-        ChestPrefab = chestPrefab;
-        ChestSpawnPoint = chestSpawnPoint;
-        MagicStonePrefab = magicStonePrefab;
-        ScatterOrigin = scatterOrigin;
-        ScatterRadius = scatterRadius;
+        TreasureChest = treasureChest;
+        DropOrigin = dropOrigin;
         LogContext = logContext;
-    }
-}
-
-internal readonly struct BossRewardSpawnResult
-{
-    public static BossRewardSpawnResult Empty => new BossRewardSpawnResult(false, false, false);
-
-    public bool ChestSpawned { get; }
-    public bool CurrencySpawned { get; }
-    public bool FieldHealsSpawned { get; }
-    public bool SpawnedAny => ChestSpawned || CurrencySpawned || FieldHealsSpawned;
-
-    public BossRewardSpawnResult(bool chestSpawned, bool currencySpawned, bool fieldHealsSpawned)
-    {
-        ChestSpawned = chestSpawned;
-        CurrencySpawned = currencySpawned;
-        FieldHealsSpawned = fieldHealsSpawned;
     }
 }
 
 internal static class BossRewardSpawnService
 {
-    public static BossRewardSpawnResult Spawn(BossRewardSpawnRequest request)
+    private const float PhysicalDropScatterRadius = 0.65f;
+
+    public static bool ActivateTreasureChest(BossRewardActivationRequest request)
     {
-        bool chestSpawned = TryRunRewardStep(
-            () => SpawnTreasureChest(
+        return TryRunRewardStep(
+            () => ActivateTreasureChestCore(
                 request.Context,
                 request.SpecialRewardPreset,
-                request.ChestPrefab,
-                request.ChestSpawnPoint),
-            "SpawnTreasureChest",
+                request.TreasureChest,
+                request.DropOrigin),
+            "ActivateTreasureChest",
             request.LogContext);
-        bool currencySpawned = TryRunRewardStep(
-            () => SpawnBossCurrency(
-                request.Context,
-                request.MagicStonePrefab,
-                request.ScatterOrigin,
-                request.ScatterRadius),
-            "SpawnBossCurrency",
-            request.LogContext);
-        bool fieldHealsSpawned = TryRunRewardStep(
-            () => SpawnBossFieldHeals(
-                request.Context,
-                request.ScatterOrigin,
-                request.ScatterRadius),
-            "SpawnBossFieldHeals",
-            request.LogContext);
-
-        return new BossRewardSpawnResult(chestSpawned, currencySpawned, fieldHealsSpawned);
     }
 
-    private static bool SpawnTreasureChest(
+    public static bool SpawnPhysicalDrops(BossRewardContext context, Vector3 dropOrigin, Object logContext)
+    {
+        return TryRunRewardStep(
+            () =>
+            {
+                SpawnPhysicalDrops(dropOrigin, ResolveRewardModifiers(context));
+                return true;
+            },
+            "SpawnPhysicalDrops",
+            logContext);
+    }
+
+    private static bool ActivateTreasureChestCore(
         BossRewardContext context,
         BossSpecialRewardPresetSO specialRewardPreset,
-        GameObject resolvedChestPrefab,
-        Transform resolvedChestSpawnPoint)
+        TreasureChest chest,
+        Vector3 dropOrigin)
     {
-        if (resolvedChestPrefab == null)
-            return false;
-
-        if (resolvedChestSpawnPoint == null)
-            return false;
-
-        Vector3 spawnPosition = resolvedChestSpawnPoint.position;
-        GameObject chestObject = Object.Instantiate(resolvedChestPrefab, spawnPosition, Quaternion.identity);
-        TreasureChest chest = chestObject.GetComponent<TreasureChest>();
         if (chest == null)
-            return true;
+            return false;
 
         var finalLoots = new List<ScriptableObject>();
         BossRewardModifierAggregate modifiers = ResolveRewardModifiers(context);
@@ -109,63 +71,11 @@ internal static class BossRewardSpawnService
                 finalLoots.AddRange(baseLoots);
         }
 
+        chest.gameObject.SetActive(true);
         AddRolledBonusLoots(finalLoots, specialRewardPreset != null ? specialRewardPreset.SpecialLoots : null);
         AddRolledBonusLoots(finalLoots, modifiers.BonusLoots);
         chest.InitializeWithLoot(finalLoots);
-        return true;
-    }
-
-    private static bool SpawnBossCurrency(
-        BossRewardContext context,
-        GameObject resolvedMagicStonePrefab,
-        Transform scatterOrigin,
-        float resolvedScatterRadius)
-    {
-        BossRewardModifierAggregate modifiers = ResolveRewardModifiers(context);
-        int count = LootManager.Instance != null ? LootManager.Instance.GetBossMagicStoneCount() : 0;
-        count += modifiers.MagicStoneBonus;
-        if (count <= 0 || resolvedMagicStonePrefab == null)
-            return false;
-
-        if (scatterOrigin == null)
-            return false;
-
-        Vector3 origin = scatterOrigin.position;
-        float radius = Mathf.Max(0f, resolvedScatterRadius);
-        for (int i = 0; i < count; i++)
-        {
-            Vector3 spawnPosition = origin + (Vector3)(Random.insideUnitCircle * radius);
-            GameObject stoneObject = Object.Instantiate(resolvedMagicStonePrefab, spawnPosition, Quaternion.identity);
-            MagicStonePickup pickup = stoneObject.GetComponent<MagicStonePickup>();
-            if (pickup != null)
-                pickup.amount = 1;
-        }
-
-        return true;
-    }
-
-    private static bool SpawnBossFieldHeals(
-        BossRewardContext context,
-        Transform scatterOrigin,
-        float resolvedScatterRadius)
-    {
-        BossRewardModifierAggregate modifiers = ResolveRewardModifiers(context);
-        int count = LootManager.Instance != null ? LootManager.Instance.GetBossFieldHealBaseCount() : 0;
-        count += Mathf.Max(0, modifiers.FieldHealPickupBonus);
-        if (count <= 0 || LootManager.Instance == null)
-            return false;
-
-        if (scatterOrigin == null)
-            return false;
-
-        Vector3 origin = scatterOrigin.position;
-        float radius = Mathf.Max(0f, resolvedScatterRadius);
-        for (int i = 0; i < count; i++)
-        {
-            Vector3 spawnPosition = origin + (Vector3)(Random.insideUnitCircle * radius);
-            LootManager.Instance.SpawnFieldHealPickup(spawnPosition);
-        }
-
+        SpawnPhysicalDrops(dropOrigin, modifiers);
         return true;
     }
 
@@ -187,6 +97,27 @@ internal static class BossRewardSpawnService
         }
     }
 
+    private static void SpawnPhysicalDrops(Vector3 origin, BossRewardModifierAggregate modifiers)
+    {
+        if (LootManager.Instance == null)
+            return;
+
+        int magicStoneCount = Mathf.Max(0, LootManager.Instance.GetBossMagicStoneCount() + modifiers.MagicStoneBonus);
+        int fieldHealCount = Mathf.Max(0, LootManager.Instance.GetBossFieldHealBaseCount() + modifiers.FieldHealPickupBonus);
+
+        for (int i = 0; i < magicStoneCount; i++)
+            LootManager.Instance.SpawnMagicStonePickup(ResolveDropPosition(origin), 1);
+
+        for (int i = 0; i < fieldHealCount; i++)
+            LootManager.Instance.SpawnFieldHealPickup(ResolveDropPosition(origin));
+    }
+
+    private static Vector3 ResolveDropPosition(Vector3 origin)
+    {
+        Vector2 offset = Random.insideUnitCircle * PhysicalDropScatterRadius;
+        return origin + new Vector3(offset.x, offset.y, 0f);
+    }
+
     private static bool TryRunRewardStep(System.Func<bool> action, string stepName, Object logContext)
     {
         if (action == null)
@@ -198,7 +129,7 @@ internal static class BossRewardSpawnService
         }
         catch (System.Exception exception)
         {
-            Debug.LogException(new System.Exception($"[BossRewardSpawner] {stepName} failed.", exception), logContext);
+            Debug.LogException(new System.Exception($"[BossBattleEnd] {stepName} failed.", exception), logContext);
             return false;
         }
     }

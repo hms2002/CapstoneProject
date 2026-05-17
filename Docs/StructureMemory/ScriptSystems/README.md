@@ -24,6 +24,7 @@ These documents are working memory for context reconstruction. They are not sour
 | [Scene Runtime Save Structure](./SceneRuntimeSaveStructure.md) | Scene/run transition, player runtime capture/restore, save data, run timer, map/shortcuts. |
 | [Loot Reward Structure](./LootRewardStructure.md) | Loot manager, boss rewards, grave/stage loot, pickups, reward presentation boundary. |
 | [Loading Presentation Structure](./LoadingPresentationStructure.md) | Loading, presentation runtime, global UI, camera/audio/input/settings/speech bubbles. |
+| [Level Design Editor Tool Structure](./LevelDesignEditorToolStructure.md) | Editor-only level-design validation, SceneView overlay, door/shortcut linking, battle-room authoring, placement helpers. |
 
 ## Use Rules
 

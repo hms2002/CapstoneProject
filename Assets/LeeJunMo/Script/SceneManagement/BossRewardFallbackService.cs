@@ -12,12 +12,12 @@ internal static class BossRewardFallbackService
         if (!context.RewardsHandled)
             LogFallback(
                 context,
-                "Boss rewards were not handled. Add or verify BossRewardSpawner, BossBattleEndPrefabCatalogSO, and BossBattleEndAnchors on the boss scene/prefab.");
+                "Boss rewards were not handled. Add or verify a scene-authored BossBattleEndHandler with a boss reference, physical-drop handling, and a TreasureChest reference for non-final boss routes.");
 
         if (!context.PortalHandled)
             LogFallback(
                 context,
-                "Boss portal was not handled. Add or verify BossExitPortalActivator, BossBattleEndPrefabCatalogSO, and BossBattleEndAnchors on the boss scene/prefab.");
+                "Boss portal was not handled. Add or verify a scene-authored BossBattleEndHandler with boss and exitPortal references.");
     }
 
     [Conditional("UNITY_EDITOR")]

@@ -4,6 +4,14 @@ public static class ScenePortalTravelService
 {
     public static bool TryTravel(ScenePortal portal)
     {
+        return ScenePortalTravelCoordinator.TryTravel(portal);
+    }
+}
+
+internal static class ScenePortalTravelCoordinator
+{
+    public static bool TryTravel(ScenePortal portal)
+    {
         if (portal == null)
             return false;
 
