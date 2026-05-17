@@ -13,6 +13,8 @@ using UnityEngine.UI;
 public sealed class SceneSetupValidatorWindow : EditorWindow
 {
     private const string GlobalUiRootPrefabPath = "Assets/LeeJunMo/Prefab/UI/GlobalUIRoot.prefab";
+    private const string ShopSlotPrefabPath = "Assets/LeeJunMo/Prefab/Dialogue/ShopSlot.prefab";
+    private const string UpgradeTreePanelPrefabPath = "Assets/LeeJunMo/Prefab/UI/Upgrade/UpgradeTreePanel.prefab";
 
     private enum Severity
     {
@@ -58,6 +60,9 @@ public sealed class SceneSetupValidatorWindow : EditorWindow
 
             if (GUILayout.Button("Auto Fix All Scenes", EditorStyles.toolbarButton))
                 AutoFixAllScenes();
+
+            if (GUILayout.Button("Auto Fix GlobalUIRoot Prefab", EditorStyles.toolbarButton))
+                AutoFixRepresentativeGlobalUiRootPrefab();
 
             if (GUILayout.Button("Cleanup Active Scene", EditorStyles.toolbarButton))
                 CleanupActiveScene();
@@ -129,6 +134,7 @@ public sealed class SceneSetupValidatorWindow : EditorWindow
         }
 
         ValidateScene(activeScene);
+        ValidateRepresentativeGlobalUiRootPrefab();
     }
 
     private void AutoFixActiveScene()
@@ -203,6 +209,43 @@ public sealed class SceneSetupValidatorWindow : EditorWindow
         }
     }
 
+    private void AutoFixRepresentativeGlobalUiRootPrefab()
+    {
+        results.Clear();
+
+        GameObject prefabContents = PrefabUtility.LoadPrefabContents(GlobalUiRootPrefabPath);
+        if (prefabContents == null)
+        {
+            AddResult(GlobalUiRootPrefabPath, Severity.Error, "Representative GlobalUIRoot prefab could not be loaded for auto fix.", null, string.Empty);
+            return;
+        }
+
+        try
+        {
+            GlobalUIRoot root = prefabContents.GetComponent<GlobalUIRoot>();
+            if (root == null)
+            {
+                AddResult(GlobalUiRootPrefabPath, Severity.Error, "Representative GlobalUIRoot prefab has no GlobalUIRoot component.", prefabContents, prefabContents.name);
+                return;
+            }
+
+            SerializedObject serializedRoot = new SerializedObject(root);
+            AssignSerializedReference(serializedRoot, "loadingCanvas", FindChildCanvas(prefabContents.transform, "LoadingCanvas"));
+            AssignSerializedReference(serializedRoot, "bossHudCanvas", FindChildCanvas(prefabContents.transform, "BossHUDCanvas"));
+            serializedRoot.ApplyModifiedPropertiesWithoutUndo();
+
+            EnsureMouseCursorAuthoredPresentation(prefabContents.transform);
+            PrefabUtility.SaveAsPrefabAsset(prefabContents, GlobalUiRootPrefabPath);
+            AssetDatabase.SaveAssets();
+        }
+        finally
+        {
+            PrefabUtility.UnloadPrefabContents(prefabContents);
+        }
+
+        ValidateRepresentativeGlobalUiRootPrefab();
+    }
+
     private void ValidateAllScenes()
     {
         if (!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())
@@ -225,6 +268,8 @@ public sealed class SceneSetupValidatorWindow : EditorWindow
                 Scene scene = EditorSceneManager.OpenScene(scenePath, OpenSceneMode.Single);
                 ValidateScene(scene);
             }
+
+            ValidateRepresentativeGlobalUiRootPrefab();
         }
         finally
         {
@@ -264,6 +309,8 @@ public sealed class SceneSetupValidatorWindow : EditorWindow
         ValidateCinematicDirectors(scene);
         ValidateDialogueViews(scene);
         ValidateUpgradeTrees(scene);
+        ValidateMerchantShops(scene);
+        ValidateRuntimePresentationFallbacks(scene);
     }
 
     private void AutoFixScene(Scene scene)
@@ -313,6 +360,9 @@ public sealed class SceneSetupValidatorWindow : EditorWindow
         ValidateSerializedReference(scene.path, primaryRoot, serializedRoot, "rewardCanvas", "GlobalUIRoot.rewardCanvas is not assigned.");
         ValidateSerializedReference(scene.path, primaryRoot, serializedRoot, "damagePopupCanvas", "GlobalUIRoot.damagePopupCanvas is not assigned.");
         ValidateSerializedReference(scene.path, primaryRoot, serializedRoot, "bossHudCanvas", "GlobalUIRoot.bossHudCanvas is not assigned.");
+        ValidateOptionalPresentationReference(scene.path, primaryRoot, serializedRoot, "loadingCanvas", "GlobalUIRoot.loadingCanvas is not assigned. LoadingOverlayController can create a runtime fallback canvas.");
+        ValidateOptionalPresentationReference(scene.path, primaryRoot, serializedRoot, "statusHudPresenterPrefab", "GlobalUIRoot.statusHudPresenterPrefab is not assigned. Status HUD can create a runtime fallback presenter.");
+        ValidateOptionalPresentationReference(scene.path, primaryRoot, serializedRoot, "statusTooltipPrefab", "GlobalUIRoot.statusTooltipPrefab is not assigned. Status HUD tooltip can create a runtime fallback view.");
 
         SerializedProperty promptCanvasProperty = serializedRoot.FindProperty("promptCanvas");
         if (promptCanvasProperty == null || promptCanvasProperty.objectReferenceValue == null)
@@ -351,6 +401,7 @@ public sealed class SceneSetupValidatorWindow : EditorWindow
         AssignSerializedReference(serializedRoot, "rewardCanvas", FindChildCanvas(root.transform, "RewardCanvas"));
         AssignSerializedReference(serializedRoot, "damagePopupCanvas", FindChildCanvas(root.transform, "DamagePopupCanvas"));
         AssignSerializedReference(serializedRoot, "bossHudCanvas", FindChildCanvas(root.transform, "BossHUDCanvas"));
+        AssignSerializedReference(serializedRoot, "loadingCanvas", FindChildCanvas(root.transform, "LoadingCanvas"));
 
         serializedRoot.ApplyModifiedPropertiesWithoutUndo();
         EditorUtility.SetDirty(root);
@@ -625,7 +676,7 @@ public sealed class SceneSetupValidatorWindow : EditorWindow
 
     private void ValidateUpgradeTrees(Scene scene)
     {
-        UpgradeTreeUI[] trees = FindSceneObjects<UpgradeTreeUI>(scene, includeInactive: false);
+        UpgradeTreeUI[] trees = FindSceneObjects<UpgradeTreeUI>(scene, includeInactive: true);
         foreach (UpgradeTreeUI tree in trees)
         {
             SerializedObject serializedTree = new SerializedObject(tree);
@@ -635,17 +686,26 @@ public sealed class SceneSetupValidatorWindow : EditorWindow
             ValidateSerializedReference(scene.path, tree, serializedTree, "lineParent", "UpgradeTreeUI.lineParent is missing.");
             ValidateSerializedReference(scene.path, tree, serializedTree, "slotPrefab", "UpgradeTreeUI.slotPrefab is missing.");
             ValidateSerializedReference(scene.path, tree, serializedTree, "linePrefab", "UpgradeTreeUI.linePrefab is missing.");
+            ValidateSerializedReference(scene.path, tree, serializedTree, "leftOverflowArrow", $"UpgradeTreeUI.leftOverflowArrow is missing. Migrate the panel to {UpgradeTreePanelPrefabPath}.");
+            ValidateSerializedReference(scene.path, tree, serializedTree, "rightOverflowArrow", $"UpgradeTreeUI.rightOverflowArrow is missing. Migrate the panel to {UpgradeTreePanelPrefabPath}.");
+            ValidateSerializedReference(scene.path, tree, serializedTree, "upOverflowArrow", $"UpgradeTreeUI.upOverflowArrow is missing. Migrate the panel to {UpgradeTreePanelPrefabPath}.");
+            ValidateSerializedReference(scene.path, tree, serializedTree, "downOverflowArrow", $"UpgradeTreeUI.downOverflowArrow is missing. Migrate the panel to {UpgradeTreePanelPrefabPath}.");
 
             RectTransform contentRect = GetSerializedObjectReference<RectTransform>(serializedTree, "contentRect");
             Transform slotParent = GetSerializedObjectReference<Transform>(serializedTree, "slotParent");
             Transform lineParent = GetSerializedObjectReference<Transform>(serializedTree, "lineParent");
 
-            ScrollRect scrollRect = tree.GetComponent<ScrollRect>();
+            ScrollRect scrollRect = GetSerializedObjectReference<ScrollRect>(serializedTree, "scrollRect")
+                ?? tree.GetComponent<ScrollRect>()
+                ?? tree.GetComponentInChildren<ScrollRect>(true);
             if (scrollRect == null)
             {
                 AddResult(scene.path, Severity.Error, "UpgradeTreeUI is missing ScrollRect.", tree, GetObjectPath(tree.transform));
                 continue;
             }
+
+            if (scrollRect.horizontalScrollbar != null)
+                AddResult(scene.path, Severity.Error, $"UpgradeTreeUI.ScrollRect.horizontalScrollbar should be unassigned. Use overflow arrow buttons from {UpgradeTreePanelPrefabPath} instead.", scrollRect.horizontalScrollbar, GetObjectPath(scrollRect.horizontalScrollbar.transform));
 
             if (scrollRect.viewport == null)
                 AddResult(scene.path, Severity.Error, "UpgradeTreeUI.ScrollRect.viewport is missing.", tree, GetObjectPath(tree.transform));
@@ -664,9 +724,276 @@ public sealed class SceneSetupValidatorWindow : EditorWindow
         }
     }
 
+    private void ValidateRuntimePresentationFallbacks(Scene scene)
+    {
+        foreach (LoadingOverlayController controller in FindSceneObjects<LoadingOverlayController>(scene, includeInactive: true))
+        {
+            SerializedObject serializedController = new SerializedObject(controller);
+            ValidateOptionalPresentationReference(scene.path, controller, serializedController, "overlayView", "LoadingOverlayController.overlayView is not assigned. It can use GlobalUIRoot.loadingCanvas or create a runtime fallback canvas.");
+        }
+
+        foreach (MouseCursorService cursorService in FindSceneObjects<MouseCursorService>(scene, includeInactive: true))
+        {
+            SerializedObject serializedCursor = new SerializedObject(cursorService);
+            Canvas authoredCanvas = GetSerializedObjectReference<Canvas>(serializedCursor, "authoredCursorCanvas");
+            Image authoredImage = GetSerializedObjectReference<Image>(serializedCursor, "authoredCursorImage");
+            RectTransform authoredRect = GetSerializedObjectReference<RectTransform>(serializedCursor, "authoredCursorRect");
+            bool hasSerializedPresentation = authoredCanvas != null && authoredImage != null && authoredRect != null;
+            bool hasLegacyChildPresentation = HasMouseCursorChildPresentation(cursorService.transform);
+
+            if (!hasSerializedPresentation && !hasLegacyChildPresentation)
+            {
+                AddResult(scene.path, Severity.Warning, "MouseCursorService has no authored cursor canvas/image references. Sprite cursor mode can create runtime UI fallback.", cursorService, GetObjectPath(cursorService.transform));
+            }
+            else if (!hasSerializedPresentation)
+            {
+                AddResult(scene.path, Severity.Warning, "MouseCursorService uses legacy child-name cursor presentation. Assign authoredCursorCanvas/authoredCursorRect/authoredCursorImage to avoid fallback dependency.", cursorService, GetObjectPath(cursorService.transform));
+            }
+        }
+
+        foreach (GamePresentationController controller in FindSceneObjects<GamePresentationController>(scene, includeInactive: true))
+        {
+            AddResult(scene.path, Severity.Info, "GamePresentationController intentionally creates the display letterbox overlay at runtime.", controller, GetObjectPath(controller.transform));
+        }
+
+        foreach (StatusHudPresenter presenter in FindSceneObjects<StatusHudPresenter>(scene, includeInactive: true))
+        {
+            SerializedObject serializedPresenter = new SerializedObject(presenter);
+            ValidateOptionalPresentationReference(scene.path, presenter, serializedPresenter, "container", "StatusHudPresenter.container is not assigned. Status HUD can configure its runtime fallback layout.");
+            ValidateOptionalPresentationReference(scene.path, presenter, serializedPresenter, "entryViewPrefab", "StatusHudPresenter.entryViewPrefab is not assigned. Status HUD can create runtime entry views.");
+        }
+
+        foreach (StatusHudEntryView entryView in FindSceneObjects<StatusHudEntryView>(scene, includeInactive: true))
+        {
+            SerializedObject serializedEntry = new SerializedObject(entryView);
+            ValidateOptionalPresentationReference(scene.path, entryView, serializedEntry, "backgroundImage", "StatusHudEntryView.backgroundImage is not assigned. Entry view can create runtime fallback visuals.");
+            ValidateOptionalPresentationReference(scene.path, entryView, serializedEntry, "iconImage", "StatusHudEntryView.iconImage is not assigned. Entry view can create runtime fallback visuals.");
+            ValidateOptionalPresentationReference(scene.path, entryView, serializedEntry, "durationFillImage", "StatusHudEntryView.durationFillImage is not assigned. Entry view can create runtime fallback visuals.");
+            ValidateOptionalPresentationReference(scene.path, entryView, serializedEntry, "stackText", "StatusHudEntryView.stackText is not assigned. Entry view can create runtime fallback visuals.");
+            ValidateOptionalPresentationReference(scene.path, entryView, serializedEntry, "durationText", "StatusHudEntryView.durationText is not assigned. Entry view can create runtime fallback visuals.");
+        }
+
+        foreach (StatusHudTooltipView tooltipView in FindSceneObjects<StatusHudTooltipView>(scene, includeInactive: true))
+        {
+            SerializedObject serializedTooltip = new SerializedObject(tooltipView);
+            ValidateOptionalPresentationReference(scene.path, tooltipView, serializedTooltip, "backgroundImage", "StatusHudTooltipView.backgroundImage is not assigned. Tooltip view can create runtime fallback visuals.");
+            ValidateOptionalPresentationReference(scene.path, tooltipView, serializedTooltip, "iconImage", "StatusHudTooltipView.iconImage is not assigned. Tooltip view can create runtime fallback visuals.");
+            ValidateOptionalPresentationReference(scene.path, tooltipView, serializedTooltip, "nameText", "StatusHudTooltipView.nameText is not assigned. Tooltip view can create runtime fallback visuals.");
+            ValidateOptionalPresentationReference(scene.path, tooltipView, serializedTooltip, "storyText", "StatusHudTooltipView.storyText is not assigned. Tooltip view can create runtime fallback visuals.");
+            ValidateOptionalPresentationReference(scene.path, tooltipView, serializedTooltip, "effectText", "StatusHudTooltipView.effectText is not assigned. Tooltip view can create runtime fallback visuals.");
+        }
+
+        foreach (BossHealthBarUI bossHud in FindSceneObjects<BossHealthBarUI>(scene, includeInactive: true))
+        {
+            SerializedObject serializedHud = new SerializedObject(bossHud);
+            bool canCreateDualFallback = GetSerializedBool(serializedHud, "createFallbackDualHealthPresentation");
+            bool canCreateSplitFallback = GetSerializedBool(serializedHud, "createFallbackSplitHealthPresentation");
+
+            if (canCreateDualFallback && HasAnyMissingSerializedReference(
+                    serializedHud,
+                    "dualHealthRoot",
+                    "leftImmediateHealthSlider",
+                    "leftDelayedHealthSlider",
+                    "rightImmediateHealthSlider",
+                    "rightDelayedHealthSlider"))
+            {
+                AddResult(scene.path, Severity.Warning, "BossHealthBarUI dual-health references are incomplete while createFallbackDualHealthPresentation is enabled. Dual boss HUD can be created at runtime.", bossHud, GetObjectPath(bossHud.transform));
+            }
+
+            if (canCreateSplitFallback && HasAnyMissingSerializedReference(serializedHud, "splitHealthRoot", "splitDividerImage"))
+            {
+                AddResult(scene.path, Severity.Warning, "BossHealthBarUI split-health references are incomplete while createFallbackSplitHealthPresentation is enabled. Split boss HUD can be created at runtime.", bossHud, GetObjectPath(bossHud.transform));
+            }
+        }
+    }
+
+    private void ValidateRepresentativeGlobalUiRootPrefab()
+    {
+        GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(GlobalUiRootPrefabPath);
+        if (prefab == null)
+        {
+            AddResult(GlobalUiRootPrefabPath, Severity.Error, "Representative GlobalUIRoot prefab could not be loaded.", null, string.Empty);
+            return;
+        }
+
+        GlobalUIRoot root = prefab.GetComponent<GlobalUIRoot>();
+        if (root == null)
+        {
+            AddResult(GlobalUiRootPrefabPath, Severity.Error, "Representative GlobalUIRoot prefab has no GlobalUIRoot component.", prefab, prefab.name);
+            return;
+        }
+
+        SerializedObject serializedRoot = new SerializedObject(root);
+        ValidateSerializedReference(GlobalUiRootPrefabPath, root, serializedRoot, "loadingCanvas", "Representative GlobalUIRoot.loadingCanvas is not assigned.");
+        ValidateSerializedReference(GlobalUiRootPrefabPath, root, serializedRoot, "bossHudCanvas", "Representative GlobalUIRoot.bossHudCanvas is not assigned.");
+        ValidateSerializedReference(GlobalUiRootPrefabPath, root, serializedRoot, "statusHudPresenterPrefab", "Representative GlobalUIRoot.statusHudPresenterPrefab is not assigned.");
+        ValidateSerializedReference(GlobalUiRootPrefabPath, root, serializedRoot, "statusTooltipPrefab", "Representative GlobalUIRoot.statusTooltipPrefab is not assigned.");
+
+        LoadingOverlayController loadingOverlay = prefab.GetComponentInChildren<LoadingOverlayController>(true);
+        if (loadingOverlay == null)
+        {
+            AddResult(GlobalUiRootPrefabPath, Severity.Error, "Representative GlobalUIRoot prefab has no LoadingOverlayController.", prefab, prefab.name);
+        }
+        else
+        {
+            SerializedObject serializedLoading = new SerializedObject(loadingOverlay);
+            ValidateSerializedReference(GlobalUiRootPrefabPath, loadingOverlay, serializedLoading, "overlayView", "Representative LoadingOverlayController.overlayView is not assigned.");
+        }
+
+        MouseCursorService cursorService = prefab.GetComponentInChildren<MouseCursorService>(true);
+        if (cursorService == null)
+        {
+            AddResult(GlobalUiRootPrefabPath, Severity.Error, "Representative GlobalUIRoot prefab has no MouseCursorService.", prefab, prefab.name);
+        }
+        else
+        {
+            SerializedObject serializedCursor = new SerializedObject(cursorService);
+            ValidateSerializedReference(GlobalUiRootPrefabPath, cursorService, serializedCursor, "authoredCursorCanvas", "Representative MouseCursorService.authoredCursorCanvas is not assigned.");
+            ValidateSerializedReference(GlobalUiRootPrefabPath, cursorService, serializedCursor, "authoredCursorRect", "Representative MouseCursorService.authoredCursorRect is not assigned.");
+            ValidateSerializedReference(GlobalUiRootPrefabPath, cursorService, serializedCursor, "authoredCursorImage", "Representative MouseCursorService.authoredCursorImage is not assigned.");
+        }
+
+        StatusHudPresenter statusPresenterPrefab = GetSerializedObjectReference<StatusHudPresenter>(serializedRoot, "statusHudPresenterPrefab");
+        if (statusPresenterPrefab != null)
+        {
+            SerializedObject serializedPresenter = new SerializedObject(statusPresenterPrefab);
+            ValidateSerializedReference(GlobalUiRootPrefabPath, statusPresenterPrefab, serializedPresenter, "container", "Representative StatusHudPresenter.container is not assigned.");
+            ValidateSerializedReference(GlobalUiRootPrefabPath, statusPresenterPrefab, serializedPresenter, "entryViewPrefab", "Representative StatusHudPresenter.entryViewPrefab is not assigned.");
+        }
+
+        StatusHudTooltipView tooltipPrefab = GetSerializedObjectReference<StatusHudTooltipView>(serializedRoot, "statusTooltipPrefab");
+        if (tooltipPrefab != null)
+        {
+            SerializedObject serializedTooltip = new SerializedObject(tooltipPrefab);
+            ValidateSerializedReference(GlobalUiRootPrefabPath, tooltipPrefab, serializedTooltip, "backgroundImage", "Representative StatusHudTooltipView.backgroundImage is not assigned.");
+            ValidateSerializedReference(GlobalUiRootPrefabPath, tooltipPrefab, serializedTooltip, "iconImage", "Representative StatusHudTooltipView.iconImage is not assigned.");
+            ValidateSerializedReference(GlobalUiRootPrefabPath, tooltipPrefab, serializedTooltip, "nameText", "Representative StatusHudTooltipView.nameText is not assigned.");
+            ValidateSerializedReference(GlobalUiRootPrefabPath, tooltipPrefab, serializedTooltip, "storyText", "Representative StatusHudTooltipView.storyText is not assigned.");
+            ValidateSerializedReference(GlobalUiRootPrefabPath, tooltipPrefab, serializedTooltip, "effectText", "Representative StatusHudTooltipView.effectText is not assigned.");
+        }
+    }
+
+    private void ValidateMerchantShops(Scene scene)
+    {
+        MerchantNPC[] merchants = FindSceneObjects<MerchantNPC>(scene, includeInactive: true);
+        if (merchants == null || merchants.Length == 0)
+            return;
+
+        ShopSlot expectedPrefab = AssetDatabase.LoadAssetAtPath<ShopSlot>(ShopSlotPrefabPath);
+
+        foreach (MerchantNPC merchant in merchants)
+        {
+            if (merchant == null)
+                continue;
+
+            SerializedObject serializedMerchant = new SerializedObject(merchant);
+            SerializedProperty prefabProperty = serializedMerchant.FindProperty("slotPrefab");
+            SerializedProperty anchorsProperty = serializedMerchant.FindProperty("slotAnchors");
+            SerializedProperty legacySlotsProperty = serializedMerchant.FindProperty("shopSlots");
+
+            bool hasSlotPrefab = prefabProperty != null && prefabProperty.objectReferenceValue != null;
+            bool hasSlotAnchors = anchorsProperty != null && anchorsProperty.isArray && anchorsProperty.arraySize > 0;
+            int legacySlotCount = CountAssignedObjectReferences(legacySlotsProperty);
+            int childSlotCount = merchant.GetComponentsInChildren<ShopSlot>(true)
+                .Count(slot => slot != null && slot.GetComponentInParent<MerchantNPC>(true) == merchant);
+
+            if (!hasSlotPrefab || !hasSlotAnchors)
+            {
+                if (legacySlotCount > 0 || childSlotCount > 0)
+                {
+                    AddResult(
+                        scene.path,
+                        Severity.Warning,
+                        "MerchantNPC still uses copied scene ShopSlot objects. Use Tools/Merchant/ShopSlot Prefab Migration to create empty anchors, assign the ShopSlot prefab, and clear copied slots.",
+                        merchant,
+                        GetObjectPath(merchant.transform));
+                }
+
+                continue;
+            }
+
+            if (expectedPrefab != null && prefabProperty.objectReferenceValue != expectedPrefab)
+            {
+                AddResult(
+                    scene.path,
+                    Severity.Warning,
+                    $"MerchantNPC.slotPrefab does not reference the shared prefab at {ShopSlotPrefabPath}.",
+                    merchant,
+                    GetObjectPath(merchant.transform));
+            }
+
+            ValidateMerchantShopAnchors(scene.path, merchant, anchorsProperty);
+            ValidateMerchantShopFilters(scene.path, merchant, anchorsProperty);
+
+            if (legacySlotCount > 0 || childSlotCount > 0)
+            {
+                AddResult(
+                    scene.path,
+                    Severity.Warning,
+                    "MerchantNPC has prefab-slot authoring but copied child/shopSlots still exist. Remove copied scene ShopSlot objects after confirming anchor order.",
+                    merchant,
+                    GetObjectPath(merchant.transform));
+            }
+        }
+    }
+
+    private void ValidateMerchantShopAnchors(
+        string scenePath,
+        MerchantNPC merchant,
+        SerializedProperty anchorsProperty)
+    {
+        for (int i = 0; i < anchorsProperty.arraySize; i++)
+        {
+            SerializedProperty anchorEntry = anchorsProperty.GetArrayElementAtIndex(i);
+            SerializedProperty anchorProperty = anchorEntry.FindPropertyRelative("anchor");
+            if (anchorProperty != null && anchorProperty.objectReferenceValue != null)
+                continue;
+
+            AddResult(
+                scenePath,
+                Severity.Error,
+                $"MerchantNPC.slotAnchors[{i}] has no anchor Transform.",
+                merchant,
+                GetObjectPath(merchant.transform));
+        }
+    }
+
+    private void ValidateMerchantShopFilters(
+        string scenePath,
+        MerchantNPC merchant,
+        SerializedProperty anchorsProperty)
+    {
+        bool hasWeaponSlot = false;
+        bool hasRelicSlot = false;
+        bool hasConsumableSlot = false;
+
+        for (int i = 0; i < anchorsProperty.arraySize; i++)
+        {
+            SerializedProperty anchorEntry = anchorsProperty.GetArrayElementAtIndex(i);
+            SerializedProperty filterProperty = anchorEntry.FindPropertyRelative("itemFilter");
+            if (filterProperty == null)
+                continue;
+
+            ShopSlotItemFilter filter = (ShopSlotItemFilter)filterProperty.enumValueIndex;
+            hasWeaponSlot |= filter == ShopSlotItemFilter.Weapon;
+            hasRelicSlot |= filter == ShopSlotItemFilter.Relic;
+            hasConsumableSlot |= filter == ShopSlotItemFilter.Consumable;
+        }
+
+        if (hasWeaponSlot && hasRelicSlot && hasConsumableSlot)
+            return;
+
+        AddResult(
+            scenePath,
+            Severity.Warning,
+            "MerchantNPC prefab anchors should include separate Weapon, Relic, and Consumable filters for the requested shop display split.",
+            merchant,
+            GetObjectPath(merchant.transform));
+    }
+
     private void AutoFixUpgradeTrees(Scene scene)
     {
-        UpgradeTreeUI[] trees = FindSceneObjects<UpgradeTreeUI>(scene, includeInactive: false);
+        UpgradeTreeUI[] trees = FindSceneObjects<UpgradeTreeUI>(scene, includeInactive: true);
         foreach (UpgradeTreeUI tree in trees)
         {
             SerializedObject serializedTree = new SerializedObject(tree);
@@ -709,6 +1036,25 @@ public sealed class SceneSetupValidatorWindow : EditorWindow
             {
                 Undo.RecordObject(scrollRect, "Fix UpgradeTreeUI ScrollRect");
                 scrollRect.content = contentRect;
+            }
+
+            if (scrollRect.horizontalScrollbar != null)
+            {
+                Scrollbar horizontalScrollbar = scrollRect.horizontalScrollbar;
+                Undo.RecordObject(scrollRect, "Remove UpgradeTreeUI Horizontal Scrollbar");
+                scrollRect.horizontalScrollbar = null;
+                scrollRect.horizontalScrollbarVisibility = ScrollRect.ScrollbarVisibility.AutoHide;
+
+                Undo.RecordObject(horizontalScrollbar, "Disable UpgradeTreeUI Horizontal Scrollbar");
+                horizontalScrollbar.interactable = false;
+
+                if (horizontalScrollbar.gameObject.activeSelf)
+                {
+                    Undo.RecordObject(horizontalScrollbar.gameObject, "Disable UpgradeTreeUI Horizontal Scrollbar");
+                    horizontalScrollbar.gameObject.SetActive(false);
+                }
+
+                EditorUtility.SetDirty(horizontalScrollbar);
             }
 
             if (scrollRect.viewport == null)
@@ -791,6 +1137,61 @@ public sealed class SceneSetupValidatorWindow : EditorWindow
             return;
 
         AddResult(scenePath, Severity.Error, message, owner, GetObjectPath(owner.transform));
+    }
+
+    private void ValidateOptionalPresentationReference(string scenePath, Component owner, SerializedObject serializedObject, string propertyName, string message)
+    {
+        SerializedProperty property = serializedObject.FindProperty(propertyName);
+        if (property == null || property.objectReferenceValue != null)
+            return;
+
+        AddResult(scenePath, Severity.Warning, message, owner, GetObjectPath(owner.transform));
+    }
+
+    private static bool HasAnyMissingSerializedReference(SerializedObject serializedObject, params string[] propertyNames)
+    {
+        foreach (string propertyName in propertyNames)
+        {
+            SerializedProperty property = serializedObject.FindProperty(propertyName);
+            if (property != null && property.objectReferenceValue == null)
+                return true;
+        }
+
+        return false;
+    }
+
+    private static int CountAssignedObjectReferences(SerializedProperty arrayProperty)
+    {
+        if (arrayProperty == null || !arrayProperty.isArray)
+            return 0;
+
+        int count = 0;
+        for (int i = 0; i < arrayProperty.arraySize; i++)
+        {
+            if (arrayProperty.GetArrayElementAtIndex(i).objectReferenceValue != null)
+                count++;
+        }
+
+        return count;
+    }
+
+    private static bool HasMouseCursorChildPresentation(Transform cursorServiceRoot)
+    {
+        if (cursorServiceRoot == null)
+            return false;
+
+        Transform canvasTransform = cursorServiceRoot.Find("MouseCursorCanvas");
+        if (canvasTransform == null)
+            return false;
+
+        return canvasTransform.GetComponent<Canvas>() != null &&
+               canvasTransform.Find("CursorImage")?.GetComponent<Image>() != null;
+    }
+
+    private static bool GetSerializedBool(SerializedObject serializedObject, string propertyName)
+    {
+        SerializedProperty property = serializedObject.FindProperty(propertyName);
+        return property != null && property.propertyType == SerializedPropertyType.Boolean && property.boolValue;
     }
 
     private static T GetSerializedObjectReference<T>(SerializedObject serializedObject, string propertyName) where T : UnityEngine.Object
@@ -940,6 +1341,78 @@ public sealed class SceneSetupValidatorWindow : EditorWindow
         instance.SetActive(true);
         Undo.RegisterCreatedObjectUndo(instance, "Create GlobalUIRoot");
         EditorSceneManager.MarkSceneDirty(scene);
+    }
+
+    private static void EnsureMouseCursorAuthoredPresentation(Transform root)
+    {
+        MouseCursorService cursorService = root.GetComponentInChildren<MouseCursorService>(true);
+        if (cursorService == null)
+        {
+            Transform servicesRoot = FindChildRecursive(root, "Services") ?? root;
+            GameObject serviceObject = new GameObject(nameof(MouseCursorService), typeof(MouseCursorService));
+            serviceObject.transform.SetParent(servicesRoot, false);
+            cursorService = serviceObject.GetComponent<MouseCursorService>();
+        }
+
+        Transform canvasTransform = cursorService.transform.Find("MouseCursorCanvas");
+        if (canvasTransform == null)
+        {
+            GameObject canvasObject = new GameObject("MouseCursorCanvas", typeof(RectTransform), typeof(Canvas));
+            canvasTransform = canvasObject.transform;
+            canvasTransform.SetParent(cursorService.transform, false);
+        }
+
+        RectTransform canvasRect = canvasTransform as RectTransform;
+        ConfigureFullScreenRect(canvasRect);
+
+        Canvas canvas = GetOrAddComponent<Canvas>(canvasTransform.gameObject);
+        canvas.renderMode = RenderMode.ScreenSpaceOverlay;
+        canvas.overrideSorting = true;
+        canvas.sortingOrder = short.MaxValue;
+
+        Transform imageTransform = canvasTransform.Find("CursorImage");
+        if (imageTransform == null)
+        {
+            GameObject imageObject = new GameObject("CursorImage", typeof(RectTransform), typeof(Image));
+            imageTransform = imageObject.transform;
+            imageTransform.SetParent(canvasTransform, false);
+        }
+
+        RectTransform imageRect = imageTransform as RectTransform;
+        if (imageRect != null)
+        {
+            imageRect.anchorMin = Vector2.zero;
+            imageRect.anchorMax = Vector2.zero;
+            imageRect.anchoredPosition = Vector2.zero;
+        }
+
+        Image cursorImage = GetOrAddComponent<Image>(imageTransform.gameObject);
+        cursorImage.raycastTarget = false;
+        cursorImage.enabled = false;
+
+        SerializedObject serializedCursor = new SerializedObject(cursorService);
+        AssignSerializedReference(serializedCursor, "authoredCursorCanvas", canvas);
+        AssignSerializedReference(serializedCursor, "authoredCursorRect", imageRect);
+        AssignSerializedReference(serializedCursor, "authoredCursorImage", cursorImage);
+        serializedCursor.ApplyModifiedPropertiesWithoutUndo();
+        EditorUtility.SetDirty(cursorService);
+    }
+
+    private static void ConfigureFullScreenRect(RectTransform rectTransform)
+    {
+        if (rectTransform == null)
+            return;
+
+        rectTransform.anchorMin = Vector2.zero;
+        rectTransform.anchorMax = Vector2.one;
+        rectTransform.offsetMin = Vector2.zero;
+        rectTransform.offsetMax = Vector2.zero;
+    }
+
+    private static T GetOrAddComponent<T>(GameObject gameObject) where T : Component
+    {
+        T component = gameObject.GetComponent<T>();
+        return component != null ? component : gameObject.AddComponent<T>();
     }
 
     private static void DisableLegacyUiRoots(Scene scene)
@@ -1134,5 +1607,430 @@ public sealed class SceneSetupValidatorWindow : EditorWindow
 
         parts.Reverse();
         return string.Join("/", parts);
+    }
+}
+
+public sealed class MerchantShopSlotPrefabMigrationWindow : EditorWindow
+{
+    private const string ShopSlotPrefabPath = "Assets/LeeJunMo/Prefab/Dialogue/ShopSlot.prefab";
+    private const string AnchorRootName = "ShopSlotAnchors";
+
+    private readonly List<SlotCandidate> slotCandidates = new List<SlotCandidate>();
+    private MerchantNPC selectedMerchant;
+    private ShopSlot shopSlotPrefab;
+    private Vector2 scrollPosition;
+
+    private sealed class SlotCandidate
+    {
+        public ShopSlot Slot;
+        public ShopSlotItemFilter Filter;
+    }
+
+    [MenuItem("Tools/Merchant/ShopSlot Prefab Migration")]
+    public static void ShowWindow()
+    {
+        GetWindow<MerchantShopSlotPrefabMigrationWindow>("ShopSlot Migration");
+    }
+
+    private void OnEnable()
+    {
+        shopSlotPrefab = AssetDatabase.LoadAssetAtPath<ShopSlot>(ShopSlotPrefabPath);
+        Selection.selectionChanged += HandleSelectionChanged;
+        RefreshFromSelection();
+    }
+
+    private void OnDisable()
+    {
+        Selection.selectionChanged -= HandleSelectionChanged;
+    }
+
+    private void OnGUI()
+    {
+        DrawSelectionFields();
+        DrawCandidateList();
+        DrawActions();
+    }
+
+    private void DrawSelectionFields()
+    {
+        EditorGUILayout.LabelField("Merchant ShopSlot Prefab Migration", EditorStyles.boldLabel);
+        EditorGUILayout.HelpBox(
+            "Use this for scene review only. It creates empty layout anchors, wires MerchantNPC.slotPrefab/slotAnchors, and can delete copied scene ShopSlot objects through Undo.",
+            MessageType.Info);
+
+        EditorGUI.BeginChangeCheck();
+        selectedMerchant = EditorGUILayout.ObjectField("Merchant", selectedMerchant, typeof(MerchantNPC), true) as MerchantNPC;
+        shopSlotPrefab = EditorGUILayout.ObjectField("ShopSlot Prefab", shopSlotPrefab, typeof(ShopSlot), false) as ShopSlot;
+        if (EditorGUI.EndChangeCheck())
+            RefreshCandidates();
+
+        using (new EditorGUILayout.HorizontalScope())
+        {
+            if (GUILayout.Button("Use Selection"))
+                RefreshFromSelection();
+
+            if (GUILayout.Button("Refresh Slots"))
+                RefreshCandidates();
+        }
+
+        if (shopSlotPrefab == null)
+        {
+            EditorGUILayout.HelpBox(
+                $"ShopSlot prefab was not found at {ShopSlotPrefabPath}. Assign it before migration.",
+                MessageType.Error);
+        }
+    }
+
+    private void DrawCandidateList()
+    {
+        EditorGUILayout.Space(6f);
+        EditorGUILayout.LabelField("Copied ShopSlots", EditorStyles.boldLabel);
+
+        if (selectedMerchant == null)
+        {
+            EditorGUILayout.HelpBox("Select or assign a MerchantNPC.", MessageType.Warning);
+            return;
+        }
+
+        if (slotCandidates.Count == 0)
+        {
+            EditorGUILayout.HelpBox("No copied ShopSlot references were found on this merchant.", MessageType.Warning);
+            return;
+        }
+
+        using (new EditorGUILayout.HorizontalScope())
+        {
+            if (GUILayout.Button("Apply Weapon / Relic / Consumable Pattern"))
+                ApplyDefaultFilterPattern();
+
+            if (GUILayout.Button("Set All Any"))
+                SetAllFilters(ShopSlotItemFilter.Any);
+        }
+
+        scrollPosition = EditorGUILayout.BeginScrollView(scrollPosition, GUILayout.MinHeight(120f));
+        for (int i = 0; i < slotCandidates.Count; i++)
+        {
+            SlotCandidate candidate = slotCandidates[i];
+            using (new EditorGUILayout.HorizontalScope(EditorStyles.helpBox))
+            {
+                EditorGUILayout.ObjectField($"Slot {i}", candidate.Slot, typeof(ShopSlot), true);
+                candidate.Filter = (ShopSlotItemFilter)EditorGUILayout.EnumPopup(candidate.Filter, GUILayout.Width(120f));
+
+                if (candidate.Slot != null && GUILayout.Button("Ping", GUILayout.Width(48f)))
+                    EditorGUIUtility.PingObject(candidate.Slot);
+            }
+        }
+
+        EditorGUILayout.EndScrollView();
+    }
+
+    private void DrawActions()
+    {
+        EditorGUILayout.Space(6f);
+        using (new EditorGUI.DisabledScope(!CanMigrate()))
+        {
+            if (GUILayout.Button("Create Anchors And Replace Copied Slots"))
+                MigrateSelectedMerchant(true);
+
+            if (GUILayout.Button("Create Anchors Only"))
+                MigrateSelectedMerchant(false);
+        }
+
+        EditorGUILayout.HelpBox(
+            "Create Anchors Only is for inspection. If copied ShopSlots remain active in the scene, play mode can show duplicate slots after prefab instantiation.",
+            MessageType.Warning);
+    }
+
+    private void HandleSelectionChanged()
+    {
+        MerchantNPC merchant = FindMerchantInSelection();
+        if (merchant == selectedMerchant)
+            return;
+
+        selectedMerchant = merchant;
+        RefreshCandidates();
+        Repaint();
+    }
+
+    private void RefreshFromSelection()
+    {
+        selectedMerchant = FindMerchantInSelection();
+        RefreshCandidates();
+    }
+
+    private static MerchantNPC FindMerchantInSelection()
+    {
+        GameObject activeGameObject = Selection.activeGameObject;
+        return activeGameObject != null
+            ? activeGameObject.GetComponentInParent<MerchantNPC>(true)
+            : null;
+    }
+
+    private void RefreshCandidates()
+    {
+        slotCandidates.Clear();
+        if (selectedMerchant == null)
+            return;
+
+        List<ShopSlot> slots = ReadAuthoredShopSlots(selectedMerchant);
+        for (int i = 0; i < slots.Count; i++)
+        {
+            ShopSlot slot = slots[i];
+            if (slot == null)
+                continue;
+
+            slotCandidates.Add(new SlotCandidate
+            {
+                Slot = slot,
+                Filter = ReadSlotFilter(slot)
+            });
+        }
+    }
+
+    private static List<ShopSlot> ReadAuthoredShopSlots(MerchantNPC merchant)
+    {
+        List<ShopSlot> slots = new List<ShopSlot>();
+        HashSet<ShopSlot> seen = new HashSet<ShopSlot>();
+
+        SerializedObject serializedMerchant = new SerializedObject(merchant);
+        SerializedProperty shopSlotsProperty = serializedMerchant.FindProperty("shopSlots");
+        if (shopSlotsProperty != null && shopSlotsProperty.isArray)
+        {
+            for (int i = 0; i < shopSlotsProperty.arraySize; i++)
+            {
+                ShopSlot slot = shopSlotsProperty.GetArrayElementAtIndex(i).objectReferenceValue as ShopSlot;
+                if (slot != null && seen.Add(slot))
+                    slots.Add(slot);
+            }
+        }
+
+        if (slots.Count > 0)
+            return slots;
+
+        ShopSlot[] childSlots = merchant.GetComponentsInChildren<ShopSlot>(true);
+        for (int i = 0; i < childSlots.Length; i++)
+        {
+            ShopSlot slot = childSlots[i];
+            if (slot != null && seen.Add(slot))
+                slots.Add(slot);
+        }
+
+        return slots;
+    }
+
+    private static ShopSlotItemFilter ReadSlotFilter(ShopSlot slot)
+    {
+        SerializedObject serializedSlot = new SerializedObject(slot);
+        SerializedProperty filterProperty = serializedSlot.FindProperty("itemFilter");
+        return filterProperty != null
+            ? (ShopSlotItemFilter)filterProperty.enumValueIndex
+            : ShopSlotItemFilter.Any;
+    }
+
+    private bool CanMigrate()
+    {
+        return selectedMerchant != null && shopSlotPrefab != null && slotCandidates.Count > 0;
+    }
+
+    private void ApplyDefaultFilterPattern()
+    {
+        for (int i = 0; i < slotCandidates.Count; i++)
+            slotCandidates[i].Filter = ResolveDefaultFilter(i);
+    }
+
+    private static ShopSlotItemFilter ResolveDefaultFilter(int index)
+    {
+        switch (index)
+        {
+            case 0:
+                return ShopSlotItemFilter.Weapon;
+            case 1:
+                return ShopSlotItemFilter.Relic;
+            case 2:
+                return ShopSlotItemFilter.Consumable;
+            default:
+                return ShopSlotItemFilter.Any;
+        }
+    }
+
+    private void SetAllFilters(ShopSlotItemFilter filter)
+    {
+        for (int i = 0; i < slotCandidates.Count; i++)
+            slotCandidates[i].Filter = filter;
+    }
+
+    private void MigrateSelectedMerchant(bool replaceCopiedSlots)
+    {
+        if (!CanMigrate())
+            return;
+
+        if (replaceCopiedSlots && !EditorUtility.DisplayDialog(
+                "Replace Copied ShopSlots",
+                "This creates empty anchors, wires the merchant to the ShopSlot prefab, and deletes the copied scene ShopSlot objects. The operation is undoable. Continue?",
+                "Replace",
+                "Cancel"))
+        {
+            return;
+        }
+
+        Undo.IncrementCurrentGroup();
+        int undoGroup = Undo.GetCurrentGroup();
+        Undo.SetCurrentGroupName("Migrate Merchant ShopSlots To Prefab");
+
+        Transform anchorRoot = FindOrCreateAnchorRoot(selectedMerchant, slotCandidates);
+        List<Transform> anchors = CreateAnchors(anchorRoot, slotCandidates);
+        List<ShopSlotItemFilter> filters = CaptureFilters(slotCandidates);
+
+        if (replaceCopiedSlots)
+            DestroyCopiedSlots(slotCandidates);
+
+        ApplyMerchantAuthoring(selectedMerchant, shopSlotPrefab, anchors, filters);
+        MarkSceneDirty(selectedMerchant);
+
+        Undo.CollapseUndoOperations(undoGroup);
+        Selection.activeObject = selectedMerchant;
+        RefreshCandidates();
+        Repaint();
+    }
+
+    private static Transform FindOrCreateAnchorRoot(MerchantNPC merchant, List<SlotCandidate> candidates)
+    {
+        Transform parent = ResolveCommonSlotParent(merchant.transform, candidates);
+        Transform existingRoot = parent.Find(AnchorRootName);
+        if (existingRoot != null)
+            return existingRoot;
+
+        GameObject rootObject = new GameObject(AnchorRootName);
+        Undo.RegisterCreatedObjectUndo(rootObject, "Create ShopSlot Anchor Root");
+        Transform root = rootObject.transform;
+        root.SetParent(parent, false);
+        root.localPosition = Vector3.zero;
+        root.localRotation = Quaternion.identity;
+        root.localScale = Vector3.one;
+        return root;
+    }
+
+    private static Transform ResolveCommonSlotParent(Transform fallbackParent, List<SlotCandidate> candidates)
+    {
+        Transform commonParent = null;
+        for (int i = 0; i < candidates.Count; i++)
+        {
+            ShopSlot slot = candidates[i].Slot;
+            if (slot == null || slot.transform.parent == null)
+                continue;
+
+            if (commonParent == null)
+            {
+                commonParent = slot.transform.parent;
+                continue;
+            }
+
+            if (commonParent != slot.transform.parent)
+                return fallbackParent;
+        }
+
+        return commonParent != null ? commonParent : fallbackParent;
+    }
+
+    private static List<Transform> CreateAnchors(Transform anchorRoot, List<SlotCandidate> candidates)
+    {
+        List<Transform> anchors = new List<Transform>();
+        for (int i = 0; i < candidates.Count; i++)
+        {
+            ShopSlot slot = candidates[i].Slot;
+            if (slot == null)
+                continue;
+
+            GameObject anchorObject = new GameObject(BuildUniqueChildName(anchorRoot, $"{slot.name}_Anchor"));
+            Undo.RegisterCreatedObjectUndo(anchorObject, "Create ShopSlot Anchor");
+
+            Transform anchor = anchorObject.transform;
+            anchor.SetParent(anchorRoot, false);
+            anchor.SetPositionAndRotation(slot.transform.position, slot.transform.rotation);
+            anchor.localScale = slot.transform.localScale;
+            anchors.Add(anchor);
+        }
+
+        return anchors;
+    }
+
+    private static string BuildUniqueChildName(Transform parent, string baseName)
+    {
+        if (parent.Find(baseName) == null)
+            return baseName;
+
+        int index = 1;
+        while (parent.Find($"{baseName}_{index}") != null)
+            index++;
+
+        return $"{baseName}_{index}";
+    }
+
+    private static List<ShopSlotItemFilter> CaptureFilters(List<SlotCandidate> candidates)
+    {
+        List<ShopSlotItemFilter> filters = new List<ShopSlotItemFilter>();
+        for (int i = 0; i < candidates.Count; i++)
+        {
+            if (candidates[i].Slot != null)
+                filters.Add(candidates[i].Filter);
+        }
+
+        return filters;
+    }
+
+    private static void DestroyCopiedSlots(List<SlotCandidate> candidates)
+    {
+        for (int i = 0; i < candidates.Count; i++)
+        {
+            ShopSlot slot = candidates[i].Slot;
+            if (slot != null)
+                Undo.DestroyObjectImmediate(slot.gameObject);
+        }
+    }
+
+    private static void ApplyMerchantAuthoring(
+        MerchantNPC merchant,
+        ShopSlot prefab,
+        List<Transform> anchors,
+        List<ShopSlotItemFilter> filters)
+    {
+        SerializedObject serializedMerchant = new SerializedObject(merchant);
+        serializedMerchant.Update();
+
+        SerializedProperty prefabProperty = serializedMerchant.FindProperty("slotPrefab");
+        if (prefabProperty != null)
+            prefabProperty.objectReferenceValue = prefab;
+
+        SerializedProperty anchorsProperty = serializedMerchant.FindProperty("slotAnchors");
+        if (anchorsProperty != null && anchorsProperty.isArray)
+        {
+            anchorsProperty.arraySize = anchors.Count;
+            for (int i = 0; i < anchors.Count; i++)
+            {
+                SerializedProperty anchorElement = anchorsProperty.GetArrayElementAtIndex(i);
+                SerializedProperty anchorProperty = anchorElement.FindPropertyRelative("anchor");
+                SerializedProperty filterProperty = anchorElement.FindPropertyRelative("itemFilter");
+
+                if (anchorProperty != null)
+                    anchorProperty.objectReferenceValue = anchors[i];
+
+                if (filterProperty != null)
+                    filterProperty.enumValueIndex = (int)filters[i];
+            }
+        }
+
+        SerializedProperty shopSlotsProperty = serializedMerchant.FindProperty("shopSlots");
+        if (shopSlotsProperty != null && shopSlotsProperty.isArray)
+            shopSlotsProperty.arraySize = 0;
+
+        serializedMerchant.ApplyModifiedProperties();
+        EditorUtility.SetDirty(merchant);
+    }
+
+    private static void MarkSceneDirty(MerchantNPC merchant)
+    {
+        Scene scene = merchant.gameObject.scene;
+        if (scene.IsValid())
+            EditorSceneManager.MarkSceneDirty(scene);
     }
 }

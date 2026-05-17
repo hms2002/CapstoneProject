@@ -49,6 +49,7 @@ public sealed class LightningSpearLoadout : WeaponAbilityLoadout
     [Header("Feedback Prefabs")]
     [SerializeField] private GameObject rushRangeIndicatorPrefab;
     [SerializeField] private GameObject selectedMarkIndicatorPrefab;
+    [SerializeField] private GameObject markHoverRangeIndicatorPrefab;
 
     public AbilityDefinition BaseAttack => baseAttack;
     public AbilityDefinition MarkRushOrSweep => markRushOrSweep;
@@ -89,6 +90,7 @@ public sealed class LightningSpearLoadout : WeaponAbilityLoadout
 
     public GameObject RushRangeIndicatorPrefab => rushRangeIndicatorPrefab;
     public GameObject SelectedMarkIndicatorPrefab => selectedMarkIndicatorPrefab;
+    public GameObject MarkHoverRangeIndicatorPrefab => markHoverRangeIndicatorPrefab;
 
     public override System.Type ExpectedRuntimeDataType => typeof(LightningSpearRuntimeData);
 

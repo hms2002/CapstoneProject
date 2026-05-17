@@ -8,6 +8,7 @@ using UnityEditor;
 public class LootManager : MonoBehaviour
 {
     private const string DefaultFieldItemPrefabResourcePath = "PF_FieldHealPickup2D";
+    private const string DefaultMagicStonePrefabResourcePath = "MagicStonePrefab";
 
     public static LootManager Instance { get; private set; }
 
@@ -17,6 +18,7 @@ public class LootManager : MonoBehaviour
     [Header("Settings")]
     [SerializeField] private GameObject worldItemPrefab;
     [SerializeField] private GameObject fieldItemPrefab;
+    [SerializeField] private GameObject magicStonePrefab;
 
     [Header("References")]
     [SerializeField] private List<StageLootTable> stageTables = new List<StageLootTable>();
@@ -31,6 +33,9 @@ public class LootManager : MonoBehaviour
     private LootPoolService poolService;
     private LootRollService rollService;
     private LootSpawnService spawnService;
+    private ChestLootGenerationService chestLootGenerationService;
+    private MonsterLootDropService monsterLootDropService;
+    private GraveLootDropService graveLootDropService;
 
     // 외부 시스템(Portal, RunModifier)과의 결합을 끊기 위한 데이터 제공자(Provider) 델리게이트
     // 외부(예: StageManager 등)에서 이 Func를 할당해주어 LootManager가 싱글톤에 의존하지 않게 합니다.
@@ -122,59 +127,48 @@ public class LootManager : MonoBehaviour
 
     public List<ScriptableObject> GenerateChestLoot(ChestRunModifierDelta extraModifiers)
     {
-        var drops = new List<ScriptableObject>();
+        return GenerateChestLootResult(new ChestLootRequest(extraModifiers)).ToList();
+    }
+
+    public ChestLootResult GenerateChestLootResult(ChestLootRequest request)
+    {
         StageLootTable table = GetCurrentTable();
         if (table == null)
-            return drops;
+            return ChestLootResult.Empty;
 
         EnsureServices();
 
-        HashSet<string> banList = poolService.BuildPlayerWeaponExclusionSet();
-        
         // 싱글톤 직접 참조 대신 외부에서 주입된 Provider를 통해 업그레이드 보너스 수치를 받아옵니다.
-        ChestRunModifierDelta chestModifiers = ResolveChestModifiers(extraModifiers);
+        ChestRunModifierDelta chestModifiers = ResolveChestModifiers(request.ExtraModifiers);
 
-        int weaponCount = rollService.PickCountInProfile(
-            table.ChestWeaponCountProfile,
-            chestModifiers.chestWeaponMinBonus,
-            chestModifiers.chestWeaponMaxBonus);
-        for (int i = 0; i < weaponCount; i++)
-        {
-            WeaponDefinition weapon = poolService.GetRandomWeapon(banList);
-            if (weapon == null)
-                continue;
+        return chestLootGenerationService.Generate(table, request, chestModifiers);
+    }
 
-            drops.Add(weapon);
-            banList.Add(weapon.weaponId);
-        }
+    public List<ScriptableObject> GenerateBossChestLoot()
+    {
+        return GenerateBossChestLoot(default);
+    }
 
-        int relicCount = rollService.PickCountInProfile(
-            table.ChestRelicCountProfile,
-            chestModifiers.chestRelicMinBonus,
-            chestModifiers.chestRelicMaxBonus);
-        for (int i = 0; i < relicCount; i++)
-        {
-            RelicDefinition relic = GetRandomRelic();
-            if (relic != null)
-                drops.Add(relic);
-        }
+    public List<ScriptableObject> GenerateBossChestLoot(ChestRunModifierDelta extraModifiers)
+    {
+        return GenerateBossChestLootResult(new ChestLootRequest(extraModifiers)).ToList();
+    }
 
-        int consumableCount = rollService.PickCountInProfile(table.ChestConsumableCountProfile);
-        for (int i = 0; i < consumableCount; i++)
-        {
-            ConsumableDefinition consumable = poolService.GetRandomConsumable();
-            if (consumable != null)
-                drops.Add(consumable);
-        }
+    public ChestLootResult GenerateBossChestLootResult(ChestLootRequest request)
+    {
+        StageLootTable table = GetCurrentTable();
+        if (table == null)
+            return ChestLootResult.Empty;
 
-        return drops;
+        EnsureServices();
+        return chestLootGenerationService.GenerateBoss(table, request, request.ExtraModifiers);
     }
 
     private ChestRunModifierDelta ResolveChestModifiers(ChestRunModifierDelta extraModifiers)
     {
         ChestRunModifierDelta modifiers = ChestModifierProvider != null
             ? ChestModifierProvider.Invoke()
-            : (RunModifierService.Instance != null ? RunModifierService.Instance.ChestModifiers : default);
+            : RunModifierService.CurrentRewardSnapshot.ChestModifiers;
 
         modifiers.Add(extraModifiers);
         return modifiers;
@@ -187,45 +181,7 @@ public class LootManager : MonoBehaviour
             return;
 
         EnsureServices();
-
-        MonsterLootType lootType = rollService.RollMonsterLootType(table);
-        switch (lootType)
-        {
-            case MonsterLootType.None:
-                return;
-
-            case MonsterLootType.Weapon:
-            {
-                HashSet<string> banList = poolService.BuildPlayerWeaponExclusionSet();
-                WeaponDefinition weapon = poolService.GetRandomWeapon(banList);
-                if (weapon != null)
-                    SpawnLootObject(position, weapon);
-                return;
-            }
-
-            case MonsterLootType.Relic:
-            {
-                RelicDefinition relic = GetRandomRelic();
-                if (relic != null)
-                    SpawnLootObject(position, relic);
-                return;
-            }
-
-            case MonsterLootType.Consumable:
-            {
-                ConsumableDefinition consumable = poolService.GetRandomConsumable();
-                if (consumable != null)
-                    SpawnLootObject(position, consumable);
-                return;
-            }
-
-            case MonsterLootType.FieldItem:
-                spawnService.SpawnFieldHealPickup(position);
-                return;
-
-            default:
-                return;
-        }
+        monsterLootDropService.Spawn(new MonsterLootDropRequest(position, table));
     }
 
     public void SpawnLootObject(Vector3 position, ScriptableObject itemData)
@@ -240,10 +196,22 @@ public class LootManager : MonoBehaviour
         spawnService.SpawnFieldHealPickup(position);
     }
 
+    public void SpawnMagicStonePickup(Vector3 position, int amount = 1)
+    {
+        EnsureServices();
+        spawnService.SpawnMagicStonePickup(position, amount);
+    }
+
     public int GetBossMagicStoneCount()
     {
         StageLootTable table = GetCurrentTable();
-        return table != null ? table.bossStoneCount : 0;
+        return table != null ? Mathf.Max(0, table.bossStoneCount) : 0;
+    }
+
+    public int GetBossFieldHealBaseCount()
+    {
+        StageLootTable table = GetCurrentTable();
+        return table != null ? Mathf.Max(0, table.BossFieldHealBaseCount) : 0;
     }
 
     public void SpawnGraveLoot(Vector3 position, GraveType type, int bonusMinCount = 0, int bonusMaxCount = 0, float bonusRareChance = 0f, float bonusEpicChance = 0f)
@@ -256,55 +224,28 @@ public class LootManager : MonoBehaviour
         if (currentGraveTable == null)
             return;
 
-        switch (type)
-        {
-            case GraveType.Weapon:
-                SpawnWeaponGraveLoot(position, currentGraveTable, bonusMinCount, bonusMaxCount);
-                break;
-
-            case GraveType.Relic:
-                SpawnRelicGraveLoot(position, currentGraveTable, bonusMinCount, bonusMaxCount, bonusRareChance, bonusEpicChance);
-                break;
-        }
-    }
-
-    private void SpawnWeaponGraveLoot(Vector3 position, GraveLootTable currentGraveTable, int bonusMinCount, int bonusMaxCount)
-    {
-        int totalCount = rollService.PickCountInProfile(
-            currentGraveTable.WeaponDropCountProfile,
+        graveLootDropService.Spawn(new GraveLootDropRequest(
+            position,
+            type,
+            currentGraveTable,
             bonusMinCount,
-            bonusMaxCount);
-        List<Vector3> landingPositions = spawnService.GetHorizontalGroundPositions(position, 1);
-
-        for (int i = 0; i < totalCount; i++)
-        {
-            WeaponDefinition weapon = poolService.GetRandomWeapon(new HashSet<string>());
-            if (weapon != null)
-                SpawnAnimatedGraveLoot(position, landingPositions, i, weapon);
-        }
-    }
-
-    private void SpawnRelicGraveLoot(Vector3 position, GraveLootTable currentGraveTable, int bonusMinCount, int bonusMaxCount, float bonusRareChance, float bonusEpicChance)
-    {
-        int totalCount = rollService.PickCountInProfile(
-            currentGraveTable.RelicDropCountProfile,
-            bonusMinCount,
-            bonusMaxCount);
-        List<Vector3> landingPositions = spawnService.GetHorizontalGroundPositions(position, 1);
-
-        for (int i = 0; i < totalCount; i++)
-        {
-            ItemRarity rarity = rollService.RollGraveRelicRarity(currentGraveTable, bonusRareChance, bonusEpicChance);
-            RelicDefinition relic = GetRandomRelicByRarity(rarity);
-            if (relic != null)
-                SpawnAnimatedGraveLoot(position, landingPositions, i, relic);
-        }
+            bonusMaxCount,
+            bonusRareChance,
+            bonusEpicChance));
     }
 
     private void EnsureServices()
     {
-        if (tableResolver == null || poolService == null || rollService == null || spawnService == null)
+        if (tableResolver == null ||
+            poolService == null ||
+            rollService == null ||
+            spawnService == null ||
+            chestLootGenerationService == null ||
+            monsterLootDropService == null ||
+            graveLootDropService == null)
+        {
             RefreshServices();
+        }
     }
 
     private void RefreshServices(bool editorSafe = false)
@@ -312,7 +253,13 @@ public class LootManager : MonoBehaviour
         tableResolver = new LootTableResolver(stageTables, graveLootTable);
         poolService = new LootPoolService();
         rollService = new LootRollService();
-        spawnService = new LootSpawnService(worldItemPrefab, ResolveFieldItemPrefab(editorSafe));
+        spawnService = new LootSpawnService(
+            worldItemPrefab,
+            ResolveFieldItemPrefab(editorSafe),
+            ResolveMagicStonePrefab(editorSafe));
+        chestLootGenerationService = new ChestLootGenerationService(poolService, rollService, GetRandomRelic, GetRandomRelicByRarity);
+        monsterLootDropService = new MonsterLootDropService(poolService, rollService, spawnService, GetRandomRelic);
+        graveLootDropService = new GraveLootDropService(poolService, rollService, spawnService, GetRandomRelicByRarity);
     }
 
     private GameObject ResolveFieldItemPrefab(bool editorSafe = false)
@@ -328,6 +275,19 @@ public class LootManager : MonoBehaviour
         return Resources.Load<GameObject>(DefaultFieldItemPrefabResourcePath);
     }
 
+    private GameObject ResolveMagicStonePrefab(bool editorSafe = false)
+    {
+        if (magicStonePrefab != null)
+            return magicStonePrefab;
+
+#if UNITY_EDITOR
+        if (editorSafe && !Application.isPlaying)
+            return null;
+#endif
+
+        return Resources.Load<GameObject>(DefaultMagicStonePrefabResourcePath);
+    }
+
     private StageLootTable GetCurrentTable()
     {
         EnsureServices();
@@ -340,12 +300,4 @@ public class LootManager : MonoBehaviour
         return poolService.GetRandomRelicByRarity(targetRarity);
     }
 
-    private void SpawnAnimatedGraveLoot(Vector3 originPosition, List<Vector3> landingPositions, int dropIndex, ScriptableObject itemData)
-    {
-        Vector3 landingPosition = landingPositions != null && landingPositions.Count > 0
-            ? landingPositions[dropIndex % landingPositions.Count]
-            : originPosition + spawnService.GetRandomScatterOffset();
-
-        spawnService.SpawnAnimatedLootObject(originPosition, landingPosition, itemData);
-    }
 }

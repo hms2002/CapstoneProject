@@ -108,7 +108,7 @@ public class DropZoneUI : MonoBehaviour, IDropHandler
             ? playerTransform.position
             : (dropOrigin != null ? dropOrigin.position : Vector3.zero);
 
-        var spawnService = new LootSpawnService(worldDropPrefab.gameObject, null);
+        var spawnService = new LootSpawnService(worldDropPrefab.gameObject, null, null);
         var candidatePositions = spawnService.GetForwardGroundPositions(spawnOrigin, directionSource);
         Vector3 landingPosition = candidatePositions.Count > 0
             ? candidatePositions[Random.Range(0, candidatePositions.Count)]

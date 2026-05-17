@@ -74,6 +74,11 @@ public sealed class MouseCursorService : MonoBehaviour
     [Header("Theme")]
     [SerializeField] private MouseCursorTheme themeOverride;
 
+    [Header("Authoring")]
+    [SerializeField] private Canvas authoredCursorCanvas;
+    [SerializeField] private RectTransform authoredCursorRect;
+    [SerializeField] private Image authoredCursorImage;
+
     [Header("Software Cursor Fallback")]
     [SerializeField] private bool hideSystemCursorWhileSpriteActive = true;
     [SerializeField] private int overlaySortingOrder = short.MaxValue;
@@ -246,9 +251,17 @@ public sealed class MouseCursorService : MonoBehaviour
         if (cursorCanvas != null && cursorRect != null && cursorImage != null)
             return;
 
+        if (TryBindAuthoredRuntimePresentation())
+            return;
+
         Transform canvasTransform = transform.Find("MouseCursorCanvas");
         if (canvasTransform == null)
         {
+            RuntimePresentationFallbackAudit.Record(
+                this,
+                "Mouse cursor canvas fallback",
+                "an authored cursor canvas/image under the cursor service prefab or global UI root");
+
             GameObject canvasObject = new GameObject("MouseCursorCanvas", typeof(RectTransform), typeof(Canvas));
             canvasTransform = canvasObject.transform;
             canvasTransform.SetParent(transform, false);
@@ -282,6 +295,27 @@ public sealed class MouseCursorService : MonoBehaviour
             cursorRect.anchorMax = Vector2.zero;
             cursorRect.anchoredPosition = Vector2.zero;
         }
+    }
+
+    private bool TryBindAuthoredRuntimePresentation()
+    {
+        if (authoredCursorCanvas == null || authoredCursorImage == null)
+            return false;
+
+        cursorCanvas = authoredCursorCanvas;
+        cursorImage = authoredCursorImage;
+        cursorRect = authoredCursorRect != null ? authoredCursorRect : authoredCursorImage.rectTransform;
+        if (cursorRect == null)
+            return false;
+
+        cursorCanvas.renderMode = RenderMode.ScreenSpaceOverlay;
+        cursorCanvas.overrideSorting = true;
+        cursorCanvas.sortingOrder = overlaySortingOrder;
+        cursorImage.raycastTarget = false;
+        cursorRect.anchorMin = Vector2.zero;
+        cursorRect.anchorMax = Vector2.zero;
+        cursorRect.anchoredPosition = Vector2.zero;
+        return true;
     }
 
     private void EnsureThemeLoaded()

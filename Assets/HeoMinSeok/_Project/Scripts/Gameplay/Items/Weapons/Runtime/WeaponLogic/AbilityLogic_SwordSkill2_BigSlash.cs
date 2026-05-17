@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace UnityGAS.Sample
@@ -57,37 +56,12 @@ namespace UnityGAS.Sample
                 ? cfg.staggerFormula.Evaluate(system.AttributeSet, statProvider, defaultIfEmpty: 0f)
                 : Mathf.Max(0f, data.baseStaggerDamage);
 
-            List<ElementDamageInput> elementInputs = null;
-            if (cfg != null && cfg.includeElementBuildUp && cfg.HasElementFormulas)
-            {
-                elementInputs = new List<ElementDamageInput>(cfg.elementFormulas.Length);
-                for (int i = 0; i < cfg.elementFormulas.Length; i++)
-                {
-                    var e = cfg.elementFormulas[i];
-                    if (e == null || e.elementType == null || e.formula == null) continue;
-
-                    float v = e.formula.Evaluate(system.AttributeSet, statProvider, defaultIfEmpty: 0f);
-                    if (v <= 0f) continue;
-
-                    elementInputs.Add(new ElementDamageInput
-                    {
-                        elementType = e.elementType,
-                        baseDamage = v
-                    });
-                }
-            }
-            else if (data.elementDamages != null && data.elementDamages.Count > 0)
-            {
-                elementInputs = new List<ElementDamageInput>(data.elementDamages);
-            }
-
             var snapshot = DamageSnapshotBuilder.BuildFromBaseValues(
                 statProvider: statProvider,
                 config: cfg,
                 baseHp: baseHp,
                 baseStagger: baseStagger,
-                baseKnockback: baseKnockback,
-                elementInputs: elementInputs
+                baseKnockback: baseKnockback
             );
 
             var payload = CombatHitPayload.FromSnapshot(

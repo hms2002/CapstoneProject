@@ -1,9 +1,5 @@
 using UnityEngine;
 
-/// <summary>
-/// 책임 : 월드에 떨어진 일반 아이템(무기/유물/1회용 아이템)을 상호작용 대상으로 노출하고,
-/// 플레이어가 획득을 시도하면 적절한 장착 인벤토리로 즉시 전달한다.
-/// </summary>
 [RequireComponent(typeof(Collider2D))]
 public class WorldItemPickup2D : InteractableBase
 {
@@ -14,14 +10,19 @@ public class WorldItemPickup2D : InteractableBase
     [SerializeField] private string interactPromptText = "획득하기";
 
     [Header("Visual (optional)")]
+    [SerializeField] private ItemDisplayVisualPresenter2D itemDisplayPresenter;
     [SerializeField] private SpriteRenderer spriteRenderer;
+    [SerializeField] private WorldDropSpritePresenter2D dropSpritePresenter;
+
+    [SerializeField] private bool interactionLocked;
+    [SerializeField] private int relicLevel = 0;
+
     private MaterialPropertyBlock outlinePropertyBlock;
     private Collider2D triggerCollider;
 
     public ScriptableObject Item => item;
-    [SerializeField] private bool interactionLocked;
-    [SerializeField] private int relicLevel = 0;
     public int RelicLevel => relicLevel;
+
     public void SetItem(ScriptableObject so, int relicLevelOverride = 0)
     {
         item = so;
@@ -37,7 +38,7 @@ public class WorldItemPickup2D : InteractableBase
 
     private void Awake()
     {
-        if (spriteRenderer == null) spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+        ResolveVisualRefs();
         outlinePropertyBlock = new MaterialPropertyBlock();
 
         triggerCollider = GetComponent<Collider2D>();
@@ -69,7 +70,11 @@ public class WorldItemPickup2D : InteractableBase
         if (item == null || interactionLocked)
             return;
 
-        if (spriteRenderer != null)
+        if (itemDisplayPresenter != null)
+        {
+            itemDisplayPresenter.SetOutline(true);
+        }
+        else if (spriteRenderer != null)
         {
             spriteRenderer.GetPropertyBlock(outlinePropertyBlock);
             outlinePropertyBlock.SetFloat(OutlineEnabledID, 1f);
@@ -81,7 +86,11 @@ public class WorldItemPickup2D : InteractableBase
 
     public override void OnUnHighlight()
     {
-        if (spriteRenderer != null)
+        if (itemDisplayPresenter != null)
+        {
+            itemDisplayPresenter.SetOutline(false);
+        }
+        else if (spriteRenderer != null)
         {
             spriteRenderer.GetPropertyBlock(outlinePropertyBlock);
             outlinePropertyBlock.SetFloat(OutlineEnabledID, 0f);
@@ -96,20 +105,16 @@ public class WorldItemPickup2D : InteractableBase
         if (item == null)
             return;
 
-        bool pickedUp = item switch
-        {
-            WeaponDefinition weapon => TryPickupWeapon(player, weapon),
-            RelicDefinition relic => TryPickupRelic(player, relic),
-            ConsumableDefinition consumable => TryPickupConsumable(player, consumable),
-            _ => false
-        };
+        WorldPickupDeliveryResult result = WorldPickupDeliveryService.TryDeliver(
+            new WorldPickupDeliveryRequest(player, item, RelicLevel));
 
-        if (pickedUp)
+        if (result.Succeeded)
         {
             Destroy(gameObject);
             return;
         }
 
+        ShowPickupWarning(result.WarningCode);
         SpeakPickupFailed(player);
     }
 
@@ -134,63 +139,10 @@ public class WorldItemPickup2D : InteractableBase
             triggerCollider.enabled = !locked;
     }
 
-    private bool TryPickupWeapon(IPlayerInteractor player, WeaponDefinition weapon)
+    private static void ShowPickupWarning(WarningPopupCode code)
     {
-        var weaponInventory = ResolveWeaponInventory(player);
-        return weaponInventory != null && weaponInventory.TryPickupWeapon(weapon);
-    }
-
-    private bool TryPickupRelic(IPlayerInteractor player, RelicDefinition relic)
-    {
-        var relicInventory = ResolveRelicInventory(player);
-        if (relicInventory == null)
-            return false;
-
-        int levelOverride = RelicLevel > 0 ? RelicLevel : -1;
-        RelicInventory.AcquireResult result = relicInventory.TryAcquireOrUpgradeDetailed(relic, levelOverride);
-        if (result == RelicInventory.AcquireResult.Success)
-            return true;
-
-        ShowRelicPickupWarning(result);
-        return false;
-    }
-
-    private bool TryPickupConsumable(IPlayerInteractor player, ConsumableDefinition consumable)
-    {
-        var consumableInventory = ResolveConsumableInventory(player);
-        if (consumableInventory == null)
-            return false;
-
-        PlayerConsumableInventory.AcquireResult result = consumableInventory.TryAcquireDetailed(consumable);
-        if (result == PlayerConsumableInventory.AcquireResult.Success)
-            return true;
-
-        ShowConsumablePickupWarning(result);
-        return false;
-    }
-
-    private static WeaponInventory2D ResolveWeaponInventory(IPlayerInteractor player)
-    {
-        if (player is Component component)
-            return component.GetComponent<WeaponInventory2D>();
-
-        return null;
-    }
-
-    private static RelicInventory ResolveRelicInventory(IPlayerInteractor player)
-    {
-        if (player is Component component)
-            return component.GetComponent<RelicInventory>();
-
-        return null;
-    }
-
-    private static PlayerConsumableInventory ResolveConsumableInventory(IPlayerInteractor player)
-    {
-        if (player is Component component)
-            return PlayerConsumableInventory.GetOrAdd(component.transform);
-
-        return null;
+        if (code != WarningPopupCode.None)
+            UIManager.Instance?.ShowWarning(code);
     }
 
     private static void SpeakPickupFailed(IPlayerInteractor player)
@@ -199,48 +151,47 @@ public class WorldItemPickup2D : InteractableBase
             playerInteractor.SpeakSituation(PlayerSpeechSituationEnum.InventoryFull);
     }
 
-    /// <summary>
-    /// 책임 :
-    /// - 월드 유물 픽업 실패 사유를 UIManager 경고 팝업 코드로 변환해 전달한다.
-    /// - 픽업 도메인 로직과 실제 경고 문구/표시 방식의 결합을 줄인다.
-    /// </summary>
-    private static void ShowRelicPickupWarning(RelicInventory.AcquireResult result)
-    {
-        WarningPopupCode code = result switch
-        {
-            RelicInventory.AcquireResult.InventoryFull => WarningPopupCode.RelicInventoryFull,
-            RelicInventory.AcquireResult.AlreadyMaxLevel => WarningPopupCode.RelicAlreadyMaxLevel,
-            _ => WarningPopupCode.None
-        };
-
-        if (code != WarningPopupCode.None)
-            UIManager.Instance?.ShowWarning(code);
-    }
-
-    /// <summary>
-    /// 책임 :
-    /// - 월드 1회용 아이템 픽업 실패 사유를 UIManager 경고 팝업 코드로 변환해 전달한다.
-    /// - 1회용 아이템 인벤토리 부족을 조용한 실패가 아니라 즉시 읽히는 피드백으로 바꾼다.
-    /// </summary>
-    private static void ShowConsumablePickupWarning(PlayerConsumableInventory.AcquireResult result)
-    {
-        WarningPopupCode code = result switch
-        {
-            PlayerConsumableInventory.AcquireResult.InventoryFull => WarningPopupCode.ConsumableInventoryFull,
-            _ => WarningPopupCode.None
-        };
-
-        if (code != WarningPopupCode.None)
-            UIManager.Instance?.ShowWarning(code);
-    }
-
     private void RefreshVisual()
     {
-        if (spriteRenderer == null) return;
-        var def = item != null ? item.AsDef() : null;
+        if (itemDisplayPresenter != null)
+        {
+            itemDisplayPresenter.Apply(item);
+            spriteRenderer = itemDisplayPresenter.FallbackRenderer;
+            return;
+        }
 
-        // Uses UI icon as a simple world sprite (good enough for prototyping).
-        spriteRenderer.sprite = def != null ? def.Icon : null;
+        var def = item != null ? item.AsDef() : null;
+        Sprite sprite = def != null ? def.Icon : null;
+
+        if (dropSpritePresenter != null)
+        {
+            dropSpritePresenter.Apply(sprite, item is WeaponDefinition);
+            spriteRenderer = dropSpritePresenter.Renderer;
+            return;
+        }
+
+        if (spriteRenderer == null)
+            return;
+
+        spriteRenderer.sprite = sprite;
         spriteRenderer.enabled = spriteRenderer.sprite != null;
+    }
+
+    private void ResolveVisualRefs()
+    {
+        if (itemDisplayPresenter == null)
+            itemDisplayPresenter = GetComponentInChildren<ItemDisplayVisualPresenter2D>(includeInactive: true);
+
+        if (itemDisplayPresenter != null)
+            spriteRenderer = itemDisplayPresenter.FallbackRenderer;
+
+        if (dropSpritePresenter == null)
+            dropSpritePresenter = GetComponentInChildren<WorldDropSpritePresenter2D>(includeInactive: true);
+
+        if (itemDisplayPresenter == null && dropSpritePresenter != null)
+            spriteRenderer = dropSpritePresenter.Renderer;
+
+        if (spriteRenderer == null)
+            spriteRenderer = GetComponentInChildren<SpriteRenderer>(includeInactive: true);
     }
 }

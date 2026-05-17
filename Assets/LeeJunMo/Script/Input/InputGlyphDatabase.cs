@@ -310,6 +310,7 @@ public sealed class InputGlyphDatabase : ScriptableObject
             KeyCode.PageUp => "PgUp",
             KeyCode.PageDown => "PgDn",
             KeyCode.CapsLock => "Caps",
+            KeyCode.BackQuote => "`",
             KeyCode.LeftShift => "LShift",
             KeyCode.RightShift => "RShift",
             KeyCode.LeftControl => "LCtrl",

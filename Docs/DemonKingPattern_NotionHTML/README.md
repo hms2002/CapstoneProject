@@ -1,3 +1,10 @@
+---
+status: active
+authority: reference-only
+category: external-artifact
+last_reviewed: 2026-05-15
+---
+
 # DemonKing Pattern Notion HTML Artifact
 
 Source Notion page: https://www.notion.so/0329ca2053b38346aad00140df404bd9

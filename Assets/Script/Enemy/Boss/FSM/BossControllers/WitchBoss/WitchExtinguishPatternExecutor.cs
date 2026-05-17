@@ -213,7 +213,6 @@ public sealed class WitchExtinguishPatternExecutor : MonoBehaviour
             finalHpDamage: context.DamageAmount,
             finalStaggerBuildUp: 0f,
             finalKnockbackImpulse: 0f,
-            elementBuildUps: null,
             isCriticalHit: false);
 
         CombatHitPayload payload = CombatHitPayload.FromSnapshot(

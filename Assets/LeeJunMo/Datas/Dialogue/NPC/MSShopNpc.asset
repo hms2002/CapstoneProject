@@ -16,7 +16,9 @@ MonoBehaviour:
   npcName: "\uC0C1\uC778"
   isBoss: 0
   primaryInk: {fileID: 4900000, guid: 1b74491ac05767b4e9e93bc5a9910555, type: 3}
+  bossEncounterInk: {fileID: 0}
+  bossEncounterDialogues: []
   dialogueTheme: {fileID: 11400000, guid: 2df553bfa70756f4c8272d84231479aa, type: 2}
   affectionRewards: []
-  spriteLibraryAsset: {fileID: 7108339969198208228, guid: 11fe976bca44ca04996308bdbaf83e5c, type: 3}
+  spriteLibraryAsset: {fileID: 7108339969198208228, guid: 738261c1c46adaa4a9eba68347b79fa5, type: 3}
   emoteOffset: {x: 75, y: 100}

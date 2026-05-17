@@ -33,6 +33,7 @@ public class RewardDisplayUI : MonoBehaviour, IStackableUI
     private float dimPanelOpenAlpha = 1f;
     private bool hasDimPanelOpenAlpha;
     private bool isClosing;
+    private GameFlowInputBlocker openPresentationInputBlocker;
 
     public bool IsActive => panelRoot != null && panelRoot.activeSelf;
     public bool CanCloseOnEscape => true;
@@ -61,10 +62,16 @@ public class RewardDisplayUI : MonoBehaviour, IStackableUI
 
     private void OnDestroy()
     {
+        ReleaseOpenPresentationInputBlock();
         RewardDisplayService.Instance?.UnregisterView(this);
 
         if (Instance == this)
             Instance = null;
+    }
+
+    private void OnDisable()
+    {
+        ReleaseOpenPresentationInputBlock();
     }
 
     public void OpenUI()
@@ -77,6 +84,7 @@ public class RewardDisplayUI : MonoBehaviour, IStackableUI
             panelRoot.SetActive(true);
 
         PrepareContentForOpenPresentation();
+        AcquireOpenPresentationInputBlock();
         presentationRoutine = StartCoroutine(PlayOpenPresentation());
     }
 
@@ -214,10 +222,17 @@ public class RewardDisplayUI : MonoBehaviour, IStackableUI
 
     private IEnumerator PlayOpenPresentation()
     {
-        SetDimPanelAlpha(0f);
-        yield return FadeDimPanel(dimPanelOpenAlpha, dimFadeInDuration, EaseOutCubic);
-        yield return PlayContentOpenPresentation();
-        presentationRoutine = null;
+        try
+        {
+            SetDimPanelAlpha(0f);
+            yield return FadeDimPanel(dimPanelOpenAlpha, dimFadeInDuration, EaseOutCubic);
+            yield return PlayContentOpenPresentation();
+        }
+        finally
+        {
+            ReleaseOpenPresentationInputBlock();
+            presentationRoutine = null;
+        }
     }
 
     private IEnumerator PlayClosePresentation()
@@ -373,11 +388,27 @@ public class RewardDisplayUI : MonoBehaviour, IStackableUI
 
     private void StopPresentationRoutine()
     {
+        ReleaseOpenPresentationInputBlock();
+
         if (presentationRoutine == null)
             return;
 
         StopCoroutine(presentationRoutine);
         presentationRoutine = null;
+    }
+
+    private void AcquireOpenPresentationInputBlock()
+    {
+        if (openPresentationInputBlocker != null && openPresentationInputBlocker.IsBlocking)
+            return;
+
+        openPresentationInputBlocker = GameFlowInputBlocker.GetOrAdd(this);
+        openPresentationInputBlocker?.Acquire();
+    }
+
+    private void ReleaseOpenPresentationInputBlock()
+    {
+        openPresentationInputBlocker?.Release();
     }
 
     private void ResolvePresentationReferences()

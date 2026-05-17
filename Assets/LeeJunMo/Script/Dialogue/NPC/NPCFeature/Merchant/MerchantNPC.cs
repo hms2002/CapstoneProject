@@ -1,13 +1,26 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 public sealed class MerchantNPC : MonoBehaviour
 {
+    [Serializable]
+    private struct ShopSlotAnchorDefinition
+    {
+        [SerializeField] private Transform anchor;
+        [SerializeField] private ShopSlotItemFilter itemFilter;
+
+        public Transform Anchor => anchor;
+        public ShopSlotItemFilter ItemFilter => itemFilter;
+    }
+
     [Header("Data (Stable ID)")]
     [SerializeField] private string merchantId;
 
     [Header("Shop Setup")]
     [SerializeField] private ShopDefinitionSO shopDefinition;
+    [SerializeField] private ShopSlot slotPrefab;
+    [SerializeField] private ShopSlotAnchorDefinition[] slotAnchors;
     [SerializeField] private ShopSlot[] shopSlots;
 
     [Header("Presentation")]
@@ -40,6 +53,7 @@ public sealed class MerchantNPC : MonoBehaviour
 
     private readonly MerchantRunStateService runStateService = new MerchantRunStateService();
     private readonly ShopInventoryRoll inventoryRoll = new ShopInventoryRoll();
+    private readonly LootPoolService lootPoolService = new LootPoolService();
     private readonly MerchantPurchaseService purchaseService = new MerchantPurchaseService();
 
     private MerchantRuntimeState runtimeState;
@@ -58,13 +72,13 @@ public sealed class MerchantNPC : MonoBehaviour
                     return;
 
                 GenerateID();
-                CollectSlotsFromChildren();
+                ResolveShopSlotReferences();
                 CollectRefreshInteractablesFromChildren();
             };
             return;
         }
 
-        CollectSlotsFromChildren();
+        ResolveShopSlotReferences();
         CollectRefreshInteractablesFromChildren();
     }
 
@@ -79,7 +93,7 @@ public sealed class MerchantNPC : MonoBehaviour
 
     private void Reset()
     {
-        CollectSlotsFromChildren();
+        ResolveShopSlotReferences();
         CollectRefreshInteractablesFromChildren();
     }
 
@@ -88,7 +102,7 @@ public sealed class MerchantNPC : MonoBehaviour
         if (speechBubble == null)
             speechBubble = GetComponent<SpeechBubbleComponent>();
 
-        CollectSlotsFromChildren();
+        ResolveShopSlotReferences();
         CollectRefreshInteractablesFromChildren();
         BindSlots();
         BindRefreshInteractables();
@@ -310,13 +324,12 @@ public sealed class MerchantNPC : MonoBehaviour
 
     private ShopRunModifierDelta ResolveShopModifiers()
     {
-        return RunModifierService.Instance != null
-            ? RunModifierService.Instance.ShopModifiers
-            : default;
+        return RunModifierService.CurrentRewardSnapshot.ShopModifiers;
     }
 
     private MerchantShopPolicySnapshot ResolveShopPolicy()
     {
+        ResolveShopSlotReferences();
         int authoredSlotCount = shopSlots != null ? shopSlots.Length : 0;
         return MerchantShopPolicy.Resolve(shopDefinition, ResolveShopModifiers(), authoredSlotCount);
     }
@@ -327,8 +340,29 @@ public sealed class MerchantNPC : MonoBehaviour
         IReadOnlyCollection<MerchantStockEntryState> excludedEntries)
     {
         return shopDefinition != null
-            ? inventoryRoll.RollStock(slotCount, shopDefinition.StockRollWeights, effectivePriceSettings, excludedEntries)
+            ? inventoryRoll.RollStock(
+                slotCount,
+                shopDefinition.StockRollWeights,
+                shopDefinition.MaxWeaponSlots,
+                shopDefinition.MaxConsumableSlots,
+                effectivePriceSettings,
+                lootPoolService.BuildWeaponExclusionSet(LootPoolContext.ShopStock),
+                excludedEntries,
+                BuildSlotFilters(slotCount))
             : new List<MerchantStockEntryState>();
+    }
+
+    private IReadOnlyList<ShopSlotItemFilter> BuildSlotFilters(int slotCount)
+    {
+        ShopSlotItemFilter[] filters = new ShopSlotItemFilter[Mathf.Max(0, slotCount)];
+        for (int i = 0; i < filters.Length; i++)
+        {
+            filters[i] = shopSlots != null && i < shopSlots.Length && shopSlots[i] != null
+                ? shopSlots[i].ItemFilter
+                : ShopSlotItemFilter.Any;
+        }
+
+        return filters;
     }
 
     private void ApplyShopAvailability(bool isAvailable, int activeSlotCount)
@@ -447,6 +481,79 @@ public sealed class MerchantNPC : MonoBehaviour
 
         if (code != WarningPopupCode.None)
             UIManager.Instance?.ShowWarning(code);
+    }
+
+    private void ResolveShopSlotReferences()
+    {
+        if (Application.isPlaying && HasPrefabSlotAuthoring())
+        {
+            EnsurePrefabSlots();
+            return;
+        }
+
+        CollectSlotsFromChildren();
+    }
+
+    private bool HasPrefabSlotAuthoring()
+    {
+        return slotPrefab != null && slotAnchors != null && slotAnchors.Length > 0;
+    }
+
+    private void EnsurePrefabSlots()
+    {
+        var resolvedSlots = new List<ShopSlot>();
+
+        for (int i = 0; i < slotAnchors.Length; i++)
+        {
+            Transform anchor = slotAnchors[i].Anchor;
+            if (anchor == null)
+                continue;
+
+            ShopSlot slot = FindSlotAtAnchor(anchor);
+            if (slot == null && slotPrefab != null)
+                slot = Instantiate(slotPrefab, anchor);
+
+            if (slot == null)
+                continue;
+
+            ResetSlotTransform(slot.transform, anchor);
+            slot.ApplyRuntimeItemFilter(slotAnchors[i].ItemFilter);
+            resolvedSlots.Add(slot);
+        }
+
+        shopSlots = resolvedSlots.ToArray();
+    }
+
+    private static ShopSlot FindSlotAtAnchor(Transform anchor)
+    {
+        if (anchor == null)
+            return null;
+
+        ShopSlot directSlot = anchor.GetComponent<ShopSlot>();
+        if (directSlot != null)
+            return directSlot;
+
+        for (int i = 0; i < anchor.childCount; i++)
+        {
+            ShopSlot childSlot = anchor.GetChild(i).GetComponent<ShopSlot>();
+            if (childSlot != null)
+                return childSlot;
+        }
+
+        return anchor.GetComponentInChildren<ShopSlot>(true);
+    }
+
+    private static void ResetSlotTransform(Transform slotTransform, Transform anchor)
+    {
+        if (slotTransform == null || anchor == null || slotTransform == anchor)
+            return;
+
+        if (slotTransform.parent != anchor)
+            slotTransform.SetParent(anchor, false);
+
+        slotTransform.localPosition = Vector3.zero;
+        slotTransform.localRotation = Quaternion.identity;
+        slotTransform.localScale = Vector3.one;
     }
 
     private void CollectSlotsFromChildren()

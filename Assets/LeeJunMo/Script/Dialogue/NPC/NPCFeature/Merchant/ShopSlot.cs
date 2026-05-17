@@ -1,10 +1,27 @@
 using TMPro;
 using UnityEngine;
 
+/// <summary>
+/// 책임 :
+/// - 상점 슬롯의 구매 상호작용, 가격 표시, 진열 아이템 표시를 관리한다.
+/// - 아이템 icon의 원본 크기와 pivot 차이를 슬롯 기준 표시 규칙에 맞춰 정규화한다.
+/// </summary>
 [RequireComponent(typeof(Collider2D))]
 public sealed class ShopSlot : InteractableBase
 {
     private static readonly int OutlineEnabledID = Shader.PropertyToID("_OutlineEnabled");
+
+    private enum ItemSpriteNormalizeMode
+    {
+        Height,
+        FitBox
+    }
+
+    private enum ItemSpriteAnchorMode
+    {
+        Center,
+        Bottom
+    }
 
     private enum PriceIconPositionMode
     {
@@ -17,6 +34,9 @@ public sealed class ShopSlot : InteractableBase
     [SerializeField] private MerchantNPC owner;
     [SerializeField] private int slotIndex = -1;
 
+    [Header("Stock Filter")]
+    [SerializeField] private ShopSlotItemFilter itemFilter = ShopSlotItemFilter.Any;
+
     [Header("Anchors")]
     [SerializeField] private Transform promptAnchor;
     [SerializeField] private Transform detailAnchor;
@@ -27,8 +47,18 @@ public sealed class ShopSlot : InteractableBase
 
     [Header("View")]
     [SerializeField] private GameObject itemVisualRoot;
+    [SerializeField] private ItemDisplayVisualPresenter2D itemDisplayPresenter;
     [SerializeField] private SpriteRenderer itemSpriteRenderer;
     [SerializeField] private TMP_Text priceText;
+
+    [Header("Legacy Item Sprite Normalization")]
+    [SerializeField, HideInInspector] private bool normalizeItemSprite = true;
+    [SerializeField, HideInInspector] private ItemSpriteNormalizeMode itemSpriteNormalizeMode = ItemSpriteNormalizeMode.FitBox;
+    [SerializeField, HideInInspector, Min(0.01f)] private float itemSpriteTargetHeight = 0.65f;
+    [SerializeField, HideInInspector] private Vector2 itemSpriteTargetBoxSize = new(1f, 1f);
+    [SerializeField, HideInInspector] private ItemSpriteAnchorMode itemSpriteAnchorMode = ItemSpriteAnchorMode.Center;
+    [SerializeField, HideInInspector] private bool itemSpriteCenterX = true;
+    [SerializeField, HideInInspector] private Vector2 itemSpriteAnchorOffset = Vector2.zero;
 
     [Header("Price Icon")]
     [SerializeField] private SpriteRenderer priceIconRenderer;
@@ -43,10 +73,13 @@ public sealed class ShopSlot : InteractableBase
     private MaterialPropertyBlock outlinePropertyBlock;
     private MerchantStockEntryState currentState;
     private ScriptableObject currentDefinition;
+    private Vector3 itemSpriteBaseLocalPosition;
+    private bool hasItemSpriteBaseLocalPosition;
 
     private void Awake()
     {
         CacheReferences();
+        CaptureItemSpriteBaseLocalPosition();
 
         outlinePropertyBlock = new MaterialPropertyBlock();
 
@@ -62,6 +95,15 @@ public sealed class ShopSlot : InteractableBase
     {
         CacheReferences();
         ApplyPriceIconScale();
+
+        if (itemSpriteTargetHeight <= 0f)
+            itemSpriteTargetHeight = 0.65f;
+
+        if (itemSpriteTargetBoxSize.x <= 0f)
+            itemSpriteTargetBoxSize.x = 1f;
+
+        if (itemSpriteTargetBoxSize.y <= 0f)
+            itemSpriteTargetBoxSize.y = 1f;
     }
 
     private void OnDisable()
@@ -69,10 +111,17 @@ public sealed class ShopSlot : InteractableBase
         OnUnHighlight();
     }
 
+    public ShopSlotItemFilter ItemFilter => itemFilter;
+
     public void AssignOwner(MerchantNPC merchant, int assignedSlotIndex)
     {
         owner = merchant;
         slotIndex = assignedSlotIndex;
+    }
+
+    public void ApplyRuntimeItemFilter(ShopSlotItemFilter filter)
+    {
+        itemFilter = filter;
     }
 
     public void ApplyState(MerchantStockEntryState state)
@@ -142,15 +191,20 @@ public sealed class ShopSlot : InteractableBase
     private void RefreshView()
     {
         bool hasActiveItem = currentState != null && currentState.HasItem && !currentState.isSold && currentDefinition != null;
-        IInventoryItemDefinition commonDefinition = currentDefinition != null ? currentDefinition.AsDef() : null;
 
         if (itemVisualRoot != null)
             itemVisualRoot.SetActive(hasActiveItem);
 
-        if (itemSpriteRenderer != null)
+        if (itemDisplayPresenter != null)
         {
-            itemSpriteRenderer.sprite = hasActiveItem && commonDefinition != null ? commonDefinition.Icon : null;
-            itemSpriteRenderer.enabled = itemSpriteRenderer.sprite != null;
+            if (hasActiveItem)
+                itemDisplayPresenter.Apply(currentDefinition);
+            else
+                itemDisplayPresenter.ClearVisual();
+        }
+        else
+        {
+            ApplyItemSprite(hasActiveItem ? currentDefinition : null);
         }
 
         if (priceText != null)
@@ -162,6 +216,94 @@ public sealed class ShopSlot : InteractableBase
         }
 
         RefreshPriceIcon(hasActiveItem && currentState != null && !currentState.isSold);
+    }
+
+    private void ApplyItemSprite(ScriptableObject item)
+    {
+        if (itemSpriteRenderer == null)
+            return;
+
+        IInventoryItemDefinition definition = item != null ? item.AsDef() : null;
+        Sprite sprite = ResolveWorldDropSprite(item, definition);
+        itemSpriteRenderer.sprite = sprite;
+        itemSpriteRenderer.enabled = sprite != null;
+
+        if (sprite == null)
+            return;
+
+        ItemDisplayVisualProfileSO profile = ResolveProfile(item);
+        ItemDisplaySpriteSettings settings = ResolveWorldDropSpriteSettings(profile, definition);
+        ApplyNormalizedItemSpriteTransform(sprite, settings);
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 상점 진열 icon의 원본 pivot과 sprite bounds 차이가 슬롯 안 표시 위치를 흔들지 않도록 보정한다.
+    /// - 슬롯마다 다른 기준 위치는 유지하면서 sprite만 공통 높이/박스와 기준점에 맞춘다.
+    /// </summary>
+    private void ApplyNormalizedItemSpriteTransform(Sprite sprite, ItemDisplaySpriteSettings settings)
+    {
+        if (itemSpriteRenderer == null || sprite == null || settings == null)
+            return;
+
+        CaptureItemSpriteBaseLocalPosition();
+
+        Bounds bounds = sprite.bounds;
+        if (bounds.size.x <= 0f || bounds.size.y <= 0f)
+            return;
+
+        float uniformScale = ResolveItemSpriteUniformScale(bounds, settings);
+        Transform rendererTransform = itemSpriteRenderer.transform;
+        Vector3 localScale = rendererTransform.localScale;
+        rendererTransform.localScale = new Vector3(uniformScale, uniformScale, localScale.z);
+
+        Vector3 localPosition = itemSpriteBaseLocalPosition + (Vector3)settings.AnchorOffset;
+        if (settings.CenterX)
+            localPosition.x += -bounds.center.x * uniformScale;
+
+        localPosition.y += settings.AnchorMode == ItemDisplayAnchorMode.Bottom
+            ? -bounds.min.y * uniformScale
+            : -bounds.center.y * uniformScale;
+
+        rendererTransform.localPosition = localPosition;
+    }
+
+    private float ResolveItemSpriteUniformScale(Bounds bounds, ItemDisplaySpriteSettings settings)
+    {
+        if (!settings.Normalize || settings.NormalizeMode == ItemDisplayNormalizeMode.RawSpriteSize)
+            return 1f;
+
+        if (settings.NormalizeMode == ItemDisplayNormalizeMode.FitBox)
+        {
+            Vector2 targetBox = settings.TargetBoxSize;
+            float widthScale = targetBox.x / bounds.size.x;
+            float heightScale = targetBox.y / bounds.size.y;
+            return Mathf.Min(widthScale, heightScale);
+        }
+
+        return settings.TargetHeight / bounds.size.y;
+    }
+
+    private static Sprite ResolveWorldDropSprite(ScriptableObject item, IInventoryItemDefinition definition)
+    {
+        ItemDisplayVisualProfileSO profile = ResolveProfile(item);
+        Sprite profileSprite = profile != null ? profile.GetSpriteOverride(ItemDisplayContext.WorldDrop) : null;
+        return profileSprite != null ? profileSprite : definition?.Icon;
+    }
+
+    private static ItemDisplaySpriteSettings ResolveWorldDropSpriteSettings(
+        ItemDisplayVisualProfileSO profile,
+        IInventoryItemDefinition definition)
+    {
+        if (profile != null && profile.TryGetSpriteSettings(ItemDisplayContext.WorldDrop, out ItemDisplaySpriteSettings settings))
+            return settings;
+
+        return ItemDisplaySpriteSettings.DefaultFor(ItemDisplayContext.WorldDrop, definition != null ? definition.Kind : (InventoryItemKind?)null);
+    }
+
+    private static ItemDisplayVisualProfileSO ResolveProfile(ScriptableObject item)
+    {
+        return item is WeaponDefinition weapon ? weapon.DisplayVisualProfile : null;
     }
 
     private void RefreshPriceIcon(bool showCurrencyIcon)
@@ -193,6 +335,12 @@ public sealed class ShopSlot : InteractableBase
         if (owner == null)
             owner = GetComponentInParent<MerchantNPC>();
 
+        if (itemDisplayPresenter == null)
+            itemDisplayPresenter = GetComponentInChildren<ItemDisplayVisualPresenter2D>(includeInactive: true);
+
+        if (itemDisplayPresenter != null)
+            itemSpriteRenderer = itemDisplayPresenter.FallbackRenderer;
+
         if (itemSpriteRenderer == null)
             itemSpriteRenderer = GetComponentInChildren<SpriteRenderer>();
 
@@ -202,6 +350,15 @@ public sealed class ShopSlot : InteractableBase
             if (iconTransform != null)
                 priceIconRenderer = iconTransform.GetComponent<SpriteRenderer>();
         }
+    }
+
+    private void CaptureItemSpriteBaseLocalPosition()
+    {
+        if (hasItemSpriteBaseLocalPosition || itemSpriteRenderer == null)
+            return;
+
+        itemSpriteBaseLocalPosition = itemSpriteRenderer.transform.localPosition;
+        hasItemSpriteBaseLocalPosition = true;
     }
 
     private void ApplyPriceIconScale()
@@ -260,6 +417,12 @@ public sealed class ShopSlot : InteractableBase
 
     private void SetOutline(bool enabled)
     {
+        if (itemDisplayPresenter != null)
+        {
+            itemDisplayPresenter.SetOutline(enabled);
+            return;
+        }
+
         if (itemSpriteRenderer == null)
             return;
 

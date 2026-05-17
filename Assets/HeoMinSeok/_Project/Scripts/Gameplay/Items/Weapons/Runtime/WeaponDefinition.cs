@@ -52,6 +52,9 @@ public class WeaponDefinition : ScriptableObject, IInventoryItemDefinition
     [Header("Prefab")]
     public GameObject weaponPrefab;
 
+    [Header("Display Visual")]
+    [SerializeField] private ItemDisplayVisualProfileSO displayVisualProfile;
+
     [Header("Equipped Tag (예: State.Equip.Weapon.Sword)")]
     public GameplayTag equippedTag;
 
@@ -106,4 +109,5 @@ public class WeaponDefinition : ScriptableObject, IInventoryItemDefinition
     public string ItemId => weaponId;
     public string DisplayName => displayName;
     public Sprite Icon => icon;
+    public ItemDisplayVisualProfileSO DisplayVisualProfile => displayVisualProfile;
 }

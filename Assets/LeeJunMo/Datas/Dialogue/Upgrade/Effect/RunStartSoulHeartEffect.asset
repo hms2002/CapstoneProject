@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: RunStartSoulHeartEffect
   m_EditorClassIdentifier: 
   rewardText: "\uC77C\uD68C\uC131 \uCD94\uAC00 \uCCB4\uB825 \uBD80\uC5EC"
-  rewardIcon: {fileID: 763030817999491006, guid: e75f469ea29530246a4a0543396316af, type: 3}
+  rewardIcon: {fileID: 3548611220100897516, guid: 5942fd97166d5fb49b1047c559c09e59, type: 3}
   soulHeartAttribute: {fileID: 11400000, guid: dfd6b6d2319c46acb6a5564fe8798a21, type: 2}
   amount: 1

@@ -42,6 +42,7 @@ public class WeaponSkillHUD2D : MonoBehaviour
     [Header("Refs")]
     [SerializeField] private WeaponInventory2D inventory;
     [SerializeField] private AbilitySystem abilitySystem;
+    [SerializeField] private WeaponEquipController weaponEquipController;
 
     [Header("Visibility")]
     [SerializeField] private GameObject hudRoot;
@@ -115,6 +116,7 @@ public class WeaponSkillHUD2D : MonoBehaviour
             UnbindInventoryEvents();
             inventory = null;
             abilitySystem = null;
+            weaponEquipController = null;
             RefreshAbilityRefs();
             RefreshVisibility();
         }
@@ -133,11 +135,20 @@ public class WeaponSkillHUD2D : MonoBehaviour
         {
             inventory = player.GetComponent<WeaponInventory2D>();
             abilitySystem = player.GetComponent<AbilitySystem>();
+            weaponEquipController = player.GetComponentInChildren<WeaponEquipController>(true);
         }
 
         if (inventory == null) inventory = FindFirstObjectByType<WeaponInventory2D>();
         if (abilitySystem == null && inventory != null) abilitySystem = inventory.GetComponent<AbilitySystem>();
         if (abilitySystem == null) abilitySystem = FindFirstObjectByType<AbilitySystem>();
+        if (weaponEquipController == null && inventory != null)
+            weaponEquipController = inventory.EquipController;
+        if (weaponEquipController == null && inventory != null)
+            weaponEquipController = inventory.GetComponentInChildren<WeaponEquipController>(true);
+        if (weaponEquipController == null && abilitySystem != null)
+            weaponEquipController = abilitySystem.GetComponentInChildren<WeaponEquipController>(true);
+        if (weaponEquipController == null)
+            weaponEquipController = FindFirstObjectByType<WeaponEquipController>();
     }
 
     private void BindInventoryEvents()
@@ -307,10 +318,50 @@ public class WeaponSkillHUD2D : MonoBehaviour
     {
         if (abilitySystem == null) return;
 
+        UpdateDynamicIcon(skill1UI, WeaponAbilitySlot.Skill1, skill1Def);
+        UpdateDynamicIcon(skill2UI, WeaponAbilitySlot.Skill2, skill2Def);
         UpdateCooldownAndCharge(skill1UI, skill1Def);
         UpdateCooldownAndCharge(skill2UI, skill2Def);
         UpdateCastingVisual(skill1UI, skill1Def);
         UpdateCastingVisual(skill2UI, skill2Def);
+    }
+
+    private void UpdateDynamicIcon(SkillSlotUI ui, WeaponAbilitySlot slot, AbilityDefinition def)
+    {
+        if (ui == null || ui.icon == null)
+            return;
+
+        Sprite resolvedIcon = null;
+        if (def != null)
+        {
+            IWeaponAbilityHudIconOverrideProvider provider = ResolveHudIconOverrideProvider();
+            if (provider != null &&
+                provider.TryGetHudIconOverride(slot, def, out Sprite overrideIcon) &&
+                overrideIcon != null)
+            {
+                resolvedIcon = overrideIcon;
+            }
+            else
+            {
+                resolvedIcon = def.icon;
+            }
+        }
+
+        if (ui.icon.sprite != resolvedIcon)
+            ui.icon.sprite = resolvedIcon;
+
+        Image overlayImage = ResolveOverlayImage(ui);
+        if (overlayImage != null && overlayImage.sprite != resolvedIcon)
+            overlayImage.sprite = resolvedIcon;
+    }
+
+    private IWeaponAbilityHudIconOverrideProvider ResolveHudIconOverrideProvider()
+    {
+        WeaponAbilityRuntimeState runtimeState = weaponEquipController != null
+            ? weaponEquipController.GetCurrentWeaponRuntimeState()
+            : null;
+
+        return runtimeState as IWeaponAbilityHudIconOverrideProvider;
     }
 
     /// <summary>

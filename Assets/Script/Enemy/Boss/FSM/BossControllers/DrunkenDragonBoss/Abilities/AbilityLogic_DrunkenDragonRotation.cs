@@ -315,7 +315,6 @@ public sealed class AbilityLogic_DrunkenDragonRotation : AbilityLogic
             finalHpDamage: damageAmount,
             finalStaggerBuildUp: 0f,
             finalKnockbackImpulse: knockbackImpulse,
-            elementBuildUps: null,
             isCriticalHit: false);
 
         return CombatHitPayload.FromSnapshot(
@@ -334,7 +333,6 @@ public sealed class AbilityLogic_DrunkenDragonRotation : AbilityLogic
             finalHpDamage: projectileDamageAmount,
             finalStaggerBuildUp: 0f,
             finalKnockbackImpulse: 0f,
-            elementBuildUps: null,
             isCriticalHit: false);
 
         return CombatHitPayload.FromSnapshot(

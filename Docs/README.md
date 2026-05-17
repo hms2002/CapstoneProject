@@ -2,7 +2,7 @@
 status: active
 authority: docs-router
 category: router
-last_reviewed: 2026-05-05
+last_reviewed: 2026-05-15
 ---
 
 # Project Docs Guide
@@ -25,9 +25,22 @@ last_reviewed: 2026-05-05
 3. [`Contracts/`](./Contracts/)
 4. [`Architecture/`](./Architecture/)
 5. [`Guides/`](./Guides/)
-6. [`Reviews/`](./Reviews/)
-7. [`Notes/`](./Notes/)
-8. [`Handoffs/`](./Handoffs/)
+6. [`StructureMemory/`](./StructureMemory/)
+7. [`RefactorBacklog/`](./RefactorBacklog/)
+8. [`Reviews/`](./Reviews/)
+9. [`Notes/`](./Notes/)
+10. [`Handoffs/`](./Handoffs/)
+
+`StructureMemory` and `RefactorBacklog` are context/planning documents. They help future work start faster, but they do not override `Contracts` or `Architecture`.
+
+## Memory Document Types
+
+- [`SessionLogs/`](./SessionLogs/) records dated task outcomes, verification, manual checks, and remaining risks.
+- [`StructureMemory/`](./StructureMemory/) stores feature-level structure maps for fast context reconstruction.
+- [`RefactorBacklog/`](./RefactorBacklog/) tracks intentional structural debt and refactor candidates with target shape and triggers.
+- [`ErrorLog.md`](./ErrorLog.md) records recurring mistakes and prevention rules.
+- [`DecisionLog.md`](./DecisionLog.md) records durable design decisions.
+- [`Architecture/`](./Architecture/) and [`Contracts/`](./Contracts/) remain the official source-of-truth layers when a structure is stable enough to promote.
 
 `Reviews`, `Notes`, `Handoffs`는 참고용입니다. 최신 구현 기준은 `Contracts`와 `Architecture`를 우선합니다.
 
@@ -45,6 +58,23 @@ last_reviewed: 2026-05-05
 - [Current Project Context](./Overview/current-project-context.md)
 - [Decision Log](./DecisionLog.md)
 - [Error Log](./ErrorLog.md)
+- [Structure Memory](./StructureMemory/README.md)
+- [Refactor Backlog](./RefactorBacklog/README.md)
+
+### 빠른 구조 맥락 또는 리팩토링 후보를 확인하고 싶다
+- [Structure Memory](./StructureMemory/README.md)
+- [Script System Map](./StructureMemory/ScriptSystemMap.md)
+- [Script Systems](./StructureMemory/ScriptSystems/README.md)
+- [Refactor Backlog](./RefactorBacklog/README.md)
+
+### Review title/game scene bootstrap and session boundary
+- [Scene Domain Bootstrap Architecture](./Architecture/SceneDomainBootstrapArchitecture.md)
+- [Scene Runtime Save Structure](./StructureMemory/ScriptSystems/SceneRuntimeSaveStructure.md)
+- [Scene Domain Bootstrap Boundary Split](./RefactorBacklog/SceneDomainBootstrapBoundarySplit.md)
+
+### 새 전투 콘텐츠를 제작 파이프라인 기준으로 만들고 싶다
+- [Content Authoring Pipelines](./Guides/ContentAuthoring/README.md)
+  - 무기, 일반 몬스터, 보스, 유물, 소모품, 루트/보상 연결 순서 포함
 
 ### 게임오버, 보스 결과, 등장/처치 연출을 수정하고 싶다
 - [Boss Encounter Architecture](./Architecture/BossEncounterArchitecture.md)
@@ -79,6 +109,7 @@ last_reviewed: 2026-05-05
 - legacy 연결/검토 문서는 아래 `Reviews` 섹션을 보세요.
 
 ### 새 일반 몬스터를 현재 FSM 표준 구조로 만들고 싶다
+- [Mob Authoring Pipeline](./Guides/ContentAuthoring/MobAuthoringPipeline.md)
 - [General Mob FSM Authoring Guide](./Guides/GeneralMobFSMAuthoringGuide.md)
   - 인스펙터 validator와 제작 체크리스트 포함
 - 패턴 실행 데이터가 어디에 있어야 하는지 점검하고 싶으면
@@ -100,8 +131,15 @@ last_reviewed: 2026-05-05
 - legacy 검토 문서는 아래 `Reviews` 섹션을 보세요.
 
 ### 새 무기를 같은 구조로 만들고 싶다
+- [Weapon Authoring Pipeline](./Guides/ContentAuthoring/WeaponAuthoringPipeline.md)
 - [Gameplay Ability Weapon Architecture](./Architecture/GameplayAbilityWeaponArchitecture.md)
 - [Eclipse Sword Pattern Guide](../Assets/HeoMinSeok/_Project/Scripts/Gameplay/Items/Weapons/Runtime/Abilities/EclipseSwordPatternGuide.md)
+
+### 새 보스, 유물, 소모품, 보상 연결을 만들고 싶다
+- [Boss Authoring Pipeline](./Guides/ContentAuthoring/BossAuthoringPipeline.md)
+- [Relic Authoring Pipeline](./Guides/ContentAuthoring/RelicAuthoringPipeline.md)
+- [Consumable Authoring Pipeline](./Guides/ContentAuthoring/ConsumableAuthoringPipeline.md)
+- [Loot Reward Integration Pipeline](./Guides/ContentAuthoring/LootRewardIntegrationPipeline.md)
 
 ### 두 무기가 서로 상태를 읽고 능력이 바뀌는 구조를 만들고 싶다
 - [Gameplay Ability Weapon Architecture](./Architecture/GameplayAbilityWeaponArchitecture.md)

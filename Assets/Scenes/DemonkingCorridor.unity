@@ -152,6 +152,7 @@ MonoBehaviour:
   verboseLogging: 0
   worldItemPrefab: {fileID: 4439982264372595963, guid: 965ec98195bcbe34f9512acce3712973, type: 3}
   fieldItemPrefab: {fileID: 0}
+  magicStonePrefab: {fileID: 5809627508243328825, guid: 108ed5884c0e5294fb2bc08d259e53f5, type: 3}
   stageTables:
   - {fileID: 11400000, guid: 3903a30b290836e4bb4413a07b019990, type: 2}
   - {fileID: 11400000, guid: 14918d38c644fad49bf378e4043c465d, type: 2}
@@ -1918,7 +1919,6 @@ GameObject:
   - component: {fileID: 197106469}
   - component: {fileID: 197106470}
   - component: {fileID: 197106467}
-  - component: {fileID: 197106471}
   m_Layer: 0
   m_Name: Boss
   m_TagString: Untagged
@@ -2026,27 +2026,6 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
---- !u!114 &197106471
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 197106466}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 42667dfbf3529e6489882ac43545fe3b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  chestPrefab: {fileID: 7530156284439312542, guid: 296eaa6f1547cb74e990055ce1319470, type: 3}
-  chestSpawnPoint: {fileID: 197106469}
-  portalObj: {fileID: 0}
-  portalSpawnPoint: {fileID: 0}
-  portalSpawnOffset: {x: 0, y: 0, z: 0}
-  bossUniqueLoots:
-  - item: {fileID: 11400000, guid: 6a8181eecc5ab3a4988f9089d46607b0, type: 2}
-    dropChance: 100
-  magicStonePrefab: {fileID: 5809627508243328825, guid: 108ed5884c0e5294fb2bc08d259e53f5, type: 3}
 --- !u!1 &236309114
 GameObject:
   m_ObjectHideFlags: 0

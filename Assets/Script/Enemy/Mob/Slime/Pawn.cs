@@ -76,7 +76,6 @@ public class Pawn : Slime
             target: hitTarget,
             finalHpDamage: ContactDamage,
             finalStaggerBuildUp: 0f,
-            elementBuildUps: null,
             finalKnockbackImpulse: 0f,
             hitConfirmedTag: null,
             hitWorldPosition: hitPoint,

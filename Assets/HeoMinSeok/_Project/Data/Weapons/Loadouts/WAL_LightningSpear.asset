@@ -81,7 +81,7 @@ MonoBehaviour:
   landingProbeRadius: 0.35
   candidateSamples: 96
   landingHit:
-    hitboxPrefab: {fileID: 0}
+    hitboxPrefab: {fileID: 510000000000000003, guid: f80c9a9d4ef14f7d963ce7aa871b9a21, type: 3}
     activeTime: 0.08
     hitboxSize: {x: 1.2, y: 1.2}
     forwardOffset: 0
@@ -90,7 +90,7 @@ MonoBehaviour:
       m_Bits: 2147483648
     wallLayers:
       serializedVersion: 2
-      m_Bits: 1073741824
+      m_Bits: 0
     damageConfig:
       includeStaggerBuildUp: 1
       includeElementBuildUp: 1
@@ -118,3 +118,4 @@ MonoBehaviour:
     m_Bits: 0
   rushRangeIndicatorPrefab: {fileID: 5600123456789012345, guid: 62a2f887f4974f44a63a42d96c410d1c, type: 3}
   selectedMarkIndicatorPrefab: {fileID: 5700123456789012345, guid: b670e855e83c42a09e2d07ad24de058b, type: 3}
+  markHoverRangeIndicatorPrefab: {fileID: 5800123456789012345, guid: 8e861bb72f93412d9d271b245c4d9a7f, type: 3}

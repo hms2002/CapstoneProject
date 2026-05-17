@@ -144,7 +144,6 @@ public sealed class LightningStrikeProc2D : IRelicProc
             finalHpDamage: finalDamage,
             finalStaggerBuildUp: 0f,
             finalKnockbackImpulse: 0f,
-            elementBuildUps: null,
             isCriticalHit: false
         );
 

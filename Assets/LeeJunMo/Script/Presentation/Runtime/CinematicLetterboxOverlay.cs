@@ -154,6 +154,11 @@ public sealed class CinematicLetterboxOverlay
         if (overlayRoot != null)
             return;
 
+        RuntimePresentationFallbackAudit.Record(
+            null,
+            "Cinematic letterbox overlay fallback",
+            "an authored cinematic letterbox overlay on GlobalUIRoot");
+
         overlayRoot = new GameObject("CinematicLetterboxOverlay", typeof(RectTransform), typeof(Canvas));
         rootRect = overlayRoot.GetComponent<RectTransform>();
 

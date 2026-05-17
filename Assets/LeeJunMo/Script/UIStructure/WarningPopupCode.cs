@@ -10,5 +10,8 @@ public enum WarningPopupCode
     RelicAlreadyMaxLevel,
     WeaponInventoryFull,
     ConsumableInventoryFull,
-    CannotDropHere
+    CannotDropHere,
+    UpgradeNotEnoughMagicStone,
+    UpgradeLocked,
+    UpgradeUnavailable
 }

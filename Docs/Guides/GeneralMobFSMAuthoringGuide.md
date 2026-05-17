@@ -2,7 +2,7 @@
 status: active
 authority: guide
 category: guide
-last_reviewed: 2026-05-05
+last_reviewed: 2026-05-15
 ---
 
 # General Mob FSM Authoring Guide
@@ -399,7 +399,7 @@ authoring이 같이 필요합니다.
 
 즉 문서 체크리스트만 보는 대신, 이제는 에디터가 기본 누락을 바로 알려주는 상태입니다.
 
---- 
+---
 
 ## 현재 기준 사례
 
@@ -414,7 +414,7 @@ authoring이 같이 필요합니다.
 - [TackleAttack.cs](../../Assets/Script/Enemy/Mob/TackleAttack.cs)
   - 별도 helper가 `IMobAttackDecisionSource` 구현
   - 태클 특수 문법 사례
-- [ShadowMonster.prefab](../../Assets/Prefabs/Enemies/Mobs/ShadowMonster.prefab)
+- [ShadowMonster.prefab](../../Assets/Prefabs/Enemies/Mobs/ShadowCorridor/ShadowMonster.prefab)
   - `Mob` 본체 + `TackleAttack` + `MobAbilityCoordinator` + `EnemyChaseIntent2D` 조합 사례
 
 현재 문서 기준으로 이 사례들을 읽는 방법은 다음과 같습니다.

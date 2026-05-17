@@ -85,6 +85,24 @@ public sealed class ChestMonsterKillLock : MonoBehaviour
         RecalculateState(raiseEvents: true);
     }
 
+    public int GetAliveMonstersNonAlloc(List<GameObject> results)
+    {
+        if (results == null)
+            return 0;
+
+        results.Clear();
+        CompactDeadEntries();
+
+        for (int i = 0; i < trackedMonsters.Count; i++)
+        {
+            GameObject monster = trackedMonsters[i];
+            if (monster != null)
+                results.Add(monster);
+        }
+
+        return results.Count;
+    }
+
     /// <summary>
     /// 책임 : 등록된 몬스터 목록에서 이미 파괴된 항목(null)을 제거한다.
     /// </summary>

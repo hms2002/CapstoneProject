@@ -2,13 +2,13 @@
 status: legacy-review
 authority: reference-only
 category: review
-last_reviewed: 2026-05-05
+last_reviewed: 2026-05-15
 ---
 
 # Mob AI Architecture Direction Review
 
-> Legacy / Review  
-> 이 문서는 일반 몬스터 AI 상위 구조를 검토하기 위해 작성된 방향성 리뷰 문서입니다.  
+> Legacy / Review
+> 이 문서는 일반 몬스터 AI 상위 구조를 검토하기 위해 작성된 방향성 리뷰 문서입니다.
 > 현재 표준 구조는 관련 아키텍처 문서를 우선하고, 이 문서는 설계 판단의 배경과 이력을 확인하는 용도로 봅니다.
 
 이 문서는 일반 몬스터 AI 구조를 다시 검토하면서 나온 논의를 정리합니다.
@@ -19,7 +19,7 @@ last_reviewed: 2026-05-05
 - `BT + helper + coordinator` 구조가 왜 실용적이면서도 조금 덜 "구조답게" 느껴지는가?
 - 리팩토링 난이도를 제외하면, 일반 몬스터 AI의 이상적인 상위 구조는 무엇인가?
 
-이 문서는 **BT 개인화 규칙 문서**가 아니라,  
+이 문서는 **BT 개인화 규칙 문서**가 아니라,
 **일반 몬스터 AI의 상위 구조 방향을 검토하는 문서**입니다.
 
 관련 문서:
@@ -493,7 +493,7 @@ helper가 어떤 AD를 쓸지 결정하고, AttackState는 완료까지 상태�
 
 프리팹 조합까지 포함하면 다음도 같은 표준 경로를 탑니다.
 
-- [ShadowMonster.prefab](../../Assets/Prefabs/Enemies/Mobs/ShadowMonster.prefab)
+- [ShadowMonster.prefab](../../Assets/Prefabs/Enemies/Mobs/ShadowCorridor/ShadowMonster.prefab)
   - `ShadowMonster` 본체 + `TackleAttack` + `MobAbilityCoordinator` + `EnemyChaseIntent2D`
 
 즉 지금은:

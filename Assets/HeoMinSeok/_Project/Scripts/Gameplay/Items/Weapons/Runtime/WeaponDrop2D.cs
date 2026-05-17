@@ -16,7 +16,9 @@ public class WeaponDrop2D : InteractableBase
     [SerializeField] private WeaponPersistentStatePayload payload;
 
     [Header("Visual (optional)")]
+    [SerializeField] private ItemDisplayVisualPresenter2D itemDisplayPresenter;
     [SerializeField] private SpriteRenderer spriteRenderer;
+    [SerializeField] private WorldDropSpritePresenter2D dropSpritePresenter;
 
     private MaterialPropertyBlock outlinePropertyBlock;
 
@@ -27,7 +29,7 @@ public class WeaponDrop2D : InteractableBase
     {
         weapon = def;
         payload = runtimePayload;
-        // 필요하면 여기서 아이콘/스프라이트 갱신
+        RefreshVisual();
     }
 
     private void Reset()
@@ -38,8 +40,8 @@ public class WeaponDrop2D : InteractableBase
 
     private void Awake()
     {
-        if (spriteRenderer == null)
-            spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+        ResolveVisualRefs();
+        RefreshVisual();
 
         outlinePropertyBlock = new MaterialPropertyBlock();
         OnUnHighlight();
@@ -73,7 +75,11 @@ public class WeaponDrop2D : InteractableBase
 
     public override void OnHighlight()
     {
-        if (spriteRenderer != null)
+        if (itemDisplayPresenter != null)
+        {
+            itemDisplayPresenter.SetOutline(true);
+        }
+        else if (spriteRenderer != null)
         {
             spriteRenderer.GetPropertyBlock(outlinePropertyBlock);
             outlinePropertyBlock.SetFloat(OutlineEnabledID, 1f);
@@ -85,7 +91,11 @@ public class WeaponDrop2D : InteractableBase
 
     public override void OnUnHighlight()
     {
-        if (spriteRenderer != null)
+        if (itemDisplayPresenter != null)
+        {
+            itemDisplayPresenter.SetOutline(false);
+        }
+        else if (spriteRenderer != null)
         {
             spriteRenderer.GetPropertyBlock(outlinePropertyBlock);
             outlinePropertyBlock.SetFloat(OutlineEnabledID, 0f);
@@ -112,5 +122,53 @@ public class WeaponDrop2D : InteractableBase
             return component.GetComponent<WeaponInventory2D>();
 
         return null;
+    }
+
+    private void RefreshVisual()
+    {
+        if (itemDisplayPresenter != null)
+        {
+            itemDisplayPresenter.Apply(weapon);
+            spriteRenderer = itemDisplayPresenter.FallbackRenderer;
+            return;
+        }
+
+        Sprite sprite = weapon != null ? weapon.Icon : null;
+
+        if (dropSpritePresenter != null)
+        {
+            dropSpritePresenter.Apply(sprite);
+            spriteRenderer = dropSpritePresenter.Renderer;
+            return;
+        }
+
+        if (spriteRenderer == null)
+            return;
+
+        spriteRenderer.sprite = sprite;
+        spriteRenderer.enabled = sprite != null;
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 무기 드롭의 실제 아이콘 렌더러와 outline 대상 렌더러를 같은 참조로 맞춘다.
+    /// - presenter가 없는 기존 프리팹도 자식 SpriteRenderer fallback으로 계속 표시되게 한다.
+    /// </summary>
+    private void ResolveVisualRefs()
+    {
+        if (itemDisplayPresenter == null)
+            itemDisplayPresenter = GetComponentInChildren<ItemDisplayVisualPresenter2D>(includeInactive: true);
+
+        if (itemDisplayPresenter != null)
+            spriteRenderer = itemDisplayPresenter.FallbackRenderer;
+
+        if (dropSpritePresenter == null)
+            dropSpritePresenter = GetComponentInChildren<WorldDropSpritePresenter2D>(includeInactive: true);
+
+        if (itemDisplayPresenter == null && dropSpritePresenter != null)
+            spriteRenderer = dropSpritePresenter.Renderer;
+
+        if (spriteRenderer == null)
+            spriteRenderer = GetComponentInChildren<SpriteRenderer>(includeInactive: true);
     }
 }

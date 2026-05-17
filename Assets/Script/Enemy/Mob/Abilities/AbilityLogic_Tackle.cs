@@ -172,7 +172,6 @@ public class AL_Tackle : AbilityLogic
             finalHpDamage: damageAmount,
             finalStaggerBuildUp: 0f,
             finalKnockbackImpulse: knockbackImpulse,
-            elementBuildUps: null,
             isCriticalHit: false);
 
         CombatDamageAction.ApplyDamageAndEmitHit(
@@ -183,7 +182,6 @@ public class AL_Tackle : AbilityLogic
             target: target,
             finalHpDamage: snapshot.FinalHpDamage,
             finalStaggerBuildUp: snapshot.FinalStaggerBuildUp,
-            elementBuildUps: snapshot.ElementBuildUps,
             finalKnockbackImpulse: snapshot.FinalKnockbackImpulse,
             hitConfirmedTag: hitConfirmedTag,
             causer: caster.gameObject);

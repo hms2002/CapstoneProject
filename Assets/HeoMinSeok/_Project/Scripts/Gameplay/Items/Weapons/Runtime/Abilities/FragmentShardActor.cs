@@ -329,7 +329,6 @@ public sealed class FragmentShardActor : MonoBehaviour
             knockbackEffect = payload.knockbackEffect,
             finalHpDamage = payload.finalHpDamage,
             finalStaggerBuildUp = payload.finalStaggerBuildUp,
-            elementBuildUps = payload.elementBuildUps,
             finalKnockbackImpulse = payload.finalKnockbackImpulse,
             hitConfirmedTag = payload.hitConfirmedTag,
             causer = gameObject,

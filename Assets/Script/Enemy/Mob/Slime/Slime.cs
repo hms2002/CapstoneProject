@@ -151,7 +151,6 @@ public abstract class Slime : Mob, IMobAttackDecisionSource
             finalHpDamage: damageAmount,
             finalStaggerBuildUp: 0f,
             finalKnockbackImpulse: knockbackImpulse,
-            elementBuildUps: null,
             isCriticalHit: false);
 
         return CombatHitPayload.FromSnapshot(
@@ -181,7 +180,10 @@ public abstract class Slime : Mob, IMobAttackDecisionSource
             if (spawned == null) continue;
 
             if (spawned.TryGetComponent(out T nextSlime))
+            {
                 nextSlime.InitSplit(target);
+                RegisterLockTrackedChild(spawned);
+            }
         }
     }
 

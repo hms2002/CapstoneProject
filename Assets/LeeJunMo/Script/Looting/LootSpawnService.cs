@@ -2,14 +2,19 @@ using UnityEngine;
 
 public sealed class LootSpawnService
 {
+    private const float FieldHealDropMinDistance = 0.25f;
+    private const float FieldHealDropMaxDistance = 0.85f;
+
     private readonly GameObject worldItemPrefab;
     private readonly GameObject fieldItemPrefab;
+    private readonly GameObject magicStonePrefab;
     private readonly GroundTileDropPositionResolver groundPositionResolver;
 
-    public LootSpawnService(GameObject worldItemPrefab, GameObject fieldItemPrefab)
+    public LootSpawnService(GameObject worldItemPrefab, GameObject fieldItemPrefab, GameObject magicStonePrefab)
     {
         this.worldItemPrefab = worldItemPrefab;
         this.fieldItemPrefab = fieldItemPrefab;
+        this.magicStonePrefab = magicStonePrefab;
         groundPositionResolver = new GroundTileDropPositionResolver();
     }
 
@@ -47,12 +52,45 @@ public sealed class LootSpawnService
             return;
         }
 
-        Object.Instantiate(fieldItemPrefab, position, Quaternion.identity);
+        Vector3 landingPosition = position + GetRandomFieldHealDropOffset();
+        GameObject go = Object.Instantiate(fieldItemPrefab, position, Quaternion.identity);
+        FieldHealPickup2D pickup = go.GetComponent<FieldHealPickup2D>();
+        if (pickup != null)
+        {
+            pickup.PlayDrop(position, landingPosition);
+            return;
+        }
+
+        go.transform.position = landingPosition;
+    }
+
+    public void SpawnMagicStonePickup(Vector3 position, int amount)
+    {
+        if (amount <= 0)
+            return;
+
+        if (magicStonePrefab == null)
+        {
+            Debug.LogError("LootManager: MagicStonePrefab is not assigned.");
+            return;
+        }
+
+        GameObject go = Object.Instantiate(magicStonePrefab, position, Quaternion.identity);
+        MagicStonePickup pickup = go.GetComponent<MagicStonePickup>();
+        if (pickup != null)
+            pickup.amount = amount;
     }
 
     public Vector3 GetRandomScatterOffset(float range = 0.5f)
     {
         return new Vector3(Random.Range(-range, range), Random.Range(-range, range), 0f);
+    }
+
+    private static Vector3 GetRandomFieldHealDropOffset()
+    {
+        float angle = Random.Range(0f, Mathf.PI * 2f);
+        float distance = Random.Range(FieldHealDropMinDistance, FieldHealDropMaxDistance);
+        return new Vector3(Mathf.Cos(angle) * distance, Mathf.Sin(angle) * distance, 0f);
     }
 
     public System.Collections.Generic.List<Vector3> GetNearbyGroundPositions(Vector3 origin, int tileRadius = 1)

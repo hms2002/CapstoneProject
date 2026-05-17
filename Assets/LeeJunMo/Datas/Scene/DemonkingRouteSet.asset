@@ -29,3 +29,4 @@ MonoBehaviour:
     anchorPolicy: 0
     localOffset: {x: 0, y: 0, z: 0}
   loadManifest: {fileID: 0}
+  bossSpecialRewardPreset: {fileID: 0}

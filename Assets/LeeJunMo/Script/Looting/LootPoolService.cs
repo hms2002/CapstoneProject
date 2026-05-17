@@ -1,90 +1,57 @@
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
 
 public sealed class LootPoolService
 {
+    private readonly Func<LootPoolContext, LootPoolWeaponExclusionSourceSet> weaponExclusionSourceProvider;
+
+    public LootPoolService()
+        : this(LootPoolLiveWeaponExclusionSourceProvider.Collect)
+    {
+    }
+
+    internal LootPoolService(Func<LootPoolContext, LootPoolWeaponExclusionSourceSet> weaponExclusionSourceProvider)
+    {
+        this.weaponExclusionSourceProvider = weaponExclusionSourceProvider;
+        if (this.weaponExclusionSourceProvider == null)
+            this.weaponExclusionSourceProvider = LootPoolLiveWeaponExclusionSourceProvider.Collect;
+    }
+
     public HashSet<string> BuildPlayerWeaponExclusionSet()
     {
-        var exclusionList = new HashSet<string>();
-        var currentPlayer = PlayerRuntimeRegistry.CurrentPlayer != null
-            ? PlayerRuntimeRegistry.CurrentPlayer
-            : PlayerInteractor2D.Instance;
+        return BuildWeaponExclusionSet(LootPoolContext.PlayerInventory);
+    }
 
-        if (currentPlayer == null)
-            return exclusionList;
+    public HashSet<string> BuildShopWeaponExclusionSet()
+    {
+        return BuildWeaponExclusionSet(LootPoolContext.ShopStock);
+    }
 
-        WeaponInventory2D weaponInventory = currentPlayer.GetComponent<WeaponInventory2D>();
-        if (weaponInventory != null)
-            exclusionList.UnionWith(weaponInventory.GetAllWeaponIDs());
+    public HashSet<string> BuildMerchantWeaponExclusionSet()
+    {
+        return BuildWeaponExclusionSet(LootPoolContext.MerchantStockOnly);
+    }
 
-        return exclusionList;
+    public HashSet<string> BuildWeaponExclusionSet(LootPoolContext context)
+    {
+        LootPoolWeaponExclusionSourceSet sourceSet = weaponExclusionSourceProvider(context);
+        LootPoolWeaponExclusionResult result =
+            LootPoolWeaponExclusionProvider.Collect(new LootPoolWeaponExclusionRequest(context, sourceSet));
+        return result.ToHashSet();
     }
 
     public WeaponDefinition GetRandomWeapon(HashSet<string> exclusionList)
     {
-        if (ItemManager.Instance == null)
-            return null;
-
-        exclusionList ??= new HashSet<string>();
-
-        var pool = ItemManager.Instance.GetUnlockedWeaponIDs();
-        var valid = pool.Where(w => !exclusionList.Contains(w)).ToList();
-        if (valid.Count == 0)
-            return null;
-
-        string pickedID = valid[Random.Range(0, valid.Count)];
-        return ItemManager.Instance.GetWeaponData(pickedID);
+        return LootPoolItemSelectionService.GetRandomWeapon(exclusionList);
     }
 
     public RelicDefinition GetRandomRelicByRarity(ItemRarity targetRarity)
     {
-        if (ItemManager.Instance == null)
-            return null;
-
-        var pool = ItemManager.Instance.GetUnlockedRelicIDs();
-        if (pool.Count == 0)
-            return null;
-
-        var allUnlockedRelics = new List<RelicDefinition>();
-        var exactMatches = new List<RelicDefinition>();
-        var lowerRarityMatches = new List<RelicDefinition>();
-
-        foreach (var id in pool)
-        {
-            var relicData = ItemManager.Instance.GetRelicData(id);
-            if (relicData == null)
-                continue;
-
-            allUnlockedRelics.Add(relicData);
-
-            if (relicData.rarity == targetRarity)
-                exactMatches.Add(relicData);
-            else if (relicData.rarity < targetRarity)
-                lowerRarityMatches.Add(relicData);
-        }
-
-        if (exactMatches.Count > 0)
-            return exactMatches[Random.Range(0, exactMatches.Count)];
-
-        if (lowerRarityMatches.Count > 0)
-            return lowerRarityMatches[Random.Range(0, lowerRarityMatches.Count)];
-
-        if (allUnlockedRelics.Count == 0)
-            return null;
-
-        return allUnlockedRelics[Random.Range(0, allUnlockedRelics.Count)];
+        return LootPoolItemSelectionService.GetRandomRelicByRarity(targetRarity);
     }
 
     public ConsumableDefinition GetRandomConsumable()
     {
-        if (ItemManager.Instance == null)
-            return null;
-
-        var pool = ItemManager.Instance.GetAllConsumables();
-        if (pool == null || pool.Count == 0)
-            return null;
-
-        return pool[Random.Range(0, pool.Count)];
+        return LootPoolItemSelectionService.GetRandomConsumable();
     }
 }

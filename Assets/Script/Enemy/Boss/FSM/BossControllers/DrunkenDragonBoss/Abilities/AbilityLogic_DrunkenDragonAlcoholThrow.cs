@@ -293,7 +293,6 @@ public sealed class AbilityLogic_DrunkenDragonAlcoholThrow : AbilityLogic
             finalHpDamage: kegDamageAmount,
             finalStaggerBuildUp: 0f,
             finalKnockbackImpulse: kegKnockbackImpulse,
-            elementBuildUps: null,
             isCriticalHit: false);
 
         CombatHitPayload payload = CombatHitPayload.FromSnapshot(

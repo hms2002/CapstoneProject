@@ -53,7 +53,6 @@ public abstract class BossControllerBase : Enemy, IBossAbilityStateBridge
     private BossDeadState deadState;
 
     // 보스 전용 드롭 처리의 책임을 이 컨트롤러에서 맡기 위한 참조입니다.
-    private BossDrop bossDrop;
     private BossEncounterDirector encounterDirector;
     private BossTalkManager bossTalkManager;
     private BossDeathPresentation deathPresentation;
@@ -90,7 +89,6 @@ public abstract class BossControllerBase : Enemy, IBossAbilityStateBridge
         base.Awake();
 
         CacheComponents();
-        bossDrop = GetComponent<BossDrop>();
         speechController = GetComponent<BossSpeechController>();
         ResolveDeathPresentation();
 
@@ -158,6 +156,12 @@ public abstract class BossControllerBase : Enemy, IBossAbilityStateBridge
 
         if (!isActive && hasInitializedBossRuntime)
             AbortCurrentPattern();
+
+        RunProgressCoordinator coordinator = RunProgressCoordinator.EnsureInstance();
+        if (isActive)
+            coordinator?.NotifyBossCombatStarted(this);
+        else
+            coordinator?.NotifyBossCombatEnded(this);
 
         SyncBossHudRegistration();
     }
@@ -454,12 +458,14 @@ public abstract class BossControllerBase : Enemy, IBossAbilityStateBridge
             ChangeState(deadState);
 
         SetCombatActive(false);
+        RunProgressCoordinator.EnsureInstance()?.NotifyBossDefeated(this);
         ResolveDeathPresentation();
         deathPresentation?.NotifyDeathStarted();
     }
 
     protected override void OnDestroy()
     {
+        RunProgressCoordinator.Instance?.NotifyBossCombatEnded(this);
         SyncBossHudRegistration(forceUnbind: true);
         base.OnDestroy();
     }
@@ -470,7 +476,7 @@ public abstract class BossControllerBase : Enemy, IBossAbilityStateBridge
         if (deathPresentation != null && deathPresentation.TryBeginDeathSequence())
             return;
 
-        SpawnDeathRewards();
+        RunProgressCoordinator.EnsureInstance()?.NotifyBossRewardsReady(this);
         base.DestroyAfterDelay();
     }
 
@@ -953,12 +959,6 @@ public abstract class BossControllerBase : Enemy, IBossAbilityStateBridge
         return false;
     }
 
-    private void SpawnDeathRewards()
-    {
-        if (bossDrop != null)
-            bossDrop.OnBossDead();
-    }
-
     internal void PlayDeferredDeathAnimationFromPresentation()
     {
         base.PlayDeathAnimation();
@@ -969,7 +969,7 @@ public abstract class BossControllerBase : Enemy, IBossAbilityStateBridge
         if (deathPresentation == null)
             deathPresentation = GetComponent<BossDeathPresentation>();
 
-        deathPresentation?.Bind(this, bossDrop);
+        deathPresentation?.Bind(this);
     }
 
     private void ResolveSpeechController()

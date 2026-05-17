@@ -25,6 +25,9 @@ public sealed class CorridorBossRouteSetSO : ScriptableObject
     [Header("Loading")]
     [SerializeField] private RouteSetLoadManifestSO loadManifest;
 
+    [Header("Boss Battle End")]
+    [SerializeField] private BossSpecialRewardPresetSO bossSpecialRewardPreset;
+
     public string CorridorSceneName => corridorSceneName;
     public string CorridorEntryPointId => corridorEntryPointId;
     public string BossSceneName => bossSceneName;
@@ -34,6 +37,7 @@ public sealed class CorridorBossRouteSetSO : ScriptableObject
     public SoundRef CorridorBgm => corridorBgm;
     public SoundRef BossCombatBgm => bossCombatBgm;
     public RouteSetLoadManifestSO LoadManifest => loadManifest;
+    public BossSpecialRewardPresetSO BossSpecialRewardPreset => bossSpecialRewardPreset;
 
     public bool IsValid =>
         !string.IsNullOrWhiteSpace(corridorSceneName) &&

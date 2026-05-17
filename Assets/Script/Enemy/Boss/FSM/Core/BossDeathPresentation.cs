@@ -74,7 +74,6 @@ public sealed class BossDeathPresentation : MonoBehaviour
     [SerializeField, Min(0f)] private float deathBgmFadeOutDuration = 0f;
 
     private BossControllerBase owner;
-    private BossDrop bossDrop;
     private Coroutine runningSequence;
     private CinematicLetterboxOverlay overlay;
     private readonly List<Renderer> cachedDeathRenderers = new();
@@ -101,10 +100,9 @@ public sealed class BossDeathPresentation : MonoBehaviour
         UnlockPlayerControls();
     }
 
-    public void Bind(BossControllerBase ownerController, BossDrop configuredBossDrop)
+    public void Bind(BossControllerBase ownerController)
     {
         owner = ownerController;
-        bossDrop = configuredBossDrop;
         ResolveReferences();
     }
 
@@ -149,7 +147,7 @@ public sealed class BossDeathPresentation : MonoBehaviour
 
         HideBossVisuals();
         SpawnDeathVanishEffect();
-        bossDrop?.OnBossDead();
+        NotifyRewardsReady();
 
         yield return WaitForPresentationSeconds(deathPostVanishHoldSeconds);
 
@@ -420,11 +418,18 @@ public sealed class BossDeathPresentation : MonoBehaviour
 
     private bool ShouldPreserveRenderer(Renderer renderer)
     {
-        if (renderer == null || bossDrop == null || bossDrop.portalObj == null)
-            return false;
+        return false;
+    }
 
-        Transform portalTransform = bossDrop.portalObj.transform;
-        return renderer.transform == portalTransform || renderer.transform.IsChildOf(portalTransform);
+    private void NotifyRewardsReady()
+    {
+        if (owner != null)
+        {
+            RunProgressCoordinator.EnsureInstance()?.NotifyBossRewardsReady(owner);
+            return;
+        }
+
+        Debug.LogWarning("[BossDeathPresentation] Cannot notify boss rewards without a BossControllerBase owner.", this);
     }
 
     private void SpawnDeathVanishEffect()

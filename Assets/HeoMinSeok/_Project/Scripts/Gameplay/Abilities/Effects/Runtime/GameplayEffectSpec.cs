@@ -72,12 +72,6 @@ namespace UnityGAS
         public Vector3 WorldPosition { get; private set; }
         public Vector3 WorldNormal { get; private set; } = Vector3.up;
 
-        /// <summary>
-        /// Optional: per-hit element damages calculated by DamageFormulaUtil.
-        /// Not applied by default - you can implement application logic later.
-        /// </summary>
-        public List<ElementDamageResult> ElementDamages { get; } = new List<ElementDamageResult>(4);
-
         public GameplayEffectContext(GameObject instigator, GameObject causer)
         {
             Instigator = instigator;

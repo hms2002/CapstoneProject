@@ -11,6 +11,15 @@ public struct ShopStockRollWeights
 }
 
 [Serializable]
+public enum ShopSlotItemFilter
+{
+    Any = 0,
+    Weapon = 1,
+    Relic = 2,
+    Consumable = 3
+}
+
+[Serializable]
 public struct MerchantPriceSettings
 {
     [Min(0)] public int weaponPrice;
@@ -84,12 +93,19 @@ public sealed class ShopInventoryRoll
     public List<MerchantStockEntryState> RollStock(
         int slotCount,
         ShopStockRollWeights rollWeights,
+        int maxWeaponSlots,
+        int maxConsumableSlots,
         MerchantPriceSettings priceSettings,
-        IReadOnlyCollection<MerchantStockEntryState> excludedEntries = null)
+        IReadOnlyCollection<string> excludedWeaponIds = null,
+        IReadOnlyCollection<MerchantStockEntryState> excludedEntries = null,
+        IReadOnlyList<ShopSlotItemFilter> slotFilters = null)
     {
         var entries = new List<MerchantStockEntryState>(Mathf.Max(0, slotCount));
         if (slotCount <= 0 || ItemManager.Instance == null)
             return entries;
+
+        maxWeaponSlots = Mathf.Max(0, maxWeaponSlots);
+        maxConsumableSlots = Mathf.Max(0, maxConsumableSlots);
 
         List<WeaponDefinition> weaponPool = BuildWeaponPool();
         List<RelicDefinition> relicPool = BuildRelicPool();
@@ -99,17 +115,30 @@ public sealed class ShopInventoryRoll
         RemoveExcludedDefinitions(weaponPool, excludedKeys);
         RemoveExcludedDefinitions(relicPool, excludedKeys);
         RemoveExcludedDefinitions(consumablePool, excludedKeys);
+        RemoveExcludedWeapons(weaponPool, excludedWeaponIds);
+
+        int weaponSlotCount = 0;
+        int consumableSlotCount = 0;
 
         for (int i = 0; i < slotCount; i++)
         {
+            ShopSlotItemFilter slotFilter = ResolveSlotFilter(slotFilters, i);
             List<WeightedKind> availableKinds = BuildAvailableKinds(
                 weaponPool,
                 relicPool,
                 consumablePool,
-                rollWeights);
+                rollWeights,
+                weaponSlotCount,
+                maxWeaponSlots,
+                consumableSlotCount,
+                maxConsumableSlots,
+                slotFilter);
 
             if (availableKinds.Count == 0)
-                break;
+            {
+                entries.Add(MerchantStockEntryState.Empty());
+                continue;
+            }
 
             ShopPoolKind pickedKind = PickKind(availableKinds);
             ScriptableObject pickedDefinition = DrawDefinition(
@@ -119,16 +148,27 @@ public sealed class ShopInventoryRoll
                 consumablePool);
 
             if (pickedDefinition == null)
+            {
+                entries.Add(MerchantStockEntryState.Empty());
                 continue;
+            }
 
             IInventoryItemDefinition commonDefinition = pickedDefinition.AsDef();
             if (commonDefinition == null || string.IsNullOrWhiteSpace(commonDefinition.ItemId))
+            {
+                entries.Add(MerchantStockEntryState.Empty());
                 continue;
+            }
 
             entries.Add(new MerchantStockEntryState(
                 commonDefinition.Kind,
                 commonDefinition.ItemId,
                 priceSettings.ResolvePrice(pickedDefinition)));
+
+            if (commonDefinition.Kind == InventoryItemKind.Weapon)
+                weaponSlotCount++;
+            else if (commonDefinition.Kind == InventoryItemKind.Consumable)
+                consumableSlotCount++;
         }
 
         while (entries.Count < slotCount)
@@ -205,6 +245,35 @@ public sealed class ShopInventoryRoll
         }
     }
 
+    private static void RemoveExcludedWeapons(
+        List<WeaponDefinition> pool,
+        IReadOnlyCollection<string> excludedWeaponIds)
+    {
+        if (pool == null || excludedWeaponIds == null || excludedWeaponIds.Count == 0)
+            return;
+
+        for (int i = pool.Count - 1; i >= 0; i--)
+        {
+            WeaponDefinition weapon = pool[i];
+            if (weapon != null && IsExcludedWeaponId(excludedWeaponIds, weapon.weaponId))
+                pool.RemoveAt(i);
+        }
+    }
+
+    private static bool IsExcludedWeaponId(IReadOnlyCollection<string> excludedWeaponIds, string weaponId)
+    {
+        if (string.IsNullOrWhiteSpace(weaponId))
+            return false;
+
+        foreach (string excludedWeaponId in excludedWeaponIds)
+        {
+            if (string.Equals(excludedWeaponId, weaponId, StringComparison.Ordinal))
+                return true;
+        }
+
+        return false;
+    }
+
     private static string BuildItemKey(InventoryItemKind kind, string itemId)
     {
         return $"{kind}:{itemId}";
@@ -214,20 +283,58 @@ public sealed class ShopInventoryRoll
         List<WeaponDefinition> weaponPool,
         List<RelicDefinition> relicPool,
         List<ConsumableDefinition> consumablePool,
-        ShopStockRollWeights rollWeights)
+        ShopStockRollWeights rollWeights,
+        int weaponSlotCount,
+        int maxWeaponSlots,
+        int consumableSlotCount,
+        int maxConsumableSlots,
+        ShopSlotItemFilter slotFilter)
     {
         var availableKinds = new List<WeightedKind>(3);
 
-        if (weaponPool != null && weaponPool.Count > 0 && rollWeights.weaponWeight > 0)
+        if (SlotAllowsKind(slotFilter, ShopPoolKind.Weapon) &&
+            weaponSlotCount < maxWeaponSlots &&
+            weaponPool != null &&
+            weaponPool.Count > 0 &&
+            rollWeights.weaponWeight > 0)
+        {
             availableKinds.Add(new WeightedKind(ShopPoolKind.Weapon, rollWeights.weaponWeight));
+        }
 
-        if (relicPool != null && relicPool.Count > 0 && rollWeights.relicWeight > 0)
+        if (SlotAllowsKind(slotFilter, ShopPoolKind.Relic) &&
+            relicPool != null &&
+            relicPool.Count > 0 &&
+            rollWeights.relicWeight > 0)
+        {
             availableKinds.Add(new WeightedKind(ShopPoolKind.Relic, rollWeights.relicWeight));
+        }
 
-        if (consumablePool != null && consumablePool.Count > 0 && rollWeights.consumableWeight > 0)
+        if (SlotAllowsKind(slotFilter, ShopPoolKind.Consumable) &&
+            consumableSlotCount < maxConsumableSlots &&
+            consumablePool != null &&
+            consumablePool.Count > 0 &&
+            rollWeights.consumableWeight > 0)
+        {
             availableKinds.Add(new WeightedKind(ShopPoolKind.Consumable, rollWeights.consumableWeight));
+        }
 
         return availableKinds;
+    }
+
+    private static ShopSlotItemFilter ResolveSlotFilter(IReadOnlyList<ShopSlotItemFilter> slotFilters, int slotIndex)
+    {
+        if (slotFilters == null || slotIndex < 0 || slotIndex >= slotFilters.Count)
+            return ShopSlotItemFilter.Any;
+
+        return slotFilters[slotIndex];
+    }
+
+    private static bool SlotAllowsKind(ShopSlotItemFilter slotFilter, ShopPoolKind poolKind)
+    {
+        return slotFilter == ShopSlotItemFilter.Any ||
+               (slotFilter == ShopSlotItemFilter.Weapon && poolKind == ShopPoolKind.Weapon) ||
+               (slotFilter == ShopSlotItemFilter.Relic && poolKind == ShopPoolKind.Relic) ||
+               (slotFilter == ShopSlotItemFilter.Consumable && poolKind == ShopPoolKind.Consumable);
     }
 
     private static ShopPoolKind PickKind(List<WeightedKind> availableKinds)

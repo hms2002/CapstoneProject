@@ -49,10 +49,10 @@ public class RelicDetailView : MonoBehaviour, IItemDetailView
         int nextPreviewLevel = previewLevel;
         int maxLevel = Mathf.Max(1, currentRelic.maxLevel);
 
-        if (input.WasPressedThisFrame(InputActionId.Skill1))
+        if (input.WasPressedThisFrame(InputContextShortcutId.RelicPreviewPrevious))
             nextPreviewLevel = Mathf.Max(1, nextPreviewLevel - 1);
 
-        if (input.WasPressedThisFrame(InputActionId.Skill2))
+        if (input.WasPressedThisFrame(InputContextShortcutId.RelicPreviewNext))
             nextPreviewLevel = Mathf.Min(maxLevel, nextPreviewLevel + 1);
 
         if (nextPreviewLevel == previewLevel)

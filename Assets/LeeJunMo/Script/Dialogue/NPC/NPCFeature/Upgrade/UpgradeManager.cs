@@ -1,14 +1,9 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class UpgradeManager : MonoBehaviour
 {
-    private const string TitleSceneName = "TitleScene";
-    private const string HubSceneName = "ProtoTypeHub";
-
     public static UpgradeManager Instance { get; private set; }
 
     [SerializeField] private UpgradeTreeUI upgradeTreeUI;
@@ -19,119 +14,87 @@ public class UpgradeManager : MonoBehaviour
     [SerializeField, Min(0f)] private float openFadeOutDuration = 0.18f;
     [SerializeField, Min(0f)] private float openFadeInDuration = 0.22f;
 
-    public Action OnDataChanged;
-    public Action OnUIClosed;
+    public event Action OnDataChanged
+    {
+        add => EnsureNotifications().DataChanged += value;
+        remove => EnsureNotifications().DataChanged -= value;
+    }
+
+    public event Action OnUIClosed
+    {
+        add => EnsureNotifications().UIClosed += value;
+        remove => EnsureNotifications().UIClosed -= value;
+    }
 
     private UpgradeProgressService progressService;
     private UpgradeEffectApplier effectApplier;
-    private PlayerInteractor2D appliedPlayer;
-    private readonly HashSet<int> appliedPlayerEffectNodeIds = new HashSet<int>();
     private readonly Queue<UpgradeCinematicRequest> pendingCinematics = new Queue<UpgradeCinematicRequest>();
-    private bool hasAppliedRunStartEffectsForCurrentRun;
-    private bool hasObservedSceneLoadForCurrentRun;
-    private Coroutine openPresentationRoutine;
+    private UpgradeUiOpenFlow uiOpenFlow;
+    private UpgradeRuntimeEffectService runtimeEffectService;
+    private UpgradePurchaseCompletionService purchaseCompletionService;
+    private UpgradeRuntimeLifecycleService runtimeLifecycleService;
+    private UpgradeProgressSaveService progressSaveService;
+    private UpgradeNotificationService notifications;
 
     private void Awake()
     {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
+        if (!UpgradeManagerLifetimeService.TryClaimInstance(this, () => Instance, value => Instance = value))
             return;
-        }
 
-        Instance = this;
-        GlobalUIRoot.AdoptService(transform);
-        MarkPersistent();
         ResolveUpgradeTreeUiReference();
+        notifications = new UpgradeNotificationService(this);
+        uiOpenFlow = new UpgradeUiOpenFlow(this, ResolveUpgradeTreeUiForFlow);
         progressService = new UpgradeProgressService(upgradeDatabase);
+        progressSaveService = new UpgradeProgressSaveService(
+            progressService,
+            notifications);
         effectApplier = new UpgradeEffectApplier();
+        runtimeEffectService = new UpgradeRuntimeEffectService(
+            ResolveCurrentPlayer,
+            progressService,
+            effectApplier,
+            IsRunActive);
+        runtimeLifecycleService = new UpgradeRuntimeLifecycleService(
+            ResolveUpgradeTreeUiReference,
+            CheckAndUnlockNodes,
+            RebuildRunModifiers,
+            runtimeEffectService.ResetAppliedPlayerEffects,
+            runtimeEffectService.TryReapplyAllEffects,
+            runtimeEffectService.TryApplyRunStartEffects,
+            IsRunActive);
+        purchaseCompletionService = new UpgradePurchaseCompletionService(
+            ResolveCurrentPlayer,
+            effectApplier,
+            runtimeEffectService.MarkNodeAppliedForCurrentPlayer,
+            runtimeEffectService.TryApplyHubTargetStates,
+            EnqueueUpgradeCinematic,
+            progressSaveService.CheckAndUnlockNodesAfterPurchase,
+            notifications);
     }
 
     private void OnDestroy()
     {
-        if (openPresentationRoutine != null)
-        {
-            StopCoroutine(openPresentationRoutine);
-            openPresentationRoutine = null;
-            SceneFadeTransitionService.Instance?.EndOverlayFadeSession();
-        }
+        runtimeLifecycleService?.Unsubscribe();
+        uiOpenFlow?.Cleanup();
 
         if (Instance == this)
-            Instance = null;
+            UpgradeManagerLifetimeService.ReleaseInstance(this, () => Instance, value => Instance = value);
     }
 
     private void OnEnable()
     {
-        PlayerRuntimeRegistry.PlayerRegistered += HandlePlayerRegistered;
-        SceneManager.sceneLoaded += HandleSceneLoaded;
-
-        GamePlayDataManager gameplay = GamePlayDataManager.EnsureInstance();
-        if (gameplay != null)
-        {
-            gameplay.OnRunStarted += HandleRunStarted;
-            gameplay.OnRunEnded += HandleRunEnded;
-        }
+        runtimeLifecycleService?.Subscribe();
     }
 
     private void Start()
     {
-        hasObservedSceneLoadForCurrentRun = IsRunActive();
-        CheckAndUnlockNodes();
-        RunModifierService.Instance?.RebuildFromPurchasedUpgrades();
-        TryReapplyAllEffects();
-        TryApplyRunStartEffects();
+        runtimeLifecycleService?.RunStartupFlow();
     }
 
     private void OnDisable()
     {
-        PlayerRuntimeRegistry.PlayerRegistered -= HandlePlayerRegistered;
-        SceneManager.sceneLoaded -= HandleSceneLoaded;
-
-        if (GamePlayDataManager.Instance != null)
-        {
-            GamePlayDataManager.Instance.OnRunStarted -= HandleRunStarted;
-            GamePlayDataManager.Instance.OnRunEnded -= HandleRunEnded;
-        }
-    }
-
-    private void HandlePlayerRegistered(PlayerInteractor2D player)
-    {
-        TryReapplyAllEffects();
-        TryApplyRunStartEffects();
-    }
-
-    private void HandleSceneLoaded(Scene scene, LoadSceneMode mode)
-    {
-        ResolveUpgradeTreeUiReference();
-        CheckAndUnlockNodes(false);
-        RunModifierService.Instance?.RebuildFromPurchasedUpgrades();
-        ResetAppliedPlayerEffects();
-        if (IsRunActive())
-            hasObservedSceneLoadForCurrentRun = true;
-        TryReapplyAllEffects();
-        TryApplyRunStartEffects();
-    }
-
-    private void HandleRunStarted()
-    {
-        hasAppliedRunStartEffectsForCurrentRun = false;
-        hasObservedSceneLoadForCurrentRun = IsActiveSceneRunContent();
-        TryApplyRunStartEffects();
-    }
-
-    private void HandleRunEnded(RunEndReason reason)
-    {
-        hasAppliedRunStartEffectsForCurrentRun = false;
-        hasObservedSceneLoadForCurrentRun = false;
-    }
-
-    private void MarkPersistent()
-    {
-        Transform persistentRoot = transform.root;
-        if (persistentRoot == null || persistentRoot.parent != null)
-            return;
-
-        DontDestroyOnLoad(persistentRoot.gameObject);
+        uiOpenFlow?.Cleanup();
+        runtimeLifecycleService?.Unsubscribe();
     }
 
     private void ResolveUpgradeTreeUiReference()
@@ -142,6 +105,12 @@ public class UpgradeManager : MonoBehaviour
         upgradeTreeUI = UpgradeTreeUI.EnsureInstance();
     }
 
+    private UpgradeTreeUI ResolveUpgradeTreeUiForFlow()
+    {
+        ResolveUpgradeTreeUiReference();
+        return upgradeTreeUI;
+    }
+
     private PlayerInteractor2D ResolveCurrentPlayer()
     {
         if (PlayerRuntimeRegistry.CurrentPlayer != null)
@@ -150,155 +119,40 @@ public class UpgradeManager : MonoBehaviour
         return PlayerInteractor2D.Instance;
     }
 
-    private void TryReapplyAllEffects()
-    {
-        PlayerInteractor2D player = ResolveCurrentPlayer();
-        if (player == null)
-            return;
-
-        if (appliedPlayer != player)
-        {
-            appliedPlayer = player;
-            appliedPlayerEffectNodeIds.Clear();
-        }
-
-        ReapplyAllEffects(player);
-        TryApplyHubTargetStates(player);
-    }
-
     public void CheckAndUnlockNodes(bool requestSaveOnChange = true)
     {
-        if (progressService == null || GameDataManager.Instance == null)
-            return;
-
-        bool isChanged = progressService.CheckAndUnlockNodes();
-        if (!isChanged)
-            return;
-
-        if (requestSaveOnChange)
-            GameDataSaveCoordinator.RequestImmediateSave(this);
-
-        OnDataChanged?.Invoke();
+        progressSaveService?.CheckAndUnlockNodes(requestSaveOnChange);
     }
 
     public void TryBuyUpgrade(int id)
     {
-        if (progressService == null)
-            return;
-
-        UpgradeNodeSO node = progressService.GetUpgradeByID(id);
-        if (node == null)
-            return;
-
-        if (progressService.GetNodeStatus(id) != LockType.UnLocked)
-            return;
-
-        if (CurrencyManager.Instance == null)
-            return;
-
-        if (CurrencyManager.Instance.GetMagicStone() < node.price)
-            return;
-
-        if (!progressService.TryPurchase(id, out node))
-            return;
-
-        if (!CurrencyManager.Instance.SpendMagicStone(node.price))
+        var purchaseResult = UpgradePurchaseService.TryPurchase(
+            new UpgradePurchaseRequest(id, progressService, CurrencyManager.Instance));
+        if (!purchaseResult.Succeeded)
         {
-            progressService.RevertPurchase(id);
+            ShowPurchaseWarning(purchaseResult.FailureReason);
             return;
         }
 
-        PlayerInteractor2D player = ResolveCurrentPlayer();
-        effectApplier.ApplyUpgrade(node, player);
-        MarkNodeAppliedForCurrentPlayer(node.nodeID, player);
-        TryApplyHubTargetStates(player);
-        QueueUpgradeCinematics(node);
-        RunModifierService.Instance?.RebuildFromPurchasedUpgrades();
-
-        if (RewardDisplayService.Instance != null)
-            RewardDisplayService.Instance.ShowReward(node.effects, null);
-
-        CheckAndUnlockNodes(false);
-        GameDataSaveCoordinator.RequestImmediateSave(this);
-        OnDataChanged?.Invoke();
+        purchaseCompletionService.Complete(purchaseResult.Node);
     }
 
-    private void ReapplyAllEffects(PlayerInteractor2D player)
+    private static void ShowPurchaseWarning(UpgradePurchaseFailureReason failureReason)
     {
-        if (player == null || GameDataManager.Instance == null || progressService == null || effectApplier == null)
-            return;
-
-        GameData data = GameDataManager.Instance.EnsureData();
-        if (data == null)
-            return;
-
-        data.upgradeData ??= new UpgradeSaveData();
-        effectApplier.ReapplyPurchasedEffects(
-            data.upgradeData.purchasedIDs,
-            progressService,
-            player,
-            appliedPlayerEffectNodeIds);
-    }
-
-    private void TryApplyRunStartEffects()
-    {
-        if (hasAppliedRunStartEffectsForCurrentRun)
-            return;
-
-        if (!IsRunActive())
-            return;
-
-        if (!hasObservedSceneLoadForCurrentRun && !IsActiveSceneRunContent())
-            return;
-
-        PlayerInteractor2D player = ResolveCurrentPlayer();
-        if (player == null || GameDataManager.Instance == null || progressService == null || effectApplier == null)
-            return;
-
-        GameData data = GameDataManager.Instance.EnsureData();
-        if (data?.upgradeData?.purchasedIDs == null)
-            return;
-
-        effectApplier.ApplyRunStartEffects(data.upgradeData.purchasedIDs, progressService, player);
-        hasAppliedRunStartEffectsForCurrentRun = true;
-    }
-
-    private void TryApplyHubTargetStates(PlayerInteractor2D player)
-    {
-        if (IsRunActive())
-            return;
-
-        if (player == null)
-            player = ResolveCurrentPlayer();
-
-        if (player == null || GameDataManager.Instance == null || progressService == null || effectApplier == null)
-            return;
-
-        GameData data = GameDataManager.Instance.EnsureData();
-        if (data?.upgradeData?.purchasedIDs == null)
-            return;
-
-        effectApplier.ApplyImmediateTargetStates(data.upgradeData.purchasedIDs, progressService, player);
-    }
-
-    private void MarkNodeAppliedForCurrentPlayer(int nodeId, PlayerInteractor2D player)
-    {
-        if (player == null)
-            return;
-
-        if (appliedPlayer != player)
+        WarningPopupCode warningCode = failureReason switch
         {
-            appliedPlayer = player;
-            appliedPlayerEffectNodeIds.Clear();
-        }
+            UpgradePurchaseFailureReason.NotEnoughMagicStone => WarningPopupCode.UpgradeNotEnoughMagicStone,
+            UpgradePurchaseFailureReason.CurrencySpendFailed => WarningPopupCode.UpgradeNotEnoughMagicStone,
+            UpgradePurchaseFailureReason.NotUnlocked => WarningPopupCode.UpgradeLocked,
+            UpgradePurchaseFailureReason.MissingProgressService => WarningPopupCode.UpgradeUnavailable,
+            UpgradePurchaseFailureReason.MissingNode => WarningPopupCode.UpgradeUnavailable,
+            UpgradePurchaseFailureReason.MissingCurrencyManager => WarningPopupCode.UpgradeUnavailable,
+            UpgradePurchaseFailureReason.PurchaseRejected => WarningPopupCode.UpgradeUnavailable,
+            _ => WarningPopupCode.None
+        };
 
-        appliedPlayerEffectNodeIds.Add(nodeId);
-    }
-
-    private void ResetAppliedPlayerEffects()
-    {
-        appliedPlayer = null;
-        appliedPlayerEffectNodeIds.Clear();
+        if (warningCode != WarningPopupCode.None)
+            UIManager.Instance?.ShowWarning(warningCode);
     }
 
     private static bool IsRunActive()
@@ -308,107 +162,33 @@ public class UpgradeManager : MonoBehaviour
             && GamePlayDataManager.Instance.Data.isRunActive;
     }
 
-    private static bool IsActiveSceneRunContent()
-    {
-        Scene activeScene = SceneManager.GetActiveScene();
-        if (!activeScene.IsValid() || !activeScene.isLoaded)
-            return false;
-
-        string sceneName = activeScene.name;
-        return !string.Equals(sceneName, TitleSceneName, StringComparison.OrdinalIgnoreCase)
-            && !string.Equals(sceneName, HubSceneName, StringComparison.OrdinalIgnoreCase);
-    }
-
     public void ToggleUI()
     {
-        ResolveUpgradeTreeUiReference();
-        if (upgradeTreeUI == null)
-            return;
-
-        if (!upgradeTreeUI.IsActive)
-        {
-            OpenUI();
-        }
-        else
-        {
-            CloseUI();
-        }
+        EnsureUiOpenFlow().Toggle(useFadePresentationOnOpen, openFadeOutDuration, openFadeInDuration);
     }
 
     public void CloseUI()
     {
-        if (openPresentationRoutine != null)
-        {
-            StopCoroutine(openPresentationRoutine);
-            openPresentationRoutine = null;
-            SceneFadeTransitionService.Instance?.EndOverlayFadeSession();
-        }
-
-        ResolveUpgradeTreeUiReference();
-        if (upgradeTreeUI == null)
-            return;
-
-        if (UIManager.Instance != null)
-            UIManager.Instance.PopUI(upgradeTreeUI);
-        else
-            upgradeTreeUI.CloseUI();
+        EnsureUiOpenFlow().Close();
     }
 
-    private void OpenUI()
+    private UpgradeUiOpenFlow EnsureUiOpenFlow()
     {
-        ResolveUpgradeTreeUiReference();
-        if (upgradeTreeUI == null || upgradeTreeUI.IsActive)
-            return;
+        if (uiOpenFlow == null)
+            uiOpenFlow = new UpgradeUiOpenFlow(this, ResolveUpgradeTreeUiForFlow);
 
-        if (UIManager.Instance != null && !UIManager.Instance.CanOpenUI(upgradeTreeUI))
-            return;
-
-        if (!useFadePresentationOnOpen)
-        {
-            OpenUIImmediate();
-            return;
-        }
-
-        if (openPresentationRoutine != null)
-            return;
-
-        openPresentationRoutine = StartCoroutine(OpenUIWithFadePresentation());
+        return uiOpenFlow;
     }
 
-    private IEnumerator OpenUIWithFadePresentation()
+    public void NotifyUIClosed()
     {
-        SceneFadeTransitionService fadeService = SceneFadeTransitionService.EnsureInstance(allowRuntimeFallback: true);
-        bool hasFadeOverlay = fadeService != null && fadeService.TryBeginOverlayFadeSession(initialAlpha: 0f);
-
-        if (hasFadeOverlay)
-            yield return fadeService.FadeOutAsync(openFadeOutDuration);
-
-        bool opened = OpenUIImmediate();
-
-        if (hasFadeOverlay)
-        {
-            yield return null;
-            yield return fadeService.FadeInAsync(opened ? openFadeInDuration : openFadeOutDuration);
-            fadeService.EndOverlayFadeSession();
-        }
-
-        openPresentationRoutine = null;
+        EnsureNotifications().NotifyUIClosed();
     }
 
-    private bool OpenUIImmediate()
+    private UpgradeNotificationService EnsureNotifications()
     {
-        ResolveUpgradeTreeUiReference();
-        if (upgradeTreeUI == null)
-            return false;
-
-        if (upgradeTreeUI.IsActive)
-            return true;
-
-        if (UIManager.Instance != null)
-            return UIManager.Instance.TryPushUI(upgradeTreeUI);
-
-        upgradeTreeUI.OpenUI();
-        return true;
+        notifications ??= new UpgradeNotificationService(this);
+        return notifications;
     }
 
     public LockType GetNodeStatus(int id)
@@ -438,26 +218,13 @@ public class UpgradeManager : MonoBehaviour
         return false;
     }
 
-    private void QueueUpgradeCinematics(UpgradeNodeSO node)
+    private void EnqueueUpgradeCinematic(UpgradeCinematicRequest request)
     {
-        if (IsShopActivationCinematicUpgrade(node))
-            pendingCinematics.Enqueue(new UpgradeCinematicRequest(UpgradeCinematicType.ShopActivated, node.nodeID));
+        pendingCinematics.Enqueue(request);
     }
 
-    private static bool IsShopActivationCinematicUpgrade(UpgradeNodeSO node)
+    private static void RebuildRunModifiers()
     {
-        if (node?.effects == null)
-            return false;
-
-        for (int i = 0; i < node.effects.Count; i++)
-        {
-            if (node.effects[i] is ShopRunModifierUpgradeEffect shopEffect &&
-                shopEffect.Delta.shopEnabled)
-            {
-                return true;
-            }
-        }
-
-        return false;
+        RunModifierService.Instance?.RebuildFromPurchasedUpgrades();
     }
 }

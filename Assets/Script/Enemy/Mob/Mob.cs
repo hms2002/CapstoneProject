@@ -18,6 +18,8 @@ public class Mob : Enemy
     private bool hasMoveBool;
     private MobStateMachine stateMachine;
     private MobAIContext aiContext;
+    private ChestMonsterKillLock lockTrackingChestLock;
+    private MonsterSpawnRoomGroup lockTrackingRoomGroup;
     private bool triedInitializeStateMachine;
 
     protected EnemyChaseIntent2D ChaseIntent => chaseIntent;
@@ -114,6 +116,27 @@ public class Mob : Enemy
         if (isDead || knockbackReceiver == null) return;
 
         knockbackReceiver.ApplyKnockback(causer, impulse);
+    }
+
+    public void ApplyLockTrackingContext(ChestMonsterKillLock chestLock, MonsterSpawnRoomGroup roomGroup)
+    {
+        lockTrackingChestLock = chestLock;
+        lockTrackingRoomGroup = roomGroup;
+    }
+
+    protected void RegisterLockTrackedChild(GameObject child)
+    {
+        if (child == null)
+            return;
+
+        if (lockTrackingChestLock != null)
+            lockTrackingChestLock.RegisterMonster(child);
+
+        if (lockTrackingRoomGroup != null)
+            lockTrackingRoomGroup.NotifyMonsterSpawned(child);
+
+        if (child.TryGetComponent(out Mob childMob))
+            childMob.ApplyLockTrackingContext(lockTrackingChestLock, lockTrackingRoomGroup);
     }
 
     protected override void OnDeathStarted()

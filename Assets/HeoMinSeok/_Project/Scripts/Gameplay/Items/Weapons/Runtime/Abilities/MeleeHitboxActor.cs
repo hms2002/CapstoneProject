@@ -7,7 +7,8 @@ namespace UnityGAS
     {
         UsePrefabAuthoredShape = 0,
         LegacyContextSizeWithAuthoredScale = 1,
-        OverrideWorldSize = 2
+        OverrideWorldSize = 2,
+        OverrideColliderWorldSizeKeepVisualScale = 3
     }
 
     public enum MeleeHitboxVisualMirrorMode
@@ -16,6 +17,12 @@ namespace UnityGAS
         DoNotMirror = 1,
         FlipLocalXWhenRequested = 2,
         PreserveWorldUpWhenFacingLeft = 3
+    }
+
+    public enum MeleeHitboxColliderLifetimeMode
+    {
+        UseContextLifetime = 0,
+        FollowVisualAnimation = 1
     }
 
     /// <summary>
@@ -35,6 +42,9 @@ namespace UnityGAS
         public Vector2 hitboxScaleMultiplier = Vector2.one;
         public bool overrideSizingMode = false;
         public MeleeHitboxSizingMode sizingMode = MeleeHitboxSizingMode.UsePrefabAuthoredShape;
+        public bool overrideAttachToOwnerOnSetup = false;
+        public bool attachToOwnerOnSetup = false;
+        public HashSet<int> sharedHitTargetIds;
     }
 
     /// <summary>
@@ -54,17 +64,27 @@ namespace UnityGAS
         [SerializeField] private float visualLocalAngleOffsetDeg = 0f;
         [SerializeField] private bool attachToOwnerOnSetup = false;
         [SerializeField] private MeleeHitboxSizingMode sizingMode = MeleeHitboxSizingMode.LegacyContextSizeWithAuthoredScale;
+        [SerializeField] private MeleeHitboxColliderLifetimeMode colliderLifetimeMode = MeleeHitboxColliderLifetimeMode.UseContextLifetime;
 
         private BoxCollider2D hitboxCollider;
         private readonly HashSet<int> hitTargetIds = new();
+        private HashSet<int> activeHitTargetIds;
 
         private bool hitOncePerTarget = true;
         private bool destroyOnFirstHit = false;
         private bool authoredShapeCached;
         private Vector2 authoredColliderSize = Vector2.one;
         private Vector3 authoredLocalScale = Vector3.one;
+        private Vector3 authoredVisualLocalPosition = Vector3.zero;
+        private float authoredVisualLocalAngleDeg;
         private Vector3 authoredVisualLocalScale = Vector3.one;
         private bool authoredVisualCached;
+        private HitboxVisualAnimatorPlayer visualAnimatorPlayer;
+        private float hitboxActiveRemaining;
+        private float visualVisibleRemaining;
+        private bool tracksHitboxActiveLifetime;
+        private bool tracksVisualLifetime;
+        private bool visualHiddenAfterAnimation;
 
         /// <summary>
         /// 책임 :
@@ -86,20 +106,25 @@ namespace UnityGAS
             CacheAuthoredShapeIfNeeded();
 
             transform.position = context.worldPosition;
+            MeleeHitboxSizingMode resolvedSizingMode = ResolveSizingMode(context);
             ApplyActorScale(
                 context.hitboxSize,
                 context.hitboxScaleMultiplier,
-                ResolveSizingMode(context));
+                resolvedSizingMode);
             ApplyActorRotation(context.direction);
 
-            hitboxCollider.size = authoredColliderSize;
+            ApplyColliderShape(context.hitboxSize, resolvedSizingMode);
             hitboxCollider.isTrigger = true;
 
             hitOncePerTarget = context.hitOncePerTarget;
             destroyOnFirstHit = context.destroyOnFirstHit;
+            activeHitTargetIds = context.sharedHitTargetIds ?? hitTargetIds;
+            if (context.sharedHitTargetIds == null)
+                hitTargetIds.Clear();
 
             CacheVisualShapeIfNeeded();
-            ApplyVisualLocalRotation(context.flipVisualX, context.visualMirrorMode, context.direction);
+            ApplyVisualLocalTransform(context.flipVisualX, context.visualMirrorMode, context.direction);
+            PrepareVisualAndLifetime(context);
             SetupBase(context);
             ApplyOwnerAttachment(context);
 
@@ -113,7 +138,11 @@ namespace UnityGAS
         /// </summary>
         private void ApplyOwnerAttachment(MeleeHitboxSpawnContext context)
         {
-            if (!attachToOwnerOnSetup || context?.ownerSystem == null)
+            bool shouldAttach = context != null && context.overrideAttachToOwnerOnSetup
+                ? context.attachToOwnerOnSetup
+                : attachToOwnerOnSetup;
+
+            if (!shouldAttach || context?.ownerSystem == null)
                 return;
 
             transform.SetParent(context.ownerSystem.transform, worldPositionStays: true);
@@ -145,6 +174,8 @@ namespace UnityGAS
                 return;
 
             authoredVisualCached = true;
+            authoredVisualLocalPosition = visualRoot.localPosition;
+            authoredVisualLocalAngleDeg = NormalizeAngleDeg(visualRoot.localEulerAngles.z);
             authoredVisualLocalScale = visualRoot.localScale;
         }
 
@@ -179,6 +210,15 @@ namespace UnityGAS
                 return;
             }
 
+            if (resolvedSizingMode == MeleeHitboxSizingMode.OverrideColliderWorldSizeKeepVisualScale)
+            {
+                transform.localScale = new Vector3(
+                    authoredLocalScale.x * safeMultiplier.x,
+                    authoredLocalScale.y * safeMultiplier.y,
+                    authoredLocalScale.z);
+                return;
+            }
+
             float baseWidth = Mathf.Abs(authoredColliderSize.x) > 0.0001f ? Mathf.Abs(authoredColliderSize.x) : 1f;
             float baseHeight = Mathf.Abs(authoredColliderSize.y) > 0.0001f ? Mathf.Abs(authoredColliderSize.y) : 1f;
 
@@ -192,6 +232,25 @@ namespace UnityGAS
                 baseScaleX * scaleX * safeMultiplier.x,
                 baseScaleY * scaleY * safeMultiplier.y,
                 authoredLocalScale.z);
+        }
+
+        private void ApplyColliderShape(Vector2 desiredWorldSize, MeleeHitboxSizingMode resolvedSizingMode)
+        {
+            if (hitboxCollider == null)
+                return;
+
+            if (resolvedSizingMode != MeleeHitboxSizingMode.OverrideColliderWorldSizeKeepVisualScale)
+            {
+                hitboxCollider.size = authoredColliderSize;
+                return;
+            }
+
+            Vector3 lossyScale = transform.lossyScale;
+            float scaleX = Mathf.Abs(lossyScale.x) > 0.0001f ? Mathf.Abs(lossyScale.x) : 1f;
+            float scaleY = Mathf.Abs(lossyScale.y) > 0.0001f ? Mathf.Abs(lossyScale.y) : 1f;
+            hitboxCollider.size = new Vector2(
+                Mathf.Max(0.01f, desiredWorldSize.x) / scaleX,
+                Mathf.Max(0.01f, desiredWorldSize.y) / scaleY);
         }
 
         private static Vector2 SanitizeScaleMultiplier(Vector2 scaleMultiplier)
@@ -216,7 +275,8 @@ namespace UnityGAS
             if (!hitOncePerTarget || target == null)
                 return true;
 
-            return hitTargetIds.Add(target.GetInstanceID());
+            HashSet<int> targetIds = activeHitTargetIds ?? hitTargetIds;
+            return targetIds.Add(target.GetInstanceID());
         }
 
         /// <summary>
@@ -251,7 +311,7 @@ namespace UnityGAS
         /// - visualRoot가 있을 경우, 공격체 회전 위에 추가 로컬 보정 회전과 좌우 반전을 적용한다.
         /// - 이펙트 프리팹의 기본 정면 축이 다르거나 콤보 단계별 좌우 이미지를 뒤집어야 할 때 사용한다.
         /// </summary>
-        private void ApplyVisualLocalRotation(
+        private void ApplyVisualLocalTransform(
             bool flipVisualX,
             MeleeHitboxVisualMirrorMode mirrorMode,
             Vector2 direction)
@@ -259,12 +319,13 @@ namespace UnityGAS
             if (visualRoot == null)
                 return;
 
-            visualRoot.localRotation = Quaternion.Euler(0f, 0f, visualLocalAngleOffsetDeg);
             if (!authoredVisualCached)
                 return;
 
             if (mirrorMode == MeleeHitboxVisualMirrorMode.DoNotMirror)
             {
+                visualRoot.localPosition = authoredVisualLocalPosition;
+                ApplyAuthoredVisualLocalRotation(1f);
                 visualRoot.localScale = authoredVisualLocalScale;
                 return;
             }
@@ -272,6 +333,8 @@ namespace UnityGAS
             if (mirrorMode == MeleeHitboxVisualMirrorMode.FlipLocalXWhenRequested)
             {
                 float signX = flipVisualX ? -1f : 1f;
+                visualRoot.localPosition = authoredVisualLocalPosition;
+                ApplyAuthoredVisualLocalRotation(1f);
                 visualRoot.localScale = new Vector3(
                     Mathf.Abs(authoredVisualLocalScale.x) * signX,
                     authoredVisualLocalScale.y,
@@ -282,6 +345,11 @@ namespace UnityGAS
             if (mirrorMode == MeleeHitboxVisualMirrorMode.PreserveWorldUpWhenFacingLeft)
             {
                 float preserveWorldUpSignY = direction.x < -0.0001f ? -1f : 1f;
+                visualRoot.localPosition = new Vector3(
+                    authoredVisualLocalPosition.x,
+                    authoredVisualLocalPosition.y * preserveWorldUpSignY,
+                    authoredVisualLocalPosition.z);
+                ApplyAuthoredVisualLocalRotation(preserveWorldUpSignY);
                 visualRoot.localScale = new Vector3(
                     authoredVisualLocalScale.x,
                     Mathf.Abs(authoredVisualLocalScale.y) * preserveWorldUpSignY,
@@ -290,10 +358,116 @@ namespace UnityGAS
             }
 
             float signY = flipVisualX ? -1f : 1f;
+            visualRoot.localPosition = new Vector3(
+                authoredVisualLocalPosition.x,
+                authoredVisualLocalPosition.y * signY,
+                authoredVisualLocalPosition.z);
+            ApplyAuthoredVisualLocalRotation(signY);
             visualRoot.localScale = new Vector3(
                 authoredVisualLocalScale.x,
                 Mathf.Abs(authoredVisualLocalScale.y) * signY,
                 authoredVisualLocalScale.z);
+        }
+
+        private void ApplyAuthoredVisualLocalRotation(float angleSign)
+        {
+            float angle = (authoredVisualLocalAngleDeg + visualLocalAngleOffsetDeg) * angleSign;
+            visualRoot.localRotation = Quaternion.Euler(0f, 0f, angle);
+        }
+
+        private static float NormalizeAngleDeg(float angleDeg)
+        {
+            return Mathf.Repeat(angleDeg + 180f, 360f) - 180f;
+        }
+
+        private void PrepareVisualAndLifetime(MeleeHitboxSpawnContext context)
+        {
+            if (context == null)
+                return;
+
+            float gameplayLifetime = Mathf.Max(0.01f, context.lifetime);
+
+            if (visualRoot != null && visualRoot != transform)
+                visualRoot.gameObject.SetActive(true);
+
+            float visualLifetime = ResolveVisualLifetime();
+
+            float colliderLifetime = ResolveColliderLifetime(gameplayLifetime, visualLifetime);
+
+            hitboxActiveRemaining = colliderLifetime;
+            tracksHitboxActiveLifetime = true;
+            visualHiddenAfterAnimation = false;
+
+            if (visualLifetime > 0f && visualRoot != null && visualRoot != transform)
+            {
+                visualVisibleRemaining = visualLifetime;
+                tracksVisualLifetime = true;
+                context.lifetime = Mathf.Max(colliderLifetime, visualLifetime);
+                return;
+            }
+
+            visualVisibleRemaining = 0f;
+            tracksVisualLifetime = false;
+            context.lifetime = colliderLifetime;
+        }
+
+        private float ResolveColliderLifetime(float contextLifetime, float visualLifetime)
+        {
+            if (colliderLifetimeMode == MeleeHitboxColliderLifetimeMode.FollowVisualAnimation && visualLifetime > 0f)
+                return visualLifetime;
+
+            return contextLifetime;
+        }
+
+        private float ResolveVisualLifetime()
+        {
+            if (visualRoot == null)
+                return 0f;
+
+            if (visualAnimatorPlayer == null)
+                visualAnimatorPlayer = visualRoot.GetComponentInChildren<HitboxVisualAnimatorPlayer>(true);
+
+            if (visualAnimatorPlayer == null)
+                return 0f;
+
+            visualAnimatorPlayer.Play();
+            return visualAnimatorPlayer.CurrentClipDuration;
+        }
+
+        protected override void TickAttack(float deltaTime)
+        {
+            UpdateHitboxActiveLifetime(deltaTime);
+            UpdateVisualLifetime(deltaTime);
+        }
+
+        private void UpdateHitboxActiveLifetime(float deltaTime)
+        {
+            if (!tracksHitboxActiveLifetime)
+                return;
+
+            hitboxActiveRemaining -= deltaTime;
+            if (hitboxActiveRemaining > 0f)
+                return;
+
+            tracksHitboxActiveLifetime = false;
+            if (hitboxCollider != null)
+                hitboxCollider.enabled = false;
+        }
+
+        private void UpdateVisualLifetime(float deltaTime)
+        {
+            if (!tracksVisualLifetime || visualHiddenAfterAnimation)
+                return;
+
+            visualVisibleRemaining -= deltaTime;
+            if (visualVisibleRemaining > 0f)
+                return;
+
+            tracksVisualLifetime = false;
+            visualHiddenAfterAnimation = true;
+
+            if (visualRoot != null && visualRoot != transform)
+                visualRoot.gameObject.SetActive(false);
         }
 
         /// <summary>

@@ -185,8 +185,9 @@ public class GameplayRuntimeDebugWindow : EditorWindow
             return;
         }
 
-        GraveRunModifierDelta modifiers = RunModifierService.Instance.GraveModifiers;
-        ChestRunModifierDelta chestModifiers = RunModifierService.Instance.ChestModifiers;
+        RunRewardModifierSnapshot snapshot = RunModifierService.CurrentRewardSnapshot;
+        GraveRunModifierDelta modifiers = snapshot.GraveModifiers;
+        ChestRunModifierDelta chestModifiers = snapshot.ChestModifiers;
         EditorGUILayout.LabelField("Weapon Grave Min Bonus", modifiers.weaponGraveMinBonus.ToString());
         EditorGUILayout.LabelField("Weapon Grave Max Bonus", modifiers.weaponGraveMaxBonus.ToString());
         EditorGUILayout.LabelField("Relic Grave Min Bonus", modifiers.relicGraveMinBonus.ToString());

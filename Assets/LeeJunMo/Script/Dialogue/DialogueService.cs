@@ -8,6 +8,7 @@ public sealed class DialogueService : MonoBehaviour
     private static bool s_isQuitting;
 
     private DialogueController activeController;
+    private GameFlowInputBlocker inputBlocker;
     private bool wasDialoguePlaying;
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
@@ -38,12 +39,17 @@ public sealed class DialogueService : MonoBehaviour
 
     private void Update()
     {
-        SyncRunTimerPauseState();
+        SyncDialogueFlowState();
+    }
+
+    private void OnDisable()
+    {
+        ReleaseDialogueFlowState();
     }
 
     private void OnDestroy()
     {
-        ReleaseRunTimerPause();
+        ReleaseDialogueFlowState();
 
         if (Instance == this)
             Instance = null;
@@ -118,17 +124,18 @@ public sealed class DialogueService : MonoBehaviour
         }
 
         activeController.EnterDialogueSequence(storySegments, participants, featureController);
-        SyncRunTimerPauseState();
+        SyncDialogueFlowState();
         return true;
     }
 
-    private void SyncRunTimerPauseState()
+    private void SyncDialogueFlowState()
     {
         bool isDialoguePlaying = IsPlaying;
         if (wasDialoguePlaying == isDialoguePlaying)
             return;
 
         wasDialoguePlaying = isDialoguePlaying;
+        SetDialogueInputBlocked(isDialoguePlaying);
 
         if (RunTimeLimitSystem.Instance == null)
             return;
@@ -136,12 +143,25 @@ public sealed class DialogueService : MonoBehaviour
         RunTimeLimitSystem.Instance.SetExternalPause(this, isDialoguePlaying);
     }
 
-    private void ReleaseRunTimerPause()
+    private void SetDialogueInputBlocked(bool blocked)
     {
-        if (RunTimeLimitSystem.Instance == null)
+        if (blocked)
+        {
+            inputBlocker = GameFlowInputBlocker.GetOrAdd(this);
+            inputBlocker?.Acquire();
             return;
+        }
 
-        RunTimeLimitSystem.Instance.SetExternalPause(this, false);
+        inputBlocker?.Release();
+    }
+
+    private void ReleaseDialogueFlowState()
+    {
+        inputBlocker?.Release();
+
+        if (RunTimeLimitSystem.Instance != null)
+            RunTimeLimitSystem.Instance.SetExternalPause(this, false);
+
         wasDialoguePlaying = false;
     }
 }

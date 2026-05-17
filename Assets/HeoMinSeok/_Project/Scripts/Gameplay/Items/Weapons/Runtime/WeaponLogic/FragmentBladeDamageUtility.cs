@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace UnityGAS.Sample
@@ -44,15 +43,12 @@ namespace UnityGAS.Sample
                 : legacyStaggerDamage;
             baseStagger *= safeScale;
 
-            List<ElementDamageInput> elementInputs = BuildElementInputs(system, statProvider, config, safeScale);
-
             var snapshot = DamageSnapshotBuilder.BuildFromBaseValues(
                 statProvider: statProvider,
                 config: config,
                 baseHp: baseHp,
                 baseStagger: config != null && config.includeStaggerBuildUp ? baseStagger : 0f,
-                baseKnockback: baseKnockback,
-                elementInputs: elementInputs);
+                baseKnockback: baseKnockback);
 
             if (snapshot.FinalHpDamage <= 0f)
                 return null;
@@ -67,37 +63,5 @@ namespace UnityGAS.Sample
                 causer: system.gameObject);
         }
 
-        private static List<ElementDamageInput> BuildElementInputs(
-            AbilitySystem system,
-            IStatProvider statProvider,
-            DamagePayloadConfig config,
-            float scale)
-        {
-            if (system == null || statProvider == null || config == null)
-                return null;
-
-            if (!config.includeElementBuildUp || !config.HasElementFormulas)
-                return null;
-
-            List<ElementDamageInput> elementInputs = new(config.elementFormulas.Length);
-            for (int i = 0; i < config.elementFormulas.Length; i++)
-            {
-                ElementFormulaEntry entry = config.elementFormulas[i];
-                if (entry == null || entry.elementType == null || entry.formula == null)
-                    continue;
-
-                float value = entry.formula.Evaluate(system.AttributeSet, statProvider, defaultIfEmpty: 0f) * scale;
-                if (value <= 0f)
-                    continue;
-
-                elementInputs.Add(new ElementDamageInput
-                {
-                    elementType = entry.elementType,
-                    baseDamage = value
-                });
-            }
-
-            return elementInputs.Count > 0 ? elementInputs : null;
-        }
     }
 }

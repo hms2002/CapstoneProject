@@ -719,7 +719,6 @@ public class DeadsSkeleton : Mob, IDamageReceiver, IMobAttackDecisionSource, IMo
             finalHpDamage: GetSelfDestructPatternData().damageAmount,
             finalStaggerBuildUp: 0f,
             finalKnockbackImpulse: 0f,
-            elementBuildUps: null,
             isCriticalHit: false);
 
         return CombatHitPayload.FromSnapshot(

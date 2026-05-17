@@ -25,6 +25,7 @@ public class InventoryUIManager : MonoBehaviour
     public bool CanOpen =>
         inventoryScreen != null &&
         !IsInputBlockedByLoadingOrTransition() &&
+        CanOpenThroughUiManager() &&
         HasCurrentPlayerInventoryContext();
     public bool IsOpen => inventoryScreen != null && inventoryScreen.IsActive;
 
@@ -49,6 +50,9 @@ public class InventoryUIManager : MonoBehaviour
     {
         if (InputBindingService.EnsureInstance().WasPressedThisFrame(InputActionId.InventoryToggle))
         {
+            if (UIManager.Instance != null && UIManager.Instance.IsExternalUiInputBlocked)
+                return;
+
             // [수정] 인터페이스 프로퍼티(IsActive)를 통해 상태 확인
             if (inventoryScreen != null && inventoryScreen.IsActive)
                 Close();
@@ -115,6 +119,9 @@ public class InventoryUIManager : MonoBehaviour
     {
         if (inventoryScreen == null) return;
 
+        if (inventoryScreen is ICloseRequestHandler closeHandler && closeHandler.TryHandleCloseRequest())
+            return;
+
         // [핵심] 직접 끄지 않고 UIManager의 스택에서 빼달라고 요청!
         if (UIManager.Instance != null) UIManager.Instance.PopUI(inventoryScreen);
         else inventoryScreen.CloseUI();
@@ -174,6 +181,11 @@ public class InventoryUIManager : MonoBehaviour
         return currentPlayer.GetComponent<PlayerConsumableInventory>() != null
             && currentPlayer.GetComponent<WeaponInventory2D>() != null
             && currentPlayer.GetComponent<RelicInventory>() != null;
+    }
+
+    private bool CanOpenThroughUiManager()
+    {
+        return UIManager.Instance == null || UIManager.Instance.CanOpenUI(inventoryScreen);
     }
 
     /// <summary>

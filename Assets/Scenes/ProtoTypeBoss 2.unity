@@ -119,37 +119,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1 &35865592
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 35865593}
-  m_Layer: 0
-  m_Name: ChestSpawnPoint
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &35865593
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 35865592}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -22.5, y: 7, z: -0.0824432}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &161455600
 GameObject:
   m_ObjectHideFlags: 0
@@ -183,6 +152,7 @@ MonoBehaviour:
   verboseLogging: 0
   worldItemPrefab: {fileID: 4439982264372595963, guid: 965ec98195bcbe34f9512acce3712973, type: 3}
   fieldItemPrefab: {fileID: 0}
+  magicStonePrefab: {fileID: 5809627508243328825, guid: 108ed5884c0e5294fb2bc08d259e53f5, type: 3}
   stageTables:
   - {fileID: 11400000, guid: 3903a30b290836e4bb4413a07b019990, type: 2}
   - {fileID: 11400000, guid: 14918d38c644fad49bf378e4043c465d, type: 2}
@@ -6884,25 +6854,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   npcData: {fileID: 11400000, guid: 4a2fd65cb07d41d2b4925014a094b1fe, type: 2}
   legacyInkJSON: {fileID: 4900000, guid: aef34e203f982094b814e11d115a65ed, type: 3}
---- !u!114 &1785454311
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1785454287}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 42667dfbf3529e6489882ac43545fe3b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  chestPrefab: {fileID: 7530156284439312542, guid: 296eaa6f1547cb74e990055ce1319470, type: 3}
-  chestSpawnPoint: {fileID: 35865593}
-  portalObj: {fileID: 272070917}
-  bossUniqueLoots:
-  - item: {fileID: 11400000, guid: 6a8181eecc5ab3a4988f9089d46607b0, type: 2}
-    dropChance: 100
-  magicStonePrefab: {fileID: 5809627508243328825, guid: 108ed5884c0e5294fb2bc08d259e53f5, type: 3}
 --- !u!114 &1785454312
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9839,4 +9790,3 @@ SceneRoots:
   - {fileID: 1764990987}
   - {fileID: 1987507144}
   - {fileID: 2107525437}
-  - {fileID: 35865593}

@@ -19,7 +19,6 @@ public static class DemonKingCombatUtil
             finalHpDamage: damageAmount,
             finalStaggerBuildUp: 0f,
             finalKnockbackImpulse: knockbackImpulse,
-            elementBuildUps: null,
             isCriticalHit: false);
 
         return CombatHitPayload.FromSnapshot(
