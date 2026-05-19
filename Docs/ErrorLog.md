@@ -2,7 +2,7 @@
 status: active
 authority: project-log
 category: error-log
-last_reviewed: 2026-05-17
+last_reviewed: 2026-05-20
 ---
 
 # Error Log
@@ -181,3 +181,31 @@ Fix:
 
 Prevention:
 When replacing UI navigation authoring, validate both the representative prefab and scene instances. Do not treat a prefab-only serialized check as proof that old scene overrides were migrated.
+
+## 2026-05-20 - Animator Parameter Lifecycle Drift
+
+Context:
+P1 Slime Queen sometimes played the wrong clip order after pattern animation parameters changed. The current Animator Controller expects `isJumping`, `isShouting`, `ready`, and `isGiantization`, while code still drove the old `jump`, `end`, and `giantization` trigger flow.
+
+Cause:
+The code and Animator Controller no longer shared the same parameter contract. Trigger-style one-shot calls were still being used for states that now need explicit bool lifetimes.
+
+Fix:
+P1 Slime Queen now drives the current Animator parameters directly: `isJumping` is true only while random jump is airborne, `isShouting` follows the call-slime speech bubble duration, `ready` fires when body-inflate warning starts, and `isGiantization` stays true during the body-inflate attack hold.
+
+Prevention:
+When Animator parameters are renamed or changed from triggers to bools, update the code-side hash names and the full enter/exit lifecycle in the same task. Do not leave compatibility helpers that imply the previous Animator contract.
+
+## 2026-05-20 - Drain Radius Captured Spawned P2 Bosses
+
+Context:
+If a Slime Queen phase 2 drain was already open before P1 died, the newly spawned P2 Slime Queens immediately became unable to act.
+
+Cause:
+The drain mechanic reused `DrainPipe.suctionRadius` for both Pawn slime suction and P2 boss drain entry. That radius is intentionally large for Pawn suction, so P2 bosses could be captured at spawn even without touching the drain.
+
+Fix:
+Keep Pawn suction radius behavior, but make P2 boss drain entry require direct `DrainPipe` trigger contact before applying the drain-control lock.
+
+Prevention:
+Do not reuse broad area-of-effect acquisition for boss state locks unless the design explicitly says the boss can be captured by proximity. Boss disabling hazards should prefer exact trigger contact or a separate boss-specific radius.

@@ -2,7 +2,7 @@
 status: active
 authority: structure-memory
 category: script-system-map
-last_reviewed: 2026-05-17
+last_reviewed: 2026-05-20
 ---
 
 # Boss And Mob Encounter Structure
@@ -18,7 +18,7 @@ Bosses use an `Encounter -> Battle -> BattleEnd` flow. General mobs use `Populat
 
 | Area | Count | Responsibility |
 | --- | ---: | --- |
-| Boss Encounter | 92 | Boss FSM core/states/configs, boss-specific controllers, pattern actors, boss presentation, BT/GAS bridge actions. |
+| Boss Encounter | 96 | Boss FSM core/states/configs, boss-specific controllers, pattern actors, boss presentation, BT/GAS bridge actions. |
 | Mob AI | 62 | General mob FSM, mob coordinators, attack decision sources, pattern runners, mob-specific actors and cleanup hooks. |
 | Monster Spawn | 16 | Scene spawn director, spawner state, room profiles, spawn points, difficulty receivers, spawn context. |
 | Hazards / Puddles | 12 | Puddle and poison cloud runtime, hazard areas, puddle visuals, pool/placement logic. |
@@ -43,7 +43,7 @@ Bosses use an `Encounter -> Battle -> BattleEnd` flow. General mobs use `Populat
 | Area | Count | Responsibility |
 | --- | ---: | --- |
 | Witch Boss | 28 | Witch controller, candle/shield services, pattern conditions/executors, states, actors, and abilities. |
-| Slime Queen Boss | 16 | Slime Queen controller/base scripts, phase-two behaviors, summon/drop/jump/body-inflate ability logic. |
+| Slime Queen Boss | 22 | Slime Queen controller/base scripts, phase-two behaviors, summon/drop/jump/body-inflate/water-cannon/toxic-drop/castling ability logic, castling availability condition, and temporary pattern visuals. |
 | Drunken Dragon Boss | 16 | Drunken Dragon controller/runtime data, arena/presentation helpers, and ability actors/logic. |
 | FSM Core | 11 | Boss controller base, blackboard, state machine, pattern runtime/eval/select, groggy/death presentation core. |
 | Demon King Boss | 8 | Demon King controller/runtime data, combat utility, actors, and ability logic. |
@@ -63,12 +63,14 @@ Bosses use an `Encounter -> Battle -> BattleEnd` flow. General mobs use `Populat
 | Boss Encounter > Witch Boss | Attack Actors / Telegraphs | 4 | Witch projectile helper, normal attack tile, basic attack ring telegraph, and ring telegraph view. |
 | Boss Encounter > Witch Boss | Shield Flow | 3 | Witch shield controller, visual controller, and shield receiver contract. |
 | Boss Encounter > Witch Boss | Controller / Runtime Data | 2 | Witch controller and runtime data. |
-| Boss Encounter > Slime Queen Boss | Slime Queen Ability Logics | 7 | Slime Queen summon, body inflate, drop, pillar, jump, slam, and toxic rush ability logic. |
+| Boss Encounter > Slime Queen Boss | Slime Queen Ability Logics | 10 | Slime Queen summon, body inflate, drop, pillar, jump, slam, toxic rush, water cannon, toxic drop, and castling ability logic. |
 | Boss Encounter > Slime Queen Boss | Phase Two Behaviors | 3 | Phase-two base, short, and long behaviors. |
 | Boss Encounter > Slime Queen Boss | Controller / Base | 2 | Slime Queen controller and base. |
 | Boss Encounter > Slime Queen Boss | Interfaces | 2 | Random jump and body-inflate host contracts. |
 | Boss Encounter > Slime Queen Boss | Movement Bounds | 1 | Slime Queen random move bounds. |
 | Boss Encounter > Slime Queen Boss | Summon Helpers | 1 | Falling summon helper. |
+| Boss Encounter > Slime Queen Boss | Pattern Visuals | 2 | Temporary blue beam prefab driver for water cannon and green arc projectile prefab driver for toxic drop. |
+| Boss Encounter > Slime Queen Boss | Pattern Conditions | 1 | Castling availability condition that blocks the joint pattern unless both phase-two bodies are alive, active, not groggy, and not busy. |
 | Boss Encounter > Drunken Dragon Boss | Ability Logics / Actors | 8 | Drunken Dragon ability logic and thrown keg/spin projectile actors. |
 | Boss Encounter > Drunken Dragon Boss | Cone Presentation | 3 | Cone pattern visual spec, particle visual, and visual interface. |
 | Boss Encounter > Drunken Dragon Boss | Controller / Runtime Data | 3 | Drunken Dragon controller, runtime data, and animation keys. |
@@ -167,6 +169,10 @@ Track the concrete candidate in `Docs/RefactorBacklog/BossHudSpecialCaseSourceSp
 ## Known Pitfalls
 
 - Boss-specific states, actors, and ability logic are mixed by boss; do not move them without prefab/scene reference checks.
+- `SlimeQueenP2Short` and `SlimeQueenP2Long` keep gameplay root components on the prefab root, while `SpriteRenderer` and `Animator` live under a child `Visual` object scaled to 75%. Preserve serialized renderer/animator references when changing these prefabs.
+- `SlimeQueen_Castling` is selected only by `SlimeQueenP2Short`; its ability logic locks and moves both phase-two bodies from their activation-time positions. Its 1.2-second warning phase also uses each phase-two body's existing `SpeechBubbleComponent`: P2Long speaks first, then P2Short replies 0.7 seconds later before the rush. Do not also add the same pattern to `SlimeQueenP2Long` unless duplicate joint-pattern selection is redesigned.
+- `SlimeQueen`, `SlimeQueenP2Short`, and `SlimeQueenP2Long` can be handled by the pit-fall system through `PitFallTarget` resolving their shared `SlimeQueenBossBase`. During the fall, `SlimeQueenBossBase` locks runtime movement/pattern updates, and the respawn position is the Slime Queen room center `(-22, 4)` rather than the player's `SafetyTracker` position. P1 random jump and P2Short repeated slam temporarily block pit-fall triggering only during their airborne movement windows.
+- Broken `DrainPipe` objects can now absorb one `SlimeQueenP2Short` or `SlimeQueenP2Long` only after direct drain trigger contact: the boss is pulled to the drain, locked for 4 seconds, then restored at the drain while that drain becomes blocked. Pawn slimes still use the broader suction radius. The shared P2 drain-control lock cancels current patterns, prevents castling while either body is in the drain/blocked state, and P2Short maps the sink window to `isSinking`; P2Long currently has no sink-specific Animator hook.
 - Pattern presentation ownership should follow `Docs/Contracts/PresentationAuthoringContract.md`.
 - The former `BossDrop` legacy reward flow is resolved in `Docs/RefactorBacklog/BossDropResponsibilitySplit.md`; unhandled reward/portal authoring now reports editor/development warnings through `BossRewardFallbackService` instead of running a dynamic fallback.
 - The boss battle-end migration validator can find missing scene `BossBattleEndHandler` coverage, missing authored chest/portal references, optional RouteSet special reward presets, stale deleted component/catalog GUIDs, stale definition/profile fields, and boss exit portal semantic mistakes. Scene Auto Fix can create first-pass handler/boss wiring, but final chest and portal objects must be placed and assigned in the Inspector.

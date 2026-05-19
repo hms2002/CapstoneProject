@@ -22,26 +22,37 @@ public sealed class AbilityLogic_SlimeQueenRepeatedSlam : AbilityLogic
             Vector3 startPosition = slimeQueen.transform.position;
             startPosition.z = landingPosition.z;
 
+            SlimeQueenBossBase pitFallBlockOwner = slimeQueen is SlimeQueenP2Short ? slimeQueen : null;
             slimeQueen.SetPatternMoveDamageBlocked(true);
+            if (pitFallBlockOwner != null)
+                pitFallBlockOwner.PushPitFallTriggerBlock();
 
-            float elapsedSeconds = 0f;
-            while (elapsedSeconds < slimeQueen.Phase2SlamIntervalSeconds)
+            try
             {
-                if (IsAbilityCancelled(spec))
+                float elapsedSeconds = 0f;
+                while (elapsedSeconds < slimeQueen.Phase2SlamIntervalSeconds)
                 {
-                    slimeQueen.SnapToPhase2SlamLanding(startPosition);
-                    slimeQueen.SetPatternMoveDamageBlocked(false);
-                    yield break;
+                    if (IsAbilityCancelled(spec))
+                    {
+                        slimeQueen.SnapToPhase2SlamLanding(startPosition);
+                        yield break;
+                    }
+
+                    elapsedSeconds += Time.deltaTime;
+                    float normalizedTime = Mathf.Clamp01(elapsedSeconds / slimeQueen.Phase2SlamIntervalSeconds);
+                    slimeQueen.SetPhase2SlamPose(startPosition, landingPosition, normalizedTime);
+                    yield return null;
                 }
 
-                elapsedSeconds += Time.deltaTime;
-                float normalizedTime = Mathf.Clamp01(elapsedSeconds / slimeQueen.Phase2SlamIntervalSeconds);
-                slimeQueen.SetPhase2SlamPose(startPosition, landingPosition, normalizedTime);
-                yield return null;
+                slimeQueen.SnapToPhase2SlamLanding(landingPosition);
+            }
+            finally
+            {
+                slimeQueen.SetPatternMoveDamageBlocked(false);
+                if (pitFallBlockOwner != null)
+                    pitFallBlockOwner.PopPitFallTriggerBlock();
             }
 
-            slimeQueen.SnapToPhase2SlamLanding(landingPosition);
-            slimeQueen.SetPatternMoveDamageBlocked(false);
             slimeQueen.ApplyPhase2SlamDamage(spec, landingPosition);
             slimeQueen.FaceCurrentTarget();
         }

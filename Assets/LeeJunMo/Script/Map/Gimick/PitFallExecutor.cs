@@ -9,20 +9,34 @@ public static class PitFallExecutor
         if (!context.IsValid)
             yield break;
 
-        ApplyFallingEffect(context);
-        ResetPhysicsVelocity(context.TargetTransform);
+        SlimeQueenBossBase slimeQueenTarget = context.TargetTransform.GetComponent<SlimeQueenBossBase>();
 
-        if (context.FallDuration > 0f)
-            yield return new WaitForSeconds(context.FallDuration);
+        try
+        {
+            if (slimeQueenTarget != null)
+                slimeQueenTarget.SetPitFallRuntimeLock(true);
 
-        ApplyTrapDamage(context);
-        MoveToRespawnPosition(context);
-        RemoveFallingEffect(context);
+            ApplyFallingEffect(context);
+            ResetPhysicsVelocity(context.TargetTransform);
+
+            if (context.FallDuration > 0f)
+                yield return new WaitForSeconds(context.FallDuration);
+
+            ApplyTrapDamage(context);
+            MoveToRespawnPosition(context);
+        }
+        finally
+        {
+            ResetPhysicsVelocity(context.TargetTransform);
+            RemoveFallingEffect(context);
+            if (slimeQueenTarget != null)
+                slimeQueenTarget.SetPitFallRuntimeLock(false);
+        }
     }
 
     private static void ApplyFallingEffect(PitFallContext context)
     {
-        if (context.FallingEffect == null)
+        if (context.FallingEffect == null || context.AbilitySystem == null || context.TargetObject == null)
             return;
 
         GameplayEffectSpec statusSpec = context.AbilitySystem.MakeSpec(
@@ -36,6 +50,9 @@ public static class PitFallExecutor
 
     private static void ResetPhysicsVelocity(Transform targetTransform)
     {
+        if (targetTransform == null)
+            return;
+
         Rigidbody2D body = targetTransform.GetComponent<Rigidbody2D>();
         if (body == null)
             return;
@@ -46,7 +63,7 @@ public static class PitFallExecutor
 
     private static void ApplyTrapDamage(PitFallContext context)
     {
-        if (context.DamageEffect == null)
+        if (context.DamageEffect == null || context.AbilitySystem == null || context.TargetObject == null)
             return;
 
         HazardDamageAction.ApplyDamage(
@@ -61,12 +78,15 @@ public static class PitFallExecutor
 
     private static void MoveToRespawnPosition(PitFallContext context)
     {
+        if (context.TargetTransform == null)
+            return;
+
         context.TargetTransform.position = context.RespawnPosition;
     }
 
     private static void RemoveFallingEffect(PitFallContext context)
     {
-        if (context.FallingEffect == null)
+        if (context.FallingEffect == null || context.AbilitySystem == null || context.TargetObject == null)
             return;
 
         context.AbilitySystem.EffectRunner.RemoveEffect(context.FallingEffect, context.TargetObject);
