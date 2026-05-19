@@ -73,6 +73,7 @@ public class AL_Tackle : AbilityLogic
         RemoveKnockbackImmuneTag(system != null ? system.TagSystem : null);
 
         HideTelegraph(system);
+        ReleasePreparedTackleMovementLock(system);
     }
 
     /// <summary>준비된 태클을 실행합니다.</summary>
@@ -84,52 +85,64 @@ public class AL_Tackle : AbilityLogic
         TackleAttack.TackleContext context)
     {
         tackle.ShowTelegraph(context, readyTime, telegraphStyle);
-
-        if (readyTime > 0f) yield return AbilityTasks.WaitDelay(caster, spec, readyTime);
-
-        if (IsCancelled(spec))
-        {
-            tackle.HideTelegraph();
-            yield break;
-        }
-
-        tackle.HideTelegraph();
-
-        AbilityMotionController2D motion = GetMotion(caster);
-        float finalLungeTime = Mathf.Max(0f, lungeTime);
-        float finalSpeed = Mathf.Max(0f, tackleSpeed);
-        float finalDamping = Mathf.Max(0f, tackleDamping);
-        bool appliedKnockbackImmune = false;
+        tackle.SetAttackPreparationMoveBlocked(true);
+        tackle.PlayAttackReadyAnimation();
 
         try
         {
-            if (motion != null && finalLungeTime > 0f && finalSpeed > 0f)
+            if (readyTime > 0f) yield return AbilityTasks.WaitDelay(caster, spec, readyTime);
+
+            if (IsCancelled(spec))
             {
-                appliedKnockbackImmune = AddKnockbackImmuneTag(caster.TagSystem);
-
-                motion.StartDampedDash(
-                    context.Direction,
-                    finalSpeed,
-                    finalLungeTime,
-                    finalDamping);
-
-                yield return AbilityTasks.WaitDelay(caster, spec, finalLungeTime);
+                tackle.HideTelegraph();
+                tackle.SetAttackPreparationMoveBlocked(false);
+                yield break;
             }
+
+            tackle.HideTelegraph();
+            tackle.SetAttackPreparationMoveBlocked(false);
+            tackle.PlayAttackAnimation();
+
+            AbilityMotionController2D motion = GetMotion(caster);
+            float finalLungeTime = Mathf.Max(0f, lungeTime);
+            float finalSpeed = Mathf.Max(0f, tackleSpeed);
+            float finalDamping = Mathf.Max(0f, tackleDamping);
+            bool appliedKnockbackImmune = false;
+
+            try
+            {
+                if (motion != null && finalLungeTime > 0f && finalSpeed > 0f)
+                {
+                    appliedKnockbackImmune = AddKnockbackImmuneTag(caster.TagSystem);
+
+                    motion.StartDampedDash(
+                        context.Direction,
+                        finalSpeed,
+                        finalLungeTime,
+                        finalDamping);
+
+                    yield return AbilityTasks.WaitDelay(caster, spec, finalLungeTime);
+                }
+            }
+            finally
+            {
+                if (appliedKnockbackImmune)
+                    RemoveKnockbackImmuneTag(caster.TagSystem);
+            }
+
+            if (IsCancelled(spec)) yield break;
+
+            GameObject finalTarget = context.Target != null ? context.Target : fallbackTarget;
+            if (!tackle.HasDelay
+                && tackle.HasClearPathTo(finalTarget)
+                && InBox(finalTarget, context)
+                && ApplyDamage(caster, spec, finalTarget))
+                tackle.StartDelay();
         }
         finally
         {
-            if (appliedKnockbackImmune)
-                RemoveKnockbackImmuneTag(caster.TagSystem);
+            tackle.SetAttackPreparationMoveBlocked(false);
         }
-
-        if (IsCancelled(spec)) yield break;
-
-        GameObject finalTarget = context.Target != null ? context.Target : fallbackTarget;
-        if (!tackle.HasDelay
-            && tackle.HasClearPathTo(finalTarget)
-            && InBox(finalTarget, context)
-            && ApplyDamage(caster, spec, finalTarget))
-            tackle.StartDelay();
     }
 
     /// <summary>타겟이 고정된 태클 범위 안에 있는지 확인합니다.</summary>
@@ -214,6 +227,15 @@ public class AL_Tackle : AbilityLogic
 
         TackleAttack tackle = caster.GetComponent<TackleAttack>();
         if (tackle != null) tackle.HideTelegraph();
+    }
+
+    /// <summary>태클 준비 중 강제 종료된 경우 남은 이동 차단 태그를 정리합니다.</summary>
+    private static void ReleasePreparedTackleMovementLock(AbilitySystem caster)
+    {
+        if (caster == null) return;
+
+        TackleAttack tackle = caster.GetComponent<TackleAttack>();
+        if (tackle != null) tackle.SetAttackPreparationMoveBlocked(false);
     }
 
     /// <summary>돌진 중 사용할 넉백 면역 태그를 추가합니다.</summary>

@@ -1,0 +1,2160 @@
+fileFormatVersion: 2
+guid: d5ff37767c10f0a41bfb6b71b379437c
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -7803983009448536926
+    second: Shadowling Sprite Sheet_0
+  - first:
+      213: -6793586972012973261
+    second: Shadowling Sprite Sheet_1
+  - first:
+      213: -6548765020324769682
+    second: Shadowling Sprite Sheet_2
+  - first:
+      213: 8253106163122591052
+    second: Shadowling Sprite Sheet_3
+  - first:
+      213: -5564880712660473209
+    second: Shadowling Sprite Sheet_4
+  - first:
+      213: -802477049419198818
+    second: Shadowling Sprite Sheet_5
+  - first:
+      213: -3197296319428916775
+    second: Shadowling Sprite Sheet_6
+  - first:
+      213: -3311389303801494112
+    second: Shadowling Sprite Sheet_7
+  - first:
+      213: 3600464709661626050
+    second: Shadowling Sprite Sheet_8
+  - first:
+      213: 6071617247171454999
+    second: Shadowling Sprite Sheet_9
+  - first:
+      213: 9168230112029394207
+    second: Shadowling Sprite Sheet_10
+  - first:
+      213: 4939684502434636983
+    second: Shadowling Sprite Sheet_11
+  - first:
+      213: -1864314287578200796
+    second: Shadowling Sprite Sheet_12
+  - first:
+      213: -1311446486487416686
+    second: Shadowling Sprite Sheet_13
+  - first:
+      213: 1911686263496909027
+    second: Shadowling Sprite Sheet_14
+  - first:
+      213: -954056265735258176
+    second: Shadowling Sprite Sheet_15
+  - first:
+      213: 711615100564508872
+    second: Shadowling Sprite Sheet_16
+  - first:
+      213: 7800920297701122315
+    second: Shadowling Sprite Sheet_17
+  - first:
+      213: 7289156260660823366
+    second: Shadowling Sprite Sheet_18
+  - first:
+      213: -964047080612516641
+    second: Shadowling Sprite Sheet_19
+  - first:
+      213: 8929710809025032133
+    second: Shadowling Sprite Sheet_20
+  - first:
+      213: 1509624918078332565
+    second: Shadowling Sprite Sheet_21
+  - first:
+      213: 865975071339860407
+    second: Shadowling Sprite Sheet_22
+  - first:
+      213: 7465701528015766149
+    second: Shadowling Sprite Sheet_23
+  - first:
+      213: 1065759023946265002
+    second: Shadowling Sprite Sheet_24
+  - first:
+      213: 167929605030330248
+    second: Shadowling Sprite Sheet_25
+  - first:
+      213: 1680682531451483229
+    second: Shadowling Sprite Sheet_26
+  - first:
+      213: 6240317819634082279
+    second: Shadowling Sprite Sheet_27
+  - first:
+      213: 987147541928050075
+    second: Shadowling Sprite Sheet_28
+  - first:
+      213: 7260366417859334614
+    second: Shadowling Sprite Sheet_29
+  - first:
+      213: -9222078450156396174
+    second: Shadowling Sprite Sheet_30
+  - first:
+      213: -5519961664066398738
+    second: Shadowling Sprite Sheet_31
+  - first:
+      213: 3029581844626339060
+    second: Shadowling Sprite Sheet_32
+  - first:
+      213: -4480157643729571925
+    second: Shadowling Sprite Sheet_33
+  - first:
+      213: -1007148570364489509
+    second: Shadowling Sprite Sheet_34
+  - first:
+      213: 3070599506195228308
+    second: Shadowling Sprite Sheet_35
+  - first:
+      213: -8673182373644290592
+    second: Shadowling Sprite Sheet_36
+  - first:
+      213: -914222293508800928
+    second: Shadowling Sprite Sheet_37
+  - first:
+      213: -6248374212386832063
+    second: Shadowling Sprite Sheet_38
+  - first:
+      213: 5621333512311956166
+    second: Shadowling Sprite Sheet_39
+  - first:
+      213: -2027048360805628754
+    second: Shadowling Sprite Sheet_40
+  - first:
+      213: 5382741301702732493
+    second: Shadowling Sprite Sheet_41
+  - first:
+      213: 1397646714494394308
+    second: Shadowling Sprite Sheet_42
+  - first:
+      213: -3794398662100956619
+    second: Shadowling Sprite Sheet_43
+  - first:
+      213: -3696541773825737543
+    second: Shadowling Sprite Sheet_44
+  - first:
+      213: -4946675979631206778
+    second: Shadowling Sprite Sheet_45
+  - first:
+      213: -3945995360390362934
+    second: Shadowling Sprite Sheet_46
+  - first:
+      213: 6069717949911747424
+    second: Shadowling Sprite Sheet_47
+  - first:
+      213: -2040478381592259511
+    second: Shadowling Sprite Sheet_48
+  - first:
+      213: 2289278088118459705
+    second: Shadowling Sprite Sheet_49
+  - first:
+      213: -4521063531490724991
+    second: Shadowling Sprite Sheet_50
+  - first:
+      213: 8483719359370532408
+    second: Shadowling Sprite Sheet_51
+  - first:
+      213: 3190297306401117460
+    second: Shadowling Sprite Sheet_52
+  - first:
+      213: 7492461072716451623
+    second: Shadowling Sprite Sheet_53
+  - first:
+      213: -4388156279277942767
+    second: Shadowling Sprite Sheet_54
+  - first:
+      213: 195828262474698563
+    second: Shadowling Sprite Sheet_55
+  - first:
+      213: 3735148047229074882
+    second: Shadowling Sprite Sheet_56
+  - first:
+      213: 4633020832584657517
+    second: Shadowling Sprite Sheet_57
+  - first:
+      213: -5948446007956012612
+    second: Shadowling Sprite Sheet_58
+  - first:
+      213: -5819708248124475079
+    second: Shadowling Sprite Sheet_59
+  - first:
+      213: -3915295971264213189
+    second: Shadowling Sprite Sheet_60
+  - first:
+      213: -541193422880257981
+    second: Shadowling Sprite Sheet_61
+  - first:
+      213: 2123355991668020335
+    second: Shadowling Sprite Sheet_62
+  - first:
+      213: -5334724232884947225
+    second: Shadowling Sprite Sheet_63
+  - first:
+      213: 3750419933815496111
+    second: Shadowling Sprite Sheet_64
+  - first:
+      213: 5411489886681565191
+    second: Shadowling Sprite Sheet_65
+  - first:
+      213: -1304923653911583060
+    second: Shadowling Sprite Sheet_66
+  - first:
+      213: 3535980830313250327
+    second: Shadowling Sprite Sheet_67
+  - first:
+      213: -3901792653738578689
+    second: Shadowling Sprite Sheet_68
+  - first:
+      213: -5906297719326877164
+    second: Shadowling Sprite Sheet_69
+  - first:
+      213: -6407226745115345575
+    second: Shadowling Sprite Sheet_70
+  - first:
+      213: -8050490993097340250
+    second: Shadowling Sprite Sheet_71
+  - first:
+      213: 2195288924060439251
+    second: Shadowling Sprite Sheet_72
+  - first:
+      213: -4071311450082390286
+    second: Shadowling Sprite Sheet_73
+  - first:
+      213: 7570880859712735552
+    second: Shadowling Sprite Sheet_74
+  - first:
+      213: -2846678855380396016
+    second: Shadowling Sprite Sheet_75
+  - first:
+      213: 287555201542780818
+    second: Shadowling Sprite Sheet_76
+  - first:
+      213: 7006751570405956178
+    second: Shadowling Sprite Sheet_77
+  - first:
+      213: -5488948364181438840
+    second: Shadowling Sprite Sheet_78
+  - first:
+      213: 4779764873752160354
+    second: Shadowling Sprite Sheet_79
+  - first:
+      213: 575908023258911681
+    second: Shadowling Sprite Sheet_80
+  - first:
+      213: 8404270657939823183
+    second: Shadowling Sprite Sheet_81
+  - first:
+      213: 8061578486347031824
+    second: Shadowling Sprite Sheet_82
+  - first:
+      213: -5711853592879162955
+    second: Shadowling Sprite Sheet_83
+  - first:
+      213: -1140385908357224358
+    second: Shadowling Sprite Sheet_84
+  - first:
+      213: 1002614867804153656
+    second: Shadowling Sprite Sheet_85
+  - first:
+      213: -668759803388419491
+    second: Shadowling Sprite Sheet_86
+  - first:
+      213: -8290894190414631673
+    second: Shadowling Sprite Sheet_87
+  - first:
+      213: -2469475053165924039
+    second: Shadowling Sprite Sheet_88
+  - first:
+      213: 1723096011630354324
+    second: Shadowling Sprite Sheet_89
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 32
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Shadowling Sprite Sheet_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 512
+        width: 64
+        height: 64
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2a4d2a8dccea2b390800000000000000
+      internalID: -7803983009448536926
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shadowling Sprite Sheet_1
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 512
+        width: 64
+        height: 64
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 333f17694a458b1a0800000000000000
+      internalID: -6793586972012973261
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shadowling Sprite Sheet_2
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 512
+        width: 64
+        height: 64
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e60d90e29ec1e15a0800000000000000
+      internalID: -6548765020324769682
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shadowling Sprite Sheet_3
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 512
+        width: 64
+        height: 64
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c45528a145ce88270800000000000000
+      internalID: 8253106163122591052
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shadowling Sprite Sheet_4
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 512
+        width: 64
+        height: 64
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 78a2370d97295c2b0800000000000000
+      internalID: -5564880712660473209
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shadowling Sprite Sheet_5
+      rect:
+        serializedVersion: 2
+        x: 320
+        y: 512
+        width: 64
+        height: 64
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e9e07f010670dd4f0800000000000000
+      internalID: -802477049419198818
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shadowling Sprite Sheet_6
+      rect:
+        serializedVersion: 2
+        x: 384
+        y: 512
+        width: 64
+        height: 64
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9d986ceffebe0a3d0800000000000000
+      internalID: -3197296319428916775
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shadowling Sprite Sheet_7
+      rect:
+        serializedVersion: 2
+        x: 448
+        y: 512
+        width: 64
+        height: 64
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0a542e109f49b02d0800000000000000
+      internalID: -3311389303801494112
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shadowling Sprite Sheet_8
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 512
+        width: 64
+        height: 64
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2ce06bdc39b67f130800000000000000
+      internalID: 3600464709661626050
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shadowling Sprite Sheet_9
+      rect:
+        serializedVersion: 2
+        x: 576
+        y: 512
+        width: 64
+        height: 64
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7182acda7b7b24450800000000000000
+      internalID: 6071617247171454999
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shadowling Sprite Sheet_10
+      rect:
+        serializedVersion: 2
+        x: 640
+        y: 512
+        width: 64
+        height: 64
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f154d8626b81c3f70800000000000000
+      internalID: 9168230112029394207
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shadowling Sprite Sheet_11
+      rect:
+        serializedVersion: 2
+        x: 704
+        y: 512
+        width: 64
+        height: 64
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7b46e1622e84d8440800000000000000
+      internalID: 4939684502434636983
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shadowling Sprite Sheet_12
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 448
+        width: 64
+        height: 64
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 42547337800a026e0800000000000000
+      internalID: -1864314287578200796
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shadowling Sprite Sheet_13
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 448
+        width: 64
+        height: 64
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 290cbfe6e5ecccde0800000000000000
+      internalID: -1311446486487416686
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shadowling Sprite Sheet_14
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 448
+        width: 64
+        height: 64
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3e02ab1378ca78a10800000000000000
+      internalID: 1911686263496909027
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shadowling Sprite Sheet_15
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 448
+        width: 64
+        height: 64
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0cf3d1191e282c2f0800000000000000
+      internalID: -954056265735258176
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shadowling Sprite Sheet_16
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 448
+        width: 64
+        height: 64
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8c093f5e92a20e900800000000000000
+      internalID: 711615100564508872
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shadowling Sprite Sheet_17
+      rect:
+        serializedVersion: 2
+        x: 320
+        y: 448
+        width: 64
+        height: 64
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b012c910eaf624c60800000000000000
+      internalID: 7800920297701122315
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shadowling Sprite Sheet_18
+      rect:
+        serializedVersion: 2
+        x: 384
+        y: 448
+        width: 64
+        height: 64
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 645c00ddff8482560800000000000000
+      internalID: 7289156260660823366
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shadowling Sprite Sheet_19
+      rect:
+        serializedVersion: 2
+        x: 448
+        y: 448
+        width: 64
+        height: 64
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fdca655b9440f92f0800000000000000
+      internalID: -964047080612516641
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shadowling Sprite Sheet_20
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 448
+        width: 64
+        height: 64
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5cf27ee4ba4bceb70800000000000000
+      internalID: 8929710809025032133
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shadowling Sprite Sheet_21
+      rect:
+        serializedVersion: 2
+        x: 576
+        y: 448
+        width: 64
+        height: 64
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 59e132a5dd343f410800000000000000
+      internalID: 1509624918078332565
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shadowling Sprite Sheet_22
+      rect:
+        serializedVersion: 2
+        x: 640
+        y: 448
+        width: 64
+        height: 64
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7b15e8f3dbf840c00800000000000000
+      internalID: 865975071339860407
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shadowling Sprite Sheet_23
+      rect:
+        serializedVersion: 2
+        x: 704
+        y: 448
+        width: 64
+        height: 64
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 58288781cff7b9760800000000000000
+      internalID: 7465701528015766149
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shadowling Sprite Sheet_24
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 384
+        width: 64
+        height: 64
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: aa1fb768f265ace00800000000000000
+      internalID: 1065759023946265002
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shadowling Sprite Sheet_25
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 384
+        width: 64
+        height: 64
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 88fba17061b945200800000000000000
+      internalID: 167929605030330248
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shadowling Sprite Sheet_26
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 384
+        width: 64
+        height: 64
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d54be539bdbf25710800000000000000
+      internalID: 1680682531451483229
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shadowling Sprite Sheet_27
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 384
+        width: 64
+        height: 64
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7e164dc8eff0a9650800000000000000
+      internalID: 6240317819634082279
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shadowling Sprite Sheet_28
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 384
+        width: 64
+        height: 64
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b9d7581957d03bd00800000000000000
+      internalID: 987147541928050075
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shadowling Sprite Sheet_29
+      rect:
+        serializedVersion: 2
+        x: 320
+        y: 384
+        width: 64
+        height: 64
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6d15eab3ac002c460800000000000000
+      internalID: 7260366417859334614
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shadowling Sprite Sheet_30
+      rect:
+        serializedVersion: 2
+        x: 384
+        y: 384
+        width: 64
+        height: 64
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 271a4af9288940080800000000000000
+      internalID: -9222078450156396174
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shadowling Sprite Sheet_31
+      rect:
+        serializedVersion: 2
+        x: 448
+        y: 384
+        width: 64
+        height: 64
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ee55c8fcc182563b0800000000000000
+      internalID: -5519961664066398738
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shadowling Sprite Sheet_32
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 384
+        width: 64
+        height: 64
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4f4fce2e2ac3b0a20800000000000000
+      internalID: 3029581844626339060
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shadowling Sprite Sheet_33
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 320
+        width: 64
+        height: 64
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: baf6fb32c5843d1c0800000000000000
+      internalID: -4480157643729571925
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shadowling Sprite Sheet_34
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 320
+        width: 64
+        height: 64
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bd0d16b16b3e502f0800000000000000
+      internalID: -1007148570364489509
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shadowling Sprite Sheet_35
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 320
+        width: 64
+        height: 64
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 496a14e6bf5fc9a20800000000000000
+      internalID: 3070599506195228308
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shadowling Sprite Sheet_36
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 320
+        width: 64
+        height: 64
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0e5b0ca659aa2a780800000000000000
+      internalID: -8673182373644290592
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shadowling Sprite Sheet_37
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 320
+        width: 64
+        height: 64
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 06e3aa5faa70053f0800000000000000
+      internalID: -914222293508800928
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shadowling Sprite Sheet_38
+      rect:
+        serializedVersion: 2
+        x: 320
+        y: 320
+        width: 64
+        height: 64
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 141c8f652c05949a0800000000000000
+      internalID: -6248374212386832063
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shadowling Sprite Sheet_39
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 256
+        width: 64
+        height: 64
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6c26a5ddb0df20e40800000000000000
+      internalID: 5621333512311956166
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shadowling Sprite Sheet_40
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 256
+        width: 64
+        height: 64
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ea484af614a7ed3e0800000000000000
+      internalID: -2027048360805628754
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shadowling Sprite Sheet_41
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 256
+        width: 64
+        height: 64
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dcaa0d5e1b653ba40800000000000000
+      internalID: 5382741301702732493
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shadowling Sprite Sheet_42
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 256
+        width: 64
+        height: 64
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4cf1ee22840756310800000000000000
+      internalID: 1397646714494394308
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shadowling Sprite Sheet_43
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 256
+        width: 64
+        height: 64
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 53a41493586975bc0800000000000000
+      internalID: -3794398662100956619
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shadowling Sprite Sheet_44
+      rect:
+        serializedVersion: 2
+        x: 320
+        y: 256
+        width: 64
+        height: 64
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9bc79b187de33bcc0800000000000000
+      internalID: -3696541773825737543
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shadowling Sprite Sheet_45
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 192
+        width: 64
+        height: 64
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 68edf17b760e95bb0800000000000000
+      internalID: -4946675979631206778
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shadowling Sprite Sheet_46
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 192
+        width: 64
+        height: 64
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ac8c79260220d39c0800000000000000
+      internalID: -3945995360390362934
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shadowling Sprite Sheet_47
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 192
+        width: 64
+        height: 64
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 06b4d431158fb3450800000000000000
+      internalID: 6069717949911747424
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shadowling Sprite Sheet_48
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 192
+        width: 64
+        height: 64
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 944545d09b3cea3e0800000000000000
+      internalID: -2040478381592259511
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shadowling Sprite Sheet_49
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 192
+        width: 64
+        height: 64
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 93dd262ca4625cf10800000000000000
+      internalID: 2289278088118459705
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shadowling Sprite Sheet_50
+      rect:
+        serializedVersion: 2
+        x: 320
+        y: 192
+        width: 64
+        height: 64
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 183b586fba4f141c0800000000000000
+      internalID: -4521063531490724991
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shadowling Sprite Sheet_51
+      rect:
+        serializedVersion: 2
+        x: 384
+        y: 192
+        width: 64
+        height: 64
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 83692650fc93cb570800000000000000
+      internalID: 8483719359370532408
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shadowling Sprite Sheet_52
+      rect:
+        serializedVersion: 2
+        x: 448
+        y: 192
+        width: 64
+        height: 64
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4159ceb4f76364c20800000000000000
+      internalID: 3190297306401117460
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shadowling Sprite Sheet_53
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 192
+        width: 64
+        height: 64
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 72fc4bc16a19af760800000000000000
+      internalID: 7492461072716451623
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shadowling Sprite Sheet_54
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 128
+        width: 64
+        height: 64
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1180dba0d132a13c0800000000000000
+      internalID: -4388156279277942767
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shadowling Sprite Sheet_55
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 128
+        width: 64
+        height: 64
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 34f49c564c8b7b200800000000000000
+      internalID: 195828262474698563
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shadowling Sprite Sheet_56
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 128
+        width: 64
+        height: 64
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2cd359afb59e5d330800000000000000
+      internalID: 3735148047229074882
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shadowling Sprite Sheet_57
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 128
+        width: 64
+        height: 64
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d6a613386ebcb4040800000000000000
+      internalID: 4633020832584657517
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shadowling Sprite Sheet_58
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 128
+        width: 64
+        height: 64
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cb1013a3fdfd27da0800000000000000
+      internalID: -5948446007956012612
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shadowling Sprite Sheet_59
+      rect:
+        serializedVersion: 2
+        x: 320
+        y: 128
+        width: 64
+        height: 64
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9393126be2e3c3fa0800000000000000
+      internalID: -5819708248124475079
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shadowling Sprite Sheet_60
+      rect:
+        serializedVersion: 2
+        x: 384
+        y: 128
+        width: 64
+        height: 64
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b3f474aee031aa9c0800000000000000
+      internalID: -3915295971264213189
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shadowling Sprite Sheet_61
+      rect:
+        serializedVersion: 2
+        x: 448
+        y: 128
+        width: 64
+        height: 64
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 348c172037b4d78f0800000000000000
+      internalID: -541193422880257981
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shadowling Sprite Sheet_62
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 128
+        width: 64
+        height: 64
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f64d11f360da77d10800000000000000
+      internalID: 2123355991668020335
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shadowling Sprite Sheet_63
+      rect:
+        serializedVersion: 2
+        x: 576
+        y: 128
+        width: 64
+        height: 64
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7e67934239047f5b0800000000000000
+      internalID: -5334724232884947225
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shadowling Sprite Sheet_64
+      rect:
+        serializedVersion: 2
+        x: 640
+        y: 128
+        width: 64
+        height: 64
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: faddd992f0b2c0430800000000000000
+      internalID: 3750419933815496111
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shadowling Sprite Sheet_65
+      rect:
+        serializedVersion: 2
+        x: 704
+        y: 128
+        width: 64
+        height: 64
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 70806417169791b40800000000000000
+      internalID: 5411489886681565191
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shadowling Sprite Sheet_66
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 64
+        width: 64
+        height: 64
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ca6689db9daf3ede0800000000000000
+      internalID: -1304923653911583060
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shadowling Sprite Sheet_67
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 64
+        width: 64
+        height: 64
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 71e796ba4d3521130800000000000000
+      internalID: 3535980830313250327
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shadowling Sprite Sheet_68
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 64
+        width: 64
+        height: 64
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ffceea6014c0ad9c0800000000000000
+      internalID: -3901792653738578689
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shadowling Sprite Sheet_69
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 64
+        width: 64
+        height: 64
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 41a52d5648d980ea0800000000000000
+      internalID: -5906297719326877164
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shadowling Sprite Sheet_70
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 64
+        width: 64
+        height: 64
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 95d7406e835f417a0800000000000000
+      internalID: -6407226745115345575
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shadowling Sprite Sheet_71
+      rect:
+        serializedVersion: 2
+        x: 320
+        y: 64
+        width: 64
+        height: 64
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6aa83f85819e64090800000000000000
+      internalID: -8050490993097340250
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shadowling Sprite Sheet_72
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 64
+        height: 64
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3d2d8f135ab377e10800000000000000
+      internalID: 2195288924060439251
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shadowling Sprite Sheet_73
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 0
+        width: 64
+        height: 64
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2fecbdf8ecbcf77c0800000000000000
+      internalID: -4071311450082390286
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shadowling Sprite Sheet_74
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 0
+        width: 64
+        height: 64
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0494bf7970c211960800000000000000
+      internalID: 7570880859712735552
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shadowling Sprite Sheet_75
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 0
+        width: 64
+        height: 64
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0189f63d9a09e78d0800000000000000
+      internalID: -2846678855380396016
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Shadowling Sprite Sheet_76
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 0
+        width: 64
+        height: 64
+      alignment: 9
+      pivot: {x: 0.5, y: 0.3}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 297f549aee99df300800000000000000
+      internalID: 287555201542780818
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 9515c80a42e4e7e4bbedd2502dc190b7
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":64.0,"y":64.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.30000001192092898},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":9,"pivotUnitMode":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
+    nameFileIdTable:
+      Shadowling Sprite Sheet_0: -7803983009448536926
+      Shadowling Sprite Sheet_1: -6793586972012973261
+      Shadowling Sprite Sheet_10: 9168230112029394207
+      Shadowling Sprite Sheet_11: 4939684502434636983
+      Shadowling Sprite Sheet_12: -1864314287578200796
+      Shadowling Sprite Sheet_13: -1311446486487416686
+      Shadowling Sprite Sheet_14: 1911686263496909027
+      Shadowling Sprite Sheet_15: -954056265735258176
+      Shadowling Sprite Sheet_16: 711615100564508872
+      Shadowling Sprite Sheet_17: 7800920297701122315
+      Shadowling Sprite Sheet_18: 7289156260660823366
+      Shadowling Sprite Sheet_19: -964047080612516641
+      Shadowling Sprite Sheet_2: -6548765020324769682
+      Shadowling Sprite Sheet_20: 8929710809025032133
+      Shadowling Sprite Sheet_21: 1509624918078332565
+      Shadowling Sprite Sheet_22: 865975071339860407
+      Shadowling Sprite Sheet_23: 7465701528015766149
+      Shadowling Sprite Sheet_24: 1065759023946265002
+      Shadowling Sprite Sheet_25: 167929605030330248
+      Shadowling Sprite Sheet_26: 1680682531451483229
+      Shadowling Sprite Sheet_27: 6240317819634082279
+      Shadowling Sprite Sheet_28: 987147541928050075
+      Shadowling Sprite Sheet_29: 7260366417859334614
+      Shadowling Sprite Sheet_3: 8253106163122591052
+      Shadowling Sprite Sheet_30: -9222078450156396174
+      Shadowling Sprite Sheet_31: -5519961664066398738
+      Shadowling Sprite Sheet_32: 3029581844626339060
+      Shadowling Sprite Sheet_33: -4480157643729571925
+      Shadowling Sprite Sheet_34: -1007148570364489509
+      Shadowling Sprite Sheet_35: 3070599506195228308
+      Shadowling Sprite Sheet_36: -8673182373644290592
+      Shadowling Sprite Sheet_37: -914222293508800928
+      Shadowling Sprite Sheet_38: -6248374212386832063
+      Shadowling Sprite Sheet_39: 5621333512311956166
+      Shadowling Sprite Sheet_4: -5564880712660473209
+      Shadowling Sprite Sheet_40: -2027048360805628754
+      Shadowling Sprite Sheet_41: 5382741301702732493
+      Shadowling Sprite Sheet_42: 1397646714494394308
+      Shadowling Sprite Sheet_43: -3794398662100956619
+      Shadowling Sprite Sheet_44: -3696541773825737543
+      Shadowling Sprite Sheet_45: -4946675979631206778
+      Shadowling Sprite Sheet_46: -3945995360390362934
+      Shadowling Sprite Sheet_47: 6069717949911747424
+      Shadowling Sprite Sheet_48: -2040478381592259511
+      Shadowling Sprite Sheet_49: 2289278088118459705
+      Shadowling Sprite Sheet_5: -802477049419198818
+      Shadowling Sprite Sheet_50: -4521063531490724991
+      Shadowling Sprite Sheet_51: 8483719359370532408
+      Shadowling Sprite Sheet_52: 3190297306401117460
+      Shadowling Sprite Sheet_53: 7492461072716451623
+      Shadowling Sprite Sheet_54: -4388156279277942767
+      Shadowling Sprite Sheet_55: 195828262474698563
+      Shadowling Sprite Sheet_56: 3735148047229074882
+      Shadowling Sprite Sheet_57: 4633020832584657517
+      Shadowling Sprite Sheet_58: -5948446007956012612
+      Shadowling Sprite Sheet_59: -5819708248124475079
+      Shadowling Sprite Sheet_6: -3197296319428916775
+      Shadowling Sprite Sheet_60: -3915295971264213189
+      Shadowling Sprite Sheet_61: -541193422880257981
+      Shadowling Sprite Sheet_62: 2123355991668020335
+      Shadowling Sprite Sheet_63: -5334724232884947225
+      Shadowling Sprite Sheet_64: 3750419933815496111
+      Shadowling Sprite Sheet_65: 5411489886681565191
+      Shadowling Sprite Sheet_66: -1304923653911583060
+      Shadowling Sprite Sheet_67: 3535980830313250327
+      Shadowling Sprite Sheet_68: -3901792653738578689
+      Shadowling Sprite Sheet_69: -5906297719326877164
+      Shadowling Sprite Sheet_7: -3311389303801494112
+      Shadowling Sprite Sheet_70: -6407226745115345575
+      Shadowling Sprite Sheet_71: -8050490993097340250
+      Shadowling Sprite Sheet_72: 2195288924060439251
+      Shadowling Sprite Sheet_73: -4071311450082390286
+      Shadowling Sprite Sheet_74: 7570880859712735552
+      Shadowling Sprite Sheet_75: -2846678855380396016
+      Shadowling Sprite Sheet_76: 287555201542780818
+      Shadowling Sprite Sheet_8: 3600464709661626050
+      Shadowling Sprite Sheet_9: 6071617247171454999
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

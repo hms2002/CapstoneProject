@@ -422,7 +422,7 @@ MonoBehaviour:
     bus: 0
     category: 3
     variants:
-    - {fileID: 8300000, guid: ebb673d2b3768d043a8c880a78749664, type: 3}
+    - {fileID: 8300000, guid: ed51a2d4e53b29046aa5a956cf54d909, type: 3}
     volume: 1
     playbackSpeed: 1
     pitchMin: 1

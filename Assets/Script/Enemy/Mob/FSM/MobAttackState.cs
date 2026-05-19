@@ -21,6 +21,7 @@ public sealed class MobAttackState : IMobState
             return;
         }
 
+        context.ChaseIntent?.StopChase();
         context.AttackDecisionSource.OnAttackStateEntered(request);
         startSucceeded = context.AbilityBridge.TryStartAbility(request.Ability, request.ExplicitTarget);
 
