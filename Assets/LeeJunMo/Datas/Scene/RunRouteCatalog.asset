@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   normalStageCount: 1
   normalRouteSets:
-  - {fileID: 11400000, guid: 946aaf6b94713064e9f547584fa3e2e3, type: 2}
+  - {fileID: 11400000, guid: ac129d8bcfb6e3c4da2f9c2e3e4ead07, type: 2}
   allowDuplicateNormalRoutes: 0
   finalRouteSet: {fileID: 11400000, guid: e51505379253cd7418eede840755f707, type: 2}
   hubBgm:
