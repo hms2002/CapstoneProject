@@ -1,18 +1,6 @@
 {
     "sessions": [
         {
-            "sessionId": "e9efd2d2e1614aaaabaf451c2f2add13",
-            "startedUtc": "2026-05-17T13:43:32.6183050Z",
-            "endedUtc": "2026-05-17T13:43:33.8324096Z",
-            "entries": []
-        },
-        {
-            "sessionId": "d32fb689a18849128faf8051dccb370d",
-            "startedUtc": "2026-05-17T14:02:15.4934107Z",
-            "endedUtc": "2026-05-17T14:02:17.0876888Z",
-            "entries": []
-        },
-        {
             "sessionId": "924ad4d5a6ad491fbb5f6d887eca2cfb",
             "startedUtc": "2026-05-19T06:04:13.4086942Z",
             "endedUtc": "2026-05-19T06:04:14.4441805Z",
@@ -322,6 +310,18 @@
                     "lastSceneName": "HeoMinSeok_Boss"
                 }
             ]
+        },
+        {
+            "sessionId": "73354b8d57a242e3844d018c7678fc73",
+            "startedUtc": "2026-05-19T09:17:53.3223554Z",
+            "endedUtc": "2026-05-19T09:17:55.5667386Z",
+            "entries": []
+        },
+        {
+            "sessionId": "2753ca80b1bd4c33b94b62d4950cf94a",
+            "startedUtc": "2026-05-19T09:23:55.9462906Z",
+            "endedUtc": "2026-05-19T09:23:58.1648584Z",
+            "entries": []
         }
     ]
 }
