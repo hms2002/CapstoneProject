@@ -46,7 +46,8 @@ namespace UnityGAS.Sample
                 config: cfg,
                 baseHp: baseHp,
                 baseStagger: baseStagger,
-                baseKnockback: baseKnockback
+                baseKnockback: baseKnockback,
+                elementSource: system.gameObject
             );
 
             var proj = go.GetComponent<SwordSkill1Projectile2D>();

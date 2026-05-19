@@ -35,7 +35,8 @@ namespace UnityGAS
                 statProvider: statProvider,
                 config: data.DamageConfig,
                 damageFormula: data.damageFormula,
-                knockbackFormula: data.knockbackFormula
+                knockbackFormula: data.knockbackFormula,
+                elementSource: system.gameObject
             );
 
             // 책임 :

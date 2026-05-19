@@ -3,8 +3,9 @@ using UnityEngine;
 namespace UnityGAS
 {
     /// <summary>
-    /// Common payload for one hit application.
-    /// Element build-up is not stored here; CombatDamageAction resolves it from the source attacker.
+    /// 책임 :
+    /// - 한 번의 적중 적용에 필요한 생성 시점 전투 수치를 보관한다.
+    /// - 장기 생존 공격체가 적중할 때 공격자 스탯을 다시 읽지 않도록 HP / 스태거 / 넉백 / 원소 누적 snapshot을 전달한다.
     /// </summary>
     [System.Serializable]
     public sealed class CombatHitPayload
@@ -19,6 +20,8 @@ namespace UnityGAS
         public GameplayTag hitConfirmedTag;
         public GameObject causer;
         public bool isCriticalHit;
+        public ElementDamageResult[] elementBuildUps;
+        public bool hasResolvedElementBuildUps;
 
         public bool IsValid()
         {
@@ -45,7 +48,9 @@ namespace UnityGAS
                 finalKnockbackImpulse = snapshot.FinalKnockbackImpulse,
                 hitConfirmedTag = hitConfirmedTag,
                 causer = causer,
-                isCriticalHit = snapshot.IsCriticalHit
+                isCriticalHit = snapshot.IsCriticalHit,
+                elementBuildUps = snapshot.FinalElementBuildUps,
+                hasResolvedElementBuildUps = snapshot.HasResolvedElementBuildUps
             };
         }
     }
@@ -74,7 +79,9 @@ namespace UnityGAS
                 hitConfirmedTag: payload.hitConfirmedTag,
                 hitWorldPosition: hitWorldPosition,
                 causer: payload.causer,
-                isCriticalHit: payload.isCriticalHit);
+                isCriticalHit: payload.isCriticalHit,
+                elementBuildUps: payload.elementBuildUps,
+                hasResolvedElementBuildUps: payload.hasResolvedElementBuildUps);
 
             return true;
         }

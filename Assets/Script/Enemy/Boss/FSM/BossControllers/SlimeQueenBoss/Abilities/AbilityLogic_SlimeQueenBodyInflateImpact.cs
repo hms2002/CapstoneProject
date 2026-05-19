@@ -11,16 +11,28 @@ public sealed class AbilityLogic_SlimeQueenBodyInflateImpact : AbilityLogic
         if (slimeQueen == null)
             yield break;
 
-        slimeQueen.FaceCurrentTarget();
-        slimeQueen.ShowBodyInflateWarning();
+        SlimeQueenPhaseTwoBase phaseTwoHost = system != null ? system.GetComponent<SlimeQueenPhaseTwoBase>() : null;
+        if (phaseTwoHost != null)
+            phaseTwoHost.SetPassiveContactDamageBlocked(true);
 
-        if (slimeQueen.BodyInflateWarningSeconds > 0f)
-            yield return WaitForSecondsUnlessCancelled(slimeQueen.BodyInflateWarningSeconds, spec);
+        try
+        {
+            slimeQueen.FaceCurrentTarget();
+            slimeQueen.ShowBodyInflateWarning();
 
-        if (IsAbilityCancelled(spec))
-            yield break;
+            if (slimeQueen.BodyInflateWarningSeconds > 0f)
+                yield return WaitForSecondsUnlessCancelled(slimeQueen.BodyInflateWarningSeconds, spec);
 
-        slimeQueen.ApplyBodyInflateImpact(spec);
-        slimeQueen.FaceCurrentTarget();
+            if (IsAbilityCancelled(spec))
+                yield break;
+
+            slimeQueen.ApplyBodyInflateImpact(spec);
+            slimeQueen.FaceCurrentTarget();
+        }
+        finally
+        {
+            if (phaseTwoHost != null)
+                phaseTwoHost.SetPassiveContactDamageBlocked(false);
+        }
     }
 }

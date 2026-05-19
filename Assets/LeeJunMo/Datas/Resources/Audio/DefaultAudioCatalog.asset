@@ -403,3 +403,48 @@ MonoBehaviour:
     cooldown: 0
     minDistance: 1
     maxDistance: 20
+  - key: weapon.oddiron.shot
+    bus: 0
+    category: 3
+    variants:
+    - {fileID: 8300000, guid: a0d322b06020f3246b18563d250b48dd, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 1
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: weapon.oddiron.emptyshot
+    bus: 0
+    category: 3
+    variants:
+    - {fileID: 8300000, guid: ed51a2d4e53b29046aa5a956cf54d909, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 1
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: weapon.oddiron.equip
+    bus: 0
+    category: 5
+    variants:
+    - {fileID: 8300000, guid: 82b67af8d762b3041b9a912590a036d3, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 1
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20

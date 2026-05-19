@@ -332,7 +332,9 @@ public sealed class FragmentShardActor : MonoBehaviour
             finalKnockbackImpulse = payload.finalKnockbackImpulse,
             hitConfirmedTag = payload.hitConfirmedTag,
             causer = gameObject,
-            isCriticalHit = payload.isCriticalHit
+            isCriticalHit = payload.isCriticalHit,
+            elementBuildUps = payload.elementBuildUps,
+            hasResolvedElementBuildUps = payload.hasResolvedElementBuildUps
         };
     }
 }
