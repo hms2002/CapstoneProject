@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: ALData_OddIronDryFire
   m_EditorClassIdentifier: 
   dryFireSound:
-    key: 
+    key: weapon.oddiron.emptyshot
     volumeMultiplier: 1
     anchorPolicy: 0
     localOffset: {x: 0, y: 0, z: 0}

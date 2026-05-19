@@ -33,12 +33,31 @@ public class TackleAttack : MonoBehaviour, IMobAttackDecisionSource, IMobPresent
     [SerializeField] private AttackTelegraphService telegraph;
     [SerializeField] private MobAbilityCoordinator abilityCoordinator;
 
+    [Header("Legacy")]
+    [Tooltip("켜면 FSM을 거치지 않고 TackleAttack.Update에서 직접 태클을 시작합니다. 일반 몬스터 FSM 사용 대상은 꺼두는 것이 기본입니다.")]
+    [SerializeField] private bool allowLegacyUpdateActivation;
+
+    [Header("Animation")]
+    [Tooltip("태클 준비/공격 트리거를 받을 Animator입니다. 비워두면 자식까지 포함해 자동 탐색합니다.")]
+    [SerializeField] private Animator animator;
+
+    [Tooltip("태클 경고가 시작될 때 호출할 Animator Trigger입니다. 비워두면 호출하지 않습니다.")]
+    [SerializeField] private string attackReadyTriggerName = "attackReady";
+
+    [Tooltip("태클 돌진이 시작될 때 호출할 Animator Trigger입니다. 비워두면 호출하지 않습니다.")]
+    [SerializeField] private string attackTriggerName = "attack";
+
     private Mob mob;
     private IMobAbilityHelperAccess helperAccess;
     private float delayTime;
     private bool blockMoveApplied;
+    private bool attackPreparationMoveBlocked;
     private bool hasContext;
     private TackleContext tackleContext;
+    private int attackReadyTriggerHash;
+    private int attackTriggerHash;
+    private bool hasAttackReadyTrigger;
+    private bool hasAttackTrigger;
 
     public float RangeRadius => Mathf.Max(0f, attackRangeDiameter * 0.5f);
     public bool IsPreparing => telegraph != null && telegraph.HasActiveTelegraph;
@@ -65,6 +84,10 @@ public class TackleAttack : MonoBehaviour, IMobAttackDecisionSource, IMobPresent
         if (telegraph == null)
             telegraph = GetComponent<AttackTelegraphService>();
 
+        if (animator == null)
+            animator = GetComponentInChildren<Animator>(true);
+
+        CacheAnimatorTriggers();
         EnsureContactTriggerCollider();
     }
 
@@ -75,7 +98,7 @@ public class TackleAttack : MonoBehaviour, IMobAttackDecisionSource, IMobPresent
         if (mob.IsDead)
         {
             ClearContext();
-            SetTag(blockMoveTag, false, ref blockMoveApplied);
+            SetAttackPreparationMoveBlocked(false);
             return;
         }
 
@@ -83,13 +106,15 @@ public class TackleAttack : MonoBehaviour, IMobAttackDecisionSource, IMobPresent
         {
             ClearContext();
             HideTelegraph();
-            SetTag(blockMoveTag, false, ref blockMoveApplied);
+            SetAttackPreparationMoveBlocked(false);
             return;
         }
 
         TickDelay();
         UpdateTags();
-        TryRequestTackle();
+
+        if (allowLegacyUpdateActivation)
+            TryRequestTackle();
     }
 
     private void OnTriggerStay2D(Collider2D other)
@@ -118,6 +143,7 @@ public class TackleAttack : MonoBehaviour, IMobAttackDecisionSource, IMobPresent
     {
         ClearContext();
         HideTelegraph();
+        attackPreparationMoveBlocked = false;
         SetTag(blockMoveTag, false, ref blockMoveApplied);
     }
 
@@ -140,7 +166,9 @@ public class TackleAttack : MonoBehaviour, IMobAttackDecisionSource, IMobPresent
     /// <summary>태클 상태에 맞춰 이동 차단 태그를 맞춥니다.</summary>
     private void UpdateTags()
     {
-        bool shouldBlock = HasDelay || (abilityCoordinator != null && abilityCoordinator.IsAbilityExecutionBusy);
+        bool shouldBlock = attackPreparationMoveBlocked ||
+                           HasDelay ||
+                           (abilityCoordinator != null && abilityCoordinator.IsAbilityExecutionBusy);
         SetTag(blockMoveTag, shouldBlock, ref blockMoveApplied);
     }
 
@@ -187,6 +215,7 @@ public class TackleAttack : MonoBehaviour, IMobAttackDecisionSource, IMobPresent
     {
         ClearContext();
         HideTelegraph();
+        SetAttackPreparationMoveBlocked(false);
     }
 
     /// <summary>지금 태클을 시작할 수 있는지 확인합니다.</summary>
@@ -299,6 +328,13 @@ public class TackleAttack : MonoBehaviour, IMobAttackDecisionSource, IMobPresent
             telegraph.HideCurrent();
     }
 
+    /// <summary>태클 준비 구간 동안 추적 이동을 막을지 설정합니다.</summary>
+    public void SetAttackPreparationMoveBlocked(bool blocked)
+    {
+        attackPreparationMoveBlocked = blocked;
+        UpdateTags();
+    }
+
     /// <summary>
     /// 책임 :
     /// - 태클 helper가 생성한 telegraph를 suppression / death / disable 같은 전역 종료 경로에서 정리한다.
@@ -307,6 +343,7 @@ public class TackleAttack : MonoBehaviour, IMobAttackDecisionSource, IMobPresent
     public void CleanupPresentation()
     {
         HideTelegraph();
+        SetAttackPreparationMoveBlocked(false);
     }
 
     /// <summary>태클 경고를 화면에 표시합니다.</summary>
@@ -326,6 +363,18 @@ public class TackleAttack : MonoBehaviour, IMobAttackDecisionSource, IMobPresent
             style);
 
         telegraph.Show(spec);
+    }
+
+    /// <summary>태클 준비 애니메이션 트리거를 선택적으로 호출합니다.</summary>
+    public void PlayAttackReadyAnimation()
+    {
+        SetAnimatorTriggerIfAvailable(attackReadyTriggerHash, hasAttackReadyTrigger);
+    }
+
+    /// <summary>태클 공격 애니메이션 트리거를 선택적으로 호출합니다.</summary>
+    public void PlayAttackAnimation()
+    {
+        SetAnimatorTriggerIfAvailable(attackTriggerHash, hasAttackTrigger);
     }
 
     /// <summary>태클 딜레이를 시작합니다.</summary>
@@ -410,6 +459,49 @@ public class TackleAttack : MonoBehaviour, IMobAttackDecisionSource, IMobPresent
 
         if (helperAccess.TryRemoveStateTag(tag))
             applied = false;
+    }
+
+    /// <summary>Animator 파라미터 목록을 확인해 실제 존재하는 트리거만 캐시합니다.</summary>
+    private void CacheAnimatorTriggers()
+    {
+        attackReadyTriggerHash = 0;
+        attackTriggerHash = 0;
+        hasAttackReadyTrigger = false;
+        hasAttackTrigger = false;
+
+        if (animator == null || animator.runtimeAnimatorController == null)
+            return;
+
+        attackReadyTriggerHash = string.IsNullOrWhiteSpace(attackReadyTriggerName)
+            ? 0
+            : Animator.StringToHash(attackReadyTriggerName);
+        attackTriggerHash = string.IsNullOrWhiteSpace(attackTriggerName)
+            ? 0
+            : Animator.StringToHash(attackTriggerName);
+
+        AnimatorControllerParameter[] parameters = animator.parameters;
+        for (int i = 0; i < parameters.Length; i++)
+        {
+            AnimatorControllerParameter parameter = parameters[i];
+            if (parameter.type != AnimatorControllerParameterType.Trigger)
+                continue;
+
+            if (attackReadyTriggerHash != 0 && parameter.nameHash == attackReadyTriggerHash)
+                hasAttackReadyTrigger = true;
+
+            if (attackTriggerHash != 0 && parameter.nameHash == attackTriggerHash)
+                hasAttackTrigger = true;
+        }
+    }
+
+    /// <summary>Animator와 트리거가 준비된 경우에만 안전하게 트리거를 재시작합니다.</summary>
+    private void SetAnimatorTriggerIfAvailable(int triggerHash, bool hasTrigger)
+    {
+        if (!hasTrigger || triggerHash == 0 || animator == null || !animator.isActiveAndEnabled)
+            return;
+
+        animator.ResetTrigger(triggerHash);
+        animator.SetTrigger(triggerHash);
     }
 
     /// <summary>태클 원형 범위를 그립니다.</summary>

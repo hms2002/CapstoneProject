@@ -2,7 +2,7 @@
 status: active
 authority: project-log
 category: decision-log
-last_reviewed: 2026-05-17
+last_reviewed: 2026-05-19
 ---
 
 # Decision Log
@@ -402,3 +402,45 @@ Implications:
 - Slime split code must register valid split children into the same lock context as the parent.
 - Boss/local summons and other direct `Instantiate(...)` enemies do not affect room/chest clear unless a future design explicitly registers them.
 - No-loot or gimmick enemies count only when they enter through the same spawn registration or Slime split inheritance path.
+
+## 2026-05-18 - Electric Trigger Splits Electrocute Status From Discharge Logic
+
+Decision:
+Electric gauge completion applies a dedicated instant trigger effect that refreshes the electrocute duration status, deals secondary electric damage, and then performs the discharge chain. The electrocute status effect itself remains status-only.
+
+Reason:
+Status refresh and chain execution have different responsibilities. Keeping discharge in the trigger effect lets each electric gauge completion and chain reapplication deal damage exactly once without making every generic status refresh recursively start another chain.
+
+Implications:
+- `GE_ElectricShockTrigger` is the Electric gauge trigger effect; `GE_ElectrocutedStatus` only grants `State.Status.Electrocuted`.
+- Discharge is a single nearest-neighbor chain: every step scans around the current unit, chooses the nearest already-electrocuted unit, and visits each unit once per discharge event.
+- Electric damage is applied through `GE_Damage_Spec` with `Data.Damage` SetByCaller so it stays inside GAS damage handling and does not re-enter element build-up.
+- Electric chain visuals are driven from the final ordered chain point list; the current authored prefab renders SpriteRenderer segments with `ElectricParticleTrail` without changing the gameplay chain logic.
+
+## 2026-05-19 - Closed Doors Block Mob Player Perception
+
+Decision:
+General mob player perception treats a closed `DoorObject` on the enemy-target sight line as an immediate perception blocker.
+
+Reason:
+Room doors should prevent monsters from detecting or continuing to act on a player beyond the closed door, even if the distance-based detection range still contains the player.
+
+Implications:
+- Shared `Enemy` perception checks line of sight for closed `DoorObject` colliders.
+- Target acquisition, chase detection/movement, common mob attack continuation, and Dead's Skeleton self-destruct checks use the shared perception rule.
+- Opening the door restores normal distance-based detection without clearing the cached player target.
+- The rule depends on door colliders being authored so physics raycasts hit the closed `DoorObject`.
+
+## 2026-05-19 - Run Special NPCs Use Speech Bubble Flow
+
+Decision:
+Run-internal special NPCs such as construction and same-scene teleport NPCs should use a separate speech-bubble interaction flow instead of extending the existing `DialogueController` / Ink / portrait dialogue stack.
+
+Reason:
+These NPCs need in-world `SpeechBubble` UI, local world choices, same-scene movement, construction progress, and shortcut unlock behavior. That interaction shape differs from the existing visual-novel dialogue UI and should not overload the Ink dialogue path.
+
+Implications:
+- `DialogueController`, `DialogueView`, Ink start paths, and portrait presentation remain the existing visual-novel/boss dialogue path.
+- Run special NPCs should start from `Docs/StructureMemory/ScriptSystems/RunSpecialNpcStructure.md`.
+- Teleport NPCs are planned as same-scene player movement, not `ScenePortal` scene transitions.
+- Construction NPC path opening should prefer durable shortcut/map progress and scene-authored blocked/open objects before direct runtime tilemap mutation.

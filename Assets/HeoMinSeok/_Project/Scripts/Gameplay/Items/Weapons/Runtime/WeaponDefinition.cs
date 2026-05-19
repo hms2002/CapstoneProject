@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityGAS;
 using System;
 using System.Collections.Generic;
+using CapstoneAudio;
 
 public enum WeaponAbilitySlot { Attack, Skill1, Skill2 }
 
@@ -54,6 +55,9 @@ public class WeaponDefinition : ScriptableObject, IInventoryItemDefinition
 
     [Header("Display Visual")]
     [SerializeField] private ItemDisplayVisualProfileSO displayVisualProfile;
+
+    [Header("Audio")]
+    [SerializeField] private SoundRef swapSoundOverride;
 
     [Header("Equipped Tag (예: State.Equip.Weapon.Sword)")]
     public GameplayTag equippedTag;
@@ -110,4 +114,15 @@ public class WeaponDefinition : ScriptableObject, IInventoryItemDefinition
     public string DisplayName => displayName;
     public Sprite Icon => icon;
     public ItemDisplayVisualProfileSO DisplayVisualProfile => displayVisualProfile;
+
+    /// <summary>
+    /// 책임 :
+    /// - 무기별 장착 교체음 오버라이드가 설정되어 있는지 확인하고 재생할 사운드 참조를 제공한다.
+    /// - 비어 있으면 인벤토리의 공용 기본 교체음을 사용하게 한다.
+    /// </summary>
+    public bool TryGetSwapSoundOverride(out SoundRef sound)
+    {
+        sound = swapSoundOverride;
+        return sound.IsSet;
+    }
 }

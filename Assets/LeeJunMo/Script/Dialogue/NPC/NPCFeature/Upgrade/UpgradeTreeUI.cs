@@ -82,6 +82,7 @@ public class UpgradeTreeUI : MonoBehaviour, IStackableUI, IMouseCursorDomainSour
     private bool hasRightOverflowArrowBasePosition;
     private bool hasUpOverflowArrowBasePosition;
     private bool hasDownOverflowArrowBasePosition;
+    private bool isExplicitOpenActivation;
 
     public bool IsActive => gameObject.activeSelf;
     public bool CanCloseOnEscape => true;
@@ -92,6 +93,12 @@ public class UpgradeTreeUI : MonoBehaviour, IStackableUI, IMouseCursorDomainSour
 
     private void Awake()
     {
+        if (Application.isPlaying && !isExplicitOpenActivation)
+        {
+            gameObject.SetActive(false);
+            return;
+        }
+
         ResolveReferences();
         EnsureLakePresentation();
         CaptureOverflowArrowBasePositions();
@@ -101,7 +108,23 @@ public class UpgradeTreeUI : MonoBehaviour, IStackableUI, IMouseCursorDomainSour
 
     public void OpenUI()
     {
-        gameObject.SetActive(true);
+        if (!gameObject.activeSelf)
+        {
+            try
+            {
+                isExplicitOpenActivation = true;
+                gameObject.SetActive(true);
+            }
+            finally
+            {
+                isExplicitOpenActivation = false;
+            }
+        }
+        else
+        {
+            gameObject.SetActive(true);
+        }
+
         PrepareLayout();
         EnsureLakePresentation();
 
@@ -315,6 +338,11 @@ public class UpgradeTreeUI : MonoBehaviour, IStackableUI, IMouseCursorDomainSour
 
     private void EnsureLakePresentation()
     {
+#if UNITY_EDITOR
+        if (!Application.isPlaying && UnityEditor.EditorUtility.IsPersistent(this))
+            return;
+#endif
+
         ResolveReferences();
         if (viewportRect == null)
             return;
@@ -359,7 +387,18 @@ public class UpgradeTreeUI : MonoBehaviour, IStackableUI, IMouseCursorDomainSour
     public bool IsLakePreviewTestActiveInEditor => lakePreviewTestActiveInEditor;
 
     public bool ShouldAnimateLakePreviewInEditor =>
-        ShouldUseAnimatedLakePreview();
+        CanEditLakePreviewObjectInEditor() && ShouldUseAnimatedLakePreview();
+
+    private bool CanEditLakePreviewObjectInEditor()
+    {
+        return this != null &&
+               !Application.isPlaying &&
+               gameObject != null &&
+               gameObject.scene.IsValid() &&
+               gameObject.scene.isLoaded &&
+               !UnityEditor.EditorUtility.IsPersistent(this) &&
+               UnityEditor.SceneManagement.PrefabStageUtility.GetPrefabStage(gameObject) == null;
+    }
 
     private void OnValidate()
     {
@@ -370,7 +409,7 @@ public class UpgradeTreeUI : MonoBehaviour, IStackableUI, IMouseCursorDomainSour
 
     public void RefreshLakePreviewInEditor()
     {
-        if (this == null || Application.isPlaying || !gameObject.scene.IsValid())
+        if (!CanEditLakePreviewObjectInEditor())
             return;
 
         ResolveLakeSurfaceMaterialAssetInEditor();
@@ -382,10 +421,7 @@ public class UpgradeTreeUI : MonoBehaviour, IStackableUI, IMouseCursorDomainSour
 
     public void TickLakePreviewInEditor()
     {
-        if (this == null ||
-            Application.isPlaying ||
-            !gameObject.scene.IsValid() ||
-            !ShouldAnimateLakePreviewInEditor)
+        if (!CanEditLakePreviewObjectInEditor() || !ShouldAnimateLakePreviewInEditor)
         {
             return;
         }
@@ -400,7 +436,7 @@ public class UpgradeTreeUI : MonoBehaviour, IStackableUI, IMouseCursorDomainSour
 
     public void StartLakePreviewTestInEditor()
     {
-        if (this == null || Application.isPlaying || !gameObject.scene.IsValid())
+        if (!CanEditLakePreviewObjectInEditor())
             return;
 
         UnityEditor.Undo.RecordObject(this, "Start Lake Test Preview");
@@ -418,7 +454,7 @@ public class UpgradeTreeUI : MonoBehaviour, IStackableUI, IMouseCursorDomainSour
 
     public void StopLakePreviewTestInEditor()
     {
-        if (this == null || Application.isPlaying)
+        if (!CanEditLakePreviewObjectInEditor())
             return;
 
         lakePreviewTestActiveInEditor = false;
@@ -433,7 +469,7 @@ public class UpgradeTreeUI : MonoBehaviour, IStackableUI, IMouseCursorDomainSour
 
     public void TestLakeRippleInEditor()
     {
-        if (this == null || Application.isPlaying || !gameObject.scene.IsValid())
+        if (!CanEditLakePreviewObjectInEditor())
             return;
 
         RefreshLakePreviewInEditor();
@@ -442,7 +478,7 @@ public class UpgradeTreeUI : MonoBehaviour, IStackableUI, IMouseCursorDomainSour
 
     public void TestLakeWakeInEditor()
     {
-        if (this == null || Application.isPlaying || !gameObject.scene.IsValid())
+        if (!CanEditLakePreviewObjectInEditor())
             return;
 
         RefreshLakePreviewInEditor();
@@ -451,7 +487,7 @@ public class UpgradeTreeUI : MonoBehaviour, IStackableUI, IMouseCursorDomainSour
 
     public void ClearLakeInteractionPreviewInEditor()
     {
-        if (this == null || Application.isPlaying || !gameObject.scene.IsValid())
+        if (!CanEditLakePreviewObjectInEditor())
             return;
 
         RefreshLakePreviewInEditor();
@@ -465,7 +501,7 @@ public class UpgradeTreeUI : MonoBehaviour, IStackableUI, IMouseCursorDomainSour
 
     public void RestoreLakePreviewMaterialInEditor(bool disableAnimation)
     {
-        if (this == null || Application.isPlaying)
+        if (!CanEditLakePreviewObjectInEditor())
             return;
 
         if (disableAnimation)
@@ -476,8 +512,10 @@ public class UpgradeTreeUI : MonoBehaviour, IStackableUI, IMouseCursorDomainSour
         }
 
         Material restoredMaterial = ResolveLakeSurfaceMaterialAssetInEditor();
-        EnsureLakePresentation();
-        lakePresentation?.RestoreEditorPreviewMaterial(restoredMaterial);
+        UpgradeLakePresentation existingLakePresentation = lakePresentation != null
+            ? lakePresentation
+            : GetComponent<UpgradeLakePresentation>();
+        existingLakePresentation?.RestoreEditorPreviewMaterial(restoredMaterial);
     }
 
     public void ApplyLakeSettingsToMaterial()

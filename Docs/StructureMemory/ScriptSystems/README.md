@@ -2,7 +2,7 @@
 status: active
 authority: structure-memory
 category: system-map-index
-last_reviewed: 2026-05-14
+last_reviewed: 2026-05-19
 ---
 
 # Script Systems
@@ -21,6 +21,7 @@ These documents are working memory for context reconstruction. They are not sour
 | [Boss And Mob Encounter Structure](./BossAndMobEncounterStructure.md) | Boss encounter/battle/battle-end flow, mob population/runtime/death flow, room/chest lock overlays, hazards/puddles, enemy shared cleanup. |
 | [Inventory And Chest UI Structure](./InventoryAndChestUIStructure.md) | Inventory/chest UI, HUD, inventory runtime, world drops, interaction, item details. |
 | [Dialogue NPC Affection Structure](./DialogueNpcAffectionStructure.md) | Dialogue, NPC features, affection, merchant, upgrade, boss dialogue. |
+| [Run Special NPC Structure](./RunSpecialNpcStructure.md) | Run-internal speech-bubble NPC flows, construction/permanent shortcut NPCs, same-scene teleport NPCs. |
 | [Scene Runtime Save Structure](./SceneRuntimeSaveStructure.md) | Scene/run transition, player runtime capture/restore, save data, run timer, map/shortcuts. |
 | [Loot Reward Structure](./LootRewardStructure.md) | Loot manager, boss rewards, grave/stage loot, pickups, reward presentation boundary. |
 | [Loading Presentation Structure](./LoadingPresentationStructure.md) | Loading, presentation runtime, global UI, camera/audio/input/settings/speech bubbles. |

@@ -35,14 +35,15 @@ public sealed class MonsterSpawnRoomGroup : MonoBehaviour
         if (requests == null || spawnProfile == null)
             return;
 
-        if (!spawnProfile.TryGetRandomSpawnTable(out MonsterRoomSpawnProfileSO.SpawnTable table))
+        int stageIndex = ResolveCurrentStageIndex();
+        if (!spawnProfile.TryGetRandomSpawnTable(out MonsterRoomSpawnProfileSO.SpawnTable table, stageIndex))
             return;
 
         RefreshContainersIfNeeded();
         if (reusableContainers.Count == 0)
             return;
 
-        if (!table.TryBuildSpawnPlan(reusableSpawnPlan) || reusableSpawnPlan.Count == 0)
+        if (!table.TryBuildSpawnPlan(reusableSpawnPlan, stageIndex) || reusableSpawnPlan.Count == 0)
             return;
 
         List<MonsterSpawnContainer> candidates = new List<MonsterSpawnContainer>(reusableContainers);
@@ -158,6 +159,20 @@ public sealed class MonsterSpawnRoomGroup : MonoBehaviour
 
             reusableContainers.Add(container);
         }
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 현재 런 진행 단계의 0-based stage index를 스폰 프로파일 해석에 제공한다.
+    /// - 런 플랜이 없는 개발/테스트 씬에서는 첫 단계로 취급해 기존 동작을 유지한다.
+    /// </summary>
+    private static int ResolveCurrentStageIndex()
+    {
+        PortalRouteManager routeManager = PortalRouteManager.Instance;
+        if (routeManager == null || !routeManager.HasActivePlan)
+            return 0;
+
+        return Mathf.Max(0, routeManager.CurrentStageIndex);
     }
 
     /// <summary>간단한 셔플로 방 안 스폰 포인트 순서를 무작위화합니다.</summary>

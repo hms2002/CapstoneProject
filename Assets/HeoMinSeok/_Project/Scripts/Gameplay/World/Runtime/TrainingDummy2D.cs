@@ -7,86 +7,154 @@ using UnityGAS;
 [RequireComponent(typeof(AttributeSet))]
 [RequireComponent(typeof(TagSystem))]
 [RequireComponent(typeof(GameplayEffectRunner))]
-[RequireComponent(typeof(AbilitySystem))] // "적 오브젝트에 꼭 넣을 GAS"에 포함시키고 싶으면 유지
+[RequireComponent(typeof(AbilitySystem))]
 public class TrainingDummy2D : MonoBehaviour
 {
     [Header("Damage Reaction")]
-    [Tooltip("데미지로 감소하는 Attribute (보통 Health)")]
+    [Tooltip("Attribute that decreases when the dummy takes damage.")]
     [SerializeField] private AttributeDefinition healthAttribute;
 
-    [Tooltip("Animator Trigger 이름 (요구사항: Damaged)")]
+    [Tooltip("Fallback Animator trigger used when no configured hit state exists.")]
     [SerializeField] private string damagedTriggerName = "Damaged";
 
-    [Tooltip("연타/다중히트로 트리거가 과도하게 들어가는 걸 막는 최소 간격")]
+    [Tooltip("Animator states restarted immediately when the dummy is hit.")]
+    [SerializeField] private string[] damagedStateNames = { "Hit_01", "Hit_02" };
+
+    [Tooltip("Minimum interval between visual hit reactions.")]
     [SerializeField] private float minHurtInterval = 0.03f;
 
+    [Header("Never Die")]
+    [SerializeField] private bool neverDie = true;
+    [SerializeField] private AttributeDefinition maxHealthAttribute;
+    [SerializeField] private float healThreshold = 1f;
 
     private AttributeSet attributeSet;
     private Animator animator;
     private int damagedTriggerHash;
     private float nextHurtAllowedTime;
 
-    [Header("Never Die")]
-    [SerializeField] private bool neverDie = true;
-    [SerializeField] private AttributeDefinition maxHealthAttribute;
-    [SerializeField] private float healThreshold = 1f; // Health가 1 이하가 되면 회복
-
-    private void OnAttributeChanged(AttributeDefinition attr, float oldValue, float newValue)
-    {
-        if (healthAttribute == null) return;
-        if (attr != healthAttribute) return;
-
-        if (newValue < oldValue)
-        {
-            float dmg = oldValue - newValue;
-
-            DamagePopupService.Show(dmg, transform.position);
-
-            PlayHurt();
-        }
-
-        // ✅ “안 죽는” 처리 (회복은 ModifyAttributeValue로)
-        if (neverDie && maxHealthAttribute != null && attributeSet != null)
-        {
-            if (newValue <= healThreshold)
-            {
-                float maxHp = attributeSet.GetAttributeValue(maxHealthAttribute);
-                float delta = maxHp - newValue; // 부족분만큼 더해줌
-                if (delta > 0f)
-                    attributeSet.TryModifyAttributeValue(healthAttribute, delta, this);
-            }
-        }
-    }
-
     private void Awake()
     {
         attributeSet = GetComponent<AttributeSet>();
         animator = GetComponent<Animator>();
-        damagedTriggerHash = Animator.StringToHash(damagedTriggerName);
+        damagedTriggerHash = string.IsNullOrEmpty(damagedTriggerName) ? 0 : Animator.StringToHash(damagedTriggerName);
     }
 
-
-    private void Start()
+    private void OnEnable()
     {
         if (attributeSet != null)
+        {
             attributeSet.OnAttributeChanged += OnAttributeChanged;
+        }
     }
 
     private void OnDisable()
     {
         if (attributeSet != null)
+        {
             attributeSet.OnAttributeChanged -= OnAttributeChanged;
+        }
+    }
+
+    private void OnAttributeChanged(AttributeDefinition attr, float oldValue, float newValue)
+    {
+        if (healthAttribute == null)
+        {
+            return;
+        }
+
+        if (attr != healthAttribute)
+        {
+            return;
+        }
+
+        if (newValue < oldValue)
+        {
+            float damage = oldValue - newValue;
+            DamagePopupService.Show(damage, transform.position);
+            PlayHurt();
+        }
+
+        if (neverDie && maxHealthAttribute != null && attributeSet != null && newValue <= healThreshold)
+        {
+            float maxHp = attributeSet.GetAttributeValue(maxHealthAttribute);
+            float delta = maxHp - newValue;
+            if (delta > 0f)
+            {
+                attributeSet.TryModifyAttributeValue(healthAttribute, delta, this);
+            }
+        }
     }
 
     private void PlayHurt()
     {
-        if (animator == null) return;
-        if (Time.time < nextHurtAllowedTime) return;
+        if (animator == null)
+        {
+            return;
+        }
+
+        if (Time.time < nextHurtAllowedTime)
+        {
+            return;
+        }
 
         nextHurtAllowedTime = Time.time + minHurtInterval;
 
-        // 같은 프레임/짧은 간격 재피격에서도 확실히 다시 트리거되도록
+        if (TryPlayRandomDamagedState())
+        {
+            return;
+        }
+
+        if (damagedTriggerHash == 0)
+        {
+            return;
+        }
+
         animator.ResetTrigger(damagedTriggerHash);
         animator.SetTrigger(damagedTriggerHash);
+    }
+
+    private bool TryPlayRandomDamagedState()
+    {
+        if (damagedStateNames == null || damagedStateNames.Length == 0)
+        {
+            return false;
+        }
+
+        int startIndex = Random.Range(0, damagedStateNames.Length);
+        for (int i = 0; i < damagedStateNames.Length; i++)
+        {
+            string stateName = damagedStateNames[(startIndex + i) % damagedStateNames.Length];
+            if (string.IsNullOrEmpty(stateName))
+            {
+                continue;
+            }
+
+            if (TryPlayDamagedState(stateName))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private bool TryPlayDamagedState(string stateName)
+    {
+        int shortHash = Animator.StringToHash(stateName);
+        if (animator.HasState(0, shortHash))
+        {
+            animator.Play(shortHash, 0, 0f);
+            return true;
+        }
+
+        int baseLayerHash = Animator.StringToHash("Base Layer." + stateName);
+        if (animator.HasState(0, baseLayerHash))
+        {
+            animator.Play(baseLayerHash, 0, 0f);
+            return true;
+        }
+
+        return false;
     }
 }

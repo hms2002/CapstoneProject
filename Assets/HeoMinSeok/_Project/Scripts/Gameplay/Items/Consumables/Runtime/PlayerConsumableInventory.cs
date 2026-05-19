@@ -33,6 +33,10 @@ public class PlayerConsumableInventory : MonoBehaviour
     [Header("Slots")]
     [SerializeField] private ConsumableDefinition[] slots = new ConsumableDefinition[4];
 
+    [Header("Heal Presentation")]
+    [SerializeField] private ParticleSystem healParticlePrefab;
+    [SerializeField] private Vector3 healParticleLocalOffset = Vector3.zero;
+
     public int Capacity => slots != null ? slots.Length : 0;
     public int SlotCount => Capacity;
 
@@ -119,6 +123,7 @@ public class PlayerConsumableInventory : MonoBehaviour
         if (!consumable.TryUse(gameObject))
             return false;
 
+        PlayerHealParticlePlayback.PlayAttached(healParticlePrefab, transform, healParticleLocalOffset);
         PlayConsumableUseSound();
         slots[slotIndex] = null;
         OnChanged?.Invoke();
@@ -243,5 +248,84 @@ public class PlayerConsumableInventory : MonoBehaviour
             Position = transform.position,
             SourceObject = this
         });
+    }
+}
+
+internal static class PlayerHealParticlePlayback
+{
+    private const float MinimumDestroyDelay = 0.1f;
+
+    public static void PlayAttached(ParticleSystem particlePrefab, Transform target, Vector3 localOffset)
+    {
+        if (particlePrefab == null || target == null)
+            return;
+
+        ParticleSystem particle = UnityEngine.Object.Instantiate(
+            particlePrefab,
+            target.position,
+            target.rotation);
+        if (particle == null)
+            return;
+
+        Transform particleTransform = particle.transform;
+        particleTransform.SetParent(target, worldPositionStays: false);
+        particleTransform.localPosition = localOffset;
+        particleTransform.localRotation = Quaternion.identity;
+        particleTransform.localScale = particlePrefab.transform.localScale;
+
+        GameObject particleObject = particle.gameObject;
+        particleObject.SetActive(true);
+
+        ParticleSystem[] particleSystems = particleObject.GetComponentsInChildren<ParticleSystem>(includeInactive: true);
+        for (int i = 0; i < particleSystems.Length; i++)
+        {
+            ParticleSystem system = particleSystems[i];
+            if (system == null)
+                continue;
+
+            ParticleSystem.MainModule main = system.main;
+            main.simulationSpace = ParticleSystemSimulationSpace.Local;
+
+            system.Stop(withChildren: true, ParticleSystemStopBehavior.StopEmittingAndClear);
+            system.Play(withChildren: true);
+        }
+
+        UnityEngine.Object.Destroy(particleObject, ResolveLifetime(particleSystems));
+    }
+
+    private static float ResolveLifetime(ParticleSystem[] particleSystems)
+    {
+        float lifetime = MinimumDestroyDelay;
+        if (particleSystems == null)
+            return lifetime;
+
+        for (int i = 0; i < particleSystems.Length; i++)
+        {
+            ParticleSystem system = particleSystems[i];
+            if (system == null)
+                continue;
+
+            ParticleSystem.MainModule main = system.main;
+            float systemLifetime = main.duration + ResolveCurveMax(main.startLifetime);
+            lifetime = Mathf.Max(lifetime, systemLifetime);
+        }
+
+        return lifetime;
+    }
+
+    private static float ResolveCurveMax(ParticleSystem.MinMaxCurve curve)
+    {
+        switch (curve.mode)
+        {
+            case ParticleSystemCurveMode.Constant:
+                return curve.constant;
+            case ParticleSystemCurveMode.TwoConstants:
+                return curve.constantMax;
+            case ParticleSystemCurveMode.Curve:
+            case ParticleSystemCurveMode.TwoCurves:
+                return curve.curveMultiplier;
+            default:
+                return curve.constantMax;
+        }
     }
 }

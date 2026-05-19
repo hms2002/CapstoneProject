@@ -266,7 +266,10 @@ public class WeaponInventory2D : MonoBehaviour
     /// 책임 : 무기를 인벤토리에 픽업하고, 필요하면 그 무기 인스턴스의 영속 상태도 함께 복원한다.
     /// 드롭 오브젝트, 상자 보상, 테스트 코드 등 다양한 진입점을 이 API로 통일한다.
     /// </summary>
-    public bool TryPickupWeapon(WeaponDefinition weapon, WeaponPersistentStatePayload runtimePayload = null)
+    public bool TryPickupWeapon(
+        WeaponDefinition weapon,
+        WeaponPersistentStatePayload runtimePayload = null,
+        Vector3? replacementDropPosition = null)
     {
         if (weapon == null) return false;
 
@@ -284,12 +287,13 @@ public class WeaponInventory2D : MonoBehaviour
         {
             replaced = true;
 
-            int current = ActiveIndex;
-            int other = (current == 0) ? 1 : 0;
-            targetIndex = (slots[other] != null) ? other : Mathf.Clamp(current, 0, slots.Length - 1);
-            replacedWasActive = (targetIndex == current);
+            targetIndex = ResolveReplacementSlotIndex();
+            if (!IsValidSlot(targetIndex))
+                return false;
 
-            DropSlot(targetIndex);
+            replacedWasActive = (targetIndex == ActiveIndex);
+
+            DropSlot(targetIndex, replacementDropPosition);
         }
 
         SetSlot(targetIndex, weapon);
@@ -433,7 +437,8 @@ public class WeaponInventory2D : MonoBehaviour
     /// </summary>
     private void PlayRuntimeSwapSound()
     {
-        SoundManager.EnsureInstance().Play(ChangeWeaponSound, new SoundPlaybackContext
+        SoundRef sound = ResolveRuntimeSwapSound();
+        SoundManager.EnsureInstance().Play(sound, new SoundPlaybackContext
         {
             Instigator = gameObject,
             Causer = gameObject,
@@ -441,6 +446,20 @@ public class WeaponInventory2D : MonoBehaviour
             Position = transform.position,
             SourceObject = this
         });
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 현재 새로 장착된 무기의 교체음 오버라이드를 우선 사용하고, 없으면 공용 기본 교체음을 반환한다.
+    /// - 무기별 authoring 선택과 인벤토리의 재생 타이밍 책임을 분리한다.
+    /// </summary>
+    private SoundRef ResolveRuntimeSwapSound()
+    {
+        WeaponDefinition activeWeapon = ActiveWeapon;
+        if (activeWeapon != null && activeWeapon.TryGetSwapSoundOverride(out SoundRef overrideSound))
+            return overrideSound;
+
+        return ChangeWeaponSound;
     }
 
     /// <summary>
@@ -747,7 +766,7 @@ public class WeaponInventory2D : MonoBehaviour
         SetSlot(slotIndex, null);
     }
 
-    private void DropSlot(int slotIndex)
+    private void DropSlot(int slotIndex, Vector3? worldPositionOverride = null)
     {
         if (!IsValidSlot(slotIndex)) return;
 
@@ -777,11 +796,23 @@ public class WeaponInventory2D : MonoBehaviour
 
         if (dropPrefab != null)
         {
-            var drop = Instantiate(dropPrefab, transform.position, Quaternion.identity);
+            Vector3 startPosition = transform.position;
+            Vector3 dropPosition = worldPositionOverride ?? transform.position;
+            var drop = Instantiate(dropPrefab, dropPosition, Quaternion.identity);
             drop.SetWeapon(weapon, payload);
+            drop.PlayDrop(startPosition, dropPosition);
         }
 
         ClearSlot(slotIndex);
+    }
+
+    private int ResolveReplacementSlotIndex()
+    {
+        int current = ActiveIndex;
+        if (IsValidSlot(current) && slots[current] != null)
+            return current;
+
+        return FindFirstFilledSlot();
     }
 
     private void NotifyInventoryChanged()

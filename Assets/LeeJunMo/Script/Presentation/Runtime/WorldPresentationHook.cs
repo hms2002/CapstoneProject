@@ -11,6 +11,18 @@ namespace CapstonePresentation
         ManualRelease
     }
 
+    public enum PresentationSpawnAnchorMode
+    {
+        ContextPosition,
+        TargetSpriteBoundsCenter
+    }
+
+    public enum PresentationSpawnScaleMode
+    {
+        None,
+        TargetSpriteBoundsUniform
+    }
+
     [Serializable]
     public struct SpawnedPresentationHook
     {
@@ -18,6 +30,11 @@ namespace CapstonePresentation
         public Vector3 localOffset;
         public float rotationOffsetZ;
         public Vector3 scaleMultiplier;
+        public bool attachToTarget;
+        public PresentationSpawnAnchorMode anchorMode;
+        public PresentationSpawnScaleMode scaleMode;
+        [Min(0.0001f)] public float targetBoundsReferenceSize;
+        [Min(0f)] public float targetBoundsScaleMultiplier;
         public PresentationLifetimeMode lifetimeMode;
         [Min(0f)] public float lifetimeOverrideSeconds;
         public bool useUnscaledTime;
@@ -27,6 +44,12 @@ namespace CapstonePresentation
 
         public Vector3 EffectiveScaleMultiplier =>
             scaleMultiplier == Vector3.zero ? Vector3.one : scaleMultiplier;
+
+        public float EffectiveTargetBoundsReferenceSize =>
+            targetBoundsReferenceSize > 0.0001f ? targetBoundsReferenceSize : 1f;
+
+        public float EffectiveTargetBoundsScaleMultiplier =>
+            targetBoundsScaleMultiplier > 0f ? targetBoundsScaleMultiplier : 1f;
     }
 
     [Serializable]
@@ -113,6 +136,51 @@ namespace CapstonePresentation
                 position,
                 rotation,
                 fallbackDirection);
+        }
+    }
+
+    public static class PresentationTargetBoundsUtility
+    {
+        public static bool TryResolveSpriteBounds(GameObject target, out Bounds bounds)
+        {
+            bounds = default;
+            if (target == null)
+                return false;
+
+            if (target.TryGetComponent(out SpriteRenderer rootSprite) && IsUsable(rootSprite))
+            {
+                bounds = rootSprite.bounds;
+                return true;
+            }
+
+            bool hasBounds = false;
+            SpriteRenderer[] sprites = target.GetComponentsInChildren<SpriteRenderer>(includeInactive: false);
+            for (int i = 0; i < sprites.Length; i++)
+            {
+                SpriteRenderer sprite = sprites[i];
+                if (!IsUsable(sprite))
+                    continue;
+
+                if (!hasBounds)
+                {
+                    bounds = sprite.bounds;
+                    hasBounds = true;
+                }
+                else
+                {
+                    bounds.Encapsulate(sprite.bounds);
+                }
+            }
+
+            return hasBounds;
+        }
+
+        private static bool IsUsable(SpriteRenderer sprite)
+        {
+            return sprite != null
+                   && sprite.enabled
+                   && sprite.gameObject.activeInHierarchy
+                   && sprite.sprite != null;
         }
     }
 }

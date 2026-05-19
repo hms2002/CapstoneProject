@@ -2,7 +2,7 @@
 status: active
 authority: structure-memory
 category: system-map
-last_reviewed: 2026-05-14
+last_reviewed: 2026-05-19
 ---
 
 # Script System Map
@@ -30,7 +30,7 @@ The current inventory was checked with `rg --files Assets -g '*.cs'`.
 | Cluster | Count | Detailed map |
 | --- | ---: | --- |
 | Gameplay Core | 301 | [Weapon And GAS Structure](./ScriptSystems/WeaponAndGASStructure.md), [Loading Presentation Structure](./ScriptSystems/LoadingPresentationStructure.md) for presentation-adjacent runtime. |
-| Progression / Content | 228 | [Dialogue NPC Affection Structure](./ScriptSystems/DialogueNpcAffectionStructure.md), [Scene Runtime Save Structure](./ScriptSystems/SceneRuntimeSaveStructure.md), [Loot Reward Structure](./ScriptSystems/LootRewardStructure.md), [Inventory And Chest UI Structure](./ScriptSystems/InventoryAndChestUIStructure.md). |
+| Progression / Content | 228 | [Dialogue NPC Affection Structure](./ScriptSystems/DialogueNpcAffectionStructure.md), [Run Special NPC Structure](./ScriptSystems/RunSpecialNpcStructure.md), [Scene Runtime Save Structure](./ScriptSystems/SceneRuntimeSaveStructure.md), [Loot Reward Structure](./ScriptSystems/LootRewardStructure.md), [Inventory And Chest UI Structure](./ScriptSystems/InventoryAndChestUIStructure.md). |
 | Enemy / Encounter | 185 | [Boss And Mob Encounter Structure](./ScriptSystems/BossAndMobEncounterStructure.md); separates boss encounter/battle/battle-end from mob population/runtime/death and lock overlays. |
 | UI / Presentation | 179 | [Inventory And Chest UI Structure](./ScriptSystems/InventoryAndChestUIStructure.md), [Loading Presentation Structure](./ScriptSystems/LoadingPresentationStructure.md). |
 | Editor Tools | 40 | Boundary group; do not treat as runtime structure unless editor tooling is the task. |
@@ -48,6 +48,7 @@ Use these documents instead of expanding this index further.
 | [BossAndMobEncounterStructure.md](./ScriptSystems/BossAndMobEncounterStructure.md) | Boss encounter/battle/battle-end flow, mob population/runtime/death flow, room/chest lock overlays, hazards/puddles, enemy shared cleanup. | Work touches bosses, mobs, FSM/pattern runners, spawn population, lock overlays, hazards, or enemy cleanup. |
 | [InventoryAndChestUIStructure.md](./ScriptSystems/InventoryAndChestUIStructure.md) | Inventory/chest UI, HUD, inventory runtime, world drops, interaction, item details. | Work touches inventory screens, chest reveal, item detail/tooltip, HUD inventory entry points, or world item pickup/drop. |
 | [DialogueNpcAffectionStructure.md](./ScriptSystems/DialogueNpcAffectionStructure.md) | Dialogue, NPC features, affection, merchant, upgrade, boss dialogue. | Work touches Ink dialogue, NPC feature popups, affection rewards, merchant/upgrade policies, or dialogue blockers. |
+| [RunSpecialNpcStructure.md](./ScriptSystems/RunSpecialNpcStructure.md) | Run-internal special NPCs that use speech bubbles, local choices, construction shortcuts, and same-scene teleport. | Work touches run NPCs that should not use Ink portrait dialogue, or NPC flows that combine speech bubbles with permanent shortcuts or same-scene movement. |
 | [SceneRuntimeSaveStructure.md](./ScriptSystems/SceneRuntimeSaveStructure.md) | Scene/run transition, player runtime capture/restore, save data, run timer, map/shortcuts. | Work touches scene transitions, portals, runtime persistence, run progress, save data, or shortcut/map progression. |
 | [LootRewardStructure.md](./ScriptSystems/LootRewardStructure.md) | Loot manager, boss rewards, grave/stage loot, pickups, reward presentation boundary. | Work touches reward generation, loot tables, boss reward modifiers, currency, or pickup spawning. |
 | [LoadingPresentationStructure.md](./ScriptSystems/LoadingPresentationStructure.md) | Loading, presentation runtime, global UI, camera/audio/input/settings/speech bubbles. | Work touches loading scopes, asset providers, presentation services, global UI, camera/audio presentation, or settings/input binding UI. |

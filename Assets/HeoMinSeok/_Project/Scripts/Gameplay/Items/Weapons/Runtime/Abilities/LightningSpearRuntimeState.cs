@@ -167,7 +167,7 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWea
             return true;
         }
 
-        return hasMarkRushOrigin || isBasicAttackBusy || isExecutingMarkRush || ownerSystem != null && ownerSystem.IsBusy;
+        return false;
     }
 
     public override void HandleAbilityActivationRejected(

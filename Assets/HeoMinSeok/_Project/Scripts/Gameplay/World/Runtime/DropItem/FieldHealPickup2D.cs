@@ -31,9 +31,12 @@ public class FieldHealPickup2D : MonoBehaviour
     [SerializeField, Min(0f)] private float idleFloatFrequency = 1.4f;
     [SerializeField, Min(0f)] private float heartbeatScaleAmplitude = 0.08f;
     [SerializeField, Min(0f)] private float heartbeatFrequency = 2.2f;
+    [SerializeField, Min(0.01f)] private float heartbeatScalePulseDuration = 0.22f;
 
     [Header("Collect Presentation")]
     [SerializeField] private ParticleSystem collectParticlePrefab;
+    [SerializeField] private ParticleSystem healParticlePrefab;
+    [SerializeField] private Vector3 healParticleLocalOffset = Vector3.zero;
 
     private bool collected;
     private bool interactionLocked;
@@ -71,6 +74,7 @@ public class FieldHealPickup2D : MonoBehaviour
 
         maxDropDuration = Mathf.Max(minDropDuration, maxDropDuration);
         maxDropArcHeight = Mathf.Max(minDropArcHeight, maxDropArcHeight);
+        heartbeatScalePulseDuration = Mathf.Max(0.01f, heartbeatScalePulseDuration);
 
         CacheReferences();
 
@@ -137,28 +141,48 @@ public class FieldHealPickup2D : MonoBehaviour
         if (collected || interactionLocked || other == null)
             return;
 
-        if (!TryResolvePlayerAttributeSet(other, out AttributeSet attributeSet))
+        if (!TryResolvePlayerAttributeSet(other, out AttributeSet attributeSet, out Transform playerTransform))
+            return;
+
+        bool didHeal = TryApplyHeal(attributeSet);
+        if (!didHeal)
             return;
 
         collected = true;
-
-        if (healthAttribute != null)
-            attributeSet.TryModifyAttributeValue(healthAttribute, healAmount, this);
-
+        PlayerHealParticlePlayback.PlayAttached(healParticlePrefab, playerTransform, healParticleLocalOffset);
         PlayCollectPresentation();
         Destroy(gameObject);
     }
 
-    private bool TryResolvePlayerAttributeSet(Collider2D other, out AttributeSet attributeSet)
+    private bool TryApplyHeal(AttributeSet attributeSet)
+    {
+        if (attributeSet == null || healthAttribute == null)
+            return false;
+
+        float before = attributeSet.GetCurrentValue(healthAttribute);
+        if (!attributeSet.TryModifyAttributeValue(healthAttribute, healAmount, this))
+            return false;
+
+        float after = attributeSet.GetCurrentValue(healthAttribute);
+        return after > before;
+    }
+
+    private bool TryResolvePlayerAttributeSet(Collider2D other, out AttributeSet attributeSet, out Transform playerTransform)
     {
         attributeSet = null;
+        playerTransform = null;
 
         PickupCollector2D pickupCollector = other.GetComponent<PickupCollector2D>();
         if (pickupCollector == null)
             return false;
 
         attributeSet = pickupCollector.AttributeSet;
-        return attributeSet != null;
+        if (attributeSet == null)
+            return false;
+
+        PlayerInteractor2D player = pickupCollector.PlayerInteractor;
+        playerTransform = player != null ? player.transform : attributeSet.transform;
+        return playerTransform != null;
     }
 
     private void RefreshVisual()
@@ -209,12 +233,29 @@ public class FieldHealPickup2D : MonoBehaviour
         float floatOffset = idleFloatAmplitude > 0f && idleFloatFrequency > 0f
             ? Mathf.Sin(time * idleFloatFrequency * Mathf.PI * 2f) * idleFloatAmplitude
             : 0f;
-        float heartbeatScale = heartbeatScaleAmplitude > 0f && heartbeatFrequency > 0f
-            ? 1f + Mathf.Max(0f, Mathf.Sin(time * heartbeatFrequency * Mathf.PI * 2f)) * heartbeatScaleAmplitude
-            : 1f;
+        float heartbeatScale = ResolveHeartbeatScale(time);
 
         visualRoot.localPosition = visualBaseLocalPosition + Vector3.up * floatOffset;
         visualRoot.localScale = visualBaseLocalScale * heartbeatScale;
+    }
+
+    private float ResolveHeartbeatScale(float time)
+    {
+        if (heartbeatScaleAmplitude <= 0f || heartbeatFrequency <= 0f)
+            return 1f;
+
+        float beatDuration = 1f / heartbeatFrequency;
+        float pulseDuration = Mathf.Min(Mathf.Max(0.01f, heartbeatScalePulseDuration), beatDuration);
+        float beatTime = Mathf.Repeat(time, beatDuration);
+        if (beatTime >= pulseDuration)
+            return 1f;
+
+        float pulseT = Mathf.Clamp01(beatTime / pulseDuration);
+        float pulse = pulseT < 0.5f
+            ? Mathf.SmoothStep(0f, 1f, pulseT * 2f)
+            : Mathf.SmoothStep(1f, 0f, (pulseT - 0.5f) * 2f);
+
+        return 1f + pulse * heartbeatScaleAmplitude;
     }
 
     private void PlayCollectPresentation()

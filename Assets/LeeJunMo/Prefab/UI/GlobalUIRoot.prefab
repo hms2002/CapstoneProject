@@ -9957,6 +9957,11 @@ MonoBehaviour:
       localOffset: {x: 0, y: 0, z: 0}
       rotationOffsetZ: 0
       scaleMultiplier: {x: 0, y: 0, z: 0}
+      attachToTarget: 0
+      anchorMode: 0
+      scaleMode: 0
+      targetBoundsReferenceSize: 0
+      targetBoundsScaleMultiplier: 0
       lifetimeMode: 0
       lifetimeOverrideSeconds: 0
       useUnscaledTime: 0
@@ -9965,6 +9970,11 @@ MonoBehaviour:
       localOffset: {x: 0, y: 0, z: 0}
       rotationOffsetZ: 0
       scaleMultiplier: {x: 0, y: 0, z: 0}
+      attachToTarget: 0
+      anchorMode: 0
+      scaleMode: 0
+      targetBoundsReferenceSize: 0
+      targetBoundsScaleMultiplier: 0
       lifetimeMode: 0
       lifetimeOverrideSeconds: 0
       useUnscaledTime: 0
@@ -35710,7 +35720,7 @@ MonoBehaviour:
   heartContainer: {fileID: 7933390349864068690}
   filledHeartSprite: {fileID: 6435912432560062591, guid: e75f469ea29530246a4a0543396316af, type: 3}
   emptyHeartSprite: {fileID: 2501108752766977309, guid: e75f469ea29530246a4a0543396316af, type: 3}
-  soulHeartSprite: {fileID: 763030817999491006, guid: e75f469ea29530246a4a0543396316af, type: 3}
+  soulHeartSprite: {fileID: 21300000, guid: 5942fd97166d5fb49b1047c559c09e59, type: 3}
   normalHeartColor: {r: 1, g: 1, b: 1, a: 1}
   soulHeartColor: {r: 1, g: 1, b: 1, a: 1}
   healthPerHeart: 1
@@ -44537,10 +44547,6 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5022250120612758010, guid: 713cfeb5710be48478cd9b4ae8f324a4, type: 3}
-      propertyPath: lakePresentation
-      value: 
-      objectReference: {fileID: 5670651680454672317}
-    - target: {fileID: 5022250120612758010, guid: 713cfeb5710be48478cd9b4ae8f324a4, type: 3}
       propertyPath: lakeSurfaceImage
       value: 
       objectReference: {fileID: 6748697047050030378}
@@ -44789,9 +44795,6 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 8975802752265251817}
     m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 8892360037678210520, guid: 713cfeb5710be48478cd9b4ae8f324a4, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 5670651680454672317}
     - targetCorrespondingSourceObject: {fileID: 7679110130678569659, guid: 713cfeb5710be48478cd9b4ae8f324a4, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6748697047050030378}
@@ -44841,29 +44844,12 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!1 &6125201180481339017 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8892360037678210520, guid: 713cfeb5710be48478cd9b4ae8f324a4, type: 3}
-  m_PrefabInstance: {fileID: 3344226542612177745}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &5670651680454672317
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6125201180481339017}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4810967c6d2ae7c4594a70de9f6dffe0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::UpgradeLakePresentation
 --- !u!114 &7771956981108941483 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 5022250120612758010, guid: 713cfeb5710be48478cd9b4ae8f324a4, type: 3}
   m_PrefabInstance: {fileID: 3344226542612177745}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6125201180481339017}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 55879c0390757294b87bcadbd98ac5ed, type: 3}

@@ -21,6 +21,8 @@ public class WeaponDrop2D : InteractableBase
     [SerializeField] private WorldDropSpritePresenter2D dropSpritePresenter;
 
     private MaterialPropertyBlock outlinePropertyBlock;
+    private Collider2D triggerCollider;
+    private bool interactionLocked;
 
     public WeaponDefinition Weapon => weapon;
     public WeaponPersistentStatePayload Payload => payload;
@@ -30,6 +32,28 @@ public class WeaponDrop2D : InteractableBase
         weapon = def;
         payload = runtimePayload;
         RefreshVisual();
+    }
+
+    public void PlayDrop(Vector3 startPosition, Vector3 landingPosition)
+    {
+        SetInteractionLocked(true);
+
+        WorldItemDropTweenAnimator animator = GetComponent<WorldItemDropTweenAnimator>();
+        if (animator == null)
+            animator = gameObject.AddComponent<WorldItemDropTweenAnimator>();
+
+        animator.PlayDrop(startPosition, landingPosition, () => SetInteractionLocked(false));
+    }
+
+    public void SetInteractionLocked(bool locked)
+    {
+        interactionLocked = locked;
+
+        if (locked)
+            OnUnHighlight();
+
+        if (triggerCollider != null)
+            triggerCollider.enabled = !locked;
     }
 
     private void Reset()
@@ -43,6 +67,10 @@ public class WeaponDrop2D : InteractableBase
         ResolveVisualRefs();
         RefreshVisual();
 
+        triggerCollider = GetComponent<Collider2D>();
+        if (triggerCollider != null)
+            triggerCollider.isTrigger = true;
+
         outlinePropertyBlock = new MaterialPropertyBlock();
         OnUnHighlight();
     }
@@ -54,16 +82,16 @@ public class WeaponDrop2D : InteractableBase
 
     public override bool CanInteract(IPlayerInteractor player)
     {
-        return weapon != null;
+        return weapon != null && !interactionLocked;
     }
 
     public override void OnPlayerInteract(IPlayerInteractor player)
     {
-        if (weapon == null)
+        if (weapon == null || interactionLocked)
             return;
 
         var inventory = ResolveWeaponInventory(player);
-        if (inventory != null && inventory.TryPickupWeapon(weapon, payload))
+        if (inventory != null && inventory.TryPickupWeapon(weapon, payload, transform.position))
         {
             Destroy(gameObject);
             return;
@@ -75,6 +103,9 @@ public class WeaponDrop2D : InteractableBase
 
     public override void OnHighlight()
     {
+        if (weapon == null || interactionLocked)
+            return;
+
         if (itemDisplayPresenter != null)
         {
             itemDisplayPresenter.SetOutline(true);
@@ -109,7 +140,7 @@ public class WeaponDrop2D : InteractableBase
 
     public override string GetInteractDescription()
     {
-        return weapon != null ? interactPromptText : string.Empty;
+        return weapon != null && !interactionLocked ? interactPromptText : string.Empty;
     }
 
     public override Transform GetPromptAnchor() => promptAnchor != null ? promptAnchor : transform;

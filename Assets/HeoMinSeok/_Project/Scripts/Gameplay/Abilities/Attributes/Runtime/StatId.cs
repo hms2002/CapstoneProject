@@ -71,6 +71,11 @@ namespace UnityGAS
         PoisonMul,
         PoisonFinal,
 
+        ElectricBase = 320,
+        ElectricAdd = 321,
+        ElectricMul = 322,
+        ElectricFinal = 323,
+
         // --- Evasion (Base/Add/Mul/Final) ---
         EvasionBase = 300,
         EvasionAdd = 301,

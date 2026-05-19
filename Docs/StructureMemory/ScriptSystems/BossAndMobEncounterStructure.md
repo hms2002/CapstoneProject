@@ -2,7 +2,7 @@
 status: active
 authority: structure-memory
 category: script-system-map
-last_reviewed: 2026-05-20
+last_reviewed: 2026-05-19
 ---
 
 # Boss And Mob Encounter Structure
@@ -18,7 +18,7 @@ Bosses use an `Encounter -> Battle -> BattleEnd` flow. General mobs use `Populat
 
 | Area | Count | Responsibility |
 | --- | ---: | --- |
-| Boss Encounter | 96 | Boss FSM core/states/configs, boss-specific controllers, pattern actors, boss presentation, BT/GAS bridge actions. |
+| Boss Encounter | 92 | Boss FSM core/states/configs, boss-specific controllers, pattern actors, boss presentation, BT/GAS bridge actions. |
 | Mob AI | 62 | General mob FSM, mob coordinators, attack decision sources, pattern runners, mob-specific actors and cleanup hooks. |
 | Monster Spawn | 16 | Scene spawn director, spawner state, room profiles, spawn points, difficulty receivers, spawn context. |
 | Hazards / Puddles | 12 | Puddle and poison cloud runtime, hazard areas, puddle visuals, pool/placement logic. |
@@ -43,10 +43,10 @@ Bosses use an `Encounter -> Battle -> BattleEnd` flow. General mobs use `Populat
 | Area | Count | Responsibility |
 | --- | ---: | --- |
 | Witch Boss | 28 | Witch controller, candle/shield services, pattern conditions/executors, states, actors, and abilities. |
-| Slime Queen Boss | 22 | Slime Queen controller/base scripts, phase-two behaviors, summon/drop/jump/body-inflate/water-cannon/toxic-drop/castling ability logic, castling availability condition, and temporary pattern visuals. |
+| Slime Queen Boss | 16 | Slime Queen controller/base scripts, phase-two behaviors, summon/drop/jump/body-inflate ability logic. |
 | Drunken Dragon Boss | 16 | Drunken Dragon controller/runtime data, arena/presentation helpers, and ability actors/logic. |
 | FSM Core | 11 | Boss controller base, blackboard, state machine, pattern runtime/eval/select, groggy/death presentation core. |
-| Demon King Boss | 8 | Demon King controller/runtime data, combat utility, actors, and ability logic. |
+| Demon King Boss | 9 | Demon King controller/runtime data, combat utility, actors, local VFX presenters, and ability logic. |
 | FSM States | 7 | Spawn, dialogue, idle, pattern select/execute, groggy, and death states. |
 | FSM Configs | 3 | Pattern entry, condition, and phase config data. |
 | Behavior Tree Bridge | 2 | Boss behavior-tree selector and GAS action bridge scripts. |
@@ -63,19 +63,19 @@ Bosses use an `Encounter -> Battle -> BattleEnd` flow. General mobs use `Populat
 | Boss Encounter > Witch Boss | Attack Actors / Telegraphs | 4 | Witch projectile helper, normal attack tile, basic attack ring telegraph, and ring telegraph view. |
 | Boss Encounter > Witch Boss | Shield Flow | 3 | Witch shield controller, visual controller, and shield receiver contract. |
 | Boss Encounter > Witch Boss | Controller / Runtime Data | 2 | Witch controller and runtime data. |
-| Boss Encounter > Slime Queen Boss | Slime Queen Ability Logics | 10 | Slime Queen summon, body inflate, drop, pillar, jump, slam, toxic rush, water cannon, toxic drop, and castling ability logic. |
+| Boss Encounter > Slime Queen Boss | Slime Queen Ability Logics | 7 | Slime Queen summon, body inflate, drop, pillar, jump, slam, and toxic rush ability logic. |
 | Boss Encounter > Slime Queen Boss | Phase Two Behaviors | 3 | Phase-two base, short, and long behaviors. |
 | Boss Encounter > Slime Queen Boss | Controller / Base | 2 | Slime Queen controller and base. |
 | Boss Encounter > Slime Queen Boss | Interfaces | 2 | Random jump and body-inflate host contracts. |
 | Boss Encounter > Slime Queen Boss | Movement Bounds | 1 | Slime Queen random move bounds. |
 | Boss Encounter > Slime Queen Boss | Summon Helpers | 1 | Falling summon helper. |
-| Boss Encounter > Slime Queen Boss | Pattern Visuals | 2 | Temporary blue beam prefab driver for water cannon and green arc projectile prefab driver for toxic drop. |
-| Boss Encounter > Slime Queen Boss | Pattern Conditions | 1 | Castling availability condition that blocks the joint pattern unless both phase-two bodies are alive, active, not groggy, and not busy. |
 | Boss Encounter > Drunken Dragon Boss | Ability Logics / Actors | 8 | Drunken Dragon ability logic and thrown keg/spin projectile actors. |
 | Boss Encounter > Drunken Dragon Boss | Cone Presentation | 3 | Cone pattern visual spec, particle visual, and visual interface. |
 | Boss Encounter > Drunken Dragon Boss | Controller / Runtime Data | 3 | Drunken Dragon controller, runtime data, and animation keys. |
 | Boss Encounter > Drunken Dragon Boss | Dialogue Selector | 1 | Dialogue start knot selector. |
 | Boss Encounter > Drunken Dragon Boss | Drunken Dragon Other | 1 | Remaining Drunken Dragon support script. |
+| Boss Encounter > Demon King Boss | EgoSword Laser Presentation | 2 | `EgoSwordActor` spawns the Resources laser VFX prefab for the four-direction dropped-sword pattern. Warning geometry is wall-clipped; attack VFX and damage geometry pierce walls using the configured fallback laser length. Animated ray origins can be pushed outward with `laserVfxRayOriginOffset` to reduce center overlap. `DemonKingEgoLaserVfx` owns ray geometry, Start/Idle/End Animator state playback, code-driven damage-active window, Projectile sorting layer/order 1 rendering, and a visual-only doubled Body length. |
+| Boss Encounter > Demon King Boss | Pattern Sprite VFX | 2 | DemonKing pattern-local VFX uses `DemonKingPatternVfx` and `DemonKingAnimationClipVisual` in `DemonKingPrimitiveVisual.cs`. The helper loads authored VFX prefabs from `Resources/DemonKing/Vfx`; those prefabs own SpriteRenderer + Animator + AnimatorController links to `.anim` clips. Runtime code instantiates the prefabs, plays `Play` or `Start`/`Idle` Animator states, renders on Projectile sorting layer/order 1, and does not load sprite-sheet frames directly. `EgoSwordActor` owns loop cleanup for the vertical-strike aura/attack children. |
 
 ### Mob Battle Runtime Breakdown
 
@@ -136,16 +136,21 @@ Track the concrete candidate in `Docs/RefactorBacklog/BossHudSpecialCaseSourceSp
 - `Assets/HeoMinSeok/_Project/Prefabs/Gameplay/Items/KillLockMonsterNavigationArrow.prefab`
 - `Assets/HeoMinSeok/_Project/Scripts/Gameplay/Puddles/Runtime/FirePuddleArea.cs`
 - `Assets/LeeJunMo/Script/Editor/BossBattleEndMigrationValidatorWindow.cs`
+- `Assets/Script/Enemy/Boss/FSM/BossControllers/DemonKingBoss/Actors/EgoSwordActor.cs`
+- `Assets/Script/Enemy/Boss/FSM/BossControllers/DemonKingBoss/Actors/DemonKingEgoLaserVfx.cs`
+- `Assets/Resources/DemonKing/DemonKingEgoLaserVfx.prefab`
 
 ## Ownership And Lifecycle
 
 - Boss controllers own boss battle runtime; boss encounter setup and boss battle-end results should remain visible as separate flow boundaries.
+- Boss encounter presentation owns its own UI input block through `GameFlowInputBlocker` while camera focus, dialogue, and return-to-player handoff are running. Dialogue still owns only dialogue playback blocking.
 - General mobs are spawned through population systems, then stay battle-ready through their own runtime FSM. Do not treat all mob work as encounter work.
 - Spawn systems own instantiation/configuration and may bridge to lock overlays, but lock semantics are not the same as spawn semantics.
 - `ChestMonsterKillLockNavigationView` is presentation-only: it reads alive registered monsters from `ChestMonsterKillLock`, spawns authored arrow prefabs locally, and must not decide unlock, spawn, or combatant counting rules. The authored arrow prefab is SpriteRenderer-only; avoid renderer-driving scripts and MeshRenderer/MeshFilter presentation for this 2D guidance. Its selected-object gizmos are authoring/debug visualization only.
 - Puddles/hazards are battle environment systems and should stay separate from boss-specific policy unless the boss ability owns only a trigger.
 - Enemy cleanup rules should follow `Docs/Contracts/MobCleanupContract.md` when general mobs are involved.
 - Shared enemy player targeting should resolve to the canonical player root through `PlayerRuntimeRegistry`/`PlayerInteractor2D`; player-attached orbit/effect colliders or directly assigned child transforms should not become the boss target transform.
+- Shared mob perception treats a closed `DoorObject` on the enemy-target sight line as a blocker for acquisition, chase, common attack continuation, and Dead's Skeleton self-destruct flow.
 
 ## Extension Entry Points
 
@@ -169,10 +174,6 @@ Track the concrete candidate in `Docs/RefactorBacklog/BossHudSpecialCaseSourceSp
 ## Known Pitfalls
 
 - Boss-specific states, actors, and ability logic are mixed by boss; do not move them without prefab/scene reference checks.
-- `SlimeQueenP2Short` and `SlimeQueenP2Long` keep gameplay root components on the prefab root, while `SpriteRenderer` and `Animator` live under a child `Visual` object scaled to 75%. Preserve serialized renderer/animator references when changing these prefabs.
-- `SlimeQueen_Castling` is selected only by `SlimeQueenP2Short`; its ability logic locks and moves both phase-two bodies from their activation-time positions. Its 1.2-second warning phase also uses each phase-two body's existing `SpeechBubbleComponent`: P2Long speaks first, then P2Short replies 0.7 seconds later before the rush. Do not also add the same pattern to `SlimeQueenP2Long` unless duplicate joint-pattern selection is redesigned.
-- `SlimeQueen`, `SlimeQueenP2Short`, and `SlimeQueenP2Long` can be handled by the pit-fall system through `PitFallTarget` resolving their shared `SlimeQueenBossBase`. During the fall, `SlimeQueenBossBase` locks runtime movement/pattern updates, and the respawn position is the Slime Queen room center `(-22, 4)` rather than the player's `SafetyTracker` position. P1 random jump and P2Short repeated slam temporarily block pit-fall triggering only during their airborne movement windows.
-- Broken `DrainPipe` objects can now absorb one `SlimeQueenP2Short` or `SlimeQueenP2Long` only after direct drain trigger contact: the boss is pulled to the drain, locked for 4 seconds, then restored at the drain while that drain becomes blocked. Pawn slimes still use the broader suction radius. The shared P2 drain-control lock cancels current patterns, prevents castling while either body is in the drain/blocked state, and P2Short maps the sink window to `isSinking`; P2Long currently has no sink-specific Animator hook.
 - Pattern presentation ownership should follow `Docs/Contracts/PresentationAuthoringContract.md`.
 - The former `BossDrop` legacy reward flow is resolved in `Docs/RefactorBacklog/BossDropResponsibilitySplit.md`; unhandled reward/portal authoring now reports editor/development warnings through `BossRewardFallbackService` instead of running a dynamic fallback.
 - The boss battle-end migration validator can find missing scene `BossBattleEndHandler` coverage, missing authored chest/portal references, optional RouteSet special reward presets, stale deleted component/catalog GUIDs, stale definition/profile fields, and boss exit portal semantic mistakes. Scene Auto Fix can create first-pass handler/boss wiring, but final chest and portal objects must be placed and assigned in the Inspector.
@@ -181,6 +182,10 @@ Track the concrete candidate in `Docs/RefactorBacklog/BossHudSpecialCaseSourceSp
 - `FirePuddleArea` has boss-specific target exclusion logic. If more hazard actors learn boss policy, move the rule toward a combat target policy instead of spreading concrete boss checks.
 - Do not add new concrete boss type branches to common Boss HUD for split or multi-body bosses. Add a boss-specific HUD source/adapter instead.
 - Player-attached relic/effect objects should avoid unintended `Player` tags, hurtboxes, or blocking body colliders. The shared `Enemy` target resolver maps player-owned child colliders and assigned child transforms back to the player root, but collision/hurtbox authoring still needs separate review.
+- Closed-door perception depends on `DoorObject` colliders being authored on the physics line between enemy and player. If a closed door is visual-only or on an ignored collider setup, mobs may still perceive through it.
+- DemonKing EgoSword laser clips bind to the local SpriteRenderer on the Start/Body child objects. Keep Animator components on those child objects with Start/Idle/End states; root-level `AnimationClip.SampleAnimation(...)` is not the supported playback path for this VFX.
+- DemonKing EgoSword laser warning and attack lines intentionally use different geometry. Do not reuse the warning `LaserLine` for attack VFX/damage unless the design changes back to wall-blocked lasers.
+- `laserVfxRayOriginOffset` is a visual-only offset for the animated ray start points. It does not move warning geometry or damage rectangles.
 
 ## Promotion Candidate
 

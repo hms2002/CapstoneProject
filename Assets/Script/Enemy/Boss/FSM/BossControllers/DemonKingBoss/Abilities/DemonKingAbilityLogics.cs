@@ -47,7 +47,7 @@ public abstract class AbilityLogic_DemonKingBase : AbilityLogic
         float diameter,
         float duration)
     {
-        DemonKingPrimitiveVisual.SpawnSquare(center, new Vector2(diameter, diameter), 0f, duration, WarningSquareColor);
+        DemonKingPrimitiveVisual.SpawnCircle(center, diameter, duration, WarningSquareColor);
         demon.GetTelegraphService()?.SpawnDetachedView(
             AttackTelegraphSpec.CreateCircle(center, diameter, duration, demon.DefaultWarningStyle));
     }
@@ -406,6 +406,7 @@ public sealed class AbilityLogic_DemonKingPierceCombo : AbilityLogic_DemonKingBa
             direction /= distance;
             demon.FacePatternDirection(direction);
             demon.PlayPatternTrigger();
+            DemonKingPatternVfx.SpawnStab(start, direction, distance, hitWidth);
 
             yield return RunLungeContactDamage(
                 demon,
@@ -515,6 +516,7 @@ public sealed class AbilityLogic_DemonKingHeavySlash : AbilityLogic_DemonKingBas
         if (IsAbilityCancelled(spec))
             yield break;
 
+        DemonKingPatternVfx.SpawnSlash(origin, direction, slashRadius);
         DemonKingCombatUtil.ApplySectorDamage(
             demon,
             origin,
@@ -821,13 +823,12 @@ public sealed class AbilityLogic_DemonKingExplosionJump : AbilityLogic_DemonKing
             demon.DefaultDamageEffect,
             damage,
             knockbackImpulse: knockback);
-        DemonKingPrimitiveVisual.SpawnSquare(
+        DemonKingPatternVfx.SpawnImpact(target, impactDiameter);
+        DemonKingPatternVfx.SpawnExplosionOrFallbackCircle(
             target,
-            new Vector2(impactDiameter, impactDiameter),
-            0f,
-            0.12f,
+            impactDiameter,
             AttackSquareColor,
-            "DemonKing_ImpactSquareAttack");
+            "DemonKing_ImpactCircleAttack");
 
         LineArea[] radialLines = CreateRadialLines(demon, target);
         for (int i = 0; i < radialLines.Length; i++)
@@ -1016,13 +1017,12 @@ public sealed class AbilityLogic_DemonKingWallBounceRush : AbilityLogic_DemonKin
             demon.DefaultDamageEffect,
             finalImpactDamage,
             knockbackImpulse: knockback);
-        DemonKingPrimitiveVisual.SpawnSquare(
+        DemonKingPatternVfx.SpawnImpact(target, finalImpactDiameter);
+        DemonKingPatternVfx.SpawnExplosionOrFallbackCircle(
             target,
-            new Vector2(finalImpactDiameter, finalImpactDiameter),
-            0f,
-            0.12f,
+            finalImpactDiameter,
             AttackSquareColor,
-            "DemonKing_FinalJumpSquareAttack");
+            "DemonKing_FinalJumpCircleAttack");
     }
 }
 
@@ -1041,6 +1041,7 @@ public sealed class AbilityLogic_DemonKingGroggyRecoverCounter : AbilityLogic_De
 
         demon.PlayPatternTrigger();
         Vector2 center = demon.transform.position;
+        DemonKingPatternVfx.SpawnGroggyRelease(center, explosionDiameter);
         yield return WaitForSecondsUnlessCancelled(attackDelaySeconds, spec);
         if (IsAbilityCancelled(spec))
             yield break;
@@ -1052,13 +1053,11 @@ public sealed class AbilityLogic_DemonKingGroggyRecoverCounter : AbilityLogic_De
             demon.DefaultDamageEffect,
             damage,
             knockbackImpulse: knockback);
-        DemonKingPrimitiveVisual.SpawnSquare(
+        DemonKingPatternVfx.SpawnExplosionOrFallbackCircle(
             center,
-            new Vector2(explosionDiameter, explosionDiameter),
-            0f,
-            0.12f,
+            explosionDiameter,
             AttackSquareColor,
-            "DemonKing_GroggyCounterSquareAttack");
+            "DemonKing_GroggyCounterCircleAttack");
     }
 }
 

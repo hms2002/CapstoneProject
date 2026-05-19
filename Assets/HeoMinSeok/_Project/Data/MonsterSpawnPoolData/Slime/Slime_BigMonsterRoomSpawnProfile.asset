@@ -20,6 +20,9 @@ MonoBehaviour:
       weight: 1
     - monsterPrefab: {fileID: 100000, guid: 4c120d14b57b4436a325443f7b0caa3f, type: 3}
       weight: 1
+    commonEntries:
+    - monsterSet: {fileID: 11400000, guid: e1d3d90a4cd3c2a42973a850f70132e6, type: 2}
+      weight: 0
   - tableName: OpB
     spawnCount: 10
     entries:
@@ -27,3 +30,4 @@ MonoBehaviour:
       weight: 1
     - monsterPrefab: {fileID: 100000, guid: 4c120d14b57b4436a325443f7b0caa3f, type: 3}
       weight: 1
+    commonEntries: []

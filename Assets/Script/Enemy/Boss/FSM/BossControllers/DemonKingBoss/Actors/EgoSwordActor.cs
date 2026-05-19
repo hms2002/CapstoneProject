@@ -33,6 +33,10 @@ public sealed class EgoSwordActor : MonoBehaviour
     [SerializeField, Min(0f)] private float laserAttackDurationSeconds = 1f;
     [SerializeField, Min(0.1f)] private float fallbackMapLaserLength = 40f;
     [SerializeField, Min(0.1f)] private float laserWidth = 0.75f;
+    [SerializeField, Min(0f)] private float laserVfxRayOriginOffset = 0.35f;
+    [SerializeField] private bool useAnimatedLaserVfx = true;
+    [SerializeField] private DemonKingEgoLaserVfx laserVfxPrefab;
+    [SerializeField] private string laserVfxResourcePath = "DemonKing/DemonKingEgoLaserVfx";
     [SerializeField, Min(0.1f)] private float verticalTrackSeconds = 1.5f;
     [SerializeField, Min(0.1f)] private float verticalHoverHeight = 2.2f;
     [SerializeField, Min(0.1f)] private float verticalStrikeDiameter = 2.3f;
@@ -49,6 +53,9 @@ public sealed class EgoSwordActor : MonoBehaviour
     private LayerMask wallMask;
     private Coroutine droppedPatternRoutine;
     private bool useCrossPatternNext = true;
+    private bool laserVfxMissingLogged;
+    private DemonKingAnimationClipVisual activeVerticalAuraVfx;
+    private DemonKingAnimationClipVisual activeVerticalAttackVfx;
 
     public bool IsHeld => state == SwordState.Held;
     public bool IsDropped => state == SwordState.Flying || state == SwordState.Fixed || state == SwordState.Recalling;
@@ -65,6 +72,12 @@ public sealed class EgoSwordActor : MonoBehaviour
     private void OnEnable()
     {
         ApplyProjectileSortingOnce();
+    }
+
+    private void OnDisable()
+    {
+        StopDroppedPatterns();
+        ReleaseVerticalStrikeVfx();
     }
 
     private void LateUpdate()
@@ -241,16 +254,18 @@ public sealed class EgoSwordActor : MonoBehaviour
     {
         SpriteRenderer[] renderers = GetComponentsInChildren<SpriteRenderer>(true);
         for (int i = 0; i < renderers.Length; i++)
-            DemonKingPrimitiveVisual.ApplyProjectileSorting(renderers[i], 1050);
+            DemonKingPrimitiveVisual.ApplyProjectileSorting(renderers[i]);
     }
 
     private void StopDroppedPatterns()
     {
-        if (droppedPatternRoutine == null)
-            return;
+        if (droppedPatternRoutine != null)
+        {
+            StopCoroutine(droppedPatternRoutine);
+            droppedPatternRoutine = null;
+        }
 
-        StopCoroutine(droppedPatternRoutine);
-        droppedPatternRoutine = null;
+        ReleaseVerticalStrikeVfx();
     }
 
     private IEnumerator RunDroppedPatternLoop()
@@ -279,69 +294,207 @@ public sealed class EgoSwordActor : MonoBehaviour
     private IEnumerator RunLaserPair(Vector2 firstDirection, Vector2 secondDirection)
     {
         AttackTelegraphService telegraph = owner.GetTelegraphService();
-        LaserLine firstLine = ResolveMapLaserLine(transform.position, firstDirection);
-        LaserLine secondLine = ResolveMapLaserLine(transform.position, secondDirection);
+        Vector2 laserOrigin = transform.position;
+        LaserLine firstWarningLine = ResolveWallClippedLaserLine(laserOrigin, firstDirection);
+        LaserLine secondWarningLine = ResolveWallClippedLaserLine(laserOrigin, secondDirection);
+        LaserLine firstAttackLine = ResolvePiercingLaserLine(laserOrigin, firstDirection);
+        LaserLine secondAttackLine = ResolvePiercingLaserLine(laserOrigin, secondDirection);
 
         DemonKingPrimitiveVisual.SpawnSquare(
-            firstLine.Center,
-            firstLine.Size,
-            firstLine.RotationDeg,
+            firstWarningLine.Center,
+            firstWarningLine.Size,
+            firstWarningLine.RotationDeg,
             laserWarningSeconds,
             WarningSquareColor,
             "DemonKing_EgoLaserSquareWarning");
         DemonKingPrimitiveVisual.SpawnSquare(
-            secondLine.Center,
-            secondLine.Size,
-            secondLine.RotationDeg,
+            secondWarningLine.Center,
+            secondWarningLine.Size,
+            secondWarningLine.RotationDeg,
             laserWarningSeconds,
             WarningSquareColor,
             "DemonKing_EgoLaserSquareWarning");
-        telegraph?.SpawnDetachedView(CreateLaserSpec(firstLine, laserWarningSeconds));
-        telegraph?.SpawnDetachedView(CreateLaserSpec(secondLine, laserWarningSeconds));
+        telegraph?.SpawnDetachedView(CreateLaserSpec(firstWarningLine, laserWarningSeconds));
+        telegraph?.SpawnDetachedView(CreateLaserSpec(secondWarningLine, laserWarningSeconds));
 
         yield return new WaitForSeconds(laserWarningSeconds);
 
-        DemonKingPrimitiveVisual.SpawnSquare(
-            firstLine.Center,
-            firstLine.Size,
-            firstLine.RotationDeg,
-            laserAttackDurationSeconds,
-            AttackSquareColor,
-            "DemonKing_EgoLaserSquareAttack");
-        DemonKingPrimitiveVisual.SpawnSquare(
-            secondLine.Center,
-            secondLine.Size,
-            secondLine.RotationDeg,
-            laserAttackDurationSeconds,
-            AttackSquareColor,
-            "DemonKing_EgoLaserSquareAttack");
-        telegraph?.SpawnDetachedView(CreateLaserSpec(firstLine, laserAttackDurationSeconds));
-        telegraph?.SpawnDetachedView(CreateLaserSpec(secondLine, laserAttackDurationSeconds));
+        DemonKingEgoLaserVfx[] firstLaserVfx = SpawnLaserLineVfx(firstAttackLine);
+        DemonKingEgoLaserVfx[] secondLaserVfx = SpawnLaserLineVfx(secondAttackLine);
+        bool usingAnimatedVfx = HasAnyLaserVfx(firstLaserVfx) || HasAnyLaserVfx(secondLaserVfx);
+
+        if (!usingAnimatedVfx)
+        {
+            DemonKingPrimitiveVisual.SpawnSquare(
+                firstAttackLine.Center,
+                firstAttackLine.Size,
+                firstAttackLine.RotationDeg,
+                laserAttackDurationSeconds,
+                AttackSquareColor,
+                "DemonKing_EgoLaserSquareAttack");
+            DemonKingPrimitiveVisual.SpawnSquare(
+                secondAttackLine.Center,
+                secondAttackLine.Size,
+                secondAttackLine.RotationDeg,
+                laserAttackDurationSeconds,
+                AttackSquareColor,
+                "DemonKing_EgoLaserSquareAttack");
+            telegraph?.SpawnDetachedView(CreateLaserSpec(firstAttackLine, laserAttackDurationSeconds));
+            telegraph?.SpawnDetachedView(CreateLaserSpec(secondAttackLine, laserAttackDurationSeconds));
+        }
 
         HashSet<GameObject> damagedTargets = new();
         float elapsed = 0f;
-        while (elapsed < laserAttackDurationSeconds)
+        while (usingAnimatedVfx ? IsAnyLaserVfxPlaying(firstLaserVfx, secondLaserVfx) : elapsed < laserAttackDurationSeconds)
         {
-            DemonKingCombatUtil.ApplyRectangleDamage(
-                owner,
-                firstLine.Center,
-                firstLine.Size,
-                firstLine.RotationDeg,
-                owner.DefaultDamageEffect,
-                patternDamage,
-                damagedTargets);
-            DemonKingCombatUtil.ApplyRectangleDamage(
-                owner,
-                secondLine.Center,
-                secondLine.Size,
-                secondLine.RotationDeg,
-                owner.DefaultDamageEffect,
-                patternDamage,
-                damagedTargets);
+            if (!usingAnimatedVfx || IsAnyLaserDamageActive(firstLaserVfx))
+            {
+                DemonKingCombatUtil.ApplyRectangleDamage(
+                    owner,
+                    firstAttackLine.Center,
+                    firstAttackLine.Size,
+                    firstAttackLine.RotationDeg,
+                    owner.DefaultDamageEffect,
+                    patternDamage,
+                    damagedTargets);
+            }
+
+            if (!usingAnimatedVfx || IsAnyLaserDamageActive(secondLaserVfx))
+            {
+                DemonKingCombatUtil.ApplyRectangleDamage(
+                    owner,
+                    secondAttackLine.Center,
+                    secondAttackLine.Size,
+                    secondAttackLine.RotationDeg,
+                    owner.DefaultDamageEffect,
+                    patternDamage,
+                    damagedTargets);
+            }
 
             elapsed += Time.fixedDeltaTime;
             yield return new WaitForFixedUpdate();
         }
+    }
+
+    private DemonKingEgoLaserVfx[] SpawnLaserLineVfx(LaserLine line)
+    {
+        DemonKingEgoLaserVfx prefab = ResolveLaserVfxPrefab();
+        if (prefab == null)
+            return null;
+
+        DemonKingEgoLaserVfx[] views = new DemonKingEgoLaserVfx[2];
+        float forwardOffset = ResolveLaserVfxRayOriginOffset(line.ForwardDistance);
+        float backwardOffset = ResolveLaserVfxRayOriginOffset(line.BackwardDistance);
+        Vector2 backwardDirection = -line.Direction;
+
+        views[0] = SpawnLaserRayVfx(
+            prefab,
+            line.Origin + line.Direction * forwardOffset,
+            line.Direction,
+            line.ForwardDistance - forwardOffset);
+        views[1] = SpawnLaserRayVfx(
+            prefab,
+            line.Origin + backwardDirection * backwardOffset,
+            backwardDirection,
+            line.BackwardDistance - backwardOffset);
+        return views;
+    }
+
+    private float ResolveLaserVfxRayOriginOffset(float rayLength)
+    {
+        return Mathf.Clamp(laserVfxRayOriginOffset, 0f, Mathf.Max(0f, rayLength - 0.01f));
+    }
+
+    private DemonKingEgoLaserVfx SpawnLaserRayVfx(
+        DemonKingEgoLaserVfx prefab,
+        Vector2 origin,
+        Vector2 direction,
+        float length)
+    {
+        if (prefab == null || length <= 0.01f)
+            return null;
+
+        DemonKingEgoLaserVfx instance = Instantiate(prefab);
+        instance.name = "DemonKing_EgoLaserAnimatedAttack";
+        instance.Play(origin, direction, length, laserWidth, laserAttackDurationSeconds);
+        return instance;
+    }
+
+    private DemonKingEgoLaserVfx ResolveLaserVfxPrefab()
+    {
+        if (!useAnimatedLaserVfx)
+            return null;
+
+        if (laserVfxPrefab != null)
+            return laserVfxPrefab;
+
+        if (!string.IsNullOrWhiteSpace(laserVfxResourcePath))
+        {
+            GameObject prefabObject = Resources.Load<GameObject>(laserVfxResourcePath);
+            if (prefabObject != null)
+                laserVfxPrefab = prefabObject.GetComponent<DemonKingEgoLaserVfx>();
+        }
+
+        if (laserVfxPrefab == null && !laserVfxMissingLogged)
+        {
+            laserVfxMissingLogged = true;
+            Debug.LogWarning(
+                $"EgoSwordActor could not load animated laser VFX at Resources/{laserVfxResourcePath}. Falling back to primitive laser visuals.",
+                this);
+        }
+
+        return laserVfxPrefab;
+    }
+
+    private static bool HasAnyLaserVfx(DemonKingEgoLaserVfx[] views)
+    {
+        if (views == null)
+            return false;
+
+        for (int i = 0; i < views.Length; i++)
+        {
+            if (views[i] != null)
+                return true;
+        }
+
+        return false;
+    }
+
+    private static bool IsAnyLaserDamageActive(DemonKingEgoLaserVfx[] views)
+    {
+        if (views == null)
+            return false;
+
+        for (int i = 0; i < views.Length; i++)
+        {
+            DemonKingEgoLaserVfx view = views[i];
+            if (view != null && view.DamageActive)
+                return true;
+        }
+
+        return false;
+    }
+
+    private static bool IsAnyLaserVfxPlaying(params DemonKingEgoLaserVfx[][] viewGroups)
+    {
+        if (viewGroups == null)
+            return false;
+
+        for (int groupIndex = 0; groupIndex < viewGroups.Length; groupIndex++)
+        {
+            DemonKingEgoLaserVfx[] views = viewGroups[groupIndex];
+            if (views == null)
+                continue;
+
+            for (int i = 0; i < views.Length; i++)
+            {
+                DemonKingEgoLaserVfx view = views[i];
+                if (view != null && view.IsPlaying)
+                    return true;
+            }
+        }
+
+        return false;
     }
 
     private IEnumerator RunVerticalStrikePattern()
@@ -351,48 +504,60 @@ public sealed class EgoSwordActor : MonoBehaviour
             ? (Vector2)owner.CurrentTarget.position
             : (Vector2)transform.position;
         Vector2 hoverTarget = groundTarget + Vector2.up * verticalHoverHeight;
+        ReleaseVerticalStrikeVfx();
+        activeVerticalAuraVfx = DemonKingPatternVfx.SpawnEgoSwordAura(transform, verticalStrikeDiameter);
 
         AttackTelegraphView warning = telegraph?.SpawnDetachedView(
-            AttackTelegraphSpec.CreateCircle(hoverTarget, verticalStrikeDiameter, verticalTrackSeconds, owner.DefaultWarningStyle));
-        DemonKingPrimitiveVisual warningSquare = DemonKingPrimitiveVisual.SpawnSquare(
-            hoverTarget,
-            new Vector2(verticalStrikeDiameter, verticalStrikeDiameter),
-            0f,
+            AttackTelegraphSpec.CreateCircle(groundTarget, verticalStrikeDiameter, verticalTrackSeconds, owner.DefaultWarningStyle));
+        DemonKingPrimitiveVisual warningCircle = DemonKingPrimitiveVisual.SpawnCircle(
+            groundTarget,
+            verticalStrikeDiameter,
             verticalTrackSeconds,
             WarningSquareColor,
-            "DemonKing_EgoVerticalSquareWarning");
+            "DemonKing_EgoVerticalCircleWarning");
 
-        float elapsed = 0f;
-        while (elapsed < verticalTrackSeconds)
+        try
         {
-            if (owner.CurrentTarget != null)
-                groundTarget = owner.CurrentTarget.position;
+            float elapsed = 0f;
+            while (elapsed < verticalTrackSeconds)
+            {
+                if (owner.CurrentTarget != null)
+                    groundTarget = owner.CurrentTarget.position;
 
-            hoverTarget = groundTarget + Vector2.up * verticalHoverHeight;
-            transform.position = new Vector3(hoverTarget.x, hoverTarget.y, transform.position.z);
-            transform.rotation = Quaternion.Euler(0f, 0f, -90f);
-            warning?.UpdateGeometry(AttackTelegraphSpec.CreateCircle(
-                hoverTarget,
-                verticalStrikeDiameter,
-                verticalTrackSeconds,
-                owner.DefaultWarningStyle));
-            warningSquare?.UpdateGeometry(
-                hoverTarget,
-                new Vector2(verticalStrikeDiameter, verticalStrikeDiameter),
-                0f);
+                hoverTarget = groundTarget + Vector2.up * verticalHoverHeight;
+                transform.position = new Vector3(hoverTarget.x, hoverTarget.y, transform.position.z);
+                transform.rotation = Quaternion.identity;
+                warning?.UpdateGeometry(AttackTelegraphSpec.CreateCircle(
+                    groundTarget,
+                    verticalStrikeDiameter,
+                    verticalTrackSeconds,
+                    owner.DefaultWarningStyle));
+                warningCircle?.UpdateGeometry(
+                    groundTarget,
+                    new Vector2(verticalStrikeDiameter, verticalStrikeDiameter),
+                    0f);
 
-            elapsed += Time.deltaTime;
-            yield return null;
+                elapsed += Time.deltaTime;
+                yield return null;
+            }
+        }
+        finally
+        {
+            ReleaseVerticalAuraVfx();
         }
 
         transform.position = groundTarget;
-        DemonKingPrimitiveVisual.SpawnSquare(
-            groundTarget,
-            new Vector2(verticalStrikeDiameter, verticalStrikeDiameter),
-            0f,
-            0.12f,
-            AttackSquareColor,
-            "DemonKing_EgoVerticalSquareAttack");
+        activeVerticalAttackVfx = DemonKingPatternVfx.SpawnEgoSwordAttack(transform, verticalStrikeDiameter);
+        DemonKingPatternVfx.SpawnImpact(groundTarget, verticalStrikeDiameter);
+        if (activeVerticalAttackVfx == null)
+        {
+            DemonKingPrimitiveVisual.SpawnCircle(
+                groundTarget,
+                verticalStrikeDiameter,
+                0.12f,
+                AttackSquareColor,
+                "DemonKing_EgoVerticalCircleAttack");
+        }
 
         DemonKingCombatUtil.ApplyCircleDamage(
             owner,
@@ -400,6 +565,26 @@ public sealed class EgoSwordActor : MonoBehaviour
             verticalStrikeDiameter * 0.5f,
             owner.DefaultDamageEffect,
             patternDamage);
+    }
+
+    private void ReleaseVerticalAuraVfx()
+    {
+        if (activeVerticalAuraVfx == null)
+            return;
+
+        activeVerticalAuraVfx.StopAndRelease();
+        activeVerticalAuraVfx = null;
+    }
+
+    private void ReleaseVerticalStrikeVfx()
+    {
+        ReleaseVerticalAuraVfx();
+
+        if (activeVerticalAttackVfx == null)
+            return;
+
+        activeVerticalAttackVfx.StopAndRelease();
+        activeVerticalAttackVfx = null;
     }
 
     private RaycastHit2D FindNearestWallHit(Vector2 start, Vector2 direction, float distance)
@@ -428,18 +613,38 @@ public sealed class EgoSwordActor : MonoBehaviour
         return nearestHit;
     }
 
-    private LaserLine ResolveMapLaserLine(Vector2 origin, Vector2 direction)
+    private LaserLine ResolveWallClippedLaserLine(Vector2 origin, Vector2 direction)
     {
         Vector2 safeDirection = direction.sqrMagnitude > 0.0001f ? direction.normalized : Vector2.right;
         float forwardDistance = ResolveWallDistance(origin, safeDirection);
         float backwardDistance = ResolveWallDistance(origin, -safeDirection);
+        return CreateLaserLine(origin, safeDirection, forwardDistance, backwardDistance);
+    }
+
+    private LaserLine ResolvePiercingLaserLine(Vector2 origin, Vector2 direction)
+    {
+        Vector2 safeDirection = direction.sqrMagnitude > 0.0001f ? direction.normalized : Vector2.right;
+        float halfLength = Mathf.Max(0.05f, fallbackMapLaserLength * 0.5f);
+        return CreateLaserLine(origin, safeDirection, halfLength, halfLength);
+    }
+
+    private LaserLine CreateLaserLine(
+        Vector2 origin,
+        Vector2 safeDirection,
+        float forwardDistance,
+        float backwardDistance)
+    {
         float length = Mathf.Max(0.1f, forwardDistance + backwardDistance);
         Vector2 center = origin + safeDirection * ((forwardDistance - backwardDistance) * 0.5f);
 
         return new LaserLine(
+            origin,
+            safeDirection,
             center,
             new Vector2(length, laserWidth),
-            DemonKingCombatUtil.RotationDeg(safeDirection));
+            DemonKingCombatUtil.RotationDeg(safeDirection),
+            forwardDistance,
+            backwardDistance);
     }
 
     private float ResolveWallDistance(Vector2 origin, Vector2 direction)
@@ -475,15 +680,30 @@ public sealed class EgoSwordActor : MonoBehaviour
 
     private readonly struct LaserLine
     {
+        public Vector2 Origin { get; }
+        public Vector2 Direction { get; }
         public Vector2 Center { get; }
         public Vector2 Size { get; }
         public float RotationDeg { get; }
+        public float ForwardDistance { get; }
+        public float BackwardDistance { get; }
 
-        public LaserLine(Vector2 center, Vector2 size, float rotationDeg)
+        public LaserLine(
+            Vector2 origin,
+            Vector2 direction,
+            Vector2 center,
+            Vector2 size,
+            float rotationDeg,
+            float forwardDistance,
+            float backwardDistance)
         {
+            Origin = origin;
+            Direction = direction;
             Center = center;
             Size = size;
             RotationDeg = rotationDeg;
+            ForwardDistance = forwardDistance;
+            BackwardDistance = backwardDistance;
         }
     }
 }

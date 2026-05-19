@@ -36,7 +36,7 @@ MonoBehaviour:
   fixedKnockbackImpulse: 8
   muzzleFlashPrefab: {fileID: 5379966320317882081, guid: f89c42f0b331fde42bbce703000cd556, type: 3}
   fireSound:
-    key: 
+    key: weapon.oddiron.shot
     volumeMultiplier: 1
     anchorPolicy: 0
     localOffset: {x: 0, y: 0, z: 0}

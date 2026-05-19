@@ -100,6 +100,15 @@ MonoBehaviour:
   - id: 210
     attribute: {fileID: 11400000, guid: f1b00e97d4b97d94dbd5d9df27c64099, type: 2}
     isMultiplier: 1
+  - id: 320
+    attribute: {fileID: 11400000, guid: 418ca09dfa4c417ca3cadc4fd73bd414, type: 2}
+    isMultiplier: 0
+  - id: 321
+    attribute: {fileID: 11400000, guid: f79c86d599c44c8e95bdf6949914f4e3, type: 2}
+    isMultiplier: 0
+  - id: 322
+    attribute: {fileID: 11400000, guid: 3f69b3af0c3b4c89ab6df3ad1b969919, type: 2}
+    isMultiplier: 1
   - id: 140
     attribute: {fileID: 11400000, guid: 567fb769f1a0604458f4f84132a1ffa3, type: 2}
     isMultiplier: 0
@@ -157,6 +166,10 @@ MonoBehaviour:
     baseId: 208
     addId: 209
     mulId: 210
+  - finalId: 323
+    baseId: 320
+    addId: 321
+    mulId: 322
   - finalId: 143
     baseId: 140
     addId: 141

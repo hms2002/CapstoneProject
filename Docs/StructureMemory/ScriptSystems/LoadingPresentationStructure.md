@@ -66,6 +66,7 @@ Map loading, presentation runtime, global UI, camera, audio, input binding, sett
 - `GameFlowInputBlocker` owns temporary flow blocks and should release from completion and disable/destroy cleanup paths.
 - Title-local UI, canvas, and camera presentation should follow `Docs/Architecture/SceneDomainBootstrapArchitecture.md`: title scene authoring must not be replaced by gameplay runtime roots or camera rigs.
 - Loading assets/providers should not own gameplay state; they prepare presentation/runtime dependencies.
+- Loading cleanup paths must not recreate runtime provider services. `PresentationPreloadService` release-on-destroy uses non-creating provider lookup and clears active manifest references even when the provider is already gone.
 - Camera/audio/settings/speech bubble scripts are presentation support and should not own progression state.
 
 ## Boundary Review
@@ -98,6 +99,7 @@ Map loading, presentation runtime, global UI, camera, audio, input binding, sett
 - Title-local presentation should stay scene-authored; adding runtime fallback UI or camera objects for title needs explicit owner, cleanup, and migration notes.
 - Production-facing global UI and presentation overlays should be scene- or prefab-authored where possible, then driven through serialized references or `GlobalUIRoot` layers.
 - Runtime-created fallback paths need explicit owner, cleanup, and a migration follow-up before they are treated as final UI.
+- Service properties that call `EnsureInstance()` are unsafe in destruction cleanup. Use non-creating lookups when releasing loading manifests during `OnDestroy` or scene teardown.
 - Presentation authoring should follow `Docs/Contracts/PresentationAuthoringContract.md`.
 - Loading/addressable behavior can be scene and asset-reference sensitive; verify paths and asset references before changing.
 

@@ -22,6 +22,12 @@ MonoBehaviour:
   skill1InputHint: Q
   skill2InputHint: E
   weaponPrefab: {fileID: 916365682996460394, guid: 40e7945588c049fdaebcd5532846f022, type: 3}
+  displayVisualProfile: {fileID: 0}
+  swapSoundOverride:
+    key: weapon.oddiron.equip
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
   equippedTag: {fileID: 0}
   attack: {fileID: 11400000, guid: 9f6461f0cdcd4d4dbfc3b3ae5bc0ed10, type: 2}
   skill1: {fileID: 11400000, guid: 3fb1c87771af4404bf08d3f4ad76d143, type: 2}

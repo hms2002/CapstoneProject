@@ -2,7 +2,7 @@
 status: active
 authority: project-log
 category: error-log
-last_reviewed: 2026-05-20
+last_reviewed: 2026-05-19
 ---
 
 # Error Log
@@ -24,6 +24,132 @@ Prevention:
 ```
 
 ## Active Entries
+
+## 2026-05-19 - Affection Reward UI Waited Behind Dialogue Blocker
+
+Context:
+Dialogue could stop after affection gain when the affection change unlocked a reward.
+
+Cause:
+`AffectionRewardProcessor` passed the dialogue continuation callback into `RewardDisplayService.ShowReward(...)`. During dialogue, `DialogueService` owns an external UI input blocker, so `RewardDisplayService` could not open `RewardDisplayUI` and left the request queued. Dialogue was waiting for the reward close callback, while the reward UI was waiting for dialogue's blocker to release.
+
+Fix:
+When an affection reward is earned while external UI input is blocked, the reward display request is queued without the dialogue continuation callback and the dialogue callback is invoked immediately. `RewardDisplayService` now retries queued reward presentation once UI opening is allowed again.
+
+Prevention:
+Do not make a UI popup close callback the only continuation path while the popup itself is blocked by the current flow's input blocker. Queue the popup separately or use an explicit owner handoff.
+
+## 2026-05-19 - Affection Tween Kill Skipped Dialogue Continuation
+
+Context:
+Dialogue could stop advancing after the affection gain presentation.
+
+Cause:
+`AffectionUI.PlayGainAnimation(...)` forwarded the dialogue continuation only from the DOTween sequence `OnComplete`. If the UI was disabled, destroyed, or a new affection animation killed the existing sequence before completion, DOTween did not run that completion callback and the dialogue tag flow stayed waiting.
+
+Fix:
+`AffectionUI` now tracks the active gain sequence and pending continuation callback. `OnComplete`, `OnKill`, `OnDisable`, and replacement animation paths all converge through a single completion helper that snaps the UI to the final affection value and invokes the pending callback once.
+
+Prevention:
+Dialogue-blocking presentation code must not rely only on tween `OnComplete`. Any presentation that gates Ink/dialogue continuation needs an interruption path that invokes the continuation exactly once.
+
+## 2026-05-19 - World Drop Sprite Hidden By Mask Interaction
+
+Context:
+Weapon replacement created the dropped weapon object correctly, and its SpriteRenderer, sprite, material, and color alpha looked valid, but the dropped weapon sprite was not visible in the world.
+
+Cause:
+`DroppedWeapon.prefab` had its active weapon image SpriteRenderer authored with `SpriteMaskInteraction.VisibleInsideMask` and the Default sorting layer. Without a matching SpriteMask, the renderer can be fully hidden even when the component is enabled and alpha is 1. Default sorting also made the drop less consistent with other world pickups.
+
+Fix:
+`DroppedWeapon.prefab` now disables the unused root SpriteRenderer, clears SpriteMask interaction on the actual `WeaponImage` renderer, and moves that renderer to the Entity sorting layer used by generic world pickups.
+
+Prevention:
+For world pickup and drop prefabs, check `SpriteRenderer.maskInteraction` and sorting layer before assuming material, sprite assignment, or alpha is the visibility cause. World pickup visuals should normally use no SpriteMask interaction unless a visible SpriteMask is intentionally authored with the prefab.
+
+## 2026-05-19 - Runtime SampleAnimation Did Not Drive Laser Clip Playback
+
+Context:
+DemonKing EgoSword laser VFX spawned, but the visible SpriteRenderers stayed on their initial prefab sprites instead of playing the authored Start/Idle/End clips.
+
+Cause:
+The VFX tried to use code-driven `AnimationClip.SampleAnimation(...)` instead of real Animator components. The prefab had no Animator Controller bound to the Start/Body renderers, and later edits also left a stale manual sampling call in the Idle phase.
+
+Fix:
+`DemonKingEgoLaserVfx` now controls playback by calling `Animator.Play(...)` for `Start`, `Idle`, and `End` states. The VFX prefab has separate Animator components on the Start and Body SpriteRenderer objects, and those Animators reference dedicated Start/Body controllers using the authored AnimationClip assets. Idle clips are marked looping.
+
+Prevention:
+For sprite clips authored as Unity AnimationClips, prefer an Animator Controller on the GameObject that owns the animated SpriteRenderer. Keep gameplay timing code-driven when needed, but let Animator own frame binding and clip playback.
+
+## 2026-05-19 - Transparent Beam Sprite Bounds Made Laser Look Tiny
+
+Context:
+DemonKing EgoSword laser VFX used a sliced 64px-high sprite sheet where the visible beam occupied only a small strip inside a mostly transparent frame.
+
+Cause:
+The first runtime VFX implementation sized the tiled `SpriteRenderer` directly to gameplay `laserWidth`. That scaled the full transparent sprite rect down to the hitbox width, so the actual visible beam pixels became much thinner than the intended attack width and made the Body segment look missing.
+
+Fix:
+`DemonKingEgoLaserVfx` now separates ray length from visual thickness. Body uses `SpriteRenderer.size.x` for tile length, keeps source sprite height for `size.y`, and applies Y transform scale from a serialized `sourceBeamHeightUnits` value. Start uses the same visual scale. The VFX drives the authored AnimationClip assets through Animator Controllers instead of manually stepping sprite arrays.
+
+Prevention:
+For beam/ribbon sprites with transparent padding, do not treat the sprite rect height as the visible beam height. Author or serialize the visible beam height separately, and scale only the visual axis while preserving tile size on the repeat axis.
+
+## 2026-05-18 - Attached Target VFX Used Root Transform Instead Of Visual Bounds
+
+Context:
+Electric electrocute status particles and discharge snap/trail points needed to appear around the monster body center and scale across small mobs, large mobs, and scaled dummy targets.
+
+Cause:
+The presentation context fell back to `target.transform.position`, and attached visuals kept a fixed world scale. Several enemy roots are authored at the base or have collider/sprite offsets, so root position and fixed scale did not match the visible monster sprite.
+
+Fix:
+`SpawnedPresentationHook` now has opt-in sprite-bounds anchor and uniform scale modes. Electric electrocute status particles use `SpriteRenderer.bounds.center` and `SpriteRenderer.bounds.size`, and Electric discharge visual points use the same sprite-bounds center.
+
+Prevention:
+Target-attached body VFX should not assume the target root transform is the visual body center. For presentation that must cover the rendered unit, use an explicit visual anchor policy such as sprite bounds, and leave root-position spawning as the compatibility default.
+
+## 2026-05-18 - Manual WhileActive Presentation Had No Release Handle
+
+Context:
+Electric electrocute needed a looping particle visual that attaches to each debuffed monster and stays alive until the status ends.
+
+Cause:
+`GameplayEffect.presentationWhileActive` previously forwarded spawned visuals through one-shot presentation playback only. Looping ParticleSystems with auto-detected lifetime could auto-release too early, while `ManualRelease` visuals had no retained handle for the effect removal path to release.
+
+Fix:
+`GameplayEffectPresentationRouter` now stores handles for ManualRelease while-active visuals, spawns them through `PresentationSpawnService.SpawnPersistent(...)`, and releases them from `RemoveWhileActive(...)`. Auto-release while-active visuals still use the existing merged presentation path.
+
+Prevention:
+Any sustained `GameplayEffect` visual with `ManualRelease` must have an owner-held handle and an explicit release call on phase/effect exit. Do not rely on one-shot auto lifetime for looping status particles.
+
+## 2026-05-18 - Destroy Cleanup Recreated Runtime Service
+
+Context:
+Stopping Play or closing a scene logged `Cannot set the parent of the GameObject 'PresentationAssetProvider' while its new parent '[RuntimeServices]' is being destroyed`, followed by a leaked `PresentationAssetProvider` scene object warning.
+
+Cause:
+`PresentationPreloadService.OnDestroy()` tried to release active manifests without creating a provider, but `ApplyManifest(...)` and `ApplyRouteSetManifest(...)` fell back to `PresentationAssetProvider.CurrentProvider`. That property creates a provider when none exists, so cleanup code could spawn a new runtime service while `[RuntimeServices]` was already being destroyed.
+
+Fix:
+Make `PresentationPreloadService.ReleaseAllActiveManifests(...)` pass a no-provider-creation mode into manifest apply helpers. Cleanup can still clear active manifest references and record completed operations, but it no longer creates `PresentationAssetProvider` during destruction.
+
+Prevention:
+`OnDestroy`, scene-close, and application-quit cleanup paths must use non-creating service lookups. Avoid properties or helpers named like `Current...` if they have `EnsureInstance()` fallback behavior.
+
+## 2026-05-18 - Editor Preview Mutated Prefab Asset
+
+Context:
+Upgrade UI lake preview restoration ran during assembly reload and play-mode state changes, then Unity Inspector repeatedly failed with `EditorStyles.toolbarButtonRight` errors.
+
+Cause:
+`Resources.FindObjectsOfTypeAll<UpgradeTreeUI>()` returned `UpgradeTreeUI` components that live in Prefab Assets. The editor preview restore path called `UpgradeLakePresentation.Initialize(...)`, which attempted to create and parent a generated `LakeSurface` child under a Prefab Asset transform.
+
+Fix:
+Skip persistent Prefab Asset objects, unloaded scenes, and Prefab Stage objects in the upgrade lake editor preview loop and in `UpgradeTreeUI` editor preview/restore methods. Keep automatic material restoration no-create/no-initialize so assembly reload and play-mode transitions do not call `UpgradeLakePresentation.Initialize(...)`. Disable the automatic edit-mode lake preview callbacks by default; lake preview refresh is now a manual Inspector button action. Add defensive `UpgradeLakePresentation` guards so generated lake surface or ripple layers are not created under persistent Prefab Asset transforms.
+
+Prevention:
+Editor preview/update loops that use `Resources.FindObjectsOfTypeAll` must filter out persistent assets, unloaded scene objects, and Prefab Stage contents before mutating transforms, components, materials, or generated children. Automatic cleanup/restoration handlers for assembly reload, play-mode transitions, and `OnDisable` should restore only existing state; they must not create helper components or generated children.
 
 ## 2026-05-06 - CurrentTask Drift
 
@@ -182,30 +308,44 @@ Fix:
 Prevention:
 When replacing UI navigation authoring, validate both the representative prefab and scene instances. Do not treat a prefab-only serialized check as proof that old scene overrides were migrated.
 
-## 2026-05-20 - Animator Parameter Lifecycle Drift
+## 2026-05-17 - Attached Particle Transform Did Not Guarantee Attached Simulation
 
 Context:
-P1 Slime Queen sometimes played the wrong clip order after pattern animation parameters changed. The current Animator Controller expects `isJumping`, `isShouting`, `ready`, and `isGiantization`, while code still drove the old `jump`, `end`, and `giantization` trigger flow.
+Player heal recovery spawned `HealParticle` as a child of the player, but the visible particles stayed near the spawn position while the player moved.
 
 Cause:
-The code and Animator Controller no longer shared the same parameter contract. Trigger-style one-shot calls were still being used for states that now need explicit bool lifetimes.
+The implementation parented the spawned ParticleSystem transform but did not force attached heal playback to use local particle simulation before replaying the particle systems. For player-following presentation, Transform parenting alone is not enough if the ParticleSystem simulates emitted particles in world space.
 
 Fix:
-P1 Slime Queen now drives the current Animator parameters directly: `isJumping` is true only while random jump is airborne, `isShouting` follows the call-slime speech bubble duration, `ready` fires when body-inflate warning starts, and `isGiantization` stays true during the body-inflate attack hold.
+`PlayerHealParticlePlayback` now sets each spawned ParticleSystem `main.simulationSpace` to `ParticleSystemSimulationSpace.Local` before clearing and replaying it.
 
 Prevention:
-When Animator parameters are renamed or changed from triggers to bools, update the code-side hash names and the full enter/exit lifecycle in the same task. Do not leave compatibility helpers that imply the previous Animator contract.
+For VFX that must follow an owner after spawn, verify both the spawned transform parent and ParticleSystem simulation space. Parent-attached one-shot particles should set or author Local simulation unless world-trailing particles are explicitly desired.
 
-## 2026-05-20 - Drain Radius Captured Spawned P2 Bosses
+## 2026-05-19 - Boss Encounter Presentation Did Not Own UI Input Blocking
 
 Context:
-If a Slime Queen phase 2 drain was already open before P1 died, the newly spawned P2 Slime Queens immediately became unable to act.
+ESC could still open pause/UI during boss encounter presentation windows, even though dialogue playback itself was blocked correctly.
 
 Cause:
-The drain mechanic reused `DrainPipe.suctionRadius` for both Pawn slime suction and P2 boss drain entry. That radius is intentionally large for Pawn suction, so P2 bosses could be captured at spawn even without touching the drain.
+`DialogueService` owned the dialogue-only input block, while `BossEncounterDirector` and legacy `BossTalkManager` owned camera focus, transition wait, player cinematic protection, and timer pause without also owning a UI input blocker for the non-dialogue encounter windows.
 
 Fix:
-Keep Pawn suction radius behavior, but make P2 boss drain entry require direct `DrainPipe` trigger contact before applying the drain-control lock.
+Boss encounter sequence owners now acquire a `GameFlowInputBlocker` for the full encounter presentation and release it on normal handoff, setup failure, disable, and coroutine interruption cleanup paths.
 
 Prevention:
-Do not reuse broad area-of-effect acquisition for boss state locks unless the design explicitly says the boss can be captured by proximity. Boss disabling hazards should prefer exact trigger contact or a separate boss-specific radius.
+When a flow spans both dialogue and non-dialogue presentation, do not assume the dialogue blocker covers the whole flow. The outer flow owner must acquire its own `GameFlowInputBlocker` for camera/transition/handoff windows where unrelated ESC or UI opens must stay blocked.
+
+## 2026-05-19 - World Text Readout Was Authored Without Canvas
+
+Context:
+The lobby training dummy damage record text did not appear during play review.
+
+Cause:
+The readout was authored as a 3D `TextMeshPro` MeshRenderer child using a `RectTransform` but no Canvas. Unity normalized the child RectTransform to the dummy center, and the text was not reliably visible as the intended above-dummy UI.
+
+Fix:
+`TrainingDummy.prefab` now owns a prefab-authored world-space Canvas with `TextMeshProUGUI`, and `TrainingDummyDamageReadout2D` targets `TMP_Text` so it can drive either UGUI or world TMP text safely.
+
+Prevention:
+For prefab-authored world UI labels, prefer a world-space Canvas plus `TextMeshProUGUI`, or use a plain Transform with 3D TMP deliberately. Do not rely on RectTransform positioning without a Canvas when the label must appear at a precise world offset.
