@@ -39392,7 +39392,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   merchantId: Trigger_e15c2671
   shopDefinition: {fileID: 11400000, guid: ffba98fbd34a48b085c9b91e38a52c4f, type: 2}
-  slotPrefab: {fileID: 0}
+  slotPrefab: {fileID: 1472148101, guid: d16a91e06c60d4a4a9a7ea42846d2f31, type: 3}
   slotAnchors:
   - anchor: {fileID: 2136925991}
     itemFilter: 0
