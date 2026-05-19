@@ -36,7 +36,9 @@ namespace UnityGAS
                     hitConfirmedTag: hitConfirmedTag,
                     hitWorldPosition: target.transform.position,
                     causer: causer,
-                    isCriticalHit: snapshot.IsCriticalHit
+                    isCriticalHit: snapshot.IsCriticalHit,
+                    elementBuildUps: snapshot.FinalElementBuildUps,
+                    hasResolvedElementBuildUps: snapshot.HasResolvedElementBuildUps
                 );
             }
         }

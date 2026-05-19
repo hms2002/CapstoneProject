@@ -48,7 +48,8 @@ namespace UnityGAS.Sample
                 config: config,
                 baseHp: baseHp,
                 baseStagger: config != null && config.includeStaggerBuildUp ? baseStagger : 0f,
-                baseKnockback: baseKnockback);
+                baseKnockback: baseKnockback,
+                elementSource: system.gameObject);
 
             if (snapshot.FinalHpDamage <= 0f)
                 return null;

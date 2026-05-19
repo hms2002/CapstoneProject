@@ -691,6 +691,67 @@ Transform:
   m_Children: []
   m_Father: {fileID: 449784227}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &111292667
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 625522859161183429, guid: 0b51d4a4499f87a48946b57538449b77, type: 3}
+      propertyPath: m_Name
+      value: ShadowMonster
+      objectReference: {fileID: 0}
+    - target: {fileID: 1695031726951874086, guid: 0b51d4a4499f87a48946b57538449b77, type: 3}
+      propertyPath: m_MaskInteraction
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2826825829709561300, guid: 0b51d4a4499f87a48946b57538449b77, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -13.001411
+      objectReference: {fileID: 0}
+    - target: {fileID: 2826825829709561300, guid: 0b51d4a4499f87a48946b57538449b77, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -3.4754858
+      objectReference: {fileID: 0}
+    - target: {fileID: 2826825829709561300, guid: 0b51d4a4499f87a48946b57538449b77, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2826825829709561300, guid: 0b51d4a4499f87a48946b57538449b77, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2826825829709561300, guid: 0b51d4a4499f87a48946b57538449b77, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2826825829709561300, guid: 0b51d4a4499f87a48946b57538449b77, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2826825829709561300, guid: 0b51d4a4499f87a48946b57538449b77, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2826825829709561300, guid: 0b51d4a4499f87a48946b57538449b77, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2826825829709561300, guid: 0b51d4a4499f87a48946b57538449b77, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2826825829709561300, guid: 0b51d4a4499f87a48946b57538449b77, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 0b51d4a4499f87a48946b57538449b77, type: 3}
 --- !u!1 &161455600
 GameObject:
   m_ObjectHideFlags: 0
@@ -724,6 +785,7 @@ MonoBehaviour:
   verboseLogging: 0
   worldItemPrefab: {fileID: 4439982264372595963, guid: 965ec98195bcbe34f9512acce3712973, type: 3}
   fieldItemPrefab: {fileID: 0}
+  magicStonePrefab: {fileID: 0}
   stageTables:
   - {fileID: 11400000, guid: 3903a30b290836e4bb4413a07b019990, type: 2}
   - {fileID: 11400000, guid: 73f94fed09a844d4fa580676170cabb7, type: 2}
@@ -38144,6 +38206,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   owner: {fileID: 1082065425}
   slotIndex: -1
+  itemFilter: 0
   promptAnchor: {fileID: 438268072}
   detailAnchor: {fileID: 1843111976}
   interactPromptText: "\uAD6C\uB9E4"
@@ -40868,6 +40931,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   merchantId: Trigger_e15c2671
   shopDefinition: {fileID: 11400000, guid: ffba98fbd34a48b085c9b91e38a52c4f, type: 2}
+  slotPrefab: {fileID: 0}
+  slotAnchors: []
   shopSlots:
   - {fileID: 1472148101}
   - {fileID: 337216490}
@@ -41267,6 +41332,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   owner: {fileID: 1082065425}
   slotIndex: -1
+  itemFilter: 0
   promptAnchor: {fileID: 1375061065}
   detailAnchor: {fileID: 1601063617}
   interactPromptText: "\uAD6C\uB9E4"
@@ -41846,6 +41912,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   owner: {fileID: 1082065425}
   slotIndex: -1
+  itemFilter: 0
   promptAnchor: {fileID: 20195302}
   detailAnchor: {fileID: 191438381}
   interactPromptText: "\uAD6C\uB9E4"
@@ -42793,6 +42860,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   owner: {fileID: 1082065425}
   slotIndex: -1
+  itemFilter: 0
   promptAnchor: {fileID: 1379906555}
   detailAnchor: {fileID: 1632563425}
   interactPromptText: "\uAD6C\uB9E4"
@@ -46199,3 +46267,4 @@ SceneRoots:
   - {fileID: 1175960437}
   - {fileID: 1764990987}
   - {fileID: 8345541588293432014}
+  - {fileID: 111292667}

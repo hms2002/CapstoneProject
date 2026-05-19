@@ -3,10 +3,10 @@ using UnityEngine;
 using UnityGAS;
 
 /// <summary>
-/// Centralized damage application utility.
-/// HP damage is applied through GameplayEffect, while stagger and element build-up are routed to
-/// their target-side gauge systems. Element build-up is resolved from the attacker's
-/// ElementOffenseSource at application time.
+/// 책임 :
+/// - 생성 시점에 확정된 피해 payload를 대상에게 적용하는 중앙 유틸리티다.
+/// - HP 피해는 GameplayEffect로, 스태거/원소 누적은 대상 gauge system으로 라우팅한다.
+/// - payload가 원소 snapshot을 제공하면 그 값을 사용하고, legacy 직접 호출만 공격자 현재 상태 조회로 후방 호환한다.
 /// </summary>
 public static class CombatDamageAction
 {
@@ -162,7 +162,9 @@ public static class CombatDamageAction
         GameplayTag hitConfirmedTag,
         Vector3 hitWorldPosition,
         GameObject causer,
-        bool isCriticalHit = false)
+        bool isCriticalHit = false,
+        ElementDamageResult[] elementBuildUps = null,
+        bool hasResolvedElementBuildUps = false)
     {
         ApplyDamageAndEmitHitInternal(
             system,
@@ -176,7 +178,9 @@ public static class CombatDamageAction
             hitConfirmedTag,
             hitWorldPosition,
             causer,
-            isCriticalHit);
+            isCriticalHit,
+            elementBuildUps,
+            hasResolvedElementBuildUps);
     }
 
     private static void ApplyDamageAndEmitHitInternal(
@@ -191,7 +195,9 @@ public static class CombatDamageAction
         GameplayTag hitConfirmedTag,
         Vector3 hitWorldPosition,
         GameObject causer,
-        bool isCriticalHit)
+        bool isCriticalHit,
+        ElementDamageResult[] elementBuildUps,
+        bool hasResolvedElementBuildUps)
     {
         if (!Validate(system, damageEffect, target))
             return;
@@ -232,7 +238,7 @@ public static class CombatDamageAction
         TryEmitKillConfirmed(system, spec, target, causer, hpCheck);
 
         ApplyStagger(target, finalStaggerBuildUp, system.gameObject, causer);
-        ApplyElements(target, system.gameObject, causer);
+        ApplyElements(target, system.gameObject, causer, elementBuildUps, hasResolvedElementBuildUps);
 
         EmitHitConfirmed(system, spec, target, causer, hitConfirmedTag, hitWorldPosition, isCriticalHit);
     }
@@ -417,17 +423,26 @@ public static class CombatDamageAction
         return false;
     }
 
-    private static void ApplyElements(GameObject target, GameObject instigator, GameObject causer)
+    private static void ApplyElements(
+        GameObject target,
+        GameObject instigator,
+        GameObject causer,
+        ElementDamageResult[] elementBuildUps,
+        bool hasResolvedElementBuildUps)
     {
         if (target == null) return;
 
         var gaugeSystem = target.GetComponent<ElementGaugeSystem>();
         if (gaugeSystem == null) return;
 
-        var resolved = ElementBuildUpResolver.ResolveForApplication(
-            instigator,
-            target,
-            s_resolvedElements);
+        IReadOnlyList<ElementDamageResult> resolved = elementBuildUps;
+        if (!hasResolvedElementBuildUps)
+        {
+            resolved = ElementBuildUpResolver.ResolveForApplication(
+                instigator,
+                target,
+                s_resolvedElements);
+        }
 
         if (resolved == null || resolved.Count == 0) return;
 

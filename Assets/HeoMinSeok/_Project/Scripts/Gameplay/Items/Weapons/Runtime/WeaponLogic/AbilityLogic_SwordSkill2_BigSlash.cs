@@ -61,7 +61,8 @@ namespace UnityGAS.Sample
                 config: cfg,
                 baseHp: baseHp,
                 baseStagger: baseStagger,
-                baseKnockback: baseKnockback
+                baseKnockback: baseKnockback,
+                elementSource: system.gameObject
             );
 
             var payload = CombatHitPayload.FromSnapshot(
