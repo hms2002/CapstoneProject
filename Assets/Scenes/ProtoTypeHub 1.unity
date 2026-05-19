@@ -40617,6 +40617,10 @@ PrefabInstance:
       propertyPath: portalId
       value: 8c3e644af74b49ee86a70b02f44f784b
       objectReference: {fileID: 0}
+    - target: {fileID: 5909209640859858232, guid: 99cd9d723ba00e14e8bf7327129f4aae, type: 3}
+      propertyPath: startRunRouteCatalog
+      value: 
+      objectReference: {fileID: 11400000, guid: 2199820cb676dbc4692f5aca1000cb22, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
