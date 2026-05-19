@@ -15,6 +15,7 @@ namespace UnityGAS
     {
         private readonly GameplayCueManager cueManager;
         private readonly Dictionary<LoopKey, AudioHandle> activeLoopHandles = new();
+        private readonly Dictionary<LoopKey, List<GameObject>> activeVisualHandles = new();
 
         private readonly struct LoopKey : IEquatable<LoopKey>
         {
@@ -103,13 +104,16 @@ namespace UnityGAS
 
             GameplayPresentationPhase activePhase = effect.GetWhileActivePhase();
             GameplayCueParams cueParams = BuildCueParams(instigator, causer, target, sourceObject, magnitude, ctx);
-            StartLoop(MakeLoopKey(effect, target, sourceObject), activePhase.Sound, cueParams);
+            LoopKey loopKey = MakeLoopKey(effect, target, sourceObject);
+            StartLoop(loopKey, activePhase.Sound, cueParams);
             // Sustained effect phase:
             // - sound loops while the duration effect stays active
             // - presentation / shake fire once on enter
             // - cues are added here and removed in RemoveWhileActive(...)
+            SpawnManualWhileActiveVisuals(loopKey, activePhase.Presentation, BuildWorldPresentationContext(cueParams));
+            WorldPresentationHook autoReleasePresentation = BuildAutoReleasePresentation(activePhase.Presentation);
             WorldPresentationRuntime.PlayMerged(
-                activePhase.Presentation,
+                autoReleasePresentation,
                 default,
                 activePhase.CameraShake,
                 BuildWorldPresentationContext(cueParams));
@@ -138,7 +142,9 @@ namespace UnityGAS
 
             GameplayPresentationPhase activePhase = effect.GetWhileActivePhase();
             GameplayCueParams cueParams = BuildCueParams(instigator, causer, target, sourceObject, magnitude, ctx);
-            StopLoop(MakeLoopKey(effect, target, sourceObject));
+            LoopKey loopKey = MakeLoopKey(effect, target, sourceObject);
+            StopLoop(loopKey);
+            ReleaseWhileActiveVisuals(loopKey);
 
             if (cueManager != null)
             {
@@ -244,6 +250,68 @@ namespace UnityGAS
                 effect != null ? effect.GetInstanceID() : 0,
                 target != null ? target.GetInstanceID() : 0,
                 sourceObject != null ? sourceObject.GetInstanceID() : 0);
+        }
+
+        private static WorldPresentationHook BuildAutoReleasePresentation(in WorldPresentationHook presentation)
+        {
+            return new WorldPresentationHook
+            {
+                sound = presentation.sound,
+                cameraShake = presentation.cameraShake,
+                effect = ShouldSpawnManualWhileActive(presentation.effect) ? default : presentation.effect,
+                particle = ShouldSpawnManualWhileActive(presentation.particle) ? default : presentation.particle
+            };
+        }
+
+        private void SpawnManualWhileActiveVisuals(
+            LoopKey key,
+            in WorldPresentationHook presentation,
+            in WorldPresentationContext context)
+        {
+            if (activeVisualHandles.ContainsKey(key))
+                return;
+
+            List<GameObject> handles = null;
+            SpawnManualWhileActiveVisual(presentation.effect, context, ref handles);
+            SpawnManualWhileActiveVisual(presentation.particle, context, ref handles);
+
+            if (handles != null && handles.Count > 0)
+                activeVisualHandles[key] = handles;
+        }
+
+        private void SpawnManualWhileActiveVisual(
+            in SpawnedPresentationHook hook,
+            in WorldPresentationContext context,
+            ref List<GameObject> handles)
+        {
+            if (!ShouldSpawnManualWhileActive(hook))
+                return;
+
+            GameObject instance = PresentationSpawnService.SpawnPersistent(hook, context);
+            if (instance == null)
+                return;
+
+            handles ??= new List<GameObject>(2);
+            handles.Add(instance);
+        }
+
+        private void ReleaseWhileActiveVisuals(LoopKey key)
+        {
+            if (!activeVisualHandles.TryGetValue(key, out List<GameObject> handles))
+                return;
+
+            activeVisualHandles.Remove(key);
+            for (int i = 0; i < handles.Count; i++)
+            {
+                GameObject handle = handles[i];
+                if (handle != null)
+                    PresentationSpawnService.Release(handle);
+            }
+        }
+
+        private static bool ShouldSpawnManualWhileActive(in SpawnedPresentationHook hook)
+        {
+            return hook.HasContent && hook.lifetimeMode == PresentationLifetimeMode.ManualRelease;
         }
 
         private static SoundPlaybackContext BuildSoundContext(GameplayCueParams p)

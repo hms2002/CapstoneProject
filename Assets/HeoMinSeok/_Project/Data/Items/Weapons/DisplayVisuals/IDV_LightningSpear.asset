@@ -22,7 +22,7 @@ MonoBehaviour:
     targetBoxSize: {x: 1, y: 1}
     anchorMode: 1
     centerX: 1
-    anchorOffset: {x: 0, y: 0.08}
+    anchorOffset: {x: 0, y: 5}
   shopVisualPrefab: {fileID: 0}
   shopSpriteOverride: {fileID: 0}
   overrideShopSpriteSettings: 0
@@ -33,7 +33,7 @@ MonoBehaviour:
     targetBoxSize: {x: 1, y: 1}
     anchorMode: 0
     centerX: 1
-    anchorOffset: {x: 0, y: 0}
+    anchorOffset: {x: 0, y: 1}
   worldDropVisualPrefab: {fileID: 0}
   worldDropSpriteOverride: {fileID: 0}
   overrideWorldDropSpriteSettings: 0

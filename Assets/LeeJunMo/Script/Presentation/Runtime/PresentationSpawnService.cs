@@ -296,10 +296,13 @@ namespace CapstonePresentation
             Transform instanceTransform = pooledInstance.transform;
             instanceTransform.SetParent(null, worldPositionStays: false);
 
-            Vector3 position = context.Position + (context.Rotation * hook.localOffset);
+            Vector3 position = ResolveAnchorPosition(hook, context) + (context.Rotation * hook.localOffset);
             Quaternion rotation = context.Rotation * Quaternion.Euler(0f, 0f, hook.rotationOffsetZ);
             instanceTransform.SetPositionAndRotation(position, rotation);
-            instanceTransform.localScale = Vector3.Scale(pooledInstance.initialScale, hook.EffectiveScaleMultiplier);
+            instanceTransform.localScale = ResolveSpawnScale(pooledInstance.initialScale, hook, context);
+
+            if (hook.attachToTarget && context.Target != null)
+                instanceTransform.SetParent(context.Target.transform, worldPositionStays: true);
 
             GameObject instance = pooledInstance.gameObject;
             instance.SetActive(true);
@@ -317,6 +320,40 @@ namespace CapstonePresentation
             }
 
             return instance;
+        }
+
+        private static Vector3 ResolveAnchorPosition(
+            in SpawnedPresentationHook hook,
+            in WorldPresentationContext context)
+        {
+            if (hook.anchorMode == PresentationSpawnAnchorMode.TargetSpriteBoundsCenter
+                && PresentationTargetBoundsUtility.TryResolveSpriteBounds(context.Target, out Bounds bounds))
+            {
+                return bounds.center;
+            }
+
+            return context.Position;
+        }
+
+        private static Vector3 ResolveSpawnScale(
+            Vector3 initialScale,
+            in SpawnedPresentationHook hook,
+            in WorldPresentationContext context)
+        {
+            Vector3 scale = Vector3.Scale(initialScale, hook.EffectiveScaleMultiplier);
+            if (hook.scaleMode != PresentationSpawnScaleMode.TargetSpriteBoundsUniform)
+                return scale;
+
+            if (!PresentationTargetBoundsUtility.TryResolveSpriteBounds(context.Target, out Bounds bounds))
+                return scale;
+
+            float targetSize = Mathf.Max(bounds.size.x, bounds.size.y);
+            if (targetSize <= 0f)
+                return scale;
+
+            float boundsScale = (targetSize / hook.EffectiveTargetBoundsReferenceSize)
+                                * hook.EffectiveTargetBoundsScaleMultiplier;
+            return scale * boundsScale;
         }
 
         private IEnumerator ReturnAfterDelay(

@@ -895,6 +895,8 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+  healParticlePrefab: {fileID: 361241697615398169, guid: a1b798cb840f94a4197ffc6aadee7028, type: 3}
+  healParticleLocalOffset: {x: 0, y: 0, z: 0}
 --- !u!114 &771234567890123457
 MonoBehaviour:
   m_ObjectHideFlags: 0

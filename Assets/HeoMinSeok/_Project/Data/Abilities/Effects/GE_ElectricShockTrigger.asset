@@ -1,0 +1,196 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6740fcf270ed4dd5a6f1eb0125720ed4, type: 3}
+  m_Name: GE_ElectricShockTrigger
+  m_EditorClassIdentifier: 
+  effectName: GE_ElectricShockTrigger
+  description: Applies electrocute damage and discharges to nearby electrocuted units.
+  icon: {fileID: 0}
+  duration: 0
+  canStack: 0
+  maxStacks: 1
+  grantedTags: []
+  grantedTagSets: []
+  audioOnExecute:
+    key: 
+    volumeMultiplier: 0
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  audioWhileActive:
+    key: 
+    volumeMultiplier: 0
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  audioOnRemove:
+    key: 
+    volumeMultiplier: 0
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  cameraShakeOnExecute:
+    amplitude: 0
+    amplitudeMultiplier: 0
+    maxAmplitude: 0
+    minIntervalSeconds: 0
+    directionMode: 0
+    customDirection: {x: 0, y: 0, z: 0}
+    ignoreScreenShakeSetting: 0
+  cameraShakeWhileActive:
+    amplitude: 0
+    amplitudeMultiplier: 0
+    maxAmplitude: 0
+    minIntervalSeconds: 0
+    directionMode: 0
+    customDirection: {x: 0, y: 0, z: 0}
+    ignoreScreenShakeSetting: 0
+  cameraShakeOnRemove:
+    amplitude: 0
+    amplitudeMultiplier: 0
+    maxAmplitude: 0
+    minIntervalSeconds: 0
+    directionMode: 0
+    customDirection: {x: 0, y: 0, z: 0}
+    ignoreScreenShakeSetting: 0
+  presentationOnExecute:
+    sound:
+      key: 
+      volumeMultiplier: 0
+      anchorPolicy: 0
+      localOffset: {x: 0, y: 0, z: 0}
+    cameraShake:
+      amplitude: 0
+      amplitudeMultiplier: 0
+      maxAmplitude: 0
+      minIntervalSeconds: 0
+      directionMode: 0
+      customDirection: {x: 0, y: 0, z: 0}
+      ignoreScreenShakeSetting: 0
+    effect:
+      prefab: {fileID: 0}
+      localOffset: {x: 0, y: 0, z: 0}
+      rotationOffsetZ: 0
+      scaleMultiplier: {x: 0, y: 0, z: 0}
+      attachToTarget: 0
+      anchorMode: 0
+      scaleMode: 0
+      targetBoundsReferenceSize: 0
+      targetBoundsScaleMultiplier: 0
+      lifetimeMode: 0
+      lifetimeOverrideSeconds: 0
+      useUnscaledTime: 0
+    particle:
+      prefab: {fileID: 0}
+      localOffset: {x: 0, y: 0, z: 0}
+      rotationOffsetZ: 0
+      scaleMultiplier: {x: 0, y: 0, z: 0}
+      attachToTarget: 0
+      anchorMode: 0
+      scaleMode: 0
+      targetBoundsReferenceSize: 0
+      targetBoundsScaleMultiplier: 0
+      lifetimeMode: 0
+      lifetimeOverrideSeconds: 0
+      useUnscaledTime: 0
+  presentationWhileActive:
+    sound:
+      key: 
+      volumeMultiplier: 0
+      anchorPolicy: 0
+      localOffset: {x: 0, y: 0, z: 0}
+    cameraShake:
+      amplitude: 0
+      amplitudeMultiplier: 0
+      maxAmplitude: 0
+      minIntervalSeconds: 0
+      directionMode: 0
+      customDirection: {x: 0, y: 0, z: 0}
+      ignoreScreenShakeSetting: 0
+    effect:
+      prefab: {fileID: 0}
+      localOffset: {x: 0, y: 0, z: 0}
+      rotationOffsetZ: 0
+      scaleMultiplier: {x: 0, y: 0, z: 0}
+      attachToTarget: 0
+      anchorMode: 0
+      scaleMode: 0
+      targetBoundsReferenceSize: 0
+      targetBoundsScaleMultiplier: 0
+      lifetimeMode: 0
+      lifetimeOverrideSeconds: 0
+      useUnscaledTime: 0
+    particle:
+      prefab: {fileID: 0}
+      localOffset: {x: 0, y: 0, z: 0}
+      rotationOffsetZ: 0
+      scaleMultiplier: {x: 0, y: 0, z: 0}
+      attachToTarget: 0
+      anchorMode: 0
+      scaleMode: 0
+      targetBoundsReferenceSize: 0
+      targetBoundsScaleMultiplier: 0
+      lifetimeMode: 0
+      lifetimeOverrideSeconds: 0
+      useUnscaledTime: 0
+  presentationOnRemove:
+    sound:
+      key: 
+      volumeMultiplier: 0
+      anchorPolicy: 0
+      localOffset: {x: 0, y: 0, z: 0}
+    cameraShake:
+      amplitude: 0
+      amplitudeMultiplier: 0
+      maxAmplitude: 0
+      minIntervalSeconds: 0
+      directionMode: 0
+      customDirection: {x: 0, y: 0, z: 0}
+      ignoreScreenShakeSetting: 0
+    effect:
+      prefab: {fileID: 0}
+      localOffset: {x: 0, y: 0, z: 0}
+      rotationOffsetZ: 0
+      scaleMultiplier: {x: 0, y: 0, z: 0}
+      attachToTarget: 0
+      anchorMode: 0
+      scaleMode: 0
+      targetBoundsReferenceSize: 0
+      targetBoundsScaleMultiplier: 0
+      lifetimeMode: 0
+      lifetimeOverrideSeconds: 0
+      useUnscaledTime: 0
+    particle:
+      prefab: {fileID: 0}
+      localOffset: {x: 0, y: 0, z: 0}
+      rotationOffsetZ: 0
+      scaleMultiplier: {x: 0, y: 0, z: 0}
+      attachToTarget: 0
+      anchorMode: 0
+      scaleMode: 0
+      targetBoundsReferenceSize: 0
+      targetBoundsScaleMultiplier: 0
+      lifetimeMode: 0
+      lifetimeOverrideSeconds: 0
+      useUnscaledTime: 0
+  cueOnExecute: {fileID: 0}
+  cueWhileActive: {fileID: 0}
+  cueOnRemove: {fileID: 0}
+  electrocutedStatusEffect: {fileID: 11400000, guid: 098ed5d6eb1548c884517bade6c21d73, type: 2}
+  electrocutedTag: {fileID: 11400000, guid: 91af69d21bca4a2fb9e29a76190e8979, type: 2}
+  electricDamageEffect: {fileID: 11400000, guid: 3ce29a9354b34e5dac3bdc529a0735be, type: 2}
+  electricDamageKey: {fileID: 11400000, guid: 2e2e8bd1bde4f78429bf913fa737505c, type: 2}
+  electricDamage: 5
+  chainRadius: 6.5
+  maxTargetsPerDischarge: 8
+  maxScanColliders: 64
+  chainTargetLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  chainVfxPrefab: {fileID: 7753839861218199246, guid: 6f5a6630cd3b4e0d99cda1710f6e1bb2, type: 3}

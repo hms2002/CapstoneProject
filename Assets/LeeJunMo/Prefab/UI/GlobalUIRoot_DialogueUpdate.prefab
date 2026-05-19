@@ -8376,7 +8376,7 @@ MonoBehaviour:
   gridRoot: {fileID: 2393397160615727751}
   downFrame: {fileID: 4620773579028786826}
   revealDuration: 0.34
-  topLiftDistance: 0
+  topLiftDistance: -19
   useUnscaledTime: 1
   blockInteractionDuringReveal: 1
   sideApproachDuration: 0.24
@@ -8418,22 +8418,37 @@ MonoBehaviour:
       lifetimeMode: 0
       lifetimeOverrideSeconds: 0
       useUnscaledTime: 0
-  impactCameraShakeAmplitude: 0.08
-  impactCameraShakeDuration: 0.12
+  impactCameraShakeAmplitude: 1
+  impactCameraShakeDuration: 1
+  impactCameraShakePositionScale: 2
   impactPresentationAnchor: {fileID: 0}
   impactParticleSystems: []
   impactShakeRoot: {fileID: 1891207895635120300}
+  playImpactChestShake: 1
+  impactChestShakeDuration: 0.5
+  impactChestShakeStrength: {x: 30, y: 30}
+  impactChestShakeVibrato: 18
+  impactChestShakeRandomness: 60
   playImpactUiParticles: 1
   impactUiParticleEmitter: {fileID: 8942350213942013994}
   impactUiParticleOffset: {x: 0, y: 0}
-  uiImpactShakeDuration: 0.16
+  uiImpactShakeDuration: 0.3
   uiImpactShakeAmplitude: 16
   uiImpactShakeFrequency: 5
   applyLayoutInEditMode: 1
   disableOuterLayoutDrivers: 1
   previewSlotCount: 6
-  fallbackTopHeight: 0
-  fallbackDownHeight: 0
+  fallbackTopHeight: 84.55
+  fallbackDownHeight: 84.55
+  chestWidth: 375.3
+  overrideTopFrameSize: 1
+  topFrameHeight: 200
+  overrideDownFrameSize: 1
+  downFrameHeight: 200
+  forceTopSlotAsLastSibling: 0
+  editModePreviewPose: 2
+  customPreviewRevealProgress: 0
+  closedTopFrameOffset: {x: 0, y: -56}
   chestPanelName: ChestPanel
   inventoryPanelName: ChestLegacyPlayerInventoryScreen
   topSlotName: TopSlot

@@ -49,13 +49,12 @@ public sealed class DemonKingDelayedDamageArea : MonoBehaviour
         float damage,
         bool ignoreOwnerGroggy)
     {
-        DemonKingPrimitiveVisual.SpawnSquare(
+        DemonKingPrimitiveVisual.SpawnCircle(
             center,
-            new Vector2(diameter, diameter),
-            0f,
+            diameter,
             warningSeconds,
             WarningColor,
-            "DemonKing_ExplosionSquareWarning");
+            "DemonKing_ExplosionCircleWarning");
 
         owner.GetTelegraphService()?.SpawnDetachedView(
             AttackTelegraphSpec.CreateCircle(center, diameter, warningSeconds, owner.DefaultWarningStyle));
@@ -72,13 +71,11 @@ public sealed class DemonKingDelayedDamageArea : MonoBehaviour
                 owner.DefaultDamageEffect,
                 damage);
 
-            DemonKingPrimitiveVisual.SpawnSquare(
+            DemonKingPatternVfx.SpawnExplosionOrFallbackCircle(
                 center,
-                new Vector2(diameter, diameter),
-                0f,
-                AttackFlashSeconds,
+                diameter,
                 AttackColor,
-                "DemonKing_ExplosionSquareAttack");
+                "DemonKing_ExplosionCircleAttack");
         }
 
         Destroy(gameObject);

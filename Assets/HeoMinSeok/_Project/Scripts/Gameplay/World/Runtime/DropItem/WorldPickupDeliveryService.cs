@@ -5,12 +5,18 @@ internal readonly struct WorldPickupDeliveryRequest
     public IPlayerInteractor Player { get; }
     public ScriptableObject Item { get; }
     public int RelicLevel { get; }
+    public Vector3? PickupWorldPosition { get; }
 
-    public WorldPickupDeliveryRequest(IPlayerInteractor player, ScriptableObject item, int relicLevel)
+    public WorldPickupDeliveryRequest(
+        IPlayerInteractor player,
+        ScriptableObject item,
+        int relicLevel,
+        Vector3? pickupWorldPosition = null)
     {
         Player = player;
         Item = item;
         RelicLevel = relicLevel;
+        PickupWorldPosition = pickupWorldPosition;
     }
 }
 
@@ -59,20 +65,23 @@ internal static class WorldPickupDeliveryService
         return request.Item switch
         {
             null => WorldPickupDeliveryResult.Failed(WorldPickupDeliveryFailureReason.MissingItem),
-            WeaponDefinition weapon => TryDeliverWeapon(request.Player, weapon),
+            WeaponDefinition weapon => TryDeliverWeapon(request.Player, weapon, request.PickupWorldPosition),
             RelicDefinition relic => TryDeliverRelic(request.Player, relic, request.RelicLevel),
             ConsumableDefinition consumable => TryDeliverConsumable(request.Player, consumable),
             _ => WorldPickupDeliveryResult.Failed(WorldPickupDeliveryFailureReason.UnsupportedItem)
         };
     }
 
-    private static WorldPickupDeliveryResult TryDeliverWeapon(IPlayerInteractor player, WeaponDefinition weapon)
+    private static WorldPickupDeliveryResult TryDeliverWeapon(
+        IPlayerInteractor player,
+        WeaponDefinition weapon,
+        Vector3? replacementDropPosition)
     {
         WeaponInventory2D weaponInventory = ResolveWeaponInventory(player);
         if (weaponInventory == null)
             return WorldPickupDeliveryResult.Failed(WorldPickupDeliveryFailureReason.MissingInventory);
 
-        return weaponInventory.TryPickupWeapon(weapon)
+        return weaponInventory.TryPickupWeapon(weapon, replacementDropPosition: replacementDropPosition)
             ? WorldPickupDeliveryResult.Success
             : WorldPickupDeliveryResult.Failed(WorldPickupDeliveryFailureReason.WeaponRejected);
     }

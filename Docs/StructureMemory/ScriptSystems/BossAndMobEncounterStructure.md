@@ -2,7 +2,7 @@
 status: active
 authority: structure-memory
 category: script-system-map
-last_reviewed: 2026-05-17
+last_reviewed: 2026-05-19
 ---
 
 # Boss And Mob Encounter Structure
@@ -46,7 +46,7 @@ Bosses use an `Encounter -> Battle -> BattleEnd` flow. General mobs use `Populat
 | Slime Queen Boss | 16 | Slime Queen controller/base scripts, phase-two behaviors, summon/drop/jump/body-inflate ability logic. |
 | Drunken Dragon Boss | 16 | Drunken Dragon controller/runtime data, arena/presentation helpers, and ability actors/logic. |
 | FSM Core | 11 | Boss controller base, blackboard, state machine, pattern runtime/eval/select, groggy/death presentation core. |
-| Demon King Boss | 8 | Demon King controller/runtime data, combat utility, actors, and ability logic. |
+| Demon King Boss | 9 | Demon King controller/runtime data, combat utility, actors, local VFX presenters, and ability logic. |
 | FSM States | 7 | Spawn, dialogue, idle, pattern select/execute, groggy, and death states. |
 | FSM Configs | 3 | Pattern entry, condition, and phase config data. |
 | Behavior Tree Bridge | 2 | Boss behavior-tree selector and GAS action bridge scripts. |
@@ -74,6 +74,8 @@ Bosses use an `Encounter -> Battle -> BattleEnd` flow. General mobs use `Populat
 | Boss Encounter > Drunken Dragon Boss | Controller / Runtime Data | 3 | Drunken Dragon controller, runtime data, and animation keys. |
 | Boss Encounter > Drunken Dragon Boss | Dialogue Selector | 1 | Dialogue start knot selector. |
 | Boss Encounter > Drunken Dragon Boss | Drunken Dragon Other | 1 | Remaining Drunken Dragon support script. |
+| Boss Encounter > Demon King Boss | EgoSword Laser Presentation | 2 | `EgoSwordActor` spawns the Resources laser VFX prefab for the four-direction dropped-sword pattern. Warning geometry is wall-clipped; attack VFX and damage geometry pierce walls using the configured fallback laser length. Animated ray origins can be pushed outward with `laserVfxRayOriginOffset` to reduce center overlap. `DemonKingEgoLaserVfx` owns ray geometry, Start/Idle/End Animator state playback, code-driven damage-active window, Projectile sorting layer/order 1 rendering, and a visual-only doubled Body length. |
+| Boss Encounter > Demon King Boss | Pattern Sprite VFX | 2 | DemonKing pattern-local VFX uses `DemonKingPatternVfx` and `DemonKingAnimationClipVisual` in `DemonKingPrimitiveVisual.cs`. The helper loads authored VFX prefabs from `Resources/DemonKing/Vfx`; those prefabs own SpriteRenderer + Animator + AnimatorController links to `.anim` clips. Runtime code instantiates the prefabs, plays `Play` or `Start`/`Idle` Animator states, renders on Projectile sorting layer/order 1, and does not load sprite-sheet frames directly. `EgoSwordActor` owns loop cleanup for the vertical-strike aura/attack children. |
 
 ### Mob Battle Runtime Breakdown
 
@@ -134,16 +136,21 @@ Track the concrete candidate in `Docs/RefactorBacklog/BossHudSpecialCaseSourceSp
 - `Assets/HeoMinSeok/_Project/Prefabs/Gameplay/Items/KillLockMonsterNavigationArrow.prefab`
 - `Assets/HeoMinSeok/_Project/Scripts/Gameplay/Puddles/Runtime/FirePuddleArea.cs`
 - `Assets/LeeJunMo/Script/Editor/BossBattleEndMigrationValidatorWindow.cs`
+- `Assets/Script/Enemy/Boss/FSM/BossControllers/DemonKingBoss/Actors/EgoSwordActor.cs`
+- `Assets/Script/Enemy/Boss/FSM/BossControllers/DemonKingBoss/Actors/DemonKingEgoLaserVfx.cs`
+- `Assets/Resources/DemonKing/DemonKingEgoLaserVfx.prefab`
 
 ## Ownership And Lifecycle
 
 - Boss controllers own boss battle runtime; boss encounter setup and boss battle-end results should remain visible as separate flow boundaries.
+- Boss encounter presentation owns its own UI input block through `GameFlowInputBlocker` while camera focus, dialogue, and return-to-player handoff are running. Dialogue still owns only dialogue playback blocking.
 - General mobs are spawned through population systems, then stay battle-ready through their own runtime FSM. Do not treat all mob work as encounter work.
 - Spawn systems own instantiation/configuration and may bridge to lock overlays, but lock semantics are not the same as spawn semantics.
 - `ChestMonsterKillLockNavigationView` is presentation-only: it reads alive registered monsters from `ChestMonsterKillLock`, spawns authored arrow prefabs locally, and must not decide unlock, spawn, or combatant counting rules. The authored arrow prefab is SpriteRenderer-only; avoid renderer-driving scripts and MeshRenderer/MeshFilter presentation for this 2D guidance. Its selected-object gizmos are authoring/debug visualization only.
 - Puddles/hazards are battle environment systems and should stay separate from boss-specific policy unless the boss ability owns only a trigger.
 - Enemy cleanup rules should follow `Docs/Contracts/MobCleanupContract.md` when general mobs are involved.
 - Shared enemy player targeting should resolve to the canonical player root through `PlayerRuntimeRegistry`/`PlayerInteractor2D`; player-attached orbit/effect colliders or directly assigned child transforms should not become the boss target transform.
+- Shared mob perception treats a closed `DoorObject` on the enemy-target sight line as a blocker for acquisition, chase, common attack continuation, and Dead's Skeleton self-destruct flow.
 
 ## Extension Entry Points
 
@@ -175,6 +182,10 @@ Track the concrete candidate in `Docs/RefactorBacklog/BossHudSpecialCaseSourceSp
 - `FirePuddleArea` has boss-specific target exclusion logic. If more hazard actors learn boss policy, move the rule toward a combat target policy instead of spreading concrete boss checks.
 - Do not add new concrete boss type branches to common Boss HUD for split or multi-body bosses. Add a boss-specific HUD source/adapter instead.
 - Player-attached relic/effect objects should avoid unintended `Player` tags, hurtboxes, or blocking body colliders. The shared `Enemy` target resolver maps player-owned child colliders and assigned child transforms back to the player root, but collision/hurtbox authoring still needs separate review.
+- Closed-door perception depends on `DoorObject` colliders being authored on the physics line between enemy and player. If a closed door is visual-only or on an ignored collider setup, mobs may still perceive through it.
+- DemonKing EgoSword laser clips bind to the local SpriteRenderer on the Start/Body child objects. Keep Animator components on those child objects with Start/Idle/End states; root-level `AnimationClip.SampleAnimation(...)` is not the supported playback path for this VFX.
+- DemonKing EgoSword laser warning and attack lines intentionally use different geometry. Do not reuse the warning `LaserLine` for attack VFX/damage unless the design changes back to wall-blocked lasers.
+- `laserVfxRayOriginOffset` is a visual-only offset for the animated ray start points. It does not move warning geometry or damage rectangles.
 
 ## Promotion Candidate
 

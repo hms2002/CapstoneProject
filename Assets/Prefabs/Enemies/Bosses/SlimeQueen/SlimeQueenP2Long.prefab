@@ -25,7 +25,6 @@ GameObject:
   - component: {fileID: 1015000}
   - component: {fileID: 1016000}
   - component: {fileID: 1017000}
-  - component: {fileID: 1018000}
   - component: {fileID: 1019000}
   - component: {fileID: 1020000}
   - component: {fileID: 1021000}
@@ -495,26 +494,6 @@ MonoBehaviour:
     m_Bits: 0
   defaultWallClipSampleCount: 48
   defaultWallClipSkinWidth: 0.03
---- !u!114 &1018000
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1000000}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6ff4ff08e39f49319d1e0414b9985957, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: Assembly-CSharp::UnityGAS.EntityCollisionProfile2D
-  bodyColliders: []
-  baseExcludedLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  actorLayers:
-    serializedVersion: 2
-    m_Bits: 2147483656
-  defaultMode: 1
 --- !u!114 &1019000
 MonoBehaviour:
   m_ObjectHideFlags: 0

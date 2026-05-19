@@ -35,7 +35,7 @@ public sealed class DemonKingProjectile2D : MonoBehaviour
         SpriteRenderer renderer = projectileObject.AddComponent<SpriteRenderer>();
         renderer.sprite = DemonKingPrimitiveVisual.GetCircleSprite();
         renderer.color = new Color(0.55f, 0.15f, 1f, 0.95f);
-        DemonKingPrimitiveVisual.ApplyProjectileSorting(renderer, 1100);
+        DemonKingPrimitiveVisual.ApplyProjectileSorting(renderer);
 
         DemonKingProjectile2D projectile = projectileObject.AddComponent<DemonKingProjectile2D>();
         projectile.Initialize(owner, direction, homingTarget, speed, turnRate, radius, damage, lifetime);

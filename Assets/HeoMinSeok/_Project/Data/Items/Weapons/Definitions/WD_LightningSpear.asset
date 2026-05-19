@@ -18,7 +18,11 @@ MonoBehaviour:
   storyText: "\"\uBC88\uB729\uC774\uB294 \uC12C\uAD11\uC774 \uC2DC\uC57C\uB97C \uC2A4\uCE58\uAE30
     \uC804, \uC801\uC758 \uC804\uC5F4\uC740 \uC774\uBBF8 \uAFF0\uB6AB\uB824 \uC788\uC744
     \uAC83\uC774\uB2E4.\u201D"
-  statModifiers: []
+  statModifiers:
+  - attribute: {fileID: 11400000, guid: 418ca09dfa4c417ca3cadc4fd73bd414, type: 2}
+    type: 0
+    value: 100
+    labelOverride: "\uC804\uAE30 \uC18D\uC131"
   attackInputHint: Mouse1
   skill1InputHint: Q
   skill2InputHint: E

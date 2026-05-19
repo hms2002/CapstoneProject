@@ -7,6 +7,7 @@ public sealed class MobAttackState : IMobState
 {
     private readonly MobAttackRequest request;
     private bool startSucceeded;
+    private bool cancelledByLostTarget;
 
     public MobAttackState(MobAttackRequest request)
     {
@@ -42,6 +43,14 @@ public sealed class MobAttackState : IMobState
             return;
         }
 
+        if (context.Owner.Target == null || !context.Owner.CanPerceiveTarget(context.Owner.Target))
+        {
+            cancelledByLostTarget = true;
+            context.AbilityBridge?.CancelActiveAbility(true);
+            stateMachine.ChangeState(MobStateTransitionUtility.CreatePostAttackState(context), context);
+            return;
+        }
+
         if (context.AbilityBridge != null && context.AbilityBridge.IsAbilityExecutionBusy)
             return;
 
@@ -53,6 +62,6 @@ public sealed class MobAttackState : IMobState
 
     public void Exit(MobStateMachine stateMachine, MobAIContext context)
     {
-        context?.AttackDecisionSource?.OnAttackStateExited(request, !startSucceeded);
+        context?.AttackDecisionSource?.OnAttackStateExited(request, !startSucceeded || cancelledByLostTarget);
     }
 }

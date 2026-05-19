@@ -1,0 +1,52 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 50c12b8c197605049b45e2cd383052ca, type: 3}
+  m_Name: GE_ElectricDamage_Spec
+  m_EditorClassIdentifier:
+  effectName: GE_ElectricDamage_Spec
+  description: Secondary HP damage for Electric electrocute and discharge.
+  icon: {fileID: 0}
+  duration: 0
+  canStack: 0
+  maxStacks: 1
+  grantedTags: []
+  grantedTagSets: []
+  audioOnExecute:
+    key:
+    volumeMultiplier: 0
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  audioWhileActive:
+    key:
+    volumeMultiplier: 0
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  audioOnRemove:
+    key:
+    volumeMultiplier: 0
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  cueOnExecute: {fileID: 0}
+  cueWhileActive: {fileID: 0}
+  cueOnRemove: {fileID: 0}
+  healthAttribute: {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
+  invulnerableTag: {fileID: 11400000, guid: 90cc853a47e809d4e8baa4fbcd354709, type: 2}
+  damageKey: {fileID: 11400000, guid: 2e2e8bd1bde4f78429bf913fa737505c, type: 2}
+  fallbackDamage: 0
+  stunSecondsKey: {fileID: 0}
+  fallbackStunSeconds: 0
+  cameraShakeKey: {fileID: 0}
+  fallbackCameraShake: 0
+  oneHitShieldTag: {fileID: 0}
+  absorbShieldAttribute: {fileID: 11400000, guid: dfd6b6d2319c46acb6a5564fe8798a21, type: 2}
+  tokenDamageKey: {fileID: 0}
+  fallbackTokenDamage: 0

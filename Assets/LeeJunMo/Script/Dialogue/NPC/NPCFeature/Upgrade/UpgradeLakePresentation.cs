@@ -666,6 +666,15 @@ public sealed class UpgradeLakePresentation : MonoBehaviour
         if (viewportRoot == null)
             return;
 
+#if UNITY_EDITOR
+        if (!Application.isPlaying &&
+            (UnityEditor.EditorUtility.IsPersistent(this) ||
+             UnityEditor.EditorUtility.IsPersistent(viewportRoot)))
+        {
+            return;
+        }
+#endif
+
         RemoveGeneratedSurfaceLayer();
         EnsureSurfaceTarget();
         if (settings.drawOverlayRipples)
@@ -733,6 +742,11 @@ public sealed class UpgradeLakePresentation : MonoBehaviour
 
         if (viewportRoot == null)
             return null;
+
+#if UNITY_EDITOR
+        if (!Application.isPlaying && UnityEditor.EditorUtility.IsPersistent(viewportRoot))
+            return null;
+#endif
 
         RectTransform internalLayer = FindDirectChild(viewportRoot, SurfaceLayerName);
         if (internalLayer == null)
@@ -1374,6 +1388,12 @@ public sealed class UpgradeLakePresentation : MonoBehaviour
     {
         if (Application.isPlaying)
             return;
+
+        if (UnityEditor.EditorUtility.IsPersistent(this) ||
+            (viewportRoot != null && UnityEditor.EditorUtility.IsPersistent(viewportRoot)))
+        {
+            return;
+        }
 
         if (materialPresetOverride != null)
             surfaceMaterialPreset = materialPresetOverride;

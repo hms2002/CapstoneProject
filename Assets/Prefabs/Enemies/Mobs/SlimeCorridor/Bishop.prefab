@@ -28,6 +28,7 @@ GameObject:
   - component: {fileID: 900000}
   - component: {fileID: 910000}
   - component: {fileID: 920000}
+  - component: {fileID: 6600200000000001}
   m_Layer: 31
   m_Name: Bishop
   m_TagString: Enemy
@@ -465,3 +466,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c721f3a2f874aa14ea14c5bc2261cc39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &6600200000000001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ff4ff08e39f49319d1e0414b9985957, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::UnityGAS.EntityCollisionProfile2D
+  bodyColliders: []
+  baseExcludedLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  actorLayers:
+    serializedVersion: 2
+    m_Bits: 2147483656
+  defaultMode: 1

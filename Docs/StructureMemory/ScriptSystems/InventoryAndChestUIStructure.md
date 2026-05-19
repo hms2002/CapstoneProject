@@ -2,7 +2,7 @@
 status: active
 authority: structure-memory
 category: script-system-map
-last_reviewed: 2026-05-15
+last_reviewed: 2026-05-19
 ---
 
 # Inventory And Chest UI Structure
@@ -65,13 +65,16 @@ Map inventory, chest UI, HUD inventory entry points, item details, inventory run
 - `Assets/HeoMinSeok/_Project/Scripts/UI/Inventory/Common/DragIcon.cs`
 - `Assets/HeoMinSeok/_Project/Scripts/UI/Inventory/Common/DetailUI/ItemDetailPanel.cs`
 - `Assets/HeoMinSeok/_Project/Scripts/Gameplay/Inventory/Chest/Runtime/TreasureChest.cs`
+- `Assets/HeoMinSeok/_Project/Scripts/Gameplay/Items/Consumables/Runtime/PlayerConsumableInventory.cs`
 
 ## Ownership And Lifecycle
 
 - Stack UI open/close policy should remain owned by `UIManager` and stack screens.
 - Chest first-open presentation has separate world timing and UI reveal timing; do not conflate those lifetimes.
+- `Assets/LeeJunMo/Prefab/UI/GlobalUIRoot.prefab` is the representative source for chest first-open reveal timing, shake, and layout scalar settings. UI root variants and scene overrides should stay aligned to that source while preserving their authored references and hierarchy.
 - Detail/tooltip UI should project item/runtime state rather than own gameplay state.
 - HUD scripts should project player/combat/status state; they should not own the state they display.
+- `PlayerConsumableInventory.TryUseAt(...)` owns successful consumable-use feedback. For heal potions it plays the player-attached `HealParticle` only after `ConsumableDefinition.TryUse(...)` confirms HP increased.
 
 ## Runtime Boundary Review
 
@@ -119,6 +122,7 @@ The current concern is not that the inventory UI lacks a strict MVP pattern. The
 ## Known Pitfalls
 
 - First-open chest input blocking has had regressions; check `Docs/ErrorLog.md` and `Docs/StructureMemory/UIFlowInputBlocking.md` before changing it.
+- When synchronizing chest reveal presentation across scenes, change scalar motion/shake/layout values only unless a prefab/scene reference migration has been explicitly reviewed.
 - Avoid runtime creation of full UI hierarchy unless explicitly approved; dynamic tooltip/HUD data is acceptable, but the base visual template should be prefab/scene authored when it is build-facing.
 - Do not rename serialized UI fields without prefab/scene migration review.
 - `Find*` and `AddComponent` fallbacks in inventory/chest/HUD UI are authoring-risk markers. Treat them as prefab/scene wiring cleanup candidates, not as proof that UI should own runtime state.

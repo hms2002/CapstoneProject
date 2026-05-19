@@ -25,6 +25,8 @@ This is a fast context map, not the final UI architecture source of truth.
 - `Assets/LeeJunMo/Script/UIStructure/UIManager.cs`
 - `Assets/LeeJunMo/Script/UIStructure/GameFlowInputBlocker.cs`
 - `Assets/LeeJunMo/Script/Dialogue/DialogueService.cs`
+- `Assets/LeeJunMo/Script/Dialogue/BossEncounterDirector.cs`
+- `Assets/LeeJunMo/Script/Dialogue/BossTalkManager.cs`
 - `Assets/HeoMinSeok/_Project/Scripts/Gameplay/Inventory/Chest/Runtime/TreasureChest.cs`
 - `Assets/HeoMinSeok/_Project/Scripts/UI/Inventory/Chest/ChestFirstOpenRevealPresentation.cs`
 - `Assets/LeeJunMo/Script/Dialogue/NPC/NPCFeature/Upgrade/UpgradeManager.cs`
@@ -44,6 +46,7 @@ This is a fast context map, not the final UI architecture source of truth.
 
 - Chest first open starts blocking from `TreasureChest` interaction and hands off through the inventory/chest reveal presentation.
 - Dialogue blocking is owned by `DialogueService` while dialogue is playing.
+- Boss encounter presentation blocking is owned by `BossEncounterDirector` for the outer camera/transition/dialogue/return sequence. Legacy `BossTalkManager` follows the same rule.
 - Upgrade open fade is executed by `UpgradeUiOpenFlow`; it blocks unrelated UI input, then opens `UpgradeTreeUI` through the owned push path.
 - Reward open presentation blocks unrelated UI input until the open presentation finishes.
 
@@ -58,6 +61,7 @@ This is a fast context map, not the final UI architecture source of truth.
 
 - Do not call `UIManager.SetExternalUiInputBlocked(...)` directly from feature code; use `GameFlowInputBlocker`.
 - Do not open feature UI while a dialogue-owned blocker is still active. Request dialogue exit first, then open after dialogue and external UI blockers release.
+- Do not assume dialogue blocking covers an outer encounter/cinematic sequence. The outer flow owner must block its non-dialogue camera, transition, and handoff windows.
 - Do not merge chest world-object presentation timing with chest UI reveal timing. Keep timing separate, but block input across the full first-open sequence when needed.
 - Interrupted flows must release their blocker from cleanup paths.
 

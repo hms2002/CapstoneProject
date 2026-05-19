@@ -6,15 +6,20 @@ using System;
 
 public class AffectionUI : MonoBehaviour
 {
-    [Header("UI 컴포넌트")]
+    [Header("UI Components")]
     [SerializeField] private Slider affectionSlider;
     [SerializeField] private TextMeshProUGUI affectionText;
     [SerializeField] private CanvasGroup uiCanvasGroup;
     [SerializeField] private AffectionGainScreenEffect gainScreenEffect;
 
-    [Header("연출 설정")]
+    [Header("Presentation Settings")]
     [SerializeField] private float fillDuration = 0.5f;
     [SerializeField] private float resetDuration = 0.2f;
+
+    private Sequence gainSequence;
+    private Action pendingGainComplete;
+    private int pendingGainFinalAffection;
+    private bool hasPendingGainAnimation;
 
     private void Awake()
     {
@@ -26,11 +31,21 @@ public class AffectionUI : MonoBehaviour
 
     private void OnEnable()
     {
-        // UI가 활성화될 때마다 매니저에게 "나 여기 있어!" 하고 연결을 갱신합니다.
         if (AffectionManager.Instance != null)
         {
             AffectionManager.Instance.SetLinkedUI(this);
         }
+    }
+
+    private void OnDisable()
+    {
+        CompletePendingGainAnimation();
+        KillTargetTweens();
+    }
+
+    private void OnDestroy()
+    {
+        CompletePendingGainAnimation();
     }
 
     public void Setup(int currentAffection)
@@ -44,9 +59,12 @@ public class AffectionUI : MonoBehaviour
 
     public void PlayGainAnimation(int prevAffection, int newAffection, Action onComplete)
     {
-        // [수정] 이전에 진행 중이던 애니메이션이 있다면 강제 종료 (꼬임 방지)
-        if (affectionSlider != null) affectionSlider.DOKill();
-        if (affectionText != null) affectionText.transform.DOKill();
+        CompletePendingGainAnimation();
+        KillTargetTweens();
+
+        pendingGainComplete = onComplete;
+        pendingGainFinalAffection = newAffection;
+        hasPendingGainAnimation = true;
 
         if (affectionText != null) affectionText.text = prevAffection.ToString();
 
@@ -56,15 +74,15 @@ public class AffectionUI : MonoBehaviour
             gainScreenEffect?.Play();
         }
 
-        Sequence seq = DOTween.Sequence();
-        seq.SetUpdate(true);
+        gainSequence = DOTween.Sequence();
+        gainSequence.SetUpdate(true);
 
         if (affectionSlider != null)
-            seq.Append(affectionSlider.DOValue(1f, fillDuration).SetUpdate(true).SetEase(Ease.OutQuad));
+            gainSequence.Append(affectionSlider.DOValue(1f, fillDuration).SetUpdate(true).SetEase(Ease.OutQuad));
         else
-            seq.AppendInterval(fillDuration);
+            gainSequence.AppendInterval(fillDuration);
 
-        seq.AppendCallback(() => {
+        gainSequence.AppendCallback(() => {
             if (affectionText != null)
             {
                 affectionText.text = newAffection.ToString();
@@ -72,16 +90,58 @@ public class AffectionUI : MonoBehaviour
             }
         });
 
-        seq.AppendInterval(0.4f);
+        gainSequence.AppendInterval(0.4f);
 
         if (affectionSlider != null)
-            seq.Append(affectionSlider.DOValue(0f, resetDuration).SetUpdate(true).SetEase(Ease.InQuad));
+            gainSequence.Append(affectionSlider.DOValue(0f, resetDuration).SetUpdate(true).SetEase(Ease.InQuad));
         else
-            seq.AppendInterval(resetDuration);
+            gainSequence.AppendInterval(resetDuration);
 
-        seq.OnComplete(() => {
-            onComplete?.Invoke();
+        gainSequence.OnComplete(CompleteGainAnimation);
+        gainSequence.OnKill(() =>
+        {
+            if (hasPendingGainAnimation)
+                CompleteGainAnimation();
         });
+    }
+
+    private void KillTargetTweens()
+    {
+        if (affectionSlider != null) affectionSlider.DOKill(false);
+        if (affectionText != null) affectionText.transform.DOKill(false);
+    }
+
+    private void CompletePendingGainAnimation()
+    {
+        if (!hasPendingGainAnimation)
+            return;
+
+        if (gainSequence != null && gainSequence.IsActive())
+        {
+            gainSequence.Kill(false);
+            return;
+        }
+
+        CompleteGainAnimation();
+    }
+
+    private void CompleteGainAnimation()
+    {
+        if (!hasPendingGainAnimation)
+            return;
+
+        hasPendingGainAnimation = false;
+        gainSequence = null;
+
+        if (affectionText != null)
+            affectionText.text = pendingGainFinalAffection.ToString();
+
+        if (affectionSlider != null)
+            affectionSlider.value = 0f;
+
+        Action complete = pendingGainComplete;
+        pendingGainComplete = null;
+        complete?.Invoke();
     }
 
     private void ResolveGainScreenEffect()

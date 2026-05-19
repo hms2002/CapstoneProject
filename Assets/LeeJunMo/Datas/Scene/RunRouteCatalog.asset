@@ -23,5 +23,5 @@ MonoBehaviour:
     anchorPolicy: 0
     localOffset: {x: 0, y: 0, z: 0}
   runCommonLoadManifest: {fileID: 0}
-  hubSceneName: ProtoTypeHub
+  hubSceneName: ProtoTypeHub 1
   hubEntryPointId: Default

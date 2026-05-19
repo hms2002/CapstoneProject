@@ -14,6 +14,7 @@ public class Enemy : MonoBehaviour, ICombatDeathCommand
 {
     private const float DeathStateEnterTimeout = 1f;
     private const float DeathDestroyFailSafeTimeout = 5f;
+    private static readonly RaycastHit2D[] DoorSightHitBuffer = new RaycastHit2D[64];
 
     // Components =============================
     protected Rigidbody2D       rigid2D;
@@ -218,7 +219,7 @@ public class Enemy : MonoBehaviour, ICombatDeathCommand
     public bool TryAcquireTargetInRange(float range)
     {
         if (Target != null)
-            return true;
+            return CanPerceiveTarget(Target);
 
         float searchRange = Mathf.Max(0f, range);
         Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, searchRange, targetSearchLayers);
@@ -235,6 +236,9 @@ public class Enemy : MonoBehaviour, ICombatDeathCommand
             if (candidate == null)
                 continue;
 
+            if (!CanPerceiveTarget(candidate))
+                continue;
+
             float sqrDistance = ((Vector2)(candidate.position - transform.position)).sqrMagnitude;
             if (sqrDistance >= nearestSqrDistance)
                 continue;
@@ -248,6 +252,72 @@ public class Enemy : MonoBehaviour, ICombatDeathCommand
 
         SetTarget(nearestTarget);
         return true;
+    }
+
+    public bool CanPerceiveTarget(Transform candidate)
+    {
+        if (candidate == null)
+            return false;
+
+        Vector2 origin = ResolvePerceptionOrigin();
+        Vector2 destination = ResolvePerceptionPoint(candidate);
+        Vector2 delta = destination - origin;
+        float distance = delta.magnitude;
+        if (distance <= 0.001f)
+            return true;
+
+        ContactFilter2D filter = new ContactFilter2D();
+        filter.useLayerMask = false;
+        filter.useTriggers = false;
+
+        int hitCount = Physics2D.Raycast(
+            origin,
+            delta / distance,
+            filter,
+            DoorSightHitBuffer,
+            distance);
+
+        for (int i = 0; i < hitCount; i++)
+        {
+            Collider2D hitCollider = DoorSightHitBuffer[i].collider;
+            if (hitCollider == null || hitCollider.isTrigger)
+                continue;
+
+            if (IsColliderOwnedByTransform(hitCollider, transform) ||
+                IsColliderOwnedByTransform(hitCollider, candidate))
+            {
+                continue;
+            }
+
+            DoorObject door = hitCollider.GetComponentInParent<DoorObject>();
+            if (door != null && !door.IsOpen)
+                return false;
+        }
+
+        return true;
+    }
+
+    private Vector2 ResolvePerceptionOrigin()
+    {
+        if (collision != null)
+            return collision.bounds.center;
+
+        return transform.position;
+    }
+
+    private static Vector2 ResolvePerceptionPoint(Transform candidate)
+    {
+        if (candidate == null)
+            return Vector2.zero;
+
+        Collider2D collider = candidate.GetComponent<Collider2D>();
+        if (collider == null)
+            collider = candidate.GetComponentInChildren<Collider2D>();
+
+        if (collider != null)
+            return collider.bounds.center;
+
+        return candidate.position;
     }
 
     /// <summary>
