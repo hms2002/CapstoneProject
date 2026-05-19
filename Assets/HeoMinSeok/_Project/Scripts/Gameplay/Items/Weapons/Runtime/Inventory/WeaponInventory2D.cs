@@ -433,7 +433,8 @@ public class WeaponInventory2D : MonoBehaviour
     /// </summary>
     private void PlayRuntimeSwapSound()
     {
-        SoundManager.EnsureInstance().Play(ChangeWeaponSound, new SoundPlaybackContext
+        SoundRef sound = ResolveRuntimeSwapSound();
+        SoundManager.EnsureInstance().Play(sound, new SoundPlaybackContext
         {
             Instigator = gameObject,
             Causer = gameObject,
@@ -441,6 +442,20 @@ public class WeaponInventory2D : MonoBehaviour
             Position = transform.position,
             SourceObject = this
         });
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 현재 새로 장착된 무기의 교체음 오버라이드를 우선 사용하고, 없으면 공용 기본 교체음을 반환한다.
+    /// - 무기별 authoring 선택과 인벤토리의 재생 타이밍 책임을 분리한다.
+    /// </summary>
+    private SoundRef ResolveRuntimeSwapSound()
+    {
+        WeaponDefinition activeWeapon = ActiveWeapon;
+        if (activeWeapon != null && activeWeapon.TryGetSwapSoundOverride(out SoundRef overrideSound))
+            return overrideSound;
+
+        return ChangeWeaponSound;
     }
 
     /// <summary>
