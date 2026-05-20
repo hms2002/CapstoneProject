@@ -16,5 +16,5 @@ MonoBehaviour:
   rewardIcon: {fileID: 21300000, guid: 80e2cdbbf23063546b08b1f0741c8b17, type: 3}
   shopEnabled: 0
   shopSlotBonus: 0
-  shopRefreshCount: 1
+  shopRefreshCount: 100
   discountRate: 0

@@ -48,17 +48,16 @@ public class HoleTrap : MonoBehaviour
     {
         context = default;
 
-        if (!PitFallTarget.TryCreatePlayer(collision, out PitFallTarget target))
+        if (!PitFallTarget.TryCreate(collision, out PitFallTarget target))
             return false;
 
         if (ignoreTag != null)
         {
-            if (target.AbilitySystem.TagSystem.HasTag(ignoreTag))
+            if (target.AbilitySystem.TagSystem != null && target.AbilitySystem.TagSystem.HasTag(ignoreTag))
                 return false;
         }
 
         Vector3 fallCenter = PitFallPositionResolver.ResolveFallCenter(target.Transform.position, gameObject);
-        Vector3 respawnPosition = target.SafetyTracker.GetRespawnPosition();
 
         context = new PitFallContext(
             target.AbilitySystem,
@@ -70,7 +69,7 @@ public class HoleTrap : MonoBehaviour
             trapDamage,
             trapDuration,
             fallCenter,
-            respawnPosition,
+            target.RespawnPosition,
             this);
 
         return context.IsValid;

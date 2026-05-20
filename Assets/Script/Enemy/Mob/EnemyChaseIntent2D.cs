@@ -102,6 +102,13 @@ public sealed class EnemyChaseIntent2D : MonoBehaviour, IIntentMovementSource2D,
             return lastIntent;
         }
 
+        if (!enemy.CanPerceiveTarget(enemy.Target))
+        {
+            LogChaseThrottled("Movement intent blocked: closed door blocks target perception.");
+            lastIntent = IntentMovementData.None;
+            return lastIntent;
+        }
+
         Vector2 toTarget = (Vector2)(enemy.Target.position - transform.position);
         float sqrDistance = toTarget.sqrMagnitude;
 
@@ -169,6 +176,12 @@ public sealed class EnemyChaseIntent2D : MonoBehaviour, IIntentMovementSource2D,
         if (enemy == null || enemy.Target == null)
         {
             LogChaseThrottled("감지 실패: enemy 또는 target이 없습니다.");
+            return false;
+        }
+
+        if (!enemy.CanPerceiveTarget(enemy.Target))
+        {
+            LogChaseThrottled("Detection failed: closed door blocks target perception.");
             return false;
         }
 

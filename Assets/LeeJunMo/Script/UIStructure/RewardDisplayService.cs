@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -11,6 +12,7 @@ public class RewardDisplayService : MonoBehaviour
     private readonly Queue<PendingRewardRequest> pendingRequests = new Queue<PendingRewardRequest>();
 
     private RewardDisplayUI currentView;
+    private Coroutine presentationRetryRoutine;
     private bool isShowingReward;
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
@@ -63,6 +65,7 @@ public class RewardDisplayService : MonoBehaviour
 
         currentView = null;
         isShowingReward = false;
+        StopPresentationRetry();
     }
 
     public void ShowReward(List<UpgradeEffectSO> upgradeEffects = null, List<AffectionEffect> affectionEffects = null, Action callback = null)
@@ -93,11 +96,46 @@ public class RewardDisplayService : MonoBehaviour
             return;
 
         if (UIManager.Instance != null && !UIManager.Instance.CanOpenUI(currentView))
+        {
+            EnsurePresentationRetry();
             return;
+        }
 
+        StopPresentationRetry();
         PendingRewardRequest request = pendingRequests.Dequeue();
         isShowingReward = true;
         currentView.ShowReward(request.upgradeEffects, request.affectionEffects, request.callback);
+    }
+
+    private void EnsurePresentationRetry()
+    {
+        if (presentationRetryRoutine != null)
+            return;
+
+        presentationRetryRoutine = StartCoroutine(RetryPresentWhenPossible());
+    }
+
+    private void StopPresentationRetry()
+    {
+        if (presentationRetryRoutine == null)
+            return;
+
+        StopCoroutine(presentationRetryRoutine);
+        presentationRetryRoutine = null;
+    }
+
+    private IEnumerator RetryPresentWhenPossible()
+    {
+        while (currentView != null && !isShowingReward && pendingRequests.Count > 0)
+        {
+            if (UIManager.Instance == null || UIManager.Instance.CanOpenUI(currentView))
+                break;
+
+            yield return null;
+        }
+
+        presentationRetryRoutine = null;
+        TryPresentNext();
     }
 
     private readonly struct PendingRewardRequest

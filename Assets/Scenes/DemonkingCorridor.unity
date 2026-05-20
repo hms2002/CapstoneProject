@@ -4978,7 +4978,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3291214652359126029, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: settleDuration
-      value: 0.4
+      value: 0.34
       objectReference: {fileID: 0}
     - target: {fileID: 3291214652359126029, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: impactShakeRoot
@@ -4986,19 +4986,19 @@ PrefabInstance:
       objectReference: {fileID: 371932436}
     - target: {fileID: 3291214652359126029, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: impactRushDuration
-      value: 0.05
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 3291214652359126029, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: impactPauseDuration
-      value: 0.2
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 3291214652359126029, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: resistancePulseCount
-      value: 4
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 3291214652359126029, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: sideApproachDuration
-      value: 1
+      value: 0.24
       objectReference: {fileID: 0}
     - target: {fileID: 3291214652359126029, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: playImpactCameraShake
@@ -5010,7 +5010,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3291214652359126029, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: uiImpactShakeAmplitude
-      value: 100
+      value: 16
       objectReference: {fileID: 0}
     - target: {fileID: 3291214652359126029, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: impactUiParticleEmitter
@@ -5022,19 +5022,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3291214652359126029, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: resistancePulseAmplitude
-      value: 30
+      value: 18
       objectReference: {fileID: 0}
     - target: {fileID: 3291214652359126029, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: resistanceTravelFraction
-      value: 0.2
+      value: 0.18
       objectReference: {fileID: 0}
     - target: {fileID: 3291214652359126029, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: impactCameraShakeDuration
-      value: 0.8
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3291214652359126029, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: impactCameraShakeAmplitude
-      value: 5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3291214652359126029, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: impactParticleSystems.Array.size
@@ -5046,11 +5046,11 @@ PrefabInstance:
       objectReference: {fileID: 4496051618483977664, guid: e6cf7f0dfc7a4f0ab23e38d2b55ccf91, type: 3}
     - target: {fileID: 3291214652359126029, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: impactPresentation.cameraShake.amplitude
-      value: 3
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3291214652359126029, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: impactPresentation.cameraShake.minIntervalSeconds
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3291214652359126029, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: impactPresentation.cameraShake.amplitudeMultiplier

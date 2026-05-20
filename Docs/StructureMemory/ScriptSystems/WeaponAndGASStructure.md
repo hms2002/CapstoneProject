@@ -2,7 +2,7 @@
 status: active
 authority: structure-memory
 category: script-system-map
-last_reviewed: 2026-05-15
+last_reviewed: 2026-05-18
 ---
 
 # Weapon And GAS Structure
@@ -126,6 +126,29 @@ The concrete risks are narrower than a full combat rewrite.
 | Status Runtime | Keep `PlayerStatusRuntime` as an apply/projection hub, not as the real owner of gameplay effects. | Current `CombatBuffDebuffApplier` flow mostly follows this, but `GetOrAdd` component creation remains a prefab/scene authoring risk when the player root is missing expected components. |
 | Combat Presentation Hooks | Keep combat state and authored presentation references separate enough to move safely later. | `ElementGaugeSystem` owns trigger/sustain VFX instances and `StaggerGaugeSystem` can spawn a boss groggy timer prefab, so file movement needs serialized-reference review. |
 
+### Electric Element Extension
+
+- Electric build-up follows the same attacker-wide `ElementOffenseSource` and `ElementBuildUpFormulaProfile` route as Fire/Blood/Poison.
+- `Element.Electric` resolves from `StatId.ElectricFinal`, which is a `StatTypeBindings` composite over Electric base/add/mul attributes.
+- Electric gauge completion runs `GE_ElectricShockTrigger`, not the status effect directly.
+- `GE_ElectricShockTrigger` refreshes `GE_ElectrocutedStatus`, applies configured secondary damage through `GE_Damage_Spec`, then discharges through nearest already-electrocuted targets.
+- Discharge scans from the current target at every step and tracks visited roots so one unit is hit at most once per discharge event.
+- `ElectricChainRibbonVfx` is a presentation helper only: it receives ordered world points, renders adjacent SpriteRenderer segments simultaneously with `SpriteDrawMode.Tiled`, spawns `ElectricSnap` sprites on each chain point, fades them out together, then destroys the spawned VFX instance. A one-point input is valid and plays only the `ElectricSnap` hit effect, so standalone electrocute applications show a hit snap while discharge chains reuse the chain point snaps without duplicating the effect.
+- `GE_ElectricShockTrigger.chainVfxPrefab` currently points to the temporary authored prefab `Assets/HeoMinSeok/_Project/Prefabs/VFX/Element/ElectricChainRibbonVfx.prefab`, which uses a disabled `SegmentTemplate` SpriteRenderer with `Assets/Sprites/Effects/Elemental/ElectricParticleTrail.png`. Segment length is driven through `SpriteRenderer.size`, not transform x-scale, so the texture repeats instead of stretching. Chain visual points resolve from target `SpriteRenderer.bounds.center` when available, falling back to root transform position only when no usable sprite renderer exists.
+- Electric chain segments pulse only on their rendered Y size using configurable scale-in/scale-out seconds. The helper stores each segment midpoint, rotation, base size, and sprite pivot-center offset so height animation stays centered on the ordered chain point line even when the source sprite pivot is not centered.
+- `GE_ElectrocutedStatus.presentationWhileActive` now spawns `ElectrocutedSparkParticle.prefab` as an attached ManualRelease particle visual while the status is active. The prefab uses `LightningSparkParticle.png` as a 4x3 texture sheet: three row variations, four animation frames per particle. Its presentation hook opts into target sprite-bounds anchoring and uniform target sprite-bounds scaling so small/large monsters and scaled targets use their visible sprite bounds rather than root transform position.
+- `SpawnedPresentationHook.attachToTarget` lets authored spawned presentation stay parented to the target after spawn. `SpawnedPresentationHook.anchorMode` and `scaleMode` optionally resolve from the target `SpriteRenderer.bounds` while keeping context-position/no-extra-scale as default behavior. `GameplayEffectPresentationRouter` owns ManualRelease while-active visual handles and releases them from `RemoveWhileActive(...)`; auto-release visuals still flow through `WorldPresentationRuntime.PlayMerged(...)`.
+
+### Training Dummy Test Target Extension
+
+- `TrainingDummy2D` is the lobby/test target bridge on `TrainingDummy.prefab`: it listens for `HealthAttribute` decreases through `AttributeSet.OnAttributeChanged`, keeps the existing floating damage popup, and restores health through the existing never-die path.
+- Damage reactions should use the dummy root Animator states `Hit_01` and `Hit_02`. The script restarts one state immediately per accepted hit and falls back to the legacy `Damaged` trigger only if the configured states are unavailable.
+- `TrainingDummyDamageReadout2D` is presentation-only. It observes health loss, records last/max hit damage, rolling one-second DPS/max DPS, and total damage, then hides the `TMP_Text` readout by alpha after five seconds without clearing the records.
+- The prefab readout is a prefab-authored world-space Canvas with `TextMeshProUGUI`, not a runtime-created Canvas and not a 3D `TextMeshPro` MeshRenderer. Keep the Canvas/RectTransform authored on the prefab so the readout remains visible above the dummy.
+- The readout record lifetime is the scene instance lifetime. Do not persist these values or move ownership into UI/HUD state unless a future task explicitly changes the testing contract.
+- `Assets/Sprites/ThirdParty/TrainingDummy/Training_Dummy_Sprite_Sheet.png` is sliced as 32px frames from a 256x96 sheet. Only rows 1 and 2 are currently used for `TrainingDummy_Hit_01` and `TrainingDummy_Hit_02`; row 3 is intentionally unused.
+- `ProtoTypeHub 1` owns the scene-authored `TrainingDummy_Right` prefab instance. Runtime creation of dummy UI or a dummy manager is not part of this flow.
+
 ### Refactor Candidate
 
 - `Docs/RefactorBacklog/CombatElementBuildUpSourceUnification.md` is resolved for runtime/code debt. Reopen it only for explicit asset/schema migration, new elemental weapon tuning policy, or a regression in attacker-wide build-up application.
@@ -136,12 +159,17 @@ The concrete risks are narrower than a full combat rewrite.
 - Add new weapon behavior through weapon data, loadout/selection, executor/logic, and runtime state patterns already present in this map.
 - Add shared ability behavior through GAS runtime/core when multiple systems need it.
 - Add combat rules only when they belong in shared hit/damage/element/telegraph flow rather than a single weapon.
+- For new element reactions, prefer a trigger-effect ScriptableObject that composes status/damage/presentation instead of making a duration status effect own reaction chaining.
 
 ## Known Pitfalls
 
 - Do not move MonoBehaviour or ScriptableObject weapon/GAS scripts without Unity serialized reference review.
 - Do not collapse weapon runtime state into GAS unless an Architecture update explicitly approves it.
 - Applied elemental build-up policy is attacker `ElementOffenseSource`; do not reintroduce per-hit payload application without a named merge/override policy and serialized weapon data audit.
+- Electric discharge candidate scans should use damage-target roots from hurtboxes, not arbitrary child colliders, otherwise a chain can select attack/effect children or non-unit colliders.
+- ManualRelease while-active presentation must have an owner-held handle and a matching remove path. A looping attached particle should not be routed through auto-detected one-shot lifetime because looping ParticleSystems otherwise release too early or never release.
+- Attached particle prefabs should use local/move-with-transform simulation if the emitted particles must stay with a moving target.
+- Body-centered attached VFX should opt into sprite-bounds anchoring or another explicit visual anchor. Root transforms on enemies may be authored at feet/base positions and should not be treated as visual body centers by default.
 - `SwordCombo2D` and RealWeapon naming appear legacy/sample-like; treat them as existing behavior, not project-wide policy, unless a task targets them.
 
 ## Promotion Candidate

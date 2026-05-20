@@ -45,7 +45,6 @@ public readonly struct PitFallContext
 
     public bool IsValid =>
         AbilitySystem != null &&
-        SafetyTracker != null &&
         TargetTransform != null &&
         TargetObject != null &&
         TrapObject != null;

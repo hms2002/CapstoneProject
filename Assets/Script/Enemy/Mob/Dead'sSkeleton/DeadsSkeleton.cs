@@ -253,6 +253,9 @@ public class DeadsSkeleton : Mob, IDamageReceiver, IMobAttackDecisionSource, IMo
         if (radius <= 0f)
             return false;
 
+        if (!CanPerceiveTarget(target))
+            return false;
+
         Vector2 toTarget = (Vector2)(target.position - transform.position);
         return toTarget.sqrMagnitude <= radius * radius;
     }
@@ -267,6 +270,9 @@ public class DeadsSkeleton : Mob, IDamageReceiver, IMobAttackDecisionSource, IMo
         if (radius <= 0f)
             return false;
 
+        if (!CanPerceiveTarget(target))
+            return false;
+
         Vector2 toTarget = (Vector2)(target.position - transform.position);
         return toTarget.sqrMagnitude <= radius * radius;
     }
@@ -279,6 +285,9 @@ public class DeadsSkeleton : Mob, IDamageReceiver, IMobAttackDecisionSource, IMo
 
         float radius = GetExplosionRadius();
         if (radius <= 0f)
+            return false;
+
+        if (!CanPerceiveTarget(target))
             return false;
 
         Vector2 toTarget = (Vector2)(target.position - transform.position);

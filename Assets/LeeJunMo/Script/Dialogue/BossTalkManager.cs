@@ -27,6 +27,7 @@ public class BossTalkManager : MonoBehaviour
 
     private Coroutine runningSequence;
     private PlayerInteractor2D cachedPlayer;
+    private GameFlowInputBlocker encounterInputBlocker;
     private InteractState previousPlayerState = InteractState.Idle;
     private bool holdsTransitionPlayerLock;
     private bool holdsRunTimerPause;
@@ -55,6 +56,7 @@ public class BossTalkManager : MonoBehaviour
     {
         PlayerRuntimeRegistry.PlayerRegistered -= HandlePlayerRegistered;
         ReleaseTransitionPlayerLock();
+        ReleaseEncounterInputBlock();
         ReleaseRunTimerPause();
 
         if (runningSequence != null)
@@ -75,6 +77,7 @@ public class BossTalkManager : MonoBehaviour
             return;
 
         AcquireTransitionPlayerLock();
+        AcquireEncounterInputBlock();
         AcquireRunTimerPause();
         TryCacheAndLockPlayer();
         runningSequence = StartCoroutine(EncounterSequence());
@@ -85,6 +88,7 @@ public class BossTalkManager : MonoBehaviour
         if (!ValidateSetup())
         {
             ReleaseTransitionPlayerLock();
+            ReleaseEncounterInputBlock();
             ReleaseRunTimerPause();
             runningSequence = null;
             yield break;
@@ -99,6 +103,7 @@ public class BossTalkManager : MonoBehaviour
         yield return cameraDirector.ReturnToPlayerRoutine();
 
         RestorePlayerState();
+        ReleaseEncounterInputBlock();
         StartBossCombat();
         ReleaseRunTimerPause();
         runningSequence = null;
@@ -211,6 +216,17 @@ public class BossTalkManager : MonoBehaviour
             transitionService.SetPlayerUnlockBlocked(this, false);
 
         holdsTransitionPlayerLock = false;
+    }
+
+    private void AcquireEncounterInputBlock()
+    {
+        encounterInputBlocker = GameFlowInputBlocker.GetOrAdd(this);
+        encounterInputBlocker?.Acquire();
+    }
+
+    private void ReleaseEncounterInputBlock()
+    {
+        encounterInputBlocker?.Release();
     }
 
     /// <summary>

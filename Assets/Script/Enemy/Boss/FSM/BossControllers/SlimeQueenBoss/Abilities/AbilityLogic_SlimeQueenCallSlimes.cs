@@ -31,5 +31,9 @@ public sealed class AbilityLogic_SlimeQueenCallSlimes : AbilityLogic
 
         if (largeSlimePrefab != null)
             Instantiate(largeSlimePrefab, largeSpawnPosition, Quaternion.identity);
+
+        float remainingSpeechSeconds = slimeQueen.CallSlimeSpeechSeconds - slimeQueen.CallSlimeSpawnDelaySeconds;
+        if (remainingSpeechSeconds > 0f)
+            yield return WaitForSecondsUnlessCancelled(remainingSpeechSeconds, spec);
     }
 }

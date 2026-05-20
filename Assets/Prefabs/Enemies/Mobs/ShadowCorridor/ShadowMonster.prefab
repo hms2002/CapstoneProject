@@ -34,6 +34,7 @@ GameObject:
   - component: {fileID: 8223012456081861757}
   - component: {fileID: 5188487318859962288}
   - component: {fileID: 7001000000000000002}
+  - component: {fileID: 6600200000000001}
   m_Layer: 31
   m_Name: ShadowMonster
   m_TagString: Enemy
@@ -615,3 +616,23 @@ MonoBehaviour:
   samplePointOverride: {fileID: 0}
   sampleOffset: {x: 0, y: -0.5, z: 0}
   spriteMaskRefreshInterval: 0.25
+--- !u!114 &6600200000000001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 625522859161183429}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ff4ff08e39f49319d1e0414b9985957, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::UnityGAS.EntityCollisionProfile2D
+  bodyColliders: []
+  baseExcludedLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  actorLayers:
+    serializedVersion: 2
+    m_Bits: 2147483656
+  defaultMode: 1

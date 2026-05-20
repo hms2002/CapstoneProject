@@ -2,7 +2,7 @@
 status: active
 authority: structure-memory
 category: script-system-map
-last_reviewed: 2026-05-16
+last_reviewed: 2026-05-17
 ---
 
 # Loot Reward Structure
@@ -63,14 +63,17 @@ The active boundary concern is the general loot/chest/world-pickup flow. Reward 
 | Loot Pool Context | Describe which items should be excluded for this roll. | `LootPoolService` keeps the public facade, `LootPoolLiveWeaponExclusionSourceProvider` reads live player/world/scene/merchant sources into a snapshot, and `LootPoolWeaponExclusionProvider` combines that snapshot with `LootPoolContext`. Item selection reads go through `LootPoolItemSelectionService`. |
 | Chest Reward Policy | Own chest-only modifiers such as refresh count, relic level bonus, and chest reward deltas. | `ChestRewardPolicy` is now a helper file for refresh eligibility, refresh guard snapshots/comparison, and relic level bonus calculation. It reads chest modifiers through `RunRewardModifierSnapshot`. |
 | Reward Delivery | Deliver a chosen reward to an inventory, world object, currency store, or spawned pickup and return a success/failure result. | World pickup item delivery now goes through `WorldPickupDeliveryService`; overlapping inventory warning-code mapping is shared through `InventoryDeliveryWarningResolver`; currency is embedded in `CurrencyManager`/`MagicStonePickup`; spawned pickup delivery goes through `LootSpawnService`. |
-| World Pickup Presentation | Present dropped items and forward interaction requests. | `WorldItemPickup2D` now keeps item state, highlight/detail presentation, warning display, failed-pickup speech, and success destruction while delegating grant attempts/failure-code mapping to the delivery helper. `FieldHealPickup2D` owns field-heal drop travel, idle heartbeat/floating, travel-time interaction lock, healing, and optional consume particle playback. |
+| World Pickup Presentation | Present dropped items and forward interaction requests. | `WorldItemPickup2D` now keeps item state, highlight/detail presentation, warning display, failed-pickup speech, and success destruction while delegating grant attempts/failure-code mapping to the delivery helper. `FieldHealPickup2D` owns field-heal drop travel, idle heartbeat/floating, travel-time interaction lock, healing, optional consume particle playback, and player-attached heal particle playback when HP actually increases. |
 | Boss Reward Activation | Initialize and activate an authored boss chest when applicable, spawn variable-count physical pickups, and activate an authored boss exit portal. | `CorridorBossRouteSetSO` can reference an optional `BossSpecialRewardPresetSO`; `StageLootTable` supplies boss weapon/relic count and boss relic rarity for chest loot plus magic stone/field-heal pickup counts; scene `BossBattleEndHandler` owns event subscription, boss matching, authored chest/portal references, final-route chest suppression, boss death-position drop origin, and handled marking; `BossRewardSpawnService` owns chest initialization/activation, bonus loot application, and boss physical pickup spawning from that origin. Final routes suppress only chest activation, not physical drops. |
 
 ### Field-Heal Pickup Presentation
 
-- `Assets/Resources/PF_FieldHealPickup2D.prefab` wires `visualRoot`, drop arc values, idle float/heartbeat values, and `collectParticlePrefab`.
+- `Assets/Resources/PF_FieldHealPickup2D.prefab` wires `visualRoot`, drop arc values, idle float/heartbeat values, `collectParticlePrefab`, and the player-attached `healParticlePrefab`.
 - Monster and boss field-heal drops enter through `LootSpawnService.SpawnFieldHealPickup(...)`, which chooses a bounded random landing offset before calling `FieldHealPickup2D.PlayDrop(...)`.
 - `FieldHealPickup2D` locks interaction during drop travel, then resumes trigger collection after landing.
+- `FieldHealPickup2D.heartbeatFrequency` owns only the heartbeat cadence, while `heartbeatScalePulseDuration` owns the grow/shrink pulse duration so beat period changes do not also change scale speed.
+- `FieldHealPickup2D` keeps the collect particle at the pickup position, but spawns `HealParticle` as a child of the resolved `PlayerInteractor2D` root only when the `healthAttribute` current value increases.
+- `FieldHealPickup2D` does not complete collection when the player is already at full HP; the pickup remains in the world until an actual HP increase can occur.
 
 ### Reviewed Responsibility Mix
 

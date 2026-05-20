@@ -340,8 +340,6 @@ GameObject:
   - component: {fileID: 90180065996933109}
   - component: {fileID: 7149764901070497529}
   - component: {fileID: 5037083305729046494}
-  - component: {fileID: 8032819372621698076}
-  - component: {fileID: 1372317291228162320}
   - component: {fileID: 8912314080984615041}
   - component: {fileID: 6969754958341642168}
   - component: {fileID: 3750611596770769795}
@@ -742,44 +740,6 @@ MonoBehaviour:
   mode: 0
   visualHeight: 0
   zHeight: 1
---- !u!114 &8032819372621698076
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5055118451258413439}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6ff4ff08e39f49319d1e0414b9985957, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  bodyColliders:
-  - {fileID: 5037244466471634069}
-  baseExcludedLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  actorLayers:
-    serializedVersion: 2
-    m_Bits: 2147483656
-  defaultMode: 1
---- !u!114 &1372317291228162320
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5055118451258413439}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4746e930aa0546e7a63dc942f37d1d42, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::UnityGAS.CombatHeightCollisionBinder2D
-  heightState: {fileID: 5037083305729046494}
-  collisionProfile: {fileID: 8032819372621698076}
-  groundedMode: 1
-  airborneMode: 1
-  restoreProfileDefaultWhenGrounded: 1
 --- !u!114 &8912314080984615041
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -285,10 +285,31 @@ public sealed class PresentationPreloadService : MonoBehaviour
 
     private void ReleaseAllActiveManifests(IAssetProvider assetProvider = null)
     {
-        ApplyManifest("Boot", ref activeBootManifest, null, assetProvider: assetProvider);
-        ApplyManifest("RunCommon", ref activeRunCommonManifest, null, assetProvider: assetProvider);
-        ApplyRouteSetManifest("Current", ref activeCurrentStageManifest, null, assetProvider: assetProvider);
-        ApplyRouteSetManifest("Next", ref activeNextStageManifest, null, assetProvider: assetProvider);
+        const bool allowProviderCreation = false;
+        ApplyManifest(
+            "Boot",
+            ref activeBootManifest,
+            null,
+            assetProvider: assetProvider,
+            allowProviderCreation: allowProviderCreation);
+        ApplyManifest(
+            "RunCommon",
+            ref activeRunCommonManifest,
+            null,
+            assetProvider: assetProvider,
+            allowProviderCreation: allowProviderCreation);
+        ApplyRouteSetManifest(
+            "Current",
+            ref activeCurrentStageManifest,
+            null,
+            assetProvider: assetProvider,
+            allowProviderCreation: allowProviderCreation);
+        ApplyRouteSetManifest(
+            "Next",
+            ref activeNextStageManifest,
+            null,
+            assetProvider: assetProvider,
+            allowProviderCreation: allowProviderCreation);
     }
 
     private void RefreshBootManifest(string reason = null)
@@ -306,12 +327,14 @@ public sealed class PresentationPreloadService : MonoBehaviour
         ref LoadManifestSO currentManifest,
         LoadManifestSO desiredManifest,
         int batchId = 0,
-        IAssetProvider assetProvider = null)
+        IAssetProvider assetProvider = null,
+        bool allowProviderCreation = true)
     {
         if (currentManifest == desiredManifest)
             return false;
 
-        assetProvider ??= PresentationAssetProvider.CurrentProvider;
+        if (assetProvider == null && allowProviderCreation)
+            assetProvider = PresentationAssetProvider.CurrentProvider;
 
         if (currentManifest != null)
         {
@@ -339,12 +362,14 @@ public sealed class PresentationPreloadService : MonoBehaviour
         ref RouteSetLoadManifestSO currentManifest,
         RouteSetLoadManifestSO desiredManifest,
         int batchId = 0,
-        IAssetProvider assetProvider = null)
+        IAssetProvider assetProvider = null,
+        bool allowProviderCreation = true)
     {
         if (currentManifest == desiredManifest)
             return false;
 
-        assetProvider ??= PresentationAssetProvider.CurrentProvider;
+        if (assetProvider == null && allowProviderCreation)
+            assetProvider = PresentationAssetProvider.CurrentProvider;
 
         if (currentManifest != null)
         {

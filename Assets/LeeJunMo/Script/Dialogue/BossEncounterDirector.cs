@@ -21,6 +21,7 @@ public class BossEncounterDirector : MonoBehaviour
     private Coroutine runningSequence;
     private PlayerInteractor2D cachedPlayer;
     private PlayerCinematicProtection lockedPlayerProtection;
+    private GameFlowInputBlocker encounterInputBlocker;
     private InteractState previousPlayerState = InteractState.Idle;
     private bool hasPlayed;
     private bool shouldHoldPlayerLock;
@@ -47,6 +48,7 @@ public class BossEncounterDirector : MonoBehaviour
     {
         PlayerRuntimeRegistry.PlayerRegistered -= HandlePlayerRegistered;
         ReleaseTransitionPlayerLock();
+        ReleaseEncounterInputBlock();
         ReleaseRunTimerPause();
 
         if (runningSequence != null)
@@ -106,6 +108,7 @@ public class BossEncounterDirector : MonoBehaviour
             return;
 
         AcquireTransitionPlayerLock();
+        AcquireEncounterInputBlock();
         AcquireRunTimerPause();
         shouldHoldPlayerLock = true;
         MaintainPlayerLock();
@@ -118,6 +121,7 @@ public class BossEncounterDirector : MonoBehaviour
         {
             Debug.LogError("[BossEncounterDirector] cameraDirector is missing.", this);
             ReleaseTransitionPlayerLock();
+            ReleaseEncounterInputBlock();
             shouldHoldPlayerLock = false;
             ReleasePlayerCinematicProtection();
             RestorePlayerState();
@@ -130,6 +134,7 @@ public class BossEncounterDirector : MonoBehaviour
         {
             Debug.LogError("[BossEncounterDirector] dialogueRunner is missing.", this);
             ReleaseTransitionPlayerLock();
+            ReleaseEncounterInputBlock();
             shouldHoldPlayerLock = false;
             ReleasePlayerCinematicProtection();
             RestorePlayerState();
@@ -152,6 +157,7 @@ public class BossEncounterDirector : MonoBehaviour
         shouldHoldPlayerLock = false;
         ReleasePlayerCinematicProtection();
         RestorePlayerState();
+        ReleaseEncounterInputBlock();
         StartBossCombat();
         ReleaseRunTimerPause();
 
@@ -295,6 +301,17 @@ public class BossEncounterDirector : MonoBehaviour
             transitionService.SetPlayerUnlockBlocked(this, false);
 
         holdsTransitionPlayerLock = false;
+    }
+
+    private void AcquireEncounterInputBlock()
+    {
+        encounterInputBlocker = GameFlowInputBlocker.GetOrAdd(this);
+        encounterInputBlocker?.Acquire();
+    }
+
+    private void ReleaseEncounterInputBlock()
+    {
+        encounterInputBlocker?.Release();
     }
 
     /// <summary>

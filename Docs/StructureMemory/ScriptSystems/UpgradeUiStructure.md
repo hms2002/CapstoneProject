@@ -2,7 +2,7 @@
 status: active
 authority: structure-memory
 category: script-system-map
-last_reviewed: 2026-05-17
+last_reviewed: 2026-05-18
 ---
 
 # Upgrade UI Structure
@@ -57,6 +57,7 @@ Map the upgrade tree UI navigation and purchase feedback flow after the overflow
 - The arrow movement assumes the existing centered content/clamp model. If the content anchor/pivot model changes, re-check direction mapping.
 - Locked nodes are now clickable for feedback. Verify cursor, hover, and disabled-looking presentation together so players understand the click shows a reason rather than purchases the node.
 - Warning strings live in `UIManager.ResolveWarningMessage(...)`; avoid feature-local popup text unless the shared warning path becomes insufficient.
+- The lake preview editor loop uses `Resources.FindObjectsOfTypeAll`, so it must ignore persistent Prefab Asset objects before preview restore or generated layer creation. Otherwise Unity can reject `Transform.SetParent(...)` under a Prefab Asset and leave the Inspector in a broken repaint state.
 
 ## Promotion Candidate
 

@@ -106,7 +106,7 @@ public class WorldItemPickup2D : InteractableBase
             return;
 
         WorldPickupDeliveryResult result = WorldPickupDeliveryService.TryDeliver(
-            new WorldPickupDeliveryRequest(player, item, RelicLevel));
+            new WorldPickupDeliveryRequest(player, item, RelicLevel, transform.position));
 
         if (result.Succeeded)
         {

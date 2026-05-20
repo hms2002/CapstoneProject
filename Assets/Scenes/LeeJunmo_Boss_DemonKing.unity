@@ -13816,8 +13816,8 @@ GameObject:
   m_Component:
   - component: {fileID: 912430100000000002}
   - component: {fileID: 912430100000000003}
-  - component: {fileID: 912430100000000004}
   - component: {fileID: 912430100000000005}
+  - component: {fileID: 912430100000000006}
   m_Layer: 0
   m_Name: EgoSword
   m_TagString: Untagged
@@ -13889,18 +13889,51 @@ SpriteRenderer:
   m_SortingLayer: 7
   m_SortingOrder: 1050
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 1497478763720940017, guid: 00e3f2ec534236e419a5a89446013d91, type: 3}
+  m_Sprite: {fileID: 21300000, guid: a4415387b23521e4da212b581bdf670a, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 1.625, y: 3.25}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 1
---- !u!58 &912430100000000004
-CircleCollider2D:
+--- !u!114 &912430100000000005
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 912430100000000001}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c39aca2676c649b1bd8082ca38d3f62e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  heldOffset: {x: 0.85, y: 0.1, z: 0}
+  contactRadius: 0.45
+  contactDamage: 1
+  contactKnockback: 6
+  flyingRotationDegreesPerSecond: 720
+  patternIntervalSeconds: 1.5
+  laserWarningSeconds: 1
+  laserAttackDurationSeconds: 1
+  fallbackMapLaserLength: 40
+  laserWidth: 0.75
+  laserVfxRayOriginOffset: 1.2
+  useAnimatedLaserVfx: 1
+  laserVfxPrefab: {fileID: 0}
+  laserVfxResourcePath: DemonKing/DemonKingEgoLaserVfx
+  verticalTrackSeconds: 1.5
+  verticalHoverHeight: 2.2
+  verticalStrikeDiameter: 2.3
+  patternDamage: 1
+  recallImpactDiameter: 3.2
+  recallImpactDamage: 1.5
+  recallImpactKnockback: 8
+--- !u!70 &912430100000000006
+CapsuleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -13929,41 +13962,13 @@ CircleCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
-  m_Radius: 0.45
---- !u!114 &912430100000000005
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 912430100000000001}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c39aca2676c649b1bd8082ca38d3f62e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  heldOffset: {x: 0.85, y: 0.1, z: 0}
-  contactRadius: 0.45
-  contactDamage: 1
-  contactKnockback: 6
-  flyingRotationDegreesPerSecond: 720
-  patternIntervalSeconds: 1.5
-  laserWarningSeconds: 1
-  laserAttackDurationSeconds: 1
-  fallbackMapLaserLength: 40
-  laserWidth: 0.75
-  verticalTrackSeconds: 1.5
-  verticalHoverHeight: 2.2
-  verticalStrikeDiameter: 2.3
-  patternDamage: 1
-  recallImpactDiameter: 3.2
-  recallImpactDamage: 1.5
-  recallImpactKnockback: 8
+  m_Offset: {x: -0.0000009536743, y: 0.16751504}
+  m_Size: {x: 0.7588253, y: 2.522737}
+  m_Direction: 0
 --- !u!114 &1293483340571622804
 MonoBehaviour:
   m_ObjectHideFlags: 0
