@@ -49,6 +49,7 @@ namespace UnityGAS
 
             targetSystem.EffectRunner.ApplyEffectSpec(spec, target);
 
+            TryShowPopup(target, hpCheck);
             EmitDamagedTaken(targetSystem, target, causer, hpCheck);
         }
 
@@ -94,6 +95,25 @@ namespace UnityGAS
                 WorldPosition = target.transform.position,
                 Causer = causer
             });
+        }
+
+        /// <summary>
+        /// 책임 :
+        /// - 함정/장판 피해처럼 AbilitySpec이 없는 피해도 실제 HP 감소량 기준으로 팝업을 표시한다.
+        /// - 기존 Attribute 감소 listener fallback과 중복 표시되지 않도록 같은 피해를 suppress 등록한다.
+        /// </summary>
+        private static void TryShowPopup(GameObject target, HpCheckData hpCheck)
+        {
+            if (target == null || !hpCheck.IsValid)
+                return;
+
+            float postHp = hpCheck.TargetAttrs.GetAttributeValue(hpCheck.HpAttr);
+            float appliedDamage = Mathf.Max(0f, hpCheck.PreHp - postHp);
+            if (appliedDamage <= 0f)
+                return;
+
+            DamagePopupService.Show(DamagePopupRequest.Damage(appliedDamage, target.transform.position));
+            DamagePopupDuplicateSuppressor.Register(target, appliedDamage);
         }
 
         private readonly struct HpCheckData

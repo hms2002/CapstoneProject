@@ -225,6 +225,8 @@ public static class CombatDamageAction
 
         runner.ApplyEffectSpec(damageSpec, target);
 
+        TryShowHpDamagePopup(target, hpCheck, hitWorldPosition, isCriticalHit);
+
         EmitDamagedTaken(system, damageEffect, target, spec, causer, hpCheck);
 
         ApplyKnockbackEffect(
@@ -238,7 +240,7 @@ public static class CombatDamageAction
         TryEmitKillConfirmed(system, spec, target, causer, hpCheck);
 
         ApplyStagger(target, finalStaggerBuildUp, system.gameObject, causer);
-        ApplyElements(target, system.gameObject, causer, elementBuildUps, hasResolvedElementBuildUps);
+        ApplyElements(target, system.gameObject, causer, elementBuildUps, hasResolvedElementBuildUps, hitWorldPosition);
 
         EmitHitConfirmed(system, spec, target, causer, hitConfirmedTag, hitWorldPosition, isCriticalHit);
     }
@@ -323,6 +325,30 @@ public static class CombatDamageAction
 
         float preHp = targetAttrs.GetAttributeValue(hpAttr);
         return new HpCheckData(preHp, hpAttr, targetAttrs);
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 실제 HP 감소량이 확인된 전투 피해를 메타데이터가 포함된 데미지 팝업으로 표시한다.
+    /// - Attribute 감소 listener fallback과 중복 표시되지 않도록 같은 피해를 짧게 suppress 등록한다.
+    /// </summary>
+    private static void TryShowHpDamagePopup(
+        GameObject target,
+        HpCheckData hpCheck,
+        Vector3 hitWorldPosition,
+        bool isCriticalHit)
+    {
+        if (!hpCheck.IsValid || target == null)
+            return;
+
+        float postHp = hpCheck.TargetAttrs.GetAttributeValue(hpCheck.HpAttr);
+        float appliedDamage = Mathf.Max(0f, hpCheck.PreHp - postHp);
+        if (appliedDamage <= 0f)
+            return;
+
+        Vector3 popupPosition = hitWorldPosition != Vector3.zero ? hitWorldPosition : target.transform.position;
+        DamagePopupService.Show(DamagePopupRequest.Damage(appliedDamage, popupPosition, isCriticalHit));
+        DamagePopupDuplicateSuppressor.Register(target, appliedDamage);
     }
 
     private static void EmitDamagedTaken(
@@ -428,7 +454,8 @@ public static class CombatDamageAction
         GameObject instigator,
         GameObject causer,
         ElementDamageResult[] elementBuildUps,
-        bool hasResolvedElementBuildUps)
+        bool hasResolvedElementBuildUps,
+        Vector3 hitWorldPosition)
     {
         if (target == null) return;
 
@@ -457,6 +484,9 @@ public static class CombatDamageAction
                 element.damage,
                 instigator: instigator,
                 causer: causer);
+
+            Vector3 popupPosition = hitWorldPosition != Vector3.zero ? hitWorldPosition : target.transform.position;
+            DamagePopupService.Show(DamagePopupRequest.Element(element.damage, popupPosition, element.elementType));
         }
     }
 

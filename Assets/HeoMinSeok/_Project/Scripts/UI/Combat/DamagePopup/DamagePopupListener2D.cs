@@ -73,6 +73,9 @@ public class DamagePopupListener2D : MonoBehaviour
         if (dmg <= 0f)
             return;
 
+        if (DamagePopupDuplicateSuppressor.TryConsume(gameObject, dmg))
+            return;
+
         Vector3 pos = (worldAnchor != null ? worldAnchor.position : transform.position) + extraWorldOffset;
         DamagePopupService.Show(dmg, pos);
     }

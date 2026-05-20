@@ -1,0 +1,59 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 56b15a4d9f0d4b35b2a3e3e6f587e86b, type: 3}
+  m_Name: DamagePopupFormatProfile_Default
+  m_EditorClassIdentifier: 
+  normal:
+    kind: 0
+    elementTag: {fileID: 0}
+    format: '{0}'
+    textColor: {r: 1, g: 1, b: 1, a: 1}
+    moveVelocity: {x: 0.45, y: 1.25, z: 0}
+    lifetime: 0.75
+    fadeOutRatio: 0.55
+    startScale: 0.9
+    endScale: 1.1
+    fontSize: 0
+  critical:
+    kind: 2
+    elementTag: {fileID: 0}
+    format: '{0}!'
+    textColor: {r: 1, g: 0.86, b: 0.22, a: 1}
+    moveVelocity: {x: 0.58, y: 1.48, z: 0}
+    lifetime: 0.85
+    fadeOutRatio: 0.6
+    startScale: 1.15
+    endScale: 1.35
+    fontSize: 8.5
+  elementFallback:
+    kind: 1
+    elementTag: {fileID: 0}
+    format: '{0}'
+    textColor: {r: 0.72, g: 0.92, b: 1, a: 1}
+    moveVelocity: {x: 0.42, y: 1.18, z: 0}
+    lifetime: 0.8
+    fadeOutRatio: 0.55
+    startScale: 0.85
+    endScale: 1.05
+    fontSize: 0
+  textFallback:
+    kind: 3
+    elementTag: {fileID: 0}
+    format: '{0}'
+    textColor: {r: 1, g: 1, b: 1, a: 1}
+    moveVelocity: {x: 0.35, y: 1.15, z: 0}
+    lifetime: 0.75
+    fadeOutRatio: 0.55
+    startScale: 0.9
+    endScale: 1.05
+    fontSize: 0
+  elementEntries: []

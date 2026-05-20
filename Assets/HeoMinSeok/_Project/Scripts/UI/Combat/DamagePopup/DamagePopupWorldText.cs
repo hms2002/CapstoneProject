@@ -28,6 +28,12 @@ public class DamagePopupWorldText : MonoBehaviour
     private Color _textColor;
     private Color _spriteColor;
     private bool _hasSprite;
+    private Vector3 _runtimeMoveVelocity;
+    private float _runtimeLifetime;
+    private float _runtimeFadeOutRatio;
+    private float _runtimeStartScale;
+    private float _runtimeEndScale;
+    private float _defaultFontSize;
 
     private void Reset()
     {
@@ -46,11 +52,16 @@ public class DamagePopupWorldText : MonoBehaviour
             optionalSpriteRenderer = GetComponentInChildren<SpriteRenderer>();
 
         if (text != null)
+        {
             _textColor = text.color;
+            _defaultFontSize = text.fontSize;
+        }
 
         _hasSprite = optionalSpriteRenderer != null;
         if (_hasSprite)
             _spriteColor = optionalSpriteRenderer.color;
+
+        ResetRuntimeStyle();
     }
 
     /// <summary>
@@ -58,18 +69,7 @@ public class DamagePopupWorldText : MonoBehaviour
     /// </summary>
     public void Setup(int amount)
     {
-        _t = 0f;
-
-        if (text != null)
-            text.text = amount.ToString();
-
-        transform.localScale = Vector3.one * startScale;
-
-        if (text != null)
-            text.color = _textColor;
-
-        if (_hasSprite)
-            optionalSpriteRenderer.color = _spriteColor;
+        Setup(amount.ToString());
     }
 
     /// <summary>
@@ -77,12 +77,39 @@ public class DamagePopupWorldText : MonoBehaviour
     /// </summary>
     public void Setup(string content)
     {
+        ResetRuntimeStyle();
+        ApplyContent(content);
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - DamagePopupFormatProfileSO가 결정한 최종 표시 모델을 반영한다.
+    /// - 팝업 인스턴스마다 색/폰트/이동/수명 값을 독립적으로 덮어쓸 수 있게 한다.
+    /// </summary>
+    public void Setup(DamagePopupViewModel viewModel)
+    {
+        _runtimeMoveVelocity = viewModel.MoveVelocity;
+        _runtimeLifetime = Mathf.Max(0.05f, viewModel.Lifetime);
+        _runtimeFadeOutRatio = Mathf.Clamp01(viewModel.FadeOutRatio);
+        _runtimeStartScale = Mathf.Max(0.01f, viewModel.StartScale);
+        _runtimeEndScale = Mathf.Max(0.01f, viewModel.EndScale);
+
+        _textColor = viewModel.TextColor;
+
+        if (text != null && viewModel.OverrideFontSize)
+            text.fontSize = viewModel.FontSize;
+
+        ApplyContent(viewModel.Text);
+    }
+
+    private void ApplyContent(string content)
+    {
         _t = 0f;
 
         if (text != null)
             text.text = string.IsNullOrWhiteSpace(content) ? string.Empty : content;
 
-        transform.localScale = Vector3.one * startScale;
+        transform.localScale = Vector3.one * _runtimeStartScale;
 
         if (text != null)
             text.color = _textColor;
@@ -94,17 +121,17 @@ public class DamagePopupWorldText : MonoBehaviour
     private void Update()
     {
         _t += Time.deltaTime;
-        float p = Mathf.Clamp01(_t / lifetime);
+        float p = Mathf.Clamp01(_t / _runtimeLifetime);
 
-        transform.position += moveVelocity * Time.deltaTime;
-        transform.localScale = Vector3.one * Mathf.Lerp(startScale, endScale, p);
+        transform.position += _runtimeMoveVelocity * Time.deltaTime;
+        transform.localScale = Vector3.one * Mathf.Lerp(_runtimeStartScale, _runtimeEndScale, p);
 
         if (faceCamera)
             UpdateFacing();
 
-        if (p >= fadeOutRatio)
+        if (p >= _runtimeFadeOutRatio)
         {
-            float fp = (p - fadeOutRatio) / Mathf.Max(0.0001f, 1f - fadeOutRatio);
+            float fp = (p - _runtimeFadeOutRatio) / Mathf.Max(0.0001f, 1f - _runtimeFadeOutRatio);
             float alpha = Mathf.Lerp(1f, 0f, fp);
 
             if (text != null)
@@ -122,8 +149,20 @@ public class DamagePopupWorldText : MonoBehaviour
             }
         }
 
-        if (_t >= lifetime)
+        if (_t >= _runtimeLifetime)
             Destroy(gameObject);
+    }
+
+    private void ResetRuntimeStyle()
+    {
+        _runtimeMoveVelocity = moveVelocity;
+        _runtimeLifetime = Mathf.Max(0.05f, lifetime);
+        _runtimeFadeOutRatio = Mathf.Clamp01(fadeOutRatio);
+        _runtimeStartScale = Mathf.Max(0.01f, startScale);
+        _runtimeEndScale = Mathf.Max(0.01f, endScale);
+
+        if (text != null && _defaultFontSize > 0f)
+            text.fontSize = _defaultFontSize;
     }
 
     /// <summary>

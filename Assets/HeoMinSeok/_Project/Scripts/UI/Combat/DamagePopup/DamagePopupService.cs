@@ -8,10 +8,16 @@ using UnityEngine.UI;
 [DisallowMultipleComponent]
 public sealed class DamagePopupService : MonoBehaviour
 {
+    private const string DefaultFormatProfileResourcePath = "DamagePopup/DamagePopupFormatProfile_Default";
+
     public static DamagePopupService Instance { get; private set; }
 
     [Header("Prefab")]
     [SerializeField] private DamagePopupWorldText popupPrefab;
+
+    [Header("Format")]
+    [Tooltip("비워두면 Resources/DamagePopup/DamagePopupFormatProfile_Default를 자동 사용합니다.")]
+    [SerializeField] private DamagePopupFormatProfileSO formatProfile;
 
     [Header("Spawn")]
     [SerializeField] private Vector3 worldOffset = new Vector3(0f, 0.8f, 0f);
@@ -26,6 +32,7 @@ public sealed class DamagePopupService : MonoBehaviour
     [SerializeField] private Transform popupParent;
 
     private bool hasWarnedInvalidPopupParent;
+    private DamagePopupFormatProfileSO runtimeFormatProfile;
 
     private void Awake()
     {
@@ -37,6 +44,7 @@ public sealed class DamagePopupService : MonoBehaviour
 
         Instance = this;
         DontDestroyOnLoad(gameObject);
+        ResolveFormatProfile();
     }
 
 #if UNITY_EDITOR
@@ -62,6 +70,17 @@ public sealed class DamagePopupService : MonoBehaviour
         Instance.ShowInternal(amount, worldPosition);
     }
 
+    public static void Show(DamagePopupRequest request)
+    {
+        if (Instance == null)
+        {
+            Debug.LogWarning("[DamagePopupService] Instance가 없습니다. 씬 시작 전에 서비스가 생성되어야 합니다.");
+            return;
+        }
+
+        Instance.ShowInternal(request);
+    }
+
     public static void ShowText(string content, Vector3 worldPosition)
     {
         if (Instance == null)
@@ -70,7 +89,7 @@ public sealed class DamagePopupService : MonoBehaviour
             return;
         }
 
-        Instance.ShowTextInternal(content, worldPosition);
+        Instance.ShowInternal(DamagePopupRequest.Text(content, worldPosition));
     }
 
     /// <summary>
@@ -78,32 +97,38 @@ public sealed class DamagePopupService : MonoBehaviour
     /// </summary>
     private void ShowInternal(float amount, Vector3 worldPosition)
     {
-        if (popupPrefab == null)
-            return;
-
-        int damageInt = Mathf.Max(1, Mathf.CeilToInt(amount));
-
-        Vector3 spawnPos = worldPosition + worldOffset;
-        spawnPos.x += Random.Range(randomOffsetX.x, randomOffsetX.y);
-        spawnPos.y += Random.Range(randomOffsetY.x, randomOffsetY.y);
-
-        Transform resolvedParent = ResolvePopupParent();
-        DamagePopupWorldText instance = Instantiate(popupPrefab, spawnPos, Quaternion.identity, resolvedParent);
-        instance.Setup(damageInt);
+        ShowInternal(DamagePopupRequest.Damage(amount, worldPosition));
     }
 
-    private void ShowTextInternal(string content, Vector3 worldPosition)
+    private void ShowInternal(DamagePopupRequest request)
     {
         if (popupPrefab == null)
             return;
 
-        Vector3 spawnPos = worldPosition + worldOffset;
+        Vector3 spawnPos = request.WorldPosition + worldOffset;
         spawnPos.x += Random.Range(randomOffsetX.x, randomOffsetX.y);
         spawnPos.y += Random.Range(randomOffsetY.x, randomOffsetY.y);
 
         Transform resolvedParent = ResolvePopupParent();
         DamagePopupWorldText instance = Instantiate(popupPrefab, spawnPos, Quaternion.identity, resolvedParent);
-        instance.Setup(content);
+        DamagePopupFormatProfileSO profile = ResolveFormatProfile();
+        if (profile != null)
+            instance.Setup(profile.BuildViewModel(request));
+        else if (!string.IsNullOrWhiteSpace(request.TextOverride))
+            instance.Setup(request.TextOverride);
+        else
+            instance.Setup(Mathf.Max(1, Mathf.CeilToInt(request.Amount)));
+    }
+
+    private DamagePopupFormatProfileSO ResolveFormatProfile()
+    {
+        if (formatProfile != null)
+            return formatProfile;
+
+        if (runtimeFormatProfile == null)
+            runtimeFormatProfile = Resources.Load<DamagePopupFormatProfileSO>(DefaultFormatProfileResourcePath);
+
+        return runtimeFormatProfile;
     }
 
     private Transform ResolvePopupParent()
