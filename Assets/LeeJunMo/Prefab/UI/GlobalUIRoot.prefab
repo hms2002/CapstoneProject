@@ -9503,9 +9503,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   popupPrefab: {fileID: 788094768127510997, guid: 6dd146133f44c4e45a1839cbed6f7ec4, type: 3}
-  worldOffset: {x: 0, y: 0.8, z: 0}
-  randomOffsetX: {x: -0.15, y: 0.15}
-  randomOffsetY: {x: -0.05, y: 0.05}
+  formatProfile: {fileID: 0}
+  logPopupRequests: 0
+  worldOffset: {x: 0, y: 0.45, z: 0}
+  randomOffsetX: {x: -0.22, y: 0.22}
+  randomOffsetY: {x: -0.12, y: 0.12}
+  useTetrisPlacement: 1
+  slotSpacing: {x: 0.5, y: 0.36}
+  minSeparation: {x: 0.4, y: 0.28}
+  maxReservationSeconds: 0.75
   popupParent: {fileID: 0}
 --- !u!1 &1599957046012113080
 GameObject:

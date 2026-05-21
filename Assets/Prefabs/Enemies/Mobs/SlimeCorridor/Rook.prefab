@@ -12,6 +12,8 @@ GameObject:
   - component: {fileID: 1695031726951874086}
   - component: {fileID: 1119615970379559667}
   - component: {fileID: 4601776432013924379}
+  - component: {fileID: 880000000000001006}
+  - component: {fileID: 880000000000002006}
   - component: {fileID: 6906640129251997176}
   - component: {fileID: 6475138671717524079}
   - component: {fileID: 7001000000000000001}
@@ -104,7 +106,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -1039746825
-  m_SortingLayer: 4
+  m_SortingLayer: 5
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: 5243682370759810228, guid: 0aa624ae775e0694280091e8d8bfeae3, type: 3}
@@ -160,6 +162,52 @@ BoxCollider2D:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
+    m_Bits: 2147483656
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 0.5833333, y: 0.8333333}
+    newSize: {x: 1, y: 1}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Size: {x: 0.8, y: 0.8}
+  m_EdgeRadius: 0
+--- !u!70 &880000000000001006
+CapsuleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 625522859161183429}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
   m_ForceSendLayers:
@@ -179,17 +227,33 @@ BoxCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.5833333, y: 0.8333333}
-    newSize: {x: 1, y: 1}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
   m_Size: {x: 0.8, y: 0.8}
-  m_EdgeRadius: 0
+  m_Direction: 0
+--- !u!114 &880000000000002006
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 625522859161183429}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f91c6f777744985b46d03508b0db52a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UnityGAS.ActorSoftCollision2D
+  bodyCollider: {fileID: 880000000000001006}
+  body: {fileID: 0}
+  externalMovement: {fileID: 0}
+  actorLayers:
+    serializedVersion: 2
+    m_Bits: 2147483656
+  wallLayers:
+    serializedVersion: 2
+    m_Bits: 1073741824
+  pushSpeed: 2.8
+  pushDurationSeconds: 0.08
+  wallProbeDistance: 0.08
+  maxActorsPerTick: 8
 --- !u!95 &6906640129251997176
 Animator:
   serializedVersion: 7
@@ -198,9 +262,9 @@ Animator:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 625522859161183429}
-  m_Enabled: 0
+  m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: b8c9c6df785c18f4994ebf1b066a5681, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -235,12 +299,26 @@ MonoBehaviour:
     m_Bits: 1073740808
   chaseIntent: {fileID: 0}
   logMobFsmDebug: 0
+  splitLandingSeconds: 0.45
+  splitLandingArcHeight: 0.55
+  splitLandingBlockedLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  splitLandingBlockedSkin: 0.08
+  splitLandingProbeRadius: 0.18
+  splitLandingResolveSteps: 4
   splitPrefab: {fileID: 100000, guid: a1365e9c0af9480b9dc3169f803a951d, type: 3}
   chargeAbility: {fileID: 11400000, guid: 4a7ea9f5e4df4e39877c3818b6700006, type: 2}
   damageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
   knockbackEffect: {fileID: 11400000, guid: 2f5faaf6bd840544cb59f6d23905c40d, type: 2}
   dashSpeedMultiplier: 3
+  chaseAssistRange: 6
+  inRoomChargeRangeMultiplier: 2
   splitCount: 2
+  logChargeCastDebug: 1
+  logRookFsmDebug: 0
+  logChargeHitCandidateDebug: 0
+  rookFsmLogInterval: 0.35
 --- !u!114 &7001000000000000001
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -256,6 +334,19 @@ MonoBehaviour:
   owner: {fileID: 0}
   abilityCoordinator: {fileID: 0}
   telegraphService: {fileID: 0}
+  dashDustEffectPrefab: {fileID: 6718438523550872990, guid: a377460fdf422a74f98915cf652001d4, type: 3}
+  dashDustAnchor: {fileID: 0}
+  dashDustLocalOffset: {x: 0, y: 0}
+  dashDustRotationOffsetDegrees: 0
+  dashDustFallbackLifetime: 1.5
+  wallImpactCameraShake:
+    amplitude: 1
+    amplitudeMultiplier: 1
+    maxAmplitude: 1
+    minIntervalSeconds: 0.08
+    directionMode: 0
+    customDirection: {x: 0, y: 0, z: 0}
+    ignoreScreenShakeSetting: 0
 --- !u!114 &3790217430196525045
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -348,6 +439,7 @@ MonoBehaviour:
   worldAnchor: {fileID: 2826825829709561300}
   extraWorldOffset: {x: 0, y: 0, z: 0}
   minInterval: 0.02
+  logFallbackPopup: 0
 --- !u!114 &5122803876250813742
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -437,6 +529,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   body: {fileID: 0}
   enforceContinuousCollision: 1
+  preventWallTunneling: 1
+  wallCollisionLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  wallSafetyMinSpeed: 8
+  wallCastSkinWidth: 0.03
+  depenetrationSkinWidth: 0.01
+  maxDepenetrationIterations: 3
   intentSourceBehaviour: {fileID: 0}
   statProviderBehaviour: {fileID: 0}
   externalMovement: {fileID: 3341026293018187748}
@@ -491,6 +591,10 @@ MonoBehaviour:
   detectionRange: 7
   stopRange: 0.35
   speedScale: 0.5
+  usePathfindingWhenDirectPathBlocked: 1
+  pathWaypointReachDistance: 0.18
+  pathRebuildInterval: 0.35
+  pathTargetMoveThreshold: 0.35
   returnSpeedScale: 0.9
   logChaseDebug: 0
   logInterval: 0.35
@@ -574,6 +678,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UnityGAS.AttackTelegraphService
   telegraphPrefab: {fileID: 788264263987448140, guid: 211dd09e2da9caf47ad8409c9e35b83d, type: 3}
   defaultStyle: {fileID: 11400000, guid: b15f18602ec87284d80cbd57720425f1, type: 2}
+  useDefaultWallClipping: 0
+  defaultWallClipLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  defaultWallClipSampleCount: 48
+  defaultWallClipSkinWidth: 0.03
 --- !u!114 &5188487318859962288
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -587,7 +697,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UnityGAS.CombatHurtbox2D
   targetRoot: {fileID: 0}
-  ownedColliders: []
+  ownedColliders:
+  - {fileID: 4601776432013924379}
 --- !u!114 &8223012456081861757
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -628,9 +739,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6ff4ff08e39f49319d1e0414b9985957, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UnityGAS.EntityCollisionProfile2D
-  bodyColliders: []
+  bodyColliders:
+  - {fileID: 4601776432013924379}
   baseExcludedLayers:
     serializedVersion: 2
     m_Bits: 0

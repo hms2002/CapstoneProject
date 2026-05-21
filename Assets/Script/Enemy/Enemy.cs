@@ -289,8 +289,7 @@ public class Enemy : MonoBehaviour, ICombatDeathCommand
                 continue;
             }
 
-            DoorObject door = hitCollider.GetComponentInParent<DoorObject>();
-            if (door != null && !door.IsOpen)
+            if (CombatPathBlocker2DUtility.BlocksCombatPath(hitCollider, gameObject, CombatPathBlockerQuery.Sight))
                 return false;
         }
 

@@ -126,6 +126,29 @@ public sealed class TilemapPathfinder2D : MonoBehaviour
         return false;
     }
 
+    /// <summary>
+    /// 책임:
+    /// 현재 pathfinder의 차단 레이어/탐색 크기 기준으로 두 월드 좌표 사이를 직선 이동할 수 있는지 빠르게 판정한다.
+    /// 추적 의도는 이 결과로 열린 공간에서는 직선 추적을 유지하고, 막힌 경우에만 경로 탐색으로 전환한다.
+    /// </summary>
+    public bool HasDirectWalkableSegment(Vector2 startWorld, Vector2 endWorld)
+    {
+        Vector2 delta = endWorld - startWorld;
+        float distance = delta.magnitude;
+        if (distance <= 0.001f)
+            return true;
+
+        RaycastHit2D hit = Physics2D.BoxCast(
+            startWorld,
+            probeSize,
+            0f,
+            delta / distance,
+            distance,
+            blockedLayers);
+
+        return hit.collider == null;
+    }
+
     /// <summary>지정한 셀이 막혀 있다면 인접 셀 중 가장 가까운 이동 가능 셀을 찾습니다.</summary>
     private Vector2Int FindNearestWalkableCell(Vector2Int center, int radius)
     {

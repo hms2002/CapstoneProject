@@ -14,9 +14,13 @@ namespace UnityGAS
         private Mesh mesh;
         private MeshRenderer meshRenderer;
         private MeshFilter meshFilter;
+        private LineRenderer borderLineRenderer;
         private Material material;
+        private Material borderMaterial;
         private Vector3[] vertices;
         private int[] triangles;
+        private Vector3[] borderPositions;
+        private const float BorderWidth = 0.045f;
 
         public bool IsVisible => meshRenderer != null && meshRenderer.enabled;
 
@@ -62,12 +66,33 @@ namespace UnityGAS
             }
 
             material.color = color;
+
+            if (borderMaterial != null)
+            {
+                Color borderColor = style != null
+                    ? Color.Lerp(style.borderColorStart, style.borderColorEnd, curved)
+                    : new Color(1f, 0.35f, 0.25f, 0.9f);
+
+                if (style != null &&
+                    normalizedProgress >= style.blinkStartNormalized &&
+                    style.blinkFrequency > 0f)
+                {
+                    float blinkWave = Mathf.Sin(Time.time * style.blinkFrequency * Mathf.PI * 2f);
+                    float blinkMultiplier = Mathf.Lerp(style.blinkAlphaMin, 1f, (blinkWave + 1f) * 0.5f);
+                    borderColor.a *= blinkMultiplier;
+                }
+
+                borderMaterial.color = borderColor;
+            }
         }
 
         public void HideImmediate()
         {
             if (meshRenderer != null)
                 meshRenderer.enabled = false;
+
+            if (borderLineRenderer != null)
+                borderLineRenderer.enabled = false;
         }
 
         private void EnsureComponents()
@@ -86,6 +111,20 @@ namespace UnityGAS
                     meshRenderer = gameObject.AddComponent<MeshRenderer>();
             }
 
+            if (borderLineRenderer == null)
+            {
+                borderLineRenderer = GetComponent<LineRenderer>();
+                if (borderLineRenderer == null)
+                    borderLineRenderer = gameObject.AddComponent<LineRenderer>();
+
+                borderLineRenderer.useWorldSpace = false;
+                borderLineRenderer.widthMultiplier = BorderWidth;
+                borderLineRenderer.numCapVertices = 0;
+                borderLineRenderer.numCornerVertices = 0;
+                borderLineRenderer.alignment = LineAlignment.TransformZ;
+                borderLineRenderer.textureMode = LineTextureMode.Stretch;
+            }
+
             if (mesh == null)
             {
                 mesh = new Mesh { name = "AttackTelegraphWallClippedMesh" };
@@ -97,6 +136,13 @@ namespace UnityGAS
                 Shader shader = Shader.Find(DefaultShaderName);
                 material = new Material(shader);
                 meshRenderer.sharedMaterial = material;
+            }
+
+            if (borderMaterial == null)
+            {
+                Shader shader = Shader.Find(DefaultShaderName);
+                borderMaterial = new Material(shader);
+                borderLineRenderer.sharedMaterial = borderMaterial;
             }
         }
 
@@ -168,6 +214,8 @@ namespace UnityGAS
                 vertices[i + 1] = rayDirection * distance;
             }
 
+            RebuildBorderLine(outerVertexCount, isFullCircle);
+
             int triangleIndex = 0;
             int triangleFanCount = isFullCircle ? outerVertexCount : outerVertexCount - 1;
             for (int i = 0; i < triangleFanCount; i++)
@@ -185,6 +233,43 @@ namespace UnityGAS
             mesh.vertices = vertices;
             mesh.triangles = triangles;
             mesh.RecalculateBounds();
+        }
+
+        /// <summary>
+        /// 책임 :
+        /// - 벽에 의해 잘린 원형/부채꼴 mesh의 외곽 샘플점을 따라 테두리 선을 갱신한다.
+        /// - 일반 Sprite border를 쓰지 못하는 wall-clipped 렌더링 경로에서도 위험 영역 경계를 읽기 쉽게 만든다.
+        /// </summary>
+        private void RebuildBorderLine(int outerVertexCount, bool isFullCircle)
+        {
+            if (borderLineRenderer == null)
+                return;
+
+            if (isFullCircle)
+            {
+                EnsureBorderBuffer(outerVertexCount);
+                for (int i = 0; i < outerVertexCount; i++)
+                    borderPositions[i] = vertices[i + 1];
+
+                borderLineRenderer.loop = true;
+                borderLineRenderer.positionCount = outerVertexCount;
+                borderLineRenderer.SetPositions(borderPositions);
+            }
+            else
+            {
+                int positionCount = outerVertexCount + 2;
+                EnsureBorderBuffer(positionCount);
+                borderPositions[0] = Vector3.zero;
+                for (int i = 0; i < outerVertexCount; i++)
+                    borderPositions[i + 1] = vertices[i + 1];
+
+                borderPositions[positionCount - 1] = Vector3.zero;
+                borderLineRenderer.loop = false;
+                borderLineRenderer.positionCount = positionCount;
+                borderLineRenderer.SetPositions(borderPositions);
+            }
+
+            borderLineRenderer.enabled = true;
         }
 
         private float ResolveVisibleDistance(
@@ -214,6 +299,12 @@ namespace UnityGAS
                 triangles = new int[triangleCount];
         }
 
+        private void EnsureBorderBuffer(int positionCount)
+        {
+            if (borderPositions == null || borderPositions.Length != positionCount)
+                borderPositions = new Vector3[positionCount];
+        }
+
         private void ApplySorting(SpriteRenderer sortingReference)
         {
             if (meshRenderer == null || sortingReference == null)
@@ -221,6 +312,12 @@ namespace UnityGAS
 
             meshRenderer.sortingLayerID = sortingReference.sortingLayerID;
             meshRenderer.sortingOrder = sortingReference.sortingOrder;
+
+            if (borderLineRenderer != null)
+            {
+                borderLineRenderer.sortingLayerID = sortingReference.sortingLayerID;
+                borderLineRenderer.sortingOrder = sortingReference.sortingOrder + 1;
+            }
         }
 
         private static Vector2 Rotate(Vector2 vector, float degrees)
@@ -237,6 +334,9 @@ namespace UnityGAS
         {
             if (material != null)
                 Destroy(material);
+
+            if (borderMaterial != null)
+                Destroy(borderMaterial);
 
             if (mesh != null)
                 Destroy(mesh);

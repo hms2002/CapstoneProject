@@ -20,8 +20,8 @@ MonoBehaviour:
     moveVelocity: {x: 0.45, y: 1.25, z: 0}
     lifetime: 0.75
     fadeOutRatio: 0.55
-    startScale: 0.9
-    endScale: 1.1
+    startScale: 0.52
+    endScale: 0.64
     fontSize: 0
   critical:
     kind: 2
@@ -31,9 +31,9 @@ MonoBehaviour:
     moveVelocity: {x: 0.58, y: 1.48, z: 0}
     lifetime: 0.85
     fadeOutRatio: 0.6
-    startScale: 1.15
-    endScale: 1.35
-    fontSize: 8.5
+    startScale: 0.58
+    endScale: 0.7
+    fontSize: 0
   elementFallback:
     kind: 1
     elementTag: {fileID: 0}
@@ -42,8 +42,8 @@ MonoBehaviour:
     moveVelocity: {x: 0.42, y: 1.18, z: 0}
     lifetime: 0.8
     fadeOutRatio: 0.55
-    startScale: 0.85
-    endScale: 1.05
+    startScale: 0.5
+    endScale: 0.62
     fontSize: 0
   textFallback:
     kind: 3
@@ -53,7 +53,47 @@ MonoBehaviour:
     moveVelocity: {x: 0.35, y: 1.15, z: 0}
     lifetime: 0.75
     fadeOutRatio: 0.55
-    startScale: 0.9
-    endScale: 1.05
+    startScale: 0.5
+    endScale: 0.6
     fontSize: 0
-  elementEntries: []
+  elementEntries:
+  - kind: 1
+    elementTag: {fileID: 11400000, guid: 82578c30453dcb04a88dce3cd193db5b, type: 2}
+    format: '{0}'
+    textColor: {r: 1, g: 0.22, b: 0.28, a: 1}
+    moveVelocity: {x: 0.5, y: 1.26, z: 0}
+    lifetime: 0.82
+    fadeOutRatio: 0.56
+    startScale: 0.52
+    endScale: 0.66
+    fontSize: 0
+  - kind: 1
+    elementTag: {fileID: 11400000, guid: f2c3c9b4eb9b4ed5b0224bd53dfd8f46, type: 2}
+    format: '{0}'
+    textColor: {r: 1, g: 0.92, b: 0.16, a: 1}
+    moveVelocity: {x: 0.54, y: 1.34, z: 0}
+    lifetime: 0.78
+    fadeOutRatio: 0.52
+    startScale: 0.54
+    endScale: 0.7
+    fontSize: 0
+  - kind: 1
+    elementTag: {fileID: 11400000, guid: 7c8af04be6bcbb84794e303f3f4c401c, type: 2}
+    format: '{0}'
+    textColor: {r: 1, g: 0.48, b: 0.08, a: 1}
+    moveVelocity: {x: 0.48, y: 1.28, z: 0}
+    lifetime: 0.8
+    fadeOutRatio: 0.54
+    startScale: 0.52
+    endScale: 0.68
+    fontSize: 0
+  - kind: 1
+    elementTag: {fileID: 11400000, guid: 53bdedc3d917f83458902716124fcc3c, type: 2}
+    format: '{0}'
+    textColor: {r: 0.55, g: 1, b: 0.32, a: 1}
+    moveVelocity: {x: 0.4, y: 1.2, z: 0}
+    lifetime: 0.84
+    fadeOutRatio: 0.58
+    startScale: 0.5
+    endScale: 0.62
+    fontSize: 0

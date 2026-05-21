@@ -298,7 +298,8 @@ namespace UnityGAS
 
             var ctx = new GameplayEffectContext(src, src)
             {
-                SourceObject = def.triggerEffect
+                SourceObject = def.triggerEffect,
+                DamagePopupElementTag = def.elementTag
             };
 
             var spec = new GameplayEffectSpec(def.triggerEffect, ctx);

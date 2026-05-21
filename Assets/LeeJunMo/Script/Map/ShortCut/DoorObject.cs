@@ -6,7 +6,12 @@ using UnityGAS;
 using UnityEditor;
 #endif
 
-public class DoorObject : InteractableBase
+/// <summary>
+/// 책임:
+/// - 플레이어 상호작용으로 열리고 닫히는 문/출입구 상태와 연출을 관리한다.
+/// - 닫힌 상태에서는 전투 시야와 돌진 경로를 막는 공통 경로 차단자로 동작한다.
+/// </summary>
+public class DoorObject : InteractableBase, ICombatPathBlocker2D
 {
     private const string OpenAnimatorTriggerName = "Open";
     private const string CloseAnimatorTriggerName = "Close";
@@ -376,6 +381,14 @@ public class DoorObject : InteractableBase
             return CanAffectionDoorOpen() ? openPromptText : lockedPromptText;
 
         return openPromptText;
+    }
+
+    public bool BlocksCombatPath(Collider2D queriedCollider, GameObject requester, CombatPathBlockerQuery query)
+    {
+        if (IsOpen)
+            return false;
+
+        return obstacleCollider != null && queriedCollider == obstacleCollider;
     }
 
 #if UNITY_EDITOR

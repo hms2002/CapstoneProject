@@ -66,6 +66,13 @@ namespace UnityGAS
         public GameObject Instigator { get; }
         public GameObject Causer { get; }
         public Object SourceObject { get; set; }  // 무기 데이터/유물 데이터 등
+
+        /// <summary>
+        /// 책임 :
+        /// - 이 효과가 실제 HP 피해를 발생시켰을 때 어떤 속성 피해 팝업으로 표시할지 전달한다.
+        /// - 게이지 축적 수치와 발현 피해 표시를 분리하기 위한 presentation 메타데이터다.
+        /// </summary>
+        public GameplayTag DamagePopupElementTag { get; set; }
         public RaycastHit? Hit3D { get; set; }
         public RaycastHit2D? Hit2D { get; set; }
         public bool HasWorldPosition { get; private set; }

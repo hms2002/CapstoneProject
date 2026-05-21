@@ -186,6 +186,7 @@ MonoBehaviour:
   electrocutedTag: {fileID: 11400000, guid: 91af69d21bca4a2fb9e29a76190e8979, type: 2}
   electricDamageEffect: {fileID: 11400000, guid: 3ce29a9354b34e5dac3bdc529a0735be, type: 2}
   electricDamageKey: {fileID: 11400000, guid: 2e2e8bd1bde4f78429bf913fa737505c, type: 2}
+  electricPopupElementTag: {fileID: 11400000, guid: f2c3c9b4eb9b4ed5b0224bd53dfd8f46, type: 2}
   electricDamage: 5
   chainRadius: 6.5
   maxTargetsPerDischarge: 8

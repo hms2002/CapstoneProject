@@ -2,11 +2,19 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityGAS;
 
+/// <summary>
+/// 책임:
+/// - Slime 계열 Bishop의 직선 마법 공격 판단, 공격 문맥 생성, 사망 시 분열 규칙을 소유한다.
+/// - 실제 마법 실행과 경고/폭발 표시는 BishopLineBlastRunner에 위임한다.
+/// </summary>
 [DisallowMultipleComponent]
 [RequireComponent(typeof(MobAbilityCoordinator))]
 [RequireComponent(typeof(BishopLineBlastRunner))]
 public class Bishop : Slime
 {
+    private const string MagicPrepareTriggerName = "magicPrepare";
+    private const string MagicCastTriggerName = "magicCast";
+    private const string DieTriggerName = "die";
     private const int WallLayer = 30;
     private const float AttackRange = 7f;
     private const float WarningTime = 1.6f;
@@ -29,6 +37,9 @@ public class Bishop : Slime
     [SerializeField, Min(0)] private int splitCount = 2;
 
     private BishopLineBlastRunner lineBlastRunner;
+    private bool hasMagicPrepareTrigger;
+    private bool hasMagicCastTrigger;
+    private bool hasDieTrigger;
     private bool hasLoggedInvalidConfig;
 
     public readonly struct LineBlastContext
@@ -76,6 +87,7 @@ public class Bishop : Slime
         if (lineBlastRunner == null)
             lineBlastRunner = gameObject.AddComponent<BishopLineBlastRunner>();
 
+        CacheAnimatorParameters();
         ApplyStats();
     }
 
@@ -103,6 +115,27 @@ public class Bishop : Slime
 
     protected override void PlayDeathAnimation()
     {
+        SetAnimatorTriggerIfAvailable(DieTriggerName, hasDieTrigger);
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - Bishop 마법 경고/준비 동작 시작을 Animator trigger로 전달한다.
+    /// - 공격 판정과 분리해 표현 상태 전환만 담당한다.
+    /// </summary>
+    public void PlayMagicPrepareAnimation()
+    {
+        SetAnimatorTriggerIfAvailable(MagicPrepareTriggerName, hasMagicPrepareTrigger);
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - Bishop 마법 폭발이 실제 발생하는 타이밍을 Animator trigger로 전달한다.
+    /// - 시전 애니메이션과 피해/폭발 연출 타이밍을 맞춘다.
+    /// </summary>
+    public void PlayMagicCastAnimation()
+    {
+        SetAnimatorTriggerIfAvailable(MagicCastTriggerName, hasMagicCastTrigger);
     }
 
     protected override void DrawAttackGizmos()
@@ -256,5 +289,39 @@ public class Bishop : Slime
         }
 
         return false;
+    }
+
+    /// <summary>Animator Controller에 Bishop 전용 트리거가 있는지 캐시합니다.</summary>
+    private void CacheAnimatorParameters()
+    {
+        hasMagicPrepareTrigger = HasAnimatorParameter(MagicPrepareTriggerName, AnimatorControllerParameterType.Trigger);
+        hasMagicCastTrigger = HasAnimatorParameter(MagicCastTriggerName, AnimatorControllerParameterType.Trigger);
+        hasDieTrigger = HasAnimatorParameter(DieTriggerName, AnimatorControllerParameterType.Trigger);
+    }
+
+    /// <summary>지정한 Animator 파라미터가 존재하고 타입이 맞는지 확인합니다.</summary>
+    private bool HasAnimatorParameter(string parameterName, AnimatorControllerParameterType parameterType)
+    {
+        if (animator == null)
+            return false;
+
+        AnimatorControllerParameter[] parameters = animator.parameters;
+        for (int i = 0; i < parameters.Length; i++)
+        {
+            AnimatorControllerParameter parameter = parameters[i];
+            if (parameter.type == parameterType && parameter.name == parameterName)
+                return true;
+        }
+
+        return false;
+    }
+
+    /// <summary>파라미터가 존재할 때만 Animator trigger를 전달해 authoring 중 콘솔 오류를 방지합니다.</summary>
+    private void SetAnimatorTriggerIfAvailable(string triggerName, bool hasTrigger)
+    {
+        if (!hasTrigger || animator == null)
+            return;
+
+        animator.SetTrigger(triggerName);
     }
 }

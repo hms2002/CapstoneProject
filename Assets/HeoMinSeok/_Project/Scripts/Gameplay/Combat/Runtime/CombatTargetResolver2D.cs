@@ -25,7 +25,12 @@ namespace UnityGAS
 
             CombatHurtbox2D hurtbox = other.GetComponent<CombatHurtbox2D>();
             if (hurtbox != null)
-                return hurtbox.ResolveTargetRoot();
+            {
+                if (hurtbox.OwnsCollider(other))
+                    return hurtbox.ResolveTargetRoot();
+
+                return null;
+            }
 
             WarnMissingHurtbox(other);
             return null;

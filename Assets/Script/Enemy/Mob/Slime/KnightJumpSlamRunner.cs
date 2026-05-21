@@ -2,6 +2,11 @@ using System.Collections;
 using UnityEngine;
 using UnityGAS;
 
+/// <summary>
+/// 책임:
+/// - Knight 점프 내려찍기 패턴의 실행 흐름, 경고 표시, 공중 충돌 모드, 높이 연출을 조율한다.
+/// - 패턴 취소/정리 시 남은 모션과 프레젠테이션 상태를 원복한다.
+/// </summary>
 [DisallowMultipleComponent]
 [RequireComponent(typeof(Knight))]
 public class KnightJumpSlamRunner : MonoBehaviour, IMobPatternRunner, IMobPresentationCleanup
@@ -9,9 +14,14 @@ public class KnightJumpSlamRunner : MonoBehaviour, IMobPatternRunner, IMobPresen
     [SerializeField] private Knight owner;
     [SerializeField] private MobAbilityCoordinator abilityCoordinator;
     [SerializeField] private AttackTelegraphService telegraphService;
+    [Header("Landing VFX")]
+    [SerializeField] private GameObject landingEffectPrefab;
+    [SerializeField] private Vector3 landingEffectOffset;
+    [SerializeField, Min(0.01f)] private float landingEffectScale = 1f;
 
     private AbilityMotionController2D motionController;
     private CombatHeightState2D heightState;
+    private EntityCollisionProfile2D collisionProfile;
     private AttackTelegraphStyle impactStyle;
     private AttackTelegraphView impactWarning;
     private Knight.JumpSlamContext currentContext;
@@ -35,6 +45,7 @@ public class KnightJumpSlamRunner : MonoBehaviour, IMobPatternRunner, IMobPresen
         heightState = GetComponent<CombatHeightState2D>();
         if (heightState == null)
             heightState = gameObject.AddComponent<CombatHeightState2D>();
+        collisionProfile = GetComponent<EntityCollisionProfile2D>();
 
         impactStyle = MakeImpactStyle();
     }
@@ -50,6 +61,7 @@ public class KnightJumpSlamRunner : MonoBehaviour, IMobPatternRunner, IMobPresen
         HideWarning();
         motionController?.CancelMotion();
         heightState?.SetGrounded();
+        collisionProfile?.RestoreDefaultMode();
     }
 
     /// <summary>나이트의 점프 내려치기 패턴을 실행합니다.</summary>
@@ -65,12 +77,15 @@ public class KnightJumpSlamRunner : MonoBehaviour, IMobPatternRunner, IMobPresen
         try
         {
             ShowWarning(currentContext);
+            collisionProfile?.SetBodyCollisionMode(EntityCollisionProfile2D.BodyCollisionMode.PassThroughActors);
+            owner.PlayJumpAnimation();
             StartJump(currentContext);
 
             yield return MoveJump(currentContext, spec);
 
             if (cancelRequested || owner.IsDead) yield break;
 
+            PlayLandingEffect(currentContext);
             owner.ApplyImpactDamage(currentContext);
         }
         finally
@@ -78,6 +93,7 @@ public class KnightJumpSlamRunner : MonoBehaviour, IMobPatternRunner, IMobPresen
             HideWarning();
             motionController?.CancelMotion();
             heightState?.SetGrounded();
+            collisionProfile?.RestoreDefaultMode();
             currentContext = default;
             cancelRequested = false;
             isRunning = false;
@@ -92,6 +108,7 @@ public class KnightJumpSlamRunner : MonoBehaviour, IMobPatternRunner, IMobPresen
         HideWarning();
         motionController?.CancelMotion();
         heightState?.SetGrounded();
+        collisionProfile?.RestoreDefaultMode();
     }
 
     /// <summary>남아 있는 점프 내려치기 경고를 정리합니다.</summary>
@@ -138,7 +155,7 @@ public class KnightJumpSlamRunner : MonoBehaviour, IMobPatternRunner, IMobPresen
             context.StartPos,
             delta.normalized,
             delta.magnitude,
-            context.TravelSeconds,
+            context.HorizontalTravelSeconds,
             context.TravelEaseOutPower);
     }
 
@@ -147,12 +164,20 @@ public class KnightJumpSlamRunner : MonoBehaviour, IMobPatternRunner, IMobPresen
     {
         float duration = Mathf.Max(0.01f, context.TravelSeconds);
         float elapsed = 0f;
+        bool hasStartedSlam = false;
+        float slamTriggerTime = Mathf.Max(0f, duration - Mathf.Max(0.01f, context.LandingDropSeconds));
 
         heightState?.SetAirborne(0f, context.AirborneBodyHeight);
 
         while (elapsed < duration)
         {
             if (cancelRequested || owner.IsDead || IsCancelled(spec)) yield break;
+
+            if (!hasStartedSlam && elapsed >= slamTriggerTime)
+            {
+                hasStartedSlam = true;
+                owner.PlaySlamAnimation();
+            }
 
             float normalized = Mathf.Clamp01(elapsed / duration);
             float height = owner.GetJumpHeight(normalized);
@@ -163,7 +188,25 @@ public class KnightJumpSlamRunner : MonoBehaviour, IMobPatternRunner, IMobPresen
             yield return null;
         }
 
+        if (!hasStartedSlam)
+            owner.PlaySlamAnimation();
+
         heightState?.SetAirborne(0f, context.AirborneBodyHeight);
+    }
+
+    /// <summary>착지 지점에 일회성 먼지 이펙트를 생성한다.</summary>
+    private void PlayLandingEffect(Knight.JumpSlamContext context)
+    {
+        if (landingEffectPrefab == null)
+            return;
+
+        Vector3 spawnPosition = new Vector3(context.ImpactPos.x, context.ImpactPos.y, transform.position.z) + landingEffectOffset;
+        GameObject effect = Instantiate(landingEffectPrefab, spawnPosition, Quaternion.identity);
+        effect.transform.localScale *= landingEffectScale;
+
+        ParticleSystem[] particles = effect.GetComponentsInChildren<ParticleSystem>(true);
+        for (int i = 0; i < particles.Length; i++)
+            particles[i].Play(true);
     }
 
     /// <summary>어빌리티 취소 여부를 확인합니다.</summary>

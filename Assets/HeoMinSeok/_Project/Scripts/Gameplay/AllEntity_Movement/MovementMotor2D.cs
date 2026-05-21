@@ -137,7 +137,26 @@ namespace UnityGAS
         /// </summary>
         private void CacheBodyColliders()
         {
-            bodyColliders = GetComponents<Collider2D>();
+            Collider2D[] candidates = GetComponentsInChildren<Collider2D>(true);
+            int bodyCount = 0;
+            for (int i = 0; i < candidates.Length; i++)
+            {
+                Collider2D candidate = candidates[i];
+                if (IsUsableBodyCollider(candidate))
+                    bodyCount++;
+            }
+
+            bodyColliders = new Collider2D[bodyCount];
+            int writeIndex = 0;
+            for (int i = 0; i < candidates.Length; i++)
+            {
+                Collider2D candidate = candidates[i];
+                if (!IsUsableBodyCollider(candidate))
+                    continue;
+
+                bodyColliders[writeIndex] = candidate;
+                writeIndex++;
+            }
         }
 
         /// <summary>
@@ -434,7 +453,10 @@ namespace UnityGAS
 
         private static bool IsUsableBodyCollider(Collider2D bodyCollider)
         {
-            return bodyCollider != null && bodyCollider.enabled && !bodyCollider.isTrigger;
+            return bodyCollider != null
+                && bodyCollider.enabled
+                && bodyCollider.gameObject.activeInHierarchy
+                && !bodyCollider.isTrigger;
         }
 
         /// <summary>

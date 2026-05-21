@@ -4,6 +4,10 @@ using UnityEngine;
 
 namespace UnityGAS
 {
+    /// <summary>
+    /// 책임 : 전기 게이지가 발현됐을 때 감전 상태 부여, 연쇄 대상 탐색, 전기 발현 피해 적용을 수행한다.
+    /// 전기 발현 피해가 일반 피해 팝업으로 섞이지 않도록 팝업용 속성 태그도 함께 전달한다.
+    /// </summary>
     [CreateAssetMenu(fileName = "GE_ElectricShockTrigger", menuName = "GAS/Effects/Electric Shock Trigger")]
     public sealed class GE_ElectricShockTrigger : GameplayEffect, ISpecGameplayEffect
     {
@@ -14,6 +18,7 @@ namespace UnityGAS
         [Header("Damage")]
         [SerializeField] private GameplayEffect electricDamageEffect;
         [SerializeField] private GameplayTag electricDamageKey;
+        [SerializeField] private GameplayTag electricPopupElementTag;
         [SerializeField, Min(0f)] private float electricDamage = 5f;
 
         [Header("Discharge")]
@@ -38,19 +43,24 @@ namespace UnityGAS
         {
             GameObject instigator = spec != null ? spec.Context?.Instigator : null;
             GameObject causer = spec != null ? spec.Context?.Causer : instigator;
-            Execute(target, instigator, causer);
+            GameplayTag popupElementTag = ResolvePopupElementTag(spec != null ? spec.Context?.DamagePopupElementTag : null);
+            Execute(target, instigator, causer, popupElementTag);
         }
 
         public override void Apply(GameObject target, GameObject instigator, int stackCount = 1)
         {
-            Execute(target, instigator, instigator);
+            Execute(target, instigator, instigator, ResolvePopupElementTag(null));
         }
 
         public override void Remove(GameObject target, GameObject instigator)
         {
         }
 
-        private void Execute(GameObject initialTarget, GameObject instigator, GameObject causer)
+        private void Execute(
+            GameObject initialTarget,
+            GameObject instigator,
+            GameObject causer,
+            GameplayTag popupElementTag)
         {
             if (initialTarget == null)
                 return;
@@ -63,7 +73,7 @@ namespace UnityGAS
             var chainPoints = new List<Vector3>(Mathf.Max(1, maxTargetsPerDischarge));
 
             AddVisitedTarget(initialTarget, visited, chainTargets, chainPoints);
-            ApplyElectricHit(initialTarget, instigator, causer);
+            ApplyElectricHit(initialTarget, instigator, causer, popupElementTag);
 
             if (chainRadius <= 0f || electrocutedTag == null || maxTargetsPerDischarge <= 1)
             {
@@ -87,7 +97,7 @@ namespace UnityGAS
                     break;
 
                 AddVisitedTarget(next, visited, chainTargets, chainPoints);
-                ApplyElectricHit(next, instigator, causer);
+                ApplyElectricHit(next, instigator, causer, popupElementTag);
                 current = next;
             }
 
@@ -181,7 +191,11 @@ namespace UnityGAS
             return target.transform.position;
         }
 
-        private void ApplyElectricHit(GameObject target, GameObject instigator, GameObject causer)
+        private void ApplyElectricHit(
+            GameObject target,
+            GameObject instigator,
+            GameObject causer,
+            GameplayTag popupElementTag)
         {
             if (target == null)
                 return;
@@ -192,13 +206,23 @@ namespace UnityGAS
 
             if (electrocutedStatusEffect != null)
             {
-                GameplayEffectSpec statusSpec = CreateSpec(electrocutedStatusEffect, instigator, causer, electrocutedStatusEffect);
+                GameplayEffectSpec statusSpec = CreateSpec(
+                    electrocutedStatusEffect,
+                    instigator,
+                    causer,
+                    electrocutedStatusEffect,
+                    popupElementTag: null);
                 runner.ApplyEffectSpec(statusSpec, target);
             }
 
             if (electricDamageEffect != null && electricDamage > 0f)
             {
-                GameplayEffectSpec damageSpec = CreateSpec(electricDamageEffect, instigator, causer, this);
+                GameplayEffectSpec damageSpec = CreateSpec(
+                    electricDamageEffect,
+                    instigator,
+                    causer,
+                    this,
+                    popupElementTag);
                 if (electricDamageKey != null)
                     damageSpec.SetSetByCallerMagnitude(electricDamageKey, electricDamage);
 
@@ -210,11 +234,13 @@ namespace UnityGAS
             GameplayEffect effect,
             GameObject instigator,
             GameObject causer,
-            Object sourceObject)
+            Object sourceObject,
+            GameplayTag popupElementTag)
         {
             var context = new GameplayEffectContext(instigator, causer != null ? causer : instigator)
             {
-                SourceObject = sourceObject != null ? sourceObject : effect
+                SourceObject = sourceObject != null ? sourceObject : effect,
+                DamagePopupElementTag = popupElementTag
             };
 
             return new GameplayEffectSpec(effect, context);
@@ -230,6 +256,11 @@ namespace UnityGAS
                 return abilitySystem.EffectRunner;
 
             return target.GetComponent<GameplayEffectRunner>();
+        }
+
+        private GameplayTag ResolvePopupElementTag(GameplayTag contextTag)
+        {
+            return contextTag != null ? contextTag : electricPopupElementTag;
         }
 
         private void PlayChainVfx(IReadOnlyList<Vector3> chainPoints)

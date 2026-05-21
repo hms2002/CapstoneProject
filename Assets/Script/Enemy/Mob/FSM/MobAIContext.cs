@@ -1,6 +1,16 @@
 using UnityEngine;
 
 /// <summary>
+/// 책임:
+/// - 특정 몬스터가 공통 추적 감지 범위 대신 자기 전용 감지 성공 조건을 FSM에 제공하게 한다.
+/// - Rook처럼 "같은 방 + 경로 차단물 없음" 같은 몬스터별 전투 진입 조건을 공통 FSM에 누수 없이 연결한다.
+/// </summary>
+public interface IMobTargetDetectionOverride
+{
+    bool HasDetectedTargetForMobFsm();
+}
+
+/// <summary>
 /// 책임 :
 /// - 일반 몬스터 FSM 상태가 공통으로 참조할 owner, chase intent 인터페이스, bridge, attack decision source를 한 묶음으로 제공한다.
 /// - 상태 클래스가 개별 컴포넌트 탐색 없이 필요한 최소 의존만 주입받아 동작하게 한다.
@@ -37,6 +47,9 @@ public sealed class MobAIContext
 
         if (Owner.Target == null)
             return false;
+
+        if (Owner is IMobTargetDetectionOverride detectionOverride)
+            return detectionOverride.HasDetectedTargetForMobFsm();
 
         return ChaseIntent == null || ChaseIntent.IsTargetWithinDetectionRange();
     }

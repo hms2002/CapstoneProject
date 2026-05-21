@@ -20,9 +20,11 @@ public class Mob : Enemy
     private MobAIContext aiContext;
     private ChestMonsterKillLock lockTrackingChestLock;
     private MonsterSpawnRoomGroup lockTrackingRoomGroup;
+    private IEnemyChaseIntent resolvedChaseIntent;
     private bool triedInitializeStateMachine;
 
     protected EnemyChaseIntent2D ChaseIntent => chaseIntent;
+    protected MonsterSpawnRoomGroup LockTrackingRoomGroup => lockTrackingRoomGroup;
     public bool LogMobFsmDebug => logMobFsmDebug;
 
     protected override void Awake()
@@ -31,6 +33,8 @@ public class Mob : Enemy
 
         if (chaseIntent == null)
             chaseIntent = GetComponent<EnemyChaseIntent2D>();
+
+        resolvedChaseIntent = ResolveChaseIntent();
 
         hasMoveBool = CheckMoveBool();
     }
@@ -176,7 +180,7 @@ public class Mob : Enemy
 
         aiContext = new MobAIContext(
             this,
-            chaseIntent,
+            ResolveChaseIntent(),
             abilityBridge,
             attackDecisionSource,
             ResolvePatternRunnerTargets(),
@@ -185,6 +189,32 @@ public class Mob : Enemy
         stateMachine.SetInitialState(new MobIdleState(), aiContext);
         LogFsmDebug($"FSM 초기화 완료. chaseIntent={(chaseIntent != null ? chaseIntent.name : "null")}, bridge={abilityBridge.GetType().Name}, decisionSource={attackDecisionSource.GetType().Name}");
         return true;
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 기존 EnemyChaseIntent2D와 몬스터별 추적 intent 구현을 모두 FSM 추적 인터페이스로 정규화한다.
+    /// - Pawn처럼 개인화된 이동 intent가 일반 FSM 생명주기를 그대로 사용할 수 있게 한다.
+    /// </summary>
+    private IEnemyChaseIntent ResolveChaseIntent()
+    {
+        if (resolvedChaseIntent != null)
+            return resolvedChaseIntent;
+
+        if (chaseIntent != null)
+            return chaseIntent;
+
+        MonoBehaviour[] behaviours = GetComponents<MonoBehaviour>();
+        for (int i = 0; i < behaviours.Length; i++)
+        {
+            if (behaviours[i] is IEnemyChaseIntent candidate)
+            {
+                resolvedChaseIntent = candidate;
+                return resolvedChaseIntent;
+            }
+        }
+
+        return null;
     }
 
     /// <summary>현재 오브젝트에 붙은 pattern runner cleanup 대상을 수집합니다.</summary>

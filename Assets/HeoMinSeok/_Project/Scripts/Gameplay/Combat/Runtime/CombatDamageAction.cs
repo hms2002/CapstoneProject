@@ -240,7 +240,7 @@ public static class CombatDamageAction
         TryEmitKillConfirmed(system, spec, target, causer, hpCheck);
 
         ApplyStagger(target, finalStaggerBuildUp, system.gameObject, causer);
-        ApplyElements(target, system.gameObject, causer, elementBuildUps, hasResolvedElementBuildUps, hitWorldPosition);
+        ApplyElements(target, system.gameObject, causer, elementBuildUps, hasResolvedElementBuildUps);
 
         EmitHitConfirmed(system, spec, target, causer, hitConfirmedTag, hitWorldPosition, isCriticalHit);
     }
@@ -454,8 +454,7 @@ public static class CombatDamageAction
         GameObject instigator,
         GameObject causer,
         ElementDamageResult[] elementBuildUps,
-        bool hasResolvedElementBuildUps,
-        Vector3 hitWorldPosition)
+        bool hasResolvedElementBuildUps)
     {
         if (target == null) return;
 
@@ -484,9 +483,6 @@ public static class CombatDamageAction
                 element.damage,
                 instigator: instigator,
                 causer: causer);
-
-            Vector3 popupPosition = hitWorldPosition != Vector3.zero ? hitWorldPosition : target.transform.position;
-            DamagePopupService.Show(DamagePopupRequest.Element(element.damage, popupPosition, element.elementType));
         }
     }
 
