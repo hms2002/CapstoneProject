@@ -13,6 +13,8 @@ public interface ISlimeQueenBodyInflateHost
     /// <summary>몸 부풀림 원형 경고를 표시합니다.</summary>
     void ShowBodyInflateWarning();
 
+    void CleanupBodyInflatePresentation();
+
     /// <summary>몸 부풀림 범위 안의 플레이어에게 효과를 적용합니다.</summary>
     void ApplyBodyInflateImpact(AbilitySpec sourceSpec);
 }

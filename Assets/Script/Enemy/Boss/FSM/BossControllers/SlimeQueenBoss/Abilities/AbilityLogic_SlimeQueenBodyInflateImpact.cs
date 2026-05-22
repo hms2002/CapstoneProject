@@ -59,6 +59,8 @@ public sealed class AbilityLogic_SlimeQueenBodyInflateImpact : AbilityLogic
         }
         finally
         {
+            slimeQueen.CleanupBodyInflatePresentation();
+
             if (phaseOneQueen != null)
             {
                 phaseOneQueen.ResetBodyInflateReadyAnimation();
