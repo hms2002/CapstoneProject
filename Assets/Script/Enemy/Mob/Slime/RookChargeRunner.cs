@@ -645,7 +645,7 @@ public class RookChargeRunner : MonoBehaviour, IMobPatternRunner, IMobPresentati
     /// <summary>플레이어 감지용 트리거 콜라이더를 보장합니다.</summary>
     private void EnsureContactTriggerCollider()
     {
-        Collider2D[] colliders = GetComponents<Collider2D>();
+        Collider2D[] colliders = GetComponentsInChildren<Collider2D>(true);
         for (int i = 0; i < colliders.Length; i++)
         {
             Collider2D existingCollider = colliders[i];
@@ -653,7 +653,7 @@ public class RookChargeRunner : MonoBehaviour, IMobPatternRunner, IMobPresentati
                 return;
         }
 
-        BoxCollider2D bodyCollider = GetComponent<BoxCollider2D>();
+        BoxCollider2D bodyCollider = GetComponentInChildren<BoxCollider2D>(true);
         if (bodyCollider == null) return;
 
         BoxCollider2D triggerCollider = gameObject.AddComponent<BoxCollider2D>();
