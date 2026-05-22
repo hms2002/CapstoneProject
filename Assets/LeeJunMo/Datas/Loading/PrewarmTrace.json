@@ -1,18 +1,6 @@
 {
     "sessions": [
         {
-            "sessionId": "73d1a20351fa43a7857927b020babb91",
-            "startedUtc": "2026-05-21T10:40:29.5830582Z",
-            "endedUtc": "2026-05-21T10:40:30.8696033Z",
-            "entries": []
-        },
-        {
-            "sessionId": "1d3dfbe5182d49e4b9e7779f95db8557",
-            "startedUtc": "2026-05-21T11:06:11.0605831Z",
-            "endedUtc": "2026-05-21T11:06:12.3759041Z",
-            "entries": []
-        },
-        {
             "sessionId": "2d1535b31c9847a3ab3c76fb38dd3e39",
             "startedUtc": "2026-05-21T11:24:19.7322739Z",
             "endedUtc": "2026-05-21T11:24:20.9288971Z",
@@ -118,6 +106,29 @@
             "sessionId": "6b5b23c8fe0c49cdb46966aa9a52ed2a",
             "startedUtc": "2026-05-21T14:51:40.4735665Z",
             "endedUtc": "2026-05-21T14:51:41.8682998Z",
+            "entries": []
+        },
+        {
+            "sessionId": "6fc19fcdf1fe42c8a04709c8e577164d",
+            "startedUtc": "2026-05-22T06:21:43.0896746Z",
+            "endedUtc": "2026-05-22T06:26:27.8414060Z",
+            "entries": [
+                {
+                    "prefabPath": "Assets/HeoMinSeok/_Project/Prefabs/VFX/Element/ElectrocutedSparkParticle.prefab",
+                    "prefabName": "ElectrocutedSparkParticle",
+                    "totalSpawns": 436,
+                    "coldSpawns": 436,
+                    "firstSeenSeconds": 15.509323120117188,
+                    "lastSeenSeconds": 284.7377624511719,
+                    "firstSceneName": "SlimeCorridor",
+                    "lastSceneName": "SlimeCorridor"
+                }
+            ]
+        },
+        {
+            "sessionId": "29059de562af48288cfbbaeb67402a26",
+            "startedUtc": "2026-05-22T07:05:45.8238333Z",
+            "endedUtc": "2026-05-22T07:05:47.3897037Z",
             "entries": []
         }
     ]

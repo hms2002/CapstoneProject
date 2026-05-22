@@ -25,6 +25,20 @@ Prevention:
 
 ## Active Entries
 
+## 2026-05-22 - Detached Telegraph Cleanup Was Owned Only By Caster Coroutine
+
+Context:
+SlimeQueenP2Short body inflate could leave its circular warning blinking in the scene when the boss died during the warning window.
+
+Cause:
+The warning was created as a detached `AttackTelegraphView`, while its timed destroy coroutine ran on the caster's `AttackTelegraphService`. If the caster was destroyed before the coroutine completed, the detached warning had no remaining owner-held cleanup path.
+
+Fix:
+Body inflate warning views are now retained by the Slime Queen body-inflate host and cleared from ability `finally`, pattern end/abort, disable, and destroy paths.
+
+Prevention:
+Detached telegraph or presentation views must either be self-owned for their lifetime or retained by the gameplay owner that can clear them during cancel, death, disable, and destroy cleanup. Do not rely only on a coroutine hosted by an object that may die before the detached view.
+
 ## 2026-05-19 - Affection Reward UI Waited Behind Dialogue Blocker
 
 Context:

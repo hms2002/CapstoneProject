@@ -100,6 +100,7 @@ public abstract class SlimeQueenPhaseTwoBase : SlimeQueenBossBase, ISlimeQueenBo
     private bool isJointPatternLocked;
     private bool isDrainControlLocked;
     private SpeechBubbleComponent speechBubble;
+    private readonly List<AttackTelegraphView> bodyInflateWarningViews = new List<AttackTelegraphView>();
     private readonly List<AttackTelegraphView> castlingWarningViews = new List<AttackTelegraphView>();
 
     public int Phase2SlamCount => Mathf.Max(1, slamCount);
@@ -193,8 +194,15 @@ public abstract class SlimeQueenPhaseTwoBase : SlimeQueenBossBase, ISlimeQueenBo
 
     protected override void OnDestroy()
     {
+        CleanupBodyInflatePresentation();
         ForceCleanupCastlingPattern();
         base.OnDestroy();
+    }
+
+    protected virtual void OnDisable()
+    {
+        CleanupBodyInflatePresentation();
+        ForceCleanupCastlingPattern();
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -514,6 +522,8 @@ public abstract class SlimeQueenPhaseTwoBase : SlimeQueenBossBase, ISlimeQueenBo
     /// <summary>몸 부풀림 원형 경고를 보스 위치에 표시합니다.</summary>
     public void ShowBodyInflateWarning()
     {
+        CleanupBodyInflatePresentation();
+
         AttackTelegraphService service = GetTelegraphService();
         if (service == null)
             return;
@@ -524,7 +534,14 @@ public abstract class SlimeQueenPhaseTwoBase : SlimeQueenBossBase, ISlimeQueenBo
             bodyInflateWarningSeconds,
             bodyInflateWarningStyle);
 
-        service.SpawnDetachedView(spec);
+        AttackTelegraphView view = service.SpawnDetachedView(spec);
+        if (view != null)
+            bodyInflateWarningViews.Add(view);
+    }
+
+    public void CleanupBodyInflatePresentation()
+    {
+        ClearViews(bodyInflateWarningViews);
     }
 
     /// <summary>몸 부풀림 범위 안의 플레이어에게 피해와 넉백을 적용합니다.</summary>
@@ -600,6 +617,7 @@ public abstract class SlimeQueenPhaseTwoBase : SlimeQueenBossBase, ISlimeQueenBo
     /// <summary>캐슬링 관련 임시 상태를 패턴 종료 시 항상 정리합니다.</summary>
     protected override void OnPatternEnd(BossPatternEntry patternEntry, bool forced)
     {
+        CleanupBodyInflatePresentation();
         ForceCleanupCastlingPattern();
         base.OnPatternEnd(patternEntry, forced);
     }
@@ -758,7 +776,10 @@ public abstract class SlimeQueenPhaseTwoBase : SlimeQueenBossBase, ISlimeQueenBo
         {
             AttackTelegraphView view = views[i];
             if (view != null)
+            {
+                view.HideImmediate();
                 Destroy(view.gameObject);
+            }
         }
 
         views.Clear();
