@@ -38,7 +38,7 @@ public class Rook : Slime, IMobTargetDetectionOverride
     [SerializeField] private float chaseAssistRange = 6f;
     [SerializeField] private float inRoomChargeRangeMultiplier = 2f;
     [SerializeField, Min(0)] private int splitCount = 2;
-    [SerializeField] private bool logChargeCastDebug = true;
+    [SerializeField] private bool logChargeCastDebug;
     [SerializeField] private bool logRookFsmDebug;
     [SerializeField] private bool logChargeHitCandidateDebug;
     [SerializeField] private float rookFsmLogInterval = 0.35f;
@@ -206,7 +206,7 @@ public class Rook : Slime, IMobTargetDetectionOverride
     {
         CancelAbility();
 
-        if (!suppressSplit)
+        if (!suppressSplit && !IsPitFallDeath)
             SpawnSplit<Knight>(splitPrefab, splitCount, SplitSpread);
 
         base.OnDeathStarted();
@@ -295,7 +295,6 @@ public class Rook : Slime, IMobTargetDetectionOverride
 
         Vector2 direction = GetDirection(targetObject);
         ChargeCastResult chargeCast = ResolveChargeCastCached(direction, targetObject);
-        LogChargeCastDebug(direction, chargeCast);
         context = new ChargeContext(
             targetObject,
             chargeCast.Start,
@@ -566,27 +565,6 @@ public class Rook : Slime, IMobTargetDetectionOverride
     private Vector2 ResolveChargeStartPosition(Vector2 direction)
     {
         return transform.position;
-    }
-
-    /// <summary>
-    /// 책임:
-    /// - 룩 돌진 경고/이동이 참조하는 cast 시작점과 끝점 데이터를 테스트 중 확인할 수 있게 출력한다.
-    /// - 계산 데이터와 화면에 보이는 telegraph가 어긋날 때 원인을 빠르게 분리한다.
-    /// </summary>
-    private void LogChargeCastDebug(Vector2 direction, ChargeCastResult chargeCast)
-    {
-        if (!logChargeCastDebug)
-            return;
-
-        Vector2 safeDirection = direction.sqrMagnitude > 0.0001f ? direction.normalized : Vector2.right;
-        Vector2 end = chargeCast.Start + safeDirection * chargeCast.Distance;
-        string blockerName = chargeCast.Blocker != null ? chargeCast.Blocker.name : "none";
-        string colliderName = collision != null ? $"{collision.name}/{collision.GetType().Name}" : "none";
-
-        Debug.Log(
-            $"[RookChargeCast] caster={name}, casterPos={transform.position}, bodyCollider={colliderName}, " +
-            $"start={chargeCast.Start}, end={end}, direction={safeDirection}, distance={chargeCast.Distance:F2}, blocker={blockerName}",
-            this);
     }
 
     /// <summary>

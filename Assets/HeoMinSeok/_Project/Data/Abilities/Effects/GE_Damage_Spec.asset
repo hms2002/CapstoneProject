@@ -195,3 +195,4 @@ MonoBehaviour:
   tokenDamageKey: {fileID: 0}
   fallbackTokenDamage: 1
   logElementDamagePopup: 1
+  logDamageApplication: 1

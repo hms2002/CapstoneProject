@@ -109,7 +109,9 @@ public class Bishop : Slime
     protected override void OnDeathStarted()
     {
         CancelAbility();
-        SpawnSplit<Wizard>(splitPrefab, splitCount, SplitSpread);
+        if (!IsPitFallDeath)
+            SpawnSplit<Wizard>(splitPrefab, splitCount, SplitSpread);
+
         base.OnDeathStarted();
     }
 
