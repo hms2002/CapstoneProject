@@ -21,6 +21,7 @@ public class Mob : Enemy
     private ChestMonsterKillLock lockTrackingChestLock;
     private MonsterSpawnRoomGroup lockTrackingRoomGroup;
     private IEnemyChaseIntent resolvedChaseIntent;
+    private PitFallReaction2D pitFallReaction;
     private bool triedInitializeStateMachine;
 
     protected EnemyChaseIntent2D ChaseIntent => chaseIntent;
@@ -34,6 +35,7 @@ public class Mob : Enemy
         if (chaseIntent == null)
             chaseIntent = GetComponent<EnemyChaseIntent2D>();
 
+        pitFallReaction = GetComponentInChildren<PitFallReaction2D>(includeInactive: true);
         resolvedChaseIntent = ResolveChaseIntent();
 
         hasMoveBool = CheckMoveBool();
@@ -46,9 +48,30 @@ public class Mob : Enemy
         EnsureTargetResolved();
 
         if (TryInitializeStateMachine())
+        {
+            if (IsPitFallSuppressed())
+            {
+                aiContext?.PerformSuppressionCleanup();
+                return;
+            }
+
             stateMachine?.Tick(aiContext);
+        }
 
         UpdateAnimation();
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 구덩이 낙하 연출 중 일반 몬스터 FSM/공격/추적 갱신을 멈춰 전투 로직이 연출 상태와 따로 놀지 않게 한다.
+    /// - PitFallReaction2D가 붙은 몬스터만 이 억제 규칙을 적용해 authoring 선택성을 유지한다.
+    /// </summary>
+    private bool IsPitFallSuppressed()
+    {
+        if (pitFallReaction == null)
+            pitFallReaction = GetComponentInChildren<PitFallReaction2D>(includeInactive: true);
+
+        return pitFallReaction != null && pitFallReaction.IsPitFallActive;
     }
 
     /// <summary>

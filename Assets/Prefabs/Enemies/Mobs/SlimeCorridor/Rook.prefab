@@ -37,6 +37,7 @@ GameObject:
   - component: {fileID: 5188487318859962288}
   - component: {fileID: 8223012456081861757}
   - component: {fileID: 7001000000000000002}
+  - component: {fileID: 6600200000000002}
   - component: {fileID: 6600200000000001}
   m_Layer: 31
   m_Name: Rook
@@ -315,7 +316,7 @@ MonoBehaviour:
   chaseAssistRange: 6
   inRoomChargeRangeMultiplier: 2
   splitCount: 2
-  logChargeCastDebug: 1
+  logChargeCastDebug: 0
   logRookFsmDebug: 0
   logChargeHitCandidateDebug: 0
   rookFsmLogInterval: 0.35
@@ -729,6 +730,24 @@ MonoBehaviour:
   samplePointOverride: {fileID: 0}
   sampleOffset: {x: 0, y: -0.5, z: 0}
   spriteMaskRefreshInterval: 0.25
+--- !u!114 &6600200000000002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 625522859161183429}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9e4d6a4fc32b4d0aa77d0a4791d6f207, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  canReact: 1
+  stopMovementOnStart: 1
+  cancelMobAbilityOnStart: 1
+  requestDeathOnComplete: 1
+  useDefaultRespawn: 0
+  removeFallingEffectOnComplete: 0
 --- !u!114 &6600200000000001
 MonoBehaviour:
   m_ObjectHideFlags: 0

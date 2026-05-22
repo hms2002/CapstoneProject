@@ -168,6 +168,7 @@ public class RookChargeRunner : MonoBehaviour, IMobPatternRunner, IMobPresentati
             }
 
             PlayWallImpactCameraShakeIfDashReachedDestination();
+
         }
         finally
         {
@@ -216,7 +217,6 @@ public class RookChargeRunner : MonoBehaviour, IMobPatternRunner, IMobPresentati
         {
             fellIntoHole = true;
             StopDash();
-            owner.FallIntoHole();
             return;
         }
 
@@ -243,7 +243,6 @@ public class RookChargeRunner : MonoBehaviour, IMobPatternRunner, IMobPresentati
             geometry.AngleDeg,
             geometry.Duration,
             warningStyle));
-        LogWarningGeometry(geometry);
         ShowWarningAccents(geometry);
     }
 
@@ -252,19 +251,6 @@ public class RookChargeRunner : MonoBehaviour, IMobPatternRunner, IMobPresentati
     {
         telegraphService?.HideCurrent();
         HideWarningTelegraphs();
-    }
-
-    /// <summary>
-    /// 책임:
-    /// - 룩 돌진의 붉은 경고 박스가 의도하는 시작/끝/중심 데이터를 테스트 로그로 출력한다.
-    /// - cast 결과와 실제 렌더링 위치가 어긋나는 원인을 데이터/프리팹 중 어디인지 분리한다.
-    /// </summary>
-    private void LogWarningGeometry(WarningGeometry geometry)
-    {
-        Debug.Log(
-            $"[RookWarningGeometry] caster={name}, redStart={geometry.Start}, redCenter={geometry.SegmentCenter}, " +
-            $"redEnd={geometry.SegmentEnd}, redLength={geometry.SegmentLength:F2}, width={geometry.Width:F2}, angle={geometry.AngleDeg:F1}",
-            this);
     }
 
     /// <summary>

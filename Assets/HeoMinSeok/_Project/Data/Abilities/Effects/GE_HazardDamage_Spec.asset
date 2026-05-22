@@ -50,3 +50,5 @@ MonoBehaviour:
   absorbShieldAttribute: {fileID: 11400000, guid: dfd6b6d2319c46acb6a5564fe8798a21, type: 2}
   tokenDamageKey: {fileID: 0}
   fallbackTokenDamage: 1
+  logElementDamagePopup: 1
+  logDamageApplication: 1
