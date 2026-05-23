@@ -261,7 +261,8 @@ namespace UnityGAS.Sample
                 knockbackEffect: data.knockbackEffect,
                 snapshot: snapshot,
                 hitConfirmedTag: data.hitConfirmedTag,
-                causer: system.gameObject);
+                causer: system.gameObject,
+                hitImpactCueKind: step.hitImpactCueKind);
 
             MeleeHitboxActor hitboxPrefab = ResolveHitboxPrefab(data, step);
             var hitbox = Object.Instantiate(hitboxPrefab, center, Quaternion.identity);

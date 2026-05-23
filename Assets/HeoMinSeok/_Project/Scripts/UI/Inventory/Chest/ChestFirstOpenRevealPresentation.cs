@@ -293,6 +293,40 @@ public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
         SnapPostRevealSlideFadeOpen();
     }
 
+    public void ApplyManualRevealProgress(float progress, bool enableInteraction, bool stopPresentationEffects = true)
+    {
+        if (!gameObject.activeSelf)
+            gameObject.SetActive(true);
+
+        StopActiveRoutine(stopPresentationEffects);
+        ResolveReferences();
+        CapturePanelOpenPositions(force: false);
+        ApplyPanelPositions(chestPanelOpenPosition, inventoryPanelOpenPosition);
+        ApplyRevealPose(progress);
+        SetInteractionEnabled(enableInteraction);
+    }
+
+    public void PlayManualOpenRevealVfx(bool playSlotRevealParticles = true)
+    {
+        if (!gameObject.activeSelf)
+            gameObject.SetActive(true);
+
+        ResolveReferences();
+        ResetRevealParticleState();
+        PlayOpenUiParticles();
+        if (playSlotRevealParticles)
+            PlayVisibleSlotRevealParticles(forceVisible: true);
+    }
+
+    public void PlayManualSlotRevealVfx()
+    {
+        if (!gameObject.activeSelf)
+            gameObject.SetActive(true);
+
+        ResolveReferences();
+        PlayVisibleSlotRevealParticles(forceVisible: true);
+    }
+
     public void ConfigurePanels(
         RectTransform chestPanelOverride,
         RectTransform inventoryPanelOverride,
@@ -2019,21 +2053,23 @@ public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
         return transform as RectTransform;
     }
 
-    private void StopActiveRoutine()
+    private void StopActiveRoutine(bool stopPresentationEffects = true)
     {
         EndPanelMotionOwnership();
         ReleaseExternalUiInputBlockIfNeeded();
 
         if (activeRoutine == null)
         {
-            StopPresentationParticles();
+            if (stopPresentationEffects)
+                StopPresentationParticles();
             StopImpactChestShake(resetPosition: true);
             return;
         }
 
         StopCoroutine(activeRoutine);
         activeRoutine = null;
-        StopPresentationParticles();
+        if (stopPresentationEffects)
+            StopPresentationParticles();
         StopImpactChestShake(resetPosition: true);
     }
 

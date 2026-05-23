@@ -13,11 +13,12 @@ MonoBehaviour:
   m_Name: Node_639129975995253496
   m_EditorClassIdentifier: Assembly-CSharp::UpgradeNodeSO
   nodeID: 749890120
-  upgradeName: Upgrade 5,1
-  description: 
+  upgradeName: "\uC720\uBB3C \uAC00\uBC29 \uD655\uC7A5 II"
+  description: "\uC720\uBB3C \uC2AC\uB86F 16\uCE78 \u2192 20\uCE78"
   icon: {fileID: 0}
   price: 0
-  effects: []
+  effects:
+  - {fileID: 11400000, guid: 3b8a9d5960a943ef99d6e7dbb21db24c, type: 2}
   unlockedNodeIDs: 07d62be4
   requiredParentIDs: 21f1cfc4
   nextNodes:

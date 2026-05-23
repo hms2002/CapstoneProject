@@ -43,7 +43,7 @@ public class RelicInventory : MonoBehaviour
     // 유물 1개당 1개 생성할 런타임 토큰(중복 구분)
     private class RelicRuntimeToken : ScriptableObject { }
 
-    [SerializeField] private int capacity = 18;
+    [SerializeField] private int capacity = 12;
 
     // ✅ 게임 룰: 같은 relicId는 인벤토리에 1개만 존재해야 합니다.
     // 중복 획득은 슬롯을 늘리지 않고 강화 레벨을 합산하여 1개로 유지합니다.

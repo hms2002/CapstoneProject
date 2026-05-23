@@ -2,7 +2,7 @@
 status: active
 authority: structure-memory
 category: script-system-map
-last_reviewed: 2026-05-19
+last_reviewed: 2026-05-20
 ---
 
 # Scene Runtime Save Structure
@@ -18,7 +18,7 @@ Map scene/run transition, title-to-game bootstrap, player runtime capture/restor
 | Scene / Run Transition | 39 | Scene domain, player runtime capture/restore, portals, run progress, transition policies, route catalogs, title profile flow. |
 | Save Data | 8 | Game/profile/run data managers, repositories, runtime state DTOs, merchant/shortcut progress. |
 | Run Timer | 6 | Run timer HUD, timer policy/config, time limit system, time-over return flow. |
-| Map / Shortcuts | 10 | Shortcut doors, door ID helpers, map gimmicks, legacy map interaction object. |
+| Map / Shortcuts | 11 | Shortcut doors, construction site tilemap modules, door ID helpers, map gimmicks, legacy map interaction object. |
 
 ### Scene / Run Transition Breakdown
 
@@ -54,6 +54,7 @@ Map scene/run transition, title-to-game bootstrap, player runtime capture/restor
 - `Assets/LeeJunMo/Script/SceneManagement/RunProgressCoordinator.cs`
 - `Assets/LeeJunMo/Script/SaveData/GamePlayDataManager.cs`
 - `Assets/LeeJunMo/Script/SaveData/GameDataSaveCoordinator.cs`
+- `Assets/LeeJunMo/Script/Map/Construction/ConstructionSiteTilemapModule.cs`
 
 ## Ownership And Lifecycle
 
@@ -71,7 +72,7 @@ Map scene/run transition, title-to-game bootstrap, player runtime capture/restor
 - Treat `GamePlayDataManager` as run-session state, not durable save ownership. Pending run progress commit/clear policy sits in `RunSessionProgressCommitPolicy`, run start/end mutation sits in `RunSessionLifecycleService`, and volatile timer/pending transition/player/reward/affection/shortcut mutation sits in `RunSessionStateService`. The manager still owns singleton lifecycle, public compatibility APIs, run events, and save flush orchestration.
 - Treat `RunProgressCoordinator` as a boss battle-end/run-progress bridge when reviewing boss reward, portal, and timer behavior. Boss reward modifier data is read through `RunRewardModifierSnapshot`, route-key/final-boss/context policy sits in `BossRunProgressPolicy`, and unhandled reward/portal authoring warnings sit in `BossRewardFallbackService`.
 - Treat `PlayerSceneRestoreBootstrapper` as the player runtime restore lifecycle and handoff owner. Player lookup, scene eligibility, item database readiness, and post-restore equipment matching sit in `PlayerSceneRestorePlanner`. Pending equipment resolvability, player component gathering, and restore result creation now sit behind `PlayerSceneRestoreExecutionService`; confirmation and pending-state consumption sit in `PlayerSceneRestoreConfirmationService`.
-- Planned run-internal special NPCs cross this boundary when they unlock permanent shortcuts, track construction progress across runs, or move the player within the same scene. Keep durable unlock/progress state in save/run progression owners, and keep same-scene teleport separate from `ScenePortal` scene transitions.
+- Run-internal special NPCs cross this boundary when they unlock permanent shortcuts, track construction progress across runs, or move the player within the same scene. Construction progress now uses `GameData.runSpecialNpcData.constructionRecords` plus `GamePlayData.pendingRunSpecialNpcConstructionStarts`, and run-active starts commit through `RunSessionProgressCommitPolicy`. Completed construction toggles scene-authored `ConstructionSiteTilemapModule` blocked/open roots and keeps the durable shortcut state on `DoorObject` / `ShortcutProgressService`. Same-scene teleport remains separate from `ScenePortal` scene transitions.
 
 ## Refactor Candidates
 
@@ -90,6 +91,7 @@ Map scene/run transition, title-to-game bootstrap, player runtime capture/restor
 - Add runtime state restoration through player runtime snapshot/restore buckets.
 - Add save data only through save coordinator/repository/data model patterns.
 - For run special NPCs, use [Run Special NPC Structure](./RunSpecialNpcStructure.md) as the feature map and this document for shortcut/save/teleport persistence boundaries.
+- For construction NPCs, durable progress belongs in `RunSpecialNpcSaveData`, pending run starts belong in `GamePlayData`, scene path presentation belongs in `ConstructionSiteTilemapModule`, and permanent path unlocks should still use `DoorObject` / `ShortcutProgressService`.
 
 ## Known Pitfalls
 
@@ -102,7 +104,8 @@ Map scene/run transition, title-to-game bootstrap, player runtime capture/restor
 - Scene/run/save helper boundaries have been moved to dedicated helper files. Generated project files now include the recent helper files and Visual Studio MSBuild errors-only verification passes, but Unity Editor import/compile confirmation remains the final verification path for scene-facing flows.
 - Do not split boss progress/reward/portal behavior without checking the resolved `Docs/RefactorBacklog/BossDropResponsibilitySplit.md` and the current battle-end validator behavior.
 - Do not claim compile/import safety without Unity verification after schema or MonoBehaviour changes.
-- Construction NPC state may require save-schema or map-progress changes. Prefer existing shortcut progress where it fits, and review migration/default behavior before adding new durable fields.
+- Construction NPC state now adds save-schema fields. Keep `GameDataManager.NormalizeLoadedData()` and save-time normalization updated for existing profiles, and do not claim Unity import safety without Editor verification.
+- Construction site additive tilemaps require active-object filtering in tilemap scanners. If a consumer searches inactive tilemaps without filtering, unopened `OpenState` ground or closed `BlockedState` walls can affect safety/drop/path decisions.
 
 ## Promotion Candidate
 

@@ -331,6 +331,7 @@ public sealed class FragmentShardActor : MonoBehaviour
             finalStaggerBuildUp = payload.finalStaggerBuildUp,
             finalKnockbackImpulse = payload.finalKnockbackImpulse,
             hitConfirmedTag = payload.hitConfirmedTag,
+            hitImpactCueKind = payload.hitImpactCueKind,
             causer = gameObject,
             isCriticalHit = payload.isCriticalHit,
             elementBuildUps = payload.elementBuildUps,

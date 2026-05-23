@@ -132,10 +132,15 @@ public class UIManager : MonoBehaviour
 
     private bool CanOpenUI(IStackableUI ui, Object allowedExternalBlockOwner)
     {
+        return CanOpenUI(ui, allowedExternalBlockOwner, false);
+    }
+
+    private bool CanOpenUI(IStackableUI ui, Object allowedExternalBlockOwner, bool ignoreExternalInputBlockers)
+    {
         if (ui == null)
             return false;
 
-        if (IsNewUiOpeningBlocked(allowedExternalBlockOwner))
+        if (IsNewUiOpeningBlocked(allowedExternalBlockOwner, ignoreExternalInputBlockers))
             return false;
 
         var snapshot = popupStack.Snapshot();
@@ -150,6 +155,11 @@ public class UIManager : MonoBehaviour
         }
 
         return true;
+    }
+
+    public bool CanOpenFlowOwnedUI(IStackableUI ui)
+    {
+        return CanOpenUI(ui, null, true);
     }
 
     public bool TryPushUI(IStackableUI ui)
@@ -173,6 +183,15 @@ public class UIManager : MonoBehaviour
         return true;
     }
 
+    public bool TryPushFlowOwnedUI(IStackableUI ui)
+    {
+        if (!CanOpenFlowOwnedUI(ui))
+            return false;
+
+        PushUI(ui, null, true);
+        return true;
+    }
+
     public void PushUI(IStackableUI ui)
     {
         PushUI(ui, null);
@@ -180,10 +199,15 @@ public class UIManager : MonoBehaviour
 
     private void PushUI(IStackableUI ui, Object allowedExternalBlockOwner)
     {
+        PushUI(ui, allowedExternalBlockOwner, false);
+    }
+
+    private void PushUI(IStackableUI ui, Object allowedExternalBlockOwner, bool ignoreExternalInputBlockers)
+    {
         if (ui == null)
             return;
 
-        if (!CanOpenUI(ui, allowedExternalBlockOwner))
+        if (!CanOpenUI(ui, allowedExternalBlockOwner, ignoreExternalInputBlockers))
             return;
 
         popupStack.Push(ui);
@@ -624,9 +648,12 @@ public class UIManager : MonoBehaviour
     /// <summary>
     /// Blocks new stack UI openings while loading or an explicit external game flow blocker is active.
     /// </summary>
-    private bool IsNewUiOpeningBlocked(Object allowedExternalBlockOwner = null)
+    private bool IsNewUiOpeningBlocked(Object allowedExternalBlockOwner = null, bool ignoreExternalInputBlockers = false)
     {
-        return IsInputBlockedByLoading() ||
+        if (IsInputBlockedByLoading())
+            return true;
+
+        return !ignoreExternalInputBlockers &&
                HasExternalUiInputBlockersExcept(allowedExternalBlockOwner);
     }
 

@@ -13,11 +13,12 @@ MonoBehaviour:
   m_Name: Node_639065978627947690
   m_EditorClassIdentifier: 
   nodeID: -993005279
-  upgradeName: Up_5_0
-  description: 
+  upgradeName: "\uC720\uBB3C \uAC00\uBC29 \uD655\uC7A5 I"
+  description: "\uC720\uBB3C \uC2AC\uB86F 12\uCE78 \u2192 16\uCE78"
   icon: {fileID: 0}
   price: 0
-  effects: []
+  effects:
+  - {fileID: 11400000, guid: 510cfeee010347c882ca020189bfbf46, type: 2}
   unlockedNodeIDs: 486ab22c
   requiredParentIDs: 
   nextNodes:

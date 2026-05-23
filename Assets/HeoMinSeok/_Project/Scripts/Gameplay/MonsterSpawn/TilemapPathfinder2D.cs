@@ -14,6 +14,7 @@ public sealed class TilemapPathfinder2D : MonoBehaviour
     [Header("Grid")]
     [SerializeField] private Grid grid;
     [SerializeField] private Tilemap groundTilemap;
+    [SerializeField] private Tilemap[] additionalGroundTilemaps;
 
     [Header("Collision")]
     [SerializeField] private LayerMask blockedLayers = 1 << 30;
@@ -33,6 +34,7 @@ public sealed class TilemapPathfinder2D : MonoBehaviour
     private readonly Dictionary<Vector2Int, int> gScore = new();
     private readonly List<Vector2Int> openSet = new();
     private readonly HashSet<Vector2Int> closedSet = new();
+    private readonly HashSet<Tilemap> runtimeGroundTilemaps = new();
     private readonly List<Vector2> lastDebugPath = new();
     private Vector2 lastDebugStart;
     private Vector2 lastDebugEnd;
@@ -126,6 +128,22 @@ public sealed class TilemapPathfinder2D : MonoBehaviour
         return false;
     }
 
+    public void RegisterRuntimeGroundTilemap(Tilemap tilemap)
+    {
+        if (tilemap == null)
+            return;
+
+        runtimeGroundTilemaps.Add(tilemap);
+    }
+
+    public void UnregisterRuntimeGroundTilemap(Tilemap tilemap)
+    {
+        if (tilemap == null)
+            return;
+
+        runtimeGroundTilemaps.Remove(tilemap);
+    }
+
     /// <summary>지정한 셀이 막혀 있다면 인접 셀 중 가장 가까운 이동 가능 셀을 찾습니다.</summary>
     private Vector2Int FindNearestWalkableCell(Vector2Int center, int radius)
     {
@@ -216,12 +234,52 @@ public sealed class TilemapPathfinder2D : MonoBehaviour
     /// <summary>지정한 셀이 이동 가능한 셀인지 판정합니다.</summary>
     private bool IsWalkable(Vector2Int cell)
     {
-        if (groundTilemap != null && !groundTilemap.HasTile((Vector3Int)cell))
+        if (!HasGroundTile(cell))
             return false;
 
         Vector2 center = CellToWorld(cell);
         Collider2D blocker = Physics2D.OverlapBox(center, probeSize, 0f, blockedLayers);
         return blocker == null;
+    }
+
+    private bool HasGroundTile(Vector2Int cell)
+    {
+        Vector3Int tileCell = new Vector3Int(cell.x, cell.y, 0);
+        bool hasAnyGroundMap = false;
+
+        if (TryGroundTilemapHasTile(groundTilemap, tileCell, ref hasAnyGroundMap))
+            return true;
+
+        if (additionalGroundTilemaps != null)
+        {
+            for (int i = 0; i < additionalGroundTilemaps.Length; i++)
+            {
+                if (TryGroundTilemapHasTile(additionalGroundTilemaps[i], tileCell, ref hasAnyGroundMap))
+                    return true;
+            }
+        }
+
+        foreach (Tilemap tilemap in runtimeGroundTilemaps)
+        {
+            if (TryGroundTilemapHasTile(tilemap, tileCell, ref hasAnyGroundMap))
+                return true;
+        }
+
+        return !hasAnyGroundMap;
+    }
+
+    private static bool TryGroundTilemapHasTile(Tilemap tilemap, Vector3Int cell, ref bool hasAnyGroundMap)
+    {
+        if (!IsUsableGroundTilemap(tilemap))
+            return false;
+
+        hasAnyGroundMap = true;
+        return tilemap.HasTile(cell);
+    }
+
+    private static bool IsUsableGroundTilemap(Tilemap tilemap)
+    {
+        return tilemap != null && tilemap.isActiveAndEnabled && tilemap.gameObject.activeInHierarchy;
     }
 
     /// <summary>월드 좌표를 pathfinding 셀 좌표로 변환합니다.</summary>

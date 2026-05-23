@@ -70,10 +70,32 @@ public class RewardDisplayService : MonoBehaviour
 
     public void ShowReward(List<UpgradeEffectSO> upgradeEffects = null, List<AffectionEffect> affectionEffects = null, Action callback = null)
     {
+        EnqueueRewardRequest(upgradeEffects, affectionEffects, callback, false);
+    }
+
+    public void ShowFlowOwnedReward(List<UpgradeEffectSO> upgradeEffects = null, List<AffectionEffect> affectionEffects = null, Action callback = null)
+    {
+        if (currentView == null)
+        {
+            Debug.LogWarning("[RewardDisplayService] RewardDisplayUI view is not registered. Flow-owned reward display will be skipped to keep the owning flow moving.", this);
+            callback?.Invoke();
+            return;
+        }
+
+        EnqueueRewardRequest(upgradeEffects, affectionEffects, callback, true);
+    }
+
+    private void EnqueueRewardRequest(
+        List<UpgradeEffectSO> upgradeEffects,
+        List<AffectionEffect> affectionEffects,
+        Action callback,
+        bool allowDuringExternalUiInputBlock)
+    {
         pendingRequests.Enqueue(new PendingRewardRequest(
             upgradeEffects != null ? new List<UpgradeEffectSO>(upgradeEffects) : null,
             affectionEffects != null ? new List<AffectionEffect>(affectionEffects) : null,
-            callback));
+            callback,
+            allowDuringExternalUiInputBlock));
 
         if (currentView == null)
             Debug.LogWarning("[RewardDisplayService] RewardDisplayUI view is not registered yet. Reward display request will be queued.", this);
@@ -95,16 +117,36 @@ public class RewardDisplayService : MonoBehaviour
         if (currentView == null || isShowingReward || pendingRequests.Count == 0)
             return;
 
-        if (UIManager.Instance != null && !UIManager.Instance.CanOpenUI(currentView))
+        PendingRewardRequest request = pendingRequests.Peek();
+        if (!CanPresent(request))
         {
             EnsurePresentationRetry();
             return;
         }
 
         StopPresentationRetry();
-        PendingRewardRequest request = pendingRequests.Dequeue();
+        request = pendingRequests.Dequeue();
         isShowingReward = true;
-        currentView.ShowReward(request.upgradeEffects, request.affectionEffects, request.callback);
+        if (!currentView.ShowReward(
+                request.upgradeEffects,
+                request.affectionEffects,
+                request.callback,
+                request.allowDuringExternalUiInputBlock))
+        {
+            isShowingReward = false;
+            request.callback?.Invoke();
+            TryPresentNext();
+        }
+    }
+
+    private bool CanPresent(PendingRewardRequest request)
+    {
+        if (UIManager.Instance == null)
+            return true;
+
+        return request.allowDuringExternalUiInputBlock
+            ? UIManager.Instance.CanOpenFlowOwnedUI(currentView)
+            : UIManager.Instance.CanOpenUI(currentView);
     }
 
     private void EnsurePresentationRetry()
@@ -128,7 +170,7 @@ public class RewardDisplayService : MonoBehaviour
     {
         while (currentView != null && !isShowingReward && pendingRequests.Count > 0)
         {
-            if (UIManager.Instance == null || UIManager.Instance.CanOpenUI(currentView))
+            if (CanPresent(pendingRequests.Peek()))
                 break;
 
             yield return null;
@@ -143,12 +185,18 @@ public class RewardDisplayService : MonoBehaviour
         public readonly List<UpgradeEffectSO> upgradeEffects;
         public readonly List<AffectionEffect> affectionEffects;
         public readonly Action callback;
+        public readonly bool allowDuringExternalUiInputBlock;
 
-        public PendingRewardRequest(List<UpgradeEffectSO> upgradeEffects, List<AffectionEffect> affectionEffects, Action callback)
+        public PendingRewardRequest(
+            List<UpgradeEffectSO> upgradeEffects,
+            List<AffectionEffect> affectionEffects,
+            Action callback,
+            bool allowDuringExternalUiInputBlock)
         {
             this.upgradeEffects = upgradeEffects;
             this.affectionEffects = affectionEffects;
             this.callback = callback;
+            this.allowDuringExternalUiInputBlock = allowDuringExternalUiInputBlock;
         }
     }
 }

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using CapstoneAudio;
 using UnityEngine;
 using UnityGAS;
 
@@ -9,6 +10,8 @@ public sealed class DemonKingController : BossControllerBase
     [Header("Demon King Runtime")]
     [SerializeField] private bool configureRuntimePatternsOnStart = true;
     [SerializeField] private EgoSwordActor egoSword;
+    [SerializeField] private AbilityDefinition egoSwordVerticalStrikeAbility;
+    [SerializeField] private AbilityDefinition egoSwordCrossLaserAbility;
     [SerializeField] private Transform arenaCenterPoint;
 
     [Header("Combat Shared Data")]
@@ -28,17 +31,22 @@ public sealed class DemonKingController : BossControllerBase
     [SerializeField, Min(0.1f)] private float playerDashDistanceReference = 4f;
     [SerializeField] private bool faceTargetDuringCombat = true;
 
+    [Header("Groggy Counter Presentation")]
+    [SerializeField] private SoundRef groggyRecoverCounterWarningPingSound;
+
     private readonly Dictionary<AbilityDefinition, DemonKingPatternRole> roleByAbility = new();
     private DemonKingRuntimeData runtimeData;
     private AttackTelegraphService telegraphService;
     private int faceTargetLockCount;
     private bool runtimePatternsConfigured;
+    private bool authoredPatternRolesBound;
 
     private BossPatternEntry throwSwordEntry;
     private BossPatternEntry recallSwordEntry;
     private BossPatternEntry hp50RushEntry;
     private BossPatternEntry groggyRecoverCounterEntry;
     private BossPatternEntry finalDesperationEntry;
+    private bool missingEgoSwordSubPatternAbilityLogged;
 
     public DemonKingRuntimeData RuntimeData
     {
@@ -55,6 +63,7 @@ public sealed class DemonKingController : BossControllerBase
     public LayerMask WallMask => wallMask;
     public float PlayerMoveSpeedReference => playerMoveSpeedReference;
     public float PlayerDashDistanceReference => playerDashDistanceReference;
+    public SoundRef GroggyRecoverCounterWarningPingSound => groggyRecoverCounterWarningPingSound;
     public EgoSwordActor EgoSword => ResolveEgoSword();
 
     public LayerMask TargetMask
@@ -80,11 +89,14 @@ public sealed class DemonKingController : BossControllerBase
 
     protected override void Start()
     {
-        if (configureRuntimePatternsOnStart || ConfiguredPhaseCount == 0)
+        if (ShouldConfigureRuntimePatterns())
             ConfigureRuntimePatternsIfNeeded();
+        else
+            BindAuthoredPatternRolesIfNeeded();
 
         ResolveEgoSword()?.AttachToOwner();
         base.Start();
+        RegisterEgoSwordSubPatternAbilities();
     }
 
     protected override void Update()
@@ -106,9 +118,24 @@ public sealed class DemonKingController : BossControllerBase
             ForceFinalDesperationNow();
     }
 
+    protected override void OnDeathStarted()
+    {
+        CleanupEgoSwordForBattleEnd();
+        base.OnDeathStarted();
+    }
+
+    protected override void OnDestroy()
+    {
+        CleanupEgoSwordForBattleEnd();
+        base.OnDestroy();
+    }
+
     public override BossPatternEntry SelectNextPattern()
     {
-        ConfigureRuntimePatternsIfNeeded();
+        if (ShouldConfigureRuntimePatterns())
+            ConfigureRuntimePatternsIfNeeded();
+        else
+            BindAuthoredPatternRolesIfNeeded();
 
         if (!RuntimeData.FinalDesperationStarted &&
             CurrentHealthRatio <= finalDesperationHpRatio &&
@@ -262,6 +289,16 @@ public sealed class DemonKingController : BossControllerBase
         RuntimeData.RecordEgoSwordPatternUse(droppedSwordPatternsBeforeRecall);
     }
 
+    public bool TryStartEgoSwordVerticalStrikeSubPattern()
+    {
+        return TryStartEgoSwordSubPatternAbility(egoSwordVerticalStrikeAbility, "EgoSwordVerticalStrike");
+    }
+
+    public bool TryStartEgoSwordCrossLaserSubPattern()
+    {
+        return TryStartEgoSwordSubPatternAbility(egoSwordCrossLaserAbility, "EgoSwordCrossLaser");
+    }
+
     public void CompleteEgoSwordRecall()
     {
         RuntimeData.SetSwordHeld();
@@ -312,13 +349,28 @@ public sealed class DemonKingController : BossControllerBase
         return egoSword;
     }
 
+    private void CleanupEgoSwordForBattleEnd()
+    {
+        if (!Application.isPlaying)
+            return;
+
+        RuntimeData.SetSwordHeld();
+
+        if (egoSword == null)
+            return;
+
+        egoSword.CleanupForBossBattleEnd();
+    }
+
     private void ConfigureRuntimePatternsIfNeeded()
     {
         if (runtimePatternsConfigured)
             return;
 
         runtimePatternsConfigured = true;
+        authoredPatternRolesBound = false;
         roleByAbility.Clear();
+        ClearSpecialPatternEntries();
 
         BossPatternEntry pierce = CreatePattern<AbilityLogic_DemonKingPierceCombo>(
             "DemonKing_PierceCombo",
@@ -470,7 +522,7 @@ public sealed class DemonKingController : BossControllerBase
         ability.executionPolicy = AbilityDefinition.ExecutionPolicy.ExclusiveQueued;
         ability.logic = logic;
 
-        roleByAbility[ability] = role;
+        RegisterPatternRole(ability, role, null);
 
         return BossPatternEntry.CreateRuntime(
             ability,
@@ -483,6 +535,157 @@ public sealed class DemonKingController : BossControllerBase
             maxDistance,
             minHp,
             maxHp);
+    }
+
+    private bool ShouldConfigureRuntimePatterns()
+    {
+        return configureRuntimePatternsOnStart || ConfiguredPhaseCount == 0;
+    }
+
+    private void RegisterEgoSwordSubPatternAbilities()
+    {
+        RegisterEgoSwordSubPatternAbility(egoSwordVerticalStrikeAbility, "EgoSwordVerticalStrike");
+        RegisterEgoSwordSubPatternAbility(egoSwordCrossLaserAbility, "EgoSwordCrossLaser");
+    }
+
+    private bool RegisterEgoSwordSubPatternAbility(AbilityDefinition ability, string label)
+    {
+        if (ability == null)
+            return false;
+
+        if (ability.executionPolicy != AbilityDefinition.ExecutionPolicy.ParallelIndependent)
+        {
+            Debug.LogWarning(
+                $"DemonKing {label} should use ParallelIndependent so it can run outside the main boss pattern timer.",
+                this);
+        }
+
+        return TryRegisterAbility(ability);
+    }
+
+    private bool TryStartEgoSwordSubPatternAbility(AbilityDefinition ability, string label)
+    {
+        if (ability == null)
+        {
+            if (!missingEgoSwordSubPatternAbilityLogged)
+            {
+                missingEgoSwordSubPatternAbilityLogged = true;
+                Debug.LogWarning(
+                    $"DemonKing is missing an authored GAS AbilityDefinition for {label}. EgoSword dropped subpatterns will not run.",
+                    this);
+            }
+
+            return false;
+        }
+
+        RegisterEgoSwordSubPatternAbility(ability, label);
+        return TryStartAbility(ability);
+    }
+
+    private void BindAuthoredPatternRolesIfNeeded()
+    {
+        if (authoredPatternRolesBound || runtimePatternsConfigured)
+            return;
+
+        authoredPatternRolesBound = true;
+        roleByAbility.Clear();
+        ClearSpecialPatternEntries();
+
+        IReadOnlyList<BossPhaseConfig> phases = ConfiguredPhases;
+        if (phases == null)
+            return;
+
+        for (int phaseIndex = 0; phaseIndex < phases.Count; phaseIndex++)
+        {
+            IReadOnlyList<BossPatternEntry> patterns = phases[phaseIndex]?.Patterns;
+            if (patterns == null)
+                continue;
+
+            for (int patternIndex = 0; patternIndex < patterns.Count; patternIndex++)
+            {
+                BossPatternEntry pattern = patterns[patternIndex];
+                AbilityDefinition ability = pattern != null ? pattern.Ability : null;
+                if (ability == null)
+                    continue;
+
+                if (TryResolvePatternRole(ability, out DemonKingPatternRole role))
+                    RegisterPatternRole(ability, role, pattern);
+            }
+        }
+    }
+
+    private void ClearSpecialPatternEntries()
+    {
+        throwSwordEntry = null;
+        recallSwordEntry = null;
+        hp50RushEntry = null;
+        groggyRecoverCounterEntry = null;
+        finalDesperationEntry = null;
+    }
+
+    private void RegisterPatternRole(AbilityDefinition ability, DemonKingPatternRole role, BossPatternEntry patternEntry)
+    {
+        if (ability == null)
+            return;
+
+        roleByAbility[ability] = role;
+
+        switch (role)
+        {
+            case DemonKingPatternRole.ThrowSword:
+                throwSwordEntry = patternEntry;
+                break;
+            case DemonKingPatternRole.RecallSword:
+                recallSwordEntry = patternEntry;
+                break;
+            case DemonKingPatternRole.Hp50Rush:
+                hp50RushEntry = patternEntry;
+                break;
+            case DemonKingPatternRole.GroggyRecoverCounter:
+                groggyRecoverCounterEntry = patternEntry;
+                break;
+            case DemonKingPatternRole.FinalDesperation:
+                finalDesperationEntry = patternEntry;
+                break;
+        }
+    }
+
+    private static bool TryResolvePatternRole(AbilityDefinition ability, out DemonKingPatternRole role)
+    {
+        role = default;
+        AbilityLogic logic = ability != null ? ability.logic : null;
+        if (logic == null)
+            return false;
+
+        switch (logic)
+        {
+            case AbilityLogic_DemonKingPierceCombo:
+            case AbilityLogic_DemonKingHeavySlash:
+                role = DemonKingPatternRole.HoldNormal;
+                return true;
+            case AbilityLogic_DemonKingThrowEgoSword:
+                role = DemonKingPatternRole.ThrowSword;
+                return true;
+            case AbilityLogic_DemonKingHomingMagic:
+            case AbilityLogic_DemonKingBombardment:
+            case AbilityLogic_DemonKingExplosionJump:
+                role = DemonKingPatternRole.DropNormal;
+                return true;
+            case AbilityLogic_DemonKingRecallEgoSword:
+                role = DemonKingPatternRole.RecallSword;
+                return true;
+            case AbilityLogic_DemonKingWallBounceRush:
+                role = DemonKingPatternRole.Hp50Rush;
+                return true;
+            case AbilityLogic_DemonKingGroggyRecoverCounter:
+                role = DemonKingPatternRole.GroggyRecoverCounter;
+                return true;
+            case AbilityLogic_DemonKingFinalDesperation:
+                role = DemonKingPatternRole.FinalDesperation;
+                return true;
+            default:
+                return false;
+        }
     }
 
     private void ForceFinalDesperationNow()

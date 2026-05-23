@@ -73,6 +73,7 @@ public abstract class BossControllerBase : Enemy, IBossAbilityStateBridge
     public Transform CurrentTarget => Target;
     public override Transform Target => target;
     protected int ConfiguredPhaseCount => phases != null ? phases.Count : 0;
+    protected IReadOnlyList<BossPhaseConfig> ConfiguredPhases => phases;
     public float CurrentHealthRatio => GetCurrentHpRatio();
     public float CurrentHealthValue => GetCurrentHealthValue();
     public float MaxHealthValue => GetCurrentMaxHealthValue();

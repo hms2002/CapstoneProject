@@ -173,6 +173,154 @@ public sealed class DemonKingPrimitiveVisual : MonoBehaviour
     }
 }
 
+[DisallowMultipleComponent]
+public sealed class DemonKingWorldDimmingOverlay : MonoBehaviour
+{
+    private const int OverlaySortingOrder = 0;
+    private const int HighlightSortingOrder = 2;
+    private const float OrthographicPadding = 1.2f;
+    private const float FallbackWorldSize = 64f;
+    private const float OverlayZ = -0.05f;
+
+    private SpriteRenderer overlayRenderer;
+    private Camera targetCamera;
+    private Transform fallbackAnchor;
+    private RendererSortingState[] boostedRenderers;
+    private bool released;
+    private float alpha;
+
+    public float Alpha => alpha;
+
+    public static DemonKingWorldDimmingOverlay Begin(DemonKingController owner, float initialAlpha)
+    {
+        GameObject overlayObject = new("DemonKing_GroggyCounterWorldDim");
+        DemonKingWorldDimmingOverlay overlay = overlayObject.AddComponent<DemonKingWorldDimmingOverlay>();
+        overlay.Initialize(owner, initialAlpha);
+        return overlay;
+    }
+
+    public void SetAlpha(float value)
+    {
+        alpha = Mathf.Clamp01(value);
+        if (overlayRenderer != null)
+            overlayRenderer.color = new Color(0f, 0f, 0f, alpha);
+    }
+
+    public void Release()
+    {
+        if (released)
+            return;
+
+        released = true;
+        RestoreBoostedRenderers();
+        Destroy(gameObject);
+    }
+
+    private void Initialize(DemonKingController owner, float initialAlpha)
+    {
+        fallbackAnchor = owner != null ? owner.transform : null;
+        targetCamera = Camera.main != null ? Camera.main : Object.FindAnyObjectByType<Camera>();
+
+        overlayRenderer = gameObject.AddComponent<SpriteRenderer>();
+        overlayRenderer.sprite = DemonKingPrimitiveVisual.GetSquareSprite();
+        DemonKingPrimitiveVisual.ApplyProjectileSorting(overlayRenderer, OverlaySortingOrder);
+
+        CaptureAndBoostOwnerRenderers(owner);
+        SetAlpha(initialAlpha);
+        FollowCamera();
+    }
+
+    private void LateUpdate()
+    {
+        FollowCamera();
+    }
+
+    private void OnDisable()
+    {
+        if (!released)
+            RestoreBoostedRenderers();
+    }
+
+    private void OnDestroy()
+    {
+        if (!released)
+            RestoreBoostedRenderers();
+    }
+
+    private void FollowCamera()
+    {
+        Vector3 center = targetCamera != null
+            ? targetCamera.transform.position
+            : fallbackAnchor != null
+                ? fallbackAnchor.position
+                : Vector3.zero;
+
+        transform.position = new Vector3(center.x, center.y, OverlayZ);
+        transform.rotation = Quaternion.identity;
+
+        if (targetCamera != null && targetCamera.orthographic)
+        {
+            float height = Mathf.Max(0.01f, targetCamera.orthographicSize * 2f * OrthographicPadding);
+            float width = Mathf.Max(0.01f, height * targetCamera.aspect);
+            transform.localScale = new Vector3(width, height, 1f);
+            return;
+        }
+
+        transform.localScale = new Vector3(FallbackWorldSize, FallbackWorldSize, 1f);
+    }
+
+    private void CaptureAndBoostOwnerRenderers(DemonKingController owner)
+    {
+        if (owner == null)
+        {
+            boostedRenderers = System.Array.Empty<RendererSortingState>();
+            return;
+        }
+
+        SpriteRenderer[] renderers = owner.GetComponentsInChildren<SpriteRenderer>(true);
+        boostedRenderers = new RendererSortingState[renderers.Length];
+        for (int i = 0; i < renderers.Length; i++)
+        {
+            boostedRenderers[i] = new RendererSortingState(renderers[i]);
+            DemonKingPrimitiveVisual.ApplyProjectileSorting(renderers[i], HighlightSortingOrder);
+        }
+    }
+
+    private void RestoreBoostedRenderers()
+    {
+        if (boostedRenderers == null)
+            return;
+
+        for (int i = 0; i < boostedRenderers.Length; i++)
+            boostedRenderers[i].Restore();
+
+        boostedRenderers = null;
+    }
+
+    private readonly struct RendererSortingState
+    {
+        private readonly SpriteRenderer renderer;
+        private readonly int sortingLayerId;
+        private readonly int sortingOrder;
+
+        public RendererSortingState(SpriteRenderer renderer)
+        {
+            this.renderer = renderer;
+            sortingLayerId = renderer != null ? renderer.sortingLayerID : 0;
+            sortingOrder = renderer != null ? renderer.sortingOrder : 0;
+        }
+
+        public void Restore()
+        {
+            if (renderer == null)
+                return;
+
+            renderer.sortingLayerID = sortingLayerId;
+            renderer.sortingOrder = sortingOrder;
+        }
+    }
+}
+
 public static class DemonKingPatternVfx
 {
     private const string ExplosionVfxPath = "DemonKing/Vfx/DemonKingExplosionVfx";
@@ -180,10 +328,12 @@ public static class DemonKingPatternVfx
     private const string StabVfxPath = "DemonKing/Vfx/DemonKingStabVfx";
     private const string SlashVfxPath = "DemonKing/Vfx/DarkLordSlashVfx";
     private const string GroggyReleaseVfxPath = "DemonKing/Vfx/DarkLordGroggyReleaseVfx";
+    private const string EyeFlashVfxPath = "DemonKing/Vfx/DemonKingEyeLightVfx";
     private const string EgoSwordAttackVfxPath = "DemonKing/Vfx/EgoSwordAttackVfx";
-    private const string EgoSwordAuraVfxPath = "DemonKing/Vfx/EgoSwordAttackAuraVfx";
 
     private const int DefaultSortingOrder = 1;
+    private const float StabOriginalVisualLength = 4f;
+    private const float StabForwardOffsetRatio = 0.35f;
 
     public static DemonKingAnimationClipVisual SpawnExplosion(Vector2 center, float diameter)
     {
@@ -208,26 +358,32 @@ public static class DemonKingPatternVfx
 
     public static DemonKingAnimationClipVisual SpawnImpact(Vector2 center, float diameter)
     {
+        _ = diameter;
         return DemonKingAnimationClipVisual.SpawnOneShot(
             ImpactVfxPath,
             center,
-            new Vector2(diameter, diameter),
+            Vector2.zero,
             0f,
             "DemonKing_ImpactVfx",
             DefaultSortingOrder);
     }
 
-    public static DemonKingAnimationClipVisual SpawnStab(Vector2 start, Vector2 direction, float distance, float hitWidth)
+    public static DemonKingAnimationClipVisual SpawnAttachedStab(Transform parent, Vector2 direction)
     {
-        Vector2 safeDirection = direction.sqrMagnitude > 0.0001f ? direction.normalized : Vector2.right;
-        float safeDistance = Mathf.Max(0.1f, distance);
-        Vector2 center = start + safeDirection * (safeDistance * 0.5f);
-        Vector2 size = new(safeDistance, Mathf.Max(0.8f, hitWidth * 1.8f));
+        if (parent == null)
+            return null;
 
-        return DemonKingAnimationClipVisual.SpawnOneShot(
+        Vector2 safeDirection = direction.sqrMagnitude > 0.0001f ? direction.normalized : Vector2.right;
+        Vector3 localPosition = new(
+            safeDirection.x * (StabOriginalVisualLength * StabForwardOffsetRatio),
+            safeDirection.y * (StabOriginalVisualLength * StabForwardOffsetRatio),
+            -0.05f);
+
+        return DemonKingAnimationClipVisual.SpawnAttachedOneShot(
             StabVfxPath,
-            center,
-            size,
+            parent,
+            localPosition,
+            Vector2.zero,
             DemonKingCombatUtil.RotationDeg(safeDirection),
             "DemonKing_StabVfx",
             DefaultSortingOrder);
@@ -240,13 +396,15 @@ public static class DemonKingPatternVfx
         Vector2 center = origin + safeDirection * (safeRadius * 0.5f);
         Vector2 size = new(safeRadius, safeRadius * 2f);
 
-        return DemonKingAnimationClipVisual.SpawnOneShot(
+        DemonKingAnimationClipVisual visual = DemonKingAnimationClipVisual.SpawnOneShot(
             SlashVfxPath,
             center,
             size,
             DemonKingCombatUtil.RotationDeg(safeDirection),
             "DarkLord_SlashVfx",
             DefaultSortingOrder);
+        visual?.SetSpriteFlipX(true);
+        return visual;
     }
 
     public static DemonKingAnimationClipVisual SpawnGroggyRelease(Vector2 center, float diameter)
@@ -260,25 +418,27 @@ public static class DemonKingPatternVfx
             DefaultSortingOrder);
     }
 
-    public static DemonKingAnimationClipVisual SpawnEgoSwordAura(Transform parent, float diameter)
+    public static DemonKingAnimationClipVisual SpawnEyeFlash(Transform parent, Vector2 localOffset, Vector2 size)
     {
-        return DemonKingAnimationClipVisual.SpawnAttachedStartThenLoop(
-            EgoSwordAuraVfxPath,
+        return DemonKingAnimationClipVisual.SpawnAttachedOneShot(
+            EyeFlashVfxPath,
             parent,
-            new Vector3(0f, 0f, -0.05f),
-            new Vector2(diameter, diameter),
+            new Vector3(localOffset.x, localOffset.y, -0.07f),
+            size,
             0f,
-            "EgoSword_AttackAuraVfx",
-            DefaultSortingOrder);
+            "DemonKing_EyeLightVfx",
+            DefaultSortingOrder,
+            warnIfMissing: false);
     }
 
     public static DemonKingAnimationClipVisual SpawnEgoSwordAttack(Transform parent, float diameter)
     {
+        _ = diameter;
         return DemonKingAnimationClipVisual.SpawnAttachedOneShot(
             EgoSwordAttackVfxPath,
             parent,
             new Vector3(0f, 0f, -0.06f),
-            new Vector2(diameter, diameter),
+            Vector2.zero,
             0f,
             "EgoSword_AttackVfx",
             DefaultSortingOrder);
@@ -289,18 +449,27 @@ public static class DemonKingPatternVfx
 public sealed class DemonKingAnimationClipVisual : MonoBehaviour
 {
     private const float VisualZ = -0.06f;
+    private const float MinimumOneShotLifetimeSeconds = 0.12f;
     private const string OneShotStateName = "Play";
-    private const string StartStateName = "Start";
-    private const string IdleStateName = "Idle";
 
     private static readonly System.Collections.Generic.Dictionary<string, GameObject> PrefabCache = new();
     private static readonly System.Collections.Generic.HashSet<string> MissingPrefabWarnings = new();
+    private static readonly System.Collections.Generic.HashSet<string> InvalidPrefabWarnings = new();
 
     private SpriteRenderer spriteRenderer;
     private Animator animator;
     private Coroutine playbackRoutine;
+    private string sourceResourcePath;
 
     public bool IsPlaying { get; private set; }
+
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    private static void ResetStaticState()
+    {
+        PrefabCache.Clear();
+        MissingPrefabWarnings.Clear();
+        InvalidPrefabWarnings.Clear();
+    }
 
     public static DemonKingAnimationClipVisual SpawnOneShot(
         string resourcePath,
@@ -320,7 +489,9 @@ public sealed class DemonKingAnimationClipVisual : MonoBehaviour
         if (visual == null)
             return null;
 
-        visual.PlayOneShot(targetSize);
+        if (!visual.TryPlayOneShot(targetSize))
+            return null;
+
         return visual;
     }
 
@@ -331,7 +502,8 @@ public sealed class DemonKingAnimationClipVisual : MonoBehaviour
         Vector2 targetSize,
         float localRotationDeg,
         string name,
-        int sortingOrder)
+        int sortingOrder,
+        bool warnIfMissing = true)
     {
         if (parent == null)
             return null;
@@ -342,37 +514,14 @@ public sealed class DemonKingAnimationClipVisual : MonoBehaviour
             localPosition,
             localRotationDeg,
             name,
-            sortingOrder);
+            sortingOrder,
+            warnIfMissing);
         if (visual == null)
             return null;
 
-        visual.PlayOneShot(targetSize);
-        return visual;
-    }
-
-    public static DemonKingAnimationClipVisual SpawnAttachedStartThenLoop(
-        string resourcePath,
-        Transform parent,
-        Vector3 localPosition,
-        Vector2 targetSize,
-        float localRotationDeg,
-        string name,
-        int sortingOrder)
-    {
-        if (parent == null)
+        if (!visual.TryPlayOneShot(targetSize))
             return null;
 
-        DemonKingAnimationClipVisual visual = InstantiateVisual(
-            resourcePath,
-            parent,
-            localPosition,
-            localRotationDeg,
-            name,
-            sortingOrder);
-        if (visual == null)
-            return null;
-
-        visual.PlayStartThenLoop(targetSize);
         return visual;
     }
 
@@ -382,15 +531,23 @@ public sealed class DemonKingAnimationClipVisual : MonoBehaviour
         Destroy(gameObject);
     }
 
+    public void SetSpriteFlipX(bool flipX)
+    {
+        CacheRuntimeReferences();
+        if (spriteRenderer != null)
+            spriteRenderer.flipX = flipX;
+    }
+
     private static DemonKingAnimationClipVisual InstantiateVisual(
         string resourcePath,
         Transform parent,
         Vector3 position,
         float rotationDeg,
         string name,
-        int sortingOrder)
+        int sortingOrder,
+        bool warnIfMissing = true)
     {
-        GameObject prefab = LoadPrefab(resourcePath);
+        GameObject prefab = LoadPrefab(resourcePath, warnIfMissing);
         if (prefab == null)
             return null;
 
@@ -414,23 +571,24 @@ public sealed class DemonKingAnimationClipVisual : MonoBehaviour
 
         visual.CacheRuntimeReferences();
         visual.ApplySorting(sortingOrder);
+        visual.sourceResourcePath = resourcePath;
         return visual;
     }
 
-    private void PlayOneShot(Vector2 targetSize)
+    private bool TryPlayOneShot(Vector2 targetSize)
     {
         StopPlayback();
+        if (!ValidatePlayable(OneShotStateName))
+        {
+            StopAndRelease();
+            return false;
+        }
+
         IsPlaying = true;
         PlayAnimatorState(OneShotStateName);
         ApplyTargetScale(targetSize);
         playbackRoutine = StartCoroutine(CoDestroyAfterSeconds(ResolveLongestClipLength()));
-    }
-
-    private void PlayStartThenLoop(Vector2 targetSize)
-    {
-        StopPlayback();
-        IsPlaying = true;
-        playbackRoutine = StartCoroutine(CoPlayStartThenLoop(targetSize));
+        return true;
     }
 
     private IEnumerator CoDestroyAfterSeconds(float seconds)
@@ -439,25 +597,6 @@ public sealed class DemonKingAnimationClipVisual : MonoBehaviour
         IsPlaying = false;
         playbackRoutine = null;
         Destroy(gameObject);
-    }
-
-    private IEnumerator CoPlayStartThenLoop(Vector2 targetSize)
-    {
-        PlayAnimatorState(StartStateName);
-        ApplyTargetScale(targetSize);
-
-        float startLength = ResolveClipLength(StartStateName);
-        if (startLength > 0f)
-            yield return new WaitForSeconds(startLength);
-
-        if (!PlayAnimatorState(IdleStateName))
-        {
-            IsPlaying = false;
-            yield break;
-        }
-
-        ApplyTargetScale(targetSize);
-        playbackRoutine = null;
     }
 
     private void StopPlayback()
@@ -513,35 +652,95 @@ public sealed class DemonKingAnimationClipVisual : MonoBehaviour
     private bool PlayAnimatorState(string stateName)
     {
         CacheRuntimeReferences();
-        if (animator == null || animator.runtimeAnimatorController == null)
+        if (!ValidateAnimatorState(stateName, out int stateHash))
             return false;
 
-        animator.Play(stateName, 0, 0f);
+        animator.Play(stateHash, 0, 0f);
         animator.Update(0f);
         return true;
+    }
+
+    private bool ValidatePlayable(string stateName)
+    {
+        CacheRuntimeReferences();
+        if (spriteRenderer == null)
+        {
+            WarnInvalid("missing SpriteRenderer");
+            return false;
+        }
+
+        if (spriteRenderer.sprite == null)
+        {
+            WarnInvalid("SpriteRenderer has no sprite");
+            return false;
+        }
+
+        return ValidateAnimatorState(stateName);
+    }
+
+    private bool ValidateAnimatorState(string stateName)
+    {
+        return ValidateAnimatorState(stateName, out _);
+    }
+
+    private bool ValidateAnimatorState(string stateName, out int stateHash)
+    {
+        CacheRuntimeReferences();
+        stateHash = 0;
+        if (animator == null)
+        {
+            WarnInvalid("missing Animator");
+            return false;
+        }
+
+        if (animator.runtimeAnimatorController == null)
+        {
+            WarnInvalid("Animator has no RuntimeAnimatorController");
+            return false;
+        }
+
+        if (!TryResolveStateHash(stateName, out stateHash))
+        {
+            WarnInvalid($"AnimatorController has no state '{stateName}'");
+            return false;
+        }
+
+        return true;
+    }
+
+    private bool TryResolveStateHash(string stateName, out int stateHash)
+    {
+        stateHash = Animator.StringToHash(stateName);
+        if (animator.HasState(0, stateHash))
+            return true;
+
+        if (animator.layerCount <= 0)
+            return false;
+
+        string layerName = animator.GetLayerName(0);
+        if (string.IsNullOrWhiteSpace(layerName))
+            return false;
+
+        stateHash = Animator.StringToHash($"{layerName}.{stateName}");
+        return animator.HasState(0, stateHash);
+    }
+
+    private void WarnInvalid(string reason)
+    {
+        string resourcePath = string.IsNullOrWhiteSpace(sourceResourcePath) ? gameObject.name : sourceResourcePath;
+        string key = $"{resourcePath}:{reason}";
+        if (InvalidPrefabWarnings.Add(key))
+            Debug.LogWarning($"DemonKing VFX at Resources/{resourcePath} is invalid: {reason}.", this);
     }
 
     private float ResolveLongestClipLength()
     {
         AnimationClip[] clips = ResolveClips();
-        float length = 0.01f;
+        float length = MinimumOneShotLifetimeSeconds;
         for (int i = 0; i < clips.Length; i++)
             length = Mathf.Max(length, clips[i] != null ? clips[i].length : 0f);
 
         return length;
-    }
-
-    private float ResolveClipLength(string nameFragment)
-    {
-        AnimationClip[] clips = ResolveClips();
-        for (int i = 0; i < clips.Length; i++)
-        {
-            AnimationClip clip = clips[i];
-            if (clip != null && clip.name.IndexOf(nameFragment, System.StringComparison.OrdinalIgnoreCase) >= 0)
-                return Mathf.Max(0.01f, clip.length);
-        }
-
-        return 0f;
     }
 
     private AnimationClip[] ResolveClips()
@@ -552,18 +751,26 @@ public sealed class DemonKingAnimationClipVisual : MonoBehaviour
             : System.Array.Empty<AnimationClip>();
     }
 
-    private static GameObject LoadPrefab(string resourcePath)
+    private static GameObject LoadPrefab(string resourcePath, bool warnIfMissing = true)
     {
         if (string.IsNullOrWhiteSpace(resourcePath))
             return null;
 
-        if (PrefabCache.TryGetValue(resourcePath, out GameObject cachedPrefab))
+        if (PrefabCache.TryGetValue(resourcePath, out GameObject cachedPrefab) && cachedPrefab != null)
             return cachedPrefab;
 
         GameObject prefab = Resources.Load<GameObject>(resourcePath);
-        PrefabCache[resourcePath] = prefab;
-        if (prefab == null && MissingPrefabWarnings.Add(resourcePath))
-            Debug.LogWarning($"DemonKing VFX prefab not found at Resources/{resourcePath}.");
+        if (prefab != null)
+        {
+            PrefabCache[resourcePath] = prefab;
+            MissingPrefabWarnings.Remove(resourcePath);
+        }
+        else
+        {
+            PrefabCache.Remove(resourcePath);
+            if (warnIfMissing && MissingPrefabWarnings.Add(resourcePath))
+                Debug.LogWarning($"DemonKing VFX prefab not found at Resources/{resourcePath}.");
+        }
 
         return prefab;
     }

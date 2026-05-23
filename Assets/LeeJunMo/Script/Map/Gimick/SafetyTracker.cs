@@ -60,7 +60,7 @@ public class SafetyTracker : MonoBehaviour
         InitializePosition();
     }
 
-    private void RefreshTilemaps()
+    public void RefreshTilemaps()
     {
         groundMaps.Clear();
         holeMaps.Clear();
@@ -70,6 +70,9 @@ public class SafetyTracker : MonoBehaviour
 
         foreach (var map in allMaps)
         {
+            if (!IsActiveTilemap(map))
+                continue;
+
             // 레이어 마스크 비교 (비트 연산)
             if (IsInLayerMask(map.gameObject.layer, groundLayer))
             {
@@ -174,6 +177,11 @@ public class SafetyTracker : MonoBehaviour
     private bool IsInLayerMask(int layer, LayerMask mask)
     {
         return (mask == (mask | (1 << layer)));
+    }
+
+    private static bool IsActiveTilemap(Tilemap map)
+    {
+        return map != null && map.isActiveAndEnabled && map.gameObject.activeInHierarchy;
     }
 
     // [디버깅]

@@ -164,7 +164,8 @@ public static class CombatDamageAction
         GameObject causer,
         bool isCriticalHit = false,
         ElementDamageResult[] elementBuildUps = null,
-        bool hasResolvedElementBuildUps = false)
+        bool hasResolvedElementBuildUps = false,
+        HitImpactCueKind hitImpactCueKind = HitImpactCueKind.Default)
     {
         ApplyDamageAndEmitHitInternal(
             system,
@@ -180,7 +181,8 @@ public static class CombatDamageAction
             causer,
             isCriticalHit,
             elementBuildUps,
-            hasResolvedElementBuildUps);
+            hasResolvedElementBuildUps,
+            hitImpactCueKind);
     }
 
     private static void ApplyDamageAndEmitHitInternal(
@@ -197,7 +199,8 @@ public static class CombatDamageAction
         GameObject causer,
         bool isCriticalHit,
         ElementDamageResult[] elementBuildUps,
-        bool hasResolvedElementBuildUps)
+        bool hasResolvedElementBuildUps,
+        HitImpactCueKind hitImpactCueKind)
     {
         if (!Validate(system, damageEffect, target))
             return;
@@ -240,7 +243,7 @@ public static class CombatDamageAction
         ApplyStagger(target, finalStaggerBuildUp, system.gameObject, causer);
         ApplyElements(target, system.gameObject, causer, elementBuildUps, hasResolvedElementBuildUps);
 
-        EmitHitConfirmed(system, spec, target, causer, hitConfirmedTag, hitWorldPosition, isCriticalHit);
+        EmitHitConfirmed(system, spec, target, causer, hitConfirmedTag, hitWorldPosition, isCriticalHit, hitImpactCueKind);
     }
 
     private static bool Validate(AbilitySystem system, GameplayEffect damageEffect, GameObject target)
@@ -467,7 +470,8 @@ public static class CombatDamageAction
         GameObject causer,
         GameplayTag hitConfirmedTag,
         Vector3 hitWorldPosition,
-        bool isCriticalHit)
+        bool isCriticalHit,
+        HitImpactCueKind hitImpactCueKind)
     {
         var resolvedHitConfirmedTag = ResolveHitConfirmedTag(hitConfirmedTag);
         if (resolvedHitConfirmedTag == null)
@@ -481,7 +485,8 @@ public static class CombatDamageAction
             Target = target,
             WorldPosition = hitWorldPosition != Vector3.zero ? hitWorldPosition : target.transform.position,
             Causer = causer,
-            IsCriticalHit = isCriticalHit
+            IsCriticalHit = isCriticalHit,
+            HitImpactCueKind = hitImpactCueKind
         });
     }
 

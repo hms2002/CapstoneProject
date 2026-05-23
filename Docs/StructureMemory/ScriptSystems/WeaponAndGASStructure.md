@@ -126,6 +126,13 @@ The concrete risks are narrower than a full combat rewrite.
 | Status Runtime | Keep `PlayerStatusRuntime` as an apply/projection hub, not as the real owner of gameplay effects. | Current `CombatBuffDebuffApplier` flow mostly follows this, but `GetOrAdd` component creation remains a prefab/scene authoring risk when the player root is missing expected components. |
 | Combat Presentation Hooks | Keep combat state and authored presentation references separate enough to move safely later. | `ElementGaugeSystem` owns trigger/sustain VFX instances and `StaggerGaugeSystem` can spawn a boss groggy timer prefab, so file movement needs serialized-reference review. |
 
+### Hit Confirm Presentation
+
+- `AbilityHitCueRouter` listens for `Event.HitConfirm`, runs explicit `AbilityDefinition` hit-confirmed cues/presentation, then applies an automatic hit-impact cue resolved from the hit event's `HitImpactCueKind`.
+- `HitImpactCueKind` is authored on ALData at the actual hit unit. Combo data can set it per step, while single-hit data can set it on the root hit data/config. The runtime transport path is `ALData -> CombatHitPayload -> CombatDamageAction -> AbilityEventData -> AbilityHitCueRouter`.
+- The current cue map resolves `Default`, `Slash`, and `Blow` to `Cue.Ability.Sword.Hit` because `SlashHit` is the only finished hit-impact cue. `None` suppresses the automatic cue. Future `BlowHit` should update the router mapping without moving the authoring owner out of ALData.
+- Existing explicit additions such as hit spark and camera shake still run through the `AbilityDefinition` cue list. If an explicit cue is the same as the automatic hit-impact cue, the router skips the automatic duplicate.
+
 ### Electric Element Extension
 
 - Electric build-up follows the same attacker-wide `ElementOffenseSource` and `ElementBuildUpFormulaProfile` route as Fire/Blood/Poison.

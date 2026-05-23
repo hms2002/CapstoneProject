@@ -21,6 +21,7 @@ public class Mob : Enemy
     private ChestMonsterKillLock lockTrackingChestLock;
     private MonsterSpawnRoomGroup lockTrackingRoomGroup;
     private bool triedInitializeStateMachine;
+    private bool suppressMonsterLootDrop;
 
     protected EnemyChaseIntent2D ChaseIntent => chaseIntent;
     public bool LogMobFsmDebug => logMobFsmDebug;
@@ -124,6 +125,11 @@ public class Mob : Enemy
         lockTrackingRoomGroup = roomGroup;
     }
 
+    public void SuppressMonsterLootDrop()
+    {
+        suppressMonsterLootDrop = true;
+    }
+
     protected void RegisterLockTrackedChild(GameObject child)
     {
         if (child == null)
@@ -142,7 +148,9 @@ public class Mob : Enemy
     protected override void OnDeathStarted()
     {
         EnterDeathState();
-        LootManager.Instance?.SpawnMonsterLoot(transform.position);
+
+        if (!suppressMonsterLootDrop)
+            LootManager.Instance?.SpawnMonsterLoot(transform.position);
     }
 
     private void OnDisable()

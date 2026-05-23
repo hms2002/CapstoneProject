@@ -17,6 +17,9 @@ public sealed class LightningSpearHitConfig
     [SerializeField] private LayerMask hitLayers;
     [SerializeField] private LayerMask wallLayers;
 
+    [Header("Hit Impact")]
+    [SerializeField] private HitImpactCueKind hitImpactCueKind;
+
     [Header("Damage")]
     [SerializeField] private UnityGAS.DamagePayloadConfig damageConfig = new UnityGAS.DamagePayloadConfig();
     [SerializeField] private GameplayEffect damageEffect;
@@ -48,6 +51,7 @@ public sealed class LightningSpearHitConfig
             legacyDamage,
             legacyStaggerDamage,
             damageScale,
-            hitConfirmedTag);
+            hitConfirmedTag,
+            hitImpactCueKind);
     }
 }

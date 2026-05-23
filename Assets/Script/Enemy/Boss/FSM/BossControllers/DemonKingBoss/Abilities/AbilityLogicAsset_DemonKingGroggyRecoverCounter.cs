@@ -1,0 +1,3 @@
+public sealed class AbilityLogicAsset_DemonKingGroggyRecoverCounter : AbilityLogic_DemonKingGroggyRecoverCounter
+{
+}

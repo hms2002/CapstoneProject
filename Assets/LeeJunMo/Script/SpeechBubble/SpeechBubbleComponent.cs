@@ -42,6 +42,47 @@ public class SpeechBubbleComponent : MonoBehaviour
 
     public void Speak(string text, float duration, SpeechBubbleThemeSettings theme, Action onHidden)
     {
+        SpeakInternal(
+            text,
+            duration,
+            theme,
+            onHidden,
+            false,
+            0f,
+            0f,
+            0f);
+    }
+
+    public void SpeakWithPreSizedLayout(
+        string text,
+        float duration,
+        SpeechBubbleThemeSettings theme,
+        Action onHidden,
+        float minTextWidth,
+        float maxTextWidth,
+        float minTextHeight)
+    {
+        SpeakInternal(
+            text,
+            duration,
+            theme,
+            onHidden,
+            true,
+            minTextWidth,
+            maxTextWidth,
+            minTextHeight);
+    }
+
+    private void SpeakInternal(
+        string text,
+        float duration,
+        SpeechBubbleThemeSettings theme,
+        Action onHidden,
+        bool preSizeLayout,
+        float minTextWidth,
+        float maxTextWidth,
+        float minTextHeight)
+    {
         if (bubblePrefab == null || string.IsNullOrWhiteSpace(text))
             return;
 
@@ -61,7 +102,24 @@ public class SpeechBubbleComponent : MonoBehaviour
             defaultTypingSpeed,
             theme,
             onHidden,
-            HandleBubbleReleased);
+            HandleBubbleReleased,
+            preSizeLayout,
+            minTextWidth,
+            maxTextWidth,
+            minTextHeight);
+    }
+
+    public void HideActive()
+    {
+        if (!TryGetActiveBubble(out SpeechBubble bubble))
+            return;
+
+        bubble.Hide();
+    }
+
+    public bool TryAdvanceActive()
+    {
+        return TryGetActiveBubble(out SpeechBubble bubble) && bubble.TryAdvance();
     }
 
     private void HandleBubbleReleased(SpeechBubble bubble)
@@ -70,6 +128,17 @@ public class SpeechBubbleComponent : MonoBehaviour
             activeBubble = null;
 
         bubblePool.Release(bubble);
+    }
+
+    private bool TryGetActiveBubble(out SpeechBubble bubble)
+    {
+        bubble = activeBubble;
+        if (bubble != null)
+            return true;
+
+        activeBubble = null;
+        bubble = null;
+        return false;
     }
 
     private void OnDrawGizmosSelected()

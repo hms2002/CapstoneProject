@@ -31,11 +31,23 @@ public class SpeechBubble : MonoBehaviour
     private Action hiddenAction;
     private Material runtimeBackgroundMaterial;
     private Material runtimeTextMaterial;
+    private RectTransform backgroundRect;
+    private RectTransform textRect;
+    private LayoutElement textLayoutElement;
     private bool supportsBackgroundTheme;
     private bool supportsTextFaceColor;
+    private string currentFullText = string.Empty;
+    private bool isTyping;
+    private bool isHiding;
+    private bool hasCachedTextDefaults;
+    private bool defaultWordWrapping;
+    private TextOverflowModes defaultOverflowMode;
+    private HorizontalAlignmentOptions defaultHorizontalAlignment;
     private int backgroundBorderColorPropertyId = -1;
     private int lastTypedCharacterCount;
     private float nextTypingSoundTime;
+
+    private const float UnwrappedPreferredWidthProbe = 10000f;
 
     private static readonly int FillColorId = Shader.PropertyToID("_FillColor");
     private static readonly int BorderColorId = Shader.PropertyToID("_BorderColor");
@@ -62,16 +74,51 @@ public class SpeechBubble : MonoBehaviour
         Action onHidden,
         Action<SpeechBubble> onRelease)
     {
+        SetupAndShow(
+            target,
+            offset,
+            text,
+            duration,
+            useTyping,
+            typingSpeed,
+            theme,
+            onHidden,
+            onRelease,
+            false,
+            0f,
+            0f,
+            0f);
+    }
+
+    public void SetupAndShow(
+        Transform target,
+        Vector3 offset,
+        string text,
+        float duration,
+        bool useTyping,
+        float typingSpeed,
+        SpeechBubbleThemeSettings theme,
+        Action onHidden,
+        Action<SpeechBubble> onRelease,
+        bool preSizeLayout,
+        float minTextWidth,
+        float maxTextWidth,
+        float minTextHeight)
+    {
         StopActiveTweens();
 
         this.target = target;
         this.offset = offset;
         hiddenAction = onHidden;
         releaseAction = onRelease;
+        currentFullText = text;
+        isTyping = false;
+        isHiding = false;
 
         transform.position = target.position + offset;
         gameObject.SetActive(true);
         ApplyTheme(theme);
+        PrepareLayoutForText(text, preSizeLayout, minTextWidth, maxTextWidth, minTextHeight);
 
         if (canvasGroup != null)
         {
@@ -81,18 +128,27 @@ public class SpeechBubble : MonoBehaviour
 
         transform.localScale = Vector3.zero;
         transform.DOKill();
-        transform.DOScale(originalScale, 0.3f).SetEase(Ease.OutBack);
+        transform.DOScale(originalScale, 0.3f).SetEase(Ease.OutBack).SetUpdate(true);
 
         if (bubbleText != null)
         {
             bubbleText.text = string.Empty;
             ResetTypingAudioTracking();
 
-            if (useTyping)
-                typingTween = bubbleText.DOText(text, text.Length * typingSpeed)
+            float typingDuration = Mathf.Max(0f, text.Length * typingSpeed);
+            if (useTyping && typingDuration > 0f)
+            {
+                isTyping = true;
+                typingTween = bubbleText.DOText(text, typingDuration)
+                    .SetUpdate(true)
                     .SetEase(Ease.Linear)
                     .OnUpdate(HandleTypingTweenUpdated)
-                    .OnComplete(HandleTypingTweenUpdated);
+                    .OnComplete(() =>
+                    {
+                        HandleTypingTweenUpdated();
+                        isTyping = false;
+                    });
+            }
             else
             {
                 bubbleText.text = text;
@@ -101,20 +157,44 @@ public class SpeechBubble : MonoBehaviour
         }
 
         if (duration > 0f)
-            hideDelayTween = DOVirtual.DelayedCall(duration, Hide);
+            hideDelayTween = DOVirtual.DelayedCall(duration, Hide).SetUpdate(true);
+    }
+
+    public bool TryAdvance()
+    {
+        if (isHiding)
+            return false;
+
+        if (isTyping)
+        {
+            CompleteTyping();
+            return true;
+        }
+
+        Hide();
+        return true;
     }
 
     public void Hide()
     {
+        if (this == null)
+            return;
+
+        if (isHiding)
+            return;
+
+        isHiding = true;
         StopActiveTweens();
 
         if (canvasGroup != null)
         {
-            canvasGroup.DOFade(0f, 0.3f).OnComplete(() =>
-            {
-                NotifyHidden();
-                ReleaseToPool();
-            });
+            canvasGroup.DOFade(0f, 0.3f)
+                .SetUpdate(true)
+                .OnComplete(() =>
+                {
+                    NotifyHidden();
+                    ReleaseToPool();
+                });
         }
         else
         {
@@ -122,7 +202,7 @@ public class SpeechBubble : MonoBehaviour
             ReleaseToPool();
         }
 
-        transform.DOScale(Vector3.zero, 0.3f).SetEase(Ease.InBack);
+        transform.DOScale(Vector3.zero, 0.3f).SetEase(Ease.InBack).SetUpdate(true);
     }
 
     private void LateUpdate()
@@ -139,6 +219,9 @@ public class SpeechBubble : MonoBehaviour
         target = null;
         hiddenAction = null;
         releaseAction = null;
+        currentFullText = string.Empty;
+        isTyping = false;
+        isHiding = false;
     }
 
     private void StopActiveTweens()
@@ -154,6 +237,18 @@ public class SpeechBubble : MonoBehaviour
             canvasGroup.DOKill();
 
         transform.DOKill();
+    }
+
+    private void CompleteTyping()
+    {
+        typingTween?.Kill();
+        typingTween = null;
+        isTyping = false;
+
+        if (bubbleText != null)
+            bubbleText.text = currentFullText;
+
+        lastTypedCharacterCount = string.IsNullOrEmpty(currentFullText) ? 0 : currentFullText.Length;
     }
 
     private void OnDestroy()
@@ -172,6 +267,117 @@ public class SpeechBubble : MonoBehaviour
 
         if (bubbleBackground == null && bubbleText != null)
             bubbleBackground = bubbleText.GetComponentInParent<Image>();
+
+        backgroundRect = bubbleBackground != null ? bubbleBackground.rectTransform : null;
+
+        if (bubbleText != null)
+        {
+            textRect = bubbleText.rectTransform;
+            textLayoutElement = bubbleText.GetComponent<LayoutElement>();
+            CacheTextDefaults();
+        }
+    }
+
+    private void CacheTextDefaults()
+    {
+        if (hasCachedTextDefaults || bubbleText == null)
+            return;
+
+        defaultWordWrapping = bubbleText.enableWordWrapping;
+        defaultOverflowMode = bubbleText.overflowMode;
+        defaultHorizontalAlignment = bubbleText.horizontalAlignment;
+        hasCachedTextDefaults = true;
+    }
+
+    private void PrepareLayoutForText(
+        string text,
+        bool preSizeLayout,
+        float minTextWidth,
+        float maxTextWidth,
+        float minTextHeight)
+    {
+        ResolveVisualReferences();
+
+        if (bubbleText == null)
+            return;
+
+        if (!preSizeLayout)
+        {
+            RestoreDefaultTextLayout();
+            return;
+        }
+
+        EnsureTextLayoutElement();
+
+        bubbleText.enableWordWrapping = true;
+        bubbleText.overflowMode = TextOverflowModes.Overflow;
+        bubbleText.horizontalAlignment = HorizontalAlignmentOptions.Left;
+        bubbleText.text = text;
+
+        float maxWidth = Mathf.Max(1f, maxTextWidth);
+        float minWidth = Mathf.Clamp(minTextWidth, 1f, maxWidth);
+        Vector2 unwrappedPreferred = bubbleText.GetPreferredValues(text, UnwrappedPreferredWidthProbe, 0f);
+        float targetWidth = Mathf.Clamp(Mathf.Ceil(unwrappedPreferred.x), minWidth, maxWidth);
+        Vector2 wrappedPreferred = bubbleText.GetPreferredValues(text, targetWidth, 0f);
+        float targetHeight = Mathf.Max(minTextHeight, Mathf.Ceil(wrappedPreferred.y));
+
+        ApplyPreparedTextLayout(targetWidth, targetHeight);
+        bubbleText.text = string.Empty;
+
+        if (backgroundRect != null)
+            LayoutRebuilder.ForceRebuildLayoutImmediate(backgroundRect);
+    }
+
+    private void EnsureTextLayoutElement()
+    {
+        if (bubbleText == null)
+            return;
+
+        if (textLayoutElement == null)
+            textLayoutElement = bubbleText.GetComponent<LayoutElement>();
+
+        if (textLayoutElement == null)
+            textLayoutElement = bubbleText.gameObject.AddComponent<LayoutElement>();
+    }
+
+    private void ApplyPreparedTextLayout(float width, float height)
+    {
+        if (textLayoutElement != null)
+        {
+            textLayoutElement.ignoreLayout = false;
+            textLayoutElement.minWidth = width;
+            textLayoutElement.preferredWidth = width;
+            textLayoutElement.flexibleWidth = 0f;
+            textLayoutElement.minHeight = height;
+            textLayoutElement.preferredHeight = height;
+            textLayoutElement.flexibleHeight = 0f;
+        }
+
+        if (textRect == null)
+            return;
+
+        textRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, width);
+        textRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, height);
+    }
+
+    private void RestoreDefaultTextLayout()
+    {
+        if (hasCachedTextDefaults && bubbleText != null)
+        {
+            bubbleText.enableWordWrapping = defaultWordWrapping;
+            bubbleText.overflowMode = defaultOverflowMode;
+            bubbleText.horizontalAlignment = defaultHorizontalAlignment;
+        }
+
+        if (textLayoutElement == null)
+            return;
+
+        textLayoutElement.minWidth = -1f;
+        textLayoutElement.preferredWidth = -1f;
+        textLayoutElement.flexibleWidth = -1f;
+        textLayoutElement.minHeight = -1f;
+        textLayoutElement.preferredHeight = -1f;
+        textLayoutElement.flexibleHeight = -1f;
     }
 
     private void InitializeRuntimeMaterials()

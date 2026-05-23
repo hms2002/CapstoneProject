@@ -182,6 +182,7 @@ public abstract class Slime : Mob, IMobAttackDecisionSource
             if (spawned.TryGetComponent(out T nextSlime))
             {
                 nextSlime.InitSplit(target);
+                nextSlime.SuppressMonsterLootDrop();
                 RegisterLockTrackedChild(spawned);
             }
         }

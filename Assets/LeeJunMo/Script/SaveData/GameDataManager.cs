@@ -92,6 +92,14 @@ public class GameDataManager : MonoBehaviour
             Data.bossDialogueData = new BossDialogueSaveData();
         Data.bossDialogueData.bossRecords ??= new System.Collections.Generic.List<BossDialogueRecord>();
 
+        if (Data.runSpecialNpcData == null)
+            Data.runSpecialNpcData = new RunSpecialNpcSaveData();
+        Data.runSpecialNpcData.constructionRecords ??= new System.Collections.Generic.List<RunSpecialNpcConstructionRecord>();
+
+        if (Data.tutorialData == null)
+            Data.tutorialData = new TutorialSaveData();
+        Data.tutorialData.Normalize();
+
         if (ItemManager.Instance != null)
         {
             Data.itemData.unlockedWeaponIDs = ItemManager.Instance.GetUnlockedWeaponIDs();
@@ -118,6 +126,10 @@ public class GameDataManager : MonoBehaviour
         Data.affectionData ??= new AffectionSaveData();
         Data.bossDialogueData ??= new BossDialogueSaveData();
         Data.bossDialogueData.bossRecords ??= new System.Collections.Generic.List<BossDialogueRecord>();
+        Data.runSpecialNpcData ??= new RunSpecialNpcSaveData();
+        Data.runSpecialNpcData.constructionRecords ??= new System.Collections.Generic.List<RunSpecialNpcConstructionRecord>();
+        Data.tutorialData ??= new TutorialSaveData();
+        Data.tutorialData.Normalize();
     }
 
     private void OnApplicationQuit()

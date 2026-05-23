@@ -18,7 +18,6 @@ public sealed class SceneDomainCoordinator : MonoBehaviour
     private static bool s_editorDirectGameplayStartActive;
     private static bool s_editorDirectBootstrapApplied;
     private static string s_editorDirectStartSceneName;
-    private static bool s_skipHubSpawnPresentationOnNextSpawn;
 #endif
 
     public static SceneDomainCoordinator Instance { get; private set; }
@@ -111,19 +110,6 @@ public sealed class SceneDomainCoordinator : MonoBehaviour
 #endif
     }
 
-    public static bool ConsumeHubSpawnPresentationSkip()
-    {
-#if UNITY_EDITOR
-        if (!s_skipHubSpawnPresentationOnNextSpawn)
-            return false;
-
-        s_skipHubSpawnPresentationOnNextSpawn = false;
-        return true;
-#else
-        return false;
-#endif
-    }
-
 #if UNITY_EDITOR
     private IEnumerator EditorPostSceneBootstrapRoutine(SceneDomainSceneInfo sceneInfo)
     {
@@ -184,7 +170,6 @@ public sealed class SceneDomainCoordinator : MonoBehaviour
         s_editorDirectGameplayStartActive = false;
         s_editorDirectBootstrapApplied = false;
         s_editorDirectStartSceneName = null;
-        s_skipHubSpawnPresentationOnNextSpawn = false;
     }
 
     private static void DetectEditorDirectSceneStart(SceneDomainSceneInfo sceneInfo)
@@ -195,7 +180,6 @@ public sealed class SceneDomainCoordinator : MonoBehaviour
         s_editorDirectStartDecisionMade = true;
         s_editorDirectGameplayStartActive = SceneDomainEditorDirectStartPolicy.IsDirectGameplayStart(sceneInfo);
         s_editorDirectStartSceneName = s_editorDirectGameplayStartActive ? sceneInfo.SceneName : null;
-        s_skipHubSpawnPresentationOnNextSpawn = false;
         s_editorDirectBootstrapApplied = false;
     }
 
@@ -225,10 +209,7 @@ public sealed class SceneDomainCoordinator : MonoBehaviour
         routeManager?.ClearPlan();
 
         if (sceneInfo.IsHubScene)
-        {
-            s_skipHubSpawnPresentationOnNextSpawn = true;
             return;
-        }
 
         if (gameplayManager != null)
             gameplayManager.StartRun();

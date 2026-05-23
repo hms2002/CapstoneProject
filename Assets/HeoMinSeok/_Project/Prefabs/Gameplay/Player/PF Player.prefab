@@ -963,7 +963,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 080a1edfbe917734e929b8bf39f5a545, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  capacity: 8
+  capacity: 12
   enforceUniqueRelicId: 1
   debugView: []
 --- !u!114 &7028711097407121541

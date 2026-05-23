@@ -93,15 +93,6 @@ public sealed class PlayerSpawner : MonoBehaviour
         if (player == null)
             return;
 
-        if (SceneDomainCoordinator.ConsumeHubSpawnPresentationSkip())
-        {
-            var interactor = player.GetComponent<PlayerInteractor2D>();
-            if (interactor != null && interactor.CurrentState == InteractState.None)
-                interactor.SetInteractState(InteractState.Idle);
-
-            return;
-        }
-
         var presentation = player.GetComponent<PlayerHubSpawnPresentation2D>();
         if (presentation == null)
             return;

@@ -2,7 +2,7 @@
 status: active
 authority: project-log
 category: error-log
-last_reviewed: 2026-05-19
+last_reviewed: 2026-05-23
 ---
 
 # Error Log
@@ -25,6 +25,222 @@ Prevention:
 
 ## Active Entries
 
+## 2026-05-23 - Run-Special Teleport Waited Behind Paused FixedUpdate
+
+Context:
+A run-special same-scene teleport NPC could play the screen fade but fail to move the player.
+
+Cause:
+`RunSpecialNpcInteractor` pauses `Time.timeScale` during dialogue. `RunSameSceneTeleportNpcFeature` uses `MovementMotor2D.WarpTo(...)`, and that motor applies the queued warp in `FixedUpdate`. The teleport feature also waited on `WaitForFixedUpdate`, so executing it inside the paused dialogue window could leave the warp unapplied.
+
+Fix:
+Same-scene teleport opts into post-presentation execution. The interactor closes speech/letterbox/HUD presentation first, restores the run timer pause and `Time.timeScale`, keeps the input blocker/player talking state, then runs the teleport fade/warp/fade sequence.
+
+Prevention:
+Run-special features that depend on physics, `FixedUpdate`, or scaled game time must not execute inside the paused dialogue window. Add an explicit post-presentation execution policy for those features instead of relying on unscaled UI presentation timing.
+
+## 2026-05-22 - PageCover Animator Overrode Reverse Sampled Disappear
+
+Context:
+The encyclopedia content disappear transition was implemented by sampling `ContentAppear` from the end of the clip back to the start, but the observed result still looked like the clip was playing forward.
+
+Cause:
+`PageCover` could carry an Animator with `ContentAppear` as its default state. Activating the PageCover object allowed that Animator to advance normally and overwrite the sprite value that `AnimationClip.SampleAnimation(...)` had just sampled in reverse.
+
+Fix:
+`EncyclopediaBookPresentation` now disables the optional `pageCoverAnimator` while it manually samples `contentAppearClip`, then restores the Animator enabled state after sampling or when the active presentation routine is stopped.
+
+Prevention:
+When a UI transition is manually sampled from an `AnimationClip`, disable any Animator on the sampled object for the sampling window. Otherwise the Animator and manual sampler both write the same properties and the visible result can follow the Animator instead of the requested sample time.
+
+## 2026-05-22 - Runtime Self-Repair Hid Encyclopedia Authoring Gaps
+
+Context:
+The encyclopedia UI repeatedly looked wired enough to show partial data, but DimPanel/book animation, tab transitions, and item detail ownership kept breaking or becoming unclear.
+
+Cause:
+Runtime code and broad auto-wiring paths tried to find missing children or add missing components such as presentation helpers. That made missing prefab references look like a working runtime fallback and preserved legacy presenters on the active hierarchy longer than intended.
+
+Fix:
+Keep the active runtime path to serialized references: `EncyclopediaScreen -> EncyclopediaItemTab -> EncyclopediaItemLeftPage / EncyclopediaItemRightPage`. Runtime now logs missing required references instead of adding presenter/presentation components or silently rebuilding fallback bindings. The GlobalUIRoot wiring tool removes active legacy presenters and is the only repair path for the current prefab.
+
+Prevention:
+Do not solve authored UI wiring gaps with runtime `AddComponent`, broad `GetComponentInChildren` fallback during `Awake`/`OpenUI`, or duplicate legacy presenters. Add or fix the reference in Unity/Editor tooling, then let runtime validation warn when a required field is still missing.
+
+## 2026-05-22 - OnValidate Auto-Wiring Dirtied Encyclopedia Authoring
+
+Context:
+After the encyclopedia Inspector/import issue, trying to save or close the Unity Editor kept producing new unsaved changes.
+
+Cause:
+Several encyclopedia presenter components used `OnValidate()` to call `ResolveReferences()`, and `EncyclopediaScreen.OnValidate()` also scheduled a delayed auto-wire that called `EditorUtility.SetDirty(this)`. Reference resolution writes serialized component fields and can add editor-time helper components, so Unity could mark the scene or prefab dirty again immediately after saving.
+
+Fix:
+Remove edit-mode auto-wiring from `OnValidate()`. Keep the same authoring convenience only in `Reset()` and the explicit `Auto Wire References` context menu so it runs when a component is added or when the author intentionally requests it.
+
+Prevention:
+Do not use `OnValidate()` for serialized-reference discovery, component adding, `SetDirty`, or delayed edit-mode mutation. Use explicit editor commands or one-time `Reset()` initialization for prefab/scene authoring helpers.
+
+## 2026-05-22 - Duplicate Encyclopedia Item Detail Presenters
+
+Context:
+The authored encyclopedia `RightPage` had `EncyclopediaItemRightPage` on `RightPage` while the child `ItemDetailPanel` still carried the older `EncyclopediaDetailPanel`. Both exposed similar icon/title/story/stat/detail fields in the Inspector.
+
+Cause:
+The migration from the first fixed detail presenter to the `EncyclopediaItemTab -> EncyclopediaItemRightPage` structure left the legacy component on the active hierarchy as a fallback. That made it unclear which component owned item detail binding and allowed future wiring to target the wrong presenter.
+
+Fix:
+Make `EncyclopediaItemRightPage` the sole active Item RightPage presenter. The GlobalUIRoot wiring tool now keeps/adds the presenter on `RightPage`, removes duplicate child `EncyclopediaItemRightPage` components, and removes legacy `EncyclopediaDetailPanel` components under RightPage. The V1 builder no longer adds `EncyclopediaDetailPanel` for generated encyclopedia screens.
+
+Prevention:
+Do not keep fallback presenters on the same active authored UI hierarchy once the replacement presenter owns the flow. If a migration component must remain in source, hide it from Add Component and remove it from the current prefab/scene through UnityEditor API or Inspector work.
+
+## 2026-05-22 - Corrupt Prefab Import Masqueraded As Inspector GUIStyle Failure
+
+Context:
+Unity repeatedly logged `Unable to use a named GUIStyle without a current skin` and `UnityEditor.EditorStyles.get_toolbarButtonRight()` while the Inspector was redrawing after the encyclopedia UI prefab work.
+
+Cause:
+The visible Console stack was a Unity Inspector cascade. `Editor.log` showed the earlier source error: `Assets/LeeJunMo/Prefab/UI/PopupUI/Encyclopedia/EncyclopediaScreen.prefab` failed import with `Problem detected while importing the Prefab file`, `Broken text PPtr`, and many `Transform child can't be loaded` messages. Static YAML inspection found 153 local `fileID` references in that prefab that had no matching object definitions, and those 153 IDs matched the broken PPtr IDs in `Editor.log`.
+
+Fix:
+Do not keep the corrupt prefab under `Assets` while the Editor imports. Preserve it outside the Unity import tree for inspection, then regenerate the screen prefab through `EncyclopediaV1AssetBuilder` or rebuild it in Unity with authored references. Do not try to repair this class of damage with broad YAML regex patches.
+
+Prevention:
+When an all-Unity-internal Inspector GUIStyle stack persists after Library/layout reset, inspect `Editor.log` for the first import/serialization error before the GUIStyle cascade. For prefab YAML, run a local-reference scan that verifies every non-external `{fileID: ...}` has a corresponding `--- !u! ... &fileID` document before trusting the prefab.
+
+## 2026-05-20 - Broad Regex Corrupted Unity Prefab YAML
+
+Context:
+The encyclopedia book presentation needed Animator components and clip/controller references on generated prefabs while Unity Editor was open, so Unity batchmode could not be run.
+
+Cause:
+A manual text replacement used a broad regex across Unity prefab YAML documents. It matched beyond the intended MonoBehaviour block, inserted Animator/BookPresentation data into unrelated objects, and left malformed fields such as duplicated serialized values and broken document separators.
+
+Fix:
+Stop manual YAML patching for this change and regenerate the affected prefabs through `EncyclopediaV1AssetBuilder` in Unity Editor or batchmode when the Editor is closed. The builder now creates the AnimatorController and AnimationClip assets through UnityEditor APIs.
+
+Prevention:
+Do not use cross-document regex replacements on Unity prefab/scene YAML. For Animator, AnimationClip, nested UI, TMP, and cross-prefab references, use UnityEditor APIs or a document-bound parser with explicit fileID ownership checks, then validate import in Unity.
+
+## 2026-05-20 - TMP Font Asset Changed Without Shared Material
+
+Context:
+The encyclopedia prefab appeared to ignore the requested Galmuri9 font on existing screen text, especially RightPage detail text, even after the builder assigned a font asset for new TMP objects.
+
+Cause:
+Existing prefab TMP components still serialized the default TMP font asset and shared material GUIDs. The earlier correction only handled null/new font references and did not replace already-assigned default TMP font/material references. The slot prefab also had Galmuri9 `m_fontAsset` but no serialized Galmuri9 `m_sharedMaterial`.
+
+Fix:
+Replace both `m_fontAsset` and `m_sharedMaterial` references in encyclopedia prefabs with `Galmuri9 SDF.asset` and update the editor builder to assign `fontSharedMaterial = fontAsset.material` when creating TMP text.
+
+Prevention:
+When changing TMP font in prefabs or builders, verify both `m_fontAsset` and `m_sharedMaterial` GUIDs. Do not treat font replacement as complete when only null references or only `fontAsset` assignments were updated.
+
+## 2026-05-20 - DemonKing EgoSword Dropped Loop Survived Boss Battle End
+
+Context:
+DemonKing could die while EgoSword was planted in the arena. The sword stayed visible and continued running its independent dropped VerticalStrike/CrossLaser pattern loop after the boss fight ended.
+
+Cause:
+The dropped sword cadence was owned by `EgoSwordActor`, but DemonKing death/battle-end cleanup only stopped the boss pattern runtime. `EgoSwordActor` also checked only `owner != null` and `state == Fixed`, so a dead or combat-inactive owner still allowed the side loop and active subpattern ability to continue.
+
+Fix:
+`DemonKingController` now sends an explicit battle-end cleanup to EgoSword from death and destroy paths. `EgoSwordActor` cancels active dropped subpattern tokens, stops the dropped loop, clears mask/aura/attached one-shot VFX, switches back to held state, and deactivates the sword until the next `AttachToOwner()` reactivates it. Dropped loop and subpattern cancellation checks now require `owner.IsCombatActive` and `!owner.IsDead`.
+
+Prevention:
+Boss-owned side actors with independent timers must have an owner death/battle-end cleanup entry point and must include owner death/combat-active checks in wait loops, activation gates, and active ability cancellation checks. Do not rely on the boss main pattern abort path to stop side actor coroutines.
+
+## 2026-05-20 - Inactive Tilemaps Leaked Into Runtime Queries
+
+Context:
+Construction sites now switch between inactive `BlockedState` / `OpenState` tilemap roots. Existing safety and drop code used `FindObjectsOfType<Tilemap>(true)`, so inactive open-ground or blocked-wall tilemaps could be discovered before their construction state was active.
+
+Cause:
+The search intentionally included inactive objects but did not filter `isActiveAndEnabled` and `activeInHierarchy` before treating a tilemap as runtime ground or hazard data.
+
+Fix:
+Filter inactive tilemaps in runtime tilemap scanners. Construction site modules also refresh safety tilemap caches after toggling state and register completed open-ground tilemaps with scene pathfinders.
+
+Prevention:
+When a system uses inactive scene authoring roots, any runtime scan that passes `includeInactive: true` must immediately filter inactive components before using gameplay data from those objects.
+
+## 2026-05-20 - DemonKing Inspector Used Stale Witch GAS Assets
+
+Context:
+DemonKing battle logic was using GAS at runtime, but the DemonKing scene Inspector still showed Witch `AbilityDefinition` references in `Phase Data` and `AbilitySystem.initialAbilities`.
+
+Cause:
+DemonKing patterns had been implemented as runtime-created `AbilityDefinition` / `AbilityLogic` instances inside `DemonKingController.ConfigureRuntimePatternsIfNeeded()`. That made play mode work through runtime registration, but left copied Witch serialized references visible in the scene and made the Inspector an unreliable source of truth.
+
+Fix:
+Create persistent `AD_DemonKing_*` and `AL_DemonKing_*` assets, wire the DemonKing scene phase list to those assets, clear `AbilitySystem.initialAbilities`, and turn off `configureRuntimePatternsOnStart` for the scene. `DemonKingController` now binds special pattern roles from authored phase abilities when runtime generation is disabled, while keeping runtime generation as a fallback when no phases are authored.
+
+Prevention:
+For boss patterns that should be inspected or tuned in Unity, create persistent AbilityDefinition/AbilityLogic assets and put them in `BossPhaseConfig`. Do not leave copied boss ability references in a scene just because a runtime fallback currently overwrites them. Keep `AbilitySystem.initialAbilities` empty for boss phase abilities unless a separate non-phase ability must be granted at startup.
+
+## 2026-05-20 - EgoSword Dropped Subpatterns Bypassed GAS
+
+Context:
+EgoSword dropped VerticalStrike and CrossLaser were intended to be DemonKing patterns with a separate cadence from the main boss pattern timer, but they were implemented as direct `EgoSwordActor` coroutines with no authored AbilityDefinition/AbilityLogic assets.
+
+Cause:
+The separate dropped-sword timer was treated as a reason to keep the attacks outside GAS, instead of splitting "timing owner" from "pattern execution owner". That made the attacks less inspectable and bypassed the AbilitySystem cancellation/presentation lifecycle used by DemonKing patterns.
+
+Fix:
+Create persistent `AD_DemonKing_EgoSwordVerticalStrike` / `AD_DemonKing_EgoSwordCrossLaser` and matching AL assets, register them on `DemonKingController` as `ParallelIndependent` subpattern abilities, and make `EgoSwordActor` request GAS activation from its independent dropped-pattern loop.
+
+Prevention:
+When a boss-owned attack has an independent cadence, keep the cadence runner separate but still execute the attack through GAS. Use `ParallelIndependent` instant abilities for side-patterns that must run while the main boss FSM pattern queue may be busy.
+
+## 2026-05-20 - Behavior Tree Base Was Not Serializable
+
+Context:
+After script reload, Unity logged `The type Assembly-CSharp ActivateGASAbilityAction is being serialized by [SerializeReference], but its parent type Assembly-CSharp AIAbilityBridgeActionBase is missing the [Serializable] attribute`, followed immediately by repeated Inspector `Unable to use a named GUIStyle without a current skin` and `EditorStyles.toolbarButtonRight` errors.
+
+Cause:
+Concrete Unity Behavior nodes were marked `[Serializable]`, but the shared abstract `AIAbilityBridgeActionBase` and `AIAbilityBridgeConditionBase` classes in the same SerializeReference inheritance path were not. The Unity serializer warning occurred during Inspector rebuild after domain reload, then Unity's internal `PropertyEditor` tried to initialize named GUIStyles before a current skin was available.
+
+Fix:
+Mark the shared Behavior Tree action/condition base classes `[Serializable]`. They do not add serialized fields, so this only satisfies Unity's serialization chain requirement.
+
+Prevention:
+For Unity Behavior nodes that expose `[SerializeReference]` / `BlackboardVariable` fields, keep the full node inheritance chain serializable, including abstract project base classes. When an Inspector `EditorStyles` stack is all Unity-internal, check the first Console or `Editor.log` message before the GUIStyle cascade.
+
+## 2026-05-19 - Pattern State Animation Was Treated As Spawned VFX
+
+Context:
+DemonKing PierceCombo and EgoSword VerticalStrike VFX were visible, but their ownership did not match the authored effect intent.
+
+Cause:
+`DemonKingStab` was scaled across the whole PierceCombo path as if it represented the hitbox lane, even though the intended visual is an effect attached to the boss during the lunge. `EgoSwordAttackAura` was also built and spawned as a child VFX prefab even though it is the EgoSword's own attack state animation.
+
+Fix:
+PierceCombo now attaches `DemonKingStab` to the boss transform and suppresses the path-covering attack primitive for that pattern. `EgoSwordActor` plays `EgoSwordAttackAura` through its own SpriteRenderer/Animator as `Start` then `Idle`, and the generated aura prefab was removed.
+
+Prevention:
+Before wiring new boss sprites, decide whether the asset represents an external hit VFX, a hitbox/telegraph visualization, or the actor's own state animation. State animation should be driven by the owning actor's Animator, while hitbox geometry remains separate gameplay logic.
+
+## 2026-05-19 - Animator Import And State Validation Hid DemonKing VFX
+
+Context:
+Non-laser DemonKing/DarkLord VFX prefabs existed and were loaded through `Resources/DemonKing/Vfx`, but Explosion, Impact, Stab, Slash, GroggyRelease, and EgoSword attack visuals did not appear in play tests.
+
+Cause:
+The generated AnimatorController YAML had `m_TimeParameter:` and the next Unity document separator on the same line, e.g. `m_TimeParameter:--- !u!...`. Unity can fail to import or play those malformed controllers, leaving Animator-driven sprite VFX invisible even though the prefab path is correct.
+
+A follow-up failure came from runtime validation: `Animator.HasState(...)` was checked with only the short state name hash such as `Play`. Unity state lookup can require the layer-qualified hash such as `Base Layer.Play`, so valid controllers were treated as invalid, the authored VFX object was destroyed, and the primitive fallback ran instead. With domain reload disabled, a prior failed `Resources.Load(...)` could also leave a cached `null` prefab until play mode restarted.
+
+Another follow-up was that manually authored `.anim` / `.controller` files could appear empty in the Unity Inspector even when their text YAML looked populated. This made the runtime path keep falling back because the Editor import result, not the raw YAML text, is what matters.
+
+Fix:
+Repair the controller YAML so `m_TimeParameter:` is its own blank scalar line and each `--- !u!...` separator starts a new YAML document. Runtime validation now resolves both short and layer-qualified Animator state hashes before rejecting a controller. DemonKing VFX prefab cache is cleared through `SubsystemRegistration`, and failed `Resources.Load(...)` results are not cached.
+
+Add an Editor-only DemonKing VFX asset builder that creates or repairs AnimationClips, AnimatorControllers, and prefabs through UnityEditor APIs from the original DarkLord sprite sheets. It runs only when the imported VFX assets are missing or invalid, and it can also be triggered manually from `Tools/DemonKing/Rebuild Pattern VFX Assets`.
+
+Prevention:
+When manually editing Unity `.controller` YAML, run a text check for `:--- !u!` or `m_TimeParameter:---` before play testing. For sprite-sheet VFX, keep playback through AnimatorController states, but validate Animator states with the same layer-qualified names Unity uses internally. Prefer UnityEditor API generation for `.anim` and `.controller` assets if the Inspector shows empty curves/states. Do not cache missing `Resources` prefabs as durable failures during iteration.
+
 ## 2026-05-19 - Affection Reward UI Waited Behind Dialogue Blocker
 
 Context:
@@ -34,10 +250,10 @@ Cause:
 `AffectionRewardProcessor` passed the dialogue continuation callback into `RewardDisplayService.ShowReward(...)`. During dialogue, `DialogueService` owns an external UI input blocker, so `RewardDisplayService` could not open `RewardDisplayUI` and left the request queued. Dialogue was waiting for the reward close callback, while the reward UI was waiting for dialogue's blocker to release.
 
 Fix:
-When an affection reward is earned while external UI input is blocked, the reward display request is queued without the dialogue continuation callback and the dialogue callback is invoked immediately. `RewardDisplayService` now retries queued reward presentation once UI opening is allowed again.
+`RewardDisplayService` now has a flow-owned reward request path that can open `RewardDisplayUI` as part of the active dialogue/encounter flow while unrelated UI openings remain blocked. `AffectionRewardProcessor` keeps the dialogue continuation callback attached to the reward close callback, so dialogue resumes only after the player closes the reward UI. If the reward view is missing, the service logs a warning and invokes the callback as a fallback so dialogue does not remain stuck.
 
 Prevention:
-Do not make a UI popup close callback the only continuation path while the popup itself is blocked by the current flow's input blocker. Queue the popup separately or use an explicit owner handoff.
+Do not detach a dialogue continuation from the reward popup just to avoid an input-blocker deadlock. If the popup is part of the current flow, use an explicit flow-owned UI handoff; if the view is missing, invoke a fallback continuation with a warning.
 
 ## 2026-05-19 - Affection Tween Kill Skipped Dialogue Continuation
 
@@ -349,3 +565,73 @@ Fix:
 
 Prevention:
 For prefab-authored world UI labels, prefer a world-space Canvas plus `TextMeshProUGUI`, or use a plain Transform with 3D TMP deliberately. Do not rely on RectTransform positioning without a Canvas when the label must appear at a precise world offset.
+
+## 2026-05-20 - Disable Cleanup Started Presentation Coroutine On Inactive Object
+
+Context:
+Exiting play mode or disabling the encyclopedia stand logged `Coroutine couldn't be started because the the game object 'EncyclopediaStand' is inactive!`.
+
+Cause:
+`EncyclopediaInteractable.OnDisable()` reused the normal unhighlight path, which asked `BookWorldSpriteSequencePresentation.PlayClose()` to start the close coroutine after Unity had already made the object inactive.
+
+Fix:
+Disable cleanup now clears the outline and calls `SnapClosed()`. The book sprite presentation also guards public play methods so inactive calls apply a static sprite instead of starting a coroutine.
+
+Prevention:
+`OnDisable()` cleanup should stop/snap authored presentation state and release references; it should not replay highlight, close, fade, or idle animations that depend on `StartCoroutine()` on the disabled object.
+
+## 2026-05-20 - Speech Bubble Cleanup Used C# Null-Conditional On Destroyed Unity Object
+
+Context:
+Disabling a run-special NPC flow logged `MissingReferenceException: The object of type 'SpeechBubble' has been destroyed but you are still trying to access it`, from `SpeechBubbleComponent.HideActive()` into `SpeechBubble.StopActiveTweens()`.
+
+Cause:
+`SpeechBubbleComponent` stored a pooled `SpeechBubble` reference and called `activeBubble?.Hide()`. Unity destroyed objects are not real C# nulls, so the null-conditional operator still invoked `Hide()` on a destroyed `UnityEngine.Object`.
+
+Fix:
+Active bubble cleanup and line-skip access now pass through a helper that uses Unity's overloaded null check and clears destroyed references. `SpeechBubble.Hide()` also exits early when invoked on a destroyed instance, and run-special cleanup avoids null-conditional calls on Unity component references.
+
+Prevention:
+Do not use `?.` as a lifecycle guard for `UnityEngine.Object` references in teardown, pooling, or delayed callback paths. Use explicit `if (object != null)` checks so Unity fake-null destroyed objects are treated as gone before calling instance methods.
+
+## 2026-05-22 - Pooled Ability Preview Kept Ignored Layout State
+
+Context:
+After viewing or switching a variant-capable encyclopedia weapon, later normal weapons could display two skill rows overlapped in one `Panel_AbilityBlock_Encyclopedia` area.
+
+Cause:
+The variant switch preview used a pooled ability-block instance and set its `LayoutElement.ignoreLayout` to `true` so it could animate outside the normal vertical layout. When that same instance was later reused as a normal skill row, the ignored-layout state and preview presentation state were not reset.
+
+Fix:
+`WeaponAbilityBlockView` now has a reusable pooled-state reset path that restores switch guide, preview mute, `CanvasGroup`, and `LayoutElement.ignoreLayout`. `EncyclopediaItemRightPage` calls it before reusing or hiding pooled ability blocks.
+
+Prevention:
+Any UI pooled object that temporarily opts out of parent layout, changes draw order, or changes preview alpha/color must restore those states before returning to the pool. Do not assume `SetActive(false)` resets `LayoutElement`, `CanvasGroup`, or graphic color state.
+
+## 2026-05-22 - Encyclopedia Book Animation Was Bypassed By Missing Presentation Dependency
+
+Context:
+Tome interaction and Item sub-tab switching displayed data but did not play the expected DimPanel fade, `BookOpen`, or `BookLeftPage` animations.
+
+Cause:
+The authored `GlobalUIRoot` encyclopedia screen had no persisted `EncyclopediaBookPresentation` component/reference, so screen open and tab switching fell back to immediate content binding. The DimPanel path also assumed a `CanvasGroup`; a plain `Image`/`Graphic` DimPanel could be treated as effectively unavailable for animated fade. Generic child Animator lookup could also pick slot/button animators before the actual Book/Tome animator.
+
+Fix:
+`EncyclopediaScreen` can add the missing `EncyclopediaBookPresentation` in edit mode and at runtime as a component-only self-repair, and the safe GlobalUIRoot wire tool now adds/wires it explicitly for persistent prefab repair. `EncyclopediaBookPresentation` fades either `CanvasGroup` or `Graphic` DimPanels and prefers Book/Tome/EarthTome named animators or animators with `BookOpen`, `BookClose`, `BookLeftPage`, or `BookRightPage` states/clips.
+
+Prevention:
+Treat book presentation as a required authored dependency for animated encyclopedia screens. Do not rely on content binding to prove the presentation path is wired. When inspecting missing DimPanel behavior, check both `CanvasGroup` and plain `Image` authoring, and verify the selected Animator is the book Animator rather than a slot/button animator.
+
+## 2026-05-22 - Encyclopedia DimPanel Leaked Because Book Was Treated As Screen Root
+
+Context:
+Play mode could start with `EncyclopediaUI` active and only `DimPanel` visible, making the game screen look black even though the book/content appeared closed.
+
+Cause:
+The implementation treated the child `Book` object as the screen active boundary. `DimPanel` is authored under `EncyclopediaUI`, so closing/deactivating `Book` did not necessarily deactivate sibling UI objects.
+
+Fix:
+`EncyclopediaScreen` now owns a serialized `screenActiveRoot` that resolves to `EncyclopediaUI`. Opening activates that root, while runtime startup close and `CloseUI()` deactivate it.
+
+Prevention:
+For authored popup roots with sibling presentation objects, define the active boundary at the popup root, not at one animated child. Dim panels should be covered by the same root lifecycle as the rest of the popup.

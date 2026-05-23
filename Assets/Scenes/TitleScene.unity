@@ -24885,7 +24885,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 187767951}
   m_HandleRect: {fileID: 187767950}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -36643,7 +36643,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f6f2f695d0b458aa47ba62406e0f4f7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetSceneName: ProtoTypeHub
+  targetSceneName: ProtoTypeHub 1
   enableQuickStartShortcut: 0
   startKey: 32
 --- !u!224 &7726161979931748096

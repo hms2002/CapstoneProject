@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc9938c52bf64da9b8e3093e37f20cd0, type: 3}
   m_Name: RelicInventoryCapacityEffect
   m_EditorClassIdentifier: 
-  rewardText: 
+  rewardText: "\uC720\uBB3C \uC2AC\uB86F 4\uCE78 \uD655\uC7A5"
   rewardIcon: {fileID: 27973645106443723, guid: c8d744a5a9680674c9dadec99c73389e, type: 3}
-  slotBonus: 1
+  slotBonus: 4

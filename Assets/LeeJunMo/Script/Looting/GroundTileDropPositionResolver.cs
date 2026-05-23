@@ -121,9 +121,14 @@ public sealed class GroundTileDropPositionResolver
         for (int i = 0; i < tilemaps.Length; i++)
         {
             Tilemap map = tilemaps[i];
-            if (map != null && map.gameObject.layer == groundLayer)
+            if (IsActiveTilemap(map) && map.gameObject.layer == groundLayer)
                 yield return map;
         }
+    }
+
+    private static bool IsActiveTilemap(Tilemap map)
+    {
+        return map != null && map.isActiveAndEnabled && map.gameObject.activeInHierarchy;
     }
 
     private static bool TryFindClosestGroundCell(Tilemap map, Vector3 worldPosition, int searchRadius, out Vector3Int result)

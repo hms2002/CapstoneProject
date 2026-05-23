@@ -14,6 +14,7 @@ using UnityGAS;
 public sealed class PlayerDeathReturnToHub2D : MonoBehaviour
 {
     private const string DeadStateTagSetResourcePath = "Tags/TagSet/TS_PlayerDeadState";
+    private const string DeadControlBlockTagSetResourcePath = "Tags/TagSet/TS_BlockControlByUI";
     private const string DefaultTrapCauseName = "구덩이";
     private const string DefaultMonsterCauseName = "알 수 없는 적";
     private const string TimeOverCauseName = "마왕의 인내심";
@@ -40,6 +41,7 @@ public sealed class PlayerDeathReturnToHub2D : MonoBehaviour
     private bool isDeathSequenceRunning;
     private string lastDamageSourceName;
     private GameOverCauseKind lastDamageCauseKind = GameOverCauseKind.Monster;
+    private GameplayTagSet deadControlBlockTagSet;
     private readonly HashSet<GameplayTag> deathTagsBuffer = new();
 
     private void Awake()
@@ -52,6 +54,7 @@ public sealed class PlayerDeathReturnToHub2D : MonoBehaviour
         if (hitFeedback == null) hitFeedback = GetComponent<PlayerHitFeedback2D>();
         if (deathPresentation == null) deathPresentation = GetComponent<PlayerDeathPresentation2D>();
         if (deathStateTagSet == null) deathStateTagSet = Resources.Load<GameplayTagSet>(DeadStateTagSetResourcePath);
+        if (deadControlBlockTagSet == null) deadControlBlockTagSet = Resources.Load<GameplayTagSet>(DeadControlBlockTagSetResourcePath);
 
         if (collidersToDisable == null || collidersToDisable.Length == 0)
             collidersToDisable = GetComponentsInChildren<Collider2D>(includeInactive: false);
@@ -415,11 +418,12 @@ public sealed class PlayerDeathReturnToHub2D : MonoBehaviour
     /// </summary>
     private void ApplyDeathStateTags()
     {
-        if (tagSystem == null || deathStateTagSet == null)
+        if (tagSystem == null)
             return;
 
         deathTagsBuffer.Clear();
-        deathStateTagSet.CollectTags(deathTagsBuffer);
+        deathStateTagSet?.CollectTags(deathTagsBuffer);
+        deadControlBlockTagSet?.CollectTags(deathTagsBuffer);
 
         foreach (var tag in deathTagsBuffer)
         {

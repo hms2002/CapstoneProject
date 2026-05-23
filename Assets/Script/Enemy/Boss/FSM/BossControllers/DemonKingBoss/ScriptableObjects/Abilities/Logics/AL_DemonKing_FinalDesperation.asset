@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f9453cba5ab49ebbb4b11fe064c9f2f, type: 3}
+  m_Name: AL_DemonKing_FinalDesperation
+  m_EditorClassIdentifier: 
+  moveToCenterSeconds: 0.6
+  openingKnockbackDiameter: 40
+  openingKnockbackDamage: 0.01
+  openingKnockback: 26
+  bombIntervalSeconds: 0.2
+  bombWarningSeconds: 0.4
+  bombDiameter: 2.1
+  bombDamage: 1
+  bombOffsetRange: 5
+  laserWarningSeconds: 1
+  laserAttackSeconds: 1
+  laserWidth: 0.75
+  laserVfxRayOriginOffset: 1.2
+  fallbackLaserLength: 40
+  laserDamage: 1

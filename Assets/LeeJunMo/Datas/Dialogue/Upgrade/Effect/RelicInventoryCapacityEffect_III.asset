@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc9938c52bf64da9b8e3093e37f20cd0, type: 3}
+  m_Name: RelicInventoryCapacityEffect_III
+  m_EditorClassIdentifier: 
+  rewardText: "\uC720\uBB3C \uC2AC\uB86F 4\uCE78 \uD655\uC7A5"
+  rewardIcon: {fileID: 27973645106443723, guid: c8d744a5a9680674c9dadec99c73389e, type: 3}
+  slotBonus: 4

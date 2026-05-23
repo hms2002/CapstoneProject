@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityGAS;
 
@@ -41,6 +42,22 @@ public sealed class DemonKingDelayedDamageArea : MonoBehaviour
         area.StartCoroutine(area.RunRectangle(owner, center, size, rotationDeg, warningSeconds, damage, ignoreOwnerGroggy));
     }
 
+    public static void SpawnCircleCluster(
+        DemonKingController owner,
+        IReadOnlyList<Vector2> centers,
+        float diameter,
+        float warningSeconds,
+        float damage,
+        bool ignoreOwnerGroggy = false)
+    {
+        if (owner == null || centers == null || centers.Count == 0)
+            return;
+
+        GameObject runner = new("DemonKing_DelayedCircleCluster");
+        DemonKingDelayedDamageArea area = runner.AddComponent<DemonKingDelayedDamageArea>();
+        area.StartCoroutine(area.RunCircleCluster(owner, centers, diameter, warningSeconds, damage, ignoreOwnerGroggy));
+    }
+
     private IEnumerator RunCircle(
         DemonKingController owner,
         Vector2 center,
@@ -76,6 +93,56 @@ public sealed class DemonKingDelayedDamageArea : MonoBehaviour
                 diameter,
                 AttackColor,
                 "DemonKing_ExplosionCircleAttack");
+        }
+
+        Destroy(gameObject);
+    }
+
+    private IEnumerator RunCircleCluster(
+        DemonKingController owner,
+        IReadOnlyList<Vector2> centers,
+        float diameter,
+        float warningSeconds,
+        float damage,
+        bool ignoreOwnerGroggy)
+    {
+        for (int i = 0; i < centers.Count; i++)
+        {
+            Vector2 center = centers[i];
+            DemonKingPrimitiveVisual.SpawnCircle(
+                center,
+                diameter,
+                warningSeconds,
+                WarningColor,
+                "DemonKing_ExplosionCircleWarning");
+
+            owner.GetTelegraphService()?.SpawnDetachedView(
+                AttackTelegraphSpec.CreateCircle(center, diameter, warningSeconds, owner.DefaultWarningStyle));
+        }
+
+        if (warningSeconds > 0f)
+            yield return new WaitForSeconds(warningSeconds);
+
+        if (owner != null && !owner.IsDead && (ignoreOwnerGroggy || !owner.HasGroggyTag()))
+        {
+            HashSet<GameObject> damagedTargets = new();
+            for (int i = 0; i < centers.Count; i++)
+            {
+                Vector2 center = centers[i];
+                DemonKingCombatUtil.ApplyCircleDamage(
+                    owner,
+                    center,
+                    diameter * 0.5f,
+                    owner.DefaultDamageEffect,
+                    damage,
+                    damagedTargets);
+
+                DemonKingPatternVfx.SpawnExplosionOrFallbackCircle(
+                    center,
+                    diameter,
+                    AttackColor,
+                    "DemonKing_ExplosionCircleAttack");
+            }
         }
 
         Destroy(gameObject);

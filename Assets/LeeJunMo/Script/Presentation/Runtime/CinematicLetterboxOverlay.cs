@@ -35,8 +35,38 @@ public sealed class CinematicLetterboxOverlay
 
     public IEnumerator PlayIn(float duration, float letterboxHeightRatio, float uiTargetAlpha)
     {
+        yield return PlayIn(duration, letterboxHeightRatio, uiTargetAlpha, captureGlobalUiLayers: true);
+    }
+
+    public IEnumerator PlayIn(
+        float duration,
+        float letterboxHeightRatio,
+        float uiTargetAlpha,
+        bool captureGlobalUiLayers)
+    {
         EnsureOverlayExists();
-        CaptureCanvasStates();
+        if (captureGlobalUiLayers)
+            CaptureCanvasStates();
+        else
+            RestoreCanvasStatesImmediate();
+
+        float targetBarHeight = ResolveTargetBarHeight(letterboxHeightRatio);
+        yield return Animate(
+            duration,
+            topBarTargetHeight: targetBarHeight,
+            bottomBarTargetHeight: targetBarHeight,
+            resolveTargetAlpha: _ => Mathf.Clamp01(uiTargetAlpha),
+            restoreCanvasInteraction: false);
+    }
+
+    public IEnumerator PlayIn(
+        float duration,
+        float letterboxHeightRatio,
+        float uiTargetAlpha,
+        IReadOnlyList<GlobalCanvasLayer> fadedLayers)
+    {
+        EnsureOverlayExists();
+        CaptureCanvasStates(fadedLayers);
 
         float targetBarHeight = ResolveTargetBarHeight(letterboxHeightRatio);
         yield return Animate(
@@ -213,11 +243,19 @@ public sealed class CinematicLetterboxOverlay
 
     private void CaptureCanvasStates()
     {
+        CaptureCanvasStates(FadedLayers);
+    }
+
+    private void CaptureCanvasStates(IReadOnlyList<GlobalCanvasLayer> fadedLayers)
+    {
         RestoreCanvasStatesImmediate();
 
-        for (int i = 0; i < FadedLayers.Length; i++)
+        if (fadedLayers == null)
+            return;
+
+        for (int i = 0; i < fadedLayers.Count; i++)
         {
-            Canvas canvas = GlobalUIRoot.GetCanvas(FadedLayers[i]);
+            Canvas canvas = GlobalUIRoot.GetCanvas(fadedLayers[i]);
             if (canvas == null)
                 continue;
 

@@ -105,6 +105,47 @@ internal static class RunSessionStateService
         return data.pendingRunShortcutUnlocks.Exists(x => x.mapID == mapID && x.doorID == doorID);
     }
 
+    public static void AddPendingRunSpecialNpcConstructionStart(
+        GamePlayData data,
+        string constructionId,
+        int startedClearCount)
+    {
+        if (data == null || string.IsNullOrWhiteSpace(constructionId))
+            return;
+
+        data.pendingRunSpecialNpcConstructionStarts ??= new List<PendingRunSpecialNpcConstructionStart>();
+
+        PendingRunSpecialNpcConstructionStart existing =
+            data.pendingRunSpecialNpcConstructionStarts.Find(x => x != null && x.constructionId == constructionId);
+        if (existing != null)
+        {
+            existing.startedClearCount = Mathf.Min(existing.startedClearCount, startedClearCount);
+            return;
+        }
+
+        data.pendingRunSpecialNpcConstructionStarts.Add(
+            new PendingRunSpecialNpcConstructionStart(constructionId, startedClearCount));
+    }
+
+    public static bool TryGetPendingRunSpecialNpcConstructionStart(
+        GamePlayData data,
+        string constructionId,
+        out int startedClearCount)
+    {
+        startedClearCount = 0;
+
+        if (data?.pendingRunSpecialNpcConstructionStarts == null || string.IsNullOrWhiteSpace(constructionId))
+            return false;
+
+        PendingRunSpecialNpcConstructionStart pending =
+            data.pendingRunSpecialNpcConstructionStarts.Find(x => x != null && x.constructionId == constructionId);
+        if (pending == null)
+            return false;
+
+        startedClearCount = pending.startedClearCount;
+        return true;
+    }
+
     public static void TickRunTimer(GamePlayData data, float deltaTime)
     {
         if (data == null || !data.isRunActive)

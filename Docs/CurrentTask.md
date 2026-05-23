@@ -1,76 +1,71 @@
 ---
 status: active
 authority: current-task
-category: runtime-gameplay
-last_reviewed: 2026-05-19
+category: run-special-npc
+last_reviewed: 2026-05-23
 ---
 
 # Current Task
 
 ## Goal
 
-Close three runtime gameplay gaps: BossEncounter ESC input blocking, scene-consistent first chest reveal presentation, and closed-door monster perception.
+Stabilize the run-internal special NPC interaction pipeline for construction and same-scene teleport NPCs.
 
 ## Requested Work
 
-- Treat the ESC issue as a boss encounter presentation ownership problem, not a `DialogueService` or `UIManager` special case.
-- Have `BossEncounterDirector` own a `GameFlowInputBlocker` from sequence start through boss combat handoff.
-- Apply the same blocker ownership to legacy `BossTalkManager`.
-- Align chest reveal timing, shake, and layout scalar values to `Assets/LeeJunMo/Prefab/UI/GlobalUIRoot.prefab`.
-- Update only the relevant UI root variants and scene chest reveal overrides.
-- Prevent enemies from perceiving the player through closed `DoorObject` line of sight.
-- Apply the same closed-door perception rule to target acquisition, chase intent, common attack continuation, and Dead's Skeleton self-destruct detection/cancel paths.
+- Keep run-special NPC dialogue separate from the normal `DialogueController` / Ink / portrait dialogue stack.
+- Use `SpeechBubbleComponent` for NPC lines and the authored `RunSpecialNpcChoicePanel` under `GlobalUIRoot > DialogueCanvas` for user choices.
+- During NPC lines, allow the camera to focus on the NPC/speech-bubble target.
+- Fade HUD/prompt presentation out and back in like Merchant cinematic presentation, while keeping the run-special choice panel usable.
+- Before user choices appear, return the camera to the player, then show the choice panel.
+- Support the authored three-button choice panel while hiding unused button slots when fewer choices are available.
+- In construction-pending dialogue, replace the authored `N일` text token with the remaining run completion count.
+- When construction is already pending, skip the normal opening lines and immediately play the construction-pending status lines.
+- When construction has not started but the player lacks enough magic stones, use a separate insufficient-funds line branch.
+- Move run-special dialogue data into `RunSpecialNpcDialogueSetSO`, with feature-specific branch keys returned by the primary feature.
+- Treat line breaks inside a `RunSpecialNpcLine` text field as separate speech-bubble lines at playback time, so SO authors can paste multi-line dialogue without adding array elements for every line.
+- Provide an Editor migration tool that creates dialogue set assets from existing Interactor/provider-authored lines and choices without direct YAML editing.
+- Keep run timer and `Time.timeScale` paused during the interaction, while speech, camera waits, letterbox, and choice input use unscaled time.
+- For same-scene teleport, close the run-special dialogue presentation and restore gameplay time before executing the teleport feature.
+- Keep scene/prefab authoring explicit. Source code may drive serialized references, but should not create runtime UI hierarchy.
 
 ## Scope Notes
 
-- Do not change `DialogueService` ESC blocking.
-- Do not add BossEncounter-specific branches to `UIManager.HandleEscapeInput()`.
-- Do not add asmdefs, managers, singletons, serialized fields, or prefab-facing schema.
-- Do not touch chest hierarchy, references, serialized field names, or `TreasureChest` world-open settings.
-- Door perception blocking assumes closed `DoorObject` colliders are present on the enemy-target linecast path.
+- `ConstructionNpc` in `SlimeCorridor` is the current primary validation target.
+- Construction shortcut state, tilemap block authoring, Door/Shortcut, and save integration remain part of the same RunSpecialNpc pipeline.
+- Current work may update `RunSpecialNpc` scripts and project memory docs.
+- Do not directly edit Unity scenes, prefabs, serialized assets, or ScriptableObject schemas unless the user explicitly asks for that authoring step.
+- Existing unrelated worktree changes are not part of this task and must not be reverted.
 - Unity batchmode must not run while Unity Editor processes are open.
 
 ## Done Criteria
 
-- Boss intro camera focus, boss dialogue, and return-to-player presentation block ESC until combat handoff.
-- Encounter input blocker releases on normal completion, setup error, `OnDisable`, and coroutine stop paths.
-- First chest open reveal scalar values are consistent across the relevant UI root prefabs and scene overrides.
-- Monsters fail target acquisition/chase/attack/self-destruct checks when a closed door is between enemy and player, and can perceive again after the door is open.
-- Static analysis runs after code changes.
+- Opening NPC lines can play with camera focused on the NPC target.
+- HUD/prompt layers fade out during the run-special presentation and fade back in during cleanup.
+- User choice UI appears only after the camera has returned to the player.
+- Choice buttons beyond the visible choice count are inactive, so a three-button panel can safely show one, two, or three choices.
+- The SlimeCorridor pending-construction line `앞으로 N일 정도 남았어.` displays the current remaining run completion count in place of `N`.
+- Pending construction re-interaction goes directly to the construction status line set instead of replaying first-time opening lines.
+- Construction insufficient-funds re-interaction goes to the construction insufficient-funds line set instead of showing the payment choice.
+- A single SO line text containing multiple newline-separated sentences plays as multiple speech-bubble lines, including choice response lines.
+- `RunSpecialNpcInteractor` reads `RunSpecialNpcDialogueSetSO` and executes the branch selected by `primaryFeature.GetDialogueBranchKey(...)`.
+- Same-scene teleport choice closes speech/letterbox/HUD presentation, restores `Time.timeScale`, then runs fade out -> warp -> fade in without hanging behind `FixedUpdate`.
+- Existing Interactor/provider line and choice data can be migrated through `Tools/RunSpecialNpc/Create Dialogue Set Asset From Selected Interactors`.
+- Choice input still supports mouse click and number keys for active choices only.
+- Cleanup hides choices, clears choice follow target, restores camera state, releases input/timer/time-scale locks, and restores player state.
+- Static analysis runs after C# changes when the generated project file includes the touched scripts.
 
 ## Verification Plan
 
-- Run `git diff --check` for changed source, prefab, scene, and docs.
-- Search for BossEncounter blocker acquire/release paths and closed-door perception helper call sites.
-- Confirm changed C# files are present in the generated `.csproj`.
-- Run MSBuild if the generated project includes the changed C# files.
-- Do not run Unity batchmode while Unity Editor processes are open.
-
-## Outcome
-
-- `BossEncounterDirector` now acquires a private `GameFlowInputBlocker` at sequence start and releases it on normal combat handoff, missing-reference exits, and `OnDisable`.
-- Legacy `BossTalkManager` now uses the same encounter blocker ownership pattern.
-- `DialogueService` and `UIManager.HandleEscapeInput()` were not changed.
-- `GlobalUIRoot_DialogueUpdate.prefab`, `GlobalUIRoot_Deafiso.prefab`, and `GlobalUIRoot_Water.prefab` chest reveal scalar values now match the canonical `GlobalUIRoot.prefab` values.
-- `DemonkingCorridor`, `SangHyup_Hallway`, and `SpiliCorridor` chest reveal scene overrides were aligned to the same scalar values while preserving references.
-- `Enemy.CanPerceiveTarget(...)` now blocks line of sight when a closed `DoorObject` collider is between enemy and target.
-- Target acquisition, chase intent, shared mob attack continuation, and Dead's Skeleton self-destruct range checks now use the same closed-door perception policy.
-
-## Verification
-
-- `git diff --check -- <changed source/prefab/scene/docs>` passed with line-ending normalization warnings only.
-- `rg` confirmed BossEncounter blocker acquire/release paths in `BossEncounterDirector` and `BossTalkManager`.
-- `rg` confirmed closed-door perception helper usage in `Enemy`, `EnemyChaseIntent2D`, `MobAttackState`, and `DeadsSkeleton`.
-- `rg` confirmed the three UI root prefab chest reveal scalar values match the canonical values.
-- A read-only PowerShell YAML check confirmed the three scene chest reveal override scalar values match the canonical values.
-- `Select-String -Path Assembly-CSharp.csproj -Pattern 'BossEncounterDirector.cs|BossTalkManager.cs|Enemy.cs|EnemyChaseIntent2D.cs|MobAttackState.cs|DeadsSkeleton.cs'` confirmed all changed C# files are included in the generated project.
-- `& 'C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin\MSBuild.exe' Assembly-CSharp.csproj /p:RunAnalyzers=true /v:minimal /nologo` passed with existing project warnings.
-- `Get-Process -Name Unity -ErrorAction SilentlyContinue` showed Unity Editor processes are open, so Unity batchmode was not run.
+- Run `git diff --check` for changed source/docs.
+- Run a trailing-whitespace scan for touched files.
+- Confirm changed C# files are present in generated `.csproj` files.
+- Run MSBuild analyzers for `Assembly-CSharp.csproj` when the changed files are included.
+- Check `Get-Process -Name Unity -ErrorAction SilentlyContinue`; do not run Unity batchmode if the Editor is open.
 
 ## Remaining Risks
 
-- Unity Editor import/compile and play-mode validation were not run by Codex because Unity Editor processes are open.
-- BossEncounter blocker release should be play-tested through skip/error-like scene unload paths to confirm ESC never remains permanently blocked.
-- Prefab and scene YAML changes should be opened in Unity for import/normalization and visual confirmation.
-- Closed-door perception depends on closed `DoorObject` colliders being hit by the linecast and not authored as ignored trigger-only colliders.
-- Door perception should be manually checked in scenes with one-way, animated, or composite door colliders.
+- Manual Unity play validation is required for SlimeCorridor camera framing, choice-panel positioning, and button layout.
+- Existing scene instances should be reviewed in Inspector after script import because `RunSpecialNpcInteractor` has recently gained camera focus serialized fields.
+- Existing scene/prefab line and choice data still needs Unity Editor migration through `Tools/RunSpecialNpc/Create Dialogue Set Asset From Selected Interactors`; legacy interactor fields and provider components should remain only until that migration is inspected and saved.
+- Camera feel depends on the current `PlayerCam` Cinemachine damping and may need scene-side tuning.
