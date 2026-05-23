@@ -60,6 +60,7 @@ namespace UnityGAS.Sample
         public readonly float legacyDamage;
         public readonly float legacyStaggerDamage;
         public readonly LightningSpearAttackElementDamageGroup elementDamages;
+        public readonly HitImpactCueKind hitImpactCueKind;
         public readonly float forwardOffset;
         public readonly float sideOffset;
         public readonly int sideSign;
@@ -77,6 +78,7 @@ namespace UnityGAS.Sample
             float legacyDamage,
             float legacyStaggerDamage,
             LightningSpearAttackElementDamageGroup elementDamages,
+            HitImpactCueKind hitImpactCueKind,
             float forwardOffset,
             float sideOffset,
             int sideSign,
@@ -93,6 +95,7 @@ namespace UnityGAS.Sample
             this.legacyDamage = legacyDamage;
             this.legacyStaggerDamage = legacyStaggerDamage;
             this.elementDamages = elementDamages;
+            this.hitImpactCueKind = hitImpactCueKind;
             this.forwardOffset = forwardOffset;
             this.sideOffset = sideOffset;
             this.sideSign = sideSign;
@@ -119,6 +122,8 @@ namespace UnityGAS.Sample
         public float legacyDamage = 10f;
         public float legacyStaggerDamage;
         public LightningSpearAttackElementDamageGroup elementDamages = new();
+        [Header("Hit Impact")]
+        public HitImpactCueKind hitImpactCueKind;
         public float forwardOffset = 1f;
         public float sideOffset;
         public int sideSign = 1;
@@ -150,6 +155,7 @@ namespace UnityGAS.Sample
                 legacyDamage,
                 legacyStaggerDamage,
                 elementDamages,
+                hitImpactCueKind,
                 forwardOffset,
                 sideOffset,
                 sideSign,

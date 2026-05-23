@@ -188,7 +188,8 @@ namespace UnityGAS.Sample
                 step.legacyDamage,
                 step.legacyStaggerDamage,
                 1f,
-                combo.HitConfirmedTag);
+                combo.HitConfirmedTag,
+                step.hitImpactCueKind);
 
             if (payload == null)
                 return;
@@ -249,7 +250,8 @@ namespace UnityGAS.Sample
             float legacyDamage,
             float legacyStaggerDamage,
             float damageScale,
-            GameplayTag hitConfirmedTag)
+            GameplayTag hitConfirmedTag,
+            HitImpactCueKind hitImpactCueKind)
         {
             if (system == null || system.AttributeSet == null || damageEffect == null)
                 return null;
@@ -290,7 +292,8 @@ namespace UnityGAS.Sample
                 knockbackEffect: knockbackEffect,
                 snapshot: snapshot,
                 hitConfirmedTag: hitConfirmedTag,
-                causer: system.gameObject);
+                causer: system.gameObject,
+                hitImpactCueKind: hitImpactCueKind);
         }
 
         private static MeleeHitboxActor ResolveHitboxPrefab(

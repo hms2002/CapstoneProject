@@ -1,0 +1,3 @@
+public sealed class AbilityLogicAsset_DemonKingFinalDesperation : AbilityLogic_DemonKingFinalDesperation
+{
+}

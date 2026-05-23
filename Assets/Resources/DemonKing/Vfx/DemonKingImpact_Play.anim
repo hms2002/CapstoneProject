@@ -30,15 +30,15 @@ AnimationClip:
       value: {fileID: 4108690555799070913, guid: e43a13b988df32243aa23835194f9ed6, type: 3}
     - time: 0.33333334
       value: {fileID: -3501601527382150848, guid: e43a13b988df32243aa23835194f9ed6, type: 3}
-    - time: 0.4166667
+    - time: 0.41666666
       value: {fileID: -655747429959695465, guid: e43a13b988df32243aa23835194f9ed6, type: 3}
     attribute: m_Sprite
-    path:
+    path: 
     classID: 212
     script: {fileID: 0}
     flags: 2
   m_SampleRate: 12
-  m_WrapMode: 0
+  m_WrapMode: 1
   m_Bounds:
     m_Center: {x: 0, y: 0, z: 0}
     m_Extent: {x: 0, y: 0, z: 0}

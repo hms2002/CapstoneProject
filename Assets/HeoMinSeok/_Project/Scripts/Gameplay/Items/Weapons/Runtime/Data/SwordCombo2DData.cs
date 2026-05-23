@@ -40,6 +40,7 @@ namespace UnityGAS.Sample
             public readonly float legacyDamage;
             public readonly float legacyStaggerDamage;
             public readonly ElementDamageGroup elementDamages;
+            public readonly HitImpactCueKind hitImpactCueKind;
             public readonly Vector2 hitboxSize;
             public readonly float forwardOffset;
             public readonly float sideOffset;
@@ -60,6 +61,7 @@ namespace UnityGAS.Sample
                 float legacyDamage,
                 float legacyStaggerDamage,
                 ElementDamageGroup elementDamages,
+                HitImpactCueKind hitImpactCueKind,
                 Vector2 hitboxSize,
                 float forwardOffset,
                 float sideOffset,
@@ -79,6 +81,7 @@ namespace UnityGAS.Sample
                 this.legacyDamage = legacyDamage;
                 this.legacyStaggerDamage = legacyStaggerDamage;
                 this.elementDamages = elementDamages;
+                this.hitImpactCueKind = hitImpactCueKind;
                 this.hitboxSize = hitboxSize;
                 this.forwardOffset = forwardOffset;
                 this.sideOffset = sideOffset;
@@ -108,6 +111,8 @@ namespace UnityGAS.Sample
             public float legacyDamage;
             public float legacyStaggerDamage;
             public ElementDamageGroup elementDamages;
+            [Header("Hit Impact")]
+            public HitImpactCueKind hitImpactCueKind;
             public Vector2 hitboxSize;
             public float forwardOffset;
             public float sideOffset;
@@ -141,6 +146,7 @@ namespace UnityGAS.Sample
                     legacyDamage,
                     legacyStaggerDamage,
                     elementDamages,
+                    hitImpactCueKind,
                     hitboxSize,
                     forwardOffset,
                     sideOffset,

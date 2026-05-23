@@ -27,12 +27,12 @@ AnimationClip:
     - time: 0.16666667
       value: {fileID: 2110617341229408705, guid: c1b591e123a74824d9ee8fb318f1eb5b, type: 3}
     attribute: m_Sprite
-    path:
+    path: 
     classID: 212
     script: {fileID: 0}
     flags: 2
   m_SampleRate: 12
-  m_WrapMode: 0
+  m_WrapMode: 1
   m_Bounds:
     m_Center: {x: 0, y: 0, z: 0}
     m_Extent: {x: 0, y: 0, z: 0}

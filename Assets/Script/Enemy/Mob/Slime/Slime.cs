@@ -221,6 +221,7 @@ public abstract class Slime : Mob, IMobAttackDecisionSource, IPitFallDeathHandle
             if (spawned.TryGetComponent(out T nextSlime))
             {
                 nextSlime.InitSplit(target);
+                nextSlime.SuppressMonsterLootDrop();
                 StartSplitLandingMotion(spawned, center, landingPosition);
                 RegisterLockTrackedChild(spawned);
             }

@@ -36,6 +36,7 @@ public class ItemSlotUI : MonoBehaviour,
     [SerializeField] private Image icon;
     [SerializeField] private TextMeshProUGUI levelText;
     [SerializeField] private GameObject hoverHighlightRoot;
+    [SerializeField] private Sprite lockedSlotSprite;
 
     [Header("Highlight Presentation")]
     [SerializeField, Range(0f, 1f)] private float hoverHighlightAlpha = 0.65f;
@@ -68,6 +69,7 @@ public class ItemSlotUI : MonoBehaviour,
     public ScriptableObject CurrentItem => container != null ? container.Get(index) : null;
     public bool HasItem => CurrentItem != null;
     public bool HasEpicItem => CurrentItem is RelicDefinition relic && relic.rarity == ItemRarity.Epic;
+    private bool IsLocked => container != null && index >= container.SlotCount;
 
     private void Awake()
     {
@@ -119,6 +121,12 @@ public class ItemSlotUI : MonoBehaviour,
             return;
         }
 
+        if (IsLocked)
+        {
+            RefreshLockedSlot();
+            return;
+        }
+
         var so = container.Get(index);
         RefreshHoverHighlight(so);
 
@@ -148,9 +156,23 @@ public class ItemSlotUI : MonoBehaviour,
             levelText.gameObject.SetActive(false);
     }
 
+    private void RefreshLockedSlot()
+    {
+        SetHoverHighlight(false);
+
+        if (icon != null)
+        {
+            ItemDisplayIconDefaultState lockState = ItemDisplayIconDefaultState.Stretch(icon, preserveAspect: true);
+            ItemDisplayIconUtility.ApplyRaw(icon, lockedSlotSprite, lockState);
+        }
+
+        if (levelText != null)
+            levelText.gameObject.SetActive(false);
+    }
+
     public void OnBeginDrag(PointerEventData eventData)
     {
-        if (container == null) return;
+        if (container == null || IsLocked) return;
 
         // [수정] 드래그 시작 시 호버 패널 숨김 (UIManager 활용)
         if (UIManager.Instance != null) UIManager.Instance.HideHoverImmediate();
@@ -203,12 +225,15 @@ public class ItemSlotUI : MonoBehaviour,
 
     public void OnDrop(PointerEventData eventData)
     {
+        if (IsLocked)
+            return;
+
         InventorySlotTransferInteractionService.ExecuteDrop(container, index, Refresh);
     }
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        if (container == null) return;
+        if (container == null || IsLocked) return;
 
         if (eventData.button == PointerEventData.InputButton.Right)
         {
@@ -219,7 +244,7 @@ public class ItemSlotUI : MonoBehaviour,
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        if (container == null || ItemDragContext.Active)
+        if (container == null || IsLocked || ItemDragContext.Active)
             return;
 
         if (container.Get(index) == null)
@@ -245,6 +270,15 @@ public class ItemSlotUI : MonoBehaviour,
         if (container == null)
         {
             SetHoverHighlight(false);
+            return;
+        }
+
+        if (IsLocked)
+        {
+            SetHoverHighlight(false);
+            MouseCursorService.EnsureInstance().SetInteractable(this, false);
+            if (UIManager.Instance != null)
+                UIManager.Instance.HideHoverImmediate();
             return;
         }
 

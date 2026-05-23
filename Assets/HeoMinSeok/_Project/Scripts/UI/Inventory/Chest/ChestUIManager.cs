@@ -85,6 +85,16 @@ public class ChestUIManager : MonoBehaviour
         return openedChest != null && openedChest.CanRefreshLoot();
     }
 
+    public int GetOpenedChestRefreshLimit()
+    {
+        return openedChest != null ? openedChest.RefreshCountLimit : 0;
+    }
+
+    public int GetOpenedChestRemainingRefreshCount()
+    {
+        return openedChest != null ? openedChest.RemainingRefreshCount : 0;
+    }
+
     public bool TryRefreshOpenedChest()
     {
         return openedChest != null && openedChest.TryRefreshLoot();

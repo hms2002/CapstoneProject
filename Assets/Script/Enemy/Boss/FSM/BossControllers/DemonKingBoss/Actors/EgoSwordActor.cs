@@ -6,6 +6,11 @@ using UnityGAS;
 [DisallowMultipleComponent]
 public sealed class EgoSwordActor : MonoBehaviour
 {
+    private const string EgoSwordAuraControllerResourcePath = "DemonKing/Vfx/EgoSwordAttackAuraVfx";
+    private const string EgoSwordAuraStartStateName = "Start";
+    private const string EgoSwordAuraIdleStateName = "Idle";
+    private const string EgoSwordAuraEndStateName = "End";
+
     private static readonly RaycastHit2D[] WallHitBuffer = new RaycastHit2D[8];
     private static readonly Color WarningSquareColor = new(1f, 0.15f, 0.08f, 0.35f);
     private static readonly Color AttackSquareColor = new(1f, 0.85f, 0.2f, 0.62f);
@@ -14,6 +19,7 @@ public sealed class EgoSwordActor : MonoBehaviour
     {
         Held,
         Flying,
+        Planting,
         Fixed,
         Recalling
     }
@@ -26,6 +32,14 @@ public sealed class EgoSwordActor : MonoBehaviour
     [SerializeField, Min(0f)] private float contactDamage = 1f;
     [SerializeField, Min(0f)] private float contactKnockback = 6f;
     [SerializeField, Min(0f)] private float flyingRotationDegreesPerSecond = 720f;
+
+    [Header("Throw Landing")]
+    [SerializeField, Min(0f)] private float plantingHopSeconds = 0.18f;
+    [SerializeField, Min(0f)] private float plantingHopDistance = 0.45f;
+    [SerializeField, Min(0f)] private float plantingHopArcHeight = 0.25f;
+    [SerializeField, Range(0.05f, 0.95f)] private float buriedMaskHeightRatio = 0.42f;
+    [SerializeField, Min(0.1f)] private float buriedMaskWidthMultiplier = 1.6f;
+    [SerializeField] private SpriteMask buriedMask;
 
     [Header("Dropped Patterns")]
     [SerializeField, Min(0.1f)] private float patternIntervalSeconds = 1.5f;
@@ -40,6 +54,10 @@ public sealed class EgoSwordActor : MonoBehaviour
     [SerializeField, Min(0.1f)] private float verticalTrackSeconds = 1.5f;
     [SerializeField, Min(0.1f)] private float verticalHoverHeight = 2.2f;
     [SerializeField, Min(0.1f)] private float verticalStrikeDiameter = 2.3f;
+    [SerializeField, Min(0f)] private float verticalStrikeApproachSeconds = 0.12f;
+    [SerializeField, Min(0f)] private float verticalStrikeLiftSeconds = 0.1f;
+    [SerializeField, Min(0f)] private float verticalStrikeLiftHeight = 0.45f;
+    [SerializeField, Min(0.01f)] private float verticalStrikeDropSeconds = 0.16f;
     [SerializeField, Min(0f)] private float patternDamage = 1f;
     [SerializeField, Min(0.1f)] private float recallImpactDiameter = 3.2f;
     [SerializeField, Min(0f)] private float recallImpactDamage = 1.5f;
@@ -52,18 +70,36 @@ public sealed class EgoSwordActor : MonoBehaviour
     private int remainingBounces;
     private LayerMask wallMask;
     private Coroutine droppedPatternRoutine;
-    private bool useCrossPatternNext = true;
+    private Coroutine plantingRoutine;
+    private bool useCrossPatternNext;
     private bool laserVfxMissingLogged;
-    private DemonKingAnimationClipVisual activeVerticalAuraVfx;
+    private SpriteRenderer[] baseSwordRenderers;
+    private SpriteMask runtimeBuriedMask;
     private DemonKingAnimationClipVisual activeVerticalAttackVfx;
+    private SpriteRenderer primarySwordRenderer;
+    private Animator swordAnimator;
+    private RuntimeAnimatorController defaultSwordAnimatorController;
+    private RuntimeAnimatorController auraAnimatorController;
+    private Sprite defaultSwordSprite;
+    private Coroutine verticalAuraAnimationRoutine;
+    private bool verticalAuraAnimationActive;
+    private bool swordAnimationDefaultsCaptured;
+    private bool auraControllerMissingLogged;
+    private bool auraControllerInvalidLogged;
+    private bool recallMovementActive;
+    private bool subPatternAbilityRunning;
+    private AbilitySpec activeSubPatternSpec;
 
     public bool IsHeld => state == SwordState.Held;
-    public bool IsDropped => state == SwordState.Flying || state == SwordState.Fixed || state == SwordState.Recalling;
+    public bool IsDropped => state == SwordState.Flying || state == SwordState.Planting || state == SwordState.Fixed || state == SwordState.Recalling;
     public bool IsRecallActive => state == SwordState.Recalling;
 
     private void Awake()
     {
+        CacheBaseSwordRenderers();
+        CacheSwordAnimationDefaults();
         ApplyProjectileSortingOnce();
+        ClearBuriedMask();
 
         if (TryGetComponent(out Collider2D collider2d))
             collider2d.isTrigger = true;
@@ -71,13 +107,18 @@ public sealed class EgoSwordActor : MonoBehaviour
 
     private void OnEnable()
     {
+        CacheBaseSwordRenderers();
+        CacheSwordAnimationDefaults();
         ApplyProjectileSortingOnce();
     }
 
     private void OnDisable()
     {
+        StopPlantingRoutine();
         StopDroppedPatterns();
+        ClearBuriedMask();
         ReleaseVerticalStrikeVfx();
+        ReleaseAttachedOneShotVfx();
     }
 
     private void LateUpdate()
@@ -107,46 +148,81 @@ public sealed class EgoSwordActor : MonoBehaviour
 
     public void AttachToOwner()
     {
+        if (!gameObject.activeSelf)
+            gameObject.SetActive(true);
+
+        StopPlantingRoutine();
         StopDroppedPatterns();
+        ClearBuriedMask();
+        StopVerticalAuraAnimation();
+        recallMovementActive = false;
         state = SwordState.Held;
         flyingSpeed = 0f;
         remainingBounces = 0;
         transform.SetParent(owner != null ? owner.transform : null, true);
+        transform.rotation = Quaternion.identity;
         if (owner != null)
             transform.position = owner.ResolveSwordHoldPosition(heldOffset);
     }
 
+    public void CleanupForBossBattleEnd()
+    {
+        StopPlantingRoutine();
+        StopDroppedPatterns();
+        ClearBuriedMask();
+        ReleaseVerticalStrikeVfx();
+        ReleaseAttachedOneShotVfx();
+        recallMovementActive = false;
+        subPatternAbilityRunning = false;
+        activeSubPatternSpec = null;
+        state = SwordState.Held;
+        flyingSpeed = 0f;
+        remainingBounces = 0;
+        transform.SetParent(owner != null ? owner.transform : null, true);
+        transform.rotation = Quaternion.identity;
+
+        if (gameObject.activeSelf)
+            gameObject.SetActive(false);
+    }
+
     public void Throw(Vector2 origin, Vector2 direction, float speed, int bounceCount, LayerMask newWallMask)
     {
+        StopPlantingRoutine();
         StopDroppedPatterns();
+        ClearBuriedMask();
+        recallMovementActive = false;
         transform.SetParent(null, true);
         transform.position = origin;
         velocityDirection = direction.sqrMagnitude > 0.0001f ? direction.normalized : Vector2.right;
         flyingSpeed = Mathf.Max(0.01f, speed);
         remainingBounces = Mathf.Max(0, bounceCount);
         wallMask = newWallMask;
+        useCrossPatternNext = false;
         state = SwordState.Flying;
+        PlayAuraStartAnimation(playIdleAfterStart: true);
 
         if (remainingBounces <= 0)
-            FixAtCurrentPosition();
+            BeginPlantingAtCurrentPosition(velocityDirection);
     }
 
     public void FixAtCurrentPosition()
     {
-        if (state == SwordState.Fixed)
+        if (state == SwordState.Fixed || state == SwordState.Planting)
             return;
 
-        state = SwordState.Fixed;
-        flyingSpeed = 0f;
-        StartDroppedPatterns();
+        BeginPlantingAtCurrentPosition(velocityDirection);
     }
 
     public void Recall(float speed)
     {
+        StopPlantingRoutine();
         StopDroppedPatterns();
+        ClearBuriedMask();
         transform.SetParent(null, true);
         flyingSpeed = Mathf.Max(0.01f, speed);
+        recallMovementActive = false;
         state = SwordState.Recalling;
+        PlayRecallAuraStartup();
     }
 
     private void TickFlying()
@@ -168,7 +244,7 @@ public sealed class EgoSwordActor : MonoBehaviour
 
                 if (remainingBounces <= 0)
                 {
-                    FixAtCurrentPosition();
+                    BeginPlantingAtCurrentPosition(velocityDirection);
                     return;
                 }
 
@@ -196,6 +272,9 @@ public sealed class EgoSwordActor : MonoBehaviour
 
     private void TickRecall()
     {
+        if (!recallMovementActive)
+            return;
+
         RotateClockwise(Time.fixedDeltaTime);
 
         Vector2 targetPosition = owner.ResolveSwordHoldPosition(heldOffset);
@@ -250,6 +329,15 @@ public sealed class EgoSwordActor : MonoBehaviour
         droppedPatternRoutine = StartCoroutine(RunDroppedPatternLoop());
     }
 
+    private void StopPlantingRoutine()
+    {
+        if (plantingRoutine == null)
+            return;
+
+        StopCoroutine(plantingRoutine);
+        plantingRoutine = null;
+    }
+
     private void ApplyProjectileSortingOnce()
     {
         SpriteRenderer[] renderers = GetComponentsInChildren<SpriteRenderer>(true);
@@ -265,40 +353,245 @@ public sealed class EgoSwordActor : MonoBehaviour
             droppedPatternRoutine = null;
         }
 
+        if (activeSubPatternSpec != null && activeSubPatternSpec.Token != null)
+            activeSubPatternSpec.Token.Cancel();
+
+        subPatternAbilityRunning = false;
+        activeSubPatternSpec = null;
         ReleaseVerticalStrikeVfx();
+    }
+
+    private void BeginPlantingAtCurrentPosition(Vector2 hopDirection)
+    {
+        StopPlantingRoutine();
+        StopDroppedPatterns();
+        ClearBuriedMask();
+        StopVerticalAuraAnimation();
+        recallMovementActive = false;
+
+        state = SwordState.Planting;
+        flyingSpeed = 0f;
+        remainingBounces = 0;
+        transform.rotation = Quaternion.identity;
+
+        if (!isActiveAndEnabled)
+        {
+            CompletePlantingAtCurrentPosition(startPatterns: false);
+            return;
+        }
+
+        plantingRoutine = StartCoroutine(CoPlantAfterThrow(hopDirection));
+    }
+
+    private IEnumerator CoPlantAfterThrow(Vector2 hopDirection)
+    {
+        Vector2 start = transform.position;
+        Vector2 safeDirection = hopDirection.sqrMagnitude > 0.0001f ? hopDirection.normalized : Vector2.right;
+        Vector2 end = start + safeDirection * plantingHopDistance;
+        float duration = Mathf.Max(0f, plantingHopSeconds);
+
+        if (duration > 0f)
+        {
+            float elapsed = 0f;
+            while (elapsed < duration)
+            {
+                float t = Mathf.Clamp01(elapsed / duration);
+                Vector2 flatPosition = Vector2.Lerp(start, end, t);
+                float arcOffset = Mathf.Sin(t * Mathf.PI) * plantingHopArcHeight;
+                transform.position = new Vector3(flatPosition.x, flatPosition.y + arcOffset, transform.position.z);
+                transform.rotation = Quaternion.identity;
+
+                elapsed += Time.deltaTime;
+                yield return null;
+            }
+        }
+
+        transform.position = new Vector3(end.x, end.y, transform.position.z);
+        CompletePlantingAtCurrentPosition();
+        plantingRoutine = null;
+    }
+
+    private void CompletePlantingAtCurrentPosition(bool startPatterns = true)
+    {
+        state = SwordState.Fixed;
+        flyingSpeed = 0f;
+        transform.rotation = Quaternion.identity;
+        ApplyBuriedMask();
+        DemonKingPatternVfx.SpawnEgoSwordAttack(transform, verticalStrikeDiameter);
+        DemonKingPatternVfx.SpawnImpact(transform.position, verticalStrikeDiameter);
+        useCrossPatternNext = false;
+        if (startPatterns && isActiveAndEnabled)
+            StartDroppedPatterns();
     }
 
     private IEnumerator RunDroppedPatternLoop()
     {
-        yield return new WaitForSeconds(patternIntervalSeconds);
+        yield return WaitDroppedPatternInterval();
 
-        while (owner != null && state == SwordState.Fixed)
+        while (CanRunDroppedPatterns())
         {
-            if (useCrossPatternNext)
-                yield return RunCrossPattern();
-            else
-                yield return RunVerticalStrikePattern();
+            bool activated = useCrossPatternNext
+                ? TryActivateCrossLaserAbility()
+                : TryActivateVerticalStrikeAbility();
+            if (!activated)
+            {
+                yield return WaitDroppedPatternInterval();
+                continue;
+            }
+
+            yield return null;
+            while (CanRunDroppedPatterns() && subPatternAbilityRunning)
+                yield return null;
+
+            if (!CanRunDroppedPatterns())
+                yield break;
 
             useCrossPatternNext = !useCrossPatternNext;
             owner.NotifyEgoSwordPatternCompleted();
-            yield return new WaitForSeconds(patternIntervalSeconds);
+            yield return WaitDroppedPatternInterval();
         }
     }
 
-    private IEnumerator RunCrossPattern()
+    public IEnumerator RunCrossLaserAbilityPattern(AbilitySpec spec)
     {
-        yield return RunLaserPair(Vector2.right, Vector2.up);
-        yield return RunLaserPair(new Vector2(1f, 1f).normalized, new Vector2(1f, -1f).normalized);
+        BeginSubPatternAbility(spec);
+        try
+        {
+            yield return RunCrossPattern(spec);
+        }
+        finally
+        {
+            EndSubPatternAbility(spec);
+        }
     }
 
-    private IEnumerator RunLaserPair(Vector2 firstDirection, Vector2 secondDirection)
+    public IEnumerator RunVerticalStrikeAbilityPattern(AbilitySpec spec)
     {
+        BeginSubPatternAbility(spec);
+        try
+        {
+            yield return RunVerticalStrikePattern(spec);
+        }
+        finally
+        {
+            EndSubPatternAbility(spec);
+        }
+    }
+
+    private bool TryActivateVerticalStrikeAbility()
+    {
+        if (!BeginExpectedSubPatternAbility())
+            return false;
+
+        bool activated = owner != null && owner.TryStartEgoSwordVerticalStrikeSubPattern();
+        if (!activated)
+            EndExpectedSubPatternAbility();
+
+        return activated;
+    }
+
+    private bool TryActivateCrossLaserAbility()
+    {
+        if (!BeginExpectedSubPatternAbility())
+            return false;
+
+        bool activated = owner != null && owner.TryStartEgoSwordCrossLaserSubPattern();
+        if (!activated)
+            EndExpectedSubPatternAbility();
+
+        return activated;
+    }
+
+    private bool BeginExpectedSubPatternAbility()
+    {
+        if (!CanRunDroppedPatterns())
+            return false;
+
+        if (subPatternAbilityRunning)
+            return false;
+
+        subPatternAbilityRunning = true;
+        activeSubPatternSpec = null;
+        return true;
+    }
+
+    private void EndExpectedSubPatternAbility()
+    {
+        if (activeSubPatternSpec != null)
+            return;
+
+        subPatternAbilityRunning = false;
+    }
+
+    private void BeginSubPatternAbility(AbilitySpec spec)
+    {
+        subPatternAbilityRunning = true;
+        activeSubPatternSpec = spec;
+    }
+
+    private void EndSubPatternAbility(AbilitySpec spec)
+    {
+        if (activeSubPatternSpec != null && activeSubPatternSpec != spec)
+            return;
+
+        activeSubPatternSpec = null;
+        subPatternAbilityRunning = false;
+    }
+
+    private IEnumerator WaitDroppedPatternInterval()
+    {
+        float elapsed = 0f;
+        while (elapsed < patternIntervalSeconds)
+        {
+            if (!CanRunDroppedPatterns())
+                yield break;
+
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+    }
+
+    private bool CanRunDroppedPatterns()
+    {
+        return owner != null &&
+               !owner.IsDead &&
+               owner.IsCombatActive &&
+               state == SwordState.Fixed;
+    }
+
+    private bool IsSubPatternCancelled(AbilitySpec spec)
+    {
+        return owner == null ||
+               owner.IsDead ||
+               !owner.IsCombatActive ||
+               state != SwordState.Fixed ||
+               spec != null && spec.Token != null && spec.Token.IsCancelled;
+    }
+
+    private IEnumerator RunCrossPattern(AbilitySpec spec)
+    {
+        if (IsSubPatternCancelled(spec))
+            yield break;
+
+        yield return RunLaserPair(Vector2.right, Vector2.up, spec);
+        if (IsSubPatternCancelled(spec))
+            yield break;
+
+        yield return RunLaserPair(new Vector2(1f, 1f).normalized, new Vector2(1f, -1f).normalized, spec);
+    }
+
+    private IEnumerator RunLaserPair(Vector2 firstDirection, Vector2 secondDirection, AbilitySpec spec)
+    {
+        if (IsSubPatternCancelled(spec))
+            yield break;
+
         AttackTelegraphService telegraph = owner.GetTelegraphService();
         Vector2 laserOrigin = transform.position;
         LaserLine firstWarningLine = ResolveWallClippedLaserLine(laserOrigin, firstDirection);
         LaserLine secondWarningLine = ResolveWallClippedLaserLine(laserOrigin, secondDirection);
         LaserLine firstAttackLine = ResolvePiercingLaserLine(laserOrigin, firstDirection);
         LaserLine secondAttackLine = ResolvePiercingLaserLine(laserOrigin, secondDirection);
+        bool shouldSyncAuraWithLaser = ResolveLaserVfxPrefab() != null;
 
         DemonKingPrimitiveVisual.SpawnSquare(
             firstWarningLine.Center,
@@ -316,8 +609,24 @@ public sealed class EgoSwordActor : MonoBehaviour
             "DemonKing_EgoLaserSquareWarning");
         telegraph?.SpawnDetachedView(CreateLaserSpec(firstWarningLine, laserWarningSeconds));
         telegraph?.SpawnDetachedView(CreateLaserSpec(secondWarningLine, laserWarningSeconds));
+        if (shouldSyncAuraWithLaser)
+            PlayAuraStartAnimation(playIdleAfterStart: true);
 
-        yield return new WaitForSeconds(laserWarningSeconds);
+        float warningElapsed = 0f;
+        while (warningElapsed < laserWarningSeconds)
+        {
+            if (IsSubPatternCancelled(spec))
+                yield break;
+
+            warningElapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        if (shouldSyncAuraWithLaser)
+        {
+            StopAuraTransitionRoutine();
+            PlayAuraIdleAnimation();
+        }
 
         DemonKingEgoLaserVfx[] firstLaserVfx = SpawnLaserLineVfx(firstAttackLine);
         DemonKingEgoLaserVfx[] secondLaserVfx = SpawnLaserLineVfx(secondAttackLine);
@@ -345,8 +654,21 @@ public sealed class EgoSwordActor : MonoBehaviour
 
         HashSet<GameObject> damagedTargets = new();
         float elapsed = 0f;
+        bool auraEndStarted = false;
         while (usingAnimatedVfx ? IsAnyLaserVfxPlaying(firstLaserVfx, secondLaserVfx) : elapsed < laserAttackDurationSeconds)
         {
+            if (IsSubPatternCancelled(spec))
+                yield break;
+
+            if (usingAnimatedVfx)
+            {
+                if (!auraEndStarted && (IsAnyLaserEndActive(firstLaserVfx) || IsAnyLaserEndActive(secondLaserVfx)))
+                {
+                    auraEndStarted = true;
+                    PlayAuraEndAnimation();
+                }
+            }
+
             if (!usingAnimatedVfx || IsAnyLaserDamageActive(firstLaserVfx))
             {
                 DemonKingCombatUtil.ApplyRectangleDamage(
@@ -374,6 +696,11 @@ public sealed class EgoSwordActor : MonoBehaviour
             elapsed += Time.fixedDeltaTime;
             yield return new WaitForFixedUpdate();
         }
+
+        if (usingAnimatedVfx && !auraEndStarted)
+            PlayAuraEndAnimation();
+        else if (!usingAnimatedVfx && shouldSyncAuraWithLaser)
+            StopVerticalAuraAnimation();
     }
 
     private DemonKingEgoLaserVfx[] SpawnLaserLineVfx(LaserLine line)
@@ -475,6 +802,21 @@ public sealed class EgoSwordActor : MonoBehaviour
         return false;
     }
 
+    private static bool IsAnyLaserEndActive(DemonKingEgoLaserVfx[] views)
+    {
+        if (views == null)
+            return false;
+
+        for (int i = 0; i < views.Length; i++)
+        {
+            DemonKingEgoLaserVfx view = views[i];
+            if (view != null && view.EndActive)
+                return true;
+        }
+
+        return false;
+    }
+
     private static bool IsAnyLaserVfxPlaying(params DemonKingEgoLaserVfx[][] viewGroups)
     {
         if (viewGroups == null)
@@ -497,40 +839,58 @@ public sealed class EgoSwordActor : MonoBehaviour
         return false;
     }
 
-    private IEnumerator RunVerticalStrikePattern()
+    private IEnumerator RunVerticalStrikePattern(AbilitySpec spec)
     {
+        if (IsSubPatternCancelled(spec))
+            yield break;
+
         AttackTelegraphService telegraph = owner.GetTelegraphService();
         Vector2 groundTarget = owner.CurrentTarget != null
             ? (Vector2)owner.CurrentTarget.position
             : (Vector2)transform.position;
         Vector2 hoverTarget = groundTarget + Vector2.up * verticalHoverHeight;
+        float warningDuration = verticalTrackSeconds + ResolveVerticalStrikeCommitMotionSeconds();
+        ClearBuriedMask();
         ReleaseVerticalStrikeVfx();
-        activeVerticalAuraVfx = DemonKingPatternVfx.SpawnEgoSwordAura(transform, verticalStrikeDiameter);
+        PlayVerticalAuraAnimation();
 
         AttackTelegraphView warning = telegraph?.SpawnDetachedView(
-            AttackTelegraphSpec.CreateCircle(groundTarget, verticalStrikeDiameter, verticalTrackSeconds, owner.DefaultWarningStyle));
+            AttackTelegraphSpec.CreateCircle(groundTarget, verticalStrikeDiameter, warningDuration, owner.DefaultWarningStyle));
         DemonKingPrimitiveVisual warningCircle = DemonKingPrimitiveVisual.SpawnCircle(
             groundTarget,
             verticalStrikeDiameter,
-            verticalTrackSeconds,
+            warningDuration,
             WarningSquareColor,
             "DemonKing_EgoVerticalCircleWarning");
 
         try
         {
             float elapsed = 0f;
+            float approachSeconds = Mathf.Min(verticalStrikeApproachSeconds, Mathf.Max(0f, verticalTrackSeconds));
+            Vector2 approachStart = transform.position;
             while (elapsed < verticalTrackSeconds)
             {
+                if (IsSubPatternCancelled(spec))
+                    yield break;
+
                 if (owner.CurrentTarget != null)
                     groundTarget = owner.CurrentTarget.position;
 
                 hoverTarget = groundTarget + Vector2.up * verticalHoverHeight;
-                transform.position = new Vector3(hoverTarget.x, hoverTarget.y, transform.position.z);
+                Vector2 swordPosition = hoverTarget;
+                if (approachSeconds > 0.001f && elapsed < approachSeconds)
+                {
+                    float approachT = Mathf.Clamp01(elapsed / approachSeconds);
+                    float easedApproachT = 1f - Mathf.Pow(1f - approachT, 3f);
+                    swordPosition = Vector2.Lerp(approachStart, hoverTarget, easedApproachT);
+                }
+
+                transform.position = new Vector3(swordPosition.x, swordPosition.y, transform.position.z);
                 transform.rotation = Quaternion.identity;
                 warning?.UpdateGeometry(AttackTelegraphSpec.CreateCircle(
                     groundTarget,
                     verticalStrikeDiameter,
-                    verticalTrackSeconds,
+                    warningDuration,
                     owner.DefaultWarningStyle));
                 warningCircle?.UpdateGeometry(
                     groundTarget,
@@ -540,13 +900,76 @@ public sealed class EgoSwordActor : MonoBehaviour
                 elapsed += Time.deltaTime;
                 yield return null;
             }
+
+            yield return RunVerticalStrikeCommitMotion(groundTarget, spec);
+
+            if (IsSubPatternCancelled(spec))
+                yield break;
+
+            StopVerticalAuraAnimation();
+            CommitVerticalStrikeImpact(groundTarget);
         }
         finally
         {
-            ReleaseVerticalAuraVfx();
+            StopVerticalAuraAnimation();
         }
+    }
 
+    private IEnumerator RunVerticalStrikeCommitMotion(Vector2 groundTarget, AbilitySpec spec)
+    {
+        Vector2 start = transform.position;
+        Vector2 apex = start + Vector2.up * verticalStrikeLiftHeight;
+        if (verticalStrikeLiftHeight > 0f && verticalStrikeLiftSeconds > 0f)
+            yield return MoveVerticalStrikeSword(start, apex, verticalStrikeLiftSeconds, easeIn: false, spec);
+        else
+            transform.position = new Vector3(apex.x, apex.y, transform.position.z);
+
+        if (IsSubPatternCancelled(spec))
+            yield break;
+
+        Vector2 dropStart = transform.position;
+        yield return MoveVerticalStrikeSword(dropStart, groundTarget, verticalStrikeDropSeconds, easeIn: true, spec);
+        if (IsSubPatternCancelled(spec))
+            yield break;
+
+        transform.position = new Vector3(groundTarget.x, groundTarget.y, transform.position.z);
+        transform.rotation = Quaternion.identity;
+    }
+
+    private IEnumerator MoveVerticalStrikeSword(Vector2 start, Vector2 end, float duration, bool easeIn, AbilitySpec spec)
+    {
+        float safeDuration = Mathf.Max(0.01f, duration);
+        float elapsed = 0f;
+        while (elapsed < safeDuration)
+        {
+            if (IsSubPatternCancelled(spec))
+                yield break;
+
+            float t = Mathf.Clamp01(elapsed / safeDuration);
+            float easedT = easeIn
+                ? t * t * t
+                : 1f - Mathf.Pow(1f - t, 3f);
+
+            Vector2 position = Vector2.Lerp(start, end, easedT);
+            transform.position = new Vector3(position.x, position.y, transform.position.z);
+            transform.rotation = Quaternion.identity;
+
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+    }
+
+    private float ResolveVerticalStrikeCommitMotionSeconds()
+    {
+        float liftSeconds = verticalStrikeLiftHeight > 0f ? Mathf.Max(0f, verticalStrikeLiftSeconds) : 0f;
+        return liftSeconds + Mathf.Max(0.01f, verticalStrikeDropSeconds);
+    }
+
+    private void CommitVerticalStrikeImpact(Vector2 groundTarget)
+    {
         transform.position = groundTarget;
+        transform.rotation = Quaternion.identity;
+        ApplyBuriedMask();
         activeVerticalAttackVfx = DemonKingPatternVfx.SpawnEgoSwordAttack(transform, verticalStrikeDiameter);
         DemonKingPatternVfx.SpawnImpact(groundTarget, verticalStrikeDiameter);
         if (activeVerticalAttackVfx == null)
@@ -567,24 +990,393 @@ public sealed class EgoSwordActor : MonoBehaviour
             patternDamage);
     }
 
-    private void ReleaseVerticalAuraVfx()
+    private void CacheBaseSwordRenderers()
     {
-        if (activeVerticalAuraVfx == null)
+        if (baseSwordRenderers == null || baseSwordRenderers.Length == 0)
+            baseSwordRenderers = GetComponentsInChildren<SpriteRenderer>(true);
+    }
+
+    private void CacheSwordAnimationDefaults()
+    {
+        if (primarySwordRenderer == null)
+            primarySwordRenderer = ResolvePrimarySwordRenderer();
+
+        if (swordAnimator == null)
+            TryGetComponent(out swordAnimator);
+
+        if (swordAnimationDefaultsCaptured)
             return;
 
-        activeVerticalAuraVfx.StopAndRelease();
-        activeVerticalAuraVfx = null;
+        defaultSwordSprite = primarySwordRenderer != null ? primarySwordRenderer.sprite : null;
+        if (swordAnimator != null)
+            defaultSwordAnimatorController = swordAnimator.runtimeAnimatorController;
+        swordAnimationDefaultsCaptured = true;
+    }
+
+    private void ApplyBuriedMask()
+    {
+        CacheBaseSwordRenderers();
+        SpriteMask mask = ResolveBuriedMask(createIfMissing: true);
+        if (mask == null)
+            return;
+
+        ConfigureBuriedMask(mask);
+        mask.enabled = true;
+        for (int i = 0; i < baseSwordRenderers.Length; i++)
+        {
+            if (baseSwordRenderers[i] != null)
+                baseSwordRenderers[i].maskInteraction = SpriteMaskInteraction.VisibleOutsideMask;
+        }
+    }
+
+    private void ClearBuriedMask()
+    {
+        CacheBaseSwordRenderers();
+        for (int i = 0; i < baseSwordRenderers.Length; i++)
+        {
+            if (baseSwordRenderers[i] != null)
+                baseSwordRenderers[i].maskInteraction = SpriteMaskInteraction.None;
+        }
+
+        SpriteMask mask = ResolveBuriedMask(createIfMissing: false);
+        if (mask != null)
+            mask.enabled = false;
+    }
+
+    private SpriteMask ResolveBuriedMask(bool createIfMissing)
+    {
+        if (buriedMask != null)
+            return buriedMask;
+
+        if (runtimeBuriedMask != null)
+            return runtimeBuriedMask;
+
+        buriedMask = GetComponentInChildren<SpriteMask>(includeInactive: true);
+        if (buriedMask != null || !createIfMissing)
+            return buriedMask;
+
+        SpriteRenderer primaryRenderer = ResolvePrimarySwordRenderer();
+        if (primaryRenderer == null)
+            return null;
+
+        GameObject maskObject = new("EgoSword_BuriedMask");
+        maskObject.transform.SetParent(primaryRenderer.transform, false);
+        runtimeBuriedMask = maskObject.AddComponent<SpriteMask>();
+        runtimeBuriedMask.sprite = DemonKingPrimitiveVisual.GetSquareSprite();
+        buriedMask = runtimeBuriedMask;
+        return runtimeBuriedMask;
+    }
+
+    private void ConfigureBuriedMask(SpriteMask mask)
+    {
+        SpriteRenderer primaryRenderer = ResolvePrimarySwordRenderer();
+        if (primaryRenderer == null || primaryRenderer.sprite == null)
+            return;
+
+        Bounds bounds = primaryRenderer.sprite.bounds;
+        float maskHeight = Mathf.Max(0.01f, bounds.size.y * Mathf.Clamp01(buriedMaskHeightRatio));
+        float maskWidth = Mathf.Max(0.01f, bounds.size.x * buriedMaskWidthMultiplier);
+        mask.transform.SetParent(primaryRenderer.transform, false);
+        mask.transform.localPosition = new Vector3(0f, bounds.min.y + maskHeight * 0.5f, 0f);
+        mask.transform.localRotation = Quaternion.identity;
+        mask.transform.localScale = new Vector3(maskWidth, maskHeight, 1f);
+        mask.sprite = mask.sprite != null ? mask.sprite : DemonKingPrimitiveVisual.GetSquareSprite();
+        mask.isCustomRangeActive = true;
+        mask.frontSortingLayerID = primaryRenderer.sortingLayerID;
+        mask.backSortingLayerID = primaryRenderer.sortingLayerID;
+        mask.frontSortingOrder = primaryRenderer.sortingOrder + 1;
+        mask.backSortingOrder = primaryRenderer.sortingOrder - 1;
+    }
+
+    private SpriteRenderer ResolvePrimarySwordRenderer()
+    {
+        if (primarySwordRenderer != null)
+            return primarySwordRenderer;
+
+        CacheBaseSwordRenderers();
+        for (int i = 0; i < baseSwordRenderers.Length; i++)
+        {
+            if (baseSwordRenderers[i] != null && baseSwordRenderers[i].sprite != null)
+            {
+                primarySwordRenderer = baseSwordRenderers[i];
+                return primarySwordRenderer;
+            }
+        }
+
+        return null;
+    }
+
+    private void PlayVerticalAuraAnimation()
+    {
+        PlayAuraStartAnimation(playIdleAfterStart: true);
+    }
+
+    private void PlayAuraStartAnimation(bool playIdleAfterStart)
+    {
+        StopVerticalAuraAnimation();
+        if (!PlayAuraStartState(out float startLength))
+            return;
+
+        if (playIdleAfterStart)
+            verticalAuraAnimationRoutine = StartCoroutine(CoPlayAuraIdleAfterStart(startLength));
+    }
+
+    private void PlayRecallAuraStartup()
+    {
+        StopVerticalAuraAnimation();
+        if (!PlayAuraStartState(out float startLength))
+        {
+            recallMovementActive = true;
+            return;
+        }
+
+        verticalAuraAnimationRoutine = StartCoroutine(CoStartRecallMovementAfterAuraStart(startLength));
+    }
+
+    private bool PlayAuraStartState(out float startLength)
+    {
+        startLength = 0f;
+        if (!PrepareAuraPlayback())
+            return false;
+
+        if (!TryPlaySwordAnimatorState(EgoSwordAuraStartStateName, out startLength))
+        {
+            StopVerticalAuraAnimation();
+            return false;
+        }
+
+        return true;
+    }
+
+    private bool PrepareAuraPlayback()
+    {
+        CacheSwordAnimationDefaults();
+
+        RuntimeAnimatorController controller = ResolveAuraAnimatorController();
+        if (controller == null)
+            return false;
+
+        SpriteRenderer renderer = ResolvePrimarySwordRenderer();
+        Animator animator = ResolveSwordAnimator(createIfMissing: true);
+        if (renderer == null || animator == null)
+        {
+            WarnAuraAnimationInvalid("missing EgoSword SpriteRenderer or Animator");
+            return false;
+        }
+
+        animator.runtimeAnimatorController = controller;
+        animator.applyRootMotion = false;
+        animator.cullingMode = AnimatorCullingMode.AlwaysAnimate;
+        animator.enabled = true;
+        verticalAuraAnimationActive = true;
+        return true;
+    }
+
+    private IEnumerator CoPlayAuraIdleAfterStart(float startLength)
+    {
+        if (startLength > 0f)
+            yield return new WaitForSeconds(startLength);
+
+        verticalAuraAnimationRoutine = null;
+        if (!verticalAuraAnimationActive)
+            yield break;
+
+        PlayAuraIdleAnimation();
+    }
+
+    private IEnumerator CoStartRecallMovementAfterAuraStart(float startLength)
+    {
+        if (startLength > 0f)
+            yield return new WaitForSeconds(startLength);
+
+        verticalAuraAnimationRoutine = null;
+        if (!verticalAuraAnimationActive || state != SwordState.Recalling)
+            yield break;
+
+        if (!TryPlaySwordAnimatorState(EgoSwordAuraIdleStateName, out _))
+        {
+            StopVerticalAuraAnimation();
+            recallMovementActive = true;
+            yield break;
+        }
+
+        recallMovementActive = true;
+    }
+
+    private void PlayAuraIdleAnimation()
+    {
+        if (!verticalAuraAnimationActive && !PrepareAuraPlayback())
+            return;
+
+        if (!TryPlaySwordAnimatorState(EgoSwordAuraIdleStateName, out _))
+            StopVerticalAuraAnimation();
+    }
+
+    private void PlayAuraEndAnimation()
+    {
+        if (!verticalAuraAnimationActive && !PrepareAuraPlayback())
+            return;
+
+        StopAuraTransitionRoutine();
+
+        if (!TryPlaySwordAnimatorState(EgoSwordAuraEndStateName, out float endLength))
+        {
+            StopVerticalAuraAnimation();
+            return;
+        }
+
+        verticalAuraAnimationRoutine = StartCoroutine(CoStopAuraAfterEnd(endLength));
+    }
+
+    private void StopAuraTransitionRoutine()
+    {
+        if (verticalAuraAnimationRoutine == null)
+            return;
+
+        StopCoroutine(verticalAuraAnimationRoutine);
+        verticalAuraAnimationRoutine = null;
+    }
+
+    private IEnumerator CoStopAuraAfterEnd(float endLength)
+    {
+        if (endLength > 0f)
+            yield return new WaitForSeconds(endLength);
+
+        verticalAuraAnimationRoutine = null;
+        StopVerticalAuraAnimation();
+    }
+
+    private void StopVerticalAuraAnimation()
+    {
+        if (verticalAuraAnimationRoutine != null)
+        {
+            StopCoroutine(verticalAuraAnimationRoutine);
+            verticalAuraAnimationRoutine = null;
+        }
+
+        if (!verticalAuraAnimationActive)
+            return;
+
+        verticalAuraAnimationActive = false;
+        recallMovementActive = false;
+        if (swordAnimator != null)
+        {
+            swordAnimator.runtimeAnimatorController = defaultSwordAnimatorController;
+            if (defaultSwordAnimatorController == null)
+                swordAnimator.enabled = false;
+        }
+
+        if (primarySwordRenderer != null && defaultSwordSprite != null)
+            primarySwordRenderer.sprite = defaultSwordSprite;
     }
 
     private void ReleaseVerticalStrikeVfx()
     {
-        ReleaseVerticalAuraVfx();
+        StopVerticalAuraAnimation();
 
         if (activeVerticalAttackVfx == null)
             return;
 
         activeVerticalAttackVfx.StopAndRelease();
         activeVerticalAttackVfx = null;
+    }
+
+    private void ReleaseAttachedOneShotVfx()
+    {
+        if (!Application.isPlaying)
+            return;
+
+        DemonKingAnimationClipVisual[] visuals = GetComponentsInChildren<DemonKingAnimationClipVisual>(true);
+        for (int i = 0; i < visuals.Length; i++)
+        {
+            DemonKingAnimationClipVisual visual = visuals[i];
+            if (visual != null)
+                visual.StopAndRelease();
+        }
+    }
+
+    private RuntimeAnimatorController ResolveAuraAnimatorController()
+    {
+        if (auraAnimatorController != null)
+            return auraAnimatorController;
+
+        auraAnimatorController = Resources.Load<RuntimeAnimatorController>(EgoSwordAuraControllerResourcePath);
+        if (auraAnimatorController == null && !auraControllerMissingLogged)
+        {
+            auraControllerMissingLogged = true;
+            Debug.LogWarning($"EgoSword aura AnimatorController not found at Resources/{EgoSwordAuraControllerResourcePath}.", this);
+        }
+
+        return auraAnimatorController;
+    }
+
+    private Animator ResolveSwordAnimator(bool createIfMissing)
+    {
+        if (swordAnimator != null)
+            return swordAnimator;
+
+        if (!TryGetComponent(out swordAnimator) && createIfMissing)
+            swordAnimator = gameObject.AddComponent<Animator>();
+
+        return swordAnimator;
+    }
+
+    private bool TryPlaySwordAnimatorState(string stateName, out float clipLength)
+    {
+        clipLength = 0f;
+        if (swordAnimator == null)
+            return false;
+
+        if (!TryResolveSwordAnimatorStateHash(stateName, out int stateHash))
+        {
+            WarnAuraAnimationInvalid($"AnimatorController has no state '{stateName}'");
+            return false;
+        }
+
+        swordAnimator.Play(stateHash, 0, 0f);
+        swordAnimator.Update(0f);
+        clipLength = ResolveSwordAnimatorClipLength(stateName);
+        return true;
+    }
+
+    private bool TryResolveSwordAnimatorStateHash(string stateName, out int stateHash)
+    {
+        stateHash = Animator.StringToHash(stateName);
+        if (swordAnimator.HasState(0, stateHash))
+            return true;
+
+        if (swordAnimator.layerCount <= 0)
+            return false;
+
+        string layerName = swordAnimator.GetLayerName(0);
+        if (string.IsNullOrWhiteSpace(layerName))
+            return false;
+
+        stateHash = Animator.StringToHash($"{layerName}.{stateName}");
+        return swordAnimator.HasState(0, stateHash);
+    }
+
+    private float ResolveSwordAnimatorClipLength(string nameFragment)
+    {
+        RuntimeAnimatorController controller = swordAnimator != null ? swordAnimator.runtimeAnimatorController : null;
+        AnimationClip[] clips = controller != null ? controller.animationClips : System.Array.Empty<AnimationClip>();
+        for (int i = 0; i < clips.Length; i++)
+        {
+            AnimationClip clip = clips[i];
+            if (clip != null && clip.name.IndexOf(nameFragment, System.StringComparison.OrdinalIgnoreCase) >= 0)
+                return Mathf.Max(0.01f, clip.length);
+        }
+
+        return 0f;
+    }
+
+    private void WarnAuraAnimationInvalid(string reason)
+    {
+        if (auraControllerInvalidLogged)
+            return;
+
+        auraControllerInvalidLogged = true;
+        Debug.LogWarning($"EgoSword aura animation is invalid: {reason}.", this);
     }
 
     private RaycastHit2D FindNearestWallHit(Vector2 start, Vector2 direction, float distance)

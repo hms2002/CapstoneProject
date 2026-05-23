@@ -9,6 +9,7 @@ using Action = Unity.Behavior.Action;
 /// - BT Action 노드가 공통 AI-ASC bridge만 통해 능력 실행 문맥에 접근하게 만든다.
 /// - BT Action 구현이 AbilitySystem, TagSystem 직접 참조 대신 bridge 해석 결과만 쓰도록 강제하는 최소 기반을 제공한다.
 /// </summary>
+[Serializable]
 public abstract class AIAbilityBridgeActionBase : Action
 {
     protected bool TryResolveBridge(GameObject owner, out IAIAbilityBridge bridge)
@@ -23,6 +24,7 @@ public abstract class AIAbilityBridgeActionBase : Action
 /// - BT Condition 노드가 공통 AI-ASC bridge만 통해 상태 질의를 수행하게 만든다.
 /// - BT Condition 구현이 AbilitySystem, TagSystem 직접 접근 없이 얕은 bridge 질의만 쓰도록 강제하는 최소 기반을 제공한다.
 /// </summary>
+[Serializable]
 public abstract class AIAbilityBridgeConditionBase : Condition
 {
     protected bool TryResolveBridge(GameObject owner, out IAIAbilityBridge bridge)

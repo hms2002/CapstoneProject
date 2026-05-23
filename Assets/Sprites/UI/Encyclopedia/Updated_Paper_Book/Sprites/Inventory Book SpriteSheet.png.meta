@@ -1,0 +1,1903 @@
+fileFormatVersion: 2
+guid: 089f375622af80747b587b131c054cd2
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 3235405202117561037
+    second: Inventory Book SpriteSheet_0
+  - first:
+      213: 6524154635269085483
+    second: Inventory Book SpriteSheet_1
+  - first:
+      213: 3504288623781624321
+    second: Inventory Book SpriteSheet_2
+  - first:
+      213: 8165487771345263763
+    second: Inventory Book SpriteSheet_3
+  - first:
+      213: 6721619448925482678
+    second: Inventory Book SpriteSheet_4
+  - first:
+      213: -5799653257581492928
+    second: Inventory Book SpriteSheet_5
+  - first:
+      213: 2405107881384276181
+    second: Inventory Book SpriteSheet_6
+  - first:
+      213: 5816386074611963664
+    second: Inventory Book SpriteSheet_7
+  - first:
+      213: 7588171882267360667
+    second: Inventory Book SpriteSheet_8
+  - first:
+      213: 6757903966814971444
+    second: Inventory Book SpriteSheet_9
+  - first:
+      213: -8528994930906879637
+    second: Inventory Book SpriteSheet_10
+  - first:
+      213: -1581231950367674244
+    second: Inventory Book SpriteSheet_11
+  - first:
+      213: -3784940200725541261
+    second: Inventory Book SpriteSheet_12
+  - first:
+      213: 6475834243277557952
+    second: Inventory Book SpriteSheet_13
+  - first:
+      213: -100997906670458292
+    second: Inventory Book SpriteSheet_14
+  - first:
+      213: 6731981423784872005
+    second: Inventory Book SpriteSheet_15
+  - first:
+      213: -3849108077646013239
+    second: Inventory Book SpriteSheet_16
+  - first:
+      213: 6518221612898484957
+    second: Inventory Book SpriteSheet_17
+  - first:
+      213: -1076749079548852271
+    second: Inventory Book SpriteSheet_18
+  - first:
+      213: -4390521358280877761
+    second: Inventory Book SpriteSheet_19
+  - first:
+      213: -9124825732220892915
+    second: Inventory Book SpriteSheet_20
+  - first:
+      213: 4580846924329984416
+    second: Inventory Book SpriteSheet_21
+  - first:
+      213: -6355451281003972432
+    second: Inventory Book SpriteSheet_22
+  - first:
+      213: -2241282871517675317
+    second: Inventory Book SpriteSheet_23
+  - first:
+      213: 1565195654715893646
+    second: Inventory Book SpriteSheet_24
+  - first:
+      213: -4567586462924391461
+    second: Inventory Book SpriteSheet_25
+  - first:
+      213: -6645104227791088110
+    second: Inventory Book SpriteSheet_26
+  - first:
+      213: 6100189357899609455
+    second: Inventory Book SpriteSheet_27
+  - first:
+      213: 866606295220058240
+    second: Inventory Book SpriteSheet_28
+  - first:
+      213: 6721812240533191342
+    second: Inventory Book SpriteSheet_29
+  - first:
+      213: -9035121426414577148
+    second: Inventory Book SpriteSheet_30
+  - first:
+      213: -5231638768567934889
+    second: Inventory Book SpriteSheet_31
+  - first:
+      213: 5745695055681545904
+    second: Inventory Book SpriteSheet_32
+  - first:
+      213: 3804741437742671220
+    second: Inventory Book SpriteSheet_33
+  - first:
+      213: -7475756115488145136
+    second: Inventory Book SpriteSheet_34
+  - first:
+      213: -4939213141545482561
+    second: Inventory Book SpriteSheet_35
+  - first:
+      213: -4665995972906446297
+    second: Inventory Book SpriteSheet_36
+  - first:
+      213: 3067654315705524575
+    second: Inventory Book SpriteSheet_37
+  - first:
+      213: 3458499023825897942
+    second: Inventory Book SpriteSheet_38
+  - first:
+      213: -6801712404776209481
+    second: Inventory Book SpriteSheet_39
+  - first:
+      213: -8665723857317313727
+    second: Inventory Book SpriteSheet_40
+  - first:
+      213: -2241444694222436544
+    second: Inventory Book SpriteSheet_41
+  - first:
+      213: 675024821163125574
+    second: Inventory Book SpriteSheet_42
+  - first:
+      213: -1514338696091022577
+    second: Inventory Book SpriteSheet_43
+  - first:
+      213: 5708302342671515060
+    second: Inventory Book SpriteSheet_44
+  - first:
+      213: -7293058590852697180
+    second: Inventory Book SpriteSheet_45
+  - first:
+      213: 3879271939457259151
+    second: Inventory Book SpriteSheet_46
+  - first:
+      213: -4497500574514316929
+    second: Inventory Book SpriteSheet_47
+  - first:
+      213: -1156889549157993456
+    second: Inventory Book SpriteSheet_48
+  - first:
+      213: 3289534648681349156
+    second: Inventory Book SpriteSheet_49
+  - first:
+      213: 1231061369006410693
+    second: Inventory Book SpriteSheet_50
+  - first:
+      213: 8422602012620191503
+    second: Inventory Book SpriteSheet_51
+  - first:
+      213: 5146362983307829143
+    second: Inventory Book SpriteSheet_52
+  - first:
+      213: -23794161813599550
+    second: Inventory Book SpriteSheet_53
+  - first:
+      213: 310163561816886904
+    second: Inventory Book SpriteSheet_54
+  - first:
+      213: -8146495904551803414
+    second: Inventory Book SpriteSheet_55
+  - first:
+      213: 5488143907402015885
+    second: Inventory Book SpriteSheet_56
+  - first:
+      213: 6960517366330950950
+    second: Inventory Book SpriteSheet_57
+  - first:
+      213: 5281835296260385579
+    second: Inventory Book SpriteSheet_58
+  - first:
+      213: 8093138129252239060
+    second: Inventory Book SpriteSheet_59
+  - first:
+      213: 6422556237854211573
+    second: Inventory Book SpriteSheet_60
+  - first:
+      213: -5618405461017807580
+    second: Inventory Book SpriteSheet_61
+  - first:
+      213: -117214548554840528
+    second: Inventory Book SpriteSheet_62
+  - first:
+      213: 8759834218736163680
+    second: Inventory Book SpriteSheet_63
+  - first:
+      213: 7016607461675054518
+    second: Inventory Book SpriteSheet_64
+  - first:
+      213: -1847618729833360050
+    second: Inventory Book SpriteSheet_65
+  - first:
+      213: 3652250505420718414
+    second: Inventory Book SpriteSheet_66
+  - first:
+      213: -7194126530869948368
+    second: Inventory Book SpriteSheet_67
+  - first:
+      213: 2661143360275446090
+    second: Inventory Book SpriteSheet_68
+  - first:
+      213: -9132925689061719845
+    second: Inventory Book SpriteSheet_69
+  - first:
+      213: -2998887649878614939
+    second: Inventory Book SpriteSheet_70
+  - first:
+      213: 2294204907619860227
+    second: Inventory Book SpriteSheet_71
+  - first:
+      213: 8066545744467244106
+    second: Inventory Book SpriteSheet_72
+  - first:
+      213: -8158177640562600825
+    second: Inventory Book SpriteSheet_73
+  - first:
+      213: 6074587368196598363
+    second: Inventory Book SpriteSheet_74
+  - first:
+      213: -2008664039618930086
+    second: Inventory Book SpriteSheet_75
+  - first:
+      213: -8502191484037654574
+    second: Inventory Book SpriteSheet_76
+  - first:
+      213: 3254729247072579114
+    second: Inventory Book SpriteSheet_77
+  - first:
+      213: 430053936390914792
+    second: Inventory Book SpriteSheet_78
+  - first:
+      213: -9095316073675161784
+    second: Inventory Book SpriteSheet_79
+  - first:
+      213: -4208850042534424247
+    second: Inventory Book SpriteSheet_80
+  - first:
+      213: -7861996236538630376
+    second: Inventory Book SpriteSheet_81
+  - first:
+      213: 8383676805427794004
+    second: Inventory Book SpriteSheet_82
+  - first:
+      213: -6633113816231811264
+    second: Inventory Book SpriteSheet_83
+  - first:
+      213: 2230503949138156864
+    second: Inventory Book SpriteSheet_84
+  - first:
+      213: 2477711316168979976
+    second: Inventory Book SpriteSheet_85
+  - first:
+      213: 5748323953592513675
+    second: Inventory Book SpriteSheet_86
+  - first:
+      213: 4787760241841669449
+    second: Inventory Book SpriteSheet_87
+  - first:
+      213: -773097438136916233
+    second: Inventory Book SpriteSheet_88
+  - first:
+      213: -1566987973891118292
+    second: Inventory Book SpriteSheet_89
+  - first:
+      213: -3207931536641599602
+    second: Inventory Book SpriteSheet_90
+  - first:
+      213: 589235691631145379
+    second: Inventory Book SpriteSheet_91
+  - first:
+      213: 1257814587247898091
+    second: Inventory Book SpriteSheet_92
+  - first:
+      213: -8767138505161247145
+    second: Inventory Book SpriteSheet_93
+  - first:
+      213: -234712419554471736
+    second: Inventory Book SpriteSheet_94
+  - first:
+      213: 8723365993496215458
+    second: Inventory Book SpriteSheet_95
+  - first:
+      213: 5111404277023287899
+    second: Inventory Book SpriteSheet_96
+  - first:
+      213: -950424123529826358
+    second: Inventory Book SpriteSheet_97
+  - first:
+      213: 3348652178865963701
+    second: Inventory Book SpriteSheet_98
+  - first:
+      213: 875078952190531245
+    second: Inventory Book SpriteSheet_99
+  - first:
+      213: 6063854696923051335
+    second: Inventory Book SpriteSheet_100
+  - first:
+      213: 1073447570580984645
+    second: Inventory Book SpriteSheet_101
+  - first:
+      213: 6258581192721400750
+    second: Inventory Book SpriteSheet_102
+  - first:
+      213: 730176028439142570
+    second: Inventory Book SpriteSheet_103
+  - first:
+      213: -2431764191441600111
+    second: Inventory Book SpriteSheet_104
+  - first:
+      213: -6148969433387031720
+    second: Inventory Book SpriteSheet_105
+  - first:
+      213: -5557076415776986701
+    second: Inventory Book SpriteSheet_106
+  - first:
+      213: -9120677788230407768
+    second: Inventory Book SpriteSheet_107
+  - first:
+      213: -187542498612060059
+    second: Inventory Book SpriteSheet_108
+  - first:
+      213: -3442403093304695961
+    second: Inventory Book SpriteSheet_109
+  - first:
+      213: 909703436733552294
+    second: Inventory Book SpriteSheet_110
+  - first:
+      213: 284870891866894016
+    second: Inventory Book SpriteSheet_111
+  - first:
+      213: 5125929158117012405
+    second: Inventory Book SpriteSheet_112
+  - first:
+      213: 8343451300814874347
+    second: Inventory Book SpriteSheet_113
+  - first:
+      213: 5725073784315291390
+    second: Inventory Book SpriteSheet_114
+  - first:
+      213: 868532940949309996
+    second: Inventory Book SpriteSheet_115
+  - first:
+      213: 2445628187181839225
+    second: Inventory Book SpriteSheet_116
+  - first:
+      213: -3298551556832485409
+    second: Inventory Book SpriteSheet_117
+  - first:
+      213: 6480967334566795851
+    second: Inventory Book SpriteSheet_118
+  - first:
+      213: 6224024190114505551
+    second: Inventory Book SpriteSheet_119
+  - first:
+      213: 3400728917569026276
+    second: Inventory Book SpriteSheet_120
+  - first:
+      213: -2158762820702165021
+    second: Inventory Book SpriteSheet_121
+  - first:
+      213: 9036232357540700493
+    second: Inventory Book SpriteSheet_122
+  - first:
+      213: -2646632842087411639
+    second: Inventory Book SpriteSheet_123
+  - first:
+      213: 2072983944910474844
+    second: Inventory Book SpriteSheet_124
+  - first:
+      213: 535253560942499435
+    second: Inventory Book SpriteSheet_125
+  - first:
+      213: -9078959955665638611
+    second: Inventory Book SpriteSheet_126
+  - first:
+      213: -3945017259250686944
+    second: Inventory Book SpriteSheet_127
+  - first:
+      213: -8664458250461755481
+    second: Inventory Book SpriteSheet_128
+  - first:
+      213: -4523540835213835581
+    second: Inventory Book SpriteSheet_129
+  - first:
+      213: -3761266220966375474
+    second: Inventory Book SpriteSheet_130
+  - first:
+      213: -7676970535436183158
+    second: Inventory Book SpriteSheet_131
+  - first:
+      213: 1959878889620939691
+    second: Inventory Book SpriteSheet_132
+  - first:
+      213: -2597732130638995940
+    second: Inventory Book SpriteSheet_133
+  - first:
+      213: 3598654237227945891
+    second: Inventory Book SpriteSheet_134
+  - first:
+      213: -6364367293001485664
+    second: Inventory Book SpriteSheet_135
+  - first:
+      213: 6667608838177054812
+    second: Inventory Book SpriteSheet_136
+  - first:
+      213: 7846609992602351381
+    second: Inventory Book SpriteSheet_137
+  - first:
+      213: -2404958747214644876
+    second: Inventory Book SpriteSheet_138
+  - first:
+      213: -5607625098059165832
+    second: Inventory Book SpriteSheet_139
+  - first:
+      213: -1360340811690428964
+    second: Inventory Book SpriteSheet_140
+  - first:
+      213: -3856802467394355128
+    second: Inventory Book SpriteSheet_141
+  - first:
+      213: -3497140210236522812
+    second: Inventory Book SpriteSheet_142
+  - first:
+      213: -8770719874361901169
+    second: Inventory Book SpriteSheet_143
+  - first:
+      213: 7702436010737570538
+    second: Inventory Book SpriteSheet_144
+  - first:
+      213: 7108656331591570474
+    second: Inventory Book SpriteSheet_145
+  - first:
+      213: -3051197428915542975
+    second: Inventory Book SpriteSheet_146
+  - first:
+      213: 6946357513095879159
+    second: Inventory Book SpriteSheet_147
+  - first:
+      213: 7702799515765715120
+    second: Inventory Book SpriteSheet_148
+  - first:
+      213: 3219988700053132219
+    second: Inventory Book SpriteSheet_149
+  - first:
+      213: 8780323884336466702
+    second: Inventory Book SpriteSheet_150
+  - first:
+      213: -6091963211321980265
+    second: Inventory Book SpriteSheet_151
+  - first:
+      213: 8741330128011265701
+    second: Inventory Book SpriteSheet_152
+  - first:
+      213: 3402154098789936604
+    second: Inventory Book SpriteSheet_153
+  - first:
+      213: -6907508459480049115
+    second: Inventory Book SpriteSheet_154
+  - first:
+      213: -5418213090743188248
+    second: Inventory Book SpriteSheet_155
+  - first:
+      213: -9074934557799507954
+    second: Inventory Book SpriteSheet_156
+  - first:
+      213: 8193266752043535341
+    second: Inventory Book SpriteSheet_157
+  - first:
+      213: -6732365561278898555
+    second: Inventory Book SpriteSheet_158
+  - first:
+      213: -786498225101057255
+    second: Inventory Book SpriteSheet_159
+  - first:
+      213: 6243983554290666153
+    second: Inventory Book SpriteSheet_160
+  - first:
+      213: -7595868631888611365
+    second: Inventory Book SpriteSheet_161
+  - first:
+      213: -3978464871759588322
+    second: Inventory Book SpriteSheet_162
+  - first:
+      213: -7691094267310529905
+    second: Inventory Book SpriteSheet_163
+  - first:
+      213: 9013438091514678825
+    second: Inventory Book SpriteSheet_164
+  - first:
+      213: -46217349384961799
+    second: Inventory Book SpriteSheet_165
+  - first:
+      213: 4126341006056402429
+    second: Inventory Book SpriteSheet_166
+  - first:
+      213: -5422021228339681867
+    second: Inventory Book SpriteSheet_167
+  - first:
+      213: -6272694934970882041
+    second: Inventory Book SpriteSheet_168
+  - first:
+      213: 2665842874188441303
+    second: Inventory Book SpriteSheet_169
+  - first:
+      213: 2183855659475632944
+    second: Inventory Book SpriteSheet_170
+  - first:
+      213: 2131777016716041829
+    second: Inventory Book SpriteSheet_171
+  - first:
+      213: 6192829787953696159
+    second: Inventory Book SpriteSheet_172
+  - first:
+      213: -3802597687517976094
+    second: Inventory Book SpriteSheet_173
+  - first:
+      213: -5347189158211834174
+    second: Inventory Book SpriteSheet_174
+  - first:
+      213: 5236392611339554664
+    second: Inventory Book SpriteSheet_175
+  - first:
+      213: -4021667018672438355
+    second: Inventory Book SpriteSheet_176
+  - first:
+      213: -54992933311891313
+    second: Inventory Book SpriteSheet_177
+  - first:
+      213: 3290944666515341172
+    second: Inventory Book SpriteSheet_178
+  - first:
+      213: 7123562361391206197
+    second: Inventory Book SpriteSheet_179
+  - first:
+      213: -5300465881149056639
+    second: Inventory Book SpriteSheet_180
+  - first:
+      213: 4587097703949006779
+    second: Inventory Book SpriteSheet_181
+  - first:
+      213: -48451994924386624
+    second: Inventory Book SpriteSheet_182
+  - first:
+      213: -5535686801477679991
+    second: Inventory Book SpriteSheet_183
+  - first:
+      213: 1906852170701277051
+    second: Inventory Book SpriteSheet_184
+  - first:
+      213: -6421356511503359358
+    second: Inventory Book SpriteSheet_185
+  - first:
+      213: -5703144209363814459
+    second: Inventory Book SpriteSheet_186
+  - first:
+      213: -295391612897472015
+    second: Inventory Book SpriteSheet_187
+  - first:
+      213: -8580489454693719733
+    second: Inventory Book SpriteSheet_188
+  - first:
+      213: -6386123137781076094
+    second: Inventory Book SpriteSheet_189
+  - first:
+      213: -3822090209581458706
+    second: Inventory Book SpriteSheet_190
+  - first:
+      213: 6985228783413791681
+    second: Inventory Book SpriteSheet_191
+  - first:
+      213: 2587726926879994150
+    second: Inventory Book SpriteSheet_192
+  - first:
+      213: -1708367117680237791
+    second: Inventory Book SpriteSheet_193
+  - first:
+      213: -6394611723223260193
+    second: Inventory Book SpriteSheet_194
+  - first:
+      213: -6547691963624563007
+    second: Inventory Book SpriteSheet_195
+  - first:
+      213: -7171665462198211956
+    second: Inventory Book SpriteSheet_196
+  - first:
+      213: 1085557477882444469
+    second: Inventory Book SpriteSheet_197
+  - first:
+      213: 3522069187714098409
+    second: Inventory Book SpriteSheet_198
+  - first:
+      213: -5665851302010389224
+    second: Inventory Book SpriteSheet_199
+  - first:
+      213: 2488689277530964554
+    second: Inventory Book SpriteSheet_200
+  - first:
+      213: -5345599836066125854
+    second: Inventory Book SpriteSheet_201
+  - first:
+      213: -4719654072194026992
+    second: Inventory Book SpriteSheet_202
+  - first:
+      213: -2046302312340493493
+    second: Inventory Book SpriteSheet_203
+  - first:
+      213: 6883364800449462314
+    second: Inventory Book SpriteSheet_204
+  - first:
+      213: -7864515288089884168
+    second: Inventory Book SpriteSheet_205
+  - first:
+      213: -5189348979337307744
+    second: Inventory Book SpriteSheet_206
+  - first:
+      213: -3522716302011724530
+    second: Inventory Book SpriteSheet_207
+  - first:
+      213: -4291179283959719341
+    second: Inventory Book SpriteSheet_208
+  - first:
+      213: -642103510346774665
+    second: Inventory Book SpriteSheet_209
+  - first:
+      213: -8788099032099623918
+    second: Inventory Book SpriteSheet_210
+  - first:
+      213: 4105687683070012981
+    second: Inventory Book SpriteSheet_211
+  - first:
+      213: -283893840377352915
+    second: Inventory Book SpriteSheet_212
+  - first:
+      213: 5169911597847040328
+    second: Inventory Book SpriteSheet_213
+  - first:
+      213: 831683384331695876
+    second: Inventory Book SpriteSheet_214
+  - first:
+      213: -3066743879882749643
+    second: Inventory Book SpriteSheet_215
+  - first:
+      213: 2643538208166379275
+    second: Inventory Book SpriteSheet_216
+  - first:
+      213: 7962847920231216706
+    second: Inventory Book SpriteSheet_217
+  - first:
+      213: -4174780497885310568
+    second: Inventory Book SpriteSheet_218
+  - first:
+      213: -8033792753564469536
+    second: Inventory Book SpriteSheet_219
+  - first:
+      213: -2075833363424372560
+    second: Inventory Book SpriteSheet_220
+  - first:
+      213: 4688756254060104898
+    second: Inventory Book SpriteSheet_221
+  - first:
+      213: 3803138703273265373
+    second: Inventory Book SpriteSheet_222
+  - first:
+      213: -1333476655220357490
+    second: Inventory Book SpriteSheet_223
+  - first:
+      213: -5868149550696326139
+    second: Inventory Book SpriteSheet_224
+  - first:
+      213: -2090025398091494303
+    second: Inventory Book SpriteSheet_225
+  - first:
+      213: -5587439061075683358
+    second: Inventory Book SpriteSheet_226
+  - first:
+      213: 5421425794928439984
+    second: Inventory Book SpriteSheet_227
+  - first:
+      213: -1639861364199804845
+    second: Inventory Book SpriteSheet_228
+  - first:
+      213: 2614262267013500100
+    second: Inventory Book SpriteSheet_229
+  - first:
+      213: -8070983203898858204
+    second: Inventory Book SpriteSheet_230
+  - first:
+      213: -4717924232379636628
+    second: Inventory Book SpriteSheet_231
+  - first:
+      213: 3863469779702825677
+    second: Inventory Book SpriteSheet_232
+  - first:
+      213: 944955705087344122
+    second: Inventory Book SpriteSheet_233
+  - first:
+      213: 7005338424331293994
+    second: Inventory Book SpriteSheet_234
+  - first:
+      213: 9166015024856425514
+    second: Inventory Book SpriteSheet_235
+  - first:
+      213: -3842312586236686538
+    second: Inventory Book SpriteSheet_236
+  - first:
+      213: 7055405888855398079
+    second: Inventory Book SpriteSheet_237
+  - first:
+      213: -2094024515286372389
+    second: Inventory Book SpriteSheet_238
+  - first:
+      213: 8713637737923354665
+    second: Inventory Book SpriteSheet_239
+  - first:
+      213: 3799374518536210689
+    second: Inventory Book SpriteSheet_240
+  - first:
+      213: -460112605480167582
+    second: Inventory Book SpriteSheet_241
+  - first:
+      213: -940259271023089490
+    second: Inventory Book SpriteSheet_242
+  - first:
+      213: 4139171779890187301
+    second: Inventory Book SpriteSheet_243
+  - first:
+      213: -2824237823147286557
+    second: Inventory Book SpriteSheet_244
+  - first:
+      213: 3924137208683519798
+    second: Inventory Book SpriteSheet_245
+  - first:
+      213: 559192204833891394
+    second: Inventory Book SpriteSheet_246
+  - first:
+      213: 5038020872584341517
+    second: Inventory Book SpriteSheet_247
+  - first:
+      213: 5195766829826242712
+    second: Inventory Book SpriteSheet_248
+  - first:
+      213: -7711596651222317723
+    second: Inventory Book SpriteSheet_249
+  - first:
+      213: 2177389516785775153
+    second: Inventory Book SpriteSheet_250
+  - first:
+      213: -2986797970673207093
+    second: Inventory Book SpriteSheet_251
+  - first:
+      213: -4423252846479987302
+    second: Inventory Book SpriteSheet_252
+  - first:
+      213: -8445921218049169329
+    second: Inventory Book SpriteSheet_253
+  - first:
+      213: -5301247186411882789
+    second: Inventory Book SpriteSheet_254
+  - first:
+      213: 3122374030256255647
+    second: Inventory Book SpriteSheet_255
+  - first:
+      213: 3320033938257526019
+    second: Inventory Book SpriteSheet_256
+  - first:
+      213: -6093568587035985596
+    second: Inventory Book SpriteSheet_257
+  - first:
+      213: 4595217177465463875
+    second: Inventory Book SpriteSheet_258
+  - first:
+      213: 2772736077706118352
+    second: Inventory Book SpriteSheet_259
+  - first:
+      213: -836688691872651820
+    second: Inventory Book SpriteSheet_260
+  - first:
+      213: -918191265513312195
+    second: Inventory Book SpriteSheet_261
+  - first:
+      213: 7071846958573147504
+    second: Inventory Book SpriteSheet_262
+  - first:
+      213: -7160059035942513008
+    second: Inventory Book SpriteSheet_263
+  - first:
+      213: 9140342126448180246
+    second: Inventory Book SpriteSheet_264
+  - first:
+      213: 1266772483276279619
+    second: Inventory Book SpriteSheet_265
+  - first:
+      213: 343146916992456870
+    second: Inventory Book SpriteSheet_266
+  - first:
+      213: 4967879098069771367
+    second: Inventory Book SpriteSheet_267
+  - first:
+      213: -3472769598058509804
+    second: Inventory Book SpriteSheet_268
+  - first:
+      213: -1399219287264502472
+    second: Inventory Book SpriteSheet_269
+  - first:
+      213: 7315361178433573720
+    second: Inventory Book SpriteSheet_270
+  - first:
+      213: -5349473637147840471
+    second: Inventory Book SpriteSheet_271
+  - first:
+      213: -8742320489433398887
+    second: Inventory Book SpriteSheet_272
+  - first:
+      213: 3179578728022804016
+    second: Inventory Book SpriteSheet_273
+  - first:
+      213: 8446301858916618454
+    second: Inventory Book SpriteSheet_274
+  - first:
+      213: 6309323235739241461
+    second: Inventory Book SpriteSheet_275
+  - first:
+      213: -3471519352080747602
+    second: Inventory Book SpriteSheet_276
+  - first:
+      213: -1709987348436400236
+    second: Inventory Book SpriteSheet_277
+  - first:
+      213: 32865658513984640
+    second: Inventory Book SpriteSheet_278
+  - first:
+      213: -1607915718908718014
+    second: Inventory Book SpriteSheet_279
+  - first:
+      213: 8652346433927994125
+    second: Inventory Book SpriteSheet_280
+  - first:
+      213: 3462238992351397890
+    second: Inventory Book SpriteSheet_281
+  - first:
+      213: 5446442172935238861
+    second: Inventory Book SpriteSheet_282
+  - first:
+      213: -867777673501144678
+    second: Inventory Book SpriteSheet_283
+  - first:
+      213: 4193757787404134193
+    second: Inventory Book SpriteSheet_284
+  - first:
+      213: 2473010761643367917
+    second: Inventory Book SpriteSheet_285
+  - first:
+      213: 1297269049746256668
+    second: Inventory Book SpriteSheet_286
+  - first:
+      213: 4800965170642805544
+    second: Inventory Book SpriteSheet_287
+  - first:
+      213: 39765751902477759
+    second: Inventory Book SpriteSheet_288
+  - first:
+      213: -160298907315495528
+    second: Inventory Book SpriteSheet_289
+  - first:
+      213: -5976259554877442410
+    second: Inventory Book SpriteSheet_290
+  - first:
+      213: -3935819610549900094
+    second: Inventory Book SpriteSheet_291
+  - first:
+      213: -5798762244844799242
+    second: Inventory Book SpriteSheet_292
+  - first:
+      213: -6734716748623223392
+    second: Inventory Book SpriteSheet_293
+  - first:
+      213: -4705968747506573694
+    second: Inventory Book SpriteSheet_294
+  - first:
+      213: 3209632766571052519
+    second: Inventory Book SpriteSheet_295
+  - first:
+      213: -2361348499739818328
+    second: Inventory Book SpriteSheet_296
+  - first:
+      213: 2116445936928107965
+    second: Inventory Book SpriteSheet_297
+  - first:
+      213: 3527843691025301575
+    second: Inventory Book SpriteSheet_298
+  - first:
+      213: 2842679320413330817
+    second: Inventory Book SpriteSheet_299
+  - first:
+      213: 9139099944296741725
+    second: Inventory Book SpriteSheet_300
+  - first:
+      213: 1001839018452900855
+    second: Inventory Book SpriteSheet_301
+  - first:
+      213: -8895741762495631683
+    second: Inventory Book SpriteSheet_302
+  - first:
+      213: -4779473468240365151
+    second: Inventory Book SpriteSheet_303
+  - first:
+      213: 5158900534797109433
+    second: Inventory Book SpriteSheet_304
+  - first:
+      213: -5460800252223534752
+    second: Inventory Book SpriteSheet_305
+  - first:
+      213: 2235132487600450973
+    second: Inventory Book SpriteSheet_306
+  - first:
+      213: 7365984345165745302
+    second: Inventory Book SpriteSheet_307
+  - first:
+      213: -5059809186635610495
+    second: Inventory Book SpriteSheet_308
+  - first:
+      213: -7703751196659467993
+    second: Inventory Book SpriteSheet_309
+  - first:
+      213: -3579425565994132828
+    second: Inventory Book SpriteSheet_310
+  - first:
+      213: -6381596404640597019
+    second: Inventory Book SpriteSheet_311
+  - first:
+      213: -5845057954781433223
+    second: Inventory Book SpriteSheet_312
+  - first:
+      213: 5823063206699274908
+    second: Inventory Book SpriteSheet_313
+  - first:
+      213: -5685341951183812816
+    second: Inventory Book SpriteSheet_314
+  - first:
+      213: -4795133693365143479
+    second: Inventory Book SpriteSheet_315
+  - first:
+      213: -7216017021701841437
+    second: Inventory Book SpriteSheet_316
+  - first:
+      213: -5895108564962488510
+    second: Inventory Book SpriteSheet_317
+  - first:
+      213: -7557219918456642053
+    second: Inventory Book SpriteSheet_318
+  - first:
+      213: 1711308463805438272
+    second: Inventory Book SpriteSheet_319
+  - first:
+      213: -1837982692341860721
+    second: Inventory Book SpriteSheet_320
+  - first:
+      213: 1634218651171322995
+    second: Inventory Book SpriteSheet_321
+  - first:
+      213: -7857781269894440324
+    second: Inventory Book SpriteSheet_322
+  - first:
+      213: 7291469163935065194
+    second: Inventory Book SpriteSheet_323
+  - first:
+      213: -4171005854018656902
+    second: Inventory Book SpriteSheet_324
+  - first:
+      213: -709168652369038478
+    second: Inventory Book SpriteSheet_325
+  - first:
+      213: -3156486448015719955
+    second: Inventory Book SpriteSheet_326
+  - first:
+      213: 4018185159695264793
+    second: Inventory Book SpriteSheet_327
+  - first:
+      213: -4095987109333848521
+    second: Inventory Book SpriteSheet_328
+  - first:
+      213: 6947408991421993520
+    second: Inventory Book SpriteSheet_329
+  - first:
+      213: 3432398104852142847
+    second: Inventory Book SpriteSheet_330
+  - first:
+      213: -6990021478411086278
+    second: Inventory Book SpriteSheet_331
+  - first:
+      213: -6994004065381568742
+    second: Inventory Book SpriteSheet_332
+  - first:
+      213: -7552104126769598948
+    second: Inventory Book SpriteSheet_333
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 8192
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Inventory Book SpriteSheet_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 2880
+        width: 816
+        height: 720
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dca0ba0b3e776ec20800000000000000
+      internalID: 3235405202117561037
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Inventory Book SpriteSheet_1
+      rect:
+        serializedVersion: 2
+        x: 816
+        y: 2880
+        width: 816
+        height: 720
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b299ee603147a8a50800000000000000
+      internalID: 6524154635269085483
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Inventory Book SpriteSheet_2
+      rect:
+        serializedVersion: 2
+        x: 1632
+        y: 2880
+        width: 816
+        height: 720
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 10a32f2dfebb1a030800000000000000
+      internalID: 3504288623781624321
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Inventory Book SpriteSheet_3
+      rect:
+        serializedVersion: 2
+        x: 2448
+        y: 2880
+        width: 816
+        height: 720
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 39c94dc8dd3a15170800000000000000
+      internalID: 8165487771345263763
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Inventory Book SpriteSheet_4
+      rect:
+        serializedVersion: 2
+        x: 3264
+        y: 2880
+        width: 816
+        height: 720
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6be6f80b64df74d50800000000000000
+      internalID: 6721619448925482678
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Inventory Book SpriteSheet_5
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 2160
+        width: 816
+        height: 720
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0450b61171e738fa0800000000000000
+      internalID: -5799653257581492928
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Inventory Book SpriteSheet_6
+      rect:
+        serializedVersion: 2
+        x: 816
+        y: 2160
+        width: 816
+        height: 720
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5d0f66410e8a06120800000000000000
+      internalID: 2405107881384276181
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Inventory Book SpriteSheet_7
+      rect:
+        serializedVersion: 2
+        x: 1632
+        y: 2160
+        width: 816
+        height: 720
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 01756cd7154f7b050800000000000000
+      internalID: 5816386074611963664
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Inventory Book SpriteSheet_8
+      rect:
+        serializedVersion: 2
+        x: 2448
+        y: 2160
+        width: 816
+        height: 720
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b9d37218f1a9e4960800000000000000
+      internalID: 7588171882267360667
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Inventory Book SpriteSheet_9
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1440
+        width: 816
+        height: 720
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 436a5385ad5e8cd50800000000000000
+      internalID: 6757903966814971444
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Inventory Book SpriteSheet_10
+      rect:
+        serializedVersion: 2
+        x: 816
+        y: 1440
+        width: 816
+        height: 720
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b6920348c4ce2a980800000000000000
+      internalID: -8528994930906879637
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Inventory Book SpriteSheet_11
+      rect:
+        serializedVersion: 2
+        x: 1632
+        y: 1440
+        width: 816
+        height: 720
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c7036da3be55e0ae0800000000000000
+      internalID: -1581231950367674244
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Inventory Book SpriteSheet_12
+      rect:
+        serializedVersion: 2
+        x: 2448
+        y: 1440
+        width: 816
+        height: 720
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 37e88afd0f0397bc0800000000000000
+      internalID: -3784940200725541261
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Inventory Book SpriteSheet_13
+      rect:
+        serializedVersion: 2
+        x: 3264
+        y: 1440
+        width: 816
+        height: 720
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0c09ede0fe8ced950800000000000000
+      internalID: 6475834243277557952
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Inventory Book SpriteSheet_14
+      rect:
+        serializedVersion: 2
+        x: 4080
+        y: 1440
+        width: 816
+        height: 720
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c4a69d160fe299ef0800000000000000
+      internalID: -100997906670458292
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Inventory Book SpriteSheet_15
+      rect:
+        serializedVersion: 2
+        x: 4896
+        y: 1440
+        width: 816
+        height: 720
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 548c937ff6dcc6d50800000000000000
+      internalID: 6731981423784872005
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Inventory Book SpriteSheet_16
+      rect:
+        serializedVersion: 2
+        x: 5712
+        y: 1440
+        width: 816
+        height: 720
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9cc92d9c898359ac0800000000000000
+      internalID: -3849108077646013239
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Inventory Book SpriteSheet_17
+      rect:
+        serializedVersion: 2
+        x: 6528
+        y: 1440
+        width: 816
+        height: 720
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dd2861c9500657a50800000000000000
+      internalID: 6518221612898484957
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Inventory Book SpriteSheet_18
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 720
+        width: 816
+        height: 720
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1d70341ca6e9e01f0800000000000000
+      internalID: -1076749079548852271
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Inventory Book SpriteSheet_19
+      rect:
+        serializedVersion: 2
+        x: 816
+        y: 720
+        width: 816
+        height: 720
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f3917ec261cb113c0800000000000000
+      internalID: -4390521358280877761
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Inventory Book SpriteSheet_20
+      rect:
+        serializedVersion: 2
+        x: 1632
+        y: 720
+        width: 816
+        height: 720
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d0941a9875b1e5180800000000000000
+      internalID: -9124825732220892915
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Inventory Book SpriteSheet_21
+      rect:
+        serializedVersion: 2
+        x: 2448
+        y: 720
+        width: 816
+        height: 720
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0a1212fd100729f30800000000000000
+      internalID: 4580846924329984416
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Inventory Book SpriteSheet_22
+      rect:
+        serializedVersion: 2
+        x: 3264
+        y: 720
+        width: 816
+        height: 720
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0b8f4788bb6ecc7a0800000000000000
+      internalID: -6355451281003972432
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Inventory Book SpriteSheet_23
+      rect:
+        serializedVersion: 2
+        x: 4080
+        y: 720
+        width: 816
+        height: 720
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bc0850a6a1d55e0e0800000000000000
+      internalID: -2241282871517675317
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Inventory Book SpriteSheet_24
+      rect:
+        serializedVersion: 2
+        x: 4896
+        y: 720
+        width: 816
+        height: 720
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e87635bb721b8b510800000000000000
+      internalID: 1565195654715893646
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Inventory Book SpriteSheet_25
+      rect:
+        serializedVersion: 2
+        x: 5712
+        y: 720
+        width: 816
+        height: 720
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bdb3284ef4cac90c0800000000000000
+      internalID: -4567586462924391461
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Inventory Book SpriteSheet_26
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 816
+        height: 720
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 216d01f79e8d7c3a0800000000000000
+      internalID: -6645104227791088110
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Inventory Book SpriteSheet_27
+      rect:
+        serializedVersion: 2
+        x: 816
+        y: 0
+        width: 816
+        height: 720
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f65793c96e938a450800000000000000
+      internalID: 6100189357899609455
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Inventory Book SpriteSheet_28
+      rect:
+        serializedVersion: 2
+        x: 1632
+        y: 0
+        width: 816
+        height: 720
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 08875b285ddc60c00800000000000000
+      internalID: 866606295220058240
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Inventory Book SpriteSheet_29
+      rect:
+        serializedVersion: 2
+        x: 2448
+        y: 0
+        width: 816
+        height: 720
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: eaa7adb7e9ca84d50800000000000000
+      internalID: 6721812240533191342
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Inventory Book SpriteSheet_30
+      rect:
+        serializedVersion: 2
+        x: 3264
+        y: 0
+        width: 816
+        height: 720
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 40ad90cceeccc9280800000000000000
+      internalID: -9035121426414577148
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Inventory Book SpriteSheet_31
+      rect:
+        serializedVersion: 2
+        x: 4080
+        y: 0
+        width: 816
+        height: 720
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 750a856224c7567b0800000000000000
+      internalID: -5231638768567934889
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Inventory Book SpriteSheet_32
+      rect:
+        serializedVersion: 2
+        x: 4896
+        y: 0
+        width: 816
+        height: 720
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0b6ed9d063fccbf40800000000000000
+      internalID: 5745695055681545904
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Inventory Book SpriteSheet_33
+      rect:
+        serializedVersion: 2
+        x: 5712
+        y: 0
+        width: 816
+        height: 720
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4756cd2ed282dc430800000000000000
+      internalID: 3804741437742671220
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":9.0,"y":5.0},"gridSpriteSize":{"x":816.0,"y":720.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":2,"keepEmptyRects":false,"isAlternate":false}'
+    nameFileIdTable:
+      Inventory Book SpriteSheet_0: 3235405202117561037
+      Inventory Book SpriteSheet_1: 6524154635269085483
+      Inventory Book SpriteSheet_10: -8528994930906879637
+      Inventory Book SpriteSheet_11: -1581231950367674244
+      Inventory Book SpriteSheet_12: -3784940200725541261
+      Inventory Book SpriteSheet_13: 6475834243277557952
+      Inventory Book SpriteSheet_14: -100997906670458292
+      Inventory Book SpriteSheet_15: 6731981423784872005
+      Inventory Book SpriteSheet_16: -3849108077646013239
+      Inventory Book SpriteSheet_17: 6518221612898484957
+      Inventory Book SpriteSheet_18: -1076749079548852271
+      Inventory Book SpriteSheet_19: -4390521358280877761
+      Inventory Book SpriteSheet_2: 3504288623781624321
+      Inventory Book SpriteSheet_20: -9124825732220892915
+      Inventory Book SpriteSheet_21: 4580846924329984416
+      Inventory Book SpriteSheet_22: -6355451281003972432
+      Inventory Book SpriteSheet_23: -2241282871517675317
+      Inventory Book SpriteSheet_24: 1565195654715893646
+      Inventory Book SpriteSheet_25: -4567586462924391461
+      Inventory Book SpriteSheet_26: -6645104227791088110
+      Inventory Book SpriteSheet_27: 6100189357899609455
+      Inventory Book SpriteSheet_28: 866606295220058240
+      Inventory Book SpriteSheet_29: 6721812240533191342
+      Inventory Book SpriteSheet_3: 8165487771345263763
+      Inventory Book SpriteSheet_30: -9035121426414577148
+      Inventory Book SpriteSheet_31: -5231638768567934889
+      Inventory Book SpriteSheet_32: 5745695055681545904
+      Inventory Book SpriteSheet_33: 3804741437742671220
+      Inventory Book SpriteSheet_4: 6721619448925482678
+      Inventory Book SpriteSheet_5: -5799653257581492928
+      Inventory Book SpriteSheet_6: 2405107881384276181
+      Inventory Book SpriteSheet_7: 5816386074611963664
+      Inventory Book SpriteSheet_8: 7588171882267360667
+      Inventory Book SpriteSheet_9: 6757903966814971444
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -23,14 +23,7 @@ public sealed class AffectionRewardProcessor
 
         if (earnedEffects.Count > 0 && RewardDisplayService.Instance != null)
         {
-            if (UIManager.Instance != null && UIManager.Instance.IsExternalUiInputBlocked)
-            {
-                RewardDisplayService.Instance.ShowReward(null, earnedEffects);
-                onComplete?.Invoke();
-                return;
-            }
-
-            RewardDisplayService.Instance.ShowReward(null, earnedEffects, onComplete);
+            RewardDisplayService.Instance.ShowFlowOwnedReward(null, earnedEffects, onComplete);
             return;
         }
 

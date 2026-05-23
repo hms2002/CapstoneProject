@@ -13,11 +13,33 @@ internal static class ChestRewardPolicy
         if (!isGenerated || inventory == null || !hasLootManager)
             return false;
 
-        ChestRunModifierDelta modifiers = ResolveChestModifiers();
-        if (refreshCountUsed >= Mathf.Max(0, modifiers.chestRefreshCount))
+        int refreshLimit = ResolveRefreshLimit();
+        if (refreshCountUsed >= refreshLimit)
             return false;
 
         return MatchesRefreshGuard(inventory, refreshGuard);
+    }
+
+    public static int ResolveRefreshLimit()
+    {
+        return Mathf.Max(0, ResolveChestModifiers().chestRefreshCount);
+    }
+
+    public static int ResolveRemainingRefreshCount(
+        bool isGenerated,
+        ChestInventory inventory,
+        bool hasLootManager,
+        int refreshCountUsed,
+        IReadOnlyList<ChestLootSnapshot> refreshGuard)
+    {
+        if (!isGenerated || inventory == null || !hasLootManager)
+            return 0;
+
+        int remainingCount = Mathf.Max(0, ResolveRefreshLimit() - Mathf.Max(0, refreshCountUsed));
+        if (remainingCount <= 0)
+            return 0;
+
+        return MatchesRefreshGuard(inventory, refreshGuard) ? remainingCount : 0;
     }
 
     public static int ResolveChestRelicLevel(RelicDefinition relic)

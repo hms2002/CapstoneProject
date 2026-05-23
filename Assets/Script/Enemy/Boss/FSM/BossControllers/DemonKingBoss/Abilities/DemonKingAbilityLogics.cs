@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using CapstoneAudio;
 using UnityEngine;
 using UnityGAS;
 
@@ -88,20 +89,24 @@ public abstract class AbilityLogic_DemonKingBase : AbilityLogic
         float hitWidth,
         float damage,
         float knockback,
-        AbilitySpec spec)
+        AbilitySpec spec,
+        bool showAttackPrimitive = true)
     {
         if (motion != null)
             motion.StartLunge(start, direction, distance, duration);
         else
             demon.transform.position = start + direction * distance;
 
-        DemonKingPrimitiveVisual.SpawnSquare(
-            start + direction * (distance * 0.5f),
-            new Vector2(Mathf.Max(0.1f, distance), hitWidth),
-            DemonKingCombatUtil.RotationDeg(direction),
-            duration,
-            AttackSquareColor,
-            "DemonKing_LungeSquareAttack");
+        if (showAttackPrimitive)
+        {
+            DemonKingPrimitiveVisual.SpawnSquare(
+                start + direction * (distance * 0.5f),
+                new Vector2(Mathf.Max(0.1f, distance), hitWidth),
+                DemonKingCombatUtil.RotationDeg(direction),
+                duration,
+                AttackSquareColor,
+                "DemonKing_LungeSquareAttack");
+        }
 
         HashSet<GameObject> damagedTargets = new();
         float elapsed = 0f;
@@ -335,9 +340,33 @@ public abstract class AbilityLogic_DemonKingBase : AbilityLogic
             damagedTargets,
             knockback);
     }
+
+    protected static List<Vector2> CreateLineAreaExplosionPoints(LineArea line, float spacing)
+    {
+        List<Vector2> points = new();
+        float safeSpacing = Mathf.Max(0.1f, spacing);
+        int pointCount = Mathf.Max(1, Mathf.CeilToInt(line.Length / safeSpacing) + 1);
+        Vector2 direction = DirectionFromRotation(line.RotationDeg);
+        Vector2 start = line.Center - direction * (line.Length * 0.5f);
+        Vector2 end = line.Center + direction * (line.Length * 0.5f);
+
+        for (int i = 0; i < pointCount; i++)
+        {
+            float t = pointCount == 1 ? 0.5f : i / (float)(pointCount - 1);
+            points.Add(Vector2.Lerp(start, end, t));
+        }
+
+        return points;
+    }
+
+    protected static Vector2 DirectionFromRotation(float rotationDeg)
+    {
+        float radians = rotationDeg * Mathf.Deg2Rad;
+        return new Vector2(Mathf.Cos(radians), Mathf.Sin(radians)).normalized;
+    }
 }
 
-public sealed class AbilityLogic_DemonKingPierceCombo : AbilityLogic_DemonKingBase
+public class AbilityLogic_DemonKingPierceCombo : AbilityLogic_DemonKingBase
 {
     [SerializeField, Min(1)] private int pierceCount = 3;
     [SerializeField, Min(0f)] private float firstWarningSeconds = 1f;
@@ -406,7 +435,7 @@ public sealed class AbilityLogic_DemonKingPierceCombo : AbilityLogic_DemonKingBa
             direction /= distance;
             demon.FacePatternDirection(direction);
             demon.PlayPatternTrigger();
-            DemonKingPatternVfx.SpawnStab(start, direction, distance, hitWidth);
+            DemonKingPatternVfx.SpawnAttachedStab(demon.transform, direction);
 
             yield return RunLungeContactDamage(
                 demon,
@@ -418,7 +447,8 @@ public sealed class AbilityLogic_DemonKingPierceCombo : AbilityLogic_DemonKingBa
                 hitWidth,
                 damage,
                 knockback,
-                spec);
+                spec,
+                showAttackPrimitive: false);
 
             if (!IsAbilityCancelled(spec) && i < pierceCount - 1)
                 yield return ReturnToStart(demon, motion, start, returnSeconds, spec);
@@ -454,7 +484,7 @@ public sealed class AbilityLogic_DemonKingPierceCombo : AbilityLogic_DemonKingBa
     }
 }
 
-public sealed class AbilityLogic_DemonKingHeavySlash : AbilityLogic_DemonKingBase
+public class AbilityLogic_DemonKingHeavySlash : AbilityLogic_DemonKingBase
 {
     [SerializeField, Min(0.1f)] private float moveSpeedMultiplier = 4f;
     [SerializeField, Min(0.01f)] private float fallbackMoveSeconds = 0.35f;
@@ -580,7 +610,7 @@ public sealed class AbilityLogic_DemonKingHeavySlash : AbilityLogic_DemonKingBas
     }
 }
 
-public sealed class AbilityLogic_DemonKingThrowEgoSword : AbilityLogic_DemonKingBase
+public class AbilityLogic_DemonKingThrowEgoSword : AbilityLogic_DemonKingBase
 {
     [SerializeField, Min(0f)] private float warningSeconds = 1.4f;
     [SerializeField, Min(0.1f)] private float throwSpeedMultiplier = 5f;
@@ -620,7 +650,7 @@ public sealed class AbilityLogic_DemonKingThrowEgoSword : AbilityLogic_DemonKing
     }
 }
 
-public sealed class AbilityLogic_DemonKingHomingMagic : AbilityLogic_DemonKingBase
+public class AbilityLogic_DemonKingHomingMagic : AbilityLogic_DemonKingBase
 {
     private static readonly Vector2[] CardinalDirections =
     {
@@ -720,7 +750,7 @@ public sealed class AbilityLogic_DemonKingHomingMagic : AbilityLogic_DemonKingBa
     }
 }
 
-public sealed class AbilityLogic_DemonKingBombardment : AbilityLogic_DemonKingBase
+public class AbilityLogic_DemonKingBombardment : AbilityLogic_DemonKingBase
 {
     [SerializeField, Min(1)] private int strikeCount = 6;
     [SerializeField, Min(0f)] private float moveSeconds = 0.5f;
@@ -729,6 +759,8 @@ public sealed class AbilityLogic_DemonKingBombardment : AbilityLogic_DemonKingBa
     [SerializeField, Min(0.1f)] private float sideOffset = 4.8f;
     [SerializeField, Min(0.1f)] private float laneWidth = 1.6f;
     [SerializeField, Min(0.1f)] private float fallbackMapHeight = 40f;
+    [SerializeField, Min(0.1f)] private float explosionDiameter = 1.35f;
+    [SerializeField, Min(0.1f)] private float explosionSpacing = 1.35f;
     [SerializeField, Min(0f)] private float damage = 1f;
 
     public override IEnumerator Activate(AbilitySystem system, AbilitySpec spec, GameObject initialTarget)
@@ -766,11 +798,10 @@ public sealed class AbilityLogic_DemonKingBombardment : AbilityLogic_DemonKingBa
             float t = count == 1 ? 0f : i / (float)(count - 1);
             Vector2 laneOrigin = new(Mathf.Lerp(startX, endX, t), arenaCenter.y);
             LineArea lane = ResolveFullLineArea(demon, laneOrigin, Vector2.up, laneWidth, fallbackMapHeight);
-            DemonKingDelayedDamageArea.SpawnRectangle(
+            DemonKingDelayedDamageArea.SpawnCircleCluster(
                 demon,
-                lane.Center,
-                lane.Size,
-                lane.RotationDeg,
+                CreateLineAreaExplosionPoints(lane, explosionSpacing),
+                explosionDiameter,
                 warningSeconds,
                 damage);
 
@@ -781,7 +812,7 @@ public sealed class AbilityLogic_DemonKingBombardment : AbilityLogic_DemonKingBa
     }
 }
 
-public sealed class AbilityLogic_DemonKingExplosionJump : AbilityLogic_DemonKingBase
+public class AbilityLogic_DemonKingExplosionJump : AbilityLogic_DemonKingBase
 {
     [SerializeField, Min(0.1f)] private float travelSeconds = 0.7f;
     [SerializeField, Min(0.1f)] private float impactDiameter = 3.2f;
@@ -790,6 +821,9 @@ public sealed class AbilityLogic_DemonKingExplosionJump : AbilityLogic_DemonKing
     [SerializeField, Min(0f)] private float radialWarningSeconds = 0.6f;
     [SerializeField, Min(0.1f)] private float radialLineWidth = 1.3f;
     [SerializeField, Min(0.1f)] private float radialFallbackLength = 40f;
+    [SerializeField, Min(0.1f)] private float radialExplosionDiameter = 1.35f;
+    [SerializeField, Min(0.1f)] private float radialExplosionSpacing = 1.35f;
+    [SerializeField, Min(0f)] private float radialExplosionStepInterval = 0.04f;
     [SerializeField, Min(0f)] private float radialDamage = 1f;
 
     public override IEnumerator Activate(AbilitySystem system, AbilitySpec spec, GameObject initialTarget)
@@ -824,13 +858,9 @@ public sealed class AbilityLogic_DemonKingExplosionJump : AbilityLogic_DemonKing
             damage,
             knockbackImpulse: knockback);
         DemonKingPatternVfx.SpawnImpact(target, impactDiameter);
-        DemonKingPatternVfx.SpawnExplosionOrFallbackCircle(
-            target,
-            impactDiameter,
-            AttackSquareColor,
-            "DemonKing_ImpactCircleAttack");
 
-        LineArea[] radialLines = CreateRadialLines(demon, target);
+        Vector2[] radialDirections = CreateRadialDirections();
+        LineArea[] radialLines = CreateRadialLines(demon, target, radialDirections);
         for (int i = 0; i < radialLines.Length; i++)
             ShowLineAreaWarning(demon, radialLines[i], radialWarningSeconds);
 
@@ -838,25 +868,78 @@ public sealed class AbilityLogic_DemonKingExplosionJump : AbilityLogic_DemonKing
         if (IsAbilityCancelled(spec))
             yield break;
 
-        HashSet<GameObject> damagedTargets = new();
-        for (int i = 0; i < radialLines.Length; i++)
-            ApplyLineAreaDamage(demon, radialLines[i], radialDamage, damagedTargets, knockback);
+        yield return SpawnRadialExplosionWave(demon, target, radialDirections, radialLines, spec);
     }
 
-    private LineArea[] CreateRadialLines(DemonKingController demon, Vector2 origin)
+    private static Vector2[] CreateRadialDirections()
     {
-        LineArea[] lines = new LineArea[8];
+        Vector2[] directions = new Vector2[8];
+        for (int i = 0; i < directions.Length; i++)
+            directions[i] = (Vector2)(Quaternion.Euler(0f, 0f, i * 45f) * Vector2.right);
+
+        return directions;
+    }
+
+    private LineArea[] CreateRadialLines(DemonKingController demon, Vector2 origin, IReadOnlyList<Vector2> directions)
+    {
+        LineArea[] lines = new LineArea[directions.Count];
         for (int i = 0; i < lines.Length; i++)
         {
-            Vector2 direction = (Vector2)(Quaternion.Euler(0f, 0f, i * 45f) * Vector2.right);
+            Vector2 direction = directions[i].sqrMagnitude > 0.0001f ? directions[i].normalized : Vector2.right;
             lines[i] = ResolveForwardLineArea(demon, origin, direction, radialLineWidth, radialFallbackLength);
         }
 
         return lines;
     }
+
+    private IEnumerator SpawnRadialExplosionWave(
+        DemonKingController demon,
+        Vector2 origin,
+        IReadOnlyList<Vector2> directions,
+        IReadOnlyList<LineArea> lines,
+        AbilitySpec spec)
+    {
+        float spacing = Mathf.Max(0.1f, radialExplosionSpacing);
+        float maxLength = 0f;
+        for (int i = 0; i < lines.Count; i++)
+            maxLength = Mathf.Max(maxLength, lines[i].Length);
+
+        HashSet<GameObject> damagedTargets = new();
+        for (float distance = spacing; distance <= maxLength + 0.01f; distance += spacing)
+        {
+            if (IsAbilityCancelled(spec))
+                yield break;
+
+            for (int i = 0; i < directions.Count && i < lines.Count; i++)
+            {
+                if (distance > lines[i].Length + 0.01f)
+                    continue;
+
+                Vector2 direction = directions[i].sqrMagnitude > 0.0001f ? directions[i].normalized : Vector2.right;
+                Vector2 center = origin + direction * distance;
+                DemonKingCombatUtil.ApplyCircleDamage(
+                    demon,
+                    center,
+                    radialExplosionDiameter * 0.5f,
+                    demon.DefaultDamageEffect,
+                    radialDamage,
+                    damagedTargets,
+                    knockback);
+
+                DemonKingPatternVfx.SpawnExplosionOrFallbackCircle(
+                    center,
+                    radialExplosionDiameter,
+                    AttackSquareColor,
+                    "DemonKing_RadialExplosionCircleAttack");
+            }
+
+            if (radialExplosionStepInterval > 0f)
+                yield return WaitForSecondsUnlessCancelled(radialExplosionStepInterval, spec);
+        }
+    }
 }
 
-public sealed class AbilityLogic_DemonKingRecallEgoSword : AbilityLogic_DemonKingBase
+public class AbilityLogic_DemonKingRecallEgoSword : AbilityLogic_DemonKingBase
 {
     [SerializeField, Min(0.1f)] private float recallSpeedMultiplier = 5f;
     [SerializeField, Min(0.1f)] private float timeoutSeconds = 2.5f;
@@ -885,7 +968,33 @@ public sealed class AbilityLogic_DemonKingRecallEgoSword : AbilityLogic_DemonKin
     }
 }
 
-public sealed class AbilityLogic_DemonKingWallBounceRush : AbilityLogic_DemonKingBase
+public class AbilityLogic_DemonKingEgoSwordVerticalStrike : AbilityLogic_DemonKingBase
+{
+    public override IEnumerator Activate(AbilitySystem system, AbilitySpec spec, GameObject initialTarget)
+    {
+        DemonKingController demon = GetDemonKing(system);
+        EgoSwordActor sword = demon != null ? demon.EgoSword : null;
+        if (sword == null)
+            yield break;
+
+        yield return sword.RunVerticalStrikeAbilityPattern(spec);
+    }
+}
+
+public class AbilityLogic_DemonKingEgoSwordCrossLaser : AbilityLogic_DemonKingBase
+{
+    public override IEnumerator Activate(AbilitySystem system, AbilitySpec spec, GameObject initialTarget)
+    {
+        DemonKingController demon = GetDemonKing(system);
+        EgoSwordActor sword = demon != null ? demon.EgoSword : null;
+        if (sword == null)
+            yield break;
+
+        yield return sword.RunCrossLaserAbilityPattern(spec);
+    }
+}
+
+public class AbilityLogic_DemonKingWallBounceRush : AbilityLogic_DemonKingBase
 {
     [SerializeField, Min(1)] private int wallBounceCount = 4;
     [SerializeField, Min(0f)] private float warningSeconds = 0.6f;
@@ -1026,12 +1135,18 @@ public sealed class AbilityLogic_DemonKingWallBounceRush : AbilityLogic_DemonKin
     }
 }
 
-public sealed class AbilityLogic_DemonKingGroggyRecoverCounter : AbilityLogic_DemonKingBase
+public class AbilityLogic_DemonKingGroggyRecoverCounter : AbilityLogic_DemonKingBase
 {
+    private const float DimFadeOutRatio = 0.45f;
+    private const float EyeFlashHoldRatio = 0.2f;
+
     [SerializeField, Min(0f)] private float attackDelaySeconds = 0.4f;
     [SerializeField, Min(0.1f)] private float explosionDiameter = 5.4f;
     [SerializeField, Min(0f)] private float damage = 2f;
     [SerializeField, Min(0f)] private float knockback = 14f;
+    [SerializeField, Range(0f, 1f)] private float dimTargetAlpha = 0.55f;
+    [SerializeField] private Vector2 eyeFlashLocalOffset = new(0f, 0.75f);
+    [SerializeField] private Vector2 eyeFlashSize = new(2.4f, 0.9f);
 
     public override IEnumerator Activate(AbilitySystem system, AbilitySpec spec, GameObject initialTarget)
     {
@@ -1040,29 +1155,101 @@ public sealed class AbilityLogic_DemonKingGroggyRecoverCounter : AbilityLogic_De
             yield break;
 
         demon.PlayPatternTrigger();
-        Vector2 center = demon.transform.position;
-        DemonKingPatternVfx.SpawnGroggyRelease(center, explosionDiameter);
-        yield return WaitForSecondsUnlessCancelled(attackDelaySeconds, spec);
-        if (IsAbilityCancelled(spec))
-            yield break;
+        DemonKingWorldDimmingOverlay dimming = DemonKingWorldDimmingOverlay.Begin(demon, 0f);
+        try
+        {
+            float fadeOutSeconds = attackDelaySeconds * DimFadeOutRatio;
+            float eyeFlashHoldSeconds = attackDelaySeconds * EyeFlashHoldRatio;
+            float fadeInSeconds = Mathf.Max(0f, attackDelaySeconds - fadeOutSeconds - eyeFlashHoldSeconds);
 
-        DemonKingCombatUtil.ApplyCircleDamage(
-            demon,
-            center,
-            explosionDiameter * 0.5f,
-            demon.DefaultDamageEffect,
-            damage,
-            knockbackImpulse: knockback);
-        DemonKingPatternVfx.SpawnExplosionOrFallbackCircle(
-            center,
-            explosionDiameter,
-            AttackSquareColor,
-            "DemonKing_GroggyCounterCircleAttack");
+            yield return FadeDimming(dimming, dimTargetAlpha, fadeOutSeconds, spec);
+            if (IsAbilityCancelled(spec))
+                yield break;
+
+            DemonKingPatternVfx.SpawnEyeFlash(demon.transform, eyeFlashLocalOffset, eyeFlashSize);
+            PlayWarningPing(demon);
+
+            yield return WaitForSecondsUnlessCancelled(eyeFlashHoldSeconds, spec);
+            if (IsAbilityCancelled(spec))
+                yield break;
+
+            yield return FadeDimming(dimming, 0f, fadeInSeconds, spec);
+            if (IsAbilityCancelled(spec))
+                yield break;
+
+            Vector2 center = demon.transform.position;
+            DemonKingPatternVfx.SpawnGroggyRelease(center, explosionDiameter);
+            DemonKingCombatUtil.ApplyCircleDamage(
+                demon,
+                center,
+                explosionDiameter * 0.5f,
+                demon.DefaultDamageEffect,
+                damage,
+                knockbackImpulse: knockback);
+        }
+        finally
+        {
+            if (dimming != null)
+                dimming.Release();
+        }
+    }
+
+    private static IEnumerator FadeDimming(
+        DemonKingWorldDimmingOverlay dimming,
+        float targetAlpha,
+        float duration,
+        AbilitySpec spec)
+    {
+        if (dimming == null)
+        {
+            yield return WaitForSecondsUnlessCancelled(duration, spec);
+            yield break;
+        }
+
+        float startAlpha = dimming.Alpha;
+        if (duration <= 0f)
+        {
+            dimming.SetAlpha(targetAlpha);
+            yield break;
+        }
+
+        float elapsed = 0f;
+        while (elapsed < duration)
+        {
+            if (IsAbilityCancelled(spec))
+                yield break;
+
+            elapsed += Time.deltaTime;
+            float t = Mathf.Clamp01(elapsed / duration);
+            dimming.SetAlpha(Mathf.Lerp(startAlpha, targetAlpha, t));
+            yield return null;
+        }
+
+        dimming.SetAlpha(targetAlpha);
+    }
+
+    private static void PlayWarningPing(DemonKingController demon)
+    {
+        if (demon == null)
+            return;
+
+        SoundRef warningPingSound = demon.GroggyRecoverCounterWarningPingSound;
+        if (!warningPingSound.IsSet)
+            return;
+
+        SoundPlaybackUtility.Play(
+            warningPingSound,
+            instigator: demon.gameObject,
+            causer: demon.gameObject,
+            position: demon.transform.position,
+            sourceObject: demon);
     }
 }
 
-public sealed class AbilityLogic_DemonKingFinalDesperation : AbilityLogic_DemonKingBase
+public class AbilityLogic_DemonKingFinalDesperation : AbilityLogic_DemonKingBase
 {
+    private const string FinalLaserVfxResourcePath = "DemonKing/DemonKingEgoLaserVfx";
+
     [SerializeField, Min(0.01f)] private float moveToCenterSeconds = 0.6f;
     [SerializeField, Min(0.1f)] private float openingKnockbackDiameter = 40f;
     [SerializeField, Min(0f)] private float openingKnockbackDamage = 0.01f;
@@ -1075,8 +1262,12 @@ public sealed class AbilityLogic_DemonKingFinalDesperation : AbilityLogic_DemonK
     [SerializeField, Min(0f)] private float laserWarningSeconds = 1f;
     [SerializeField, Min(0f)] private float laserAttackSeconds = 1f;
     [SerializeField, Min(0.1f)] private float laserWidth = 0.75f;
+    [SerializeField, Min(0f)] private float laserVfxRayOriginOffset = 0.35f;
     [SerializeField, Min(0.1f)] private float fallbackLaserLength = 40f;
     [SerializeField, Min(0f)] private float laserDamage = 1f;
+
+    private DemonKingEgoLaserVfx finalLaserVfxPrefab;
+    private bool finalLaserVfxMissingLogged;
 
     public override IEnumerator Activate(AbilitySystem system, AbilitySpec spec, GameObject initialTarget)
     {
@@ -1130,32 +1321,41 @@ public sealed class AbilityLogic_DemonKingFinalDesperation : AbilityLogic_DemonK
                 yield return null;
             }
 
-            ShowLineAreaWarning(demon, firstLine, laserAttackSeconds);
-            ShowLineAreaWarning(demon, secondLine, laserAttackSeconds);
-            DemonKingPrimitiveVisual.SpawnSquare(
-                firstLine.Center,
-                firstLine.Size,
-                firstLine.RotationDeg,
-                laserAttackSeconds,
-                AttackSquareColor,
-                "DemonKing_FinalLaserSquareAttack");
-            DemonKingPrimitiveVisual.SpawnSquare(
-                secondLine.Center,
-                secondLine.Size,
-                secondLine.RotationDeg,
-                laserAttackSeconds,
-                AttackSquareColor,
-                "DemonKing_FinalLaserSquareAttack");
+            DemonKingEgoLaserVfx[] firstLaserVfx = SpawnFinalLaserVfx(demon, center, firstDirection);
+            DemonKingEgoLaserVfx[] secondLaserVfx = SpawnFinalLaserVfx(demon, center, secondDirection);
+            bool usingAnimatedVfx = HasAnyFinalLaserVfx(firstLaserVfx) || HasAnyFinalLaserVfx(secondLaserVfx);
+            if (!usingAnimatedVfx)
+            {
+                ShowLineAreaWarning(demon, firstLine, laserAttackSeconds);
+                ShowLineAreaWarning(demon, secondLine, laserAttackSeconds);
+                DemonKingPrimitiveVisual.SpawnSquare(
+                    firstLine.Center,
+                    firstLine.Size,
+                    firstLine.RotationDeg,
+                    laserAttackSeconds,
+                    AttackSquareColor,
+                    "DemonKing_FinalLaserSquareAttack");
+                DemonKingPrimitiveVisual.SpawnSquare(
+                    secondLine.Center,
+                    secondLine.Size,
+                    secondLine.RotationDeg,
+                    laserAttackSeconds,
+                    AttackSquareColor,
+                    "DemonKing_FinalLaserSquareAttack");
+            }
+
             HashSet<GameObject> damagedTargets = new();
             float attackElapsed = 0f;
-            while (attackElapsed < laserAttackSeconds)
+            while (usingAnimatedVfx ? IsAnyFinalLaserVfxPlaying(firstLaserVfx, secondLaserVfx) : attackElapsed < laserAttackSeconds)
             {
                 if (IsAbilityCancelled(spec) || demon.IsDead)
                     yield break;
 
                 bombTimer = TickFinalBombardment(demon, bombTimer, Time.fixedDeltaTime);
-                ApplyLineAreaDamage(demon, firstLine, laserDamage, damagedTargets);
-                ApplyLineAreaDamage(demon, secondLine, laserDamage, damagedTargets);
+                if (!usingAnimatedVfx || IsAnyFinalLaserDamageActive(firstLaserVfx))
+                    ApplyLineAreaDamage(demon, firstLine, laserDamage, damagedTargets);
+                if (!usingAnimatedVfx || IsAnyFinalLaserDamageActive(secondLaserVfx))
+                    ApplyLineAreaDamage(demon, secondLine, laserDamage, damagedTargets);
                 attackElapsed += Time.fixedDeltaTime;
                 yield return new WaitForFixedUpdate();
             }
@@ -1193,5 +1393,116 @@ public sealed class AbilityLogic_DemonKingFinalDesperation : AbilityLogic_DemonK
         }
 
         return timer;
+    }
+
+    private DemonKingEgoLaserVfx[] SpawnFinalLaserVfx(DemonKingController demon, Vector2 origin, Vector2 direction)
+    {
+        DemonKingEgoLaserVfx prefab = ResolveFinalLaserVfxPrefab();
+        if (demon == null || prefab == null)
+            return null;
+
+        Vector2 safeDirection = direction.sqrMagnitude > 0.0001f ? direction.normalized : Vector2.right;
+        float forwardLength = ResolveWallDistance(demon, origin, safeDirection, fallbackLaserLength * 0.5f);
+        float backwardLength = ResolveWallDistance(demon, origin, -safeDirection, fallbackLaserLength * 0.5f);
+        float forwardOffset = ResolveFinalLaserVfxRayOriginOffset(forwardLength);
+        float backwardOffset = ResolveFinalLaserVfxRayOriginOffset(backwardLength);
+        Vector2 backwardDirection = -safeDirection;
+
+        return new[]
+        {
+            SpawnFinalLaserRay(prefab, origin + safeDirection * forwardOffset, safeDirection, forwardLength - forwardOffset),
+            SpawnFinalLaserRay(prefab, origin + backwardDirection * backwardOffset, backwardDirection, backwardLength - backwardOffset)
+        };
+    }
+
+    private float ResolveFinalLaserVfxRayOriginOffset(float rayLength)
+    {
+        return Mathf.Clamp(laserVfxRayOriginOffset, 0f, Mathf.Max(0f, rayLength - 0.01f));
+    }
+
+    private DemonKingEgoLaserVfx SpawnFinalLaserRay(
+        DemonKingEgoLaserVfx prefab,
+        Vector2 origin,
+        Vector2 direction,
+        float length)
+    {
+        if (prefab == null || length <= 0.01f)
+            return null;
+
+        DemonKingEgoLaserVfx instance = UnityEngine.Object.Instantiate(prefab);
+        instance.name = "DemonKing_FinalLaserAnimatedAttack";
+        instance.Play(origin, direction, length, laserWidth, laserAttackSeconds);
+        return instance;
+    }
+
+    private DemonKingEgoLaserVfx ResolveFinalLaserVfxPrefab()
+    {
+        if (finalLaserVfxPrefab != null)
+            return finalLaserVfxPrefab;
+
+        GameObject prefabObject = Resources.Load<GameObject>(FinalLaserVfxResourcePath);
+        if (prefabObject != null)
+            finalLaserVfxPrefab = prefabObject.GetComponent<DemonKingEgoLaserVfx>();
+
+        if (finalLaserVfxPrefab == null && !finalLaserVfxMissingLogged)
+        {
+            finalLaserVfxMissingLogged = true;
+            Debug.LogWarning(
+                $"DemonKing FinalDesperation could not load animated laser VFX at Resources/{FinalLaserVfxResourcePath}. Falling back to primitive laser visuals.",
+                this);
+        }
+
+        return finalLaserVfxPrefab;
+    }
+
+    private static bool HasAnyFinalLaserVfx(DemonKingEgoLaserVfx[] views)
+    {
+        if (views == null)
+            return false;
+
+        for (int i = 0; i < views.Length; i++)
+        {
+            if (views[i] != null)
+                return true;
+        }
+
+        return false;
+    }
+
+    private static bool IsAnyFinalLaserDamageActive(DemonKingEgoLaserVfx[] views)
+    {
+        if (views == null)
+            return false;
+
+        for (int i = 0; i < views.Length; i++)
+        {
+            DemonKingEgoLaserVfx view = views[i];
+            if (view != null && view.DamageActive)
+                return true;
+        }
+
+        return false;
+    }
+
+    private static bool IsAnyFinalLaserVfxPlaying(params DemonKingEgoLaserVfx[][] viewGroups)
+    {
+        if (viewGroups == null)
+            return false;
+
+        for (int groupIndex = 0; groupIndex < viewGroups.Length; groupIndex++)
+        {
+            DemonKingEgoLaserVfx[] views = viewGroups[groupIndex];
+            if (views == null)
+                continue;
+
+            for (int i = 0; i < views.Length; i++)
+            {
+                DemonKingEgoLaserVfx view = views[i];
+                if (view != null && view.IsPlaying)
+                    return true;
+            }
+        }
+
+        return false;
     }
 }

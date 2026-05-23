@@ -34,6 +34,7 @@ internal static class RunSessionProgressCommitPolicy
 
         CommitPendingAffectionChanges(request.RunData, request.PersistentData);
         CommitPendingShortcutUnlocks(request.RunData, request.PersistentData);
+        CommitPendingRunSpecialNpcConstructionStarts(request.RunData, request.PersistentData);
         ClearPendingRunProgress(request.RunData);
     }
 
@@ -47,6 +48,8 @@ internal static class RunSessionProgressCommitPolicy
         runData.pendingRunAffectionChanges.Clear();
         runData.pendingRunShortcutUnlocks ??= new List<PendingRunShortcutUnlock>();
         runData.pendingRunShortcutUnlocks.Clear();
+        runData.pendingRunSpecialNpcConstructionStarts ??= new List<PendingRunSpecialNpcConstructionStart>();
+        runData.pendingRunSpecialNpcConstructionStarts.Clear();
         runData.merchantStates ??= new List<MerchantRuntimeState>();
         runData.merchantStates.Clear();
     }
@@ -87,6 +90,31 @@ internal static class RunSessionProgressCommitPolicy
             StageProgress stageData = gameData.mapData.GetStageData(unlock.mapID);
             if (!stageData.unlockedShortcuts.Contains(unlock.doorID))
                 stageData.unlockedShortcuts.Add(unlock.doorID);
+        }
+    }
+
+    private static void CommitPendingRunSpecialNpcConstructionStarts(GamePlayData runData, GameData gameData)
+    {
+        if (runData.pendingRunSpecialNpcConstructionStarts == null ||
+            runData.pendingRunSpecialNpcConstructionStarts.Count == 0)
+        {
+            return;
+        }
+
+        gameData.runSpecialNpcData ??= new RunSpecialNpcSaveData();
+        gameData.runSpecialNpcData.constructionRecords ??= new List<RunSpecialNpcConstructionRecord>();
+
+        foreach (PendingRunSpecialNpcConstructionStart start in runData.pendingRunSpecialNpcConstructionStarts)
+        {
+            if (start == null || string.IsNullOrWhiteSpace(start.constructionId))
+                continue;
+
+            RunSpecialNpcConstructionRecord record =
+                gameData.runSpecialNpcData.GetOrCreateConstructionRecord(
+                    start.constructionId,
+                    start.startedClearCount);
+
+            record.startedClearCount = Mathf.Min(record.startedClearCount, start.startedClearCount);
         }
     }
 }
