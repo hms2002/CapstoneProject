@@ -17,6 +17,16 @@ namespace UnityGAS
         [Tooltip("비워두면 같은 GameObject의 Collider2D만 허트박스로 취급합니다.")]
         [SerializeField] private Collider2D[] ownedColliders;
 
+        private void Awake()
+        {
+            if (ownedColliders != null && ownedColliders.Length > 0)
+                return;
+
+            Collider2D ownCollider = GetComponent<Collider2D>();
+            if (ownCollider != null)
+                ownedColliders = new[] { ownCollider };
+        }
+
         /// <summary>이 허트박스가 전달된 콜라이더를 실제 허트박스로 소유하는지 확인합니다.</summary>
         public bool OwnsCollider(Collider2D collider)
         {

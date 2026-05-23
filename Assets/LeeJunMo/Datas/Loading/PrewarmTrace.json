@@ -1,36 +1,6 @@
 {
     "sessions": [
         {
-            "sessionId": "be77ee1616f748fcb49b97fde2a61660",
-            "startedUtc": "2026-05-22T05:04:18.9164541Z",
-            "endedUtc": "2026-05-22T05:04:19.9839486Z",
-            "entries": []
-        },
-        {
-            "sessionId": "cb0864f406044a709c76226466f5379e",
-            "startedUtc": "2026-05-22T05:07:36.5442684Z",
-            "endedUtc": "2026-05-22T05:07:37.6372928Z",
-            "entries": []
-        },
-        {
-            "sessionId": "4233b23449854fecb620eb840a352b6e",
-            "startedUtc": "2026-05-22T05:44:00.0125761Z",
-            "endedUtc": "2026-05-22T05:44:01.9373859Z",
-            "entries": []
-        },
-        {
-            "sessionId": "68630ad58d444a10939855688b152c04",
-            "startedUtc": "2026-05-22T06:01:04.1740175Z",
-            "endedUtc": "2026-05-22T06:01:05.2533900Z",
-            "entries": []
-        },
-        {
-            "sessionId": "97589182e0ec4dfbb42ec0e6eb0c9bfb",
-            "startedUtc": "2026-05-22T06:11:01.4080610Z",
-            "endedUtc": "2026-05-22T06:11:02.8742716Z",
-            "entries": []
-        },
-        {
             "sessionId": "a56e1998934a478e83f49b4ec9aa2ee6",
             "startedUtc": "2026-05-22T06:14:08.3426077Z",
             "endedUtc": "2026-05-22T06:14:09.7515710Z",
@@ -129,6 +99,68 @@
             "sessionId": "4d7cbe85d629437f9ad8b62893316f82",
             "startedUtc": "2026-05-23T04:53:49.2563279Z",
             "endedUtc": "2026-05-23T04:53:50.9707153Z",
+            "entries": []
+        },
+        {
+            "sessionId": "219da3be684c498ca21096090b3fe449",
+            "startedUtc": "2026-05-23T06:03:33.1521923Z",
+            "endedUtc": "2026-05-23T06:07:03.0403523Z",
+            "entries": [
+                {
+                    "prefabPath": "Assets/HeoMinSeok/_Project/Prefabs/VFX/Element/ElectrocutedSparkParticle.prefab",
+                    "prefabName": "ElectrocutedSparkParticle",
+                    "totalSpawns": 185,
+                    "coldSpawns": 185,
+                    "firstSeenSeconds": 96.37052154541016,
+                    "lastSeenSeconds": 209.60382080078126,
+                    "firstSceneName": "SlimeCorridor",
+                    "lastSceneName": "SlimeCorridor"
+                }
+            ]
+        },
+        {
+            "sessionId": "4e6dd453179f4c1aaaea1b2d33185cb6",
+            "startedUtc": "2026-05-23T06:25:10.7395182Z",
+            "endedUtc": "2026-05-23T06:25:30.8839967Z",
+            "entries": [
+                {
+                    "prefabPath": "Assets/Prefabs/VFX/PF_DrunkenDragon_KegImpactSplash.prefab",
+                    "prefabName": "PF_DrunkenDragon_KegImpactSplash",
+                    "totalSpawns": 1,
+                    "coldSpawns": 1,
+                    "firstSeenSeconds": 18.205211639404298,
+                    "lastSeenSeconds": 18.205352783203126,
+                    "firstSceneName": "HeoMinSeok_Boss_Dragon_Spili",
+                    "lastSceneName": "HeoMinSeok_Boss_Dragon_Spili"
+                },
+                {
+                    "prefabPath": "Assets/HeoMinSeok/_Project/Prefabs/Attack/Hitbox_WindWeapon_NormalAtk_HardSlash.prefab",
+                    "prefabName": "Hitbox_WindWeapon_NormalAtk_HardSlash",
+                    "totalSpawns": 1,
+                    "coldSpawns": 1,
+                    "firstSeenSeconds": 20.135591506958009,
+                    "lastSeenSeconds": 20.135597229003908,
+                    "firstSceneName": "HeoMinSeok_Boss_Dragon_Spili",
+                    "lastSceneName": "HeoMinSeok_Boss_Dragon_Spili"
+                }
+            ]
+        },
+        {
+            "sessionId": "5926010131894b8088166d788477c21f",
+            "startedUtc": "2026-05-23T06:26:37.2749059Z",
+            "endedUtc": "2026-05-23T06:26:38.4914236Z",
+            "entries": []
+        },
+        {
+            "sessionId": "82fa4b2bcf5a4805ab9f8d1120509248",
+            "startedUtc": "2026-05-23T06:34:41.0271091Z",
+            "endedUtc": "2026-05-23T06:34:42.1452177Z",
+            "entries": []
+        },
+        {
+            "sessionId": "f4bb5a0771da4378be69941343c02c55",
+            "startedUtc": "2026-05-23T06:40:19.8820668Z",
+            "endedUtc": "2026-05-23T06:40:21.1234110Z",
             "entries": []
         }
     ]
