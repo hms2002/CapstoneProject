@@ -5900,6 +5900,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1756440637}
   - component: {fileID: 1756440636}
+  - component: {fileID: 1756440638}
+  - component: {fileID: 1756440639}
   m_Layer: 0
   m_Name: BossBattleEndHandler
   m_TagString: Untagged
@@ -5923,6 +5925,40 @@ MonoBehaviour:
   treasureChest: {fileID: 501379796}
   exitPortal: {fileID: 1987507146}
   hideAuthoredObjectsOnStart: 1
+--- !u!114 &1756440638
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1756440635}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67a8c4d9d36b402eb20a0e5e85832440, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SingleBossEncounterClearCondition
+  boss: {fileID: 6787846962178461538}
+--- !u!114 &1756440639
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1756440635}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a0df9c2a03e54a089a2f81d093135bc0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BossEncounterEndDirector
+  clearCondition: {fileID: 1756440638}
+  suppressManagedBossAutomaticRewards: 1
+  finalDeathPresentation: {fileID: 0}
+  useFinalDeathPresentation: 1
+  rewardDelayAfterClearSeconds: 0
+  treasureChest: {fileID: 501379796}
+  exitPortal: {fileID: 1987507146}
+  hideAuthoredObjectsOnStart: 1
+  logDebug: 0
 --- !u!4 &1756440637
 Transform:
   m_ObjectHideFlags: 0

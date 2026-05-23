@@ -476,7 +476,9 @@ public abstract class BossControllerBase : Enemy, IBossAbilityStateBridge
         if (deathPresentation != null && deathPresentation.TryBeginDeathSequence())
             return;
 
-        RunProgressCoordinator.EnsureInstance()?.NotifyBossRewardsReady(this);
+        if (!BossEncounterEndDirector.SuppressesAutomaticRewardReady(this))
+            RunProgressCoordinator.EnsureInstance()?.NotifyBossRewardsReady(this);
+
         base.DestroyAfterDelay();
     }
 

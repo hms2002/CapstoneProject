@@ -965,7 +965,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+  m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d84fb7a441404cf4ba049fe22336cdb3, type: 3}
 --- !u!114 &139315037 stripped
 MonoBehaviour:
@@ -978,6 +978,99 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3014b7037964d04ba4a6b79c5e2a0f9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &1503153600
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1503153601}
+  - component: {fileID: 1503153602}
+  - component: {fileID: 1503153603}
+  - component: {fileID: 1503153604}
+  m_Layer: 0
+  m_Name: SlimeQueenEncounterDirector
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1503153601
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1503153600}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1503153602
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1503153600}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f6527ad7c611aa41ac5e2b94666620e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cameraDirector: {fileID: 1503153604}
+  dialogueRunner: {fileID: 1503153603}
+  bossController: {fileID: 139315037}
+  autoPlayWhenPlayerSpawned: 1
+  playOnlyOnce: 1
+  startBossCombatAfterDialogue: 1
+--- !u!114 &1503153603
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1503153600}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2eae5b7f38d512841bb3d472aa68139c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  npcData: {fileID: 11400000, guid: 8b199e36e6724de0af3a3e8504571e0a, type: 2}
+  startKnotSelectorBehaviour: {fileID: 0}
+  playEncounterDialogue: 1
+  playPrimaryDialogueAfterEncounter: 1
+  recordEncounterProgress: 1
+  legacyInkJSON: {fileID: 4900000, guid: 56d53b56704a4f39b25ca9cc847a542d, type: 3}
+--- !u!114 &1503153604
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1503153600}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 928775a6a95adc64a9a5a0bd430fa85a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerCam: {fileID: 0}
+  bossCam: {fileID: 0}
+  normalPriority: 10
+  focusPriority: 100
+  disableLegacyFollowWhileSequence: 1
+  blendWaitFallbackSeconds: 2
+  useBossLensPresentation: 1
+  deathLensScale: 0.82
+  deathLensBlendDuration: 0.35
+  phaseLensScale: 1.18
+  phaseLensBlendDuration: 0.35
 --- !u!1 &161455600
 GameObject:
   m_ObjectHideFlags: 0
@@ -4060,6 +4153,8 @@ GameObject:
   m_Component:
   - component: {fileID: 279945773}
   - component: {fileID: 279945772}
+  - component: {fileID: 279945774}
+  - component: {fileID: 279945775}
   m_Layer: 0
   m_Name: BossBattleEndHandler
   m_TagString: Untagged
@@ -4083,6 +4178,40 @@ MonoBehaviour:
   treasureChest: {fileID: 192571271}
   exitPortal: {fileID: 1987507145}
   hideAuthoredObjectsOnStart: 1
+--- !u!114 &279945774
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 279945771}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c3f80c490a7649848f9d2056c28f0c54, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SlimeQueenEncounterClearCondition
+  phaseOneBoss: {fileID: 139315037}
+--- !u!114 &279945775
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 279945771}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a0df9c2a03e54a089a2f81d093135bc0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BossEncounterEndDirector
+  clearCondition: {fileID: 279945774}
+  suppressManagedBossAutomaticRewards: 1
+  finalDeathPresentation: {fileID: 0}
+  useFinalDeathPresentation: 1
+  rewardDelayAfterClearSeconds: 0
+  treasureChest: {fileID: 192571271}
+  exitPortal: {fileID: 1987507145}
+  hideAuthoredObjectsOnStart: 1
+  logDebug: 0
 --- !u!4 &279945773
 Transform:
   m_ObjectHideFlags: 0

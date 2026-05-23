@@ -1,30 +1,6 @@
 {
     "sessions": [
         {
-            "sessionId": "a6b6d332d0f64ceea46d1bb822d92ed3",
-            "startedUtc": "2026-05-22T04:25:49.5952965Z",
-            "endedUtc": "2026-05-22T04:25:50.6599640Z",
-            "entries": []
-        },
-        {
-            "sessionId": "2197c89084f94ee7be0e6f972d0e592d",
-            "startedUtc": "2026-05-22T04:37:35.7701745Z",
-            "endedUtc": "2026-05-22T04:37:36.7964147Z",
-            "entries": []
-        },
-        {
-            "sessionId": "b5360c5decd2437ab23a02aad366700b",
-            "startedUtc": "2026-05-22T04:47:46.5408302Z",
-            "endedUtc": "2026-05-22T04:47:47.5793269Z",
-            "entries": []
-        },
-        {
-            "sessionId": "f3d3a87fd1dd4fa48bdcd076b4636230",
-            "startedUtc": "2026-05-22T04:57:53.8833393Z",
-            "endedUtc": "2026-05-22T04:57:54.9312943Z",
-            "entries": []
-        },
-        {
             "sessionId": "be77ee1616f748fcb49b97fde2a61660",
             "startedUtc": "2026-05-22T05:04:18.9164541Z",
             "endedUtc": "2026-05-22T05:04:19.9839486Z",
@@ -118,6 +94,41 @@
             "sessionId": "b963536713c84fd5835f66dce7e9c4bd",
             "startedUtc": "2026-05-22T08:47:45.3502215Z",
             "endedUtc": "2026-05-22T08:47:46.7006238Z",
+            "entries": []
+        },
+        {
+            "sessionId": "478e348b1a7b4a5fae865e66cfda249a",
+            "startedUtc": "2026-05-22T17:58:43.8889373Z",
+            "endedUtc": "2026-05-22T17:58:44.9677636Z",
+            "entries": []
+        },
+        {
+            "sessionId": "c19f914dd2f94f4f8183be135ebb823f",
+            "startedUtc": "2026-05-22T18:07:51.5978795Z",
+            "endedUtc": "2026-05-22T18:07:53.2165057Z",
+            "entries": []
+        },
+        {
+            "sessionId": "87280a690b384d809c497c723ed46f2b",
+            "startedUtc": "2026-05-22T18:10:04.8962987Z",
+            "endedUtc": "2026-05-22T18:10:36.1828628Z",
+            "entries": [
+                {
+                    "prefabPath": "Assets/HeoMinSeok/_Project/Prefabs/VFX/Element/ElectrocutedSparkParticle.prefab",
+                    "prefabName": "ElectrocutedSparkParticle",
+                    "totalSpawns": 1,
+                    "coldSpawns": 1,
+                    "firstSeenSeconds": 31.27910041809082,
+                    "lastSeenSeconds": 31.279203414916993,
+                    "firstSceneName": "SlimeCorridor",
+                    "lastSceneName": "SlimeCorridor"
+                }
+            ]
+        },
+        {
+            "sessionId": "4d7cbe85d629437f9ad8b62893316f82",
+            "startedUtc": "2026-05-23T04:53:49.2563279Z",
+            "endedUtc": "2026-05-23T04:53:50.9707153Z",
             "entries": []
         }
     ]
