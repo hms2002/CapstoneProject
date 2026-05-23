@@ -12,6 +12,8 @@ GameObject:
   - component: {fileID: 1695031726951874086}
   - component: {fileID: 1119615970379559667}
   - component: {fileID: 4601776432013924379}
+  - component: {fileID: 880000000000001012}
+  - component: {fileID: 880000000000002012}
   - component: {fileID: 6906640129251997176}
   - component: {fileID: 7098643081786945513}
   - component: {fileID: 3790217430196525045}
@@ -104,7 +106,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -1039746825
-  m_SortingLayer: 3
+  m_SortingLayer: 5
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: 1208040618, guid: 65633814affcc704fbd9de0c57f8591b, type: 3}
@@ -160,6 +162,52 @@ BoxCollider2D:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
+    m_Bits: 2147483656
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: 0.16666667}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.17}
+    oldSize: {x: 1.0416666, y: 1.0833334}
+    newSize: {x: 1, y: 1}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Size: {x: 0.4375, y: 0.33333334}
+  m_EdgeRadius: 0
+--- !u!70 &880000000000001012
+CapsuleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 625522859161183429}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
   m_ForceSendLayers:
@@ -179,17 +227,33 @@ BoxCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0.16666667}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.17}
-    oldSize: {x: 1.0416666, y: 1.0833334}
-    newSize: {x: 1, y: 1}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
   m_Size: {x: 0.4375, y: 0.33333334}
-  m_EdgeRadius: 0
+  m_Direction: 1
+--- !u!114 &880000000000002012
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 625522859161183429}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f91c6f777744985b46d03508b0db52a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UnityGAS.ActorSoftCollision2D
+  bodyCollider: {fileID: 880000000000001012}
+  body: {fileID: 0}
+  externalMovement: {fileID: 0}
+  actorLayers:
+    serializedVersion: 2
+    m_Bits: 2147483656
+  wallLayers:
+    serializedVersion: 2
+    m_Bits: 1073741824
+  pushSpeed: 2.8
+  pushDurationSeconds: 0.08
+  wallProbeDistance: 0.08
+  maxActorsPerTick: 8
 --- !u!95 &6906640129251997176
 Animator:
   serializedVersion: 7
@@ -224,39 +288,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 049cd52424ad0bc48976093fc5d79e63, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sprite: {fileID: 0}
+  animator: {fileID: 0}
   maxHealthDef: {fileID: 11400000, guid: 0e177e1d15e428745b5859fac08ce203, type: 2}
   healthDef: {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
   enemyName: Deads' Skeleton
   targetTag: Player
+  targetSearchLayers:
+    serializedVersion: 2
+    m_Bits: 4294967291
   chaseIntent: {fileID: 0}
+  logMobFsmDebug: 0
   selfDestructTriggerDiameter: 7
-  explosionDiameter: 5
   selfDestructChaseSpeedScale: 1.5
   normalChaseSpeedScale: 1
   normalDetectionRange: 5
   selfDestructDetectionRange: 12
-  explosionDamageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
-  explosionDamage: 1
-  explosionVisualPrefab: {fileID: 4540458603196068083, guid: f3e6d674c38bfa3459b9aa0e37af577d, type: 3}
-  explosionParticlePrefab: {fileID: 2356285918434582956, guid: 7e3dd9b93aa3a5b498afc1b7b958ee42, type: 3}
   explosionVisualAnchor: {fileID: 0}
-  explosionVisualOffset: {x: 0, y: 0, z: 0}
-  explosionParticleOffset: {x: 0, y: 0, z: 0}
-  explosionVisualScale: {x: 1, y: 1, z: 1}
-  explosionParticleScale: {x: 1, y: 1, z: 1}
-  explosionSound:
-    key: chloe.pattern.normal2
-    volumeMultiplier: 1
-    anchorPolicy: 0
-    localOffset: {x: 0, y: 0, z: 0}
-  explosionCameraShake:
-    amplitude: 2
-    amplitudeMultiplier: 1
-    maxAmplitude: 0
-    minIntervalSeconds: 0.04
-    directionMode: 0
-    customDirection: {x: 0, y: 0, z: 0}
-    ignoreScreenShakeSetting: 0
   selfDestructAbilityDefinition: {fileID: 11400000, guid: a6b7d8d7626f416cb0dca7f4dca90fb3, type: 2}
   abilityCoordinator: {fileID: 2715241289973940211}
   selfDestructExecutor: {fileID: 2715241289973940212}
@@ -352,6 +400,7 @@ MonoBehaviour:
   worldAnchor: {fileID: 2826825829709561300}
   extraWorldOffset: {x: 0, y: 0, z: 0}
   minInterval: 0.02
+  logFallbackPopup: 0
 --- !u!114 &5122803876250813742
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -426,6 +475,7 @@ MonoBehaviour:
   knockbackImmuneTag: {fileID: 0}
   resistancePctAttribute: {fileID: 11400000, guid: cd582b58892249e4a6ef8ae28bd345e3, type: 2}
   knockbackDominanceTime: 0.12
+  debugKnockback: 0
 --- !u!114 &8526413885200350815
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -440,6 +490,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   body: {fileID: 0}
   enforceContinuousCollision: 1
+  preventWallTunneling: 1
+  wallCollisionLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  wallSafetyMinSpeed: 8
+  wallCastSkinWidth: 0.03
+  depenetrationSkinWidth: 0.01
+  maxDepenetrationIterations: 3
   intentSourceBehaviour: {fileID: 0}
   statProviderBehaviour: {fileID: 0}
   externalMovement: {fileID: 3341026293018187748}
@@ -494,7 +552,14 @@ MonoBehaviour:
   detectionRange: 6
   stopRange: 0.2
   speedScale: 0.5
+  usePathfindingWhenDirectPathBlocked: 1
+  pathWaypointReachDistance: 0.18
+  pathRebuildInterval: 0.35
+  pathTargetMoveThreshold: 0.35
   returnSpeedScale: 0.9
+  logChaseDebug: 0
+  logInterval: 0.35
+  targetAcquireInterval: 0.25
 --- !u!114 &1202927576409601092
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -574,6 +639,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   telegraphPrefab: {fileID: 788264263987448140, guid: 211dd09e2da9caf47ad8409c9e35b83d, type: 3}
   defaultStyle: {fileID: 0}
+  useDefaultWallClipping: 0
+  defaultWallClipLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  defaultWallClipSampleCount: 48
+  defaultWallClipSkinWidth: 0.03
 --- !u!114 &2715241289973940211
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -615,7 +686,29 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UnityGAS.CombatHurtbox2D
   targetRoot: {fileID: 0}
-  ownedColliders: []
+  ownedColliders:
+  - {fileID: 4601776432013924379}
+--- !u!114 &6600200000000001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 625522859161183429}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ff4ff08e39f49319d1e0414b9985957, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UnityGAS.EntityCollisionProfile2D
+  bodyColliders:
+  - {fileID: 4601776432013924379}
+  baseExcludedLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  actorLayers:
+    serializedVersion: 2
+    m_Bits: 2147483656
+  defaultMode: 1
 --- !u!1 &9100000000000000001
 GameObject:
   m_ObjectHideFlags: 0
@@ -700,30 +793,10 @@ SpriteMask:
   m_MaskAlphaCutoff: 0.5
   m_FrontSortingLayerID: -1417877795
   m_BackSortingLayerID: -1417877795
-  m_FrontSortingLayer: 5
-  m_BackSortingLayer: 5
+  m_FrontSortingLayer: 8
+  m_BackSortingLayer: 8
   m_FrontSortingOrder: 100
   m_BackSortingOrder: -100
   m_IsCustomRangeActive: 0
   m_SpriteSortPoint: 0
   m_MaskSource: 0
---- !u!114 &6600200000000001
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 625522859161183429}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6ff4ff08e39f49319d1e0414b9985957, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: Assembly-CSharp::UnityGAS.EntityCollisionProfile2D
-  bodyColliders: []
-  baseExcludedLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  actorLayers:
-    serializedVersion: 2
-    m_Bits: 2147483656
-  defaultMode: 1

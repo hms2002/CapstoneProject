@@ -39,6 +39,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &5888260045512627143
 SpriteRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -57,6 +58,8 @@ SpriteRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -78,9 +81,11 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -1039746825
-  m_SortingLayer: 2
+  m_SortingLayer: 5
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_Sprite: {fileID: -608775220, guid: a8001a286628f85489409db1f7e29f8d, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -90,7 +95,6 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!61 &3144344590017098942
 BoxCollider2D:
@@ -180,6 +184,150 @@ MonoBehaviour:
         volumeMultiplier: 0
         anchorPolicy: 0
         localOffset: {x: 0, y: 0, z: 0}
+      cameraShakeOnExecute:
+        amplitude: 0
+        amplitudeMultiplier: 0
+        maxAmplitude: 0
+        minIntervalSeconds: 0
+        directionMode: 0
+        customDirection: {x: 0, y: 0, z: 0}
+        ignoreScreenShakeSetting: 0
+      cameraShakeWhileActive:
+        amplitude: 0
+        amplitudeMultiplier: 0
+        maxAmplitude: 0
+        minIntervalSeconds: 0
+        directionMode: 0
+        customDirection: {x: 0, y: 0, z: 0}
+        ignoreScreenShakeSetting: 0
+      cameraShakeOnRemove:
+        amplitude: 0
+        amplitudeMultiplier: 0
+        maxAmplitude: 0
+        minIntervalSeconds: 0
+        directionMode: 0
+        customDirection: {x: 0, y: 0, z: 0}
+        ignoreScreenShakeSetting: 0
+      presentationOnExecute:
+        sound:
+          key: 
+          volumeMultiplier: 0
+          anchorPolicy: 0
+          localOffset: {x: 0, y: 0, z: 0}
+        cameraShake:
+          amplitude: 0
+          amplitudeMultiplier: 0
+          maxAmplitude: 0
+          minIntervalSeconds: 0
+          directionMode: 0
+          customDirection: {x: 0, y: 0, z: 0}
+          ignoreScreenShakeSetting: 0
+        effect:
+          prefab: {fileID: 0}
+          localOffset: {x: 0, y: 0, z: 0}
+          rotationOffsetZ: 0
+          scaleMultiplier: {x: 0, y: 0, z: 0}
+          attachToTarget: 0
+          anchorMode: 0
+          scaleMode: 0
+          targetBoundsReferenceSize: 0
+          targetBoundsScaleMultiplier: 0
+          lifetimeMode: 0
+          lifetimeOverrideSeconds: 0
+          useUnscaledTime: 0
+        particle:
+          prefab: {fileID: 0}
+          localOffset: {x: 0, y: 0, z: 0}
+          rotationOffsetZ: 0
+          scaleMultiplier: {x: 0, y: 0, z: 0}
+          attachToTarget: 0
+          anchorMode: 0
+          scaleMode: 0
+          targetBoundsReferenceSize: 0
+          targetBoundsScaleMultiplier: 0
+          lifetimeMode: 0
+          lifetimeOverrideSeconds: 0
+          useUnscaledTime: 0
+      presentationWhileActive:
+        sound:
+          key: 
+          volumeMultiplier: 0
+          anchorPolicy: 0
+          localOffset: {x: 0, y: 0, z: 0}
+        cameraShake:
+          amplitude: 0
+          amplitudeMultiplier: 0
+          maxAmplitude: 0
+          minIntervalSeconds: 0
+          directionMode: 0
+          customDirection: {x: 0, y: 0, z: 0}
+          ignoreScreenShakeSetting: 0
+        effect:
+          prefab: {fileID: 0}
+          localOffset: {x: 0, y: 0, z: 0}
+          rotationOffsetZ: 0
+          scaleMultiplier: {x: 0, y: 0, z: 0}
+          attachToTarget: 0
+          anchorMode: 0
+          scaleMode: 0
+          targetBoundsReferenceSize: 0
+          targetBoundsScaleMultiplier: 0
+          lifetimeMode: 0
+          lifetimeOverrideSeconds: 0
+          useUnscaledTime: 0
+        particle:
+          prefab: {fileID: 0}
+          localOffset: {x: 0, y: 0, z: 0}
+          rotationOffsetZ: 0
+          scaleMultiplier: {x: 0, y: 0, z: 0}
+          attachToTarget: 0
+          anchorMode: 0
+          scaleMode: 0
+          targetBoundsReferenceSize: 0
+          targetBoundsScaleMultiplier: 0
+          lifetimeMode: 0
+          lifetimeOverrideSeconds: 0
+          useUnscaledTime: 0
+      presentationOnRemove:
+        sound:
+          key: 
+          volumeMultiplier: 0
+          anchorPolicy: 0
+          localOffset: {x: 0, y: 0, z: 0}
+        cameraShake:
+          amplitude: 0
+          amplitudeMultiplier: 0
+          maxAmplitude: 0
+          minIntervalSeconds: 0
+          directionMode: 0
+          customDirection: {x: 0, y: 0, z: 0}
+          ignoreScreenShakeSetting: 0
+        effect:
+          prefab: {fileID: 0}
+          localOffset: {x: 0, y: 0, z: 0}
+          rotationOffsetZ: 0
+          scaleMultiplier: {x: 0, y: 0, z: 0}
+          attachToTarget: 0
+          anchorMode: 0
+          scaleMode: 0
+          targetBoundsReferenceSize: 0
+          targetBoundsScaleMultiplier: 0
+          lifetimeMode: 0
+          lifetimeOverrideSeconds: 0
+          useUnscaledTime: 0
+        particle:
+          prefab: {fileID: 0}
+          localOffset: {x: 0, y: 0, z: 0}
+          rotationOffsetZ: 0
+          scaleMultiplier: {x: 0, y: 0, z: 0}
+          attachToTarget: 0
+          anchorMode: 0
+          scaleMode: 0
+          targetBoundsReferenceSize: 0
+          targetBoundsScaleMultiplier: 0
+          lifetimeMode: 0
+          lifetimeOverrideSeconds: 0
+          useUnscaledTime: 0
       cuesOnExecute: []
       cuesWhileActive: []
       cuesOnRemove: []
@@ -195,6 +343,8 @@ MonoBehaviour:
     useUnscaledParticleTime: 0
   oneWayOpenSide: 0
   oneWayOpenThreshold: 0.25
+  affectionTargetNpcId: 0
+  requiredAffection: 0
 --- !u!95 &8025805421795082607
 Animator:
   serializedVersion: 7
@@ -258,7 +408,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1505904660396019993}
   - component: {fileID: 8131229036808013587}
-  m_Layer: 0
+  m_Layer: 30
   m_Name: Obstacle
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -9,10 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1001000}
-  - component: {fileID: 1002000}
   - component: {fileID: 1003000}
   - component: {fileID: 1004000}
-  - component: {fileID: 1005000}
   - component: {fileID: 1006000}
   - component: {fileID: 1007000}
   - component: {fileID: 1008000}
@@ -48,8 +46,42 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.7, y: 0.7, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1023000}
   m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1024000
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1023000}
+  - component: {fileID: 1002000}
+  - component: {fileID: 1005000}
+  m_Layer: 31
+  m_Name: Visual
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1023000
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1024000}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0.75, y: 0.75, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1001000}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &1002000
 SpriteRenderer:
@@ -58,7 +90,7 @@ SpriteRenderer:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1000000}
+  m_GameObject: {fileID: 1024000}
   m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
@@ -181,7 +213,7 @@ Animator:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1000000}
+  m_GameObject: {fileID: 1024000}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: 3e6989b159152494da4fa82598b7f471, type: 2}
@@ -268,6 +300,20 @@ MonoBehaviour:
       minHpRatio: 0
       maxHpRatio: 1
       additionalConditions: []
+    - ability: {fileID: 11400000, guid: 6f740a2bae934c608a0f6b5395d1f137, type: 2}
+      followUpAbility: {fileID: 0}
+      selectableByAi: 1
+      selectionWeight: 100
+      maxConsecutiveUseCount: 1
+      maxUseCount: 0
+      aiSelectionLockTime: 0.5
+      postPatternDelay: 0.35
+      minDistanceToTarget: 0
+      maxDistanceToTarget: 999
+      minHpRatio: 0
+      maxHpRatio: 1
+      additionalConditions:
+      - {fileID: 11400000, guid: b6b3270ae0b64527be3bc8398bbdcd6e, type: 2}
   contactDamage: 1
   contactDamageCooldownSeconds: 1
   contactDamageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
@@ -280,13 +326,20 @@ MonoBehaviour:
   slamDamage: 1
   slamDamageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
   bodyInflateWarningStyle: {fileID: 11400000, guid: b15f18602ec87284d80cbd57720425f1, type: 2}
-  bodyInflateWarningDiameter: 4
+  bodyInflateWarningDiameter: 6
   bodyInflateWarningSeconds: 1.4
-  bodyInflateImpactDiameter: 4
-  bodyInflateImpactDamage: 1.5
+  bodyInflateImpactDiameter: 6
+  bodyInflateImpactDamage: 0
   bodyInflateImpactDamageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
   bodyInflateImpactKnockbackEffect: {fileID: 11400000, guid: 2f5faaf6bd840544cb59f6d23905c40d, type: 2}
-  bodyInflateImpactKnockbackImpulse: 8
+  bodyInflateImpactKnockbackImpulse: 195
+  castlingWarningStyle: {fileID: 11400000, guid: b15f18602ec87284d80cbd57720425f1, type: 2}
+  castlingWarningSeconds: 1.2
+  castlingRushSpeed: 9
+  castlingWarningWidth: 2.2
+  castlingHitRadius: 0.75
+  castlingDamage: 1
+  castlingDamageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
   toxicRushWarningStyle: {fileID: 11400000, guid: b15f18602ec87284d80cbd57720425f1, type: 2}
   toxicRushWarningSeconds: 1.4
   toxicRushRepeatCount: 3

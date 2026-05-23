@@ -1,9 +1,15 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityGAS;
 
 public sealed class SlimeQueen : SlimeQueenBossBase, ISlimeQueenBodyInflateHost, ISlimeQueenRandomJumpHost
 {
+    private static readonly int IsJumpingHash = Animator.StringToHash("isJumping");
+    private static readonly int IsShoutingHash = Animator.StringToHash("isShouting");
+    private static readonly int ReadyTriggerHash = Animator.StringToHash("ready");
+    private static readonly int IsGiantizationHash = Animator.StringToHash("isGiantization");
+
     [Header("Slime Queen Runtime")]
     [Tooltip("켜두면 Phase 1 Pattern 1을 런타임 보스 FSM 패턴으로 자동 구성합니다.")]
     [SerializeField] private bool configureRuntimePatternsOnStart = true;
@@ -108,16 +114,16 @@ public sealed class SlimeQueen : SlimeQueenBossBase, ISlimeQueenBodyInflateHost,
     [SerializeField] private AttackTelegraphStyle bodyInflateWarningStyle;
 
     [Tooltip("패턴 4 몸 부풀림 경고 원의 지름입니다.")]
-    [SerializeField, Min(0.1f)] private float bodyInflateWarningDiameter = 4f;
+    [SerializeField, Min(0.1f)] private float bodyInflateWarningDiameter = 6f;
 
     [Tooltip("패턴 4 몸 부풀림 경고가 유지되는 시간입니다.")]
     [SerializeField, Min(0f)] private float bodyInflateWarningSeconds = 1.4f;
 
     [Tooltip("패턴 4 몸 부풀림 실제 피해 판정 원의 지름입니다.")]
-    [SerializeField, Min(0.1f)] private float bodyInflateImpactDiameter = 4f;
+    [SerializeField, Min(0.1f)] private float bodyInflateImpactDiameter = 6f;
 
-    [Tooltip("패턴 4 몸 부풀림이 플레이어에게 주는 피해량입니다.")]
-    [SerializeField, Min(0f)] private float bodyInflateImpactDamage = 1.5f;
+    [Tooltip("패턴 4 몸 부풀림이 플레이어에게 주는 피해량입니다. 0이면 피해 없이 넉백만 적용합니다.")]
+    [SerializeField, Min(0f)] private float bodyInflateImpactDamage = 0f;
 
     [Tooltip("패턴 4 몸 부풀림 피해에 사용할 GAS Damage Effect입니다. 비워두면 패턴 1 낙하 피해 Effect를 사용합니다.")]
     [SerializeField] private GE_Damage_Spec bodyInflateImpactDamageEffect;
@@ -126,7 +132,7 @@ public sealed class SlimeQueen : SlimeQueenBossBase, ISlimeQueenBodyInflateHost,
     [SerializeField] private GE_Knockback_Spec bodyInflateImpactKnockbackEffect;
 
     [Tooltip("패턴 4 몸 부풀림 넉백 세기입니다.")]
-    [SerializeField, Min(0f)] private float bodyInflateImpactKnockbackImpulse = 8f;
+    [SerializeField, Min(0f)] private float bodyInflateImpactKnockbackImpulse = 195f;
 
     [Space(8)]
 
@@ -138,12 +144,14 @@ public sealed class SlimeQueen : SlimeQueenBossBase, ISlimeQueenBodyInflateHost,
     [SerializeField] private SlimeQueenP2Long phase2LongPrefab;
 
     [Tooltip("2페이즈 근거리 퀸을 1페이즈 사망 위치 기준으로 생성할 오프셋입니다.")]
-    [SerializeField] private Vector2 phase2ShortSpawnOffset = new Vector2(-2.5f, 0f);
+    [SerializeField] private Vector2 phase2ShortSpawnOffset = new Vector2(-1.5f, 0f);
 
     [Tooltip("2페이즈 원거리 퀸을 1페이즈 사망 위치 기준으로 생성할 오프셋입니다.")]
-    [SerializeField] private Vector2 phase2LongSpawnOffset = new Vector2(2.5f, 0f);
+    [SerializeField] private Vector2 phase2LongSpawnOffset = new Vector2(1.5f, 0f);
 
     private SpeechBubbleComponent speechBubble;
+    private Coroutine callSlimeSpeechAnimationRoutine;
+    private readonly List<AttackTelegraphView> bodyInflateWarningViews = new List<AttackTelegraphView>();
     private bool runtimePatternsConfigured;
     private bool hasSpawnedPhaseTwoQueens;
 
@@ -165,7 +173,46 @@ public sealed class SlimeQueen : SlimeQueenBossBase, ISlimeQueenBodyInflateHost,
 
     public float CallSlimeSpawnDelaySeconds => callSlimeSpawnDelaySeconds;
 
+    public float CallSlimeSpeechSeconds => callSlimeSpeechSeconds;
+
     public float BodyInflateWarningSeconds => bodyInflateWarningSeconds;
+
+    public void BeginRandomJumpAnimation()
+    {
+        SetAnimatorBool(IsJumpingHash, true);
+    }
+
+    public void EndRandomJumpAnimation()
+    {
+        SetAnimatorBool(IsJumpingHash, false);
+    }
+
+    public void TriggerBodyInflateReadyAnimation()
+    {
+        if (animator == null)
+            return;
+
+        animator.ResetTrigger(ReadyTriggerHash);
+        animator.SetTrigger(ReadyTriggerHash);
+    }
+
+    public void ResetBodyInflateReadyAnimation()
+    {
+        if (animator == null)
+            return;
+
+        animator.ResetTrigger(ReadyTriggerHash);
+    }
+
+    public void BeginBodyInflateImpactAnimation()
+    {
+        SetAnimatorBool(IsGiantizationHash, true);
+    }
+
+    public void EndBodyInflateImpactAnimation()
+    {
+        SetAnimatorBool(IsGiantizationHash, false);
+    }
 
     protected override void Awake()
     {
@@ -179,6 +226,23 @@ public sealed class SlimeQueen : SlimeQueenBossBase, ISlimeQueenBodyInflateHost,
             ConfigureRuntimePatternsIfNeeded();
 
         base.Start();
+    }
+
+    protected override void OnDestroy()
+    {
+        CleanupBodyInflatePresentation();
+        base.OnDestroy();
+    }
+
+    private void OnDisable()
+    {
+        CleanupBodyInflatePresentation();
+    }
+
+    protected override void OnPatternEnd(BossPatternEntry patternEntry, bool forced)
+    {
+        CleanupBodyInflatePresentation();
+        base.OnPatternEnd(patternEntry, forced);
     }
 
     /// <summary>소환 위치 경고 원을 AttackTelegraph로 표시합니다.</summary>
@@ -269,7 +333,12 @@ public sealed class SlimeQueen : SlimeQueenBossBase, ISlimeQueenBodyInflateHost,
     public void ShowCallSlimeSpeech()
     {
         if (string.IsNullOrWhiteSpace(callSlimeSpeechText))
+        {
+            StopCallSlimeSpeechAnimation();
             return;
+        }
+
+        BeginCallSlimeSpeechAnimation();
 
         if (speechBubble == null)
             speechBubble = GetComponent<SpeechBubbleComponent>();
@@ -281,6 +350,42 @@ public sealed class SlimeQueen : SlimeQueenBossBase, ISlimeQueenBodyInflateHost,
         }
 
         Debug.Log($"SlimeQueen: {callSlimeSpeechText}", this);
+    }
+
+    private void BeginCallSlimeSpeechAnimation()
+    {
+        if (callSlimeSpeechAnimationRoutine != null)
+            StopCoroutine(callSlimeSpeechAnimationRoutine);
+
+        SetAnimatorBool(IsShoutingHash, true);
+
+        if (callSlimeSpeechSeconds <= 0f)
+        {
+            SetAnimatorBool(IsShoutingHash, false);
+            callSlimeSpeechAnimationRoutine = null;
+            return;
+        }
+
+        callSlimeSpeechAnimationRoutine = StartCoroutine(EndCallSlimeSpeechAnimationAfterDelay(callSlimeSpeechSeconds));
+    }
+
+    private IEnumerator EndCallSlimeSpeechAnimationAfterDelay(float duration)
+    {
+        yield return new WaitForSeconds(duration);
+
+        SetAnimatorBool(IsShoutingHash, false);
+        callSlimeSpeechAnimationRoutine = null;
+    }
+
+    private void StopCallSlimeSpeechAnimation()
+    {
+        if (callSlimeSpeechAnimationRoutine != null)
+        {
+            StopCoroutine(callSlimeSpeechAnimationRoutine);
+            callSlimeSpeechAnimationRoutine = null;
+        }
+
+        SetAnimatorBool(IsShoutingHash, false);
     }
 
     /// <summary>낙하 중형 슬라임의 플레이어 접촉 피해를 GAS Damage Effect로 적용합니다.</summary>
@@ -341,6 +446,8 @@ public sealed class SlimeQueen : SlimeQueenBossBase, ISlimeQueenBodyInflateHost,
     /// <summary>패턴 4 몸 부풀림 원형 경고를 보스 위치에 표시합니다.</summary>
     public void ShowBodyInflateWarning()
     {
+        CleanupBodyInflatePresentation();
+
         AttackTelegraphService service = GetTelegraphService();
         if (service == null)
             return;
@@ -351,21 +458,35 @@ public sealed class SlimeQueen : SlimeQueenBossBase, ISlimeQueenBodyInflateHost,
             bodyInflateWarningSeconds,
             bodyInflateWarningStyle);
 
-        service.SpawnDetachedView(spec);
+        AttackTelegraphView view = service.SpawnDetachedView(spec);
+        if (view != null)
+            bodyInflateWarningViews.Add(view);
+    }
+
+    public void CleanupBodyInflatePresentation()
+    {
+        ClearViews(bodyInflateWarningViews);
     }
 
     /// <summary>패턴 4 몸 부풀림 범위 안의 플레이어에게 피해와 넉백을 적용합니다.</summary>
     public void ApplyBodyInflateImpact(AbilitySpec sourceSpec)
     {
-        if (bodyInflateImpactDamage <= 0f || CurrentTarget == null)
+        bool hasDamage = bodyInflateImpactDamage > 0f;
+        bool hasKnockback = bodyInflateImpactKnockbackImpulse > 0f && bodyInflateImpactKnockbackEffect != null;
+
+        if ((!hasDamage && !hasKnockback) || CurrentTarget == null)
             return;
 
-        GE_Damage_Spec damageEffect = bodyInflateImpactDamageEffect != null
-            ? bodyInflateImpactDamageEffect
-            : fallingContactDamageEffect;
+        GE_Damage_Spec damageEffect = null;
+        if (hasDamage)
+        {
+            damageEffect = bodyInflateImpactDamageEffect != null
+                ? bodyInflateImpactDamageEffect
+                : fallingContactDamageEffect;
 
-        if (damageEffect == null)
-            return;
+            if (damageEffect == null)
+                return;
+        }
 
         float radius = Mathf.Max(0.1f, bodyInflateImpactDiameter * 0.5f);
         Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, radius);
@@ -380,6 +501,12 @@ public sealed class SlimeQueen : SlimeQueenBossBase, ISlimeQueenBodyInflateHost,
                 continue;
 
             Vector3 hitWorldPosition = hits[i].ClosestPoint(transform.position);
+            if (!hasDamage)
+            {
+                ApplyBodyInflateKnockbackOnly(sourceSpec, contactTarget);
+                return;
+            }
+
             CombatDamageAction.ApplyDamageAndEmitHit(
                 AbilitySystem,
                 sourceSpec,
@@ -388,12 +515,35 @@ public sealed class SlimeQueen : SlimeQueenBossBase, ISlimeQueenBodyInflateHost,
                 contactTarget,
                 bodyInflateImpactDamage,
                 0f,
-                bodyInflateImpactKnockbackImpulse,
+                hasKnockback ? bodyInflateImpactKnockbackImpulse : 0f,
                 null,
                 hitWorldPosition,
                 gameObject);
             return;
         }
+    }
+
+    private void ApplyBodyInflateKnockbackOnly(AbilitySpec sourceSpec, GameObject contactTarget)
+    {
+        if (AbilitySystem == null || AbilitySystem.EffectRunner == null)
+            return;
+
+        if (bodyInflateImpactKnockbackEffect == null || bodyInflateImpactKnockbackImpulse <= 0f || contactTarget == null)
+            return;
+
+        var knockbackSpec = AbilitySystem.MakeSpec(
+            bodyInflateImpactKnockbackEffect,
+            causer: gameObject,
+            sourceObject: sourceSpec != null ? sourceSpec.Definition : null);
+
+        if (bodyInflateImpactKnockbackEffect.knockbackKey != null)
+        {
+            knockbackSpec.SetSetByCallerMagnitude(
+                bodyInflateImpactKnockbackEffect.knockbackKey,
+                bodyInflateImpactKnockbackImpulse);
+        }
+
+        AbilitySystem.EffectRunner.ApplyEffectSpec(knockbackSpec, contactTarget);
     }
 
     /// <summary>점프 포물선 진행도에 맞춰 보스 위치를 이동시킵니다.</summary>
@@ -416,6 +566,33 @@ public sealed class SlimeQueen : SlimeQueenBossBase, ISlimeQueenBodyInflateHost,
             movementMotor.StopAllMotion();
 
         transform.position = landingPosition;
+        EndRandomJumpAnimation();
+    }
+
+    private void SetAnimatorBool(int parameterHash, bool value)
+    {
+        if (animator == null)
+            return;
+
+        animator.SetBool(parameterHash, value);
+    }
+
+    private static void ClearViews(List<AttackTelegraphView> views)
+    {
+        if (views == null)
+            return;
+
+        for (int i = 0; i < views.Count; i++)
+        {
+            AttackTelegraphView view = views[i];
+            if (view != null)
+            {
+                view.HideImmediate();
+                Destroy(view.gameObject);
+            }
+        }
+
+        views.Clear();
     }
 
     /// <summary>패턴 2 착지 범위 안의 현재 타겟에게 GAS Damage Effect를 적용합니다.</summary>

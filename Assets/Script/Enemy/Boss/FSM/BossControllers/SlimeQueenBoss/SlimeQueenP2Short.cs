@@ -7,6 +7,11 @@ using UnityGAS;
 /// </summary>
 public sealed class SlimeQueenP2Short : SlimeQueenPhaseTwoBase
 {
+    private static readonly int IsRushingHash = Animator.StringToHash("isRushing");
+    private static readonly int IsSinkingHash = Animator.StringToHash("isSinking");
+    private static readonly int ReadyTriggerHash = Animator.StringToHash("ready");
+    private static readonly int IsGiantizationHash = Animator.StringToHash("isGiantization");
+
     [Header("Phase 2 Short - Toxic Rush")]
     [Tooltip("독성 돌진 경고선 표시에 사용할 AttackTelegraph 스타일입니다.")]
     [SerializeField] private AttackTelegraphStyle toxicRushWarningStyle;
@@ -70,6 +75,53 @@ public sealed class SlimeQueenP2Short : SlimeQueenPhaseTwoBase
     public float ToxicRushWarningSeconds => Mathf.Max(0f, toxicRushWarningSeconds);
     public float ToxicRushSpeed => Mathf.Max(0.1f, toxicRushSpeed);
     public float ToxicRushIntervalSeconds => Mathf.Max(0f, toxicRushIntervalSeconds);
+
+    public void BeginToxicRushAnimation()
+    {
+        SetAnimatorBool(IsRushingHash, true);
+    }
+
+    public void EndToxicRushAnimation()
+    {
+        SetAnimatorBool(IsRushingHash, false);
+    }
+
+    public override void BeginDrainSinkAnimation()
+    {
+        SetAnimatorBool(IsSinkingHash, true);
+    }
+
+    public override void EndDrainSinkAnimation()
+    {
+        SetAnimatorBool(IsSinkingHash, false);
+    }
+
+    public void TriggerBodyInflateReadyAnimation()
+    {
+        if (animator == null)
+            return;
+
+        animator.ResetTrigger(ReadyTriggerHash);
+        animator.SetTrigger(ReadyTriggerHash);
+    }
+
+    public void ResetBodyInflateReadyAnimation()
+    {
+        if (animator == null)
+            return;
+
+        animator.ResetTrigger(ReadyTriggerHash);
+    }
+
+    public void BeginBodyInflateImpactAnimation()
+    {
+        SetAnimatorBool(IsGiantizationHash, true);
+    }
+
+    public void EndBodyInflateImpactAnimation()
+    {
+        SetAnimatorBool(IsGiantizationHash, false);
+    }
 
     public readonly struct ToxicRushSegment
     {
@@ -194,6 +246,14 @@ public sealed class SlimeQueenP2Short : SlimeQueenPhaseTwoBase
     public void CleanupToxicRushPresentation()
     {
         ClearToxicRushWarnings();
+    }
+
+    private void SetAnimatorBool(int parameterHash, bool value)
+    {
+        if (animator == null)
+            return;
+
+        animator.SetBool(parameterHash, value);
     }
 
     /// <summary>벽 레이캐스트로 독성 돌진 허용 거리를 계산합니다.</summary>

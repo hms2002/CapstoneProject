@@ -13083,6 +13083,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   trapDamage: 10
+  playerTrapDamage: 1
   trapDuration: 1
   damageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
   fallingEffect: {fileID: 11400000, guid: f3033dc69e9708347a58b0f11d0759c7, type: 2}

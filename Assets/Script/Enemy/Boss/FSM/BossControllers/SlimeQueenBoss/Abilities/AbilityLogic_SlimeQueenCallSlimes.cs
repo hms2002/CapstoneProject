@@ -31,6 +31,10 @@ public sealed class AbilityLogic_SlimeQueenCallSlimes : AbilityLogic
 
         if (largeSlimePrefab != null)
             SpawnSummonedSlime(largeSlimePrefab, largeSpawnPosition);
+
+        float remainingSpeechSeconds = slimeQueen.CallSlimeSpeechSeconds - slimeQueen.CallSlimeSpawnDelaySeconds;
+        if (remainingSpeechSeconds > 0f)
+            yield return WaitForSecondsUnlessCancelled(remainingSpeechSeconds, spec);
     }
 
     private GameObject SpawnSummonedSlime(GameObject slimePrefab, Vector3 spawnPosition)

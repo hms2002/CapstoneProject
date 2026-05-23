@@ -26,6 +26,10 @@ public class DamagePopupListener2D : MonoBehaviour
     [Tooltip("연타/다중히트로 팝업이 과도하게 생성되는 것을 막는 최소 간격(초).")]
     [SerializeField] private float minInterval = 0.02f;
 
+    [Header("Debug")]
+    [Tooltip("Attribute fallback 데미지 팝업이 표시/억제되는 흐름을 콘솔에 출력합니다.")]
+    [SerializeField] private bool logFallbackPopup = true;
+
     private AttributeSet _attributeSet;
     private float _nextAllowedTime;
 
@@ -73,7 +77,22 @@ public class DamagePopupListener2D : MonoBehaviour
         if (dmg <= 0f)
             return;
 
+        if (DamagePopupDuplicateSuppressor.TryConsume(gameObject, dmg))
+        {
+            LogFallbackPopup($"suppressed dmg={dmg:0.###}, target={name}");
+            return;
+        }
+
         Vector3 pos = (worldAnchor != null ? worldAnchor.position : transform.position) + extraWorldOffset;
+        LogFallbackPopup($"show fallback dmg={dmg:0.###}, target={name}, pos={pos}");
         DamagePopupService.Show(dmg, pos);
+    }
+
+    private void LogFallbackPopup(string message)
+    {
+        if (!logFallbackPopup)
+            return;
+
+        Debug.Log($"[DamagePopupListener2D] {message}", this);
     }
 }

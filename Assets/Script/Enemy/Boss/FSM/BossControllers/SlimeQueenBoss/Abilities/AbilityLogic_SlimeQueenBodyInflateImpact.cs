@@ -4,6 +4,8 @@ using UnityGAS;
 
 public sealed class AbilityLogic_SlimeQueenBodyInflateImpact : AbilityLogic
 {
+    private const float BodyInflateAttackAnimationHoldSeconds = 2f;
+
     /// <summary>슬라임 여왕 계열 보스가 원형 경고 후 몸 부풀림 충돌 효과를 적용합니다.</summary>
     public override IEnumerator Activate(AbilitySystem system, AbilitySpec spec, GameObject initialTarget)
     {
@@ -15,9 +17,18 @@ public sealed class AbilityLogic_SlimeQueenBodyInflateImpact : AbilityLogic
         if (phaseTwoHost != null)
             phaseTwoHost.SetPassiveContactDamageBlocked(true);
 
+        SlimeQueen phaseOneQueen = slimeQueen as SlimeQueen;
+        SlimeQueenP2Short phaseTwoShortQueen = slimeQueen as SlimeQueenP2Short;
+        bool shouldHoldBodyInflateAnimation = phaseOneQueen != null || phaseTwoShortQueen != null;
+
         try
         {
             slimeQueen.FaceCurrentTarget();
+            if (phaseOneQueen != null)
+                phaseOneQueen.TriggerBodyInflateReadyAnimation();
+            if (phaseTwoShortQueen != null)
+                phaseTwoShortQueen.TriggerBodyInflateReadyAnimation();
+
             slimeQueen.ShowBodyInflateWarning();
 
             if (slimeQueen.BodyInflateWarningSeconds > 0f)
@@ -26,11 +37,42 @@ public sealed class AbilityLogic_SlimeQueenBodyInflateImpact : AbilityLogic
             if (IsAbilityCancelled(spec))
                 yield break;
 
+            if (phaseOneQueen != null)
+                phaseOneQueen.BeginBodyInflateImpactAnimation();
+            if (phaseTwoShortQueen != null)
+                phaseTwoShortQueen.BeginBodyInflateImpactAnimation();
+
             slimeQueen.ApplyBodyInflateImpact(spec);
+
+            if (shouldHoldBodyInflateAnimation && BodyInflateAttackAnimationHoldSeconds > 0f)
+                yield return WaitForSecondsUnlessCancelled(BodyInflateAttackAnimationHoldSeconds, spec);
+
+            if (IsAbilityCancelled(spec))
+                yield break;
+
+            if (phaseOneQueen != null)
+                phaseOneQueen.EndBodyInflateImpactAnimation();
+            if (phaseTwoShortQueen != null)
+                phaseTwoShortQueen.EndBodyInflateImpactAnimation();
+
             slimeQueen.FaceCurrentTarget();
         }
         finally
         {
+            slimeQueen.CleanupBodyInflatePresentation();
+
+            if (phaseOneQueen != null)
+            {
+                phaseOneQueen.ResetBodyInflateReadyAnimation();
+                phaseOneQueen.EndBodyInflateImpactAnimation();
+            }
+
+            if (phaseTwoShortQueen != null)
+            {
+                phaseTwoShortQueen.ResetBodyInflateReadyAnimation();
+                phaseTwoShortQueen.EndBodyInflateImpactAnimation();
+            }
+
             if (phaseTwoHost != null)
                 phaseTwoHost.SetPassiveContactDamageBlocked(false);
         }

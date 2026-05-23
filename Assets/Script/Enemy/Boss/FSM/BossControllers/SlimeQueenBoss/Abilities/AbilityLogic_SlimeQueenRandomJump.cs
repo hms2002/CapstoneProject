@@ -17,30 +17,52 @@ public sealed class AbilityLogic_SlimeQueenRandomJump : AbilityLogic
 
         randomJumpHost.FaceCurrentTarget();
         randomJumpHost.ShowJumpWarning(landingPosition);
+        SlimeQueen phaseOneQueen = randomJumpHost as SlimeQueen;
+        SlimeQueenP2Long phaseTwoLongQueen = randomJumpHost as SlimeQueenP2Long;
+        if (phaseOneQueen != null)
+            phaseOneQueen.BeginRandomJumpAnimation();
+        if (phaseTwoLongQueen != null)
+            phaseTwoLongQueen.BeginRandomJumpAnimation();
 
         Vector3 startPosition = hostComponent.transform.position;
         startPosition.z = landingPosition.z;
 
+        SlimeQueenBossBase pitFallBlockOwner = phaseOneQueen;
         randomJumpHost.SetPatternMoveDamageBlocked(true);
+        if (pitFallBlockOwner != null)
+            pitFallBlockOwner.PushPitFallTriggerBlock();
 
-        float elapsedSeconds = 0f;
-        while (elapsedSeconds < randomJumpHost.JumpDurationSeconds)
+        try
         {
-            if (IsAbilityCancelled(spec))
+            float elapsedSeconds = 0f;
+            while (elapsedSeconds < randomJumpHost.JumpDurationSeconds)
             {
-                randomJumpHost.SnapToJumpLanding(startPosition);
-                randomJumpHost.SetPatternMoveDamageBlocked(false);
-                yield break;
+                if (IsAbilityCancelled(spec))
+                {
+                    randomJumpHost.SnapToJumpLanding(startPosition);
+                    yield break;
+                }
+
+                elapsedSeconds += Time.deltaTime;
+                float normalizedTime = Mathf.Clamp01(elapsedSeconds / randomJumpHost.JumpDurationSeconds);
+                randomJumpHost.SetJumpPose(startPosition, landingPosition, normalizedTime);
+                yield return null;
             }
 
-            elapsedSeconds += Time.deltaTime;
-            float normalizedTime = Mathf.Clamp01(elapsedSeconds / randomJumpHost.JumpDurationSeconds);
-            randomJumpHost.SetJumpPose(startPosition, landingPosition, normalizedTime);
-            yield return null;
+            randomJumpHost.SnapToJumpLanding(landingPosition);
+        }
+        finally
+        {
+            if (phaseOneQueen != null)
+                phaseOneQueen.EndRandomJumpAnimation();
+            if (phaseTwoLongQueen != null)
+                phaseTwoLongQueen.EndRandomJumpAnimation();
+
+            randomJumpHost.SetPatternMoveDamageBlocked(false);
+            if (pitFallBlockOwner != null)
+                pitFallBlockOwner.PopPitFallTriggerBlock();
         }
 
-        randomJumpHost.SnapToJumpLanding(landingPosition);
-        randomJumpHost.SetPatternMoveDamageBlocked(false);
         randomJumpHost.ApplyJumpLandingDamage(spec, landingPosition);
         randomJumpHost.FaceCurrentTarget();
     }

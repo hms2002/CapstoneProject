@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityGAS;
@@ -6,6 +7,8 @@ using UnityGAS;
 [RequireComponent(typeof(Collider2D), typeof(SpriteRenderer), typeof(CombatHurtbox2D))]
 public sealed class DrainPipe : MonoBehaviour, IDamageReceiver
 {
+    private const float PhaseTwoBossDrainSeconds = 4f;
+
     [Header("Refs")]
     [Tooltip("임시 배수관 원형 스프라이트를 표시할 렌더러입니다.")]
     [SerializeField] private SpriteRenderer spriteRenderer;
@@ -39,8 +42,12 @@ public sealed class DrainPipe : MonoBehaviour, IDamageReceiver
 
     private readonly List<Pawn> suctionTargets = new List<Pawn>();
     private Collider2D[] pawnColliders;
+    private SlimeQueenPhaseTwoBase phaseTwoBossTarget;
+    private Coroutine phaseTwoBossDrainCoroutine;
+    private PhaseTwoBossDrainContext activePhaseTwoBossDrainContext;
     private int currentHitCount;
     private bool isBroken;
+    private bool isBlocked;
 
     private void Awake()
     {
@@ -62,12 +69,45 @@ public sealed class DrainPipe : MonoBehaviour, IDamageReceiver
         SyncVisual();
     }
 
+    private void OnDisable()
+    {
+        if (phaseTwoBossDrainCoroutine != null)
+        {
+            StopCoroutine(phaseTwoBossDrainCoroutine);
+            phaseTwoBossDrainCoroutine = null;
+        }
+
+        activePhaseTwoBossDrainContext?.Restore();
+        activePhaseTwoBossDrainContext = null;
+
+        if (phaseTwoBossTarget != null)
+            phaseTwoBossTarget.EndDrainControlLock();
+
+        phaseTwoBossTarget = null;
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        TryAcquirePhaseTwoBossOnContact(other);
+    }
+
+    private void OnTriggerStay2D(Collider2D other)
+    {
+        TryAcquirePhaseTwoBossOnContact(other);
+    }
+
     private void FixedUpdate()
     {
-        if (!isBroken)
+        if (!isBroken || isBlocked)
             return;
 
         EnsurePawnBuffer();
+
+        if (phaseTwoBossDrainCoroutine == null)
+        {
+            PullPhaseTwoBossTarget();
+        }
+
         AcquirePawnTargets();
         PullPawnTargets();
     }
@@ -75,7 +115,7 @@ public sealed class DrainPipe : MonoBehaviour, IDamageReceiver
     /// <summary>배수관 피격 횟수를 누적하고 3회 이상이면 파괴 상태로 전환합니다.</summary>
     public bool TryApplyDamage(DamageRequest request)
     {
-        if (isBroken)
+        if (isBroken || isBlocked)
             return false;
 
         int hitAmount = Mathf.Max(1, request.TokenDamage);
@@ -100,14 +140,105 @@ public sealed class DrainPipe : MonoBehaviour, IDamageReceiver
         if (spriteRenderer == null)
             return;
 
-        spriteRenderer.color = isBroken ? brokenColor : corkColor;
+        spriteRenderer.color = isBroken && !isBlocked ? brokenColor : corkColor;
     }
 
     /// <summary>파괴 상태로 전환하고 흡입 연출이 시작되도록 표시를 갱신합니다.</summary>
     private void BreakPipe()
     {
+        if (isBlocked)
+            return;
+
         isBroken = true;
         SyncVisual();
+    }
+
+    /// <summary>배수구 트리거에 직접 닿은 2페이즈 슬라임 여왕만 배수구 대상으로 등록합니다.</summary>
+    private void TryAcquirePhaseTwoBossOnContact(Collider2D hitCollider)
+    {
+        if (!isBroken || isBlocked || phaseTwoBossTarget != null || phaseTwoBossDrainCoroutine != null || hitCollider == null)
+            return;
+
+        SlimeQueenPhaseTwoBase slimeQueen = hitCollider.GetComponentInParent<SlimeQueenPhaseTwoBase>();
+        if (!CanAcquirePhaseTwoBoss(slimeQueen))
+            return;
+
+        PreparePhaseTwoBossForSuction(slimeQueen);
+        phaseTwoBossTarget = slimeQueen;
+    }
+
+    /// <summary>등록된 2페이즈 슬라임 여왕을 배수구 중심으로 끌어당기고 중심에 닿으면 4초 잠금으로 전환합니다.</summary>
+    private void PullPhaseTwoBossTarget()
+    {
+        if (phaseTwoBossTarget == null)
+            return;
+
+        if (!IsPhaseTwoBossAlive(phaseTwoBossTarget))
+        {
+            phaseTwoBossTarget.EndDrainControlLock();
+            phaseTwoBossTarget = null;
+            return;
+        }
+
+        Vector2 drainPosition = transform.position;
+        Rigidbody2D bossBody = phaseTwoBossTarget.GetComponent<Rigidbody2D>();
+        Vector2 bossPosition = bossBody != null && bossBody.simulated
+            ? bossBody.position
+            : (Vector2)phaseTwoBossTarget.transform.position;
+        Vector2 toDrain = drainPosition - bossPosition;
+
+        if (toDrain.magnitude <= consumeDistance)
+        {
+            SlimeQueenPhaseTwoBase drainedBoss = phaseTwoBossTarget;
+            drainedBoss.transform.position = GetDrainPosition(drainedBoss.transform.position.z);
+            ResetBodyVelocity(bossBody);
+            phaseTwoBossTarget = null;
+            phaseTwoBossDrainCoroutine = StartCoroutine(DrainPhaseTwoBossRoutine(drainedBoss));
+            return;
+        }
+
+        Vector2 suctionVelocity = toDrain.normalized * suctionSpeed;
+        if (bossBody != null && bossBody.simulated)
+            bossBody.linearVelocity = suctionVelocity;
+        else
+            phaseTwoBossTarget.transform.position = Vector2.MoveTowards(
+                bossPosition,
+                drainPosition,
+                suctionSpeed * Time.fixedDeltaTime);
+    }
+
+    /// <summary>2페이즈 슬라임 여왕의 현재 패턴을 중단하고 배수구 흡입 이동만 적용되게 합니다.</summary>
+    private static void PreparePhaseTwoBossForSuction(SlimeQueenPhaseTwoBase slimeQueen)
+    {
+        if (slimeQueen == null)
+            return;
+
+        slimeQueen.BeginDrainControlLock();
+        ResetBodyVelocity(slimeQueen.GetComponent<Rigidbody2D>());
+    }
+
+    /// <summary>배수구 안에 잠긴 보스를 4초 뒤 복귀시키고 배수구를 막힘 상태로 전환합니다.</summary>
+    private IEnumerator DrainPhaseTwoBossRoutine(SlimeQueenPhaseTwoBase slimeQueen)
+    {
+        PhaseTwoBossDrainContext drainContext = null;
+        if (slimeQueen != null)
+        {
+            drainContext = new PhaseTwoBossDrainContext(slimeQueen);
+            activePhaseTwoBossDrainContext = drainContext;
+            slimeQueen.transform.position = GetDrainPosition(slimeQueen.transform.position.z);
+            slimeQueen.BeginDrainSinkAnimation();
+            drainContext.SetSubmerged(true);
+        }
+
+        yield return new WaitForSeconds(PhaseTwoBossDrainSeconds);
+
+        if (slimeQueen != null)
+            slimeQueen.transform.position = GetDrainPosition(slimeQueen.transform.position.z);
+
+        drainContext?.Restore();
+        activePhaseTwoBossDrainContext = null;
+        phaseTwoBossDrainCoroutine = null;
+        BlockPipe();
     }
 
     /// <summary>흡입 범위 안에 들어온 Pawn 슬라임을 흡입 대상으로 등록합니다.</summary>
@@ -202,6 +333,66 @@ public sealed class DrainPipe : MonoBehaviour, IDamageReceiver
         pawn.enabled = false;
     }
 
+    /// <summary>배수구가 한 번 보스를 삼킨 뒤 다시 사용할 수 없도록 막힘 상태로 전환합니다.</summary>
+    private void BlockPipe()
+    {
+        isBlocked = true;
+        isBroken = false;
+        currentHitCount = hitCountToBreak;
+        ConsumeRemainingPawnTargets();
+        SyncVisual();
+    }
+
+    /// <summary>막힘 전까지 이미 흡입 대상이 된 Pawn이 비활성 상태로 남지 않도록 정리합니다.</summary>
+    private void ConsumeRemainingPawnTargets()
+    {
+        for (int i = suctionTargets.Count - 1; i >= 0; i--)
+        {
+            Pawn pawn = suctionTargets[i];
+            if (pawn != null)
+                Destroy(pawn.gameObject);
+        }
+
+        suctionTargets.Clear();
+    }
+
+    private bool CanAcquirePhaseTwoBoss(SlimeQueenPhaseTwoBase slimeQueen)
+    {
+        if (isBlocked || slimeQueen == null || slimeQueen == phaseTwoBossTarget)
+            return false;
+
+        if (!IsPhaseTwoBossAlive(slimeQueen))
+            return false;
+
+        return slimeQueen.IsCombatActive && slimeQueen.CanTriggerPitFall;
+    }
+
+    private static bool IsPhaseTwoBossAlive(SlimeQueenPhaseTwoBase slimeQueen)
+    {
+        return slimeQueen != null &&
+               slimeQueen.isActiveAndEnabled &&
+               slimeQueen.gameObject.activeInHierarchy &&
+               !slimeQueen.IsDead &&
+               !slimeQueen.HasDeadTag() &&
+               slimeQueen.CurrentHealthValue > 0f;
+    }
+
+    private Vector3 GetDrainPosition(float targetZ)
+    {
+        Vector3 drainPosition = transform.position;
+        drainPosition.z = targetZ;
+        return drainPosition;
+    }
+
+    private static void ResetBodyVelocity(Rigidbody2D body)
+    {
+        if (body == null)
+            return;
+
+        body.linearVelocity = Vector2.zero;
+        body.angularVelocity = 0f;
+    }
+
     /// <summary>흡입 범위 검사에 사용할 콜라이더 버퍼를 준비합니다.</summary>
     private void EnsurePawnBuffer()
     {
@@ -255,9 +446,74 @@ public sealed class DrainPipe : MonoBehaviour, IDamageReceiver
         sharedTemporaryCircleSprite.hideFlags = HideFlags.HideAndDontSave;
     }
 
+    private sealed class PhaseTwoBossDrainContext
+    {
+        private readonly SlimeQueenPhaseTwoBase slimeQueen;
+        private readonly Rigidbody2D body;
+        private readonly bool wasBodySimulated;
+        private readonly Collider2D[] colliders;
+        private readonly bool[] colliderEnabledStates;
+        private bool isRestored;
+
+        public PhaseTwoBossDrainContext(SlimeQueenPhaseTwoBase slimeQueen)
+        {
+            this.slimeQueen = slimeQueen;
+            body = slimeQueen != null ? slimeQueen.GetComponent<Rigidbody2D>() : null;
+            wasBodySimulated = body == null || body.simulated;
+            colliders = slimeQueen != null ? slimeQueen.GetComponentsInChildren<Collider2D>() : new Collider2D[0];
+            colliderEnabledStates = new bool[colliders.Length];
+
+            for (int i = 0; i < colliders.Length; i++)
+                colliderEnabledStates[i] = colliders[i] != null && colliders[i].enabled;
+        }
+
+        public void SetSubmerged(bool isSubmerged)
+        {
+            if (!isSubmerged)
+                return;
+
+            if (body != null)
+            {
+                body.linearVelocity = Vector2.zero;
+                body.angularVelocity = 0f;
+                body.simulated = false;
+            }
+
+            for (int i = 0; i < colliders.Length; i++)
+            {
+                if (colliders[i] != null)
+                    colliders[i].enabled = false;
+            }
+        }
+
+        public void Restore()
+        {
+            if (isRestored)
+                return;
+
+            isRestored = true;
+
+            if (body != null)
+            {
+                body.simulated = wasBodySimulated;
+                body.linearVelocity = Vector2.zero;
+                body.angularVelocity = 0f;
+            }
+
+            for (int i = 0; i < colliders.Length; i++)
+            {
+                if (colliders[i] != null)
+                    colliders[i].enabled = colliderEnabledStates[i];
+            }
+
+            if (slimeQueen != null)
+                slimeQueen.EndDrainControlLock();
+        }
+    }
+
     private void OnDrawGizmosSelected()
     {
-        Gizmos.color = isBroken ? Color.black : new Color(0.56f, 0.34f, 0.17f, 0.7f);
+        Gizmos.color = isBroken && !isBlocked ? Color.black : new Color(0.56f, 0.34f, 0.17f, 0.7f);
         Gizmos.DrawWireSphere(transform.position, suctionRadius);
     }
 }

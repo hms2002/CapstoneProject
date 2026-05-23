@@ -3,6 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityGAS;
 
+/// <summary>
+/// 책임:
+/// - Bishop이 만든 직선 마법 문맥을 받아 경고 표시, 폭발 표시, 피해 판정을 실행한다.
+/// - 패턴 취소/정리 시 남은 경고와 폭발 표시를 회수한다.
+/// </summary>
 [DisallowMultipleComponent]
 [RequireComponent(typeof(Bishop))]
 public class BishopLineBlastRunner : MonoBehaviour, IMobPatternRunner, IMobPresentationCleanup
@@ -64,6 +69,7 @@ public class BishopLineBlastRunner : MonoBehaviour, IMobPatternRunner, IMobPrese
         try
         {
             ShowLine(currentContext);
+            owner.PlayMagicPrepareAnimation();
 
             if (currentContext.WarningTime > 0f)
                 yield return AbilityTasks.WaitDelay(system, spec, currentContext.WarningTime);
@@ -129,6 +135,7 @@ public class BishopLineBlastRunner : MonoBehaviour, IMobPatternRunner, IMobPrese
     /// <summary>경고선 위의 원형 폭발들을 동시에 발생시킵니다.</summary>
     private void FireBlasts(AbilitySystem system, AbilitySpec spec, Bishop.LineBlastContext context)
     {
+        owner.PlayMagicCastAnimation();
         owner.FillBlastPoints(context, blastPoints);
         ShowBlastViews(context);
         owner.TryHitBlasts(system, spec, context, blastPoints);

@@ -1,6 +1,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// 책임:
+/// - 방 encounter가 시작되면 연결된 문을 닫고, 추적 중인 몬스터가 모두 정리되면 다시 연다.
+/// - 몬스터가 방 밖에 유인된 상태에서는 문을 열어 두어 전투 대상이 문 밖에 갇히지 않게 한다.
+/// </summary>
 [DisallowMultipleComponent]
 [DefaultExecutionOrder(-50)]
 public sealed class RoomDoorMonsterKillLock : MonoBehaviour
@@ -10,6 +15,9 @@ public sealed class RoomDoorMonsterKillLock : MonoBehaviour
 
     [Header("Room")]
     [SerializeField] private MonsterSpawnRoomGroup targetRoomGroup;
+    [SerializeField] private bool requireTrackedMonstersInsideBeforeClose = true;
+    [Tooltip("몬스터 수가 0이 된 뒤 이 시간 동안 추가 등록이 없을 때만 문을 엽니다. 슬라임 분열처럼 사망 직후 자식 등록 전 공백을 흡수합니다.")]
+    [SerializeField, Min(0f)] private float openAfterAllClearedDelaySeconds = 0.35f;
 
     [Header("Debug")]
     [SerializeField] private bool logDebug;
@@ -20,6 +28,8 @@ public sealed class RoomDoorMonsterKillLock : MonoBehaviour
     private bool missingDoorWarningLogged;
     private bool missingRoomGroupWarningLogged;
     private bool registeredWithRoomGroup;
+    private MonsterRoomArea2D cachedRoomArea;
+    private float allClearedStableSince = -1f;
 
     public bool RoomEntered => roomEntered;
     public bool EncounterEntered => roomEntered;
@@ -66,6 +76,9 @@ public sealed class RoomDoorMonsterKillLock : MonoBehaviour
 
         if (roomEntered && targetDoor != null && targetDoor.IsOpen && CountRemainingMonsters() > 0)
             RefreshDoorState();
+
+        if (roomEntered && allClearedStableSince >= 0f)
+            RefreshDoorState();
     }
 
     public void RegisterMonster(GameObject monster)
@@ -74,6 +87,7 @@ public sealed class RoomDoorMonsterKillLock : MonoBehaviour
             return;
 
         trackedMonsters.Add(monster);
+        ResetAllClearedDelay();
         LogDebug($"Registered monster '{monster.name}'. remaining={RemainingMonsterCount}");
         RefreshDoorState();
     }
@@ -141,7 +155,24 @@ public sealed class RoomDoorMonsterKillLock : MonoBehaviour
             return;
 
         int remainingCount = CountRemainingMonsters();
-        if (!roomEntered || remainingCount <= 0)
+        if (!roomEntered)
+        {
+            ResetAllClearedDelay();
+            OpenDoorIfNeeded(playPresentation: doorClosedByLock);
+            return;
+        }
+
+        if (remainingCount <= 0)
+        {
+            if (ShouldDelayOpeningAfterAllCleared())
+                return;
+
+            OpenDoorIfNeeded(playPresentation: doorClosedByLock);
+            return;
+        }
+
+        ResetAllClearedDelay();
+        if (ShouldKeepDoorOpenForOutsideMonsters())
         {
             OpenDoorIfNeeded(playPresentation: doorClosedByLock);
             return;
@@ -182,6 +213,73 @@ public sealed class RoomDoorMonsterKillLock : MonoBehaviour
         }
 
         return count;
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 전투 종료 직후 짧은 시간 동안 문 열림을 보류해 사망/분열 등록 사이의 공백을 흡수한다.
+    /// - 새 몬스터가 등록되면 안정화 타이머가 리셋되어 문이 열렸다 닫히는 깜빡임을 방지한다.
+    /// </summary>
+    private bool ShouldDelayOpeningAfterAllCleared()
+    {
+        if (!doorClosedByLock || openAfterAllClearedDelaySeconds <= 0f)
+            return false;
+
+        if (allClearedStableSince < 0f)
+        {
+            allClearedStableSince = Time.time;
+            LogDebug($"All monsters cleared. Waiting {openAfterAllClearedDelaySeconds:0.###}s before opening door.");
+            return true;
+        }
+
+        return Time.time - allClearedStableSince < openAfterAllClearedDelaySeconds;
+    }
+
+    private void ResetAllClearedDelay()
+    {
+        allClearedStableSince = -1f;
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 방 밖으로 유인된 몬스터가 문에 막혀 전투에 복귀하지 못하는 상황을 방지한다.
+    /// - 방 영역 정보가 없으면 기존 문 닫힘 규칙을 유지해 authoring 누락이 전투를 영구 개방하지 않게 한다.
+    /// </summary>
+    private bool ShouldKeepDoorOpenForOutsideMonsters()
+    {
+        if (!requireTrackedMonstersInsideBeforeClose)
+            return false;
+
+        MonsterRoomArea2D roomArea = ResolveRoomArea();
+        if (roomArea == null)
+            return false;
+
+        for (int i = 0; i < trackedMonsters.Count; i++)
+        {
+            GameObject monster = trackedMonsters[i];
+            if (monster == null)
+                continue;
+
+            if (!roomArea.Contains(monster.transform.position))
+            {
+                LogDebug($"Keeping door open because '{monster.name}' is outside room area.");
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private MonsterRoomArea2D ResolveRoomArea()
+    {
+        if (cachedRoomArea != null)
+            return cachedRoomArea;
+
+        if (targetRoomGroup == null)
+            return null;
+
+        cachedRoomArea = targetRoomGroup.GetComponentInChildren<MonsterRoomArea2D>();
+        return cachedRoomArea;
     }
 
     private void CompactDestroyedMonsterEntries()

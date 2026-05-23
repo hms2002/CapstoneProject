@@ -10,8 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 200000}
   - component: {fileID: 400000}
-  - component: {fileID: 500000}
-  - component: {fileID: 600000}
+  - component: {fileID: 880000000000002008}
   - component: {fileID: 700000}
   - component: {fileID: 710000}
   - component: {fileID: 800000}
@@ -25,10 +24,10 @@ GameObject:
   - component: {fileID: 880000}
   - component: {fileID: 890000}
   - component: {fileID: 900000}
-  - component: {fileID: 910000}
   - component: {fileID: 920000}
   - component: {fileID: 930000}
   - component: {fileID: 940000}
+  - component: {fileID: 970000}
   - component: {fileID: 6600200000000001}
   m_Layer: 31
   m_Name: Knight
@@ -51,6 +50,9 @@ Transform:
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 210000}
+  - {fileID: 210276287355527729}
+  - {fileID: 991000000000002002}
+  - {fileID: 991000000000002004}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &400000
@@ -86,7 +88,7 @@ BoxCollider2D:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 100000}
+  m_GameObject: {fileID: 991000000000002003}
   m_Enabled: 1
   serializedVersion: 3
   m_Density: 1
@@ -96,7 +98,53 @@ BoxCollider2D:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
+    m_Bits: 2147483656
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 1, y: 1}
+    newSize: {x: 1, y: 1}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Size: {x: 0.75, y: 0.75}
+  m_EdgeRadius: 0
+--- !u!70 &880000000000001008
+CapsuleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 991000000000002001}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
     m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 2147483656
   m_LayerOverridePriority: 0
   m_ForceSendLayers:
     serializedVersion: 2
@@ -114,40 +162,34 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
-    newSize: {x: 1, y: 1}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  m_Size: {x: 0.75, y: 0.75}
-  m_EdgeRadius: 0
---- !u!95 &600000
-Animator:
-  serializedVersion: 7
+  m_Offset: {x: -0.008991212, y: -0.25}
+  m_Size: {x: 0.33950728, y: 0.35192847}
+  m_Direction: 0
+--- !u!114 &880000000000002008
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 100000}
-  m_Enabled: 0
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 0}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_AnimatePhysics: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f91c6f777744985b46d03508b0db52a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UnityGAS.ActorSoftCollision2D
+  bodyCollider: {fileID: 880000000000001008}
+  body: {fileID: 0}
+  externalMovement: {fileID: 0}
+  actorLayers:
+    serializedVersion: 2
+    m_Bits: 2147483656
+  wallLayers:
+    serializedVersion: 2
+    m_Bits: 1073741824
+  pushSpeed: 2.8
+  pushDurationSeconds: 0.08
+  wallProbeDistance: 0.08
+  maxActorsPerTick: 8
 --- !u!114 &700000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -161,7 +203,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sprite: {fileID: 300000}
-  animator: {fileID: 600000}
+  animator: {fileID: 2832147349129693863}
   maxHealthDef: {fileID: 11400000, guid: 0e177e1d15e428745b5859fac08ce203, type: 2}
   healthDef: {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
   enemyName: Knight
@@ -171,11 +213,24 @@ MonoBehaviour:
     m_Bits: 1073740808
   chaseIntent: {fileID: 880000}
   logMobFsmDebug: 0
+  splitLandingSeconds: 0.45
+  splitLandingArcHeight: 0.55
+  splitLandingBlockedLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  splitLandingBlockedSkin: 0.08
+  splitLandingProbeRadius: 0.18
+  splitLandingResolveSteps: 4
   splitPrefab: {fileID: 625522859161183429, guid: 2327e9837a564ed58b0ae70d7c8e00b1, type: 3}
   jumpSlamAbility: {fileID: 11400000, guid: 5bdfce96561d469ba894ae5f6bac2af0, type: 2}
   damageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
   knockbackEffect: {fileID: 11400000, guid: 2f5faaf6bd840544cb59f6d23905c40d, type: 2}
   splitCount: 4
+  jumpBlockedLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  jumpBlockedSkin: 0.08
+  jumpLandingProbeRadius: 0.22
 --- !u!114 &710000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -191,6 +246,9 @@ MonoBehaviour:
   owner: {fileID: 700000}
   abilityCoordinator: {fileID: 900000}
   telegraphService: {fileID: 890000}
+  landingEffectPrefab: {fileID: 6718438523550872990, guid: 47d328b88c893e241a4c084d550218b7, type: 3}
+  landingEffectOffset: {x: 0, y: -0.15, z: 0}
+  landingEffectScale: 0.65
 --- !u!114 &800000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -281,6 +339,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   body: {fileID: 400000}
   enforceContinuousCollision: 1
+  preventWallTunneling: 1
+  wallCollisionLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  wallSafetyMinSpeed: 8
+  wallCastSkinWidth: 0.03
+  depenetrationSkinWidth: 0.01
+  maxDepenetrationIterations: 3
   intentSourceBehaviour: {fileID: 880000}
   statProviderBehaviour: {fileID: 850000}
   externalMovement: {fileID: 860000}
@@ -352,6 +418,10 @@ MonoBehaviour:
   detectionRange: 7
   stopRange: 0.35
   speedScale: 1
+  usePathfindingWhenDirectPathBlocked: 1
+  pathWaypointReachDistance: 0.18
+  pathRebuildInterval: 0.35
+  pathTargetMoveThreshold: 0.35
   returnSpeedScale: 0.9
   logChaseDebug: 0
   logInterval: 0.35
@@ -370,6 +440,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UnityGAS.AttackTelegraphService
   telegraphPrefab: {fileID: 788264263987448140, guid: 211dd09e2da9caf47ad8409c9e35b83d, type: 3}
   defaultStyle: {fileID: 11400000, guid: b15f18602ec87284d80cbd57720425f1, type: 2}
+  useDefaultWallClipping: 0
+  defaultWallClipLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  defaultWallClipSampleCount: 48
+  defaultWallClipSkinWidth: 0.03
 --- !u!114 &900000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -390,14 +466,15 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 100000}
+  m_GameObject: {fileID: 991000000000002003}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cbc9a19645b6c8f458d6e368d5e1dabc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UnityGAS.CombatHurtbox2D
   targetRoot: {fileID: 100000}
-  ownedColliders: []
+  ownedColliders:
+  - {fileID: 500000}
 --- !u!114 &920000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -439,11 +516,55 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   heightState: {fileID: 930000}
   visualRoot: {fileID: 210000}
-  shadowRoot: {fileID: 0}
-  shadowRenderer: {fileID: 0}
+  shadowRoot: {fileID: 210276287355527729}
+  shadowRenderer: {fileID: 3379174250642427353}
   dampTimeSeconds: 0.08
   airborneShadowAlphaScale: 0.55
   airborneShadowScale: 0.75
+  createFallbackShadow: 1
+  fallbackShadowLocalScale: {x: 0.7, y: 0.22, z: 1}
+  fallbackShadowColor: {r: 0, g: 0, b: 0, a: 0.32}
+  fallbackShadowSortingLayerName: Entity
+  fallbackShadowSortingOrder: -1
+--- !u!114 &970000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9e4d6a4fc32b4d0aa77d0a4791d6f207, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  canReact: 1
+  stopMovementOnStart: 1
+  cancelMobAbilityOnStart: 1
+  requestDeathOnComplete: 1
+  useDefaultRespawn: 0
+  removeFallingEffectOnComplete: 0
+--- !u!114 &6600200000000001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ff4ff08e39f49319d1e0414b9985957, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UnityGAS.EntityCollisionProfile2D
+  bodyColliders:
+  - {fileID: 880000000000001008}
+  baseExcludedLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  actorLayers:
+    serializedVersion: 2
+    m_Bits: 2147483656
+  defaultMode: 1
 --- !u!1 &110000
 GameObject:
   m_ObjectHideFlags: 0
@@ -454,6 +575,7 @@ GameObject:
   m_Component:
   - component: {fileID: 210000}
   - component: {fileID: 300000}
+  - component: {fileID: 2832147349129693863}
   m_Layer: 31
   m_Name: Visual
   m_TagString: Untagged
@@ -522,10 +644,10 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -1039746825
-  m_SortingLayer: 4
+  m_SortingLayer: 5
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 8748819513765163098, guid: bf17ab823a307a94994dfc2d34269f30, type: 3}
+  m_Sprite: {fileID: 6552813186526701887, guid: 2ed2f4140059f244697c7f7ee698371c, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -535,23 +657,181 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 1
---- !u!114 &6600200000000001
-MonoBehaviour:
+--- !u!95 &2832147349129693863
+Animator:
+  serializedVersion: 7
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 100000}
+  m_GameObject: {fileID: 110000}
   m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6ff4ff08e39f49319d1e0414b9985957, type: 3}
-  m_Name:
-  m_EditorClassIdentifier: Assembly-CSharp::UnityGAS.EntityCollisionProfile2D
-  bodyColliders: []
-  baseExcludedLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  actorLayers:
-    serializedVersion: 2
-    m_Bits: 2147483656
-  defaultMode: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 63b4b910aec2cd44aa6ba12dc919db64, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
+--- !u!1 &5806636608801103315
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 210276287355527729}
+  - component: {fileID: 3379174250642427353}
+  m_Layer: 31
+  m_Name: Shadow
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &210276287355527729
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5806636608801103315}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.021, y: -0.361, z: 0}
+  m_LocalScale: {x: 2, y: 2, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 200000}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!212 &3379174250642427353
+SpriteRenderer:
+  serializedVersion: 2
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5806636608801103315}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
+  m_SortingLayerID: -1039746825
+  m_SortingLayer: 5
+  m_SortingOrder: -1
+  m_MaskInteraction: 0
+  m_Sprite: {fileID: 4093480436322176185, guid: 66a4ec10a50936e449f2c1fd782999b2, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_FlipX: 0
+  m_FlipY: 0
+  m_DrawMode: 0
+  m_Size: {x: 1, y: 1}
+  m_AdaptiveModeThreshold: 0.5
+  m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
+  m_SpriteSortPoint: 0
+--- !u!1 &991000000000002001
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 991000000000002002}
+  - component: {fileID: 880000000000001008}
+  m_Layer: 31
+  m_Name: BodyCollision
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &991000000000002002
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 991000000000002001}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 1
+  m_Children: []
+  m_Father: {fileID: 200000}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &991000000000002003
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 991000000000002004}
+  - component: {fileID: 500000}
+  - component: {fileID: 910000}
+  m_Layer: 31
+  m_Name: Hurtbox
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &991000000000002004
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 991000000000002003}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 1
+  m_Children: []
+  m_Father: {fileID: 200000}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

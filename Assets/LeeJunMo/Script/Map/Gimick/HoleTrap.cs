@@ -1,12 +1,19 @@
 using DG.Tweening;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityGAS;
 
+/// <summary>
+/// 책임:
+/// - 구덩이 trigger에 닿은 유효 대상을 PitFallTarget으로 정규화하고 공통 낙하 실행을 시작한다.
+/// - 대상별 후처리와 낙하 연출 세부 구현은 PitFallExecutor와 IPitFallReaction에 위임한다.
+/// </summary>
 public class HoleTrap : MonoBehaviour
 {
     [Header("Settings")]
     [SerializeField] private float trapDamage = 10f;
+    [SerializeField] private float playerTrapDamage = 1f;
     [SerializeField] private float trapDuration = 1.0f;
 
     [Header("GAS References")]
@@ -17,7 +24,10 @@ public class HoleTrap : MonoBehaviour
     [Tooltip("이 태그가 있으면 함정이 발동하지 않습니다 (예: Action.Dash)")]
     [SerializeField] private GameplayTag ignoreTag;
 
-    private bool isTriggered = false;
+    [Header("Debug")]
+    [SerializeField] private bool logDebug = true;
+
+    private readonly HashSet<GameObject> activeTargets = new();
 
     private void Start()
     {
@@ -36,9 +46,10 @@ public class HoleTrap : MonoBehaviour
 
     private void CheckAndActivateTrap(Collider2D collision)
     {
-        if (isTriggered) return;
-
         if (!TryBuildFallContext(collision, out PitFallContext context))
+            return;
+
+        if (!TryRegisterActiveTarget(context.TargetObject))
             return;
 
         StartCoroutine(ApplyTrapRoutine(context));
@@ -48,17 +59,29 @@ public class HoleTrap : MonoBehaviour
     {
         context = default;
 
-        if (!PitFallTarget.TryCreatePlayer(collision, out PitFallTarget target))
+        if (!PitFallTarget.TryCreate(collision, out PitFallTarget target))
+        {
+            LogDebug($"ignored collider: no pitfall target. collider={GetColliderName(collision)}");
             return false;
+        }
+
+        if (target.Reaction != null && !target.Reaction.CanReactToPitFall(this))
+        {
+            LogDebug($"ignored target: reaction rejected. target={target.GameObject.name}, reaction={target.Reaction}");
+            return false;
+        }
 
         if (ignoreTag != null)
         {
-            if (target.AbilitySystem.TagSystem.HasTag(ignoreTag))
+            if (target.AbilitySystem.TagSystem != null && target.AbilitySystem.TagSystem.HasTag(ignoreTag))
+            {
+                LogDebug($"ignored target: has ignore tag. target={target.GameObject.name}, tag={ignoreTag.name}");
                 return false;
+            }
         }
 
         Vector3 fallCenter = PitFallPositionResolver.ResolveFallCenter(target.Transform.position, gameObject);
-        Vector3 respawnPosition = target.SafetyTracker.GetRespawnPosition();
+        float damage = ResolveTrapDamage(target);
 
         context = new PitFallContext(
             target.AbilitySystem,
@@ -67,21 +90,78 @@ public class HoleTrap : MonoBehaviour
             gameObject,
             damageEffect,
             fallingEffect,
-            trapDamage,
+            damage,
             trapDuration,
             fallCenter,
-            respawnPosition,
-            this);
+            target.RespawnPosition,
+            this,
+            target.Reaction,
+            logDebug);
 
+        LogDebug($"context built. target={target.GameObject.name}, kind={target.Kind}, damage={damage:0.###}, duration={trapDuration:0.###}, respawn={target.RespawnPosition}, reaction={target.Reaction}");
         return context.IsValid;
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 정규화된 낙하 대상 분류에 따라 구덩이 피해량을 결정한다.
+    /// - 플레이어 한정 피해량을 이름/태그 재검사 없이 공식 target kind로 분기한다.
+    /// </summary>
+    private float ResolveTrapDamage(PitFallTarget target)
+    {
+        return target.Kind == PitFallTargetKind.Player
+            ? Mathf.Max(0f, playerTrapDamage)
+            : Mathf.Max(0f, trapDamage);
     }
 
     private IEnumerator ApplyTrapRoutine(PitFallContext context)
     {
-        isTriggered = true;
+        try
+        {
+            yield return PitFallExecutor.Execute(context);
+        }
+        finally
+        {
+            UnregisterActiveTarget(context.TargetObject);
+        }
+    }
 
-        yield return PitFallExecutor.Execute(context);
+    /// <summary>
+    /// 책임:
+    /// - 같은 대상이 OnTriggerStay로 낙하 처리를 중복 시작하지 않도록 대상별 실행 잠금을 건다.
+    /// - 구덩이 전체가 아니라 대상 단위로 잠가 여러 몬스터가 동시에 떨어질 수 있게 한다.
+    /// </summary>
+    private bool TryRegisterActiveTarget(GameObject targetObject)
+    {
+        if (targetObject == null)
+            return false;
 
-        isTriggered = false;
+        bool registered = activeTargets.Add(targetObject);
+        if (!registered)
+            LogDebug($"ignored target: already falling. target={targetObject.name}");
+
+        return registered;
+    }
+
+    /// <summary>낙하 처리가 끝난 대상을 실행 잠금 목록에서 제거합니다.</summary>
+    private void UnregisterActiveTarget(GameObject targetObject)
+    {
+        if (targetObject == null)
+            return;
+
+        activeTargets.Remove(targetObject);
+    }
+
+    private void LogDebug(string message)
+    {
+        if (!logDebug)
+            return;
+
+        Debug.Log($"[HoleTrap] {name}: {message}", this);
+    }
+
+    private static string GetColliderName(Collider2D collider)
+    {
+        return collider != null ? collider.name : "<null>";
     }
 }

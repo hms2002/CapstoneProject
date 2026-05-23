@@ -1,6 +1,10 @@
 using UnityEngine;
 using UnityGAS;
 
+/// <summary>
+/// 책임 : 테스트용 샌드백의 피격 반응, 데미지 팝업, 자동 회복을 처리한다.
+/// 실제 전투 대상과 달리 프로토타입 씬에서 반복 테스트가 가능하도록 죽지 않는 동작을 제공한다.
+/// </summary>
 [DisallowMultipleComponent]
 [RequireComponent(typeof(Animator))]
 [RequireComponent(typeof(Collider2D))]
@@ -71,7 +75,9 @@ public class TrainingDummy2D : MonoBehaviour
         if (newValue < oldValue)
         {
             float damage = oldValue - newValue;
-            DamagePopupService.Show(damage, transform.position);
+            if (!DamagePopupDuplicateSuppressor.TryConsume(gameObject, damage))
+                DamagePopupService.Show(damage, transform.position);
+
             PlayHurt();
         }
 

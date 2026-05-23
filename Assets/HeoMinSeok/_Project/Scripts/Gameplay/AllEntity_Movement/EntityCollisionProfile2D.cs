@@ -93,7 +93,8 @@ namespace UnityGAS
         /// <summary>
         /// 책임 :
         /// - EntityCollisionProfile2D가 관리할 이동 방해용 body collider만 선별한다.
-        /// - 피해 판정용 hurtbox/hitbox trigger는 combat 계층이 관리하므로 body profile에서 제외한다.
+        /// - 피해 판정용 trigger는 combat 계층이 관리하므로 body profile에서 제외한다.
+        /// - 기존 프리팹처럼 non-trigger 몸체 콜라이더가 CombatHurtbox2D도 겸하는 경우에는 body profile 적용 대상에 포함한다.
         /// </summary>
         private static bool IsBodyCollider(Collider2D candidate)
         {
@@ -101,9 +102,6 @@ namespace UnityGAS
                 return false;
 
             if (candidate.isTrigger)
-                return false;
-
-            if (candidate.GetComponent<CombatHurtbox2D>() != null)
                 return false;
 
             return true;
