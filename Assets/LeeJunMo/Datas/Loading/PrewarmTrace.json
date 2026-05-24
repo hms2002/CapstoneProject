@@ -1,18 +1,6 @@
 {
     "sessions": [
         {
-            "sessionId": "501145d0338a482d897e68be8fa84849",
-            "startedUtc": "2026-05-22T08:43:28.0920640Z",
-            "endedUtc": "2026-05-22T08:43:29.4555600Z",
-            "entries": []
-        },
-        {
-            "sessionId": "b963536713c84fd5835f66dce7e9c4bd",
-            "startedUtc": "2026-05-22T08:47:45.3502215Z",
-            "endedUtc": "2026-05-22T08:47:46.7006238Z",
-            "entries": []
-        },
-        {
             "sessionId": "478e348b1a7b4a5fae865e66cfda249a",
             "startedUtc": "2026-05-22T17:58:43.8889373Z",
             "endedUtc": "2026-05-22T17:58:44.9677636Z",
@@ -184,6 +172,40 @@
             "startedUtc": "2026-05-24T08:27:10.3782502Z",
             "endedUtc": "2026-05-24T08:27:11.4291798Z",
             "entries": []
+        },
+        {
+            "sessionId": "d67ef6f5a5e54b808cd82d94f73d3c71",
+            "startedUtc": "2026-05-24T16:03:17.0445816Z",
+            "endedUtc": "2026-05-24T16:03:57.4646704Z",
+            "entries": [
+                {
+                    "prefabPath": "Assets/HeoMinSeok/_Project/Prefabs/VFX/Element/ElectrocutedSparkParticle.prefab",
+                    "prefabName": "ElectrocutedSparkParticle",
+                    "totalSpawns": 2,
+                    "coldSpawns": 1,
+                    "firstSeenSeconds": 23.93072509765625,
+                    "lastSeenSeconds": 40.411834716796878,
+                    "firstSceneName": "LeeJunmo_Boss_DemonKing",
+                    "lastSceneName": "LeeJunmo_Boss_DemonKing"
+                }
+            ]
+        },
+        {
+            "sessionId": "60cfa7424efe45658f26fe8002549754",
+            "startedUtc": "2026-05-24T17:38:17.3999724Z",
+            "endedUtc": "2026-05-24T17:38:40.1777736Z",
+            "entries": [
+                {
+                    "prefabPath": "Assets/HeoMinSeok/_Project/Prefabs/VFX/Element/ElectrocutedSparkParticle.prefab",
+                    "prefabName": "ElectrocutedSparkParticle",
+                    "totalSpawns": 4,
+                    "coldSpawns": 4,
+                    "firstSeenSeconds": 21.746868133544923,
+                    "lastSeenSeconds": 21.934791564941408,
+                    "firstSceneName": "SangHyup_Boss_SlimeQueen",
+                    "lastSceneName": "SangHyup_Boss_SlimeQueen"
+                }
+            ]
         }
     ]
 }
