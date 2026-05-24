@@ -2,13 +2,12 @@ using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityGAS;
 
 /// <summary>
 /// 책임 :
-/// - 씬에서 직접 연결한 보스 엔티티에서 이름, HP, 그로기 정보를 읽어 각 보스 HUD 뷰에 배포한다.
+/// - 현재 보스 HUD source가 만든 snapshot을 읽어 이름, HP, 그로기 뷰에 배포한다.
 /// - 보스 참조가 없으면 HUD 전체를 비활성화해 잘못된 정보 노출을 막는다.
-/// - 각 개별 UI 뷰는 표현만 담당하고, 어떤 값을 언제 뿌릴지는 이 컨트롤러가 조율한다.
+/// - 보스별 특수 표시 규칙은 HUD source 쪽에 두고, 공용 HUD는 표시 orchestration만 담당한다.
 /// </summary>
 [DisallowMultipleComponent]
 public sealed class BossHudController : MonoBehaviour
@@ -22,10 +21,6 @@ public sealed class BossHudController : MonoBehaviour
 
     [Tooltip("비어 있으면 보스 오브젝트 이름을 그대로 사용합니다.")]
     [SerializeField] private string displayNameOverride;
-
-    [Header("Dual Boss Binding")]
-    [Tooltip("2체 보스 체력바를 표시할 때 사용할 보스 이름입니다.")]
-    [SerializeField] private string dualBossDisplayName = "Slime Queen";
 
     [Header("Views")]
     [SerializeField] private GameObject visibleRoot;
@@ -45,13 +40,11 @@ public sealed class BossHudController : MonoBehaviour
     [SerializeField, Min(0f)] private float slideDuration = 0.3f;
     [SerializeField] private bool useUnscaledSlideTime = true;
 
-    private StaggerGaugeSystem _staggerGaugeSystem;
-    private GameplayEffectRunner _effectRunner;
+    private readonly SingleBossHudSource singleBossSource = new SingleBossHudSource();
+    private IBossHudSource activeSource;
     private Coroutine _slideRoutine;
     private bool _hasAppliedInitialSlideState;
     private bool _lastSlideVisibleState;
-    private SlimeQueenP2Short phaseTwoShortBoss;
-    private SlimeQueenP2Long phaseTwoLongBoss;
 
     private void Awake()
     {
@@ -90,22 +83,8 @@ public sealed class BossHudController : MonoBehaviour
 
     private void Update()
     {
-        if (RefreshSlimeQueenPhaseTwoHudIfAvailable())
-            return;
-
-        if (targetBoss == null)
-        {
-            if (healthBarUI != null)
-            {
-                healthBarUI.SetDualHealthRatios(false, 0f, 0f);
-                healthBarUI.SetSplitHealthPresentation(false, null, null);
-            }
-
-            SetHudVisible(false);
-            return;
-        }
-
-        RefreshAll();
+        if (!TryRefreshActiveSource())
+            HideHud();
     }
 
     /// <summary>
@@ -115,46 +94,23 @@ public sealed class BossHudController : MonoBehaviour
     /// </summary>
     private void HandleSceneLoaded(Scene scene, LoadSceneMode mode)
     {
+        ClearActiveSource();
         ResolveBossBinding();
     }
 
     /// <summary>
     /// 책임 :
-    /// - 현재 씬의 보스 엔티티를 수동 참조 또는 자동 탐색으로 결정하고 관련 런타임 참조를 갱신한다.
+    /// - 현재 씬의 보스 엔티티를 수동 참조 또는 자동 탐색으로 결정하고 HUD source를 갱신한다.
     /// - 바인딩 성공 시 HUD를 즉시 갱신하고, 실패 시에는 안전하게 숨김 상태로 전환한다.
     /// </summary>
     private void ResolveBossBinding()
     {
         ResolveSlideRoot();
-        ClearDestroyedPhaseTwoReferences();
 
-        if (RefreshSlimeQueenPhaseTwoHudIfAvailable())
-            return;
-
-        if (targetBoss == null && ShouldUseAutoFindFallback())
-            targetBoss = FindAnyObjectByType<BossControllerBase>();
-
-        if (CacheSlimeQueenPhaseTwoBoss(targetBoss))
+        if (!TryBindFallbackBoss() || !TryRefreshActiveSource())
         {
-            targetBoss = null;
-            RefreshSlimeQueenPhaseTwoHudIfAvailable();
-            return;
+            HideHud();
         }
-
-        if (targetBoss == null)
-        {
-            _staggerGaugeSystem = null;
-            _effectRunner = null;
-            SetHudVisible(false);
-            return;
-        }
-
-        _staggerGaugeSystem = targetBoss.GetComponent<StaggerGaugeSystem>();
-        _effectRunner = targetBoss.GetComponent<GameplayEffectRunner>();
-
-        SetHudVisible(true);
-        ApplyStaticVisuals();
-        RefreshAll();
     }
 
     private bool ShouldUseAutoFindFallback()
@@ -176,213 +132,224 @@ public sealed class BossHudController : MonoBehaviour
     /// </summary>
     public void BindBoss(BossControllerBase boss)
     {
-        if (CacheSlimeQueenPhaseTwoBoss(boss))
-        {
-            targetBoss = null;
-            RefreshSlimeQueenPhaseTwoHudIfAvailable();
+        if (boss == null)
             return;
-        }
 
-        phaseTwoShortBoss = null;
-        phaseTwoLongBoss = null;
-        targetBoss = boss;
-        ResolveBossBinding();
+        BindSourceForBoss(boss);
+        if (!TryRefreshActiveSource())
+            HideHud();
     }
 
     /// <summary>
     /// 책임 :
-    /// - 현재 HUD에 연결된 보스가 해제될 때만 안전하게 참조를 비우고 HUD를 숨긴다.
-    /// - 다른 보스가 이미 등록된 상황에서 잘못된 해제가 들어와도 현재 HUD 바인딩을 보호한다.
+    /// - 현재 HUD source가 소유한 보스가 해제될 때만 안전하게 참조를 비운다.
+    /// - 다중 보스 source는 남은 보스 snapshot을 만들 수 있으면 HUD 표시를 유지한다.
     /// </summary>
     public void UnbindBoss(BossControllerBase boss)
     {
-        if (boss != null && boss == phaseTwoShortBoss)
+        if (boss == null || IsSourceMissing(activeSource) || !activeSource.OwnsBoss(boss))
+            return;
+
+        if (ReferenceEquals(activeSource, singleBossSource))
         {
-            phaseTwoShortBoss = null;
-            HideHudIfPhaseTwoEnded();
+            ClearActiveSource();
+            HideHud();
             return;
         }
 
-        if (boss != null && boss == phaseTwoLongBoss)
-        {
-            phaseTwoLongBoss = null;
-            HideHudIfPhaseTwoEnded();
-            return;
-        }
-
-        if (boss == null || targetBoss != boss)
+        TryReplaceSourceOwnedByUnbindingBoss(boss);
+        if (TryRefreshActiveSource())
             return;
 
-        targetBoss = null;
-        _staggerGaugeSystem = null;
-        _effectRunner = null;
-        SetHudVisible(false);
+        ClearActiveSource();
+        HideHud();
     }
 
-    /// <summary>2페이즈 슬라임 퀸 HUD를 표시할 수 있으면 갱신합니다.</summary>
-    private bool RefreshSlimeQueenPhaseTwoHudIfAvailable()
+    private bool TryBindFallbackBoss()
     {
-        ClearDestroyedPhaseTwoReferences();
-        FindSlimeQueenPhaseTwoBosses();
+        BossControllerBase boss = targetBoss;
+        if (boss == null && ShouldUseAutoFindFallback())
+            boss = FindAnyObjectByType<BossControllerBase>();
 
-        if (phaseTwoShortBoss == null && phaseTwoLongBoss == null)
+        if (boss == null)
             return false;
 
-        targetBoss = null;
-        _staggerGaugeSystem = null;
-        _effectRunner = null;
+        BindSourceForBoss(boss);
+        return !IsSourceMissing(activeSource);
+    }
 
-        SetHudVisible(true);
-        ApplySlimeQueenPhaseTwoStaticVisuals();
-
-        if (healthBarUI != null)
+    private void BindSourceForBoss(BossControllerBase boss)
+    {
+        IBossHudSource source = ResolveHudSourceForBoss(boss);
+        if (!IsSourceMissing(source))
         {
-            healthBarUI.SetSplitHealthPresentation(false, null, null);
-            healthBarUI.SetDualHealthRatios(
-                true,
-                GetBossHealthRatioOrZero(phaseTwoShortBoss),
-                GetBossHealthRatioOrZero(phaseTwoLongBoss));
+            activeSource = source;
+            singleBossSource.Clear();
+            targetBoss = null;
+            return;
         }
 
-        if (groggyBarUI != null)
-            groggyBarUI.SetVisible(false);
+        targetBoss = boss;
+        activeSource = singleBossSource.Bind(boss, displayNameOverride);
+    }
 
+    private IBossHudSource ResolveHudSourceForBoss(BossControllerBase boss)
+    {
+        if (boss == null)
+            return null;
+
+        MonoBehaviour[] behaviours = boss.GetComponents<MonoBehaviour>();
+        IBossHudSource bestSource = null;
+        int bestPriority = int.MinValue;
+
+        for (int i = 0; i < behaviours.Length; i++)
+        {
+            if (behaviours[i] is not IBossHudSource source)
+                continue;
+
+            if (!source.OwnsBoss(boss) || source.Priority < bestPriority)
+                continue;
+
+            bestSource = source;
+            bestPriority = source.Priority;
+        }
+
+        return bestSource;
+    }
+
+    private bool TryReplaceSourceOwnedByUnbindingBoss(BossControllerBase unbindingBoss)
+    {
+        if (unbindingBoss == null || activeSource is not MonoBehaviour activeBehaviour)
+            return false;
+
+        if (activeBehaviour == null || activeBehaviour.gameObject != unbindingBoss.gameObject)
+            return false;
+
+        MonoBehaviour[] behaviours = FindObjectsByType<MonoBehaviour>(FindObjectsInactive.Exclude);
+        IBossHudSource bestSource = null;
+        int bestPriority = int.MinValue;
+
+        for (int i = 0; i < behaviours.Length; i++)
+        {
+            MonoBehaviour behaviour = behaviours[i];
+            if (behaviour == null || behaviour == activeBehaviour)
+                continue;
+
+            if (behaviour is not IBossHudSource source)
+                continue;
+
+            if (!source.OwnsBoss(unbindingBoss) || source.Priority < bestPriority)
+                continue;
+
+            if (!source.TryBuildSnapshot(out BossHudSnapshot snapshot) || !snapshot.IsVisible)
+                continue;
+
+            bestSource = source;
+            bestPriority = source.Priority;
+        }
+
+        if (IsSourceMissing(bestSource))
+            return false;
+
+        activeSource = bestSource;
         return true;
     }
 
-    /// <summary>2페이즈 보스가 모두 사라졌으면 HUD를 숨기고, 남아 있으면 갱신합니다.</summary>
-    private void HideHudIfPhaseTwoEnded()
+    private bool TryRefreshActiveSource()
     {
-        if (RefreshSlimeQueenPhaseTwoHudIfAvailable())
-            return;
-
-        if (healthBarUI != null)
+        if (IsSourceMissing(activeSource))
         {
-            healthBarUI.SetDualHealthRatios(false, 0f, 0f);
-            healthBarUI.SetSplitHealthPresentation(false, null, null);
+            activeSource = null;
+            singleBossSource.Clear();
         }
 
-        SetHudVisible(false);
+        if (activeSource == null && !TryBindFallbackBoss())
+            return false;
+
+        if (activeSource == null ||
+            !activeSource.TryBuildSnapshot(out BossHudSnapshot snapshot) ||
+            !snapshot.IsVisible)
+            return false;
+
+        ApplySnapshot(snapshot);
+        return true;
     }
 
-    /// <summary>2페이즈 슬라임 퀸 이름 표시를 갱신합니다.</summary>
-    private void ApplySlimeQueenPhaseTwoStaticVisuals()
+    private void ClearActiveSource()
     {
+        activeSource = null;
+        singleBossSource.Clear();
+    }
+
+    private static bool IsSourceMissing(IBossHudSource source)
+    {
+        if (source == null)
+            return true;
+
+        return source is UnityEngine.Object unityObject && unityObject == null;
+    }
+
+    private void ApplySnapshot(BossHudSnapshot snapshot)
+    {
+        SetHudVisible(true);
+
         if (bossNameText != null)
-            bossNameText.text = string.IsNullOrWhiteSpace(dualBossDisplayName) ? "Slime Queen" : dualBossDisplayName;
+            bossNameText.text = snapshot.DisplayName;
 
-        ApplyGroggyLabel(false);
+        ApplyGroggyLabel(snapshot.HasAnyGroggyChannel);
+        ApplyHealthSnapshot(snapshot);
+        ApplyGroggySnapshot(snapshot);
     }
 
-    /// <summary>2페이즈 슬라임 퀸 타입이면 HUD 캐시에 저장합니다.</summary>
-    private bool CacheSlimeQueenPhaseTwoBoss(BossControllerBase boss)
-    {
-        SlimeQueenP2Short shortBoss = boss as SlimeQueenP2Short;
-        if (shortBoss != null)
-        {
-            phaseTwoShortBoss = shortBoss;
-            return true;
-        }
-
-        SlimeQueenP2Long longBoss = boss as SlimeQueenP2Long;
-        if (longBoss != null)
-        {
-            phaseTwoLongBoss = longBoss;
-            return true;
-        }
-
-        return false;
-    }
-
-    /// <summary>씬에 존재하는 2페이즈 슬라임 퀸 보스를 찾습니다.</summary>
-    private void FindSlimeQueenPhaseTwoBosses()
-    {
-        if (phaseTwoShortBoss != null || phaseTwoLongBoss != null)
-            return;
-
-        if (phaseTwoShortBoss == null)
-            phaseTwoShortBoss = FindAnyObjectByType<SlimeQueenP2Short>();
-
-        if (phaseTwoLongBoss == null)
-            phaseTwoLongBoss = FindAnyObjectByType<SlimeQueenP2Long>();
-    }
-
-    /// <summary>파괴된 2페이즈 슬라임 퀸 참조를 비웁니다.</summary>
-    private void ClearDestroyedPhaseTwoReferences()
-    {
-        if (phaseTwoShortBoss == null)
-            phaseTwoShortBoss = null;
-
-        if (phaseTwoLongBoss == null)
-            phaseTwoLongBoss = null;
-    }
-
-    /// <summary>보스 참조가 없으면 0, 있으면 현재 체력 비율을 반환합니다.</summary>
-    private float GetBossHealthRatioOrZero(BossControllerBase boss)
-    {
-        return boss == null ? 0f : boss.CurrentHealthRatio;
-    }
-
-    /// <summary>
-    /// 책임 :
-    /// - 보스가 바뀌지 않는 정보(표시 이름)를 뷰에 한 번 반영한다.
-    /// - 이름 텍스트의 fallback 규칙을 HUD 컨트롤러 안에 모아 authoring 부담을 줄인다.
-    /// </summary>
-    private void ApplyStaticVisuals()
-    {
-        if (bossNameText == null)
-        {
-            ApplyGroggyLabel(false);
-            return;
-        }
-
-        string resolvedBossName = string.IsNullOrWhiteSpace(displayNameOverride)
-            ? targetBoss.EnemyName
-            : displayNameOverride;
-
-        if (string.IsNullOrWhiteSpace(resolvedBossName))
-            resolvedBossName = targetBoss.gameObject.name;
-
-        bossNameText.text = resolvedBossName;
-        ApplyGroggyLabel(targetBoss != null && targetBoss.HasGroggyTag());
-    }
-
-    private void RefreshAll()
-    {
-        ApplyGroggyLabel(targetBoss != null && targetBoss.HasGroggyTag());
-
-        if (healthBarUI != null)
-        {
-            healthBarUI.SetHealthRatio(targetBoss.CurrentHealthRatio);
-            ApplySplitHealthPresentation();
-        }
-
-        if (groggyBarUI != null)
-        {
-            bool isGroggy = targetBoss.HasGroggyTag();
-            groggyBarUI.SetVisible(true);
-            groggyBarUI.SetGroggyMode(isGroggy);
-            groggyBarUI.SetGroggyRatio(GetGroggyRatio());
-        }
-    }
-
-    /// <summary>분리형 보스 체력 표시 정보를 현재 보스에서 읽어 체력바 뷰에 반영합니다.</summary>
-    private void ApplySplitHealthPresentation()
+    private void ApplyHealthSnapshot(BossHudSnapshot snapshot)
     {
         if (healthBarUI == null)
             return;
 
-        IBossSplitHealthPresentation splitHealthPresentation = targetBoss as IBossSplitHealthPresentation;
-        if (splitHealthPresentation == null || !splitHealthPresentation.ShowSplitHealthPresentation)
+        if (snapshot.ChannelCount >= 2)
         {
             healthBarUI.SetSplitHealthPresentation(false, null, null);
+            healthBarUI.SetDualHealthRatios(
+                true,
+                snapshot.PrimaryChannel.HealthRatio,
+                snapshot.SecondaryChannel.HealthRatio);
             return;
         }
 
+        healthBarUI.SetDualHealthRatios(false, 0f, 0f);
         healthBarUI.SetSplitHealthPresentation(
-            true,
-            splitHealthPresentation.SplitHealthLeftLabel,
-            splitHealthPresentation.SplitHealthRightLabel);
+            snapshot.UseSplitHealthPresentation,
+            snapshot.SplitHealthLeftLabel,
+            snapshot.SplitHealthRightLabel);
+        healthBarUI.SetHealthRatio(snapshot.PrimaryChannel.HealthRatio);
+    }
+
+    private void ApplyGroggySnapshot(BossHudSnapshot snapshot)
+    {
+        if (groggyBarUI == null)
+            return;
+
+        if (snapshot.ChannelCount >= 2)
+        {
+            bool visible = snapshot.PrimaryChannel.HasGroggyGauge || snapshot.SecondaryChannel.HasGroggyGauge;
+            groggyBarUI.SetVisible(visible);
+            groggyBarUI.SetDualGroggyRatios(
+                visible,
+                snapshot.PrimaryChannel.GroggyRatio,
+                snapshot.PrimaryChannel.IsGroggy,
+                snapshot.SecondaryChannel.GroggyRatio,
+                snapshot.SecondaryChannel.IsGroggy);
+            return;
+        }
+
+        BossHudChannelSnapshot channel = snapshot.PrimaryChannel;
+        groggyBarUI.SetDualGroggyRatios(false, 0f, false, 0f, false);
+        groggyBarUI.SetVisible(channel.HasGroggyGauge);
+        if (channel.HasGroggyGauge)
+        {
+            groggyBarUI.SetGroggyMode(channel.IsGroggy);
+            groggyBarUI.SetGroggyRatio(channel.GroggyRatio);
+        }
     }
 
     /// <summary>
@@ -400,38 +367,22 @@ public sealed class BossHudController : MonoBehaviour
             groggyStateText.text = groggyStateLabel;
     }
 
-    /// <summary>
-    /// 책임 :
-    /// - 기절 중이면 경과 시간 비율(0→1)을 반환해 남은 시간 표현을 기존과 반대로 뒤집는다.
-    /// - 기절 중이 아니면 스태거 게이지 누적의 역비율(1→0)을 반환해 피격될수록 슬라이더가 줄어들게 만든다.
-    /// </summary>
-    private float GetGroggyRatio()
+    private void HideHud()
     {
-        if (_staggerGaugeSystem == null) return 0f;
-
-        // 기절 중 : 경과 시간 비율(남은 시간 표현 반전)
-        if (_effectRunner != null)
+        if (healthBarUI != null)
         {
-            GameplayEffect groggyEffect = _staggerGaugeSystem.staggeredEffect;
-            if (groggyEffect != null && groggyEffect.duration > 0f)
-            {
-                float remaining = _effectRunner.GetRemainingTime(groggyEffect, targetBoss.gameObject);
-                if (remaining > 0.001f)
-                {
-                    float elapsedNormalized = 1f - Mathf.Clamp01(remaining / groggyEffect.duration);
-                    return elapsedNormalized;
-                }
-            }
+            healthBarUI.SetDualHealthRatios(false, 0f, 0f);
+            healthBarUI.SetSplitHealthPresentation(false, null, null);
         }
 
-        // 기절 아닐 때 : 스태거 게이지 누적 역비율
-        if (targetBoss.AttributeSet == null) return 0f;
-        if (_staggerGaugeSystem.currentGaugeAttribute == null || _staggerGaugeSystem.maxGaugeAttribute == null) return 0f;
+        if (groggyBarUI != null)
+        {
+            groggyBarUI.SetDualGroggyRatios(false, 0f, false, 0f, false);
+            groggyBarUI.SetVisible(false);
+        }
 
-        float current = targetBoss.AttributeSet.GetAttributeValue(_staggerGaugeSystem.currentGaugeAttribute);
-        float max = targetBoss.AttributeSet.GetAttributeValue(_staggerGaugeSystem.maxGaugeAttribute);
-
-        return max > 0f ? 1f - Mathf.Clamp01(current / max) : 0f;
+        ApplyGroggyLabel(false);
+        SetHudVisible(false);
     }
 
     /// <summary>
@@ -446,8 +397,8 @@ public sealed class BossHudController : MonoBehaviour
         {
             if (bossNameText != null)
                 bossNameText.gameObject.SetActive(visible);
-            if (groggyStateText != null)
-                groggyStateText.gameObject.SetActive(visible && targetBoss != null && targetBoss.HasGroggyTag());
+            if (groggyStateText != null && !visible)
+                groggyStateText.gameObject.SetActive(false);
             if (healthBarUI != null)
                 healthBarUI.gameObject.SetActive(visible);
             if (groggyBarUI != null)

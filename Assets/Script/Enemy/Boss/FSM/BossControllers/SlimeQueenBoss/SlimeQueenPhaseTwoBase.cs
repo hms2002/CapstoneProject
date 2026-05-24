@@ -137,6 +137,12 @@ public abstract class SlimeQueenPhaseTwoBase : SlimeQueenBossBase, ISlimeQueenBo
         }
     }
 
+    protected override void Awake()
+    {
+        base.Awake();
+        SlimeQueenPhaseTwoHudSource.EnsureFor(this);
+    }
+
     /// <summary>패턴 피해가 우선 적용되어야 하는 동안 상시 접촉 피해를 막습니다.</summary>
     public void SetPassiveContactDamageBlocked(bool isBlocked)
     {
@@ -181,6 +187,9 @@ public abstract class SlimeQueenPhaseTwoBase : SlimeQueenBossBase, ISlimeQueenBo
 
     protected override void Update()
     {
+        if (isDrainControlLocked)
+            return;
+
         if (isJointPatternLocked)
         {
             if (movementMotor != null)
