@@ -1,123 +1,167 @@
 {
     "sessions": [
         {
-            "sessionId": "73d1a20351fa43a7857927b020babb91",
-            "startedUtc": "2026-05-21T10:40:29.5830582Z",
-            "endedUtc": "2026-05-21T10:40:30.8696033Z",
+            "sessionId": "f267f292428649f7b800994f719cd3fc",
+            "startedUtc": "2026-05-21T18:56:26.5689828Z",
+            "endedUtc": "2026-05-21T18:59:19.9153596Z",
+            "entries": [
+                {
+                    "prefabPath": "Assets/HeoMinSeok/_Project/Prefabs/VFX/Element/ElectrocutedSparkParticle.prefab",
+                    "prefabName": "ElectrocutedSparkParticle",
+                    "totalSpawns": 201,
+                    "coldSpawns": 201,
+                    "firstSeenSeconds": 68.80567932128906,
+                    "lastSeenSeconds": 173.32994079589845,
+                    "firstSceneName": "SlimeCorridor",
+                    "lastSceneName": "SlimeCorridor"
+                }
+            ]
+        },
+        {
+            "sessionId": "6258bbba2f5f4ee8b0e765df5821951b",
+            "startedUtc": "2026-05-21T19:24:43.3230958Z",
+            "endedUtc": "2026-05-21T19:24:45.2669999Z",
             "entries": []
         },
         {
-            "sessionId": "1d3dfbe5182d49e4b9e7779f95db8557",
-            "startedUtc": "2026-05-21T11:06:11.0605831Z",
-            "endedUtc": "2026-05-21T11:06:12.3759041Z",
+            "sessionId": "9b8044400ca64071b605afb5b0397265",
+            "startedUtc": "2026-05-21T19:29:11.0141802Z",
+            "endedUtc": "2026-05-21T19:29:12.8139228Z",
             "entries": []
         },
         {
-            "sessionId": "2d1535b31c9847a3ab3c76fb38dd3e39",
-            "startedUtc": "2026-05-21T11:24:19.7322739Z",
-            "endedUtc": "2026-05-21T11:24:20.9288971Z",
+            "sessionId": "e8ddc2f3c72c406eb535bd3d0f18a613",
+            "startedUtc": "2026-05-21T19:30:56.6499698Z",
+            "endedUtc": "2026-05-21T19:30:57.6593460Z",
             "entries": []
         },
         {
-            "sessionId": "ce1c8edd1ba34913a20bfb7f194c95a0",
-            "startedUtc": "2026-05-21T11:29:09.9192228Z",
-            "endedUtc": "2026-05-21T11:29:11.2395975Z",
+            "sessionId": "9fe0803f419c4a9eadfd920401aab095",
+            "startedUtc": "2026-05-21T19:31:18.9346631Z",
+            "endedUtc": "2026-05-21T19:31:20.6544357Z",
             "entries": []
         },
         {
-            "sessionId": "19c390d339b64774b79e0dd32205b876",
-            "startedUtc": "2026-05-21T11:34:45.7279331Z",
-            "endedUtc": "2026-05-21T11:34:47.0268312Z",
+            "sessionId": "e231e9258c244827812c7b7d069b5c1d",
+            "startedUtc": "2026-05-21T19:31:42.0245646Z",
+            "endedUtc": "2026-05-21T19:31:43.7473347Z",
             "entries": []
         },
         {
-            "sessionId": "63c66e43ceee4cccbd111ffd74f14d0b",
-            "startedUtc": "2026-05-21T11:50:59.7847853Z",
-            "endedUtc": "2026-05-21T11:51:01.0950224Z",
+            "sessionId": "78f97fd42d5645e4bd4018da9e96b744",
+            "startedUtc": "2026-05-21T19:32:35.7495566Z",
+            "endedUtc": "2026-05-21T19:32:37.4890895Z",
             "entries": []
         },
         {
-            "sessionId": "4f1505bd7bf341b6b59045aef52694c7",
-            "startedUtc": "2026-05-21T12:42:41.1537560Z",
-            "endedUtc": "2026-05-21T12:42:42.4775891Z",
+            "sessionId": "5ae0e66fbdc44c9d9fe0585d5adeca96",
+            "startedUtc": "2026-05-21T19:35:40.1408880Z",
+            "endedUtc": "2026-05-21T19:35:41.1675691Z",
             "entries": []
         },
         {
-            "sessionId": "a056e5d15d614e99a1059680d4925d12",
-            "startedUtc": "2026-05-21T13:21:55.3234045Z",
-            "endedUtc": "2026-05-21T13:21:56.6582216Z",
+            "sessionId": "efc3f364a7034902a8e8d1327a36918b",
+            "startedUtc": "2026-05-21T19:36:16.7931869Z",
+            "endedUtc": "2026-05-21T19:36:18.6708534Z",
             "entries": []
         },
         {
-            "sessionId": "50a6923095cb4e0a9eebfb314afa35d8",
-            "startedUtc": "2026-05-21T13:25:30.2909618Z",
-            "endedUtc": "2026-05-21T13:25:31.6389856Z",
+            "sessionId": "39307a86aaf244fcbb01ea3ce70aa3b8",
+            "startedUtc": "2026-05-21T19:55:23.5789915Z",
+            "endedUtc": "2026-05-21T19:55:24.5898022Z",
             "entries": []
         },
         {
-            "sessionId": "7229422ca1234ee2960f9583fec81487",
-            "startedUtc": "2026-05-21T13:28:04.9700192Z",
-            "endedUtc": "2026-05-21T13:28:06.3321245Z",
+            "sessionId": "81bce951ec804ee3956acde1fc177fa2",
+            "startedUtc": "2026-05-21T19:58:48.9133164Z",
+            "endedUtc": "2026-05-21T19:58:50.8721951Z",
             "entries": []
         },
         {
-            "sessionId": "bc55d42f44b04c19967dbd298e5f774a",
-            "startedUtc": "2026-05-21T13:33:48.1817579Z",
-            "endedUtc": "2026-05-21T13:33:49.3010918Z",
+            "sessionId": "1ffd0680f79f41568f2d439d6ea44506",
+            "startedUtc": "2026-05-21T20:02:56.9391887Z",
+            "endedUtc": "2026-05-21T20:02:57.9634550Z",
             "entries": []
         },
         {
-            "sessionId": "001c9ebc04dc443b8de5bfc124a0b2ce",
-            "startedUtc": "2026-05-21T13:53:52.7336431Z",
-            "endedUtc": "2026-05-21T13:53:53.7980073Z",
+            "sessionId": "df4d417124294795ac76b8d868c361d2",
+            "startedUtc": "2026-05-21T20:04:07.1816734Z",
+            "endedUtc": "2026-05-21T20:04:09.0823599Z",
             "entries": []
         },
         {
-            "sessionId": "d01f950358b5488bacf9a09d5271002c",
-            "startedUtc": "2026-05-21T14:09:54.3524444Z",
-            "endedUtc": "2026-05-21T14:09:55.4155231Z",
+            "sessionId": "e111e239b5b346918293d1d1c7fc2dd9",
+            "startedUtc": "2026-05-21T20:08:11.1578754Z",
+            "endedUtc": "2026-05-21T20:09:10.5774026Z",
+            "entries": [
+                {
+                    "prefabPath": "Assets/HeoMinSeok/_Project/Prefabs/VFX/Element/ElectrocutedSparkParticle.prefab",
+                    "prefabName": "ElectrocutedSparkParticle",
+                    "totalSpawns": 1,
+                    "coldSpawns": 1,
+                    "firstSeenSeconds": 59.40172576904297,
+                    "lastSeenSeconds": 59.40183639526367,
+                    "firstSceneName": "LeeJunmo_Boss_DemonKing",
+                    "lastSceneName": "LeeJunmo_Boss_DemonKing"
+                }
+            ]
+        },
+        {
+            "sessionId": "9120c32f3af94f68a6601f3d9c2bb35f",
+            "startedUtc": "2026-05-21T20:10:52.9353084Z",
+            "endedUtc": "2026-05-21T20:11:50.9907023Z",
+            "entries": [
+                {
+                    "prefabPath": "Assets/HeoMinSeok/_Project/Prefabs/VFX/Element/ElectrocutedSparkParticle.prefab",
+                    "prefabName": "ElectrocutedSparkParticle",
+                    "totalSpawns": 1,
+                    "coldSpawns": 1,
+                    "firstSeenSeconds": 58.045143127441409,
+                    "lastSeenSeconds": 58.04525375366211,
+                    "firstSceneName": "LeeJunmo_Boss_DemonKing",
+                    "lastSceneName": "LeeJunmo_Boss_DemonKing"
+                }
+            ]
+        },
+        {
+            "sessionId": "d194ed94f1f94245b8a1c1cc531ade2b",
+            "startedUtc": "2026-05-24T06:53:12.3469605Z",
+            "endedUtc": "2026-05-24T06:53:14.1233582Z",
             "entries": []
         },
         {
-            "sessionId": "028d6682bd9d4aa3a629b2b04ba918ff",
-            "startedUtc": "2026-05-21T14:13:55.2970315Z",
-            "endedUtc": "2026-05-21T14:13:56.6361109Z",
+            "sessionId": "a8fec3f7273749e6ba7a219341f1a90c",
+            "startedUtc": "2026-05-24T07:02:31.6594711Z",
+            "endedUtc": "2026-05-24T07:02:51.4960005Z",
+            "entries": [
+                {
+                    "prefabPath": "Assets/HeoMinSeok/_Project/Prefabs/VFX/Element/ElectrocutedSparkParticle.prefab",
+                    "prefabName": "ElectrocutedSparkParticle",
+                    "totalSpawns": 4,
+                    "coldSpawns": 4,
+                    "firstSeenSeconds": 16.81264305114746,
+                    "lastSeenSeconds": 19.01919174194336,
+                    "firstSceneName": "TotorialCorridor",
+                    "lastSceneName": "TotorialCorridor"
+                }
+            ]
+        },
+        {
+            "sessionId": "7762cd8886f444d0ae9dbc88a1eba725",
+            "startedUtc": "2026-05-24T07:08:26.7792942Z",
+            "endedUtc": "2026-05-24T07:08:28.7700300Z",
             "entries": []
         },
         {
-            "sessionId": "412a7c88658144e5b9a27c2e959070d9",
-            "startedUtc": "2026-05-21T14:23:15.9812679Z",
-            "endedUtc": "2026-05-21T14:23:17.0641853Z",
+            "sessionId": "4439ce74cf2844cc8ff4a742333eb687",
+            "startedUtc": "2026-05-24T07:09:50.4608933Z",
+            "endedUtc": "2026-05-24T07:09:52.4712771Z",
             "entries": []
         },
         {
-            "sessionId": "46e07a84236d4268a0e960a0e7c99e2b",
-            "startedUtc": "2026-05-21T14:32:58.5733407Z",
-            "endedUtc": "2026-05-21T14:32:59.6394671Z",
-            "entries": []
-        },
-        {
-            "sessionId": "1b992839ad864f35a509cfb23864da6b",
-            "startedUtc": "2026-05-21T14:37:46.9182122Z",
-            "endedUtc": "2026-05-21T14:37:48.6450434Z",
-            "entries": []
-        },
-        {
-            "sessionId": "f49c339b21e34b74b51a785f86c89387",
-            "startedUtc": "2026-05-21T14:43:42.6284716Z",
-            "endedUtc": "2026-05-21T14:43:44.0581623Z",
-            "entries": []
-        },
-        {
-            "sessionId": "0773449f850d458e86ed6a2341119dc2",
-            "startedUtc": "2026-05-21T14:49:27.2306851Z",
-            "endedUtc": "2026-05-21T14:49:28.6788689Z",
-            "entries": []
-        },
-        {
-            "sessionId": "6b5b23c8fe0c49cdb46966aa9a52ed2a",
-            "startedUtc": "2026-05-21T14:51:40.4735665Z",
-            "endedUtc": "2026-05-21T14:51:41.8682998Z",
+            "sessionId": "0b9d62d90143473f99a38b3fb8156156",
+            "startedUtc": "2026-05-24T07:18:10.1927044Z",
+            "endedUtc": "2026-05-24T07:18:12.0189677Z",
             "entries": []
         }
     ]
