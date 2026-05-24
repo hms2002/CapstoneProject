@@ -259,6 +259,9 @@ public class Enemy : MonoBehaviour, ICombatDeathCommand
         if (candidate == null)
             return false;
 
+        if (!IsTargetablePlayer(candidate))
+            return false;
+
         Vector2 origin = ResolvePerceptionOrigin();
         Vector2 destination = ResolvePerceptionPoint(candidate);
         Vector2 delta = destination - origin;
@@ -294,6 +297,16 @@ public class Enemy : MonoBehaviour, ICombatDeathCommand
         }
 
         return true;
+    }
+
+    private static bool IsTargetablePlayer(Transform candidate)
+    {
+        PlayerInteractor2D player = ResolvePlayerInteractor(candidate);
+        if (player == null)
+            return true;
+
+        PlayerTargetabilityBlocker blocker = player.GetComponent<PlayerTargetabilityBlocker>();
+        return blocker == null || blocker.IsTargetable;
     }
 
     private Vector2 ResolvePerceptionOrigin()
@@ -380,6 +393,25 @@ public class Enemy : MonoBehaviour, ICombatDeathCommand
             return player.transform;
 
         return hit.CompareTag(targetTag) ? hit.transform : null;
+    }
+
+    private static PlayerInteractor2D ResolvePlayerInteractor(Transform candidate)
+    {
+        if (candidate == null)
+            return null;
+
+        PlayerInteractor2D player = candidate.GetComponentInParent<PlayerInteractor2D>();
+        if (player != null)
+            return player;
+
+        Transform registeredPlayer = PlayerRuntimeRegistry.GetPlayerTransform();
+        if (registeredPlayer != null &&
+            (candidate == registeredPlayer || candidate.IsChildOf(registeredPlayer)))
+        {
+            return registeredPlayer.GetComponent<PlayerInteractor2D>();
+        }
+
+        return null;
     }
 
     private static bool IsColliderOwnedByTransform(Collider2D hit, Transform owner)

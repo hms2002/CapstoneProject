@@ -2,7 +2,7 @@
 status: active
 authority: structure-memory
 category: script-system-map
-last_reviewed: 2026-05-19
+last_reviewed: 2026-05-20
 ---
 
 # Dialogue NPC Affection Structure
@@ -60,7 +60,7 @@ Map dialogue, NPC features, affection, merchant, upgrade, and boss dialogue scri
 - Merchant stock and upgrade progress are run/save-policy sensitive; do not treat UI state as the source of truth.
 - Affection should contribute modifiers/rewards without bypassing base progression reward rules.
 - Affection gain presentation gates dialogue continuation, so interrupted DOTween sequences must still invoke their pending completion callback exactly once.
-- Affection reward popups must not block dialogue continuation while `DialogueService` owns an external UI input blocker; queue the reward display and let `RewardDisplayService` retry after UI opening is allowed.
+- Affection reward popups are part of the dialogue flow: after affection gain presentation, show the reward UI through `RewardDisplayService.ShowFlowOwnedReward(...)`, keep the dialogue continuation as the reward close callback, and resume dialogue only after the reward UI closes.
 - Boss reward affection effects author their own additive fields and convert them into `BossRewardModifierAggregate` at runtime; they should not depend on a separate modifier ScriptableObject asset.
 
 ## Boundary Review
@@ -73,13 +73,14 @@ Map dialogue, NPC features, affection, merchant, upgrade, and boss dialogue scri
 | Run modifiers | `RunModifierService` and its delta/snapshot/aggregation/rebuild/provider helpers live under `Assets/LeeJunMo/Script/Progression/RunModifiers/`. It aggregates upgrade and affection contributors for grave, chest, shop, and boss reward modifiers. Reward-facing consumers use `RunRewardModifierSnapshot`, aggregation traversal/calculation runs through `RunModifierAggregationService`, upgrade node loading/merge policy runs through `RunModifierUpgradeNodeProvider`, and rebuild execution orchestration runs through `RunModifierRebuildService`. | System-wide progression/run modifier owner, not upgrade-only. The current singleton/public API surface remains as the compatibility facade. |
 | Merchant policy | `MerchantNPC` combines `ShopDefinitionSO`, `RunModifierService.ShopModifiers`, `MerchantShopPolicy`, and `MerchantRunStateService`. | Boundary is acceptable. Continue treating stock as run/session state and shop definition as authored policy. |
 | Boss dialogue sequence | `BossEncounterDirector` is the current encounter dialogue/camera/combat-start path; `BossTalkManager` remains a legacy bridge with similar sequence responsibilities. | Watch as legacy/current bridge. Do not create a separate backlog entry until prefab migration or duplicate sequence behavior becomes an active task. |
-| Run-internal special NPCs | Planned construction and same-scene teleport NPCs use `SpeechBubbleComponent` and local world choices rather than `DialogueController`, Ink, portraits, or `DialogueView`. | Keep this flow separate from the existing Ink dialogue stack. Start from `Docs/StructureMemory/ScriptSystems/RunSpecialNpcStructure.md` when implementing it. |
+| Run-internal special NPCs | Construction and same-scene teleport NPCs use `RunSpecialNpcInteractor`, `SpeechBubbleComponent`, and local authored choices rather than `DialogueController`, Ink, portraits, or `DialogueView`. | Keep this flow separate from the existing Ink dialogue stack. Use `Docs/StructureMemory/ScriptSystems/RunSpecialNpcStructure.md` for implementation details. |
 
 ## Extension Entry Points
 
 - Add dialogue behavior through Dialogue Core and Dialogue UI buckets.
 - Add NPC actions through NPC Feature Core and feature-specific folders.
 - Add run-internal speech-bubble NPC behavior through [Run Special NPC Structure](./RunSpecialNpcStructure.md), not the Ink portrait dialogue buckets.
+- Add run-special NPC feature behavior by deriving from `RunSpecialNpcFeatureBase`; do not attach it to `NPCFeatureController` unless the design intentionally moves back into the portrait dialogue stack.
 - Add upgrade behavior through Upgrade Feature and Upgrade Effects, keeping authored data in ScriptableObjects.
 - Add affection reward behavior through Affection Effects and additive runtime modifier patterns.
 
@@ -92,7 +93,7 @@ Map dialogue, NPC features, affection, merchant, upgrade, and boss dialogue scri
 - `RunModifierService`, `RunModifierDeltas`, `RunRewardModifierSnapshot`, `RunModifierAggregationService`, `RunModifierUpgradeNodeProvider`, and `RunModifierRebuildService` live in the dedicated progression/run modifier layer.
 - Boss dialogue has both current and legacy sequence drivers; check scene/prefab references before removing either path.
 - Affection presentation must not rely only on DOTween `OnComplete`; disable, destroy, or replacement-animation paths also need to release the dialogue continuation.
-- Affection reward display can deadlock if the reward popup close callback is used as the dialogue continuation while an external dialogue blocker prevents opening the popup.
+- Affection reward display can deadlock if it uses the normal reward opening path while a dialogue or boss encounter external blocker is active. Use the flow-owned reward path for dialogue-gated affection rewards, and keep the missing-view fallback so dialogue can continue if the authored reward UI is absent.
 - ScriptableObject changes need asset migration/reference review.
 
 ## Refactor Candidates

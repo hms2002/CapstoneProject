@@ -106,7 +106,11 @@ public class RewardDisplayUI : MonoBehaviour, IStackableUI
         presentationRoutine = StartCoroutine(PlayClosePresentation());
     }
 
-    public void ShowReward(List<UpgradeEffectSO> upgradeEffects = null, List<AffectionEffect> affectionEffects = null, Action callback = null)
+    public bool ShowReward(
+        List<UpgradeEffectSO> upgradeEffects = null,
+        List<AffectionEffect> affectionEffects = null,
+        Action callback = null,
+        bool allowDuringExternalUiInputBlock = false)
     {
         onCloseCallback = callback;
 
@@ -140,10 +144,23 @@ public class RewardDisplayUI : MonoBehaviour, IStackableUI
 
         RebuildRewardLayout();
 
+        bool opened;
         if (UIManager.Instance != null)
-            UIManager.Instance.TryPushUI(this);
+        {
+            opened = allowDuringExternalUiInputBlock
+                ? UIManager.Instance.TryPushFlowOwnedUI(this)
+                : UIManager.Instance.TryPushUI(this);
+        }
         else
+        {
             OpenUI();
+            opened = true;
+        }
+
+        if (!opened)
+            onCloseCallback = null;
+
+        return opened;
     }
 
     public void Close()

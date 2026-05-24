@@ -2,6 +2,14 @@ using UnityEngine;
 
 namespace UnityGAS
 {
+    public enum HitImpactCueKind
+    {
+        Default = 0,
+        Slash = 1,
+        Blow = 2,
+        None = 3
+    }
+
     /// <summary>
     /// 책임 :
     /// - GameplayEvent 발행 시 공통으로 전달할 컨텍스트 데이터를 담는다.
@@ -18,5 +26,6 @@ namespace UnityGAS
         public Vector3 WorldPosition;
         public object Causer;
         public bool IsCriticalHit;
+        public HitImpactCueKind HitImpactCueKind;
     }
 }

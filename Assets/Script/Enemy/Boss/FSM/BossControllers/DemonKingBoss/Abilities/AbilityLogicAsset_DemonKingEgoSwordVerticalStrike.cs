@@ -1,0 +1,3 @@
+public sealed class AbilityLogicAsset_DemonKingEgoSwordVerticalStrike : AbilityLogic_DemonKingEgoSwordVerticalStrike
+{
+}

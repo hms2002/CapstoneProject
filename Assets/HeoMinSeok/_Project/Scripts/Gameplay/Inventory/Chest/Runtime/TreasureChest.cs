@@ -34,6 +34,14 @@ public class TreasureChest : MonoBehaviour
     private int refreshCountUsed;
     public int Capacity => capacity;
     public bool IsOpened => isOpened;
+    public int RefreshCountLimit => ChestRewardPolicy.ResolveRefreshLimit();
+    public int RefreshCountUsed => refreshCountUsed;
+    public int RemainingRefreshCount => ChestRewardPolicy.ResolveRemainingRefreshCount(
+        isGenerated,
+        inventory,
+        LootManager.Instance != null,
+        refreshCountUsed,
+        refreshGuard);
 
     private void Awake()
     {

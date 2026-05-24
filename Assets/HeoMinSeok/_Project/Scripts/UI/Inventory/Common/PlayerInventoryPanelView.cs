@@ -5,6 +5,8 @@ using UnityEngine;
 [DisallowMultipleComponent]
 public sealed class PlayerInventoryPanelView : MonoBehaviour
 {
+    private const int RelicVisibleSlotCount = 24;
+
     [Header("Slot Roots")]
     [SerializeField] private RectTransform panelRoot;
     [SerializeField] private Transform consumableGridRoot;
@@ -107,7 +109,7 @@ public sealed class PlayerInventoryPanelView : MonoBehaviour
 
         BuildSlots(ConsumableContainer, consumableGridRoot, consumableSlotPrefab);
         BuildSlots(WeaponContainer, weaponGridRoot, weaponSlotPrefab);
-        BuildSlots(RelicContainer, relicGridRoot, relicSlotPrefab);
+        BuildSlots(RelicContainer, relicGridRoot, relicSlotPrefab, RelicVisibleSlotCount);
     }
 
     public void ClearBinding()
@@ -128,12 +130,16 @@ public sealed class PlayerInventoryPanelView : MonoBehaviour
         RelicContainer = null;
     }
 
-    private void BuildSlots(IItemContainer container, Transform gridRoot, ItemSlotUI slotPrefab)
+    private void BuildSlots(IItemContainer container, Transform gridRoot, ItemSlotUI slotPrefab, int visibleSlotCount = 0)
     {
         if (container == null || gridRoot == null || slotPrefab == null)
             return;
 
-        for (int i = 0; i < container.SlotCount; i++)
+        int slotCount = visibleSlotCount > 0
+            ? Mathf.Max(container.SlotCount, visibleSlotCount)
+            : container.SlotCount;
+
+        for (int i = 0; i < slotCount; i++)
         {
             ItemSlotUI slot = Instantiate(slotPrefab, gridRoot);
             slot.Bind(container, i);

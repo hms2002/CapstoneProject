@@ -18,6 +18,7 @@ namespace UnityGAS
         public float finalStaggerBuildUp;
         public float finalKnockbackImpulse;
         public GameplayTag hitConfirmedTag;
+        public HitImpactCueKind hitImpactCueKind;
         public GameObject causer;
         public bool isCriticalHit;
         public ElementDamageResult[] elementBuildUps;
@@ -35,7 +36,8 @@ namespace UnityGAS
             GE_Knockback_Spec knockbackEffect,
             CombatDamageSnapshot snapshot,
             GameplayTag hitConfirmedTag,
-            GameObject causer)
+            GameObject causer,
+            HitImpactCueKind hitImpactCueKind = HitImpactCueKind.Default)
         {
             return new CombatHitPayload
             {
@@ -47,6 +49,7 @@ namespace UnityGAS
                 finalStaggerBuildUp = snapshot.FinalStaggerBuildUp,
                 finalKnockbackImpulse = snapshot.FinalKnockbackImpulse,
                 hitConfirmedTag = hitConfirmedTag,
+                hitImpactCueKind = hitImpactCueKind,
                 causer = causer,
                 isCriticalHit = snapshot.IsCriticalHit,
                 elementBuildUps = snapshot.FinalElementBuildUps,
@@ -81,7 +84,8 @@ namespace UnityGAS
                 causer: payload.causer,
                 isCriticalHit: payload.isCriticalHit,
                 elementBuildUps: payload.elementBuildUps,
-                hasResolvedElementBuildUps: payload.hasResolvedElementBuildUps);
+                hasResolvedElementBuildUps: payload.hasResolvedElementBuildUps,
+                hitImpactCueKind: payload.hitImpactCueKind);
 
             return true;
         }

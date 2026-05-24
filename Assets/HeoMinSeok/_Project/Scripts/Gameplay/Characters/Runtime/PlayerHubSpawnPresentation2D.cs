@@ -116,6 +116,7 @@ public sealed class PlayerHubSpawnPresentation2D : MonoBehaviour
 
     private bool presentationPrepared;
     private bool hasPlayedThisScene;
+    private bool fadeUnlockBlocked;
     private Vector3 landingPosition;
     private GameplayPresentationRuntime presentationRuntime;
     private Sprite capturedAwakeSprite;
@@ -145,6 +146,8 @@ public sealed class PlayerHubSpawnPresentation2D : MonoBehaviour
 
         if (presentationPrepared)
             ForceRestorePresentationState(allowHierarchyMutation: gameObject.activeInHierarchy);
+        else
+            SetFadeTransitionUnlockBlocked(false);
     }
 
     private void HandleSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -170,6 +173,7 @@ public sealed class PlayerHubSpawnPresentation2D : MonoBehaviour
         landingPosition = transform.position;
         presentationPrepared = true;
 
+        SetFadeTransitionUnlockBlocked(true);
         PrepareForPresentation();
         DetachShadow();
 
@@ -256,6 +260,7 @@ public sealed class PlayerHubSpawnPresentation2D : MonoBehaviour
             WakeIntoGameplay();
 
         presentationPrepared = false;
+        SetFadeTransitionUnlockBlocked(false);
         sequenceRoutine = null;
     }
 
@@ -303,6 +308,7 @@ public sealed class PlayerHubSpawnPresentation2D : MonoBehaviour
         }
 
         RestoreGameplayControl();
+        SetFadeTransitionUnlockBlocked(false);
         ZeroAllRigidbodies();
         presentationRuntime?.Stop(gameplayPresentation, BuildPresentationParams(landingPosition, hasExplicitPosition: true), playRemove: false);
 
@@ -609,6 +615,7 @@ public sealed class PlayerHubSpawnPresentation2D : MonoBehaviour
         ReattachShadow();
         RestoreCameraBindingToPlayer();
         RestoreGameplayControl();
+        SetFadeTransitionUnlockBlocked(false);
         CleanupCameraAnchor();
     }
 
@@ -793,6 +800,15 @@ public sealed class PlayerHubSpawnPresentation2D : MonoBehaviour
             Destroy(activeSleepEffectInstance);
 
         activeSleepEffectInstance = null;
+    }
+
+    private void SetFadeTransitionUnlockBlocked(bool blocked)
+    {
+        if (fadeUnlockBlocked == blocked)
+            return;
+
+        fadeUnlockBlocked = blocked;
+        SceneFadeTransitionService.Instance?.SetPlayerUnlockBlocked(this, blocked);
     }
 
     private readonly struct ManagedBehaviourState

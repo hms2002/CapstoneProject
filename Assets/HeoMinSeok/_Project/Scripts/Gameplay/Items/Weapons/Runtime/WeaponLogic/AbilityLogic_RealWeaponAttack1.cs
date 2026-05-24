@@ -49,7 +49,8 @@ namespace UnityGAS
                 knockbackEffect: data.knockbackEffect,
                 snapshot: snapshot,
                 hitConfirmedTag: null,
-                causer: system.gameObject);
+                causer: system.gameObject,
+                hitImpactCueKind: data.hitImpactCueKind);
 
             var hitbox = Object.Instantiate(data.hitboxPrefab, center, Quaternion.identity);
             if (hitbox == null)

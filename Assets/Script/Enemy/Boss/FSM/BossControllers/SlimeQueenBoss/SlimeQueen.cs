@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityGAS;
 
@@ -150,6 +151,7 @@ public sealed class SlimeQueen : SlimeQueenBossBase, ISlimeQueenBodyInflateHost,
 
     private SpeechBubbleComponent speechBubble;
     private Coroutine callSlimeSpeechAnimationRoutine;
+    private readonly List<AttackTelegraphView> bodyInflateWarningViews = new List<AttackTelegraphView>();
     private bool runtimePatternsConfigured;
     private bool hasSpawnedPhaseTwoQueens;
 
@@ -224,6 +226,23 @@ public sealed class SlimeQueen : SlimeQueenBossBase, ISlimeQueenBodyInflateHost,
             ConfigureRuntimePatternsIfNeeded();
 
         base.Start();
+    }
+
+    protected override void OnDestroy()
+    {
+        CleanupBodyInflatePresentation();
+        base.OnDestroy();
+    }
+
+    private void OnDisable()
+    {
+        CleanupBodyInflatePresentation();
+    }
+
+    protected override void OnPatternEnd(BossPatternEntry patternEntry, bool forced)
+    {
+        CleanupBodyInflatePresentation();
+        base.OnPatternEnd(patternEntry, forced);
     }
 
     /// <summary>소환 위치 경고 원을 AttackTelegraph로 표시합니다.</summary>
@@ -427,6 +446,8 @@ public sealed class SlimeQueen : SlimeQueenBossBase, ISlimeQueenBodyInflateHost,
     /// <summary>패턴 4 몸 부풀림 원형 경고를 보스 위치에 표시합니다.</summary>
     public void ShowBodyInflateWarning()
     {
+        CleanupBodyInflatePresentation();
+
         AttackTelegraphService service = GetTelegraphService();
         if (service == null)
             return;
@@ -437,7 +458,14 @@ public sealed class SlimeQueen : SlimeQueenBossBase, ISlimeQueenBodyInflateHost,
             bodyInflateWarningSeconds,
             bodyInflateWarningStyle);
 
-        service.SpawnDetachedView(spec);
+        AttackTelegraphView view = service.SpawnDetachedView(spec);
+        if (view != null)
+            bodyInflateWarningViews.Add(view);
+    }
+
+    public void CleanupBodyInflatePresentation()
+    {
+        ClearViews(bodyInflateWarningViews);
     }
 
     /// <summary>패턴 4 몸 부풀림 범위 안의 플레이어에게 피해와 넉백을 적용합니다.</summary>
@@ -547,6 +575,24 @@ public sealed class SlimeQueen : SlimeQueenBossBase, ISlimeQueenBodyInflateHost,
             return;
 
         animator.SetBool(parameterHash, value);
+    }
+
+    private static void ClearViews(List<AttackTelegraphView> views)
+    {
+        if (views == null)
+            return;
+
+        for (int i = 0; i < views.Count; i++)
+        {
+            AttackTelegraphView view = views[i];
+            if (view != null)
+            {
+                view.HideImmediate();
+                Destroy(view.gameObject);
+            }
+        }
+
+        views.Clear();
     }
 
     /// <summary>패턴 2 착지 범위 안의 현재 타겟에게 GAS Damage Effect를 적용합니다.</summary>

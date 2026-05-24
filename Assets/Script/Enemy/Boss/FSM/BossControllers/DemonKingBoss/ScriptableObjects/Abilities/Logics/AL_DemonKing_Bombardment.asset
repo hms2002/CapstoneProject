@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5c91001799674e4db8bea8498f120499, type: 3}
+  m_Name: AL_DemonKing_Bombardment
+  m_EditorClassIdentifier:
+  strikeCount: 6
+  moveSeconds: 0.5
+  warningSeconds: 0.6
+  warningIntervalSeconds: 0.3
+  sideOffset: 4.8
+  laneWidth: 1.6
+  fallbackMapHeight: 40
+  explosionDiameter: 1.35
+  explosionSpacing: 1.35
+  damage: 1

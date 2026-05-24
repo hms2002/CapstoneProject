@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.Serialization;
 using UnityGAS;
 
-public abstract class Slime : Mob, IMobAttackDecisionSource
+public abstract class Slime : Mob, IMobAttackDecisionSource, IPitFallDeathHandler
 {
     private const float SplitWakeSeconds = 1f;
     private const float PlayerBaseSpeedFallback = 4f;
@@ -25,6 +25,7 @@ public abstract class Slime : Mob, IMobAttackDecisionSource
 
     private MobAbilityCoordinator abilityCoordinator;
     private float wakeTime;
+    private bool isPitFallDeath;
     private readonly RaycastHit2D[] splitLandingRaycastHits = new RaycastHit2D[8];
     private readonly Collider2D[] splitLandingOverlapHits = new Collider2D[8];
 
@@ -32,6 +33,7 @@ public abstract class Slime : Mob, IMobAttackDecisionSource
     public virtual void InitSplit(Transform nextTarget)
     {
         wakeTime = Time.time + SplitWakeSeconds;
+        isPitFallDeath = false;
         ApplyStats();
 
         if (nextTarget != null)
@@ -39,6 +41,23 @@ public abstract class Slime : Mob, IMobAttackDecisionSource
     }
 
     public abstract bool TryBuildAttackRequest(out MobAttackRequest request);
+
+    /// <summary>구덩이 사망 여부를 사망 분열 규칙에서 확인할 수 있게 제공합니다.</summary>
+    protected bool IsPitFallDeath => isPitFallDeath;
+
+    /// <summary>
+    /// 책임:
+    /// - PitFallReaction2D가 낙하 완료 후 슬라임에게 구덩이 사망 처리를 요청하는 진입점이다.
+    /// - 일반 사망과 달리 분열을 생략해야 하므로 사망 플래그를 기록한 뒤 공통 사망 경로를 탄다.
+    /// </summary>
+    public virtual void HandlePitFallDeath(PitFallContext context)
+    {
+        if (isDead)
+            return;
+
+        isPitFallDeath = true;
+        RequestDeath(context.TrapObject);
+    }
 
     /// <summary>공격 상태에 들어갈 때 필요한 기본 처리를 수행합니다.</summary>
     public virtual void OnAttackStateEntered(MobAttackRequest request)
@@ -202,6 +221,7 @@ public abstract class Slime : Mob, IMobAttackDecisionSource
             if (spawned.TryGetComponent(out T nextSlime))
             {
                 nextSlime.InitSplit(target);
+                nextSlime.SuppressMonsterLootDrop();
                 StartSplitLandingMotion(spawned, center, landingPosition);
                 RegisterLockTrackedChild(spawned);
             }

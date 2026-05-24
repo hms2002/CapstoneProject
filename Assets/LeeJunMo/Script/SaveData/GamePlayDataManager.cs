@@ -125,6 +125,16 @@ public sealed class GamePlayDataManager : MonoBehaviour
         return RunSessionStateService.HasPendingShortcutUnlock(Data, mapID, doorID);
     }
 
+    public void AddPendingRunSpecialNpcConstructionStart(string constructionId, int startedClearCount)
+    {
+        RunSessionStateService.AddPendingRunSpecialNpcConstructionStart(Data, constructionId, startedClearCount);
+    }
+
+    public bool TryGetPendingRunSpecialNpcConstructionStart(string constructionId, out int startedClearCount)
+    {
+        return RunSessionStateService.TryGetPendingRunSpecialNpcConstructionStart(Data, constructionId, out startedClearCount);
+    }
+
     public void TickRunTimer(float deltaTime)
     {
         RunSessionStateService.TickRunTimer(Data, deltaTime);

@@ -2,7 +2,7 @@
 status: active
 authority: structure-memory
 category: script-system-map
-last_reviewed: 2026-05-19
+last_reviewed: 2026-05-20
 ---
 
 # Inventory And Chest UI Structure
@@ -61,17 +61,25 @@ Map inventory, chest UI, HUD inventory entry points, item details, inventory run
 
 - `Assets/HeoMinSeok/_Project/Scripts/UI/Inventory/Common/InventoryScreen.cs`
 - `Assets/HeoMinSeok/_Project/Scripts/UI/Inventory/Chest/ChestScreen.cs`
+- `Assets/HeoMinSeok/_Project/Scripts/UI/Inventory/Chest/ChestFirstOpenRevealPresentation.cs`
 - `Assets/HeoMinSeok/_Project/Scripts/UI/Inventory/Common/ItemSlotUI.cs`
 - `Assets/HeoMinSeok/_Project/Scripts/UI/Inventory/Common/DragIcon.cs`
 - `Assets/HeoMinSeok/_Project/Scripts/UI/Inventory/Common/DetailUI/ItemDetailPanel.cs`
 - `Assets/HeoMinSeok/_Project/Scripts/Gameplay/Inventory/Chest/Runtime/TreasureChest.cs`
+- `Assets/HeoMinSeok/_Project/Scripts/Gameplay/Inventory/Chest/Runtime/ChestRewardPolicy.cs`
 - `Assets/HeoMinSeok/_Project/Scripts/Gameplay/Items/Consumables/Runtime/PlayerConsumableInventory.cs`
 
 ## Ownership And Lifecycle
 
 - Stack UI open/close policy should remain owned by `UIManager` and stack screens.
 - Chest first-open presentation has separate world timing and UI reveal timing; do not conflate those lifetimes.
+- Chest reroll hold UI is owned by `ChestScreen`; reward mutation remains owned by `TreasureChest.TryRefreshLoot()` and guarded by `ChestRewardPolicy`.
+- Reroll presentation reuses manual reveal progress on `ChestFirstOpenRevealPresentation`; successful refresh reopen may call FirstReveal open UI particles and high-rarity slot reveal particles, but must not call first-open side entry, impact particles, or post-reveal VFX. Open UI particles can start with the manual reopen, while high-rarity slot particles should play only after the reveal pose reaches the opened slot positions.
 - `Assets/LeeJunMo/Prefab/UI/GlobalUIRoot.prefab` is the representative source for chest first-open reveal timing, shake, and layout scalar settings. UI root variants and scene overrides should stay aligned to that source while preserving their authored references and hierarchy.
+- `GlobalUIRoot.prefab` currently carries the temporary chest `RerollButton` reference plus its `RerollHoldProgress` child `Image` for code/UI wiring. Hold-progress display follows the tutorial panel pattern of driving an authored `Image.fillAmount`; other UI root variants and scene instances are not wired until explicitly included in scope.
+- Player relic inventory UI can render a fixed 24-slot visual grid while `RelicInventory.Capacity` owns the currently unlocked capacity. `ItemSlotUI` treats `index >= container.SlotCount` as a locked slot, shows the prefab-authored lock sprite, and blocks drag/drop/click/hover item interaction.
+- Inventory slot prefabs use existing `Assets/Sprites/UI/Inventory/Inventory Sprites.png` sub-sprites for slot backgrounds: `InventorySlot`, `InventoryWeaponSlot`, `InventorySlotPotion`, and `InventorySlotLock`. Item icon images should start empty and be enabled by `ItemSlotUI.Refresh()` only when an item exists.
+- `InventoryElementPannel.prefab` is authored as a vertical frame: `InventoryTop`, `InventoryPanelBody`, then `InventoryBottom`. `InventoryPanelBody` keeps the existing weapon/consumable/relic/drop references. `InventoryTop` and `InventoryBottom` use tiled Images so width follows the authored layout while height stays prefab-authored.
 - Detail/tooltip UI should project item/runtime state rather than own gameplay state.
 - HUD scripts should project player/combat/status state; they should not own the state they display.
 - `PlayerConsumableInventory.TryUseAt(...)` owns successful consumable-use feedback. For heal potions it plays the player-attached `HealParticle` only after `ConsumableDefinition.TryUse(...)` confirms HP increased.
@@ -117,14 +125,19 @@ The current concern is not that the inventory UI lacks a strict MVP pattern. The
 
 - Add inventory screen behavior through Inventory Common UI and stack interfaces.
 - Add chest reveal behavior through Chest UI / Reveal and documented input blocker flow.
+- Add chest reroll UI by extending `ChestScreen` presentation/input/progress wiring and read-only chest refresh state APIs; keep refresh generation and consumption rules inside the runtime chest policy path.
 - Add item explanation through Common Detail UI and item-specific detail providers.
 
 ## Known Pitfalls
 
 - First-open chest input blocking has had regressions; check `Docs/ErrorLog.md` and `Docs/StructureMemory/UIFlowInputBlocking.md` before changing it.
 - When synchronizing chest reveal presentation across scenes, change scalar motion/shake/layout values only unless a prefab/scene reference migration has been explicitly reviewed.
+- Reroll pose control should start from the current reveal progress. The intended sequence is fast close, closed-state shake until the 1.5 second hold threshold, successful refresh, then fast open with open particles and opened-position slot reveal particles. Cancel reopen paths should not trigger VFX or consume rerolls outside `TryRefreshLoot()`.
+- Reroll hold-progress UI should stay as an authored prefab `Image` driven by `ChestScreen`; do not runtime-create the progress image or make it own refresh state.
 - Avoid runtime creation of full UI hierarchy unless explicitly approved; dynamic tooltip/HUD data is acceptable, but the base visual template should be prefab/scene authored when it is build-facing.
 - Do not rename serialized UI fields without prefab/scene migration review.
+- Relic locked-slot display depends on `ItemSlotUI.prefab` referencing the existing `InventorySlotLock` sub-sprite from `Assets/Sprites/UI/Inventory/Inventory Sprites.png`; do not replace that PNG or `.meta` as a side effect of slot unlock work.
+- Slot/frame visual changes should only change prefab sprite references or authored layout components unless the user explicitly asks to replace `Inventory Sprites.png`. Confirm the `InventoryWeaponSlot` sub-sprite resolves correctly in Unity Inspector because this prefab references its sprite internal ID directly.
 - `Find*` and `AddComponent` fallbacks in inventory/chest/HUD UI are authoring-risk markers. Treat them as prefab/scene wiring cleanup candidates, not as proof that UI should own runtime state.
 
 ## Promotion Candidate

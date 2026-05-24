@@ -13,6 +13,7 @@ namespace UnityGAS
     public sealed class AbilityHitCueRouter
     {
         private const string DefaultHitConfirmTagResourcePath = "Tags/Event.HitConfirm";
+        private const string DefaultHitImpactCueResourcePath = "Tags/Cue.Ability.Sword.Hit";
         private const int MaxQueuedHitCues = 24;
         private const int MaxHitCuesPerDrainStep = 2;
         private const float HitCueDrainIntervalSeconds = 0.02f;
@@ -21,6 +22,7 @@ namespace UnityGAS
         private readonly GameplayCueManager cueManager;
         private readonly AbilityGameplayEventChannel eventChannel;
         private readonly GameplayTag hitConfirmRootTag;
+        private readonly GameplayTag defaultHitImpactCueTag;
         private readonly Queue<QueuedHitCueRequest> pendingHitCues = new();
         private Coroutine drainCoroutine;
 
@@ -31,6 +33,7 @@ namespace UnityGAS
         {
             public AbilityDefinition Definition;
             public GameplayCueParams CueParams;
+            public HitImpactCueKind HitImpactCueKind;
         }
 
         public AbilityHitCueRouter(
@@ -45,6 +48,7 @@ namespace UnityGAS
             this.hitConfirmRootTag = hitConfirmRootTag != null
                 ? hitConfirmRootTag
                 : Resources.Load<GameplayTag>(DefaultHitConfirmTagResourcePath);
+            defaultHitImpactCueTag = Resources.Load<GameplayTag>(DefaultHitImpactCueResourcePath);
 
             if (this.eventChannel != null)
                 this.eventChannel.GameplayEventRaised += HandleGameplayEvent;
@@ -77,7 +81,7 @@ namespace UnityGAS
                 return;
 
             GameplayCueParams cueParams = BuildCueParams(data, definition);
-            EnqueueHitCues(definition, cueParams);
+            EnqueueHitCues(definition, cueParams, data.HitImpactCueKind);
         }
 
         private GameplayCueParams BuildCueParams(AbilityEventData data, AbilityDefinition definition)
@@ -133,7 +137,7 @@ namespace UnityGAS
             return false;
         }
 
-        private void EnqueueHitCues(AbilityDefinition definition, GameplayCueParams cueParams)
+        private void EnqueueHitCues(AbilityDefinition definition, GameplayCueParams cueParams, HitImpactCueKind hitImpactCueKind)
         {
             if (definition == null || owner == null)
                 return;
@@ -146,7 +150,8 @@ namespace UnityGAS
             pendingHitCues.Enqueue(new QueuedHitCueRequest
             {
                 Definition = definition,
-                CueParams = cueParams
+                CueParams = cueParams,
+                HitImpactCueKind = hitImpactCueKind
             });
 
             if (drainCoroutine == null)
@@ -161,7 +166,7 @@ namespace UnityGAS
                 while (remainingBudget > 0 && pendingHitCues.Count > 0)
                 {
                     QueuedHitCueRequest request = pendingHitCues.Dequeue();
-                    ExecuteHitCuesImmediate(request.Definition, request.CueParams);
+                    ExecuteHitCuesImmediate(request.Definition, request.CueParams, request.HitImpactCueKind);
                     remainingBudget--;
                 }
 
@@ -172,7 +177,7 @@ namespace UnityGAS
             drainCoroutine = null;
         }
 
-        private void ExecuteHitCuesImmediate(AbilityDefinition definition, GameplayCueParams cueParams)
+        private void ExecuteHitCuesImmediate(AbilityDefinition definition, GameplayCueParams cueParams, HitImpactCueKind hitImpactCueKind)
         {
             if (definition == null)
                 return;
@@ -180,11 +185,21 @@ namespace UnityGAS
             GameplayPresentationPhase hitConfirmedPhase = definition.GetHitConfirmedPhase();
             if (cueManager != null)
             {
+                GameplayTag automaticHitImpactCueTag = ResolveHitImpactCueTag(hitImpactCueKind);
+                bool hasAutomaticHitImpactCue = false;
                 foreach (GameplayTag tag in hitConfirmedPhase.EnumerateCues())
                 {
-                    if (tag != null)
-                        cueManager.ExecuteCue(tag, cueParams);
+                    if (tag == null)
+                        continue;
+
+                    if (IsSameExplicitTag(tag, automaticHitImpactCueTag))
+                        hasAutomaticHitImpactCue = true;
+
+                    cueManager.ExecuteCue(tag, cueParams);
                 }
+
+                if (!hasAutomaticHitImpactCue && automaticHitImpactCueTag != null)
+                    cueManager.ExecuteCue(automaticHitImpactCueTag, cueParams);
             }
 
             Vector3 normal = cueParams.Normal.sqrMagnitude > 0.0001f ? cueParams.Normal : Vector3.up;
@@ -200,6 +215,31 @@ namespace UnityGAS
                     sourceObject: cueParams.SourceObject,
                     rotation: Quaternion.LookRotation(Vector3.forward, normal),
                     causer: cueParams.Causer));
+        }
+
+        private static bool IsSameExplicitTag(GameplayTag tag, GameplayTag expected)
+        {
+            if (tag == null || expected == null)
+                return false;
+
+            if (tag == expected)
+                return true;
+
+            return tag.Id != 0 && tag.Id == expected.Id;
+        }
+
+        private GameplayTag ResolveHitImpactCueTag(HitImpactCueKind hitImpactCueKind)
+        {
+            switch (hitImpactCueKind)
+            {
+                case HitImpactCueKind.None:
+                    return null;
+                case HitImpactCueKind.Default:
+                case HitImpactCueKind.Slash:
+                case HitImpactCueKind.Blow:
+                default:
+                    return defaultHitImpactCueTag;
+            }
         }
     }
 }

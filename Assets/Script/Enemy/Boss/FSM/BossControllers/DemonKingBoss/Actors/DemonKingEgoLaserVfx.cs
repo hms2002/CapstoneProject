@@ -30,6 +30,7 @@ public sealed class DemonKingEgoLaserVfx : MonoBehaviour
 
     public bool IsPlaying { get; private set; }
     public bool DamageActive { get; private set; }
+    public bool EndActive { get; private set; }
 
     private void Awake()
     {
@@ -39,6 +40,7 @@ public sealed class DemonKingEgoLaserVfx : MonoBehaviour
     private void OnDisable()
     {
         DisableDamage();
+        EndActive = false;
         IsPlaying = false;
     }
 
@@ -66,6 +68,7 @@ public sealed class DemonKingEgoLaserVfx : MonoBehaviour
     private IEnumerator CoPlay(float damageHoldSeconds)
     {
         IsPlaying = true;
+        EndActive = false;
         DisableDamage();
 
         yield return CoPlayStartClips();
@@ -112,12 +115,14 @@ public sealed class DemonKingEgoLaserVfx : MonoBehaviour
         float duration = Mathf.Max(GetClipLength(startEndClip), GetClipLength(bodyEndClip));
         float frameRate = ResolveFrameRate(startEndClip, bodyEndClip);
         float damageOffTime = Mathf.Max(0, endDamageOffFrameIndex) / frameRate;
+        EndActive = true;
         PlayAnimatorState(startAnimator, EndStateName);
         PlayAnimatorState(bodyAnimator, EndStateName);
 
         if (duration <= 0f)
         {
             DisableDamage();
+            EndActive = false;
             yield break;
         }
 
@@ -132,6 +137,7 @@ public sealed class DemonKingEgoLaserVfx : MonoBehaviour
         }
 
         DisableDamage();
+        EndActive = false;
     }
 
     private void ConfigureGeometry(Vector2 origin, Vector2 direction, float length, float width)

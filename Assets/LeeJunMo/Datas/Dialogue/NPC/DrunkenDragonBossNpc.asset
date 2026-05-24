@@ -13,9 +13,11 @@ MonoBehaviour:
   m_Name: DrunkenDragonBossNpc
   m_EditorClassIdentifier: 
   id: 2001
-  npcName: Drunken Dragon
+  npcName: "\uC2A4\uD53C\uB9AC"
   isBoss: 1
   primaryInk: {fileID: 4900000, guid: 0ea3c7635ba34a0b82c5b552cf9ff0e3, type: 3}
+  bossEncounterInk: {fileID: 0}
+  bossEncounterDialogues: []
   dialogueTheme: {fileID: 11400000, guid: 3ef1664fdf0dac148a47091038acdfd9, type: 2}
   affectionRewards: []
   spriteLibraryAsset: {fileID: 7108339969198208228, guid: e3f9a4eb235a0cc4da7a0c799a104cba, type: 3}

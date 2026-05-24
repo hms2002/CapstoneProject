@@ -666,6 +666,7 @@ public class Witch : BossControllerBase, IWitchPatternStateBridge
             return false;
         }
 
+        skeleton.SuppressMonsterLootDrop();
         skeleton.SetBoost(Target, explosionDiameter, speedScale, true);
         RegisterRetreatSummon(skeleton);
         return true;

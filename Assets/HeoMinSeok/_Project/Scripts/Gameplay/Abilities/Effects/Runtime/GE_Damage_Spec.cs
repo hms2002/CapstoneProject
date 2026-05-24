@@ -71,6 +71,9 @@ namespace UnityGAS
         [Tooltip("속성 발현 피해 팝업의 태그/피해량/억제 예약 흐름을 콘솔에 출력합니다.")]
         [SerializeField] private bool logElementDamagePopup = true;
 
+        [Tooltip("환경 피해 등 일반 피해의 보호막/HP 적용 흐름을 콘솔에 출력합니다.")]
+        [SerializeField] private bool logDamageApplication;
+
         private void OnValidate()
         {
             duration = 0f;
@@ -96,7 +99,10 @@ namespace UnityGAS
             if (invulnerableTag != null)
             {
                 if (tags != null && tags.HasTag(invulnerableTag))
+                {
+                    LogDamageApplication($"blocked: invulnerable tag. target={target.name}, tag={invulnerableTag.name}", target);
                     return;
+                }
             }
 
             // 1) 1회 보호막(태그) 처리
@@ -179,16 +185,37 @@ namespace UnityGAS
                 if (shield > 0f)
                 {
                     float absorbed = Mathf.Min(shield, damage);
-                    attributeSet.TryModifyAttributeValue(absorbShieldAttribute, -absorbed, this);
+                    bool shieldModified = attributeSet.TryModifyAttributeValue(absorbShieldAttribute, -absorbed, this);
+                    float postShield = attributeSet.GetAttributeValue(absorbShieldAttribute);
+                    LogDamageApplication(
+                        $"shield absorb. target={target.name}, shield={shield:0.###}->{postShield:0.###}, absorbed={absorbed:0.###}, remainingBefore={damage:0.###}, modifyResult={shieldModified}",
+                        target);
                     damage -= absorbed;
 
-                    if (damage <= 0f) return;
+                    if (damage <= 0f)
+                    {
+                        LogDamageApplication($"hp skipped: fully absorbed. target={target.name}", target);
+                        return;
+                    }
+                }
+                else
+                {
+                    LogDamageApplication($"shield skipped: no shield. target={target.name}, shield={shield:0.###}", target);
                 }
             }
 
-            if (healthAttribute == null) return;
+            if (healthAttribute == null)
+            {
+                LogDamageApplication($"hp skipped: healthAttribute is null. target={target.name}, remainingDamage={damage:0.###}", target);
+                return;
+            }
+
             TryReserveElementDamagePopupSuppression(spec, target, preHp, damage);
-            attributeSet.TryModifyAttributeValue(healthAttribute, -damage, this);
+            bool hpModified = attributeSet.TryModifyAttributeValue(healthAttribute, -damage, this);
+            float postHpAfterModify = attributeSet.GetAttributeValue(healthAttribute);
+            LogDamageApplication(
+                $"hp modify. target={target.name}, damage={damage:0.###}, hp={preHp:0.###}->{postHpAfterModify:0.###}, modifyResult={hpModified}",
+                target);
             TryShowElementDamagePopup(spec, target, attributeSet, preHp, damage);
 
             TrySendHitFeedback(target, stunSeconds, cameraShake);
@@ -324,6 +351,19 @@ namespace UnityGAS
             Debug.Log(
                 $"[GE_Damage_Spec] {name}: enter target={targetName}, element={elementName}, damageKey={damageKeyName}, damage={resolvedDamage:0.###}, hasSetByCaller={hasSetByCaller}",
                 this);
+        }
+
+        /// <summary>
+        /// 책임:
+        /// - 일반 피해가 보호막과 HP 중 어느 단계에서 소비됐는지 선택적으로 출력한다.
+        /// - 구덩이/장판처럼 AbilitySpec 밖에서 들어오는 환경 피해 디버깅을 보조한다.
+        /// </summary>
+        private void LogDamageApplication(string message, GameObject target)
+        {
+            if (!logDamageApplication)
+                return;
+
+            Debug.Log($"[GE_Damage_Spec] {name}: {message}", target);
         }
 
         private static Vector3 ResolvePopupPosition(GameplayEffectSpec spec, GameObject target)

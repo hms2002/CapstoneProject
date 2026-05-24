@@ -27,13 +27,22 @@ public sealed class AbilityLogic_SlimeQueenCallSlimes : AbilityLogic
         GameObject largeSlimePrefab = slimeQueen.GetRandomLargeSlimePrefab();
 
         if (mediumSlimePrefab != null)
-            Instantiate(mediumSlimePrefab, mediumSpawnPosition, Quaternion.identity);
+            SpawnSummonedSlime(mediumSlimePrefab, mediumSpawnPosition);
 
         if (largeSlimePrefab != null)
-            Instantiate(largeSlimePrefab, largeSpawnPosition, Quaternion.identity);
+            SpawnSummonedSlime(largeSlimePrefab, largeSpawnPosition);
 
         float remainingSpeechSeconds = slimeQueen.CallSlimeSpeechSeconds - slimeQueen.CallSlimeSpawnDelaySeconds;
         if (remainingSpeechSeconds > 0f)
             yield return WaitForSecondsUnlessCancelled(remainingSpeechSeconds, spec);
+    }
+
+    private GameObject SpawnSummonedSlime(GameObject slimePrefab, Vector3 spawnPosition)
+    {
+        GameObject spawnedSlime = Instantiate(slimePrefab, spawnPosition, Quaternion.identity);
+        if (spawnedSlime != null && spawnedSlime.TryGetComponent(out Mob mob))
+            mob.SuppressMonsterLootDrop();
+
+        return spawnedSlime;
     }
 }

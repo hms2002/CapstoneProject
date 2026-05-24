@@ -87,6 +87,7 @@ public sealed class WitchRetreatPatternExecutor : MonoBehaviour
             return false;
         }
 
+        skeleton.SuppressMonsterLootDrop();
         skeleton.SetBoost(
             owner.Target,
             explosionDiameter,

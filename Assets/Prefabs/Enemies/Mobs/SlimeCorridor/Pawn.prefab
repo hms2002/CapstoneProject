@@ -32,6 +32,7 @@ GameObject:
   - component: {fileID: 344486096308046059}
   - component: {fileID: 8223012456081861757}
   - component: {fileID: 7001000000000000002}
+  - component: {fileID: 6600200000000002}
   - component: {fileID: 6600200000000001}
   m_Layer: 31
   m_Name: Pawn
@@ -107,7 +108,7 @@ SpriteRenderer:
   m_SortingLayer: 5
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 1614426717862407760, guid: 1ed6c7e45fac4ae45a372d6b86033752, type: 3}
+  m_Sprite: {fileID: 3099609899156637211, guid: 1921a38ea9bc71c47817fd2c437f2f66, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -568,6 +569,24 @@ MonoBehaviour:
   samplePointOverride: {fileID: 0}
   sampleOffset: {x: 0, y: -0.5, z: 0}
   spriteMaskRefreshInterval: 0.25
+--- !u!114 &6600200000000002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 625522859161183429}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9e4d6a4fc32b4d0aa77d0a4791d6f207, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  canReact: 1
+  stopMovementOnStart: 1
+  cancelMobAbilityOnStart: 1
+  requestDeathOnComplete: 1
+  useDefaultRespawn: 0
+  removeFallingEffectOnComplete: 0
 --- !u!114 &6600200000000001
 MonoBehaviour:
   m_ObjectHideFlags: 0

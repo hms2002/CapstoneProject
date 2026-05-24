@@ -122,6 +122,8 @@ public class WeaponAbilityBlockView : MonoBehaviour
 
     public void SetExternalShuffleNextView(WeaponAbilityBlockView nextView)
     {
+        RestoreExternalShuffleNextViewState(hideRestoredView: true);
+
         externalShuffleNextView = nextView != this ? nextView : null;
         externalShuffleNextGroup = null;
         externalShuffleNextLayout = null;
@@ -147,6 +149,17 @@ public class WeaponAbilityBlockView : MonoBehaviour
         hasQueuedExternalPreview = false;
         externalShuffleNextView.SetVariantSwitchGuide(false, null, null);
         externalShuffleNextView.gameObject.SetActive(false);
+    }
+
+    public void ResetPooledPresentationState()
+    {
+        StopVariantSwitchRoutine();
+        SetExternalShuffleNextView(null);
+        SetVariantSwitchGuide(false, null, null);
+        ResetNextContainer();
+        SetPreviewMuted(false, externalPreviewBrightness, externalPreviewDesaturation);
+        RestoreReusablePanelState(this, null, null, hideRestoredView: false);
+        Canvas.ForceUpdateCanvases();
     }
 
     public void SetExternalShufflePreview(
@@ -989,6 +1002,53 @@ public class WeaponAbilityBlockView : MonoBehaviour
                 SetAlpha(externalShuffleNextGroup, 0f);
             }
         }
+    }
+
+    private void RestoreExternalShuffleNextViewState(bool hideRestoredView)
+    {
+        if (externalShuffleNextView != null)
+        {
+            externalShuffleNextView.StopVariantSwitchRoutine();
+            externalShuffleNextView.SetVariantSwitchGuide(false, null, null);
+            externalShuffleNextView.ResetNextContainer();
+            externalShuffleNextView.SetPreviewMuted(false, externalPreviewBrightness, externalPreviewDesaturation);
+            RestoreReusablePanelState(
+                externalShuffleNextView,
+                externalShuffleNextGroup,
+                externalShuffleNextLayout,
+                hideRestoredView);
+        }
+
+        externalShuffleNextView = null;
+        externalShuffleNextGroup = null;
+        externalShuffleNextLayout = null;
+        externalPreviewConfigured = false;
+        hasQueuedExternalPreview = false;
+    }
+
+    private static void RestoreReusablePanelState(
+        WeaponAbilityBlockView view,
+        CanvasGroup knownGroup,
+        LayoutElement knownLayout,
+        bool hideRestoredView)
+    {
+        if (view == null)
+            return;
+
+        CanvasGroup group = knownGroup != null ? knownGroup : view.GetComponent<CanvasGroup>();
+        if (group != null)
+        {
+            group.alpha = 1f;
+            group.interactable = false;
+            group.blocksRaycasts = false;
+        }
+
+        LayoutElement layout = knownLayout != null ? knownLayout : view.GetComponent<LayoutElement>();
+        if (layout != null)
+            layout.ignoreLayout = false;
+
+        if (hideRestoredView)
+            view.gameObject.SetActive(false);
     }
 
     private void StopVariantSwitchRoutine()

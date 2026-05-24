@@ -19,6 +19,9 @@ namespace UnityGAS
         public float forwardOffset = 0.9f;
         public LayerMask hitLayers;
 
+        [Header("Hit Impact")]
+        public HitImpactCueKind hitImpactCueKind;
+
         [Header("Damage")]
         public GameplayEffect damageEffect;
         public GE_Knockback_Spec knockbackEffect;

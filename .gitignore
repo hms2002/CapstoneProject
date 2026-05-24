@@ -12,6 +12,11 @@
 /[Uu]ser[Ss]ettings/
 *.log
 
+# Local Unity backup/quarantine folders
+/[Ll]ibrary.bak*/
+/[Tt]emp.bak*/
+/__CodexQuarantine/
+
 # MemoryCaptures can get excessive in size.
 # They also could contain extremely sensitive data
 /[Mm]emoryCaptures/

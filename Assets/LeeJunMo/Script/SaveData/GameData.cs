@@ -97,7 +97,97 @@ public class BossDialogueSaveData
 }
 
 // =========================================================
-// [기존] 업그레이드 데이터
+// Run-internal special NPC state
+// =========================================================
+[System.Serializable]
+public class RunSpecialNpcConstructionRecord
+{
+    public string constructionId;
+    public int startedClearCount;
+    public bool completed;
+
+    public RunSpecialNpcConstructionRecord(string id, int clearCount)
+    {
+        constructionId = id;
+        startedClearCount = clearCount;
+    }
+}
+
+[System.Serializable]
+public class RunSpecialNpcSaveData
+{
+    public List<RunSpecialNpcConstructionRecord> constructionRecords = new List<RunSpecialNpcConstructionRecord>();
+
+    public RunSpecialNpcConstructionRecord FindConstructionRecord(string constructionId)
+    {
+        if (string.IsNullOrWhiteSpace(constructionId))
+            return null;
+
+        constructionRecords ??= new List<RunSpecialNpcConstructionRecord>();
+        return constructionRecords.Find(x => x != null && x.constructionId == constructionId);
+    }
+
+    public RunSpecialNpcConstructionRecord GetOrCreateConstructionRecord(string constructionId, int startedClearCount)
+    {
+        constructionRecords ??= new List<RunSpecialNpcConstructionRecord>();
+
+        RunSpecialNpcConstructionRecord record = FindConstructionRecord(constructionId);
+        if (record != null)
+            return record;
+
+        record = new RunSpecialNpcConstructionRecord(constructionId, startedClearCount);
+        constructionRecords.Add(record);
+        return record;
+    }
+}
+
+// =========================================================
+// Tutorial guide completion state
+// =========================================================
+[System.Serializable]
+public class TutorialSaveData
+{
+    public List<string> completedTutorialIds = new List<string>();
+
+    public bool IsCompleted(string tutorialId)
+    {
+        if (string.IsNullOrWhiteSpace(tutorialId))
+            return false;
+
+        completedTutorialIds ??= new List<string>();
+        return completedTutorialIds.Contains(tutorialId);
+    }
+
+    public bool MarkCompleted(string tutorialId)
+    {
+        if (string.IsNullOrWhiteSpace(tutorialId))
+            return false;
+
+        completedTutorialIds ??= new List<string>();
+        if (completedTutorialIds.Contains(tutorialId))
+            return false;
+
+        completedTutorialIds.Add(tutorialId);
+        return true;
+    }
+
+    public bool ClearCompleted(string tutorialId)
+    {
+        if (string.IsNullOrWhiteSpace(tutorialId) || completedTutorialIds == null)
+            return false;
+
+        return completedTutorialIds.Remove(tutorialId);
+    }
+
+    public void Normalize()
+    {
+        completedTutorialIds ??= new List<string>();
+        completedTutorialIds.RemoveAll(string.IsNullOrWhiteSpace);
+    }
+}
+
+// =========================================================
+// [Existing] Upgrade data
 // =========================================================
 [System.Serializable]
 public class UpgradeSaveData
@@ -156,6 +246,8 @@ public class GameData
     public MapSaveData mapData = new MapSaveData();
     public AffectionSaveData affectionData = new AffectionSaveData();
     public BossDialogueSaveData bossDialogueData = new BossDialogueSaveData();
+    public RunSpecialNpcSaveData runSpecialNpcData = new RunSpecialNpcSaveData();
+    public TutorialSaveData tutorialData = new TutorialSaveData();
 
     // [New] 아이템 해금 데이터 포함
     public ItemSaveData itemData = new ItemSaveData();

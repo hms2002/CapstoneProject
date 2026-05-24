@@ -73,6 +73,7 @@ public abstract class BossControllerBase : Enemy, IBossAbilityStateBridge
     public Transform CurrentTarget => Target;
     public override Transform Target => target;
     protected int ConfiguredPhaseCount => phases != null ? phases.Count : 0;
+    protected IReadOnlyList<BossPhaseConfig> ConfiguredPhases => phases;
     public float CurrentHealthRatio => GetCurrentHpRatio();
     public float CurrentHealthValue => GetCurrentHealthValue();
     public float MaxHealthValue => GetCurrentMaxHealthValue();
@@ -476,7 +477,9 @@ public abstract class BossControllerBase : Enemy, IBossAbilityStateBridge
         if (deathPresentation != null && deathPresentation.TryBeginDeathSequence())
             return;
 
-        RunProgressCoordinator.EnsureInstance()?.NotifyBossRewardsReady(this);
+        if (!BossEncounterEndDirector.SuppressesAutomaticRewardReady(this))
+            RunProgressCoordinator.EnsureInstance()?.NotifyBossRewardsReady(this);
+
         base.DestroyAfterDelay();
     }
 

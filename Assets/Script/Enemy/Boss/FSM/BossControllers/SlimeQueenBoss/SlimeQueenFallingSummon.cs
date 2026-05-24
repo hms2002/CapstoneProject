@@ -122,7 +122,9 @@ public sealed class SlimeQueenFallingSummon : MonoBehaviour
         if (summonPrefab == null)
             return;
 
-        Instantiate(summonPrefab, landingPosition, Quaternion.identity);
+        GameObject summonedSlime = Instantiate(summonPrefab, landingPosition, Quaternion.identity);
+        if (summonedSlime != null && summonedSlime.TryGetComponent(out Mob mob))
+            mob.SuppressMonsterLootDrop();
     }
 
     /// <summary>프리팹의 SpriteRenderer 설정을 낙하 연출용 렌더러에 복사합니다.</summary>
