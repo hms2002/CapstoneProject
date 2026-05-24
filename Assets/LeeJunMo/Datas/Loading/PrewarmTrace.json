@@ -1,60 +1,6 @@
 {
     "sessions": [
         {
-            "sessionId": "a56e1998934a478e83f49b4ec9aa2ee6",
-            "startedUtc": "2026-05-22T06:14:08.3426077Z",
-            "endedUtc": "2026-05-22T06:14:09.7515710Z",
-            "entries": []
-        },
-        {
-            "sessionId": "bd2755bc45114acc85731975c8712b28",
-            "startedUtc": "2026-05-22T06:26:40.0844840Z",
-            "endedUtc": "2026-05-22T06:26:41.5136475Z",
-            "entries": []
-        },
-        {
-            "sessionId": "2c18f575945a49789b9d54d44954db04",
-            "startedUtc": "2026-05-22T06:59:44.8123581Z",
-            "endedUtc": "2026-05-22T06:59:46.1308101Z",
-            "entries": []
-        },
-        {
-            "sessionId": "8c260619f0f9472cb3a89901947f9565",
-            "startedUtc": "2026-05-22T07:43:03.1997269Z",
-            "endedUtc": "2026-05-22T07:43:04.4988400Z",
-            "entries": []
-        },
-        {
-            "sessionId": "b60de18768f04f20837607d2fa5a8abf",
-            "startedUtc": "2026-05-22T07:44:37.9351110Z",
-            "endedUtc": "2026-05-22T07:44:39.0983441Z",
-            "entries": []
-        },
-        {
-            "sessionId": "d364bbb430454cd1ac90b81f0fb8204b",
-            "startedUtc": "2026-05-22T08:02:03.2055657Z",
-            "endedUtc": "2026-05-22T08:02:04.6212007Z",
-            "entries": []
-        },
-        {
-            "sessionId": "4e5a0ea8fa61445e98ae51e8d64ac6d8",
-            "startedUtc": "2026-05-22T08:02:34.4133142Z",
-            "endedUtc": "2026-05-22T08:02:35.8538648Z",
-            "entries": []
-        },
-        {
-            "sessionId": "8db65f64d3de4a3bad9be0728fcacbc3",
-            "startedUtc": "2026-05-22T08:07:08.2655947Z",
-            "endedUtc": "2026-05-22T08:07:09.9554547Z",
-            "entries": []
-        },
-        {
-            "sessionId": "c45a8e3bd238465f82bc1f5f5e0a8bd0",
-            "startedUtc": "2026-05-22T08:41:46.6959029Z",
-            "endedUtc": "2026-05-22T08:41:48.2863450Z",
-            "entries": []
-        },
-        {
             "sessionId": "501145d0338a482d897e68be8fa84849",
             "startedUtc": "2026-05-22T08:43:28.0920640Z",
             "endedUtc": "2026-05-22T08:43:29.4555600Z",
@@ -161,6 +107,82 @@
             "sessionId": "f4bb5a0771da4378be69941343c02c55",
             "startedUtc": "2026-05-23T06:40:19.8820668Z",
             "endedUtc": "2026-05-23T06:40:21.1234110Z",
+            "entries": []
+        },
+        {
+            "sessionId": "7022fad85ae1426e8ee1f84c5ca9e204",
+            "startedUtc": "2026-05-24T07:41:15.5940221Z",
+            "endedUtc": "2026-05-24T07:41:16.6179312Z",
+            "entries": []
+        },
+        {
+            "sessionId": "cc0cd315e4564a6192079ccf790ca402",
+            "startedUtc": "2026-05-24T07:41:42.7766443Z",
+            "endedUtc": "2026-05-24T07:42:22.5549928Z",
+            "entries": [
+                {
+                    "prefabPath": "Assets/HeoMinSeok/_Project/Prefabs/VFX/Element/ElectrocutedSparkParticle.prefab",
+                    "prefabName": "ElectrocutedSparkParticle",
+                    "totalSpawns": 4,
+                    "coldSpawns": 4,
+                    "firstSeenSeconds": 37.36333084106445,
+                    "lastSeenSeconds": 39.75718307495117,
+                    "firstSceneName": "TotorialCorridor",
+                    "lastSceneName": "TotorialCorridor"
+                }
+            ]
+        },
+        {
+            "sessionId": "6d35940c19e14e5f8488ebb498782f63",
+            "startedUtc": "2026-05-24T07:43:28.5128758Z",
+            "endedUtc": "2026-05-24T07:43:29.5566485Z",
+            "entries": []
+        },
+        {
+            "sessionId": "c0954deb927348a38ec42fe60d338115",
+            "startedUtc": "2026-05-24T07:44:21.3335925Z",
+            "endedUtc": "2026-05-24T07:44:22.3446993Z",
+            "entries": []
+        },
+        {
+            "sessionId": "f4c753da44a743e9865b7abefeb54bf8",
+            "startedUtc": "2026-05-24T07:44:52.9472917Z",
+            "endedUtc": "2026-05-24T07:44:53.9565939Z",
+            "entries": []
+        },
+        {
+            "sessionId": "8efa6fd737e547e4ac76b887f35c97df",
+            "startedUtc": "2026-05-24T08:02:23.0353110Z",
+            "endedUtc": "2026-05-24T08:02:50.0545183Z",
+            "entries": [
+                {
+                    "prefabPath": "Assets/HeoMinSeok/_Project/Prefabs/VFX/Element/ElectrocutedSparkParticle.prefab",
+                    "prefabName": "ElectrocutedSparkParticle",
+                    "totalSpawns": 1,
+                    "coldSpawns": 1,
+                    "firstSeenSeconds": 27.002641677856447,
+                    "lastSeenSeconds": 27.002748489379884,
+                    "firstSceneName": "LeeJunmo_Boss_DemonKing",
+                    "lastSceneName": "LeeJunmo_Boss_DemonKing"
+                }
+            ]
+        },
+        {
+            "sessionId": "4278c1e63a5d4c95a20df73440c085c1",
+            "startedUtc": "2026-05-24T08:13:21.1299365Z",
+            "endedUtc": "2026-05-24T08:13:22.1994118Z",
+            "entries": []
+        },
+        {
+            "sessionId": "c0fb54b1a3594a0a8c04b071fc8fb031",
+            "startedUtc": "2026-05-24T08:24:51.1066152Z",
+            "endedUtc": "2026-05-24T08:24:52.1419371Z",
+            "entries": []
+        },
+        {
+            "sessionId": "d302389c157145248bbb6f622db84253",
+            "startedUtc": "2026-05-24T08:27:10.3782502Z",
+            "endedUtc": "2026-05-24T08:27:11.4291798Z",
             "entries": []
         }
     ]
