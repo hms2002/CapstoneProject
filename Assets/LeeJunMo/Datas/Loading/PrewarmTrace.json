@@ -174,16 +174,38 @@
             "entries": []
         },
         {
-            "sessionId": "3d62e78c7dae4b9ba81e0aab4b551681",
-            "startedUtc": "2026-05-24T17:41:13.6936100Z",
-            "endedUtc": "2026-05-24T17:41:15.4629193Z",
-            "entries": []
+            "sessionId": "d67ef6f5a5e54b808cd82d94f73d3c71",
+            "startedUtc": "2026-05-24T16:03:17.0445816Z",
+            "endedUtc": "2026-05-24T16:03:57.4646704Z",
+            "entries": [
+                {
+                    "prefabPath": "Assets/HeoMinSeok/_Project/Prefabs/VFX/Element/ElectrocutedSparkParticle.prefab",
+                    "prefabName": "ElectrocutedSparkParticle",
+                    "totalSpawns": 2,
+                    "coldSpawns": 1,
+                    "firstSeenSeconds": 23.93072509765625,
+                    "lastSeenSeconds": 40.411834716796878,
+                    "firstSceneName": "LeeJunmo_Boss_DemonKing",
+                    "lastSceneName": "LeeJunmo_Boss_DemonKing"
+                }
+            ]
         },
         {
-            "sessionId": "2cc43102cd6646e5936ebf88a7739280",
-            "startedUtc": "2026-05-24T18:37:26.8446500Z",
-            "endedUtc": "2026-05-24T18:37:28.8599988Z",
-            "entries": []
+            "sessionId": "60cfa7424efe45658f26fe8002549754",
+            "startedUtc": "2026-05-24T17:38:17.3999724Z",
+            "endedUtc": "2026-05-24T17:38:40.1777736Z",
+            "entries": [
+                {
+                    "prefabPath": "Assets/HeoMinSeok/_Project/Prefabs/VFX/Element/ElectrocutedSparkParticle.prefab",
+                    "prefabName": "ElectrocutedSparkParticle",
+                    "totalSpawns": 4,
+                    "coldSpawns": 4,
+                    "firstSeenSeconds": 21.746868133544923,
+                    "lastSeenSeconds": 21.934791564941408,
+                    "firstSceneName": "SangHyup_Boss_SlimeQueen",
+                    "lastSceneName": "SangHyup_Boss_SlimeQueen"
+                }
+            ]
         }
     ]
 }
