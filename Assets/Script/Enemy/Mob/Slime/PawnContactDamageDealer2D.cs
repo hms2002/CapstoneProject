@@ -69,7 +69,10 @@ public sealed class PawnContactDamageDealer2D : MonoBehaviour
             hitWorldPosition: hitPoint,
             causer: owner != null ? owner.gameObject : gameObject);
 
-        nextDamageTime = Time.time + contactDamageInterval;
+        nextDamageTime = Time.time + CombatTimingService.ScaleSeconds(
+            abilitySystem,
+            contactDamageInterval,
+            CombatTimingSlot.AttackInterval);
     }
 
     /// <summary>피해 쿨다운과 필수 전투 의존성이 준비되었는지 확인한다.</summary>

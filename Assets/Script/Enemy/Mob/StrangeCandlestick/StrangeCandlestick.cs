@@ -315,7 +315,10 @@ public class StrangeCandlestick : Mob, IMobAttackDecisionSource
         };
 
         lightBead.Setup(context);
-        nextProjectileFireTime = Time.time + GetPostShotCooldown();
+        nextProjectileFireTime = Time.time + CombatTimingService.ScaleSeconds(
+            abilitySystem,
+            GetPostShotCooldown(),
+            CombatTimingSlot.AttackInterval);
 
         if (animator != null)
             animator.SetTrigger("attack");
@@ -329,7 +332,7 @@ public class StrangeCandlestick : Mob, IMobAttackDecisionSource
             telegraphService.HideCurrent();
     }
 
-    public AttackTelegraphSpec MakeLockOnSpec(GameObject explicitTarget)
+    public AttackTelegraphSpec MakeLockOnSpec(GameObject explicitTarget, float durationOverride = -1f)
     {
         AbilityLogic_StrangeCandlestickAttack.PatternData data = GetAttackPatternData();
         Vector2 start = transform.position;
@@ -347,7 +350,7 @@ public class StrangeCandlestick : Mob, IMobAttackDecisionSource
             center,
             new Vector2(length, Mathf.Max(0.01f, data.lockOnLineWidth)),
             angle,
-            Mathf.Max(0.01f, data.lockOnDuration),
+            Mathf.Max(0.01f, durationOverride >= 0f ? durationOverride : data.lockOnDuration),
             GetLockOnStyle());
     }
 

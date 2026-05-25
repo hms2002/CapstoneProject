@@ -63,10 +63,11 @@ public class WizardScatterShotRunner : MonoBehaviour, IMobPatternRunner
 
         try
         {
-            ShowTelegraph(context);
+            float prepareSeconds = CombatTimingService.ScaleSeconds(system, context.PrepareSeconds, CombatTimingSlot.AttackWarning);
+            ShowTelegraph(context, prepareSeconds);
             owner.PlayAttackPrepareAnimation();
-            if (context.PrepareSeconds > 0f)
-                yield return AbilityTasks.WaitDelay(system, spec, context.PrepareSeconds);
+            if (prepareSeconds > 0f)
+                yield return AbilityTasks.WaitDelay(system, spec, prepareSeconds);
 
             if (cancelRequested || owner.IsDead || IsCancelled(spec)) yield break;
 
@@ -96,7 +97,7 @@ public class WizardScatterShotRunner : MonoBehaviour, IMobPatternRunner
     /// - Wizard 산탄 공격의 발사 방향과 퍼짐 각도를 플레이어에게 미리 보여준다.
     /// - 실제 투사체 생성과 분리해 경고 표시 생명주기만 관리한다.
     /// </summary>
-    private void ShowTelegraph(Wizard.ScatterShotContext context)
+    private void ShowTelegraph(Wizard.ScatterShotContext context, float duration)
     {
         if (telegraphService == null)
             return;
@@ -110,7 +111,7 @@ public class WizardScatterShotRunner : MonoBehaviour, IMobPatternRunner
             context.TelegraphRange,
             context.TelegraphAngle,
             angleDeg,
-            context.PrepareSeconds,
+            duration,
             scatterTelegraphStyle)
             .WithWallClipping(
                 telegraphWallClipLayers,

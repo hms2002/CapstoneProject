@@ -17,7 +17,14 @@ public sealed class MobRecoverState : IMobState
 
     public void Enter(MobStateMachine stateMachine, MobAIContext context)
     {
-        recoverEndTime = Time.time + recoverSeconds;
+        UnityGAS.AbilitySystem abilitySystem = context != null && context.Owner != null
+            ? context.Owner.GetComponent<UnityGAS.AbilitySystem>()
+            : null;
+        float scaledRecoverSeconds = UnityGAS.CombatTimingService.ScaleSeconds(
+            abilitySystem,
+            recoverSeconds,
+            UnityGAS.CombatTimingSlot.AttackRecovery);
+        recoverEndTime = Time.time + scaledRecoverSeconds;
     }
 
     public void Tick(MobStateMachine stateMachine, MobAIContext context)

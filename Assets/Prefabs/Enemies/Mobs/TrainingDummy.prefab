@@ -163,6 +163,35 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &880070000000000004
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6100200000000000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f7fd960e9c14d44990494a70a80d3df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tagSystem: {fileID: 0}
+  groggyTag: {fileID: 0}
+  followAnchor: {fileID: 0}
+  boundsSource: {fileID: 0}
+  effectPrefab: {fileID: 2456809460785590275, guid: 80d266c90ff9c4d458d715b8d37a677b, type: 3}
+  effectParent: {fileID: 0}
+  instantiateOnAwake: 0
+  destroyInstanceWhenHidden: 1
+  usePooling: 1
+  maxPooledInstancesPerPrefab: 16
+  worldOffset: {x: 0, y: 0.18, z: 0}
+  fallbackHeight: 1.2
+  followEveryFrame: 1
+  scaleByBoundsHeight: 1
+  heightToScaleRatio: 0.45
+  minScale: 0.55
+  maxScale: 1.8
 --- !u!1 &1956472550783629341
 GameObject:
   m_ObjectHideFlags: 0
@@ -527,32 +556,3 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 2147483656
   defaultMode: 1
---- !u!114 &880070000000000004
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6100200000000000}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6f7fd960e9c14d44990494a70a80d3df, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  tagSystem: {fileID: 0}
-  groggyTag: {fileID: 0}
-  followAnchor: {fileID: 0}
-  boundsSource: {fileID: 0}
-  effectPrefab: {fileID: 2456809460785590275, guid: 80d266c90ff9c4d458d715b8d37a677b, type: 3}
-  effectParent: {fileID: 0}
-  instantiateOnAwake: 0
-  destroyInstanceWhenHidden: 1
-  usePooling: 1
-  maxPooledInstancesPerPrefab: 16
-  worldOffset: {x: 0, y: 0.18, z: 0}
-  fallbackHeight: 1.2
-  followEveryFrame: 1
-  scaleByBoundsHeight: 1
-  heightToScaleRatio: 0.45
-  minScale: 0.55
-  maxScale: 1.8

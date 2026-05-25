@@ -65,18 +65,19 @@ public class StrangeCandlestickAttackRunner : MonoBehaviour, IMobPatternRunner, 
 
         isRunning = true;
         cancelRequested = false;
-        ShowWarning(context);
+        float delaySeconds = CombatTimingService.ScaleSeconds(system, context.DelaySeconds, CombatTimingSlot.AttackWarning);
+        ShowWarning(context, delaySeconds);
 
         float elapsed = 0f;
 
         try
         {
-            while (elapsed < context.DelaySeconds)
+            while (elapsed < delaySeconds)
             {
                 if (IsCancelled(spec) || cancelRequested || IsSuppressed() || !owner.CanContinueAttack(context.TargetObject))
                     yield break;
 
-                UpdateWarning(context);
+                UpdateWarning(context, delaySeconds);
                 elapsed += Time.deltaTime;
                 yield return null;
             }
@@ -107,20 +108,20 @@ public class StrangeCandlestickAttackRunner : MonoBehaviour, IMobPatternRunner, 
         return abilityCoordinator != null && abilityCoordinator.IsAbilityExecutionSuppressed;
     }
 
-    private void ShowWarning(AttackContext context)
+    private void ShowWarning(AttackContext context, float duration)
     {
         if (telegraphService == null)
             return;
 
-        telegraphService.Show(owner.MakeLockOnSpec(context.TargetObject));
+        telegraphService.Show(owner.MakeLockOnSpec(context.TargetObject, duration));
     }
 
-    private void UpdateWarning(AttackContext context)
+    private void UpdateWarning(AttackContext context, float duration)
     {
         if (telegraphService == null)
             return;
 
-        AttackTelegraphSpec spec = owner.MakeLockOnSpec(context.TargetObject);
+        AttackTelegraphSpec spec = owner.MakeLockOnSpec(context.TargetObject, duration);
         if (telegraphService.HasActiveTelegraph)
             telegraphService.UpdateCurrentGeometry(spec);
         else

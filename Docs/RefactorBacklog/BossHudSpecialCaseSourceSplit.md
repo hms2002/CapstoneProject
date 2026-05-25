@@ -1,5 +1,5 @@
 ---
-status: resolved
+status: superseded
 authority: refactor-backlog
 category: refactor-item
 last_reviewed: 2026-05-15
@@ -9,7 +9,7 @@ last_reviewed: 2026-05-15
 
 ## Status
 
-resolved
+superseded by one-slot-per-boss HUD registration
 
 ## Current Problem
 
@@ -23,12 +23,12 @@ The original pressure points were:
 
 Slime Queen phase two is still a valid special case because the boss is split into separate runtime bodies. The structural issue was that the common HUD controller knew the endpoint boss types.
 
-Resolved shape:
+Current shape:
 
-- `BossHudController` reads `IBossHudSource` / `BossHudSnapshot`.
-- `SingleBossHudSource` adapts a normal `BossControllerBase`.
-- `SlimeQueenPhaseTwoHudSource` owns the Short/Long lookup and projects two phase-two channels.
-- `BossGroggyBarUI` now supports dual groggy channels, with a runtime fallback that clones the existing single groggy slider until authored dual references are wired.
+- `BossHudController` owns explicit boss registrations.
+- Each registered boss receives one `BossHudSlotView`.
+- `BossHealthBarUI` and `BossGroggyBarUI` render one boss channel only.
+- Slime Queen phase two Short/Long bodies appear as separate HUD slots instead of one dual-channel HUD.
 
 ## Why It Exists
 
@@ -36,26 +36,15 @@ Resolved shape:
 - `BossHudController` already had scene-load binding and health/groggy view orchestration, so adding the special case there was the shortest path.
 - Existing `IBossSplitHealthPresentation` helps with split labels on a single bound boss, but it does not model a phase made from multiple boss objects.
 
-## Target Shape
+## Superseded Target Shape
 
-- `BossHudController` reads a generic HUD source or snapshot, not concrete boss types. Done.
-- A normal boss adapter/source translates one `BossControllerBase` into the common HUD snapshot. Done.
-- A Slime Queen phase-two adapter/source owns references to `SlimeQueenP2Short` and `SlimeQueenP2Long` and translates them into the same snapshot. Done.
-- The snapshot carries display name, visibility, groggy display state, and one or more health/groggy channels. Done.
-- `BossHealthBarUI` and `BossGroggyBarUI` render supplied channels without knowing which boss produced them. Done.
-
-Example target boundary:
+The previous target was a generic source/snapshot adapter layer that projected normal bosses and Slime Queen phase-two bodies into one HUD view. That target was replaced by the simpler slot registration model:
 
 ```text
 BossHudController
--> IBossHudSource / BossHudSnapshot
--> BossHealthBarUI
-
-SingleBossHudSource
 -> BossControllerBase
-
-SlimeQueenPhaseTwoHudSource
--> SlimeQueenP2Short + SlimeQueenP2Long
+-> BossHudSlotView
+-> BossHealthBarUI / BossGroggyBarUI
 ```
 
 ## Risks
@@ -85,4 +74,4 @@ SlimeQueenPhaseTwoHudSource
 
 ## Remaining Follow-up
 
-Author dedicated dual groggy references on the active `GlobalUIRoot` / boss HUD prefab if the runtime fallback layout is not acceptable for final UI. That is an authoring follow-up, not a remaining source split blocker.
+No dual groggy authoring follow-up remains. Future HUD work should improve `BossHudSlotView` and the slot container layout rather than reintroducing dual health/groggy bar rendering.

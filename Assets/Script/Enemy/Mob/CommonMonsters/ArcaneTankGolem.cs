@@ -286,9 +286,10 @@ public sealed partial class ArcaneTankGolemSlamRunner : MonoBehaviour, IMobPatte
 
         try
         {
-            ShowLandingWarning(context);
-            if (context.LandingWarningSeconds > 0f)
-                yield return AbilityTasks.WaitDelay(system, spec, context.LandingWarningSeconds);
+            float landingWarningSeconds = CombatTimingService.ScaleSeconds(system, context.LandingWarningSeconds, CombatTimingSlot.AttackWarning);
+            ShowLandingWarning(context, landingWarningSeconds);
+            if (landingWarningSeconds > 0f)
+                yield return AbilityTasks.WaitDelay(system, spec, landingWarningSeconds);
 
             HideCurrentWarning();
             if (cancelRequested || owner.IsDead || IsCancelled(spec))
@@ -321,9 +322,10 @@ public sealed partial class ArcaneTankGolemSlamRunner : MonoBehaviour, IMobPatte
                 context.HitPayload);
 
             Vector2[] rockPositions = BuildRockPositions(context.LandingPosition, context.RockOffsetDistance);
-            ShowRockWarnings(rockPositions, context);
-            if (context.RockWarningSeconds > 0f)
-                yield return AbilityTasks.WaitDelay(system, spec, context.RockWarningSeconds);
+            float rockWarningSeconds = CombatTimingService.ScaleSeconds(system, context.RockWarningSeconds, CombatTimingSlot.AttackWarning);
+            ShowRockWarnings(rockPositions, context, rockWarningSeconds);
+            if (rockWarningSeconds > 0f)
+                yield return AbilityTasks.WaitDelay(system, spec, rockWarningSeconds);
 
             if (cancelRequested || owner.IsDead || IsCancelled(spec))
                 yield break;
@@ -429,16 +431,16 @@ public sealed partial class ArcaneTankGolemSlamRunner : MonoBehaviour, IMobPatte
         heightState?.SetGrounded();
     }
 
-    private void ShowLandingWarning(ArcaneTankGolem.SlamContext context)
+    private void ShowLandingWarning(ArcaneTankGolem.SlamContext context, float warningSeconds)
     {
         telegraphService?.Show(AttackTelegraphSpec.CreateCircle(
             context.LandingPosition,
             context.LandingDiameter,
-            context.LandingWarningSeconds,
+            warningSeconds,
             landingWarningStyle));
     }
 
-    private void ShowRockWarnings(Vector2[] centers, ArcaneTankGolem.SlamContext context)
+    private void ShowRockWarnings(Vector2[] centers, ArcaneTankGolem.SlamContext context, float warningSeconds)
     {
         if (telegraphService == null)
             return;
@@ -448,7 +450,7 @@ public sealed partial class ArcaneTankGolemSlamRunner : MonoBehaviour, IMobPatte
             AttackTelegraphView view = telegraphService.SpawnDetachedView(AttackTelegraphSpec.CreateCircle(
                 centers[i],
                 context.RockDiameter,
-                context.RockWarningSeconds,
+                warningSeconds,
                 rockWarningStyle));
             if (view != null)
                 detachedWarnings.Add(view);

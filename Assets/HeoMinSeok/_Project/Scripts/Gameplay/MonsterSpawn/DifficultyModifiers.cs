@@ -11,6 +11,7 @@ public class DifficultyModifiers
     [Header("Stats")]
     [Min(0f)] public float hpMultiplier = 1f;
     [Min(0f)] public float attackMultiplier = 1f;
+    [Min(0f)] public float attackSpeedMultiplier = 1f;
 
     public DifficultyModifiers()
     {
@@ -29,6 +30,7 @@ public class DifficultyModifiers
         eliteChanceBonus = source.eliteChanceBonus;
         hpMultiplier = source.hpMultiplier;
         attackMultiplier = source.attackMultiplier;
+        attackSpeedMultiplier = source.attackSpeedMultiplier;
     }
 
     /// <summary>

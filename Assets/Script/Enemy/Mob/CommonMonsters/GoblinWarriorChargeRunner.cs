@@ -56,9 +56,10 @@ public sealed class GoblinWarriorChargeRunner : MonoBehaviour, IMobPatternRunner
 
         try
         {
-            ShowWarning(context);
-            if (context.WarningSeconds > 0f)
-                yield return AbilityTasks.WaitDelay(system, spec, context.WarningSeconds);
+            float warningSeconds = CombatTimingService.ScaleSeconds(system, context.WarningSeconds, CombatTimingSlot.AttackWarning);
+            ShowWarning(context, warningSeconds);
+            if (warningSeconds > 0f)
+                yield return AbilityTasks.WaitDelay(system, spec, warningSeconds);
 
             if (cancelRequested || owner.IsDead || IsCancelled(spec))
                 yield break;
@@ -117,7 +118,7 @@ public sealed class GoblinWarriorChargeRunner : MonoBehaviour, IMobPatternRunner
         TryHitTarget(context);
     }
 
-    private void ShowWarning(GoblinWarrior.ChargeContext context)
+    private void ShowWarning(GoblinWarrior.ChargeContext context, float warningSeconds)
     {
         if (telegraphService == null)
             return;
@@ -128,7 +129,7 @@ public sealed class GoblinWarriorChargeRunner : MonoBehaviour, IMobPatternRunner
             center,
             new Vector2(context.DashDistance, context.WarningWidth),
             angle,
-            context.WarningSeconds,
+            warningSeconds,
             warningStyle));
     }
 

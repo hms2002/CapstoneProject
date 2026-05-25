@@ -786,19 +786,7 @@ public sealed class SceneSetupValidatorWindow : EditorWindow
         foreach (BossHealthBarUI bossHud in FindSceneObjects<BossHealthBarUI>(scene, includeInactive: true))
         {
             SerializedObject serializedHud = new SerializedObject(bossHud);
-            bool canCreateDualFallback = GetSerializedBool(serializedHud, "createFallbackDualHealthPresentation");
             bool canCreateSplitFallback = GetSerializedBool(serializedHud, "createFallbackSplitHealthPresentation");
-
-            if (canCreateDualFallback && HasAnyMissingSerializedReference(
-                    serializedHud,
-                    "dualHealthRoot",
-                    "leftImmediateHealthSlider",
-                    "leftDelayedHealthSlider",
-                    "rightImmediateHealthSlider",
-                    "rightDelayedHealthSlider"))
-            {
-                AddResult(scene.path, Severity.Warning, "BossHealthBarUI dual-health references are incomplete while createFallbackDualHealthPresentation is enabled. Dual boss HUD can be created at runtime.", bossHud, GetObjectPath(bossHud.transform));
-            }
 
             if (canCreateSplitFallback && HasAnyMissingSerializedReference(serializedHud, "splitHealthRoot", "splitDividerImage"))
             {

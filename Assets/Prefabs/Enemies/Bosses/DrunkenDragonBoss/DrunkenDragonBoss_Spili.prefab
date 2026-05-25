@@ -595,6 +595,8 @@ MonoBehaviour:
   initialTarget: {fileID: 0}
   healthAttribute: {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
   maxHealthAttribute: {fileID: 11400000, guid: 0e177e1d15e428745b5859fac08ce203, type: 2}
+  hudHealthBarTheme: {fileID: 11400000, guid: efb8cce34a2819545b863edad3307a32, type: 2}
+  logBossHudRegistration: 1
   deadTag: {fileID: 11400000, guid: c4d01ec0a10b46e7a1ce43d426f0d859, type: 2}
   groggyTag: {fileID: 11400000, guid: 6a381fd96b3c05d4cbcbd73fbf173f4e, type: 2}
   phases:

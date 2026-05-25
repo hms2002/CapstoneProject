@@ -48,10 +48,10 @@ Cause:
 The Slime Queen prefabs did not author a `StaggerGaugeSystem`, and the Slime Queen phase-two HUD special case explicitly hid the shared groggy bar while showing dual health bars. That meant phase-one had no stagger target component for `CombatDamageAction`, and phase-two had no visible groggy gauge even after the combat component existed.
 
 Fix:
-`SlimeQueenBossBase` now ensures a runtime `StaggerGaugeSystem` for every Slime Queen variant and wires it to the existing stagger attributes plus a 3-second status-only Groggy effect. Phase-two Slime Queen HUD handling now lives in `SlimeQueenPhaseTwoHudSource`, which projects Short/Long as separate health and groggy channels. `BossGroggyBarUI` can render the two groggy channels, using a logged runtime fallback until authored dual references are wired.
+`SlimeQueenBossBase` now ensures a runtime `StaggerGaugeSystem` for every Slime Queen variant and wires it to the existing stagger attributes plus a 3-second status-only Groggy effect. Phase-two Slime Queen Short/Long bodies now use the same boss HUD registration path as other bosses and appear as separate HUD slots.
 
 Prevention:
-When adding a new boss or special multi-body HUD path, verify both sides of groggy support: the combat target must have a configured `StaggerGaugeSystem`, and the HUD path must provide an `IBossHudSource` snapshot with explicit groggy channels instead of hiding the groggy view or adding concrete boss branches to `BossHudController`.
+When adding a new boss or special multi-body HUD path, verify both sides of groggy support: the combat target must have a configured `StaggerGaugeSystem`, and each active boss body must register its own HUD slot instead of hiding the groggy view or adding concrete boss branches to `BossHudController`.
 
 ## 2026-05-25 - Drain Control Lock Stopped Drain Pull
 

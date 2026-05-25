@@ -242,9 +242,9 @@ public sealed partial class LizardWarriorChargeRunner : MonoBehaviour, IMobPatte
 
         try
         {
-            yield return RunStep(context, owner.FirstStep, spec);
+            yield return RunStep(system, context, owner.FirstStep, spec);
             if (!cancelRequested && !owner.IsDead && !IsCancelled(spec))
-                yield return RunStep(context, owner.SecondStep, spec);
+                yield return RunStep(system, context, owner.SecondStep, spec);
         }
         finally
         {
@@ -266,7 +266,7 @@ public sealed partial class LizardWarriorChargeRunner : MonoBehaviour, IMobPatte
         HideWarning();
     }
 
-    private IEnumerator RunStep(LizardWarrior.ChargeContext context, LizardWarrior.ChargeStep step, AbilitySpec spec)
+    private IEnumerator RunStep(AbilitySystem system, LizardWarrior.ChargeContext context, LizardWarrior.ChargeStep step, AbilitySpec spec)
     {
         Vector2 direction = context.Target != null
             ? CommonMonsterCombatUtility.DirectionTo(gameObject, context.Target, false)
@@ -276,9 +276,10 @@ public sealed partial class LizardWarriorChargeRunner : MonoBehaviour, IMobPatte
         {
             owner.LockFacingForChargeStep(context.Target);
             CommonMonsterCombatUtility.TriggerAnimation(owner, CommonMonsterAnimationCue.AttackReady);
-            ShowWarning(transform.position, direction, step);
-            if (step.warningSeconds > 0f)
-                yield return new WaitForSeconds(step.warningSeconds);
+            float warningSeconds = CombatTimingService.ScaleSeconds(this, step.warningSeconds, CombatTimingSlot.AttackWarning);
+            ShowWarning(transform.position, direction, step, warningSeconds);
+            if (warningSeconds > 0f)
+                yield return AbilityTasks.WaitDelay(system, spec, warningSeconds);
 
             if (cancelRequested || owner.IsDead || IsCancelled(spec))
                 yield break;
@@ -325,7 +326,7 @@ public sealed partial class LizardWarriorChargeRunner : MonoBehaviour, IMobPatte
             CommonMonsterCombatUtility.TryApplyCircleDamage(transform.position, step.warningWidth, owner.ChargeLogic.TargetLayers, gameObject, payload);
     }
 
-    private void ShowWarning(Vector2 start, Vector2 direction, LizardWarrior.ChargeStep step)
+    private void ShowWarning(Vector2 start, Vector2 direction, LizardWarrior.ChargeStep step, float warningSeconds)
     {
         if (telegraphService == null)
             return;
@@ -336,7 +337,7 @@ public sealed partial class LizardWarriorChargeRunner : MonoBehaviour, IMobPatte
             center,
             new Vector2(step.dashDistance, step.warningWidth),
             angle,
-            step.warningSeconds,
+            warningSeconds,
             warningStyle));
     }
 

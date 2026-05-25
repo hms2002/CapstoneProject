@@ -28249,7 +28249,7 @@ MonoBehaviour:
   useBossHudSlidePresentation: 1
   hiddenAnchoredPosY: 120
   shownAnchoredPosY: 0
-  slideDuration: 0.3
+  slideDuration: 0.8
   useUnscaledSlideTime: 1
 --- !u!1 &7351477084799799427
 GameObject:

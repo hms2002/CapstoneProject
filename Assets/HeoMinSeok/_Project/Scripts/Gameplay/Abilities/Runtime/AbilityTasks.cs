@@ -20,6 +20,16 @@ namespace UnityGAS
         }
 
         /// <summary>
+        /// 책임:
+        /// - Ability 코루틴이 전투 의도별 시간 보정을 거친 delay를 기다리게 한다.
+        /// - 취소 토큰 처리는 기존 WaitDelay와 동일하게 유지한다.
+        /// </summary>
+        public static IEnumerator WaitCombatDelay(AbilitySystem system, AbilitySpec spec, float seconds, CombatTimingSlot slot)
+        {
+            yield return WaitDelay(system, spec, CombatTimingService.ScaleSeconds(system, seconds, slot));
+        }
+
+        /// <summary>
         /// 특정 태그 이벤트를 기다림. (Spec 소유 waiter 사용)
         /// timeout <= 0이면 무한 대기.
         /// predicate가 있으면 이벤트 데이터 필터링(조건 불만족이면 계속 대기).
