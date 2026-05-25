@@ -151,10 +151,13 @@ namespace UnityGAS
             switch (spec.shape)
             {
                 case AttackTelegraphShape.Rectangle:
+                    Vector2 rectangleDirection = Quaternion.Euler(0f, 0f, spec.rotationDeg) * Vector2.right;
+                    float rectangleLength = Mathf.Max(0.01f, spec.size.x);
+                    Vector2 rectangleStart = (Vector2)spec.center - (rectangleDirection.normalized * (rectangleLength * 0.5f));
                     RebuildRectangleMesh(
-                        spec.origin,
-                        Quaternion.Euler(0f, 0f, spec.rotationDeg) * Vector2.right,
-                        Mathf.Max(0.01f, spec.size.x),
+                        rectangleStart,
+                        rectangleDirection,
+                        rectangleLength,
                         Mathf.Max(0.01f, spec.size.y),
                         spec.wallClipLayers,
                         spec.wallClipSampleCount,

@@ -18,6 +18,7 @@ public sealed class LevelDesignEditorWindow : EditorWindow
     private const string PortalPrefabPath = "Assets/LeeJunMo/Prefab/Map/Portal/ScenePortal.prefab";
     private const string MonsterPrefabRoot = "Assets/Prefabs/Enemies/Mobs";
     private const string MonsterPrefabDragKey = "LevelDesignEditor.MonsterPrefab";
+    private const string StageMonsterSetDragKey = "LevelDesignEditor.StageMonsterSet";
     private const string ObjectPlacementDragKey = "LevelDesignEditor.ObjectPlacement";
     private const string LevelDesignRootName = "LevelDesignRoot";
     private const float PolygonEdgeInsertPixelThreshold = 14f;
@@ -49,6 +50,12 @@ public sealed class LevelDesignEditorWindow : EditorWindow
         KillLockChest,
         Portal,
         MonsterSpawn
+    }
+
+    private enum MonsterSpawnPlacementSource
+    {
+        FixedPrefab,
+        StageMonsterSet
     }
 
     private enum RoomDrawShape
@@ -84,7 +91,9 @@ public sealed class LevelDesignEditorWindow : EditorWindow
     private PlacementKind placementKind = PlacementKind.MonsterSpawn;
     private readonly List<ValidationResult> validationResults = new();
     private readonly List<GameObject> monsterPrefabs = new();
+    private readonly List<StageMonsterSetSO> stageMonsterSets = new();
     private readonly Dictionary<string, bool> monsterFolderFoldouts = new(StringComparer.Ordinal);
+    private readonly Dictionary<string, bool> stageMonsterSetFolderFoldouts = new(StringComparer.Ordinal);
 
     private DoorObject[] doors = Array.Empty<DoorObject>();
     private ShortcutBase[] shortcuts = Array.Empty<ShortcutBase>();
@@ -106,6 +115,8 @@ public sealed class LevelDesignEditorWindow : EditorWindow
     private MonsterSpawnRoomGroup selectedRoomGroup;
     private PolygonCollider2D selectedPolygonVertexCollider;
     private GameObject selectedMonsterPrefab;
+    private StageMonsterSetSO selectedStageMonsterSet;
+    private MonsterSpawnPlacementSource selectedMonsterSpawnSource;
     private GameObject doorPrefab;
     private GameObject leverPrefab;
     private GameObject statuePrefab;
@@ -375,14 +386,10 @@ public sealed class LevelDesignEditorWindow : EditorWindow
                 if (GUILayout.Button("스폰 속성"))
                     mode = ToolMode.Options;
 
-                using (new EditorGUI.DisabledScope(spawn.MonsterPrefab == null))
+                using (new EditorGUI.DisabledScope(!TryUseSpawnSourceForPlacement(spawn)))
                 {
-                    if (GUILayout.Button("프리팹 배치에 사용"))
-                    {
-                        selectedMonsterPrefab = spawn.MonsterPrefab;
-                        placementKind = PlacementKind.MonsterSpawn;
-                        mode = ToolMode.Place;
-                    }
+                    if (GUILayout.Button("스폰 설정 배치에 사용"))
+                        UseSpawnSourceForPlacement(spawn);
                 }
             }
             else if (context is ChestMonsterKillLock chestLock)
@@ -734,8 +741,7 @@ public sealed class LevelDesignEditorWindow : EditorWindow
         }
         else if (context is MonsterSpawnContainer spawn)
         {
-            if (spawn.MonsterPrefab != null)
-                selectedMonsterPrefab = spawn.MonsterPrefab;
+            UseSpawnSourceForPlacement(spawn, switchToPlace: false);
 
             if (allowLinking && linkingChestLock != null)
             {
@@ -1047,7 +1053,7 @@ public sealed class LevelDesignEditorWindow : EditorWindow
             (PlacementKind.Chest, "상자", chestPrefab),
             (PlacementKind.KillLockChest, "킬락 상자", killLockChestPrefab != null ? killLockChestPrefab : chestPrefab),
             (PlacementKind.Portal, "포탈", portalPrefab),
-            (PlacementKind.MonsterSpawn, "몬스터 스폰", selectedMonsterPrefab)
+            (PlacementKind.MonsterSpawn, "몬스터 스폰", GetSelectedMonsterSpawnPreviewPrefab())
         };
 
         int columns = Mathf.Max(1, Mathf.FloorToInt((position.width - 42f) / 108f));
@@ -1126,13 +1132,19 @@ public sealed class LevelDesignEditorWindow : EditorWindow
         }
 
         monsterSearch = EditorGUILayout.TextField("검색", monsterSearch);
-        selectedMonsterPrefab = EditorGUILayout.ObjectField("선택 몬스터", selectedMonsterPrefab, typeof(GameObject), false) as GameObject;
+        selectedMonsterSpawnSource = (MonsterSpawnPlacementSource)EditorGUILayout.EnumPopup("스폰 소스", selectedMonsterSpawnSource);
+        selectedMonsterPrefab = EditorGUILayout.ObjectField("선택 고정 몬스터", selectedMonsterPrefab, typeof(GameObject), false) as GameObject;
+        selectedStageMonsterSet = EditorGUILayout.ObjectField("선택 공통 세트", selectedStageMonsterSet, typeof(StageMonsterSetSO), false) as StageMonsterSetSO;
 
         List<GameObject> filtered = monsterPrefabs
             .Where(prefab => prefab != null && (string.IsNullOrWhiteSpace(monsterSearch) || prefab.name.IndexOf(monsterSearch, StringComparison.OrdinalIgnoreCase) >= 0))
             .ToList();
+        List<StageMonsterSetSO> filteredSets = stageMonsterSets
+            .Where(set => set != null && (string.IsNullOrWhiteSpace(monsterSearch) || set.name.IndexOf(monsterSearch, StringComparison.OrdinalIgnoreCase) >= 0))
+            .ToList();
 
         monsterPaletteScroll = EditorGUILayout.BeginScrollView(monsterPaletteScroll, GUILayout.MinHeight(180f));
+        DrawStageMonsterSetPalette(filteredSets);
         int columns = Mathf.Max(1, Mathf.FloorToInt((position.width - 60f) / 100f));
         foreach (IGrouping<string, GameObject> folderGroup in filtered
                      .GroupBy(GetMonsterFolderLabel)
@@ -1165,6 +1177,84 @@ public sealed class LevelDesignEditorWindow : EditorWindow
         EditorGUILayout.EndScrollView();
     }
 
+    private void DrawStageMonsterSetPalette(List<StageMonsterSetSO> filteredSets)
+    {
+        if (filteredSets.Count == 0)
+            return;
+
+        int columns = Mathf.Max(1, Mathf.FloorToInt((position.width - 60f) / 100f));
+        foreach (IGrouping<string, StageMonsterSetSO> folderGroup in filteredSets
+                     .GroupBy(GetStageMonsterSetFolderLabel)
+                     .OrderBy(group => group.Key, StringComparer.OrdinalIgnoreCase))
+        {
+            string foldoutKey = $"StageSet/{folderGroup.Key}";
+            if (!stageMonsterSetFolderFoldouts.ContainsKey(foldoutKey))
+                stageMonsterSetFolderFoldouts[foldoutKey] = true;
+
+            stageMonsterSetFolderFoldouts[foldoutKey] = EditorGUILayout.Foldout(
+                stageMonsterSetFolderFoldouts[foldoutKey],
+                $"공통 세트/{folderGroup.Key} ({folderGroup.Count()})",
+                true);
+
+            if (!stageMonsterSetFolderFoldouts[foldoutKey])
+                continue;
+
+            List<StageMonsterSetSO> folderSets = folderGroup
+                .OrderBy(set => set.name, StringComparer.OrdinalIgnoreCase)
+                .ToList();
+
+            for (int i = 0; i < folderSets.Count; i += columns)
+            {
+                using (new EditorGUILayout.HorizontalScope())
+                {
+                    for (int column = 0; column < columns && i + column < folderSets.Count; column++)
+                        DrawStageMonsterSetPaletteItem(folderSets[i + column]);
+                }
+            }
+        }
+    }
+
+    private void DrawStageMonsterSetPaletteItem(StageMonsterSetSO monsterSet)
+    {
+        Rect itemRect = GUILayoutUtility.GetRect(92f, 92f, GUILayout.Width(92f), GUILayout.Height(92f));
+        bool selected = monsterSet == selectedStageMonsterSet && selectedMonsterSpawnSource == MonsterSpawnPlacementSource.StageMonsterSet;
+        EditorGUI.DrawRect(itemRect, selected ? new Color(0.25f, 0.62f, 0.35f, 0.35f) : new Color(0f, 0f, 0f, 0.12f));
+
+        Texture preview = AssetPreview.GetMiniThumbnail(monsterSet);
+        Rect previewRect = new Rect(itemRect.x + 10f, itemRect.y + 6f, 72f, 34f);
+        if (preview != null)
+            GUI.DrawTexture(previewRect, preview, ScaleMode.ScaleToFit);
+
+        string stageZeroName = monsterSet != null && monsterSet.TryResolveMonsterPrefab(0, out GameObject prefab) && prefab != null
+            ? prefab.name
+            : "미설정";
+        GUI.Label(new Rect(itemRect.x + 4f, itemRect.y + 42f, itemRect.width - 8f, 18f), "COMMON", EditorStyles.centeredGreyMiniLabel);
+        GUI.Label(new Rect(itemRect.x + 4f, itemRect.y + 58f, itemRect.width - 8f, 16f), monsterSet.name, EditorStyles.centeredGreyMiniLabel);
+        GUI.Label(new Rect(itemRect.x + 4f, itemRect.y + 73f, itemRect.width - 8f, 16f), $"0: {stageZeroName}", EditorStyles.centeredGreyMiniLabel);
+
+        Event e = Event.current;
+        if (!itemRect.Contains(e.mousePosition))
+            return;
+
+        if (e.type == EventType.MouseDown && e.button == 0)
+        {
+            selectedStageMonsterSet = monsterSet;
+            selectedMonsterSpawnSource = MonsterSpawnPlacementSource.StageMonsterSet;
+            Repaint();
+            e.Use();
+        }
+        else if (e.type == EventType.MouseDrag && e.button == 0)
+        {
+            selectedStageMonsterSet = monsterSet;
+            selectedMonsterSpawnSource = MonsterSpawnPlacementSource.StageMonsterSet;
+            DragAndDrop.PrepareStartDrag();
+            DragAndDrop.objectReferences = new Object[] { monsterSet };
+            DragAndDrop.SetGenericData(StageMonsterSetDragKey, monsterSet);
+            DragAndDrop.StartDrag(monsterSet.name);
+            e.Use();
+        }
+    }
+
     private void DrawMonsterPaletteItem(GameObject prefab)
     {
         Rect itemRect = GUILayoutUtility.GetRect(92f, 92f, GUILayout.Width(92f), GUILayout.Height(92f));
@@ -1188,12 +1278,14 @@ public sealed class LevelDesignEditorWindow : EditorWindow
         if (e.type == EventType.MouseDown && e.button == 0)
         {
             selectedMonsterPrefab = prefab;
+            selectedMonsterSpawnSource = MonsterSpawnPlacementSource.FixedPrefab;
             Repaint();
             e.Use();
         }
         else if (e.type == EventType.MouseDrag && e.button == 0)
         {
             selectedMonsterPrefab = prefab;
+            selectedMonsterSpawnSource = MonsterSpawnPlacementSource.FixedPrefab;
             DragAndDrop.PrepareStartDrag();
             DragAndDrop.objectReferences = new Object[] { prefab };
             DragAndDrop.SetGenericData(MonsterPrefabDragKey, prefab);
@@ -1229,7 +1321,7 @@ public sealed class LevelDesignEditorWindow : EditorWindow
             DrawObjectProperties("석상", statue, "costType", "costAmount", "allowLethalPayment", "healthAttribute", "magicStoneIcon", "hpIcon");
 
         if (spawn != null)
-            DrawObjectProperties("몬스터 스폰", spawn, "monsterPrefab", "spawnByDefault", "allowExtraSpawn", "spawnAnchor", "roomArea", "roomGroup", "linkedChestKillLock");
+            DrawObjectProperties("몬스터 스폰", spawn, "sourceKind", "monsterPrefab", "stageMonsterSet", "spawnByDefault", "allowExtraSpawn", "spawnAnchor", "roomArea", "roomGroup", "linkedChestKillLock");
 
         if (doorLock != null)
             DrawObjectProperties("문 KillLock", doorLock, "targetDoor", "targetRoomGroup", "logDebug");
@@ -1325,7 +1417,7 @@ public sealed class LevelDesignEditorWindow : EditorWindow
             DrawMarker(roomGroup, new Color(0.2f, 0.75f, 1f, 1f), "Room");
 
         foreach (MonsterSpawnContainer spawn in spawnContainers)
-            DrawMarker(spawn, new Color(0.25f, 1f, 0.25f, 1f), spawn.MonsterPrefab != null ? spawn.MonsterPrefab.name : "스폰?");
+            DrawMarker(spawn, new Color(0.25f, 1f, 0.25f, 1f), BuildSpawnLabel(spawn));
 
         foreach (TreasureChest chest in chests)
             DrawMarker(chest, new Color(1f, 0.85f, 0.25f, 1f), chest.GetComponent<ChestMonsterKillLock>() != null ? "상자락" : "상자");
@@ -2034,6 +2126,23 @@ public sealed class LevelDesignEditorWindow : EditorWindow
             return;
         }
 
+        StageMonsterSetSO draggedMonsterSet = DragAndDrop.GetGenericData(StageMonsterSetDragKey) as StageMonsterSetSO;
+        if (draggedMonsterSet != null && (e.type == EventType.DragUpdated || e.type == EventType.DragPerform))
+        {
+            DragAndDrop.visualMode = DragAndDropVisualMode.Copy;
+            if (e.type == EventType.DragPerform)
+            {
+                DragAndDrop.AcceptDrag();
+                selectedStageMonsterSet = draggedMonsterSet;
+                selectedMonsterSpawnSource = MonsterSpawnPlacementSource.StageMonsterSet;
+                CreateMonsterSpawnAt(Snap(GetMouseWorldPosition(e)), draggedMonsterSet);
+                RefreshAll();
+            }
+
+            e.Use();
+            return;
+        }
+
         if (placementKind == PlacementKind.None || e.type != EventType.MouseDown || e.button != 0)
             return;
 
@@ -2179,7 +2288,10 @@ public sealed class LevelDesignEditorWindow : EditorWindow
                 InstantiatePrefabAt(portalPrefab, "Portals", position);
                 break;
             case PlacementKind.MonsterSpawn:
-                CreateMonsterSpawnAt(position, selectedMonsterPrefab);
+                if (selectedMonsterSpawnSource == MonsterSpawnPlacementSource.StageMonsterSet)
+                    CreateMonsterSpawnAt(position, selectedStageMonsterSet);
+                else
+                    CreateMonsterSpawnAt(position, selectedMonsterPrefab);
                 break;
         }
     }
@@ -2244,8 +2356,35 @@ public sealed class LevelDesignEditorWindow : EditorWindow
         SetParent(spawnObject.transform, FindOrCreateLevelRootChild("MonsterSpawns"));
 
         MonsterSpawnContainer spawn = Undo.AddComponent<MonsterSpawnContainer>(spawnObject);
+        AssignEnum(spawn, "sourceKind", (int)MonsterSpawnSourceKind.FixedPrefab);
         AssignReference(spawn, "monsterPrefab", monsterPrefab);
+        ConfigureMonsterSpawnRoomReferences(spawn, position);
 
+        EditorUtility.SetDirty(spawn);
+        EditorSceneManager.MarkSceneDirty(scene);
+        Selection.activeObject = spawnObject;
+    }
+
+    private void CreateMonsterSpawnAt(Vector3 position, StageMonsterSetSO monsterSet)
+    {
+        Scene scene = SceneManager.GetActiveScene();
+        GameObject spawnObject = new(monsterSet != null ? $"MonsterSpawn_{monsterSet.name}" : "MonsterSpawn_Common");
+        Undo.RegisterCreatedObjectUndo(spawnObject, "Create Common Monster Spawn");
+        spawnObject.transform.position = position;
+        SetParent(spawnObject.transform, FindOrCreateLevelRootChild("MonsterSpawns"));
+
+        MonsterSpawnContainer spawn = Undo.AddComponent<MonsterSpawnContainer>(spawnObject);
+        AssignEnum(spawn, "sourceKind", (int)MonsterSpawnSourceKind.StageMonsterSet);
+        AssignReference(spawn, "stageMonsterSet", monsterSet);
+        ConfigureMonsterSpawnRoomReferences(spawn, position);
+
+        EditorUtility.SetDirty(spawn);
+        EditorSceneManager.MarkSceneDirty(scene);
+        Selection.activeObject = spawnObject;
+    }
+
+    private void ConfigureMonsterSpawnRoomReferences(MonsterSpawnContainer spawn, Vector3 position)
+    {
         MonsterSpawnRoomGroup roomGroup = selectedRoomGroup != null ? selectedRoomGroup : FindRoomGroupAt(position);
         MonsterRoomArea2D area = roomGroup != null ? ResolveRoomArea(roomGroup) : FindRoomAreaAt(position);
         AssignReference(spawn, "roomGroup", roomGroup);
@@ -2254,10 +2393,6 @@ public sealed class LevelDesignEditorWindow : EditorWindow
         ChestMonsterKillLock roomChestLock = roomGroup != null ? FindSingleChestLockInRoom(roomGroup) : null;
         if (roomChestLock != null)
             AssignReference(spawn, "linkedChestKillLock", roomChestLock);
-
-        EditorUtility.SetDirty(spawn);
-        EditorSceneManager.MarkSceneDirty(scene);
-        Selection.activeObject = spawnObject;
     }
 
     private void CreateBattleRoomAtSceneCenter()
@@ -2603,6 +2738,7 @@ public sealed class LevelDesignEditorWindow : EditorWindow
     private void RefreshMonsterPalette()
     {
         monsterPrefabs.Clear();
+        stageMonsterSets.Clear();
         string[] folders = AssetDatabase.IsValidFolder(MonsterPrefabRoot)
             ? new[] { MonsterPrefabRoot }
             : new[] { "Assets" };
@@ -2624,6 +2760,18 @@ public sealed class LevelDesignEditorWindow : EditorWindow
 
         if (selectedMonsterPrefab == null && monsterPrefabs.Count > 0)
             selectedMonsterPrefab = monsterPrefabs[0];
+
+        string[] setGuids = AssetDatabase.FindAssets("t:StageMonsterSetSO");
+        foreach (string guid in setGuids)
+        {
+            string path = AssetDatabase.GUIDToAssetPath(guid);
+            StageMonsterSetSO monsterSet = AssetDatabase.LoadAssetAtPath<StageMonsterSetSO>(path);
+            if (monsterSet != null && !stageMonsterSets.Contains(monsterSet))
+                stageMonsterSets.Add(monsterSet);
+        }
+
+        if (selectedStageMonsterSet == null && stageMonsterSets.Count > 0)
+            selectedStageMonsterSet = stageMonsterSets[0];
     }
 
     private void ValidateActiveScope()
@@ -2771,8 +2919,13 @@ public sealed class LevelDesignEditorWindow : EditorWindow
             if (spawn == null)
                 continue;
 
-            if (spawn.MonsterPrefab == null)
-                AddResult(Severity.Error, "MonsterSpawnContainer.monsterPrefab is empty.", spawn);
+            if (!spawn.TryResolveMonsterPrefab(0, out _))
+            {
+                if (spawn.SourceKind == MonsterSpawnSourceKind.StageMonsterSet)
+                    AddResult(Severity.Error, "MonsterSpawnContainer.stageMonsterSet is empty or cannot resolve stage 0.", spawn);
+                else
+                    AddResult(Severity.Error, "MonsterSpawnContainer.monsterPrefab is empty.", spawn);
+            }
 
             MonsterSpawnRoomGroup group = ResolveRoomGroup(spawn);
             MonsterRoomArea2D area = spawn.RoomArea != null ? spawn.RoomArea : FindRoomAreaAt(spawn.transform.position);
@@ -3526,6 +3679,61 @@ public sealed class LevelDesignEditorWindow : EditorWindow
         return $"문 {door.doorType} {id}";
     }
 
+    private static string BuildSpawnLabel(MonsterSpawnContainer spawn)
+    {
+        if (spawn == null)
+            return "스폰?";
+
+        if (!spawn.TryResolveMonsterPrefab(0, out GameObject stageZeroPrefab) || stageZeroPrefab == null)
+            return spawn.SourceKind == MonsterSpawnSourceKind.StageMonsterSet ? "공통 스폰?" : "스폰?";
+
+        return spawn.SourceKind == MonsterSpawnSourceKind.StageMonsterSet && spawn.StageMonsterSet != null
+            ? $"{spawn.StageMonsterSet.name} -> {stageZeroPrefab.name}"
+            : stageZeroPrefab.name;
+    }
+
+    private GameObject GetSelectedMonsterSpawnPreviewPrefab()
+    {
+        if (selectedMonsterSpawnSource == MonsterSpawnPlacementSource.StageMonsterSet &&
+            selectedStageMonsterSet != null &&
+            selectedStageMonsterSet.TryResolveMonsterPrefab(0, out GameObject resolvedPrefab))
+        {
+            return resolvedPrefab;
+        }
+
+        return selectedMonsterPrefab;
+    }
+
+    private bool TryUseSpawnSourceForPlacement(MonsterSpawnContainer spawn)
+    {
+        return spawn != null &&
+               ((spawn.SourceKind == MonsterSpawnSourceKind.StageMonsterSet && spawn.StageMonsterSet != null) ||
+                (spawn.SourceKind == MonsterSpawnSourceKind.FixedPrefab && spawn.MonsterPrefab != null));
+    }
+
+    private void UseSpawnSourceForPlacement(MonsterSpawnContainer spawn, bool switchToPlace = true)
+    {
+        if (!TryUseSpawnSourceForPlacement(spawn))
+            return;
+
+        if (spawn.SourceKind == MonsterSpawnSourceKind.StageMonsterSet)
+        {
+            selectedStageMonsterSet = spawn.StageMonsterSet;
+            selectedMonsterSpawnSource = MonsterSpawnPlacementSource.StageMonsterSet;
+        }
+        else
+        {
+            selectedMonsterPrefab = spawn.MonsterPrefab;
+            selectedMonsterSpawnSource = MonsterSpawnPlacementSource.FixedPrefab;
+        }
+
+        if (switchToPlace)
+        {
+            placementKind = PlacementKind.MonsterSpawn;
+            mode = ToolMode.Place;
+        }
+    }
+
     private string BuildMarkerLabel(Component component, string label)
     {
         if (component == null)
@@ -3635,6 +3843,24 @@ public sealed class LevelDesignEditorWindow : EditorWindow
         string rootPrefix = MonsterPrefabRoot + "/";
         if (folder.StartsWith(rootPrefix, StringComparison.OrdinalIgnoreCase))
             return folder.Substring(rootPrefix.Length);
+
+        return folder;
+    }
+
+    private static string GetStageMonsterSetFolderLabel(StageMonsterSetSO monsterSet)
+    {
+        if (monsterSet == null)
+            return "기타";
+
+        string path = AssetDatabase.GetAssetPath(monsterSet).Replace('\\', '/');
+        int slashIndex = path.LastIndexOf('/');
+        if (slashIndex < 0)
+            return "기타";
+
+        string folder = path.Substring(0, slashIndex);
+        int commonIndex = folder.IndexOf("/Common", StringComparison.OrdinalIgnoreCase);
+        if (commonIndex >= 0)
+            return folder.Substring(commonIndex + 1);
 
         return folder;
     }
@@ -3794,6 +4020,22 @@ public sealed class LevelDesignEditorWindow : EditorWindow
             return;
 
         property.objectReferenceValue = value;
+        serializedObject.ApplyModifiedProperties();
+    }
+
+    private static void AssignEnum(Object target, string propertyName, int enumValueIndex)
+    {
+        if (target == null)
+            return;
+
+        Undo.RecordObject(target, $"Assign {propertyName}");
+        SerializedObject serializedObject = new(target);
+        serializedObject.Update();
+        SerializedProperty property = serializedObject.FindProperty(propertyName);
+        if (property == null)
+            return;
+
+        property.enumValueIndex = enumValueIndex;
         serializedObject.ApplyModifiedProperties();
     }
 

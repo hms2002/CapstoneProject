@@ -176,6 +176,18 @@ namespace UnityGAS
             return id >= 0 && _counts[id] > 0;
         }
 
+        /// <summary>
+        /// 책임 :
+        /// - 부모/자식 closure를 포함하지 않고 직접 AddTag/AddTagId로 부여된 태그만 확인한다.
+        /// - 구덩이 무시 태그처럼 하위 상태까지 포괄하면 안 되는 예외 판정에 사용한다.
+        /// </summary>
+        public bool HasExplicitTag(GameplayTag tag)
+        {
+            EnsureCapacity();
+            int id = TagRegistry.GetId(tag);
+            return id >= 0 && id < _explicitCounts.Length && _explicitCounts[id] > 0;
+        }
+
         // ✅ 고속 쿼리(비트마스크)
         public bool HasAll(TagMask required)
         {

@@ -189,11 +189,12 @@ internal sealed class SceneMonsterSpawnDirector
     {
         List<MonsterSpawnContainer> defaultPoints = new List<MonsterSpawnContainer>();
         List<MonsterSpawnContainer> extraCandidates = new List<MonsterSpawnContainer>();
+        int stageIndex = ResolveCurrentStageIndex();
 
         for (int i = 0; i < spawnPoints.Count; i++)
         {
             MonsterSpawnContainer point = spawnPoints[i];
-            if (point == null || point.MonsterPrefab == null)
+            if (point == null || !point.TryResolveMonsterPrefab(stageIndex, out _))
                 continue;
 
             if (point.RoomGroup != null && point.RoomGroup.SpawnProfile != null)
@@ -207,13 +208,33 @@ internal sealed class SceneMonsterSpawnDirector
         }
 
         for (int i = 0; i < defaultPoints.Count; i++)
-            SpawnOne(defaultPoints[i].CreateRequest(), difficultyModifiers);
+        {
+            if (defaultPoints[i].TryCreateRequest(stageIndex, out MonsterSpawnRequest request))
+                SpawnOne(request, difficultyModifiers);
+        }
 
         int extraCount = CalculateExtraSpawnCount(defaultPoints.Count, difficultyModifiers?.extraSpawnRatio ?? 0f);
         Shuffle(extraCandidates);
 
         for (int i = 0; i < extraCount && i < extraCandidates.Count; i++)
-            SpawnOne(extraCandidates[i].CreateRequest(), difficultyModifiers);
+        {
+            if (extraCandidates[i].TryCreateRequest(stageIndex, out MonsterSpawnRequest request))
+                SpawnOne(request, difficultyModifiers);
+        }
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 직접 배치된 MonsterSpawnContainer가 스테이지별 몬스터 세트를 resolve할 때 사용할 현재 런 index를 제공한다.
+    /// - 개발 씬처럼 route plan이 없으면 첫 스테이지로 취급한다.
+    /// </summary>
+    private static int ResolveCurrentStageIndex()
+    {
+        PortalRouteManager routeManager = PortalRouteManager.Instance;
+        if (routeManager == null || !routeManager.HasActivePlan)
+            return 0;
+
+        return Mathf.Max(0, routeManager.CurrentStageIndex);
     }
 
     private void ApplyDifficulty(GameObject monster, DifficultyModifiers difficultyModifiers)
