@@ -289,6 +289,30 @@ namespace UnityGAS.Sample
             };
 
             hitbox.Setup(context);
+            SpawnAttackEffect(step.attackEffectPrefab, center, dir);
+        }
+
+        private static void SpawnAttackEffect(GameObject effectPrefab, Vector2 center, Vector2 direction)
+        {
+            if (effectPrefab == null)
+                return;
+
+            Vector2 safeDirection = direction.sqrMagnitude > 0.0001f ? direction.normalized : Vector2.right;
+            float angle = Mathf.Atan2(safeDirection.y, safeDirection.x) * Mathf.Rad2Deg;
+            GameObject effect = Object.Instantiate(effectPrefab, center, Quaternion.Euler(0f, 0f, angle));
+            if (effect == null)
+                return;
+
+            HitboxVisualAnimatorPlayer player = effect.GetComponentInChildren<HitboxVisualAnimatorPlayer>(true);
+            if (player == null)
+            {
+                Object.Destroy(effect, 1f);
+                return;
+            }
+
+            player.Play();
+            if (!player.DestroyOnComplete && player.CurrentClipDuration > 0f)
+                Object.Destroy(effect, player.CurrentClipDuration);
         }
 
         /// <summary>

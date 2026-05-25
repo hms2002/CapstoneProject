@@ -65,6 +65,10 @@ public sealed class PrewarmTraceRuntime : MonoBehaviour
     }
 
     public const string EditorTraceRelativePath = "Assets/LeeJunMo/Datas/Loading/PrewarmTrace.json";
+    public const string LegacyEditorTraceRelativePath = EditorTraceRelativePath;
+    public const string EditorTraceDirectoryRelativePath = "Assets/LeeJunMo/Datas/Loading";
+    private const string TraceFilePrefix = "PrewarmTrace_";
+    private const string TraceFileExtension = ".json";
     private const float FlushIntervalSeconds = 1f;
     private const int MaxSessionCount = 20;
 
@@ -116,10 +120,48 @@ public sealed class PrewarmTraceRuntime : MonoBehaviour
     public static string GetTraceFilePath()
     {
 #if UNITY_EDITOR
+        return Path.Combine(GetTraceDirectoryPath(), BuildTraceFileName());
+#else
+        return Path.Combine(Application.persistentDataPath, "PrewarmTrace.json");
+#endif
+    }
+
+    public static string GetTraceDirectoryPath()
+    {
+#if UNITY_EDITOR
+        return Path.Combine(Application.dataPath, "LeeJunMo", "Datas", "Loading");
+#else
+        return Application.persistentDataPath;
+#endif
+    }
+
+    public static string GetLegacyTraceFilePath()
+    {
+#if UNITY_EDITOR
         return Path.Combine(Application.dataPath, "LeeJunMo", "Datas", "Loading", "PrewarmTrace.json");
 #else
         return Path.Combine(Application.persistentDataPath, "PrewarmTrace.json");
 #endif
+    }
+
+    public static List<string> GetTraceFilePathsForRead()
+    {
+        var paths = new List<string>();
+        var seen = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+        AddPathIfExists(GetTraceFilePath(), paths, seen);
+
+        string directory = GetTraceDirectoryPath();
+        if (Directory.Exists(directory))
+        {
+            string[] traceFiles = Directory.GetFiles(directory, $"{TraceFilePrefix}*{TraceFileExtension}");
+            Array.Sort(traceFiles, StringComparer.OrdinalIgnoreCase);
+            for (int i = 0; i < traceFiles.Length; i++)
+                AddPathIfExists(traceFiles[i], paths, seen);
+        }
+
+        AddPathIfExists(GetLegacyTraceFilePath(), paths, seen);
+        return paths;
     }
 
     private void Awake()
@@ -281,5 +323,41 @@ public sealed class PrewarmTraceRuntime : MonoBehaviour
 #else
         return prefab.name;
 #endif
+    }
+
+    private static string BuildTraceFileName()
+    {
+        string testerId = $"{Environment.UserName}_{Environment.MachineName}";
+        testerId = SanitizeFileNameSegment(testerId);
+        if (string.IsNullOrWhiteSpace(testerId))
+            testerId = "unknown_tester";
+
+        return $"{TraceFilePrefix}{testerId}{TraceFileExtension}";
+    }
+
+    private static string SanitizeFileNameSegment(string value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return string.Empty;
+
+        char[] invalidChars = Path.GetInvalidFileNameChars();
+        var chars = value.Trim().ToCharArray();
+        for (int i = 0; i < chars.Length; i++)
+        {
+            if (Array.IndexOf(invalidChars, chars[i]) >= 0 || char.IsWhiteSpace(chars[i]))
+                chars[i] = '_';
+        }
+
+        return new string(chars);
+    }
+
+    private static void AddPathIfExists(string path, List<string> paths, HashSet<string> seen)
+    {
+        if (string.IsNullOrWhiteSpace(path) || !File.Exists(path))
+            return;
+
+        string fullPath = Path.GetFullPath(path);
+        if (seen.Add(fullPath))
+            paths.Add(fullPath);
     }
 }

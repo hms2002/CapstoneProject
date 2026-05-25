@@ -62,6 +62,21 @@ public sealed class AffectionGradientBorderGraphic : MaskableGraphic
         }
     }
 
+    public void ConfigureShape(float thicknessRatio, float cornerRatio)
+    {
+        float clampedThickness = Mathf.Clamp(thicknessRatio, 0.01f, 0.5f);
+        float clampedCorner = Mathf.Clamp(cornerRatio, 0f, 0.35f);
+        if (Mathf.Approximately(borderThicknessRatio, clampedThickness) &&
+            Mathf.Approximately(cornerRadiusRatio, clampedCorner))
+        {
+            return;
+        }
+
+        borderThicknessRatio = clampedThickness;
+        cornerRadiusRatio = clampedCorner;
+        SetVerticesDirty();
+    }
+
     protected override void OnEnable()
     {
         base.OnEnable();

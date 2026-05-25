@@ -28,6 +28,7 @@ public sealed class SceneFadeTransitionService : MonoBehaviour
     private float savedTimeScale = 1f;
     private bool isInitialized;
     private bool ownsRuntimeOverlay;
+    private SceneFadeTransitionService pendingReplacementInstance;
     private readonly Dictionary<int, Object> externalPlayerUnlockBlockers = new();
 
     public bool IsTransitionActive => isTransitionActive;
@@ -86,6 +87,11 @@ public sealed class SceneFadeTransitionService : MonoBehaviour
                 SceneFadeTransitionService previousInstance = Instance;
                 Instance = this;
                 Destroy(previousInstance.gameObject);
+            }
+            else if (ShouldDeferReplacementUntilTransitionEnd(Instance))
+            {
+                Instance.DeferReplacementUntilTransitionEnds(this);
+                return;
             }
             else
             {
@@ -267,6 +273,8 @@ public sealed class SceneFadeTransitionService : MonoBehaviour
             overlayRoot.SetActive(false);
         else
             ApplyOverlayVisualState(alpha: 0f, active: true);
+
+        PromotePendingReplacementIfAvailable();
     }
 
     private IEnumerator FadeCanvasGroup(float toAlpha, float duration)
@@ -481,11 +489,57 @@ public sealed class SceneFadeTransitionService : MonoBehaviour
         if (existingInstance == null || existingInstance == this)
             return false;
 
+        if (existingInstance.IsTransitionActive)
+            return false;
+
         if (!existingInstance.ownsRuntimeOverlay)
             return false;
 
-        bool currentHasSerializedOverlay = HasValidOverlaySetup() && !ownsRuntimeOverlay;
-        return currentHasSerializedOverlay;
+        return HasAuthoredOverlaySetup();
+    }
+
+    private bool ShouldDeferReplacementUntilTransitionEnd(SceneFadeTransitionService existingInstance)
+    {
+        if (existingInstance == null || existingInstance == this)
+            return false;
+
+        if (!existingInstance.IsTransitionActive)
+            return false;
+
+        return HasAuthoredOverlaySetup();
+    }
+
+    private void DeferReplacementUntilTransitionEnds(SceneFadeTransitionService replacement)
+    {
+        if (replacement == null || replacement == this)
+            return;
+
+        replacement.ResolveOverlayReferences();
+        replacement.ConfigureOverlayVisuals();
+        replacement.ApplyOverlayVisualState(alpha: 0f, active: !replacement.deactivateOverlayWhenIdle);
+        pendingReplacementInstance = replacement;
+    }
+
+    private void PromotePendingReplacementIfAvailable()
+    {
+        SceneFadeTransitionService replacement = pendingReplacementInstance;
+        pendingReplacementInstance = null;
+
+        if (replacement == null || replacement == this)
+            return;
+
+        replacement.ResolveOverlayReferences();
+        if (!replacement.HasAuthoredOverlaySetup())
+            return;
+
+        Instance = replacement;
+        replacement.Initialize();
+        Destroy(gameObject);
+    }
+
+    private bool HasAuthoredOverlaySetup()
+    {
+        return HasValidOverlaySetup() && !ownsRuntimeOverlay;
     }
 
     private void EnsureRuntimeEventSystemExists()

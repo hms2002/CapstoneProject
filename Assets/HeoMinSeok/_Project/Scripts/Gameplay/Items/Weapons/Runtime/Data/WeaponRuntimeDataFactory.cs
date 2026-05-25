@@ -41,6 +41,9 @@ public static class WeaponRuntimeDataFactory
         if (weapon.abilityLoadout is LightningSpearLoadout)
             return typeof(LightningSpearRuntimeData);
 
+        if (weapon.abilityLoadout is FloweringLoadout)
+            return typeof(FloweringRuntimeData);
+
         return typeof(WeaponRuntimeData);
     }
 
@@ -100,6 +103,9 @@ public static class WeaponRuntimeDataFactory
 
         if (weapon.abilityLoadout is LightningSpearLoadout)
             return new LightningSpearRuntimeData();
+
+        if (weapon.abilityLoadout is FloweringLoadout)
+            return new FloweringRuntimeData();
 
         return new WeaponRuntimeData();
     }

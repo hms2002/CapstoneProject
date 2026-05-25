@@ -34,6 +34,7 @@ public class ItemSlotUI : MonoBehaviour,
 {
     [Header("UI")]
     [SerializeField] private Image icon;
+    [SerializeField] private Image backgroundImage;
     [SerializeField] private TextMeshProUGUI levelText;
     [SerializeField] private GameObject hoverHighlightRoot;
     [SerializeField] private Sprite lockedSlotSprite;
@@ -49,6 +50,13 @@ public class ItemSlotUI : MonoBehaviour,
     private int index;
     [SerializeField] private RectTransform slotRect;
     private ItemDisplayIconDefaultState iconDefaultState;
+    private Sprite defaultBackgroundSprite;
+    private bool defaultBackgroundEnabled;
+    private bool defaultBackgroundPreserveAspect;
+    private Image.Type defaultBackgroundType;
+    private bool hasDefaultBackgroundState;
+    private bool loggedMissingBackgroundImage;
+    private bool loggedMissingLockedSlotSprite;
     private CanvasGroup hoverHighlightCanvasGroup;
     private Coroutine hoverHighlightRoutine;
     private bool isPointerOver;
@@ -77,6 +85,7 @@ public class ItemSlotUI : MonoBehaviour,
             slotRect = transform as RectTransform;
 
         iconDefaultState = ItemDisplayIconDefaultState.Stretch(icon);
+        CaptureDefaultBackgroundState();
         SetHoverHighlightImmediate(false);
     }
     private void OnDisable()
@@ -105,6 +114,7 @@ public class ItemSlotUI : MonoBehaviour,
         isPointerPressed = false;
         isDraggingThisSlot = false;
         SetHoverHighlightImmediate(false);
+        RestoreDefaultBackground();
 
         if (this.container != null)
             this.container.OnChanged += Refresh;
@@ -128,6 +138,7 @@ public class ItemSlotUI : MonoBehaviour,
         }
 
         var so = container.Get(index);
+        RestoreDefaultBackground();
         RefreshHoverHighlight(so);
 
         if (icon != null)
@@ -149,6 +160,8 @@ public class ItemSlotUI : MonoBehaviour,
 
     private void ClearIconAndLevel()
     {
+        RestoreDefaultBackground();
+
         if (icon != null)
             ItemDisplayIconUtility.Clear(icon, iconDefaultState);
 
@@ -159,15 +172,71 @@ public class ItemSlotUI : MonoBehaviour,
     private void RefreshLockedSlot()
     {
         SetHoverHighlight(false);
+        ClearIconAndLevel();
 
-        if (icon != null)
-        {
-            ItemDisplayIconDefaultState lockState = ItemDisplayIconDefaultState.Stretch(icon, preserveAspect: true);
-            ItemDisplayIconUtility.ApplyRaw(icon, lockedSlotSprite, lockState);
-        }
+        ApplyLockedBackground();
 
         if (levelText != null)
             levelText.gameObject.SetActive(false);
+    }
+
+    private void CaptureDefaultBackgroundState()
+    {
+        if (backgroundImage == null)
+            return;
+
+        defaultBackgroundSprite = backgroundImage.sprite;
+        defaultBackgroundEnabled = backgroundImage.enabled;
+        defaultBackgroundPreserveAspect = backgroundImage.preserveAspect;
+        defaultBackgroundType = backgroundImage.type;
+        hasDefaultBackgroundState = true;
+    }
+
+    private void RestoreDefaultBackground()
+    {
+        if (backgroundImage == null || !hasDefaultBackgroundState)
+            return;
+
+        backgroundImage.sprite = defaultBackgroundSprite;
+        backgroundImage.enabled = defaultBackgroundEnabled;
+        backgroundImage.preserveAspect = defaultBackgroundPreserveAspect;
+        backgroundImage.type = defaultBackgroundType;
+    }
+
+    private void ApplyLockedBackground()
+    {
+        if (backgroundImage == null)
+        {
+            LogMissingBackgroundImage();
+            return;
+        }
+
+        if (lockedSlotSprite == null)
+        {
+            LogMissingLockedSlotSprite();
+            return;
+        }
+
+        backgroundImage.sprite = lockedSlotSprite;
+        backgroundImage.enabled = true;
+    }
+
+    private void LogMissingBackgroundImage()
+    {
+        if (loggedMissingBackgroundImage)
+            return;
+
+        loggedMissingBackgroundImage = true;
+        Debug.LogWarning($"{nameof(ItemSlotUI)} on {name} has no background image reference for locked slot presentation.", this);
+    }
+
+    private void LogMissingLockedSlotSprite()
+    {
+        if (loggedMissingLockedSlotSprite)
+            return;
+
+        loggedMissingLockedSlotSprite = true;
+        Debug.LogWarning($"{nameof(ItemSlotUI)} on {name} has no locked slot sprite assigned.", this);
     }
 
     public void OnBeginDrag(PointerEventData eventData)

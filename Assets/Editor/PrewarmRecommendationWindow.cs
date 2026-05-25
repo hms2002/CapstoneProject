@@ -47,6 +47,8 @@ public sealed class PrewarmRecommendationWindow : EditorWindow
     private readonly List<AggregatedTraceEntry> unmappedEntries = new();
     private Vector2 scrollPosition;
     private int skippedCoveredCount;
+    private int loadedTraceFileCount;
+    private int skippedTraceFileCount;
 
     [MenuItem("Tools/Loading/Prewarm Recommendations")]
     public static void ShowWindow()
@@ -116,7 +118,11 @@ public sealed class PrewarmRecommendationWindow : EditorWindow
     private void DrawSummary()
     {
         EditorGUILayout.LabelField("Trace Source", EditorStyles.boldLabel);
-        EditorGUILayout.HelpBox(PrewarmTraceRuntime.GetTraceFilePath(), MessageType.None);
+        EditorGUILayout.HelpBox(
+            $"Current tester file:\n{PrewarmTraceRuntime.GetTraceFilePath()}\n\n" +
+            $"Aggregated folder:\n{PrewarmTraceRuntime.GetTraceDirectoryPath()}\n\n" +
+            $"Legacy file also read when present:\n{PrewarmTraceRuntime.GetLegacyTraceFilePath()}",
+            MessageType.None);
 
         if (notes.Count == 0)
             return;
@@ -213,6 +219,8 @@ public sealed class PrewarmRecommendationWindow : EditorWindow
         recommendations.Clear();
         unmappedEntries.Clear();
         skippedCoveredCount = 0;
+        loadedTraceFileCount = 0;
+        skippedTraceFileCount = 0;
 
         if (routeSet == null)
         {
@@ -226,7 +234,7 @@ public sealed class PrewarmRecommendationWindow : EditorWindow
             return;
         }
 
-        PrewarmTraceRuntime.PrewarmTraceHistoryData history = LoadTraceHistory();
+        PrewarmTraceRuntime.PrewarmTraceHistoryData history = LoadTraceHistory(out loadedTraceFileCount, out skippedTraceFileCount);
         if (history == null || history.sessions == null || history.sessions.Count == 0)
         {
             notes.Add("No trace history was found.");
@@ -266,7 +274,9 @@ public sealed class PrewarmRecommendationWindow : EditorWindow
             return right.score.CompareTo(left.score);
         });
 
-        notes.Add($"Loaded {history.sessions.Count} trace session(s).");
+        notes.Add($"Loaded {history.sessions.Count} trace session(s) from {loadedTraceFileCount} trace file(s).");
+        if (skippedTraceFileCount > 0)
+            notes.Add($"Skipped {skippedTraceFileCount} unreadable trace file(s).");
         notes.Add($"Mapped {recommendations.Count} prefab recommendation(s).");
         if (skippedCoveredCount > 0)
             notes.Add($"Skipped {skippedCoveredCount} prefab(s) already covered by current prewarm counts.");
@@ -274,17 +284,58 @@ public sealed class PrewarmRecommendationWindow : EditorWindow
             notes.Add($"Unmapped {unmappedEntries.Count} traced prefab(s).");
     }
 
-    private static PrewarmTraceRuntime.PrewarmTraceHistoryData LoadTraceHistory()
+    private static PrewarmTraceRuntime.PrewarmTraceHistoryData LoadTraceHistory(out int loadedFileCount, out int skippedFileCount)
     {
-        string tracePath = PrewarmTraceRuntime.GetTraceFilePath();
-        if (!File.Exists(tracePath))
-            return null;
+        loadedFileCount = 0;
+        skippedFileCount = 0;
 
-        string json = File.ReadAllText(tracePath);
-        if (string.IsNullOrWhiteSpace(json))
-            return null;
+        var merged = new PrewarmTraceRuntime.PrewarmTraceHistoryData
+        {
+            sessions = new List<PrewarmTraceRuntime.PrewarmTraceSessionData>()
+        };
+        var seenSessionIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        List<string> tracePaths = PrewarmTraceRuntime.GetTraceFilePathsForRead();
+        for (int pathIndex = 0; pathIndex < tracePaths.Count; pathIndex++)
+        {
+            string tracePath = tracePaths[pathIndex];
+            try
+            {
+                string json = File.ReadAllText(tracePath);
+                if (string.IsNullOrWhiteSpace(json))
+                    continue;
 
-        return JsonUtility.FromJson<PrewarmTraceRuntime.PrewarmTraceHistoryData>(json);
+                PrewarmTraceRuntime.PrewarmTraceHistoryData data = JsonUtility.FromJson<PrewarmTraceRuntime.PrewarmTraceHistoryData>(json);
+                if (data?.sessions == null || data.sessions.Count == 0)
+                    continue;
+
+                bool loadedAnySession = false;
+                for (int sessionIndex = 0; sessionIndex < data.sessions.Count; sessionIndex++)
+                {
+                    PrewarmTraceRuntime.PrewarmTraceSessionData session = data.sessions[sessionIndex];
+                    if (session == null)
+                        continue;
+
+                    string sessionKey = string.IsNullOrWhiteSpace(session.sessionId)
+                        ? $"{tracePath}:{sessionIndex}"
+                        : session.sessionId;
+                    if (!seenSessionIds.Add(sessionKey))
+                        continue;
+
+                    merged.sessions.Add(session);
+                    loadedAnySession = true;
+                }
+
+                if (loadedAnySession)
+                    loadedFileCount++;
+            }
+            catch (Exception ex)
+            {
+                skippedFileCount++;
+                Debug.LogWarning($"[PrewarmRecommendationWindow] Failed to read trace file '{tracePath}': {ex.Message}");
+            }
+        }
+
+        return merged.sessions.Count > 0 ? merged : null;
     }
 
     private static Dictionary<string, AggregatedTraceEntry> BuildAggregatedEntries(PrewarmTraceRuntime.PrewarmTraceHistoryData history)

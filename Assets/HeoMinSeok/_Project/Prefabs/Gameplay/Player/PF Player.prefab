@@ -966,21 +966,6 @@ MonoBehaviour:
   capacity: 12
   enforceUniqueRelicId: 1
   debugView: []
---- !u!114 &7028711097407121541
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8883617028798182002}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1da424ed8f82b4244bdac8125d0d5f4e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  key: 114
-  testRelic: {fileID: 11400000, guid: 1f774045e4d72664996fab05fc0e1308, type: 2}
-  gainedLevel: 0
 --- !u!114 &2236992985390640672
 MonoBehaviour:
   m_ObjectHideFlags: 0

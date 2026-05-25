@@ -22,7 +22,6 @@ public sealed class SettingsPanelUI : MonoBehaviour, IStackableUI
     private const float DisabledStepperAlpha = 0.45f;
     private const float EnabledStepperAlpha = 1f;
     private const int SystemCursorPriority = 300;
-    private const string DontDestroyOnLoadSceneName = "DontDestroyOnLoad";
     private const string TitleSceneName = "TitleScene";
 
     private static readonly GameWindowMode[] WindowModeOptions =
@@ -132,16 +131,8 @@ public sealed class SettingsPanelUI : MonoBehaviour, IStackableUI
 
         if (Instance != null && Instance != this)
         {
-            if (ShouldReplaceExistingInstance(Instance))
-            {
-                Destroy(Instance.gameObject);
-                Instance = null;
-            }
-            else
-            {
-                Destroy(gameObject);
-                return;
-            }
+            Destroy(gameObject);
+            return;
         }
 
         Instance = this;
@@ -253,22 +244,6 @@ public sealed class SettingsPanelUI : MonoBehaviour, IStackableUI
 
         if (temporaryHiddenCanvasGroup == null)
             temporaryHiddenCanvasGroup = GetComponentInChildren<CanvasGroup>(true);
-    }
-
-    private bool ShouldReplaceExistingInstance(SettingsPanelUI existingInstance)
-    {
-        if (existingInstance == null)
-            return true;
-
-        bool existingIsPersistent = IsPersistent(existingInstance.gameObject);
-        bool currentIsPersistent = IsPersistent(gameObject);
-        return existingIsPersistent && !currentIsPersistent;
-    }
-
-    private static bool IsPersistent(GameObject target)
-    {
-        return target != null &&
-               string.Equals(target.scene.name, DontDestroyOnLoadSceneName, StringComparison.Ordinal);
     }
 
     private void ApplyTemporaryHiddenState(bool hidden)

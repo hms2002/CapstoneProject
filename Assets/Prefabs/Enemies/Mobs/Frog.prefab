@@ -102,7 +102,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -1039746825
-  m_SortingLayer: 3
+  m_SortingLayer: 5
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: 1559784003, guid: 04c50facf069bad43845261d3131b7df, type: 3}
@@ -158,7 +158,7 @@ BoxCollider2D:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 2147483656
   m_LayerOverridePriority: 0
   m_ForceSendLayers:
     serializedVersion: 2
@@ -222,11 +222,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 648be1e2932a98a4eba07e6d6c574a83, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sprite: {fileID: 0}
+  animator: {fileID: 0}
   maxHealthDef: {fileID: 11400000, guid: 0e177e1d15e428745b5859fac08ce203, type: 2}
   healthDef: {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
   enemyName: Frog
   targetTag: Player
+  targetSearchLayers:
+    serializedVersion: 2
+    m_Bits: 4294967291
   chaseIntent: {fileID: 0}
+  logMobFsmDebug: 0
 --- !u!114 &7001000000000000002
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -246,6 +252,11 @@ MonoBehaviour:
   telegraphWidth: 1
   blockMoveTag: {fileID: 0}
   telegraph: {fileID: 0}
+  abilityCoordinator: {fileID: 0}
+  allowLegacyUpdateActivation: 0
+  animator: {fileID: 0}
+  attackReadyTriggerName: attackReady
+  attackTriggerName: attack
 --- !u!114 &3790217430196525045
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -338,6 +349,7 @@ MonoBehaviour:
   worldAnchor: {fileID: 2826825829709561300}
   extraWorldOffset: {x: 0, y: 0, z: 0}
   minInterval: 0.02
+  logFallbackPopup: 1
 --- !u!114 &5122803876250813742
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -412,6 +424,7 @@ MonoBehaviour:
   knockbackImmuneTag: {fileID: 0}
   resistancePctAttribute: {fileID: 11400000, guid: cd582b58892249e4a6ef8ae28bd345e3, type: 2}
   knockbackDominanceTime: 0.12
+  debugKnockback: 0
 --- !u!114 &8526413885200350815
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -426,6 +439,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   body: {fileID: 0}
   enforceContinuousCollision: 1
+  preventWallTunneling: 1
+  wallCollisionLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  wallSafetyMinSpeed: 8
+  wallCastSkinWidth: 0.03
+  depenetrationSkinWidth: 0.01
+  maxDepenetrationIterations: 3
   intentSourceBehaviour: {fileID: 0}
   statProviderBehaviour: {fileID: 0}
   externalMovement: {fileID: 3341026293018187748}
@@ -480,7 +501,14 @@ MonoBehaviour:
   detectionRange: 6
   stopRange: 0.2
   speedScale: 1
+  usePathfindingWhenDirectPathBlocked: 1
+  pathWaypointReachDistance: 0.18
+  pathRebuildInterval: 0.35
+  pathTargetMoveThreshold: 0.35
   returnSpeedScale: 0.9
+  logChaseDebug: 0
+  logInterval: 0.35
+  targetAcquireInterval: 0.25
 --- !u!114 &1202927576409601092
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -560,6 +588,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   telegraphPrefab: {fileID: 788264263987448140, guid: 211dd09e2da9caf47ad8409c9e35b83d, type: 3}
   defaultStyle: {fileID: 0}
+  useDefaultWallClipping: 0
+  defaultWallClipLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  defaultWallClipSampleCount: 48
+  defaultWallClipSkinWidth: 0.03
 --- !u!114 &5523319380639165943
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -573,6 +607,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UnityGAS.CombatHurtbox2D
   targetRoot: {fileID: 0}
+  ownedColliders: []
 --- !u!114 &6600200000000001
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -583,9 +618,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6ff4ff08e39f49319d1e0414b9985957, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UnityGAS.EntityCollisionProfile2D
-  bodyColliders: []
+  bodyColliders:
+  - {fileID: 4601776432013924379}
   baseExcludedLayers:
     serializedVersion: 2
     m_Bits: 0

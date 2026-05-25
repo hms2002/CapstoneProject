@@ -1,0 +1,122 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 062a3326141e44558866974139586d13, type: 3}
+  m_Name: ALData_FloweringBloom
+  m_EditorClassIdentifier: 
+  durationSeconds: 3
+  killExtensionSeconds: 1
+  dashAbility: {fileID: 11400000, guid: dadc84cd2fffcae45905741575af20c3, type: 2}
+  normalDamageAddAttribute: {fileID: 11400000, guid: 4b6e7cdf4c89b0b44adad24835703fdc, type: 2}
+  attackSpeedBaseAttribute: {fileID: 11400000, guid: 40277bede661488094dd09d158341e30, type: 2}
+  moveSpeedMulAttribute: {fileID: 11400000, guid: 23db6468e859c6f42b0230a5af7ca81c, type: 2}
+  normalDamageAdd: 25
+  attackSpeedBaseAdd: 2.5
+  moveSpeedPercent: 0.6
+  bloomColor: {r: 0.933, g: 0.251, b: 0.286, a: 1}
+  cutInAnimationTrigger: Skill1
+  cutInAimPresentation:
+    mode: 1
+    minimumHoldTime: 0
+  weaponRevealEventTag: {fileID: 11400000, guid: f647a7e780e64fe28ecb4bb27129326b, type: 2}
+  weaponRevealEventTimeout: 1
+  weaponRevealFallbackDelay: 0.33333334
+  screenBorderMaterial: {fileID: 2100000, guid: ca0bb09ad2e14e5e9f6a38fcb954aaf0, type: 2}
+  dimTargetAlpha: 1
+  fadeInSeconds: 1
+  holdSeconds: 0.22
+  fadeOutSeconds: 0.3
+  screenBorderRevealSeconds: 0.35
+  screenBorderThicknessRatio: 0.05
+  openingShakeAmplitude: 1
+  finalShakeAmplitude: 1.25
+  zoomShakeAmplitude: 0.22
+  zoomShakeIntervalSeconds: 0.055
+  worldDimSortingLayerName: Entity
+  worldDimSortingOrder: -1
+  worldDimCameraPadding: 1.2
+  worldDimZ: -0.05
+  cutInZoomScale: 0.5
+  zoomInSeconds: 1
+  zoomOutSeconds: 0.1
+  eyeFlashFrames:
+  - {fileID: -985328220453710478, guid: ee7ef00ce7d44514584cd5ae9eb1120e, type: 3}
+  - {fileID: 5081898911219636732, guid: ee7ef00ce7d44514584cd5ae9eb1120e, type: 3}
+  - {fileID: -4201582547638382892, guid: ee7ef00ce7d44514584cd5ae9eb1120e, type: 3}
+  - {fileID: 704430958, guid: ee7ef00ce7d44514584cd5ae9eb1120e, type: 3}
+  eyeFlashFps: 18
+  eyeFlashLocalOffset: {x: -0.05, y: 0.55}
+  eyeFlashScale: 1
+  eyeFlashSortingLayerName: Entity
+  eyeFlashSortingOrder: 20
+  eyeFlashPlayerTint: {r: 0.22264141, g: 0.22264141, b: 0.22264141, a: 1}
+  playerCutInBaseSprite: {fileID: -720365038908779728, guid: 54afb36f0c9a5b347b44945f7a8e0f78, type: 3}
+  playerCutInLocalOffset: {x: 0, y: 0}
+  playerCutInScale: 1
+  playerTintInStartRatio: 0.15
+  playerTintInEndRatio: 0.6
+  playerTintOutStartRatio: 0
+  playerTintOutEndRatio: 1
+  weaponInactiveSprite: {fileID: 21300000, guid: 3fa4a22379c20c641870d73d6590726c, type: 3}
+  weaponBloomSprite: {fileID: 21300000, guid: 17629281fc740a546b474c104a96e947, type: 3}
+  weaponRevealMaterial: {fileID: 2100000, guid: 36e53291a17f49fbbef032729c33e7d1, type: 2}
+  weaponRevealSeconds: 0.9
+  weaponRevealOutSeconds: 0.2
+  weaponRevealUvDirection: {x: -1, y: 1}
+  weaponRevealFeather: 0
+  weaponRevealMaskLocalDirection: {x: -1, y: 1}
+  weaponRevealMaskAlphaCutoff: 0.5
+  weaponRevealMaskPadding: 0.1
+  weaponRevealMaskWidthMultiplier: 1.25
+  bloomStatusDefinition: {fileID: 11400000, guid: 7fac5e14458643cba83a84793d2a1a0a, type: 2}
+  bloomStatusIcon: {fileID: 21300000, guid: a99578084c43ee442bdee25e29041870, type: 3}
+  killExtensionRequiredTag: {fileID: 11400000, guid: e5e066ec16be4990b9e8391b7a1b66ac, type: 2}
+  outlinePixels: 2
+  outlineTopWavePixels: 3
+  outlineWaveSpeed: 16
+  dashDistanceMultiplier: 1.45
+  dashDurationMultiplier: 0.45
+  dashSlashCount: 3
+  dashSlashInitialDelaySeconds: 0.02
+  dashSlashIntervalSeconds: 0.08
+  dashSlashActiveTime: 0.08
+  dashSlashHitboxSize: {x: 2.4, y: 0.6}
+  dashSlashAngleJitter: 90
+  dashSlashDamageScale: 1
+  dashSlashHitLayers:
+    serializedVersion: 2
+    m_Bits: 2147483648
+  dashSlashWallLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  dashSlashDamageConfig:
+    includeStaggerBuildUp: 1
+    includeElementBuildUp: 1
+    staggerFormula: {fileID: 11400000, guid: 8fb95c16fb825134f8ce24efb528fe19, type: 2}
+    elementFormulas: []
+    critAffectsElement: 1
+  dashSlashDamageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
+  dashSlashKnockbackEffect: {fileID: 11400000, guid: 2f5faaf6bd840544cb59f6d23905c40d, type: 2}
+  dashSlashDamageFormula: {fileID: 11400000, guid: f836f4795e60fd54f9a4e401de9d7dd9, type: 2}
+  dashSlashKnockbackFormula: {fileID: 11400000, guid: 886233d2a5002ae4facf46de4cb4864d, type: 2}
+  dashSlashLegacyDamage: 5
+  dashSlashLegacyStaggerDamage: 0
+  dashSlashHitConfirmedTag: {fileID: 0}
+  dashSlashHitImpactCueKind: 1
+  slashEffectPrefab: {fileID: 1412473672868303488, guid: c257fcc31167b184e9a65f583e74626f, type: 3}
+  slashEffectLifetime: 0.35
+  slashEffectScale: 1.35
+  slashEffectSortingOrderOffset: 40
+  dashSlashParticlePrefab: {fileID: 7504802840108214165, guid: cf510ff300e13494c98c0d4aed66f896, type: 3}
+  weaponRevealParticlePrefab: {fileID: 8672368362208833670, guid: f03b83a7062684245ba7d9af3371e11d, type: 3}
+  finalShakeParticlePrefab: {fileID: 7504802840108214165, guid: cf510ff300e13494c98c0d4aed66f896, type: 3}
+  particleLifetimeFallback: 1
+  particleSortingOrderOffset: 40

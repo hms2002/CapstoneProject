@@ -2,7 +2,7 @@
 status: active
 authority: structure-memory
 category: script-system-map
-last_reviewed: 2026-05-18
+last_reviewed: 2026-05-26
 ---
 
 # Weapon And GAS Structure
@@ -155,6 +155,22 @@ The concrete risks are narrower than a full combat rewrite.
 - The readout record lifetime is the scene instance lifetime. Do not persist these values or move ownership into UI/HUD state unless a future task explicitly changes the testing contract.
 - `Assets/Sprites/ThirdParty/TrainingDummy/Training_Dummy_Sprite_Sheet.png` is sliced as 32px frames from a 256x96 sheet. Only rows 1 and 2 are currently used for `TrainingDummy_Hit_01` and `TrainingDummy_Hit_02`; row 3 is intentionally unused.
 - `ProtoTypeHub 1` owns the scene-authored `TrainingDummy_Right` prefab instance. Runtime creation of dummy UI or a dummy manager is not part of this flow.
+
+### Flowering Weapon Prototype Extension
+
+- `개화` is authored as its own `WeaponDefinition` / `FloweringLoadout` / `FloweringSelectionStrategy` and uses `FloweringRuntimeData` for Bloom active state and remaining time.
+- `AD_FloweringAttack_Base` uses the existing import-stable `AL_FloweringAttack` asset as a dispatcher with dedicated `FloweringBaseAttackData`, modeled after the active LightningSpear basic attack schema. `ALData_FloweringAttack_Base` owns a nested `combo.steps[].attackPrefab` setup that points to `Hitbox_Flowering_BasicAttack1/2/3`; those hitbox prefabs own `VisualRoot/Render` slash visuals with the 1/2/1 Flowering clip mapping while preserving the existing three-hit timing, damage, lunge, hit-event, and hit cue values.
+- `AD_FloweringAttack_Bloom` remains on `AbilityLogic_FloweringAttack`. It does not read or write normal combo state; one activation spawns one world-positioned hitbox-owned BloomSlash visual, stores the last variant index on the `AbilitySpec`, and avoids immediately repeating that visual variant across rapid repeated activations. `FloweringAttackData.animationTriggersByHitboxVariant` maps the chosen hitbox variant index to the weapon Animator trigger, with the root `animationTrigger` kept as fallback.
+- Bloom Skill1 uses `AbilityLogic_FloweringBloom` with `startCooldownOnEnd`; the logic stays alive as a parallel ability until Bloom duration and kill extensions end, so normal attacks can continue while the cooldown starts only afterward.
+- Dash remains the global `AD_Dash`. `AbilityLogic_Dash2D` resolves optional `IWeaponDashAugment` implementers and calls them to modify dash distance/duration and observe dash start/end.
+- `FloweringRuntimeState` is a transient player-root runtime component created by Bloom logic. It applies/removes Bloom attribute modifiers, registers for kill-confirm gameplay events, keeps dash cooldown at zero during Bloom, and spawns the delayed dash slash hitboxes/effects.
+- Flowering kill extension is relic-gated: `RelicLogic_FloweringBloomExtension_Managed` grants `State.Relic.FloweringBloomExtension`, and `FloweringRuntimeState` checks `FloweringBloomData.killExtensionRequiredTag` before applying `FloweringRuntimeData.ExtendBloom(...)`.
+- Bloom state HUD is projected through `PlayerStatusRuntime` using `SHD_FloweringBloom`; Skill1 HUD active-duration fill is projected through `IWeaponAbilityHudDurationOverrideProvider` and returns to the normal cooldown display when Bloom ends. `WeaponSkillHUD2D.SkillSlotUI.activeDurationFill` is the preferred dedicated authored Image for this display; if it is not assigned, the code falls back to the legacy `cooldownFill`. The HUD resolver checks both the equipped weapon prefab runtime state and the player `AbilitySystem` root, because Flowering's active Bloom runtime state is attached to the player root.
+- Dash slash scheduling is owned by Bloom runtime state cleanup rather than the short dash ability token, so the delayed three-hit sequence can finish after dash movement ends while still stopping on Bloom end/weapon cleanup.
+- Dash slash damage uses direct `FloweringDashSlashHitboxActor` overlap scans with a wall-layer line-of-sight check before applying `CombatHitPayload`. Collider layer filtering comes from `OverlapBoxAll`; the resolved target root layer is not rechecked because many targets resolve from child hurtboxes to differently-layered roots.
+- Dash slash presentation directly instantiates `Assets/LeeJunMo/Prefab/Effect/AnimEffect/SlashHit.prefab`, tints child `SpriteRenderer`s red, bumps their sorting order, and destroys the instance after a short lifetime. It intentionally does not go through GameplayCue so rotation/tint are fixed per slash mark.
+- Bloom cut-in/active screen border now creates a runtime UI overlay using `AffectionGradientBorderGraphic` and `M_UIAffectionGradientBorder.mat`, while the player outline remains duplicate-sprite prototype presentation. If this presentation is reused, move the overlay to a scene/prefab-authored owner.
+- Bloom cut-in also owns short-lived runtime presentation for zoom-in shake, Player_Idle first-frame silhouette blackout, one-shot `Eagle-eyed_NoPlayer` playback after the silhouette reaches target tint, Flowering OFF/ON weapon reveal through a target sprite overlay plus runtime `SpriteMask`, and a final-shake completion particle spawned at the player visual center. During fade-in, the runtime plays `FloweringBloomData.cutInAnimationTrigger` on the weapon Animator, applies `FloweringBloomData.cutInAimPresentation` so the Skill1 weapon motion ignores aim angle and only mirrors the cast-time left/right side, and waits for `Event.Anim.Flowering.WeaponReveal` from the Skill1 animation event before starting the reveal. The weapon Animator is temporarily moved to unscaled update mode because the cut-in pauses combat time. The cut-in acquires a `GameFlowInputBlocker` while the time freeze is active so unrelated pause/menu UI cannot stack another freeze over it. Reveal timing is split: `weaponRevealSeconds` / `WeaponRevealInSeconds` drives OFF→ON, and `weaponRevealOutSeconds` / `WeaponRevealOutSeconds` drives ON→OFF. The older reveal material fields remain serialized on `FloweringBloomData` for compatibility but are not the active runtime path.
 
 ### Refactor Candidate
 

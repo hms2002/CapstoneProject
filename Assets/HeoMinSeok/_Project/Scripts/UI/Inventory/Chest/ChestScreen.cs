@@ -35,8 +35,12 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
 
     [Header("Chest Reroll")]
     [SerializeField] private Button rerollButton;
+    [SerializeField] private HoldActionButton rerollHoldActionButton;
+    [SerializeField] private HoldFillButtonView rerollHoldButtonView;
     [SerializeField] private Image rerollHoldProgressImage;
     [SerializeField] private TMP_Text rerollCountLabel;
+    [SerializeField, Tooltip("{0}=remaining, {1}=limit, {2}=used")]
+    private string rerollCountFormat = "{0}";
     [SerializeField] private KeyCode rerollHoldKey = KeyCode.Space;
     [SerializeField, Min(0.01f)] private float rerollHoldDuration = 1.5f;
     [SerializeField, Min(0.01f)] private float rerollCloseDuration = 0.18f;
@@ -70,12 +74,10 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
     private IStackableUI rootOwner;
     private RerollRevealState rerollRevealState = RerollRevealState.Idle;
     private float rerollRevealProgress = 1f;
-    private float rerollHoldElapsed;
     private bool rerollHoldActive;
-    private bool rerollHoldConsumed;
-    private bool rerollButtonHoldActive;
     private bool rerollOpenVfxActive;
     private bool rerollSlotRevealVfxPending;
+    private HoldActionButton subscribedRerollHoldActionButton;
 
     public bool IsActive => gameObject.activeSelf;
     public bool CanCloseOnEscape => true;
@@ -99,6 +101,12 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
     public void SetRootOwner(IStackableUI owner)
     {
         rootOwner = owner;
+    }
+
+    public void SetRerollCountFormat(string format)
+    {
+        rerollCountFormat = format;
+        RefreshRerollUi();
     }
 
     public void OpenUI()
@@ -165,6 +173,9 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
     {
         ResolvePresentation();
         ResolvePlayerInventoryPanel();
+        ResolveRerollHoldControls();
+        SubscribeRerollHoldActionButton();
+        ConfigureRerollHoldActionButton();
         RefreshRerollUi();
 
         if (closeButton != null)
@@ -188,12 +199,15 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
         if (!Application.isPlaying)
             return;
 
-        UpdateRerollHold();
+        UpdateRerollReveal();
     }
 
     private void OnEnable()
     {
         MouseCursorService.EnsureInstance().SetDomain(this, MouseCursorDomain.Inventory, priority: 100);
+        ResolveRerollHoldControls();
+        SubscribeRerollHoldActionButton();
+        ConfigureRerollHoldActionButton();
         RefreshRerollUi();
     }
 
@@ -207,6 +221,7 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
         DisposeChestAdapter();
         playerInventoryPanel?.ClearBinding();
         ItemContainerGroupRegistry.Clear();
+        UnsubscribeRerollHoldActionButton();
         ResetRerollHoldState();
         RefreshRerollUi();
     }
@@ -441,30 +456,82 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
         return PlayerRuntimeRegistry.GetPlayerTransform();
     }
 
-    private void UpdateRerollHold()
+    private void ResolveRerollHoldControls()
     {
-        if (rerollButtonHoldActive && InputKeyCompatibility.WasReleasedThisFrame(KeyCode.Mouse0))
-            rerollButtonHoldActive = false;
+        if (rerollHoldActionButton == null)
+        {
+            if (rerollHoldButtonView != null)
+                rerollHoldActionButton = rerollHoldButtonView.GetComponent<HoldActionButton>();
 
+            if (rerollHoldActionButton == null && rerollButton != null)
+                rerollHoldActionButton = rerollButton.GetComponent<HoldActionButton>();
+        }
+
+        if (rerollHoldButtonView == null)
+        {
+            if (rerollHoldActionButton != null)
+                rerollHoldButtonView = rerollHoldActionButton.HoldView;
+
+            if (rerollHoldButtonView == null && rerollButton != null)
+                rerollHoldButtonView = rerollButton.GetComponent<HoldFillButtonView>();
+        }
+
+        if (rerollButton == null && rerollHoldActionButton != null)
+            rerollButton = rerollHoldActionButton.GetComponent<Button>();
+    }
+
+    private void SubscribeRerollHoldActionButton()
+    {
+        ResolveRerollHoldControls();
+        if (subscribedRerollHoldActionButton == rerollHoldActionButton)
+            return;
+
+        UnsubscribeRerollHoldActionButton();
+
+        if (rerollHoldActionButton == null)
+            return;
+
+        rerollHoldActionButton.HoldStarted += HandleRerollHoldStarted;
+        rerollHoldActionButton.HoldCanceled += HandleRerollHoldCanceled;
+        rerollHoldActionButton.HoldCompleted += HandleRerollHoldCompleted;
+        rerollHoldActionButton.ProgressChanged += HandleRerollHoldProgressChanged;
+        subscribedRerollHoldActionButton = rerollHoldActionButton;
+    }
+
+    private void UnsubscribeRerollHoldActionButton()
+    {
+        if (subscribedRerollHoldActionButton == null)
+            return;
+
+        subscribedRerollHoldActionButton.HoldStarted -= HandleRerollHoldStarted;
+        subscribedRerollHoldActionButton.HoldCanceled -= HandleRerollHoldCanceled;
+        subscribedRerollHoldActionButton.HoldCompleted -= HandleRerollHoldCompleted;
+        subscribedRerollHoldActionButton.ProgressChanged -= HandleRerollHoldProgressChanged;
+        subscribedRerollHoldActionButton = null;
+    }
+
+    private void ConfigureRerollHoldActionButton()
+    {
+        ResolveRerollHoldControls();
+
+        if (rerollHoldActionButton == null)
+            return;
+
+        rerollHoldActionButton.SetHoldSeconds(rerollHoldDuration);
+        rerollHoldActionButton.SetKeyboardHold(enableSpaceReroll, rerollHoldKey, startWhilePressed: true);
+        rerollHoldActionButton.SetPointerHoldEnabled(enableButtonHoldReroll);
+    }
+
+    private void UpdateRerollReveal()
+    {
         if (IsFirstOpenRevealPlaying)
         {
-            rerollHoldActive = false;
-            rerollButtonHoldActive = false;
+            if (rerollHoldActive || (rerollHoldActionButton != null && rerollHoldActionButton.IsHolding))
+                ResetRerollHoldState();
+
             RefreshRerollUi();
             return;
         }
-
-        bool pressedThisFrame = WasRerollHoldPressedThisFrame();
-        bool isPressed = IsRerollHoldPressed();
-
-        if (rerollHoldConsumed && !isPressed)
-            rerollHoldConsumed = false;
-
-        if (pressedThisFrame && CanStartRerollHold())
-            BeginRerollHold();
-
-        if (rerollHoldActive && !isPressed)
-            CancelRerollHold();
 
         AdvanceRerollReveal();
         RefreshRerollUi();
@@ -472,67 +539,62 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
 
     private bool CanStartRerollHold()
     {
-        if (rerollHoldConsumed || ChestUIManager.Instance == null)
+        if (ChestUIManager.Instance == null)
             return false;
 
         ResolvePresentation();
         return firstOpenRevealPresentation != null && ChestUIManager.Instance.CanRefreshOpenedChest();
     }
 
-    private bool WasRerollHoldPressedThisFrame()
+    private void HandleRerollHoldStarted()
     {
-        if (enableSpaceReroll && InputKeyCompatibility.WasPressedThisFrame(rerollHoldKey))
-            return true;
+        if (!CanStartRerollHold())
+        {
+            rerollHoldActionButton?.ResetHold();
+            return;
+        }
 
-        return WasRerollButtonHoldPressedThisFrame();
+        BeginRerollHold();
     }
 
-    private bool IsRerollHoldPressed()
+    private void HandleRerollHoldCanceled()
     {
-        bool keyPressed = enableSpaceReroll && InputKeyCompatibility.IsPressed(rerollHoldKey);
-        bool buttonPressed = rerollButtonHoldActive && InputKeyCompatibility.IsPressed(KeyCode.Mouse0);
-        return keyPressed || buttonPressed;
+        if (rerollHoldActive)
+            CancelRerollHold();
+
+        RefreshRerollHoldProgressUi(0f);
     }
 
-    private bool WasRerollButtonHoldPressedThisFrame()
+    private void HandleRerollHoldCompleted()
     {
-        if (!enableButtonHoldReroll || rerollButton == null || !rerollButton.interactable)
-            return false;
-        if (!InputKeyCompatibility.WasPressedThisFrame(KeyCode.Mouse0))
-            return false;
+        if (rerollHoldActive)
+            CompleteRerollHold();
 
-        RectTransform buttonRect = rerollButton.transform as RectTransform;
-        if (buttonRect == null)
-            return false;
-        if (!RectTransformUtility.RectangleContainsScreenPoint(buttonRect, Input.mousePosition, ResolveRerollButtonCamera()))
-            return false;
-
-        rerollButtonHoldActive = true;
-        return true;
+        RefreshRerollHoldProgressUi(0f);
     }
 
-    private Camera ResolveRerollButtonCamera()
+    private void HandleRerollHoldProgressChanged(float progress)
     {
-        if (rerollButton == null)
-            return null;
+        float normalized = Mathf.Clamp01(progress);
+        RefreshRerollHoldProgressUi(normalized);
 
-        Canvas canvas = rerollButton.GetComponentInParent<Canvas>();
-        if (canvas == null || canvas.renderMode == RenderMode.ScreenSpaceOverlay)
-            return null;
+        if (!rerollHoldActive)
+            return;
+        if (normalized <= 0f && rerollHoldActionButton != null && !rerollHoldActionButton.IsHolding)
+            return;
 
-        return canvas.worldCamera;
+        ApplyRerollHoldProgress(normalized);
     }
 
     private void BeginRerollHold()
     {
         rerollHoldActive = true;
-        rerollHoldElapsed = 0f;
         rerollOpenVfxActive = false;
         rerollSlotRevealVfxPending = false;
         rerollRevealState = RerollRevealState.Closing;
         ItemDragContext.CancelActiveDragSession();
         UIManager.Instance?.HideHoverImmediate();
-        ApplyRerollRevealPose(enableInteraction: false, applyShake: false);
+        ApplyRerollHoldProgress(0f);
         RefreshRerollUi();
     }
 
@@ -547,37 +609,28 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
         ApplyRerollRevealPose(enableInteraction: false, applyShake: false);
     }
 
-    private void AdvanceRerollReveal()
+    private void ApplyRerollHoldProgress(float progress)
     {
-        if (rerollHoldActive)
-            rerollHoldElapsed += Time.unscaledDeltaTime;
+        float normalized = Mathf.Clamp01(progress);
+        float closeProgressThreshold = Mathf.Clamp01(rerollCloseDuration / Mathf.Max(0.01f, rerollHoldDuration));
+        closeProgressThreshold = Mathf.Max(0.0001f, closeProgressThreshold);
 
-        if (rerollRevealState == RerollRevealState.Closing)
+        if (normalized < closeProgressThreshold)
         {
-            float closeDelta = Time.unscaledDeltaTime / Mathf.Max(0.01f, rerollCloseDuration);
-            rerollRevealProgress = Mathf.MoveTowards(rerollRevealProgress, 0f, closeDelta);
+            rerollRevealState = RerollRevealState.Closing;
+            float closeNormalized = Mathf.Clamp01(normalized / closeProgressThreshold);
+            rerollRevealProgress = Mathf.Lerp(1f, 0f, closeNormalized);
             ApplyRerollRevealPose(enableInteraction: false, applyShake: false);
-
-            if (rerollRevealProgress <= 0f)
-            {
-                rerollRevealProgress = 0f;
-                rerollRevealState = RerollRevealState.Shaking;
-            }
-
-            if (rerollRevealState != RerollRevealState.Shaking)
-                return;
-        }
-
-        if (rerollRevealState == RerollRevealState.Shaking)
-        {
-            ApplyRerollRevealPose(enableInteraction: false, applyShake: true);
-
-            if (rerollHoldElapsed >= rerollHoldDuration)
-                CompleteRerollHold();
-
             return;
         }
 
+        rerollRevealState = RerollRevealState.Shaking;
+        rerollRevealProgress = 0f;
+        ApplyRerollRevealPose(enableInteraction: false, applyShake: true);
+    }
+
+    private void AdvanceRerollReveal()
+    {
         if (rerollRevealState != RerollRevealState.Opening)
             return;
 
@@ -605,7 +658,6 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
     {
         bool refreshed = ChestUIManager.Instance != null && ChestUIManager.Instance.TryRefreshOpenedChest();
         rerollHoldActive = false;
-        rerollHoldConsumed = true;
         rerollRevealState = RerollRevealState.Opening;
         rerollOpenVfxActive = false;
         rerollSlotRevealVfxPending = false;
@@ -629,7 +681,8 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
         firstOpenRevealPresentation.ApplyManualRevealProgress(
             rerollRevealProgress,
             enableInteraction,
-            stopPresentationEffects: !rerollOpenVfxActive);
+            stopPresentationEffects: !rerollOpenVfxActive,
+            resizePivotY: 0f);
 
         if (applyShake)
             ApplyRerollShakeOffset();
@@ -650,50 +703,104 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
 
     private void RefreshRerollUi()
     {
+        ResolveRerollHoldControls();
+        ConfigureRerollHoldActionButton();
+
         int remainingCount = 0;
+        int refreshLimit = 0;
+        int usedCount = 0;
         bool canRefresh = false;
 
         if (ChestUIManager.Instance != null)
         {
             remainingCount = ChestUIManager.Instance.GetOpenedChestRemainingRefreshCount();
+            refreshLimit = ChestUIManager.Instance.GetOpenedChestRefreshLimit();
+            usedCount = ChestUIManager.Instance.GetOpenedChestRefreshUsedCount();
             canRefresh = ChestUIManager.Instance.CanRefreshOpenedChest();
+        }
+
+        bool isHolding = rerollHoldActionButton != null && rerollHoldActionButton.IsHolding;
+        bool canInteract = canRefresh &&
+                           !IsFirstOpenRevealPlaying &&
+                           (rerollRevealState == RerollRevealState.Idle || isHolding);
+
+        GameObject rerollControlRoot = ResolveRerollControlRoot();
+        if (rerollControlRoot != null)
+            rerollControlRoot.SetActive(true);
+
+        if (rerollHoldActionButton != null)
+        {
+            rerollHoldActionButton.SetInteractable(canInteract);
+            if (rerollHoldButtonView != null && rerollHoldButtonView != rerollHoldActionButton.HoldView)
+                rerollHoldButtonView.SetInteractableVisual(canInteract);
+        }
+        else
+        {
+            rerollHoldButtonView?.SetInteractableVisual(canInteract);
         }
 
         if (rerollButton != null)
         {
             rerollButton.gameObject.SetActive(true);
-            rerollButton.interactable = canRefresh && !IsFirstOpenRevealPlaying && !rerollHoldConsumed;
+            if (rerollHoldActionButton == null)
+                rerollButton.interactable = canInteract;
         }
 
         if (rerollCountLabel != null)
-            rerollCountLabel.text = remainingCount.ToString();
+            rerollCountLabel.text = FormatRerollCount(remainingCount, refreshLimit, usedCount);
 
-        RefreshRerollHoldProgressUi();
+        if (rerollHoldActionButton == null)
+            RefreshRerollHoldProgressUi(0f);
     }
 
-    private void RefreshRerollHoldProgressUi()
+    private GameObject ResolveRerollControlRoot()
     {
-        if (rerollHoldProgressImage == null)
+        if (rerollHoldActionButton != null)
+            return rerollHoldActionButton.gameObject;
+        if (rerollHoldButtonView != null)
+            return rerollHoldButtonView.gameObject;
+        if (rerollButton != null)
+            return rerollButton.gameObject;
+
+        return null;
+    }
+
+    private string FormatRerollCount(int remainingCount, int refreshLimit, int usedCount)
+    {
+        if (string.IsNullOrWhiteSpace(rerollCountFormat))
+            return remainingCount.ToString();
+
+        try
+        {
+            return string.Format(rerollCountFormat, remainingCount, refreshLimit, usedCount);
+        }
+        catch (FormatException)
+        {
+            return remainingCount.ToString();
+        }
+    }
+
+    private void RefreshRerollHoldProgressUi(float progress)
+    {
+        float normalized = Mathf.Clamp01(progress);
+
+        if (rerollHoldButtonView != null || rerollHoldProgressImage == null)
             return;
 
-        float progress = rerollHoldActive
-            ? Mathf.Clamp01(rerollHoldElapsed / Mathf.Max(0.01f, rerollHoldDuration))
-            : 0f;
-
-        rerollHoldProgressImage.fillAmount = progress;
-        rerollHoldProgressImage.enabled = progress > 0f;
+        rerollHoldProgressImage.fillAmount = normalized;
+        rerollHoldProgressImage.enabled = normalized > 0f;
     }
 
     private void ResetRerollHoldState()
     {
         rerollRevealState = RerollRevealState.Idle;
         rerollRevealProgress = 1f;
-        rerollHoldElapsed = 0f;
         rerollHoldActive = false;
-        rerollHoldConsumed = false;
-        rerollButtonHoldActive = false;
         rerollOpenVfxActive = false;
         rerollSlotRevealVfxPending = false;
+        rerollHoldActionButton?.ResetHold();
+        rerollHoldButtonView?.SetProgress(0f);
+        RefreshRerollHoldProgressUi(0f);
     }
 
     private void BuildChestSlots()

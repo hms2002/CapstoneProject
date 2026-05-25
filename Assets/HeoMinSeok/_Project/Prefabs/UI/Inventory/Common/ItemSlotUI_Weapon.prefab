@@ -16,6 +16,10 @@ PrefabInstance:
       propertyPath: m_Sprite
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 1648626825173008858, guid: e2d83cdcfb9485d499433d3acc5bad5e, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3275845844994885226, guid: e2d83cdcfb9485d499433d3acc5bad5e, type: 3}
       propertyPath: m_Name
       value: ItemSlotUI_Weapon

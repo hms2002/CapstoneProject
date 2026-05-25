@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   abilityName: 낙뢰 표식
   icon: {fileID: 21300000, guid: 0adc7957cb62497438400e9e92f01b19, type: 3}
-  description: 플레이어 주변 전투 구역에 번개 창 표식을 생성한다. 창이 꽂힐 때 약한 착지 피해를 주며, 생성된 표식은 뇌창 돌격의 대상으로 사용할 수 있다.
+  description: "● 플레이어 주변 전투 구역에 {val:낙뢰 표식 6개} 생성\n● 창이 꽂힐 때 약한 착지 피해를 주고 표식은 {val:7초} 유지\n● 생성된 표식은 [[뇌창 돌격]]의 대상으로 사용"
   cooldown: 10
   executionPolicy: 0
   useCharges: 0

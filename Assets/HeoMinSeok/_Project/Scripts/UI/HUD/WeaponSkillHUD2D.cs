@@ -35,8 +35,16 @@ public class WeaponSkillHUD2D : MonoBehaviour
         [Tooltip("activeOverlay 안의 Image를 직접 연결하면, 현재 스킬 아이콘 스프라이트를 자동 동기화합니다.")]
         public Image activeOverlayImage;
         public Image cooldownFill;   // fillAmount = remaining/total (Image Type Filled 필요)
+        [Tooltip("선택. 지정하면 Bloom 같은 활성 지속시간 표시는 cooldownFill 대신 이 Image를 사용합니다.")]
+        public Image activeDurationFill;
         public TMP_Text cooldownText; // 선택(초 표기)
         public TMP_Text chargeText;   // 선택(예: 2/3)
+
+        [System.NonSerialized] public bool cooldownFillConfigCaptured;
+        [System.NonSerialized] public Image.Type cooldownFillType;
+        [System.NonSerialized] public Image.FillMethod cooldownFillMethod;
+        [System.NonSerialized] public int cooldownFillOrigin;
+        [System.NonSerialized] public bool cooldownFillVisibilityWarningLogged;
     }
 
     [Header("Refs")]
@@ -259,6 +267,8 @@ public class WeaponSkillHUD2D : MonoBehaviour
         if (ui.cooldownFill != null)
             ui.cooldownFill.fillAmount = has ? 0f : 0f;
 
+        SetActiveDurationFillVisible(ui, false);
+
         if (ui.cooldownText != null)
             ui.cooldownText.text = "";
 
@@ -320,8 +330,8 @@ public class WeaponSkillHUD2D : MonoBehaviour
 
         UpdateDynamicIcon(skill1UI, WeaponAbilitySlot.Skill1, skill1Def);
         UpdateDynamicIcon(skill2UI, WeaponAbilitySlot.Skill2, skill2Def);
-        UpdateCooldownAndCharge(skill1UI, skill1Def);
-        UpdateCooldownAndCharge(skill2UI, skill2Def);
+        UpdateCooldownAndCharge(skill1UI, WeaponAbilitySlot.Skill1, skill1Def);
+        UpdateCooldownAndCharge(skill2UI, WeaponAbilitySlot.Skill2, skill2Def);
         UpdateCastingVisual(skill1UI, skill1Def);
         UpdateCastingVisual(skill2UI, skill2Def);
     }
@@ -362,6 +372,20 @@ public class WeaponSkillHUD2D : MonoBehaviour
             : null;
 
         return runtimeState as IWeaponAbilityHudIconOverrideProvider;
+    }
+
+    private IWeaponAbilityHudDurationOverrideProvider ResolveHudDurationOverrideProvider()
+    {
+        WeaponAbilityRuntimeState runtimeState = weaponEquipController != null
+            ? weaponEquipController.GetCurrentWeaponRuntimeState()
+            : null;
+
+        if (runtimeState is IWeaponAbilityHudDurationOverrideProvider weaponProvider)
+            return weaponProvider;
+
+        return abilitySystem != null
+            ? abilitySystem.GetComponent<IWeaponAbilityHudDurationOverrideProvider>()
+            : null;
     }
 
     /// <summary>
@@ -512,17 +536,25 @@ public class WeaponSkillHUD2D : MonoBehaviour
 
         return cachedInputBindingService;
     }
-    private void UpdateCooldownAndCharge(SkillSlotUI ui, AbilityDefinition def)
+    private void UpdateCooldownAndCharge(SkillSlotUI ui, WeaponAbilitySlot slot, AbilityDefinition def)
     {
         if (ui == null) return;
 
         if (def == null)
         {
+            RestoreCooldownFillConfig(ui);
+            SetActiveDurationFillVisible(ui, false);
             if (ui.cooldownFill != null) ui.cooldownFill.fillAmount = 0f;
             if (ui.cooldownText != null) ui.cooldownText.text = "";
             if (ui.chargeText != null) ui.chargeText.text = "";
             return;
         }
+
+        if (TryApplyActiveDurationOverride(ui, slot, def))
+            return;
+
+        SetActiveDurationFillVisible(ui, false);
+        RestoreCooldownFillConfig(ui);
 
         float total = Mathf.Max(0.0001f, def.cooldown);
 
@@ -566,6 +598,114 @@ public class WeaponSkillHUD2D : MonoBehaviour
 
         if (ui.chargeText != null)
             ui.chargeText.text = "";
+    }
+
+    private bool TryApplyActiveDurationOverride(SkillSlotUI ui, WeaponAbilitySlot slot, AbilityDefinition def)
+    {
+        IWeaponAbilityHudDurationOverrideProvider provider = ResolveHudDurationOverrideProvider();
+        if (provider == null ||
+            !provider.TryGetHudDurationOverride(slot, def, out WeaponAbilityHudDurationOverride duration))
+        {
+            return false;
+        }
+
+        Image fill = ResolveActiveDurationFill(ui);
+        if (fill != null)
+        {
+            bool usesCooldownFill = fill == ui.cooldownFill;
+            if (usesCooldownFill)
+                CaptureCooldownFillConfig(ui);
+
+            SetActiveDurationFillVisible(ui, true);
+            fill.enabled = true;
+            fill.type = Image.Type.Filled;
+            if (duration.FillBottomToTop)
+            {
+                fill.fillMethod = Image.FillMethod.Vertical;
+                fill.fillOrigin = (int)Image.OriginVertical.Bottom;
+            }
+
+            fill.fillAmount = Mathf.Clamp01(duration.RemainingSeconds / duration.MaxSeconds);
+        }
+
+        WarnIfDurationOverrideFillInvisible(ui, slot, fill);
+
+        if (ui.cooldownText != null)
+            ui.cooldownText.text = duration.ShowText && duration.RemainingSeconds > 0.01f
+                ? duration.RemainingSeconds.ToString("0.0")
+                : "";
+
+        if (ui.chargeText != null)
+            ui.chargeText.text = "";
+
+        return true;
+    }
+
+    private static Image ResolveActiveDurationFill(SkillSlotUI ui)
+    {
+        if (ui == null)
+            return null;
+
+        return ui.activeDurationFill != null ? ui.activeDurationFill : ui.cooldownFill;
+    }
+
+    private static void SetActiveDurationFillVisible(SkillSlotUI ui, bool visible)
+    {
+        if (ui == null || ui.activeDurationFill == null || ui.activeDurationFill == ui.cooldownFill)
+            return;
+
+        if (ui.activeDurationFill.gameObject.activeSelf != visible)
+            ui.activeDurationFill.gameObject.SetActive(visible);
+
+        ui.activeDurationFill.enabled = visible;
+        if (!visible)
+            ui.activeDurationFill.fillAmount = 0f;
+    }
+
+    private static void WarnIfDurationOverrideFillInvisible(SkillSlotUI ui, WeaponAbilitySlot slot, Image fill)
+    {
+        if (ui == null || ui.cooldownFillVisibilityWarningLogged)
+            return;
+
+        if (fill == null)
+        {
+            ui.cooldownFillVisibilityWarningLogged = true;
+            Debug.LogWarning($"[WeaponSkillHUD2D] {slot} active duration override is active, but neither activeDurationFill nor cooldownFill is assigned.");
+            return;
+        }
+
+        bool invisible =
+            !fill.gameObject.activeInHierarchy ||
+            !fill.enabled ||
+            fill.canvasRenderer.GetAlpha() <= 0.01f ||
+            fill.color.a <= 0.01f ||
+            fill.sprite == null;
+        if (!invisible)
+            return;
+
+        ui.cooldownFillVisibilityWarningLogged = true;
+        Debug.LogWarning($"[WeaponSkillHUD2D] {slot} active duration override is active, but the resolved fill Image may be invisible. Check activeDurationFill/cooldownFill active state, alpha, sprite, and hierarchy order.");
+    }
+
+    private static void CaptureCooldownFillConfig(SkillSlotUI ui)
+    {
+        if (ui == null || ui.cooldownFill == null || ui.cooldownFillConfigCaptured)
+            return;
+
+        ui.cooldownFillType = ui.cooldownFill.type;
+        ui.cooldownFillMethod = ui.cooldownFill.fillMethod;
+        ui.cooldownFillOrigin = ui.cooldownFill.fillOrigin;
+        ui.cooldownFillConfigCaptured = true;
+    }
+
+    private static void RestoreCooldownFillConfig(SkillSlotUI ui)
+    {
+        if (ui == null || ui.cooldownFill == null || !ui.cooldownFillConfigCaptured)
+            return;
+
+        ui.cooldownFill.type = ui.cooldownFillType;
+        ui.cooldownFill.fillMethod = ui.cooldownFillMethod;
+        ui.cooldownFill.fillOrigin = ui.cooldownFillOrigin;
     }
 
 }
