@@ -10,6 +10,8 @@ using UnityEngine.SceneManagement;
 /// </summary>
 public class MonsterSpawner : MonoBehaviour
 {
+    private const string DefaultStageHpScalingSettingsResourcePath = "MonsterStageHpScalingSettings";
+
     public static MonsterSpawner Instance { get; private set; }
 
     [Header("Spawn Points")]
@@ -18,6 +20,7 @@ public class MonsterSpawner : MonoBehaviour
 
     [Header("Difficulty")]
     [SerializeField] private DifficultyModifiers difficultyModifiers = new();
+    [SerializeField] private MonsterStageHpScalingSettings stageHpScalingSettings;
     [SerializeField] private bool enableStageHpScaling = true;
     [SerializeField, Min(0f)] private float hpMultiplierPerClearedStage = 0.5f;
 
@@ -202,13 +205,31 @@ public class MonsterSpawner : MonoBehaviour
             ? difficultyModifiers.Clone()
             : new DifficultyModifiers();
 
-        if (!enableStageHpScaling)
+        MonsterStageHpScalingSettings settings = ResolveStageHpScalingSettings();
+        bool useStageHpScaling = settings != null ? settings.Enabled : enableStageHpScaling;
+        if (!useStageHpScaling)
             return runtimeModifiers;
 
         int stageIndex = ResolveCurrentStageIndex();
-        float stageHpMultiplier = 1f + hpMultiplierPerClearedStage * Mathf.Max(0, stageIndex);
+        float stageHpMultiplier = settings != null
+            ? settings.CalculateStageHpMultiplier(stageIndex)
+            : 1f + Mathf.Max(0f, hpMultiplierPerClearedStage) * Mathf.Max(0, stageIndex);
         runtimeModifiers.hpMultiplier = Mathf.Max(0f, runtimeModifiers.hpMultiplier) * stageHpMultiplier;
         return runtimeModifiers;
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 씬별 MonsterSpawner 설정 대신 중앙 stage HP scaling 설정을 우선 사용한다.
+    /// - 중앙 설정이 없는 기존 씬은 기존 serialized 필드를 fallback으로 유지한다.
+    /// </summary>
+    private MonsterStageHpScalingSettings ResolveStageHpScalingSettings()
+    {
+        if (stageHpScalingSettings != null)
+            return stageHpScalingSettings;
+
+        stageHpScalingSettings = Resources.Load<MonsterStageHpScalingSettings>(DefaultStageHpScalingSettingsResourcePath);
+        return stageHpScalingSettings;
     }
 
     /// <summary>
