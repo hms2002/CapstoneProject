@@ -8,6 +8,7 @@ using UnityGAS;
 public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandomJumpHost
 {
     private static readonly int IsJumpingHash = Animator.StringToHash("isJumping");
+    private static readonly int IsSinkingHash = Animator.StringToHash("isSinking");
 
     private const int ToxicDropPositionCount = 3;
     private const float ToxicDropLowerTriangleY = -0.5f;
@@ -184,6 +185,7 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
     private Vector2 waterCannonLockedBeamDirection;
     private bool waterCannonHasLockedBeamDirection;
     private float nextWaterCannonDamageTime;
+    private bool? hasSinkingParameter;
 
     public float JumpDurationSeconds => jumpDurationSeconds;
     public float CrossWaterPillarWarningSeconds => crossWaterPillarWarningSeconds;
@@ -201,6 +203,16 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
     public void EndRandomJumpAnimation()
     {
         SetAnimatorBool(IsJumpingHash, false);
+    }
+
+    public override void BeginDrainSinkAnimation()
+    {
+        SetAnimatorBoolIfExists(IsSinkingHash, ref hasSinkingParameter, true);
+    }
+
+    public override void EndDrainSinkAnimation()
+    {
+        SetAnimatorBoolIfExists(IsSinkingHash, ref hasSinkingParameter, false);
     }
 
     public readonly struct CrossWaterPillarSegment
@@ -313,6 +325,34 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
             return;
 
         animator.SetBool(parameterHash, value);
+    }
+
+    private void SetAnimatorBoolIfExists(int parameterHash, ref bool? cachedExists, bool value)
+    {
+        if (animator == null)
+            return;
+
+        if (!cachedExists.HasValue)
+            cachedExists = HasAnimatorBoolParameter(parameterHash);
+
+        if (cachedExists.Value)
+            animator.SetBool(parameterHash, value);
+    }
+
+    private bool HasAnimatorBoolParameter(int parameterHash)
+    {
+        if (animator == null)
+            return false;
+
+        AnimatorControllerParameter[] parameters = animator.parameters;
+        for (int i = 0; i < parameters.Length; i++)
+        {
+            AnimatorControllerParameter parameter = parameters[i];
+            if (parameter.nameHash == parameterHash && parameter.type == AnimatorControllerParameterType.Bool)
+                return true;
+        }
+
+        return false;
     }
 
     /// <summary>착지 범위 안의 현재 타겟에게 GAS Damage Effect를 적용합니다.</summary>

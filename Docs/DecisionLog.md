@@ -7,6 +7,34 @@ last_reviewed: 2026-05-23
 
 # Decision Log
 
+## 2026-05-25 - P2 Drain Completion Restores The Drain
+
+Decision:
+When a phase-two Slime Queen finishes the drain sink sequence, `DrainPipe` restores to its initial damageable cork state instead of becoming permanently blocked.
+
+Reason:
+The design intent is a temporary 4-second boss groggy/control-loss mechanic. The drain should be usable again after being re-opened by hits, not removed from future play.
+
+Implications:
+- `DrainPipe` resets `currentHitCount` to `0` after the P2 boss exits.
+- The drain visual returns to the cork color/state.
+- Existing captured Pawn slime targets are cleaned up during restore so disabled suction targets do not remain.
+- Future P2 drain changes should avoid permanent disable/blocked flags unless a separate design request asks for one-time drains.
+
+## 2026-05-25 - Boss HUD Reads Source Snapshots
+
+Decision:
+`BossHudController` reads `IBossHudSource` / `BossHudSnapshot` values instead of adding concrete boss-type branches for split or multi-body bosses.
+
+Reason:
+Slime Queen phase two needs two body channels, but the common HUD should remain a projection layer. Keeping Short/Long lookup and dual-channel rules in `SlimeQueenPhaseTwoHudSource` prevents the controller from accumulating boss-specific lifetime and display policy.
+
+Implications:
+- Normal bosses use `SingleBossHudSource`.
+- Slime Queen phase two uses `SlimeQueenPhaseTwoHudSource`.
+- Future split, multi-body, or shared-health bosses should add their own source/adapter instead of editing `BossHudController` with concrete type checks.
+- Dedicated dual groggy UI references can be authored later; runtime fallback is only a migration path.
+
 ## 2026-05-23 - Run-Special Unavailable Responses Belong To Choices
 
 Decision:

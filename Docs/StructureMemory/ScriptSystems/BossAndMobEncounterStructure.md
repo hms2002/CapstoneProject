@@ -2,7 +2,7 @@
 status: active
 authority: structure-memory
 category: script-system-map
-last_reviewed: 2026-05-19
+last_reviewed: 2026-05-25
 ---
 
 # Boss And Mob Encounter Structure
@@ -111,16 +111,17 @@ Bosses use an `Encounter -> Battle -> BattleEnd` flow. General mobs use `Populat
 
 ### Boss HUD Boundary Note
 
-`BossHudController` belongs to the UI/HUD script group, but the boss review found a boss-flow boundary issue: the common Boss HUD currently knows the concrete `SlimeQueenP2Short` and `SlimeQueenP2Long` phase-two types.
+`BossHudController` belongs to the UI/HUD script group. The Slime Queen phase-two special case has been moved out of the common controller into a HUD source/snapshot boundary.
 
 Slime Queen phase two is allowed to be special. The issue is only where the special case lives.
 
-Target direction:
+Current shape:
 
-- `BossHudController` should read a generic boss HUD source or snapshot.
-- Normal bosses can be adapted by a single-boss HUD source.
-- Slime Queen phase two can keep its custom rules in a `SlimeQueenPhaseTwoHudSource`-style adapter that knows the short/long bodies, labels, visibility, and groggy behavior.
-- The common HUD should not keep adding boss-type-specific `Find*` branches for future split, multi-body, or shared-health bosses.
+- `BossHudController` reads `IBossHudSource` / `BossHudSnapshot` and applies one or two channels to the existing HUD views.
+- `SingleBossHudSource` adapts a normal `BossControllerBase` into the snapshot shape.
+- `SlimeQueenPhaseTwoHudSource` knows the Short/Long bodies and emits two health/groggy channels for phase two.
+- `BossHealthBarUI` and `BossGroggyBarUI` can both render two channels. If `BossGroggyBarUI` has no authored dual references, it clones the existing single slider as a runtime fallback and logs a presentation fallback warning in Editor/development builds.
+- The common HUD should not add boss-type-specific `Find*` branches for future split, multi-body, or shared-health bosses.
 
 Track the concrete candidate in `Docs/RefactorBacklog/BossHudSpecialCaseSourceSplit.md`.
 
@@ -147,6 +148,8 @@ Track the concrete candidate in `Docs/RefactorBacklog/BossHudSpecialCaseSourceSp
 ## Ownership And Lifecycle
 
 - Boss controllers own boss battle runtime; boss encounter setup and boss battle-end results should remain visible as separate flow boundaries.
+- Slime Queen variants (`SlimeQueen`, `SlimeQueenP2Short`, `SlimeQueenP2Long`) inherit common groggy/stagger support from `SlimeQueenBossBase`. The base ensures a runtime `StaggerGaugeSystem` when the prefab does not author one, resolves the shared stagger attributes from the boss `AttributeSet`, and uses a 3-second status-only Groggy effect that grants `State.Status.Groggy`. Phase two uses `SlimeQueenPhaseTwoHudSource` to project Short/Long health and groggy channels separately. The common `BossHudController` consumes only `IBossHudSource` snapshots and no longer stores concrete P2 Slime Queen references.
+- Slime Queen phase two drain interaction is owned by `DrainPipe`, not by the phase-two boss controllers. Broken drains keep Pawn slime suction on `suctionRadius`, while P2 Slime Queen acquisition uses the separate inspector-authored `phaseTwoBossSuctionRadius` and selected-object gizmo. When a P2 boss enters that radius, `DrainPipe` locks the boss through `SlimeQueenPhaseTwoBase.BeginDrainControlLock()`, temporarily disables the boss `MovementMotor2D`, directly pulls the boss to the drain, keeps it submerged for 4 seconds, restores movement/control, then resets the drain to its original cork state with hit count `0`. While drain-locked, `SlimeQueenPhaseTwoBase.Update()` returns before the shared pit-fall lock can call per-frame `StopAllMotion()`. P2Short owns a concrete `isSinking` Animator bool hook; P2Long has a safe hook that no-ops until the bool is authored on its controller. Do not reuse the broad Pawn suction radius for P2 boss acquisition, do not let normal boss movement own the drain-pull step, and do not convert P2 drain completion into permanent drain blocking.
 - Boss encounter presentation owns its own UI input block through `GameFlowInputBlocker` while camera focus, dialogue, and return-to-player handoff are running. Dialogue still owns only dialogue playback blocking.
 - General mobs are spawned through population systems, then stay battle-ready through their own runtime FSM. Do not treat all mob work as encounter work.
 - Spawn systems own instantiation/configuration and may bridge to lock overlays, but lock semantics are not the same as spawn semantics.
