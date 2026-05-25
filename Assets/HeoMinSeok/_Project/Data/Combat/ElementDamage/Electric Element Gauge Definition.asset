@@ -11,12 +11,12 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bbb5acfe5042c134b9916c0a2483d3fd, type: 3}
   m_Name: Electric Element Gauge Definition
-  m_EditorClassIdentifier:
+  m_EditorClassIdentifier: 
   elementTag: {fileID: 11400000, guid: f2c3c9b4eb9b4ed5b0224bd53dfd8f46, type: 2}
   maxGaugeAttribute: {fileID: 11400000, guid: 630d2d639dfa41608b6a44de79394637, type: 2}
   resistanceAttribute: {fileID: 0}
   triggerEffect: {fileID: 11400000, guid: acf199c01fc74d32bbea55bdd520323e, type: 2}
-  icon: {fileID: 0}
+  icon: {fileID: -4977739269507789910, guid: 688b46cd9e7cb694aa21a2c1c7b7a731, type: 3}
   triggerVfxPrefab: {fileID: 0}
   sustainVfxPrefab: {fileID: 0}
   useTint: 1

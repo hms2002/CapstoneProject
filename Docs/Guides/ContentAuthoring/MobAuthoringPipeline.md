@@ -2,7 +2,7 @@
 status: active
 authority: guide
 category: content-authoring
-last_reviewed: 2026-05-15
+last_reviewed: 2026-05-24
 ---
 
 # Mob Authoring Pipeline
@@ -43,6 +43,25 @@ last_reviewed: 2026-05-15
 | population/spawn context | `MonsterSpawner` / scene spawn director |
 | death loot | `Mob.OnDeathStarted`와 `LootManager` |
 | room/chest lock overlay | lock overlay component; see Lock Count Authoring Rule below |
+
+## Common Corridor Monster Authoring
+
+문서나 기획에서 말하는 "공통 몬스터"는 여러 테마 복도 레벨에서 재사용하는 스폰용 몬스터를 뜻합니다. 코드 공통 아키타입을 뜻하지 않으며, 각 몬스터는 기존 일반 몬스터 FSM 규격에 맞춘 개인화 구현을 유지합니다.
+
+현재 자동 생성 산출물:
+
+- 프리팹: `Assets/Prefabs/Enemies/Mobs/CommonCorridor`
+- AD/AL: `Assets/Script/Enemy/Mob/Abilities/CommonMonsters`
+- Stage set: `Assets/HeoMinSeok/_Project/Data/MonsterSpawnPoolData/Common`
+
+생성/검증 절차:
+
+1. `Tools/Authoring/Generate Common Monsters`로 구조 우선 프리팹, AD/AL, StageMonsterSet, AnimatorController 연결을 재생성합니다.
+2. `Tools/Authoring/Validate Common Monsters`로 missing script, 필수 컴포넌트, Visual/SpriteRenderer/Animator, ASC/Coordinator/Groggy presenter 참조, AD logic, StageMonsterSet stage clamp를 확인합니다.
+3. `MonsterRoomSpawnProfileSO`의 `commonEntries`에 `CommonMeleeStageMonsterSet`, `CommonRangedStageMonsterSet`, `CommonTankStageMonsterSet` 중 필요한 세트를 연결합니다.
+4. 생성기는 `Visual` 자식, `SpriteRenderer`, `Animator`, root `Mob.animator`, `CommonMonsterAnimatorBridge.animator` 참조를 자동 연결합니다.
+5. 최종 Sprite, collider/hurtbox 크기, 공격 범위, 애니메이션 클립 프레임/타이밍은 Unity 인스펙터와 플레이 테스트에서 수동 authoring합니다.
+6. `GoblinTank_HPUp` 같은 스테이지별 스펙 variant는 만들지 않습니다. 스테이지가 높아질수록 증가하는 몬스터 스펙은 별도 보정 흐름에서 처리합니다.
 
 ## Lock Count Authoring Rule
 

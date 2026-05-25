@@ -37,6 +37,7 @@ GameObject:
   - component: {fileID: 5188487318859962288}
   - component: {fileID: 4627516709666046419}
   - component: {fileID: 6600200000000001}
+  - component: {fileID: 880070000000000003}
   m_Layer: 31
   m_Name: TreasureMonster
   m_TagString: Enemy
@@ -105,7 +106,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -1039746825
-  m_SortingLayer: 4
+  m_SortingLayer: 5
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: -2987867392972033973, guid: 15c91a5b134cee44185165d194272923, type: 3}
@@ -207,7 +208,7 @@ CapsuleCollider2D:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 2147483656
   m_LayerOverridePriority: 0
   m_ForceSendLayers:
     serializedVersion: 2
@@ -318,6 +319,10 @@ MonoBehaviour:
   blockMoveTag: {fileID: 0}
   telegraph: {fileID: 0}
   abilityCoordinator: {fileID: 0}
+  allowLegacyUpdateActivation: 0
+  animator: {fileID: 0}
+  attackReadyTriggerName: attackReady
+  attackTriggerName: attack
 --- !u!114 &3790217430196525045
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -410,6 +415,7 @@ MonoBehaviour:
   worldAnchor: {fileID: 2826825829709561300}
   extraWorldOffset: {x: 0, y: 0, z: 0}
   minInterval: 0.02
+  logFallbackPopup: 1
 --- !u!114 &5122803876250813742
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -561,6 +567,10 @@ MonoBehaviour:
   detectionRange: 6
   stopRange: 0.2
   speedScale: 0.5
+  usePathfindingWhenDirectPathBlocked: 1
+  pathWaypointReachDistance: 0.18
+  pathRebuildInterval: 0.35
+  pathTargetMoveThreshold: 0.35
   returnSpeedScale: 0.9
   logChaseDebug: 0
   logInterval: 0.35
@@ -689,9 +699,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6ff4ff08e39f49319d1e0414b9985957, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UnityGAS.EntityCollisionProfile2D
-  bodyColliders: []
+  bodyColliders:
+  - {fileID: 880000000000001004}
   baseExcludedLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -699,3 +710,32 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 2147483656
   defaultMode: 1
+--- !u!114 &880070000000000003
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 625522859161183429}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f7fd960e9c14d44990494a70a80d3df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tagSystem: {fileID: 0}
+  groggyTag: {fileID: 0}
+  followAnchor: {fileID: 0}
+  boundsSource: {fileID: 0}
+  effectPrefab: {fileID: 2456809460785590275, guid: 80d266c90ff9c4d458d715b8d37a677b, type: 3}
+  effectParent: {fileID: 0}
+  instantiateOnAwake: 0
+  destroyInstanceWhenHidden: 1
+  usePooling: 1
+  maxPooledInstancesPerPrefab: 16
+  worldOffset: {x: 0, y: 0.18, z: 0}
+  fallbackHeight: 1.2
+  followEveryFrame: 1
+  scaleByBoundsHeight: 1
+  heightToScaleRatio: 0.45
+  minScale: 0.55
+  maxScale: 1.8

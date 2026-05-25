@@ -18,10 +18,12 @@ public class MonsterElementGaugeView : MonoBehaviour
     [Header("UI")]
     [SerializeField] private Transform slotRoot;
     [SerializeField] private ElementGaugeSlotView slotPrefab;
+    [SerializeField] private float slotSpacing = 320f;
+    [SerializeField] private bool centerSlots = true;
 
     [Header("Mode")]
-    [SerializeField] private bool destroyWhenTargetMissing = false;
-    [SerializeField] private bool hideWhenTargetMissing = true;
+    [SerializeField] private bool destroyWhenTargetMissing = true;
+    [SerializeField] private bool hideWhenTargetMissing = false;
 
     private readonly List<ElementGaugeUiModel> models = new();
     private readonly List<ElementGaugeSlotView> slots = new();
@@ -99,6 +101,8 @@ public class MonsterElementGaugeView : MonoBehaviour
             slots[i].SetData(models[i]);
         }
 
+        ArrangeVisibleSlots(count);
+
         for (int i = count; i < slots.Count; i++)
         {
             slots[i].Hide();
@@ -119,6 +123,25 @@ public class MonsterElementGaugeView : MonoBehaviour
             var slot = Instantiate(slotPrefab, slotRoot);
             slot.Hide();
             slots.Add(slot);
+        }
+    }
+
+    private void ArrangeVisibleSlots(int count)
+    {
+        float startX = centerSlots ? -slotSpacing * (count - 1) * 0.5f : 0f;
+
+        for (int i = 0; i < count; i++)
+        {
+            RectTransform rect = slots[i] != null ? slots[i].transform as RectTransform : null;
+            if (rect == null)
+                continue;
+
+            rect.anchorMin = new Vector2(0.5f, 0.5f);
+            rect.anchorMax = new Vector2(0.5f, 0.5f);
+            rect.pivot = new Vector2(0.5f, 0.5f);
+            rect.anchoredPosition = new Vector2(startX + slotSpacing * i, 0f);
+            rect.localRotation = Quaternion.identity;
+            rect.localScale = Vector3.one;
         }
     }
 

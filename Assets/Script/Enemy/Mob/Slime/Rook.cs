@@ -26,14 +26,14 @@ public class Rook : Slime, IMobTargetDetectionOverride
     private const float MaxHealth = 13f;
     private const float VisualScale = 1.2f;
     private const float ChaseSpeedMultiplier = 0.5f;
-    private const float DamageAmount = 2f;
-    private const float KnockbackImpulse = 8f;
     private const float SplitSpread = 0.55f;
 
     [SerializeField] private GameObject splitPrefab;
     [SerializeField] private AbilityDefinition chargeAbility;
     [SerializeField] private GE_Damage_Spec damageEffect;
     [SerializeField] private GE_Knockback_Spec knockbackEffect;
+    [SerializeField] private float chargeDamageAmount = 1f;
+    [SerializeField] private float playerKnockbackImpulse = 120f;
     [SerializeField] private float dashSpeedMultiplier = 3f;
     [SerializeField] private float chaseAssistRange = 6f;
     [SerializeField] private float inRoomChargeRangeMultiplier = 2f;
@@ -303,7 +303,7 @@ public class Rook : Slime, IMobTargetDetectionOverride
             chargeCast.Distance,
             GetDashSpeed(),
             WarningWidth,
-            MakePayload(system, spec, damageEffect, knockbackEffect, DamageAmount, KnockbackImpulse));
+            MakePayload(system, spec, damageEffect, knockbackEffect, chargeDamageAmount, playerKnockbackImpulse));
         return true;
     }
 

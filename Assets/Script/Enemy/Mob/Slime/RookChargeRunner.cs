@@ -12,9 +12,12 @@ using UnityGAS;
 [RequireComponent(typeof(Rook))]
 public class RookChargeRunner : MonoBehaviour, IMobPatternRunner, IMobPresentationCleanup
 {
+    private const string StaggerImmuneTagResourcePath = "Tags/State.Status.StaggerImmune";
+
     [SerializeField] private Rook owner;
     [SerializeField] private MobAbilityCoordinator abilityCoordinator;
     [SerializeField] private AttackTelegraphService telegraphService;
+    [SerializeField] private GameplayTag staggerImmuneTag;
 
     [Header("Dash VFX")]
     [SerializeField] private GameObject dashDustEffectPrefab;
@@ -43,6 +46,8 @@ public class RookChargeRunner : MonoBehaviour, IMobPatternRunner, IMobPresentati
     private bool hitWall;
     private bool fellIntoHole;
     private bool hitPlayer;
+    private TagSystem tagSystem;
+    private bool staggerImmuneApplied;
     private float dashEndTime;
     private const float ImpactTipLength = 0.26f;
 
@@ -101,6 +106,10 @@ public class RookChargeRunner : MonoBehaviour, IMobPatternRunner, IMobPresentati
         if (telegraphService == null)
             telegraphService = GetComponent<AttackTelegraphService>();
 
+        tagSystem = GetComponent<TagSystem>();
+        if (staggerImmuneTag == null)
+            staggerImmuneTag = Resources.Load<GameplayTag>(StaggerImmuneTagResourcePath);
+
         motionController = GetComponent<AbilityMotionController2D>();
         warningStyle = MakeWarningStyle();
         centerLineStyle = MakeCenterLineStyle();
@@ -111,6 +120,8 @@ public class RookChargeRunner : MonoBehaviour, IMobPatternRunner, IMobPresentati
 
     private void OnDestroy()
     {
+        RemoveChargeStaggerImmunity();
+
         if (warningStyle != null)
             Destroy(warningStyle);
 
@@ -324,6 +335,7 @@ public class RookChargeRunner : MonoBehaviour, IMobPatternRunner, IMobPresentati
 
         isDashing = true;
         dashEndTime = Time.time + dashTime;
+        ApplyChargeStaggerImmunity();
         owner.PlayChargeAnimation();
         owner.SetChargeAnimationActive(true);
         motionController.StartDash(context.Direction, context.DashSpeed, dashTime);
@@ -333,6 +345,7 @@ public class RookChargeRunner : MonoBehaviour, IMobPatternRunner, IMobPresentati
     /// <summary>룩의 현재 돌진을 강제로 멈춥니다.</summary>
     private void StopDash()
     {
+        RemoveChargeStaggerImmunity();
         isDashing = false;
         if (owner != null)
         {
@@ -342,6 +355,45 @@ public class RookChargeRunner : MonoBehaviour, IMobPatternRunner, IMobPresentati
 
         if (motionController != null)
             motionController.CancelMotion();
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 룩이 실제 돌진 중일 때 스태거 누적과 그로기 효과 발동을 막는 상태 태그를 부여한다.
+    /// - 전투 피해 파이프라인의 공통 StaggerImmune 판정을 재사용해 별도 예외 로직을 만들지 않는다.
+    /// </summary>
+    private void ApplyChargeStaggerImmunity()
+    {
+        if (staggerImmuneApplied)
+            return;
+
+        if (tagSystem == null)
+            tagSystem = GetComponent<TagSystem>();
+
+        if (staggerImmuneTag == null)
+            staggerImmuneTag = Resources.Load<GameplayTag>(StaggerImmuneTagResourcePath);
+
+        if (tagSystem == null || staggerImmuneTag == null)
+            return;
+
+        tagSystem.AddTag(staggerImmuneTag);
+        staggerImmuneApplied = true;
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 돌진 종료/취소/비활성화 등 모든 종료 경로에서 돌진 중 부여한 스태거 면역 태그만 회수한다.
+    /// - 다른 시스템이 같은 태그를 별도로 부여했더라도 count 기반 태그 시스템이 남은 스택을 유지하게 한다.
+    /// </summary>
+    private void RemoveChargeStaggerImmunity()
+    {
+        if (!staggerImmuneApplied)
+            return;
+
+        if (tagSystem != null && staggerImmuneTag != null)
+            tagSystem.RemoveTag(staggerImmuneTag);
+
+        staggerImmuneApplied = false;
     }
 
     /// <summary>
@@ -486,12 +538,37 @@ public class RookChargeRunner : MonoBehaviour, IMobPatternRunner, IMobPresentati
         if (hitPlayer || other == null)
             return false;
 
-        GameObject targetObject = CombatTargetResolver2D.ResolveDamageTarget(other);
+        GameObject targetObject = ResolveChargeTriggerDamageTarget(other);
         if (targetObject == null || !targetObject.CompareTag("Player"))
             return false;
 
         Vector3 hitPoint = other.ClosestPoint(transform.position);
         return TryApplyPlayerHit(targetObject, hitPoint);
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 룩 돌진 트리거가 닿은 collider에서 피해 대상 플레이어를 찾는다.
+    /// - CombatHurtbox2D가 있는 정식 경로를 우선 사용하되, 플레이어 물리/하위 collider authoring 누락은 안전한 fallback으로 보완한다.
+    /// - 공격 이펙트/히트박스 콜라이더가 부모의 Player 태그로 역참조되는 기존 오탐은 AttackBase 차단으로 막는다.
+    /// </summary>
+    private static GameObject ResolveChargeTriggerDamageTarget(Collider2D other)
+    {
+        GameObject targetObject = CombatTargetResolver2D.ResolveDamageTarget(other);
+        if (targetObject != null)
+            return targetObject;
+
+        if (other == null || other.GetComponentInParent<AttackBase>() != null)
+            return null;
+
+        targetObject = ResolvePlayerObject(other);
+        if (targetObject != null)
+            return targetObject;
+
+        Rigidbody2D attachedBody = other.attachedRigidbody;
+        return attachedBody != null
+            ? ResolvePlayerObject(attachedBody.gameObject)
+            : null;
     }
 
     /// <summary>룩 돌진 중 non-trigger 물리 충돌로 닿은 플레이어에게 1회 피해를 적용합니다.</summary>

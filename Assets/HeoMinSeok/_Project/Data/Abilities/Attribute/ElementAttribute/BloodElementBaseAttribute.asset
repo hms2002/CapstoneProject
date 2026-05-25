@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   attributeName: BloodElementBaseAttribute
   description: Attribute description.
+  mutationPolicy: 1
   defaultBaseValue: 0
   minValue: 0
   maxValue: 1000

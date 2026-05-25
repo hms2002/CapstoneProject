@@ -15,7 +15,7 @@ public sealed class PawnContactDamageDealer2D : MonoBehaviour
     [SerializeField] private GE_Damage_Spec damageEffect;
 
     [Header("Damage")]
-    [SerializeField, Min(0f)] private float contactDamage = 0.5f;
+    [SerializeField, Min(0f)] private float contactDamage = 1f;
     [SerializeField, Min(0.01f)] private float contactDamageInterval = 0.45f;
 
     private float nextDamageTime;

@@ -18,6 +18,8 @@ public class MonsterSpawner : MonoBehaviour
 
     [Header("Difficulty")]
     [SerializeField] private DifficultyModifiers difficultyModifiers = new();
+    [SerializeField] private bool enableStageHpScaling = true;
+    [SerializeField, Min(0f)] private float hpMultiplierPerClearedStage = 0.5f;
 
     [Header("Installers")]
     [SerializeField] private MonsterElementGaugeViewInstaller gaugeViewInstaller;
@@ -120,7 +122,7 @@ public class MonsterSpawner : MonoBehaviour
     [ContextMenu("Spawn All")]
     public void SpawnAll()
     {
-        SceneDirector.SpawnAll(difficultyModifiers);
+        SceneDirector.SpawnAll(BuildRuntimeDifficultyModifiers());
         SyncSceneServiceReferences();
     }
 
@@ -131,7 +133,7 @@ public class MonsterSpawner : MonoBehaviour
     /// </summary>
     public GameObject SpawnOne(MonsterSpawnRequest request)
     {
-        GameObject monster = SceneDirector.SpawnOne(request, difficultyModifiers);
+        GameObject monster = SceneDirector.SpawnOne(request, BuildRuntimeDifficultyModifiers());
         SyncSceneServiceReferences();
         return monster;
     }
@@ -155,7 +157,7 @@ public class MonsterSpawner : MonoBehaviour
     [ContextMenu("Reapply Difficulty To Alive Monsters")]
     public void ReapplyDifficultyToAliveMonsters()
     {
-        SceneDirector.ReapplyDifficultyToAliveMonsters(difficultyModifiers);
+        SceneDirector.ReapplyDifficultyToAliveMonsters(BuildRuntimeDifficultyModifiers());
     }
 
     /// <summary>
@@ -184,9 +186,43 @@ public class MonsterSpawner : MonoBehaviour
                 recollectSpawnPointsOnSceneLoaded,
                 spawnOnSceneLoaded,
                 clearAliveMonstersBeforeSceneSpawn),
-            difficultyModifiers);
+            BuildRuntimeDifficultyModifiers());
 
         SyncSceneServiceReferences();
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 현재 런 스테이지 진행도에 따른 일반 몬스터 HP 보정을 계산한다.
+    /// - serialized 원본 난이도 설정은 보존하고, 스폰/재적용 순간에만 복사본을 조정한다.
+    /// </summary>
+    private DifficultyModifiers BuildRuntimeDifficultyModifiers()
+    {
+        DifficultyModifiers runtimeModifiers = difficultyModifiers != null
+            ? difficultyModifiers.Clone()
+            : new DifficultyModifiers();
+
+        if (!enableStageHpScaling)
+            return runtimeModifiers;
+
+        int stageIndex = ResolveCurrentStageIndex();
+        float stageHpMultiplier = 1f + hpMultiplierPerClearedStage * Mathf.Max(0, stageIndex);
+        runtimeModifiers.hpMultiplier = Mathf.Max(0f, runtimeModifiers.hpMultiplier) * stageHpMultiplier;
+        return runtimeModifiers;
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - PortalRouteManager의 현재 런 스테이지 index를 난이도 보정 입력값으로 정규화한다.
+    /// - 개발/테스트 씬처럼 active plan이 없으면 첫 스테이지로 취급한다.
+    /// </summary>
+    private static int ResolveCurrentStageIndex()
+    {
+        PortalRouteManager routeManager = PortalRouteManager.Instance;
+        if (routeManager == null || !routeManager.HasActivePlan)
+            return 0;
+
+        return Mathf.Max(0, routeManager.CurrentStageIndex);
     }
 
     private void SyncSceneServiceReferences()

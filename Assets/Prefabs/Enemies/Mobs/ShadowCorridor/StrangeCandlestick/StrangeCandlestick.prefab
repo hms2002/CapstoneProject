@@ -38,6 +38,7 @@ GameObject:
   - component: {fileID: 8154518470469117426}
   - component: {fileID: 8154518470469117427}
   - component: {fileID: 6600200000000001}
+  - component: {fileID: 880070000000000012}
   m_Layer: 31
   m_Name: StrangeCandlestick
   m_TagString: Enemy
@@ -721,6 +722,35 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 2147483656
   defaultMode: 1
+--- !u!114 &880070000000000012
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 625522859161183429}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f7fd960e9c14d44990494a70a80d3df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tagSystem: {fileID: 0}
+  groggyTag: {fileID: 0}
+  followAnchor: {fileID: 0}
+  boundsSource: {fileID: 0}
+  effectPrefab: {fileID: 2456809460785590275, guid: 80d266c90ff9c4d458d715b8d37a677b, type: 3}
+  effectParent: {fileID: 0}
+  instantiateOnAwake: 0
+  destroyInstanceWhenHidden: 1
+  usePooling: 1
+  maxPooledInstancesPerPrefab: 16
+  worldOffset: {x: 0, y: 0.18, z: 0}
+  fallbackHeight: 1.2
+  followEveryFrame: 1
+  scaleByBoundsHeight: 1
+  heightToScaleRatio: 0.45
+  minScale: 0.55
+  maxScale: 1.8
 --- !u!1 &4115588661587353561
 GameObject:
   m_ObjectHideFlags: 0

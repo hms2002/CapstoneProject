@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6eb91fa4c68ca6d4ab9f43d0e86e1ddc, type: 3}
+  m_Name: AL_GoblinTankSlam
+  m_EditorClassIdentifier: Assembly-CSharp::AbilityLogic_GoblinTankSlam
+  damageEffect: {fileID: 11400000, guid: a7c21e5f6a1f4d0d8f4c2b3a19e8d725, type: 2}
+  knockbackEffect: {fileID: 11400000, guid: 2f5faaf6bd840544cb59f6d23905c40d, type: 2}
+  damageAmount: 1
+  knockbackImpulse: 0
+  attackRange: 2.2
+  warningSeconds: 2
+  postWarningImpactDelay: 0.1
+  impactDiameter: 4.8
+  recoverSeconds: 0.35
+  targetLayers:
+    serializedVersion: 2
+    m_Bits: 8
+  impactEffectPrefab: {fileID: 3297215421415640078, guid: a007a9f51facfcb428c22ce2d3727a82, type: 3}
+  impactEffectOffset: {x: 0, y: 0, z: 0}
+  impactEffectScale: 1
+  impactEffectReferenceDiameter: 2.4
+  impactEffectFallbackLifetime: 0.6

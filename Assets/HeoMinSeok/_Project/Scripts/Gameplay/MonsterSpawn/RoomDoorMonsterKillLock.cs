@@ -5,6 +5,7 @@ using UnityEngine;
 /// 책임:
 /// - 방 encounter가 시작되면 연결된 문을 닫고, 추적 중인 몬스터가 모두 정리되면 다시 연다.
 /// - 몬스터가 방 밖에 유인된 상태에서는 문을 열어 두어 전투 대상이 문 밖에 갇히지 않게 한다.
+/// - 문이 아직 닫히지 않은 유예 상태에서 플레이어가 방을 벗어나면 encounter 시작을 취소한다.
 /// </summary>
 [DisallowMultipleComponent]
 [DefaultExecutionOrder(-50)]
@@ -139,6 +140,23 @@ public sealed class RoomDoorMonsterKillLock : MonoBehaviour
 
         roomEntered = true;
         LogDebug("Room encounter entered.");
+        RefreshDoorState();
+    }
+
+    public void NotifyRoomEncounterExited()
+    {
+        if (!roomEntered)
+            return;
+
+        if (doorClosedByLock)
+        {
+            LogDebug("Room encounter exit ignored because the door is already locked.");
+            return;
+        }
+
+        roomEntered = false;
+        ResetAllClearedDelay();
+        LogDebug("Room encounter exited before lock. Closing sequence cancelled.");
         RefreshDoorState();
     }
 

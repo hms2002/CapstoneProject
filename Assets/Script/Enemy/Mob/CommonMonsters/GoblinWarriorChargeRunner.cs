@@ -1,0 +1,177 @@
+using System.Collections;
+using UnityEngine;
+using UnityGAS;
+
+/// <summary>
+/// 책임:
+/// - 고블린 전사가 만든 돌진 문맥을 받아 고정 경고선, 돌진 이동, 1회 플레이어 피해를 실행한다.
+/// - 패턴 취소, disable, groggy 전환 시 경고와 이동 상태를 정리한다.
+/// </summary>
+[DisallowMultipleComponent]
+[RequireComponent(typeof(GoblinWarrior))]
+public sealed class GoblinWarriorChargeRunner : MonoBehaviour, IMobPatternRunner, IMobPresentationCleanup
+{
+    [SerializeField] private GoblinWarrior owner;
+    [SerializeField] private MobAbilityCoordinator abilityCoordinator;
+    [SerializeField] private AttackTelegraphService telegraphService;
+
+    private AttackTelegraphStyle warningStyle;
+    private bool isRunning;
+    private bool cancelRequested;
+    private bool hitTarget;
+
+    public bool IsRunning => isRunning;
+
+    private void Awake()
+    {
+        if (owner == null)
+            owner = GetComponent<GoblinWarrior>();
+        if (abilityCoordinator == null)
+            abilityCoordinator = GetComponent<MobAbilityCoordinator>();
+        if (telegraphService == null)
+            telegraphService = GetComponent<AttackTelegraphService>();
+        warningStyle = MakeWarningStyle();
+    }
+
+    private void OnDestroy()
+    {
+        if (warningStyle != null)
+            Destroy(warningStyle);
+    }
+
+    private void OnDisable()
+    {
+        Cancel();
+    }
+
+    public IEnumerator Run(AbilitySystem system, AbilitySpec spec, GameObject initialTarget)
+    {
+        if (owner == null) yield break;
+        if (!owner.TryBuildChargeContext(system, spec, initialTarget, out GoblinWarrior.ChargeContext context)) yield break;
+        if (abilityCoordinator != null && !abilityCoordinator.TryBeginRunner(this)) yield break;
+
+        isRunning = true;
+        cancelRequested = false;
+        hitTarget = false;
+
+        try
+        {
+            ShowWarning(context);
+            if (context.WarningSeconds > 0f)
+                yield return AbilityTasks.WaitDelay(system, spec, context.WarningSeconds);
+
+            if (cancelRequested || owner.IsDead || IsCancelled(spec))
+                yield break;
+
+            HideWarning();
+            CommonMonsterCombatUtility.TriggerAnimation(owner, CommonMonsterAnimationCue.Attack);
+            yield return Dash(context, spec);
+        }
+        finally
+        {
+            HideWarning();
+            cancelRequested = false;
+            hitTarget = false;
+            isRunning = false;
+            abilityCoordinator?.EndRunner(this);
+        }
+    }
+
+    public void Cancel()
+    {
+        cancelRequested = true;
+        HideWarning();
+    }
+
+    public void CleanupPresentation()
+    {
+        HideWarning();
+    }
+
+    private IEnumerator Dash(GoblinWarrior.ChargeContext context, AbilitySpec spec)
+    {
+        Vector2 direction = context.Direction.normalized;
+        float speed = context.DashDistance / Mathf.Max(0.01f, context.DashSeconds);
+        float duration = Mathf.Max(0.01f, context.DashSeconds);
+        float elapsed = 0f;
+
+        while (elapsed < duration)
+        {
+            if (cancelRequested || owner.IsDead || IsCancelled(spec))
+                yield break;
+
+            float deltaTime = Mathf.Min(Time.deltaTime, duration - elapsed);
+            Vector2 desiredDelta = direction * (speed * deltaTime);
+            Vector2 resolvedDelta = CommonMonsterCombatUtility.ResolveDashWallSlideDelta(
+                transform.position,
+                desiredDelta,
+                context.DashCastRadius,
+                context.DashObstacleLayers,
+                context.DashWallSkinWidth);
+            transform.position += (Vector3)resolvedDelta;
+            TryHitTarget(context);
+            elapsed += deltaTime;
+            yield return null;
+        }
+
+        TryHitTarget(context);
+    }
+
+    private void ShowWarning(GoblinWarrior.ChargeContext context)
+    {
+        if (telegraphService == null)
+            return;
+
+        Vector3 center = (Vector3)context.StartPosition + (Vector3)(context.Direction.normalized * context.DashDistance * 0.5f);
+        float angle = Mathf.Atan2(context.Direction.y, context.Direction.x) * Mathf.Rad2Deg;
+        telegraphService.Show(AttackTelegraphSpec.CreateRectangle(
+            center,
+            new Vector2(context.DashDistance, context.WarningWidth),
+            angle,
+            context.WarningSeconds,
+            warningStyle));
+    }
+
+    private void HideWarning()
+    {
+        telegraphService?.HideCurrent();
+    }
+
+    private void TryHitTarget(GoblinWarrior.ChargeContext context)
+    {
+        if (hitTarget)
+            return;
+
+        if (CommonMonsterCombatUtility.TryApplyCircleDamage(
+                transform.position,
+                context.WarningWidth,
+                context.TargetLayers,
+                gameObject,
+                context.HitPayload))
+        {
+            hitTarget = true;
+        }
+    }
+
+    private static bool IsCancelled(AbilitySpec spec)
+    {
+        return spec != null && spec.Token != null && spec.Token.IsCancelled;
+    }
+
+    private static AttackTelegraphStyle MakeWarningStyle()
+    {
+        AttackTelegraphStyle style = ScriptableObject.CreateInstance<AttackTelegraphStyle>();
+        style.fillColorStart = new Color(1f, 0f, 0f, 0.12f);
+        style.fillColorEnd = new Color(1f, 0f, 0f, 0.32f);
+        style.borderColorStart = new Color(1f, 0.35f, 0.2f, 0.95f);
+        style.borderColorEnd = new Color(1f, 0.35f, 0.2f, 0.95f);
+        style.progressCurve = AnimationCurve.Linear(0f, 0f, 1f, 1f);
+        style.blinkStartNormalized = 0.72f;
+        style.blinkFrequency = 5f;
+        style.blinkAlphaMin = 0.45f;
+        style.scaleFillWithProgress = false;
+        style.fillScaleStart = 1f;
+        style.fillScaleEnd = 1f;
+        return style;
+    }
+}
