@@ -297,9 +297,10 @@ public sealed partial class GoblinGunnerShotRunner : MonoBehaviour, IMobPatternR
 
         try
         {
-            ShowWarning(context);
-            if (context.WarningSeconds > 0f)
-                yield return TrackWarningUntilFire(system, spec, initialTarget, context);
+            float warningSeconds = CombatTimingService.ScaleSeconds(system, context.WarningSeconds, CombatTimingSlot.AttackWarning);
+            ShowWarning(context, warningSeconds);
+            if (warningSeconds > 0f)
+                yield return TrackWarningUntilFire(system, spec, initialTarget, context, warningSeconds);
 
             if (cancelRequested || owner.IsDead || IsCancelled(spec))
                 yield break;
@@ -307,7 +308,7 @@ public sealed partial class GoblinGunnerShotRunner : MonoBehaviour, IMobPatternR
             if (owner.TryBuildShotContext(system, spec, initialTarget, out GoblinGunner.ShotContext finalContext))
             {
                 context = finalContext;
-                UpdateWarning(context);
+                UpdateWarning(context, warningSeconds);
             }
 
             HideWarning();
@@ -327,10 +328,11 @@ public sealed partial class GoblinGunnerShotRunner : MonoBehaviour, IMobPatternR
         AbilitySystem system,
         AbilitySpec spec,
         GameObject initialTarget,
-        GoblinGunner.ShotContext context)
+        GoblinGunner.ShotContext context,
+        float warningSeconds)
     {
         float elapsed = 0f;
-        float duration = Mathf.Max(0f, context.WarningSeconds);
+        float duration = Mathf.Max(0f, warningSeconds);
 
         while (elapsed < duration)
         {
@@ -340,7 +342,7 @@ public sealed partial class GoblinGunnerShotRunner : MonoBehaviour, IMobPatternR
             if (owner.TryBuildShotContext(system, spec, initialTarget, out GoblinGunner.ShotContext trackedContext))
             {
                 context = trackedContext;
-                UpdateWarning(context);
+                UpdateWarning(context, warningSeconds);
             }
 
             elapsed += Time.deltaTime;
@@ -359,23 +361,23 @@ public sealed partial class GoblinGunnerShotRunner : MonoBehaviour, IMobPatternR
         HideWarning();
     }
 
-    private void ShowWarning(GoblinGunner.ShotContext context)
+    private void ShowWarning(GoblinGunner.ShotContext context, float warningSeconds)
     {
         if (telegraphService == null)
             return;
 
-        telegraphService.Show(CreateWarningSpec(context));
+        telegraphService.Show(CreateWarningSpec(context, warningSeconds));
     }
 
-    private void UpdateWarning(GoblinGunner.ShotContext context)
+    private void UpdateWarning(GoblinGunner.ShotContext context, float warningSeconds)
     {
         if (telegraphService == null)
             return;
 
-        telegraphService.UpdateCurrentGeometry(CreateWarningSpec(context));
+        telegraphService.UpdateCurrentGeometry(CreateWarningSpec(context, warningSeconds));
     }
 
-    private AttackTelegraphSpec CreateWarningSpec(GoblinGunner.ShotContext context)
+    private AttackTelegraphSpec CreateWarningSpec(GoblinGunner.ShotContext context, float warningSeconds)
     {
         LogWallClipProbe(context);
 
@@ -385,7 +387,7 @@ public sealed partial class GoblinGunnerShotRunner : MonoBehaviour, IMobPatternR
             center,
             new Vector2(context.TelegraphRange, context.WarningWidth),
             angle,
-            context.WarningSeconds,
+            warningSeconds,
             warningStyle);
         spec.origin = context.Origin;
         return spec.WithWallClipping(context.WallLayers, 48, 0.03f);

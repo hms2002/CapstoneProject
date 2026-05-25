@@ -84,12 +84,14 @@ public class ShadowServantAttackRunner : MonoBehaviour, IMobPatternRunner, IMobP
 
         isRunning = true;
         cancelRequested = false;
-        ShowWarning(context);
 
         try
         {
-            if (context.DelaySeconds > 0f)
-                yield return AbilityTasks.WaitDelay(system, spec, context.DelaySeconds);
+            float delaySeconds = CombatTimingService.ScaleSeconds(system, context.DelaySeconds, CombatTimingSlot.AttackWarning);
+            ShowWarning(context, delaySeconds);
+
+            if (delaySeconds > 0f)
+                yield return AbilityTasks.WaitDelay(system, spec, delaySeconds);
 
             if (IsCancelled(spec) || cancelRequested || owner.IsDead || IsSuppressed())
                 yield break;
@@ -118,7 +120,7 @@ public class ShadowServantAttackRunner : MonoBehaviour, IMobPatternRunner, IMobP
         return abilityCoordinator != null && abilityCoordinator.IsAbilityExecutionSuppressed;
     }
 
-    private void ShowWarning(AttackContext context)
+    private void ShowWarning(AttackContext context, float duration)
     {
         if (telegraphService == null)
             return;
@@ -126,7 +128,7 @@ public class ShadowServantAttackRunner : MonoBehaviour, IMobPatternRunner, IMobP
         AttackTelegraphSpec spec = AttackTelegraphSpec.CreateCircle(
             context.HitPoint,
             context.WarningDiameter,
-            context.DelaySeconds,
+            duration,
             warningStyle);
 
         telegraphService.Show(spec);

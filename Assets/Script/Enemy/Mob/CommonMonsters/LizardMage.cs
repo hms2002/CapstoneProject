@@ -263,9 +263,10 @@ public sealed partial class LizardMageBurstRunner : MonoBehaviour, IMobPatternRu
 
         try
         {
-            ShowWarning(context);
-            if (context.WarningSeconds > 0f)
-                yield return TrackWarningUntilFire(system, spec, initialTarget, context);
+            float warningSeconds = CombatTimingService.ScaleSeconds(system, context.WarningSeconds, CombatTimingSlot.AttackWarning);
+            ShowWarning(context, warningSeconds);
+            if (warningSeconds > 0f)
+                yield return TrackWarningUntilFire(system, spec, initialTarget, context, warningSeconds);
 
             if (cancelRequested || owner.IsDead || IsCancelled(spec))
                 yield break;
@@ -273,7 +274,7 @@ public sealed partial class LizardMageBurstRunner : MonoBehaviour, IMobPatternRu
             if (owner.TryBuildBurstContext(system, spec, initialTarget, out LizardMage.BurstContext finalContext))
             {
                 context = finalContext;
-                UpdateWarning(context);
+                UpdateWarning(context, warningSeconds);
             }
 
             HideWarning();
@@ -285,7 +286,7 @@ public sealed partial class LizardMageBurstRunner : MonoBehaviour, IMobPatternRu
 
                 owner.FireProjectile(context);
                 if (i < owner.ShotCount - 1 && owner.ShotInterval > 0f)
-                    yield return AbilityTasks.WaitDelay(system, spec, owner.ShotInterval);
+                    yield return AbilityTasks.WaitCombatDelay(system, spec, owner.ShotInterval, CombatTimingSlot.AttackInterval);
             }
         }
         finally
@@ -306,10 +307,11 @@ public sealed partial class LizardMageBurstRunner : MonoBehaviour, IMobPatternRu
         AbilitySystem system,
         AbilitySpec spec,
         GameObject initialTarget,
-        LizardMage.BurstContext context)
+        LizardMage.BurstContext context,
+        float warningSeconds)
     {
         float elapsed = 0f;
-        float duration = Mathf.Max(0f, context.WarningSeconds);
+        float duration = Mathf.Max(0f, warningSeconds);
 
         while (elapsed < duration)
         {
@@ -319,7 +321,7 @@ public sealed partial class LizardMageBurstRunner : MonoBehaviour, IMobPatternRu
             if (owner.TryBuildBurstContext(system, spec, initialTarget, out LizardMage.BurstContext trackedContext))
             {
                 context = trackedContext;
-                UpdateWarning(context);
+                UpdateWarning(context, warningSeconds);
             }
 
             elapsed += Time.deltaTime;
@@ -338,27 +340,27 @@ public sealed partial class LizardMageBurstRunner : MonoBehaviour, IMobPatternRu
         HideWarning();
     }
 
-    private void ShowWarning(LizardMage.BurstContext context)
+    private void ShowWarning(LizardMage.BurstContext context, float warningSeconds)
     {
         if (telegraphService == null)
             return;
 
-        telegraphService.Show(CreateWarningSpec(context));
+        telegraphService.Show(CreateWarningSpec(context, warningSeconds));
     }
 
-    private void UpdateWarning(LizardMage.BurstContext context)
+    private void UpdateWarning(LizardMage.BurstContext context, float warningSeconds)
     {
         if (telegraphService == null)
             return;
 
-        telegraphService.UpdateCurrentGeometry(CreateWarningSpec(context));
+        telegraphService.UpdateCurrentGeometry(CreateWarningSpec(context, warningSeconds));
     }
 
     /// <summary>
     /// 책임:
     /// - 리자드맨 마법사 조준선용 사각형 텔레그래프 Spec을 만들고, 벽 기준 clipping 정보를 함께 담는다.
     /// </summary>
-    private AttackTelegraphSpec CreateWarningSpec(LizardMage.BurstContext context)
+    private AttackTelegraphSpec CreateWarningSpec(LizardMage.BurstContext context, float warningSeconds)
     {
         Vector3 center = (Vector3)context.Origin + (Vector3)(context.WarningDirection.normalized * context.TelegraphRange * 0.5f);
         float angle = Mathf.Atan2(context.WarningDirection.y, context.WarningDirection.x) * Mathf.Rad2Deg;
@@ -366,7 +368,7 @@ public sealed partial class LizardMageBurstRunner : MonoBehaviour, IMobPatternRu
             center,
             new Vector2(context.TelegraphRange, context.WarningWidth),
             angle,
-            context.WarningSeconds,
+            warningSeconds,
             warningStyle);
         spec.origin = context.Origin;
         return spec.WithWallClipping(context.WallLayers, 48, 0.03f);

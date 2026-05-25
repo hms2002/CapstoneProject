@@ -198,9 +198,10 @@ public sealed partial class GoblinTankSlamRunner : MonoBehaviour, IMobPatternRun
 
         try
         {
-            ShowWarning(context);
-            if (context.WarningSeconds > 0f)
-                yield return AbilityTasks.WaitDelay(system, spec, context.WarningSeconds);
+            float warningSeconds = CombatTimingService.ScaleSeconds(system, context.WarningSeconds, CombatTimingSlot.AttackWarning);
+            ShowWarning(context, warningSeconds);
+            if (warningSeconds > 0f)
+                yield return AbilityTasks.WaitDelay(system, spec, warningSeconds);
 
             if (cancelRequested || owner.IsDead || IsCancelled(spec))
                 yield break;
@@ -242,12 +243,12 @@ public sealed partial class GoblinTankSlamRunner : MonoBehaviour, IMobPatternRun
         HideWarning();
     }
 
-    private void ShowWarning(GoblinTank.SlamContext context)
+    private void ShowWarning(GoblinTank.SlamContext context, float warningSeconds)
     {
         telegraphService?.Show(AttackTelegraphSpec.CreateCircle(
             context.Center,
             context.ImpactDiameter,
-            context.WarningSeconds,
+            warningSeconds,
             warningStyle));
     }
 

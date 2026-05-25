@@ -88,10 +88,31 @@ public sealed class CombatBalanceEditorWindow : EditorWindow
             SerializedObject serializedSettings = new(stageHpScalingSettings);
             SerializedProperty enabledProperty = serializedSettings.FindProperty("enabled");
             SerializedProperty bonusProperty = serializedSettings.FindProperty("hpMultiplierPerClearedStage");
+            SerializedProperty attackSpeedBonusProperty = serializedSettings.FindProperty("attackSpeedMultiplierPerClearedStage");
+            SerializedProperty scaleWarningProperty = serializedSettings.FindProperty("scaleAttackWarning");
+            SerializedProperty scaleRecoveryProperty = serializedSettings.FindProperty("scaleAttackRecovery");
+            SerializedProperty scaleIntervalProperty = serializedSettings.FindProperty("scaleAttackInterval");
+            SerializedProperty scaleAbilityCastProperty = serializedSettings.FindProperty("scaleAbilityCast");
+            SerializedProperty scaleAbilityRecoveryProperty = serializedSettings.FindProperty("scaleAbilityRecovery");
+            SerializedProperty scaleAbilityCooldownProperty = serializedSettings.FindProperty("scaleAbilityCooldown");
+            SerializedProperty minimumScaledSecondsProperty = serializedSettings.FindProperty("minimumScaledSeconds");
+            SerializedProperty logStageScalingDebugProperty = serializedSettings.FindProperty("logStageScalingDebug");
+            SerializedProperty logCombatTimingDebugProperty = serializedSettings.FindProperty("logCombatTimingDebug");
 
             EditorGUI.BeginChangeCheck();
             EditorGUILayout.PropertyField(enabledProperty, new GUIContent("Enable Stage HP Scaling"));
             EditorGUILayout.PropertyField(bonusProperty, new GUIContent("HP Bonus Per Stage"));
+            EditorGUILayout.PropertyField(attackSpeedBonusProperty, new GUIContent("Attack Speed Bonus Per Stage"));
+            EditorGUILayout.PropertyField(scaleWarningProperty, new GUIContent("Scale Warning"));
+            EditorGUILayout.PropertyField(scaleRecoveryProperty, new GUIContent("Scale Recovery"));
+            EditorGUILayout.PropertyField(scaleIntervalProperty, new GUIContent("Scale Interval"));
+            EditorGUILayout.PropertyField(scaleAbilityCastProperty, new GUIContent("Scale Ability Cast"));
+            EditorGUILayout.PropertyField(scaleAbilityRecoveryProperty, new GUIContent("Scale Ability Recovery"));
+            EditorGUILayout.PropertyField(scaleAbilityCooldownProperty, new GUIContent("Scale Ability Cooldown"));
+            EditorGUILayout.PropertyField(minimumScaledSecondsProperty, new GUIContent("Min Scaled Seconds"));
+            EditorGUILayout.Space(3f);
+            EditorGUILayout.PropertyField(logStageScalingDebugProperty, new GUIContent("Log Stage Scaling"));
+            EditorGUILayout.PropertyField(logCombatTimingDebugProperty, new GUIContent("Log Combat Timing"));
 
             if (EditorGUI.EndChangeCheck())
             {
@@ -106,6 +127,12 @@ public sealed class CombatBalanceEditorWindow : EditorWindow
             EditorGUILayout.LabelField("Stage 1", $"x{CalculatePreviewStageMultiplier(1, bonus):0.##}");
             EditorGUILayout.LabelField("Stage 2", $"x{CalculatePreviewStageMultiplier(2, bonus):0.##}");
             EditorGUILayout.LabelField("Stage 3", $"x{CalculatePreviewStageMultiplier(3, bonus):0.##}");
+            EditorGUILayout.Space(2f);
+            EditorGUILayout.LabelField("Attack Speed");
+            EditorGUILayout.LabelField("Stage 0", "x1.00");
+            EditorGUILayout.LabelField("Stage 1", $"x{stageHpScalingSettings.CalculateStageAttackSpeedMultiplier(1):0.##}");
+            EditorGUILayout.LabelField("Stage 2", $"x{stageHpScalingSettings.CalculateStageAttackSpeedMultiplier(2):0.##}");
+            EditorGUILayout.LabelField("Stage 3", $"x{stageHpScalingSettings.CalculateStageAttackSpeedMultiplier(3):0.##}");
 
             using (new EditorGUILayout.HorizontalScope())
             {
@@ -186,10 +213,13 @@ public sealed class CombatBalanceEditorWindow : EditorWindow
             DrawSelectedActions(selectedRow);
 
             EditorGUILayout.Space(8f);
-            DrawMonsterAbilityReferences(selectedRow);
+            DrawEditableMonsterStats(selectedRow);
 
             EditorGUILayout.Space(8f);
             DrawCoreAttributePreview(selectedRow);
+
+            EditorGUILayout.Space(8f);
+            DrawMonsterAbilityReferences(selectedRow);
         }
         EditorGUILayout.EndScrollView();
     }
@@ -229,6 +259,77 @@ public sealed class CombatBalanceEditorWindow : EditorWindow
             }
 
             GUI.enabled = true;
+        }
+    }
+
+    private void DrawEditableMonsterStats(MonsterProfileRow row)
+    {
+        EditorGUILayout.LabelField("Editable Monster Stats", EditorStyles.boldLabel);
+
+        AttributeInitProfileSO editableProfile = AssetDatabase.LoadAssetAtPath<AttributeInitProfileSO>(row.ExpectedProfilePath);
+        if (row.Status != MonsterProfileStatus.Ready || editableProfile == null)
+        {
+            EditorGUILayout.HelpBox("전용 override profile이 있어야 안전하게 스탯을 편집할 수 있습니다. Missing이면 생성하고, Shared/Legacy면 전용 복사본을 만든 뒤 편집하세요.", MessageType.Warning);
+            DrawSelectedActions(row);
+            return;
+        }
+
+        IReadOnlyList<AttributeProfileEntry> entries = BuildCoreEffectiveEntries(row);
+        using (new EditorGUILayout.HorizontalScope(EditorStyles.toolbar))
+        {
+            GUILayout.Label("Stat", GUILayout.Width(140f));
+            GUILayout.Label("Value", GUILayout.Width(90f));
+            GUILayout.Label("Write Target", GUILayout.MinWidth(260f));
+        }
+
+        bool changed = false;
+        changed |= DrawLinkedAttributeFloatField(
+            editableProfile,
+            entries,
+            "HP",
+            new[] { "maxhealth", "health" },
+            new[] { "health", "maxhealth" },
+            "Health + MaxHealth");
+        changed |= DrawLinkedAttributeFloatField(
+            editableProfile,
+            entries,
+            "Move Speed",
+            new[] { "movespeed" },
+            new[] { "movespeed" },
+            "MoveSpeed");
+        changed |= DrawLinkedAttributeFloatField(
+            editableProfile,
+            entries,
+            "Attack Speed",
+            new[] { "attackspeedbase" },
+            new[] { "attackspeedbase" },
+            "AttackSpeedBase");
+        changed |= DrawLinkedAttributeFloatField(
+            editableProfile,
+            entries,
+            "Max Stagger",
+            new[] { "maxstagger" },
+            new[] { "maxstagger" },
+            "MaxStagger");
+        changed |= DrawLinkedAttributeFloatField(
+            editableProfile,
+            entries,
+            "Stagger Resist",
+            new[] { "staggerresistance" },
+            new[] { "staggerresistance" },
+            "StaggerResistance");
+        changed |= DrawLinkedAttributeFloatField(
+            editableProfile,
+            entries,
+            "Knockback Resist",
+            new[] { "knockbackresistance" },
+            new[] { "knockbackresistance" },
+            "KnockbackResistance");
+
+        if (changed)
+        {
+            EditorUtility.SetDirty(editableProfile);
+            Repaint();
         }
     }
 
@@ -293,10 +394,13 @@ public sealed class CombatBalanceEditorWindow : EditorWindow
 
         using (new EditorGUILayout.HorizontalScope(EditorStyles.toolbar))
         {
-            GUILayout.Label("Ability", GUILayout.Width(220f));
-            GUILayout.Label("Owner / Field", GUILayout.MinWidth(220f));
-            GUILayout.Label("Logic", GUILayout.Width(170f));
-            GUILayout.Label("Source", GUILayout.Width(170f));
+            GUILayout.Label("Ability", GUILayout.Width(190f));
+            GUILayout.Label("Owner / Field", GUILayout.MinWidth(190f));
+            GUILayout.Label("Cooldown", GUILayout.Width(70f));
+            GUILayout.Label("Cast", GUILayout.Width(60f));
+            GUILayout.Label("Recovery", GUILayout.Width(70f));
+            GUILayout.Label("Logic", GUILayout.Width(150f));
+            GUILayout.Label("Source", GUILayout.Width(150f));
             GUILayout.Space(50f);
         }
 
@@ -311,10 +415,31 @@ public sealed class CombatBalanceEditorWindow : EditorWindow
         AbilityDefinition ability = info.Ability;
         using (new EditorGUILayout.HorizontalScope())
         {
-            EditorGUILayout.ObjectField(ability, typeof(AbilityDefinition), false, GUILayout.Width(220f));
-            GUILayout.Label($"{info.OwnerName}.{info.PropertyPath}", GUILayout.MinWidth(220f));
-            EditorGUILayout.ObjectField(ability != null ? ability.logic : null, typeof(AbilityLogic), false, GUILayout.Width(170f));
-            EditorGUILayout.ObjectField(ability != null ? ability.sourceObject : null, typeof(UnityEngine.Object), false, GUILayout.Width(170f));
+            EditorGUILayout.ObjectField(ability, typeof(AbilityDefinition), false, GUILayout.Width(190f));
+            GUILayout.Label($"{info.OwnerName}.{info.PropertyPath}", GUILayout.MinWidth(190f));
+
+            if (ability != null)
+            {
+                EditorGUI.BeginChangeCheck();
+                float cooldown = Mathf.Max(0f, EditorGUILayout.FloatField(ability.cooldown, GUILayout.Width(70f)));
+                float castTime = Mathf.Max(0f, EditorGUILayout.FloatField(ability.castTime, GUILayout.Width(60f)));
+                float recovery = Mathf.Max(0f, EditorGUILayout.FloatField(ability.recoveryTime, GUILayout.Width(70f)));
+                if (EditorGUI.EndChangeCheck())
+                {
+                    Undo.RecordObject(ability, "Edit Monster Ability Timing");
+                    ability.cooldown = cooldown;
+                    ability.castTime = castTime;
+                    ability.recoveryTime = recovery;
+                    EditorUtility.SetDirty(ability);
+                }
+            }
+            else
+            {
+                GUILayout.Space(200f);
+            }
+
+            EditorGUILayout.ObjectField(ability != null ? ability.logic : null, typeof(AbilityLogic), false, GUILayout.Width(150f));
+            EditorGUILayout.ObjectField(ability != null ? ability.sourceObject : null, typeof(UnityEngine.Object), false, GUILayout.Width(150f));
 
             if (GUILayout.Button("Ping", GUILayout.Width(50f)) && ability != null)
                 EditorGUIUtility.PingObject(ability);
@@ -646,6 +771,96 @@ public sealed class CombatBalanceEditorWindow : EditorWindow
         serializedProfile.ApplyModifiedProperties();
     }
 
+    private static bool DrawLinkedAttributeFloatField(
+        AttributeInitProfileSO editableProfile,
+        IReadOnlyList<AttributeProfileEntry> effectiveEntries,
+        string label,
+        IReadOnlyList<string> readNormalizedNames,
+        IReadOnlyList<string> writeNormalizedNames,
+        string writeTargetLabel)
+    {
+        if (!TryFindEffectiveAttributeEntry(effectiveEntries, readNormalizedNames, out AttributeProfileEntry readEntry))
+        {
+            using (new EditorGUILayout.HorizontalScope())
+            {
+                GUILayout.Label(label, GUILayout.Width(140f));
+                GUILayout.Label("N/A", GUILayout.Width(90f));
+                GUILayout.Label($"Attribute not found: {string.Join(", ", readNormalizedNames)}", EditorStyles.miniLabel);
+            }
+
+            return false;
+        }
+
+        using (new EditorGUILayout.HorizontalScope())
+        {
+            GUILayout.Label(label, GUILayout.Width(140f));
+            EditorGUI.BeginChangeCheck();
+            float nextValue = EditorGUILayout.FloatField(readEntry.Value, GUILayout.Width(90f));
+            GUILayout.Label(writeTargetLabel, GUILayout.MinWidth(260f));
+
+            if (!EditorGUI.EndChangeCheck())
+                return false;
+
+            Undo.RecordObject(editableProfile, $"Edit {label}");
+            foreach (string normalizedName in writeNormalizedNames)
+            {
+                if (TryFindEffectiveAttributeEntry(effectiveEntries, new[] { normalizedName }, out AttributeProfileEntry targetEntry))
+                    WriteProfileEntryValue(editableProfile, targetEntry.Attribute, nextValue);
+            }
+
+            return true;
+        }
+    }
+
+    private static bool TryFindEffectiveAttributeEntry(
+        IReadOnlyList<AttributeProfileEntry> entries,
+        IReadOnlyList<string> normalizedNames,
+        out AttributeProfileEntry result)
+    {
+        foreach (string normalizedName in normalizedNames)
+        {
+            foreach (AttributeProfileEntry entry in entries)
+            {
+                if (NormalizeAttributeName(entry.Attribute) != normalizedName)
+                    continue;
+
+                result = entry;
+                return true;
+            }
+        }
+
+        result = default;
+        return false;
+    }
+
+    private static void WriteProfileEntryValue(AttributeInitProfileSO profile, AttributeDefinition attribute, float value)
+    {
+        if (profile == null || attribute == null)
+            return;
+
+        SerializedObject serializedProfile = new(profile);
+        SerializedProperty entries = serializedProfile.FindProperty("entries");
+        if (entries == null || !entries.isArray)
+            return;
+
+        for (int i = 0; i < entries.arraySize; i++)
+        {
+            SerializedProperty entry = entries.GetArrayElementAtIndex(i);
+            if (entry.FindPropertyRelative("attribute")?.objectReferenceValue != attribute)
+                continue;
+
+            entry.FindPropertyRelative("baseValue").floatValue = value;
+            serializedProfile.ApplyModifiedProperties();
+            return;
+        }
+
+        entries.InsertArrayElementAtIndex(entries.arraySize);
+        SerializedProperty newEntry = entries.GetArrayElementAtIndex(entries.arraySize - 1);
+        newEntry.FindPropertyRelative("attribute").objectReferenceValue = attribute;
+        newEntry.FindPropertyRelative("baseValue").floatValue = value;
+        serializedProfile.ApplyModifiedProperties();
+    }
+
     private static bool IsCoreAttribute(AttributeDefinition attribute)
     {
         if (attribute == null)
@@ -654,6 +869,8 @@ public sealed class CombatBalanceEditorWindow : EditorWindow
         string normalized = NormalizeAttributeName(attribute);
         return normalized is "health" or
             "maxhealth" or
+            "movespeed" or
+            "attackspeedbase" or
             "maxstagger" or
             "staggerresistance" or
             "knockbackresistance" or
@@ -668,11 +885,13 @@ public sealed class CombatBalanceEditorWindow : EditorWindow
         {
             "health" => 0,
             "maxhealth" => 1,
-            "maxstagger" => 2,
-            "staggerresistance" => 3,
-            "knockbackresistance" => 4,
-            "attack" => 5,
-            "attackbase" => 6,
+            "movespeed" => 2,
+            "attackspeedbase" => 3,
+            "maxstagger" => 4,
+            "staggerresistance" => 5,
+            "knockbackresistance" => 6,
+            "attack" => 7,
+            "attackbase" => 8,
             _ => 100
         };
     }

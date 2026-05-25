@@ -196,7 +196,7 @@ public class MonsterSpawner : MonoBehaviour
 
     /// <summary>
     /// 책임:
-    /// - 현재 런 스테이지 진행도에 따른 일반 몬스터 HP 보정을 계산한다.
+    /// - 현재 런 스테이지 진행도에 따른 일반 몬스터 HP/공격 템포 보정을 계산한다.
     /// - serialized 원본 난이도 설정은 보존하고, 스폰/재적용 순간에만 복사본을 조정한다.
     /// </summary>
     private DifficultyModifiers BuildRuntimeDifficultyModifiers()
@@ -206,8 +206,8 @@ public class MonsterSpawner : MonoBehaviour
             : new DifficultyModifiers();
 
         MonsterStageHpScalingSettings settings = ResolveStageHpScalingSettings();
-        bool useStageHpScaling = settings != null ? settings.Enabled : enableStageHpScaling;
-        if (!useStageHpScaling)
+        bool useStageScaling = settings != null ? settings.Enabled : enableStageHpScaling;
+        if (!useStageScaling)
             return runtimeModifiers;
 
         int stageIndex = ResolveCurrentStageIndex();
@@ -215,7 +215,33 @@ public class MonsterSpawner : MonoBehaviour
             ? settings.CalculateStageHpMultiplier(stageIndex)
             : 1f + Mathf.Max(0f, hpMultiplierPerClearedStage) * Mathf.Max(0, stageIndex);
         runtimeModifiers.hpMultiplier = Mathf.Max(0f, runtimeModifiers.hpMultiplier) * stageHpMultiplier;
+
+        float stageAttackSpeedMultiplier = settings != null
+            ? settings.CalculateStageAttackSpeedMultiplier(stageIndex)
+            : 1f;
+        runtimeModifiers.attackSpeedMultiplier = Mathf.Max(0f, runtimeModifiers.attackSpeedMultiplier) * stageAttackSpeedMultiplier;
+        LogRuntimeDifficulty(stageIndex, stageHpMultiplier, stageAttackSpeedMultiplier, runtimeModifiers, settings);
         return runtimeModifiers;
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - CombatTimingService 검증을 위해 현재 스테이지에서 계산된 HP/공격속도 난이도 배율을 토글 기반으로 출력한다.
+    /// - 스폰 정책 계산과 로그 출력을 분리해 기본 플레이에서는 콘솔 출력을 만들지 않는다.
+    /// </summary>
+    private void LogRuntimeDifficulty(
+        int stageIndex,
+        float stageHpMultiplier,
+        float stageAttackSpeedMultiplier,
+        DifficultyModifiers runtimeModifiers,
+        MonsterStageHpScalingSettings settings)
+    {
+        if (settings == null || !settings.LogStageScalingDebug)
+            return;
+
+        Debug.Log(
+            $"[MonsterSpawner] stage={stageIndex}, stageHpMultiplier={stageHpMultiplier:0.###}, stageAttackSpeedMultiplier={stageAttackSpeedMultiplier:0.###}, finalHpMultiplier={runtimeModifiers.hpMultiplier:0.###}, finalAttackSpeedMultiplier={runtimeModifiers.attackSpeedMultiplier:0.###}",
+            this);
     }
 
     /// <summary>

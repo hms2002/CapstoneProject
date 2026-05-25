@@ -71,13 +71,13 @@ public class RookChargeRunner : MonoBehaviour, IMobPatternRunner, IMobPresentati
         public readonly float Width;
         public readonly float Duration;
 
-        public WarningGeometry(Rook.ChargeContext context)
+        public WarningGeometry(Rook.ChargeContext context, float duration)
         {
             Start = context.StartPos;
             Direction = ResolveSafeDirection(context.Direction);
             Perpendicular = new Vector3(-Direction.y, Direction.x, 0f);
             Width = Mathf.Max(0.01f, context.WarningWidth);
-            Duration = context.WarningTime;
+            Duration = duration;
             SegmentLength = Mathf.Max(0.01f, context.DashDistance);
             SegmentEnd = Start + Direction * SegmentLength;
             ImpactCenter = SegmentEnd - Direction * (ImpactTipLength * 0.5f);
@@ -156,12 +156,13 @@ public class RookChargeRunner : MonoBehaviour, IMobPatternRunner, IMobPresentati
 
         try
         {
-            ShowWarning(currentContext);
+            float warningSeconds = CombatTimingService.ScaleSeconds(system, currentContext.WarningTime, CombatTimingSlot.AttackWarning);
+            ShowWarning(currentContext, warningSeconds);
             owner.PlayChargePrepareAnimation();
             owner.SetFacingLocked(true);
 
-            if (currentContext.WarningTime > 0f)
-                yield return AbilityTasks.WaitDelay(system, spec, currentContext.WarningTime);
+            if (warningSeconds > 0f)
+                yield return AbilityTasks.WaitDelay(system, spec, warningSeconds);
 
             if (cancelRequested || owner.IsDead)
                 yield break;
@@ -241,13 +242,13 @@ public class RookChargeRunner : MonoBehaviour, IMobPatternRunner, IMobPresentati
     }
 
     /// <summary>룩의 경고 직사각형을 화면에 표시합니다.</summary>
-    private void ShowWarning(Rook.ChargeContext context)
+    private void ShowWarning(Rook.ChargeContext context, float duration)
     {
         if (telegraphService == null) return;
 
         HideWarning();
 
-        WarningGeometry geometry = new(context);
+        WarningGeometry geometry = new(context, duration);
         SpawnWarningTelegraph(AttackTelegraphSpec.CreateRectangle(
             geometry.SegmentCenter,
             new Vector2(geometry.SegmentLength, geometry.Width),

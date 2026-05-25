@@ -1,12 +1,6 @@
 {
     "sessions": [
         {
-            "sessionId": "2f1c79eb234d4f45a0d0142aa3a42c51",
-            "startedUtc": "2026-05-25T10:59:53.5644948Z",
-            "endedUtc": "2026-05-25T10:59:55.1512101Z",
-            "entries": []
-        },
-        {
             "sessionId": "f9350360b82645a0adbf194dbeae6f95",
             "startedUtc": "2026-05-25T11:01:25.3601792Z",
             "endedUtc": "2026-05-25T11:01:26.4821428Z",
@@ -284,6 +278,23 @@
             "startedUtc": "2026-05-25T12:54:25.9274957Z",
             "endedUtc": "2026-05-25T12:54:27.0761724Z",
             "entries": []
+        },
+        {
+            "sessionId": "00751a1fec244376b12b2ddd7b6efd43",
+            "startedUtc": "2026-05-25T16:15:50.0315507Z",
+            "endedUtc": "2026-05-25T16:18:03.7213083Z",
+            "entries": [
+                {
+                    "prefabPath": "Assets/HeoMinSeok/_Project/Prefabs/Attack/Hitbox_WindWeapon_NormalAtk_HardSlash.prefab",
+                    "prefabName": "Hitbox_WindWeapon_NormalAtk_HardSlash",
+                    "totalSpawns": 3,
+                    "coldSpawns": 1,
+                    "firstSeenSeconds": 130.4596710205078,
+                    "lastSeenSeconds": 133.68577575683595,
+                    "firstSceneName": "HeoMinSeok_Boss_Dragon_Spili",
+                    "lastSceneName": "HeoMinSeok_Boss_Dragon_Spili"
+                }
+            ]
         }
     ]
 }
