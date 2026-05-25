@@ -159,6 +159,34 @@ Implications:
 - Future changes to the post-intro destination should edit the profile slot target scene setting, not add an intro-only target override.
 - Intro UI remains scene-authored in `TitleScene`; runtime code drives serialized references and does not create the intro UI hierarchy.
 
+## 2026-05-25 - P2 Drain Completion Restores The Drain
+
+Decision:
+When a phase-two Slime Queen finishes the drain sink sequence, `DrainPipe` restores to its initial damageable cork state instead of becoming permanently blocked.
+
+Reason:
+The design intent is a temporary 4-second boss groggy/control-loss mechanic. The drain should be usable again after being re-opened by hits, not removed from future play.
+
+Implications:
+- `DrainPipe` resets `currentHitCount` to `0` after the P2 boss exits.
+- The drain visual returns to the cork color/state.
+- Existing captured Pawn slime targets are cleaned up during restore so disabled suction targets do not remain.
+- Future P2 drain changes should avoid permanent disable/blocked flags unless a separate design request asks for one-time drains.
+
+## 2026-05-25 - Boss HUD Uses One Slot Per Boss
+
+Decision:
+`BossHudController` manages registered bosses as separate HUD slots. A multi-body boss phase displays one slot per active boss body instead of projecting multiple bodies into one dual health/groggy bar.
+
+Reason:
+The slot model is easier to reason about than a second dual-channel rendering path inside `BossHealthBarUI` and `BossGroggyBarUI`. It keeps the common HUD controller boss-agnostic without requiring source adapters for every multi-body boss shape.
+
+Implications:
+- Bosses call `RegisterBoss`, `MarkBossDefeated`, and `UnregisterBoss` through the common HUD registration API.
+- Slime Queen phase two Short/Long bodies register as independent slots.
+- `BossHealthBarUI` and `BossGroggyBarUI` remain single-channel views.
+- `IBossSplitHealthPresentation` is still available for split labels on a single boss slot, but dual boss rendering is not a supported HUD path.
+
 ## 2026-05-23 - Run-Special Unavailable Responses Belong To Choices
 
 Decision:

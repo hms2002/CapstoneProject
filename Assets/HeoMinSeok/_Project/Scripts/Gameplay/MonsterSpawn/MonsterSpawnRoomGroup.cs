@@ -5,6 +5,7 @@ using UnityEngine;
 /// 책임:
 /// - 하나의 방에 속한 MonsterSpawnContainer들을 묶어 관리한다.
 /// - 방 전용 스폰 프로파일에서 무작위로 스폰 테이블 하나를 선택해 스폰 요청 목록을 생성한다.
+/// - 플레이어의 방 encounter 진입/이탈을 연결된 문 잠금 장치에 전파한다.
 /// </summary>
 [DisallowMultipleComponent]
 public sealed class MonsterSpawnRoomGroup : MonoBehaviour
@@ -129,6 +130,27 @@ public sealed class MonsterSpawnRoomGroup : MonoBehaviour
             }
 
             doorLock.NotifyRoomEncounterEntered();
+        }
+    }
+
+    public void NotifyPlayerExitedEncounter()
+    {
+        if (!playerEncounterEntered)
+            return;
+
+        playerEncounterEntered = false;
+        CompactRuntimeLists();
+
+        for (int i = runtimeDoorLocks.Count - 1; i >= 0; i--)
+        {
+            RoomDoorMonsterKillLock doorLock = runtimeDoorLocks[i];
+            if (doorLock == null)
+            {
+                runtimeDoorLocks.RemoveAt(i);
+                continue;
+            }
+
+            doorLock.NotifyRoomEncounterExited();
         }
     }
 

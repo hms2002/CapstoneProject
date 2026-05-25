@@ -26,7 +26,6 @@ public class Knight : Slime
     private const float MaxHealth = 6f;
     private const float VisualScale = 0.9f;
     private const float ChaseSpeedMultiplier = 1f;
-    private const float DamageAmount = 1f;
     private const float KnockbackImpulse = 12f;
     private const float SplitSpread = 0.55f;
     private const float AttackRecoverSeconds = 0.25f;
@@ -44,6 +43,7 @@ public class Knight : Slime
     [SerializeField] private AbilityDefinition jumpSlamAbility;
     [SerializeField] private GE_Damage_Spec damageEffect;
     [SerializeField] private GE_Knockback_Spec knockbackEffect;
+    [SerializeField] private float slamDamageAmount = 1f;
     [SerializeField, Min(0)] private int splitCount = 4;
     [Header("Jump Landing")]
     [Tooltip("점프 내려찍기 착지 지점이 벽/사물 너머로 잡히지 않도록 검사할 레이어입니다. 비워두면 Wall, Default, Non_FightCollision을 사용합니다.")]
@@ -211,7 +211,7 @@ public class Knight : Slime
             LandingDropSeconds,
             LandingDropSharpness,
             ImpactDiameter,
-            MakePayload(system, spec, damageEffect, knockbackEffect, DamageAmount, KnockbackImpulse));
+            MakePayload(system, spec, damageEffect, knockbackEffect, slamDamageAmount, KnockbackImpulse));
         return true;
     }
 

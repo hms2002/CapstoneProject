@@ -1,0 +1,233 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+/// <summary>
+/// 책임:
+/// - 보스전 클리어 조건, 최종 사망 연출, 보상/포털 활성화를 씬 단위로 조율한다.
+/// - 개별 보스 사망과 보스전 종료를 분리해 단일보스와 분열/다중 보스가 같은 종료 파이프라인을 쓰게 한다.
+/// </summary>
+[DisallowMultipleComponent]
+[AddComponentMenu("Capstone/Boss/Boss Encounter End Director")]
+public sealed class BossEncounterEndDirector : MonoBehaviour
+{
+    private static readonly List<BossEncounterEndDirector> ActiveDirectors = new();
+
+    [Header("Clear")]
+    [SerializeField] private BossEncounterClearCondition clearCondition;
+    [SerializeField] private bool suppressManagedBossAutomaticRewards = true;
+
+    [Header("Final Presentation")]
+    [SerializeField] private BossDeathPresentation finalDeathPresentation;
+    [SerializeField] private bool useFinalDeathPresentation = true;
+    [SerializeField, Min(0f)] private float rewardDelayAfterClearSeconds = 0f;
+
+    [Header("Rewards")]
+    [SerializeField] private TreasureChest treasureChest;
+    [SerializeField] private GameObject exitPortal;
+    [SerializeField] private bool hideAuthoredObjectsOnStart = true;
+
+    [Header("Debug")]
+    [SerializeField] private bool logDebug;
+
+    private bool hasCompleted;
+    private Coroutine completionRoutine;
+
+    public static bool SuppressesAutomaticRewardReady(BossControllerBase boss)
+    {
+        if (boss == null)
+            return false;
+
+        for (int i = 0; i < ActiveDirectors.Count; i++)
+        {
+            BossEncounterEndDirector director = ActiveDirectors[i];
+            if (director != null && director.SuppressesRewardsFor(boss))
+                return true;
+        }
+
+        return false;
+    }
+
+    private void Awake()
+    {
+        ResolveReferences();
+    }
+
+    private void Start()
+    {
+        if (!hideAuthoredObjectsOnStart)
+            return;
+
+        if (treasureChest != null)
+            treasureChest.gameObject.SetActive(false);
+
+        if (exitPortal != null)
+            exitPortal.SetActive(false);
+    }
+
+    private void OnEnable()
+    {
+        if (!ActiveDirectors.Contains(this))
+            ActiveDirectors.Add(this);
+    }
+
+    private void OnDisable()
+    {
+        ActiveDirectors.Remove(this);
+
+        if (completionRoutine != null)
+        {
+            StopCoroutine(completionRoutine);
+            completionRoutine = null;
+        }
+    }
+
+    private void Update()
+    {
+        if (hasCompleted)
+            return;
+
+        ResolveReferences();
+        if (clearCondition == null || !clearCondition.IsCleared)
+            return;
+
+        hasCompleted = true;
+        completionRoutine = StartCoroutine(CompleteEncounterRoutine());
+    }
+
+    private void ResolveReferences()
+    {
+        if (clearCondition == null)
+            clearCondition = GetComponent<BossEncounterClearCondition>();
+    }
+
+    private bool SuppressesRewardsFor(BossControllerBase boss)
+    {
+        return suppressManagedBossAutomaticRewards &&
+               clearCondition != null &&
+               clearCondition.ControlsBoss(boss);
+    }
+
+    private IEnumerator CompleteEncounterRoutine()
+    {
+        if (rewardDelayAfterClearSeconds > 0f)
+            yield return new WaitForSeconds(rewardDelayAfterClearSeconds);
+
+        BossControllerBase rewardBoss = clearCondition != null ? clearCondition.RewardBoss : null;
+        BossDeathPresentation presentation = ResolveFinalDeathPresentation(rewardBoss);
+        if (useFinalDeathPresentation && presentation != null)
+        {
+            presentation.Bind(rewardBoss);
+            if (presentation.IsRunning || presentation.TryBeginDeathSequence(false))
+            {
+                while (presentation != null && presentation.IsRunning)
+                    yield return null;
+            }
+        }
+
+        BossRewardContext context = BuildRewardContext(rewardBoss);
+        Vector3 rewardOrigin = clearCondition != null ? clearCondition.RewardOrigin : transform.position;
+
+        HandleRewards(context, rewardOrigin);
+        HandlePortal(context);
+        LogDebug("Encounter completed.");
+        completionRoutine = null;
+    }
+
+    private BossDeathPresentation ResolveFinalDeathPresentation(BossControllerBase rewardBoss)
+    {
+        if (finalDeathPresentation != null)
+            return finalDeathPresentation;
+
+        return rewardBoss != null ? rewardBoss.GetComponent<BossDeathPresentation>() : null;
+    }
+
+    private static BossRewardContext BuildRewardContext(BossControllerBase rewardBoss)
+    {
+        BossRewardModifierAggregate modifiers = RunModifierService.CurrentRewardSnapshot.BossRewardModifiers;
+        return BossRunProgressPolicy.Evaluate(
+            new BossRunProgressRequest(
+                rewardBoss,
+                PortalRouteManager.Instance,
+                modifiers)).ToRewardContext();
+    }
+
+    private void HandleRewards(BossRewardContext context, Vector3 rewardOrigin)
+    {
+        if (context == null || context.RewardsHandled)
+            return;
+
+        if (context.IsFinalRouteSet)
+        {
+            if (BossRewardSpawnService.SpawnPhysicalDrops(context, rewardOrigin, this))
+                context.MarkRewardsHandled();
+
+            return;
+        }
+
+        if (treasureChest == null)
+        {
+            Debug.LogWarning("[BossEncounterEndDirector] TreasureChest is not assigned.", this);
+            return;
+        }
+
+        bool activated = BossRewardSpawnService.ActivateTreasureChest(new BossRewardActivationRequest(
+            context,
+            context.SpecialRewardPreset,
+            treasureChest,
+            rewardOrigin,
+            this));
+
+        if (activated)
+            context.MarkRewardsHandled();
+    }
+
+    private void HandlePortal(BossRewardContext context)
+    {
+        if (context == null || context.PortalHandled)
+            return;
+
+        if (exitPortal == null)
+        {
+            Debug.LogWarning("[BossEncounterEndDirector] Exit portal is not assigned.", this);
+            return;
+        }
+
+        exitPortal.SetActive(true);
+        RestorePortalVisibilityAndInteraction(exitPortal);
+        context.MarkPortalHandled();
+    }
+
+    private static void RestorePortalVisibilityAndInteraction(GameObject portalRoot)
+    {
+        if (portalRoot == null)
+            return;
+
+        Renderer[] renderers = portalRoot.GetComponentsInChildren<Renderer>(true);
+        for (int i = 0; i < renderers.Length; i++)
+        {
+            if (renderers[i] != null)
+                renderers[i].enabled = true;
+        }
+
+        Collider2D[] colliders = portalRoot.GetComponentsInChildren<Collider2D>(true);
+        for (int i = 0; i < colliders.Length; i++)
+        {
+            if (colliders[i] != null)
+                colliders[i].enabled = true;
+        }
+
+        ScenePortal[] scenePortals = portalRoot.GetComponentsInChildren<ScenePortal>(true);
+        for (int i = 0; i < scenePortals.Length; i++)
+        {
+            if (scenePortals[i] != null)
+                scenePortals[i].enabled = true;
+        }
+    }
+
+    private void LogDebug(string message)
+    {
+        if (logDebug)
+            Debug.Log($"[BossEncounterEndDirector] {message}", this);
+    }
+}

@@ -22,7 +22,6 @@ public class Bishop : Slime
     private const float MaxHealth = 10f;
     private const float VisualScale = 1.2f;
     private const float ChaseSpeedMultiplier = 0.5f;
-    private const float DamageAmount = 1.5f;
     private const float SplitSpread = 0.55f;
     private const float AttackRecoverSeconds = 0.25f;
     private const float RaycastDistance = 64f;
@@ -34,6 +33,7 @@ public class Bishop : Slime
     [SerializeField] private GameObject splitPrefab;
     [SerializeField] private AbilityDefinition attackAbility;
     [SerializeField] private GE_Damage_Spec damageEffect;
+    [SerializeField] private float blastDamageAmount = 1f;
     [SerializeField, Min(0)] private int splitCount = 2;
 
     private BishopLineBlastRunner lineBlastRunner;
@@ -228,7 +228,7 @@ public class Bishop : Slime
                 damageEffect: damageEffect,
                 knockbackEffect: null,
                 target: context.Target,
-                finalHpDamage: DamageAmount,
+                finalHpDamage: blastDamageAmount,
                 finalStaggerBuildUp: 0f,
                 finalKnockbackImpulse: 0f,
                 hitConfirmedTag: null,

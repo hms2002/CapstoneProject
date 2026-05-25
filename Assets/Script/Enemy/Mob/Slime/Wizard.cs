@@ -20,7 +20,6 @@ public class Wizard : Slime
     private const float MaxHealth = 6f;
     private const float VisualScale = 0.85f;
     private const float ChaseSpeedMultiplier = 1f;
-    private const float DamageAmount = 0.8f;
     private const float ProjectileSpeed = 5.5f;
     private const float ScatterAngle = 24f;
     private const float SplitSpread = 0.55f;
@@ -31,6 +30,7 @@ public class Wizard : Slime
     [SerializeField] private GameObject projectilePrefab;
     [SerializeField] private AbilityDefinition attackAbility;
     [SerializeField] private GE_Damage_Spec damageEffect;
+    [SerializeField] private float shotDamageAmount = 1f;
     [SerializeField, Min(0)] private int splitCount = 4;
 
     private WizardScatterShotRunner scatterShotRunner;
@@ -174,7 +174,7 @@ public class Wizard : Slime
             AttackPrepareSeconds,
             AttackRange,
             ScatterAngle,
-            MakePayload(system, spec, damageEffect, null, DamageAmount, 0f));
+            MakePayload(system, spec, damageEffect, null, shotDamageAmount, 0f));
         return true;
     }
 

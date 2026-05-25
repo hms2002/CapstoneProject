@@ -79,9 +79,11 @@ public sealed class BossDeathPresentation : MonoBehaviour
     private readonly List<Renderer> cachedDeathRenderers = new();
 
     private PlayerCinematicProtection lockedPlayerProtection;
+    private bool shouldNotifyRewardsForRunningSequence = true;
 
     public bool HandlesDeathFlow => useDeathPresentation && isActiveAndEnabled;
     public bool ShouldDeferDeathAnimation => HandlesDeathFlow;
+    public bool IsRunning => runningSequence != null;
 
     private void Awake()
     {
@@ -113,12 +115,18 @@ public sealed class BossDeathPresentation : MonoBehaviour
 
     public bool TryBeginDeathSequence()
     {
+        return TryBeginDeathSequence(true);
+    }
+
+    public bool TryBeginDeathSequence(bool notifyRewardsReady)
+    {
         if (!HandlesDeathFlow)
             return false;
 
         if (runningSequence != null)
             return true;
 
+        shouldNotifyRewardsForRunningSequence = notifyRewardsReady;
         LockPlayerControls();
         runningSequence = StartCoroutine(RunDeathPresentationRoutine());
         return true;
@@ -147,7 +155,8 @@ public sealed class BossDeathPresentation : MonoBehaviour
 
         HideBossVisuals();
         SpawnDeathVanishEffect();
-        NotifyRewardsReady();
+        if (shouldNotifyRewardsForRunningSequence)
+            NotifyRewardsReady();
 
         yield return WaitForPresentationSeconds(deathPostVanishHoldSeconds);
 
@@ -423,6 +432,9 @@ public sealed class BossDeathPresentation : MonoBehaviour
 
     private void NotifyRewardsReady()
     {
+        if (BossEncounterEndDirector.SuppressesAutomaticRewardReady(owner))
+            return;
+
         if (owner != null)
         {
             RunProgressCoordinator.EnsureInstance()?.NotifyBossRewardsReady(owner);

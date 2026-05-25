@@ -1,13 +1,15 @@
 using UnityEngine;
 using UnityGAS;
 
+/// <summary>
+/// 책임:
+/// - 태클 발동 가능 여부를 판단하고, 태클 경고/돌진에 필요한 문맥을 준비한다.
+/// - bridge를 통한 태클 실행 요청과 태클 중 이동 차단 상태, 적중 후 재공격 지연을 관리한다.
+/// </summary>
 [DisallowMultipleComponent]
 [RequireComponent(typeof(Mob))]
 public class TackleAttack : MonoBehaviour, IMobAttackDecisionSource, IMobPresentationCleanup
 {
-    // 이 클래스의 책임:
-    // 태클 발동 가능 여부를 판단하고, 태클 경고/돌진에 필요한 문맥을 준비하며, bridge를 통한 태클 실행 요청과 태클 중 이동 차단 상태를 관리한다.
-
     private const int WallLayer = 30;
 
     [Header("태클")]
@@ -380,7 +382,10 @@ public class TackleAttack : MonoBehaviour, IMobAttackDecisionSource, IMobPresent
     /// <summary>태클 딜레이를 시작합니다.</summary>
     public void StartDelay()
     {
-        delayTime = Mathf.Max(0f, hitDelay);
+        delayTime = CombatTimingService.ScaleSeconds(
+            GetComponent<AbilitySystem>(),
+            hitDelay,
+            CombatTimingSlot.AttackInterval);
 
         if (helperAccess != null && tackleAbility != null)
             helperAccess.TrySetCooldownRemaining(tackleAbility, delayTime);

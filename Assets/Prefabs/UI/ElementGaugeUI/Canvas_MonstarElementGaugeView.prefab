@@ -86,7 +86,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 0
+  m_PresetInfoIsWorld: 1
 --- !u!114 &4813057371513768460
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -122,8 +122,10 @@ MonoBehaviour:
   followTarget: 1
   slotRoot: {fileID: 6621963485075252765}
   slotPrefab: {fileID: 7139527313155595916, guid: d7ecec296da011c4ca790af9d941b2b2, type: 3}
-  destroyWhenTargetMissing: 0
-  hideWhenTargetMissing: 1
+  slotSpacing: 320
+  centerSlots: 1
+  destroyWhenTargetMissing: 1
+  hideWhenTargetMissing: 0
 --- !u!1 &1079488720447328492
 GameObject:
   m_ObjectHideFlags: 0

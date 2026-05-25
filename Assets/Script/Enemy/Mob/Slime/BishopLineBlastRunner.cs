@@ -68,11 +68,12 @@ public class BishopLineBlastRunner : MonoBehaviour, IMobPatternRunner, IMobPrese
 
         try
         {
-            ShowLine(currentContext);
+            float warningSeconds = CombatTimingService.ScaleSeconds(system, currentContext.WarningTime, CombatTimingSlot.AttackWarning);
+            ShowLine(currentContext, warningSeconds);
             owner.PlayMagicPrepareAnimation();
 
-            if (currentContext.WarningTime > 0f)
-                yield return AbilityTasks.WaitDelay(system, spec, currentContext.WarningTime);
+            if (warningSeconds > 0f)
+                yield return AbilityTasks.WaitDelay(system, spec, warningSeconds);
 
             if (cancelRequested || owner.IsDead) yield break;
 
@@ -109,7 +110,7 @@ public class BishopLineBlastRunner : MonoBehaviour, IMobPatternRunner, IMobPrese
     }
 
     /// <summary>비숍의 긴 직사각형 경고선을 표시합니다.</summary>
-    private void ShowLine(Bishop.LineBlastContext context)
+    private void ShowLine(Bishop.LineBlastContext context, float duration)
     {
         if (telegraphService == null) return;
 
@@ -118,7 +119,7 @@ public class BishopLineBlastRunner : MonoBehaviour, IMobPatternRunner, IMobPrese
             context.Center,
             new Vector2(context.HalfLength * 2f, context.WarningWidth),
             angleDeg,
-            context.WarningTime,
+            duration,
             lineStyle);
 
         telegraphService.Show(spec);

@@ -199,7 +199,8 @@ namespace UnityGAS
             if (!spec.useWallClipping || spec.wallClipLayers.value == 0)
                 return false;
 
-            return spec.shape == AttackTelegraphShape.Sector ||
+            return spec.shape == AttackTelegraphShape.Rectangle ||
+                   spec.shape == AttackTelegraphShape.Sector ||
                    spec.shape == AttackTelegraphShape.Circle;
         }
 

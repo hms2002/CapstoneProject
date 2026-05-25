@@ -29,6 +29,7 @@ GameObject:
   - component: {fileID: 940000}
   - component: {fileID: 970000}
   - component: {fileID: 6600200000000001}
+  - component: {fileID: 880071000000000001}
   m_Layer: 31
   m_Name: Knight
   m_TagString: Enemy
@@ -142,6 +143,7 @@ MonoBehaviour:
   jumpSlamAbility: {fileID: 11400000, guid: 5bdfce96561d469ba894ae5f6bac2af0, type: 2}
   damageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
   knockbackEffect: {fileID: 11400000, guid: 2f5faaf6bd840544cb59f6d23905c40d, type: 2}
+  slamDamageAmount: 1
   splitCount: 4
   jumpBlockedLayers:
     serializedVersion: 2
@@ -212,7 +214,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   attributeCatalog: {fileID: 11400000, guid: b9c79b9448814f2408077eff50c01aeb, type: 2}
   baseInitProfile: {fileID: 11400000, guid: ac5ff33387b8e384ea5c5452dcc2efcc, type: 2}
-  overrideInitProfiles: []
+  overrideInitProfiles:
+  - {fileID: 11400000, guid: 0056ddefeb3ebf94d80b1cdd98143193, type: 2}
   maxLinks:
   - value: {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
     max: {fileID: 11400000, guid: 0e177e1d15e428745b5859fac08ce203, type: 2}
@@ -467,6 +470,35 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 2147483656
   defaultMode: 1
+--- !u!114 &880071000000000001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 100000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f7fd960e9c14d44990494a70a80d3df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tagSystem: {fileID: 0}
+  groggyTag: {fileID: 0}
+  followAnchor: {fileID: 0}
+  boundsSource: {fileID: 0}
+  effectPrefab: {fileID: 2456809460785590275, guid: 80d266c90ff9c4d458d715b8d37a677b, type: 3}
+  effectParent: {fileID: 0}
+  instantiateOnAwake: 0
+  destroyInstanceWhenHidden: 1
+  usePooling: 1
+  maxPooledInstancesPerPrefab: 16
+  worldOffset: {x: 0, y: 0.18, z: 0}
+  fallbackHeight: 1.2
+  followEveryFrame: 1
+  scaleByBoundsHeight: 1
+  heightToScaleRatio: 0.45
+  minScale: 0.55
+  maxScale: 1.8
 --- !u!1 &110000
 GameObject:
   m_ObjectHideFlags: 0

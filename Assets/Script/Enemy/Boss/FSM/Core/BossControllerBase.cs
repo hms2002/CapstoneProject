@@ -27,6 +27,12 @@ public abstract class BossControllerBase : Enemy, IBossAbilityStateBridge
 
     [Space(8)]
 
+    [Header("HUD")]
+    [Tooltip("이 보스가 HUD 등록 시 요청할 체력바 테마입니다. 비워두면 HUD 슬롯 프리팹 기본 프레임을 사용합니다.")]
+    [SerializeField] private BossHudHealthBarTheme hudHealthBarTheme;
+
+    [Space(8)]
+
     [Header("Reactive Tags")]
     [Tooltip("이 태그가 있으면 DeadState로 전환합니다.")]
     [SerializeField] private GameplayTag deadTag;
@@ -149,6 +155,8 @@ public abstract class BossControllerBase : Enemy, IBossAbilityStateBridge
     }
 
     public bool IsCombatActive => combatActive;
+
+    public BossHudHealthBarTheme HudHealthBarTheme => hudHealthBarTheme;
 
     public void SetCombatActive(bool isActive)
     {
@@ -458,7 +466,13 @@ public abstract class BossControllerBase : Enemy, IBossAbilityStateBridge
         if (stateMachine != null && deadState != null && stateMachine.CurrentState != deadState)
             ChangeState(deadState);
 
-        SetCombatActive(false);
+        combatActive = false;
+        hasCombatOverride = true;
+        if (hasInitializedBossRuntime)
+            AbortCurrentPattern();
+
+        RunProgressCoordinator.EnsureInstance()?.NotifyBossCombatEnded(this);
+        BossHudController.Instance?.MarkBossDefeated(this);
         RunProgressCoordinator.EnsureInstance()?.NotifyBossDefeated(this);
         ResolveDeathPresentation();
         deathPresentation?.NotifyDeathStarted();
@@ -477,7 +491,9 @@ public abstract class BossControllerBase : Enemy, IBossAbilityStateBridge
         if (deathPresentation != null && deathPresentation.TryBeginDeathSequence())
             return;
 
-        RunProgressCoordinator.EnsureInstance()?.NotifyBossRewardsReady(this);
+        if (!BossEncounterEndDirector.SuppressesAutomaticRewardReady(this))
+            RunProgressCoordinator.EnsureInstance()?.NotifyBossRewardsReady(this);
+
         base.DestroyAfterDelay();
     }
 
@@ -602,7 +618,9 @@ public abstract class BossControllerBase : Enemy, IBossAbilityStateBridge
     private void SyncBossHudRegistration(bool forceUnbind = false)
     {
         if (BossHudController.Instance == null)
+        {
             return;
+        }
 
         if (forceUnbind || !combatActive)
         {
@@ -610,7 +628,7 @@ public abstract class BossControllerBase : Enemy, IBossAbilityStateBridge
             return;
         }
 
-        BossHudController.Instance.BindBoss(this);
+        BossHudController.Instance.RegisterBoss(this, hudHealthBarTheme);
     }
 
     /// <summary>

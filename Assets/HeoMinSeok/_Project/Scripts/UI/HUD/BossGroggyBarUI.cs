@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 /// <summary>
 /// 책임 :
-/// - 오케스트레이션 계층이 전달하는 보스 그로기 비율을 단일 슬라이더에 표시한다.
+/// - 오케스트레이션 계층이 전달하는 보스 그로기 비율을 단일 슬라이더로 표시한다.
 /// - 그로기 활성 중에는 fill 색상이 흰색 ↔ 원래 색을 오가며 점멸한다.
 /// </summary>
 [DisallowMultipleComponent]
@@ -14,25 +14,20 @@ public sealed class BossGroggyBarUI : MonoBehaviour
 
     [Header("Blink")]
     [SerializeField] private float blinkSpeed = 4f;
+    [SerializeField] private Color blinkTargetColor = new Color(1f, 0.25f, 0.05f, 1f);
 
-    private Color _originalColor;
-    private bool _isGroggyMode;
+    private Color originalColor;
+    private bool isGroggyMode;
 
     private void Awake()
     {
-        if (fillImage == null && groggySlider != null)
-            fillImage = groggySlider.fillRect.GetComponent<Image>();
-
-        if (fillImage != null)
-            _originalColor = fillImage.color;
+        ResolveFillReferences();
+        CacheOriginalColors();
     }
 
     private void Update()
     {
-        if (!_isGroggyMode || fillImage == null) return;
-
-        float t = Mathf.PingPong(Time.time * blinkSpeed, 1f);
-        fillImage.color = Color.Lerp(_originalColor, Color.white, t);
+        UpdateBlink(fillImage, originalColor, isGroggyMode);
     }
 
     public void SetVisible(bool visible)
@@ -42,21 +37,68 @@ public sealed class BossGroggyBarUI : MonoBehaviour
 
     public void SetGroggyRatio(float ratio)
     {
-        if (groggySlider == null) return;
-
-        groggySlider.minValue = 0f;
-        groggySlider.maxValue = 1f;
-        groggySlider.value = Mathf.Clamp01(ratio);
+        ApplySliderValue(groggySlider, ratio);
     }
 
     public void SetGroggyMode(bool isGroggy)
     {
-        if (_isGroggyMode == isGroggy) return;
+        if (isGroggyMode == isGroggy)
+            return;
 
-        _isGroggyMode = isGroggy;
+        isGroggyMode = isGroggy;
+        if (!isGroggy)
+            RestoreColor(fillImage, originalColor);
+    }
 
-        // 그로기 모드 종료 시 색상 원복
-        if (!isGroggy && fillImage != null)
-            fillImage.color = _originalColor;
+    private void ResolveFillReferences()
+    {
+        if (fillImage == null)
+            fillImage = ResolveFillImage(groggySlider);
+    }
+
+    private void CacheOriginalColors()
+    {
+        if (fillImage != null)
+            originalColor = fillImage.color;
+    }
+
+    private void UpdateBlink(Image targetImage, Color baseColor, bool isBlinking)
+    {
+        if (targetImage == null)
+            return;
+
+        if (!isBlinking)
+        {
+            if (targetImage.color != baseColor)
+                targetImage.color = baseColor;
+
+            return;
+        }
+
+        float t = Mathf.PingPong(Time.time * blinkSpeed, 1f);
+        targetImage.color = Color.Lerp(baseColor, blinkTargetColor, t);
+    }
+
+    private void RestoreColor(Image targetImage, Color color)
+    {
+        if (targetImage != null)
+            targetImage.color = color;
+    }
+
+    private void ApplySliderValue(Slider slider, float ratio)
+    {
+        if (slider == null)
+            return;
+
+        slider.minValue = 0f;
+        slider.maxValue = 1f;
+        slider.value = Mathf.Clamp01(ratio);
+    }
+
+    private static Image ResolveFillImage(Slider slider)
+    {
+        return slider != null && slider.fillRect != null
+            ? slider.fillRect.GetComponent<Image>()
+            : null;
     }
 }

@@ -172,10 +172,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spriteRenderer: {fileID: 3000000000000000000}
   hitCountToBreak: 3
-  suctionRadius: 7
+  suctionRadius: 2.5
   suctionSpeed: 5
   consumeDistance: 0.2
   maxPawnChecks: 64
+  phaseTwoBossSuctionRadius: 2
   corkColor: {r: 0.56, g: 0.34, b: 0.17, a: 1}
   brokenColor: {r: 0, g: 0, b: 0, a: 1}
 --- !u!114 &5000000000000000000

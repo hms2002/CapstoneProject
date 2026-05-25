@@ -295,11 +295,11 @@ public class DeadsSkeleton : Mob, IDamageReceiver, IMobAttackDecisionSource, IMo
     }
 
     /// <summary>자폭 모드를 시작하고 경고를 띄웁니다.</summary>
-    private void StartSelfDestruct()
+    private void StartSelfDestruct(float introDurationOverride = -1f)
     {
         isSelfDestruct = true;
         hasEnteredArmedPhase = false;
-        float introDuration = GetSelfDestructIntroDuration();
+        float introDuration = Mathf.Max(0f, introDurationOverride >= 0f ? introDurationOverride : GetSelfDestructIntroDuration());
         selfDestructIntroEndTime = Time.time + introDuration;
 
         if (movementMotor != null)
@@ -311,7 +311,7 @@ public class DeadsSkeleton : Mob, IDamageReceiver, IMobAttackDecisionSource, IMo
         ApplyNormalChaseSpeed();
         ApplySelfDestructDetectionRange();
         ApplySelfDestructDetectionBypass(true);
-        PlaySightMaskExpand();
+        PlaySightMaskExpand(introDuration);
         ShowIntroWarning(introDuration);
 
         if (IsInsideCandlestickLight())
@@ -371,12 +371,12 @@ public class DeadsSkeleton : Mob, IDamageReceiver, IMobAttackDecisionSource, IMo
     }
 
     /// <summary>executor가 공식 시작 시점에 타깃을 확정하고 기존 자폭 인트로 로직을 재사용한다.</summary>
-    public void BeginSelfDestructSequence(GameObject explicitTarget)
+    public void BeginSelfDestructSequence(GameObject explicitTarget, float introDurationOverride = -1f)
     {
         if (explicitTarget != null)
             SetTarget(explicitTarget.transform);
 
-        StartSelfDestruct();
+        StartSelfDestruct(introDurationOverride);
     }
 
     /// <summary>자폭 인트로가 아직 끝나지 않았는지 전용 상태가 확인할 수 있게 노출합니다.</summary>
@@ -558,12 +558,11 @@ public class DeadsSkeleton : Mob, IDamageReceiver, IMobAttackDecisionSource, IMo
     }
 
     /// <summary>자폭 전환과 동시에 시야 마스크를 폭발 지름만큼 확장합니다.</summary>
-    private void PlaySightMaskExpand()
+    private void PlaySightMaskExpand(float introDuration)
     {
         if (sightMask == null || sightMaskTransform == null || sightMask.sprite == null)
             return;
 
-        float introDuration = GetSelfDestructIntroDuration();
         if (introDuration <= 0f)
         {
             sightMaskTransform.localScale = GetExplosionSightMaskScale();
@@ -893,6 +892,16 @@ public class DeadsSkeleton : Mob, IDamageReceiver, IMobAttackDecisionSource, IMo
     private float GetSelfDestructIntroDuration()
     {
         return Mathf.Max(0f, FindAnimationClipLength("DeadsSkeleton_BeSelfDestructionMode"));
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 자폭 준비 시간이 CombatTimingService의 AttackWarning 슬롯으로 보정될 수 있게 원본 기준 시간을 노출한다.
+    /// - 애니메이션 클립 길이 조회 책임은 DeadsSkeleton 내부에 남겨 executor가 Animator 세부사항을 알지 않게 한다.
+    /// </summary>
+    public float GetSelfDestructIntroDurationForTiming()
+    {
+        return GetSelfDestructIntroDuration();
     }
 
     /// <summary>플레이어 접촉 감지용 트리거 콜라이더를 보장합니다.</summary>

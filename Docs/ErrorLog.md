@@ -305,6 +305,62 @@ Fix:
 Prevention:
 Do not let feature screens and shared hold-button components both calculate the same hold progress. If a `HoldActionButton` is authored for a button, feature code should consume its events instead of duplicating pointer/key hold detection.
 
+## 2026-05-25 - P2 Drain Completion Was Treated As Permanent Blocking
+
+Context:
+After a phase-two Slime Queen sank into a broken drain and resurfaced, the same drain could no longer receive hit damage.
+
+Cause:
+The phrase "block/close the drain" was implemented as a permanent `DrainPipe.isBlocked` state. `TryApplyDamage(...)` returned false while blocked, so the drain became unusable instead of returning to its original cork state.
+
+Fix:
+`DrainPipe` no longer has a permanent blocked state for P2 boss drain completion. After the 4-second drain sequence, it restores the boss, resets the pipe to unbroken cork visual state, clears the hit count to `0`, and remains damageable.
+
+Prevention:
+For this mechanic, "close/restore the drain" means reset to the initial damageable drain state. Do not model P2 drain completion as a permanent disable unless the design explicitly changes.
+
+## 2026-05-25 - Slime Queen Groggy Gauge Was Not Wired
+
+Context:
+`SlimeQueen`, `SlimeQueenP2Short`, and `SlimeQueenP2Long` did not expose the same groggy/stagger gauge behavior as the other bosses.
+
+Cause:
+The Slime Queen prefabs did not author a `StaggerGaugeSystem`, and the Slime Queen phase-two HUD special case explicitly hid the shared groggy bar while showing dual health bars. That meant phase-one had no stagger target component for `CombatDamageAction`, and phase-two had no visible groggy gauge even after the combat component existed.
+
+Fix:
+`SlimeQueenBossBase` now ensures a runtime `StaggerGaugeSystem` for every Slime Queen variant and wires it to the existing stagger attributes plus a 3-second status-only Groggy effect. Phase-two Slime Queen Short/Long bodies now use the same boss HUD registration path as other bosses and appear as separate HUD slots.
+
+Prevention:
+When adding a new boss or special multi-body HUD path, verify both sides of groggy support: the combat target must have a configured `StaggerGaugeSystem`, and each active boss body must register its own HUD slot instead of hiding the groggy view or adding concrete boss branches to `BossHudController`.
+
+## 2026-05-25 - Drain Control Lock Stopped Drain Pull
+
+Context:
+P2 Slime Queens stopped as soon as they entered the open drain suction radius instead of being pulled into the drain.
+
+Cause:
+The drain acquisition path called `BeginDrainControlLock()`, which set the shared pit-fall runtime lock. `SlimeQueenBossBase.Update()` responds to that lock by calling `movementMotor.StopAllMotion()` every frame, and `MovementMotor2D.FixedUpdate()` can also overwrite direct Rigidbody velocity with zero. This fought the `DrainPipe` suction velocity.
+
+Fix:
+`SlimeQueenPhaseTwoBase.Update()` now returns immediately while drain-locked, before the shared pit-fall stop path runs. `DrainPipe` creates a drain context at acquisition time, disables the boss `MovementMotor2D` for the suction/submerged lifecycle, pulls the boss by direct `Rigidbody2D.MovePosition`, and restores the motor when the boss leaves the drain.
+
+Prevention:
+When an environmental gimmick owns a forced movement phase, do not rely on Rigidbody velocity while the target's normal movement motor is still active. Explicitly transfer movement ownership for the whole forced phase and restore it in the same lifecycle context.
+
+## 2026-05-25 - Drain Boss Suction Reused Pawn Radius
+
+Context:
+Slime Queen P2 bosses could become unable to act immediately after spawning when a drain was already open, and the first fix changed P2 drain acquisition to direct trigger contact only.
+
+Cause:
+P2 boss drain acquisition originally reused `DrainPipe.suctionRadius`, which is intentionally broad for Pawn slime cleanup. That radius was too large for phase-two boss spawn safety, while the trigger-only workaround removed the planned "enter drain suction range and get pulled in" behavior.
+
+Fix:
+`DrainPipe` now has a separate Inspector field, `phaseTwoBossSuctionRadius`, for P2 Slime Queen acquisition. Pawn slime suction still uses `suctionRadius`; P2Short/P2Long acquisition uses the new radius, then the existing drain lock/submerge/restore flow. Selected `DrainPipe` gizmos draw both ranges separately.
+
+Prevention:
+Do not reuse a broad mob cleanup radius for a boss gimmick acquisition rule when spawn safety and gimmick proximity need different tuning. Split the serialized authoring fields and show both authoring ranges in gizmos.
+
 ## 2026-05-22 - Detached Telegraph Cleanup Was Owned Only By Caster Coroutine
 
 Context:

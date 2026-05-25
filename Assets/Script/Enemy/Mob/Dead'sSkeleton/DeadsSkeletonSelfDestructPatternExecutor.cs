@@ -59,7 +59,11 @@ public class DeadsSkeletonSelfDestructPatternExecutor : MonoBehaviour, IMobPatte
 
         isRunning = true;
         cancelRequested = false;
-        owner.BeginSelfDestructSequence(context.TargetObject);
+        float introDuration = CombatTimingService.ScaleSeconds(
+            system,
+            owner.GetSelfDestructIntroDurationForTiming(),
+            CombatTimingSlot.AttackWarning);
+        owner.BeginSelfDestructSequence(context.TargetObject, introDuration);
 
         try
         {
