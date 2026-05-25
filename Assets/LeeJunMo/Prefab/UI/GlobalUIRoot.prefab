@@ -16706,6 +16706,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BossGroggyBarUI
   groggySlider: {fileID: 1980133473321238881}
   fillImage: {fileID: 0}
+  dualGroggyRoot: {fileID: 0}
+  leftGroggySlider: {fileID: 0}
+  leftFillImage: {fileID: 0}
+  rightGroggySlider: {fileID: 0}
+  rightFillImage: {fileID: 0}
+  dualGroggyGap: 10
+  createFallbackDualGroggyPresentation: 1
   blinkSpeed: 4
 --- !u!1 &3352759803564660846
 GameObject:
@@ -32082,7 +32089,6 @@ MonoBehaviour:
   targetBoss: {fileID: 0}
   autoFindBossOnSceneLoad: 1
   displayNameOverride: 
-  dualBossDisplayName: Slime Queen
   visibleRoot: {fileID: 0}
   healthBarUI: {fileID: 1938255669122893353}
   groggyBarUI: {fileID: 231952700181240352}
