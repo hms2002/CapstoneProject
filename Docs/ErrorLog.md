@@ -25,6 +25,45 @@ Prevention:
 
 ## Active Entries
 
+## 2026-05-26 - Manually Generated Unity Empty Lists Swallowed Following Fields
+
+Context:
+The timed common relics `승리의 깃발`, `추격자의 발톱`, and `붉은 계약` showed tooltip output like `[[ ]] [0]` even though the logic assets had visible `attribute`, `displayNameOverride`, and `value` lines in text.
+
+Cause:
+The manually generated Unity YAML wrote empty lists as:
+
+```yaml
+passiveEntries:
+  []
+```
+
+Unity did not deserialize the following root fields reliably from that shape, so the ScriptableObject loaded default values for the timed buff fields.
+
+Fix:
+Use inline empty-list serialization for manually generated Unity assets:
+
+```yaml
+passiveEntries: []
+```
+
+Prevention:
+When creating or rewriting Unity `.asset` files outside the Editor, verify empty lists, field indentation, and root-field deserialization with `rg` checks. Prefer matching Unity's existing inline `field: []` style for empty serialized arrays/lists.
+
+## 2026-05-26 - Global DamagePayloadConfig Shadowed UnityGAS Type
+
+Context:
+`ApprenticeHeroSwordHitConfig` failed compilation with `CS1503` when passing its damage config into `DamageSnapshotBuilder.BuildFromBaseValues(...)`.
+
+Cause:
+The project still has both a legacy global `DamagePayloadConfig` and the current `UnityGAS.DamagePayloadConfig`. In a global-namespace source file, unqualified `DamagePayloadConfig` resolved to the legacy global type even though `using UnityGAS;` was present.
+
+Fix:
+Apprentice Hero Sword damage config now explicitly uses `UnityGAS.DamagePayloadConfig`.
+
+Prevention:
+New weapon damage data that feeds `DamageSnapshotBuilder` should spell `UnityGAS.DamagePayloadConfig` explicitly until the legacy global compatibility type is removed.
+
 ## 2026-05-26 - Overlapping Time Freeze Restored Stale Zero
 
 Context:

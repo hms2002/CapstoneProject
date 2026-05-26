@@ -11,14 +11,13 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2ac1da532121a934bb7f57799b194806, type: 3}
   m_Name: RD_CounterKick
-  m_EditorClassIdentifier: 
+  m_EditorClassIdentifier:
   relicId: RD_CounterKick
-  displayName: "\uBC18\uACA9\uC758 \uBC15\uCC28"
+  displayName: "반격의 박차"
   icon: {fileID: 21300000, guid: fe26a83a4ededf64ba867c2d5e1863f8, type: 3}
   rarity: 0
-  description: "[\uD53C\uD574\uB97C \uBC1B\uC73C\uBA74] 15\uCD08 \uB3D9\uC548 [\uC774\uB3D9\uC18D\uB3C4]
-    50% \uC99D\uAC00"
+  description: "피해를 받으면 잠시 이동속도가 증가합니다."
   maxLevel: 1
   dropLevel: 1
-  logic: {fileID: 11400000, guid: 94d47d4a2c1a4cc6b8468d8f45a5ea31, type: 2}
+  logic: {fileID: 11400000, guid: a6b833541606472cb49962aed161d97d, type: 2}
   param: {fileID: 0}

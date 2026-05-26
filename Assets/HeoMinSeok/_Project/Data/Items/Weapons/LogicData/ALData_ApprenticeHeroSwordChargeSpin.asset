@@ -1,0 +1,72 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79f8e10316eb4aaea3730259103c40f8, type: 3}
+  m_Name: ALData_ApprenticeHeroSwordChargeSpin
+  m_EditorClassIdentifier:
+  chargeAnimationTrigger:
+  releaseAnimationTrigger: Skill2
+  minChargeSeconds: 0.25
+  maxChargeSeconds: 1
+  spinDuration: 0.35
+  recoveryDuration: 0.2
+  pulseCount: 1
+  minRadius: 0
+  maxRadius: 0
+  minDamageScale: 1
+  maxDamageScale: 1.6
+  hitLayers:
+    serializedVersion: 2
+    m_Bits: 2147483648
+  hitbox:
+    hitboxPrefab: {fileID: 2863281621525748656, guid: 621dece46c884d5d93b149654fdcb397, type: 3}
+    activeTime: 0.2
+    hitboxSize: {x: 3.6, y: 3.6}
+    hitboxScaleMultiplier: {x: 1.6, y: 1.6}
+    overrideSizingMode: 1
+    sizingMode: 3
+    wallLayers:
+      serializedVersion: 2
+      m_Bits: 0
+    hitOncePerTarget: 1
+    destroyOnFirstHit: 0
+    attachToOwnerOnSetup: 0
+    visualMirrorMode: 3
+  damage:
+    damageConfig:
+      includeStaggerBuildUp: 1
+      includeElementBuildUp: 1
+      staggerFormula: {fileID: 11400000, guid: 8fb95c16fb825134f8ce24efb528fe19, type: 2}
+      elementFormulas: []
+      critAffectsElement: 1
+    damageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
+    knockbackEffect: {fileID: 11400000, guid: 2f5faaf6bd840544cb59f6d23905c40d, type: 2}
+    damageFormula: {fileID: 11400000, guid: f836f4795e60fd54f9a4e401de9d7dd9, type: 2}
+    knockbackFormula: {fileID: 0}
+    legacyDamage: 8
+    legacyStaggerDamage: 0
+    hitConfirmedTag: {fileID: 11400000, guid: 465249853d3321e47b796f8e8c787f64, type: 2}
+    hitImpactCueKind: 1
+  chargeStartSound:
+    key:
+    volumeMultiplier: 0
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  releaseSound:
+    key: weapon.sword.swing.2
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  pulseSound:
+    key: weapon.sword.swing.1
+    volumeMultiplier: 0.75
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}

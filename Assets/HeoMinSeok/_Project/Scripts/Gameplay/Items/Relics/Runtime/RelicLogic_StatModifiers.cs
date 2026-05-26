@@ -116,11 +116,12 @@ public class RelicLogic_StatModifiers : RelicLogic
                 if (entry.attribute == null)
                     continue;
 
+                string displayName = ResolveDisplayName(entry);
                 string value = RelicTooltipFormatter.FormatSignedValueToken(
                     EvalValue(entry, previewLevel),
-                    entry.type == ModifierType.Percent);
+                    RelicTooltipFormatter.ShouldDisplayAsPercent(entry.attribute, displayName, entry.type));
 
-                sb.Append($"● [[{ResolveDisplayName(entry)}]] {value}");
+                sb.Append($"● [[{displayName}]] {value}");
                 if (entry.duration > 0f)
                     sb.Append($" ({RelicTooltipFormatter.FormatSeconds(entry.duration)})");
                 sb.AppendLine();

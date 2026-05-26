@@ -403,6 +403,12 @@ public sealed class FloweringRuntimeState :
             SpawnDashSlashHitbox(system, spec, center, angle, startPosition);
             SpawnSlashEffect(center, angle);
             SpawnDashSlashParticle(center, angle);
+            AbilityAudioRouter.PlayOneShotAtPosition(
+                bloomData.DashSlashSound,
+                system,
+                spec,
+                center,
+                bloomData);
         }
     }
 

@@ -1,3 +1,4 @@
+using CapstoneAudio;
 using UnityEngine;
 using UnityGAS;
 
@@ -28,6 +29,11 @@ public sealed class LightningSpearSkill2Data : ScriptableObject
     [SerializeField, Min(1)] private int candidateSamples = 96;
     [SerializeField] private LightningSpearHitConfig landingHit = new LightningSpearHitConfig();
 
+    [Header("E - Sound")]
+    [SerializeField] private SoundRef markRainSpawnStartSound;
+    [SerializeField] private SoundRef markRainMarkSpawnSound;
+    [SerializeField] private SoundRef markRainLandingHitSound;
+
     public string MarkRainAnimationTrigger => markRainAnimationTrigger;
     public WeaponAimPresentationSettings MarkRainAimPresentation => markRainAimPresentation;
     public GameplayTag MarkRainSpawnEventTag => markRainSpawnEventTag;
@@ -44,4 +50,7 @@ public sealed class LightningSpearSkill2Data : ScriptableObject
     public float LandingProbeRadius => Mathf.Max(0f, landingProbeRadius);
     public int CandidateSamples => Mathf.Max(1, candidateSamples);
     public LightningSpearHitConfig LandingHit => landingHit;
+    public SoundRef MarkRainSpawnStartSound => markRainSpawnStartSound;
+    public SoundRef MarkRainMarkSpawnSound => markRainMarkSpawnSound;
+    public SoundRef MarkRainLandingHitSound => markRainLandingHitSound;
 }

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using CapstoneAudio;
 using UnityEngine;
 using UnityGAS;
 
@@ -275,7 +276,7 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWea
             {
                 TryPlayAnimationTrigger(system, spec.Definition, GetNoMarkSweepAnimationTrigger(data));
                 RecoveredSpearVolleyContext recoveredVolley =
-                    BeginRecoveredSpearVolleyDespawn(data, system, direction);
+                    BeginRecoveredSpearVolleyDespawn(data, system, spec, direction);
                 yield return WaitForAnimationEventOrDelay(
                     system,
                     spec,
@@ -283,7 +284,10 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWea
                     GetNoMarkSweepHitEventTimeout(data),
                     GetNoMarkSweepFallbackHitDelay(data));
                 Vector2 hitOrigin = system.transform.position;
-                SpawnHitbox(GetNoMarkSweepHit(loadout, data), system, spec, hitOrigin, direction, facingSideSign);
+                LightningSpearHitConfig noMarkSweepHit = GetNoMarkSweepHit(loadout, data);
+                Vector2 hitCenter = ResolveHitboxCenter(noMarkSweepHit, system, hitOrigin, direction);
+                if (SpawnHitbox(noMarkSweepHit, system, spec, hitOrigin, direction, facingSideSign))
+                    PlaySoundAt(data != null ? data.NoMarkSweepHitSound : default, system, spec, hitCenter, data);
                 StartRecoveredSpearShotSequence(data, system, spec, recoveredVolley);
             }
             finally
@@ -337,6 +341,8 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWea
 
             Vector2 ownerPosition = system.transform.position;
             List<Vector2> positions = GenerateMarkPositions(loadout, data, ownerPosition);
+            if (positions.Count > 0)
+                PlaySoundAt(data != null ? data.MarkRainSpawnStartSound : default, system, spec, ownerPosition, data);
 
             for (int i = 0; i < positions.Count; i++)
                 SpawnMark(loadout, data, positions[i], null, system, spec);
@@ -511,7 +517,17 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWea
             return;
 
         LightningSpearSkill2Data data = ResolveSkill2Data(loadout);
-        SpawnHitbox(GetLandingHit(loadout, data), system, spec, mark.transform.position, Vector2.right, 1);
+        Vector2 hitOrigin = mark.transform.position;
+        LightningSpearHitConfig landingHit = GetLandingHit(loadout, data);
+        if (SpawnHitbox(landingHit, system, spec, hitOrigin, Vector2.right, 1))
+        {
+            PlaySoundAt(
+                data != null ? data.MarkRainLandingHitSound : default,
+                system,
+                spec,
+                ResolveHitboxCenter(landingHit, system, hitOrigin, Vector2.right),
+                data);
+        }
     }
 
     public bool TryGetHudIconOverride(WeaponAbilitySlot slot, AbilityDefinition ability, out Sprite icon)
@@ -549,6 +565,7 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWea
         try
         {
             mark.Consume();
+            PlaySoundAt(data != null ? data.MarkRushStartSound : default, system, spec, start, data);
             LightningSpearHitConfig markRushHit = GetMarkRushHit(loadout, data);
             bool markRushEffectHandlesHitboxes = SpawnMarkRushEffect(
                 loadout,
@@ -561,7 +578,7 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWea
                 direction,
                 facingSideSign);
             MoveOwnerToMark(system, destination);
-            AddRecoveredSpear(data, system.transform);
+            AddRecoveredSpear(data, system.transform, system, spec);
 
             float hitDelay = GetMarkRushArrivalHitDelay(loadout, data);
             if (hitDelay > 0f)
@@ -569,6 +586,7 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWea
 
             if (!markRushEffectHandlesHitboxes)
                 SpawnHitbox(markRushHit, system, spec, destination, direction, facingSideSign);
+            PlaySoundAt(data != null ? data.MarkRushArrivalSound : default, system, spec, destination, data);
 
             RefreshMarkFeedback(loadout, data);
         }
@@ -663,7 +681,11 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWea
             GetMarkRushArrivalHitDelay(loadout, data));
     }
 
-    private void AddRecoveredSpear(LightningSpearSkill1Data data, Transform ownerTransform)
+    private void AddRecoveredSpear(
+        LightningSpearSkill1Data data,
+        Transform ownerTransform,
+        AbilitySystem system,
+        AbilitySpec spec)
     {
         if (data == null || ownerTransform == null || data.RecoveredSpearPrefab == null)
             return;
@@ -704,12 +726,14 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWea
             data.RecoveredSpearFollowSmoothTime,
             data.RecoveredSpearWarpSnapDistance);
         recoveredSpears.Add(actor);
+        PlaySoundAt(data.RecoveredSpearSpawnSound, system, spec, spawnPosition, data);
         ApplyRecoveredSpearLayout(data);
     }
 
     private RecoveredSpearVolleyContext BeginRecoveredSpearVolleyDespawn(
         LightningSpearSkill1Data data,
         AbilitySystem system,
+        AbilitySpec spec,
         Vector2 aimDirection)
     {
         if (data == null || system == null || data.RecoveredSpearProjectilePrefab == null)
@@ -751,6 +775,8 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWea
         Coroutine routine = null;
         routine = StartCoroutine(CoDespawnRecoveredSpears(
             data,
+            system,
+            spec,
             volleySpears,
             () => recoveredSpearFireRoutines.Remove(routine)));
         recoveredSpearFireRoutines.Add(routine);
@@ -760,6 +786,8 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWea
 
     private IEnumerator CoDespawnRecoveredSpears(
         LightningSpearSkill1Data data,
+        AbilitySystem system,
+        AbilitySpec spec,
         List<LightningSpearRecoveredSpearActor> volleySpears,
         System.Action onComplete)
     {
@@ -779,6 +807,7 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWea
                 continue;
 
             float despawnFallbackSeconds = data != null ? data.RecoveredSpearDespawnFallbackSeconds : 0f;
+            PlaySoundAt(data != null ? data.RecoveredSpearDespawnSound : default, system, spec, actor.transform.position, data);
             actor.PlayDespawnAndDestroy(despawnFallbackSeconds);
             startedCount++;
 
@@ -833,10 +862,12 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWea
                 volley.baseDirection,
                 shot.direction);
             SpawnRecoveredSpearShotSpawnEffect(data, spawnPosition, shot.direction);
+            PlaySoundAt(data != null ? data.RecoveredSpearShotSpawnSound : default, system, spec, spawnPosition, data);
 
             if (releaseDelay > 0f)
                 yield return new WaitForSeconds(releaseDelay);
 
+            PlaySoundAt(data != null ? data.RecoveredSpearShotFireSound : default, system, spec, spawnPosition, data);
             SpawnRecoveredShotTrail(data, spawnPosition, shot.direction);
             SpawnRecoveredSpearProjectile(data, system, spec, spawnPosition, shot.direction);
 
@@ -996,6 +1027,7 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWea
             return;
 
         RegisterMark(mark);
+        PlaySoundAt(data != null ? data.MarkRainMarkSpawnSound : default, system, spec, position, data);
         mark.Initialize(
             this,
             room,
@@ -1320,7 +1352,30 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWea
         return loadout != null ? loadout.LandingHit : null;
     }
 
-    private void SpawnHitbox(
+    private static void PlaySoundAt(
+        SoundRef sound,
+        AbilitySystem system,
+        AbilitySpec spec,
+        Vector3 position,
+        Object sourceObject)
+    {
+        AbilityAudioRouter.PlayOneShotAtPosition(sound, system, spec, position, sourceObject);
+    }
+
+    private Vector2 ResolveHitboxCenter(
+        LightningSpearHitConfig hitConfig,
+        AbilitySystem system,
+        Vector2 origin,
+        Vector2 direction)
+    {
+        Vector2 safeDirection = direction.sqrMagnitude > 0.0001f
+            ? direction.normalized
+            : ResolveAimDirection(system);
+        float forwardOffset = hitConfig != null ? hitConfig.ForwardOffset : 0f;
+        return origin + safeDirection * forwardOffset;
+    }
+
+    private bool SpawnHitbox(
         LightningSpearHitConfig hitConfig,
         AbilitySystem system,
         AbilitySpec spec,
@@ -1330,23 +1385,23 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWea
         HashSet<int> sharedHitTargetIds = null)
     {
         if (hitConfig == null || !hitConfig.HasHitbox || system == null || spec == null)
-            return;
+            return false;
 
         CombatHitPayload payload = hitConfig.BuildPayload(system, spec);
         if (payload == null)
-            return;
+            return false;
 
         Vector2 safeDirection = direction.sqrMagnitude > 0.0001f
             ? direction.normalized
             : ResolveAimDirection(system);
-        Vector2 center = origin + safeDirection * hitConfig.ForwardOffset;
+        Vector2 center = ResolveHitboxCenter(hitConfig, system, origin, safeDirection);
         int visualSideSign = facingSideSignOverride != 0
             ? (facingSideSignOverride < 0 ? -1 : 1)
             : ResolveFacingSideSign(system, safeDirection);
 
         MeleeHitboxActor hitbox = Instantiate(hitConfig.HitboxPrefab, center, Quaternion.identity);
         if (hitbox == null)
-            return;
+            return false;
 
         var context = new MeleeHitboxSpawnContext
         {
@@ -1368,6 +1423,7 @@ public sealed class LightningSpearRuntimeState : WeaponAbilityRuntimeState, IWea
         };
 
         hitbox.Setup(context);
+        return true;
     }
 
     private void RefreshMarkFeedback(LightningSpearLoadout loadout, LightningSpearSkill1Data data)

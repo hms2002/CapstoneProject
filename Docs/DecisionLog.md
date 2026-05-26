@@ -7,6 +7,58 @@ last_reviewed: 2026-05-26
 
 # Decision Log
 
+## 2026-05-26 - Tutorial Default Weapon Is Scene-Local
+
+Decision:
+Tutorial scenes that must force a basic starting weapon use a scene-authored `TutorialDefaultWeaponBootstrap` instead of changing global player spawn, save restore, or normal run loadout behavior.
+
+Reason:
+The tutorial needs a deterministic starting weapon, but that rule should not leak into normal corridor, hub, or boss entry. Running through `WeaponInventory2D.TrySetWeaponSlot(...)` and `Equip(...)` keeps weapon cleanup, ability ownership, stats, presentation, and inventory UI events on the existing weapon inventory path.
+
+Implications:
+- Tutorial scene authoring assigns the default `WeaponDefinition` directly on the bootstrap component.
+- Other weapon slots can be cleared by the bootstrap when the tutorial must start with only the default weapon.
+- The bootstrap changes the live runtime inventory for that session; if tutorial completion should transition into a different loadout policy, that later transition must reset or rebuild run state explicitly.
+
+## 2026-05-26 - Weapon Detail SFX Stay In Logic Data
+
+Decision:
+Weapon-specific sub-timing sounds for Flowering and Lightning Spear are authored on the weapon logic data that owns the timing, while `AbilityDefinition` audio fields remain the broad cast/commit/end phase slots.
+
+Reason:
+BloomSlash, cut-in reveal, dash slash, MarkRush, recovered spear, and MarkRain timings are not shared ability lifecycle phases. Keeping those `SoundRef` slots beside the timing data lets designers tune them without adding a new manager or overloading generic `AbilityDefinition` audio.
+
+Implications:
+- Weapon logic should route these detail sounds through `AbilityAudioRouter.PlayOneShotAtPosition(...)` so world-positioned effects use the same playback context shape.
+- Empty `SoundRef` values remain no-op defaults; adding the slots must not change existing sound behavior until keys are authored.
+- Basic attack step sounds and common `AbilityDefinition` audio slots remain separate and can intentionally overlap if both are configured.
+
+## 2026-05-26 - Common Demo Relics Stay Data-Centered
+
+Decision:
+Pre-demo common relic expansion is implemented as data-centered `RelicDefinition` / `RelicLogic` assets with small reusable runtime logic only for generic timed-event and health-ratio stat modifiers. Boss-target-specific and critical-kill relics stay out of this slice.
+
+Reason:
+The June 2 demo needs many stable, drop-ready relics without widening combat damage routing, boss identity checks, or kill-event payload contracts. Keeping the v1 relics at `maxLevel = 1`, `dropLevel = 1`, and default-unlocked reduces balance and verification load.
+
+Implications:
+- `결투자의 인장` remains deferred until boss target classification and damage calculation routing are reviewed.
+- `처형자의 동전` remains deferred until `KillConfirmed` or an equivalent event carries critical-hit context.
+- New pre-demo common relics should prefer existing stat attributes and shared `RelicLogic` assets over one-off code.
+
+## 2026-05-26 - Tutorial Boss Encounter Uses Presentation-Only Failure
+
+Decision:
+Tutorial boss encounter support uses scene-authored presentation scripts for lasers, HP loss, collapse, and fake game-over. The scripted lasers reduce `TutorialPresentationHpView` only, and fake game-over calls `GameOverPresentationController.TryShow(...)` with `EndRunOnReturn = false`.
+
+Reason:
+The tutorial needs to teach a forced failure beat without mutating real player HP, triggering real death components, or ending the active run. Keeping the sequence presentation-only lets the same authored UI and game-over presentation be reused while avoiding save/runtime side effects.
+
+Implications:
+- Tutorial boss Ink uses a dedicated `NPCData` plus explicit first/second Ink TextAssets on `TutorialBossEncounterSequence`; it does not use `BossDialogueRunner` encounter progress.
+- Hit, collapse, sound, and VFX timing are exposed as UnityEvents for scene authoring.
+- Real damage/death/run-end systems should not be connected to the tutorial laser flow unless a later design explicitly changes the tutorial from scripted presentation to real combat.
+
 ## 2026-05-26 - Flowering Bloom Cut-in Reveal Uses Weapon Animation Event
 
 Decision:

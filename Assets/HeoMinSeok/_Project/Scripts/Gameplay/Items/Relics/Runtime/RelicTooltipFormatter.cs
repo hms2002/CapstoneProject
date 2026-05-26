@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityGAS;
 
 /// <summary>
 /// 책임 :
@@ -8,6 +9,27 @@ using UnityEngine;
 /// </summary>
 public static class RelicTooltipFormatter
 {
+    private static readonly string[] PercentDisplayNames =
+    {
+        "이동속도",
+        "공격속도",
+        "회피율",
+        "치명타 확률",
+        "치명타 피해",
+        "MoveSpeed",
+        "Move Speed",
+        "AttackSpeed",
+        "Attack Speed",
+        "Evasion",
+        "CritChance",
+        "CriticalChance",
+        "Critical Chance",
+        "CritMultiplier",
+        "CriticalDamage",
+        "Critical Damage",
+        "Crit Damage"
+    };
+
     public static float EvaluateLeveledValue(float baseValue, List<float> valuesByLevel, int level)
     {
         if (level < 1)
@@ -36,6 +58,33 @@ public static class RelicTooltipFormatter
             return "{neg:" + raw + "}";
 
         return raw;
+    }
+
+    public static bool ShouldDisplayAsPercent(
+        AttributeDefinition attribute,
+        string displayName,
+        ModifierType modifierType)
+    {
+        if (modifierType == ModifierType.Percent)
+            return true;
+
+        return IsPercentDisplayName(displayName)
+            || IsPercentDisplayName(attribute != null ? attribute.attributeName : null)
+            || IsPercentDisplayName(attribute != null ? attribute.name : null);
+    }
+
+    private static bool IsPercentDisplayName(string text)
+    {
+        if (string.IsNullOrWhiteSpace(text))
+            return false;
+
+        for (int i = 0; i < PercentDisplayNames.Length; i++)
+        {
+            if (text.Contains(PercentDisplayNames[i], System.StringComparison.OrdinalIgnoreCase))
+                return true;
+        }
+
+        return false;
     }
 
     public static string FormatUnsignedValueToken(float value, bool isPercent)

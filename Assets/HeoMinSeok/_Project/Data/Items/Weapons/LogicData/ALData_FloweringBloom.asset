@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 062a3326141e44558866974139586d13, type: 3}
   m_Name: ALData_FloweringBloom
   m_EditorClassIdentifier: 
-  durationSeconds: 3
+  durationSeconds: 15
   killExtensionSeconds: 1
   dashAbility: {fileID: 11400000, guid: dadc84cd2fffcae45905741575af20c3, type: 2}
   normalDamageAddAttribute: {fileID: 11400000, guid: 4b6e7cdf4c89b0b44adad24835703fdc, type: 2}
@@ -40,6 +40,26 @@ MonoBehaviour:
   finalShakeAmplitude: 1.25
   zoomShakeAmplitude: 0.22
   zoomShakeIntervalSeconds: 0.055
+  cutInOpenSound:
+    key: ""
+    volumeMultiplier: 0
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  weaponRevealInSound:
+    key: ""
+    volumeMultiplier: 0
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  weaponRevealOutSound:
+    key: ""
+    volumeMultiplier: 0
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  finalShakeSound:
+    key: ""
+    volumeMultiplier: 0
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
   worldDimSortingLayerName: Entity
   worldDimSortingOrder: -1
   worldDimCameraPadding: 1.2
@@ -71,10 +91,10 @@ MonoBehaviour:
   weaponRevealSeconds: 0.9
   weaponRevealOutSeconds: 0.2
   weaponRevealUvDirection: {x: -1, y: 1}
-  weaponRevealFeather: 0
+  weaponRevealFeather: 0.128
   weaponRevealMaskLocalDirection: {x: -1, y: 1}
-  weaponRevealMaskAlphaCutoff: 0.5
-  weaponRevealMaskPadding: 0.1
+  weaponRevealMaskAlphaCutoff: 1
+  weaponRevealMaskPadding: 0
   weaponRevealMaskWidthMultiplier: 1.25
   bloomStatusDefinition: {fileID: 11400000, guid: 7fac5e14458643cba83a84793d2a1a0a, type: 2}
   bloomStatusIcon: {fileID: 21300000, guid: a99578084c43ee442bdee25e29041870, type: 3}
@@ -118,5 +138,10 @@ MonoBehaviour:
   dashSlashParticlePrefab: {fileID: 7504802840108214165, guid: cf510ff300e13494c98c0d4aed66f896, type: 3}
   weaponRevealParticlePrefab: {fileID: 8672368362208833670, guid: f03b83a7062684245ba7d9af3371e11d, type: 3}
   finalShakeParticlePrefab: {fileID: 7504802840108214165, guid: cf510ff300e13494c98c0d4aed66f896, type: 3}
+  dashSlashSound:
+    key: ""
+    volumeMultiplier: 0
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
   particleLifetimeFallback: 1
   particleSortingOrderOffset: 40

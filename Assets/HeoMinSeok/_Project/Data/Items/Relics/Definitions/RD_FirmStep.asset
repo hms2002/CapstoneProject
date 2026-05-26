@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ac1da532121a934bb7f57799b194806, type: 3}
+  m_Name: RD_FirmStep
+  m_EditorClassIdentifier: 
+  relicId: RD_FirmStep
+  displayName: "\uAD73\uC13C \uBC1C\uAC78\uC74C"
+  icon: {fileID: -8815494589321632592, guid: 21b9f59aa21a76448a3d5baf5a6a2d8f, type: 3}
+  rarity: 0
+  description: "\uB109\uBC31 \uC800\uD56D\uC774 \uC99D\uAC00\uD569\uB2C8\uB2E4."
+  maxLevel: 1
+  dropLevel: 1
+  logic: {fileID: 11400000, guid: 4778f2d87b1a49cba5c7f18bc60fd7bd, type: 2}
+  param: {fileID: 0}
