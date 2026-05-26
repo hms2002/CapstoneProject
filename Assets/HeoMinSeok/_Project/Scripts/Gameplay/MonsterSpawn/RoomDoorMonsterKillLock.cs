@@ -17,6 +17,8 @@ public sealed class RoomDoorMonsterKillLock : MonoBehaviour
     [Header("Room")]
     [SerializeField] private MonsterSpawnRoomGroup targetRoomGroup;
     [SerializeField] private bool requireTrackedMonstersInsideBeforeClose = true;
+    [Tooltip("몬스터가 방 밖에 감지되어도 이 시간 동안 상태가 유지될 때만 문을 다시 엽니다. 분열/점프 착지 전 순간적인 외부 판정을 흡수합니다.")]
+    [SerializeField, Min(0f)] private float openForOutsideMonsterDelaySeconds = 0.35f;
     [Tooltip("몬스터 수가 0이 된 뒤 이 시간 동안 추가 등록이 없을 때만 문을 엽니다. 슬라임 분열처럼 사망 직후 자식 등록 전 공백을 흡수합니다.")]
     [SerializeField, Min(0f)] private float openAfterAllClearedDelaySeconds = 0.35f;
 
@@ -31,6 +33,7 @@ public sealed class RoomDoorMonsterKillLock : MonoBehaviour
     private bool registeredWithRoomGroup;
     private MonsterRoomArea2D cachedRoomArea;
     private float allClearedStableSince = -1f;
+    private float outsideMonsterStableSince = -1f;
 
     public bool RoomEntered => roomEntered;
     public bool EncounterEntered => roomEntered;
@@ -176,12 +179,14 @@ public sealed class RoomDoorMonsterKillLock : MonoBehaviour
         if (!roomEntered)
         {
             ResetAllClearedDelay();
+            ResetOutsideMonsterDelay();
             OpenDoorIfNeeded(playPresentation: doorClosedByLock);
             return;
         }
 
         if (remainingCount <= 0)
         {
+            ResetOutsideMonsterDelay();
             if (ShouldDelayOpeningAfterAllCleared())
                 return;
 
@@ -190,12 +195,16 @@ public sealed class RoomDoorMonsterKillLock : MonoBehaviour
         }
 
         ResetAllClearedDelay();
-        if (ShouldKeepDoorOpenForOutsideMonsters())
+        if (ShouldKeepDoorOpenForOutsideMonsters(out string outsideMonsterName))
         {
+            if (ShouldDelayOpeningForOutsideMonster(outsideMonsterName))
+                return;
+
             OpenDoorIfNeeded(playPresentation: doorClosedByLock);
             return;
         }
 
+        ResetOutsideMonsterDelay();
         CloseDoorIfNeeded();
     }
 
@@ -260,11 +269,37 @@ public sealed class RoomDoorMonsterKillLock : MonoBehaviour
 
     /// <summary>
     /// 책임:
+    /// - 몬스터가 방 밖으로 감지된 뒤 짧은 안정화 시간을 둬 순간적인 분열/점프 위치 오차로 문이 열리는 일을 막는다.
+    /// </summary>
+    private bool ShouldDelayOpeningForOutsideMonster(string outsideMonsterName)
+    {
+        if (!doorClosedByLock || openForOutsideMonsterDelaySeconds <= 0f)
+            return false;
+
+        if (outsideMonsterStableSince < 0f)
+        {
+            outsideMonsterStableSince = Time.time;
+            LogDebug($"Outside monster '{outsideMonsterName}' detected. Waiting {openForOutsideMonsterDelaySeconds:0.###}s before opening door.");
+            return true;
+        }
+
+        return Time.time - outsideMonsterStableSince < openForOutsideMonsterDelaySeconds;
+    }
+
+    private void ResetOutsideMonsterDelay()
+    {
+        outsideMonsterStableSince = -1f;
+    }
+
+    /// <summary>
+    /// 책임:
     /// - 방 밖으로 유인된 몬스터가 문에 막혀 전투에 복귀하지 못하는 상황을 방지한다.
     /// - 방 영역 정보가 없으면 기존 문 닫힘 규칙을 유지해 authoring 누락이 전투를 영구 개방하지 않게 한다.
     /// </summary>
-    private bool ShouldKeepDoorOpenForOutsideMonsters()
+    private bool ShouldKeepDoorOpenForOutsideMonsters(out string outsideMonsterName)
     {
+        outsideMonsterName = string.Empty;
+
         if (!requireTrackedMonstersInsideBeforeClose)
             return false;
 
@@ -280,7 +315,8 @@ public sealed class RoomDoorMonsterKillLock : MonoBehaviour
 
             if (!roomArea.Contains(monster.transform.position))
             {
-                LogDebug($"Keeping door open because '{monster.name}' is outside room area.");
+                outsideMonsterName = monster.name;
+                LogDebug($"Keeping door open because '{outsideMonsterName}' is outside room area.");
                 return true;
             }
         }

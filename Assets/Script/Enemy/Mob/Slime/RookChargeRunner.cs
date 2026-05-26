@@ -19,6 +19,9 @@ public class RookChargeRunner : MonoBehaviour, IMobPatternRunner, IMobPresentati
     [SerializeField] private AttackTelegraphService telegraphService;
     [SerializeField] private GameplayTag staggerImmuneTag;
 
+    [Header("Safety")]
+    [SerializeField, Min(0.1f)] private float maxDashDurationSeconds = 3f;
+
     [Header("Dash VFX")]
     [SerializeField] private GameObject dashDustEffectPrefab;
     [SerializeField] private Transform dashDustAnchor;
@@ -331,7 +334,7 @@ public class RookChargeRunner : MonoBehaviour, IMobPatternRunner, IMobPresentati
     {
         if (motionController == null) return;
 
-        float dashTime = owner.GetDashTime(context.DashSpeed, context.DashDistance);
+        float dashTime = ResolveSafeDashDuration(context);
         if (dashTime <= 0f) return;
 
         isDashing = true;
@@ -341,6 +344,16 @@ public class RookChargeRunner : MonoBehaviour, IMobPatternRunner, IMobPresentati
         owner.SetChargeAnimationActive(true);
         motionController.StartDash(context.Direction, context.DashSpeed, dashTime);
         SpawnDashDustEffect(context.Direction);
+    }
+
+    /// <summary>룩 돌진이 예외 상황에서 너무 오래 유지되지 않도록 실제 dash duration을 안전 상한으로 제한합니다.</summary>
+    private float ResolveSafeDashDuration(Rook.ChargeContext context)
+    {
+        float authoredDashTime = owner.GetDashTime(context.DashSpeed, context.DashDistance);
+        if (authoredDashTime <= 0f)
+            return 0f;
+
+        return Mathf.Min(authoredDashTime, Mathf.Max(0.1f, maxDashDurationSeconds));
     }
 
     /// <summary>룩의 현재 돌진을 강제로 멈춥니다.</summary>

@@ -173,6 +173,7 @@ MonoBehaviour:
   abilityCoordinator: {fileID: 0}
   telegraphService: {fileID: 0}
   staggerImmuneTag: {fileID: 11400000, guid: 08d30921786c4e4ebbe5fd1efb862613, type: 2}
+  maxDashDurationSeconds: 3
   dashDustEffectPrefab: {fileID: 6718438523550872990, guid: a377460fdf422a74f98915cf652001d4, type: 3}
   dashDustAnchor: {fileID: 0}
   dashDustLocalOffset: {x: 0, y: 0}
