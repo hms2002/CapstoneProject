@@ -1,12 +1,6 @@
 {
     "sessions": [
         {
-            "sessionId": "f9350360b82645a0adbf194dbeae6f95",
-            "startedUtc": "2026-05-25T11:01:25.3601792Z",
-            "endedUtc": "2026-05-25T11:01:26.4821428Z",
-            "entries": []
-        },
-        {
             "sessionId": "db9395fc7316441ca2a9a55597b54496",
             "startedUtc": "2026-05-25T11:02:41.1051091Z",
             "endedUtc": "2026-05-25T11:02:42.1943952Z",
@@ -291,6 +285,33 @@
                     "coldSpawns": 1,
                     "firstSeenSeconds": 130.4596710205078,
                     "lastSeenSeconds": 133.68577575683595,
+                    "firstSceneName": "HeoMinSeok_Boss_Dragon_Spili",
+                    "lastSceneName": "HeoMinSeok_Boss_Dragon_Spili"
+                }
+            ]
+        },
+        {
+            "sessionId": "b7c7de39b35b41c18489b76e7f727da9",
+            "startedUtc": "2026-05-26T00:14:55.3141400Z",
+            "endedUtc": "2026-05-26T00:22:25.4673265Z",
+            "entries": [
+                {
+                    "prefabPath": "Assets/Prefabs/VFX/PF_DrunkenDragon_InhaleWind.prefab",
+                    "prefabName": "PF_DrunkenDragon_InhaleWind",
+                    "totalSpawns": 2,
+                    "coldSpawns": 1,
+                    "firstSeenSeconds": 446.7481689453125,
+                    "lastSeenSeconds": 450.1473693847656,
+                    "firstSceneName": "HeoMinSeok_Boss_Dragon_Spili",
+                    "lastSceneName": "HeoMinSeok_Boss_Dragon_Spili"
+                },
+                {
+                    "prefabPath": "Assets/Prefabs/VFX/PF_DrunkenDragon_KegImpactSplash.prefab",
+                    "prefabName": "PF_DrunkenDragon_KegImpactSplash",
+                    "totalSpawns": 1,
+                    "coldSpawns": 1,
+                    "firstSeenSeconds": 445.51800537109377,
+                    "lastSeenSeconds": 445.5181884765625,
                     "firstSceneName": "HeoMinSeok_Boss_Dragon_Spili",
                     "lastSceneName": "HeoMinSeok_Boss_Dragon_Spili"
                 }
