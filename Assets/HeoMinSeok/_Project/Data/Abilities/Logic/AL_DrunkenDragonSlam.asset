@@ -159,8 +159,8 @@ MonoBehaviour:
   scatteredKegTravelSeconds: 0.35
   scatteredKegDropHeight: 2.2
   scatteredKegSpinDegrees: 420
-  scatteredKegTelegraphDiameter: 2.4
-  scatteredKegMissedDamageRadius: 1.2
+  scatteredKegTelegraphDiameter: 4.8
+  scatteredKegMissedDamageRadius: 2.4
   scatteredKegImpactPresentation:
     sound:
       key: 

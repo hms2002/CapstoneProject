@@ -5619,7 +5619,7 @@ ParticleSystem:
     sphericalDirectionAmount: 0
     randomPositionAmount: 0
     radius:
-      value: 1.107
+      value: 2.214
       mode: 0
       spread: 0
       speed:
@@ -9752,8 +9752,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 19a1faa29da523b44b0083c4027a2786, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UnityGAS.AlcoholPuddleArea
-  groundRadius: 1.35
+  groundRadius: 2.7
   projectileRadius: 0.5
+  ignitionContactRadiusScale: 0.85
   groundCollider: {fileID: 2683093073263352051}
   projectileCollider: {fileID: 1351201004699082590}
   absorbMoveSpeed: 5
@@ -9807,7 +9808,7 @@ CircleCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_Radius: 1.35
+  m_Radius: 2.7
 --- !u!50 &654556819262975831
 Rigidbody2D:
   serializedVersion: 5
@@ -9933,7 +9934,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 2.97, y: 2.97, z: 2.97}
+  m_LocalScale: {x: 5.94, y: 5.94, z: 5.94}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2291001931328513163}

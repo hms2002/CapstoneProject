@@ -44,6 +44,13 @@ public sealed class AbilityLogic_DrunkenDragonDashCombo : AbilityLogic
     [SerializeField] private WorldPresentationHook dashAttackPresentation;
     [SerializeField] private WorldPresentationHook dashHitPresentation;
 
+    [Header("Afterimage")]
+    [SerializeField] private bool enableDashAfterimage = true;
+    [SerializeField, Min(0.01f)] private float afterimageEmissionInterval = 0.035f;
+    [SerializeField, Min(0.01f)] private float afterimageLifetimeSeconds = 0.18f;
+    [SerializeField] private Color afterimageColor = new(1f, 0.35f, 0.18f, 0.42f);
+    [SerializeField] private bool clearAfterimagesOnCancel;
+
     public override IEnumerator Activate(AbilitySystem system, AbilitySpec spec, GameObject initialTarget)
     {
         DrunkenDragonController dragon = system != null ? system.GetComponent<DrunkenDragonController>() : null;
@@ -112,6 +119,7 @@ public sealed class AbilityLogic_DrunkenDragonDashCombo : AbilityLogic
         }
         finally
         {
+            StopDashAfterimage(dragon, IsAbilityCancelled(spec) && clearAfterimagesOnCancel);
             telegraphService?.HideCurrent();
             damagedTargets.Clear();
         }
@@ -132,11 +140,14 @@ public sealed class AbilityLogic_DrunkenDragonDashCombo : AbilityLogic
 
         try
         {
+            BeginDashAfterimage(dragon);
             motion?.StartLunge(start, direction, distance, duration);
             yield return TickDashContactDamage(dragon, direction, resolvedHitWidth, duration, spec);
         }
         finally
         {
+            StopDashAfterimage(dragon, IsAbilityCancelled(spec) && clearAfterimagesOnCancel);
+
             if (IsAbilityCancelled(spec))
                 motion?.CancelMotion();
 
@@ -342,6 +353,41 @@ public sealed class AbilityLogic_DrunkenDragonDashCombo : AbilityLogic
                 target: targetRoot,
                 sourceObject: this,
                 rotation: Quaternion.Euler(0f, 0f, angleDeg)));
+    }
+
+    /// <summary>
+    /// 책임:
+    /// 실제 돌진 이동 구간에만 취룡 본체 SpriteRenderer 잔상 방출을 시작한다.
+    /// </summary>
+    private void BeginDashAfterimage(DrunkenDragonController dragon)
+    {
+        if (!enableDashAfterimage || dragon == null)
+            return;
+
+        SpriteAfterimageEmitter2D emitter = dragon.GetComponent<SpriteAfterimageEmitter2D>();
+        if (emitter == null)
+            emitter = dragon.gameObject.AddComponent<SpriteAfterimageEmitter2D>();
+
+        Transform sourceRoot = dragon.BodyVisualRoot != null ? dragon.BodyVisualRoot : dragon.transform;
+        emitter.Begin(sourceRoot, afterimageEmissionInterval, afterimageLifetimeSeconds, afterimageColor);
+    }
+
+    /// <summary>
+    /// 책임:
+    /// 돌진 잔상 생성을 멈추고, 강제 취소 정책에 따라 이미 생성된 잔상까지 정리한다.
+    /// </summary>
+    private static void StopDashAfterimage(DrunkenDragonController dragon, bool clearGhosts)
+    {
+        if (dragon == null)
+            return;
+
+        SpriteAfterimageEmitter2D emitter = dragon.GetComponent<SpriteAfterimageEmitter2D>();
+        if (emitter == null)
+            return;
+
+        emitter.StopEmission();
+        if (clearGhosts)
+            emitter.ClearSpawnedGhosts();
     }
 
     private LayerMask ResolveTargetMask(DrunkenDragonController dragon)

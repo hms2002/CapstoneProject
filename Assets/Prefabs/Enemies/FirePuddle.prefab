@@ -30,7 +30,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 2.97, y: 2.97, z: 2.97}
+  m_LocalScale: {x: 5.94, y: 5.94, z: 5.94}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4823867137427523623}
@@ -920,7 +920,7 @@ ParticleSystem:
     sphericalDirectionAmount: 0
     randomPositionAmount: 0
     radius:
-      value: 1.215
+      value: 2.43
       mode: 0
       spread: 0
       speed:
@@ -5756,7 +5756,7 @@ ParticleSystem:
     sphericalDirectionAmount: 0
     randomPositionAmount: 0
     radius:
-      value: 1.215
+      value: 2.43
       mode: 0
       spread: 0
       speed:
@@ -10592,7 +10592,7 @@ ParticleSystem:
     sphericalDirectionAmount: 0
     randomPositionAmount: 0
     radius:
-      value: 1.215
+      value: 2.43
       mode: 0
       spread: 0
       speed:
@@ -20400,7 +20400,7 @@ ParticleSystem:
     sphericalDirectionAmount: 0
     randomPositionAmount: 0
     radius:
-      value: 1.215
+      value: 2.43
       mode: 0
       spread: 0
       speed:
@@ -24556,7 +24556,7 @@ CircleCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_Radius: 1.35
+  m_Radius: 2.7
 --- !u!50 &1057287827768813349
 Rigidbody2D:
   serializedVersion: 5
@@ -24596,8 +24596,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee9a4f9c501ed804d8c5a3f5fced122d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UnityGAS.FirePuddleArea
-  groundRadius: 1.35
+  groundRadius: 2.7
   projectileRadius: 0.5
+  ignitionContactRadiusScale: 0.85
   groundCollider: {fileID: 8447482724659118158}
   projectileCollider: {fileID: 7180248656314881103}
   absorbMoveSpeed: 5

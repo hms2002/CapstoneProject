@@ -35993,7 +35993,7 @@ MonoBehaviour:
   heartContainer: {fileID: 7933390349864068690}
   filledHeartSprite: {fileID: 6435912432560062591, guid: e75f469ea29530246a4a0543396316af, type: 3}
   emptyHeartSprite: {fileID: 2501108752766977309, guid: e75f469ea29530246a4a0543396316af, type: 3}
-  soulHeartSprite: {fileID: 21300000, guid: 5942fd97166d5fb49b1047c559c09e59, type: 3}
+  soulHeartSprite: {fileID: 1520901937, guid: d8ea97f098c5b0f4daafdae1493166cd, type: 3}
   normalHeartColor: {r: 1, g: 1, b: 1, a: 1}
   soulHeartColor: {r: 1, g: 1, b: 1, a: 1}
   healthPerHeart: 1

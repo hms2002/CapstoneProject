@@ -102,14 +102,19 @@ namespace UnityGAS
                 overlappingTargets.Remove(target);
         }
 
-        private static void TryIgniteAlcohol(Collider2D other)
+        private void TryIgniteAlcohol(Collider2D other)
         {
             if (other == null)
                 return;
 
             AlcoholPuddleArea alcohol = other.GetComponentInParent<AlcoholPuddleArea>();
-            if (alcohol != null)
-                alcohol.RequestIgnite();
+            if (alcohol == null)
+                return;
+
+            if (!PuddleManager.AreIgnitionContactAreasOverlapping(this, alcohol))
+                return;
+
+            alcohol.RequestIgnite();
         }
 
         private IEnumerator IgniteDirectOverlappingAlcoholNextFrame()

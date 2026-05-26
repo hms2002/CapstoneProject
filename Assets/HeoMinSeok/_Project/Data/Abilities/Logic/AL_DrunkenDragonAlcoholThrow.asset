@@ -22,7 +22,7 @@ MonoBehaviour:
   kegDamageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
   kegDamageAmount: 1
   kegKnockbackImpulse: 0
-  missedImpactDamageRadius: 1.35
+  missedImpactDamageRadius: 2.7
   kegImpactPresentation:
     sound:
       key: 
@@ -57,5 +57,5 @@ MonoBehaviour:
   impactWarningSeconds: 0.45
   impactTelegraphStyle: {fileID: 11400000, guid: b15f18602ec87284d80cbd57720425f1, type: 2}
   aimLineTelegraphStyle: {fileID: 0}
-  telegraphDiameter: 2.7
+  telegraphDiameter: 5.4
   aimLineWidth: 0.08

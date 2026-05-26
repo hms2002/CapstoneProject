@@ -26,7 +26,7 @@ public sealed class AbilityLogic_DrunkenDragonAlcoholThrow : AbilityLogic
     [SerializeField] private GE_Damage_Spec kegDamageEffect;
     [SerializeField, Min(0f)] private float kegDamageAmount = 1f;
     [SerializeField, Min(0f)] private float kegKnockbackImpulse;
-    [SerializeField, Min(0f)] private float missedImpactDamageRadius = 1.35f;
+    [SerializeField, Min(0f)] private float missedImpactDamageRadius = 2.7f;
 
     [Header("Impact Presentation")]
     [SerializeField] private WorldPresentationHook kegImpactPresentation;
@@ -38,7 +38,7 @@ public sealed class AbilityLogic_DrunkenDragonAlcoholThrow : AbilityLogic
     [Header("Telegraph")]
     [SerializeField] private AttackTelegraphStyle impactTelegraphStyle;
     [SerializeField] private AttackTelegraphStyle aimLineTelegraphStyle;
-    [SerializeField, Min(0.1f)] private float telegraphDiameter = 2.7f;
+    [SerializeField, Min(0.1f)] private float telegraphDiameter = 5.4f;
     [SerializeField, Min(0.02f)] private float aimLineWidth = 0.08f;
 
     public override IEnumerator Activate(AbilitySystem system, AbilitySpec spec, GameObject initialTarget)

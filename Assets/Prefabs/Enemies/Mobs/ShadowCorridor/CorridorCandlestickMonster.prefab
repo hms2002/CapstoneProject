@@ -299,11 +299,8 @@ MonoBehaviour:
     m_Bits: 4294967295
   chaseIntent: {fileID: 4498329263665203074}
   logMobFsmDebug: 0
-  deathIgnitionRadius: 1.5
-  igniteAlcoholPuddlesOnDeath: 1
-  deathIgnitionStartDelay: 0.02
-  deathIgnitionScanDuration: 0.2
-  deathIgnitionScanInterval: 0.03
+  igniteAlcoholPuddlesOnContact: 1
+  contactIgnitionInterval: 0.1
 --- !u!114 &7001000000000000001
 MonoBehaviour:
   m_ObjectHideFlags: 0

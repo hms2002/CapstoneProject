@@ -57,8 +57,8 @@ public sealed class AbilityLogic_DrunkenDragonSlam : AbilityLogic
     [SerializeField, Min(0.01f)] private float scatteredKegTravelSeconds = 0.35f;
     [SerializeField, Min(0f)] private float scatteredKegDropHeight = 2.2f;
     [SerializeField] private float scatteredKegSpinDegrees = 420f;
-    [SerializeField, Min(0.1f)] private float scatteredKegTelegraphDiameter = 2.4f;
-    [SerializeField, Min(0f)] private float scatteredKegMissedDamageRadius = 1.2f;
+    [SerializeField, Min(0.1f)] private float scatteredKegTelegraphDiameter = 4.8f;
+    [SerializeField, Min(0f)] private float scatteredKegMissedDamageRadius = 2.4f;
 
     [Header("Scattered Keg Presentation")]
     [SerializeField] private WorldPresentationHook scatteredKegImpactPresentation;
