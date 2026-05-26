@@ -1,3 +1,4 @@
+using CapstoneAudio;
 using UnityEngine;
 using UnityGAS;
 
@@ -27,6 +28,10 @@ public sealed class FloweringAttackData : ScriptableObject
     [Header("Bloom Attack Particle")]
     [SerializeField] private GameObject bloomSlashParticlePrefab;
     [SerializeField, Min(0.01f)] private float bloomSlashParticleLifetimeFallback = 1f;
+
+    [Header("Bloom Attack Sound")]
+    [SerializeField] private SoundRef bloomSlashSound;
+    [SerializeField] private SoundRef[] bloomSlashSoundsByHitboxVariant = new SoundRef[0];
 
     [Header("Damage")]
     [SerializeField] private UnityGAS.DamagePayloadConfig damageConfig = new();
@@ -58,6 +63,7 @@ public sealed class FloweringAttackData : ScriptableObject
     public string AnimationTrigger => animationTrigger;
     public GameObject BloomSlashParticlePrefab => bloomSlashParticlePrefab;
     public float BloomSlashParticleLifetimeFallback => Mathf.Max(0.01f, bloomSlashParticleLifetimeFallback);
+    public SoundRef BloomSlashSound => bloomSlashSound;
     public UnityGAS.DamagePayloadConfig DamageConfig => damageConfig;
     public GameplayEffect DamageEffect => damageEffect;
     public GE_Knockback_Spec KnockbackEffect => knockbackEffect;
@@ -94,6 +100,19 @@ public sealed class FloweringAttackData : ScriptableObject
         }
 
         return animationTrigger;
+    }
+
+    public SoundRef GetBloomSlashSoundForVariant(int variantIndex)
+    {
+        if (variantIndex >= 0
+            && bloomSlashSoundsByHitboxVariant != null
+            && variantIndex < bloomSlashSoundsByHitboxVariant.Length
+            && bloomSlashSoundsByHitboxVariant[variantIndex].IsSet)
+        {
+            return bloomSlashSoundsByHitboxVariant[variantIndex];
+        }
+
+        return bloomSlashSound;
     }
 
     private int GetHitboxVariantCount()

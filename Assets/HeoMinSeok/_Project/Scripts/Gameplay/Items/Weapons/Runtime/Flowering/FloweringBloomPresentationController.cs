@@ -86,6 +86,12 @@ public sealed class FloweringBloomPresentationController : MonoBehaviour
         CacheCameraLens();
 
         PlayShake(system, data.OpeningShakeAmplitude, "Flowering Bloom open");
+        AbilityAudioRouter.PlayOneShotAtPosition(
+            data.CutInOpenSound,
+            system,
+            spec,
+            ResolvePlayerCenter(),
+            data);
 
         playerCutInCoroutine = StartCoroutine(PlayPlayerTintInAndEyeFlash(spec));
         Coroutine tintIn = playerCutInCoroutine;
@@ -119,6 +125,12 @@ public sealed class FloweringBloomPresentationController : MonoBehaviour
         StopEyeFlash();
         RestorePlayerCutInVisual();
         SpawnFinalShakeParticle();
+        AbilityAudioRouter.PlayOneShotAtPosition(
+            data.FinalShakeSound,
+            system,
+            spec,
+            ResolvePlayerCenter(),
+            data);
         PlayShake(system, data.FinalShakeAmplitude, "Flowering Bloom close");
         SetWorldDimAlpha(0f);
         RestoreCameraZoom();
@@ -128,7 +140,7 @@ public sealed class FloweringBloomPresentationController : MonoBehaviour
     {
         data = bloomData;
         StopWeaponReveal();
-        yield return PlayWeaponReveal(active: false, spec);
+        yield return PlayWeaponReveal(active: false, spec, ResolveAbilitySystem());
     }
 
     public void BeginActiveBloom(FloweringBloomData bloomData)
@@ -747,7 +759,7 @@ public sealed class FloweringBloomPresentationController : MonoBehaviour
     private void StartWeaponReveal(bool active, AbilitySpec spec)
     {
         StopWeaponReveal();
-        weaponRevealCoroutine = StartCoroutine(PlayWeaponReveal(active, spec));
+        weaponRevealCoroutine = StartCoroutine(PlayWeaponReveal(active, spec, ResolveAbilitySystem()));
     }
 
     private void StartWeaponRevealOnAnimationEvent(AbilitySystem system, AbilitySpec spec)
@@ -761,7 +773,7 @@ public sealed class FloweringBloomPresentationController : MonoBehaviour
         return active ? data.WeaponRevealInSeconds : data.WeaponRevealOutSeconds;
     }
 
-    private IEnumerator PlayWeaponReveal(bool active, AbilitySpec spec)
+    private IEnumerator PlayWeaponReveal(bool active, AbilitySpec spec, AbilitySystem system = null)
     {
         if (owner == null || data == null || data.WeaponInactiveSprite == null || data.WeaponBloomSprite == null)
         {
@@ -787,6 +799,8 @@ public sealed class FloweringBloomPresentationController : MonoBehaviour
             weaponRevealCoroutine = null;
             yield break;
         }
+
+        PlayWeaponRevealSound(active, system, spec);
 
         float elapsed = 0f;
         SetWeaponRevealProgress(0f);
@@ -820,7 +834,7 @@ public sealed class FloweringBloomPresentationController : MonoBehaviour
             yield break;
         }
 
-        yield return PlayWeaponReveal(active: true, spec);
+        yield return PlayWeaponReveal(active: true, spec, system);
     }
 
     private IEnumerator WaitForWeaponRevealEventOrDelay(AbilitySystem system, AbilitySpec spec)
@@ -1107,6 +1121,36 @@ public sealed class FloweringBloomPresentationController : MonoBehaviour
         ApplyRendererSortingOrderOffset(particle, data.ParticleSortingOrderOffset);
         finalShakeParticleObjects.Add(particle);
         Destroy(particle, data.ParticleLifetimeFallback);
+    }
+
+    private AbilitySystem ResolveAbilitySystem()
+    {
+        return owner != null ? owner.GetComponent<AbilitySystem>() : null;
+    }
+
+    private void PlayWeaponRevealSound(bool active, AbilitySystem system, AbilitySpec spec)
+    {
+        if (data == null)
+            return;
+
+        AbilityAudioRouter.PlayOneShotAtPosition(
+            active ? data.WeaponRevealInSound : data.WeaponRevealOutSound,
+            system,
+            spec,
+            ResolveWeaponRevealSoundPosition(),
+            data);
+    }
+
+    private Vector3 ResolveWeaponRevealSoundPosition()
+    {
+        for (int i = 0; i < weaponRevealOverlays.Count; i++)
+        {
+            GameObject root = weaponRevealOverlays[i].Root;
+            if (root != null)
+                return root.transform.position;
+        }
+
+        return ResolvePlayerCenter();
     }
 
     private Vector3 ResolvePlayerCenter()

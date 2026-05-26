@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ac1da532121a934bb7f57799b194806, type: 3}
+  m_Name: RD_HeavyBracelet
+  m_EditorClassIdentifier: 
+  relicId: RD_HeavyBracelet
+  displayName: "\uBB34\uAC70\uC6B4 \uD314\uCC0C"
+  icon: {fileID: 6752461376909513456, guid: 21b9f59aa21a76448a3d5baf5a6a2d8f, type: 3}
+  rarity: 1
+  description: "\uC774\uB3D9\uC18D\uB3C4\uAC00 \uAC10\uC18C\uD558\uC9C0\uB9CC \uACF5\uACA9\uB825\uC774
+    \uD06C\uAC8C \uC99D\uAC00\uD569\uB2C8\uB2E4."
+  maxLevel: 1
+  dropLevel: 1
+  logic: {fileID: 11400000, guid: f6f4ed2e6a75450a9200b6c6db29ef75, type: 2}
+  param: {fileID: 0}

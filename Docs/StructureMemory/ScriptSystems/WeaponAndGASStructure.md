@@ -133,6 +133,12 @@ The concrete risks are narrower than a full combat rewrite.
 - The current cue map resolves `Default`, `Slash`, and `Blow` to `Cue.Ability.Sword.Hit` because `SlashHit` is the only finished hit-impact cue. `None` suppresses the automatic cue. Future `BlowHit` should update the router mapping without moving the authoring owner out of ALData.
 - Existing explicit additions such as hit spark and camera shake still run through the `AbilityDefinition` cue list. If an explicit cue is the same as the automatic hit-impact cue, the router skips the automatic duplicate.
 
+### Weapon Detail Audio Hooks
+
+- `AbilityDefinition` audio fields remain broad lifecycle slots. Weapon-specific sub-timing sounds are authored on the logic data that owns the timing and are played through `AbilityAudioRouter.PlayOneShotAtPosition(...)` when the timing is world-positioned.
+- Flowering owns BloomSlash, cut-in open, weapon reveal in/out, final shake, and dash slash `SoundRef` hooks on `FloweringAttackData` / `FloweringBloomData`. Empty slots are no-op defaults, so existing behavior is unchanged until keys are authored.
+- Lightning Spear owns NoMark sweep, MarkRush start/arrival, recovered spear spawn/despawn/shot spawn/shot fire, and MarkRain spawn/mark/landing `SoundRef` hooks on `LightningSpearSkill1Data` / `LightningSpearSkill2Data`.
+
 ### Electric Element Extension
 
 - Electric build-up follows the same attacker-wide `ElementOffenseSource` and `ElementBuildUpFormulaProfile` route as Fire/Blood/Poison.

@@ -18,7 +18,7 @@ MonoBehaviour:
   primaryInk: {fileID: 4900000, guid: 0ea3c7635ba34a0b82c5b552cf9ff0e3, type: 3}
   bossEncounterInk: {fileID: 0}
   bossEncounterDialogues: []
-  dialogueTheme: {fileID: 11400000, guid: 3ef1664fdf0dac148a47091038acdfd9, type: 2}
+  dialogueTheme: {fileID: 11400000, guid: e4c06c59a5a87a949b3f48db4a19e571, type: 2}
   affectionRewards: []
   spriteLibraryAsset: {fileID: 7108339969198208228, guid: e3f9a4eb235a0cc4da7a0c799a104cba, type: 3}
   emoteOffset: {x: 75, y: 100}

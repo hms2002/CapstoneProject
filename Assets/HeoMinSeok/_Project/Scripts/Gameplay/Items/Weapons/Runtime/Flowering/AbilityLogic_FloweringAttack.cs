@@ -61,6 +61,12 @@ public sealed class AbilityLogic_FloweringAttack : AbilityLogic
         Vector2 center = ResolveHitboxCenter(system, data, dir);
         SpawnHitbox(system, spec, data, payload, hitboxPrefab, center, dir);
         SpawnBloomSlashParticle(data, center, dir);
+        AbilityAudioRouter.PlayOneShotAtPosition(
+            data.GetBloomSlashSoundForVariant(selectedVariantIndex),
+            system,
+            spec,
+            center,
+            data);
     }
 
     private static Vector2 ResolveHitboxCenter(AbilitySystem system, FloweringAttackData data, Vector2 dir)
