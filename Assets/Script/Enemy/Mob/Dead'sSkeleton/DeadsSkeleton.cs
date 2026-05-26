@@ -947,10 +947,7 @@ public class DeadsSkeleton : Mob, IDamageReceiver, IMobAttackDecisionSource, IMo
     private AttackTelegraphStyle MakeIntroWarningStyle()
     {
         AttackTelegraphStyle style = ScriptableObject.CreateInstance<AttackTelegraphStyle>();
-        style.fillColorStart = new Color(1f, 0f, 0f, 0.45f);
-        style.fillColorEnd = new Color(1f, 0f, 0f, 0.45f);
-        style.borderColorStart = new Color(1f, 0f, 0f, 1f);
-        style.borderColorEnd = new Color(1f, 0f, 0f, 1f);
+        AttackTelegraphStyleUtility.ApplyDangerAreaColors(style);
         style.progressCurve = AnimationCurve.Linear(0f, 0f, 1f, 1f);
         style.blinkStartNormalized = 1f;
         style.blinkFrequency = 0f;
@@ -965,10 +962,7 @@ public class DeadsSkeleton : Mob, IDamageReceiver, IMobAttackDecisionSource, IMo
     private AttackTelegraphStyle MakeArmedWarningStyle()
     {
         AttackTelegraphStyle style = ScriptableObject.CreateInstance<AttackTelegraphStyle>();
-        style.fillColorStart = new Color(1f, 0f, 0f, 0.45f);
-        style.fillColorEnd = new Color(1f, 0f, 0f, 0.45f);
-        style.borderColorStart = new Color(1f, 0f, 0f, 1f);
-        style.borderColorEnd = new Color(1f, 0f, 0f, 1f);
+        AttackTelegraphStyleUtility.ApplyDangerAreaColors(style);
         style.progressCurve = AnimationCurve.Linear(0f, 0f, 1f, 1f);
         style.blinkStartNormalized = 0f;
         style.blinkFrequency = 8f;

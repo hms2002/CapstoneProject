@@ -18,26 +18,46 @@ public sealed class CombatBalanceEditorWindow : EditorWindow
     private const string MobProfileFolder = "Assets/HeoMinSeok/_Project/Data/Abilities/Attribute/AttributeManageSO/Enemies/Mobs";
     private const string BossProfileFolder = "Assets/HeoMinSeok/_Project/Data/Abilities/Attribute/AttributeManageSO/Enemies/Bosses";
     private const string MiscProfileFolder = "Assets/HeoMinSeok/_Project/Data/Abilities/Attribute/AttributeManageSO/Enemies/Misc";
+    private const string WeaponDefinitionRoot = "Assets/HeoMinSeok/_Project/Data/Items/Weapons/Definitions";
 
     private readonly List<MonsterProfileRow> monsterRows = new();
+    private readonly List<WeaponBalanceRow> weaponRows = new();
     private Vector2 monsterScroll;
     private Vector2 detailScroll;
+    private Vector2 weaponScroll;
+    private Vector2 weaponDetailScroll;
     private string monsterSearch = string.Empty;
+    private string weaponSearch = string.Empty;
     private MonsterProfileRow selectedRow;
+    private WeaponBalanceRow selectedWeaponRow;
     private MonsterStageHpScalingSettings stageHpScalingSettings;
+    private BalanceToolTab activeTab = BalanceToolTab.MonsterStats;
 
-    [MenuItem("Tools/Combat/Combat Balance Editor")]
-    public static void OpenWindow()
+    [MenuItem("Tools/Balance/Monster Stats")]
+    public static void OpenMonsterStats()
     {
-        CombatBalanceEditorWindow window = GetWindow<CombatBalanceEditorWindow>("Combat Balance");
+        OpenWindow(BalanceToolTab.MonsterStats);
+    }
+
+    [MenuItem("Tools/Balance/Weapon Stats")]
+    public static void OpenWeaponStats()
+    {
+        OpenWindow(BalanceToolTab.WeaponStats);
+    }
+
+    private static void OpenWindow(BalanceToolTab initialTab)
+    {
+        CombatBalanceEditorWindow window = GetWindow<CombatBalanceEditorWindow>("Balance Tools");
         window.minSize = new Vector2(720f, 520f);
-        window.RefreshMonsters();
+        window.activeTab = initialTab;
+        window.RefreshAll();
+        window.Show();
     }
 
     private void OnEnable()
     {
         LoadStageHpScalingSettings();
-        RefreshMonsters();
+        RefreshAll();
     }
 
     private void OnGUI()
@@ -51,15 +71,29 @@ public sealed class CombatBalanceEditorWindow : EditorWindow
         using (new EditorGUILayout.HorizontalScope(EditorStyles.toolbar))
         {
             if (GUILayout.Button("Refresh", EditorStyles.toolbarButton, GUILayout.Width(70f)))
-                RefreshMonsters();
+                RefreshAll();
 
             GUILayout.Space(8f);
-            GUILayout.Label("Monster Stats", EditorStyles.boldLabel, GUILayout.Width(110f));
+            activeTab = (BalanceToolTab)GUILayout.Toolbar((int)activeTab, new[] { "Monster Stats", "Weapon Stats" }, EditorStyles.toolbarButton, GUILayout.Width(230f));
             GUILayout.FlexibleSpace();
         }
     }
 
     private void DrawMonsterStatsTab()
+    {
+        switch (activeTab)
+        {
+            case BalanceToolTab.WeaponStats:
+                DrawWeaponStatsTab();
+                break;
+            case BalanceToolTab.MonsterStats:
+            default:
+                DrawMonsterStatsContent();
+                break;
+        }
+    }
+
+    private void DrawMonsterStatsContent()
     {
         using (new EditorGUILayout.HorizontalScope())
         {
@@ -67,6 +101,465 @@ public sealed class CombatBalanceEditorWindow : EditorWindow
             DrawMonsterList();
             DrawSelectedMonsterDetail();
         }
+    }
+
+    private void DrawWeaponStatsTab()
+    {
+        using (new EditorGUILayout.HorizontalScope())
+        {
+            DrawWeaponList();
+            DrawSelectedWeaponDetail();
+        }
+    }
+
+    private void DrawWeaponList()
+    {
+        using (new EditorGUILayout.VerticalScope(GUILayout.Width(330f)))
+        {
+            EditorGUILayout.LabelField("Weapon Definitions", EditorStyles.boldLabel);
+
+            using (new EditorGUILayout.HorizontalScope())
+            {
+                weaponSearch = EditorGUILayout.TextField(weaponSearch, GUI.skin.FindStyle("ToolbarSearchTextField") ?? EditorStyles.textField);
+                if (GUILayout.Button("Clear", GUILayout.Width(52f)))
+                    weaponSearch = string.Empty;
+            }
+
+            EditorGUILayout.Space(4f);
+
+            weaponScroll = EditorGUILayout.BeginScrollView(weaponScroll);
+            foreach (WeaponBalanceRow row in GetFilteredWeaponRows())
+            {
+                DrawWeaponRowButton(row);
+            }
+            EditorGUILayout.EndScrollView();
+        }
+    }
+
+    private void DrawWeaponRowButton(WeaponBalanceRow row)
+    {
+        GUIStyle style = row == selectedWeaponRow ? EditorStyles.helpBox : GUI.skin.button;
+        using (new EditorGUILayout.HorizontalScope(style))
+        {
+            Rect thumbnailRect = GUILayoutUtility.GetRect(32f, 32f, GUILayout.Width(36f), GUILayout.Height(36f));
+            DrawListPreviewSprite(thumbnailRect, row.Icon);
+
+            if (GUILayout.Button(row.DisplayName, GUIStyle.none, GUILayout.Height(36f)))
+                selectedWeaponRow = row;
+
+            GUILayout.Label(row.AssetName, EditorStyles.miniLabel, GUILayout.Width(120f));
+        }
+    }
+
+    private void DrawSelectedWeaponDetail()
+    {
+        weaponDetailScroll = EditorGUILayout.BeginScrollView(weaponDetailScroll);
+        using (new EditorGUILayout.VerticalScope())
+        {
+            if (selectedWeaponRow == null)
+            {
+                EditorGUILayout.HelpBox("왼쪽에서 무기 정의를 선택하세요.", MessageType.Info);
+                EditorGUILayout.EndScrollView();
+                return;
+            }
+
+            WeaponDefinition weapon = selectedWeaponRow.Weapon;
+            SerializedObject serializedWeapon = new(weapon);
+
+            EditorGUILayout.LabelField(weapon.name, EditorStyles.boldLabel);
+            EditorGUILayout.ObjectField("Definition", weapon, typeof(WeaponDefinition), false);
+            EditorGUILayout.LabelField("Path", selectedWeaponRow.AssetPath);
+
+            EditorGUILayout.Space(6f);
+            DrawWeaponVisualPreview(weapon);
+
+            EditorGUILayout.Space(8f);
+            DrawWeaponDefinitionFields(serializedWeapon);
+
+            EditorGUILayout.Space(8f);
+            DrawWeaponStatModifiers(serializedWeapon);
+
+            serializedWeapon.ApplyModifiedProperties();
+
+            EditorGUILayout.Space(8f);
+            DrawWeaponDirectAbilities(weapon);
+
+            EditorGUILayout.Space(8f);
+            DrawWeaponLoadout(weapon);
+
+            EditorGUILayout.Space(8f);
+            DrawWeaponAbilityBalanceParameters(weapon);
+        }
+        EditorGUILayout.EndScrollView();
+    }
+
+    private void DrawWeaponVisualPreview(WeaponDefinition weapon)
+    {
+        EditorGUILayout.LabelField("Weapon Visual Preview", EditorStyles.boldLabel);
+        using (new EditorGUILayout.HorizontalScope(EditorStyles.helpBox))
+        {
+            Rect previewRect = GUILayoutUtility.GetRect(64f, 64f, GUILayout.Width(80f), GUILayout.Height(80f));
+            DrawListPreviewSprite(previewRect, weapon != null ? weapon.icon : null);
+
+            using (new EditorGUILayout.VerticalScope())
+            {
+                EditorGUILayout.LabelField("Icon", weapon != null && weapon.icon != null ? weapon.icon.name : "(None)");
+                EditorGUILayout.ObjectField("Prefab", weapon != null ? weapon.weaponPrefab : null, typeof(GameObject), false);
+
+                using (new EditorGUILayout.HorizontalScope())
+                {
+                    GUI.enabled = weapon != null && weapon.icon != null;
+                    if (GUILayout.Button("Ping Icon", GUILayout.Width(90f)))
+                        EditorGUIUtility.PingObject(weapon.icon);
+
+                    GUI.enabled = weapon != null && weapon.weaponPrefab != null;
+                    if (GUILayout.Button("Ping Prefab", GUILayout.Width(90f)))
+                        EditorGUIUtility.PingObject(weapon.weaponPrefab);
+
+                    GUI.enabled = true;
+                }
+            }
+        }
+    }
+
+    private static void DrawWeaponDefinitionFields(SerializedObject serializedWeapon)
+    {
+        EditorGUILayout.LabelField("Weapon Definition", EditorStyles.boldLabel);
+
+        EditorGUI.BeginChangeCheck();
+        EditorGUILayout.PropertyField(serializedWeapon.FindProperty("weaponId"));
+        EditorGUILayout.PropertyField(serializedWeapon.FindProperty("displayName"));
+        EditorGUILayout.PropertyField(serializedWeapon.FindProperty("icon"));
+        EditorGUILayout.PropertyField(serializedWeapon.FindProperty("weaponPrefab"));
+        EditorGUILayout.PropertyField(serializedWeapon.FindProperty("displayVisualProfile"));
+        EditorGUILayout.PropertyField(serializedWeapon.FindProperty("swapSoundOverride"));
+        EditorGUILayout.Space(4f);
+        EditorGUILayout.PropertyField(serializedWeapon.FindProperty("attack"));
+        EditorGUILayout.PropertyField(serializedWeapon.FindProperty("skill1"));
+        EditorGUILayout.PropertyField(serializedWeapon.FindProperty("skill2"));
+        EditorGUILayout.PropertyField(serializedWeapon.FindProperty("abilityLoadout"));
+        if (EditorGUI.EndChangeCheck())
+            serializedWeapon.ApplyModifiedProperties();
+    }
+
+    private static void DrawWeaponStatModifiers(SerializedObject serializedWeapon)
+    {
+        EditorGUILayout.LabelField("Equipped Stat Modifiers", EditorStyles.boldLabel);
+        EditorGUI.BeginChangeCheck();
+        EditorGUILayout.PropertyField(serializedWeapon.FindProperty("statModifiers"), includeChildren: true);
+        if (EditorGUI.EndChangeCheck())
+            serializedWeapon.ApplyModifiedProperties();
+    }
+
+    private void DrawWeaponDirectAbilities(WeaponDefinition weapon)
+    {
+        EditorGUILayout.LabelField("Direct Slot Abilities", EditorStyles.boldLabel);
+
+        DrawWeaponAbilitySlotRow("Attack", weapon != null ? weapon.attack : null);
+        DrawWeaponAbilitySlotRow("Skill1", weapon != null ? weapon.skill1 : null);
+        DrawWeaponAbilitySlotRow("Skill2", weapon != null ? weapon.skill2 : null);
+    }
+
+    private static void DrawWeaponAbilitySlotRow(string label, AbilityDefinition ability)
+    {
+        using (new EditorGUILayout.HorizontalScope(EditorStyles.helpBox))
+        {
+            GUILayout.Label(label, GUILayout.Width(56f));
+            DrawAbilityTimingFields(ability);
+        }
+    }
+
+    private void DrawWeaponLoadout(WeaponDefinition weapon)
+    {
+        EditorGUILayout.LabelField("Weapon Ability Loadout", EditorStyles.boldLabel);
+        WeaponAbilityLoadout loadout = weapon != null ? weapon.abilityLoadout : null;
+        EditorGUILayout.ObjectField("Loadout", loadout, typeof(WeaponAbilityLoadout), false);
+
+        if (loadout == null)
+        {
+            EditorGUILayout.HelpBox("Ability Loadout이 없습니다. 직접 슬롯 AD만 사용합니다.", MessageType.Info);
+            return;
+        }
+
+        SerializedObject serializedLoadout = new(loadout);
+        EditorGUILayout.PropertyField(serializedLoadout.FindProperty("selectionStrategy"));
+        serializedLoadout.ApplyModifiedProperties();
+
+        List<string> validationErrors = loadout.GetValidationErrors().ToList();
+        if (validationErrors.Count > 0)
+        {
+            foreach (string error in validationErrors)
+                EditorGUILayout.HelpBox(error, MessageType.Warning);
+        }
+
+        EditorGUILayout.LabelField("Granted Ability Definitions", EditorStyles.boldLabel);
+        foreach (AbilityDefinition ability in loadout.EnumerateGrantedAbilities().Where(ability => ability != null).Distinct())
+        {
+            DrawAbilityTimingFields(ability);
+        }
+    }
+
+    private static void DrawAbilityTimingFields(AbilityDefinition ability)
+    {
+        EditorGUILayout.ObjectField(ability, typeof(AbilityDefinition), false, GUILayout.Width(220f));
+        if (ability == null)
+        {
+            GUILayout.Label("(None)", EditorStyles.miniLabel);
+            return;
+        }
+
+        EditorGUI.BeginChangeCheck();
+        float cooldown = Mathf.Max(0f, EditorGUILayout.FloatField("Cooldown", ability.cooldown, GUILayout.Width(170f)));
+        float castTime = Mathf.Max(0f, EditorGUILayout.FloatField("Cast", ability.castTime, GUILayout.Width(145f)));
+        float recovery = Mathf.Max(0f, EditorGUILayout.FloatField("Recovery", ability.recoveryTime, GUILayout.Width(170f)));
+        if (EditorGUI.EndChangeCheck())
+        {
+            Undo.RecordObject(ability, "Edit Weapon Ability Timing");
+            ability.cooldown = cooldown;
+            ability.castTime = castTime;
+            ability.recoveryTime = recovery;
+            EditorUtility.SetDirty(ability);
+        }
+
+        if (GUILayout.Button("Ping", GUILayout.Width(50f)))
+            EditorGUIUtility.PingObject(ability);
+    }
+
+    private void DrawWeaponAbilityBalanceParameters(WeaponDefinition weapon)
+    {
+        EditorGUILayout.LabelField("Ability Balance Parameters", EditorStyles.boldLabel);
+        List<WeaponAbilityBalanceBlock> blocks = BuildWeaponAbilityBalanceBlocks(weapon);
+        if (blocks.Count == 0)
+        {
+            EditorGUILayout.HelpBox("이 무기에서 참조하는 AbilityDefinition이 없습니다.", MessageType.Info);
+            return;
+        }
+
+        Dictionary<ScaledStatFormula, int> formulaUseCounts = CountFormulaReferences(blocks);
+        foreach (WeaponAbilityBalanceBlock block in blocks)
+            DrawWeaponAbilityBalanceBlock(block, formulaUseCounts);
+    }
+
+    private static List<WeaponAbilityBalanceBlock> BuildWeaponAbilityBalanceBlocks(WeaponDefinition weapon)
+    {
+        List<WeaponAbilityBalanceBlock> blocks = new();
+        Dictionary<AbilityDefinition, WeaponAbilityBalanceBlock> byAbility = new();
+
+        AddWeaponAbilityBalanceBlock(byAbility, blocks, weapon != null ? weapon.attack : null, "Direct: Attack");
+        AddWeaponAbilityBalanceBlock(byAbility, blocks, weapon != null ? weapon.skill1 : null, "Direct: Skill1");
+        AddWeaponAbilityBalanceBlock(byAbility, blocks, weapon != null ? weapon.skill2 : null, "Direct: Skill2");
+
+        WeaponAbilityLoadout loadout = weapon != null ? weapon.abilityLoadout : null;
+        if (loadout != null)
+        {
+            foreach (AbilityDefinition ability in loadout.EnumerateGrantedAbilities().Where(ability => ability != null))
+                AddWeaponAbilityBalanceBlock(byAbility, blocks, ability, "Loadout Grant");
+        }
+
+        return blocks;
+    }
+
+    private static void AddWeaponAbilityBalanceBlock(
+        Dictionary<AbilityDefinition, WeaponAbilityBalanceBlock> byAbility,
+        List<WeaponAbilityBalanceBlock> blocks,
+        AbilityDefinition ability,
+        string sourceLabel)
+    {
+        if (ability == null)
+            return;
+
+        if (byAbility.TryGetValue(ability, out WeaponAbilityBalanceBlock existing))
+        {
+            existing.AddSourceLabel(sourceLabel);
+            return;
+        }
+
+        WeaponAbilityBalanceBlock block = new(ability, sourceLabel);
+        byAbility.Add(ability, block);
+        blocks.Add(block);
+    }
+
+    private static Dictionary<ScaledStatFormula, int> CountFormulaReferences(List<WeaponAbilityBalanceBlock> blocks)
+    {
+        Dictionary<ScaledStatFormula, int> counts = new();
+        foreach (WeaponAbilityBalanceBlock block in blocks)
+        {
+            if (block.Ability == null || block.Ability.sourceObject is not ScriptableObject sourceObject)
+                continue;
+
+            foreach (ScaledFormulaReference formulaReference in ScaledFormulaEditorDrawer.FindFormulaReferences(sourceObject))
+            {
+                if (formulaReference.Formula == null)
+                    continue;
+
+                counts.TryGetValue(formulaReference.Formula, out int count);
+                counts[formulaReference.Formula] = count + 1;
+            }
+        }
+
+        return counts;
+    }
+
+    private static void DrawWeaponAbilityBalanceBlock(
+        WeaponAbilityBalanceBlock block,
+        Dictionary<ScaledStatFormula, int> formulaUseCounts)
+    {
+        AbilityDefinition ability = block.Ability;
+        using (new EditorGUILayout.VerticalScope(EditorStyles.helpBox))
+        {
+            using (new EditorGUILayout.HorizontalScope())
+            {
+                EditorGUILayout.ObjectField(ability, typeof(AbilityDefinition), false, GUILayout.Width(240f));
+                GUILayout.Label(block.SourceLabel, EditorStyles.miniLabel, GUILayout.MinWidth(140f));
+                GUILayout.FlexibleSpace();
+                if (GUILayout.Button("Ping AD", GUILayout.Width(70f)))
+                    EditorGUIUtility.PingObject(ability);
+            }
+
+            using (new EditorGUILayout.HorizontalScope())
+            {
+                DrawAbilityTimingFields(ability);
+            }
+
+            using (new EditorGUILayout.HorizontalScope())
+            {
+                EditorGUILayout.ObjectField("Logic (Read Only)", ability != null ? ability.logic : null, typeof(AbilityLogic), false);
+                GUI.enabled = ability != null && ability.logic != null;
+                if (GUILayout.Button("Ping Logic", GUILayout.Width(82f)))
+                    EditorGUIUtility.PingObject(ability.logic);
+                GUI.enabled = true;
+            }
+
+            UnityEngine.Object sourceObject = ability != null ? ability.sourceObject : null;
+            using (new EditorGUILayout.HorizontalScope())
+            {
+                EditorGUILayout.ObjectField("Source Object", sourceObject, typeof(UnityEngine.Object), false);
+                GUI.enabled = sourceObject != null;
+                if (GUILayout.Button("Ping Source", GUILayout.Width(90f)))
+                    EditorGUIUtility.PingObject(sourceObject);
+                GUI.enabled = true;
+            }
+
+            if (sourceObject == null)
+            {
+                EditorGUILayout.HelpBox("sourceObject가 없어 AD timing만 편집합니다. 공유 AbilityLogic은 여기서 직접 편집하지 않습니다.", MessageType.Info);
+                return;
+            }
+
+            if (sourceObject is not ScriptableObject scriptableSource)
+            {
+                EditorGUILayout.HelpBox("sourceObject가 ScriptableObject가 아니므로 자동 밸런싱 필드를 편집하지 않습니다.", MessageType.Info);
+                return;
+            }
+
+            DrawScriptableSourceBalanceFields(scriptableSource, formulaUseCounts);
+        }
+    }
+
+    private static void DrawScriptableSourceBalanceFields(
+        ScriptableObject sourceObject,
+        Dictionary<ScaledStatFormula, int> formulaUseCounts)
+    {
+        EditorGUILayout.LabelField("Tunable Fields", EditorStyles.boldLabel);
+        SerializedObject serializedSource = new(sourceObject);
+        serializedSource.Update();
+
+        List<string> tunablePropertyPaths = BalanceTunablePropertyFilter.FindTunablePropertyPaths(serializedSource);
+        if (tunablePropertyPaths.Count == 0)
+            EditorGUILayout.HelpBox("자동 추출된 일반 밸런싱 수치 필드가 없습니다.", MessageType.None);
+
+        EditorGUI.BeginChangeCheck();
+        foreach (string propertyPath in tunablePropertyPaths)
+        {
+            SerializedProperty property = serializedSource.FindProperty(propertyPath);
+            if (property == null)
+                continue;
+
+            DrawReadableTunableProperty(property);
+        }
+
+        if (EditorGUI.EndChangeCheck())
+        {
+            Undo.RecordObject(sourceObject, "Edit Weapon Ability Source Data");
+            serializedSource.ApplyModifiedProperties();
+            EditorUtility.SetDirty(sourceObject);
+        }
+        else
+        {
+            serializedSource.ApplyModifiedProperties();
+        }
+
+        List<ScaledFormulaReference> formulaReferences = ScaledFormulaEditorDrawer.FindFormulaReferences(sourceObject);
+        EditorGUILayout.Space(4f);
+        EditorGUILayout.LabelField("Scaled Stat Formulas", EditorStyles.boldLabel);
+        if (formulaReferences.Count == 0)
+        {
+            EditorGUILayout.HelpBox("이 sourceObject에서 ScaledStatFormula 참조를 찾지 못했습니다.", MessageType.None);
+            return;
+        }
+
+        foreach (ScaledFormulaReference formulaReference in formulaReferences)
+            ScaledFormulaEditorDrawer.DrawFormulaReference(formulaReference, formulaUseCounts);
+    }
+
+    private static void DrawReadableTunableProperty(SerializedProperty property)
+    {
+        using (new EditorGUILayout.HorizontalScope())
+        {
+            EditorGUILayout.LabelField(BuildReadablePropertyLabel(property.propertyPath), GUILayout.Width(280f));
+            EditorGUILayout.PropertyField(property, GUIContent.none, includeChildren: true);
+        }
+    }
+
+    private static string BuildReadablePropertyLabel(string propertyPath)
+    {
+        if (string.IsNullOrWhiteSpace(propertyPath))
+            return "(Unknown)";
+
+        string[] rawParts = propertyPath.Split('.');
+        List<string> labels = new();
+        for (int i = 0; i < rawParts.Length; i++)
+        {
+            string part = rawParts[i];
+            if (part == "Array")
+                continue;
+
+            if (part.StartsWith("data[", StringComparison.Ordinal))
+            {
+                int index = ParseArrayIndex(part);
+                string context = labels.Count > 0 ? labels[labels.Count - 1] : "Element";
+                if (labels.Count > 0)
+                    labels.RemoveAt(labels.Count - 1);
+
+                labels.Add($"{SingularizeLabel(context)} {index + 1}");
+                continue;
+            }
+
+            labels.Add(ObjectNames.NicifyVariableName(part));
+        }
+
+        return string.Join(" / ", labels);
+    }
+
+    private static int ParseArrayIndex(string arrayDataPart)
+    {
+        int start = arrayDataPart.IndexOf('[', StringComparison.Ordinal);
+        int end = arrayDataPart.IndexOf(']', StringComparison.Ordinal);
+        if (start < 0 || end <= start)
+            return 0;
+
+        string indexText = arrayDataPart.Substring(start + 1, end - start - 1);
+        return int.TryParse(indexText, out int index) ? Mathf.Max(0, index) : 0;
+    }
+
+    private static string SingularizeLabel(string label)
+    {
+        if (string.IsNullOrWhiteSpace(label))
+            return "Element";
+
+        return label.EndsWith("s", StringComparison.OrdinalIgnoreCase) && label.Length > 1
+            ? label.Substring(0, label.Length - 1)
+            : label;
     }
 
     private void DrawStageHpScalingSettings()
@@ -182,11 +675,35 @@ public sealed class CombatBalanceEditorWindow : EditorWindow
         GUIStyle style = row == selectedRow ? EditorStyles.helpBox : GUI.skin.button;
         using (new EditorGUILayout.HorizontalScope(style))
         {
-            if (GUILayout.Button(row.Prefab.name, GUIStyle.none, GUILayout.Height(24f)))
+            Rect thumbnailRect = GUILayoutUtility.GetRect(32f, 32f, GUILayout.Width(36f), GUILayout.Height(36f));
+            DrawListPreviewSprite(thumbnailRect, row.ListPreviewSprite);
+
+            if (GUILayout.Button(row.Prefab.name, GUIStyle.none, GUILayout.Height(36f)))
                 selectedRow = row;
 
             GUILayout.Label(row.StatusLabel, GetStatusStyle(row.Status), GUILayout.Width(86f));
         }
+    }
+
+    private static void DrawListPreviewSprite(Rect rect, Sprite sprite)
+    {
+        Rect paddedRect = new(rect.x + 2f, rect.y + 2f, 32f, 32f);
+        EditorGUI.DrawRect(paddedRect, new Color(0.13f, 0.13f, 0.13f, 1f));
+        if (sprite == null || sprite.texture == null)
+        {
+            EditorGUI.LabelField(paddedRect, "-", EditorStyles.centeredGreyMiniLabel);
+            return;
+        }
+
+        Rect spriteTextureRect = sprite.textureRect;
+        Rect fittedRect = FitRectByAspect(paddedRect, spriteTextureRect.width, spriteTextureRect.height);
+        Rect textureCoords = new(
+            spriteTextureRect.x / sprite.texture.width,
+            spriteTextureRect.y / sprite.texture.height,
+            spriteTextureRect.width / sprite.texture.width,
+            spriteTextureRect.height / sprite.texture.height);
+
+        GUI.DrawTextureWithTexCoords(fittedRect, sprite.texture, textureCoords, alphaBlend: true);
     }
 
     private void DrawSelectedMonsterDetail()
@@ -207,6 +724,9 @@ public sealed class CombatBalanceEditorWindow : EditorWindow
             EditorGUILayout.LabelField("Expected Profile", selectedRow.ExpectedProfilePath);
 
             EditorGUILayout.Space(6f);
+            DrawMonsterVisualPreview(selectedRow);
+
+            EditorGUILayout.Space(8f);
             DrawProfileObjectFields(selectedRow);
 
             EditorGUILayout.Space(8f);
@@ -222,6 +742,189 @@ public sealed class CombatBalanceEditorWindow : EditorWindow
             DrawMonsterAbilityReferences(selectedRow);
         }
         EditorGUILayout.EndScrollView();
+    }
+
+    private void DrawMonsterVisualPreview(MonsterProfileRow row)
+    {
+        EditorGUILayout.LabelField("Monster Visual Preview", EditorStyles.boldLabel);
+
+        MonsterVisualPreviewInfo preview = ResolveMonsterVisualPreview(row.Prefab);
+        using (new EditorGUILayout.HorizontalScope(EditorStyles.helpBox))
+        {
+            Rect previewRect = GUILayoutUtility.GetRect(96f, 96f, GUILayout.Width(112f), GUILayout.Height(112f));
+            DrawPreviewTexture(previewRect, preview.Texture);
+
+            using (new EditorGUILayout.VerticalScope())
+            {
+                EditorGUILayout.LabelField("Sprite", preview.Sprite != null ? preview.Sprite.name : "(None)");
+                EditorGUILayout.LabelField("Renderer", string.IsNullOrWhiteSpace(preview.RendererPath) ? "(None)" : preview.RendererPath);
+                EditorGUILayout.LabelField("Source", preview.SourceLabel);
+
+                using (new EditorGUILayout.HorizontalScope())
+                {
+                    GUI.enabled = preview.Sprite != null;
+                    if (GUILayout.Button("Ping Sprite", GUILayout.Width(90f)))
+                        EditorGUIUtility.PingObject(preview.Sprite);
+
+                    GUI.enabled = row.Prefab != null;
+                    if (GUILayout.Button("Ping Prefab", GUILayout.Width(90f)))
+                        EditorGUIUtility.PingObject(row.Prefab);
+
+                    GUI.enabled = true;
+                }
+
+                if (preview.Texture == null)
+                    EditorGUILayout.HelpBox("대표 SpriteRenderer 또는 prefab preview를 찾지 못했습니다.", MessageType.Info);
+            }
+        }
+    }
+
+    private static void DrawPreviewTexture(Rect rect, Texture2D texture)
+    {
+        EditorGUI.DrawRect(rect, new Color(0.15f, 0.15f, 0.15f, 1f));
+        if (texture == null)
+        {
+            EditorGUI.LabelField(rect, "No Preview", EditorStyles.centeredGreyMiniLabel);
+            return;
+        }
+
+        Rect fittedRect = FitTextureRect(rect, texture);
+        EditorGUI.DrawPreviewTexture(fittedRect, texture, null, ScaleMode.ScaleToFit);
+    }
+
+    private static Rect FitTextureRect(Rect outerRect, Texture2D texture)
+    {
+        if (texture == null || texture.width <= 0 || texture.height <= 0)
+            return outerRect;
+
+        return FitRectByAspect(outerRect, texture.width, texture.height);
+    }
+
+    private static Rect FitRectByAspect(Rect outerRect, float width, float height)
+    {
+        if (width <= 0f || height <= 0f)
+            return outerRect;
+
+        float textureAspect = width / height;
+        float rectAspect = outerRect.width / outerRect.height;
+        if (textureAspect > rectAspect)
+        {
+            float fittedHeight = outerRect.width / textureAspect;
+            return new Rect(outerRect.x, outerRect.y + (outerRect.height - fittedHeight) * 0.5f, outerRect.width, fittedHeight);
+        }
+
+        float fittedWidth = outerRect.height * textureAspect;
+        return new Rect(outerRect.x + (outerRect.width - fittedWidth) * 0.5f, outerRect.y, fittedWidth, outerRect.height);
+    }
+
+    private static MonsterVisualPreviewInfo ResolveMonsterVisualPreview(GameObject prefab)
+    {
+        if (prefab == null)
+            return MonsterVisualPreviewInfo.Empty;
+
+        SpriteRenderer representativeRenderer = FindRepresentativeSpriteRenderer(prefab);
+        if (representativeRenderer != null && representativeRenderer.sprite != null)
+        {
+            Texture2D spritePreview = AssetPreview.GetAssetPreview(representativeRenderer.sprite);
+            if (spritePreview == null)
+                spritePreview = AssetPreview.GetMiniThumbnail(representativeRenderer.sprite);
+
+            return new MonsterVisualPreviewInfo(
+                representativeRenderer.sprite,
+                spritePreview,
+                GetTransformPath(representativeRenderer.transform, prefab.transform),
+                "SpriteRenderer");
+        }
+
+        Texture2D prefabPreview = AssetPreview.GetAssetPreview(prefab);
+        if (prefabPreview == null)
+            prefabPreview = AssetPreview.GetMiniThumbnail(prefab);
+
+        return new MonsterVisualPreviewInfo(null, prefabPreview, string.Empty, "Prefab Preview");
+    }
+
+    private static SpriteRenderer FindRepresentativeSpriteRenderer(GameObject prefab)
+    {
+        SpriteRenderer[] renderers = prefab.GetComponentsInChildren<SpriteRenderer>(true);
+        if (renderers == null || renderers.Length == 0)
+            return null;
+
+        SpriteRenderer bestRenderer = null;
+        int bestScore = int.MinValue;
+        foreach (SpriteRenderer renderer in renderers)
+        {
+            if (renderer == null || renderer.sprite == null)
+                continue;
+
+            int score = CalculateRepresentativeRendererScore(renderer, prefab.transform);
+            if (score <= -1000 || score <= bestScore)
+                continue;
+
+            bestScore = score;
+            bestRenderer = renderer;
+        }
+
+        return bestRenderer;
+    }
+
+    private static int CalculateRepresentativeRendererScore(SpriteRenderer renderer, Transform root)
+    {
+        string rendererName = renderer.transform.name;
+        string path = GetTransformPath(renderer.transform, root);
+        string normalizedPath = path.ToLowerInvariant();
+        int score = 0;
+
+        if (ContainsAny(normalizedPath, "shadow", "hitbox", "hurtbox", "collider", "telegraph", "effect", "vfx", "outline"))
+            score -= 1000;
+
+        if (ContainsAny(normalizedPath, "visualroot", "/visual", "body", "sprite", "render", "renderer"))
+            score += 100;
+
+        if (ContainsAny(rendererName.ToLowerInvariant(), "body", "sprite", "visual", "render"))
+            score += 40;
+
+        if (renderer.GetComponent<Animator>() != null || renderer.GetComponentInParent<Animator>() != null)
+            score += 25;
+
+        if (renderer.enabled)
+            score += 10;
+
+        score += Mathf.Clamp(Mathf.RoundToInt(renderer.bounds.size.y * 10f), 0, 30);
+        return score;
+    }
+
+    private static bool ContainsAny(string value, params string[] tokens)
+    {
+        if (string.IsNullOrEmpty(value))
+            return false;
+
+        foreach (string token in tokens)
+        {
+            if (value.IndexOf(token, StringComparison.OrdinalIgnoreCase) >= 0)
+                return true;
+        }
+
+        return false;
+    }
+
+    private static string GetTransformPath(Transform target, Transform root)
+    {
+        if (target == null)
+            return string.Empty;
+
+        List<string> parts = new();
+        Transform current = target;
+        while (current != null)
+        {
+            parts.Add(current.name);
+            if (current == root)
+                break;
+
+            current = current.parent;
+        }
+
+        parts.Reverse();
+        return string.Join("/", parts);
     }
 
     private void DrawProfileObjectFields(MonsterProfileRow row)
@@ -304,6 +1007,13 @@ public sealed class CombatBalanceEditorWindow : EditorWindow
             new[] { "attackspeedbase" },
             new[] { "attackspeedbase" },
             "AttackSpeedBase");
+        changed |= DrawLinkedAttributeFloatField(
+            editableProfile,
+            entries,
+            "Attack",
+            new[] { "attackbase", "attack" },
+            new[] { "attack", "attackbase" },
+            "Attack + AttackBase");
         changed |= DrawLinkedAttributeFloatField(
             editableProfile,
             entries,
@@ -471,6 +1181,17 @@ public sealed class CombatBalanceEditorWindow : EditorWindow
         return monsterRows.Where(row => row.Prefab.name.IndexOf(monsterSearch, StringComparison.OrdinalIgnoreCase) >= 0);
     }
 
+    private IEnumerable<WeaponBalanceRow> GetFilteredWeaponRows()
+    {
+        if (string.IsNullOrWhiteSpace(weaponSearch))
+            return weaponRows;
+
+        return weaponRows.Where(row =>
+            row.AssetName.IndexOf(weaponSearch, StringComparison.OrdinalIgnoreCase) >= 0 ||
+            row.DisplayName.IndexOf(weaponSearch, StringComparison.OrdinalIgnoreCase) >= 0 ||
+            (row.Weapon.weaponId ?? string.Empty).IndexOf(weaponSearch, StringComparison.OrdinalIgnoreCase) >= 0);
+    }
+
     private static GUIStyle GetStatusStyle(MonsterProfileStatus status)
     {
         return status switch
@@ -480,6 +1201,12 @@ public sealed class CombatBalanceEditorWindow : EditorWindow
             MonsterProfileStatus.SharedOrLegacy => EditorStyles.miniBoldLabel,
             _ => EditorStyles.label
         };
+    }
+
+    private void RefreshAll()
+    {
+        RefreshMonsters();
+        RefreshWeapons();
     }
 
     private void RefreshMonsters()
@@ -501,6 +1228,28 @@ public sealed class CombatBalanceEditorWindow : EditorWindow
 
         if (selectedRow != null)
             selectedRow = monsterRows.FirstOrDefault(row => row.Prefab == selectedRow.Prefab);
+
+        Repaint();
+    }
+
+    private void RefreshWeapons()
+    {
+        weaponRows.Clear();
+
+        foreach (string guid in AssetDatabase.FindAssets("t:WeaponDefinition", new[] { WeaponDefinitionRoot }))
+        {
+            string path = AssetDatabase.GUIDToAssetPath(guid);
+            WeaponDefinition weapon = AssetDatabase.LoadAssetAtPath<WeaponDefinition>(path);
+            if (weapon == null)
+                continue;
+
+            weaponRows.Add(new WeaponBalanceRow(weapon, path));
+        }
+
+        weaponRows.Sort((a, b) => string.Compare(a.DisplayName, b.DisplayName, StringComparison.OrdinalIgnoreCase));
+
+        if (selectedWeaponRow != null)
+            selectedWeaponRow = weaponRows.FirstOrDefault(row => row.Weapon == selectedWeaponRow.Weapon);
 
         Repaint();
     }
@@ -549,9 +1298,24 @@ public sealed class CombatBalanceEditorWindow : EditorWindow
         List<AttributeInitProfileSO> overrideProfiles = ReadOverrideProfiles(serializedAttributeSet);
         string expectedPath = BuildExpectedProfilePath(prefab, prefabPath);
         MonsterProfileStatus status = ResolveStatus(prefab, overrideProfiles, expectedPath);
+        MonsterListPreviewInfo listPreview = ResolveMonsterListPreview(prefab);
 
         bool usesStageHpScaling = prefab.GetComponent<Mob>() != null && prefab.GetComponent<BossControllerBase>() == null;
-        return new MonsterProfileRow(prefab, prefabPath, attributeSet, baseProfile, overrideProfiles, expectedPath, status, usesStageHpScaling);
+        return new MonsterProfileRow(prefab, prefabPath, attributeSet, baseProfile, overrideProfiles, expectedPath, status, usesStageHpScaling, listPreview);
+    }
+
+    private static MonsterListPreviewInfo ResolveMonsterListPreview(GameObject prefab)
+    {
+        if (prefab == null)
+            return MonsterListPreviewInfo.Empty;
+
+        SpriteRenderer representativeRenderer = FindRepresentativeSpriteRenderer(prefab);
+        if (representativeRenderer == null || representativeRenderer.sprite == null)
+            return MonsterListPreviewInfo.Empty;
+
+        return new MonsterListPreviewInfo(
+            representativeRenderer.sprite,
+            GetTransformPath(representativeRenderer.transform, prefab.transform));
     }
 
     private static List<AbilityReferenceInfo> CollectAbilityReferences(GameObject prefab)
@@ -962,11 +1726,310 @@ public sealed class CombatBalanceEditorWindow : EditorWindow
         }
     }
 
+    private enum BalanceToolTab
+    {
+        MonsterStats,
+        WeaponStats
+    }
+
     private enum MonsterProfileStatus
     {
         Ready,
         Missing,
         SharedOrLegacy
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 밸런스 에디터가 한 무기 정의의 목록/검색/아이콘 표시와 상세 편집에 필요한 읽기 모델을 보관한다.
+    /// </summary>
+    private sealed class WeaponBalanceRow
+    {
+        public WeaponBalanceRow(WeaponDefinition weapon, string assetPath)
+        {
+            Weapon = weapon;
+            AssetPath = assetPath;
+        }
+
+        public WeaponDefinition Weapon { get; }
+        public string AssetPath { get; }
+        public string AssetName => Weapon != null ? Weapon.name : "(Missing)";
+        public string DisplayName => Weapon != null && !string.IsNullOrWhiteSpace(Weapon.displayName) ? Weapon.displayName : AssetName;
+        public Sprite Icon => Weapon != null ? Weapon.icon : null;
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 선택된 무기에서 발견한 한 AbilityDefinition과 그 참조 출처를 AD 밸런싱 패널에 전달한다.
+    /// </summary>
+    private sealed class WeaponAbilityBalanceBlock
+    {
+        private readonly List<string> sourceLabels = new();
+
+        public WeaponAbilityBalanceBlock(AbilityDefinition ability, string sourceLabel)
+        {
+            Ability = ability;
+            AddSourceLabel(sourceLabel);
+        }
+
+        public AbilityDefinition Ability { get; }
+        public string SourceLabel => string.Join(", ", sourceLabels);
+
+        public void AddSourceLabel(string sourceLabel)
+        {
+            if (string.IsNullOrWhiteSpace(sourceLabel) || sourceLabels.Contains(sourceLabel))
+                return;
+
+            sourceLabels.Add(sourceLabel);
+        }
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - SerializedProperty가 무기/Ability 밸런싱 수치로 보여줄 만한 필드인지 판정한다.
+    /// - VFX/SFX/프리팹 같은 표현 데이터가 밸런스 패널에 섞이지 않도록 제외한다.
+    /// </summary>
+    private static class BalanceTunablePropertyFilter
+    {
+        private static readonly string[] IncludeKeywords =
+        {
+            "fixeddamage", "legacydamage", "damage", "stagger", "knockback",
+            "scale", "multiplier", "coefficient", "radius", "range", "distance", "size", "length",
+            "speed", "duration", "interval", "delay", "count", "spread", "ammo"
+        };
+
+        private static readonly string[] ExcludeKeywords =
+        {
+            "prefab", "sprite", "audio", "sound", "vfx", "effect", "material", "anim", "visual", "layer"
+        };
+
+        public static List<string> FindTunablePropertyPaths(SerializedObject serializedObject)
+        {
+            List<string> paths = new();
+            SerializedProperty iterator = serializedObject.GetIterator();
+            bool enterChildren = true;
+            while (iterator.NextVisible(enterChildren))
+            {
+                enterChildren = true;
+                if (ShouldDrawAsTunable(iterator))
+                    paths.Add(iterator.propertyPath);
+            }
+
+            return paths;
+        }
+
+        private static bool ShouldDrawAsTunable(SerializedProperty property)
+        {
+            if (property == null || property.propertyPath == "m_Script")
+                return false;
+
+            if (property.propertyType == SerializedPropertyType.ObjectReference &&
+                IsFormulaReferenceProperty(property))
+            {
+                return false;
+            }
+
+            string key = Normalize(property.propertyPath);
+            if (ContainsAny(key, ExcludeKeywords))
+                return false;
+
+            if (!ContainsAny(key, IncludeKeywords))
+                return false;
+
+            return property.propertyType switch
+            {
+                SerializedPropertyType.Integer => true,
+                SerializedPropertyType.Boolean => true,
+                SerializedPropertyType.Float => true,
+                SerializedPropertyType.Enum => true,
+                SerializedPropertyType.Vector2 => true,
+                SerializedPropertyType.Vector3 => true,
+                SerializedPropertyType.Vector2Int => true,
+                SerializedPropertyType.Vector3Int => true,
+                SerializedPropertyType.ObjectReference => true,
+                _ => false
+            };
+        }
+
+        private static bool ContainsAny(string value, string[] keywords)
+        {
+            for (int i = 0; i < keywords.Length; i++)
+            {
+                if (value.IndexOf(keywords[i], StringComparison.OrdinalIgnoreCase) >= 0)
+                    return true;
+            }
+
+            return false;
+        }
+
+        private static string Normalize(string value)
+        {
+            return string.IsNullOrEmpty(value)
+                ? string.Empty
+                : value.Replace(" ", string.Empty).Replace("_", string.Empty).ToLowerInvariant();
+        }
+
+        private static bool IsFormulaReferenceProperty(SerializedProperty property)
+        {
+            if (property.objectReferenceValue is ScaledStatFormula)
+                return true;
+
+            string key = Normalize(property.propertyPath);
+            return key.EndsWith("damageformula", StringComparison.OrdinalIgnoreCase) ||
+                   key.EndsWith("knockbackformula", StringComparison.OrdinalIgnoreCase) ||
+                   key.EndsWith("staggerformula", StringComparison.OrdinalIgnoreCase) ||
+                   key.EndsWith("elementformulas.formula", StringComparison.OrdinalIgnoreCase) ||
+                   key.EndsWith("formula", StringComparison.OrdinalIgnoreCase);
+        }
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - sourceObject 내부에서 발견한 ScaledStatFormula 참조 위치와 실제 Formula 에셋을 함께 전달한다.
+    /// </summary>
+    private readonly struct ScaledFormulaReference
+    {
+        public ScaledFormulaReference(string propertyPath, ScaledStatFormula formula)
+        {
+            PropertyPath = propertyPath;
+            Formula = formula;
+        }
+
+        public string PropertyPath { get; }
+        public ScaledStatFormula Formula { get; }
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - ScaledStatFormula 참조를 sourceObject에서 수집하고 terms 계수 편집 UI를 그린다.
+    /// - Formula가 공유될 수 있음을 명확히 보여줘 밸런싱 사고를 줄인다.
+    /// </summary>
+    private static class ScaledFormulaEditorDrawer
+    {
+        public static List<ScaledFormulaReference> FindFormulaReferences(ScriptableObject sourceObject)
+        {
+            List<ScaledFormulaReference> references = new();
+            if (sourceObject == null)
+                return references;
+
+            SerializedObject serializedObject = new(sourceObject);
+            SerializedProperty iterator = serializedObject.GetIterator();
+            bool enterChildren = true;
+            while (iterator.NextVisible(enterChildren))
+            {
+                enterChildren = true;
+                if (iterator.propertyPath == "m_Script" ||
+                    iterator.propertyType != SerializedPropertyType.ObjectReference ||
+                    iterator.objectReferenceValue is not ScaledStatFormula formula)
+                {
+                    continue;
+                }
+
+                references.Add(new ScaledFormulaReference(iterator.propertyPath, formula));
+            }
+
+            return references;
+        }
+
+        public static void DrawFormulaReference(
+            ScaledFormulaReference formulaReference,
+            Dictionary<ScaledStatFormula, int> formulaUseCounts)
+        {
+            ScaledStatFormula formula = formulaReference.Formula;
+            using (new EditorGUILayout.VerticalScope(EditorStyles.helpBox))
+            {
+                using (new EditorGUILayout.HorizontalScope())
+                {
+                    EditorGUILayout.ObjectField(
+                        BuildReadablePropertyLabel(formulaReference.PropertyPath),
+                        formula,
+                        typeof(ScaledStatFormula),
+                        false);
+                    GUI.enabled = formula != null;
+                    if (GUILayout.Button("Ping Formula", GUILayout.Width(96f)))
+                        EditorGUIUtility.PingObject(formula);
+                    GUI.enabled = true;
+                }
+
+                if (formula == null)
+                {
+                    EditorGUILayout.HelpBox("Formula 참조가 비어 있습니다.", MessageType.None);
+                    return;
+                }
+
+                if (formulaUseCounts != null &&
+                    formulaUseCounts.TryGetValue(formula, out int count) &&
+                    count > 1)
+                {
+                    EditorGUILayout.HelpBox($"Shared Formula: 현재 선택 무기 안에서 {count}회 참조됩니다. 수정 시 여러 공격 값이 함께 바뀔 수 있습니다.", MessageType.Warning);
+                }
+
+                string formulaPath = AssetDatabase.GetAssetPath(formula);
+                if (!string.IsNullOrWhiteSpace(formulaPath))
+                    EditorGUILayout.LabelField("Path", formulaPath, EditorStyles.miniLabel);
+
+                SerializedObject serializedFormula = new(formula);
+                serializedFormula.Update();
+                SerializedProperty termsProperty = serializedFormula.FindProperty("terms");
+                if (termsProperty == null)
+                {
+                    EditorGUILayout.HelpBox("terms 필드를 찾지 못했습니다.", MessageType.Warning);
+                    return;
+                }
+
+                EditorGUI.BeginChangeCheck();
+                DrawFormulaTerms(termsProperty);
+                if (EditorGUI.EndChangeCheck())
+                {
+                    Undo.RecordObject(formula, "Edit Scaled Stat Formula");
+                    serializedFormula.ApplyModifiedProperties();
+                    EditorUtility.SetDirty(formula);
+                }
+                else
+                {
+                    serializedFormula.ApplyModifiedProperties();
+                }
+            }
+        }
+
+        private static void DrawFormulaTerms(SerializedProperty termsProperty)
+        {
+            int size = Mathf.Max(0, EditorGUILayout.IntField("Term Count", termsProperty.arraySize));
+            if (size != termsProperty.arraySize)
+                termsProperty.arraySize = size;
+
+            for (int i = 0; i < termsProperty.arraySize; i++)
+            {
+                SerializedProperty term = termsProperty.GetArrayElementAtIndex(i);
+                SerializedProperty useStatId = term.FindPropertyRelative("useStatId");
+                SerializedProperty statId = term.FindPropertyRelative("statId");
+                SerializedProperty sourceAttribute = term.FindPropertyRelative("sourceAttribute");
+                SerializedProperty rate = term.FindPropertyRelative("rate");
+                SerializedProperty flat = term.FindPropertyRelative("flat");
+
+                using (new EditorGUILayout.VerticalScope(EditorStyles.helpBox))
+                {
+                    EditorGUILayout.LabelField($"Term {i + 1}", EditorStyles.boldLabel);
+                    if (useStatId != null)
+                        EditorGUILayout.PropertyField(useStatId, new GUIContent("Use StatId"));
+
+                    if (useStatId != null && useStatId.boolValue)
+                    {
+                        if (statId != null)
+                            EditorGUILayout.PropertyField(statId, new GUIContent("Stat Id"));
+                    }
+                    else if (sourceAttribute != null)
+                    {
+                        EditorGUILayout.PropertyField(sourceAttribute, new GUIContent("Source Attribute"));
+                    }
+
+                    if (rate != null)
+                        EditorGUILayout.PropertyField(rate, new GUIContent("Rate (1.0 = 100%)"));
+                    if (flat != null)
+                        EditorGUILayout.PropertyField(flat, new GUIContent("Flat Add"));
+                }
+            }
+        }
     }
 
     /// <summary>
@@ -983,7 +2046,8 @@ public sealed class CombatBalanceEditorWindow : EditorWindow
             List<AttributeInitProfileSO> overrideProfiles,
             string expectedProfilePath,
             MonsterProfileStatus status,
-            bool usesStageHpScaling)
+            bool usesStageHpScaling,
+            MonsterListPreviewInfo listPreview)
         {
             Prefab = prefab;
             PrefabPath = prefabPath;
@@ -993,6 +2057,8 @@ public sealed class CombatBalanceEditorWindow : EditorWindow
             ExpectedProfilePath = expectedProfilePath;
             Status = status;
             UsesStageHpScaling = usesStageHpScaling;
+            ListPreviewSprite = listPreview.Sprite;
+            ListPreviewRendererPath = listPreview.RendererPath;
         }
 
         public GameObject Prefab { get; }
@@ -1003,6 +2069,8 @@ public sealed class CombatBalanceEditorWindow : EditorWindow
         public string ExpectedProfilePath { get; }
         public MonsterProfileStatus Status { get; }
         public bool UsesStageHpScaling { get; }
+        public Sprite ListPreviewSprite { get; }
+        public string ListPreviewRendererPath { get; }
 
         public string StatusLabel => Status switch
         {
@@ -1027,6 +2095,46 @@ public sealed class CombatBalanceEditorWindow : EditorWindow
 
         public AttributeDefinition Attribute { get; }
         public float Value { get; }
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 몬스터 목록 행에서 사용할 작은 정적 sprite preview 정보를 캐싱한다.
+    /// </summary>
+    private readonly struct MonsterListPreviewInfo
+    {
+        public MonsterListPreviewInfo(Sprite sprite, string rendererPath)
+        {
+            Sprite = sprite;
+            RendererPath = rendererPath;
+        }
+
+        public Sprite Sprite { get; }
+        public string RendererPath { get; }
+
+        public static MonsterListPreviewInfo Empty => new(null, string.Empty);
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 선택된 몬스터 프리팹의 대표 비주얼 프리뷰를 그리는 데 필요한 sprite, texture, renderer 출처를 전달한다.
+    /// </summary>
+    private readonly struct MonsterVisualPreviewInfo
+    {
+        public MonsterVisualPreviewInfo(Sprite sprite, Texture2D texture, string rendererPath, string sourceLabel)
+        {
+            Sprite = sprite;
+            Texture = texture;
+            RendererPath = rendererPath;
+            SourceLabel = sourceLabel;
+        }
+
+        public Sprite Sprite { get; }
+        public Texture2D Texture { get; }
+        public string RendererPath { get; }
+        public string SourceLabel { get; }
+
+        public static MonsterVisualPreviewInfo Empty => new(null, null, string.Empty, "None");
     }
 
     /// <summary>

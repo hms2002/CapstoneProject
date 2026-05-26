@@ -17,6 +17,8 @@ namespace UnityGAS
         public float duration;
         public AttackTelegraphStyle style;
         public Vector3 origin;
+        public Vector3 lineStart;
+        public Vector3 lineEnd;
         public bool useWallClipping;
         public LayerMask wallClipLayers;
         public int wallClipSampleCount;
@@ -39,7 +41,9 @@ namespace UnityGAS
                 rotationDeg = rotationDeg,
                 duration = duration,
                 style = style,
-                origin = center
+                origin = center,
+                lineStart = center,
+                lineEnd = center
             };
         }
 
@@ -59,7 +63,9 @@ namespace UnityGAS
                 rotationDeg = 0f,
                 duration = duration,
                 style = style,
-                origin = center
+                origin = center,
+                lineStart = center,
+                lineEnd = center
             };
         }
 
@@ -84,7 +90,9 @@ namespace UnityGAS
                 rotationDeg = 0f,
                 duration = duration,
                 style = style,
-                origin = center
+                origin = center,
+                lineStart = center,
+                lineEnd = center
             };
         }
 
@@ -114,7 +122,41 @@ namespace UnityGAS
                 rotationDeg = rotationDeg,
                 duration = duration,
                 style = style,
-                origin = origin
+                origin = origin,
+                lineStart = origin,
+                lineEnd = origin
+            };
+        }
+
+        /// <summary>
+        /// 책임 :
+        /// - 원거리 조준선처럼 실제 시작점과 끝점이 중요한 선형 공격 예고를 생성한다.
+        /// - 색상은 Style의 borderColor를 사용하고, size.x는 길이, size.y는 선 두께로 보관한다.
+        /// </summary>
+        public static AttackTelegraphSpec CreateLine(
+            Vector3 start,
+            Vector3 end,
+            float width,
+            float duration,
+            AttackTelegraphStyle style = null)
+        {
+            Vector3 delta = end - start;
+            float length = Mathf.Max(0.0001f, delta.magnitude);
+            float rotationDeg = Mathf.Atan2(delta.y, delta.x) * Mathf.Rad2Deg;
+
+            return new AttackTelegraphSpec
+            {
+                shape = AttackTelegraphShape.Line,
+                center = (start + end) * 0.5f,
+                size = new Vector2(length, Mathf.Max(0.001f, width)),
+                innerDiameter = 0f,
+                sectorAngleDeg = 0f,
+                rotationDeg = rotationDeg,
+                duration = duration,
+                style = style,
+                origin = start,
+                lineStart = start,
+                lineEnd = end
             };
         }
 

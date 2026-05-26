@@ -652,10 +652,7 @@ public class RookChargeRunner : MonoBehaviour, IMobPatternRunner, IMobPresentati
     private AttackTelegraphStyle MakeWarningStyle()
     {
         AttackTelegraphStyle style = ScriptableObject.CreateInstance<AttackTelegraphStyle>();
-        style.fillColorStart = new Color(0.85f, 0.03f, 0.02f, 0.08f);
-        style.fillColorEnd = new Color(1f, 0.05f, 0.02f, 0.24f);
-        style.borderColorStart = new Color(1f, 0.35f, 0.12f, 0.72f);
-        style.borderColorEnd = new Color(1f, 0.08f, 0.02f, 1f);
+        AttackTelegraphStyleUtility.ApplyDangerAreaColors(style);
         style.progressCurve = AnimationCurve.EaseInOut(0f, 0f, 1f, 1f);
         style.blinkStartNormalized = 0.68f;
         style.blinkFrequency = 7f;
@@ -670,10 +667,7 @@ public class RookChargeRunner : MonoBehaviour, IMobPatternRunner, IMobPresentati
     private AttackTelegraphStyle MakeCenterLineStyle()
     {
         AttackTelegraphStyle style = ScriptableObject.CreateInstance<AttackTelegraphStyle>();
-        style.fillColorStart = new Color(1f, 0.92f, 0.45f, 0.2f);
-        style.fillColorEnd = new Color(1f, 0.98f, 0.72f, 0.72f);
-        style.borderColorStart = new Color(1f, 0.8f, 0.32f, 0.25f);
-        style.borderColorEnd = new Color(1f, 0.95f, 0.55f, 0.85f);
+        AttackTelegraphStyleUtility.ApplyDangerSolidLineColors(style);
         style.progressCurve = AnimationCurve.EaseInOut(0f, 0f, 1f, 1f);
         style.blinkStartNormalized = 0.62f;
         style.blinkFrequency = 9f;
@@ -688,10 +682,7 @@ public class RookChargeRunner : MonoBehaviour, IMobPatternRunner, IMobPresentati
     private AttackTelegraphStyle MakeRailStyle()
     {
         AttackTelegraphStyle style = ScriptableObject.CreateInstance<AttackTelegraphStyle>();
-        style.fillColorStart = new Color(1f, 0.18f, 0.04f, 0.1f);
-        style.fillColorEnd = new Color(1f, 0.12f, 0.02f, 0.55f);
-        style.borderColorStart = new Color(1f, 0.42f, 0.16f, 0.18f);
-        style.borderColorEnd = new Color(1f, 0.2f, 0.05f, 0.85f);
+        AttackTelegraphStyleUtility.ApplyDangerSolidLineColors(style);
         style.progressCurve = AnimationCurve.EaseInOut(0f, 0f, 1f, 1f);
         style.blinkStartNormalized = 0.72f;
         style.blinkFrequency = 8f;
@@ -706,10 +697,7 @@ public class RookChargeRunner : MonoBehaviour, IMobPatternRunner, IMobPresentati
     private AttackTelegraphStyle MakeImpactTipStyle()
     {
         AttackTelegraphStyle style = ScriptableObject.CreateInstance<AttackTelegraphStyle>();
-        style.fillColorStart = new Color(1f, 0.72f, 0.18f, 0.08f);
-        style.fillColorEnd = new Color(1f, 0.16f, 0.04f, 0.68f);
-        style.borderColorStart = new Color(1f, 0.75f, 0.32f, 0.25f);
-        style.borderColorEnd = new Color(1f, 0.95f, 0.62f, 1f);
+        AttackTelegraphStyleUtility.ApplyDangerAreaColors(style);
         style.progressCurve = AnimationCurve.EaseInOut(0f, 0f, 1f, 1f);
         style.blinkStartNormalized = 0.55f;
         style.blinkFrequency = 10f;

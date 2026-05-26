@@ -5,6 +5,30 @@
             "startedUtc": "2026-05-26T06:39:46.6031680Z",
             "endedUtc": "2026-05-26T06:39:47.7066235Z",
             "entries": []
+        },
+        {
+            "sessionId": "74bd84f01c23455a87f73a7d64bbe9dc",
+            "startedUtc": "2026-05-26T07:28:29.2577395Z",
+            "endedUtc": "2026-05-26T07:28:30.8758352Z",
+            "entries": []
+        },
+        {
+            "sessionId": "b1c5a37f5f244a72abaf236d801f2cac",
+            "startedUtc": "2026-05-26T08:16:02.7292518Z",
+            "endedUtc": "2026-05-26T08:16:03.7415431Z",
+            "entries": []
+        },
+        {
+            "sessionId": "6d5a45f029244ec092ff9e450d83c96c",
+            "startedUtc": "2026-05-26T09:24:10.4452335Z",
+            "endedUtc": "2026-05-26T09:24:11.5869814Z",
+            "entries": []
+        },
+        {
+            "sessionId": "7a33e151de294fdfa3d578bb5affc1bb",
+            "startedUtc": "2026-05-26T09:45:00.5644296Z",
+            "endedUtc": "2026-05-26T09:45:02.5404111Z",
+            "entries": []
         }
     ]
 }

@@ -9,6 +9,7 @@ namespace UnityGAS
         Rectangle = 0,
         Circle = 1,
         Ring = 2,
-        Sector = 3
+        Sector = 3,
+        Line = 4
     }
 }

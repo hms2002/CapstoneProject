@@ -555,10 +555,7 @@ public sealed partial class ArcaneTankGolemSlamRunner : MonoBehaviour, IMobPatte
     private static AttackTelegraphStyle CreateWarningStyle(Color accent)
     {
         AttackTelegraphStyle style = ScriptableObject.CreateInstance<AttackTelegraphStyle>();
-        style.fillColorStart = new Color(accent.r, accent.g, accent.b, 0.12f);
-        style.fillColorEnd = new Color(accent.r, accent.g, accent.b, 0.34f);
-        style.borderColorStart = new Color(accent.r, accent.g, accent.b, 1f);
-        style.borderColorEnd = new Color(accent.r, accent.g, accent.b, 1f);
+        AttackTelegraphStyleUtility.ApplyDangerAreaColors(style);
         style.progressCurve = AnimationCurve.Linear(0f, 0f, 1f, 1f);
         style.blinkStartNormalized = 0.7f;
         style.blinkFrequency = 5f;

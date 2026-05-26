@@ -162,10 +162,7 @@ public sealed class GoblinWarriorChargeRunner : MonoBehaviour, IMobPatternRunner
     private static AttackTelegraphStyle MakeWarningStyle()
     {
         AttackTelegraphStyle style = ScriptableObject.CreateInstance<AttackTelegraphStyle>();
-        style.fillColorStart = new Color(1f, 0f, 0f, 0.12f);
-        style.fillColorEnd = new Color(1f, 0f, 0f, 0.32f);
-        style.borderColorStart = new Color(1f, 0.35f, 0.2f, 0.95f);
-        style.borderColorEnd = new Color(1f, 0.35f, 0.2f, 0.95f);
+        AttackTelegraphStyleUtility.ApplyDangerAreaColors(style);
         style.progressCurve = AnimationCurve.Linear(0f, 0f, 1f, 1f);
         style.blinkStartNormalized = 0.72f;
         style.blinkFrequency = 5f;
