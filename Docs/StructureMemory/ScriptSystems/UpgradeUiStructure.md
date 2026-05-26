@@ -28,6 +28,7 @@ Map the upgrade tree UI navigation and purchase feedback flow after the overflow
 - The previous `Scrollbar Horizontal` subtree has been removed from the main upgrade panel prefab; do not re-add a horizontal scrollbar unless the navigation model changes again.
 - Active arrows are shown only when the content can move farther in that direction.
 - Arrow clicks move content by `gridCellSize * overflowArrowBlockCells` and then reuse the existing clamp logic.
+- Movement input bindings (`MoveLeft`, `MoveRight`, `MoveUp`, `MoveDown`; default WASD / arrow keys) invoke the matching active arrow button `onClick` path, so keyboard navigation reuses the same movement, clamp, and extra button listener behavior as pointer clicks.
 - Active arrows oscillate along their own direction using unscaled time.
 - `Tools/Validation/Scene Setup Validator` checks inactive upgrade panels too, reports missing overflow arrow references, reports stale `ScrollRect.horizontalScrollbar` references, and can detach/disable the stale horizontal scrollbar through Auto Fix.
 
@@ -53,6 +54,7 @@ Map the upgrade tree UI navigation and purchase feedback flow after the overflow
 ## Known Pitfalls
 
 - The arrow controls are authoring-backed. Other upgrade panel variants or scene overrides may still need their own button wiring if they do not use `UpgradeTreePanel.prefab` as-is.
+- Keyboard arrow movement only fires through assigned, active, interactable arrow buttons. If an upgrade panel variant omits an overflow arrow reference, the matching movement key has no fallback movement path.
 - `Assets/Scenes/LEeJunmo.unity` and `Assets/Scenes/LEeJunmo 1.unity` still contain legacy upgrade panel data from missing old prefab GUID `f323f5e4b95e66b46aa688b37b914038`. They are not build-enabled as of 2026-05-17, but they should be replaced with the current `UpgradeTreePanel.prefab` before being used as verified content.
 - The arrow movement assumes the existing centered content/clamp model. If the content anchor/pivot model changes, re-check direction mapping.
 - Locked nodes are now clickable for feedback. Verify cursor, hover, and disabled-looking presentation together so players understand the click shows a reason rather than purchases the node.

@@ -4,16 +4,28 @@ using UnityEngine;
 
 public class GameplayRuntimeDebugWindow : EditorWindow
 {
+    private static readonly string[] ItemTabNames = { "Weapon", "Relic", "Consumable" };
+    private const float ItemCardWidth = 220f;
+
     private UpgradeNodeSO[] upgradeNodes = System.Array.Empty<UpgradeNodeSO>();
     private NPCData[] npcAssets = System.Array.Empty<NPCData>();
+    private ItemDatabase[] itemDatabases = System.Array.Empty<ItemDatabase>();
+    private WeaponDefinition[] weaponAssets = System.Array.Empty<WeaponDefinition>();
+    private RelicDefinition[] relicAssets = System.Array.Empty<RelicDefinition>();
+    private ConsumableDefinition[] consumableAssets = System.Array.Empty<ConsumableDefinition>();
     private string[] upgradeNodeNames = System.Array.Empty<string>();
     private string[] npcNames = System.Array.Empty<string>();
+    private string[] itemDatabaseNames = System.Array.Empty<string>();
 
     private int selectedUpgradeIndex;
     private int selectedNpcIndex;
+    private int selectedItemDatabaseIndex;
+    private int selectedItemTabIndex;
     private int magicStoneDelta = 1000;
     private int affectionDelta = 1;
     private Vector2 scrollPosition;
+    private Vector2 itemGridScrollPosition;
+    private string itemGrantStatus = "No item grant action yet.";
 
     [MenuItem("Tools/Runtime/Gameplay Debug Window")]
     public static void ShowWindow()
@@ -53,6 +65,8 @@ public class GameplayRuntimeDebugWindow : EditorWindow
         EditorGUILayout.Space(10f);
         DrawAffectionSection();
         EditorGUILayout.Space(10f);
+        DrawItemGrantSection();
+        EditorGUILayout.Space(10f);
         DrawRunModifierSection();
         EditorGUILayout.Space(10f);
         DrawPersistenceSection();
@@ -83,6 +97,8 @@ public class GameplayRuntimeDebugWindow : EditorWindow
         DrawStatusLine("AffectionManager", AffectionManager.Instance != null);
         DrawStatusLine("RewardDisplayService", RewardDisplayService.Instance != null);
         DrawStatusLine("RunModifierService", RunModifierService.Instance != null);
+        DrawStatusLine("ItemDatabase", GetSelectedItemDatabase() != null);
+        DrawStatusLine("Current Player", ResolveCurrentPlayer() != null);
     }
 
     private void DrawCurrencySection()
@@ -175,6 +191,95 @@ public class GameplayRuntimeDebugWindow : EditorWindow
         }
     }
 
+    private void DrawItemGrantSection()
+    {
+        EditorGUILayout.LabelField("Item Grant", EditorStyles.boldLabel);
+
+        if (itemDatabases.Length > 1)
+        {
+            int previousDatabaseIndex = selectedItemDatabaseIndex;
+            selectedItemDatabaseIndex = DrawAssetPopup("Item Database", selectedItemDatabaseIndex, itemDatabaseNames);
+            if (selectedItemDatabaseIndex != previousDatabaseIndex)
+                RefreshItemAssets();
+        }
+
+        ItemDatabase database = GetSelectedItemDatabase();
+        if (database == null)
+        {
+            EditorGUILayout.HelpBox("No ItemDatabase assets found. Refresh assets after creating or importing an ItemDatabase.", MessageType.Warning);
+            return;
+        }
+
+        EditorGUILayout.LabelField("Database", database.name);
+        EditorGUILayout.HelpBox(itemGrantStatus, MessageType.None);
+
+        selectedItemTabIndex = GUILayout.Toolbar(selectedItemTabIndex, ItemTabNames);
+        itemGridScrollPosition = EditorGUILayout.BeginScrollView(itemGridScrollPosition, GUILayout.MinHeight(260f));
+
+        switch (selectedItemTabIndex)
+        {
+            case 0:
+                DrawWeaponGrantGrid();
+                break;
+            case 1:
+                DrawRelicGrantGrid();
+                break;
+            case 2:
+                DrawConsumableGrantGrid();
+                break;
+        }
+
+        EditorGUILayout.EndScrollView();
+    }
+
+    private void DrawWeaponGrantGrid()
+    {
+        if (weaponAssets.Length == 0)
+        {
+            EditorGUILayout.HelpBox("No WeaponDefinition entries found in the selected ItemDatabase.", MessageType.Info);
+            return;
+        }
+
+        DrawItemGrid(
+            weaponAssets,
+            weapon => weapon != null ? GetDisplayName(weapon.DisplayName, weapon.name) : "(Missing Weapon)",
+            weapon => weapon != null ? weapon.weaponId : string.Empty,
+            BuildWeaponInventoryStatus,
+            GrantWeapon);
+    }
+
+    private void DrawRelicGrantGrid()
+    {
+        if (relicAssets.Length == 0)
+        {
+            EditorGUILayout.HelpBox("No RelicDefinition entries found in the selected ItemDatabase.", MessageType.Info);
+            return;
+        }
+
+        DrawItemGrid(
+            relicAssets,
+            relic => relic != null ? GetDisplayName(relic.DisplayName, relic.name) : "(Missing Relic)",
+            relic => relic != null ? relic.relicId : string.Empty,
+            BuildRelicInventoryStatus,
+            GrantRelic);
+    }
+
+    private void DrawConsumableGrantGrid()
+    {
+        if (consumableAssets.Length == 0)
+        {
+            EditorGUILayout.HelpBox("No ConsumableDefinition entries found in the selected ItemDatabase.", MessageType.Info);
+            return;
+        }
+
+        DrawItemGrid(
+            consumableAssets,
+            consumable => consumable != null ? GetDisplayName(consumable.DisplayName, consumable.name) : "(Missing Consumable)",
+            consumable => consumable != null ? consumable.consumableId : string.Empty,
+            BuildConsumableInventoryStatus,
+            GrantConsumable);
+    }
+
     private void DrawRunModifierSection()
     {
         EditorGUILayout.LabelField("Run Modifier", EditorStyles.boldLabel);
@@ -219,6 +324,135 @@ public class GameplayRuntimeDebugWindow : EditorWindow
                 RunModifierService.Instance?.ReloadFromSave();
             }
         }
+    }
+
+    private void DrawItemGrid<T>(
+        IReadOnlyList<T> items,
+        System.Func<T, string> nameSelector,
+        System.Func<T, string> idSelector,
+        System.Func<T, string> statusSelector,
+        System.Action<T> grantAction)
+        where T : ScriptableObject
+    {
+        int columns = Mathf.Max(1, Mathf.FloorToInt((position.width - 48f) / ItemCardWidth));
+
+        for (int i = 0; i < items.Count; i++)
+        {
+            if (i % columns == 0)
+                EditorGUILayout.BeginHorizontal();
+
+            T item = items[i];
+            using (new EditorGUILayout.VerticalScope(GUI.skin.box, GUILayout.Width(ItemCardWidth)))
+            {
+                EditorGUILayout.LabelField(nameSelector(item), EditorStyles.boldLabel);
+                EditorGUILayout.LabelField(idSelector(item), EditorStyles.miniLabel);
+                EditorGUILayout.LabelField(statusSelector(item), EditorStyles.miniLabel);
+
+                EditorGUI.BeginDisabledGroup(item == null);
+                if (GUILayout.Button("Grant"))
+                    grantAction(item);
+                EditorGUI.EndDisabledGroup();
+            }
+
+            if (i % columns == columns - 1 || i == items.Count - 1)
+                EditorGUILayout.EndHorizontal();
+        }
+    }
+
+    private string BuildWeaponInventoryStatus(WeaponDefinition weapon)
+    {
+        if (weapon == null)
+            return "Invalid definition";
+
+        WeaponInventory2D inventory = ResolvePlayerComponent<WeaponInventory2D>();
+        if (inventory == null)
+            return "WeaponInventory2D missing";
+
+        List<string> ids = inventory.GetAllWeaponIDs();
+        return ids.Contains(weapon.weaponId) ? "Held" : "Not held";
+    }
+
+    private string BuildRelicInventoryStatus(RelicDefinition relic)
+    {
+        if (relic == null)
+            return "Invalid definition";
+
+        RelicInventory inventory = ResolvePlayerComponent<RelicInventory>();
+        if (inventory == null)
+            return "RelicInventory missing";
+
+        return inventory.TryGetRelicLevelById(relic.relicId, out int level)
+            ? $"Level {level}/{Mathf.Max(1, relic.maxLevel)}"
+            : "Not held";
+    }
+
+    private string BuildConsumableInventoryStatus(ConsumableDefinition consumable)
+    {
+        if (consumable == null)
+            return "Invalid definition";
+
+        PlayerConsumableInventory inventory = ResolvePlayerComponent<PlayerConsumableInventory>();
+        if (inventory == null)
+            return "PlayerConsumableInventory missing";
+
+        return $"Held {inventory.CountConsumable(consumable)}/{inventory.Capacity}";
+    }
+
+    private void GrantWeapon(WeaponDefinition weapon)
+    {
+        if (weapon == null)
+        {
+            itemGrantStatus = "Weapon grant failed: invalid definition.";
+            return;
+        }
+
+        WeaponInventory2D inventory = ResolvePlayerComponent<WeaponInventory2D>();
+        if (inventory == null)
+        {
+            itemGrantStatus = "Weapon grant failed: current player has no WeaponInventory2D.";
+            return;
+        }
+
+        WeaponInventory2D.AcquireResult result = inventory.TryAcquireWithoutReplacementDetailed(weapon);
+        itemGrantStatus = $"Weapon '{GetDisplayName(weapon.DisplayName, weapon.name)}' grant result: {FormatWeaponAcquireResult(result)}";
+    }
+
+    private void GrantRelic(RelicDefinition relic)
+    {
+        if (relic == null)
+        {
+            itemGrantStatus = "Relic grant failed: invalid definition.";
+            return;
+        }
+
+        RelicInventory inventory = ResolvePlayerComponent<RelicInventory>();
+        if (inventory == null)
+        {
+            itemGrantStatus = "Relic grant failed: current player has no RelicInventory.";
+            return;
+        }
+
+        RelicInventory.AcquireResult result = inventory.TryAcquireOrUpgradeDetailed(relic);
+        itemGrantStatus = $"Relic '{GetDisplayName(relic.DisplayName, relic.name)}' grant result: {FormatRelicAcquireResult(result)}";
+    }
+
+    private void GrantConsumable(ConsumableDefinition consumable)
+    {
+        if (consumable == null)
+        {
+            itemGrantStatus = "Consumable grant failed: invalid definition.";
+            return;
+        }
+
+        PlayerConsumableInventory inventory = ResolvePlayerComponent<PlayerConsumableInventory>();
+        if (inventory == null)
+        {
+            itemGrantStatus = "Consumable grant failed: current player has no PlayerConsumableInventory.";
+            return;
+        }
+
+        PlayerConsumableInventory.AcquireResult result = inventory.TryAcquireDetailed(consumable);
+        itemGrantStatus = $"Consumable '{GetDisplayName(consumable.DisplayName, consumable.name)}' grant result: {FormatConsumableAcquireResult(result)}";
     }
 
     private void PreviewAffectionRewards(NPCData npcData)
@@ -275,14 +509,42 @@ public class GameplayRuntimeDebugWindow : EditorWindow
         return npcAssets[selectedNpcIndex];
     }
 
+    private ItemDatabase GetSelectedItemDatabase()
+    {
+        if (selectedItemDatabaseIndex < 0 || selectedItemDatabaseIndex >= itemDatabases.Length)
+            return null;
+
+        return itemDatabases[selectedItemDatabaseIndex];
+    }
+
     private void RefreshAssets()
     {
         upgradeNodes = LoadAssetsByType<UpgradeNodeSO>();
         npcAssets = LoadAssetsByType<NPCData>();
+        itemDatabases = LoadAssetsByType<ItemDatabase>();
         upgradeNodeNames = BuildNames(upgradeNodes, node => node != null ? node.upgradeName : "(None)");
         npcNames = BuildNames(npcAssets, npc => npc != null ? $"{npc.npcName} ({npc.id})" : "(None)");
+        itemDatabaseNames = BuildNames(itemDatabases, database => database != null ? database.name : "(None)");
         selectedUpgradeIndex = ClampIndex(selectedUpgradeIndex, upgradeNodes.Length);
         selectedNpcIndex = ClampIndex(selectedNpcIndex, npcAssets.Length);
+        selectedItemDatabaseIndex = ClampIndex(selectedItemDatabaseIndex, itemDatabases.Length);
+        RefreshItemAssets();
+    }
+
+    private void RefreshItemAssets()
+    {
+        ItemDatabase database = GetSelectedItemDatabase();
+        if (database == null)
+        {
+            weaponAssets = System.Array.Empty<WeaponDefinition>();
+            relicAssets = System.Array.Empty<RelicDefinition>();
+            consumableAssets = System.Array.Empty<ConsumableDefinition>();
+            return;
+        }
+
+        weaponAssets = ToSortedNonNullArray(database.allWeapons, weapon => GetDisplayName(weapon.DisplayName, weapon.name));
+        relicAssets = ToSortedNonNullArray(database.allRelics, relic => GetDisplayName(relic.DisplayName, relic.name));
+        consumableAssets = ToSortedNonNullArray(database.allConsumables, consumable => GetDisplayName(consumable.DisplayName, consumable.name));
     }
 
     private static T[] LoadAssetsByType<T>() where T : ScriptableObject
@@ -320,6 +582,84 @@ public class GameplayRuntimeDebugWindow : EditorWindow
             return -1;
 
         return Mathf.Clamp(index, 0, count - 1);
+    }
+
+    private static T[] ToSortedNonNullArray<T>(IEnumerable<T> source, System.Func<T, string> sortKeySelector)
+        where T : ScriptableObject
+    {
+        if (source == null)
+            return System.Array.Empty<T>();
+
+        List<T> result = new List<T>();
+        foreach (T item in source)
+        {
+            if (item != null)
+                result.Add(item);
+        }
+
+        result.Sort((a, b) => string.Compare(sortKeySelector(a), sortKeySelector(b), System.StringComparison.Ordinal));
+        return result.ToArray();
+    }
+
+    private static PlayerInteractor2D ResolveCurrentPlayer()
+    {
+        if (PlayerRuntimeRegistry.CurrentPlayer != null)
+            return PlayerRuntimeRegistry.CurrentPlayer;
+
+        return PlayerRuntimeRegistry.GetPlayerComponent<PlayerInteractor2D>();
+    }
+
+    private static T ResolvePlayerComponent<T>() where T : Component
+    {
+        PlayerInteractor2D player = PlayerRuntimeRegistry.CurrentPlayer;
+        if (player != null)
+        {
+            T component = player.GetComponent<T>();
+            if (component != null)
+                return component;
+        }
+
+        return PlayerRuntimeRegistry.GetPlayerComponent<T>();
+    }
+
+    private static string GetDisplayName(string displayName, string fallback)
+    {
+        return !string.IsNullOrWhiteSpace(displayName) ? displayName : fallback;
+    }
+
+    private static string FormatWeaponAcquireResult(WeaponInventory2D.AcquireResult result)
+    {
+        return result switch
+        {
+            WeaponInventory2D.AcquireResult.Success => "Success",
+            WeaponInventory2D.AcquireResult.InvalidDefinition => "Failed - invalid weapon definition",
+            WeaponInventory2D.AcquireResult.InventoryFull => "Failed - weapon inventory is full",
+            WeaponInventory2D.AcquireResult.DuplicateRejected => "Failed - duplicate weapon rejected",
+            _ => $"Failed - {result}"
+        };
+    }
+
+    private static string FormatRelicAcquireResult(RelicInventory.AcquireResult result)
+    {
+        return result switch
+        {
+            RelicInventory.AcquireResult.Success => "Success",
+            RelicInventory.AcquireResult.InvalidDefinition => "Failed - invalid relic definition",
+            RelicInventory.AcquireResult.InventoryFull => "Failed - relic inventory is full",
+            RelicInventory.AcquireResult.AlreadyMaxLevel => "Failed - relic is already at max level",
+            _ => $"Failed - {result}"
+        };
+    }
+
+    private static string FormatConsumableAcquireResult(PlayerConsumableInventory.AcquireResult result)
+    {
+        return result switch
+        {
+            PlayerConsumableInventory.AcquireResult.Success => "Success",
+            PlayerConsumableInventory.AcquireResult.InvalidDefinition => "Failed - invalid consumable definition",
+            PlayerConsumableInventory.AcquireResult.InventoryFull => "Failed - consumable inventory is full",
+            _ => $"Failed - {result}"
+        };
     }
 
     private void HandlePlayModeChanged(PlayModeStateChange state)

@@ -18,7 +18,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2404158798424994851
 RectTransform:
   m_ObjectHideFlags: 0
@@ -134,7 +134,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -10, y: -10}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3083432284479969811
 CanvasRenderer:
@@ -251,6 +251,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   icon: {fileID: 995905561502516241}
+  backgroundImage: {fileID: 380177578162397077}
   levelText: {fileID: 9078819365429633312}
   hoverHighlightRoot: {fileID: 1648626825173008858}
   lockedSlotSprite: {fileID: 4590640743156308186, guid: 4f4c8793e0a02874481807ac64d48bac, type: 3}

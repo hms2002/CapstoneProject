@@ -71,6 +71,8 @@ public sealed class RunSpecialNpcChoicePresenter : MonoBehaviour
 
             if (i < choiceLabels.Length && choiceLabels[i] != null)
                 choiceLabels[i].text = active ? labels[i] : string.Empty;
+
+            ApplyChoiceKeyGlyph(button, i, active);
         }
 
         RebuildLayout();
@@ -97,6 +99,7 @@ public sealed class RunSpecialNpcChoicePresenter : MonoBehaviour
                 continue;
 
             button.interactable = false;
+            ApplyChoiceKeyGlyph(button, i, false);
             SetChoiceButtonVisible(button, false);
         }
 
@@ -142,6 +145,21 @@ public sealed class RunSpecialNpcChoicePresenter : MonoBehaviour
     {
         if (rootRect != null)
             LayoutRebuilder.ForceRebuildLayoutImmediate(rootRect);
+    }
+
+    private static void ApplyChoiceKeyGlyph(Button button, int index, bool visible)
+    {
+        if (button == null)
+            return;
+
+        DialogueChoiceKeyGlyph keyGlyph = button.GetComponent<DialogueChoiceKeyGlyph>();
+        if (keyGlyph == null)
+            return;
+
+        if (visible)
+            keyGlyph.Bind(index);
+        else
+            keyGlyph.Hide();
     }
 
     private void EnsureButtonHandlers()

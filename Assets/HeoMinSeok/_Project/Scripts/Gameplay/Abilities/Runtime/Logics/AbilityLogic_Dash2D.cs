@@ -31,6 +31,13 @@ namespace UnityGAS.Sample
             if (dir.sqrMagnitude < 0.0001f) yield break;
             dir.Normalize();
 
+            IWeaponDashAugment dashAugment = ResolveDashAugment(system);
+            dashAugment?.ModifyDash(ref duration, ref distance);
+
+            duration = Mathf.Max(0.01f, duration);
+            distance = Mathf.Max(0f, distance);
+            if (distance <= 0.0001f) yield break;
+
             var tags = system.GetComponent<TagSystem>();
             var motion = system.GetComponent<AbilityMotionController2D>();
 
@@ -52,20 +59,48 @@ namespace UnityGAS.Sample
                     system.TryPlayAnimationTriggerHash(spec.Definition.animationTriggerHash, spec.Definition);
 
                 float dashSpeed = distance / duration;
+                Vector2 startPosition = system.transform.position;
                 motion.StartDash(dir, dashSpeed, duration);
+                dashAugment?.HandleDashStarted(
+                    system,
+                    spec,
+                    spec.Definition,
+                    dir,
+                    startPosition,
+                    duration,
+                    distance);
 
                 float elapsed = 0f;
+                bool cancelled = false;
                 while (elapsed < duration)
                 {
                     if (spec.Token != null && spec.Token.IsCancelled)
                     {
+                        cancelled = true;
                         motion.CancelMotion();
+                        dashAugment?.HandleDashFinished(
+                            system,
+                            spec,
+                            spec.Definition,
+                            dir,
+                            startPosition,
+                            system.transform.position,
+                            cancelled);
                         yield break;
                     }
 
                     elapsed += Time.deltaTime;
                     yield return null;
                 }
+
+                dashAugment?.HandleDashFinished(
+                    system,
+                    spec,
+                    spec.Definition,
+                    dir,
+                    startPosition,
+                    system.transform.position,
+                    cancelled);
 
                 if (data.postLockTime > 0f && tags != null)
                 {
@@ -154,6 +189,25 @@ namespace UnityGAS.Sample
             }
 
             return Vector2.zero;
+        }
+
+        private static IWeaponDashAugment ResolveDashAugment(AbilitySystem system)
+        {
+            if (system == null)
+                return null;
+
+            IWeaponDashAugment directAugment = system.GetComponent<IWeaponDashAugment>();
+            if (directAugment != null)
+                return directAugment;
+
+            MonoBehaviour[] components = system.GetComponentsInChildren<MonoBehaviour>(true);
+            for (int i = 0; i < components.Length; i++)
+            {
+                if (components[i] is IWeaponDashAugment augment)
+                    return augment;
+            }
+
+            return null;
         }
     }
 }

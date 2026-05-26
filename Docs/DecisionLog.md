@@ -2,10 +2,162 @@
 status: active
 authority: project-log
 category: decision-log
-last_reviewed: 2026-05-23
+last_reviewed: 2026-05-26
 ---
 
 # Decision Log
+
+## 2026-05-26 - Flowering Bloom Cut-in Reveal Uses Weapon Animation Event
+
+Decision:
+`Flowering` Skill1 Bloom cut-in now plays the weapon Animator `Skill1` trigger during the fade-in cut-in and starts the weapon reveal from the `Event.Anim.Flowering.WeaponReveal` animation event, following the Lightning Spear Skill2 pattern of data-owned trigger and event tag timing.
+
+Reason:
+The Bloom reveal should line up with the authored weapon swing animation instead of starting immediately from cut-in code. Lightning Spear Skill2 already uses an authored weapon animation event to time gameplay/presentation work, and matching that shape keeps the timing editable in the animation clip.
+
+Implications:
+- `FloweringBloomData` owns the cut-in animation trigger, reveal event tag, timeout, and fallback delay.
+- The cut-in path temporarily runs the weapon Animator with unscaled time because the Bloom cut-in pauses combat time.
+- The cut-in path uses `WeaponAimPresentationSettings` with `FacingSideOnly` so the Skill1 weapon motion ignores aim angle and only mirrors left/right. `FacingSideOnly` locks the cast-time side instead of following live aim changes during the animation.
+- The cut-in path acquires a `GameFlowInputBlocker` before pausing combat time so unrelated UI freeze owners, such as pause menu entry, cannot stack on top of the Bloom cut-in and restore a stale `Time.timeScale = 0`.
+- The final shake timing also spawns the cut-in completion particle at the player visual center, using the same cleanup/lifetime fallback path as other Flowering cut-in particles.
+- The reveal waits on a Flowering-specific animation event tag so the previous SwordSkill2 event reference no longer drives Flowering reveal timing.
+
+## 2026-05-25 - Flowering Bloom Attack Uses Single World-Lingering Slash Activations
+
+Decision:
+`Flowering` Bloom attack stays separate from normal combo state, but each `AD_FloweringAttack_Bloom` activation now creates exactly one hitbox-owned BloomSlash visual in world space. Rapid repeated activations provide the Bloom attack sequence; the ability no longer auto-spawns a multi-hit flurry inside one activation.
+
+Reason:
+Bloom attack should feel like a consistent rapid slash sequence where each slash remains visible long enough to read as a world-positioned slash mark. Bundling several hits inside one activation made timing harder to tune and made attached hitbox visuals visually follow the player instead of lingering at the strike location.
+
+Implications:
+- `AbilityLogic_FloweringAttack` stores the last Bloom hitbox variant index on the `AbilitySpec`, so immediate visual repeat avoidance works across repeated activations.
+- BloomSlash prefabs are spawned as independent world objects, not player children; their colliders expire after `activeTime`, while their visuals remain until the authored animation clip finishes.
+- `FloweringAttackData` no longer serializes Bloom flurry hit count or interval fields. Attack cadence is tuned through `nextAttackDelay` / `recoveryDuration`.
+
+## 2026-05-25 - Flowering Normal Attack Uses Dedicated LightningSpear-Style Combo
+
+Decision:
+`Flowering` normal attack now uses dedicated `FloweringBaseAttackData` and a `Flowering` attack logic dispatcher modeled after the active `LightningSpearAttackData` combo schema. It no longer runs through the shared `SwordCombo2DData` / `AL_SwordCombo2D` path.
+
+Reason:
+The active Lightning Spear baseline attack is weapon-specific data and logic with nested `combo.steps[].attackPrefab` authoring, and its slash visual is authored inside the hitbox prefab's `VisualRoot/Render` hierarchy. Matching that shape for Flowering keeps the weapon's basic attack data local, makes step hitbox/visual authoring clearer, and avoids growing the legacy/sample `SwordCombo2D` path for Flowering-only needs.
+
+Implications:
+- `AD_FloweringAttack_Base` points to the existing import-stable `AL_FloweringAttack` asset, while `ALData_FloweringAttack_Base` serializes as `FloweringBaseAttackData`; runtime dispatch routes that data to the base attack runner.
+- Flowering normal attack remains a three-hit combo with the existing step timing, damage, lunge, hit-event, and hit cue values. Its 1/2/1 slash visuals are owned by `Hitbox_Flowering_BasicAttack1/2/3` prefabs rather than spawned as separate step effect prefabs.
+- Bloom attack remains a separate rapid single-slash branch in `AbilityLogic_FloweringAttack` and does not read/write normal combo state.
+- `SwordCombo2DData.attackEffectPrefab` stays available for other weapons and compatibility, but Flowering normal attack no longer depends on it.
+
+## 2026-05-25 - Flowering Kill Extension Requires Dedicated Relic
+
+Decision:
+`Flowering` Bloom kill duration extension is gated by a dedicated relic-granted gameplay tag. The weapon runtime still owns the actual `+1s` duration change, but it only applies when the relic tag is present.
+
+Reason:
+The Notion spec treats kill extension as the Flowering-specific relic effect, not as the weapon's baseline Bloom behavior. Keeping the duration mutation in `FloweringRuntimeState` avoids moving weapon state ownership into relic logic while still making the effect relic-conditional.
+
+Implications:
+- `RelicLogic_FloweringBloomExtension_Managed` grants/removes only the Flowering relic tag on equip/unequip/restore.
+- `FloweringBloomData.killExtensionRequiredTag` is the data gate checked before `FloweringRuntimeData.ExtendBloom(...)`.
+- Bloom status HUD and Skill1 active-duration HUD are runtime projections of `FloweringRuntimeData`; HUD views do not own Bloom gameplay state.
+
+## 2026-05-25 - Flowering Splits Normal Combo From Bloom Attack
+
+Decision:
+This historical prototype decision established that `Flowering` normal and Bloom attacks stay separate. Its earlier `SwordCombo2D` and Bloom flurry implementation details are superseded by the dedicated normal attack and single Bloom slash activation decisions above.
+
+Reason:
+The design needs a stable three-hit baseline attack before Bloom, while Bloom should feel like a separate rapid state attack that can randomize hitbox-owned visual variants and avoid immediate visual repetition.
+
+Implications:
+- `AD_FloweringAttack_Base` and `AD_FloweringAttack_Bloom` continue to be selected separately by Flowering runtime state.
+- `AD_FloweringAttack_Bloom` remains on `AbilityLogic_FloweringAttack`, but now owns one world-positioned slash activation at a time.
+- Delayed Bloom dash slashes are owned by Bloom runtime state cleanup, not by the short-lived dash ability token.
+- Bloom screen border presentation now uses the affection gradient UI graphic/material path for v1 instead of world `SpriteRenderer` border strips.
+
+## 2026-05-25 - TitleScene Authors Shared Fade Service
+
+Decision:
+`TitleScene` should have an authored scene-root `SceneFadeTransitionService` for title-origin transitions, instead of relying on the runtime fallback overlay for the intro-to-gameplay load.
+
+Reason:
+The fade service is shared transition infrastructure, and the title intro needs the same Inspector-tunable fade-out/load/fade-in timing as gameplay scenes. A scene-root authored service can survive the scene load long enough to finish the fade-in, then yield to the loaded `GlobalUIRoot` authored service after the active transition session ends.
+
+Implications:
+- The title fade service should be authored as a root object, not as a child under the title canvas, so it is not destroyed before post-load fade-in completes.
+- Loaded authored fade services must defer replacement while any existing fade service is actively transitioning.
+- Runtime fallback remains an emergency path when no authored service exists, not the preferred title transition structure.
+- Title fade overlay wiring should happen through Unity authoring tools or Inspector review, not direct scene YAML edits.
+
+## 2026-05-24 - Prewarm Trace Uses Per-Tester Files
+
+Decision:
+Editor prewarm trace capture writes to tester/machine-specific JSON files under `Assets/LeeJunMo/Datas/Loading/`, while the recommendation tool aggregates all `PrewarmTrace_*.json` files plus the legacy `PrewarmTrace.json`.
+
+Reason:
+A single shared tracked trace file creates source-control conflicts when multiple testers run play sessions. Per-tester files let each tester commit their own results independently while preserving aggregate recommendation quality.
+
+Implications:
+- `PrewarmTraceRuntime` should not write new editor sessions back into the legacy shared `PrewarmTrace.json`.
+- `PrewarmRecommendationWindow` is responsible for merging trace histories and deduplicating sessions by `sessionId`.
+- If trace cleanup is needed, remove or archive individual tester files rather than collapsing all results into one generated JSON.
+
+## 2026-05-23 - GlobalUIRoot Owns Persistent UI Instance Selection
+
+Decision:
+`GlobalUIRoot` remains the source of truth for persistent global UI ownership. Child global panels such as `SettingsPanelUI` and `KeyBindingPanelUI` may cache or find instances, but they must not destroy an existing persistent representative to replace it with a scene-local duplicate.
+
+Reason:
+Scene-local panels can be loaded under duplicate scene UI roots that are destroyed during scene transitions. If a child panel replaces the persistent singleton before that duplicate root is removed, the project can lose both the original persistent UI and the scene-local replacement.
+
+Implications:
+- `UIManager` continues to resolve settings/keybinding panels through `EnsureInstance()`.
+- Scene-local child panels destroy themselves when another valid non-title instance already exists.
+- Pad/keyboard selected-state and EventSystem selected-object behavior remain separate from persistent ownership.
+
+## 2026-05-23 - Shared Hold Buttons Own Hold Input
+
+Decision:
+Reusable hold-confirm buttons should let `HoldActionButton` own pointer/keyboard hold timing and progress. Feature screens such as `ChestScreen` should consume hold events for domain behavior instead of recalculating the same hold input and progress.
+
+Reason:
+When a feature screen and a shared hold button both drive progress, authored fill visuals can be reset or bypassed by the wrong owner. Keeping hold input in `HoldActionButton` preserves reusable button behavior across chest reroll, tutorial panels, and title intro skip.
+
+Implications:
+- `HoldActionButton` supports authored pointer hold and optional keyboard hold.
+- `HoldFillButtonView` remains visual projection only.
+- Feature screens remain responsible for feature eligibility, side effects, and presentation sequences after hold events.
+
+## 2026-05-24 - Tutorial Pages Reuse One Authored Layout
+
+Decision:
+Tutorial explanation UI uses one authored `TutorialInfoPanel` layout that swaps page image/body/title data at runtime. Page navigation belongs to the panel, while final confirmation remains owned by the authored `HoldActionButton` and is enabled only on the last page.
+
+Reason:
+The current tutorial plan has no variant layouts. Reusing one panel keeps scene/prefab authoring simple and avoids creating separate UI objects for each tutorial page while still letting designers author page content per trigger.
+
+Implications:
+- `TutorialInfoTrigger.pages` is the only tutorial content entry point.
+- Prev/Next buttons are authored UI objects; `TutorialInfoPanel` only binds their click events and hides invalid directions with `SetActive(false)`.
+- A/D page keys are panel-local navigation shortcuts while the panel is open.
+- The Space hold-confirm button should not complete the tutorial until the final page is displayed.
+- If future tutorials need different layout structure, add a separate presenter/prefab variant instead of overloading `TutorialInfoPage` or reintroducing top-level fallback content fields.
+
+## 2026-05-23 - Title New-Slot Intro Reuses Profile Launch Target
+
+Decision:
+The title intro is a title-scene-local presentation step that runs only before empty-slot `StartNewRun` launches. It does not own or override the destination scene; after completion or skip, launch continues through the existing `TitleProfileSlotService.targetSceneName` / `TitleProfileLaunchService` path.
+
+Reason:
+The current project has no dedicated tutorial scene in BuildSettings, and the profile launch target already owns where a selected slot should enter gameplay. Keeping the intro as a presentation gate avoids introducing a second target configuration or a title-specific scene-loading branch.
+
+Implications:
+- Existing-slot `ContinueRun` launches bypass the intro and keep the current direct prepare/load path.
+- Empty-slot intro completion and skip must call back into the existing profile launch preparation before scene load.
+- Future changes to the post-intro destination should edit the profile slot target scene setting, not add an intro-only target override.
+- Intro UI remains scene-authored in `TitleScene`; runtime code drives serialized references and does not create the intro UI hierarchy.
 
 ## 2026-05-25 - P2 Drain Completion Restores The Drain
 
@@ -984,3 +1136,44 @@ Implications:
 - Scene authoring may assign a specific `cameraFocusTarget`; otherwise the speech-bubble transform is used, then the NPC transform.
 - User choices are framed on the player: the flow returns the camera to the player before showing the authored choice panel, then refocuses the NPC only when the selected choice has NPC response lines.
 - Manual play validation is required for scene-specific framing and damping.
+
+## 2026-05-25 - Flowering Dash Augment Keeps Dash Global
+
+Decision:
+`개화` Bloom dash behavior uses a narrow `IWeaponDashAugment` opt-in hook from `AbilityLogic_Dash2D`; it does not add a dash `WeaponAbilitySlot` or route dash through weapon input selection.
+
+Reason:
+Dash is authored and executed as the global `AD_Dash`, while weapon attacks and skills use `WeaponAbilitySelector -> WeaponAbilityBridge -> AbilitySystem`. Extending weapon slots for one weapon's dash modifier would blur that boundary and risk changing all dash input behavior.
+
+Implications:
+- Bloom state lives in `FloweringRuntimeData` and a transient `FloweringRuntimeState` attached to the player while active.
+- `AbilityLogic_Dash2D` only asks for an optional augment; if none is active, global dash behavior is unchanged.
+- Bloom can keep dash cooldown at zero and add three delayed slash hitboxes without making dash a weapon-owned ability.
+- The current Flowering presentation is runtime-created prototype presentation; if reused, move it to authored prefab/material references under the presentation contract.
+
+## 2026-05-25 - Flowering Bloom Splits World Dim From UI Border
+
+Decision:
+Flowering Bloom uses a world `SpriteRenderer` DimPanel on `Sorting Layer = Entity`, `Order in Layer = -1` for black dimming, while the red Bloom border remains a raycast-free UI overlay using `AffectionGradientBorderGraphic`.
+
+Reason:
+The black DimPanel must darken tiles/background without covering player, monsters, effects, or HUD. The affection gradient border already gives the desired soft screen-edge quality and should stay in UI space.
+
+Implications:
+- `FloweringBloomData` owns the DimPanel sorting values, cut-in zoom values, eye-flash frames/settings, and Flowering OFF/ON weapon sprites.
+- `FloweringBloomPresentationController` may create runtime-only DimPanel and eye-flash objects for the current v1 implementation and must destroy them during Bloom cleanup/weapon release.
+- Camera zoom is applied to the existing `CameraBootstrap` player `CinemachineCamera` and restored from cached lens values after the cut-in.
+- If Flowering cut-in presentation becomes reusable, migrate the runtime-created presentation objects into authored prefab/scene references under the presentation authoring contract.
+
+## 2026-05-25 - Flowering Cut-in Uses SpriteMask Reveal And Player_Idle Silhouette
+
+Decision:
+Flowering weapon OFF/ON reveal uses a target sprite overlay with a runtime `SpriteMask`, and the player blackout cut-in uses the first frame of `Player_Idle.anim` as a fixed silhouette. `Eagle-eyed_YesPlayer` remains a reference image only.
+
+Reason:
+The reveal needs handle-to-blade spatial control that is easier to tune with mask position/size than material UV parameters. The blackout cut-in must match the player's actual idle silhouette while letting `Eagle-eyed_NoPlayer` remain a separate one-shot eye flash layered over the player.
+
+Implications:
+- Keep the old reveal material fields serialized on `FloweringBloomData` for compatibility, but do not use them as the runtime reveal gate.
+- `FloweringBloomPresentationController` must restore the hidden `PlayerRender`, destroy the silhouette, and clear any reveal masks during Bloom cleanup/weapon release.
+- If this cut-in becomes shared presentation, migrate the runtime-created silhouette/reveal objects to authored prefab references under the presentation authoring contract.

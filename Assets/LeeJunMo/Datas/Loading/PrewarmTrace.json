@@ -1,6 +1,18 @@
 {
     "sessions": [
         {
+            "sessionId": "db9395fc7316441ca2a9a55597b54496",
+            "startedUtc": "2026-05-25T11:02:41.1051091Z",
+            "endedUtc": "2026-05-25T11:02:42.1943952Z",
+            "entries": []
+        },
+        {
+            "sessionId": "fe5eea25f0a741c685e8505deddaee3c",
+            "startedUtc": "2026-05-25T11:03:04.1860947Z",
+            "endedUtc": "2026-05-25T11:03:05.3769967Z",
+            "entries": []
+        },
+        {
             "sessionId": "540d3d0ab5774a538486e5c07342dfb8",
             "startedUtc": "2026-05-25T11:03:38.8023453Z",
             "endedUtc": "2026-05-25T11:04:55.6662220Z",
@@ -279,22 +291,31 @@
             ]
         },
         {
-            "sessionId": "0da953235de342b98e0ce0cd816306fa",
-            "startedUtc": "2026-05-26T06:40:11.5969297Z",
-            "endedUtc": "2026-05-26T06:40:12.9102381Z",
-            "entries": []
-        },
-        {
-            "sessionId": "300b8b27ddd7441fbb6f29d6c3e33bc6",
-            "startedUtc": "2026-05-26T08:18:15.4096792Z",
-            "endedUtc": "2026-05-26T08:18:17.4035972Z",
-            "entries": []
-        },
-        {
-            "sessionId": "58298ab36212499daca23c9779762032",
-            "startedUtc": "2026-05-26T08:26:33.4457361Z",
-            "endedUtc": "2026-05-26T08:26:34.6317375Z",
-            "entries": []
+            "sessionId": "b7c7de39b35b41c18489b76e7f727da9",
+            "startedUtc": "2026-05-26T00:14:55.3141400Z",
+            "endedUtc": "2026-05-26T00:22:25.4673265Z",
+            "entries": [
+                {
+                    "prefabPath": "Assets/Prefabs/VFX/PF_DrunkenDragon_InhaleWind.prefab",
+                    "prefabName": "PF_DrunkenDragon_InhaleWind",
+                    "totalSpawns": 2,
+                    "coldSpawns": 1,
+                    "firstSeenSeconds": 446.7481689453125,
+                    "lastSeenSeconds": 450.1473693847656,
+                    "firstSceneName": "HeoMinSeok_Boss_Dragon_Spili",
+                    "lastSceneName": "HeoMinSeok_Boss_Dragon_Spili"
+                },
+                {
+                    "prefabPath": "Assets/Prefabs/VFX/PF_DrunkenDragon_KegImpactSplash.prefab",
+                    "prefabName": "PF_DrunkenDragon_KegImpactSplash",
+                    "totalSpawns": 1,
+                    "coldSpawns": 1,
+                    "firstSeenSeconds": 445.51800537109377,
+                    "lastSeenSeconds": 445.5181884765625,
+                    "firstSceneName": "HeoMinSeok_Boss_Dragon_Spili",
+                    "lastSceneName": "HeoMinSeok_Boss_Dragon_Spili"
+                }
+            ]
         }
     ]
 }

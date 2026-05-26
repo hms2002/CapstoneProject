@@ -90,6 +90,11 @@ public class ChestUIManager : MonoBehaviour
         return openedChest != null ? openedChest.RefreshCountLimit : 0;
     }
 
+    public int GetOpenedChestRefreshUsedCount()
+    {
+        return openedChest != null ? openedChest.RefreshCountUsed : 0;
+    }
+
     public int GetOpenedChestRemainingRefreshCount()
     {
         return openedChest != null ? openedChest.RemainingRefreshCount : 0;

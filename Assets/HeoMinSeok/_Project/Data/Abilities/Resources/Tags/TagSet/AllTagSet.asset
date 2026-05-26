@@ -11,7 +11,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 47de7bc346cd48f43ba80cddf5f59263, type: 3}
   m_Name: AllTagSet
-  m_EditorClassIdentifier: 
+  m_EditorClassIdentifier:
   tags:
   - {fileID: 11400000, guid: 9fc66f236befece4b817fa14c255282f, type: 2}
   - {fileID: 11400000, guid: aba3607b5b3d7854ab8de4bb1cf5027c, type: 2}
@@ -64,5 +64,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 13c397bf609bfd6419f58cb78f10326a, type: 2}
   - {fileID: 11400000, guid: 6a381fd96b3c05d4cbcbd73fbf173f4e, type: 2}
   - {fileID: 11400000, guid: a1d4f5110d4049e48d5cb0f39db1d88a, type: 2}
+  - {fileID: 11400000, guid: e5e066ec16be4990b9e8391b7a1b66ac, type: 2}
   includes: []
   version: 2

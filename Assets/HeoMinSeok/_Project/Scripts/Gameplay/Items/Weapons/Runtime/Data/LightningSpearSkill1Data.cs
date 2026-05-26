@@ -139,7 +139,7 @@ public sealed class LightningSpearSkill1Data : ScriptableObject, IAbilityTooltip
             "NoMark",
             "뇌창 휩쓸기",
             ability != null ? ability.icon : null,
-            "표식이 없을 때 이동하지 않고 전방을 휩쓴다.\n회수 창이 있으면 조준 방향 앞쪽에서 아치형 부채꼴로 순차 사출한다.",
+            "● {em:표식이 없을 때} 이동하지 않고 전방을 휩쓴다\n● 보유한 {val:회수 창}이 있으면 조준 방향 앞쪽에서 부채꼴로 순차 사출",
             ability != null ? (float?)ability.cooldown : null);
     }
 
@@ -150,7 +150,7 @@ public sealed class LightningSpearSkill1Data : ScriptableObject, IAbilityTooltip
             "MarkRush",
             "뇌창 돌격",
             icon,
-            "커서 주변의 번개 표식으로 즉시 돌진해 궤적과 도착 지점을 공격한다.\n표식을 소모하면 Skill1 쿨타임이 초기화되고 회수 창을 1개 얻는다.",
+            "● 커서 주변의 [[낙뢰 표식]]으로 즉시 돌진\n● 이동 궤적과 도착 지점을 공격\n● 표식 소모 시 Skill1 쿨타임 초기화 및 {val:회수 창 1개} 획득",
             ability != null ? (float?)ability.cooldown : null);
     }
 }

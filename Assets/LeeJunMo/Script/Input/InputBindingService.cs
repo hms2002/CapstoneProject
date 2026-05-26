@@ -109,7 +109,7 @@ internal static class InputKeyCompatibility
         return false;
     }
 
-    private static bool TryGetButtonControl(KeyCode key, out ButtonControl control)
+    internal static bool TryGetButtonControl(KeyCode key, out ButtonControl control)
     {
         if (TryGetMouseButtonControl(key, out control))
             return true;

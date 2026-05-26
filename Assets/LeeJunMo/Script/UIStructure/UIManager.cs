@@ -794,7 +794,11 @@ public class UIManager : MonoBehaviour
         if (!isTimeFrozenByUi)
             return;
 
-        Time.timeScale = frozenPreviousTimeScale;
+        float restoreTimeScale = frozenPreviousTimeScale;
+        if (restoreTimeScale <= 0f && Time.timeScale > 0f)
+            restoreTimeScale = Time.timeScale;
+
+        Time.timeScale = restoreTimeScale;
         isTimeFrozenByUi = false;
         frozenPreviousTimeScale = 1f;
     }

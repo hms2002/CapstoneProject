@@ -154,6 +154,7 @@ public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
     private Vector2 impactChestShakeRestorePosition;
     private bool hasImpactChestShakeRestorePosition;
     private Vector2 chestPanelOpenPosition;
+    private Vector2 chestPanelOpenPivot = new(0.5f, 0.5f);
     private Vector2 inventoryPanelOpenPosition;
     private bool hasCapturedPanelOpenPositions;
     private bool hasPlayedOpenUiParticles;
@@ -293,7 +294,11 @@ public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
         SnapPostRevealSlideFadeOpen();
     }
 
-    public void ApplyManualRevealProgress(float progress, bool enableInteraction, bool stopPresentationEffects = true)
+    public void ApplyManualRevealProgress(
+        float progress,
+        bool enableInteraction,
+        bool stopPresentationEffects = true,
+        float? resizePivotY = null)
     {
         if (!gameObject.activeSelf)
             gameObject.SetActive(true);
@@ -302,7 +307,7 @@ public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
         ResolveReferences();
         CapturePanelOpenPositions(force: false);
         ApplyPanelPositions(chestPanelOpenPosition, inventoryPanelOpenPosition);
-        ApplyRevealPose(progress);
+        ApplyRevealPose(progress, resizePivotY);
         SetInteractionEnabled(enableInteraction);
     }
 
@@ -583,14 +588,14 @@ public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
         activeRoutine = StartCoroutine(PlayRevealRoutine());
     }
 
-    private void ApplyRevealPose(float t)
+    private void ApplyRevealPose(float t, float? resizePivotY = null)
     {
         t = Mathf.Clamp01(t);
         LayoutMetrics metrics = ResolveLayoutMetrics();
         float revealedMiddleHeight = metrics.MiddleHeight * t;
         float totalHeight = metrics.TopHeight + revealedMiddleHeight + metrics.DownHeight;
 
-        SetSize(chestPanel, metrics.Width, totalHeight);
+        SetChestPanelSize(metrics.Width, totalHeight, metrics.TopHeight + metrics.MiddleHeight + metrics.DownHeight, resizePivotY);
 
         if (chestPanel != null)
         {
@@ -677,7 +682,10 @@ public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
             return;
 
         if (chestPanel != null)
+        {
             chestPanelOpenPosition = chestPanel.anchoredPosition;
+            chestPanelOpenPivot = chestPanel.pivot;
+        }
 
         if (inventoryPanel != null)
             inventoryPanelOpenPosition = inventoryPanel.anchoredPosition;
@@ -1422,6 +1430,25 @@ public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
 
         rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, Mathf.Max(0f, width));
         rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, Mathf.Max(0f, height));
+    }
+
+    private void SetChestPanelSize(float width, float height, float openHeight, float? resizePivotY)
+    {
+        if (chestPanel == null)
+            return;
+
+        SetSize(chestPanel, width, height);
+
+        if (!resizePivotY.HasValue)
+            return;
+
+        float virtualPivotY = Mathf.Clamp01(resizePivotY.Value);
+        float clampedOpenHeight = Mathf.Max(0f, openHeight);
+        float clampedHeight = Mathf.Max(0f, height);
+        float referenceY = chestPanelOpenPosition.y + (virtualPivotY - chestPanelOpenPivot.y) * clampedOpenHeight;
+        Vector2 anchoredPosition = chestPanel.anchoredPosition;
+        anchoredPosition.y = referenceY - (virtualPivotY - chestPanel.pivot.y) * clampedHeight;
+        chestPanel.anchoredPosition = anchoredPosition;
     }
 
     private void SetInteractionEnabled(bool enabled)
