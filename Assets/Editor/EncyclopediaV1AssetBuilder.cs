@@ -147,7 +147,7 @@ public static class EncyclopediaV1AssetBuilder
         {
             new("boss.slime_queen", "Slime Queen", "보스", "점프/낙성 패턴/소환", "슬라임의 방", "슬라임 루트의 여왕 보스입니다.", "Assets/Prefabs/Enemies/Bosses/SlimeQueen/SlimeQueen.prefab", null),
             new("boss.witch_chloe", "클로에", "보스", "투사체/시야 교란/광역 마법", "클로에의 방", "그림자 복도 중심에 있는 마녀 보스입니다.", "Assets/Prefabs/Enemies/Bosses/Witch/Witch.prefab", "Assets/LeeJunMo/Datas/Dialogue/NPC/MSBossNpc.asset"),
-            new("boss.drunken_dragon", "Drunken Dragon", "보스", "돌진/화염/광역 사격", "스피리의 방", "술기운을 머금은 드래곤 보스입니다.", "Assets/Prefabs/Enemies/Bosses/DrunkenDragonBoss/DrunkenDragonBoss_Spili.prefab", "Assets/LeeJunMo/Datas/Dialogue/NPC/DrunkenDragonBossNpc.asset"),
+            new("boss.dragon", "Dragon", "보스", "돌진/화염/광역 사격", "드래곤의 방", "술기운을 머금은 드래곤 보스입니다.", "Assets/Prefabs/Enemies/Bosses/DragonBoss/DragonBoss.prefab", "Assets/LeeJunMo/Datas/Dialogue/NPC/DragonBossNpc.asset"),
             new("boss.demon_king", "마왕", "보스", "검격/사선/광역 패턴", "마왕의 방", "최종 루트의 마왕 보스입니다.", null, "Assets/LeeJunMo/Datas/Dialogue/NPC/DarkLordNpcData.asset")
         };
 

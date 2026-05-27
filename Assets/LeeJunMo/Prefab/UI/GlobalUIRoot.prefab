@@ -21589,7 +21589,6 @@ MonoBehaviour:
   customTravelVisualPrefab: {fileID: 0}
   trackFillProgressStart01: 0.2
   trackFillProgressEnd01: 0.78
-  debugPreviewToggleKey: 288
   debugPreviewCycleSeconds: 2.4
   startWithDebugPreview: 0
   defaultCorridorTips:

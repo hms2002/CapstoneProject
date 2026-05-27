@@ -91,10 +91,10 @@ public struct GameOverPresentationRequest
         if (normalized.Contains("demon") || normalized.Contains("king"))
             return "마왕의 알현실";
 
-        if (normalized.Contains("spili") || normalized.Contains("spiri") ||
+        if (normalized.Contains("dragon") || normalized.Contains("dragon") ||
             sceneName == "ProtoTypeCorridor 1" || sceneName == "ProtoTypeBoss 2")
         {
-            return isBossRoom ? "스피리의 방" : "보물창고";
+            return isBossRoom ? "드래곤의 방" : "보물창고";
         }
 
         if (normalized.Contains("shadow") || normalized.Contains("chloe") ||
