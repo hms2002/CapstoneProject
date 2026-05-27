@@ -103,8 +103,11 @@ public class Wizard : Slime
     protected override void OnDeathStarted()
     {
         CancelAbility();
-        if (!IsPitFallDeath)
+        if (!IsPitFallDeath && splitPrefab != null && splitCount > 0)
+        {
+            PlaySplitDeathVanishEffect();
             SpawnSplit<Pawn>(splitPrefab, splitCount, SplitSpread);
+        }
 
         base.OnDeathStarted();
     }

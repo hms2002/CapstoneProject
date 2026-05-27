@@ -206,8 +206,11 @@ public class Rook : Slime, IMobTargetDetectionOverride
     {
         CancelAbility();
 
-        if (!suppressSplit && !IsPitFallDeath)
+        if (!suppressSplit && !IsPitFallDeath && splitPrefab != null && splitCount > 0)
+        {
+            PlaySplitDeathVanishEffect();
             SpawnSplit<Knight>(splitPrefab, splitCount, SplitSpread);
+        }
 
         base.OnDeathStarted();
     }

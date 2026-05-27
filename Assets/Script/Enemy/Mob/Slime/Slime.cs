@@ -24,10 +24,17 @@ public abstract class Slime : Mob, IMobAttackDecisionSource, IPitFallDeathHandle
     [SerializeField, Range(1, 8)] private int splitLandingResolveSteps = 4;
 
     private MobAbilityCoordinator abilityCoordinator;
+    private SlimeQueenVanishParticleEffect splitDeathVanishEffect;
     private float wakeTime;
     private bool isPitFallDeath;
     private readonly RaycastHit2D[] splitLandingRaycastHits = new RaycastHit2D[8];
     private readonly Collider2D[] splitLandingOverlapHits = new Collider2D[8];
+
+    protected override void Awake()
+    {
+        base.Awake();
+        EnsureSplitDeathVanishEffect();
+    }
 
     /// <summary>분열로 생성된 슬라임의 대기 시간과 타깃을 설정합니다.</summary>
     public virtual void InitSplit(Transform nextTarget)
@@ -84,6 +91,13 @@ public abstract class Slime : Mob, IMobAttackDecisionSource, IPitFallDeathHandle
     protected void CancelAbility()
     {
         abilityCoordinator?.CancelActiveAbility(true);
+    }
+
+    /// <summary>분열 사망 순간에 슬라임퀸 소멸 파티클과 같은 초록 사각 이펙트를 재생합니다.</summary>
+    protected void PlaySplitDeathVanishEffect()
+    {
+        EnsureSplitDeathVanishEffect();
+        splitDeathVanishEffect?.SpawnOneShot(transform.position, sprite);
     }
 
     /// <summary>슬라임 이름, 체력, 크기를 적용합니다.</summary>
@@ -378,5 +392,14 @@ public abstract class Slime : Mob, IMobAttackDecisionSource, IPitFallDeathHandle
         if (abilitySystem.FindSpec(ability) != null) return;
 
         abilitySystem.GiveAbility(ability);
+    }
+
+    private void EnsureSplitDeathVanishEffect()
+    {
+        if (splitDeathVanishEffect == null)
+            splitDeathVanishEffect = GetComponent<SlimeQueenVanishParticleEffect>();
+
+        if (splitDeathVanishEffect == null)
+            splitDeathVanishEffect = gameObject.AddComponent<SlimeQueenVanishParticleEffect>();
     }
 }
