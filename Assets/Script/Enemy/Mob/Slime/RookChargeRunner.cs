@@ -48,7 +48,6 @@ public class RookChargeRunner : MonoBehaviour, IMobPatternRunner, IMobPresentati
     private bool isDashing;
     private bool cancelRequested;
     private bool hitWall;
-    private bool fellIntoHole;
     private bool hitPlayer;
     private TagSystem tagSystem;
     private bool staggerImmuneApplied;
@@ -134,7 +133,6 @@ public class RookChargeRunner : MonoBehaviour, IMobPatternRunner, IMobPresentati
         isRunning = true;
         cancelRequested = false;
         hitWall = false;
-        fellIntoHole = false;
         hitPlayer = false;
 
         try
@@ -156,7 +154,6 @@ public class RookChargeRunner : MonoBehaviour, IMobPatternRunner, IMobPresentati
             while (!cancelRequested &&
                    !owner.IsDead &&
                    !hitWall &&
-                   !fellIntoHole &&
                    Time.time < dashEndTime)
             {
                 yield return null;
@@ -172,7 +169,6 @@ public class RookChargeRunner : MonoBehaviour, IMobPatternRunner, IMobPresentati
             currentContext = default;
             cancelRequested = false;
             hitWall = false;
-            fellIntoHole = false;
             hitPlayer = false;
             isRunning = false;
             abilityCoordinator?.EndRunner(this);
@@ -202,18 +198,11 @@ public class RookChargeRunner : MonoBehaviour, IMobPatternRunner, IMobPresentati
         StopDash();
     }
 
-    /// <summary>룩 돌진 중 플레이어와 구덩이 트리거를 처리합니다.</summary>
+    /// <summary>룩 돌진 중 플레이어 trigger 접촉을 처리합니다.</summary>
     public void HandleTrigger(Collider2D other)
     {
         if (!isDashing) return;
         if (other == null) return;
-
-        if (IsHole(other))
-        {
-            fellIntoHole = true;
-            StopDash();
-            return;
-        }
 
         TryHitTriggerPlayer(other);
     }
@@ -367,7 +356,7 @@ public class RookChargeRunner : MonoBehaviour, IMobPatternRunner, IMobPresentati
         if (!isDashing)
             return;
 
-        if (cancelRequested || owner == null || owner.IsDead || hitWall || fellIntoHole)
+        if (cancelRequested || owner == null || owner.IsDead || hitWall)
             return;
 
         if (Time.time < dashEndTime)
@@ -582,13 +571,6 @@ public class RookChargeRunner : MonoBehaviour, IMobPatternRunner, IMobPresentati
             hitPoint);
 
         return hitPlayer;
-    }
-
-    /// <summary>현재 트리거가 구덩이 기믹인지 확인합니다.</summary>
-    private bool IsHole(Collider2D other)
-    {
-        return other.GetComponent<HoleTrap>() != null ||
-               other.GetComponentInParent<HoleTrap>() != null;
     }
 
     /// <summary>룩이 사용할 붉은 돌진 경고 스타일을 만듭니다.</summary>

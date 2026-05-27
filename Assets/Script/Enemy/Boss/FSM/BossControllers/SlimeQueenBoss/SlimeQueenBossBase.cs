@@ -9,6 +9,9 @@ public abstract class SlimeQueenBossBase : BossControllerBase, IIntentMovementSo
 {
     private const string GroggyTagResourcePath = "Tags/State.Status.Groggy";
     private const float DefaultGroggyDurationSeconds = 3f;
+    private const int ThinWarningOutlineWallLayer = 30;
+    private const int ThinWarningOutlineSampleCount = 48;
+    private const float ThinWarningOutlineSkinWidth = 0.03f;
 
     [Header("Height Presentation")]
     [Tooltip("점프/내려찍기 중 공중 판정 높이로 사용할 바디 Z 높이입니다.")]
@@ -159,6 +162,21 @@ public abstract class SlimeQueenBossBase : BossControllerBase, IIntentMovementSo
     protected void CleanupAllTelegraphs()
     {
         GetTelegraphService()?.ClearAll();
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 슬라임 퀸 계열 경고 telegraph를 Rook 경고와 같은 mesh/LineRenderer 기반 얇은 외곽선 경로로 렌더링하게 한다.
+    /// - 실제 공격 판정은 건드리지 않고, 표시용 wall clipping 옵션만 공통으로 부여한다.
+    /// </summary>
+    protected static AttackTelegraphSpec WithThinWarningOutline(AttackTelegraphSpec spec)
+    {
+        LayerMask wallLayers = default;
+        wallLayers.value = 1 << ThinWarningOutlineWallLayer;
+        return spec.WithWallClipping(
+            wallLayers,
+            ThinWarningOutlineSampleCount,
+            ThinWarningOutlineSkinWidth);
     }
 
     /// <summary>

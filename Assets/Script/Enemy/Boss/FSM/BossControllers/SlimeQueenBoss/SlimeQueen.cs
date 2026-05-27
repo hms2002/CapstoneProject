@@ -311,11 +311,11 @@ public sealed class SlimeQueen : SlimeQueenBossBase, ISlimeQueenBodyInflateHost,
         if (service == null)
             return;
 
-        AttackTelegraphSpec spec = AttackTelegraphSpec.CreateCircle(
+        AttackTelegraphSpec spec = WithThinWarningOutline(AttackTelegraphSpec.CreateCircle(
             landingPosition,
             summonWarningDiameter,
             summonWarningSeconds,
-            summonWarningStyle);
+            summonWarningStyle));
 
         service.SpawnDetachedView(spec);
     }
@@ -327,11 +327,11 @@ public sealed class SlimeQueen : SlimeQueenBossBase, ISlimeQueenBodyInflateHost,
         if (service == null)
             return;
 
-        AttackTelegraphSpec spec = AttackTelegraphSpec.CreateCircle(
+        AttackTelegraphSpec spec = WithThinWarningOutline(AttackTelegraphSpec.CreateCircle(
             landingPosition,
             jumpWarningDiameter,
             jumpDurationSeconds,
-            jumpWarningStyle);
+            jumpWarningStyle));
 
         service.SpawnDetachedView(spec);
     }
@@ -511,11 +511,11 @@ public sealed class SlimeQueen : SlimeQueenBossBase, ISlimeQueenBodyInflateHost,
         if (service == null)
             return;
 
-        AttackTelegraphSpec spec = AttackTelegraphSpec.CreateCircle(
+        AttackTelegraphSpec spec = WithThinWarningOutline(AttackTelegraphSpec.CreateCircle(
             transform.position,
             bodyInflateWarningDiameter,
             bodyInflateWarningSeconds,
-            bodyInflateWarningStyle);
+            bodyInflateWarningStyle));
 
         AttackTelegraphView view = service.SpawnDetachedView(spec);
         if (view != null)
@@ -605,26 +605,20 @@ public sealed class SlimeQueen : SlimeQueenBossBase, ISlimeQueenBodyInflateHost,
         AbilitySystem.EffectRunner.ApplyEffectSpec(knockbackSpec, contactTarget);
     }
 
-    /// <summary>점프 포물선 진행도에 맞춰 보스 위치를 이동시킵니다.</summary>
+    /// <summary>점프 포물선 진행도에 맞춰 root는 바닥 좌표로 이동시키고 visual 높이만 분리해 적용합니다.</summary>
     public void SetJumpPose(Vector3 startPosition, Vector3 landingPosition, float normalizedTime)
     {
         float clampedTime = Mathf.Clamp01(normalizedTime);
         Vector3 groundPosition = Vector3.Lerp(startPosition, landingPosition, clampedTime);
         float arcOffset = Mathf.Sin(clampedTime * Mathf.PI) * jumpArcHeight;
 
-        if (movementMotor != null)
-            movementMotor.StopAllMotion();
-
-        transform.position = groundPosition + Vector3.up * arcOffset;
+        ApplyGroundedMotionPose(groundPosition, arcOffset);
     }
 
     /// <summary>점프 종료 위치로 보스 좌표를 확정합니다.</summary>
     public void SnapToJumpLanding(Vector3 landingPosition)
     {
-        if (movementMotor != null)
-            movementMotor.StopAllMotion();
-
-        transform.position = landingPosition;
+        SnapToGroundedMotionLanding(landingPosition);
         EndRandomJumpAnimation();
     }
 

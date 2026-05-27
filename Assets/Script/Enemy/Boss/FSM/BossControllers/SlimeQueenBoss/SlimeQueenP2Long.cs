@@ -298,11 +298,11 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
         if (service == null)
             return;
 
-        AttackTelegraphSpec spec = AttackTelegraphSpec.CreateCircle(
+        AttackTelegraphSpec spec = WithThinWarningOutline(AttackTelegraphSpec.CreateCircle(
             landingPosition,
             jumpWarningDiameter,
             jumpDurationSeconds,
-            jumpWarningStyle);
+            jumpWarningStyle));
 
         service.SpawnDetachedView(spec);
     }
@@ -426,12 +426,12 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
             if (!segment.IsValid)
                 continue;
 
-            AttackTelegraphSpec spec = AttackTelegraphSpec.CreateRectangle(
+            AttackTelegraphSpec spec = WithThinWarningOutline(AttackTelegraphSpec.CreateRectangle(
                 segment.Center,
                 new Vector2(segment.Length, crossWaterPillarWarningWidth),
                 segment.RotationDegrees,
                 crossWaterPillarWarningSeconds,
-                crossWaterPillarWarningStyle);
+                crossWaterPillarWarningStyle));
 
             AttackTelegraphView view = service.SpawnDetachedView(spec);
             if (view != null)
@@ -503,11 +503,11 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
         AttackTelegraphService service = GetTelegraphService();
         if (service != null)
         {
-            AttackTelegraphSpec spec = CreateWaterCannonSpec(
+            AttackTelegraphSpec spec = WithThinWarningOutline(CreateWaterCannonSpec(
                 line,
                 waterCannonVisualWidth,
                 waterCannonWarningSeconds,
-                waterCannonWarningStyle);
+                waterCannonWarningStyle));
 
             if (waterCannonWarningView == null)
                 waterCannonWarningView = service.SpawnDetachedView(spec);
@@ -603,11 +603,11 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
 
         for (int i = 0; i < dropPositions.Count; i++)
         {
-            AttackTelegraphSpec spec = AttackTelegraphSpec.CreateCircle(
+            AttackTelegraphSpec spec = WithThinWarningOutline(AttackTelegraphSpec.CreateCircle(
                 dropPositions[i],
                 toxicDropWarningDiameter,
                 ToxicDropWarningSeconds,
-                toxicDropWarningStyle);
+                toxicDropWarningStyle));
 
             AttackTelegraphView view = service.SpawnDetachedView(spec);
             if (view != null)

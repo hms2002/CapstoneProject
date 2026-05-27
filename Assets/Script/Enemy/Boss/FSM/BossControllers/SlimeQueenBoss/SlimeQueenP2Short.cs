@@ -201,12 +201,12 @@ public sealed class SlimeQueenP2Short : SlimeQueenPhaseTwoBase
         if (service == null)
             return;
 
-        AttackTelegraphSpec spec = AttackTelegraphSpec.CreateRectangle(
+        AttackTelegraphSpec spec = WithThinWarningOutline(AttackTelegraphSpec.CreateRectangle(
             segment.Center,
             new Vector2(segment.Length, Mathf.Max(0.05f, toxicRushWarningWidth)),
             segment.RotationDegrees,
             ToxicRushWarningSeconds,
-            toxicRushWarningStyle);
+            toxicRushWarningStyle));
 
         AttackTelegraphView view = service.SpawnDetachedView(spec);
         if (view != null)

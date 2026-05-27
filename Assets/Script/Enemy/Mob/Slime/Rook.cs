@@ -365,6 +365,9 @@ public class Rook : Slime, IMobTargetDetectionOverride
         if (candidate == null)
             return false;
 
+        if (IsHoleTrapCollider(candidate))
+            return false;
+
         if (CombatPathBlocker2DUtility.BlocksCombatPath(candidate, gameObject, CombatPathBlockerQuery.Charge))
         {
             LogChargeBlockerDecision(candidate, "IsChargeBlocker");
@@ -862,6 +865,9 @@ public class Rook : Slime, IMobTargetDetectionOverride
         if (targetObject != null && IsColliderOwnedByTransform(hitCollider, targetObject.transform))
             return "target";
 
+        if (IsHoleTrapCollider(hitCollider))
+            return "hole trap";
+
         if (CombatPathBlocker2DUtility.BlocksCombatPath(hitCollider, gameObject, CombatPathBlockerQuery.Charge))
             return $"combat path blocker ({CombatPathBlocker2DUtility.DescribeBlockerDecision(hitCollider, gameObject, CombatPathBlockerQuery.Charge)})";
 
@@ -940,6 +946,14 @@ public class Rook : Slime, IMobTargetDetectionOverride
             return false;
 
         return IsChargeBlocker(hitCollider);
+    }
+
+    /// <summary>룩 돌진 경로 산출에서 구덩이 기믹 collider를 벽/문 차단물과 분리합니다.</summary>
+    private static bool IsHoleTrapCollider(Collider2D candidate)
+    {
+        return candidate != null &&
+               (candidate.GetComponent<HoleTrap>() != null ||
+                candidate.GetComponentInParent<HoleTrap>() != null);
     }
 
     /// <summary>룩 돌진을 막는 지형 레이어 마스크를 구성합니다.</summary>

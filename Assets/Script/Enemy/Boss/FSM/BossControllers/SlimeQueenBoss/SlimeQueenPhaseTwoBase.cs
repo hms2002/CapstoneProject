@@ -387,12 +387,12 @@ public abstract class SlimeQueenPhaseTwoBase : SlimeQueenBossBase, ISlimeQueenBo
         float length = direction.magnitude;
         float rotationDegrees = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
 
-        AttackTelegraphSpec spec = AttackTelegraphSpec.CreateRectangle(
+        AttackTelegraphSpec spec = WithThinWarningOutline(AttackTelegraphSpec.CreateRectangle(
             center,
             new Vector2(length, Mathf.Max(0.05f, castlingWarningWidth)),
             rotationDegrees,
             CastlingWarningSeconds,
-            castlingWarningStyle);
+            castlingWarningStyle));
 
         AttackTelegraphView view = service.SpawnDetachedView(spec);
         if (view != null)
@@ -525,11 +525,11 @@ public abstract class SlimeQueenPhaseTwoBase : SlimeQueenBossBase, ISlimeQueenBo
         if (service == null)
             return;
 
-        AttackTelegraphSpec spec = AttackTelegraphSpec.CreateCircle(
+        AttackTelegraphSpec spec = WithThinWarningOutline(AttackTelegraphSpec.CreateCircle(
             landingPosition,
             slamWarningDiameter,
             Phase2SlamIntervalSeconds,
-            slamWarningStyle);
+            slamWarningStyle));
 
         service.SpawnDetachedView(spec);
     }
@@ -549,26 +549,20 @@ public abstract class SlimeQueenPhaseTwoBase : SlimeQueenBossBase, ISlimeQueenBo
         return true;
     }
 
-    /// <summary>페이즈 2 내려찍기 포물선 진행도에 맞춰 보스 위치를 이동시킵니다.</summary>
+    /// <summary>페이즈 2 내려찍기 중 root는 바닥 좌표로 이동시키고 visual 높이만 분리해 적용합니다.</summary>
     public void SetPhase2SlamPose(Vector3 startPosition, Vector3 landingPosition, float normalizedTime)
     {
         float clampedTime = Mathf.Clamp01(normalizedTime);
         Vector3 groundPosition = Vector3.Lerp(startPosition, landingPosition, clampedTime);
         float arcOffset = Mathf.Sin(clampedTime * Mathf.PI) * slamArcHeight;
 
-        if (movementMotor != null)
-            movementMotor.StopAllMotion();
-
-        transform.position = groundPosition + Vector3.up * arcOffset;
+        ApplyGroundedMotionPose(groundPosition, arcOffset);
     }
 
     /// <summary>페이즈 2 내려찍기 종료 위치로 보스 좌표를 확정합니다.</summary>
     public void SnapToPhase2SlamLanding(Vector3 landingPosition)
     {
-        if (movementMotor != null)
-            movementMotor.StopAllMotion();
-
-        transform.position = landingPosition;
+        SnapToGroundedMotionLanding(landingPosition);
     }
 
     /// <summary>페이즈 2 내려찍기 범위 안의 현재 타겟에게 GAS Damage Effect를 적용합니다.</summary>
@@ -605,11 +599,11 @@ public abstract class SlimeQueenPhaseTwoBase : SlimeQueenBossBase, ISlimeQueenBo
         if (service == null)
             return;
 
-        AttackTelegraphSpec spec = AttackTelegraphSpec.CreateCircle(
+        AttackTelegraphSpec spec = WithThinWarningOutline(AttackTelegraphSpec.CreateCircle(
             transform.position,
             bodyInflateWarningDiameter,
             bodyInflateWarningSeconds,
-            bodyInflateWarningStyle);
+            bodyInflateWarningStyle));
 
         AttackTelegraphView view = service.SpawnDetachedView(spec);
         if (view != null)
