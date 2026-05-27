@@ -32,6 +32,7 @@ public sealed class AbilityLogic_SlimeQueenToxicRush : AbilityLogic
                 slimeQueen.BeginToxicRushTrail(segment.Start);
 
                 float traveledDistance = 0f;
+                bool hitPlayer = false;
                 while (traveledDistance < segment.Length)
                 {
                     if (IsAbilityCancelled(spec))
@@ -39,10 +40,20 @@ public sealed class AbilityLogic_SlimeQueenToxicRush : AbilityLogic
 
                     traveledDistance += slimeQueen.ToxicRushSpeed * Time.deltaTime;
                     slimeQueen.SetToxicRushPose(segment, traveledDistance);
+                    if (slimeQueen.HasToxicRushHitPlayer())
+                    {
+                        hitPlayer = true;
+                        break;
+                    }
+
                     yield return null;
                 }
 
-                slimeQueen.FinishToxicRushSegment(segment);
+                if (hitPlayer)
+                    slimeQueen.FinishToxicRushAtCurrentPosition();
+                else
+                    slimeQueen.FinishToxicRushSegment(segment);
+
                 slimeQueen.EndToxicRushAnimation();
                 slimeQueen.FaceCurrentTarget();
 

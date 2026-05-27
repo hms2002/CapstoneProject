@@ -4,7 +4,7 @@ using UnityGAS;
 
 public sealed class AbilityLogic_SlimeQueenRandomJump : AbilityLogic
 {
-    /// <summary>슬라임 여왕 계열 보스가 바운더리 안의 랜덤 위치로 포물선 점프 이동합니다.</summary>
+    /// <summary>슬라임 여왕 계열 보스가 바운더리 안의 랜덤 위치 위로 이동한 뒤 체공/급강하합니다.</summary>
     public override IEnumerator Activate(AbilitySystem system, AbilitySpec spec, GameObject initialTarget)
     {
         ISlimeQueenRandomJumpHost randomJumpHost = system != null ? system.GetComponent<ISlimeQueenRandomJumpHost>() : null;

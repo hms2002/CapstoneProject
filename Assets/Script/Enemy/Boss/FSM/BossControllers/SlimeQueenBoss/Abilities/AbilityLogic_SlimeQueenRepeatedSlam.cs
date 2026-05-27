@@ -4,14 +4,17 @@ using UnityGAS;
 
 public sealed class AbilityLogic_SlimeQueenRepeatedSlam : AbilityLogic
 {
-    /// <summary>슬라임 여왕 2페이즈 개체가 플레이어 위치를 연속 조준해 포물선 내려찍기를 반복합니다.</summary>
+    private const float PostLandingPauseSeconds = 0.5f;
+
+    /// <summary>슬라임 여왕 2페이즈 개체가 플레이어 위치를 연속 조준해 체공/급강하 내려찍기를 반복합니다.</summary>
     public override IEnumerator Activate(AbilitySystem system, AbilitySpec spec, GameObject initialTarget)
     {
         SlimeQueenPhaseTwoBase slimeQueen = system != null ? system.GetComponent<SlimeQueenPhaseTwoBase>() : null;
         if (slimeQueen == null)
             yield break;
 
-        for (int slamIndex = 0; slamIndex < slimeQueen.Phase2SlamCount; slamIndex++)
+        int slamCount = slimeQueen.Phase2SlamCount;
+        for (int slamIndex = 0; slamIndex < slamCount; slamIndex++)
         {
             if (!slimeQueen.TryGetPhase2SlamLandingPosition(initialTarget, out Vector3 landingPosition))
                 yield break;
@@ -55,6 +58,19 @@ public sealed class AbilityLogic_SlimeQueenRepeatedSlam : AbilityLogic
 
             slimeQueen.ApplyPhase2SlamDamage(spec, landingPosition);
             slimeQueen.FaceCurrentTarget();
+
+            if (slamIndex >= slamCount - 1)
+                continue;
+
+            float postLandingElapsedSeconds = 0f;
+            while (postLandingElapsedSeconds < PostLandingPauseSeconds)
+            {
+                if (IsAbilityCancelled(spec))
+                    yield break;
+
+                postLandingElapsedSeconds += Time.deltaTime;
+                yield return null;
+            }
         }
     }
 }

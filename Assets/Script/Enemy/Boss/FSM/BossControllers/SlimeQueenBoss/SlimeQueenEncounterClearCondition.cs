@@ -24,6 +24,8 @@ public sealed class SlimeQueenEncounterClearCondition : BossEncounterClearCondit
     private const string ShortFinaleSpeech = "우으으 져버리다니..!";
     private const string LongFinaleSpeech = "다음에는 봐주지 않을 거야!";
 
+    private static readonly Vector3 FinaleSpeechBubbleOffsetDelta = new(0f, -1f, 0f);
+
     [SerializeField] private SlimeQueen phaseOneBoss;
 
     private readonly HashSet<SlimeQueenPhaseTwoBase> observedPhaseTwoBosses = new();
@@ -290,7 +292,11 @@ public sealed class SlimeQueenEncounterClearCondition : BossEncounterClearCondit
         }
 
         bool bubbleHidden = false;
-        bool started = boss.TryShowPhaseTwoSpeech(text, resolvedDuration, () => bubbleHidden = true);
+        bool started = boss.TryShowPhaseTwoSpeech(
+            text,
+            resolvedDuration,
+            () => bubbleHidden = true,
+            FinaleSpeechBubbleOffsetDelta);
         if (!started)
         {
             yield return WaitForPresentationSeconds(resolvedDuration);

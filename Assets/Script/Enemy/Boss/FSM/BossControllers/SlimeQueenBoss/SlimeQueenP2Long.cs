@@ -28,7 +28,7 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
     [Tooltip("랜덤 위치까지 점프 이동하는 데 걸리는 시간입니다.")]
     [SerializeField, Min(0.1f)] private float jumpDurationSeconds = 1.6f;
 
-    [Tooltip("점프 중간 지점에서 올라갈 포물선 높이입니다.")]
+    [Tooltip("착지 위치 위로 올라가 체공할 높이입니다.")]
     [SerializeField, Min(0f)] private float jumpArcHeight = 2.5f;
 
     [Tooltip("착지 피해 판정 원의 지름입니다.")]
@@ -307,14 +307,10 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
         service.SpawnDetachedView(spec);
     }
 
-    /// <summary>점프 포물선 진행도에 맞춰 보스 위치를 이동시킵니다.</summary>
+    /// <summary>착지 위치 위로 빠르게 올라가 체공한 뒤 급강하하는 자세를 적용합니다.</summary>
     public void SetJumpPose(Vector3 startPosition, Vector3 landingPosition, float normalizedTime)
     {
-        float clampedTime = Mathf.Clamp01(normalizedTime);
-        Vector3 groundPosition = Vector3.Lerp(startPosition, landingPosition, clampedTime);
-        float arcOffset = Mathf.Sin(clampedTime * Mathf.PI) * jumpArcHeight;
-
-        ApplyGroundedMotionPose(groundPosition, arcOffset);
+        ApplyKnightStyleSlamPose(startPosition, landingPosition, normalizedTime, jumpArcHeight);
     }
 
     /// <summary>점프 종료 위치로 보스 좌표를 확정합니다.</summary>
@@ -363,6 +359,8 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
     /// <summary>착지 범위 안의 현재 타겟에게 GAS Damage Effect를 적용합니다.</summary>
     public void ApplyJumpLandingDamage(AbilitySpec sourceSpec, Vector3 landingPosition)
     {
+        PlayLightSlamLandingCameraShake("SlimeQueenP2Long.JumpLanding");
+
         if (jumpLandingDamage <= 0f || CurrentTarget == null || jumpLandingDamageEffect == null)
             return;
 

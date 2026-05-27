@@ -20,7 +20,7 @@ public interface ISlimeQueenRandomJumpHost
     /// <summary>이동형 패턴 중 피격과 접촉 피해 차단 상태를 변경합니다.</summary>
     void SetPatternMoveDamageBlocked(bool isBlocked);
 
-    /// <summary>점프 포물선 진행도에 맞춰 보스 위치를 이동시킵니다.</summary>
+    /// <summary>착지 위치 위로 이동한 뒤 체공/급강하하는 진행도를 적용합니다.</summary>
     void SetJumpPose(Vector3 startPosition, Vector3 landingPosition, float normalizedTime);
 
     /// <summary>점프 종료 위치로 보스 좌표를 확정합니다.</summary>

@@ -12,6 +12,17 @@ public abstract class SlimeQueenBossBase : BossControllerBase, IIntentMovementSo
     private const int ThinWarningOutlineWallLayer = 30;
     private const int ThinWarningOutlineSampleCount = 48;
     private const float ThinWarningOutlineSkinWidth = 0.03f;
+    private const float KnightStyleSlamTravelNormalized = 0.28f;
+    private const float KnightStyleSlamHoldEndNormalized = 0.86f;
+    private const float KnightStyleSlamPreDropEndNormalized = 0.96f;
+    private const float KnightStyleSlamPreDropHeightScale = 0.9f;
+    private const float KnightStyleSlamTravelEaseOutPower = 2.2f;
+    private const float KnightStyleSlamLandingDropSharpness = 0.22f;
+    private static readonly CameraShakeHook SlamLandingCameraShake = CameraShakeHook.Create(
+        amplitude: 0.22f,
+        amplitudeMultiplier: 1f,
+        maxAmplitude: 0.45f,
+        minIntervalSeconds: 0.04f);
 
     [Header("Height Presentation")]
     [Tooltip("점프/내려찍기 중 공중 판정 높이로 사용할 바디 Z 높이입니다.")]
@@ -137,6 +148,18 @@ public abstract class SlimeQueenBossBase : BossControllerBase, IIntentMovementSo
             movementMotor.StopAllMotion();
     }
 
+    /// <summary>HoleTrap 공통 낙하 파이프라인에서 보스별 시작 후처리를 받을 수 있게 합니다.</summary>
+    public void NotifyPitFallStarted(PitFallContext context)
+    {
+        OnPitFallStarted(context);
+    }
+
+    /// <summary>HoleTrap 공통 낙하 파이프라인에서 보스별 완료 후처리를 받을 수 있게 합니다.</summary>
+    public void NotifyPitFallCompleted(PitFallContext context)
+    {
+        OnPitFallCompleted(context);
+    }
+
     /// <summary>현재 타겟 방향에 맞춰 보스 스프라이트 방향을 갱신합니다.</summary>
     public void FaceCurrentTarget()
     {
@@ -182,7 +205,7 @@ public abstract class SlimeQueenBossBase : BossControllerBase, IIntentMovementSo
     /// <summary>
     /// 책임:
     /// - 점프/내려찍기 중 root와 collider는 바닥 좌표에 두고, visual 높이는 CombatHeightState2D로 분리한다.
-    /// - 높이 프레젠테이션 컴포넌트가 아직 없는 프리팹은 기존 root 포물선 이동으로 fallback해 authoring 전에도 연출을 유지한다.
+    /// - 높이 프레젠테이션 컴포넌트가 아직 없는 프리팹은 root 높이 이동으로 fallback해 authoring 전에도 연출을 유지한다.
     /// </summary>
     protected void ApplyGroundedMotionPose(Vector3 groundPosition, float visualHeight)
     {
@@ -200,6 +223,18 @@ public abstract class SlimeQueenBossBase : BossControllerBase, IIntentMovementSo
         EnsureCombatHeightState()?.SetAirborne(safeVisualHeight, airborneBodyZHeight);
     }
 
+    /// <summary>Knight 슬라임처럼 착지 위치 위로 빠르게 올라가 체공한 뒤 마지막에 급강하하는 자세를 적용합니다.</summary>
+    protected void ApplyKnightStyleSlamPose(Vector3 startPosition, Vector3 landingPosition, float normalizedTime, float visualHeight)
+    {
+        float clampedTime = Mathf.Clamp01(normalizedTime);
+        float groundProgress = ResolveKnightStyleSlamGroundProgress(clampedTime);
+        Vector3 groundPosition = Vector3.Lerp(startPosition, landingPosition, groundProgress);
+        groundPosition.z = landingPosition.z;
+
+        float height = ResolveKnightStyleSlamVisualHeight(clampedTime, visualHeight);
+        ApplyGroundedMotionPose(groundPosition, height);
+    }
+
     /// <summary>점프/내려찍기 종료 시 root를 착지 좌표에 고정하고 visual 높이를 지상 상태로 되돌립니다.</summary>
     protected void SnapToGroundedMotionLanding(Vector3 landingPosition)
     {
@@ -208,6 +243,15 @@ public abstract class SlimeQueenBossBase : BossControllerBase, IIntentMovementSo
 
         transform.position = landingPosition;
         ClearCombatHeightPresentation();
+    }
+
+    /// <summary>슬라임 여왕 계열 내려찍기 착지에 쓰는 드래곤 내려찍기와 같은 세기의 카메라 흔들림입니다.</summary>
+    protected void PlayLightSlamLandingCameraShake(string debugReason)
+    {
+        SlamLandingCameraShake.TryPlay(
+            gameObject,
+            Vector3.down,
+            debugReason: debugReason);
     }
 
     /// <summary>남아 있을 수 있는 가짜 높이를 지상 상태로 정리합니다.</summary>
@@ -222,6 +266,48 @@ public abstract class SlimeQueenBossBase : BossControllerBase, IIntentMovementSo
             combatHeightState = heightState;
             heightState.SetGrounded();
         }
+    }
+
+    private static float ResolveKnightStyleSlamGroundProgress(float normalizedTime)
+    {
+        if (normalizedTime <= 0f)
+            return 0f;
+
+        if (normalizedTime >= KnightStyleSlamTravelNormalized)
+            return 1f;
+
+        float travelProgress = Mathf.Clamp01(normalizedTime / KnightStyleSlamTravelNormalized);
+        return 1f - Mathf.Pow(1f - travelProgress, KnightStyleSlamTravelEaseOutPower);
+    }
+
+    private static float ResolveKnightStyleSlamVisualHeight(float normalizedTime, float maxHeight)
+    {
+        float safeHeight = Mathf.Max(0f, maxHeight);
+        if (safeHeight <= 0f)
+            return 0f;
+
+        if (normalizedTime <= KnightStyleSlamTravelNormalized)
+        {
+            float travelProgress = Mathf.Clamp01(normalizedTime / KnightStyleSlamTravelNormalized);
+            float easedProgress = 1f - Mathf.Pow(1f - travelProgress, KnightStyleSlamTravelEaseOutPower);
+            return Mathf.Lerp(0f, safeHeight, easedProgress);
+        }
+
+        if (normalizedTime <= KnightStyleSlamHoldEndNormalized)
+            return safeHeight;
+
+        if (normalizedTime <= KnightStyleSlamPreDropEndNormalized)
+        {
+            float preDropProgress = Mathf.InverseLerp(
+                KnightStyleSlamHoldEndNormalized,
+                KnightStyleSlamPreDropEndNormalized,
+                normalizedTime);
+            return Mathf.Lerp(safeHeight, safeHeight * KnightStyleSlamPreDropHeightScale, preDropProgress);
+        }
+
+        float dropProgress = Mathf.InverseLerp(KnightStyleSlamPreDropEndNormalized, 1f, normalizedTime);
+        float easedDrop = Mathf.Pow(Mathf.Clamp01(dropProgress), KnightStyleSlamLandingDropSharpness);
+        return Mathf.Lerp(safeHeight * KnightStyleSlamPreDropHeightScale, 0f, easedDrop);
     }
 
     private bool CanUseCombatHeightPresentation()
@@ -387,5 +473,15 @@ public abstract class SlimeQueenBossBase : BossControllerBase, IIntentMovementSo
         }
 
         return false;
+    }
+
+    /// <summary>구덩이 낙하 시작 시 보스별 특수 상태를 기록하는 선택적 훅입니다.</summary>
+    protected virtual void OnPitFallStarted(PitFallContext context)
+    {
+    }
+
+    /// <summary>구덩이 낙하 완료 후 보스별 후속 패턴을 실행하는 선택적 훅입니다.</summary>
+    protected virtual void OnPitFallCompleted(PitFallContext context)
+    {
     }
 }
