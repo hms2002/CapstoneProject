@@ -325,7 +325,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemy: {fileID: 700000}
-  detectionRange: 7
+  detectionRange: 10
   stopRange: 2.5
   speedScale: 0.5
   usePathfindingWhenDirectPathBlocked: 1
