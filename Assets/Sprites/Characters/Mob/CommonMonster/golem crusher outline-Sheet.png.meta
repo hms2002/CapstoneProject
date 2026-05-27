@@ -1,0 +1,2232 @@
+fileFormatVersion: 2
+guid: 7c2545b0f83a7414fa60ca691e1ce25e
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 6747230643440317673
+    second: golem crusher outline-Sheet_0
+  - first:
+      213: 3763906728512693831
+    second: golem crusher outline-Sheet_1
+  - first:
+      213: -5210246635642995804
+    second: golem crusher outline-Sheet_2
+  - first:
+      213: -6819059718262826629
+    second: golem crusher outline-Sheet_3
+  - first:
+      213: -6104264248766052281
+    second: golem crusher outline-Sheet_4
+  - first:
+      213: -3737757235721960210
+    second: golem crusher outline-Sheet_5
+  - first:
+      213: -4311019334529818793
+    second: golem crusher outline-Sheet_6
+  - first:
+      213: 5384773894336406412
+    second: golem crusher outline-Sheet_7
+  - first:
+      213: 4971761463928637583
+    second: golem crusher outline-Sheet_8
+  - first:
+      213: 8758940448381679522
+    second: golem crusher outline-Sheet_9
+  - first:
+      213: 194564641820959377
+    second: golem crusher outline-Sheet_10
+  - first:
+      213: 58841373895489457
+    second: golem crusher outline-Sheet_11
+  - first:
+      213: -6263110295085156578
+    second: golem crusher outline-Sheet_12
+  - first:
+      213: 1094937425269154478
+    second: golem crusher outline-Sheet_13
+  - first:
+      213: 7507669214339176036
+    second: golem crusher outline-Sheet_14
+  - first:
+      213: 5315205008636479609
+    second: golem crusher outline-Sheet_15
+  - first:
+      213: 2485496189503297537
+    second: golem crusher outline-Sheet_16
+  - first:
+      213: 2005824743065789051
+    second: golem crusher outline-Sheet_17
+  - first:
+      213: 1115334982842348228
+    second: golem crusher outline-Sheet_18
+  - first:
+      213: -7821992176903306963
+    second: golem crusher outline-Sheet_19
+  - first:
+      213: -5935830605645027131
+    second: golem crusher outline-Sheet_20
+  - first:
+      213: -4293162869653074166
+    second: golem crusher outline-Sheet_21
+  - first:
+      213: 7638200002946374809
+    second: golem crusher outline-Sheet_22
+  - first:
+      213: -2913227617138121651
+    second: golem crusher outline-Sheet_23
+  - first:
+      213: -8175318558886544048
+    second: golem crusher outline-Sheet_24
+  - first:
+      213: -8316726425619124032
+    second: golem crusher outline-Sheet_25
+  - first:
+      213: 8152074557052168760
+    second: golem crusher outline-Sheet_26
+  - first:
+      213: 1100490631342183613
+    second: golem crusher outline-Sheet_27
+  - first:
+      213: 2209886422508948279
+    second: golem crusher outline-Sheet_28
+  - first:
+      213: -1233393839699066210
+    second: golem crusher outline-Sheet_29
+  - first:
+      213: -197228665523077724
+    second: golem crusher outline-Sheet_30
+  - first:
+      213: -3842802054320310375
+    second: golem crusher outline-Sheet_31
+  - first:
+      213: -3175267139567487654
+    second: golem crusher outline-Sheet_32
+  - first:
+      213: 8623447617119871609
+    second: golem crusher outline-Sheet_33
+  - first:
+      213: 6559939313067243816
+    second: golem crusher outline-Sheet_34
+  - first:
+      213: -269046894288448772
+    second: golem crusher outline-Sheet_35
+  - first:
+      213: -2504201571088450847
+    second: golem crusher outline-Sheet_36
+  - first:
+      213: 4608691763654766486
+    second: golem crusher outline-Sheet_37
+  - first:
+      213: 7928011289528332138
+    second: golem crusher outline-Sheet_38
+  - first:
+      213: 6422878695837658894
+    second: golem crusher outline-Sheet_39
+  - first:
+      213: 2434327782669377955
+    second: golem crusher outline-Sheet_40
+  - first:
+      213: -3924668019368207687
+    second: golem crusher outline-Sheet_41
+  - first:
+      213: -655218483889369246
+    second: golem crusher outline-Sheet_42
+  - first:
+      213: 849559569829908352
+    second: golem crusher outline-Sheet_43
+  - first:
+      213: 4081509282420981374
+    second: golem crusher outline-Sheet_44
+  - first:
+      213: 7686162326814832927
+    second: golem crusher outline-Sheet_45
+  - first:
+      213: 8892212653856185441
+    second: golem crusher outline-Sheet_46
+  - first:
+      213: 7026291901353529664
+    second: golem crusher outline-Sheet_47
+  - first:
+      213: 3811526872346358814
+    second: golem crusher outline-Sheet_48
+  - first:
+      213: 5967846804037180047
+    second: golem crusher outline-Sheet_49
+  - first:
+      213: 2615719092966521823
+    second: golem crusher outline-Sheet_50
+  - first:
+      213: 2681370424611987942
+    second: golem crusher outline-Sheet_51
+  - first:
+      213: -2922020121762693528
+    second: golem crusher outline-Sheet_52
+  - first:
+      213: -4720232396830212175
+    second: golem crusher outline-Sheet_53
+  - first:
+      213: 904508796655352137
+    second: golem crusher outline-Sheet_54
+  - first:
+      213: -715467571508421679
+    second: golem crusher outline-Sheet_55
+  - first:
+      213: 7630776376403415535
+    second: golem crusher outline-Sheet_56
+  - first:
+      213: 2581426809955295874
+    second: golem crusher outline-Sheet_57
+  - first:
+      213: -720390907400415200
+    second: golem crusher outline-Sheet_58
+  - first:
+      213: 7994449316946778737
+    second: golem crusher outline-Sheet_59
+  - first:
+      213: 5738034186240645116
+    second: golem crusher outline-Sheet_60
+  - first:
+      213: 4892966196780635944
+    second: golem crusher outline-Sheet_61
+  - first:
+      213: -8346245679071968945
+    second: golem crusher outline-Sheet_62
+  - first:
+      213: 4994020643910148078
+    second: golem crusher outline-Sheet_63
+  - first:
+      213: -1425028735115645052
+    second: golem crusher outline-Sheet_64
+  - first:
+      213: -2617418076413640810
+    second: golem crusher outline-Sheet_65
+  - first:
+      213: 5185407420026253218
+    second: golem crusher outline-Sheet_66
+  - first:
+      213: -4135528047463807657
+    second: golem crusher outline-Sheet_67
+  - first:
+      213: 7489972239364739213
+    second: golem crusher outline-Sheet_68
+  - first:
+      213: 9026992883159323829
+    second: golem crusher outline-Sheet_69
+  - first:
+      213: 5610491107203164430
+    second: golem crusher outline-Sheet_70
+  - first:
+      213: 3926487418329467727
+    second: golem crusher outline-Sheet_71
+  - first:
+      213: -8488945562174766968
+    second: golem crusher outline-Sheet_72
+  - first:
+      213: 2328122894590273023
+    second: golem crusher outline-Sheet_73
+  - first:
+      213: 7967018577996523275
+    second: golem crusher outline-Sheet_74
+  - first:
+      213: 5771604553018679316
+    second: golem crusher outline-Sheet_75
+  - first:
+      213: 277262797562219255
+    second: golem crusher outline-Sheet_76
+  - first:
+      213: -7403573144738342614
+    second: golem crusher outline-Sheet_77
+  - first:
+      213: -8133191107302813248
+    second: golem crusher outline-Sheet_78
+  - first:
+      213: -6019910345725733892
+    second: golem crusher outline-Sheet_79
+  - first:
+      213: -352990681488055022
+    second: golem crusher outline-Sheet_80
+  - first:
+      213: 5790727242944419046
+    second: golem crusher outline-Sheet_81
+  - first:
+      213: -8154267749970177127
+    second: golem crusher outline-Sheet_82
+  - first:
+      213: 6070976240288510929
+    second: golem crusher outline-Sheet_83
+  - first:
+      213: 7858298042705066860
+    second: golem crusher outline-Sheet_84
+  - first:
+      213: 3872094663145065061
+    second: golem crusher outline-Sheet_85
+  - first:
+      213: 8044343588706623305
+    second: golem crusher outline-Sheet_86
+  - first:
+      213: 202484559848415167
+    second: golem crusher outline-Sheet_87
+  - first:
+      213: 8700052589477150324
+    second: golem crusher outline-Sheet_88
+  - first:
+      213: 2256524139438649717
+    second: golem crusher outline-Sheet_89
+  - first:
+      213: -5269272117940134849
+    second: golem crusher outline-Sheet_90
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 16
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 4096
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: golem crusher outline-Sheet_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 576
+        width: 96
+        height: 96
+      alignment: 9
+      pivot: {x: 0.48, y: 0.34}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9e4f3e7958af2ad50800000000000000
+      internalID: 6747230643440317673
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: golem crusher outline-Sheet_1
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 576
+        width: 96
+        height: 96
+      alignment: 9
+      pivot: {x: 0.48, y: 0.34}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 746a3b04a351c3430800000000000000
+      internalID: 3763906728512693831
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: golem crusher outline-Sheet_2
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 576
+        width: 96
+        height: 96
+      alignment: 9
+      pivot: {x: 0.48, y: 0.34}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4ab335a3a4c71b7b0800000000000000
+      internalID: -5210246635642995804
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: golem crusher outline-Sheet_3
+      rect:
+        serializedVersion: 2
+        x: 288
+        y: 576
+        width: 96
+        height: 96
+      alignment: 9
+      pivot: {x: 0.48, y: 0.34}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b79d4cea055dd51a0800000000000000
+      internalID: -6819059718262826629
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: golem crusher outline-Sheet_4
+      rect:
+        serializedVersion: 2
+        x: 384
+        y: 576
+        width: 96
+        height: 96
+      alignment: 9
+      pivot: {x: 0.48, y: 0.34}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 748ce2de10c494ba0800000000000000
+      internalID: -6104264248766052281
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: golem crusher outline-Sheet_5
+      rect:
+        serializedVersion: 2
+        x: 480
+        y: 576
+        width: 96
+        height: 96
+      alignment: 9
+      pivot: {x: 0.48, y: 0.34}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ee4852cf891d02cc0800000000000000
+      internalID: -3737757235721960210
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: golem crusher outline-Sheet_6
+      rect:
+        serializedVersion: 2
+        x: 576
+        y: 576
+        width: 96
+        height: 96
+      alignment: 9
+      pivot: {x: 0.48, y: 0.34}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 75f528981ce2c24c0800000000000000
+      internalID: -4311019334529818793
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: golem crusher outline-Sheet_7
+      rect:
+        serializedVersion: 2
+        x: 672
+        y: 576
+        width: 96
+        height: 96
+      alignment: 9
+      pivot: {x: 0.48, y: 0.34}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c83e7bfb35f8aba40800000000000000
+      internalID: 5384773894336406412
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: golem crusher outline-Sheet_8
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 576
+        width: 96
+        height: 96
+      alignment: 9
+      pivot: {x: 0.48, y: 0.34}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f88417db5be3ff440800000000000000
+      internalID: 4971761463928637583
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: golem crusher outline-Sheet_9
+      rect:
+        serializedVersion: 2
+        x: 864
+        y: 576
+        width: 96
+        height: 96
+      alignment: 9
+      pivot: {x: 0.48, y: 0.34}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2a737925ee10e8970800000000000000
+      internalID: 8758940448381679522
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: golem crusher outline-Sheet_10
+      rect:
+        serializedVersion: 2
+        x: 960
+        y: 576
+        width: 96
+        height: 96
+      alignment: 9
+      pivot: {x: 0.48, y: 0.34}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 192e699c28b33b200800000000000000
+      internalID: 194564641820959377
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: golem crusher outline-Sheet_11
+      rect:
+        serializedVersion: 2
+        x: 1056
+        y: 576
+        width: 96
+        height: 96
+      alignment: 9
+      pivot: {x: 0.48, y: 0.34}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1b7f225faeb01d000800000000000000
+      internalID: 58841373895489457
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: golem crusher outline-Sheet_12
+      rect:
+        serializedVersion: 2
+        x: 1152
+        y: 576
+        width: 96
+        height: 96
+      alignment: 9
+      pivot: {x: 0.48, y: 0.34}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e177b58be56f419a0800000000000000
+      internalID: -6263110295085156578
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: golem crusher outline-Sheet_13
+      rect:
+        serializedVersion: 2
+        x: 1248
+        y: 576
+        width: 96
+        height: 96
+      alignment: 9
+      pivot: {x: 0.48, y: 0.34}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ea2e27c79cff13f00800000000000000
+      internalID: 1094937425269154478
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: golem crusher outline-Sheet_14
+      rect:
+        serializedVersion: 2
+        x: 1344
+        y: 576
+        width: 96
+        height: 96
+      alignment: 9
+      pivot: {x: 0.48, y: 0.34}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 46692d38f59903860800000000000000
+      internalID: 7507669214339176036
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: golem crusher outline-Sheet_15
+      rect:
+        serializedVersion: 2
+        x: 1440
+        y: 576
+        width: 96
+        height: 96
+      alignment: 9
+      pivot: {x: 0.48, y: 0.34}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 97887205bc663c940800000000000000
+      internalID: 5315205008636479609
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: golem crusher outline-Sheet_16
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 576
+        width: 96
+        height: 96
+      alignment: 9
+      pivot: {x: 0.48, y: 0.34}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1085ee99d914e7220800000000000000
+      internalID: 2485496189503297537
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: golem crusher outline-Sheet_17
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 480
+        width: 96
+        height: 96
+      alignment: 9
+      pivot: {x: 0.48, y: 0.34}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b72202cf9fe16db10800000000000000
+      internalID: 2005824743065789051
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: golem crusher outline-Sheet_18
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 480
+        width: 96
+        height: 96
+      alignment: 9
+      pivot: {x: 0.48, y: 0.34}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4c272e1f1477a7f00800000000000000
+      internalID: 1115334982842348228
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: golem crusher outline-Sheet_19
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 480
+        width: 96
+        height: 96
+      alignment: 9
+      pivot: {x: 0.48, y: 0.34}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d214bcbce83b27390800000000000000
+      internalID: -7821992176903306963
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: golem crusher outline-Sheet_20
+      rect:
+        serializedVersion: 2
+        x: 288
+        y: 480
+        width: 96
+        height: 96
+      alignment: 9
+      pivot: {x: 0.48, y: 0.34}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5c8e2a77381bf9da0800000000000000
+      internalID: -5935830605645027131
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: golem crusher outline-Sheet_21
+      rect:
+        serializedVersion: 2
+        x: 384
+        y: 480
+        width: 96
+        height: 96
+      alignment: 9
+      pivot: {x: 0.48, y: 0.34}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a0f8e6fbd1f9b64c0800000000000000
+      internalID: -4293162869653074166
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: golem crusher outline-Sheet_22
+      rect:
+        serializedVersion: 2
+        x: 480
+        y: 480
+        width: 96
+        height: 96
+      alignment: 9
+      pivot: {x: 0.48, y: 0.34}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 99c910b0f66500a60800000000000000
+      internalID: 7638200002946374809
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: golem crusher outline-Sheet_23
+      rect:
+        serializedVersion: 2
+        x: 576
+        y: 480
+        width: 96
+        height: 96
+      alignment: 9
+      pivot: {x: 0.48, y: 0.34}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d44ef9acae22297d0800000000000000
+      internalID: -2913227617138121651
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: golem crusher outline-Sheet_24
+      rect:
+        serializedVersion: 2
+        x: 672
+        y: 480
+        width: 96
+        height: 96
+      alignment: 9
+      pivot: {x: 0.48, y: 0.34}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 05db8ebd51f6b8e80800000000000000
+      internalID: -8175318558886544048
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: golem crusher outline-Sheet_25
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 480
+        width: 96
+        height: 96
+      alignment: 9
+      pivot: {x: 0.48, y: 0.34}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0c03eda316d059c80800000000000000
+      internalID: -8316726425619124032
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: golem crusher outline-Sheet_26
+      rect:
+        serializedVersion: 2
+        x: 864
+        y: 480
+        width: 96
+        height: 96
+      alignment: 9
+      pivot: {x: 0.48, y: 0.34}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 83a289b3e9cf12170800000000000000
+      internalID: 8152074557052168760
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: golem crusher outline-Sheet_27
+      rect:
+        serializedVersion: 2
+        x: 960
+        y: 480
+        width: 96
+        height: 96
+      alignment: 9
+      pivot: {x: 0.48, y: 0.34}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: db4dbc7066ab54f00800000000000000
+      internalID: 1100490631342183613
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: golem crusher outline-Sheet_28
+      rect:
+        serializedVersion: 2
+        x: 1056
+        y: 480
+        width: 96
+        height: 96
+      alignment: 9
+      pivot: {x: 0.48, y: 0.34}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 73bca972ef71bae10800000000000000
+      internalID: 2209886422508948279
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: golem crusher outline-Sheet_29
+      rect:
+        serializedVersion: 2
+        x: 1152
+        y: 480
+        width: 96
+        height: 96
+      alignment: 9
+      pivot: {x: 0.48, y: 0.34}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 529cb52c5d79b0641a86bf57e57c5424
+      internalID: -1233393839699066210
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: golem crusher outline-Sheet_30
+      rect:
+        serializedVersion: 2
+        x: 1248
+        y: 480
+        width: 96
+        height: 96
+      alignment: 9
+      pivot: {x: 0.48, y: 0.34}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f394cb174d881ca48a8f2f2f5eaf778e
+      internalID: -197228665523077724
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: golem crusher outline-Sheet_31
+      rect:
+        serializedVersion: 2
+        x: 1344
+        y: 480
+        width: 96
+        height: 96
+      alignment: 9
+      pivot: {x: 0.48, y: 0.34}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a2faf254a97208249a64e8f361d55743
+      internalID: -3842802054320310375
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: golem crusher outline-Sheet_32
+      rect:
+        serializedVersion: 2
+        x: 1440
+        y: 480
+        width: 96
+        height: 96
+      alignment: 9
+      pivot: {x: 0.48, y: 0.34}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5cebd0e0cbd569645a82d3361b38ce54
+      internalID: -3175267139567487654
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: golem crusher outline-Sheet_33
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 384
+        width: 96
+        height: 96
+      alignment: 9
+      pivot: {x: 0.48, y: 0.34}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4a64268ae9def6944bcd4c94e1d181a3
+      internalID: 8623447617119871609
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: golem crusher outline-Sheet_34
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 384
+        width: 96
+        height: 96
+      alignment: 9
+      pivot: {x: 0.48, y: 0.34}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7564879ab342be447bdcfb640777e290
+      internalID: 6559939313067243816
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: golem crusher outline-Sheet_35
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 384
+        width: 96
+        height: 96
+      alignment: 9
+      pivot: {x: 0.48, y: 0.34}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d17b48b3b744d5d43ba49974471b0219
+      internalID: -269046894288448772
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: golem crusher outline-Sheet_36
+      rect:
+        serializedVersion: 2
+        x: 288
+        y: 384
+        width: 96
+        height: 96
+      alignment: 9
+      pivot: {x: 0.48, y: 0.34}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b0f1ae74ebc8a2b458d541fa0b55dc90
+      internalID: -2504201571088450847
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: golem crusher outline-Sheet_37
+      rect:
+        serializedVersion: 2
+        x: 384
+        y: 384
+        width: 96
+        height: 96
+      alignment: 9
+      pivot: {x: 0.48, y: 0.34}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f7acfa39d08e6f143876fe0ce071b1cb
+      internalID: 4608691763654766486
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: golem crusher outline-Sheet_38
+      rect:
+        serializedVersion: 2
+        x: 480
+        y: 384
+        width: 96
+        height: 96
+      alignment: 9
+      pivot: {x: 0.48, y: 0.34}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a7f4694ec3ff3a242a6fe925f004862f
+      internalID: 7928011289528332138
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: golem crusher outline-Sheet_39
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 288
+        width: 96
+        height: 96
+      alignment: 9
+      pivot: {x: 0.48, y: 0.34}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 685674a5d276dca47b86c3a5c19ce8d0
+      internalID: 6422878695837658894
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: golem crusher outline-Sheet_40
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 288
+        width: 96
+        height: 96
+      alignment: 9
+      pivot: {x: 0.48, y: 0.34}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8a9ec3df24d4d4c428074957dba89012
+      internalID: 2434327782669377955
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: golem crusher outline-Sheet_41
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 288
+        width: 96
+        height: 96
+      alignment: 9
+      pivot: {x: 0.48, y: 0.34}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3e9073cf2c873b74b9343ad03ec543d5
+      internalID: -3924668019368207687
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: golem crusher outline-Sheet_42
+      rect:
+        serializedVersion: 2
+        x: 288
+        y: 288
+        width: 96
+        height: 96
+      alignment: 9
+      pivot: {x: 0.48, y: 0.34}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e8a6556f63c61be43a2efec01ebfa917
+      internalID: -655218483889369246
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: golem crusher outline-Sheet_43
+      rect:
+        serializedVersion: 2
+        x: 384
+        y: 288
+        width: 96
+        height: 96
+      alignment: 9
+      pivot: {x: 0.48, y: 0.34}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2746b285c7f62a2478e792d085c44a33
+      internalID: 849559569829908352
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: golem crusher outline-Sheet_44
+      rect:
+        serializedVersion: 2
+        x: 480
+        y: 288
+        width: 96
+        height: 96
+      alignment: 9
+      pivot: {x: 0.48, y: 0.34}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8028322dfa94c9147b92f5de32523825
+      internalID: 4081509282420981374
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: golem crusher outline-Sheet_45
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 192
+        width: 96
+        height: 96
+      alignment: 9
+      pivot: {x: 0.48, y: 0.34}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7499db3c6057d4842b5721c0d74e86db
+      internalID: 7686162326814832927
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: golem crusher outline-Sheet_46
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 192
+        width: 96
+        height: 96
+      alignment: 9
+      pivot: {x: 0.48, y: 0.34}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: af17919d5f683464987e421513d82ac3
+      internalID: 8892212653856185441
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: golem crusher outline-Sheet_47
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 192
+        width: 96
+        height: 96
+      alignment: 9
+      pivot: {x: 0.48, y: 0.34}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a144368ab874d094d86871e750ad63f0
+      internalID: 7026291901353529664
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: golem crusher outline-Sheet_48
+      rect:
+        serializedVersion: 2
+        x: 288
+        y: 192
+        width: 96
+        height: 96
+      alignment: 9
+      pivot: {x: 0.48, y: 0.34}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: bd0b2a9d479293a4f9aab503a20345d3
+      internalID: 3811526872346358814
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: golem crusher outline-Sheet_49
+      rect:
+        serializedVersion: 2
+        x: 384
+        y: 192
+        width: 96
+        height: 96
+      alignment: 9
+      pivot: {x: 0.48, y: 0.34}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 73acfa117d1efdd4c9696b3a7597d352
+      internalID: 5967846804037180047
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: golem crusher outline-Sheet_50
+      rect:
+        serializedVersion: 2
+        x: 480
+        y: 192
+        width: 96
+        height: 96
+      alignment: 9
+      pivot: {x: 0.48, y: 0.34}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e28325b2639e4f24283a795027d590ff
+      internalID: 2615719092966521823
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: golem crusher outline-Sheet_51
+      rect:
+        serializedVersion: 2
+        x: 576
+        y: 192
+        width: 96
+        height: 96
+      alignment: 9
+      pivot: {x: 0.48, y: 0.34}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a5bf19eb49bd87d44aaf7694cbd33388
+      internalID: 2681370424611987942
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: golem crusher outline-Sheet_52
+      rect:
+        serializedVersion: 2
+        x: 672
+        y: 192
+        width: 96
+        height: 96
+      alignment: 9
+      pivot: {x: 0.48, y: 0.34}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b21c631699642eb408bae7355cdc602f
+      internalID: -2922020121762693528
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: golem crusher outline-Sheet_53
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 192
+        width: 96
+        height: 96
+      alignment: 9
+      pivot: {x: 0.48, y: 0.34}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1ff829527a6f9334b9707782e6234b29
+      internalID: -4720232396830212175
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: golem crusher outline-Sheet_54
+      rect:
+        serializedVersion: 2
+        x: 864
+        y: 192
+        width: 96
+        height: 96
+      alignment: 9
+      pivot: {x: 0.48, y: 0.34}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4881604095772a04c8553126172986fe
+      internalID: 904508796655352137
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: golem crusher outline-Sheet_55
+      rect:
+        serializedVersion: 2
+        x: 960
+        y: 192
+        width: 96
+        height: 96
+      alignment: 9
+      pivot: {x: 0.48, y: 0.34}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 84a217216dba355449f4fd163830a8ea
+      internalID: -715467571508421679
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: golem crusher outline-Sheet_56
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 96
+        width: 96
+        height: 96
+      alignment: 9
+      pivot: {x: 0.48, y: 0.34}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a1b14ae2d973444448d11cd9fa844ac3
+      internalID: 7630776376403415535
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: golem crusher outline-Sheet_57
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 96
+        width: 96
+        height: 96
+      alignment: 9
+      pivot: {x: 0.48, y: 0.34}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f511b27b7929ddd4d8567a5837670a9b
+      internalID: 2581426809955295874
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: golem crusher outline-Sheet_58
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 96
+        height: 96
+      alignment: 9
+      pivot: {x: 0.48, y: 0.34}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8ff6927b772ca884b9714e08029debe3
+      internalID: -720390907400415200
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: golem crusher outline-Sheet_59
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 0
+        width: 96
+        height: 96
+      alignment: 9
+      pivot: {x: 0.48, y: 0.34}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1972e0b05da480b4c9f3b572576baa56
+      internalID: 7994449316946778737
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: golem crusher outline-Sheet_60
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 0
+        width: 96
+        height: 96
+      alignment: 9
+      pivot: {x: 0.48, y: 0.34}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 209a31aac66b45647b233cb9710ce5e0
+      internalID: 5738034186240645116
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: golem crusher outline-Sheet_61
+      rect:
+        serializedVersion: 2
+        x: 288
+        y: 0
+        width: 96
+        height: 96
+      alignment: 9
+      pivot: {x: 0.48, y: 0.34}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6ef2466d1f680c049bf9b4ea54fe800b
+      internalID: 4892966196780635944
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: golem crusher outline-Sheet_62
+      rect:
+        serializedVersion: 2
+        x: 384
+        y: 0
+        width: 96
+        height: 96
+      alignment: 9
+      pivot: {x: 0.48, y: 0.34}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b96fd5e566191a74cae7e167c49c45f6
+      internalID: -8346245679071968945
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: golem crusher outline-Sheet_63
+      rect:
+        serializedVersion: 2
+        x: 480
+        y: 0
+        width: 96
+        height: 96
+      alignment: 9
+      pivot: {x: 0.48, y: 0.34}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9a5b6f1166f3098498d8f6d8c27a5204
+      internalID: 4994020643910148078
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: golem crusher outline-Sheet_64
+      rect:
+        serializedVersion: 2
+        x: 576
+        y: 0
+        width: 96
+        height: 96
+      alignment: 9
+      pivot: {x: 0.48, y: 0.34}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6570d637eb40d8a4691bd6caef7e71a9
+      internalID: -1425028735115645052
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: golem crusher outline-Sheet_65
+      rect:
+        serializedVersion: 2
+        x: 672
+        y: 0
+        width: 96
+        height: 96
+      alignment: 9
+      pivot: {x: 0.48, y: 0.34}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0cfa0ec57bea3b4428b567f366582234
+      internalID: -2617418076413640810
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: golem crusher outline-Sheet_66
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 0
+        width: 96
+        height: 96
+      alignment: 9
+      pivot: {x: 0.48, y: 0.34}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e24cb865f1f37874382d52dc731ddfaf
+      internalID: 5185407420026253218
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: golem crusher outline-Sheet_67
+      rect:
+        serializedVersion: 2
+        x: 864
+        y: 0
+        width: 96
+        height: 96
+      alignment: 9
+      pivot: {x: 0.48, y: 0.34}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 30605c75bbf9b7647947e8cd3f8d0364
+      internalID: -4135528047463807657
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: golem crusher outline-Sheet_68
+      rect:
+        serializedVersion: 2
+        x: 960
+        y: 0
+        width: 96
+        height: 96
+      alignment: 9
+      pivot: {x: 0.48, y: 0.34}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6e0dfe64c13ec124daa0963eedc440a8
+      internalID: 7489972239364739213
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: golem crusher outline-Sheet_69
+      rect:
+        serializedVersion: 2
+        x: 1056
+        y: 0
+        width: 96
+        height: 96
+      alignment: 9
+      pivot: {x: 0.48, y: 0.34}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6f6bddadf414cae46bb3cd34f29e7cd3
+      internalID: 9026992883159323829
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: golem crusher outline-Sheet_70
+      rect:
+        serializedVersion: 2
+        x: 1152
+        y: 0
+        width: 96
+        height: 96
+      alignment: 9
+      pivot: {x: 0.48, y: 0.34}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1bcec2294426cfe4783031ace1516b98
+      internalID: 5610491107203164430
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: golem crusher outline-Sheet_71
+      rect:
+        serializedVersion: 2
+        x: 1248
+        y: 0
+        width: 96
+        height: 96
+      alignment: 9
+      pivot: {x: 0.48, y: 0.34}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2104ef0e79f57fa4d9f2870e14a5e441
+      internalID: 3926487418329467727
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: golem crusher outline-Sheet_72
+      rect:
+        serializedVersion: 2
+        x: 1344
+        y: 0
+        width: 96
+        height: 96
+      alignment: 9
+      pivot: {x: 0.48, y: 0.34}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cc56b1a92cfed9e439eff34467987dfd
+      internalID: -8488945562174766968
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: golem crusher outline-Sheet_73
+      rect:
+        serializedVersion: 2
+        x: 1440
+        y: 0
+        width: 96
+        height: 96
+      alignment: 9
+      pivot: {x: 0.48, y: 0.34}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 95df03c6c153c70479d5aad5998ab6ba
+      internalID: 2328122894590273023
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: golem crusher outline-Sheet_74
+      rect:
+        serializedVersion: 2
+        x: 1536
+        y: 0
+        width: 96
+        height: 96
+      alignment: 9
+      pivot: {x: 0.48, y: 0.34}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 242adaf5713c6df45be89e7ec37f09fc
+      internalID: 7967018577996523275
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: golem crusher outline-Sheet_75
+      rect:
+        serializedVersion: 2
+        x: 1632
+        y: 0
+        width: 96
+        height: 96
+      alignment: 9
+      pivot: {x: 0.48, y: 0.34}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f85d3d11bcb9bb142896914524aa8c01
+      internalID: 5771604553018679316
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: golem crusher outline-Sheet_76
+      rect:
+        serializedVersion: 2
+        x: 1728
+        y: 0
+        width: 96
+        height: 96
+      alignment: 9
+      pivot: {x: 0.48, y: 0.34}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9dbaa14ae5f7a8a478e3db7cae463a9d
+      internalID: 277262797562219255
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: golem crusher outline-Sheet_77
+      rect:
+        serializedVersion: 2
+        x: 1824
+        y: 0
+        width: 96
+        height: 96
+      alignment: 9
+      pivot: {x: 0.48, y: 0.34}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f73b73b254509d643b6539823bbcc509
+      internalID: -7403573144738342614
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: golem crusher outline-Sheet_78
+      rect:
+        serializedVersion: 2
+        x: 1920
+        y: 0
+        width: 96
+        height: 96
+      alignment: 9
+      pivot: {x: 0.48, y: 0.34}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a4e1d950976e5b643b1c69eba70bf67e
+      internalID: -8133191107302813248
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: golem crusher outline-Sheet_79
+      rect:
+        serializedVersion: 2
+        x: 2016
+        y: 0
+        width: 96
+        height: 96
+      alignment: 9
+      pivot: {x: 0.48, y: 0.34}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f4c35b7c7b46871479d0cfab7af1dfd5
+      internalID: -6019910345725733892
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 622132d5bd5a3e84c92f613920e5e522
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":22.0,"y":7.0},"gridSpriteSize":{"x":96.0,"y":96.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.47999998927116396,"y":0.3400000035762787},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":9,"pivotUnitMode":0,"slicingType":2,"keepEmptyRects":false,"isAlternate":false}'
+    nameFileIdTable:
+      golem crusher outline-Sheet_0: 6747230643440317673
+      golem crusher outline-Sheet_1: 3763906728512693831
+      golem crusher outline-Sheet_10: 194564641820959377
+      golem crusher outline-Sheet_11: 58841373895489457
+      golem crusher outline-Sheet_12: -6263110295085156578
+      golem crusher outline-Sheet_13: 1094937425269154478
+      golem crusher outline-Sheet_14: 7507669214339176036
+      golem crusher outline-Sheet_15: 5315205008636479609
+      golem crusher outline-Sheet_16: 2485496189503297537
+      golem crusher outline-Sheet_17: 2005824743065789051
+      golem crusher outline-Sheet_18: 1115334982842348228
+      golem crusher outline-Sheet_19: -7821992176903306963
+      golem crusher outline-Sheet_2: -5210246635642995804
+      golem crusher outline-Sheet_20: -5935830605645027131
+      golem crusher outline-Sheet_21: -4293162869653074166
+      golem crusher outline-Sheet_22: 7638200002946374809
+      golem crusher outline-Sheet_23: -2913227617138121651
+      golem crusher outline-Sheet_24: -8175318558886544048
+      golem crusher outline-Sheet_25: -8316726425619124032
+      golem crusher outline-Sheet_26: 8152074557052168760
+      golem crusher outline-Sheet_27: 1100490631342183613
+      golem crusher outline-Sheet_28: 2209886422508948279
+      golem crusher outline-Sheet_29: -1233393839699066210
+      golem crusher outline-Sheet_3: -6819059718262826629
+      golem crusher outline-Sheet_30: -197228665523077724
+      golem crusher outline-Sheet_31: -3842802054320310375
+      golem crusher outline-Sheet_32: -3175267139567487654
+      golem crusher outline-Sheet_33: 8623447617119871609
+      golem crusher outline-Sheet_34: 6559939313067243816
+      golem crusher outline-Sheet_35: -269046894288448772
+      golem crusher outline-Sheet_36: -2504201571088450847
+      golem crusher outline-Sheet_37: 4608691763654766486
+      golem crusher outline-Sheet_38: 7928011289528332138
+      golem crusher outline-Sheet_39: 6422878695837658894
+      golem crusher outline-Sheet_4: -6104264248766052281
+      golem crusher outline-Sheet_40: 2434327782669377955
+      golem crusher outline-Sheet_41: -3924668019368207687
+      golem crusher outline-Sheet_42: -655218483889369246
+      golem crusher outline-Sheet_43: 849559569829908352
+      golem crusher outline-Sheet_44: 4081509282420981374
+      golem crusher outline-Sheet_45: 7686162326814832927
+      golem crusher outline-Sheet_46: 8892212653856185441
+      golem crusher outline-Sheet_47: 7026291901353529664
+      golem crusher outline-Sheet_48: 3811526872346358814
+      golem crusher outline-Sheet_49: 5967846804037180047
+      golem crusher outline-Sheet_5: -3737757235721960210
+      golem crusher outline-Sheet_50: 2615719092966521823
+      golem crusher outline-Sheet_51: 2681370424611987942
+      golem crusher outline-Sheet_52: -2922020121762693528
+      golem crusher outline-Sheet_53: -4720232396830212175
+      golem crusher outline-Sheet_54: 904508796655352137
+      golem crusher outline-Sheet_55: -715467571508421679
+      golem crusher outline-Sheet_56: 7630776376403415535
+      golem crusher outline-Sheet_57: 2581426809955295874
+      golem crusher outline-Sheet_58: -720390907400415200
+      golem crusher outline-Sheet_59: 7994449316946778737
+      golem crusher outline-Sheet_6: -4311019334529818793
+      golem crusher outline-Sheet_60: 5738034186240645116
+      golem crusher outline-Sheet_61: 4892966196780635944
+      golem crusher outline-Sheet_62: -8346245679071968945
+      golem crusher outline-Sheet_63: 4994020643910148078
+      golem crusher outline-Sheet_64: -1425028735115645052
+      golem crusher outline-Sheet_65: -2617418076413640810
+      golem crusher outline-Sheet_66: 5185407420026253218
+      golem crusher outline-Sheet_67: -4135528047463807657
+      golem crusher outline-Sheet_68: 7489972239364739213
+      golem crusher outline-Sheet_69: 9026992883159323829
+      golem crusher outline-Sheet_7: 5384773894336406412
+      golem crusher outline-Sheet_70: 5610491107203164430
+      golem crusher outline-Sheet_71: 3926487418329467727
+      golem crusher outline-Sheet_72: -8488945562174766968
+      golem crusher outline-Sheet_73: 2328122894590273023
+      golem crusher outline-Sheet_74: 7967018577996523275
+      golem crusher outline-Sheet_75: 5771604553018679316
+      golem crusher outline-Sheet_76: 277262797562219255
+      golem crusher outline-Sheet_77: -7403573144738342614
+      golem crusher outline-Sheet_78: -8133191107302813248
+      golem crusher outline-Sheet_79: -6019910345725733892
+      golem crusher outline-Sheet_8: 4971761463928637583
+      golem crusher outline-Sheet_9: 8758940448381679522
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

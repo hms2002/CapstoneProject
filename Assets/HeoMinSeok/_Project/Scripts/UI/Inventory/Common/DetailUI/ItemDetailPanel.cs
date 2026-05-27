@@ -24,6 +24,14 @@ public class ItemDetailPanel : MonoBehaviour, IHoverView, IHoverPositionOffsetPr
     [SerializeField] private CanvasGroup relicPreviewNextGuide;
     [SerializeField, Range(0f, 1f)] private float disabledGuideAlpha = 0.35f;
 
+    [Header("Action Hint")]
+    [SerializeField] private GameObject actionHintRoot;
+    [SerializeField] private Image actionHintIcon;
+    [SerializeField] private TMP_Text actionHintKeyFallbackLabel;
+    [SerializeField] private TMP_Text actionHintLabel;
+    [SerializeField] private Vector2 fallbackActionHintAnchoredPosition = new Vector2(0f, 24f);
+    [SerializeField] private Vector2 fallbackActionHintSize = new Vector2(320f, 36f);
+
     [Header("Views")]
     [SerializeField] private WeaponDetailView weaponView;
     [SerializeField] private WeaponDetailViewV2 weaponViewV2;
@@ -211,6 +219,7 @@ public class ItemDetailPanel : MonoBehaviour, IHoverView, IHoverPositionOffsetPr
                 consumableView.Hide();
         }
 
+        RefreshActionHint(ctx);
         Canvas.ForceUpdateCanvases();
         PlayOpenPresentation(animateOpen, serial);
     }
@@ -248,6 +257,7 @@ public class ItemDetailPanel : MonoBehaviour, IHoverView, IHoverPositionOffsetPr
             glossaryPopup.Hide();
 
         SetRelicPreviewGuidesVisible(false);
+        HideActionHint();
         currentDefinition = null;
         currentHeaderLevelSuffix = string.Empty;
         SetHeaderTitle(string.Empty);
@@ -471,6 +481,151 @@ public class ItemDetailPanel : MonoBehaviour, IHoverView, IHoverPositionOffsetPr
             Sprite icon = input.GetContextShortcutIcon(InputContextShortcutId.RelicPreviewNext);
             relicPreviewNextGuideIcon.sprite = icon;
             relicPreviewNextGuideIcon.enabled = icon != null;
+        }
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 현재 상세 패널 컨텍스트에 맞는 하단 고정 조작 힌트를 렌더링한다.
+    /// - 키 설정 대상이 아닌 Mouse1/F 같은 컨텍스트 입력을 글리프 데이터베이스의 비주얼만 재사용해 보여준다.
+    /// </summary>
+    private void RefreshActionHint(ItemDetailContext ctx)
+    {
+        ItemDetailActionHint hint = ctx != null
+            ? ctx.ResolvePrimaryActionHint()
+            : ItemDetailActionHint.Hidden;
+
+        if (!hint.Visible)
+        {
+            HideActionHint();
+            return;
+        }
+
+        EnsureActionHintView();
+        if (actionHintRoot == null)
+            return;
+
+        InputGlyphPresentation glyph = InputGlyphDatabase.Resolve(hint.Key);
+        Sprite icon = glyph.Icon;
+
+        actionHintRoot.SetActive(true);
+
+        if (actionHintIcon != null)
+        {
+            actionHintIcon.sprite = icon;
+            actionHintIcon.enabled = icon != null;
+            actionHintIcon.gameObject.SetActive(icon != null);
+        }
+
+        if (actionHintKeyFallbackLabel != null)
+        {
+            actionHintKeyFallbackLabel.text = icon == null
+                ? InputGlyphVisualUtility.ResolveLabel(glyph, hint.Key.ToString())
+                : string.Empty;
+            actionHintKeyFallbackLabel.gameObject.SetActive(icon == null);
+        }
+
+        if (actionHintLabel != null)
+            actionHintLabel.text = hint.Label;
+    }
+
+    private void HideActionHint()
+    {
+        if (actionHintRoot != null)
+            actionHintRoot.SetActive(false);
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 프리팹에 액션 힌트 참조가 아직 연결되지 않은 경우에도 테스트 가능한 최소 UI를 구성한다.
+    /// - 최종 아트/레이아웃은 인스펙터 참조를 연결하면 그대로 대체 가능하게 둔다.
+    /// </summary>
+    private void EnsureActionHintView()
+    {
+        if (actionHintRoot != null)
+        {
+            ResolveActionHintReferences();
+            return;
+        }
+
+        GameObject root = new GameObject("ActionHintRoot", typeof(RectTransform), typeof(HorizontalLayoutGroup));
+        root.transform.SetParent(transform, false);
+        actionHintRoot = root;
+
+        RectTransform rootRect = root.transform as RectTransform;
+        if (rootRect != null)
+        {
+            rootRect.anchorMin = new Vector2(0.5f, 0f);
+            rootRect.anchorMax = new Vector2(0.5f, 0f);
+            rootRect.pivot = new Vector2(0.5f, 0f);
+            rootRect.anchoredPosition = fallbackActionHintAnchoredPosition;
+            rootRect.sizeDelta = fallbackActionHintSize;
+        }
+
+        HorizontalLayoutGroup layout = root.GetComponent<HorizontalLayoutGroup>();
+        layout.childAlignment = TextAnchor.MiddleCenter;
+        layout.spacing = 6f;
+        layout.childControlWidth = false;
+        layout.childControlHeight = true;
+        layout.childForceExpandWidth = false;
+        layout.childForceExpandHeight = false;
+
+        GameObject iconObject = new GameObject("KeyIcon", typeof(RectTransform), typeof(Image), typeof(LayoutElement));
+        iconObject.transform.SetParent(root.transform, false);
+        actionHintIcon = iconObject.GetComponent<Image>();
+        actionHintIcon.preserveAspect = true;
+        LayoutElement iconLayout = iconObject.GetComponent<LayoutElement>();
+        iconLayout.preferredWidth = 28f;
+        iconLayout.preferredHeight = 28f;
+
+        GameObject keyLabelObject = new GameObject("KeyFallbackLabel", typeof(RectTransform), typeof(TextMeshProUGUI), typeof(LayoutElement));
+        keyLabelObject.transform.SetParent(root.transform, false);
+        actionHintKeyFallbackLabel = keyLabelObject.GetComponent<TextMeshProUGUI>();
+        actionHintKeyFallbackLabel.alignment = TextAlignmentOptions.Center;
+        actionHintKeyFallbackLabel.fontSize = 18f;
+        actionHintKeyFallbackLabel.color = Color.white;
+        LayoutElement keyLabelLayout = keyLabelObject.GetComponent<LayoutElement>();
+        keyLabelLayout.preferredWidth = 36f;
+        keyLabelLayout.preferredHeight = 28f;
+
+        GameObject labelObject = new GameObject("ActionLabel", typeof(RectTransform), typeof(TextMeshProUGUI), typeof(LayoutElement));
+        labelObject.transform.SetParent(root.transform, false);
+        actionHintLabel = labelObject.GetComponent<TextMeshProUGUI>();
+        actionHintLabel.alignment = TextAlignmentOptions.MidlineLeft;
+        actionHintLabel.fontSize = 18f;
+        actionHintLabel.color = Color.white;
+        LayoutElement labelLayout = labelObject.GetComponent<LayoutElement>();
+        labelLayout.preferredWidth = 180f;
+        labelLayout.preferredHeight = 28f;
+    }
+
+    private void ResolveActionHintReferences()
+    {
+        if (actionHintRoot == null)
+            return;
+
+        if (actionHintIcon == null)
+            actionHintIcon = actionHintRoot.GetComponentInChildren<Image>(true);
+
+        TMP_Text[] texts = actionHintRoot.GetComponentsInChildren<TMP_Text>(true);
+        if (texts == null)
+            return;
+
+        for (int i = 0; i < texts.Length; i++)
+        {
+            TMP_Text text = texts[i];
+            if (text == null)
+                continue;
+
+            if (actionHintKeyFallbackLabel == null &&
+                text.name.IndexOf("key", System.StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                actionHintKeyFallbackLabel = text;
+                continue;
+            }
+
+            if (actionHintLabel == null)
+                actionHintLabel = text;
         }
     }
 

@@ -6988,7 +6988,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5055118451258413439, guid: 69f361477ab13cb469045903bed6a96e, type: 3}
       propertyPath: m_Name
-      value: DrunkenDragonBoss_Spili
+      value: DragonBoss
       objectReference: {fileID: 0}
     - target: {fileID: 5708815224463359826, guid: 69f361477ab13cb469045903bed6a96e, type: 3}
       propertyPath: arenaCenterPoint

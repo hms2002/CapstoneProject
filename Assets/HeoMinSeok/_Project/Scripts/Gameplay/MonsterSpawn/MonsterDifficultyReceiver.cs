@@ -26,20 +26,25 @@ public class MonsterDifficultyReceiver : MonoBehaviour, IMonsterDifficultyReceiv
     [SerializeField] private AttributeDefinition healthAttribute;
     [SerializeField] private AttributeDefinition maxHealthAttribute;
     [SerializeField] private AttributeDefinition attackAttribute;
+    [SerializeField] private AttributeDefinition attackSpeedBaseAttribute;
 
     [Header("Policy")]
     [SerializeField] private bool scaleCurrentHealthWithMaxHealth = true;
     [SerializeField] private bool refillHealthToFullAfterScaling = false;
 
     private AttributeSet attributeSet;
+    private AbilitySystem abilitySystem;
 
     private float baseMaxHealth;
     private float baseAttack;
+    private float baseAttackSpeed = 1f;
     private bool cachedBaseValues;
 
     private void Awake()
     {
         attributeSet = GetComponent<AttributeSet>();
+        abilitySystem = GetComponent<AbilitySystem>();
+        ResolveStatBindingAttributes();
         CacheBaseValues();
     }
 
@@ -59,11 +64,18 @@ public class MonsterDifficultyReceiver : MonoBehaviour, IMonsterDifficultyReceiv
         if (attributeSet == null)
             return;
 
+        if (abilitySystem == null)
+            abilitySystem = GetComponent<AbilitySystem>();
+
+        ResolveStatBindingAttributes();
+
         if (!cachedBaseValues)
             CacheBaseValues();
 
         ApplyMaxHealth(modifiers);
         ApplyAttack(modifiers);
+        ApplyAttackSpeed(modifiers);
+        LogDifficultyApplied(modifiers);
     }
 
     /// <summary>
@@ -86,6 +98,14 @@ public class MonsterDifficultyReceiver : MonoBehaviour, IMonsterDifficultyReceiv
             attributeSet.TryGetReadOnly(attackAttribute, out var attackReadOnly))
         {
             baseAttack = attackReadOnly.BaseValue;
+        }
+
+        if (attackSpeedBaseAttribute != null &&
+            attributeSet.TryGetReadOnly(attackSpeedBaseAttribute, out var attackSpeedReadOnly))
+        {
+            baseAttackSpeed = attackSpeedReadOnly.BaseValue > 0.0001f
+                ? attackSpeedReadOnly.BaseValue
+                : 1f;
         }
 
         cachedBaseValues = true;
@@ -143,6 +163,61 @@ public class MonsterDifficultyReceiver : MonoBehaviour, IMonsterDifficultyReceiv
         float attackMultiplier = Mathf.Max(0f, modifiers.attackMultiplier);
         float newAttack = baseAttack * attackMultiplier;
         attributeSet.TrySetBaseValue(attackAttribute, newAttack, this);
+    }
+
+    /// <summary>
+    /// [책임]
+    /// - 공격속도 Base Attribute를 난이도 배율에 맞게 재설정한다.
+    /// - CombatTimingService가 AttackSpeedFinal을 읽어 실제 전투 delay를 줄이는 기반 값을 제공한다.
+    /// </summary>
+    private void ApplyAttackSpeed(DifficultyModifiers modifiers)
+    {
+        if (attackSpeedBaseAttribute == null || attributeSet == null)
+            return;
+
+        float attackSpeedMultiplier = Mathf.Max(0f, modifiers.attackSpeedMultiplier);
+        float newAttackSpeed = baseAttackSpeed * attackSpeedMultiplier;
+        attributeSet.TrySetBaseValue(attackSpeedBaseAttribute, newAttackSpeed, this);
+    }
+
+    /// <summary>
+    /// [책임]
+    /// - CombatTimingService 테스트 중 몬스터가 받은 난이도/공격속도 보정값을 설정 토글 기반으로 출력한다.
+    /// - 실제 스탯 적용 로직과 분리해 기본 플레이에서는 로그 비용을 만들지 않는다.
+    /// </summary>
+    private void LogDifficultyApplied(DifficultyModifiers modifiers)
+    {
+        MonsterStageHpScalingSettings settings = Resources.Load<MonsterStageHpScalingSettings>("MonsterStageHpScalingSettings");
+        if (settings == null || !settings.LogStageScalingDebug)
+            return;
+
+        float currentAttackSpeed = attackSpeedBaseAttribute != null && attributeSet != null
+            ? attributeSet.GetAttributeValue(attackSpeedBaseAttribute)
+            : 0f;
+
+        Debug.Log(
+            $"[MonsterDifficultyReceiver] target={name}, hpMultiplier={modifiers.hpMultiplier:0.###}, attackMultiplier={modifiers.attackMultiplier:0.###}, attackSpeedMultiplier={modifiers.attackSpeedMultiplier:0.###}, attackSpeedBase={baseAttackSpeed:0.###}->{currentAttackSpeed:0.###}",
+            this);
+    }
+
+    /// <summary>
+    /// [책임]
+    /// - 인스펙터에 직접 연결되지 않은 공격속도 Attribute를 DamageProfile의 StatTypeBindings에서 보완한다.
+    /// - 기존 프리팹을 모두 다시 authoring하지 않아도 스테이지 템포 보정이 동작하게 한다.
+    /// </summary>
+    private void ResolveStatBindingAttributes()
+    {
+        if (attackSpeedBaseAttribute != null)
+            return;
+
+        StatTypeBindings bindings = abilitySystem != null && abilitySystem.DamageProfile != null
+            ? abilitySystem.DamageProfile.GetStatBindings()
+            : null;
+        if (bindings == null)
+            return;
+
+        if (bindings.TryGetBinding(StatId.AttackSpeedBase, out StatTypeBindings.Binding attackSpeedBinding))
+            attackSpeedBaseAttribute = attackSpeedBinding.attribute;
     }
 
 #if UNITY_EDITOR

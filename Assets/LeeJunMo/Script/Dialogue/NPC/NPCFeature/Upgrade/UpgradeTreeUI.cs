@@ -161,6 +161,7 @@ public class UpgradeTreeUI : MonoBehaviour, IStackableUI, IMouseCursorDomainSour
     private void Update()
     {
         HandleRightMousePan();
+        HandleOverflowArrowKeyboardInput();
         AnimateOverflowArrows();
         RefreshOverflowArrows();
     }
@@ -920,6 +921,28 @@ public class UpgradeTreeUI : MonoBehaviour, IStackableUI, IMouseCursorDomainSour
         RectTransform rect = button.transform as RectTransform;
         if (rect != null)
             rect.anchoredPosition = basePosition;
+    }
+
+    private void HandleOverflowArrowKeyboardInput()
+    {
+        InputBindingService input = InputBindingService.EnsureInstance();
+
+        if (input.WasPressedThisFrame(InputActionId.MoveLeft))
+            InvokeOverflowArrowClick(leftOverflowArrow);
+        if (input.WasPressedThisFrame(InputActionId.MoveRight))
+            InvokeOverflowArrowClick(rightOverflowArrow);
+        if (input.WasPressedThisFrame(InputActionId.MoveUp))
+            InvokeOverflowArrowClick(upOverflowArrow);
+        if (input.WasPressedThisFrame(InputActionId.MoveDown))
+            InvokeOverflowArrowClick(downOverflowArrow);
+    }
+
+    private static void InvokeOverflowArrowClick(Button button)
+    {
+        if (button == null || !button.gameObject.activeInHierarchy || !button.IsInteractable())
+            return;
+
+        button.onClick.Invoke();
     }
 
     private Vector2 GetContentPositionLimits()

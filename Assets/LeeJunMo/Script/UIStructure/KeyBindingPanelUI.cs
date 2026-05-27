@@ -8,7 +8,6 @@ using UnityEngine.UI;
 public sealed class KeyBindingPanelUI : MonoBehaviour, IStackableUI, ICloseRequestHandler
 {
     private const int SystemCursorPriority = 300;
-    private const string DontDestroyOnLoadSceneName = "DontDestroyOnLoad";
     private const string TitleSceneName = "TitleScene";
 
     public static KeyBindingPanelUI Instance { get; private set; }
@@ -98,16 +97,8 @@ public sealed class KeyBindingPanelUI : MonoBehaviour, IStackableUI, ICloseReque
 
         if (Instance != null && Instance != this)
         {
-            if (ShouldReplaceExistingInstance(Instance))
-            {
-                Destroy(Instance.gameObject);
-                Instance = null;
-            }
-            else
-            {
-                Destroy(gameObject);
-                return;
-            }
+            Destroy(gameObject);
+            return;
         }
 
         Instance = this;
@@ -116,22 +107,6 @@ public sealed class KeyBindingPanelUI : MonoBehaviour, IStackableUI, ICloseReque
         RefreshCanvasParent();
         HideGuide();
         gameObject.SetActive(false);
-    }
-
-    private bool ShouldReplaceExistingInstance(KeyBindingPanelUI existingInstance)
-    {
-        if (existingInstance == null)
-            return true;
-
-        bool existingIsPersistent = IsPersistent(existingInstance.gameObject);
-        bool currentIsPersistent = IsPersistent(gameObject);
-        return existingIsPersistent && !currentIsPersistent;
-    }
-
-    private static bool IsPersistent(GameObject target)
-    {
-        return target != null &&
-               string.Equals(target.scene.name, DontDestroyOnLoadSceneName, StringComparison.Ordinal);
     }
 
     private void Update()

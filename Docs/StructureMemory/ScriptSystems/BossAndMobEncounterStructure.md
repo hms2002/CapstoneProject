@@ -2,7 +2,7 @@
 status: active
 authority: structure-memory
 category: script-system-map
-last_reviewed: 2026-05-26
+last_reviewed: 2026-05-25
 ---
 
 # Boss And Mob Encounter Structure
@@ -111,17 +111,16 @@ Bosses use an `Encounter -> Battle -> BattleEnd` flow. General mobs use `Populat
 
 ### Boss HUD Boundary Note
 
-`BossHudController` belongs to the UI/HUD script group. The Slime Queen phase-two special case has been moved out of the common controller into a HUD source/snapshot boundary.
+`BossHudController` belongs to the UI/HUD script group. Multi-body bosses are represented as multiple registered HUD slots, not as dual channels inside one health/groggy bar.
 
 Slime Queen phase two is allowed to be special. The issue is only where the special case lives.
 
 Current shape:
 
-- `BossHudController` reads `IBossHudSource` / `BossHudSnapshot` and applies one or two channels to the existing HUD views.
-- `SingleBossHudSource` adapts a normal `BossControllerBase` into the snapshot shape.
-- `SlimeQueenPhaseTwoHudSource` knows the Short/Long bodies and emits two health/groggy channels for phase two.
-- `BossHealthBarUI` and `BossGroggyBarUI` can both render two channels. If `BossGroggyBarUI` has no authored dual references, it clones the existing single slider as a runtime fallback and logs a presentation fallback warning in Editor/development builds.
-- The common HUD should not add boss-type-specific `Find*` branches for future split, multi-body, or shared-health bosses.
+- `BossHudController` owns a registration list and assigns one `BossHudSlotView` per active boss.
+- Each slot uses a single-channel `BossHealthBarUI` and `BossGroggyBarUI`.
+- Slime Queen phase two Short/Long bodies register independently and are laid out by the HUD slot container.
+- The common HUD should not add boss-type-specific `Find*` branches or dual rendering code for future split, multi-body, or shared-health bosses.
 
 Track the concrete candidate in `Docs/RefactorBacklog/BossHudSpecialCaseSourceSplit.md`.
 
@@ -148,9 +147,8 @@ Track the concrete candidate in `Docs/RefactorBacklog/BossHudSpecialCaseSourceSp
 ## Ownership And Lifecycle
 
 - Boss controllers own boss battle runtime; boss encounter setup and boss battle-end results should remain visible as separate flow boundaries.
-- Slime Queen variants (`SlimeQueen`, `SlimeQueenP2Short`, `SlimeQueenP2Long`) inherit common groggy/stagger support from `SlimeQueenBossBase`. The base ensures a runtime `StaggerGaugeSystem` when the prefab does not author one, resolves the shared stagger attributes from the boss `AttributeSet`, and uses a 3-second status-only Groggy effect that grants `State.Status.Groggy`. Phase two uses `SlimeQueenPhaseTwoHudSource` to project Short/Long health and groggy channels separately. Managed phase-two death sets each body's Animator `isDead` bool immediately but keeps the dead bodies in-scene until both Short and Long are dead. `SlimeQueenEncounterClearCondition` then provides the joint finale through `IBossEncounterFinalePresentationProvider`: focus P2Short, speech, vanish, move the still-zoomed camera to P2Long, speech, vanish, and return to player before rewards. P2 finale vanish now uses the same `SlimeQueenVanishParticleEffect` detached square-particle playback as P1 instead of the old hard-coded many-particle circle fallback. The common `BossHudController` consumes only `IBossHudSource` snapshots and no longer stores concrete P2 Slime Queen references.
-- Slime Queen phase-one death split presentation is owned by `SlimeQueen`, not the phase-two prefabs. P1 plays the vanish effect at its death position, then P2 Short/Long spawn from an optional authored split origin or the `SlimeQueenRandomMoveBounds` center. The default P1 vanish path is `SlimeQueenVanishParticleEffect`: a boss-local settings component that spawns a detached ParticleSystem object so four small green square particles can spread in random 360-degree directions, hold for 1 second, and fade even after the P1 GameObject is hidden/destroyed. The authored `phase2SplitVanishEffectPrefab` override still takes priority when assigned. Landing positions are opposite random directions, clamped to the random-move bounds, and resolved away from walls, `HoleTrap`, and active `DrainPipe` phase-two suction radius. During the landing arc, `SlimeQueenPhaseTwoBase.BeginPhaseTwoSplitLanding(...)` reuses `SlimeSplitLandingMotion2D` but also locks boss control, movement motor, contact damage, and pit/drain eligibility so the intro cannot immediately trigger hazards.
-- Slime Queen phase two drain interaction is owned by `DrainPipe`, not by the phase-two boss controllers. Broken drains keep Pawn slime suction on `suctionRadius`, while P2 Slime Queen acquisition uses the separate inspector-authored `phaseTwoBossSuctionRadius` and selected-object gizmo. When a P2 boss enters that radius, `DrainPipe` locks the boss through `SlimeQueenPhaseTwoBase.BeginDrainControlLock()`, temporarily disables the boss `MovementMotor2D`, directly pulls the boss to the drain, keeps it submerged/damageable for 4 seconds, plays a short upward exit jump, restores movement/control, then resets the drain to its original cork state with hit count `0`. The submerged hold freezes Rigidbody position/rotation and pins the boss to the drain center, but keeps Rigidbody simulation and damage-receiving colliders active so the player can attack during the intended free-damage window. While drain-locked, `SlimeQueenPhaseTwoBase.Update()` returns before the shared pit-fall lock can call per-frame `StopAllMotion()`. P2Short owns a concrete `isSinking` Animator bool hook; P2Long has a safe hook that no-ops until the bool is authored on its controller. Do not reuse the broad Pawn suction radius for P2 boss acquisition, do not let normal boss movement own the drain-pull step, do not disable the boss hurtbox during drain stun, and do not convert P2 drain completion into permanent drain blocking.
+- Slime Queen variants (`SlimeQueen`, `SlimeQueenP2Short`, `SlimeQueenP2Long`) inherit common groggy/stagger support from `SlimeQueenBossBase`. The base ensures a runtime `StaggerGaugeSystem` when the prefab does not author one, resolves the shared stagger attributes from the boss `AttributeSet`, and uses a 3-second status-only Groggy effect that grants `State.Status.Groggy`. Phase two Short/Long bodies use the common boss HUD registration path as independent slots, so the HUD no longer needs Slime Queen concrete references or dual-channel source adapters.
+- Slime Queen phase two drain interaction is owned by `DrainPipe`, not by the phase-two boss controllers. Broken drains keep Pawn slime suction on `suctionRadius`, while P2 Slime Queen acquisition uses the separate inspector-authored `phaseTwoBossSuctionRadius` and selected-object gizmo. When a P2 boss enters that radius, `DrainPipe` locks the boss through `SlimeQueenPhaseTwoBase.BeginDrainControlLock()`, temporarily disables the boss `MovementMotor2D`, directly pulls the boss to the drain, keeps it submerged for 4 seconds, restores movement/control, then resets the drain to its original cork state with hit count `0`. While drain-locked, `SlimeQueenPhaseTwoBase.Update()` returns before the shared pit-fall lock can call per-frame `StopAllMotion()`. P2Short owns a concrete `isSinking` Animator bool hook; P2Long has a safe hook that no-ops until the bool is authored on its controller. Do not reuse the broad Pawn suction radius for P2 boss acquisition, do not let normal boss movement own the drain-pull step, and do not convert P2 drain completion into permanent drain blocking.
 - Boss encounter presentation owns its own UI input block through `GameFlowInputBlocker` while camera focus, dialogue, and return-to-player handoff are running. Dialogue still owns only dialogue playback blocking.
 - General mobs are spawned through population systems, then stay battle-ready through their own runtime FSM. Do not treat all mob work as encounter work.
 - Spawn systems own instantiation/configuration and may bridge to lock overlays, but lock semantics are not the same as spawn semantics.

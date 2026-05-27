@@ -10,7 +10,13 @@ public abstract class SlimeQueenBossBase : BossControllerBase, IIntentMovementSo
     private const string GroggyTagResourcePath = "Tags/State.Status.Groggy";
     private const float DefaultGroggyDurationSeconds = 3f;
 
+    [Header("Height Presentation")]
+    [Tooltip("점프/내려찍기 중 공중 판정 높이로 사용할 바디 Z 높이입니다.")]
+    [SerializeField, Min(0f)] private float airborneBodyZHeight = 1f;
+
     private AttackTelegraphService telegraphService;
+    private CombatHeightState2D combatHeightState;
+    private CombatHeightPresentation2D combatHeightPresentation;
     private GameplayTag patternMoveInvulnerableTag;
     private GameplayEffect runtimeGroggyStatusEffect;
     private bool isPatternMoveDamageBlocked;
@@ -26,6 +32,8 @@ public abstract class SlimeQueenBossBase : BossControllerBase, IIntentMovementSo
     {
         base.Awake();
         telegraphService = GetComponent<AttackTelegraphService>();
+        combatHeightState = GetComponent<CombatHeightState2D>();
+        combatHeightPresentation = GetComponent<CombatHeightPresentation2D>();
         patternMoveInvulnerableTag = Resources.Load<GameplayTag>("Tags/State.Invulnerable");
         EnsureGroggyGauge();
     }
@@ -46,6 +54,9 @@ public abstract class SlimeQueenBossBase : BossControllerBase, IIntentMovementSo
 
     protected override void OnDestroy()
     {
+        CleanupAllTelegraphs();
+        ClearCombatHeightPresentation();
+
         if (runtimeGroggyStatusEffect != null)
         {
             Destroy(runtimeGroggyStatusEffect);
@@ -53,6 +64,13 @@ public abstract class SlimeQueenBossBase : BossControllerBase, IIntentMovementSo
         }
 
         base.OnDestroy();
+    }
+
+    /// <summary>사망 시작 시 남아 있는 공통/분리형 공격 예고를 즉시 정리합니다.</summary>
+    protected override void OnDeathStarted()
+    {
+        CleanupAllTelegraphs();
+        base.OnDeathStarted();
     }
 
     /// <summary>보스가 기본 의도 이동을 하지 않도록 빈 이동값을 제공합니다.</summary>
@@ -133,6 +151,80 @@ public abstract class SlimeQueenBossBase : BossControllerBase, IIntentMovementSo
     {
         SetPatternMoveDamageBlocked(false);
         pitFallTriggerBlockCount = 0;
+        CleanupAllTelegraphs();
+        ClearCombatHeightPresentation();
+    }
+
+    /// <summary>AttackTelegraphService가 소유한 모든 경고 표시를 회수합니다.</summary>
+    protected void CleanupAllTelegraphs()
+    {
+        GetTelegraphService()?.ClearAll();
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 점프/내려찍기 중 root와 collider는 바닥 좌표에 두고, visual 높이는 CombatHeightState2D로 분리한다.
+    /// - 높이 프레젠테이션 컴포넌트가 아직 없는 프리팹은 기존 root 포물선 이동으로 fallback해 authoring 전에도 연출을 유지한다.
+    /// </summary>
+    protected void ApplyGroundedMotionPose(Vector3 groundPosition, float visualHeight)
+    {
+        if (movementMotor != null)
+            movementMotor.StopAllMotion();
+
+        float safeVisualHeight = Mathf.Max(0f, visualHeight);
+        if (!CanUseCombatHeightPresentation())
+        {
+            transform.position = groundPosition + Vector3.up * safeVisualHeight;
+            return;
+        }
+
+        transform.position = groundPosition;
+        EnsureCombatHeightState()?.SetAirborne(safeVisualHeight, airborneBodyZHeight);
+    }
+
+    /// <summary>점프/내려찍기 종료 시 root를 착지 좌표에 고정하고 visual 높이를 지상 상태로 되돌립니다.</summary>
+    protected void SnapToGroundedMotionLanding(Vector3 landingPosition)
+    {
+        if (movementMotor != null)
+            movementMotor.StopAllMotion();
+
+        transform.position = landingPosition;
+        ClearCombatHeightPresentation();
+    }
+
+    /// <summary>남아 있을 수 있는 가짜 높이를 지상 상태로 정리합니다.</summary>
+    protected void ClearCombatHeightPresentation()
+    {
+        CombatHeightState2D heightState = combatHeightState != null
+            ? combatHeightState
+            : GetComponent<CombatHeightState2D>();
+
+        if (heightState != null)
+        {
+            combatHeightState = heightState;
+            heightState.SetGrounded();
+        }
+    }
+
+    private bool CanUseCombatHeightPresentation()
+    {
+        if (combatHeightPresentation == null)
+            combatHeightPresentation = GetComponent<CombatHeightPresentation2D>();
+
+        return combatHeightPresentation != null;
+    }
+
+    private CombatHeightState2D EnsureCombatHeightState()
+    {
+        if (combatHeightState != null)
+            return combatHeightState;
+
+        combatHeightState = GetComponent<CombatHeightState2D>();
+        if (combatHeightState != null)
+            return combatHeightState;
+
+        combatHeightState = gameObject.AddComponent<CombatHeightState2D>();
+        return combatHeightState;
     }
 
     /// <summary>슬라임 여왕 계열 보스가 그로기 진입 시 패턴 애니메이션 잔여 상태를 정리합니다.</summary>

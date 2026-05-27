@@ -18,27 +18,9 @@ public sealed class BossHealthBarUI : MonoBehaviour
     [Tooltip("보스 체력 감소 잔상을 표시하는 뒤쪽 슬라이더입니다.")]
     [SerializeField] private Slider delayedHealthSlider;
 
-    [Header("Dual Boss Health")]
-    [Tooltip("2체 보스 체력바 루트입니다. 비어 있으면 기존 슬라이더를 복제해 fallback UI를 만듭니다.")]
-    [SerializeField] private RectTransform dualHealthRoot;
-
-    [Tooltip("왼쪽 보스의 즉시 체력 슬라이더입니다.")]
-    [SerializeField] private Slider leftImmediateHealthSlider;
-
-    [Tooltip("왼쪽 보스의 지연 체력 슬라이더입니다.")]
-    [SerializeField] private Slider leftDelayedHealthSlider;
-
-    [Tooltip("오른쪽 보스의 즉시 체력 슬라이더입니다.")]
-    [SerializeField] private Slider rightImmediateHealthSlider;
-
-    [Tooltip("오른쪽 보스의 지연 체력 슬라이더입니다.")]
-    [SerializeField] private Slider rightDelayedHealthSlider;
-
-    [Tooltip("좌우 체력바 사이 간격입니다.")]
-    [SerializeField, Min(0f)] private float dualHealthGap = 10f;
-
-    [Tooltip("전용 체력바 참조가 없을 때 기존 슬라이더를 복제해 fallback UI를 생성합니다.")]
-    [SerializeField] private bool createFallbackDualHealthPresentation = true;
+    [Header("Theme")]
+    [Tooltip("보스 체력바 외곽 프레임 이미지입니다. 보스별 HUD 테마가 있으면 이 이미지의 스프라이트를 교체합니다.")]
+    [SerializeField] private Image frameImage;
 
     [Header("Timing")]
     [Tooltip("체력 감소 후 잔상 슬라이더가 내려오기 전 대기 시간입니다.")]
@@ -77,34 +59,43 @@ public sealed class BossHealthBarUI : MonoBehaviour
     private float lastDamageTime = float.NegativeInfinity;
     private float delayedVelocity;
     private bool initialized;
-    private float leftTargetHealthRatio = 1f;
-    private float rightTargetHealthRatio = 1f;
-    private float leftPreviousHealthRatio = 1f;
-    private float rightPreviousHealthRatio = 1f;
-    private float leftLastDamageTime = float.NegativeInfinity;
-    private float rightLastDamageTime = float.NegativeInfinity;
-    private float leftDelayedVelocity;
-    private float rightDelayedVelocity;
-    private bool isDualHealthMode;
-    private bool initializedDualHealth;
-    private RectTransform fallbackLeftHealthRoot;
-    private RectTransform fallbackRightHealthRoot;
+    private Sprite defaultFrameSprite;
+    private Image.Type defaultFrameImageType;
+    private float defaultPixelsPerUnitMultiplier = 1f;
 
     private void Awake()
     {
+        CacheDefaultFrameSprite();
         ApplyImmediate(1f);
         ApplyDelayedImmediate(1f);
-        ApplyDualHealthVisible(false);
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 보스 HUD 슬롯이 전달한 체력바 테마를 프레임 이미지에 적용한다.
+    /// - 테마가 없거나 프레임 스프라이트가 비어 있으면 프리팹의 기본 프레임을 복구한다.
+    /// </summary>
+    public void ApplyTheme(BossHudHealthBarTheme theme)
+    {
+        if (frameImage == null)
+            return;
+
+        Sprite nextSprite = theme != null && theme.FrameSprite != null
+            ? theme.FrameSprite
+            : defaultFrameSprite;
+
+        frameImage.sprite = nextSprite;
+        frameImage.type = theme != null && theme.FrameSprite != null
+            ? theme.FrameImageType
+            : defaultFrameImageType;
+        frameImage.pixelsPerUnitMultiplier = theme != null && theme.FrameSprite != null
+            ? theme.PixelsPerUnitMultiplier
+            : defaultPixelsPerUnitMultiplier;
+        frameImage.enabled = nextSprite != null;
     }
 
     private void Update()
     {
-        if (isDualHealthMode)
-        {
-            UpdateDualHealthBars();
-            return;
-        }
-
         if (!initialized)
             return;
 
@@ -171,9 +162,6 @@ public sealed class BossHealthBarUI : MonoBehaviour
     /// </summary>
     public void SetHealthRatio(float ratio)
     {
-        if (isDualHealthMode)
-            SetDualHealthRatios(false, 0f, 0f);
-
         float nextRatio = Mathf.Clamp01(ratio);
         if (!initialized)
         {
@@ -182,50 +170,6 @@ public sealed class BossHealthBarUI : MonoBehaviour
         }
 
         targetHealthRatio = nextRatio;
-    }
-
-    /// <summary>2체 보스 체력바 표시 여부와 좌우 체력 비율을 갱신합니다.</summary>
-    public void SetDualHealthRatios(bool visible, float leftRatio, float rightRatio)
-    {
-        if (!visible)
-        {
-            isDualHealthMode = false;
-            initializedDualHealth = false;
-            ApplySingleHealthVisible(true);
-            ApplyDualHealthVisible(false);
-            return;
-        }
-
-        if (!EnsureDualHealthPresentation())
-            return;
-
-        float nextLeftRatio = Mathf.Clamp01(leftRatio);
-        float nextRightRatio = Mathf.Clamp01(rightRatio);
-
-        isDualHealthMode = true;
-        ApplySplitPresentationVisible(false);
-        ApplySingleHealthVisible(false);
-        ApplyDualHealthVisible(true);
-
-        if (!initializedDualHealth)
-        {
-            ResetDualHealthRatios(nextLeftRatio, nextRightRatio);
-            return;
-        }
-
-        if (nextLeftRatio < leftPreviousHealthRatio)
-            leftLastDamageTime = Time.unscaledTime;
-
-        if (nextRightRatio < rightPreviousHealthRatio)
-            rightLastDamageTime = Time.unscaledTime;
-
-        leftPreviousHealthRatio = nextLeftRatio;
-        rightPreviousHealthRatio = nextRightRatio;
-        leftTargetHealthRatio = nextLeftRatio;
-        rightTargetHealthRatio = nextRightRatio;
-
-        ApplySliderImmediate(leftImmediateHealthSlider, nextLeftRatio);
-        ApplySliderImmediate(rightImmediateHealthSlider, nextRightRatio);
     }
 
     /// <summary>분리형 보스 체력 표시 상태와 라벨을 갱신합니다.</summary>
@@ -241,6 +185,16 @@ public sealed class BossHealthBarUI : MonoBehaviour
     private void ApplyImmediate(float ratio)
     {
         ApplySliderImmediate(immediateHealthSlider, ratio);
+    }
+
+    private void CacheDefaultFrameSprite()
+    {
+        if (frameImage == null)
+            return;
+
+        defaultFrameSprite = frameImage.sprite;
+        defaultFrameImageType = frameImage.type;
+        defaultPixelsPerUnitMultiplier = frameImage.pixelsPerUnitMultiplier;
     }
 
     private void ApplyDelayedImmediate(float ratio)
@@ -260,158 +214,6 @@ public sealed class BossHealthBarUI : MonoBehaviour
         slider.value = ratio;
     }
 
-    /// <summary>2체 보스 체력바의 지연 체력 연출을 갱신합니다.</summary>
-    private void UpdateDualHealthBars()
-    {
-        UpdateDelayedSlider(leftDelayedHealthSlider, leftTargetHealthRatio, leftLastDamageTime, ref leftDelayedVelocity);
-        UpdateDelayedSlider(rightDelayedHealthSlider, rightTargetHealthRatio, rightLastDamageTime, ref rightDelayedVelocity);
-    }
-
-    /// <summary>지정한 지연 슬라이더를 목표 체력 비율로 부드럽게 이동시킵니다.</summary>
-    private void UpdateDelayedSlider(Slider slider, float targetRatio, float damageTime, ref float velocity)
-    {
-        if (slider == null)
-            return;
-
-        if (targetRatio >= slider.value)
-        {
-            ApplySliderImmediate(slider, targetRatio);
-            velocity = 0f;
-            return;
-        }
-
-        if (Time.unscaledTime - damageTime < delayedStartDelay)
-            return;
-
-        slider.value = Mathf.SmoothDamp(
-            slider.value,
-            targetRatio,
-            ref velocity,
-            Mathf.Max(0.01f, delayedSmoothTime),
-            Mathf.Infinity,
-            Time.unscaledDeltaTime);
-    }
-
-    /// <summary>2체 보스 체력바를 지정한 비율로 즉시 초기화합니다.</summary>
-    private void ResetDualHealthRatios(float leftRatio, float rightRatio)
-    {
-        initializedDualHealth = true;
-        leftTargetHealthRatio = leftRatio;
-        rightTargetHealthRatio = rightRatio;
-        leftPreviousHealthRatio = leftRatio;
-        rightPreviousHealthRatio = rightRatio;
-        leftLastDamageTime = float.NegativeInfinity;
-        rightLastDamageTime = float.NegativeInfinity;
-        leftDelayedVelocity = 0f;
-        rightDelayedVelocity = 0f;
-
-        ApplySliderImmediate(leftImmediateHealthSlider, leftRatio);
-        ApplySliderImmediate(leftDelayedHealthSlider, leftRatio);
-        ApplySliderImmediate(rightImmediateHealthSlider, rightRatio);
-        ApplySliderImmediate(rightDelayedHealthSlider, rightRatio);
-    }
-
-    /// <summary>2체 보스 체력바 참조가 준비되어 있는지 확인하고 없으면 fallback을 생성합니다.</summary>
-    private bool EnsureDualHealthPresentation()
-    {
-        if (HasDualHealthSliders())
-            return true;
-
-        if (!createFallbackDualHealthPresentation)
-            return false;
-
-        if (immediateHealthSlider == null || delayedHealthSlider == null)
-            return false;
-
-        CreateFallbackDualHealthPresentation();
-        return HasDualHealthSliders();
-    }
-
-    /// <summary>2체 보스 체력바에 필요한 슬라이더 참조가 모두 있는지 확인합니다.</summary>
-    private bool HasDualHealthSliders()
-    {
-        return leftImmediateHealthSlider != null
-            && leftDelayedHealthSlider != null
-            && rightImmediateHealthSlider != null
-            && rightDelayedHealthSlider != null;
-    }
-
-    /// <summary>기존 체력 슬라이더를 복제해 좌우 반분 체력바를 만듭니다.</summary>
-    private void CreateFallbackDualHealthPresentation()
-    {
-        RuntimePresentationFallbackAudit.Record(
-            this,
-            "Boss dual health fallback",
-            "authored dual-health BossHealthBarUI references");
-
-        if (dualHealthRoot == null)
-        {
-            GameObject rootObject = new GameObject("DualBossHealthRoot", typeof(RectTransform));
-            dualHealthRoot = rootObject.GetComponent<RectTransform>();
-            dualHealthRoot.SetParent(transform, false);
-            StretchToParent(dualHealthRoot);
-        }
-
-        if (fallbackLeftHealthRoot == null)
-            fallbackLeftHealthRoot = CreateFallbackHalfRoot("LeftBossHealth", true);
-
-        if (fallbackRightHealthRoot == null)
-            fallbackRightHealthRoot = CreateFallbackHalfRoot("RightBossHealth", false);
-
-        if (leftDelayedHealthSlider == null)
-            leftDelayedHealthSlider = CloneHealthSlider(delayedHealthSlider, fallbackLeftHealthRoot, "LeftDelayedHealthSlider");
-
-        if (leftImmediateHealthSlider == null)
-            leftImmediateHealthSlider = CloneHealthSlider(immediateHealthSlider, fallbackLeftHealthRoot, "LeftImmediateHealthSlider");
-
-        if (rightDelayedHealthSlider == null)
-            rightDelayedHealthSlider = CloneHealthSlider(delayedHealthSlider, fallbackRightHealthRoot, "RightDelayedHealthSlider");
-
-        if (rightImmediateHealthSlider == null)
-            rightImmediateHealthSlider = CloneHealthSlider(immediateHealthSlider, fallbackRightHealthRoot, "RightImmediateHealthSlider");
-    }
-
-    /// <summary>좌우 중 한쪽 체력바 루트를 생성합니다.</summary>
-    private RectTransform CreateFallbackHalfRoot(string objectName, bool isLeftSide)
-    {
-        GameObject halfRootObject = new GameObject(objectName, typeof(RectTransform));
-        RectTransform halfRoot = halfRootObject.GetComponent<RectTransform>();
-        halfRoot.SetParent(dualHealthRoot, false);
-
-        float halfGap = dualHealthGap * 0.5f;
-        if (isLeftSide)
-        {
-            halfRoot.anchorMin = new Vector2(0f, 0f);
-            halfRoot.anchorMax = new Vector2(0.5f, 1f);
-            halfRoot.offsetMin = Vector2.zero;
-            halfRoot.offsetMax = new Vector2(-halfGap, 0f);
-        }
-        else
-        {
-            halfRoot.anchorMin = new Vector2(0.5f, 0f);
-            halfRoot.anchorMax = new Vector2(1f, 1f);
-            halfRoot.offsetMin = new Vector2(halfGap, 0f);
-            halfRoot.offsetMax = Vector2.zero;
-        }
-
-        halfRoot.pivot = new Vector2(0.5f, 0.5f);
-        return halfRoot;
-    }
-
-    /// <summary>체력 슬라이더를 복제하고 부모 영역 전체에 맞춥니다.</summary>
-    private Slider CloneHealthSlider(Slider sourceSlider, RectTransform parentRoot, string objectName)
-    {
-        if (sourceSlider == null || parentRoot == null)
-            return null;
-
-        Slider clonedSlider = Instantiate(sourceSlider, parentRoot);
-        clonedSlider.name = objectName;
-        StretchToParent(clonedSlider.GetComponent<RectTransform>());
-        clonedSlider.value = 1f;
-        clonedSlider.gameObject.SetActive(false);
-        return clonedSlider;
-    }
-
     /// <summary>RectTransform을 부모 영역 전체에 맞춥니다.</summary>
     private void StretchToParent(RectTransform targetTransform)
     {
@@ -423,35 +225,6 @@ public sealed class BossHealthBarUI : MonoBehaviour
         targetTransform.offsetMin = Vector2.zero;
         targetTransform.offsetMax = Vector2.zero;
         targetTransform.pivot = new Vector2(0.5f, 0.5f);
-    }
-
-    /// <summary>단일 보스 체력바 표시 여부를 바꿉니다.</summary>
-    private void ApplySingleHealthVisible(bool visible)
-    {
-        if (immediateHealthSlider != null && immediateHealthSlider.gameObject.activeSelf != visible)
-            immediateHealthSlider.gameObject.SetActive(visible);
-
-        if (delayedHealthSlider != null && delayedHealthSlider.gameObject.activeSelf != visible)
-            delayedHealthSlider.gameObject.SetActive(visible);
-    }
-
-    /// <summary>2체 보스 체력바 표시 여부를 바꿉니다.</summary>
-    private void ApplyDualHealthVisible(bool visible)
-    {
-        if (dualHealthRoot != null && dualHealthRoot.gameObject.activeSelf != visible)
-            dualHealthRoot.gameObject.SetActive(visible);
-
-        if (leftImmediateHealthSlider != null && leftImmediateHealthSlider.gameObject.activeSelf != visible)
-            leftImmediateHealthSlider.gameObject.SetActive(visible);
-
-        if (leftDelayedHealthSlider != null && leftDelayedHealthSlider.gameObject.activeSelf != visible)
-            leftDelayedHealthSlider.gameObject.SetActive(visible);
-
-        if (rightImmediateHealthSlider != null && rightImmediateHealthSlider.gameObject.activeSelf != visible)
-            rightImmediateHealthSlider.gameObject.SetActive(visible);
-
-        if (rightDelayedHealthSlider != null && rightDelayedHealthSlider.gameObject.activeSelf != visible)
-            rightDelayedHealthSlider.gameObject.SetActive(visible);
     }
 
     /// <summary>분리형 보스 체력 표시 오브젝트 활성 상태를 반영합니다.</summary>

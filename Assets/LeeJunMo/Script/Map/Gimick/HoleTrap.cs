@@ -21,8 +21,10 @@ public class HoleTrap : MonoBehaviour
     [SerializeField] private GameplayEffect fallingEffect;
 
     [Header("Ignore Settings")]
-    [Tooltip("이 태그가 있으면 함정이 발동하지 않습니다 (예: Action.Dash)")]
+    [Tooltip("이 태그가 있으면 함정이 발동하지 않습니다 (예: State.Move.Dash)")]
     [SerializeField] private GameplayTag ignoreTag;
+    [Tooltip("켜져 있으면 ignoreTag가 직접 부여된 경우만 무시하고, 하위 태그로 인한 부모 closure는 무시하지 않습니다.")]
+    [SerializeField] private bool useExactIgnoreTag = true;
 
     [Header("Debug")]
     [SerializeField] private bool logDebug = true;
@@ -73,9 +75,11 @@ public class HoleTrap : MonoBehaviour
 
         if (ignoreTag != null)
         {
-            if (target.AbilitySystem.TagSystem != null && target.AbilitySystem.TagSystem.HasTag(ignoreTag))
+            TagSystem tagSystem = target.AbilitySystem.TagSystem;
+            bool hasIgnoreTag = tagSystem != null && HasIgnoreTag(tagSystem);
+            if (hasIgnoreTag)
             {
-                LogDebug($"ignored target: has ignore tag. target={target.GameObject.name}, tag={ignoreTag.name}");
+                LogDebug($"ignored target: has ignore tag. target={target.GameObject.name}, tag={ignoreTag.name}, exact={useExactIgnoreTag}");
                 return false;
             }
         }
@@ -112,6 +116,21 @@ public class HoleTrap : MonoBehaviour
         return target.Kind == PitFallTargetKind.Player
             ? Mathf.Max(0f, playerTrapDamage)
             : Mathf.Max(0f, trapDamage);
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 함정 무시 태그를 exact 또는 closure 포함 방식 중 인스펙터 정책에 맞게 판정한다.
+    /// - 지속형 이동 기술의 하위 차단 태그가 대시 부모 태그로 과포괄되는 문제를 막는다.
+    /// </summary>
+    private bool HasIgnoreTag(TagSystem tagSystem)
+    {
+        if (tagSystem == null || ignoreTag == null)
+            return false;
+
+        return useExactIgnoreTag
+            ? tagSystem.HasExplicitTag(ignoreTag)
+            : tagSystem.HasTag(ignoreTag);
     }
 
     private IEnumerator ApplyTrapRoutine(PitFallContext context)

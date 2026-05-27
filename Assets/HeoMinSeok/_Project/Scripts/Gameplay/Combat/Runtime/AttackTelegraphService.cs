@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 namespace UnityGAS
 {
@@ -19,6 +20,7 @@ namespace UnityGAS
         [SerializeField, Min(0f)] private float defaultWallClipSkinWidth = 0.03f;
 
         private AttackTelegraphView activeView;
+        private readonly List<AttackTelegraphView> detachedViews = new();
         public bool HasActiveTelegraph => activeView != null && activeView.IsVisible;
 
         /// <summary>
@@ -63,6 +65,28 @@ namespace UnityGAS
 
         /// <summary>
         /// 책임 :
+        /// - 이 서비스가 생성한 공용/분리형 공격 예고 뷰를 모두 즉시 제거한다.
+        /// - 사망, 패턴 강제 중단, 씬 언로드처럼 duration을 기다리면 안 되는 cleanup 지점에서 사용한다.
+        /// </summary>
+        public void ClearAll()
+        {
+            HideCurrent();
+
+            for (int i = detachedViews.Count - 1; i >= 0; i--)
+            {
+                AttackTelegraphView view = detachedViews[i];
+                if (view == null)
+                    continue;
+
+                view.HideImmediate();
+                Destroy(view.gameObject);
+            }
+
+            detachedViews.Clear();
+        }
+
+        /// <summary>
+        /// 책임 :
         /// - 공용 설정을 재사용하면서 독립적으로 관리되는 텔레그래프 뷰를 하나 생성한다.
         /// - 여러 공격 경고를 동시에 띄워야 하는 패턴이 사용한다.
         /// </summary>
@@ -75,6 +99,7 @@ namespace UnityGAS
             AttackTelegraphView view = Instantiate(telegraphPrefab, parent);
             view.HideImmediate();
             view.Show(spec, defaultStyle);
+            detachedViews.Add(view);
             StartCoroutine(DestroyDetachedViewAfter(view, spec.duration));
             return view;
         }
@@ -111,8 +136,15 @@ namespace UnityGAS
             if (duration > 0f)
                 yield return new WaitForSeconds(duration);
 
+            detachedViews.Remove(view);
+
             if (view != null)
                 Destroy(view.gameObject);
+        }
+
+        private void OnDisable()
+        {
+            ClearAll();
         }
     }
 }

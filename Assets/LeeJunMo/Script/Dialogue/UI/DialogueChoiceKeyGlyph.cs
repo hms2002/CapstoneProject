@@ -30,6 +30,20 @@ public sealed class DialogueChoiceKeyGlyph : MonoBehaviour
             glyphIcon.raycastTarget = false;
     }
 
+    public void Hide()
+    {
+        ResolveReferences();
+
+        if (glyphRoot != null)
+            glyphRoot.gameObject.SetActive(false);
+
+        if (glyphIcon != null)
+            glyphIcon.enabled = false;
+
+        if (fallbackLabel != null)
+            fallbackLabel.gameObject.SetActive(false);
+    }
+
     private void ResolveReferences()
     {
         if (glyphRoot == null)

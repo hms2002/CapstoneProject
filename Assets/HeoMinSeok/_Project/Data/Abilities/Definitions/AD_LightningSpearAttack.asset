@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier:
   abilityName: 뇌창 연격
   icon: {fileID: -6255143421326930151, guid: e658b351294cef44b8a5c823d1fdcb73, type: 3}
-  description: 번개 창으로 3연속 공격한다. 마지막 공격은 내려찍기이며, V1에서는 표식을 생성하지 않는다.
+  description: "● 번개 창으로 {val:3연속} 찌르기와 내려찍기\n● 공격마다 [[전기 속성]] 축적을 노리고, 마지막 타격은 전방을 강하게 압박"
   cooldown: 0
   executionPolicy: 0
   useCharges: 0

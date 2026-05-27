@@ -23,6 +23,10 @@ public sealed class TitleMenuController : MonoBehaviour
     [SerializeField] private SettingsPanelUI settingsPanel;
     [SerializeField] private KeyBindingPanelUI keyBindingPanel;
 
+    [Header("Intro")]
+    [SerializeField] private TitleIntroPlayer introPlayer;
+    [SerializeField] private bool playIntroForNewProfile = true;
+
     [Header("Flow")]
     [SerializeField] private bool openMainMenuOnStart = true;
     [SerializeField] private bool lockMainMenuWhileSlotPanelOpen = true;
@@ -71,7 +75,7 @@ public sealed class TitleMenuController : MonoBehaviour
 
     private void Update()
     {
-        if (!Input.GetKeyDown(KeyCode.Escape) || isLoading)
+        if (!Input.GetKeyDown(KeyCode.Escape) || isLoading || IsIntroActive)
             return;
 
         ResolveReferences();
@@ -98,6 +102,9 @@ public sealed class TitleMenuController : MonoBehaviour
 
         if (keyBindingPanel == null || keyBindingPanel.gameObject.scene != activeScene)
             keyBindingPanel = FindSceneComponent<KeyBindingPanelUI>(activeScene);
+
+        if (introPlayer == null || introPlayer.gameObject.scene != activeScene)
+            introPlayer = FindSceneComponent<TitleIntroPlayer>(activeScene);
 
         if (mainMenuCanvasGroup == null)
             mainMenuCanvasGroup = GetComponentInChildren<CanvasGroup>(true);
@@ -153,6 +160,9 @@ public sealed class TitleMenuController : MonoBehaviour
 
     private void HandleSlotPanelClosed()
     {
+        if (isLoading || IsIntroActive)
+            return;
+
         SetMainMenuInteractable(true);
         StartMainMenuUnlockLead();
     }
@@ -166,10 +176,47 @@ public sealed class TitleMenuController : MonoBehaviour
         if (!service.TryCreateLaunchRequest(slotIndex, out TitleProfileLaunchRequest request))
             return;
 
+        if (ShouldPlayIntroBeforeLaunch(request))
+        {
+            BeginIntroLaunch(request);
+            return;
+        }
+
+        PrepareAndLoad(request);
+    }
+
+    private bool ShouldPlayIntroBeforeLaunch(TitleProfileLaunchRequest request)
+    {
+        return playIntroForNewProfile &&
+               request.Action == TitleProfileLaunchAction.StartNewRun &&
+               introPlayer != null;
+    }
+
+    private void BeginIntroLaunch(TitleProfileLaunchRequest request)
+    {
+        StopMainMenuUnlockLead();
+        SetMainMenuInteractable(false);
+
+        bool didStartIntro =
+            introPlayer != null &&
+            introPlayer.TryPlay(() => PrepareAndLoad(request), keepViewVisibleOnCompleted: true);
+        if (!didStartIntro)
+        {
+            PrepareAndLoad(request);
+            return;
+        }
+    }
+
+    private void PrepareAndLoad(TitleProfileLaunchRequest request)
+    {
         TitleProfileLaunchResult launchResult =
             TitleProfileLaunchService.PrepareLaunch(request, GameDataManager.Instance);
         if (!launchResult.Succeeded)
+        {
+            introPlayer?.HideViewImmediate();
+            SetMainMenuInteractable(true);
             return;
+        }
 
         LoadScene(launchResult.TargetSceneName);
     }
@@ -187,6 +234,8 @@ public sealed class TitleMenuController : MonoBehaviour
 
         SceneManager.LoadScene(targetSceneName);
     }
+
+    private bool IsIntroActive => introPlayer != null && introPlayer.IsPlaying;
 
     private void SetMainMenuInteractable(bool enabled)
     {

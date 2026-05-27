@@ -1,0 +1,21 @@
+{
+    "sessions": [
+        {
+            "sessionId": "876600b96b894c1f9487ee27d839a82a",
+            "startedUtc": "2026-05-26T08:36:07.4379785Z",
+            "endedUtc": "2026-05-26T08:39:18.2946910Z",
+            "entries": [
+                {
+                    "prefabPath": "Assets/HeoMinSeok/_Project/Prefabs/VFX/Element/ElectrocutedSparkParticle.prefab",
+                    "prefabName": "ElectrocutedSparkParticle",
+                    "totalSpawns": 1,
+                    "coldSpawns": 1,
+                    "firstSeenSeconds": 190.83428955078126,
+                    "lastSeenSeconds": 190.83448791503907,
+                    "firstSceneName": "DragonCorridor",
+                    "lastSceneName": "DragonCorridor"
+                }
+            ]
+        }
+    ]
+}

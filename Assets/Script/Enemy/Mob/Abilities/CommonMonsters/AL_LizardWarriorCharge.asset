@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1d5f6e86958b8764bb2ff4bd5e5fb60d, type: 3}
+  m_Name: AL_LizardWarriorCharge
+  m_EditorClassIdentifier: Assembly-CSharp::AbilityLogic_LizardWarriorCharge
+  damageEffect: {fileID: 11400000, guid: a7c21e5f6a1f4d0d8f4c2b3a19e8d725, type: 2}
+  knockbackEffect: {fileID: 11400000, guid: 2f5faaf6bd840544cb59f6d23905c40d, type: 2}
+  damageAmount: 1
+  knockbackImpulse: 0
+  recoverSeconds: 0.25
+  firstStep:
+    warningSeconds: 2
+    dashDistance: 1.875
+    dashSeconds: 0.34
+    warningWidth: 0.95
+  secondStep:
+    warningSeconds: 1.4
+    dashDistance: 1.875
+    dashSeconds: 0.34
+    warningWidth: 0.95
+  targetLayers:
+    serializedVersion: 2
+    m_Bits: 8
+  dashObstacleLayers:
+    serializedVersion: 2
+    m_Bits: 1073741824
+  dashCastRadius: 0.3
+  dashWallSkinWidth: 0.03

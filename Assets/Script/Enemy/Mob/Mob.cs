@@ -24,6 +24,7 @@ public class Mob : Enemy
     private PitFallReaction2D pitFallReaction;
     private bool triedInitializeStateMachine;
     private bool suppressMonsterLootDrop;
+    private int facingLockCount;
 
     protected EnemyChaseIntent2D ChaseIntent => chaseIntent;
     protected MonsterSpawnRoomGroup LockTrackingRoomGroup => lockTrackingRoomGroup;
@@ -105,9 +106,32 @@ public class Mob : Enemy
     /// <summary>타겟 기준으로 스프라이트 방향을 갱신합니다.</summary>
     protected virtual void UpdateFacing()
     {
+        if (facingLockCount > 0)
+            return;
+
         if (Target == null) return;
 
         TryApplySpriteFacingTargetX(Target.position.x);
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 공격 방향이 확정된 일반 몬스터 패턴 동안 자동 flipX 갱신을 잠가 준비/공격 애니메이션 방향을 보존한다.
+    /// - 중첩 패턴/정리 경로가 안전하게 공존하도록 카운트 기반으로 관리한다.
+    /// </summary>
+    public void PushFacingLock()
+    {
+        facingLockCount++;
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - PushFacingLock으로 잠근 자동 flipX 갱신을 한 단계 해제한다.
+    /// - 취소/사망/disable 경로에서 여러 번 호출되어도 음수로 내려가지 않게 보호한다.
+    /// </summary>
+    public void PopFacingLock()
+    {
+        facingLockCount = Mathf.Max(0, facingLockCount - 1);
     }
 
     /// <summary>이동 Bool 파라미터가 있는지 확인합니다.</summary>

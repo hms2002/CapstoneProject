@@ -11,6 +11,9 @@ namespace UnityGAS
     [DisallowMultipleComponent]
     public class StaggerGaugeSystem : MonoBehaviour
     {
+        private const string StaggerImmuneTagResourcePath = "Tags/State.Status.StaggerImmune";
+        private static GameplayTag s_staggerImmuneTag;
+
         [Header("Gauge Attributes")]
         public AttributeDefinition currentGaugeAttribute;      // 예: StaggerGauge
         public AttributeDefinition maxGaugeAttribute;          // 예: MaxStaggerGauge
@@ -65,6 +68,7 @@ namespace UnityGAS
             if (_attr == null) return;
             if (currentGaugeAttribute == null || maxGaugeAttribute == null) return;
             if (amount <= 0f) return;
+            if (IsBuildUpSuppressed()) return;
 
             if (resistancePercentAttribute != null)
             {
@@ -113,6 +117,23 @@ namespace UnityGAS
                 for (int i = 0; i < triggerCount; i++)
                     _runner.ApplyEffect(staggeredEffect, gameObject, src);
             }
+        }
+
+        /// <summary>
+        /// 책임 :
+        /// - 스태거 게이지 직접 호출 경로에서도 StaggerImmune 태그를 일관되게 존중한다.
+        /// - CombatDamageAction을 거치지 않는 특수 상호작용이 면역 중 누적/트리거를 우회하지 못하게 한다.
+        /// </summary>
+        private bool IsBuildUpSuppressed()
+        {
+            if (s_staggerImmuneTag == null)
+                s_staggerImmuneTag = Resources.Load<GameplayTag>(StaggerImmuneTagResourcePath);
+
+            if (s_staggerImmuneTag == null)
+                return false;
+
+            TagSystem tagSystem = GetComponent<TagSystem>();
+            return tagSystem != null && tagSystem.HasTag(s_staggerImmuneTag);
         }
 
         /// <summary>

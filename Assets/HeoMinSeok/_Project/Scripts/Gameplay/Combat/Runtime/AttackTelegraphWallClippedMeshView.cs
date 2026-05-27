@@ -4,7 +4,7 @@ namespace UnityGAS
 {
     /// <summary>
     /// 책임 :
-    /// - 공통 공격 예고 도형 중 벽 차단 옵션이 켜진 원형/부채꼴을 raycast 샘플 기반 mesh로 렌더링한다.
+    /// - 공통 공격 예고 도형 중 벽 차단 옵션이 켜진 원형/부채꼴/사각형을 raycast 샘플 기반 mesh로 렌더링한다.
     /// - AttackTelegraphView의 보조 렌더러로 동작하며, 공격 판정에는 관여하지 않는다.
     /// </summary>
     public sealed class AttackTelegraphWallClippedMeshView : MonoBehaviour
@@ -150,6 +150,20 @@ namespace UnityGAS
         {
             switch (spec.shape)
             {
+                case AttackTelegraphShape.Rectangle:
+                    Vector2 rectangleDirection = Quaternion.Euler(0f, 0f, spec.rotationDeg) * Vector2.right;
+                    float rectangleLength = Mathf.Max(0.01f, spec.size.x);
+                    Vector2 rectangleStart = (Vector2)spec.center - (rectangleDirection.normalized * (rectangleLength * 0.5f));
+                    RebuildRectangleMesh(
+                        rectangleStart,
+                        rectangleDirection,
+                        rectangleLength,
+                        Mathf.Max(0.01f, spec.size.y),
+                        spec.wallClipLayers,
+                        spec.wallClipSampleCount,
+                        spec.wallClipSkinWidth);
+                    return true;
+
                 case AttackTelegraphShape.Circle:
                     RebuildRadialMesh(
                         spec.center,
@@ -175,6 +189,70 @@ namespace UnityGAS
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// 책임 :
+        /// - 원점에서 전방으로 뻗는 사각형 경고 영역을 폭 방향으로 샘플링해 벽에 닿는 지점까지만 mesh로 만든다.
+        /// - 고블린 사수 조준선처럼 직선형 예고가 벽 너머까지 렌더링되지 않게 한다.
+        /// </summary>
+        private void RebuildRectangleMesh(
+            Vector2 origin,
+            Vector2 direction,
+            float length,
+            float width,
+            LayerMask wallLayers,
+            int sampleCount,
+            float skinWidth)
+        {
+            transform.position = origin;
+            transform.rotation = Quaternion.identity;
+
+            Vector2 forward = direction.sqrMagnitude > 0.0001f ? direction.normalized : Vector2.right;
+            Vector2 right = new Vector2(-forward.y, forward.x);
+            int safeSampleCount = Mathf.Max(2, sampleCount);
+            int vertexCount = safeSampleCount * 2;
+            int segmentCount = safeSampleCount - 1;
+            EnsureMeshBuffers(vertexCount, segmentCount * 2);
+
+            float halfWidth = Mathf.Max(0.01f, width) * 0.5f;
+            float safeLength = Mathf.Max(0.01f, length);
+            float safeSkin = Mathf.Max(0f, skinWidth);
+
+            for (int i = 0; i < safeSampleCount; i++)
+            {
+                float t = safeSampleCount <= 1 ? 0.5f : i / (float)(safeSampleCount - 1);
+                float offset = Mathf.Lerp(-halfWidth, halfWidth, t);
+                Vector2 lateral = right * offset;
+                float visibleDistance = ResolveVisibleDistance(origin + lateral, forward, safeLength, wallLayers, safeSkin);
+                int vertexIndex = i * 2;
+                vertices[vertexIndex] = lateral;
+                vertices[vertexIndex + 1] = lateral + forward * visibleDistance;
+            }
+
+            int triangleIndex = 0;
+            for (int i = 0; i < segmentCount; i++)
+            {
+                int startA = i * 2;
+                int endA = startA + 1;
+                int startB = startA + 2;
+                int endB = startA + 3;
+
+                triangles[triangleIndex++] = startA;
+                triangles[triangleIndex++] = endA;
+                triangles[triangleIndex++] = endB;
+
+                triangles[triangleIndex++] = startA;
+                triangles[triangleIndex++] = endB;
+                triangles[triangleIndex++] = startB;
+            }
+
+            RebuildRectangleBorderLine(safeSampleCount);
+
+            mesh.Clear();
+            mesh.vertices = vertices;
+            mesh.triangles = triangles;
+            mesh.RecalculateBounds();
         }
 
         private void RebuildRadialMesh(
@@ -269,6 +347,35 @@ namespace UnityGAS
                 borderLineRenderer.SetPositions(borderPositions);
             }
 
+            borderLineRenderer.enabled = true;
+        }
+
+        /// <summary>
+        /// 책임 :
+        /// - 벽에 의해 잘린 사각형 mesh의 바깥 윤곽선을 start edge, clipped front edge 순서로 갱신한다.
+        /// </summary>
+        private void RebuildRectangleBorderLine(int sampleCount)
+        {
+            if (borderLineRenderer == null)
+                return;
+
+            int positionCount = sampleCount * 2 + 1;
+            EnsureBorderBuffer(positionCount);
+
+            for (int i = 0; i < sampleCount; i++)
+                borderPositions[i] = vertices[i * 2];
+
+            for (int i = sampleCount - 1; i >= 0; i--)
+            {
+                int sourceVertex = i * 2 + 1;
+                int targetIndex = sampleCount + (sampleCount - 1 - i);
+                borderPositions[targetIndex] = vertices[sourceVertex];
+            }
+
+            borderPositions[positionCount - 1] = vertices[0];
+            borderLineRenderer.loop = false;
+            borderLineRenderer.positionCount = positionCount;
+            borderLineRenderer.SetPositions(borderPositions);
             borderLineRenderer.enabled = true;
         }
 

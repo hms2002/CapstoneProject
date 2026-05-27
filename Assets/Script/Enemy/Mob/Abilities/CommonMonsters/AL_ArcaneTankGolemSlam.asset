@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6535fa60a740aee409ac2ad1a6527346, type: 3}
+  m_Name: AL_ArcaneTankGolemSlam
+  m_EditorClassIdentifier: Assembly-CSharp::AbilityLogic_ArcaneTankGolemSlam
+  damageEffect: {fileID: 11400000, guid: a7c21e5f6a1f4d0d8f4c2b3a19e8d725, type: 2}
+  knockbackEffect: {fileID: 11400000, guid: 2f5faaf6bd840544cb59f6d23905c40d, type: 2}
+  damageAmount: 1
+  knockbackImpulse: 0
+  attackRange: 6
+  landingWarningSeconds: 1.5
+  jumpSeconds: 1.5
+  landingDiameter: 2.8
+  jumpVisualHeight: 1.6
+  bodyZHeight: 1
+  rockOffsetDistance: 2.2
+  rockDiameter: 1.3
+  rockWarningSeconds: 1.1
+  recoverSeconds: 0.45
+  targetLayers:
+    serializedVersion: 2
+    m_Bits: 8
+  landingImpactDelay: 0.1
+  landingImpactEffectPrefab: {fileID: 8608977404969338616, guid: f166f23f9f48da94cb907ee26c5ca34c, type: 3}
+  landingImpactEffectOffset: {x: 0, y: 0, z: 0}
+  landingImpactEffectScale: 1
+  landingImpactEffectFallbackLifetime: 0.5
+  rockFallVisualPrefab: {fileID: 8789784497501751072, guid: 36e8de909969b71439d78cf3be869967, type: 3}
+  rockFallVisualOffset: {x: 0, y: 0, z: 0}
+  rockFallSpawnHeight: 3
+  rockFallSeconds: 0.35

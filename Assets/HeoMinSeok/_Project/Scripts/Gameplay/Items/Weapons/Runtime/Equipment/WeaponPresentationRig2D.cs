@@ -123,7 +123,7 @@ public sealed class WeaponPresentationRig2D : MonoBehaviour
         RefreshNow();
 
         activeAimPresentationOverrideToken = ++aimPresentationOverrideToken;
-        lockedFacingSideSign = currentSideSign < 0 ? -1 : 1;
+        lockedFacingSideSign = ResolveFacingSideSign(castDirection, currentSideSign);
         activeAimPresentationMode = mode;
         activeAimPresentationOverrideReleaseTime = Time.time + Mathf.Max(0f, minimumHoldTime);
         activeAimPresentationOverrideReleaseRequested = false;
@@ -254,6 +254,17 @@ public sealed class WeaponPresentationRig2D : MonoBehaviour
             direction = Vector2.right;
 
         return Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+    }
+
+    private static int ResolveFacingSideSign(Vector2 direction, int fallbackSideSign)
+    {
+        if (direction.x < -0.0001f)
+            return -1;
+
+        if (direction.x > 0.0001f)
+            return 1;
+
+        return fallbackSideSign < 0 ? -1 : 1;
     }
 
     private void ResolveReferences()

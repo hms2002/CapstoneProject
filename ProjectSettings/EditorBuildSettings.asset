@@ -24,10 +24,10 @@ EditorBuildSettings:
     path: Assets/Scenes/LeeJunmo_Boss_DemonKing.unity
     guid: 0c24345d0b1badb4981f9aa3e94f0faa
   - enabled: 1
-    path: Assets/Scenes/SpiliCorridor.unity
+    path: Assets/Scenes/DragonCorridor.unity
     guid: bfd9d6b641331574e9884c3f75f00f11
   - enabled: 1
-    path: Assets/Scenes/HeoMinSeok_Boss_Dragon_Spili.unity
+    path: Assets/Scenes/HeoMinSeok_Boss_Dragon.unity
     guid: a12f8757a34e86041902dbfa6e583af7
   - enabled: 1
     path: Assets/Scenes/SangHyup_Hallway.unity

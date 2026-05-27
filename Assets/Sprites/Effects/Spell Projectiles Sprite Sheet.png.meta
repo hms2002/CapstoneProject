@@ -1,0 +1,6423 @@
+fileFormatVersion: 2
+guid: 08ed1d711ee0fa343ab688dbaa6e3b66
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -509536541352903267
+    second: Spell Projectiles Sprite Sheet_0
+  - first:
+      213: -7486276560977306329
+    second: Spell Projectiles Sprite Sheet_1
+  - first:
+      213: -567619242242514185
+    second: Spell Projectiles Sprite Sheet_2
+  - first:
+      213: 7665012054459195586
+    second: Spell Projectiles Sprite Sheet_3
+  - first:
+      213: 4132503686717233890
+    second: Spell Projectiles Sprite Sheet_4
+  - first:
+      213: 1143528794514803561
+    second: Spell Projectiles Sprite Sheet_5
+  - first:
+      213: 1871169501614298415
+    second: Spell Projectiles Sprite Sheet_6
+  - first:
+      213: -7288669828856768804
+    second: Spell Projectiles Sprite Sheet_7
+  - first:
+      213: 5992465535763987285
+    second: Spell Projectiles Sprite Sheet_8
+  - first:
+      213: -7742694092488482804
+    second: Spell Projectiles Sprite Sheet_9
+  - first:
+      213: -4600800082063516327
+    second: Spell Projectiles Sprite Sheet_10
+  - first:
+      213: -8262621624204701675
+    second: Spell Projectiles Sprite Sheet_11
+  - first:
+      213: 3909243187289904127
+    second: Spell Projectiles Sprite Sheet_12
+  - first:
+      213: -7221102068059699068
+    second: Spell Projectiles Sprite Sheet_13
+  - first:
+      213: -434874097733421835
+    second: Spell Projectiles Sprite Sheet_14
+  - first:
+      213: 1885083451930769640
+    second: Spell Projectiles Sprite Sheet_15
+  - first:
+      213: -8336253427015068450
+    second: Spell Projectiles Sprite Sheet_16
+  - first:
+      213: 9172683623526349473
+    second: Spell Projectiles Sprite Sheet_17
+  - first:
+      213: 5854393726202166074
+    second: Spell Projectiles Sprite Sheet_18
+  - first:
+      213: -6929860124154430858
+    second: Spell Projectiles Sprite Sheet_19
+  - first:
+      213: -8786526565979784129
+    second: Spell Projectiles Sprite Sheet_20
+  - first:
+      213: -1894886436194100263
+    second: Spell Projectiles Sprite Sheet_21
+  - first:
+      213: 7901668761593489808
+    second: Spell Projectiles Sprite Sheet_22
+  - first:
+      213: 5399306249678991649
+    second: Spell Projectiles Sprite Sheet_23
+  - first:
+      213: -8865232306112329604
+    second: Spell Projectiles Sprite Sheet_24
+  - first:
+      213: -5870334562187165794
+    second: Spell Projectiles Sprite Sheet_25
+  - first:
+      213: 7303038734949417644
+    second: Spell Projectiles Sprite Sheet_26
+  - first:
+      213: -7380541789435643827
+    second: Spell Projectiles Sprite Sheet_27
+  - first:
+      213: 3486096128411000305
+    second: Spell Projectiles Sprite Sheet_28
+  - first:
+      213: -771653385453439806
+    second: Spell Projectiles Sprite Sheet_29
+  - first:
+      213: 1763028782168413249
+    second: Spell Projectiles Sprite Sheet_30
+  - first:
+      213: -2186625303286657884
+    second: Spell Projectiles Sprite Sheet_31
+  - first:
+      213: -7869954452459100449
+    second: Spell Projectiles Sprite Sheet_32
+  - first:
+      213: 762511173269224751
+    second: Spell Projectiles Sprite Sheet_33
+  - first:
+      213: 9087931791934375277
+    second: Spell Projectiles Sprite Sheet_34
+  - first:
+      213: -8110754868932075493
+    second: Spell Projectiles Sprite Sheet_35
+  - first:
+      213: 5744326772075486418
+    second: Spell Projectiles Sprite Sheet_36
+  - first:
+      213: 1897347463348746751
+    second: Spell Projectiles Sprite Sheet_37
+  - first:
+      213: 381165733416994853
+    second: Spell Projectiles Sprite Sheet_38
+  - first:
+      213: -1511775886540194636
+    second: Spell Projectiles Sprite Sheet_39
+  - first:
+      213: -1729382891337714494
+    second: Spell Projectiles Sprite Sheet_40
+  - first:
+      213: -3190526664897246694
+    second: Spell Projectiles Sprite Sheet_41
+  - first:
+      213: -3115369698257257801
+    second: Spell Projectiles Sprite Sheet_42
+  - first:
+      213: 7825512069631362609
+    second: Spell Projectiles Sprite Sheet_43
+  - first:
+      213: -5208301365830205810
+    second: Spell Projectiles Sprite Sheet_44
+  - first:
+      213: -1781039878276257281
+    second: Spell Projectiles Sprite Sheet_45
+  - first:
+      213: -3011897116199495038
+    second: Spell Projectiles Sprite Sheet_46
+  - first:
+      213: -1394571114808880588
+    second: Spell Projectiles Sprite Sheet_47
+  - first:
+      213: 4160223508173787869
+    second: Spell Projectiles Sprite Sheet_48
+  - first:
+      213: -6851339913260845201
+    second: Spell Projectiles Sprite Sheet_49
+  - first:
+      213: -8605449953744213942
+    second: Spell Projectiles Sprite Sheet_50
+  - first:
+      213: 5662263296501156252
+    second: Spell Projectiles Sprite Sheet_51
+  - first:
+      213: -8135192779990139287
+    second: Spell Projectiles Sprite Sheet_52
+  - first:
+      213: 7205859941855914255
+    second: Spell Projectiles Sprite Sheet_53
+  - first:
+      213: 1625417035785298938
+    second: Spell Projectiles Sprite Sheet_54
+  - first:
+      213: 4767889290169877542
+    second: Spell Projectiles Sprite Sheet_55
+  - first:
+      213: -2088272631999907490
+    second: Spell Projectiles Sprite Sheet_56
+  - first:
+      213: -2121043096855227258
+    second: Spell Projectiles Sprite Sheet_57
+  - first:
+      213: -3071259567657331737
+    second: Spell Projectiles Sprite Sheet_58
+  - first:
+      213: 1441198613701963418
+    second: Spell Projectiles Sprite Sheet_59
+  - first:
+      213: 2987301780960232115
+    second: Spell Projectiles Sprite Sheet_60
+  - first:
+      213: -1061491096968791628
+    second: Spell Projectiles Sprite Sheet_61
+  - first:
+      213: -995073726428245790
+    second: Spell Projectiles Sprite Sheet_62
+  - first:
+      213: -274871564899926582
+    second: Spell Projectiles Sprite Sheet_63
+  - first:
+      213: 2937993690431952173
+    second: Spell Projectiles Sprite Sheet_64
+  - first:
+      213: 5535574290673309208
+    second: Spell Projectiles Sprite Sheet_65
+  - first:
+      213: 4310241190437379439
+    second: Spell Projectiles Sprite Sheet_66
+  - first:
+      213: 4018133951633730287
+    second: Spell Projectiles Sprite Sheet_67
+  - first:
+      213: 6593206000914454459
+    second: Spell Projectiles Sprite Sheet_68
+  - first:
+      213: -6249331685422864424
+    second: Spell Projectiles Sprite Sheet_69
+  - first:
+      213: -523614179258570116
+    second: Spell Projectiles Sprite Sheet_70
+  - first:
+      213: 1529699150546810785
+    second: Spell Projectiles Sprite Sheet_71
+  - first:
+      213: -8237277911525706708
+    second: Spell Projectiles Sprite Sheet_72
+  - first:
+      213: -1685426801620166556
+    second: Spell Projectiles Sprite Sheet_73
+  - first:
+      213: -6841262300508675748
+    second: Spell Projectiles Sprite Sheet_74
+  - first:
+      213: -4435422611430841460
+    second: Spell Projectiles Sprite Sheet_75
+  - first:
+      213: -7195814024913131885
+    second: Spell Projectiles Sprite Sheet_76
+  - first:
+      213: 1482723113821991381
+    second: Spell Projectiles Sprite Sheet_77
+  - first:
+      213: -7297767268721508437
+    second: Spell Projectiles Sprite Sheet_78
+  - first:
+      213: 6194000375581398534
+    second: Spell Projectiles Sprite Sheet_79
+  - first:
+      213: 2394188416582739383
+    second: Spell Projectiles Sprite Sheet_80
+  - first:
+      213: -2694052577166351952
+    second: Spell Projectiles Sprite Sheet_81
+  - first:
+      213: 7751431960249312403
+    second: Spell Projectiles Sprite Sheet_82
+  - first:
+      213: -333891520141430539
+    second: Spell Projectiles Sprite Sheet_83
+  - first:
+      213: 5194379081670328897
+    second: Spell Projectiles Sprite Sheet_84
+  - first:
+      213: -6499366852354672225
+    second: Spell Projectiles Sprite Sheet_85
+  - first:
+      213: 3651630823021068163
+    second: Spell Projectiles Sprite Sheet_86
+  - first:
+      213: 1409432984682532848
+    second: Spell Projectiles Sprite Sheet_87
+  - first:
+      213: 5609200240979419824
+    second: Spell Projectiles Sprite Sheet_88
+  - first:
+      213: 4383962311596037591
+    second: Spell Projectiles Sprite Sheet_89
+  - first:
+      213: 6483644055995291048
+    second: Spell Projectiles Sprite Sheet_90
+  - first:
+      213: 5518248853727906321
+    second: Spell Projectiles Sprite Sheet_91
+  - first:
+      213: 6277327497239416414
+    second: Spell Projectiles Sprite Sheet_92
+  - first:
+      213: -6558808359960009101
+    second: Spell Projectiles Sprite Sheet_93
+  - first:
+      213: 5063601325888890706
+    second: Spell Projectiles Sprite Sheet_94
+  - first:
+      213: 5077771562936710052
+    second: Spell Projectiles Sprite Sheet_95
+  - first:
+      213: 7141864363956643525
+    second: Spell Projectiles Sprite Sheet_96
+  - first:
+      213: 6752343275627734817
+    second: Spell Projectiles Sprite Sheet_97
+  - first:
+      213: -3089331675723102971
+    second: Spell Projectiles Sprite Sheet_98
+  - first:
+      213: 5637400165884657570
+    second: Spell Projectiles Sprite Sheet_99
+  - first:
+      213: 480934350895775844
+    second: Spell Projectiles Sprite Sheet_100
+  - first:
+      213: -8130468012269265732
+    second: Spell Projectiles Sprite Sheet_101
+  - first:
+      213: -4401015351048027707
+    second: Spell Projectiles Sprite Sheet_102
+  - first:
+      213: 6912868041943347319
+    second: Spell Projectiles Sprite Sheet_103
+  - first:
+      213: 7857433190466758175
+    second: Spell Projectiles Sprite Sheet_104
+  - first:
+      213: 4872455028230499022
+    second: Spell Projectiles Sprite Sheet_105
+  - first:
+      213: 6066307965251679298
+    second: Spell Projectiles Sprite Sheet_106
+  - first:
+      213: -736871963030826343
+    second: Spell Projectiles Sprite Sheet_107
+  - first:
+      213: 1875704218450136083
+    second: Spell Projectiles Sprite Sheet_108
+  - first:
+      213: 549434204175540091
+    second: Spell Projectiles Sprite Sheet_109
+  - first:
+      213: 8182129467299716507
+    second: Spell Projectiles Sprite Sheet_110
+  - first:
+      213: 3162883116628128491
+    second: Spell Projectiles Sprite Sheet_111
+  - first:
+      213: -7915468955061214461
+    second: Spell Projectiles Sprite Sheet_112
+  - first:
+      213: -7072889420094219700
+    second: Spell Projectiles Sprite Sheet_113
+  - first:
+      213: 4362681663045834193
+    second: Spell Projectiles Sprite Sheet_114
+  - first:
+      213: 1786177787961171232
+    second: Spell Projectiles Sprite Sheet_115
+  - first:
+      213: 8933080634532324824
+    second: Spell Projectiles Sprite Sheet_116
+  - first:
+      213: -3216823627160829446
+    second: Spell Projectiles Sprite Sheet_117
+  - first:
+      213: 2489535240109883417
+    second: Spell Projectiles Sprite Sheet_118
+  - first:
+      213: -3081362595414123996
+    second: Spell Projectiles Sprite Sheet_119
+  - first:
+      213: 3730988409257415931
+    second: Spell Projectiles Sprite Sheet_120
+  - first:
+      213: -405110509260243333
+    second: Spell Projectiles Sprite Sheet_121
+  - first:
+      213: 6082209710266273920
+    second: Spell Projectiles Sprite Sheet_122
+  - first:
+      213: 6221130837890747870
+    second: Spell Projectiles Sprite Sheet_123
+  - first:
+      213: -5333007273381509685
+    second: Spell Projectiles Sprite Sheet_124
+  - first:
+      213: 8449654121965381014
+    second: Spell Projectiles Sprite Sheet_125
+  - first:
+      213: 3658533567588455773
+    second: Spell Projectiles Sprite Sheet_126
+  - first:
+      213: -1614499021168455953
+    second: Spell Projectiles Sprite Sheet_127
+  - first:
+      213: 656867501411101232
+    second: Spell Projectiles Sprite Sheet_128
+  - first:
+      213: 5753208687251160448
+    second: Spell Projectiles Sprite Sheet_129
+  - first:
+      213: -1184909867376965398
+    second: Spell Projectiles Sprite Sheet_130
+  - first:
+      213: -4455274149553706958
+    second: Spell Projectiles Sprite Sheet_131
+  - first:
+      213: 2431822174212933345
+    second: Spell Projectiles Sprite Sheet_132
+  - first:
+      213: -29128110933257727
+    second: Spell Projectiles Sprite Sheet_133
+  - first:
+      213: -2129815427343171431
+    second: Spell Projectiles Sprite Sheet_134
+  - first:
+      213: -5929890340064718986
+    second: Spell Projectiles Sprite Sheet_135
+  - first:
+      213: 3423121037582172858
+    second: Spell Projectiles Sprite Sheet_136
+  - first:
+      213: 7597849110386678837
+    second: Spell Projectiles Sprite Sheet_137
+  - first:
+      213: -5589102652402968062
+    second: Spell Projectiles Sprite Sheet_138
+  - first:
+      213: 7726022032001583161
+    second: Spell Projectiles Sprite Sheet_139
+  - first:
+      213: 7522657403836142802
+    second: Spell Projectiles Sprite Sheet_140
+  - first:
+      213: -4597245437096875612
+    second: Spell Projectiles Sprite Sheet_141
+  - first:
+      213: 5790307899967145755
+    second: Spell Projectiles Sprite Sheet_142
+  - first:
+      213: 6892466450528847779
+    second: Spell Projectiles Sprite Sheet_143
+  - first:
+      213: -6037818968562287009
+    second: Spell Projectiles Sprite Sheet_144
+  - first:
+      213: -8248864984286722000
+    second: Spell Projectiles Sprite Sheet_145
+  - first:
+      213: 5740568421206851910
+    second: Spell Projectiles Sprite Sheet_146
+  - first:
+      213: 4025247944384251141
+    second: Spell Projectiles Sprite Sheet_147
+  - first:
+      213: 890524920188314015
+    second: Spell Projectiles Sprite Sheet_148
+  - first:
+      213: -6553220060706515532
+    second: Spell Projectiles Sprite Sheet_149
+  - first:
+      213: 8612349631268657299
+    second: Spell Projectiles Sprite Sheet_150
+  - first:
+      213: 4974558446354432192
+    second: Spell Projectiles Sprite Sheet_151
+  - first:
+      213: -5337218778780187396
+    second: Spell Projectiles Sprite Sheet_152
+  - first:
+      213: 3055648154175274553
+    second: Spell Projectiles Sprite Sheet_153
+  - first:
+      213: -7872894369734803326
+    second: Spell Projectiles Sprite Sheet_154
+  - first:
+      213: 4231616897085568310
+    second: Spell Projectiles Sprite Sheet_155
+  - first:
+      213: 4415777753191060921
+    second: Spell Projectiles Sprite Sheet_156
+  - first:
+      213: -3093419264304464181
+    second: Spell Projectiles Sprite Sheet_157
+  - first:
+      213: -1779026069648011832
+    second: Spell Projectiles Sprite Sheet_158
+  - first:
+      213: -6752119341437673234
+    second: Spell Projectiles Sprite Sheet_159
+  - first:
+      213: 7239523818871816019
+    second: Spell Projectiles Sprite Sheet_160
+  - first:
+      213: 826260099732379308
+    second: Spell Projectiles Sprite Sheet_161
+  - first:
+      213: 8298625658898353181
+    second: Spell Projectiles Sprite Sheet_162
+  - first:
+      213: -5360337182574107156
+    second: Spell Projectiles Sprite Sheet_163
+  - first:
+      213: 8115357709576393450
+    second: Spell Projectiles Sprite Sheet_164
+  - first:
+      213: -5898588210406374836
+    second: Spell Projectiles Sprite Sheet_165
+  - first:
+      213: 2013413147838966011
+    second: Spell Projectiles Sprite Sheet_166
+  - first:
+      213: 8866364720329716894
+    second: Spell Projectiles Sprite Sheet_167
+  - first:
+      213: 8019837447344163975
+    second: Spell Projectiles Sprite Sheet_168
+  - first:
+      213: -9079929025410640419
+    second: Spell Projectiles Sprite Sheet_169
+  - first:
+      213: -3267025261551415658
+    second: Spell Projectiles Sprite Sheet_170
+  - first:
+      213: 8911409935819007942
+    second: Spell Projectiles Sprite Sheet_171
+  - first:
+      213: 8300838928141105347
+    second: Spell Projectiles Sprite Sheet_172
+  - first:
+      213: 6763597496363949424
+    second: Spell Projectiles Sprite Sheet_173
+  - first:
+      213: 5059534411557945931
+    second: Spell Projectiles Sprite Sheet_174
+  - first:
+      213: 2655871412855268455
+    second: Spell Projectiles Sprite Sheet_175
+  - first:
+      213: 8352373738871617289
+    second: Spell Projectiles Sprite Sheet_176
+  - first:
+      213: 6955260307820317834
+    second: Spell Projectiles Sprite Sheet_177
+  - first:
+      213: 3653078743634925405
+    second: Spell Projectiles Sprite Sheet_178
+  - first:
+      213: -3714474157868265013
+    second: Spell Projectiles Sprite Sheet_179
+  - first:
+      213: 7108786669407402679
+    second: Spell Projectiles Sprite Sheet_180
+  - first:
+      213: -4524217957683725007
+    second: Spell Projectiles Sprite Sheet_181
+  - first:
+      213: 858104173971341181
+    second: Spell Projectiles Sprite Sheet_182
+  - first:
+      213: -7189012879408428014
+    second: Spell Projectiles Sprite Sheet_183
+  - first:
+      213: -1442065179273839887
+    second: Spell Projectiles Sprite Sheet_184
+  - first:
+      213: -518840211573575601
+    second: Spell Projectiles Sprite Sheet_185
+  - first:
+      213: 6271070995545268592
+    second: Spell Projectiles Sprite Sheet_186
+  - first:
+      213: 6740637501949691799
+    second: Spell Projectiles Sprite Sheet_187
+  - first:
+      213: 3138229514557770286
+    second: Spell Projectiles Sprite Sheet_188
+  - first:
+      213: 4671302652368135902
+    second: Spell Projectiles Sprite Sheet_189
+  - first:
+      213: 3170845923350956186
+    second: Spell Projectiles Sprite Sheet_190
+  - first:
+      213: 8769766940944748578
+    second: Spell Projectiles Sprite Sheet_191
+  - first:
+      213: 5262913050974406405
+    second: Spell Projectiles Sprite Sheet_192
+  - first:
+      213: -8739246345792247419
+    second: Spell Projectiles Sprite Sheet_193
+  - first:
+      213: 6594329255629030115
+    second: Spell Projectiles Sprite Sheet_194
+  - first:
+      213: 6022061809155969706
+    second: Spell Projectiles Sprite Sheet_195
+  - first:
+      213: -4002726289839108330
+    second: Spell Projectiles Sprite Sheet_196
+  - first:
+      213: 890963607103969192
+    second: Spell Projectiles Sprite Sheet_197
+  - first:
+      213: 3207048556717415282
+    second: Spell Projectiles Sprite Sheet_198
+  - first:
+      213: -8691597847575742432
+    second: Spell Projectiles Sprite Sheet_199
+  - first:
+      213: 6674962713997296480
+    second: Spell Projectiles Sprite Sheet_200
+  - first:
+      213: -2079746161757219147
+    second: Spell Projectiles Sprite Sheet_201
+  - first:
+      213: -4409707974207603223
+    second: Spell Projectiles Sprite Sheet_202
+  - first:
+      213: 408570062881798103
+    second: Spell Projectiles Sprite Sheet_203
+  - first:
+      213: 8306016333676517081
+    second: Spell Projectiles Sprite Sheet_204
+  - first:
+      213: 7647156634002250987
+    second: Spell Projectiles Sprite Sheet_205
+  - first:
+      213: 265356642054983677
+    second: Spell Projectiles Sprite Sheet_206
+  - first:
+      213: -8134974981461710397
+    second: Spell Projectiles Sprite Sheet_207
+  - first:
+      213: 4362205507710805354
+    second: Spell Projectiles Sprite Sheet_208
+  - first:
+      213: -7372681716992963919
+    second: Spell Projectiles Sprite Sheet_209
+  - first:
+      213: -6566339195635164719
+    second: Spell Projectiles Sprite Sheet_210
+  - first:
+      213: -6829945900834172841
+    second: Spell Projectiles Sprite Sheet_211
+  - first:
+      213: -6861176403709533946
+    second: Spell Projectiles Sprite Sheet_212
+  - first:
+      213: -2546674011899938333
+    second: Spell Projectiles Sprite Sheet_213
+  - first:
+      213: 7257043037081479894
+    second: Spell Projectiles Sprite Sheet_214
+  - first:
+      213: -8878381473792134707
+    second: Spell Projectiles Sprite Sheet_215
+  - first:
+      213: 8411009443976886433
+    second: Spell Projectiles Sprite Sheet_216
+  - first:
+      213: 2638156207167272082
+    second: Spell Projectiles Sprite Sheet_217
+  - first:
+      213: -7359264317229627819
+    second: Spell Projectiles Sprite Sheet_218
+  - first:
+      213: -437609759839711421
+    second: Spell Projectiles Sprite Sheet_219
+  - first:
+      213: 5188290392529352930
+    second: Spell Projectiles Sprite Sheet_220
+  - first:
+      213: 3388383076506640055
+    second: Spell Projectiles Sprite Sheet_221
+  - first:
+      213: 976695105096278777
+    second: Spell Projectiles Sprite Sheet_222
+  - first:
+      213: 2356578192795433053
+    second: Spell Projectiles Sprite Sheet_223
+  - first:
+      213: 5524161788774601726
+    second: Spell Projectiles Sprite Sheet_224
+  - first:
+      213: -7908659763378110531
+    second: Spell Projectiles Sprite Sheet_225
+  - first:
+      213: -8770593835638513621
+    second: Spell Projectiles Sprite Sheet_226
+  - first:
+      213: -6717007516136516040
+    second: Spell Projectiles Sprite Sheet_227
+  - first:
+      213: -8076052845030294142
+    second: Spell Projectiles Sprite Sheet_228
+  - first:
+      213: -1980131209439580725
+    second: Spell Projectiles Sprite Sheet_229
+  - first:
+      213: -1406764210284134312
+    second: Spell Projectiles Sprite Sheet_230
+  - first:
+      213: 5171010411237833939
+    second: Spell Projectiles Sprite Sheet_231
+  - first:
+      213: 8412797107890665246
+    second: Spell Projectiles Sprite Sheet_232
+  - first:
+      213: -6667626326716128333
+    second: Spell Projectiles Sprite Sheet_233
+  - first:
+      213: 810890717838772312
+    second: Spell Projectiles Sprite Sheet_234
+  - first:
+      213: -5873215407060795457
+    second: Spell Projectiles Sprite Sheet_235
+  - first:
+      213: -8752493501529560441
+    second: Spell Projectiles Sprite Sheet_236
+  - first:
+      213: -5689484898913785188
+    second: Spell Projectiles Sprite Sheet_237
+  - first:
+      213: -5974095718683299325
+    second: Spell Projectiles Sprite Sheet_238
+  - first:
+      213: 411898978828508061
+    second: Spell Projectiles Sprite Sheet_239
+  - first:
+      213: 4177587755861391808
+    second: Spell Projectiles Sprite Sheet_240
+  - first:
+      213: 258411011812446796
+    second: Spell Projectiles Sprite Sheet_241
+  - first:
+      213: -4280869486122702441
+    second: Spell Projectiles Sprite Sheet_242
+  - first:
+      213: -4600906093965940651
+    second: Spell Projectiles Sprite Sheet_243
+  - first:
+      213: -1277844746209796456
+    second: Spell Projectiles Sprite Sheet_244
+  - first:
+      213: -5763228325508303
+    second: Spell Projectiles Sprite Sheet_245
+  - first:
+      213: -7519462565707535673
+    second: Spell Projectiles Sprite Sheet_246
+  - first:
+      213: 8538625123235381989
+    second: Spell Projectiles Sprite Sheet_247
+  - first:
+      213: 5265982600801434601
+    second: Spell Projectiles Sprite Sheet_248
+  - first:
+      213: 1179322544738413565
+    second: Spell Projectiles Sprite Sheet_249
+  - first:
+      213: 4211047522734153108
+    second: Spell Projectiles Sprite Sheet_250
+  - first:
+      213: -1508176148250646008
+    second: Spell Projectiles Sprite Sheet_251
+  - first:
+      213: 6520838873071541031
+    second: Spell Projectiles Sprite Sheet_252
+  - first:
+      213: 3153042589629701663
+    second: Spell Projectiles Sprite Sheet_253
+  - first:
+      213: -709480421298127643
+    second: Spell Projectiles Sprite Sheet_254
+  - first:
+      213: -2385051066024975211
+    second: Spell Projectiles Sprite Sheet_255
+  - first:
+      213: -3218384153945676995
+    second: Spell Projectiles Sprite Sheet_256
+  - first:
+      213: -9068072624403590562
+    second: Spell Projectiles Sprite Sheet_257
+  - first:
+      213: -3047154856757209323
+    second: Spell Projectiles Sprite Sheet_258
+  - first:
+      213: 6675226073035830133
+    second: Spell Projectiles Sprite Sheet_259
+  - first:
+      213: 4312182809718238352
+    second: Spell Projectiles Sprite Sheet_260
+  - first:
+      213: -1717530206887155292
+    second: Spell Projectiles Sprite Sheet_261
+  - first:
+      213: -3868109580992640361
+    second: Spell Projectiles Sprite Sheet_262
+  - first:
+      213: 1999897667025356749
+    second: Spell Projectiles Sprite Sheet_263
+  - first:
+      213: -8103531470611354791
+    second: Spell Projectiles Sprite Sheet_264
+  - first:
+      213: -8285465081094039013
+    second: Spell Projectiles Sprite Sheet_265
+  - first:
+      213: -1936721813174282458
+    second: Spell Projectiles Sprite Sheet_266
+  - first:
+      213: -1612264122158595580
+    second: Spell Projectiles Sprite Sheet_267
+  - first:
+      213: -8222761110307099205
+    second: Spell Projectiles Sprite Sheet_268
+  - first:
+      213: 6129684105129714220
+    second: Spell Projectiles Sprite Sheet_269
+  - first:
+      213: 487488388452639399
+    second: Spell Projectiles Sprite Sheet_270
+  - first:
+      213: -626377943368735838
+    second: Spell Projectiles Sprite Sheet_271
+  - first:
+      213: 1791203574692824007
+    second: Spell Projectiles Sprite Sheet_272
+  - first:
+      213: -6557711733497588846
+    second: Spell Projectiles Sprite Sheet_273
+  - first:
+      213: -280369815532555446
+    second: Spell Projectiles Sprite Sheet_274
+  - first:
+      213: 1229479134273654771
+    second: Spell Projectiles Sprite Sheet_275
+  - first:
+      213: 4276499397873478078
+    second: Spell Projectiles Sprite Sheet_276
+  - first:
+      213: 6799108382019947476
+    second: Spell Projectiles Sprite Sheet_277
+  - first:
+      213: -7094689952309468143
+    second: Spell Projectiles Sprite Sheet_278
+  - first:
+      213: -8881309794415333122
+    second: Spell Projectiles Sprite Sheet_279
+  - first:
+      213: 6457579548970701253
+    second: Spell Projectiles Sprite Sheet_280
+  - first:
+      213: -2968948149116960970
+    second: Spell Projectiles Sprite Sheet_281
+  - first:
+      213: 8604221760907517767
+    second: Spell Projectiles Sprite Sheet_282
+  - first:
+      213: -4137294881517912096
+    second: Spell Projectiles Sprite Sheet_283
+  - first:
+      213: -1984006694804954358
+    second: Spell Projectiles Sprite Sheet_284
+  - first:
+      213: 800066027590557544
+    second: Spell Projectiles Sprite Sheet_285
+  - first:
+      213: 4216392769775794024
+    second: Spell Projectiles Sprite Sheet_286
+  - first:
+      213: -1004398310528427009
+    second: Spell Projectiles Sprite Sheet_287
+  - first:
+      213: 7383332514315099258
+    second: Spell Projectiles Sprite Sheet_288
+  - first:
+      213: -4888948949274796667
+    second: Spell Projectiles Sprite Sheet_289
+  - first:
+      213: -3992516827436735477
+    second: Spell Projectiles Sprite Sheet_290
+  - first:
+      213: -1342054907276829796
+    second: Spell Projectiles Sprite Sheet_291
+  - first:
+      213: -1815440543086896376
+    second: Spell Projectiles Sprite Sheet_292
+  - first:
+      213: 8569934025917663525
+    second: Spell Projectiles Sprite Sheet_293
+  - first:
+      213: 7111190138320645778
+    second: Spell Projectiles Sprite Sheet_294
+  - first:
+      213: 4185092509479100848
+    second: Spell Projectiles Sprite Sheet_295
+  - first:
+      213: 4515959284594454494
+    second: Spell Projectiles Sprite Sheet_296
+  - first:
+      213: -2807776021733364508
+    second: Spell Projectiles Sprite Sheet_297
+  - first:
+      213: 1057052346759951159
+    second: Spell Projectiles Sprite Sheet_298
+  - first:
+      213: 3190619719990151971
+    second: Spell Projectiles Sprite Sheet_299
+  - first:
+      213: 5610873393283803788
+    second: Spell Projectiles Sprite Sheet_300
+  - first:
+      213: 9014330840670102647
+    second: Spell Projectiles Sprite Sheet_301
+  - first:
+      213: -1952885150391177506
+    second: Spell Projectiles Sprite Sheet_302
+  - first:
+      213: 7127044866400476796
+    second: Spell Projectiles Sprite Sheet_303
+  - first:
+      213: -5065147446109292808
+    second: Spell Projectiles Sprite Sheet_304
+  - first:
+      213: -7770268866519097851
+    second: Spell Projectiles Sprite Sheet_305
+  - first:
+      213: -190743143204260864
+    second: Spell Projectiles Sprite Sheet_306
+  - first:
+      213: -1839211251431793831
+    second: Spell Projectiles Sprite Sheet_307
+  - first:
+      213: -3377875433154519946
+    second: Spell Projectiles Sprite Sheet_308
+  - first:
+      213: 3455722250028023458
+    second: Spell Projectiles Sprite Sheet_309
+  - first:
+      213: 7059091836303844106
+    second: Spell Projectiles Sprite Sheet_310
+  - first:
+      213: -1382145230369916237
+    second: Spell Projectiles Sprite Sheet_311
+  - first:
+      213: -2470024540559056380
+    second: Spell Projectiles Sprite Sheet_312
+  - first:
+      213: 8885172632558403413
+    second: Spell Projectiles Sprite Sheet_313
+  - first:
+      213: -1174363116837870212
+    second: Spell Projectiles Sprite Sheet_314
+  - first:
+      213: -4531334509110312539
+    second: Spell Projectiles Sprite Sheet_315
+  - first:
+      213: 2645046681814225648
+    second: Spell Projectiles Sprite Sheet_316
+  - first:
+      213: 2275530255130080879
+    second: Spell Projectiles Sprite Sheet_317
+  - first:
+      213: -1143183859117454589
+    second: Spell Projectiles Sprite Sheet_318
+  - first:
+      213: -5069264815772620402
+    second: Spell Projectiles Sprite Sheet_319
+  - first:
+      213: -3289654874640648814
+    second: Spell Projectiles Sprite Sheet_320
+  - first:
+      213: -3636172928810617328
+    second: Spell Projectiles Sprite Sheet_321
+  - first:
+      213: -8125720915032199126
+    second: Spell Projectiles Sprite Sheet_322
+  - first:
+      213: -2503812805635055344
+    second: Spell Projectiles Sprite Sheet_323
+  - first:
+      213: -1308875516840659563
+    second: Spell Projectiles Sprite Sheet_324
+  - first:
+      213: 1361335927703871034
+    second: Spell Projectiles Sprite Sheet_325
+  - first:
+      213: 5438376754127095964
+    second: Spell Projectiles Sprite Sheet_326
+  - first:
+      213: -9008245844277374603
+    second: Spell Projectiles Sprite Sheet_327
+  - first:
+      213: -1291097514099937866
+    second: Spell Projectiles Sprite Sheet_328
+  - first:
+      213: 3664500040574748539
+    second: Spell Projectiles Sprite Sheet_329
+  - first:
+      213: -7943270554030643542
+    second: Spell Projectiles Sprite Sheet_330
+  - first:
+      213: 924148252030964305
+    second: Spell Projectiles Sprite Sheet_331
+  - first:
+      213: 1098625886696794809
+    second: Spell Projectiles Sprite Sheet_332
+  - first:
+      213: 6621431788917370045
+    second: Spell Projectiles Sprite Sheet_333
+  - first:
+      213: -2902157606961950606
+    second: Spell Projectiles Sprite Sheet_334
+  - first:
+      213: -1627594037246607847
+    second: Spell Projectiles Sprite Sheet_335
+  - first:
+      213: 8741724239584944373
+    second: Spell Projectiles Sprite Sheet_336
+  - first:
+      213: -4004925774495551144
+    second: Spell Projectiles Sprite Sheet_337
+  - first:
+      213: 8850189292414412021
+    second: Spell Projectiles Sprite Sheet_338
+  - first:
+      213: -8169370956741073156
+    second: Spell Projectiles Sprite Sheet_339
+  - first:
+      213: -4461526301750949898
+    second: Spell Projectiles Sprite Sheet_340
+  - first:
+      213: -1213024098329175277
+    second: Spell Projectiles Sprite Sheet_341
+  - first:
+      213: 4962324338423875893
+    second: Spell Projectiles Sprite Sheet_342
+  - first:
+      213: -561845273554465998
+    second: Spell Projectiles Sprite Sheet_343
+  - first:
+      213: -4591916289411005509
+    second: Spell Projectiles Sprite Sheet_344
+  - first:
+      213: -8288872661110075085
+    second: Spell Projectiles Sprite Sheet_345
+  - first:
+      213: -4207022424905801850
+    second: Spell Projectiles Sprite Sheet_346
+  - first:
+      213: -7779232641390809150
+    second: Spell Projectiles Sprite Sheet_347
+  - first:
+      213: -9005354064261958632
+    second: Spell Projectiles Sprite Sheet_348
+  - first:
+      213: 2845420291502080142
+    second: Spell Projectiles Sprite Sheet_349
+  - first:
+      213: -370784360702461588
+    second: Spell Projectiles Sprite Sheet_350
+  - first:
+      213: -5167726643561744652
+    second: Spell Projectiles Sprite Sheet_351
+  - first:
+      213: -171917069833466316
+    second: Spell Projectiles Sprite Sheet_352
+  - first:
+      213: -801261028703985389
+    second: Spell Projectiles Sprite Sheet_353
+  - first:
+      213: -9139232916818993492
+    second: Spell Projectiles Sprite Sheet_354
+  - first:
+      213: -3875550574633643343
+    second: Spell Projectiles Sprite Sheet_355
+  - first:
+      213: -4707582716024252714
+    second: Spell Projectiles Sprite Sheet_356
+  - first:
+      213: -7344062251777888631
+    second: Spell Projectiles Sprite Sheet_357
+  - first:
+      213: 4518467929270854269
+    second: Spell Projectiles Sprite Sheet_358
+  - first:
+      213: -612137984926148072
+    second: Spell Projectiles Sprite Sheet_359
+  - first:
+      213: 8075002193974176633
+    second: Spell Projectiles Sprite Sheet_360
+  - first:
+      213: -6405637353882033510
+    second: Spell Projectiles Sprite Sheet_361
+  - first:
+      213: -7008947739701092240
+    second: Spell Projectiles Sprite Sheet_362
+  - first:
+      213: 7982524960671062649
+    second: Spell Projectiles Sprite Sheet_363
+  - first:
+      213: -3428358060594298560
+    second: Spell Projectiles Sprite Sheet_364
+  - first:
+      213: 6077729130952326465
+    second: Spell Projectiles Sprite Sheet_365
+  - first:
+      213: 8846307712097216791
+    second: Spell Projectiles Sprite Sheet_366
+  - first:
+      213: 3001440439105354649
+    second: Spell Projectiles Sprite Sheet_367
+  - first:
+      213: 4518973516227172027
+    second: Spell Projectiles Sprite Sheet_368
+  - first:
+      213: -4884585446263554628
+    second: Spell Projectiles Sprite Sheet_369
+  - first:
+      213: 5573165954319861869
+    second: Spell Projectiles Sprite Sheet_370
+  - first:
+      213: 3361368783629316488
+    second: Spell Projectiles Sprite Sheet_371
+  - first:
+      213: 7300507885052038155
+    second: Spell Projectiles Sprite Sheet_372
+  - first:
+      213: -1362514589484776319
+    second: Spell Projectiles Sprite Sheet_373
+  - first:
+      213: 5320995002591751769
+    second: Spell Projectiles Sprite Sheet_374
+  - first:
+      213: 135103595775673674
+    second: Spell Projectiles Sprite Sheet_375
+  - first:
+      213: 5403754743007467153
+    second: Spell Projectiles Sprite Sheet_376
+  - first:
+      213: 214424194859074836
+    second: Spell Projectiles Sprite Sheet_377
+  - first:
+      213: 1004314096831386971
+    second: Spell Projectiles Sprite Sheet_378
+  - first:
+      213: -2573703485952513804
+    second: Spell Projectiles Sprite Sheet_379
+  - first:
+      213: 4075451595102453248
+    second: Spell Projectiles Sprite Sheet_380
+  - first:
+      213: -7657007665558637531
+    second: Spell Projectiles Sprite Sheet_381
+  - first:
+      213: -9172407668952701216
+    second: Spell Projectiles Sprite Sheet_382
+  - first:
+      213: -1120551997530378699
+    second: Spell Projectiles Sprite Sheet_383
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 16
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 864
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d9d349c1733cde8f0800000000000000
+      internalID: -509536541352903267
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_1
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 864
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 72d5d9cb1276b1890800000000000000
+      internalID: -7486276560977306329
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_2
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 864
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7f2657a7e496f18f0800000000000000
+      internalID: -567619242242514185
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_3
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 864
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2c0a0214ad79f5a60800000000000000
+      internalID: 7665012054459195586
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_4
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 864
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2ead5c7453a995930800000000000000
+      internalID: 4132503686717233890
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_5
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 864
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 96b4c734161aedf00800000000000000
+      internalID: 1143528794514803561
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_6
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 864
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f25d3427fbab7f910800000000000000
+      internalID: 1871169501614298415
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_7
+      rect:
+        serializedVersion: 2
+        x: 224
+        y: 864
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cd692ed586179da90800000000000000
+      internalID: -7288669828856768804
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_8
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 832
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 55bbbf3c7a3892350800000000000000
+      internalID: 5992465535763987285
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_9
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 832
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c0065b4debc6c8490800000000000000
+      internalID: -7742694092488482804
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_10
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 832
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 95d140293bca620c0800000000000000
+      internalID: -4600800082063516327
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_11
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 832
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 51051d7f865455d80800000000000000
+      internalID: -8262621624204701675
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_12
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 832
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ff3d70f77fb604630800000000000000
+      internalID: 3909243187289904127
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_13
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 832
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 488867a9ded79cb90800000000000000
+      internalID: -7221102068059699068
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_14
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 832
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5f4b49aef4407f9f0800000000000000
+      internalID: -434874097733421835
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_15
+      rect:
+        serializedVersion: 2
+        x: 224
+        y: 832
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8e8fc447969292a10800000000000000
+      internalID: 1885083451930769640
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_16
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 800
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ed4522decadaf4c80800000000000000
+      internalID: -8336253427015068450
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_17
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 800
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1aab459182beb4f70800000000000000
+      internalID: 9172683623526349473
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_18
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 800
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a3b3e89731cfe3150800000000000000
+      internalID: 5854393726202166074
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_19
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 800
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 67a71acdee034df90800000000000000
+      internalID: -6929860124154430858
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_20
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 800
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f3cfd3924acff0680800000000000000
+      internalID: -8786526565979784129
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_21
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 800
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9dbd1f863d204b5e0800000000000000
+      internalID: -1894886436194100263
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_22
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 800
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 099a493bfdd58ad60800000000000000
+      internalID: 7901668761593489808
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_23
+      rect:
+        serializedVersion: 2
+        x: 224
+        y: 800
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 121b9a56d603eea40800000000000000
+      internalID: 5399306249678991649
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_24
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 768
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c788bd6003e58f480800000000000000
+      internalID: -8865232306112329604
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_25
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 768
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e9fb22c61d1688ea0800000000000000
+      internalID: -5870334562187165794
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_26
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 768
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ca20499490b995560800000000000000
+      internalID: 7303038734949417644
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_27
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 768
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d4833c6a85c039990800000000000000
+      internalID: -7380541789435643827
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_28
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 768
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1fd5dca65f9116030800000000000000
+      internalID: 3486096128411000305
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_29
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 768
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2c4f15695598a45f0800000000000000
+      internalID: -771653385453439806
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_30
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 768
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 14410f12659877810800000000000000
+      internalID: 1763028782168413249
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_31
+      rect:
+        serializedVersion: 2
+        x: 224
+        y: 768
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4acc7b43fdb87a1e0800000000000000
+      internalID: -2186625303286657884
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_32
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 736
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fd6ebae4f1e48c290800000000000000
+      internalID: -7869954452459100449
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_33
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 736
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f2d7af34fdbf49a00800000000000000
+      internalID: 762511173269224751
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_34
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 736
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d654a3990d1de1e70800000000000000
+      internalID: 9087931791934375277
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_35
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 736
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b10a8095b6fc07f80800000000000000
+      internalID: -8110754868932075493
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_36
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 736
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2dc5353b3c2f7bf40800000000000000
+      internalID: 5744326772075486418
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_37
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 736
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ff9f360277bb45a10800000000000000
+      internalID: 1897347463348746751
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_38
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 736
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5280fdc073c2a4500800000000000000
+      internalID: 381165733416994853
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_39
+      rect:
+        serializedVersion: 2
+        x: 224
+        y: 736
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4bc35c647d7150be0800000000000000
+      internalID: -1511775886540194636
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_40
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 704
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2c47d294c6ffff7e0800000000000000
+      internalID: -1729382891337714494
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_41
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 704
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a1a436407e8f8b3d0800000000000000
+      internalID: -3190526664897246694
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_42
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 704
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7ba3c5fe3cbf3c4d0800000000000000
+      internalID: -3115369698257257801
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_43
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 704
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 136c8e714cdc99c60800000000000000
+      internalID: 7825512069631362609
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_44
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 704
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e8e3286a08568b7b0800000000000000
+      internalID: -5208301365830205810
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_45
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 704
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ff9e984caa97847e0800000000000000
+      internalID: -1781039878276257281
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_46
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 704
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 28ad7e0d7879336d0800000000000000
+      internalID: -3011897116199495038
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_47
+      rect:
+        serializedVersion: 2
+        x: 224
+        y: 704
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 432dbc7b5fc75ace0800000000000000
+      internalID: -1394571114808880588
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_48
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 672
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dd29de62d351cb930800000000000000
+      internalID: 4160223508173787869
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_49
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 672
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f67b1aa16a62be0a0800000000000000
+      internalID: -6851339913260845201
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_50
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 672
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a48aca65cdc439880800000000000000
+      internalID: -8605449953744213942
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_51
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 672
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c990facd776649e40800000000000000
+      internalID: 5662263296501156252
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_52
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 672
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 96e7d59c44df91f80800000000000000
+      internalID: -8135192779990139287
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_53
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 672
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f09e987507b500460800000000000000
+      internalID: 7205859941855914255
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_54
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 672
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: af3e9d5ae24ae8610800000000000000
+      internalID: 1625417035785298938
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_55
+      rect:
+        serializedVersion: 2
+        x: 224
+        y: 672
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 62407fc4c02fa2240800000000000000
+      internalID: 4767889290169877542
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_56
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 640
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e59b977fa17f403e0800000000000000
+      internalID: -2088272631999907490
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_57
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 640
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 68456aa8a8a8092e0800000000000000
+      internalID: -2121043096855227258
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_58
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 640
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7e3d3c802b1b065d0800000000000000
+      internalID: -3071259567657331737
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_59
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 640
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a9ead7cd08a200410800000000000000
+      internalID: 1441198613701963418
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_60
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 640
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3b2c6037427057920800000000000000
+      internalID: 2987301780960232115
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_61
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 640
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4b97fe8a873d441f0800000000000000
+      internalID: -1061491096968791628
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_62
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 640
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2e09beac7b9c032f0800000000000000
+      internalID: -995073726428245790
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_63
+      rect:
+        serializedVersion: 2
+        x: 224
+        y: 640
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: acdb84f94c57f2cf0800000000000000
+      internalID: -274871564899926582
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_64
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 608
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d25198ef1b9d5c820800000000000000
+      internalID: 2937993690431952173
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_65
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 608
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8161e571d7f42dc40800000000000000
+      internalID: 5535574290673309208
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_66
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 608
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f6dd64ca68d01db30800000000000000
+      internalID: 4310241190437379439
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_67
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 608
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: feaa01f3a8743c730800000000000000
+      internalID: 4018133951633730287
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_68
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 608
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bb7da7fece5cf7b50800000000000000
+      internalID: 6593206000914454459
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_69
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 608
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8d7e6c641f9e549a0800000000000000
+      internalID: -6249331685422864424
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_70
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 608
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c7a6fed9dafbbb8f0800000000000000
+      internalID: -523614179258570116
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_71
+      rect:
+        serializedVersion: 2
+        x: 224
+        y: 608
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1a73f81d5459a3510800000000000000
+      internalID: 1529699150546810785
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_72
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 576
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c24b657e16f4fad80800000000000000
+      internalID: -8237277911525706708
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_73
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 576
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 468d182f0492c98e0800000000000000
+      internalID: -1685426801620166556
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_74
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 576
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c51a8ea2f24fe01a0800000000000000
+      internalID: -6841262300508675748
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_75
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 576
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c83ede082a63272c0800000000000000
+      internalID: -4435422611430841460
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_76
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 576
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3966747f445532c90800000000000000
+      internalID: -7195814024913131885
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_77
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 576
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5d1fe93f0d0b39410800000000000000
+      internalID: 1482723113821991381
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_78
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 576
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bafb166955f19ba90800000000000000
+      internalID: -7297767268721508437
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_79
+      rect:
+        serializedVersion: 2
+        x: 224
+        y: 576
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6065a2d368285f550800000000000000
+      internalID: 6194000375581398534
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_80
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 544
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7b5e4cf0eadd93120800000000000000
+      internalID: 2394188416582739383
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_81
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 544
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0b126cb647dcc9ad0800000000000000
+      internalID: -2694052577166351952
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_82
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 544
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 394254b8c4e929b60800000000000000
+      internalID: 7751431960249312403
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_83
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 544
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5f074747e67cd5bf0800000000000000
+      internalID: -333891520141430539
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_84
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 544
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1420ea7f044261840800000000000000
+      internalID: 5194379081670328897
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_85
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 544
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f99737c684c9dc5a0800000000000000
+      internalID: -6499366852354672225
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_86
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 544
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 38fb909e2e23da230800000000000000
+      internalID: 3651630823021068163
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_87
+      rect:
+        serializedVersion: 2
+        x: 224
+        y: 544
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0ff88b205df4f8310800000000000000
+      internalID: 1409432984682532848
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_88
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 512
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0b22d9d76e1e7dd40800000000000000
+      internalID: 5609200240979419824
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_89
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 512
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7d5d163ce76f6dc30800000000000000
+      internalID: 4383962311596037591
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_90
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 512
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8a51ca7cae78af950800000000000000
+      internalID: 6483644055995291048
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_91
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 512
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 11a88a47812c49c40800000000000000
+      internalID: 5518248853727906321
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_92
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 512
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e5e4fbb991c8d1750800000000000000
+      internalID: 6277327497239416414
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_93
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 512
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 376a8b2fb8e6af4a0800000000000000
+      internalID: -6558808359960009101
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_94
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 512
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 257edc9e396854640800000000000000
+      internalID: 5063601325888890706
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_95
+      rect:
+        serializedVersion: 2
+        x: 224
+        y: 512
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4a33c63555ed77640800000000000000
+      internalID: 5077771562936710052
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_96
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 480
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5c628afbccffc1360800000000000000
+      internalID: 7141864363956643525
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_97
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 480
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 127e9490f6425bd50800000000000000
+      internalID: 6752343275627734817
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_98
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 480
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 505892b753d7025d0800000000000000
+      internalID: -3089331675723102971
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_99
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 480
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2af784825911c3e40800000000000000
+      internalID: 5637400165884657570
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_100
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 480
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4600d697e3f9ca600800000000000000
+      internalID: 480934350895775844
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_101
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 480
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cbc930f7b66ca2f80800000000000000
+      internalID: -8130468012269265732
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_102
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 480
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5c1cdb51bd37ce2c0800000000000000
+      internalID: -4401015351048027707
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_103
+      rect:
+        serializedVersion: 2
+        x: 224
+        y: 480
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 770fe23bbd07fef50800000000000000
+      internalID: 6912868041943347319
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_104
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 448
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f16a2243bd53b0d60800000000000000
+      internalID: 7857433190466758175
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_105
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 448
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ecaaeb568007e9340800000000000000
+      internalID: 4872455028230499022
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_106
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 448
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 244f2f624fadf2450800000000000000
+      internalID: 6066307965251679298
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_107
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 448
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9925a9e8ada16c5f0800000000000000
+      internalID: -736871963030826343
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_108
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 448
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 31c0c6c7c07d70a10800000000000000
+      internalID: 1875704218450136083
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_109
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 448
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b7f15576f7bff9700800000000000000
+      internalID: 549434204175540091
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_110
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 448
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b9dd7a45663cc8170800000000000000
+      internalID: 8182129467299716507
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_111
+      rect:
+        serializedVersion: 2
+        x: 224
+        y: 448
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: be233b8df61d4eb20800000000000000
+      internalID: 3162883116628128491
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_112
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 416
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 303a1fe5cea962290800000000000000
+      internalID: -7915468955061214461
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_113
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 416
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c4a5aa3db8c08dd90800000000000000
+      internalID: -7072889420094219700
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_114
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 416
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1d515f9abdb5b8c30800000000000000
+      internalID: 4362681663045834193
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_115
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 416
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 02d5e1d0c37c9c810800000000000000
+      internalID: 1786177787961171232
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_116
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 416
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8d56833f18da8fb70800000000000000
+      internalID: 8933080634532324824
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_117
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 416
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: af1cefd54fb8b53d0800000000000000
+      internalID: -3216823627160829446
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_118
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 416
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 910019a5c1b9c8220800000000000000
+      internalID: 2489535240109883417
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_119
+      rect:
+        serializedVersion: 2
+        x: 224
+        y: 416
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 42a5a249b0dcc35d0800000000000000
+      internalID: -3081362595414123996
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_120
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 384
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bf453eac03227c330800000000000000
+      internalID: 3730988409257415931
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_121
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 384
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b7ef3c06322c06af0800000000000000
+      internalID: -405110509260243333
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_122
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 384
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0805adda189586450800000000000000
+      internalID: 6082209710266273920
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_123
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 384
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: eddc4bd3985e55650800000000000000
+      internalID: 6221130837890747870
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_124
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 384
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bc5458de32a5df5b0800000000000000
+      internalID: -5333007273381509685
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_125
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 384
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 69569aed7a3334570800000000000000
+      internalID: 8449654121965381014
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_126
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 384
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d55d3fe55e8b5c230800000000000000
+      internalID: 3658533567588455773
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_127
+      rect:
+        serializedVersion: 2
+        x: 224
+        y: 384
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: feec909b1b52899e0800000000000000
+      internalID: -1614499021168455953
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_128
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 352
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 03a6b162389ad1900800000000000000
+      internalID: 656867501411101232
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_129
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 352
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 08dfb4ab1d087df40800000000000000
+      internalID: 5753208687251160448
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_130
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 352
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ae80428e0ca5e8fe0800000000000000
+      internalID: -1184909867376965398
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_131
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 352
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 238eeda14cfab22c0800000000000000
+      internalID: -4455274149553706958
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_132
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 352
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1e641e212619fb120800000000000000
+      internalID: 2431822174212933345
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_133
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 352
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 10258de2324889ff0800000000000000
+      internalID: -29128110933257727
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_134
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 352
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 990401037206172e0800000000000000
+      internalID: -2129815427343171431
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_135
+      rect:
+        serializedVersion: 2
+        x: 224
+        y: 352
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 67f0c63572cc4bda0800000000000000
+      internalID: -5929890340064718986
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_136
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 320
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ab2804c727e518f20800000000000000
+      internalID: 3423121037582172858
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_137
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 320
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 53c9d91c28bf07960800000000000000
+      internalID: 7597849110386678837
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_138
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 320
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 20ad35effb48f62b0800000000000000
+      internalID: -5589102652402968062
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_139
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 320
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 938cb489a18583b60800000000000000
+      internalID: 7726022032001583161
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_140
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 320
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2d49d925d09d56860800000000000000
+      internalID: 7522657403836142802
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_141
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 320
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4a92e88d1ad4330c0800000000000000
+      internalID: -4597245437096875612
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_142
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 320
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b170ead4b5e4b5050800000000000000
+      internalID: 5790307899967145755
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_143
+      rect:
+        serializedVersion: 2
+        x: 224
+        y: 320
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3a7c11a08b5f6af50800000000000000
+      internalID: 6892466450528847779
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_144
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 288
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f5ebab843ab553ca0800000000000000
+      internalID: -6037818968562287009
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_145
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 288
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0388e6b4005268d80800000000000000
+      internalID: -8248864984286722000
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_146
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 288
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6410cd270989aaf40800000000000000
+      internalID: 5740568421206851910
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_147
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 288
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 50505e1cdad8cd730800000000000000
+      internalID: 4025247944384251141
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_148
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 288
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f91257b52b7cb5c00800000000000000
+      internalID: 890524920188314015
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_149
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 288
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4b5df9243194e05a0800000000000000
+      internalID: -6553220060706515532
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_150
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 288
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3981c350c56358770800000000000000
+      internalID: 8612349631268657299
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_151
+      rect:
+        serializedVersion: 2
+        x: 224
+        y: 288
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0c00065fc8e290540800000000000000
+      internalID: 4974558446354432192
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_152
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 256
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cf4434a6cc36ee5b0800000000000000
+      internalID: -5337218778780187396
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_153
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 256
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 93ef1348ec7d76a20800000000000000
+      internalID: 3055648154175274553
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_154
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 256
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 280c8c9784cddb290800000000000000
+      internalID: -7872894369734803326
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_155
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 256
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6357358d529b9ba30800000000000000
+      internalID: 4231616897085568310
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_156
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 256
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9b59602887ef74d30800000000000000
+      internalID: 4415777753191060921
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_157
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 256
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bce38c99197f115d0800000000000000
+      internalID: -3093419264304464181
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_158
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 256
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8cd88702731af47e0800000000000000
+      internalID: -1779026069648011832
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_159
+      rect:
+        serializedVersion: 2
+        x: 224
+        y: 256
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ee02094bb37ab42a0800000000000000
+      internalID: -6752119341437673234
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_160
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 224
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 35f75de7e84f77460800000000000000
+      internalID: 7239523818871816019
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_161
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 224
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ca690a8de27777b00800000000000000
+      internalID: 826260099732379308
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_162
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 224
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d1c049a9114aa2370800000000000000
+      internalID: 8298625658898353181
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_163
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 224
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ce52a549bb14c95b0800000000000000
+      internalID: -5360337182574107156
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_164
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 224
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ae2578007da8f9070800000000000000
+      internalID: 8115357709576393450
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_165
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 224
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c42cb625641042ea0800000000000000
+      internalID: -5898588210406374836
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_166
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 224
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bf8ea07279411fb10800000000000000
+      internalID: 2013413147838966011
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_167
+      rect:
+        serializedVersion: 2
+        x: 224
+        y: 224
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e94fe44bcb7ab0b70800000000000000
+      internalID: 8866364720329716894
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_168
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 192
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 78c035ddaaf2c4f60800000000000000
+      internalID: 8019837447344163975
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_169
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 192
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dd5d3aea8ac9df180800000000000000
+      internalID: -9079929025410640419
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_170
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 192
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 69e000585d139a2d0800000000000000
+      internalID: -3267025261551415658
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_171
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 192
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6c7e0683f10bbab70800000000000000
+      internalID: 8911409935819007942
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_172
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 192
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3c8b5918601823370800000000000000
+      internalID: 8300838928141105347
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_173
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 192
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 07d9e7e76102ddd50800000000000000
+      internalID: 6763597496363949424
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_174
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 192
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b42c6c1adb3173640800000000000000
+      internalID: 5059534411557945931
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_175
+      rect:
+        serializedVersion: 2
+        x: 224
+        y: 192
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7646a548afc8bd420800000000000000
+      internalID: 2655871412855268455
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_176
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 160
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 38953ef86b4ac9d418c9a61431c008d5
+      internalID: 8352373738871617289
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_177
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 160
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 791df55cc486a5e43860e0e8791b7f8f
+      internalID: 6955260307820317834
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_178
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 160
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 042d5788aadd145468ba692e939c6f4e
+      internalID: 3653078743634925405
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_179
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 160
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d934ef4fd72061c49bec31cddb4e80bc
+      internalID: -3714474157868265013
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_180
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 160
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f2436a2b3b115594b8739f73c45ce2a6
+      internalID: 7108786669407402679
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_181
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 160
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 77cd9bbaf8db45f46b8bad5e23beb2b0
+      internalID: -4524217957683725007
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_182
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 160
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7981167851c8a544294539228bfdcbed
+      internalID: 858104173971341181
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_183
+      rect:
+        serializedVersion: 2
+        x: 224
+        y: 160
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 55eff4ba21961704db3229f5c7b396bf
+      internalID: -7189012879408428014
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_184
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 128
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b863c86859a2e504e9969da6983a4c85
+      internalID: -1442065179273839887
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_185
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 128
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 14edc67c091bd9d4d8bb58f6a7f8680a
+      internalID: -518840211573575601
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_186
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 128
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 532c4d96555471c4e8b895a0f3127680
+      internalID: 6271070995545268592
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_187
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 128
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 46cd5860322e54a4aad4603e85519285
+      internalID: 6740637501949691799
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_188
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 128
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d768163abf6738e479ac80438c06b4e9
+      internalID: 3138229514557770286
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_189
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 128
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3fbefc01da08a1a479dd4ba763483ad2
+      internalID: 4671302652368135902
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_190
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 128
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 737cf7af871de85479844ccd9cc22205
+      internalID: 3170845923350956186
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_191
+      rect:
+        serializedVersion: 2
+        x: 224
+        y: 128
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9a9b374d12e14b341bc0ee064a4c5348
+      internalID: 8769766940944748578
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_192
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 96
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fc6bd6f1c7c175d4cb0f8c8ebede3122
+      internalID: 5262913050974406405
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_193
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 96
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d7eedbdf064fca34db9a2dddb0448751
+      internalID: -8739246345792247419
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_194
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 96
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6c5d14a811a0ab149a0b4f0b9ebe2d63
+      internalID: 6594329255629030115
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_195
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 96
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 82ee17434002fe040be0309bb8b110dc
+      internalID: 6022061809155969706
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_196
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 96
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e01571645fcedc54d9019b6e5be680e9
+      internalID: -4002726289839108330
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_197
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 96
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0f130eea32241564d91c42f2cb1ddff2
+      internalID: 890963607103969192
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_198
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 96
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e5b090aa25234b04ebc821ba27adc2c2
+      internalID: 3207048556717415282
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_199
+      rect:
+        serializedVersion: 2
+        x: 224
+        y: 96
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d4c05b5f5263fb74d89cc5d2eee4857d
+      internalID: -8691597847575742432
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_200
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 64
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 09d88cc872640364c8770302db43bb41
+      internalID: 6674962713997296480
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_201
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 64
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e12a29fa9fc63594d895847bbb46edea
+      internalID: -2079746161757219147
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_202
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 64
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d5ba4d8c87f9011469b91c245ac37e40
+      internalID: -4409707974207603223
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_203
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 64
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ddef5856e02b5864787068c5e214d2ce
+      internalID: 408570062881798103
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_204
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 64
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0edc9d68390356b4c9d5dd2936ba5136
+      internalID: 8306016333676517081
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_205
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 64
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1f53f28fe22a05e40b075ce1de7d45fe
+      internalID: 7647156634002250987
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_206
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 64
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 24057b6fe36c57646a1126d7d051c477
+      internalID: 265356642054983677
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_207
+      rect:
+        serializedVersion: 2
+        x: 224
+        y: 64
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: be1fc7d8613bb4848b9d7c58b98cd683
+      internalID: -8134974981461710397
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_208
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 32
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 81ed8374f6dab4e4fba5a668ef5f2015
+      internalID: 4362205507710805354
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_209
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 32
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 39801e6ad76e3d0409224c84f44ab0b9
+      internalID: -7372681716992963919
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_210
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 32
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: bcc9da3e7ff4eb8419a5004f13c19bf4
+      internalID: -6566339195635164719
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_211
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 32
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 80b162a014addd44681daad38f9f49f3
+      internalID: -6829945900834172841
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_212
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 32
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b0e643b5ac249754c9aebdd6ce2ee8fc
+      internalID: -6861176403709533946
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_213
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 32
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cd01e5f389cdb104fb86128a94b977e2
+      internalID: -2546674011899938333
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_214
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 32
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 81b7ef4c7cc821b448c731b622db29ff
+      internalID: 7257043037081479894
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_215
+      rect:
+        serializedVersion: 2
+        x: 224
+        y: 32
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9d019910da96a0e4bbd5631767c64e36
+      internalID: -8878381473792134707
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_216
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c3299afe22262634ab7193f8a89c4f88
+      internalID: 8411009443976886433
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_217
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 59eb120995e3f6641bec4fd67fa6fc82
+      internalID: 2638156207167272082
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_218
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 58a3e06d5606ab94ea638bd0b057ba6c
+      internalID: -7359264317229627819
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_219
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 82419c8a167cb8744965476331856bc0
+      internalID: -437609759839711421
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_220
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d7b68a5ce54fb1d499224a6b85878771
+      internalID: 5188290392529352930
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_221
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 30a5b8240442a944b9ed4940007610c0
+      internalID: 3388383076506640055
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_222
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4e257a5fa614ae94c819ce7d894da2f8
+      internalID: 976695105096278777
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Spell Projectiles Sprite Sheet_223
+      rect:
+        serializedVersion: 2
+        x: 224
+        y: 0
+        width: 32
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d52c4a38e77595648b5807ed58819b28
+      internalID: 2356578192795433053
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 6eeeb32d00b6af8449bd20977d30f8ef
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":8.0,"y":28.0},"gridSpriteSize":{"x":32.0,"y":32.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":2,"keepEmptyRects":false,"isAlternate":false}'
+    nameFileIdTable:
+      Spell Projectiles Sprite Sheet_0: -509536541352903267
+      Spell Projectiles Sprite Sheet_1: -7486276560977306329
+      Spell Projectiles Sprite Sheet_10: -4600800082063516327
+      Spell Projectiles Sprite Sheet_100: 480934350895775844
+      Spell Projectiles Sprite Sheet_101: -8130468012269265732
+      Spell Projectiles Sprite Sheet_102: -4401015351048027707
+      Spell Projectiles Sprite Sheet_103: 6912868041943347319
+      Spell Projectiles Sprite Sheet_104: 7857433190466758175
+      Spell Projectiles Sprite Sheet_105: 4872455028230499022
+      Spell Projectiles Sprite Sheet_106: 6066307965251679298
+      Spell Projectiles Sprite Sheet_107: -736871963030826343
+      Spell Projectiles Sprite Sheet_108: 1875704218450136083
+      Spell Projectiles Sprite Sheet_109: 549434204175540091
+      Spell Projectiles Sprite Sheet_11: -8262621624204701675
+      Spell Projectiles Sprite Sheet_110: 8182129467299716507
+      Spell Projectiles Sprite Sheet_111: 3162883116628128491
+      Spell Projectiles Sprite Sheet_112: -7915468955061214461
+      Spell Projectiles Sprite Sheet_113: -7072889420094219700
+      Spell Projectiles Sprite Sheet_114: 4362681663045834193
+      Spell Projectiles Sprite Sheet_115: 1786177787961171232
+      Spell Projectiles Sprite Sheet_116: 8933080634532324824
+      Spell Projectiles Sprite Sheet_117: -3216823627160829446
+      Spell Projectiles Sprite Sheet_118: 2489535240109883417
+      Spell Projectiles Sprite Sheet_119: -3081362595414123996
+      Spell Projectiles Sprite Sheet_12: 3909243187289904127
+      Spell Projectiles Sprite Sheet_120: 3730988409257415931
+      Spell Projectiles Sprite Sheet_121: -405110509260243333
+      Spell Projectiles Sprite Sheet_122: 6082209710266273920
+      Spell Projectiles Sprite Sheet_123: 6221130837890747870
+      Spell Projectiles Sprite Sheet_124: -5333007273381509685
+      Spell Projectiles Sprite Sheet_125: 8449654121965381014
+      Spell Projectiles Sprite Sheet_126: 3658533567588455773
+      Spell Projectiles Sprite Sheet_127: -1614499021168455953
+      Spell Projectiles Sprite Sheet_128: 656867501411101232
+      Spell Projectiles Sprite Sheet_129: 5753208687251160448
+      Spell Projectiles Sprite Sheet_13: -7221102068059699068
+      Spell Projectiles Sprite Sheet_130: -1184909867376965398
+      Spell Projectiles Sprite Sheet_131: -4455274149553706958
+      Spell Projectiles Sprite Sheet_132: 2431822174212933345
+      Spell Projectiles Sprite Sheet_133: -29128110933257727
+      Spell Projectiles Sprite Sheet_134: -2129815427343171431
+      Spell Projectiles Sprite Sheet_135: -5929890340064718986
+      Spell Projectiles Sprite Sheet_136: 3423121037582172858
+      Spell Projectiles Sprite Sheet_137: 7597849110386678837
+      Spell Projectiles Sprite Sheet_138: -5589102652402968062
+      Spell Projectiles Sprite Sheet_139: 7726022032001583161
+      Spell Projectiles Sprite Sheet_14: -434874097733421835
+      Spell Projectiles Sprite Sheet_140: 7522657403836142802
+      Spell Projectiles Sprite Sheet_141: -4597245437096875612
+      Spell Projectiles Sprite Sheet_142: 5790307899967145755
+      Spell Projectiles Sprite Sheet_143: 6892466450528847779
+      Spell Projectiles Sprite Sheet_144: -6037818968562287009
+      Spell Projectiles Sprite Sheet_145: -8248864984286722000
+      Spell Projectiles Sprite Sheet_146: 5740568421206851910
+      Spell Projectiles Sprite Sheet_147: 4025247944384251141
+      Spell Projectiles Sprite Sheet_148: 890524920188314015
+      Spell Projectiles Sprite Sheet_149: -6553220060706515532
+      Spell Projectiles Sprite Sheet_15: 1885083451930769640
+      Spell Projectiles Sprite Sheet_150: 8612349631268657299
+      Spell Projectiles Sprite Sheet_151: 4974558446354432192
+      Spell Projectiles Sprite Sheet_152: -5337218778780187396
+      Spell Projectiles Sprite Sheet_153: 3055648154175274553
+      Spell Projectiles Sprite Sheet_154: -7872894369734803326
+      Spell Projectiles Sprite Sheet_155: 4231616897085568310
+      Spell Projectiles Sprite Sheet_156: 4415777753191060921
+      Spell Projectiles Sprite Sheet_157: -3093419264304464181
+      Spell Projectiles Sprite Sheet_158: -1779026069648011832
+      Spell Projectiles Sprite Sheet_159: -6752119341437673234
+      Spell Projectiles Sprite Sheet_16: -8336253427015068450
+      Spell Projectiles Sprite Sheet_160: 7239523818871816019
+      Spell Projectiles Sprite Sheet_161: 826260099732379308
+      Spell Projectiles Sprite Sheet_162: 8298625658898353181
+      Spell Projectiles Sprite Sheet_163: -5360337182574107156
+      Spell Projectiles Sprite Sheet_164: 8115357709576393450
+      Spell Projectiles Sprite Sheet_165: -5898588210406374836
+      Spell Projectiles Sprite Sheet_166: 2013413147838966011
+      Spell Projectiles Sprite Sheet_167: 8866364720329716894
+      Spell Projectiles Sprite Sheet_168: 8019837447344163975
+      Spell Projectiles Sprite Sheet_169: -9079929025410640419
+      Spell Projectiles Sprite Sheet_17: 9172683623526349473
+      Spell Projectiles Sprite Sheet_170: -3267025261551415658
+      Spell Projectiles Sprite Sheet_171: 8911409935819007942
+      Spell Projectiles Sprite Sheet_172: 8300838928141105347
+      Spell Projectiles Sprite Sheet_173: 6763597496363949424
+      Spell Projectiles Sprite Sheet_174: 5059534411557945931
+      Spell Projectiles Sprite Sheet_175: 2655871412855268455
+      Spell Projectiles Sprite Sheet_176: 8352373738871617289
+      Spell Projectiles Sprite Sheet_177: 6955260307820317834
+      Spell Projectiles Sprite Sheet_178: 3653078743634925405
+      Spell Projectiles Sprite Sheet_179: -3714474157868265013
+      Spell Projectiles Sprite Sheet_18: 5854393726202166074
+      Spell Projectiles Sprite Sheet_180: 7108786669407402679
+      Spell Projectiles Sprite Sheet_181: -4524217957683725007
+      Spell Projectiles Sprite Sheet_182: 858104173971341181
+      Spell Projectiles Sprite Sheet_183: -7189012879408428014
+      Spell Projectiles Sprite Sheet_184: -1442065179273839887
+      Spell Projectiles Sprite Sheet_185: -518840211573575601
+      Spell Projectiles Sprite Sheet_186: 6271070995545268592
+      Spell Projectiles Sprite Sheet_187: 6740637501949691799
+      Spell Projectiles Sprite Sheet_188: 3138229514557770286
+      Spell Projectiles Sprite Sheet_189: 4671302652368135902
+      Spell Projectiles Sprite Sheet_19: -6929860124154430858
+      Spell Projectiles Sprite Sheet_190: 3170845923350956186
+      Spell Projectiles Sprite Sheet_191: 8769766940944748578
+      Spell Projectiles Sprite Sheet_192: 5262913050974406405
+      Spell Projectiles Sprite Sheet_193: -8739246345792247419
+      Spell Projectiles Sprite Sheet_194: 6594329255629030115
+      Spell Projectiles Sprite Sheet_195: 6022061809155969706
+      Spell Projectiles Sprite Sheet_196: -4002726289839108330
+      Spell Projectiles Sprite Sheet_197: 890963607103969192
+      Spell Projectiles Sprite Sheet_198: 3207048556717415282
+      Spell Projectiles Sprite Sheet_199: -8691597847575742432
+      Spell Projectiles Sprite Sheet_2: -567619242242514185
+      Spell Projectiles Sprite Sheet_20: -8786526565979784129
+      Spell Projectiles Sprite Sheet_200: 6674962713997296480
+      Spell Projectiles Sprite Sheet_201: -2079746161757219147
+      Spell Projectiles Sprite Sheet_202: -4409707974207603223
+      Spell Projectiles Sprite Sheet_203: 408570062881798103
+      Spell Projectiles Sprite Sheet_204: 8306016333676517081
+      Spell Projectiles Sprite Sheet_205: 7647156634002250987
+      Spell Projectiles Sprite Sheet_206: 265356642054983677
+      Spell Projectiles Sprite Sheet_207: -8134974981461710397
+      Spell Projectiles Sprite Sheet_208: 4362205507710805354
+      Spell Projectiles Sprite Sheet_209: -7372681716992963919
+      Spell Projectiles Sprite Sheet_21: -1894886436194100263
+      Spell Projectiles Sprite Sheet_210: -6566339195635164719
+      Spell Projectiles Sprite Sheet_211: -6829945900834172841
+      Spell Projectiles Sprite Sheet_212: -6861176403709533946
+      Spell Projectiles Sprite Sheet_213: -2546674011899938333
+      Spell Projectiles Sprite Sheet_214: 7257043037081479894
+      Spell Projectiles Sprite Sheet_215: -8878381473792134707
+      Spell Projectiles Sprite Sheet_216: 8411009443976886433
+      Spell Projectiles Sprite Sheet_217: 2638156207167272082
+      Spell Projectiles Sprite Sheet_218: -7359264317229627819
+      Spell Projectiles Sprite Sheet_219: -437609759839711421
+      Spell Projectiles Sprite Sheet_22: 7901668761593489808
+      Spell Projectiles Sprite Sheet_220: 5188290392529352930
+      Spell Projectiles Sprite Sheet_221: 3388383076506640055
+      Spell Projectiles Sprite Sheet_222: 976695105096278777
+      Spell Projectiles Sprite Sheet_223: 2356578192795433053
+      Spell Projectiles Sprite Sheet_23: 5399306249678991649
+      Spell Projectiles Sprite Sheet_24: -8865232306112329604
+      Spell Projectiles Sprite Sheet_25: -5870334562187165794
+      Spell Projectiles Sprite Sheet_26: 7303038734949417644
+      Spell Projectiles Sprite Sheet_27: -7380541789435643827
+      Spell Projectiles Sprite Sheet_28: 3486096128411000305
+      Spell Projectiles Sprite Sheet_29: -771653385453439806
+      Spell Projectiles Sprite Sheet_3: 7665012054459195586
+      Spell Projectiles Sprite Sheet_30: 1763028782168413249
+      Spell Projectiles Sprite Sheet_31: -2186625303286657884
+      Spell Projectiles Sprite Sheet_32: -7869954452459100449
+      Spell Projectiles Sprite Sheet_33: 762511173269224751
+      Spell Projectiles Sprite Sheet_34: 9087931791934375277
+      Spell Projectiles Sprite Sheet_35: -8110754868932075493
+      Spell Projectiles Sprite Sheet_36: 5744326772075486418
+      Spell Projectiles Sprite Sheet_37: 1897347463348746751
+      Spell Projectiles Sprite Sheet_38: 381165733416994853
+      Spell Projectiles Sprite Sheet_39: -1511775886540194636
+      Spell Projectiles Sprite Sheet_4: 4132503686717233890
+      Spell Projectiles Sprite Sheet_40: -1729382891337714494
+      Spell Projectiles Sprite Sheet_41: -3190526664897246694
+      Spell Projectiles Sprite Sheet_42: -3115369698257257801
+      Spell Projectiles Sprite Sheet_43: 7825512069631362609
+      Spell Projectiles Sprite Sheet_44: -5208301365830205810
+      Spell Projectiles Sprite Sheet_45: -1781039878276257281
+      Spell Projectiles Sprite Sheet_46: -3011897116199495038
+      Spell Projectiles Sprite Sheet_47: -1394571114808880588
+      Spell Projectiles Sprite Sheet_48: 4160223508173787869
+      Spell Projectiles Sprite Sheet_49: -6851339913260845201
+      Spell Projectiles Sprite Sheet_5: 1143528794514803561
+      Spell Projectiles Sprite Sheet_50: -8605449953744213942
+      Spell Projectiles Sprite Sheet_51: 5662263296501156252
+      Spell Projectiles Sprite Sheet_52: -8135192779990139287
+      Spell Projectiles Sprite Sheet_53: 7205859941855914255
+      Spell Projectiles Sprite Sheet_54: 1625417035785298938
+      Spell Projectiles Sprite Sheet_55: 4767889290169877542
+      Spell Projectiles Sprite Sheet_56: -2088272631999907490
+      Spell Projectiles Sprite Sheet_57: -2121043096855227258
+      Spell Projectiles Sprite Sheet_58: -3071259567657331737
+      Spell Projectiles Sprite Sheet_59: 1441198613701963418
+      Spell Projectiles Sprite Sheet_6: 1871169501614298415
+      Spell Projectiles Sprite Sheet_60: 2987301780960232115
+      Spell Projectiles Sprite Sheet_61: -1061491096968791628
+      Spell Projectiles Sprite Sheet_62: -995073726428245790
+      Spell Projectiles Sprite Sheet_63: -274871564899926582
+      Spell Projectiles Sprite Sheet_64: 2937993690431952173
+      Spell Projectiles Sprite Sheet_65: 5535574290673309208
+      Spell Projectiles Sprite Sheet_66: 4310241190437379439
+      Spell Projectiles Sprite Sheet_67: 4018133951633730287
+      Spell Projectiles Sprite Sheet_68: 6593206000914454459
+      Spell Projectiles Sprite Sheet_69: -6249331685422864424
+      Spell Projectiles Sprite Sheet_7: -7288669828856768804
+      Spell Projectiles Sprite Sheet_70: -523614179258570116
+      Spell Projectiles Sprite Sheet_71: 1529699150546810785
+      Spell Projectiles Sprite Sheet_72: -8237277911525706708
+      Spell Projectiles Sprite Sheet_73: -1685426801620166556
+      Spell Projectiles Sprite Sheet_74: -6841262300508675748
+      Spell Projectiles Sprite Sheet_75: -4435422611430841460
+      Spell Projectiles Sprite Sheet_76: -7195814024913131885
+      Spell Projectiles Sprite Sheet_77: 1482723113821991381
+      Spell Projectiles Sprite Sheet_78: -7297767268721508437
+      Spell Projectiles Sprite Sheet_79: 6194000375581398534
+      Spell Projectiles Sprite Sheet_8: 5992465535763987285
+      Spell Projectiles Sprite Sheet_80: 2394188416582739383
+      Spell Projectiles Sprite Sheet_81: -2694052577166351952
+      Spell Projectiles Sprite Sheet_82: 7751431960249312403
+      Spell Projectiles Sprite Sheet_83: -333891520141430539
+      Spell Projectiles Sprite Sheet_84: 5194379081670328897
+      Spell Projectiles Sprite Sheet_85: -6499366852354672225
+      Spell Projectiles Sprite Sheet_86: 3651630823021068163
+      Spell Projectiles Sprite Sheet_87: 1409432984682532848
+      Spell Projectiles Sprite Sheet_88: 5609200240979419824
+      Spell Projectiles Sprite Sheet_89: 4383962311596037591
+      Spell Projectiles Sprite Sheet_9: -7742694092488482804
+      Spell Projectiles Sprite Sheet_90: 6483644055995291048
+      Spell Projectiles Sprite Sheet_91: 5518248853727906321
+      Spell Projectiles Sprite Sheet_92: 6277327497239416414
+      Spell Projectiles Sprite Sheet_93: -6558808359960009101
+      Spell Projectiles Sprite Sheet_94: 5063601325888890706
+      Spell Projectiles Sprite Sheet_95: 5077771562936710052
+      Spell Projectiles Sprite Sheet_96: 7141864363956643525
+      Spell Projectiles Sprite Sheet_97: 6752343275627734817
+      Spell Projectiles Sprite Sheet_98: -3089331675723102971
+      Spell Projectiles Sprite Sheet_99: 5637400165884657570
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

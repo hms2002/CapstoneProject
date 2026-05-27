@@ -5,6 +5,11 @@ using UnityEngine.Tilemaps;
 using UnityEngine.SceneManagement; // 씬 전환 감지를 위해 필요
 using UnityGAS;
 
+/// <summary>
+/// 책임:
+/// - 플레이어가 구덩이에 빠졌을 때 돌아갈 마지막 안전 위치를 추적한다.
+/// - 땅/구덩이 타일과 일시적인 위험 상태 태그를 함께 고려해 리스폰 후보를 갱신한다.
+/// </summary>
 public class SafetyTracker : MonoBehaviour
 {
     [Header("Auto Detection Settings")]
@@ -20,6 +25,8 @@ public class SafetyTracker : MonoBehaviour
 
     [Header("Unsafe Conditions")]
     [SerializeField] private GameplayTag[] unsafeTags;
+    [Tooltip("켜져 있으면 unsafeTags가 직접 부여된 경우만 안전 위치 갱신을 막고, 하위 태그로 인한 부모 closure는 무시합니다.")]
+    [SerializeField] private bool useExactUnsafeTags = true;
 
     // 자동으로 찾아낸 타일맵들을 저장할 리스트
     private List<Tilemap> groundMaps = new List<Tilemap>();
@@ -164,9 +171,24 @@ public class SafetyTracker : MonoBehaviour
 
         foreach (var tag in unsafeTags)
         {
-            if (abilitySystem.TagSystem.HasTag(tag)) return true;
+            if (HasUnsafeTag(tag)) return true;
         }
         return false;
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 안전 위치 갱신 차단 태그를 exact 또는 closure 포함 방식 중 인스펙터 정책에 맞게 판정한다.
+    /// - Dash.Blocked 같은 하위 제약 태그가 대시 시작 위치를 리스폰 위치로 고정시키는 문제를 막는다.
+    /// </summary>
+    private bool HasUnsafeTag(GameplayTag tag)
+    {
+        if (tag == null || abilitySystem == null || abilitySystem.TagSystem == null)
+            return false;
+
+        return useExactUnsafeTags
+            ? abilitySystem.TagSystem.HasExplicitTag(tag)
+            : abilitySystem.TagSystem.HasTag(tag);
     }
 
     public Vector3 GetRespawnPosition()

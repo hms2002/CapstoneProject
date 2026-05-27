@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d26164ce00041742a35f6fcac85bde1, type: 3}
+  m_Name: CommonMonster_TestRoomSpawnProfile
+  m_EditorClassIdentifier: Assembly-CSharp::MonsterRoomSpawnProfileSO
+  spawnTables:
+  - tableName: CommonMonsterTest
+    spawnCount: 7
+    entries:
+    - monsterPrefab: {fileID: 9047710376581899356, guid: fda3cefab78502b40b55e2b827a2ecd1, type: 3}
+      weight: 1
+    - monsterPrefab: {fileID: 7164257353146660579, guid: a185228d38109f64eae6c7afb0622827, type: 3}
+      weight: 1
+    - monsterPrefab: {fileID: 827981175415890305, guid: b9febceb6e3458b4aaa9d31cefa9bfb0, type: 3}
+      weight: 1
+    - monsterPrefab: {fileID: 5433486041897825252, guid: e67c0e27f47424648af599f14420164d, type: 3}
+      weight: 1
+    - monsterPrefab: {fileID: 2113181437983400040, guid: 9e597eeaaba098f4c8a80a394fb30174, type: 3}
+      weight: 1
+    - monsterPrefab: {fileID: 7326883398652249423, guid: 65aed765b26cc4745a94999e32542d6c, type: 3}
+      weight: 1
+    - monsterPrefab: {fileID: 6955305126709057867, guid: 6b49f710022e5e64bb337a1da469af91, type: 3}
+      weight: 1
+    commonEntries: []

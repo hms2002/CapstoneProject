@@ -1,13 +1,15 @@
 using System.Collections;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 /// <summary>
 /// 책임 :
-/// - 현재 보스 HUD source가 만든 snapshot을 읽어 이름, HP, 그로기 뷰에 배포한다.
-/// - 보스 참조가 없으면 HUD 전체를 비활성화해 잘못된 정보 노출을 막는다.
-/// - 보스별 특수 표시 규칙은 HUD source 쪽에 두고, 공용 HUD는 표시 orchestration만 담당한다.
+/// - 전투 중인 보스들의 HUD 표시 요청을 등록 목록으로 관리한다.
+/// - 등록된 보스마다 슬롯 프리팹을 배정하고 이름, HP, 그로기 표시 값을 배포한다.
+/// - 씬 전환, 보스 파괴, 강제 해제 상황에서 남은 HUD 슬롯을 안전하게 정리한다.
 /// </summary>
 [DisallowMultipleComponent]
 public sealed class BossHudController : MonoBehaviour
@@ -24,6 +26,17 @@ public sealed class BossHudController : MonoBehaviour
 
     [Header("Views")]
     [SerializeField] private GameObject visibleRoot;
+    [Tooltip("보스 HUD 슬롯들이 배치될 부모입니다. HorizontalLayoutGroup을 붙이는 것을 권장합니다.")]
+    [SerializeField] private RectTransform slotRoot;
+    [Tooltip("보스 한 체를 표시하는 HUD 슬롯 프리팹입니다.")]
+    [SerializeField] private BossHudSlotView slotPrefab;
+    [Tooltip("slotRoot에 HorizontalLayoutGroup이 없으면 자동으로 추가합니다.")]
+    [SerializeField] private bool ensureHorizontalLayoutGroup = true;
+    [Tooltip("슬롯 간격입니다. 자동 생성된 HorizontalLayoutGroup에만 적용됩니다.")]
+    [SerializeField, Min(0f)] private float slotSpacing = 10f;
+
+    [Header("Legacy Single Slot Fallback")]
+    [Tooltip("slotPrefab이 없을 때 기존 단일 HUD 참조를 임시로 사용합니다.")]
     [SerializeField] private BossHealthBarUI healthBarUI;
     [SerializeField] private BossGroggyBarUI groggyBarUI;
     [SerializeField] private TMP_Text bossNameText;
@@ -37,14 +50,28 @@ public sealed class BossHudController : MonoBehaviour
     [SerializeField] private bool useBossHudSlidePresentation = true;
     [SerializeField] private float hiddenAnchoredPosY = 120f;
     [SerializeField] private float shownAnchoredPosY = 0f;
-    [SerializeField, Min(0f)] private float slideDuration = 0.3f;
+    [SerializeField, Min(0f)] private float slideDuration = 0.8f;
     [SerializeField] private bool useUnscaledSlideTime = true;
+    [SerializeField] private bool logSlidePresentation;
 
-    private readonly SingleBossHudSource singleBossSource = new SingleBossHudSource();
-    private IBossHudSource activeSource;
+    private readonly List<BossHudRegistration> registrations = new List<BossHudRegistration>();
     private Coroutine _slideRoutine;
     private bool _hasAppliedInitialSlideState;
     private bool _lastSlideVisibleState;
+
+    /// <summary>
+    /// 책임 :
+    /// - HUD 컨트롤러가 추적하는 보스와 그 보스에 배정된 슬롯 상태를 묶어 보관한다.
+    /// - 사망 표시 유지와 실제 슬롯 제거 타이밍을 분리한다.
+    /// </summary>
+    private sealed class BossHudRegistration
+    {
+        public BossControllerBase Boss;
+        public BossHudSlotView Slot;
+        public string DisplayNameOverride;
+        public BossHudHealthBarTheme HealthBarTheme;
+        public bool IsDefeated;
+    }
 
     private void Awake()
     {
@@ -55,6 +82,7 @@ public sealed class BossHudController : MonoBehaviour
         }
 
         Instance = this;
+        EnsureSlotLayout();
         ResolveBossBinding();
     }
 
@@ -83,7 +111,7 @@ public sealed class BossHudController : MonoBehaviour
 
     private void Update()
     {
-        if (!TryRefreshActiveSource())
+        if (!TryRefreshRegisteredBosses(allowFallbackBind: false))
             HideHud();
     }
 
@@ -94,7 +122,7 @@ public sealed class BossHudController : MonoBehaviour
     /// </summary>
     private void HandleSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        ClearActiveSource();
+        ClearAllBosses();
         ResolveBossBinding();
     }
 
@@ -106,8 +134,9 @@ public sealed class BossHudController : MonoBehaviour
     private void ResolveBossBinding()
     {
         ResolveSlideRoot();
+        EnsureSlotLayout();
 
-        if (!TryBindFallbackBoss() || !TryRefreshActiveSource())
+        if (!TryBindFallbackBoss() || !TryRefreshRegisteredBosses())
         {
             HideHud();
         }
@@ -132,11 +161,8 @@ public sealed class BossHudController : MonoBehaviour
     /// </summary>
     public void BindBoss(BossControllerBase boss)
     {
-        if (boss == null)
-            return;
-
-        BindSourceForBoss(boss);
-        if (!TryRefreshActiveSource())
+        RegisterBoss(boss);
+        if (!TryRefreshRegisteredBosses(allowFallbackBind: false))
             HideHud();
     }
 
@@ -147,22 +173,129 @@ public sealed class BossHudController : MonoBehaviour
     /// </summary>
     public void UnbindBoss(BossControllerBase boss)
     {
-        if (boss == null || IsSourceMissing(activeSource) || !activeSource.OwnsBoss(boss))
+        UnregisterBoss(boss);
+        if (TryRefreshRegisteredBosses(allowFallbackBind: false))
             return;
 
-        if (ReferenceEquals(activeSource, singleBossSource))
+        HideHud();
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 호출자가 display name 없이 체력바 테마만 요청할 때 인자 순서를 헷갈리지 않는 진입점을 제공한다.
+    /// - 내부 등록 정책은 문자열 override를 받는 기본 RegisterBoss 경로로 모은다.
+    /// </summary>
+    public void RegisterBoss(BossControllerBase boss, BossHudHealthBarTheme healthBarTheme)
+    {
+        RegisterBoss(boss, null, healthBarTheme);
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 보스 전투 시작 시 HUD 슬롯 표시를 요청하는 공식 진입점입니다.
+    /// - 이미 등록된 보스는 중복 슬롯 없이 사망 표시만 해제합니다.
+    /// </summary>
+    public void RegisterBoss(
+        BossControllerBase boss,
+        string bossDisplayNameOverride = null,
+        BossHudHealthBarTheme healthBarTheme = null)
+    {
+        if (boss == null)
         {
-            ClearActiveSource();
-            HideHud();
             return;
         }
 
-        TryReplaceSourceOwnedByUnbindingBoss(boss);
-        if (TryRefreshActiveSource())
+        BossHudHealthBarTheme resolvedTheme = healthBarTheme != null
+            ? healthBarTheme
+            : boss.HudHealthBarTheme;
+
+        BossHudRegistration registration = FindRegistration(boss);
+        if (registration == null)
+        {
+            registration = new BossHudRegistration
+            {
+                Boss = boss,
+                Slot = CreateSlotView(),
+                DisplayNameOverride = bossDisplayNameOverride,
+                HealthBarTheme = resolvedTheme,
+                IsDefeated = false
+            };
+            registrations.Add(registration);
+        }
+        else
+        {
+            registration.IsDefeated = false;
+            if (!string.IsNullOrWhiteSpace(bossDisplayNameOverride))
+                registration.DisplayNameOverride = bossDisplayNameOverride;
+
+            if (resolvedTheme != null)
+                registration.HealthBarTheme = resolvedTheme;
+        }
+
+        TryRefreshRegisteredBosses(allowFallbackBind: false);
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 보스 사망 시작 시 HUD 슬롯을 제거하지 않고 체력 0 상태로 유지하도록 표시한다.
+    /// - 처치 연출과 실제 HUD 제거 타이밍을 분리해 다중 보스 피드백을 안정화한다.
+    /// </summary>
+    public void MarkBossDefeated(BossControllerBase boss)
+    {
+        if (boss == null)
             return;
 
-        ClearActiveSource();
-        HideHud();
+        BossHudRegistration registration = FindRegistration(boss);
+        if (registration == null)
+        {
+            RegisterBoss(boss);
+            registration = FindRegistration(boss);
+        }
+
+        if (registration == null)
+            return;
+
+        registration.IsDefeated = true;
+        TryRefreshRegisteredBosses(allowFallbackBind: false);
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 보스 처치 연출 종료, Destroy, 강제 전투 종료 시 해당 보스 슬롯을 실제로 제거한다.
+    /// - 남은 보스가 없으면 HUD 전체를 숨긴다.
+    /// </summary>
+    public void UnregisterBoss(BossControllerBase boss)
+    {
+        if (boss == null)
+        {
+            return;
+        }
+
+        for (int i = registrations.Count - 1; i >= 0; i--)
+        {
+            BossHudRegistration registration = registrations[i];
+            if (registration == null || registration.Boss != boss)
+                continue;
+
+            DestroySlot(registration.Slot);
+            registrations.RemoveAt(i);
+        }
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 씬 전환이나 Global UI 재생성 같은 전역 상황에서 모든 보스 HUD 슬롯을 즉시 제거한다.
+    /// </summary>
+    public void ClearAllBosses()
+    {
+        for (int i = registrations.Count - 1; i >= 0; i--)
+        {
+            BossHudRegistration registration = registrations[i];
+            if (registration != null)
+                DestroySlot(registration.Slot);
+        }
+
+        registrations.Clear();
     }
 
     private bool TryBindFallbackBoss()
@@ -174,182 +307,32 @@ public sealed class BossHudController : MonoBehaviour
         if (boss == null)
             return false;
 
-        BindSourceForBoss(boss);
-        return !IsSourceMissing(activeSource);
+        if (!boss.IsCombatActive)
+            return false;
+
+        RegisterBoss(boss, displayNameOverride);
+        return registrations.Count > 0;
     }
 
-    private void BindSourceForBoss(BossControllerBase boss)
+    private bool TryRefreshRegisteredBosses(bool allowFallbackBind = true)
     {
-        IBossHudSource source = ResolveHudSourceForBoss(boss);
-        if (!IsSourceMissing(source))
+        RemoveMissingRegistrations();
+
+        if (registrations.Count <= 0 && allowFallbackBind && !TryBindFallbackBoss())
         {
-            activeSource = source;
-            singleBossSource.Clear();
-            targetBoss = null;
-            return;
+            return false;
         }
 
-        targetBoss = boss;
-        activeSource = singleBossSource.Bind(boss, displayNameOverride);
-    }
-
-    private IBossHudSource ResolveHudSourceForBoss(BossControllerBase boss)
-    {
-        if (boss == null)
-            return null;
-
-        MonoBehaviour[] behaviours = boss.GetComponents<MonoBehaviour>();
-        IBossHudSource bestSource = null;
-        int bestPriority = int.MinValue;
-
-        for (int i = 0; i < behaviours.Length; i++)
+        if (registrations.Count <= 0)
         {
-            if (behaviours[i] is not IBossHudSource source)
-                continue;
-
-            if (!source.OwnsBoss(boss) || source.Priority < bestPriority)
-                continue;
-
-            bestSource = source;
-            bestPriority = source.Priority;
+            return false;
         }
 
-        return bestSource;
-    }
-
-    private bool TryReplaceSourceOwnedByUnbindingBoss(BossControllerBase unbindingBoss)
-    {
-        if (unbindingBoss == null || activeSource is not MonoBehaviour activeBehaviour)
-            return false;
-
-        if (activeBehaviour == null || activeBehaviour.gameObject != unbindingBoss.gameObject)
-            return false;
-
-        MonoBehaviour[] behaviours = FindObjectsByType<MonoBehaviour>(FindObjectsInactive.Exclude);
-        IBossHudSource bestSource = null;
-        int bestPriority = int.MinValue;
-
-        for (int i = 0; i < behaviours.Length; i++)
-        {
-            MonoBehaviour behaviour = behaviours[i];
-            if (behaviour == null || behaviour == activeBehaviour)
-                continue;
-
-            if (behaviour is not IBossHudSource source)
-                continue;
-
-            if (!source.OwnsBoss(unbindingBoss) || source.Priority < bestPriority)
-                continue;
-
-            if (!source.TryBuildSnapshot(out BossHudSnapshot snapshot) || !snapshot.IsVisible)
-                continue;
-
-            bestSource = source;
-            bestPriority = source.Priority;
-        }
-
-        if (IsSourceMissing(bestSource))
-            return false;
-
-        activeSource = bestSource;
-        return true;
-    }
-
-    private bool TryRefreshActiveSource()
-    {
-        if (IsSourceMissing(activeSource))
-        {
-            activeSource = null;
-            singleBossSource.Clear();
-        }
-
-        if (activeSource == null && !TryBindFallbackBoss())
-            return false;
-
-        if (activeSource == null ||
-            !activeSource.TryBuildSnapshot(out BossHudSnapshot snapshot) ||
-            !snapshot.IsVisible)
-            return false;
-
-        ApplySnapshot(snapshot);
-        return true;
-    }
-
-    private void ClearActiveSource()
-    {
-        activeSource = null;
-        singleBossSource.Clear();
-    }
-
-    private static bool IsSourceMissing(IBossHudSource source)
-    {
-        if (source == null)
-            return true;
-
-        return source is UnityEngine.Object unityObject && unityObject == null;
-    }
-
-    private void ApplySnapshot(BossHudSnapshot snapshot)
-    {
         SetHudVisible(true);
+        for (int i = 0; i < registrations.Count; i++)
+            ApplyRegistration(registrations[i]);
 
-        if (bossNameText != null)
-            bossNameText.text = snapshot.DisplayName;
-
-        ApplyGroggyLabel(snapshot.HasAnyGroggyChannel);
-        ApplyHealthSnapshot(snapshot);
-        ApplyGroggySnapshot(snapshot);
-    }
-
-    private void ApplyHealthSnapshot(BossHudSnapshot snapshot)
-    {
-        if (healthBarUI == null)
-            return;
-
-        if (snapshot.ChannelCount >= 2)
-        {
-            healthBarUI.SetSplitHealthPresentation(false, null, null);
-            healthBarUI.SetDualHealthRatios(
-                true,
-                snapshot.PrimaryChannel.HealthRatio,
-                snapshot.SecondaryChannel.HealthRatio);
-            return;
-        }
-
-        healthBarUI.SetDualHealthRatios(false, 0f, 0f);
-        healthBarUI.SetSplitHealthPresentation(
-            snapshot.UseSplitHealthPresentation,
-            snapshot.SplitHealthLeftLabel,
-            snapshot.SplitHealthRightLabel);
-        healthBarUI.SetHealthRatio(snapshot.PrimaryChannel.HealthRatio);
-    }
-
-    private void ApplyGroggySnapshot(BossHudSnapshot snapshot)
-    {
-        if (groggyBarUI == null)
-            return;
-
-        if (snapshot.ChannelCount >= 2)
-        {
-            bool visible = snapshot.PrimaryChannel.HasGroggyGauge || snapshot.SecondaryChannel.HasGroggyGauge;
-            groggyBarUI.SetVisible(visible);
-            groggyBarUI.SetDualGroggyRatios(
-                visible,
-                snapshot.PrimaryChannel.GroggyRatio,
-                snapshot.PrimaryChannel.IsGroggy,
-                snapshot.SecondaryChannel.GroggyRatio,
-                snapshot.SecondaryChannel.IsGroggy);
-            return;
-        }
-
-        BossHudChannelSnapshot channel = snapshot.PrimaryChannel;
-        groggyBarUI.SetDualGroggyRatios(false, 0f, false, 0f, false);
-        groggyBarUI.SetVisible(channel.HasGroggyGauge);
-        if (channel.HasGroggyGauge)
-        {
-            groggyBarUI.SetGroggyMode(channel.IsGroggy);
-            groggyBarUI.SetGroggyRatio(channel.GroggyRatio);
-        }
+        return true;
     }
 
     /// <summary>
@@ -369,20 +352,146 @@ public sealed class BossHudController : MonoBehaviour
 
     private void HideHud()
     {
+        for (int i = 0; i < registrations.Count; i++)
+            registrations[i]?.Slot?.ResetSlot();
+
         if (healthBarUI != null)
         {
-            healthBarUI.SetDualHealthRatios(false, 0f, 0f);
             healthBarUI.SetSplitHealthPresentation(false, null, null);
         }
 
         if (groggyBarUI != null)
         {
-            groggyBarUI.SetDualGroggyRatios(false, 0f, false, 0f, false);
             groggyBarUI.SetVisible(false);
         }
 
         ApplyGroggyLabel(false);
         SetHudVisible(false);
+    }
+
+    private void ApplyRegistration(BossHudRegistration registration)
+    {
+        if (registration == null || registration.Boss == null)
+        {
+            return;
+        }
+
+        if (registration.Slot == null)
+        {
+            registration.Slot = CreateSlotView();
+        }
+
+        BossHudSlotSnapshot snapshot = BossHudSlotSnapshot.FromBoss(
+            registration.Boss,
+            registration.DisplayNameOverride,
+            registration.IsDefeated || registration.Boss.IsDead || registration.Boss.HasDeadTag(),
+            registration.HealthBarTheme);
+
+        if (registration.Slot != null)
+        {
+            registration.Slot.Apply(snapshot);
+            return;
+        }
+
+        ApplyLegacySingleSlot(snapshot);
+    }
+
+    private void ApplyLegacySingleSlot(BossHudSlotSnapshot snapshot)
+    {
+        if (registrations.Count > 1)
+            return;
+
+        if (bossNameText != null)
+            bossNameText.text = snapshot.DisplayName;
+
+        if (healthBarUI != null)
+        {
+            healthBarUI.SetSplitHealthPresentation(false, null, null);
+            healthBarUI.SetHealthRatio(snapshot.HealthRatio);
+        }
+
+        if (groggyBarUI != null)
+        {
+            groggyBarUI.SetVisible(snapshot.HasGroggyGauge);
+            if (snapshot.HasGroggyGauge)
+            {
+                groggyBarUI.SetGroggyMode(snapshot.IsGroggy);
+                groggyBarUI.SetGroggyRatio(snapshot.GroggyRatio);
+            }
+        }
+
+        ApplyGroggyLabel(snapshot.IsGroggy);
+    }
+
+    private BossHudRegistration FindRegistration(BossControllerBase boss)
+    {
+        if (boss == null)
+            return null;
+
+        for (int i = 0; i < registrations.Count; i++)
+        {
+            BossHudRegistration registration = registrations[i];
+            if (registration != null && registration.Boss == boss)
+                return registration;
+        }
+
+        return null;
+    }
+
+    private void RemoveMissingRegistrations()
+    {
+        for (int i = registrations.Count - 1; i >= 0; i--)
+        {
+            BossHudRegistration registration = registrations[i];
+            if (registration == null || registration.Boss == null)
+            {
+                if (registration != null)
+                    DestroySlot(registration.Slot);
+
+                registrations.RemoveAt(i);
+            }
+        }
+    }
+
+    private BossHudSlotView CreateSlotView()
+    {
+        if (slotPrefab == null)
+        {
+            return null;
+        }
+
+        RectTransform parent = slotRoot != null ? slotRoot : transform as RectTransform;
+        BossHudSlotView slot = Instantiate(slotPrefab, parent);
+        slot.ResetSlot();
+        return slot;
+    }
+
+    private void DestroySlot(BossHudSlotView slot)
+    {
+        if (slot == null)
+            return;
+
+        Destroy(slot.gameObject);
+    }
+
+    private void EnsureSlotLayout()
+    {
+        if (slotRoot == null)
+            slotRoot = transform as RectTransform;
+
+        if (!ensureHorizontalLayoutGroup || slotRoot == null)
+            return;
+
+        HorizontalLayoutGroup layoutGroup = slotRoot.GetComponent<HorizontalLayoutGroup>();
+        if (layoutGroup == null)
+            layoutGroup = slotRoot.gameObject.AddComponent<HorizontalLayoutGroup>();
+
+        layoutGroup.childAlignment = TextAnchor.MiddleCenter;
+        layoutGroup.childControlWidth = true;
+        layoutGroup.childControlHeight = true;
+        layoutGroup.childForceExpandWidth = true;
+        layoutGroup.childForceExpandHeight = false;
+        layoutGroup.spacing = slotSpacing;
     }
 
     /// <summary>
@@ -419,22 +528,43 @@ public sealed class BossHudController : MonoBehaviour
     private void ApplySlidePresentation(bool visible)
     {
         if (!useBossHudSlidePresentation)
-            return;
-
-        ResolveSlideRoot();
-        if (bossHudSlideRoot == null)
-            return;
-
-        if (!_hasAppliedInitialSlideState)
         {
-            SnapSlideRoot(visible);
-            _hasAppliedInitialSlideState = true;
-            _lastSlideVisibleState = visible;
+            LogSlidePresentation($"skip disabled. visible={visible}");
             return;
         }
 
-        if (_lastSlideVisibleState == visible)
+        ResolveSlideRoot();
+        if (bossHudSlideRoot == null)
+        {
+            LogSlidePresentation($"skip no slide root. visible={visible}");
             return;
+        }
+
+        LogSlidePresentation(
+            $"request visible={visible}, root={bossHudSlideRoot.name}, currentY={bossHudSlideRoot.anchoredPosition.y:F2}, hiddenY={hiddenAnchoredPosY:F2}, shownY={shownAnchoredPosY:F2}, initialized={_hasAppliedInitialSlideState}, lastVisible={_lastSlideVisibleState}");
+
+        if (!_hasAppliedInitialSlideState)
+        {
+            _hasAppliedInitialSlideState = true;
+
+            if (!visible)
+            {
+                SnapSlideRoot(false);
+                _lastSlideVisibleState = false;
+                LogSlidePresentation($"initial hidden snap. currentY={bossHudSlideRoot.anchoredPosition.y:F2}");
+                return;
+            }
+
+            SnapSlideRoot(false);
+            _lastSlideVisibleState = false;
+            LogSlidePresentation($"initial visible starts from hidden. currentY={bossHudSlideRoot.anchoredPosition.y:F2}");
+        }
+
+        if (_lastSlideVisibleState == visible)
+        {
+            LogSlidePresentation($"skip same visibility. visible={visible}, currentY={bossHudSlideRoot.anchoredPosition.y:F2}");
+            return;
+        }
 
         _lastSlideVisibleState = visible;
 
@@ -446,11 +576,15 @@ public sealed class BossHudController : MonoBehaviour
 
         if (visible)
         {
-            _slideRoutine = StartCoroutine(AnimateSlideRoot(GetSlideTargetPosition(true)));
+            Vector2 targetPosition = GetSlideTargetPosition(true);
+            LogSlidePresentation(
+                $"start slide in. fromY={bossHudSlideRoot.anchoredPosition.y:F2}, toY={targetPosition.y:F2}, duration={slideDuration:F2}");
+            _slideRoutine = StartCoroutine(AnimateSlideRoot(targetPosition));
             return;
         }
 
         SnapSlideRoot(false);
+        LogSlidePresentation($"snap hidden. currentY={bossHudSlideRoot.anchoredPosition.y:F2}");
     }
 
     private void SnapSlideRoot(bool visible)
@@ -480,6 +614,7 @@ public sealed class BossHudController : MonoBehaviour
         {
             bossHudSlideRoot.anchoredPosition = targetPosition;
             _slideRoutine = null;
+            LogSlidePresentation($"slide instant. targetY={targetPosition.y:F2}");
             yield break;
         }
 
@@ -495,5 +630,15 @@ public sealed class BossHudController : MonoBehaviour
 
         bossHudSlideRoot.anchoredPosition = targetPosition;
         _slideRoutine = null;
+        LogSlidePresentation($"slide complete. targetY={targetPosition.y:F2}");
     }
+
+    private void LogSlidePresentation(string message)
+    {
+        if (!logSlidePresentation)
+            return;
+
+        Debug.Log($"[BossHudSlide] {name}: {message}", this);
+    }
+
 }

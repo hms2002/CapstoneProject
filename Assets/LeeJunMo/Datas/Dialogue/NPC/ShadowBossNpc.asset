@@ -1,0 +1,66 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7ca3e3429f4d51841b586ade79545d41, type: 3}
+  m_Name: ShadowBossNpc
+  m_EditorClassIdentifier: 
+  id: 1003
+  npcName: "\uD074\uB85C\uC5D0"
+  isBoss: 1
+  primaryInk: {fileID: 4900000, guid: aef34e203f982094b814e11d115a65ed, type: 3}
+  bossEncounterInk: {fileID: 4900000, guid: 30cb64b0ab23601498a11512f2d78cd4, type: 3}
+  bossEncounterDialogues:
+  - label: 
+    startPath: first_encounter
+    inkJSON: {fileID: 0}
+    priority: 100
+    conditions:
+    - type: 1
+      comparison: 0
+      expectedBool: 0
+      intValue: 0
+      minIntValue: 0
+      maxIntValue: 0
+      floatValue: 0
+      minFloatValue: 0
+      maxFloatValue: 0
+      stringValue: 
+      targetNpcOverride: {fileID: 11400000}
+      attribute: {fileID: 0}
+      maxAttribute: {fileID: 0}
+      runEndReason: 0
+      invert: 0
+  - label: 
+    startPath: low_affection
+    inkJSON: {fileID: 0}
+    priority: 30
+    conditions:
+    - type: 5
+      comparison: 2
+      expectedBool: 0
+      intValue: 5
+      minIntValue: 0
+      maxIntValue: 0
+      floatValue: 0
+      minFloatValue: 0
+      maxFloatValue: 0
+      stringValue: 
+      targetNpcOverride: {fileID: 11400000}
+      attribute: {fileID: 0}
+      maxAttribute: {fileID: 0}
+      runEndReason: 0
+      invert: 0
+  dialogueTheme: {fileID: 11400000, guid: 3ef1664fdf0dac148a47091038acdfd9, type: 2}
+  affectionRewards:
+  - targetLevel: 2
+    effect: {fileID: 11400000, guid: 9de8ce10bc35dcc4b8303cf7c074028a, type: 2}
+  spriteLibraryAsset: {fileID: 7108339969198208228, guid: 11fe976bca44ca04996308bdbaf83e5c, type: 3}
+  emoteOffset: {x: 75, y: 100}

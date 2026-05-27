@@ -2,12 +2,14 @@
 using UnityEngine;
 using UnityGAS;
 
+/// <summary>
+/// 책임:
+/// - 태클 경고와 돌진 공격을 실행하고, 돌진 구간에만 넉백 면역 태그를 관리한다.
+/// - 태클 준비 시간은 CombatTimingService를 통해 몬스터 공격속도 보정 대상에 편입한다.
+/// </summary>
 [CreateAssetMenu(fileName = "AL_Tackle", menuName = "GAS/Ability Logic/Tackle")]
 public class AL_Tackle : AbilityLogic
 {
-    // 이 클래스의 책임:
-    // 태클 경고와 돌진 공격을 실행하고, 돌진 구간에만 넉백 면역 태그를 관리한다.
-
     private const string KnockbackImmuneTagResourcePath = "Tags/State.Status.KnockbackImmune";
 
     [Header("데미지")]
@@ -84,13 +86,15 @@ public class AL_Tackle : AbilityLogic
         TackleAttack tackle,
         TackleAttack.TackleContext context)
     {
-        tackle.ShowTelegraph(context, readyTime, telegraphStyle);
+        float warningSeconds = CombatTimingService.ScaleSeconds(caster, readyTime, CombatTimingSlot.AttackWarning);
+        tackle.ShowTelegraph(context, warningSeconds, telegraphStyle);
         tackle.SetAttackPreparationMoveBlocked(true);
         tackle.PlayAttackReadyAnimation();
 
         try
         {
-            if (readyTime > 0f) yield return AbilityTasks.WaitDelay(caster, spec, readyTime);
+            if (warningSeconds > 0f)
+                yield return AbilityTasks.WaitDelay(caster, spec, warningSeconds);
 
             if (IsCancelled(spec))
             {

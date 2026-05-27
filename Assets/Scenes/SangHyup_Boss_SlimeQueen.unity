@@ -960,6 +960,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1006000, guid: d84fb7a441404cf4ba049fe22336cdb3, type: 3}
+      propertyPath: enemyName
+      value: "\uC2AC\uB77C\uC784 \uC5EC\uC655 \uBA5C\uD0C0"
+      objectReference: {fileID: 0}
+    - target: {fileID: 1006000, guid: d84fb7a441404cf4ba049fe22336cdb3, type: 3}
       propertyPath: randomMoveBounds
       value: 
       objectReference: {fileID: 2123456704}
@@ -5707,6 +5711,8 @@ MonoBehaviour:
     eliteChanceBonus: 0
     hpMultiplier: 1
     attackMultiplier: 1
+  enableStageHpScaling: 1
+  hpMultiplierPerClearedStage: 0.5
   gaugeViewInstaller: {fileID: 0}
   pathfinder: {fileID: 0}
   recollectSpawnPointsOnSceneLoaded: 1
@@ -7881,11 +7887,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4702513790182257295, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 1067.3771
+      value: 960
       objectReference: {fileID: 0}
     - target: {fileID: 4702513790182257295, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -536.99054
+      value: -604.8948
       objectReference: {fileID: 0}
     - target: {fileID: 4715477109639455323, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_AnchorMax.y
@@ -8671,10 +8677,6 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7210055881861697875, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 7219932327892966396, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -8761,11 +8763,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7349978582733647170, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 1067.3771
+      value: 960
       objectReference: {fileID: 0}
     - target: {fileID: 7349978582733647170, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -351.94873
+      value: -392.69128
       objectReference: {fileID: 0}
     - target: {fileID: 7384568750193819425, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_AnchorMax.y
@@ -9382,10 +9384,6 @@ PrefabInstance:
     - target: {fileID: 8896438890629372256, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 9100000000000000001, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9196724421336334717, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_AnchorMax.y

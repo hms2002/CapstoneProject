@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 20c0f076685c37d4c85c9a2043868538, type: 3}
+  m_Name: AL_GoblinGunnerShot
+  m_EditorClassIdentifier: Assembly-CSharp::AbilityLogic_GoblinGunnerShot
+  projectilePrefab: {fileID: 8003320094034868151, guid: b1f8e58050cba114da8fe6380275e443, type: 3}
+  damageEffect: {fileID: 11400000, guid: a7c21e5f6a1f4d0d8f4c2b3a19e8d725, type: 2}
+  damageAmount: 1
+  attackRange: 7
+  warningSeconds: 1.7
+  warningWidth: 0.12
+  projectileSpeedMultiplier: 1.4
+  projectileLifetime: 5
+  recoverSeconds: 0.25
+  wallLayers:
+    serializedVersion: 2
+    m_Bits: 1073741824
+  targetLayers:
+    serializedVersion: 2
+    m_Bits: 8
+  muzzleEffectPrefab: {fileID: 7172252843674837502, guid: d579f2466bb155e469dcf0bc0f5d2c08, type: 3}
+  muzzleEffectScale: 1
+  muzzleEffectFallbackLifetime: 0.4
+  logWallClipProbe: 0
+  wallClipProbeLogInterval: 0.5

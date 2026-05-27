@@ -39,6 +39,7 @@ GameObject:
   - component: {fileID: 2108456829143765123}
   - component: {fileID: 2108456829143765124}
   - component: {fileID: 5477811146804509481}
+  - component: {fileID: 880070000000000005}
   m_Layer: 31
   m_Name: Witch
   m_TagString: Enemy
@@ -201,7 +202,7 @@ Animator:
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
   m_AnimatePhysics: 0
-  m_WarningMessage:
+  m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
@@ -216,8 +217,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 464a6e8a33336a842b70b6c9764abb1c, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   sprite: {fileID: 0}
   animator: {fileID: 0}
   maxHealthDef: {fileID: 11400000, guid: 0e177e1d15e428745b5859fac08ce203, type: 2}
@@ -231,6 +232,7 @@ MonoBehaviour:
   initialTarget: {fileID: 0}
   healthAttribute: {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
   maxHealthAttribute: {fileID: 11400000, guid: 0e177e1d15e428745b5859fac08ce203, type: 2}
+  hudHealthBarTheme: {fileID: 0}
   deadTag: {fileID: 0}
   groggyTag: {fileID: 11400000, guid: 6a381fd96b3c05d4cbcbd73fbf173f4e, type: 2}
   phases:
@@ -339,8 +341,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f0bcf155a89d8e14db39a9f2416d691c, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   initialAbilities:
   - {fileID: 11400000, guid: 8dbccf3ca7da42d88efb39ed3d1d2f20, type: 2}
   - {fileID: 11400000, guid: 0c89c5f9457540d6a5d0c393c44b0c7e, type: 2}
@@ -373,11 +375,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8910a2e22aa25664cb9b2709778e44dd, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   attributeCatalog: {fileID: 11400000, guid: b9c79b9448814f2408077eff50c01aeb, type: 2}
   baseInitProfile: {fileID: 11400000, guid: 78214cbbca9b4804ba1be48157d5657e, type: 2}
-  overrideInitProfiles: []
+  overrideInitProfiles:
+  - {fileID: 11400000, guid: 43ee30a75155c3d4a8b07af31169268e, type: 2}
   maxLinks:
   - value: {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
     max: {fileID: 11400000, guid: 0e177e1d15e428745b5859fac08ce203, type: 2}
@@ -392,8 +395,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8ecfb7b101eaca847b0dadf898f6fb19, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   cueManager: {fileID: 0}
 --- !u!114 &4477728599806979434
 MonoBehaviour:
@@ -405,8 +408,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6675ab8ab5253d745b73cb4b3b1f9345, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &1985583645530484325
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -417,8 +420,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c08b6f09684607641a1ee3070d5f8273, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   popupPrefab: {fileID: 0}
   canvasRoot: {fileID: 0}
   worldCamera: {fileID: 0}
@@ -435,12 +438,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6f0ae6e32d91e0f45a4b821a03209428, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   healthAttribute: {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
   worldAnchor: {fileID: 0}
   extraWorldOffset: {x: 0, y: 0, z: 0}
   minInterval: 0.02
+  logFallbackPopup: 1
 --- !u!114 &1317332433921410740
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -451,8 +455,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2e232de7843f92745a254698e2054f4e, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   currentGaugeAttribute: {fileID: 11400000, guid: 122086249f809784c84b56e9b99e367e, type: 2}
   maxGaugeAttribute: {fileID: 11400000, guid: ddbd05a9b77349441a875c479e48212d, type: 2}
   resistancePercentAttribute: {fileID: 0}
@@ -474,8 +478,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f1d4aa4b27d4ffd45b29291c3673f422, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   catalog: {fileID: 11400000, guid: 170c93a1a1f812a4998120c119fcd1e0, type: 2}
   useDecay: 1
   decayDelaySeconds: 3
@@ -494,8 +498,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 82ae4624ea26de741ba8bc236cf3108b, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   body: {fileID: 5310030812964765969}
   enforceContinuousCollision: 1
   preventWallTunneling: 1
@@ -523,8 +527,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 526f8835b2c4eeb4593ade78758d3986, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   attributeSet: {fileID: 0}
   abilitySystem: {fileID: 0}
   statBindingsOverride: {fileID: 0}
@@ -538,8 +542,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b5ebf9fcd76f27f4f874c8853b167522, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   knockbackDamping: 18
   defaultKnockbackDominanceTime: 0.12
   maxKnockbackMagnitude: 25
@@ -554,8 +558,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 26c9fe53bdef53947bbf6f41db722013, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   externalMovement: {fileID: 0}
   knockbackImmuneTag: {fileID: 0}
   resistancePctAttribute: {fileID: 11400000, guid: cd582b58892249e4a6ef8ae28bd345e3, type: 2}
@@ -571,13 +575,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cbeb54d2db10da14b8076a6745dad316, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   hitEnterSeconds: 0.2
   hitActiveSeconds: 0.4
   animator: {fileID: 0}
-  hitEnterTrigger:
-  hitLoopBool:
+  hitEnterTrigger: 
+  hitLoopBool: 
   hitFlashController: {fileID: 6288342579342210012}
   hitReactStateTag: {fileID: 0}
   attackingBlockedTag: {fileID: 0}
@@ -593,8 +597,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6014e026c86c11f4385811e5bf185269, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   targetRenderers:
   - {fileID: 8897721723054304330}
   flashColor: {r: 1, g: 1, b: 1, a: 1}
@@ -610,8 +614,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e976ed306a130c94db8843af68333d15, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   telegraphPrefab: {fileID: 788264263987448140, guid: 211dd09e2da9caf47ad8409c9e35b83d, type: 3}
   defaultStyle: {fileID: 11400000, guid: 5c4c8108f36d4acbaa6dfaf6d6b3f6e7, type: 2}
   useDefaultWallClipping: 0
@@ -630,7 +634,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c721f3a2f874aa14ea14c5bc2261cc39, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UnityGAS.AbilityMotionController2D
 --- !u!114 &5724109387412903854
 MonoBehaviour:
@@ -642,8 +646,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d58f7ddaaeeb3da489b8e9fbafa66102, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   bubblePrefab: {fileID: 8482697653009772348, guid: 62446638c99411c4c9669c3f3efc113d, type: 3}
   bubbleOffset: {x: 0.3, y: 1.3, z: 0}
   showBubbleOffsetGizmo: 1
@@ -661,8 +665,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8d47b449fb5f4f14a1b8be7e114d7b29, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   speechBubble: {fileID: 5724109387412903854}
   speechData: {fileID: 11400000, guid: b1f6e8fa2c2b48cc925e3f5ac1ffd2cb, type: 2}
 --- !u!114 &8412503971642095334
@@ -675,8 +679,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1fb35ba1d82842c4b4d58b07af4f7081, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   useDeathPresentation: 1
   deathCinematicIntroDuration: 0.45
   deathLetterboxScreenHeightRatio: 0.14
@@ -690,12 +694,12 @@ MonoBehaviour:
   deathEffectAnchor: {fileID: 7124681143442968898}
   speechController: {fileID: 4097123456789012345}
   breakdownAnimation:
-    triggerName:
+    triggerName: 
     stateName: Boss1BreakdownAnim
     crossFadeDuration: 0.05
     fallbackDuration: 0
   deathAnimation:
-    triggerName:
+    triggerName: 
     stateName: BossDeathAnim
     crossFadeDuration: 0.05
     fallbackDuration: 0
@@ -713,8 +717,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2eae5b7f38d512841bb3d472aa68139c, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   npcData: {fileID: 11400000, guid: 4a2fd65cb07d41d2b4925014a094b1fe, type: 2}
   startKnotSelectorBehaviour: {fileID: 0}
   playEncounterDialogue: 1
@@ -731,8 +735,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9f6527ad7c611aa41ac5e2b94666620e, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   cameraDirector: {fileID: 8439794030914778521}
   dialogueRunner: {fileID: 3836901854821853225}
   bossController: {fileID: 669182791067580952}
@@ -749,8 +753,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 928775a6a95adc64a9a5a0bd430fa85a, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   playerCam: {fileID: 0}
   bossCam: {fileID: 0}
   normalPriority: 10
@@ -772,8 +776,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 16b5dced38ff4ce1a6994a142f29e24a, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   tagSystem: {fileID: 0}
   shieldedTag: {fileID: 0}
   invulnerableTag: {fileID: 0}
@@ -788,8 +792,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0730508b2089443bb5296176c0329ab5, type: 3}
-  m_Name:
-  m_EditorClassIdentifier:
+  m_Name: 
+  m_EditorClassIdentifier: 
   shieldController: {fileID: 2108456829143765123}
   ownerSpriteRenderer: {fileID: 8897721723054304330}
   shieldVisualPrefab: {fileID: 0}
@@ -803,26 +807,26 @@ MonoBehaviour:
   tintShieldVisualWithStageColor: 1
   shieldVisualAlphaMultiplier: 0.72
   shieldActivateSound:
-    key:
+    key: 
     volumeMultiplier: 0
     anchorPolicy: 0
     localOffset: {x: 0, y: 0, z: 0}
   shieldBreakSound:
-    key:
+    key: 
     volumeMultiplier: 0
     anchorPolicy: 0
     localOffset: {x: 0, y: 0, z: 0}
   activateAnimation:
-    triggerName:
+    triggerName: 
     stateName: Boss1ShieldAnim
     crossFadeDuration: 0.05
   breakAnimation:
-    triggerName:
-    stateName:
+    triggerName: 
+    stateName: 
     crossFadeDuration: 0.05
   shieldBreakPresentation:
     sound:
-      key:
+      key: 
       volumeMultiplier: 0
       anchorPolicy: 0
       localOffset: {x: 0, y: 0, z: 0}
@@ -839,6 +843,11 @@ MonoBehaviour:
       localOffset: {x: 0, y: 0, z: 0}
       rotationOffsetZ: 0
       scaleMultiplier: {x: 0, y: 0, z: 0}
+      attachToTarget: 0
+      anchorMode: 0
+      scaleMode: 0
+      targetBoundsReferenceSize: 0
+      targetBoundsScaleMultiplier: 0
       lifetimeMode: 0
       lifetimeOverrideSeconds: 0
       useUnscaledTime: 0
@@ -847,6 +856,11 @@ MonoBehaviour:
       localOffset: {x: 0, y: 0.15, z: -0.02}
       rotationOffsetZ: 0
       scaleMultiplier: {x: 1.2, y: 1.2, z: 1}
+      attachToTarget: 0
+      anchorMode: 0
+      scaleMode: 0
+      targetBoundsReferenceSize: 0
+      targetBoundsScaleMultiplier: 0
       lifetimeMode: 0
       lifetimeOverrideSeconds: 0
       useUnscaledTime: 0
@@ -874,7 +888,36 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cbc9a19645b6c8f458d6e368d5e1dabc, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UnityGAS.CombatHurtbox2D
   targetRoot: {fileID: 0}
   ownedColliders: []
+--- !u!114 &880070000000000005
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4104743717894493410}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f7fd960e9c14d44990494a70a80d3df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tagSystem: {fileID: 0}
+  groggyTag: {fileID: 0}
+  followAnchor: {fileID: 0}
+  boundsSource: {fileID: 0}
+  effectPrefab: {fileID: 2456809460785590275, guid: 80d266c90ff9c4d458d715b8d37a677b, type: 3}
+  effectParent: {fileID: 0}
+  instantiateOnAwake: 0
+  destroyInstanceWhenHidden: 1
+  usePooling: 1
+  maxPooledInstancesPerPrefab: 16
+  worldOffset: {x: 0, y: 0.18, z: 0}
+  fallbackHeight: 1.2
+  followEveryFrame: 1
+  scaleByBoundsHeight: 1
+  heightToScaleRatio: 0.45
+  minScale: 0.55
+  maxScale: 1.8

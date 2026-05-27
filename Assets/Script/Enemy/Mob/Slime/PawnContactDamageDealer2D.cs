@@ -15,7 +15,7 @@ public sealed class PawnContactDamageDealer2D : MonoBehaviour
     [SerializeField] private GE_Damage_Spec damageEffect;
 
     [Header("Damage")]
-    [SerializeField, Min(0f)] private float contactDamage = 0.5f;
+    [SerializeField, Min(0f)] private float contactDamage = 1f;
     [SerializeField, Min(0.01f)] private float contactDamageInterval = 0.45f;
 
     private float nextDamageTime;
@@ -69,7 +69,10 @@ public sealed class PawnContactDamageDealer2D : MonoBehaviour
             hitWorldPosition: hitPoint,
             causer: owner != null ? owner.gameObject : gameObject);
 
-        nextDamageTime = Time.time + contactDamageInterval;
+        nextDamageTime = Time.time + CombatTimingService.ScaleSeconds(
+            abilitySystem,
+            contactDamageInterval,
+            CombatTimingSlot.AttackInterval);
     }
 
     /// <summary>피해 쿨다운과 필수 전투 의존성이 준비되었는지 확인한다.</summary>

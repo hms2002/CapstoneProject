@@ -76,12 +76,13 @@ public class KnightJumpSlamRunner : MonoBehaviour, IMobPatternRunner, IMobPresen
 
         try
         {
-            ShowWarning(currentContext);
+            float travelSeconds = CombatTimingService.ScaleSeconds(system, currentContext.TravelSeconds, CombatTimingSlot.AttackWarning);
+            ShowWarning(currentContext, travelSeconds);
             collisionProfile?.SetBodyCollisionMode(EntityCollisionProfile2D.BodyCollisionMode.PassThroughActors);
             owner.PlayJumpAnimation();
-            StartJump(currentContext);
+            StartJump(currentContext, travelSeconds);
 
-            yield return MoveJump(currentContext, spec);
+            yield return MoveJump(currentContext, spec, travelSeconds);
 
             if (cancelRequested || owner.IsDead) yield break;
 
@@ -118,14 +119,14 @@ public class KnightJumpSlamRunner : MonoBehaviour, IMobPatternRunner, IMobPresen
     }
 
     /// <summary>착지 위치에 원형 경고를 표시합니다.</summary>
-    private void ShowWarning(Knight.JumpSlamContext context)
+    private void ShowWarning(Knight.JumpSlamContext context, float duration)
     {
         if (telegraphService == null) return;
 
         AttackTelegraphSpec spec = AttackTelegraphSpec.CreateCircle(
             context.ImpactPos,
             context.ImpactDiameter,
-            context.TravelSeconds,
+            duration,
             impactStyle);
 
         impactWarning = telegraphService.SpawnDetachedView(spec);
@@ -142,7 +143,7 @@ public class KnightJumpSlamRunner : MonoBehaviour, IMobPatternRunner, IMobPresen
     }
 
     /// <summary>목표 위치를 향한 점프 이동을 시작합니다.</summary>
-    private void StartJump(Knight.JumpSlamContext context)
+    private void StartJump(Knight.JumpSlamContext context, float travelSeconds)
     {
         Vector2 delta = context.ImpactPos - context.StartPos;
         if (motionController == null || delta.sqrMagnitude <= 0.0001f)
@@ -155,14 +156,14 @@ public class KnightJumpSlamRunner : MonoBehaviour, IMobPatternRunner, IMobPresen
             context.StartPos,
             delta.normalized,
             delta.magnitude,
-            context.HorizontalTravelSeconds,
+            travelSeconds * ResolveHorizontalTravelRatio(context),
             context.TravelEaseOutPower);
     }
 
     /// <summary>점프 높이를 갱신하면서 착지 시간까지 기다립니다.</summary>
-    private IEnumerator MoveJump(Knight.JumpSlamContext context, AbilitySpec spec)
+    private IEnumerator MoveJump(Knight.JumpSlamContext context, AbilitySpec spec, float travelSeconds)
     {
-        float duration = Mathf.Max(0.01f, context.TravelSeconds);
+        float duration = Mathf.Max(0.01f, travelSeconds);
         float elapsed = 0f;
         bool hasStartedSlam = false;
         float slamTriggerTime = Mathf.Max(0f, duration - Mathf.Max(0.01f, context.LandingDropSeconds));
@@ -194,6 +195,13 @@ public class KnightJumpSlamRunner : MonoBehaviour, IMobPatternRunner, IMobPresen
         heightState?.SetAirborne(0f, context.AirborneBodyHeight);
     }
 
+    /// <summary>원본 점프 문맥의 수평 이동 비율을 유지해 공격속도 보정 후에도 이동 곡선을 보존합니다.</summary>
+    private static float ResolveHorizontalTravelRatio(Knight.JumpSlamContext context)
+    {
+        float travelSeconds = Mathf.Max(0.01f, context.TravelSeconds);
+        return Mathf.Clamp01(context.HorizontalTravelSeconds / travelSeconds);
+    }
+
     /// <summary>착지 지점에 일회성 먼지 이펙트를 생성한다.</summary>
     private void PlayLandingEffect(Knight.JumpSlamContext context)
     {
@@ -219,10 +227,7 @@ public class KnightJumpSlamRunner : MonoBehaviour, IMobPatternRunner, IMobPresen
     private AttackTelegraphStyle MakeImpactStyle()
     {
         AttackTelegraphStyle style = ScriptableObject.CreateInstance<AttackTelegraphStyle>();
-        style.fillColorStart = new Color(1f, 0f, 0f, 0.16f);
-        style.fillColorEnd = new Color(1f, 0f, 0f, 0.34f);
-        style.borderColorStart = new Color(1f, 0.25f, 0.25f, 0.95f);
-        style.borderColorEnd = new Color(1f, 0.25f, 0.25f, 0.95f);
+        AttackTelegraphStyleUtility.ApplyDangerAreaColors(style);
         style.progressCurve = AnimationCurve.Linear(0f, 0f, 1f, 1f);
         style.blinkStartNormalized = 0.72f;
         style.blinkFrequency = 5f;

@@ -1,0 +1,1824 @@
+fileFormatVersion: 2
+guid: b76eaaa63cc0cf7428beb92cde4ea8c1
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -3872177976794851194
+    second: Arcane Golem Tileset_0
+  - first:
+      213: -293400834660297447
+    second: Arcane Golem Tileset_1
+  - first:
+      213: -8524436298271626380
+    second: Arcane Golem Tileset_2
+  - first:
+      213: 5541941227508369666
+    second: Arcane Golem Tileset_3
+  - first:
+      213: -1901443623670893736
+    second: Arcane Golem Tileset_4
+  - first:
+      213: -5662286782738707673
+    second: Arcane Golem Tileset_5
+  - first:
+      213: -3992314873129309401
+    second: Arcane Golem Tileset_6
+  - first:
+      213: 5583751658013597349
+    second: Arcane Golem Tileset_7
+  - first:
+      213: 880933599071445643
+    second: Arcane Golem Tileset_8
+  - first:
+      213: 3190391332512962718
+    second: Arcane Golem Tileset_9
+  - first:
+      213: -325294025284003890
+    second: Arcane Golem Tileset_10
+  - first:
+      213: -8764550388663042460
+    second: Arcane Golem Tileset_11
+  - first:
+      213: 660301582589338445
+    second: Arcane Golem Tileset_12
+  - first:
+      213: -7419431699696795078
+    second: Arcane Golem Tileset_13
+  - first:
+      213: 5239111814679524945
+    second: Arcane Golem Tileset_14
+  - first:
+      213: -8523715666913865644
+    second: Arcane Golem Tileset_15
+  - first:
+      213: -1978633278787632913
+    second: Arcane Golem Tileset_16
+  - first:
+      213: 5834843996836870700
+    second: Arcane Golem Tileset_17
+  - first:
+      213: 4312491091407268801
+    second: Arcane Golem Tileset_18
+  - first:
+      213: -3604296329738069623
+    second: Arcane Golem Tileset_19
+  - first:
+      213: 6196609772128560139
+    second: Arcane Golem Tileset_20
+  - first:
+      213: 6937404794282211273
+    second: Arcane Golem Tileset_21
+  - first:
+      213: 6963892247135478285
+    second: Arcane Golem Tileset_22
+  - first:
+      213: 5088646866951679218
+    second: Arcane Golem Tileset_23
+  - first:
+      213: -6740002476580136003
+    second: Arcane Golem Tileset_24
+  - first:
+      213: 5656824933951008115
+    second: Arcane Golem Tileset_25
+  - first:
+      213: -388004903702527707
+    second: Arcane Golem Tileset_26
+  - first:
+      213: 1038931795849684339
+    second: Arcane Golem Tileset_27
+  - first:
+      213: 3051281397476921910
+    second: Arcane Golem Tileset_28
+  - first:
+      213: -7916437971347156697
+    second: Arcane Golem Tileset_29
+  - first:
+      213: -8434781842780254401
+    second: Arcane Golem Tileset_30
+  - first:
+      213: 1067869815605626026
+    second: Arcane Golem Tileset_31
+  - first:
+      213: 1263314234013442185
+    second: Arcane Golem Tileset_32
+  - first:
+      213: -3992368030852794281
+    second: Arcane Golem Tileset_33
+  - first:
+      213: -2857780574944702802
+    second: Arcane Golem Tileset_34
+  - first:
+      213: -9071540758143240804
+    second: Arcane Golem Tileset_35
+  - first:
+      213: 2103975093477207055
+    second: Arcane Golem Tileset_36
+  - first:
+      213: 7932077052458441651
+    second: Arcane Golem Tileset_37
+  - first:
+      213: -8330051636193190087
+    second: Arcane Golem Tileset_38
+  - first:
+      213: 2933255285169022961
+    second: Arcane Golem Tileset_39
+  - first:
+      213: -2737890441084855535
+    second: Arcane Golem Tileset_40
+  - first:
+      213: 3387355360799673212
+    second: Arcane Golem Tileset_41
+  - first:
+      213: 960346879674886683
+    second: Arcane Golem Tileset_42
+  - first:
+      213: 6954549204877261039
+    second: Arcane Golem Tileset_43
+  - first:
+      213: -4670804534345602933
+    second: Arcane Golem Tileset_44
+  - first:
+      213: 3519188706216262761
+    second: Arcane Golem Tileset_45
+  - first:
+      213: 3767630192539255859
+    second: Arcane Golem Tileset_46
+  - first:
+      213: -1772590035709779638
+    second: Arcane Golem Tileset_47
+  - first:
+      213: -4500181245863119529
+    second: Arcane Golem Tileset_48
+  - first:
+      213: 1442608168507564
+    second: Arcane Golem Tileset_49
+  - first:
+      213: -3892556877895711837
+    second: Arcane Golem Tileset_50
+  - first:
+      213: 498919933622507902
+    second: Arcane Golem Tileset_51
+  - first:
+      213: -7698559058194748837
+    second: Arcane Golem Tileset_52
+  - first:
+      213: 6004182929141898252
+    second: Arcane Golem Tileset_53
+  - first:
+      213: -4716609245434467023
+    second: Arcane Golem Tileset_54
+  - first:
+      213: -2964551581842342873
+    second: Arcane Golem Tileset_55
+  - first:
+      213: 9014379986452189240
+    second: Arcane Golem Tileset_56
+  - first:
+      213: 8220833590019970487
+    second: Arcane Golem Tileset_57
+  - first:
+      213: -7436321235791596892
+    second: Arcane Golem Tileset_58
+  - first:
+      213: -2466390063648338360
+    second: Arcane Golem Tileset_59
+  - first:
+      213: 7723049271326792711
+    second: Arcane Golem Tileset_60
+  - first:
+      213: 976421616153595514
+    second: Arcane Golem Tileset_61
+  - first:
+      213: -6684626406283508567
+    second: Arcane Golem Tileset_62
+  - first:
+      213: -7780654107282441903
+    second: Arcane Golem Tileset_63
+  - first:
+      213: -2910840740926063793
+    second: Arcane Golem Tileset_64
+  - first:
+      213: -3252031268942064928
+    second: Arcane Golem Tileset_65
+  - first:
+      213: 1766487659097921331
+    second: Arcane Golem Tileset_66
+  - first:
+      213: -4167980724059114657
+    second: Arcane Golem Tileset_67
+  - first:
+      213: 7514175261730062788
+    second: Arcane Golem Tileset_68
+  - first:
+      213: 2404740021162728746
+    second: Arcane Golem Tileset_69
+  - first:
+      213: -4170462780740521215
+    second: Arcane Golem Tileset_70
+  - first:
+      213: -902477755390784083
+    second: Arcane Golem Tileset_71
+  - first:
+      213: -6751993343247716214
+    second: Arcane Golem Tileset_72
+  - first:
+      213: -1379891272173888204
+    second: Arcane Golem Tileset_73
+  - first:
+      213: -1092156269739389597
+    second: Arcane Golem Tileset_74
+  - first:
+      213: -4872379335715006837
+    second: Arcane Golem Tileset_75
+  - first:
+      213: -4654778682716147938
+    second: Arcane Golem Tileset_76
+  - first:
+      213: 2522823720078604964
+    second: Arcane Golem Tileset_77
+  - first:
+      213: -2171114565751855924
+    second: Arcane Golem Tileset_78
+  - first:
+      213: -3765629195056246282
+    second: Arcane Golem Tileset_79
+  - first:
+      213: 1882949340581414526
+    second: Arcane Golem Tileset_80
+  - first:
+      213: -4459257851719615700
+    second: Arcane Golem Tileset_81
+  - first:
+      213: 8811576976414388901
+    second: Arcane Golem Tileset_82
+  - first:
+      213: 8432041423821608363
+    second: Arcane Golem Tileset_83
+  - first:
+      213: 7142428390008118417
+    second: Arcane Golem Tileset_84
+  - first:
+      213: 2949700101179764405
+    second: Arcane Golem Tileset_85
+  - first:
+      213: 2814269211299199014
+    second: Arcane Golem Tileset_86
+  - first:
+      213: 4244799300839557601
+    second: Arcane Golem Tileset_87
+  - first:
+      213: -2685261165697042408
+    second: Arcane Golem Tileset_88
+  - first:
+      213: -150690302848311407
+    second: Arcane Golem Tileset_89
+  - first:
+      213: -6724001423448779290
+    second: Arcane Golem Tileset_90
+  - first:
+      213: -717569099070409373
+    second: Arcane Golem Tileset_91
+  - first:
+      213: 5028753006531487522
+    second: Arcane Golem Tileset_92
+  - first:
+      213: 6775749696857086350
+    second: Arcane Golem Tileset_93
+  - first:
+      213: -3865780521606714465
+    second: Arcane Golem Tileset_94
+  - first:
+      213: 4040959902340047363
+    second: Arcane Golem Tileset_95
+  - first:
+      213: 7233835202074867100
+    second: Arcane Golem Tileset_96
+  - first:
+      213: 873331292509412453
+    second: Arcane Golem Tileset_97
+  - first:
+      213: -5054129535714784815
+    second: Arcane Golem Tileset_98
+  - first:
+      213: -5567873060628791641
+    second: Arcane Golem Tileset_99
+  - first:
+      213: -301532740423766349
+    second: Arcane Golem Tileset_100
+  - first:
+      213: 6357507680052465134
+    second: Arcane Golem Tileset_101
+  - first:
+      213: 6897401967144500614
+    second: Arcane Golem Tileset_102
+  - first:
+      213: 4310172937018703856
+    second: Arcane Golem Tileset_103
+  - first:
+      213: 7304743148907311452
+    second: Arcane Golem Tileset_104
+  - first:
+      213: 2075390127912436283
+    second: Arcane Golem Tileset_105
+  - first:
+      213: 1284387374324885755
+    second: Arcane Golem Tileset_106
+  - first:
+      213: -3656064676956424733
+    second: Arcane Golem Tileset_107
+  - first:
+      213: 5259777507916211876
+    second: Arcane Golem Tileset_108
+  - first:
+      213: 4067877113619804324
+    second: Arcane Golem Tileset_109
+  - first:
+      213: 8240702865616999981
+    second: Arcane Golem Tileset_110
+  - first:
+      213: -8524983237176488504
+    second: Arcane Golem Tileset_111
+  - first:
+      213: -6220437581435352717
+    second: Arcane Golem Tileset_112
+  - first:
+      213: -1097667179587109346
+    second: Arcane Golem Tileset_113
+  - first:
+      213: -5775306473005314168
+    second: Arcane Golem Tileset_114
+  - first:
+      213: 7177535685482352142
+    second: Arcane Golem Tileset_115
+  - first:
+      213: 7377929052372934499
+    second: Arcane Golem Tileset_116
+  - first:
+      213: -1892908947998348160
+    second: Arcane Golem Tileset_117
+  - first:
+      213: 9140237556553239725
+    second: Arcane Golem Tileset_118
+  - first:
+      213: 6814300593082434605
+    second: Arcane Golem Tileset_119
+  - first:
+      213: -7267301447960701445
+    second: Arcane Golem Tileset_120
+  - first:
+      213: 7390276338879774187
+    second: Arcane Golem Tileset_121
+  - first:
+      213: -9050365398701126424
+    second: Arcane Golem Tileset_122
+  - first:
+      213: 828185139480983252
+    second: Arcane Golem Tileset_123
+  - first:
+      213: 7008633102204324466
+    second: Arcane Golem Tileset_124
+  - first:
+      213: -3149952838638833618
+    second: Arcane Golem Tileset_125
+  - first:
+      213: -5678533541183150483
+    second: Arcane Golem Tileset_126
+  - first:
+      213: 5574911858219359508
+    second: Arcane Golem Tileset_127
+  - first:
+      213: -6530218915065703748
+    second: Arcane Golem Tileset_128
+  - first:
+      213: 4435962934867033001
+    second: Arcane Golem Tileset_129
+  - first:
+      213: -8797638096105364373
+    second: Arcane Golem Tileset_130
+  - first:
+      213: -8095785942679451371
+    second: Arcane Golem Tileset_131
+  - first:
+      213: 350991586499992654
+    second: Arcane Golem Tileset_132
+  - first:
+      213: -4311253406829874016
+    second: Arcane Golem Tileset_133
+  - first:
+      213: 3225346129401880958
+    second: Arcane Golem Tileset_134
+  - first:
+      213: -3607003998130457838
+    second: Arcane Golem Tileset_135
+  - first:
+      213: 3350371659526379882
+    second: Arcane Golem Tileset_136
+  - first:
+      213: 3504431391495487287
+    second: Arcane Golem Tileset_137
+  - first:
+      213: 1483326632956826964
+    second: Arcane Golem Tileset_138
+  - first:
+      213: 5559092296714724822
+    second: Arcane Golem Tileset_139
+  - first:
+      213: 3670624863673346438
+    second: Arcane Golem Tileset_140
+  - first:
+      213: -1350091240319274428
+    second: Arcane Golem Tileset_141
+  - first:
+      213: 6761403266237487607
+    second: Arcane Golem Tileset_142
+  - first:
+      213: 1856901905664249970
+    second: Arcane Golem Tileset_143
+  - first:
+      213: -8488207053329485661
+    second: Arcane Golem Tileset_144
+  - first:
+      213: 1836819561089157779
+    second: Arcane Golem Tileset_145
+  - first:
+      213: -4268995332102212043
+    second: Arcane Golem Tileset_146
+  - first:
+      213: -5476162867472940327
+    second: Arcane Golem Tileset_147
+  - first:
+      213: 805641064499909868
+    second: Arcane Golem Tileset_148
+  - first:
+      213: 4778964109370336715
+    second: Arcane Golem Tileset_149
+  - first:
+      213: -1896774532289925956
+    second: Arcane Golem Tileset_150
+  - first:
+      213: 5977873154081977173
+    second: Arcane Golem Tileset_151
+  - first:
+      213: 8354845145057159055
+    second: Arcane Golem Tileset_152
+  - first:
+      213: 3145181694758527441
+    second: Arcane Golem Tileset_153
+  - first:
+      213: 8149544838330288513
+    second: Arcane Golem Tileset_154
+  - first:
+      213: -7060170532525048359
+    second: Arcane Golem Tileset_155
+  - first:
+      213: 173105174482600383
+    second: Arcane Golem Tileset_156
+  - first:
+      213: 114430802314088038
+    second: Arcane Golem Tileset_157
+  - first:
+      213: -4557485839447416417
+    second: Arcane Golem Tileset_158
+  - first:
+      213: -4547833381823457675
+    second: Arcane Golem Tileset_159
+  - first:
+      213: 7149541756995770117
+    second: Arcane Golem Tileset_160
+  - first:
+      213: -260614316988010635
+    second: Arcane Golem Tileset_161
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 16
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Arcane Golem Tileset_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 480
+        width: 96
+        height: 96
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6885d0255a2434ac0800000000000000
+      internalID: -3872177976794851194
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Arcane Golem Tileset_1
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 480
+        width: 96
+        height: 96
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9151541de71adebf0800000000000000
+      internalID: -293400834660297447
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Arcane Golem Tileset_2
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 480
+        width: 96
+        height: 96
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 47be213e95e13b980800000000000000
+      internalID: -8524436298271626380
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Arcane Golem Tileset_3
+      rect:
+        serializedVersion: 2
+        x: 288
+        y: 480
+        width: 96
+        height: 96
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2098ab71f2ee8ec40800000000000000
+      internalID: 5541941227508369666
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Arcane Golem Tileset_4
+      rect:
+        serializedVersion: 2
+        x: 384
+        y: 480
+        width: 96
+        height: 96
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8533aaa3917bc95e0800000000000000
+      internalID: -1901443623670893736
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Arcane Golem Tileset_5
+      rect:
+        serializedVersion: 2
+        x: 480
+        y: 480
+        width: 96
+        height: 96
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 72b4872db248b61b0800000000000000
+      internalID: -5662286782738707673
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Arcane Golem Tileset_6
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 384
+        width: 96
+        height: 96
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 72b6e9b66c27898c0800000000000000
+      internalID: -3992314873129309401
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Arcane Golem Tileset_7
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 384
+        width: 96
+        height: 96
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5ae16e98c887d7d40800000000000000
+      internalID: 5583751658013597349
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Arcane Golem Tileset_8
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 384
+        width: 96
+        height: 96
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b822c53e074b93c00800000000000000
+      internalID: 880933599071445643
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Arcane Golem Tileset_9
+      rect:
+        serializedVersion: 2
+        x: 288
+        y: 384
+        width: 96
+        height: 96
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e989be4730c864c20800000000000000
+      internalID: 3190391332512962718
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Arcane Golem Tileset_10
+      rect:
+        serializedVersion: 2
+        x: 384
+        y: 384
+        width: 96
+        height: 96
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ec7d367bec25c7bf0800000000000000
+      internalID: -325294025284003890
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Arcane Golem Tileset_11
+      rect:
+        serializedVersion: 2
+        x: 480
+        y: 384
+        width: 96
+        height: 96
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 46e3abbabdf0e5680800000000000000
+      internalID: -8764550388663042460
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Arcane Golem Tileset_12
+      rect:
+        serializedVersion: 2
+        x: 576
+        y: 384
+        width: 96
+        height: 96
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d43adda7accd92900800000000000000
+      internalID: 660301582589338445
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Arcane Golem Tileset_13
+      rect:
+        serializedVersion: 2
+        x: 672
+        y: 384
+        width: 96
+        height: 96
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a32cc40dd22e80990800000000000000
+      internalID: -7419431699696795078
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Arcane Golem Tileset_14
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 288
+        width: 96
+        height: 96
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 156768cff6015b840800000000000000
+      internalID: 5239111814679524945
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Arcane Golem Tileset_15
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 288
+        width: 96
+        height: 96
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 450da23f2cda5b980800000000000000
+      internalID: -8523715666913865644
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Arcane Golem Tileset_16
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 288
+        width: 96
+        height: 96
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fe0c815248b7a84e0800000000000000
+      internalID: -1978633278787632913
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Arcane Golem Tileset_17
+      rect:
+        serializedVersion: 2
+        x: 288
+        y: 288
+        width: 96
+        height: 96
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c2a384763b789f050800000000000000
+      internalID: 5834843996836870700
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Arcane Golem Tileset_18
+      rect:
+        serializedVersion: 2
+        x: 384
+        y: 288
+        width: 96
+        height: 96
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1cbed509ccb09db30800000000000000
+      internalID: 4312491091407268801
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Arcane Golem Tileset_19
+      rect:
+        serializedVersion: 2
+        x: 480
+        y: 288
+        width: 96
+        height: 96
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 989d7b0a597fafdc0800000000000000
+      internalID: -3604296329738069623
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Arcane Golem Tileset_20
+      rect:
+        serializedVersion: 2
+        x: 576
+        y: 288
+        width: 96
+        height: 96
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b04ef67b1c7cef550800000000000000
+      internalID: 6196609772128560139
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Arcane Golem Tileset_21
+      rect:
+        serializedVersion: 2
+        x: 672
+        y: 288
+        width: 96
+        height: 96
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9c7784a87ec964060800000000000000
+      internalID: 6937404794282211273
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Arcane Golem Tileset_22
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 288
+        width: 96
+        height: 96
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d026b9c3a17b4a060800000000000000
+      internalID: 6963892247135478285
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Arcane Golem Tileset_23
+      rect:
+        serializedVersion: 2
+        x: 864
+        y: 288
+        width: 96
+        height: 96
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2fc2f0c5d518e9640800000000000000
+      internalID: 5088646866951679218
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Arcane Golem Tileset_24
+      rect:
+        serializedVersion: 2
+        x: 960
+        y: 288
+        width: 96
+        height: 96
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dbb10362573b672a0800000000000000
+      internalID: -6740002476580136003
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Arcane Golem Tileset_25
+      rect:
+        serializedVersion: 2
+        x: 1056
+        y: 288
+        width: 96
+        height: 96
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 37de8b86e44118e40800000000000000
+      internalID: 5656824933951008115
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Arcane Golem Tileset_26
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 192
+        width: 96
+        height: 96
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 52183b788978d9af0800000000000000
+      internalID: -388004903702527707
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Arcane Golem Tileset_27
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 192
+        width: 96
+        height: 96
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 375aa7db6f60b6e00800000000000000
+      internalID: 1038931795849684339
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Arcane Golem Tileset_28
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 192
+        width: 96
+        height: 96
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6329e5eb344585a20800000000000000
+      internalID: 3051281397476921910
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Arcane Golem Tileset_29
+      rect:
+        serializedVersion: 2
+        x: 288
+        y: 192
+        width: 96
+        height: 96
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 721507fab99232290800000000000000
+      internalID: -7916437971347156697
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Arcane Golem Tileset_30
+      rect:
+        serializedVersion: 2
+        x: 384
+        y: 192
+        width: 96
+        height: 96
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f3f0b277a92a1fa80800000000000000
+      internalID: -8434781842780254401
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Arcane Golem Tileset_31
+      rect:
+        serializedVersion: 2
+        x: 480
+        y: 192
+        width: 96
+        height: 96
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: aa4098180f5d1de00800000000000000
+      internalID: 1067869815605626026
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Arcane Golem Tileset_32
+      rect:
+        serializedVersion: 2
+        x: 576
+        y: 192
+        width: 96
+        height: 96
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 980e01e3a91388110800000000000000
+      internalID: 1263314234013442185
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Arcane Golem Tileset_33
+      rect:
+        serializedVersion: 2
+        x: 672
+        y: 192
+        width: 96
+        height: 96
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 758b46cad624898c0800000000000000
+      internalID: -3992368030852794281
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Arcane Golem Tileset_34
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 192
+        width: 96
+        height: 96
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: eaec86055bf1758d0800000000000000
+      internalID: -2857780574944702802
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Arcane Golem Tileset_35
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 96
+        width: 96
+        height: 96
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c95f4695eb96b1280800000000000000
+      internalID: -9071540758143240804
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Arcane Golem Tileset_36
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 96
+        width: 96
+        height: 96
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f0c6afe3332d23d10800000000000000
+      internalID: 2103975093477207055
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Arcane Golem Tileset_37
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 96
+        width: 96
+        height: 96
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3bb10d2ad06641e60800000000000000
+      internalID: 7932077052458441651
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Arcane Golem Tileset_38
+      rect:
+        serializedVersion: 2
+        x: 288
+        y: 96
+        width: 96
+        height: 96
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 93f1b00eb26b56c80800000000000000
+      internalID: -8330051636193190087
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Arcane Golem Tileset_39
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 96
+        height: 96
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1f7690c042405b820800000000000000
+      internalID: 2933255285169022961
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Arcane Golem Tileset_40
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 0
+        width: 96
+        height: 96
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 11b1339562f010ad0800000000000000
+      internalID: -2737890441084855535
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Arcane Golem Tileset_41
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 0
+        width: 96
+        height: 96
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c7bca70f0cd420f20800000000000000
+      internalID: 3387355360799673212
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Arcane Golem Tileset_42
+      rect:
+        serializedVersion: 2
+        x: 288
+        y: 0
+        width: 96
+        height: 96
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b1a2d202666d35d00800000000000000
+      internalID: 960346879674886683
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Arcane Golem Tileset_43
+      rect:
+        serializedVersion: 2
+        x: 384
+        y: 0
+        width: 96
+        height: 96
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fe83fa1b7a5838060800000000000000
+      internalID: 6954549204877261039
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Arcane Golem Tileset_44
+      rect:
+        serializedVersion: 2
+        x: 480
+        y: 0
+        width: 96
+        height: 96
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b88eb03e508fd2fb0800000000000000
+      internalID: -4670804534345602933
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Arcane Golem Tileset_45
+      rect:
+        serializedVersion: 2
+        x: 576
+        y: 0
+        width: 96
+        height: 96
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 96c369b9b7ba6d030800000000000000
+      internalID: 3519188706216262761
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Arcane Golem Tileset_46
+      rect:
+        serializedVersion: 2
+        x: 672
+        y: 0
+        width: 96
+        height: 96
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 334c657c2bf494430800000000000000
+      internalID: 3767630192539255859
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Arcane Golem Tileset_47
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 0
+        width: 96
+        height: 96
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a412f1d01ce7667e0800000000000000
+      internalID: -1772590035709779638
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Arcane Golem Tileset_48
+      rect:
+        serializedVersion: 2
+        x: 864
+        y: 0
+        width: 96
+        height: 96
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7553477fff42c81c0800000000000000
+      internalID: -4500181245863119529
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Arcane Golem Tileset_49
+      rect:
+        serializedVersion: 2
+        x: 960
+        y: 0
+        width: 96
+        height: 96
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ca81f636b00250000800000000000000
+      internalID: 1442608168507564
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Arcane Golem Tileset_50
+      rect:
+        serializedVersion: 2
+        x: 1056
+        y: 0
+        width: 96
+        height: 96
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3a3c509a42cdaf9c0800000000000000
+      internalID: -3892556877895711837
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Arcane Golem Tileset_51
+      rect:
+        serializedVersion: 2
+        x: 1152
+        y: 0
+        width: 96
+        height: 96
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e795ee649058ce600800000000000000
+      internalID: 498919933622507902
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Arcane Golem Tileset_52
+      rect:
+        serializedVersion: 2
+        x: 1248
+        y: 0
+        width: 96
+        height: 96
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b5aafe54359392590800000000000000
+      internalID: -7698559058194748837
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 8f7ef431120d44f448ad3f402d5c443b
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":14.0,"y":6.0},"gridSpriteSize":{"x":96.0,"y":96.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.0},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":7,"pivotUnitMode":0,"slicingType":2,"keepEmptyRects":false,"isAlternate":false}'
+    nameFileIdTable:
+      Arcane Golem Tileset_0: -3872177976794851194
+      Arcane Golem Tileset_1: -293400834660297447
+      Arcane Golem Tileset_10: -325294025284003890
+      Arcane Golem Tileset_11: -8764550388663042460
+      Arcane Golem Tileset_12: 660301582589338445
+      Arcane Golem Tileset_13: -7419431699696795078
+      Arcane Golem Tileset_14: 5239111814679524945
+      Arcane Golem Tileset_15: -8523715666913865644
+      Arcane Golem Tileset_16: -1978633278787632913
+      Arcane Golem Tileset_17: 5834843996836870700
+      Arcane Golem Tileset_18: 4312491091407268801
+      Arcane Golem Tileset_19: -3604296329738069623
+      Arcane Golem Tileset_2: -8524436298271626380
+      Arcane Golem Tileset_20: 6196609772128560139
+      Arcane Golem Tileset_21: 6937404794282211273
+      Arcane Golem Tileset_22: 6963892247135478285
+      Arcane Golem Tileset_23: 5088646866951679218
+      Arcane Golem Tileset_24: -6740002476580136003
+      Arcane Golem Tileset_25: 5656824933951008115
+      Arcane Golem Tileset_26: -388004903702527707
+      Arcane Golem Tileset_27: 1038931795849684339
+      Arcane Golem Tileset_28: 3051281397476921910
+      Arcane Golem Tileset_29: -7916437971347156697
+      Arcane Golem Tileset_3: 5541941227508369666
+      Arcane Golem Tileset_30: -8434781842780254401
+      Arcane Golem Tileset_31: 1067869815605626026
+      Arcane Golem Tileset_32: 1263314234013442185
+      Arcane Golem Tileset_33: -3992368030852794281
+      Arcane Golem Tileset_34: -2857780574944702802
+      Arcane Golem Tileset_35: -9071540758143240804
+      Arcane Golem Tileset_36: 2103975093477207055
+      Arcane Golem Tileset_37: 7932077052458441651
+      Arcane Golem Tileset_38: -8330051636193190087
+      Arcane Golem Tileset_39: 2933255285169022961
+      Arcane Golem Tileset_4: -1901443623670893736
+      Arcane Golem Tileset_40: -2737890441084855535
+      Arcane Golem Tileset_41: 3387355360799673212
+      Arcane Golem Tileset_42: 960346879674886683
+      Arcane Golem Tileset_43: 6954549204877261039
+      Arcane Golem Tileset_44: -4670804534345602933
+      Arcane Golem Tileset_45: 3519188706216262761
+      Arcane Golem Tileset_46: 3767630192539255859
+      Arcane Golem Tileset_47: -1772590035709779638
+      Arcane Golem Tileset_48: -4500181245863119529
+      Arcane Golem Tileset_49: 1442608168507564
+      Arcane Golem Tileset_5: -5662286782738707673
+      Arcane Golem Tileset_50: -3892556877895711837
+      Arcane Golem Tileset_51: 498919933622507902
+      Arcane Golem Tileset_52: -7698559058194748837
+      Arcane Golem Tileset_6: -3992314873129309401
+      Arcane Golem Tileset_7: 5583751658013597349
+      Arcane Golem Tileset_8: 880933599071445643
+      Arcane Golem Tileset_9: 3190391332512962718
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

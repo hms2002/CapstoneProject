@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Serialization;
 
 [DisallowMultipleComponent]
 [RequireComponent(typeof(Collider2D))]
@@ -10,12 +11,11 @@ public sealed class TutorialInfoTrigger : MonoBehaviour
     [SerializeField] private TutorialInfoPanel infoPanel;
     [SerializeField] private bool playerOnly = true;
 
-    [Header("Content")]
+    [Header("Pages")]
     [SerializeField] private string tutorialId;
-    [SerializeField] private string title;
-    [TextArea(2, 8)] [SerializeField] private string body;
-    [SerializeField] private Sprite contentSprite;
-    [SerializeField] private Sprite windowSprite;
+    [SerializeField] private TutorialInfoPage[] pages;
+    [FormerlySerializedAs("windowSprite")]
+    [SerializeField] private Sprite tutorialPanelSprite;
     [SerializeField] private Sprite titleSprite;
 
     [Header("Completion")]
@@ -133,11 +133,9 @@ public sealed class TutorialInfoTrigger : MonoBehaviour
         return new TutorialInfoRequest
         {
             tutorialId = tutorialId,
-            title = title,
-            body = body,
-            contentSprite = contentSprite,
-            windowSprite = windowSprite,
+            tutorialPanelSprite = this.tutorialPanelSprite,
             titleSprite = titleSprite,
+            pages = pages,
             holdSeconds = holdSeconds,
             usePersistentCompletion = usePersistentCompletion,
             markCompletedOnClose = markCompletedOnClose,

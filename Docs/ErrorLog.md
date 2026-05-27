@@ -25,61 +25,324 @@ Prevention:
 
 ## Active Entries
 
-## 2026-05-28 - Persistent Display Letterbox Was Mistaken For Cinematic Letterbox
+## 2026-05-26 - Manually Generated Unity Empty Lists Swallowed Following Fields
 
 Context:
-The Slime Queen scene showed black top/bottom bars from scene start, and the bars persisted when moving to other scenes. The first fix targeted the phase-two finale cinematic letterbox cleanup path, but that did not match the reported "already visible at scene start" symptom.
+The timed common relics `승리의 깃발`, `추격자의 발톱`, and `붉은 계약` showed tooltip output like `[[ ]] [0]` even though the logic assets had visible `attribute`, `displayNameOverride`, and `value` lines in text.
 
 Cause:
-There are two separate black-bar systems. `CinematicLetterboxOverlay` is cutscene-local, while `GamePresentationController` creates a persistent display letterbox under `GameSettingsService`, which survives scene loads through `DontDestroyOnLoad`. The display path was using the current Game View/screen container in Editor play, so a non-16:9 editor view could create top/bottom bars before any boss finale ran.
+The manually generated Unity YAML wrote empty lists as:
+
+```yaml
+passiveEntries:
+  []
+```
+
+Unity did not deserialize the following root fields reliably from that shape, so the ScriptableObject loaded default values for the timed buff fields.
 
 Fix:
-Windowed presentation container calculation now uses the selected display resolution instead of the current Game View size. In Unity Editor play mode, the persistent display letterbox path resolves to full viewport and destroys its runtime `LetterboxOverlay` object. The two runtime bar systems now also use distinct child names: `CinematicTopBar/CinematicBottomBar` for cutscenes and `DisplayLetterboxTopBar/DisplayLetterboxBottomBar` for display correction. Build presentation still keeps the 16:9 display letterbox policy.
+Use inline empty-list serialization for manually generated Unity assets:
+
+```yaml
+passiveEntries: []
+```
 
 Prevention:
-When black bars appear before a cutscene starts or survive scene loads, inspect `GameSettingsService > LetterboxOverlay` separately from `CinematicLetterboxOverlay`. Do not diagnose persistent scene-start bars as a boss finale cleanup bug unless the runtime object name confirms it. Avoid giving unrelated runtime fallback bars identical child names.
+When creating or rewriting Unity `.asset` files outside the Editor, verify empty lists, field indentation, and root-field deserialization with `rg` checks. Prefer matching Unity's existing inline `field: []` style for empty serialized arrays/lists.
 
-## 2026-05-28 - Slime Queen P2 Finale Letterbox Could Outlive Cutscene
+## 2026-05-26 - Global DamagePayloadConfig Shadowed UnityGAS Type
 
 Context:
-During the Slime Queen phase-two finale, the camera zoom cutscene letterbox bars could remain on screen after the sequence should have returned to gameplay.
+`ApprenticeHeroSwordHitConfig` failed compilation with `CS1503` when passing its damage config into `DamageSnapshotBuilder.BuildFromBaseValues(...)`.
 
 Cause:
-`SlimeQueenEncounterClearCondition` started `CinematicLetterboxOverlay.PlayIn/PlayOut` as independent child coroutines while the finale routine continued with camera movement and speech waits. If the finale owner was interrupted, disabled, or cleanup ran before a child overlay coroutine had fully completed, the local overlay cleanup was not enough to guarantee those child coroutines stopped and the runtime-created `CinematicLetterboxOverlay` object was destroyed.
+The project still has both a legacy global `DamagePayloadConfig` and the current `UnityGAS.DamagePayloadConfig`. In a global-namespace source file, unqualified `DamagePayloadConfig` resolved to the legacy global type even though `using UnityGAS;` was present.
 
 Fix:
-The Slime Queen finale now stores overlay coroutine handles and all finale runtime owners as fields, stops overlay child coroutines during cleanup, disposes the overlay from `finally` and `OnDisable`, releases input/player locks, destroys the temporary focus anchor, and restores the camera. `CinematicLetterboxOverlay` also now refuses to run `PlayIn/PlayOut` after `Dispose()` so a late-starting coroutine cannot recreate or keep bars alive.
+Apprentice Hero Sword damage config now explicitly uses `UnityGAS.DamagePayloadConfig`.
 
 Prevention:
-When a presentation routine starts child coroutines for overlay/fade/camera work, track and stop those child handles in the owner cleanup path. Do not rely only on a local `finally` variable when runtime-created UI is involved.
+New weapon damage data that feeds `DamageSnapshotBuilder` should spell `UnityGAS.DamagePayloadConfig` explicitly until the legacy global compatibility type is removed.
 
-## 2026-05-27 - Slime Queen Groggy Left Pattern Animator State Active
+## 2026-05-26 - Overlapping Time Freeze Restored Stale Zero
 
 Context:
-SlimeQueen, SlimeQueenP2Short, or SlimeQueenP2Long could enter Groggy while a pattern animation was active, then remain visually frozen on the skill sprite instead of returning to Idle.
+`Flowering` Bloom cut-in pauses combat time while playing unscaled presentation. If the pause menu or another freeze-owning UI opened during that cut-in, the screen could remain frozen after the presentation ended.
 
 Cause:
-`BossGroggyState.OnEnter()` aborted the current pattern and cancelled the active ability, but the Slime Queen-specific `OnGroggyStateEntered()` path did not reset Animator bool/trigger parameters or force an Idle state. Some Slime Queen controllers also have authored states such as `Ready` that do not have a direct no-condition return to Idle, so simply cancelling the ability was not enough when interruption happened mid-state.
+Both Bloom cut-in and stack UI freeze paths stored `Time.timeScale` locally and restored their cached value later. When UI opened while Bloom had already set `Time.timeScale = 0`, UI cached `0`; Bloom then restored gameplay to `1`, and closing the UI restored the stale cached `0` back over the resumed value.
 
 Fix:
-`SlimeQueenBossBase` now exposes an interrupt cleanup hook and safe Animator helpers. P1, P2Short, and P2Long reset their pattern parameters and force their authored Idle state when Groggy or forced pattern cancellation interrupts them.
+Bloom cut-in now acquires a `GameFlowInputBlocker` before setting `Time.timeScale = 0`, blocking unrelated pause/new UI entry during the protected cut-in window and releasing it in cleanup. `UIManager` also avoids writing a stale cached zero over a later non-zero restore when a freeze overlap has already been resolved by another owner.
 
 Prevention:
-Any boss pattern that drives Animator parameters must have an interruption cleanup path owned by the boss or state layer, not only by the ability coroutine `finally` block. Groggy, death, phase changes, drain/pit locks, and scene cleanup can interrupt patterns at points where animator transitions cannot naturally return to Idle.
+Do not allow independent time-freeze owners to enter freely inside a cinematic/presentation freeze window. Use `GameFlowInputBlocker` for protected flow windows, and when restoring a UI-owned freeze that cached `0`, avoid overwriting a later non-zero `Time.timeScale` restored by the original freeze owner.
 
-## 2026-05-26 - P2 Drain Stun Disabled Boss Hurtbox
+## 2026-05-26 - Paused Cut-in Blocked Weapon Animation Event Timing
 
 Context:
-Phase-two Slime Queens were intended to be trapped in an opened drain for 4 seconds so the player could freely attack them, but they could not be hit while submerged.
+`Flowering` Bloom Skill1 should play its weapon animation during the cut-in fade and use an animation event to start the weapon reveal.
 
 Cause:
-The drain submerge context disabled `Rigidbody2D.simulated` and all owned `Collider2D` components. In Unity 2D physics, disabling Rigidbody simulation also removes attached colliders from simulation, so the boss hurtbox/contact colliders were no longer valid damage targets.
+Bloom cut-in presentation pauses combat by setting `Time.timeScale` to `0`. A normal Animator update mode does not advance under scaled time while paused, so weapon animation events can fail to fire or fire only after time resumes. The existing Skill1 clip also pointed its event at the old SwordSkill2 hit tag, so even a fired event would not identify Flowering reveal timing clearly.
 
 Fix:
-`DrainPipe` now keeps the P2 boss Rigidbody simulated and leaves colliders enabled during the drain stun. It disables only normal movement ownership, freezes Rigidbody position/rotation, pins the boss at the drain center, then restores movement after a short exit jump. If the boss dies during the stun, cleanup does not re-enable death-disabled gameplay components.
+The Bloom cut-in path plays the `FloweringBloomData.cutInAnimationTrigger` on the weapon animation channel, temporarily switches the weapon Animator to unscaled time for the cut-in, and restores the previous update mode afterward. The Skill1 clip now sends `Event.Anim.Flowering.WeaponReveal`, and the reveal coroutine waits for that tag with a timeout before starting the SpriteMask reveal.
 
 Prevention:
-Environmental control locks that are meant to create a damage window must not disable the target hurtbox, Rigidbody simulation, or damage-receiving colliders. Lock movement/action ownership separately from damage reception.
+When presentation pauses `Time.timeScale` but still depends on Animator events, explicitly decide whether that Animator must run on unscaled time for the paused section. Use feature-specific gameplay event tags for animation timing instead of reusing another weapon's hit/event tag.
+
+## 2026-05-26 - Weapon Reveal Replayed After Cut-in Fade
+
+Context:
+`Flowering` Bloom weapon reveal should play once during the cut-in fade. In Play Mode it could play once during the fade, then play a second time after the fade when active Bloom state began.
+
+Cause:
+`FloweringBloomPresentationController.PlayCutIn(...)` and `BeginActiveBloom(...)` both called `ApplyWeaponBloomSprite(true)`. The first fix made active apply idempotent, but `FloweringRuntimeState.BeginBloom(...)` still called `EndBloom()` before active state setup. That `EndBloom()` released the presentation and restored the weapon sprite immediately after the cut-in reveal completed, so active Bloom entered from an inactive sprite and started reveal again.
+
+Fix:
+The active weapon sprite apply path returns early when the Bloom sprite is already applied or a weapon reveal coroutine is still running. `FloweringRuntimeState` now preserves the cut-in presentation across the immediate `BeginBloom(...)` setup reset, while normal Bloom end, cancellation, weapon swap, and owner disable still release presentation state. Reveal coroutine handles are also cleared on early exits, so a failed/empty reveal attempt does not permanently block a later valid apply.
+
+Prevention:
+Presentation entry points that can be called from both transition setup and steady-state activation must be idempotent. Do not run full presentation release between a transition reveal and the steady-state that consumes that revealed visual state. Guard effect/reveal starts against already-running coroutines and already-applied visual state before starting a new coroutine.
+
+## 2026-05-25 - Hitbox-Owned Slash Visual Followed Owner
+
+Context:
+`Flowering` Bloom attack should leave each BloomSlash visual at the strike position like a short-lived slash mark while its collider turns off early.
+
+Cause:
+The BloomSlash hitbox prefabs owned their visuals correctly, but `MeleeHitboxActor.attachToOwnerOnSetup` was enabled. `Setup(...)` parented each hitbox instance to the player while preserving world position, so the lingering visual continued to follow player movement after spawn.
+
+Fix:
+Bloom attack now forces `overrideAttachToOwnerOnSetup = true` and `attachToOwnerOnSetup = false` in its spawn context, and the BloomSlash prefabs are authored with `attachToOwnerOnSetup` disabled. The collider still expires through `activeTime`; the visual remains only for its authored animation clip lifetime.
+
+Prevention:
+For hitbox-owned slash marks or lingering attack visuals, do not enable owner attachment unless the design explicitly wants the visual to move with the attacker. Prefer world-parented hitbox instances with short collider lifetime and clip-length visual lifetime for strike marks.
+
+## 2026-05-25 - Runtime AttackBase Component Needed Concrete Collider First
+
+Context:
+`Flowering` Bloom dash logged a `NullReferenceException` every time dash tried to spawn a slash hitbox.
+
+Cause:
+`FloweringDashSlashHitboxActor` derives from `AttackBase`, whose base attribute requires `Collider2D`. `Collider2D` is abstract, so adding the hitbox actor first to an empty runtime GameObject can fail Unity's automatic required-component creation and return a null component before `Setup(...)` is called.
+
+Fix:
+The dash slash spawn path now adds a concrete `BoxCollider2D` before adding `FloweringDashSlashHitboxActor`, checks the returned actor before setup, and the actor explicitly declares `RequireComponent(typeof(BoxCollider2D))`.
+
+Prevention:
+Runtime-created `AttackBase` subclasses should declare and add their concrete collider type before adding the behavior component. Do not rely on a base `RequireComponent(typeof(Collider2D))` to create a valid collider on an empty runtime GameObject.
+
+## 2026-05-25 - Detached Dash Slash Hitbox Scanned Too Narrowly
+
+Context:
+`Flowering` Bloom dash slash marks could appear while the intended slash damage did not apply.
+
+Cause:
+The detached dash slash hitbox only scanned once at spawn time and filtered `OverlapBoxAll` by damage layers before resolving `CombatHurtbox2D`. That made the hit path more fragile than the existing melee hitbox path: fast dash timing, trigger update timing, or collider/root layer differences could cause a valid target to be missed.
+
+Fix:
+The dash slash hitbox now scans during its active lifetime and accepts a target when either the hit collider layer or resolved damage target root layer matches the authored damage mask. Wall line-of-sight blocking is still checked before damage is applied.
+
+Prevention:
+Detached short-lived hitboxes should either reuse the shared melee hitbox actor or match its target resolution tolerance. Avoid spawn-frame-only scans for effects that are meant to remain active across multiple frames.
+
+## 2026-05-25 - Delayed Dash Augment Was Tied To Dash Ability Token
+
+Context:
+`Flowering` Bloom dash should create three delayed slash hitboxes and three red slash marks after the dash starts.
+
+Cause:
+The delayed slash coroutine checked the dash ability spec cancellation token between slash spawns. A short dash ability can complete or cancel before the delayed visual/hit sequence finishes, so later slash marks and hitboxes can be skipped even though Bloom is still active.
+
+Fix:
+Dash slash scheduling now follows Bloom runtime state lifetime and weapon cleanup. Bloom end, weapon swap, owner disable, and transient runtime reset still stop remaining coroutines and destroy temporary hitboxes/effects.
+
+Prevention:
+Delayed weapon augment effects that intentionally outlive the triggering global ability should be cancelled by the owning weapon runtime state, not by the trigger ability token, unless the design explicitly says the delayed effect should disappear when that trigger ends.
+
+## 2026-05-25 - Active Fade Service Was Replaced During Scene Load
+
+Context:
+Title intro completion should fade to black, load the gameplay scene, then fade the next scene in through the shared `SceneTransitionCoordinator` flow.
+
+Cause:
+When the title scene had no authored `SceneFadeTransitionService`, the transition began with a runtime fallback overlay. Loading the next scene awakened an authored `SceneFadeTransitionService` under `GlobalUIRoot`, and the existing singleton replacement policy destroyed the fallback while the coordinator still held it for `FadeInAsync()`. The same trap also applies to any active title-authored transition owner that must survive long enough to finish the fade-in before yielding to the loaded scene's authored service.
+
+Fix:
+`SceneFadeTransitionService` now defers replacing an active transition owner with a loaded authored service until `EndTransitionSession()`. The pending authored overlay is reset transparent/inactive while it waits, so it cannot cover the active fade-in. The active owner remains alive for fade-out, load, post-load settle, and fade-in, then promotes the authored service after the transition ends.
+
+Prevention:
+Do not replace or destroy a fade service while `IsTransitionActive` is true. Scene-loaded authored services should wait until the current transition owner has completed fade-in before taking over singleton ownership, and any deferred overlay must be visually hidden while pending. Title-origin transitions should prefer a scene-root authored fade service over runtime fallback so transition duration can be tuned in the Inspector.
+
+## 2026-05-25 - Intro Entry Fade Overlapped Slot Panel Close Fade
+
+Context:
+Starting a new empty profile slot should show one start-button-to-intro fade before the first intro image appears.
+
+Cause:
+`TitleMenuController.BeginIntroLaunch(...)` started `TitleIntroPlayer` and then called `TitleProfileSlotPanelUI.CloseUI()`. The profile slot panel's own fade-out could run under the intro overlay root fade, making the start fade appear to reset and run twice even with no additional input.
+
+Fix:
+The intro launch path no longer starts the profile slot panel close animation after intro playback begins. The panel can remain active behind the intro overlay because the overlay blocks raycasts and covers the title UI until scene transition.
+
+Prevention:
+For title intro entry, keep exactly one visual fade owner. Do not run panel close fades underneath the intro overlay start fade unless the transition is explicitly sequenced after the overlay has fully covered the UI.
+
+## 2026-05-24 - Intro Entry Fade Was Conflated With First Image Fade
+
+Context:
+The title intro slow-start request needed two separately tunable beats: the intro overlay FadeIn immediately after pressing `시작하기`, and the first slide image FadeIn after the overlay is visible.
+
+Cause:
+The first pass interpreted "intro starts slowly" as only the first slide image FadeIn duration, so the start-button-to-intro overlay FadeIn had no separate data field.
+
+Fix:
+`TitleIntroSequenceSO` now separates `introStartFadeDuration` from `initialImageFadeDuration`. `TitleIntroPlayer` fades the authored intro overlay root first, then starts first-slide image FadeIn together with text typing.
+
+Prevention:
+For title/popup presentation timing, distinguish container/root visibility transitions from content-specific media transitions. Do not use a slide image fade field to represent the screen or overlay entry fade.
+
+## 2026-05-23 - Intro Text Was Coupled To Image Fade
+
+Context:
+The title intro design keeps slide text visible while images fade in or out. Text typing starts together with the new image fade-in, and completed text remains visible during old-image fade-out.
+
+Cause:
+`TitleIntroPlayer` treated image fade-in, text typing, wait, image fade-out, and text clear as separate sequential steps. That made text disappear as part of image transition cleanup instead of letting text lifetime follow the script timing.
+
+Fix:
+`TitleIntroPlayer` now runs text typing and image fade-in as one input-polled phase, and image fade-out no longer clears the completed text. The next slide replaces text only when its own typing starts.
+
+Prevention:
+For staged narrative UI, define text lifetime separately from media transition lifetime. Do not clear narrative text from image fade cleanup unless the design explicitly says the text should fade or disappear with the image.
+
+## 2026-05-23 - Scene-Local UI Replaced Persistent Global Panel
+
+Context:
+After moving from lobby to corridor, pause still opened but the settings panel could fail to open. The global UI root was intended to persist as the UI source of truth.
+
+Cause:
+`SettingsPanelUI` and `KeyBindingPanelUI` had their own singleton replacement policy. A scene-local panel could destroy the existing persistent instance, then later be destroyed together with a duplicate scene-local `GlobalUIRoot`, leaving no usable global panel.
+
+Fix:
+The child panels now destroy only themselves when another valid instance already exists. `EnsureInstance()` remains a lookup/search path, while persistent ownership stays with `GlobalUIRoot` and `UIManager`.
+
+Prevention:
+Do not let global UI child panels delete an existing persistent representative to win a static instance slot. Scene-local duplicates should defer to the root/UI manager ownership policy, and selected-button/EventSystem visual policy should be handled separately.
+
+## 2026-05-23 - Intro Skip Prompt Overwrote Authored Visuals
+
+Context:
+The title intro skip prompt should be scene-authored so its icon, text, fill color, and custom art can be tuned in Unity. `TitleIntroView.Show()` still forced the skip prompt glyph/label to Space at runtime.
+
+Cause:
+The view treated skip prompt display as runtime-owned presentation instead of only projecting the authored root/fill state. This made custom prompt visuals fragile because show-time setup could overwrite authored icon/text/color references.
+
+Fix:
+`TitleIntroView` now keeps authored skip prompt icon/text/fill color untouched by default. Runtime glyph and fill color application are available only through serialized opt-ins or explicit projection calls.
+
+Prevention:
+For scene-authored UI prompts, runtime view code should activate/reset/progress the authored objects without replacing their icon/text/color content unless an explicit serialized opt-in says the prompt value is data-driven.
+
+## 2026-05-23 - Intro Advance Input Skipped Multiple Phases
+
+Context:
+Title intro text advance should complete the currently typing text, then still wait for the configured post-text delay before image fade-out. A click or short Space release during typing could immediately push the intro into the fade-out phase.
+
+Cause:
+`TitleIntroPlayer` polled raw advance input separately in typing, wait, and fade coroutines. When a typing coroutine consumed an advance input and ended, the next coroutine could poll the same frame's input event again and treat it as a wait/fade skip.
+
+Fix:
+`TitleIntroPlayer` now records the frame that consumed an advance input. Later phases ignore click or short Space advance events already consumed in that frame, while Space hold skip remains independent.
+
+Prevention:
+For staged presentation flows, consume physical input events at the flow-owner level before crossing coroutine/state boundaries. One click or key release should not be able to complete typing and skip the following wait/fade phase in the same frame.
+
+## 2026-05-23 - Locked Slot Art Was Written To Item Icon
+
+Context:
+Inventory locked-slot presentation needed `InventorySlotLock` to appear as the slot background, with the item icon layer empty. The locked slot still changed the serialized `icon` / `itemImage` sprite to `InventorySlotLock`.
+
+Cause:
+`ItemSlotUI.RefreshLockedSlot()` reused the item icon rendering path through `ItemDisplayIconUtility.ApplyRaw(icon, lockedSlotSprite, ...)`, so the lock art was treated as an item icon instead of slot background presentation.
+
+Fix:
+`ItemSlotUI` now writes `lockedSlotSprite` only to the serialized `backgroundImage` reference. Locked slots clear item icon/level content first, and missing `backgroundImage` wiring logs a warning instead of falling back to the icon image.
+
+Prevention:
+Do not use `icon`, `itemImage`, or item display helpers for locked-slot frame art. Locked slot visuals belong to the authored slot background layer; item icon images should only display actual item icons or remain empty.
+
+## 2026-05-23 - Legacy Button Interactable Blocked HoldActionButton
+
+Context:
+Chest reroll prefab wiring had `HoldActionButton`, `HoldFillButtonView`, and `RerollHoldProgress` connected correctly, but Space hold still did not start reliably.
+
+Cause:
+`HoldActionButton` was intended to own hold availability, but `CanUse()` still checked the optional companion Unity `Button.IsInteractable()`. A legacy `Button` with `interactable = false` could therefore block the shared hold input even when `ChestScreen` set `HoldActionButton` itself usable.
+
+Fix:
+`HoldActionButton.CanUse()` now uses its own `interactable` state as the hold gate. The optional Unity `Button` can still mirror visual/interactable state for compatibility, but it no longer decides whether a hold can start.
+
+Prevention:
+For hold-only controls, do not reintroduce Unity `Button.IsInteractable()` as an input gate. Feature screens should call `HoldActionButton.SetInteractable(...)`, and Unity `Button` should remain optional legacy compatibility only.
+
+## 2026-05-23 - UI Submit Did Not Start Hold Action
+
+Context:
+Chest reroll Space input changed the selected Unity `Button` to its pressed color, but the shared hold action did not start.
+
+Cause:
+Unity UI Submit can drive `Button` pressed visuals independently from a custom hold component. `HoldActionButton` only relied on its own key polling, so a selected button could visually react to Space without routing that Submit event into the hold flow.
+
+Fix:
+`HoldActionButton` now implements `ISubmitHandler` and bridges selected UI Submit input into the same keyboard hold path, while still verifying that the Submit action's active control matches the configured `holdKey`.
+
+Prevention:
+For hold buttons that can be selected by the EventSystem, bridge UI Submit into the hold component instead of assuming `Button` pressed visuals imply the hold action has started.
+
+## 2026-05-23 - Keyboard Hold Missed The Usable Window
+
+Context:
+Chest reroll needed Space hold to work through `HoldActionButton`, but pressing Space could fail to start the hold.
+
+Cause:
+`HoldActionButton` only started keyboard hold on the key-down frame. If Space was already held while the chest reveal was finishing, or while the reroll button was still non-interactable, the original key-down frame was missed and the hold never started after the button became usable.
+
+Fix:
+`HoldActionButton` can now start keyboard hold while the configured key is already pressed and the button becomes usable. Keyboard completion blocks restart until the key is released, so one long press cannot repeatedly complete the action.
+
+Prevention:
+For keyboard hold buttons inside animated or gated UI, support "key already held when usable" behavior and separately block repeated completion until release.
+
+## 2026-05-23 - Filled Image And Clip Width Double-Applied Hold Progress
+
+Context:
+Chest reroll hold fill was authored with a filled `Image` and the same `RectTransform` assigned as the clip/fill root.
+
+Cause:
+`HoldFillButtonView` drove both `Image.fillAmount` and the same rect width by the same progress value. This effectively applied progress twice, so early hold progress could be too small to notice.
+
+Fix:
+`HoldFillButtonView` now skips clip-width resizing when the fill `Image` is already a filled Image on the same `RectTransform`. It also reapplies progress on enable and avoids deactivating its own GameObject when the clip root is accidentally assigned to the owner.
+
+Prevention:
+For hold-fill buttons, either drive a filled Image or drive a separate clip-root width. Do not double-drive the same fill geometry with both mechanisms.
+
+## 2026-05-23 - Duplicate Hold Progress Owners Hid Authored Fill UI
+
+Context:
+Chest reroll was being tested with the shared hold-fill button components, but the fill was not visibly progressing.
+
+Cause:
+`ChestScreen` still owned direct mouse/Space hold detection and progress calculation while an authored `HoldActionButton`/`HoldFillButtonView` could also be present on the same reroll button. This left two possible owners for the same progress state and made it easy for the shared fill view to be unconnected or reset by the legacy path.
+
+Fix:
+`HoldActionButton` now owns pointer/keyboard hold timing and progress, while `ChestScreen` subscribes to hold events and only owns reroll eligibility, chest close/shake/open presentation, and refresh execution.
+
+Prevention:
+Do not let feature screens and shared hold-button components both calculate the same hold progress. If a `HoldActionButton` is authored for a button, feature code should consume its events instead of duplicating pointer/key hold detection.
 
 ## 2026-05-25 - P2 Drain Completion Was Treated As Permanent Blocking
 
@@ -104,10 +367,10 @@ Cause:
 The Slime Queen prefabs did not author a `StaggerGaugeSystem`, and the Slime Queen phase-two HUD special case explicitly hid the shared groggy bar while showing dual health bars. That meant phase-one had no stagger target component for `CombatDamageAction`, and phase-two had no visible groggy gauge even after the combat component existed.
 
 Fix:
-`SlimeQueenBossBase` now ensures a runtime `StaggerGaugeSystem` for every Slime Queen variant and wires it to the existing stagger attributes plus a 3-second status-only Groggy effect. Phase-two Slime Queen HUD handling now lives in `SlimeQueenPhaseTwoHudSource`, which projects Short/Long as separate health and groggy channels. `BossGroggyBarUI` can render the two groggy channels, using a logged runtime fallback until authored dual references are wired.
+`SlimeQueenBossBase` now ensures a runtime `StaggerGaugeSystem` for every Slime Queen variant and wires it to the existing stagger attributes plus a 3-second status-only Groggy effect. Phase-two Slime Queen Short/Long bodies now use the same boss HUD registration path as other bosses and appear as separate HUD slots.
 
 Prevention:
-When adding a new boss or special multi-body HUD path, verify both sides of groggy support: the combat target must have a configured `StaggerGaugeSystem`, and the HUD path must provide an `IBossHudSource` snapshot with explicit groggy channels instead of hiding the groggy view or adding concrete boss branches to `BossHudController`.
+When adding a new boss or special multi-body HUD path, verify both sides of groggy support: the combat target must have a configured `StaggerGaugeSystem`, and each active boss body must register its own HUD slot instead of hiding the groggy view or adding concrete boss branches to `BossHudController`.
 
 ## 2026-05-25 - Drain Control Lock Stopped Drain Pull
 
@@ -475,17 +738,3 @@ Fix:
 
 Prevention:
 For prefab-authored world UI labels, prefer a world-space Canvas plus `TextMeshProUGUI`, or use a plain Transform with 3D TMP deliberately. Do not rely on RectTransform positioning without a Canvas when the label must appear at a precise world offset.
-
-## 2026-05-26 - Split Landing Presentation Can Trigger Hazards Too Early
-
-Context:
-Slime Queen phase-two bodies need a polished slime-style split landing, but the arena can contain holes and drain pipes.
-
-Cause:
-`SlimeSplitLandingMotion2D` only handles visual arc motion and temporary hurtbox disabling. Bosses also have pattern selection, movement motors, contact damage, pit-fall eligibility, and drain acquisition paths that can run during or immediately after the visual arc if the landing point is unsafe.
-
-Fix:
-`SlimeQueen` now resolves split landing points away from walls, `HoleTrap`, and active `DrainPipe` phase-two suction radius; `SlimeQueenPhaseTwoBase.BeginPhaseTwoSplitLanding(...)` locks movement/control/contact damage/pit-drain eligibility until the arc ends.
-
-Prevention:
-When reusing mob split presentation for bosses or hazard-sensitive actors, add gameplay-control locks and landing-point hazard checks. Do not assume a hurtbox-only visual motion component is enough.

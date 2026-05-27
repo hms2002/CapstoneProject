@@ -2,17 +2,9 @@ using UnityEngine;
 using UnityGAS;
 
 /// <summary>
-/// 보스 HUD가 보스 구체 타입을 몰라도 표시 값을 읽기 위한 계약입니다.
-/// </summary>
-public interface IBossHudSource
-{
-    int Priority { get; }
-    bool OwnsBoss(BossControllerBase boss);
-    bool TryBuildSnapshot(out BossHudSnapshot snapshot);
-}
-
-/// <summary>
-/// 보스 HUD에 표시할 단일 체력/그로기 채널 값입니다.
+/// 책임 :
+/// - 보스 HUD 슬롯이 표시할 단일 체력/그로기 채널 값을 담는다.
+/// - HUD 계산 유틸리티와 슬롯 snapshot 사이의 임시 값 전달 형식을 제공한다.
 /// </summary>
 public struct BossHudChannelSnapshot
 {
@@ -43,67 +35,61 @@ public struct BossHudChannelSnapshot
 }
 
 /// <summary>
-/// 보스 HUD 한 프레임에 필요한 표시 값 묶음입니다.
+/// 책임 :
+/// - 보스 HUD 슬롯 하나가 한 프레임에 표시해야 하는 이름, 체력, 그로기 상태를 담는다.
+/// - 다중 보스 HUD가 보스 구체 타입을 몰라도 슬롯 단위 표시만 갱신할 수 있게 한다.
 /// </summary>
-public struct BossHudSnapshot
+public struct BossHudSlotSnapshot
 {
     public string DisplayName { get; private set; }
-    public int ChannelCount { get; private set; }
-    public BossHudChannelSnapshot PrimaryChannel { get; private set; }
-    public BossHudChannelSnapshot SecondaryChannel { get; private set; }
-    public bool UseSplitHealthPresentation { get; private set; }
-    public string SplitHealthLeftLabel { get; private set; }
-    public string SplitHealthRightLabel { get; private set; }
+    public float HealthRatio { get; private set; }
+    public bool HasGroggyGauge { get; private set; }
+    public float GroggyRatio { get; private set; }
+    public bool IsGroggy { get; private set; }
+    public bool IsDefeated { get; private set; }
+    public BossHudHealthBarTheme HealthBarTheme { get; private set; }
 
-    public bool IsVisible => ChannelCount > 0;
-
-    public bool HasAnyGroggyGauge =>
-        (ChannelCount >= 1 && PrimaryChannel.HasGroggyGauge) ||
-        (ChannelCount >= 2 && SecondaryChannel.HasGroggyGauge);
-
-    public bool HasAnyGroggyChannel =>
-        (ChannelCount >= 1 && PrimaryChannel.IsGroggy) ||
-        (ChannelCount >= 2 && SecondaryChannel.IsGroggy);
-
-    public static BossHudSnapshot Single(
+    public BossHudSlotSnapshot(
         string displayName,
-        BossHudChannelSnapshot channel,
-        bool useSplitHealthPresentation,
-        string splitHealthLeftLabel,
-        string splitHealthRightLabel)
+        float healthRatio,
+        bool hasGroggyGauge,
+        float groggyRatio,
+        bool isGroggy,
+        bool isDefeated,
+        BossHudHealthBarTheme healthBarTheme)
     {
-        return new BossHudSnapshot
-        {
-            DisplayName = displayName,
-            ChannelCount = 1,
-            PrimaryChannel = channel,
-            SecondaryChannel = BossHudChannelSnapshot.Empty(null),
-            UseSplitHealthPresentation = useSplitHealthPresentation,
-            SplitHealthLeftLabel = splitHealthLeftLabel,
-            SplitHealthRightLabel = splitHealthRightLabel
-        };
+        DisplayName = string.IsNullOrWhiteSpace(displayName) ? string.Empty : displayName;
+        HealthRatio = Mathf.Clamp01(healthRatio);
+        HasGroggyGauge = hasGroggyGauge;
+        GroggyRatio = Mathf.Clamp01(groggyRatio);
+        IsGroggy = isGroggy;
+        IsDefeated = isDefeated;
+        HealthBarTheme = healthBarTheme;
     }
 
-    public static BossHudSnapshot Dual(
-        string displayName,
-        BossHudChannelSnapshot primaryChannel,
-        BossHudChannelSnapshot secondaryChannel)
+    public static BossHudSlotSnapshot FromBoss(
+        BossControllerBase boss,
+        string displayNameOverride,
+        bool isDefeated,
+        BossHudHealthBarTheme healthBarTheme)
     {
-        return new BossHudSnapshot
-        {
-            DisplayName = displayName,
-            ChannelCount = 2,
-            PrimaryChannel = primaryChannel,
-            SecondaryChannel = secondaryChannel,
-            UseSplitHealthPresentation = false,
-            SplitHealthLeftLabel = null,
-            SplitHealthRightLabel = null
-        };
+        string displayName = BossHudValueUtility.ResolveBossDisplayName(boss, displayNameOverride);
+        BossHudChannelSnapshot channel = BossHudValueUtility.BuildBossChannel(boss, null, true);
+        return new BossHudSlotSnapshot(
+            displayName,
+            isDefeated ? 0f : channel.HealthRatio,
+            channel.HasGroggyGauge,
+            channel.GroggyRatio,
+            channel.IsGroggy,
+            isDefeated,
+            healthBarTheme);
     }
 }
 
 /// <summary>
-/// HUD source들이 공통으로 쓰는 보스 표시 값 계산 유틸리티입니다.
+/// 책임 :
+/// - 보스 HUD 슬롯이 보스 객체에서 이름, 체력, 그로기 표시 값을 읽는 공통 계산을 제공한다.
+/// - UI 계층이 보스별 구체 타입을 몰라도 단일 슬롯 snapshot을 만들 수 있게 한다.
 /// </summary>
 public static class BossHudValueUtility
 {
@@ -184,51 +170,5 @@ public static class BossHudValueUtility
             resolvedBossName = boss.gameObject.name;
 
         return resolvedBossName;
-    }
-}
-
-/// <summary>
-/// 기존 단일 보스를 공통 HUD snapshot으로 변환하는 기본 source입니다.
-/// </summary>
-internal sealed class SingleBossHudSource : IBossHudSource
-{
-    private BossControllerBase boss;
-    private string displayNameOverride;
-
-    public int Priority => 0;
-
-    public SingleBossHudSource Bind(BossControllerBase nextBoss, string nextDisplayNameOverride)
-    {
-        boss = nextBoss;
-        displayNameOverride = nextDisplayNameOverride;
-        return this;
-    }
-
-    public void Clear()
-    {
-        boss = null;
-        displayNameOverride = null;
-    }
-
-    public bool OwnsBoss(BossControllerBase candidate)
-    {
-        return candidate != null && boss == candidate;
-    }
-
-    public bool TryBuildSnapshot(out BossHudSnapshot snapshot)
-    {
-        snapshot = default;
-        if (boss == null)
-            return false;
-
-        IBossSplitHealthPresentation splitHealthPresentation = boss as IBossSplitHealthPresentation;
-        bool useSplitHealth = splitHealthPresentation != null && splitHealthPresentation.ShowSplitHealthPresentation;
-        snapshot = BossHudSnapshot.Single(
-            BossHudValueUtility.ResolveBossDisplayName(boss, displayNameOverride),
-            BossHudValueUtility.BuildBossChannel(boss, null, true),
-            useSplitHealth,
-            useSplitHealth ? splitHealthPresentation.SplitHealthLeftLabel : null,
-            useSplitHealth ? splitHealthPresentation.SplitHealthRightLabel : null);
-        return true;
     }
 }

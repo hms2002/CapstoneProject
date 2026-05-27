@@ -1,0 +1,124 @@
+{
+    "sessions": [
+        {
+            "sessionId": "443a2b1535ea4b9eb75dc15753fb17c5",
+            "startedUtc": "2026-05-27T12:13:29.8609405Z",
+            "endedUtc": "2026-05-27T12:13:31.1640417Z",
+            "entries": []
+        },
+        {
+            "sessionId": "a8b260073c1c4ad49457c7678955719e",
+            "startedUtc": "2026-05-27T12:15:44.8646847Z",
+            "endedUtc": "2026-05-27T12:15:46.3250697Z",
+            "entries": []
+        },
+        {
+            "sessionId": "4914749005c94386b665c7b12a2b64ef",
+            "startedUtc": "2026-05-27T12:20:05.4591245Z",
+            "endedUtc": "2026-05-27T12:20:06.9040668Z",
+            "entries": []
+        },
+        {
+            "sessionId": "44285ae5dd444ac5ad292d03e4814fbe",
+            "startedUtc": "2026-05-27T12:20:52.6310938Z",
+            "endedUtc": "2026-05-27T12:20:53.9561696Z",
+            "entries": []
+        },
+        {
+            "sessionId": "9b0d8ef4c4764fdaa0d54e705657d55a",
+            "startedUtc": "2026-05-27T12:21:32.1971485Z",
+            "endedUtc": "2026-05-27T12:21:33.5199688Z",
+            "entries": []
+        },
+        {
+            "sessionId": "479cee6534614ffa9157abd05b9a51e6",
+            "startedUtc": "2026-05-27T12:22:11.7718821Z",
+            "endedUtc": "2026-05-27T12:22:13.6622815Z",
+            "entries": []
+        },
+        {
+            "sessionId": "11456b1095804eabbc945022ade265ba",
+            "startedUtc": "2026-05-27T12:23:54.7779022Z",
+            "endedUtc": "2026-05-27T12:23:55.8753276Z",
+            "entries": []
+        },
+        {
+            "sessionId": "81ec46528a9043848ddc00cce6417ba0",
+            "startedUtc": "2026-05-27T12:24:28.9919669Z",
+            "endedUtc": "2026-05-27T12:24:30.1238287Z",
+            "entries": []
+        },
+        {
+            "sessionId": "080c3c9fff1d4af9aa2b0231f096df9f",
+            "startedUtc": "2026-05-27T12:32:20.7632279Z",
+            "endedUtc": "2026-05-27T12:32:22.0465821Z",
+            "entries": []
+        },
+        {
+            "sessionId": "a65149d15980420b876d6dcc6e90b405",
+            "startedUtc": "2026-05-27T12:52:15.7878105Z",
+            "endedUtc": "2026-05-27T12:52:17.1763651Z",
+            "entries": []
+        },
+        {
+            "sessionId": "1dc129b85f6541b9b5aadafde68dbdc0",
+            "startedUtc": "2026-05-27T12:53:10.6089340Z",
+            "endedUtc": "2026-05-27T12:53:11.8772677Z",
+            "entries": []
+        },
+        {
+            "sessionId": "60ab44e1880943f086413adc21edbc60",
+            "startedUtc": "2026-05-27T13:03:41.5841142Z",
+            "endedUtc": "2026-05-27T13:03:42.7011531Z",
+            "entries": []
+        },
+        {
+            "sessionId": "090c4d62f29d4c1db0f53eba766bc7df",
+            "startedUtc": "2026-05-27T13:54:10.1099865Z",
+            "endedUtc": "2026-05-27T13:54:11.2533106Z",
+            "entries": []
+        },
+        {
+            "sessionId": "6bd26ec4ae3049128e48884471f3557e",
+            "startedUtc": "2026-05-27T13:57:23.0007161Z",
+            "endedUtc": "2026-05-27T13:57:24.0072918Z",
+            "entries": []
+        },
+        {
+            "sessionId": "4d04d731cc1541f2a49cd314cf429977",
+            "startedUtc": "2026-05-27T13:59:23.0072365Z",
+            "endedUtc": "2026-05-27T13:59:24.0541215Z",
+            "entries": []
+        },
+        {
+            "sessionId": "f812c4c5b16041898ede7c106cbfd8eb",
+            "startedUtc": "2026-05-27T14:00:00.1741616Z",
+            "endedUtc": "2026-05-27T14:00:01.3801826Z",
+            "entries": []
+        },
+        {
+            "sessionId": "04481763a790496ab977b2786031dddb",
+            "startedUtc": "2026-05-27T14:16:15.9942282Z",
+            "endedUtc": "2026-05-27T14:16:17.2034721Z",
+            "entries": []
+        },
+        {
+            "sessionId": "05714f8f94234fbd909da123707e988a",
+            "startedUtc": "2026-05-27T14:26:09.7218179Z",
+            "endedUtc": "2026-05-27T14:26:10.8146565Z",
+            "entries": []
+        },
+        {
+            "sessionId": "e99e2765e1304c769218eebb71d7da20",
+            "startedUtc": "2026-05-27T14:32:50.2294891Z",
+            "endedUtc": "2026-05-27T14:32:51.2967511Z",
+            "entries": []
+        },
+        {
+            "sessionId": "dc760d2f09a540d6b916423919265014",
+            "startedUtc": "2026-05-27T14:41:11.1096720Z",
+            "endedUtc": "2026-05-27T14:41:12.9317403Z",
+            "entries": []
+        }
+    ]
+}

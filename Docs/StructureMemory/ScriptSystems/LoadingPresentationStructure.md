@@ -59,6 +59,8 @@ Map loading, presentation runtime, global UI, camera, audio, input binding, sett
 - `Assets/LeeJunMo/Script/UIStructure/GameFlowInputBlocker.cs`
 - `Assets/LeeJunMo/Script/Loading/Runtime/LoadingOverlayController.cs`
 - `Assets/LeeJunMo/Script/Loading/Runtime/PresentationPreloadService.cs`
+- `Assets/LeeJunMo/Script/Loading/Runtime/PrewarmTraceRuntime.cs`
+- `Assets/Editor/PrewarmRecommendationWindow.cs`
 
 ## Ownership And Lifecycle
 
@@ -67,6 +69,8 @@ Map loading, presentation runtime, global UI, camera, audio, input binding, sett
 - Title-local UI, canvas, and camera presentation should follow `Docs/Architecture/SceneDomainBootstrapArchitecture.md`: title scene authoring must not be replaced by gameplay runtime roots or camera rigs.
 - Loading assets/providers should not own gameplay state; they prepare presentation/runtime dependencies.
 - Loading cleanup paths must not recreate runtime provider services. `PresentationPreloadService` release-on-destroy uses non-creating provider lookup and clears active manifest references even when the provider is already gone.
+- `SceneFadeTransitionService` may create a runtime fallback overlay when a transition begins from a scene without an authored fade service, but title-origin transitions should prefer a scene-root authored `SceneFadeTransitionService` so fade timing is Inspector-tuned. If the loaded scene brings in an authored service during any active transition, replacement is deferred until `EndTransitionSession()` so the same overlay that faded to black can fade the next scene back in. The deferred authored overlay is reset transparent/inactive while pending.
+- `PrewarmTraceRuntime` writes editor trace output to a tester/machine-specific `PrewarmTrace_*.json` file under `Assets/LeeJunMo/Datas/Loading/` and keeps the older `PrewarmTrace.json` as a read-only legacy source. `PrewarmRecommendationWindow` aggregates every tester trace file it finds plus the legacy file so multiple testers can commit their own trace results without rewriting one shared JSON.
 - Camera/audio/settings/speech bubble scripts are presentation support and should not own progression state.
 
 ## Boundary Review
@@ -99,7 +103,9 @@ Map loading, presentation runtime, global UI, camera, audio, input binding, sett
 - Title-local presentation should stay scene-authored; adding runtime fallback UI or camera objects for title needs explicit owner, cleanup, and migration notes.
 - Production-facing global UI and presentation overlays should be scene- or prefab-authored where possible, then driven through serialized references or `GlobalUIRoot` layers.
 - Runtime-created fallback paths need explicit owner, cleanup, and a migration follow-up before they are treated as final UI.
+- Do not destroy or replace the active fade service while `IsTransitionActive` is true. Scene loads can awaken authored `GlobalUIRoot` fade services before the transition owner has called `FadeInAsync()`, so replacement must be deferred until the current fade session ends. Also hide the deferred authored overlay immediately because prefab-authored fade images may start active with alpha 1. For title-origin transitions, keep the title authored fade service as a scene-root object rather than a title-canvas child so it survives the load long enough to complete fade-in.
 - Service properties that call `EnsureInstance()` are unsafe in destruction cleanup. Use non-creating lookups when releasing loading manifests during `OnDestroy` or scene teardown.
+- Do not change prewarm trace capture back to a single shared JSON file. Shared trace writes create source-control conflicts when several testers run sessions; recommendation analysis should merge per-tester files instead.
 - Presentation authoring should follow `Docs/Contracts/PresentationAuthoringContract.md`.
 - Loading/addressable behavior can be scene and asset-reference sensitive; verify paths and asset references before changing.
 

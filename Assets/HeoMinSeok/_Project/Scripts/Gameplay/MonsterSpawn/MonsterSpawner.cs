@@ -10,6 +10,8 @@ using UnityEngine.SceneManagement;
 /// </summary>
 public class MonsterSpawner : MonoBehaviour
 {
+    private const string DefaultStageHpScalingSettingsResourcePath = "MonsterStageHpScalingSettings";
+
     public static MonsterSpawner Instance { get; private set; }
 
     [Header("Spawn Points")]
@@ -18,6 +20,9 @@ public class MonsterSpawner : MonoBehaviour
 
     [Header("Difficulty")]
     [SerializeField] private DifficultyModifiers difficultyModifiers = new();
+    [SerializeField] private MonsterStageHpScalingSettings stageHpScalingSettings;
+    [SerializeField] private bool enableStageHpScaling = true;
+    [SerializeField, Min(0f)] private float hpMultiplierPerClearedStage = 0.5f;
 
     [Header("Installers")]
     [SerializeField] private MonsterElementGaugeViewInstaller gaugeViewInstaller;
@@ -120,7 +125,7 @@ public class MonsterSpawner : MonoBehaviour
     [ContextMenu("Spawn All")]
     public void SpawnAll()
     {
-        SceneDirector.SpawnAll(difficultyModifiers);
+        SceneDirector.SpawnAll(BuildRuntimeDifficultyModifiers());
         SyncSceneServiceReferences();
     }
 
@@ -131,7 +136,7 @@ public class MonsterSpawner : MonoBehaviour
     /// </summary>
     public GameObject SpawnOne(MonsterSpawnRequest request)
     {
-        GameObject monster = SceneDirector.SpawnOne(request, difficultyModifiers);
+        GameObject monster = SceneDirector.SpawnOne(request, BuildRuntimeDifficultyModifiers());
         SyncSceneServiceReferences();
         return monster;
     }
@@ -155,7 +160,7 @@ public class MonsterSpawner : MonoBehaviour
     [ContextMenu("Reapply Difficulty To Alive Monsters")]
     public void ReapplyDifficultyToAliveMonsters()
     {
-        SceneDirector.ReapplyDifficultyToAliveMonsters(difficultyModifiers);
+        SceneDirector.ReapplyDifficultyToAliveMonsters(BuildRuntimeDifficultyModifiers());
     }
 
     /// <summary>
@@ -184,9 +189,87 @@ public class MonsterSpawner : MonoBehaviour
                 recollectSpawnPointsOnSceneLoaded,
                 spawnOnSceneLoaded,
                 clearAliveMonstersBeforeSceneSpawn),
-            difficultyModifiers);
+            BuildRuntimeDifficultyModifiers());
 
         SyncSceneServiceReferences();
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 현재 런 스테이지 진행도에 따른 일반 몬스터 HP/공격 템포 보정을 계산한다.
+    /// - serialized 원본 난이도 설정은 보존하고, 스폰/재적용 순간에만 복사본을 조정한다.
+    /// </summary>
+    private DifficultyModifiers BuildRuntimeDifficultyModifiers()
+    {
+        DifficultyModifiers runtimeModifiers = difficultyModifiers != null
+            ? difficultyModifiers.Clone()
+            : new DifficultyModifiers();
+
+        MonsterStageHpScalingSettings settings = ResolveStageHpScalingSettings();
+        bool useStageScaling = settings != null ? settings.Enabled : enableStageHpScaling;
+        if (!useStageScaling)
+            return runtimeModifiers;
+
+        int stageIndex = ResolveCurrentStageIndex();
+        float stageHpMultiplier = settings != null
+            ? settings.CalculateStageHpMultiplier(stageIndex)
+            : 1f + Mathf.Max(0f, hpMultiplierPerClearedStage) * Mathf.Max(0, stageIndex);
+        runtimeModifiers.hpMultiplier = Mathf.Max(0f, runtimeModifiers.hpMultiplier) * stageHpMultiplier;
+
+        float stageAttackSpeedMultiplier = settings != null
+            ? settings.CalculateStageAttackSpeedMultiplier(stageIndex)
+            : 1f;
+        runtimeModifiers.attackSpeedMultiplier = Mathf.Max(0f, runtimeModifiers.attackSpeedMultiplier) * stageAttackSpeedMultiplier;
+        LogRuntimeDifficulty(stageIndex, stageHpMultiplier, stageAttackSpeedMultiplier, runtimeModifiers, settings);
+        return runtimeModifiers;
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - CombatTimingService 검증을 위해 현재 스테이지에서 계산된 HP/공격속도 난이도 배율을 토글 기반으로 출력한다.
+    /// - 스폰 정책 계산과 로그 출력을 분리해 기본 플레이에서는 콘솔 출력을 만들지 않는다.
+    /// </summary>
+    private void LogRuntimeDifficulty(
+        int stageIndex,
+        float stageHpMultiplier,
+        float stageAttackSpeedMultiplier,
+        DifficultyModifiers runtimeModifiers,
+        MonsterStageHpScalingSettings settings)
+    {
+        if (settings == null || !settings.LogStageScalingDebug)
+            return;
+
+        Debug.Log(
+            $"[MonsterSpawner] stage={stageIndex}, stageHpMultiplier={stageHpMultiplier:0.###}, stageAttackSpeedMultiplier={stageAttackSpeedMultiplier:0.###}, finalHpMultiplier={runtimeModifiers.hpMultiplier:0.###}, finalAttackSpeedMultiplier={runtimeModifiers.attackSpeedMultiplier:0.###}",
+            this);
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 씬별 MonsterSpawner 설정 대신 중앙 stage HP scaling 설정을 우선 사용한다.
+    /// - 중앙 설정이 없는 기존 씬은 기존 serialized 필드를 fallback으로 유지한다.
+    /// </summary>
+    private MonsterStageHpScalingSettings ResolveStageHpScalingSettings()
+    {
+        if (stageHpScalingSettings != null)
+            return stageHpScalingSettings;
+
+        stageHpScalingSettings = Resources.Load<MonsterStageHpScalingSettings>(DefaultStageHpScalingSettingsResourcePath);
+        return stageHpScalingSettings;
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - PortalRouteManager의 현재 런 스테이지 index를 난이도 보정 입력값으로 정규화한다.
+    /// - 개발/테스트 씬처럼 active plan이 없으면 첫 스테이지로 취급한다.
+    /// </summary>
+    private static int ResolveCurrentStageIndex()
+    {
+        PortalRouteManager routeManager = PortalRouteManager.Instance;
+        if (routeManager == null || !routeManager.HasActivePlan)
+            return 0;
+
+        return Mathf.Max(0, routeManager.CurrentStageIndex);
     }
 
     private void SyncSceneServiceReferences()
