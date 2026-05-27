@@ -23,6 +23,7 @@ public sealed class CinematicLetterboxOverlay
     private RectTransform rootRect;
     private RectTransform topBarRect;
     private RectTransform bottomBarRect;
+    private bool isDisposed;
 
     private sealed class CanvasGroupState
     {
@@ -44,6 +45,9 @@ public sealed class CinematicLetterboxOverlay
         float uiTargetAlpha,
         bool captureGlobalUiLayers)
     {
+        if (isDisposed)
+            yield break;
+
         EnsureOverlayExists();
         if (captureGlobalUiLayers)
             CaptureCanvasStates();
@@ -65,6 +69,9 @@ public sealed class CinematicLetterboxOverlay
         float uiTargetAlpha,
         IReadOnlyList<GlobalCanvasLayer> fadedLayers)
     {
+        if (isDisposed)
+            yield break;
+
         EnsureOverlayExists();
         CaptureCanvasStates(fadedLayers);
 
@@ -79,7 +86,7 @@ public sealed class CinematicLetterboxOverlay
 
     public IEnumerator PlayOut(float duration)
     {
-        if (overlayRoot == null)
+        if (isDisposed || overlayRoot == null)
             yield break;
 
         yield return Animate(
@@ -92,6 +99,10 @@ public sealed class CinematicLetterboxOverlay
 
     public void Dispose()
     {
+        if (isDisposed)
+            return;
+
+        isDisposed = true;
         RestoreCanvasStatesImmediate();
 
         if (overlayRoot != null)
@@ -110,7 +121,7 @@ public sealed class CinematicLetterboxOverlay
         System.Func<CanvasGroupState, float> resolveTargetAlpha,
         bool restoreCanvasInteraction)
     {
-        if (topBarRect == null || bottomBarRect == null)
+        if (isDisposed || topBarRect == null || bottomBarRect == null)
             yield break;
 
         float topBarStartHeight = topBarRect.sizeDelta.y;
@@ -131,6 +142,9 @@ public sealed class CinematicLetterboxOverlay
         float elapsed = 0f;
         while (elapsed < duration)
         {
+            if (isDisposed)
+                yield break;
+
             elapsed += Time.unscaledDeltaTime;
             float t = Mathf.Clamp01(elapsed / duration);
 
@@ -208,8 +222,8 @@ public sealed class CinematicLetterboxOverlay
             rootRect.pivot = new Vector2(0.5f, 0.5f);
         }
 
-        topBarRect = CreateBar("TopBar", isTop: true);
-        bottomBarRect = CreateBar("BottomBar", isTop: false);
+        topBarRect = CreateBar("CinematicTopBar", isTop: true);
+        bottomBarRect = CreateBar("CinematicBottomBar", isTop: false);
     }
 
     private RectTransform CreateBar(string objectName, bool isTop)

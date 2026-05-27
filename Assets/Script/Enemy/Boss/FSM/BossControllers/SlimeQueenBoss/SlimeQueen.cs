@@ -3,12 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityGAS;
 
+[RequireComponent(typeof(SlimeQueenVanishParticleEffect))]
 public sealed class SlimeQueen : SlimeQueenBossBase, ISlimeQueenBodyInflateHost, ISlimeQueenRandomJumpHost
 {
+    private const float PhaseTwoSplitBlockedSkin = 0.08f;
+    private const int PhaseTwoSplitDirectionAttempts = 16;
+
     private static readonly int IsJumpingHash = Animator.StringToHash("isJumping");
     private static readonly int IsShoutingHash = Animator.StringToHash("isShouting");
     private static readonly int ReadyTriggerHash = Animator.StringToHash("ready");
     private static readonly int IsGiantizationHash = Animator.StringToHash("isGiantization");
+    private static readonly int IdleStateHash = Animator.StringToHash("SlimeQueenA_Idle");
 
     [Header("Slime Queen Runtime")]
     [Tooltip("켜두면 Phase 1 Pattern 1을 런타임 보스 FSM 패턴으로 자동 구성합니다.")]
@@ -143,15 +148,45 @@ public sealed class SlimeQueen : SlimeQueenBossBase, ISlimeQueenBodyInflateHost,
     [Tooltip("1페이즈 사망 후 생성할 2페이즈 원거리 퀸 프리팹입니다.")]
     [SerializeField] private SlimeQueenP2Long phase2LongPrefab;
 
-    [Tooltip("2페이즈 근거리 퀸을 1페이즈 사망 위치 기준으로 생성할 오프셋입니다.")]
+    [Tooltip("분열 착지점 계산에 실패했을 때 사용하는 2페이즈 근거리 퀸 fallback 오프셋입니다.")]
     [SerializeField] private Vector2 phase2ShortSpawnOffset = new Vector2(-1.5f, 0f);
 
-    [Tooltip("2페이즈 원거리 퀸을 1페이즈 사망 위치 기준으로 생성할 오프셋입니다.")]
+    [Tooltip("분열 착지점 계산에 실패했을 때 사용하는 2페이즈 원거리 퀸 fallback 오프셋입니다.")]
     [SerializeField] private Vector2 phase2LongSpawnOffset = new Vector2(1.5f, 0f);
 
+    [Tooltip("분열 연출의 시작점입니다. 비워두면 패턴 2 랜덤 이동 바운더리 중앙을 사용하고, 그것도 없으면 사망 위치를 사용합니다.")]
+    [SerializeField] private Transform phase2SplitOrigin;
+
+    [Tooltip("분열 원점에서 각 2페이즈 퀸이 튀어나갈 거리입니다.")]
+    [SerializeField, Min(0f)] private float phase2SplitDistance = 1.45f;
+
+    [Tooltip("2페이즈 퀸 분열 착지 연출 시간입니다.")]
+    [SerializeField, Min(0.01f)] private float phase2SplitLandingSeconds = 0.6f;
+
+    [Tooltip("2페이즈 퀸 분열 착지 포물선 높이입니다.")]
+    [SerializeField, Min(0f)] private float phase2SplitLandingArcHeight = 0.85f;
+
+    [Tooltip("소멸 파티클 후 2페이즈 분열체가 나타나기 전 짧은 지연 시간입니다.")]
+    [SerializeField, Min(0f)] private float phase2SplitVanishLeadSeconds = 0.15f;
+
+    [Tooltip("분열 착지점이 벽/장애물과 겹치지 않도록 검사할 레이어입니다. 비워두면 Wall, Default, Non_FightCollision을 사용합니다.")]
+    [SerializeField] private LayerMask phase2SplitBlockedLayers;
+
+    [Tooltip("분열 착지점 충돌 검사 반지름입니다.")]
+    [SerializeField, Min(0.01f)] private float phase2SplitLandingProbeRadius = 0.45f;
+
+    [Tooltip("1페이즈 소멸 위치에 생성할 초록 파티클 프리팹입니다. 비워두면 임시 런타임 파티클을 사용합니다.")]
+    [SerializeField] private GameObject phase2SplitVanishEffectPrefab;
+
+    [Tooltip("소멸 파티클 프리팹 또는 임시 파티클을 제거할 시간입니다.")]
+    [SerializeField, Min(0.1f)] private float phase2SplitVanishEffectLifetime = 1.2f;
+
     private SpeechBubbleComponent speechBubble;
+    private SlimeQueenVanishParticleEffect phaseOneVanishEffect;
     private Coroutine callSlimeSpeechAnimationRoutine;
     private readonly List<AttackTelegraphView> bodyInflateWarningViews = new List<AttackTelegraphView>();
+    private readonly RaycastHit2D[] phase2SplitRaycastHits = new RaycastHit2D[8];
+    private readonly Collider2D[] phase2SplitOverlapHits = new Collider2D[12];
     private bool runtimePatternsConfigured;
     private bool hasSpawnedPhaseTwoQueens;
 
@@ -218,6 +253,7 @@ public sealed class SlimeQueen : SlimeQueenBossBase, ISlimeQueenBodyInflateHost,
     {
         base.Awake();
         speechBubble = GetComponent<SpeechBubbleComponent>();
+        EnsurePhaseOneVanishEffect();
     }
 
     protected override void Start()
@@ -226,6 +262,16 @@ public sealed class SlimeQueen : SlimeQueenBossBase, ISlimeQueenBodyInflateHost,
             ConfigureRuntimePatternsIfNeeded();
 
         base.Start();
+    }
+
+    private void OnValidate()
+    {
+        phase2SplitDistance = Mathf.Max(0f, phase2SplitDistance);
+        phase2SplitLandingSeconds = Mathf.Max(0.01f, phase2SplitLandingSeconds);
+        phase2SplitLandingArcHeight = Mathf.Max(0f, phase2SplitLandingArcHeight);
+        phase2SplitVanishLeadSeconds = Mathf.Max(0f, phase2SplitVanishLeadSeconds);
+        phase2SplitLandingProbeRadius = Mathf.Max(0.01f, phase2SplitLandingProbeRadius);
+        phase2SplitVanishEffectLifetime = Mathf.Max(0.1f, phase2SplitVanishEffectLifetime);
     }
 
     protected override void OnDestroy()
@@ -242,7 +288,20 @@ public sealed class SlimeQueen : SlimeQueenBossBase, ISlimeQueenBodyInflateHost,
     protected override void OnPatternEnd(BossPatternEntry patternEntry, bool forced)
     {
         CleanupBodyInflatePresentation();
+        if (forced)
+            ResetPatternAnimatorStateForInterrupt();
+
         base.OnPatternEnd(patternEntry, forced);
+    }
+
+    protected override void ResetPatternAnimatorStateForInterrupt()
+    {
+        StopCallSlimeSpeechAnimation();
+        SetAnimatorBoolIfExists(IsJumpingHash, false);
+        SetAnimatorBoolIfExists(IsShoutingHash, false);
+        ResetAnimatorTriggerIfExists(ReadyTriggerHash);
+        SetAnimatorBoolIfExists(IsGiantizationHash, false);
+        PlayAnimatorStateIfExists(IdleStateHash);
     }
 
     /// <summary>소환 위치 경고 원을 AttackTelegraph로 표시합니다.</summary>
@@ -645,23 +704,36 @@ public sealed class SlimeQueen : SlimeQueenBossBase, ISlimeQueenBodyInflateHost,
             yield return null;
         }
 
-        SpawnPhaseTwoQueens();
+        Vector3 vanishPosition = transform.position;
+        Vector3 splitOrigin = ResolvePhaseTwoSplitOrigin();
+        PlayPhaseTwoSplitVanishEffect(vanishPosition);
+        SetPhaseOneVisualsVisible(false);
+
+        elapsedSeconds = 0f;
+        while (elapsedSeconds < phase2SplitVanishLeadSeconds)
+        {
+            elapsedSeconds += Time.deltaTime;
+            yield return null;
+        }
+
+        SpawnPhaseTwoQueens(splitOrigin);
         Destroy(gameObject);
     }
 
     /// <summary>설정된 근거리/원거리 2페이즈 퀸 프리팹을 각각 생성합니다.</summary>
-    private void SpawnPhaseTwoQueens()
+    private void SpawnPhaseTwoQueens(Vector3 splitOrigin)
     {
         if (hasSpawnedPhaseTwoQueens)
             return;
 
         hasSpawnedPhaseTwoQueens = true;
-        SpawnPhaseTwoQueen(phase2ShortPrefab, phase2ShortSpawnOffset, "SlimeQueenP2Short");
-        SpawnPhaseTwoQueen(phase2LongPrefab, phase2LongSpawnOffset, "SlimeQueenP2Long");
+        ResolvePhaseTwoSplitLandingPair(splitOrigin, out Vector3 shortLandingPosition, out Vector3 longLandingPosition);
+        SpawnPhaseTwoQueen(phase2ShortPrefab, splitOrigin, shortLandingPosition, "SlimeQueenP2Short");
+        SpawnPhaseTwoQueen(phase2LongPrefab, splitOrigin, longLandingPosition, "SlimeQueenP2Long");
     }
 
-    /// <summary>2페이즈 퀸 프리팹 하나를 지정 오프셋에 생성하고 타겟을 공유합니다.</summary>
-    private TQueen SpawnPhaseTwoQueen<TQueen>(TQueen prefab, Vector2 spawnOffset, string fallbackName)
+    /// <summary>2페이즈 퀸 프리팹 하나를 분열 원점에 생성하고 착지 연출을 시작합니다.</summary>
+    private TQueen SpawnPhaseTwoQueen<TQueen>(TQueen prefab, Vector3 splitOrigin, Vector3 landingPosition, string fallbackName)
         where TQueen : SlimeQueenPhaseTwoBase
     {
         if (prefab == null)
@@ -670,11 +742,335 @@ public sealed class SlimeQueen : SlimeQueenBossBase, ISlimeQueenBodyInflateHost,
             return null;
         }
 
-        Vector3 worldOffset = new Vector3(spawnOffset.x, spawnOffset.y, 0f);
-        TQueen spawnedQueen = Instantiate(prefab, transform.position + worldOffset, transform.rotation);
+        TQueen spawnedQueen = Instantiate(prefab, splitOrigin, transform.rotation);
         spawnedQueen.name = fallbackName;
         spawnedQueen.SetCombatTarget(CurrentTarget);
+        spawnedQueen.BeginPhaseTwoSplitLanding(
+            splitOrigin,
+            landingPosition,
+            phase2SplitLandingSeconds,
+            phase2SplitLandingArcHeight);
         return spawnedQueen;
+    }
+
+    /// <summary>분열 연출 원점을 씬 기준 안전 중앙 위치로 결정합니다.</summary>
+    private Vector3 ResolvePhaseTwoSplitOrigin()
+    {
+        if (phase2SplitOrigin != null)
+        {
+            Vector3 authoredOrigin = phase2SplitOrigin.position;
+            authoredOrigin.z = transform.position.z;
+            return authoredOrigin;
+        }
+
+        SlimeQueenRandomMoveBounds bounds = ResolveRandomMoveBounds();
+        if (bounds != null && bounds.TryGetCenter(transform.position.z, out Vector3 boundsCenter))
+            return boundsCenter;
+
+        return transform.position;
+    }
+
+    /// <summary>두 2페이즈 퀸이 서로 반대 방향으로, 구덩이/배수구를 피해서 착지할 좌표를 계산합니다.</summary>
+    private void ResolvePhaseTwoSplitLandingPair(Vector3 splitOrigin, out Vector3 shortLandingPosition, out Vector3 longLandingPosition)
+    {
+        float splitDistance = Mathf.Max(0f, phase2SplitDistance);
+        if (splitDistance <= 0f)
+        {
+            ResolveLegacyPhaseTwoSplitOffsets(splitOrigin, out shortLandingPosition, out longLandingPosition);
+            return;
+        }
+
+        float bestScore = -1f;
+        Vector3 bestShortLanding = splitOrigin;
+        Vector3 bestLongLanding = splitOrigin;
+
+        for (int i = 0; i < PhaseTwoSplitDirectionAttempts; i++)
+        {
+            Vector2 direction = CreateRandomPhaseTwoSplitDirection();
+            Vector3 shortCandidate = ResolvePhaseTwoSplitLandingPosition(splitOrigin, direction, splitDistance);
+            Vector3 longCandidate = ResolvePhaseTwoSplitLandingPosition(splitOrigin, -direction, splitDistance);
+            float shortDistance = Vector2.Distance(splitOrigin, shortCandidate);
+            float longDistance = Vector2.Distance(splitOrigin, longCandidate);
+            float separation = Vector2.Distance(shortCandidate, longCandidate);
+            float score = shortDistance + longDistance + separation;
+
+            if (score > bestScore)
+            {
+                bestScore = score;
+                bestShortLanding = shortCandidate;
+                bestLongLanding = longCandidate;
+            }
+
+            bool enoughSplit = separation >= Mathf.Max(0.8f, splitDistance * 1.25f);
+            bool enoughDistance = shortDistance >= splitDistance * 0.45f && longDistance >= splitDistance * 0.45f;
+            if (enoughSplit && enoughDistance)
+            {
+                shortLandingPosition = shortCandidate;
+                longLandingPosition = longCandidate;
+                return;
+            }
+        }
+
+        if (bestScore > 0f)
+        {
+            shortLandingPosition = bestShortLanding;
+            longLandingPosition = bestLongLanding;
+            return;
+        }
+
+        ResolveLegacyPhaseTwoSplitOffsets(splitOrigin, out shortLandingPosition, out longLandingPosition);
+    }
+
+    /// <summary>기존 serialized 오프셋을 최후 fallback으로 사용합니다.</summary>
+    private void ResolveLegacyPhaseTwoSplitOffsets(Vector3 splitOrigin, out Vector3 shortLandingPosition, out Vector3 longLandingPosition)
+    {
+        shortLandingPosition = ClampPhaseTwoSplitPointToBounds(splitOrigin + new Vector3(phase2ShortSpawnOffset.x, phase2ShortSpawnOffset.y, 0f));
+        longLandingPosition = ClampPhaseTwoSplitPointToBounds(splitOrigin + new Vector3(phase2LongSpawnOffset.x, phase2LongSpawnOffset.y, 0f));
+    }
+
+    /// <summary>분열 방향을 랜덤 각도로 생성합니다.</summary>
+    private static Vector2 CreateRandomPhaseTwoSplitDirection()
+    {
+        float angleRadians = Random.Range(0f, Mathf.PI * 2f);
+        return new Vector2(Mathf.Cos(angleRadians), Mathf.Sin(angleRadians));
+    }
+
+    /// <summary>한 방향의 착지 후보를 장애물/기믹 충돌을 피해 보정합니다.</summary>
+    private Vector3 ResolvePhaseTwoSplitLandingPosition(Vector3 splitOrigin, Vector2 direction, float splitDistance)
+    {
+        if (direction.sqrMagnitude <= 0.0001f || splitDistance <= 0f)
+            return splitOrigin;
+
+        LayerMask blockedLayers = ResolvePhaseTwoSplitBlockedLayers();
+        Vector2 normalizedDirection = direction.normalized;
+        Vector2 start = splitOrigin;
+        float safeDistance = splitDistance;
+
+        if (blockedLayers.value != 0)
+        {
+            RaycastHit2D blockerHit = FindNearestPhaseTwoSplitBlocker(start, normalizedDirection, splitDistance, blockedLayers);
+            if (blockerHit.collider != null)
+                safeDistance = Mathf.Max(0f, blockerHit.distance - PhaseTwoSplitBlockedSkin);
+        }
+
+        Vector3 candidate = splitOrigin + (Vector3)(normalizedDirection * safeDistance);
+        candidate = ClampPhaseTwoSplitPointToBounds(candidate);
+        return ResolveSafePhaseTwoSplitLanding(splitOrigin, candidate, blockedLayers);
+    }
+
+    /// <summary>후보 착지점이 구덩이/배수구/벽과 겹치면 분열 원점 쪽으로 되돌리며 안전 좌표를 찾습니다.</summary>
+    private Vector3 ResolveSafePhaseTwoSplitLanding(Vector3 splitOrigin, Vector3 candidate, LayerMask blockedLayers)
+    {
+        if (IsPhaseTwoSplitLandingSafe(candidate, blockedLayers))
+            return candidate;
+
+        const int resolveSteps = 8;
+        for (int i = 1; i <= resolveSteps; i++)
+        {
+            float t = 1f - (float)i / resolveSteps;
+            Vector3 fallback = Vector3.Lerp(splitOrigin, candidate, t);
+            if (IsPhaseTwoSplitLandingSafe(fallback, blockedLayers))
+                return fallback;
+        }
+
+        return splitOrigin;
+    }
+
+    /// <summary>분열 착지점이 바운더리 밖으로 나가지 않도록 보정합니다.</summary>
+    private Vector3 ClampPhaseTwoSplitPointToBounds(Vector3 point)
+    {
+        SlimeQueenRandomMoveBounds bounds = ResolveRandomMoveBounds();
+        if (bounds != null && bounds.TryClampPoint(point, out Vector3 clampedPoint))
+            return clampedPoint;
+
+        return point;
+    }
+
+    /// <summary>착지점에 장애물 또는 구덩이/배수구 기믹이 없는지 확인합니다.</summary>
+    private bool IsPhaseTwoSplitLandingSafe(Vector3 position, LayerMask blockedLayers)
+    {
+        return !IsPhaseTwoSplitLandingBlocked(position, blockedLayers) &&
+               !IsPhaseTwoSplitLandingOnHazard(position);
+    }
+
+    /// <summary>분열 착지점 검사에 사용할 충돌체 레이어를 가져옵니다.</summary>
+    private LayerMask ResolvePhaseTwoSplitBlockedLayers()
+    {
+        if (phase2SplitBlockedLayers.value != 0)
+            return phase2SplitBlockedLayers;
+
+        int mask = 0;
+        int wallLayer = LayerMask.NameToLayer("Wall");
+        int defaultLayer = LayerMask.NameToLayer("Default");
+        int nonFightCollisionLayer = LayerMask.NameToLayer("Non_FightCollision");
+
+        if (wallLayer >= 0)
+            mask |= 1 << wallLayer;
+        if (defaultLayer >= 0)
+            mask |= 1 << defaultLayer;
+        if (nonFightCollisionLayer >= 0)
+            mask |= 1 << nonFightCollisionLayer;
+
+        return mask;
+    }
+
+    /// <summary>분열 이동 경로에서 가장 가까운 non-trigger 장애물을 찾습니다.</summary>
+    private RaycastHit2D FindNearestPhaseTwoSplitBlocker(Vector2 start, Vector2 direction, float distance, LayerMask blockedLayers)
+    {
+        ContactFilter2D filter = new()
+        {
+            useLayerMask = true,
+            layerMask = blockedLayers,
+            useTriggers = false
+        };
+
+        int hitCount = Physics2D.Raycast(start, direction, filter, phase2SplitRaycastHits, distance);
+        RaycastHit2D nearestHit = default;
+        float nearestDistance = float.MaxValue;
+
+        for (int i = 0; i < hitCount; i++)
+        {
+            RaycastHit2D hit = phase2SplitRaycastHits[i];
+            if (hit.collider == null || hit.collider.transform.IsChildOf(transform))
+                continue;
+
+            if (hit.distance < nearestDistance)
+            {
+                nearestHit = hit;
+                nearestDistance = hit.distance;
+            }
+        }
+
+        return nearestHit;
+    }
+
+    /// <summary>착지점이 non-trigger 장애물과 겹치는지 검사합니다.</summary>
+    private bool IsPhaseTwoSplitLandingBlocked(Vector3 position, LayerMask blockedLayers)
+    {
+        if (blockedLayers.value == 0)
+            return false;
+
+        ContactFilter2D filter = new()
+        {
+            useLayerMask = true,
+            layerMask = blockedLayers,
+            useTriggers = false
+        };
+
+        int hitCount = Physics2D.OverlapCircle(position, phase2SplitLandingProbeRadius, filter, phase2SplitOverlapHits);
+        for (int i = 0; i < hitCount; i++)
+        {
+            Collider2D hit = phase2SplitOverlapHits[i];
+            if (hit != null && !hit.transform.IsChildOf(transform))
+                return true;
+        }
+
+        return false;
+    }
+
+    /// <summary>착지점이 구덩이 또는 배수구 근처인지 검사합니다.</summary>
+    private bool IsPhaseTwoSplitLandingOnHazard(Vector3 position)
+    {
+        Collider2D[] hits = Physics2D.OverlapCircleAll(position, phase2SplitLandingProbeRadius);
+        for (int i = 0; i < hits.Length; i++)
+        {
+            Collider2D hit = hits[i];
+            if (hit == null || hit.transform.IsChildOf(transform))
+                continue;
+
+            if (hit.GetComponent<HoleTrap>() != null || hit.GetComponentInParent<HoleTrap>() != null)
+                return true;
+
+            if (hit.GetComponent<DrainPipe>() != null || hit.GetComponentInParent<DrainPipe>() != null)
+                return true;
+        }
+
+        DrainPipe[] drainPipes = FindObjectsByType<DrainPipe>(FindObjectsInactive.Exclude);
+        for (int i = 0; i < drainPipes.Length; i++)
+        {
+            DrainPipe drainPipe = drainPipes[i];
+            if (drainPipe != null && drainPipe.ContainsActivePhaseTwoBossSuctionPoint(position, phase2SplitLandingProbeRadius))
+                return true;
+        }
+
+        return false;
+    }
+
+    /// <summary>1페이즈 사망 위치에 소멸 파티클을 출력합니다.</summary>
+    private void PlayPhaseTwoSplitVanishEffect(Vector3 position)
+    {
+        if (phase2SplitVanishEffectPrefab != null)
+        {
+            GameObject effect = Instantiate(phase2SplitVanishEffectPrefab, position, Quaternion.identity);
+            Destroy(effect, phase2SplitVanishEffectLifetime);
+            return;
+        }
+
+        EnsurePhaseOneVanishEffect();
+        if (phaseOneVanishEffect != null)
+        {
+            phaseOneVanishEffect.SpawnOneShot(position, sprite);
+            return;
+        }
+
+        CreateFallbackPhaseTwoSplitVanishEffect(position);
+    }
+
+    private void EnsurePhaseOneVanishEffect()
+    {
+        if (phaseOneVanishEffect == null)
+            phaseOneVanishEffect = GetComponent<SlimeQueenVanishParticleEffect>();
+
+        if (phaseOneVanishEffect == null)
+            phaseOneVanishEffect = gameObject.AddComponent<SlimeQueenVanishParticleEffect>();
+    }
+
+    /// <summary>별도 프리팹이 없을 때 사용하는 임시 초록 소멸 파티클입니다.</summary>
+    private void CreateFallbackPhaseTwoSplitVanishEffect(Vector3 position)
+    {
+        GameObject effect = new GameObject("SlimeQueenPhaseTwoSplitVanish");
+        effect.transform.position = position;
+
+        ParticleSystem particles = effect.AddComponent<ParticleSystem>();
+        ParticleSystem.MainModule main = particles.main;
+        main.duration = 0.45f;
+        main.loop = false;
+        main.startLifetime = new ParticleSystem.MinMaxCurve(0.35f, 0.55f);
+        main.startSpeed = new ParticleSystem.MinMaxCurve(1.4f, 2.4f);
+        main.startSize = new ParticleSystem.MinMaxCurve(0.08f, 0.18f);
+        main.startColor = new ParticleSystem.MinMaxGradient(
+            new Color(0.26f, 1f, 0.34f, 0.9f),
+            new Color(0.03f, 0.65f, 0.12f, 0.35f));
+        main.simulationSpace = ParticleSystemSimulationSpace.World;
+
+        ParticleSystem.EmissionModule emission = particles.emission;
+        emission.rateOverTime = 0f;
+        emission.SetBursts(new[] { new ParticleSystem.Burst(0f, (short)42) });
+
+        ParticleSystem.ShapeModule shape = particles.shape;
+        shape.enabled = true;
+        shape.shapeType = ParticleSystemShapeType.Circle;
+        shape.radius = 0.12f;
+
+        ParticleSystemRenderer particleRenderer = effect.GetComponent<ParticleSystemRenderer>();
+        if (particleRenderer != null && sprite != null)
+        {
+            particleRenderer.sortingLayerID = sprite.sortingLayerID;
+            particleRenderer.sortingOrder = sprite.sortingOrder + 3;
+        }
+
+        Destroy(effect, phase2SplitVanishEffectLifetime);
+    }
+
+    /// <summary>소멸 연출 이후 1페이즈 본체 표시를 숨깁니다.</summary>
+    private void SetPhaseOneVisualsVisible(bool isVisible)
+    {
+        Renderer[] renderers = GetComponentsInChildren<Renderer>(true);
+        for (int i = 0; i < renderers.Length; i++)
+        {
+            if (renderers[i] != null)
+                renderers[i].enabled = isVisible;
+        }
     }
 
     /// <summary>사망 애니메이션 클립 길이를 기준으로 분열 생성 대기 시간을 계산합니다.</summary>

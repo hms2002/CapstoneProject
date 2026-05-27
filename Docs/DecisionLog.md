@@ -2,10 +2,63 @@
 status: active
 authority: project-log
 category: decision-log
-last_reviewed: 2026-05-23
+last_reviewed: 2026-05-26
 ---
 
 # Decision Log
+
+## 2026-05-28 - Editor Play Mode Bypasses Persistent Display Letterbox
+
+Decision:
+Unity Editor Play Mode bypasses the persistent display letterbox owned by `GamePresentationController`, forcing a full viewport and destroying the runtime `LetterboxOverlay` object. Player builds still use the normal 16:9 display letterbox/pillarbox policy.
+
+Reason:
+Editor Game View aspect can change independently of authored gameplay validation, and persistent `GameSettingsService` presentation survives scene loads. When the display letterbox appears from scene start, it is easy to confuse it with cutscene letterbox bugs and boss finale cleanup issues. Editor testing should not show persistent display bars unless a build/display-mode test is being performed.
+
+Implications:
+- `CinematicLetterboxOverlay` remains available in Editor Play Mode for actual cutscenes.
+- Display/aspect-ratio behavior for builds remains governed by `Docs/Contracts/display-presentation-rules.md`.
+- Future debugging of black bars should first distinguish `GameSettingsService > LetterboxOverlay` from `CinematicLetterboxOverlay`.
+
+## 2026-05-26 - Slime Queen Vanish Particles Are Detached Playback
+
+Decision:
+Slime Queen vanish presentation is configured through a boss-local `SlimeQueenVanishParticleEffect` component, but the actual one-shot ParticleSystem playback object is detached from the boss when played.
+
+Reason:
+Phase-one Slime Queen hides and destroys its own GameObject shortly after the split beat. A ParticleSystem directly hosted on the boss would be cut off before the 4 green square particles finish spreading, holding for 1 second, and fading.
+
+Implications:
+- P1 can keep the vanish settings on the boss component while still letting the visual survive object destruction.
+- The authored `phase2SplitVanishEffectPrefab` override remains the highest-priority path when assigned.
+- P2 finale vanish reuses the same component shape instead of maintaining a separate hard-coded fallback.
+
+## 2026-05-26 - P2 Drain Stun Keeps Damage Reception Active
+
+Decision:
+During the Slime Queen phase-two drain stun, `DrainPipe` owns movement/action lock only. The trapped P2 boss must keep Rigidbody simulation and hurtbox colliders active so player attacks can hit during the 4-second damage window.
+
+Reason:
+The drain mechanic is designed as a temporary free-damage/groggy window, not as a disappear or invulnerability state. Removing the boss from physics makes the player-facing reward of opening the drain fail.
+
+Implications:
+- Drain submerge can freeze position/rotation and disable the boss movement motor, but must not disable damage-receiving colliders.
+- Drain cleanup must avoid restoring gameplay components if the boss dies while submerged, because death cleanup owns that disabled state.
+- Exit from the drain can add a short presentation jump before movement/control are restored.
+
+## 2026-05-26 - Slime Queen Phase Two Bodies Persist Until Joint Finale
+
+Decision:
+P2Short and P2Long enter their `isDead` animation immediately when individually defeated, but managed Slime Queen phase-two bodies are not destroyed until both P2 bosses are dead and the joint finale sequence consumes them.
+
+Reason:
+The design requires the final defeat presentation to start only after both split bodies have died, then show P2Short's line and disappearance before moving the zoomed camera to P2Long for its line and disappearance. Individual auto-destruction would remove the targets needed for that sequence.
+
+Implications:
+- `SlimeQueenEncounterClearCondition` treats P2 death state as the clear signal instead of waiting for object destruction.
+- `BossEncounterEndDirector` can run a clear-condition-provided finale before reward handling through `IBossEncounterFinalePresentationProvider`.
+- Managed P2 bodies should not use per-body delayed destruction. Their disappearance belongs to the joint finale.
+- Camera target changes for this finale should use `CameraPresentationDirector` and a temporary focus anchor, then return to the player before rewards/portal activation.
 
 ## 2026-05-25 - P2 Drain Completion Restores The Drain
 
@@ -984,3 +1037,16 @@ Implications:
 - Scene authoring may assign a specific `cameraFocusTarget`; otherwise the speech-bubble transform is used, then the NPC transform.
 - User choices are framed on the player: the flow returns the camera to the player before showing the authored choice panel, then refocuses the NPC only when the selected choice has NPC response lines.
 - Manual play validation is required for scene-specific framing and damping.
+
+## 2026-05-26 - Slime Queen Phase Two Split Uses A Safe Split Origin
+
+Decision:
+Slime Queen phase-one death plays the vanish effect at the actual death position, but phase-two Short/Long split bodies spawn from an authored split origin or the random-move bounds center. They then land in opposite random directions through the shared slime split landing motion.
+
+Reason:
+When phase one dies near a map edge, splitting directly and widely from the death position can place phase-two bosses into holes or drain influence immediately. Moving the split origin to a stable arena center keeps the presentation readable while preserving the death-position vanish beat.
+
+Implications:
+- Existing serialized Short/Long offsets remain fallback data only.
+- Phase-two split landing must lock boss movement, contact damage, pattern selection, and pit/drain eligibility until the landing arc finishes.
+- Final art can replace the temporary code-created green vanish ParticleSystem by assigning `phase2SplitVanishEffectPrefab`.

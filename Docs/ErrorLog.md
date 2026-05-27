@@ -2,7 +2,7 @@
 status: active
 authority: project-log
 category: error-log
-last_reviewed: 2026-05-25
+last_reviewed: 2026-05-26
 ---
 
 # Error Log
@@ -24,6 +24,62 @@ Prevention:
 ```
 
 ## Active Entries
+
+## 2026-05-28 - Persistent Display Letterbox Was Mistaken For Cinematic Letterbox
+
+Context:
+The Slime Queen scene showed black top/bottom bars from scene start, and the bars persisted when moving to other scenes. The first fix targeted the phase-two finale cinematic letterbox cleanup path, but that did not match the reported "already visible at scene start" symptom.
+
+Cause:
+There are two separate black-bar systems. `CinematicLetterboxOverlay` is cutscene-local, while `GamePresentationController` creates a persistent display letterbox under `GameSettingsService`, which survives scene loads through `DontDestroyOnLoad`. The display path was using the current Game View/screen container in Editor play, so a non-16:9 editor view could create top/bottom bars before any boss finale ran.
+
+Fix:
+Windowed presentation container calculation now uses the selected display resolution instead of the current Game View size. In Unity Editor play mode, the persistent display letterbox path resolves to full viewport and destroys its runtime `LetterboxOverlay` object. The two runtime bar systems now also use distinct child names: `CinematicTopBar/CinematicBottomBar` for cutscenes and `DisplayLetterboxTopBar/DisplayLetterboxBottomBar` for display correction. Build presentation still keeps the 16:9 display letterbox policy.
+
+Prevention:
+When black bars appear before a cutscene starts or survive scene loads, inspect `GameSettingsService > LetterboxOverlay` separately from `CinematicLetterboxOverlay`. Do not diagnose persistent scene-start bars as a boss finale cleanup bug unless the runtime object name confirms it. Avoid giving unrelated runtime fallback bars identical child names.
+
+## 2026-05-28 - Slime Queen P2 Finale Letterbox Could Outlive Cutscene
+
+Context:
+During the Slime Queen phase-two finale, the camera zoom cutscene letterbox bars could remain on screen after the sequence should have returned to gameplay.
+
+Cause:
+`SlimeQueenEncounterClearCondition` started `CinematicLetterboxOverlay.PlayIn/PlayOut` as independent child coroutines while the finale routine continued with camera movement and speech waits. If the finale owner was interrupted, disabled, or cleanup ran before a child overlay coroutine had fully completed, the local overlay cleanup was not enough to guarantee those child coroutines stopped and the runtime-created `CinematicLetterboxOverlay` object was destroyed.
+
+Fix:
+The Slime Queen finale now stores overlay coroutine handles and all finale runtime owners as fields, stops overlay child coroutines during cleanup, disposes the overlay from `finally` and `OnDisable`, releases input/player locks, destroys the temporary focus anchor, and restores the camera. `CinematicLetterboxOverlay` also now refuses to run `PlayIn/PlayOut` after `Dispose()` so a late-starting coroutine cannot recreate or keep bars alive.
+
+Prevention:
+When a presentation routine starts child coroutines for overlay/fade/camera work, track and stop those child handles in the owner cleanup path. Do not rely only on a local `finally` variable when runtime-created UI is involved.
+
+## 2026-05-27 - Slime Queen Groggy Left Pattern Animator State Active
+
+Context:
+SlimeQueen, SlimeQueenP2Short, or SlimeQueenP2Long could enter Groggy while a pattern animation was active, then remain visually frozen on the skill sprite instead of returning to Idle.
+
+Cause:
+`BossGroggyState.OnEnter()` aborted the current pattern and cancelled the active ability, but the Slime Queen-specific `OnGroggyStateEntered()` path did not reset Animator bool/trigger parameters or force an Idle state. Some Slime Queen controllers also have authored states such as `Ready` that do not have a direct no-condition return to Idle, so simply cancelling the ability was not enough when interruption happened mid-state.
+
+Fix:
+`SlimeQueenBossBase` now exposes an interrupt cleanup hook and safe Animator helpers. P1, P2Short, and P2Long reset their pattern parameters and force their authored Idle state when Groggy or forced pattern cancellation interrupts them.
+
+Prevention:
+Any boss pattern that drives Animator parameters must have an interruption cleanup path owned by the boss or state layer, not only by the ability coroutine `finally` block. Groggy, death, phase changes, drain/pit locks, and scene cleanup can interrupt patterns at points where animator transitions cannot naturally return to Idle.
+
+## 2026-05-26 - P2 Drain Stun Disabled Boss Hurtbox
+
+Context:
+Phase-two Slime Queens were intended to be trapped in an opened drain for 4 seconds so the player could freely attack them, but they could not be hit while submerged.
+
+Cause:
+The drain submerge context disabled `Rigidbody2D.simulated` and all owned `Collider2D` components. In Unity 2D physics, disabling Rigidbody simulation also removes attached colliders from simulation, so the boss hurtbox/contact colliders were no longer valid damage targets.
+
+Fix:
+`DrainPipe` now keeps the P2 boss Rigidbody simulated and leaves colliders enabled during the drain stun. It disables only normal movement ownership, freezes Rigidbody position/rotation, pins the boss at the drain center, then restores movement after a short exit jump. If the boss dies during the stun, cleanup does not re-enable death-disabled gameplay components.
+
+Prevention:
+Environmental control locks that are meant to create a damage window must not disable the target hurtbox, Rigidbody simulation, or damage-receiving colliders. Lock movement/action ownership separately from damage reception.
 
 ## 2026-05-25 - P2 Drain Completion Was Treated As Permanent Blocking
 
@@ -419,3 +475,17 @@ Fix:
 
 Prevention:
 For prefab-authored world UI labels, prefer a world-space Canvas plus `TextMeshProUGUI`, or use a plain Transform with 3D TMP deliberately. Do not rely on RectTransform positioning without a Canvas when the label must appear at a precise world offset.
+
+## 2026-05-26 - Split Landing Presentation Can Trigger Hazards Too Early
+
+Context:
+Slime Queen phase-two bodies need a polished slime-style split landing, but the arena can contain holes and drain pipes.
+
+Cause:
+`SlimeSplitLandingMotion2D` only handles visual arc motion and temporary hurtbox disabling. Bosses also have pattern selection, movement motors, contact damage, pit-fall eligibility, and drain acquisition paths that can run during or immediately after the visual arc if the landing point is unsafe.
+
+Fix:
+`SlimeQueen` now resolves split landing points away from walls, `HoleTrap`, and active `DrainPipe` phase-two suction radius; `SlimeQueenPhaseTwoBase.BeginPhaseTwoSplitLanding(...)` locks movement/control/contact damage/pit-drain eligibility until the arc ends.
+
+Prevention:
+When reusing mob split presentation for bosses or hazard-sensitive actors, add gameplay-control locks and landing-point hazard checks. Do not assume a hurtbox-only visual motion component is enough.

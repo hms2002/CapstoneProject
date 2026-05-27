@@ -96,10 +96,27 @@ public class CameraPresentationDirector : MonoBehaviour
         yield return WaitForBlendEnd();
     }
 
+    public IEnumerator FocusTargetWithDeathLensRoutine(Transform target)
+    {
+        BindBossCameraTarget(target);
+        yield return FocusBossWithDeathLensRoutine();
+    }
+
     public IEnumerator FocusBossWithPhaseLensRoutine()
     {
         BeginBossFocusWithPhaseLens();
         yield return WaitForBlendEnd();
+    }
+
+    public void BindBossCameraTarget(Transform target)
+    {
+        ResolveRuntimeReferences();
+
+        if (bossCam == null || target == null)
+            return;
+
+        bossCam.Follow = target;
+        bossCam.LookAt = target;
     }
 
     public IEnumerator ReturnToPlayerRoutine()

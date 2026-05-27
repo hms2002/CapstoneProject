@@ -312,7 +312,8 @@ MonoBehaviour:
   m_EditorClassIdentifier:
   attributeCatalog: {fileID: 11400000, guid: b9c79b9448814f2408077eff50c01aeb, type: 2}
   baseInitProfile: {fileID: 11400000, guid: 78214cbbca9b4804ba1be48157d5657e, type: 2}
-  overrideInitProfiles: []
+  overrideInitProfiles:
+  - {fileID: 11400000, guid: 4ef68433f5814e86abef2e0debf7c646, type: 2}
   maxLinks:
   - value: {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
     max: {fileID: 11400000, guid: 0e177e1d15e428745b5859fac08ce203, type: 2}

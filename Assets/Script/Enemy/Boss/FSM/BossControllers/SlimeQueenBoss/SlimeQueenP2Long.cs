@@ -9,6 +9,7 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
 {
     private static readonly int IsJumpingHash = Animator.StringToHash("isJumping");
     private static readonly int IsSinkingHash = Animator.StringToHash("isSinking");
+    private static readonly int IdleStateHash = Animator.StringToHash("SlimeQueenC_Idle");
 
     private const int ToxicDropPositionCount = 3;
     private const float ToxicDropLowerTriangleY = -0.5f;
@@ -213,6 +214,16 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
     public override void EndDrainSinkAnimation()
     {
         SetAnimatorBoolIfExists(IsSinkingHash, ref hasSinkingParameter, false);
+    }
+
+    protected override void ResetPatternAnimatorStateForInterrupt()
+    {
+        SetAnimatorBoolIfExists(IsJumpingHash, false);
+
+        if (!HasGroggyTag())
+            SetAnimatorBoolIfExists(IsSinkingHash, false);
+
+        PlayAnimatorStateIfExists(IdleStateHash);
     }
 
     public readonly struct CrossWaterPillarSegment

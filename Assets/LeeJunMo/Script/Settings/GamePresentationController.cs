@@ -41,7 +41,10 @@ public sealed class GamePresentationController : MonoBehaviour
     {
         Camera presentationCamera = ResolvePresentationCamera();
         int presentationCameraInstanceId = presentationCamera != null ? presentationCamera.GetInstanceID() : 0;
-        Vector2Int containerSize = PresentationViewportUtility.GetPresentationContainerSize(windowMode);
+        Vector2Int containerSize = PresentationViewportUtility.GetPresentationContainerSize(
+            windowMode,
+            resolutionWidth,
+            resolutionHeight);
         if (lastContainerWidth == containerSize.x &&
             lastContainerHeight == containerSize.y &&
             lastWindowMode == windowMode &&
@@ -56,8 +59,13 @@ public sealed class GamePresentationController : MonoBehaviour
     public void ApplyPresentation(GameWindowMode windowMode, int resolutionWidth, int resolutionHeight)
     {
         Camera presentationCamera = ResolvePresentationCamera();
-        Vector2Int containerSize = PresentationViewportUtility.GetPresentationContainerSize(windowMode);
-        Rect viewportRect = PresentationViewportUtility.CalculateViewportRect(containerSize.x, containerSize.y);
+        Vector2Int containerSize = PresentationViewportUtility.GetPresentationContainerSize(
+            windowMode,
+            resolutionWidth,
+            resolutionHeight);
+        Rect viewportRect = PresentationViewportUtility.ShouldBypassDisplayLetterboxForEditorPlayMode()
+            ? PresentationViewportUtility.FullViewportRect
+            : PresentationViewportUtility.CalculateViewportRect(containerSize.x, containerSize.y);
         ApplyCameraViewport(viewportRect);
         ApplyUiCanvasPresentation(viewportRect, presentationCamera);
         ApplyLetterboxOverlay(viewportRect);
@@ -137,11 +145,16 @@ public sealed class GamePresentationController : MonoBehaviour
 
     private void ApplyLetterboxOverlay(Rect viewportRect)
     {
+        bool useFullScreen = PresentationViewportUtility.IsFullViewport(viewportRect);
+        if (useFullScreen)
+        {
+            DestroyLetterboxOverlay();
+            return;
+        }
+
         EnsureLetterboxOverlay();
         if (letterboxRoot == null)
             return;
-
-        bool useFullScreen = PresentationViewportUtility.IsFullViewport(viewportRect);
 
         SetLetterboxBar(topLetterboxBar, Vector2.zero, Vector2.zero, !useFullScreen && viewportRect.y > 0f);
         SetLetterboxBar(bottomLetterboxBar, Vector2.zero, Vector2.zero, !useFullScreen && viewportRect.y > 0f);
@@ -163,6 +176,19 @@ public sealed class GamePresentationController : MonoBehaviour
             SetLetterboxBar(leftLetterboxBar, new Vector2(0f, 0f), new Vector2(viewportRect.x, 1f), true);
             SetLetterboxBar(rightLetterboxBar, new Vector2(viewportRect.x + viewportRect.width, 0f), new Vector2(1f, 1f), true);
         }
+    }
+
+    private void DestroyLetterboxOverlay()
+    {
+        if (letterboxCanvas != null)
+            Destroy(letterboxCanvas.gameObject);
+
+        letterboxCanvas = null;
+        letterboxRoot = null;
+        topLetterboxBar = null;
+        bottomLetterboxBar = null;
+        leftLetterboxBar = null;
+        rightLetterboxBar = null;
     }
 
     private void EnsureLetterboxOverlay()
@@ -193,10 +219,10 @@ public sealed class GamePresentationController : MonoBehaviour
         GraphicRaycaster raycaster = root.GetComponent<GraphicRaycaster>();
         raycaster.enabled = false;
 
-        topLetterboxBar = CreateLetterboxBar("TopBar");
-        bottomLetterboxBar = CreateLetterboxBar("BottomBar");
-        leftLetterboxBar = CreateLetterboxBar("LeftBar");
-        rightLetterboxBar = CreateLetterboxBar("RightBar");
+        topLetterboxBar = CreateLetterboxBar("DisplayLetterboxTopBar");
+        bottomLetterboxBar = CreateLetterboxBar("DisplayLetterboxBottomBar");
+        leftLetterboxBar = CreateLetterboxBar("DisplayLetterboxLeftBar");
+        rightLetterboxBar = CreateLetterboxBar("DisplayLetterboxRightBar");
     }
 
     private Image CreateLetterboxBar(string name)

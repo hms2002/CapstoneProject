@@ -8,6 +8,8 @@ using UnityGAS;
 public sealed class DrainPipe : MonoBehaviour, IDamageReceiver
 {
     private const float PhaseTwoBossDrainSeconds = 4f;
+    private const float PhaseTwoBossExitJumpSeconds = 0.45f;
+    private const float PhaseTwoBossExitJumpArcHeight = 0.85f;
 
     [Header("Refs")]
     [Tooltip("임시 배수관 원형 스프라이트를 표시할 렌더러입니다.")]
@@ -242,10 +244,10 @@ public sealed class DrainPipe : MonoBehaviour, IDamageReceiver
             drainContext.SetSubmerged(true);
         }
 
-        yield return new WaitForSeconds(PhaseTwoBossDrainSeconds);
+        yield return HoldPhaseTwoBossInDrain(slimeQueen, PhaseTwoBossDrainSeconds);
 
-        if (slimeQueen != null)
-            slimeQueen.transform.position = GetDrainPosition(slimeQueen.transform.position.z);
+        if (IsPhaseTwoBossAlive(slimeQueen))
+            yield return PlayPhaseTwoBossExitJump(slimeQueen, drainContext);
 
         drainContext?.Restore();
         activePhaseTwoBossDrainContext = null;
@@ -376,6 +378,16 @@ public sealed class DrainPipe : MonoBehaviour, IDamageReceiver
         return slimeQueen.IsCombatActive && slimeQueen.CanTriggerPitFall;
     }
 
+    /// <summary>열린 배수구의 2페이즈 보스 흡입 반경 안에 지정 좌표가 들어오는지 확인합니다.</summary>
+    public bool ContainsActivePhaseTwoBossSuctionPoint(Vector3 worldPosition, float extraRadius = 0f)
+    {
+        if (!isBroken || phaseTwoBossSuctionRadius <= 0f)
+            return false;
+
+        float radius = Mathf.Max(0f, phaseTwoBossSuctionRadius + extraRadius);
+        return Vector2.Distance(transform.position, worldPosition) <= radius;
+    }
+
     private static bool IsPhaseTwoBossAlive(SlimeQueenPhaseTwoBase slimeQueen)
     {
         return slimeQueen != null &&
@@ -386,11 +398,69 @@ public sealed class DrainPipe : MonoBehaviour, IDamageReceiver
                slimeQueen.CurrentHealthValue > 0f;
     }
 
+    /// <summary>배수구 안 4초 그로기 동안 피격 판정은 유지하고 위치만 배수구에 고정합니다.</summary>
+    private IEnumerator HoldPhaseTwoBossInDrain(SlimeQueenPhaseTwoBase slimeQueen, float durationSeconds)
+    {
+        float elapsed = 0f;
+        float duration = Mathf.Max(0f, durationSeconds);
+
+        while (elapsed < duration && IsPhaseTwoBossAlive(slimeQueen))
+        {
+            SetPhaseTwoBossPosition(slimeQueen, GetDrainPosition(slimeQueen.transform.position.z));
+            ResetBodyVelocity(slimeQueen.GetComponent<Rigidbody2D>());
+
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+    }
+
+    /// <summary>배수구에서 빠져나올 때 내려찍기류 패턴처럼 짧은 포물선 점프를 보여줍니다.</summary>
+    private IEnumerator PlayPhaseTwoBossExitJump(SlimeQueenPhaseTwoBase slimeQueen, PhaseTwoBossDrainContext drainContext)
+    {
+        if (!IsPhaseTwoBossAlive(slimeQueen))
+            yield break;
+
+        drainContext?.BeginExitJump();
+        slimeQueen.EndDrainSinkAnimation();
+
+        Vector3 startPosition = GetDrainPosition(slimeQueen.transform.position.z);
+        Vector3 landingPosition = startPosition;
+        float duration = Mathf.Max(0.01f, PhaseTwoBossExitJumpSeconds);
+        float elapsed = 0f;
+
+        while (elapsed < duration && IsPhaseTwoBossAlive(slimeQueen))
+        {
+            float t = Mathf.Clamp01(elapsed / duration);
+            Vector3 groundPosition = Vector3.Lerp(startPosition, landingPosition, t);
+            float arcOffset = Mathf.Sin(t * Mathf.PI) * PhaseTwoBossExitJumpArcHeight;
+
+            SetPhaseTwoBossPosition(slimeQueen, groundPosition + Vector3.up * arcOffset);
+            ResetBodyVelocity(slimeQueen.GetComponent<Rigidbody2D>());
+
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        if (IsPhaseTwoBossAlive(slimeQueen))
+        {
+            SetPhaseTwoBossPosition(slimeQueen, landingPosition);
+            ResetBodyVelocity(slimeQueen.GetComponent<Rigidbody2D>());
+        }
+    }
+
     private Vector3 GetDrainPosition(float targetZ)
     {
         Vector3 drainPosition = transform.position;
         drainPosition.z = targetZ;
         return drainPosition;
+    }
+
+    private static void SetPhaseTwoBossPosition(SlimeQueenPhaseTwoBase slimeQueen, Vector3 position)
+    {
+        if (slimeQueen == null)
+            return;
+
+        slimeQueen.transform.position = position;
     }
 
     private static void ResetBodyVelocity(Rigidbody2D body)
@@ -468,6 +538,7 @@ public sealed class DrainPipe : MonoBehaviour, IDamageReceiver
         private readonly SlimeQueenPhaseTwoBase slimeQueen;
         private readonly Rigidbody2D body;
         private readonly bool wasBodySimulated;
+        private readonly RigidbodyConstraints2D wasBodyConstraints;
         private readonly MovementMotor2D movementMotor;
         private readonly bool wasMovementMotorEnabled;
         private readonly Collider2D[] colliders;
@@ -479,6 +550,7 @@ public sealed class DrainPipe : MonoBehaviour, IDamageReceiver
             this.slimeQueen = slimeQueen;
             body = slimeQueen != null ? slimeQueen.GetComponent<Rigidbody2D>() : null;
             wasBodySimulated = body == null || body.simulated;
+            wasBodyConstraints = body != null ? body.constraints : RigidbodyConstraints2D.None;
             movementMotor = slimeQueen != null ? slimeQueen.GetComponent<MovementMotor2D>() : null;
             wasMovementMotorEnabled = movementMotor == null || movementMotor.enabled;
             colliders = slimeQueen != null ? slimeQueen.GetComponentsInChildren<Collider2D>() : new Collider2D[0];
@@ -517,13 +589,25 @@ public sealed class DrainPipe : MonoBehaviour, IDamageReceiver
             {
                 body.linearVelocity = Vector2.zero;
                 body.angularVelocity = 0f;
-                body.simulated = false;
+                body.simulated = true;
+                body.constraints = wasBodyConstraints |
+                                   RigidbodyConstraints2D.FreezePositionX |
+                                   RigidbodyConstraints2D.FreezePositionY |
+                                   RigidbodyConstraints2D.FreezeRotation;
             }
+        }
 
-            for (int i = 0; i < colliders.Length; i++)
+        public void BeginExitJump()
+        {
+            if (isRestored)
+                return;
+
+            if (body != null)
             {
-                if (colliders[i] != null)
-                    colliders[i].enabled = false;
+                body.simulated = true;
+                body.constraints = wasBodyConstraints;
+                body.linearVelocity = Vector2.zero;
+                body.angularVelocity = 0f;
             }
         }
 
@@ -533,22 +617,30 @@ public sealed class DrainPipe : MonoBehaviour, IDamageReceiver
                 return;
 
             isRestored = true;
+            bool shouldRestoreGameplayComponents = slimeQueen != null &&
+                                                   !slimeQueen.IsDead &&
+                                                   !slimeQueen.HasDeadTag() &&
+                                                   slimeQueen.CurrentHealthValue > 0f;
 
-            if (body != null)
+            if (shouldRestoreGameplayComponents && body != null)
             {
                 body.simulated = wasBodySimulated;
+                body.constraints = wasBodyConstraints;
                 body.linearVelocity = Vector2.zero;
                 body.angularVelocity = 0f;
             }
 
-            for (int i = 0; i < colliders.Length; i++)
+            if (shouldRestoreGameplayComponents)
             {
-                if (colliders[i] != null)
-                    colliders[i].enabled = colliderEnabledStates[i];
-            }
+                for (int i = 0; i < colliders.Length; i++)
+                {
+                    if (colliders[i] != null)
+                        colliders[i].enabled = colliderEnabledStates[i];
+                }
 
-            if (movementMotor != null)
-                movementMotor.enabled = wasMovementMotorEnabled;
+                if (movementMotor != null)
+                    movementMotor.enabled = wasMovementMotorEnabled;
+            }
 
             if (slimeQueen != null)
                 slimeQueen.EndDrainControlLock();

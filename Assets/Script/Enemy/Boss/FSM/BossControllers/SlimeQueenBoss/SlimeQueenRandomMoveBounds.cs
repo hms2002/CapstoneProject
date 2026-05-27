@@ -62,6 +62,39 @@ public sealed class SlimeQueenRandomMoveBounds : MonoBehaviour
         return true;
     }
 
+    /// <summary>바운더리의 중앙 월드 좌표를 반환합니다.</summary>
+    public bool TryGetCenter(float z, out Vector3 center)
+    {
+        CacheBoundsCollider();
+        if (boundsCollider == null)
+        {
+            center = Vector3.zero;
+            return false;
+        }
+
+        Bounds bounds = boundsCollider.bounds;
+        center = new Vector3(bounds.center.x, bounds.center.y, z);
+        return true;
+    }
+
+    /// <summary>지정 좌표를 바운더리 내부 좌표로 보정합니다.</summary>
+    public bool TryClampPoint(Vector3 point, out Vector3 clampedPoint)
+    {
+        CacheBoundsCollider();
+        if (boundsCollider == null)
+        {
+            clampedPoint = point;
+            return false;
+        }
+
+        Bounds bounds = boundsCollider.bounds;
+        clampedPoint = new Vector3(
+            Mathf.Clamp(point.x, bounds.min.x, bounds.max.x),
+            Mathf.Clamp(point.y, bounds.min.y, bounds.max.y),
+            point.z);
+        return true;
+    }
+
     /// <summary>BoxCollider2D 참조를 자동으로 보정합니다.</summary>
     private void CacheBoundsCollider()
     {
