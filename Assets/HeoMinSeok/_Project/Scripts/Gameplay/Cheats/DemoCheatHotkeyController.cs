@@ -40,6 +40,9 @@ public sealed class DemoCheatHotkeyController : MonoBehaviour
         if (IsSceneTransitionActive())
             return;
 
+        if (WasPressed(settings.CheatGuideKey))
+            ShowResult(DemoCheatResult.Succeeded(service.BuildCheatGuide(settings)), settings.CheatGuideDuration);
+
         if (WasPressed(settings.WarpToRunSpecialNpcKey))
             ShowResult(service.WarpPlayerToNextRunSpecialNpc(settings));
 
@@ -59,14 +62,15 @@ public sealed class DemoCheatHotkeyController : MonoBehaviour
             ShowResult(service.IncreasePlayerAttack(settings));
     }
 
-    private void ShowResult(DemoCheatResult result)
+    private void ShowResult(DemoCheatResult result, float durationOverride = -1f)
     {
         if (string.IsNullOrWhiteSpace(result.Message))
             return;
 
+        float duration = durationOverride > 0f ? durationOverride : settings.NotificationDuration;
         if (UIManager.Instance != null)
         {
-            UIManager.Instance.ShowWarning(result.Message, settings.NotificationDuration);
+            UIManager.Instance.ShowWarning(result.Message, duration);
             return;
         }
 

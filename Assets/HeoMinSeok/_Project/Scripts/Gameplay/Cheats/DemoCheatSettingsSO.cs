@@ -12,6 +12,7 @@ public sealed class DemoCheatSettingsSO : ScriptableObject
     [SerializeField] private bool enableDemoCheats = true;
 
     [Header("Hotkeys")]
+    [SerializeField] private KeyCode cheatGuideKey = KeyCode.F1;
     [SerializeField] private KeyCode warpToRunSpecialNpcKey = KeyCode.F7;
     [SerializeField] private KeyCode addMagicStoneKey = KeyCode.F8;
     [SerializeField] private KeyCode maxHealthKey = KeyCode.F9;
@@ -32,8 +33,10 @@ public sealed class DemoCheatSettingsSO : ScriptableObject
 
     [Header("Notification")]
     [SerializeField, Min(0.1f)] private float notificationDuration = 1.2f;
+    [SerializeField, Min(0.1f)] private float cheatGuideDuration = 4f;
 
     public bool EnableDemoCheats => enableDemoCheats;
+    public KeyCode CheatGuideKey => cheatGuideKey;
     public KeyCode WarpToRunSpecialNpcKey => warpToRunSpecialNpcKey;
     public KeyCode AddMagicStoneKey => addMagicStoneKey;
     public KeyCode MaxHealthKey => maxHealthKey;
@@ -46,4 +49,5 @@ public sealed class DemoCheatSettingsSO : ScriptableObject
     public float AttackIncreaseAmount => attackIncreaseAmount;
     public int MagicStoneAddAmount => magicStoneAddAmount;
     public float NotificationDuration => notificationDuration;
+    public float CheatGuideDuration => cheatGuideDuration;
 }

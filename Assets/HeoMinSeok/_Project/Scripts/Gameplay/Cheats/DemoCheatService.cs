@@ -40,6 +40,20 @@ public sealed class DemoCheatService
         this.logContext = logContext;
     }
 
+    public string BuildCheatGuide(DemoCheatSettingsSO settings)
+    {
+        int magicStoneAmount = Mathf.Max(1, settings.MagicStoneAddAmount);
+        return string.Join(
+            "\n",
+            "시연 치트 키",
+            $"{FormatKey(settings.WarpToRunSpecialNpcKey)}: Runtime Special NPC 워프",
+            $"{FormatKey(settings.AddMagicStoneKey)}: 마정석 +{magicStoneAmount}",
+            $"{FormatKey(settings.MaxHealthKey)}: 체력 MAX",
+            $"{FormatKey(settings.WarpToPortalKey)}: 포탈 앞으로 이동",
+            $"{FormatKey(settings.ResetWeaponCooldownKey)}: 무기 쿨타임 초기화",
+            $"{FormatKey(settings.IncreaseAttackKey)}: 공격력 +{settings.AttackIncreaseAmount:0.###}");
+    }
+
     public DemoCheatResult AddMagicStone(DemoCheatSettingsSO settings)
     {
         if (CurrencyManager.Instance == null)
@@ -112,7 +126,7 @@ public sealed class DemoCheatService
             return DemoCheatResult.Failed("이 씬에서는 포탈 워프를 사용할 수 없습니다.");
         }
 
-        ScenePortal portal = FindNearestAllowedPortal(player.position);
+        ScenePortal portal = FindNearestPortal(player.position);
         if (portal == null)
         {
             return Fail("이동 가능한 포탈을 찾을 수 없습니다.");
@@ -227,7 +241,7 @@ public sealed class DemoCheatService
                sceneName.IndexOf("Hallway", StringComparison.OrdinalIgnoreCase) >= 0;
     }
 
-    private static ScenePortal FindNearestAllowedPortal(Vector3 playerPosition)
+    private static ScenePortal FindNearestPortal(Vector3 playerPosition)
     {
         ScenePortal[] portals = UnityEngine.Object.FindObjectsByType<ScenePortal>(
             FindObjectsInactive.Exclude,
@@ -238,7 +252,7 @@ public sealed class DemoCheatService
         for (int i = 0; i < portals.Length; i++)
         {
             ScenePortal portal = portals[i];
-            if (portal == null || !IsAllowedPortalTransition(portal.PortalTransitionType))
+            if (portal == null)
                 continue;
 
             float distanceSqr = (portal.transform.position - playerPosition).sqrMagnitude;
@@ -307,13 +321,6 @@ public sealed class DemoCheatService
         return $"{interactor.gameObject.scene.name}/{path}/{interactor.transform.GetSiblingIndex():D4}";
     }
 
-    private static bool IsAllowedPortalTransition(TransitionType transitionType)
-    {
-        return transitionType == TransitionType.HubToRunStart ||
-               transitionType == TransitionType.CorridorToCorridor ||
-               transitionType == TransitionType.CorridorToBoss;
-    }
-
     private static void SetPlayerPositionImmediate(Transform player, Vector3 targetPosition)
     {
         Rigidbody2D body = player.GetComponent<Rigidbody2D>();
@@ -324,6 +331,21 @@ public sealed class DemoCheatService
         }
 
         player.position = targetPosition;
+    }
+
+    private static string FormatKey(KeyCode key)
+    {
+        if (key == KeyCode.None)
+            return "None";
+
+        string keyName = key.ToString();
+        if (keyName.StartsWith("Alpha", StringComparison.Ordinal))
+            return keyName.Substring("Alpha".Length);
+
+        if (keyName.StartsWith("Keypad", StringComparison.Ordinal))
+            return $"Num{keyName.Substring("Keypad".Length)}";
+
+        return keyName;
     }
 
     private void Log(string message)

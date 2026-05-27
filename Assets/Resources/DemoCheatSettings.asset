@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: DemoCheatSettings
   m_EditorClassIdentifier:
   enableDemoCheats: 1
+  cheatGuideKey: 282
   warpToRunSpecialNpcKey: 288
   addMagicStoneKey: 289
   maxHealthKey: 290
@@ -25,3 +26,4 @@ MonoBehaviour:
   attackIncreaseAmount: 10
   magicStoneAddAmount: 100
   notificationDuration: 1.2
+  cheatGuideDuration: 4
