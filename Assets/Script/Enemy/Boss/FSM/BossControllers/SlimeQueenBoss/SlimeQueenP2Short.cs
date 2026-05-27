@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using CapstoneAudio;
 using UnityEngine;
 using UnityGAS;
 
@@ -79,6 +80,7 @@ public sealed class SlimeQueenP2Short : SlimeQueenPhaseTwoBase
     private bool isToxicRushActive;
     private bool shouldRunToxicRushPitFallSlam;
     private bool isToxicRushPitFallSlamLocked;
+    private SoundRef activePoisonCloudLoopSound;
 
     public int ToxicRushRepeatCount => Mathf.Max(1, toxicRushRepeatCount);
     public float ToxicRushWarningSeconds => Mathf.Max(0f, toxicRushWarningSeconds);
@@ -252,8 +254,9 @@ public sealed class SlimeQueenP2Short : SlimeQueenPhaseTwoBase
     }
 
     /// <summary>독성 돌진 시작점에 독구름을 배치하고 트레일 기록을 초기화합니다.</summary>
-    public void BeginToxicRushTrail(Vector3 startPosition)
+    public void BeginToxicRushTrail(Vector3 startPosition, SoundRef poisonCloudLoopSound = default)
     {
+        activePoisonCloudLoopSound = poisonCloudLoopSound;
         hasLastPoisonCloudSpawnPosition = false;
         SpawnPoisonCloudAt(startPosition);
     }
@@ -271,6 +274,7 @@ public sealed class SlimeQueenP2Short : SlimeQueenPhaseTwoBase
         }
 
         hasLastPoisonCloudSpawnPosition = false;
+        activePoisonCloudLoopSound = default;
     }
 
     /// <summary>플레이어 충돌로 독성 돌진이 중단된 현재 위치를 종료점으로 정리합니다.</summary>
@@ -281,6 +285,7 @@ public sealed class SlimeQueenP2Short : SlimeQueenPhaseTwoBase
 
         SpawnPoisonCloudTrailIfNeeded(transform.position);
         hasLastPoisonCloudSpawnPosition = false;
+        activePoisonCloudLoopSound = default;
     }
 
     /// <summary>독성 돌진 중 플레이어와 겹쳤는지 확인합니다.</summary>
@@ -316,6 +321,7 @@ public sealed class SlimeQueenP2Short : SlimeQueenPhaseTwoBase
     public void CleanupToxicRushPresentation()
     {
         ClearToxicRushWarnings();
+        activePoisonCloudLoopSound = default;
     }
 
     private void SetAnimatorBool(int parameterHash, bool value)
@@ -502,7 +508,8 @@ public sealed class SlimeQueenP2Short : SlimeQueenPhaseTwoBase
             poisonCloudFadeSeconds,
             poisonCloudDamage,
             poisonCloudDamageIntervalSeconds,
-            poisonCloudDamageEffect);
+            poisonCloudDamageEffect,
+            activePoisonCloudLoopSound);
 
         lastPoisonCloudSpawnPosition = spawnPosition;
         hasLastPoisonCloudSpawnPosition = true;

@@ -27,6 +27,8 @@ GameObject:
   - component: {fileID: 1022000}
   - component: {fileID: 1025000}
   - component: {fileID: 1026000}
+  - component: {fileID: 1027000}
+  - component: {fileID: 1028000}
   - component: {fileID: 4160568613653900950}
   m_Layer: 31
   m_Name: SlimeQueenP2Short
@@ -106,7 +108,7 @@ MonoBehaviour:
   initialTarget: {fileID: 0}
   healthAttribute: {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
   maxHealthAttribute: {fileID: 11400000, guid: 0e177e1d15e428745b5859fac08ce203, type: 2}
-  hudHealthBarTheme: {fileID: 0}
+  hudHealthBarTheme: {fileID: 11400000, guid: c0a22b38484774e4e82564f837979fba, type: 2}
   deadTag: {fileID: 0}
   groggyTag: {fileID: 11400000, guid: 6a381fd96b3c05d4cbcbd73fbf173f4e, type: 2}
   phases:
@@ -169,6 +171,7 @@ MonoBehaviour:
       additionalConditions:
       - {fileID: 11400000, guid: b6b3270ae0b64527be3bc8398bbdcd6e, type: 2}
   airborneBodyZHeight: 1
+  logHeightCollisionDebug: 1
   contactDamage: 1
   contactDamageCooldownSeconds: 1
   contactDamageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
@@ -513,6 +516,44 @@ MonoBehaviour:
   fallbackShadowColor: {r: 0, g: 0, b: 0, a: 0.32}
   fallbackShadowSortingLayerName: Entity
   fallbackShadowSortingOrder: -1
+--- !u!114 &1027000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1000000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ff4ff08e39f49319d1e0414b9985957, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UnityGAS.EntityCollisionProfile2D
+  bodyColliders:
+  - {fileID: 3460152695675496067}
+  baseExcludedLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  actorLayers:
+    serializedVersion: 2
+    m_Bits: 2147483656
+  defaultMode: 0
+--- !u!114 &1028000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1000000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4746e930aa0546e7a63dc942f37d1d42, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UnityGAS.CombatHeightCollisionBinder2D
+  heightState: {fileID: 1025000}
+  collisionProfile: {fileID: 1027000}
+  groundedMode: 0
+  airborneMode: 2
+  restoreProfileDefaultWhenGrounded: 1
 --- !u!114 &4160568613653900950
 MonoBehaviour:
   m_ObjectHideFlags: 0

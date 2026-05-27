@@ -87,6 +87,12 @@ MonoBehaviour:
   activeSeconds: 4
   fadeSeconds: 1
   destroyOnFinished: 1
+  loopSound:
+    key: 
+    volumeMultiplier: 0
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  loopFadeOutSeconds: 0.1
   damageEffect: {fileID: 11400000, guid: b9d37f5a2c1e4ef2a6d9b3c4810f762e, type: 2}
   playerDamage: 1
   damageIntervalSeconds: 1

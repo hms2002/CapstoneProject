@@ -613,3 +613,273 @@ MonoBehaviour:
     cooldown: 0
     minDistance: 1
     maxDistance: 20
+  - key: sound_slimeQueen_Jump
+    bus: 0
+    category: 7
+    variants:
+    - {fileID: 8300000, guid: b8b95ab1db91a3a47ada60768c818598, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 1
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_slimeQueen_Land
+    bus: 0
+    category: 7
+    variants:
+    - {fileID: 8300000, guid: ecc00db913db00748a6e571cabfa4ba4, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 1
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_slimeQueen_Bigger
+    bus: 0
+    category: 7
+    variants:
+    - {fileID: 8300000, guid: 0d5cf2efa9d5cd74fafd3c8257bbb92a, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 1
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_slimeQeen_landMinion1
+    bus: 0
+    category: 7
+    variants:
+    - {fileID: 8300000, guid: c5c8cdadf068e784788dd259a902a041, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 1
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_slimeQeen_landMinion2
+    bus: 0
+    category: 7
+    variants:
+    - {fileID: 8300000, guid: 906eb7ef96e1e7f42a25fda8e9c9ea07, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 1
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_slimeQeen_landMinion3
+    bus: 0
+    category: 7
+    variants:
+    - {fileID: 8300000, guid: fcf62a724f6cd5a45bd053be0756c8f0, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 1
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_slimeQeen_landMinion4
+    bus: 0
+    category: 7
+    variants:
+    - {fileID: 8300000, guid: 6b0e32b5719eb6346a0b92acee033784, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 1
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_slimeQueen_Split1
+    bus: 0
+    category: 7
+    variants:
+    - {fileID: 8300000, guid: de318363b02d09248b4989b4b90b3ccc, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 1
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_slimeQueen_Split2
+    bus: 0
+    category: 7
+    variants:
+    - {fileID: 8300000, guid: fc96f6d59eb55ff4483baf9f61d3f38a, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 1
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_slimeQueen_Stamping
+    bus: 0
+    category: 7
+    variants:
+    - {fileID: 8300000, guid: 93e09e1dd13cd0349bd150c65c594acf, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 1
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_slimeQueen_Dash
+    bus: 0
+    category: 7
+    variants:
+    - {fileID: 8300000, guid: 254ddcc6b50b40542abc749d448997b9, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 1
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_slimeQueen_PoisonMist
+    bus: 0
+    category: 7
+    variants:
+    - {fileID: 8300000, guid: dac4bdf60208f6546a60fa755b026f95, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 1
+    spatial: 1
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_slimeQueen_Return
+    bus: 0
+    category: 7
+    variants:
+    - {fileID: 8300000, guid: f1b80487824fcb645b963423a1a56db7, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 1
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_slimeQueen_CrossWaterPillar1
+    bus: 0
+    category: 7
+    variants:
+    - {fileID: 8300000, guid: 51344e67a095760468f516ebe841f91c, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 1
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_slimeQueen_CrossWaterPillar2
+    bus: 0
+    category: 7
+    variants:
+    - {fileID: 8300000, guid: 6db8f0c05a704654d8f9483e0dd5ba38, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 1
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_slimeQueen_LandPoisonLiquid
+    bus: 0
+    category: 7
+    variants:
+    - {fileID: 8300000, guid: db07b112cb676164a8c65ceca0a0344a, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 1
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_SlimeQueen_Castling
+    bus: 0
+    category: 7
+    variants:
+    - {fileID: 8300000, guid: 2f36bc8099936d54b9c74392b465e81d, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 1
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_slimeQueen_ShotWater
+    bus: 0
+    category: 7
+    variants:
+    - {fileID: 8300000, guid: 2dc7cc487900c6b4ea663cdf6d107fef, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 1
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20

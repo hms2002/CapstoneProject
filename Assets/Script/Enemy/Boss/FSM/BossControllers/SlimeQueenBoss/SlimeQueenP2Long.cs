@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using CapstoneAudio;
+using CapstonePresentation;
 using UnityEngine;
 using UnityGAS;
 
@@ -620,7 +622,10 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
     }
 
     /// <summary>독성 탄막 세 개를 각 착탄 지점까지 포물선으로 날립니다.</summary>
-    public bool LaunchToxicDropProjectiles(IReadOnlyList<Vector3> dropPositions)
+    public bool LaunchToxicDropProjectiles(
+        IReadOnlyList<Vector3> dropPositions,
+        WorldPresentationHook impactPresentation = default,
+        Object presentationSourceObject = null)
     {
         ClearToxicDropProjectiles();
 
@@ -643,7 +648,9 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
                 startPosition,
                 dropPositions[i],
                 ToxicDropProjectileFlightSeconds,
-                toxicDropProjectileArcHeight);
+                toxicDropProjectileArcHeight,
+                impactPresentation,
+                presentationSourceObject);
             toxicDropProjectileVisuals.Add(projectile);
         }
 
@@ -677,17 +684,17 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
     }
 
     /// <summary>독성 투하 착탄 지점들에 독구름 장판을 생성합니다.</summary>
-    public void SpawnToxicDropPoisonClouds(IReadOnlyList<Vector3> dropPositions)
+    public void SpawnToxicDropPoisonClouds(IReadOnlyList<Vector3> dropPositions, SoundRef poisonCloudLoopSound = default)
     {
         if (dropPositions == null)
             return;
 
         for (int i = 0; i < dropPositions.Count; i++)
-            SpawnToxicDropPoisonCloud(dropPositions[i]);
+            SpawnToxicDropPoisonCloud(dropPositions[i], poisonCloudLoopSound);
     }
 
     /// <summary>독성 투하 착탄 지점에 독구름 장판을 생성합니다.</summary>
-    public void SpawnToxicDropPoisonCloud(Vector3 dropPosition)
+    public void SpawnToxicDropPoisonCloud(Vector3 dropPosition, SoundRef poisonCloudLoopSound = default)
     {
         if (toxicDropPoisonCloudPrefab == null)
             return;
@@ -699,7 +706,8 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
             toxicDropPoisonCloudFadeSeconds,
             toxicDropPoisonCloudDamage,
             toxicDropPoisonCloudDamageIntervalSeconds,
-            toxicDropPoisonCloudDamageEffect);
+            toxicDropPoisonCloudDamageEffect,
+            poisonCloudLoopSound);
     }
 
     /// <summary>독성 투하 경고와 탄막 표시를 정리합니다. 생성된 독구름은 자기 수명으로 소멸합니다.</summary>

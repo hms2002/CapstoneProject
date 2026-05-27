@@ -18,6 +18,8 @@ public abstract class SlimeQueenBossBase : BossControllerBase, IIntentMovementSo
     private const float KnightStyleSlamPreDropHeightScale = 0.9f;
     private const float KnightStyleSlamTravelEaseOutPower = 2.2f;
     private const float KnightStyleSlamLandingDropSharpness = 0.22f;
+    private const string PlayerLayerName = "Player";
+    private const string EnemyActorLayerName = "TEMP_Enemy_LAYER";
     private static readonly CameraShakeHook SlamLandingCameraShake = CameraShakeHook.Create(
         amplitude: 0.22f,
         amplitudeMultiplier: 1f,
@@ -27,16 +29,22 @@ public abstract class SlimeQueenBossBase : BossControllerBase, IIntentMovementSo
     [Header("Height Presentation")]
     [Tooltip("점프/내려찍기 중 공중 판정 높이로 사용할 바디 Z 높이입니다.")]
     [SerializeField, Min(0f)] private float airborneBodyZHeight = 1f;
+    [SerializeField] private bool logHeightCollisionDebug = true;
 
     private AttackTelegraphService telegraphService;
     private CombatHeightState2D combatHeightState;
     private CombatHeightPresentation2D combatHeightPresentation;
+    private EntityCollisionProfile2D heightCollisionProfile;
+    private CombatHeightCollisionBinder2D heightCollisionBinder;
+    private Collider2D[] heightCollisionBodyColliders;
     private GameplayTag patternMoveInvulnerableTag;
     private GameplayEffect runtimeGroggyStatusEffect;
     private bool isPatternMoveDamageBlocked;
     private bool hasAppliedPatternMoveInvulnerableTag;
     private bool isPitFallRuntimeLocked;
     private int pitFallTriggerBlockCount;
+    private float nextHeightCollisionDebugLogTime;
+    private float nextAirborneCollisionDebugLogTime;
 
     public bool IsPatternMoveDamageBlocked => isPatternMoveDamageBlocked;
 
@@ -48,6 +56,7 @@ public abstract class SlimeQueenBossBase : BossControllerBase, IIntentMovementSo
         telegraphService = GetComponent<AttackTelegraphService>();
         combatHeightState = GetComponent<CombatHeightState2D>();
         combatHeightPresentation = GetComponent<CombatHeightPresentation2D>();
+        EnsureCombatHeightCollisionBinding();
         patternMoveInvulnerableTag = Resources.Load<GameplayTag>("Tags/State.Invulnerable");
         EnsureGroggyGauge();
     }
@@ -91,6 +100,16 @@ public abstract class SlimeQueenBossBase : BossControllerBase, IIntentMovementSo
     public IntentMovementData GetIntent()
     {
         return IntentMovementData.None;
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        LogAirborneCollision("enter", collision);
+    }
+
+    private void OnCollisionStay2D(Collision2D collision)
+    {
+        LogAirborneCollision("stay", collision);
     }
 
     /// <summary>이동형 패턴 중 보스 피격과 접촉 피해를 임시로 막습니다.</summary>
@@ -221,6 +240,7 @@ public abstract class SlimeQueenBossBase : BossControllerBase, IIntentMovementSo
 
         transform.position = groundPosition;
         EnsureCombatHeightState()?.SetAirborne(safeVisualHeight, airborneBodyZHeight);
+        LogHeightCollisionStateThrottled("airborne pose");
     }
 
     /// <summary>Knight 슬라임처럼 착지 위치 위로 빠르게 올라가 체공한 뒤 마지막에 급강하하는 자세를 적용합니다.</summary>
@@ -265,6 +285,7 @@ public abstract class SlimeQueenBossBase : BossControllerBase, IIntentMovementSo
         {
             combatHeightState = heightState;
             heightState.SetGrounded();
+            LogHeightCollisionState("grounded cleanup");
         }
     }
 
@@ -329,6 +350,202 @@ public abstract class SlimeQueenBossBase : BossControllerBase, IIntentMovementSo
 
         combatHeightState = gameObject.AddComponent<CombatHeightState2D>();
         return combatHeightState;
+    }
+
+    /// <summary>
+    /// 슬라임 여왕이 기존 CombatHeight/EntityCollisionProfile 경로로 공중 actor 통과를 보장하도록 런타임 연결을 보정합니다.
+    /// </summary>
+    private void EnsureCombatHeightCollisionBinding()
+    {
+        CombatHeightState2D heightState = EnsureCombatHeightState();
+
+        heightCollisionProfile = GetComponent<EntityCollisionProfile2D>();
+        if (heightCollisionProfile == null)
+            heightCollisionProfile = gameObject.AddComponent<EntityCollisionProfile2D>();
+
+        LayerMask emptyMask = default;
+        heightCollisionBodyColliders = CollectBodyColliders();
+        heightCollisionProfile.Configure(
+            heightCollisionBodyColliders,
+            emptyMask,
+            ResolveActorLayerMask(),
+            EntityCollisionProfile2D.BodyCollisionMode.Normal,
+            applyImmediately: false);
+
+        heightCollisionBinder = GetComponent<CombatHeightCollisionBinder2D>();
+        if (heightCollisionBinder == null)
+            heightCollisionBinder = gameObject.AddComponent<CombatHeightCollisionBinder2D>();
+
+        heightCollisionBinder.Configure(
+            heightState,
+            heightCollisionProfile,
+            EntityCollisionProfile2D.BodyCollisionMode.Normal,
+            EntityCollisionProfile2D.BodyCollisionMode.Disabled,
+            restoreDefaultOnGrounded: true);
+
+        LogHeightCollisionState("binding ensured");
+    }
+
+    private Collider2D[] CollectBodyColliders()
+    {
+        Collider2D[] candidates = GetComponentsInChildren<Collider2D>(true);
+        int bodyCount = 0;
+        for (int i = 0; i < candidates.Length; i++)
+        {
+            Collider2D candidate = candidates[i];
+            if (candidate != null && !candidate.isTrigger)
+                bodyCount++;
+        }
+
+        Collider2D[] bodyColliders = new Collider2D[bodyCount];
+        int writeIndex = 0;
+        for (int i = 0; i < candidates.Length; i++)
+        {
+            Collider2D candidate = candidates[i];
+            if (candidate == null || candidate.isTrigger)
+                continue;
+
+            bodyColliders[writeIndex] = candidate;
+            writeIndex++;
+        }
+
+        return bodyColliders;
+    }
+
+    private static LayerMask ResolveActorLayerMask()
+    {
+        LayerMask actorLayers = default;
+        actorLayers.value = ResolveLayerBit(PlayerLayerName) | ResolveLayerBit(EnemyActorLayerName);
+        return actorLayers;
+    }
+
+    private static int ResolveLayerBit(string layerName)
+    {
+        int layer = LayerMask.NameToLayer(layerName);
+        return layer >= 0 ? 1 << layer : 0;
+    }
+
+    private void LogHeightCollisionStateThrottled(string reason)
+    {
+        if (!logHeightCollisionDebug || Time.time < nextHeightCollisionDebugLogTime)
+            return;
+
+        nextHeightCollisionDebugLogTime = Time.time + 0.5f;
+        LogHeightCollisionState(reason);
+    }
+
+    private void LogHeightCollisionState(string reason)
+    {
+        if (!logHeightCollisionDebug)
+            return;
+
+        CombatHeightState2D heightState = combatHeightState != null
+            ? combatHeightState
+            : GetComponent<CombatHeightState2D>();
+
+        EntityCollisionProfile2D collisionProfile = heightCollisionProfile != null
+            ? heightCollisionProfile
+            : GetComponent<EntityCollisionProfile2D>();
+
+        Collider2D[] bodyColliders = heightCollisionBodyColliders;
+        if (bodyColliders == null || bodyColliders.Length == 0)
+            bodyColliders = CollectBodyColliders();
+
+        string colliderSummary = BuildColliderDebugSummary(bodyColliders);
+        int playerLayer = LayerMask.NameToLayer(PlayerLayerName);
+        int enemyLayer = LayerMask.NameToLayer(EnemyActorLayerName);
+
+        Debug.Log(
+            $"[SlimeQueenHeightCollision] {name}: {reason}. " +
+            $"heightMode={(heightState != null ? heightState.Mode.ToString() : "null")}, " +
+            $"visualHeight={(heightState != null ? heightState.VisualHeight : -1f):0.00}, " +
+            $"zMin={(heightState != null ? heightState.ZMin : -1f):0.00}, " +
+            $"zMax={(heightState != null ? heightState.ZMax : -1f):0.00}, " +
+            $"collisionMode={(collisionProfile != null ? collisionProfile.CurrentMode.ToString() : "null")}, " +
+            $"playerLayer={playerLayer}, enemyLayer={enemyLayer}, " +
+            $"bodyCount={(bodyColliders != null ? bodyColliders.Length : 0)}, bodies={colliderSummary}",
+            this);
+    }
+
+    private static string BuildColliderDebugSummary(Collider2D[] bodyColliders)
+    {
+        if (bodyColliders == null || bodyColliders.Length == 0)
+            return "none";
+
+        System.Text.StringBuilder builder = new System.Text.StringBuilder();
+        for (int i = 0; i < bodyColliders.Length; i++)
+        {
+            Collider2D bodyCollider = bodyColliders[i];
+            if (i > 0)
+                builder.Append(" | ");
+
+            if (bodyCollider == null)
+            {
+                builder.Append("null");
+                continue;
+            }
+
+            builder
+                .Append(bodyCollider.name)
+                .Append("(enabled=")
+                .Append(bodyCollider.enabled)
+                .Append(", layer=")
+                .Append(LayerMask.LayerToName(bodyCollider.gameObject.layer))
+                .Append("/")
+                .Append(bodyCollider.gameObject.layer)
+                .Append(", trigger=")
+                .Append(bodyCollider.isTrigger)
+                .Append(", exclude=")
+                .Append(bodyCollider.excludeLayers.value)
+                .Append(")");
+        }
+
+        return builder.ToString();
+    }
+
+    private void LogAirborneCollision(string phase, Collision2D collision)
+    {
+        if (!logHeightCollisionDebug || collision == null)
+            return;
+
+        CombatHeightState2D heightState = combatHeightState != null
+            ? combatHeightState
+            : GetComponent<CombatHeightState2D>();
+
+        if (heightState == null || !heightState.IsAirborne)
+            return;
+
+        if (Time.time < nextAirborneCollisionDebugLogTime)
+            return;
+
+        nextAirborneCollisionDebugLogTime = Time.time + 0.25f;
+
+        Collider2D ownCollider = collision.collider;
+        Collider2D otherCollider = collision.otherCollider;
+        Transform otherRoot = otherCollider != null ? otherCollider.transform.root : null;
+        Rigidbody2D otherRigidbody = collision.rigidbody;
+
+        Debug.Log(
+            $"[SlimeQueenAirborneCollision] {name}: {phase}. " +
+            $"heightMode={heightState.Mode}, collisionMode={(heightCollisionProfile != null ? heightCollisionProfile.CurrentMode.ToString() : "null")}, " +
+            $"own={FormatCollisionCollider(ownCollider)}, " +
+            $"other={FormatCollisionCollider(otherCollider)}, " +
+            $"otherRoot={(otherRoot != null ? otherRoot.name : "null")}, " +
+            $"otherRootLayer={(otherRoot != null ? LayerMask.LayerToName(otherRoot.gameObject.layer) : "null")}/{(otherRoot != null ? otherRoot.gameObject.layer : -1)}, " +
+            $"otherTag={(otherRoot != null ? otherRoot.tag : "null")}, " +
+            $"otherRigidbody={(otherRigidbody != null ? otherRigidbody.name : "null")}, " +
+            $"contacts={collision.contactCount}",
+            this);
+    }
+
+    private static string FormatCollisionCollider(Collider2D targetCollider)
+    {
+        if (targetCollider == null)
+            return "null";
+
+        GameObject targetObject = targetCollider.gameObject;
+        return $"{targetCollider.name}(layer={LayerMask.LayerToName(targetObject.layer)}/{targetObject.layer}, " +
+            $"trigger={targetCollider.isTrigger}, enabled={targetCollider.enabled}, exclude={targetCollider.excludeLayers.value})";
     }
 
     /// <summary>슬라임 여왕 계열 보스가 그로기 진입 시 패턴 애니메이션 잔여 상태를 정리합니다.</summary>

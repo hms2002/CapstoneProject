@@ -1,6 +1,11 @@
+using CapstonePresentation;
 using UnityEngine;
 using UnityGAS;
 
+/// <summary>
+/// 책임:
+/// - 슬라임 여왕이 소환한 중형 슬라임의 낙하 연출, 착지 사운드, 실제 몬스터 생성을 관리한다.
+/// </summary>
 public sealed class SlimeQueenFallingSummon : MonoBehaviour
 {
     private enum FallState
@@ -21,6 +26,8 @@ public sealed class SlimeQueenFallingSummon : MonoBehaviour
     private float landingWaitElapsed;
     private bool hasAppliedContactDamage;
     private FallState state;
+    private WorldPresentationHook landingPresentation;
+    private Object presentationSourceObject;
 
     public bool IsFinished => state == FallState.Finished;
 
@@ -35,7 +42,9 @@ public sealed class SlimeQueenFallingSummon : MonoBehaviour
         float fallSpeed,
         float postLandingWaitSeconds,
         float contactRadius,
-        Transform damageTarget)
+        Transform damageTarget,
+        WorldPresentationHook landingPresentation = default,
+        Object presentationSourceObject = null)
     {
         if (owner == null || summonPrefab == null)
             return null;
@@ -55,6 +64,8 @@ public sealed class SlimeQueenFallingSummon : MonoBehaviour
         fallingSummon.fallSpeed = Mathf.Max(0.1f, fallSpeed);
         fallingSummon.postLandingWaitSeconds = Mathf.Max(0f, postLandingWaitSeconds);
         fallingSummon.contactRadius = Mathf.Max(0.1f, contactRadius);
+        fallingSummon.landingPresentation = landingPresentation;
+        fallingSummon.presentationSourceObject = presentationSourceObject;
         fallingSummon.state = FallState.Falling;
         return fallingSummon;
     }
@@ -85,8 +96,21 @@ public sealed class SlimeQueenFallingSummon : MonoBehaviour
             return;
 
         transform.position = landingPosition;
+        PlayLandingPresentation();
         state = FallState.LandingWait;
         landingWaitElapsed = 0f;
+    }
+
+    /// <summary>AL에서 주입된 착지 연출 hook을 기존 프레젠테이션 인프라로 실행합니다.</summary>
+    private void PlayLandingPresentation()
+    {
+        SlimeQueenPresentationAudioUtility.PlayPresentation(
+            landingPresentation,
+            owner != null ? owner.gameObject : gameObject,
+            landingPosition,
+            presentationSourceObject != null ? presentationSourceObject : this,
+            damageTarget != null ? damageTarget.gameObject : null,
+            gameObject);
     }
 
     /// <summary>착지 후 대기 시간을 진행하고 끝나면 실제 중형 슬라임을 생성합니다.</summary>

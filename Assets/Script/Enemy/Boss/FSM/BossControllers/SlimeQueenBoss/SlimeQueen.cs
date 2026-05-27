@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using CapstoneAudio;
+using CapstonePresentation;
 using UnityEngine;
 using UnityGAS;
 
@@ -180,6 +182,16 @@ public sealed class SlimeQueen : SlimeQueenBossBase, ISlimeQueenBodyInflateHost,
 
     [Tooltip("소멸 파티클 프리팹 또는 임시 파티클을 제거할 시간입니다.")]
     [SerializeField, Min(0.1f)] private float phase2SplitVanishEffectLifetime = 1.2f;
+
+    [Tooltip("2페이즈 전환 분열 순간에 재생할 사운드/연출입니다.")]
+    [SerializeField] private WorldPresentationHook phase2SplitPresentation = new WorldPresentationHook
+    {
+        sound = SoundRef.FromKey("sound_slimeQueen_Split1"),
+        additionalSounds = new[]
+        {
+            SoundRef.FromKey("sound_slimeQueen_Split2")
+        }
+    };
 
     private SpeechBubbleComponent speechBubble;
     private SlimeQueenVanishParticleEffect phaseOneVanishEffect;
@@ -367,7 +379,12 @@ public sealed class SlimeQueen : SlimeQueenBossBase, ISlimeQueenBodyInflateHost,
     }
 
     /// <summary>선택된 중형 슬라임의 낙하 연출 오브젝트를 생성합니다.</summary>
-    public SlimeQueenFallingSummon SpawnFallingMediumSlime(GameObject summonPrefab, AbilitySpec sourceSpec, Vector3 landingPosition)
+    public SlimeQueenFallingSummon SpawnFallingMediumSlime(
+        GameObject summonPrefab,
+        AbilitySpec sourceSpec,
+        Vector3 landingPosition,
+        WorldPresentationHook landingPresentation = default,
+        Object presentationSourceObject = null)
     {
         if (summonPrefab == null)
             return null;
@@ -385,7 +402,9 @@ public sealed class SlimeQueen : SlimeQueenBossBase, ISlimeQueenBodyInflateHost,
             fallSpeed,
             postLandingWaitSeconds,
             FallContactRadius,
-            CurrentTarget);
+            CurrentTarget,
+            landingPresentation,
+            presentationSourceObject);
     }
 
     /// <summary>패턴 3 호출 대사를 보스 말풍선으로 출력합니다.</summary>
@@ -991,6 +1010,13 @@ public sealed class SlimeQueen : SlimeQueenBossBase, ISlimeQueenBodyInflateHost,
     /// <summary>1페이즈 사망 위치에 소멸 파티클을 출력합니다.</summary>
     private void PlayPhaseTwoSplitVanishEffect(Vector3 position)
     {
+        SlimeQueenPresentationAudioUtility.PlayPresentation(
+            phase2SplitPresentation,
+            gameObject,
+            position,
+            this,
+            CurrentTarget != null ? CurrentTarget.gameObject : null);
+
         if (phase2SplitVanishEffectPrefab != null)
         {
             GameObject effect = Instantiate(phase2SplitVanishEffectPrefab, position, Quaternion.identity);

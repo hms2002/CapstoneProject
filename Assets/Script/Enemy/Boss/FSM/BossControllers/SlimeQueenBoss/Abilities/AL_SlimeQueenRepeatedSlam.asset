@@ -12,3 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b6b861f79b744f491908d081f20bca7, type: 3}
   m_Name: AL_SlimeQueenRepeatedSlam
   m_EditorClassIdentifier: 
+  slamSound:
+    key: sound_slimeQueen_Stamping
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}

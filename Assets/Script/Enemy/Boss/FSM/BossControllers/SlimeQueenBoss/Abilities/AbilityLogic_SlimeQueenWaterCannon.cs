@@ -1,9 +1,17 @@
 using System.Collections;
+using CapstoneAudio;
 using UnityEngine;
 using UnityGAS;
 
+/// <summary>
+/// 책임:
+/// - 원거리 슬라임 여왕의 물대포 경고/발사 패턴과 발사 사운드 실행을 담당한다.
+/// </summary>
 public sealed class AbilityLogic_SlimeQueenWaterCannon : AbilityLogic
 {
+    [Header("Sound")]
+    [SerializeField] private SoundRef shotWaterSound = SoundRef.FromKey("sound_slimeQueen_ShotWater");
+
     /// <summary>원거리 슬라임 여왕이 플레이어를 추적하는 경고 후 고정 방향 물대포를 발사합니다.</summary>
     public override IEnumerator Activate(AbilitySystem system, AbilitySpec spec, GameObject initialTarget)
     {
@@ -35,6 +43,13 @@ public sealed class AbilityLogic_SlimeQueenWaterCannon : AbilityLogic
             slimeQueen.FaceCurrentTarget();
             if (!slimeQueen.StartWaterCannonBeam(system, spec, initialTarget))
                 yield break;
+
+            SlimeQueenPresentationAudioUtility.PlaySound(
+                shotWaterSound,
+                slimeQueen.gameObject,
+                slimeQueen.transform.position,
+                this,
+                initialTarget);
 
             float elapsedSeconds = 0f;
             while (elapsedSeconds < slimeQueen.WaterCannonActiveSeconds)

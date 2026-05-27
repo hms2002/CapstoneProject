@@ -1,10 +1,18 @@
 using System.Collections;
+using CapstoneAudio;
 using UnityEngine;
 using UnityGAS;
 
+/// <summary>
+/// 책임:
+/// - 2페이즈 슬라임 여왕의 연속 내려찍기 패턴과 각 착지 사운드를 실행한다.
+/// </summary>
 public sealed class AbilityLogic_SlimeQueenRepeatedSlam : AbilityLogic
 {
     private const float PostLandingPauseSeconds = 0.5f;
+
+    [Header("Sound")]
+    [SerializeField] private SoundRef slamSound = SoundRef.FromKey("sound_slimeQueen_Stamping");
 
     /// <summary>슬라임 여왕 2페이즈 개체가 플레이어 위치를 연속 조준해 체공/급강하 내려찍기를 반복합니다.</summary>
     public override IEnumerator Activate(AbilitySystem system, AbilitySpec spec, GameObject initialTarget)
@@ -57,6 +65,12 @@ public sealed class AbilityLogic_SlimeQueenRepeatedSlam : AbilityLogic
             }
 
             slimeQueen.ApplyPhase2SlamDamage(spec, landingPosition);
+            SlimeQueenPresentationAudioUtility.PlaySound(
+                slamSound,
+                slimeQueen.gameObject,
+                landingPosition,
+                this,
+                initialTarget);
             slimeQueen.FaceCurrentTarget();
 
             if (slamIndex >= slamCount - 1)

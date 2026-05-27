@@ -10467,6 +10467,8 @@ MonoBehaviour:
       volumeMultiplier: 0
       anchorPolicy: 0
       localOffset: {x: 0, y: 0, z: 0}
+    randomSounds: []
+    additionalSounds: []
     cameraShake:
       amplitude: 0
       amplitudeMultiplier: 0

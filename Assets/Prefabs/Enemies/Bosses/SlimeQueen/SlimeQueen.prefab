@@ -27,6 +27,8 @@ GameObject:
   - component: {fileID: 1022000}
   - component: {fileID: 1025000}
   - component: {fileID: 1026000}
+  - component: {fileID: 1027000}
+  - component: {fileID: 1028000}
   - component: {fileID: 4160568613653900950}
   m_Layer: 31
   m_Name: SlimeQueen
@@ -111,6 +113,7 @@ MonoBehaviour:
   groggyTag: {fileID: 11400000, guid: 6a381fd96b3c05d4cbcbd73fbf173f4e, type: 2}
   phases: []
   airborneBodyZHeight: 1
+  logHeightCollisionDebug: 1
   configureRuntimePatternsOnStart: 1
   knightPrefab: {fileID: 100000, guid: a1365e9c0af9480b9dc3169f803a951d, type: 3}
   wizardPrefab: {fileID: 100000, guid: d18966565254432a82dc5a7b4acdb6cb, type: 3}
@@ -165,6 +168,52 @@ MonoBehaviour:
   phase2SplitLandingProbeRadius: 0.45
   phase2SplitVanishEffectPrefab: {fileID: 0}
   phase2SplitVanishEffectLifetime: 1.2
+  phase2SplitPresentation:
+    sound:
+      key: sound_slimeQueen_Split1
+      volumeMultiplier: 1
+      anchorPolicy: 0
+      localOffset: {x: 0, y: 0, z: 0}
+    randomSounds: []
+    additionalSounds:
+    - key: sound_slimeQueen_Split2
+      volumeMultiplier: 1
+      anchorPolicy: 0
+      localOffset: {x: 0, y: 0, z: 0}
+    cameraShake:
+      amplitude: 0
+      amplitudeMultiplier: 0
+      maxAmplitude: 0
+      minIntervalSeconds: 0
+      directionMode: 0
+      customDirection: {x: 0, y: 0, z: 0}
+      ignoreScreenShakeSetting: 0
+    effect:
+      prefab: {fileID: 0}
+      localOffset: {x: 0, y: 0, z: 0}
+      rotationOffsetZ: 0
+      scaleMultiplier: {x: 0, y: 0, z: 0}
+      attachToTarget: 0
+      anchorMode: 0
+      scaleMode: 0
+      targetBoundsReferenceSize: 0
+      targetBoundsScaleMultiplier: 0
+      lifetimeMode: 0
+      lifetimeOverrideSeconds: 0
+      useUnscaledTime: 0
+    particle:
+      prefab: {fileID: 0}
+      localOffset: {x: 0, y: 0, z: 0}
+      rotationOffsetZ: 0
+      scaleMultiplier: {x: 0, y: 0, z: 0}
+      attachToTarget: 0
+      anchorMode: 0
+      scaleMode: 0
+      targetBoundsReferenceSize: 0
+      targetBoundsScaleMultiplier: 0
+      lifetimeMode: 0
+      lifetimeOverrideSeconds: 0
+      useUnscaledTime: 0
 --- !u!114 &1007000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -464,6 +513,44 @@ MonoBehaviour:
   fallbackShadowColor: {r: 0, g: 0, b: 0, a: 0.32}
   fallbackShadowSortingLayerName: Entity
   fallbackShadowSortingOrder: -1
+--- !u!114 &1027000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1000000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ff4ff08e39f49319d1e0414b9985957, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UnityGAS.EntityCollisionProfile2D
+  bodyColliders:
+  - {fileID: 1033903863279289278}
+  baseExcludedLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  actorLayers:
+    serializedVersion: 2
+    m_Bits: 2147483656
+  defaultMode: 0
+--- !u!114 &1028000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1000000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4746e930aa0546e7a63dc942f37d1d42, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UnityGAS.CombatHeightCollisionBinder2D
+  heightState: {fileID: 1025000}
+  collisionProfile: {fileID: 1027000}
+  groundedMode: 0
+  airborneMode: 2
+  restoreProfileDefaultWhenGrounded: 1
 --- !u!114 &4160568613653900950
 MonoBehaviour:
   m_ObjectHideFlags: 0

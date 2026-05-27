@@ -12,3 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0b793df3ef2c42e49317c66739d2c7ce, type: 3}
   m_Name: AL_SlimeQueenRandomJump
   m_EditorClassIdentifier: 
+  jumpSound:
+    key: sound_slimeQueen_Jump
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  landSound:
+    key: sound_slimeQueen_Land
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}

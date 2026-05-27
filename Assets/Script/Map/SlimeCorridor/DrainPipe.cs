@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using CapstoneAudio;
 using UnityEngine;
 using UnityGAS;
 
@@ -42,6 +43,10 @@ public sealed class DrainPipe : MonoBehaviour, IDamageReceiver
 
     [Tooltip("3회 피격 후 표시할 임시 파괴 색상입니다. 실제 스프라이트 적용 시 제거할 임시 연출입니다.")]
     [SerializeField] private Color brokenColor = Color.black;
+
+    [Header("Sound")]
+    [Tooltip("2페이즈 근거리 슬라임 퀸이 배수구에서 복귀하기 직전에 재생할 사운드입니다.")]
+    [SerializeField] private SoundRef phaseTwoBossReturnSound = SoundRef.FromKey("sound_slimeQueen_Return");
 
     private static Texture2D sharedTemporaryCircleTexture;
     private static Sprite sharedTemporaryCircleSprite;
@@ -422,6 +427,13 @@ public sealed class DrainPipe : MonoBehaviour, IDamageReceiver
 
         drainContext?.BeginExitJump();
         slimeQueen.EndDrainSinkAnimation();
+        SoundPlaybackUtility.Play(
+            phaseTwoBossReturnSound,
+            slimeQueen.gameObject,
+            gameObject,
+            slimeQueen.gameObject,
+            transform.position,
+            this);
 
         Vector3 startPosition = GetDrainPosition(slimeQueen.transform.position.z);
         Vector3 landingPosition = startPosition;
