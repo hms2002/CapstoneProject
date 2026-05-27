@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: DemoCheatSettings
   m_EditorClassIdentifier:
   enableDemoCheats: 1
+  warpToRunSpecialNpcKey: 288
+  addMagicStoneKey: 289
   maxHealthKey: 290
   warpToPortalKey: 291
   resetWeaponCooldownKey: 292
@@ -21,4 +23,5 @@ MonoBehaviour:
   maxHealthAttribute: {fileID: 11400000, guid: 0e177e1d15e428745b5859fac08ce203, type: 2}
   attackAddAttribute: {fileID: 11400000, guid: 81ebe564c6bd7d54a92e1093c59a8161, type: 2}
   attackIncreaseAmount: 10
+  magicStoneAddAmount: 100
   notificationDuration: 1.2

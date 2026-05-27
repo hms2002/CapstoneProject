@@ -40,6 +40,12 @@ public sealed class DemoCheatHotkeyController : MonoBehaviour
         if (IsSceneTransitionActive())
             return;
 
+        if (WasPressed(settings.WarpToRunSpecialNpcKey))
+            ShowResult(service.WarpPlayerToNextRunSpecialNpc(settings));
+
+        if (WasPressed(settings.AddMagicStoneKey))
+            ShowResult(service.AddMagicStone(settings));
+
         if (WasPressed(settings.MaxHealthKey))
             ShowResult(service.RefillPlayerHealth(settings));
 

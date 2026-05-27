@@ -30,11 +30,53 @@ public readonly struct DemoCheatResult
 public sealed class DemoCheatService
 {
     private static readonly HashSet<AbilityDefinition> AbilityBuffer = new();
+    private static readonly List<RunSpecialNpcInteractor> RunSpecialNpcBuffer = new();
     private readonly UnityEngine.Object logContext;
+    private string lastRunSpecialNpcSceneName;
+    private int nextRunSpecialNpcIndex;
 
     public DemoCheatService(UnityEngine.Object logContext)
     {
         this.logContext = logContext;
+    }
+
+    public DemoCheatResult AddMagicStone(DemoCheatSettingsSO settings)
+    {
+        if (CurrencyManager.Instance == null)
+            return Fail("마정석 시스템을 찾을 수 없습니다.");
+
+        int amount = Mathf.Max(1, settings.MagicStoneAddAmount);
+        CurrencyManager.Instance.AddMagicStone(amount);
+
+        Log($"마정석 추가. amount={amount}, total={CurrencyManager.Instance.GetMagicStone()}");
+        return DemoCheatResult.Succeeded($"마정석을 {amount}개 획득했습니다.");
+    }
+
+    public DemoCheatResult WarpPlayerToNextRunSpecialNpc(DemoCheatSettingsSO settings)
+    {
+        if (!TryResolvePlayer(out Transform player))
+            return Fail("플레이어를 찾을 수 없습니다.");
+
+        RunSpecialNpcInteractor npc = FindNextRunSpecialNpc();
+        if (npc == null)
+            return Fail("이 씬에서 Runtime Special NPC를 찾을 수 없습니다.");
+
+        Transform anchor = npc.GetPromptAnchor();
+        Vector3 targetPosition = anchor != null ? anchor.position : npc.transform.position;
+        targetPosition.z = player.position.z;
+
+        MovementMotor2D movementMotor = player.GetComponent<MovementMotor2D>();
+        if (movementMotor != null)
+        {
+            movementMotor.WarpTo(targetPosition, clearExternalMovement: true, clearMotion: true);
+        }
+        else
+        {
+            SetPlayerPositionImmediate(player, targetPosition);
+        }
+
+        Log($"Runtime Special NPC 앞으로 워프. scene={SceneManager.GetActiveScene().name}, npc={npc.name}");
+        return DemoCheatResult.Succeeded("Runtime Special NPC 앞으로 이동했습니다.");
     }
 
     public DemoCheatResult RefillPlayerHealth(DemoCheatSettingsSO settings)
@@ -208,6 +250,61 @@ public sealed class DemoCheatService
         }
 
         return nearest;
+    }
+
+    private RunSpecialNpcInteractor FindNextRunSpecialNpc()
+    {
+        string sceneName = SceneManager.GetActiveScene().name;
+        if (!string.Equals(lastRunSpecialNpcSceneName, sceneName, StringComparison.Ordinal))
+        {
+            lastRunSpecialNpcSceneName = sceneName;
+            nextRunSpecialNpcIndex = 0;
+        }
+
+        RunSpecialNpcBuffer.Clear();
+        RunSpecialNpcInteractor[] interactors = UnityEngine.Object.FindObjectsByType<RunSpecialNpcInteractor>(
+            FindObjectsInactive.Exclude,
+            FindObjectsSortMode.None);
+
+        for (int i = 0; i < interactors.Length; i++)
+        {
+            RunSpecialNpcInteractor interactor = interactors[i];
+            if (interactor != null && interactor.isActiveAndEnabled && interactor.gameObject.activeInHierarchy)
+                RunSpecialNpcBuffer.Add(interactor);
+        }
+
+        if (RunSpecialNpcBuffer.Count == 0)
+            return null;
+
+        RunSpecialNpcBuffer.Sort(CompareRunSpecialNpcStableOrder);
+        if (nextRunSpecialNpcIndex < 0 || nextRunSpecialNpcIndex >= RunSpecialNpcBuffer.Count)
+            nextRunSpecialNpcIndex = 0;
+
+        RunSpecialNpcInteractor selected = RunSpecialNpcBuffer[nextRunSpecialNpcIndex];
+        nextRunSpecialNpcIndex = (nextRunSpecialNpcIndex + 1) % RunSpecialNpcBuffer.Count;
+        RunSpecialNpcBuffer.Clear();
+        return selected;
+    }
+
+    private static int CompareRunSpecialNpcStableOrder(RunSpecialNpcInteractor a, RunSpecialNpcInteractor b)
+    {
+        return string.CompareOrdinal(BuildRunSpecialNpcStableKey(a), BuildRunSpecialNpcStableKey(b));
+    }
+
+    private static string BuildRunSpecialNpcStableKey(RunSpecialNpcInteractor interactor)
+    {
+        if (interactor == null)
+            return string.Empty;
+
+        Transform current = interactor.transform;
+        string path = current.name;
+        while (current.parent != null)
+        {
+            current = current.parent;
+            path = $"{current.GetSiblingIndex():D4}:{current.name}/{path}";
+        }
+
+        return $"{interactor.gameObject.scene.name}/{path}/{interactor.transform.GetSiblingIndex():D4}";
     }
 
     private static bool IsAllowedPortalTransition(TransitionType transitionType)
