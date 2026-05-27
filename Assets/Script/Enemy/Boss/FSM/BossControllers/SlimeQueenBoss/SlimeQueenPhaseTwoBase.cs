@@ -40,7 +40,7 @@ public abstract class SlimeQueenPhaseTwoBase : SlimeQueenBossBase, ISlimeQueenBo
     [Tooltip("연속 내려찍기를 반복할 횟수입니다.")]
     [SerializeField, Min(1)] private int slamCount = 3;
 
-    [Tooltip("연속 내려찍기 점프 중간 지점에서 올라갈 포물선 높이입니다.")]
+    [Tooltip("연속 내려찍기에서 착지 위치 위로 올라가 체공할 높이입니다.")]
     [SerializeField, Min(0f)] private float slamArcHeight = 2.8f;
 
     [Tooltip("연속 내려찍기 착지 시 플레이어에게 적용할 피해량입니다.")]
@@ -159,7 +159,7 @@ public abstract class SlimeQueenPhaseTwoBase : SlimeQueenBossBase, ISlimeQueenBo
         isPassiveContactDamageBlocked = isBlocked;
     }
 
-    /// <summary>배수구에 끌려가는 동안 현재 패턴과 상시 접촉 피해를 잠급니다.</summary>
+    /// <summary>배수구에 끌려가는 동안 현재 패턴, 기본 이동, 상시 접촉 피해를 잠급니다.</summary>
     public void BeginDrainControlLock()
     {
         if (isDrainControlLocked)
@@ -168,7 +168,6 @@ public abstract class SlimeQueenPhaseTwoBase : SlimeQueenBossBase, ISlimeQueenBo
         isDrainControlLocked = true;
         CancelCastlingForDrain();
         SetPitFallRuntimeLock(true);
-        SetPatternMoveDamageBlocked(true);
         SetPassiveContactDamageBlocked(true);
     }
 
@@ -420,6 +419,12 @@ public abstract class SlimeQueenPhaseTwoBase : SlimeQueenBossBase, ISlimeQueenBo
     /// <summary>2페이즈 보스 공용 말풍선 대사를 출력합니다.</summary>
     public bool TryShowPhaseTwoSpeech(string text, float duration, Action onHidden = null)
     {
+        return TryShowPhaseTwoSpeech(text, duration, onHidden, Vector3.zero);
+    }
+
+    /// <summary>2페이즈 보스 공용 말풍선 대사를 추가 오프셋과 함께 출력합니다.</summary>
+    public bool TryShowPhaseTwoSpeech(string text, float duration, Action onHidden, Vector3 bubbleOffsetDelta)
+    {
         if (string.IsNullOrWhiteSpace(text))
             return false;
 
@@ -435,7 +440,7 @@ public abstract class SlimeQueenPhaseTwoBase : SlimeQueenBossBase, ISlimeQueenBo
             return false;
         }
 
-        speechBubble.Speak(text, Mathf.Max(0.1f, duration), null, onHidden);
+        speechBubble.SpeakWithOffsetDelta(text, Mathf.Max(0.1f, duration), null, onHidden, bubbleOffsetDelta);
         return true;
     }
 
@@ -549,14 +554,10 @@ public abstract class SlimeQueenPhaseTwoBase : SlimeQueenBossBase, ISlimeQueenBo
         return true;
     }
 
-    /// <summary>페이즈 2 내려찍기 중 root는 바닥 좌표로 이동시키고 visual 높이만 분리해 적용합니다.</summary>
+    /// <summary>페이즈 2 내려찍기에서 착지 위치 위로 빠르게 올라가 체공한 뒤 급강하하는 자세를 적용합니다.</summary>
     public void SetPhase2SlamPose(Vector3 startPosition, Vector3 landingPosition, float normalizedTime)
     {
-        float clampedTime = Mathf.Clamp01(normalizedTime);
-        Vector3 groundPosition = Vector3.Lerp(startPosition, landingPosition, clampedTime);
-        float arcOffset = Mathf.Sin(clampedTime * Mathf.PI) * slamArcHeight;
-
-        ApplyGroundedMotionPose(groundPosition, arcOffset);
+        ApplyKnightStyleSlamPose(startPosition, landingPosition, normalizedTime, slamArcHeight);
     }
 
     /// <summary>페이즈 2 내려찍기 종료 위치로 보스 좌표를 확정합니다.</summary>
@@ -568,6 +569,8 @@ public abstract class SlimeQueenPhaseTwoBase : SlimeQueenBossBase, ISlimeQueenBo
     /// <summary>페이즈 2 내려찍기 범위 안의 현재 타겟에게 GAS Damage Effect를 적용합니다.</summary>
     public void ApplyPhase2SlamDamage(AbilitySpec sourceSpec, Vector3 landingPosition)
     {
+        PlayLightSlamLandingCameraShake($"{GetType().Name}.Phase2SlamLanding");
+
         if (slamDamage <= 0f || CurrentTarget == null || slamDamageEffect == null)
             return;
 

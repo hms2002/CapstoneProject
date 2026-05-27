@@ -25,6 +25,34 @@ Prevention:
 
 ## Active Entries
 
+## 2026-05-28 - Toxic Rush Was Limited By Random Move Bounds
+
+Context:
+Slime Queen P2Short toxic rush still stopped before reaching the level edge even after the pattern was changed away from the original short fixed distance.
+
+Cause:
+The first fix interpreted "map edge" as the authored `SlimeQueenRandomMoveBounds` area. That added a fourth stop condition to toxic rush and could terminate the rush at the random-move authoring volume instead of the actual wall/end of the level.
+
+Fix:
+Toxic rush now builds its segment from a long wall cast using the configured wall layer. Its intended stop conditions are only wall collision, normal HoleTrap fall, or player collision. The center follow-up slam is only tied to the normal HoleTrap fall path.
+
+Prevention:
+Do not reuse movement/landing authoring bounds as a combat dash termination rule unless the design explicitly says the pattern is range-limited by that volume. For Slime Queen P2Short toxic rush, keep `SlimeQueenRandomMoveBounds` out of the rush stop condition.
+
+## 2026-05-28 - Drain Groggy Reused Movement Invulnerability
+
+Context:
+Slime Queen P2Short trapped in an open drain for the intended 4-second free-damage window did not take player damage.
+
+Cause:
+`SlimeQueenPhaseTwoBase.BeginDrainControlLock()` still called `SetPatternMoveDamageBlocked(true)`. That helper is for airborne/rush movement patterns and applies the shared `State.Invulnerable` tag, so `CombatDamageAction` suppressed incoming damage through `CombatInvulnerabilityUtil`.
+
+Fix:
+Drain control now aborts the current pattern, locks movement/pitfall handling, and blocks passive contact damage without applying the movement-pattern invulnerable tag. `EndDrainControlLock()` still clears pattern-move damage blocking defensively in case a previous pattern left it set.
+
+Prevention:
+Do not use movement-pattern damage blockers for groggy, trap, stun, or free-damage windows. If the target should remain hittable, separate action/movement locking from invulnerability tagging.
+
 ## 2026-05-26 - Manually Generated Unity Empty Lists Swallowed Following Fields
 
 Context:
