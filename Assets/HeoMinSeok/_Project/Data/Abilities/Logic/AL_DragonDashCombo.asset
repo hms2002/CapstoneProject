@@ -73,6 +73,19 @@ MonoBehaviour:
       lifetimeMode: 0
       lifetimeOverrideSeconds: 0
       useUnscaledTime: 0
+  dashAttackSoundsByDash:
+  - key: sound_dragon_dash1
+    volumeMultiplier: 1
+    anchorPolicy: 2
+    localOffset: {x: 0, y: 0, z: 0}
+  - key: sound_dragon_dash2
+    volumeMultiplier: 1
+    anchorPolicy: 2
+    localOffset: {x: 0, y: 0, z: 0}
+  - key: sound_dragon_dash3
+    volumeMultiplier: 1
+    anchorPolicy: 2
+    localOffset: {x: 0, y: 0, z: 0}
   dashHitPresentation:
     sound:
       key: 

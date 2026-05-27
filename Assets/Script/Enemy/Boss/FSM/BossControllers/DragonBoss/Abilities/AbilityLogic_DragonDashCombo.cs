@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using CapstoneAudio;
 using CapstonePresentation;
 using UnityEngine;
 using UnityGAS;
@@ -42,6 +43,7 @@ public sealed class AbilityLogic_DragonDashCombo : AbilityLogic
 
     [Header("Presentation")]
     [SerializeField] private WorldPresentationHook dashAttackPresentation;
+    [SerializeField] private SoundRef[] dashAttackSoundsByDash = new SoundRef[3];
     [SerializeField] private WorldPresentationHook dashHitPresentation;
 
     [Header("Afterimage")]
@@ -90,7 +92,7 @@ public sealed class AbilityLogic_DragonDashCombo : AbilityLogic
 
                     telegraphService?.HideCurrent();
                     dragon.PlayPatternTrigger(DragonAnimationKeys.DashAttack);
-                    PlayDashAttackPresentation(dragon, start, direction, resolvedDistance, resolvedHitWidth);
+                    PlayDashAttackPresentation(dragon, start, direction, resolvedDistance, resolvedHitWidth, i);
 
                     damagedTargets.Clear();
                     yield return RunDashWithActorPassThrough(
@@ -289,9 +291,11 @@ public sealed class AbilityLogic_DragonDashCombo : AbilityLogic
         Vector2 start,
         Vector2 direction,
         float distance,
-        float resolvedHitWidth)
+        float resolvedHitWidth,
+        int dashIndex)
     {
-        if (dragon == null || !dashAttackPresentation.HasAnyContent)
+        SoundRef indexedDashSound = ResolveDashAttackSound(dashIndex);
+        if (dragon == null || (!dashAttackPresentation.HasAnyContent && !indexedDashSound.IsSet))
             return;
 
         Vector2 safeDirection = direction.sqrMagnitude > 0.0001f ? direction.normalized : Vector2.right;
@@ -308,9 +312,33 @@ public sealed class AbilityLogic_DragonDashCombo : AbilityLogic
             sourceObject: this,
             rotation: Quaternion.Euler(0f, 0f, angleDeg));
 
-        WorldPresentationRuntime.PlaySignalOnly(dashAttackPresentation, context);
+        WorldPresentationHook signalPresentation = dashAttackPresentation;
+        if (indexedDashSound.IsSet)
+            signalPresentation.sound = default;
+
+        if (indexedDashSound.IsSet)
+        {
+            SoundPlaybackUtility.Play(
+                indexedDashSound,
+                instigator: dragon.gameObject,
+                causer: dragon.gameObject,
+                target: dragon.CurrentTarget != null ? dragon.CurrentTarget.gameObject : null,
+                position: center,
+                sourceObject: this);
+        }
+
+        WorldPresentationRuntime.PlaySignalOnly(signalPresentation, context);
         SpawnScaledDashAttackVisual(dashAttackPresentation.effect, context, presentationScale);
         SpawnScaledDashAttackVisual(dashAttackPresentation.particle, context, presentationScale);
+    }
+
+    /// <summary>돌진 콤보의 n번째 돌진에 대응하는 사운드를 선택합니다.</summary>
+    private SoundRef ResolveDashAttackSound(int dashIndex)
+    {
+        if (dashAttackSoundsByDash == null || dashIndex < 0 || dashIndex >= dashAttackSoundsByDash.Length)
+            return default;
+
+        return dashAttackSoundsByDash[dashIndex];
     }
 
     private static void SpawnScaledDashAttackVisual(

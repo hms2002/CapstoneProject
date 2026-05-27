@@ -448,3 +448,168 @@ MonoBehaviour:
     cooldown: 0
     minDistance: 1
     maxDistance: 20
+  - key: sound_dragon_jump
+    bus: 0
+    category: 7
+    variants:
+    - {fileID: 8300000, guid: c5bea4f36b19a6542bc62e0f8313583d, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 1
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_dragon_land
+    bus: 0
+    category: 7
+    variants:
+    - {fileID: 8300000, guid: 12a59c4fea971144a8a8420889c25597, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 1
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_dragon_fire
+    bus: 0
+    category: 7
+    variants:
+    - {fileID: 8300000, guid: 47a638363aa88e84ead31dad18582435, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 1
+    spatial: 1
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_dragon_throw
+    bus: 0
+    category: 7
+    variants:
+    - {fileID: 8300000, guid: 00127d77f399e7f44bc645a21d77291d, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 1
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_dragon_dash1
+    bus: 0
+    category: 7
+    variants:
+    - {fileID: 8300000, guid: d3e4fdb4cced2f14dbe1133a1a99fce3, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 1
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_dragon_dash2
+    bus: 0
+    category: 7
+    variants:
+    - {fileID: 8300000, guid: 56774367f5fb6d34c81f25cf4647cc36, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 1
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_dragon_dash3
+    bus: 0
+    category: 7
+    variants:
+    - {fileID: 8300000, guid: 8ebb22e5b06ff3b4e921395c6bec3abc, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 1
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_dragon_inhale
+    bus: 0
+    category: 7
+    variants:
+    - {fileID: 8300000, guid: 53b68d3e7aea0bf4cbcf0381b756f4e8, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 1
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_dragon_shotfire
+    bus: 0
+    category: 7
+    variants:
+    - {fileID: 8300000, guid: 9049e6c7097c7b7479c2c234727a9b04, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 1
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_dragon_barrelBoke
+    bus: 0
+    category: 7
+    variants:
+    - {fileID: 8300000, guid: 501129bbb4a6fdc48936a4d1bfc423ee, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 1
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_dragon_drink
+    bus: 0
+    category: 7
+    variants:
+    - {fileID: 8300000, guid: a2aa2bcdd47b30242a4ff9a69451711a, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 1
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20

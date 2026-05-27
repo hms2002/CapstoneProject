@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using CapstoneAudio;
 using CapstonePresentation;
 using UnityEngine;
 using UnityGAS;
@@ -21,6 +22,7 @@ public sealed class AbilityLogic_DragonAlcoholThrow : AbilityLogic
     [SerializeField] private float kegSpinDegrees = 540f;
     [SerializeField, Min(0f)] private float launchForwardOffset = 0.4f;
     [SerializeField, Min(0f)] private float launchUpOffset = 0.8f;
+    [SerializeField] private SoundRef throwSound;
 
     [Header("Damage")]
     [SerializeField] private GE_Damage_Spec kegDamageEffect;
@@ -238,6 +240,7 @@ public sealed class AbilityLogic_DragonAlcoholThrow : AbilityLogic
         bool didImpact = false;
         Vector3 launchPosition = ResolveLaunchPosition(dragon, impactPosition);
         DragonThrownKegActor keg = Object.Instantiate(thrownKegPrefab, launchPosition, Quaternion.identity);
+        PlayThrowSound(dragon, launchPosition);
         keg.Launch(
             launchPosition,
             impactPosition,
@@ -264,6 +267,21 @@ public sealed class AbilityLogic_DragonAlcoholThrow : AbilityLogic
 
         if (IsAbilityCancelled(spec) && keg != null)
             Object.Destroy(keg.gameObject);
+    }
+
+    /// <summary>술통이 손을 떠나는 순간의 투척 사운드를 재생합니다.</summary>
+    private void PlayThrowSound(DragonController dragon, Vector3 launchPosition)
+    {
+        if (dragon == null)
+            return;
+
+        SoundPlaybackUtility.Play(
+            throwSound,
+            instigator: dragon.gameObject,
+            causer: dragon.gameObject,
+            target: dragon.CurrentTarget != null ? dragon.CurrentTarget.gameObject : null,
+            position: launchPosition,
+            sourceObject: this);
     }
 
     private Vector3 ResolveLaunchPosition(DragonController dragon, Vector3 impactPosition)
@@ -317,7 +335,7 @@ public sealed class AbilityLogic_DragonAlcoholThrow : AbilityLogic
         Vector3 impactPosition,
         Vector3 intendedImpactPosition)
     {
-        if (!kegImpactPresentation.HasVisuals)
+        if (!kegImpactPresentation.HasAnyContent)
             return;
 
         Vector3 fallbackDirection = intendedImpactPosition - (dragon != null ? dragon.transform.position : impactPosition);

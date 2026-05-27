@@ -93,8 +93,8 @@ MonoBehaviour:
   impactVisualLifetime: 1.2
   jumpStartPresentation:
     sound:
-      key: 
-      volumeMultiplier: 0
+      key: sound_dragon_jump
+      volumeMultiplier: 1
       anchorPolicy: 0
       localOffset: {x: 0, y: 0, z: 0}
     cameraShake:
@@ -123,8 +123,8 @@ MonoBehaviour:
       useUnscaledTime: 0
   landingPresentation:
     sound:
-      key: 
-      volumeMultiplier: 0
+      key: sound_dragon_land
+      volumeMultiplier: 1
       anchorPolicy: 0
       localOffset: {x: 0, y: 0, z: 0}
     cameraShake:
@@ -163,9 +163,9 @@ MonoBehaviour:
   scatteredKegMissedDamageRadius: 2.4
   scatteredKegImpactPresentation:
     sound:
-      key: 
-      volumeMultiplier: 0
-      anchorPolicy: 0
+      key: sound_dragon_barrelBoke
+      volumeMultiplier: 1
+      anchorPolicy: 2
       localOffset: {x: 0, y: 0, z: 0}
     cameraShake:
       amplitude: 0

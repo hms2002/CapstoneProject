@@ -19,15 +19,20 @@ MonoBehaviour:
   kegSpinDegrees: 540
   launchForwardOffset: 0.4
   launchUpOffset: 0.8
+  throwSound:
+    key: sound_dragon_throw
+    volumeMultiplier: 1
+    anchorPolicy: 2
+    localOffset: {x: 0, y: 0, z: 0}
   kegDamageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
   kegDamageAmount: 1
   kegKnockbackImpulse: 0
   missedImpactDamageRadius: 2.7
   kegImpactPresentation:
     sound:
-      key: 
-      volumeMultiplier: 0
-      anchorPolicy: 0
+      key: sound_dragon_barrelBoke
+      volumeMultiplier: 1
+      anchorPolicy: 2
       localOffset: {x: 0, y: 0, z: 0}
     cameraShake:
       amplitude: 0

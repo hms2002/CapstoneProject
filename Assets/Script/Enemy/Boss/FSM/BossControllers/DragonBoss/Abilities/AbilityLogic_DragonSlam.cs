@@ -288,7 +288,7 @@ public sealed class AbilityLogic_DragonSlam : AbilityLogic
     /// </summary>
     private void PlayJumpStartPresentation(DragonController dragon, Vector2 startPosition)
     {
-        if (!jumpStartPresentation.HasVisuals)
+        if (!jumpStartPresentation.HasAnyContent)
             return;
 
         Vector3 position = new(startPosition.x, startPosition.y, dragon != null ? dragon.transform.position.z : 0f);
@@ -309,7 +309,7 @@ public sealed class AbilityLogic_DragonSlam : AbilityLogic
     /// </summary>
     private void PlayLandingPresentation(DragonController dragon, Vector2 impactPosition)
     {
-        if (!landingPresentation.HasVisuals)
+        if (!landingPresentation.HasAnyContent)
             return;
 
         Vector3 position = new(impactPosition.x, impactPosition.y, dragon != null ? dragon.transform.position.z : 0f);
@@ -510,7 +510,7 @@ public sealed class AbilityLogic_DragonSlam : AbilityLogic
         GameObject hitTarget,
         Vector3 impactPosition)
     {
-        if (!scatteredKegImpactPresentation.HasVisuals)
+        if (!scatteredKegImpactPresentation.HasAnyContent)
             return;
 
         Vector3 fallbackDirection = dragon != null

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using CapstoneAudio;
 using CapstonePresentation;
 using UnityEngine;
 using UnityGAS;
@@ -43,6 +44,7 @@ public sealed class AbilityLogic_DragonFireBreath : AbilityLogic
 
     [Header("Presentation")]
     [SerializeField] private WorldPresentationHook inhalePreparePresentation;
+    [SerializeField] private SoundRef fireBreathLoopSound;
     [SerializeField] private GameObject fireBreathVisualPrefab;
 
     public override IEnumerator Activate(AbilitySystem system, AbilitySpec spec, GameObject initialTarget)
@@ -128,9 +130,18 @@ public sealed class AbilityLogic_DragonFireBreath : AbilityLogic
     {
         GameObject fireBreathVisualObject = null;
         IConePatternVisual2D fireBreathVisual = null;
+        AudioHandle fireBreathSoundHandle = AudioHandle.Invalid;
 
         try
         {
+            fireBreathSoundHandle = SoundPlaybackUtility.Play(
+                fireBreathLoopSound,
+                instigator: dragon.gameObject,
+                causer: dragon.gameObject,
+                target: dragon.CurrentTarget != null ? dragon.CurrentTarget.gameObject : null,
+                position: aim.FireOrigin,
+                sourceObject: this);
+
             fireBreathVisualObject = CreateFireBreathVisual(dragon, aim.FireOrigin, out fireBreathVisual);
             fireBreathVisual?.Play(new ConePatternVisualSpec2D(
                 aim.FireOrigin,
@@ -143,6 +154,7 @@ public sealed class AbilityLogic_DragonFireBreath : AbilityLogic
         }
         finally
         {
+            SoundPlaybackUtility.Stop(fireBreathSoundHandle);
             fireBreathVisual?.Stop();
             if (fireBreathVisualObject != null)
                 Destroy(fireBreathVisualObject);

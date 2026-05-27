@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using CapstoneAudio;
 using UnityEngine;
 using UnityGAS;
 
@@ -37,6 +38,7 @@ public sealed class AbilityLogic_DragonRotation : AbilityLogic
     [SerializeField, Min(0f)] private float projectileSpawnRadius = 0.65f;
     [SerializeField] private float projectileRotationOffsetDegrees;
     [SerializeField] private LayerMask projectileWallLayers;
+    [SerializeField] private SoundRef projectileFireSound;
 
     [Header("Telegraph")]
     [SerializeField] private AttackTelegraphStyle warningTelegraphStyle;
@@ -273,6 +275,12 @@ public sealed class AbilityLogic_DragonRotation : AbilityLogic
         };
 
         projectile.Setup(context);
+        SoundPlaybackUtility.Play(
+            projectileFireSound,
+            instigator: dragon.gameObject,
+            causer: dragon.gameObject,
+            position: origin,
+            sourceObject: this);
     }
 
     /// <summary>

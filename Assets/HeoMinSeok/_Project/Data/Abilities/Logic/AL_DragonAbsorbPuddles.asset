@@ -73,10 +73,40 @@ MonoBehaviour:
   fireStaggerBuildUpMaxRatio: 0.1
   maxAbsorbSeconds: 12
   logAbsorbResult: 1
+  centerJumpPresentation:
+    sound:
+      key: sound_dragon_jump
+      volumeMultiplier: 1
+      anchorPolicy: 2
+      localOffset: {x: 0, y: 0, z: 0}
+    cameraShake:
+      amplitude: 0
+      amplitudeMultiplier: 0
+      maxAmplitude: 0
+      minIntervalSeconds: 0
+      directionMode: 0
+      customDirection: {x: 0, y: 0, z: 0}
+      ignoreScreenShakeSetting: 0
+    effect:
+      prefab: {fileID: 0}
+      localOffset: {x: 0, y: 0, z: 0}
+      rotationOffsetZ: 0
+      scaleMultiplier: {x: 1, y: 1, z: 1}
+      lifetimeMode: 0
+      lifetimeOverrideSeconds: 0
+      useUnscaledTime: 0
+    particle:
+      prefab: {fileID: 0}
+      localOffset: {x: 0, y: 0, z: 0}
+      rotationOffsetZ: 0
+      scaleMultiplier: {x: 1, y: 1, z: 1}
+      lifetimeMode: 0
+      lifetimeOverrideSeconds: 0
+      useUnscaledTime: 0
   inhalePresentation:
     sound:
-      key: 
-      volumeMultiplier: 0
+      key: sound_dragon_inhale
+      volumeMultiplier: 1
       anchorPolicy: 0
       localOffset: {x: 0, y: 0, z: 0}
     cameraShake:
@@ -105,8 +135,8 @@ MonoBehaviour:
       useUnscaledTime: 0
   centerLandingPresentation:
     sound:
-      key: 
-      volumeMultiplier: 0
+      key: sound_dragon_land
+      volumeMultiplier: 1
       anchorPolicy: 0
       localOffset: {x: 0, y: 0, z: 0}
     cameraShake:
@@ -133,6 +163,11 @@ MonoBehaviour:
       lifetimeMode: 0
       lifetimeOverrideSeconds: 0
       useUnscaledTime: 0
+  alcoholOnlyDrinkSound:
+    key: sound_dragon_drink
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
   pullTargetDuringAbsorb: 1
   pullSpeed: 1.6
   pullVelocityRefreshSeconds: 0.08

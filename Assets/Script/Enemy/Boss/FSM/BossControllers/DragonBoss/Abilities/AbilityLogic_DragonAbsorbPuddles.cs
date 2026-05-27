@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using CapstoneAudio;
 using CapstonePresentation;
 using UnityEngine;
 using UnityGAS;
@@ -44,8 +45,10 @@ public sealed class AbilityLogic_DragonAbsorbPuddles : AbilityLogic
     [SerializeField] private bool logAbsorbResult = true;
 
     [Header("Presentation")]
+    [SerializeField] private WorldPresentationHook centerJumpPresentation;
     [SerializeField] private WorldPresentationHook inhalePresentation;
     [SerializeField] private WorldPresentationHook centerLandingPresentation;
+    [SerializeField] private SoundRef alcoholOnlyDrinkSound;
 
     [Header("Player Pull")]
     [SerializeField] private bool pullTargetDuringAbsorb = true;
@@ -100,6 +103,7 @@ public sealed class AbilityLogic_DragonAbsorbPuddles : AbilityLogic
         try
         {
             dragon.PlayPatternTrigger(DragonAnimationKeys.Jump);
+            PlayCenterJumpPresentation(dragon, start);
             heightState?.SetAirborne(0f, centerJumpBodyZHeight);
 
             while (elapsed < duration)
@@ -134,6 +138,26 @@ public sealed class AbilityLogic_DragonAbsorbPuddles : AbilityLogic
         dragon.PlayPatternTrigger(DragonAnimationKeys.Landing);
         PlayCenterLandingPresentation(dragon, target);
         ApplyCenterImpactDamage(dragon, target);
+    }
+
+    /// <summary>
+    /// 책임:
+    /// 흡수 패턴의 중앙 이동 점프가 시작되는 순간 도약 연출을 재생한다.
+    /// </summary>
+    private void PlayCenterJumpPresentation(DragonController dragon, Vector2 startPosition)
+    {
+        if (dragon == null || !centerJumpPresentation.HasAnyContent)
+            return;
+
+        WorldPresentationRuntime.Play(
+            centerJumpPresentation,
+            WorldPresentationContext.AtWorld(
+                instigator: dragon.gameObject,
+                position: startPosition,
+                fallbackDirection: Vector3.up,
+                target: dragon.CurrentTarget != null ? dragon.CurrentTarget.gameObject : null,
+                sourceObject: this,
+                causer: dragon.gameObject));
     }
 
     /// <summary>
@@ -306,7 +330,7 @@ public sealed class AbilityLogic_DragonAbsorbPuddles : AbilityLogic
     /// 책임:
     /// 흡수 패턴 결과에 따라 취룡 전용 상황 대사를 선택해 출력한다.
     /// </summary>
-    private static void SpeakAbsorbResult(DragonController dragon)
+    private void SpeakAbsorbResult(DragonController dragon)
     {
         if (dragon == null)
             return;
@@ -319,7 +343,28 @@ public sealed class AbilityLogic_DragonAbsorbPuddles : AbilityLogic
         }
 
         if (data.AbsorbedAlcoholProjectileCount > 0)
+        {
+            PlayAlcoholOnlyDrinkSound(dragon);
             dragon.SpeakSituation(BossSpeechSituationEnum.AbsorbAlcoholOnly);
+        }
+    }
+
+    /// <summary>
+    /// 책임:
+    /// 술 장판만 흡수해 취룡이 만족하는 결과가 났을 때 전용 만족 사운드를 재생한다.
+    /// </summary>
+    private void PlayAlcoholOnlyDrinkSound(DragonController dragon)
+    {
+        if (dragon == null)
+            return;
+
+        SoundPlaybackUtility.Play(
+            alcoholOnlyDrinkSound,
+            instigator: dragon.gameObject,
+            causer: dragon.gameObject,
+            target: dragon.CurrentTarget != null ? dragon.CurrentTarget.gameObject : null,
+            position: dragon.transform.position,
+            sourceObject: this);
     }
 
     private void ConvertAllGroundPuddles(DragonController dragon)

@@ -34,4 +34,9 @@ MonoBehaviour:
   projectileWallLayers:
     serializedVersion: 2
     m_Bits: 0
+  projectileFireSound:
+    key: sound_dragon_shotfire
+    volumeMultiplier: 1
+    anchorPolicy: 2
+    localOffset: {x: 0, y: 0, z: 0}
   warningTelegraphStyle: {fileID: 11400000, guid: b15f18602ec87284d80cbd57720425f1, type: 2}

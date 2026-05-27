@@ -35,8 +35,8 @@ MonoBehaviour:
   warningTelegraphWallSkinWidth: 0.03
   inhalePreparePresentation:
     sound:
-      key: 
-      volumeMultiplier: 0
+      key: sound_dragon_inhale
+      volumeMultiplier: 1
       anchorPolicy: 0
       localOffset: {x: 0, y: 0, z: 0}
     cameraShake:
@@ -63,4 +63,9 @@ MonoBehaviour:
       lifetimeMode: 0
       lifetimeOverrideSeconds: 0
       useUnscaledTime: 0
+  fireBreathLoopSound:
+    key: sound_dragon_fire
+    volumeMultiplier: 1
+    anchorPolicy: 2
+    localOffset: {x: 0, y: 0, z: 0}
   fireBreathVisualPrefab: {fileID: 4251223848648810675, guid: fc620d7fcc12f9e4e8acfdd983cc69ce, type: 3}

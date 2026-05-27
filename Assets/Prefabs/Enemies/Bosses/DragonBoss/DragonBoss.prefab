@@ -891,7 +891,7 @@ MonoBehaviour:
   playEncounterDialogue: 1
   playPrimaryDialogueAfterEncounter: 1
   recordEncounterProgress: 1
-  legacyInkJSON: {fileID: 4900000, guid: 0ea3c7635ba34a0b82c5b552cf9ff0e3, type: 3}
+  legacyInkJSON: {fileID: 4900000, guid: 77449fa9b212abb4885485f3b0c45973, type: 3}
 --- !u!114 &6824159300182253413
 MonoBehaviour:
   m_ObjectHideFlags: 0
