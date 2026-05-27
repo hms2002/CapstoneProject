@@ -90,8 +90,6 @@ public sealed class SlimeQueenFallingSummon : MonoBehaviour
             landingPosition,
             fallSpeed * Time.deltaTime);
 
-        TryApplyContactDamage();
-
         if ((transform.position - landingPosition).sqrMagnitude > 0.0001f)
             return;
 
