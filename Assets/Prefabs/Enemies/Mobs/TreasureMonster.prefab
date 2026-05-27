@@ -753,9 +753,12 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8b8f30f33e704d66ad23cc5fe2a27a0c, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::UnityGAS.ShadowFacingOffsetMirror2D
+  m_EditorClassIdentifier: Assembly-CSharp::UnityGAS.FacingOffsetMirror2D
   facingSprite: {fileID: 1695031726951874086}
-  shadowRoot: {fileID: 1789383082579711955}
+  mirroredTargets:
+  - {fileID: 1789383082579711955}
+  captureInitialPositionsOnAwake: 1
+  invertWhenFlipX: 1
 --- !u!1 &7794058750579509229
 GameObject:
   m_ObjectHideFlags: 0

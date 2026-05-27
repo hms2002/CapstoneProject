@@ -174,6 +174,7 @@ GameObject:
   - component: {fileID: 1257763502827862016}
   - component: {fileID: 8929158703503573081}
   - component: {fileID: 864154482984569919}
+  - component: {fileID: 2286205519184665686}
   m_Layer: 31
   m_Name: GoblinGunner
   m_TagString: Enemy
@@ -596,6 +597,23 @@ MonoBehaviour:
   shotAbility: {fileID: 11400000, guid: 02b4f8969ddbedb4e9e0a6885fd6d0ea, type: 2}
   maxHealth: 5
   muzzleEffectSocket: {fileID: 8858279587563323237}
+--- !u!114 &2286205519184665686
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7164257353146660579}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b8f30f33e704d66ad23cc5fe2a27a0c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UnityGAS.FacingOffsetMirror2D
+  facingSprite: {fileID: 4930297288649166727}
+  mirroredTargets:
+  - {fileID: 7350576754103196058}
+  captureInitialPositionsOnAwake: 1
+  invertWhenFlipX: 1
 --- !u!1 &7350576754103196061
 GameObject:
   m_ObjectHideFlags: 0
@@ -623,7 +641,7 @@ Transform:
   m_GameObject: {fileID: 7350576754103196061}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0.125, y: 0.239, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -663,8 +681,8 @@ CapsuleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0.065032005, y: 0.25770333}
-  m_Size: {x: 0.48953724, y: 0.52169174}
+  m_Offset: {x: 0, y: 0.25770333}
+  m_Size: {x: 0.91, y: 1.17}
   m_Direction: 0
 --- !u!114 &2577173999905490326
 MonoBehaviour:

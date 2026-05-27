@@ -115,6 +115,35 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &880070000000000013
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 269519966932063243}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f7fd960e9c14d44990494a70a80d3df, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tagSystem: {fileID: 0}
+  groggyTag: {fileID: 0}
+  followAnchor: {fileID: 0}
+  boundsSource: {fileID: 0}
+  effectPrefab: {fileID: 2456809460785590275, guid: 80d266c90ff9c4d458d715b8d37a677b, type: 3}
+  effectParent: {fileID: 0}
+  instantiateOnAwake: 0
+  destroyInstanceWhenHidden: 1
+  usePooling: 1
+  maxPooledInstancesPerPrefab: 16
+  worldOffset: {x: 0, y: 0.18, z: 0}
+  fallbackHeight: 1.2
+  followEveryFrame: 1
+  scaleByBoundsHeight: 1
+  heightToScaleRatio: 0.45
+  minScale: 0.55
+  maxScale: 1.8
 --- !u!1 &995930129114536224
 GameObject:
   m_ObjectHideFlags: 0
@@ -218,9 +247,12 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8b8f30f33e704d66ad23cc5fe2a27a0c, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::UnityGAS.ShadowFacingOffsetMirror2D
+  m_EditorClassIdentifier: Assembly-CSharp::UnityGAS.FacingOffsetMirror2D
   facingSprite: {fileID: 5569021315184123239}
-  shadowRoot: {fileID: 3231640008702004774}
+  mirroredTargets:
+  - {fileID: 3231640008702004774}
+  captureInitialPositionsOnAwake: 1
+  invertWhenFlipX: 1
 --- !u!1 &2204439048017043696
 GameObject:
   m_ObjectHideFlags: 0
@@ -349,6 +381,7 @@ GameObject:
   - component: {fileID: 6824159300182253413}
   - component: {fileID: 6824159300182253414}
   - component: {fileID: 6824159300182253415}
+  - component: {fileID: 182207136877452930}
   m_Layer: 31
   m_Name: DragonBoss
   m_TagString: Enemy
@@ -596,7 +629,6 @@ MonoBehaviour:
   healthAttribute: {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
   maxHealthAttribute: {fileID: 11400000, guid: 0e177e1d15e428745b5859fac08ce203, type: 2}
   hudHealthBarTheme: {fileID: 11400000, guid: efb8cce34a2819545b863edad3307a32, type: 2}
-  logBossHudRegistration: 1
   deadTag: {fileID: 11400000, guid: c4d01ec0a10b46e7a1ce43d426f0d859, type: 2}
   groggyTag: {fileID: 11400000, guid: 6a381fd96b3c05d4cbcbd73fbf173f4e, type: 2}
   phases:
@@ -728,6 +760,11 @@ MonoBehaviour:
   dampTimeSeconds: 0.08
   airborneShadowAlphaScale: 0.55
   airborneShadowScale: 0.75
+  createFallbackShadow: 1
+  fallbackShadowLocalScale: {x: 0.7, y: 0.22, z: 1}
+  fallbackShadowColor: {r: 0, g: 0, b: 0, a: 0.32}
+  fallbackShadowSortingLayerName: Entity
+  fallbackShadowSortingOrder: -1
 --- !u!114 &5037083305729046494
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -909,6 +946,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   defaultStartKnot: DRAGON_01
+--- !u!114 &182207136877452930
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5055118451258413439}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b8f30f33e704d66ad23cc5fe2a27a0c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UnityGAS.FacingOffsetMirror2D
+  facingSprite: {fileID: 5569021315184123239}
+  mirroredTargets:
+  - {fileID: 3367446406404327446}
+  captureInitialPositionsOnAwake: 1
+  invertWhenFlipX: 1
 --- !u!1 &5151103204004599664
 GameObject:
   m_ObjectHideFlags: 0
@@ -1084,7 +1138,7 @@ Transform:
   m_GameObject: {fileID: 7138173018263961606}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0.192, y: 0.192, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1124,7 +1178,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0.21051884, y: 0.09311414}
+  m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -1185,32 +1239,3 @@ MonoBehaviour:
   useTransformPositionAsRightFacingOffset: 1
   rightFacingLocalOffset: {x: 0, y: 0}
   mirrorXBySpriteFlip: 1
---- !u!114 &880070000000000013
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 269519966932063243}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6f7fd960e9c14d44990494a70a80d3df, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  tagSystem: {fileID: 0}
-  groggyTag: {fileID: 0}
-  followAnchor: {fileID: 0}
-  boundsSource: {fileID: 0}
-  effectPrefab: {fileID: 2456809460785590275, guid: 80d266c90ff9c4d458d715b8d37a677b, type: 3}
-  effectParent: {fileID: 0}
-  instantiateOnAwake: 0
-  destroyInstanceWhenHidden: 1
-  usePooling: 1
-  maxPooledInstancesPerPrefab: 16
-  worldOffset: {x: 0, y: 0.18, z: 0}
-  fallbackHeight: 1.2
-  followEveryFrame: 1
-  scaleByBoundsHeight: 1
-  heightToScaleRatio: 0.45
-  minScale: 0.55
-  maxScale: 1.8

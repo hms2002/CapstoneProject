@@ -232,7 +232,7 @@ Transform:
   m_GameObject: {fileID: 6971749414595865137}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.432, z: 0}
+  m_LocalPosition: {x: -0.27, y: 0.99, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -273,7 +273,7 @@ CapsuleCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_Size: {x: 0.6079382, y: 0.85}
+  m_Size: {x: 1.7291979, y: 1.9964716}
   m_Direction: 0
 --- !u!114 &2666458231452988986
 MonoBehaviour:
@@ -315,13 +315,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6971749414595865139}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.233, z: 0}
+  m_LocalRotation: {x: 0, y: 0, z: 0.7071068, w: 0.7071068}
+  m_LocalPosition: {x: -0.11, y: 0.23, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 5348863507050994782}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90}
 --- !u!70 &7004926244180959844
 CapsuleCollider2D:
   m_ObjectHideFlags: 0
@@ -357,7 +357,7 @@ CapsuleCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_Size: {x: 0.5, y: 0.5}
+  m_Size: {x: 0.5, y: 0.96}
   m_Direction: 0
 --- !u!1 &7326883398652249423
 GameObject:
@@ -820,6 +820,11 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8b8f30f33e704d66ad23cc5fe2a27a0c, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::UnityGAS.ShadowFacingOffsetMirror2D
+  m_EditorClassIdentifier: Assembly-CSharp::UnityGAS.FacingOffsetMirror2D
   facingSprite: {fileID: 8068936024933027789}
-  shadowRoot: {fileID: 5929940184221811722}
+  mirroredTargets:
+  - {fileID: 5929940184221811722}
+  - {fileID: 6971749414595865136}
+  - {fileID: 6971749414595865136}
+  captureInitialPositionsOnAwake: 1
+  invertWhenFlipX: 1

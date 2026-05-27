@@ -636,9 +636,12 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8b8f30f33e704d66ad23cc5fe2a27a0c, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::UnityGAS.ShadowFacingOffsetMirror2D
+  m_EditorClassIdentifier: Assembly-CSharp::UnityGAS.FacingOffsetMirror2D
   facingSprite: {fileID: 6309188611656536190}
-  shadowRoot: {fileID: 4808957652288042674}
+  mirroredTargets:
+  - {fileID: 4808957652288042674}
+  captureInitialPositionsOnAwake: 1
+  invertWhenFlipX: 1
 --- !u!1 &991000000000003001
 GameObject:
   m_ObjectHideFlags: 0
@@ -775,7 +778,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: -0.011459053, y: 0}
+  m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
