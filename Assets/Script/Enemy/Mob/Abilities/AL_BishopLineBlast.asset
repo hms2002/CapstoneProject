@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 44ca622695a54044b1c1c5be2213b662, type: 3}
   m_Name: AL_BishopLineBlast
   m_EditorClassIdentifier: 
-  blastEffectPrefab: {fileID: 3297215421415640078, guid: a007a9f51facfcb428c22ce2d3727a82, type: 3}
+  blastEffectPrefab: {fileID: 7968343011548716367, guid: bc919b85e0071254893177a307067310, type: 3}
   blastEffectScaleMultiplier: 1
   alignBlastEffectToLine: 0
   fallbackBlastEffectLifetime: 0.6

@@ -203,6 +203,11 @@ public sealed partial class LizardWarriorChargeRunner : MonoBehaviour, IMobPatte
     [SerializeField] private MobAbilityCoordinator abilityCoordinator;
     [SerializeField] private AttackTelegraphService telegraphService;
 
+    [Header("Telegraph Clipping")]
+    [SerializeField] private LayerMask telegraphWallClipLayers = 1 << 30;
+    [SerializeField, Min(3)] private int telegraphWallClipSampleCount = 48;
+    [SerializeField, Min(0f)] private float telegraphWallClipSkinWidth = 0.03f;
+
     private AttackTelegraphStyle warningStyle;
     private bool isRunning;
     private bool cancelRequested;
@@ -333,12 +338,18 @@ public sealed partial class LizardWarriorChargeRunner : MonoBehaviour, IMobPatte
 
         Vector3 center = (Vector3)start + (Vector3)(direction.normalized * step.dashDistance * 0.5f);
         float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-        telegraphService.Show(AttackTelegraphSpec.CreateRectangle(
+        AttackTelegraphSpec spec = AttackTelegraphSpec.CreateRectangle(
             center,
             new Vector2(step.dashDistance, step.warningWidth),
             angle,
             warningSeconds,
-            warningStyle));
+            warningStyle)
+            .WithWallClipping(
+                telegraphWallClipLayers,
+                telegraphWallClipSampleCount,
+                telegraphWallClipSkinWidth);
+
+        telegraphService.Show(spec);
     }
 
     private void HideWarning()

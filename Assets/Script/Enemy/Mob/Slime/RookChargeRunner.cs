@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityGAS;
 
@@ -18,6 +17,11 @@ public class RookChargeRunner : MonoBehaviour, IMobPatternRunner, IMobPresentati
     [SerializeField] private MobAbilityCoordinator abilityCoordinator;
     [SerializeField] private AttackTelegraphService telegraphService;
     [SerializeField] private GameplayTag staggerImmuneTag;
+
+    [Header("Telegraph Clipping")]
+    [SerializeField] private LayerMask telegraphWallClipLayers = 1 << 30;
+    [SerializeField, Min(3)] private int telegraphWallClipSampleCount = 48;
+    [SerializeField, Min(0f)] private float telegraphWallClipSkinWidth = 0.03f;
 
     [Header("Safety")]
     [SerializeField, Min(0.1f)] private float maxDashDurationSeconds = 3f;
@@ -38,10 +42,7 @@ public class RookChargeRunner : MonoBehaviour, IMobPatternRunner, IMobPresentati
 
     private AbilityMotionController2D motionController;
     private AttackTelegraphStyle warningStyle;
-    private AttackTelegraphStyle centerLineStyle;
-    private AttackTelegraphStyle railStyle;
-    private AttackTelegraphStyle impactTipStyle;
-    private readonly List<AttackTelegraphView> accentTelegraphViews = new();
+    private AttackTelegraphView warningTelegraphView;
     private Rook.ChargeContext currentContext;
     private bool isRunning;
     private bool isDashing;
@@ -52,23 +53,17 @@ public class RookChargeRunner : MonoBehaviour, IMobPatternRunner, IMobPresentati
     private TagSystem tagSystem;
     private bool staggerImmuneApplied;
     private float dashEndTime;
-    private const float ImpactTipLength = 0.26f;
 
     public bool IsRunning => isRunning;
 
     /// <summary>
     /// 책임:
-    /// - 룩 돌진 경고의 중심, 방향, 끝점, 회전값을 한 번만 계산해 모든 경고 레이어가 같은 기준을 쓰게 한다.
-    /// - 기본 위험 박스와 보조선이 서로 다른 방향/크기 계산을 하면서 어긋나는 문제를 막는다.
+    /// - 룩 돌진 경고의 중심, 방향, 회전값을 실제 돌진 문맥에서 계산한다.
+    /// - 다른 돌진 몬스터와 같은 단일 사각형 telegraph 경로를 쓰도록 필요한 렌더 값만 전달한다.
     /// </summary>
     private readonly struct WarningGeometry
     {
-        public readonly Vector3 Start;
-        public readonly Vector3 Direction;
-        public readonly Vector3 Perpendicular;
         public readonly Vector3 SegmentCenter;
-        public readonly Vector3 SegmentEnd;
-        public readonly Vector3 ImpactCenter;
         public readonly float AngleDeg;
         public readonly float SegmentLength;
         public readonly float Width;
@@ -76,16 +71,13 @@ public class RookChargeRunner : MonoBehaviour, IMobPatternRunner, IMobPresentati
 
         public WarningGeometry(Rook.ChargeContext context, float duration)
         {
-            Start = context.StartPos;
-            Direction = ResolveSafeDirection(context.Direction);
-            Perpendicular = new Vector3(-Direction.y, Direction.x, 0f);
+            Vector3 start = context.StartPos;
+            Vector3 direction = ResolveSafeDirection(context.Direction);
             Width = Mathf.Max(0.01f, context.WarningWidth);
             Duration = duration;
             SegmentLength = Mathf.Max(0.01f, context.DashDistance);
-            SegmentEnd = Start + Direction * SegmentLength;
-            ImpactCenter = SegmentEnd - Direction * (ImpactTipLength * 0.5f);
-            SegmentCenter = Vector3.Lerp(Start, SegmentEnd, 0.5f);
-            AngleDeg = Mathf.Atan2(Direction.y, Direction.x) * Mathf.Rad2Deg;
+            SegmentCenter = start + direction * (SegmentLength * 0.5f);
+            AngleDeg = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
         }
 
         private static Vector3 ResolveSafeDirection(Vector2 direction)
@@ -115,9 +107,6 @@ public class RookChargeRunner : MonoBehaviour, IMobPatternRunner, IMobPresentati
 
         motionController = GetComponent<AbilityMotionController2D>();
         warningStyle = MakeWarningStyle();
-        centerLineStyle = MakeCenterLineStyle();
-        railStyle = MakeRailStyle();
-        impactTipStyle = MakeImpactTipStyle();
         EnsureContactTriggerCollider();
     }
 
@@ -127,15 +116,6 @@ public class RookChargeRunner : MonoBehaviour, IMobPatternRunner, IMobPresentati
 
         if (warningStyle != null)
             Destroy(warningStyle);
-
-        if (centerLineStyle != null)
-            Destroy(centerLineStyle);
-
-        if (railStyle != null)
-            Destroy(railStyle);
-
-        if (impactTipStyle != null)
-            Destroy(impactTipStyle);
     }
 
     private void OnDisable()
@@ -252,81 +232,31 @@ public class RookChargeRunner : MonoBehaviour, IMobPatternRunner, IMobPresentati
         HideWarning();
 
         WarningGeometry geometry = new(context, duration);
-        SpawnWarningTelegraph(AttackTelegraphSpec.CreateRectangle(
+        AttackTelegraphSpec spec = AttackTelegraphSpec.CreateRectangle(
             geometry.SegmentCenter,
             new Vector2(geometry.SegmentLength, geometry.Width),
             geometry.AngleDeg,
             geometry.Duration,
-            warningStyle));
-        ShowWarningAccents(geometry);
+            warningStyle)
+            .WithWallClipping(
+                telegraphWallClipLayers,
+                telegraphWallClipSampleCount,
+                telegraphWallClipSkinWidth);
+
+        // 룩 프리팹의 root scale이 telegraph 길이에 섞이지 않도록 경고 뷰만 월드에 분리 생성한다.
+        warningTelegraphView = telegraphService.SpawnDetachedView(spec);
     }
 
     /// <summary>현재 표시 중인 룩 경고를 숨깁니다.</summary>
     private void HideWarning()
     {
-        telegraphService?.HideCurrent();
-        HideWarningTelegraphs();
-    }
-
-    /// <summary>
-    /// 책임:
-    /// - 룩 돌진 경고 위에 방향성과 끝점을 강조하는 보조 텔레그래프들을 겹쳐 표시한다.
-    /// - 실제 위험 영역은 기본 사각형 spec이 유지하고, 이 레이어는 읽기 쉬운 연출만 담당한다.
-    /// </summary>
-    private void ShowWarningAccents(WarningGeometry geometry)
-    {
-        if (telegraphService == null)
-            return;
-
-        SpawnWarningTelegraph(AttackTelegraphSpec.CreateRectangle(
-            geometry.SegmentCenter,
-            new Vector2(geometry.SegmentLength, 0.08f),
-            geometry.AngleDeg,
-            geometry.Duration,
-            centerLineStyle));
-
-        float railOffset = geometry.Width * 0.42f;
-        Vector2 railSize = new Vector2(geometry.SegmentLength, 0.06f);
-        SpawnWarningTelegraph(AttackTelegraphSpec.CreateRectangle(
-            geometry.SegmentCenter + geometry.Perpendicular * railOffset,
-            railSize,
-            geometry.AngleDeg,
-            geometry.Duration,
-            railStyle));
-        SpawnWarningTelegraph(AttackTelegraphSpec.CreateRectangle(
-            geometry.SegmentCenter - geometry.Perpendicular * railOffset,
-            railSize,
-            geometry.AngleDeg,
-            geometry.Duration,
-            railStyle));
-
-        SpawnWarningTelegraph(AttackTelegraphSpec.CreateRectangle(
-            geometry.ImpactCenter,
-            new Vector2(ImpactTipLength, geometry.Width * 1.15f),
-            geometry.AngleDeg,
-            geometry.Duration,
-            impactTipStyle));
-    }
-
-    /// <summary>룩 경고를 구성하는 모든 텔레그래프 조각을 같은 생성 경로와 cleanup 목록으로 관리합니다.</summary>
-    private void SpawnWarningTelegraph(AttackTelegraphSpec spec)
-    {
-        AttackTelegraphView view = telegraphService.SpawnDetachedView(spec);
-        if (view != null)
-            accentTelegraphViews.Add(view);
-    }
-
-    /// <summary>룩 경고를 구성하는 모든 텔레그래프 조각을 즉시 숨기고 목록을 정리합니다.</summary>
-    private void HideWarningTelegraphs()
-    {
-        for (int i = accentTelegraphViews.Count - 1; i >= 0; i--)
+        if (warningTelegraphView != null)
         {
-            AttackTelegraphView view = accentTelegraphViews[i];
-            if (view != null)
-                view.HideImmediate();
+            warningTelegraphView.HideImmediate();
+            warningTelegraphView = null;
         }
 
-        accentTelegraphViews.Clear();
+        telegraphService?.HideCurrent();
     }
 
     /// <summary>룩이 고정 방향으로 돌진을 시작합니다.</summary>
@@ -666,55 +596,10 @@ public class RookChargeRunner : MonoBehaviour, IMobPatternRunner, IMobPresentati
     {
         AttackTelegraphStyle style = ScriptableObject.CreateInstance<AttackTelegraphStyle>();
         AttackTelegraphStyleUtility.ApplyDangerAreaColors(style);
-        style.progressCurve = AnimationCurve.EaseInOut(0f, 0f, 1f, 1f);
-        style.blinkStartNormalized = 0.68f;
-        style.blinkFrequency = 7f;
-        style.blinkAlphaMin = 0.52f;
-        style.scaleFillWithProgress = false;
-        style.fillScaleStart = 1f;
-        style.fillScaleEnd = 1f;
-        return style;
-    }
-
-    /// <summary>룩 돌진 중심선을 강조하는 경고 스타일을 만듭니다.</summary>
-    private AttackTelegraphStyle MakeCenterLineStyle()
-    {
-        AttackTelegraphStyle style = ScriptableObject.CreateInstance<AttackTelegraphStyle>();
-        AttackTelegraphStyleUtility.ApplyDangerSolidLineColors(style);
-        style.progressCurve = AnimationCurve.EaseInOut(0f, 0f, 1f, 1f);
-        style.blinkStartNormalized = 0.62f;
-        style.blinkFrequency = 9f;
-        style.blinkAlphaMin = 0.35f;
-        style.scaleFillWithProgress = false;
-        style.fillScaleStart = 1f;
-        style.fillScaleEnd = 1f;
-        return style;
-    }
-
-    /// <summary>룩 돌진 경고의 양쪽 레일 스타일을 만듭니다.</summary>
-    private AttackTelegraphStyle MakeRailStyle()
-    {
-        AttackTelegraphStyle style = ScriptableObject.CreateInstance<AttackTelegraphStyle>();
-        AttackTelegraphStyleUtility.ApplyDangerSolidLineColors(style);
-        style.progressCurve = AnimationCurve.EaseInOut(0f, 0f, 1f, 1f);
+        style.progressCurve = AnimationCurve.Linear(0f, 0f, 1f, 1f);
         style.blinkStartNormalized = 0.72f;
-        style.blinkFrequency = 8f;
-        style.blinkAlphaMin = 0.4f;
-        style.scaleFillWithProgress = false;
-        style.fillScaleStart = 1f;
-        style.fillScaleEnd = 1f;
-        return style;
-    }
-
-    /// <summary>룩 돌진 도착점의 충돌감을 강조하는 경고 스타일을 만듭니다.</summary>
-    private AttackTelegraphStyle MakeImpactTipStyle()
-    {
-        AttackTelegraphStyle style = ScriptableObject.CreateInstance<AttackTelegraphStyle>();
-        AttackTelegraphStyleUtility.ApplyDangerAreaColors(style);
-        style.progressCurve = AnimationCurve.EaseInOut(0f, 0f, 1f, 1f);
-        style.blinkStartNormalized = 0.55f;
-        style.blinkFrequency = 10f;
-        style.blinkAlphaMin = 0.35f;
+        style.blinkFrequency = 5f;
+        style.blinkAlphaMin = 0.45f;
         style.scaleFillWithProgress = false;
         style.fillScaleStart = 1f;
         style.fillScaleEnd = 1f;

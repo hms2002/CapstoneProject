@@ -15,6 +15,11 @@ public sealed class GoblinWarriorChargeRunner : MonoBehaviour, IMobPatternRunner
     [SerializeField] private MobAbilityCoordinator abilityCoordinator;
     [SerializeField] private AttackTelegraphService telegraphService;
 
+    [Header("Telegraph Clipping")]
+    [SerializeField] private LayerMask telegraphWallClipLayers = 1 << 30;
+    [SerializeField, Min(3)] private int telegraphWallClipSampleCount = 48;
+    [SerializeField, Min(0f)] private float telegraphWallClipSkinWidth = 0.03f;
+
     private AttackTelegraphStyle warningStyle;
     private bool isRunning;
     private bool cancelRequested;
@@ -125,12 +130,18 @@ public sealed class GoblinWarriorChargeRunner : MonoBehaviour, IMobPatternRunner
 
         Vector3 center = (Vector3)context.StartPosition + (Vector3)(context.Direction.normalized * context.DashDistance * 0.5f);
         float angle = Mathf.Atan2(context.Direction.y, context.Direction.x) * Mathf.Rad2Deg;
-        telegraphService.Show(AttackTelegraphSpec.CreateRectangle(
+        AttackTelegraphSpec spec = AttackTelegraphSpec.CreateRectangle(
             center,
             new Vector2(context.DashDistance, context.WarningWidth),
             angle,
             warningSeconds,
-            warningStyle));
+            warningStyle)
+            .WithWallClipping(
+                telegraphWallClipLayers,
+                telegraphWallClipSampleCount,
+                telegraphWallClipSkinWidth);
+
+        telegraphService.Show(spec);
     }
 
     private void HideWarning()
