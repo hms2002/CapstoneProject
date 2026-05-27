@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: d8ea97f098c5b0f4daafdae1493166cd
+guid: 522fe167c55eab149b6bf24c2e3fa0ff
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 2809157193256619909
-    second: IronHeart_0
+      213: 2914263891378394802
+    second: weaponbox_relicbox_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -51,7 +51,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 100
+  spritePixelsToUnits: 16
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -100,111 +100,89 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: IronHeart_0
+      name: weaponbox_relicbox_0
       rect:
         serializedVersion: 2
         x: 0
-        y: 0
-        width: 21
-        height: 18
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+        y: 14
+        width: 14
+        height: 14
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 58f4b4e65912cf620800000000000000
-      internalID: 2809157193256619909
+      spriteID: 2b65b5b919b817820800000000000000
+      internalID: 2914263891378394802
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: IronHeart_1
+      name: weaponbox_relicbox_1
       rect:
         serializedVersion: 2
-        x: 21
-        y: 0
-        width: 21
-        height: 18
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+        x: 14
+        y: 14
+        width: 14
+        height: 14
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 5a92ca335c705ca43b3b0d2c8fe9e9f1
-      internalID: -274233789
+      spriteID: 02ff6f480d3458c47998198d58a744b3
+      internalID: -1807100930
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: IronHeart_2
+      name: weaponbox_relicbox_2
       rect:
         serializedVersion: 2
-        x: 42
+        x: 0
         y: 0
-        width: 21
-        height: 18
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+        width: 14
+        height: 14
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 04b82c3911a08224fad165cfbbaabf56
-      internalID: 1520901937
+      spriteID: b838d18a4c3df564884e28c1f19134d0
+      internalID: -779116412
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: IronHeart_3
+      name: weaponbox_relicbox_3
       rect:
         serializedVersion: 2
-        x: 63
+        x: 14
         y: 0
-        width: 21
-        height: 18
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+        width: 14
+        height: 14
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 89306b3e88383ba4a85d0e0421567659
-      internalID: -634181472
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: IronHeart_4
-      rect:
-        serializedVersion: 2
-        x: 84
-        y: 0
-        width: 21
-        height: 18
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 17b58afa8d106e041861a4dd9c695320
-      internalID: -699384087
+      spriteID: aba5c297e0fc0724fa3ac2563ed92949
+      internalID: -930361372
       vertices: []
       indices: 
       edges: []
@@ -213,7 +191,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 0f3597d63c8bfb949bc8c2cf2d42e0c8
+    spriteID: 6b40e04820cf2294ab38632824a15298
     internalID: 0
     vertices: []
     indices: 
@@ -223,13 +201,12 @@ TextureImporter:
     spriteCustomMetadata:
       entries:
       - key: SpriteEditor.SliceSettings
-        value: '{"sliceOnImport":false,"gridCellCount":{"x":5.0,"y":1.0},"gridSpriteSize":{"x":21.0,"y":18.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":2,"keepEmptyRects":false,"isAlternate":false}'
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":2.0,"y":2.0},"gridSpriteSize":{"x":14.0,"y":14.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.0},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":7,"pivotUnitMode":0,"slicingType":2,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
-      IronHeart_0: 2809157193256619909
-      IronHeart_1: -274233789
-      IronHeart_2: 1520901937
-      IronHeart_3: -634181472
-      IronHeart_4: -699384087
+      weaponbox_relicbox_0: 2914263891378394802
+      weaponbox_relicbox_1: -1807100930
+      weaponbox_relicbox_2: -779116412
+      weaponbox_relicbox_3: -930361372
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
