@@ -1,3 +1,5 @@
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityGAS;
@@ -5,8 +7,11 @@ using UnityGAS;
 /// <summary>
 /// 슬라임 여왕 2페이즈 개체가 공유하는 접촉 피해와 향후 패턴 실행 기반입니다.
 /// </summary>
+[RequireComponent(typeof(SlimeQueenVanishParticleEffect))]
 public abstract class SlimeQueenPhaseTwoBase : SlimeQueenBossBase, ISlimeQueenBodyInflateHost
 {
+    private static readonly int IsDeadHash = Animator.StringToHash("isDead");
+
     [Header("Phase 2 Contact")]
     [Tooltip("2페이즈 퀸이 플레이어와 접촉했을 때 적용할 피해량입니다.")]
     [SerializeField, Min(0f)] private float contactDamage = 1f;
@@ -99,7 +104,12 @@ public abstract class SlimeQueenPhaseTwoBase : SlimeQueenBossBase, ISlimeQueenBo
     private bool isPassiveContactDamageBlocked;
     private bool isJointPatternLocked;
     private bool isDrainControlLocked;
+    private bool isSplitLandingControlLocked;
+    private bool splitLandingMovementMotorWasEnabled;
+    private Coroutine splitLandingRoutine;
+    private bool? hasIsDeadParameter;
     private SpeechBubbleComponent speechBubble;
+    private SlimeQueenVanishParticleEffect finaleVanishEffect;
     private readonly List<AttackTelegraphView> bodyInflateWarningViews = new List<AttackTelegraphView>();
     private readonly List<AttackTelegraphView> castlingWarningViews = new List<AttackTelegraphView>();
 
@@ -140,6 +150,8 @@ public abstract class SlimeQueenPhaseTwoBase : SlimeQueenBossBase, ISlimeQueenBo
     protected override void Awake()
     {
         base.Awake();
+        EnsureFinaleVanishEffect();
+        SlimeQueenPhaseTwoHudSource.EnsureFor(this);
     }
 
     /// <summary>패턴 피해가 우선 적용되어야 하는 동안 상시 접촉 피해를 막습니다.</summary>
@@ -174,6 +186,19 @@ public abstract class SlimeQueenPhaseTwoBase : SlimeQueenBossBase, ISlimeQueenBo
         isDrainControlLocked = false;
     }
 
+    /// <summary>1페이즈 분열 직후 잡몹 분열과 같은 포물선 착지 연출을 시작합니다.</summary>
+    public void BeginPhaseTwoSplitLanding(Vector3 startPosition, Vector3 landingPosition, float durationSeconds, float arcHeight)
+    {
+        if (splitLandingRoutine != null)
+            StopCoroutine(splitLandingRoutine);
+
+        splitLandingRoutine = StartCoroutine(PhaseTwoSplitLandingRoutine(
+            startPosition,
+            landingPosition,
+            Mathf.Max(0.01f, durationSeconds),
+            Mathf.Max(0f, arcHeight)));
+    }
+
     /// <summary>배수구 안에 잠긴 상태의 보스별 애니메이션 진입 훅입니다.</summary>
     public virtual void BeginDrainSinkAnimation()
     {
@@ -186,6 +211,9 @@ public abstract class SlimeQueenPhaseTwoBase : SlimeQueenBossBase, ISlimeQueenBo
 
     protected override void Update()
     {
+        if (isSplitLandingControlLocked)
+            return;
+
         if (isDrainControlLocked)
             return;
 
@@ -202,6 +230,7 @@ public abstract class SlimeQueenPhaseTwoBase : SlimeQueenBossBase, ISlimeQueenBo
 
     protected override void OnDestroy()
     {
+        ForceCleanupPhaseTwoSplitLanding();
         CleanupBodyInflatePresentation();
         ForceCleanupCastlingPattern();
         base.OnDestroy();
@@ -209,6 +238,7 @@ public abstract class SlimeQueenPhaseTwoBase : SlimeQueenBossBase, ISlimeQueenBo
 
     protected virtual void OnDisable()
     {
+        ForceCleanupPhaseTwoSplitLanding();
         CleanupBodyInflatePresentation();
         ForceCleanupCastlingPattern();
     }
@@ -221,6 +251,23 @@ public abstract class SlimeQueenPhaseTwoBase : SlimeQueenBossBase, ISlimeQueenBo
     private void OnTriggerStay2D(Collider2D other)
     {
         TryApplyContactDamage(other);
+    }
+
+    protected override void OnDeathStarted()
+    {
+        SetPhaseTwoDeathAnimation(true);
+        base.OnDeathStarted();
+    }
+
+    protected override void PlayDeathAnimation()
+    {
+        SetPhaseTwoDeathAnimation(true);
+    }
+
+    protected override void DestroyAfterDelay()
+    {
+        if (!BossEncounterEndDirector.SuppressesAutomaticRewardReady(this))
+            base.DestroyAfterDelay();
     }
 
     /// <summary>패턴이 설정된 2페이즈 보스만 일반 패턴 루프를 사용하고, 비어 있으면 대기 상태를 사용합니다.</summary>
@@ -368,6 +415,12 @@ public abstract class SlimeQueenPhaseTwoBase : SlimeQueenBossBase, ISlimeQueenBo
     /// <summary>캐슬링 경고 중 해당 2페이즈 슬라임의 말풍선 대사를 출력합니다.</summary>
     public bool TryShowCastlingSpeech(string text, float duration)
     {
+        return TryShowPhaseTwoSpeech(text, Mathf.Max(0.1f, duration), null);
+    }
+
+    /// <summary>2페이즈 보스 공용 말풍선 대사를 출력합니다.</summary>
+    public bool TryShowPhaseTwoSpeech(string text, float duration, Action onHidden = null)
+    {
         if (string.IsNullOrWhiteSpace(text))
             return false;
 
@@ -375,13 +428,30 @@ public abstract class SlimeQueenPhaseTwoBase : SlimeQueenBossBase, ISlimeQueenBo
             speechBubble = GetComponent<SpeechBubbleComponent>();
 
         if (speechBubble == null)
+            speechBubble = GetComponentInChildren<SpeechBubbleComponent>(includeInactive: true);
+
+        if (speechBubble == null)
         {
-            Debug.Log($"SlimeQueen Castling Speech: {text}", this);
+            Debug.Log($"SlimeQueen Phase Two Speech: {text}", this);
             return false;
         }
 
-        speechBubble.Speak(text, Mathf.Max(0.1f, duration));
+        speechBubble.Speak(text, Mathf.Max(0.1f, duration), null, onHidden);
         return true;
+    }
+
+    /// <summary>최종 패배 연출에서 이 2페이즈 보스를 소멸시킵니다.</summary>
+    public void PlayFinaleVanishAndDestroy()
+    {
+        if (speechBubble == null)
+            speechBubble = GetComponentInChildren<SpeechBubbleComponent>(includeInactive: true);
+
+        speechBubble?.HideActive();
+        CleanupBodyInflatePresentation();
+        CleanupCastlingPresentation();
+        PlayFinaleVanishEffect(transform.position);
+        SetPhaseTwoRenderersVisible(false);
+        Destroy(gameObject);
     }
 
     /// <summary>캐슬링 진행도에 맞춰 보스 위치를 선형 이동시킵니다.</summary>
@@ -487,13 +557,19 @@ public abstract class SlimeQueenPhaseTwoBase : SlimeQueenBossBase, ISlimeQueenBo
         Vector3 groundPosition = Vector3.Lerp(startPosition, landingPosition, clampedTime);
         float arcOffset = Mathf.Sin(clampedTime * Mathf.PI) * slamArcHeight;
 
-        ApplyGroundedMotionPose(groundPosition, arcOffset);
+        if (movementMotor != null)
+            movementMotor.StopAllMotion();
+
+        transform.position = groundPosition + Vector3.up * arcOffset;
     }
 
     /// <summary>페이즈 2 내려찍기 종료 위치로 보스 좌표를 확정합니다.</summary>
     public void SnapToPhase2SlamLanding(Vector3 landingPosition)
     {
-        SnapToGroundedMotionLanding(landingPosition);
+        if (movementMotor != null)
+            movementMotor.StopAllMotion();
+
+        transform.position = landingPosition;
     }
 
     /// <summary>페이즈 2 내려찍기 범위 안의 현재 타겟에게 GAS Damage Effect를 적용합니다.</summary>
@@ -621,6 +697,9 @@ public abstract class SlimeQueenPhaseTwoBase : SlimeQueenBossBase, ISlimeQueenBo
     {
         CleanupBodyInflatePresentation();
         ForceCleanupCastlingPattern();
+        if (forced)
+            ResetPatternAnimatorStateForInterrupt();
+
         base.OnPatternEnd(patternEntry, forced);
     }
 
@@ -751,6 +830,142 @@ public abstract class SlimeQueenPhaseTwoBase : SlimeQueenBossBase, ISlimeQueenBo
 
         if (isLocked && movementMotor != null)
             movementMotor.StopAllMotion();
+    }
+
+    private IEnumerator PhaseTwoSplitLandingRoutine(
+        Vector3 startPosition,
+        Vector3 landingPosition,
+        float durationSeconds,
+        float arcHeight)
+    {
+        BeginPhaseTwoSplitLandingLock();
+
+        SlimeSplitLandingMotion2D landingMotion = GetComponent<SlimeSplitLandingMotion2D>();
+        if (landingMotion == null)
+            landingMotion = gameObject.AddComponent<SlimeSplitLandingMotion2D>();
+
+        landingMotion.Begin(startPosition, landingPosition, durationSeconds, arcHeight);
+
+        float elapsedSeconds = 0f;
+        while (elapsedSeconds < durationSeconds)
+        {
+            elapsedSeconds += Time.deltaTime;
+            yield return null;
+        }
+
+        transform.position = landingPosition;
+        EndPhaseTwoSplitLandingLock();
+        splitLandingRoutine = null;
+    }
+
+    private void BeginPhaseTwoSplitLandingLock()
+    {
+        if (isSplitLandingControlLocked)
+            return;
+
+        isSplitLandingControlLocked = true;
+        splitLandingMovementMotorWasEnabled = movementMotor == null || movementMotor.enabled;
+
+        SetPitFallRuntimeLock(true);
+        SetPatternMoveDamageBlocked(true);
+        SetPassiveContactDamageBlocked(true);
+
+        if (movementMotor != null)
+        {
+            movementMotor.StopAllMotion();
+            movementMotor.enabled = false;
+        }
+
+        if (rigid2D != null)
+        {
+            rigid2D.linearVelocity = Vector2.zero;
+            rigid2D.angularVelocity = 0f;
+        }
+    }
+
+    private void EndPhaseTwoSplitLandingLock()
+    {
+        if (!isSplitLandingControlLocked)
+            return;
+
+        if (rigid2D != null)
+        {
+            rigid2D.linearVelocity = Vector2.zero;
+            rigid2D.angularVelocity = 0f;
+        }
+
+        if (movementMotor != null)
+            movementMotor.enabled = splitLandingMovementMotorWasEnabled;
+
+        SetPassiveContactDamageBlocked(false);
+        SetPatternMoveDamageBlocked(false);
+        SetPitFallRuntimeLock(false);
+        isSplitLandingControlLocked = false;
+    }
+
+    private void ForceCleanupPhaseTwoSplitLanding()
+    {
+        if (splitLandingRoutine != null)
+        {
+            StopCoroutine(splitLandingRoutine);
+            splitLandingRoutine = null;
+        }
+
+        EndPhaseTwoSplitLandingLock();
+    }
+
+    private void SetPhaseTwoDeathAnimation(bool value)
+    {
+        if (animator == null)
+            return;
+
+        if (!hasIsDeadParameter.HasValue)
+            hasIsDeadParameter = HasAnimatorBoolParameter(IsDeadHash);
+
+        if (hasIsDeadParameter.Value)
+            animator.SetBool(IsDeadHash, value);
+    }
+
+    private bool HasAnimatorBoolParameter(int parameterHash)
+    {
+        if (animator == null)
+            return false;
+
+        AnimatorControllerParameter[] parameters = animator.parameters;
+        for (int i = 0; i < parameters.Length; i++)
+        {
+            AnimatorControllerParameter parameter = parameters[i];
+            if (parameter.nameHash == parameterHash && parameter.type == AnimatorControllerParameterType.Bool)
+                return true;
+        }
+
+        return false;
+    }
+
+    private void SetPhaseTwoRenderersVisible(bool visible)
+    {
+        Renderer[] renderers = GetComponentsInChildren<Renderer>(includeInactive: true);
+        for (int i = 0; i < renderers.Length; i++)
+        {
+            Renderer phaseTwoRenderer = renderers[i];
+            if (phaseTwoRenderer != null)
+                phaseTwoRenderer.enabled = visible;
+        }
+    }
+
+    private void PlayFinaleVanishEffect(Vector3 position)
+    {
+        EnsureFinaleVanishEffect();
+        finaleVanishEffect?.SpawnOneShot(position, sprite);
+    }
+
+    private void EnsureFinaleVanishEffect()
+    {
+        if (finaleVanishEffect == null)
+            finaleVanishEffect = GetComponent<SlimeQueenVanishParticleEffect>();
+
+        if (finaleVanishEffect == null)
+            finaleVanishEffect = gameObject.AddComponent<SlimeQueenVanishParticleEffect>();
     }
 
     private void FaceCastlingDestination(Vector3 destination)

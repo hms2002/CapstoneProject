@@ -227,6 +227,58 @@ public abstract class SlimeQueenBossBase : BossControllerBase, IIntentMovementSo
         return combatHeightState;
     }
 
+    /// <summary>슬라임 여왕 계열 보스가 그로기 진입 시 패턴 애니메이션 잔여 상태를 정리합니다.</summary>
+    protected override void OnGroggyStateEntered()
+    {
+        ResetPatternAnimatorStateForInterrupt();
+    }
+
+    /// <summary>그로기/강제 취소처럼 패턴이 중단될 때 보스별 Animator 파라미터를 Idle 조건으로 되돌립니다.</summary>
+    protected virtual void ResetPatternAnimatorStateForInterrupt()
+    {
+    }
+
+    protected void SetAnimatorBoolIfExists(int parameterHash, bool value)
+    {
+        if (animator == null || !HasAnimatorParameter(parameterHash, AnimatorControllerParameterType.Bool))
+            return;
+
+        animator.SetBool(parameterHash, value);
+    }
+
+    protected void ResetAnimatorTriggerIfExists(int parameterHash)
+    {
+        if (animator == null || !HasAnimatorParameter(parameterHash, AnimatorControllerParameterType.Trigger))
+            return;
+
+        animator.ResetTrigger(parameterHash);
+    }
+
+    protected void PlayAnimatorStateIfExists(int stateHash)
+    {
+        if (animator == null || !animator.HasState(0, stateHash))
+            return;
+
+        animator.Play(stateHash, 0, 0f);
+        animator.Update(0f);
+    }
+
+    protected bool HasAnimatorParameter(int parameterHash, AnimatorControllerParameterType parameterType)
+    {
+        if (animator == null)
+            return false;
+
+        AnimatorControllerParameter[] parameters = animator.parameters;
+        for (int i = 0; i < parameters.Length; i++)
+        {
+            AnimatorControllerParameter parameter = parameters[i];
+            if (parameter.nameHash == parameterHash && parameter.type == parameterType)
+                return true;
+        }
+
+        return false;
+    }
+
     /// <summary>AttackTelegraphService 참조를 반환합니다.</summary>
     protected AttackTelegraphService GetTelegraphService()
     {

@@ -11,6 +11,7 @@ public sealed class SlimeQueenP2Short : SlimeQueenPhaseTwoBase
     private static readonly int IsSinkingHash = Animator.StringToHash("isSinking");
     private static readonly int ReadyTriggerHash = Animator.StringToHash("ready");
     private static readonly int IsGiantizationHash = Animator.StringToHash("isGiantization");
+    private static readonly int IdleStateHash = Animator.StringToHash("SlimeQueenB_Idle");
 
     [Header("Phase 2 Short - Toxic Rush")]
     [Tooltip("독성 돌진 경고선 표시에 사용할 AttackTelegraph 스타일입니다.")]
@@ -121,6 +122,18 @@ public sealed class SlimeQueenP2Short : SlimeQueenPhaseTwoBase
     public void EndBodyInflateImpactAnimation()
     {
         SetAnimatorBool(IsGiantizationHash, false);
+    }
+
+    protected override void ResetPatternAnimatorStateForInterrupt()
+    {
+        SetAnimatorBoolIfExists(IsRushingHash, false);
+        ResetAnimatorTriggerIfExists(ReadyTriggerHash);
+        SetAnimatorBoolIfExists(IsGiantizationHash, false);
+
+        if (!HasGroggyTag())
+            SetAnimatorBoolIfExists(IsSinkingHash, false);
+
+        PlayAnimatorStateIfExists(IdleStateHash);
     }
 
     public readonly struct ToxicRushSegment

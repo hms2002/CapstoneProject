@@ -114,8 +114,20 @@ public sealed class BossEncounterEndDirector : MonoBehaviour
             yield return new WaitForSeconds(rewardDelayAfterClearSeconds);
 
         BossControllerBase rewardBoss = clearCondition != null ? clearCondition.RewardBoss : null;
+        BossRewardContext context = BuildRewardContext(rewardBoss);
+        Vector3 rewardOrigin = clearCondition != null ? clearCondition.RewardOrigin : transform.position;
+        bool usedCustomFinalePresentation = false;
+
+        if (clearCondition is IBossEncounterFinalePresentationProvider finaleProvider &&
+            finaleProvider.TryCreateFinalePresentationRoutine(this, out IEnumerator finaleRoutine) &&
+            finaleRoutine != null)
+        {
+            usedCustomFinalePresentation = true;
+            yield return finaleRoutine;
+        }
+
         BossDeathPresentation presentation = ResolveFinalDeathPresentation(rewardBoss);
-        if (useFinalDeathPresentation && presentation != null)
+        if (!usedCustomFinalePresentation && useFinalDeathPresentation && presentation != null)
         {
             presentation.Bind(rewardBoss);
             if (presentation.IsRunning || presentation.TryBeginDeathSequence(false))
@@ -124,9 +136,6 @@ public sealed class BossEncounterEndDirector : MonoBehaviour
                     yield return null;
             }
         }
-
-        BossRewardContext context = BuildRewardContext(rewardBoss);
-        Vector3 rewardOrigin = clearCondition != null ? clearCondition.RewardOrigin : transform.position;
 
         HandleRewards(context, rewardOrigin);
         HandlePortal(context);

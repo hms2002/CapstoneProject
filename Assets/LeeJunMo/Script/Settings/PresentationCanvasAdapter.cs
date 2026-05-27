@@ -45,15 +45,28 @@ public sealed class PresentationCanvasAdapter : MonoBehaviour
 
         CaptureBaseCanvasState();
 
-        GameWindowMode windowMode = GameSettingsService.Instance != null
-            ? GameSettingsService.Instance.CurrentWindowMode
+        GameSettingsService settingsService = GameSettingsService.Instance;
+        GameWindowMode windowMode = settingsService != null
+            ? settingsService.CurrentWindowMode
             : GameWindowMode.Windowed;
 
-        Vector2Int containerSize = PresentationViewportUtility.GetPresentationContainerSize(windowMode);
-        Rect viewportRect = PresentationViewportUtility.CalculateViewportRect(
-            containerSize.x,
-            containerSize.y,
-            targetAspectRatio);
+        int resolutionWidth = settingsService != null
+            ? settingsService.CurrentResolutionWidth
+            : PresentationViewportUtility.DefaultWindowWidth;
+        int resolutionHeight = settingsService != null
+            ? settingsService.CurrentResolutionHeight
+            : PresentationViewportUtility.DefaultWindowHeight;
+
+        Vector2Int containerSize = PresentationViewportUtility.GetPresentationContainerSize(
+            windowMode,
+            resolutionWidth,
+            resolutionHeight);
+        Rect viewportRect = PresentationViewportUtility.ShouldBypassDisplayLetterboxForEditorPlayMode()
+            ? PresentationViewportUtility.FullViewportRect
+            : PresentationViewportUtility.CalculateViewportRect(
+                containerSize.x,
+                containerSize.y,
+                targetAspectRatio);
 
         Camera presentationCamera = ResolvePresentationCamera();
         int cameraInstanceId = presentationCamera != null ? presentationCamera.GetInstanceID() : 0;
