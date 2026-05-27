@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 726608237280868030}
   - component: {fileID: 2649407259074215914}
   m_Layer: 0
-  m_Name: Stun_Sprak
+  m_Name: Effect_Stun_Sprak
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

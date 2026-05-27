@@ -303,19 +303,13 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
         Vector3 groundPosition = Vector3.Lerp(startPosition, landingPosition, clampedTime);
         float arcOffset = Mathf.Sin(clampedTime * Mathf.PI) * jumpArcHeight;
 
-        if (movementMotor != null)
-            movementMotor.StopAllMotion();
-
-        transform.position = groundPosition + Vector3.up * arcOffset;
+        ApplyGroundedMotionPose(groundPosition, arcOffset);
     }
 
     /// <summary>점프 종료 위치로 보스 좌표를 확정합니다.</summary>
     public void SnapToJumpLanding(Vector3 landingPosition)
     {
-        if (movementMotor != null)
-            movementMotor.StopAllMotion();
-
-        transform.position = landingPosition;
+        SnapToGroundedMotionLanding(landingPosition);
         EndRandomJumpAnimation();
     }
 

@@ -487,19 +487,13 @@ public abstract class SlimeQueenPhaseTwoBase : SlimeQueenBossBase, ISlimeQueenBo
         Vector3 groundPosition = Vector3.Lerp(startPosition, landingPosition, clampedTime);
         float arcOffset = Mathf.Sin(clampedTime * Mathf.PI) * slamArcHeight;
 
-        if (movementMotor != null)
-            movementMotor.StopAllMotion();
-
-        transform.position = groundPosition + Vector3.up * arcOffset;
+        ApplyGroundedMotionPose(groundPosition, arcOffset);
     }
 
     /// <summary>페이즈 2 내려찍기 종료 위치로 보스 좌표를 확정합니다.</summary>
     public void SnapToPhase2SlamLanding(Vector3 landingPosition)
     {
-        if (movementMotor != null)
-            movementMotor.StopAllMotion();
-
-        transform.position = landingPosition;
+        SnapToGroundedMotionLanding(landingPosition);
     }
 
     /// <summary>페이즈 2 내려찍기 범위 안의 현재 타겟에게 GAS Damage Effect를 적용합니다.</summary>

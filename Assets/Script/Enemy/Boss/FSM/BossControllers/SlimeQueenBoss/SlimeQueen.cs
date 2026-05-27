@@ -149,6 +149,18 @@ public sealed class SlimeQueen : SlimeQueenBossBase, ISlimeQueenBodyInflateHost,
     [Tooltip("2페이즈 원거리 퀸을 1페이즈 사망 위치 기준으로 생성할 오프셋입니다.")]
     [SerializeField] private Vector2 phase2LongSpawnOffset = new Vector2(1.5f, 0f);
 
+    [Tooltip("1페이즈가 2페이즈로 분열될 때 한 번 출력할 점액 파편 이펙트 프리팹입니다.")]
+    [SerializeField] private GameObject phase2SplitEffectPrefab;
+
+    [Tooltip("분열 이펙트를 1페이즈 사망 위치 기준으로 출력할 오프셋입니다.")]
+    [SerializeField] private Vector2 phase2SplitEffectOffset;
+
+    [Tooltip("분열 이펙트 프리팹의 기본 스케일에 곱할 배율입니다.")]
+    [SerializeField, Min(0f)] private float phase2SplitEffectScaleMultiplier = 1f;
+
+    [Tooltip("Particle/Animator 수명을 찾지 못했을 때 분열 이펙트를 제거할 fallback 시간입니다.")]
+    [SerializeField, Min(0.05f)] private float phase2SplitEffectFallbackLifetime = 1.2f;
+
     private SpeechBubbleComponent speechBubble;
     private Coroutine callSlimeSpeechAnimationRoutine;
     private readonly List<AttackTelegraphView> bodyInflateWarningViews = new List<AttackTelegraphView>();
@@ -553,19 +565,13 @@ public sealed class SlimeQueen : SlimeQueenBossBase, ISlimeQueenBodyInflateHost,
         Vector3 groundPosition = Vector3.Lerp(startPosition, landingPosition, clampedTime);
         float arcOffset = Mathf.Sin(clampedTime * Mathf.PI) * jumpArcHeight;
 
-        if (movementMotor != null)
-            movementMotor.StopAllMotion();
-
-        transform.position = groundPosition + Vector3.up * arcOffset;
+        ApplyGroundedMotionPose(groundPosition, arcOffset);
     }
 
     /// <summary>점프 종료 위치로 보스 좌표를 확정합니다.</summary>
     public void SnapToJumpLanding(Vector3 landingPosition)
     {
-        if (movementMotor != null)
-            movementMotor.StopAllMotion();
-
-        transform.position = landingPosition;
+        SnapToGroundedMotionLanding(landingPosition);
         EndRandomJumpAnimation();
     }
 
@@ -656,8 +662,71 @@ public sealed class SlimeQueen : SlimeQueenBossBase, ISlimeQueenBodyInflateHost,
             return;
 
         hasSpawnedPhaseTwoQueens = true;
+        SpawnPhaseTwoSplitEffect();
         SpawnPhaseTwoQueen(phase2ShortPrefab, phase2ShortSpawnOffset, "SlimeQueenP2Short");
         SpawnPhaseTwoQueen(phase2LongPrefab, phase2LongSpawnOffset, "SlimeQueenP2Long");
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 슬라임 퀸 1페이즈가 2페이즈로 분열되는 순간의 VFX를 1회 생성한다.
+    /// - 프리팹 구현 방식과 무관하게 일정 시간 뒤 제거해 씬 누수를 막는다.
+    /// </summary>
+    private void SpawnPhaseTwoSplitEffect()
+    {
+        if (phase2SplitEffectPrefab == null)
+            return;
+
+        Vector3 worldOffset = new Vector3(phase2SplitEffectOffset.x, phase2SplitEffectOffset.y, 0f);
+        GameObject effect = Instantiate(phase2SplitEffectPrefab, transform.position + worldOffset, Quaternion.identity);
+        if (effect == null)
+            return;
+
+        float scaleMultiplier = Mathf.Max(0.01f, phase2SplitEffectScaleMultiplier);
+        effect.transform.localScale = Vector3.Scale(effect.transform.localScale, new Vector3(scaleMultiplier, scaleMultiplier, 1f));
+        Destroy(effect, ResolveEffectLifetime(effect, phase2SplitEffectFallbackLifetime));
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 분열 이펙트 프리팹의 ParticleSystem/Animator 재생 시간을 읽어 자동 제거 시간을 계산한다.
+    /// - 수명 정보를 찾지 못하면 인스펙터 fallback 값을 사용한다.
+    /// </summary>
+    private static float ResolveEffectLifetime(GameObject effect, float fallbackLifetime)
+    {
+        float lifetime = Mathf.Max(0.05f, fallbackLifetime);
+
+        ParticleSystem[] particles = effect.GetComponentsInChildren<ParticleSystem>(true);
+        for (int i = 0; i < particles.Length; i++)
+        {
+            ParticleSystem particle = particles[i];
+            if (particle == null)
+                continue;
+
+            ParticleSystem.MainModule main = particle.main;
+            float startLifetime = main.startLifetime.mode == ParticleSystemCurveMode.Constant
+                ? main.startLifetime.constant
+                : main.startLifetime.constantMax;
+            lifetime = Mathf.Max(lifetime, main.duration + startLifetime);
+        }
+
+        Animator[] animators = effect.GetComponentsInChildren<Animator>(true);
+        for (int i = 0; i < animators.Length; i++)
+        {
+            Animator animator = animators[i];
+            if (animator == null || animator.runtimeAnimatorController == null)
+                continue;
+
+            AnimationClip[] clips = animator.runtimeAnimatorController.animationClips;
+            for (int j = 0; j < clips.Length; j++)
+            {
+                AnimationClip clip = clips[j];
+                if (clip != null)
+                    lifetime = Mathf.Max(lifetime, clip.length);
+            }
+        }
+
+        return lifetime;
     }
 
     /// <summary>2페이즈 퀸 프리팹 하나를 지정 오프셋에 생성하고 타겟을 공유합니다.</summary>
