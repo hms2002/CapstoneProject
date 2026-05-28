@@ -12,6 +12,7 @@ namespace UnityGAS
         private const int CircleTextureSize = 128;
         private const float CircleBorderThickness = 0.08f;
         private const string DefaultShaderName = "Sprites/Default";
+        private const int WallClipHitBufferSize = 16;
 
         [Header("Refs")]
         [SerializeField] private Transform fillRoot;
@@ -58,6 +59,7 @@ namespace UnityGAS
         private Vector3 activeLineStart;
         private Vector3 activeLineEnd;
         private float activeLineWidth = 0.05f;
+        private readonly RaycastHit2D[] wallClipHitBuffer = new RaycastHit2D[WallClipHitBufferSize];
 
         public bool IsVisible => isVisible;
 
@@ -303,12 +305,47 @@ namespace UnityGAS
                 return spec.lineEnd;
 
             Vector2 direction = delta / distance;
-            RaycastHit2D hit = Physics2D.Raycast(start, direction, distance, spec.wallClipLayers);
-            if (hit.collider == null)
+            if (!TryFindNearestWallClipHit(start, direction, distance, spec.wallClipLayers, out RaycastHit2D hit))
                 return spec.lineEnd;
 
             float visibleDistance = Mathf.Clamp(hit.distance - spec.wallClipSkinWidth, 0f, distance);
             return start + direction * visibleDistance;
+        }
+
+        /// <summary>경고선 clipping은 실제 벽/문 같은 non-trigger 장애물만 사용하고, HoleTrap 같은 trigger 감지 영역은 무시합니다.</summary>
+        private bool TryFindNearestWallClipHit(
+            Vector2 start,
+            Vector2 direction,
+            float distance,
+            LayerMask wallLayers,
+            out RaycastHit2D nearestHit)
+        {
+            nearestHit = default;
+            if (wallLayers.value == 0)
+                return false;
+
+            ContactFilter2D filter = new ContactFilter2D
+            {
+                useTriggers = false
+            };
+            filter.SetLayerMask(wallLayers);
+
+            int hitCount = Physics2D.Raycast(start, direction, filter, wallClipHitBuffer, distance);
+            bool hasHit = false;
+            for (int i = 0; i < hitCount; i++)
+            {
+                RaycastHit2D hit = wallClipHitBuffer[i];
+                if (hit.collider == null || hit.collider.isTrigger)
+                    continue;
+
+                if (!hasHit || hit.distance < nearestHit.distance)
+                {
+                    nearestHit = hit;
+                    hasHit = true;
+                }
+            }
+
+            return hasHit;
         }
 
         private LineRenderer GetOrCreateLineRenderer()

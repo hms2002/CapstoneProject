@@ -11,6 +11,7 @@ using UnityGAS;
 public abstract class SlimeQueenPhaseTwoBase : SlimeQueenBossBase, ISlimeQueenBodyInflateHost
 {
     private static readonly int IsDeadHash = Animator.StringToHash("isDead");
+    protected static readonly int IsSinkingHash = Animator.StringToHash("isSinking");
 
     [Header("Phase 2 Contact")]
     [Tooltip("2페이즈 퀸이 플레이어와 접촉했을 때 적용할 피해량입니다.")]
@@ -200,11 +201,13 @@ public abstract class SlimeQueenPhaseTwoBase : SlimeQueenBossBase, ISlimeQueenBo
     /// <summary>배수구 안에 잠긴 상태의 보스별 애니메이션 진입 훅입니다.</summary>
     public virtual void BeginDrainSinkAnimation()
     {
+        SetAnimatorBoolIfExists(IsSinkingHash, true);
     }
 
     /// <summary>배수구에서 올라올 때 보스별 애니메이션 상태를 정리하는 훅입니다.</summary>
     public virtual void EndDrainSinkAnimation()
     {
+        SetAnimatorBoolIfExists(IsSinkingHash, false);
     }
 
     protected override void Update()
@@ -307,6 +310,8 @@ public abstract class SlimeQueenPhaseTwoBase : SlimeQueenBossBase, ISlimeQueenBo
 
         shortQueen.SetCastlingRuntimeLock(true);
         longQueen.SetCastlingRuntimeLock(true);
+        shortQueen.BeginPatternFacingLockTowards(longStartPosition);
+        longQueen.BeginPatternFacingLockTowards(shortStartPosition);
         shortQueen.SetPatternMoveDamageBlocked(true);
         longQueen.SetPatternMoveDamageBlocked(true);
         shortQueen.SetPassiveContactDamageBlocked(true);
@@ -347,6 +352,7 @@ public abstract class SlimeQueenPhaseTwoBase : SlimeQueenBossBase, ISlimeQueenBo
     public void ForceCleanupCastlingPattern()
     {
         CleanupCastlingPresentation();
+        EndPatternFacingLock();
         SetPatternMoveDamageBlocked(false);
         SetPassiveContactDamageBlocked(false);
         SetCastlingRuntimeLock(false);
@@ -558,6 +564,17 @@ public abstract class SlimeQueenPhaseTwoBase : SlimeQueenBossBase, ISlimeQueenBo
     public void SetPhase2SlamPose(Vector3 startPosition, Vector3 landingPosition, float normalizedTime)
     {
         ApplyKnightStyleSlamPose(startPosition, landingPosition, normalizedTime, slamArcHeight);
+    }
+
+    /// <summary>구덩이에서 복귀할 때 시작부터 공중에 있는 상태로 내려오는 낙하 자세를 적용합니다.</summary>
+    public void SetPhase2PitFallReturnPose(Vector3 landingPosition, float normalizedTime, float startVisualHeight)
+    {
+        float clampedTime = Mathf.Clamp01(normalizedTime);
+        float safeHeight = Mathf.Max(0f, startVisualHeight);
+        float easedDrop = Mathf.Pow(clampedTime, 2.25f);
+        float visualHeight = Mathf.Lerp(safeHeight, 0f, easedDrop);
+        ApplyGroundedMotionPose(landingPosition, visualHeight);
+        SnapCombatHeightPresentationToState();
     }
 
     /// <summary>페이즈 2 내려찍기 종료 위치로 보스 좌표를 확정합니다.</summary>
@@ -968,6 +985,15 @@ public abstract class SlimeQueenPhaseTwoBase : SlimeQueenBossBase, ISlimeQueenBo
     {
         if (sprite == null)
             return;
+
+        if (ShouldBlockFacingUpdate())
+            return;
+
+        if (IsPatternFacingLocked)
+        {
+            ApplyPatternFacingLock();
+            return;
+        }
 
         if (transform.position.x > destination.x)
             sprite.flipX = true;

@@ -770,12 +770,12 @@ public class Witch : BossControllerBase, IWitchPatternStateBridge
             return;
 
         ResolveArenaRectangle(center, out Vector3 rectCenter, out Vector2 rectSize);
-        AttackTelegraphSpec spec = AttackTelegraphSpec.CreateRectangle(
+        AttackTelegraphSpec spec = AttackTelegraphSpecUtility.WithThinWarningOutline(AttackTelegraphSpec.CreateRectangle(
             rectCenter,
             rectSize,
             0f,
             Mathf.Max(0f, warningTime),
-            warningStyle);
+            warningStyle));
 
         telegraphService.Show(spec);
     }

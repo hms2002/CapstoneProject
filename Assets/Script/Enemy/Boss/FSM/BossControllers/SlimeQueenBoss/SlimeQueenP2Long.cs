@@ -9,8 +9,8 @@ using UnityGAS;
 /// </summary>
 public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandomJumpHost
 {
+    private const float MinCrossWaterPillarCastDistance = 40f;
     private static readonly int IsJumpingHash = Animator.StringToHash("isJumping");
-    private static readonly int IsSinkingHash = Animator.StringToHash("isSinking");
     private static readonly int IdleStateHash = Animator.StringToHash("SlimeQueenC_Idle");
 
     private const int ToxicDropPositionCount = 3;
@@ -201,6 +201,7 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
 
     private readonly List<AttackTelegraphView> crossWaterPillarWarningViews = new List<AttackTelegraphView>();
     private readonly List<AttackTelegraphView> crossWaterPillarBlastViews = new List<AttackTelegraphView>();
+    private readonly List<GameObject> crossWaterPillarBlastEffects = new List<GameObject>();
     private readonly List<AttackTelegraphView> toxicDropWarningViews = new List<AttackTelegraphView>();
     private readonly List<SlimeQueenToxicDropProjectileVisual> toxicDropProjectileVisuals = new List<SlimeQueenToxicDropProjectileVisual>();
     private readonly List<AttackTelegraphView> waterCannonShotWarningViews = new List<AttackTelegraphView>();
@@ -211,8 +212,6 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
     private SlimeQueenWaterCannonBeamVisual waterCannonBeamVisual;
     private Vector2 waterCannonLockedBeamDirection;
     private bool waterCannonHasLockedBeamDirection;
-    private bool? hasSinkingParameter;
-
     public float JumpDurationSeconds => jumpDurationSeconds;
     public float CrossWaterPillarWarningSeconds => crossWaterPillarWarningSeconds;
     public float CrossWaterPillarBlastViewSeconds => crossWaterPillarBlastViewSeconds;
@@ -231,16 +230,6 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
     public void EndRandomJumpAnimation()
     {
         SetAnimatorBool(IsJumpingHash, false);
-    }
-
-    public override void BeginDrainSinkAnimation()
-    {
-        SetAnimatorBoolIfExists(IsSinkingHash, ref hasSinkingParameter, true);
-    }
-
-    public override void EndDrainSinkAnimation()
-    {
-        SetAnimatorBoolIfExists(IsSinkingHash, ref hasSinkingParameter, false);
     }
 
     protected override void ResetPatternAnimatorStateForInterrupt()
@@ -355,34 +344,6 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
         animator.SetBool(parameterHash, value);
     }
 
-    private void SetAnimatorBoolIfExists(int parameterHash, ref bool? cachedExists, bool value)
-    {
-        if (animator == null)
-            return;
-
-        if (!cachedExists.HasValue)
-            cachedExists = HasAnimatorBoolParameter(parameterHash);
-
-        if (cachedExists.Value)
-            animator.SetBool(parameterHash, value);
-    }
-
-    private bool HasAnimatorBoolParameter(int parameterHash)
-    {
-        if (animator == null)
-            return false;
-
-        AnimatorControllerParameter[] parameters = animator.parameters;
-        for (int i = 0; i < parameters.Length; i++)
-        {
-            AnimatorControllerParameter parameter = parameters[i];
-            if (parameter.nameHash == parameterHash && parameter.type == AnimatorControllerParameterType.Bool)
-                return true;
-        }
-
-        return false;
-    }
-
     /// <summary>착지 범위 안의 현재 타겟에게 GAS Damage Effect를 적용합니다.</summary>
     public void ApplyJumpLandingDamage(AbilitySpec sourceSpec, Vector3 landingPosition)
     {
@@ -465,10 +426,15 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
     }
 
     /// <summary>경고선 위 물기둥 지점을 표시하고 범위 안의 플레이어에게 피해를 적용합니다.</summary>
-    public void FireCrossWaterPillars(AbilitySystem sourceSystem, AbilitySpec sourceSpec, IReadOnlyList<CrossWaterPillarSegment> segments)
+    public void FireCrossWaterPillars(
+        AbilitySystem sourceSystem,
+        AbilitySpec sourceSpec,
+        IReadOnlyList<CrossWaterPillarSegment> segments,
+        GameObject blastEffectPrefab = null)
     {
         ClearViews(crossWaterPillarWarningViews);
         ClearViews(crossWaterPillarBlastViews);
+        ClearCrossWaterPillarBlastEffects();
 
         if (segments == null || crossWaterPillarDamage <= 0f || crossWaterPillarDamageEffect == null)
             return;
@@ -486,7 +452,7 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
             for (float offset = 0f; offset <= segment.Length + 0.001f; offset += interval)
             {
                 Vector3 blastPosition = segment.Start + segment.Direction * offset;
-                SpawnWaterPillarBlastView(blastPosition);
+                SpawnWaterPillarBlastEffect(blastPosition, blastEffectPrefab);
 
                 if (!hasDamagedTarget && TryDamagePlayerAtBlast(sourceSystem, sourceSpec, blastPosition))
                     hasDamagedTarget = true;
@@ -497,7 +463,7 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
             if (segment.Length - lastOffset > crossWaterPillarBlastDiameter * 0.25f)
             {
                 Vector3 blastPosition = segment.End;
-                SpawnWaterPillarBlastView(blastPosition);
+                SpawnWaterPillarBlastEffect(blastPosition, blastEffectPrefab);
 
                 if (!hasDamagedTarget && TryDamagePlayerAtBlast(sourceSystem, sourceSpec, blastPosition))
                     hasDamagedTarget = true;
@@ -510,6 +476,7 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
     {
         ClearViews(crossWaterPillarWarningViews);
         ClearViews(crossWaterPillarBlastViews);
+        ClearCrossWaterPillarBlastEffects();
     }
 
     /// <summary>물대포 연발 패턴의 첫 조준 방향을 현재 플레이어 방향으로 초기화합니다.</summary>
@@ -823,31 +790,43 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
         RaycastHit2D hit = Physics2D.Raycast(
             center,
             direction,
-            crossWaterPillarFallbackDistance,
+            ResolveCrossWaterPillarCastDistance(),
             crossWaterPillarWallLayers.value);
 
         if (hit.collider != null)
             return Mathf.Max(0.1f, hit.distance - crossWaterPillarWallStopPadding);
 
-        return crossWaterPillarFallbackDistance;
+        return ResolveCrossWaterPillarCastDistance();
     }
 
-    /// <summary>물기둥 발생 지점 표시를 생성합니다.</summary>
-    private void SpawnWaterPillarBlastView(Vector3 blastPosition)
+    private float ResolveCrossWaterPillarCastDistance()
     {
-        AttackTelegraphService service = GetTelegraphService();
-        if (service == null)
+        return Mathf.Max(MinCrossWaterPillarCastDistance, crossWaterPillarFallbackDistance);
+    }
+
+    /// <summary>물기둥 발생 지점 이펙트를 생성합니다.</summary>
+    private void SpawnWaterPillarBlastEffect(Vector3 blastPosition, GameObject blastEffectPrefab)
+    {
+        if (blastEffectPrefab == null)
             return;
 
-        AttackTelegraphSpec spec = AttackTelegraphSpec.CreateCircle(
-            blastPosition,
-            crossWaterPillarBlastDiameter,
-            crossWaterPillarBlastViewSeconds,
-            crossWaterPillarBlastStyle);
+        GameObject effect = Instantiate(blastEffectPrefab, blastPosition, Quaternion.identity);
+        if (effect == null)
+            return;
 
-        AttackTelegraphView view = service.SpawnDetachedView(spec);
-        if (view != null)
-            crossWaterPillarBlastViews.Add(view);
+        crossWaterPillarBlastEffects.Add(effect);
+    }
+
+    private void ClearCrossWaterPillarBlastEffects()
+    {
+        for (int i = crossWaterPillarBlastEffects.Count - 1; i >= 0; i--)
+        {
+            GameObject effect = crossWaterPillarBlastEffects[i];
+            if (effect != null)
+                Destroy(effect);
+        }
+
+        crossWaterPillarBlastEffects.Clear();
     }
 
     /// <summary>물기둥 판정 원 안에 있는 플레이어에게 한 번 피해를 적용합니다.</summary>

@@ -177,4 +177,26 @@ namespace UnityGAS
             return this;
         }
     }
+
+    /// <summary>
+    /// 책임 :
+    /// - 여러 보스/몬스터 패턴이 최신 얇은 외곽선 경고 렌더 옵션을 같은 규칙으로 적용하게 돕는다.
+    /// - 표시용 wall clipping만 설정하고, 실제 공격 판정이나 이동 차단 규칙은 변경하지 않는다.
+    /// </summary>
+    public static class AttackTelegraphSpecUtility
+    {
+        private const int DefaultWarningWallLayer = 30;
+        private const int ThinWarningOutlineSampleCount = 48;
+        private const float ThinWarningOutlineSkinWidth = 0.03f;
+
+        public static AttackTelegraphSpec WithThinWarningOutline(AttackTelegraphSpec spec)
+        {
+            LayerMask wallLayers = default;
+            wallLayers.value = 1 << DefaultWarningWallLayer;
+            return spec.WithWallClipping(
+                wallLayers,
+                ThinWarningOutlineSampleCount,
+                ThinWarningOutlineSkinWidth);
+        }
+    }
 }

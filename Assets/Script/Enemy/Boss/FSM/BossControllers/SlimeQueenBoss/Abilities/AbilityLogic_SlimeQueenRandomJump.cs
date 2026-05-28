@@ -25,6 +25,8 @@ public sealed class AbilityLogic_SlimeQueenRandomJump : AbilityLogic
             yield break;
 
         randomJumpHost.FaceCurrentTarget();
+        SlimeQueenBossBase facingLockOwner = randomJumpHost as SlimeQueenBossBase;
+        facingLockOwner?.BeginPatternFacingLock(initialTarget);
         randomJumpHost.ShowJumpWarning(landingPosition);
         SlimeQueen phaseOneQueen = randomJumpHost as SlimeQueen;
         SlimeQueenP2Long phaseTwoLongQueen = randomJumpHost as SlimeQueenP2Long;
@@ -76,6 +78,7 @@ public sealed class AbilityLogic_SlimeQueenRandomJump : AbilityLogic
             if (phaseTwoLongQueen != null)
                 phaseTwoLongQueen.EndRandomJumpAnimation();
             afterimageOwner?.StopPatternAfterimage(IsAbilityCancelled(spec));
+            facingLockOwner?.EndPatternFacingLock();
 
             randomJumpHost.SetPatternMoveDamageBlocked(false);
             if (pitFallBlockOwner != null)

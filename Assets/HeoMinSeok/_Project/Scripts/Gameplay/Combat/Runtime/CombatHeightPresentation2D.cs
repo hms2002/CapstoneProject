@@ -38,6 +38,16 @@ namespace UnityGAS
         private float currentVisualHeight;
         private float visualHeightVelocity;
 
+        public Transform VisualRoot => visualRoot;
+        public float CurrentVisualHeight => currentVisualHeight;
+        public Vector3 VisualBaseLocalPosition => visualBaseLocalPosition;
+
+        /// <summary>현재 CombatHeightState2D 값을 보간 없이 즉시 visual/shadow에 반영합니다.</summary>
+        public void SnapToCurrentState()
+        {
+            ApplyImmediate();
+        }
+
         private void Awake()
         {
             CacheReferences(createFallbackShadow);

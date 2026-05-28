@@ -480,11 +480,11 @@ public class DeadsSkeleton : Mob, IDamageReceiver, IMobAttackDecisionSource, IMo
     {
         if (telegraphService == null) return;
 
-        AttackTelegraphSpec spec = AttackTelegraphSpec.CreateCircle(
+        AttackTelegraphSpec spec = AttackTelegraphSpecUtility.WithThinWarningOutline(AttackTelegraphSpec.CreateCircle(
             transform.position,
             GetConfiguredExplosionDiameter(),
             Mathf.Max(0f, introDuration),
-            introWarningStyle);
+            introWarningStyle));
 
         telegraphService.Show(spec);
     }
@@ -516,11 +516,11 @@ public class DeadsSkeleton : Mob, IDamageReceiver, IMobAttackDecisionSource, IMo
         if (telegraphService == null)
             return;
 
-        AttackTelegraphSpec spec = AttackTelegraphSpec.CreateCircle(
+        AttackTelegraphSpec spec = AttackTelegraphSpecUtility.WithThinWarningOutline(AttackTelegraphSpec.CreateCircle(
             transform.position,
             GetConfiguredExplosionDiameter(),
             0f,
-            armedWarningStyle);
+            armedWarningStyle));
 
         telegraphService.Show(spec);
     }
@@ -531,11 +531,11 @@ public class DeadsSkeleton : Mob, IDamageReceiver, IMobAttackDecisionSource, IMo
         if (telegraphService == null || IsPlayingSelfDestructIntro())
             return;
 
-        AttackTelegraphSpec spec = AttackTelegraphSpec.CreateCircle(
+        AttackTelegraphSpec spec = AttackTelegraphSpecUtility.WithThinWarningOutline(AttackTelegraphSpec.CreateCircle(
             transform.position,
             GetConfiguredExplosionDiameter(),
             0f,
-            armedWarningStyle);
+            armedWarningStyle));
 
         telegraphService.UpdateCurrentGeometry(spec);
     }

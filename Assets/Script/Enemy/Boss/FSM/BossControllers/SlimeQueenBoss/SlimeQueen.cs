@@ -253,11 +253,13 @@ public sealed class SlimeQueen : SlimeQueenBossBase, ISlimeQueenBodyInflateHost,
 
     public void BeginBodyInflateImpactAnimation()
     {
+        BeginBodyInflateVisualScale();
         SetAnimatorBool(IsGiantizationHash, true);
     }
 
     public void EndBodyInflateImpactAnimation()
     {
+        EndBodyInflateVisualScale();
         SetAnimatorBool(IsGiantizationHash, false);
     }
 
@@ -309,6 +311,7 @@ public sealed class SlimeQueen : SlimeQueenBossBase, ISlimeQueenBodyInflateHost,
     protected override void ResetPatternAnimatorStateForInterrupt()
     {
         StopCallSlimeSpeechAnimation();
+        EndBodyInflateVisualScale(resetImmediately: true);
         SetAnimatorBoolIfExists(IsJumpingHash, false);
         SetAnimatorBoolIfExists(IsShoutingHash, false);
         ResetAnimatorTriggerIfExists(ReadyTriggerHash);

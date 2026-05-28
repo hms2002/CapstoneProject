@@ -83,6 +83,25 @@ namespace UnityGAS
             ApplyMode(defaultMode);
         }
 
+        /// <summary>지정된 콜라이더가 이 프로필이 관리하는 이동 방해용 body collider인지 확인합니다.</summary>
+        public bool ContainsBodyCollider(Collider2D targetCollider)
+        {
+            if (targetCollider == null)
+                return false;
+
+            CacheBodyCollidersIfNeeded();
+            if (bodyColliders == null)
+                return false;
+
+            for (int i = 0; i < bodyColliders.Length; i++)
+            {
+                if (bodyColliders[i] == targetCollider)
+                    return true;
+            }
+
+            return false;
+        }
+
         private void CacheBodyCollidersIfNeeded()
         {
             if (bodyColliders != null && bodyColliders.Length > 0)

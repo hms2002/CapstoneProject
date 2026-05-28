@@ -28,6 +28,7 @@ public sealed class AbilityLogic_SlimeQueenToxicRush : AbilityLogic
                     yield break;
 
                 slimeQueen.FaceCurrentTarget();
+                slimeQueen.BeginPatternFacingLockTowards(segment.End);
                 slimeQueen.ShowToxicRushWarning(segment);
 
                 if (slimeQueen.ToxicRushWarningSeconds > 0f)
@@ -72,6 +73,7 @@ public sealed class AbilityLogic_SlimeQueenToxicRush : AbilityLogic
 
                 slimeQueen.StopPatternAfterimage(IsAbilityCancelled(spec));
                 slimeQueen.EndToxicRushAnimation();
+                slimeQueen.EndPatternFacingLock();
                 slimeQueen.FaceCurrentTarget();
 
                 if (slimeQueen.ToxicRushIntervalSeconds > 0f && rushIndex < slimeQueen.ToxicRushRepeatCount - 1)
@@ -85,6 +87,7 @@ public sealed class AbilityLogic_SlimeQueenToxicRush : AbilityLogic
         {
             slimeQueen.StopPatternAfterimage(IsAbilityCancelled(spec));
             slimeQueen.EndToxicRushAnimation();
+            slimeQueen.EndPatternFacingLock();
             slimeQueen.CleanupToxicRushPresentation();
         }
     }
@@ -97,6 +100,7 @@ public sealed class AbilityLogic_SlimeQueenToxicRush : AbilityLogic
             return;
 
         slimeQueen.EndToxicRushAnimation();
+        slimeQueen.EndPatternFacingLock();
         slimeQueen.StopPatternAfterimage(clearGhosts: true);
         slimeQueen.CleanupToxicRushPresentation();
     }

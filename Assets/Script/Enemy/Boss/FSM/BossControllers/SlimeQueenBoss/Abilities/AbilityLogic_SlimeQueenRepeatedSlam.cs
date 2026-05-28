@@ -28,6 +28,7 @@ public sealed class AbilityLogic_SlimeQueenRepeatedSlam : AbilityLogic
                 yield break;
 
             slimeQueen.FaceCurrentTarget();
+            slimeQueen.BeginPatternFacingLockTowards(landingPosition);
             slimeQueen.ShowPhase2SlamWarning(landingPosition);
 
             Vector3 startPosition = slimeQueen.transform.position;
@@ -59,6 +60,7 @@ public sealed class AbilityLogic_SlimeQueenRepeatedSlam : AbilityLogic
             }
             finally
             {
+                slimeQueen.EndPatternFacingLock();
                 slimeQueen.SetPatternMoveDamageBlocked(false);
                 if (pitFallBlockOwner != null)
                     pitFallBlockOwner.PopPitFallTriggerBlock();

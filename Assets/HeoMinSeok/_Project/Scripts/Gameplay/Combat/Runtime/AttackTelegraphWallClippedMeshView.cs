@@ -21,6 +21,8 @@ namespace UnityGAS
         private int[] triangles;
         private Vector3[] borderPositions;
         private const float BorderWidth = 0.045f;
+        private const int WallClipHitBufferSize = 16;
+        private readonly RaycastHit2D[] wallClipHitBuffer = new RaycastHit2D[WallClipHitBufferSize];
 
         public bool IsVisible => meshRenderer != null && meshRenderer.enabled;
 
@@ -389,11 +391,43 @@ namespace UnityGAS
             if (wallLayers.value == 0)
                 return range;
 
-            RaycastHit2D hit = Physics2D.Raycast(origin, rayDirection, range, wallLayers);
-            if (hit.collider == null)
+            if (!TryFindNearestWallClipHit(origin, rayDirection, range, wallLayers, out RaycastHit2D hit))
                 return range;
 
             return Mathf.Clamp(hit.distance - skinWidth, 0f, range);
+        }
+
+        /// <summary>경고 mesh clipping은 실제 벽/문 같은 non-trigger 장애물만 사용하고, HoleTrap 같은 trigger 감지 영역은 무시합니다.</summary>
+        private bool TryFindNearestWallClipHit(
+            Vector2 origin,
+            Vector2 rayDirection,
+            float range,
+            LayerMask wallLayers,
+            out RaycastHit2D nearestHit)
+        {
+            nearestHit = default;
+            ContactFilter2D filter = new ContactFilter2D
+            {
+                useTriggers = false
+            };
+            filter.SetLayerMask(wallLayers);
+
+            int hitCount = Physics2D.Raycast(origin, rayDirection, filter, wallClipHitBuffer, range);
+            bool hasHit = false;
+            for (int i = 0; i < hitCount; i++)
+            {
+                RaycastHit2D hit = wallClipHitBuffer[i];
+                if (hit.collider == null || hit.collider.isTrigger)
+                    continue;
+
+                if (!hasHit || hit.distance < nearestHit.distance)
+                {
+                    nearestHit = hit;
+                    hasHit = true;
+                }
+            }
+
+            return hasHit;
         }
 
         private void EnsureMeshBuffers(int vertexCount, int triangleFanCount)
