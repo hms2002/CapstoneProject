@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using CapstoneAudio;
 using UnityEngine;
 
 namespace UnityGAS
@@ -27,6 +28,13 @@ namespace UnityGAS
         [Tooltip("소멸 시간이 끝나면 오브젝트를 Destroy합니다. 풀링 시에는 끄고 직접 회수하면 됩니다.")]
         [SerializeField] private bool destroyOnFinished = true;
 
+        [Header("Sound")]
+        [Tooltip("독구름이 존재하는 동안 반복 재생할 루프 사운드입니다. 비우면 재생하지 않습니다.")]
+        [SerializeField] private SoundRef loopSound;
+
+        [Tooltip("독구름 루프 사운드를 정리할 때 사용할 페이드아웃 시간입니다.")]
+        [SerializeField, Min(0f)] private float loopFadeOutSeconds = 0.1f;
+
         [Header("Damage")]
         [Tooltip("독구름이 플레이어에게 적용할 GAS Damage Effect입니다.")]
         [SerializeField] private GE_Damage_Spec damageEffect;
@@ -51,6 +59,7 @@ namespace UnityGAS
         private readonly Dictionary<GameObject, float> nextDamageTimes = new Dictionary<GameObject, float>();
         private float elapsedSeconds;
         private bool isFading;
+        private AudioHandle loopHandle;
 
         private void Awake()
         {
@@ -62,6 +71,17 @@ namespace UnityGAS
         {
             CacheComponents();
             ResetRuntimeState();
+            StartLoopSound();
+        }
+
+        private void OnDisable()
+        {
+            StopLoopSound();
+        }
+
+        private void OnDestroy()
+        {
+            StopLoopSound();
         }
 
         private void OnValidate()
@@ -122,7 +142,8 @@ namespace UnityGAS
             float newFadeSeconds,
             float newPlayerDamage,
             float newDamageIntervalSeconds,
-            GE_Damage_Spec newDamageEffect)
+            GE_Damage_Spec newDamageEffect,
+            SoundRef newLoopSound = default)
         {
             radius = Mathf.Max(0.05f, newRadius);
             activeSeconds = Mathf.Max(0f, newActiveSeconds);
@@ -133,8 +154,11 @@ namespace UnityGAS
             if (newDamageEffect != null)
                 damageEffect = newDamageEffect;
 
+            loopSound = newLoopSound;
+
             ApplyRadius();
             ResetRuntimeState();
+            StartLoopSound();
         }
 
         /// <summary>독구름을 피해 없는 페이드 상태로 전환합니다.</summary>
@@ -168,6 +192,8 @@ namespace UnityGAS
         /// <summary>독구름 수명이 끝났을 때 파괴하거나 비활성화합니다.</summary>
         private void FinishLifetime()
         {
+            StopLoopSound();
+
             if (destroyOnFinished)
             {
                 Destroy(gameObject);
@@ -326,6 +352,33 @@ namespace UnityGAS
             Color color = activeColor;
             color.a *= Mathf.Clamp01(normalizedAlpha);
             spriteRenderer.color = color;
+        }
+
+        /// <summary>독구름 수명과 함께 유지될 루프 사운드를 기존 오디오 시스템으로 시작합니다.</summary>
+        private void StartLoopSound()
+        {
+            StopLoopSound();
+
+            if (!loopSound.IsSet)
+                return;
+
+            loopHandle = SoundPlaybackUtility.Play(
+                loopSound,
+                gameObject,
+                gameObject,
+                null,
+                transform.position,
+                this);
+        }
+
+        /// <summary>독구름이 사라지거나 비활성화될 때 루프 사운드 핸들을 정리합니다.</summary>
+        private void StopLoopSound()
+        {
+            if (!loopHandle.IsValid)
+                return;
+
+            SoundPlaybackUtility.Stop(loopHandle, loopFadeOutSeconds);
+            loopHandle = AudioHandle.Invalid;
         }
     }
 }

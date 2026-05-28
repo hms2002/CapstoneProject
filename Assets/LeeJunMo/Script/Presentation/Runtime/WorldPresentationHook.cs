@@ -56,14 +56,88 @@ namespace CapstonePresentation
     public struct WorldPresentationHook
     {
         public SoundRef sound;
+        [Tooltip("비어 있지 않으면 단일 sound 대신 유효한 후보 중 하나를 무작위로 재생합니다.")]
+        public SoundRef[] randomSounds;
+        [Tooltip("메인 사운드와 동시에 추가로 전부 재생할 사운드 목록입니다.")]
+        public SoundRef[] additionalSounds;
         public CameraShakeHook cameraShake;
         public SpawnedPresentationHook effect;
         public SpawnedPresentationHook particle;
 
-        public bool HasSound => sound.IsSet;
+        public bool HasSound => sound.IsSet || HasRandomSound || HasAdditionalSound;
+        public bool HasRandomSound => CountValidRandomSounds() > 0;
+        public bool HasAdditionalSound => CountValidAdditionalSounds() > 0;
         public bool HasShake => cameraShake.amplitude > 0f;
         public bool HasVisuals => effect.HasContent || particle.HasContent;
         public bool HasAnyContent => HasSound || HasShake || HasVisuals;
+        public SoundRef[] AdditionalSounds => additionalSounds;
+
+        /// <summary>
+        /// 책임:
+        /// - 연출 hook에 여러 사운드 후보가 지정된 경우 그중 하나를 선택한다.
+        /// - 랜덤 후보가 없으면 기존 단일 sound 경로를 그대로 유지한다.
+        /// </summary>
+        public SoundRef ResolveSound()
+        {
+            return TryGetRandomSound(out SoundRef randomSound) ? randomSound : sound;
+        }
+
+        private bool TryGetRandomSound(out SoundRef selected)
+        {
+            selected = default;
+            int validCount = CountValidRandomSounds();
+            if (validCount <= 0)
+                return false;
+
+            int targetIndex = UnityEngine.Random.Range(0, validCount);
+            for (int i = 0; i < randomSounds.Length; i++)
+            {
+                if (!randomSounds[i].IsSet)
+                    continue;
+
+                if (targetIndex == 0)
+                {
+                    selected = randomSounds[i];
+                    return true;
+                }
+
+                targetIndex--;
+            }
+
+            return false;
+        }
+
+        private int CountValidRandomSounds()
+        {
+            int validCount = 0;
+
+            if (randomSounds == null || randomSounds.Length == 0)
+                return 0;
+
+            for (int i = 0; i < randomSounds.Length; i++)
+            {
+                if (randomSounds[i].IsSet)
+                    validCount++;
+            }
+
+            return validCount;
+        }
+
+        private int CountValidAdditionalSounds()
+        {
+            int validCount = 0;
+
+            if (additionalSounds == null || additionalSounds.Length == 0)
+                return 0;
+
+            for (int i = 0; i < additionalSounds.Length; i++)
+            {
+                if (additionalSounds[i].IsSet)
+                    validCount++;
+            }
+
+            return validCount;
+        }
     }
 
     public readonly struct WorldPresentationContext

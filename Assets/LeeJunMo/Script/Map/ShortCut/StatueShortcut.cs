@@ -1,9 +1,13 @@
+using CapstoneAudio;
 using TMPro;
 using UnityEngine;
 using UnityGAS;
 
 public class StatueShortcut : TemporaryShortcut
 {
+    private static readonly SoundRef OfferMagicStoneSound = SoundRef.FromKey("sound_player_OfferMagicstone");
+    private static readonly SoundRef OfferBloodSound = SoundRef.FromKey("sound_player_OfferBlood");
+
     public enum CostType
     {
         MagicStone,
@@ -124,14 +128,28 @@ public class StatueShortcut : TemporaryShortcut
         {
             case CostType.MagicStone:
                 CurrencyManager.Instance?.SpendMagicStone(costAmount);
+                PlayPaymentSound(OfferMagicStoneSound, player);
                 break;
 
             case CostType.HP:
                 var attributeSet = player != null ? player.Transform.GetComponent<AttributeSet>() : null;
                 if (attributeSet != null && healthAttribute != null)
+                {
                     attributeSet.TryModifyAttributeValue(healthAttribute, -costAmount, this);
+                    PlayPaymentSound(OfferBloodSound, player);
+                }
                 break;
         }
+    }
+
+    /// <summary>석상 지불이 성공했을 때 플레이어 위치 기준으로 지불 사운드를 재생합니다.</summary>
+    private void PlayPaymentSound(SoundRef sound, IPlayerInteractor player)
+    {
+        GameObject instigator = player != null && player.Transform != null
+            ? player.Transform.gameObject
+            : null;
+
+        SoundPlaybackUtility.Play(sound, instigator: instigator, causer: gameObject, position: transform.position, sourceObject: this);
     }
 
     protected override void OnSuccess()

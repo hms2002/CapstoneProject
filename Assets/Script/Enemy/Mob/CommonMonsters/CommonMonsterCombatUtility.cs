@@ -67,6 +67,84 @@ public static class CommonMonsterCombatUtility
         return delta.sqrMagnitude <= range * range;
     }
 
+    /// <summary>
+    /// 책임:
+    /// - 원거리 조준선과 투사체 방향 계산이 발밑/root 대신 목적별 전투 기준점을 겨냥하도록 계산한다.
+    /// - provider가 없는 기존 객체도 hurtbox/sprite/root 순 fallback으로 안정적으로 지원한다.
+    /// </summary>
+    public static Vector2 ResolveAimPoint(GameObject target, CombatAimPointKind kind = CombatAimPointKind.ProjectileTarget)
+    {
+        if (target == null)
+            return Vector2.zero;
+
+        if (kind == CombatAimPointKind.Root)
+            return target.transform.position;
+
+        CombatAimPointProvider2D provider = target.GetComponentInChildren<CombatAimPointProvider2D>();
+        if (provider != null)
+            return provider.Resolve(kind);
+
+        Collider2D collider = ResolvePreferredCollider(target);
+        if (collider != null)
+            return collider.bounds.center;
+
+        SpriteRenderer renderer = target.GetComponentInChildren<SpriteRenderer>();
+        if (renderer != null && renderer.enabled)
+            return renderer.bounds.center;
+
+        return target.transform.position;
+    }
+
+    public static Vector2 ResolveTelegraphAimPoint(GameObject target)
+    {
+        return ResolveAimPoint(target, CombatAimPointKind.ProjectileTarget);
+    }
+
+    public static Vector2 DirectionToAimPoint(Vector2 origin, GameObject target, bool fallbackLeft)
+    {
+        Vector2 targetPoint = ResolveAimPoint(target, CombatAimPointKind.ProjectileTarget);
+        Vector2 direction = target != null
+            ? targetPoint - origin
+            : Vector2.zero;
+
+        if (direction.sqrMagnitude > 0.0001f)
+            return direction.normalized;
+
+        return fallbackLeft ? Vector2.left : Vector2.right;
+    }
+
+    private static Collider2D ResolvePreferredCollider(GameObject target)
+    {
+        CombatHurtbox2D[] hurtboxes = target.GetComponentsInChildren<CombatHurtbox2D>();
+        for (int i = 0; i < hurtboxes.Length; i++)
+        {
+            CombatHurtbox2D hurtbox = hurtboxes[i];
+            if (hurtbox == null || !hurtbox.enabled)
+                continue;
+
+            Collider2D hurtboxCollider = hurtbox.GetComponent<Collider2D>();
+            if (hurtboxCollider != null && hurtboxCollider.enabled)
+                return hurtboxCollider;
+        }
+
+        Collider2D[] colliders = target.GetComponentsInChildren<Collider2D>();
+        Collider2D triggerFallback = null;
+        for (int i = 0; i < colliders.Length; i++)
+        {
+            Collider2D collider = colliders[i];
+            if (collider == null || !collider.enabled)
+                continue;
+
+            if (!collider.isTrigger)
+                return collider;
+
+            if (triggerFallback == null)
+                triggerFallback = collider;
+        }
+
+        return triggerFallback;
+    }
+
     public static float ResolvePlayerBaseSpeed(Transform target, float fallback = PlayerBaseSpeedFallback)
     {
         if (target == null)

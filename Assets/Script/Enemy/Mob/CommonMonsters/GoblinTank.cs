@@ -333,10 +333,7 @@ public sealed partial class GoblinTankSlamRunner : MonoBehaviour, IMobPatternRun
     private static AttackTelegraphStyle CreateWarningStyle()
     {
         AttackTelegraphStyle style = ScriptableObject.CreateInstance<AttackTelegraphStyle>();
-        style.fillColorStart = new Color(1f, 0.25f, 0.05f, 0.12f);
-        style.fillColorEnd = new Color(1f, 0.25f, 0.05f, 0.34f);
-        style.borderColorStart = new Color(1f, 0.65f, 0.2f, 1f);
-        style.borderColorEnd = new Color(1f, 0.65f, 0.2f, 1f);
+        AttackTelegraphStyleUtility.ApplyDangerAreaColors(style);
         style.progressCurve = AnimationCurve.Linear(0f, 0f, 1f, 1f);
         style.blinkStartNormalized = 0.7f;
         style.blinkFrequency = 5f;

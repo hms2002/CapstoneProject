@@ -1,13 +1,21 @@
 using System.Collections;
 using System.Collections.Generic;
+using CapstoneAudio;
 using UnityEngine;
 using UnityGAS;
 
+/// <summary>
+/// 책임:
+/// - 2페이즈 두 슬라임 여왕의 캐슬링 이동과 실제 교차 이동 시작 사운드를 실행한다.
+/// </summary>
 public sealed class AbilityLogic_SlimeQueenCastling : AbilityLogic
 {
     private const string LongQueenCastlingSpeechText = "교대해줘!";
     private const string ShortQueenCastlingSpeechText = "오케이!";
     private const float ShortQueenSpeechDelaySeconds = 0.7f;
+
+    [Header("Sound")]
+    [SerializeField] private SoundRef castlingSound = SoundRef.FromKey("sound_SlimeQueen_Castling");
 
     /// <summary>2페이즈 근거리/원거리 슬라임 여왕이 발동 순간 위치를 기준으로 서로의 위치를 교환합니다.</summary>
     public override IEnumerator Activate(AbilitySystem system, AbilitySpec spec, GameObject initialTarget)
@@ -30,6 +38,12 @@ public sealed class AbilityLogic_SlimeQueenCastling : AbilityLogic
                 yield break;
 
             slimeQueen.ClearCastlingWarnings();
+            SlimeQueenPresentationAudioUtility.PlaySound(
+                castlingSound,
+                slimeQueen.gameObject,
+                slimeQueen.transform.position,
+                this,
+                initialTarget);
 
             float traveledDistance = 0f;
             while (traveledDistance < context.Distance)

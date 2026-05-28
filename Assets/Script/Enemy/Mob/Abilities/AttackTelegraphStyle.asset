@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4a4e8e4b6b0b77a45a9ed3732ce9ad4f, type: 3}
   m_Name: AttackTelegraphStyle
   m_EditorClassIdentifier: 
-  fillColorStart: {r: 1, g: 0.85, b: 0.2, a: 0.15}
-  fillColorEnd: {r: 1, g: 0.2, b: 0.2, a: 0.35}
-  borderColorStart: {r: 1, g: 0.95, b: 0.65, a: 0.8}
-  borderColorEnd: {r: 1, g: 0.2, b: 0.2, a: 1}
+  fillColorStart: {r: 1, g: 0, b: 0, a: 0.3}
+  fillColorEnd: {r: 1, g: 0, b: 0, a: 0.3}
+  borderColorStart: {r: 1, g: 0, b: 0, a: 0.9}
+  borderColorEnd: {r: 1, g: 0, b: 0, a: 0.9}
   progressCurve:
     serializedVersion: 2
     m_Curve:

@@ -22,4 +22,4 @@ MonoBehaviour:
   regenerationRate: 0
   regenerationDelay: 0
   displayColor: {r: 0.35, g: 0.75, b: 1, a: 1}
-  icon: {fileID: 21300000, guid: 5942fd97166d5fb49b1047c559c09e59, type: 3}
+  icon: {fileID: 1520901937, guid: d8ea97f098c5b0f4daafdae1493166cd, type: 3}

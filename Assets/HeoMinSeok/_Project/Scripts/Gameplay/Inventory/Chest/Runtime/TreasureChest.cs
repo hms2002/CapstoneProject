@@ -12,6 +12,10 @@ public class TreasureChest : MonoBehaviour
     [Header("Inventory")]
     [SerializeField] private int capacity = 16;
 
+    [Header("Loot Override")]
+    [SerializeField] private ChestLootMode lootMode = ChestLootMode.StageTable;
+    [SerializeField] private ChestLootOverrideProfile lootOverrideProfile = new();
+
     [Header("Open Presentation")]
     [SerializeField] private Animator chestAnimator;
     [SerializeField] private string openStateName = "Open";
@@ -183,7 +187,7 @@ public class TreasureChest : MonoBehaviour
         if (LootManager.Instance == null)
             return;
 
-        ChestLootResult result = LootManager.Instance.GenerateChestLootResult(ChestLootRequest.Default);
+        ChestLootResult result = LootManager.Instance.GenerateChestLootResult(BuildLootRequest());
         FillInventoryWithLoot(result.Items);
         RecordRefreshGuard();
     }
@@ -209,7 +213,7 @@ public class TreasureChest : MonoBehaviour
         if (lootManager == null)
             return false;
 
-        ChestLootResult result = lootManager.GenerateChestLootResult(ChestLootRequest.Default);
+        ChestLootResult result = lootManager.GenerateChestLootResult(BuildLootRequest());
 
         inventory.Clear();
         FillInventoryWithLoot(result.Items);
@@ -237,6 +241,14 @@ public class TreasureChest : MonoBehaviour
             return inventory.TryAddRelicWithLevel(relic, ChestRewardPolicy.ResolveChestRelicLevel(relic));
 
         return inventory.TryAdd(item);
+    }
+
+    private ChestLootRequest BuildLootRequest()
+    {
+        if (lootMode != ChestLootMode.OverrideProfile || lootOverrideProfile == null)
+            return ChestLootRequest.Default;
+
+        return new ChestLootRequest(default, LootPoolContext.PlayerInventory, lootOverrideProfile);
     }
 
     private void RecordRefreshGuard()

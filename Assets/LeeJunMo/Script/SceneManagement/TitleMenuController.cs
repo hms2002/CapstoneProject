@@ -63,7 +63,7 @@ public sealed class TitleMenuController : MonoBehaviour
 
         if (openMainMenuOnStart)
         {
-            mainMenuPresentation?.PlayOpen();
+            mainMenuPresentation?.PlayOpen(playSound: false);
             StartMainMenuUnlockLead();
         }
     }

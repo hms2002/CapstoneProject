@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using CapstoneAudio;
 using UnityEngine;
 using UnityGAS;
 
@@ -8,6 +9,8 @@ using UnityGAS;
 public sealed class DrainPipe : MonoBehaviour, IDamageReceiver
 {
     private const float PhaseTwoBossDrainSeconds = 4f;
+    private const float PhaseTwoBossExitJumpSeconds = 0.45f;
+    private const float PhaseTwoBossExitJumpArcHeight = 0.85f;
 
     [Header("Refs")]
     [Tooltip("임시 배수관 원형 스프라이트를 표시할 렌더러입니다.")]
@@ -41,6 +44,22 @@ public sealed class DrainPipe : MonoBehaviour, IDamageReceiver
     [Tooltip("3회 피격 후 표시할 임시 파괴 색상입니다. 실제 스프라이트 적용 시 제거할 임시 연출입니다.")]
     [SerializeField] private Color brokenColor = Color.black;
 
+    [Header("Sound")]
+    [Tooltip("배수관이 열릴 때 재생할 사운드입니다.")]
+    [SerializeField] private SoundRef openSound = SoundRef.FromKey("sound_drainPipe_Open");
+    [Tooltip("배수관 흡입이 활성화된 동안 반복 재생할 사운드입니다.")]
+    [SerializeField] private SoundRef waterfallLoopSound = SoundRef.FromKey("sound_drainPipe_WtaerFall");
+    [Tooltip("Pawn 슬라임이 배수관에 빨려 들어갈 때 무작위로 재생할 사운드 후보입니다.")]
+    [SerializeField] private SoundRef[] slimeFallSounds =
+    {
+        SoundRef.FromKey("sound_drainPipe_SlimeFall1"),
+        SoundRef.FromKey("sound_drainPipe_SlimeFall2"),
+        SoundRef.FromKey("sound_drainPipe_SlimeFall3"),
+        SoundRef.FromKey("sound_drainPipe_SlimeFall4")
+    };
+    [Tooltip("2페이즈 근거리 슬라임 퀸이 배수구에서 복귀하기 직전에 재생할 사운드입니다.")]
+    [SerializeField] private SoundRef phaseTwoBossReturnSound = SoundRef.FromKey("sound_slimeQueen_Return");
+
     private static Texture2D sharedTemporaryCircleTexture;
     private static Sprite sharedTemporaryCircleSprite;
 
@@ -49,6 +68,7 @@ public sealed class DrainPipe : MonoBehaviour, IDamageReceiver
     private SlimeQueenPhaseTwoBase phaseTwoBossTarget;
     private Coroutine phaseTwoBossDrainCoroutine;
     private PhaseTwoBossDrainContext activePhaseTwoBossDrainContext;
+    private AudioHandle waterfallLoopHandle;
     private int currentHitCount;
     private bool isBroken;
 
@@ -83,6 +103,7 @@ public sealed class DrainPipe : MonoBehaviour, IDamageReceiver
 
         activePhaseTwoBossDrainContext?.Restore();
         activePhaseTwoBossDrainContext = null;
+        StopWaterfallLoop();
 
         if (phaseTwoBossTarget != null)
             phaseTwoBossTarget.EndDrainControlLock();
@@ -143,6 +164,8 @@ public sealed class DrainPipe : MonoBehaviour, IDamageReceiver
     {
         isBroken = true;
         SyncVisual();
+        SoundPlaybackUtility.Play(openSound, causer: gameObject, position: transform.position, sourceObject: this);
+        StartWaterfallLoop();
     }
 
     /// <summary>배수구 흡입 범위 안에 들어온 2페이즈 슬라임 여왕을 배수구 대상으로 등록합니다.</summary>
@@ -242,10 +265,10 @@ public sealed class DrainPipe : MonoBehaviour, IDamageReceiver
             drainContext.SetSubmerged(true);
         }
 
-        yield return new WaitForSeconds(PhaseTwoBossDrainSeconds);
+        yield return HoldPhaseTwoBossInDrain(slimeQueen, PhaseTwoBossDrainSeconds);
 
-        if (slimeQueen != null)
-            slimeQueen.transform.position = GetDrainPosition(slimeQueen.transform.position.z);
+        if (IsPhaseTwoBossAlive(slimeQueen))
+            yield return PlayPhaseTwoBossExitJump(slimeQueen, drainContext);
 
         drainContext?.Restore();
         activePhaseTwoBossDrainContext = null;
@@ -295,6 +318,7 @@ public sealed class DrainPipe : MonoBehaviour, IDamageReceiver
 
             if (toDrain.magnitude <= consumeDistance)
             {
+                PlayRandomSlimeFallSound(pawn);
                 Destroy(pawn.gameObject);
                 suctionTargets.RemoveAt(i);
                 continue;
@@ -349,7 +373,38 @@ public sealed class DrainPipe : MonoBehaviour, IDamageReceiver
         isBroken = false;
         currentHitCount = 0;
         ConsumeRemainingPawnTargets();
+        StopWaterfallLoop();
         SyncVisual();
+    }
+
+    /// <summary>배수관 흡입 루프 사운드를 시작합니다.</summary>
+    private void StartWaterfallLoop()
+    {
+        if (waterfallLoopHandle.IsValid)
+            return;
+
+        waterfallLoopHandle = SoundPlaybackUtility.Play(waterfallLoopSound, causer: gameObject, position: transform.position, sourceObject: this);
+    }
+
+    /// <summary>배수관 흡입 루프 사운드를 중단해 씬 전환/비활성 후 잔류를 막습니다.</summary>
+    private void StopWaterfallLoop()
+    {
+        if (!waterfallLoopHandle.IsValid)
+            return;
+
+        SoundPlaybackUtility.Stop(waterfallLoopHandle, 0.12f);
+        waterfallLoopHandle = AudioHandle.Invalid;
+    }
+
+    /// <summary>Pawn 슬라임이 배수관에 빠질 때 후보 중 하나를 무작위로 재생합니다.</summary>
+    private void PlayRandomSlimeFallSound(Pawn pawn)
+    {
+        if (slimeFallSounds == null || slimeFallSounds.Length == 0)
+            return;
+
+        SoundRef sound = slimeFallSounds[Random.Range(0, slimeFallSounds.Length)];
+        GameObject target = pawn != null ? pawn.gameObject : null;
+        SoundPlaybackUtility.Play(sound, causer: gameObject, target: target, position: transform.position, sourceObject: this);
     }
 
     /// <summary>원상복구 전까지 이미 흡입 대상이 된 Pawn이 비활성 상태로 남지 않도록 정리합니다.</summary>
@@ -376,6 +431,16 @@ public sealed class DrainPipe : MonoBehaviour, IDamageReceiver
         return slimeQueen.IsCombatActive && slimeQueen.CanTriggerPitFall;
     }
 
+    /// <summary>열린 배수구의 2페이즈 보스 흡입 반경 안에 지정 좌표가 들어오는지 확인합니다.</summary>
+    public bool ContainsActivePhaseTwoBossSuctionPoint(Vector3 worldPosition, float extraRadius = 0f)
+    {
+        if (!isBroken || phaseTwoBossSuctionRadius <= 0f)
+            return false;
+
+        float radius = Mathf.Max(0f, phaseTwoBossSuctionRadius + extraRadius);
+        return Vector2.Distance(transform.position, worldPosition) <= radius;
+    }
+
     private static bool IsPhaseTwoBossAlive(SlimeQueenPhaseTwoBase slimeQueen)
     {
         return slimeQueen != null &&
@@ -386,11 +451,76 @@ public sealed class DrainPipe : MonoBehaviour, IDamageReceiver
                slimeQueen.CurrentHealthValue > 0f;
     }
 
+    /// <summary>배수구 안 4초 그로기 동안 피격 판정은 유지하고 위치만 배수구에 고정합니다.</summary>
+    private IEnumerator HoldPhaseTwoBossInDrain(SlimeQueenPhaseTwoBase slimeQueen, float durationSeconds)
+    {
+        float elapsed = 0f;
+        float duration = Mathf.Max(0f, durationSeconds);
+
+        while (elapsed < duration && IsPhaseTwoBossAlive(slimeQueen))
+        {
+            SetPhaseTwoBossPosition(slimeQueen, GetDrainPosition(slimeQueen.transform.position.z));
+            ResetBodyVelocity(slimeQueen.GetComponent<Rigidbody2D>());
+
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+    }
+
+    /// <summary>배수구에서 빠져나올 때 내려찍기류 패턴처럼 짧은 포물선 점프를 보여줍니다.</summary>
+    private IEnumerator PlayPhaseTwoBossExitJump(SlimeQueenPhaseTwoBase slimeQueen, PhaseTwoBossDrainContext drainContext)
+    {
+        if (!IsPhaseTwoBossAlive(slimeQueen))
+            yield break;
+
+        drainContext?.BeginExitJump();
+        slimeQueen.EndDrainSinkAnimation();
+        SoundPlaybackUtility.Play(
+            phaseTwoBossReturnSound,
+            slimeQueen.gameObject,
+            gameObject,
+            slimeQueen.gameObject,
+            transform.position,
+            this);
+
+        Vector3 startPosition = GetDrainPosition(slimeQueen.transform.position.z);
+        Vector3 landingPosition = startPosition;
+        float duration = Mathf.Max(0.01f, PhaseTwoBossExitJumpSeconds);
+        float elapsed = 0f;
+
+        while (elapsed < duration && IsPhaseTwoBossAlive(slimeQueen))
+        {
+            float t = Mathf.Clamp01(elapsed / duration);
+            Vector3 groundPosition = Vector3.Lerp(startPosition, landingPosition, t);
+            float arcOffset = Mathf.Sin(t * Mathf.PI) * PhaseTwoBossExitJumpArcHeight;
+
+            SetPhaseTwoBossPosition(slimeQueen, groundPosition + Vector3.up * arcOffset);
+            ResetBodyVelocity(slimeQueen.GetComponent<Rigidbody2D>());
+
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        if (IsPhaseTwoBossAlive(slimeQueen))
+        {
+            SetPhaseTwoBossPosition(slimeQueen, landingPosition);
+            ResetBodyVelocity(slimeQueen.GetComponent<Rigidbody2D>());
+        }
+    }
+
     private Vector3 GetDrainPosition(float targetZ)
     {
         Vector3 drainPosition = transform.position;
         drainPosition.z = targetZ;
         return drainPosition;
+    }
+
+    private static void SetPhaseTwoBossPosition(SlimeQueenPhaseTwoBase slimeQueen, Vector3 position)
+    {
+        if (slimeQueen == null)
+            return;
+
+        slimeQueen.transform.position = position;
     }
 
     private static void ResetBodyVelocity(Rigidbody2D body)
@@ -468,6 +598,7 @@ public sealed class DrainPipe : MonoBehaviour, IDamageReceiver
         private readonly SlimeQueenPhaseTwoBase slimeQueen;
         private readonly Rigidbody2D body;
         private readonly bool wasBodySimulated;
+        private readonly RigidbodyConstraints2D wasBodyConstraints;
         private readonly MovementMotor2D movementMotor;
         private readonly bool wasMovementMotorEnabled;
         private readonly Collider2D[] colliders;
@@ -479,6 +610,7 @@ public sealed class DrainPipe : MonoBehaviour, IDamageReceiver
             this.slimeQueen = slimeQueen;
             body = slimeQueen != null ? slimeQueen.GetComponent<Rigidbody2D>() : null;
             wasBodySimulated = body == null || body.simulated;
+            wasBodyConstraints = body != null ? body.constraints : RigidbodyConstraints2D.None;
             movementMotor = slimeQueen != null ? slimeQueen.GetComponent<MovementMotor2D>() : null;
             wasMovementMotorEnabled = movementMotor == null || movementMotor.enabled;
             colliders = slimeQueen != null ? slimeQueen.GetComponentsInChildren<Collider2D>() : new Collider2D[0];
@@ -517,13 +649,25 @@ public sealed class DrainPipe : MonoBehaviour, IDamageReceiver
             {
                 body.linearVelocity = Vector2.zero;
                 body.angularVelocity = 0f;
-                body.simulated = false;
+                body.simulated = true;
+                body.constraints = wasBodyConstraints |
+                                   RigidbodyConstraints2D.FreezePositionX |
+                                   RigidbodyConstraints2D.FreezePositionY |
+                                   RigidbodyConstraints2D.FreezeRotation;
             }
+        }
 
-            for (int i = 0; i < colliders.Length; i++)
+        public void BeginExitJump()
+        {
+            if (isRestored)
+                return;
+
+            if (body != null)
             {
-                if (colliders[i] != null)
-                    colliders[i].enabled = false;
+                body.simulated = true;
+                body.constraints = wasBodyConstraints;
+                body.linearVelocity = Vector2.zero;
+                body.angularVelocity = 0f;
             }
         }
 
@@ -533,22 +677,30 @@ public sealed class DrainPipe : MonoBehaviour, IDamageReceiver
                 return;
 
             isRestored = true;
+            bool shouldRestoreGameplayComponents = slimeQueen != null &&
+                                                   !slimeQueen.IsDead &&
+                                                   !slimeQueen.HasDeadTag() &&
+                                                   slimeQueen.CurrentHealthValue > 0f;
 
-            if (body != null)
+            if (shouldRestoreGameplayComponents && body != null)
             {
                 body.simulated = wasBodySimulated;
+                body.constraints = wasBodyConstraints;
                 body.linearVelocity = Vector2.zero;
                 body.angularVelocity = 0f;
             }
 
-            for (int i = 0; i < colliders.Length; i++)
+            if (shouldRestoreGameplayComponents)
             {
-                if (colliders[i] != null)
-                    colliders[i].enabled = colliderEnabledStates[i];
-            }
+                for (int i = 0; i < colliders.Length; i++)
+                {
+                    if (colliders[i] != null)
+                        colliders[i].enabled = colliderEnabledStates[i];
+                }
 
-            if (movementMotor != null)
-                movementMotor.enabled = wasMovementMotorEnabled;
+                if (movementMotor != null)
+                    movementMotor.enabled = wasMovementMotorEnabled;
+            }
 
             if (slimeQueen != null)
                 slimeQueen.EndDrainControlLock();

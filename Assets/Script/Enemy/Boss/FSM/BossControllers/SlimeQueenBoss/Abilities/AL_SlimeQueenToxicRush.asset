@@ -12,3 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 080ab673512a4775825ec4ddf81b019c, type: 3}
   m_Name: AL_SlimeQueenToxicRush
   m_EditorClassIdentifier: 
+  dashSound:
+    key: sound_slimeQueen_Dash
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  poisonCloudLoopSound:
+    key: sound_slimeQueen_PoisonMist
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}

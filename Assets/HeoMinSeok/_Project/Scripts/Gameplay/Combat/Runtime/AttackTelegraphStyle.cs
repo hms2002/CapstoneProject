@@ -10,12 +10,12 @@ namespace UnityGAS
     public sealed class AttackTelegraphStyle : ScriptableObject
     {
         [Header("Fill")]
-        public Color fillColorStart = new Color(1f, 0.85f, 0.2f, 0.15f);
-        public Color fillColorEnd = new Color(1f, 0.2f, 0.2f, 0.35f);
+        public Color fillColorStart = new Color(1f, 0f, 0f, 0.3f);
+        public Color fillColorEnd = new Color(1f, 0f, 0f, 0.3f);
 
         [Header("Border")]
-        public Color borderColorStart = new Color(1f, 0.95f, 0.65f, 0.8f);
-        public Color borderColorEnd = new Color(1f, 0.2f, 0.2f, 1f);
+        public Color borderColorStart = new Color(1f, 0f, 0f, 0.9f);
+        public Color borderColorEnd = new Color(1f, 0f, 0f, 0.9f);
 
     [Header("Timing")]
     public AnimationCurve progressCurve = AnimationCurve.Linear(0f, 0f, 1f, 1f);

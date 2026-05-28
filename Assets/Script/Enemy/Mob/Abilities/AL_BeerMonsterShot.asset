@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 77ff4c6f0a2348898a57d09f1303fd89, type: 3}
+  m_Name: AL_BeerMonsterShot
+  m_EditorClassIdentifier: Assembly-CSharp::AbilityLogic_BeerMonsterShot
+  projectilePrefab: {fileID: 3760106881503541346, guid: ca526788b6ca8554e85d442937407f1e, type: 3}
+  damageEffect: {fileID: 11400000, guid: a7c21e5f6a1f4d0d8f4c2b3a19e8d725, type: 2}
+  damageAmount: 1
+  attackRange: 7
+  warningSeconds: 1.7
+  warningWidth: 0.12
+  projectileSpeedMultiplier: 1.4
+  projectileLifetime: 5
+  recoverSeconds: 0.25
+  wallLayers:
+    serializedVersion: 2
+    m_Bits: 1073741824
+  targetLayers:
+    serializedVersion: 2
+    m_Bits: 8
+  alignProjectileRotationToDirection: 1
+  projectileRotationOffsetDegrees: 0
+  logWallClipProbe: 0
+  wallClipProbeLogInterval: 0.5

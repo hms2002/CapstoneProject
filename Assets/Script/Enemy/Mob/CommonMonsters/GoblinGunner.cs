@@ -1,4 +1,5 @@
 using System.Collections;
+using CapstoneAudio;
 using UnityEngine;
 using UnityGAS;
 
@@ -12,6 +13,8 @@ using UnityGAS;
 [RequireComponent(typeof(GoblinGunnerShotRunner))]
 public sealed class GoblinGunner : Mob, IMobAttackDecisionSource
 {
+    private static readonly SoundRef GunShotSound = SoundRef.FromKey("sound_goblinGunner_GunShot");
+
     [SerializeField] private AbilityDefinition shotAbility;
     [SerializeField, Min(0f)] private float maxHealth = 5f;
     [Header("Presentation Sockets")]
@@ -121,7 +124,8 @@ public sealed class GoblinGunner : Mob, IMobAttackDecisionSource
         if (!HasRequiredData() || logic == null || !CommonMonsterCombatUtility.InRange(transform, targetObject, logic.AttackRange))
             return false;
 
-        Vector2 direction = CommonMonsterCombatUtility.DirectionTo(gameObject, targetObject, sprite != null && sprite.flipX);
+        Vector2 origin = transform.position;
+        Vector2 direction = CommonMonsterCombatUtility.DirectionToAimPoint(origin, targetObject, sprite != null && sprite.flipX);
         float speed = CommonMonsterCombatUtility.ResolvePlayerBaseSpeed(target) * logic.ProjectileSpeedMultiplier;
         CombatHitPayload payload = CommonMonsterCombatUtility.BuildPayload(
             system != null ? system : abilitySystem,
@@ -134,7 +138,7 @@ public sealed class GoblinGunner : Mob, IMobAttackDecisionSource
 
         context = new ShotContext(
             targetObject,
-            transform.position,
+            origin,
             direction,
             logic.WarningSeconds,
             logic.WarningWidth,
@@ -154,6 +158,7 @@ public sealed class GoblinGunner : Mob, IMobAttackDecisionSource
             return;
 
         SpawnMuzzleEffect(logic);
+        SoundPlaybackUtility.Play(GunShotSound, causer: gameObject, position: context.Origin, sourceObject: this);
 
         GameObject projectileObject = Instantiate(logic.ProjectilePrefab, context.Origin, Quaternion.identity);
         if (projectileObject == null)
@@ -381,15 +386,17 @@ public sealed partial class GoblinGunnerShotRunner : MonoBehaviour, IMobPatternR
     {
         LogWallClipProbe(context);
 
-        Vector3 center = (Vector3)context.Origin + (Vector3)(context.Direction.normalized * context.TelegraphRange * 0.5f);
-        float angle = Mathf.Atan2(context.Direction.y, context.Direction.x) * Mathf.Rad2Deg;
-        AttackTelegraphSpec spec = AttackTelegraphSpec.CreateRectangle(
-            center,
-            new Vector2(context.TelegraphRange, context.WarningWidth),
-            angle,
+        Vector2 start = CommonMonsterCombatUtility.ResolveAimPoint(owner.gameObject, CombatAimPointKind.ProjectileTarget);
+        Vector2 end = context.Target != null
+            ? CommonMonsterCombatUtility.ResolveAimPoint(context.Target, CombatAimPointKind.ProjectileTarget)
+            : start + context.Direction.normalized * context.TelegraphRange;
+
+        AttackTelegraphSpec spec = AttackTelegraphSpec.CreateLine(
+            start,
+            end,
+            context.WarningWidth,
             warningSeconds,
             warningStyle);
-        spec.origin = context.Origin;
         return spec.WithWallClipping(context.WallLayers, 48, 0.03f);
     }
 
@@ -401,12 +408,18 @@ public sealed partial class GoblinGunnerShotRunner : MonoBehaviour, IMobPatternR
 
         nextWallClipProbeLogTime = Time.time + logic.WallClipProbeLogInterval;
 
-        Vector2 direction = context.Direction.sqrMagnitude > 0.0001f ? context.Direction.normalized : Vector2.right;
-        RaycastHit2D hit = Physics2D.Raycast(context.Origin, direction, context.TelegraphRange, context.WallLayers);
+        Vector2 start = CommonMonsterCombatUtility.ResolveAimPoint(owner.gameObject, CombatAimPointKind.ProjectileTarget);
+        Vector2 end = context.Target != null
+            ? CommonMonsterCombatUtility.ResolveAimPoint(context.Target, CombatAimPointKind.ProjectileTarget)
+            : start + context.Direction.normalized * context.TelegraphRange;
+        Vector2 delta = end - start;
+        Vector2 direction = delta.sqrMagnitude > 0.0001f ? delta.normalized : Vector2.right;
+        float range = Mathf.Max(0.01f, delta.magnitude);
+        RaycastHit2D hit = Physics2D.Raycast(start, direction, range, context.WallLayers);
         if (hit.collider == null)
         {
             Debug.Log(
-                $"[GoblinGunnerWallClipProbe] no wall hit. origin={context.Origin}, dir={direction}, range={context.TelegraphRange:0.00}, wallMask={context.WallLayers.value}",
+                $"[GoblinGunnerWallClipProbe] no wall hit. origin={start}, dir={direction}, range={range:0.00}, wallMask={context.WallLayers.value}",
                 this);
             return;
         }
@@ -435,10 +448,7 @@ public sealed partial class GoblinGunnerShotRunner : MonoBehaviour, IMobPatternR
     private static AttackTelegraphStyle CreateWarningStyle()
     {
         AttackTelegraphStyle style = ScriptableObject.CreateInstance<AttackTelegraphStyle>();
-        style.fillColorStart = new Color(1f, 0.15f, 0.05f, 0.12f);
-        style.fillColorEnd = new Color(1f, 0.15f, 0.05f, 0.3f);
-        style.borderColorStart = new Color(1f, 0.65f, 0.25f, 1f);
-        style.borderColorEnd = new Color(1f, 0.65f, 0.25f, 1f);
+        AttackTelegraphStyleUtility.ApplyDangerLineColors(style);
         style.progressCurve = AnimationCurve.Linear(0f, 0f, 1f, 1f);
         style.blinkStartNormalized = 0.72f;
         style.blinkFrequency = 5f;

@@ -48,6 +48,16 @@
                     "lastSeenSeconds": 21.970043182373048,
                     "firstSceneName": "HeoMinSeok_Boss",
                     "lastSceneName": "HeoMinSeok_Boss"
+                },
+                {
+                    "prefabPath": "Assets/LeeJunMo/Prefab/Effect/AnimEffect/Boss1NormalAttack2Boom.prefab",
+                    "prefabName": "Boss1NormalAttack2Boom",
+                    "totalSpawns": 1,
+                    "coldSpawns": 1,
+                    "firstSeenSeconds": 25.668804168701173,
+                    "lastSeenSeconds": 25.66900634765625,
+                    "firstSceneName": "HeoMinSeok_Boss_Dragon",
+                    "lastSceneName": "HeoMinSeok_Boss_Dragon"
                 }
             ]
         },
@@ -81,6 +91,16 @@
                     "lastSeenSeconds": 19.711456298828126,
                     "firstSceneName": "HeoMinSeok_Boss",
                     "lastSceneName": "HeoMinSeok_Boss"
+                },
+                {
+                    "prefabPath": "Assets/Prefabs/VFX/PF_Dragon_InhaleWind.prefab",
+                    "prefabName": "PF_Dragon_InhaleWind",
+                    "totalSpawns": 3,
+                    "coldSpawns": 1,
+                    "firstSeenSeconds": 21.53631591796875,
+                    "lastSeenSeconds": 28.334596633911134,
+                    "firstSceneName": "HeoMinSeok_Boss_Dragon",
+                    "lastSceneName": "HeoMinSeok_Boss_Dragon"
                 }
             ]
         },

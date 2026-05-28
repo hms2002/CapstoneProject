@@ -1,4 +1,5 @@
 using System;
+using CapstoneAudio;
 using UnityEngine;
 
 public readonly struct InventoryQuickMoveResult
@@ -273,6 +274,8 @@ public static class InventoryQuickMoveService
 /// </summary>
 public static class InventorySlotTransferInteractionService
 {
+    private static readonly SoundRef FailMigrateItemSound = SoundRef.FromKey("sound_ui_FailMigrateItem");
+
     public static void ExecuteDrop(IItemContainer target, int targetIndex, Action refresh)
     {
         if (target == null || !ItemDragContext.Active)
@@ -288,6 +291,8 @@ public static class InventorySlotTransferInteractionService
             return;
 
         InventoryQuickMoveResult result = InventoryQuickMoveService.TryMove(source, sourceIndex);
+        if (!result.Succeeded && result.FailureReason != InventoryTransferFailureReason.None)
+            SoundPlaybackUtility.Play(FailMigrateItemSound);
         ShowWarning(result);
         refresh?.Invoke();
     }

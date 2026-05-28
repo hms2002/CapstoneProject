@@ -12,3 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e2bee454bb04ea0b119fce8975b4ecd, type: 3}
   m_Name: AL_SlimeQueenCastling
   m_EditorClassIdentifier: 
+  castlingSound:
+    key: sound_SlimeQueen_Castling
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}

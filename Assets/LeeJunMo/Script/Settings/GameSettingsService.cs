@@ -77,6 +77,8 @@ public sealed class GameSettingsService : MonoBehaviour
 
     public bool ScreenShakeEnabled => screenShakeEnabled;
     public GameWindowMode CurrentWindowMode => windowMode;
+    public int CurrentResolutionWidth => resolutionWidth;
+    public int CurrentResolutionHeight => resolutionHeight;
     public UiScalePreset CurrentUiScalePreset => uiScalePreset;
     public GameLanguageOption CurrentLanguage => language;
 

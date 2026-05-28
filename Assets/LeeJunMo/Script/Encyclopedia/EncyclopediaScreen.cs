@@ -1,3 +1,4 @@
+using CapstoneAudio;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -5,6 +6,8 @@ using UnityEngine.UI;
 public sealed class EncyclopediaScreen : MonoBehaviour, IStackableUI, ICloseRequestHandler
 {
     private const int CursorDomainPriority = 100;
+    private static readonly SoundRef OpenDictionarySound = SoundRef.FromKey("sound_ui_OpenDictionary");
+    private static readonly SoundRef CloseDictionarySound = SoundRef.FromKey("sound_ui_CloseDictionary");
 
     [Header("Data Gate")]
     [SerializeField] private bool resetToItemWeaponOnOpen = true;
@@ -224,6 +227,8 @@ public sealed class EncyclopediaScreen : MonoBehaviour, IStackableUI, ICloseRequ
         if (!gameObject.activeSelf)
             gameObject.SetActive(true);
 
+        SoundPlaybackUtility.Play(OpenDictionarySound, sourceObject: this);
+
         InitializeRuntimeReferences();
         BindListeners();
 
@@ -347,6 +352,7 @@ public sealed class EncyclopediaScreen : MonoBehaviour, IStackableUI, ICloseRequ
     private void FinishDeferredClose()
     {
         closePresentationComplete = true;
+        SoundPlaybackUtility.Play(CloseDictionarySound, sourceObject: this);
 
         if (UIManager.Instance != null)
             UIManager.Instance.PopUI(this);

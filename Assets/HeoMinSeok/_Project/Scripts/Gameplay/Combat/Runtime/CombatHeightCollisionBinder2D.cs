@@ -19,6 +19,29 @@ namespace UnityGAS
         [SerializeField] private EntityCollisionProfile2D.BodyCollisionMode airborneMode = EntityCollisionProfile2D.BodyCollisionMode.PassThroughActors;
         [SerializeField] private bool restoreProfileDefaultWhenGrounded = true;
 
+        /// <summary>높이 상태와 충돌 프로필을 런타임에서 안전하게 재연결합니다.</summary>
+        public void Configure(
+            CombatHeightState2D state,
+            EntityCollisionProfile2D profile,
+            EntityCollisionProfile2D.BodyCollisionMode groundedCollisionMode,
+            EntityCollisionProfile2D.BodyCollisionMode airborneCollisionMode,
+            bool restoreDefaultOnGrounded)
+        {
+            if (heightState != null)
+                heightState.Changed -= HandleHeightChanged;
+
+            heightState = state;
+            collisionProfile = profile;
+            groundedMode = groundedCollisionMode;
+            airborneMode = airborneCollisionMode;
+            restoreProfileDefaultWhenGrounded = restoreDefaultOnGrounded;
+
+            if (isActiveAndEnabled && heightState != null)
+                heightState.Changed += HandleHeightChanged;
+
+            ApplyCurrentMode();
+        }
+
         private void Awake()
         {
             CacheReferences();
@@ -30,7 +53,10 @@ namespace UnityGAS
             CacheReferences();
 
             if (heightState != null)
+            {
+                heightState.Changed -= HandleHeightChanged;
                 heightState.Changed += HandleHeightChanged;
+            }
 
             ApplyCurrentMode();
         }

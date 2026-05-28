@@ -11,6 +11,7 @@ namespace UnityGAS
     {
         private const int CircleTextureSize = 128;
         private const float CircleBorderThickness = 0.08f;
+        private const string DefaultShaderName = "Sprites/Default";
 
         [Header("Refs")]
         [SerializeField] private Transform fillRoot;
@@ -20,6 +21,8 @@ namespace UnityGAS
 
         private static Sprite circleFillSprite;
         private static Sprite circleBorderSprite;
+        private static Sprite rectangleFillSprite;
+        private static Sprite rectangleBorderSprite;
         private Sprite ringFillSprite;
         private Sprite ringBorderSprite;
         private Sprite sectorFillSprite;
@@ -46,10 +49,15 @@ namespace UnityGAS
         private float duration;
         private bool isVisible;
         private AttackTelegraphWallClippedMeshView wallClippedMeshView;
+        private LineRenderer lineRenderer;
+        private Material lineMaterial;
         private bool activeUseWallClipping;
         private LayerMask activeWallClipLayers;
         private int activeWallClipSampleCount;
         private float activeWallClipSkinWidth;
+        private Vector3 activeLineStart;
+        private Vector3 activeLineEnd;
+        private float activeLineWidth = 0.05f;
 
         public bool IsVisible => isVisible;
 
@@ -90,6 +98,18 @@ namespace UnityGAS
             CacheActiveWallClipping(spec);
 
             gameObject.SetActive(true);
+            if (spec.shape == AttackTelegraphShape.Line)
+            {
+                HideWallClippedMesh();
+                SetSpriteRenderersEnabled(false);
+                ApplyLineGeometry(spec);
+                ApplyStyle(0f);
+                return;
+            }
+
+            HideLineRenderer();
+            activeShape = spec.shape;
+            activeSize = spec.size;
             if (TryApplyWallClippedMesh(spec, 0f))
             {
                 SetSpriteRenderersEnabled(false);
@@ -118,6 +138,18 @@ namespace UnityGAS
             activeInnerDiameter = Mathf.Max(0f, spec.innerDiameter);
             activeSectorAngleDeg = Mathf.Clamp(spec.sectorAngleDeg, 0.1f, 360f);
             float normalizedProgress = GetCurrentNormalizedProgress();
+            if (spec.shape == AttackTelegraphShape.Line)
+            {
+                HideWallClippedMesh();
+                SetSpriteRenderersEnabled(false);
+                ApplyLineGeometry(spec);
+                ApplyStyle(normalizedProgress);
+                return;
+            }
+
+            HideLineRenderer();
+            activeShape = spec.shape;
+            activeSize = spec.size;
             if (TryApplyWallClippedMesh(spec, normalizedProgress))
             {
                 SetSpriteRenderersEnabled(false);
@@ -146,6 +178,7 @@ namespace UnityGAS
                 borderRenderer.enabled = false;
 
             HideWallClippedMesh();
+            HideLineRenderer();
             ClearActiveWallClipping();
         }
 
@@ -161,6 +194,7 @@ namespace UnityGAS
 
             ApplySortingLayer(fillRenderer, referenceRenderer);
             ApplySortingLayer(borderRenderer, referenceRenderer);
+            ApplyLineSorting();
         }
 
         /// <summary>
@@ -229,6 +263,106 @@ namespace UnityGAS
 
             if (borderRenderer != null)
                 borderRenderer.enabled = enabled;
+        }
+
+        /// <summary>
+        /// 책임 :
+        /// - 원거리 조준선처럼 시작점과 끝점이 명확한 선형 텔레그래프의 위치와 길이를 갱신한다.
+        /// - 벽 clipping은 선분 끝점만 줄여 처리하고, 실제 공격 판정에는 관여하지 않는다.
+        /// </summary>
+        private void ApplyLineGeometry(AttackTelegraphSpec spec)
+        {
+            LineRenderer renderer = GetOrCreateLineRenderer();
+            if (renderer == null)
+                return;
+
+            activeShape = AttackTelegraphShape.Line;
+            activeSize = spec.size;
+            activeLineStart = spec.lineStart;
+            activeLineEnd = ResolveLineEndWithWallClipping(spec);
+            activeLineWidth = Mathf.Max(0.001f, spec.size.y);
+
+            transform.rotation = Quaternion.identity;
+            renderer.widthMultiplier = activeLineWidth;
+            renderer.positionCount = 2;
+            renderer.SetPosition(0, activeLineStart);
+            renderer.SetPosition(1, activeLineEnd);
+            renderer.enabled = true;
+        }
+
+        private Vector3 ResolveLineEndWithWallClipping(AttackTelegraphSpec spec)
+        {
+            if (!spec.useWallClipping || spec.wallClipLayers.value == 0)
+                return spec.lineEnd;
+
+            Vector2 start = spec.lineStart;
+            Vector2 end = spec.lineEnd;
+            Vector2 delta = end - start;
+            float distance = delta.magnitude;
+            if (distance <= 0.0001f)
+                return spec.lineEnd;
+
+            Vector2 direction = delta / distance;
+            RaycastHit2D hit = Physics2D.Raycast(start, direction, distance, spec.wallClipLayers);
+            if (hit.collider == null)
+                return spec.lineEnd;
+
+            float visibleDistance = Mathf.Clamp(hit.distance - spec.wallClipSkinWidth, 0f, distance);
+            return start + direction * visibleDistance;
+        }
+
+        private LineRenderer GetOrCreateLineRenderer()
+        {
+            if (lineRenderer != null)
+                return lineRenderer;
+
+            Transform lineRoot = transform.Find("LineTelegraph");
+            if (lineRoot == null)
+            {
+                GameObject lineObject = new GameObject("LineTelegraph");
+                lineRoot = lineObject.transform;
+                lineRoot.SetParent(transform, false);
+            }
+
+            lineRenderer = lineRoot.GetComponent<LineRenderer>();
+            if (lineRenderer == null)
+                lineRenderer = lineRoot.gameObject.AddComponent<LineRenderer>();
+
+            lineRenderer.useWorldSpace = true;
+            lineRenderer.numCapVertices = 0;
+            lineRenderer.numCornerVertices = 0;
+            lineRenderer.alignment = LineAlignment.TransformZ;
+            lineRenderer.textureMode = LineTextureMode.Stretch;
+            lineRenderer.positionCount = 2;
+
+            if (lineMaterial == null)
+            {
+                Shader shader = Shader.Find(DefaultShaderName);
+                lineMaterial = new Material(shader);
+            }
+
+            lineRenderer.sharedMaterial = lineMaterial;
+            ApplyLineSorting();
+            return lineRenderer;
+        }
+
+        private void HideLineRenderer()
+        {
+            if (lineRenderer != null)
+                lineRenderer.enabled = false;
+        }
+
+        private void ApplyLineSorting()
+        {
+            if (lineRenderer == null)
+                return;
+
+            SpriteRenderer referenceRenderer = borderRenderer != null ? borderRenderer : fillRenderer;
+            if (referenceRenderer == null)
+                return;
+
+            lineRenderer.sortingLayerID = referenceRenderer.sortingLayerID;
+            lineRenderer.sortingOrder = referenceRenderer.sortingOrder;
         }
 
         private void CacheActiveWallClipping(AttackTelegraphSpec spec)
@@ -308,6 +442,19 @@ namespace UnityGAS
 
         private void ApplyShapeSprites()
         {
+            if (activeShape == AttackTelegraphShape.Rectangle)
+            {
+                EnsureRectangleSprites();
+
+                if (fillRenderer != null)
+                    fillRenderer.sprite = rectangleFillSprite;
+
+                if (borderRenderer != null)
+                    borderRenderer.sprite = rectangleBorderSprite;
+
+                return;
+            }
+
             if (activeShape == AttackTelegraphShape.Circle)
             {
                 EnsureCircleSprites();
@@ -400,6 +547,15 @@ namespace UnityGAS
                 circleBorderSprite = MakeCircleSprite(true);
         }
 
+        private static void EnsureRectangleSprites()
+        {
+            if (rectangleFillSprite == null)
+                rectangleFillSprite = MakeRectangleSprite(false);
+
+            if (rectangleBorderSprite == null)
+                rectangleBorderSprite = MakeRectangleSprite(true);
+        }
+
         private void EnsureRingSprites()
         {
             float outerDiameter = Mathf.Max(0.0001f, activeSize.x);
@@ -439,6 +595,42 @@ namespace UnityGAS
             string name = borderOnly ? "TelegraphCircleBorder" : "TelegraphCircleFill";
             Sprite sprite = MakeSprite(texture, name);
             return sprite;
+        }
+
+        private static Sprite MakeRectangleSprite(bool borderOnly)
+        {
+            Texture2D texture = MakeRectangleTexture(borderOnly);
+            string name = borderOnly ? "TelegraphRectangleBorder" : "TelegraphRectangleFill";
+            Sprite sprite = MakeSprite(texture, name);
+            return sprite;
+        }
+
+        private static Texture2D MakeRectangleTexture(bool borderOnly)
+        {
+            Texture2D texture = new Texture2D(CircleTextureSize, CircleTextureSize, TextureFormat.RGBA32, false);
+            texture.wrapMode = TextureWrapMode.Clamp;
+            texture.filterMode = FilterMode.Bilinear;
+
+            int borderPixels = Mathf.Max(1, Mathf.RoundToInt(CircleTextureSize * CircleBorderThickness));
+            Color clear = new Color(1f, 1f, 1f, 0f);
+            Color solid = Color.white;
+
+            for (int y = 0; y < CircleTextureSize; y++)
+            {
+                for (int x = 0; x < CircleTextureSize; x++)
+                {
+                    bool isBorder =
+                        x < borderPixels ||
+                        y < borderPixels ||
+                        x >= CircleTextureSize - borderPixels ||
+                        y >= CircleTextureSize - borderPixels;
+
+                    texture.SetPixel(x, y, borderOnly ? (isBorder ? solid : clear) : solid);
+                }
+            }
+
+            texture.Apply();
+            return texture;
         }
 
         private static Texture2D MakeCircleTexture(bool borderOnly, float innerRadiusNormalized)
@@ -536,6 +728,9 @@ namespace UnityGAS
         {
             ReleaseRingSprites();
             ReleaseSectorSprites();
+
+            if (lineMaterial != null)
+                Destroy(lineMaterial);
         }
 
         private void ReleaseRingSprites()
@@ -581,6 +776,13 @@ namespace UnityGAS
 
         private void ApplyStyle(float normalized)
         {
+            if (activeShape == AttackTelegraphShape.Line)
+            {
+                ApplyLineStyle(normalized);
+                SetSpriteRenderersEnabled(false);
+                return;
+            }
+
             if (wallClippedMeshView != null && wallClippedMeshView.IsVisible)
             {
                 wallClippedMeshView.ApplyStyle(activeStyle, normalized);
@@ -627,6 +829,40 @@ namespace UnityGAS
                 borderRenderer.color = borderColor;
                 borderRenderer.enabled = true;
             }
+        }
+
+        private void ApplyLineStyle(float normalized)
+        {
+            if (lineRenderer == null)
+                return;
+
+            float curved = activeStyle != null && activeStyle.progressCurve != null
+                ? Mathf.Clamp01(activeStyle.progressCurve.Evaluate(normalized))
+                : normalized;
+
+            float blinkMultiplier = 1f;
+            if (activeStyle != null &&
+                normalized >= activeStyle.blinkStartNormalized &&
+                activeStyle.blinkFrequency > 0f)
+            {
+                float blinkWave = Mathf.Sin(Time.time * activeStyle.blinkFrequency * Mathf.PI * 2f);
+                blinkMultiplier = Mathf.Lerp(activeStyle.blinkAlphaMin, 1f, (blinkWave + 1f) * 0.5f);
+            }
+
+            Color lineColor = activeStyle != null
+                ? Color.Lerp(activeStyle.borderColorStart, activeStyle.borderColorEnd, curved)
+                : new Color(1f, 0f, 0f, 0.9f);
+
+            lineColor.a *= blinkMultiplier;
+            if (lineMaterial != null)
+                lineMaterial.color = lineColor;
+
+            lineRenderer.startColor = lineColor;
+            lineRenderer.endColor = lineColor;
+            lineRenderer.widthMultiplier = activeLineWidth;
+            lineRenderer.SetPosition(0, activeLineStart);
+            lineRenderer.SetPosition(1, activeLineEnd);
+            lineRenderer.enabled = true;
         }
 
         /// <summary>

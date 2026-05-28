@@ -1,10 +1,19 @@
 using System.Collections;
+using CapstoneAudio;
 using UnityEngine;
 using UnityGAS;
 
+/// <summary>
+/// 책임:
+/// - 슬라임 여왕 계열 보스의 랜덤 위치 점프 패턴 실행 순서와 점프/착지 사운드를 조율한다.
+/// </summary>
 public sealed class AbilityLogic_SlimeQueenRandomJump : AbilityLogic
 {
-    /// <summary>슬라임 여왕 계열 보스가 바운더리 안의 랜덤 위치로 포물선 점프 이동합니다.</summary>
+    [Header("Sound")]
+    [SerializeField] private SoundRef jumpSound = SoundRef.FromKey("sound_slimeQueen_Jump");
+    [SerializeField] private SoundRef landSound = SoundRef.FromKey("sound_slimeQueen_Land");
+
+    /// <summary>슬라임 여왕 계열 보스가 바운더리 안의 랜덤 위치 위로 이동한 뒤 체공/급강하합니다.</summary>
     public override IEnumerator Activate(AbilitySystem system, AbilitySpec spec, GameObject initialTarget)
     {
         ISlimeQueenRandomJumpHost randomJumpHost = system != null ? system.GetComponent<ISlimeQueenRandomJumpHost>() : null;
@@ -23,6 +32,13 @@ public sealed class AbilityLogic_SlimeQueenRandomJump : AbilityLogic
             phaseOneQueen.BeginRandomJumpAnimation();
         if (phaseTwoLongQueen != null)
             phaseTwoLongQueen.BeginRandomJumpAnimation();
+
+        SlimeQueenPresentationAudioUtility.PlaySound(
+            jumpSound,
+            hostComponent.gameObject,
+            hostComponent.transform.position,
+            this,
+            initialTarget);
 
         Vector3 startPosition = hostComponent.transform.position;
         startPosition.z = landingPosition.z;
@@ -64,6 +80,12 @@ public sealed class AbilityLogic_SlimeQueenRandomJump : AbilityLogic
         }
 
         randomJumpHost.ApplyJumpLandingDamage(spec, landingPosition);
+        SlimeQueenPresentationAudioUtility.PlaySound(
+            landSound,
+            hostComponent.gameObject,
+            landingPosition,
+            this,
+            initialTarget);
         randomJumpHost.FaceCurrentTarget();
     }
 }

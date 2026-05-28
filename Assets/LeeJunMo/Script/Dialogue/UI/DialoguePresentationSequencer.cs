@@ -30,6 +30,8 @@ public static class DialoguePresentationSequencer
             return;
         }
 
+        view.PlayOpeningIntroSound();
+
         Action showDialogueUi = () =>
         {
             view.ShowUI(isBoss && !presentationOptions.ForceDialogueBoxOnly, onOpened);

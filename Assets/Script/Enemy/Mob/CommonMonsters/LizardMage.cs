@@ -122,7 +122,8 @@ public sealed class LizardMage : Mob, IMobAttackDecisionSource
         if (!HasRequiredData() || logic == null || !CommonMonsterCombatUtility.InRange(transform, targetObject, logic.AttackRange))
             return false;
 
-        Vector2 direction = CommonMonsterCombatUtility.DirectionTo(gameObject, targetObject, sprite != null && sprite.flipX);
+        Vector2 origin = transform.position;
+        Vector2 direction = CommonMonsterCombatUtility.DirectionToAimPoint(origin, targetObject, sprite != null && sprite.flipX);
         float speed = CommonMonsterCombatUtility.ResolvePlayerBaseSpeed(target) * logic.ProjectileSpeedMultiplier;
         CombatHitPayload payload = CommonMonsterCombatUtility.BuildPayload(
             system != null ? system : abilitySystem,
@@ -135,7 +136,7 @@ public sealed class LizardMage : Mob, IMobAttackDecisionSource
 
         context = new BurstContext(
             targetObject,
-            transform.position,
+            origin,
             direction,
             logic.WarningSeconds,
             logic.WarningWidth,
@@ -151,7 +152,7 @@ public sealed class LizardMage : Mob, IMobAttackDecisionSource
     public void FireProjectile(BurstContext context)
     {
         Vector2 direction = context.Target != null
-            ? CommonMonsterCombatUtility.DirectionTo(gameObject, context.Target, sprite != null && sprite.flipX)
+            ? CommonMonsterCombatUtility.DirectionToAimPoint(context.Origin, context.Target, sprite != null && sprite.flipX)
             : context.WarningDirection;
 
         AbilityLogic_LizardMageBurst logic = Logic;
@@ -358,19 +359,21 @@ public sealed partial class LizardMageBurstRunner : MonoBehaviour, IMobPatternRu
 
     /// <summary>
     /// 책임:
-    /// - 리자드맨 마법사 조준선용 사각형 텔레그래프 Spec을 만들고, 벽 기준 clipping 정보를 함께 담는다.
+    /// - 리자드맨 마법사 조준선용 선형 텔레그래프 Spec을 만들고, 벽 기준 clipping 정보를 함께 담는다.
     /// </summary>
     private AttackTelegraphSpec CreateWarningSpec(LizardMage.BurstContext context, float warningSeconds)
     {
-        Vector3 center = (Vector3)context.Origin + (Vector3)(context.WarningDirection.normalized * context.TelegraphRange * 0.5f);
-        float angle = Mathf.Atan2(context.WarningDirection.y, context.WarningDirection.x) * Mathf.Rad2Deg;
-        AttackTelegraphSpec spec = AttackTelegraphSpec.CreateRectangle(
-            center,
-            new Vector2(context.TelegraphRange, context.WarningWidth),
-            angle,
+        Vector2 start = CommonMonsterCombatUtility.ResolveAimPoint(owner.gameObject, CombatAimPointKind.ProjectileTarget);
+        Vector2 end = context.Target != null
+            ? CommonMonsterCombatUtility.ResolveAimPoint(context.Target, CombatAimPointKind.ProjectileTarget)
+            : start + context.WarningDirection.normalized * context.TelegraphRange;
+
+        AttackTelegraphSpec spec = AttackTelegraphSpec.CreateLine(
+            start,
+            end,
+            context.WarningWidth,
             warningSeconds,
             warningStyle);
-        spec.origin = context.Origin;
         return spec.WithWallClipping(context.WallLayers, 48, 0.03f);
     }
 
@@ -387,10 +390,7 @@ public sealed partial class LizardMageBurstRunner : MonoBehaviour, IMobPatternRu
     private static AttackTelegraphStyle CreateWarningStyle()
     {
         AttackTelegraphStyle style = ScriptableObject.CreateInstance<AttackTelegraphStyle>();
-        style.fillColorStart = new Color(0.45f, 0.05f, 1f, 0.12f);
-        style.fillColorEnd = new Color(0.78f, 0.18f, 1f, 0.32f);
-        style.borderColorStart = new Color(0.95f, 0.55f, 1f, 1f);
-        style.borderColorEnd = new Color(0.95f, 0.55f, 1f, 1f);
+        AttackTelegraphStyleUtility.ApplyDangerLineColors(style);
         style.progressCurve = AnimationCurve.Linear(0f, 0f, 1f, 1f);
         style.blinkStartNormalized = 0.72f;
         style.blinkFrequency = 5f;

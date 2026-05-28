@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 /// <summary>
@@ -18,4 +19,9 @@ public abstract class BossEncounterClearCondition : MonoBehaviour
     {
         return boss != null && RewardBoss != null && ReferenceEquals(boss, RewardBoss);
     }
+}
+
+public interface IBossEncounterFinalePresentationProvider
+{
+    bool TryCreateFinalePresentationRoutine(BossEncounterEndDirector director, out IEnumerator routine);
 }

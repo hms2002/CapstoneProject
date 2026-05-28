@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ac5f84fdf6c49fdb88721db1b68ef98, type: 3}
   m_Name: AttackTelegraphStyle_WitchLightAllCandlesWarning
   m_EditorClassIdentifier: 
-  fillColorStart: {r: 1, g: 0.1, b: 0.1, a: 0.08}
-  fillColorEnd: {r: 1, g: 0.1, b: 0.1, a: 0.26}
-  borderColorStart: {r: 1, g: 0.4, b: 0.4, a: 0.75}
-  borderColorEnd: {r: 1, g: 0.15, b: 0.15, a: 1}
+  fillColorStart: {r: 1, g: 0, b: 0, a: 0.3}
+  fillColorEnd: {r: 1, g: 0, b: 0, a: 0.3}
+  borderColorStart: {r: 1, g: 0, b: 0, a: 0.9}
+  borderColorEnd: {r: 1, g: 0, b: 0, a: 0.9}
   progressCurve:
     serializedVersion: 2
     m_Curve:

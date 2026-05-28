@@ -1,4 +1,5 @@
 using System;
+using CapstoneAudio;
 using UnityEngine;
 
 [DisallowMultipleComponent]
@@ -8,6 +9,11 @@ public class CandlestickSeal : MonoBehaviour
     // 촛대 봉인 상태와 남은 해제 타격 수를 관리하고, 봉인 상태 변화에 맞춰 빛 루트를 제어하며 연출 구현체에 상태만 통지한다.
 
     private const int SealHitCount = 3;
+    private static readonly SoundRef SealSound = SoundRef.FromKey("sound_candlestick_Seal");
+    private static readonly SoundRef Unlock1Sound = SoundRef.FromKey("sound_candlestick_Unlock1");
+    private static readonly SoundRef Unlock2Sound = SoundRef.FromKey("sound_candlestick_Unlock2");
+    private static readonly SoundRef Unlock3Sound = SoundRef.FromKey("sound_candlestick_Unlock3");
+    private static readonly SoundRef UnsealSound = SoundRef.FromKey("sound_candlestick_Unseal");
 
     [SerializeField] private GameObject lightVisualRoot;
     [SerializeField] private SpriteMask sightMask;
@@ -46,6 +52,7 @@ public class CandlestickSeal : MonoBehaviour
         isSealed = true;
         hitsLeft = SealHitCount;
         ToggleLight(false);
+        PlaySound(SealSound);
         ShowSealPresentations();
         SealChanged?.Invoke(true);
         SealStacksChanged?.Invoke(hitsLeft, SealHitCount);
@@ -56,6 +63,7 @@ public class CandlestickSeal : MonoBehaviour
     {
         if (!isSealed) return false;
 
+        PlayUnlockSound(hitsLeft);
         hitsLeft = Mathf.Max(0, hitsLeft - 1);
         UpdateSealPresentations();
         SealStacksChanged?.Invoke(hitsLeft, SealHitCount);
@@ -71,8 +79,28 @@ public class CandlestickSeal : MonoBehaviour
     {
         isSealed = false;
         ToggleLight(true);
+        PlaySound(UnsealSound);
         PlaySealBrokenPresentations();
         SealChanged?.Invoke(false);
+    }
+
+    /// <summary>봉인 타격 전 남은 횟수에 대응하는 해제 사운드를 재생합니다.</summary>
+    private void PlayUnlockSound(int remainingBeforeHit)
+    {
+        SoundRef sound = remainingBeforeHit switch
+        {
+            3 => Unlock3Sound,
+            2 => Unlock2Sound,
+            _ => Unlock1Sound
+        };
+
+        PlaySound(sound);
+    }
+
+    /// <summary>촛대 봉인 위치를 기준으로 단발 사운드를 재생합니다.</summary>
+    private void PlaySound(SoundRef sound)
+    {
+        SoundPlaybackUtility.Play(sound, causer: gameObject, position: transform.position, sourceObject: this);
     }
 
     /// <summary>빛 연출 루트와 빛 판정 범위를 켜고 끕니다.</summary>

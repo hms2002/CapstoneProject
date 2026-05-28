@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using CapstoneAudio;
+using CapstonePresentation;
 using UnityEngine;
 using UnityGAS;
 
@@ -9,6 +11,7 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
 {
     private static readonly int IsJumpingHash = Animator.StringToHash("isJumping");
     private static readonly int IsSinkingHash = Animator.StringToHash("isSinking");
+    private static readonly int IdleStateHash = Animator.StringToHash("SlimeQueenC_Idle");
 
     private const int ToxicDropPositionCount = 3;
     private const float ToxicDropLowerTriangleY = -0.5f;
@@ -27,7 +30,7 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
     [Tooltip("랜덤 위치까지 점프 이동하는 데 걸리는 시간입니다.")]
     [SerializeField, Min(0.1f)] private float jumpDurationSeconds = 1.6f;
 
-    [Tooltip("점프 중간 지점에서 올라갈 포물선 높이입니다.")]
+    [Tooltip("착지 위치 위로 올라가 체공할 높이입니다.")]
     [SerializeField, Min(0f)] private float jumpArcHeight = 2.5f;
 
     [Tooltip("착지 피해 판정 원의 지름입니다.")]
@@ -215,6 +218,16 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
         SetAnimatorBoolIfExists(IsSinkingHash, ref hasSinkingParameter, false);
     }
 
+    protected override void ResetPatternAnimatorStateForInterrupt()
+    {
+        SetAnimatorBoolIfExists(IsJumpingHash, false);
+
+        if (!HasGroggyTag())
+            SetAnimatorBoolIfExists(IsSinkingHash, false);
+
+        PlayAnimatorStateIfExists(IdleStateHash);
+    }
+
     public readonly struct CrossWaterPillarSegment
     {
         public readonly Vector2 Start;
@@ -287,35 +300,25 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
         if (service == null)
             return;
 
-        AttackTelegraphSpec spec = AttackTelegraphSpec.CreateCircle(
+        AttackTelegraphSpec spec = WithThinWarningOutline(AttackTelegraphSpec.CreateCircle(
             landingPosition,
             jumpWarningDiameter,
             jumpDurationSeconds,
-            jumpWarningStyle);
+            jumpWarningStyle));
 
         service.SpawnDetachedView(spec);
     }
 
-    /// <summary>점프 포물선 진행도에 맞춰 보스 위치를 이동시킵니다.</summary>
+    /// <summary>착지 위치 위로 빠르게 올라가 체공한 뒤 급강하하는 자세를 적용합니다.</summary>
     public void SetJumpPose(Vector3 startPosition, Vector3 landingPosition, float normalizedTime)
     {
-        float clampedTime = Mathf.Clamp01(normalizedTime);
-        Vector3 groundPosition = Vector3.Lerp(startPosition, landingPosition, clampedTime);
-        float arcOffset = Mathf.Sin(clampedTime * Mathf.PI) * jumpArcHeight;
-
-        if (movementMotor != null)
-            movementMotor.StopAllMotion();
-
-        transform.position = groundPosition + Vector3.up * arcOffset;
+        ApplyKnightStyleSlamPose(startPosition, landingPosition, normalizedTime, jumpArcHeight);
     }
 
     /// <summary>점프 종료 위치로 보스 좌표를 확정합니다.</summary>
     public void SnapToJumpLanding(Vector3 landingPosition)
     {
-        if (movementMotor != null)
-            movementMotor.StopAllMotion();
-
-        transform.position = landingPosition;
+        SnapToGroundedMotionLanding(landingPosition);
         EndRandomJumpAnimation();
     }
 
@@ -358,6 +361,8 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
     /// <summary>착지 범위 안의 현재 타겟에게 GAS Damage Effect를 적용합니다.</summary>
     public void ApplyJumpLandingDamage(AbilitySpec sourceSpec, Vector3 landingPosition)
     {
+        PlayLightSlamLandingCameraShake("SlimeQueenP2Long.JumpLanding");
+
         if (jumpLandingDamage <= 0f || CurrentTarget == null || jumpLandingDamageEffect == null)
             return;
 
@@ -421,12 +426,12 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
             if (!segment.IsValid)
                 continue;
 
-            AttackTelegraphSpec spec = AttackTelegraphSpec.CreateRectangle(
+            AttackTelegraphSpec spec = WithThinWarningOutline(AttackTelegraphSpec.CreateRectangle(
                 segment.Center,
                 new Vector2(segment.Length, crossWaterPillarWarningWidth),
                 segment.RotationDegrees,
                 crossWaterPillarWarningSeconds,
-                crossWaterPillarWarningStyle);
+                crossWaterPillarWarningStyle));
 
             AttackTelegraphView view = service.SpawnDetachedView(spec);
             if (view != null)
@@ -498,11 +503,11 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
         AttackTelegraphService service = GetTelegraphService();
         if (service != null)
         {
-            AttackTelegraphSpec spec = CreateWaterCannonSpec(
+            AttackTelegraphSpec spec = WithThinWarningOutline(CreateWaterCannonSpec(
                 line,
                 waterCannonVisualWidth,
                 waterCannonWarningSeconds,
-                waterCannonWarningStyle);
+                waterCannonWarningStyle));
 
             if (waterCannonWarningView == null)
                 waterCannonWarningView = service.SpawnDetachedView(spec);
@@ -598,11 +603,11 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
 
         for (int i = 0; i < dropPositions.Count; i++)
         {
-            AttackTelegraphSpec spec = AttackTelegraphSpec.CreateCircle(
+            AttackTelegraphSpec spec = WithThinWarningOutline(AttackTelegraphSpec.CreateCircle(
                 dropPositions[i],
                 toxicDropWarningDiameter,
                 ToxicDropWarningSeconds,
-                toxicDropWarningStyle);
+                toxicDropWarningStyle));
 
             AttackTelegraphView view = service.SpawnDetachedView(spec);
             if (view != null)
@@ -617,7 +622,10 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
     }
 
     /// <summary>독성 탄막 세 개를 각 착탄 지점까지 포물선으로 날립니다.</summary>
-    public bool LaunchToxicDropProjectiles(IReadOnlyList<Vector3> dropPositions)
+    public bool LaunchToxicDropProjectiles(
+        IReadOnlyList<Vector3> dropPositions,
+        WorldPresentationHook impactPresentation = default,
+        Object presentationSourceObject = null)
     {
         ClearToxicDropProjectiles();
 
@@ -640,7 +648,9 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
                 startPosition,
                 dropPositions[i],
                 ToxicDropProjectileFlightSeconds,
-                toxicDropProjectileArcHeight);
+                toxicDropProjectileArcHeight,
+                impactPresentation,
+                presentationSourceObject);
             toxicDropProjectileVisuals.Add(projectile);
         }
 
@@ -674,17 +684,17 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
     }
 
     /// <summary>독성 투하 착탄 지점들에 독구름 장판을 생성합니다.</summary>
-    public void SpawnToxicDropPoisonClouds(IReadOnlyList<Vector3> dropPositions)
+    public void SpawnToxicDropPoisonClouds(IReadOnlyList<Vector3> dropPositions, SoundRef poisonCloudLoopSound = default)
     {
         if (dropPositions == null)
             return;
 
         for (int i = 0; i < dropPositions.Count; i++)
-            SpawnToxicDropPoisonCloud(dropPositions[i]);
+            SpawnToxicDropPoisonCloud(dropPositions[i], poisonCloudLoopSound);
     }
 
     /// <summary>독성 투하 착탄 지점에 독구름 장판을 생성합니다.</summary>
-    public void SpawnToxicDropPoisonCloud(Vector3 dropPosition)
+    public void SpawnToxicDropPoisonCloud(Vector3 dropPosition, SoundRef poisonCloudLoopSound = default)
     {
         if (toxicDropPoisonCloudPrefab == null)
             return;
@@ -696,7 +706,8 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
             toxicDropPoisonCloudFadeSeconds,
             toxicDropPoisonCloudDamage,
             toxicDropPoisonCloudDamageIntervalSeconds,
-            toxicDropPoisonCloudDamageEffect);
+            toxicDropPoisonCloudDamageEffect,
+            poisonCloudLoopSound);
     }
 
     /// <summary>독성 투하 경고와 탄막 표시를 정리합니다. 생성된 독구름은 자기 수명으로 소멸합니다.</summary>

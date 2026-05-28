@@ -1,9 +1,13 @@
 using System;
 using System.Collections.Generic;
+using CapstoneAudio;
 using UnityEngine;
 
 public class UpgradeManager : MonoBehaviour
 {
+    private static readonly SoundRef UpgradeSuccessSound = SoundRef.FromKey("sound_ui_UpgradeSuccess");
+    private static readonly SoundRef CantUpgradeSound = SoundRef.FromKey("sound_ui_CantUpgrade");
+
     public static UpgradeManager Instance { get; private set; }
 
     [SerializeField] private UpgradeTreeUI upgradeTreeUI;
@@ -130,10 +134,12 @@ public class UpgradeManager : MonoBehaviour
             new UpgradePurchaseRequest(id, progressService, CurrencyManager.Instance));
         if (!purchaseResult.Succeeded)
         {
+            SoundPlaybackUtility.Play(CantUpgradeSound, sourceObject: this);
             ShowPurchaseWarning(purchaseResult.FailureReason);
             return;
         }
 
+        SoundPlaybackUtility.Play(UpgradeSuccessSound, sourceObject: this);
         purchaseCompletionService.Complete(purchaseResult.Node);
     }
 

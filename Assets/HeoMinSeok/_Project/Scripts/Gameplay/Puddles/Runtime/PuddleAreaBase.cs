@@ -16,6 +16,7 @@ namespace UnityGAS
         [Header("Puddle")]
         [SerializeField, Min(0.01f)] private float groundRadius = 1.35f;
         [SerializeField, Min(0.01f)] private float projectileRadius = 0.25f;
+        [SerializeField, Range(0.1f, 1f)] private float ignitionContactRadiusScale = 0.85f;
 
         [Header("Colliders")]
         [SerializeField] private CircleCollider2D groundCollider;
@@ -43,6 +44,7 @@ namespace UnityGAS
         public PuddleAreaMode Mode { get; private set; } = PuddleAreaMode.Ground;
         public float GroundRadius => groundRadius;
         public float ProjectileRadius => projectileRadius;
+        public float IgnitionContactRadius => groundRadius * ignitionContactRadiusScale;
         public bool CanApplyGroundEffect => Mode == PuddleAreaMode.Ground;
         public bool IsAbsorbTransitioning => Mode == PuddleAreaMode.AbsorbPreparing;
         public bool CanApplyProjectileEffect => Mode == PuddleAreaMode.AbsorbProjectile;
@@ -82,6 +84,7 @@ namespace UnityGAS
         {
             groundRadius = Mathf.Max(0.01f, groundRadius);
             projectileRadius = Mathf.Max(0.01f, projectileRadius);
+            ignitionContactRadiusScale = Mathf.Clamp(ignitionContactRadiusScale, 0.1f, 1f);
             CacheColliders();
             CachePresentation();
             SyncPresentationContext();

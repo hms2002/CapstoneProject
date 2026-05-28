@@ -1,0 +1,461 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &401667468039810420
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3754634418042159138}
+  m_Layer: 0
+  m_Name: InteractUIAnchor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3754634418042159138
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 401667468039810420}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5205111981208987127}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &5920694504871736436
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4773129844813817167}
+  - component: {fileID: 860439334278707932}
+  - component: {fileID: 7305723242744879239}
+  m_Layer: 0
+  m_Name: Visual
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4773129844813817167
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5920694504871736436}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5205111981208987127}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!212 &860439334278707932
+SpriteRenderer:
+  serializedVersion: 2
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5920694504871736436}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 0d09aba533d2fa84da4a54832b741dc2, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
+  m_SortingLayerID: -1039746825
+  m_SortingLayer: 5
+  m_SortingOrder: 0
+  m_MaskInteraction: 0
+  m_Sprite: {fileID: -1139170583, guid: 38fff8b5f0a464f4fa7dd878114bb1b2, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_FlipX: 0
+  m_FlipY: 0
+  m_DrawMode: 0
+  m_Size: {x: 1, y: 0.96875}
+  m_AdaptiveModeThreshold: 0.5
+  m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
+  m_SpriteSortPoint: 0
+--- !u!95 &7305723242744879239
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5920694504871736436}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 22100000, guid: e21dfb54139197d40836cba8c82609dd, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
+--- !u!1 &7530156284439312542
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5205111981208987127}
+  - component: {fileID: 6139486227512965566}
+  - component: {fileID: 2992899921198328162}
+  - component: {fileID: 4619545861444706312}
+  m_Layer: 0
+  m_Name: LowRewardTreasureChest
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5205111981208987127
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7530156284439312542}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -18.65, y: -2.38, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 3754634418042159138}
+  - {fileID: 4773129844813817167}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6139486227512965566
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7530156284439312542}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5ffb80732f3ba36419c67d43f5c83c39, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  capacity: 16
+  lootMode: 1
+  lootOverrideProfile:
+    totalLootCount: 8
+    weaponCountProfile:
+      minCount: 0
+      maxCount: 0
+      weights:
+      - count: 0
+        weight: 100
+    relicCountProfile:
+      minCount: 7
+      maxCount: 8
+      weights:
+      - count: 7
+        weight: 100
+      - count: 8
+        weight: 100
+    consumableCountProfile:
+      minCount: 0
+      maxCount: 0
+      weights:
+      - count: 0
+        weight: 100
+    fillRemainingWithConsumables: 1
+  chestAnimator: {fileID: 7305723242744879239}
+  openStateName: Open
+  openedStateName: Opened
+  openPreludeFallbackDuration: 0.5
+  freezeTimeOnFirstOpen: 1
+  openEffects: []
+  chestSpriteRenderer: {fileID: 0}
+  openedSprite: {fileID: 21300040, guid: 29c9cded5e558164aaf8c9bf08aa1510, type: 3}
+  presentationAnchor: {fileID: 5205111981208987127}
+  openPresentation:
+    gameplayPresentation:
+      audioOnExecute:
+        key: world.chest.open
+        volumeMultiplier: 1
+        anchorPolicy: 0
+        localOffset: {x: 0, y: 0, z: 0}
+      audioWhileActive:
+        key: 
+        volumeMultiplier: 0
+        anchorPolicy: 0
+        localOffset: {x: 0, y: 0, z: 0}
+      audioOnRemove:
+        key: 
+        volumeMultiplier: 0
+        anchorPolicy: 0
+        localOffset: {x: 0, y: 0, z: 0}
+      cameraShakeOnExecute:
+        amplitude: 0
+        amplitudeMultiplier: 0
+        maxAmplitude: 0
+        minIntervalSeconds: 0
+        directionMode: 0
+        customDirection: {x: 0, y: 0, z: 0}
+        ignoreScreenShakeSetting: 0
+      cameraShakeWhileActive:
+        amplitude: 0
+        amplitudeMultiplier: 0
+        maxAmplitude: 0
+        minIntervalSeconds: 0
+        directionMode: 0
+        customDirection: {x: 0, y: 0, z: 0}
+        ignoreScreenShakeSetting: 0
+      cameraShakeOnRemove:
+        amplitude: 0
+        amplitudeMultiplier: 0
+        maxAmplitude: 0
+        minIntervalSeconds: 0
+        directionMode: 0
+        customDirection: {x: 0, y: 0, z: 0}
+        ignoreScreenShakeSetting: 0
+      presentationOnExecute:
+        sound:
+          key: 
+          volumeMultiplier: 0
+          anchorPolicy: 0
+          localOffset: {x: 0, y: 0, z: 0}
+        randomSounds: []
+        additionalSounds: []
+        cameraShake:
+          amplitude: 0
+          amplitudeMultiplier: 0
+          maxAmplitude: 0
+          minIntervalSeconds: 0
+          directionMode: 0
+          customDirection: {x: 0, y: 0, z: 0}
+          ignoreScreenShakeSetting: 0
+        effect:
+          prefab: {fileID: 0}
+          localOffset: {x: 0, y: 0, z: 0}
+          rotationOffsetZ: 0
+          scaleMultiplier: {x: 0, y: 0, z: 0}
+          attachToTarget: 0
+          anchorMode: 0
+          scaleMode: 0
+          targetBoundsReferenceSize: 0
+          targetBoundsScaleMultiplier: 0
+          lifetimeMode: 0
+          lifetimeOverrideSeconds: 0
+          useUnscaledTime: 0
+        particle:
+          prefab: {fileID: 0}
+          localOffset: {x: 0, y: 0, z: 0}
+          rotationOffsetZ: 0
+          scaleMultiplier: {x: 0, y: 0, z: 0}
+          attachToTarget: 0
+          anchorMode: 0
+          scaleMode: 0
+          targetBoundsReferenceSize: 0
+          targetBoundsScaleMultiplier: 0
+          lifetimeMode: 0
+          lifetimeOverrideSeconds: 0
+          useUnscaledTime: 0
+      presentationWhileActive:
+        sound:
+          key: 
+          volumeMultiplier: 0
+          anchorPolicy: 0
+          localOffset: {x: 0, y: 0, z: 0}
+        randomSounds: []
+        additionalSounds: []
+        cameraShake:
+          amplitude: 0
+          amplitudeMultiplier: 0
+          maxAmplitude: 0
+          minIntervalSeconds: 0
+          directionMode: 0
+          customDirection: {x: 0, y: 0, z: 0}
+          ignoreScreenShakeSetting: 0
+        effect:
+          prefab: {fileID: 0}
+          localOffset: {x: 0, y: 0, z: 0}
+          rotationOffsetZ: 0
+          scaleMultiplier: {x: 0, y: 0, z: 0}
+          attachToTarget: 0
+          anchorMode: 0
+          scaleMode: 0
+          targetBoundsReferenceSize: 0
+          targetBoundsScaleMultiplier: 0
+          lifetimeMode: 0
+          lifetimeOverrideSeconds: 0
+          useUnscaledTime: 0
+        particle:
+          prefab: {fileID: 0}
+          localOffset: {x: 0, y: 0, z: 0}
+          rotationOffsetZ: 0
+          scaleMultiplier: {x: 0, y: 0, z: 0}
+          attachToTarget: 0
+          anchorMode: 0
+          scaleMode: 0
+          targetBoundsReferenceSize: 0
+          targetBoundsScaleMultiplier: 0
+          lifetimeMode: 0
+          lifetimeOverrideSeconds: 0
+          useUnscaledTime: 0
+      presentationOnRemove:
+        sound:
+          key: 
+          volumeMultiplier: 0
+          anchorPolicy: 0
+          localOffset: {x: 0, y: 0, z: 0}
+        randomSounds: []
+        additionalSounds: []
+        cameraShake:
+          amplitude: 0
+          amplitudeMultiplier: 0
+          maxAmplitude: 0
+          minIntervalSeconds: 0
+          directionMode: 0
+          customDirection: {x: 0, y: 0, z: 0}
+          ignoreScreenShakeSetting: 0
+        effect:
+          prefab: {fileID: 0}
+          localOffset: {x: 0, y: 0, z: 0}
+          rotationOffsetZ: 0
+          scaleMultiplier: {x: 0, y: 0, z: 0}
+          attachToTarget: 0
+          anchorMode: 0
+          scaleMode: 0
+          targetBoundsReferenceSize: 0
+          targetBoundsScaleMultiplier: 0
+          lifetimeMode: 0
+          lifetimeOverrideSeconds: 0
+          useUnscaledTime: 0
+        particle:
+          prefab: {fileID: 0}
+          localOffset: {x: 0, y: 0, z: 0}
+          rotationOffsetZ: 0
+          scaleMultiplier: {x: 0, y: 0, z: 0}
+          attachToTarget: 0
+          anchorMode: 0
+          scaleMode: 0
+          targetBoundsReferenceSize: 0
+          targetBoundsScaleMultiplier: 0
+          lifetimeMode: 0
+          lifetimeOverrideSeconds: 0
+          useUnscaledTime: 0
+      cuesOnExecute: []
+      cuesWhileActive: []
+      cuesOnRemove: []
+      executeCueMagnitude: 0
+      whileActiveCueMagnitude: 0
+      removeCueMagnitude: 0
+      cueOnExecute: {fileID: 0}
+      cueWhileActive: {fileID: 0}
+      cueOnRemove: {fileID: 0}
+    particlePrefab: {fileID: 6821349489537912191, guid: beac3d8a478eebb45a9cbef082420e8f, type: 3}
+    particleLocalOffset: {x: 0, y: 0, z: 0}
+    particleLifetimeOverrideSeconds: -1
+    useUnscaledParticleTime: 0
+--- !u!114 &2992899921198328162
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7530156284439312542}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 676583283aa75a942a115efbb0fdfd2d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  promptAnchor: {fileID: 3754634418042159138}
+  openPromptText: "\uC0C1\uC790 \uC5F4\uAE30"
+  lockedPromptFormat: "\uC7A0\uAE40 ({0})"
+  spriteRenderer: {fileID: 0}
+--- !u!58 &4619545861444706312
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7530156284439312542}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: 0}
+  m_Radius: 1

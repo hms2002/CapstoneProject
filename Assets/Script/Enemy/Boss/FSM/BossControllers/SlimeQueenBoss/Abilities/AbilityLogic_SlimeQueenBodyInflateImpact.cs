@@ -1,10 +1,18 @@
 using System.Collections;
+using CapstoneAudio;
 using UnityEngine;
 using UnityGAS;
 
+/// <summary>
+/// 책임:
+/// - 슬라임 여왕 계열 보스의 몸 부풀림 충격 패턴과 충격 시작 사운드를 실행한다.
+/// </summary>
 public sealed class AbilityLogic_SlimeQueenBodyInflateImpact : AbilityLogic
 {
     private const float BodyInflateAttackAnimationHoldSeconds = 2f;
+
+    [Header("Sound")]
+    [SerializeField] private SoundRef bodyInflateSound = SoundRef.FromKey("sound_slimeQueen_Bigger");
 
     /// <summary>슬라임 여왕 계열 보스가 원형 경고 후 몸 부풀림 충돌 효과를 적용합니다.</summary>
     public override IEnumerator Activate(AbilitySystem system, AbilitySpec spec, GameObject initialTarget)
@@ -41,6 +49,17 @@ public sealed class AbilityLogic_SlimeQueenBodyInflateImpact : AbilityLogic
                 phaseOneQueen.BeginBodyInflateImpactAnimation();
             if (phaseTwoShortQueen != null)
                 phaseTwoShortQueen.BeginBodyInflateImpactAnimation();
+
+            Component hostComponent = slimeQueen as Component;
+            if (hostComponent != null)
+            {
+                SlimeQueenPresentationAudioUtility.PlaySound(
+                    bodyInflateSound,
+                    hostComponent.gameObject,
+                    hostComponent.transform.position,
+                    this,
+                    initialTarget);
+            }
 
             slimeQueen.ApplyBodyInflateImpact(spec);
 

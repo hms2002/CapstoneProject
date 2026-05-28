@@ -190,10 +190,7 @@ public class ShadowServantAttackRunner : MonoBehaviour, IMobPatternRunner, IMobP
             : default;
 
         AttackTelegraphStyle style = ScriptableObject.CreateInstance<AttackTelegraphStyle>();
-        style.fillColorStart = new Color(1f, 0f, 0f, 0.35f);
-        style.fillColorEnd = new Color(1f, 0f, 0f, 0.35f);
-        style.borderColorStart = new Color(1f, 0f, 0f, 1f);
-        style.borderColorEnd = new Color(1f, 0f, 0f, 1f);
+        AttackTelegraphStyleUtility.ApplyDangerAreaColors(style);
         style.progressCurve = AnimationCurve.Linear(0f, 0f, 1f, 1f);
         style.blinkStartNormalized = data.warningBlinkStartNormalized;
         style.blinkFrequency = data.warningBlinkFrequency;

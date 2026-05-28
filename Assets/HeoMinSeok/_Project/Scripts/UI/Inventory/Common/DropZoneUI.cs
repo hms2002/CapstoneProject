@@ -1,3 +1,4 @@
+using CapstoneAudio;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -7,6 +8,8 @@ using UnityEngine.UI;
 /// </summary>
 public class DropZoneUI : MonoBehaviour, IDropHandler
 {
+    private static readonly SoundRef DropItemSound = SoundRef.FromKey("sound_ui_DropItem");
+
     public static DropZoneUI ActiveInstance { get; private set; }
 
     [Header("World Drop")]
@@ -54,31 +57,57 @@ public class DropZoneUI : MonoBehaviour, IDropHandler
     {
         if (!ItemDragContext.Active) return;
 
-        // loot 슬롯을 다시 월드로 드랍 금지
-        if (ItemDragContext.Source is WorldLootContainerAdapter)
-        {
-            DragIcon.Instance?.Hide();
-            ItemDragContext.Clear();
-            return;
-        }
-
-        var item = ItemDragContext.Item;
-        var src = ItemDragContext.Source;
-        int srcIndex = ItemDragContext.SourceIndex;
-
-        // ✅ (중요) 제거 전에 레벨 확보
-        int relicLevel = ItemDragContext.RelicLevel;
-        if (relicLevel <= 0 && item is RelicDefinition && src is IRelicLevelProvider p)
-            p.TryGetRelicLevel(srcIndex, out relicLevel);
-
-        // Remove from source
-        bool removed = src != null && src.TrySet(srcIndex, null);
-        if (removed)
-            SpawnWorldItem(item, relicLevel);
+        TryDropSourceToWorld(
+            ItemDragContext.Source,
+            ItemDragContext.SourceIndex,
+            ItemDragContext.Item,
+            ItemDragContext.RelicLevel);
 
         DragIcon.Instance?.Hide();
         ItemDragContext.Clear();
         Hide();
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - UI 드래그가 아닌 고정 입력에서도 동일한 월드 드롭 정책을 재사용하게 한다.
+    /// - source 슬롯 제거, 유물 레벨 보존, 월드 드롭 스폰을 하나의 안전한 API로 묶는다.
+    /// </summary>
+    public bool TryDropSourceToWorld(IItemContainer source, int sourceIndex)
+    {
+        if (source == null || sourceIndex < 0 || sourceIndex >= source.SlotCount)
+            return false;
+
+        ScriptableObject item = source.Get(sourceIndex);
+        return TryDropSourceToWorld(source, sourceIndex, item, 0);
+    }
+
+    private bool TryDropSourceToWorld(
+        IItemContainer source,
+        int sourceIndex,
+        ScriptableObject item,
+        int relicLevel)
+    {
+        if (source == null || item == null)
+            return false;
+
+        // loot 슬롯을 다시 월드로 드랍 금지
+        if (source is WorldLootContainerAdapter)
+            return false;
+
+        if (sourceIndex < 0 || sourceIndex >= source.SlotCount)
+            return false;
+
+        // ✅ (중요) 제거 전에 레벨 확보
+        if (relicLevel <= 0 && item is RelicDefinition && source is IRelicLevelProvider p)
+            p.TryGetRelicLevel(sourceIndex, out relicLevel);
+
+        bool removed = source.TrySet(sourceIndex, null);
+        if (!removed)
+            return false;
+
+        SpawnWorldItem(item, relicLevel);
+        return true;
     }
 
     private void SetVisible(bool visible)
@@ -120,5 +149,6 @@ public class DropZoneUI : MonoBehaviour, IDropHandler
         }
 
         spawnService.SpawnAnimatedLootObject(spawnOrigin, landingPosition, item, relicLevel);
+        SoundPlaybackUtility.Play(DropItemSound, position: spawnOrigin, sourceObject: this);
     }
 }

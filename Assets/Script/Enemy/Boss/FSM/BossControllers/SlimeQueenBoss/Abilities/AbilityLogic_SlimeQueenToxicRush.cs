@@ -1,9 +1,18 @@
 using System.Collections;
+using CapstoneAudio;
 using UnityEngine;
 using UnityGAS;
 
+/// <summary>
+/// 책임:
+/// - 근거리 슬라임 여왕의 독성 돌진 반복과 돌진/독구름 사운드 주입을 담당한다.
+/// </summary>
 public sealed class AbilityLogic_SlimeQueenToxicRush : AbilityLogic
 {
+    [Header("Sound")]
+    [SerializeField] private SoundRef dashSound = SoundRef.FromKey("sound_slimeQueen_Dash");
+    [SerializeField] private SoundRef poisonCloudLoopSound = SoundRef.FromKey("sound_slimeQueen_PoisonMist");
+
     /// <summary>근거리 슬라임 여왕이 플레이어 방향으로 독성 돌진을 반복하고 독구름 트레일을 남깁니다.</summary>
     public override IEnumerator Activate(AbilitySystem system, AbilitySpec spec, GameObject initialTarget)
     {
@@ -28,10 +37,17 @@ public sealed class AbilityLogic_SlimeQueenToxicRush : AbilityLogic
                     yield break;
 
                 slimeQueen.BeginToxicRushAnimation();
+                SlimeQueenPresentationAudioUtility.PlaySound(
+                    dashSound,
+                    slimeQueen.gameObject,
+                    slimeQueen.transform.position,
+                    this,
+                    initialTarget);
                 slimeQueen.ClearToxicRushWarnings();
-                slimeQueen.BeginToxicRushTrail(segment.Start);
+                slimeQueen.BeginToxicRushTrail(segment.Start, poisonCloudLoopSound);
 
                 float traveledDistance = 0f;
+                bool hitPlayer = false;
                 while (traveledDistance < segment.Length)
                 {
                     if (IsAbilityCancelled(spec))
@@ -39,10 +55,20 @@ public sealed class AbilityLogic_SlimeQueenToxicRush : AbilityLogic
 
                     traveledDistance += slimeQueen.ToxicRushSpeed * Time.deltaTime;
                     slimeQueen.SetToxicRushPose(segment, traveledDistance);
+                    if (slimeQueen.HasToxicRushHitPlayer())
+                    {
+                        hitPlayer = true;
+                        break;
+                    }
+
                     yield return null;
                 }
 
-                slimeQueen.FinishToxicRushSegment(segment);
+                if (hitPlayer)
+                    slimeQueen.FinishToxicRushAtCurrentPosition();
+                else
+                    slimeQueen.FinishToxicRushSegment(segment);
+
                 slimeQueen.EndToxicRushAnimation();
                 slimeQueen.FaceCurrentTarget();
 

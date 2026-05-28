@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7ffaadf95fa348849c61dceb6b519c9a, type: 3}
+  m_Name: AL_DragonRotation
+  m_EditorClassIdentifier: 
+  warningSeconds: 1.4
+  spinSeconds: 2.5
+  damageIntervalSeconds: 0.45
+  visualSwayAmplitude: 0.1
+  visualSwayFrequency: 3.5
+  debugVisualSway: 0
+  hitDiameter: 3.6
+  damageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
+  knockbackEffect: {fileID: 11400000, guid: 2f5faaf6bd840544cb59f6d23905c40d, type: 2}
+  damageAmount: 1
+  knockbackImpulse: 150
+  projectilePrefab: {fileID: 6738498832634369492, guid: 568ffe4436c45db418e1510196a9fb69, type: 3}
+  projectileDamageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
+  projectileDamageAmount: 1
+  projectileSpeed: 5
+  projectileLifetimeSeconds: 4
+  projectileSpawnIntervalSeconds: 0.4
+  projectileSpawnRadius: 0.65
+  projectileRotationOffsetDegrees: 90
+  projectileWallLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  projectileFireSound:
+    key: sound_dragon_shotfire
+    volumeMultiplier: 1
+    anchorPolicy: 2
+    localOffset: {x: 0, y: 0, z: 0}
+  warningTelegraphStyle: {fileID: 11400000, guid: b15f18602ec87284d80cbd57720425f1, type: 2}

@@ -12,3 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9bb9f53bc19147a5a1f2c4f063ed1043, type: 3}
   m_Name: AL_SlimeQueenBodyInflateImpact
   m_EditorClassIdentifier: 
+  bodyInflateSound:
+    key: sound_slimeQueen_Bigger
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}

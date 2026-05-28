@@ -1,8 +1,12 @@
 using System;
+using CapstoneAudio;
 using UnityEngine;
 
 public class AffectionManager : MonoBehaviour
 {
+    private static readonly SoundRef AffectionUpSound = SoundRef.FromKey("sound_ui_AffectionUp");
+    private static readonly SoundRef AffectionDownSound = SoundRef.FromKey("sound_ui_AffectionDown");
+
     public static AffectionManager Instance { get; private set; }
 
     private static bool s_isQuitting;
@@ -84,6 +88,8 @@ public class AffectionManager : MonoBehaviour
 
         if (change.NewAmount != change.PreviousAmount)
         {
+            PlayAffectionChangeSound(change.Delta);
+
             if (isRunActive)
                 GamePlayDataManager.Instance?.AddPendingAffectionDelta(data.id, change.Delta);
             else
@@ -107,11 +113,22 @@ public class AffectionManager : MonoBehaviour
         progressStore.SetAffection(GameDataManager.Instance?.Data, npcId, value, syncToGameData: !isRunActive);
         if (previousValue != value)
         {
+            PlayAffectionChangeSound(value - previousValue);
+
             if (isRunActive)
                 GamePlayDataManager.Instance?.AddPendingAffectionDelta(npcId, value - previousValue);
             else
                 GameDataSaveCoordinator.RequestImmediateSave(this);
         }
+    }
+
+    /// <summary>호감도 증감 방향에 맞는 UI 피드백 사운드를 재생합니다.</summary>
+    private static void PlayAffectionChangeSound(int delta)
+    {
+        if (delta == 0)
+            return;
+
+        SoundPlaybackUtility.Play(delta > 0 ? AffectionUpSound : AffectionDownSound);
     }
 
     private void LoadAffectionData()

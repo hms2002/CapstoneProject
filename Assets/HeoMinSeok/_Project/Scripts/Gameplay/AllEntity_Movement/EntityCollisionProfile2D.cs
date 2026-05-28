@@ -34,6 +34,25 @@ namespace UnityGAS
 
         public BodyCollisionMode CurrentMode => currentMode;
 
+        /// <summary>런타임/authoring 보정 경로에서 body collider와 충돌 정책을 한 번에 지정합니다.</summary>
+        public void Configure(
+            Collider2D[] managedBodyColliders,
+            LayerMask excludedLayers,
+            LayerMask passThroughActorLayers,
+            BodyCollisionMode profileDefaultMode,
+            bool applyImmediately = true)
+        {
+            bodyColliders = managedBodyColliders;
+            baseExcludedLayers = excludedLayers;
+            actorLayers = passThroughActorLayers;
+            defaultMode = profileDefaultMode;
+
+            CacheBodyCollidersIfNeeded();
+
+            if (applyImmediately)
+                ApplyMode(defaultMode);
+        }
+
         private void Awake()
         {
             CacheBodyCollidersIfNeeded();

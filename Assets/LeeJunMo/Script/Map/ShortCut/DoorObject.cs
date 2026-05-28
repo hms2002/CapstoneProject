@@ -1,4 +1,5 @@
 using System.Collections;
+using CapstoneAudio;
 using UnityEngine;
 using DG.Tweening;
 using UnityGAS;
@@ -19,6 +20,8 @@ public class DoorObject : InteractableBase, ICombatPathBlocker2D
     private const string ClosedAnimatorStateName = "Idle";
     private const float CloseCompletionFallbackTimeoutSeconds = 5f;
     private static readonly int ClosedAnimatorStateHash = Animator.StringToHash(ClosedAnimatorStateName);
+    private static readonly SoundRef CantOpenSound = SoundRef.FromKey("sound_door_CantOpen");
+    private static readonly SoundRef CloseSound = SoundRef.FromKey("sound_door_Close");
 
     public enum DoorType
     {
@@ -163,6 +166,7 @@ public class DoorObject : InteractableBase, ICombatPathBlocker2D
         }
         else
         {
+            PlayDoorSound(CantOpenSound);
             PlayShakeAnimation();
 
             PlayerInteractor2D playerScript = player.Transform.GetComponent<PlayerInteractor2D>();
@@ -299,6 +303,7 @@ public class DoorObject : InteractableBase, ICombatPathBlocker2D
         BeginCloseCompletionWait();
         EnableObstacle();
         KillShakeTween();
+        PlayDoorSound(CloseSound);
 
         if (animator != null && animator.runtimeAnimatorController != null)
         {
@@ -413,6 +418,12 @@ public class DoorObject : InteractableBase, ICombatPathBlocker2D
             return CanAffectionDoorOpen() ? openPromptText : lockedPromptText;
 
         return openPromptText;
+    }
+
+    /// <summary>문 위치 기준으로 단발 상호작용 사운드를 재생합니다.</summary>
+    private void PlayDoorSound(SoundRef sound)
+    {
+        SoundPlaybackUtility.Play(sound, causer: gameObject, position: transform.position, sourceObject: this);
     }
 
     public bool BlocksCombatPath(Collider2D queriedCollider, GameObject requester, CombatPathBlockerQuery query)
