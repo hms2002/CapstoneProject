@@ -172,6 +172,10 @@ MonoBehaviour:
       - {fileID: 11400000, guid: b6b3270ae0b64527be3bc8398bbdcd6e, type: 2}
   airborneBodyZHeight: 1
   logHeightCollisionDebug: 1
+  enablePatternAfterimage: 1
+  patternAfterimageIntervalSeconds: 0.045
+  patternAfterimageLifetimeSeconds: 0.18
+  patternAfterimageColor: {r: 0.65, g: 1, b: 0.85, a: 0.38}
   contactDamage: 1
   contactDamageCooldownSeconds: 1
   contactDamageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}

@@ -31,11 +31,25 @@ public abstract class SlimeQueenBossBase : BossControllerBase, IIntentMovementSo
     [SerializeField, Min(0f)] private float airborneBodyZHeight = 1f;
     [SerializeField] private bool logHeightCollisionDebug = true;
 
+    [Header("Pattern Afterimage")]
+    [Tooltip("점프/돌진 같은 빠른 이동형 패턴 중 본체 잔상을 남길지 여부입니다.")]
+    [SerializeField] private bool enablePatternAfterimage = true;
+
+    [Tooltip("잔상 스냅샷을 생성하는 간격입니다.")]
+    [SerializeField, Min(0.01f)] private float patternAfterimageIntervalSeconds = 0.045f;
+
+    [Tooltip("각 잔상 스냅샷이 사라질 때까지 걸리는 시간입니다.")]
+    [SerializeField, Min(0.01f)] private float patternAfterimageLifetimeSeconds = 0.18f;
+
+    [Tooltip("잔상에 입힐 색과 투명도입니다.")]
+    [SerializeField] private Color patternAfterimageColor = new(0.65f, 1f, 0.85f, 0.38f);
+
     private AttackTelegraphService telegraphService;
     private CombatHeightState2D combatHeightState;
     private CombatHeightPresentation2D combatHeightPresentation;
     private EntityCollisionProfile2D heightCollisionProfile;
     private CombatHeightCollisionBinder2D heightCollisionBinder;
+    private SpriteAfterimageEmitter2D patternAfterimageEmitter;
     private Collider2D[] heightCollisionBodyColliders;
     private GameplayTag patternMoveInvulnerableTag;
     private GameplayEffect runtimeGroggyStatusEffect;
@@ -77,6 +91,7 @@ public abstract class SlimeQueenBossBase : BossControllerBase, IIntentMovementSo
 
     protected override void OnDestroy()
     {
+        StopPatternAfterimage(clearGhosts: true);
         CleanupAllTelegraphs();
         ClearCombatHeightPresentation();
 
@@ -191,9 +206,47 @@ public abstract class SlimeQueenBossBase : BossControllerBase, IIntentMovementSo
             sprite.flipX = false;
     }
 
+    /// <summary>
+    /// 책임:
+    /// - 슬라임 퀸 계열의 빠른 이동형 패턴 중 Visual 기준 잔상 방출을 시작한다.
+    /// - 개별 패턴 로직이 SpriteRenderer 복제 방식에 의존하지 않도록 공통 시작점만 제공한다.
+    /// </summary>
+    public void BeginPatternAfterimage()
+    {
+        if (!enablePatternAfterimage || !isActiveAndEnabled)
+            return;
+
+        SpriteAfterimageEmitter2D emitter = ResolvePatternAfterimageEmitter();
+        if (emitter == null)
+            return;
+
+        Transform sourceRoot = sprite != null ? sprite.transform : transform;
+        emitter.Begin(
+            sourceRoot,
+            patternAfterimageIntervalSeconds,
+            patternAfterimageLifetimeSeconds,
+            patternAfterimageColor);
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 슬라임 퀸 계열 이동형 패턴의 잔상 생성을 멈춘다.
+    /// - 일반 종료에서는 남은 잔상이 자연 소멸하고, 씬 정리 같은 강제 상황에서는 즉시 제거할 수 있다.
+    /// </summary>
+    public void StopPatternAfterimage(bool clearGhosts = false)
+    {
+        if (patternAfterimageEmitter == null)
+            return;
+
+        patternAfterimageEmitter.StopEmission();
+        if (clearGhosts)
+            patternAfterimageEmitter.ClearSpawnedGhosts();
+    }
+
     /// <summary>패턴 종료 시 이동형 패턴 피해 차단 상태를 정리합니다.</summary>
     protected override void OnPatternEnd(BossPatternEntry patternEntry, bool forced)
     {
+        StopPatternAfterimage(clearGhosts: forced);
         SetPatternMoveDamageBlocked(false);
         pitFallTriggerBlockCount = 0;
         CleanupAllTelegraphs();
@@ -329,6 +382,17 @@ public abstract class SlimeQueenBossBase : BossControllerBase, IIntentMovementSo
         float dropProgress = Mathf.InverseLerp(KnightStyleSlamPreDropEndNormalized, 1f, normalizedTime);
         float easedDrop = Mathf.Pow(Mathf.Clamp01(dropProgress), KnightStyleSlamLandingDropSharpness);
         return Mathf.Lerp(safeHeight * KnightStyleSlamPreDropHeightScale, 0f, easedDrop);
+    }
+
+    private SpriteAfterimageEmitter2D ResolvePatternAfterimageEmitter()
+    {
+        if (patternAfterimageEmitter != null)
+            return patternAfterimageEmitter;
+
+        if (!TryGetComponent(out patternAfterimageEmitter))
+            patternAfterimageEmitter = gameObject.AddComponent<SpriteAfterimageEmitter2D>();
+
+        return patternAfterimageEmitter;
     }
 
     private bool CanUseCombatHeightPresentation()

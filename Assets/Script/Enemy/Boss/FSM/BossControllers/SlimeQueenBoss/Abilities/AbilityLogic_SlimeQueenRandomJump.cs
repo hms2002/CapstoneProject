@@ -28,10 +28,12 @@ public sealed class AbilityLogic_SlimeQueenRandomJump : AbilityLogic
         randomJumpHost.ShowJumpWarning(landingPosition);
         SlimeQueen phaseOneQueen = randomJumpHost as SlimeQueen;
         SlimeQueenP2Long phaseTwoLongQueen = randomJumpHost as SlimeQueenP2Long;
+        SlimeQueenBossBase afterimageOwner = randomJumpHost as SlimeQueenBossBase;
         if (phaseOneQueen != null)
             phaseOneQueen.BeginRandomJumpAnimation();
         if (phaseTwoLongQueen != null)
             phaseTwoLongQueen.BeginRandomJumpAnimation();
+        afterimageOwner?.BeginPatternAfterimage();
 
         SlimeQueenPresentationAudioUtility.PlaySound(
             jumpSound,
@@ -73,6 +75,7 @@ public sealed class AbilityLogic_SlimeQueenRandomJump : AbilityLogic
                 phaseOneQueen.EndRandomJumpAnimation();
             if (phaseTwoLongQueen != null)
                 phaseTwoLongQueen.EndRandomJumpAnimation();
+            afterimageOwner?.StopPatternAfterimage(IsAbilityCancelled(spec));
 
             randomJumpHost.SetPatternMoveDamageBlocked(false);
             if (pitFallBlockOwner != null)

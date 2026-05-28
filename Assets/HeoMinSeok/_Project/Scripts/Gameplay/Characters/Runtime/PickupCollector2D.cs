@@ -7,7 +7,6 @@ using UnityGAS;
 /// - 픽업 로직이 부모 탐색 없이도 플레이어 AttributeSet과 상호작용 주체를 안전하게 찾도록 돕는다.
 /// </summary>
 [DisallowMultipleComponent]
-[RequireComponent(typeof(Collider2D))]
 public class PickupCollector2D : MonoBehaviour
 {
     [Header("Owner")]

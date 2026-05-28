@@ -2,7 +2,11 @@ using UnityEngine;
 
 [DisallowMultipleComponent]
 [RequireComponent(typeof(Collider2D))]
-[RequireComponent(typeof(Rigidbody2D))]
+/// <summary>
+/// 책임:
+/// - 플레이어 하위 trigger collider로 상호작용 가능 오브젝트와의 overlap을 추적기에 전달한다.
+/// - 물리 소유권은 부모 플레이어 Rigidbody2D에 맡겨 센서 자체가 별도 Rigidbody2D를 강제하지 않게 한다.
+/// </summary>
 public sealed class PlayerInteractionSensor2D : MonoBehaviour
 {
     [SerializeField] private PlayerInteractableTracker2D tracker;
@@ -47,7 +51,6 @@ public sealed class PlayerInteractionSensor2D : MonoBehaviour
         }
 
         ResolveTracker();
-        EnsureSensorBody();
         EnsureTriggerCollider();
     }
 
@@ -72,20 +75,6 @@ public sealed class PlayerInteractionSensor2D : MonoBehaviour
         Collider2D collider2D = GetComponent<Collider2D>();
         if (collider2D != null)
             collider2D.isTrigger = true;
-    }
-
-    private void EnsureSensorBody()
-    {
-        Rigidbody2D body = GetComponent<Rigidbody2D>();
-        if (body == null)
-            return;
-
-        body.bodyType = RigidbodyType2D.Kinematic;
-        body.simulated = true;
-        body.gravityScale = 0f;
-        body.linearDamping = 0f;
-        body.angularDamping = 0f;
-        body.freezeRotation = true;
     }
 
     private void SyncColliderFrom(Collider2D sourceCollider)
