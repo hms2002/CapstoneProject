@@ -171,6 +171,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spriteRenderer: {fileID: 3000000000000000000}
+  damageReceptionColliders:
+  - {fileID: 4000000000000000000}
   hitCountToBreak: 3
   suctionRadius: 2.5
   suctionSpeed: 5

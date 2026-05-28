@@ -15,6 +15,16 @@ public sealed class DragonController : BossControllerBase
     [SerializeField] private MirroredLocalSocket2D fireBreathMouthSocket;
     [SerializeField] private bool faceTargetDuringCombat = true;
 
+    [Header("Jump Afterimage")]
+    [Tooltip("점프형 패턴 중 본체 잔상을 남길지 여부입니다.")]
+    [SerializeField] private bool enableJumpAfterimage = true;
+    [Tooltip("점프 잔상 스냅샷을 생성하는 간격입니다.")]
+    [SerializeField, Min(0.01f)] private float jumpAfterimageEmissionInterval = 0.045f;
+    [Tooltip("각 점프 잔상 스냅샷이 사라질 때까지 걸리는 시간입니다.")]
+    [SerializeField, Min(0.01f)] private float jumpAfterimageLifetimeSeconds = 0.18f;
+    [Tooltip("점프 잔상에 입힐 색과 투명도입니다.")]
+    [SerializeField] private Color jumpAfterimageColor = new(1f, 0.72f, 0.45f, 0.36f);
+
     [Header("Puddle Reactive Pattern Weight")]
     [SerializeField] private bool scaleFireBreathWeightByPuddles = true;
     [SerializeField, Min(0)] private int fireBreathMinimumPuddlesToUse = 4;
@@ -24,6 +34,7 @@ public sealed class DragonController : BossControllerBase
 
     private DragonRuntimeData runtimeData;
     private int faceTargetLockCount;
+    private SpriteAfterimageEmitter2D jumpAfterimageEmitter;
 
     public DragonRuntimeData RuntimeData
     {
@@ -57,6 +68,7 @@ public sealed class DragonController : BossControllerBase
     protected override void OnPatternEnd(BossPatternEntry patternEntry, bool forced)
     {
         RuntimeData.ResetPatternCounters();
+        StopJumpAfterimage(clearGhosts: forced);
     }
 
     /// <summary>
@@ -243,6 +255,41 @@ public sealed class DragonController : BossControllerBase
         sprite.flipX = direction.x < 0f;
     }
 
+    /// <summary>
+    /// 책임:
+    /// 취룡 점프형 패턴에서 Visual 기준 잔상 방출을 시작한다.
+    /// </summary>
+    public void BeginJumpAfterimage()
+    {
+        if (!enableJumpAfterimage || !isActiveAndEnabled)
+            return;
+
+        SpriteAfterimageEmitter2D emitter = ResolveJumpAfterimageEmitter();
+        if (emitter == null)
+            return;
+
+        Transform sourceRoot = BodyVisualRoot != null ? BodyVisualRoot : transform;
+        emitter.Begin(
+            sourceRoot,
+            jumpAfterimageEmissionInterval,
+            jumpAfterimageLifetimeSeconds,
+            jumpAfterimageColor);
+    }
+
+    /// <summary>
+    /// 책임:
+    /// 취룡 점프형 패턴의 잔상 생성을 멈추고, 강제 종료 상황에서는 이미 생성된 잔상까지 정리한다.
+    /// </summary>
+    public void StopJumpAfterimage(bool clearGhosts = false)
+    {
+        if (jumpAfterimageEmitter == null)
+            return;
+
+        jumpAfterimageEmitter.StopEmission();
+        if (clearGhosts)
+            jumpAfterimageEmitter.ClearSpawnedGhosts();
+    }
+
     /// <summary>취룡 보스가 흡수 패턴을 시작할 때 이전 결과를 정리한다.</summary>
     public void BeginAbsorbPatternTracking()
     {
@@ -301,6 +348,17 @@ public sealed class DragonController : BossControllerBase
             sprite.flipX = true;
         else if (transform.position.x < Target.position.x)
             sprite.flipX = false;
+    }
+
+    private SpriteAfterimageEmitter2D ResolveJumpAfterimageEmitter()
+    {
+        if (jumpAfterimageEmitter != null)
+            return jumpAfterimageEmitter;
+
+        if (!TryGetComponent(out jumpAfterimageEmitter))
+            jumpAfterimageEmitter = gameObject.AddComponent<SpriteAfterimageEmitter2D>();
+
+        return jumpAfterimageEmitter;
     }
 
     private DragonArenaBounds2D ResolveArenaBounds()

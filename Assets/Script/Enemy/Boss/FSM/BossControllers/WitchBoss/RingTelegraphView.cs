@@ -7,7 +7,7 @@ public sealed class RingTelegraphView : MonoBehaviour
     // 도넛형 텔레그래프를 셰이더 기반 radial fill로 표시하고, inner/outer 반경은 고정한 채 진행도만 갱신한다.
 
     private const int TextureSize = 128;
-    private const float BorderThickness = 0.08f;
+    private const float BorderThickness = 0.035f;
     private const string RingShaderName = "Custom/SpriteRadialTimerRing";
 
     private static Material sharedRingFillMaterial;

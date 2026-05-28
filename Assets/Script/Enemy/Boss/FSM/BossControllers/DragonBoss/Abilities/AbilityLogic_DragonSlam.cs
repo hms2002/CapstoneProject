@@ -93,12 +93,15 @@ public sealed class AbilityLogic_DragonSlam : AbilityLogic
             {
                 PlayJumpStartPresentation(dragon, start);
                 dragon.PlayPatternTrigger(DragonAnimationKeys.Jump);
+                dragon.BeginJumpAfterimage();
                 MoveToImpactPosition(motion, dragon, start, impactPosition, duration);
 
                 yield return TweenJumpHeight(heightState, duration, spec);
             }
             finally
             {
+                dragon.StopJumpAfterimage(IsAbilityCancelled(spec));
+
                 if (IsAbilityCancelled(spec))
                     motion?.CancelMotion();
 

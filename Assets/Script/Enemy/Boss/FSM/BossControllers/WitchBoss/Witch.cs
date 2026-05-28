@@ -770,6 +770,7 @@ public class Witch : BossControllerBase, IWitchPatternStateBridge
             return;
 
         ResolveArenaRectangle(center, out Vector3 rectCenter, out Vector2 rectSize);
+        rectSize = InsetMapWideWarningSize(rectSize);
         AttackTelegraphSpec spec = AttackTelegraphSpecUtility.WithThinWarningOutline(AttackTelegraphSpec.CreateRectangle(
             rectCenter,
             rectSize,
@@ -778,6 +779,18 @@ public class Witch : BossControllerBase, IWitchPatternStateBridge
             warningStyle));
 
         telegraphService.Show(spec);
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 벽에 딱 붙어 계산된 맵 전체 경고 사각형을 최신 wall-clipped outline이 자기 자신을 자르지 않을 만큼만 안쪽으로 줄인다.
+    /// </summary>
+    private static Vector2 InsetMapWideWarningSize(Vector2 rectSize)
+    {
+        const float mapWideWarningInset = 0.08f;
+        return new Vector2(
+            Mathf.Max(0.5f, rectSize.x - mapWideWarningInset * 2f),
+            Mathf.Max(0.5f, rectSize.y - mapWideWarningInset * 2f));
     }
 
     /// <summary>맵 전체 피해 경고 텔레그래프를 즉시 숨깁니다.</summary>

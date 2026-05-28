@@ -15,6 +15,7 @@ namespace UnityGAS
         private MeshRenderer meshRenderer;
         private MeshFilter meshFilter;
         private LineRenderer borderLineRenderer;
+        private LineRenderer innerBorderLineRenderer;
         private Material material;
         private Material borderMaterial;
         private Vector3[] vertices;
@@ -23,6 +24,8 @@ namespace UnityGAS
         private const float BorderWidth = 0.045f;
         private const int WallClipHitBufferSize = 16;
         private readonly RaycastHit2D[] wallClipHitBuffer = new RaycastHit2D[WallClipHitBufferSize];
+        private AttackTelegraphSpec activeSpec;
+        private AttackTelegraphStyle activeStyle;
 
         public bool IsVisible => meshRenderer != null && meshRenderer.enabled;
 
@@ -33,8 +36,10 @@ namespace UnityGAS
             float normalizedProgress)
         {
             EnsureComponents();
+            activeSpec = spec;
+            activeStyle = style;
 
-            if (!TryRebuildMesh(spec))
+            if (!TryRebuildMesh(spec, style, normalizedProgress))
             {
                 HideImmediate();
                 return;
@@ -49,6 +54,10 @@ namespace UnityGAS
         {
             if (material == null)
                 return;
+
+            activeStyle = style;
+            if (IsVisible)
+                TryRebuildMesh(activeSpec, activeStyle, normalizedProgress);
 
             float curved = style != null && style.progressCurve != null
                 ? Mathf.Clamp01(style.progressCurve.Evaluate(normalizedProgress))
@@ -95,6 +104,9 @@ namespace UnityGAS
 
             if (borderLineRenderer != null)
                 borderLineRenderer.enabled = false;
+
+            if (innerBorderLineRenderer != null)
+                innerBorderLineRenderer.enabled = false;
         }
 
         private void EnsureComponents()
@@ -119,12 +131,24 @@ namespace UnityGAS
                 if (borderLineRenderer == null)
                     borderLineRenderer = gameObject.AddComponent<LineRenderer>();
 
-                borderLineRenderer.useWorldSpace = false;
-                borderLineRenderer.widthMultiplier = BorderWidth;
-                borderLineRenderer.numCapVertices = 0;
-                borderLineRenderer.numCornerVertices = 0;
-                borderLineRenderer.alignment = LineAlignment.TransformZ;
-                borderLineRenderer.textureMode = LineTextureMode.Stretch;
+                ConfigureBorderLineRenderer(borderLineRenderer);
+            }
+
+            if (innerBorderLineRenderer == null)
+            {
+                Transform innerBorderRoot = transform.Find("InnerBorderLine");
+                if (innerBorderRoot == null)
+                {
+                    GameObject innerBorderObject = new GameObject("InnerBorderLine");
+                    innerBorderRoot = innerBorderObject.transform;
+                    innerBorderRoot.SetParent(transform, false);
+                }
+
+                innerBorderLineRenderer = innerBorderRoot.GetComponent<LineRenderer>();
+                if (innerBorderLineRenderer == null)
+                    innerBorderLineRenderer = innerBorderRoot.gameObject.AddComponent<LineRenderer>();
+
+                ConfigureBorderLineRenderer(innerBorderLineRenderer);
             }
 
             if (mesh == null)
@@ -145,11 +169,34 @@ namespace UnityGAS
                 Shader shader = Shader.Find(DefaultShaderName);
                 borderMaterial = new Material(shader);
                 borderLineRenderer.sharedMaterial = borderMaterial;
+                innerBorderLineRenderer.sharedMaterial = borderMaterial;
+            }
+            else if (innerBorderLineRenderer.sharedMaterial == null)
+            {
+                innerBorderLineRenderer.sharedMaterial = borderMaterial;
             }
         }
 
-        private bool TryRebuildMesh(AttackTelegraphSpec spec)
+        /// <summary>
+        /// 책임 :
+        /// - wall-clipped mesh 경계선을 그리는 LineRenderer의 공통 옵션을 맞춘다.
+        /// </summary>
+        private static void ConfigureBorderLineRenderer(LineRenderer renderer)
         {
+            if (renderer == null)
+                return;
+
+            renderer.useWorldSpace = false;
+            renderer.widthMultiplier = BorderWidth;
+            renderer.numCapVertices = 0;
+            renderer.numCornerVertices = 0;
+            renderer.alignment = LineAlignment.TransformZ;
+            renderer.textureMode = LineTextureMode.Stretch;
+        }
+
+        private bool TryRebuildMesh(AttackTelegraphSpec spec, AttackTelegraphStyle style, float normalizedProgress)
+        {
+            float fillScale = ResolveFillScale(style, normalizedProgress);
             switch (spec.shape)
             {
                 case AttackTelegraphShape.Rectangle:
@@ -163,7 +210,8 @@ namespace UnityGAS
                         Mathf.Max(0.01f, spec.size.y),
                         spec.wallClipLayers,
                         spec.wallClipSampleCount,
-                        spec.wallClipSkinWidth);
+                        spec.wallClipSkinWidth,
+                        fillScale);
                     return true;
 
                 case AttackTelegraphShape.Circle:
@@ -174,7 +222,19 @@ namespace UnityGAS
                         360f,
                         spec.wallClipLayers,
                         spec.wallClipSampleCount,
-                        spec.wallClipSkinWidth);
+                        spec.wallClipSkinWidth,
+                        fillScale);
+                    return true;
+
+                case AttackTelegraphShape.Ring:
+                    RebuildRingMesh(
+                        spec.center,
+                        Mathf.Max(spec.size.x, spec.size.y) * 0.5f,
+                        Mathf.Max(0f, spec.innerDiameter) * 0.5f,
+                        spec.wallClipLayers,
+                        spec.wallClipSampleCount,
+                        spec.wallClipSkinWidth,
+                        fillScale);
                     return true;
 
                 case AttackTelegraphShape.Sector:
@@ -185,12 +245,28 @@ namespace UnityGAS
                         spec.sectorAngleDeg,
                         spec.wallClipLayers,
                         spec.wallClipSampleCount,
-                        spec.wallClipSkinWidth);
+                        spec.wallClipSkinWidth,
+                        fillScale);
                     return true;
 
             }
 
             return false;
+        }
+
+        /// <summary>
+        /// 책임 :
+        /// - AttackTelegraphStyle의 진행도 기반 fill scale 설정을 wall-clipped mesh가 사용할 값으로 환산한다.
+        /// </summary>
+        private static float ResolveFillScale(AttackTelegraphStyle style, float normalizedProgress)
+        {
+            if (style == null || !style.scaleFillWithProgress)
+                return 1f;
+
+            float curved = style.progressCurve != null
+                ? Mathf.Clamp01(style.progressCurve.Evaluate(normalizedProgress))
+                : Mathf.Clamp01(normalizedProgress);
+            return Mathf.Clamp01(Mathf.Lerp(Mathf.Clamp01(style.fillScaleStart), Mathf.Clamp01(style.fillScaleEnd), curved));
         }
 
         /// <summary>
@@ -205,7 +281,8 @@ namespace UnityGAS
             float width,
             LayerMask wallLayers,
             int sampleCount,
-            float skinWidth)
+            float skinWidth,
+            float fillScale)
         {
             transform.position = origin;
             transform.rotation = Quaternion.identity;
@@ -250,6 +327,72 @@ namespace UnityGAS
             }
 
             RebuildRectangleBorderLine(safeSampleCount);
+            ApplyFillScaleToRectangleVertices(safeSampleCount, fillScale);
+
+            mesh.Clear();
+            mesh.vertices = vertices;
+            mesh.triangles = triangles;
+            mesh.RecalculateBounds();
+        }
+
+        /// <summary>
+        /// 책임 :
+        /// - 도넛형 경고 영역을 각도별 raycast 거리로 잘라 annulus mesh로 갱신한다.
+        /// - Witch 도넛 패턴처럼 안쪽 안전지대와 바깥 위험 경계를 동시에 보여야 하는 공격에 사용한다.
+        /// </summary>
+        private void RebuildRingMesh(
+            Vector2 origin,
+            float outerRadius,
+            float innerRadius,
+            LayerMask wallLayers,
+            int sampleCount,
+            float skinWidth,
+            float fillScale)
+        {
+            transform.position = origin;
+            transform.rotation = Quaternion.identity;
+
+            int safeSampleCount = Mathf.Max(8, sampleCount);
+            EnsureMeshBuffers(safeSampleCount * 2, safeSampleCount * 2);
+
+            float safeOuterRadius = Mathf.Max(0.01f, outerRadius);
+            float safeInnerRadius = Mathf.Clamp(innerRadius, 0f, safeOuterRadius - 0.01f);
+            float safeSkin = Mathf.Max(0f, skinWidth);
+
+            for (int i = 0; i < safeSampleCount; i++)
+            {
+                float angle = i / (float)safeSampleCount * 360f;
+                Vector2 rayDirection = Rotate(Vector2.right, angle);
+                float visibleOuterDistance = ResolveVisibleDistance(origin, rayDirection, safeOuterRadius, wallLayers, safeSkin);
+                float visibleInnerDistance = Mathf.Min(safeInnerRadius, visibleOuterDistance);
+                int vertexIndex = i * 2;
+                vertices[vertexIndex] = rayDirection * visibleInnerDistance;
+                vertices[vertexIndex + 1] = rayDirection * visibleOuterDistance;
+            }
+
+            int triangleIndex = 0;
+            for (int i = 0; i < safeSampleCount; i++)
+            {
+                int next = i + 1;
+                if (next >= safeSampleCount)
+                    next = 0;
+
+                int innerA = i * 2;
+                int outerA = innerA + 1;
+                int innerB = next * 2;
+                int outerB = innerB + 1;
+
+                triangles[triangleIndex++] = innerA;
+                triangles[triangleIndex++] = outerA;
+                triangles[triangleIndex++] = outerB;
+
+                triangles[triangleIndex++] = innerA;
+                triangles[triangleIndex++] = outerB;
+                triangles[triangleIndex++] = innerB;
+            }
+
+            RebuildRingBorderLines(safeSampleCount);
+            ApplyFillScaleToRingVertices(safeSampleCount, safeInnerRadius, fillScale);
 
             mesh.Clear();
             mesh.vertices = vertices;
@@ -264,7 +407,8 @@ namespace UnityGAS
             float angleDegrees,
             LayerMask wallLayers,
             int sampleCount,
-            float skinWidth)
+            float skinWidth,
+            float fillScale)
         {
             transform.position = origin;
             transform.rotation = Quaternion.identity;
@@ -295,6 +439,7 @@ namespace UnityGAS
             }
 
             RebuildBorderLine(outerVertexCount, isFullCircle);
+            ApplyFillScaleToRadialVertices(outerVertexCount, fillScale);
 
             int triangleIndex = 0;
             int triangleFanCount = isFullCircle ? outerVertexCount : outerVertexCount - 1;
@@ -317,6 +462,64 @@ namespace UnityGAS
 
         /// <summary>
         /// 책임 :
+        /// - 사각형 경고의 외곽선은 유지하고 fill mesh만 중심에서 진행도만큼 커지게 한다.
+        /// </summary>
+        private void ApplyFillScaleToRectangleVertices(int sampleCount, float fillScale)
+        {
+            if (fillScale >= 0.999f)
+                return;
+
+            Vector3 center = Vector3.zero;
+            for (int i = 0; i < sampleCount; i++)
+            {
+                center += vertices[i * 2];
+                center += vertices[i * 2 + 1];
+            }
+
+            center /= Mathf.Max(1, sampleCount * 2);
+            for (int i = 0; i < sampleCount * 2; i++)
+                vertices[i] = Vector3.Lerp(center, vertices[i], fillScale);
+        }
+
+        /// <summary>
+        /// 책임 :
+        /// - 원형/부채꼴 경고의 외곽선은 유지하고 fill mesh만 원점에서 진행도만큼 확장한다.
+        /// </summary>
+        private void ApplyFillScaleToRadialVertices(int outerVertexCount, float fillScale)
+        {
+            if (fillScale >= 0.999f)
+                return;
+
+            for (int i = 0; i < outerVertexCount; i++)
+                vertices[i + 1] *= fillScale;
+        }
+
+        /// <summary>
+        /// 책임 :
+        /// - 도넛 경고의 안쪽/바깥쪽 외곽선은 유지하고 fill mesh만 안쪽 안전지대에서 바깥 방향으로 차오르게 한다.
+        /// </summary>
+        private void ApplyFillScaleToRingVertices(int sampleCount, float innerRadius, float fillScale)
+        {
+            if (fillScale >= 0.999f)
+                return;
+
+            for (int i = 0; i < sampleCount; i++)
+            {
+                int innerIndex = i * 2;
+                int outerIndex = innerIndex + 1;
+                Vector3 inner = vertices[innerIndex];
+                Vector3 outer = vertices[outerIndex];
+                float outerDistance = outer.magnitude;
+                float visibleThickness = Mathf.Max(0f, outerDistance - innerRadius);
+                float scaledOuterDistance = innerRadius + visibleThickness * fillScale;
+                vertices[outerIndex] = outerDistance > 0.0001f
+                    ? outer.normalized * scaledOuterDistance
+                    : inner;
+            }
+        }
+
+        /// <summary>
+        /// 책임 :
         /// - 벽에 의해 잘린 원형/부채꼴 mesh의 외곽 샘플점을 따라 테두리 선을 갱신한다.
         /// - 일반 Sprite border를 쓰지 못하는 wall-clipped 렌더링 경로에서도 위험 영역 경계를 읽기 쉽게 만든다.
         /// </summary>
@@ -324,6 +527,9 @@ namespace UnityGAS
         {
             if (borderLineRenderer == null)
                 return;
+
+            if (innerBorderLineRenderer != null)
+                innerBorderLineRenderer.enabled = false;
 
             if (isFullCircle)
             {
@@ -354,12 +560,43 @@ namespace UnityGAS
 
         /// <summary>
         /// 책임 :
+        /// - 도넛형 mesh의 바깥/안쪽 경계선을 각각 갱신해 안전지대와 위험지대를 명확히 분리한다.
+        /// </summary>
+        private void RebuildRingBorderLines(int sampleCount)
+        {
+            if (borderLineRenderer == null || innerBorderLineRenderer == null)
+                return;
+
+            EnsureBorderBuffer(sampleCount);
+
+            for (int i = 0; i < sampleCount; i++)
+                borderPositions[i] = vertices[i * 2 + 1];
+
+            borderLineRenderer.loop = true;
+            borderLineRenderer.positionCount = sampleCount;
+            borderLineRenderer.SetPositions(borderPositions);
+            borderLineRenderer.enabled = true;
+
+            for (int i = 0; i < sampleCount; i++)
+                borderPositions[i] = vertices[i * 2];
+
+            innerBorderLineRenderer.loop = true;
+            innerBorderLineRenderer.positionCount = sampleCount;
+            innerBorderLineRenderer.SetPositions(borderPositions);
+            innerBorderLineRenderer.enabled = true;
+        }
+
+        /// <summary>
+        /// 책임 :
         /// - 벽에 의해 잘린 사각형 mesh의 바깥 윤곽선을 start edge, clipped front edge 순서로 갱신한다.
         /// </summary>
         private void RebuildRectangleBorderLine(int sampleCount)
         {
             if (borderLineRenderer == null)
                 return;
+
+            if (innerBorderLineRenderer != null)
+                innerBorderLineRenderer.enabled = false;
 
             int positionCount = sampleCount * 2 + 1;
             EnsureBorderBuffer(positionCount);
@@ -458,6 +695,12 @@ namespace UnityGAS
             {
                 borderLineRenderer.sortingLayerID = sortingReference.sortingLayerID;
                 borderLineRenderer.sortingOrder = sortingReference.sortingOrder + 1;
+            }
+
+            if (innerBorderLineRenderer != null)
+            {
+                innerBorderLineRenderer.sortingLayerID = sortingReference.sortingLayerID;
+                innerBorderLineRenderer.sortingOrder = sortingReference.sortingOrder + 1;
             }
         }
 

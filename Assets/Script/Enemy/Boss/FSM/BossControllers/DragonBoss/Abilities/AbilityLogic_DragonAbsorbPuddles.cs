@@ -104,6 +104,7 @@ public sealed class AbilityLogic_DragonAbsorbPuddles : AbilityLogic
         {
             dragon.PlayPatternTrigger(DragonAnimationKeys.Jump);
             PlayCenterJumpPresentation(dragon, start);
+            dragon.BeginJumpAfterimage();
             heightState?.SetAirborne(0f, centerJumpBodyZHeight);
 
             while (elapsed < duration)
@@ -126,6 +127,7 @@ public sealed class AbilityLogic_DragonAbsorbPuddles : AbilityLogic
         }
         finally
         {
+            dragon.StopJumpAfterimage(IsAbilityCancelled(spec));
             heightState?.SetGrounded();
             if (impactTelegraph != null)
                 impactTelegraph.HideImmediate();

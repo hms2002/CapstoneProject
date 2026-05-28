@@ -237,7 +237,8 @@ namespace UnityGAS
 
             return spec.shape == AttackTelegraphShape.Rectangle ||
                    spec.shape == AttackTelegraphShape.Sector ||
-                   spec.shape == AttackTelegraphShape.Circle;
+                   spec.shape == AttackTelegraphShape.Circle ||
+                   spec.shape == AttackTelegraphShape.Ring;
         }
 
         private AttackTelegraphWallClippedMeshView GetOrCreateWallClippedMeshView()
