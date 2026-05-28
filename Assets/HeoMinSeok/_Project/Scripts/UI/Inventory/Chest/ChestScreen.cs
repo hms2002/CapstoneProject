@@ -719,14 +719,26 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
             canRefresh = ChestUIManager.Instance.CanRefreshOpenedChest();
         }
 
+        bool isRerollUnlocked = refreshLimit > 0;
         bool isHolding = rerollHoldActionButton != null && rerollHoldActionButton.IsHolding;
         bool canInteract = canRefresh &&
                            !IsFirstOpenRevealPlaying &&
                            (rerollRevealState == RerollRevealState.Idle || isHolding);
 
         GameObject rerollControlRoot = ResolveRerollControlRoot();
-        if (rerollControlRoot != null)
-            rerollControlRoot.SetActive(true);
+        GameObject rerollGroupRoot = ResolveRerollGroupRoot(rerollControlRoot);
+
+        SetRerollUiVisible(isRerollUnlocked, rerollGroupRoot, rerollControlRoot);
+        if (!isRerollUnlocked)
+        {
+            if (rerollHoldActionButton != null)
+                rerollHoldActionButton.SetInteractable(false);
+            else
+                rerollHoldButtonView?.SetInteractableVisual(false);
+
+            ResetRerollHoldState();
+            return;
+        }
 
         if (rerollHoldActionButton != null)
         {
@@ -741,7 +753,6 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
 
         if (rerollButton != null)
         {
-            rerollButton.gameObject.SetActive(true);
             if (rerollHoldActionButton == null)
                 rerollButton.interactable = canInteract;
         }
@@ -763,6 +774,36 @@ public class ChestScreen : MonoBehaviour, IStackableUI, IMouseCursorDomainSource
             return rerollButton.gameObject;
 
         return null;
+    }
+
+    private GameObject ResolveRerollGroupRoot(GameObject rerollControlRoot)
+    {
+        if (rerollControlRoot == null || rerollCountLabel == null)
+            return rerollControlRoot;
+
+        Transform controlParent = rerollControlRoot.transform.parent;
+        Transform labelParent = rerollCountLabel.transform.parent;
+        return controlParent != null && controlParent == labelParent
+            ? controlParent.gameObject
+            : rerollControlRoot;
+    }
+
+    private void SetRerollUiVisible(bool visible, GameObject rerollGroupRoot, GameObject rerollControlRoot)
+    {
+        if (rerollGroupRoot != null)
+        {
+            if (rerollGroupRoot.activeSelf != visible)
+                rerollGroupRoot.SetActive(visible);
+
+            if (rerollGroupRoot != rerollControlRoot)
+                return;
+        }
+
+        if (rerollControlRoot != null && rerollControlRoot.activeSelf != visible)
+            rerollControlRoot.SetActive(visible);
+
+        if (rerollCountLabel != null && rerollCountLabel.gameObject.activeSelf != visible)
+            rerollCountLabel.gameObject.SetActive(visible);
     }
 
     private string FormatRerollCount(int remainingCount, int refreshLimit, int usedCount)

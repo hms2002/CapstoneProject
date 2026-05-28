@@ -1,49 +1,52 @@
 ---
 status: active
 authority: current-task
-category: shortcut-cinematic
-last_reviewed: 2026-05-26
+category: boss-defeat-ending-outro
+last_reviewed: 2026-05-27
 ---
 
 # Current Task
 
 ## Goal
 
-Add a lever-triggered door reveal cinematic so the player can see which door opened.
+Add a boss-selectable terminal ending flow after boss defeat:
+
+`BossDeathPresentation` death speech bubble -> Ink `DialogueService` dialogue -> fullscreen ending outro -> `RunEndReason.Victory` -> `TitleScene`.
 
 ## Requested Work
 
-- When a lever is activated, apply the lever activated visual and success presentation immediately.
-- Delay the linked door opening until the camera has moved to the door.
-- Reuse the existing cinematic presentation pattern: letterbox, HUD fade, player control lock, external UI input block, gameplay camera focus, and camera restore.
-- Keep the scope limited to `LeverShortcut`; statue and temporary shortcut behavior should remain unchanged.
+- Add ending outro playback scripts modeled after TitleIntro without modifying the existing title intro path.
+- Add a scene-authored boss defeat ending sequence component with explicit boss, dialogue, outro, run-end, and target-scene references.
+- Extend `BossDeathPresentation` with an optional terminal ending hook after death speech.
+- Skip normal boss reward/portal handling when the terminal ending flow completes.
+- Keep Dialogue UI visible during the post-speech Dialogue section even while the boss cinematic letterbox is active.
 
 ## Scope Notes
 
-- User current instruction supersedes the older Flowering weapon polish task.
-- Do not pause `Time.timeScale`; the door opening animation/DOTween path should continue using the existing scaled-time behavior.
-- Do not edit scene YAML or prefab YAML directly. Optional door focus target authoring can be reviewed in Unity Inspector.
-- Unity batchmode must not run while Unity Editor processes are open.
+- The flow is opt-in per explicitly assigned boss, not global for every boss.
+- Existing normal boss reward/chest/portal behavior remains unchanged.
+- The terminal ending path replaces reward/portal activation for the selected boss.
+- Outro UI must be authored as scene/prefab UI and driven through serialized references; runtime UI hierarchy creation is not part of this task.
+- Do not direct-edit scene or prefab YAML for wiring.
 
 ## Done Criteria
 
-- Lever interaction no longer calls `DoorObject.ForceOpen(...)` before the camera focus beat.
-- Lever interaction is blocked while the reveal cinematic is already running.
-- Cinematic cleanup restores camera follow/look-at/priority, legacy camera follow state, Cinemachine brain unscaled-time setting, player protection, UI input blocking, and letterbox overlay.
-- The linked door opens with permanent save enabled after the camera focus wait.
-- Already-unlocked permanent shortcuts still show the activated lever visual on startup.
+- A selected boss can run death speech, Ink dialogue, ending outro, Victory run end, and `TitleScene` transition in order.
+- The selected terminal flow does not call boss reward-ready handling or activate the normal reward/portal path.
+- Normal bosses without the terminal sequence keep the existing death presentation and reward/portal flow.
+- DialogueCanvas is not faded out by the death letterbox while terminal post-speech dialogue is active.
+- Static verification checks confirm the new hook ordering, source references, and project-file inclusion state.
 
 ## Verification Plan
 
-- Run `rg` checks for lever cinematic state, focus target, door opening, letterbox, input blocking, and player protection references.
-- Confirm generated `Assembly-CSharp.csproj` includes the changed runtime script.
-- Run `dotnet build Assembly-CSharp.csproj --no-restore` because the changed script is included by the generated project file.
+- Run `rg` checks for the terminal hook before reward notification, no new manager/singleton/`DontDestroyOnLoad`, and ending sequence API references.
+- Check generated `.csproj` inclusion for new scripts before choosing build coverage.
+- Run `dotnet build Assembly-CSharp.csproj --no-restore` only if generated project files include the new scripts.
 - Run `git diff --check` for touched tracked files.
 - Run a trailing-whitespace scan for touched source/docs.
 - Check for Unity Editor processes and do not run Unity batchmode if the Editor is open.
 
 ## Remaining Risks
 
-- Unity Editor import/compile must still confirm the new `LeverShortcut` serialized fields.
-- Existing lever prefab and scene instances should be reviewed in Inspector for optional `doorFocusTarget` placement and timing values.
-- Manual Play Mode validation is required for camera framing, door timing, input blocking, and saved shortcut startup visual state.
+- New MonoBehaviours and ScriptableObject require Unity import/compile and Inspector wiring.
+- Manual Play Mode validation is required for authored outro layout, skip/advance behavior, Dialogue visibility under letterbox, final run-end save behavior, and selected boss reward/portal suppression.

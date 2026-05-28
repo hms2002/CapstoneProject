@@ -119,10 +119,47 @@ internal static class ApprenticeHeroSwordHitUtility
         bool flipVisualX,
         System.Collections.Generic.HashSet<int> sharedHitTargetIds = null)
     {
+        return SpawnHitbox(
+            system,
+            spec,
+            hitboxConfig,
+            hitLayers,
+            payload,
+            center,
+            direction,
+            flipVisualX,
+            Vector2.one,
+            Vector2.one,
+            false,
+            Color.white,
+            sharedHitTargetIds);
+    }
+
+    public static MeleeHitboxActor SpawnHitbox(
+        AbilitySystem system,
+        AbilitySpec spec,
+        ApprenticeHeroSwordHitboxConfig hitboxConfig,
+        LayerMask hitLayers,
+        CombatHitPayload payload,
+        Vector2 center,
+        Vector2 direction,
+        bool flipVisualX,
+        Vector2 hitboxSizeMultiplier,
+        Vector2 visualScaleMultiplier,
+        bool applyVisualColor,
+        Color visualColor,
+        System.Collections.Generic.HashSet<int> sharedHitTargetIds = null)
+    {
         if (system == null || hitboxConfig == null || hitboxConfig.HitboxPrefab == null || payload == null)
             return null;
 
         Vector2 safeDirection = direction.sqrMagnitude > 0.0001f ? direction.normalized : Vector2.right;
+        Vector2 resolvedHitboxSize = Vector2.Scale(
+            hitboxConfig.HitboxSize,
+            SanitizeMultiplier(hitboxSizeMultiplier));
+        Vector2 resolvedVisualScale = Vector2.Scale(
+            hitboxConfig.HitboxScaleMultiplier,
+            SanitizeMultiplier(visualScaleMultiplier));
         MeleeHitboxActor hitbox = UnityEngine.Object.Instantiate(
             hitboxConfig.HitboxPrefab,
             center,
@@ -142,8 +179,8 @@ internal static class ApprenticeHeroSwordHitUtility
             damageLayers = hitLayers,
             hitPayload = payload,
             worldPosition = center,
-            hitboxSize = hitboxConfig.HitboxSize,
-            hitboxScaleMultiplier = hitboxConfig.HitboxScaleMultiplier,
+            hitboxSize = resolvedHitboxSize,
+            hitboxScaleMultiplier = resolvedVisualScale,
             overrideSizingMode = hitboxConfig.OverrideSizingMode,
             sizingMode = hitboxConfig.SizingMode,
             hitOncePerTarget = hitboxConfig.HitOncePerTarget,
@@ -156,6 +193,37 @@ internal static class ApprenticeHeroSwordHitUtility
             sharedHitTargetIds = sharedHitTargetIds
         });
 
+        if (applyVisualColor)
+            ApplyVisualColor(hitbox, visualColor);
+
         return hitbox;
+    }
+
+    private static Vector2 SanitizeMultiplier(Vector2 multiplier)
+    {
+        return new Vector2(
+            Mathf.Abs(multiplier.x) > 0.0001f ? Mathf.Abs(multiplier.x) : 1f,
+            Mathf.Abs(multiplier.y) > 0.0001f ? Mathf.Abs(multiplier.y) : 1f);
+    }
+
+    private static void ApplyVisualColor(MeleeHitboxActor hitbox, Color visualColor)
+    {
+        if (hitbox == null)
+            return;
+
+        SpriteRenderer[] renderers = hitbox.GetComponentsInChildren<SpriteRenderer>(includeInactive: true);
+        for (int i = 0; i < renderers.Length; i++)
+        {
+            SpriteRenderer renderer = renderers[i];
+            if (renderer == null)
+                continue;
+
+            Color previous = renderer.color;
+            renderer.color = new Color(
+                visualColor.r,
+                visualColor.g,
+                visualColor.b,
+                previous.a * visualColor.a);
+        }
     }
 }

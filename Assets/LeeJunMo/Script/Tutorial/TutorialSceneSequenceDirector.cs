@@ -7,6 +7,7 @@ public sealed class TutorialSceneSequenceDirector : MonoBehaviour
 {
     [Header("Scene Start")]
     [SerializeField] private bool playOnStart;
+    [SerializeField] private bool waitForSceneTransitionBeforeStart;
     [SerializeField, Min(0f)] private float startDelaySeconds;
 
     [Header("Trigger")]
@@ -224,6 +225,12 @@ public sealed class TutorialSceneSequenceDirector : MonoBehaviour
 
     private IEnumerator SceneStartRoutine(float delaySeconds)
     {
+        if (waitForSceneTransitionBeforeStart)
+        {
+            while (IsSceneTransitionActive())
+                yield return null;
+        }
+
         if (delaySeconds > 0f)
         {
             float elapsed = 0f;
@@ -236,6 +243,16 @@ public sealed class TutorialSceneSequenceDirector : MonoBehaviour
 
         startRoutine = null;
         onSceneStarted?.Invoke();
+    }
+
+    private static bool IsSceneTransitionActive()
+    {
+        SceneTransitionCoordinator transitionCoordinator = SceneTransitionCoordinator.Instance;
+        if (transitionCoordinator != null && transitionCoordinator.IsTransitionActive)
+            return true;
+
+        SceneFadeTransitionService fadeService = SceneFadeTransitionService.Instance;
+        return fadeService != null && fadeService.IsTransitionActive;
     }
 
     private IEnumerator WaitForMonsterClearRoutine()

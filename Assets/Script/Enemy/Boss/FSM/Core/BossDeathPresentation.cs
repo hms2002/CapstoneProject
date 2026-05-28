@@ -73,6 +73,9 @@ public sealed class BossDeathPresentation : MonoBehaviour
     [Header("Audio")]
     [SerializeField, Min(0f)] private float deathBgmFadeOutDuration = 0f;
 
+    [Header("Terminal Ending")]
+    [SerializeField] private BossDefeatEndingSequence terminalEndingSequence;
+
     private BossControllerBase owner;
     private Coroutine runningSequence;
     private CinematicLetterboxOverlay overlay;
@@ -80,10 +83,13 @@ public sealed class BossDeathPresentation : MonoBehaviour
 
     private PlayerCinematicProtection lockedPlayerProtection;
     private bool shouldNotifyRewardsForRunningSequence = true;
+    private bool completedViaTerminalEnding;
+    private bool hasTerminalNonDialogueUiSuppression;
 
     public bool HandlesDeathFlow => useDeathPresentation && isActiveAndEnabled;
     public bool ShouldDeferDeathAnimation => HandlesDeathFlow;
     public bool IsRunning => runningSequence != null;
+    public bool CompletedViaTerminalEnding => completedViaTerminalEnding;
 
     private void Awake()
     {
@@ -92,11 +98,18 @@ public sealed class BossDeathPresentation : MonoBehaviour
 
     private void OnDisable()
     {
+        bool stoppedRunningSequence = runningSequence != null;
         if (runningSequence != null)
         {
             StopCoroutine(runningSequence);
             runningSequence = null;
         }
+
+        if (stoppedRunningSequence)
+            RestoreCameraAfterIncompleteTerminalEnding();
+
+        if (stoppedRunningSequence || hasTerminalNonDialogueUiSuppression)
+            ReleaseTerminalNonDialogueUiSuppression(restoreIfIncomplete: !completedViaTerminalEnding);
 
         CleanupPresentationArtifacts();
         UnlockPlayerControls();
@@ -127,6 +140,7 @@ public sealed class BossDeathPresentation : MonoBehaviour
             return true;
 
         shouldNotifyRewardsForRunningSequence = notifyRewardsReady;
+        completedViaTerminalEnding = false;
         LockPlayerControls();
         runningSequence = StartCoroutine(RunDeathPresentationRoutine());
         return true;
@@ -137,9 +151,17 @@ public sealed class BossDeathPresentation : MonoBehaviour
         SoundManager.EnsureInstance().StopMusic(deathBgmFadeOutDuration);
         LockPlayerControls();
         overlay = new CinematicLetterboxOverlay();
+        bool hasTerminalEnding = TryGetTerminalEndingSequence(out BossDefeatEndingSequence endingSequence);
+        if (hasTerminalEnding)
+            AcquireTerminalNonDialogueUiSuppression();
 
-        Coroutine overlayIntroRoutine = StartCoroutine(
-            overlay.PlayIn(
+        Coroutine overlayIntroRoutine = hasTerminalEnding
+            ? StartCoroutine(overlay.PlayIn(
+                deathCinematicIntroDuration,
+                deathLetterboxScreenHeightRatio,
+                deathUiTargetAlpha,
+                captureGlobalUiLayers: false))
+            : StartCoroutine(overlay.PlayIn(
                 deathCinematicIntroDuration,
                 deathLetterboxScreenHeightRatio,
                 deathUiTargetAlpha));
@@ -151,6 +173,30 @@ public sealed class BossDeathPresentation : MonoBehaviour
         yield return WaitForPresentationSeconds(deathPreSpeechDelaySeconds);
         yield return PlayAnimationAndWait(breakdownAnimation);
         yield return PlayDeathSpeechAndWait();
+
+        if (hasTerminalEnding && endingSequence != null)
+        {
+            yield return endingSequence.RunRoutine(owner, PlayTerminalEndingDialoguePreludeRoutine);
+            completedViaTerminalEnding = endingSequence.CompletedViaTerminalEnding;
+            if (!completedViaTerminalEnding)
+            {
+                yield return RestoreCameraAfterIncompleteTerminalEndingRoutine();
+                ReleaseTerminalNonDialogueUiSuppression(restoreIfIncomplete: true);
+            }
+            else
+            {
+                bool transitionStarted =
+                    SceneTransitionCoordinator.Instance != null &&
+                    SceneTransitionCoordinator.Instance.IsTransitionActive;
+                ReleaseTerminalNonDialogueUiSuppression(restoreIfIncomplete: !transitionStarted);
+            }
+
+            UnlockPlayerControls();
+            CleanupPresentationArtifacts();
+            runningSequence = null;
+            yield break;
+        }
+
         yield return PlayAnimationAndWait(deathAnimation);
 
         HideBossVisuals();
@@ -200,6 +246,9 @@ public sealed class BossDeathPresentation : MonoBehaviour
         if (speechController == null)
             speechController = GetComponent<BossSpeechController>();
 
+        if (terminalEndingSequence == null)
+            terminalEndingSequence = GetComponent<BossDefeatEndingSequence>();
+
         if (deathEffectAnchor == null)
             deathEffectAnchor = transform;
     }
@@ -225,6 +274,36 @@ public sealed class BossDeathPresentation : MonoBehaviour
             lockedPlayerProtection.Release(this);
 
         lockedPlayerProtection = null;
+    }
+
+    private void AcquireTerminalNonDialogueUiSuppression()
+    {
+        if (hasTerminalNonDialogueUiSuppression)
+            return;
+
+        DialogueService service = DialogueService.Instance;
+        if (service == null)
+            return;
+
+        service.AcquireNonDialogueUiSuppression(this);
+        hasTerminalNonDialogueUiSuppression = true;
+    }
+
+    private void ReleaseTerminalNonDialogueUiSuppression(bool restoreIfIncomplete)
+    {
+        if (!hasTerminalNonDialogueUiSuppression)
+            return;
+
+        DialogueService service = DialogueService.Instance;
+        if (service != null)
+        {
+            if (restoreIfIncomplete)
+                service.ReleaseNonDialogueUiSuppression(this);
+            else
+                service.ReleaseNonDialogueUiSuppressionWithoutRestore(this);
+        }
+
+        hasTerminalNonDialogueUiSuppression = false;
     }
 
     private void HideBossVisuals()
@@ -432,6 +511,9 @@ public sealed class BossDeathPresentation : MonoBehaviour
 
     private void NotifyRewardsReady()
     {
+        if (completedViaTerminalEnding)
+            return;
+
         if (BossEncounterEndDirector.SuppressesAutomaticRewardReady(owner))
             return;
 
@@ -492,5 +574,40 @@ public sealed class BossDeathPresentation : MonoBehaviour
             overlay.Dispose();
             overlay = null;
         }
+    }
+
+    private bool TryGetTerminalEndingSequence(out BossDefeatEndingSequence endingSequence)
+    {
+        ResolveReferences();
+        endingSequence = terminalEndingSequence;
+        return endingSequence != null && endingSequence.CanRunForBoss(owner);
+    }
+
+    private IEnumerator PlayTerminalEndingDialoguePreludeRoutine()
+    {
+        Coroutine overlayOutroRoutine = null;
+        if (overlay != null)
+            overlayOutroRoutine = StartCoroutine(overlay.PlayOut(deathCinematicOutroDuration));
+
+        if (overlayOutroRoutine != null)
+            yield return overlayOutroRoutine;
+
+        CleanupPresentationArtifacts();
+    }
+
+    private IEnumerator RestoreCameraAfterIncompleteTerminalEndingRoutine()
+    {
+        if (deathCameraDirector == null)
+            yield break;
+
+        yield return deathCameraDirector.ReturnToPlayerRoutine();
+    }
+
+    private void RestoreCameraAfterIncompleteTerminalEnding()
+    {
+        if (completedViaTerminalEnding || deathCameraDirector == null)
+            return;
+
+        deathCameraDirector.RestoreDefaultState();
     }
 }

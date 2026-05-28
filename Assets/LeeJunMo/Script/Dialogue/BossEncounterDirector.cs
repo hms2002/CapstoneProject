@@ -21,6 +21,8 @@ public class BossEncounterDirector : MonoBehaviour
     private Coroutine runningSequence;
     private PlayerInteractor2D cachedPlayer;
     private PlayerCinematicProtection lockedPlayerProtection;
+    private PlayerAnimatorController2D lockedPlayerAnimator;
+    private WeaponPresentationRig2D lockedWeaponPresentationRig;
     private GameFlowInputBlocker encounterInputBlocker;
     private InteractState previousPlayerState = InteractState.Idle;
     private bool hasPlayed;
@@ -209,7 +211,10 @@ public class BossEncounterDirector : MonoBehaviour
     private void AcquirePlayerCinematicProtection(PlayerInteractor2D player = null)
     {
         if (lockedPlayerProtection != null)
+        {
+            AcquirePlayerPresentationLock(lockedPlayerProtection.transform);
             return;
+        }
 
         Transform playerTransform = player != null ? player.transform : PlayerRuntimeRegistry.GetPlayerTransform();
         if (playerTransform == null)
@@ -218,7 +223,9 @@ public class BossEncounterDirector : MonoBehaviour
         lockedPlayerProtection = playerTransform.GetComponent<PlayerCinematicProtection>();
         if (lockedPlayerProtection == null)
             lockedPlayerProtection = playerTransform.gameObject.AddComponent<PlayerCinematicProtection>();
+
         lockedPlayerProtection.Acquire(this);
+        AcquirePlayerPresentationLock(playerTransform);
     }
 
     /// <summary>
@@ -228,11 +235,38 @@ public class BossEncounterDirector : MonoBehaviour
     /// </summary>
     private void ReleasePlayerCinematicProtection()
     {
-        if (lockedPlayerProtection == null)
+        if (lockedPlayerProtection != null)
+        {
+            lockedPlayerProtection.Release(this);
+            lockedPlayerProtection = null;
+        }
+
+        ReleasePlayerPresentationLock();
+    }
+
+    private void AcquirePlayerPresentationLock(Transform playerTransform)
+    {
+        if (playerTransform == null)
             return;
 
-        lockedPlayerProtection.Release(this);
-        lockedPlayerProtection = null;
+        if (lockedPlayerAnimator == null)
+            lockedPlayerAnimator = playerTransform.GetComponent<PlayerAnimatorController2D>();
+
+        lockedPlayerAnimator?.AcquireCinematicFacingLock(this);
+
+        if (lockedWeaponPresentationRig == null)
+            lockedWeaponPresentationRig = playerTransform.GetComponentInChildren<WeaponPresentationRig2D>(true);
+
+        lockedWeaponPresentationRig?.AcquireCinematicPresentationLock(this);
+    }
+
+    private void ReleasePlayerPresentationLock()
+    {
+        lockedPlayerAnimator?.ReleaseCinematicFacingLock(this);
+        lockedPlayerAnimator = null;
+
+        lockedWeaponPresentationRig?.ReleaseCinematicPresentationLock(this);
+        lockedWeaponPresentationRig = null;
     }
 
     /// <summary>

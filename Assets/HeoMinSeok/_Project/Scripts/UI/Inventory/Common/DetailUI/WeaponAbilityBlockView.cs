@@ -89,6 +89,9 @@ public class WeaponAbilityBlockView : MonoBehaviour
     private bool[] activeShuffleNextLayoutGroupStates;
     private LayoutFreezeState activeShuffleCurrentLayoutFreeze;
     private LayoutFreezeState activeShuffleNextLayoutFreeze;
+    private LayoutFreezeState stableExternalPreviewLayoutFreeze;
+    private bool stableExternalPreviewLayoutDirty = true;
+    private float stableExternalPreviewLayoutWidth = -1f;
 
     public bool IsVariantSwitching => variantSwitchRoutine != null;
 
@@ -116,6 +119,7 @@ public class WeaponAbilityBlockView : MonoBehaviour
     {
         StopVariantSwitchRoutine();
         SetVariantSwitchGuide(false, null, null);
+        SetCurrentTextEnabled(true);
         ApplyContentToCurrent(title, icon, inputHint, cooldownSeconds, extraMeta, body, inputAction, onGlossaryClick);
         ResetNextContainer();
     }
@@ -127,6 +131,7 @@ public class WeaponAbilityBlockView : MonoBehaviour
         externalShuffleNextView = nextView != this ? nextView : null;
         externalShuffleNextGroup = null;
         externalShuffleNextLayout = null;
+        RestoreStableExternalPreviewLayout();
 
         if (externalShuffleNextView == null)
             return;
@@ -145,6 +150,8 @@ public class WeaponAbilityBlockView : MonoBehaviour
         externalShuffleNextGroup.blocksRaycasts = false;
         SetExternalPanelDrawOrder(externalInFront: false);
         externalShuffleNextView.SetPreviewMuted(false, externalPreviewBrightness, externalPreviewDesaturation);
+        externalShuffleNextView.SetCurrentTextEnabled(false);
+        externalShuffleNextView.SetNextTextEnabled(false);
         externalPreviewConfigured = false;
         hasQueuedExternalPreview = false;
         externalShuffleNextView.SetVariantSwitchGuide(false, null, null);
@@ -157,6 +164,8 @@ public class WeaponAbilityBlockView : MonoBehaviour
         SetExternalShuffleNextView(null);
         SetVariantSwitchGuide(false, null, null);
         ResetNextContainer();
+        RestoreStableExternalPreviewLayout();
+        SetCurrentTextEnabled(true);
         SetPreviewMuted(false, externalPreviewBrightness, externalPreviewDesaturation);
         RestoreReusablePanelState(this, null, null, hideRestoredView: false);
         Canvas.ForceUpdateCanvases();
@@ -177,6 +186,7 @@ public class WeaponAbilityBlockView : MonoBehaviour
 
         externalPreviewConfigured = true;
         hasQueuedExternalPreview = false;
+        stableExternalPreviewLayoutDirty = true;
         externalShuffleNextView.gameObject.SetActive(true);
         externalShuffleNextView.Set(
             title,
@@ -330,6 +340,7 @@ public class WeaponAbilityBlockView : MonoBehaviour
 
         PrepareCurrentLayoutAnimation(currentRect);
         currentRect.anchoredPosition = start;
+        SetCurrentTextEnabled(true);
         externalShuffleNextView.gameObject.SetActive(true);
         externalShuffleNextView.Set(
             title,
@@ -341,6 +352,8 @@ public class WeaponAbilityBlockView : MonoBehaviour
             inputAction,
             onGlossaryClick);
         externalShuffleNextView.SetVariantSwitchGuide(false, null, null);
+        externalShuffleNextView.SetCurrentTextEnabled(true);
+        externalShuffleNextView.SetNextTextEnabled(false);
         SyncExternalNextRect(currentRect, nextRect);
         PlaceExternalNextBehindCurrent(currentRect, nextRect);
         SetExternalPanelDrawOrder(externalInFront: false);
@@ -395,6 +408,7 @@ public class WeaponAbilityBlockView : MonoBehaviour
         RestoreCurrentLayoutAnimation();
         SetExternalPanelDrawOrder(externalInFront: false);
         ApplyQueuedExternalPreviewOrRestore();
+        SetCurrentTextEnabled(true);
         variantSwitchRoutine = null;
         Canvas.ForceUpdateCanvases();
     }
@@ -447,6 +461,7 @@ public class WeaponAbilityBlockView : MonoBehaviour
             keyStart,
             keyScale);
 
+        SetCurrentTextEnabled(true);
         externalShuffleNextView.gameObject.SetActive(true);
         externalShuffleNextView.Set(
             title,
@@ -458,6 +473,8 @@ public class WeaponAbilityBlockView : MonoBehaviour
             inputAction,
             onGlossaryClick);
         externalShuffleNextView.SetVariantSwitchGuide(false, null, null);
+        externalShuffleNextView.SetCurrentTextEnabled(true);
+        externalShuffleNextView.SetNextTextEnabled(false);
         SyncExternalNextRect(currentRect, nextRect);
         SetExternalPanelDrawOrder(externalInFront: false);
 
@@ -516,6 +533,7 @@ public class WeaponAbilityBlockView : MonoBehaviour
         ApplyQueuedExternalPreviewOrRestore();
         RestoreActiveCardMotionShuffleLayouts();
         ClearActiveCardMotionShuffle();
+        SetCurrentTextEnabled(true);
         variantSwitchRoutine = null;
         Canvas.ForceUpdateCanvases();
     }
@@ -535,6 +553,7 @@ public class WeaponAbilityBlockView : MonoBehaviour
         Vector2 offset = shuffleOffset.sqrMagnitude > 0.0001f ? shuffleOffset : new Vector2(36f, 0f);
         float halfDuration = Mathf.Max(0.01f, shuffleDuration * 0.5f);
 
+        SetCurrentTextEnabled(true);
         float elapsed = 0f;
         while (elapsed < halfDuration)
         {
@@ -563,6 +582,7 @@ public class WeaponAbilityBlockView : MonoBehaviour
 
         container.anchoredPosition = start;
         SetAlpha(currentContainerGroup, 1f);
+        SetCurrentTextEnabled(true);
         variantSwitchRoutine = null;
         Canvas.ForceUpdateCanvases();
     }
@@ -581,6 +601,8 @@ public class WeaponAbilityBlockView : MonoBehaviour
         Vector2 nextStart = nextContainer.anchoredPosition;
         Vector2 offset = shuffleOffset.sqrMagnitude > 0.0001f ? shuffleOffset : new Vector2(36f, 0f);
 
+        SetCurrentTextEnabled(true);
+        SetNextTextEnabled(true);
         ApplyContentToNext(title, icon, inputHint, cooldownSeconds, extraMeta, body, inputAction);
         nextContainer.gameObject.SetActive(true);
         currentContainer.anchoredPosition = currentStart;
@@ -639,6 +661,7 @@ public class WeaponAbilityBlockView : MonoBehaviour
             inputAction,
             onGlossaryClick);
 
+        stableExternalPreviewLayoutDirty = true;
         RefreshVariantSwitchGuide();
     }
 
@@ -998,10 +1021,19 @@ public class WeaponAbilityBlockView : MonoBehaviour
                 StyleRestingExternalPreview();
             else
             {
+                RestoreStableExternalPreviewLayout();
+                externalShuffleNextView.SetCurrentTextEnabled(false);
+                externalShuffleNextView.SetNextTextEnabled(false);
                 externalShuffleNextView.gameObject.SetActive(false);
                 SetAlpha(externalShuffleNextGroup, 0f);
             }
         }
+        else
+        {
+            RestoreStableExternalPreviewLayout();
+        }
+
+        SetNextTextEnabled(false);
     }
 
     private void RestoreExternalShuffleNextViewState(bool hideRestoredView)
@@ -1024,6 +1056,7 @@ public class WeaponAbilityBlockView : MonoBehaviour
         externalShuffleNextLayout = null;
         externalPreviewConfigured = false;
         hasQueuedExternalPreview = false;
+        RestoreStableExternalPreviewLayout();
     }
 
     private static void RestoreReusablePanelState(
@@ -1047,6 +1080,9 @@ public class WeaponAbilityBlockView : MonoBehaviour
         if (layout != null)
             layout.ignoreLayout = false;
 
+        view.SetCurrentTextEnabled(!hideRestoredView);
+        view.SetNextTextEnabled(false);
+
         if (hideRestoredView)
             view.gameObject.SetActive(false);
     }
@@ -1062,6 +1098,7 @@ public class WeaponAbilityBlockView : MonoBehaviour
         if (currentContainer != null)
             SetAlpha(currentContainerGroup, 1f);
 
+        SetCurrentTextEnabled(true);
         SetAlpha(ResolveCurrentPanelCanvasGroup(), 1f);
         RestoreActiveCardMotionShufflePose();
         RestoreCurrentLayoutAnimation();
@@ -1073,6 +1110,96 @@ public class WeaponAbilityBlockView : MonoBehaviour
     {
         if (group != null)
             group.alpha = alpha;
+    }
+
+    private void SetCurrentTextEnabled(bool enabled)
+    {
+        SetAbilityTextEnabled(titleText, enabled);
+        SetAbilityTextEnabled(cooldownText, enabled);
+        SetAbilityTextEnabled(extraMetaText, enabled);
+        SetAbilityTextEnabled(bodyText, enabled);
+    }
+
+    private void SetNextTextEnabled(bool enabled)
+    {
+        SetAbilityTextEnabled(nextTitleText, enabled);
+        SetAbilityTextEnabled(nextCooldownText, enabled);
+        SetAbilityTextEnabled(nextExtraMetaText, enabled);
+        SetAbilityTextEnabled(nextBodyText, enabled);
+    }
+
+    private static void SetAbilityTextEnabled(TMP_Text text, bool enabled)
+    {
+        if (text != null)
+            text.enabled = enabled;
+    }
+
+    private void ApplyStableExternalPreviewLayout(RectTransform currentRect, RectTransform nextRect)
+    {
+        if (currentRect == null || nextRect == null || externalShuffleNextView == null)
+        {
+            RestoreStableExternalPreviewLayout();
+            return;
+        }
+
+        float currentWidth = Mathf.Max(0f, currentRect.rect.width);
+        if (!stableExternalPreviewLayoutDirty &&
+            stableExternalPreviewLayoutFreeze != null &&
+            Mathf.Approximately(stableExternalPreviewLayoutWidth, currentWidth))
+        {
+            return;
+        }
+
+        RestoreStableExternalPreviewLayout();
+        SetCurrentTextEnabled(true);
+        externalShuffleNextView.SetCurrentTextEnabled(true);
+        externalShuffleNextView.SetNextTextEnabled(false);
+
+        float currentHeight = ResolvePreferredLayoutHeight(currentRect);
+        float nextHeight = ResolvePreferredLayoutHeight(nextRect);
+        float maxHeight = Mathf.Max(currentHeight, nextHeight);
+        if (maxHeight <= 0f)
+            return;
+
+        stableExternalPreviewLayoutFreeze = FreezeLayoutElement(currentRect, forceParticipatesInParentLayout: true);
+        if (stableExternalPreviewLayoutFreeze?.Element != null)
+        {
+            LayoutElement element = stableExternalPreviewLayoutFreeze.Element;
+            element.minHeight = Mathf.Max(element.minHeight, maxHeight);
+            element.preferredHeight = Mathf.Max(element.preferredHeight, maxHeight);
+            element.flexibleHeight = 0f;
+            element.layoutPriority = Mathf.Max(element.layoutPriority, 100);
+        }
+
+        stableExternalPreviewLayoutDirty = false;
+        stableExternalPreviewLayoutWidth = currentWidth;
+        if (currentRect.parent is RectTransform parentRect)
+            LayoutRebuilder.ForceRebuildLayoutImmediate(parentRect);
+        LayoutRebuilder.ForceRebuildLayoutImmediate(currentRect);
+        Canvas.ForceUpdateCanvases();
+    }
+
+    private void RestoreStableExternalPreviewLayout()
+    {
+        RestoreLayoutFreeze(stableExternalPreviewLayoutFreeze);
+        stableExternalPreviewLayoutFreeze = null;
+        stableExternalPreviewLayoutDirty = true;
+        stableExternalPreviewLayoutWidth = -1f;
+    }
+
+    private static float ResolvePreferredLayoutHeight(RectTransform rect)
+    {
+        if (rect == null)
+            return 0f;
+
+        LayoutRebuilder.ForceRebuildLayoutImmediate(rect);
+        Canvas.ForceUpdateCanvases();
+
+        float preferredHeight = LayoutUtility.GetPreferredHeight(rect);
+        if (preferredHeight <= 0f)
+            preferredHeight = rect.rect.height;
+
+        return Mathf.Max(0f, preferredHeight);
     }
 
     private CanvasGroup ResolveCurrentPanelCanvasGroup()
@@ -1126,12 +1253,17 @@ public class WeaponAbilityBlockView : MonoBehaviour
         CanvasGroup nextGroup = ResolveExternalNextCanvasGroup();
 
         if (currentRect == null || nextRect == null)
+        {
+            RestoreStableExternalPreviewLayout();
             return;
+        }
 
         externalShuffleNextView.gameObject.SetActive(true);
         SyncExternalNextRect(currentRect, nextRect);
         PlaceExternalNextBehindCurrent(currentRect, nextRect);
         SetExternalPanelDrawOrder(externalInFront: false);
+        ApplyStableExternalPreviewLayout(currentRect, nextRect);
+        SyncExternalNextRect(currentRect, nextRect);
         if (CanUseCardMotionShuffle(currentRect, nextRect, out RectTransform currentMotion, out RectTransform nextMotion))
         {
             nextRect.anchoredPosition = currentRect.anchoredPosition + externalPreviewOffset;
@@ -1144,6 +1276,8 @@ public class WeaponAbilityBlockView : MonoBehaviour
 
         SetAlpha(nextGroup, 1f);
         externalShuffleNextView.SetPreviewMuted(true, externalPreviewBrightness, externalPreviewDesaturation);
+        externalShuffleNextView.SetCurrentTextEnabled(false);
+        externalShuffleNextView.SetNextTextEnabled(false);
 
         if (nextGroup != null)
         {

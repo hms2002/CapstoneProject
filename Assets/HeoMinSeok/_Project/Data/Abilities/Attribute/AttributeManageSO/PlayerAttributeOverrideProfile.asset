@@ -29,3 +29,5 @@ MonoBehaviour:
     baseValue: 1
   - attribute: {fileID: 11400000, guid: dde112729dec0bb4a9d2238ee7ee6dcc, type: 2}
     baseValue: 100
+  - attribute: {fileID: 11400000, guid: 947f52c2a34d008428c105cd897d5efd, type: 2}
+    baseValue: 40

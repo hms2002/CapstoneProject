@@ -30,10 +30,16 @@ public sealed class TutorialInfoPanel : MonoBehaviour
     [SerializeField] private Button nextPageButton;
     [SerializeField] private GameObject previousPageRoot;
     [SerializeField] private GameObject nextPageRoot;
+    [SerializeField] private GameObject pageKeyGuideRoot;
+    [SerializeField] private GameObject previousPageKeyGuideRoot;
+    [SerializeField] private GameObject nextPageKeyGuideRoot;
+    [SerializeField] private Image previousPageKeyGlyphImage;
+    [SerializeField] private Image nextPageKeyGlyphImage;
     [SerializeField] private TMP_Text pageNumberText;
     [SerializeField] private bool enableKeyboardPageInput = true;
     [SerializeField] private KeyCode previousPageKey = KeyCode.A;
     [SerializeField] private KeyCode nextPageKey = KeyCode.D;
+    [SerializeField] private Color disabledPageKeyGlyphColor = new(1f, 1f, 1f, 0.35f);
 
     [Header("Progress")]
     [SerializeField] private TMP_Text advanceGuideText;
@@ -58,6 +64,7 @@ public sealed class TutorialInfoPanel : MonoBehaviour
     [SerializeField] private bool animateOpenClose = true;
 
     [Header("Flow")]
+    [SerializeField] private bool hideOnPlayStart = true;
     [SerializeField] private bool blockGameFlowWhileOpen = true;
     [SerializeField] private UnityEvent onShown;
     [SerializeField] private UnityEvent onCompleted;
@@ -75,6 +82,12 @@ public sealed class TutorialInfoPanel : MonoBehaviour
     private Vector2 panelOpenAnchoredPosition;
     private bool hasPanelOpenAnchoredPosition;
     private Coroutine presentationRoutine;
+    private Image cachedPreviousPageKeyGlyphImage;
+    private Image cachedNextPageKeyGlyphImage;
+    private Color previousPageKeyGlyphOriginalColor;
+    private Color nextPageKeyGlyphOriginalColor;
+    private bool hasPreviousPageKeyGlyphOriginalColor;
+    private bool hasNextPageKeyGlyphOriginalColor;
 
     public bool IsOpen => isOpen;
 
@@ -95,6 +108,12 @@ public sealed class TutorialInfoPanel : MonoBehaviour
     {
         BindAdvanceHoldButton();
         BindPageButtons();
+    }
+
+    private void Start()
+    {
+        if (hideOnPlayStart)
+            HideForPlayStart();
     }
 
     private void Update()
@@ -222,6 +241,20 @@ public sealed class TutorialInfoPanel : MonoBehaviour
         SetVisible(false, animateOpenClose);
     }
 
+    private void HideForPlayStart()
+    {
+        StopPresentationRoutine();
+        isOpen = false;
+        isClosing = false;
+        heldSeconds = 0f;
+        SetProgress(0f);
+        CleanupAdvanceHoldButtonForClose();
+        SetInteractionEnabled(false);
+        SetDimPanelActive(false);
+        ReleaseInputBlocker();
+        SetRootActive(false);
+    }
+
     public void ShowPreviousPage()
     {
         if (!CanNavigatePages() || currentPageIndex <= 0)
@@ -307,8 +340,9 @@ public sealed class TutorialInfoPanel : MonoBehaviour
         bool canGoPrevious = hasMultiplePages && currentPageIndex > 0;
         bool canGoNext = hasMultiplePages && currentPageIndex < GetLastPageIndex();
 
-        SetPageControlActive(previousPageRoot, previousPageButton, canGoPrevious);
-        SetPageControlActive(nextPageRoot, nextPageButton, canGoNext);
+        SetPageControlState(previousPageRoot, previousPageButton, hasMultiplePages, canGoPrevious);
+        SetPageControlState(nextPageRoot, nextPageButton, hasMultiplePages, canGoNext);
+        RefreshPageKeyGuides(hasMultiplePages, canGoPrevious, canGoNext);
         RefreshPageNumberText();
 
         bool canAdvance = IsOnFinalPage();
@@ -338,6 +372,84 @@ public sealed class TutorialInfoPanel : MonoBehaviour
 
         int displayPage = Mathf.Clamp(currentPageIndex + 1, 1, totalPages);
         pageNumberText.text = $"{displayPage}/{totalPages}";
+    }
+
+    private void RefreshPageKeyGuides(bool hasMultiplePages, bool canGoPrevious, bool canGoNext)
+    {
+        bool showKeyboardGuides = enableKeyboardPageInput && hasMultiplePages;
+
+        SetOptionalRootActive(pageKeyGuideRoot, showKeyboardGuides);
+        SetOptionalRootActive(previousPageKeyGuideRoot, showKeyboardGuides);
+        SetOptionalRootActive(nextPageKeyGuideRoot, showKeyboardGuides);
+
+        ApplyPageKeyGlyphs(canGoPrevious, canGoNext);
+    }
+
+    private void ApplyPageKeyGlyphs(bool canGoPrevious, bool canGoNext)
+    {
+        if (previousPageKeyGlyphImage == null)
+            previousPageKeyGlyphImage = ResolveKeyGlyphImage(previousPageKeyGuideRoot);
+
+        if (nextPageKeyGlyphImage == null)
+            nextPageKeyGlyphImage = ResolveKeyGlyphImage(nextPageKeyGuideRoot);
+
+        ApplyPageKeyGlyph(
+            previousPageKeyGlyphImage,
+            previousPageKey,
+            canGoPrevious,
+            ref cachedPreviousPageKeyGlyphImage,
+            ref hasPreviousPageKeyGlyphOriginalColor,
+            ref previousPageKeyGlyphOriginalColor);
+        ApplyPageKeyGlyph(
+            nextPageKeyGlyphImage,
+            nextPageKey,
+            canGoNext,
+            ref cachedNextPageKeyGlyphImage,
+            ref hasNextPageKeyGlyphOriginalColor,
+            ref nextPageKeyGlyphOriginalColor);
+    }
+
+    private static Image ResolveKeyGlyphImage(GameObject rootObject)
+    {
+        if (rootObject == null)
+            return null;
+
+        Image image = rootObject.GetComponent<Image>();
+        if (image != null)
+            return image;
+
+        return rootObject.GetComponentInChildren<Image>(true);
+    }
+
+    private void ApplyPageKeyGlyph(
+        Image image,
+        KeyCode key,
+        bool interactable,
+        ref Image cachedImage,
+        ref bool hasOriginalColor,
+        ref Color originalColor)
+    {
+        if (image == null)
+            return;
+
+        if (cachedImage != image)
+        {
+            cachedImage = image;
+            hasOriginalColor = false;
+        }
+
+        if (!hasOriginalColor)
+        {
+            originalColor = image.color;
+            hasOriginalColor = true;
+        }
+
+        InputGlyphPresentation glyph = InputGlyphDatabase.Resolve(key);
+        Sprite icon = InputGlyphVisualUtility.ResolveIcon(glyph);
+        image.sprite = icon;
+        image.enabled = icon != null;
+        image.color = interactable ? originalColor : disabledPageKeyGlyphColor;
+        image.raycastTarget = false;
     }
 
     private void AcquireInputBlocker()
@@ -382,10 +494,25 @@ public sealed class TutorialInfoPanel : MonoBehaviour
         pageButtonsBound = false;
     }
 
-    private static void SetPageControlActive(GameObject rootOverride, Button button, bool active)
+    private static void SetPageControlState(GameObject rootOverride, Button button, bool visible, bool interactable)
     {
         GameObject rootObject = rootOverride != null ? rootOverride : button != null ? button.gameObject : null;
-        if (rootObject != null && rootObject.activeSelf != active)
+        if (rootObject != null && rootObject.activeSelf != visible)
+            rootObject.SetActive(visible);
+
+        if (button != null)
+            button.interactable = visible && interactable;
+    }
+
+    private void SetOptionalRootActive(GameObject rootObject, bool active)
+    {
+        if (rootObject == null)
+            return;
+
+        if (rootObject == gameObject || rootObject == root)
+            return;
+
+        if (rootObject.activeSelf != active)
             rootObject.SetActive(active);
     }
 

@@ -2,10 +2,273 @@
 status: active
 authority: project-log
 category: decision-log
-last_reviewed: 2026-05-26
+last_reviewed: 2026-05-28
 ---
 
 # Decision Log
+
+## 2026-05-28 - Normal Boss Routes Are The Default Reward Path
+
+Decision:
+The run route catalog uses three normal boss RouteSets (`ShadowCorridorBossRouteSet`, `Drunken_Dragon_Spili_CorridorBossRouteSet`, and `SlimeRouteSet`) followed by `DemonkingRouteSet` as the single final RouteSet. Direct boss-scene Play uses the full catalog route order deterministically and points `currentStageIndex` at the scene being tested, instead of creating a one-stage plan.
+
+Reason:
+Normal bosses are repeated route content and should keep the ordinary chest plus portal reward path. Final-route behavior is the exceptional terminal/final-boss policy. A one-stage direct Play plan made normal boss scenes look like the last stage and obscured reward diagnosis.
+
+Implications:
+- `RunRouteCatalog.asset` should keep `normalStageCount = 3`, `allowDuplicateNormalRoutes = false`, the three normal RouteSets, and `DemonkingRouteSet` as final.
+- Runtime hub-start route generation still randomizes the normal route order according to the existing catalog policy.
+- Editor direct Play uses catalog order only for deterministic local testing and route-context debugging.
+- `BossRewardRevealSceneValidatorWindow` validates and can reapply the route catalog defaults alongside the target scene reveal setup.
+
+## 2026-05-28 - Reward Gate Reveal Isolates Global Vision Masks
+
+Decision:
+When a boss reward portal reveal runs in a scene with `GlobalVisionMaskRoot`, `BossRewardObjectRevealPresentation` can temporarily narrow active global vision `SpriteMask` ranges to the dark overlay renderer's sorting range. This keeps the boss gimmick overlay masked while preventing the reward portal renderer from being clipped by the player vision mask during its local gate reveal.
+
+Reason:
+Unity `SpriteMask` interaction is sorting-range based. The reward gate reveal uses `VisibleInsideMask` on portal renderers for the local reveal mask, so the same renderers can unintentionally react to the scene's global player vision mask.
+
+Implications:
+- The target-scene apply tool enables `isolateGlobalVisionMasksDuringReveal` for portal reveal components.
+- The reveal component defaults this option to enabled, but only applies it when the reveal actually uses a SpriteMask or masked renderers.
+- Global vision mask ranges are restored when reveal completes, is stopped, or the reveal component is disabled.
+- `HeoMinSeok_Boss` needs Play Mode review because it combines the reward portal reveal with the boss gimmick `GlobalVisionMaskRoot`.
+
+## 2026-05-28 - Global Ending Outro View Owns Runtime Closed Startup
+
+Decision:
+`EndingOutroView` snaps itself hidden during runtime startup when its authored root is active, while `Show(...)` marks intentional playback activation so inactive authored views can still be enabled and played normally.
+
+Reason:
+The ending outro view can be authored under persistent `GlobalUIRoot` without a colocated `EndingOutroPlayer`. If the shared `IntroOverlay` is left active for editing, relying only on `EndingOutroPlayer.hideViewOnAwake` lets the fullscreen overlay appear as soon as Play Mode starts.
+
+Implications:
+- Fullscreen ending outro UI can remain authored in the global UI prefab without requiring the root to be manually inactive after every edit.
+- Real outro playback still activates inactive roots through `EndingOutroView.Show(...)`.
+- This is a runtime state guard only; scene/prefab authoring should still keep presentation roots inactive when practical.
+
+## 2026-05-28 - Boss Reward Reveal Ownership Is Split By Object
+
+Decision:
+Normal boss reward chests own their simple dust reveal directly through `TreasureChest.PlayRewardReveal()`. Reward exit portals own the mask, rise, dust loop/burst, collider lock, global vision mask isolation, camera shake, and local tremble through the optional `BossRewardObjectRevealPresentation` scene component. If no portal reveal component is present, the portal still activates immediately as before.
+
+Reason:
+Chest reveal is only a one-shot dust particle and does not need the portal reveal component's mask, movement, collider lock, camera shake, or global vision mask isolation fields. Keeping chest dust on `TreasureChest` and portal reveal on a portal scene component keeps each object's presentation API proportional to its behavior.
+
+Implications:
+- `BossBattleEndHandler` and `BossEncounterEndDirector` invoke `TreasureChest.PlayRewardReveal()` only after existing chest initialization succeeds.
+- `BossRewardSpawnService` activates the referenced chest before boss loot generation so presentation visibility is not blocked by a later loot-content exception.
+- `BossBattleEndHandler` and `BossEncounterEndDirector` invoke `BossRewardObjectRevealPresentation.PlayReveal()` only after portal visibility restoration succeeds.
+- Portal reveal sub-effects share the same reveal timeline: mask/collider lock spans the reveal, loop dust and local/root loop shake run during the reveal, burst dust and completion camera shake run on reveal completion.
+- Final-route chest suppression and terminal `BossDefeatEndingSequence` reward suppression stay unchanged.
+- Unity scene authoring must wire TreasureChest reward dust fields for chest dust, and portal reveal root, SpriteRenderers, particles, and colliders for the gate reveal.
+
+## 2026-05-28 - Target Boss Reward Scenes Use Editor Apply Tool
+
+Decision:
+`HeoMinSeok_Boss`, `HeoMinSeok_Boss_Dragon_Spili`, and `SangHyup_Boss_SlimeQueen` should use `BossEncounterEndDirector` as the canonical active reward owner and use the Unity Editor apply tool for first-pass reveal wiring. The tool uses Editor scene APIs, not handwritten YAML, and disables a duplicate `BossBattleEndHandler` only when it references the same chest and portal as the director.
+
+Reason:
+The target scenes already carry both director and legacy handler components referencing the same authored chest and portal. A repeatable Editor apply path keeps the scene-instance reveal setup consistent while avoiding duplicate reward ownership and avoiding shared prefab changes.
+
+Implications:
+- Run `Tools/Validation/Apply Boss Reward Reveal Target Scene Setup` after Unity recompiles the Editor script, then review and save the scene changes.
+- If an enabled `BossBattleEndHandler` references different objects, the tool leaves it enabled and reports it for manual review.
+- Generated mask/dust helpers are first-pass authoring defaults; visual timing, sorting, and positions still require Play Mode review.
+
+## 2026-05-28 - Terminal Outro Uses Live GlobalUIRoot View Resolution
+
+Decision:
+The terminal boss ending outro does not trust a stale scene-instance `EndingOutroView` reference at playback time. `EndingOutroPlayer` first reuses its assigned view when it is alive and ready, then resolves a ready view under the active `GlobalUIRoot`, and only then falls back to a single unambiguous scene view.
+
+Reason:
+Playable scenes each author a `GlobalUIRoot` for direct scene testing, but at runtime the root is persistent and duplicates destroy themselves. A boss scene reached from Hub or Corridor can therefore lose serialized references to UI children on its duplicate root even though the persistent root still has the authored outro view.
+
+Implications:
+- Cross-scene terminal endings can play the same authored outro UI whether the boss scene is launched directly or reached from another scene.
+- The outro player still uses authored UI only; it does not create Canvas, TMP, Image, or presentation hierarchy at runtime.
+- Ending outro player control lock spans the outro and accepted TitleScene transition startup so gameplay input does not resume behind the fullscreen panel.
+
+## 2026-05-28 - Boss Choice Failure Effect Requires Add-Affection Sibling
+
+Decision:
+Boss dialogue choice failure presentation is automatic only when the current choice set contains at least one `add_aff` choice and the selected choice does not carry `add_aff`. Explicit `choice_fail`, `aff_fail`, and `fail_aff` tags still force the failure effect.
+
+Reason:
+Some boss choice sets are weak story branches with no affection reward. Treating every non-`add_aff` boss choice result as failure made both sides of simple branches look like failed answers.
+
+Implications:
+- Ink authors can make a success/failure pair by putting `# add_aff: 1` in the success choice body and leaving the opposite choice without `add_aff`.
+- Choice sets with no `add_aff` tags do not show the failure effect unless an explicit failure tag is authored.
+- The runtime previews the first result tags of the current choice set from a cloned Ink story state so body-level `add_aff` tags are detected without advancing the real story.
+
+## 2026-05-28 - Dialogue Hides Non-Dialogue UI Through Fade Suppression
+
+Decision:
+`DialogueService` owns the common non-dialogue UI suppression boundary for Ink dialogue and exposes owner-token suppression for outer flows that need the same hidden UI window before or after Dialogue playback. The suppressed layers are `GameplayHUD`, `Popup`, `Hover`, `Prompt`, `Reward`, `DamagePopup`, and `BossHUD`; `Dialogue`, `GameOver`, and `Loading` are never suppressed by this path.
+
+Reason:
+Dialogue should stay readable without gameplay HUD or boss HP noise, but instant `SetActive` toggles made the transition abrupt and let the terminal boss ending briefly restore HUD between death SpeechBubble, Dialogue, and outro. Owner-token suppression lets the terminal death flow hold the UI hidden across multiple presentation beats while normal Dialogue still restores the original UI state when it ends.
+
+Implications:
+- Active UI roots fade out through `CanvasGroup` before deactivation and fade back in to their captured alpha when the final suppression owner releases.
+- Terminal boss death acquires suppression before the death SpeechBubble and releases it without restore only after a TitleScene transition has started, so HUD does not reappear behind the ending outro or transition fade.
+- If a terminal handoff fails or is interrupted before scene transition starts, the same suppression owner is released with restore so gameplay UI returns.
+- Flow-owned reward presentation may reactivate the authored `RewardCanvas` and non-raycasting `HoverCanvas` through `DialogueService`'s captured-layer temporary visibility boundary while Dialogue is still waiting for a reward callback; the Reward panel and its item detail hover are part of that dialogue reward flow, not ambient HUD noise.
+
+## 2026-05-28 - DarkLord Hub Intro Uses Completion And Seen Gates
+
+Decision:
+The first Hub introduction after `DarkLord_Tutorial` is gated by `darklord_tutorial_forced_defeat_completed` and `hub_intro_after_darklord_seen`, with editor-only test bypass routed through the same `HubIntroProgressGate` helper used by both the Hub fall presentation and the Hub intro sequence.
+
+Reason:
+The sequence is both a first-Hub introduction and the continuation of the forced-loss tutorial boss flow. Requiring the DarkLord completion flag prevents normal first Hub entry from accidentally playing the post-defeat version, while the seen flag keeps it one-shot per profile.
+
+Implications:
+- `TutorialBossEncounterSequence` records the forced-defeat completion before fake GameOver returns to Hub.
+- `PlayerHubSpawnPresentation2D` and `HubIntroAfterDarkLordSequence` must use matching completion/seen ids and matching editor-bypass settings for direct Hub testing.
+- The Hub introduction remains scene-authored through serialized SpeechBubble, camera focus, and Dialogue references; scene/prefab wiring and Unity import validation are required before playtest sign-off.
+
+## 2026-05-27 - DarkLord Tutorial Scene Authoring Uses Editor Menu
+
+Decision:
+`DarkLord_Tutorial` scene placement and serialized wiring for the tutorial boss presentation is performed through `Tools/Tutorial/DarkLord Tutorial/Apply Default Authoring To Active Scene`, with validation through the paired `Validate Active Scene` menu.
+
+Reason:
+The scene needs multiple authored objects, focus targets, laser origins, tutorial HP UI, Ink references, and disabled real-boss-start flags, but direct scene YAML edits are too risky for Unity object references. A scoped Editor menu keeps placement repeatable while leaving final scene save/review under Unity Editor control.
+
+Implications:
+- The menu only mutates the active `DarkLord_Tutorial` scene outside Play Mode and marks the scene dirty for the user to save.
+- Compiled Ink `.json` assets are still produced by the Unity Ink import pipeline; the menu warns/validation reports when those generated TextAssets are not ready yet.
+- Scene View review remains required for camera framing, HP safe-area placement, and laser angle fine tuning after the automated pass.
+
+## 2026-05-27 - Tutorial Boss Dialogue Stays Outside Letterbox
+
+Decision:
+`TutorialBossEncounterSequence` keeps cinematic letterbox bars off while Ink dialogue is visible, and uses the bars only for non-dialogue presentation beats such as scripted lasers and the collapse/return-to-player moment.
+
+Reason:
+The authored Dialogue UI can occupy the same vertical screen space as the letterbox bars. Keeping dialogue outside the letterbox avoids hiding speaker names, choices, or dialogue body text while preserving cinematic framing during laser/failure presentation.
+
+Implications:
+- Tutorial boss Ink should use `# speaker: ...` tags for speaker names and should not include visible speaker prefixes such as `마왕:` in line text.
+- A hidden or temporary speaker can be shown through a string speaker tag such as `# speaker: ???`.
+- Player input and targetability protection still spans the full sequence, including both dialogue and laser sections.
+
+## 2026-05-27 - Tutorial Chest Open Handoff Uses Chest UI Success Event
+
+Decision:
+Tutorial chest-open continuation is driven by `TreasureChest` UI-open success events and a scene-authored `TutorialChestOpenedTrigger` bridge.
+
+Reason:
+The combat tutorial flow needs to continue after the player actually opens the reward chest, but `TutorialSceneSequenceDirector.NotifyChestOpened()` previously had no reliable source event. Emitting from `TreasureChest` only after `ChestUIManager.OpenChest(...)` succeeds keeps the tutorial handoff aligned with the visible chest UI instead of the interaction request or world open prelude.
+
+Implications:
+- `TreasureChest.OpenedUi` can report repeated successful UI opens, while `FirstOpenedUi` reports only the first successful UI open.
+- `TutorialChestOpenedTrigger` defaults to first-open-only and one-shot so tutorial steps do not replay when the same chest UI is reopened.
+- Scene authoring should wire `TutorialSceneSequenceDirector.OnMonstersCleared` to the chest-open tutorial prompt, and `TutorialChestOpenedTrigger.OnChestOpened` to `TutorialSceneSequenceDirector.NotifyChestOpened()` or the next tutorial step.
+
+## 2026-05-27 - Boss Terminal Ending Replaces Reward Portal Flow Per Boss
+
+Decision:
+Boss defeat ending is an explicit scene-authored terminal flow on the selected boss: death speech bubble, Ink dialogue, ending outro, `RunEndReason.Victory`, then `TitleScene`. It reuses the boss death presentation handoff but does not run normal reward-ready, chest, or portal activation for that selected flow.
+
+Reason:
+The ending is story/session completion, not a normal battle-end reward beat. Making it opt-in per boss avoids changing ordinary boss reward and portal behavior while still letting a final/story boss move directly from defeat presentation into ending content.
+
+Implications:
+- `BossDefeatEndingSequence` is authored only on bosses that should end the run.
+- `EndingOutroSequenceSO`, `EndingOutroView`, and `EndingOutroPlayer` stay separate from TitleIntro so title launch timing remains isolated.
+- Terminal death presentation removes the letterbox before post-speech Dialogue starts, but keeps the camera focused on the boss through terminal Dialogue and outro. The camera is restored only if the terminal handoff fails or is interrupted before completion.
+- Terminal ending scene load uses terminal-flow fade-out and TitleScene fade-in durations owned by `BossDefeatEndingSequence`, leaving ordinary scene transition timings unchanged.
+- Normal bosses without this sequence continue through `BossBattleEndHandler` / `BossEncounterEndDirector` reward and portal handling.
+
+## 2026-05-27 - Combat Tutorial Intro Owns Temporary Presentation State
+
+Decision:
+The attack/skill combat tutorial intro is owned by a scene-authored `TutorialCombatIntroSequence` triggered after `TutorialDoorClosedTrigger`, while the tutorial-only HP safety is owned by `TutorialPlayerHealthAutoRecover`.
+
+Reason:
+The design needs a temporary presentation window after the door fully closes: focus the camera on the monster/chest composition, prevent player control and enemy target acquisition, show the attack/skill tutorial, return the camera to the player, then restore normal combat. Keeping HP auto-recovery scene-local avoids changing shared damage/death rules for a tutorial exception.
+
+Implications:
+- `DoorObject` remains generic and only reports close-presentation completion.
+- `TutorialCombatIntroSequence` uses existing player protection, targetability blocking, cinematic letterbox, and gameplay camera ownership patterns instead of adding a manager.
+- Combat tutorial letterbox bars are enabled by default, while global UI fading is opt-in so the attack/skill tutorial panel is not accidentally hidden by the prompt/dialogue layer fade.
+- Scene authoring must provide the monster/chest camera focus marker, attack/skill `TutorialInfoTrigger`, and optional gameplay-released UnityEvents.
+- `TutorialPlayerHealthAutoRecover` should be present only in the tutorial scene that requires instant HP restoration; its death-return suspension is a scene-local safety guard, not a global combat rule.
+
+## 2026-05-27 - Room Enemy Navigation Uses Active Spawn Room Registration
+
+Decision:
+Room-level enemy navigation is driven by the currently active `MonsterSpawnRoomGroup`, reads its alive spawn/lock-registered monsters, and renders arrows through a scene-level world `SpriteRenderer` overlay using the existing kill-lock arrow prefab.
+
+Reason:
+The guidance should match room/chest lock semantics instead of scanning every `Enemy` in the scene. Keeping the arrows as a world overlay avoids adding UGUI hierarchy and lets the existing chest arrow visual stay consistent while changing only the placement rule to camera viewport edges.
+
+Implications:
+- `RoomEncounterEntryTrigger2D -> MonsterSpawnRoomGroup` remains the active-room signal.
+- Spawn-registered roots and Slime split descendants count because they enter through the room group's registration path.
+- General direct summons remain excluded unless they explicitly use the same registration path.
+- Scene authoring must provide one `RoomEnemyNavigationOverlay` and assign `KillLockMonsterNavigationArrow.prefab`; the validation menu can create/wire the opened scene instance through UnityEditor APIs.
+
+## 2026-05-27 - Tutorial Boss Portal Uses Direct Scene Portal
+
+Decision:
+Tutorial-only fixed scene travel, such as `TutorialCorridor` to `DarkLord_Tutorial`, uses `TutorialScenePortal` instead of adding a tutorial-specific `TransitionType` to the run route system. The direct portal still captures current player runtime state and prepares a minimal destination transition context so spawned tutorial scenes can restore inventory/loadout state.
+
+Reason:
+`TransitionType` currently expresses run-route semantics resolved by `PortalRouteManager` and `RunRouteCatalogSO`. The tutorial boss handoff is a fixed authored scene jump, not a run-progress route transition, so adding a global transition enum would mix tutorial-specific routing into the normal run plan.
+
+Implications:
+- `ScenePortal` remains owned by normal run route travel.
+- `TutorialScenePortal` loads a serialized target scene through `SceneTransitionCoordinator` with direct `SceneManager.LoadScene(...)` fallback, without using `PortalRouteManager`.
+- `TutorialScenePortal` preserves the current player runtime state by default; enable `resetPlayerRuntimeStateOnTravel` only for a tutorial jump that intentionally discards the current loadout.
+- Fixed tutorial destination scenes must be present in BuildSettings.
+- If tutorial scene travel later needs run progress, reward, or route-plan behavior, promote it into the route system deliberately instead of expanding the direct portal.
+
+## 2026-05-27 - New Profiles Enter Tutorial Corridor
+
+Decision:
+Empty-slot `StartNewRun` launches use `TitleProfileSlotService.newProfileTargetSceneName`, defaulting to `TutorialCorridor`, while existing-slot `ContinueRun` keeps using `targetSceneName`.
+
+Reason:
+The title intro is still a presentation gate and should not hard-code its own destination, but a first-time profile now needs to enter the tutorial scene after the intro instead of going straight to the hub. Keeping the split inside `TitleProfileSlotService` preserves the existing launch request path while allowing continue/default launch behavior to remain separate.
+
+Implications:
+- `TitleIntroPlayer` still does not own scene selection.
+- `TutorialCorridor` must remain in BuildSettings for player builds.
+- TitleScene Inspector can clear or change `newProfileTargetSceneName` if the first-time profile route changes later.
+- Tutorial scene startup beats should be owned by scene-authored tutorial components, not title UI.
+
+## 2026-05-26 - Demon King Threshold Patterns Own Temporary Damage Rules
+
+Decision:
+Demon King threshold set pieces apply their exceptional damage rules only while the set piece needs them: the 50% WallBounceRush owns a temporary `State.Status.StaggerImmune` guard, and the 10% FinalDesperation owns `State.Status.StaggerImmune` for the full final-pattern lifetime while its HP clamp only lasts until the center move finishes and the attack loop begins. FinalDesperation is the terminal threshold pattern and suppresses the 50% WallBounceRush when HP is already at or below the final threshold. If the final threshold is crossed during Groggy, FinalDesperation immediately ends the Groggy effect/tag and starts through a forced pattern reservation instead of waiting for Groggy recovery.
+
+Reason:
+The 50% rush and 10% final pattern should not be interrupted or weakened by stagger buildup during their scripted threshold set pieces, and the 10% phase should not be skipped by a large hit, delayed behind a lower-priority threshold set piece, or delayed by an already-active Groggy state. FinalDesperation also needs a center-position reset followed by a no-damage map-edge knockback before the attack loop starts. Once FinalDesperation attacks begin, normal damage and death rules should resume so the fight can end cleanly, but stagger buildup remains suppressed for the final loop.
+
+Implications:
+- Future Demon King threshold patterns should acquire and release their own temporary tags or HP guards instead of changing global combat damage behavior.
+- FinalDesperation entry validation must include both the center-move HP clamp release point and the final-pattern `StaggerImmune` release path.
+- Marking FinalDesperation started also consumes/suppresses the 50% pattern so a direct drop to 10% cannot play WallBounceRush first.
+- FinalDesperation force-start must bypass normal selection gates and clear active Groggy state so the reactive Groggy FSM transition cannot reclaim control for the remaining Groggy duration.
+- Scene/Inspector tuning can change threshold ratios, but the clamp lifetime remains code-owned unless the phase design changes.
+
+## 2026-05-26 - Flowering Bloom Locks Active Weapon Changes
+
+Decision:
+While `Flowering` Skill1 Bloom activation is running, active weapon changes are rejected by `WeaponInventory2D`. The lock starts before the cut-in and is released only after Bloom active duration, reveal-out, cancellation, or scene cleanup finishes.
+
+Reason:
+Bloom owns player-root runtime state, cut-in presentation, weapon reveal state, dash slash augment, HUD duration projection, and a long-lived ability coroutine. Swapping or replacing the active weapon mid-flow can force weapon cleanup and leave the Bloom presentation/runtime lifecycle out of sequence.
+
+Implications:
+- Swap input, direct equip, active drop/unequip/destroy, active slot replacement, and active slot inventory swap all respect the Flowering lock.
+- Offhand/non-active slot changes can still proceed because they do not tear down the active Flowering runtime.
+- The lock is runtime-only and adds no serialized fields.
 
 ## 2026-05-26 - Tutorial Default Weapon Is Scene-Local
 

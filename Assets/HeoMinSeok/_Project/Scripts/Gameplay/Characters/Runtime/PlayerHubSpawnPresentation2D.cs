@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Cainos.PixelArtTopDown_Basic;
@@ -32,11 +33,23 @@ public sealed class PlayerHubSpawnPresentation2D : MonoBehaviour
         FollowFallingPlayer = 1
     }
 
+    private enum HubSpawnPlayCondition
+    {
+        AnyHubSpawn = 0,
+        AfterDarkLordTutorialUntilSeen = 1
+    }
+
     private const string DefaultHubSceneName = "ProtoTypeHub";
     private const string DefaultShadowChildName = "Shadow";
     [Header("Scene")]
     [SerializeField] private string hubSceneName = DefaultHubSceneName;
     [SerializeField] private bool playOnHubSpawn = true;
+
+    [Header("Intro Gate")]
+    [SerializeField] private HubSpawnPlayCondition playCondition = HubSpawnPlayCondition.AnyHubSpawn;
+    [SerializeField] private string darkLordTutorialCompletionId = HubIntroProgressGate.DefaultDarkLordTutorialCompletionId;
+    [SerializeField] private string hubIntroSeenId = HubIntroProgressGate.DefaultHubIntroSeenId;
+    [SerializeField] private bool allowEditorBypassTutorialCompletion;
 
     [Header("Fall")]
     [SerializeField, Min(0.1f)] private float fallDuration = 0.85f;
@@ -68,6 +81,8 @@ public sealed class PlayerHubSpawnPresentation2D : MonoBehaviour
     [Header("Post Landing")]
     [SerializeField, Min(0f)] private float sleepAfterIdleSeconds = 10f;
     [SerializeField, Min(0f)] private float sleepWakeDelaySeconds = 1f;
+    [SerializeField] private bool autoWakeWithoutInput;
+    [SerializeField, Min(0f)] private float autoWakeDelaySeconds = 2f;
 
     [Header("Lying Shadow")]
     [SerializeField] private bool useLyingShadowOverride;
@@ -123,6 +138,9 @@ public sealed class PlayerHubSpawnPresentation2D : MonoBehaviour
     private Sprite capturedAwakeShadowSprite;
     private GameObject activeSleepEffectInstance;
 
+    public bool IsPlaying => sequenceRoutine != null;
+    public event Action<PlayerHubSpawnPresentation2D> PresentationCompleted;
+
     private void Awake()
     {
         CacheReferences();
@@ -161,6 +179,9 @@ public sealed class PlayerHubSpawnPresentation2D : MonoBehaviour
             return;
 
         if (!IsHubScene())
+            return;
+
+        if (!ShouldPlayForCondition())
             return;
 
         CacheReferences();
@@ -218,41 +239,49 @@ public sealed class PlayerHubSpawnPresentation2D : MonoBehaviour
         yield return new WaitForSeconds(landingLockSeconds);
 
         bool completedWake = false;
-        float idleElapsed = 0f;
-        while (idleElapsed < sleepAfterIdleSeconds)
+        if (autoWakeWithoutInput)
         {
-            if (HasWakeInput())
-            {
-                WakeIntoGameplay();
-                completedWake = true;
-                break;
-            }
-
-            idleElapsed += Time.deltaTime;
-            yield return null;
+            yield return WaitForWakeInputOrAutoWakeRoutine();
+            completedWake = true;
         }
-
-        if (!completedWake)
+        else
         {
-            ApplySleepSprite();
-            SpawnSleepEffect();
-
-            while (true)
+            float idleElapsed = 0f;
+            while (idleElapsed < sleepAfterIdleSeconds)
             {
                 if (HasWakeInput())
                 {
-                    StopAndClearSleepEffects();
-                    ApplyAwakeIdleSprite();
-
-                    if (sleepWakeDelaySeconds > 0f)
-                        yield return new WaitForSeconds(sleepWakeDelaySeconds);
-
                     WakeIntoGameplay();
                     completedWake = true;
                     break;
                 }
 
+                idleElapsed += Time.deltaTime;
                 yield return null;
+            }
+
+            if (!completedWake)
+            {
+                ApplySleepSprite();
+                SpawnSleepEffect();
+
+                while (true)
+                {
+                    if (HasWakeInput())
+                    {
+                        StopAndClearSleepEffects();
+                        ApplyAwakeIdleSprite();
+
+                        if (sleepWakeDelaySeconds > 0f)
+                            yield return new WaitForSeconds(sleepWakeDelaySeconds);
+
+                        WakeIntoGameplay();
+                        completedWake = true;
+                        break;
+                    }
+
+                    yield return null;
+                }
             }
         }
 
@@ -262,6 +291,23 @@ public sealed class PlayerHubSpawnPresentation2D : MonoBehaviour
         presentationPrepared = false;
         SetFadeTransitionUnlockBlocked(false);
         sequenceRoutine = null;
+        InvokePresentationCompleted();
+    }
+
+    private IEnumerator WaitForWakeInputOrAutoWakeRoutine()
+    {
+        float elapsed = 0f;
+        float delaySeconds = Mathf.Max(0f, autoWakeDelaySeconds);
+        while (elapsed < delaySeconds)
+        {
+            if (HasWakeInput())
+                break;
+
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        WakeIntoGameplay();
     }
 
     private void PrepareForPresentation()
@@ -775,6 +821,24 @@ public sealed class PlayerHubSpawnPresentation2D : MonoBehaviour
             ownerScene = SceneManager.GetActiveScene();
 
         return string.Equals(ownerScene.name, hubSceneName, System.StringComparison.Ordinal);
+    }
+
+    private bool ShouldPlayForCondition()
+    {
+        return playCondition switch
+        {
+            HubSpawnPlayCondition.AfterDarkLordTutorialUntilSeen =>
+                HubIntroProgressGate.ShouldPlayAfterDarkLordTutorial(
+                    darkLordTutorialCompletionId,
+                    hubIntroSeenId,
+                    allowEditorBypassTutorialCompletion),
+            _ => true,
+        };
+    }
+
+    private void InvokePresentationCompleted()
+    {
+        PresentationCompleted?.Invoke(this);
     }
 
     private GameplayCueParams BuildPresentationParams(Vector3 position, bool hasExplicitPosition)

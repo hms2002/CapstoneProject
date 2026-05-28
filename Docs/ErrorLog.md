@@ -2,7 +2,7 @@
 status: active
 authority: project-log
 category: error-log
-last_reviewed: 2026-05-26
+last_reviewed: 2026-05-28
 ---
 
 # Error Log
@@ -24,6 +24,328 @@ Prevention:
 ```
 
 ## Active Entries
+
+## 2026-05-28 - Run Route Catalog Made Normal Bosses Look Like Final Context
+
+Context:
+Normal reward bosses should run as the default route flow three times before the single final boss, but direct boss-scene testing made normal bosses appear to use final-route behavior or an incomplete route context.
+
+Cause:
+`RunRouteCatalog.asset` had only one normal stage and only the Dragon Spili route in `normalRouteSets`, while `SceneDomainCoordinator` seeded direct scene Play with only the current RouteSet. A single-stage development plan makes the current boss both first and last, so final-route checks and boss-exit routing can be misleading during direct scene tests.
+
+Fix:
+Restore `RunRouteCatalog.asset` to three normal RouteSets (`Shadow`, `Dragon Spili`, `Slime Queen`) plus `DemonkingRouteSet` as final. `PortalRouteManager.SeedDevelopmentPlan(...)` now builds the deterministic full catalog plan for direct Play and sets `currentStageIndex` to the tested RouteSet. `BossEncounterEndDirector` debug logging now reports RouteSet, `IsFinalRouteSet`, active-plan state, stage index, and catalog.
+
+Prevention:
+Treat NormalRoute as the default boss reward path and FinalRoute as the special one. When testing a boss scene directly, verify the route context with `BossEncounterEndDirector.logDebug` before diagnosing reward suppression. Keep `RunRouteCatalog.normalStageCount`, normal RouteSet list, and final RouteSet covered by the boss reward reveal validator.
+
+## 2026-05-28 - Boss Reward Portal Reveal Sub-Effects Used Split Timing
+
+Context:
+The boss reward portal reveal looked unsynchronized: SpriteMask reveal, dust particles, portal root tremble, and camera shake did not feel tied to the same rise timing.
+
+Cause:
+Portal reveal sub-effects were triggered from separate moments in the routine. Loop and burst dust both played at reveal startup, root tremble used global time for its oscillation phase, and scene ParticleSystems authored under the moving reveal root could inherit the lowered root motion instead of staying at the authored dust output point.
+
+Fix:
+`BossRewardObjectRevealPresentation` now uses one reveal timeline. The mask and collider lock span the reveal. Loop dust starts with the reveal and stops at completion, burst dust plays only at completion, loop camera shake and root tremble use the reveal normalized envelope, and root tremble uses reveal elapsed time for its phase. Particle prefab spawn poses are resolved from the final reveal-root position, and scene loop ParticleSystems under the moving reveal root are temporarily detached/restored during playback.
+
+Prevention:
+When adding portal reveal polish, route it through the reveal timeline instead of firing it from independent setup or completion code. Effects that should live during the rise should use reveal normalized progress; effects that should punctuate arrival should run after the final reveal progress is applied. Do not let ground dust inherit the lowered gate root unless the intended effect is attached to the moving gate itself.
+
+## 2026-05-28 - Boss Reward Reveal Used Mask And Particle References From The Wrong Scope
+
+Context:
+In `HeoMinSeok_Boss`, the reward chest did not visibly activate after boss defeat, and the reward portal's mask/particle reveal did not play as expected.
+
+Cause:
+The chest reveal was dust-only but still had `maskedRenderers` serialized from component reset, with no `revealMask`. Runtime reveal therefore set the chest renderer to `VisibleInsideMask` without a local mask, making it appear invisible. The portal reveal mask was parented under the same portal root used as `revealRoot`, so the mask moved with the portal and could not clip a bottom-up reveal. The dust arrays also referenced prefab asset ParticleSystem components instead of scene instances.
+
+Fix:
+Chest reward dust now belongs to `TreasureChest.PlayRewardReveal()` with one serialized dust ParticleSystem plus spawn anchor/offset. `BossRewardObjectRevealPresentation` remains for portal gate reveal behavior only: mask interaction, root rise, particles, collider lock, global mask isolation, camera shake, and local tremble. The boss reward reveal apply tool now removes stale chest reveal components, serializes `TreasureChest` reward dust fields, clears serialized gate masks for runtime generation, and validation reports stale chest reveal components or portal mask wiring mistakes.
+
+Prevention:
+For reward reveal authoring, do not put `BossRewardObjectRevealPresentation` on reward chests. Configure chest dust on `TreasureChest`. Keep mask/masked-renderer wiring only on portal gate reveals. Gate masks must stay outside the transform that moves during reveal, or leave the mask field empty so runtime can generate one from the target renderer. Particle fields may reference either scene ParticleSystem instances or prefab ParticleSystem assets; prefab references need a spawn anchor/offset that represents the intended reveal dust position.
+
+## 2026-05-28 - Dialogue Boss Silhouette Ignored First Face Tag
+
+Context:
+`DarkLord_Tutorial` authored the first Ink line with `# face:Tutorial`, but the boss dialogue silhouette still appeared with the `Normal` portrait shape.
+
+Cause:
+The Dialogue opening sequence played the boss portrait/silhouette intro before the first Ink line was consumed. The `face` tag was processed only after the intro completed and the first line began, so the silhouette setup had already chosen the `Normal` sprite.
+
+Fix:
+`DialogueController` now previews the first playable Ink line through a cloned `Story` state, extracts the matching `face` tag without advancing the real story, and passes that label through `DialoguePresentationSequencer` / `CinematicDirector` to the portrait intro. `PortraitController.SetupSilhouetteMode(...)` can now set the silhouette sprite from that label.
+
+Prevention:
+When a presentation intro depends on Ink tags from the first line, preview the tag state before opening presentation instead of waiting for normal line playback. For boss silhouette variants, author the first playable line with a valid `face` label and verify that the assigned `SpriteLibraryAsset` contains the same label.
+
+## 2026-05-28 - Global SpriteMask Clipped Reward Portal Reveal
+
+Context:
+`HeoMinSeok_Boss` uses `GlobalVisionMaskRoot` for its boss gimmick. The reward portal also uses a local `SpriteMask` reveal so the gate can rise from below after boss defeat.
+
+Cause:
+Unity `SpriteRenderer.maskInteraction` responds to every `SpriteMask` whose sorting range includes the renderer; it does not target one specific mask. When the reward portal renderer is set to `VisibleInsideMask` for the local reveal, the global player vision mask can also clip it.
+
+Fix:
+`BossRewardObjectRevealPresentation` now has `isolateGlobalVisionMasksDuringReveal`, defaulted on for reward reveals but only applied when a local reveal mask or masked renderers exist. While the gate reveal is active, it stores active `GlobalVisionMaskController` child mask ranges, narrows those masks to the dark overlay renderer's sorting range, and restores the original ranges on completion, stop, or disable. The target-scene apply tool enables this option for portal reveal components, and validation reports it as required in global vision mask scenes.
+
+Prevention:
+For any future scene that combines a local reward gate SpriteMask reveal with `GlobalVisionMaskRoot`, keep global vision mask isolation enabled and verify both the dark overlay cutout and the portal reveal in Play Mode. Do not assume `VisibleInsideMask` means "inside only my local reveal mask."
+
+## 2026-05-28 - Global Ending IntroOverlay Appeared On Play Start
+
+Context:
+The `IntroOverlay` authored under `GlobalUIRoot` for the ending outro could appear immediately when entering Play Mode if the prefab or scene instance was left active for authoring.
+
+Cause:
+`GlobalUIRoot` carries the authored `EndingOutroView`, but not necessarily an `EndingOutroPlayer` on the same active object. The player-owned `hideViewOnAwake` path therefore does not cover a globally authored view object that starts active.
+
+Fix:
+`EndingOutroView.Awake()` now snaps the view hidden when it is active due to scene/prefab authoring. `EndingOutroView.Show(...)` marks its own activation so the first real outro playback can activate an inactive authored view without the `Awake()` startup hide immediately turning it off again.
+
+Prevention:
+Presentation view roots that can live under persistent global UI should own a safe runtime-closed startup state, even if a separate player component also hides them. Do not rely only on scene/prefab inactive authoring for fullscreen overlays that may be toggled on during editing.
+
+## 2026-05-28 - Ink Rich Text Hex Color Split Into Tag
+
+Context:
+DarkLord tutorial Script 1 tried to color the hidden `???` laugh line purple with TMP rich text, but Dialogue showed literal `<color=` instead of colored text.
+
+Cause:
+Ink treats `#` inside a line as the start of an Ink tag. The source line used `<color=#A855F7>...`, so the compiled JSON split the visible text at `^<color=` and stored `A855F7>...` as a tag instead of body text. The Dialogue typewriter also used `DOText`, which can expose partial rich-text tags while typing.
+
+Fix:
+Use a named TMP color tag (`<color=purple>...`) for the tutorial line and update the generated TextAsset JSON to match. `DialogueView` now sets the full rich text on TMP first and animates `maxVisibleCharacters`, so rich-text tags are never revealed as partial body text during typing.
+
+Prevention:
+Do not put raw `#RRGGBB` rich-text color values directly in Ink body text unless the `#` is confirmed to survive Ink compilation. Prefer named TMP colors or verify the generated JSON contains a single visible text token with the full rich-text tag.
+
+## 2026-05-28 - Dialogue Reward Opened Under Suppressed Reward And Hover Canvases
+
+Context:
+Completing an affection reward during Dialogue could log `Coroutine couldn't be started because the game object 'RewardPanel' is inactive!` from `RewardDisplayUI.OpenUI()`. After the reward canvas was restored, hovering a reward slot could also log the same coroutine error for `ItemDetailPanel` because `HoverCanvas` was still inactive.
+
+Cause:
+Dialogue non-dialogue UI suppression hides both `GlobalCanvasLayer.Reward` and `GlobalCanvasLayer.Hover` while Dialogue is playing. Affection rewards are flow-owned UI that can intentionally open before Dialogue fully exits, so `UIManager` accepted the reward panel while its parent `RewardCanvas` was still inactive from suppression. Reward slots then use the normal inventory hover path, which needs `HoverCanvas` to be active before `ItemDetailPanel` starts its open presentation coroutine.
+
+Fix:
+`DialogueService` now lets a flow mark a captured suppressed layer as temporarily visible so an in-progress suppression fade will not immediately hide it again. `RewardDisplayUI.OpenUI()` uses that boundary to reactivate the authored Reward and Hover canvas roots before enabling the reward panel. Reward is restored as interactable/raycasting, while Hover is restored visible but non-raycasting. When the reward popup closes while Dialogue is still playing, the reward owner hides both canvas roots again so the dialogue suppression window remains intact.
+
+Prevention:
+When an overlay can be opened as part of the same flow that suppressed its canvas layer, the overlay owner must restore every authored canvas root it needs before starting coroutines or UI animation. Do not assume `UIManager.PushUI()` activates inactive parent canvas roots, and remember that reward item slots depend on the shared Hover layer.
+
+## 2026-05-28 - Terminal Outro View Destroyed With Duplicate GlobalUIRoot
+
+Context:
+Entering the DemonKing boss scene from Hub or Corridor could complete the death SpeechBubble and Dialogue handoff but skip the ending outro.
+
+Cause:
+The DemonKing scene's `EndingOutroPlayer` could hold a serialized `EndingOutroView` reference from that scene's `GlobalUIRoot` prefab instance. When the scene was reached from another playable scene, a persistent `GlobalUIRoot` already existed, so the destination scene's duplicate `GlobalUIRoot` destroyed itself and invalidated the serialized outro view reference before playback.
+
+Fix:
+`EndingOutroPlayer` now resolves a live `EndingOutroView` from the current `GlobalUIRoot` before playback when its serialized view is missing or not ready, and `BossDefeatEndingSequence` revalidates the playable outro player immediately before starting the outro.
+
+Prevention:
+For presentation UI authored under persistent global roots, validate cross-scene entry, not only direct scene play. Any terminal flow that references global UI children should re-resolve live `GlobalUIRoot` objects after scene load and duplicate-root cleanup instead of trusting stale scene-instance references.
+
+## 2026-05-28 - Tutorial Direct Portal Dropped Weapon Runtime State
+
+Context:
+Using the tutorial gate from `TutorialCorridor` into `DarkLord_Tutorial` could leave the spawned player without the tutorial weapon.
+
+Cause:
+`TutorialScenePortal` intentionally bypassed the normal `ScenePortalTravelService` route plan, but that also bypassed the player runtime-state capture used by normal scene portals. `DarkLord_Tutorial` then spawned a fresh player prefab and the restore bootstrapper had no pending weapon inventory state to apply. A later source fix added preserve flags, but existing scene instances did not serialize those new fields, so they could still deserialize as `false` and skip capture. After capture was restored, the tutorial default weapon still could not be restored because `Weapon.ApprenticeHeroSword` was assigned in the scene bootstrap but missing from `ItemDatabase.allWeapons`, so `PlayerRuntimeResolverBridge.ResolveWeapon(...)` could not map the captured id back to a `WeaponDefinition`.
+
+Fix:
+`TutorialScenePortal` now captures the current player's `PlayerRuntimeState` through `PlayerRuntimeCaptureBridge`, stores it in `GamePlayDataManager`, and prepares a minimal pending transition context before starting the direct scene load. If load acceptance fails, it restores the previously pending state/context. The runtime now preserves by default without relying on newly added serialized true values; only the explicit inverse `resetPlayerRuntimeStateOnTravel` option disables capture. `WD_ApprenticeHeroSword` is also registered in `ItemDatabase.allWeapons` so the captured tutorial weapon id can be resolved during destination restore.
+
+Prevention:
+When adding direct tutorial scene travel, check whether the destination depends on spawned-player inventory, relics, consumables, or ability runtime state. Direct scene travel must either capture runtime state explicitly or deliberately reset the destination loadout. Avoid adding positive serialized bool defaults to existing scene components when a stale false value would break critical runtime preservation. Any weapon that can be saved/restored by id must be present in the active `ItemDatabase.allWeapons`, even if it is tutorial-only and not default-unlocked.
+
+## 2026-05-28 - Hub Intro Draft Ink Opened Empty Dialogue
+
+Context:
+The DarkLord-to-Hub intro reached the Dialogue UI, but the dialogue body was empty during the temporary MSUpgradeNpc Hub intro test.
+
+Cause:
+The temporary Hub intro JSON stored each line under a named Ink knot such as `HUB_INTRO_JUNK`, while `HubIntroAfterDarkLordSequence` had blank `dialogueStartPath` fields in the saved Hub scene. Ink therefore started at the generated root, found only `done`, and opened/closes the Dialogue presentation without yielding visible text.
+
+Fix:
+The Hub intro authoring tool now wires the temporary draft start paths and validates that draft JSON assets use their matching knot. The temporary JSON files also mirror their line at root so already-saved blank start paths can still show placeholder text after Unity imports the updated TextAssets.
+
+Prevention:
+When creating temporary Ink JSON by hand, either put playable content at root or wire the exact `startPath` used by the runtime caller. Validation must cover the asset/start-path pair, not just that a TextAsset reference exists.
+
+## 2026-05-28 - DemonKing Final Threshold Waited For Groggy Exit
+
+Context:
+Dropping DemonKing to the 10% FinalDesperation threshold while he was already Groggy left him in the invulnerable-looking Groggy state until the Groggy duration ended, then started the 10% pattern.
+
+Cause:
+The health gate reserved FinalDesperation, but the active `State.Status.Groggy` tag still drove the boss FSM back into `BossGroggyState` on the next reactive transition. The forced start also reused normal pattern evaluation, which can still be affected by stale blackboard HP/selection gates.
+
+Fix:
+FinalDesperation now marks the final phase started, ends active Groggy effects/tags immediately, and reserves the final pattern through a forced pattern reservation that bypasses normal selection gates at execution start.
+
+Prevention:
+Terminal threshold patterns that must preempt reactive states should explicitly clear or override the reactive state tag and should not depend on ordinary AI pattern selection/evaluation gates.
+
+## 2026-05-28 - DarkLord Tutorial Relied On Scene-Only HUD And Camera Authoring
+
+Context:
+Entering `DarkLord_Tutorial` from `TutorialScene` could still show the normal Gameplay/Boss HUD and could jump straight to the boss focus instead of first showing the spawned player.
+
+Cause:
+The previous fix deactivated HUD objects in the `DarkLord_Tutorial` scene instance, but the actual `GlobalUIRoot` can persist from the previous scene through `DontDestroyOnLoad`. Scene YAML authoring for inactive HUD roots therefore did not cover runtime entry. The sequence also started the first boss focus immediately after player registration, so scene transition fade-in could hide the player-facing starting beat.
+
+Fix:
+`TutorialBossEncounterSequence` now snapshots and hides the runtime `GlobalUIRoot` Gameplay/Boss HUD canvas roots and default HUD component roots at sequence start, restores that snapshot when the scene unloads or the sequence is canceled, waits for the active transition fade to finish, frames the player for the initial beat, then moves to the boss focus. The tutorial fake game-over request also carries a tutorial-only return button label.
+
+Prevention:
+For tutorial scenes reached through runtime scene transitions, validate both scene-authored objects and persistent UI/service state. Do not assume inactive objects saved in the destination scene will affect an already-loaded `DontDestroyOnLoad` UI root, and do not start camera focus beats until the transition fade is no longer active.
+
+## 2026-05-28 - Scene Fade Image Rendered Behind Ending Outro
+
+Context:
+The DemonKing terminal ending outro reached its final slide and waited for the configured slow title transition duration, but the visible black fade did not appear before `TitleScene` loaded.
+
+Cause:
+The ending outro was authored as a later child under the same `FadeInOutCanvas` that owns the shared `SceneFadeTransitionService` `FadeImage`. The fade coroutine was increasing the fade image alpha, but Unity rendered that image behind the outro because of sibling order.
+
+Fix:
+`SceneFadeTransitionService` now moves the configured overlay root to the last sibling whenever it is activated, so authored UI inserted into the same fade canvas cannot sit above the black transition image.
+
+Prevention:
+For shared transition overlays, validate both canvas sorting and sibling order. A correct fade duration and alpha curve do not prove the fade is visible if the overlay image is below scene-authored presentation UI.
+
+## 2026-05-28 - Scene Fade Canvas Rendered Behind Destination Scene UI
+
+Context:
+The DemonKing terminal ending could load `TitleScene`, but the requested post-load TitleScene fade-in did not visibly play.
+
+Cause:
+The active fade image sibling order was corrected inside its own `FadeInOutCanvas`, but the destination scene can load new canvases after the transition starts. The persistent `GlobalUIRoot` fade canvas uses normal overlay sorting, so the old active fade image can continue changing alpha behind newly loaded TitleScene UI.
+
+Fix:
+`SceneFadeTransitionService` now elevates the active overlay's parent canvas to the maximum sorting order while a fade is running, repeats that elevation during fade frames after scene load, and restores the saved canvas sorting state when the transition or overlay fade session ends.
+
+Prevention:
+For scene-load fade-in bugs, validate the active transition canvas against destination-scene canvases, not only the fade image alpha and sibling order. A `DontDestroyOnLoad` overlay must be re-promoted after `LoadSceneAsync` because the destination scene can introduce newer or higher-sorted canvases.
+
+## 2026-05-28 - Deferred Fade Replacement Promoted A Destroyed Owner
+
+Context:
+After the DemonKing terminal ending loaded `TitleScene`, Unity threw a `MissingReferenceException` from `SceneFadeTransitionService.PromotePendingReplacementIfAvailable()` when `EndTransitionSession()` tried to destroy the old fade service owner.
+
+Cause:
+The scene-load coordinator can still hold a `SceneFadeTransitionService` reference after Unity has destroyed that service object during `LoadSceneMode.Single`. The deferred replacement path then promoted the TitleScene service but accessed `gameObject` on the destroyed old owner. In the same state, the post-load fade-in can be skipped because the old owner's overlay references are destroyed.
+
+Fix:
+`SceneFadeTransitionService` now destroys service owners through a helper that first respects Unity's destroyed-object null check. `SceneTransitionCoordinator` also re-resolves a replacement fade service after the scene load if the original service has been destroyed, begins a recovered transition session, snaps it to black, and then runs the configured fade-in on the replacement.
+
+Prevention:
+After `LoadSceneAsync`, do not assume a cached `UnityEngine.Object` service reference is still alive. Re-check Unity null semantics before post-load fade work, and recover through the destination scene's authored service when the original transition owner was destroyed.
+
+## 2026-05-28 - Tutorial Presentation HP Canvas Used Stale Authoring
+
+Context:
+`DarkLord_Tutorial` had a valid `TutorialPresentationHpView`, heart slots, and laser references, but the fake HP UI did not appear during the laser sequence.
+
+Cause:
+The saved scene had an older generated `TutorialPresentationHpCanvas` setup: the HP references were wired, but the canvas/root transform and sorting authoring were not normalized and the sequence only restored CanvasGroup alpha. During the laser beat, the cinematic letterbox canvas can also draw above presentation UI unless the tutorial HP canvas is explicitly sorted as an overlay.
+
+Fix:
+The DarkLord authoring tool now normalizes the tutorial HP canvas RectTransform to full-screen overlay bounds with `localScale = Vector3.one`, keeps the canvas GameObject active, enables max overlay sorting, and validates that the HP canvas is renderable. `TutorialBossEncounterSequence` also ensures the referenced presentation HP canvas is active, enabled, and sorted before showing it at the laser timing.
+
+Prevention:
+For temporary scene-authored UI that is hidden with CanvasGroup alpha, keep the Canvas and root GameObjects active and validate transform/sorting separately from visibility alpha. A passing serialized reference check is not enough to prove UI can render above a cinematic overlay.
+
+## 2026-05-28 - Tutorial Boss Camera Followed Real Boss Director
+
+Context:
+`DarkLord_Tutorial` should move the gameplay camera to the authored tutorial boss focus before Script 1 and again before Script 2, but the camera could fail to move when the sequence was wired through the real boss `CameraPresentationDirector` / `BossCam` path.
+
+Cause:
+The tutorial scene reused a real boss camera presentation path even though the tutorial boss is a stripped presentation scene object. That made the sequence depend on real encounter camera authoring that may be missing, disabled, or no longer aligned with the tutorial focus markers.
+
+Fix:
+The DarkLord tutorial authoring menu now disables `TutorialBossEncounterSequence.useCameraPresentationDirector` and wires the sequence to the explicit `BossFocusTarget` / `PlayerFocusTarget` gameplay camera path. Validation reports if the real boss camera director path is enabled.
+
+Prevention:
+Scene-local tutorial presentations should use their own authored focus targets unless the target scene intentionally owns a complete real boss camera setup. Do not treat a present `CameraPresentationDirector` as sufficient for tutorial camera authoring.
+
+## 2026-05-27 - Cinematic Protection Did Not Block Dash Tags
+
+Context:
+`DarkLord_Tutorial` should never allow player movement, dash, attack, skill, or aim input, but the player could still move or dash after the tutorial boss sequence validation passed.
+
+Cause:
+`PlayerCinematicProtection` disabled several input producer behaviours, but movement and ability systems can still read cached movement sources or activation tags. The shared UI control tag set also did not include `State.Move.Dash.Blocked`, so dash activation could survive when only UI-style control blocking was active.
+
+Fix:
+Make `PlayerCinematicProtection` apply the existing UI control block tag set and explicitly add `State.Move.Dash.Blocked` for the protected window. `TutorialBossEncounterSequence` now keeps the player protection held after completion for `DarkLord_Tutorial` because that scene has no intended controllable player timing.
+
+Prevention:
+Cinematic player locks must block both input behaviours and gameplay tags. Do not treat disabled input components as sufficient when `MovementMotor2D`, cached intent sources, or GAS activation can still consume state after another system restores player interactor state.
+
+## 2026-05-27 - Tutorial Boss Sequence Locked Before Player Registration
+
+Context:
+`DarkLord_Tutorial` validation passed with `lockPlayerControls = true`, but the player could still move during the laser presentation.
+
+Cause:
+`TutorialBossEncounterSequence` acquired `PlayerCinematicProtection` immediately at `Start()`. In the tutorial scene, `playOnStart` can run before the player is registered in `PlayerRuntimeRegistry`, so the sequence had no player transform and skipped the control/targetability lock while validation only checked serialized booleans. A later scene fade or player spawn path could also restore the current player to an interactive state unless the sequence held a `SceneFadeTransitionService` player-unlock blocker and maintained the lock after registration.
+
+Fix:
+Wait for a resolved player transform before acquiring the sequence state, subscribe to `PlayerRuntimeRegistry.PlayerRegistered` / `PlayerUnregistered`, hold `SceneFadeTransitionService.SetPlayerUnlockBlocked(...)`, and maintain the current registered player lock during the sequence. Keep the acquired player protection for the full sequence, including dialogue, laser, collapse, and fake game-over setup.
+
+Prevention:
+For play-on-start tutorial or cinematic flows that depend on spawned player components, validate serialized intent but also make runtime acquisition wait for player registration before starting the protected flow. If a scene fade or spawner can restore player state, the cinematic owner must hold the transition unlock blocker and reapply the lock to the currently registered player.
+
+## 2026-05-27 - Event-Driven Tutorial Info Trigger Required Collider
+
+Context:
+Combat tutorial info should be opened by the door-close sequence through `TutorialInfoTrigger.FireNow()`, not by player collider entry.
+
+Cause:
+`TutorialInfoTrigger` still had `[RequireComponent(typeof(Collider2D))]` even though its public `Fire`, `FireNow`, and `FireAfterDelay` methods already support event-driven timing. This forced unnecessary collider authoring on sequence-owned tutorial prompts.
+
+Fix:
+Remove the `Collider2D` requirement from `TutorialInfoTrigger`. Collider setup remains optional and is used only for `OnTriggerEnter2D` activation.
+
+Prevention:
+For components that support both trigger-collider activation and direct event/code activation, do not use `RequireComponent` for the optional activation path. Document which activation mode needs scene collider authoring.
+
+## 2026-05-27 - Boss Encounter Aim Block Did Not Freeze Presentation Facing
+
+Context:
+Boss encounter intros needed the player body and weapon presentation to stop turning left/right from Aim while the encounter camera/dialogue sequence was running.
+
+Cause:
+Blocking or disabling `PlayerAim2D` stopped live aim updates, but `PlayerAnimatorController2D` and `WeaponPresentationRig2D` still read cached `AimDirection` / `MouseWorld` every frame. The first legacy `BossTalkManager` fix also did not cover scenes driven by `BossEncounterDirector`.
+
+Fix:
+Player body facing and weapon presentation now expose owner-token cinematic locks, and boss encounter owners acquire/release those locks for modern, legacy, and tutorial boss encounter flows.
+
+Prevention:
+For cinematic or boss flows that must freeze facing, block both the input producer and the aim-driven presentation consumers. Do not assume disabling `PlayerAim2D` prevents all visible Aim-following behavior.
+
+## 2026-05-26 - Accepted Scene Transition Could Still Abort Before Load
+
+Context:
+Title intro Space-hold skip could appear to complete but intermittently remain on the title scene.
+
+Cause:
+`SceneTransitionCoordinator.TryLoadScene(...)` returned `true` as soon as it started the transition coroutine. If `SceneFadeTransitionService.TryBeginTransitionSession()` then failed inside that coroutine, the coordinator cleared its routine and exited without loading the requested scene, leaving the caller with no retry path.
+
+Fix:
+The coordinator now logs the fade-session begin failure and falls back to direct `SceneManager.LoadScene(...)` for the accepted target scene.
+
+Prevention:
+Scene transition APIs that report request acceptance must either complete the scene load or provide an explicit fallback/logged failure path after asynchronous setup begins. Do not let a post-acceptance fade/session setup failure silently end the transition.
 
 ## 2026-05-26 - Manually Generated Unity Empty Lists Swallowed Following Fields
 
@@ -738,3 +1060,17 @@ Fix:
 
 Prevention:
 For prefab-authored world UI labels, prefer a world-space Canvas plus `TextMeshProUGUI`, or use a plain Transform with 3D TMP deliberately. Do not rely on RectTransform positioning without a Canvas when the label must appear at a precise world offset.
+
+## 2026-05-28 - Boss Reward Chest Appeared Missing From Duplicate Scene Instance Or Loot Exception
+
+Context:
+`HeoMinSeok_Boss` reward review showed the portal path running while the chest appeared not to activate.
+
+Cause:
+`HeoMinSeok_Boss` is not a final-boss scene, so final-route chest suppression should not explain direct scene testing there. The scene contains more than one `TreasureChest` instance; the canonical `BossEncounterEndDirector.treasureChest` reference points to `TreasureChest (1)`, so watching a different chest object can look like activation failed. The reward chest activation path also generated boss chest loot before calling `SetActive(true)`, so a loot-generation exception could leave the chest inactive while the later portal path still ran.
+
+Fix:
+Keep the final-route chest skip policy separate from portal activation, but do not apply it as the default diagnosis for `HeoMinSeok_Boss` direct tests. `BossRewardSpawnService` now activates the referenced chest before boss loot generation, so a later loot exception does not keep the reward object hidden. For setup/debugging, validate the active reward owner reference and inspect the referenced scene object, not any duplicate chest instance with a similar name.
+
+Prevention:
+When a boss reward chest appears inactive, first confirm whether the tested scene should actually be final-route suppressed. For non-final direct scene tests, confirm which `TreasureChest` object is wired into `BossEncounterEndDirector` or the active `BossBattleEndHandler`, then check the Unity Console for `[BossBattleEnd] ActivateTreasureChest failed.` Remove or clearly rename duplicate authored chest instances during scene authoring so the reward owner reference is unambiguous.

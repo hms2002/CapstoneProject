@@ -28,6 +28,14 @@ public sealed class BossPatternRuntimeState
         selectedFollowUpPattern = null;
     }
 
+    /// <summary>Reserves a pattern that must bypass regular selection gates when execution starts.</summary>
+    public void ReserveForcedPattern(BossPatternEntry pattern)
+    {
+        ReservedPattern = pattern;
+        ReservedPatternIsForcedFollowUp = pattern != null;
+        selectedFollowUpPattern = null;
+    }
+
     public void ClearReservedPattern()
     {
         ReservedPattern = null;

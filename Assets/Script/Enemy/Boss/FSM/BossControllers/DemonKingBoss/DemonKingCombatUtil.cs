@@ -12,7 +12,10 @@ public static class DemonKingCombatUtil
         float damageAmount,
         float knockbackImpulse = 0f)
     {
-        if (demon == null || damageEffect == null || damageAmount <= 0f)
+        if (demon == null || damageEffect == null || damageAmount < 0f)
+            return null;
+
+        if (damageAmount <= 0f && knockbackImpulse <= 0f)
             return null;
 
         CombatDamageSnapshot snapshot = new(

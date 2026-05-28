@@ -59,10 +59,16 @@ public sealed class BossEncounterEndDirector : MonoBehaviour
             return;
 
         if (treasureChest != null)
+        {
+            LogDebug($"Hiding authored chest on start: {treasureChest.name}.");
             treasureChest.gameObject.SetActive(false);
+        }
 
         if (exitPortal != null)
+        {
+            LogDebug($"Hiding authored portal on start: {exitPortal.name}.");
             exitPortal.SetActive(false);
+        }
     }
 
     private void OnEnable()
@@ -114,6 +120,7 @@ public sealed class BossEncounterEndDirector : MonoBehaviour
             yield return new WaitForSeconds(rewardDelayAfterClearSeconds);
 
         BossControllerBase rewardBoss = clearCondition != null ? clearCondition.RewardBoss : null;
+        LogDebug($"Clear condition completed. RewardBoss={(rewardBoss != null ? rewardBoss.name : "None")}.");
         BossDeathPresentation presentation = ResolveFinalDeathPresentation(rewardBoss);
         if (useFinalDeathPresentation && presentation != null)
         {
@@ -123,9 +130,17 @@ public sealed class BossEncounterEndDirector : MonoBehaviour
                 while (presentation != null && presentation.IsRunning)
                     yield return null;
             }
+
+            if (presentation != null && presentation.CompletedViaTerminalEnding)
+            {
+                LogDebug("Encounter completed through terminal ending sequence.");
+                completionRoutine = null;
+                yield break;
+            }
         }
 
         BossRewardContext context = BuildRewardContext(rewardBoss);
+        LogRewardContext(context);
         Vector3 rewardOrigin = clearCondition != null ? clearCondition.RewardOrigin : transform.position;
 
         HandleRewards(context, rewardOrigin);
@@ -159,6 +174,9 @@ public sealed class BossEncounterEndDirector : MonoBehaviour
 
         if (context.IsFinalRouteSet)
         {
+            LogDebug(
+                $"Skipping treasure chest because the current route is the final route set. " +
+                $"RouteSet={ResolveRouteSetName(context)}.");
             if (BossRewardSpawnService.SpawnPhysicalDrops(context, rewardOrigin, this))
                 context.MarkRewardsHandled();
 
@@ -171,6 +189,10 @@ public sealed class BossEncounterEndDirector : MonoBehaviour
             return;
         }
 
+        LogDebug(
+            $"Activating treasure chest '{treasureChest.name}' at '{treasureChest.gameObject.name}'. " +
+            $"BeforeActiveSelf={treasureChest.gameObject.activeSelf}.");
+
         bool activated = BossRewardSpawnService.ActivateTreasureChest(new BossRewardActivationRequest(
             context,
             context.SpecialRewardPreset,
@@ -178,8 +200,17 @@ public sealed class BossEncounterEndDirector : MonoBehaviour
             rewardOrigin,
             this));
 
-        if (activated)
-            context.MarkRewardsHandled();
+        if (!activated)
+        {
+            LogDebug($"Treasure chest activation returned false for '{treasureChest.name}'.");
+            return;
+        }
+
+        treasureChest.PlayRewardReveal();
+        LogDebug(
+            $"Treasure chest '{treasureChest.name}' activated. " +
+            $"AfterActiveSelf={treasureChest.gameObject.activeSelf}.");
+        context.MarkRewardsHandled();
     }
 
     private void HandlePortal(BossRewardContext context)
@@ -195,7 +226,22 @@ public sealed class BossEncounterEndDirector : MonoBehaviour
 
         exitPortal.SetActive(true);
         RestorePortalVisibilityAndInteraction(exitPortal);
+        PlayPortalRevealPresentation(exitPortal);
+        LogDebug($"Portal '{exitPortal.name}' activated.");
         context.MarkPortalHandled();
+    }
+
+    private static void PlayPortalRevealPresentation(GameObject root)
+    {
+        if (root == null)
+            return;
+
+        BossRewardObjectRevealPresentation presentation =
+            root.GetComponent<BossRewardObjectRevealPresentation>();
+        if (presentation == null)
+            presentation = root.GetComponentInChildren<BossRewardObjectRevealPresentation>(true);
+
+        presentation?.PlayReveal();
     }
 
     private static void RestorePortalVisibilityAndInteraction(GameObject portalRoot)
@@ -229,5 +275,30 @@ public sealed class BossEncounterEndDirector : MonoBehaviour
     {
         if (logDebug)
             Debug.Log($"[BossEncounterEndDirector] {message}", this);
+    }
+
+    private void LogRewardContext(BossRewardContext context)
+    {
+        if (!logDebug)
+            return;
+
+        PortalRouteManager routeManager = PortalRouteManager.Instance;
+        string catalogName = routeManager != null && routeManager.ActiveRouteCatalog != null
+            ? routeManager.ActiveRouteCatalog.name
+            : "None";
+        bool hasActivePlan = routeManager != null && routeManager.HasActivePlan;
+        int currentStageIndex = routeManager != null ? routeManager.CurrentStageIndex : -1;
+        int totalStageCount = routeManager != null ? routeManager.TotalStageCount : 0;
+
+        LogDebug(
+            $"Reward context. RouteSet={ResolveRouteSetName(context)}, " +
+            $"IsFinalRouteSet={(context != null && context.IsFinalRouteSet)}, " +
+            $"HasActivePlan={hasActivePlan}, Stage={currentStageIndex + 1}/{totalStageCount}, " +
+            $"Catalog={catalogName}, RouteSetKey={(context != null ? context.RouteSetKey : 0)}.");
+    }
+
+    private static string ResolveRouteSetName(BossRewardContext context)
+    {
+        return context != null && context.RouteSet != null ? context.RouteSet.name : "None";
     }
 }

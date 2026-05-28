@@ -233,6 +233,25 @@ public sealed class EncyclopediaItemLeftPage : MonoBehaviour
         EntryGridView?.RefreshSelection(selectedIndex);
     }
 
+    public void SettleLayout()
+    {
+        Canvas.ForceUpdateCanvases();
+
+        if (titleText != null)
+        {
+            titleText.ForceMeshUpdate();
+            LayoutRebuilder.ForceRebuildLayoutImmediate(titleText.rectTransform);
+        }
+
+        if (entryGridView != null && entryGridView.transform is RectTransform entryGridRect)
+            LayoutRebuilder.ForceRebuildLayoutImmediate(entryGridRect);
+
+        if (contentRoot != null && contentRoot.transform is RectTransform contentRect)
+            LayoutRebuilder.ForceRebuildLayoutImmediate(contentRect);
+
+        Canvas.ForceUpdateCanvases();
+    }
+
     public void ClearSlots()
     {
         EntryGridView?.Clear();

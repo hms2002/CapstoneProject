@@ -38,6 +38,8 @@ public sealed class EncyclopediaItemTab : MonoBehaviour
     private EncyclopediaItemSubTab currentSubTab = EncyclopediaItemSubTab.Weapon;
     private int currentPage;
     private int selectedIndex = -1;
+    private EncyclopediaCategory selectedCategory = EncyclopediaCategory.Weapon;
+    private ScriptableObject selectedItem;
     private bool listenersBound;
     private bool interactionEnabled = true;
     private bool warnedMissingItemDatabase;
@@ -149,7 +151,7 @@ public sealed class EncyclopediaItemTab : MonoBehaviour
     {
         currentSubTab = EncyclopediaItemSubTab.Weapon;
         currentPage = 0;
-        selectedIndex = -1;
+        ClearSelection();
         SetContentVisible(true);
         ApplyCurrentState(selectFirst: true);
     }
@@ -157,7 +159,7 @@ public sealed class EncyclopediaItemTab : MonoBehaviour
     public void ShowCurrent()
     {
         SetContentVisible(true);
-        ApplyCurrentState(selectFirst: selectedIndex < 0);
+        ApplyCurrentState(selectFirst: selectedIndex < 0 || selectedItem == null);
     }
 
     public void OpenWeaponSubTab()
@@ -181,7 +183,7 @@ public sealed class EncyclopediaItemTab : MonoBehaviour
             return;
 
         currentPage--;
-        selectedIndex = -1;
+        ClearSelection();
         Rebuild(selectFirst: true);
     }
 
@@ -193,15 +195,16 @@ public sealed class EncyclopediaItemTab : MonoBehaviour
             return;
 
         currentPage++;
-        selectedIndex = -1;
+        ClearSelection();
         Rebuild(selectFirst: true);
     }
 
     public void Clear()
     {
-        selectedIndex = -1;
+        ClearSelection();
         leftPage?.ClearSlots();
         rightPage?.Clear();
+        SettleCurrentLayout();
     }
 
     private void RequestSubTab(EncyclopediaItemSubTab subTab)
@@ -226,7 +229,7 @@ public sealed class EncyclopediaItemTab : MonoBehaviour
             bookPresentation.PlayLeftPageTurn(Swap, Complete);
         else
         {
-            SetContentVisible(false);
+            SetContentVisible(true);
             Swap();
             Complete();
         }
@@ -236,7 +239,7 @@ public sealed class EncyclopediaItemTab : MonoBehaviour
     {
         currentSubTab = subTab;
         currentPage = 0;
-        selectedIndex = -1;
+        ClearSelection();
         ApplyCurrentState(selectFirst);
     }
 
@@ -246,6 +249,7 @@ public sealed class EncyclopediaItemTab : MonoBehaviour
         RefreshTitle();
         leftPage?.SetSubTabState(currentSubTab);
         Rebuild(selectFirst);
+        SettleCurrentLayout();
     }
 
     private void ValidateRequiredReferences()
@@ -305,9 +309,12 @@ public sealed class EncyclopediaItemTab : MonoBehaviour
 
         if (entryCount == 0 || visibleCount == 0)
         {
+            selectedCategory = category;
             selectedIndex = -1;
+            selectedItem = null;
             leftPage?.RefreshSelection(selectedIndex);
             rightPage?.Clear();
+            SettleCurrentLayout();
             return;
         }
 
@@ -316,6 +323,8 @@ public sealed class EncyclopediaItemTab : MonoBehaviour
             SelectEntry(category, pageStartIndex);
         else
             SelectEntry(category, selectedIndex);
+
+        SettleCurrentLayout();
     }
 
     private int GetCurrentPageCapacity()
@@ -423,14 +432,26 @@ public sealed class EncyclopediaItemTab : MonoBehaviour
         ScriptableObject item = ResolveItem(category, index);
         if (item == null)
         {
+            selectedCategory = category;
             selectedIndex = -1;
+            selectedItem = null;
             leftPage?.RefreshSelection(selectedIndex);
             rightPage?.Clear();
+            SettleCurrentLayout();
             return;
         }
 
+        bool isSameSelection = selectedCategory == category && selectedIndex == index && selectedItem == item;
         selectedIndex = index;
+        selectedCategory = category;
+        selectedItem = item;
         leftPage?.RefreshSelection(selectedIndex);
+
+        if (isSameSelection)
+        {
+            SettleCurrentLayout();
+            return;
+        }
 
         switch (item)
         {
@@ -447,6 +468,22 @@ public sealed class EncyclopediaItemTab : MonoBehaviour
                 rightPage?.Clear();
                 break;
         }
+
+        SettleCurrentLayout();
+    }
+
+    private void ClearSelection()
+    {
+        selectedCategory = CurrentCategory;
+        selectedIndex = -1;
+        selectedItem = null;
+    }
+
+    private void SettleCurrentLayout()
+    {
+        leftPage?.SettleLayout();
+        rightPage?.SettleLayout();
+        Canvas.ForceUpdateCanvases();
     }
 
     private static EncyclopediaCategory GetCategoryForSubTab(EncyclopediaItemSubTab subTab)

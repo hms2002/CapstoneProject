@@ -163,7 +163,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c81675374be78d949a2b97adae763d77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSpawnContainer
+  sourceKind: 0
   monsterPrefab: {fileID: 7164257353146660579, guid: a185228d38109f64eae6c7afb0622827, type: 3}
+  stageMonsterSet: {fileID: 0}
   spawnByDefault: 1
   allowExtraSpawn: 1
   spawnAnchor: {fileID: 0}
@@ -214,7 +216,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c81675374be78d949a2b97adae763d77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSpawnContainer
+  sourceKind: 0
   monsterPrefab: {fileID: 625522859161183429, guid: 3f5ff6b5c99e4e5da8df23347c49d472, type: 3}
+  stageMonsterSet: {fileID: 0}
   spawnByDefault: 1
   allowExtraSpawn: 1
   spawnAnchor: {fileID: 0}
@@ -327,7 +331,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c81675374be78d949a2b97adae763d77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSpawnContainer
+  sourceKind: 0
   monsterPrefab: {fileID: 625522859161183429, guid: 3f5ff6b5c99e4e5da8df23347c49d472, type: 3}
+  stageMonsterSet: {fileID: 0}
   spawnByDefault: 1
   allowExtraSpawn: 1
   spawnAnchor: {fileID: 0}
@@ -443,7 +449,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c81675374be78d949a2b97adae763d77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSpawnContainer
+  sourceKind: 0
   monsterPrefab: {fileID: 625522859161183429, guid: 47229d8a0d124e00b991425e8e86546e, type: 3}
+  stageMonsterSet: {fileID: 0}
   spawnByDefault: 1
   allowExtraSpawn: 1
   spawnAnchor: {fileID: 0}
@@ -629,7 +637,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c81675374be78d949a2b97adae763d77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSpawnContainer
+  sourceKind: 0
   monsterPrefab: {fileID: 6955305126709057867, guid: 6b49f710022e5e64bb337a1da469af91, type: 3}
+  stageMonsterSet: {fileID: 0}
   spawnByDefault: 1
   allowExtraSpawn: 1
   spawnAnchor: {fileID: 0}
@@ -680,7 +690,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c81675374be78d949a2b97adae763d77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSpawnContainer
+  sourceKind: 0
   monsterPrefab: {fileID: 625522859161183429, guid: 3f5ff6b5c99e4e5da8df23347c49d472, type: 3}
+  stageMonsterSet: {fileID: 0}
   spawnByDefault: 1
   allowExtraSpawn: 1
   spawnAnchor: {fileID: 0}
@@ -731,7 +743,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c81675374be78d949a2b97adae763d77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSpawnContainer
+  sourceKind: 0
   monsterPrefab: {fileID: 7164257353146660579, guid: a185228d38109f64eae6c7afb0622827, type: 3}
+  stageMonsterSet: {fileID: 0}
   spawnByDefault: 1
   allowExtraSpawn: 1
   spawnAnchor: {fileID: 0}
@@ -782,7 +796,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c81675374be78d949a2b97adae763d77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSpawnContainer
+  sourceKind: 0
   monsterPrefab: {fileID: 2113181437983400040, guid: 9e597eeaaba098f4c8a80a394fb30174, type: 3}
+  stageMonsterSet: {fileID: 0}
   spawnByDefault: 1
   allowExtraSpawn: 1
   spawnAnchor: {fileID: 0}
@@ -833,7 +849,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c81675374be78d949a2b97adae763d77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSpawnContainer
+  sourceKind: 0
   monsterPrefab: {fileID: 5433486041897825252, guid: e67c0e27f47424648af599f14420164d, type: 3}
+  stageMonsterSet: {fileID: 0}
   spawnByDefault: 1
   allowExtraSpawn: 1
   spawnAnchor: {fileID: 0}
@@ -1144,7 +1162,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c81675374be78d949a2b97adae763d77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSpawnContainer
+  sourceKind: 0
   monsterPrefab: {fileID: 625522859161183429, guid: a4a67a3598fb4cfbb4bfda7759db598a, type: 3}
+  stageMonsterSet: {fileID: 0}
   spawnByDefault: 1
   allowExtraSpawn: 1
   spawnAnchor: {fileID: 0}
@@ -1345,7 +1365,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c81675374be78d949a2b97adae763d77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSpawnContainer
+  sourceKind: 0
   monsterPrefab: {fileID: 625522859161183429, guid: a4a67a3598fb4cfbb4bfda7759db598a, type: 3}
+  stageMonsterSet: {fileID: 0}
   spawnByDefault: 1
   allowExtraSpawn: 1
   spawnAnchor: {fileID: 0}
@@ -1754,7 +1776,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c81675374be78d949a2b97adae763d77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSpawnContainer
+  sourceKind: 0
   monsterPrefab: {fileID: 625522859161183429, guid: 3f5ff6b5c99e4e5da8df23347c49d472, type: 3}
+  stageMonsterSet: {fileID: 0}
   spawnByDefault: 1
   allowExtraSpawn: 1
   spawnAnchor: {fileID: 0}
@@ -1805,7 +1829,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c81675374be78d949a2b97adae763d77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSpawnContainer
+  sourceKind: 0
   monsterPrefab: {fileID: 625522859161183429, guid: 47229d8a0d124e00b991425e8e86546e, type: 3}
+  stageMonsterSet: {fileID: 0}
   spawnByDefault: 1
   allowExtraSpawn: 1
   spawnAnchor: {fileID: 0}
@@ -1887,7 +1913,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c81675374be78d949a2b97adae763d77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSpawnContainer
+  sourceKind: 0
   monsterPrefab: {fileID: 625522859161183429, guid: 3f5ff6b5c99e4e5da8df23347c49d472, type: 3}
+  stageMonsterSet: {fileID: 0}
   spawnByDefault: 1
   allowExtraSpawn: 1
   spawnAnchor: {fileID: 0}
@@ -1938,7 +1966,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c81675374be78d949a2b97adae763d77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSpawnContainer
+  sourceKind: 0
   monsterPrefab: {fileID: 7164257353146660579, guid: a185228d38109f64eae6c7afb0622827, type: 3}
+  stageMonsterSet: {fileID: 0}
   spawnByDefault: 1
   allowExtraSpawn: 1
   spawnAnchor: {fileID: 0}
@@ -2054,7 +2084,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c81675374be78d949a2b97adae763d77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSpawnContainer
+  sourceKind: 0
   monsterPrefab: {fileID: 6955305126709057867, guid: 6b49f710022e5e64bb337a1da469af91, type: 3}
+  stageMonsterSet: {fileID: 0}
   spawnByDefault: 1
   allowExtraSpawn: 1
   spawnAnchor: {fileID: 0}
@@ -2343,7 +2375,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c81675374be78d949a2b97adae763d77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSpawnContainer
+  sourceKind: 0
   monsterPrefab: {fileID: 6955305126709057867, guid: 6b49f710022e5e64bb337a1da469af91, type: 3}
+  stageMonsterSet: {fileID: 0}
   spawnByDefault: 1
   allowExtraSpawn: 1
   spawnAnchor: {fileID: 0}
@@ -2467,7 +2501,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c81675374be78d949a2b97adae763d77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSpawnContainer
+  sourceKind: 0
   monsterPrefab: {fileID: 625522859161183429, guid: 47229d8a0d124e00b991425e8e86546e, type: 3}
+  stageMonsterSet: {fileID: 0}
   spawnByDefault: 1
   allowExtraSpawn: 1
   spawnAnchor: {fileID: 0}
@@ -2562,7 +2598,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c81675374be78d949a2b97adae763d77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSpawnContainer
+  sourceKind: 0
   monsterPrefab: {fileID: 625522859161183429, guid: 47229d8a0d124e00b991425e8e86546e, type: 3}
+  stageMonsterSet: {fileID: 0}
   spawnByDefault: 1
   allowExtraSpawn: 1
   spawnAnchor: {fileID: 0}
@@ -2799,7 +2837,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c81675374be78d949a2b97adae763d77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSpawnContainer
+  sourceKind: 0
   monsterPrefab: {fileID: 625522859161183429, guid: 3f5ff6b5c99e4e5da8df23347c49d472, type: 3}
+  stageMonsterSet: {fileID: 0}
   spawnByDefault: 1
   allowExtraSpawn: 1
   spawnAnchor: {fileID: 0}
@@ -93844,7 +93884,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c81675374be78d949a2b97adae763d77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSpawnContainer
+  sourceKind: 0
   monsterPrefab: {fileID: 9047710376581899356, guid: fda3cefab78502b40b55e2b827a2ecd1, type: 3}
+  stageMonsterSet: {fileID: 0}
   spawnByDefault: 1
   allowExtraSpawn: 1
   spawnAnchor: {fileID: 0}
@@ -93996,7 +94038,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c81675374be78d949a2b97adae763d77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSpawnContainer
+  sourceKind: 0
   monsterPrefab: {fileID: 625522859161183429, guid: 3f5ff6b5c99e4e5da8df23347c49d472, type: 3}
+  stageMonsterSet: {fileID: 0}
   spawnByDefault: 1
   allowExtraSpawn: 1
   spawnAnchor: {fileID: 0}
@@ -94047,7 +94091,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c81675374be78d949a2b97adae763d77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSpawnContainer
+  sourceKind: 0
   monsterPrefab: {fileID: 625522859161183429, guid: 3f5ff6b5c99e4e5da8df23347c49d472, type: 3}
+  stageMonsterSet: {fileID: 0}
   spawnByDefault: 1
   allowExtraSpawn: 1
   spawnAnchor: {fileID: 0}
@@ -94098,7 +94144,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c81675374be78d949a2b97adae763d77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSpawnContainer
+  sourceKind: 0
   monsterPrefab: {fileID: 625522859161183429, guid: 3f5ff6b5c99e4e5da8df23347c49d472, type: 3}
+  stageMonsterSet: {fileID: 0}
   spawnByDefault: 1
   allowExtraSpawn: 1
   spawnAnchor: {fileID: 0}
@@ -94441,7 +94489,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c81675374be78d949a2b97adae763d77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSpawnContainer
+  sourceKind: 0
   monsterPrefab: {fileID: 6955305126709057867, guid: 6b49f710022e5e64bb337a1da469af91, type: 3}
+  stageMonsterSet: {fileID: 0}
   spawnByDefault: 1
   allowExtraSpawn: 1
   spawnAnchor: {fileID: 0}
@@ -94492,7 +94542,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c81675374be78d949a2b97adae763d77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSpawnContainer
+  sourceKind: 0
   monsterPrefab: {fileID: 625522859161183429, guid: a4a67a3598fb4cfbb4bfda7759db598a, type: 3}
+  stageMonsterSet: {fileID: 0}
   spawnByDefault: 1
   allowExtraSpawn: 1
   spawnAnchor: {fileID: 0}
@@ -94611,7 +94663,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c81675374be78d949a2b97adae763d77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSpawnContainer
+  sourceKind: 0
   monsterPrefab: {fileID: 625522859161183429, guid: 3f5ff6b5c99e4e5da8df23347c49d472, type: 3}
+  stageMonsterSet: {fileID: 0}
   spawnByDefault: 1
   allowExtraSpawn: 1
   spawnAnchor: {fileID: 0}
@@ -94777,7 +94831,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c81675374be78d949a2b97adae763d77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSpawnContainer
+  sourceKind: 0
   monsterPrefab: {fileID: 625522859161183429, guid: 3f5ff6b5c99e4e5da8df23347c49d472, type: 3}
+  stageMonsterSet: {fileID: 0}
   spawnByDefault: 1
   allowExtraSpawn: 1
   spawnAnchor: {fileID: 0}
@@ -94833,7 +94889,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c81675374be78d949a2b97adae763d77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSpawnContainer
+  sourceKind: 0
   monsterPrefab: {fileID: 625522859161183429, guid: 3f5ff6b5c99e4e5da8df23347c49d472, type: 3}
+  stageMonsterSet: {fileID: 0}
   spawnByDefault: 1
   allowExtraSpawn: 1
   spawnAnchor: {fileID: 0}
@@ -94884,7 +94942,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c81675374be78d949a2b97adae763d77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSpawnContainer
+  sourceKind: 0
   monsterPrefab: {fileID: 625522859161183429, guid: 47229d8a0d124e00b991425e8e86546e, type: 3}
+  stageMonsterSet: {fileID: 0}
   spawnByDefault: 1
   allowExtraSpawn: 1
   spawnAnchor: {fileID: 0}
@@ -94945,7 +95005,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c81675374be78d949a2b97adae763d77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSpawnContainer
+  sourceKind: 0
   monsterPrefab: {fileID: 625522859161183429, guid: 3f5ff6b5c99e4e5da8df23347c49d472, type: 3}
+  stageMonsterSet: {fileID: 0}
   spawnByDefault: 1
   allowExtraSpawn: 1
   spawnAnchor: {fileID: 0}
@@ -94996,7 +95058,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c81675374be78d949a2b97adae763d77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSpawnContainer
+  sourceKind: 0
   monsterPrefab: {fileID: 625522859161183429, guid: 3f5ff6b5c99e4e5da8df23347c49d472, type: 3}
+  stageMonsterSet: {fileID: 0}
   spawnByDefault: 1
   allowExtraSpawn: 1
   spawnAnchor: {fileID: 0}
@@ -95047,7 +95111,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c81675374be78d949a2b97adae763d77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSpawnContainer
+  sourceKind: 0
   monsterPrefab: {fileID: 5433486041897825252, guid: e67c0e27f47424648af599f14420164d, type: 3}
+  stageMonsterSet: {fileID: 0}
   spawnByDefault: 1
   allowExtraSpawn: 1
   spawnAnchor: {fileID: 0}
@@ -95352,7 +95418,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c81675374be78d949a2b97adae763d77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSpawnContainer
+  sourceKind: 0
   monsterPrefab: {fileID: 2113181437983400040, guid: 9e597eeaaba098f4c8a80a394fb30174, type: 3}
+  stageMonsterSet: {fileID: 0}
   spawnByDefault: 1
   allowExtraSpawn: 1
   spawnAnchor: {fileID: 0}
@@ -95403,7 +95471,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c81675374be78d949a2b97adae763d77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSpawnContainer
+  sourceKind: 0
   monsterPrefab: {fileID: 625522859161183429, guid: a4a67a3598fb4cfbb4bfda7759db598a, type: 3}
+  stageMonsterSet: {fileID: 0}
   spawnByDefault: 1
   allowExtraSpawn: 1
   spawnAnchor: {fileID: 0}
@@ -95589,7 +95659,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c81675374be78d949a2b97adae763d77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSpawnContainer
+  sourceKind: 0
   monsterPrefab: {fileID: 2113181437983400040, guid: 9e597eeaaba098f4c8a80a394fb30174, type: 3}
+  stageMonsterSet: {fileID: 0}
   spawnByDefault: 1
   allowExtraSpawn: 1
   spawnAnchor: {fileID: 0}
@@ -95640,7 +95712,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c81675374be78d949a2b97adae763d77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSpawnContainer
+  sourceKind: 0
   monsterPrefab: {fileID: 625522859161183429, guid: 3f5ff6b5c99e4e5da8df23347c49d472, type: 3}
+  stageMonsterSet: {fileID: 0}
   spawnByDefault: 1
   allowExtraSpawn: 1
   spawnAnchor: {fileID: 0}
@@ -95766,6 +95840,7 @@ MonoBehaviour:
   damageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
   fallingEffect: {fileID: 11400000, guid: f3033dc69e9708347a58b0f11d0759c7, type: 2}
   ignoreTag: {fileID: 11400000, guid: c4d6c74817ae3b945b20c041f24f86b0, type: 2}
+  useExactIgnoreTag: 1
   logDebug: 1
 --- !u!50 &758383637
 Rigidbody2D:
@@ -97163,7 +97238,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c81675374be78d949a2b97adae763d77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSpawnContainer
+  sourceKind: 0
   monsterPrefab: {fileID: 7326883398652249423, guid: 65aed765b26cc4745a94999e32542d6c, type: 3}
+  stageMonsterSet: {fileID: 0}
   spawnByDefault: 1
   allowExtraSpawn: 1
   spawnAnchor: {fileID: 0}
@@ -97344,7 +97421,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c81675374be78d949a2b97adae763d77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSpawnContainer
+  sourceKind: 0
   monsterPrefab: {fileID: 625522859161183429, guid: a4a67a3598fb4cfbb4bfda7759db598a, type: 3}
+  stageMonsterSet: {fileID: 0}
   spawnByDefault: 1
   allowExtraSpawn: 1
   spawnAnchor: {fileID: 0}
@@ -97488,7 +97567,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c81675374be78d949a2b97adae763d77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSpawnContainer
+  sourceKind: 0
   monsterPrefab: {fileID: 5433486041897825252, guid: e67c0e27f47424648af599f14420164d, type: 3}
+  stageMonsterSet: {fileID: 0}
   spawnByDefault: 1
   allowExtraSpawn: 1
   spawnAnchor: {fileID: 0}
@@ -97539,13 +97620,64 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c81675374be78d949a2b97adae763d77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSpawnContainer
+  sourceKind: 0
   monsterPrefab: {fileID: 7326883398652249423, guid: 65aed765b26cc4745a94999e32542d6c, type: 3}
+  stageMonsterSet: {fileID: 0}
   spawnByDefault: 1
   allowExtraSpawn: 1
   spawnAnchor: {fileID: 0}
   roomArea: {fileID: 406360848}
   roomGroup: {fileID: 406360850}
   linkedChestKillLock: {fileID: 0}
+--- !u!1 &889031514
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 889031516}
+  - component: {fileID: 889031515}
+  m_Layer: 0
+  m_Name: RoomEnemyNavigationOverlay
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &889031515
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 889031514}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c3765e7afefdc3d4da8cb3a0cc3903ce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RoomEnemyNavigationOverlay
+  arrowPrefab: {fileID: 6100123456789012345, guid: 397712dcf285471895fbf9ddca3073e0, type: 3}
+  showThreshold: 4
+  viewportPadding: 0.08
+  arrowVisualForward: {x: -1, y: 0}
+  worldCamera: {fileID: 0}
+--- !u!4 &889031516
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 889031514}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &891791413 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5698896082064649552, guid: 225d580cb9ca3624c9d81e307cbfce64, type: 3}
@@ -97635,7 +97767,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c81675374be78d949a2b97adae763d77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSpawnContainer
+  sourceKind: 0
   monsterPrefab: {fileID: 7164257353146660579, guid: a185228d38109f64eae6c7afb0622827, type: 3}
+  stageMonsterSet: {fileID: 0}
   spawnByDefault: 1
   allowExtraSpawn: 1
   spawnAnchor: {fileID: 0}
@@ -97686,7 +97820,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c81675374be78d949a2b97adae763d77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSpawnContainer
+  sourceKind: 0
   monsterPrefab: {fileID: 2113181437983400040, guid: 9e597eeaaba098f4c8a80a394fb30174, type: 3}
+  stageMonsterSet: {fileID: 0}
   spawnByDefault: 1
   allowExtraSpawn: 1
   spawnAnchor: {fileID: 0}
@@ -97847,7 +97983,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c81675374be78d949a2b97adae763d77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSpawnContainer
+  sourceKind: 0
   monsterPrefab: {fileID: 625522859161183429, guid: 3f5ff6b5c99e4e5da8df23347c49d472, type: 3}
+  stageMonsterSet: {fileID: 0}
   spawnByDefault: 1
   allowExtraSpawn: 1
   spawnAnchor: {fileID: 0}
@@ -97929,7 +98067,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c81675374be78d949a2b97adae763d77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSpawnContainer
+  sourceKind: 0
   monsterPrefab: {fileID: 7326883398652249423, guid: 65aed765b26cc4745a94999e32542d6c, type: 3}
+  stageMonsterSet: {fileID: 0}
   spawnByDefault: 1
   allowExtraSpawn: 1
   spawnAnchor: {fileID: 0}
@@ -98193,7 +98333,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3108882496881713227, guid: 3b7c58c25137bb847a4b3ff4e06fed18, type: 3}
       propertyPath: orthographic size
-      value: 6
+      value: 4.8
       objectReference: {fileID: 0}
     - target: {fileID: 4689228142644701662, guid: 3b7c58c25137bb847a4b3ff4e06fed18, type: 3}
       propertyPath: m_Name
@@ -98240,6 +98380,8 @@ MonoBehaviour:
     eliteChanceBonus: 0
     hpMultiplier: 1
     attackMultiplier: 1
+    attackSpeedMultiplier: 1
+  stageHpScalingSettings: {fileID: 0}
   enableStageHpScaling: 1
   hpMultiplierPerClearedStage: 0.5
   gaugeViewInstaller: {fileID: 0}
@@ -98571,7 +98713,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c81675374be78d949a2b97adae763d77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSpawnContainer
+  sourceKind: 0
   monsterPrefab: {fileID: 827981175415890305, guid: b9febceb6e3458b4aaa9d31cefa9bfb0, type: 3}
+  stageMonsterSet: {fileID: 0}
   spawnByDefault: 1
   allowExtraSpawn: 1
   spawnAnchor: {fileID: 0}
@@ -99745,7 +99889,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c81675374be78d949a2b97adae763d77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSpawnContainer
+  sourceKind: 0
   monsterPrefab: {fileID: 2113181437983400040, guid: 9e597eeaaba098f4c8a80a394fb30174, type: 3}
+  stageMonsterSet: {fileID: 0}
   spawnByDefault: 1
   allowExtraSpawn: 1
   spawnAnchor: {fileID: 0}
@@ -99899,7 +100045,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c81675374be78d949a2b97adae763d77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSpawnContainer
+  sourceKind: 0
   monsterPrefab: {fileID: 6955305126709057867, guid: 6b49f710022e5e64bb337a1da469af91, type: 3}
+  stageMonsterSet: {fileID: 0}
   spawnByDefault: 1
   allowExtraSpawn: 1
   spawnAnchor: {fileID: 0}
@@ -100168,7 +100316,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c81675374be78d949a2b97adae763d77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSpawnContainer
+  sourceKind: 0
   monsterPrefab: {fileID: 625522859161183429, guid: 3f5ff6b5c99e4e5da8df23347c49d472, type: 3}
+  stageMonsterSet: {fileID: 0}
   spawnByDefault: 1
   allowExtraSpawn: 1
   spawnAnchor: {fileID: 0}
@@ -100397,7 +100547,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c81675374be78d949a2b97adae763d77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSpawnContainer
+  sourceKind: 0
   monsterPrefab: {fileID: 7326883398652249423, guid: 65aed765b26cc4745a94999e32542d6c, type: 3}
+  stageMonsterSet: {fileID: 0}
   spawnByDefault: 1
   allowExtraSpawn: 1
   spawnAnchor: {fileID: 0}
@@ -101006,7 +101158,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c81675374be78d949a2b97adae763d77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSpawnContainer
+  sourceKind: 0
   monsterPrefab: {fileID: 7326883398652249423, guid: 65aed765b26cc4745a94999e32542d6c, type: 3}
+  stageMonsterSet: {fileID: 0}
   spawnByDefault: 1
   allowExtraSpawn: 1
   spawnAnchor: {fileID: 0}
@@ -101062,7 +101216,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c81675374be78d949a2b97adae763d77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSpawnContainer
+  sourceKind: 0
   monsterPrefab: {fileID: 625522859161183429, guid: a4a67a3598fb4cfbb4bfda7759db598a, type: 3}
+  stageMonsterSet: {fileID: 0}
   spawnByDefault: 1
   allowExtraSpawn: 1
   spawnAnchor: {fileID: 0}
@@ -101208,7 +101364,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c81675374be78d949a2b97adae763d77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSpawnContainer
+  sourceKind: 0
   monsterPrefab: {fileID: 2113181437983400040, guid: 9e597eeaaba098f4c8a80a394fb30174, type: 3}
+  stageMonsterSet: {fileID: 0}
   spawnByDefault: 1
   allowExtraSpawn: 1
   spawnAnchor: {fileID: 0}
@@ -101449,7 +101607,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c81675374be78d949a2b97adae763d77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSpawnContainer
+  sourceKind: 0
   monsterPrefab: {fileID: 7164257353146660579, guid: a185228d38109f64eae6c7afb0622827, type: 3}
+  stageMonsterSet: {fileID: 0}
   spawnByDefault: 1
   allowExtraSpawn: 1
   spawnAnchor: {fileID: 0}
@@ -101505,7 +101665,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c81675374be78d949a2b97adae763d77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSpawnContainer
+  sourceKind: 0
   monsterPrefab: {fileID: 625522859161183429, guid: 47229d8a0d124e00b991425e8e86546e, type: 3}
+  stageMonsterSet: {fileID: 0}
   spawnByDefault: 1
   allowExtraSpawn: 1
   spawnAnchor: {fileID: 0}
@@ -101556,7 +101718,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c81675374be78d949a2b97adae763d77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSpawnContainer
+  sourceKind: 0
   monsterPrefab: {fileID: 625522859161183429, guid: 3f5ff6b5c99e4e5da8df23347c49d472, type: 3}
+  stageMonsterSet: {fileID: 0}
   spawnByDefault: 1
   allowExtraSpawn: 1
   spawnAnchor: {fileID: 0}
@@ -101607,7 +101771,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c81675374be78d949a2b97adae763d77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSpawnContainer
+  sourceKind: 0
   monsterPrefab: {fileID: 827981175415890305, guid: b9febceb6e3458b4aaa9d31cefa9bfb0, type: 3}
+  stageMonsterSet: {fileID: 0}
   spawnByDefault: 1
   allowExtraSpawn: 1
   spawnAnchor: {fileID: 0}
@@ -101720,7 +101886,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c81675374be78d949a2b97adae763d77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSpawnContainer
+  sourceKind: 0
   monsterPrefab: {fileID: 625522859161183429, guid: 3f5ff6b5c99e4e5da8df23347c49d472, type: 3}
+  stageMonsterSet: {fileID: 0}
   spawnByDefault: 1
   allowExtraSpawn: 1
   spawnAnchor: {fileID: 0}
@@ -102278,6 +102446,22 @@ PrefabInstance:
       propertyPath: m_Size
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 910440521100000002, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 910440521100000002, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 910440521100000002, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 103.125
+      objectReference: {fileID: 0}
+    - target: {fileID: 910440521100000002, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -50
+      objectReference: {fileID: 0}
     - target: {fileID: 918450001000000006, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_SizeDelta.x
       value: 0
@@ -102428,6 +102612,22 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1089564069257991271, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1114056854193858651, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1114056854193858651, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1114056854193858651, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1114056854193858651, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1156508343739884859, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
@@ -102655,6 +102855,38 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1438350484866650335, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1439624458138347669, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1439624458138347669, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1439624458138347669, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1439624458138347669, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1514827747691127894, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1514827747691127894, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1514827747691127894, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1514827747691127894, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
@@ -103242,6 +103474,22 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -183.5
       objectReference: {fileID: 0}
+    - target: {fileID: 3093005380952639913, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3093005380952639913, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3093005380952639913, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 103.125
+      objectReference: {fileID: 0}
+    - target: {fileID: 3093005380952639913, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -127.0875
+      objectReference: {fileID: 0}
     - target: {fileID: 3099517092467319976, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -103563,6 +103811,26 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4057798540880435972, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4086434158429250337, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4086434158429250337, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4086434158429250337, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4086434158429250337, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4086434158429250337, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
@@ -103956,7 +104224,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5247961140025905387, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -56
+      value: -25
       objectReference: {fileID: 0}
     - target: {fileID: 5275529150230966297, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_SizeDelta.y
@@ -104862,6 +105130,26 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7733829640716006510, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7733829640716006510, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7733829640716006510, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7733829640716006510, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7733829640716006510, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7821199182450576335, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -105468,7 +105756,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c81675374be78d949a2b97adae763d77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSpawnContainer
+  sourceKind: 0
   monsterPrefab: {fileID: 625522859161183429, guid: 3f5ff6b5c99e4e5da8df23347c49d472, type: 3}
+  stageMonsterSet: {fileID: 0}
   spawnByDefault: 1
   allowExtraSpawn: 1
   spawnAnchor: {fileID: 0}
@@ -105787,7 +106077,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c81675374be78d949a2b97adae763d77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSpawnContainer
+  sourceKind: 0
   monsterPrefab: {fileID: 625522859161183429, guid: a4a67a3598fb4cfbb4bfda7759db598a, type: 3}
+  stageMonsterSet: {fileID: 0}
   spawnByDefault: 1
   allowExtraSpawn: 1
   spawnAnchor: {fileID: 0}
@@ -105974,7 +106266,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c81675374be78d949a2b97adae763d77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSpawnContainer
+  sourceKind: 0
   monsterPrefab: {fileID: 6955305126709057867, guid: 6b49f710022e5e64bb337a1da469af91, type: 3}
+  stageMonsterSet: {fileID: 0}
   spawnByDefault: 1
   allowExtraSpawn: 1
   spawnAnchor: {fileID: 0}
@@ -106070,7 +106364,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c81675374be78d949a2b97adae763d77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSpawnContainer
+  sourceKind: 0
   monsterPrefab: {fileID: 625522859161183429, guid: 3f5ff6b5c99e4e5da8df23347c49d472, type: 3}
+  stageMonsterSet: {fileID: 0}
   spawnByDefault: 1
   allowExtraSpawn: 1
   spawnAnchor: {fileID: 0}
@@ -107092,7 +107388,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c81675374be78d949a2b97adae763d77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSpawnContainer
+  sourceKind: 0
   monsterPrefab: {fileID: 6955305126709057867, guid: 6b49f710022e5e64bb337a1da469af91, type: 3}
+  stageMonsterSet: {fileID: 0}
   spawnByDefault: 1
   allowExtraSpawn: 1
   spawnAnchor: {fileID: 0}
@@ -107143,7 +107441,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c81675374be78d949a2b97adae763d77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSpawnContainer
+  sourceKind: 0
   monsterPrefab: {fileID: 7164257353146660579, guid: a185228d38109f64eae6c7afb0622827, type: 3}
+  stageMonsterSet: {fileID: 0}
   spawnByDefault: 1
   allowExtraSpawn: 1
   spawnAnchor: {fileID: 0}
@@ -107194,7 +107494,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c81675374be78d949a2b97adae763d77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSpawnContainer
+  sourceKind: 0
   monsterPrefab: {fileID: 9047710376581899356, guid: fda3cefab78502b40b55e2b827a2ecd1, type: 3}
+  stageMonsterSet: {fileID: 0}
   spawnByDefault: 1
   allowExtraSpawn: 1
   spawnAnchor: {fileID: 0}
@@ -107245,7 +107547,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c81675374be78d949a2b97adae763d77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSpawnContainer
+  sourceKind: 0
   monsterPrefab: {fileID: 625522859161183429, guid: 3f5ff6b5c99e4e5da8df23347c49d472, type: 3}
+  stageMonsterSet: {fileID: 0}
   spawnByDefault: 1
   allowExtraSpawn: 1
   spawnAnchor: {fileID: 0}
@@ -107935,7 +108239,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c81675374be78d949a2b97adae763d77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSpawnContainer
+  sourceKind: 0
   monsterPrefab: {fileID: 6955305126709057867, guid: 6b49f710022e5e64bb337a1da469af91, type: 3}
+  stageMonsterSet: {fileID: 0}
   spawnByDefault: 1
   allowExtraSpawn: 1
   spawnAnchor: {fileID: 0}
@@ -107986,7 +108292,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c81675374be78d949a2b97adae763d77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSpawnContainer
+  sourceKind: 0
   monsterPrefab: {fileID: 5433486041897825252, guid: e67c0e27f47424648af599f14420164d, type: 3}
+  stageMonsterSet: {fileID: 0}
   spawnByDefault: 1
   allowExtraSpawn: 1
   spawnAnchor: {fileID: 0}
@@ -108271,7 +108579,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c81675374be78d949a2b97adae763d77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSpawnContainer
+  sourceKind: 0
   monsterPrefab: {fileID: 5433486041897825252, guid: e67c0e27f47424648af599f14420164d, type: 3}
+  stageMonsterSet: {fileID: 0}
   spawnByDefault: 1
   allowExtraSpawn: 1
   spawnAnchor: {fileID: 0}
@@ -108322,7 +108632,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c81675374be78d949a2b97adae763d77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSpawnContainer
+  sourceKind: 0
   monsterPrefab: {fileID: 2113181437983400040, guid: 9e597eeaaba098f4c8a80a394fb30174, type: 3}
+  stageMonsterSet: {fileID: 0}
   spawnByDefault: 1
   allowExtraSpawn: 1
   spawnAnchor: {fileID: 0}
@@ -108526,7 +108838,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c81675374be78d949a2b97adae763d77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSpawnContainer
+  sourceKind: 0
   monsterPrefab: {fileID: 625522859161183429, guid: 3f5ff6b5c99e4e5da8df23347c49d472, type: 3}
+  stageMonsterSet: {fileID: 0}
   spawnByDefault: 1
   allowExtraSpawn: 1
   spawnAnchor: {fileID: 0}
@@ -108683,7 +108997,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c81675374be78d949a2b97adae763d77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSpawnContainer
+  sourceKind: 0
   monsterPrefab: {fileID: 7326883398652249423, guid: 65aed765b26cc4745a94999e32542d6c, type: 3}
+  stageMonsterSet: {fileID: 0}
   spawnByDefault: 1
   allowExtraSpawn: 1
   spawnAnchor: {fileID: 0}
@@ -109115,7 +109431,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c81675374be78d949a2b97adae763d77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSpawnContainer
+  sourceKind: 0
   monsterPrefab: {fileID: 9047710376581899356, guid: fda3cefab78502b40b55e2b827a2ecd1, type: 3}
+  stageMonsterSet: {fileID: 0}
   spawnByDefault: 1
   allowExtraSpawn: 1
   spawnAnchor: {fileID: 0}
@@ -109321,7 +109639,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c81675374be78d949a2b97adae763d77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSpawnContainer
+  sourceKind: 0
   monsterPrefab: {fileID: 625522859161183429, guid: 3f5ff6b5c99e4e5da8df23347c49d472, type: 3}
+  stageMonsterSet: {fileID: 0}
   spawnByDefault: 1
   allowExtraSpawn: 1
   spawnAnchor: {fileID: 0}
@@ -109522,7 +109842,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c81675374be78d949a2b97adae763d77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSpawnContainer
+  sourceKind: 0
   monsterPrefab: {fileID: 7326883398652249423, guid: 65aed765b26cc4745a94999e32542d6c, type: 3}
+  stageMonsterSet: {fileID: 0}
   spawnByDefault: 1
   allowExtraSpawn: 1
   spawnAnchor: {fileID: 0}
@@ -109573,7 +109895,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c81675374be78d949a2b97adae763d77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSpawnContainer
+  sourceKind: 0
   monsterPrefab: {fileID: 5433486041897825252, guid: e67c0e27f47424648af599f14420164d, type: 3}
+  stageMonsterSet: {fileID: 0}
   spawnByDefault: 1
   allowExtraSpawn: 1
   spawnAnchor: {fileID: 0}
@@ -109798,7 +110122,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c81675374be78d949a2b97adae763d77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSpawnContainer
+  sourceKind: 0
   monsterPrefab: {fileID: 827981175415890305, guid: b9febceb6e3458b4aaa9d31cefa9bfb0, type: 3}
+  stageMonsterSet: {fileID: 0}
   spawnByDefault: 1
   allowExtraSpawn: 1
   spawnAnchor: {fileID: 0}
@@ -109849,7 +110175,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c81675374be78d949a2b97adae763d77, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MonsterSpawnContainer
+  sourceKind: 0
   monsterPrefab: {fileID: 625522859161183429, guid: 3f5ff6b5c99e4e5da8df23347c49d472, type: 3}
+  stageMonsterSet: {fileID: 0}
   spawnByDefault: 1
   allowExtraSpawn: 1
   spawnAnchor: {fileID: 0}
@@ -139689,3 +140017,4 @@ SceneRoots:
   - {fileID: 1531557033}
   - {fileID: 1138330085}
   - {fileID: 1924381648}
+  - {fileID: 889031516}

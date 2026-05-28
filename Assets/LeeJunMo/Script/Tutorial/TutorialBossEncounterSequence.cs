@@ -4,6 +4,7 @@ using Cainos.PixelArtTopDown_Basic;
 using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityGAS;
 
 [DisallowMultipleComponent]
 public sealed class TutorialBossEncounterSequence : MonoBehaviour
@@ -16,7 +17,16 @@ public sealed class TutorialBossEncounterSequence : MonoBehaviour
     [SerializeField] private Transform playerTransform;
     [SerializeField] private bool lockPlayerControls = true;
     [SerializeField] private bool blockPlayerTargetability = true;
+    [SerializeField] private bool keepPlayerLockedAfterSequence = true;
     [SerializeField] private bool pauseRunTimer = true;
+
+    [Header("Initial Aim")]
+    [SerializeField] private bool applyInitialAimOnSequenceStart;
+    [SerializeField] private Transform initialAimTarget;
+    [SerializeField] private Vector2 fallbackInitialAimDirection = Vector2.right;
+
+    [Header("HUD")]
+    [SerializeField] private bool hideDefaultHudDuringSequence = true;
 
     [Header("Camera")]
     [SerializeField] private CameraPresentationDirector cameraDirector;
@@ -28,6 +38,19 @@ public sealed class TutorialBossEncounterSequence : MonoBehaviour
     [SerializeField, Min(0.01f)] private float focusOrthographicSize = 4f;
     [SerializeField, Min(0f)] private float cameraZoomInSeconds = 0.35f;
     [SerializeField, Min(0f)] private float cameraZoomOutSeconds = 0.25f;
+
+    [Header("Initial Camera")]
+    [SerializeField] private bool focusPlayerBeforeFirstBossFocus = true;
+    [SerializeField] private bool waitForSceneTransitionBeforeInitialPlayerFocus = true;
+    [SerializeField, Min(0f)] private float initialPlayerFocusWaitSeconds = 0.75f;
+
+    [Header("Laser Camera")]
+    [SerializeField] private bool focusPlayerBeforeLaser = true;
+    [SerializeField] private Transform playerFocusTarget;
+    [SerializeField, Min(0f)] private float playerFocusWaitSeconds = 0.45f;
+    [SerializeField, Min(0.01f)] private float playerFocusOrthographicSize = 3.25f;
+    [SerializeField] private bool refocusBossAfterLaser = true;
+    [SerializeField, Min(0f)] private float bossRefocusWaitSeconds = 0.45f;
 
     [Header("Letterbox")]
     [SerializeField] private bool useLetterbox = true;
@@ -64,7 +87,11 @@ public sealed class TutorialBossEncounterSequence : MonoBehaviour
 
     [Header("Fake Game Over")]
     [SerializeField] private bool showFakeGameOver = true;
-    [SerializeField] private string fakeGameOverCauseName = "Tutorial Boss";
+    [SerializeField] private string fakeGameOverCauseName = "마왕";
+    [SerializeField] private string fakeGameOverMessageText = "처치자 마왕";
+    [SerializeField] private string fakeGameOverLocationName = "마왕의 알현실";
+    [SerializeField] private bool hideFakeGameOverTimeText = true;
+    [SerializeField] private string fakeGameOverButtonLabel = "추락";
     [SerializeField] private string returnSceneName = "ProtoTypeHub";
     [SerializeField] private bool useSceneTransitionService = true;
 
@@ -86,7 +113,15 @@ public sealed class TutorialBossEncounterSequence : MonoBehaviour
     private CinematicLetterboxOverlay letterboxOverlay;
     private GameFlowInputBlocker inputBlocker;
     private PlayerCinematicProtection playerProtection;
+    private PlayerAnimatorController2D playerAnimatorLock;
+    private WeaponPresentationRig2D weaponPresentationLock;
     private PlayerTargetabilityBlocker targetabilityBlocker;
+    private PlayerHitFeedback2D playerHitFeedback;
+    private PlayerDeathPresentation2D playerDeathPresentation;
+    private Transform protectedPlayerTransform;
+    private Transform targetabilityBlockedPlayerTransform;
+    private Transform playerPresentationLockedTransform;
+    private Transform cachedPlayerPresentationTransform;
     private CinemachineCamera gameplayCamera;
     private CinemachineBrain cameraBrain;
     private CameraFollow legacyFollowCamera;
@@ -102,21 +137,63 @@ public sealed class TutorialBossEncounterSequence : MonoBehaviour
     private bool hasCachedBossVisualScale;
     private bool hasPlayed;
     private bool hasAcquiredPlayerProtection;
+    private bool hasAcquiredPlayerPresentationLock;
     private bool hasAcquiredTargetabilityBlock;
+    private bool holdsTransitionPlayerUnlockBlock;
     private bool holdsRunTimerPause;
     private bool subscribedToLaserHit;
+    private bool subscribedToHpDepleted;
+    private bool hasHiddenDefaultHudRoots;
+    private bool hasStartedPlayerDeathPresentation;
+    private bool hasInvokedPlayerCollapse;
+    private Coroutine playerDeathPresentationRoutine;
+    private readonly List<HudObjectActiveState> hiddenDefaultHudStates = new();
+    private const int PresentationHpSortingOrder = short.MaxValue;
+    private static readonly GlobalCanvasLayer[] DefaultHudLayersToHide =
+    {
+        GlobalCanvasLayer.GameplayHUD,
+        GlobalCanvasLayer.BossHUD
+    };
+
+    private readonly struct HudObjectActiveState
+    {
+        public HudObjectActiveState(GameObject gameObject, bool wasActive)
+        {
+            GameObject = gameObject;
+            WasActive = wasActive;
+        }
+
+        public GameObject GameObject { get; }
+        public bool WasActive { get; }
+    }
 
     public bool IsRunning => sequenceRoutine != null;
     public bool HasPlayed => hasPlayed;
 
+    private void OnEnable()
+    {
+        PlayerRuntimeRegistry.PlayerRegistered += HandlePlayerRegistered;
+        PlayerRuntimeRegistry.PlayerUnregistered += HandlePlayerUnregistered;
+    }
+
     private void Start()
     {
+        presentationHpView?.SetVisible(false);
+
         if (playOnStart)
             BeginSequence();
     }
 
+    private void LateUpdate()
+    {
+        if (ShouldMaintainPlayerLock())
+            MaintainPlayerLock();
+    }
+
     private void OnDisable()
     {
+        PlayerRuntimeRegistry.PlayerRegistered -= HandlePlayerRegistered;
+        PlayerRuntimeRegistry.PlayerUnregistered -= HandlePlayerUnregistered;
         CancelSequence(invokeCanceled: false);
     }
 
@@ -128,6 +205,8 @@ public sealed class TutorialBossEncounterSequence : MonoBehaviour
         if (playOnlyOnce && hasPlayed)
             return;
 
+        AcquireTransitionPlayerUnlockBlock();
+        HideDefaultHudRoots();
         sequenceRoutine = StartCoroutine(SequenceRoutine());
     }
 
@@ -138,18 +217,21 @@ public sealed class TutorialBossEncounterSequence : MonoBehaviour
 
     private IEnumerator SequenceRoutine()
     {
-        ResolvePlayerTransform();
+        yield return WaitForPlayerTransformRoutine();
         AcquireSequenceState();
-        SubscribeLaserEvents();
+        HideDefaultHudRoots();
+        SubscribePresentationEvents();
+        hasStartedPlayerDeathPresentation = false;
+        hasInvokedPlayerCollapse = false;
+        playerDeathPresentationRoutine = null;
         presentationHpView?.ResetToMax();
+        presentationHpView?.SetVisible(false);
 
         onSequenceStarted?.Invoke();
 
-        if (useLetterbox)
-        {
-            letterboxOverlay = new CinematicLetterboxOverlay();
-            yield return PlayLetterboxInRoutine();
-        }
+        yield return WaitForSceneTransitionBeforeInitialFocusRoutine();
+        if (focusPlayerBeforeFirstBossFocus)
+            yield return FocusInitialPlayerRoutine();
 
         yield return FocusCameraRoutine();
         yield return ScaleBossVisualRoutine(focus: true);
@@ -159,27 +241,33 @@ public sealed class TutorialBossEncounterSequence : MonoBehaviour
         onFirstDialogueCompleted?.Invoke();
         yield return WaitForPresentationSeconds(delayAfterFirstDialogueSeconds);
 
+        PrepareLaserHpHud();
+        yield return PlayLetterboxInIfNeededRoutine();
+        presentationHpView?.SetVisible(true);
+
+        if (focusPlayerBeforeLaser)
+            yield return FocusPlayerForLaserRoutine();
+
         onBeforeLaser?.Invoke();
+        presentationHpView?.SetVisible(true);
         if (laserPresentation != null)
             yield return laserPresentation.PlayRoutine();
         onLaserCompleted?.Invoke();
         yield return WaitForPresentationSeconds(delayAfterLaserSeconds);
+        presentationHpView?.SetVisible(false);
+        yield return WaitForPlayerDeathPresentationIfRunningRoutine();
+
+        yield return PlayLetterboxOutIfNeededRoutine();
+
+        if (refocusBossAfterLaser)
+            yield return RefocusBossAfterLaserRoutine();
 
         onBeforeSecondDialogue?.Invoke();
         yield return PlayDialogueRoutine(secondDialogueInk, secondDialogueStartPath, "second");
         onSecondDialogueCompleted?.Invoke();
 
-        onPlayerCollapse?.Invoke();
-        yield return WaitForPresentationSeconds(collapseDelaySeconds);
-
         yield return ScaleBossVisualRoutine(focus: false);
         yield return ReturnCameraRoutine();
-
-        if (useLetterbox && letterboxOverlay != null)
-            yield return letterboxOverlay.PlayOut(letterboxOutSeconds);
-
-        letterboxOverlay?.Dispose();
-        letterboxOverlay = null;
 
         yield return WaitForPresentationSeconds(gameOverDelaySeconds);
         onBeforeGameOver?.Invoke();
@@ -188,7 +276,7 @@ public sealed class TutorialBossEncounterSequence : MonoBehaviour
 
         hasPlayed = true;
         sequenceRoutine = null;
-        CleanupSequenceState();
+        CleanupSequenceState(releasePlayerLocks: !keepPlayerLockedAfterSequence);
         onSequenceCompleted?.Invoke();
     }
 
@@ -239,6 +327,87 @@ public sealed class TutorialBossEncounterSequence : MonoBehaviour
         yield return letterboxOverlay.PlayIn(letterboxInSeconds, letterboxScreenHeightRatio, uiTargetAlpha);
     }
 
+    private void PrepareLaserHpHud()
+    {
+        if (presentationHpView == null)
+            return;
+
+        EnsurePresentationHpViewRenderable();
+        presentationHpView.ResetToMax();
+        presentationHpView.Refresh();
+        presentationHpView.SetVisible(true);
+    }
+
+    private void EnsurePresentationHpViewRenderable()
+    {
+        if (presentationHpView == null)
+            return;
+
+        Canvas canvas = presentationHpView.GetComponentInParent<Canvas>(true);
+        if (canvas != null)
+        {
+            if (!canvas.gameObject.activeSelf)
+                canvas.gameObject.SetActive(true);
+
+            canvas.enabled = true;
+            canvas.overrideSorting = true;
+            canvas.sortingOrder = PresentationHpSortingOrder;
+        }
+
+        if (!presentationHpView.gameObject.activeSelf)
+            presentationHpView.gameObject.SetActive(true);
+    }
+
+    private IEnumerator PlayLetterboxInIfNeededRoutine()
+    {
+        if (!useLetterbox)
+            yield break;
+
+        letterboxOverlay ??= new CinematicLetterboxOverlay();
+        yield return PlayLetterboxInRoutine();
+    }
+
+    private IEnumerator PlayLetterboxOutIfNeededRoutine()
+    {
+        if (!useLetterbox || letterboxOverlay == null)
+            yield break;
+
+        yield return letterboxOverlay.PlayOut(letterboxOutSeconds);
+        letterboxOverlay.Dispose();
+        letterboxOverlay = null;
+    }
+
+    private IEnumerator WaitForSceneTransitionBeforeInitialFocusRoutine()
+    {
+        if (!waitForSceneTransitionBeforeInitialPlayerFocus)
+            yield break;
+
+        while (IsSceneTransitionActive())
+            yield return null;
+    }
+
+    private IEnumerator FocusInitialPlayerRoutine()
+    {
+        if (useCameraPresentationDirector && cameraDirector != null)
+        {
+            yield return cameraDirector.ReturnToPlayerRoutine();
+            yield return WaitForPresentationSeconds(initialPlayerFocusWaitSeconds);
+            yield break;
+        }
+
+        Transform target = playerFocusTarget != null ? playerFocusTarget : ResolvePlayerTransform();
+        if (target == null)
+            yield break;
+
+        CacheCameraState();
+        CameraBootstrap.CenterGameplayCameraOn(target);
+        SetCameraTarget(target);
+        yield return ZoomCameraWhileWaitingRoutine(
+            playerFocusOrthographicSize,
+            cameraZoomInSeconds,
+            initialPlayerFocusWaitSeconds);
+    }
+
     private IEnumerator FocusCameraRoutine()
     {
         if (useCameraPresentationDirector && cameraDirector != null)
@@ -251,6 +420,34 @@ public sealed class TutorialBossEncounterSequence : MonoBehaviour
         CacheCameraState();
         SetCameraTarget(focusTarget);
         yield return ZoomCameraWhileWaitingRoutine(focusOrthographicSize, cameraZoomInSeconds, cameraFocusWaitSeconds);
+    }
+
+    private IEnumerator FocusPlayerForLaserRoutine()
+    {
+        if (useCameraPresentationDirector && cameraDirector != null)
+        {
+            yield return cameraDirector.ReturnToPlayerRoutine();
+            yield break;
+        }
+
+        CacheCameraState();
+        Transform target = playerFocusTarget != null ? playerFocusTarget : ResolvePlayerTransform();
+        SetCameraTarget(target);
+        yield return ZoomCameraWhileWaitingRoutine(playerFocusOrthographicSize, cameraZoomInSeconds, playerFocusWaitSeconds);
+    }
+
+    private IEnumerator RefocusBossAfterLaserRoutine()
+    {
+        if (useCameraPresentationDirector && cameraDirector != null)
+        {
+            yield return cameraDirector.FocusBossWithPhaseLensRoutine();
+            yield break;
+        }
+
+        CacheCameraState();
+        Transform target = bossFocusTarget != null ? bossFocusTarget : transform;
+        SetCameraTarget(target);
+        yield return ZoomCameraWhileWaitingRoutine(focusOrthographicSize, cameraZoomInSeconds, bossRefocusWaitSeconds);
     }
 
     private IEnumerator ReturnCameraRoutine()
@@ -364,22 +561,128 @@ public sealed class TutorialBossEncounterSequence : MonoBehaviour
         }
     }
 
+    private IEnumerator WaitForPlayerTransformRoutine()
+    {
+        if (ResolvePlayerTransform() != null)
+            yield break;
+
+        float elapsed = 0f;
+        bool warned = false;
+        while (ResolvePlayerTransform() == null)
+        {
+            elapsed += Time.unscaledDeltaTime;
+            if (!warned && elapsed >= 2f)
+            {
+                Debug.LogWarning(
+                    "[TutorialBossEncounterSequence] Waiting for player registration before starting tutorial boss sequence.",
+                    this);
+                warned = true;
+            }
+
+            yield return null;
+        }
+    }
+
+    private static bool IsSceneTransitionActive()
+    {
+        SceneTransitionCoordinator transitionCoordinator = SceneTransitionCoordinator.Instance;
+        if (transitionCoordinator != null && transitionCoordinator.IsTransitionActive)
+            return true;
+
+        SceneFadeTransitionService fadeService = SceneFadeTransitionService.Instance;
+        return fadeService != null && fadeService.IsTransitionActive;
+    }
+
+    private IEnumerator PlayPlayerCollapsePresentationRoutine()
+    {
+        if (hasStartedPlayerDeathPresentation)
+        {
+            yield return WaitForPlayerDeathPresentationIfRunningRoutine();
+
+            yield break;
+        }
+
+        yield return PlayPlayerDeathPresentationRoutine();
+    }
+
+    private IEnumerator WaitForPlayerDeathPresentationIfRunningRoutine()
+    {
+        while (playerDeathPresentationRoutine != null)
+            yield return null;
+    }
+
+    private IEnumerator PlayPlayerDeathPresentationRoutine()
+    {
+        hasStartedPlayerDeathPresentation = true;
+        Transform resolvedPlayer = ResolvePlayerTransform();
+        if (resolvedPlayer != null)
+        {
+            CachePlayerPresentationComponents(resolvedPlayer);
+            playerHitFeedback?.ForceEndReaction();
+
+            if (playerDeathPresentation != null)
+            {
+                yield return playerDeathPresentation.Play();
+                yield break;
+            }
+        }
+
+        yield return WaitForPresentationSeconds(collapseDelaySeconds);
+    }
+
+    private void StartPlayerDeathPresentationIfNeeded()
+    {
+        if (hasStartedPlayerDeathPresentation)
+            return;
+
+        InvokePlayerCollapseOnce();
+        playerDeathPresentationRoutine = StartCoroutine(PlayerDeathPresentationHandleRoutine());
+    }
+
+    private IEnumerator PlayerDeathPresentationHandleRoutine()
+    {
+        yield return PlayPlayerDeathPresentationRoutine();
+        playerDeathPresentationRoutine = null;
+    }
+
     private void ShowFakeGameOver()
     {
+        HubIntroProgressGate.MarkDarkLordTutorialForcedDefeatCompleted();
+
         Transform resolvedPlayer = ResolvePlayerTransform();
         GameOverPresentationRequest request = GameOverPresentationRequest.Defeat(
             resolvedPlayer,
-            fakeGameOverCauseName,
+            ResolveFakeGameOverText(fakeGameOverCauseName, "Tutorial Boss", "마왕"),
             GameOverCauseKind.Monster,
             returnSceneName,
             useSceneTransitionService);
         request.EndRunOnReturn = false;
+        request.ReturnButtonLabel = fakeGameOverButtonLabel;
+        request.MessageTextOverride = ResolveFakeGameOverText(fakeGameOverMessageText, null, "처치자 마왕");
+        request.LocationName = ResolveFakeGameOverText(fakeGameOverLocationName, null, "마왕의 알현실");
+        request.HideTimeText = hideFakeGameOverTimeText;
 
         GameOverPresentationController.TryShow(request);
     }
 
+    private static string ResolveFakeGameOverText(string value, string legacyValue, string fallback)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return fallback;
+
+        if (!string.IsNullOrWhiteSpace(legacyValue) &&
+            string.Equals(value, legacyValue, System.StringComparison.Ordinal))
+        {
+            return fallback;
+        }
+
+        return value;
+    }
+
     private void AcquireSequenceState()
     {
+        AcquireTransitionPlayerUnlockBlock();
+
         inputBlocker = GameFlowInputBlocker.GetOrAdd(this);
         inputBlocker?.Acquire();
 
@@ -396,10 +699,17 @@ public sealed class TutorialBossEncounterSequence : MonoBehaviour
             AcquireTargetabilityBlock();
     }
 
-    private void CleanupSequenceState()
+    private void CleanupSequenceState(bool releasePlayerLocks = true)
     {
-        UnsubscribeLaserEvents();
+        UnsubscribePresentationEvents();
         laserPresentation?.Cancel();
+        presentationHpView?.SetVisible(false);
+
+        if (releasePlayerLocks && playerDeathPresentationRoutine != null)
+        {
+            StopCoroutine(playerDeathPresentationRoutine);
+            playerDeathPresentationRoutine = null;
+        }
 
         if (letterboxOverlay != null)
         {
@@ -414,8 +724,14 @@ public sealed class TutorialBossEncounterSequence : MonoBehaviour
         else
             cameraDirector?.RestoreDefaultState();
 
-        ReleaseTargetabilityBlock();
-        ReleasePlayerProtection();
+        if (releasePlayerLocks)
+        {
+            RestoreDefaultHudRoots();
+            ReleaseTargetabilityBlock();
+            ReleasePlayerProtection();
+            ReleaseTransitionPlayerUnlockBlock();
+        }
+
         inputBlocker?.Release();
         inputBlocker = null;
 
@@ -423,6 +739,81 @@ public sealed class TutorialBossEncounterSequence : MonoBehaviour
             RunTimeLimitSystem.Instance.SetExternalPause(this, false);
 
         holdsRunTimerPause = false;
+    }
+
+    private void HideDefaultHudRoots()
+    {
+        if (!hideDefaultHudDuringSequence || hasHiddenDefaultHudRoots)
+            return;
+
+        for (int i = 0; i < DefaultHudLayersToHide.Length; i++)
+        {
+            Canvas canvas = GlobalUIRoot.GetCanvas(DefaultHudLayersToHide[i]);
+            if (canvas == null)
+                continue;
+
+            CaptureAndSetHudObjectActive(canvas.gameObject, false);
+            HideDefaultHudComponentRoots(canvas.transform);
+        }
+
+        hasHiddenDefaultHudRoots = hiddenDefaultHudStates.Count > 0;
+    }
+
+    private void HideDefaultHudComponentRoots(Transform canvasRoot)
+    {
+        if (canvasRoot == null)
+            return;
+
+        HideHudComponentRoots<PlayerHealthHeartHUD>(canvasRoot);
+        HideHudComponentRoots<WeaponSkillHUD2D>(canvasRoot);
+        HideHudComponentRoots<PlayerConsumableHUD2D>(canvasRoot);
+        HideHudComponentRoots<StatusHudPresenter>(canvasRoot);
+        HideHudComponentRoots<BossHealthBarUI>(canvasRoot);
+    }
+
+    private void HideHudComponentRoots<T>(Transform canvasRoot) where T : Component
+    {
+        T[] components = canvasRoot.GetComponentsInChildren<T>(true);
+        for (int i = 0; i < components.Length; i++)
+        {
+            T component = components[i];
+            if (component != null)
+                CaptureAndSetHudObjectActive(component.gameObject, false);
+        }
+    }
+
+    private void CaptureAndSetHudObjectActive(GameObject target, bool active)
+    {
+        if (target == null || HasCapturedHudObject(target))
+            return;
+
+        hiddenDefaultHudStates.Add(new HudObjectActiveState(target, target.activeSelf));
+        if (target.activeSelf != active)
+            target.SetActive(active);
+    }
+
+    private bool HasCapturedHudObject(GameObject target)
+    {
+        for (int i = 0; i < hiddenDefaultHudStates.Count; i++)
+        {
+            if (hiddenDefaultHudStates[i].GameObject == target)
+                return true;
+        }
+
+        return false;
+    }
+
+    private void RestoreDefaultHudRoots()
+    {
+        for (int i = hiddenDefaultHudStates.Count - 1; i >= 0; i--)
+        {
+            HudObjectActiveState state = hiddenDefaultHudStates[i];
+            if (state.GameObject != null && state.GameObject.activeSelf != state.WasActive)
+                state.GameObject.SetActive(state.WasActive);
+        }
+
+        hiddenDefaultHudStates.Clear();
+        hasHiddenDefaultHudRoots = false;
     }
 
     private void CancelSequence(bool invokeCanceled)
@@ -433,10 +824,22 @@ public sealed class TutorialBossEncounterSequence : MonoBehaviour
             sequenceRoutine = null;
         }
 
-        CleanupSequenceState();
+        CleanupSequenceState(releasePlayerLocks: true);
 
         if (invokeCanceled)
             onSequenceCanceled?.Invoke();
+    }
+
+    private void SubscribePresentationEvents()
+    {
+        SubscribeLaserEvents();
+        SubscribePresentationHpEvents();
+    }
+
+    private void UnsubscribePresentationEvents()
+    {
+        UnsubscribeLaserEvents();
+        UnsubscribePresentationHpEvents();
     }
 
     private void SubscribeLaserEvents()
@@ -457,15 +860,149 @@ public sealed class TutorialBossEncounterSequence : MonoBehaviour
         subscribedToLaserHit = false;
     }
 
+    private void SubscribePresentationHpEvents()
+    {
+        if (presentationHpView == null || subscribedToHpDepleted)
+            return;
+
+        presentationHpView.OnDepleted.AddListener(HandlePresentationHpDepleted);
+        subscribedToHpDepleted = true;
+    }
+
+    private void UnsubscribePresentationHpEvents()
+    {
+        if (presentationHpView == null || !subscribedToHpDepleted)
+            return;
+
+        presentationHpView.OnDepleted.RemoveListener(HandlePresentationHpDepleted);
+        subscribedToHpDepleted = false;
+    }
+
     private void HandleLaserStepHit(int _)
     {
+        PlayPlayerHitPresentation();
+
+        if (presentationHpView != null && presentationHpView.CurrentHp <= 0)
+            StartPlayerDeathPresentationIfNeeded();
+
         onPlayerHit?.Invoke();
+    }
+
+    private void HandlePresentationHpDepleted()
+    {
+        StartPlayerDeathPresentationIfNeeded();
+    }
+
+    private void InvokePlayerCollapseOnce()
+    {
+        if (hasInvokedPlayerCollapse)
+            return;
+
+        hasInvokedPlayerCollapse = true;
+        onPlayerCollapse?.Invoke();
+    }
+
+    private void PlayPlayerHitPresentation()
+    {
+        Transform resolvedPlayer = ResolvePlayerTransform();
+        if (resolvedPlayer == null)
+            return;
+
+        CachePlayerPresentationComponents(resolvedPlayer);
+
+        GameObject causer = bossVisualRoot != null ? bossVisualRoot.gameObject : gameObject;
+        playerHitFeedback?.OnHitFeedback(new HitFeedbackPayload(causer, 0f, 0f));
+    }
+
+    private void HandlePlayerRegistered(PlayerInteractor2D player)
+    {
+        if (player == null)
+            return;
+
+        playerTransform = player.transform;
+        ClearPlayerPresentationComponentCache();
+
+        if (ShouldMaintainPlayerLock())
+            MaintainPlayerLock();
+    }
+
+    private void HandlePlayerUnregistered(PlayerInteractor2D player)
+    {
+        if (player == null || player.transform != playerTransform)
+            return;
+
+        playerTransform = null;
+        ClearPlayerPresentationComponentCache();
+    }
+
+    private bool ShouldMaintainPlayerLock()
+    {
+        if (!lockPlayerControls && !blockPlayerTargetability)
+            return false;
+
+        return sequenceRoutine != null || (keepPlayerLockedAfterSequence && hasAcquiredPlayerProtection);
+    }
+
+    private void MaintainPlayerLock()
+    {
+        Transform resolvedPlayer = ResolvePlayerTransform();
+        if (resolvedPlayer == null)
+            return;
+
+        if (lockPlayerControls)
+            AcquirePlayerProtection();
+
+        if (blockPlayerTargetability)
+            AcquireTargetabilityBlock();
+
+        PlayerInteractor2D interactor = resolvedPlayer.GetComponent<PlayerInteractor2D>();
+        if (interactor != null && interactor.CurrentState != InteractState.None)
+            interactor.SetInteractState(InteractState.None);
+
+        MovementMotor2D movementMotor = resolvedPlayer.GetComponent<MovementMotor2D>();
+        movementMotor?.StopAllMotion();
+
+        Rigidbody2D playerBody = resolvedPlayer.GetComponent<Rigidbody2D>();
+        if (playerBody != null)
+        {
+            playerBody.linearVelocity = Vector2.zero;
+            playerBody.angularVelocity = 0f;
+        }
+    }
+
+    private void CachePlayerPresentationComponents(Transform resolvedPlayer)
+    {
+        if (resolvedPlayer == null)
+            return;
+
+        if (cachedPlayerPresentationTransform == resolvedPlayer)
+            return;
+
+        cachedPlayerPresentationTransform = resolvedPlayer;
+        playerHitFeedback = resolvedPlayer.GetComponent<PlayerHitFeedback2D>();
+        playerDeathPresentation = resolvedPlayer.GetComponent<PlayerDeathPresentation2D>();
+    }
+
+    private void ClearPlayerPresentationComponentCache()
+    {
+        cachedPlayerPresentationTransform = null;
+        playerHitFeedback = null;
+        playerDeathPresentation = null;
     }
 
     private Transform ResolvePlayerTransform()
     {
-        if (playerTransform == null)
-            playerTransform = PlayerRuntimeRegistry.GetPlayerTransform();
+        Transform registeredPlayer = PlayerRuntimeRegistry.GetPlayerTransform();
+        if (registeredPlayer != null)
+        {
+            if (playerTransform != registeredPlayer)
+            {
+                playerTransform = registeredPlayer;
+                ClearPlayerPresentationComponentCache();
+            }
+
+            return registeredPlayer;
+        }
 
         return playerTransform;
     }
@@ -476,23 +1013,113 @@ public sealed class TutorialBossEncounterSequence : MonoBehaviour
         if (resolvedPlayer == null)
             return;
 
-        if (playerProtection == null)
-            playerProtection = resolvedPlayer.GetComponent<PlayerCinematicProtection>();
+        if (hasAcquiredPlayerProtection && protectedPlayerTransform == resolvedPlayer)
+        {
+            AcquirePlayerPresentationLock(resolvedPlayer);
+            return;
+        }
+
+        if (hasAcquiredPlayerProtection)
+            ReleasePlayerProtection();
+
+        playerProtection = resolvedPlayer.GetComponent<PlayerCinematicProtection>();
 
         if (playerProtection == null)
             playerProtection = resolvedPlayer.gameObject.AddComponent<PlayerCinematicProtection>();
 
+        ApplyInitialAimPose(resolvedPlayer);
         playerProtection.Acquire(this);
+        protectedPlayerTransform = resolvedPlayer;
+        AcquirePlayerPresentationLock(resolvedPlayer);
         hasAcquiredPlayerProtection = true;
+    }
+
+    private void ApplyInitialAimPose(Transform resolvedPlayer)
+    {
+        if (!applyInitialAimOnSequenceStart || resolvedPlayer == null)
+            return;
+
+        if (!TryResolveInitialAimDirection(resolvedPlayer, out Vector2 direction))
+            return;
+
+        PlayerAim2D aim = resolvedPlayer.GetComponent<PlayerAim2D>();
+        aim?.SetAimDirectionForPresentation(direction);
+
+        PlayerAnimatorController2D animatorController = resolvedPlayer.GetComponent<PlayerAnimatorController2D>();
+        animatorController?.ApplyFacingDirectionForPresentation(direction);
+
+        WeaponPresentationRig2D presentationRig = resolvedPlayer.GetComponentInChildren<WeaponPresentationRig2D>(true);
+        presentationRig?.RefreshNow();
+    }
+
+    private bool TryResolveInitialAimDirection(Transform resolvedPlayer, out Vector2 direction)
+    {
+        direction = Vector2.zero;
+
+        if (resolvedPlayer == null)
+            return false;
+
+        if (initialAimTarget != null)
+            direction = (Vector2)(initialAimTarget.position - resolvedPlayer.position);
+
+        if (direction.sqrMagnitude <= 0.0001f)
+            direction = fallbackInitialAimDirection;
+
+        if (direction.sqrMagnitude <= 0.0001f)
+            return false;
+
+        direction.Normalize();
+        return true;
     }
 
     private void ReleasePlayerProtection()
     {
         if (!hasAcquiredPlayerProtection)
+        {
+            ReleasePlayerPresentationLock();
             return;
+        }
 
         playerProtection?.Release(this);
+        playerProtection = null;
+        protectedPlayerTransform = null;
+        ReleasePlayerPresentationLock();
         hasAcquiredPlayerProtection = false;
+    }
+
+    private void AcquirePlayerPresentationLock(Transform resolvedPlayer)
+    {
+        if (resolvedPlayer == null)
+            return;
+
+        if (hasAcquiredPlayerPresentationLock && playerPresentationLockedTransform != resolvedPlayer)
+            ReleasePlayerPresentationLock();
+
+        if (playerAnimatorLock == null)
+            playerAnimatorLock = resolvedPlayer.GetComponent<PlayerAnimatorController2D>();
+
+        playerAnimatorLock?.AcquireCinematicFacingLock(this);
+
+        if (weaponPresentationLock == null)
+            weaponPresentationLock = resolvedPlayer.GetComponentInChildren<WeaponPresentationRig2D>(true);
+
+        weaponPresentationLock?.AcquireCinematicPresentationLock(this);
+        playerPresentationLockedTransform = resolvedPlayer;
+        hasAcquiredPlayerPresentationLock = playerAnimatorLock != null || weaponPresentationLock != null;
+    }
+
+    private void ReleasePlayerPresentationLock()
+    {
+        if (!hasAcquiredPlayerPresentationLock)
+            return;
+
+        playerAnimatorLock?.ReleaseCinematicFacingLock(this);
+        playerAnimatorLock = null;
+
+        weaponPresentationLock?.ReleaseCinematicPresentationLock(this);
+        weaponPresentationLock = null;
+        playerPresentationLockedTransform = null;
+        hasAcquiredPlayerPresentationLock = false;
     }
 
     private void AcquireTargetabilityBlock()
@@ -501,8 +1128,15 @@ public sealed class TutorialBossEncounterSequence : MonoBehaviour
         if (resolvedPlayer == null)
             return;
 
+        if (hasAcquiredTargetabilityBlock && targetabilityBlockedPlayerTransform == resolvedPlayer)
+            return;
+
+        if (hasAcquiredTargetabilityBlock)
+            ReleaseTargetabilityBlock();
+
         targetabilityBlocker = PlayerTargetabilityBlocker.GetOrAdd(resolvedPlayer);
         targetabilityBlocker?.Acquire(this);
+        targetabilityBlockedPlayerTransform = resolvedPlayer;
         hasAcquiredTargetabilityBlock = true;
     }
 
@@ -512,7 +1146,34 @@ public sealed class TutorialBossEncounterSequence : MonoBehaviour
             return;
 
         targetabilityBlocker?.Release(this);
+        targetabilityBlocker = null;
+        targetabilityBlockedPlayerTransform = null;
         hasAcquiredTargetabilityBlock = false;
+    }
+
+    private void AcquireTransitionPlayerUnlockBlock()
+    {
+        if (holdsTransitionPlayerUnlockBlock)
+            return;
+
+        SceneFadeTransitionService transitionService = SceneFadeTransitionService.EnsureInstance();
+        if (transitionService == null)
+            return;
+
+        transitionService.SetPlayerUnlockBlocked(this, true);
+        holdsTransitionPlayerUnlockBlock = true;
+    }
+
+    private void ReleaseTransitionPlayerUnlockBlock()
+    {
+        if (!holdsTransitionPlayerUnlockBlock)
+            return;
+
+        SceneFadeTransitionService transitionService = SceneFadeTransitionService.Instance;
+        if (transitionService != null)
+            transitionService.SetPlayerUnlockBlocked(this, false);
+
+        holdsTransitionPlayerUnlockBlock = false;
     }
 
     private void CacheCameraState()
