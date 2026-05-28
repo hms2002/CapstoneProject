@@ -97,6 +97,22 @@ public sealed class TitleProfileSlotPanelUI : MonoBehaviour, ICloseRequestHandle
         Open(onSlotSelected, onClosed);
     }
 
+    public void SetInteractionBlocked(bool blocked)
+    {
+        if (blocked)
+        {
+            SetInteractionEnabled(false);
+            SetPanelContentInteractable(false);
+            return;
+        }
+
+        if (!gameObject.activeSelf || isClosing || awaitingDeleteConfirmation)
+            return;
+
+        SetInteractionEnabled(true);
+        SetPanelContentInteractable(true);
+    }
+
     public void CloseUI()
     {
         if (isClosing)

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -10,6 +11,9 @@ using UnityEngine;
 [DisallowMultipleComponent]
 public sealed class MonsterSpawnRoomGroup : MonoBehaviour
 {
+    public static event Action<MonsterSpawnRoomGroup> ActiveRoomEntered;
+    public static event Action<MonsterSpawnRoomGroup> ActiveRoomExited;
+
     [SerializeField] private MonsterRoomSpawnProfileSO spawnProfile;
     [SerializeField] private bool autoCollectChildContainers = true;
     [SerializeField] private List<MonsterSpawnContainer> spawnContainers = new();
@@ -22,6 +26,13 @@ public sealed class MonsterSpawnRoomGroup : MonoBehaviour
 
     public MonsterRoomSpawnProfileSO SpawnProfile => spawnProfile;
     public bool PlayerEncounterEntered => playerEncounterEntered;
+
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
+    private static void ResetStaticEvents()
+    {
+        ActiveRoomEntered = null;
+        ActiveRoomExited = null;
+    }
 
     /// <summary>현재 방 그룹이 관리하는 스폰 포인트들을 반환합니다.</summary>
     public IReadOnlyList<MonsterSpawnContainer> GetSpawnContainers()
@@ -112,6 +123,24 @@ public sealed class MonsterSpawnRoomGroup : MonoBehaviour
         }
     }
 
+    public int GetAliveRegisteredMonstersNonAlloc(List<GameObject> results)
+    {
+        if (results == null)
+            return 0;
+
+        results.Clear();
+        CompactRuntimeLists();
+
+        for (int i = 0; i < runtimeSpawnedMonsters.Count; i++)
+        {
+            GameObject monster = runtimeSpawnedMonsters[i];
+            if (monster != null)
+                results.Add(monster);
+        }
+
+        return results.Count;
+    }
+
     public void NotifyPlayerEnteredEncounter()
     {
         if (playerEncounterEntered)
@@ -131,6 +160,8 @@ public sealed class MonsterSpawnRoomGroup : MonoBehaviour
 
             doorLock.NotifyRoomEncounterEntered();
         }
+
+        ActiveRoomEntered?.Invoke(this);
     }
 
     public void NotifyPlayerExitedEncounter()
@@ -152,6 +183,8 @@ public sealed class MonsterSpawnRoomGroup : MonoBehaviour
 
             doorLock.NotifyRoomEncounterExited();
         }
+
+        ActiveRoomExited?.Invoke(this);
     }
 
     private void RefreshContainersIfNeeded()
@@ -202,7 +235,7 @@ public sealed class MonsterSpawnRoomGroup : MonoBehaviour
     {
         for (int i = 0; i < list.Count; i++)
         {
-            int j = Random.Range(i, list.Count);
+            int j = UnityEngine.Random.Range(i, list.Count);
             (list[i], list[j]) = (list[j], list[i]);
         }
     }

@@ -79,9 +79,7 @@ public class RewardDisplayUI : MonoBehaviour, IStackableUI
         isClosing = false;
         StopPresentationRoutine();
         ResolvePresentationReferences();
-
-        if (panelRoot != null)
-            panelRoot.SetActive(true);
+        EnsureOpenHierarchyActive();
 
         PrepareContentForOpenPresentation();
         AcquireOpenPresentationInputBlock();
@@ -398,6 +396,9 @@ public class RewardDisplayUI : MonoBehaviour, IStackableUI
         if (panelRoot != null)
             panelRoot.SetActive(false);
 
+        HideRewardHover();
+        RehideRewardPresentationLayersForActiveDialogue();
+
         onCloseCallback?.Invoke();
         onCloseCallback = null;
         RewardDisplayService.Instance?.NotifyClosed(this);
@@ -426,6 +427,82 @@ public class RewardDisplayUI : MonoBehaviour, IStackableUI
     private void ReleaseOpenPresentationInputBlock()
     {
         openPresentationInputBlocker?.Release();
+    }
+
+    private void EnsureOpenHierarchyActive()
+    {
+        RestorePresentationLayer(GlobalCanvasLayer.Reward, true, true);
+        RestorePresentationLayer(GlobalCanvasLayer.Hover, false, false);
+
+        if (!gameObject.activeSelf)
+            gameObject.SetActive(true);
+
+        if (panelRoot != null && !panelRoot.activeSelf)
+            panelRoot.SetActive(true);
+    }
+
+    private static void RestorePresentationLayer(GlobalCanvasLayer layer, bool interactable, bool blocksRaycasts)
+    {
+        if (DialogueService.Instance != null &&
+            DialogueService.Instance.SetSuppressedNonDialogueUiLayerVisible(layer, true, interactable, blocksRaycasts))
+        {
+            return;
+        }
+
+        Canvas canvas = GlobalUIRoot.GetCanvas(layer);
+        GameObject canvasRoot = canvas != null ? canvas.gameObject : null;
+        if (canvasRoot == null)
+            return;
+
+        if (!canvasRoot.activeSelf)
+            canvasRoot.SetActive(true);
+
+        CanvasGroup canvasGroup = canvasRoot.GetComponent<CanvasGroup>();
+        if (canvasGroup == null)
+            return;
+
+        canvasGroup.alpha = 1f;
+        canvasGroup.interactable = interactable;
+        canvasGroup.blocksRaycasts = blocksRaycasts;
+    }
+
+    private static void HideRewardHover()
+    {
+        UIManager.Instance?.HideHoverImmediate();
+    }
+
+    private static void RehideRewardPresentationLayersForActiveDialogue()
+    {
+        if (DialogueService.Instance == null || !DialogueService.Instance.IsPlaying)
+            return;
+
+        HidePresentationLayer(GlobalCanvasLayer.Hover);
+        HidePresentationLayer(GlobalCanvasLayer.Reward);
+    }
+
+    private static void HidePresentationLayer(GlobalCanvasLayer layer)
+    {
+        if (DialogueService.Instance != null &&
+            DialogueService.Instance.SetSuppressedNonDialogueUiLayerVisible(layer, false))
+        {
+            return;
+        }
+
+        Canvas canvas = GlobalUIRoot.GetCanvas(layer);
+        GameObject canvasRoot = canvas != null ? canvas.gameObject : null;
+        if (canvasRoot == null)
+            return;
+
+        CanvasGroup canvasGroup = canvasRoot.GetComponent<CanvasGroup>();
+        if (canvasGroup != null)
+        {
+            canvasGroup.alpha = 0f;
+            canvasGroup.interactable = false;
+            canvasGroup.blocksRaycasts = false;
+        }
+
+        if (canvasRoot.activeSelf)
+            canvasRoot.SetActive(false);
     }
 
     private void ResolvePresentationReferences()

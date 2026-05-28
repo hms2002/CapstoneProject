@@ -25,8 +25,10 @@ public sealed class FloweringRuntimeState :
     private bool modifiersApplied;
     private bool eventRegistered;
     private bool cutInPresentationPrepared;
+    private bool bloomSkillSwapLocked;
 
     public bool IsBloomActive => runtimeData != null && runtimeData.IsBloomActive && bloomData != null;
+    public bool BlocksWeaponSwap => bloomSkillSwapLocked || IsBloomActive;
 
     public static FloweringRuntimeState GetOrAdd(AbilitySystem system)
     {
@@ -50,6 +52,16 @@ public sealed class FloweringRuntimeState :
     {
         abilitySystem = system;
         attributeSet = system != null ? system.AttributeSet : null;
+    }
+
+    public void BeginBloomSkillSwapLock()
+    {
+        bloomSkillSwapLocked = true;
+    }
+
+    public void EndBloomSkillSwapLock()
+    {
+        bloomSkillSwapLocked = false;
     }
 
     public IEnumerator PlayBloomCutIn(AbilitySystem system, AbilitySpec spec, FloweringBloomData data)
@@ -256,6 +268,7 @@ public sealed class FloweringRuntimeState :
     private void OnDisable()
     {
         EndBloom();
+        EndBloomSkillSwapLock();
     }
 
     private FloweringBloomPresentationController EnsurePresentation(FloweringBloomData data)

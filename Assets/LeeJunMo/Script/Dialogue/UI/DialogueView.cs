@@ -132,7 +132,10 @@ public class DialogueView : MonoBehaviour
             nameText.text = string.Empty;
 
         if (dialogueText != null)
+        {
             dialogueText.text = string.Empty;
+            dialogueText.maxVisibleCharacters = int.MaxValue;
+        }
     }
 
     public void ApplyTheme(DialogueThemeSO theme, bool updateEffectTheme = false)
@@ -260,41 +263,76 @@ public class DialogueView : MonoBehaviour
         if (nameText != null)
             nameText.text = speakerName;
 
-        if (dialogueText != null)
-            dialogueText.text = string.Empty;
-
         if (continueIcon != null)
             continueIcon.SetActive(false);
 
         typingTween?.Kill();
         ResetTypingAudioTracking();
 
-        if (dialogueText != null)
+        if (dialogueText == null)
+            return;
+
+        string lineText = text ?? string.Empty;
+        dialogueText.richText = true;
+        dialogueText.text = lineText;
+        dialogueText.maxVisibleCharacters = 0;
+        dialogueText.ForceMeshUpdate();
+
+        int visibleCharacterCount = dialogueText.textInfo != null
+            ? dialogueText.textInfo.characterCount
+            : 0;
+
+        if (visibleCharacterCount <= 0)
         {
-            typingTween = dialogueText.DOText(text, text.Length * 0.05f)
-                .SetUpdate(true)
-                .SetEase(Ease.Linear)
-                .OnUpdate(HandleTypingTweenUpdated)
-                .OnComplete(() =>
-                {
-                    HandleTypingTweenUpdated();
+            dialogueText.maxVisibleCharacters = int.MaxValue;
 
-                    if (continueIcon != null)
-                        continueIcon.SetActive(true);
+            if (continueIcon != null)
+                continueIcon.SetActive(true);
 
-                    onComplete?.Invoke();
-                });
+            onComplete?.Invoke();
+            return;
         }
+
+        typingTween = DOTween.To(
+                () => dialogueText.maxVisibleCharacters,
+                visibleCount =>
+                {
+                    dialogueText.maxVisibleCharacters = Mathf.Clamp(visibleCount, 0, visibleCharacterCount);
+                    HandleTypingTweenUpdated();
+                },
+                visibleCharacterCount,
+                visibleCharacterCount * 0.05f)
+            .SetUpdate(true)
+            .SetEase(Ease.Linear)
+            .OnComplete(() =>
+            {
+                dialogueText.maxVisibleCharacters = visibleCharacterCount;
+                HandleTypingTweenUpdated();
+                typingTween = null;
+
+                if (continueIcon != null)
+                    continueIcon.SetActive(true);
+
+                onComplete?.Invoke();
+            });
     }
 
     public void SkipTyping(string fullText)
     {
         typingTween?.Kill();
+        typingTween = null;
 
         if (dialogueText != null)
-            dialogueText.text = fullText;
+        {
+            dialogueText.richText = true;
+            dialogueText.text = fullText ?? string.Empty;
+            dialogueText.ForceMeshUpdate();
+            dialogueText.maxVisibleCharacters = dialogueText.textInfo != null
+                ? dialogueText.textInfo.characterCount
+                : int.MaxValue;
+        }
 
-        lastTypedCharacterCount = string.IsNullOrEmpty(fullText) ? 0 : fullText.Length;
+        lastTypedCharacterCount = GetCurrentVisibleDialogueCharacterCount();
 
         if (continueIcon != null)
             continueIcon.SetActive(true);
@@ -975,8 +1013,7 @@ public class DialogueView : MonoBehaviour
         if (!playTypingSound || dialogueText == null)
             return;
 
-        string currentText = dialogueText.text;
-        int currentCharacterCount = string.IsNullOrEmpty(currentText) ? 0 : currentText.Length;
+        int currentCharacterCount = GetCurrentVisibleDialogueCharacterCount();
         if (currentCharacterCount <= lastTypedCharacterCount)
             return;
 
@@ -987,6 +1024,18 @@ public class DialogueView : MonoBehaviour
         }
 
         lastTypedCharacterCount = currentCharacterCount;
+    }
+
+    private int GetCurrentVisibleDialogueCharacterCount()
+    {
+        if (dialogueText == null || dialogueText.textInfo == null)
+            return 0;
+
+        int totalCharacterCount = dialogueText.textInfo.characterCount;
+        if (totalCharacterCount <= 0)
+            return 0;
+
+        return Mathf.Clamp(dialogueText.maxVisibleCharacters, 0, totalCharacterCount);
     }
 
     private AnimationClip ResolveDialogueEffectClip(string stateOrClipName)

@@ -92,42 +92,51 @@ public abstract class AbilityLogic_DemonKingBase : AbilityLogic
         AbilitySpec spec,
         bool showAttackPrimitive = true)
     {
+        demon?.BeginBodyAfterimage();
+
         if (motion != null)
             motion.StartLunge(start, direction, distance, duration);
         else
             demon.transform.position = start + direction * distance;
 
-        if (showAttackPrimitive)
+        try
         {
-            DemonKingPrimitiveVisual.SpawnSquare(
-                start + direction * (distance * 0.5f),
-                new Vector2(Mathf.Max(0.1f, distance), hitWidth),
-                DemonKingCombatUtil.RotationDeg(direction),
-                duration,
-                AttackSquareColor,
-                "DemonKing_LungeSquareAttack");
+            if (showAttackPrimitive)
+            {
+                DemonKingPrimitiveVisual.SpawnSquare(
+                    start + direction * (distance * 0.5f),
+                    new Vector2(Mathf.Max(0.1f, distance), hitWidth),
+                    DemonKingCombatUtil.RotationDeg(direction),
+                    duration,
+                    AttackSquareColor,
+                    "DemonKing_LungeSquareAttack");
+            }
+
+            HashSet<GameObject> damagedTargets = new();
+            float elapsed = 0f;
+            while (elapsed < duration)
+            {
+                if (IsAbilityCancelled(spec))
+                    yield break;
+
+                Vector2 center = (Vector2)demon.transform.position + direction * 0.6f;
+                DemonKingCombatUtil.ApplyRectangleDamage(
+                    demon,
+                    center,
+                    new Vector2(1.25f, hitWidth),
+                    DemonKingCombatUtil.RotationDeg(direction),
+                    demon.DefaultDamageEffect,
+                    damage,
+                    damagedTargets,
+                    knockback);
+
+                elapsed += Time.fixedDeltaTime;
+                yield return new WaitForFixedUpdate();
+            }
         }
-
-        HashSet<GameObject> damagedTargets = new();
-        float elapsed = 0f;
-        while (elapsed < duration)
+        finally
         {
-            if (IsAbilityCancelled(spec))
-                yield break;
-
-            Vector2 center = (Vector2)demon.transform.position + direction * 0.6f;
-            DemonKingCombatUtil.ApplyRectangleDamage(
-                demon,
-                center,
-                new Vector2(1.25f, hitWidth),
-                DemonKingCombatUtil.RotationDeg(direction),
-                demon.DefaultDamageEffect,
-                damage,
-                damagedTargets,
-                knockback);
-
-            elapsed += Time.fixedDeltaTime;
-            yield return new WaitForFixedUpdate();
+            demon?.StopBodyAfterimage();
         }
     }
 
@@ -706,13 +715,27 @@ public class AbilityLogic_DemonKingHomingMagic : AbilityLogic_DemonKingBase
 
             Vector2 moveDirection = ResolveMagicMoveDirection(demon, bossPosition);
             float moveDistance = demon.PlayerDashDistanceReference;
-            if (motion != null && moveDistance > 0f)
-                motion.StartLunge(bossPosition, moveDirection, moveDistance, moveSeconds, 1.8f);
-            else
-                demon.transform.position = bossPosition + moveDirection * moveDistance;
+            float moveWaitSeconds = Mathf.Max(0f, moveSeconds);
+            demon.BeginBodyAfterimage();
+            try
+            {
+                if (motion != null && moveDistance > 0f)
+                    motion.StartLunge(bossPosition, moveDirection, moveDistance, moveSeconds, 1.8f);
+                else
+                    demon.transform.position = bossPosition + moveDirection * moveDistance;
 
-            float waitSeconds = Mathf.Max(shotIntervalSeconds, moveSeconds);
-            yield return WaitForSecondsUnlessCancelled(waitSeconds, spec);
+                yield return WaitForSecondsUnlessCancelled(moveWaitSeconds, spec);
+            }
+            finally
+            {
+                demon.StopBodyAfterimage();
+            }
+
+            if (IsAbilityCancelled(spec))
+                yield break;
+
+            float remainingWaitSeconds = Mathf.Max(0f, shotIntervalSeconds - moveWaitSeconds);
+            yield return WaitForSecondsUnlessCancelled(remainingWaitSeconds, spec);
         }
     }
 
@@ -841,12 +864,21 @@ public class AbilityLogic_DemonKingExplosionJump : AbilityLogic_DemonKingBase
 
         ShowCircleWarning(demon, target, impactDiameter, travelSeconds);
 
-        if (direction.sqrMagnitude > 0.0001f && motion != null)
-            motion.StartLunge(start, direction.normalized, direction.magnitude, travelSeconds, 2.7f);
-        else
-            demon.transform.position = target;
+        demon.BeginBodyAfterimage();
+        try
+        {
+            if (direction.sqrMagnitude > 0.0001f && motion != null)
+                motion.StartLunge(start, direction.normalized, direction.magnitude, travelSeconds, 2.7f);
+            else
+                demon.transform.position = target;
 
-        yield return WaitForSecondsUnlessCancelled(travelSeconds, spec);
+            yield return WaitForSecondsUnlessCancelled(travelSeconds, spec);
+        }
+        finally
+        {
+            demon.StopBodyAfterimage();
+        }
+
         if (IsAbilityCancelled(spec))
             yield break;
 
@@ -1018,6 +1050,7 @@ public class AbilityLogic_DemonKingWallBounceRush : AbilityLogic_DemonKingBase
         EntityCollisionProfile2D collisionProfile = demon.GetComponent<EntityCollisionProfile2D>();
         collisionProfile?.SetBodyCollisionMode(EntityCollisionProfile2D.BodyCollisionMode.PassThroughActors);
         demon.PushFaceTargetLock();
+        demon.PushThresholdStaggerGuard();
 
         try
         {
@@ -1025,12 +1058,21 @@ public class AbilityLogic_DemonKingWallBounceRush : AbilityLogic_DemonKingBase
             Vector2 awayFromPlayer = -demon.GetDirectionToTargetOrFacing(retreatStart);
             float retreatDistance = demon.PlayerDashDistanceReference;
             demon.FacePatternDirection(-awayFromPlayer);
-            if (motion != null && retreatDistance > 0f)
-                motion.StartLunge(retreatStart, awayFromPlayer, retreatDistance, retreatSeconds, 1.8f);
-            else
-                demon.transform.position = retreatStart + awayFromPlayer * retreatDistance;
+            demon.BeginBodyAfterimage();
+            try
+            {
+                if (motion != null && retreatDistance > 0f)
+                    motion.StartLunge(retreatStart, awayFromPlayer, retreatDistance, retreatSeconds, 1.8f);
+                else
+                    demon.transform.position = retreatStart + awayFromPlayer * retreatDistance;
 
-            yield return WaitForSecondsUnlessCancelled(retreatSeconds, spec);
+                yield return WaitForSecondsUnlessCancelled(retreatSeconds, spec);
+            }
+            finally
+            {
+                demon.StopBodyAfterimage();
+            }
+
             if (IsAbilityCancelled(spec))
                 yield break;
 
@@ -1092,6 +1134,8 @@ public class AbilityLogic_DemonKingWallBounceRush : AbilityLogic_DemonKingBase
         }
         finally
         {
+            demon.StopBodyAfterimage();
+            demon.PopThresholdStaggerGuard();
             collisionProfile?.RestoreDefaultMode();
             motion?.CancelMotion();
             demon.PopFaceTargetLock();
@@ -1110,12 +1154,21 @@ public class AbilityLogic_DemonKingWallBounceRush : AbilityLogic_DemonKingBase
         Vector2 delta = target - start;
         ShowCircleWarning(demon, target, finalImpactDiameter, finalJumpSeconds);
 
-        if (delta.sqrMagnitude > 0.0001f && motion != null)
-            motion.StartLunge(start, delta.normalized, delta.magnitude, finalJumpSeconds, 2.7f);
-        else
-            demon.transform.position = target;
+        demon.BeginBodyAfterimage();
+        try
+        {
+            if (delta.sqrMagnitude > 0.0001f && motion != null)
+                motion.StartLunge(start, delta.normalized, delta.magnitude, finalJumpSeconds, 2.7f);
+            else
+                demon.transform.position = target;
 
-        yield return WaitForSecondsUnlessCancelled(finalJumpSeconds, spec);
+            yield return WaitForSecondsUnlessCancelled(finalJumpSeconds, spec);
+        }
+        finally
+        {
+            demon.StopBodyAfterimage();
+        }
+
         if (IsAbilityCancelled(spec))
             yield break;
 
@@ -1252,7 +1305,7 @@ public class AbilityLogic_DemonKingFinalDesperation : AbilityLogic_DemonKingBase
 
     [SerializeField, Min(0.01f)] private float moveToCenterSeconds = 0.6f;
     [SerializeField, Min(0.1f)] private float openingKnockbackDiameter = 40f;
-    [SerializeField, Min(0f)] private float openingKnockbackDamage = 0.01f;
+    [SerializeField, Min(0f)] private float openingKnockbackDamage = 0f;
     [SerializeField, Min(0f)] private float openingKnockback = 26f;
     [SerializeField, Min(0f)] private float bombIntervalSeconds = 0.2f;
     [SerializeField, Min(0f)] private float bombWarningSeconds = 0.4f;
@@ -1275,96 +1328,117 @@ public class AbilityLogic_DemonKingFinalDesperation : AbilityLogic_DemonKingBase
         if (demon == null)
             yield break;
 
-        demon.MarkFinalDesperationStarted();
-        demon.CompleteEgoSwordRecall();
-        demon.PlayPatternTrigger();
-
-        DemonKingCombatUtil.ApplyCircleDamage(
-            demon,
-            demon.transform.position,
-            openingKnockbackDiameter * 0.5f,
-            demon.DefaultDamageEffect,
-            openingKnockbackDamage,
-            knockbackImpulse: openingKnockback);
-
-        AbilityMotionController2D motion = demon.GetComponent<AbilityMotionController2D>();
-        Vector2 center = demon.ArenaCenterPosition;
-        Vector2 start = demon.transform.position;
-        Vector2 delta = center - start;
-        if (delta.sqrMagnitude > 0.0001f && motion != null)
-            motion.StartLunge(start, delta.normalized, delta.magnitude, moveToCenterSeconds, 1.8f);
-        else
-            demon.transform.position = center;
-
-        yield return WaitForSecondsUnlessCancelled(moveToCenterSeconds, spec);
-        if (!IsAbilityCancelled(spec))
-            demon.transform.position = center;
-
-        float bombTimer = 0f;
-
-        IEnumerator RunLaserStep(Vector2 firstDirection, Vector2 secondDirection)
+        demon.PushThresholdStaggerGuard();
+        try
         {
-            center = demon.ArenaCenterPosition;
-            LineArea firstLine = ResolveFullLineArea(demon, center, firstDirection, laserWidth, fallbackLaserLength);
-            LineArea secondLine = ResolveFullLineArea(demon, center, secondDirection, laserWidth, fallbackLaserLength);
-            ShowLineAreaWarning(demon, firstLine, laserWarningSeconds);
-            ShowLineAreaWarning(demon, secondLine, laserWarningSeconds);
+            demon.MarkFinalDesperationStarted();
+            demon.CompleteEgoSwordRecall();
+            demon.PlayPatternTrigger();
 
-            float warningElapsed = 0f;
-            while (warningElapsed < laserWarningSeconds)
+            AbilityMotionController2D motion = demon.GetComponent<AbilityMotionController2D>();
+            Vector2 center = demon.ArenaCenterPosition;
+            Vector2 start = demon.transform.position;
+            Vector2 delta = center - start;
+            demon.BeginBodyAfterimage();
+            try
             {
-                if (IsAbilityCancelled(spec) || demon.IsDead)
-                    yield break;
+                if (delta.sqrMagnitude > 0.0001f && motion != null)
+                    motion.StartLunge(start, delta.normalized, delta.magnitude, moveToCenterSeconds, 1.8f);
+                else
+                    demon.transform.position = center;
 
-                bombTimer = TickFinalBombardment(demon, bombTimer, Time.deltaTime);
-                warningElapsed += Time.deltaTime;
-                yield return null;
+                yield return WaitForSecondsUnlessCancelled(moveToCenterSeconds, spec);
+            }
+            finally
+            {
+                demon.StopBodyAfterimage();
             }
 
-            DemonKingEgoLaserVfx[] firstLaserVfx = SpawnFinalLaserVfx(demon, center, firstDirection);
-            DemonKingEgoLaserVfx[] secondLaserVfx = SpawnFinalLaserVfx(demon, center, secondDirection);
-            bool usingAnimatedVfx = HasAnyFinalLaserVfx(firstLaserVfx) || HasAnyFinalLaserVfx(secondLaserVfx);
-            if (!usingAnimatedVfx)
+            if (IsAbilityCancelled(spec) || demon.IsDead)
+                yield break;
+
+            demon.transform.position = center;
+            DemonKingCombatUtil.ApplyCircleDamage(
+                demon,
+                center,
+                openingKnockbackDiameter * 0.5f,
+                demon.DefaultDamageEffect,
+                openingKnockbackDamage,
+                knockbackImpulse: openingKnockback);
+            demon.ReleaseFinalDesperationHealthClamp();
+
+            float bombTimer = 0f;
+
+            IEnumerator RunLaserStep(Vector2 firstDirection, Vector2 secondDirection)
             {
-                ShowLineAreaWarning(demon, firstLine, laserAttackSeconds);
-                ShowLineAreaWarning(demon, secondLine, laserAttackSeconds);
-                DemonKingPrimitiveVisual.SpawnSquare(
-                    firstLine.Center,
-                    firstLine.Size,
-                    firstLine.RotationDeg,
-                    laserAttackSeconds,
-                    AttackSquareColor,
-                    "DemonKing_FinalLaserSquareAttack");
-                DemonKingPrimitiveVisual.SpawnSquare(
-                    secondLine.Center,
-                    secondLine.Size,
-                    secondLine.RotationDeg,
-                    laserAttackSeconds,
-                    AttackSquareColor,
-                    "DemonKing_FinalLaserSquareAttack");
+                center = demon.ArenaCenterPosition;
+                LineArea firstLine = ResolveFullLineArea(demon, center, firstDirection, laserWidth, fallbackLaserLength);
+                LineArea secondLine = ResolveFullLineArea(demon, center, secondDirection, laserWidth, fallbackLaserLength);
+                ShowLineAreaWarning(demon, firstLine, laserWarningSeconds);
+                ShowLineAreaWarning(demon, secondLine, laserWarningSeconds);
+
+                float warningElapsed = 0f;
+                while (warningElapsed < laserWarningSeconds)
+                {
+                    if (IsAbilityCancelled(spec) || demon.IsDead)
+                        yield break;
+
+                    bombTimer = TickFinalBombardment(demon, bombTimer, Time.deltaTime);
+                    warningElapsed += Time.deltaTime;
+                    yield return null;
+                }
+
+                DemonKingEgoLaserVfx[] firstLaserVfx = SpawnFinalLaserVfx(demon, center, firstDirection);
+                DemonKingEgoLaserVfx[] secondLaserVfx = SpawnFinalLaserVfx(demon, center, secondDirection);
+                bool usingAnimatedVfx = HasAnyFinalLaserVfx(firstLaserVfx) || HasAnyFinalLaserVfx(secondLaserVfx);
+                if (!usingAnimatedVfx)
+                {
+                    ShowLineAreaWarning(demon, firstLine, laserAttackSeconds);
+                    ShowLineAreaWarning(demon, secondLine, laserAttackSeconds);
+                    DemonKingPrimitiveVisual.SpawnSquare(
+                        firstLine.Center,
+                        firstLine.Size,
+                        firstLine.RotationDeg,
+                        laserAttackSeconds,
+                        AttackSquareColor,
+                        "DemonKing_FinalLaserSquareAttack");
+                    DemonKingPrimitiveVisual.SpawnSquare(
+                        secondLine.Center,
+                        secondLine.Size,
+                        secondLine.RotationDeg,
+                        laserAttackSeconds,
+                        AttackSquareColor,
+                        "DemonKing_FinalLaserSquareAttack");
+                }
+
+                HashSet<GameObject> damagedTargets = new();
+                float attackElapsed = 0f;
+                while (usingAnimatedVfx ? IsAnyFinalLaserVfxPlaying(firstLaserVfx, secondLaserVfx) : attackElapsed < laserAttackSeconds)
+                {
+                    if (IsAbilityCancelled(spec) || demon.IsDead)
+                        yield break;
+
+                    bombTimer = TickFinalBombardment(demon, bombTimer, Time.fixedDeltaTime);
+                    if (!usingAnimatedVfx || IsAnyFinalLaserDamageActive(firstLaserVfx))
+                        ApplyLineAreaDamage(demon, firstLine, laserDamage, damagedTargets);
+                    if (!usingAnimatedVfx || IsAnyFinalLaserDamageActive(secondLaserVfx))
+                        ApplyLineAreaDamage(demon, secondLine, laserDamage, damagedTargets);
+                    attackElapsed += Time.fixedDeltaTime;
+                    yield return new WaitForFixedUpdate();
+                }
             }
 
-            HashSet<GameObject> damagedTargets = new();
-            float attackElapsed = 0f;
-            while (usingAnimatedVfx ? IsAnyFinalLaserVfxPlaying(firstLaserVfx, secondLaserVfx) : attackElapsed < laserAttackSeconds)
+            while (!IsAbilityCancelled(spec) && !demon.IsDead)
             {
-                if (IsAbilityCancelled(spec) || demon.IsDead)
-                    yield break;
-
-                bombTimer = TickFinalBombardment(demon, bombTimer, Time.fixedDeltaTime);
-                if (!usingAnimatedVfx || IsAnyFinalLaserDamageActive(firstLaserVfx))
-                    ApplyLineAreaDamage(demon, firstLine, laserDamage, damagedTargets);
-                if (!usingAnimatedVfx || IsAnyFinalLaserDamageActive(secondLaserVfx))
-                    ApplyLineAreaDamage(demon, secondLine, laserDamage, damagedTargets);
-                attackElapsed += Time.fixedDeltaTime;
-                yield return new WaitForFixedUpdate();
+                yield return RunLaserStep(Vector2.right, Vector2.up);
+                yield return RunLaserStep(new Vector2(1f, 1f).normalized, new Vector2(1f, -1f).normalized);
             }
         }
-
-        while (!IsAbilityCancelled(spec) && !demon.IsDead)
+        finally
         {
-            yield return RunLaserStep(Vector2.right, Vector2.up);
-            yield return RunLaserStep(new Vector2(1f, 1f).normalized, new Vector2(1f, -1f).normalized);
+            demon.StopBodyAfterimage();
+            demon.ReleaseFinalDesperationHealthClamp();
+            demon.PopThresholdStaggerGuard();
         }
     }
 
@@ -1377,9 +1451,7 @@ public class AbilityLogic_DemonKingFinalDesperation : AbilityLogic_DemonKingBase
                 ? (Vector2)demon.CurrentTarget.position
                 : (Vector2)demon.ArenaCenterPosition;
 
-            Vector2 offset = new(
-                Random.Range(-bombOffsetRange, bombOffsetRange),
-                Random.Range(-bombOffsetRange, bombOffsetRange));
+            Vector2 offset = Random.insideUnitCircle * bombOffsetRange;
 
             DemonKingDelayedDamageArea.SpawnCircle(
                 demon,

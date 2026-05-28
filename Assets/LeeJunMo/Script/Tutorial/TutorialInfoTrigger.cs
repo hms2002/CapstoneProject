@@ -4,7 +4,6 @@ using UnityEngine.Events;
 using UnityEngine.Serialization;
 
 [DisallowMultipleComponent]
-[RequireComponent(typeof(Collider2D))]
 public sealed class TutorialInfoTrigger : MonoBehaviour
 {
     [Header("Target")]

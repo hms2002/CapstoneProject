@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
@@ -32,11 +33,16 @@ public sealed class WeaponPresentationRig2D : MonoBehaviour
     private bool activeAimPresentationOverrideReleaseRequested;
     private int lockedFacingSideSign = 1;
     private float lockedAimAngleDeg;
+    private readonly HashSet<object> cinematicPresentationLockOwners = new();
+    private int cinematicLockedFacingSideSign = 1;
+    private float cinematicLockedAimAngleDeg;
     private Coroutine aimPresentationOverrideReleaseRoutine;
     private WeaponAimPresentationMode activeAimPresentationMode = WeaponAimPresentationMode.FollowAim;
 
     public Transform WeaponMount => weaponMount != null ? weaponMount : transform;
     public int CurrentSideSign => currentSideSign;
+
+    private bool IsCinematicPresentationLocked => cinematicPresentationLockOwners.Count > 0;
 
     public bool HasRequiredRig(out string missing)
     {
@@ -99,6 +105,7 @@ public sealed class WeaponPresentationRig2D : MonoBehaviour
 
     private void OnDisable()
     {
+        cinematicPresentationLockOwners.Clear();
         ClearAimPresentationOverride();
     }
 
@@ -139,6 +146,37 @@ public sealed class WeaponPresentationRig2D : MonoBehaviour
         return activeAimPresentationOverrideToken;
     }
 
+    public void AcquireCinematicPresentationLock(object ownerToken)
+    {
+        if (ownerToken == null)
+            return;
+
+        ResolveReferences();
+        if (!cinematicPresentationLockOwners.Add(ownerToken))
+            return;
+
+        if (cinematicPresentationLockOwners.Count != 1)
+            return;
+
+        cinematicLockedFacingSideSign = currentSideSign < 0 ? -1 : 1;
+        cinematicLockedAimAngleDeg = ResolveCurrentAimRootAngle();
+    }
+
+    public void ReleaseCinematicPresentationLock(object ownerToken)
+    {
+        if (ownerToken == null)
+            return;
+
+        if (!cinematicPresentationLockOwners.Remove(ownerToken))
+            return;
+
+        if (cinematicPresentationLockOwners.Count > 0)
+            return;
+
+        cinematicLockedFacingSideSign = currentSideSign < 0 ? -1 : 1;
+        cinematicLockedAimAngleDeg = 0f;
+    }
+
     public void EndAimPresentationOverride(int token)
     {
         if (token == 0 || token != activeAimPresentationOverrideToken)
@@ -163,7 +201,11 @@ public sealed class WeaponPresentationRig2D : MonoBehaviour
             return;
 
         float deltaX = aimSource.MouseWorld.x - ownerTransform.position.x;
-        if (activeAimPresentationMode != WeaponAimPresentationMode.FollowAim)
+        if (IsCinematicPresentationLocked)
+        {
+            currentSideSign = cinematicLockedFacingSideSign;
+        }
+        else if (activeAimPresentationMode != WeaponAimPresentationMode.FollowAim)
         {
             currentSideSign = lockedFacingSideSign;
         }
@@ -194,8 +236,19 @@ public sealed class WeaponPresentationRig2D : MonoBehaviour
         if (direction.sqrMagnitude <= 0.0001f)
             direction = Vector2.right;
 
-        float angle = ResolveAimRootAngle(direction);
+        float angle = IsCinematicPresentationLocked
+            ? cinematicLockedAimAngleDeg
+            : ResolveAimRootAngle(direction);
         aimRoot.rotation = Quaternion.Euler(0f, 0f, angle);
+    }
+
+    private float ResolveCurrentAimRootAngle()
+    {
+        if (aimRoot != null)
+            return aimRoot.eulerAngles.z;
+
+        Vector2 direction = aimSource != null ? aimSource.AimDirection : Vector2.right;
+        return ResolveDirectionAngle(direction);
     }
 
     private float ResolveAimRootAngle(Vector2 followAimDirection)

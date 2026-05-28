@@ -9,7 +9,10 @@ public sealed class TitleProfileSlotService : MonoBehaviour
 
     [Header("Slots")]
     [SerializeField, Min(1)] private int slotCount = 3;
+
+    [Header("Launch Targets")]
     [SerializeField] private string targetSceneName = "ProtoTypeHub";
+    [SerializeField] private string newProfileTargetSceneName = "TutorialCorridor";
     [SerializeField] private UpgradeDatabase upgradeDatabase;
 
     [Header("Debug Preview")]
@@ -100,15 +103,30 @@ public sealed class TitleProfileSlotService : MonoBehaviour
     {
         request = default;
 
-        if (slotIndex < 0 || slotIndex >= SlotCount || string.IsNullOrWhiteSpace(targetSceneName))
+        if (slotIndex < 0 || slotIndex >= SlotCount)
             return false;
 
         TitleProfileLaunchAction action = GetPrimaryActionForSlot(slotIndex);
         if (action == TitleProfileLaunchAction.None)
             return false;
 
-        request = new TitleProfileLaunchRequest(slotIndex, action, targetSceneName);
+        string resolvedTargetSceneName = ResolveTargetSceneName(action);
+        if (string.IsNullOrWhiteSpace(resolvedTargetSceneName))
+            return false;
+
+        request = new TitleProfileLaunchRequest(slotIndex, action, resolvedTargetSceneName);
         return true;
+    }
+
+    private string ResolveTargetSceneName(TitleProfileLaunchAction action)
+    {
+        if (action == TitleProfileLaunchAction.StartNewRun &&
+            !string.IsNullOrWhiteSpace(newProfileTargetSceneName))
+        {
+            return newProfileTargetSceneName;
+        }
+
+        return targetSceneName;
     }
 
     public bool DeleteSlot(int slotIndex)

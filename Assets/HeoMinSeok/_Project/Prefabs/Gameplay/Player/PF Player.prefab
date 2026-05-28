@@ -671,7 +671,6 @@ GameObject:
   - component: {fileID: 3517715623297123696}
   - component: {fileID: 963026585117413559}
   - component: {fileID: 4885150337275956111}
-  - component: {fileID: 7028711097407121541}
   - component: {fileID: 2236992985390640672}
   - component: {fileID: 3936464590184144143}
   - component: {fileID: 4488810999718796541}
@@ -1294,6 +1293,7 @@ MonoBehaviour:
   unsafeTags:
   - {fileID: 11400000, guid: f54e8cb58b4f7c64292067442e9286c7, type: 2}
   - {fileID: 11400000, guid: c4d6c74817ae3b945b20c041f24f86b0, type: 2}
+  useExactUnsafeTags: 1
 --- !u!114 &1288651143475980145
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1725,6 +1725,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hubSceneName: ProtoTypeHub
   playOnHubSpawn: 1
+  playCondition: 1
+  darkLordTutorialCompletionId: darklord_tutorial_forced_defeat_completed
+  hubIntroSeenId: hub_intro_after_darklord_seen
+  allowEditorBypassTutorialCompletion: 1
   fallDuration: 0.85
   minimumStartHeight: 8
   offscreenPadding: 2
@@ -1813,6 +1817,8 @@ MonoBehaviour:
   disableAnimatorDuringPresentation: 1
   sleepAfterIdleSeconds: 10
   sleepWakeDelaySeconds: 1
+  autoWakeWithoutInput: 1
+  autoWakeDelaySeconds: 2
   useLyingShadowOverride: 1
   lyingShadowPoseReference: {fileID: 0}
   lyingShadowSprite: {fileID: 0}

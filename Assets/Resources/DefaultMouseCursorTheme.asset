@@ -80,3 +80,20 @@ MonoBehaviour:
       sprite: {fileID: 0}
       hotspotPixels: {x: 0, y: 0}
       scale: 1
+  encyclopediaDomain:
+    defaultCursor:
+      sprite: {fileID: -8448536817689828998, guid: 1d56a304110f63a4fbab81eeacf6910a, type: 3}
+      hotspotPixels: {x: 2, y: 2}
+      scale: 1
+    defaultPressedCursor:
+      sprite: {fileID: 6051788245673681451, guid: 1d56a304110f63a4fbab81eeacf6910a, type: 3}
+      hotspotPixels: {x: 2, y: 2}
+      scale: 1
+    itemSlotCursor:
+      sprite: {fileID: 6031248440567335274, guid: 1d56a304110f63a4fbab81eeacf6910a, type: 3}
+      hotspotPixels: {x: 2, y: 2}
+      scale: 1
+    itemSlotPressedCursor:
+      sprite: {fileID: 1449552957060229219, guid: 1d56a304110f63a4fbab81eeacf6910a, type: 3}
+      hotspotPixels: {x: 2, y: 2}
+      scale: 1

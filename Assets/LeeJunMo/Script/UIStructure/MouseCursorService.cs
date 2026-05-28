@@ -9,7 +9,8 @@ public enum MouseCursorDomain
     Combat = 0,
     Inventory = 1,
     NpcUi = 2,
-    SystemUi = 3
+    SystemUi = 3,
+    Encyclopedia = 4
 }
 
 public enum MouseCursorVariant
@@ -17,7 +18,8 @@ public enum MouseCursorVariant
     Default = 0,
     Interactable = 1,
     Pressed = 2,
-    Dragging = 3
+    Dragging = 3,
+    InteractablePressed = 4
 }
 
 [Serializable]
@@ -42,7 +44,28 @@ public sealed class MouseCursorDomainDefinition
         {
             MouseCursorVariant.Interactable => interactableCursor,
             MouseCursorVariant.Pressed => pressedCursor,
+            MouseCursorVariant.InteractablePressed => pressedCursor,
             MouseCursorVariant.Dragging => draggingCursor,
+            _ => defaultCursor
+        };
+    }
+}
+
+[Serializable]
+public sealed class MouseCursorEncyclopediaDomainDefinition
+{
+    public MouseCursorSpriteDefinition defaultCursor = new MouseCursorSpriteDefinition();
+    public MouseCursorSpriteDefinition defaultPressedCursor = new MouseCursorSpriteDefinition();
+    public MouseCursorSpriteDefinition itemSlotCursor = new MouseCursorSpriteDefinition();
+    public MouseCursorSpriteDefinition itemSlotPressedCursor = new MouseCursorSpriteDefinition();
+
+    public MouseCursorSpriteDefinition GetDefinition(MouseCursorVariant variant)
+    {
+        return variant switch
+        {
+            MouseCursorVariant.Interactable => itemSlotCursor,
+            MouseCursorVariant.Pressed => defaultPressedCursor,
+            MouseCursorVariant.InteractablePressed => itemSlotPressedCursor,
             _ => defaultCursor
         };
     }
@@ -86,6 +109,7 @@ public sealed class MouseCursorService : MonoBehaviour
     private readonly Dictionary<int, DomainRequest> domainRequests = new Dictionary<int, DomainRequest>();
     private readonly Dictionary<int, OwnerFlag> interactableOwners = new Dictionary<int, OwnerFlag>();
     private readonly Dictionary<int, OwnerFlag> draggingOwners = new Dictionary<int, OwnerFlag>();
+    private readonly Dictionary<int, OwnerFlag> hiddenOwners = new Dictionary<int, OwnerFlag>();
     private readonly Dictionary<int, Texture2D> generatedCursorTextures = new Dictionary<int, Texture2D>();
     private readonly HashSet<int> unreadableSpriteWarnings = new HashSet<int>();
     private readonly List<RaycastResult> uiRaycastResults = new List<RaycastResult>(8);
@@ -225,6 +249,11 @@ public sealed class MouseCursorService : MonoBehaviour
         SetOwnerFlag(draggingOwners, owner, active);
     }
 
+    public void SetHidden(UnityEngine.Object owner, bool hidden)
+    {
+        SetOwnerFlag(hiddenOwners, owner, hidden);
+    }
+
     private void SetOwnerFlag(Dictionary<int, OwnerFlag> owners, UnityEngine.Object owner, bool active)
     {
         if (owner == null)
@@ -339,6 +368,7 @@ public sealed class MouseCursorService : MonoBehaviour
         PruneDeadDomainRequests();
         PruneDeadOwnerFlags(interactableOwners);
         PruneDeadOwnerFlags(draggingOwners);
+        PruneDeadOwnerFlags(hiddenOwners);
     }
 
     private void PruneDeadDomainRequests()
@@ -387,6 +417,14 @@ public sealed class MouseCursorService : MonoBehaviour
 
     private void ApplyResolvedCursor()
     {
+        if (HasAnyOwner(hiddenOwners))
+        {
+            HideSoftwareCursor();
+            ClearSystemCursorTexture();
+            Cursor.visible = false;
+            return;
+        }
+
         currentDomain = ResolveDomain();
         currentVariant = ResolveVariant();
 
@@ -444,10 +482,20 @@ public sealed class MouseCursorService : MonoBehaviour
         if (HasAnyOwner(draggingOwners))
             return MouseCursorVariant.Dragging;
 
-        if (IsAnyMouseButtonPressed())
-            return MouseCursorVariant.Pressed;
+        bool hasInteractableOwner = HasAnyOwner(interactableOwners);
+        bool isMousePressed = IsAnyMouseButtonPressed();
+        if (hasInteractableOwner && isMousePressed)
+            return MouseCursorVariant.InteractablePressed;
 
-        if (HasAnyOwner(interactableOwners))
+        if (isMousePressed)
+        {
+            if (currentDomain == MouseCursorDomain.SystemUi && IsPointerOverInteractableSystemUi())
+                return MouseCursorVariant.InteractablePressed;
+
+            return MouseCursorVariant.Pressed;
+        }
+
+        if (hasInteractableOwner)
             return MouseCursorVariant.Interactable;
 
         if (currentDomain == MouseCursorDomain.SystemUi && IsPointerOverInteractableSystemUi())
@@ -506,26 +554,26 @@ public sealed class MouseCursorService : MonoBehaviour
 
     private MouseCursorSpriteDefinition ResolveDefinition(MouseCursorDomain domain, MouseCursorVariant variant)
     {
-        MouseCursorSpriteDefinition definition = GetDomainDefinition(domain)?.GetDefinition(variant);
+        MouseCursorSpriteDefinition definition = GetDefinition(domain, variant);
         if (HasSprite(definition))
             return definition;
 
         if (variant != MouseCursorVariant.Default)
         {
-            definition = GetDomainDefinition(domain)?.GetDefinition(MouseCursorVariant.Default);
+            definition = GetDefinition(domain, MouseCursorVariant.Default);
             if (HasSprite(definition))
                 return definition;
         }
 
         if (domain != MouseCursorDomain.Combat)
         {
-            definition = GetDomainDefinition(MouseCursorDomain.Combat)?.GetDefinition(variant);
+            definition = GetDefinition(MouseCursorDomain.Combat, variant);
             if (HasSprite(definition))
                 return definition;
 
             if (variant != MouseCursorVariant.Default)
             {
-                definition = GetDomainDefinition(MouseCursorDomain.Combat)?.GetDefinition(MouseCursorVariant.Default);
+                definition = GetDefinition(MouseCursorDomain.Combat, MouseCursorVariant.Default);
                 if (HasSprite(definition))
                     return definition;
             }
@@ -534,10 +582,10 @@ public sealed class MouseCursorService : MonoBehaviour
         return null;
     }
 
-    private MouseCursorDomainDefinition GetDomainDefinition(MouseCursorDomain domain)
+    private MouseCursorSpriteDefinition GetDefinition(MouseCursorDomain domain, MouseCursorVariant variant)
     {
         MouseCursorTheme theme = themeOverride != null ? themeOverride : loadedTheme;
-        return theme != null ? theme.GetDomainDefinition(domain) : null;
+        return theme != null ? theme.GetDefinition(domain, variant) : null;
     }
 
     private static bool HasSprite(MouseCursorSpriteDefinition definition)
@@ -680,6 +728,16 @@ public sealed class MouseCursorService : MonoBehaviour
         appliedCursorHotspot = new Vector2(float.MinValue, float.MinValue);
         Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
         Cursor.visible = true;
+    }
+
+    private void ClearSystemCursorTexture()
+    {
+        if (appliedCursorTexture == null && appliedCursorHotspot == new Vector2(float.MinValue, float.MinValue))
+            return;
+
+        appliedCursorTexture = null;
+        appliedCursorHotspot = new Vector2(float.MinValue, float.MinValue);
+        Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
     }
 
     private void ReleaseGeneratedTextures()

@@ -292,6 +292,8 @@ public class WeaponInventory2D : MonoBehaviour
                 return false;
 
             replacedWasActive = (targetIndex == ActiveIndex);
+            if (replacedWasActive && IsActiveWeaponChangeBlocked())
+                return false;
 
             DropSlot(targetIndex, replacementDropPosition);
         }
@@ -321,6 +323,7 @@ public class WeaponInventory2D : MonoBehaviour
     public void Equip(int slotIndex)
     {
         if (!IsValidSlot(slotIndex)) return;
+        if (slotIndex != ActiveIndex && IsActiveWeaponChangeBlocked()) return;
 
         var newWeapon = slots[slotIndex];
         if (newWeapon == null) return;
@@ -338,6 +341,8 @@ public class WeaponInventory2D : MonoBehaviour
     public void Unequip()
     {
         if (!HasEquippedWeapon) return;
+        if (IsActiveWeaponChangeBlocked()) return;
+
         CleanupTransientAbilitiesForWeaponChange();
 
         var result = equipRuntime.Unequip();
@@ -350,6 +355,9 @@ public class WeaponInventory2D : MonoBehaviour
 
     public void Swap()
     {
+        if (IsActiveWeaponChangeBlocked())
+            return;
+
         int current = ActiveIndex;
 
         if (!HasEquippedWeapon)
@@ -374,6 +382,7 @@ public class WeaponInventory2D : MonoBehaviour
     public void DropActive()
     {
         if (!HasEquippedWeapon) return;
+        if (IsActiveWeaponChangeBlocked()) return;
 
         int droppingIndex = ActiveIndex;
         DropSlot(droppingIndex);
@@ -393,6 +402,8 @@ public class WeaponInventory2D : MonoBehaviour
     public bool DestroyActiveWeaponWithoutDrop(bool equipFallback = true)
     {
         if (!HasEquippedWeapon)
+            return false;
+        if (IsActiveWeaponChangeBlocked())
             return false;
 
         int destroyingIndex = ActiveIndex;
@@ -493,6 +504,8 @@ public class WeaponInventory2D : MonoBehaviour
             return false;
 
         bool wasActive = (slotIndex == ActiveIndex);
+        if (wasActive && IsActiveWeaponChangeBlocked())
+            return false;
 
         if (wasActive)
         {
@@ -538,6 +551,7 @@ public class WeaponInventory2D : MonoBehaviour
     {
         if (!IsValidSlot(a) || !IsValidSlot(b)) return false;
         if (a == b) return true;
+        if ((a == ActiveIndex || b == ActiveIndex) && IsActiveWeaponChangeBlocked()) return false;
 
         int prevIndex = ActiveIndex;
         WeaponDefinition prevWeapon = IsValidSlot(prevIndex) ? slots[prevIndex] : null;
@@ -774,6 +788,8 @@ public class WeaponInventory2D : MonoBehaviour
         if (weapon == null) return;
 
         bool wasActive = (slotIndex == ActiveIndex);
+        if (wasActive && IsActiveWeaponChangeBlocked())
+            return;
 
         if (wasActive)
         {
@@ -818,6 +834,12 @@ public class WeaponInventory2D : MonoBehaviour
     private void NotifyInventoryChanged()
     {
         OnInventoryChanged?.Invoke();
+    }
+
+    private bool IsActiveWeaponChangeBlocked()
+    {
+        FloweringRuntimeState floweringState = FloweringRuntimeState.ResolveExisting(abilitySystem);
+        return floweringState != null && floweringState.BlocksWeaponSwap;
     }
 
     /// <summary>

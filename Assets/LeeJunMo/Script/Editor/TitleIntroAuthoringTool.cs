@@ -321,6 +321,13 @@ public static class TitleIntroAuthoringTool
         skipRect.anchoredPosition = new Vector2(-72f, 54f);
         skipRect.sizeDelta = new Vector2(360f, 54f);
 
+        CanvasGroup skipGroup = skipRoot.GetComponent<CanvasGroup>();
+        if (skipGroup == null)
+            skipGroup = Undo.AddComponent<CanvasGroup>(skipRoot);
+        skipGroup.alpha = 0f;
+        skipGroup.interactable = false;
+        skipGroup.blocksRaycasts = false;
+
         Image keyBackground = EnsureChildImage(skipRoot.transform, "SpaceKeyBackground");
         RectTransform keyRect = keyBackground.rectTransform;
         keyRect.anchorMin = new Vector2(0f, 0.5f);
@@ -379,6 +386,7 @@ public static class TitleIntroAuthoringTool
         viewObject.FindProperty("slideImage").objectReferenceValue = slideImage;
         viewObject.FindProperty("scriptText").objectReferenceValue = scriptText;
         viewObject.FindProperty("skipPromptRoot").objectReferenceValue = skipRoot;
+        viewObject.FindProperty("skipPromptGroup").objectReferenceValue = skipGroup;
         viewObject.FindProperty("skipKeyIconImage").objectReferenceValue = keyIcon;
         viewObject.FindProperty("skipKeyLabel").objectReferenceValue = keyLabel;
         viewObject.FindProperty("skipHoldFillImage").objectReferenceValue = fillImage;

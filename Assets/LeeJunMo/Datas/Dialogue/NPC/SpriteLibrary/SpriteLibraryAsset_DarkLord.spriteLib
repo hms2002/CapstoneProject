@@ -42,8 +42,13 @@ MonoBehaviour:
       m_Sprite: {fileID: 21300000, guid: 495a33ee4edfc294cbeb5ffe7713e328, type: 3}
       m_FromMain: 0
       m_SpriteOverride: {fileID: 21300000, guid: 495a33ee4edfc294cbeb5ffe7713e328, type: 3}
+    - m_Name: Tutorial
+      m_Hash: 1058905535
+      m_Sprite: {fileID: 21300000, guid: 56283158b474adc4c820207e12447588, type: 3}
+      m_FromMain: 0
+      m_SpriteOverride: {fileID: 21300000, guid: 56283158b474adc4c820207e12447588, type: 3}
     m_FromMain: 0
-    m_EntryOverrideCount: 5
+    m_EntryOverrideCount: 6
   m_PrimaryLibraryGUID: 
-  m_ModificationHash: 639148154488250394
+  m_ModificationHash: 639155756793041848
   m_Version: 1

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,6 +6,9 @@ using UnityGAS;
 
 public class TreasureChest : MonoBehaviour
 {
+    private static readonly Color RewardRevealDustGizmoColor = new Color(1f, 0.82f, 0.12f, 0.95f);
+    private const float RewardRevealDustGizmoRadius = 0.08f;
+
     [Header("Inventory")]
     [SerializeField] private int capacity = 16;
 
@@ -22,6 +26,13 @@ public class TreasureChest : MonoBehaviour
     [SerializeField] private SpriteRenderer chestSpriteRenderer;
     [SerializeField] private Sprite openedSprite;
 
+    [Header("Reward Reveal")]
+    [SerializeField] private ParticleSystem rewardRevealDustParticle;
+    [SerializeField] private Transform rewardRevealDustAnchor;
+    [SerializeField] private Vector3 rewardRevealDustLocalOffset = new Vector3(0f, -0.35f, 0f);
+    [SerializeField] private bool clearRewardRevealDustBeforePlay = true;
+    [SerializeField, Min(0f)] private float spawnedRewardRevealDustDestroyDelay = 2f;
+
     [Header("Interaction Presentation")]
     [SerializeField] private Transform presentationAnchor;
     [SerializeField] private WorldObjectPresentationDefinition openPresentation = new();
@@ -35,7 +46,9 @@ public class TreasureChest : MonoBehaviour
     private float preludePreviousTimeScale = 1f;
     private WorldObjectPresentationRuntime openPresentationRuntime;
     private readonly List<ChestLootSnapshot> refreshGuard = new List<ChestLootSnapshot>();
+    private readonly List<ParticleSystem> spawnedRewardRevealParticles = new List<ParticleSystem>();
     private int refreshCountUsed;
+    private bool hasRaisedFirstOpenedUi;
     public int Capacity => capacity;
     public bool IsOpened => isOpened;
     public int RefreshCountLimit => ChestRewardPolicy.ResolveRefreshLimit();
@@ -46,6 +59,8 @@ public class TreasureChest : MonoBehaviour
         LootManager.Instance != null,
         refreshCountUsed,
         refreshGuard);
+    public event Action<TreasureChest> OpenedUi;
+    public event Action<TreasureChest> FirstOpenedUi;
 
     private void Awake()
     {
@@ -68,6 +83,7 @@ public class TreasureChest : MonoBehaviour
     {
         ReleaseOpeningUiInputBlockIfNeeded();
         RestorePreludeTimeIfNeeded();
+        DestroySpawnedRewardRevealParticles(immediate: true);
         isOpening = false;
     }
 
@@ -83,6 +99,11 @@ public class TreasureChest : MonoBehaviour
         isGenerated = true;
     }
 
+    public void PlayRewardReveal()
+    {
+        PlayRewardRevealDust();
+    }
+
     public bool Open(IPlayerInteractor player = null)
     {
         if (!isGenerated)
@@ -95,7 +116,13 @@ public class TreasureChest : MonoBehaviour
             return true;
 
         if (isOpened)
-            return TryOpenUi();
+        {
+            bool openedUi = TryOpenUi();
+            if (openedUi)
+                RaiseOpenedUiEvents();
+
+            return openedUi;
+        }
 
         StartCoroutine(OpenRoutine(player != null ? player.Transform.gameObject : null));
         return true;
@@ -120,6 +147,8 @@ public class TreasureChest : MonoBehaviour
             RestorePreludeTimeIfNeeded();
 
             opened = TryOpenUi(playSlideFadePresentation: false, inputBlocker: openingInputBlocker);
+            if (opened)
+                RaiseOpenedUiEvents();
         }
         finally
         {
@@ -130,6 +159,17 @@ public class TreasureChest : MonoBehaviour
 
         if (!opened && PlayerInteractor2D.Instance != null)
             PlayerInteractor2D.Instance.SetInteractState(InteractState.Idle);
+    }
+
+    private void RaiseOpenedUiEvents()
+    {
+        OpenedUi?.Invoke(this);
+
+        if (hasRaisedFirstOpenedUi)
+            return;
+
+        hasRaisedFirstOpenedUi = true;
+        FirstOpenedUi?.Invoke(this);
     }
 
     private bool TryOpenUi(
@@ -242,6 +282,85 @@ public class TreasureChest : MonoBehaviour
             effect.gameObject.SetActive(true);
             effect.Play(true);
         }
+    }
+
+    private void PlayRewardRevealDust()
+    {
+        ParticleSystem particle = ResolvePlayableRewardRevealDust();
+        if (particle == null)
+            return;
+
+        ParticleSystem.MainModule main = particle.main;
+        main.useUnscaledTime = true;
+        particle.gameObject.SetActive(true);
+        if (clearRewardRevealDustBeforePlay)
+            particle.Clear(withChildren: true);
+        particle.Play(withChildren: true);
+    }
+
+    private ParticleSystem ResolvePlayableRewardRevealDust()
+    {
+        if (rewardRevealDustParticle == null)
+            return null;
+
+        if (rewardRevealDustParticle.gameObject.scene.IsValid() &&
+            rewardRevealDustParticle.gameObject.scene.isLoaded)
+        {
+            return rewardRevealDustParticle;
+        }
+
+        ParticleSystem instance = Instantiate(
+            rewardRevealDustParticle,
+            ResolveRewardRevealDustSpawnPosition(),
+            ResolveRewardRevealDustSpawnRotation());
+        spawnedRewardRevealParticles.Add(instance);
+        Destroy(instance.gameObject, ResolveRewardRevealDustDestroyDelay(instance));
+        return instance;
+    }
+
+    private Vector3 ResolveRewardRevealDustSpawnPosition()
+    {
+        Transform anchor = ResolveRewardRevealDustAnchor();
+        return anchor.TransformPoint(rewardRevealDustLocalOffset);
+    }
+
+    private Quaternion ResolveRewardRevealDustSpawnRotation()
+    {
+        return ResolveRewardRevealDustAnchor().rotation;
+    }
+
+    private Transform ResolveRewardRevealDustAnchor()
+    {
+        return rewardRevealDustAnchor != null ? rewardRevealDustAnchor : transform;
+    }
+
+    private float ResolveRewardRevealDustDestroyDelay(ParticleSystem particle)
+    {
+        if (spawnedRewardRevealDustDestroyDelay > 0f)
+            return spawnedRewardRevealDustDestroyDelay;
+
+        if (particle == null)
+            return 0f;
+
+        ParticleSystem.MainModule main = particle.main;
+        return Mathf.Max(0.1f, main.duration + main.startLifetime.constantMax);
+    }
+
+    private void DestroySpawnedRewardRevealParticles(bool immediate)
+    {
+        for (int i = 0; i < spawnedRewardRevealParticles.Count; i++)
+        {
+            ParticleSystem particle = spawnedRewardRevealParticles[i];
+            if (particle == null)
+                continue;
+
+            if (immediate && !Application.isPlaying)
+                DestroyImmediate(particle.gameObject);
+            else
+                Destroy(particle.gameObject);
+        }
+
+        spawnedRewardRevealParticles.Clear();
     }
 
     private void HoldOpenedVisualState()
@@ -408,6 +527,33 @@ public class TreasureChest : MonoBehaviour
             return chestSpriteRenderer.transform;
 
         return transform;
+    }
+
+    private void OnDrawGizmos()
+    {
+        DrawRewardRevealDustGizmo(drawUnconfigured: false);
+    }
+
+    private void OnDrawGizmosSelected()
+    {
+        DrawRewardRevealDustGizmo(drawUnconfigured: true);
+    }
+
+    private void DrawRewardRevealDustGizmo(bool drawUnconfigured)
+    {
+        if (!drawUnconfigured &&
+            rewardRevealDustParticle == null &&
+            rewardRevealDustAnchor == null &&
+            rewardRevealDustLocalOffset == Vector3.zero)
+        {
+            return;
+        }
+
+        Transform anchor = rewardRevealDustAnchor != null ? rewardRevealDustAnchor : transform;
+        Vector3 spawnPosition = anchor.TransformPoint(rewardRevealDustLocalOffset);
+        Gizmos.color = RewardRevealDustGizmoColor;
+        Gizmos.DrawLine(anchor.position, spawnPosition);
+        Gizmos.DrawSphere(spawnPosition, RewardRevealDustGizmoRadius);
     }
 
 }

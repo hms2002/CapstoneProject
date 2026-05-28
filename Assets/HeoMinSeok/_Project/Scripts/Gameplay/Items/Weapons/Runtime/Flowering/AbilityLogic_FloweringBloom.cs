@@ -31,57 +31,70 @@ public sealed class AbilityLogic_FloweringBloom : AbilityLogic
         if (runtimeState == null)
             yield break;
 
-        runtimeState.AcquireBloomCutInInputBlock();
-        PauseCombatTime();
+        runtimeState.BeginBloomSkillSwapLock();
         try
         {
-            yield return runtimeState.PlayBloomCutIn(system, spec, data);
-        }
-        finally
-        {
-            RestoreCombatTime();
-            runtimeState.ReleaseBloomCutInInputBlock();
-        }
-
-        if (IsAbilityCancelled(spec))
-        {
-            runtimeState.EndBloom();
-            yield break;
-        }
-
-        runtimeState.BeginBloom(system, data, runtimeData);
-
-        bool completedNaturally = false;
-        try
-        {
-            while (runtimeData.IsBloomActive)
+            runtimeState.AcquireBloomCutInInputBlock();
+            PauseCombatTime();
+            try
             {
-                if (IsAbilityCancelled(spec))
-                    break;
-
-                runtimeData.TickBloom(Time.deltaTime);
-                yield return null;
+                yield return runtimeState.PlayBloomCutIn(system, spec, data);
+            }
+            finally
+            {
+                RestoreCombatTime();
+                runtimeState.ReleaseBloomCutInInputBlock();
             }
 
-            completedNaturally = !IsAbilityCancelled(spec) && !runtimeData.IsBloomActive;
+            if (IsAbilityCancelled(spec))
+            {
+                runtimeState.EndBloom();
+                yield break;
+            }
+
+            runtimeState.BeginBloom(system, data, runtimeData);
+
+            bool completedNaturally = false;
+            try
+            {
+                while (runtimeData.IsBloomActive)
+                {
+                    if (IsAbilityCancelled(spec))
+                        break;
+
+                    runtimeData.TickBloom(Time.deltaTime);
+                    yield return null;
+                }
+
+                completedNaturally = !IsAbilityCancelled(spec) && !runtimeData.IsBloomActive;
+            }
+            finally
+            {
+                if (!completedNaturally)
+                    runtimeState.EndBloom();
+            }
+
+            if (completedNaturally)
+            {
+                yield return runtimeState.PlayBloomEndTransition(system, spec, data);
+                runtimeState.EndBloom();
+            }
         }
         finally
         {
-            if (!completedNaturally)
-                runtimeState.EndBloom();
-        }
-
-        if (completedNaturally)
-        {
-            yield return runtimeState.PlayBloomEndTransition(system, spec, data);
-            runtimeState.EndBloom();
+            runtimeState.EndBloomSkillSwapLock();
         }
     }
 
     public override void CleanupForSceneTransition(AbilitySystem system, AbilitySpec spec, GameObject target)
     {
         RestoreCombatTime();
-        FloweringRuntimeState.ResolveExisting(system)?.EndBloom();
+        FloweringRuntimeState runtimeState = FloweringRuntimeState.ResolveExisting(system);
+        if (runtimeState == null)
+            return;
+
+        runtimeState.EndBloom();
+        runtimeState.EndBloomSkillSwapLock();
     }
 
     private static FloweringRuntimeData ResolveRuntimeData(AbilitySystem system)

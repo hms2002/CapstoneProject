@@ -5,6 +5,7 @@ using UnityEngine.UI;
 [DisallowMultipleComponent]
 public sealed class EncyclopediaScreen : MonoBehaviour, IStackableUI, ICloseRequestHandler
 {
+    private const int CursorDomainPriority = 100;
     private static readonly SoundRef OpenDictionarySound = SoundRef.FromKey("sound_ui_OpenDictionary");
     private static readonly SoundRef CloseDictionarySound = SoundRef.FromKey("sound_ui_CloseDictionary");
 
@@ -94,11 +95,13 @@ public sealed class EncyclopediaScreen : MonoBehaviour, IStackableUI, ICloseRequ
 
     private void OnDestroy()
     {
+        ClearCursorDomain();
         UnbindListeners();
     }
 
     private void OnDisable()
     {
+        ClearCursorDomain();
         revealPresentation?.CancelAndHide();
         if (gameObject.activeInHierarchy)
             bookPresentation?.SnapClosed();
@@ -136,6 +139,7 @@ public sealed class EncyclopediaScreen : MonoBehaviour, IStackableUI, ICloseRequ
 
     public void CloseUI()
     {
+        ClearCursorDomain();
         revealPresentation?.CancelAndHide();
         SetScreenActiveRootActive(false);
         bookPresentation?.SnapClosed();
@@ -218,6 +222,7 @@ public sealed class EncyclopediaScreen : MonoBehaviour, IStackableUI, ICloseRequ
 
     private void OpenUIInternal()
     {
+        ApplyCursorDomain();
         SetScreenActiveRootActive(true);
         if (!gameObject.activeSelf)
             gameObject.SetActive(true);
@@ -247,6 +252,16 @@ public sealed class EncyclopediaScreen : MonoBehaviour, IStackableUI, ICloseRequ
             rootSlideFadePresentation.PlayOpen(PlayImmediateOpenContent);
         else
             PlayImmediateOpenContent();
+    }
+
+    private void ApplyCursorDomain()
+    {
+        MouseCursorService.EnsureInstance().SetDomain(this, MouseCursorDomain.Encyclopedia, CursorDomainPriority);
+    }
+
+    private void ClearCursorDomain()
+    {
+        MouseCursorService.Instance?.ClearDomain(this);
     }
 
     private void PlayImmediateOpenContent()

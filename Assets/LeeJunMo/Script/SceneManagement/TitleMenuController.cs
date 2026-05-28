@@ -169,6 +169,9 @@ public sealed class TitleMenuController : MonoBehaviour
 
     private void HandleSlotSelected(int slotIndex)
     {
+        if (isLoading || IsIntroActive)
+            return;
+
         TitleProfileSlotService service = TitleProfileSlotService.EnsureInstance();
         if (service == null)
             return;
@@ -196,6 +199,7 @@ public sealed class TitleMenuController : MonoBehaviour
     {
         StopMainMenuUnlockLead();
         SetMainMenuInteractable(false);
+        SetProfileSlotPanelInteractionBlocked(true);
 
         bool didStartIntro =
             introPlayer != null &&
@@ -214,6 +218,7 @@ public sealed class TitleMenuController : MonoBehaviour
         if (!launchResult.Succeeded)
         {
             introPlayer?.HideViewImmediate();
+            SetProfileSlotPanelInteractionBlocked(false);
             SetMainMenuInteractable(true);
             return;
         }
@@ -236,6 +241,14 @@ public sealed class TitleMenuController : MonoBehaviour
     }
 
     private bool IsIntroActive => introPlayer != null && introPlayer.IsPlaying;
+
+    private void SetProfileSlotPanelInteractionBlocked(bool blocked)
+    {
+        if (profileSlotPanel == null)
+            return;
+
+        profileSlotPanel.SetInteractionBlocked(blocked);
+    }
 
     private void SetMainMenuInteractable(bool enabled)
     {

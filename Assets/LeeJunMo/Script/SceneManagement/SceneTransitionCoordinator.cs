@@ -71,19 +71,66 @@ public sealed class SceneTransitionCoordinator : MonoBehaviour
 
     public bool TryLoadScene(string targetSceneName)
     {
+        return TryLoadScene(targetSceneName, fadeOutDurationOverride: null, fadeInDurationOverride: null);
+    }
+
+    public bool TryLoadScene(string targetSceneName, float fadeOutDurationOverride)
+    {
+        return TryLoadScene(
+            targetSceneName,
+            (float?)Mathf.Max(0f, fadeOutDurationOverride),
+            fadeInDurationOverride: null);
+    }
+
+    public bool TryLoadScene(
+        string targetSceneName,
+        float fadeOutDurationOverride,
+        float fadeInDurationOverride)
+    {
+        return TryLoadScene(
+            targetSceneName,
+            (float?)Mathf.Max(0f, fadeOutDurationOverride),
+            (float?)Mathf.Max(0f, fadeInDurationOverride));
+    }
+
+    private bool TryLoadScene(
+        string targetSceneName,
+        float? fadeOutDurationOverride,
+        float? fadeInDurationOverride)
+    {
         if (string.IsNullOrWhiteSpace(targetSceneName) || transitionRoutine != null)
             return false;
 
-        transitionRoutine = StartCoroutine(CoTransition(targetSceneName));
+        transitionRoutine = StartCoroutine(CoTransition(
+            targetSceneName,
+            fadeOutDurationOverride,
+            fadeInDurationOverride));
         return true;
     }
 
-    private IEnumerator CoTransition(string targetSceneName)
+    private IEnumerator CoTransition(
+        string targetSceneName,
+        float? fadeOutDurationOverride,
+        float? fadeInDurationOverride)
     {
         SceneFadeTransitionService fadeService = SceneFadeTransitionService.EnsureInstance(allowRuntimeFallback: true);
-        if (fadeService == null || !fadeService.TryBeginTransitionSession())
+        if (fadeService == null)
         {
+            Debug.LogWarning(
+                $"[SceneTransitionCoordinator] No fade service was available. Loading scene '{targetSceneName}' without transition fade.",
+                this);
             transitionRoutine = null;
+            LoadSceneImmediately(targetSceneName);
+            yield break;
+        }
+
+        if (!fadeService.TryBeginTransitionSession())
+        {
+            Debug.LogWarning(
+                $"[SceneTransitionCoordinator] Could not begin a fade transition session. Loading scene '{targetSceneName}' without transition fade.",
+                this);
+            transitionRoutine = null;
+            LoadSceneImmediately(targetSceneName);
             yield break;
         }
 
@@ -92,7 +139,10 @@ public sealed class SceneTransitionCoordinator : MonoBehaviour
             routeManager != null &&
             PortalRouteManager.IsCorridorEntryTransition(routeManager.LastLoadPresentationTransitionType);
 
-        yield return fadeService.FadeOutAsync();
+        if (fadeOutDurationOverride.HasValue)
+            yield return fadeService.FadeOutAsync(fadeOutDurationOverride.Value);
+        else
+            yield return fadeService.FadeOutAsync();
 
         LoadingOverlayController loadingOverlay = null;
         float loadingPhaseStartedRealtime = 0f;
@@ -134,7 +184,7 @@ public sealed class SceneTransitionCoordinator : MonoBehaviour
                 loadingOverlay.ForceHidePresentation();
             }
 
-            yield return fadeService.FadeInAsync();
+            yield return FadeInAsync(fadeService, fadeInDurationOverride);
             fadeService.EndTransitionSession();
             transitionRoutine = null;
             yield break;
@@ -148,6 +198,13 @@ public sealed class SceneTransitionCoordinator : MonoBehaviour
                 loadingPhaseStartedRealtime,
                 ref loadingPresentationRevealed);
             yield return null;
+        }
+
+        fadeService = ResolvePostLoadFadeService(fadeService, targetSceneName, this);
+        if (fadeService == null)
+        {
+            transitionRoutine = null;
+            yield break;
         }
 
         yield return fadeService.WaitForPostLoadSettleAsync();
@@ -167,15 +224,60 @@ public sealed class SceneTransitionCoordinator : MonoBehaviour
             routeManager?.CompleteLoadPresentationContext("Managed loading presentation completed.");
             fadeService.ShowBlackImmediately();
             loadingOverlay.ForceHidePresentation();
-            yield return fadeService.FadeInAsync();
+            yield return FadeInAsync(fadeService, fadeInDurationOverride);
         }
         else
         {
-            yield return fadeService.FadeInAsync();
+            yield return FadeInAsync(fadeService, fadeInDurationOverride);
         }
 
         fadeService.EndTransitionSession();
         transitionRoutine = null;
+    }
+
+    private static SceneFadeTransitionService ResolvePostLoadFadeService(
+        SceneFadeTransitionService current,
+        string targetSceneName,
+        Object logContext)
+    {
+        if (current != null)
+            return current;
+
+        SceneFadeTransitionService recovered =
+            SceneFadeTransitionService.EnsureInstance(allowRuntimeFallback: true);
+        if (recovered == null)
+        {
+            Debug.LogWarning(
+                $"[SceneTransitionCoordinator] Fade service was destroyed while loading scene '{targetSceneName}', and no replacement was available for fade-in.",
+                logContext);
+            return null;
+        }
+
+        if (!recovered.IsTransitionActive)
+        {
+            if (recovered.TryBeginTransitionSession())
+            {
+                recovered.ShowBlackImmediately();
+            }
+            else
+            {
+                Debug.LogWarning(
+                    $"[SceneTransitionCoordinator] Fade service was destroyed while loading scene '{targetSceneName}'. A replacement was found, but it could not begin a recovered fade session.",
+                    logContext);
+            }
+        }
+
+        return recovered;
+    }
+
+    private static IEnumerator FadeInAsync(
+        SceneFadeTransitionService fadeService,
+        float? fadeInDurationOverride)
+    {
+        if (fadeInDurationOverride.HasValue)
+            yield return fadeService.FadeInAsync(fadeInDurationOverride.Value);
+        else
+            yield return fadeService.FadeInAsync();
     }
 
     private IEnumerator WaitForManagedLoadingReady(
@@ -230,5 +332,19 @@ public sealed class SceneTransitionCoordinator : MonoBehaviour
         fadeService?.HideOverlayImmediately();
         loadingPresentationRevealed = true;
         return true;
+    }
+
+    private void LoadSceneImmediately(string targetSceneName)
+    {
+        try
+        {
+            SceneManager.LoadScene(targetSceneName, LoadSceneMode.Single);
+        }
+        catch (System.Exception ex)
+        {
+            Debug.LogError(
+                $"[SceneTransitionCoordinator] Failed to load scene '{targetSceneName}' without transition fade: {ex.Message}",
+                this);
+        }
     }
 }

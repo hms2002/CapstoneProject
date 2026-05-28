@@ -5,6 +5,25 @@ public static class DialoguePresentationSequencer
 {
     public static void PlayOpening(DialogueView view, CinematicDirector director, List<NPCData> participants, bool isBoss, Action onOpened)
     {
+        PlayOpening(
+            view,
+            director,
+            participants,
+            isBoss,
+            DialoguePresentationOptions.Default,
+            null,
+            onOpened);
+    }
+
+    public static void PlayOpening(
+        DialogueView view,
+        CinematicDirector director,
+        List<NPCData> participants,
+        bool isBoss,
+        DialoguePresentationOptions presentationOptions,
+        string openingPortraitLabel,
+        Action onOpened)
+    {
         if (view == null)
         {
             onOpened?.Invoke();
@@ -15,8 +34,14 @@ public static class DialoguePresentationSequencer
 
         Action showDialogueUi = () =>
         {
-            view.ShowUI(isBoss, onOpened);
+            view.ShowUI(isBoss && !presentationOptions.ForceDialogueBoxOnly, onOpened);
         };
+
+        if (presentationOptions.SuppressPortraitIntro)
+        {
+            showDialogueUi();
+            return;
+        }
 
         if (director == null)
         {
@@ -24,8 +49,20 @@ public static class DialoguePresentationSequencer
             return;
         }
 
-        Action playPortraitIntro = () => director.PlayIntro(participants, showDialogueUi);
-        if (isBoss)
+        if (presentationOptions.UseFastSilhouetteIntro)
+        {
+            director.PlayFastSilhouetteIntro(
+                GetPrimaryParticipant(participants),
+                presentationOptions.ResolvedFastSilhouettePosition,
+                presentationOptions.ResolvedFastSilhouetteFadeSeconds,
+                presentationOptions.FastSilhouetteColorize,
+                openingPortraitLabel,
+                showDialogueUi);
+            return;
+        }
+
+        Action playPortraitIntro = () => director.PlayIntro(participants, showDialogueUi, openingPortraitLabel);
+        if (isBoss && !presentationOptions.SkipBossPrelude && !presentationOptions.ForceDialogueBoxOnly)
         {
             view.PlayBossPrelude(playPortraitIntro);
             return;
@@ -36,6 +73,15 @@ public static class DialoguePresentationSequencer
 
     public static void PlayClosing(DialogueView view, CinematicDirector director, Action onClosed)
     {
+        PlayClosing(view, director, DialoguePresentationOptions.Default, onClosed);
+    }
+
+    public static void PlayClosing(
+        DialogueView view,
+        CinematicDirector director,
+        DialoguePresentationOptions presentationOptions,
+        Action onClosed)
+    {
         if (view == null)
         {
             onClosed?.Invoke();
@@ -44,7 +90,7 @@ public static class DialoguePresentationSequencer
 
         view.HideUI(() =>
         {
-            if (director == null)
+            if (director == null || presentationOptions.SuppressPortraitOutro)
             {
                 onClosed?.Invoke();
                 return;
@@ -52,5 +98,13 @@ public static class DialoguePresentationSequencer
 
             director.PlayOutro(onClosed);
         });
+    }
+
+    private static NPCData GetPrimaryParticipant(List<NPCData> participants)
+    {
+        if (participants == null || participants.Count == 0)
+            return null;
+
+        return participants[0];
     }
 }

@@ -17,6 +17,8 @@ public class LeverShortcut : PermanentShortcut
     [SerializeField, Min(0f)] private float cinematicIntroDuration = 0.35f;
     [SerializeField, Min(0f)] private float cameraMoveStartDelaySeconds = 0.15f;
     [SerializeField, Min(0f)] private float cameraFocusWaitSeconds = 0.55f;
+    [SerializeField, Min(0.01f)] private float cameraMoveMaxSpeed = 8f;
+    [SerializeField, Min(0f)] private float cameraMoveArrivalDistance = 0.05f;
     [SerializeField, Min(0f)] private float postOpenWaitSeconds = 0.8f;
     [SerializeField, Min(0f)] private float cameraReturnWaitSeconds = 0.45f;
     [SerializeField, Min(0f)] private float cinematicOutroDuration = 0.25f;
@@ -31,6 +33,7 @@ public class LeverShortcut : PermanentShortcut
     private CinemachineCamera gameplayCamera;
     private CinemachineBrain cameraBrain;
     private CameraFollow legacyFollowCamera;
+    private Transform cameraMoveTarget;
     private Transform cachedCameraFollow;
     private Transform cachedCameraLookAt;
     private int cachedCameraPriority;
@@ -147,7 +150,9 @@ public class LeverShortcut : PermanentShortcut
             yield break;
 
         CacheCameraState();
-        SetCameraTarget(focusTarget);
+        Transform moveTarget = EnsureCameraMoveTarget();
+        SetCameraTarget(moveTarget);
+        yield return MoveCameraTargetToRoutine(moveTarget, focusTarget);
         yield return WaitForPresentationSeconds(cameraFocusWaitSeconds);
     }
 
@@ -158,9 +163,38 @@ public class LeverShortcut : PermanentShortcut
 
         Transform playerTransform = PlayerRuntimeRegistry.GetPlayerTransform();
         Transform restoreTarget = playerTransform != null ? playerTransform : cachedCameraFollow;
-        SetCameraTarget(restoreTarget);
+        Transform moveTarget = EnsureCameraMoveTarget();
+        SetCameraTarget(moveTarget != null ? moveTarget : restoreTarget);
+        yield return MoveCameraTargetToRoutine(moveTarget, restoreTarget);
         yield return WaitForPresentationSeconds(cameraReturnWaitSeconds);
         RestoreCameraState(restoreTarget);
+    }
+
+    private IEnumerator MoveCameraTargetToRoutine(Transform movingTarget, Transform destination)
+    {
+        if (movingTarget == null || destination == null)
+            yield break;
+
+        float speed = Mathf.Max(0.01f, cameraMoveMaxSpeed);
+        float arrivalDistance = Mathf.Max(0f, cameraMoveArrivalDistance);
+
+        while (Vector2.Distance(movingTarget.position, destination.position) > arrivalDistance)
+        {
+            Vector3 currentPosition = movingTarget.position;
+            Vector3 targetPosition = destination.position;
+            targetPosition.z = currentPosition.z;
+
+            movingTarget.position = Vector3.MoveTowards(
+                currentPosition,
+                targetPosition,
+                speed * Time.unscaledDeltaTime);
+
+            yield return null;
+        }
+
+        Vector3 finalPosition = destination.position;
+        finalPosition.z = movingTarget.position.z;
+        movingTarget.position = finalPosition;
     }
 
     private IEnumerator WaitForPresentationSeconds(float seconds)
@@ -183,6 +217,33 @@ public class LeverShortcut : PermanentShortcut
             return doorFocusTarget;
 
         return targetDoor != null ? targetDoor.transform : null;
+    }
+
+    private Transform EnsureCameraMoveTarget()
+    {
+        if (cameraMoveTarget != null)
+            return cameraMoveTarget;
+
+        GameObject targetObject = new GameObject($"{name}_DoorRevealCameraTarget");
+        targetObject.hideFlags = HideFlags.HideAndDontSave;
+        cameraMoveTarget = targetObject.transform;
+        cameraMoveTarget.position = ResolveCameraCenterPosition();
+        return cameraMoveTarget;
+    }
+
+    private Vector3 ResolveCameraCenterPosition()
+    {
+        Camera mainCamera = CameraBootstrap.GetMainCamera();
+        if (mainCamera != null)
+            return new Vector3(mainCamera.transform.position.x, mainCamera.transform.position.y, 0f);
+
+        if (gameplayCamera != null)
+            return new Vector3(gameplayCamera.transform.position.x, gameplayCamera.transform.position.y, 0f);
+
+        if (cachedCameraFollow != null)
+            return cachedCameraFollow.position;
+
+        return transform.position;
     }
 
     private void CacheCameraState()
@@ -261,6 +322,19 @@ public class LeverShortcut : PermanentShortcut
         hasCachedCameraState = false;
     }
 
+    private void DestroyCameraMoveTarget()
+    {
+        if (cameraMoveTarget == null)
+            return;
+
+        if (Application.isPlaying)
+            Destroy(cameraMoveTarget.gameObject);
+        else
+            DestroyImmediate(cameraMoveTarget.gameObject);
+
+        cameraMoveTarget = null;
+    }
+
     private void AcquireInputBlocker()
     {
         inputBlocker = GameFlowInputBlocker.GetOrAdd(this);
@@ -306,6 +380,7 @@ public class LeverShortcut : PermanentShortcut
         }
 
         RestoreCameraState(PlayerRuntimeRegistry.GetPlayerTransform());
+        DestroyCameraMoveTarget();
         UnlockPlayerControls();
         ReleaseInputBlocker();
     }

@@ -11,11 +11,12 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5686dc461c9b6a546991383454aa181f, type: 3}
   m_Name: WD_ApprenticeHeroSword
-  m_EditorClassIdentifier:
+  m_EditorClassIdentifier: 
   weaponId: Weapon.ApprenticeHeroSword
   displayName: "\uACAC\uC2B5 \uC6A9\uC0AC\uC758 \uAC80"
-  icon: {fileID: -8157333574000607655, guid: 748bd1286788d5f468f9857941b73367, type: 3}
-  storyText: "<color=#96DCFA>\uACAC\uC2B5 \uC6A9\uC0AC\uAC00 \uCC98\uC74C \uC950\uC5C8\uB358 \uAE30\uBCF8 \uAC80.</color>"
+  icon: {fileID: 21300000, guid: 748bd1286788d5f468f9857941b73367, type: 3}
+  storyText: "<color=#96DCFA>\uACAC\uC2B5 \uC6A9\uC0AC\uAC00 \uCC98\uC74C \uC950\uC5C8\uB358
+    \uAE30\uBCF8 \uAC80.</color>"
   statModifiers: []
   attackInputHint: "\uC6B0\uD074\uB9AD"
   skill1InputHint: Q
@@ -23,7 +24,7 @@ MonoBehaviour:
   weaponPrefab: {fileID: 916365682996460394, guid: 9fe6c68944504e748195234398110ddd, type: 3}
   displayVisualProfile: {fileID: 0}
   swapSoundOverride:
-    key:
+    key: 
     volumeMultiplier: 0
     anchorPolicy: 0
     localOffset: {x: 0, y: 0, z: 0}

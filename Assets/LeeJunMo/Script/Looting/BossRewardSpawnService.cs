@@ -61,6 +61,8 @@ internal static class BossRewardSpawnService
         if (chest == null)
             return false;
 
+        chest.gameObject.SetActive(true);
+
         var finalLoots = new List<ScriptableObject>();
         BossRewardModifierAggregate modifiers = ResolveRewardModifiers(context);
 
@@ -71,7 +73,6 @@ internal static class BossRewardSpawnService
                 finalLoots.AddRange(baseLoots);
         }
 
-        chest.gameObject.SetActive(true);
         AddRolledBonusLoots(finalLoots, specialRewardPreset != null ? specialRewardPreset.SpecialLoots : null);
         AddRolledBonusLoots(finalLoots, modifiers.BonusLoots);
         chest.InitializeWithLoot(finalLoots);

@@ -27,6 +27,7 @@ public sealed class TitleIntroPlayer : MonoBehaviour
     private bool skipIntroRequested;
     private float nextTypingSoundTime;
     private int consumedAdvanceInputFrame = -1;
+    private bool hasHiddenCursor;
 
     public bool IsPlaying => playRoutine != null;
 
@@ -57,6 +58,7 @@ public sealed class TitleIntroPlayer : MonoBehaviour
         }
 
         ResetInputState();
+        ReleaseCursorHidden();
         view?.HideImmediate();
     }
 
@@ -86,9 +88,11 @@ public sealed class TitleIntroPlayer : MonoBehaviour
     {
         skipIntroRequested = false;
         ResetInputState();
+        AcquireCursorHidden();
         view.Show(skipKey);
         view.ApplySkipFillColor(sequence.SkipFillColor);
         view.SetRootAlpha(0f);
+        view.SetSkipPromptAlpha(0f);
 
         yield return FadeIntroRootAsync(1f, sequence.IntroStartFadeDuration);
         if (skipIntroRequested)
@@ -110,7 +114,11 @@ public sealed class TitleIntroPlayer : MonoBehaviour
             float fadeInDuration = i == 0
                 ? sequence.InitialImageFadeDuration
                 : sequence.ImageFadeDuration;
-            yield return TypeTextAndFadeInAsync(text, fadeInDuration, ignoreAdvanceUntilFadeComplete: i == 0);
+            yield return TypeTextAndFadeInAsync(
+                text,
+                fadeInDuration,
+                ignoreAdvanceUntilFadeComplete: i == 0,
+                fadeSkipPromptWithSlide: i == 0);
             if (skipIntroRequested)
                 break;
 
@@ -159,7 +167,11 @@ public sealed class TitleIntroPlayer : MonoBehaviour
         view.SetRootAlpha(targetAlpha);
     }
 
-    private IEnumerator TypeTextAndFadeInAsync(string text, float fadeDuration, bool ignoreAdvanceUntilFadeComplete)
+    private IEnumerator TypeTextAndFadeInAsync(
+        string text,
+        float fadeDuration,
+        bool ignoreAdvanceUntilFadeComplete,
+        bool fadeSkipPromptWithSlide)
     {
         text ??= string.Empty;
         view.SetText(string.Empty);
@@ -179,7 +191,11 @@ public sealed class TitleIntroPlayer : MonoBehaviour
         float startAlpha = view.SlideAlpha;
         bool fadeComplete = fadeDuration <= 0f;
         if (fadeComplete)
+        {
             view.SetSlideAlpha(1f);
+            if (fadeSkipPromptWithSlide)
+                view.SetSkipPromptAlpha(1f);
+        }
 
         while (!textComplete || !fadeComplete)
         {
@@ -189,6 +205,8 @@ public sealed class TitleIntroPlayer : MonoBehaviour
                 skipIntroRequested = true;
                 view.SetText(text);
                 view.SetSlideAlpha(1f);
+                if (fadeSkipPromptWithSlide)
+                    view.SetSkipPromptAlpha(1f);
                 yield break;
             }
 
@@ -199,6 +217,8 @@ public sealed class TitleIntroPlayer : MonoBehaviour
                 {
                     view.SetText(text);
                     view.SetSlideAlpha(1f);
+                    if (fadeSkipPromptWithSlide)
+                        view.SetSkipPromptAlpha(1f);
                     yield break;
                 }
             }
@@ -229,6 +249,8 @@ public sealed class TitleIntroPlayer : MonoBehaviour
                 fadeElapsed += deltaTime;
                 float normalized = Mathf.Clamp01(fadeElapsed / fadeDuration);
                 view.SetSlideAlpha(Mathf.Lerp(startAlpha, 1f, normalized));
+                if (fadeSkipPromptWithSlide)
+                    view.SetSkipPromptAlpha(normalized);
                 fadeComplete = fadeElapsed >= fadeDuration;
             }
 
@@ -237,6 +259,8 @@ public sealed class TitleIntroPlayer : MonoBehaviour
 
         view.SetText(text);
         view.SetSlideAlpha(1f);
+        if (fadeSkipPromptWithSlide)
+            view.SetSkipPromptAlpha(1f);
     }
 
     private IEnumerator WaitAfterTextAsync(float waitSeconds)
@@ -358,10 +382,30 @@ public sealed class TitleIntroPlayer : MonoBehaviour
         nextTypingSoundTime = Time.unscaledTime + Mathf.Max(0f, typingSoundInterval);
     }
 
+    private void AcquireCursorHidden()
+    {
+        MouseCursorService service = MouseCursorService.EnsureInstance();
+        if (service == null)
+            return;
+
+        service.SetHidden(this, true);
+        hasHiddenCursor = true;
+    }
+
+    private void ReleaseCursorHidden()
+    {
+        if (!hasHiddenCursor)
+            return;
+
+        MouseCursorService.Instance?.SetHidden(this, false);
+        hasHiddenCursor = false;
+    }
+
     private void CompletePlayback(Action onCompleted, bool keepViewVisibleOnCompleted)
     {
         playRoutine = null;
         ResetInputState();
+        ReleaseCursorHidden();
 
         if (hideViewWhenCompleted && !keepViewVisibleOnCompleted)
             view?.HideImmediate();

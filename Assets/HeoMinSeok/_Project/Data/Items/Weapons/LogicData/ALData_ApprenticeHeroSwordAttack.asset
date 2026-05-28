@@ -11,7 +11,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bf6e06a6645341fc9a0f9c09ca38e240, type: 3}
   m_Name: ALData_ApprenticeHeroSwordAttack
-  m_EditorClassIdentifier:
+  m_EditorClassIdentifier: 
   combo:
     defaultHitboxPrefab: {fileID: 2863281621525748656, guid: cf2a593a59084a949d586f1051384385, type: 3}
     steps:
@@ -91,7 +91,7 @@ MonoBehaviour:
         volumeMultiplier: 1
         anchorPolicy: 0
         localOffset: {x: 0, y: 0, z: 0}
-      animationTrigger: Swing1
+      animationTrigger: Swing2
       recoveryDuration: 0.16
       nextAttackDelay: 0
       forwardOffset: 0.9
@@ -133,7 +133,7 @@ MonoBehaviour:
         volumeMultiplier: 1
         anchorPolicy: 0
         localOffset: {x: 0, y: 0, z: 0}
-      animationTrigger: Swing1
+      animationTrigger: Swing3
       recoveryDuration: 0.22
       nextAttackDelay: 0.45
       forwardOffset: 0.95
