@@ -596,7 +596,11 @@ public sealed class CombatBalanceEditorWindow : EditorWindow
             EditorGUILayout.PropertyField(enabledProperty, new GUIContent("Enable Stage HP Scaling"));
             EditorGUILayout.PropertyField(bonusProperty, new GUIContent("HP Bonus Per Stage"));
             EditorGUILayout.PropertyField(attackSpeedBonusProperty, new GUIContent("Attack Speed Bonus Per Stage"));
-            EditorGUILayout.PropertyField(scaleWarningProperty, new GUIContent("Scale Warning"));
+            EditorGUILayout.PropertyField(
+                scaleWarningProperty,
+                new GUIContent(
+                    "Telegraph Uses Attack Speed",
+                    "몬스터 공격 경고/telegraph 시간이 공격속도 보정에 따라 짧아질지 결정합니다. 몬스터별 override가 있으면 그 값이 우선됩니다."));
             EditorGUILayout.PropertyField(scaleRecoveryProperty, new GUIContent("Scale Recovery"));
             EditorGUILayout.PropertyField(scaleIntervalProperty, new GUIContent("Scale Interval"));
             EditorGUILayout.PropertyField(scaleAbilityCastProperty, new GUIContent("Scale Ability Cast"));
@@ -727,6 +731,9 @@ public sealed class CombatBalanceEditorWindow : EditorWindow
             DrawMonsterVisualPreview(selectedRow);
 
             EditorGUILayout.Space(8f);
+            DrawMonsterCombatTimingProfile(selectedRow);
+
+            EditorGUILayout.Space(8f);
             DrawProfileObjectFields(selectedRow);
 
             EditorGUILayout.Space(8f);
@@ -777,6 +784,84 @@ public sealed class CombatBalanceEditorWindow : EditorWindow
                     EditorGUILayout.HelpBox("대표 SpriteRenderer 또는 prefab preview를 찾지 못했습니다.", MessageType.Info);
             }
         }
+    }
+
+    private void DrawMonsterCombatTimingProfile(MonsterProfileRow row)
+    {
+        EditorGUILayout.LabelField("Combat Timing Override", EditorStyles.boldLabel);
+
+        if (row.Prefab == null)
+        {
+            EditorGUILayout.HelpBox("선택된 프리팹이 없어 전투 타이밍 override를 편집할 수 없습니다.", MessageType.Info);
+            return;
+        }
+
+        MonsterCombatTimingProfile profile = row.Prefab.GetComponent<MonsterCombatTimingProfile>();
+        MonsterTimingOverrideMode currentMode = profile != null
+            ? profile.AttackWarningTiming
+            : MonsterTimingOverrideMode.UseGlobal;
+
+        using (new EditorGUILayout.VerticalScope(EditorStyles.helpBox))
+        {
+            EditorGUILayout.HelpBox(
+                "Attack Telegraph Time은 공격 경고/telegraph 지속 시간이 스테이지 공격속도 보정에 영향을 받을지 정합니다. Use Global이면 왼쪽 전역 설정을 따릅니다.",
+                MessageType.None);
+
+            EditorGUI.BeginChangeCheck();
+            MonsterTimingOverrideMode nextMode = (MonsterTimingOverrideMode)EditorGUILayout.EnumPopup(
+                new GUIContent("Attack Telegraph Time", "이 몬스터의 경고 telegraph 시간이 공격속도에 따라 짧아질지 override합니다."),
+                currentMode);
+
+            if (EditorGUI.EndChangeCheck())
+            {
+                ApplyMonsterCombatTimingProfile(row.Prefab, profile, nextMode);
+                profile = row.Prefab.GetComponent<MonsterCombatTimingProfile>();
+                currentMode = nextMode;
+                Repaint();
+            }
+
+            EditorGUILayout.LabelField("Effective Source", ResolveTimingOverrideSource(profile, currentMode));
+        }
+    }
+
+    private static string ResolveTimingOverrideSource(MonsterCombatTimingProfile profile, MonsterTimingOverrideMode mode)
+    {
+        if (profile == null || mode == MonsterTimingOverrideMode.UseGlobal)
+            return "Uses global MonsterStageHpScalingSettings";
+
+        return mode == MonsterTimingOverrideMode.ForceEnabled
+            ? "Monster override: enabled"
+            : "Monster override: disabled";
+    }
+
+    private static void ApplyMonsterCombatTimingProfile(
+        GameObject prefab,
+        MonsterCombatTimingProfile profile,
+        MonsterTimingOverrideMode nextMode)
+    {
+        if (prefab == null)
+            return;
+
+        if (profile == null)
+        {
+            if (nextMode == MonsterTimingOverrideMode.UseGlobal)
+                return;
+
+            profile = Undo.AddComponent<MonsterCombatTimingProfile>(prefab);
+        }
+
+        Undo.RecordObject(profile, "Change Monster Combat Timing Profile");
+
+        SerializedObject serializedProfile = new(profile);
+        SerializedProperty attackWarningTiming = serializedProfile.FindProperty("attackWarningTiming");
+        if (attackWarningTiming != null)
+            attackWarningTiming.enumValueIndex = (int)nextMode;
+
+        serializedProfile.ApplyModifiedProperties();
+        EditorUtility.SetDirty(profile);
+        EditorUtility.SetDirty(prefab);
+        PrefabUtility.SavePrefabAsset(prefab);
+        AssetDatabase.SaveAssets();
     }
 
     private static void DrawPreviewTexture(Rect rect, Texture2D texture)

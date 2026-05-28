@@ -20,7 +20,7 @@ namespace UnityGAS
                 return 0f;
 
             MonsterStageHpScalingSettings settings = ResolveSettings();
-            if (!ShouldScale(settings, slot))
+            if (!ShouldScale(settings, system, slot))
             {
                 LogTiming(settings, system, slot, baseSeconds, 1f, baseSeconds, "skipped by settings");
                 return baseSeconds;
@@ -45,18 +45,29 @@ namespace UnityGAS
             return ScaleSeconds(system, baseSeconds, slot);
         }
 
-        private static bool ShouldScale(MonsterStageHpScalingSettings settings, CombatTimingSlot slot)
+        private static bool ShouldScale(MonsterStageHpScalingSettings settings, AbilitySystem system, CombatTimingSlot slot)
         {
             if (slot == CombatTimingSlot.PresentationOnly)
                 return false;
 
-            if (settings != null)
-                return settings.ShouldScaleTimingSlot(slot);
+            if (settings != null && !settings.Enabled)
+                return false;
 
-            return slot is CombatTimingSlot.AttackRecovery or
+            bool globalValue = settings != null
+                ? settings.ShouldScaleTimingSlot(slot)
+                : slot is CombatTimingSlot.AttackRecovery or
                 CombatTimingSlot.AttackInterval or
                 CombatTimingSlot.AbilityRecovery or
                 CombatTimingSlot.AbilityCooldown;
+
+            MonsterCombatTimingProfile profile = system != null
+                ? system.GetComponentInParent<MonsterCombatTimingProfile>()
+                : null;
+
+            if (profile != null && profile.TryResolveTimingSlotScale(slot, globalValue, out bool resolvedValue))
+                return resolvedValue;
+
+            return globalValue;
         }
 
         private static MonsterStageHpScalingSettings ResolveSettings()
