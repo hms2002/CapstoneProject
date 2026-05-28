@@ -928,7 +928,7 @@ MonoBehaviour:
     cooldown: 0
     minDistance: 1
     maxDistance: 20
-  - key: sound_player_OfferMagicstone
+  - key: sound_player_offermagicstone
     bus: 0
     category: 5
     variants:
@@ -943,7 +943,7 @@ MonoBehaviour:
     cooldown: 0
     minDistance: 1
     maxDistance: 20
-  - key: sound_player_OfferBlood
+  - key: sound_player_offerblood
     bus: 0
     category: 5
     variants:
@@ -958,7 +958,7 @@ MonoBehaviour:
     cooldown: 0
     minDistance: 1
     maxDistance: 20
-  - key: sound_ui_UpgradeWaterInteract
+  - key: sound_ui_upgradewaterinteract
     bus: 0
     category: 1
     variants:
@@ -973,7 +973,7 @@ MonoBehaviour:
     cooldown: 0
     minDistance: 1
     maxDistance: 20
-  - key: sound_ui_UpgradeSuccess
+  - key: sound_ui_upgradesuccess
     bus: 0
     category: 1
     variants:
@@ -988,7 +988,7 @@ MonoBehaviour:
     cooldown: 0
     minDistance: 1
     maxDistance: 20
-  - key: sound_ui_CantUpgrade
+  - key: sound_ui_cantupgrade
     bus: 0
     category: 1
     variants:
@@ -1003,7 +1003,7 @@ MonoBehaviour:
     cooldown: 0
     minDistance: 1
     maxDistance: 20
-  - key: sound_ui_AfterPlayerDieReturnToHub
+  - key: sound_ui_afterplayerdiereturntohub
     bus: 0
     category: 1
     variants:
@@ -1018,7 +1018,7 @@ MonoBehaviour:
     cooldown: 0
     minDistance: 1
     maxDistance: 20
-  - key: sound_door_CantOpen
+  - key: sound_door_cantopen
     bus: 0
     category: 10
     variants:
@@ -1033,7 +1033,7 @@ MonoBehaviour:
     cooldown: 0
     minDistance: 1
     maxDistance: 20
-  - key: sound_ui_FindUniqueItem1
+  - key: sound_ui_finduniqueitem1
     bus: 0
     category: 1
     variants:
@@ -1048,7 +1048,7 @@ MonoBehaviour:
     cooldown: 0
     minDistance: 1
     maxDistance: 20
-  - key: sound_ui_FindUniqueItem2
+  - key: sound_ui_finduniqueitem2
     bus: 0
     category: 1
     variants:
@@ -1063,7 +1063,7 @@ MonoBehaviour:
     cooldown: 0
     minDistance: 1
     maxDistance: 20
-  - key: sound_ui_FindUniqueItem3
+  - key: sound_ui_finduniqueitem3
     bus: 0
     category: 1
     variants:
@@ -1078,7 +1078,7 @@ MonoBehaviour:
     cooldown: 0
     minDistance: 1
     maxDistance: 20
-  - key: sound_ui_UnlockChest1
+  - key: sound_ui_unlockchest1
     bus: 0
     category: 1
     variants:
@@ -1093,7 +1093,7 @@ MonoBehaviour:
     cooldown: 0
     minDistance: 1
     maxDistance: 20
-  - key: sound_ui_UnlockChest2
+  - key: sound_ui_unlockchest2
     bus: 0
     category: 1
     variants:
@@ -1108,7 +1108,7 @@ MonoBehaviour:
     cooldown: 0
     minDistance: 1
     maxDistance: 20
-  - key: sound_ui_FailMigrateItem
+  - key: sound_ui_failmigrateitem
     bus: 0
     category: 1
     variants:
@@ -1123,7 +1123,7 @@ MonoBehaviour:
     cooldown: 0
     minDistance: 1
     maxDistance: 20
-  - key: sound_door_Close
+  - key: sound_door_close
     bus: 0
     category: 10
     variants:
@@ -1138,7 +1138,7 @@ MonoBehaviour:
     cooldown: 0
     minDistance: 1
     maxDistance: 20
-  - key: sound_player_GetFiledHeart
+  - key: sound_player_getfiledheart
     bus: 0
     category: 5
     variants:
@@ -1153,12 +1153,12 @@ MonoBehaviour:
     cooldown: 0
     minDistance: 1
     maxDistance: 20
-  - key: sound_ui_CollisionEachUI
+  - key: sound_ui_collisioneachui
     bus: 0
     category: 1
     variants:
     - {fileID: 8300000, guid: 734dc6052be7a3f4784280dc0ef479de, type: 3}
-    volume: 1
+    volume: 0.553
     playbackSpeed: 1
     pitchMin: 1
     pitchMax: 1
@@ -1168,7 +1168,7 @@ MonoBehaviour:
     cooldown: 0
     minDistance: 1
     maxDistance: 20
-  - key: sound_ui_ChestUnlock
+  - key: sound_ui_chestunlock
     bus: 0
     category: 1
     variants:
@@ -1183,7 +1183,7 @@ MonoBehaviour:
     cooldown: 0
     minDistance: 1
     maxDistance: 20
-  - key: sound_ui_DropItem
+  - key: sound_ui_dropitem
     bus: 0
     category: 1
     variants:
@@ -1198,7 +1198,7 @@ MonoBehaviour:
     cooldown: 0
     minDistance: 1
     maxDistance: 20
-  - key: sound_player_Evade
+  - key: sound_player_evade
     bus: 0
     category: 5
     variants:
@@ -1213,7 +1213,7 @@ MonoBehaviour:
     cooldown: 0
     minDistance: 1
     maxDistance: 20
-  - key: sound_ui_OpenDictionary
+  - key: sound_ui_opendictionary
     bus: 0
     category: 1
     variants:
@@ -1228,7 +1228,7 @@ MonoBehaviour:
     cooldown: 0
     minDistance: 1
     maxDistance: 20
-  - key: sound_ui_CloseDictionary
+  - key: sound_ui_closedictionary
     bus: 0
     category: 1
     variants:
@@ -1243,7 +1243,7 @@ MonoBehaviour:
     cooldown: 0
     minDistance: 1
     maxDistance: 20
-  - key: sound_goblinGunner_GunShot
+  - key: sound_goblingunner_gunshot
     bus: 0
     category: 6
     variants:
@@ -1258,7 +1258,7 @@ MonoBehaviour:
     cooldown: 0
     minDistance: 1
     maxDistance: 20
-  - key: sound_knightSlime_Stamping
+  - key: sound_knightslime_stamping
     bus: 0
     category: 6
     variants:
@@ -1273,7 +1273,7 @@ MonoBehaviour:
     cooldown: 0
     minDistance: 1
     maxDistance: 20
-  - key: sound_knightSlime_Jump
+  - key: sound_knightslime_jump
     bus: 0
     category: 6
     variants:
@@ -1288,7 +1288,7 @@ MonoBehaviour:
     cooldown: 0
     minDistance: 1
     maxDistance: 20
-  - key: sound_puddle_Fire
+  - key: sound_puddle_fire
     bus: 0
     category: 8
     variants:
@@ -1303,7 +1303,7 @@ MonoBehaviour:
     cooldown: 0
     minDistance: 1
     maxDistance: 20
-  - key: sound_candleMonsger_Die
+  - key: sound_candlemonsger_die
     bus: 0
     category: 6
     variants:
@@ -1318,7 +1318,7 @@ MonoBehaviour:
     cooldown: 0
     minDistance: 1
     maxDistance: 20
-  - key: sound_mediumSlime_Split
+  - key: sound_mediumslime_split
     bus: 0
     category: 6
     variants:
@@ -1333,7 +1333,7 @@ MonoBehaviour:
     cooldown: 0
     minDistance: 1
     maxDistance: 20
-  - key: sound_largeSlime_Split
+  - key: sound_largeslime_split
     bus: 0
     category: 6
     variants:
@@ -1348,7 +1348,7 @@ MonoBehaviour:
     cooldown: 0
     minDistance: 1
     maxDistance: 20
-  - key: sound_ui_AffectionDown
+  - key: sound_ui_affectiondown
     bus: 0
     category: 1
     variants:
@@ -1363,7 +1363,7 @@ MonoBehaviour:
     cooldown: 0
     minDistance: 1
     maxDistance: 20
-  - key: sound_ui_AffectionUp
+  - key: sound_ui_affectionup
     bus: 0
     category: 1
     variants:
@@ -1378,12 +1378,12 @@ MonoBehaviour:
     cooldown: 0
     minDistance: 1
     maxDistance: 20
-  - key: sound_ui_TalkUIIntro
+  - key: sound_ui_talkuiintro
     bus: 0
     category: 1
     variants:
     - {fileID: 8300000, guid: 25192bb42bae355479cca2805290bac5, type: 3}
-    volume: 1
+    volume: 0.509
     playbackSpeed: 1
     pitchMin: 1
     pitchMax: 1
@@ -1393,7 +1393,7 @@ MonoBehaviour:
     cooldown: 0
     minDistance: 1
     maxDistance: 20
-  - key: sound_rook_Rush
+  - key: sound_rook_rush
     bus: 0
     category: 6
     variants:
@@ -1408,7 +1408,7 @@ MonoBehaviour:
     cooldown: 0
     minDistance: 1
     maxDistance: 20
-  - key: sound_rook_CollisionWall
+  - key: sound_rook_collisionwall
     bus: 0
     category: 6
     variants:
@@ -1423,7 +1423,7 @@ MonoBehaviour:
     cooldown: 0
     minDistance: 1
     maxDistance: 20
-  - key: sound_bishop_Attack
+  - key: sound_bishop_attack
     bus: 0
     category: 6
     variants:
@@ -1438,7 +1438,7 @@ MonoBehaviour:
     cooldown: 0
     minDistance: 1
     maxDistance: 20
-  - key: sound_drainPipe_Open
+  - key: sound_drainpipe_open
     bus: 0
     category: 8
     variants:
@@ -1453,7 +1453,7 @@ MonoBehaviour:
     cooldown: 0
     minDistance: 1
     maxDistance: 20
-  - key: sound_drainPipe_WtaerFall
+  - key: sound_drainpipe_wtaerfall
     bus: 0
     category: 8
     variants:
@@ -1468,7 +1468,7 @@ MonoBehaviour:
     cooldown: 0
     minDistance: 1
     maxDistance: 20
-  - key: sound_drainPipe_SlimeFall1
+  - key: sound_drainpipe_slimefall1
     bus: 0
     category: 8
     variants:
@@ -1483,7 +1483,7 @@ MonoBehaviour:
     cooldown: 0
     minDistance: 1
     maxDistance: 20
-  - key: sound_drainPipe_SlimeFall2
+  - key: sound_drainpipe_slimefall2
     bus: 0
     category: 8
     variants:
@@ -1498,7 +1498,7 @@ MonoBehaviour:
     cooldown: 0
     minDistance: 1
     maxDistance: 20
-  - key: sound_drainPipe_SlimeFall3
+  - key: sound_drainpipe_slimefall3
     bus: 0
     category: 8
     variants:
@@ -1513,7 +1513,7 @@ MonoBehaviour:
     cooldown: 0
     minDistance: 1
     maxDistance: 20
-  - key: sound_drainPipe_SlimeFall4
+  - key: sound_drainpipe_slimefall4
     bus: 0
     category: 8
     variants:
@@ -1528,7 +1528,7 @@ MonoBehaviour:
     cooldown: 0
     minDistance: 1
     maxDistance: 20
-  - key: sound_deadSkeleton_Boom
+  - key: sound_deadskeleton_boom
     bus: 0
     category: 6
     variants:
@@ -1543,7 +1543,7 @@ MonoBehaviour:
     cooldown: 0
     minDistance: 1
     maxDistance: 20
-  - key: sound_candlestick_Seal
+  - key: sound_candlestick_seal
     bus: 0
     category: 8
     variants:
@@ -1558,7 +1558,7 @@ MonoBehaviour:
     cooldown: 0
     minDistance: 1
     maxDistance: 20
-  - key: sound_candlestick_Unlock1
+  - key: sound_candlestick_unlock1
     bus: 0
     category: 8
     variants:
@@ -1573,7 +1573,7 @@ MonoBehaviour:
     cooldown: 0
     minDistance: 1
     maxDistance: 20
-  - key: sound_candlestick_Unlock2
+  - key: sound_candlestick_unlock2
     bus: 0
     category: 8
     variants:
@@ -1588,7 +1588,7 @@ MonoBehaviour:
     cooldown: 0
     minDistance: 1
     maxDistance: 20
-  - key: sound_candlestick_Unlock3
+  - key: sound_candlestick_unlock3
     bus: 0
     category: 8
     variants:
@@ -1603,7 +1603,7 @@ MonoBehaviour:
     cooldown: 0
     minDistance: 1
     maxDistance: 20
-  - key: sound_candlestick_Unseal
+  - key: sound_candlestick_unseal
     bus: 0
     category: 8
     variants:
