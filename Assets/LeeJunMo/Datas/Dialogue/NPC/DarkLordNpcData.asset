@@ -18,7 +18,7 @@ MonoBehaviour:
   primaryInk: {fileID: 4900000, guid: 4c91aa836d1666747bcb8525ef84c524, type: 3}
   bossEncounterInk: {fileID: 0}
   bossEncounterDialogues: []
-  dialogueTheme: {fileID: 11400000, guid: 3ef1664fdf0dac148a47091038acdfd9, type: 2}
+  dialogueTheme: {fileID: 11400000, guid: 7d2872e29cd11e4459ff58d02bcd6c9f, type: 2}
   affectionRewards:
   - targetLevel: 2
     effect: {fileID: 11400000, guid: 9de8ce10bc35dcc4b8303cf7c074028a, type: 2}

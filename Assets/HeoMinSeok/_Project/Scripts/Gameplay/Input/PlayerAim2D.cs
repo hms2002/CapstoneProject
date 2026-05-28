@@ -34,6 +34,27 @@ public sealed class PlayerAim2D : MonoBehaviour, IAimDirectionSource2D
         return AimDirection;
     }
 
+    public bool SetAimDirectionForPresentation(Vector2 direction)
+    {
+        if (direction.sqrMagnitude <= 0.0001f)
+            return false;
+
+        AimDirection = direction.normalized;
+        MouseWorld = (Vector2)transform.position + AimDirection;
+        return true;
+    }
+
+    public bool SetAimWorldPositionForPresentation(Vector2 worldPosition)
+    {
+        Vector2 direction = worldPosition - (Vector2)transform.position;
+        if (direction.sqrMagnitude <= 0.0001f)
+            return false;
+
+        MouseWorld = worldPosition;
+        AimDirection = direction.normalized;
+        return true;
+    }
+
     private void UpdateMouseAim()
     {
         if (mainCamera == null) return;

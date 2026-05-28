@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using CapstoneAudio;
 using UnityEngine;
 
 namespace UnityGAS
@@ -11,6 +12,8 @@ namespace UnityGAS
     /// </summary>
     public sealed class FirePuddleArea : PuddleAreaBase
     {
+        private static readonly SoundRef FireLoopSound = SoundRef.FromKey("sound_puddle_Fire");
+
         [Header("Lifetime")]
         [SerializeField, Min(0f)] private float lifetimeSeconds = 10f;
 
@@ -27,6 +30,7 @@ namespace UnityGAS
 
         private readonly HashSet<GameObject> overlappingTargets = new();
         private Coroutine directIgnitionScanRoutine;
+        private AudioHandle fireLoopHandle;
         private float expireTime;
         private float nextDamageTime;
 
@@ -45,6 +49,7 @@ namespace UnityGAS
             expireTime = lifetimeSeconds > 0f ? Time.time + lifetimeSeconds : float.PositiveInfinity;
             nextDamageTime = Time.time + Mathf.Max(0.01f, damageIntervalSeconds);
             directIgnitionScanRoutine = StartCoroutine(IgniteDirectOverlappingAlcoholNextFrame());
+            TryStartFireLoop();
         }
 
         protected override void OnDisable()
@@ -55,6 +60,7 @@ namespace UnityGAS
                 directIgnitionScanRoutine = null;
             }
 
+            StopFireLoop();
             base.OnDisable();
         }
 
@@ -102,14 +108,19 @@ namespace UnityGAS
                 overlappingTargets.Remove(target);
         }
 
-        private static void TryIgniteAlcohol(Collider2D other)
+        private void TryIgniteAlcohol(Collider2D other)
         {
             if (other == null)
                 return;
 
             AlcoholPuddleArea alcohol = other.GetComponentInParent<AlcoholPuddleArea>();
-            if (alcohol != null)
-                alcohol.RequestIgnite();
+            if (alcohol == null)
+                return;
+
+            if (!PuddleManager.AreIgnitionContactAreasOverlapping(this, alcohol))
+                return;
+
+            alcohol.RequestIgnite();
         }
 
         private IEnumerator IgniteDirectOverlappingAlcoholNextFrame()
@@ -135,7 +146,33 @@ namespace UnityGAS
         protected override void HandleModeChanged(PuddleAreaMode previousMode, PuddleAreaMode newMode)
         {
             if (!CanApplyGroundEffect)
+            {
                 overlappingTargets.Clear();
+                StopFireLoop();
+            }
+            else
+            {
+                TryStartFireLoop();
+            }
+        }
+
+        /// <summary>불 장판이 ground hazard로 활성화된 동안 루프 사운드를 유지합니다.</summary>
+        private void TryStartFireLoop()
+        {
+            if (!CanApplyGroundEffect || fireLoopHandle.IsValid)
+                return;
+
+            fireLoopHandle = SoundPlaybackUtility.Play(FireLoopSound, causer: gameObject, position: transform.position, sourceObject: this);
+        }
+
+        /// <summary>불 장판이 꺼지거나 다른 모드로 전환될 때 남은 루프 사운드를 정지합니다.</summary>
+        private void StopFireLoop()
+        {
+            if (!fireLoopHandle.IsValid)
+                return;
+
+            SoundPlaybackUtility.Stop(fireLoopHandle, 0.08f);
+            fireLoopHandle = AudioHandle.Invalid;
         }
 
         private void ApplyPeriodicDamage()

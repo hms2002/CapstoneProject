@@ -1,13 +1,18 @@
 using System.Collections;
 using UnityEngine;
 
+/// <summary>
+/// 책임:
+/// - Demon King 계열 레이저의 시작/유지/종료 애니메이션과 실제 표시 길이/폭을 한 번에 구성한다.
+/// - 다른 패턴이 같은 레이저 비주얼을 재사용할 수 있도록 길이 보정 multiplier를 선택적으로 받는다.
+/// </summary>
 [DisallowMultipleComponent]
 public sealed class DemonKingEgoLaserVfx : MonoBehaviour
 {
     private const string StartStateName = "Start";
     private const string IdleStateName = "Idle";
     private const string EndStateName = "End";
-    private const float BodyVisualLengthMultiplier = 2f;
+    private const float DefaultBodyVisualLengthMultiplier = 2f;
 
     [SerializeField] private SpriteRenderer startRenderer;
     [SerializeField] private SpriteRenderer bodyRenderer;
@@ -46,8 +51,19 @@ public sealed class DemonKingEgoLaserVfx : MonoBehaviour
 
     public void Play(Vector2 origin, Vector2 direction, float length, float width, float damageHoldSeconds)
     {
+        Play(origin, direction, length, width, damageHoldSeconds, DefaultBodyVisualLengthMultiplier);
+    }
+
+    public void Play(
+        Vector2 origin,
+        Vector2 direction,
+        float length,
+        float width,
+        float damageHoldSeconds,
+        float bodyVisualLengthMultiplier)
+    {
         ApplyRendererDefaults();
-        ConfigureGeometry(origin, direction, length, width);
+        ConfigureGeometry(origin, direction, length, width, bodyVisualLengthMultiplier);
 
         if (playRoutine != null)
             StopCoroutine(playRoutine);
@@ -140,11 +156,12 @@ public sealed class DemonKingEgoLaserVfx : MonoBehaviour
         EndActive = false;
     }
 
-    private void ConfigureGeometry(Vector2 origin, Vector2 direction, float length, float width)
+    private void ConfigureGeometry(Vector2 origin, Vector2 direction, float length, float width, float bodyVisualLengthMultiplier)
     {
         Vector2 safeDirection = direction.sqrMagnitude > 0.0001f ? direction.normalized : Vector2.right;
         float safeLength = Mathf.Max(0.01f, length);
         float safeWidth = Mathf.Max(0.01f, width);
+        float safeBodyLengthMultiplier = Mathf.Max(0.01f, bodyVisualLengthMultiplier);
         float rotationDeg = Mathf.Atan2(safeDirection.y, safeDirection.x) * Mathf.Rad2Deg;
         float visualYScale = ResolveVisualYScale(safeWidth);
 
@@ -155,7 +172,7 @@ public sealed class DemonKingEgoLaserVfx : MonoBehaviour
         float startExtent = ResolveStartForwardExtent(visualYScale);
         float bodyOffset = Mathf.Max(0f, startExtent - bodyStartInset);
         float bodyLength = Mathf.Max(0.01f, safeLength - bodyOffset);
-        float visualBodyLength = bodyLength * BodyVisualLengthMultiplier;
+        float visualBodyLength = bodyLength * safeBodyLengthMultiplier;
 
         if (startRenderer != null)
         {

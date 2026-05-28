@@ -81,8 +81,8 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: -1039746825
-  m_SortingLayer: 5
+  m_SortingLayerID: 673162585
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: 21300000, guid: 9f7e709805604741a88b1db0a4774f61, type: 3}
@@ -94,7 +94,7 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_SpriteSortPoint: 0
+  m_SpriteSortPoint: 1
 --- !u!50 &3500000000000000000
 Rigidbody2D:
   serializedVersion: 5
@@ -177,8 +177,45 @@ MonoBehaviour:
   consumeDistance: 0.2
   maxPawnChecks: 64
   phaseTwoBossSuctionRadius: 2
+  suctionVfxPrefab: {fileID: 2010564695846189207, guid: 91ef41aa8bfef59498e0d63842c08bc4, type: 3}
+  suctionVfxAnchor: {fileID: 0}
+  suctionVfxGrowSeconds: 0.35
+  suctionVfxShrinkSeconds: 0.25
+  suctionVfxMaxScaleMultiplier: 2
   corkColor: {r: 0.56, g: 0.34, b: 0.17, a: 1}
   brokenColor: {r: 0, g: 0, b: 0, a: 1}
+  openSound:
+    key: sound_drainPipe_Open
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  waterfallLoopSound:
+    key: sound_drainPipe_WtaerFall
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  slimeFallSounds:
+  - key: sound_drainPipe_SlimeFall1
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  - key: sound_drainPipe_SlimeFall2
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  - key: sound_drainPipe_SlimeFall3
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  - key: sound_drainPipe_SlimeFall4
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  phaseTwoBossReturnSound:
+    key: sound_slimeQueen_Return
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
 --- !u!114 &5000000000000000000
 MonoBehaviour:
   m_ObjectHideFlags: 0

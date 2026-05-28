@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using TMPro;
@@ -111,11 +110,7 @@ public sealed class EncyclopediaItemRightPage : MonoBehaviour
 
     private void OnDisable()
     {
-        if (pendingScrollReset == null)
-            return;
-
-        StopCoroutine(pendingScrollReset);
-        pendingScrollReset = null;
+        CancelPendingScrollReset();
     }
 
 #if UNITY_EDITOR
@@ -300,6 +295,23 @@ public sealed class EncyclopediaItemRightPage : MonoBehaviour
     {
         if (contentRoot != null)
             contentRoot.SetActive(visible);
+    }
+
+    public void SettleLayout()
+    {
+        RebuildDetailLayout();
+    }
+
+    public void SettleLayoutAndResetScroll()
+    {
+        CancelPendingScrollReset();
+        if (!resetScrollOnBind)
+        {
+            RebuildDetailLayout();
+            return;
+        }
+
+        ApplyScrollReset();
     }
 
     public void Clear()
@@ -842,36 +854,33 @@ public sealed class EncyclopediaItemRightPage : MonoBehaviour
 
     private void QueueScrollReset()
     {
-        if (!resetScrollOnBind || detailScrollRect == null)
-            return;
+        CancelPendingScrollReset();
 
-        if (!isActiveAndEnabled)
+        if (!resetScrollOnBind)
         {
-            ApplyScrollReset();
+            RebuildDetailLayout();
             return;
         }
 
-        if (pendingScrollReset != null)
-            StopCoroutine(pendingScrollReset);
-
-        pendingScrollReset = StartCoroutine(ResetScrollAfterLayout());
+        ApplyScrollReset();
     }
 
-    private IEnumerator ResetScrollAfterLayout()
+    private void CancelPendingScrollReset()
     {
-        yield return null;
-        ApplyScrollReset();
-        yield return null;
-        ApplyScrollReset();
+        if (pendingScrollReset == null)
+            return;
+
+        StopCoroutine(pendingScrollReset);
         pendingScrollReset = null;
     }
 
     private void ApplyScrollReset()
     {
+        RebuildDetailLayout();
+
         if (detailScrollRect == null)
             return;
 
-        RebuildDetailLayout();
         detailScrollRect.StopMovement();
         if (detailScrollRect.vertical)
             detailScrollRect.verticalNormalizedPosition = 1f;
@@ -881,6 +890,7 @@ public sealed class EncyclopediaItemRightPage : MonoBehaviour
 
     private void RebuildDetailLayout()
     {
+        ForceDetailTextMeshes();
         Canvas.ForceUpdateCanvases();
 
         RebuildHeaderLayout();
@@ -903,6 +913,15 @@ public sealed class EncyclopediaItemRightPage : MonoBehaviour
         Canvas.ForceUpdateCanvases();
     }
 
+    private void ForceDetailTextMeshes()
+    {
+        ForceTextMeshUpdate(descriptionTitleText);
+        ForceTextMeshUpdate(storyText);
+        ForceTextMeshUpdate(weaponStatsText);
+        ForceTextMeshUpdate(relicLevelText);
+        ForceTextMeshUpdate(relicEffectText);
+    }
+
     private void RebuildHeaderLayout()
     {
         if (titleText != null)
@@ -913,6 +932,12 @@ public sealed class EncyclopediaItemRightPage : MonoBehaviour
 
         if (namePanelRoot != null)
             LayoutRebuilder.ForceRebuildLayoutImmediate(namePanelRoot);
+    }
+
+    private static void ForceTextMeshUpdate(TMP_Text text)
+    {
+        if (text != null && text.gameObject.activeInHierarchy)
+            text.ForceMeshUpdate();
     }
 
     private string FormatText(string raw)

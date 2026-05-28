@@ -516,6 +516,30 @@ public abstract class BossControllerBase : Enemy, IBossAbilityStateBridge
         return HasStateTag(groggyTag);
     }
 
+    protected bool TryEndGroggyStateImmediately()
+    {
+        if (groggyTag == null || tagSystem == null || !tagSystem.HasTag(groggyTag))
+            return false;
+
+        bool ended = false;
+        if (effectRunner != null)
+        {
+            ended = effectRunner.ReduceRemainingTimeByGrantedTag(
+                gameObject,
+                groggyTag,
+                float.MaxValue) > 0;
+        }
+
+        int remainingExplicitCount = tagSystem.GetExplicitTagCount(groggyTag);
+        if (remainingExplicitCount > 0)
+        {
+            tagSystem.RemoveTag(groggyTag, remainingExplicitCount);
+            ended = true;
+        }
+
+        return ended;
+    }
+
     protected virtual void OnEnterSpawn()
     {
         if (CanEnterEncounterIntroState() && encounterIntroState != null)
@@ -653,6 +677,21 @@ public abstract class BossControllerBase : Enemy, IBossAbilityStateBridge
             return false;
 
         return attributeSet.TryModifyAttributeValue(currentHealthAttribute, amount, source != null ? source : this);
+    }
+
+    protected bool TrySetCurrentHealthValue(float value, Object source)
+    {
+        AttributeDefinition currentHealthAttribute = ResolveHealthAttribute();
+        if (attributeSet == null || currentHealthAttribute == null)
+            return false;
+
+        return attributeSet.TrySetCurrentValue(currentHealthAttribute, value, source != null ? source : this);
+    }
+
+    protected bool IsCurrentHealthAttribute(AttributeDefinition attribute)
+    {
+        AttributeDefinition currentHealthAttribute = ResolveHealthAttribute();
+        return attribute != null && currentHealthAttribute != null && attribute == currentHealthAttribute;
     }
 
     /// <summary>

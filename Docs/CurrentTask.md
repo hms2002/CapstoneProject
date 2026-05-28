@@ -1,51 +1,52 @@
 ---
 status: active
 authority: current-task
-category: weapon-gas
-last_reviewed: 2026-05-25
+category: boss-defeat-ending-outro
+last_reviewed: 2026-05-27
 ---
 
 # Current Task
 
 ## Goal
 
-Polish the `Flowering` weapon prototype after first play validation.
+Add a boss-selectable terminal ending flow after boss defeat:
+
+`BossDeathPresentation` death speech bubble -> Ink `DialogueService` dialogue -> fullscreen ending outro -> `RunEndReason.Victory` -> `TitleScene`.
 
 ## Requested Work
 
-- Make normal `Flowering` attacks use the existing `SwordCombo2D` three-hit combo flow.
-- Keep Bloom-state attacks separate from combo state and make them a three-hit flurry.
-- Make Bloom flurry hitbox/effect variants choose randomly without repeating the immediately previous variant.
-- Fix Bloom dash slash scheduling, hit detection, and red `SlashHit.prefab` visibility.
-- Replace the hard world-rendered Bloom screen border with the affection-style UI gradient border.
+- Add ending outro playback scripts modeled after TitleIntro without modifying the existing title intro path.
+- Add a scene-authored boss defeat ending sequence component with explicit boss, dialogue, outro, run-end, and target-scene references.
+- Extend `BossDeathPresentation` with an optional terminal ending hook after death speech.
+- Skip normal boss reward/portal handling when the terminal ending flow completes.
+- Keep Dialogue UI visible during the post-speech Dialogue section even while the boss cinematic letterbox is active.
 
 ## Scope Notes
 
-- User current instruction supersedes the older runtime debug item grant task.
-- Damage numbers remain temporary and can be tuned later.
-- `GlobalUIRoot.prefab` is not modified in this slice; the Flowering border stays runtime-created for v1.
-- Existing unrelated worktree changes must not be reverted.
-- Unity batchmode must not run while Unity Editor processes are open.
+- The flow is opt-in per explicitly assigned boss, not global for every boss.
+- Existing normal boss reward/chest/portal behavior remains unchanged.
+- The terminal ending path replaces reward/portal activation for the selected boss.
+- Outro UI must be authored as scene/prefab UI and driven through serialized references; runtime UI hierarchy creation is not part of this task.
+- Do not direct-edit scene or prefab YAML for wiring.
 
 ## Done Criteria
 
-- Normal `Flowering` attack selects `AD_FloweringAttack_Base` and runs a 1-2-3 SwordCombo-style combo.
-- Bloom `Flowering` attack selects `AD_FloweringAttack_Bloom` and runs a non-combo three-hit flurry.
-- Bloom dash creates three delayed slash hitboxes and three red slash marks.
-- Dash slash hit checks keep wall line-of-sight blocking but do not drop hits because the resolved target root uses a different layer than the collider.
-- Bloom screen border uses `AffectionGradientBorderGraphic` and `M_UIAffectionGradientBorder.mat`.
-- Bloom cleanup removes temporary overlay, outline, dash hitboxes, and slash effects.
+- A selected boss can run death speech, Ink dialogue, ending outro, Victory run end, and `TitleScene` transition in order.
+- The selected terminal flow does not call boss reward-ready handling or activate the normal reward/portal path.
+- Normal bosses without the terminal sequence keep the existing death presentation and reward/portal flow.
+- DialogueCanvas is not faded out by the death letterbox while terminal post-speech dialogue is active.
+- Static verification checks confirm the new hook ordering, source references, and project-file inclusion state.
 
 ## Verification Plan
 
-- Run `rg` checks for Flowering, dash augment, SwordCombo, and affection border references.
-- Confirm generated `Assembly-CSharp.csproj` includes changed runtime scripts.
-- Run `dotnet build Assembly-CSharp.csproj --no-restore` when generated projects include the relevant source files.
+- Run `rg` checks for the terminal hook before reward notification, no new manager/singleton/`DontDestroyOnLoad`, and ending sequence API references.
+- Check generated `.csproj` inclusion for new scripts before choosing build coverage.
+- Run `dotnet build Assembly-CSharp.csproj --no-restore` only if generated project files include the new scripts.
 - Run `git diff --check` for touched tracked files.
-- Run a trailing-whitespace scan for touched source/assets/docs, including untracked new assets.
+- Run a trailing-whitespace scan for touched source/docs.
 - Check for Unity Editor processes and do not run Unity batchmode if the Editor is open.
 
 ## Remaining Risks
 
-- Unity Editor import/compile must still confirm ScriptableObject asset type changes and new serialized fields.
-- Manual Play Mode validation is required for attack feel, UI border layering, dash slash timing, and wall line-of-sight.
+- New MonoBehaviours and ScriptableObject require Unity import/compile and Inspector wiring.
+- Manual Play Mode validation is required for authored outro layout, skip/advance behavior, Dialogue visibility under letterbox, final run-end save behavior, and selected boss reward/portal suppression.

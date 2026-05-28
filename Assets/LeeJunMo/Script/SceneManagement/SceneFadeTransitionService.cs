@@ -7,6 +7,8 @@ using UnityEngine.EventSystems;
 [DisallowMultipleComponent]
 public sealed class SceneFadeTransitionService : MonoBehaviour
 {
+    private const int ActiveOverlaySortingOrder = short.MaxValue;
+
     public static SceneFadeTransitionService Instance { get; private set; }
 
     [Header("Fade")]
@@ -29,6 +31,10 @@ public sealed class SceneFadeTransitionService : MonoBehaviour
     private bool isInitialized;
     private bool ownsRuntimeOverlay;
     private SceneFadeTransitionService pendingReplacementInstance;
+    private Canvas elevatedOverlayCanvas;
+    private bool hasSavedOverlayCanvasSorting;
+    private bool savedOverlayCanvasOverrideSorting;
+    private int savedOverlayCanvasSortingOrder;
     private readonly Dictionary<int, Object> externalPlayerUnlockBlockers = new();
 
     public bool IsTransitionActive => isTransitionActive;
@@ -86,7 +92,7 @@ public sealed class SceneFadeTransitionService : MonoBehaviour
             {
                 SceneFadeTransitionService previousInstance = Instance;
                 Instance = this;
-                Destroy(previousInstance.gameObject);
+                DestroyServiceGameObject(previousInstance);
             }
             else if (ShouldDeferReplacementUntilTransitionEnd(Instance))
             {
@@ -95,7 +101,7 @@ public sealed class SceneFadeTransitionService : MonoBehaviour
             }
             else
             {
-                Destroy(gameObject);
+                DestroyServiceGameObject(this);
                 return;
             }
         }
@@ -124,6 +130,8 @@ public sealed class SceneFadeTransitionService : MonoBehaviour
     {
         if (isTransitionActive)
             RestoreTimeScaleImmediately();
+
+        RestoreOverlayCanvasSorting();
 
         if (Instance == this)
             Instance = null;
@@ -245,6 +253,8 @@ public sealed class SceneFadeTransitionService : MonoBehaviour
             overlayRoot.SetActive(false);
         else
             ApplyOverlayVisualState(alpha: 0f, active: true);
+
+        RestoreOverlayCanvasSorting();
     }
 
     public void ShowBlackImmediately()
@@ -274,6 +284,7 @@ public sealed class SceneFadeTransitionService : MonoBehaviour
         else
             ApplyOverlayVisualState(alpha: 0f, active: true);
 
+        RestoreOverlayCanvasSorting();
         PromotePendingReplacementIfAvailable();
     }
 
@@ -282,23 +293,25 @@ public sealed class SceneFadeTransitionService : MonoBehaviour
         if (overlayCanvasGroup == null)
             yield break;
 
+        ApplyOverlayVisualState(overlayCanvasGroup.alpha, active: true);
         float fromAlpha = overlayCanvasGroup.alpha;
         if (duration <= 0f)
         {
-            overlayCanvasGroup.alpha = toAlpha;
+            ApplyOverlayVisualState(toAlpha, active: true);
             yield break;
         }
 
         float elapsed = 0f;
         while (elapsed < duration)
         {
+            BringOverlayToFront();
             elapsed += Time.unscaledDeltaTime;
             float t = Mathf.Clamp01(elapsed / duration);
             overlayCanvasGroup.alpha = Mathf.Lerp(fromAlpha, toAlpha, t);
             yield return null;
         }
 
-        overlayCanvasGroup.alpha = toAlpha;
+        ApplyOverlayVisualState(toAlpha, active: true);
     }
 
     private IEnumerator WaitForPostLoadSettle()
@@ -534,7 +547,17 @@ public sealed class SceneFadeTransitionService : MonoBehaviour
 
         Instance = replacement;
         replacement.Initialize();
-        Destroy(gameObject);
+        DestroyServiceGameObject(this);
+    }
+
+    private static void DestroyServiceGameObject(SceneFadeTransitionService service)
+    {
+        if (service == null)
+            return;
+
+        GameObject owner = service.gameObject;
+        if (owner != null)
+            Destroy(owner);
     }
 
     private bool HasAuthoredOverlaySetup()
@@ -586,9 +609,87 @@ public sealed class SceneFadeTransitionService : MonoBehaviour
     private void ApplyOverlayVisualState(float alpha, bool active)
     {
         if (overlayRoot != null)
+        {
+            if (active)
+                BringOverlayToFront();
+
             overlayRoot.SetActive(active);
+        }
 
         if (overlayCanvasGroup != null)
             overlayCanvasGroup.alpha = Mathf.Clamp01(alpha);
+    }
+
+    private void BringOverlayToFront()
+    {
+        if (overlayRoot == null)
+            return;
+
+        Transform overlayTransform = overlayRoot.transform;
+        if (overlayTransform.parent != null)
+            overlayTransform.SetAsLastSibling();
+
+        ElevateOverlayCanvas(overlayTransform);
+    }
+
+    private void ElevateOverlayCanvas(Transform overlayTransform)
+    {
+        Canvas overlayCanvas = ResolveOverlayCanvas(overlayTransform);
+        if (overlayCanvas == null)
+            return;
+
+        if (elevatedOverlayCanvas != overlayCanvas)
+        {
+            RestoreOverlayCanvasSorting();
+            SaveOverlayCanvasSorting(overlayCanvas);
+        }
+        else if (!hasSavedOverlayCanvasSorting)
+        {
+            SaveOverlayCanvasSorting(overlayCanvas);
+        }
+
+        overlayCanvas.overrideSorting = true;
+        overlayCanvas.sortingOrder = ActiveOverlaySortingOrder;
+
+        Transform canvasTransform = overlayCanvas.transform;
+        if (canvasTransform.parent != null)
+            canvasTransform.SetAsLastSibling();
+    }
+
+    private static Canvas ResolveOverlayCanvas(Transform overlayTransform)
+    {
+        if (overlayTransform == null)
+            return null;
+
+        Canvas[] parentCanvases = overlayTransform.GetComponentsInParent<Canvas>(true);
+        return parentCanvases != null && parentCanvases.Length > 0
+            ? parentCanvases[0]
+            : null;
+    }
+
+    private void SaveOverlayCanvasSorting(Canvas overlayCanvas)
+    {
+        if (overlayCanvas == null)
+            return;
+
+        elevatedOverlayCanvas = overlayCanvas;
+        savedOverlayCanvasOverrideSorting = overlayCanvas.overrideSorting;
+        savedOverlayCanvasSortingOrder = overlayCanvas.sortingOrder;
+        hasSavedOverlayCanvasSorting = true;
+    }
+
+    private void RestoreOverlayCanvasSorting()
+    {
+        if (!hasSavedOverlayCanvasSorting)
+            return;
+
+        if (elevatedOverlayCanvas != null)
+        {
+            elevatedOverlayCanvas.overrideSorting = savedOverlayCanvasOverrideSorting;
+            elevatedOverlayCanvas.sortingOrder = savedOverlayCanvasSortingOrder;
+        }
+
+        elevatedOverlayCanvas = null;
+        hasSavedOverlayCanvasSorting = false;
     }
 }

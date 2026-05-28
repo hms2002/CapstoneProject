@@ -1,3 +1,4 @@
+using CapstoneAudio;
 using UnityEngine;
 using UnityGAS;
 
@@ -31,6 +32,15 @@ public sealed class LightningSpearSkill1Data : ScriptableObject, IAbilityTooltip
 
     [Header("Q - No Mark Sweep")]
     [SerializeField] private LightningSpearHitConfig noMarkSweepHit = new LightningSpearHitConfig();
+
+    [Header("Q - Sound")]
+    [SerializeField] private SoundRef noMarkSweepHitSound;
+    [SerializeField] private SoundRef markRushStartSound;
+    [SerializeField] private SoundRef markRushArrivalSound;
+    [SerializeField] private SoundRef recoveredSpearSpawnSound;
+    [SerializeField] private SoundRef recoveredSpearDespawnSound;
+    [SerializeField] private SoundRef recoveredSpearShotSpawnSound;
+    [SerializeField] private SoundRef recoveredSpearShotFireSound;
 
     [Header("Recovered Spears")]
     [SerializeField] private LightningSpearRecoveredSpearActor recoveredSpearPrefab;
@@ -86,6 +96,13 @@ public sealed class LightningSpearSkill1Data : ScriptableObject, IAbilityTooltip
     public LightningSpearDashStabTrailEffect MarkRushTrailEffectPrefab => markRushTrailEffectPrefab;
     public LightningSpearHitConfig MarkRushHit => markRushHit;
     public LightningSpearHitConfig NoMarkSweepHit => noMarkSweepHit;
+    public SoundRef NoMarkSweepHitSound => noMarkSweepHitSound;
+    public SoundRef MarkRushStartSound => markRushStartSound;
+    public SoundRef MarkRushArrivalSound => markRushArrivalSound;
+    public SoundRef RecoveredSpearSpawnSound => recoveredSpearSpawnSound;
+    public SoundRef RecoveredSpearDespawnSound => recoveredSpearDespawnSound;
+    public SoundRef RecoveredSpearShotSpawnSound => recoveredSpearShotSpawnSound;
+    public SoundRef RecoveredSpearShotFireSound => recoveredSpearShotFireSound;
 
     public LightningSpearRecoveredSpearActor RecoveredSpearPrefab => recoveredSpearPrefab;
     public LightningSpearRecoveredSpearProjectile2D RecoveredSpearProjectilePrefab => recoveredSpearProjectilePrefab;

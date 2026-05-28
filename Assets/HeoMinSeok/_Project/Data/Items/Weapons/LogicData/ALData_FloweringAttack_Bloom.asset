@@ -39,6 +39,12 @@ MonoBehaviour:
   - Swing_Bloom3
   bloomSlashParticlePrefab: {fileID: 7504802840108214165, guid: cf510ff300e13494c98c0d4aed66f896, type: 3}
   bloomSlashParticleLifetimeFallback: 1
+  bloomSlashSound:
+    key: ""
+    volumeMultiplier: 0
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  bloomSlashSoundsByHitboxVariant: []
   damageConfig:
     includeStaggerBuildUp: 1
     includeElementBuildUp: 1

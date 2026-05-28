@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using CapstoneAudio;
 using UnityEngine;
 using UnityGAS;
 
@@ -11,6 +12,9 @@ using UnityGAS;
 [DisallowMultipleComponent]
 public sealed class ChestMonsterKillLock : MonoBehaviour
 {
+    private static readonly SoundRef UnlockSoundMain = SoundRef.FromKey("sound_ui_UnlockChest1");
+    private static readonly SoundRef UnlockSoundLayer = SoundRef.FromKey("sound_ui_UnlockChest2");
+
     private readonly List<GameObject> trackedMonsters = new();
 
     [Header("Presentation")]
@@ -148,10 +152,23 @@ public sealed class ChestMonsterKillLock : MonoBehaviour
 
     private void PlayUnlockPresentation()
     {
+        PlayUnlockSounds();
+
         unlockPresentationRuntime?.PlayExecuteOnly(
             unlockPresentation,
             target: gameObject,
             anchor: presentationAnchor != null ? presentationAnchor : transform,
             sourceObject: this);
+    }
+
+    /// <summary>
+    /// 책임 : 킬락 상자가 해제되는 순간 두 레이어의 해제음을 동시에 요청한다.
+    /// </summary>
+    private void PlayUnlockSounds()
+    {
+        Transform anchor = presentationAnchor != null ? presentationAnchor : transform;
+        Vector3 position = anchor.position;
+        SoundPlaybackUtility.Play(UnlockSoundMain, causer: gameObject, position: position, sourceObject: this);
+        SoundPlaybackUtility.Play(UnlockSoundLayer, causer: gameObject, position: position, sourceObject: this);
     }
 }

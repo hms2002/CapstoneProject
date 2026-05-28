@@ -11,6 +11,8 @@ using UnityGAS;
 public sealed class PlayerCinematicProtection : MonoBehaviour
 {
     private const string DefaultPlayerInvulnerableTagResourcePath = "Tags/State.Invulnerable";
+    private const string DefaultControlBlockTagSetResourcePath = "Tags/TagSet/TS_BlockControlByUI";
+    private const string DefaultDashBlockedTagResourcePath = "Tags/State.Move.Dash.Blocked";
 
     private readonly HashSet<object> activeOwners = new();
     private readonly List<ManagedBehaviourState> lockedBehaviourStates = new();
@@ -19,10 +21,15 @@ public sealed class PlayerCinematicProtection : MonoBehaviour
     [SerializeField] private PlayerInteractor2D playerInteractor;
     [SerializeField] private TagSystem tagSystem;
     [SerializeField] private MovementMotor2D movementMotor;
-    [SerializeField] private Rigidbody2D rigidbody2D;
+    [SerializeField] private new Rigidbody2D rigidbody2D;
 
+    private GameplayTagSet controlBlockTagSet;
+    private GameplayTag dashBlockedTag;
+    private PlayerUIControlLockBridge controlLockBridge;
     private InteractState previousInteractState = InteractState.Idle;
     private bool hasAppliedInvulnerableTag;
+    private bool hasAppliedControlBlockTagSet;
+    private bool hasAppliedDashBlockedTag;
 
     /// <summary>
     /// 책임 :
@@ -118,6 +125,12 @@ public sealed class PlayerCinematicProtection : MonoBehaviour
 
         if (invulnerableTag == null)
             invulnerableTag = Resources.Load<GameplayTag>(DefaultPlayerInvulnerableTagResourcePath);
+
+        if (controlBlockTagSet == null)
+            controlBlockTagSet = Resources.Load<GameplayTagSet>(DefaultControlBlockTagSetResourcePath);
+
+        if (dashBlockedTag == null)
+            dashBlockedTag = Resources.Load<GameplayTag>(DefaultDashBlockedTagResourcePath);
     }
 
     private void ApplyProtection()
@@ -127,6 +140,8 @@ public sealed class PlayerCinematicProtection : MonoBehaviour
             previousInteractState = NormalizeRestoreState(playerInteractor.CurrentState);
             playerInteractor.SetInteractState(InteractState.None);
         }
+
+        ApplyControlBlockTags();
 
         CacheAndDisableBehaviour(GetComponent<PlayerIntentInput2D>());
         CacheAndDisableBehaviour(GetComponent<PlayerCombatInput2D>());
@@ -150,6 +165,8 @@ public sealed class PlayerCinematicProtection : MonoBehaviour
 
     private void RestoreProtection()
     {
+        RemoveControlBlockTags();
+
         if (tagSystem != null && invulnerableTag != null && hasAppliedInvulnerableTag)
         {
             tagSystem.RemoveTag(invulnerableTag, 1);
@@ -178,6 +195,39 @@ public sealed class PlayerCinematicProtection : MonoBehaviour
 
         lockedBehaviourStates.Add(new ManagedBehaviourState(behaviour, behaviour.enabled));
         behaviour.enabled = false;
+    }
+
+    private void ApplyControlBlockTags()
+    {
+        if (controlBlockTagSet != null && !hasAppliedControlBlockTagSet)
+        {
+            controlLockBridge ??= PlayerUIControlLockBridge.GetOrAdd(transform);
+            if (controlLockBridge != null && controlLockBridge.Acquire(this, controlBlockTagSet))
+                hasAppliedControlBlockTagSet = true;
+        }
+
+        if (tagSystem != null && dashBlockedTag != null && !hasAppliedDashBlockedTag)
+        {
+            tagSystem.AddTag(dashBlockedTag, 1);
+            hasAppliedDashBlockedTag = true;
+        }
+    }
+
+    private void RemoveControlBlockTags()
+    {
+        if (tagSystem != null && dashBlockedTag != null && hasAppliedDashBlockedTag)
+        {
+            tagSystem.RemoveTag(dashBlockedTag, 1);
+            hasAppliedDashBlockedTag = false;
+        }
+
+        if (controlLockBridge != null && controlBlockTagSet != null && hasAppliedControlBlockTagSet)
+        {
+            controlLockBridge.Release(this, controlBlockTagSet);
+            hasAppliedControlBlockTagSet = false;
+        }
+
+        controlLockBridge = null;
     }
 
     private static InteractState NormalizeRestoreState(InteractState state)

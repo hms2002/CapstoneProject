@@ -1,3 +1,4 @@
+using CapstoneAudio;
 using UnityEngine;
 using UnityGAS;
 
@@ -38,6 +39,12 @@ public sealed class FloweringBloomData : ScriptableObject
     [SerializeField, Min(0f)] private float finalShakeAmplitude = 1.25f;
     [SerializeField, Min(0f)] private float zoomShakeAmplitude = 0.22f;
     [SerializeField, Min(0.01f)] private float zoomShakeIntervalSeconds = 0.055f;
+
+    [Header("Cut-in Sound")]
+    [SerializeField] private SoundRef cutInOpenSound;
+    [SerializeField] private SoundRef weaponRevealInSound;
+    [SerializeField] private SoundRef weaponRevealOutSound;
+    [SerializeField] private SoundRef finalShakeSound;
 
     [Header("Cut-in World Dim")]
     [SerializeField] private string worldDimSortingLayerName = "Entity";
@@ -123,6 +130,7 @@ public sealed class FloweringBloomData : ScriptableObject
     [SerializeField] private GameObject dashSlashParticlePrefab;
     [SerializeField] private GameObject weaponRevealParticlePrefab;
     [SerializeField] private GameObject finalShakeParticlePrefab;
+    [SerializeField] private SoundRef dashSlashSound;
     [SerializeField, Min(0.01f)] private float particleLifetimeFallback = 1f;
     [SerializeField] private int particleSortingOrderOffset = 40;
 
@@ -152,6 +160,10 @@ public sealed class FloweringBloomData : ScriptableObject
     public float FinalShakeAmplitude => Mathf.Max(0f, finalShakeAmplitude);
     public float ZoomShakeAmplitude => Mathf.Max(0f, zoomShakeAmplitude);
     public float ZoomShakeIntervalSeconds => Mathf.Max(0.01f, zoomShakeIntervalSeconds);
+    public SoundRef CutInOpenSound => cutInOpenSound;
+    public SoundRef WeaponRevealInSound => weaponRevealInSound;
+    public SoundRef WeaponRevealOutSound => weaponRevealOutSound;
+    public SoundRef FinalShakeSound => finalShakeSound;
     public string WorldDimSortingLayerName => string.IsNullOrWhiteSpace(worldDimSortingLayerName) ? "Entity" : worldDimSortingLayerName;
     public int WorldDimSortingOrder => worldDimSortingOrder;
     public float WorldDimCameraPadding => Mathf.Max(1f, worldDimCameraPadding);
@@ -218,6 +230,7 @@ public sealed class FloweringBloomData : ScriptableObject
     public GameObject DashSlashParticlePrefab => dashSlashParticlePrefab;
     public GameObject WeaponRevealParticlePrefab => weaponRevealParticlePrefab;
     public GameObject FinalShakeParticlePrefab => finalShakeParticlePrefab;
+    public SoundRef DashSlashSound => dashSlashSound;
     public float ParticleLifetimeFallback => Mathf.Max(0.01f, particleLifetimeFallback);
     public int ParticleSortingOrderOffset => particleSortingOrderOffset;
 }

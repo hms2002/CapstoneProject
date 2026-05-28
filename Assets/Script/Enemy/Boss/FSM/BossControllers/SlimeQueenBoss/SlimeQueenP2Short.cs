@@ -1,4 +1,6 @@
+using System.Collections;
 using System.Collections.Generic;
+using CapstoneAudio;
 using UnityEngine;
 using UnityGAS;
 
@@ -8,9 +10,20 @@ using UnityGAS;
 public sealed class SlimeQueenP2Short : SlimeQueenPhaseTwoBase
 {
     private static readonly int IsRushingHash = Animator.StringToHash("isRushing");
-    private static readonly int IsSinkingHash = Animator.StringToHash("isSinking");
     private static readonly int ReadyTriggerHash = Animator.StringToHash("ready");
     private static readonly int IsGiantizationHash = Animator.StringToHash("isGiantization");
+    private static readonly int IdleStateHash = Animator.StringToHash("SlimeQueenB_Idle");
+    private const string ToxicRushPitFallSlamSpeechText = "아야야… 감히 피하다니!";
+    private const float ToxicRushPitFallSlamSpeechSeconds = 1.2f;
+    private const float ToxicRushWallSearchDistance = 1000f;
+    private const int ToxicRushWallHitBufferSize = 32;
+
+    [Header("Phase 2 Short - Pit Fall Return")]
+    [Tooltip("독성 돌진 중 구덩이에 빠진 뒤 하늘에서 다시 떨어질 때 시작할 시각 높이입니다.")]
+    [SerializeField, Min(0f)] private float toxicRushPitFallSlamVisualHeight = 10f;
+
+    [Tooltip("구덩이 복귀 내려찍기에서 height target과 실제 Visual 위치를 추적 로그로 출력합니다.")]
+    [SerializeField] private bool logToxicRushPitFallSlamHeight = true;
 
     [Header("Phase 2 Short - Toxic Rush")]
     [Tooltip("독성 돌진 경고선 표시에 사용할 AttackTelegraph 스타일입니다.")]
@@ -25,13 +38,13 @@ public sealed class SlimeQueenP2Short : SlimeQueenPhaseTwoBase
     [Tooltip("독성 돌진 이동 속도입니다.")]
     [SerializeField, Min(0.1f)] private float toxicRushSpeed = 9f;
 
-    [Tooltip("독성 돌진 1회당 이동할 최대 거리입니다.")]
+    [Tooltip("벽 검출에 실패했을 때 독성 돌진이 무한 지속되지 않게 막는 안전 이동 거리입니다.")]
     [SerializeField, Min(0.1f)] private float toxicRushDistance = 7f;
 
     [Tooltip("독성 돌진 경고선의 폭입니다.")]
     [SerializeField, Min(0.05f)] private float toxicRushWarningWidth = 2.2f;
 
-    [Tooltip("독성 돌진이 벽 앞에서 멈추도록 검사할 벽 레이어입니다.")]
+    [Tooltip("독성 돌진이 충돌 종료 조건으로 검사할 벽 레이어입니다.")]
     [SerializeField] private LayerMask toxicRushWallLayers = 1 << 30;
 
     [Tooltip("벽과 겹치지 않게 돌진 종료점을 안쪽으로 당길 거리입니다.")]
@@ -68,8 +81,15 @@ public sealed class SlimeQueenP2Short : SlimeQueenPhaseTwoBase
     [SerializeField] private GE_Damage_Spec poisonCloudDamageEffect;
 
     private readonly List<AttackTelegraphView> toxicRushWarningViews = new List<AttackTelegraphView>();
+    private Coroutine toxicRushPitFallSlamRoutine;
     private Vector3 lastPoisonCloudSpawnPosition;
     private bool hasLastPoisonCloudSpawnPosition;
+    private bool isToxicRushActive;
+    private bool shouldRunToxicRushPitFallSlam;
+    private bool isToxicRushPitFallSlamLocked;
+    private float nextToxicRushPitFallSlamHeightLogTime;
+    private SoundRef activePoisonCloudLoopSound;
+    private readonly RaycastHit2D[] toxicRushWallHitBuffer = new RaycastHit2D[ToxicRushWallHitBufferSize];
 
     public int ToxicRushRepeatCount => Mathf.Max(1, toxicRushRepeatCount);
     public float ToxicRushWarningSeconds => Mathf.Max(0f, toxicRushWarningSeconds);
@@ -78,22 +98,14 @@ public sealed class SlimeQueenP2Short : SlimeQueenPhaseTwoBase
 
     public void BeginToxicRushAnimation()
     {
+        isToxicRushActive = true;
         SetAnimatorBool(IsRushingHash, true);
     }
 
     public void EndToxicRushAnimation()
     {
+        isToxicRushActive = false;
         SetAnimatorBool(IsRushingHash, false);
-    }
-
-    public override void BeginDrainSinkAnimation()
-    {
-        SetAnimatorBool(IsSinkingHash, true);
-    }
-
-    public override void EndDrainSinkAnimation()
-    {
-        SetAnimatorBool(IsSinkingHash, false);
     }
 
     public void TriggerBodyInflateReadyAnimation()
@@ -115,12 +127,28 @@ public sealed class SlimeQueenP2Short : SlimeQueenPhaseTwoBase
 
     public void BeginBodyInflateImpactAnimation()
     {
+        BeginBodyInflateVisualScale();
         SetAnimatorBool(IsGiantizationHash, true);
     }
 
     public void EndBodyInflateImpactAnimation()
     {
+        EndBodyInflateVisualScale();
         SetAnimatorBool(IsGiantizationHash, false);
+    }
+
+    protected override void ResetPatternAnimatorStateForInterrupt()
+    {
+        isToxicRushActive = false;
+        EndBodyInflateVisualScale(resetImmediately: true);
+        SetAnimatorBoolIfExists(IsRushingHash, false);
+        ResetAnimatorTriggerIfExists(ReadyTriggerHash);
+        SetAnimatorBoolIfExists(IsGiantizationHash, false);
+
+        if (!HasGroggyTag())
+            SetAnimatorBoolIfExists(IsSinkingHash, false);
+
+        PlayAnimatorStateIfExists(IdleStateHash);
     }
 
     public readonly struct ToxicRushSegment
@@ -146,11 +174,18 @@ public sealed class SlimeQueenP2Short : SlimeQueenPhaseTwoBase
 
     protected override void OnDestroy()
     {
+        StopToxicRushPitFallSlam();
         CleanupToxicRushPresentation();
         base.OnDestroy();
     }
 
-    /// <summary>현재 타겟 방향을 기준으로 벽 앞에서 멈추는 독성 돌진 경로를 계산합니다.</summary>
+    protected override void OnDisable()
+    {
+        StopToxicRushPitFallSlam();
+        base.OnDisable();
+    }
+
+    /// <summary>현재 타겟 방향을 기준으로 벽에 닿을 때까지 이어지는 독성 돌진 경로를 계산합니다.</summary>
     public bool TryBuildToxicRushSegment(GameObject explicitTarget, out ToxicRushSegment segment)
     {
         Transform targetTransform = explicitTarget != null ? explicitTarget.transform : CurrentTarget;
@@ -170,8 +205,8 @@ public sealed class SlimeQueenP2Short : SlimeQueenPhaseTwoBase
         else
             direction.Normalize();
 
-        float clampedDistance = GetWallClampedRushDistance(startPosition, direction);
-        Vector3 endPosition = startPosition + (Vector3)(direction * clampedDistance);
+        float rushDistance = ResolveWallTerminatedRushDistance(startPosition, direction);
+        Vector3 endPosition = startPosition + (Vector3)(direction * rushDistance);
         endPosition.z = startPosition.z;
 
         segment = new ToxicRushSegment(startPosition, endPosition, direction);
@@ -188,12 +223,12 @@ public sealed class SlimeQueenP2Short : SlimeQueenPhaseTwoBase
         if (service == null)
             return;
 
-        AttackTelegraphSpec spec = AttackTelegraphSpec.CreateRectangle(
+        AttackTelegraphSpec spec = WithThinWarningOutline(AttackTelegraphSpec.CreateRectangle(
             segment.Center,
             new Vector2(segment.Length, Mathf.Max(0.05f, toxicRushWarningWidth)),
             segment.RotationDegrees,
             ToxicRushWarningSeconds,
-            toxicRushWarningStyle);
+            toxicRushWarningStyle));
 
         AttackTelegraphView view = service.SpawnDetachedView(spec);
         if (view != null)
@@ -221,8 +256,9 @@ public sealed class SlimeQueenP2Short : SlimeQueenPhaseTwoBase
     }
 
     /// <summary>독성 돌진 시작점에 독구름을 배치하고 트레일 기록을 초기화합니다.</summary>
-    public void BeginToxicRushTrail(Vector3 startPosition)
+    public void BeginToxicRushTrail(Vector3 startPosition, SoundRef poisonCloudLoopSound = default)
     {
+        activePoisonCloudLoopSound = poisonCloudLoopSound;
         hasLastPoisonCloudSpawnPosition = false;
         SpawnPoisonCloudAt(startPosition);
     }
@@ -240,12 +276,54 @@ public sealed class SlimeQueenP2Short : SlimeQueenPhaseTwoBase
         }
 
         hasLastPoisonCloudSpawnPosition = false;
+        activePoisonCloudLoopSound = default;
+    }
+
+    /// <summary>플레이어 충돌로 독성 돌진이 중단된 현재 위치를 종료점으로 정리합니다.</summary>
+    public void FinishToxicRushAtCurrentPosition()
+    {
+        if (movementMotor != null)
+            movementMotor.StopAllMotion();
+
+        SpawnPoisonCloudTrailIfNeeded(transform.position);
+        hasLastPoisonCloudSpawnPosition = false;
+        activePoisonCloudLoopSound = default;
+    }
+
+    /// <summary>독성 돌진 중 플레이어와 겹쳤는지 확인합니다.</summary>
+    public bool HasToxicRushHitPlayer()
+    {
+        float hitRadius = Mathf.Max(0.05f, toxicRushWarningWidth * 0.5f);
+        if (CurrentTarget != null)
+        {
+            float sqrDistance = ((Vector2)(CurrentTarget.position - transform.position)).sqrMagnitude;
+            if (sqrDistance <= hitRadius * hitRadius)
+                return true;
+        }
+
+        Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, hitRadius);
+        for (int i = 0; i < hits.Length; i++)
+        {
+            Collider2D hit = hits[i];
+            if (hit == null || !HasPlayerTagInHierarchy(hit.transform))
+                continue;
+
+            GameObject damageTarget = CombatTargetResolver2D.ResolveDamageTarget(hit);
+            if (damageTarget == null)
+                return true;
+
+            if (damageTarget.CompareTag("Player"))
+                return true;
+        }
+
+        return false;
     }
 
     /// <summary>독성 돌진이 남긴 경고 표시를 정리합니다.</summary>
     public void CleanupToxicRushPresentation()
     {
         ClearToxicRushWarnings();
+        activePoisonCloudLoopSound = default;
     }
 
     private void SetAnimatorBool(int parameterHash, bool value)
@@ -256,23 +334,240 @@ public sealed class SlimeQueenP2Short : SlimeQueenPhaseTwoBase
         animator.SetBool(parameterHash, value);
     }
 
-    /// <summary>벽 레이캐스트로 독성 돌진 허용 거리를 계산합니다.</summary>
-    private float GetWallClampedRushDistance(Vector3 startPosition, Vector2 direction)
+    protected override void OnPitFallStarted(PitFallContext context)
     {
-        float maxDistance = Mathf.Max(0.1f, toxicRushDistance);
-        if (toxicRushWallLayers.value == 0)
-            return maxDistance;
+        LogToxicRushPitFallSlamHeight("pit fall started", context.RespawnPosition, force: true);
 
-        RaycastHit2D hit = Physics2D.Raycast(
+        if (isToxicRushActive)
+            shouldRunToxicRushPitFallSlam = true;
+    }
+
+    protected override void OnPitFallCompleted(PitFallContext context)
+    {
+        LogToxicRushPitFallSlamHeight(
+            $"pit fall completed. shouldReturnSlam={shouldRunToxicRushPitFallSlam}",
+            context.RespawnPosition,
+            force: true);
+
+        if (!shouldRunToxicRushPitFallSlam)
+            return;
+
+        shouldRunToxicRushPitFallSlam = false;
+        if (!CanStartToxicRushPitFallSlam())
+            return;
+
+        StartToxicRushPitFallSlam(context.RespawnPosition, toxicRushPitFallSlamVisualHeight);
+    }
+
+    /// <summary>독성 돌진의 벽 충돌 종료 지점을 긴 거리 cast로 계산합니다.</summary>
+    private float ResolveWallTerminatedRushDistance(Vector3 startPosition, Vector2 direction)
+    {
+        float maxSearchDistance = Mathf.Max(ToxicRushWallSearchDistance, toxicRushDistance);
+        if (toxicRushWallLayers.value == 0)
+            return maxSearchDistance;
+
+        ContactFilter2D filter = new ContactFilter2D
+        {
+            useTriggers = false
+        };
+        filter.SetLayerMask(toxicRushWallLayers);
+
+        int hitCount = Physics2D.Raycast(
             startPosition,
             direction,
-            maxDistance,
-            toxicRushWallLayers.value);
+            filter,
+            toxicRushWallHitBuffer,
+            maxSearchDistance);
 
-        if (hit.collider == null)
-            return maxDistance;
+        RaycastHit2D nearestWallHit = default;
+        bool hasWallHit = false;
+        for (int i = 0; i < hitCount; i++)
+        {
+            RaycastHit2D hit = toxicRushWallHitBuffer[i];
+            if (!IsToxicRushWallStopCollider(hit.collider))
+                continue;
 
-        return Mathf.Max(0f, hit.distance - toxicRushWallStopPadding);
+            if (!hasWallHit || hit.distance < nearestWallHit.distance)
+            {
+                nearestWallHit = hit;
+                hasWallHit = true;
+            }
+        }
+
+        if (hasWallHit)
+            return Mathf.Max(0.05f, nearestWallHit.distance - toxicRushWallStopPadding);
+
+        return maxSearchDistance;
+    }
+
+    /// <summary>독성 돌진을 멈출 실제 벽 collider인지 판정하고, 구덩이/트리거성 감지 영역은 통과시킵니다.</summary>
+    private static bool IsToxicRushWallStopCollider(Collider2D collider)
+    {
+        if (collider == null || collider.isTrigger)
+            return false;
+
+        return collider.GetComponent<HoleTrap>() == null &&
+               collider.GetComponentInParent<HoleTrap>() == null;
+    }
+
+    private void StartToxicRushPitFallSlam(Vector3 landingPosition, float startVisualHeight)
+    {
+        if (toxicRushPitFallSlamRoutine != null)
+            StopCoroutine(toxicRushPitFallSlamRoutine);
+
+        landingPosition.z = transform.position.z;
+        BeginToxicRushPitFallSlamLock();
+        LogToxicRushPitFallSlamHeight("return slam start before pose", landingPosition, 0f, startVisualHeight, force: true);
+        SetPhase2PitFallReturnPose(landingPosition, 0f, startVisualHeight);
+        LogToxicRushPitFallSlamHeight("return slam start after pose", landingPosition, 0f, startVisualHeight, force: true);
+        toxicRushPitFallSlamRoutine = StartCoroutine(ToxicRushPitFallSlamRoutine(landingPosition, startVisualHeight));
+    }
+
+    private void StopToxicRushPitFallSlam()
+    {
+        if (toxicRushPitFallSlamRoutine != null)
+        {
+            StopCoroutine(toxicRushPitFallSlamRoutine);
+            toxicRushPitFallSlamRoutine = null;
+        }
+
+        EndToxicRushPitFallSlamLock();
+        shouldRunToxicRushPitFallSlam = false;
+    }
+
+    private IEnumerator ToxicRushPitFallSlamRoutine(Vector3 landingPosition, float startVisualHeight)
+    {
+        BeginToxicRushPitFallSlamLock();
+        LogToxicRushPitFallSlamHeight("return slam routine enter", landingPosition, 0f, startVisualHeight, force: true);
+
+        try
+        {
+            TryShowPhaseTwoSpeech(ToxicRushPitFallSlamSpeechText, ToxicRushPitFallSlamSpeechSeconds);
+            ShowPhase2SlamWarning(landingPosition);
+
+            float elapsedSeconds = 0f;
+            while (elapsedSeconds < Phase2SlamIntervalSeconds)
+            {
+                if (!CanContinueToxicRushPitFallSlam())
+                    yield break;
+
+                elapsedSeconds += Time.deltaTime;
+                float normalizedTime = Mathf.Clamp01(elapsedSeconds / Phase2SlamIntervalSeconds);
+                SetPhase2PitFallReturnPose(landingPosition, normalizedTime, startVisualHeight);
+                LogToxicRushPitFallSlamHeight("return slam tick", landingPosition, normalizedTime, startVisualHeight);
+                yield return null;
+            }
+
+            if (!CanContinueToxicRushPitFallSlam())
+                yield break;
+
+            LogToxicRushPitFallSlamHeight("return slam before landing snap", landingPosition, 1f, startVisualHeight, force: true);
+            SnapToPhase2SlamLanding(landingPosition);
+            LogToxicRushPitFallSlamHeight("return slam after landing snap", landingPosition, 1f, startVisualHeight, force: true);
+            ApplyPhase2SlamDamage(null, landingPosition);
+            FaceCurrentTarget();
+        }
+        finally
+        {
+            LogToxicRushPitFallSlamHeight("return slam finally before clear", landingPosition, 1f, startVisualHeight, force: true);
+            ClearCombatHeightPresentation();
+            LogToxicRushPitFallSlamHeight("return slam finally after clear", landingPosition, 1f, startVisualHeight, force: true);
+            EndToxicRushPitFallSlamLock();
+            toxicRushPitFallSlamRoutine = null;
+        }
+    }
+
+    private void LogToxicRushPitFallSlamHeight(
+        string reason,
+        Vector3 landingPosition,
+        float normalizedTime = -1f,
+        float startVisualHeight = -1f,
+        bool force = false)
+    {
+        if (!logToxicRushPitFallSlamHeight)
+            return;
+
+        if (!force && Time.time < nextToxicRushPitFallSlamHeightLogTime)
+            return;
+
+        nextToxicRushPitFallSlamHeightLogTime = Time.time + 0.12f;
+
+        CombatHeightState2D heightState = GetComponent<CombatHeightState2D>();
+        CombatHeightPresentation2D heightPresentation = GetComponent<CombatHeightPresentation2D>();
+        Transform visualRoot = heightPresentation != null && heightPresentation.VisualRoot != null
+            ? heightPresentation.VisualRoot
+            : sprite != null
+                ? sprite.transform
+                : null;
+
+        string heightMode = heightState != null ? heightState.Mode.ToString() : "null";
+        float stateVisualHeight = heightState != null ? heightState.VisualHeight : -1f;
+        float presentationHeight = heightPresentation != null ? heightPresentation.CurrentVisualHeight : -1f;
+        Vector3 visualLocalPosition = visualRoot != null ? visualRoot.localPosition : Vector3.zero;
+        Vector3 visualWorldPosition = visualRoot != null ? visualRoot.position : Vector3.zero;
+        Vector3 visualBaseLocalPosition = heightPresentation != null
+            ? heightPresentation.VisualBaseLocalPosition
+            : Vector3.zero;
+
+        Debug.Log(
+            $"[SlimeQueenPitFallReturn] {name}: {reason}. " +
+            $"normalized={FormatDebugFloat(normalizedTime)}, startHeight={FormatDebugFloat(startVisualHeight)}, " +
+            $"landing={FormatDebugVector3(landingPosition)}, root={FormatDebugVector3(transform.position)}, " +
+            $"heightMode={heightMode}, stateVisualHeight={FormatDebugFloat(stateVisualHeight)}, " +
+            $"presentationHeight={FormatDebugFloat(presentationHeight)}, " +
+            $"visualLocal={FormatDebugVector3(visualLocalPosition)}, visualBaseLocal={FormatDebugVector3(visualBaseLocalPosition)}, " +
+            $"visualWorld={FormatDebugVector3(visualWorldPosition)}, " +
+            $"hasPresentation={heightPresentation != null}, runtimeLock={isToxicRushPitFallSlamLocked}",
+            this);
+    }
+
+    private static string FormatDebugFloat(float value)
+    {
+        return value < 0f ? "n/a" : value.ToString("0.00");
+    }
+
+    private static string FormatDebugVector3(Vector3 value)
+    {
+        return $"({value.x:0.00}, {value.y:0.00}, {value.z:0.00})";
+    }
+
+    private bool CanStartToxicRushPitFallSlam()
+    {
+        return isActiveAndEnabled &&
+               gameObject.activeInHierarchy &&
+               !IsDead &&
+               !HasDeadTag() &&
+               !HasGroggyTag() &&
+               CurrentHealthValue > 0f;
+    }
+
+    private bool CanContinueToxicRushPitFallSlam()
+    {
+        return CanStartToxicRushPitFallSlam();
+    }
+
+    private void BeginToxicRushPitFallSlamLock()
+    {
+        if (isToxicRushPitFallSlamLocked)
+            return;
+
+        isToxicRushPitFallSlamLocked = true;
+        SetPitFallRuntimeLock(true);
+        SetPassiveContactDamageBlocked(true);
+        SetPatternMoveDamageBlocked(true);
+        PushPitFallTriggerBlock();
+    }
+
+    private void EndToxicRushPitFallSlamLock()
+    {
+        if (!isToxicRushPitFallSlamLocked)
+            return;
+
+        PopPitFallTriggerBlock();
+        SetPatternMoveDamageBlocked(false);
+        SetPassiveContactDamageBlocked(false);
+        SetPitFallRuntimeLock(false);
+        isToxicRushPitFallSlamLocked = false;
     }
 
     /// <summary>이전 독구름 위치에서 현재 위치까지 설정 간격에 맞춰 독구름을 배치합니다.</summary>
@@ -314,7 +609,8 @@ public sealed class SlimeQueenP2Short : SlimeQueenPhaseTwoBase
             poisonCloudFadeSeconds,
             poisonCloudDamage,
             poisonCloudDamageIntervalSeconds,
-            poisonCloudDamageEffect);
+            poisonCloudDamageEffect,
+            activePoisonCloudLoopSound);
 
         lastPoisonCloudSpawnPosition = spawnPosition;
         hasLastPoisonCloudSpawnPosition = true;

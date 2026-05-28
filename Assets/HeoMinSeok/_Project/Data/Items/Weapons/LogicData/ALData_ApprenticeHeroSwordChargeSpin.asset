@@ -1,0 +1,110 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79f8e10316eb4aaea3730259103c40f8, type: 3}
+  m_Name: ALData_ApprenticeHeroSwordChargeSpin
+  m_EditorClassIdentifier: 
+  chargeAnimationTrigger: 
+  releaseAnimationTrigger: Skill2
+  minChargeSeconds: 0.25
+  maxChargeSeconds: 1
+  spinDuration: 0.35
+  recoveryDuration: 0.2
+  pulseCount: 1
+  minRadius: 0
+  maxRadius: 0
+  minDamageScale: 1
+  maxDamageScale: 1.6
+  hitLayers:
+    serializedVersion: 2
+    m_Bits: 2147483648
+  hitbox:
+    hitboxPrefab: {fileID: 2863281621525748656, guid: 621dece46c884d5d93b149654fdcb397, type: 3}
+    activeTime: 0.2
+    hitboxSize: {x: 3.6, y: 3.6}
+    hitboxScaleMultiplier: {x: 1.6, y: 1.6}
+    overrideSizingMode: 1
+    sizingMode: 3
+    wallLayers:
+      serializedVersion: 2
+      m_Bits: 0
+    hitOncePerTarget: 1
+    destroyOnFirstHit: 0
+    attachToOwnerOnSetup: 0
+    visualMirrorMode: 3
+  damage:
+    damageConfig:
+      includeStaggerBuildUp: 1
+      includeElementBuildUp: 1
+      staggerFormula: {fileID: 11400000, guid: 8fb95c16fb825134f8ce24efb528fe19, type: 2}
+      elementFormulas: []
+      critAffectsElement: 1
+    damageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
+    knockbackEffect: {fileID: 11400000, guid: 2f5faaf6bd840544cb59f6d23905c40d, type: 2}
+    damageFormula: {fileID: 11400000, guid: f836f4795e60fd54f9a4e401de9d7dd9, type: 2}
+    knockbackFormula: {fileID: 0}
+    legacyDamage: 8
+    legacyStaggerDamage: 0
+    hitConfirmedTag: {fileID: 11400000, guid: 465249853d3321e47b796f8e8c787f64, type: 2}
+    hitImpactCueKind: 1
+  chargeParticlePrefab: {fileID: 9220266015815699353, guid: d571ccb863f2c524bbbda03c4ce06d0e, type: 3}
+  chargeParticleLocalPosition: {x: 0, y: 0, z: 0}
+  chargeParticleLocalEulerAngles: {x: 0, y: 0, z: 0}
+  chargeParticleLocalScale: {x: 1, y: 1, z: 1}
+  chargeParticleUseLocalSimulation: 1
+  chargeParticleStopDelay: 0
+  enableChargeReveal: 1
+  chargeRevealSprite: {fileID: 5092607822017767761, guid: 6110a12bd862ff9419c73f9a2d508033, type: 3}
+  fullChargeRevealSprite: {fileID: 146794589577207384, guid: 6110a12bd862ff9419c73f9a2d508033, type: 3}
+  chargeRevealMaskSprite: {fileID: 0}
+  chargeRevealColor: {r: 1, g: 1, b: 1, a: 1}
+  fullChargeRevealColor: {r: 1, g: 1, b: 1, a: 1}
+  chargeRevealLocalPosition: {x: -0.5, y: 0.5, z: 0}
+  chargeRevealLocalEulerAngles: {x: 0, y: 0, z: 0}
+  chargeRevealLocalScale: {x: 1.2, y: 1.2, z: 1}
+  chargeRevealMaskStartOffset: {x: 0, y: 0}
+  chargeRevealMaskEndOffset: {x: 0, y: 0}
+  chargeRevealMaskStartScale: {x: 1, y: 0}
+  chargeRevealMaskEndScale: {x: 1, y: 1}
+  useDirectionalChargeRevealMask: 1
+  chargeRevealMaskLocalDirection: {x: -1, y: 1}
+  chargeRevealMaskPadding: 0.04
+  chargeRevealMaskWidthMultiplier: 1.25
+  fullChargeSpriteThreshold: 1
+  chargeRevealSortingOrderOffset: 1
+  chargeRevealMaskAlphaCutoff: 0.5
+  minChargeReleaseColor: {r: 1, g: 0.95, b: 0.55, a: 1}
+  maxPartialChargeReleaseColor: {r: 1, g: 0.72, b: 0.24, a: 1}
+  fullChargeReleaseColor: {r: 1, g: 0.38, b: 0.08, a: 1}
+  minChargeReleaseSizeMultiplier: {x: 0.85, y: 0.85}
+  maxPartialChargeReleaseSizeMultiplier: {x: 1.05, y: 1.05}
+  fullChargeReleaseSizeMultiplier: {x: 1.35, y: 1.35}
+  fullChargeVfxPrefab: {fileID: 1465094183477541801, guid: 4895d901be2e5ce44a875520b037a7cb, type: 3}
+  fullChargeVfxLocalPosition: {x: 0, y: 0, z: 0}
+  fullChargeVfxLocalEulerAngles: {x: 0, y: 0, z: 0}
+  fullChargeVfxLocalScale: {x: 1, y: 1, z: 1}
+  fullChargeVfxUseLocalSimulation: 1
+  fullChargeVfxDestroyDelay: 2
+  chargeStartSound:
+    key: 
+    volumeMultiplier: 0
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  releaseSound:
+    key: weapon.sword.swing.2
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  pulseSound:
+    key: weapon.sword.swing.1
+    volumeMultiplier: 0.75
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}

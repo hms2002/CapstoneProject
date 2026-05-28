@@ -1,6 +1,9 @@
 using System;
 using UnityEngine;
 
+/// <summary>
+/// 책임 : NPC 호감도 저장값을 변경하고 보상/표시/피드백 흐름을 조율한다.
+/// </summary>
 public class AffectionManager : MonoBehaviour
 {
     public static AffectionManager Instance { get; private set; }
@@ -84,6 +87,8 @@ public class AffectionManager : MonoBehaviour
 
         if (change.NewAmount != change.PreviousAmount)
         {
+            PlayAffectionChangeSound(change.Delta);
+
             if (isRunActive)
                 GamePlayDataManager.Instance?.AddPendingAffectionDelta(data.id, change.Delta);
             else
@@ -107,11 +112,22 @@ public class AffectionManager : MonoBehaviour
         progressStore.SetAffection(GameDataManager.Instance?.Data, npcId, value, syncToGameData: !isRunActive);
         if (previousValue != value)
         {
+            PlayAffectionChangeSound(value - previousValue);
+
             if (isRunActive)
                 GamePlayDataManager.Instance?.AddPendingAffectionDelta(npcId, value - previousValue);
             else
                 GameDataSaveCoordinator.RequestImmediateSave(this);
         }
+    }
+
+    /// <summary>호감도 증감 방향에 맞는 UI 피드백 사운드를 재생합니다.</summary>
+    private static void PlayAffectionChangeSound(int delta)
+    {
+        if (delta == 0)
+            return;
+
+        AffectionFeedbackSoundPlayer.PlayChange(delta);
     }
 
     private void LoadAffectionData()

@@ -15,6 +15,11 @@ public sealed class GoblinWarriorChargeRunner : MonoBehaviour, IMobPatternRunner
     [SerializeField] private MobAbilityCoordinator abilityCoordinator;
     [SerializeField] private AttackTelegraphService telegraphService;
 
+    [Header("Telegraph Clipping")]
+    [SerializeField] private LayerMask telegraphWallClipLayers = 1 << 30;
+    [SerializeField, Min(3)] private int telegraphWallClipSampleCount = 48;
+    [SerializeField, Min(0f)] private float telegraphWallClipSkinWidth = 0.03f;
+
     private AttackTelegraphStyle warningStyle;
     private bool isRunning;
     private bool cancelRequested;
@@ -125,12 +130,18 @@ public sealed class GoblinWarriorChargeRunner : MonoBehaviour, IMobPatternRunner
 
         Vector3 center = (Vector3)context.StartPosition + (Vector3)(context.Direction.normalized * context.DashDistance * 0.5f);
         float angle = Mathf.Atan2(context.Direction.y, context.Direction.x) * Mathf.Rad2Deg;
-        telegraphService.Show(AttackTelegraphSpec.CreateRectangle(
+        AttackTelegraphSpec spec = AttackTelegraphSpec.CreateRectangle(
             center,
             new Vector2(context.DashDistance, context.WarningWidth),
             angle,
             warningSeconds,
-            warningStyle));
+            warningStyle)
+            .WithWallClipping(
+                telegraphWallClipLayers,
+                telegraphWallClipSampleCount,
+                telegraphWallClipSkinWidth);
+
+        telegraphService.Show(spec);
     }
 
     private void HideWarning()
@@ -162,10 +173,7 @@ public sealed class GoblinWarriorChargeRunner : MonoBehaviour, IMobPatternRunner
     private static AttackTelegraphStyle MakeWarningStyle()
     {
         AttackTelegraphStyle style = ScriptableObject.CreateInstance<AttackTelegraphStyle>();
-        style.fillColorStart = new Color(1f, 0f, 0f, 0.12f);
-        style.fillColorEnd = new Color(1f, 0f, 0f, 0.32f);
-        style.borderColorStart = new Color(1f, 0.35f, 0.2f, 0.95f);
-        style.borderColorEnd = new Color(1f, 0.35f, 0.2f, 0.95f);
+        AttackTelegraphStyleUtility.ApplyDangerAreaColors(style);
         style.progressCurve = AnimationCurve.Linear(0f, 0f, 1f, 1f);
         style.blinkStartNormalized = 0.72f;
         style.blinkFrequency = 5f;

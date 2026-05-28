@@ -34,6 +34,25 @@ namespace UnityGAS
 
         public BodyCollisionMode CurrentMode => currentMode;
 
+        /// <summary>런타임/authoring 보정 경로에서 body collider와 충돌 정책을 한 번에 지정합니다.</summary>
+        public void Configure(
+            Collider2D[] managedBodyColliders,
+            LayerMask excludedLayers,
+            LayerMask passThroughActorLayers,
+            BodyCollisionMode profileDefaultMode,
+            bool applyImmediately = true)
+        {
+            bodyColliders = managedBodyColliders;
+            baseExcludedLayers = excludedLayers;
+            actorLayers = passThroughActorLayers;
+            defaultMode = profileDefaultMode;
+
+            CacheBodyCollidersIfNeeded();
+
+            if (applyImmediately)
+                ApplyMode(defaultMode);
+        }
+
         private void Awake()
         {
             CacheBodyCollidersIfNeeded();
@@ -62,6 +81,25 @@ namespace UnityGAS
         public void RestoreDefaultMode()
         {
             ApplyMode(defaultMode);
+        }
+
+        /// <summary>지정된 콜라이더가 이 프로필이 관리하는 이동 방해용 body collider인지 확인합니다.</summary>
+        public bool ContainsBodyCollider(Collider2D targetCollider)
+        {
+            if (targetCollider == null)
+                return false;
+
+            CacheBodyCollidersIfNeeded();
+            if (bodyColliders == null)
+                return false;
+
+            for (int i = 0; i < bodyColliders.Length; i++)
+            {
+                if (bodyColliders[i] == targetCollider)
+                    return true;
+            }
+
+            return false;
         }
 
         private void CacheBodyCollidersIfNeeded()

@@ -75,13 +75,23 @@ public class TrainingDummy2D : MonoBehaviour
         if (newValue < oldValue)
         {
             float damage = oldValue - newValue;
-            if (!DamagePopupDuplicateSuppressor.TryConsume(gameObject, damage))
+            bool willAutoHeal = ShouldAutoHeal(newValue);
+            bool isSuppressed = DamagePopupDuplicateSuppressor.TryConsume(
+                gameObject,
+                damage,
+                out DamagePopupSuppressionKind suppressionKind);
+
+            bool shouldShowPopup = willAutoHeal
+                ? suppressionKind != DamagePopupSuppressionKind.Element
+                : !isSuppressed;
+
+            if (shouldShowPopup)
                 DamagePopupService.Show(damage, transform.position);
 
             PlayHurt();
         }
 
-        if (neverDie && maxHealthAttribute != null && attributeSet != null && newValue <= healThreshold)
+        if (ShouldAutoHeal(newValue))
         {
             float maxHp = attributeSet.GetAttributeValue(maxHealthAttribute);
             float delta = maxHp - newValue;
@@ -90,6 +100,18 @@ public class TrainingDummy2D : MonoBehaviour
                 attributeSet.TryModifyAttributeValue(healthAttribute, delta, this);
             }
         }
+    }
+
+    /// <summary>
+    /// 책임 : 허수아비가 죽지 않도록 체력 감소 직후 자동 회복할 상황인지 판정한다.
+    /// 즉시 회복되는 경우 CombatDamageAction의 후처리 팝업 계산이 0 피해로 보일 수 있어 fallback 팝업을 유지해야 한다.
+    /// </summary>
+    private bool ShouldAutoHeal(float currentHealth)
+    {
+        return neverDie
+               && maxHealthAttribute != null
+               && attributeSet != null
+               && currentHealth <= healThreshold;
     }
 
     private void PlayHurt()

@@ -11,7 +11,7 @@ namespace CapstonePresentation
             if (!hook.HasAnyContent)
                 return;
 
-            PlaySound(hook.sound, context);
+            PlaySounds(hook, context);
             PlayShake(hook.cameraShake, context);
             SpawnVisual(hook.effect, context);
             SpawnVisual(hook.particle, context);
@@ -38,7 +38,7 @@ namespace CapstonePresentation
             if (!hook.HasSound && !hook.HasShake)
                 return;
 
-            PlaySound(hook.sound, context);
+            PlaySounds(hook, context);
             PlayShake(hook.cameraShake, context);
         }
 
@@ -49,7 +49,7 @@ namespace CapstonePresentation
             in WorldPresentationContext context)
         {
             if (hook.HasSound)
-                PlaySound(hook.sound, context);
+                PlaySounds(hook, context);
             else
                 PlaySound(legacySound, context);
 
@@ -176,6 +176,23 @@ namespace CapstonePresentation
                 target: context.Target,
                 position: context.Position,
                 sourceObject: context.SourceObject);
+        }
+
+        /// <summary>
+        /// 책임:
+        /// - WorldPresentationHook의 메인 사운드 1개와 동시 재생 보조 사운드들을 같은 문맥으로 재생한다.
+        /// - 랜덤 사운드는 메인 사운드 선택 정책으로만 사용하고, additionalSounds는 전부 병렬 재생한다.
+        /// </summary>
+        private static void PlaySounds(in WorldPresentationHook hook, in WorldPresentationContext context)
+        {
+            PlaySound(hook.ResolveSound(), context);
+
+            SoundRef[] additionalSounds = hook.AdditionalSounds;
+            if (additionalSounds == null || additionalSounds.Length == 0)
+                return;
+
+            for (int i = 0; i < additionalSounds.Length; i++)
+                PlaySound(additionalSounds[i], context);
         }
 
         private static void PlayShake(CameraShakeHook shake, in WorldPresentationContext context)

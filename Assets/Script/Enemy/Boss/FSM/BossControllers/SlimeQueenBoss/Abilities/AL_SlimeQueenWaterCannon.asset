@@ -12,3 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ad543e16276d4bdf9d990b3ca6140b9f, type: 3}
   m_Name: AL_SlimeQueenWaterCannon
   m_EditorClassIdentifier: 
+  shotWaterSound:
+    key: sound_slimeQueen_ShotWater
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}

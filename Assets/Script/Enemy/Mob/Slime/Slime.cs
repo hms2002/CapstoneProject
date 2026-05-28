@@ -1,3 +1,4 @@
+using CapstoneAudio;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityGAS;
@@ -6,6 +7,8 @@ public abstract class Slime : Mob, IMobAttackDecisionSource, IPitFallDeathHandle
 {
     private const float SplitWakeSeconds = 1f;
     private const float PlayerBaseSpeedFallback = 4f;
+    private static readonly SoundRef MediumSplitSound = SoundRef.FromKey("sound_mediumSlime_Split");
+    private static readonly SoundRef LargeSplitSound = SoundRef.FromKey("sound_largeSlime_Split");
 
     [Header("Split Landing")]
     [Tooltip("분열체가 본체에서 튀어나와 착지점에 도달하는 시간입니다.")]
@@ -24,10 +27,17 @@ public abstract class Slime : Mob, IMobAttackDecisionSource, IPitFallDeathHandle
     [SerializeField, Range(1, 8)] private int splitLandingResolveSteps = 4;
 
     private MobAbilityCoordinator abilityCoordinator;
+    private SlimeQueenVanishParticleEffect splitDeathVanishEffect;
     private float wakeTime;
     private bool isPitFallDeath;
     private readonly RaycastHit2D[] splitLandingRaycastHits = new RaycastHit2D[8];
     private readonly Collider2D[] splitLandingOverlapHits = new Collider2D[8];
+
+    protected override void Awake()
+    {
+        base.Awake();
+        EnsureSplitDeathVanishEffect();
+    }
 
     /// <summary>분열로 생성된 슬라임의 대기 시간과 타깃을 설정합니다.</summary>
     public virtual void InitSplit(Transform nextTarget)
@@ -84,6 +94,13 @@ public abstract class Slime : Mob, IMobAttackDecisionSource, IPitFallDeathHandle
     protected void CancelAbility()
     {
         abilityCoordinator?.CancelActiveAbility(true);
+    }
+
+    /// <summary>분열 사망 순간에 슬라임퀸 소멸 파티클과 같은 초록 사각 이펙트를 재생합니다.</summary>
+    protected void PlaySplitDeathVanishEffect()
+    {
+        EnsureSplitDeathVanishEffect();
+        splitDeathVanishEffect?.SpawnOneShot(transform.position, sprite);
     }
 
     /// <summary>슬라임 이름, 체력, 크기를 적용합니다.</summary>
@@ -208,6 +225,7 @@ public abstract class Slime : Mob, IMobAttackDecisionSource, IPitFallDeathHandle
 
         Vector3 center = transform.position;
         Vector2[] dirs = GetDirs(splitCount);
+        PlaySplitSound<T>(center);
 
         for (int i = 0; i < dirs.Length; i++)
         {
@@ -226,6 +244,16 @@ public abstract class Slime : Mob, IMobAttackDecisionSource, IPitFallDeathHandle
                 RegisterLockTrackedChild(spawned);
             }
         }
+    }
+
+    /// <summary>분열 결과 크기를 기준으로 큰/중간 슬라임 분해 사운드를 선택해 재생합니다.</summary>
+    private void PlaySplitSound<T>(Vector3 position) where T : Slime
+    {
+        SoundRef sound = typeof(T) == typeof(Pawn)
+            ? MediumSplitSound
+            : LargeSplitSound;
+
+        SoundPlaybackUtility.Play(sound, causer: gameObject, position: position, sourceObject: this);
     }
 
     /// <summary>분열체에 착지 모션 컴포넌트를 보장하고, 착지 전 피격 불가 상태를 시작합니다.</summary>
@@ -378,5 +406,14 @@ public abstract class Slime : Mob, IMobAttackDecisionSource, IPitFallDeathHandle
         if (abilitySystem.FindSpec(ability) != null) return;
 
         abilitySystem.GiveAbility(ability);
+    }
+
+    private void EnsureSplitDeathVanishEffect()
+    {
+        if (splitDeathVanishEffect == null)
+            splitDeathVanishEffect = GetComponent<SlimeQueenVanishParticleEffect>();
+
+        if (splitDeathVanishEffect == null)
+            splitDeathVanishEffect = gameObject.AddComponent<SlimeQueenVanishParticleEffect>();
     }
 }

@@ -2,7 +2,7 @@
 status: active
 authority: structure-memory
 category: script-system-map
-last_reviewed: 2026-05-26
+last_reviewed: 2026-05-27
 ---
 
 # Weapon And GAS Structure
@@ -133,6 +133,21 @@ The concrete risks are narrower than a full combat rewrite.
 - The current cue map resolves `Default`, `Slash`, and `Blow` to `Cue.Ability.Sword.Hit` because `SlashHit` is the only finished hit-impact cue. `None` suppresses the automatic cue. Future `BlowHit` should update the router mapping without moving the authoring owner out of ALData.
 - Existing explicit additions such as hit spark and camera shake still run through the `AbilityDefinition` cue list. If an explicit cue is the same as the automatic hit-impact cue, the router skips the automatic duplicate.
 
+### Weapon Detail Audio Hooks
+
+- `AbilityDefinition` audio fields remain broad lifecycle slots. Weapon-specific sub-timing sounds are authored on the logic data that owns the timing and are played through `AbilityAudioRouter.PlayOneShotAtPosition(...)` when the timing is world-positioned.
+- Flowering owns BloomSlash, cut-in open, weapon reveal in/out, final shake, and dash slash `SoundRef` hooks on `FloweringAttackData` / `FloweringBloomData`. Empty slots are no-op defaults, so existing behavior is unchanged until keys are authored.
+- Lightning Spear owns NoMark sweep, MarkRush start/arrival, recovered spear spawn/despawn/shot spawn/shot fire, and MarkRain spawn/mark/landing `SoundRef` hooks on `LightningSpearSkill1Data` / `LightningSpearSkill2Data`.
+
+### Apprentice Hero Sword Tutorial Weapon Extension
+
+- `ApprenticeHeroSwordChargeSpinData` owns Skill2 charge-presentation tuning for the tutorial default weapon: optional looping charge particle prefab, blade-fill reveal sprite, full-charge reveal sprite/color, player-anchored full-charge VFX prefab, directional local-coordinate mask reveal settings, release attack color/size scaling, sorting offset, and particle stop delay.
+- `AbilityLogic_ApprenticeHeroSwordChargeSpin` keeps the visuals transient and ability-owned. During the charge hold window it instantiates the authored particle under the current weapon render root, creates a runtime `SpriteRenderer` plus `SpriteMask` reveal overlay under the equipped weapon renderer, updates the mask from live charge ratio, plays the full-charge VFX once under the player/`AbilitySystem` transform, and releases the charge objects on Skill2 release/cancel/cleanup.
+- Directional charge reveal uses a generated square `SpriteMask` when no mask sprite is assigned, projects the current reveal sprite bounds onto `chargeRevealMaskLocalDirection`, and mirrors the local direction with the equipped weapon renderer's `flipX`/`flipY`.
+- Skill2 release attack color and size are derived from charge ratio: partial charges lerp between min and max partial values, while full charge uses separate color and larger size multipliers for both hitbox size and hitbox-owned visuals.
+- `ALData_ApprenticeHeroSwordChargeSpin.asset` currently wires `BasicWeaponSkill1ChargeAura_0` as the normal charge reveal sprite and `_1` as the full-charge reveal sprite. Its charge loop and full-charge particle refs point to the BasicWeapon charge particle prefabs.
+- Particle gathering behavior remains prefab-authored through the assigned particle setup, including any `ParticleSystemForceField`; the weapon logic only controls lifetime, transform, loop/play state, and cleanup.
+
 ### Electric Element Extension
 
 - Electric build-up follows the same attacker-wide `ElementOffenseSource` and `ElementBuildUpFormulaProfile` route as Fire/Blood/Poison.
@@ -164,6 +179,7 @@ The concrete risks are narrower than a full combat rewrite.
 - Bloom Skill1 uses `AbilityLogic_FloweringBloom` with `startCooldownOnEnd`; the logic stays alive as a parallel ability until Bloom duration and kill extensions end, so normal attacks can continue while the cooldown starts only afterward.
 - Dash remains the global `AD_Dash`. `AbilityLogic_Dash2D` resolves optional `IWeaponDashAugment` implementers and calls them to modify dash distance/duration and observe dash start/end.
 - `FloweringRuntimeState` is a transient player-root runtime component created by Bloom logic. It applies/removes Bloom attribute modifiers, registers for kill-confirm gameplay events, keeps dash cooldown at zero during Bloom, and spawns the delayed dash slash hitboxes/effects.
+- Flowering Skill1/Bloom locks active weapon changes from cut-in start through active Bloom and reveal-out cleanup. `WeaponInventory2D` rejects swap input, direct active equip, active drop/unequip/destroy, active slot replacement, and active slot inventory swaps while `FloweringRuntimeState.BlocksWeaponSwap` is true; non-active slot changes remain allowed.
 - Flowering kill extension is relic-gated: `RelicLogic_FloweringBloomExtension_Managed` grants `State.Relic.FloweringBloomExtension`, and `FloweringRuntimeState` checks `FloweringBloomData.killExtensionRequiredTag` before applying `FloweringRuntimeData.ExtendBloom(...)`.
 - Bloom state HUD is projected through `PlayerStatusRuntime` using `SHD_FloweringBloom`; Skill1 HUD active-duration fill is projected through `IWeaponAbilityHudDurationOverrideProvider` and returns to the normal cooldown display when Bloom ends. `WeaponSkillHUD2D.SkillSlotUI.activeDurationFill` is the preferred dedicated authored Image for this display; if it is not assigned, the code falls back to the legacy `cooldownFill`. The HUD resolver checks both the equipped weapon prefab runtime state and the player `AbilitySystem` root, because Flowering's active Bloom runtime state is attached to the player root.
 - Dash slash scheduling is owned by Bloom runtime state cleanup rather than the short dash ability token, so the delayed three-hit sequence can finish after dash movement ends while still stopping on Bloom end/weapon cleanup.

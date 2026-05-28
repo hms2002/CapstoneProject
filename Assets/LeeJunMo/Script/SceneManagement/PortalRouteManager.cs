@@ -229,13 +229,61 @@ public sealed class PortalRouteManager : MonoBehaviour
         activeRouteCatalog = catalog;
         currentStageIndex = 0;
 
-        if (currentStageSet != null)
+        if (TryBuildDevelopmentPlan(catalog, currentStageSet, out List<CorridorBossRouteSetSO> stages, out int stageIndex))
+        {
+            activeRouteStages.AddRange(stages);
+            currentStageIndex = stageIndex;
+        }
+        else if (currentStageSet != null)
+        {
             activeRouteStages.Add(currentStageSet);
+        }
 
         ClearLoadPresentationContext();
         RecordTransitionEvent(
-            $"Seeded development plan. scene={sourceSceneName ?? "<unknown>"}, stage={(currentStageSet != null ? currentStageSet.name : "<none>")}, catalog={(catalog != null ? catalog.name : "<none>")}");
+            $"Seeded development plan. scene={sourceSceneName ?? "<unknown>"}, stage={(currentStageSet != null ? currentStageSet.name : "<none>")}, catalog={(catalog != null ? catalog.name : "<none>")}, index={currentStageIndex + 1}/{Mathf.Max(1, activeRouteStages.Count)}");
         RaiseLoadWindowChanged();
+    }
+
+    private static bool TryBuildDevelopmentPlan(
+        RunRouteCatalogSO catalog,
+        CorridorBossRouteSetSO currentStageSet,
+        out List<CorridorBossRouteSetSO> stages,
+        out int stageIndex)
+    {
+        stages = null;
+        stageIndex = -1;
+
+        if (catalog == null || currentStageSet == null)
+            return false;
+
+        stages = new List<CorridorBossRouteSetSO>(catalog.NormalStageCount + 1);
+        IReadOnlyList<CorridorBossRouteSetSO> normalRoutes = catalog.NormalRouteSets;
+        if (normalRoutes != null)
+        {
+            for (int i = 0; i < normalRoutes.Count && stages.Count < catalog.NormalStageCount; i++)
+            {
+                CorridorBossRouteSetSO routeSet = normalRoutes[i];
+                if (routeSet != null && routeSet.IsValid)
+                    stages.Add(routeSet);
+            }
+        }
+
+        if (catalog.FinalRouteSet != null && catalog.FinalRouteSet.IsValid)
+            stages.Add(catalog.FinalRouteSet);
+
+        for (int i = 0; i < stages.Count; i++)
+        {
+            if (!ReferenceEquals(stages[i], currentStageSet))
+                continue;
+
+            stageIndex = i;
+            return true;
+        }
+
+        stages = null;
+        stageIndex = -1;
+        return false;
     }
 
     public bool CanResolveRoute(ScenePortal portal)

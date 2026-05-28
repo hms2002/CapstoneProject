@@ -6,6 +6,7 @@ using UnityGAS;
 public sealed class DemonKingController : BossControllerBase
 {
     private const int DefaultWallLayer = 30;
+    private const string StaggerImmuneTagResourcePath = "Tags/State.Status.StaggerImmune";
 
     [Header("Demon King Runtime")]
     [SerializeField] private bool configureRuntimePatternsOnStart = true;
@@ -34,12 +35,23 @@ public sealed class DemonKingController : BossControllerBase
     [Header("Groggy Counter Presentation")]
     [SerializeField] private SoundRef groggyRecoverCounterWarningPingSound;
 
+    [Header("Afterimage")]
+    [SerializeField] private bool enableBodyAfterimage = true;
+    [SerializeField, Min(0.01f)] private float bodyAfterimageIntervalSeconds = 0.04f;
+    [SerializeField, Min(0.01f)] private float bodyAfterimageLifetimeSeconds = 0.16f;
+    [SerializeField] private Color bodyAfterimageColor = new(1f, 0.25f, 0.18f, 0.45f);
+
     private readonly Dictionary<AbilityDefinition, DemonKingPatternRole> roleByAbility = new();
     private DemonKingRuntimeData runtimeData;
     private AttackTelegraphService telegraphService;
+    private GameplayTag staggerImmuneTag;
+    private SpriteAfterimageEmitter2D bodyAfterimageEmitter;
     private int faceTargetLockCount;
+    private int thresholdStaggerGuardCount;
     private bool runtimePatternsConfigured;
     private bool authoredPatternRolesBound;
+    private bool finalDesperationHealthClampActive;
+    private bool restoringFinalDesperationHealthClamp;
 
     private BossPatternEntry throwSwordEntry;
     private BossPatternEntry recallSwordEntry;
@@ -85,6 +97,7 @@ public sealed class DemonKingController : BossControllerBase
         base.Awake();
         runtimeData = new DemonKingRuntimeData();
         telegraphService = GetComponent<AttackTelegraphService>();
+        staggerImmuneTag = Resources.Load<GameplayTag>(StaggerImmuneTagResourcePath);
     }
 
     protected override void Start()
@@ -109,23 +122,41 @@ public sealed class DemonKingController : BossControllerBase
 
     protected override void OnEnemyAttributeChanged(AttributeDefinition attribute, float oldValue, float newValue)
     {
+        if (restoringFinalDesperationHealthClamp)
+        {
+            base.OnEnemyAttributeChanged(attribute, oldValue, newValue);
+            return;
+        }
+
+        if (TryMaintainFinalDesperationHealthClamp(attribute, newValue))
+            return;
+
+        if (TryStartFinalDesperationFromHealthGate(attribute, oldValue, newValue))
+            return;
+
         base.OnEnemyAttributeChanged(attribute, oldValue, newValue);
 
         if (IsDead || RuntimeData.FinalDesperationStarted)
             return;
 
-        if (CurrentHealthRatio <= finalDesperationHpRatio)
+        if (IsCurrentHealthAttribute(attribute) && CurrentHealthRatio <= finalDesperationHpRatio)
             ForceFinalDesperationNow();
     }
 
     protected override void OnDeathStarted()
     {
+        ReleaseFinalDesperationHealthClamp();
+        ClearThresholdStaggerGuard();
+        StopBodyAfterimage(clearGhosts: true);
         CleanupEgoSwordForBattleEnd();
         base.OnDeathStarted();
     }
 
     protected override void OnDestroy()
     {
+        ReleaseFinalDesperationHealthClamp();
+        ClearThresholdStaggerGuard();
+        StopBodyAfterimage(clearGhosts: true);
         CleanupEgoSwordForBattleEnd();
         base.OnDestroy();
     }
@@ -147,9 +178,7 @@ public sealed class DemonKingController : BossControllerBase
         if (RuntimeData.GroggyRecoverCounterRequested && groggyRecoverCounterEntry != null)
             return groggyRecoverCounterEntry;
 
-        if (!RuntimeData.Hp50PatternUsed &&
-            CurrentHealthRatio <= hp50RushRatio &&
-            hp50RushEntry != null)
+        if (CanUseHp50Rush() && hp50RushEntry != null)
         {
             return hp50RushEntry;
         }
@@ -177,7 +206,7 @@ public sealed class DemonKingController : BossControllerBase
             DemonKingPatternRole.DropNormal => RuntimeData.SwordMode == DemonKingEgoSwordMode.Drop,
             DemonKingPatternRole.ThrowSword => RuntimeData.ShouldThrowSword(holdPatternsBeforeThrow),
             DemonKingPatternRole.RecallSword => RuntimeData.ShouldRecallSword(),
-            DemonKingPatternRole.Hp50Rush => !RuntimeData.Hp50PatternUsed && CurrentHealthRatio <= hp50RushRatio,
+            DemonKingPatternRole.Hp50Rush => CanUseHp50Rush(),
             DemonKingPatternRole.GroggyRecoverCounter => RuntimeData.GroggyRecoverCounterRequested,
             DemonKingPatternRole.FinalDesperation => RuntimeData.FinalDesperationStarted || CurrentHealthRatio <= finalDesperationHpRatio,
             _ => true
@@ -279,6 +308,60 @@ public sealed class DemonKingController : BossControllerBase
         faceTargetLockCount = Mathf.Max(0, faceTargetLockCount - 1);
     }
 
+    public void PushThresholdStaggerGuard()
+    {
+        if (staggerImmuneTag == null || TagSystem == null)
+            return;
+
+        if (thresholdStaggerGuardCount <= 0 && !TryAddStateTag(staggerImmuneTag, 1))
+            return;
+
+        thresholdStaggerGuardCount++;
+    }
+
+    public void PopThresholdStaggerGuard()
+    {
+        if (thresholdStaggerGuardCount <= 0)
+            return;
+
+        thresholdStaggerGuardCount--;
+        if (thresholdStaggerGuardCount > 0 || staggerImmuneTag == null || TagSystem == null)
+            return;
+
+        TryRemoveStateTag(staggerImmuneTag, 1);
+    }
+
+    public void BeginBodyAfterimage()
+    {
+        if (!enableBodyAfterimage || !isActiveAndEnabled)
+            return;
+
+        SpriteAfterimageEmitter2D emitter = ResolveBodyAfterimageEmitter();
+        if (emitter == null)
+            return;
+
+        emitter.Begin(
+            transform,
+            bodyAfterimageIntervalSeconds,
+            bodyAfterimageLifetimeSeconds,
+            bodyAfterimageColor);
+    }
+
+    public void StopBodyAfterimage(bool clearGhosts = false)
+    {
+        if (bodyAfterimageEmitter == null)
+            return;
+
+        bodyAfterimageEmitter.StopEmission();
+        if (clearGhosts)
+            bodyAfterimageEmitter.ClearSpawnedGhosts();
+    }
+
+    public void ReleaseFinalDesperationHealthClamp()
+    {
+        finalDesperationHealthClampActive = false;
+    }
+
     public void SetSwordDropped()
     {
         RuntimeData.SetSwordDropped();
@@ -347,6 +430,103 @@ public sealed class DemonKingController : BossControllerBase
 
         egoSword.Bind(this);
         return egoSword;
+    }
+
+    private SpriteAfterimageEmitter2D ResolveBodyAfterimageEmitter()
+    {
+        if (bodyAfterimageEmitter != null)
+            return bodyAfterimageEmitter;
+
+        if (!TryGetComponent(out bodyAfterimageEmitter))
+            bodyAfterimageEmitter = gameObject.AddComponent<SpriteAfterimageEmitter2D>();
+
+        return bodyAfterimageEmitter;
+    }
+
+    private void ClearThresholdStaggerGuard()
+    {
+        if (thresholdStaggerGuardCount <= 0)
+            return;
+
+        thresholdStaggerGuardCount = 0;
+        if (staggerImmuneTag != null && TagSystem != null)
+            TryRemoveStateTag(staggerImmuneTag, 1);
+    }
+
+    private bool TryStartFinalDesperationFromHealthGate(
+        AttributeDefinition attribute,
+        float oldValue,
+        float newValue)
+    {
+        if (IsDead || RuntimeData.FinalDesperationStarted)
+            return false;
+
+        if (!IsCurrentHealthAttribute(attribute))
+            return false;
+
+        float thresholdHealth = ResolveFinalDesperationThresholdHealth();
+        if (thresholdHealth <= 0f || oldValue <= thresholdHealth || newValue > thresholdHealth)
+            return false;
+
+        EnsurePatternRolesReady();
+        if (finalDesperationEntry == null)
+            return false;
+
+        finalDesperationHealthClampActive = true;
+        RestoreFinalDesperationThresholdHealth(thresholdHealth);
+        ForceFinalDesperationNow();
+        return true;
+    }
+
+    private bool TryMaintainFinalDesperationHealthClamp(AttributeDefinition attribute, float newValue)
+    {
+        if (!finalDesperationHealthClampActive || IsDead || !IsCurrentHealthAttribute(attribute))
+            return false;
+
+        float thresholdHealth = ResolveFinalDesperationThresholdHealth();
+        if (thresholdHealth <= 0f || newValue >= thresholdHealth)
+            return false;
+
+        RestoreFinalDesperationThresholdHealth(thresholdHealth);
+        return true;
+    }
+
+    private float ResolveFinalDesperationThresholdHealth()
+    {
+        float maxHealth = MaxHealthValue;
+        if (maxHealth <= 0f)
+            return 0f;
+
+        return Mathf.Max(0.01f, maxHealth * finalDesperationHpRatio);
+    }
+
+    private void RestoreFinalDesperationThresholdHealth(float thresholdHealth)
+    {
+        try
+        {
+            restoringFinalDesperationHealthClamp = true;
+            TrySetCurrentHealthValue(thresholdHealth, this);
+        }
+        finally
+        {
+            restoringFinalDesperationHealthClamp = false;
+        }
+    }
+
+    private void EnsurePatternRolesReady()
+    {
+        if (ShouldConfigureRuntimePatterns())
+            ConfigureRuntimePatternsIfNeeded();
+        else
+            BindAuthoredPatternRolesIfNeeded();
+    }
+
+    private bool CanUseHp50Rush()
+    {
+        return !RuntimeData.FinalDesperationStarted &&
+               !RuntimeData.Hp50PatternUsed &&
+               CurrentHealthRatio > finalDesperationHpRatio &&
+               CurrentHealthRatio <= hp50RushRatio;
     }
 
     private void CleanupEgoSwordForBattleEnd()
@@ -690,12 +870,14 @@ public sealed class DemonKingController : BossControllerBase
 
     private void ForceFinalDesperationNow()
     {
+        EnsurePatternRolesReady();
         if (finalDesperationEntry == null)
             return;
 
         RuntimeData.MarkFinalDesperationStarted();
+        TryEndGroggyStateImmediately();
         AbortCurrentPattern();
-        PatternRuntime.ReservePattern(finalDesperationEntry);
+        PatternRuntime.ReserveForcedPattern(finalDesperationEntry);
         ChangeState(GetPatternState(finalDesperationEntry));
     }
 

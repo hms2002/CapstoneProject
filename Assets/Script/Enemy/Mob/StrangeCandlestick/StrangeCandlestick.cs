@@ -281,7 +281,7 @@ public class StrangeCandlestick : Mob, IMobAttackDecisionSource
             return false;
 
         AbilityLogic_StrangeCandlestickAttack.PatternData data = GetAttackPatternData();
-        Vector2 shotDirection = GetLaunchDirection(explicitTarget.transform);
+        Vector2 shotDirection = GetLaunchDirection(explicitTarget);
 
         CombatHitPayload payload = MakeHitPayload();
         if (payload == null)
@@ -335,21 +335,22 @@ public class StrangeCandlestick : Mob, IMobAttackDecisionSource
     public AttackTelegraphSpec MakeLockOnSpec(GameObject explicitTarget, float durationOverride = -1f)
     {
         AbilityLogic_StrangeCandlestickAttack.PatternData data = GetAttackPatternData();
-        Vector2 start = transform.position;
-        Vector2 end = explicitTarget != null ? (Vector2)explicitTarget.transform.position : start;
+        Vector2 start = CommonMonsterCombatUtility.ResolveAimPoint(gameObject, CombatAimPointKind.ProjectileTarget);
+        Vector2 end = explicitTarget != null
+            ? CommonMonsterCombatUtility.ResolveAimPoint(explicitTarget, CombatAimPointKind.ProjectileTarget)
+            : start;
         Vector2 delta = end - start;
         float length = Mathf.Max(0.01f, delta.magnitude);
         Vector2 direction = delta.sqrMagnitude <= 0.0001f
             ? (sprite != null && sprite.flipX ? Vector2.left : Vector2.right)
             : delta / length;
+        if (delta.sqrMagnitude <= 0.0001f)
+            end = start + direction * 0.01f;
 
-        Vector3 center = start + direction * (length * 0.5f);
-        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-
-        return AttackTelegraphSpec.CreateRectangle(
-            center,
-            new Vector2(length, Mathf.Max(0.01f, data.lockOnLineWidth)),
-            angle,
+        return AttackTelegraphSpec.CreateLine(
+            start,
+            end,
+            Mathf.Max(0.01f, data.lockOnLineWidth),
             Mathf.Max(0.01f, durationOverride >= 0f ? durationOverride : data.lockOnDuration),
             GetLockOnStyle());
     }
@@ -393,12 +394,13 @@ public class StrangeCandlestick : Mob, IMobAttackDecisionSource
     }
 
     /// <summary>발사 방향을 계산합니다.</summary>
-    private Vector2 GetLaunchDirection(Transform targetTransform)
+    private Vector2 GetLaunchDirection(GameObject targetObject)
     {
-        if (targetTransform == null)
+        if (targetObject == null)
             return sprite != null && sprite.flipX ? Vector2.left : Vector2.right;
 
-        Vector2 toTarget = (Vector2)(targetTransform.position - transform.position);
+        Vector2 targetPoint = CommonMonsterCombatUtility.ResolveAimPoint(targetObject, CombatAimPointKind.ProjectileTarget);
+        Vector2 toTarget = targetPoint - (Vector2)transform.position;
 
         if (toTarget.sqrMagnitude <= 0.0001f)
             return sprite != null && sprite.flipX ? Vector2.left : Vector2.right;

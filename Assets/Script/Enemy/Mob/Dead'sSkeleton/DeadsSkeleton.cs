@@ -12,6 +12,7 @@ public class DeadsSkeleton : Mob, IDamageReceiver, IMobAttackDecisionSource, IMo
 {
     // 이 클래스의 책임:
     // Dead'sSkeleton의 자폭 상태 전이와 추적 리듬을 관리하고, 순수 폭발 패턴 실행 데이터는 AL에서 읽어 사용한다.
+    private static readonly SoundRef DefaultExplosionSound = SoundRef.FromKey("sound_deadSkeleton_Boom");
 
     /// <summary>
     /// 책임 :
@@ -479,11 +480,11 @@ public class DeadsSkeleton : Mob, IDamageReceiver, IMobAttackDecisionSource, IMo
     {
         if (telegraphService == null) return;
 
-        AttackTelegraphSpec spec = AttackTelegraphSpec.CreateCircle(
+        AttackTelegraphSpec spec = AttackTelegraphSpecUtility.WithThinWarningOutline(AttackTelegraphSpec.CreateCircle(
             transform.position,
             GetConfiguredExplosionDiameter(),
             Mathf.Max(0f, introDuration),
-            introWarningStyle);
+            introWarningStyle));
 
         telegraphService.Show(spec);
     }
@@ -515,11 +516,11 @@ public class DeadsSkeleton : Mob, IDamageReceiver, IMobAttackDecisionSource, IMo
         if (telegraphService == null)
             return;
 
-        AttackTelegraphSpec spec = AttackTelegraphSpec.CreateCircle(
+        AttackTelegraphSpec spec = AttackTelegraphSpecUtility.WithThinWarningOutline(AttackTelegraphSpec.CreateCircle(
             transform.position,
             GetConfiguredExplosionDiameter(),
             0f,
-            armedWarningStyle);
+            armedWarningStyle));
 
         telegraphService.Show(spec);
     }
@@ -530,11 +531,11 @@ public class DeadsSkeleton : Mob, IDamageReceiver, IMobAttackDecisionSource, IMo
         if (telegraphService == null || IsPlayingSelfDestructIntro())
             return;
 
-        AttackTelegraphSpec spec = AttackTelegraphSpec.CreateCircle(
+        AttackTelegraphSpec spec = AttackTelegraphSpecUtility.WithThinWarningOutline(AttackTelegraphSpec.CreateCircle(
             transform.position,
             GetConfiguredExplosionDiameter(),
             0f,
-            armedWarningStyle);
+            armedWarningStyle));
 
         telegraphService.UpdateCurrentGeometry(spec);
     }
@@ -781,7 +782,7 @@ public class DeadsSkeleton : Mob, IDamageReceiver, IMobAttackDecisionSource, IMo
             data.explosionParticleScale);
 
         SoundPlaybackUtility.Play(
-            data.explosionSound,
+            data.explosionSound.IsSet ? data.explosionSound : DefaultExplosionSound,
             instigator: gameObject,
             causer: gameObject,
             target: target != null ? target.gameObject : null,
@@ -947,10 +948,7 @@ public class DeadsSkeleton : Mob, IDamageReceiver, IMobAttackDecisionSource, IMo
     private AttackTelegraphStyle MakeIntroWarningStyle()
     {
         AttackTelegraphStyle style = ScriptableObject.CreateInstance<AttackTelegraphStyle>();
-        style.fillColorStart = new Color(1f, 0f, 0f, 0.45f);
-        style.fillColorEnd = new Color(1f, 0f, 0f, 0.45f);
-        style.borderColorStart = new Color(1f, 0f, 0f, 1f);
-        style.borderColorEnd = new Color(1f, 0f, 0f, 1f);
+        AttackTelegraphStyleUtility.ApplyDangerAreaColors(style);
         style.progressCurve = AnimationCurve.Linear(0f, 0f, 1f, 1f);
         style.blinkStartNormalized = 1f;
         style.blinkFrequency = 0f;
@@ -965,10 +963,7 @@ public class DeadsSkeleton : Mob, IDamageReceiver, IMobAttackDecisionSource, IMo
     private AttackTelegraphStyle MakeArmedWarningStyle()
     {
         AttackTelegraphStyle style = ScriptableObject.CreateInstance<AttackTelegraphStyle>();
-        style.fillColorStart = new Color(1f, 0f, 0f, 0.45f);
-        style.fillColorEnd = new Color(1f, 0f, 0f, 0.45f);
-        style.borderColorStart = new Color(1f, 0f, 0f, 1f);
-        style.borderColorEnd = new Color(1f, 0f, 0f, 1f);
+        AttackTelegraphStyleUtility.ApplyDangerAreaColors(style);
         style.progressCurve = AnimationCurve.Linear(0f, 0f, 1f, 1f);
         style.blinkStartNormalized = 0f;
         style.blinkFrequency = 8f;

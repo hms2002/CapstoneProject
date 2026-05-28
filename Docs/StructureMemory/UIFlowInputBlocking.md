@@ -58,7 +58,7 @@ This is a fast context map, not the final UI architecture source of truth.
 - Boss encounter presentation blocking is owned by `BossEncounterDirector` for the outer camera/transition/dialogue/return sequence. Legacy `BossTalkManager` follows the same rule.
 - Upgrade open fade is executed by `UpgradeUiOpenFlow`; it blocks unrelated UI input, then opens `UpgradeTreeUI` through the owned push path.
 - Reward open presentation blocks unrelated UI input until the open presentation finishes.
-- Affection reward UI can open as a flow-owned popup during dialogue/encounter blocking, then its close callback resumes the waiting dialogue tag.
+- Affection reward UI can open as a flow-owned popup during dialogue/encounter blocking, then its close callback resumes the waiting dialogue tag. While open, `RewardDisplayUI` asks `DialogueService` to make the captured Reward canvas and shared non-raycasting Hover canvas temporarily visible so reward item detail hover can render even though Dialogue suppression still owns the rest of the non-dialogue UI.
 - Flowering Bloom cut-in blocks unrelated UI input while it owns a short combat time freeze, so pause/menu freeze owners cannot enter during the cut-in and later restore a stale `Time.timeScale = 0`.
 
 ## Extension Entry Points

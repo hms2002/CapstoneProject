@@ -1,4 +1,5 @@
 using System.Collections;
+using CapstoneAudio;
 using UnityEngine;
 using UnityGAS;
 
@@ -11,6 +12,9 @@ using UnityGAS;
 [RequireComponent(typeof(Knight))]
 public class KnightJumpSlamRunner : MonoBehaviour, IMobPatternRunner, IMobPresentationCleanup
 {
+    private static readonly SoundRef JumpSound = SoundRef.FromKey("sound_knightSlime_Jump");
+    private static readonly SoundRef StampingSound = SoundRef.FromKey("sound_knightSlime_Stamping");
+
     [SerializeField] private Knight owner;
     [SerializeField] private MobAbilityCoordinator abilityCoordinator;
     [SerializeField] private AttackTelegraphService telegraphService;
@@ -80,12 +84,14 @@ public class KnightJumpSlamRunner : MonoBehaviour, IMobPatternRunner, IMobPresen
             ShowWarning(currentContext, travelSeconds);
             collisionProfile?.SetBodyCollisionMode(EntityCollisionProfile2D.BodyCollisionMode.PassThroughActors);
             owner.PlayJumpAnimation();
+            SoundPlaybackUtility.Play(JumpSound, causer: gameObject, position: transform.position, sourceObject: this);
             StartJump(currentContext, travelSeconds);
 
             yield return MoveJump(currentContext, spec, travelSeconds);
 
             if (cancelRequested || owner.IsDead) yield break;
 
+            SoundPlaybackUtility.Play(StampingSound, causer: gameObject, position: currentContext.ImpactPos, sourceObject: this);
             PlayLandingEffect(currentContext);
             owner.ApplyImpactDamage(currentContext);
         }
@@ -227,10 +233,7 @@ public class KnightJumpSlamRunner : MonoBehaviour, IMobPatternRunner, IMobPresen
     private AttackTelegraphStyle MakeImpactStyle()
     {
         AttackTelegraphStyle style = ScriptableObject.CreateInstance<AttackTelegraphStyle>();
-        style.fillColorStart = new Color(1f, 0f, 0f, 0.16f);
-        style.fillColorEnd = new Color(1f, 0f, 0f, 0.34f);
-        style.borderColorStart = new Color(1f, 0.25f, 0.25f, 0.95f);
-        style.borderColorEnd = new Color(1f, 0.25f, 0.25f, 0.95f);
+        AttackTelegraphStyleUtility.ApplyDangerAreaColors(style);
         style.progressCurve = AnimationCurve.Linear(0f, 0f, 1f, 1f);
         style.blinkStartNormalized = 0.72f;
         style.blinkFrequency = 5f;

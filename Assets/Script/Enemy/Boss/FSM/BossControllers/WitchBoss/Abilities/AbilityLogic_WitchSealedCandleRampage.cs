@@ -165,13 +165,13 @@ public class AbilityLogic_WitchSealedCandleRampage : AbilityLogic
                 continue;
 
             float angle = Mathf.Atan2(plan.direction.y, plan.direction.x) * Mathf.Rad2Deg;
-            AttackTelegraphSpec spec = AttackTelegraphSpec.CreateSector(
+            AttackTelegraphSpec spec = AttackTelegraphSpecUtility.WithThinWarningOutline(AttackTelegraphSpec.CreateSector(
                 plan.origin,
                 radius,
                 ResolveSpreadAngleDegrees(),
                 angle,
                 duration,
-                telegraphStyle);
+                telegraphStyle));
 
             AttackTelegraphView view = telegraphService.SpawnDetachedView(spec);
             if (view != null)

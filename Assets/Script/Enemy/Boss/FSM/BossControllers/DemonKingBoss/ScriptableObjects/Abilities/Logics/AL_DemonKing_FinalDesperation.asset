@@ -14,13 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveToCenterSeconds: 0.6
   openingKnockbackDiameter: 40
-  openingKnockbackDamage: 0.01
+  openingKnockbackDamage: 0
   openingKnockback: 26
   bombIntervalSeconds: 0.2
   bombWarningSeconds: 0.4
   bombDiameter: 2.1
   bombDamage: 1
-  bombOffsetRange: 5
+  bombOffsetRange: 1.8
   laserWarningSeconds: 1
   laserAttackSeconds: 1
   laserWidth: 0.75

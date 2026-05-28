@@ -24,8 +24,7 @@ public class Bishop : Slime
     private const float ChaseSpeedMultiplier = 0.5f;
     private const float SplitSpread = 0.55f;
     private const float AttackRecoverSeconds = 0.25f;
-    private const float RaycastDistance = 64f;
-    private const float FallbackHalfLength = 8f;
+    private const float MaxLineCastDistance = 20f;
     private const float BlastInterval = 1.2f;
     private const float BlastDiameter = 1.25f;
     private const float BlastViewTime = 0.2f;
@@ -45,9 +44,11 @@ public class Bishop : Slime
     public readonly struct LineBlastContext
     {
         public readonly GameObject Target;
-        public readonly Vector2 Center;
+        public readonly Vector2 LineStart;
+        public readonly Vector2 LineEnd;
+        public readonly Vector2 LineCenter;
         public readonly Vector2 Direction;
-        public readonly float HalfLength;
+        public readonly float LineLength;
         public readonly float WarningTime;
         public readonly float WarningWidth;
         public readonly float BlastInterval;
@@ -56,9 +57,9 @@ public class Bishop : Slime
 
         public LineBlastContext(
             GameObject target,
-            Vector2 center,
+            Vector2 lineStart,
+            Vector2 lineEnd,
             Vector2 direction,
-            float halfLength,
             float warningTime,
             float warningWidth,
             float blastInterval,
@@ -66,9 +67,11 @@ public class Bishop : Slime
             float blastViewTime)
         {
             Target = target;
-            Center = center;
+            LineStart = lineStart;
+            LineEnd = lineEnd;
+            LineCenter = (lineStart + lineEnd) * 0.5f;
             Direction = direction;
-            HalfLength = halfLength;
+            LineLength = Vector2.Distance(lineStart, lineEnd);
             WarningTime = warningTime;
             WarningWidth = warningWidth;
             BlastInterval = blastInterval;
@@ -109,8 +112,11 @@ public class Bishop : Slime
     protected override void OnDeathStarted()
     {
         CancelAbility();
-        if (!IsPitFallDeath)
+        if (!IsPitFallDeath && splitPrefab != null && splitCount > 0)
+        {
+            PlaySplitDeathVanishEffect();
             SpawnSplit<Wizard>(splitPrefab, splitCount, SplitSpread);
+        }
 
         base.OnDeathStarted();
     }
@@ -174,11 +180,12 @@ public class Bishop : Slime
 
         Vector2 center = transform.position;
         Vector2 direction = GetDirection(targetObject);
+        ResolveLineSegment(center, direction, out Vector2 lineStart, out Vector2 lineEnd);
         context = new LineBlastContext(
             targetObject,
-            center,
+            lineStart,
+            lineEnd,
             direction,
-            GetLineHalfLength(center, direction),
             WarningTime,
             WarningWidth,
             BlastInterval,
@@ -195,14 +202,18 @@ public class Bishop : Slime
         points.Clear();
 
         float interval = Mathf.Max(0.1f, context.BlastInterval);
-        float start = -context.HalfLength;
-        float end = context.HalfLength;
+        float lineLength = Mathf.Max(0f, context.LineLength);
+        if (lineLength <= 0.001f)
+        {
+            points.Add(context.LineCenter);
+            return;
+        }
 
-        for (float offset = start; offset <= end + 0.001f; offset += interval)
-            points.Add(context.Center + context.Direction * offset);
+        for (float offset = 0f; offset <= lineLength + 0.001f; offset += interval)
+            points.Add(context.LineStart + context.Direction * offset);
 
         if (points.Count == 0)
-            points.Add(context.Center);
+            points.Add(context.LineCenter);
     }
 
     /// <summary>폭발 위치 안에 대상이 있으면 피해를 적용합니다.</summary>
@@ -246,32 +257,24 @@ public class Bishop : Slime
         SetStats("Bishop", MaxHealth, VisualScale);
     }
 
-    /// <summary>비숍 중심 기준으로 벽까지 이어지는 경고선 반쪽 길이를 구합니다.</summary>
-    private float GetLineHalfLength(Vector2 center, Vector2 direction)
+    /// <summary>비숍 중심에서 양방향으로 독립 cast해 실제 직선 마법 선분을 계산합니다.</summary>
+    private static void ResolveLineSegment(Vector2 center, Vector2 direction, out Vector2 lineStart, out Vector2 lineEnd)
     {
-        float forward = GetWallDistance(center, direction);
-        float backward = GetWallDistance(center, -direction);
+        Vector2 normalizedDirection = direction.sqrMagnitude > 0.001f ? direction.normalized : Vector2.right;
+        float forwardLength = ResolveCastLength(center, normalizedDirection);
+        float backwardLength = ResolveCastLength(center, -normalizedDirection);
 
-        bool hasForward = forward > 0f;
-        bool hasBackward = backward > 0f;
-
-        if (hasForward && hasBackward)
-            return Mathf.Max(BlastDiameter * 0.5f, Mathf.Min(forward, backward));
-
-        if (hasForward)
-            return Mathf.Max(BlastDiameter * 0.5f, Mathf.Min(forward, FallbackHalfLength));
-
-        if (hasBackward)
-            return Mathf.Max(BlastDiameter * 0.5f, Mathf.Min(backward, FallbackHalfLength));
-
-        return FallbackHalfLength;
+        lineStart = center - normalizedDirection * backwardLength;
+        lineEnd = center + normalizedDirection * forwardLength;
     }
 
-    /// <summary>지정 방향으로 벽까지의 거리를 구합니다.</summary>
-    private static float GetWallDistance(Vector2 center, Vector2 direction)
+    /// <summary>지정 방향으로 최대 사거리 또는 벽 앞까지의 Bishop 라인 길이를 구합니다.</summary>
+    private static float ResolveCastLength(Vector2 center, Vector2 direction)
     {
-        RaycastHit2D hit = Physics2D.Raycast(center, direction, RaycastDistance, 1 << WallLayer);
-        return hit.collider != null ? hit.distance : 0f;
+        float minimumLength = BlastDiameter * 0.5f;
+        RaycastHit2D hit = Physics2D.Raycast(center, direction, MaxLineCastDistance, 1 << WallLayer);
+        float resolvedLength = hit.collider != null ? hit.distance : MaxLineCastDistance;
+        return Mathf.Max(minimumLength, Mathf.Min(resolvedLength, MaxLineCastDistance));
     }
 
     /// <summary>비숍 공격 설정이 모두 연결되어 있는지 확인합니다.</summary>

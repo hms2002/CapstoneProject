@@ -47,6 +47,26 @@ public class SpeechBubbleComponent : MonoBehaviour
             duration,
             theme,
             onHidden,
+            Vector3.zero,
+            false,
+            0f,
+            0f,
+            0f);
+    }
+
+    public void SpeakWithOffsetDelta(
+        string text,
+        float duration,
+        SpeechBubbleThemeSettings theme,
+        Action onHidden,
+        Vector3 offsetDelta)
+    {
+        SpeakInternal(
+            text,
+            duration,
+            theme,
+            onHidden,
+            offsetDelta,
             false,
             0f,
             0f,
@@ -67,6 +87,7 @@ public class SpeechBubbleComponent : MonoBehaviour
             duration,
             theme,
             onHidden,
+            Vector3.zero,
             true,
             minTextWidth,
             maxTextWidth,
@@ -78,6 +99,7 @@ public class SpeechBubbleComponent : MonoBehaviour
         float duration,
         SpeechBubbleThemeSettings theme,
         Action onHidden,
+        Vector3 offsetDelta,
         bool preSizeLayout,
         float minTextWidth,
         float maxTextWidth,
@@ -95,7 +117,7 @@ public class SpeechBubbleComponent : MonoBehaviour
 
         bubble.SetupAndShow(
             transform,
-            bubbleOffset,
+            bubbleOffset + offsetDelta,
             text,
             duration,
             defaultUseTyping,

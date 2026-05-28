@@ -13,12 +13,12 @@ MonoBehaviour:
   m_Name: SlimeQueenBossNpc
   m_EditorClassIdentifier: 
   id: 3001
-  npcName: "\uC2AC\uB77C\uC784 \uD034"
+  npcName: "\uBA5C\uD0C0"
   isBoss: 1
   primaryInk: {fileID: 4900000, guid: 56d53b56704a4f39b25ca9cc847a542d, type: 3}
   bossEncounterInk: {fileID: 0}
   bossEncounterDialogues: []
-  dialogueTheme: {fileID: 11400000, guid: 3ef1664fdf0dac148a47091038acdfd9, type: 2}
+  dialogueTheme: {fileID: 11400000, guid: 16de5d7645fe404429b78b7115f05ed0, type: 2}
   affectionRewards: []
   spriteLibraryAsset: {fileID: 0}
   emoteOffset: {x: 75, y: 100}

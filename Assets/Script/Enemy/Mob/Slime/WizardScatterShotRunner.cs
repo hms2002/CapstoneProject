@@ -133,14 +133,11 @@ public class WizardScatterShotRunner : MonoBehaviour, IMobPatternRunner
         return spec != null && spec.Token != null && spec.Token.IsCancelled;
     }
 
-    /// <summary>Wizard 산탄 공격의 보라색 부채꼴 경고 스타일을 만듭니다.</summary>
+    /// <summary>Wizard 산탄 공격의 표준 위험 부채꼴 경고 스타일을 만듭니다.</summary>
     private static AttackTelegraphStyle MakeScatterTelegraphStyle()
     {
         AttackTelegraphStyle style = ScriptableObject.CreateInstance<AttackTelegraphStyle>();
-        style.fillColorStart = new Color(0.45f, 0.05f, 1f, 0.22f);
-        style.fillColorEnd = new Color(0.78f, 0.18f, 1f, 0.46f);
-        style.borderColorStart = new Color(0.95f, 0.55f, 1f, 1f);
-        style.borderColorEnd = new Color(1f, 0.78f, 1f, 1f);
+        AttackTelegraphStyleUtility.ApplyDangerAreaColors(style);
         style.progressCurve = AnimationCurve.EaseInOut(0f, 0f, 1f, 1f);
         style.blinkStartNormalized = 0.65f;
         style.blinkFrequency = 7f;

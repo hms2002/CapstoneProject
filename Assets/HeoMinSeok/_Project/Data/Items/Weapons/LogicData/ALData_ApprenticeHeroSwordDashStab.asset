@@ -1,0 +1,61 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c861f4b5c424177a779ddf07afabded, type: 3}
+  m_Name: ALData_ApprenticeHeroSwordDashStab
+  m_EditorClassIdentifier:
+  animationTrigger: Swing1
+  dashDistance: 3
+  dashDuration: 0.18
+  recoveryDuration: 0.18
+  forwardOffset: 0.95
+  hitLayers:
+    serializedVersion: 2
+    m_Bits: 2147483648
+  hitbox:
+    hitboxPrefab: {fileID: 2863281621525748656, guid: 9657263b5030492aa04a4b949ea7dd87, type: 3}
+    activeTime: 0.22
+    hitboxSize: {x: 2.2, y: 0.75}
+    hitboxScaleMultiplier: {x: 1, y: 1}
+    overrideSizingMode: 1
+    sizingMode: 3
+    wallLayers:
+      serializedVersion: 2
+      m_Bits: 0
+    hitOncePerTarget: 1
+    destroyOnFirstHit: 0
+    attachToOwnerOnSetup: 1
+    visualMirrorMode: 3
+  damage:
+    damageConfig:
+      includeStaggerBuildUp: 1
+      includeElementBuildUp: 1
+      staggerFormula: {fileID: 11400000, guid: 8fb95c16fb825134f8ce24efb528fe19, type: 2}
+      elementFormulas: []
+      critAffectsElement: 1
+    damageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
+    knockbackEffect: {fileID: 11400000, guid: 2f5faaf6bd840544cb59f6d23905c40d, type: 2}
+    damageFormula: {fileID: 11400000, guid: f836f4795e60fd54f9a4e401de9d7dd9, type: 2}
+    knockbackFormula: {fileID: 0}
+    legacyDamage: 10
+    legacyStaggerDamage: 0
+    hitConfirmedTag: {fileID: 11400000, guid: 465249853d3321e47b796f8e8c787f64, type: 2}
+    hitImpactCueKind: 1
+  dashStartSound:
+    key: weapon.sword.swing.1
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  stabSound:
+    key: weapon.sword.swing.2
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}

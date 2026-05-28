@@ -1,10 +1,30 @@
 using System.Collections;
 using System.Collections.Generic;
+using CapstoneAudio;
+using CapstonePresentation;
 using UnityEngine;
 using UnityGAS;
 
+/// <summary>
+/// 책임:
+/// - 원거리 슬라임 여왕의 십자 물기둥 패턴과 발동 동시 사운드를 실행한다.
+/// </summary>
 public sealed class AbilityLogic_SlimeQueenCrossWaterPillar : AbilityLogic
 {
+    [Header("Effect")]
+    [Tooltip("물기둥 피해 지점마다 출력할 이펙트 프리팹입니다. 비워두면 피해 표시는 생략하고 판정만 적용합니다.")]
+    [SerializeField] private GameObject blastEffectPrefab;
+
+    [Header("Sound")]
+    [SerializeField] private WorldPresentationHook castPresentation = new WorldPresentationHook
+    {
+        sound = SoundRef.FromKey("sound_slimeQueen_CrossWaterPillar1"),
+        additionalSounds = new[]
+        {
+            SoundRef.FromKey("sound_slimeQueen_CrossWaterPillar2")
+        }
+    };
+
     /// <summary>원거리 슬라임 여왕이 자신 중심 네 방향 경고선 후 물기둥 공격을 실행합니다.</summary>
     public override IEnumerator Activate(AbilitySystem system, AbilitySpec spec, GameObject initialTarget)
     {
@@ -28,7 +48,13 @@ public sealed class AbilityLogic_SlimeQueenCrossWaterPillar : AbilityLogic
             if (IsAbilityCancelled(spec))
                 yield break;
 
-            slimeQueen.FireCrossWaterPillars(system, spec, segments);
+            SlimeQueenPresentationAudioUtility.PlayPresentation(
+                castPresentation,
+                slimeQueen.gameObject,
+                slimeQueen.transform.position,
+                this,
+                initialTarget);
+            slimeQueen.FireCrossWaterPillars(system, spec, segments, blastEffectPrefab);
             slimeQueen.FaceCurrentTarget();
 
             if (slimeQueen.CrossWaterPillarBlastViewSeconds > 0f)

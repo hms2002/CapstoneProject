@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe2f2aa3b7d897b4882187f548f45df1, type: 3}
+  m_Name: Relic Logic_Common_SharpAwl
+  m_EditorClassIdentifier:
+  entries:
+  - attribute: {fileID: 11400000, guid: 4cf98b7d858f198459256a03d954c0d2, type: 2}
+    displayNameOverride: "치명타 피해"
+    type: 0
+    value: 0.35
+    valueByLevel: []
+    duration: 0

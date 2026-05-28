@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using CapstoneAudio;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -25,6 +26,9 @@ public struct GameOverPresentationRequest
     public bool EndRunOnReturn;
     public RunEndReason EndRunReason;
     public bool UseSceneTransitionService;
+    public string ReturnButtonLabel;
+    public string MessageTextOverride;
+    public bool HideTimeText;
 
     public static GameOverPresentationRequest Defeat(
         Transform playerTransform,
@@ -91,10 +95,10 @@ public struct GameOverPresentationRequest
         if (normalized.Contains("demon") || normalized.Contains("king"))
             return "마왕의 알현실";
 
-        if (normalized.Contains("spili") || normalized.Contains("spiri") ||
+        if (normalized.Contains("dragon") || normalized.Contains("dragon") ||
             sceneName == "ProtoTypeCorridor 1" || sceneName == "ProtoTypeBoss 2")
         {
-            return isBossRoom ? "스피리의 방" : "보물창고";
+            return isBossRoom ? "드래곤의 방" : "보물창고";
         }
 
         if (normalized.Contains("shadow") || normalized.Contains("chloe") ||
@@ -132,6 +136,7 @@ public struct GameOverPresentationRequest
 public sealed class GameOverPresentationController : MonoBehaviour
 {
     private const string DefaultHubSceneName = "ProtoTypeHub";
+    private static readonly SoundRef ReturnToHubSound = SoundRef.FromKey("sound_ui_AfterPlayerDieReturnToHub");
     private const int SystemCursorPriority = 350;
     private const float FadeToBlackSeconds = 0.85f;
     private const float InfoFadeSeconds = 0.35f;
@@ -165,6 +170,7 @@ public sealed class GameOverPresentationController : MonoBehaviour
     [SerializeField] private TMP_Text timeText;
     [SerializeField] private TMP_Text locationText;
     [SerializeField] private Button returnButton;
+    [SerializeField] private TMP_Text returnButtonLabelText;
 
     [Header("Authored Death Text")]
     [TextArea(1, 3)]
@@ -205,6 +211,10 @@ public sealed class GameOverPresentationController : MonoBehaviour
     private bool listenerBound;
     private bool hideOnNextSceneLoaded;
     private bool hasCapturedAuthoredReturnPose;
+    private bool hasCapturedDefaultReturnButtonLabel;
+    private bool hasCapturedDefaultTimeTextActive;
+    private string defaultReturnButtonLabel;
+    private bool defaultTimeTextActive;
     private PlayerCinematicProtection acquiredProtection;
     private readonly List<SpriteRenderer> hiddenWorldPlayerRenderers = new List<SpriteRenderer>();
     private Vector2 returnPlayerAuthoredAnchorMin = new Vector2(0.5f, 0.5f);
@@ -269,6 +279,8 @@ public sealed class GameOverPresentationController : MonoBehaviour
         ResolveReferences();
         CaptureAuthoredReturnPose();
         BindReturnButton();
+        CaptureDefaultReturnButtonLabel();
+        CaptureDefaultTimeTextActive();
         SetPresentationVisible(false);
         SetReturnPresentationVisible(false);
         SetPitVisible(false);
@@ -288,6 +300,8 @@ public sealed class GameOverPresentationController : MonoBehaviour
     private void OnDestroy()
     {
         RestoreHiddenWorldPlayerRenderers();
+        RestoreDefaultReturnButtonLabel();
+        RestoreDefaultTimeTextActive();
         ReleasePlayerProtection();
         ReleaseTimerPause();
         MouseCursorService.Instance?.ClearDomain(this);
@@ -310,6 +324,8 @@ public sealed class GameOverPresentationController : MonoBehaviour
         ResolveReferences();
         CaptureAuthoredReturnPose();
         BindReturnButton();
+        CaptureDefaultReturnButtonLabel();
+        CaptureDefaultTimeTextActive();
         ValidateAuthoredReferences();
         PrepareGameplayState(request.PlayerTransform);
         CenterCameraOnPlayer(request.PlayerTransform);
@@ -341,6 +357,7 @@ public sealed class GameOverPresentationController : MonoBehaviour
     private IEnumerator CoShow()
     {
         ApplyText(request);
+        ApplyReturnButtonLabel(request);
         ResetReturnPresentationPose(showPlayer: true, showHole: false);
         SpriteRenderer snapshotRenderer = CaptureReturnPlayerSnapshot(request.PlayerTransform);
         bool matchedWorldSnapshot = TryMatchReturnPlayerToWorldSprite(snapshotRenderer);
@@ -362,6 +379,7 @@ public sealed class GameOverPresentationController : MonoBehaviour
         if (returnRoutine != null)
             return;
 
+        SoundPlaybackUtility.Play(ReturnToHubSound, sourceObject: this);
         returnRoutine = StartCoroutine(CoReturnToHub());
     }
 
@@ -570,6 +588,9 @@ public sealed class GameOverPresentationController : MonoBehaviour
 
         if (returnPitRenderer == null && returnPitTransform != null)
             returnPitRenderer = returnPitTransform.GetComponent<SpriteRenderer>();
+
+        if (returnButtonLabelText == null && returnButton != null)
+            returnButtonLabelText = returnButton.GetComponentInChildren<TMP_Text>(true);
     }
 
     private void CaptureAuthoredReturnPose()
@@ -907,6 +928,8 @@ public sealed class GameOverPresentationController : MonoBehaviour
         if (returnButton != null)
             returnButton.interactable = true;
 
+        RestoreDefaultReturnButtonLabel();
+        RestoreDefaultTimeTextActive();
         SetGraphicAlpha(blackoutGraphic, 0f);
         SetInfoVisible(alpha: 0f, interactable: false);
         SetReturnPresentationVisible(false);
@@ -942,6 +965,8 @@ public sealed class GameOverPresentationController : MonoBehaviour
 
         if (returnButton == null)
             Debug.LogWarning("[GameOverPresentationController] Return button is not assigned.", this);
+        else if (returnButtonLabelText == null)
+            Debug.LogWarning("[GameOverPresentationController] Return button label TMP_Text was not found.", this);
 
         if (returnPresentationGroup == null || returnPlayerImage == null || returnHoleImage == null)
             Debug.LogWarning("[GameOverPresentationController] One or more UI return presentation references are not assigned.", this);
@@ -1123,13 +1148,78 @@ public sealed class GameOverPresentationController : MonoBehaviour
     private void ApplyText(GameOverPresentationRequest request)
     {
         if (messageText != null)
-            messageText.text = BuildDeathMessage(request);
+        {
+            messageText.text = string.IsNullOrWhiteSpace(request.MessageTextOverride)
+                ? BuildDeathMessage(request)
+                : request.MessageTextOverride;
+        }
 
-        if (timeText != null)
-            timeText.text = $"남은 시간  {FormatTime(request.RemainingSeconds)}";
+        ApplyTimeText(request);
 
         if (locationText != null)
             locationText.text = $"장소  {request.LocationName}";
+    }
+
+    private void CaptureDefaultTimeTextActive()
+    {
+        if (hasCapturedDefaultTimeTextActive || timeText == null)
+            return;
+
+        defaultTimeTextActive = timeText.gameObject.activeSelf;
+        hasCapturedDefaultTimeTextActive = true;
+    }
+
+    private void ApplyTimeText(GameOverPresentationRequest request)
+    {
+        if (timeText == null)
+            return;
+
+        CaptureDefaultTimeTextActive();
+
+        bool showTimeText = !request.HideTimeText && defaultTimeTextActive;
+        if (timeText.gameObject.activeSelf != showTimeText)
+            timeText.gameObject.SetActive(showTimeText);
+
+        if (!request.HideTimeText)
+            timeText.text = $"남은 시간  {FormatTime(request.RemainingSeconds)}";
+    }
+
+    private void RestoreDefaultTimeTextActive()
+    {
+        if (!hasCapturedDefaultTimeTextActive || timeText == null)
+            return;
+
+        if (timeText.gameObject.activeSelf != defaultTimeTextActive)
+            timeText.gameObject.SetActive(defaultTimeTextActive);
+    }
+
+    private void CaptureDefaultReturnButtonLabel()
+    {
+        if (hasCapturedDefaultReturnButtonLabel || returnButtonLabelText == null)
+            return;
+
+        defaultReturnButtonLabel = returnButtonLabelText.text;
+        hasCapturedDefaultReturnButtonLabel = true;
+    }
+
+    private void ApplyReturnButtonLabel(GameOverPresentationRequest request)
+    {
+        if (returnButtonLabelText == null)
+            return;
+
+        CaptureDefaultReturnButtonLabel();
+
+        returnButtonLabelText.text = string.IsNullOrWhiteSpace(request.ReturnButtonLabel)
+            ? defaultReturnButtonLabel
+            : request.ReturnButtonLabel;
+    }
+
+    private void RestoreDefaultReturnButtonLabel()
+    {
+        if (!hasCapturedDefaultReturnButtonLabel || returnButtonLabelText == null)
+            return;
+
+        returnButtonLabelText.text = defaultReturnButtonLabel;
     }
 
     private string BuildDeathMessage(GameOverPresentationRequest request)

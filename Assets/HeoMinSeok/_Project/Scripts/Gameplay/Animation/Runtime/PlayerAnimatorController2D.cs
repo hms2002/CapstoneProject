@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityGAS;
 
@@ -33,6 +34,9 @@ public sealed class PlayerAnimatorController2D : MonoBehaviour
     private int isMovingBoolHash;
     private int directionIntHash;
     private int lastDirectionValue;
+    private readonly HashSet<object> cinematicFacingLockOwners = new();
+
+    private bool IsCinematicFacingLocked => cinematicFacingLockOwners.Count > 0;
 
     public static PlayerAnimatorController2D GetOrAdd(Transform owner)
     {
@@ -67,8 +71,51 @@ public sealed class PlayerAnimatorController2D : MonoBehaviour
             return;
 
         SyncMovementState();
+
+        if (IsCinematicFacingLocked)
+            return;
+
         SyncDirectionState();
         SyncVisualFlip();
+    }
+
+    private void OnDisable()
+    {
+        cinematicFacingLockOwners.Clear();
+    }
+
+    public void AcquireCinematicFacingLock(object ownerToken)
+    {
+        if (ownerToken == null)
+            return;
+
+        cinematicFacingLockOwners.Add(ownerToken);
+    }
+
+    public void ReleaseCinematicFacingLock(object ownerToken)
+    {
+        if (ownerToken == null)
+            return;
+
+        cinematicFacingLockOwners.Remove(ownerToken);
+    }
+
+    public void ApplyFacingDirectionForPresentation(Vector2 direction)
+    {
+        if (direction.sqrMagnitude <= 0.0001f)
+            return;
+
+        Vector2 normalizedDirection = direction.normalized;
+        if (directionIntHash == 0 && !string.IsNullOrWhiteSpace(directionInt))
+            directionIntHash = Animator.StringToHash(directionInt);
+
+        if (animator != null && directionIntHash != 0)
+        {
+            lastDirectionValue = ConvertToDirectionValue(normalizedDirection);
+            animator.SetInteger(directionIntHash, lastDirectionValue);
+        }
+
+        SyncVisualFlip(normalizedDirection);
     }
 
     private void SyncMovementState()
@@ -133,10 +180,14 @@ public sealed class PlayerAnimatorController2D : MonoBehaviour
     /// </summary>
     private void SyncVisualFlip()
     {
+        SyncVisualFlip(ResolveFacingDirection());
+    }
+
+    private void SyncVisualFlip(Vector2 facingDirection)
+    {
         if (visualRenderers == null || visualRenderers.Length == 0)
             return;
 
-        Vector2 facingDirection = ResolveFacingDirection();
         if (facingDirection.sqrMagnitude <= 0.0001f)
             return;
 

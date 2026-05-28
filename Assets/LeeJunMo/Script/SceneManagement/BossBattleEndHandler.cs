@@ -100,6 +100,7 @@ public sealed class BossBattleEndHandler : MonoBehaviour
         if (!activated)
             return;
 
+        treasureChest.PlayRewardReveal();
         hasHandledRewards = true;
         context.MarkRewardsHandled();
     }
@@ -117,8 +118,22 @@ public sealed class BossBattleEndHandler : MonoBehaviour
 
         exitPortal.SetActive(true);
         RestorePortalVisibilityAndInteraction(exitPortal);
+        PlayPortalRevealPresentation(exitPortal);
         hasHandledPortal = true;
         context.MarkPortalHandled();
+    }
+
+    private static void PlayPortalRevealPresentation(GameObject root)
+    {
+        if (root == null)
+            return;
+
+        BossRewardObjectRevealPresentation presentation =
+            root.GetComponent<BossRewardObjectRevealPresentation>();
+        if (presentation == null)
+            presentation = root.GetComponentInChildren<BossRewardObjectRevealPresentation>(true);
+
+        presentation?.PlayReveal();
     }
 
     private static void RestorePortalVisibilityAndInteraction(GameObject portalRoot)

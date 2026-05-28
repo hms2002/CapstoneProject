@@ -1,3 +1,4 @@
+using CapstoneAudio;
 using UnityEngine;
 using DG.Tweening;
 using UnityGAS;
@@ -8,6 +9,7 @@ public class FieldHealPickup2D : MonoBehaviour
 {
     // 이 클래스의 책임:
     // 월드에 떨어진 체력 회복 픽업을 관리하고, 유효한 PickupCollector2D와 접촉했을 때만 회복 후 자신을 제거한다.
+    private static readonly SoundRef CollectSound = SoundRef.FromKey("sound_player_GetFiledHeart");
 
     [Header("Heal")]
     [SerializeField] private AttributeDefinition healthAttribute;
@@ -149,6 +151,7 @@ public class FieldHealPickup2D : MonoBehaviour
             return;
 
         collected = true;
+        SoundPlaybackUtility.Play(CollectSound, instigator: playerTransform.gameObject, causer: gameObject, position: transform.position, sourceObject: this);
         PlayerHealParticlePlayback.PlayAttached(healParticlePrefab, playerTransform, healParticleLocalOffset);
         PlayCollectPresentation();
         Destroy(gameObject);

@@ -72,6 +72,7 @@ public sealed class EncyclopediaEntryButton : MonoBehaviour,
 
     private void OnDisable()
     {
+        SetItemSlotCursorInteractable(false);
         hovered = false;
         pressed = false;
         RefreshPresentation();
@@ -79,6 +80,7 @@ public sealed class EncyclopediaEntryButton : MonoBehaviour,
 
     private void OnDestroy()
     {
+        SetItemSlotCursorInteractable(false);
         if (button != null)
             button.onClick.RemoveListener(HandleClick);
     }
@@ -111,6 +113,7 @@ public sealed class EncyclopediaEntryButton : MonoBehaviour,
 
     public void Clear()
     {
+        SetItemSlotCursorInteractable(false);
         entryIndex = -1;
         onSelected = null;
         hovered = false;
@@ -130,15 +133,20 @@ public sealed class EncyclopediaEntryButton : MonoBehaviour,
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        if (locked)
+        if (!IsCursorItemSlot())
+        {
+            SetItemSlotCursorInteractable(false);
             return;
+        }
 
         hovered = true;
+        SetItemSlotCursorInteractable(true);
         RefreshPresentation();
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
+        SetItemSlotCursorInteractable(false);
         hovered = false;
         pressed = false;
         RefreshPresentation();
@@ -183,6 +191,9 @@ public sealed class EncyclopediaEntryButton : MonoBehaviour,
         if (button != null)
             button.interactable = !locked;
 
+        if (locked)
+            SetItemSlotCursorInteractable(false);
+
         RefreshPresentation();
     }
 
@@ -203,6 +214,26 @@ public sealed class EncyclopediaEntryButton : MonoBehaviour,
             return;
 
         onSelected?.Invoke(category, entryIndex);
+    }
+
+    private bool IsCursorItemSlot()
+    {
+        return entryIndex >= 0 &&
+               !locked &&
+               (category == EncyclopediaCategory.Weapon ||
+                category == EncyclopediaCategory.Relic ||
+                category == EncyclopediaCategory.Consumable);
+    }
+
+    private void SetItemSlotCursorInteractable(bool active)
+    {
+        if (active && IsCursorItemSlot())
+        {
+            MouseCursorService.EnsureInstance().SetInteractable(this, true);
+            return;
+        }
+
+        MouseCursorService.Instance?.SetInteractable(this, false);
     }
 
     private void ResolveReferences()

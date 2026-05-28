@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using CapstoneAudio;
 using UnityEngine;
 using UnityGAS;
 
@@ -18,6 +19,7 @@ public static class CombatDamageAction
     private static GameplayTag s_groggyTag;
     private static GameplayTag s_staggerImmuneTag;
     private static readonly List<ElementDamageResult> s_resolvedElements = new(8);
+    private static readonly SoundRef PlayerEvadeSound = SoundRef.FromKey("sound_player_Evade");
 
     public static void ApplyDamageAndEmitHit(
         AbilitySystem system,
@@ -211,6 +213,7 @@ public static class CombatDamageAction
         if (CombatEvasionUtil.TryRollEvasion(target))
         {
             DamagePopupService.ShowText("EVADE", target.transform.position);
+            TryPlayPlayerEvadeSound(target);
             return;
         }
 
@@ -226,6 +229,7 @@ public static class CombatDamageAction
             finalHpDamage,
             causer);
 
+        ReserveFallbackDamagePopupSuppression(target, hpCheck, geDamage, finalHpDamage);
         runner.ApplyEffectSpec(damageSpec, target);
 
         TryShowHpDamagePopup(target, hpCheck, hitWorldPosition, isCriticalHit);
@@ -328,6 +332,43 @@ public static class CombatDamageAction
 
         float preHp = targetAttrs.GetAttributeValue(hpAttr);
         return new HpCheckData(preHp, hpAttr, targetAttrs);
+    }
+
+    /// <summary>플레이어가 공격을 회피했을 때만 회피 성공 사운드를 재생합니다.</summary>
+    private static void TryPlayPlayerEvadeSound(GameObject target)
+    {
+        if (target == null || !target.CompareTag("Player"))
+            return;
+
+        SoundPlaybackUtility.Play(PlayerEvadeSound, target: target, position: target.transform.position);
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - AttributeSet 변경 이벤트가 동기적으로 발생하기 전에 fallback 데미지 팝업을 먼저 억제 예약한다.
+    /// - CombatDamageAction 메타데이터 팝업과 DamagePopupListener2D fallback 팝업이 같은 타격에서 중복 표시되는 일을 막는다.
+    /// </summary>
+    private static void ReserveFallbackDamagePopupSuppression(
+        GameObject target,
+        HpCheckData hpCheck,
+        GE_Damage_Spec geDamage,
+        float requestedHpDamage)
+    {
+        if (target == null || !hpCheck.IsValid || requestedHpDamage <= 0f)
+            return;
+
+        float expectedDamage = requestedHpDamage;
+        if (geDamage != null && geDamage.absorbShieldAttribute != null)
+        {
+            float shield = hpCheck.TargetAttrs.GetAttributeValue(geDamage.absorbShieldAttribute);
+            expectedDamage = Mathf.Max(0f, expectedDamage - Mathf.Max(0f, shield));
+        }
+
+        expectedDamage = Mathf.Min(expectedDamage, Mathf.Max(0f, hpCheck.PreHp - hpCheck.HpAttr.minValue));
+        if (expectedDamage <= 0f)
+            return;
+
+        DamagePopupDuplicateSuppressor.Register(target, expectedDamage);
     }
 
     /// <summary>

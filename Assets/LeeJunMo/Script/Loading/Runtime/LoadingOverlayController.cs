@@ -52,7 +52,6 @@ public sealed class LoadingOverlayController : MonoBehaviour
     [SerializeField, Range(0f, 1f)] private float trackFillProgressEnd01 = 0.88f;
 
     [Header("Debug Preview")]
-    [SerializeField] private KeyCode debugPreviewToggleKey = KeyCode.F7;
     [SerializeField, Min(0.25f)] private float debugPreviewCycleSeconds = 2.4f;
     [SerializeField] private bool startWithDebugPreview;
 
@@ -274,8 +273,6 @@ public sealed class LoadingOverlayController : MonoBehaviour
 
     private void Update()
     {
-        UpdateDebugPreviewToggle();
-
         PortalRouteManager routeManager = PortalRouteManager.Instance;
         int batchId = PresentationPreloadService.GetCurrentProviderBatchId();
         int pendingCount = PresentationPreloadService.GetCurrentBatchPendingProviderOperationCount();
@@ -612,7 +609,7 @@ public sealed class LoadingOverlayController : MonoBehaviour
         bool previewActive)
     {
         if (previewActive)
-            return $"Press {debugPreviewToggleKey} to hide preview";
+            return "Debug preview is active from inspector settings";
 
         string stageText = routeManager != null && routeManager.HasActivePlan
             ? $"Stage {routeManager.CurrentStageIndex + 1}/{Mathf.Max(1, routeManager.TotalStageCount)}"
@@ -985,17 +982,6 @@ public sealed class LoadingOverlayController : MonoBehaviour
             TransitionType.ReturnToHubAfterRun => "Run -> Hub",
             _ => "Route transition"
         };
-    }
-
-    private void UpdateDebugPreviewToggle()
-    {
-        if (!Input.GetKeyDown(debugPreviewToggleKey))
-            return;
-
-        debugPreviewActive = !debugPreviewActive;
-        debugPreviewStartedRealtime = Time.realtimeSinceStartup;
-        if (debugPreviewActive)
-            BeginBatch(DebugPreviewBatchId);
     }
 
     private float EvaluateDebugPreviewProgress()

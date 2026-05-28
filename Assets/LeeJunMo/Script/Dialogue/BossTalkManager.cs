@@ -27,6 +27,9 @@ public class BossTalkManager : MonoBehaviour
 
     private Coroutine runningSequence;
     private PlayerInteractor2D cachedPlayer;
+    private PlayerCinematicProtection lockedPlayerProtection;
+    private PlayerAnimatorController2D lockedPlayerAnimator;
+    private WeaponPresentationRig2D lockedWeaponPresentationRig;
     private GameFlowInputBlocker encounterInputBlocker;
     private InteractState previousPlayerState = InteractState.Idle;
     private bool holdsTransitionPlayerLock;
@@ -65,6 +68,7 @@ public class BossTalkManager : MonoBehaviour
             runningSequence = null;
         }
 
+        ReleasePlayerCinematicProtection();
         RestorePlayerState();
 
         if (cameraDirector != null)
@@ -79,6 +83,7 @@ public class BossTalkManager : MonoBehaviour
         AcquireTransitionPlayerLock();
         AcquireEncounterInputBlock();
         AcquireRunTimerPause();
+        AcquirePlayerCinematicProtection();
         TryCacheAndLockPlayer();
         runningSequence = StartCoroutine(EncounterSequence());
     }
@@ -89,12 +94,15 @@ public class BossTalkManager : MonoBehaviour
         {
             ReleaseTransitionPlayerLock();
             ReleaseEncounterInputBlock();
+            ReleasePlayerCinematicProtection();
+            RestorePlayerState();
             ReleaseRunTimerPause();
             runningSequence = null;
             yield break;
         }
 
         yield return new WaitUntil(() => PlayerRuntimeRegistry.GetPlayerTransform() != null);
+        AcquirePlayerCinematicProtection();
         TryCacheAndLockPlayer();
         yield return new WaitUntil(IsSceneTransitionReady);
         ReleaseTransitionPlayerLock();
@@ -102,6 +110,7 @@ public class BossTalkManager : MonoBehaviour
         yield return dialogueRunner.PlayDialogueRoutine();
         yield return cameraDirector.ReturnToPlayerRoutine();
 
+        ReleasePlayerCinematicProtection();
         RestorePlayerState();
         ReleaseEncounterInputBlock();
         StartBossCombat();
@@ -176,6 +185,62 @@ public class BossTalkManager : MonoBehaviour
 
         previousPlayerState = NormalizeRestoredPlayerState(cachedPlayer.CurrentState);
         cachedPlayer.SetInteractState(InteractState.Talking);
+    }
+
+    private void AcquirePlayerCinematicProtection(PlayerInteractor2D player = null)
+    {
+        if (lockedPlayerProtection != null)
+        {
+            AcquirePlayerPresentationLock(lockedPlayerProtection.transform);
+            return;
+        }
+
+        Transform playerTransform = player != null ? player.transform : PlayerRuntimeRegistry.GetPlayerTransform();
+        if (playerTransform == null)
+            return;
+
+        lockedPlayerProtection = playerTransform.GetComponent<PlayerCinematicProtection>();
+        if (lockedPlayerProtection == null)
+            lockedPlayerProtection = playerTransform.gameObject.AddComponent<PlayerCinematicProtection>();
+
+        lockedPlayerProtection.Acquire(this);
+        AcquirePlayerPresentationLock(playerTransform);
+    }
+
+    private void ReleasePlayerCinematicProtection()
+    {
+        if (lockedPlayerProtection != null)
+        {
+            lockedPlayerProtection.Release(this);
+            lockedPlayerProtection = null;
+        }
+
+        ReleasePlayerPresentationLock();
+    }
+
+    private void AcquirePlayerPresentationLock(Transform playerTransform)
+    {
+        if (playerTransform == null)
+            return;
+
+        if (lockedPlayerAnimator == null)
+            lockedPlayerAnimator = playerTransform.GetComponent<PlayerAnimatorController2D>();
+
+        lockedPlayerAnimator?.AcquireCinematicFacingLock(this);
+
+        if (lockedWeaponPresentationRig == null)
+            lockedWeaponPresentationRig = playerTransform.GetComponentInChildren<WeaponPresentationRig2D>(true);
+
+        lockedWeaponPresentationRig?.AcquireCinematicPresentationLock(this);
+    }
+
+    private void ReleasePlayerPresentationLock()
+    {
+        lockedPlayerAnimator?.ReleaseCinematicFacingLock(this);
+        lockedPlayerAnimator = null;
+
+        lockedWeaponPresentationRig?.ReleaseCinematicPresentationLock(this);
+        lockedWeaponPresentationRig = null;
     }
 
     private void RestorePlayerState()
@@ -294,6 +359,7 @@ public class BossTalkManager : MonoBehaviour
         if (runningSequence == null || player == null)
             return;
 
+        AcquirePlayerCinematicProtection(player);
         TryCacheAndLockPlayer(player);
     }
 

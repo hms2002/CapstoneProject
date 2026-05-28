@@ -1,9 +1,14 @@
+using CapstoneAudio;
 using UnityEngine;
 using UnityEngine.UI;
 
 [DisallowMultipleComponent]
 public sealed class EncyclopediaScreen : MonoBehaviour, IStackableUI, ICloseRequestHandler
 {
+    private const int CursorDomainPriority = 100;
+    private static readonly SoundRef OpenDictionarySound = SoundRef.FromKey("sound_ui_OpenDictionary");
+    private static readonly SoundRef CloseDictionarySound = SoundRef.FromKey("sound_ui_CloseDictionary");
+
     [Header("Data Gate")]
     [SerializeField] private bool resetToItemWeaponOnOpen = true;
     [SerializeField] private bool requireDataSourceToOpen;
@@ -90,11 +95,13 @@ public sealed class EncyclopediaScreen : MonoBehaviour, IStackableUI, ICloseRequ
 
     private void OnDestroy()
     {
+        ClearCursorDomain();
         UnbindListeners();
     }
 
     private void OnDisable()
     {
+        ClearCursorDomain();
         revealPresentation?.CancelAndHide();
         if (gameObject.activeInHierarchy)
             bookPresentation?.SnapClosed();
@@ -132,6 +139,7 @@ public sealed class EncyclopediaScreen : MonoBehaviour, IStackableUI, ICloseRequ
 
     public void CloseUI()
     {
+        ClearCursorDomain();
         revealPresentation?.CancelAndHide();
         SetScreenActiveRootActive(false);
         bookPresentation?.SnapClosed();
@@ -214,9 +222,12 @@ public sealed class EncyclopediaScreen : MonoBehaviour, IStackableUI, ICloseRequ
 
     private void OpenUIInternal()
     {
+        ApplyCursorDomain();
         SetScreenActiveRootActive(true);
         if (!gameObject.activeSelf)
             gameObject.SetActive(true);
+
+        SoundPlaybackUtility.Play(OpenDictionarySound, sourceObject: this);
 
         InitializeRuntimeReferences();
         BindListeners();
@@ -241,6 +252,16 @@ public sealed class EncyclopediaScreen : MonoBehaviour, IStackableUI, ICloseRequ
             rootSlideFadePresentation.PlayOpen(PlayImmediateOpenContent);
         else
             PlayImmediateOpenContent();
+    }
+
+    private void ApplyCursorDomain()
+    {
+        MouseCursorService.EnsureInstance().SetDomain(this, MouseCursorDomain.Encyclopedia, CursorDomainPriority);
+    }
+
+    private void ClearCursorDomain()
+    {
+        MouseCursorService.Instance?.ClearDomain(this);
     }
 
     private void PlayImmediateOpenContent()
@@ -331,6 +352,7 @@ public sealed class EncyclopediaScreen : MonoBehaviour, IStackableUI, ICloseRequ
     private void FinishDeferredClose()
     {
         closePresentationComplete = true;
+        SoundPlaybackUtility.Play(CloseDictionarySound, sourceObject: this);
 
         if (UIManager.Instance != null)
             UIManager.Instance.PopUI(this);

@@ -45,6 +45,7 @@ public sealed class EgoSwordActor : MonoBehaviour
     [SerializeField, Min(0.1f)] private float patternIntervalSeconds = 1.5f;
     [SerializeField, Min(0f)] private float laserWarningSeconds = 1f;
     [SerializeField, Min(0f)] private float laserAttackDurationSeconds = 1f;
+    [SerializeField, Range(0.1f, 1f)] private float laserTempoMultiplier = 0.75f;
     [SerializeField, Min(0.1f)] private float fallbackMapLaserLength = 40f;
     [SerializeField, Min(0.1f)] private float laserWidth = 0.75f;
     [SerializeField, Min(0f)] private float laserVfxRayOriginOffset = 0.35f;
@@ -62,6 +63,12 @@ public sealed class EgoSwordActor : MonoBehaviour
     [SerializeField, Min(0.1f)] private float recallImpactDiameter = 3.2f;
     [SerializeField, Min(0f)] private float recallImpactDamage = 1.5f;
     [SerializeField, Min(0f)] private float recallImpactKnockback = 8f;
+
+    [Header("Afterimage")]
+    [SerializeField] private bool enableAfterimage = true;
+    [SerializeField, Min(0.01f)] private float afterimageIntervalSeconds = 0.035f;
+    [SerializeField, Min(0.01f)] private float afterimageLifetimeSeconds = 0.14f;
+    [SerializeField] private Color afterimageColor = new(1f, 0.25f, 0.12f, 0.42f);
 
     private DemonKingController owner;
     private SwordState state = SwordState.Held;
@@ -89,6 +96,7 @@ public sealed class EgoSwordActor : MonoBehaviour
     private bool recallMovementActive;
     private bool subPatternAbilityRunning;
     private AbilitySpec activeSubPatternSpec;
+    private SpriteAfterimageEmitter2D afterimageEmitter;
 
     public bool IsHeld => state == SwordState.Held;
     public bool IsDropped => state == SwordState.Flying || state == SwordState.Planting || state == SwordState.Fixed || state == SwordState.Recalling;
@@ -114,6 +122,7 @@ public sealed class EgoSwordActor : MonoBehaviour
 
     private void OnDisable()
     {
+        StopAfterimage(clearGhosts: true);
         StopPlantingRoutine();
         StopDroppedPatterns();
         ClearBuriedMask();
@@ -151,6 +160,7 @@ public sealed class EgoSwordActor : MonoBehaviour
         if (!gameObject.activeSelf)
             gameObject.SetActive(true);
 
+        StopAfterimage(clearGhosts: true);
         StopPlantingRoutine();
         StopDroppedPatterns();
         ClearBuriedMask();
@@ -167,6 +177,7 @@ public sealed class EgoSwordActor : MonoBehaviour
 
     public void CleanupForBossBattleEnd()
     {
+        StopAfterimage(clearGhosts: true);
         StopPlantingRoutine();
         StopDroppedPatterns();
         ClearBuriedMask();
@@ -200,6 +211,7 @@ public sealed class EgoSwordActor : MonoBehaviour
         useCrossPatternNext = false;
         state = SwordState.Flying;
         PlayAuraStartAnimation(playIdleAfterStart: true);
+        BeginAfterimage();
 
         if (remainingBounces <= 0)
             BeginPlantingAtCurrentPosition(velocityDirection);
@@ -223,6 +235,7 @@ public sealed class EgoSwordActor : MonoBehaviour
         recallMovementActive = false;
         state = SwordState.Recalling;
         PlayRecallAuraStartup();
+        BeginAfterimage();
     }
 
     private void TickFlying()
@@ -300,6 +313,7 @@ public sealed class EgoSwordActor : MonoBehaviour
 
     public void CompleteRecallAtOwner()
     {
+        StopAfterimage();
         if (owner == null)
             return;
 
@@ -413,6 +427,7 @@ public sealed class EgoSwordActor : MonoBehaviour
 
     private void CompletePlantingAtCurrentPosition(bool startPatterns = true)
     {
+        StopAfterimage();
         state = SwordState.Fixed;
         flyingSpeed = 0f;
         transform.rotation = Quaternion.identity;
@@ -540,8 +555,9 @@ public sealed class EgoSwordActor : MonoBehaviour
 
     private IEnumerator WaitDroppedPatternInterval()
     {
+        float intervalSeconds = ResolveLaserTempoSeconds(patternIntervalSeconds);
         float elapsed = 0f;
-        while (elapsed < patternIntervalSeconds)
+        while (elapsed < intervalSeconds)
         {
             if (!CanRunDroppedPatterns())
                 yield break;
@@ -592,28 +608,30 @@ public sealed class EgoSwordActor : MonoBehaviour
         LaserLine firstAttackLine = ResolvePiercingLaserLine(laserOrigin, firstDirection);
         LaserLine secondAttackLine = ResolvePiercingLaserLine(laserOrigin, secondDirection);
         bool shouldSyncAuraWithLaser = ResolveLaserVfxPrefab() != null;
+        float warningSeconds = ResolveLaserTempoSeconds(laserWarningSeconds);
+        float attackSeconds = ResolveLaserTempoSeconds(laserAttackDurationSeconds);
 
         DemonKingPrimitiveVisual.SpawnSquare(
             firstWarningLine.Center,
             firstWarningLine.Size,
             firstWarningLine.RotationDeg,
-            laserWarningSeconds,
+            warningSeconds,
             WarningSquareColor,
             "DemonKing_EgoLaserSquareWarning");
         DemonKingPrimitiveVisual.SpawnSquare(
             secondWarningLine.Center,
             secondWarningLine.Size,
             secondWarningLine.RotationDeg,
-            laserWarningSeconds,
+            warningSeconds,
             WarningSquareColor,
             "DemonKing_EgoLaserSquareWarning");
-        telegraph?.SpawnDetachedView(CreateLaserSpec(firstWarningLine, laserWarningSeconds));
-        telegraph?.SpawnDetachedView(CreateLaserSpec(secondWarningLine, laserWarningSeconds));
+        telegraph?.SpawnDetachedView(CreateLaserSpec(firstWarningLine, warningSeconds));
+        telegraph?.SpawnDetachedView(CreateLaserSpec(secondWarningLine, warningSeconds));
         if (shouldSyncAuraWithLaser)
             PlayAuraStartAnimation(playIdleAfterStart: true);
 
         float warningElapsed = 0f;
-        while (warningElapsed < laserWarningSeconds)
+        while (warningElapsed < warningSeconds)
         {
             if (IsSubPatternCancelled(spec))
                 yield break;
@@ -628,8 +646,8 @@ public sealed class EgoSwordActor : MonoBehaviour
             PlayAuraIdleAnimation();
         }
 
-        DemonKingEgoLaserVfx[] firstLaserVfx = SpawnLaserLineVfx(firstAttackLine);
-        DemonKingEgoLaserVfx[] secondLaserVfx = SpawnLaserLineVfx(secondAttackLine);
+        DemonKingEgoLaserVfx[] firstLaserVfx = SpawnLaserLineVfx(firstAttackLine, attackSeconds);
+        DemonKingEgoLaserVfx[] secondLaserVfx = SpawnLaserLineVfx(secondAttackLine, attackSeconds);
         bool usingAnimatedVfx = HasAnyLaserVfx(firstLaserVfx) || HasAnyLaserVfx(secondLaserVfx);
 
         if (!usingAnimatedVfx)
@@ -638,24 +656,24 @@ public sealed class EgoSwordActor : MonoBehaviour
                 firstAttackLine.Center,
                 firstAttackLine.Size,
                 firstAttackLine.RotationDeg,
-                laserAttackDurationSeconds,
+                attackSeconds,
                 AttackSquareColor,
                 "DemonKing_EgoLaserSquareAttack");
             DemonKingPrimitiveVisual.SpawnSquare(
                 secondAttackLine.Center,
                 secondAttackLine.Size,
                 secondAttackLine.RotationDeg,
-                laserAttackDurationSeconds,
+                attackSeconds,
                 AttackSquareColor,
                 "DemonKing_EgoLaserSquareAttack");
-            telegraph?.SpawnDetachedView(CreateLaserSpec(firstAttackLine, laserAttackDurationSeconds));
-            telegraph?.SpawnDetachedView(CreateLaserSpec(secondAttackLine, laserAttackDurationSeconds));
+            telegraph?.SpawnDetachedView(CreateLaserSpec(firstAttackLine, attackSeconds));
+            telegraph?.SpawnDetachedView(CreateLaserSpec(secondAttackLine, attackSeconds));
         }
 
         HashSet<GameObject> damagedTargets = new();
         float elapsed = 0f;
         bool auraEndStarted = false;
-        while (usingAnimatedVfx ? IsAnyLaserVfxPlaying(firstLaserVfx, secondLaserVfx) : elapsed < laserAttackDurationSeconds)
+        while (usingAnimatedVfx ? IsAnyLaserVfxPlaying(firstLaserVfx, secondLaserVfx) : elapsed < attackSeconds)
         {
             if (IsSubPatternCancelled(spec))
                 yield break;
@@ -703,7 +721,7 @@ public sealed class EgoSwordActor : MonoBehaviour
             StopVerticalAuraAnimation();
     }
 
-    private DemonKingEgoLaserVfx[] SpawnLaserLineVfx(LaserLine line)
+    private DemonKingEgoLaserVfx[] SpawnLaserLineVfx(LaserLine line, float attackSeconds)
     {
         DemonKingEgoLaserVfx prefab = ResolveLaserVfxPrefab();
         if (prefab == null)
@@ -718,12 +736,14 @@ public sealed class EgoSwordActor : MonoBehaviour
             prefab,
             line.Origin + line.Direction * forwardOffset,
             line.Direction,
-            line.ForwardDistance - forwardOffset);
+            line.ForwardDistance - forwardOffset,
+            attackSeconds);
         views[1] = SpawnLaserRayVfx(
             prefab,
             line.Origin + backwardDirection * backwardOffset,
             backwardDirection,
-            line.BackwardDistance - backwardOffset);
+            line.BackwardDistance - backwardOffset,
+            attackSeconds);
         return views;
     }
 
@@ -736,14 +756,15 @@ public sealed class EgoSwordActor : MonoBehaviour
         DemonKingEgoLaserVfx prefab,
         Vector2 origin,
         Vector2 direction,
-        float length)
+        float length,
+        float attackSeconds)
     {
         if (prefab == null || length <= 0.01f)
             return null;
 
         DemonKingEgoLaserVfx instance = Instantiate(prefab);
         instance.name = "DemonKing_EgoLaserAnimatedAttack";
-        instance.Play(origin, direction, length, laserWidth, laserAttackDurationSeconds);
+        instance.Play(origin, direction, length, laserWidth, attackSeconds);
         return instance;
     }
 
@@ -853,6 +874,7 @@ public sealed class EgoSwordActor : MonoBehaviour
         ClearBuriedMask();
         ReleaseVerticalStrikeVfx();
         PlayVerticalAuraAnimation();
+        BeginAfterimage();
 
         AttackTelegraphView warning = telegraph?.SpawnDetachedView(
             AttackTelegraphSpec.CreateCircle(groundTarget, verticalStrikeDiameter, warningDuration, owner.DefaultWarningStyle));
@@ -911,6 +933,7 @@ public sealed class EgoSwordActor : MonoBehaviour
         }
         finally
         {
+            StopAfterimage();
             StopVerticalAuraAnimation();
         }
     }
@@ -1104,6 +1127,49 @@ public sealed class EgoSwordActor : MonoBehaviour
         }
 
         return null;
+    }
+
+    private void BeginAfterimage()
+    {
+        if (!enableAfterimage || !isActiveAndEnabled)
+            return;
+
+        SpriteAfterimageEmitter2D emitter = ResolveAfterimageEmitter();
+        if (emitter == null)
+            return;
+
+        SpriteRenderer primaryRenderer = ResolvePrimarySwordRenderer();
+        emitter.Begin(
+            primaryRenderer != null ? primaryRenderer.transform : transform,
+            afterimageIntervalSeconds,
+            afterimageLifetimeSeconds,
+            afterimageColor);
+    }
+
+    private void StopAfterimage(bool clearGhosts = false)
+    {
+        if (afterimageEmitter == null)
+            return;
+
+        afterimageEmitter.StopEmission();
+        if (clearGhosts)
+            afterimageEmitter.ClearSpawnedGhosts();
+    }
+
+    private SpriteAfterimageEmitter2D ResolveAfterimageEmitter()
+    {
+        if (afterimageEmitter != null)
+            return afterimageEmitter;
+
+        if (!TryGetComponent(out afterimageEmitter))
+            afterimageEmitter = gameObject.AddComponent<SpriteAfterimageEmitter2D>();
+
+        return afterimageEmitter;
+    }
+
+    private float ResolveLaserTempoSeconds(float seconds)
+    {
+        return Mathf.Max(0f, seconds) * Mathf.Clamp(laserTempoMultiplier, 0.1f, 1f);
     }
 
     private void PlayVerticalAuraAnimation()

@@ -93,6 +93,7 @@ public sealed class DemonKingRuntimeData
     public void MarkFinalDesperationStarted()
     {
         FinalDesperationStarted = true;
+        Hp50PatternUsed = true;
         RecallRequested = false;
         GroggyRecoverCounterRequested = false;
     }

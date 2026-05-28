@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!221 &22100000
+AnimatorOverrideController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: LowRewardChestAnimCnt
+  m_Controller: {fileID: 9100000, guid: 764f4ff81eb2ac34faa4a420f70de20c, type: 2}
+  m_Clips:
+  - m_OriginalClip: {fileID: 7400000, guid: 997f455d3df4c814bb80f597bb01a21f, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 349ab909529296a4096f41602498ece4, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: 10c7d7bbe8e71244c8b78798cddf6484, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 0a3f9d329d660c24ab77d13b8b5d1b29, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: a02e72789b581484299cecea7ba9d4cd, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 9d2c9297acea33d41a8b5a8554ecbf0b, type: 2}

@@ -48,8 +48,7 @@ public class PortraitController : MonoBehaviour
         newActor.currentLabel = "Normal";
         newActor.currentPosition = "center";
 
-        if (data.spriteLibraryAsset != null)
-            newActor.SetSprite(data.spriteLibraryAsset.GetSprite(targetCategory, "Normal"));
+        SetActorSprite(data, newActor, "Normal");
 
         return newActor;
     }
@@ -73,6 +72,16 @@ public class PortraitController : MonoBehaviour
         RectTransform rt = actor.GetComponent<RectTransform>();
         float targetX = GetTargetXByPositionKey(actor.currentPosition);
         rt.anchoredPosition = new Vector2(targetX, hidePosY);
+    }
+
+    public void SnapActiveActorToShownPosition(NPCData targetData)
+    {
+        if (targetData == null || !activeActors.ContainsKey(targetData.id))
+            return;
+
+        PortraitActor actor = activeActors[targetData.id];
+        RectTransform rt = actor.GetComponent<RectTransform>();
+        rt.anchoredPosition = new Vector2(rt.anchoredPosition.x, 0f);
     }
 
     public void EnterAnimation(NPCData targetData)
@@ -205,10 +214,11 @@ public class PortraitController : MonoBehaviour
         currentSpeakerId = -1;
     }
 
-    public void SetupSilhouetteMode(NPCData targetData)
+    public void SetupSilhouetteMode(NPCData targetData, string label = null)
     {
         if (targetData == null) return;
         PortraitActor actor = GetOrCreateActiveActor(targetData);
+        SetActorSprite(targetData, actor, ResolveLabel(label));
         actor.image.color = Color.black;
         actor.canvasGroup.alpha = 0f;
         actor.gameObject.SetActive(true);
@@ -237,5 +247,20 @@ public class PortraitController : MonoBehaviour
             case "far_right": return farSideOffset;
             default: return centerPosX;
         }
+    }
+
+    private void SetActorSprite(NPCData targetData, PortraitActor actor, string label)
+    {
+        if (targetData == null || actor == null || targetData.spriteLibraryAsset == null)
+            return;
+
+        string resolvedLabel = ResolveLabel(label);
+        actor.currentLabel = resolvedLabel;
+        actor.SetSprite(targetData.spriteLibraryAsset.GetSprite(targetCategory, resolvedLabel));
+    }
+
+    private static string ResolveLabel(string label)
+    {
+        return string.IsNullOrWhiteSpace(label) ? "Normal" : label.Trim();
     }
 }

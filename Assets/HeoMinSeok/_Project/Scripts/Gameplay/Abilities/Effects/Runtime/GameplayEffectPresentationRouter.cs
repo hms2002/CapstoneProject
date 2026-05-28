@@ -265,6 +265,8 @@ namespace UnityGAS
             return new WorldPresentationHook
             {
                 sound = presentation.sound,
+                randomSounds = presentation.randomSounds,
+                additionalSounds = presentation.additionalSounds,
                 cameraShake = presentation.cameraShake,
                 effect = ShouldSpawnManualWhileActive(presentation.effect) ? default : presentation.effect,
                 particle = ShouldSpawnManualWhileActive(presentation.particle) ? default : presentation.particle

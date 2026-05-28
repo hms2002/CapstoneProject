@@ -15,11 +15,15 @@ public static class PitFallExecutor
             yield break;
 
         SlimeQueenBossBase slimeQueenTarget = context.TargetTransform.GetComponent<SlimeQueenBossBase>();
+        bool completed = false;
 
         try
         {
             if (slimeQueenTarget != null)
+            {
+                slimeQueenTarget.NotifyPitFallStarted(context);
                 slimeQueenTarget.SetPitFallRuntimeLock(true);
+            }
 
             context.Reaction?.OnPitFallStarted(context);
             ApplyFallingEffect(context);
@@ -34,6 +38,8 @@ public static class PitFallExecutor
 
             if (context.Reaction == null || context.Reaction.UseDefaultRespawn)
                 MoveToRespawnPosition(context);
+
+            completed = true;
         }
         finally
         {
@@ -41,7 +47,11 @@ public static class PitFallExecutor
             if (context.Reaction == null || context.Reaction.RemoveFallingEffectOnComplete)
                 RemoveFallingEffect(context);
             if (slimeQueenTarget != null)
+            {
                 slimeQueenTarget.SetPitFallRuntimeLock(false);
+                if (completed)
+                    slimeQueenTarget.NotifyPitFallCompleted(context);
+            }
         }
     }
 

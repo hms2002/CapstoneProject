@@ -1,4 +1,5 @@
 using System.Collections;
+using CapstoneAudio;
 using UnityEngine;
 using DG.Tweening;
 using UnityGAS;
@@ -17,6 +18,10 @@ public class DoorObject : InteractableBase, ICombatPathBlocker2D
     private const string CloseAnimatorTriggerName = "Close";
     private const string OpenAnimatorStateName = "Open";
     private const string ClosedAnimatorStateName = "Idle";
+    private const float CloseCompletionFallbackTimeoutSeconds = 5f;
+    private static readonly int ClosedAnimatorStateHash = Animator.StringToHash(ClosedAnimatorStateName);
+    private static readonly SoundRef CantOpenSound = SoundRef.FromKey("sound_door_CantOpen");
+    private static readonly SoundRef CloseSound = SoundRef.FromKey("sound_door_Close");
 
     public enum DoorType
     {
@@ -68,6 +73,8 @@ public class DoorObject : InteractableBase, ICombatPathBlocker2D
     [SerializeField] private int requiredAffection;
 
     public bool IsOpen { get; private set; }
+    public event System.Action<DoorObject> ClosedPresentationCompleted;
+
     private Transform runtimePromptAnchor;
     private Tween shakeTween;
     private Vector3 closedModelLocalPosition;
@@ -76,6 +83,8 @@ public class DoorObject : InteractableBase, ICombatPathBlocker2D
     private WorldObjectPresentationRuntime openPresentationRuntime;
     private bool affectionChangeSubscribed;
     private Coroutine deferredAffectionRefreshCoroutine;
+    private Coroutine closeCompletionCoroutine;
+    private bool closeCompletionPending;
 
 #if UNITY_EDITOR
     private const float DefaultOneWayGizmoWidth = 1.2f;
@@ -157,6 +166,7 @@ public class DoorObject : InteractableBase, ICombatPathBlocker2D
         }
         else
         {
+            PlayDoorSound(CantOpenSound);
             PlayShakeAnimation();
 
             PlayerInteractor2D playerScript = player.Transform.GetComponent<PlayerInteractor2D>();
@@ -244,6 +254,7 @@ public class DoorObject : InteractableBase, ICombatPathBlocker2D
         if (IsOpen)
             return;
 
+        CancelCloseCompletionWait();
         IsOpen = true;
 
         if (save && ShortcutProgressService.Instance != null)
@@ -289,8 +300,10 @@ public class DoorObject : InteractableBase, ICombatPathBlocker2D
         }
 
         IsOpen = false;
+        BeginCloseCompletionWait();
         EnableObstacle();
         KillShakeTween();
+        PlayDoorSound(CloseSound);
 
         if (animator != null && animator.runtimeAnimatorController != null)
         {
@@ -300,23 +313,31 @@ public class DoorObject : InteractableBase, ICombatPathBlocker2D
             if (!immediate && HasAnimatorTrigger(CloseAnimatorTriggerName))
             {
                 animator.SetTrigger(CloseAnimatorTriggerName);
+                BeginAnimatorCloseCompletionWait();
                 return;
             }
 
             animator.Play(ClosedAnimatorStateName, 0, 0f);
+            CompleteClosePresentation();
             return;
         }
 
         if (model == null || !hasClosedModelLocalPosition)
+        {
+            CompleteClosePresentation();
             return;
+        }
 
         if (immediate)
         {
             model.localPosition = closedModelLocalPosition;
+            CompleteClosePresentation();
             return;
         }
 
-        model.DOLocalMove(closedModelLocalPosition, 0.5f).SetEase(Ease.OutQuart);
+        model.DOLocalMove(closedModelLocalPosition, 0.5f)
+            .SetEase(Ease.OutQuart)
+            .OnComplete(CompleteClosePresentation);
     }
 
     /// <summary>
@@ -330,6 +351,11 @@ public class DoorObject : InteractableBase, ICombatPathBlocker2D
             return;
 
         DisableObstacle();
+    }
+
+    public void OnCloseAnimationComplete()
+    {
+        CompleteClosePresentationFromAnimationEvent();
     }
 
     private void DisableObstacle()
@@ -392,6 +418,12 @@ public class DoorObject : InteractableBase, ICombatPathBlocker2D
             return CanAffectionDoorOpen() ? openPromptText : lockedPromptText;
 
         return openPromptText;
+    }
+
+    /// <summary>문 위치 기준으로 단발 상호작용 사운드를 재생합니다.</summary>
+    private void PlayDoorSound(SoundRef sound)
+    {
+        SoundPlaybackUtility.Play(sound, causer: gameObject, position: transform.position, sourceObject: this);
     }
 
     public bool BlocksCombatPath(Collider2D queriedCollider, GameObject requester, CombatPathBlockerQuery query)
@@ -823,8 +855,88 @@ public class DoorObject : InteractableBase, ICombatPathBlocker2D
         return transform;
     }
 
+    private void BeginCloseCompletionWait()
+    {
+        closeCompletionPending = true;
+        StopCloseCompletionCoroutine();
+    }
+
+    private void BeginAnimatorCloseCompletionWait()
+    {
+        StopCloseCompletionCoroutine();
+        closeCompletionCoroutine = StartCoroutine(WaitForAnimatorCloseCompletionRoutine());
+    }
+
+    private IEnumerator WaitForAnimatorCloseCompletionRoutine()
+    {
+        yield return null;
+
+        float elapsed = 0f;
+        while (closeCompletionPending &&
+               !IsOpen &&
+               animator != null &&
+               animator.runtimeAnimatorController != null)
+        {
+            if (IsAnimatorInClosedPresentationState())
+                break;
+
+            elapsed += Time.unscaledDeltaTime;
+            if (elapsed >= CloseCompletionFallbackTimeoutSeconds)
+                break;
+
+            yield return null;
+        }
+
+        closeCompletionCoroutine = null;
+        CompleteClosePresentation();
+    }
+
+    private bool IsAnimatorInClosedPresentationState()
+    {
+        if (animator.IsInTransition(0))
+            return false;
+
+        AnimatorStateInfo state = animator.GetCurrentAnimatorStateInfo(0);
+        if (state.shortNameHash == ClosedAnimatorStateHash || state.IsName(ClosedAnimatorStateName))
+            return true;
+
+        return !state.loop && state.normalizedTime >= 1f && !state.IsName(OpenAnimatorStateName);
+    }
+
+    private void CompleteClosePresentationFromAnimationEvent()
+    {
+        StopCloseCompletionCoroutine();
+        CompleteClosePresentation();
+    }
+
+    private void CompleteClosePresentation()
+    {
+        if (!closeCompletionPending || IsOpen)
+            return;
+
+        closeCompletionPending = false;
+        ClosedPresentationCompleted?.Invoke(this);
+    }
+
+    private void CancelCloseCompletionWait()
+    {
+        closeCompletionPending = false;
+        StopCloseCompletionCoroutine();
+    }
+
+    private void StopCloseCompletionCoroutine()
+    {
+        if (closeCompletionCoroutine == null)
+            return;
+
+        StopCoroutine(closeCompletionCoroutine);
+        closeCompletionCoroutine = null;
+    }
+
     private void OnDestroy()
     {
+        CancelCloseCompletionWait();
+
         if (deferredAffectionRefreshCoroutine != null)
             StopCoroutine(deferredAffectionRefreshCoroutine);
 

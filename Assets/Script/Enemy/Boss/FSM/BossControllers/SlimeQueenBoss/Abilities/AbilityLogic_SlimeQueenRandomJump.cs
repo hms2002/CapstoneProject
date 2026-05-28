@@ -1,10 +1,19 @@
 using System.Collections;
+using CapstoneAudio;
 using UnityEngine;
 using UnityGAS;
 
+/// <summary>
+/// 책임:
+/// - 슬라임 여왕 계열 보스의 랜덤 위치 점프 패턴 실행 순서와 점프/착지 사운드를 조율한다.
+/// </summary>
 public sealed class AbilityLogic_SlimeQueenRandomJump : AbilityLogic
 {
-    /// <summary>슬라임 여왕 계열 보스가 바운더리 안의 랜덤 위치로 포물선 점프 이동합니다.</summary>
+    [Header("Sound")]
+    [SerializeField] private SoundRef jumpSound = SoundRef.FromKey("sound_slimeQueen_Jump");
+    [SerializeField] private SoundRef landSound = SoundRef.FromKey("sound_slimeQueen_Land");
+
+    /// <summary>슬라임 여왕 계열 보스가 바운더리 안의 랜덤 위치 위로 이동한 뒤 체공/급강하합니다.</summary>
     public override IEnumerator Activate(AbilitySystem system, AbilitySpec spec, GameObject initialTarget)
     {
         ISlimeQueenRandomJumpHost randomJumpHost = system != null ? system.GetComponent<ISlimeQueenRandomJumpHost>() : null;
@@ -16,13 +25,24 @@ public sealed class AbilityLogic_SlimeQueenRandomJump : AbilityLogic
             yield break;
 
         randomJumpHost.FaceCurrentTarget();
+        SlimeQueenBossBase facingLockOwner = randomJumpHost as SlimeQueenBossBase;
+        facingLockOwner?.BeginPatternFacingLock(initialTarget);
         randomJumpHost.ShowJumpWarning(landingPosition);
         SlimeQueen phaseOneQueen = randomJumpHost as SlimeQueen;
         SlimeQueenP2Long phaseTwoLongQueen = randomJumpHost as SlimeQueenP2Long;
+        SlimeQueenBossBase afterimageOwner = randomJumpHost as SlimeQueenBossBase;
         if (phaseOneQueen != null)
             phaseOneQueen.BeginRandomJumpAnimation();
         if (phaseTwoLongQueen != null)
             phaseTwoLongQueen.BeginRandomJumpAnimation();
+        afterimageOwner?.BeginPatternAfterimage();
+
+        SlimeQueenPresentationAudioUtility.PlaySound(
+            jumpSound,
+            hostComponent.gameObject,
+            hostComponent.transform.position,
+            this,
+            initialTarget);
 
         Vector3 startPosition = hostComponent.transform.position;
         startPosition.z = landingPosition.z;
@@ -57,6 +77,8 @@ public sealed class AbilityLogic_SlimeQueenRandomJump : AbilityLogic
                 phaseOneQueen.EndRandomJumpAnimation();
             if (phaseTwoLongQueen != null)
                 phaseTwoLongQueen.EndRandomJumpAnimation();
+            afterimageOwner?.StopPatternAfterimage(IsAbilityCancelled(spec));
+            facingLockOwner?.EndPatternFacingLock();
 
             randomJumpHost.SetPatternMoveDamageBlocked(false);
             if (pitFallBlockOwner != null)
@@ -64,6 +86,12 @@ public sealed class AbilityLogic_SlimeQueenRandomJump : AbilityLogic
         }
 
         randomJumpHost.ApplyJumpLandingDamage(spec, landingPosition);
+        SlimeQueenPresentationAudioUtility.PlaySound(
+            landSound,
+            hostComponent.gameObject,
+            landingPosition,
+            this,
+            initialTarget);
         randomJumpHost.FaceCurrentTarget();
     }
 }

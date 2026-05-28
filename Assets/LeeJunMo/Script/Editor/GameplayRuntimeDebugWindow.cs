@@ -97,7 +97,7 @@ public class GameplayRuntimeDebugWindow : EditorWindow
         DrawStatusLine("AffectionManager", AffectionManager.Instance != null);
         DrawStatusLine("RewardDisplayService", RewardDisplayService.Instance != null);
         DrawStatusLine("RunModifierService", RunModifierService.Instance != null);
-        DrawStatusLine("ItemDatabase", GetSelectedItemDatabase() != null);
+        DrawStatusLine("Item Grant Assets", HasAnyGrantableItemAssets());
         DrawStatusLine("Current Player", ResolveCurrentPlayer() != null);
     }
 
@@ -204,14 +204,15 @@ public class GameplayRuntimeDebugWindow : EditorWindow
         }
 
         ItemDatabase database = GetSelectedItemDatabase();
-        if (database == null)
+        EditorGUILayout.LabelField("Database", database != null ? database.name : "None");
+        EditorGUILayout.HelpBox("Lists include selected ItemDatabase entries plus unregistered item definition assets found in the project.", MessageType.Info);
+        EditorGUILayout.HelpBox(itemGrantStatus, MessageType.None);
+
+        if (!HasAnyGrantableItemAssets())
         {
-            EditorGUILayout.HelpBox("No ItemDatabase assets found. Refresh assets after creating or importing an ItemDatabase.", MessageType.Warning);
+            EditorGUILayout.HelpBox("No item definition assets found. Refresh assets after creating or importing item definitions.", MessageType.Warning);
             return;
         }
-
-        EditorGUILayout.LabelField("Database", database.name);
-        EditorGUILayout.HelpBox(itemGrantStatus, MessageType.None);
 
         selectedItemTabIndex = GUILayout.Toolbar(selectedItemTabIndex, ItemTabNames);
         itemGridScrollPosition = EditorGUILayout.BeginScrollView(itemGridScrollPosition, GUILayout.MinHeight(260f));
@@ -236,7 +237,7 @@ public class GameplayRuntimeDebugWindow : EditorWindow
     {
         if (weaponAssets.Length == 0)
         {
-            EditorGUILayout.HelpBox("No WeaponDefinition entries found in the selected ItemDatabase.", MessageType.Info);
+            EditorGUILayout.HelpBox("No WeaponDefinition assets found.", MessageType.Info);
             return;
         }
 
@@ -252,7 +253,7 @@ public class GameplayRuntimeDebugWindow : EditorWindow
     {
         if (relicAssets.Length == 0)
         {
-            EditorGUILayout.HelpBox("No RelicDefinition entries found in the selected ItemDatabase.", MessageType.Info);
+            EditorGUILayout.HelpBox("No RelicDefinition assets found.", MessageType.Info);
             return;
         }
 
@@ -268,7 +269,7 @@ public class GameplayRuntimeDebugWindow : EditorWindow
     {
         if (consumableAssets.Length == 0)
         {
-            EditorGUILayout.HelpBox("No ConsumableDefinition entries found in the selected ItemDatabase.", MessageType.Info);
+            EditorGUILayout.HelpBox("No ConsumableDefinition assets found.", MessageType.Info);
             return;
         }
 
@@ -369,7 +370,8 @@ public class GameplayRuntimeDebugWindow : EditorWindow
             return "WeaponInventory2D missing";
 
         List<string> ids = inventory.GetAllWeaponIDs();
-        return ids.Contains(weapon.weaponId) ? "Held" : "Not held";
+        string heldStatus = ids.Contains(weapon.weaponId) ? "Held" : "Not held";
+        return $"{heldStatus} / {BuildRegistrationStatus(weapon, GetSelectedItemDatabase()?.allWeapons)}";
     }
 
     private string BuildRelicInventoryStatus(RelicDefinition relic)
@@ -381,9 +383,10 @@ public class GameplayRuntimeDebugWindow : EditorWindow
         if (inventory == null)
             return "RelicInventory missing";
 
-        return inventory.TryGetRelicLevelById(relic.relicId, out int level)
+        string heldStatus = inventory.TryGetRelicLevelById(relic.relicId, out int level)
             ? $"Level {level}/{Mathf.Max(1, relic.maxLevel)}"
             : "Not held";
+        return $"{heldStatus} / {BuildRegistrationStatus(relic, GetSelectedItemDatabase()?.allRelics)}";
     }
 
     private string BuildConsumableInventoryStatus(ConsumableDefinition consumable)
@@ -395,7 +398,7 @@ public class GameplayRuntimeDebugWindow : EditorWindow
         if (inventory == null)
             return "PlayerConsumableInventory missing";
 
-        return $"Held {inventory.CountConsumable(consumable)}/{inventory.Capacity}";
+        return $"Held {inventory.CountConsumable(consumable)}/{inventory.Capacity} / {BuildRegistrationStatus(consumable, GetSelectedItemDatabase()?.allConsumables)}";
     }
 
     private void GrantWeapon(WeaponDefinition weapon)
@@ -536,15 +539,20 @@ public class GameplayRuntimeDebugWindow : EditorWindow
         ItemDatabase database = GetSelectedItemDatabase();
         if (database == null)
         {
-            weaponAssets = System.Array.Empty<WeaponDefinition>();
-            relicAssets = System.Array.Empty<RelicDefinition>();
-            consumableAssets = System.Array.Empty<ConsumableDefinition>();
+            weaponAssets = ToSortedGrantAssetArray<WeaponDefinition>(null, weapon => GetDisplayName(weapon.DisplayName, weapon.name));
+            relicAssets = ToSortedGrantAssetArray<RelicDefinition>(null, relic => GetDisplayName(relic.DisplayName, relic.name));
+            consumableAssets = ToSortedGrantAssetArray<ConsumableDefinition>(null, consumable => GetDisplayName(consumable.DisplayName, consumable.name));
             return;
         }
 
-        weaponAssets = ToSortedNonNullArray(database.allWeapons, weapon => GetDisplayName(weapon.DisplayName, weapon.name));
-        relicAssets = ToSortedNonNullArray(database.allRelics, relic => GetDisplayName(relic.DisplayName, relic.name));
-        consumableAssets = ToSortedNonNullArray(database.allConsumables, consumable => GetDisplayName(consumable.DisplayName, consumable.name));
+        weaponAssets = ToSortedGrantAssetArray(database.allWeapons, weapon => GetDisplayName(weapon.DisplayName, weapon.name));
+        relicAssets = ToSortedGrantAssetArray(database.allRelics, relic => GetDisplayName(relic.DisplayName, relic.name));
+        consumableAssets = ToSortedGrantAssetArray(database.allConsumables, consumable => GetDisplayName(consumable.DisplayName, consumable.name));
+    }
+
+    private bool HasAnyGrantableItemAssets()
+    {
+        return weaponAssets.Length > 0 || relicAssets.Length > 0 || consumableAssets.Length > 0;
     }
 
     private static T[] LoadAssetsByType<T>() where T : ScriptableObject
@@ -599,6 +607,58 @@ public class GameplayRuntimeDebugWindow : EditorWindow
 
         result.Sort((a, b) => string.Compare(sortKeySelector(a), sortKeySelector(b), System.StringComparison.Ordinal));
         return result.ToArray();
+    }
+
+    private static T[] ToSortedGrantAssetArray<T>(IEnumerable<T> databaseEntries, System.Func<T, string> sortKeySelector)
+        where T : ScriptableObject
+    {
+        List<T> result = new List<T>();
+        AddUniqueAssets(result, databaseEntries);
+        AddUniqueAssets(result, LoadAssetsByType<T>());
+        result.Sort((a, b) => string.Compare(sortKeySelector(a), sortKeySelector(b), System.StringComparison.Ordinal));
+        return result.ToArray();
+    }
+
+    private static void AddUniqueAssets<T>(List<T> target, IEnumerable<T> source)
+        where T : ScriptableObject
+    {
+        if (target == null || source == null)
+            return;
+
+        foreach (T item in source)
+        {
+            if (item != null && !ContainsAssetReference(target, item))
+                target.Add(item);
+        }
+    }
+
+    private static bool ContainsAssetReference<T>(IEnumerable<T> source, T candidate)
+        where T : ScriptableObject
+    {
+        if (source == null || candidate == null)
+            return false;
+
+        string candidatePath = AssetDatabase.GetAssetPath(candidate);
+        foreach (T item in source)
+        {
+            if (item == null)
+                continue;
+
+            if (ReferenceEquals(item, candidate))
+                return true;
+
+            string itemPath = AssetDatabase.GetAssetPath(item);
+            if (!string.IsNullOrEmpty(candidatePath) && candidatePath == itemPath)
+                return true;
+        }
+
+        return false;
+    }
+
+    private static string BuildRegistrationStatus<T>(T item, IEnumerable<T> databaseEntries)
+        where T : ScriptableObject
+    {
+        return ContainsAssetReference(databaseEntries, item) ? "Registered" : "Unregistered";
     }
 
     private static PlayerInteractor2D ResolveCurrentPlayer()

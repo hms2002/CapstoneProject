@@ -1,7 +1,9 @@
+using CapstonePresentation;
 using UnityEngine;
 
 /// <summary>
-/// 슬라임 여왕 독성 투하의 초록 포물선 탄막 비주얼입니다.
+/// 책임:
+/// - 슬라임 여왕 독성 투하의 초록 포물선 탄막 비주얼과 착탄 사운드/연출 실행을 담당합니다.
 /// </summary>
 public sealed class SlimeQueenToxicDropProjectileVisual : MonoBehaviour
 {
@@ -15,6 +17,8 @@ public sealed class SlimeQueenToxicDropProjectileVisual : MonoBehaviour
     private float elapsedSeconds;
     private bool isActive;
     private bool isFinished = true;
+    private WorldPresentationHook impactPresentation;
+    private Object presentationSourceObject;
 
     public bool IsFinished => isFinished;
 
@@ -43,7 +47,13 @@ public sealed class SlimeQueenToxicDropProjectileVisual : MonoBehaviour
             Finish();
     }
 
-    public void Begin(Vector3 start, Vector3 end, float flightSeconds, float height)
+    public void Begin(
+        Vector3 start,
+        Vector3 end,
+        float flightSeconds,
+        float height,
+        WorldPresentationHook impactPresentation = default,
+        Object presentationSourceObject = null)
     {
         CacheRenderer();
 
@@ -51,6 +61,8 @@ public sealed class SlimeQueenToxicDropProjectileVisual : MonoBehaviour
         endPosition = end;
         durationSeconds = Mathf.Max(0.01f, flightSeconds);
         arcHeight = Mathf.Max(0f, height);
+        this.impactPresentation = impactPresentation;
+        this.presentationSourceObject = presentationSourceObject;
         elapsedSeconds = 0f;
         isActive = true;
         isFinished = false;
@@ -84,6 +96,12 @@ public sealed class SlimeQueenToxicDropProjectileVisual : MonoBehaviour
         isActive = false;
         isFinished = true;
         transform.position = endPosition;
+        SlimeQueenPresentationAudioUtility.PlayPresentation(
+            impactPresentation,
+            gameObject,
+            endPosition,
+            presentationSourceObject != null ? presentationSourceObject : this,
+            causer: gameObject);
     }
 
     private void SetVisible(bool isVisible)

@@ -137,6 +137,7 @@ public sealed class EncyclopediaBookPresentation : MonoBehaviour
         ResolveReferences();
         ConfigureAnimatorUpdateMode();
         PlayBookState(openedStateName);
+        SetContentHiddenForLayout();
         swapContent?.Invoke();
         SetContentVisible(true);
 
@@ -219,6 +220,7 @@ public sealed class EncyclopediaBookPresentation : MonoBehaviour
         yield return WaitForDuration(GetRequiredBookClipLength(bookOpenClip, bookOpenStateName, "BookOpen", ref warnedMissingBookOpenClip));
 
         PlayBookState(openedStateName);
+        SetContentHiddenForLayout();
         prepareContent?.Invoke();
         SetContentVisible(true);
         yield return PlayContentAppearRoutine();
@@ -257,7 +259,7 @@ public sealed class EncyclopediaBookPresentation : MonoBehaviour
 
         if (!gameObject.activeInHierarchy || !canPlay)
         {
-            SetContentVisible(false);
+            SetContentHiddenForLayout();
             swapContent?.Invoke();
             SetContentVisible(true);
             onComplete?.Invoke();
@@ -274,6 +276,7 @@ public sealed class EncyclopediaBookPresentation : MonoBehaviour
         PlayBookState(stateName);
         yield return WaitForDuration(GetClipLength(clip, stateName));
         PlayBookState(openedStateName);
+        SetContentHiddenForLayout();
         swapContent?.Invoke();
         SetContentVisible(true);
         yield return PlayContentAppearRoutine();
@@ -506,7 +509,23 @@ public sealed class EncyclopediaBookPresentation : MonoBehaviour
         return null;
     }
 
+    private void SetContentHiddenForLayout()
+    {
+        if (pageContentGroup == null)
+        {
+            SetContentVisible(false);
+            return;
+        }
+
+        SetContentVisible(false, keepRootsActiveForLayout: true);
+    }
+
     private void SetContentVisible(bool visible)
+    {
+        SetContentVisible(visible, keepRootsActiveForLayout: false);
+    }
+
+    private void SetContentVisible(bool visible, bool keepRootsActiveForLayout)
     {
         if (pageContentGroup != null)
         {
@@ -518,10 +537,11 @@ public sealed class EncyclopediaBookPresentation : MonoBehaviour
         if (!setContentRootsActive || pageContentRoots == null)
             return;
 
+        bool rootsActive = visible || keepRootsActiveForLayout;
         for (int i = 0; i < pageContentRoots.Length; i++)
         {
             if (pageContentRoots[i] != null)
-                pageContentRoots[i].SetActive(visible);
+                pageContentRoots[i].SetActive(rootsActive);
         }
     }
 

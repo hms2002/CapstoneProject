@@ -88,7 +88,7 @@ namespace UnityGAS
                     if (!candidate.IsGroundActive)
                         continue;
 
-                    if (!AreGroundAreasOverlapping(current, candidate))
+                    if (!AreIgnitionContactAreasOverlapping(current, candidate))
                         continue;
 
                     result.Add(candidate);
@@ -118,7 +118,7 @@ namespace UnityGAS
                 if (candidate == null || candidate.Mode != PuddleAreaMode.Ground)
                     continue;
 
-                if (!AreGroundAreasOverlapping(origin, candidate))
+                if (!AreIgnitionContactAreasOverlapping(origin, candidate))
                     continue;
 
                 result.Add(candidate);
@@ -127,12 +127,17 @@ namespace UnityGAS
             return result;
         }
 
-        private static bool AreGroundAreasOverlapping(PuddleAreaBase a, PuddleAreaBase b)
+        /// <summary>
+        /// 책임 :
+        /// - 장판의 실제 피해 반경이 아니라 점화 전이 전용 접촉 반경으로 두 장판의 전염 가능 여부를 판정한다.
+        /// - collider trigger와 manager scan 경로가 같은 기준을 쓰도록 공개 유틸로 제공한다.
+        /// </summary>
+        public static bool AreIgnitionContactAreasOverlapping(PuddleAreaBase a, PuddleAreaBase b)
         {
             if (a == null || b == null)
                 return false;
 
-            float radiusSum = Mathf.Max(0f, a.GroundRadius + b.GroundRadius);
+            float radiusSum = Mathf.Max(0f, a.IgnitionContactRadius + b.IgnitionContactRadius);
             return Vector2.Distance(a.transform.position, b.transform.position) <= radiusSum;
         }
     }

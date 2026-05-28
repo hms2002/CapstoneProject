@@ -1,3 +1,4 @@
+using CapstoneAudio;
 using UnityEngine;
 
 namespace UnityGAS
@@ -9,6 +10,8 @@ namespace UnityGAS
     /// </summary>
     public static class HazardDamageAction
     {
+        private static readonly SoundRef PlayerEvadeSound = SoundRef.FromKey("sound_player_Evade");
+
         public static void ApplyDamage(
             AbilitySystem targetSystem,
             GameObject target,
@@ -36,6 +39,7 @@ namespace UnityGAS
             {
                 LogDebug(logDebug, $"blocked: evaded. target={target.name}, damage={finalHpDamage:0.###}", target);
                 DamagePopupService.ShowText("EVADE", target.transform.position);
+                TryPlayPlayerEvadeSound(target);
                 return;
             }
 
@@ -72,6 +76,15 @@ namespace UnityGAS
             TryShowPopup(target, hpCheck);
             EmitDamagedTaken(targetSystem, target, causer, hpCheck);
             LogAppliedDamage(logDebug, target, hpCheck, shieldCheck, finalHpDamage, ignoreInvulnerability, ignoreEvasion);
+        }
+
+        /// <summary>환경 피해를 플레이어가 회피했을 때만 회피 성공 사운드를 재생합니다.</summary>
+        private static void TryPlayPlayerEvadeSound(GameObject target)
+        {
+            if (target == null || !target.CompareTag("Player"))
+                return;
+
+            SoundPlaybackUtility.Play(PlayerEvadeSound, target: target, position: target.transform.position);
         }
 
         /// <summary>

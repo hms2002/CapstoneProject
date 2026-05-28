@@ -99,7 +99,7 @@ public class WitchNormalAttack1Tile : MonoBehaviour
     {
         if (telegraphView == null) return;
 
-        telegraphView.Show(MakeSpec(duration, warningStyle));
+        telegraphView.Show(AttackTelegraphSpecUtility.WithThinWarningOutline(MakeSpec(duration, warningStyle)));
     }
 
     /// <summary>타격 장판을 표시합니다.</summary>

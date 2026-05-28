@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using CapstoneAudio;
 using UnityEngine;
 using UnityGAS;
 
@@ -12,14 +13,35 @@ using UnityGAS;
 [RequireComponent(typeof(Bishop))]
 public class BishopLineBlastRunner : MonoBehaviour, IMobPatternRunner, IMobPresentationCleanup
 {
+    private static readonly SoundRef AttackSound = SoundRef.FromKey("sound_bishop_Attack");
+
+    /// <summary>
+    /// 책임:
+    /// - AL이 소유한 Bishop 폭발 VFX authoring 값을 Runner에 전달하기 위한 불변 실행 설정이다.
+    /// - Runner가 ScriptableObject 직렬화 데이터에 직접 의존하지 않도록 경계를 만든다.
+    /// </summary>
+    public readonly struct BlastEffectConfig
+    {
+        public readonly GameObject Prefab;
+        public readonly float ScaleMultiplier;
+        public readonly bool AlignToLine;
+        public readonly float FallbackLifetime;
+
+        public BlastEffectConfig(GameObject prefab, float scaleMultiplier, bool alignToLine, float fallbackLifetime)
+        {
+            Prefab = prefab;
+            ScaleMultiplier = scaleMultiplier;
+            AlignToLine = alignToLine;
+            FallbackLifetime = Mathf.Max(0.05f, fallbackLifetime);
+        }
+    }
+
     [SerializeField] private Bishop owner;
     [SerializeField] private MobAbilityCoordinator abilityCoordinator;
     [SerializeField] private AttackTelegraphService telegraphService;
 
     private readonly List<Vector3> blastPoints = new();
-    private readonly List<AttackTelegraphView> blastViews = new();
     private AttackTelegraphStyle lineStyle;
-    private AttackTelegraphStyle blastStyle;
     private Bishop.LineBlastContext currentContext;
     private bool isRunning;
     private bool cancelRequested;
@@ -38,7 +60,6 @@ public class BishopLineBlastRunner : MonoBehaviour, IMobPatternRunner, IMobPrese
             telegraphService = GetComponent<AttackTelegraphService>();
 
         lineStyle = MakeLineStyle();
-        blastStyle = MakeBlastStyle();
     }
 
     private void OnDestroy()
@@ -46,18 +67,15 @@ public class BishopLineBlastRunner : MonoBehaviour, IMobPatternRunner, IMobPrese
         if (lineStyle != null)
             Destroy(lineStyle);
 
-        if (blastStyle != null)
-            Destroy(blastStyle);
     }
 
     private void OnDisable()
     {
         HideLine();
-        ClearBlastViews();
     }
 
     /// <summary>비숍의 경고선과 동시 폭발 공격을 실행합니다.</summary>
-    public IEnumerator Run(AbilitySystem system, AbilitySpec spec, GameObject initialTarget)
+    public IEnumerator Run(AbilitySystem system, AbilitySpec spec, GameObject initialTarget, BlastEffectConfig blastEffectConfig)
     {
         if (owner == null) yield break;
         if (!owner.TryBuildLineContext(initialTarget, out currentContext)) yield break;
@@ -77,7 +95,7 @@ public class BishopLineBlastRunner : MonoBehaviour, IMobPatternRunner, IMobPrese
 
             if (cancelRequested || owner.IsDead) yield break;
 
-            FireBlasts(system, spec, currentContext);
+            FireBlasts(system, spec, currentContext, blastEffectConfig);
 
             if (currentContext.BlastViewTime > 0f)
                 yield return AbilityTasks.WaitDelay(system, spec, currentContext.BlastViewTime);
@@ -85,7 +103,6 @@ public class BishopLineBlastRunner : MonoBehaviour, IMobPatternRunner, IMobPrese
         finally
         {
             HideLine();
-            ClearBlastViews();
             blastPoints.Clear();
             currentContext = default;
             cancelRequested = false;
@@ -99,14 +116,12 @@ public class BishopLineBlastRunner : MonoBehaviour, IMobPatternRunner, IMobPrese
     {
         cancelRequested = true;
         HideLine();
-        ClearBlastViews();
     }
 
     /// <summary>남아 있는 비숍 공격 경고를 정리합니다.</summary>
     public void CleanupPresentation()
     {
         HideLine();
-        ClearBlastViews();
     }
 
     /// <summary>비숍의 긴 직사각형 경고선을 표시합니다.</summary>
@@ -114,11 +129,10 @@ public class BishopLineBlastRunner : MonoBehaviour, IMobPatternRunner, IMobPrese
     {
         if (telegraphService == null) return;
 
-        float angleDeg = Mathf.Atan2(context.Direction.y, context.Direction.x) * Mathf.Rad2Deg;
-        AttackTelegraphSpec spec = AttackTelegraphSpec.CreateRectangle(
-            context.Center,
-            new Vector2(context.HalfLength * 2f, context.WarningWidth),
-            angleDeg,
+        AttackTelegraphSpec spec = AttackTelegraphSpec.CreateLine(
+            context.LineStart,
+            context.LineEnd,
+            context.WarningWidth,
             duration,
             lineStyle);
 
@@ -134,56 +148,88 @@ public class BishopLineBlastRunner : MonoBehaviour, IMobPatternRunner, IMobPrese
     }
 
     /// <summary>경고선 위의 원형 폭발들을 동시에 발생시킵니다.</summary>
-    private void FireBlasts(AbilitySystem system, AbilitySpec spec, Bishop.LineBlastContext context)
+    private void FireBlasts(AbilitySystem system, AbilitySpec spec, Bishop.LineBlastContext context, BlastEffectConfig blastEffectConfig)
     {
         owner.PlayMagicCastAnimation();
+        SoundPlaybackUtility.Play(AttackSound, causer: gameObject, position: context.LineCenter, sourceObject: this);
         owner.FillBlastPoints(context, blastPoints);
-        ShowBlastViews(context);
+        SpawnBlastEffects(context, blastEffectConfig);
         owner.TryHitBlasts(system, spec, context, blastPoints);
     }
 
-    /// <summary>원형 폭발 표시들을 생성합니다.</summary>
-    private void ShowBlastViews(Bishop.LineBlastContext context)
+    /// <summary>
+    /// 책임:
+    /// - Bishop 직선 마법의 실제 폭발 지점마다 독립 VFX를 생성한다.
+    /// - VFX 프리팹 구현 방식이 Particle/Animator/단순 GameObject 중 무엇이어도 수명 뒤 자동 제거한다.
+    /// </summary>
+    private void SpawnBlastEffects(Bishop.LineBlastContext context, BlastEffectConfig config)
     {
-        if (telegraphService == null) return;
+        if (config.Prefab == null || blastPoints.Count == 0)
+            return;
 
-        ClearBlastViews();
+        Quaternion rotation = config.AlignToLine
+            ? Quaternion.Euler(0f, 0f, Mathf.Atan2(context.Direction.y, context.Direction.x) * Mathf.Rad2Deg)
+            : Quaternion.identity;
 
+        float scale = Mathf.Max(0.01f, context.BlastDiameter * config.ScaleMultiplier);
         for (int i = 0; i < blastPoints.Count; i++)
         {
-            AttackTelegraphSpec spec = AttackTelegraphSpec.CreateCircle(
-                blastPoints[i],
-                context.BlastDiameter,
-                context.BlastViewTime,
-                blastStyle);
+            GameObject effect = Instantiate(config.Prefab, blastPoints[i], rotation);
+            if (effect == null)
+                continue;
 
-            AttackTelegraphView view = telegraphService.SpawnDetachedView(spec);
-            if (view != null)
-                blastViews.Add(view);
+            effect.transform.localScale = Vector3.Scale(effect.transform.localScale, new Vector3(scale, scale, 1f));
+            Destroy(effect, ResolveEffectLifetime(effect, config.FallbackLifetime));
         }
     }
 
-    /// <summary>생성된 원형 폭발 표시들을 제거합니다.</summary>
-    private void ClearBlastViews()
+    /// <summary>
+    /// 책임:
+    /// - 이펙트 프리팹의 재생 컴포넌트 정보를 읽어 자동 제거 시간을 산출한다.
+    /// - 정보가 부족하면 authoring fallback 수명으로 제거해 누수를 막는다.
+    /// </summary>
+    private float ResolveEffectLifetime(GameObject effect, float fallbackLifetime)
     {
-        for (int i = 0; i < blastViews.Count; i++)
+        float lifetime = Mathf.Max(0.05f, fallbackLifetime);
+
+        ParticleSystem[] particles = effect.GetComponentsInChildren<ParticleSystem>(true);
+        for (int i = 0; i < particles.Length; i++)
         {
-            AttackTelegraphView view = blastViews[i];
-            if (view != null)
-                Destroy(view.gameObject);
+            ParticleSystem particle = particles[i];
+            if (particle == null)
+                continue;
+
+            ParticleSystem.MainModule main = particle.main;
+            float startLifetime = main.startLifetime.mode == ParticleSystemCurveMode.Constant
+                ? main.startLifetime.constant
+                : main.startLifetime.constantMax;
+            lifetime = Mathf.Max(lifetime, main.duration + startLifetime);
         }
 
-        blastViews.Clear();
+        Animator[] animators = effect.GetComponentsInChildren<Animator>(true);
+        for (int i = 0; i < animators.Length; i++)
+        {
+            Animator animator = animators[i];
+            if (animator == null || animator.runtimeAnimatorController == null)
+                continue;
+
+            AnimationClip[] clips = animator.runtimeAnimatorController.animationClips;
+            for (int j = 0; j < clips.Length; j++)
+            {
+                AnimationClip clip = clips[j];
+                if (clip != null)
+                    lifetime = Mathf.Max(lifetime, clip.length);
+            }
+        }
+
+        return lifetime;
     }
 
     /// <summary>비숍의 긴 경고선 스타일을 만듭니다.</summary>
     private AttackTelegraphStyle MakeLineStyle()
     {
         AttackTelegraphStyle style = ScriptableObject.CreateInstance<AttackTelegraphStyle>();
-        style.fillColorStart = new Color(1f, 0f, 0.95f, 0.12f);
-        style.fillColorEnd = new Color(1f, 0f, 0.95f, 0.24f);
-        style.borderColorStart = new Color(1f, 0.15f, 0.95f, 0.95f);
-        style.borderColorEnd = new Color(1f, 0.15f, 0.95f, 0.95f);
+        AttackTelegraphStyleUtility.ApplyDangerLineColors(style);
         style.progressCurve = AnimationCurve.Linear(0f, 0f, 1f, 1f);
         style.blinkStartNormalized = 0.7f;
         style.blinkFrequency = 4f;
@@ -194,21 +240,4 @@ public class BishopLineBlastRunner : MonoBehaviour, IMobPatternRunner, IMobPrese
         return style;
     }
 
-    /// <summary>비숍의 원형 폭발 스타일을 만듭니다.</summary>
-    private AttackTelegraphStyle MakeBlastStyle()
-    {
-        AttackTelegraphStyle style = ScriptableObject.CreateInstance<AttackTelegraphStyle>();
-        style.fillColorStart = new Color(1f, 0f, 0.95f, 0.4f);
-        style.fillColorEnd = new Color(1f, 0f, 0.95f, 0.15f);
-        style.borderColorStart = new Color(1f, 0.35f, 1f, 1f);
-        style.borderColorEnd = new Color(1f, 0.35f, 1f, 0.5f);
-        style.progressCurve = AnimationCurve.Linear(0f, 0f, 1f, 1f);
-        style.blinkStartNormalized = 1f;
-        style.blinkFrequency = 0f;
-        style.blinkAlphaMin = 1f;
-        style.scaleFillWithProgress = false;
-        style.fillScaleStart = 1f;
-        style.fillScaleEnd = 1f;
-        return style;
-    }
 }

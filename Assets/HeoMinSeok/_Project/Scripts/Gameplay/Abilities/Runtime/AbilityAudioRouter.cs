@@ -34,6 +34,25 @@ namespace UnityGAS
                 causerOverride));
         }
 
+        public static void PlayOneShotAtPosition(
+            in SoundRef soundRef,
+            AbilitySystem system,
+            AbilitySpec spec,
+            Vector3 position,
+            Object sourceObjectOverride = null,
+            GameObject causerOverride = null)
+        {
+            if (!soundRef.IsSet)
+                return;
+
+            SoundManager.EnsureInstance().Play(soundRef, BuildContextAtPosition(
+                system,
+                spec,
+                position,
+                sourceObjectOverride,
+                causerOverride));
+        }
+
         /// <summary>
         /// 책임 :
         /// - Ability 실행 문맥을 SoundManager가 이해하는 SoundPlaybackContext로 변환한다.
@@ -60,6 +79,27 @@ namespace UnityGAS
                 Instigator = owner,
                 Causer = causerOverride != null ? causerOverride : owner,
                 Target = target,
+                Position = position,
+                SourceObject = sourceObject
+            };
+        }
+
+        private static SoundPlaybackContext BuildContextAtPosition(
+            AbilitySystem system,
+            AbilitySpec spec,
+            Vector3 position,
+            Object sourceObjectOverride = null,
+            GameObject causerOverride = null)
+        {
+            GameObject owner = system != null ? system.gameObject : null;
+            Object sourceObject = sourceObjectOverride != null
+                ? sourceObjectOverride
+                : (spec != null ? spec.Definition : null);
+
+            return new SoundPlaybackContext
+            {
+                Instigator = owner,
+                Causer = causerOverride != null ? causerOverride : owner,
                 Position = position,
                 SourceObject = sourceObject
             };
