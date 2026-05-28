@@ -5331,6 +5331,16 @@ MonoBehaviour:
   maxSimulationStep: 1
   settlePositionThreshold: 30
   settleVelocityThreshold: 0
+  openSound:
+    key: sound_menu_chain1
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  closeSound:
+    key: sound_menu_chain2
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
   closePullDownOffset: {x: 0, y: -56}
   closePullDownDuration: 0.08
   closeLaunchDuration: 0.16
@@ -6688,6 +6698,16 @@ MonoBehaviour:
   maxSimulationStep: 1
   settlePositionThreshold: 30
   settleVelocityThreshold: 0
+  openSound:
+    key: sound_menu_chain1
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  closeSound:
+    key: sound_menu_chain2
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
   closePullDownOffset: {x: 0, y: -56}
   closePullDownDuration: 0.1
   closeLaunchDuration: 0.9
@@ -9161,6 +9181,16 @@ MonoBehaviour:
   maxSimulationStep: 1
   settlePositionThreshold: 30
   settleVelocityThreshold: 0
+  openSound:
+    key: sound_menu_chain1
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  closeSound:
+    key: sound_menu_chain2
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
   closePullDownOffset: {x: 0, y: -56}
   closePullDownDuration: 0.1
   closeLaunchDuration: 0.9
@@ -12711,6 +12741,16 @@ MonoBehaviour:
   maxSimulationStep: 1
   settlePositionThreshold: 30
   settleVelocityThreshold: 0
+  openSound:
+    key: sound_menu_chain1
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  closeSound:
+    key: sound_menu_chain2
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
   closePullDownOffset: {x: 0, y: -56}
   closePullDownDuration: 0.08
   closeLaunchDuration: 0.16
@@ -15404,6 +15444,16 @@ MonoBehaviour:
   maxSimulationStep: 1
   settlePositionThreshold: 30
   settleVelocityThreshold: 0
+  openSound:
+    key: sound_menu_chain1
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  closeSound:
+    key: sound_menu_chain2
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
   closePullDownOffset: {x: 0, y: -56}
   closePullDownDuration: 0.1
   closeLaunchDuration: 0.9
@@ -18604,6 +18654,16 @@ MonoBehaviour:
   maxSimulationStep: 1
   settlePositionThreshold: 30
   settleVelocityThreshold: 0
+  openSound:
+    key: sound_menu_chain1
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  closeSound:
+    key: sound_menu_chain2
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
   closePullDownOffset: {x: 0, y: -56}
   closePullDownDuration: 0.08
   closeLaunchDuration: 0.16
@@ -23903,6 +23963,16 @@ MonoBehaviour:
   maxSimulationStep: 1
   settlePositionThreshold: 30
   settleVelocityThreshold: 0
+  openSound:
+    key: sound_menu_chain1
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  closeSound:
+    key: sound_menu_chain2
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
   closePullDownOffset: {x: 0, y: -56}
   closePullDownDuration: 0.08
   closeLaunchDuration: 0.16
@@ -36014,6 +36084,16 @@ MonoBehaviour:
   maxSimulationStep: 1
   settlePositionThreshold: 30
   settleVelocityThreshold: 0
+  openSound:
+    key: sound_menu_chain1
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  closeSound:
+    key: sound_menu_chain2
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
   closePullDownOffset: {x: 0, y: -56}
   closePullDownDuration: 0.08
   closeLaunchDuration: 0.16

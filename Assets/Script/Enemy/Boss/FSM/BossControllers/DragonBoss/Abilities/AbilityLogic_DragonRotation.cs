@@ -40,6 +40,14 @@ public sealed class AbilityLogic_DragonRotation : AbilityLogic
     [SerializeField] private LayerMask projectileWallLayers;
     [SerializeField] private SoundRef projectileFireSound;
 
+    [Header("Audio")]
+    [SerializeField] private SoundRef spinLoopSound = new()
+    {
+        key = "sound_dragon_spinloop",
+        volumeMultiplier = 1f,
+        anchorPolicy = SoundAnchorPolicy.CatalogDefault
+    };
+
     [Header("Telegraph")]
     [SerializeField] private AttackTelegraphStyle warningTelegraphStyle;
 
@@ -86,10 +94,19 @@ public sealed class AbilityLogic_DragonRotation : AbilityLogic
         Transform shadowRoot = dragon != null ? dragon.PatternShadowMotionRoot : null;
         Vector3 visualBaseLocalPosition = visualRoot != null ? visualRoot.localPosition : Vector3.zero;
         Vector3 shadowBaseLocalPosition = shadowRoot != null ? shadowRoot.localPosition : Vector3.zero;
+        AudioHandle spinLoopHandle = AudioHandle.Invalid;
         LogVisualSwayStart(dragon, visualRoot, visualBaseLocalPosition);
 
         try
         {
+            spinLoopHandle = SoundPlaybackUtility.Play(
+                spinLoopSound,
+                instigator: dragon.gameObject,
+                causer: dragon.gameObject,
+                target: dragon.CurrentTarget != null ? dragon.CurrentTarget.gameObject : null,
+                position: dragon.transform.position,
+                sourceObject: this);
+
             while (elapsed < spinSeconds)
             {
                 if (IsAbilityCancelled(spec))
@@ -122,6 +139,7 @@ public sealed class AbilityLogic_DragonRotation : AbilityLogic
             if (IsAbilityCancelled(spec))
                 DestroySpawnedProjectiles(spawnedProjectiles);
 
+            SoundPlaybackUtility.Stop(spinLoopHandle);
             LogVisualSwayEnd(visualRoot, visualBaseLocalPosition);
         }
     }

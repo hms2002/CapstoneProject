@@ -44,6 +44,12 @@ public sealed class UIChainDropPresentation : MonoBehaviour
         volumeMultiplier = 1f,
         anchorPolicy = SoundAnchorPolicy.CatalogDefault
     };
+    [SerializeField] private SoundRef closeSound = new SoundRef
+    {
+        key = "sound_menu_chain2",
+        volumeMultiplier = 1f,
+        anchorPolicy = SoundAnchorPolicy.CatalogDefault
+    };
 
     [Header("Close Motion")]
     [SerializeField] private Vector2 closePullDownOffset = new Vector2(0f, -56f);
@@ -122,7 +128,7 @@ public sealed class UIChainDropPresentation : MonoBehaviour
     private void OnEnable()
     {
         if (playOnEnable)
-            PlayOpen();
+            PlayOpen(playSound: false);
         else
         {
             ApplyChainReachConstraint();
@@ -176,7 +182,7 @@ public sealed class UIChainDropPresentation : MonoBehaviour
         RefreshLayoutIfNeeded();
     }
 
-    public void PlayOpen()
+    public void PlayOpen(bool playSound = true)
     {
         ResolveReferences();
         CaptureOpenAnchoredPosition();
@@ -192,10 +198,16 @@ public sealed class UIChainDropPresentation : MonoBehaviour
         SetInteractionEnabled(false);
         ApplyChainReachConstraint();
         SnapAllChainPresentations();
-        PlayOpenSound();
+        if (playSound)
+            PlayOpenSound();
     }
 
-    public void PlayClose(System.Action onComplete = null)
+    public void PlayOpenSilently()
+    {
+        PlayOpen(playSound: false);
+    }
+
+    public void PlayClose(System.Action onComplete = null, bool playSound = true)
     {
         ResolveReferences();
         CaptureOpenAnchoredPosition();
@@ -216,6 +228,8 @@ public sealed class UIChainDropPresentation : MonoBehaviour
         if (!ShouldIgnoreChainReachDuringCloseAnimation())
             ApplyChainReachConstraint();
         SnapAllChainPresentations();
+        if (playSound)
+            PlayCloseSound();
     }
 
     public void SnapOpen()
@@ -281,6 +295,15 @@ public sealed class UIChainDropPresentation : MonoBehaviour
     {
         SoundPlaybackUtility.Play(
             openSound,
+            instigator: gameObject,
+            causer: gameObject,
+            sourceObject: this);
+    }
+
+    private void PlayCloseSound()
+    {
+        SoundPlaybackUtility.Play(
+            closeSound,
             instigator: gameObject,
             causer: gameObject,
             sourceObject: this);

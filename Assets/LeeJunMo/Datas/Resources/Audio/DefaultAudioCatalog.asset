@@ -223,6 +223,21 @@ MonoBehaviour:
     cooldown: 0.05
     minDistance: 1
     maxDistance: 20
+  - key: sound_menu_chain2
+    bus: 0
+    category: 1
+    variants:
+    - {fileID: 8300000, guid: dcfb7c9a78a4f95499e6752061f0cd5f, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 0
+    important: 0
+    cooldown: 0.05
+    minDistance: 1
+    maxDistance: 20
   - key: relic.levelup
     bus: 0
     category: 1
@@ -593,6 +608,21 @@ MonoBehaviour:
     pitchMin: 1
     pitchMax: 1
     loop: 0
+    spatial: 1
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_dragon_spinloop
+    bus: 0
+    category: 7
+    variants:
+    - {fileID: 8300000, guid: 3da0a7c3698156c4cbac7e802b0edebd, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 1
     spatial: 1
     important: 0
     cooldown: 0

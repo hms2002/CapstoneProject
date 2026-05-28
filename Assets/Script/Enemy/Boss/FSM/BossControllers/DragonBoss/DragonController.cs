@@ -15,6 +15,13 @@ public sealed class DragonController : BossControllerBase
     [SerializeField] private MirroredLocalSocket2D fireBreathMouthSocket;
     [SerializeField] private bool faceTargetDuringCombat = true;
 
+    [Header("Puddle Reactive Pattern Weight")]
+    [SerializeField] private bool scaleFireBreathWeightByPuddles = true;
+    [SerializeField, Min(0)] private int fireBreathMinimumPuddlesToUse = 4;
+    [SerializeField, Min(0.01f)] private float fireBreathMinimumPuddleWeightMultiplier = 1f;
+    [SerializeField, Min(1)] private int fireBreathPuddlesForMaxWeight = 5;
+    [SerializeField, Min(0.01f)] private float fireBreathMaxPuddleWeightMultiplier = 5f;
+
     private DragonRuntimeData runtimeData;
     private int faceTargetLockCount;
 
@@ -50,6 +57,36 @@ public sealed class DragonController : BossControllerBase
     protected override void OnPatternEnd(BossPatternEntry patternEntry, bool forced)
     {
         RuntimeData.ResetPatternCounters();
+    }
+
+    /// <summary>
+    /// 책임:
+    /// 취룡 전용 환경 요소를 기준으로 공통 보스 패턴 평가 결과의 가중치만 보정한다.
+    /// </summary>
+    protected override BossPatternEvalResult AdjustPatternEval(BossPatternEntry patternEntry, BossPatternEvalResult result)
+    {
+        if (!result.CanUse || !scaleFireBreathWeightByPuddles || !IsFireBreathPattern(patternEntry))
+            return result;
+
+        int activePuddleCount = CountActiveAlcoholOrFirePuddles();
+        if (activePuddleCount < fireBreathMinimumPuddlesToUse)
+            return BossPatternEvalResult.HardFail(
+                $"Dragon fire breath blocked because active puddles are below requirement: {activePuddleCount}/{fireBreathMinimumPuddlesToUse}.");
+
+        float multiplier = ResolveFireBreathPuddleWeightMultiplier(activePuddleCount);
+
+        return new BossPatternEvalResult(
+            result.State,
+            result.WeightMultiplier * multiplier,
+            $"Dragon fire breath weight scaled by active puddles: {activePuddleCount}.");
+    }
+
+    private float ResolveFireBreathPuddleWeightMultiplier(int activePuddleCount)
+    {
+        if (activePuddleCount < Mathf.Max(1, fireBreathPuddlesForMaxWeight))
+            return Mathf.Max(0.01f, fireBreathMinimumPuddleWeightMultiplier);
+
+        return Mathf.Max(0.01f, fireBreathMaxPuddleWeightMultiplier);
     }
 
     /// <summary>취룡의 현재 타겟 또는 바라보는 방향을 기준으로 패턴 방향을 구한다.</summary>
@@ -100,6 +137,37 @@ public sealed class DragonController : BossControllerBase
     private bool CanAutoFaceTarget()
     {
         return !HasGroggyTag() && !HasDeadTag();
+    }
+
+    private static bool IsFireBreathPattern(BossPatternEntry patternEntry)
+    {
+        return patternEntry != null &&
+               patternEntry.Ability != null &&
+               patternEntry.Ability.logic is AbilityLogic_DragonFireBreath;
+    }
+
+    private static int CountActiveAlcoholOrFirePuddles()
+    {
+        PuddleManager manager = PuddleManager.ResolveForScene();
+        System.Collections.Generic.IReadOnlyList<PuddleAreaBase> puddles = manager != null ? manager.Puddles : null;
+        if (puddles == null || puddles.Count == 0)
+            return 0;
+
+        int count = 0;
+        for (int i = 0; i < puddles.Count; i++)
+        {
+            PuddleAreaBase puddle = puddles[i];
+            if (puddle == null || !puddle.IsGroundActive)
+                continue;
+
+            if (puddle.ElementType == PuddleElementType.Alcohol ||
+                puddle.ElementType == PuddleElementType.Fire)
+            {
+                count++;
+            }
+        }
+
+        return count;
     }
 
     /// <summary>
