@@ -16,6 +16,141 @@
                     "lastSceneName": "SpiliCorridor"
                 }
             ]
+        },
+        {
+            "sessionId": "19ba2919f5ca4a63a8327f0485fb134a",
+            "startedUtc": "2026-05-26T09:14:25.8112560Z",
+            "endedUtc": "2026-05-26T09:14:28.7440109Z",
+            "entries": []
+        },
+        {
+            "sessionId": "ff7d5ae7694a41b2b9c69afa7c53e4f2",
+            "startedUtc": "2026-05-26T09:15:12.8279002Z",
+            "endedUtc": "2026-05-26T09:15:14.1074187Z",
+            "entries": []
+        },
+        {
+            "sessionId": "d543b1e00aff427bb3c4272724929b8f",
+            "startedUtc": "2026-05-27T14:25:26.1566509Z",
+            "endedUtc": "2026-05-27T14:25:27.7808584Z",
+            "entries": []
+        },
+        {
+            "sessionId": "c5541b2a72314bc0bd4efda73c100982",
+            "startedUtc": "2026-05-27T15:56:48.7867623Z",
+            "endedUtc": "2026-05-27T15:56:50.0235902Z",
+            "entries": []
+        },
+        {
+            "sessionId": "bb02889ccfa041a0ad17d4663c093f36",
+            "startedUtc": "2026-05-27T15:58:46.6980698Z",
+            "endedUtc": "2026-05-27T15:58:48.2828237Z",
+            "entries": []
+        },
+        {
+            "sessionId": "2ae98e84a6a445128ba2581b35aa381b",
+            "startedUtc": "2026-05-28T17:14:22.7472575Z",
+            "endedUtc": "2026-05-28T17:14:25.7559115Z",
+            "entries": []
+        },
+        {
+            "sessionId": "5b77c566ad2f4c2d9b49943a4fb7e4a0",
+            "startedUtc": "2026-05-28T17:17:16.3046670Z",
+            "endedUtc": "2026-05-28T17:17:18.0592526Z",
+            "entries": []
+        },
+        {
+            "sessionId": "cf19d256f46042779eb5abd656c05e3a",
+            "startedUtc": "2026-05-28T18:13:32.8344394Z",
+            "endedUtc": "2026-05-28T18:13:34.5277509Z",
+            "entries": []
+        },
+        {
+            "sessionId": "3cb50df495ee4e1093ea647f68492270",
+            "startedUtc": "2026-05-28T18:16:59.6260074Z",
+            "endedUtc": "2026-05-28T18:17:01.7096511Z",
+            "entries": []
+        },
+        {
+            "sessionId": "34a31779698443ff83c39f701fc601d4",
+            "startedUtc": "2026-05-28T18:19:46.6387118Z",
+            "endedUtc": "2026-05-28T18:19:49.5225861Z",
+            "entries": []
+        },
+        {
+            "sessionId": "eb22c090590e412781b5e9fc173c5760",
+            "startedUtc": "2026-05-28T18:23:23.6560468Z",
+            "endedUtc": "2026-05-28T18:23:25.0888505Z",
+            "entries": []
+        },
+        {
+            "sessionId": "ad235027c7504e7c941add6e1f74ff95",
+            "startedUtc": "2026-05-28T18:23:59.1660744Z",
+            "endedUtc": "2026-05-28T18:24:00.6770940Z",
+            "entries": []
+        },
+        {
+            "sessionId": "2e22db3da73f42e5a0fdc8605c6fb528",
+            "startedUtc": "2026-05-28T18:24:57.7213798Z",
+            "endedUtc": "2026-05-28T18:24:59.2498017Z",
+            "entries": []
+        },
+        {
+            "sessionId": "011e44576d214089a63211321e730c28",
+            "startedUtc": "2026-05-28T18:27:34.9202584Z",
+            "endedUtc": "2026-05-28T18:27:58.3525898Z",
+            "entries": [
+                {
+                    "prefabPath": "Assets/HeoMinSeok/_Project/Prefabs/VFX/Element/ElectrocutedSparkParticle.prefab",
+                    "prefabName": "ElectrocutedSparkParticle",
+                    "totalSpawns": 20,
+                    "coldSpawns": 20,
+                    "firstSeenSeconds": 21.34947967529297,
+                    "lastSeenSeconds": 23.29336929321289,
+                    "firstSceneName": "SlimeCorridor",
+                    "lastSceneName": "SlimeCorridor"
+                }
+            ]
+        },
+        {
+            "sessionId": "61c53bfddac6452fa74dc2545b60ea65",
+            "startedUtc": "2026-05-28T18:28:35.7632025Z",
+            "endedUtc": "2026-05-28T18:28:37.2242694Z",
+            "entries": []
+        },
+        {
+            "sessionId": "cafb922532d741b09337c6d666b84326",
+            "startedUtc": "2026-05-28T18:35:13.2893126Z",
+            "endedUtc": "2026-05-28T18:35:35.9552926Z",
+            "entries": [
+                {
+                    "prefabPath": "Assets/HeoMinSeok/_Project/Prefabs/VFX/Element/ElectrocutedSparkParticle.prefab",
+                    "prefabName": "ElectrocutedSparkParticle",
+                    "totalSpawns": 20,
+                    "coldSpawns": 20,
+                    "firstSeenSeconds": 20.60010528564453,
+                    "lastSeenSeconds": 21.915861129760743,
+                    "firstSceneName": "SlimeCorridor",
+                    "lastSceneName": "SlimeCorridor"
+                }
+            ]
+        },
+        {
+            "sessionId": "471ffdb73a98458dbcdad80a35b96b7b",
+            "startedUtc": "2026-05-28T18:37:03.5116375Z",
+            "endedUtc": "2026-05-28T18:40:21.1665641Z",
+            "entries": [
+                {
+                    "prefabPath": "Assets/HeoMinSeok/_Project/Prefabs/VFX/Element/ElectrocutedSparkParticle.prefab",
+                    "prefabName": "ElectrocutedSparkParticle",
+                    "totalSpawns": 443,
+                    "coldSpawns": 443,
+                    "firstSeenSeconds": 24.733352661132814,
+                    "lastSeenSeconds": 197.51089477539063,
+                    "firstSceneName": "SlimeCorridor",
+                    "lastSceneName": "SlimeCorridor"
+                }
+            ]
         }
     ]
 }
