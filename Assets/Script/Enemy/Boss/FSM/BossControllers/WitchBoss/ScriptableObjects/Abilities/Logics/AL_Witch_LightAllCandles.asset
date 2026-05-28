@@ -27,11 +27,36 @@ MonoBehaviour:
   chargeOrbFailureDropDuration: 0.22
   chargeOrbImpactLocalOffset: {x: 0, y: 0.1, z: -0.05}
   chargeLoopSound:
-    key: chloe.pattern.phasepatternloop
+    key: sound_shadow_ChargeEnergyLoop
     volumeMultiplier: 1
     anchorPolicy: 0
     localOffset: {x: 0, y: 0, z: 0}
   chargeLoopFadeOutSeconds: 0.1
+  chargeLoopPitchRampEnabled: 1
+  chargeLoopPitchCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1.35
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   chargePulsePresentation:
     sound:
       key: 

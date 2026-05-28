@@ -8,6 +8,8 @@ public class CandlestickShieldBreakerLauncher : MonoBehaviour
     // 이 클래스의 책임:
     // 촛대가 봉인 해제될 때 마녀 보호막이 살아 있으면 보호막 파괴 전용 투사체를 발사한다.
 
+    private static readonly SoundRef FallbackLaunchSound = SoundRef.FromKey("sound_candlestick_ShotShieldBreaker");
+
     [SerializeField] private Candlestick ownerCandlestick;
     [SerializeField] private CandlestickSeal seal;
     [SerializeField] private Witch cachedWitch;
@@ -16,6 +18,7 @@ public class CandlestickShieldBreakerLauncher : MonoBehaviour
     [SerializeField] private float projectileLifetime = 2.2f;
     [SerializeField] private float projectileHitRadius = 0.08f;
     [SerializeField] private float spawnHeightOffset = 0.35f;
+    [SerializeField] private SoundRef launchSound;
     [SerializeField] private SoundRef shieldHitSound;
 
     private void Awake()
@@ -56,6 +59,8 @@ public class CandlestickShieldBreakerLauncher : MonoBehaviour
             ? ownerCandlestick.transform.position + new Vector3(0f, spawnHeightOffset, 0f)
             : transform.position;
 
+        PlayLaunchSound(spawnPosition);
+
         if (projectilePrefab != null)
         {
             GameObject projectileObject = Instantiate(projectilePrefab, spawnPosition, Quaternion.identity);
@@ -76,6 +81,17 @@ public class CandlestickShieldBreakerLauncher : MonoBehaviour
             projectileLifetime,
             projectileHitRadius,
             shieldHitSound);
+    }
+
+    /// <summary>보호막 파괴 투사체 발사 시점의 사운드를 재생합니다.</summary>
+    private void PlayLaunchSound(Vector3 spawnPosition)
+    {
+        SoundRef sound = launchSound.IsSet ? launchSound : FallbackLaunchSound;
+        SoundPlaybackUtility.Play(
+            sound,
+            causer: gameObject,
+            position: spawnPosition,
+            sourceObject: this);
     }
 
     private Witch ResolveWitch()

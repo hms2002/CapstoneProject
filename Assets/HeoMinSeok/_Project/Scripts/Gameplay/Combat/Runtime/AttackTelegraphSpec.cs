@@ -19,6 +19,7 @@ namespace UnityGAS
         public Vector3 origin;
         public Vector3 lineStart;
         public Vector3 lineEnd;
+        public bool useMeshOutline;
         public bool useWallClipping;
         public LayerMask wallClipLayers;
         public int wallClipSampleCount;
@@ -176,12 +177,24 @@ namespace UnityGAS
             wallClipSkinWidth = Mathf.Max(0f, skinWidth);
             return this;
         }
+
+        /// <summary>
+        /// 책임 :
+        /// - 벽 기준 자르기는 켜지 않고, mesh/LineRenderer 기반의 얇은 외곽선 렌더링만 요청한다.
+        /// - 실제 공격 판정이 원본 사각형/원형 기준인 패턴에서 경고와 피해 범위를 일치시키는 데 사용한다.
+        /// </summary>
+        public AttackTelegraphSpec WithMeshOutline(int sampleCount = 48)
+        {
+            useMeshOutline = true;
+            wallClipSampleCount = Mathf.Max(3, sampleCount);
+            return this;
+        }
     }
 
     /// <summary>
     /// 책임 :
     /// - 여러 보스/몬스터 패턴이 최신 얇은 외곽선 경고 렌더 옵션을 같은 규칙으로 적용하게 돕는다.
-    /// - 표시용 wall clipping만 설정하고, 실제 공격 판정이나 이동 차단 규칙은 변경하지 않는다.
+    /// - 패턴별 피해 판정 정책에 맞춰 wall clipping 포함/미포함 얇은 외곽선을 선택하게 한다.
     /// </summary>
     public static class AttackTelegraphSpecUtility
     {
@@ -197,6 +210,11 @@ namespace UnityGAS
                 wallLayers,
                 ThinWarningOutlineSampleCount,
                 ThinWarningOutlineSkinWidth);
+        }
+
+        public static AttackTelegraphSpec WithThinWarningOutlineOnly(AttackTelegraphSpec spec)
+        {
+            return spec.WithMeshOutline(ThinWarningOutlineSampleCount);
         }
     }
 }

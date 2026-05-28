@@ -7,6 +7,9 @@ using UnityGAS;
 
 [DisallowMultipleComponent]
 [RequireComponent(typeof(AttackTelegraphView))]
+// 이 클래스의 책임:
+// - 마녀 보스 평타1의 개별 타일 경고, 타격 표시, 피해 판정을 같은 기하 데이터로 실행한다.
+// - 경고/타격/피해 범위가 어긋날 때 진단할 수 있도록 타일 단위 로그를 제공한다.
 public class WitchNormalAttack1Tile : MonoBehaviour
 {
     private const float HitTime = 0.12f;
@@ -18,9 +21,14 @@ public class WitchNormalAttack1Tile : MonoBehaviour
     private CombatHitPayload hitPayload;
     private Vector2 tileSize;
     private float angleDeg;
+    private int debugTileIndex = -1;
+    private float debugShowDelay;
+    private float debugHitDelay;
 
     [Header("Hit Presentation")]
     [SerializeField] private WorldPresentationHook hitPresentation;
+    [Header("Debug")]
+    [SerializeField] private bool logGeometryDebug;
     [HideInInspector, FormerlySerializedAs("hitEffectPrefab")]
     [SerializeField] private GameObject legacyHitEffectPrefab;
     [HideInInspector, FormerlySerializedAs("hitEffectLocalOffset")]
@@ -60,7 +68,8 @@ public class WitchNormalAttack1Tile : MonoBehaviour
         float showDelay,
         float hitDelay,
         AttackTelegraphStyle warningTelegraphStyle,
-        AttackTelegraphStyle hitTelegraphStyle)
+        AttackTelegraphStyle hitTelegraphStyle,
+        int tileIndex = -1)
     {
         targetObject = target;
         hitPayload = payload;
@@ -68,6 +77,9 @@ public class WitchNormalAttack1Tile : MonoBehaviour
         angleDeg = angle;
         warningStyle = warningTelegraphStyle;
         hitStyle = hitTelegraphStyle;
+        debugTileIndex = tileIndex;
+        debugShowDelay = showDelay;
+        debugHitDelay = hitDelay;
 
         StopAllCoroutines();
         StartCoroutine(Run(showDelay, hitDelay));
@@ -78,6 +90,8 @@ public class WitchNormalAttack1Tile : MonoBehaviour
         float safeShowDelay = Mathf.Max(0f, showDelay);
         float safeHitDelay = Mathf.Max(safeShowDelay, hitDelay);
         float warningTime = safeHitDelay - safeShowDelay;
+
+        LogGeometry("run start", MakeSpec(warningTime, warningStyle), warningTime);
 
         if (safeShowDelay > 0f)
             yield return new WaitForSeconds(safeShowDelay);
@@ -99,7 +113,9 @@ public class WitchNormalAttack1Tile : MonoBehaviour
     {
         if (telegraphView == null) return;
 
-        telegraphView.Show(AttackTelegraphSpecUtility.WithThinWarningOutline(MakeSpec(duration, warningStyle)));
+        AttackTelegraphSpec warningSpec = AttackTelegraphSpecUtility.WithThinWarningOutlineOnly(MakeSpec(duration, warningStyle));
+        LogGeometry("show warning", warningSpec, duration);
+        telegraphView.Show(warningSpec);
     }
 
     /// <summary>타격 장판을 표시합니다.</summary>
@@ -107,7 +123,9 @@ public class WitchNormalAttack1Tile : MonoBehaviour
     {
         if (telegraphView == null) return;
 
-        telegraphView.Show(MakeSpec(HitTime, hitStyle));
+        AttackTelegraphSpec hitSpec = MakeSpec(HitTime, hitStyle);
+        LogGeometry("show hit", hitSpec, HitTime);
+        telegraphView.Show(hitSpec);
         PlayHitPresentation();
     }
 
@@ -117,6 +135,8 @@ public class WitchNormalAttack1Tile : MonoBehaviour
         if (targetObject == null || hitPayload == null || !hitPayload.IsValid()) return;
 
         Collider2D[] hits = Physics2D.OverlapBoxAll(transform.position, tileSize, angleDeg);
+        int consideredCount = 0;
+        string hitNames = string.Empty;
         for (int i = 0; i < hits.Length; i++)
         {
             Collider2D hitCollider = hits[i];
@@ -124,11 +144,17 @@ public class WitchNormalAttack1Tile : MonoBehaviour
                 continue;
 
             GameObject hitObject = GetHitObject(hitCollider);
+            consideredCount++;
+            if (logGeometryDebug)
+                hitNames += $"{hitCollider.name}->{(hitObject != null ? hitObject.name : "null")}; ";
             if (hitObject != targetObject) continue;
 
+            LogDamageProbe(hits.Length, consideredCount, hitNames, true);
             CombatHitPayloadApplier.Apply(hitObject, hitPayload, transform.position);
             return;
         }
+
+        LogDamageProbe(hits.Length, consideredCount, hitNames, false);
     }
 
     /// <summary>사각형 장판 정보를 만듭니다.</summary>
@@ -164,6 +190,7 @@ public class WitchNormalAttack1Tile : MonoBehaviour
     {
         Vector3 hitDirection = ResolveHitDirection();
         Quaternion presentationRotation = Quaternion.Euler(0f, 0f, angleDeg);
+        LogHitPresentation(presentationRotation);
         WorldPresentationRuntime.PlayDeferredAsync(
             hitPresentation,
             WorldPresentationContext.AtWorld(
@@ -208,6 +235,68 @@ public class WitchNormalAttack1Tile : MonoBehaviour
 
         if (!hitPresentation.HasShake && legacyHitCameraShake.amplitude > 0f)
             hitPresentation.cameraShake = legacyHitCameraShake;
+    }
+
+    private void LogGeometry(string phase, AttackTelegraphSpec spec, float phaseDuration)
+    {
+        if (!logGeometryDebug)
+            return;
+
+        Vector3[] corners = BuildRectangleCorners(transform.position, tileSize, angleDeg);
+        Vector3 targetPosition = targetObject != null ? targetObject.transform.position : Vector3.zero;
+        string targetName = targetObject != null ? targetObject.name : "null";
+        string styleName = spec.style != null ? spec.style.name : "null";
+        Debug.Log(
+            $"[WitchNormalAttack1Tile] {phase}. " +
+            $"tile={debugTileIndex}, object={name}, time={Time.time:0.000}, " +
+            $"center={transform.position}, specCenter={spec.center}, size={tileSize}, angle={angleDeg:0.0}, " +
+            $"duration={phaseDuration:0.000}, showDelay={debugShowDelay:0.000}, hitDelay={debugHitDelay:0.000}, " +
+            $"meshOutline={spec.useMeshOutline}, wallClip={spec.useWallClipping}, wallMask={spec.wallClipLayers.value}, style={styleName}, " +
+            $"target={targetName}, targetPos={targetPosition}, " +
+            $"corners=[{corners[0]}, {corners[1]}, {corners[2]}, {corners[3]}]",
+            this);
+    }
+
+    private void LogDamageProbe(int rawHitCount, int consideredCount, string hitNames, bool applied)
+    {
+        if (!logGeometryDebug)
+            return;
+
+        Debug.Log(
+            $"[WitchNormalAttack1Tile] damage probe. " +
+            $"tile={debugTileIndex}, object={name}, time={Time.time:0.000}, " +
+            $"center={transform.position}, size={tileSize}, angle={angleDeg:0.0}, " +
+            $"rawHits={rawHitCount}, considered={consideredCount}, applied={applied}, hits={hitNames}",
+            this);
+    }
+
+    private void LogHitPresentation(Quaternion rotation)
+    {
+        if (!logGeometryDebug)
+            return;
+
+        string effectName = hitPresentation.effect.prefab != null ? hitPresentation.effect.prefab.name : "null";
+        string particleName = hitPresentation.particle.prefab != null ? hitPresentation.particle.prefab.name : "null";
+        Debug.Log(
+            $"[WitchNormalAttack1Tile] hit presentation. " +
+            $"tile={debugTileIndex}, object={name}, time={Time.time:0.000}, " +
+            $"position={transform.position}, rotationZ={rotation.eulerAngles.z:0.0}, " +
+            $"effect={effectName}, effectScale={hitPresentation.effect.EffectiveScaleMultiplier}, " +
+            $"particle={particleName}, particleScale={hitPresentation.particle.EffectiveScaleMultiplier}",
+            this);
+    }
+
+    private static Vector3[] BuildRectangleCorners(Vector3 center, Vector2 size, float angle)
+    {
+        Vector2 half = size * 0.5f;
+        Quaternion rotation = Quaternion.Euler(0f, 0f, angle);
+        return new[]
+        {
+            center + rotation * new Vector3(-half.x, -half.y, 0f),
+            center + rotation * new Vector3(-half.x, half.y, 0f),
+            center + rotation * new Vector3(half.x, half.y, 0f),
+            center + rotation * new Vector3(half.x, -half.y, 0f)
+        };
     }
 
 }

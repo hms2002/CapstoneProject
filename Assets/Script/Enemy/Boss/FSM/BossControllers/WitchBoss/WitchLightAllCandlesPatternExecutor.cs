@@ -54,6 +54,7 @@ public sealed class WitchLightAllCandlesPatternExecutor : MonoBehaviour
         {
             float chargeProgress = Mathf.InverseLerp(chargeStartTime, deadlineTime, Time.time);
             UpdateChargeOrb(logic, chargeOrbInstance, chargeProgress);
+            UpdateChargeLoopPitch(logic, chargeProgress);
             WorldPresentationRuntime.PlaySignalOnly(
                 logic.ChargePulsePresentation,
                 WorldPresentationContext.AtWorld(
@@ -230,6 +231,20 @@ public sealed class WitchLightAllCandlesPatternExecutor : MonoBehaviour
             causer: owner.gameObject,
             position: owner.transform.position,
             sourceObject: this);
+        UpdateChargeLoopPitch(logic, 0f);
+    }
+
+    /// <summary>차지 남은 시간에 따라 루프 사운드 pitch를 갱신합니다.</summary>
+    private void UpdateChargeLoopPitch(AbilityLogic_WitchLightAllCandles logic, float chargeProgress)
+    {
+        if (owner == null || logic == null || !logic.ChargeLoopPitchRampEnabled)
+            return;
+
+        int key = owner.GetInstanceID();
+        if (!activeChargeLoopHandles.TryGetValue(key, out AudioHandle handle))
+            return;
+
+        SoundPlaybackUtility.SetPitch(handle, logic.EvaluateChargeLoopPitch(chargeProgress));
     }
 
     /// <summary>차지 루프 사운드를 정지합니다.</summary>

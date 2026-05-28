@@ -8,6 +8,9 @@ namespace CapstoneAudio
 {
     public sealed class SoundManager : MonoBehaviour
     {
+        // 이 클래스의 책임:
+        // 카탈로그 기반 사운드 재생, 루프 핸들 관리, 오디오 풀링, 볼륨/피치 런타임 제어를 총괄한다.
+
         public const string DefaultCatalogResourcesPath = "Audio/DefaultAudioCatalog";
         private const string MasterVolumePrefKey = "settings.audio.master";
         private const string MusicVolumePrefKey = "settings.audio.music";
@@ -203,6 +206,19 @@ namespace CapstoneAudio
             source.DOFade(0f, fadeOutDuration)
                 .SetUpdate(true)
                 .OnComplete(() => ReleaseLoopSource(source));
+        }
+
+        public void SetPitch(AudioHandle handle, float pitch)
+        {
+            if (!handle.IsValid)
+                return;
+
+            EnsureInitialized();
+
+            if (!activeLoopSources.TryGetValue(handle.Id, out AudioSource source) || source == null)
+                return;
+
+            source.pitch = Mathf.Clamp(pitch, 0.05f, 3f);
         }
 
         public void SetMasterVolume(float volume)

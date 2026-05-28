@@ -93,10 +93,12 @@ public sealed class WitchNormalAttack1PatternExecutor : MonoBehaviour
 
         for (int i = 0; i < context.TileCount; i++)
         {
+            Vector3 spawnPosition = owner.GetNormal1TilePoint(aimDir, i, context.TileSize);
             WitchNormalAttack1Tile tile = Instantiate(
                 context.TilePrefab,
-                owner.GetNormal1TilePoint(aimDir, i, context.TileSize),
+                spawnPosition,
                 Quaternion.Euler(0f, 0f, angle));
+            tile.name = $"{context.TilePrefab.name}_Tile{i}";
 
             owner.RuntimeData.AddNormal1Tile(tile);
             tile.Play(
@@ -107,7 +109,8 @@ public sealed class WitchNormalAttack1PatternExecutor : MonoBehaviour
                 i * context.IntervalSeconds,
                 startTime + (i * context.IntervalSeconds),
                 context.WarningTelegraphStyle,
-                context.HitTelegraphStyle);
+                context.HitTelegraphStyle,
+                i);
         }
 
         Debug.Log($"[WitchNormalAttack1PatternExecutor] 평타1 executor 경로 실행 성공: tileCount={context.TileCount}, interval={context.IntervalSeconds}", this);
