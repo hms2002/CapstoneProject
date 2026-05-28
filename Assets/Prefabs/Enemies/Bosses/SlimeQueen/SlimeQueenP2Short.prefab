@@ -206,6 +206,7 @@ MonoBehaviour:
   castlingHitRadius: 0.75
   castlingDamage: 1
   castlingDamageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
+  defeatedRendererBrightness: 0.5
   toxicRushPitFallSlamVisualHeight: 10
   logToxicRushPitFallSlamHeight: 1
   toxicRushWarningStyle: {fileID: 11400000, guid: b15f18602ec87284d80cbd57720425f1, type: 2}

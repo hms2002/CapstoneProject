@@ -17,6 +17,9 @@ public sealed class DrainPipe : MonoBehaviour, IDamageReceiver
     [Tooltip("임시 배수관 원형 스프라이트를 표시할 렌더러입니다.")]
     [SerializeField] private SpriteRenderer spriteRenderer;
 
+    [Tooltip("마개가 열리면 꺼지고 복구되면 다시 켜질 피격 전용 콜라이더입니다. 비워두면 같은 오브젝트의 Collider2D들을 사용합니다.")]
+    [SerializeField] private Collider2D[] damageReceptionColliders;
+
     [Header("Hit")]
     [Tooltip("배수관이 파괴되기까지 필요한 피격 횟수입니다.")]
     [SerializeField] private int hitCountToBreak = 3;
@@ -92,6 +95,7 @@ public sealed class DrainPipe : MonoBehaviour, IDamageReceiver
     private GameObject suctionVfxInstance;
     private Transform suctionVfxTransform;
     private Vector3 suctionVfxBaseScale = Vector3.one;
+    private bool[] damageReceptionColliderDefaultEnabledStates;
     private int currentHitCount;
     private bool isBroken;
 
@@ -178,6 +182,11 @@ public sealed class DrainPipe : MonoBehaviour, IDamageReceiver
     {
         if (spriteRenderer == null)
             spriteRenderer = GetComponent<SpriteRenderer>();
+
+        if (damageReceptionColliders == null || damageReceptionColliders.Length == 0)
+            damageReceptionColliders = GetComponents<Collider2D>();
+
+        CacheDamageReceptionColliderDefaultStates();
     }
 
     /// <summary>파괴 여부에 맞춰 임시 스프라이트 색상을 갱신합니다.</summary>
@@ -193,6 +202,7 @@ public sealed class DrainPipe : MonoBehaviour, IDamageReceiver
     private void BreakPipe()
     {
         isBroken = true;
+        SetDamageReceptionEnabled(false);
         SyncVisual();
         SoundPlaybackUtility.Play(openSound, causer: gameObject, position: transform.position, sourceObject: this);
         StartWaterfallLoop();
@@ -416,7 +426,47 @@ public sealed class DrainPipe : MonoBehaviour, IDamageReceiver
         ReleasePhaseTwoBossClaim(claimedPhaseTwoBoss);
         phaseTwoBossTarget = null;
         claimedPhaseTwoBoss = null;
+        SetDamageReceptionEnabled(true);
         SyncVisual();
+    }
+
+    /// <summary>마개 피격용 콜라이더들의 초기 enabled 상태를 저장합니다.</summary>
+    private void CacheDamageReceptionColliderDefaultStates()
+    {
+        if (damageReceptionColliders == null)
+        {
+            damageReceptionColliderDefaultEnabledStates = null;
+            return;
+        }
+
+        if (damageReceptionColliderDefaultEnabledStates != null &&
+            damageReceptionColliderDefaultEnabledStates.Length == damageReceptionColliders.Length)
+            return;
+
+        damageReceptionColliderDefaultEnabledStates = new bool[damageReceptionColliders.Length];
+        for (int i = 0; i < damageReceptionColliders.Length; i++)
+            damageReceptionColliderDefaultEnabledStates[i] = damageReceptionColliders[i] != null && damageReceptionColliders[i].enabled;
+    }
+
+    /// <summary>마개가 열린 동안 공격 시스템이 DrainPipe를 피격 대상으로 잡지 못하도록 피격 콜라이더를 제어합니다.</summary>
+    private void SetDamageReceptionEnabled(bool isEnabled)
+    {
+        if (damageReceptionColliders == null || damageReceptionColliders.Length == 0)
+            return;
+
+        CacheDamageReceptionColliderDefaultStates();
+
+        for (int i = 0; i < damageReceptionColliders.Length; i++)
+        {
+            Collider2D damageCollider = damageReceptionColliders[i];
+            if (damageCollider == null)
+                continue;
+
+            bool defaultEnabled = damageReceptionColliderDefaultEnabledStates == null ||
+                                  i >= damageReceptionColliderDefaultEnabledStates.Length ||
+                                  damageReceptionColliderDefaultEnabledStates[i];
+            damageCollider.enabled = isEnabled && defaultEnabled;
+        }
     }
 
     /// <summary>배수관이 열린 동안 흡입 범위를 보여주는 소용돌이 VFX를 생성하고 목표 크기까지 키웁니다.</summary>
