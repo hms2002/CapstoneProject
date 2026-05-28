@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using CapstoneAudio;
 using CapstonePresentation;
 using DG.Tweening;
 using UnityEngine;
@@ -15,6 +16,15 @@ using UnityEngine.UI;
 [DisallowMultipleComponent]
 public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
 {
+    private static readonly SoundRef UiCollisionSound = SoundRef.FromKey("sound_ui_CollisionEachUI");
+    private static readonly SoundRef ChestUnlockSound = SoundRef.FromKey("sound_ui_ChestUnlock");
+    private static readonly SoundRef[] FindUniqueItemSounds =
+    {
+        SoundRef.FromKey("sound_ui_FindUniqueItem1"),
+        SoundRef.FromKey("sound_ui_FindUniqueItem2"),
+        SoundRef.FromKey("sound_ui_FindUniqueItem3")
+    };
+
     private enum EditModePreviewPose
     {
         Closed,
@@ -158,6 +168,7 @@ public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
     private Vector2 inventoryPanelOpenPosition;
     private bool hasCapturedPanelOpenPositions;
     private bool hasPlayedOpenUiParticles;
+    private bool hasPlayedUniqueItemHighlightSound;
     private GameFlowInputBlocker inputBlocker;
     private ObjectPool<UIParticleEmitter> slotRevealParticlePool;
     private readonly List<ItemSlotUI> itemRevealSlots = new();
@@ -1585,6 +1596,8 @@ public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
 
     private void PlayImpactPresentationHook()
     {
+        SoundPlaybackUtility.Play(UiCollisionSound, position: ResolveImpactWorldPosition(), sourceObject: this);
+
         WorldPresentationHook presentation = impactPresentation;
         presentation.cameraShake = default;
 
@@ -1679,11 +1692,13 @@ public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
         if (!Application.isPlaying || !playOpenUiParticles || hasPlayedOpenUiParticles)
             return;
 
+        hasPlayedOpenUiParticles = true;
+        SoundPlaybackUtility.Play(ChestUnlockSound, position: ResolveOpenUiParticleWorldPosition(), sourceObject: this);
+
         if (openUiParticleEmitter == null)
             return;
 
         ConfigureOpenUiParticleRenderRoot();
-        hasPlayedOpenUiParticles = true;
         PlayUiParticleAtWorldPosition(openUiParticleEmitter, ResolveOpenUiParticleWorldPosition(), openUiParticleOffset, clearExisting: true);
     }
 
@@ -1738,12 +1753,25 @@ public sealed class ChestFirstOpenRevealPresentation : MonoBehaviour
                 clearExisting: true);
             StartCoroutine(ReleaseSlotRevealParticleWhenFinished(emitter));
             playedSlotRevealParticleSlots.Add(slot);
+            PlayUniqueItemHighlightSoundOnce(ResolveSlotWorldCenter(slot));
         }
+    }
+
+    /// <summary>상자 최초 공개 중 귀한 아이템 하이라이트가 보일 때 랜덤 강조 사운드를 한 번만 재생합니다.</summary>
+    private void PlayUniqueItemHighlightSoundOnce(Vector3 position)
+    {
+        if (hasPlayedUniqueItemHighlightSound || FindUniqueItemSounds.Length == 0)
+            return;
+
+        hasPlayedUniqueItemHighlightSound = true;
+        SoundRef sound = FindUniqueItemSounds[Random.Range(0, FindUniqueItemSounds.Length)];
+        SoundPlaybackUtility.Play(sound, position: position, sourceObject: this);
     }
 
     private void ResetRevealParticleState()
     {
         hasPlayedOpenUiParticles = false;
+        hasPlayedUniqueItemHighlightSound = false;
         playedSlotRevealParticleSlots.Clear();
     }
 

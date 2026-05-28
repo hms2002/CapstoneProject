@@ -10,6 +10,8 @@ using CapstoneAudio;
 
 public class DialogueView : MonoBehaviour
 {
+    private static readonly SoundRef TalkUiIntroSound = SoundRef.FromKey("sound_ui_TalkUIIntro");
+
     [Header("UI Groups (CanvasGroup required)")]
     [SerializeField] private CanvasGroup textBoxGroup;
     [SerializeField] private CanvasGroup affectionGroup;
@@ -214,6 +216,17 @@ public class DialogueView : MonoBehaviour
             didComplete = true;
             onComplete?.Invoke();
         }
+    }
+
+    /// <summary>
+    /// 책임 : 대화 UI가 실제 텍스트 표시로 넘어가기 전, 진입 연출 시작음을 재생한다.
+    /// </summary>
+    public void PlayOpeningIntroSound()
+    {
+        if (isUiVisible)
+            return;
+
+        SoundPlaybackUtility.Play(TalkUiIntroSound, sourceObject: this);
     }
 
     public void PlayBossPrelude(Action onComplete = null)

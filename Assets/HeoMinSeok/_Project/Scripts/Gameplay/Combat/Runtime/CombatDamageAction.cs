@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using CapstoneAudio;
 using UnityEngine;
 using UnityGAS;
 
@@ -18,6 +19,7 @@ public static class CombatDamageAction
     private static GameplayTag s_groggyTag;
     private static GameplayTag s_staggerImmuneTag;
     private static readonly List<ElementDamageResult> s_resolvedElements = new(8);
+    private static readonly SoundRef PlayerEvadeSound = SoundRef.FromKey("sound_player_Evade");
 
     public static void ApplyDamageAndEmitHit(
         AbilitySystem system,
@@ -211,6 +213,7 @@ public static class CombatDamageAction
         if (CombatEvasionUtil.TryRollEvasion(target))
         {
             DamagePopupService.ShowText("EVADE", target.transform.position);
+            TryPlayPlayerEvadeSound(target);
             return;
         }
 
@@ -329,6 +332,15 @@ public static class CombatDamageAction
 
         float preHp = targetAttrs.GetAttributeValue(hpAttr);
         return new HpCheckData(preHp, hpAttr, targetAttrs);
+    }
+
+    /// <summary>플레이어가 공격을 회피했을 때만 회피 성공 사운드를 재생합니다.</summary>
+    private static void TryPlayPlayerEvadeSound(GameObject target)
+    {
+        if (target == null || !target.CompareTag("Player"))
+            return;
+
+        SoundPlaybackUtility.Play(PlayerEvadeSound, target: target, position: target.transform.position);
     }
 
     /// <summary>

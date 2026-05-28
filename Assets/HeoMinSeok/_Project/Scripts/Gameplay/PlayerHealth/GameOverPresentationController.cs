@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using CapstoneAudio;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -132,6 +133,7 @@ public struct GameOverPresentationRequest
 public sealed class GameOverPresentationController : MonoBehaviour
 {
     private const string DefaultHubSceneName = "ProtoTypeHub";
+    private static readonly SoundRef ReturnToHubSound = SoundRef.FromKey("sound_ui_AfterPlayerDieReturnToHub");
     private const int SystemCursorPriority = 350;
     private const float FadeToBlackSeconds = 0.85f;
     private const float InfoFadeSeconds = 0.35f;
@@ -362,6 +364,7 @@ public sealed class GameOverPresentationController : MonoBehaviour
         if (returnRoutine != null)
             return;
 
+        SoundPlaybackUtility.Play(ReturnToHubSound, sourceObject: this);
         returnRoutine = StartCoroutine(CoReturnToHub());
     }
 

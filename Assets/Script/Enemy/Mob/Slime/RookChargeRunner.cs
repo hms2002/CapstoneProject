@@ -1,4 +1,5 @@
 using System.Collections;
+using CapstoneAudio;
 using UnityEngine;
 using UnityGAS;
 
@@ -12,6 +13,8 @@ using UnityGAS;
 public class RookChargeRunner : MonoBehaviour, IMobPatternRunner, IMobPresentationCleanup
 {
     private const string StaggerImmuneTagResourcePath = "Tags/State.Status.StaggerImmune";
+    private static readonly SoundRef RushSound = SoundRef.FromKey("sound_rook_Rush");
+    private static readonly SoundRef WallCollisionSound = SoundRef.FromKey("sound_rook_CollisionWall");
 
     [SerializeField] private Rook owner;
     [SerializeField] private MobAbilityCoordinator abilityCoordinator;
@@ -261,6 +264,7 @@ public class RookChargeRunner : MonoBehaviour, IMobPatternRunner, IMobPresentati
         ApplyChargeStaggerImmunity();
         owner.PlayChargeAnimation();
         owner.SetChargeAnimationActive(true);
+        SoundPlaybackUtility.Play(RushSound, causer: gameObject, position: transform.position, sourceObject: this);
         motionController.StartDash(context.Direction, context.DashSpeed, dashTime);
         SpawnDashDustEffect(context.Direction);
     }
@@ -339,6 +343,8 @@ public class RookChargeRunner : MonoBehaviour, IMobPatternRunner, IMobPresentati
         Vector3 impactDirection = currentContext.Direction.sqrMagnitude > 0.0001f
             ? -(Vector3)currentContext.Direction.normalized
             : Vector3.up;
+
+        SoundPlaybackUtility.Play(WallCollisionSound, causer: gameObject, position: transform.position, sourceObject: this);
 
         wallImpactCameraShake.TryPlay(
             gameObject,

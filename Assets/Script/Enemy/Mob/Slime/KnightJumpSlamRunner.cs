@@ -1,4 +1,5 @@
 using System.Collections;
+using CapstoneAudio;
 using UnityEngine;
 using UnityGAS;
 
@@ -11,6 +12,9 @@ using UnityGAS;
 [RequireComponent(typeof(Knight))]
 public class KnightJumpSlamRunner : MonoBehaviour, IMobPatternRunner, IMobPresentationCleanup
 {
+    private static readonly SoundRef JumpSound = SoundRef.FromKey("sound_knightSlime_Jump");
+    private static readonly SoundRef StampingSound = SoundRef.FromKey("sound_knightSlime_Stamping");
+
     [SerializeField] private Knight owner;
     [SerializeField] private MobAbilityCoordinator abilityCoordinator;
     [SerializeField] private AttackTelegraphService telegraphService;
@@ -80,12 +84,14 @@ public class KnightJumpSlamRunner : MonoBehaviour, IMobPatternRunner, IMobPresen
             ShowWarning(currentContext, travelSeconds);
             collisionProfile?.SetBodyCollisionMode(EntityCollisionProfile2D.BodyCollisionMode.PassThroughActors);
             owner.PlayJumpAnimation();
+            SoundPlaybackUtility.Play(JumpSound, causer: gameObject, position: transform.position, sourceObject: this);
             StartJump(currentContext, travelSeconds);
 
             yield return MoveJump(currentContext, spec, travelSeconds);
 
             if (cancelRequested || owner.IsDead) yield break;
 
+            SoundPlaybackUtility.Play(StampingSound, causer: gameObject, position: currentContext.ImpactPos, sourceObject: this);
             PlayLandingEffect(currentContext);
             owner.ApplyImpactDamage(currentContext);
         }

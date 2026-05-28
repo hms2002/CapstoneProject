@@ -1,3 +1,4 @@
+using CapstoneAudio;
 using UnityEngine;
 using UnityGAS;
 
@@ -9,6 +10,8 @@ using UnityGAS;
 /// </summary>
 public class CorridorCandlestickMonster : Mob
 {
+    private static readonly SoundRef DieSound = SoundRef.FromKey("sound_candleMonsger_Die");
+
     [Header("Ignition")]
     [Tooltip("켜두면 살아있는 촛대 몬스터가 술 장판에 닿을 때 점화를 요청합니다.")]
     [SerializeField] private bool igniteAlcoholPuddlesOnContact = true;
@@ -74,4 +77,11 @@ public class CorridorCandlestickMonster : Mob
     }
 
     private float nextContactIgnitionTime;
+
+    /// <summary>촛대 몬스터 사망 시 전용 파괴 사운드를 재생합니다.</summary>
+    protected override void OnDeathStarted()
+    {
+        SoundPlaybackUtility.Play(DieSound, causer: gameObject, position: transform.position, sourceObject: this);
+        base.OnDeathStarted();
+    }
 }

@@ -1,4 +1,5 @@
 using System.Collections;
+using CapstoneAudio;
 using UnityEngine;
 using UnityGAS;
 
@@ -12,6 +13,8 @@ using UnityGAS;
 [RequireComponent(typeof(GoblinGunnerShotRunner))]
 public sealed class GoblinGunner : Mob, IMobAttackDecisionSource
 {
+    private static readonly SoundRef GunShotSound = SoundRef.FromKey("sound_goblinGunner_GunShot");
+
     [SerializeField] private AbilityDefinition shotAbility;
     [SerializeField, Min(0f)] private float maxHealth = 5f;
     [Header("Presentation Sockets")]
@@ -155,6 +158,7 @@ public sealed class GoblinGunner : Mob, IMobAttackDecisionSource
             return;
 
         SpawnMuzzleEffect(logic);
+        SoundPlaybackUtility.Play(GunShotSound, causer: gameObject, position: context.Origin, sourceObject: this);
 
         GameObject projectileObject = Instantiate(logic.ProjectilePrefab, context.Origin, Quaternion.identity);
         if (projectileObject == null)

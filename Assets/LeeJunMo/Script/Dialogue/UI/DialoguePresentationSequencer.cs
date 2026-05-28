@@ -11,6 +11,8 @@ public static class DialoguePresentationSequencer
             return;
         }
 
+        view.PlayOpeningIntroSound();
+
         Action showDialogueUi = () =>
         {
             view.ShowUI(isBoss, onOpened);

@@ -1,3 +1,4 @@
+using CapstoneAudio;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -7,6 +8,8 @@ using UnityEngine.UI;
 /// </summary>
 public class DropZoneUI : MonoBehaviour, IDropHandler
 {
+    private static readonly SoundRef DropItemSound = SoundRef.FromKey("sound_ui_DropItem");
+
     public static DropZoneUI ActiveInstance { get; private set; }
 
     [Header("World Drop")]
@@ -146,5 +149,6 @@ public class DropZoneUI : MonoBehaviour, IDropHandler
         }
 
         spawnService.SpawnAnimatedLootObject(spawnOrigin, landingPosition, item, relicLevel);
+        SoundPlaybackUtility.Play(DropItemSound, position: spawnOrigin, sourceObject: this);
     }
 }

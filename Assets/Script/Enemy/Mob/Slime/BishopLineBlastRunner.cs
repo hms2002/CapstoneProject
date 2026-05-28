@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using CapstoneAudio;
 using UnityEngine;
 using UnityGAS;
 
@@ -12,6 +13,8 @@ using UnityGAS;
 [RequireComponent(typeof(Bishop))]
 public class BishopLineBlastRunner : MonoBehaviour, IMobPatternRunner, IMobPresentationCleanup
 {
+    private static readonly SoundRef AttackSound = SoundRef.FromKey("sound_bishop_Attack");
+
     /// <summary>
     /// 책임:
     /// - AL이 소유한 Bishop 폭발 VFX authoring 값을 Runner에 전달하기 위한 불변 실행 설정이다.
@@ -148,6 +151,7 @@ public class BishopLineBlastRunner : MonoBehaviour, IMobPatternRunner, IMobPrese
     private void FireBlasts(AbilitySystem system, AbilitySpec spec, Bishop.LineBlastContext context, BlastEffectConfig blastEffectConfig)
     {
         owner.PlayMagicCastAnimation();
+        SoundPlaybackUtility.Play(AttackSound, causer: gameObject, position: context.LineCenter, sourceObject: this);
         owner.FillBlastPoints(context, blastPoints);
         SpawnBlastEffects(context, blastEffectConfig);
         owner.TryHitBlasts(system, spec, context, blastPoints);

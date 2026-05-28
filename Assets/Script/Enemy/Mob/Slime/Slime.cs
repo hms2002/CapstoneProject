@@ -1,3 +1,4 @@
+using CapstoneAudio;
 using UnityEngine;
 using UnityEngine.Serialization;
 using UnityGAS;
@@ -6,6 +7,8 @@ public abstract class Slime : Mob, IMobAttackDecisionSource, IPitFallDeathHandle
 {
     private const float SplitWakeSeconds = 1f;
     private const float PlayerBaseSpeedFallback = 4f;
+    private static readonly SoundRef MediumSplitSound = SoundRef.FromKey("sound_mediumSlime_Split");
+    private static readonly SoundRef LargeSplitSound = SoundRef.FromKey("sound_largeSlime_Split");
 
     [Header("Split Landing")]
     [Tooltip("분열체가 본체에서 튀어나와 착지점에 도달하는 시간입니다.")]
@@ -222,6 +225,7 @@ public abstract class Slime : Mob, IMobAttackDecisionSource, IPitFallDeathHandle
 
         Vector3 center = transform.position;
         Vector2[] dirs = GetDirs(splitCount);
+        PlaySplitSound<T>(center);
 
         for (int i = 0; i < dirs.Length; i++)
         {
@@ -240,6 +244,16 @@ public abstract class Slime : Mob, IMobAttackDecisionSource, IPitFallDeathHandle
                 RegisterLockTrackedChild(spawned);
             }
         }
+    }
+
+    /// <summary>분열 결과 크기를 기준으로 큰/중간 슬라임 분해 사운드를 선택해 재생합니다.</summary>
+    private void PlaySplitSound<T>(Vector3 position) where T : Slime
+    {
+        SoundRef sound = typeof(T) == typeof(Pawn)
+            ? MediumSplitSound
+            : LargeSplitSound;
+
+        SoundPlaybackUtility.Play(sound, causer: gameObject, position: position, sourceObject: this);
     }
 
     /// <summary>분열체에 착지 모션 컴포넌트를 보장하고, 착지 전 피격 불가 상태를 시작합니다.</summary>

@@ -179,6 +179,33 @@ MonoBehaviour:
   phaseTwoBossSuctionRadius: 2
   corkColor: {r: 0.56, g: 0.34, b: 0.17, a: 1}
   brokenColor: {r: 0, g: 0, b: 0, a: 1}
+  openSound:
+    key: sound_drainPipe_Open
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  waterfallLoopSound:
+    key: sound_drainPipe_WtaerFall
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  slimeFallSounds:
+  - key: sound_drainPipe_SlimeFall1
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  - key: sound_drainPipe_SlimeFall2
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  - key: sound_drainPipe_SlimeFall3
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  - key: sound_drainPipe_SlimeFall4
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
   phaseTwoBossReturnSound:
     key: sound_slimeQueen_Return
     volumeMultiplier: 1

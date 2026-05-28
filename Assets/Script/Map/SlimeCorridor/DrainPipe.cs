@@ -45,6 +45,18 @@ public sealed class DrainPipe : MonoBehaviour, IDamageReceiver
     [SerializeField] private Color brokenColor = Color.black;
 
     [Header("Sound")]
+    [Tooltip("배수관이 열릴 때 재생할 사운드입니다.")]
+    [SerializeField] private SoundRef openSound = SoundRef.FromKey("sound_drainPipe_Open");
+    [Tooltip("배수관 흡입이 활성화된 동안 반복 재생할 사운드입니다.")]
+    [SerializeField] private SoundRef waterfallLoopSound = SoundRef.FromKey("sound_drainPipe_WtaerFall");
+    [Tooltip("Pawn 슬라임이 배수관에 빨려 들어갈 때 무작위로 재생할 사운드 후보입니다.")]
+    [SerializeField] private SoundRef[] slimeFallSounds =
+    {
+        SoundRef.FromKey("sound_drainPipe_SlimeFall1"),
+        SoundRef.FromKey("sound_drainPipe_SlimeFall2"),
+        SoundRef.FromKey("sound_drainPipe_SlimeFall3"),
+        SoundRef.FromKey("sound_drainPipe_SlimeFall4")
+    };
     [Tooltip("2페이즈 근거리 슬라임 퀸이 배수구에서 복귀하기 직전에 재생할 사운드입니다.")]
     [SerializeField] private SoundRef phaseTwoBossReturnSound = SoundRef.FromKey("sound_slimeQueen_Return");
 
@@ -56,6 +68,7 @@ public sealed class DrainPipe : MonoBehaviour, IDamageReceiver
     private SlimeQueenPhaseTwoBase phaseTwoBossTarget;
     private Coroutine phaseTwoBossDrainCoroutine;
     private PhaseTwoBossDrainContext activePhaseTwoBossDrainContext;
+    private AudioHandle waterfallLoopHandle;
     private int currentHitCount;
     private bool isBroken;
 
@@ -90,6 +103,7 @@ public sealed class DrainPipe : MonoBehaviour, IDamageReceiver
 
         activePhaseTwoBossDrainContext?.Restore();
         activePhaseTwoBossDrainContext = null;
+        StopWaterfallLoop();
 
         if (phaseTwoBossTarget != null)
             phaseTwoBossTarget.EndDrainControlLock();
@@ -150,6 +164,8 @@ public sealed class DrainPipe : MonoBehaviour, IDamageReceiver
     {
         isBroken = true;
         SyncVisual();
+        SoundPlaybackUtility.Play(openSound, causer: gameObject, position: transform.position, sourceObject: this);
+        StartWaterfallLoop();
     }
 
     /// <summary>배수구 흡입 범위 안에 들어온 2페이즈 슬라임 여왕을 배수구 대상으로 등록합니다.</summary>
@@ -302,6 +318,7 @@ public sealed class DrainPipe : MonoBehaviour, IDamageReceiver
 
             if (toDrain.magnitude <= consumeDistance)
             {
+                PlayRandomSlimeFallSound(pawn);
                 Destroy(pawn.gameObject);
                 suctionTargets.RemoveAt(i);
                 continue;
@@ -356,7 +373,38 @@ public sealed class DrainPipe : MonoBehaviour, IDamageReceiver
         isBroken = false;
         currentHitCount = 0;
         ConsumeRemainingPawnTargets();
+        StopWaterfallLoop();
         SyncVisual();
+    }
+
+    /// <summary>배수관 흡입 루프 사운드를 시작합니다.</summary>
+    private void StartWaterfallLoop()
+    {
+        if (waterfallLoopHandle.IsValid)
+            return;
+
+        waterfallLoopHandle = SoundPlaybackUtility.Play(waterfallLoopSound, causer: gameObject, position: transform.position, sourceObject: this);
+    }
+
+    /// <summary>배수관 흡입 루프 사운드를 중단해 씬 전환/비활성 후 잔류를 막습니다.</summary>
+    private void StopWaterfallLoop()
+    {
+        if (!waterfallLoopHandle.IsValid)
+            return;
+
+        SoundPlaybackUtility.Stop(waterfallLoopHandle, 0.12f);
+        waterfallLoopHandle = AudioHandle.Invalid;
+    }
+
+    /// <summary>Pawn 슬라임이 배수관에 빠질 때 후보 중 하나를 무작위로 재생합니다.</summary>
+    private void PlayRandomSlimeFallSound(Pawn pawn)
+    {
+        if (slimeFallSounds == null || slimeFallSounds.Length == 0)
+            return;
+
+        SoundRef sound = slimeFallSounds[Random.Range(0, slimeFallSounds.Length)];
+        GameObject target = pawn != null ? pawn.gameObject : null;
+        SoundPlaybackUtility.Play(sound, causer: gameObject, target: target, position: transform.position, sourceObject: this);
     }
 
     /// <summary>원상복구 전까지 이미 흡입 대상이 된 Pawn이 비활성 상태로 남지 않도록 정리합니다.</summary>

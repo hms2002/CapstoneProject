@@ -928,3 +928,693 @@ MonoBehaviour:
     cooldown: 0
     minDistance: 1
     maxDistance: 20
+  - key: sound_player_OfferMagicstone
+    bus: 0
+    category: 5
+    variants:
+    - {fileID: 8300000, guid: b13b3257cfdefe64aae6dcc13fd07a50, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 1
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_player_OfferBlood
+    bus: 0
+    category: 5
+    variants:
+    - {fileID: 8300000, guid: d55cf2b1e87ff27478d511fe532e4fa9, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 1
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_ui_UpgradeWaterInteract
+    bus: 0
+    category: 1
+    variants:
+    - {fileID: 8300000, guid: 77d209cd9c623f14f9ec3c8d56067a29, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 0
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_ui_UpgradeSuccess
+    bus: 0
+    category: 1
+    variants:
+    - {fileID: 8300000, guid: 7dcf891559591694f88a5900f00d5d48, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 0
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_ui_CantUpgrade
+    bus: 0
+    category: 1
+    variants:
+    - {fileID: 8300000, guid: 52064e82277388145b0849ff380df5e7, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 0
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_ui_AfterPlayerDieReturnToHub
+    bus: 0
+    category: 1
+    variants:
+    - {fileID: 8300000, guid: 64d627c6ccdb0e145bfa42f18ae405c9, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 0
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_door_CantOpen
+    bus: 0
+    category: 10
+    variants:
+    - {fileID: 8300000, guid: b3a0f0d20c7b21041ab45feb5e5681e9, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 1
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_ui_FindUniqueItem1
+    bus: 0
+    category: 1
+    variants:
+    - {fileID: 8300000, guid: 9b997d5f05e00454b9c19b7961b04beb, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 0
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_ui_FindUniqueItem2
+    bus: 0
+    category: 1
+    variants:
+    - {fileID: 8300000, guid: 142a1dc3b208623468564c06aa2b7ff4, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 0
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_ui_FindUniqueItem3
+    bus: 0
+    category: 1
+    variants:
+    - {fileID: 8300000, guid: f63c18ffcefd9eb4a9fe989e3b4ba18b, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 0
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_ui_UnlockChest1
+    bus: 0
+    category: 1
+    variants:
+    - {fileID: 8300000, guid: eec6cfa706fe2bb44b4be943da0edd04, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 0
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_ui_UnlockChest2
+    bus: 0
+    category: 1
+    variants:
+    - {fileID: 8300000, guid: 59449be93f67d0244930d88ec37129e6, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 0
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_ui_FailMigrateItem
+    bus: 0
+    category: 1
+    variants:
+    - {fileID: 8300000, guid: 2a901a2d10a647b4da33cd39745a5883, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 0
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_door_Close
+    bus: 0
+    category: 10
+    variants:
+    - {fileID: 8300000, guid: 2f9fb715619d54142b9c934276017d08, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 1
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_player_GetFiledHeart
+    bus: 0
+    category: 5
+    variants:
+    - {fileID: 8300000, guid: a996dffb712d97a4dafa701ce312989c, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 1
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_ui_CollisionEachUI
+    bus: 0
+    category: 1
+    variants:
+    - {fileID: 8300000, guid: 734dc6052be7a3f4784280dc0ef479de, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 0
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_ui_ChestUnlock
+    bus: 0
+    category: 1
+    variants:
+    - {fileID: 8300000, guid: 831236cbc5d515747995f2dd9d9a18d1, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 0
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_ui_DropItem
+    bus: 0
+    category: 1
+    variants:
+    - {fileID: 8300000, guid: 14e63e180132b0347a0eeda76c9b4eb3, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 0
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_player_Evade
+    bus: 0
+    category: 5
+    variants:
+    - {fileID: 8300000, guid: 94698b4a035ffb24f94ca07bf1224af0, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 1
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_ui_OpenDictionary
+    bus: 0
+    category: 1
+    variants:
+    - {fileID: 8300000, guid: 8f12d64bed3333148aa3476d17190c4d, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 0
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_ui_CloseDictionary
+    bus: 0
+    category: 1
+    variants:
+    - {fileID: 8300000, guid: e02d1463e2095744199ae3760eb95748, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 0
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_goblinGunner_GunShot
+    bus: 0
+    category: 6
+    variants:
+    - {fileID: 8300000, guid: 0fa02daf7a67fbc4fa1bb4807a318dbb, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 1
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_knightSlime_Stamping
+    bus: 0
+    category: 6
+    variants:
+    - {fileID: 8300000, guid: 2e962a30bfc932543a84aa98c1f85082, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 1
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_knightSlime_Jump
+    bus: 0
+    category: 6
+    variants:
+    - {fileID: 8300000, guid: 14a50a30d8693514d85617f8b6c27eb6, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 1
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_puddle_Fire
+    bus: 0
+    category: 8
+    variants:
+    - {fileID: 8300000, guid: f3dc91264fda8a345ac8de71ce4fc647, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 1
+    spatial: 1
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_candleMonsger_Die
+    bus: 0
+    category: 6
+    variants:
+    - {fileID: 8300000, guid: ec975dc5d8b89054c9068fa37799e6c6, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 1
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_mediumSlime_Split
+    bus: 0
+    category: 6
+    variants:
+    - {fileID: 8300000, guid: b397a04a8b87b5449a356ed96baa9c84, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 1
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_largeSlime_Split
+    bus: 0
+    category: 6
+    variants:
+    - {fileID: 8300000, guid: bb867db555dff6f4d8640148d2e673a2, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 1
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_ui_AffectionDown
+    bus: 0
+    category: 1
+    variants:
+    - {fileID: 8300000, guid: 9ab206dac5f157c4ba335189a18af2de, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 0
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_ui_AffectionUp
+    bus: 0
+    category: 1
+    variants:
+    - {fileID: 8300000, guid: 6990c033496d3f843a24a54caae83c48, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 0
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_ui_TalkUIIntro
+    bus: 0
+    category: 1
+    variants:
+    - {fileID: 8300000, guid: 25192bb42bae355479cca2805290bac5, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 0
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_rook_Rush
+    bus: 0
+    category: 6
+    variants:
+    - {fileID: 8300000, guid: 503f8818f2e6442499d8de308178bf29, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 1
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_rook_CollisionWall
+    bus: 0
+    category: 6
+    variants:
+    - {fileID: 8300000, guid: 0a31c0652bfe23e4db8e1c9773e56a70, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 1
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_bishop_Attack
+    bus: 0
+    category: 6
+    variants:
+    - {fileID: 8300000, guid: 0a36d9b55481eaa4b961a58a066187a6, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 1
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_drainPipe_Open
+    bus: 0
+    category: 8
+    variants:
+    - {fileID: 8300000, guid: 7d567bd64a2a2d84897e223f923c6499, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 1
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_drainPipe_WtaerFall
+    bus: 0
+    category: 8
+    variants:
+    - {fileID: 8300000, guid: 55d4d2f4b129aee419ac1b8491943db7, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 1
+    spatial: 1
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_drainPipe_SlimeFall1
+    bus: 0
+    category: 8
+    variants:
+    - {fileID: 8300000, guid: 188d8c37b8c4f494caadd6f758b77160, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 1
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_drainPipe_SlimeFall2
+    bus: 0
+    category: 8
+    variants:
+    - {fileID: 8300000, guid: 74a4ed76b85de5a468550d7ed714e2ac, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 1
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_drainPipe_SlimeFall3
+    bus: 0
+    category: 8
+    variants:
+    - {fileID: 8300000, guid: f4ff2c522c3bce247a0b016398f1c392, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 1
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_drainPipe_SlimeFall4
+    bus: 0
+    category: 8
+    variants:
+    - {fileID: 8300000, guid: 3313330307ec08b408a8474f45a36d2e, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 1
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_deadSkeleton_Boom
+    bus: 0
+    category: 6
+    variants:
+    - {fileID: 8300000, guid: a09087f05ad18c643ab464b788b182cb, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 1
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_candlestick_Seal
+    bus: 0
+    category: 8
+    variants:
+    - {fileID: 8300000, guid: e181fe7421140d94b9116ca005cba9f6, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 1
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_candlestick_Unlock1
+    bus: 0
+    category: 8
+    variants:
+    - {fileID: 8300000, guid: b1286d465a4eec640809aa67df9a49b7, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 1
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_candlestick_Unlock2
+    bus: 0
+    category: 8
+    variants:
+    - {fileID: 8300000, guid: 0792d8c07060d8545be0123893d193a9, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 1
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_candlestick_Unlock3
+    bus: 0
+    category: 8
+    variants:
+    - {fileID: 8300000, guid: 1729e760070eb284283a8fbc7b713b6f, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 1
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_candlestick_Unseal
+    bus: 0
+    category: 8
+    variants:
+    - {fileID: 8300000, guid: 3795ac9192b601f41bcd7260b469309c, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 1
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20

@@ -12,6 +12,7 @@ public class DeadsSkeleton : Mob, IDamageReceiver, IMobAttackDecisionSource, IMo
 {
     // 이 클래스의 책임:
     // Dead'sSkeleton의 자폭 상태 전이와 추적 리듬을 관리하고, 순수 폭발 패턴 실행 데이터는 AL에서 읽어 사용한다.
+    private static readonly SoundRef DefaultExplosionSound = SoundRef.FromKey("sound_deadSkeleton_Boom");
 
     /// <summary>
     /// 책임 :
@@ -781,7 +782,7 @@ public class DeadsSkeleton : Mob, IDamageReceiver, IMobAttackDecisionSource, IMo
             data.explosionParticleScale);
 
         SoundPlaybackUtility.Play(
-            data.explosionSound,
+            data.explosionSound.IsSet ? data.explosionSound : DefaultExplosionSound,
             instigator: gameObject,
             causer: gameObject,
             target: target != null ? target.gameObject : null,
