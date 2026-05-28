@@ -1,6 +1,8 @@
+using CapstoneAudio;
 using UnityEngine;
 
 [System.Serializable]
+// Responsibility: binds a panel attach point to a fake chain so the drop panel can be clamped by chain reach.
 public sealed class UIChainConstraintBinding
 {
     [SerializeField] private RectTransform chainAttachPoint;
@@ -12,6 +14,7 @@ public sealed class UIChainConstraintBinding
 }
 
 [DisallowMultipleComponent]
+// Responsibility: simulates hanging UI panels dropping from chains and plays presentation feedback for that motion.
 public sealed class UIChainDropPresentation : MonoBehaviour
 {
     [Header("Panel")]
@@ -33,6 +36,14 @@ public sealed class UIChainDropPresentation : MonoBehaviour
     [SerializeField, Min(0.001f)] private float maxSimulationStep = 1f / 60f;
     [SerializeField, Min(0f)] private float settlePositionThreshold = 2f;
     [SerializeField, Min(0f)] private float settleVelocityThreshold = 36f;
+
+    [Header("Audio")]
+    [SerializeField] private SoundRef openSound = new SoundRef
+    {
+        key = "sound_menu_chain1",
+        volumeMultiplier = 1f,
+        anchorPolicy = SoundAnchorPolicy.CatalogDefault
+    };
 
     [Header("Close Motion")]
     [SerializeField] private Vector2 closePullDownOffset = new Vector2(0f, -56f);
@@ -181,6 +192,7 @@ public sealed class UIChainDropPresentation : MonoBehaviour
         SetInteractionEnabled(false);
         ApplyChainReachConstraint();
         SnapAllChainPresentations();
+        PlayOpenSound();
     }
 
     public void PlayClose(System.Action onComplete = null)
@@ -263,6 +275,15 @@ public sealed class UIChainDropPresentation : MonoBehaviour
 
         if (interactionCanvasGroup == null)
             interactionCanvasGroup = panelRoot != null ? panelRoot.GetComponent<CanvasGroup>() : null;
+    }
+
+    private void PlayOpenSound()
+    {
+        SoundPlaybackUtility.Play(
+            openSound,
+            instigator: gameObject,
+            causer: gameObject,
+            sourceObject: this);
     }
 
     private void CaptureOpenAnchoredPosition()

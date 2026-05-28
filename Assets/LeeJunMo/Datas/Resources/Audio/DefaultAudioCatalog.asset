@@ -208,6 +208,21 @@ MonoBehaviour:
     cooldown: 0
     minDistance: 1
     maxDistance: 20
+  - key: sound_menu_chain1
+    bus: 0
+    category: 1
+    variants:
+    - {fileID: 8300000, guid: f9ad25edc55a6aa4894bd368edb8e67c, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 0
+    important: 0
+    cooldown: 0.05
+    minDistance: 1
+    maxDistance: 20
   - key: relic.levelup
     bus: 0
     category: 1
