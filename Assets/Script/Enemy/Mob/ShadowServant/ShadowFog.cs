@@ -53,6 +53,11 @@ public class ShadowFog : MonoBehaviour
         sourceKey = $"enemy.shadowFog.{GetInstanceID()}";
     }
 
+    private void OnEnable()
+    {
+        ResetForSpawn();
+    }
+
     private void Update()
     {
         switch (phase)
@@ -87,12 +92,10 @@ public class ShadowFog : MonoBehaviour
         if (phase != FogPhase.Idle || other == null)
             return;
 
-        PlayerInteractor2D player = ResolvePlayer(other);
         GameObject targetObject = UnityGAS.CombatTargetResolver2D.ResolveDamageTarget(other);
-        if (player == null && targetObject != null)
-            player = targetObject.GetComponentInParent<PlayerInteractor2D>();
-        if (player == null && targetObject != null)
-            player = targetObject.GetComponentInChildren<PlayerInteractor2D>(true);
+        PlayerInteractor2D player = targetObject != null
+            ? targetObject.GetComponent<PlayerInteractor2D>()
+            : null;
 
         if (logFogSightStatusFlow)
         {
@@ -198,7 +201,7 @@ public class ShadowFog : MonoBehaviour
         if (animator == null || string.IsNullOrWhiteSpace(endStateName))
         {
             if (Time.time >= endFallbackDestroyTime)
-                PresentationSpawnService.Release(gameObject);
+                ReleaseToPool();
             return;
         }
 
@@ -207,12 +210,42 @@ public class ShadowFog : MonoBehaviour
             !animator.IsInTransition(BaseLayerIndex) &&
             stateInfo.normalizedTime >= 1f)
         {
-            PresentationSpawnService.Release(gameObject);
+            ReleaseToPool();
             return;
         }
 
         if (Time.time >= endFallbackDestroyTime && !stateInfo.IsName(endStateName))
-            PresentationSpawnService.Release(gameObject);
+            ReleaseToPool();
+    }
+
+    /// <summary>
+    /// 책임 : 풀에서 재사용된 안개가 이전 수명 종료 상태를 물고 즉시 사라지지 않도록 런타임 상태를 초기화한다.
+    /// </summary>
+    private void ResetForSpawn()
+    {
+        phase = FogPhase.Starting;
+        idleEndTime = 0f;
+        endFallbackDestroyTime = -1f;
+
+        if (triggerZone != null)
+            triggerZone.enabled = true;
+
+        if (animator == null)
+            return;
+
+        animator.ResetTrigger(endTriggerName);
+        if (!string.IsNullOrWhiteSpace(startStateName))
+            animator.Play(startStateName, BaseLayerIndex, 0f);
+
+        animator.Update(0f);
+    }
+
+    /// <summary>
+    /// 책임 : 안개 수명이 끝난 오브젝트를 공통 프레젠테이션 풀로 반환한다.
+    /// </summary>
+    private void ReleaseToPool()
+    {
+        PresentationSpawnService.Release(gameObject);
     }
 
     private bool HasAnimatorTrigger(string triggerName)
@@ -241,32 +274,5 @@ public class ShadowFog : MonoBehaviour
 
         AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(BaseLayerIndex);
         return stateInfo.IsName(stateName) && !animator.IsInTransition(BaseLayerIndex);
-    }
-
-    private PlayerInteractor2D ResolvePlayer(Collider2D other)
-    {
-        if (other == null)
-            return null;
-
-        PlayerInteractor2D player = other.GetComponentInParent<PlayerInteractor2D>();
-        if (player != null)
-            return player;
-
-        if (other.attachedRigidbody != null)
-        {
-            player = other.attachedRigidbody.GetComponentInParent<PlayerInteractor2D>();
-            if (player != null)
-                return player;
-        }
-
-        Transform root = other.transform.root;
-        if (root != null)
-        {
-            player = root.GetComponentInChildren<PlayerInteractor2D>(true);
-            if (player != null)
-                return player;
-        }
-
-        return null;
     }
 }
