@@ -165,7 +165,6 @@ MonoBehaviour:
   phase2LongPrefab: {fileID: 1006000, guid: a18e617b0b1f4ce4b730c4d1d950f627, type: 3}
   phase2ShortSpawnOffset: {x: -1.5, y: 0}
   phase2LongSpawnOffset: {x: 1.5, y: 0}
-  phase2SplitOrigin: {fileID: 0}
   phase2SplitDistance: 1.45
   phase2SplitLandingSeconds: 0.6
   phase2SplitLandingArcHeight: 0.85
