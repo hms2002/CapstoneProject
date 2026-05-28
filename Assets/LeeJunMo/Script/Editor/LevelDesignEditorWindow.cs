@@ -15,6 +15,8 @@ public sealed class LevelDesignEditorWindow : EditorWindow
     private const string StatuePrefabPath = "Assets/LeeJunMo/Prefab/Map/ShortCut/Statue.prefab";
     private const string ChestPrefabPath = "Assets/HeoMinSeok/_Project/Prefabs/Gameplay/Items/TreasureChest.prefab";
     private const string KillLockChestPrefabPath = "Assets/HeoMinSeok/_Project/Prefabs/Gameplay/Items/KillLockTresureChest.prefab";
+    private const string LowRewardChestPrefabPath = "Assets/HeoMinSeok/_Project/Prefabs/Gameplay/Items/LowRewardTreasureChest.prefab";
+    private const string LowRewardKillLockChestPrefabPath = "Assets/HeoMinSeok/_Project/Prefabs/Gameplay/Items/LowRewardKillLockTreasureChest.prefab";
     private const string PortalPrefabPath = "Assets/LeeJunMo/Prefab/Map/Portal/ScenePortal.prefab";
     private const string MonsterPrefabRoot = "Assets/Prefabs/Enemies/Mobs";
     private const string MonsterPrefabDragKey = "LevelDesignEditor.MonsterPrefab";
@@ -48,6 +50,8 @@ public sealed class LevelDesignEditorWindow : EditorWindow
         Statue,
         Chest,
         KillLockChest,
+        LowRewardChest,
+        LowRewardKillLockChest,
         Portal,
         MonsterSpawn
     }
@@ -122,6 +126,8 @@ public sealed class LevelDesignEditorWindow : EditorWindow
     private GameObject statuePrefab;
     private GameObject chestPrefab;
     private GameObject killLockChestPrefab;
+    private GameObject lowRewardChestPrefab;
+    private GameObject lowRewardKillLockChestPrefab;
     private GameObject portalPrefab;
     private string monsterSearch = string.Empty;
     private float gridSize = 1f;
@@ -1034,6 +1040,8 @@ public sealed class LevelDesignEditorWindow : EditorWindow
                 statuePrefab = EditorGUILayout.ObjectField("석상 프리팹", statuePrefab, typeof(GameObject), false) as GameObject;
                 chestPrefab = EditorGUILayout.ObjectField("상자 프리팹", chestPrefab, typeof(GameObject), false) as GameObject;
                 killLockChestPrefab = EditorGUILayout.ObjectField("킬락 상자 프리팹", killLockChestPrefab, typeof(GameObject), false) as GameObject;
+                lowRewardChestPrefab = EditorGUILayout.ObjectField("보상 적은 상자 프리팹", lowRewardChestPrefab, typeof(GameObject), false) as GameObject;
+                lowRewardKillLockChestPrefab = EditorGUILayout.ObjectField("킬락 보상 적은 상자 프리팹", lowRewardKillLockChestPrefab, typeof(GameObject), false) as GameObject;
                 portalPrefab = EditorGUILayout.ObjectField("포탈 프리팹", portalPrefab, typeof(GameObject), false) as GameObject;
             }
         }
@@ -1052,6 +1060,8 @@ public sealed class LevelDesignEditorWindow : EditorWindow
             (PlacementKind.Statue, "석상", statuePrefab),
             (PlacementKind.Chest, "상자", chestPrefab),
             (PlacementKind.KillLockChest, "킬락 상자", killLockChestPrefab != null ? killLockChestPrefab : chestPrefab),
+            (PlacementKind.LowRewardChest, "보상 적은 상자", lowRewardChestPrefab),
+            (PlacementKind.LowRewardKillLockChest, "킬락 보상 적은 상자", ResolveLowRewardKillLockPreviewPrefab()),
             (PlacementKind.Portal, "포탈", portalPrefab),
             (PlacementKind.MonsterSpawn, "몬스터 스폰", GetSelectedMonsterSpawnPreviewPrefab())
         };
@@ -1212,6 +1222,14 @@ public sealed class LevelDesignEditorWindow : EditorWindow
                 }
             }
         }
+    }
+
+    private GameObject ResolveLowRewardKillLockPreviewPrefab()
+    {
+        if (lowRewardKillLockChestPrefab != null)
+            return lowRewardKillLockChestPrefab;
+
+        return lowRewardChestPrefab != null ? lowRewardChestPrefab : chestPrefab;
     }
 
     private void DrawStageMonsterSetPaletteItem(StageMonsterSetSO monsterSet)
@@ -2284,6 +2302,12 @@ public sealed class LevelDesignEditorWindow : EditorWindow
             case PlacementKind.KillLockChest:
                 CreateKillLockChestAt(position);
                 break;
+            case PlacementKind.LowRewardChest:
+                InstantiatePrefabAt(lowRewardChestPrefab, "Chests", position);
+                break;
+            case PlacementKind.LowRewardKillLockChest:
+                CreateKillLockChestAt(position, ResolveLowRewardKillLockPreviewPrefab());
+                break;
             case PlacementKind.Portal:
                 InstantiatePrefabAt(portalPrefab, "Portals", position);
                 break;
@@ -2330,9 +2354,10 @@ public sealed class LevelDesignEditorWindow : EditorWindow
         return instance;
     }
 
-    private void CreateKillLockChestAt(Vector3 position)
+    private void CreateKillLockChestAt(Vector3 position, GameObject prefabOverride = null)
     {
-        GameObject instance = InstantiatePrefabAt(killLockChestPrefab != null ? killLockChestPrefab : chestPrefab, "Chests", position);
+        GameObject prefab = prefabOverride != null ? prefabOverride : killLockChestPrefab != null ? killLockChestPrefab : chestPrefab;
+        GameObject instance = InstantiatePrefabAt(prefab, "Chests", position);
         if (instance == null)
             return;
 
@@ -3052,6 +3077,8 @@ public sealed class LevelDesignEditorWindow : EditorWindow
         statuePrefab = AssetDatabase.LoadAssetAtPath<GameObject>(StatuePrefabPath);
         chestPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(ChestPrefabPath);
         killLockChestPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(KillLockChestPrefabPath);
+        lowRewardChestPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(LowRewardChestPrefabPath);
+        lowRewardKillLockChestPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(LowRewardKillLockChestPrefabPath);
         portalPrefab = AssetDatabase.LoadAssetAtPath<GameObject>(PortalPrefabPath);
     }
 
@@ -3805,6 +3832,8 @@ public sealed class LevelDesignEditorWindow : EditorWindow
             PlacementKind.Statue => "석상",
             PlacementKind.Chest => "상자",
             PlacementKind.KillLockChest => "킬락 상자",
+            PlacementKind.LowRewardChest => "보상 적은 상자",
+            PlacementKind.LowRewardKillLockChest => "킬락 보상 적은 상자",
             PlacementKind.Portal => "포탈",
             PlacementKind.MonsterSpawn => "몬스터 스폰",
             _ => kind.ToString()
@@ -3820,6 +3849,8 @@ public sealed class LevelDesignEditorWindow : EditorWindow
             PlacementKind.Statue => "STATUE",
             PlacementKind.Chest => "CHEST",
             PlacementKind.KillLockChest => "LOCK",
+            PlacementKind.LowRewardChest => "LOW",
+            PlacementKind.LowRewardKillLockChest => "L-LOCK",
             PlacementKind.Portal => "PORTAL",
             PlacementKind.MonsterSpawn => "SPAWN",
             _ => "NONE"
