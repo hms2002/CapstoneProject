@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityGAS;
 
 /// <summary>
 /// 책임:
@@ -243,8 +244,32 @@ internal sealed class SceneMonsterSpawnDirector
             return;
 
         IMonsterDifficultyReceiver[] receivers = monster.GetComponentsInChildren<IMonsterDifficultyReceiver>(true);
+        if (receivers.Length == 0 && ShouldAttachDefaultDifficultyReceiver(monster))
+        {
+            MonsterDifficultyReceiver receiver = monster.GetComponent<MonsterDifficultyReceiver>();
+            if (receiver == null)
+                receiver = monster.AddComponent<MonsterDifficultyReceiver>();
+
+            receiver.ApplyDifficulty(difficultyModifiers);
+            return;
+        }
+
         for (int i = 0; i < receivers.Length; i++)
             receivers[i].ApplyDifficulty(difficultyModifiers);
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - legacy 일반 몬스터 프리팹에 MonsterDifficultyReceiver authoring이 빠져 있어도 스테이지 보정이 누락되지 않게 한다.
+    /// - 스포너가 생성한 Enemy 본체만 대상으로 삼아 투사체/이펙트/장판 같은 전투 부속물에는 난이도 수신기를 붙이지 않는다.
+    /// </summary>
+    private static bool ShouldAttachDefaultDifficultyReceiver(GameObject monster)
+    {
+        if (monster == null)
+            return false;
+
+        return monster.GetComponent<Enemy>() != null &&
+               monster.GetComponent<AttributeSet>() != null;
     }
 
     private void InstallViews(GameObject monster)

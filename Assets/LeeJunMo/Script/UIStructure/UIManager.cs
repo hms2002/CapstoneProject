@@ -35,7 +35,6 @@ public class UIManager : MonoBehaviour
     private PlayerUIControlLockBridge activeControlLockBridge;
     private bool isControlLockApplied;
     private bool isTimeFrozenByUi;
-    private float frozenPreviousTimeScale = 1f;
     private const string BlockControlByUiTagSetResourcePath = "Tags/TagSet/TS_BlockControlByUI";
 
     public bool IsExternalUiInputBlocked => HasExternalUiInputBlockers();
@@ -784,8 +783,7 @@ public class UIManager : MonoBehaviour
         if (isTimeFrozenByUi)
             return;
 
-        frozenPreviousTimeScale = Time.timeScale;
-        Time.timeScale = 0f;
+        TimeScalePauseService.Acquire(this);
         isTimeFrozenByUi = true;
     }
 
@@ -794,13 +792,8 @@ public class UIManager : MonoBehaviour
         if (!isTimeFrozenByUi)
             return;
 
-        float restoreTimeScale = frozenPreviousTimeScale;
-        if (restoreTimeScale <= 0f && Time.timeScale > 0f)
-            restoreTimeScale = Time.timeScale;
-
-        Time.timeScale = restoreTimeScale;
+        TimeScalePauseService.Release(this);
         isTimeFrozenByUi = false;
-        frozenPreviousTimeScale = 1f;
     }
 
 }

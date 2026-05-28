@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 [DisallowMultipleComponent]
 public sealed class RunProgressCoordinator : MonoBehaviour
@@ -68,6 +69,7 @@ public sealed class RunProgressCoordinator : MonoBehaviour
 
         gameplay.OnRunStarted += HandleRunStarted;
         gameplay.OnRunEnded += HandleRunEnded;
+        SceneManager.sceneLoaded += HandleSceneLoaded;
     }
 
     private void OnDisable()
@@ -77,6 +79,8 @@ public sealed class RunProgressCoordinator : MonoBehaviour
             GamePlayDataManager.Instance.OnRunStarted -= HandleRunStarted;
             GamePlayDataManager.Instance.OnRunEnded -= HandleRunEnded;
         }
+
+        SceneManager.sceneLoaded -= HandleSceneLoaded;
 
         if (Instance == this)
             ReleaseFinalBossCombatTimerPause();
@@ -170,6 +174,16 @@ public sealed class RunProgressCoordinator : MonoBehaviour
     private void HandleRunEnded(RunEndReason reason)
     {
         ClearRunScopedState();
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 보스 처치 후 해당 보스 씬에서 멈춘 런 타이머를 다음 씬 진입 시 다시 흐르게 한다.
+    /// - 보상/포탈 대기 중 정지는 유지하되, 씬 전환 후까지 run completion pause가 누수되지 않게 한다.
+    /// </summary>
+    private void HandleSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        RunTimeLimitSystem.Instance?.SetRunCompletionPaused(false);
     }
 
     private void ClearRunScopedState()

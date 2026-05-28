@@ -50,6 +50,10 @@ public class LootManager : MonoBehaviour
             return;
         }
 
+#if UNITY_EDITOR
+        TryAssignEditorDefaultPrefabs();
+#endif
+
         Instance = this;
 
         if (persistAcrossScenes)
@@ -76,6 +80,8 @@ public class LootManager : MonoBehaviour
         // editor-only SendMessage restrictions.
         if (EditorApplication.isCompiling || EditorApplication.isUpdating)
             return;
+
+        TryAssignEditorDefaultPrefabs();
 #endif
 
         RefreshServices(editorSafe: true);
@@ -287,6 +293,70 @@ public class LootManager : MonoBehaviour
 
         return Resources.Load<GameObject>(DefaultMagicStonePrefabResourcePath);
     }
+
+#if UNITY_EDITOR
+    /// <summary>
+    /// 책임:
+    /// - 에디터에서 LootManager authoring 누락을 줄이기 위해 기본 loot prefab 참조를 프로젝트 에셋에서 자동 보완한다.
+    /// - 런타임/빌드 중 Resources.Load를 호출하지 않도록 OnValidate의 안전한 에디터 구간에서만 실행된다.
+    /// </summary>
+    private void TryAssignEditorDefaultPrefabs()
+    {
+        bool changed = false;
+
+        if (magicStonePrefab == null &&
+            TryFindPrefabAsset(DefaultMagicStonePrefabResourcePath, out GameObject resolvedMagicStonePrefab))
+        {
+            magicStonePrefab = resolvedMagicStonePrefab;
+            changed = true;
+        }
+
+        if (changed)
+            EditorUtility.SetDirty(this);
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - Resources 폴더에 있지 않은 프로젝트 prefab도 이름 기준으로 찾아 LootManager 자동 참조 보정에 제공한다.
+    /// - 같은 이름 후보가 여러 개면 Resources 경로 후보를 우선하고, 없으면 첫 번째 prefab을 사용한다.
+    /// </summary>
+    private static bool TryFindPrefabAsset(string prefabNameWithoutExtension, out GameObject prefab)
+    {
+        prefab = null;
+        if (string.IsNullOrWhiteSpace(prefabNameWithoutExtension))
+            return false;
+
+        string[] guids = AssetDatabase.FindAssets($"{prefabNameWithoutExtension} t:Prefab");
+        if (guids == null || guids.Length == 0)
+            return false;
+
+        string fallbackPath = null;
+        for (int i = 0; i < guids.Length; i++)
+        {
+            string path = AssetDatabase.GUIDToAssetPath(guids[i]);
+            if (string.IsNullOrWhiteSpace(path))
+                continue;
+
+            string fileName = System.IO.Path.GetFileNameWithoutExtension(path);
+            if (!string.Equals(fileName, prefabNameWithoutExtension, StringComparison.OrdinalIgnoreCase))
+                continue;
+
+            if (path.IndexOf("/Resources/", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                prefab = AssetDatabase.LoadAssetAtPath<GameObject>(path);
+                return prefab != null;
+            }
+
+            fallbackPath ??= path;
+        }
+
+        if (string.IsNullOrWhiteSpace(fallbackPath))
+            return false;
+
+        prefab = AssetDatabase.LoadAssetAtPath<GameObject>(fallbackPath);
+        return prefab != null;
+    }
+#endif
 
     private StageLootTable GetCurrentTable()
     {

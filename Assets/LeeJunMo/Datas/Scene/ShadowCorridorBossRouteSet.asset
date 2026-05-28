@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   corridorSceneName: ShadowCorridor
   corridorEntryPointId: Default
-  bossSceneName: HeoMinSeok_Boss
+  bossSceneName: HeoMinSeok_Boss_Shadow
   bossEntryPointId: Default
   corridorLocationName: "\uADF8\uB9BC\uC790 \uAC10\uC625"
   bossLocationName: "\uD074\uB85C\uC5D0\uC758 \uBC29"

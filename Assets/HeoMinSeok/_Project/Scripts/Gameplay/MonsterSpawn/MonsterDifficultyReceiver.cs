@@ -202,22 +202,66 @@ public class MonsterDifficultyReceiver : MonoBehaviour, IMonsterDifficultyReceiv
 
     /// <summary>
     /// [책임]
-    /// - 인스펙터에 직접 연결되지 않은 공격속도 Attribute를 DamageProfile의 StatTypeBindings에서 보완한다.
-    /// - 기존 프리팹을 모두 다시 authoring하지 않아도 스테이지 템포 보정이 동작하게 한다.
+    /// - 인스펙터에 직접 연결되지 않은 난이도 보정 대상 Attribute를 DamageProfile의 StatTypeBindings에서 보완한다.
+    /// - 기존 프리팹을 모두 다시 authoring하지 않아도 HP/공격력/공격속도 보정이 동작하게 한다.
     /// </summary>
     private void ResolveStatBindingAttributes()
     {
-        if (attackSpeedBaseAttribute != null)
-            return;
-
         StatTypeBindings bindings = abilitySystem != null && abilitySystem.DamageProfile != null
             ? abilitySystem.DamageProfile.GetStatBindings()
             : null;
-        if (bindings == null)
+
+        ResolveBindingAttribute(ref healthAttribute, bindings, StatId.Health, "Health", "HealthAttribute");
+        ResolveBindingAttribute(ref maxHealthAttribute, bindings, StatId.MaxHealth, "MaxHealth", "MaxHealthAttribute");
+        ResolveBindingAttribute(ref attackAttribute, bindings, StatId.AttackBase, "AttackBase", "AttackBaseAttribute", "Attack");
+        ResolveBindingAttribute(ref attackSpeedBaseAttribute, bindings, StatId.AttackSpeedBase, "AttackSpeedBase", "AttackSpeedBaseAttribute");
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - StatTypeBindings와 AttributeSet 보유 정의를 순서대로 확인해 누락된 AttributeDefinition 참조를 채운다.
+    /// - 자동 추가된 MonsterDifficultyReceiver가 프리팹별 수동 직렬화 없이도 핵심 스탯을 찾게 한다.
+    /// </summary>
+    private void ResolveBindingAttribute(
+        ref AttributeDefinition target,
+        StatTypeBindings bindings,
+        StatId statId,
+        params string[] fallbackNames)
+    {
+        if (target != null)
             return;
 
-        if (bindings.TryGetBinding(StatId.AttackSpeedBase, out StatTypeBindings.Binding attackSpeedBinding))
-            attackSpeedBaseAttribute = attackSpeedBinding.attribute;
+        if (bindings != null &&
+            bindings.TryGetBinding(statId, out StatTypeBindings.Binding binding) &&
+            binding != null &&
+            binding.attribute != null)
+        {
+            target = binding.attribute;
+            return;
+        }
+
+        if (attributeSet == null || fallbackNames == null || fallbackNames.Length == 0)
+            return;
+
+        foreach (AttributeDefinition definition in attributeSet.EnumerateDefinitions())
+        {
+            if (definition == null)
+                continue;
+
+            for (int i = 0; i < fallbackNames.Length; i++)
+            {
+                string fallbackName = fallbackNames[i];
+                if (string.IsNullOrWhiteSpace(fallbackName))
+                    continue;
+
+                if (string.Equals(definition.name, fallbackName, System.StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(definition.attributeName, fallbackName, System.StringComparison.OrdinalIgnoreCase))
+                {
+                    target = definition;
+                    return;
+                }
+            }
+        }
     }
 
 #if UNITY_EDITOR
