@@ -1,12 +1,11 @@
 using System;
-using CapstoneAudio;
 using UnityEngine;
 
+/// <summary>
+/// 책임 : NPC 호감도 저장값을 변경하고 보상/표시/피드백 흐름을 조율한다.
+/// </summary>
 public class AffectionManager : MonoBehaviour
 {
-    private static readonly SoundRef AffectionUpSound = SoundRef.FromKey("sound_ui_AffectionUp");
-    private static readonly SoundRef AffectionDownSound = SoundRef.FromKey("sound_ui_AffectionDown");
-
     public static AffectionManager Instance { get; private set; }
 
     private static bool s_isQuitting;
@@ -128,7 +127,7 @@ public class AffectionManager : MonoBehaviour
         if (delta == 0)
             return;
 
-        SoundPlaybackUtility.Play(delta > 0 ? AffectionUpSound : AffectionDownSound);
+        AffectionFeedbackSoundPlayer.PlayChange(delta);
     }
 
     private void LoadAffectionData()

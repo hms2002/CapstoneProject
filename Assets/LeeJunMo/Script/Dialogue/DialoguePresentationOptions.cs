@@ -1,5 +1,8 @@
 using UnityEngine;
 
+/// <summary>
+/// 대화 시작/종료 시 어떤 프레젠테이션 단계를 사용할지 전달하는 값 객체입니다.
+/// </summary>
 public readonly struct DialoguePresentationOptions
 {
     public static DialoguePresentationOptions Default => default;
@@ -8,7 +11,8 @@ public readonly struct DialoguePresentationOptions
         suppressPortraitIntro: true,
         suppressPortraitOutro: true,
         forceDialogueBoxOnly: true,
-        skipBossPrelude: true);
+        skipBossPrelude: true,
+        suppressOpeningIntroSound: true);
 
     public DialoguePresentationOptions(
         bool suppressPortraitIntro = false,
@@ -18,7 +22,8 @@ public readonly struct DialoguePresentationOptions
         string fastSilhouettePosition = "center",
         bool fastSilhouetteColorize = false,
         bool forceDialogueBoxOnly = false,
-        bool skipBossPrelude = false)
+        bool skipBossPrelude = false,
+        bool suppressOpeningIntroSound = false)
     {
         SuppressPortraitIntro = suppressPortraitIntro;
         SuppressPortraitOutro = suppressPortraitOutro;
@@ -28,6 +33,7 @@ public readonly struct DialoguePresentationOptions
         FastSilhouetteColorize = fastSilhouetteColorize;
         ForceDialogueBoxOnly = forceDialogueBoxOnly;
         SkipBossPrelude = skipBossPrelude;
+        SuppressOpeningIntroSound = suppressOpeningIntroSound;
     }
 
     public bool SuppressPortraitIntro { get; }
@@ -38,6 +44,7 @@ public readonly struct DialoguePresentationOptions
     public bool FastSilhouetteColorize { get; }
     public bool ForceDialogueBoxOnly { get; }
     public bool SkipBossPrelude { get; }
+    public bool SuppressOpeningIntroSound { get; }
 
     public float ResolvedFastSilhouetteFadeSeconds => Mathf.Max(0f, FastSilhouetteFadeSeconds);
 

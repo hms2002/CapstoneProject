@@ -30,7 +30,8 @@ public static class DialoguePresentationSequencer
             return;
         }
 
-        view.PlayOpeningIntroSound();
+        if (!presentationOptions.SuppressOpeningIntroSound)
+            view.PlayOpeningIntroSound();
 
         Action showDialogueUi = () =>
         {

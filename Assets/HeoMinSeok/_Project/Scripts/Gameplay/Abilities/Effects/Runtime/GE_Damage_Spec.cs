@@ -261,7 +261,10 @@ namespace UnityGAS
             if (expectedDamage <= 0f)
                 return;
 
-            DamagePopupDuplicateSuppressor.Register(target, expectedDamage);
+            DamagePopupDuplicateSuppressor.Register(
+                target,
+                expectedDamage,
+                kind: DamagePopupSuppressionKind.Element);
             LogElementPopup(
                 $"reserved suppression expectedDamage={expectedDamage:0.###}, preHp={preHp:0.###}, remainingDamage={remainingDamage:0.###}",
                 popupElementTag,
@@ -307,7 +310,10 @@ namespace UnityGAS
                 popupElementTag,
                 target);
             DamagePopupService.Show(DamagePopupRequest.Element(appliedDamage, popupPosition, popupElementTag));
-            DamagePopupDuplicateSuppressor.Register(target, appliedDamage);
+            DamagePopupDuplicateSuppressor.Register(
+                target,
+                appliedDamage,
+                kind: DamagePopupSuppressionKind.Element);
         }
 
         private float ResolvePopupDamageAmount(float preHp, float postHp, float remainingDamage)

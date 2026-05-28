@@ -784,6 +784,11 @@ MonoBehaviour:
   owner: {fileID: 5735674896046500230}
   abilityCoordinator: {fileID: 2242263039194729975}
   telegraphService: {fileID: 876108940330213769}
+  telegraphWallClipLayers:
+    serializedVersion: 2
+    m_Bits: 1073741824
+  telegraphWallClipSampleCount: 48
+  telegraphWallClipSkinWidth: 0.03
 --- !u!114 &5735674896046500230
 MonoBehaviour:
   m_ObjectHideFlags: 0

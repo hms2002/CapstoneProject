@@ -4,6 +4,10 @@ using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// 책임 : 보스 대화 선택지에서 호감도 실패/부정 리액션 화면 연출을 재생한다.
+/// 실제 호감도 수치 감소가 없어도 부정 판정 자체의 피드백을 담당한다.
+/// </summary>
 public sealed class ChoiceFailureScreenEffect : MonoBehaviour
 {
     [Header("Canvas")]
@@ -78,6 +82,7 @@ public sealed class ChoiceFailureScreenEffect : MonoBehaviour
     public void Play(Action onComplete = null)
     {
         EnsureOverlay();
+        PlayFailureSound();
 
         if (overlayObject == null || borderGraphic == null || heartRoot == null)
         {
@@ -155,6 +160,14 @@ public sealed class ChoiceFailureScreenEffect : MonoBehaviour
         borderGraphic.RevealProgress = 1f;
 
         SpawnStaticPreviewHearts();
+    }
+
+    /// <summary>
+    /// 책임 : 호감도 수치 감소가 없는 부정 선택지에서도 동일한 실패 피드백 사운드를 재생한다.
+    /// </summary>
+    private static void PlayFailureSound()
+    {
+        AffectionFeedbackSoundPlayer.PlayDown();
     }
 
     public void ClearPreview()
