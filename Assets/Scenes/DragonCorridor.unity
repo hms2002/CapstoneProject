@@ -3083,6 +3083,7 @@ MonoBehaviour:
   targetDoor: {fileID: 426014277}
   targetRoomGroup: {fileID: 0}
   requireTrackedMonstersInsideBeforeClose: 1
+  openForOutsideMonsterDelaySeconds: 0.35
   openAfterAllClearedDelaySeconds: 0.35
   logDebug: 0
 --- !u!114 &426014277 stripped
@@ -97426,6 +97427,7 @@ MonoBehaviour:
   targetDoor: {fileID: 761629100}
   targetRoomGroup: {fileID: 0}
   requireTrackedMonstersInsideBeforeClose: 1
+  openForOutsideMonsterDelaySeconds: 0.35
   openAfterAllClearedDelaySeconds: 0.35
   logDebug: 0
 --- !u!1 &765831352 stripped
@@ -97497,6 +97499,7 @@ MonoBehaviour:
   targetDoor: {fileID: 779145238}
   targetRoomGroup: {fileID: 0}
   requireTrackedMonstersInsideBeforeClose: 1
+  openForOutsideMonsterDelaySeconds: 0.35
   openAfterAllClearedDelaySeconds: 0.35
   logDebug: 0
 --- !u!114 &779145238 stripped
@@ -97946,6 +97949,7 @@ MonoBehaviour:
   targetDoor: {fileID: 868282389}
   targetRoomGroup: {fileID: 1786279185}
   requireTrackedMonstersInsideBeforeClose: 1
+  openForOutsideMonsterDelaySeconds: 0.35
   openAfterAllClearedDelaySeconds: 0.35
   logDebug: 0
 --- !u!114 &868282389 stripped
@@ -98219,6 +98223,7 @@ MonoBehaviour:
   targetDoor: {fileID: 968713753}
   targetRoomGroup: {fileID: 1446358395}
   requireTrackedMonstersInsideBeforeClose: 1
+  openForOutsideMonsterDelaySeconds: 0.35
   openAfterAllClearedDelaySeconds: 0.35
   logDebug: 0
 --- !u!114 &968713753 stripped
@@ -98567,6 +98572,7 @@ MonoBehaviour:
   targetDoor: {fileID: 1025179340}
   targetRoomGroup: {fileID: 0}
   requireTrackedMonstersInsideBeforeClose: 1
+  openForOutsideMonsterDelaySeconds: 0.35
   openAfterAllClearedDelaySeconds: 0.35
   logDebug: 0
 --- !u!114 &1025179340 stripped
@@ -98997,6 +99003,7 @@ MonoBehaviour:
   targetDoor: {fileID: 1063915078}
   targetRoomGroup: {fileID: 0}
   requireTrackedMonstersInsideBeforeClose: 1
+  openForOutsideMonsterDelaySeconds: 0.35
   openAfterAllClearedDelaySeconds: 0.35
   logDebug: 0
 --- !u!114 &1063915078 stripped
@@ -99106,6 +99113,7 @@ MonoBehaviour:
   targetDoor: {fileID: 1076528924}
   targetRoomGroup: {fileID: 0}
   requireTrackedMonstersInsideBeforeClose: 1
+  openForOutsideMonsterDelaySeconds: 0.35
   openAfterAllClearedDelaySeconds: 0.35
   logDebug: 0
 --- !u!114 &1076528924 stripped
@@ -100577,6 +100585,7 @@ MonoBehaviour:
   targetDoor: {fileID: 1207168646}
   targetRoomGroup: {fileID: 1446358395}
   requireTrackedMonstersInsideBeforeClose: 1
+  openForOutsideMonsterDelaySeconds: 0.35
   openAfterAllClearedDelaySeconds: 0.35
   logDebug: 0
 --- !u!114 &1207168646 stripped
@@ -100728,6 +100737,7 @@ MonoBehaviour:
   targetDoor: {fileID: 1227034841}
   targetRoomGroup: {fileID: 181599482}
   requireTrackedMonstersInsideBeforeClose: 1
+  openForOutsideMonsterDelaySeconds: 0.35
   openAfterAllClearedDelaySeconds: 0.35
   logDebug: 0
 --- !u!114 &1227034841 stripped
@@ -101118,6 +101128,7 @@ MonoBehaviour:
   targetDoor: {fileID: 1286288062}
   targetRoomGroup: {fileID: 0}
   requireTrackedMonstersInsideBeforeClose: 1
+  openForOutsideMonsterDelaySeconds: 0.35
   openAfterAllClearedDelaySeconds: 0.35
   logDebug: 0
 --- !u!114 &1286288062 stripped
@@ -102183,6 +102194,7 @@ MonoBehaviour:
   targetDoor: {fileID: 1428392363}
   targetRoomGroup: {fileID: 0}
   requireTrackedMonstersInsideBeforeClose: 1
+  openForOutsideMonsterDelaySeconds: 0.35
   openAfterAllClearedDelaySeconds: 0.35
   logDebug: 0
 --- !u!114 &1428392363 stripped
@@ -102824,6 +102836,7 @@ MonoBehaviour:
   targetDoor: {fileID: 1502673661}
   targetRoomGroup: {fileID: 0}
   requireTrackedMonstersInsideBeforeClose: 1
+  openForOutsideMonsterDelaySeconds: 0.35
   openAfterAllClearedDelaySeconds: 0.35
   logDebug: 0
 --- !u!114 &1502673661 stripped
@@ -102967,6 +102980,26 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -43.333332
       objectReference: {fileID: 0}
+    - target: {fileID: 24272785607104025, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 24272785607104025, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 24272785607104025, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 24272785607104025, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 24272785607104025, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 35158659117030431, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_AnchorMax.y
       value: 1
@@ -103074,6 +103107,30 @@ PrefabInstance:
     - target: {fileID: 295235055664439723, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 527548198200260922, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 527548198200260922, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 527548198200260922, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 527548198200260922, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 527548198200260922, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 326
+      objectReference: {fileID: 0}
+    - target: {fileID: 527548198200260922, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -208.53
       objectReference: {fileID: 0}
     - target: {fileID: 585350785658854942, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_AnchorMax.y
@@ -103711,6 +103768,22 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1775230342333700200, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1775230342333700200, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1775230342333700200, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1775230342333700200, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1789411248941023619, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -104045,7 +104118,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2955313352281660509, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -91.765
+      value: -121.765
       objectReference: {fileID: 0}
     - target: {fileID: 3004553384654337518, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_AnchorMax.y
@@ -104471,6 +104544,22 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4439511937389402479, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4439511937389402479, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4439511937389402479, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4439511937389402479, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4454224700142961146, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -104683,6 +104772,22 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5216965227714232358, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5216965227714232358, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5216965227714232358, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5216965227714232358, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5275529150230966297, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_SizeDelta.y
       value: 0
@@ -104743,6 +104848,22 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5390451226157876297, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5390451226157876297, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5390451226157876297, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5390451226157876297, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5419557143886102238, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -104833,6 +104954,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5718861669557809486, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5732126089334042271, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_SizeDelta.x
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5857079469730888616, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
@@ -105803,6 +105928,22 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8704427084333342233, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8704427084333342233, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8704427084333342233, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8704427084333342233, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8708113485902352514, guid: 5e15651ae66572d459df089d6e5dc0b4, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -106082,6 +106223,7 @@ MonoBehaviour:
   targetDoor: {fileID: 1553499541}
   targetRoomGroup: {fileID: 0}
   requireTrackedMonstersInsideBeforeClose: 1
+  openForOutsideMonsterDelaySeconds: 0.35
   openAfterAllClearedDelaySeconds: 0.35
   logDebug: 0
 --- !u!114 &1553499541 stripped
@@ -106397,6 +106539,7 @@ MonoBehaviour:
   targetDoor: {fileID: 1584333067}
   targetRoomGroup: {fileID: 0}
   requireTrackedMonstersInsideBeforeClose: 1
+  openForOutsideMonsterDelaySeconds: 0.35
   openAfterAllClearedDelaySeconds: 0.35
   logDebug: 0
 --- !u!114 &1584333067 stripped
@@ -106430,6 +106573,7 @@ MonoBehaviour:
   targetDoor: {fileID: 1604289956}
   targetRoomGroup: {fileID: 181599482}
   requireTrackedMonstersInsideBeforeClose: 1
+  openForOutsideMonsterDelaySeconds: 0.35
   openAfterAllClearedDelaySeconds: 0.35
   logDebug: 0
 --- !u!114 &1604289956 stripped
@@ -107634,6 +107778,7 @@ MonoBehaviour:
   targetDoor: {fileID: 1703092061}
   targetRoomGroup: {fileID: 0}
   requireTrackedMonstersInsideBeforeClose: 1
+  openForOutsideMonsterDelaySeconds: 0.35
   openAfterAllClearedDelaySeconds: 0.35
   logDebug: 0
 --- !u!114 &1703092061 stripped
@@ -108143,6 +108288,7 @@ MonoBehaviour:
   targetDoor: {fileID: 1802765944}
   targetRoomGroup: {fileID: 0}
   requireTrackedMonstersInsideBeforeClose: 1
+  openForOutsideMonsterDelaySeconds: 0.35
   openAfterAllClearedDelaySeconds: 0.35
   logDebug: 0
 --- !u!114 &1802765944 stripped
@@ -108426,6 +108572,7 @@ MonoBehaviour:
   targetDoor: {fileID: 1857648496}
   targetRoomGroup: {fileID: 0}
   requireTrackedMonstersInsideBeforeClose: 1
+  openForOutsideMonsterDelaySeconds: 0.35
   openAfterAllClearedDelaySeconds: 0.35
   logDebug: 0
 --- !u!114 &1857648496 stripped
@@ -109322,6 +109469,7 @@ MonoBehaviour:
   targetDoor: {fileID: 1985673919}
   targetRoomGroup: {fileID: 1446358395}
   requireTrackedMonstersInsideBeforeClose: 1
+  openForOutsideMonsterDelaySeconds: 0.35
   openAfterAllClearedDelaySeconds: 0.35
   logDebug: 0
 --- !u!114 &1985673919 stripped
@@ -109724,6 +109872,7 @@ MonoBehaviour:
   targetDoor: {fileID: 2020322873}
   targetRoomGroup: {fileID: 0}
   requireTrackedMonstersInsideBeforeClose: 1
+  openForOutsideMonsterDelaySeconds: 0.35
   openAfterAllClearedDelaySeconds: 0.35
   logDebug: 0
 --- !u!1001 &2026639066
@@ -109806,6 +109955,7 @@ MonoBehaviour:
   targetDoor: {fileID: 2026639070}
   targetRoomGroup: {fileID: 1786279185}
   requireTrackedMonstersInsideBeforeClose: 1
+  openForOutsideMonsterDelaySeconds: 0.35
   openAfterAllClearedDelaySeconds: 0.35
   logDebug: 0
 --- !u!114 &2026639070 stripped
@@ -110115,6 +110265,7 @@ MonoBehaviour:
   targetDoor: {fileID: 2072230211}
   targetRoomGroup: {fileID: 406360850}
   requireTrackedMonstersInsideBeforeClose: 1
+  openForOutsideMonsterDelaySeconds: 0.35
   openAfterAllClearedDelaySeconds: 0.35
   logDebug: 0
 --- !u!114 &2072230211 stripped
@@ -110254,6 +110405,7 @@ MonoBehaviour:
   targetDoor: {fileID: 2125437843}
   targetRoomGroup: {fileID: 406360850}
   requireTrackedMonstersInsideBeforeClose: 1
+  openForOutsideMonsterDelaySeconds: 0.35
   openAfterAllClearedDelaySeconds: 0.35
   logDebug: 0
 --- !u!114 &2125437843 stripped

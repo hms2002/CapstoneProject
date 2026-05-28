@@ -66,6 +66,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &860439334278707932
 SpriteRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -84,6 +85,8 @@ SpriteRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -105,9 +108,11 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -1039746825
-  m_SortingLayer: 2
+  m_SortingLayer: 5
   m_SortingOrder: 0
+  m_MaskInteraction: 0
   m_Sprite: {fileID: 725556707599801474, guid: 38fff8b5f0a464f4fa7dd878114bb1b2, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -117,8 +122,7 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
-  m_SpriteSortPoint: 0
+  m_SpriteSortPoint: 1
 --- !u!95 &7305723242744879239
 Animator:
   serializedVersion: 7
@@ -190,6 +194,30 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   capacity: 16
+  lootMode: 0
+  lootOverrideProfile:
+    totalLootCount: 8
+    weaponCountProfile:
+      minCount: 0
+      maxCount: 0
+      weights:
+      - count: 0
+        weight: 100
+    relicCountProfile:
+      minCount: 7
+      maxCount: 8
+      weights:
+      - count: 7
+        weight: 100
+      - count: 8
+        weight: 100
+    consumableCountProfile:
+      minCount: 0
+      maxCount: 0
+      weights:
+      - count: 0
+        weight: 100
+    fillRemainingWithConsumables: 1
   chestAnimator: {fileID: 7305723242744879239}
   openStateName: Open
   openedStateName: Opened
@@ -198,6 +226,11 @@ MonoBehaviour:
   openEffects: []
   chestSpriteRenderer: {fileID: 0}
   openedSprite: {fileID: 21300040, guid: 29c9cded5e558164aaf8c9bf08aa1510, type: 3}
+  rewardRevealDustParticle: {fileID: 0}
+  rewardRevealDustAnchor: {fileID: 0}
+  rewardRevealDustLocalOffset: {x: 0, y: -0.35, z: 0}
+  clearRewardRevealDustBeforePlay: 1
+  spawnedRewardRevealDustDestroyDelay: 2
   presentationAnchor: {fileID: 5205111981208987127}
   openPresentation:
     gameplayPresentation:
@@ -216,6 +249,156 @@ MonoBehaviour:
         volumeMultiplier: 0
         anchorPolicy: 0
         localOffset: {x: 0, y: 0, z: 0}
+      cameraShakeOnExecute:
+        amplitude: 0
+        amplitudeMultiplier: 0
+        maxAmplitude: 0
+        minIntervalSeconds: 0
+        directionMode: 0
+        customDirection: {x: 0, y: 0, z: 0}
+        ignoreScreenShakeSetting: 0
+      cameraShakeWhileActive:
+        amplitude: 0
+        amplitudeMultiplier: 0
+        maxAmplitude: 0
+        minIntervalSeconds: 0
+        directionMode: 0
+        customDirection: {x: 0, y: 0, z: 0}
+        ignoreScreenShakeSetting: 0
+      cameraShakeOnRemove:
+        amplitude: 0
+        amplitudeMultiplier: 0
+        maxAmplitude: 0
+        minIntervalSeconds: 0
+        directionMode: 0
+        customDirection: {x: 0, y: 0, z: 0}
+        ignoreScreenShakeSetting: 0
+      presentationOnExecute:
+        sound:
+          key: 
+          volumeMultiplier: 0
+          anchorPolicy: 0
+          localOffset: {x: 0, y: 0, z: 0}
+        randomSounds: []
+        additionalSounds: []
+        cameraShake:
+          amplitude: 0
+          amplitudeMultiplier: 0
+          maxAmplitude: 0
+          minIntervalSeconds: 0
+          directionMode: 0
+          customDirection: {x: 0, y: 0, z: 0}
+          ignoreScreenShakeSetting: 0
+        effect:
+          prefab: {fileID: 0}
+          localOffset: {x: 0, y: 0, z: 0}
+          rotationOffsetZ: 0
+          scaleMultiplier: {x: 0, y: 0, z: 0}
+          attachToTarget: 0
+          anchorMode: 0
+          scaleMode: 0
+          targetBoundsReferenceSize: 0
+          targetBoundsScaleMultiplier: 0
+          lifetimeMode: 0
+          lifetimeOverrideSeconds: 0
+          useUnscaledTime: 0
+        particle:
+          prefab: {fileID: 0}
+          localOffset: {x: 0, y: 0, z: 0}
+          rotationOffsetZ: 0
+          scaleMultiplier: {x: 0, y: 0, z: 0}
+          attachToTarget: 0
+          anchorMode: 0
+          scaleMode: 0
+          targetBoundsReferenceSize: 0
+          targetBoundsScaleMultiplier: 0
+          lifetimeMode: 0
+          lifetimeOverrideSeconds: 0
+          useUnscaledTime: 0
+      presentationWhileActive:
+        sound:
+          key: 
+          volumeMultiplier: 0
+          anchorPolicy: 0
+          localOffset: {x: 0, y: 0, z: 0}
+        randomSounds: []
+        additionalSounds: []
+        cameraShake:
+          amplitude: 0
+          amplitudeMultiplier: 0
+          maxAmplitude: 0
+          minIntervalSeconds: 0
+          directionMode: 0
+          customDirection: {x: 0, y: 0, z: 0}
+          ignoreScreenShakeSetting: 0
+        effect:
+          prefab: {fileID: 0}
+          localOffset: {x: 0, y: 0, z: 0}
+          rotationOffsetZ: 0
+          scaleMultiplier: {x: 0, y: 0, z: 0}
+          attachToTarget: 0
+          anchorMode: 0
+          scaleMode: 0
+          targetBoundsReferenceSize: 0
+          targetBoundsScaleMultiplier: 0
+          lifetimeMode: 0
+          lifetimeOverrideSeconds: 0
+          useUnscaledTime: 0
+        particle:
+          prefab: {fileID: 0}
+          localOffset: {x: 0, y: 0, z: 0}
+          rotationOffsetZ: 0
+          scaleMultiplier: {x: 0, y: 0, z: 0}
+          attachToTarget: 0
+          anchorMode: 0
+          scaleMode: 0
+          targetBoundsReferenceSize: 0
+          targetBoundsScaleMultiplier: 0
+          lifetimeMode: 0
+          lifetimeOverrideSeconds: 0
+          useUnscaledTime: 0
+      presentationOnRemove:
+        sound:
+          key: 
+          volumeMultiplier: 0
+          anchorPolicy: 0
+          localOffset: {x: 0, y: 0, z: 0}
+        randomSounds: []
+        additionalSounds: []
+        cameraShake:
+          amplitude: 0
+          amplitudeMultiplier: 0
+          maxAmplitude: 0
+          minIntervalSeconds: 0
+          directionMode: 0
+          customDirection: {x: 0, y: 0, z: 0}
+          ignoreScreenShakeSetting: 0
+        effect:
+          prefab: {fileID: 0}
+          localOffset: {x: 0, y: 0, z: 0}
+          rotationOffsetZ: 0
+          scaleMultiplier: {x: 0, y: 0, z: 0}
+          attachToTarget: 0
+          anchorMode: 0
+          scaleMode: 0
+          targetBoundsReferenceSize: 0
+          targetBoundsScaleMultiplier: 0
+          lifetimeMode: 0
+          lifetimeOverrideSeconds: 0
+          useUnscaledTime: 0
+        particle:
+          prefab: {fileID: 0}
+          localOffset: {x: 0, y: 0, z: 0}
+          rotationOffsetZ: 0
+          scaleMultiplier: {x: 0, y: 0, z: 0}
+          attachToTarget: 0
+          anchorMode: 0
+          scaleMode: 0
+          targetBoundsReferenceSize: 0
+          targetBoundsScaleMultiplier: 0
+          lifetimeMode: 0
+          lifetimeOverrideSeconds: 0
+          useUnscaledTime: 0
       cuesOnExecute: []
       cuesWhileActive: []
       cuesOnRemove: []
@@ -279,5 +462,5 @@ CircleCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0, y: 0.5}
   m_Radius: 1
