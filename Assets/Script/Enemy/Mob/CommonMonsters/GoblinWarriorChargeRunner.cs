@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityGAS;
+using CapstoneAudio;
 
 /// <summary>
 /// 책임:
@@ -11,6 +12,8 @@ using UnityGAS;
 [RequireComponent(typeof(GoblinWarrior))]
 public sealed class GoblinWarriorChargeRunner : MonoBehaviour, IMobPatternRunner, IMobPresentationCleanup
 {
+    private static readonly SoundRef DashSound = SoundRef.FromKey("sound_goblinWarrior_dash1");
+
     [SerializeField] private GoblinWarrior owner;
     [SerializeField] private MobAbilityCoordinator abilityCoordinator;
     [SerializeField] private AttackTelegraphService telegraphService;
@@ -71,6 +74,7 @@ public sealed class GoblinWarriorChargeRunner : MonoBehaviour, IMobPatternRunner
 
             HideWarning();
             CommonMonsterCombatUtility.TriggerAnimation(owner, CommonMonsterAnimationCue.Attack);
+            PlayDashSound();
             yield return Dash(context, spec);
         }
         finally
@@ -163,6 +167,18 @@ public sealed class GoblinWarriorChargeRunner : MonoBehaviour, IMobPatternRunner
         {
             hitTarget = true;
         }
+    }
+
+    /// <summary>고블린 전사 돌진 공격 실행 타이밍에 검 휘두르기 사운드를 재생합니다.</summary>
+    private void PlayDashSound()
+    {
+        SoundPlaybackUtility.Play(
+            DashSound,
+            instigator: gameObject,
+            causer: gameObject,
+            target: owner != null && owner.Target != null ? owner.Target.gameObject : null,
+            position: transform.position,
+            sourceObject: this);
     }
 
     private static bool IsCancelled(AbilitySpec spec)

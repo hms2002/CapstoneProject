@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using CapstoneAudio;
 using DG.Tweening;
 using UnityEngine;
 using UnityGAS;
@@ -14,6 +15,8 @@ using UnityEngine.SceneManagement;
 /// </summary>
 public sealed class ScenePortal : InteractableBase
 {
+    private static readonly SoundRef EnterSound = SoundRef.FromKey("sound_scenePortal_Enter");
+
     [SerializeField, HideInInspector] private string portalId;
 
     [Header("Transition Semantic")]
@@ -161,6 +164,7 @@ public sealed class ScenePortal : InteractableBase
         }
         else
         {
+            PlayEnterSound();
             acceptedTravel = true;
         }
     }
@@ -215,6 +219,7 @@ public sealed class ScenePortal : InteractableBase
                 yield break;
             }
 
+            PlayEnterSound();
             acceptedTravel = true;
             yield return WaitForAcceptedTransitionToFinish();
 
@@ -320,6 +325,11 @@ public sealed class ScenePortal : InteractableBase
             Debug.LogError($"[ScenePortal] Travel request failed with exception. portal={name}, error={ex}", this);
             return false;
         }
+    }
+
+    private void PlayEnterSound()
+    {
+        SoundPlaybackUtility.Play(EnterSound, causer: gameObject, position: transform.position, sourceObject: this);
     }
 
     private void AcquireInputBlocker()

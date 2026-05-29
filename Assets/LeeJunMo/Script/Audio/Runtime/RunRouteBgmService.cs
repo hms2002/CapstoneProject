@@ -3,6 +3,11 @@ using CapstoneAudio;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+/// <summary>
+/// 책임:
+/// - 씬 전환과 보스 전투 상태에 맞춰 현재 재생해야 할 BGM을 결정하고 SoundManager에 재생을 요청한다.
+/// - 타이틀/허브/복도/보스 전투 BGM 전환 규칙을 한 곳에서 관리한다.
+/// </summary>
 [DisallowMultipleComponent]
 public sealed class RunRouteBgmService : MonoBehaviour
 {
@@ -12,6 +17,8 @@ public sealed class RunRouteBgmService : MonoBehaviour
 
     [SerializeField, Min(0f)] private float sceneBgmFadeDuration = 0.5f;
     [SerializeField, Min(0f)] private float bossCombatBgmFadeDuration = 0.75f;
+    [SerializeField] private string titleSceneName = "TitleScene";
+    [SerializeField] private SoundRef titleSceneBgm = SoundRef.FromKey("TitleSceneBGM");
     [SerializeField] private bool verboseLogging;
 
     private SoundRef currentMusicRef;
@@ -53,6 +60,18 @@ public sealed class RunRouteBgmService : MonoBehaviour
         PlayMusicIfChanged(currentStage.BossCombatBgm, bossCombatBgmFadeDuration, "Boss combat started");
     }
 
+    /// <summary>현재 활성 씬 기준 BGM을 다시 판정해 타이틀 정리/씬 직접 시작 뒤에도 음악 상태를 복구합니다.</summary>
+    public void RefreshActiveSceneBgm()
+    {
+        RefreshSceneBgm(SceneManager.GetActiveScene(), forceRestart: false);
+    }
+
+    /// <summary>현재 BGM 캐시와 무관하게 활성 씬 BGM 재생 요청을 다시 보냅니다.</summary>
+    public void ForceRefreshActiveSceneBgm()
+    {
+        RefreshSceneBgm(SceneManager.GetActiveScene(), forceRestart: true);
+    }
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -68,6 +87,11 @@ public sealed class RunRouteBgmService : MonoBehaviour
     private void OnEnable()
     {
         SceneManager.sceneLoaded += HandleSceneLoaded;
+    }
+
+    private void Start()
+    {
+        RefreshActiveSceneBgm();
     }
 
     private void OnDisable()
@@ -88,31 +112,54 @@ public sealed class RunRouteBgmService : MonoBehaviour
 
     private void HandleSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        RefreshSceneBgm(scene);
+        RefreshSceneBgm(scene, forceRestart: false);
     }
 
-    private void RefreshSceneBgm(Scene scene)
+    private void RefreshSceneBgm(Scene scene, bool forceRestart)
     {
         if (!scene.IsValid())
             return;
 
+        if (TryResolveTitleBgm(scene, out SoundRef titleBgm))
+        {
+            PlayMusicIfChanged(titleBgm, sceneBgmFadeDuration, $"Title scene loaded ({scene.name})", forceRestart);
+            return;
+        }
+
         if (TryResolveHubBgm(scene, out SoundRef hubBgm))
         {
-            PlayMusicIfChanged(hubBgm, sceneBgmFadeDuration, $"Hub scene loaded ({scene.name})");
+            PlayMusicIfChanged(hubBgm, sceneBgmFadeDuration, $"Hub scene loaded ({scene.name})", forceRestart);
             return;
         }
 
         if (TryResolveCurrentStageCorridorBgm(scene, out SoundRef corridorBgm))
         {
-            PlayMusicIfChanged(corridorBgm, sceneBgmFadeDuration, $"Corridor scene loaded ({scene.name})");
+            PlayMusicIfChanged(corridorBgm, sceneBgmFadeDuration, $"Corridor scene loaded ({scene.name})", forceRestart);
             return;
         }
 
         if (TryResolveBossScenePreCombatBgm(scene, out SoundRef carryOverBgm) &&
-            !AreEquivalent(currentMusicRef, carryOverBgm))
+            (forceRestart || !AreEquivalent(currentMusicRef, carryOverBgm)))
         {
-            PlayMusicIfChanged(carryOverBgm, sceneBgmFadeDuration, $"Boss scene pre-combat fallback ({scene.name})");
+            PlayMusicIfChanged(carryOverBgm, sceneBgmFadeDuration, $"Boss scene pre-combat fallback ({scene.name})", forceRestart);
         }
+    }
+
+    private bool TryResolveTitleBgm(Scene scene, out SoundRef bgm)
+    {
+        bgm = default;
+
+        if (!scene.IsValid())
+            return false;
+
+        if (!SceneNameEquals(scene.name, titleSceneName))
+            return false;
+
+        if (!titleSceneBgm.IsSet)
+            return false;
+
+        bgm = titleSceneBgm;
+        return true;
     }
 
     private static bool TryResolveCurrentStageCorridorBgm(Scene scene, out SoundRef bgm)
@@ -194,12 +241,12 @@ public sealed class RunRouteBgmService : MonoBehaviour
         return false;
     }
 
-    private void PlayMusicIfChanged(SoundRef soundRef, float fadeDuration, string reason)
+    private void PlayMusicIfChanged(SoundRef soundRef, float fadeDuration, string reason, bool forceRestart = false)
     {
         if (!soundRef.IsSet)
             return;
 
-        if (AreEquivalent(currentMusicRef, soundRef))
+        if (!forceRestart && AreEquivalent(currentMusicRef, soundRef))
             return;
 
         SoundManager.EnsureInstance().PlayMusic(soundRef, fadeDuration);

@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityGAS;
+using CapstoneAudio;
 
 /// <summary>
 /// 책임:
@@ -11,6 +12,8 @@ using UnityGAS;
 public class TackleAttack : MonoBehaviour, IMobAttackDecisionSource, IMobPresentationCleanup
 {
     private const int WallLayer = 30;
+    private static readonly SoundRef ShadowMonsterAttackSound = SoundRef.FromKey("sound_shadowMonster_dash");
+    private static readonly SoundRef TreasureMonsterAttackSound = SoundRef.FromKey("sound_treasureMonster_dash");
 
     [Header("태클")]
     [Tooltip("태클에 사용할 GAS 어빌리티입니다.")]
@@ -34,6 +37,10 @@ public class TackleAttack : MonoBehaviour, IMobAttackDecisionSource, IMobPresent
     [Tooltip("태클 경고를 표시할 서비스입니다.")]
     [SerializeField] private AttackTelegraphService telegraph;
     [SerializeField] private MobAbilityCoordinator abilityCoordinator;
+
+    [Header("Sound")]
+    [Tooltip("태클 공격 시작 타이밍에 재생할 사운드입니다. 비워두면 일부 몬스터 전용 기본 사운드를 사용합니다.")]
+    [SerializeField] private SoundRef attackSound;
 
     [Header("Legacy")]
     [Tooltip("켜면 FSM을 거치지 않고 TackleAttack.Update에서 직접 태클을 시작합니다. 일반 몬스터 FSM 사용 대상은 꺼두는 것이 기본입니다.")]
@@ -379,6 +386,22 @@ public class TackleAttack : MonoBehaviour, IMobAttackDecisionSource, IMobPresent
         SetAnimatorTriggerIfAvailable(attackTriggerHash, hasAttackTrigger);
     }
 
+    /// <summary>태클 공격 시작 타이밍에 몬스터별 사운드를 재생합니다.</summary>
+    public void PlayAttackSound()
+    {
+        SoundRef sound = attackSound.IsSet ? attackSound : ResolveFallbackAttackSound();
+        if (!sound.IsSet)
+            return;
+
+        SoundPlaybackUtility.Play(
+            sound,
+            instigator: gameObject,
+            causer: gameObject,
+            target: mob != null && mob.Target != null ? mob.Target.gameObject : null,
+            position: transform.position,
+            sourceObject: this);
+    }
+
     /// <summary>태클 딜레이를 시작합니다.</summary>
     public void StartDelay()
     {
@@ -507,6 +530,18 @@ public class TackleAttack : MonoBehaviour, IMobAttackDecisionSource, IMobPresent
 
         animator.ResetTrigger(triggerHash);
         animator.SetTrigger(triggerHash);
+    }
+
+    /// <summary>직렬화 사운드가 비어 있을 때 기존 몬스터 타입별 기본 태클 사운드를 선택합니다.</summary>
+    private SoundRef ResolveFallbackAttackSound()
+    {
+        if (GetComponent<ShadowMonster>() != null)
+            return ShadowMonsterAttackSound;
+
+        if (GetComponent<TreasureMonster>() != null)
+            return TreasureMonsterAttackSound;
+
+        return default;
     }
 
     /// <summary>태클 원형 범위를 그립니다.</summary>

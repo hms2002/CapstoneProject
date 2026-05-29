@@ -1,11 +1,16 @@
 using System;
 using System.Collections.Generic;
+using CapstoneAudio;
 using TMPro;
 using UnityEngine;
 
 [DisallowMultipleComponent]
 public sealed class EncyclopediaItemTab : MonoBehaviour
 {
+    private static readonly SoundRef CategoryChangeStartSound = SoundRef.FromKey("sound_ui_ChangeDictionaryCategoryStart");
+    private static readonly SoundRef CategoryChangeFlipPageSound = SoundRef.FromKey("sound_ui_ChangeDictionaryCategoryFlipPage");
+    private static readonly SoundRef CategoryChangeEndSound = SoundRef.FromKey("sound_ui_ChangeDictionaryCategoryEnd");
+
     [Serializable]
     private struct TitlePreset
     {
@@ -212,10 +217,12 @@ public sealed class EncyclopediaItemTab : MonoBehaviour
         if (subTab == currentSubTab)
             return;
 
+        PlayCategoryChangeStartSound();
         SetInteractionEnabled(false);
 
         void Swap()
         {
+            PlayCategoryChangeFlipPageSound();
             ApplySubTab(subTab, selectFirst: true);
         }
 
@@ -223,6 +230,7 @@ public sealed class EncyclopediaItemTab : MonoBehaviour
         {
             SetContentVisible(true);
             SetInteractionEnabled(true);
+            PlayCategoryChangeEndSound();
         }
 
         if (bookPresentation != null && playLeftPageTurnOnSubTabChange)
@@ -233,6 +241,21 @@ public sealed class EncyclopediaItemTab : MonoBehaviour
             Swap();
             Complete();
         }
+    }
+
+    private void PlayCategoryChangeStartSound()
+    {
+        SoundPlaybackUtility.Play(CategoryChangeStartSound, sourceObject: this);
+    }
+
+    private void PlayCategoryChangeFlipPageSound()
+    {
+        SoundPlaybackUtility.Play(CategoryChangeFlipPageSound, sourceObject: this);
+    }
+
+    private void PlayCategoryChangeEndSound()
+    {
+        SoundPlaybackUtility.Play(CategoryChangeEndSound, sourceObject: this);
     }
 
     private void ApplySubTab(EncyclopediaItemSubTab subTab, bool selectFirst)

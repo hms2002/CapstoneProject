@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityGAS;
+using CapstoneAudio;
 
 /// <summary>
 /// 이 클래스의 책임:
@@ -13,6 +14,8 @@ using UnityGAS;
 [RequireComponent(typeof(BeerMonsterShotRunner))]
 public class BeerMonster : Mob, IMobAttackDecisionSource
 {
+    private static readonly SoundRef ShotFireSound = SoundRef.FromKey("sound_beerMonster_shotFire");
+
     [Header("Attack")]
     [Tooltip("맥주 몬스터가 사용하는 단발 탄막 AbilityDefinition입니다.")]
     [SerializeField] private AbilityDefinition shotAbility;
@@ -181,6 +184,7 @@ public class BeerMonster : Mob, IMobAttackDecisionSource
             return;
         }
 
+        PlayShotFireSound(context.Origin);
         projectile.Setup(new ProjectileAttackSpawnContext
         {
             ownerSystem = abilitySystem,
@@ -194,6 +198,18 @@ public class BeerMonster : Mob, IMobAttackDecisionSource
             direction = context.Direction,
             speed = context.ProjectileSpeed
         });
+    }
+
+    /// <summary>맥주 몬스터 탄막 발사 타이밍에 사운드를 재생합니다.</summary>
+    private void PlayShotFireSound(Vector2 origin)
+    {
+        SoundPlaybackUtility.Play(
+            ShotFireSound,
+            instigator: gameObject,
+            causer: gameObject,
+            target: Target != null ? Target.gameObject : null,
+            position: origin,
+            sourceObject: this);
     }
 
     /// <summary>

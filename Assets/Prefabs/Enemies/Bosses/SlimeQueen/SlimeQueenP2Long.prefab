@@ -245,8 +245,11 @@ MonoBehaviour:
   waterCannonShotActiveSeconds: 0.12
   waterCannonShotIntervalSeconds: 0.1
   waterCannonMaxTurnAnglePerShot: 10
+  waterCannonMinTurnAnglePerShot: 8
+  waterCannonAimSnapAngle: 1.5
   waterCannonBeamGrowSeconds: 0.18
-  waterCannonVisualWidthMultiplier: 4.125
+  waterCannonWarningWidthMultiplier: 4.125
+  waterCannonVfxWidth: 0.165
   waterCannonLaserBodyLengthMultiplier: 1
   waterCannonHitWidth: 0.08
   waterCannonFixedDistance: 20

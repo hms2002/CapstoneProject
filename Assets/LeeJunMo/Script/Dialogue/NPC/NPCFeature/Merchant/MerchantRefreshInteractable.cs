@@ -1,9 +1,11 @@
+using CapstoneAudio;
 using TMPro;
 using UnityEngine;
 
 [RequireComponent(typeof(Collider2D))]
 public sealed class MerchantRefreshInteractable : InteractableBase, IInteractionTargetCandidate, IInteractionPromptState
 {
+    private static readonly SoundRef RefreshSound = SoundRef.FromKey("sound_shopRefresher_Refresh");
     private static readonly int OutlineEnabledID = Shader.PropertyToID("_OutlineEnabled");
 
     [Header("Ownership")]
@@ -78,6 +80,7 @@ public sealed class MerchantRefreshInteractable : InteractableBase, IInteraction
 
         if (owner.TryRefreshStock())
         {
+            SoundPlaybackUtility.Play(RefreshSound, causer: gameObject, position: transform.position, sourceObject: this);
             PlayRefreshButtonAnimation();
             RefreshPresentation();
         }

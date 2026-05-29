@@ -254,6 +254,11 @@ MonoBehaviour:
   blockMoveTag: {fileID: 0}
   telegraph: {fileID: 0}
   abilityCoordinator: {fileID: 0}
+  attackSound:
+    key: 
+    volumeMultiplier: 0
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
   allowLegacyUpdateActivation: 0
   animator: {fileID: 0}
   attackReadyTriggerName: attackReady

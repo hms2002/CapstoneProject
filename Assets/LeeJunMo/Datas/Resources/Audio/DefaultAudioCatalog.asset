@@ -328,6 +328,21 @@ MonoBehaviour:
     cooldown: 0
     minDistance: 1
     maxDistance: 20
+  - key: titlescenebgm
+    bus: 1
+    category: 11
+    variants:
+    - {fileID: 8300000, guid: 9109f86cc202be1438bc65decf1f88c3, type: 3}
+    volume: 0.06
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 1
+    spatial: 0
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
   - key: boss.talking
     bus: 0
     category: 2
@@ -1618,7 +1633,7 @@ MonoBehaviour:
     cooldown: 0
     minDistance: 1
     maxDistance: 20
-  - key: sound_shadow_OffCandleLight
+  - key: sound_shadow_offcandlelight
     bus: 0
     category: 7
     variants:
@@ -1633,7 +1648,7 @@ MonoBehaviour:
     cooldown: 0
     minDistance: 1
     maxDistance: 20
-  - key: sound_candlestick_SealedCnadleRage
+  - key: sound_candlestick_sealedcnadlerage
     bus: 0
     category: 8
     variants:
@@ -1648,7 +1663,7 @@ MonoBehaviour:
     cooldown: 0
     minDistance: 1
     maxDistance: 20
-  - key: sound_shadow_DamagedShield
+  - key: sound_shadow_damagedshield
     bus: 0
     category: 7
     variants:
@@ -1663,7 +1678,7 @@ MonoBehaviour:
     cooldown: 0
     minDistance: 1
     maxDistance: 20
-  - key: sound_shadow_BreakShield
+  - key: sound_shadow_breakshield
     bus: 0
     category: 7
     variants:
@@ -1678,7 +1693,7 @@ MonoBehaviour:
     cooldown: 0
     minDistance: 1
     maxDistance: 20
-  - key: sound_candlestick_ShotShieldBreaker
+  - key: sound_candlestick_shotshieldbreaker
     bus: 0
     category: 8
     variants:
@@ -1693,7 +1708,7 @@ MonoBehaviour:
     cooldown: 0
     minDistance: 1
     maxDistance: 20
-  - key: sound_shadow_ChargeEnergyLoop
+  - key: sound_shadow_chargeenergyloop
     bus: 0
     category: 7
     variants:
@@ -1703,6 +1718,366 @@ MonoBehaviour:
     pitchMin: 1
     pitchMax: 1
     loop: 1
+    spatial: 1
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_grave_open
+    bus: 0
+    category: 8
+    variants:
+    - {fileID: 8300000, guid: 9155902d913da5d499bc8d383cea0762, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 1
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_worlddropitem_getitem
+    bus: 0
+    category: 8
+    variants:
+    - {fileID: 8300000, guid: 62a01b3c7b2af654393e3a6e783d25d1, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 1
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_shoprefresher_refresh
+    bus: 0
+    category: 9
+    variants:
+    - {fileID: 8300000, guid: aba7ffb4997bcbe4cb0303773a905b3c, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 1
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_ui_changedictionarycategorystart
+    bus: 0
+    category: 1
+    variants:
+    - {fileID: 8300000, guid: e1755c6a324e946449bbdfab0c744161, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 0
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_ui_changedictionarycategoryflippage
+    bus: 0
+    category: 1
+    variants:
+    - {fileID: 8300000, guid: 4d48d56b8bbcc4449a1cb01457db8142, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 0
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_ui_changedictionarycategoryend
+    bus: 0
+    category: 1
+    variants:
+    - {fileID: 8300000, guid: ccb446dd0a533594f814d9b21344c09f, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 0
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_sceneportal_enter
+    bus: 0
+    category: 8
+    variants:
+    - {fileID: 8300000, guid: 4b3dcfa31bc756b47b986067e2700fee, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 1
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_lever_switch
+    bus: 0
+    category: 8
+    variants:
+    - {fileID: 8300000, guid: 186d46c1c0d2c9d49a8e90d89a96778d, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 1
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_goblinwarrior_dash1
+    bus: 0
+    category: 6
+    variants:
+    - {fileID: 8300000, guid: d723a0a72b6de104a9b5f6b9469c4d86, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 1
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_goblintank_slam
+    bus: 0
+    category: 6
+    variants:
+    - {fileID: 8300000, guid: 14342cec083fb7c449d909661ba16b45, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 1
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_lizardwarrior_dash1
+    bus: 0
+    category: 6
+    variants:
+    - {fileID: 8300000, guid: 855d22e82e42f5642b489b5524d1d450, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 1
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_lizardwarrior_dash2
+    bus: 0
+    category: 6
+    variants:
+    - {fileID: 8300000, guid: 84c5dd514decd9f4fb71cff188bbb6cf, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 1
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_lizardmage_shotfire
+    bus: 0
+    category: 6
+    variants:
+    - {fileID: 8300000, guid: 7eabdff961feeef46a241255fa17d08d, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 1
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_arcanemeleegolem_dash1
+    bus: 0
+    category: 6
+    variants:
+    - {fileID: 8300000, guid: 78ad10c9f6ec62a4a9162b21989d5ee6, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 1
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_arcanemeleegolem_dash2
+    bus: 0
+    category: 6
+    variants:
+    - {fileID: 8300000, guid: c0ede5816f6cadf44a16ac8587572cf2, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 1
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_arcanetankgolem_jump
+    bus: 0
+    category: 6
+    variants:
+    - {fileID: 8300000, guid: ad0ac83bded568949a35695dc801f8b3, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 1
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_arcanetankgolem_land
+    bus: 0
+    category: 6
+    variants:
+    - {fileID: 8300000, guid: 8fd2a54be28c0f643bbe946c761948f2, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 1
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_arcanetankgolem_rockfall
+    bus: 0
+    category: 6
+    variants:
+    - {fileID: 8300000, guid: 9edb103715021834fb10aa4e554f7139, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 1
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_beermonster_shotfire
+    bus: 0
+    category: 6
+    variants:
+    - {fileID: 8300000, guid: 49205be1ac1d8744c86835751a991d90, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 1
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_wizard_shotfire
+    bus: 0
+    category: 6
+    variants:
+    - {fileID: 8300000, guid: 81e3c3637c077e146b3ad3de88bc892b, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 1
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_shadowservant_boom
+    bus: 0
+    category: 6
+    variants:
+    - {fileID: 8300000, guid: 7fd82b4ab7fe29a42b531306a41931e0, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 1
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_strangecandlestick_shotfire
+    bus: 0
+    category: 6
+    variants:
+    - {fileID: 8300000, guid: 24ab839ad88642c41b94d68b5bef443f, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 1
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_shadowmonster_dash
+    bus: 0
+    category: 6
+    variants:
+    - {fileID: 8300000, guid: ee0abd6b41d285244aed7bcc4f789238, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 1
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_treasuremonster_dash
+    bus: 0
+    category: 6
+    variants:
+    - {fileID: 8300000, guid: a2f50605dd369a2458ff20bef843cda4, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
     spatial: 1
     important: 0
     cooldown: 0

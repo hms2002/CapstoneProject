@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityGAS;
+using CapstoneAudio;
 
 /// <summary>
 /// 책임:
@@ -220,6 +221,10 @@ public sealed class ArcaneTankGolem : Mob, IMobAttackDecisionSource
 [RequireComponent(typeof(ArcaneTankGolem))]
 public sealed partial class ArcaneTankGolemSlamRunner : MonoBehaviour, IMobPatternRunner, IMobPresentationCleanup
 {
+    private static readonly SoundRef JumpSound = SoundRef.FromKey("sound_arcaneTankGolem_jump");
+    private static readonly SoundRef LandSound = SoundRef.FromKey("sound_arcaneTankGolem_Land");
+    private static readonly SoundRef RockFallSound = SoundRef.FromKey("sound_arcaneTankGolem_RockFall");
+
     [SerializeField] private ArcaneTankGolem owner;
     [SerializeField] private MobAbilityCoordinator abilityCoordinator;
     [SerializeField] private AttackTelegraphService telegraphService;
@@ -296,6 +301,7 @@ public sealed partial class ArcaneTankGolemSlamRunner : MonoBehaviour, IMobPatte
                 yield break;
 
             CommonMonsterCombatUtility.TriggerAnimation(owner, CommonMonsterAnimationCue.Jump);
+            PlaySound(JumpSound, context.StartPosition);
             yield return JumpToLanding(context, spec);
             if (cancelRequested || owner.IsDead || IsCancelled(spec))
                 yield break;
@@ -308,6 +314,7 @@ public sealed partial class ArcaneTankGolemSlamRunner : MonoBehaviour, IMobPatte
             if (cancelRequested || owner.IsDead || IsCancelled(spec))
                 yield break;
 
+            PlaySound(LandSound, context.LandingPosition);
             SpawnLandingImpactEffect(
                 context.LandingPosition,
                 landingImpactEffectPrefab,
@@ -519,9 +526,22 @@ public sealed partial class ArcaneTankGolemSlamRunner : MonoBehaviour, IMobPatte
             RockFallVisualInstance visual = visuals[i];
             if (visual.Transform != null)
                 visual.Transform.position = visual.LandingPosition;
+            PlaySound(RockFallSound, visual.LandingPosition);
         }
 
         DestroySpawnedRockFallVisuals();
+    }
+
+    /// <summary>마도 탱커 골렘 점프/착지/낙석 이벤트 위치에서 대응 사운드를 재생합니다.</summary>
+    private void PlaySound(SoundRef sound, Vector3 position)
+    {
+        SoundPlaybackUtility.Play(
+            sound,
+            instigator: owner != null ? owner.gameObject : gameObject,
+            causer: owner != null ? owner.gameObject : gameObject,
+            target: owner != null && owner.Target != null ? owner.Target.gameObject : null,
+            position: position,
+            sourceObject: this);
     }
 
     private void DestroySpawnedRockFallVisuals()

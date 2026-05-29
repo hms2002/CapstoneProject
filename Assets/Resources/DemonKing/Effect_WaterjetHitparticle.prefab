@@ -4859,6 +4859,6 @@ MonoBehaviour:
   normalJitterDegrees: 22
   sizeMin: 0.045
   sizeMax: 0.11
-  colorStart: {r: 0.64705884, g: 0.9568628, b: 0.7725491, a: 0.95}
-  colorEnd: {r: 0.41960788, g: 0.8705883, b: 0.654902, a: 0}
+  colorStart: {r: 0.5843011, g: 1, b: 0.54901963, a: 0.95}
+  colorEnd: {r: 0.1490196, g: 1, b: 0.15500271, a: 0}
   destroyPaddingSeconds: 0.08

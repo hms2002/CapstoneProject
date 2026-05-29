@@ -1,9 +1,12 @@
+using CapstoneAudio;
 using UnityEngine;
 
 public enum GraveType { Weapon, Relic }
 
 public class GraveInteractable : InteractableBase
 {
+    private static readonly SoundRef OpenSound = SoundRef.FromKey("sound_grave_Open");
+
     [Header("유해 설정")]
     public GraveType graveType;
     [SerializeField] private Transform promptAnchor;
@@ -55,6 +58,8 @@ public class GraveInteractable : InteractableBase
 
         isLooted = true;
         OnUnHighlight();
+
+        SoundPlaybackUtility.Play(OpenSound, causer: gameObject, position: transform.position, sourceObject: this);
 
         if (LootManager.Instance != null)
             LootManager.Instance.SpawnGraveLoot(transform.position, graveType, bonusMinDropCount, bonusMaxDropCount, bonusRareChance, bonusEpicChance);

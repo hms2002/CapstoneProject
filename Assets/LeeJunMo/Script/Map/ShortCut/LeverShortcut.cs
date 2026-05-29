@@ -1,10 +1,13 @@
 using System.Collections;
+using CapstoneAudio;
 using Cainos.PixelArtTopDown_Basic;
 using Unity.Cinemachine;
 using UnityEngine;
 
 public class LeverShortcut : PermanentShortcut
 {
+    private static readonly SoundRef SwitchSound = SoundRef.FromKey("sound_lever_Switch");
+
     [Header("\uD504\uB86C\uD504\uD2B8")]
     [SerializeField] private string interactPromptText = "\uC791\uB3D9\uD558\uAE30";
 
@@ -60,6 +63,7 @@ public class LeverShortcut : PermanentShortcut
     protected override void OnSuccess()
     {
         SetActivatedVisual();
+        SoundPlaybackUtility.Play(SwitchSound, causer: gameObject, position: transform.position, sourceObject: this);
 
         if (targetDoor == null)
             return;

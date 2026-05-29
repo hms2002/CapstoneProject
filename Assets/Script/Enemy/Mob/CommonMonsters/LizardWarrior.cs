@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityGAS;
+using CapstoneAudio;
 
 /// <summary>
 /// 책임:
@@ -199,6 +200,9 @@ public sealed class LizardWarrior : Mob, IMobAttackDecisionSource
 [RequireComponent(typeof(LizardWarrior))]
 public sealed partial class LizardWarriorChargeRunner : MonoBehaviour, IMobPatternRunner, IMobPresentationCleanup
 {
+    private static readonly SoundRef Dash1Sound = SoundRef.FromKey("sound_LizardWarrior_dash1");
+    private static readonly SoundRef Dash2Sound = SoundRef.FromKey("sound_LizardWarrior_dash2");
+
     [SerializeField] private LizardWarrior owner;
     [SerializeField] private MobAbilityCoordinator abilityCoordinator;
     [SerializeField] private AttackTelegraphService telegraphService;
@@ -247,9 +251,9 @@ public sealed partial class LizardWarriorChargeRunner : MonoBehaviour, IMobPatte
 
         try
         {
-            yield return RunStep(system, context, owner.FirstStep, spec);
+            yield return RunStep(system, context, owner.FirstStep, spec, 0);
             if (!cancelRequested && !owner.IsDead && !IsCancelled(spec))
-                yield return RunStep(system, context, owner.SecondStep, spec);
+                yield return RunStep(system, context, owner.SecondStep, spec, 1);
         }
         finally
         {
@@ -271,7 +275,7 @@ public sealed partial class LizardWarriorChargeRunner : MonoBehaviour, IMobPatte
         HideWarning();
     }
 
-    private IEnumerator RunStep(AbilitySystem system, LizardWarrior.ChargeContext context, LizardWarrior.ChargeStep step, AbilitySpec spec)
+    private IEnumerator RunStep(AbilitySystem system, LizardWarrior.ChargeContext context, LizardWarrior.ChargeStep step, AbilitySpec spec, int stepIndex)
     {
         Vector2 direction = context.Target != null
             ? CommonMonsterCombatUtility.DirectionTo(gameObject, context.Target, false)
@@ -291,6 +295,7 @@ public sealed partial class LizardWarriorChargeRunner : MonoBehaviour, IMobPatte
 
             HideWarning();
             CommonMonsterCombatUtility.TriggerAnimation(owner, CommonMonsterAnimationCue.Attack);
+            PlayDashSound(stepIndex);
             yield return Dash(direction, step, context.HitPayload, spec);
         }
         finally
@@ -355,6 +360,19 @@ public sealed partial class LizardWarriorChargeRunner : MonoBehaviour, IMobPatte
     private void HideWarning()
     {
         telegraphService?.HideCurrent();
+    }
+
+    /// <summary>리자드 워리어의 1타/2타 돌진 시작 타이밍에 대응 사운드를 재생합니다.</summary>
+    private void PlayDashSound(int stepIndex)
+    {
+        SoundRef sound = stepIndex <= 0 ? Dash1Sound : Dash2Sound;
+        SoundPlaybackUtility.Play(
+            sound,
+            instigator: gameObject,
+            causer: gameObject,
+            target: owner != null && owner.Target != null ? owner.Target.gameObject : null,
+            position: transform.position,
+            sourceObject: this);
     }
 
     private static bool IsCancelled(AbilitySpec spec)
