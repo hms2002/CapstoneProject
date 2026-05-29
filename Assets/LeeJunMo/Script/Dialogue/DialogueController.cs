@@ -292,7 +292,9 @@ public class DialogueController : MonoBehaviour
             string currentText = currentStory.Continue();
             participantRegistry.HandleSpeakerTag(currentStory.currentTags);
             DialogueAnimType animType = ResolveDialogueAnimType(currentStory.currentTags);
+            DialogueCameraShakePreset cameraShakePreset = ResolveDialogueCameraShakePreset(currentStory.currentTags);
             ApplyCurrentSpeakerTheme();
+            ApplyDialogueEffectTag(currentStory.currentTags);
 
             if (portraitController != null)
                 portraitController.HighlightSpeaker(participantRegistry.CurrentSpeakerId);
@@ -304,7 +306,7 @@ public class DialogueController : MonoBehaviour
                               tagHandler.ProcessTags(currentStory.currentTags, participantRegistry.CurrentNPCData, ResumeDialogue);
 
             if (!isBlocking)
-                PlayCurrentLine(currentText, animType);
+                PlayCurrentLine(currentText, animType, cameraShakePreset);
 
             return;
         }
@@ -403,6 +405,55 @@ public class DialogueController : MonoBehaviour
             : participantRegistry.CurrentNPCData;
 
         view.ApplyTheme(themeOwner != null ? themeOwner.DialogueTheme : null, false);
+    }
+
+    private void ApplyDialogueEffectTag(List<string> tags)
+    {
+        if (!TryGetDialogueEffectTarget(tags, out string target))
+            return;
+
+        if (!TryResolveDialogueEffectOwner(target, out NPCData themeOwner))
+            return;
+
+        view.ApplyDialogueEffectTheme(themeOwner != null ? themeOwner.DialogueTheme : null);
+        // TODO: Replay the DialogueEffect Intro state here when mid-dialogue effect transitions are authored.
+    }
+
+    private bool TryResolveDialogueEffectOwner(string target, out NPCData themeOwner)
+    {
+        themeOwner = null;
+        if (string.IsNullOrWhiteSpace(target))
+            return false;
+
+        string normalizedTarget = target.Trim();
+        switch (normalizedTarget.ToLowerInvariant())
+        {
+            case "default":
+                themeOwner = participantRegistry.CurrentNPCData;
+                return true;
+
+            case "speaker":
+                themeOwner = participantRegistry.CurrentSpeakerNPCData != null
+                    ? participantRegistry.CurrentSpeakerNPCData
+                    : participantRegistry.CurrentNPCData;
+                return true;
+
+            default:
+                if (!int.TryParse(normalizedTarget, out _))
+                {
+                    Debug.LogWarning($"[DialogueController] Unsupported dialogue effect target '{target}'.", this);
+                    return false;
+                }
+
+                themeOwner = participantRegistry.GetOrLoadNPC(normalizedTarget);
+                if (themeOwner == null)
+                {
+                    Debug.LogWarning($"[DialogueController] Dialogue effect target NPC '{target}' was not found.", this);
+                    return false;
+                }
+
+                return true;
+        }
     }
 
     private bool ValidateDialogueSetup(IReadOnlyList<DialogueStorySegment> storySegments, List<NPCData> participants)
@@ -596,11 +647,14 @@ public class DialogueController : MonoBehaviour
                (input != null && input.IsPressed(InputActionId.DialogueAdvance));
     }
 
-    private void PlayCurrentLine(string currentText, DialogueAnimType animType)
+    private void PlayCurrentLine(
+        string currentText,
+        DialogueAnimType animType,
+        DialogueCameraShakePreset cameraShakePreset)
     {
         sessionState.EndWaiting();
         sessionState.BeginTyping(currentText);
-        view.TypeText(participantRegistry.CurrentSpeakerName, currentText, animType, () =>
+        view.TypeText(participantRegistry.CurrentSpeakerName, currentText, animType, cameraShakePreset, () =>
         {
             sessionState.EndTyping();
             DisplayChoicesIfNeeded();
@@ -844,6 +898,74 @@ public class DialogueController : MonoBehaviour
         }
 
         return DialogueAnimType.Normal;
+    }
+
+    private static DialogueCameraShakePreset ResolveDialogueCameraShakePreset(List<string> tags)
+    {
+        if (tags == null)
+            return DialogueCameraShakePreset.None;
+
+        for (int i = 0; i < tags.Count; i++)
+        {
+            if (!TryReadTagCommand(tags[i], out string command, out string value))
+                continue;
+
+            if (command == "camerashake" &&
+                TryParseDialogueCameraShakePreset(value, out DialogueCameraShakePreset preset))
+            {
+                return preset;
+            }
+        }
+
+        return DialogueCameraShakePreset.None;
+    }
+
+    private static bool TryParseDialogueCameraShakePreset(
+        string value,
+        out DialogueCameraShakePreset preset)
+    {
+        preset = DialogueCameraShakePreset.None;
+        if (string.IsNullOrWhiteSpace(value))
+            return false;
+
+        switch (value.Trim().ToLowerInvariant())
+        {
+            case "low":
+                preset = DialogueCameraShakePreset.Low;
+                return true;
+            case "middle":
+                preset = DialogueCameraShakePreset.Middle;
+                return true;
+            case "high":
+                preset = DialogueCameraShakePreset.High;
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    private static bool TryGetDialogueEffectTarget(List<string> tags, out string target)
+    {
+        target = null;
+        if (tags == null)
+            return false;
+
+        for (int i = 0; i < tags.Count; i++)
+        {
+            if (!TryReadTagCommand(tags[i], out string command, out string value))
+                continue;
+
+            if (command != "effect")
+                continue;
+
+            if (string.IsNullOrWhiteSpace(value))
+                continue;
+
+            target = value;
+            return true;
+        }
+
+        return false;
     }
 
     private static bool TryReadTagCommand(string tag, out string command, out string value)

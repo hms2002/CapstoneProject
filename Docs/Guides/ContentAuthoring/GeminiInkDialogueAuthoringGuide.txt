@@ -80,6 +80,20 @@ NPC id를 알 때 사용한다.
 
 `anim`은 줄 단위의 말맛을 정하는 태그다. 모든 줄에 화려한 움직임을 넣기 위한 태그가 아니다.
 
+### Camera Shake
+
+```ink
+# CameraShake: Low
+# CameraShake: Middle
+# CameraShake: High
+```
+
+Rules:
+- Use only `Low`, `Middle`, or `High`. Do not use `Medium`.
+- This is a line-level impact tag. It shakes the Dialogue UI panel, gives the dialogue text a small inertia offset, and requests gameplay camera shake through the existing camera shake service.
+- The camera part follows the player's screen-shake setting. The Dialogue UI motion still plays when screen shake is disabled.
+- Use sparingly for strong impact beats, not as a replacement for `# anim`, `[pause]`, or scoped word motion tags.
+
 ### Feature And Affection
 
 기능 실행이나 호감도 보상이 이미 필요한 흐름에서만 사용한다.
@@ -123,6 +137,8 @@ NPC id를 알 때 사용한다.
 자, [punch]춤춰보자고[/punch], 용사!
 [wave]크으~~[/wave]. 이게 인생이지...
 이제... [float]끝[/float]이구나.
+취한 말투는 [rand_size=95,110]이렇게 흔들리는 구간[/rand_size]만 잡는다.
+느린 흔들림은 [slowshake]짧은 구절[/slowshake]에만 건다.
 ```
 
 권장 사용:
@@ -134,8 +150,14 @@ NPC id를 알 때 사용한다.
 | `[punch]...[/punch]` | 강한 단어, 도발, 외침 | 한 줄에 하나 정도 |
 | `[wave]...[/wave]` | 취기, 장난, 능청 | 심각한 장면에는 쓰지 않는다 |
 | `[float]...[/float]` | 사라짐, 여운, 몽환 | 짧은 단어에만 |
+| `[rand_size=95,110]...[/rand_size]` | 취한 말 높낮이, 일부 글자 크기 차이 | 범위는 보통 `95,110`, 최대 `80,120` 안쪽 |
+| `[slowshake]...[/slowshake]` | 취기, 느슨한 떨림 | 낮은 속도라 짧은 구절에만 겹쳐 쓴다 |
 
 지원은 되지만 기본 권장하지 않는 태그: `[jitter]`, `[pop]`, `[emphasis]`, `[wobble]`, `[drift]`. 필요할 때만 사용하고, 먼저 위의 5개로 해결한다.
+
+`rand_size` is a scoped TextAnimating tag, not TMP RichText. It strips the tag from displayed text and gives each visible character in the range a stable pseudo-random scale inside the given percent range. Use it for drunk/slurred delivery instead of manually wrapping many small `<size>` tags. It may be nested with `[slowshake]`, but do not wrap a whole paragraph.
+
+TextAnimating motion values are tuned in Unity through `Tools/Dialogue/Text Animation Tuner`. The default runtime profile is `Assets/LeeJunMo/Datas/Resources/Dialogue/DefaultDialogueTextAnimationProfile.asset`; Ink syntax should stay stable unless the runtime parser is intentionally expanded.
 
 ### TMP RichText
 
@@ -157,7 +179,7 @@ Recommended color names:
 | Use | Tag |
 | --- | --- |
 | hidden or uncanny voice | `<color=purple>...</color>` |
-| danger, blood, warning | `<color=red>...</color>` |
+| danger, warning | `<color=red>...</color>` |
 | weak, quiet, aside | `<color=grey>...</color>` |
 | holy, important, bright clue | `<color=yellow>...</color>` |
 | cold, system-like line | `<color=cyan>...</color>` |
@@ -323,8 +345,9 @@ Start path로 knot을 지정할 수 있도록 ASCII snake_case 이름을 쓴다.
 - speaker: # speaker: 1001 또는 # speaker: ???
 - face: # face: npcId: label
 - anim: # anim: normal|slow|angry|whisper|cold
+- camera shake: # CameraShake: Low|Middle|High
 - pause: [pause=0.25]
-- scoped motion: [shake]...[/shake], [tremble]...[/tremble], [punch]...[/punch], [wave]...[/wave], [float]...[/float]
+- scoped motion: [shake]...[/shake], [tremble]...[/tremble], [punch]...[/punch], [wave]...[/wave], [float]...[/float], [rand_size=95,110]...[/rand_size], [slowshake]...[/slowshake]
 - TMP RichText: <b>...</b>, <i>...</i>, <color=purple>...</color>, <size=90%>...</size>
 - feature/add_aff/choice_fail은 입력에서 요청한 경우에만 사용한다.
 
@@ -463,11 +486,15 @@ Gemini 출력물을 적용하기 전에 확인한다.
 - `[pause=]` 숫자가 소수이며 닫는 `]`가 있는가.
 - scoped motion 태그가 열고 닫히는가.
 - motion 태그가 한 줄 전체가 아니라 단어/짧은 구절에만 걸렸는가.
+- `[rand_size=min,max]` 범위가 `80,120` 안쪽이고, 취한 말투 같은 짧은 구간에만 쓰였는가.
+- `[slowshake]`가 느슨한 흔들림이 필요한 짧은 구절에만 쓰였는가.
 - TMP RichText 태그가 모두 같은 줄에서 닫혔는가.
 - TMP hex color처럼 `#`가 들어간 rich text를 쓰지 않았는가.
 - `<size=80%>`-`<size=120%>` 밖의 극단적인 크기를 쓰지 않았는가.
 - RichText가 전체 문장/문단에 과하게 걸려 있지 않은가.
 - 기존 `# feature`, `# add_aff`, 선택지 구조를 실수로 제거하지 않았는가.
+
+- `# CameraShake` value is one of `Low|Middle|High`.
 
 ## Post-Authoring Pipeline
 

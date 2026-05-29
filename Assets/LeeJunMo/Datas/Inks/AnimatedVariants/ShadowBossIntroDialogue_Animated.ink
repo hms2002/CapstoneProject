@@ -1,4 +1,4 @@
-﻿// Boss encounter dialogue
+// Boss encounter dialogue
 // One choice raises affection, the other does not.
 // Combat starts after the dialogue sequence finishes.
 

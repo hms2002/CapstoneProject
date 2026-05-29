@@ -1,0 +1,271 @@
+fileFormatVersion: 2
+guid: 4630d2e3854bf0b4ca63e5b8fe4a0059
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -5858249382416513482
+    second: DemonChargeEffectDisapear_0
+  - first:
+      213: -5324549105161660128
+    second: DemonChargeEffectDisapear_1
+  - first:
+      213: -2226845795692940280
+    second: DemonChargeEffectDisapear_2
+  - first:
+      213: -8853808240518037646
+    second: DemonChargeEffectDisapear_3
+  - first:
+      213: -3551990364822007372
+    second: DemonChargeEffectDisapear_4
+  - first:
+      213: -821555858606243820
+    second: DemonChargeEffectDisapear_5
+  - first:
+      213: 6860718831955561124
+    second: DemonChargeEffectDisapear_6
+  - first:
+      213: 2619901042604544012
+    second: DemonChargeEffectDisapear_7
+  - first:
+      213: 49268950011593747
+    second: DemonChargeEffectDisapear_8
+  - first:
+      213: 8802539394626403099
+    second: DemonChargeEffectDisapear_9
+  - first:
+      213: -7216549737070283589
+    second: DemonChargeEffectDisapear_10
+  - first:
+      213: -3509306087791088748
+    second: DemonChargeEffectDisapear_11
+  - first:
+      213: -7969597918298004623
+    second: DemonChargeEffectDisapear_12
+  - first:
+      213: 8187116681592874287
+    second: DemonChargeEffectDisapear_13
+  - first:
+      213: -1891543913521714797
+    second: DemonChargeEffectDisapear_14
+  - first:
+      213: 6815043587670018370
+    second: DemonChargeEffectDisapear_15
+  - first:
+      213: 7500692402286999999
+    second: DemonChargeEffectDisapear_16
+  - first:
+      213: 6233855626095444612
+    second: DemonChargeEffectDisapear_17
+  - first:
+      213: -6939652705566110530
+    second: DemonChargeEffectDisapear_18
+  - first:
+      213: -2532209342775537515
+    second: DemonChargeEffectDisapear_19
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 32
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: DemonChargeEffectDisapear_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 238
+        height: 144
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 636896b993153bea0800000000000000
+      internalID: -5858249382416513482
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DemonChargeEffectDisapear_1
+      rect:
+        serializedVersion: 2
+        x: 238
+        y: 0
+        width: 238
+        height: 144
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 02917bdacc66b16b0800000000000000
+      internalID: -5324549105161660128
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DemonChargeEffectDisapear_2
+      rect:
+        serializedVersion: 2
+        x: 476
+        y: 0
+        width: 238
+        height: 144
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 80476221c87a811e0800000000000000
+      internalID: -2226845795692940280
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DemonChargeEffectDisapear_3
+      rect:
+        serializedVersion: 2
+        x: 714
+        y: 0
+        width: 238
+        height: 144
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 27ffe729054f02580800000000000000
+      internalID: -8853808240518037646
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 6282473991e07a349b44410d095d2199
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":4.0,"y":1.0},"gridSpriteSize":{"x":238.0,"y":144.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":2,"keepEmptyRects":false,"isAlternate":false}'
+    nameFileIdTable:
+      DemonChargeEffectDisapear_0: -5858249382416513482
+      DemonChargeEffectDisapear_1: -5324549105161660128
+      DemonChargeEffectDisapear_2: -2226845795692940280
+      DemonChargeEffectDisapear_3: -8853808240518037646
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

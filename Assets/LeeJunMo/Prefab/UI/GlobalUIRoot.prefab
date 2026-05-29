@@ -22817,6 +22817,44 @@ MonoBehaviour:
   dialogueEffectIntroState: Intro
   playTypingSound: 1
   typingSoundInterval: 0.035
+  textAnimationProfileOverride: {fileID: 0}
+  cameraShakeIntensityMultiplier: 10
+  lowCameraShake:
+    duration: 0.12
+    panelStrength: {x: 8, y: 2}
+    textMaxOffset: 2.5
+    characterImpactOffset: 1.5
+    cameraAmplitude: 0.1
+    vibrato: 12
+    randomness: 70
+    textInertiaScale: 0.45
+    textSmoothTime: 0.035
+    textSettleDuration: 0.12
+    cameraMinIntervalSeconds: 0.03
+  middleCameraShake:
+    duration: 0.18
+    panelStrength: {x: 16, y: 4}
+    textMaxOffset: 5
+    characterImpactOffset: 3
+    cameraAmplitude: 0.2
+    vibrato: 16
+    randomness: 75
+    textInertiaScale: 0.45
+    textSmoothTime: 0.035
+    textSettleDuration: 0.12
+    cameraMinIntervalSeconds: 0.03
+  highCameraShake:
+    duration: 0.26
+    panelStrength: {x: 28, y: 7}
+    textMaxOffset: 8
+    characterImpactOffset: 5
+    cameraAmplitude: 0.35
+    vibrato: 22
+    randomness: 80
+    textInertiaScale: 0.45
+    textSmoothTime: 0.035
+    textSettleDuration: 0.12
+    cameraMinIntervalSeconds: 0.03
 --- !u!1 &4624391353588219404
 GameObject:
   m_ObjectHideFlags: 0

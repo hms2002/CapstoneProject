@@ -6,6 +6,13 @@ using UnityGAS;
 
 public abstract class AbilityLogic_DemonKingBase : AbilityLogic
 {
+    private const float JumpTravelEndNormalized = 0.28f;
+    private const float JumpHoldEndNormalized = 0.86f;
+    private const float JumpPreDropEndNormalized = 0.96f;
+    private const float JumpPreDropHeightScale = 0.9f;
+    private const float JumpTravelEaseOutPower = 2.2f;
+    private const float JumpLandingDropSharpness = 0.22f;
+
     private static readonly RaycastHit2D[] WallHitBuffer = new RaycastHit2D[12];
     protected static readonly Color WarningSquareColor = new(1f, 0.15f, 0.08f, 0.35f);
     protected static readonly Color AttackSquareColor = new(1f, 0.75f, 0.15f, 0.55f);
@@ -90,12 +97,13 @@ public abstract class AbilityLogic_DemonKingBase : AbilityLogic
         float damage,
         float knockback,
         AbilitySpec spec,
-        bool showAttackPrimitive = true)
+        bool showAttackPrimitive = true,
+        float lungeEaseOutPower = 2f)
     {
         demon?.BeginBodyAfterimage();
 
         if (motion != null)
-            motion.StartLunge(start, direction, distance, duration);
+            motion.StartLunge(start, direction, distance, duration, lungeEaseOutPower);
         else
             demon.transform.position = start + direction * distance;
 
@@ -138,6 +146,85 @@ public abstract class AbilityLogic_DemonKingBase : AbilityLogic
         {
             demon?.StopBodyAfterimage();
         }
+    }
+
+    protected static IEnumerator RunParabolicPatternJump(
+        DemonKingController demon,
+        Vector2 start,
+        Vector2 target,
+        float duration,
+        float arcHeight,
+        float landingFrameSwitchRatio,
+        AbilitySpec spec)
+    {
+        if (demon == null)
+            yield break;
+
+        float safeDuration = Mathf.Max(0.01f, duration);
+        float safeArcHeight = Mathf.Max(0f, arcHeight);
+        _ = landingFrameSwitchRatio;
+        float z = demon.transform.position.z;
+
+        demon.HoldPatternAnimationFirstFrame(DemonKingController.DarkLordHandJumpAttackState);
+
+        float elapsed = 0f;
+        while (elapsed < safeDuration)
+        {
+            if (IsAbilityCancelled(spec))
+                yield break;
+
+            elapsed += Time.deltaTime;
+            float normalizedTime = Mathf.Clamp01(elapsed / safeDuration);
+
+            float horizontalProgress = ResolveDemonKingJumpGroundProgress(normalizedTime);
+            Vector2 groundPosition = Vector2.Lerp(start, target, horizontalProgress);
+            float height = ResolveDemonKingJumpHeight(normalizedTime, safeArcHeight);
+            demon.transform.position = new Vector3(groundPosition.x, groundPosition.y + height, z);
+            yield return null;
+        }
+
+        demon.transform.position = new Vector3(target.x, target.y, z);
+    }
+
+    private static float ResolveDemonKingJumpGroundProgress(float normalizedTime)
+    {
+        float clampedTime = Mathf.Clamp01(normalizedTime);
+        if (clampedTime >= JumpTravelEndNormalized)
+            return 1f;
+
+        float travelProgress = Mathf.Clamp01(clampedTime / JumpTravelEndNormalized);
+        return 1f - Mathf.Pow(1f - travelProgress, JumpTravelEaseOutPower);
+    }
+
+    private static float ResolveDemonKingJumpHeight(float normalizedTime, float maxHeight)
+    {
+        float safeHeight = Mathf.Max(0f, maxHeight);
+        if (safeHeight <= 0f)
+            return 0f;
+
+        float clampedTime = Mathf.Clamp01(normalizedTime);
+        if (clampedTime <= JumpTravelEndNormalized)
+        {
+            float travelProgress = Mathf.Clamp01(clampedTime / JumpTravelEndNormalized);
+            float easedProgress = 1f - Mathf.Pow(1f - travelProgress, JumpTravelEaseOutPower);
+            return Mathf.Lerp(0f, safeHeight, easedProgress);
+        }
+
+        if (clampedTime <= JumpHoldEndNormalized)
+            return safeHeight;
+
+        if (clampedTime <= JumpPreDropEndNormalized)
+        {
+            float preDropProgress = Mathf.InverseLerp(
+                JumpHoldEndNormalized,
+                JumpPreDropEndNormalized,
+                clampedTime);
+            return Mathf.Lerp(safeHeight, safeHeight * JumpPreDropHeightScale, preDropProgress);
+        }
+
+        float dropProgress = Mathf.InverseLerp(JumpPreDropEndNormalized, 1f, clampedTime);
+        float easedDrop = Mathf.Pow(Mathf.Clamp01(dropProgress), JumpLandingDropSharpness);
+        return Mathf.Lerp(safeHeight * JumpPreDropHeightScale, 0f, easedDrop);
     }
 
     protected static AttackTelegraphView ShowLineWarning(
@@ -386,6 +473,7 @@ public class AbilityLogic_DemonKingPierceCombo : AbilityLogic_DemonKingBase
     [SerializeField, Min(0f)] private float damage = 1f;
     [SerializeField, Min(0f)] private float knockback = 5f;
     [SerializeField, Min(0f)] private float intervalSeconds = 0.12f;
+    [SerializeField, Min(0f)] private float dashEndPoseHoldSeconds = 0.1f;
 
     public override IEnumerator Activate(AbilitySystem system, AbilitySpec spec, GameObject initialTarget)
     {
@@ -405,6 +493,8 @@ public class AbilityLogic_DemonKingPierceCombo : AbilityLogic_DemonKingBase
 
             Vector2 lockedTarget = demon.CurrentTarget != null ? (Vector2)demon.CurrentTarget.position : start + demon.FacingDirection;
             float currentWarningSeconds = Mathf.Max(0f, firstWarningSeconds - warningStepDecrease * i);
+            demon.FacePatternDirection(lockedTarget - start);
+            demon.HoldPatternAnimationFirstFrame(DemonKingController.DarkLordSwordDashStabReadyState);
             AttackTelegraphView warningView = ShowLineWarning(demon, start, lockedTarget, hitWidth, currentWarningSeconds);
             DemonKingPrimitiveVisual warningPrimitive = ShowLinePrimitiveWarning(start, lockedTarget, hitWidth, currentWarningSeconds);
 
@@ -418,8 +508,6 @@ public class AbilityLogic_DemonKingPierceCombo : AbilityLogic_DemonKingBase
                 }
 
                 lockedTarget = demon.CurrentTarget != null ? (Vector2)demon.CurrentTarget.position : lockedTarget;
-                Vector2 aimDirection = lockedTarget - start;
-                demon.FacePatternDirection(aimDirection);
                 UpdateLineWarning(warningView, demon, start, lockedTarget, hitWidth, currentWarningSeconds);
                 UpdateLinePrimitiveWarning(warningPrimitive, start, lockedTarget, hitWidth);
 
@@ -443,7 +531,7 @@ public class AbilityLogic_DemonKingPierceCombo : AbilityLogic_DemonKingBase
 
             direction /= distance;
             demon.FacePatternDirection(direction);
-            demon.PlayPatternTrigger();
+            demon.PlayPatternAnimation(DemonKingController.DarkLordSwordDashStabState);
             DemonKingPatternVfx.SpawnAttachedStab(demon.transform, direction);
 
             yield return RunLungeContactDamage(
@@ -459,8 +547,14 @@ public class AbilityLogic_DemonKingPierceCombo : AbilityLogic_DemonKingBase
                 spec,
                 showAttackPrimitive: false);
 
-            if (!IsAbilityCancelled(spec) && i < pierceCount - 1)
-                yield return ReturnToStart(demon, motion, start, returnSeconds, spec);
+            if (!IsAbilityCancelled(spec))
+            {
+                demon.HoldPatternAnimationFirstFrame(DemonKingController.DarkLordSwordDashStabReadyState);
+                if (i < pierceCount - 1)
+                    yield return ReturnToStart(demon, motion, start, returnSeconds, spec);
+                else if (dashEndPoseHoldSeconds > 0f)
+                    yield return WaitForSecondsUnlessCancelled(dashEndPoseHoldSeconds, spec);
+            }
 
             demon.PopFaceTargetLock();
 
@@ -509,6 +603,7 @@ public class AbilityLogic_DemonKingHeavySlash : AbilityLogic_DemonKingBase
     [SerializeField, Min(0f)] private float explosionWarningSeconds = 0.15f;
     [SerializeField, Min(0f)] private float explosionStepInterval = 0.04f;
     [SerializeField, Min(0f)] private float explosionDamage = 1f;
+    [SerializeField, Min(0f)] private float slashEndPoseHoldSeconds = 0.12f;
 
     public override IEnumerator Activate(AbilitySystem system, AbilitySpec spec, GameObject initialTarget)
     {
@@ -517,56 +612,69 @@ public class AbilityLogic_DemonKingHeavySlash : AbilityLogic_DemonKingBase
             yield break;
 
         AbilityMotionController2D motion = demon.GetComponent<AbilityMotionController2D>();
-        Vector2 moveStart = demon.transform.position;
-        Vector2 moveTarget = demon.CurrentTarget != null ? (Vector2)demon.CurrentTarget.position : moveStart;
-        Vector2 moveDelta = moveTarget - moveStart;
-        if (moveDelta.sqrMagnitude > 0.0001f)
+        demon.PushFaceTargetLock();
+        try
         {
-            float moveDuration = SecondsForSpeed(
-                moveDelta.magnitude,
-                demon.PlayerMoveSpeedReference * moveSpeedMultiplier,
-                fallbackMoveSeconds);
+            Vector2 moveStart = demon.transform.position;
+            Vector2 moveTarget = demon.CurrentTarget != null ? (Vector2)demon.CurrentTarget.position : moveStart;
+            Vector2 moveDelta = moveTarget - moveStart;
+            if (moveDelta.sqrMagnitude > 0.0001f)
+            {
+                float moveDuration = SecondsForSpeed(
+                    moveDelta.magnitude,
+                    demon.PlayerMoveSpeedReference * moveSpeedMultiplier,
+                    fallbackMoveSeconds);
 
-            demon.FacePatternDirection(moveDelta);
-            if (motion != null)
-                motion.StartLunge(moveStart, moveDelta.normalized, moveDelta.magnitude, moveDuration, 1.8f);
-            else
-                demon.transform.position = moveTarget;
+                demon.FacePatternDirection(moveDelta);
+                if (motion != null)
+                    motion.StartLunge(moveStart, moveDelta.normalized, moveDelta.magnitude, moveDuration, 1.8f);
+                else
+                    demon.transform.position = moveTarget;
 
-            yield return WaitForSecondsUnlessCancelled(moveDuration, spec);
+                yield return WaitForSecondsUnlessCancelled(moveDuration, spec);
+                if (IsAbilityCancelled(spec))
+                    yield break;
+            }
+
+            Vector2 origin = demon.transform.position;
+            Vector2 direction = demon.GetDirectionToTargetOrFacing(origin);
+            demon.FacePatternDirection(direction);
+            ShowSectorWarning(demon, origin, direction, slashRadius, slashAngle, warningSeconds);
+            Vector2[] lineDirections = CreateHeavySlashLineDirections(direction);
+            LineArea[] lineAreas = new LineArea[lineDirections.Length];
+            for (int i = 0; i < lineDirections.Length; i++)
+            {
+                lineAreas[i] = ResolveForwardLineArea(demon, origin, lineDirections[i], lineWidth, fallbackLineLength);
+                ShowLineAreaWarning(demon, lineAreas[i], warningSeconds);
+            }
+
+            yield return WaitForSecondsUnlessCancelled(warningSeconds, spec);
             if (IsAbilityCancelled(spec))
                 yield break;
-        }
 
-        Vector2 origin = demon.transform.position;
-        Vector2 direction = demon.GetDirectionToTargetOrFacing(origin);
-        demon.FacePatternDirection(direction);
-        demon.PlayPatternTrigger();
-        ShowSectorWarning(demon, origin, direction, slashRadius, slashAngle, warningSeconds);
-        Vector2[] lineDirections = CreateHeavySlashLineDirections(direction);
-        LineArea[] lineAreas = new LineArea[lineDirections.Length];
-        for (int i = 0; i < lineDirections.Length; i++)
+            demon.PlayPatternAnimationOncePerPattern(DemonKingController.DarkLordSwordSlashState);
+            DemonKingPatternVfx.SpawnSlash(origin, direction, slashRadius);
+            DemonKingCombatUtil.ApplySectorDamage(
+                demon,
+                origin,
+                direction,
+                slashRadius,
+                slashAngle,
+                demon.DefaultDamageEffect,
+                damage,
+                knockback);
+
+            yield return SpawnLineExplosions(demon, origin, lineDirections, lineAreas, spec);
+            if (!IsAbilityCancelled(spec) && slashEndPoseHoldSeconds > 0f)
+            {
+                demon.HoldPatternAnimationLastFrame(DemonKingController.DarkLordSwordSlashState);
+                yield return WaitForSecondsUnlessCancelled(slashEndPoseHoldSeconds, spec);
+            }
+        }
+        finally
         {
-            lineAreas[i] = ResolveForwardLineArea(demon, origin, lineDirections[i], lineWidth, fallbackLineLength);
-            ShowLineAreaWarning(demon, lineAreas[i], warningSeconds);
+            demon.PopFaceTargetLock();
         }
-
-        yield return WaitForSecondsUnlessCancelled(warningSeconds, spec);
-        if (IsAbilityCancelled(spec))
-            yield break;
-
-        DemonKingPatternVfx.SpawnSlash(origin, direction, slashRadius);
-        DemonKingCombatUtil.ApplySectorDamage(
-            demon,
-            origin,
-            direction,
-            slashRadius,
-            slashAngle,
-            demon.DefaultDamageEffect,
-            damage,
-            knockback);
-
-        yield return SpawnLineExplosions(demon, origin, lineDirections, lineAreas, spec);
     }
 
     private static Vector2[] CreateHeavySlashLineDirections(Vector2 centerDirection)
@@ -608,7 +716,8 @@ public class AbilityLogic_DemonKingHeavySlash : AbilityLogic_DemonKingBase
                     origin + direction * distance,
                     explosionDiameter,
                     explosionWarningSeconds,
-                    explosionDamage);
+                    explosionDamage,
+                    explosionVfxKind: DemonKingDelayedExplosionVfxKind.DarkLordExplosion2);
             }
 
             if (explosionStepInterval > 0f)
@@ -624,6 +733,7 @@ public class AbilityLogic_DemonKingThrowEgoSword : AbilityLogic_DemonKingBase
     [SerializeField, Min(0f)] private float warningSeconds = 1.4f;
     [SerializeField, Min(0.1f)] private float throwSpeedMultiplier = 5f;
     [SerializeField, Min(0)] private int wallBounceCount = 5;
+    [SerializeField, Min(0f)] private float throwEndPoseHoldSeconds = 0.12f;
 
     public override IEnumerator Activate(AbilitySystem system, AbilitySpec spec, GameObject initialTarget)
     {
@@ -631,30 +741,53 @@ public class AbilityLogic_DemonKingThrowEgoSword : AbilityLogic_DemonKingBase
         if (demon == null)
             yield break;
 
-        demon.PlayPatternTrigger();
+        EgoSwordActor sword = demon.EgoSword;
+        if (sword == null)
+            yield break;
 
-        float elapsed = 0f;
-        while (elapsed < warningSeconds)
+        demon.FacePatternDirection(demon.GetDirectionToTargetOrFacing(sword.ResolveThrowOriginPosition()));
+        demon.PushFaceTargetLock();
+        try
         {
+            float elapsed = 0f;
+            while (elapsed < warningSeconds)
+            {
+                if (IsAbilityCancelled(spec))
+                    yield break;
+
+                elapsed += Time.deltaTime;
+                yield return null;
+            }
+
             if (IsAbilityCancelled(spec))
                 yield break;
 
-            Vector2 holdPosition = demon.ResolveSwordHoldPosition(new Vector3(0.85f, 0.1f, 0f));
-            demon.FacePatternDirection(demon.GetDirectionToTargetOrFacing(holdPosition));
-            elapsed += Time.deltaTime;
-            yield return null;
-        }
+            Vector2 animationOrigin = sword.ResolveThrowOriginPosition();
+            Vector2 animationDirection = demon.GetDirectionToTargetOrFacing(animationOrigin);
+            demon.FacePatternDirection(animationDirection);
+            demon.PlayPatternAnimationOncePerPattern(DemonKingController.DarkLordSwordThrowingState);
 
-        if (IsAbilityCancelled(spec))
-            yield break;
+            float throwDelaySeconds = demon.ResolvePatternAnimationLastFrameStartDelay(
+                DemonKingController.DarkLordSwordThrowingState);
+            yield return WaitForSecondsUnlessCancelled(throwDelaySeconds, spec);
 
-        Vector2 origin = demon.ResolveSwordHoldPosition(new Vector3(0.85f, 0.1f, 0f));
-        Vector2 direction = demon.GetDirectionToTargetOrFacing(origin);
-        EgoSwordActor sword = demon.EgoSword;
-        if (sword != null)
-        {
+            if (IsAbilityCancelled(spec))
+                yield break;
+
+            Vector2 origin = sword.ResolveThrowOriginPosition();
+            Vector2 direction = demon.GetDirectionToTargetOrFacing(origin);
+
             sword.Throw(origin, direction, demon.PlayerMoveSpeedReference * throwSpeedMultiplier, wallBounceCount, demon.WallMask);
             demon.SetSwordDropped();
+            if (throwEndPoseHoldSeconds > 0f)
+            {
+                demon.HoldPatternAnimationLastFrame(DemonKingController.DarkLordSwordThrowingState);
+                yield return WaitForSecondsUnlessCancelled(throwEndPoseHoldSeconds, spec);
+            }
+        }
+        finally
+        {
+            demon.PopFaceTargetLock();
         }
     }
 }
@@ -686,56 +819,64 @@ public class AbilityLogic_DemonKingHomingMagic : AbilityLogic_DemonKingBase
             yield break;
 
         AbilityMotionController2D motion = demon.GetComponent<AbilityMotionController2D>();
-        demon.PlayPatternTrigger();
-
-        int count = Mathf.Max(1, projectileCount);
-        for (int i = 0; i < count; i++)
+        demon.PushFaceTargetLock();
+        try
         {
-            if (IsAbilityCancelled(spec))
-                yield break;
-
-            Vector2 bossPosition = demon.transform.position;
-            Vector2 spawnOffset = ResolveOrbOffset(i, count, demon.GetDirectionToTargetOrFacing(bossPosition));
-            Vector2 spawnPosition = bossPosition + spawnOffset;
-            Vector2 fireDirection = demon.CurrentTarget != null
-                ? ((Vector2)demon.CurrentTarget.position - spawnPosition).normalized
-                : demon.GetDirectionToTargetOrFacing(spawnPosition);
-
-            demon.FacePatternDirection(fireDirection);
-            DemonKingProjectile2D.Spawn(
-                demon,
-                spawnPosition,
-                fireDirection,
-                null,
-                demon.PlayerMoveSpeedReference * projectileSpeedMultiplier,
-                0f,
-                projectileRadius,
-                projectileDamage,
-                lifetimeSeconds);
-
-            Vector2 moveDirection = ResolveMagicMoveDirection(demon, bossPosition);
-            float moveDistance = demon.PlayerDashDistanceReference;
-            float moveWaitSeconds = Mathf.Max(0f, moveSeconds);
-            demon.BeginBodyAfterimage();
-            try
+            int count = Mathf.Max(1, projectileCount);
+            for (int i = 0; i < count; i++)
             {
-                if (motion != null && moveDistance > 0f)
-                    motion.StartLunge(bossPosition, moveDirection, moveDistance, moveSeconds, 1.8f);
-                else
-                    demon.transform.position = bossPosition + moveDirection * moveDistance;
+                if (IsAbilityCancelled(spec))
+                    yield break;
 
-                yield return WaitForSecondsUnlessCancelled(moveWaitSeconds, spec);
+                Vector2 bossPosition = demon.transform.position;
+                Vector2 spawnOffset = ResolveOrbOffset(i, count, demon.GetDirectionToTargetOrFacing(bossPosition));
+                Vector2 spawnPosition = bossPosition + spawnOffset;
+                Vector2 fireDirection = demon.CurrentTarget != null
+                    ? ((Vector2)demon.CurrentTarget.position - spawnPosition).normalized
+                    : demon.GetDirectionToTargetOrFacing(spawnPosition);
+
+                demon.FacePatternDirection(fireDirection);
+                demon.HoldPatternAnimationFirstFrame(DemonKingController.DarkLordHandBaltState);
+                DemonKingProjectile2D.Spawn(
+                    demon,
+                    spawnPosition,
+                    fireDirection,
+                    null,
+                    demon.PlayerMoveSpeedReference * projectileSpeedMultiplier,
+                    0f,
+                    projectileRadius,
+                    projectileDamage,
+                    lifetimeSeconds);
+                demon.HoldPatternAnimationLastFrame(DemonKingController.DarkLordHandBaltState);
+
+                Vector2 moveDirection = ResolveMagicMoveDirection(demon, bossPosition);
+                float moveDistance = demon.PlayerDashDistanceReference;
+                float moveWaitSeconds = Mathf.Max(0f, moveSeconds);
+                demon.BeginBodyAfterimage();
+                try
+                {
+                    if (motion != null && moveDistance > 0f)
+                        motion.StartLunge(bossPosition, moveDirection, moveDistance, moveSeconds, 1.8f);
+                    else
+                        demon.transform.position = bossPosition + moveDirection * moveDistance;
+
+                    yield return WaitForSecondsUnlessCancelled(moveWaitSeconds, spec);
+                }
+                finally
+                {
+                    demon.StopBodyAfterimage();
+                }
+
+                if (IsAbilityCancelled(spec))
+                    yield break;
+
+                float remainingWaitSeconds = Mathf.Max(0f, shotIntervalSeconds - moveWaitSeconds);
+                yield return WaitForSecondsUnlessCancelled(remainingWaitSeconds, spec);
             }
-            finally
-            {
-                demon.StopBodyAfterimage();
-            }
-
-            if (IsAbilityCancelled(spec))
-                yield break;
-
-            float remainingWaitSeconds = Mathf.Max(0f, shotIntervalSeconds - moveWaitSeconds);
-            yield return WaitForSecondsUnlessCancelled(remainingWaitSeconds, spec);
+        }
+        finally
+        {
+            demon.PopFaceTargetLock();
         }
     }
 
@@ -775,6 +916,8 @@ public class AbilityLogic_DemonKingHomingMagic : AbilityLogic_DemonKingBase
 
 public class AbilityLogic_DemonKingBombardment : AbilityLogic_DemonKingBase
 {
+    private const float ReleaseImpactPoseHoldSeconds = 1f;
+
     [SerializeField, Min(1)] private int strikeCount = 6;
     [SerializeField, Min(0f)] private float moveSeconds = 0.5f;
     [SerializeField, Min(0f)] private float warningSeconds = 0.6f;
@@ -793,45 +936,77 @@ public class AbilityLogic_DemonKingBombardment : AbilityLogic_DemonKingBase
             yield break;
 
         AbilityMotionController2D motion = demon.GetComponent<AbilityMotionController2D>();
-        demon.PlayPatternTrigger();
-        Vector2 arenaCenter = demon.ArenaCenterPosition;
-        Vector2 playerPosition = demon.CurrentTarget != null ? (Vector2)demon.CurrentTarget.position : arenaCenter + Vector2.left;
-        float bossSide = playerPosition.x < arenaCenter.x ? 1f : -1f;
-        Vector2 moveTarget = arenaCenter + Vector2.right * (bossSide * sideOffset);
-        Vector2 moveStart = demon.transform.position;
-        Vector2 moveDelta = moveTarget - moveStart;
-        demon.FacePatternDirection(moveDelta);
-        if (moveDelta.sqrMagnitude > 0.0001f && motion != null)
-            motion.StartLunge(moveStart, moveDelta.normalized, moveDelta.magnitude, moveSeconds, 1.8f);
-        else
-            demon.transform.position = moveTarget;
-
-        yield return WaitForSecondsUnlessCancelled(moveSeconds, spec);
-        if (IsAbilityCancelled(spec))
-            yield break;
-
-        float startX = arenaCenter.x - bossSide * sideOffset;
-        float endX = moveTarget.x - bossSide * laneWidth;
-        int count = Mathf.Max(1, strikeCount);
-        for (int i = 0; i < count; i++)
+        demon.PushFaceTargetLock();
+        try
         {
+            demon.PlayPatternAnimationOncePerPattern(DemonKingController.DarkLordHandChargeState);
+            Vector2 arenaCenter = demon.ArenaCenterPosition;
+            Vector2 playerPosition = demon.CurrentTarget != null ? (Vector2)demon.CurrentTarget.position : arenaCenter + Vector2.left;
+            float bossSide = playerPosition.x < arenaCenter.x ? 1f : -1f;
+            Vector2 moveTarget = arenaCenter + Vector2.right * (bossSide * sideOffset);
+            Vector2 moveStart = demon.transform.position;
+            Vector2 moveDelta = moveTarget - moveStart;
+            demon.FacePatternDirection(moveDelta);
+            if (moveDelta.sqrMagnitude > 0.0001f && motion != null)
+                motion.StartLunge(moveStart, moveDelta.normalized, moveDelta.magnitude, moveSeconds, 1.8f);
+            else
+                demon.transform.position = moveTarget;
+
+            yield return WaitForSecondsUnlessCancelled(moveSeconds, spec);
             if (IsAbilityCancelled(spec))
                 yield break;
 
-            float t = count == 1 ? 0f : i / (float)(count - 1);
-            Vector2 laneOrigin = new(Mathf.Lerp(startX, endX, t), arenaCenter.y);
-            LineArea lane = ResolveFullLineArea(demon, laneOrigin, Vector2.up, laneWidth, fallbackMapHeight);
-            DemonKingDelayedDamageArea.SpawnCircleCluster(
-                demon,
-                CreateLineAreaExplosionPoints(lane, explosionSpacing),
-                explosionDiameter,
-                warningSeconds,
-                damage);
+            float startX = arenaCenter.x - bossSide * sideOffset;
+            float endX = moveTarget.x - bossSide * laneWidth;
+            int count = Mathf.Max(1, strikeCount);
+            yield return PlayBombardmentReleasePose(demon, spec);
+            if (IsAbilityCancelled(spec))
+                yield break;
 
-            yield return WaitForSecondsUnlessCancelled(warningIntervalSeconds, spec);
+            for (int i = 0; i < count; i++)
+            {
+                if (IsAbilityCancelled(spec))
+                    yield break;
+
+                float t = count == 1 ? 0f : i / (float)(count - 1);
+                Vector2 laneOrigin = new(Mathf.Lerp(startX, endX, t), arenaCenter.y);
+                LineArea lane = ResolveFullLineArea(demon, laneOrigin, Vector2.up, laneWidth, fallbackMapHeight);
+                DemonKingDelayedDamageArea.SpawnCircleCluster(
+                    demon,
+                    CreateLineAreaExplosionPoints(lane, explosionSpacing),
+                    explosionDiameter,
+                    warningSeconds,
+                    damage,
+                    explosionVfxKind: DemonKingDelayedExplosionVfxKind.DarkLordExplosion2);
+
+                yield return WaitForSecondsUnlessCancelled(warningIntervalSeconds, spec);
+            }
+
+            yield return WaitForSecondsUnlessCancelled(warningSeconds, spec);
+        }
+        finally
+        {
+            demon.PopFaceTargetLock();
+        }
+    }
+
+    private IEnumerator PlayBombardmentReleasePose(DemonKingController demon, AbilitySpec spec)
+    {
+        string releaseState = DemonKingController.DarkLordHandGroggyCounterState;
+        if (demon.PlayPatternAnimationOncePerPattern(releaseState))
+        {
+            float releaseDelaySeconds = demon.ResolvePatternAnimationLastFrameStartDelay(releaseState);
+            yield return WaitForSecondsUnlessCancelled(releaseDelaySeconds, spec);
+            if (IsAbilityCancelled(spec))
+                yield break;
         }
 
-        yield return WaitForSecondsUnlessCancelled(warningSeconds, spec);
+        demon.HoldPatternAnimationLastFrame(releaseState);
+        DemonKingPatternVfx.SpawnImpact(demon.transform.position, explosionDiameter);
+
+        yield return WaitForSecondsUnlessCancelled(ReleaseImpactPoseHoldSeconds, spec);
+        if (!IsAbilityCancelled(spec))
+            demon.PlayPatternAnimationIfChanged(DemonKingController.DarkLordHandIdleState);
     }
 }
 
@@ -848,6 +1023,9 @@ public class AbilityLogic_DemonKingExplosionJump : AbilityLogic_DemonKingBase
     [SerializeField, Min(0.1f)] private float radialExplosionSpacing = 1.35f;
     [SerializeField, Min(0f)] private float radialExplosionStepInterval = 0.04f;
     [SerializeField, Min(0f)] private float radialDamage = 1f;
+    [SerializeField, Min(0f)] private float jumpArcHeight = 1.35f;
+    [SerializeField, Range(0f, 1f)] private float landingFrameSwitchRatio = 0.78f;
+    [SerializeField, Min(0f)] private float landingPoseHoldSeconds = 0.14f;
 
     public override IEnumerator Activate(AbilitySystem system, AbilitySpec spec, GameObject initialTarget)
     {
@@ -855,52 +1033,63 @@ public class AbilityLogic_DemonKingExplosionJump : AbilityLogic_DemonKingBase
         if (demon == null)
             yield break;
 
-        AbilityMotionController2D motion = demon.GetComponent<AbilityMotionController2D>();
         Vector2 start = demon.transform.position;
         Vector2 target = demon.CurrentTarget != null ? (Vector2)demon.CurrentTarget.position : (Vector2)demon.ArenaCenterPosition;
         Vector2 direction = target - start;
         demon.FacePatternDirection(direction);
-        demon.PlayPatternTrigger();
 
-        ShowCircleWarning(demon, target, impactDiameter, travelSeconds);
-
-        demon.BeginBodyAfterimage();
+        demon.PushFaceTargetLock();
         try
         {
-            if (direction.sqrMagnitude > 0.0001f && motion != null)
-                motion.StartLunge(start, direction.normalized, direction.magnitude, travelSeconds, 2.7f);
-            else
-                demon.transform.position = target;
+            ShowCircleWarning(demon, target, impactDiameter, travelSeconds);
 
-            yield return WaitForSecondsUnlessCancelled(travelSeconds, spec);
+            demon.BeginBodyAfterimage();
+            try
+            {
+                yield return RunParabolicPatternJump(
+                    demon,
+                    start,
+                    target,
+                    travelSeconds,
+                    jumpArcHeight,
+                    landingFrameSwitchRatio,
+                    spec);
+            }
+            finally
+            {
+                demon.StopBodyAfterimage();
+            }
+
+            if (IsAbilityCancelled(spec))
+                yield break;
+
+            demon.HoldPatternAnimationLastFrame(DemonKingController.DarkLordHandJumpAttackState);
+            DemonKingCombatUtil.ApplyCircleDamage(
+                demon,
+                target,
+                impactDiameter * 0.5f,
+                demon.DefaultDamageEffect,
+                damage,
+                knockbackImpulse: knockback);
+            DemonKingPatternVfx.SpawnImpact(target, impactDiameter);
+            if (landingPoseHoldSeconds > 0f)
+                yield return WaitForSecondsUnlessCancelled(landingPoseHoldSeconds, spec);
+
+            Vector2[] radialDirections = CreateRadialDirections();
+            LineArea[] radialLines = CreateRadialLines(demon, target, radialDirections);
+            for (int i = 0; i < radialLines.Length; i++)
+                ShowLineAreaWarning(demon, radialLines[i], radialWarningSeconds);
+
+            yield return WaitForSecondsUnlessCancelled(radialWarningSeconds, spec);
+            if (IsAbilityCancelled(spec))
+                yield break;
+
+            yield return SpawnRadialExplosionWave(demon, target, radialDirections, radialLines, spec);
         }
         finally
         {
-            demon.StopBodyAfterimage();
+            demon.PopFaceTargetLock();
         }
-
-        if (IsAbilityCancelled(spec))
-            yield break;
-
-        DemonKingCombatUtil.ApplyCircleDamage(
-            demon,
-            target,
-            impactDiameter * 0.5f,
-            demon.DefaultDamageEffect,
-            damage,
-            knockbackImpulse: knockback);
-        DemonKingPatternVfx.SpawnImpact(target, impactDiameter);
-
-        Vector2[] radialDirections = CreateRadialDirections();
-        LineArea[] radialLines = CreateRadialLines(demon, target, radialDirections);
-        for (int i = 0; i < radialLines.Length; i++)
-            ShowLineAreaWarning(demon, radialLines[i], radialWarningSeconds);
-
-        yield return WaitForSecondsUnlessCancelled(radialWarningSeconds, spec);
-        if (IsAbilityCancelled(spec))
-            yield break;
-
-        yield return SpawnRadialExplosionWave(demon, target, radialDirections, radialLines, spec);
     }
 
     private static Vector2[] CreateRadialDirections()
@@ -975,28 +1164,45 @@ public class AbilityLogic_DemonKingRecallEgoSword : AbilityLogic_DemonKingBase
 {
     [SerializeField, Min(0.1f)] private float recallSpeedMultiplier = 5f;
     [SerializeField, Min(0.1f)] private float timeoutSeconds = 2.5f;
+    [SerializeField, Min(0f)] private float recoverEndPoseHoldSeconds = 0.16f;
 
     public override IEnumerator Activate(AbilitySystem system, AbilitySpec spec, GameObject initialTarget)
     {
         DemonKingController demon = GetDemonKing(system);
-        if (demon == null || demon.EgoSword == null)
+        EgoSwordActor sword = demon != null ? demon.EgoSword : null;
+        if (demon == null || sword == null)
             yield break;
 
-        demon.PlayPatternTrigger();
-        demon.EgoSword.Recall(demon.PlayerMoveSpeedReference * recallSpeedMultiplier);
-
-        float elapsed = 0f;
-        while (!demon.EgoSword.IsHeld && elapsed < timeoutSeconds)
+        demon.HoldPatternAnimationFirstFrame(DemonKingController.DarkLordHandSwordRecoverState);
+        try
         {
-            if (IsAbilityCancelled(spec))
-                yield break;
+            sword.Recall(demon.PlayerMoveSpeedReference * recallSpeedMultiplier);
 
-            elapsed += Time.deltaTime;
-            yield return null;
+            float elapsed = 0f;
+            while (!sword.IsHeld && elapsed < timeoutSeconds)
+            {
+                if (IsAbilityCancelled(spec))
+                    yield break;
+
+                elapsed += Time.deltaTime;
+                yield return null;
+            }
+
+            if (!sword.IsHeld)
+                sword.CompleteRecallAtOwner();
+
+            demon.ReleasePatternAnimationHold();
+            demon.HoldPatternAnimationLastFrame(DemonKingController.DarkLordHandSwordRecoverState);
+            float finalFrameSeconds = demon.ResolvePatternAnimationFrameSeconds(
+                DemonKingController.DarkLordHandSwordRecoverState);
+            yield return WaitForSecondsUnlessCancelled(
+                Mathf.Max(finalFrameSeconds, recoverEndPoseHoldSeconds),
+                spec);
         }
-
-        if (!demon.EgoSword.IsHeld)
-            demon.EgoSword.CompleteRecallAtOwner();
+        finally
+        {
+            demon.ReleasePatternAnimationHold();
+        }
     }
 }
 
@@ -1039,6 +1245,10 @@ public class AbilityLogic_DemonKingWallBounceRush : AbilityLogic_DemonKingBase
     [SerializeField, Min(0.01f)] private float finalJumpSeconds = 0.5f;
     [SerializeField, Min(0.1f)] private float finalImpactDiameter = 3.4f;
     [SerializeField, Min(0f)] private float finalImpactDamage = 2f;
+    [SerializeField, Min(0f)] private float finalJumpArcHeight = 1.35f;
+    [SerializeField, Range(0f, 1f)] private float finalLandingFrameSwitchRatio = 0.78f;
+    [SerializeField, Min(0f)] private float rushEndPoseHoldSeconds = 0.1f;
+    [SerializeField, Min(0f)] private float finalLandingPoseHoldSeconds = 0.14f;
 
     public override IEnumerator Activate(AbilitySystem system, AbilitySpec spec, GameObject initialTarget)
     {
@@ -1058,11 +1268,13 @@ public class AbilityLogic_DemonKingWallBounceRush : AbilityLogic_DemonKingBase
             Vector2 awayFromPlayer = -demon.GetDirectionToTargetOrFacing(retreatStart);
             float retreatDistance = demon.PlayerDashDistanceReference;
             demon.FacePatternDirection(-awayFromPlayer);
+            if (demon.RuntimeData.SwordMode == DemonKingEgoSwordMode.Hold)
+                demon.HoldPatternAnimationFirstFrame(DemonKingController.DarkLordSwordDashStabReadyState);
             demon.BeginBodyAfterimage();
             try
             {
                 if (motion != null && retreatDistance > 0f)
-                    motion.StartLunge(retreatStart, awayFromPlayer, retreatDistance, retreatSeconds, 1.8f);
+                    motion.StartLunge(retreatStart, awayFromPlayer, retreatDistance, retreatSeconds, 1f);
                 else
                     demon.transform.position = retreatStart + awayFromPlayer * retreatDistance;
 
@@ -1078,6 +1290,8 @@ public class AbilityLogic_DemonKingWallBounceRush : AbilityLogic_DemonKingBase
 
             Vector2 warningStart = demon.transform.position;
             Vector2 direction = demon.GetDirectionToTargetOrFacing(warningStart);
+            if (demon.RuntimeData.SwordMode == DemonKingEgoSwordMode.Hold)
+                demon.HoldPatternAnimationFirstFrame(DemonKingController.DarkLordSwordDashStabReadyState);
             LineArea warningLine = ResolveForwardLineArea(demon, warningStart, direction, hitWidth, fallbackRushDistance);
             AttackTelegraphView warningView = ShowLineAreaWarning(demon, warningLine, warningSeconds);
             DemonKingPrimitiveVisual warningPrimitive = ShowLineAreaPrimitiveWarning(warningLine, warningSeconds);
@@ -1089,7 +1303,6 @@ public class AbilityLogic_DemonKingWallBounceRush : AbilityLogic_DemonKingBase
                     yield break;
 
                 direction = demon.GetDirectionToTargetOrFacing(warningStart);
-                demon.FacePatternDirection(direction);
                 warningLine = ResolveForwardLineArea(demon, warningStart, direction, hitWidth, fallbackRushDistance);
                 UpdateLineAreaWarning(warningView, demon, warningLine, warningSeconds);
                 UpdateLineAreaPrimitiveWarning(warningPrimitive, warningLine);
@@ -1107,30 +1320,53 @@ public class AbilityLogic_DemonKingWallBounceRush : AbilityLogic_DemonKingBase
                 Vector2 start = demon.transform.position;
                 direction = direction.sqrMagnitude > 0.0001f ? direction.normalized : demon.GetDirectionToTargetOrFacing(start);
                 demon.FacePatternDirection(direction);
-                demon.PlayPatternTrigger();
+                string rushState = demon.RuntimeData.SwordMode == DemonKingEgoSwordMode.Hold
+                    ? DemonKingController.DarkLordSwordDashStabState
+                    : DemonKingController.DarkLordHandJumpAttackState;
+                if (demon.RuntimeData.SwordMode == DemonKingEgoSwordMode.Hold)
+                    demon.PlayPatternAnimation(rushState);
+                else
+                    demon.HoldPatternAnimationFirstFrame(rushState);
                 float distance = Mathf.Max(0.5f, ResolveWallDistance(demon, start, direction, fallbackRushDistance) - 0.35f);
                 float rushSeconds = SecondsForSpeed(distance, rushSpeed, 0.2f);
 
-                yield return RunLungeContactDamage(
-                    demon,
-                    motion,
-                    start,
-                    direction,
-                    distance,
-                    rushSeconds,
-                    hitWidth,
-                    damage,
-                    knockback,
-                    spec);
+                DemonKingAnimationClipVisual chargeLoop = DemonKingPatternVfx.SpawnChargeLoop(demon.transform, direction);
+                try
+                {
+                    yield return RunLungeContactDamage(
+                        demon,
+                        motion,
+                        start,
+                        direction,
+                        distance,
+                        rushSeconds,
+                        hitWidth,
+                        damage,
+                        knockback,
+                        spec,
+                        lungeEaseOutPower: 1f);
+                }
+                finally
+                {
+                    chargeLoop?.StopAndRelease();
+                }
 
                 if (IsAbilityCancelled(spec))
                     yield break;
 
                 demon.transform.position = start + direction * distance;
+                DemonKingPatternVfx.SpawnChargeDisappear(demon.transform.position, direction);
+                if (demon.RuntimeData.SwordMode == DemonKingEgoSwordMode.Hold)
+                    demon.HoldPatternAnimationFirstFrame(DemonKingController.DarkLordSwordDashStabReadyState);
+                else
+                    demon.HoldPatternAnimationLastFrame(DemonKingController.DarkLordHandJumpAttackState);
+
+                yield return WaitForSecondsUnlessCancelled(Mathf.Max(0.1f, rushEndPoseHoldSeconds), spec);
+
                 direction = demon.GetDirectionToTargetOrFacing(demon.transform.position);
             }
 
-            yield return RunFinalJump(demon, motion, spec);
+            yield return RunFinalJump(demon, spec);
         }
         finally
         {
@@ -1146,23 +1382,25 @@ public class AbilityLogic_DemonKingWallBounceRush : AbilityLogic_DemonKingBase
 
     private IEnumerator RunFinalJump(
         DemonKingController demon,
-        AbilityMotionController2D motion,
         AbilitySpec spec)
     {
         Vector2 start = demon.transform.position;
         Vector2 target = demon.CurrentTarget != null ? (Vector2)demon.CurrentTarget.position : (Vector2)demon.ArenaCenterPosition;
         Vector2 delta = target - start;
+        demon.FacePatternDirection(delta);
         ShowCircleWarning(demon, target, finalImpactDiameter, finalJumpSeconds);
 
         demon.BeginBodyAfterimage();
         try
         {
-            if (delta.sqrMagnitude > 0.0001f && motion != null)
-                motion.StartLunge(start, delta.normalized, delta.magnitude, finalJumpSeconds, 2.7f);
-            else
-                demon.transform.position = target;
-
-            yield return WaitForSecondsUnlessCancelled(finalJumpSeconds, spec);
+            yield return RunParabolicPatternJump(
+                demon,
+                start,
+                target,
+                finalJumpSeconds,
+                finalJumpArcHeight,
+                finalLandingFrameSwitchRatio,
+                spec);
         }
         finally
         {
@@ -1172,6 +1410,7 @@ public class AbilityLogic_DemonKingWallBounceRush : AbilityLogic_DemonKingBase
         if (IsAbilityCancelled(spec))
             yield break;
 
+        demon.HoldPatternAnimationLastFrame(DemonKingController.DarkLordHandJumpAttackState);
         DemonKingCombatUtil.ApplyCircleDamage(
             demon,
             target,
@@ -1185,6 +1424,8 @@ public class AbilityLogic_DemonKingWallBounceRush : AbilityLogic_DemonKingBase
             finalImpactDiameter,
             AttackSquareColor,
             "DemonKing_FinalJumpCircleAttack");
+        if (finalLandingPoseHoldSeconds > 0f)
+            yield return WaitForSecondsUnlessCancelled(finalLandingPoseHoldSeconds, spec);
     }
 }
 
@@ -1192,6 +1433,7 @@ public class AbilityLogic_DemonKingGroggyRecoverCounter : AbilityLogic_DemonKing
 {
     private const float DimFadeOutRatio = 0.45f;
     private const float EyeFlashHoldRatio = 0.2f;
+    private const float ImpactPoseHoldSeconds = 0.5f;
 
     [SerializeField, Min(0f)] private float attackDelaySeconds = 0.4f;
     [SerializeField, Min(0.1f)] private float explosionDiameter = 5.4f;
@@ -1200,6 +1442,7 @@ public class AbilityLogic_DemonKingGroggyRecoverCounter : AbilityLogic_DemonKing
     [SerializeField, Range(0f, 1f)] private float dimTargetAlpha = 0.55f;
     [SerializeField] private Vector2 eyeFlashLocalOffset = new(0f, 0.75f);
     [SerializeField] private Vector2 eyeFlashSize = new(2.4f, 0.9f);
+    [SerializeField, Min(0f)] private float counterEndPoseHoldSeconds = 0.12f;
 
     public override IEnumerator Activate(AbilitySystem system, AbilitySpec spec, GameObject initialTarget)
     {
@@ -1207,7 +1450,8 @@ public class AbilityLogic_DemonKingGroggyRecoverCounter : AbilityLogic_DemonKing
         if (demon == null)
             yield break;
 
-        demon.PlayPatternTrigger();
+        string counterState = demon.ResolveGroggyCounterAnimationState();
+        demon.PushFaceTargetLock();
         DemonKingWorldDimmingOverlay dimming = DemonKingWorldDimmingOverlay.Begin(demon, 0f);
         try
         {
@@ -1215,10 +1459,12 @@ public class AbilityLogic_DemonKingGroggyRecoverCounter : AbilityLogic_DemonKing
             float eyeFlashHoldSeconds = attackDelaySeconds * EyeFlashHoldRatio;
             float fadeInSeconds = Mathf.Max(0f, attackDelaySeconds - fadeOutSeconds - eyeFlashHoldSeconds);
 
+            demon.HoldGroggyPoseAnimation(allowDuringGroggy: true);
             yield return FadeDimming(dimming, dimTargetAlpha, fadeOutSeconds, spec);
             if (IsAbilityCancelled(spec))
                 yield break;
 
+            demon.HoldGroggyPoseAnimation(allowDuringGroggy: true);
             DemonKingPatternVfx.SpawnEyeFlash(demon.transform, eyeFlashLocalOffset, eyeFlashSize);
             PlayWarningPing(demon);
 
@@ -1230,21 +1476,46 @@ public class AbilityLogic_DemonKingGroggyRecoverCounter : AbilityLogic_DemonKing
             if (IsAbilityCancelled(spec))
                 yield break;
 
-            Vector2 center = demon.transform.position;
-            DemonKingPatternVfx.SpawnGroggyRelease(center, explosionDiameter);
-            DemonKingCombatUtil.ApplyCircleDamage(
-                demon,
-                center,
-                explosionDiameter * 0.5f,
-                demon.DefaultDamageEffect,
-                damage,
-                knockbackImpulse: knockback);
+            yield return PlayCounterImpact(demon, counterState, spec);
         }
         finally
         {
             if (dimming != null)
                 dimming.Release();
+            demon.PopFaceTargetLock();
         }
+    }
+
+    private IEnumerator PlayCounterImpact(DemonKingController demon, string counterState, AbilitySpec spec)
+    {
+        if (demon.PlayPatternAnimationOncePerPattern(counterState, allowDuringGroggy: true))
+        {
+            float releaseDelaySeconds = demon.ResolvePatternAnimationLastFrameStartDelay(counterState);
+            yield return WaitForSecondsUnlessCancelled(releaseDelaySeconds, spec);
+            if (IsAbilityCancelled(spec))
+                yield break;
+        }
+
+        demon.HoldPatternAnimationLastFrame(counterState, allowDuringGroggy: true);
+        Vector2 center = demon.transform.position;
+        if (counterState == DemonKingController.DarkLordSwordGroggyCounterState)
+            DemonKingPatternVfx.SpawnGroggyRelease(center, explosionDiameter);
+        else
+            DemonKingPatternVfx.SpawnImpact(center, explosionDiameter);
+        DemonKingCombatUtil.ApplyCircleDamage(
+            demon,
+            center,
+            explosionDiameter * 0.5f,
+            demon.DefaultDamageEffect,
+            damage,
+            knockbackImpulse: knockback);
+
+        float holdSeconds = Mathf.Max(counterEndPoseHoldSeconds, ImpactPoseHoldSeconds);
+        if (holdSeconds > 0f)
+            yield return WaitForSecondsUnlessCancelled(holdSeconds, spec);
+
+        if (!IsAbilityCancelled(spec))
+            demon.RestoreCombatPose();
     }
 
     private static IEnumerator FadeDimming(
@@ -1333,7 +1604,6 @@ public class AbilityLogic_DemonKingFinalDesperation : AbilityLogic_DemonKingBase
         {
             demon.MarkFinalDesperationStarted();
             demon.CompleteEgoSwordRecall();
-            demon.PlayPatternTrigger();
 
             AbilityMotionController2D motion = demon.GetComponent<AbilityMotionController2D>();
             Vector2 center = demon.ArenaCenterPosition;
@@ -1358,6 +1628,9 @@ public class AbilityLogic_DemonKingFinalDesperation : AbilityLogic_DemonKingBase
                 yield break;
 
             demon.transform.position = center;
+            demon.HoldPatternAnimationFirstFrame(
+                DemonKingController.DarkLord10PercentState,
+                allowDuringFinalDesperation: true);
             DemonKingCombatUtil.ApplyCircleDamage(
                 demon,
                 center,
@@ -1459,7 +1732,8 @@ public class AbilityLogic_DemonKingFinalDesperation : AbilityLogic_DemonKingBase
                 bombDiameter,
                 bombWarningSeconds,
                 bombDamage,
-                ignoreOwnerGroggy: true);
+                ignoreOwnerGroggy: true,
+                explosionVfxKind: DemonKingDelayedExplosionVfxKind.DarkLordExplosion2);
 
             timer += Mathf.Max(0.01f, bombIntervalSeconds);
         }

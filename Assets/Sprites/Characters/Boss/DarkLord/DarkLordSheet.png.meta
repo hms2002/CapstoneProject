@@ -1,0 +1,656 @@
+fileFormatVersion: 2
+guid: a855f140929d4864bb0166b56e366c4f
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 5356825751424533309
+    second: DarkLordSheet_0
+  - first:
+      213: 117345247993404258
+    second: DarkLordSheet_1
+  - first:
+      213: -5025020003569725576
+    second: DarkLordSheet_2
+  - first:
+      213: -2083445146807436982
+    second: DarkLordSheet_3
+  - first:
+      213: -4798404629429196341
+    second: DarkLordSheet_4
+  - first:
+      213: 7800417542164249327
+    second: DarkLordSheet_5
+  - first:
+      213: 5718919925475183731
+    second: DarkLordSheet_6
+  - first:
+      213: -9156434119567497890
+    second: DarkLordSheet_7
+  - first:
+      213: -2906448960487868173
+    second: DarkLordSheet_8
+  - first:
+      213: 1387650782485286998
+    second: DarkLordSheet_9
+  - first:
+      213: -1909582293299834920
+    second: DarkLordSheet_10
+  - first:
+      213: -8629458933749615994
+    second: DarkLordSheet_11
+  - first:
+      213: -2346310013415946484
+    second: DarkLordSheet_12
+  - first:
+      213: -7453778635375205600
+    second: DarkLordSheet_13
+  - first:
+      213: 8516868086565496204
+    second: DarkLordSheet_14
+  - first:
+      213: -3922505149299648942
+    second: DarkLordSheet_15
+  - first:
+      213: 7357056669370229065
+    second: DarkLordSheet_16
+  - first:
+      213: 2497217491340709431
+    second: DarkLordSheet_17
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 32
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: DarkLord_Sword_Idle
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 280
+        width: 79
+        height: 70
+      alignment: 9
+      pivot: {x: 0.38, y: 0.1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1fe301b87a25a604382b5e1ec3aa4422
+      internalID: 5356825751424533309
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DarkLord_Sword_Slash_0
+      rect:
+        serializedVersion: 2
+        x: 79
+        y: 280
+        width: 79
+        height: 70
+      alignment: 9
+      pivot: {x: 0.38, y: 0.1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: df3911339ee69e94e8784402ef3709e8
+      internalID: 117345247993404258
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DarkLord_Sword_Slash_1
+      rect:
+        serializedVersion: 2
+        x: 158
+        y: 280
+        width: 79
+        height: 70
+      alignment: 9
+      pivot: {x: 0.38, y: 0.1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c842c157c90e76449a5114373fe91ad2
+      internalID: -5025020003569725576
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DarkLord_Sword_Slash_2
+      rect:
+        serializedVersion: 2
+        x: 237
+        y: 280
+        width: 79
+        height: 70
+      alignment: 9
+      pivot: {x: 0.38, y: 0.1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: fda7129391358e54888608a7b7911b55
+      internalID: -2083445146807436982
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DarkLord_Hand_Idle
+      rect:
+        serializedVersion: 2
+        x: 316
+        y: 280
+        width: 79
+        height: 70
+      alignment: 9
+      pivot: {x: 0.38, y: 0.1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 61aba1f4e4654734ab97a559e75d7e79
+      internalID: -4798404629429196341
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DarkLord_Hand_Balt_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 210
+        width: 79
+        height: 70
+      alignment: 9
+      pivot: {x: 0.38, y: 0.1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e3a0a18f8cd9cbd48857518961c84875
+      internalID: 7800417542164249327
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DarkLord_Hand_Balt_1
+      rect:
+        serializedVersion: 2
+        x: 79
+        y: 210
+        width: 79
+        height: 70
+      alignment: 9
+      pivot: {x: 0.38, y: 0.1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 95ba2a0300dd2b2478259df9e047fb4b
+      internalID: 5718919925475183731
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DarkLord_Sword_Throwing_0
+      rect:
+        serializedVersion: 2
+        x: 158
+        y: 210
+        width: 79
+        height: 70
+      alignment: 9
+      pivot: {x: 0.38, y: 0.1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d374e1dd61ffb52459da2dc0887df0a6
+      internalID: -9156434119567497890
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DarkLord_Sword_Throwing_1
+      rect:
+        serializedVersion: 2
+        x: 237
+        y: 210
+        width: 79
+        height: 70
+      alignment: 9
+      pivot: {x: 0.38, y: 0.1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 84d7df9fd41524c47b1eefc1e2b96f51
+      internalID: -2906448960487868173
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DarkLord_Hand_SwordRecover_0
+      rect:
+        serializedVersion: 2
+        x: 316
+        y: 210
+        width: 79
+        height: 70
+      alignment: 9
+      pivot: {x: 0.38, y: 0.1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ff389a7e7f71d044b8c2b09b21bf067d
+      internalID: 1387650782485286998
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DarkLord_Hand_SwordRecover_1
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 140
+        width: 79
+        height: 70
+      alignment: 9
+      pivot: {x: 0.38, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c348cc75fbbce4b48846c950ddfecfa9
+      internalID: -1909582293299834920
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DarkLord_Hand_Groggy
+      rect:
+        serializedVersion: 2
+        x: 79
+        y: 140
+        width: 79
+        height: 70
+      alignment: 9
+      pivot: {x: 0.4585123, y: 0.14718017}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: faf5a87b35428274e876446947cb1159
+      internalID: -8629458933749615994
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DarkLord_Sword_DashStab
+      rect:
+        serializedVersion: 2
+        x: 158
+        y: 140
+        width: 79
+        height: 70
+      alignment: 9
+      pivot: {x: 0.7, y: 0.1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 129020841a65f1c4dbf9d85fc0fa3088
+      internalID: -2346310013415946484
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DarkLord_Sit
+      rect:
+        serializedVersion: 2
+        x: 237
+        y: 140
+        width: 79
+        height: 70
+      alignment: 9
+      pivot: {x: 0.5, y: 0.1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 89672fda6fc26d240953531142ae3431
+      internalID: -7453778635375205600
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DarkLord_Hand_JumpAttack_0
+      rect:
+        serializedVersion: 2
+        x: 316
+        y: 140
+        width: 79
+        height: 70
+      alignment: 9
+      pivot: {x: 0.5, y: 0.1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a302767315291af459ce456e576dfae2
+      internalID: 8516868086565496204
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DarkLord_Hand_JumpAttack_1
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 70
+        width: 79
+        height: 70
+      alignment: 9
+      pivot: {x: 0.5, y: 0.18}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6d82f4e4db8ff0a429ace853af5d1058
+      internalID: -3922505149299648942
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DarkLord_Hand_Charge
+      rect:
+        serializedVersion: 2
+        x: 79
+        y: 70
+        width: 79
+        height: 70
+      alignment: 9
+      pivot: {x: 0.45, y: 0.1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 665732c3064e3ac40ba24de51739d862
+      internalID: 7357056669370229065
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DarkLord_Sword_Groggy
+      rect:
+        serializedVersion: 2
+        x: 158
+        y: 70
+        width: 79
+        height: 70
+      alignment: 9
+      pivot: {x: 0.5275929, y: 0.14921355}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 63316f4bb488d584d963f87d29539fb9
+      internalID: 2497217491340709431
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DarkLord_Hand_GroggyCounter_0
+      rect:
+        serializedVersion: 2
+        x: 237
+        y: 70
+        width: 79
+        height: 70
+      alignment: 9
+      pivot: {x: 0.4, y: 0.1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 847d4df9ff7c152409de75e2bc3bba93
+      internalID: 1803459444
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DarkLord_Hand_GroggyCounter_1
+      rect:
+        serializedVersion: 2
+        x: 316
+        y: 70
+        width: 79
+        height: 70
+      alignment: 9
+      pivot: {x: 0.5, y: 0.1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a64d3fbaf70768844ab482993508c663
+      internalID: -1692077206
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DarkLord_10Percent
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 79
+        height: 70
+      alignment: 9
+      pivot: {x: 0.5, y: 0.1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: bc86f10fd42bb244ba016e37bec14837
+      internalID: -40961002
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: bd74ef49ee79a114ab67afb1749cbfb4
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":5.0,"y":4.0},"gridSpriteSize":{"x":79.0,"y":70.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.3799999952316284,"y":0.10000000149011612},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":9,"pivotUnitMode":0,"slicingType":2,"keepEmptyRects":false,"isAlternate":false}'
+    nameFileIdTable:
+      DarkLord_10Percent: -40961002
+      DarkLord_Hand_Balt_0: 7800417542164249327
+      DarkLord_Hand_Balt_1: 5718919925475183731
+      DarkLord_Hand_Charge: 7357056669370229065
+      DarkLord_Hand_Groggy: -8629458933749615994
+      DarkLord_Hand_GroggyCounter_0: 1803459444
+      DarkLord_Hand_GroggyCounter_1: -1692077206
+      DarkLord_Hand_Idle: -4798404629429196341
+      DarkLord_Hand_JumpAttack_0: 8516868086565496204
+      DarkLord_Hand_JumpAttack_1: -3922505149299648942
+      DarkLord_Hand_SwordRecover_0: 1387650782485286998
+      DarkLord_Hand_SwordRecover_1: -1909582293299834920
+      DarkLord_Sit: -7453778635375205600
+      DarkLord_Sword_DashStab: -2346310013415946484
+      DarkLord_Sword_Groggy: 2497217491340709431
+      DarkLord_Sword_Idle: 5356825751424533309
+      DarkLord_Sword_Slash_0: 117345247993404258
+      DarkLord_Sword_Slash_1: -5025020003569725576
+      DarkLord_Sword_Slash_2: -2083445146807436982
+      DarkLord_Sword_Throwing_0: -9156434119567497890
+      DarkLord_Sword_Throwing_1: -2906448960487868173
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

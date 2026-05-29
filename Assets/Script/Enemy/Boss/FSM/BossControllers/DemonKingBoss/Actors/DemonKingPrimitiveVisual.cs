@@ -330,10 +330,20 @@ public static class DemonKingPatternVfx
     private const string GroggyReleaseVfxPath = "DemonKing/Vfx/DarkLordGroggyReleaseVfx";
     private const string EyeFlashVfxPath = "DemonKing/Vfx/DemonKingEyeLightVfx";
     private const string EgoSwordAttackVfxPath = "DemonKing/Vfx/EgoSwordAttackVfx";
+    private const string DarkLordExplosion2VfxPath = "DemonKing/Vfx/DarkLordExplosion2Vfx";
+    private const string DarkLordFragmentVfxPath = "DemonKing/Vfx/DarkLordFragmentVfx";
+    private const string DemonChargeEffectVfxPath = "DemonKing/Vfx/DemonChargeEffectVfx";
+    private const string SwordSpinVfxPath = "DemonKing/Vfx/SwordSpin4FrameVfx";
+
+    private const string IdleStateName = "Idle";
+    private const string LoopStateName = "Loop";
+    private const string DisappearStateName = "Disappear";
 
     private const int DefaultSortingOrder = 1;
     private const float StabOriginalVisualLength = 4f;
     private const float StabForwardOffsetRatio = 0.35f;
+    private const float FragmentHoldSeconds = 2f;
+    private const float FragmentFadeSeconds = 0.5f;
 
     public static DemonKingAnimationClipVisual SpawnExplosion(Vector2 center, float diameter)
     {
@@ -356,16 +366,101 @@ public static class DemonKingPatternVfx
             DemonKingPrimitiveVisual.SpawnCircle(center, diameter, 0.12f, fallbackColor, fallbackName);
     }
 
-    public static DemonKingAnimationClipVisual SpawnImpact(Vector2 center, float diameter)
+    public static DemonKingAnimationClipVisual SpawnDarkLordExplosion2(Vector2 center, float diameter)
+    {
+        return DemonKingAnimationClipVisual.SpawnOneShot(
+            DarkLordExplosion2VfxPath,
+            center,
+            new Vector2(diameter, diameter),
+            0f,
+            "DarkLord_Explosion2Vfx",
+            DefaultSortingOrder);
+    }
+
+    public static void SpawnDarkLordExplosion2OrFallbackCircle(
+        Vector2 center,
+        float diameter,
+        Color fallbackColor,
+        string fallbackName)
+    {
+        if (SpawnDarkLordExplosion2(center, diameter) == null)
+            DemonKingPrimitiveVisual.SpawnCircle(center, diameter, 0.12f, fallbackColor, fallbackName);
+    }
+
+    public static DemonKingAnimationClipVisual SpawnImpact(Vector2 center, float diameter, bool leaveFragment = true)
     {
         _ = diameter;
-        return DemonKingAnimationClipVisual.SpawnOneShot(
+        DemonKingAnimationClipVisual impact = DemonKingAnimationClipVisual.SpawnOneShot(
             ImpactVfxPath,
             center,
             Vector2.zero,
             0f,
             "DemonKing_ImpactVfx",
             DefaultSortingOrder);
+        if (leaveFragment)
+            SpawnTimedFragment(center);
+        return impact;
+    }
+
+    public static DemonKingAnimationClipVisual SpawnPersistentFragment(Vector2 center, string name = "DarkLord_FragmentVfx")
+    {
+        return DemonKingAnimationClipVisual.SpawnLoop(
+            DarkLordFragmentVfxPath,
+            center,
+            Vector2.zero,
+            0f,
+            name,
+            DefaultSortingOrder,
+            IdleStateName,
+            centerOnSpriteBounds: true);
+    }
+
+    public static DemonKingAnimationClipVisual SpawnChargeLoop(Transform target, Vector2 direction)
+    {
+        if (target == null)
+            return null;
+
+        Vector2 safeDirection = direction.sqrMagnitude > 0.0001f ? direction.normalized : Vector2.right;
+        return DemonKingAnimationClipVisual.SpawnFollowingLoop(
+            DemonChargeEffectVfxPath,
+            target,
+            new Vector3(0f, 0f, -0.08f),
+            Vector2.zero,
+            DemonKingCombatUtil.RotationDeg(safeDirection),
+            "DemonKing_ChargeLoopVfx",
+            DefaultSortingOrder,
+            inheritRotation: false,
+            LoopStateName);
+    }
+
+    public static DemonKingAnimationClipVisual SpawnChargeDisappear(Vector2 center, Vector2 direction)
+    {
+        Vector2 safeDirection = direction.sqrMagnitude > 0.0001f ? direction.normalized : Vector2.right;
+        return DemonKingAnimationClipVisual.SpawnOneShot(
+            DemonChargeEffectVfxPath,
+            center,
+            Vector2.zero,
+            DemonKingCombatUtil.RotationDeg(safeDirection),
+            "DemonKing_ChargeDisappearVfx",
+            DefaultSortingOrder,
+            DisappearStateName);
+    }
+
+    public static DemonKingAnimationClipVisual SpawnSwordSpinLoop(Transform target)
+    {
+        if (target == null)
+            return null;
+
+        return DemonKingAnimationClipVisual.SpawnFollowingLoop(
+            SwordSpinVfxPath,
+            target,
+            new Vector3(0f, 0f, -0.08f),
+            Vector2.zero,
+            0f,
+            "EgoSword_SpinVfx",
+            DefaultSortingOrder,
+            inheritRotation: false,
+            LoopStateName);
     }
 
     public static DemonKingAnimationClipVisual SpawnAttachedStab(Transform parent, Vector2 direction)
@@ -443,6 +538,12 @@ public static class DemonKingPatternVfx
             "EgoSword_AttackVfx",
             DefaultSortingOrder);
     }
+
+    private static void SpawnTimedFragment(Vector2 center)
+    {
+        DemonKingAnimationClipVisual fragment = SpawnPersistentFragment(center, "DarkLord_TimedFragmentVfx");
+        fragment?.ReleaseAfterDelayAndFade(FragmentHoldSeconds, FragmentFadeSeconds);
+    }
 }
 
 [DisallowMultipleComponent]
@@ -460,6 +561,11 @@ public sealed class DemonKingAnimationClipVisual : MonoBehaviour
     private Animator animator;
     private Coroutine playbackRoutine;
     private string sourceResourcePath;
+    private Transform followTarget;
+    private Vector3 followLocalOffset;
+    private bool usesFollowTarget;
+    private bool followRotation;
+    private float followRotationDeg;
 
     public bool IsPlaying { get; private set; }
 
@@ -477,7 +583,9 @@ public sealed class DemonKingAnimationClipVisual : MonoBehaviour
         Vector2 targetSize,
         float rotationDeg,
         string name,
-        int sortingOrder)
+        int sortingOrder,
+        string stateName = OneShotStateName,
+        bool centerOnSpriteBounds = false)
     {
         DemonKingAnimationClipVisual visual = InstantiateVisual(
             resourcePath,
@@ -489,9 +597,73 @@ public sealed class DemonKingAnimationClipVisual : MonoBehaviour
         if (visual == null)
             return null;
 
-        if (!visual.TryPlayOneShot(targetSize))
+        if (!visual.TryPlayOneShot(targetSize, stateName, centerOnSpriteBounds))
             return null;
 
+        return visual;
+    }
+
+    public static DemonKingAnimationClipVisual SpawnLoop(
+        string resourcePath,
+        Vector2 center,
+        Vector2 targetSize,
+        float rotationDeg,
+        string name,
+        int sortingOrder,
+        string stateName,
+        bool centerOnSpriteBounds = false)
+    {
+        DemonKingAnimationClipVisual visual = InstantiateVisual(
+            resourcePath,
+            null,
+            new Vector3(center.x, center.y, VisualZ),
+            rotationDeg,
+            name,
+            sortingOrder);
+        if (visual == null)
+            return null;
+
+        if (!visual.TryPlayLoop(targetSize, stateName, centerOnSpriteBounds))
+            return null;
+
+        return visual;
+    }
+
+    public static DemonKingAnimationClipVisual SpawnFollowingLoop(
+        string resourcePath,
+        Transform target,
+        Vector3 localOffset,
+        Vector2 targetSize,
+        float rotationDeg,
+        string name,
+        int sortingOrder,
+        bool inheritRotation,
+        string stateName)
+    {
+        if (target == null)
+            return null;
+
+        Transform parent = inheritRotation ? target : null;
+        Vector3 position = inheritRotation ? localOffset : target.TransformPoint(localOffset);
+        DemonKingAnimationClipVisual visual = InstantiateVisual(
+            resourcePath,
+            parent,
+            position,
+            rotationDeg,
+            name,
+            sortingOrder);
+        if (visual == null)
+            return null;
+
+        if (!visual.TryPlayLoop(targetSize, stateName, centerOnSpriteBounds: false))
+            return null;
+
+        visual.followTarget = target;
+        visual.followLocalOffset = localOffset;
+        visual.usesFollowTarget = true;
+        visual.followRotation = inheritRotation;
+        visual.followRotationDeg = rotationDeg;
+        visual.UpdateFollowTransform();
         return visual;
     }
 
@@ -519,7 +691,7 @@ public sealed class DemonKingAnimationClipVisual : MonoBehaviour
         if (visual == null)
             return null;
 
-        if (!visual.TryPlayOneShot(targetSize))
+        if (!visual.TryPlayOneShot(targetSize, OneShotStateName, centerOnSpriteBounds: false))
             return null;
 
         return visual;
@@ -529,6 +701,17 @@ public sealed class DemonKingAnimationClipVisual : MonoBehaviour
     {
         StopPlayback();
         Destroy(gameObject);
+    }
+
+    public void ReleaseAfterDelayAndFade(float delaySeconds, float fadeSeconds)
+    {
+        StopPlayback();
+        playbackRoutine = StartCoroutine(CoReleaseAfterDelayAndFade(delaySeconds, fadeSeconds));
+    }
+
+    public void FadeAndRelease(float fadeSeconds)
+    {
+        ReleaseAfterDelayAndFade(0f, fadeSeconds);
     }
 
     public void SetSpriteFlipX(bool flipX)
@@ -575,25 +758,72 @@ public sealed class DemonKingAnimationClipVisual : MonoBehaviour
         return visual;
     }
 
-    private bool TryPlayOneShot(Vector2 targetSize)
+    private bool TryPlayOneShot(Vector2 targetSize, string stateName, bool centerOnSpriteBounds)
     {
         StopPlayback();
-        if (!ValidatePlayable(OneShotStateName))
+        if (!ValidatePlayable(stateName))
         {
             StopAndRelease();
             return false;
         }
 
         IsPlaying = true;
-        PlayAnimatorState(OneShotStateName);
+        PlayAnimatorState(stateName);
         ApplyTargetScale(targetSize);
+        if (centerOnSpriteBounds)
+            CenterOnSpriteBounds();
         playbackRoutine = StartCoroutine(CoDestroyAfterSeconds(ResolveLongestClipLength()));
+        return true;
+    }
+
+    private bool TryPlayLoop(Vector2 targetSize, string stateName, bool centerOnSpriteBounds)
+    {
+        StopPlayback();
+        if (!ValidatePlayable(stateName))
+        {
+            StopAndRelease();
+            return false;
+        }
+
+        IsPlaying = true;
+        PlayAnimatorState(stateName);
+        ApplyTargetScale(targetSize);
+        if (centerOnSpriteBounds)
+            CenterOnSpriteBounds();
         return true;
     }
 
     private IEnumerator CoDestroyAfterSeconds(float seconds)
     {
         yield return new WaitForSeconds(Mathf.Max(0.01f, seconds));
+        IsPlaying = false;
+        playbackRoutine = null;
+        Destroy(gameObject);
+    }
+
+    private IEnumerator CoReleaseAfterDelayAndFade(float delaySeconds, float fadeSeconds)
+    {
+        float safeDelay = Mathf.Max(0f, delaySeconds);
+        if (safeDelay > 0f)
+            yield return new WaitForSeconds(safeDelay);
+
+        CacheRuntimeReferences();
+        float safeFade = Mathf.Max(0f, fadeSeconds);
+        if (spriteRenderer != null && safeFade > 0f)
+        {
+            Color startColor = spriteRenderer.color;
+            float elapsed = 0f;
+            while (elapsed < safeFade)
+            {
+                elapsed += Time.deltaTime;
+                float t = Mathf.Clamp01(elapsed / safeFade);
+                Color color = startColor;
+                color.a = Mathf.Lerp(startColor.a, 0f, t);
+                spriteRenderer.color = color;
+                yield return null;
+            }
+        }
+
         IsPlaying = false;
         playbackRoutine = null;
         Destroy(gameObject);
@@ -619,6 +849,37 @@ public sealed class DemonKingAnimationClipVisual : MonoBehaviour
         float scaleX = sourceSize.x > 0f ? targetSize.x / sourceSize.x : 1f;
         float scaleY = sourceSize.y > 0f ? targetSize.y / sourceSize.y : 1f;
         transform.localScale = new Vector3(Mathf.Max(0.01f, scaleX), Mathf.Max(0.01f, scaleY), 1f);
+    }
+
+    private void CenterOnSpriteBounds()
+    {
+        if (spriteRenderer == null || spriteRenderer.sprite == null)
+            return;
+
+        transform.position -= transform.TransformVector(spriteRenderer.sprite.bounds.center);
+    }
+
+    private void LateUpdate()
+    {
+        UpdateFollowTransform();
+    }
+
+    private void UpdateFollowTransform()
+    {
+        if (!usesFollowTarget)
+            return;
+
+        if (followTarget == null)
+        {
+            StopAndRelease();
+            return;
+        }
+
+        if (followRotation)
+            return;
+
+        transform.position = followTarget.TransformPoint(followLocalOffset);
+        transform.rotation = Quaternion.Euler(0f, 0f, followRotationDeg);
     }
 
     private void OnDisable()

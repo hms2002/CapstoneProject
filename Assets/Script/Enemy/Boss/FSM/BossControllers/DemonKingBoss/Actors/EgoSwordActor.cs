@@ -26,6 +26,10 @@ public sealed class EgoSwordActor : MonoBehaviour
 
     [Header("Held")]
     [SerializeField] private Vector3 heldOffset = new(0.85f, 0.1f, 0f);
+    [SerializeField] private Vector3 throwOriginLocalOffset = new(0.85f, 0.1f, 0f);
+    [SerializeField] private Vector3 recallTargetLocalOffset = new(0.85f, 0.1f, 0f);
+    [SerializeField] private float throwInitialRotation = 0f;
+    [SerializeField] private float recallInitialRotation = 0f;
 
     [Header("Throw")]
     [SerializeField, Min(0.01f)] private float contactRadius = 0.45f;
@@ -83,6 +87,8 @@ public sealed class EgoSwordActor : MonoBehaviour
     private SpriteRenderer[] baseSwordRenderers;
     private SpriteMask runtimeBuriedMask;
     private DemonKingAnimationClipVisual activeVerticalAttackVfx;
+    private DemonKingAnimationClipVisual activeBuriedFragmentVfx;
+    private DemonKingAnimationClipVisual activeSwordSpinVfx;
     private SpriteRenderer primarySwordRenderer;
     private Animator swordAnimator;
     private RuntimeAnimatorController defaultSwordAnimatorController;
@@ -123,6 +129,7 @@ public sealed class EgoSwordActor : MonoBehaviour
     private void OnDisable()
     {
         StopAfterimage(clearGhosts: true);
+        StopSwordSpinEffect();
         StopPlantingRoutine();
         StopDroppedPatterns();
         ClearBuriedMask();
@@ -155,17 +162,18 @@ public sealed class EgoSwordActor : MonoBehaviour
         ApplyProjectileSortingOnce();
     }
 
-    public void AttachToOwner()
+    public void HideWhileHeld()
     {
-        if (!gameObject.activeSelf)
-            gameObject.SetActive(true);
-
         StopAfterimage(clearGhosts: true);
+        StopSwordSpinEffect();
         StopPlantingRoutine();
         StopDroppedPatterns();
         ClearBuriedMask();
-        StopVerticalAuraAnimation();
+        ReleaseVerticalStrikeVfx();
+        ReleaseAttachedOneShotVfx();
         recallMovementActive = false;
+        subPatternAbilityRunning = false;
+        activeSubPatternSpec = null;
         state = SwordState.Held;
         flyingSpeed = 0f;
         remainingBounces = 0;
@@ -173,11 +181,23 @@ public sealed class EgoSwordActor : MonoBehaviour
         transform.rotation = Quaternion.identity;
         if (owner != null)
             transform.position = owner.ResolveSwordHoldPosition(heldOffset);
+
+        if (gameObject.activeSelf)
+            gameObject.SetActive(false);
+    }
+
+    public Vector2 ResolveThrowOriginPosition()
+    {
+        if (owner != null)
+            return owner.ResolveSwordHoldPosition(throwOriginLocalOffset);
+
+        return (Vector2)(transform.position + throwOriginLocalOffset);
     }
 
     public void CleanupForBossBattleEnd()
     {
         StopAfterimage(clearGhosts: true);
+        StopSwordSpinEffect();
         StopPlantingRoutine();
         StopDroppedPatterns();
         ClearBuriedMask();
@@ -198,12 +218,16 @@ public sealed class EgoSwordActor : MonoBehaviour
 
     public void Throw(Vector2 origin, Vector2 direction, float speed, int bounceCount, LayerMask newWallMask)
     {
+        if (!gameObject.activeSelf)
+            gameObject.SetActive(true);
+
         StopPlantingRoutine();
         StopDroppedPatterns();
         ClearBuriedMask();
         recallMovementActive = false;
         transform.SetParent(null, true);
         transform.position = origin;
+        transform.rotation = Quaternion.Euler(0f, 0f, throwInitialRotation);
         velocityDirection = direction.sqrMagnitude > 0.0001f ? direction.normalized : Vector2.right;
         flyingSpeed = Mathf.Max(0.01f, speed);
         remainingBounces = Mathf.Max(0, bounceCount);
@@ -211,6 +235,7 @@ public sealed class EgoSwordActor : MonoBehaviour
         useCrossPatternNext = false;
         state = SwordState.Flying;
         PlayAuraStartAnimation(playIdleAfterStart: true);
+        StartSwordSpinEffect();
         BeginAfterimage();
 
         if (remainingBounces <= 0)
@@ -231,10 +256,12 @@ public sealed class EgoSwordActor : MonoBehaviour
         StopDroppedPatterns();
         ClearBuriedMask();
         transform.SetParent(null, true);
+        transform.rotation = Quaternion.Euler(0f, 0f, recallInitialRotation);
         flyingSpeed = Mathf.Max(0.01f, speed);
         recallMovementActive = false;
         state = SwordState.Recalling;
         PlayRecallAuraStartup();
+        StartSwordSpinEffect();
         BeginAfterimage();
     }
 
@@ -290,7 +317,7 @@ public sealed class EgoSwordActor : MonoBehaviour
 
         RotateClockwise(Time.fixedDeltaTime);
 
-        Vector2 targetPosition = owner.ResolveSwordHoldPosition(heldOffset);
+        Vector2 targetPosition = ResolveRecallTargetPosition();
         Vector2 current = transform.position;
         Vector2 delta = targetPosition - current;
         float step = flyingSpeed * Time.fixedDeltaTime;
@@ -314,10 +341,11 @@ public sealed class EgoSwordActor : MonoBehaviour
     public void CompleteRecallAtOwner()
     {
         StopAfterimage();
+        StopSwordSpinEffect();
         if (owner == null)
             return;
 
-        Vector2 impactCenter = owner.ResolveSwordHoldPosition(heldOffset);
+        Vector2 impactCenter = ResolveRecallTargetPosition();
         DemonKingCombatUtil.ApplyCircleDamage(
             owner,
             impactCenter,
@@ -327,6 +355,14 @@ public sealed class EgoSwordActor : MonoBehaviour
             knockbackImpulse: recallImpactKnockback);
 
         owner.CompleteEgoSwordRecall();
+    }
+
+    private Vector2 ResolveRecallTargetPosition()
+    {
+        if (owner != null)
+            return owner.ResolveSwordHoldPosition(recallTargetLocalOffset);
+
+        return (Vector2)(transform.position + recallTargetLocalOffset);
     }
 
     private void RotateClockwise(float deltaTime)
@@ -381,6 +417,7 @@ public sealed class EgoSwordActor : MonoBehaviour
         StopDroppedPatterns();
         ClearBuriedMask();
         StopVerticalAuraAnimation();
+        StopSwordSpinEffect();
         recallMovementActive = false;
 
         state = SwordState.Planting;
@@ -433,7 +470,7 @@ public sealed class EgoSwordActor : MonoBehaviour
         transform.rotation = Quaternion.identity;
         ApplyBuriedMask();
         DemonKingPatternVfx.SpawnEgoSwordAttack(transform, verticalStrikeDiameter);
-        DemonKingPatternVfx.SpawnImpact(transform.position, verticalStrikeDiameter);
+        DemonKingPatternVfx.SpawnImpact(transform.position, verticalStrikeDiameter, leaveFragment: false);
         useCrossPatternNext = false;
         if (startPatterns && isActiveAndEnabled)
             StartDroppedPatterns();
@@ -994,7 +1031,7 @@ public sealed class EgoSwordActor : MonoBehaviour
         transform.rotation = Quaternion.identity;
         ApplyBuriedMask();
         activeVerticalAttackVfx = DemonKingPatternVfx.SpawnEgoSwordAttack(transform, verticalStrikeDiameter);
-        DemonKingPatternVfx.SpawnImpact(groundTarget, verticalStrikeDiameter);
+        DemonKingPatternVfx.SpawnImpact(groundTarget, verticalStrikeDiameter, leaveFragment: false);
         if (activeVerticalAttackVfx == null)
         {
             DemonKingPrimitiveVisual.SpawnCircle(
@@ -1045,6 +1082,7 @@ public sealed class EgoSwordActor : MonoBehaviour
 
         ConfigureBuriedMask(mask);
         mask.enabled = true;
+        SpawnBuriedFragment();
         for (int i = 0; i < baseSwordRenderers.Length; i++)
         {
             if (baseSwordRenderers[i] != null)
@@ -1064,6 +1102,42 @@ public sealed class EgoSwordActor : MonoBehaviour
         SpriteMask mask = ResolveBuriedMask(createIfMissing: false);
         if (mask != null)
             mask.enabled = false;
+        ReleaseBuriedFragment(fade: true);
+    }
+
+    private void SpawnBuriedFragment()
+    {
+        if (activeBuriedFragmentVfx != null)
+            return;
+
+        activeBuriedFragmentVfx = DemonKingPatternVfx.SpawnPersistentFragment(transform.position, "EgoSword_BuriedFragmentVfx");
+    }
+
+    private void ReleaseBuriedFragment(bool fade)
+    {
+        if (activeBuriedFragmentVfx == null)
+            return;
+
+        if (fade)
+            activeBuriedFragmentVfx.FadeAndRelease(0.5f);
+        else
+            activeBuriedFragmentVfx.StopAndRelease();
+        activeBuriedFragmentVfx = null;
+    }
+
+    private void StartSwordSpinEffect()
+    {
+        StopSwordSpinEffect();
+        activeSwordSpinVfx = DemonKingPatternVfx.SpawnSwordSpinLoop(transform);
+    }
+
+    private void StopSwordSpinEffect()
+    {
+        if (activeSwordSpinVfx == null)
+            return;
+
+        activeSwordSpinVfx.StopAndRelease();
+        activeSwordSpinVfx = null;
     }
 
     private SpriteMask ResolveBuriedMask(bool createIfMissing)

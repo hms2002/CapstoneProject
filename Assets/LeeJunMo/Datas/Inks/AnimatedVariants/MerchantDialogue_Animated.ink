@@ -1,4 +1,4 @@
-﻿// Merchant NPC dialogue
+// Merchant NPC dialogue
 // This NPC only talks. Shop interaction remains outside the dialogue flow.
 
 # speaker: 1001

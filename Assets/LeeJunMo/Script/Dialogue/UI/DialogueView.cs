@@ -18,7 +18,15 @@ public enum DialogueAnimType
     Cold
 }
 
-internal readonly struct DialogueInlinePause
+public enum DialogueCameraShakePreset
+{
+    None,
+    Low,
+    Middle,
+    High
+}
+
+public readonly struct DialogueInlinePause
 {
     public DialogueInlinePause(int characterIndex, float seconds)
     {
@@ -30,27 +38,42 @@ internal readonly struct DialogueInlinePause
     public float Seconds { get; }
 }
 
-internal enum DialogueTextEffectType
+public enum DialogueTextEffectType
 {
     Shake,
     Tremble,
     Punch,
     Wave,
-    Float
+    Float,
+    RandomSize,
+    SlowShake
 }
 
-internal readonly struct DialogueTextEffectRange
+public readonly struct DialogueTextEffectRange
 {
-    public DialogueTextEffectRange(int startCharacterIndex, int endCharacterIndex, DialogueTextEffectType effectType)
+    public DialogueTextEffectRange(
+        int startCharacterIndex,
+        int endCharacterIndex,
+        DialogueTextEffectType effectType,
+        float randomSizeMinScale = 1f,
+        float randomSizeMaxScale = 1f,
+        float randomSizeClampMinScale = 0.8f,
+        float randomSizeClampMaxScale = 1.2f)
     {
+        float clampMin = Mathf.Max(0.01f, Mathf.Min(randomSizeClampMinScale, randomSizeClampMaxScale));
+        float clampMax = Mathf.Max(clampMin, Mathf.Max(randomSizeClampMinScale, randomSizeClampMaxScale));
         StartCharacterIndex = Mathf.Max(0, startCharacterIndex);
         EndCharacterIndex = Mathf.Max(StartCharacterIndex, endCharacterIndex);
         EffectType = effectType;
+        RandomSizeMinScale = Mathf.Clamp(Mathf.Min(randomSizeMinScale, randomSizeMaxScale), clampMin, clampMax);
+        RandomSizeMaxScale = Mathf.Clamp(Mathf.Max(randomSizeMinScale, randomSizeMaxScale), clampMin, clampMax);
     }
 
     public int StartCharacterIndex { get; }
     public int EndCharacterIndex { get; }
     public DialogueTextEffectType EffectType { get; }
+    public float RandomSizeMinScale { get; }
+    public float RandomSizeMaxScale { get; }
 
     public bool Contains(int characterIndex)
     {
@@ -58,7 +81,7 @@ internal readonly struct DialogueTextEffectRange
     }
 }
 
-internal readonly struct DialogueTextRevealPlan
+public readonly struct DialogueTextRevealPlan
 {
     public DialogueTextRevealPlan(
         string displayText,
@@ -75,7 +98,7 @@ internal readonly struct DialogueTextRevealPlan
     public List<DialogueTextEffectRange> Effects { get; }
 }
 
-internal readonly struct DialogueTextRevealProfile
+public readonly struct DialogueTextRevealProfile
 {
     public DialogueTextRevealProfile(float characterDelay, float punctuationPauseScale)
     {
@@ -87,24 +110,83 @@ internal readonly struct DialogueTextRevealProfile
     public float PunctuationPauseScale { get; }
 }
 
-internal static class DialogueTextRevealUtility
+public readonly struct DialogueTextImpactState
+{
+    public DialogueTextImpactState(
+        float startTime,
+        float duration,
+        float settleDuration,
+        float characterImpactOffset,
+        int vibrato,
+        float randomness)
+    {
+        StartTime = startTime;
+        Duration = Mathf.Max(0f, duration);
+        SettleDuration = Mathf.Max(0f, settleDuration);
+        CharacterImpactOffset = Mathf.Max(0f, characterImpactOffset);
+        Vibrato = Mathf.Max(1, vibrato);
+        Randomness = Mathf.Max(0f, randomness);
+    }
+
+    public float StartTime { get; }
+    public float Duration { get; }
+    public float SettleDuration { get; }
+    public float CharacterImpactOffset { get; }
+    public int Vibrato { get; }
+    public float Randomness { get; }
+
+    public float TotalDuration => Duration + SettleDuration;
+
+    public bool IsActiveAt(float elapsedSeconds)
+    {
+        return CharacterImpactOffset > 0f &&
+               TotalDuration > 0f &&
+               elapsedSeconds >= StartTime &&
+               elapsedSeconds < StartTime + TotalDuration;
+    }
+
+    public float ResolveEnvelope(float elapsedSeconds)
+    {
+        if (!IsActiveAt(elapsedSeconds))
+            return 0f;
+
+        float normalized = Mathf.Clamp01((elapsedSeconds - StartTime) / TotalDuration);
+        return 1f - Mathf.SmoothStep(0f, 1f, normalized);
+    }
+}
+
+public static class DialogueTextRevealUtility
 {
     private const string PauseTagPrefix = "[pause=";
-    private const float TextEffectSettleSeconds = 0.18f;
 
     private readonly struct ActiveEffectTag
     {
-        public ActiveEffectTag(DialogueTextEffectType effectType, int startCharacterIndex)
+        public ActiveEffectTag(
+            DialogueTextEffectType effectType,
+            int startCharacterIndex,
+            float randomSizeMinScale,
+            float randomSizeMaxScale)
         {
             EffectType = effectType;
             StartCharacterIndex = startCharacterIndex;
+            RandomSizeMinScale = randomSizeMinScale;
+            RandomSizeMaxScale = randomSizeMaxScale;
         }
 
         public DialogueTextEffectType EffectType { get; }
         public int StartCharacterIndex { get; }
+        public float RandomSizeMinScale { get; }
+        public float RandomSizeMaxScale { get; }
     }
 
     public static DialogueTextRevealPlan BuildPlan(string rawText)
+    {
+        return BuildPlan(rawText, null);
+    }
+
+    public static DialogueTextRevealPlan BuildPlan(
+        string rawText,
+        DialogueTextAnimationProfileSO textAnimationProfile)
     {
         if (string.IsNullOrEmpty(rawText))
         {
@@ -114,6 +196,8 @@ internal static class DialogueTextRevealUtility
                 new List<DialogueTextEffectRange>());
         }
 
+        DialogueTextAnimationProfileSO profile =
+            DialogueTextAnimationProfileSO.Resolve(textAnimationProfile);
         System.Text.StringBuilder displayBuilder = new System.Text.StringBuilder(rawText.Length);
         List<DialogueInlinePause> pauses = new List<DialogueInlinePause>();
         List<DialogueTextEffectRange> effects = new List<DialogueTextEffectRange>();
@@ -135,6 +219,7 @@ internal static class DialogueTextRevealUtility
                     visibleCharacterIndex,
                     activeEffects,
                     effects,
+                    profile,
                     out consumed))
             {
                 i += consumed;
@@ -161,7 +246,11 @@ internal static class DialogueTextRevealUtility
                 effects.Add(new DialogueTextEffectRange(
                     activeEffect.StartCharacterIndex,
                     visibleCharacterIndex,
-                    activeEffect.EffectType));
+                    activeEffect.EffectType,
+                    activeEffect.RandomSizeMinScale,
+                    activeEffect.RandomSizeMaxScale,
+                    profile.RandomSize.ClampMinScale,
+                    profile.RandomSize.ClampMaxScale));
             }
         }
 
@@ -248,7 +337,16 @@ internal static class DialogueTextRevealUtility
 
     public static float GetTextEffectSettleSeconds(DialogueTextRevealPlan plan)
     {
-        return HasTextEffects(plan) ? TextEffectSettleSeconds : 0f;
+        return GetTextEffectSettleSeconds(plan, null);
+    }
+
+    public static float GetTextEffectSettleSeconds(
+        DialogueTextRevealPlan plan,
+        DialogueTextAnimationProfileSO textAnimationProfile)
+    {
+        DialogueTextAnimationProfileSO profile =
+            DialogueTextAnimationProfileSO.Resolve(textAnimationProfile);
+        return HasTextEffects(plan) ? profile.TextEffectSettleSeconds : 0f;
     }
 
     public static void ApplyTextEffects(
@@ -257,9 +355,46 @@ internal static class DialogueTextRevealUtility
         int visibleCharacterCount,
         float elapsedSeconds)
     {
-        if (text == null || !HasTextEffects(plan))
+        ApplyTextEffects(
+            text,
+            plan,
+            visibleCharacterCount,
+            elapsedSeconds,
+            default(DialogueTextImpactState),
+            null);
+    }
+
+    public static void ApplyTextEffects(
+        TMP_Text text,
+        DialogueTextRevealPlan plan,
+        int visibleCharacterCount,
+        float elapsedSeconds,
+        DialogueTextImpactState impactState)
+    {
+        ApplyTextEffects(
+            text,
+            plan,
+            visibleCharacterCount,
+            elapsedSeconds,
+            impactState,
+            null);
+    }
+
+    public static void ApplyTextEffects(
+        TMP_Text text,
+        DialogueTextRevealPlan plan,
+        int visibleCharacterCount,
+        float elapsedSeconds,
+        DialogueTextImpactState impactState,
+        DialogueTextAnimationProfileSO textAnimationProfile)
+    {
+        bool hasInlineEffects = HasTextEffects(plan);
+        bool hasImpact = impactState.IsActiveAt(elapsedSeconds);
+        if (text == null || (!hasInlineEffects && !hasImpact))
             return;
 
+        DialogueTextAnimationProfileSO profile =
+            DialogueTextAnimationProfileSO.Resolve(textAnimationProfile);
         text.ForceMeshUpdate();
 
         TMP_TextInfo textInfo = text.textInfo;
@@ -276,14 +411,20 @@ internal static class DialogueTextRevealUtility
             Vector3 offset = Vector3.zero;
             float scale = 1f;
 
-            for (int effectIndex = 0; effectIndex < plan.Effects.Count; effectIndex++)
+            if (hasInlineEffects)
             {
-                DialogueTextEffectRange range = plan.Effects[effectIndex];
-                if (!range.Contains(i))
-                    continue;
+                for (int effectIndex = 0; effectIndex < plan.Effects.Count; effectIndex++)
+                {
+                    DialogueTextEffectRange range = plan.Effects[effectIndex];
+                    if (!range.Contains(i))
+                        continue;
 
-                AccumulateTextEffect(range.EffectType, i, elapsedSeconds, ref offset, ref scale);
+                    AccumulateTextEffect(range, i, elapsedSeconds, profile, ref offset, ref scale);
+                }
             }
+
+            if (hasImpact)
+                AccumulateImpactEffect(impactState, i, elapsedSeconds, ref offset);
 
             if (offset == Vector3.zero && Mathf.Approximately(scale, 1f))
                 continue;
@@ -335,43 +476,123 @@ internal static class DialogueTextRevealUtility
     }
 
     private static void AccumulateTextEffect(
-        DialogueTextEffectType effectType,
+        DialogueTextEffectRange range,
         int characterIndex,
         float elapsedSeconds,
+        DialogueTextAnimationProfileSO textAnimationProfile,
         ref Vector3 offset,
         ref float scale)
     {
-        float phase = elapsedSeconds + characterIndex * 0.37f;
-        switch (effectType)
+        switch (range.EffectType)
         {
             case DialogueTextEffectType.Shake:
-                offset.x += SignedWave(phase, 58.1f, characterIndex) * 2.2f;
-                offset.y += SignedWave(phase, 71.7f, characterIndex + 11) * 1.6f;
+            {
+                Vector2 motion = textAnimationProfile.Shake.Evaluate(elapsedSeconds, characterIndex);
+                offset.x += motion.x;
+                offset.y += motion.y;
                 break;
+            }
 
             case DialogueTextEffectType.Tremble:
-                offset.x += SignedWave(phase, 42.3f, characterIndex) * 0.9f;
-                offset.y += SignedWave(phase, 49.5f, characterIndex + 5) * 0.7f;
+            {
+                Vector2 motion = textAnimationProfile.Tremble.Evaluate(elapsedSeconds, characterIndex);
+                offset.x += motion.x;
+                offset.y += motion.y;
                 break;
+            }
 
             case DialogueTextEffectType.Punch:
-                scale *= 1f + Mathf.Max(0f, Mathf.Sin(elapsedSeconds * 18f - characterIndex * 0.22f)) * 0.08f;
-                offset.y += Mathf.Max(0f, Mathf.Sin(elapsedSeconds * 18f - characterIndex * 0.22f)) * 1.1f;
+            {
+                PunchMotionSettings settings = textAnimationProfile.Punch;
+                float pulse = settings.EvaluatePulse(elapsedSeconds, characterIndex);
+                scale *= 1f + pulse * settings.ScaleAmplitude;
+                offset.y += pulse * settings.VerticalAmplitude;
                 break;
+            }
 
             case DialogueTextEffectType.Wave:
-                offset.y += Mathf.Sin(elapsedSeconds * 7f + characterIndex * 0.55f) * 1.7f;
+                offset.y += textAnimationProfile.Wave.EvaluateOffsetY(elapsedSeconds, characterIndex);
                 break;
 
             case DialogueTextEffectType.Float:
-                offset.y += Mathf.Sin(elapsedSeconds * 3.5f + characterIndex * 0.45f) * 1.2f;
+                offset.y += textAnimationProfile.Float.EvaluateOffsetY(elapsedSeconds, characterIndex);
                 break;
+
+            case DialogueTextEffectType.RandomSize:
+                scale *= ResolveRandomSizeScale(range, characterIndex);
+                break;
+
+            case DialogueTextEffectType.SlowShake:
+            {
+                Vector2 motion = textAnimationProfile.SlowShake.Evaluate(elapsedSeconds, characterIndex);
+                offset.x += motion.x;
+                offset.y += motion.y;
+                break;
+            }
         }
     }
 
-    private static float SignedWave(float phase, float speed, int seed)
+    private static void AccumulateImpactEffect(
+        DialogueTextImpactState impactState,
+        int characterIndex,
+        float elapsedSeconds,
+        ref Vector3 offset)
     {
-        return Mathf.Sin(phase * speed + seed * 1.618f);
+        float envelope = impactState.ResolveEnvelope(elapsedSeconds);
+        if (envelope <= 0f)
+            return;
+
+        float localTime = Mathf.Max(0f, elapsedSeconds - impactState.StartTime);
+        float activeDuration = Mathf.Max(impactState.Duration, 0.0001f);
+        float samplePosition = Mathf.Clamp01(localTime / activeDuration) * impactState.Vibrato;
+        int sampleIndex = Mathf.FloorToInt(samplePosition);
+        float sampleBlend = Mathf.SmoothStep(0f, 1f, samplePosition - sampleIndex);
+        Vector2 currentSample = ResolveShakeSample(characterIndex, sampleIndex, impactState.Randomness);
+        Vector2 nextSample = ResolveShakeSample(characterIndex, sampleIndex + 1, impactState.Randomness);
+        Vector2 shakeOffset = Vector2.Lerp(currentSample, nextSample, sampleBlend) *
+                              impactState.CharacterImpactOffset *
+                              envelope;
+
+        offset.x += shakeOffset.x;
+        offset.y += shakeOffset.y;
+    }
+
+    private static float Hash01(int seed)
+    {
+        float value = Mathf.Sin(seed * 12.9898f + 78.233f) * 43758.5453f;
+        return value - Mathf.Floor(value);
+    }
+
+    private static float HashSigned(int seed)
+    {
+        return Hash01(seed) * 2f - 1f;
+    }
+
+    private static Vector2 ResolveShakeSample(int characterIndex, int sampleIndex, float randomness)
+    {
+        int randomnessSeed = Mathf.RoundToInt(randomness * 10f);
+        int baseSeed = characterIndex * 73856093 ^ sampleIndex * 19349663 ^ randomnessSeed * 83492791;
+        Vector2 direction = new Vector2(
+            HashSigned(baseSeed + 17),
+            HashSigned(baseSeed + 53));
+
+        if (direction.sqrMagnitude < 0.0001f)
+            direction = Vector2.right;
+        else
+            direction.Normalize();
+
+        float magnitude = Mathf.Lerp(0.55f, 1f, Hash01(baseSeed + 89));
+        return direction * magnitude;
+    }
+
+    private static float ResolveRandomSizeScale(DialogueTextEffectRange range, int characterIndex)
+    {
+        int seed = unchecked(
+            characterIndex * 73856093 ^
+            range.StartCharacterIndex * 19349663 ^
+            range.EndCharacterIndex * 83492791);
+        float t = Hash01(seed);
+        return Mathf.Lerp(range.RandomSizeMinScale, range.RandomSizeMaxScale, t);
     }
 
     private static void ApplyCharacterTransform(
@@ -444,6 +665,7 @@ internal static class DialogueTextRevealUtility
         int visibleCharacterIndex,
         List<ActiveEffectTag> activeEffects,
         List<DialogueTextEffectRange> effects,
+        DialogueTextAnimationProfileSO textAnimationProfile,
         out int consumed)
     {
         consumed = 0;
@@ -457,7 +679,8 @@ internal static class DialogueTextRevealUtility
 
         string tag = text.Substring(startIndex + 1, closeIndex - startIndex - 1).Trim();
         bool isClosingTag = tag.StartsWith("/", StringComparison.Ordinal);
-        string effectName = isClosingTag ? tag.Substring(1).Trim() : tag;
+        string effectExpression = isClosingTag ? tag.Substring(1).Trim() : tag;
+        string effectName = ExtractEffectName(effectExpression);
 
         if (!TryParseEffectType(effectName, out DialogueTextEffectType effectType))
             return false;
@@ -465,7 +688,13 @@ internal static class DialogueTextRevealUtility
         consumed = closeIndex - startIndex + 1;
         if (!isClosingTag)
         {
-            activeEffects.Add(new ActiveEffectTag(effectType, visibleCharacterIndex));
+            ResolveRandomSizeRange(
+                effectExpression,
+                effectType,
+                textAnimationProfile,
+                out float minScale,
+                out float maxScale);
+            activeEffects.Add(new ActiveEffectTag(effectType, visibleCharacterIndex, minScale, maxScale));
             return true;
         }
 
@@ -481,7 +710,11 @@ internal static class DialogueTextRevealUtility
                 effects.Add(new DialogueTextEffectRange(
                     activeEffect.StartCharacterIndex,
                     visibleCharacterIndex,
-                    effectType));
+                    effectType,
+                    activeEffect.RandomSizeMinScale,
+                    activeEffect.RandomSizeMaxScale,
+                    textAnimationProfile.RandomSize.ClampMinScale,
+                    textAnimationProfile.RandomSize.ClampMaxScale));
             }
 
             return true;
@@ -518,9 +751,93 @@ internal static class DialogueTextRevealUtility
             case "drift":
                 effectType = DialogueTextEffectType.Float;
                 return true;
+            case "rand_size":
+            case "random_size":
+            case "randomsize":
+            case "size_jitter":
+            case "sizejitter":
+            case "drunk_size":
+            case "drunksize":
+                effectType = DialogueTextEffectType.RandomSize;
+                return true;
+            case "slowshake":
+            case "slow_shake":
+            case "drunkshake":
+            case "drunk_shake":
+                effectType = DialogueTextEffectType.SlowShake;
+                return true;
             default:
                 return false;
         }
+    }
+
+    private static string ExtractEffectName(string expression)
+    {
+        if (string.IsNullOrWhiteSpace(expression))
+            return string.Empty;
+
+        int equalsIndex = expression.IndexOf('=');
+        return equalsIndex >= 0
+            ? expression.Substring(0, equalsIndex).Trim()
+            : expression.Trim();
+    }
+
+    private static void ResolveRandomSizeRange(
+        string expression,
+        DialogueTextEffectType effectType,
+        DialogueTextAnimationProfileSO textAnimationProfile,
+        out float minScale,
+        out float maxScale)
+    {
+        RandomSizeSettings settings = textAnimationProfile.RandomSize;
+        minScale = settings.DefaultMinScale;
+        maxScale = settings.DefaultMaxScale;
+
+        if (effectType != DialogueTextEffectType.RandomSize ||
+            string.IsNullOrWhiteSpace(expression))
+        {
+            return;
+        }
+
+        int equalsIndex = expression.IndexOf('=');
+        if (equalsIndex < 0 || equalsIndex + 1 >= expression.Length)
+            return;
+
+        string value = expression.Substring(equalsIndex + 1);
+        string[] parts = value.Split(',', ';', '|', '~');
+        if (parts.Length < 2)
+            return;
+
+        if (!TryParseScale(parts[0], out float parsedMin) ||
+            !TryParseScale(parts[1], out float parsedMax))
+        {
+            return;
+        }
+
+        settings.ResolveRange(parsedMin, parsedMax, out minScale, out maxScale);
+    }
+
+    private static bool TryParseScale(string value, out float scale)
+    {
+        scale = 1f;
+        if (string.IsNullOrWhiteSpace(value))
+            return false;
+
+        string trimmed = value.Trim();
+        if (trimmed.EndsWith("%", StringComparison.Ordinal))
+            trimmed = trimmed.Substring(0, trimmed.Length - 1);
+
+        if (!float.TryParse(
+                trimmed,
+                System.Globalization.NumberStyles.Float,
+                System.Globalization.CultureInfo.InvariantCulture,
+                out float parsed))
+        {
+            return false;
+        }
+
+        scale = parsed > 2f ? parsed / 100f : parsed;
+        return scale > 0f;
     }
 
     private static bool TryCopyRichTextTag(
@@ -543,6 +860,133 @@ internal static class DialogueTextRevealUtility
 public class DialogueView : MonoBehaviour
 {
     private static readonly SoundRef TalkUiIntroSound = SoundRef.FromKey("sound_ui_TalkUIIntro");
+
+    private readonly struct DialogueCameraShakeMotionProfile
+    {
+        public DialogueCameraShakeMotionProfile(
+            float duration,
+            Vector2 panelStrength,
+            float textMaxOffset,
+            float characterImpactOffset,
+            float cameraAmplitude,
+            int vibrato,
+            float randomness,
+            float textInertiaScale,
+            float textSmoothTime,
+            float textSettleDuration,
+            float cameraMinIntervalSeconds)
+        {
+            Duration = Mathf.Max(0f, duration);
+            PanelStrength = panelStrength;
+            TextMaxOffset = Mathf.Max(0f, textMaxOffset);
+            CharacterImpactOffset = Mathf.Max(0f, characterImpactOffset);
+            CameraAmplitude = Mathf.Max(0f, cameraAmplitude);
+            Vibrato = Mathf.Max(1, vibrato);
+            Randomness = Mathf.Max(0f, randomness);
+            TextInertiaScale = Mathf.Max(0f, textInertiaScale);
+            TextSmoothTime = Mathf.Max(0.0001f, textSmoothTime);
+            TextSettleDuration = Mathf.Max(0f, textSettleDuration);
+            CameraMinIntervalSeconds = Mathf.Max(0f, cameraMinIntervalSeconds);
+        }
+
+        public float Duration { get; }
+        public Vector2 PanelStrength { get; }
+        public float TextMaxOffset { get; }
+        public float CharacterImpactOffset { get; }
+        public float CameraAmplitude { get; }
+        public int Vibrato { get; }
+        public float Randomness { get; }
+        public float TextInertiaScale { get; }
+        public float TextSmoothTime { get; }
+        public float TextSettleDuration { get; }
+        public float CameraMinIntervalSeconds { get; }
+    }
+
+    [Serializable]
+    private sealed class DialogueCameraShakeProfileSettings
+    {
+        [SerializeField, Min(0f)] private float duration = 0.12f;
+        [SerializeField] private Vector2 panelStrength = new Vector2(8f, 2f);
+        [SerializeField, Min(0f)] private float textMaxOffset = 2.5f;
+        [SerializeField, Min(0f)] private float characterImpactOffset = 1.5f;
+        [SerializeField, Min(0f)] private float cameraAmplitude = 0.10f;
+        [SerializeField, Min(1)] private int vibrato = 12;
+        [SerializeField, Min(0f)] private float randomness = 70f;
+        [SerializeField, Min(0f)] private float textInertiaScale = 0.45f;
+        [SerializeField, Min(0.0001f)] private float textSmoothTime = 0.035f;
+        [SerializeField, Min(0f)] private float textSettleDuration = 0.12f;
+        [SerializeField, Min(0f)] private float cameraMinIntervalSeconds = 0.03f;
+
+        public DialogueCameraShakeProfileSettings()
+        {
+        }
+
+        private DialogueCameraShakeProfileSettings(
+            float duration,
+            Vector2 panelStrength,
+            float textMaxOffset,
+            float characterImpactOffset,
+            float cameraAmplitude,
+            int vibrato,
+            float randomness,
+            float textInertiaScale,
+            float textSmoothTime,
+            float textSettleDuration,
+            float cameraMinIntervalSeconds)
+        {
+            this.duration = duration;
+            this.panelStrength = panelStrength;
+            this.textMaxOffset = textMaxOffset;
+            this.characterImpactOffset = characterImpactOffset;
+            this.cameraAmplitude = cameraAmplitude;
+            this.vibrato = vibrato;
+            this.randomness = randomness;
+            this.textInertiaScale = textInertiaScale;
+            this.textSmoothTime = textSmoothTime;
+            this.textSettleDuration = textSettleDuration;
+            this.cameraMinIntervalSeconds = cameraMinIntervalSeconds;
+        }
+
+        public static DialogueCameraShakeProfileSettings Create(
+            float duration,
+            Vector2 panelStrength,
+            float textMaxOffset,
+            float characterImpactOffset,
+            float cameraAmplitude,
+            int vibrato,
+            float randomness)
+        {
+            return new DialogueCameraShakeProfileSettings(
+                duration,
+                panelStrength,
+                textMaxOffset,
+                characterImpactOffset,
+                cameraAmplitude,
+                vibrato,
+                randomness,
+                0.45f,
+                0.035f,
+                0.12f,
+                0.03f);
+        }
+
+        public DialogueCameraShakeMotionProfile ToMotionProfile(float intensityMultiplier)
+        {
+            float multiplier = Mathf.Max(0f, intensityMultiplier);
+            return new DialogueCameraShakeMotionProfile(
+                duration,
+                panelStrength * multiplier,
+                textMaxOffset * multiplier,
+                characterImpactOffset * multiplier,
+                cameraAmplitude * multiplier,
+                Mathf.Max(1, Mathf.RoundToInt(vibrato * multiplier)),
+                randomness,
+                textInertiaScale * multiplier,
+                textSmoothTime,
+                textSettleDuration,
+                cameraMinIntervalSeconds);
+        }
+    }
 
     [Header("UI Groups (CanvasGroup required)")]
     [SerializeField] private CanvasGroup textBoxGroup;
@@ -580,12 +1024,29 @@ public class DialogueView : MonoBehaviour
     [SerializeField] private bool playTypingSound = true;
     [SerializeField, Min(0f)] private float typingSoundInterval = 0.035f;
 
+    [Header("Text Animation")]
+    [SerializeField] private DialogueTextAnimationProfileSO textAnimationProfileOverride;
+
+    [SerializeField, HideInInspector, Min(0f)] private float cameraShakeIntensityMultiplier = 10f;
+    [SerializeField, HideInInspector] private DialogueCameraShakeProfileSettings lowCameraShake = DialogueCameraShakeProfileSettings.Create(0.12f, new Vector2(8f, 2f), 2.5f, 1.5f, 0.10f, 12, 70f);
+    [SerializeField, HideInInspector] private DialogueCameraShakeProfileSettings middleCameraShake = DialogueCameraShakeProfileSettings.Create(0.18f, new Vector2(16f, 4f), 5f, 3f, 0.20f, 16, 75f);
+    [SerializeField, HideInInspector] private DialogueCameraShakeProfileSettings highCameraShake = DialogueCameraShakeProfileSettings.Create(0.26f, new Vector2(28f, 7f), 8f, 5f, 0.35f, 22, 80f);
+
     private Coroutine typingRoutine;
     private Coroutine textEffectRoutine;
+    private Coroutine dialogueCameraShakeInertiaRoutine;
     private Tween continueIconTween;
+    private Tween dialoguePanelShakeTween;
     private RectTransform continueIconRect;
+    private RectTransform dialoguePanelShakeRoot;
+    private RectTransform dialogueTextRect;
     private Vector2 continueIconBaseAnchoredPosition;
+    private Vector2 dialoguePanelShakeBaseAnchoredPosition;
+    private Vector2 dialogueTextBaseAnchoredPosition;
+    private DialogueTextImpactState dialogueCharacterImpactState;
     private bool hasContinueIconBasePosition;
+    private bool hasDialoguePanelShakeBasePosition;
+    private bool hasDialogueTextBaseAnchoredPosition;
     private readonly List<GameObject> activeChoiceButtons = new List<GameObject>();
     private readonly Dictionary<Graphic, Material> originalThemeMaterials = new Dictionary<Graphic, Material>();
     private readonly Dictionary<Graphic, Color> originalThemeColors = new Dictionary<Graphic, Color>();
@@ -634,6 +1095,11 @@ public class DialogueView : MonoBehaviour
         ClearText();
     }
 
+    private DialogueTextAnimationProfileSO GetTextAnimationProfile()
+    {
+        return DialogueTextAnimationProfileSO.Resolve(textAnimationProfileOverride);
+    }
+
     private void OnEnable()
     {
         StartContinueIconMotion();
@@ -642,6 +1108,8 @@ public class DialogueView : MonoBehaviour
     private void OnDisable()
     {
         StopContinueIconMotion(true);
+        StopTextEffectRoutine(true);
+        StopDialogueCameraShake(true);
     }
 
     private void OnDestroy()
@@ -661,6 +1129,7 @@ public class DialogueView : MonoBehaviour
     {
         StopTypingRoutine();
         StopTextEffectRoutine(true);
+        StopDialogueCameraShake(true);
         ResetTypingAudioTracking();
 
         if (nameText != null)
@@ -693,6 +1162,13 @@ public class DialogueView : MonoBehaviour
         ApplyThemeToTargets(speakerFrameThemeTargets, theme.speakerFrameFillColor, theme.outlineColor);
         if (nameText != null)
             nameText.color = theme.outlineColor;
+        RefreshDialogueEffectOverride();
+    }
+
+    public void ApplyDialogueEffectTheme(DialogueThemeSO theme)
+    {
+        AutoResolveThemeTargets();
+        currentEffectTheme = theme;
         RefreshDialogueEffectOverride();
     }
 
@@ -795,13 +1271,23 @@ public class DialogueView : MonoBehaviour
 
     public void TypeText(string speakerName, string text, Action onComplete = null)
     {
-        TypeText(speakerName, text, DialogueAnimType.Normal, onComplete);
+        TypeText(speakerName, text, DialogueAnimType.Normal, DialogueCameraShakePreset.None, onComplete);
     }
 
     public void TypeText(
         string speakerName,
         string text,
         DialogueAnimType animType,
+        Action onComplete = null)
+    {
+        TypeText(speakerName, text, animType, DialogueCameraShakePreset.None, onComplete);
+    }
+
+    internal void TypeText(
+        string speakerName,
+        string text,
+        DialogueAnimType animType,
+        DialogueCameraShakePreset cameraShakePreset,
         Action onComplete = null)
     {
         if (nameText != null)
@@ -812,17 +1298,20 @@ public class DialogueView : MonoBehaviour
 
         StopTypingRoutine();
         StopTextEffectRoutine(true);
+        StopDialogueCameraShake(true);
         ResetTypingAudioTracking();
 
         if (dialogueText == null)
             return;
 
-        DialogueTextRevealPlan revealPlan = DialogueTextRevealUtility.BuildPlan(text);
+        DialogueTextAnimationProfileSO textAnimationProfile = GetTextAnimationProfile();
+        DialogueTextRevealPlan revealPlan = DialogueTextAnimationUtility.BuildPlan(text, textAnimationProfile);
         string lineText = revealPlan.DisplayText;
         dialogueText.richText = true;
         dialogueText.text = lineText;
         dialogueText.maxVisibleCharacters = 0;
         dialogueText.ForceMeshUpdate();
+        PlayDialogueCameraShake(cameraShakePreset);
 
         int visibleCharacterCount = dialogueText.textInfo != null
             ? dialogueText.textInfo.characterCount
@@ -839,7 +1328,12 @@ public class DialogueView : MonoBehaviour
             return;
         }
 
-        typingRoutine = StartCoroutine(TypeTextRoutine(revealPlan, animType, visibleCharacterCount, onComplete));
+        typingRoutine = StartCoroutine(TypeTextRoutine(
+            revealPlan,
+            animType,
+            visibleCharacterCount,
+            textAnimationProfile,
+            onComplete));
     }
 
     public void SkipTyping(string fullText)
@@ -848,7 +1342,8 @@ public class DialogueView : MonoBehaviour
 
         if (dialogueText != null)
         {
-            DialogueTextRevealPlan revealPlan = DialogueTextRevealUtility.BuildPlan(fullText);
+            DialogueTextAnimationProfileSO textAnimationProfile = GetTextAnimationProfile();
+            DialogueTextRevealPlan revealPlan = DialogueTextAnimationUtility.BuildPlan(fullText, textAnimationProfile);
             dialogueText.richText = true;
             dialogueText.text = revealPlan.DisplayText;
             dialogueText.ForceMeshUpdate();
@@ -856,7 +1351,10 @@ public class DialogueView : MonoBehaviour
                 ? dialogueText.textInfo.characterCount
                 : int.MaxValue;
 
-            StartTextEffectRoutine(revealPlan, GetCurrentVisibleDialogueCharacterCount());
+            StartTextEffectRoutine(
+                revealPlan,
+                GetCurrentVisibleDialogueCharacterCount(),
+                textAnimationProfile);
         }
 
         lastTypedCharacterCount = GetCurrentVisibleDialogueCharacterCount();
@@ -869,46 +1367,55 @@ public class DialogueView : MonoBehaviour
         DialogueTextRevealPlan revealPlan,
         DialogueAnimType animType,
         int visibleCharacterCount,
+        DialogueTextAnimationProfileSO textAnimationProfile,
         Action onComplete)
     {
-        DialogueTextRevealProfile profile = DialogueTextRevealUtility.ResolveProfile(animType);
+        DialogueTextRevealProfile profile = DialogueTextAnimationUtility.ResolveProfile(animType);
 
         for (int i = 0; i < visibleCharacterCount; i++)
         {
-            float explicitPause = DialogueTextRevealUtility.GetPauseBeforeCharacter(revealPlan, i);
+            float explicitPause = DialogueTextAnimationUtility.GetPauseBeforeCharacter(revealPlan, i);
             if (explicitPause > 0f)
-                yield return WaitForTextRevealDelay(revealPlan, i, explicitPause);
+                yield return WaitForTextRevealDelay(revealPlan, i, explicitPause, textAnimationProfile);
 
             if (dialogueText == null)
                 yield break;
 
             dialogueText.maxVisibleCharacters = i + 1;
             HandleTypingTweenUpdated();
-            DialogueTextRevealUtility.ApplyTextEffects(
+            DialogueTextAnimationUtility.ApplyTextEffects(
                 dialogueText,
                 revealPlan,
                 i + 1,
-                Time.unscaledTime);
+                Time.unscaledTime,
+                dialogueCharacterImpactState,
+                textAnimationProfile);
 
-            float delay = DialogueTextRevealUtility.GetPostCharacterDelay(
+            float delay = DialogueTextAnimationUtility.GetPostCharacterDelay(
                 profile,
                 dialogueText.textInfo,
                 i);
 
             if (delay > 0f)
-                yield return WaitForTextRevealDelay(revealPlan, i + 1, delay);
+                yield return WaitForTextRevealDelay(revealPlan, i + 1, delay, textAnimationProfile);
         }
 
-        float settleSeconds = DialogueTextRevealUtility.GetTextEffectSettleSeconds(revealPlan);
+        float settleSeconds = DialogueTextAnimationUtility.GetTextEffectSettleSeconds(
+            revealPlan,
+            textAnimationProfile);
         if (settleSeconds > 0f)
-            yield return WaitForTextRevealDelay(revealPlan, visibleCharacterCount, settleSeconds);
+            yield return WaitForTextRevealDelay(
+                revealPlan,
+                visibleCharacterCount,
+                settleSeconds,
+                textAnimationProfile);
 
         typingRoutine = null;
 
         if (dialogueText != null)
         {
             dialogueText.maxVisibleCharacters = visibleCharacterCount;
-            StartTextEffectRoutine(revealPlan, visibleCharacterCount);
+            StartTextEffectRoutine(revealPlan, visibleCharacterCount, textAnimationProfile);
             HandleTypingTweenUpdated();
         }
 
@@ -921,12 +1428,14 @@ public class DialogueView : MonoBehaviour
     private IEnumerator WaitForTextRevealDelay(
         DialogueTextRevealPlan revealPlan,
         int visibleCharacterCount,
-        float seconds)
+        float seconds,
+        DialogueTextAnimationProfileSO textAnimationProfile)
     {
         if (seconds <= 0f)
             yield break;
 
-        if (!DialogueTextRevealUtility.HasTextEffects(revealPlan))
+        bool hasInlineEffects = DialogueTextAnimationUtility.HasTextEffects(revealPlan);
+        if (!hasInlineEffects && !HasActiveDialogueCharacterImpact())
         {
             yield return new WaitForSecondsRealtime(seconds);
             yield break;
@@ -938,15 +1447,30 @@ public class DialogueView : MonoBehaviour
             if (dialogueText == null)
                 yield break;
 
-            DialogueTextRevealUtility.ApplyTextEffects(
+            if (!hasInlineEffects && !HasActiveDialogueCharacterImpact())
+            {
+                DialogueTextAnimationUtility.ResetTextEffects(dialogueText);
+                float remainingSeconds = seconds - elapsed;
+                if (remainingSeconds > 0f)
+                    yield return new WaitForSecondsRealtime(remainingSeconds);
+
+                yield break;
+            }
+
+            DialogueTextAnimationUtility.ApplyTextEffects(
                 dialogueText,
                 revealPlan,
                 visibleCharacterCount,
-                Time.unscaledTime);
+                Time.unscaledTime,
+                dialogueCharacterImpactState,
+                textAnimationProfile);
 
             elapsed += Time.unscaledDeltaTime;
             yield return null;
         }
+
+        if (!hasInlineEffects && !HasActiveDialogueCharacterImpact())
+            DialogueTextAnimationUtility.ResetTextEffects(dialogueText);
     }
 
     public bool ShowChoices(List<Ink.Runtime.Choice> choices, Action<int> onChoiceSelected)
@@ -1149,10 +1673,232 @@ public class DialogueView : MonoBehaviour
             continueIconRect.anchoredPosition = continueIconBaseAnchoredPosition;
     }
 
+    private void PlayDialogueCameraShake(DialogueCameraShakePreset preset)
+    {
+        if (preset == DialogueCameraShakePreset.None ||
+            !TryResolveDialogueCameraShakeProfile(preset, out DialogueCameraShakeMotionProfile profile))
+        {
+            return;
+        }
+
+        PlayDialoguePanelShake(profile);
+        PlayDialogueTextInertia(profile);
+        PlayDialogueCharacterImpact(profile);
+        PlayDialogueWorldCameraShake(profile);
+    }
+
+    private bool TryResolveDialogueCameraShakeProfile(
+        DialogueCameraShakePreset preset,
+        out DialogueCameraShakeMotionProfile profile)
+    {
+        DialogueTextAnimationProfileSO textAnimationProfile = GetTextAnimationProfile();
+        if (textAnimationProfile != null &&
+            textAnimationProfile.TryResolveCameraShakeMotion(
+                preset,
+                out DialogueCameraShakeMotionSettings motionSettings))
+        {
+            profile = new DialogueCameraShakeMotionProfile(
+                motionSettings.Duration,
+                motionSettings.PanelStrength,
+                motionSettings.TextMaxOffset,
+                motionSettings.CharacterImpactOffset,
+                motionSettings.CameraAmplitude,
+                motionSettings.Vibrato,
+                motionSettings.Randomness,
+                motionSettings.TextInertiaScale,
+                motionSettings.TextSmoothTime,
+                motionSettings.TextSettleDuration,
+                motionSettings.CameraMinIntervalSeconds);
+            return true;
+        }
+
+        DialogueCameraShakeProfileSettings settings = preset switch
+        {
+            DialogueCameraShakePreset.Low => lowCameraShake,
+            DialogueCameraShakePreset.Middle => middleCameraShake,
+            DialogueCameraShakePreset.High => highCameraShake,
+            _ => null,
+        };
+
+        if (settings == null)
+        {
+            profile = default;
+            return false;
+        }
+
+        profile = settings.ToMotionProfile(cameraShakeIntensityMultiplier);
+        return true;
+    }
+
+    private void PlayDialoguePanelShake(in DialogueCameraShakeMotionProfile profile)
+    {
+        RectTransform panelRoot = ResolveDialoguePanelShakeRoot();
+        if (panelRoot == null || profile.Duration <= 0f)
+            return;
+
+        dialoguePanelShakeBaseAnchoredPosition = panelRoot.anchoredPosition;
+        hasDialoguePanelShakeBasePosition = true;
+        dialoguePanelShakeTween = panelRoot
+            .DOShakeAnchorPos(
+                profile.Duration,
+                profile.PanelStrength,
+                profile.Vibrato,
+                profile.Randomness,
+                false,
+                true)
+            .SetUpdate(true)
+            .OnComplete(() =>
+            {
+                dialoguePanelShakeTween = null;
+                if (panelRoot != null && hasDialoguePanelShakeBasePosition)
+                    panelRoot.anchoredPosition = dialoguePanelShakeBaseAnchoredPosition;
+            });
+    }
+
+    private void PlayDialogueTextInertia(in DialogueCameraShakeMotionProfile profile)
+    {
+        RectTransform panelRoot = ResolveDialoguePanelShakeRoot();
+        RectTransform textRoot = ResolveDialogueTextRect();
+        if (panelRoot == null || textRoot == null || profile.TextMaxOffset <= 0f)
+            return;
+
+        dialogueTextBaseAnchoredPosition = textRoot.anchoredPosition;
+        hasDialogueTextBaseAnchoredPosition = true;
+        dialogueCameraShakeInertiaRoutine = StartCoroutine(PlayDialogueTextInertiaRoutine(panelRoot, textRoot, profile));
+    }
+
+    private IEnumerator PlayDialogueTextInertiaRoutine(
+        RectTransform panelRoot,
+        RectTransform textRoot,
+        DialogueCameraShakeMotionProfile profile)
+    {
+        float elapsed = 0f;
+        float totalDuration = profile.Duration + profile.TextSettleDuration;
+        Vector2 textOffset = Vector2.zero;
+        Vector2 velocity = Vector2.zero;
+
+        while (elapsed < totalDuration && panelRoot != null && textRoot != null)
+        {
+            float deltaTime = Mathf.Max(Time.unscaledDeltaTime, 0.0001f);
+            Vector2 panelOffset = hasDialoguePanelShakeBasePosition
+                ? panelRoot.anchoredPosition - dialoguePanelShakeBaseAnchoredPosition
+                : Vector2.zero;
+            Vector2 targetOffset = Vector2.ClampMagnitude(
+                -panelOffset * profile.TextInertiaScale,
+                profile.TextMaxOffset);
+
+            textOffset = Vector2.SmoothDamp(
+                textOffset,
+                targetOffset,
+                ref velocity,
+                profile.TextSmoothTime,
+                Mathf.Infinity,
+                deltaTime);
+
+            float settleFade = elapsed <= profile.Duration || profile.TextSettleDuration <= 0f
+                ? 1f
+                : 1f - Mathf.Clamp01((elapsed - profile.Duration) / profile.TextSettleDuration);
+            textRoot.anchoredPosition = dialogueTextBaseAnchoredPosition + textOffset * settleFade;
+
+            elapsed += deltaTime;
+            yield return null;
+        }
+
+        if (textRoot != null && hasDialogueTextBaseAnchoredPosition)
+            textRoot.anchoredPosition = dialogueTextBaseAnchoredPosition;
+
+        dialogueCameraShakeInertiaRoutine = null;
+    }
+
+    private void PlayDialogueWorldCameraShake(in DialogueCameraShakeMotionProfile profile)
+    {
+        if (profile.CameraAmplitude <= 0f)
+            return;
+
+        CameraShakeService.Play(new CameraShakeRequest(
+            profile.CameraAmplitude,
+            Vector3.up,
+            gameObject,
+            profile.CameraMinIntervalSeconds,
+            "Dialogue.CameraShake"));
+    }
+
+    private void PlayDialogueCharacterImpact(in DialogueCameraShakeMotionProfile profile)
+    {
+        dialogueCharacterImpactState = new DialogueTextImpactState(
+            Time.unscaledTime,
+            profile.Duration,
+            profile.TextSettleDuration,
+            profile.CharacterImpactOffset,
+            profile.Vibrato,
+            profile.Randomness);
+    }
+
+    private bool HasActiveDialogueCharacterImpact()
+    {
+        return dialogueCharacterImpactState.IsActiveAt(Time.unscaledTime);
+    }
+
+    private void StopDialogueCameraShake(bool resetPosition)
+    {
+        dialoguePanelShakeTween?.Kill();
+        dialoguePanelShakeTween = null;
+
+        if (dialogueCameraShakeInertiaRoutine != null)
+        {
+            StopCoroutine(dialogueCameraShakeInertiaRoutine);
+            dialogueCameraShakeInertiaRoutine = null;
+        }
+
+        if (dialoguePanelShakeRoot != null)
+            dialoguePanelShakeRoot.DOKill();
+
+        if (dialogueTextRect != null)
+            dialogueTextRect.DOKill();
+
+        if (resetPosition && dialoguePanelShakeRoot != null && hasDialoguePanelShakeBasePosition)
+            dialoguePanelShakeRoot.anchoredPosition = dialoguePanelShakeBaseAnchoredPosition;
+
+        if (resetPosition && dialogueTextRect != null && hasDialogueTextBaseAnchoredPosition)
+            dialogueTextRect.anchoredPosition = dialogueTextBaseAnchoredPosition;
+
+        dialogueCharacterImpactState = default;
+        if (resetPosition)
+            DialogueTextAnimationUtility.ResetTextEffects(dialogueText);
+
+        hasDialoguePanelShakeBasePosition = false;
+        hasDialogueTextBaseAnchoredPosition = false;
+    }
+
+    private RectTransform ResolveDialoguePanelShakeRoot()
+    {
+        if (dialoguePanelShakeRoot != null)
+            return dialoguePanelShakeRoot;
+
+        if (textBoxGroup == null)
+            return null;
+
+        dialoguePanelShakeRoot = textBoxGroup.transform as RectTransform;
+        return dialoguePanelShakeRoot;
+    }
+
+    private RectTransform ResolveDialogueTextRect()
+    {
+        if (dialogueTextRect != null)
+            return dialogueTextRect;
+
+        if (dialogueText == null)
+            return null;
+
+        dialogueTextRect = dialogueText.rectTransform;
+        return dialogueTextRect;
+    }
+
     private void StopRuntimeTweens()
     {
         StopTypingRoutine();
         StopTextEffectRoutine(true);
+        StopDialogueCameraShake(true);
 
         StopContinueIconMotion(true);
 
@@ -1184,28 +1930,51 @@ public class DialogueView : MonoBehaviour
         typingRoutine = null;
     }
 
-    private void StartTextEffectRoutine(DialogueTextRevealPlan revealPlan, int visibleCharacterCount)
+    private void StartTextEffectRoutine(
+        DialogueTextRevealPlan revealPlan,
+        int visibleCharacterCount,
+        DialogueTextAnimationProfileSO textAnimationProfile)
     {
         StopTextEffectRoutine(true);
 
-        if (!DialogueTextRevealUtility.HasTextEffects(revealPlan) || dialogueText == null)
+        if (dialogueText == null ||
+            (!DialogueTextAnimationUtility.HasTextEffects(revealPlan) && !HasActiveDialogueCharacterImpact()))
+        {
             return;
+        }
 
-        textEffectRoutine = StartCoroutine(PlayTextEffectRoutine(revealPlan, visibleCharacterCount));
+        textEffectRoutine = StartCoroutine(PlayTextEffectRoutine(
+            revealPlan,
+            visibleCharacterCount,
+            textAnimationProfile));
     }
 
-    private IEnumerator PlayTextEffectRoutine(DialogueTextRevealPlan revealPlan, int visibleCharacterCount)
+    private IEnumerator PlayTextEffectRoutine(
+        DialogueTextRevealPlan revealPlan,
+        int visibleCharacterCount,
+        DialogueTextAnimationProfileSO textAnimationProfile)
     {
+        bool hasInlineEffects = DialogueTextAnimationUtility.HasTextEffects(revealPlan);
         while (dialogueText != null)
         {
-            DialogueTextRevealUtility.ApplyTextEffects(
+            bool hasImpact = HasActiveDialogueCharacterImpact();
+            if (!hasInlineEffects && !hasImpact)
+                break;
+
+            DialogueTextAnimationUtility.ApplyTextEffects(
                 dialogueText,
                 revealPlan,
                 visibleCharacterCount,
-                Time.unscaledTime);
+                Time.unscaledTime,
+                dialogueCharacterImpactState,
+                textAnimationProfile);
 
             yield return null;
         }
+
+        textEffectRoutine = null;
+        if (dialogueText != null && !hasInlineEffects)
+            DialogueTextAnimationUtility.ResetTextEffects(dialogueText);
     }
 
     private void StopTextEffectRoutine(bool resetText)
@@ -1217,12 +1986,14 @@ public class DialogueView : MonoBehaviour
         }
 
         if (resetText)
-            DialogueTextRevealUtility.ResetTextEffects(dialogueText);
+            DialogueTextAnimationUtility.ResetTextEffects(dialogueText);
     }
 
     public void HideUI(Action onComplete = null)
     {
         ClearChoices();
+        StopTextEffectRoutine(true);
+        StopDialogueCameraShake(true);
 
         if (continueIcon != null)
             continueIcon.SetActive(false);
