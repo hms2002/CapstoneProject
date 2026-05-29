@@ -32,6 +32,7 @@ GameObject:
   - component: {fileID: 4160568613653900950}
   - component: {fileID: 7700200000000011}
   - component: {fileID: 7700100000000011}
+  - component: {fileID: 7281157922159160526}
   m_Layer: 31
   m_Name: SlimeQueen
   m_TagString: Enemy
@@ -56,6 +57,7 @@ Transform:
   - {fileID: 5549965866665574441}
   - {fileID: 7208396782787983971}
   - {fileID: 5691777336258745699}
+  - {fileID: 4249312938496968963}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &1003000
@@ -205,6 +207,7 @@ MonoBehaviour:
       attachToTarget: 0
       anchorMode: 0
       scaleMode: 0
+      boundsMode: 0
       targetBoundsReferenceSize: 0
       targetBoundsScaleMultiplier: 0
       lifetimeMode: 0
@@ -218,6 +221,7 @@ MonoBehaviour:
       attachToTarget: 0
       anchorMode: 0
       scaleMode: 0
+      boundsMode: 0
       targetBoundsReferenceSize: 0
       targetBoundsScaleMultiplier: 0
       lifetimeMode: 0
@@ -633,6 +637,20 @@ MonoBehaviour:
     lastBuildUpTime: 0
     sustainVfxInstance: {fileID: 0}
     uiVisible: 1
+--- !u!114 &7281157922159160526
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1000000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b1a21a5a77b4e9e8d68c54b70c393fe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MonsterElementGaugeAnchor2D
+  anchor: {fileID: 4249312938496968963}
+  fallbackOffset: {x: 0, y: -1}
 --- !u!1 &1024000
 GameObject:
   m_ObjectHideFlags: 0
@@ -907,6 +925,37 @@ CapsuleCollider2D:
   m_Offset: {x: 0, y: 0}
   m_Size: {x: 0.5, y: 1}
   m_Direction: 0
+--- !u!1 &7628732392687861106
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4249312938496968963}
+  m_Layer: 31
+  m_Name: ElementGaugePivot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4249312938496968963
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7628732392687861106}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.22, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1001000}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8935192427702512421
 GameObject:
   m_ObjectHideFlags: 0

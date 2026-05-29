@@ -32,6 +32,7 @@ GameObject:
   - component: {fileID: 4160568613653900950}
   - component: {fileID: 7700200000000013}
   - component: {fileID: 7700100000000013}
+  - component: {fileID: 6790609533311786552}
   m_Layer: 31
   m_Name: SlimeQueenP2Short
   m_TagString: Enemy
@@ -56,6 +57,7 @@ Transform:
   - {fileID: 1023000}
   - {fileID: 8729317492907619267}
   - {fileID: 3473633876275524979}
+  - {fileID: 4615340672627727653}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &1003000
@@ -640,6 +642,20 @@ MonoBehaviour:
     lastBuildUpTime: 0
     sustainVfxInstance: {fileID: 0}
     uiVisible: 1
+--- !u!114 &6790609533311786552
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1000000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b1a21a5a77b4e9e8d68c54b70c393fe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MonsterElementGaugeAnchor2D
+  anchor: {fileID: 4615340672627727653}
+  fallbackOffset: {x: 0, y: -1}
 --- !u!1 &1024000
 GameObject:
   m_ObjectHideFlags: 0
@@ -823,6 +839,37 @@ CapsuleCollider2D:
   m_Offset: {x: 0, y: 0}
   m_Size: {x: 0.32, y: 0.71}
   m_Direction: 0
+--- !u!1 &3062359904403498278
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4615340672627727653}
+  m_Layer: 31
+  m_Name: ElementGaugePivot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4615340672627727653
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3062359904403498278}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.22, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1001000}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3397019800949219086
 GameObject:
   m_ObjectHideFlags: 0

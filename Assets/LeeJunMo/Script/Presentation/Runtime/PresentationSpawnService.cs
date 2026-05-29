@@ -327,7 +327,7 @@ namespace CapstonePresentation
             in WorldPresentationContext context)
         {
             if (hook.anchorMode == PresentationSpawnAnchorMode.TargetSpriteBoundsCenter
-                && PresentationTargetBoundsUtility.TryResolveSpriteBounds(context.Target, out Bounds bounds))
+                && PresentationTargetBoundsUtility.TryResolveSpriteBounds(context.Target, out Bounds bounds, hook.boundsMode))
             {
                 return bounds.center;
             }
@@ -344,7 +344,7 @@ namespace CapstonePresentation
             if (hook.scaleMode != PresentationSpawnScaleMode.TargetSpriteBoundsUniform)
                 return scale;
 
-            if (!PresentationTargetBoundsUtility.TryResolveSpriteBounds(context.Target, out Bounds bounds))
+            if (!PresentationTargetBoundsUtility.TryResolveSpriteBounds(context.Target, out Bounds bounds, hook.boundsMode))
                 return scale;
 
             float targetSize = Mathf.Max(bounds.size.x, bounds.size.y);

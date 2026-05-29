@@ -1629,6 +1629,12 @@ MonoBehaviour:
   returnHoleRect: {fileID: 9700000000000111}
   returnHoleOccluderRect: {fileID: 1948217975118271408}
   returnHoleDownMaskRect: {fileID: 447857470044493291}
+  gameOverBgm:
+    key: GameOverBGM
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  gameOverBgmFadeSeconds: 0.5
   returnPitTransform: {fileID: 0}
   returnPitRenderer: {fileID: 0}
 --- !u!1 &9700000000000020
@@ -10901,6 +10907,7 @@ MonoBehaviour:
       attachToTarget: 0
       anchorMode: 0
       scaleMode: 0
+      boundsMode: 0
       targetBoundsReferenceSize: 0
       targetBoundsScaleMultiplier: 0
       lifetimeMode: 0
@@ -10914,6 +10921,7 @@ MonoBehaviour:
       attachToTarget: 0
       anchorMode: 0
       scaleMode: 0
+      boundsMode: 0
       targetBoundsReferenceSize: 0
       targetBoundsScaleMultiplier: 0
       lifetimeMode: 0

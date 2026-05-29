@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityGAS;
 
 public class MonsterElementGaugeView : MonoBehaviour
@@ -12,8 +13,15 @@ public class MonsterElementGaugeView : MonoBehaviour
     [SerializeField] private ElementGaugeSystem gaugeSystem;
 
     [Header("Tracking")]
-    [SerializeField] private Vector3 worldOffset = new Vector3(0f, -1.0f, 0f);
+    [SerializeField] private bool useGaugeAnchor = true;
+    [SerializeField] private Vector3 gaugeWorldOffset = new(0f, -1f, 0f);
     [SerializeField] private bool followTarget = true;
+
+    [Header("Sorting")]
+    [SerializeField] private bool syncSortingWithTargetRenderer = true;
+    [SerializeField] private int sortingOrderOffset;
+    [SerializeField] private string fallbackSortingLayerName = "Entity";
+    [SerializeField] private int fallbackSortingOrder;
 
     [Header("UI")]
     [SerializeField] private Transform slotRoot;
@@ -29,6 +37,9 @@ public class MonsterElementGaugeView : MonoBehaviour
     private readonly List<ElementGaugeSlotView> slots = new();
 
     private IMonsterGaugeVisibilityFilter visibilityFilter;
+    private Canvas gaugeCanvas;
+    private SortingGroup targetSortingGroup;
+    private SpriteRenderer targetSortingRenderer;
     private bool dirty = true;
 
     public void Bind(Transform targetTransform, ElementGaugeSystem targetGaugeSystem)
@@ -38,6 +49,7 @@ public class MonsterElementGaugeView : MonoBehaviour
         target = targetTransform;
         gaugeSystem = targetGaugeSystem;
         visibilityFilter = ResolveVisibilityFilter(targetTransform);
+        CacheSortingReferences();
         dirty = true;
 
         Subscribe();
@@ -66,6 +78,7 @@ public class MonsterElementGaugeView : MonoBehaviour
         if (followTarget)
             UpdatePosition();
 
+        UpdateSorting();
         UpdateVisibilityState();
 
         if (!dirty)
@@ -86,6 +99,7 @@ public class MonsterElementGaugeView : MonoBehaviour
         if (followTarget)
             UpdatePosition();
 
+        UpdateSorting();
         UpdateVisibilityState();
         dirty = false;
         RefreshSlots();
@@ -147,7 +161,50 @@ public class MonsterElementGaugeView : MonoBehaviour
 
     private void UpdatePosition()
     {
-        transform.position = target.position + worldOffset;
+        transform.position = ResolveGaugeAnchorPosition();
+    }
+
+    private void UpdateSorting()
+    {
+        if (!syncSortingWithTargetRenderer)
+            return;
+
+        if (gaugeCanvas == null)
+            gaugeCanvas = GetComponent<Canvas>();
+
+        if (gaugeCanvas == null)
+            return;
+
+        gaugeCanvas.overrideSorting = true;
+
+        if (targetSortingGroup != null)
+        {
+            gaugeCanvas.sortingLayerID = targetSortingGroup.sortingLayerID;
+            gaugeCanvas.sortingOrder = targetSortingGroup.sortingOrder + sortingOrderOffset;
+            return;
+        }
+
+        if (targetSortingRenderer != null)
+        {
+            gaugeCanvas.sortingLayerID = targetSortingRenderer.sortingLayerID;
+            gaugeCanvas.sortingOrder = targetSortingRenderer.sortingOrder + sortingOrderOffset;
+            return;
+        }
+
+        gaugeCanvas.sortingLayerID = SortingLayer.NameToID(fallbackSortingLayerName);
+        gaugeCanvas.sortingOrder = fallbackSortingOrder + sortingOrderOffset;
+    }
+
+    private Vector3 ResolveGaugeAnchorPosition()
+    {
+        if (useGaugeAnchor
+            && target != null
+            && target.TryGetComponent(out MonsterElementGaugeAnchor2D anchor))
+        {
+            return anchor.Resolve();
+        }
+
+        return target != null ? target.position + gaugeWorldOffset : transform.position;
     }
 
     private void HandleGaugeChanged(GameplayTag elementTag, float oldValue, float newValue)
@@ -207,5 +264,43 @@ public class MonsterElementGaugeView : MonoBehaviour
         }
 
         return null;
+    }
+
+    private void CacheSortingReferences()
+    {
+        gaugeCanvas = GetComponent<Canvas>();
+        targetSortingGroup = target != null ? target.GetComponentInChildren<SortingGroup>() : null;
+        targetSortingRenderer = ResolveSortingRenderer(target);
+    }
+
+    private static SpriteRenderer ResolveSortingRenderer(Transform targetTransform)
+    {
+        if (targetTransform == null)
+            return null;
+
+        Transform visual = targetTransform.Find("Visual");
+        if (visual != null && visual.TryGetComponent(out SpriteRenderer visualRenderer))
+            return visualRenderer;
+
+        SpriteRenderer[] renderers = targetTransform.GetComponentsInChildren<SpriteRenderer>(true);
+        SpriteRenderer fallback = null;
+
+        for (int i = 0; i < renderers.Length; i++)
+        {
+            SpriteRenderer renderer = renderers[i];
+            if (renderer == null)
+                continue;
+
+            if (fallback == null)
+                fallback = renderer;
+
+            string objectName = renderer.gameObject.name;
+            if (objectName.Contains("Shadow") || objectName.Contains("shadow"))
+                continue;
+
+            return renderer;
+        }
+
+        return fallback;
     }
 }

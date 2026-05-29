@@ -54,14 +54,14 @@ Canvas:
   m_PlaneDistance: 100
   m_PixelPerfect: 0
   m_ReceivesEvents: 1
-  m_OverrideSorting: 0
+  m_OverrideSorting: 1
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_VertexColorAlwaysGammaSpace: 0
   m_UseReflectionProbes: 0
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
-  m_SortingLayerID: 119640197
+  m_SortingLayerID: 3255220471
   m_SortingOrder: 0
   m_TargetDisplay: 0
 --- !u!114 &7715321510049290355
@@ -86,7 +86,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 1
+  m_PresetInfoIsWorld: 0
 --- !u!114 &4813057371513768460
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -118,8 +118,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   target: {fileID: 0}
   gaugeSystem: {fileID: 0}
-  worldOffset: {x: 0, y: -1, z: 0}
+  useGaugeAnchor: 1
+  gaugeWorldOffset: {x: 0, y: -1, z: 0}
   followTarget: 1
+  syncSortingWithTargetRenderer: 1
+  sortingOrderOffset: 0
+  fallbackSortingLayerName: Entity
+  fallbackSortingOrder: 0
   slotRoot: {fileID: 6621963485075252765}
   slotPrefab: {fileID: 7139527313155595916, guid: d7ecec296da011c4ca790af9d941b2b2, type: 3}
   slotSpacing: 320

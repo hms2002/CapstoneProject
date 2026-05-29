@@ -27,6 +27,7 @@ public class LeverShortcut : PermanentShortcut
     [SerializeField, Min(0f)] private float cinematicOutroDuration = 0.25f;
     [SerializeField, Range(0f, 0.45f)] private float letterboxScreenHeightRatio = 0.14f;
     [SerializeField, Range(0f, 1f)] private float uiTargetAlpha = 0f;
+    [SerializeField] private bool pauseWorldTimeDuringCinematic;
 
     private Sprite defaultSprite;
     private Coroutine cinematicRoutine;
@@ -44,6 +45,8 @@ public class LeverShortcut : PermanentShortcut
     private bool cachedBrainIgnoreTimeScale;
     private bool hasCachedCameraState;
     private bool isCinematicPlaying;
+    private bool holdsTimeScalePause;
+    private bool holdsRunTimerPause;
 
     protected override void Awake()
     {
@@ -113,6 +116,7 @@ public class LeverShortcut : PermanentShortcut
 
     private IEnumerator PlayDoorRevealCinematicRoutine()
     {
+        AcquireCinematicTimePause();
         AcquireInputBlocker();
         LockPlayerControls();
 
@@ -387,5 +391,38 @@ public class LeverShortcut : PermanentShortcut
         DestroyCameraMoveTarget();
         UnlockPlayerControls();
         ReleaseInputBlocker();
+        ReleaseCinematicTimePause();
+    }
+
+    /// <summary>
+    /// 책임 : 레버 문 개방 시네마틱 동안 런 타이머를 멈추고, 옵션에 따라 전투 월드 시간도 정지한다.
+    /// </summary>
+    private void AcquireCinematicTimePause()
+    {
+        if (pauseWorldTimeDuringCinematic && !holdsTimeScalePause)
+        {
+            TimeScalePauseService.Acquire(this);
+            holdsTimeScalePause = true;
+        }
+
+        if (!holdsRunTimerPause && RunTimeLimitSystem.Instance != null)
+        {
+            RunTimeLimitSystem.Instance.SetExternalPause(this, true);
+            holdsRunTimerPause = true;
+        }
+    }
+
+    /// <summary>
+    /// 책임 : 레버 문 개방 시네마틱 종료/중단 시 보유한 시간 정지 요청을 반드시 반환한다.
+    /// </summary>
+    private void ReleaseCinematicTimePause()
+    {
+        if (holdsRunTimerPause && RunTimeLimitSystem.Instance != null)
+            RunTimeLimitSystem.Instance.SetExternalPause(this, false);
+        holdsRunTimerPause = false;
+
+        if (holdsTimeScalePause)
+            TimeScalePauseService.Release(this);
+        holdsTimeScalePause = false;
     }
 }

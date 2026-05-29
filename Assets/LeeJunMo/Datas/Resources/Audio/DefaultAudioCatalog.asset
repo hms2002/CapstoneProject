@@ -183,7 +183,7 @@ MonoBehaviour:
     category: 5
     variants:
     - {fileID: 8300000, guid: df42ce14627662f429494f90dfef377a, type: 3}
-    volume: 1
+    volume: 0.172
     playbackSpeed: 1
     pitchMin: 1
     pitchMax: 1
@@ -288,7 +288,7 @@ MonoBehaviour:
     category: 11
     variants:
     - {fileID: 8300000, guid: a1a1c58fa8202454e90a9b2bf22fbb7b, type: 3}
-    volume: 0.015
+    volume: 0.053
     playbackSpeed: 1
     pitchMin: 1
     pitchMax: 1
@@ -333,6 +333,21 @@ MonoBehaviour:
     category: 11
     variants:
     - {fileID: 8300000, guid: 9109f86cc202be1438bc65decf1f88c3, type: 3}
+    volume: 0.06
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 1
+    spatial: 0
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: gameoverbgm
+    bus: 1
+    category: 11
+    variants:
+    - {fileID: 8300000, guid: 16b0fa7fd011ca847b535be9571f322f, type: 3}
     volume: 0.06
     playbackSpeed: 1
     pitchMin: 1
@@ -1758,7 +1773,7 @@ MonoBehaviour:
     category: 9
     variants:
     - {fileID: 8300000, guid: aba7ffb4997bcbe4cb0303773a905b3c, type: 3}
-    volume: 1
+    volume: 0.163
     playbackSpeed: 1
     pitchMin: 1
     pitchMax: 1

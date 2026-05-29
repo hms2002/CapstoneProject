@@ -123,8 +123,9 @@ MonoBehaviour:
       attachToTarget: 1
       anchorMode: 1
       scaleMode: 1
+      boundsMode: 1
       targetBoundsReferenceSize: 1
-      targetBoundsScaleMultiplier: 1
+      targetBoundsScaleMultiplier: 0.7
       lifetimeMode: 2
       lifetimeOverrideSeconds: 0
       useUnscaledTime: 0
