@@ -1,4 +1,4 @@
-﻿=== HUB_INTRO_GATE ===
+=== HUB_INTRO_GATE ===
 # speaker: 1002
 # anim: normal
 저 문이 밖으로 나가는 게이트야. 준비가 끝났다면 저기로 나가면 돼. 나간 뒤에 버티는 건 장비가 아니라 [punch]네 판단[/punch]이야.

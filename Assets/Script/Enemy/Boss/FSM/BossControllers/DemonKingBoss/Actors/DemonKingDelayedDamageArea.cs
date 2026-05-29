@@ -3,6 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityGAS;
 
+public enum DemonKingDelayedExplosionVfxKind
+{
+    Default,
+    DarkLordExplosion2
+}
+
 public sealed class DemonKingDelayedDamageArea : MonoBehaviour
 {
     private static readonly Color WarningColor = new(1f, 0.15f, 0.08f, 0.35f);
@@ -15,14 +21,15 @@ public sealed class DemonKingDelayedDamageArea : MonoBehaviour
         float diameter,
         float warningSeconds,
         float damage,
-        bool ignoreOwnerGroggy = false)
+        bool ignoreOwnerGroggy = false,
+        DemonKingDelayedExplosionVfxKind explosionVfxKind = DemonKingDelayedExplosionVfxKind.Default)
     {
         if (owner == null)
             return;
 
         GameObject runner = new("DemonKing_DelayedCircle");
         DemonKingDelayedDamageArea area = runner.AddComponent<DemonKingDelayedDamageArea>();
-        area.StartCoroutine(area.RunCircle(owner, center, diameter, warningSeconds, damage, ignoreOwnerGroggy));
+        area.StartCoroutine(area.RunCircle(owner, center, diameter, warningSeconds, damage, ignoreOwnerGroggy, explosionVfxKind));
     }
 
     public static void SpawnRectangle(
@@ -48,14 +55,15 @@ public sealed class DemonKingDelayedDamageArea : MonoBehaviour
         float diameter,
         float warningSeconds,
         float damage,
-        bool ignoreOwnerGroggy = false)
+        bool ignoreOwnerGroggy = false,
+        DemonKingDelayedExplosionVfxKind explosionVfxKind = DemonKingDelayedExplosionVfxKind.Default)
     {
         if (owner == null || centers == null || centers.Count == 0)
             return;
 
         GameObject runner = new("DemonKing_DelayedCircleCluster");
         DemonKingDelayedDamageArea area = runner.AddComponent<DemonKingDelayedDamageArea>();
-        area.StartCoroutine(area.RunCircleCluster(owner, centers, diameter, warningSeconds, damage, ignoreOwnerGroggy));
+        area.StartCoroutine(area.RunCircleCluster(owner, centers, diameter, warningSeconds, damage, ignoreOwnerGroggy, explosionVfxKind));
     }
 
     private IEnumerator RunCircle(
@@ -64,7 +72,8 @@ public sealed class DemonKingDelayedDamageArea : MonoBehaviour
         float diameter,
         float warningSeconds,
         float damage,
-        bool ignoreOwnerGroggy)
+        bool ignoreOwnerGroggy,
+        DemonKingDelayedExplosionVfxKind explosionVfxKind)
     {
         DemonKingPrimitiveVisual.SpawnCircle(
             center,
@@ -88,11 +97,12 @@ public sealed class DemonKingDelayedDamageArea : MonoBehaviour
                 owner.DefaultDamageEffect,
                 damage);
 
-            DemonKingPatternVfx.SpawnExplosionOrFallbackCircle(
+            SpawnExplosionVfx(
                 center,
                 diameter,
                 AttackColor,
-                "DemonKing_ExplosionCircleAttack");
+                "DemonKing_ExplosionCircleAttack",
+                explosionVfxKind);
         }
 
         Destroy(gameObject);
@@ -104,7 +114,8 @@ public sealed class DemonKingDelayedDamageArea : MonoBehaviour
         float diameter,
         float warningSeconds,
         float damage,
-        bool ignoreOwnerGroggy)
+        bool ignoreOwnerGroggy,
+        DemonKingDelayedExplosionVfxKind explosionVfxKind)
     {
         for (int i = 0; i < centers.Count; i++)
         {
@@ -137,11 +148,12 @@ public sealed class DemonKingDelayedDamageArea : MonoBehaviour
                     damage,
                     damagedTargets);
 
-                DemonKingPatternVfx.SpawnExplosionOrFallbackCircle(
+                SpawnExplosionVfx(
                     center,
                     diameter,
                     AttackColor,
-                    "DemonKing_ExplosionCircleAttack");
+                    "DemonKing_ExplosionCircleAttack",
+                    explosionVfxKind);
             }
         }
 
@@ -191,5 +203,21 @@ public sealed class DemonKingDelayedDamageArea : MonoBehaviour
         }
 
         Destroy(gameObject);
+    }
+
+    private static void SpawnExplosionVfx(
+        Vector2 center,
+        float diameter,
+        Color fallbackColor,
+        string fallbackName,
+        DemonKingDelayedExplosionVfxKind explosionVfxKind)
+    {
+        if (explosionVfxKind == DemonKingDelayedExplosionVfxKind.DarkLordExplosion2)
+        {
+            DemonKingPatternVfx.SpawnDarkLordExplosion2OrFallbackCircle(center, diameter, fallbackColor, fallbackName);
+            return;
+        }
+
+        DemonKingPatternVfx.SpawnExplosionOrFallbackCircle(center, diameter, fallbackColor, fallbackName);
     }
 }

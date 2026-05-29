@@ -1,4 +1,4 @@
-﻿=== script_1 ===
+=== script_1 ===
 # speaker: 1005 # face:Tutorial
 # anim: cold
 마침내 문이 열렸군. 영겁과 같은 시간 동안 [pause=0.25]지루하던 참이었는데 말이지.

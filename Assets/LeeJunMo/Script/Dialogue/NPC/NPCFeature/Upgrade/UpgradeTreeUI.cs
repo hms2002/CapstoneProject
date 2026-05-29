@@ -58,19 +58,12 @@ public class UpgradeTreeUI : MonoBehaviour, IStackableUI, IMouseCursorDomainSour
     [Header("Lake Presentation")]
     [Tooltip("Optional explicit Image that receives the lake material. Leave empty to use the hidden internal lake surface layer.")]
     [SerializeField] private Image lakeSurfaceImage;
-    [Tooltip("Visual tuning material for the lake background. Edit this asset directly for the fastest preview workflow.")]
+    [Tooltip("Visual tuning material for the lake background.")]
     [SerializeField] private Material lakeSurfaceMaterial;
     [Tooltip("When enabled, static lake surface values come from the material. Runtime-only interaction values still come from the settings below.")]
     [SerializeField] private bool useLakeSurfaceMaterialSettings = true;
-    [Tooltip("When enabled, changing this component in Edit Mode refreshes the lake surface preview target.")]
-    [SerializeField] private bool previewLakeSurfaceInEditMode = true;
-    [Tooltip("Allows the lake surface Test Preview buttons to animate in Edit Mode.")]
-    [SerializeField] private bool animateLakeSurfaceInEditMode = true;
     [SerializeField] private UpgradeLakePresentationSettings lakePresentationSettings = UpgradeLakePresentationSettings.CreateDefault();
     [SerializeField] private UpgradeLakePresentation lakePresentation;
-#if UNITY_EDITOR
-    [System.NonSerialized] private bool lakePreviewTestActiveInEditor;
-#endif
 
     private readonly List<UpgradeSlotUI> allSlots = new List<UpgradeSlotUI>();
     private readonly List<GameObject> allLines = new List<GameObject>();
@@ -369,252 +362,14 @@ public class UpgradeTreeUI : MonoBehaviour, IStackableUI, IMouseCursorDomainSour
                 surfaceTarget,
                 lakePresentationSettings,
                 lakeSurfaceMaterial,
-                useLakeSurfaceMaterialSettings,
-                ShouldUseAnimatedLakePreview());
+                useLakeSurfaceMaterialSettings);
         }
-    }
-
-    private bool ShouldUseAnimatedLakePreview()
-    {
-#if UNITY_EDITOR
-        return !Application.isPlaying &&
-               previewLakeSurfaceInEditMode &&
-               animateLakeSurfaceInEditMode &&
-               lakePreviewTestActiveInEditor &&
-               lakePresentationSettings.enabled;
-#else
-        return false;
-#endif
-    }
-
-#if UNITY_EDITOR
-    public bool IsLakePreviewTestActiveInEditor => lakePreviewTestActiveInEditor;
-
-    public bool ShouldAnimateLakePreviewInEditor =>
-        CanEditLakePreviewObjectInEditor() && ShouldUseAnimatedLakePreview();
-
-    private bool CanEditLakePreviewObjectInEditor()
-    {
-        return this != null &&
-               !Application.isPlaying &&
-               gameObject != null &&
-               gameObject.scene.IsValid() &&
-               gameObject.scene.isLoaded &&
-               !UnityEditor.EditorUtility.IsPersistent(this) &&
-               UnityEditor.SceneManagement.PrefabStageUtility.GetPrefabStage(gameObject) == null;
     }
 
     private void OnValidate()
     {
         lakePresentationSettings.Sanitize();
-        // Unity invokes OnValidate while opening scenes; preview refresh marks scene instances dirty.
-        // Inspector changes still refresh through UpgradeTreeUIEditor.DrawDefaultInspector().
     }
-
-    public void RefreshLakePreviewInEditor()
-    {
-        if (!CanEditLakePreviewObjectInEditor())
-            return;
-
-        ResolveLakeSurfaceMaterialAssetInEditor();
-        PrepareLayout();
-        EnsureLakePresentation();
-        lakePresentation?.TickEditorPreview();
-        UnityEditor.EditorUtility.SetDirty(this);
-    }
-
-    public void TickLakePreviewInEditor()
-    {
-        if (!CanEditLakePreviewObjectInEditor() || !ShouldAnimateLakePreviewInEditor)
-        {
-            return;
-        }
-
-        ResolveReferences();
-        if (lakeSurfaceMaterial != null && !UnityEditor.EditorUtility.IsPersistent(lakeSurfaceMaterial))
-            ResolveLakeSurfaceMaterialAssetInEditor();
-
-        EnsureLakePresentation();
-        lakePresentation?.TickEditorPreview();
-    }
-
-    public void StartLakePreviewTestInEditor()
-    {
-        if (!CanEditLakePreviewObjectInEditor())
-            return;
-
-        UnityEditor.Undo.RecordObject(this, "Start Lake Test Preview");
-        previewLakeSurfaceInEditMode = true;
-        animateLakeSurfaceInEditMode = true;
-        lakePreviewTestActiveInEditor = true;
-        ResolveLakeSurfaceMaterialAssetInEditor();
-        PrepareLayout();
-        EnsureLakePresentation();
-        lakePresentation?.TickEditorPreview();
-        UnityEditor.EditorUtility.SetDirty(this);
-        UnityEditor.EditorApplication.QueuePlayerLoopUpdate();
-        UnityEditor.SceneView.RepaintAll();
-    }
-
-    public void StopLakePreviewTestInEditor()
-    {
-        if (!CanEditLakePreviewObjectInEditor())
-            return;
-
-        lakePreviewTestActiveInEditor = false;
-        Material restoredMaterial = ResolveLakeSurfaceMaterialAssetInEditor();
-        EnsureLakePresentation();
-        lakePresentation?.ClearEditorInteractionPreview();
-        lakePresentation?.RestoreEditorPreviewMaterial(restoredMaterial);
-        UnityEditor.EditorUtility.SetDirty(this);
-        UnityEditor.EditorApplication.QueuePlayerLoopUpdate();
-        UnityEditor.SceneView.RepaintAll();
-    }
-
-    public void TestLakeRippleInEditor()
-    {
-        if (!CanEditLakePreviewObjectInEditor())
-            return;
-
-        RefreshLakePreviewInEditor();
-        lakePresentation?.EmitEditorRipplePreview();
-    }
-
-    public void TestLakeWakeInEditor()
-    {
-        if (!CanEditLakePreviewObjectInEditor())
-            return;
-
-        RefreshLakePreviewInEditor();
-        lakePresentation?.EmitEditorWakePreview();
-    }
-
-    public void ClearLakeInteractionPreviewInEditor()
-    {
-        if (!CanEditLakePreviewObjectInEditor())
-            return;
-
-        RefreshLakePreviewInEditor();
-        lakePresentation?.ClearEditorInteractionPreview();
-    }
-
-    public void RestoreLakePreviewMaterialInEditor()
-    {
-        RestoreLakePreviewMaterialInEditor(disableAnimation: false);
-    }
-
-    public void RestoreLakePreviewMaterialInEditor(bool disableAnimation)
-    {
-        if (!CanEditLakePreviewObjectInEditor())
-            return;
-
-        if (disableAnimation)
-        {
-            UnityEditor.Undo.RecordObject(this, "Disable Lake Preview Animation");
-            animateLakeSurfaceInEditMode = false;
-            UnityEditor.EditorUtility.SetDirty(this);
-        }
-
-        Material restoredMaterial = ResolveLakeSurfaceMaterialAssetInEditor();
-        UpgradeLakePresentation existingLakePresentation = lakePresentation != null
-            ? lakePresentation
-            : GetComponent<UpgradeLakePresentation>();
-        existingLakePresentation?.RestoreEditorPreviewMaterial(restoredMaterial);
-    }
-
-    public void ApplyLakeSettingsToMaterial()
-    {
-        Material targetMaterial = ResolveLakeSurfaceMaterialAssetInEditor();
-        if (targetMaterial == null)
-            return;
-
-        UnityEditor.Undo.RecordObject(targetMaterial, "Apply Lake Settings To Material");
-        lakePresentationSettings.ApplySurfaceSettingsTo(targetMaterial);
-        UnityEditor.EditorUtility.SetDirty(targetMaterial);
-        RefreshLakePreviewInEditor();
-    }
-
-    public void ReadLakeSettingsFromMaterial()
-    {
-        Material sourceMaterial = ResolveLakeSurfaceMaterialAssetInEditor();
-        if (sourceMaterial == null)
-            return;
-
-        UnityEditor.Undo.RecordObject(this, "Read Lake Settings From Material");
-        lakePresentationSettings.ReadSurfaceSettingsFrom(sourceMaterial);
-        lakePresentationSettings.Sanitize();
-        UnityEditor.EditorUtility.SetDirty(this);
-        RefreshLakePreviewInEditor();
-    }
-
-    private Material ResolveLakeSurfaceMaterialAssetInEditor()
-    {
-        Material resolvedMaterial = ResolvePersistentMaterialAsset(lakeSurfaceMaterial);
-        if (resolvedMaterial == lakeSurfaceMaterial)
-            return lakeSurfaceMaterial;
-
-        UnityEditor.Undo.RecordObject(this, "Restore Lake Surface Material Asset");
-        lakeSurfaceMaterial = resolvedMaterial;
-        UnityEditor.EditorUtility.SetDirty(this);
-        return lakeSurfaceMaterial;
-    }
-
-    private static Material ResolvePersistentMaterialAsset(Material material)
-    {
-        if (material == null)
-            return FindMaterialAssetByName("M_UpgradeLakeSurface");
-
-        if (UnityEditor.EditorUtility.IsPersistent(material))
-            return material;
-
-        string materialName = NormalizePreviewMaterialName(material.name);
-        Material resolvedMaterial = FindMaterialAssetByName(materialName);
-        if (resolvedMaterial != null)
-            return resolvedMaterial;
-
-        return FindMaterialAssetByName("M_UpgradeLakeSurface");
-    }
-
-    private static string NormalizePreviewMaterialName(string materialName)
-    {
-        if (string.IsNullOrEmpty(materialName))
-            return string.Empty;
-
-        string normalizedName = materialName.Replace(" (Instance)", string.Empty);
-        while (normalizedName.StartsWith("M_EditorPreview", System.StringComparison.Ordinal))
-            normalizedName = normalizedName.Substring("M_EditorPreview".Length);
-
-        while (normalizedName.StartsWith("M_Runtime", System.StringComparison.Ordinal))
-            normalizedName = normalizedName.Substring("M_Runtime".Length);
-
-        return normalizedName;
-    }
-
-    private static Material FindMaterialAssetByName(string materialName)
-    {
-        if (string.IsNullOrEmpty(materialName))
-            return null;
-
-        if (materialName == "M_UpgradeLakeSurface")
-        {
-            Material defaultLakeMaterial =
-                UnityEditor.AssetDatabase.LoadAssetAtPath<Material>("Assets/Shader/M_UpgradeLakeSurface.mat");
-            if (defaultLakeMaterial != null)
-                return defaultLakeMaterial;
-        }
-
-        string[] guids = UnityEditor.AssetDatabase.FindAssets($"{materialName} t:Material");
-        foreach (string guid in guids)
-        {
-            string path = UnityEditor.AssetDatabase.GUIDToAssetPath(guid);
-            Material candidate = UnityEditor.AssetDatabase.LoadAssetAtPath<Material>(path);
-            if (candidate != null && candidate.name == materialName)
-                return candidate;
-        }
-
-        return null;
-    }
-#endif
 
     private void ResolveReferences()
     {

@@ -1,4 +1,4 @@
-﻿// Slime Queen boss encounter dialogue
+// Slime Queen boss encounter dialogue
 // Placeholder text for first integration. Replace lines/portraits after final writing.
 
 -> SLIME_QUEEN_01

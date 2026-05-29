@@ -61,6 +61,44 @@ internal static class DemonKingPatternVfxAssetBuilder
             $"{OutputFolder}/EgoSwordAttack_Play.anim",
             $"{OutputFolder}/EgoSwordAttackVfx.controller",
             $"{OutputFolder}/EgoSwordAttackVfx.prefab"),
+        new(
+            "DarkLordExplosion2",
+            $"{SpriteFolder}/DarkLordExplosion2.png",
+            $"{OutputFolder}/DarkLordExplosion2_Play.anim",
+            $"{OutputFolder}/DarkLordExplosion2Vfx.controller",
+            $"{OutputFolder}/DarkLordExplosion2Vfx.prefab"),
+    };
+
+    private static readonly LoopSpec[] LoopSpecs =
+    {
+        new(
+            "DarkLordFragment",
+            $"{SpriteFolder}/DarkLordFragment.png",
+            $"{OutputFolder}/DarkLordFragment_Idle.anim",
+            $"{OutputFolder}/DarkLordFragmentVfx.controller",
+            $"{OutputFolder}/DarkLordFragmentVfx.prefab",
+            "Idle"),
+        new(
+            "SwordSpin4Frame",
+            $"{SpriteFolder}/SwordSpin4Frame.png",
+            $"{OutputFolder}/SwordSpin4Frame_Loop.anim",
+            $"{OutputFolder}/SwordSpin4FrameVfx.controller",
+            $"{OutputFolder}/SwordSpin4FrameVfx.prefab",
+            "Loop"),
+    };
+
+    private static readonly DualStateSpec[] DualStateSpecs =
+    {
+        new(
+            "DemonChargeEffect",
+            $"{SpriteFolder}/DemonChargeEffect.png",
+            $"{OutputFolder}/DemonChargeEffect_Loop.anim",
+            $"{SpriteFolder}/DemonChargeEffectDisapear.png",
+            $"{OutputFolder}/DemonChargeEffectDisapear_Play.anim",
+            $"{OutputFolder}/DemonChargeEffectVfx.controller",
+            $"{OutputFolder}/DemonChargeEffectVfx.prefab",
+            "Loop",
+            "Disappear"),
     };
 
     private static readonly AuraSpec EgoSwordAuraSpec = new(
@@ -119,6 +157,27 @@ internal static class DemonKingPatternVfxAssetBuilder
             }
         }
 
+        foreach (LoopSpec spec in LoopSpecs)
+        {
+            if (!IsClipValid(spec.ClipPath, loop: true)
+                || !IsControllerValid(spec.ControllerPath, new[] { spec.StateName })
+                || !IsPrefabValid(spec.PrefabPath))
+            {
+                return true;
+            }
+        }
+
+        foreach (DualStateSpec spec in DualStateSpecs)
+        {
+            if (!IsClipValid(spec.LoopClipPath, loop: true)
+                || !IsClipValid(spec.EndClipPath, loop: false)
+                || !IsControllerValid(spec.ControllerPath, new[] { spec.LoopStateName, spec.EndStateName })
+                || !IsPrefabValid(spec.PrefabPath))
+            {
+                return true;
+            }
+        }
+
         return !IsClipValid(EgoSwordAuraSpec.StartClipPath, loop: false)
             || !IsClipValid(EgoSwordAuraSpec.IdleClipPath, loop: true)
             || !IsClipValid(EgoSwordAuraSpec.EndClipPath, loop: false)
@@ -131,6 +190,12 @@ internal static class DemonKingPatternVfxAssetBuilder
 
         foreach (OneShotSpec spec in OneShotSpecs)
             RebuildOneShot(spec);
+
+        foreach (LoopSpec spec in LoopSpecs)
+            RebuildLoop(spec);
+
+        foreach (DualStateSpec spec in DualStateSpecs)
+            RebuildDualState(spec);
 
         RebuildEgoSwordAura();
 
@@ -148,6 +213,42 @@ internal static class DemonKingPatternVfxAssetBuilder
             Path.GetFileNameWithoutExtension(spec.ControllerPath),
             new[] { new StateClip("Play", playClip) });
         CreateOrUpdatePrefab(spec.PrefabPath, Path.GetFileNameWithoutExtension(spec.PrefabPath), frames[0], controller);
+    }
+
+    private static void RebuildLoop(LoopSpec spec)
+    {
+        Sprite[] frames = LoadSprites(spec.SpritePath);
+        AnimationClip loopClip = CreateOrUpdateClip(spec.ClipPath, $"{spec.BaseName}_{spec.StateName}", frames, loop: true);
+        AnimatorController controller = CreateOrUpdateController(
+            spec.ControllerPath,
+            Path.GetFileNameWithoutExtension(spec.ControllerPath),
+            new[] { new StateClip(spec.StateName, loopClip) });
+        CreateOrUpdatePrefab(spec.PrefabPath, Path.GetFileNameWithoutExtension(spec.PrefabPath), frames[0], controller);
+    }
+
+    private static void RebuildDualState(DualStateSpec spec)
+    {
+        Sprite[] loopFrames = LoadSprites(spec.LoopSpritePath);
+        Sprite[] endFrames = LoadSprites(spec.EndSpritePath);
+        AnimationClip loopClip = CreateOrUpdateClip(
+            spec.LoopClipPath,
+            $"{spec.BaseName}_{spec.LoopStateName}",
+            loopFrames,
+            loop: true);
+        AnimationClip endClip = CreateOrUpdateClip(
+            spec.EndClipPath,
+            $"{spec.BaseName}_{spec.EndStateName}",
+            endFrames,
+            loop: false);
+        AnimatorController controller = CreateOrUpdateController(
+            spec.ControllerPath,
+            Path.GetFileNameWithoutExtension(spec.ControllerPath),
+            new[]
+            {
+                new StateClip(spec.LoopStateName, loopClip),
+                new StateClip(spec.EndStateName, endClip),
+            });
+        CreateOrUpdatePrefab(spec.PrefabPath, Path.GetFileNameWithoutExtension(spec.PrefabPath), loopFrames[0], controller);
     }
 
     private static void RebuildEgoSwordAura()
@@ -458,6 +559,67 @@ internal static class DemonKingPatternVfxAssetBuilder
         public string IdleClipPath { get; }
         public string EndClipPath { get; }
         public string ControllerPath { get; }
+    }
+
+    private readonly struct LoopSpec
+    {
+        public LoopSpec(
+            string baseName,
+            string spritePath,
+            string clipPath,
+            string controllerPath,
+            string prefabPath,
+            string stateName)
+        {
+            BaseName = baseName;
+            SpritePath = spritePath;
+            ClipPath = clipPath;
+            ControllerPath = controllerPath;
+            PrefabPath = prefabPath;
+            StateName = stateName;
+        }
+
+        public string BaseName { get; }
+        public string SpritePath { get; }
+        public string ClipPath { get; }
+        public string ControllerPath { get; }
+        public string PrefabPath { get; }
+        public string StateName { get; }
+    }
+
+    private readonly struct DualStateSpec
+    {
+        public DualStateSpec(
+            string baseName,
+            string loopSpritePath,
+            string loopClipPath,
+            string endSpritePath,
+            string endClipPath,
+            string controllerPath,
+            string prefabPath,
+            string loopStateName,
+            string endStateName)
+        {
+            BaseName = baseName;
+            LoopSpritePath = loopSpritePath;
+            LoopClipPath = loopClipPath;
+            EndSpritePath = endSpritePath;
+            EndClipPath = endClipPath;
+            ControllerPath = controllerPath;
+            PrefabPath = prefabPath;
+            LoopStateName = loopStateName;
+            EndStateName = endStateName;
+        }
+
+        public string BaseName { get; }
+        public string LoopSpritePath { get; }
+        public string LoopClipPath { get; }
+        public string EndSpritePath { get; }
+        public string EndClipPath { get; }
+        public string ControllerPath { get; }
+        public string PrefabPath { get; }
+        public string LoopStateName { get; }
+        public string EndStateName { get; }
     }
 
     private readonly struct StateClip

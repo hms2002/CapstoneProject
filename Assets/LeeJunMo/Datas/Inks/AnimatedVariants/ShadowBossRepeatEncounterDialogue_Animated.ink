@@ -1,4 +1,4 @@
-﻿// MSBossNPC encounter dialogue sample.
+// MSBossNPC encounter dialogue sample.
 // Assign the compiled JSON to NPCData > Boss Encounter Ink.
 // Each Boss Encounter Dialogue rule should set Start Path to one of these knots.
 

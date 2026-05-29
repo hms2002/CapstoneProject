@@ -2,7 +2,7 @@
 status: active
 authority: structure-memory
 category: script-system-map
-last_reviewed: 2026-05-18
+last_reviewed: 2026-05-29
 ---
 
 # Upgrade UI Structure
@@ -32,6 +32,12 @@ Map the upgrade tree UI navigation and purchase feedback flow after the overflow
 - Active arrows oscillate along their own direction using unscaled time.
 - `Tools/Validation/Scene Setup Validator` checks inactive upgrade panels too, reports missing overflow arrow references, reports stale `ScrollRect.horizontalScrollbar` references, and can detach/disable the stale horizontal scrollbar through Auto Fix.
 
+## Lake Presentation
+
+- `UpgradeTreeUI` still initializes the optional runtime `UpgradeLakePresentation` for Play Mode lake surface and ripple presentation.
+- Edit-mode LakePreview has been removed. There is no `UpgradeTreeUI` custom Inspector, no `InitializeOnLoad` lake preview loop, and `UpgradeLakePresentation` no longer uses `ExecuteAlways`.
+- Lake material values should be tuned through the material asset or Play Mode review, not through Inspector preview buttons.
+
 ## Warning Feedback
 
 - `UpgradePurchaseService` still owns purchase validation and failure reasons.
@@ -59,7 +65,7 @@ Map the upgrade tree UI navigation and purchase feedback flow after the overflow
 - The arrow movement assumes the existing centered content/clamp model. If the content anchor/pivot model changes, re-check direction mapping.
 - Locked nodes are now clickable for feedback. Verify cursor, hover, and disabled-looking presentation together so players understand the click shows a reason rather than purchases the node.
 - Warning strings live in `UIManager.ResolveWarningMessage(...)`; avoid feature-local popup text unless the shared warning path becomes insufficient.
-- The lake preview editor loop uses `Resources.FindObjectsOfTypeAll`, so it must ignore persistent Prefab Asset objects before preview restore or generated layer creation. Otherwise Unity can reject `Transform.SetParent(...)` under a Prefab Asset and leave the Inspector in a broken repaint state.
+- Do not reintroduce automatic or manual edit-mode LakePreview unless the editor mutation boundary is redesigned. The previous preview path was tied to recurring Inspector `EditorStyles.toolbarButtonRight` failures after prefab-asset mutation.
 
 ## Promotion Candidate
 

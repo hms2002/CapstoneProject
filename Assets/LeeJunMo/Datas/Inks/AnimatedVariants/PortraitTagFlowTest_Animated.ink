@@ -1,4 +1,4 @@
-﻿// 다중 대화 / 이동 / 감정표현 / 액션 테스트용 Ink
+// 다중 대화 / 이동 / 감정표현 / 액션 테스트용 Ink
 // 사용 전 확인:
 // 1. 1001, 1002 NPC가 NPCDatabase에 등록되어 있어야 함
 // 2. face 라벨은 각 NPC SpriteLibrary에 존재해야 함 (기본값: Normal, Smile)

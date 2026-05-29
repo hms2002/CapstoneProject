@@ -9,6 +9,23 @@ public sealed class DemonKingController : BossControllerBase
     private const float AutoFaceTargetDeadZone = 0.05f;
     private const string StaggerImmuneTagResourcePath = "Tags/State.Status.StaggerImmune";
 
+    public const string DarkLordSwordIdleState = "DarkLord_Sword_Idle";
+    public const string DarkLordSwordSlashState = "DarkLord_Sword_Slash";
+    public const string DarkLordHandIdleState = "DarkLord_Hand_Idle";
+    public const string DarkLordHandBaltState = "DarkLord_Hand_Balt";
+    public const string DarkLordSwordThrowingState = "DarkLord_Sword_Throwing";
+    public const string DarkLordHandSwordRecoverState = "DarkLord_Hand_SwordRecover";
+    public const string DarkLordHandGroggyState = "DarkLord_Hand_Groggy";
+    public const string DarkLordSwordDashStabState = "DarkLord_Sword_DashStab";
+    public const string DarkLordSwordDashStabReadyState = "DarkLord_Sword_DashStabReady";
+    public const string DarkLordSitState = "DarkLord_Sit";
+    public const string DarkLordHandJumpAttackState = "DarkLord_Hand_JumpAttack";
+    public const string DarkLordHandChargeState = "DarkLord_Hand_Charge";
+    public const string DarkLordSwordGroggyState = "DarkLord_Sword_Groggy";
+    public const string DarkLordHandGroggyCounterState = "DarkLord_Hand_GroggyCounter";
+    public const string DarkLordSwordGroggyCounterState = "DarkLord_Sword_GroggyCounter";
+    public const string DarkLord10PercentState = "DarkLord_10Percent";
+
     [Header("Demon King Runtime")]
     [SerializeField] private bool configureRuntimePatternsOnStart = true;
     [SerializeField] private EgoSwordActor egoSword;
@@ -43,6 +60,8 @@ public sealed class DemonKingController : BossControllerBase
     [SerializeField] private Color bodyAfterimageColor = new(1f, 0.25f, 0.18f, 0.45f);
 
     private readonly Dictionary<AbilityDefinition, DemonKingPatternRole> roleByAbility = new();
+    private readonly HashSet<string> patternAnimationWarnings = new();
+    private readonly HashSet<string> playedPatternAnimationStartStates = new();
     private DemonKingRuntimeData runtimeData;
     private AttackTelegraphService telegraphService;
     private GameplayTag staggerImmuneTag;
@@ -53,6 +72,8 @@ public sealed class DemonKingController : BossControllerBase
     private bool authoredPatternRolesBound;
     private bool finalDesperationHealthClampActive;
     private bool restoringFinalDesperationHealthClamp;
+    private bool patternAnimationHoldActive;
+    private float patternAnimationSpeedBeforeHold = 1f;
 
     private BossPatternEntry throwSwordEntry;
     private BossPatternEntry recallSwordEntry;
@@ -90,7 +111,7 @@ public sealed class DemonKingController : BossControllerBase
         }
     }
 
-    public Vector2 FacingDirection => sprite != null && sprite.flipX ? Vector2.left : Vector2.right;
+    public Vector2 FacingDirection => IsFacingLeft ? Vector2.left : Vector2.right;
     public Vector3 ArenaCenterPosition => arenaCenterPoint != null ? arenaCenterPoint.position : transform.position;
 
     protected override void Awake()
@@ -108,7 +129,7 @@ public sealed class DemonKingController : BossControllerBase
         else
             BindAuthoredPatternRolesIfNeeded();
 
-        ResolveEgoSword()?.AttachToOwner();
+        PrepareEgoSwordHeldHidden();
         base.Start();
         RegisterEgoSwordSubPatternAbilities();
     }
@@ -146,15 +167,28 @@ public sealed class DemonKingController : BossControllerBase
 
     protected override void OnDeathStarted()
     {
+        ReleasePatternAnimationHold();
+        ClearPatternAnimationStartRecords();
         ReleaseFinalDesperationHealthClamp();
         ClearThresholdStaggerGuard();
         StopBodyAfterimage(clearGhosts: true);
         CleanupEgoSwordForBattleEnd();
         base.OnDeathStarted();
+        PlayDeathPoseAnimation();
+    }
+
+    protected override void PlayDeathAnimation()
+    {
+        if (PlayDeathPoseAnimation())
+            return;
+
+        base.PlayDeathAnimation();
     }
 
     protected override void OnDestroy()
     {
+        ReleasePatternAnimationHold();
+        ClearPatternAnimationStartRecords();
         ReleaseFinalDesperationHealthClamp();
         ClearThresholdStaggerGuard();
         StopBodyAfterimage(clearGhosts: true);
@@ -179,9 +213,13 @@ public sealed class DemonKingController : BossControllerBase
         if (RuntimeData.GroggyRecoverCounterRequested && groggyRecoverCounterEntry != null)
             return groggyRecoverCounterEntry;
 
-        if (CanUseHp50Rush() && hp50RushEntry != null)
+        if (CanUseHp50Rush())
         {
-            return hp50RushEntry;
+            if (RuntimeData.SwordMode == DemonKingEgoSwordMode.Hold && throwSwordEntry != null)
+                return throwSwordEntry;
+
+            if (RuntimeData.SwordMode == DemonKingEgoSwordMode.Drop && hp50RushEntry != null)
+                return hp50RushEntry;
         }
 
         if (RuntimeData.ShouldThrowSword(holdPatternsBeforeThrow) && throwSwordEntry != null)
@@ -205,9 +243,11 @@ public sealed class DemonKingController : BossControllerBase
         {
             DemonKingPatternRole.HoldNormal => RuntimeData.SwordMode == DemonKingEgoSwordMode.Hold,
             DemonKingPatternRole.DropNormal => RuntimeData.SwordMode == DemonKingEgoSwordMode.Drop,
-            DemonKingPatternRole.ThrowSword => RuntimeData.ShouldThrowSword(holdPatternsBeforeThrow),
+            DemonKingPatternRole.ThrowSword => RuntimeData.ShouldThrowSword(holdPatternsBeforeThrow) ||
+                                                ShouldThrowSwordForHp50Rush(),
             DemonKingPatternRole.RecallSword => RuntimeData.ShouldRecallSword(),
-            DemonKingPatternRole.Hp50Rush => CanUseHp50Rush(),
+            DemonKingPatternRole.Hp50Rush => CanUseHp50Rush() &&
+                                             RuntimeData.SwordMode == DemonKingEgoSwordMode.Drop,
             DemonKingPatternRole.GroggyRecoverCounter => RuntimeData.GroggyRecoverCounterRequested,
             DemonKingPatternRole.FinalDesperation => RuntimeData.FinalDesperationStarted || CurrentHealthRatio <= finalDesperationHpRatio,
             _ => true
@@ -218,6 +258,9 @@ public sealed class DemonKingController : BossControllerBase
 
     protected override void OnPatternEnd(BossPatternEntry patternEntry, bool forced)
     {
+        ReleasePatternAnimationHold();
+        ClearPatternAnimationStartRecords();
+
         if (patternEntry == null || patternEntry.Ability == null)
             return;
 
@@ -245,11 +288,22 @@ public sealed class DemonKingController : BossControllerBase
                 RuntimeData.MarkFinalDesperationStarted();
                 break;
         }
+
+        RestoreCombatPose();
+    }
+
+    protected override void OnGroggyStateEntered()
+    {
+        PlayGroggyPose();
     }
 
     protected override void OnGroggyStateExited()
     {
         RuntimeData.RequestGroggyRecoverCounter();
+        if (RuntimeData.GroggyRecoverCounterRequested)
+            HoldGroggyPoseAnimation(allowDuringGroggy: true);
+        else
+            RestoreCombatPose();
     }
 
     public AttackTelegraphService GetTelegraphService()
@@ -263,7 +317,7 @@ public sealed class DemonKingController : BossControllerBase
     public Vector2 ResolveSwordHoldPosition(Vector3 localOffset)
     {
         Vector3 offset = localOffset;
-        if (sprite != null && sprite.flipX)
+        if (IsFacingLeft)
             offset.x = -offset.x;
 
         return transform.position + offset;
@@ -280,7 +334,7 @@ public sealed class DemonKingController : BossControllerBase
         if (sprite == null || Mathf.Abs(direction.x) <= 0.0001f)
             return;
 
-        sprite.flipX = direction.x < 0f;
+        ApplyFacingLeft(direction.x < 0f);
     }
 
     public void PlayPatternTrigger(string triggerName = "attack")
@@ -297,6 +351,228 @@ public sealed class DemonKingController : BossControllerBase
                 return;
             }
         }
+    }
+
+    public bool PlayPatternAnimation(
+        string stateName,
+        bool allowDuringGroggy = false,
+        bool allowDuringFinalDesperation = false)
+    {
+        if (string.IsNullOrWhiteSpace(stateName))
+            return false;
+
+        ReleasePatternAnimationHold();
+        return TryPlayPatternAnimation(stateName, 0f, allowDuringGroggy, allowDuringFinalDesperation);
+    }
+
+    public bool PlayPatternAnimationOncePerPattern(
+        string stateName,
+        bool allowDuringGroggy = false,
+        bool allowDuringFinalDesperation = false)
+    {
+        if (string.IsNullOrWhiteSpace(stateName) || playedPatternAnimationStartStates.Contains(stateName))
+            return false;
+
+        if (!PlayPatternAnimation(stateName, allowDuringGroggy, allowDuringFinalDesperation))
+            return false;
+
+        playedPatternAnimationStartStates.Add(stateName);
+        return true;
+    }
+
+    public bool PlayPatternAnimationIfChanged(
+        string stateName,
+        bool allowDuringGroggy = false,
+        bool allowDuringFinalDesperation = false)
+    {
+        if (string.IsNullOrWhiteSpace(stateName))
+            return false;
+
+        ReleasePatternAnimationHold();
+        if (!CanPlayPatternAnimation(allowDuringGroggy, allowDuringFinalDesperation))
+            return false;
+
+        if (IsCurrentPatternAnimationState(stateName))
+            return true;
+
+        return TryPlayPatternAnimation(stateName, 0f, allowDuringGroggy, allowDuringFinalDesperation);
+    }
+
+    public bool HoldPatternAnimationFirstFrame(
+        string stateName,
+        bool allowDuringGroggy = false,
+        bool allowDuringFinalDesperation = false)
+    {
+        if (string.IsNullOrWhiteSpace(stateName))
+            return false;
+
+        ReleasePatternAnimationHold();
+        if (!TryPlayPatternAnimation(stateName, 0f, allowDuringGroggy, allowDuringFinalDesperation))
+            return false;
+
+        HoldPatternAnimatorSpeed();
+        return true;
+    }
+
+    public bool HoldPatternAnimationFirstFrameOncePerPattern(
+        string stateName,
+        bool allowDuringGroggy = false,
+        bool allowDuringFinalDesperation = false)
+    {
+        if (string.IsNullOrWhiteSpace(stateName) || playedPatternAnimationStartStates.Contains(stateName))
+            return false;
+
+        if (!HoldPatternAnimationFirstFrame(stateName, allowDuringGroggy, allowDuringFinalDesperation))
+            return false;
+
+        playedPatternAnimationStartStates.Add(stateName);
+        return true;
+    }
+
+    public bool PlayPatternAnimationLastFrame(
+        string stateName,
+        bool allowDuringGroggy = false,
+        bool allowDuringFinalDesperation = false)
+    {
+        if (string.IsNullOrWhiteSpace(stateName))
+            return false;
+
+        if (!CanPlayPatternAnimation(allowDuringGroggy, allowDuringFinalDesperation))
+            return false;
+
+        float normalizedTime = ResolvePatternAnimationLastFrameNormalizedTime(stateName);
+        if (IsCurrentPatternAnimationStateAtOrAfter(stateName, normalizedTime))
+            return true;
+
+        ReleasePatternAnimationHold();
+        return TryPlayPatternAnimation(stateName, normalizedTime, allowDuringGroggy, allowDuringFinalDesperation);
+    }
+
+    public bool HoldPatternAnimationLastFrame(
+        string stateName,
+        bool allowDuringGroggy = false,
+        bool allowDuringFinalDesperation = false)
+    {
+        if (string.IsNullOrWhiteSpace(stateName))
+            return false;
+
+        if (!CanPlayPatternAnimation(allowDuringGroggy, allowDuringFinalDesperation))
+            return false;
+
+        float normalizedTime = ResolvePatternAnimationLastFrameNormalizedTime(stateName);
+        if (IsCurrentPatternAnimationStateAtOrAfter(stateName, normalizedTime))
+        {
+            HoldPatternAnimatorSpeed();
+            return true;
+        }
+
+        ReleasePatternAnimationHold();
+        if (!TryPlayPatternAnimation(stateName, normalizedTime, allowDuringGroggy, allowDuringFinalDesperation))
+            return false;
+
+        HoldPatternAnimatorSpeed();
+        return true;
+    }
+
+    public void ReleasePatternAnimationHold()
+    {
+        if (!patternAnimationHoldActive)
+            return;
+
+        patternAnimationHoldActive = false;
+        if (animator != null)
+            animator.speed = patternAnimationSpeedBeforeHold;
+        patternAnimationSpeedBeforeHold = 1f;
+    }
+
+    public float ResolvePatternAnimationLastFrameStartDelay(string stateName, float fallbackSeconds = 0.08333334f)
+    {
+        if (!TryResolvePatternAnimationClip(stateName, out AnimationClip clip))
+            return Mathf.Max(0f, fallbackSeconds);
+
+        float frameSeconds = ResolveClipFrameSeconds(clip, fallbackSeconds);
+        return Mathf.Max(0f, clip.length - frameSeconds);
+    }
+
+    public float ResolvePatternAnimationFrameSeconds(string stateName, float fallbackSeconds = 0.08333334f)
+    {
+        if (!TryResolvePatternAnimationClip(stateName, out AnimationClip clip))
+            return Mathf.Max(0f, fallbackSeconds);
+
+        return ResolveClipFrameSeconds(clip, fallbackSeconds);
+    }
+
+    public void RestoreCombatPose()
+    {
+        ReleasePatternAnimationHold();
+
+        if (IsDead || HasDeadTag() || RuntimeData.FinalDesperationStarted)
+            return;
+
+        if (HasGroggyTag())
+        {
+            PlayGroggyPose();
+            return;
+        }
+
+        string stateName = RuntimeData.SwordMode == DemonKingEgoSwordMode.Hold
+            ? DarkLordSwordIdleState
+            : DarkLordHandIdleState;
+        PlayPatternAnimationIfChanged(stateName);
+    }
+
+    public string ResolveGroggyCounterAnimationState()
+    {
+        return RuntimeData.SwordMode == DemonKingEgoSwordMode.Hold
+            ? DarkLordSwordGroggyCounterState
+            : DarkLordHandGroggyCounterState;
+    }
+
+    public bool HoldGroggyPoseAnimation(bool allowDuringGroggy = true)
+    {
+        if (IsDead || HasDeadTag() || RuntimeData.FinalDesperationStarted)
+            return false;
+
+        return HoldPatternAnimationCurrentFrameIfState(
+            ResolveGroggyPoseState(),
+            allowDuringGroggy: allowDuringGroggy);
+    }
+
+    private bool HoldPatternAnimationCurrentFrameIfState(
+        string stateName,
+        bool allowDuringGroggy = false,
+        bool allowDuringFinalDesperation = false)
+    {
+        if (string.IsNullOrWhiteSpace(stateName))
+            return false;
+
+        if (!CanPlayPatternAnimation(allowDuringGroggy, allowDuringFinalDesperation))
+            return false;
+
+        if (IsCurrentPatternAnimationState(stateName))
+        {
+            HoldPatternAnimatorSpeed();
+            return true;
+        }
+
+        return HoldPatternAnimationFirstFrame(stateName, allowDuringGroggy, allowDuringFinalDesperation);
+    }
+
+    private bool TryPlayPatternAnimation(
+        string stateName,
+        float normalizedTime,
+        bool allowDuringGroggy,
+        bool allowDuringFinalDesperation)
+    {
+        if (!CanPlayPatternAnimation(allowDuringGroggy, allowDuringFinalDesperation))
+            return false;
+
+        if (!TryResolvePatternAnimationStateHash(stateName, out int stateHash))
+            return false;
+
+        animator.Play(stateHash, 0, Mathf.Clamp01(normalizedTime));
+        animator.Update(0f);
+        return true;
     }
 
     public void PushFaceTargetLock()
@@ -386,7 +662,7 @@ public sealed class DemonKingController : BossControllerBase
     public void CompleteEgoSwordRecall()
     {
         RuntimeData.SetSwordHeld();
-        ResolveEgoSword()?.AttachToOwner();
+        ResolveEgoSword()?.HideWhileHeld();
     }
 
     public void MarkHp50PatternUsed()
@@ -407,7 +683,7 @@ public sealed class DemonKingController : BossControllerBase
             return egoSword;
         }
 
-        egoSword = FindAnyObjectByType<EgoSwordActor>();
+        egoSword = FindAnyObjectByType<EgoSwordActor>(FindObjectsInactive.Include);
         if (egoSword != null)
         {
             egoSword.Bind(this);
@@ -530,6 +806,229 @@ public sealed class DemonKingController : BossControllerBase
                CurrentHealthRatio <= hp50RushRatio;
     }
 
+    private bool ShouldThrowSwordForHp50Rush()
+    {
+        return CanUseHp50Rush() && RuntimeData.SwordMode == DemonKingEgoSwordMode.Hold;
+    }
+
+    private bool IsFacingLeft => sprite == null || !sprite.flipX;
+
+    private void ApplyFacingLeft(bool faceLeft)
+    {
+        if (sprite != null)
+            sprite.flipX = !faceLeft;
+    }
+
+    private bool TryFaceTargetX(float targetX, float deadZone)
+    {
+        if (sprite == null)
+            return false;
+
+        float deltaX = targetX - transform.position.x;
+        if (Mathf.Abs(deltaX) <= deadZone)
+            return false;
+
+        ApplyFacingLeft(deltaX < 0f);
+        return true;
+    }
+
+    private bool PlayDeathPoseAnimation()
+    {
+        ReleasePatternAnimationHold();
+        ClearPatternAnimationStartRecords();
+        if (!TryResolvePatternAnimationStateHash(DarkLordHandGroggyState, out int stateHash))
+            return false;
+
+        animator.Play(stateHash, 0, 0f);
+        animator.Update(0f);
+        return true;
+    }
+
+    private void PlayGroggyPose()
+    {
+        if (IsDead || HasDeadTag() || RuntimeData.FinalDesperationStarted)
+            return;
+
+        PlayPatternAnimationIfChanged(ResolveGroggyPoseState(), allowDuringGroggy: true);
+    }
+
+    private string ResolveGroggyPoseState()
+    {
+        return RuntimeData.SwordMode == DemonKingEgoSwordMode.Hold
+            ? DarkLordSwordGroggyState
+            : DarkLordHandGroggyState;
+    }
+
+    private bool TryResolvePatternAnimationStateHash(string stateName, out int stateHash)
+    {
+        stateHash = 0;
+        if (animator == null)
+        {
+            WarnPatternAnimationInvalid(stateName, "missing Animator");
+            return false;
+        }
+
+        if (!animator.isActiveAndEnabled)
+        {
+            WarnPatternAnimationInvalid(stateName, "Animator is inactive or disabled");
+            return false;
+        }
+
+        if (animator.runtimeAnimatorController == null)
+        {
+            WarnPatternAnimationInvalid(
+                stateName,
+                "Animator has no RuntimeAnimatorController; assign DarkLordBoss.controller to the DemonKing Animator");
+            return false;
+        }
+
+        stateHash = Animator.StringToHash(stateName);
+        if (animator.HasState(0, stateHash))
+            return true;
+
+        if (animator.layerCount > 0)
+        {
+            string layerName = animator.GetLayerName(0);
+            if (!string.IsNullOrWhiteSpace(layerName))
+            {
+                stateHash = Animator.StringToHash($"{layerName}.{stateName}");
+                if (animator.HasState(0, stateHash))
+                    return true;
+            }
+        }
+
+        WarnPatternAnimationInvalid(stateName, $"AnimatorController has no state '{stateName}'");
+        return false;
+    }
+
+    private bool CanPlayPatternAnimation(bool allowDuringGroggy, bool allowDuringFinalDesperation)
+    {
+        if (IsDead || HasDeadTag())
+            return false;
+
+        if (!allowDuringGroggy && HasGroggyTag())
+            return false;
+
+        if (!allowDuringFinalDesperation && RuntimeData.FinalDesperationStarted)
+            return false;
+
+        return true;
+    }
+
+    private bool IsCurrentPatternAnimationState(string stateName)
+    {
+        return TryGetCurrentPatternAnimationStateInfo(stateName, out _);
+    }
+
+    private bool IsCurrentPatternAnimationStateAtOrAfter(string stateName, float normalizedTime)
+    {
+        if (!TryGetCurrentPatternAnimationStateInfo(stateName, out AnimatorStateInfo stateInfo))
+            return false;
+
+        float currentNormalizedTime = stateInfo.loop
+            ? Mathf.Repeat(stateInfo.normalizedTime, 1f)
+            : stateInfo.normalizedTime;
+        return currentNormalizedTime >= Mathf.Clamp01(normalizedTime);
+    }
+
+    private bool TryGetCurrentPatternAnimationStateInfo(string stateName, out AnimatorStateInfo stateInfo)
+    {
+        stateInfo = default;
+        if (animator == null || !animator.isActiveAndEnabled || string.IsNullOrWhiteSpace(stateName))
+            return false;
+
+        stateInfo = animator.GetCurrentAnimatorStateInfo(0);
+        int shortNameHash = Animator.StringToHash(stateName);
+        if (stateInfo.shortNameHash == shortNameHash)
+            return true;
+
+        if (animator.layerCount <= 0)
+            return false;
+
+        string layerName = animator.GetLayerName(0);
+        if (string.IsNullOrWhiteSpace(layerName))
+            return false;
+
+        int fullPathHash = Animator.StringToHash($"{layerName}.{stateName}");
+        return stateInfo.fullPathHash == fullPathHash;
+    }
+
+    private void ClearPatternAnimationStartRecords()
+    {
+        playedPatternAnimationStartStates.Clear();
+    }
+
+    private bool TryResolvePatternAnimationClip(string stateName, out AnimationClip clip)
+    {
+        clip = null;
+        if (animator == null)
+        {
+            WarnPatternAnimationInvalid(stateName, "missing Animator");
+            return false;
+        }
+
+        RuntimeAnimatorController controller = animator.runtimeAnimatorController;
+        if (controller == null)
+        {
+            WarnPatternAnimationInvalid(
+                stateName,
+                "Animator has no RuntimeAnimatorController; assign DarkLordBoss.controller to the DemonKing Animator");
+            return false;
+        }
+
+        AnimationClip[] clips = controller.animationClips;
+        for (int i = 0; i < clips.Length; i++)
+        {
+            AnimationClip candidate = clips[i];
+            if (candidate != null && candidate.name == stateName)
+            {
+                clip = candidate;
+                return true;
+            }
+        }
+
+        WarnPatternAnimationInvalid(stateName, $"AnimatorController has no clip '{stateName}'");
+        return false;
+    }
+
+    private float ResolvePatternAnimationLastFrameNormalizedTime(string stateName)
+    {
+        if (!TryResolvePatternAnimationClip(stateName, out AnimationClip clip) || clip.length <= 0f)
+            return 0f;
+
+        float frameSeconds = ResolveClipFrameSeconds(clip, 0.08333334f);
+        return Mathf.Clamp01(Mathf.Max(0f, clip.length - frameSeconds) / clip.length);
+    }
+
+    private static float ResolveClipFrameSeconds(AnimationClip clip, float fallbackSeconds)
+    {
+        if (clip == null || clip.frameRate <= 0f)
+            return Mathf.Max(0.001f, fallbackSeconds);
+
+        return Mathf.Max(0.001f, 1f / clip.frameRate);
+    }
+
+    private void HoldPatternAnimatorSpeed()
+    {
+        if (animator == null)
+            return;
+
+        if (!patternAnimationHoldActive)
+        {
+            patternAnimationSpeedBeforeHold = animator.speed;
+            patternAnimationHoldActive = true;
+        }
+
+        animator.speed = 0f;
+    }
+
+    private void WarnPatternAnimationInvalid(string stateName, string reason)
+    {
+        string key = $"{stateName}:{reason}";
+        if (patternAnimationWarnings.Add(key))
+            Debug.LogWarning($"DemonKing pattern animation '{stateName}' skipped: {reason}.", this);
+    }
+
     private void CleanupEgoSwordForBattleEnd()
     {
         if (!Application.isPlaying)
@@ -541,6 +1040,12 @@ public sealed class DemonKingController : BossControllerBase
             return;
 
         egoSword.CleanupForBossBattleEnd();
+    }
+
+    private void PrepareEgoSwordHeldHidden()
+    {
+        RuntimeData.SetSwordHeld();
+        ResolveEgoSword()?.HideWhileHeld();
     }
 
     private void ConfigureRuntimePatternsIfNeeded()
@@ -892,7 +1397,7 @@ public sealed class DemonKingController : BossControllerBase
         if (CurrentTarget == null)
             return;
 
-        TryApplySpriteFacingTargetX(CurrentTarget.position.x, AutoFaceTargetDeadZone);
+        TryFaceTargetX(CurrentTarget.position.x, AutoFaceTargetDeadZone);
     }
 
     private static void StripCopiedBossBehaviours(GameObject swordObject)

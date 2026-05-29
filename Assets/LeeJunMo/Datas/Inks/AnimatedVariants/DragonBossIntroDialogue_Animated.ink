@@ -1,4 +1,4 @@
-﻿// Dragon boss encounter dialogue
+// Dragon boss encounter dialogue
 // Source: 취룡_대사.xlsx
 // Entry knot is selected by DragonDialogueStartKnotSelector.
 
