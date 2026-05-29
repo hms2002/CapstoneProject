@@ -36,6 +36,8 @@ last_reviewed: 2026-05-15
 | [Consumable Authoring Pipeline](./ConsumableAuthoringPipeline.md) | 새 소모품, 사용 효과, 소모품 인벤토리 연결을 만든다. |
 | [Loot Reward Integration Pipeline](./LootRewardIntegrationPipeline.md) | 새 콘텐츠를 loot table, item database, chest, boss reward, world pickup에 연결한다. |
 
+| [Gemini Ink Dialogue Authoring Guide](./GeminiInkDialogueAuthoringGuide.md) | Gemini/Gem으로 Ink 대사 초안, animated variant, NPC/boss 대사 branch를 작성할 때 사용한다. |
+
 ## Related Maps
 
 - [Script System Map](../../StructureMemory/ScriptSystemMap.md)

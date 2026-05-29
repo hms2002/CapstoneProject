@@ -56,6 +56,7 @@ public sealed class BossRewardObjectRevealPresentation : MonoBehaviour
     private readonly List<ParticleSystem> spawnedBurstDustParticles = new();
     private readonly List<ParticleTransformState> sceneParticleTransformStates = new();
     private Coroutine revealRoutine;
+    private GameFlowInputBlocker inputBlocker;
     private SpriteMask activeRevealMask;
     private SpriteMask runtimeRevealMask;
     private Vector3 revealRootFinalLocalPosition;
@@ -91,6 +92,7 @@ public sealed class BossRewardObjectRevealPresentation : MonoBehaviour
 
     private IEnumerator PlayRevealRoutine()
     {
+        AcquireInputBlocker();
         CaptureRevealState();
         ApplyRevealStart();
         ApplyRevealProgress(0f, 0f);
@@ -221,6 +223,7 @@ public sealed class BossRewardObjectRevealPresentation : MonoBehaviour
             StopLoopDustParticles(clear: false);
 
         RestoreRevealState(complete: true);
+        ReleaseInputBlocker();
         revealRoutine = null;
     }
 
@@ -278,6 +281,21 @@ public sealed class BossRewardObjectRevealPresentation : MonoBehaviour
         return useUnscaledTime ? Time.unscaledDeltaTime : Time.deltaTime;
     }
 
+    private void AcquireInputBlocker()
+    {
+        if (inputBlocker != null && inputBlocker.IsBlocking)
+            return;
+
+        inputBlocker = GameFlowInputBlocker.GetOrAdd(this);
+        inputBlocker?.Acquire();
+    }
+
+    private void ReleaseInputBlocker()
+    {
+        inputBlocker?.Release();
+        inputBlocker = null;
+    }
+
     private bool ShouldPlayRevealMotionShake()
     {
         return hasRevealRootState && ResolveRevealRoot() != null && ResolveFirstMaskedRenderer() != null;
@@ -292,6 +310,7 @@ public sealed class BossRewardObjectRevealPresentation : MonoBehaviour
         }
 
         RestoreRevealState(complete);
+        ReleaseInputBlocker();
     }
 
     private void RestoreRevealState(bool complete)
@@ -359,7 +378,7 @@ public sealed class BossRewardObjectRevealPresentation : MonoBehaviour
             for (int maskIndex = 0; maskIndex < sceneMasks.Length; maskIndex++)
             {
                 SpriteMask sceneMask = sceneMasks[maskIndex];
-                if (sceneMask == null || IsRevealMask(sceneMask))
+                if (sceneMask == null || IsRevealMask(sceneMask) || IsPlayerVisionMask(sceneMask))
                     continue;
 
                 globalVisionMaskStates.Add(new SpriteMaskRangeState(sceneMask));
@@ -560,6 +579,11 @@ public sealed class BossRewardObjectRevealPresentation : MonoBehaviour
     private bool IsRevealMask(SpriteMask mask)
     {
         return mask != null && (mask == revealMask || mask == activeRevealMask || mask == runtimeRevealMask);
+    }
+
+    private static bool IsPlayerVisionMask(SpriteMask mask)
+    {
+        return mask != null && mask.GetComponentInParent<PlayerVisionMaskFollower>(includeInactive: true) != null;
     }
 
     private ParticleSystem ResolvePlayableParticle(ParticleSystem configuredParticle, bool isLoopDust)

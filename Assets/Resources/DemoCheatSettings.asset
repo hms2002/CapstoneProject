@@ -20,10 +20,15 @@ MonoBehaviour:
   warpToPortalKey: 291
   resetWeaponCooldownKey: 292
   increaseAttackKey: 293
+  mapZoomToggleKey: 286
   healthAttribute: {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
   maxHealthAttribute: {fileID: 11400000, guid: 0e177e1d15e428745b5859fac08ce203, type: 2}
   attackAddAttribute: {fileID: 11400000, guid: 81ebe564c6bd7d54a92e1093c59a8161, type: 2}
   attackIncreaseAmount: 10
   magicStoneAddAmount: 100
+  mapZoomCenter: {x: 0, y: 0}
+  mapZoomSize: {x: 40, y: 24}
+  mapZoomPadding: 1
+  mapZoomTransitionSeconds: 0.45
   notificationDuration: 1.2
   cheatGuideDuration: 4

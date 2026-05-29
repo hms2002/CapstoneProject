@@ -8,6 +8,8 @@ public sealed class ApprenticeHeroSwordChargeSpinData : ScriptableObject
     [Header("Animation")]
     [SerializeField] private string chargeAnimationTrigger = "Skill2Charge";
     [SerializeField] private string releaseAnimationTrigger = "Skill2";
+    [SerializeField] private GameplayTag releaseHitEventTag;
+    [SerializeField, Min(0f)] private float releaseHitEventTimeout = 0.6f;
 
     [Header("Charge")]
     [SerializeField, Min(0f)] private float minChargeSeconds = 0.25f;
@@ -78,6 +80,8 @@ public sealed class ApprenticeHeroSwordChargeSpinData : ScriptableObject
 
     public string ChargeAnimationTrigger => chargeAnimationTrigger;
     public string ReleaseAnimationTrigger => releaseAnimationTrigger;
+    public GameplayTag ReleaseHitEventTag => releaseHitEventTag;
+    public float ReleaseHitEventTimeout => Mathf.Max(0f, releaseHitEventTimeout);
     public float MinChargeSeconds => Mathf.Max(0f, minChargeSeconds);
     public float MaxChargeSeconds => Mathf.Max(0.01f, Mathf.Max(maxChargeSeconds, minChargeSeconds));
     public float SpinDuration => Mathf.Max(0.01f, spinDuration);

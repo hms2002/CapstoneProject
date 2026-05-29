@@ -18,6 +18,7 @@ public sealed class LoadingOverlayController : MonoBehaviour
         canvasGroup.alpha > 0.001f;
 
     private static bool s_isQuitting;
+    private const int ActiveOverlaySortingOrder = short.MaxValue;
     private const int DebugPreviewBatchId = -7001;
     private const float FallbackTrackWidth = 560f;
     private const float TravelRange = 172f;
@@ -85,6 +86,10 @@ public sealed class LoadingOverlayController : MonoBehaviour
     private bool hasBaseTravelWalkerAnchoredPosition;
     private LoadingOverlayView runtimeFallbackView;
     private GameObject runtimeFallbackCanvas;
+    private Canvas elevatedOverlayCanvas;
+    private bool hasSavedOverlayCanvasSorting;
+    private bool savedOverlayCanvasOverrideSorting;
+    private int savedOverlayCanvasSortingOrder;
 
     private GameObject activeCustomTravelVisualInstance;
     private GameObject boundCustomTravelVisualPrefab;
@@ -160,6 +165,8 @@ public sealed class LoadingOverlayController : MonoBehaviour
 
         if (overlayRoot != null)
             overlayRoot.gameObject.SetActive(false);
+
+        RestoreOverlayCanvasSorting();
     }
 
     public void BeginManagedPresentation(bool showImmediately = false)
@@ -196,6 +203,7 @@ public sealed class LoadingOverlayController : MonoBehaviour
         if (overlayRoot == null || canvasGroup == null)
             return;
 
+        BringOverlayToFront();
         overlayRoot.gameObject.SetActive(true);
         if (immediate)
             canvasGroup.alpha = 1f;
@@ -225,6 +233,7 @@ public sealed class LoadingOverlayController : MonoBehaviour
         managedPresentationActive = false;
         managedPresentationRevealed = false;
         targetVisible = false;
+        RestoreOverlayCanvasSorting();
     }
 
     private void Awake()
@@ -261,6 +270,7 @@ public sealed class LoadingOverlayController : MonoBehaviour
         if (runtimeFallbackCanvas != null)
             Destroy(runtimeFallbackCanvas);
 
+        RestoreOverlayCanvasSorting();
         IsActiveLoadingPresentation = false;
         if (Instance == this)
             Instance = null;
@@ -725,7 +735,7 @@ public sealed class LoadingOverlayController : MonoBehaviour
         RectTransform rootRect = CreateRect("RuntimeLoadingRoot", runtimeFallbackCanvas.transform);
         Stretch(rootRect);
         Image background = rootRect.gameObject.AddComponent<Image>();
-        background.color = new Color(0f, 0f, 0f, 0.82f);
+        background.color = Color.black;
         CanvasGroup rootGroup = rootRect.gameObject.AddComponent<CanvasGroup>();
         rootGroup.alpha = 0f;
         rootGroup.blocksRaycasts = false;
@@ -804,8 +814,12 @@ public sealed class LoadingOverlayController : MonoBehaviour
             overlayRoot.gameObject.SetActive(shouldRemainActive);
 
         if (!shouldRemainActive)
+        {
+            RestoreOverlayCanvasSorting();
             return;
+        }
 
+        BringOverlayToFront();
         float fadeDuration = targetVisible ? fadeInSeconds : fadeOutSeconds;
         float alphaStep = fadeDuration > 0f ? Time.unscaledDeltaTime / fadeDuration : 1f;
         canvasGroup.alpha = Mathf.MoveTowards(canvasGroup.alpha, targetVisible ? 1f : 0f, alphaStep);
@@ -814,6 +828,79 @@ public sealed class LoadingOverlayController : MonoBehaviour
 
         ApplyCompactViewVisibility();
         UpdateCompactLoadingText(debugPreviewActive ? debugPreviewStartedRealtime : visibleSinceRealtime);
+    }
+
+    private void BringOverlayToFront()
+    {
+        if (overlayRoot == null)
+            return;
+
+        Transform overlayTransform = overlayRoot.transform;
+        if (overlayTransform.parent != null)
+            overlayTransform.SetAsLastSibling();
+
+        ElevateOverlayCanvas(overlayTransform);
+    }
+
+    private void ElevateOverlayCanvas(Transform overlayTransform)
+    {
+        Canvas overlayCanvas = ResolveOverlayCanvas(overlayTransform);
+        if (overlayCanvas == null)
+            return;
+
+        if (elevatedOverlayCanvas != overlayCanvas)
+        {
+            RestoreOverlayCanvasSorting();
+            SaveOverlayCanvasSorting(overlayCanvas);
+        }
+        else if (!hasSavedOverlayCanvasSorting)
+        {
+            SaveOverlayCanvasSorting(overlayCanvas);
+        }
+
+        overlayCanvas.overrideSorting = true;
+        overlayCanvas.sortingOrder = ActiveOverlaySortingOrder;
+
+        Transform canvasTransform = overlayCanvas.transform;
+        if (canvasTransform.parent != null)
+            canvasTransform.SetAsLastSibling();
+    }
+
+    private static Canvas ResolveOverlayCanvas(Transform overlayTransform)
+    {
+        if (overlayTransform == null)
+            return null;
+
+        Canvas[] parentCanvases = overlayTransform.GetComponentsInParent<Canvas>(true);
+        return parentCanvases != null && parentCanvases.Length > 0
+            ? parentCanvases[0]
+            : null;
+    }
+
+    private void SaveOverlayCanvasSorting(Canvas overlayCanvas)
+    {
+        if (overlayCanvas == null)
+            return;
+
+        elevatedOverlayCanvas = overlayCanvas;
+        savedOverlayCanvasOverrideSorting = overlayCanvas.overrideSorting;
+        savedOverlayCanvasSortingOrder = overlayCanvas.sortingOrder;
+        hasSavedOverlayCanvasSorting = true;
+    }
+
+    private void RestoreOverlayCanvasSorting()
+    {
+        if (!hasSavedOverlayCanvasSorting)
+            return;
+
+        if (elevatedOverlayCanvas != null)
+        {
+            elevatedOverlayCanvas.overrideSorting = savedOverlayCanvasOverrideSorting;
+            elevatedOverlayCanvas.sortingOrder = savedOverlayCanvasSortingOrder;
+        }
+
+        elevatedOverlayCanvas = null;
+        hasSavedOverlayCanvasSorting = false;
     }
 
     private void BindTravelVisual()

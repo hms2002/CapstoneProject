@@ -40,6 +40,7 @@ public sealed class MerchantActivationCinematic : MonoBehaviour
 
     private Coroutine pendingRoutine;
     private CinematicLetterboxOverlay overlay;
+    private GameFlowInputBlocker inputBlocker;
     private PlayerCinematicProtection lockedPlayerProtection;
 
     private CinemachineCamera gameplayCamera;
@@ -149,6 +150,7 @@ public sealed class MerchantActivationCinematic : MonoBehaviour
             yield break;
         }
 
+        AcquireInputBlocker();
         LockPlayerControls();
         overlay = new CinematicLetterboxOverlay();
 
@@ -520,6 +522,21 @@ public sealed class MerchantActivationCinematic : MonoBehaviour
         SetCameraOrthographicSize(gameplayCamera, orthographicSize);
     }
 
+    private void AcquireInputBlocker()
+    {
+        if (inputBlocker != null && inputBlocker.IsBlocking)
+            return;
+
+        inputBlocker = GameFlowInputBlocker.GetOrAdd(this);
+        inputBlocker?.Acquire();
+    }
+
+    private void ReleaseInputBlocker()
+    {
+        inputBlocker?.Release();
+        inputBlocker = null;
+    }
+
     private static void SetCameraOrthographicSize(CinemachineCamera camera, float orthographicSize)
     {
         if (camera == null)
@@ -564,6 +581,7 @@ public sealed class MerchantActivationCinematic : MonoBehaviour
 
         RestoreCameraState(PlayerRuntimeRegistry.GetPlayerTransform());
         UnlockPlayerControls();
+        ReleaseInputBlocker();
     }
 
     private void WarnMissingFocusTargetOnce()

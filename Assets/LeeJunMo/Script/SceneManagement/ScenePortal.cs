@@ -1,5 +1,7 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 using UnityEngine;
 using UnityGAS;
 #if UNITY_EDITOR
@@ -28,10 +30,24 @@ public sealed class ScenePortal : InteractableBase
     [SerializeField] private GameObject highlightTarget;
     [SerializeField] private SpriteRenderer spriteRenderer;
 
+    [Header("Entrance Presentation")]
+    [SerializeField] private bool playEntrancePresentation = true;
+    [SerializeField, Min(0f)] private float entranceDuration = 0.55f;
+    [SerializeField] private float entranceRotationDegrees = 720f;
+    [SerializeField] private Transform entranceCenter;
+    [SerializeField] private Vector3 entranceCenterWorldOffset;
+
     [Header("Cleanup Before Capture")]
     [SerializeField] private List<GameplayTagSet> sceneTravelCleanupTagSets = new();
 
     private bool isTransitioning;
+    private bool acceptedTravel;
+    private bool hasActiveEntranceSnapshot;
+    private Coroutine entranceRoutine;
+    private Sequence entranceSequence;
+    private PortalEntranceSnapshot activeEntranceSnapshot;
+    private PlayerCinematicProtection lockedPlayerProtection;
+    private GameFlowInputBlocker entranceInputBlocker;
 
     private MaterialPropertyBlock propBlock;
     private static readonly int OutlineEnabledID = Shader.PropertyToID("_OutlineEnabled");
@@ -57,6 +73,11 @@ public sealed class ScenePortal : InteractableBase
     private void OnEnable()
     {
         EnsurePendingStartRunPlan();
+    }
+
+    private void OnDisable()
+    {
+        CleanupEntrancePresentation(restoreSnapshot: true);
     }
 
     private void Reset()
@@ -127,10 +148,20 @@ public sealed class ScenePortal : InteractableBase
 
         player.SetInteractState(InteractState.None);
 
-        if (!ScenePortalTravelService.TryTravel(this))
+        if (ShouldPlayEntrancePresentation(player))
+        {
+            entranceRoutine = StartCoroutine(PlayEntranceAndTravelRoutine(player));
+            return;
+        }
+
+        if (!TryStartTravelSafely())
         {
             isTransitioning = false;
             player.SetInteractState(InteractState.Idle);
+        }
+        else
+        {
+            acceptedTravel = true;
         }
     }
 
@@ -146,6 +177,216 @@ public sealed class ScenePortal : InteractableBase
         spriteRenderer.GetPropertyBlock(propBlock);
         propBlock.SetFloat(OutlineEnabledID, enabled ? 1f : 0f);
         spriteRenderer.SetPropertyBlock(propBlock);
+    }
+
+    private bool ShouldPlayEntrancePresentation(IPlayerInteractor player)
+    {
+        return playEntrancePresentation &&
+               entranceDuration > 0f &&
+               player?.Transform != null;
+    }
+
+    private IEnumerator PlayEntranceAndTravelRoutine(IPlayerInteractor player)
+    {
+        PortalEntranceSnapshot snapshot = PortalEntranceSnapshot.Capture(player);
+        activeEntranceSnapshot = snapshot;
+        hasActiveEntranceSnapshot = snapshot.IsValid;
+
+        AcquireInputBlocker();
+        AcquirePlayerCinematicProtection(snapshot.PlayerTransform);
+
+        bool travelStarted = false;
+        try
+        {
+            if (snapshot.IsValid)
+            {
+                snapshot.StopPhysicsForPresentation();
+                yield return PlayEntrancePresentation(snapshot);
+                snapshot.RestorePhysics();
+            }
+
+            ReleasePlayerCinematicProtection();
+            ReleaseInputBlocker();
+
+            travelStarted = TryStartTravelSafely();
+            if (!travelStarted)
+            {
+                RestoreFailedTravel(player, snapshot);
+                yield break;
+            }
+
+            acceptedTravel = true;
+            yield return WaitForAcceptedTransitionToFinish();
+
+            RestoreFailedTravel(player, snapshot);
+        }
+        finally
+        {
+            KillEntranceSequence();
+            ReleasePlayerCinematicProtection();
+            ReleaseInputBlocker();
+            entranceRoutine = null;
+
+            if (!travelStarted)
+                isTransitioning = false;
+        }
+    }
+
+    private IEnumerator PlayEntrancePresentation(PortalEntranceSnapshot snapshot)
+    {
+        if (!snapshot.IsValid)
+            yield break;
+
+        if (snapshot.PlayerTransform == null)
+            yield break;
+
+        KillEntranceSequence();
+
+        Vector3 targetPosition = ResolveEntranceTargetPosition(snapshot.PlayerTransform);
+        Vector3 targetRotation = snapshot.LocalRotation.eulerAngles +
+                                 new Vector3(0f, 0f, entranceRotationDegrees);
+
+        if (!TryCreateEntranceSequence(snapshot, targetPosition, targetRotation))
+            yield break;
+
+        yield return entranceSequence.WaitForCompletion();
+        entranceSequence = null;
+    }
+
+    private bool TryCreateEntranceSequence(
+        PortalEntranceSnapshot snapshot,
+        Vector3 targetPosition,
+        Vector3 targetRotation)
+    {
+        try
+        {
+            entranceSequence = DOTween.Sequence();
+            entranceSequence.Join(snapshot.PlayerTransform.DOMove(targetPosition, entranceDuration).SetEase(Ease.OutQuart));
+            entranceSequence.Join(snapshot.PlayerTransform.DOScale(Vector3.zero, entranceDuration).SetEase(Ease.InBack));
+            entranceSequence.Join(snapshot.PlayerTransform.DOLocalRotate(targetRotation, entranceDuration, RotateMode.FastBeyond360).SetEase(Ease.InCubic));
+            return true;
+        }
+        catch (Exception ex)
+        {
+            KillEntranceSequence();
+            Debug.LogError($"[ScenePortal] Entrance presentation failed. portal={name}, error={ex}", this);
+            return false;
+        }
+    }
+
+    private Vector3 ResolveEntranceTargetPosition(Transform playerTransform)
+    {
+        Vector3 targetPosition = entranceCenter != null
+            ? entranceCenter.position
+            : transform.position;
+
+        targetPosition += entranceCenterWorldOffset;
+        if (playerTransform != null)
+            targetPosition.z = playerTransform.position.z;
+
+        return targetPosition;
+    }
+
+    private IEnumerator WaitForAcceptedTransitionToFinish()
+    {
+        SceneTransitionCoordinator coordinator = SceneTransitionCoordinator.Instance;
+        while (coordinator != null && coordinator.IsTransitionActive)
+        {
+            yield return null;
+            coordinator = SceneTransitionCoordinator.Instance;
+        }
+    }
+
+    private void RestoreFailedTravel(IPlayerInteractor player, PortalEntranceSnapshot snapshot)
+    {
+        acceptedTravel = false;
+        isTransitioning = false;
+
+        if (snapshot.IsValid)
+            snapshot.RestoreAll();
+
+        hasActiveEntranceSnapshot = false;
+        player?.SetInteractState(InteractState.Idle);
+    }
+
+    private bool TryStartTravelSafely()
+    {
+        try
+        {
+            return ScenePortalTravelService.TryTravel(this);
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"[ScenePortal] Travel request failed with exception. portal={name}, error={ex}", this);
+            return false;
+        }
+    }
+
+    private void AcquireInputBlocker()
+    {
+        entranceInputBlocker = GameFlowInputBlocker.GetOrAdd(this);
+        entranceInputBlocker?.Acquire();
+    }
+
+    private void ReleaseInputBlocker()
+    {
+        entranceInputBlocker?.Release();
+        entranceInputBlocker = null;
+    }
+
+    private void AcquirePlayerCinematicProtection(Transform playerTransform)
+    {
+        if (playerTransform == null || lockedPlayerProtection != null)
+            return;
+
+        lockedPlayerProtection = playerTransform.GetComponent<PlayerCinematicProtection>();
+        if (lockedPlayerProtection == null)
+            lockedPlayerProtection = playerTransform.gameObject.AddComponent<PlayerCinematicProtection>();
+
+        lockedPlayerProtection.Acquire(this);
+    }
+
+    private void ReleasePlayerCinematicProtection()
+    {
+        if (lockedPlayerProtection != null)
+            lockedPlayerProtection.Release(this);
+
+        lockedPlayerProtection = null;
+    }
+
+    private void CleanupEntrancePresentation(bool restoreSnapshot)
+    {
+        if (entranceRoutine != null)
+        {
+            StopCoroutine(entranceRoutine);
+            entranceRoutine = null;
+        }
+
+        KillEntranceSequence();
+
+        if (restoreSnapshot && hasActiveEntranceSnapshot)
+        {
+            if (acceptedTravel)
+                activeEntranceSnapshot.RestorePresentationOnly();
+            else
+                activeEntranceSnapshot.RestoreAll();
+        }
+
+        hasActiveEntranceSnapshot = false;
+        acceptedTravel = false;
+        isTransitioning = false;
+
+        ReleasePlayerCinematicProtection();
+        ReleaseInputBlocker();
+    }
+
+    private void KillEntranceSequence()
+    {
+        if (entranceSequence == null)
+            return;
+
+        entranceSequence.Kill();
+        entranceSequence = null;
     }
 
     private void EnsurePortalId()
@@ -186,6 +427,112 @@ public sealed class ScenePortal : InteractableBase
         }
 
         return false;
+    }
+
+    private readonly struct PortalEntranceSnapshot
+    {
+        public readonly Transform PlayerTransform;
+        public readonly Rigidbody2D Body;
+        public readonly Vector3 Position;
+        public readonly Vector3 LocalScale;
+        public readonly Quaternion LocalRotation;
+        public readonly RigidbodyType2D BodyType;
+        public readonly Vector2 LinearVelocity;
+        public readonly float AngularVelocity;
+
+        private PortalEntranceSnapshot(
+            Transform playerTransform,
+            Rigidbody2D body,
+            Vector3 position,
+            Vector3 localScale,
+            Quaternion localRotation,
+            RigidbodyType2D bodyType,
+            Vector2 linearVelocity,
+            float angularVelocity)
+        {
+            PlayerTransform = playerTransform;
+            Body = body;
+            Position = position;
+            LocalScale = localScale;
+            LocalRotation = localRotation;
+            BodyType = bodyType;
+            LinearVelocity = linearVelocity;
+            AngularVelocity = angularVelocity;
+        }
+
+        public bool IsValid => PlayerTransform != null;
+
+        public static PortalEntranceSnapshot Capture(IPlayerInteractor player)
+        {
+            Transform playerTransform = player?.Transform;
+            if (playerTransform == null)
+            {
+                Transform registeredPlayer = PlayerRuntimeRegistry.GetPlayerTransform();
+                if (registeredPlayer != null)
+                    playerTransform = registeredPlayer;
+            }
+
+            if (playerTransform == null)
+                return default;
+
+            Rigidbody2D body = playerTransform.GetComponent<Rigidbody2D>();
+            RigidbodyType2D bodyType = body != null ? body.bodyType : RigidbodyType2D.Dynamic;
+            Vector2 linearVelocity = body != null ? body.linearVelocity : Vector2.zero;
+            float angularVelocity = body != null ? body.angularVelocity : 0f;
+
+            return new PortalEntranceSnapshot(
+                playerTransform,
+                body,
+                playerTransform.position,
+                playerTransform.localScale,
+                playerTransform.localRotation,
+                bodyType,
+                linearVelocity,
+                angularVelocity);
+        }
+
+        public void StopPhysicsForPresentation()
+        {
+            if (Body == null)
+                return;
+
+            Body.linearVelocity = Vector2.zero;
+            Body.angularVelocity = 0f;
+            Body.bodyType = RigidbodyType2D.Kinematic;
+        }
+
+        public void RestorePhysics()
+        {
+            if (Body == null)
+                return;
+
+            Body.bodyType = BodyType;
+            Body.linearVelocity = LinearVelocity;
+            Body.angularVelocity = AngularVelocity;
+        }
+
+        public void RestorePresentationOnly()
+        {
+            if (PlayerTransform != null)
+            {
+                PlayerTransform.localScale = LocalScale;
+                PlayerTransform.localRotation = LocalRotation;
+            }
+
+            RestorePhysics();
+        }
+
+        public void RestoreAll()
+        {
+            if (PlayerTransform != null)
+            {
+                PlayerTransform.position = Position;
+                PlayerTransform.localScale = LocalScale;
+                PlayerTransform.localRotation = LocalRotation;
+            }
+
+            RestorePhysics();
+        }
     }
 
 #if UNITY_EDITOR

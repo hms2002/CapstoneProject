@@ -44,6 +44,44 @@ public sealed class BossSpeechController : MonoBehaviour
         return true;
     }
 
+    public bool TrySpeakSituationAnimated(
+        BossSpeechSituationEnum situation,
+        float duration,
+        DialogueAnimType animType,
+        Action onBubbleHidden)
+    {
+        return TrySpeakSituationAnimated(situation, duration, animType, onBubbleHidden, null);
+    }
+
+    public bool TrySpeakSituationAnimated(
+        BossSpeechSituationEnum situation,
+        float duration,
+        DialogueAnimType animType,
+        Action onBubbleHidden,
+        Func<string, string> lineFormatter)
+    {
+        ResolveSpeechBubble();
+
+        if (speechData == null || speechBubble == null)
+        {
+            Debug.LogWarning("[BossSpeechController] Missing BossSpeechData or SpeechBubbleComponent.", this);
+            return false;
+        }
+
+        string line = speechData.GetLine(situation);
+        if (string.IsNullOrWhiteSpace(line))
+            return false;
+
+        if (lineFormatter != null)
+            line = lineFormatter(line);
+
+        if (string.IsNullOrWhiteSpace(line))
+            return false;
+
+        speechBubble.SpeakAnimated(line, duration, speechData.BubbleTheme, onBubbleHidden, animType);
+        return true;
+    }
+
     private void ResolveSpeechBubble()
     {
         if (speechBubble == null)

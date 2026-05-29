@@ -76,6 +76,8 @@ public sealed class AbilityLogic_ApprenticeHeroSwordChargeSpin : AbilityLogic
                 baseDirection = Vector2.right;
             baseDirection.Normalize();
 
+            yield return WaitForReleaseHitEvent(system, spec, data);
+
             try
             {
                 if (IsAbilityCancelled(spec))
@@ -208,6 +210,27 @@ public sealed class AbilityLogic_ApprenticeHeroSwordChargeSpin : AbilityLogic
             return;
 
         system.TryPlayAnimationTriggerHash(Animator.StringToHash(animationTrigger), definition);
+    }
+
+    private static IEnumerator WaitForReleaseHitEvent(
+        AbilitySystem system,
+        AbilitySpec spec,
+        ApprenticeHeroSwordChargeSpinData data)
+    {
+        if (system == null || spec == null || data == null || data.ReleaseHitEventTag == null)
+            yield break;
+
+        float timeout = data.ReleaseHitEventTimeout > 0f
+            ? data.ReleaseHitEventTimeout
+            : data.SpinDuration;
+
+        yield return AbilityTasks.WaitGameplayEvent(
+            system,
+            spec,
+            data.ReleaseHitEventTag,
+            onReceived: null,
+            timeout: timeout,
+            predicate: eventData => eventData.Spec == spec);
     }
 
     private sealed class ApprenticeHeroSwordChargePresentationRuntime

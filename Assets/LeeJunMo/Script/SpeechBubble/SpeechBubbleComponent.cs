@@ -54,6 +54,27 @@ public class SpeechBubbleComponent : MonoBehaviour
             0f);
     }
 
+    public void SpeakAnimated(
+        string text,
+        float duration,
+        SpeechBubbleThemeSettings theme,
+        Action onHidden,
+        DialogueAnimType animType)
+    {
+        SpeakInternal(
+            text,
+            duration,
+            theme,
+            onHidden,
+            Vector3.zero,
+            false,
+            0f,
+            0f,
+            0f,
+            true,
+            animType);
+    }
+
     public void SpeakWithOffsetDelta(
         string text,
         float duration,
@@ -103,7 +124,9 @@ public class SpeechBubbleComponent : MonoBehaviour
         bool preSizeLayout,
         float minTextWidth,
         float maxTextWidth,
-        float minTextHeight)
+        float minTextHeight,
+        bool useAnimatedReveal = false,
+        DialogueAnimType animType = DialogueAnimType.Normal)
     {
         if (bubblePrefab == null || string.IsNullOrWhiteSpace(text))
             return;
@@ -115,20 +138,39 @@ public class SpeechBubbleComponent : MonoBehaviour
             activeBubble = bubble;
         }
 
-        bubble.SetupAndShow(
-            transform,
-            bubbleOffset + offsetDelta,
-            text,
-            duration,
-            defaultUseTyping,
-            defaultTypingSpeed,
-            theme,
-            onHidden,
-            HandleBubbleReleased,
-            preSizeLayout,
-            minTextWidth,
-            maxTextWidth,
-            minTextHeight);
+        if (useAnimatedReveal)
+        {
+            bubble.SetupAndShowAnimated(
+                transform,
+                bubbleOffset + offsetDelta,
+                text,
+                duration,
+                theme,
+                onHidden,
+                HandleBubbleReleased,
+                animType,
+                preSizeLayout,
+                minTextWidth,
+                maxTextWidth,
+                minTextHeight);
+        }
+        else
+        {
+            bubble.SetupAndShow(
+                transform,
+                bubbleOffset + offsetDelta,
+                text,
+                duration,
+                defaultUseTyping,
+                defaultTypingSpeed,
+                theme,
+                onHidden,
+                HandleBubbleReleased,
+                preSizeLayout,
+                minTextWidth,
+                maxTextWidth,
+                minTextHeight);
+        }
     }
 
     public void HideActive()

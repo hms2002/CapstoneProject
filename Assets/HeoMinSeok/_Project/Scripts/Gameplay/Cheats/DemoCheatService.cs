@@ -1,5 +1,7 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityGAS;
@@ -31,9 +33,14 @@ public sealed class DemoCheatService
 {
     private static readonly HashSet<AbilityDefinition> AbilityBuffer = new();
     private static readonly List<RunSpecialNpcInteractor> RunSpecialNpcBuffer = new();
+    private static readonly List<DemoCheatMapZoomBounds> MapZoomBoundsBuffer = new();
     private readonly UnityEngine.Object logContext;
     private string lastRunSpecialNpcSceneName;
     private int nextRunSpecialNpcIndex;
+    private bool hasMapZoomSnapshot;
+    private MapZoomCameraSnapshot mapZoomSnapshot;
+    private Coroutine mapZoomRoutine;
+    private MonoBehaviour mapZoomRoutineOwner;
 
     public DemoCheatService(UnityEngine.Object logContext)
     {
@@ -51,7 +58,8 @@ public sealed class DemoCheatService
             $"{FormatKey(settings.MaxHealthKey)}: 체력 MAX",
             $"{FormatKey(settings.WarpToPortalKey)}: 포탈 앞으로 이동",
             $"{FormatKey(settings.ResetWeaponCooldownKey)}: 무기 쿨타임 초기화",
-            $"{FormatKey(settings.IncreaseAttackKey)}: 공격력 +{settings.AttackIncreaseAmount:0.###}");
+            $"{FormatKey(settings.IncreaseAttackKey)}: 공격력 +{settings.AttackIncreaseAmount:0.###}",
+            $"{FormatKey(settings.MapZoomToggleKey)}: 맵 전체 줌 토글");
     }
 
     public DemoCheatResult AddMagicStone(DemoCheatSettingsSO settings)
@@ -219,6 +227,197 @@ public sealed class DemoCheatService
         return DemoCheatResult.Succeeded("공격력이 +10 증가했습니다.");
     }
 
+    public DemoCheatResult ToggleMapZoom(DemoCheatSettingsSO settings, MonoBehaviour routineOwner)
+    {
+        if (settings == null)
+            return Fail("맵 줌 치트 설정을 찾을 수 없습니다.");
+
+        if (routineOwner == null)
+            return Fail("맵 줌 코루틴 실행 대상을 찾을 수 없습니다.");
+
+        return hasMapZoomSnapshot
+            ? RestoreMapZoom(settings, routineOwner)
+            : ZoomOutToMap(settings, routineOwner);
+    }
+
+    public void RestoreMapZoomImmediate()
+    {
+        if (!hasMapZoomSnapshot)
+            return;
+
+        StopMapZoomRoutine();
+        ApplyMapZoomSnapshot(mapZoomSnapshot);
+        ClearMapZoomSnapshot();
+        Log("맵 줌을 즉시 복구했습니다.");
+    }
+
+    private DemoCheatResult ZoomOutToMap(DemoCheatSettingsSO settings, MonoBehaviour routineOwner)
+    {
+        if (!TryResolveMapZoomTarget(settings, out Vector2 targetCenter, out Vector2 mapSize, out float padding, out string sourceLabel))
+            return Fail("맵 줌 크기는 0보다 커야 합니다.");
+
+        CinemachineCamera gameplayCamera = CameraBootstrap.GetPlayerCamera();
+        if (gameplayCamera == null || !gameplayCamera.gameObject.activeInHierarchy)
+            return Fail("맵 줌에 사용할 게임플레이 카메라를 찾을 수 없습니다.");
+
+        Camera mainCamera = CameraBootstrap.GetMainCamera();
+        float aspect = ResolveCameraAspect(mainCamera);
+        float targetSize = Mathf.Max(
+            mapSize.y * 0.5f,
+            mapSize.x / (2f * aspect)) + padding;
+        targetSize = Mathf.Max(0.01f, targetSize);
+
+        StopMapZoomRoutine();
+        mapZoomSnapshot = CaptureMapZoomSnapshot(gameplayCamera);
+        hasMapZoomSnapshot = true;
+
+        gameplayCamera.Follow = null;
+        gameplayCamera.LookAt = null;
+        gameplayCamera.Priority = Mathf.Max(gameplayCamera.Priority, 10000);
+
+        Vector2 startCenter = ResolveCurrentCameraCenter(mainCamera, gameplayCamera);
+        float startSize = GetCameraOrthographicSize(gameplayCamera, targetSize);
+        float transitionSeconds = settings.MapZoomTransitionSeconds;
+
+        mapZoomRoutineOwner = routineOwner;
+        mapZoomRoutine = routineOwner.StartCoroutine(AnimateMapZoomRoutine(
+            gameplayCamera,
+            startCenter,
+            startSize,
+            targetCenter,
+            targetSize,
+            transitionSeconds,
+            () =>
+            {
+                mapZoomRoutine = null;
+                mapZoomRoutineOwner = null;
+                Log($"맵 줌 활성화. source={sourceLabel}, center={targetCenter}, mapSize={mapSize}, cameraSize={targetSize:0.###}");
+            }));
+
+        return DemoCheatResult.Succeeded("맵 전체 줌을 켰습니다.");
+    }
+
+    private DemoCheatResult RestoreMapZoom(DemoCheatSettingsSO settings, MonoBehaviour routineOwner)
+    {
+        CinemachineCamera gameplayCamera = mapZoomSnapshot.Camera;
+        if (gameplayCamera == null)
+        {
+            StopMapZoomRoutine();
+            ClearMapZoomSnapshot();
+            return Fail("복구할 맵 줌 카메라를 찾을 수 없습니다.");
+        }
+
+        StopMapZoomRoutine();
+
+        Vector2 startCenter = ResolveCurrentCameraCenter(CameraBootstrap.GetMainCamera(), gameplayCamera);
+        float startSize = GetCameraOrthographicSize(gameplayCamera, mapZoomSnapshot.OrthographicSize);
+        Vector2 targetCenter = ResolveRestoreCameraCenter(mapZoomSnapshot);
+        float transitionSeconds = settings != null ? settings.MapZoomTransitionSeconds : 0f;
+
+        mapZoomRoutineOwner = routineOwner;
+        mapZoomRoutine = routineOwner.StartCoroutine(AnimateMapZoomRoutine(
+            gameplayCamera,
+            startCenter,
+            startSize,
+            targetCenter,
+            mapZoomSnapshot.OrthographicSize,
+            transitionSeconds,
+            () =>
+            {
+                ApplyMapZoomSnapshot(mapZoomSnapshot);
+                ClearMapZoomSnapshot();
+                Log("맵 줌을 복구했습니다.");
+            }));
+
+        return DemoCheatResult.Succeeded("맵 전체 줌을 원래대로 돌립니다.");
+    }
+
+    private bool TryResolveMapZoomTarget(
+        DemoCheatSettingsSO settings,
+        out Vector2 center,
+        out Vector2 mapSize,
+        out float padding,
+        out string sourceLabel)
+    {
+        if (TryFindSceneMapZoomBounds(out DemoCheatMapZoomBounds sceneBounds))
+        {
+            if (sceneBounds.TryGetZoomBounds(out center, out mapSize, out float extraPadding))
+            {
+                padding = settings.MapZoomPadding + extraPadding;
+                sourceLabel = sceneBounds.name;
+                return true;
+            }
+
+            LogWarning($"맵 줌 범위 오브젝트가 올바르지 않습니다. object={sceneBounds.name}");
+        }
+
+        center = settings.MapZoomCenter;
+        mapSize = settings.MapZoomSize;
+        padding = settings.MapZoomPadding;
+        sourceLabel = "DemoCheatSettings";
+        return mapSize.x > 0f && mapSize.y > 0f;
+    }
+
+    private bool TryFindSceneMapZoomBounds(out DemoCheatMapZoomBounds selected)
+    {
+        selected = null;
+        MapZoomBoundsBuffer.Clear();
+
+        Scene activeScene = SceneManager.GetActiveScene();
+        DemoCheatMapZoomBounds[] candidates = UnityEngine.Object.FindObjectsByType<DemoCheatMapZoomBounds>(
+            FindObjectsInactive.Exclude,
+            FindObjectsSortMode.None);
+
+        for (int i = 0; i < candidates.Length; i++)
+        {
+            DemoCheatMapZoomBounds candidate = candidates[i];
+            if (candidate == null ||
+                !candidate.isActiveAndEnabled ||
+                !candidate.gameObject.activeInHierarchy ||
+                candidate.gameObject.scene != activeScene)
+            {
+                continue;
+            }
+
+            MapZoomBoundsBuffer.Add(candidate);
+        }
+
+        if (MapZoomBoundsBuffer.Count == 0)
+            return false;
+
+        MapZoomBoundsBuffer.Sort(CompareMapZoomBoundsStableOrder);
+        selected = MapZoomBoundsBuffer[0];
+        if (MapZoomBoundsBuffer.Count > 1)
+        {
+            LogWarning(
+                $"활성 씬에 DemoCheatMapZoomBounds가 여러 개 있습니다. scene={activeScene.name}, selected={selected.name}, count={MapZoomBoundsBuffer.Count}");
+        }
+
+        MapZoomBoundsBuffer.Clear();
+        return selected != null;
+    }
+
+    private static int CompareMapZoomBoundsStableOrder(DemoCheatMapZoomBounds a, DemoCheatMapZoomBounds b)
+    {
+        return string.CompareOrdinal(BuildMapZoomBoundsStableKey(a), BuildMapZoomBoundsStableKey(b));
+    }
+
+    private static string BuildMapZoomBoundsStableKey(DemoCheatMapZoomBounds bounds)
+    {
+        if (bounds == null)
+            return string.Empty;
+
+        Transform current = bounds.transform;
+        string path = current.name;
+        while (current.parent != null)
+        {
+            current = current.parent;
+            path = $"{current.GetSiblingIndex():D4}:{current.name}/{path}";
+        }
+
+        return $"{bounds.gameObject.scene.name}/{path}/{bounds.transform.GetSiblingIndex():D4}";
+    }
+
     private static bool TryResolvePlayer(out Transform player)
     {
         player = PlayerRuntimeRegistry.GetPlayerTransform();
@@ -333,6 +532,156 @@ public sealed class DemoCheatService
         player.position = targetPosition;
     }
 
+    private IEnumerator AnimateMapZoomRoutine(
+        CinemachineCamera camera,
+        Vector2 startCenter,
+        float startOrthographicSize,
+        Vector2 targetCenter,
+        float targetOrthographicSize,
+        float transitionSeconds,
+        Action onComplete)
+    {
+        if (camera == null)
+            yield break;
+
+        float duration = Mathf.Max(0f, transitionSeconds);
+        if (duration <= 0f)
+        {
+            ApplyMapZoomCameraState(camera, targetCenter, targetOrthographicSize);
+            onComplete?.Invoke();
+            yield break;
+        }
+
+        float elapsed = 0f;
+        while (elapsed < duration && camera != null)
+        {
+            elapsed += Time.unscaledDeltaTime;
+            float t = Mathf.Clamp01(elapsed / duration);
+            float easedT = Mathf.SmoothStep(0f, 1f, t);
+
+            Vector2 center = Vector2.Lerp(startCenter, targetCenter, easedT);
+            float orthographicSize = Mathf.Lerp(startOrthographicSize, targetOrthographicSize, easedT);
+            ApplyMapZoomCameraState(camera, center, orthographicSize);
+            yield return null;
+        }
+
+        if (camera != null)
+            ApplyMapZoomCameraState(camera, targetCenter, targetOrthographicSize);
+
+        onComplete?.Invoke();
+    }
+
+    private static MapZoomCameraSnapshot CaptureMapZoomSnapshot(CinemachineCamera camera)
+    {
+        return new MapZoomCameraSnapshot(
+            camera,
+            camera != null ? camera.Follow : null,
+            camera != null ? camera.LookAt : null,
+            camera != null ? camera.Priority : 0,
+            camera != null ? camera.Lens.OrthographicSize : 6f,
+            camera != null ? camera.transform.position : Vector3.zero,
+            camera != null ? camera.transform.rotation : Quaternion.identity);
+    }
+
+    private static void ApplyMapZoomSnapshot(MapZoomCameraSnapshot snapshot)
+    {
+        CinemachineCamera camera = snapshot.Camera;
+        if (camera == null)
+            return;
+
+        camera.Priority = snapshot.Priority;
+        camera.Follow = snapshot.Follow;
+        camera.LookAt = snapshot.LookAt;
+        SetCameraOrthographicSize(camera, snapshot.OrthographicSize);
+        Vector2 restoreCenter = ResolveRestoreCameraCenter(snapshot);
+        Vector3 restorePosition = snapshot.Position;
+        restorePosition.x = restoreCenter.x;
+        restorePosition.y = restoreCenter.y;
+        camera.ForceCameraPosition(restorePosition, snapshot.Rotation);
+    }
+
+    private void ClearMapZoomSnapshot()
+    {
+        hasMapZoomSnapshot = false;
+        mapZoomSnapshot = default;
+        mapZoomRoutine = null;
+        mapZoomRoutineOwner = null;
+    }
+
+    private void StopMapZoomRoutine()
+    {
+        if (mapZoomRoutine != null && mapZoomRoutineOwner != null)
+            mapZoomRoutineOwner.StopCoroutine(mapZoomRoutine);
+
+        mapZoomRoutine = null;
+        mapZoomRoutineOwner = null;
+    }
+
+    private static void ApplyMapZoomCameraState(
+        CinemachineCamera camera,
+        Vector2 center,
+        float orthographicSize)
+    {
+        if (camera == null)
+            return;
+
+        SetCameraOrthographicSize(camera, orthographicSize);
+        Vector3 position = camera.transform.position;
+        position.x = center.x;
+        position.y = center.y;
+        camera.ForceCameraPosition(position, camera.transform.rotation);
+    }
+
+    private static float GetCameraOrthographicSize(CinemachineCamera camera, float fallbackOrthographicSize)
+    {
+        if (camera == null)
+            return Mathf.Max(0.01f, fallbackOrthographicSize);
+
+        return Mathf.Max(0.01f, camera.Lens.OrthographicSize);
+    }
+
+    private static void SetCameraOrthographicSize(CinemachineCamera camera, float orthographicSize)
+    {
+        if (camera == null)
+            return;
+
+        var lens = camera.Lens;
+        lens.OrthographicSize = Mathf.Max(0.01f, orthographicSize);
+        camera.Lens = lens;
+    }
+
+    private static Vector2 ResolveCurrentCameraCenter(Camera mainCamera, CinemachineCamera gameplayCamera)
+    {
+        if (mainCamera != null)
+            return mainCamera.transform.position;
+
+        return gameplayCamera != null
+            ? new Vector2(gameplayCamera.transform.position.x, gameplayCamera.transform.position.y)
+            : Vector2.zero;
+    }
+
+    private static Vector2 ResolveRestoreCameraCenter(MapZoomCameraSnapshot snapshot)
+    {
+        if (snapshot.Follow != null)
+            return snapshot.Follow.position;
+
+        if (snapshot.LookAt != null)
+            return snapshot.LookAt.position;
+
+        return new Vector2(snapshot.Position.x, snapshot.Position.y);
+    }
+
+    private static float ResolveCameraAspect(Camera camera)
+    {
+        if (camera != null && camera.aspect > 0f)
+            return camera.aspect;
+
+        if (Screen.height > 0)
+            return Mathf.Max(0.01f, (float)Screen.width / Screen.height);
+
+        return 16f / 9f;
+    }
+
     private static string FormatKey(KeyCode key)
     {
         if (key == KeyCode.None)
@@ -362,5 +711,34 @@ public sealed class DemoCheatService
     {
         LogWarning(message);
         return DemoCheatResult.Failed(message);
+    }
+
+    private readonly struct MapZoomCameraSnapshot
+    {
+        public readonly CinemachineCamera Camera;
+        public readonly Transform Follow;
+        public readonly Transform LookAt;
+        public readonly int Priority;
+        public readonly float OrthographicSize;
+        public readonly Vector3 Position;
+        public readonly Quaternion Rotation;
+
+        public MapZoomCameraSnapshot(
+            CinemachineCamera camera,
+            Transform follow,
+            Transform lookAt,
+            int priority,
+            float orthographicSize,
+            Vector3 position,
+            Quaternion rotation)
+        {
+            Camera = camera;
+            Follow = follow;
+            LookAt = lookAt;
+            Priority = priority;
+            OrthographicSize = Mathf.Max(0.01f, orthographicSize);
+            Position = position;
+            Rotation = rotation;
+        }
     }
 }

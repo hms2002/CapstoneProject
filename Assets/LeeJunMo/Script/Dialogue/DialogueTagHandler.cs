@@ -49,6 +49,8 @@ public class DialogueTagHandler : MonoBehaviour
             {
                 // [핵심 추가] Controller가 이미 처리한 태그는 경고를 띄우지 않고 쿨하게 무시합니다!
                 case "speaker":
+                case "anim":
+                case "dialogue_anim":
                     break;
 
                 case "enter": OnPortraitEnterRequested?.Invoke(targetId, value); break;

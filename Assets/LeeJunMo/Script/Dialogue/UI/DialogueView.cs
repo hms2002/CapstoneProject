@@ -1,5 +1,6 @@
 using DG.Tweening;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
@@ -7,6 +8,537 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using CapstoneAudio;
+
+public enum DialogueAnimType
+{
+    Normal,
+    Slow,
+    Angry,
+    Whisper,
+    Cold
+}
+
+internal readonly struct DialogueInlinePause
+{
+    public DialogueInlinePause(int characterIndex, float seconds)
+    {
+        CharacterIndex = Mathf.Max(0, characterIndex);
+        Seconds = Mathf.Max(0f, seconds);
+    }
+
+    public int CharacterIndex { get; }
+    public float Seconds { get; }
+}
+
+internal enum DialogueTextEffectType
+{
+    Shake,
+    Tremble,
+    Punch,
+    Wave,
+    Float
+}
+
+internal readonly struct DialogueTextEffectRange
+{
+    public DialogueTextEffectRange(int startCharacterIndex, int endCharacterIndex, DialogueTextEffectType effectType)
+    {
+        StartCharacterIndex = Mathf.Max(0, startCharacterIndex);
+        EndCharacterIndex = Mathf.Max(StartCharacterIndex, endCharacterIndex);
+        EffectType = effectType;
+    }
+
+    public int StartCharacterIndex { get; }
+    public int EndCharacterIndex { get; }
+    public DialogueTextEffectType EffectType { get; }
+
+    public bool Contains(int characterIndex)
+    {
+        return characterIndex >= StartCharacterIndex && characterIndex < EndCharacterIndex;
+    }
+}
+
+internal readonly struct DialogueTextRevealPlan
+{
+    public DialogueTextRevealPlan(
+        string displayText,
+        List<DialogueInlinePause> pauses,
+        List<DialogueTextEffectRange> effects)
+    {
+        DisplayText = displayText ?? string.Empty;
+        Pauses = pauses ?? new List<DialogueInlinePause>();
+        Effects = effects ?? new List<DialogueTextEffectRange>();
+    }
+
+    public string DisplayText { get; }
+    public List<DialogueInlinePause> Pauses { get; }
+    public List<DialogueTextEffectRange> Effects { get; }
+}
+
+internal readonly struct DialogueTextRevealProfile
+{
+    public DialogueTextRevealProfile(float characterDelay, float punctuationPauseScale)
+    {
+        CharacterDelay = Mathf.Max(0f, characterDelay);
+        PunctuationPauseScale = Mathf.Max(0f, punctuationPauseScale);
+    }
+
+    public float CharacterDelay { get; }
+    public float PunctuationPauseScale { get; }
+}
+
+internal static class DialogueTextRevealUtility
+{
+    private const string PauseTagPrefix = "[pause=";
+    private const float TextEffectSettleSeconds = 0.18f;
+
+    private readonly struct ActiveEffectTag
+    {
+        public ActiveEffectTag(DialogueTextEffectType effectType, int startCharacterIndex)
+        {
+            EffectType = effectType;
+            StartCharacterIndex = startCharacterIndex;
+        }
+
+        public DialogueTextEffectType EffectType { get; }
+        public int StartCharacterIndex { get; }
+    }
+
+    public static DialogueTextRevealPlan BuildPlan(string rawText)
+    {
+        if (string.IsNullOrEmpty(rawText))
+        {
+            return new DialogueTextRevealPlan(
+                string.Empty,
+                new List<DialogueInlinePause>(),
+                new List<DialogueTextEffectRange>());
+        }
+
+        System.Text.StringBuilder displayBuilder = new System.Text.StringBuilder(rawText.Length);
+        List<DialogueInlinePause> pauses = new List<DialogueInlinePause>();
+        List<DialogueTextEffectRange> effects = new List<DialogueTextEffectRange>();
+        List<ActiveEffectTag> activeEffects = new List<ActiveEffectTag>();
+        int visibleCharacterIndex = 0;
+
+        for (int i = 0; i < rawText.Length;)
+        {
+            if (TryReadPauseTag(rawText, i, out int consumed, out float pauseSeconds))
+            {
+                pauses.Add(new DialogueInlinePause(visibleCharacterIndex, pauseSeconds));
+                i += consumed;
+                continue;
+            }
+
+            if (TryReadEffectTag(
+                    rawText,
+                    i,
+                    visibleCharacterIndex,
+                    activeEffects,
+                    effects,
+                    out consumed))
+            {
+                i += consumed;
+                continue;
+            }
+
+            char c = rawText[i];
+            if (c == '<' && TryCopyRichTextTag(rawText, i, displayBuilder, out consumed))
+            {
+                i += consumed;
+                continue;
+            }
+
+            displayBuilder.Append(c);
+            visibleCharacterIndex++;
+            i++;
+        }
+
+        for (int i = activeEffects.Count - 1; i >= 0; i--)
+        {
+            ActiveEffectTag activeEffect = activeEffects[i];
+            if (visibleCharacterIndex > activeEffect.StartCharacterIndex)
+            {
+                effects.Add(new DialogueTextEffectRange(
+                    activeEffect.StartCharacterIndex,
+                    visibleCharacterIndex,
+                    activeEffect.EffectType));
+            }
+        }
+
+        return new DialogueTextRevealPlan(displayBuilder.ToString(), pauses, effects);
+    }
+
+    public static bool TryParseAnimType(string value, out DialogueAnimType animType)
+    {
+        animType = DialogueAnimType.Normal;
+        if (string.IsNullOrWhiteSpace(value))
+            return false;
+
+        switch (value.Trim().ToLowerInvariant())
+        {
+            case "normal":
+                animType = DialogueAnimType.Normal;
+                return true;
+            case "slow":
+                animType = DialogueAnimType.Slow;
+                return true;
+            case "angry":
+                animType = DialogueAnimType.Angry;
+                return true;
+            case "whisper":
+                animType = DialogueAnimType.Whisper;
+                return true;
+            case "cold":
+                animType = DialogueAnimType.Cold;
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    public static DialogueTextRevealProfile ResolveProfile(DialogueAnimType animType)
+    {
+        return animType switch
+        {
+            DialogueAnimType.Slow => new DialogueTextRevealProfile(0.045f, 1.3f),
+            DialogueAnimType.Angry => new DialogueTextRevealProfile(0.016f, 0.8f),
+            DialogueAnimType.Whisper => new DialogueTextRevealProfile(0.04f, 1.2f),
+            DialogueAnimType.Cold => new DialogueTextRevealProfile(0.025f, 0.65f),
+            _ => new DialogueTextRevealProfile(0.03f, 1f),
+        };
+    }
+
+    public static float GetPauseBeforeCharacter(DialogueTextRevealPlan plan, int visibleCharacterIndex)
+    {
+        if (plan.Pauses == null || plan.Pauses.Count == 0)
+            return 0f;
+
+        float total = 0f;
+        for (int i = 0; i < plan.Pauses.Count; i++)
+        {
+            DialogueInlinePause pause = plan.Pauses[i];
+            if (pause.CharacterIndex == visibleCharacterIndex)
+                total += pause.Seconds;
+        }
+
+        return total;
+    }
+
+    public static float GetPostCharacterDelay(
+        DialogueTextRevealProfile profile,
+        TMP_TextInfo textInfo,
+        int visibleCharacterIndex)
+    {
+        if (textInfo == null || visibleCharacterIndex < 0 || visibleCharacterIndex >= textInfo.characterCount)
+            return profile.CharacterDelay;
+
+        TMP_CharacterInfo characterInfo = textInfo.characterInfo[visibleCharacterIndex];
+        char c = characterInfo.character;
+        if (char.IsWhiteSpace(c))
+            return profile.CharacterDelay;
+
+        float punctuationPause = ResolvePunctuationPause(textInfo, visibleCharacterIndex, c);
+        return profile.CharacterDelay + punctuationPause * profile.PunctuationPauseScale;
+    }
+
+    public static bool HasTextEffects(DialogueTextRevealPlan plan)
+    {
+        return plan.Effects != null && plan.Effects.Count > 0;
+    }
+
+    public static float GetTextEffectSettleSeconds(DialogueTextRevealPlan plan)
+    {
+        return HasTextEffects(plan) ? TextEffectSettleSeconds : 0f;
+    }
+
+    public static void ApplyTextEffects(
+        TMP_Text text,
+        DialogueTextRevealPlan plan,
+        int visibleCharacterCount,
+        float elapsedSeconds)
+    {
+        if (text == null || !HasTextEffects(plan))
+            return;
+
+        text.ForceMeshUpdate();
+
+        TMP_TextInfo textInfo = text.textInfo;
+        if (textInfo == null || textInfo.characterCount <= 0)
+            return;
+
+        int clampedVisibleCount = Mathf.Clamp(visibleCharacterCount, 0, textInfo.characterCount);
+        for (int i = 0; i < clampedVisibleCount; i++)
+        {
+            TMP_CharacterInfo characterInfo = textInfo.characterInfo[i];
+            if (!characterInfo.isVisible)
+                continue;
+
+            Vector3 offset = Vector3.zero;
+            float scale = 1f;
+
+            for (int effectIndex = 0; effectIndex < plan.Effects.Count; effectIndex++)
+            {
+                DialogueTextEffectRange range = plan.Effects[effectIndex];
+                if (!range.Contains(i))
+                    continue;
+
+                AccumulateTextEffect(range.EffectType, i, elapsedSeconds, ref offset, ref scale);
+            }
+
+            if (offset == Vector3.zero && Mathf.Approximately(scale, 1f))
+                continue;
+
+            ApplyCharacterTransform(textInfo, characterInfo, offset, scale);
+        }
+
+        text.UpdateVertexData(TMP_VertexDataUpdateFlags.Vertices);
+    }
+
+    public static void ResetTextEffects(TMP_Text text)
+    {
+        if (text == null)
+            return;
+
+        text.ForceMeshUpdate();
+        text.UpdateVertexData(TMP_VertexDataUpdateFlags.Vertices);
+    }
+
+    private static float ResolvePunctuationPause(TMP_TextInfo textInfo, int visibleCharacterIndex, char c)
+    {
+        if (c == '\u2026')
+            return 0.45f;
+
+        if (c == '.')
+        {
+            bool previousDot = visibleCharacterIndex > 0 &&
+                               textInfo.characterInfo[visibleCharacterIndex - 1].character == '.';
+            bool nextDot = visibleCharacterIndex + 1 < textInfo.characterCount &&
+                           textInfo.characterInfo[visibleCharacterIndex + 1].character == '.';
+
+            if (previousDot && !nextDot)
+                return 0.45f;
+
+            if (nextDot || previousDot)
+                return 0f;
+
+            return 0.2f;
+        }
+
+        return c switch
+        {
+            ',' or ':' or ';' or '\uFF0C' or '\u3001' => 0.12f,
+            '?' or '\uFF1F' => 0.2f,
+            '!' or '\uFF01' => 0.15f,
+            '\u3002' => 0.2f,
+            _ => 0f,
+        };
+    }
+
+    private static void AccumulateTextEffect(
+        DialogueTextEffectType effectType,
+        int characterIndex,
+        float elapsedSeconds,
+        ref Vector3 offset,
+        ref float scale)
+    {
+        float phase = elapsedSeconds + characterIndex * 0.37f;
+        switch (effectType)
+        {
+            case DialogueTextEffectType.Shake:
+                offset.x += SignedWave(phase, 58.1f, characterIndex) * 2.2f;
+                offset.y += SignedWave(phase, 71.7f, characterIndex + 11) * 1.6f;
+                break;
+
+            case DialogueTextEffectType.Tremble:
+                offset.x += SignedWave(phase, 42.3f, characterIndex) * 0.9f;
+                offset.y += SignedWave(phase, 49.5f, characterIndex + 5) * 0.7f;
+                break;
+
+            case DialogueTextEffectType.Punch:
+                scale *= 1f + Mathf.Max(0f, Mathf.Sin(elapsedSeconds * 18f - characterIndex * 0.22f)) * 0.08f;
+                offset.y += Mathf.Max(0f, Mathf.Sin(elapsedSeconds * 18f - characterIndex * 0.22f)) * 1.1f;
+                break;
+
+            case DialogueTextEffectType.Wave:
+                offset.y += Mathf.Sin(elapsedSeconds * 7f + characterIndex * 0.55f) * 1.7f;
+                break;
+
+            case DialogueTextEffectType.Float:
+                offset.y += Mathf.Sin(elapsedSeconds * 3.5f + characterIndex * 0.45f) * 1.2f;
+                break;
+        }
+    }
+
+    private static float SignedWave(float phase, float speed, int seed)
+    {
+        return Mathf.Sin(phase * speed + seed * 1.618f);
+    }
+
+    private static void ApplyCharacterTransform(
+        TMP_TextInfo textInfo,
+        TMP_CharacterInfo characterInfo,
+        Vector3 offset,
+        float scale)
+    {
+        int materialIndex = characterInfo.materialReferenceIndex;
+        int vertexIndex = characterInfo.vertexIndex;
+
+        if (materialIndex < 0 || materialIndex >= textInfo.meshInfo.Length)
+            return;
+
+        Vector3[] vertices = textInfo.meshInfo[materialIndex].vertices;
+        if (vertices == null || vertexIndex < 0 || vertexIndex + 3 >= vertices.Length)
+            return;
+
+        Vector3 center = (vertices[vertexIndex] + vertices[vertexIndex + 2]) * 0.5f;
+        for (int i = 0; i < 4; i++)
+        {
+            int currentVertexIndex = vertexIndex + i;
+            vertices[currentVertexIndex] =
+                center +
+                (vertices[currentVertexIndex] - center) * scale +
+                offset;
+        }
+    }
+
+    private static bool TryReadPauseTag(string text, int startIndex, out int consumed, out float seconds)
+    {
+        consumed = 0;
+        seconds = 0f;
+
+        if (startIndex < 0 ||
+            startIndex + PauseTagPrefix.Length >= text.Length ||
+            !string.Equals(
+                text.Substring(startIndex, PauseTagPrefix.Length),
+                PauseTagPrefix,
+                StringComparison.OrdinalIgnoreCase))
+        {
+            return false;
+        }
+
+        int closeIndex = text.IndexOf(']', startIndex + PauseTagPrefix.Length);
+        if (closeIndex < 0)
+            return false;
+
+        string value = text.Substring(
+            startIndex + PauseTagPrefix.Length,
+            closeIndex - startIndex - PauseTagPrefix.Length);
+
+        if (!float.TryParse(
+                value,
+                System.Globalization.NumberStyles.Float,
+                System.Globalization.CultureInfo.InvariantCulture,
+                out seconds))
+        {
+            return false;
+        }
+
+        consumed = closeIndex - startIndex + 1;
+        seconds = Mathf.Max(0f, seconds);
+        return true;
+    }
+
+    private static bool TryReadEffectTag(
+        string text,
+        int startIndex,
+        int visibleCharacterIndex,
+        List<ActiveEffectTag> activeEffects,
+        List<DialogueTextEffectRange> effects,
+        out int consumed)
+    {
+        consumed = 0;
+
+        if (startIndex < 0 || startIndex >= text.Length || text[startIndex] != '[')
+            return false;
+
+        int closeIndex = text.IndexOf(']', startIndex + 1);
+        if (closeIndex < 0)
+            return false;
+
+        string tag = text.Substring(startIndex + 1, closeIndex - startIndex - 1).Trim();
+        bool isClosingTag = tag.StartsWith("/", StringComparison.Ordinal);
+        string effectName = isClosingTag ? tag.Substring(1).Trim() : tag;
+
+        if (!TryParseEffectType(effectName, out DialogueTextEffectType effectType))
+            return false;
+
+        consumed = closeIndex - startIndex + 1;
+        if (!isClosingTag)
+        {
+            activeEffects.Add(new ActiveEffectTag(effectType, visibleCharacterIndex));
+            return true;
+        }
+
+        for (int i = activeEffects.Count - 1; i >= 0; i--)
+        {
+            ActiveEffectTag activeEffect = activeEffects[i];
+            if (activeEffect.EffectType != effectType)
+                continue;
+
+            activeEffects.RemoveAt(i);
+            if (visibleCharacterIndex > activeEffect.StartCharacterIndex)
+            {
+                effects.Add(new DialogueTextEffectRange(
+                    activeEffect.StartCharacterIndex,
+                    visibleCharacterIndex,
+                    effectType));
+            }
+
+            return true;
+        }
+
+        return true;
+    }
+
+    private static bool TryParseEffectType(string value, out DialogueTextEffectType effectType)
+    {
+        effectType = DialogueTextEffectType.Tremble;
+        if (string.IsNullOrWhiteSpace(value))
+            return false;
+
+        switch (value.Trim().ToLowerInvariant())
+        {
+            case "shake":
+                effectType = DialogueTextEffectType.Shake;
+                return true;
+            case "tremble":
+            case "jitter":
+                effectType = DialogueTextEffectType.Tremble;
+                return true;
+            case "punch":
+            case "pop":
+            case "emphasis":
+                effectType = DialogueTextEffectType.Punch;
+                return true;
+            case "wave":
+            case "wobble":
+                effectType = DialogueTextEffectType.Wave;
+                return true;
+            case "float":
+            case "drift":
+                effectType = DialogueTextEffectType.Float;
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    private static bool TryCopyRichTextTag(
+        string text,
+        int startIndex,
+        System.Text.StringBuilder displayBuilder,
+        out int consumed)
+    {
+        consumed = 0;
+        int closeIndex = text.IndexOf('>', startIndex + 1);
+        if (closeIndex < 0)
+            return false;
+
+        consumed = closeIndex - startIndex + 1;
+        displayBuilder.Append(text, startIndex, consumed);
+        return true;
+    }
+}
 
 public class DialogueView : MonoBehaviour
 {
@@ -48,7 +580,8 @@ public class DialogueView : MonoBehaviour
     [SerializeField] private bool playTypingSound = true;
     [SerializeField, Min(0f)] private float typingSoundInterval = 0.035f;
 
-    private Tween typingTween;
+    private Coroutine typingRoutine;
+    private Coroutine textEffectRoutine;
     private Tween continueIconTween;
     private RectTransform continueIconRect;
     private Vector2 continueIconBaseAnchoredPosition;
@@ -126,6 +659,8 @@ public class DialogueView : MonoBehaviour
 
     public void ClearText()
     {
+        StopTypingRoutine();
+        StopTextEffectRoutine(true);
         ResetTypingAudioTracking();
 
         if (nameText != null)
@@ -260,19 +795,30 @@ public class DialogueView : MonoBehaviour
 
     public void TypeText(string speakerName, string text, Action onComplete = null)
     {
+        TypeText(speakerName, text, DialogueAnimType.Normal, onComplete);
+    }
+
+    public void TypeText(
+        string speakerName,
+        string text,
+        DialogueAnimType animType,
+        Action onComplete = null)
+    {
         if (nameText != null)
             nameText.text = speakerName;
 
         if (continueIcon != null)
             continueIcon.SetActive(false);
 
-        typingTween?.Kill();
+        StopTypingRoutine();
+        StopTextEffectRoutine(true);
         ResetTypingAudioTracking();
 
         if (dialogueText == null)
             return;
 
-        string lineText = text ?? string.Empty;
+        DialogueTextRevealPlan revealPlan = DialogueTextRevealUtility.BuildPlan(text);
+        string lineText = revealPlan.DisplayText;
         dialogueText.richText = true;
         dialogueText.text = lineText;
         dialogueText.maxVisibleCharacters = 0;
@@ -293,49 +839,114 @@ public class DialogueView : MonoBehaviour
             return;
         }
 
-        typingTween = DOTween.To(
-                () => dialogueText.maxVisibleCharacters,
-                visibleCount =>
-                {
-                    dialogueText.maxVisibleCharacters = Mathf.Clamp(visibleCount, 0, visibleCharacterCount);
-                    HandleTypingTweenUpdated();
-                },
-                visibleCharacterCount,
-                visibleCharacterCount * 0.05f)
-            .SetUpdate(true)
-            .SetEase(Ease.Linear)
-            .OnComplete(() =>
-            {
-                dialogueText.maxVisibleCharacters = visibleCharacterCount;
-                HandleTypingTweenUpdated();
-                typingTween = null;
-
-                if (continueIcon != null)
-                    continueIcon.SetActive(true);
-
-                onComplete?.Invoke();
-            });
+        typingRoutine = StartCoroutine(TypeTextRoutine(revealPlan, animType, visibleCharacterCount, onComplete));
     }
 
     public void SkipTyping(string fullText)
     {
-        typingTween?.Kill();
-        typingTween = null;
+        StopTypingRoutine();
 
         if (dialogueText != null)
         {
+            DialogueTextRevealPlan revealPlan = DialogueTextRevealUtility.BuildPlan(fullText);
             dialogueText.richText = true;
-            dialogueText.text = fullText ?? string.Empty;
+            dialogueText.text = revealPlan.DisplayText;
             dialogueText.ForceMeshUpdate();
             dialogueText.maxVisibleCharacters = dialogueText.textInfo != null
                 ? dialogueText.textInfo.characterCount
                 : int.MaxValue;
+
+            StartTextEffectRoutine(revealPlan, GetCurrentVisibleDialogueCharacterCount());
         }
 
         lastTypedCharacterCount = GetCurrentVisibleDialogueCharacterCount();
 
         if (continueIcon != null)
             continueIcon.SetActive(true);
+    }
+
+    private IEnumerator TypeTextRoutine(
+        DialogueTextRevealPlan revealPlan,
+        DialogueAnimType animType,
+        int visibleCharacterCount,
+        Action onComplete)
+    {
+        DialogueTextRevealProfile profile = DialogueTextRevealUtility.ResolveProfile(animType);
+
+        for (int i = 0; i < visibleCharacterCount; i++)
+        {
+            float explicitPause = DialogueTextRevealUtility.GetPauseBeforeCharacter(revealPlan, i);
+            if (explicitPause > 0f)
+                yield return WaitForTextRevealDelay(revealPlan, i, explicitPause);
+
+            if (dialogueText == null)
+                yield break;
+
+            dialogueText.maxVisibleCharacters = i + 1;
+            HandleTypingTweenUpdated();
+            DialogueTextRevealUtility.ApplyTextEffects(
+                dialogueText,
+                revealPlan,
+                i + 1,
+                Time.unscaledTime);
+
+            float delay = DialogueTextRevealUtility.GetPostCharacterDelay(
+                profile,
+                dialogueText.textInfo,
+                i);
+
+            if (delay > 0f)
+                yield return WaitForTextRevealDelay(revealPlan, i + 1, delay);
+        }
+
+        float settleSeconds = DialogueTextRevealUtility.GetTextEffectSettleSeconds(revealPlan);
+        if (settleSeconds > 0f)
+            yield return WaitForTextRevealDelay(revealPlan, visibleCharacterCount, settleSeconds);
+
+        typingRoutine = null;
+
+        if (dialogueText != null)
+        {
+            dialogueText.maxVisibleCharacters = visibleCharacterCount;
+            StartTextEffectRoutine(revealPlan, visibleCharacterCount);
+            HandleTypingTweenUpdated();
+        }
+
+        if (continueIcon != null)
+            continueIcon.SetActive(true);
+
+        onComplete?.Invoke();
+    }
+
+    private IEnumerator WaitForTextRevealDelay(
+        DialogueTextRevealPlan revealPlan,
+        int visibleCharacterCount,
+        float seconds)
+    {
+        if (seconds <= 0f)
+            yield break;
+
+        if (!DialogueTextRevealUtility.HasTextEffects(revealPlan))
+        {
+            yield return new WaitForSecondsRealtime(seconds);
+            yield break;
+        }
+
+        float elapsed = 0f;
+        while (elapsed < seconds)
+        {
+            if (dialogueText == null)
+                yield break;
+
+            DialogueTextRevealUtility.ApplyTextEffects(
+                dialogueText,
+                revealPlan,
+                visibleCharacterCount,
+                Time.unscaledTime);
+
+            elapsed += Time.unscaledDeltaTime;
+            yield return null;
+        }
     }
 
     public bool ShowChoices(List<Ink.Runtime.Choice> choices, Action<int> onChoiceSelected)
@@ -540,8 +1151,8 @@ public class DialogueView : MonoBehaviour
 
     private void StopRuntimeTweens()
     {
-        typingTween?.Kill();
-        typingTween = null;
+        StopTypingRoutine();
+        StopTextEffectRoutine(true);
 
         StopContinueIconMotion(true);
 
@@ -562,6 +1173,51 @@ public class DialogueView : MonoBehaviour
             if (choiceButton != null)
                 choiceButton.transform.DOKill();
         }
+    }
+
+    private void StopTypingRoutine()
+    {
+        if (typingRoutine == null)
+            return;
+
+        StopCoroutine(typingRoutine);
+        typingRoutine = null;
+    }
+
+    private void StartTextEffectRoutine(DialogueTextRevealPlan revealPlan, int visibleCharacterCount)
+    {
+        StopTextEffectRoutine(true);
+
+        if (!DialogueTextRevealUtility.HasTextEffects(revealPlan) || dialogueText == null)
+            return;
+
+        textEffectRoutine = StartCoroutine(PlayTextEffectRoutine(revealPlan, visibleCharacterCount));
+    }
+
+    private IEnumerator PlayTextEffectRoutine(DialogueTextRevealPlan revealPlan, int visibleCharacterCount)
+    {
+        while (dialogueText != null)
+        {
+            DialogueTextRevealUtility.ApplyTextEffects(
+                dialogueText,
+                revealPlan,
+                visibleCharacterCount,
+                Time.unscaledTime);
+
+            yield return null;
+        }
+    }
+
+    private void StopTextEffectRoutine(bool resetText)
+    {
+        if (textEffectRoutine != null)
+        {
+            StopCoroutine(textEffectRoutine);
+            textEffectRoutine = null;
+        }
+
+        if (resetText)
+            DialogueTextRevealUtility.ResetTextEffects(dialogueText);
     }
 
     public void HideUI(Action onComplete = null)

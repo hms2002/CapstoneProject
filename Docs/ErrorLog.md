@@ -2,7 +2,7 @@
 status: active
 authority: project-log
 category: error-log
-last_reviewed: 2026-05-28
+last_reviewed: 2026-05-29
 ---
 
 # Error Log
@@ -24,6 +24,34 @@ Prevention:
 ```
 
 ## Active Entries
+
+## 2026-05-29 - Apprentice Sword Abilities Ignored Authored Animation Hit Events
+
+Context:
+`AM_Skill2.anim` had a `SendEvent` animation event for `Event.Anim.SwordSkill2.Hit`, but `ApprenticeHeroSwordChargeSpin` did not create its release hitbox/effect from that event timing. `ApprenticeHeroSwordDashStab` also used the `Swing1` trigger, whose `AM_Swing1.anim` clip emits `Event.Anim.SwordCombo.Hit`, while spawning its hitbox immediately.
+
+Cause:
+The ability logics played animation triggers and immediately spawned hitboxes. Their data assets did not own the relevant hit-event tag fields, so authored animation events were emitted by `AbilityAnimationEventRelay` but had no local ability consumer for pattern timing.
+
+Fix:
+`ApprenticeHeroSwordChargeSpinData` now owns a release hit event tag and timeout, and `ApprenticeHeroSwordDashStabData` owns a hit event tag and timeout. Their ability logics wait for the configured tag after the animation trigger before spawning the hitbox, with timeout fallbacks so a missing clip event does not stall the ability.
+
+Prevention:
+When a weapon clip receives an animation event for gameplay or local effect timing, verify the active `AbilityLogic` waits for the same data-owned `GameplayTag`. Do not assume an authored clip event automatically creates pattern-local hitboxes or effects unless an ability container, cue, or logic waiter consumes it.
+
+## 2026-05-29 - Boss Auto Facing Ran During Encounter Presentation
+
+Context:
+Actual DemonKing could appear to shake left/right during the boss encounter presentation before combat began.
+
+Cause:
+`BossEncounterDirector` disables boss combat during the encounter sequence, but `DemonKingController.Update()` still ran its per-frame target-facing path outside the base boss FSM tick. `FaceCurrentTarget()` also compared raw X positions and wrote `sprite.flipX` directly, so near-equal X positions could repeatedly flip the visual.
+
+Fix:
+`DemonKingController.CanAutoFaceTarget()` now requires `IsCombatActive`, and `FaceCurrentTarget()` uses the shared `TryApplySpriteFacingTargetX(...)` helper with a small non-serialized deadzone.
+
+Prevention:
+Boss-specific per-frame target facing must be gated by combat state unless the encounter intro or a pattern explicitly owns that facing. Prefer shared facing helpers with deadzones over direct `sprite.flipX` X-position comparisons.
 
 ## 2026-05-28 - Run Route Catalog Made Normal Bosses Look Like Final Context
 
@@ -90,10 +118,24 @@ Cause:
 Unity `SpriteRenderer.maskInteraction` responds to every `SpriteMask` whose sorting range includes the renderer; it does not target one specific mask. When the reward portal renderer is set to `VisibleInsideMask` for the local reveal, the global player vision mask can also clip it.
 
 Fix:
-`BossRewardObjectRevealPresentation` now has `isolateGlobalVisionMasksDuringReveal`, defaulted on for reward reveals but only applied when a local reveal mask or masked renderers exist. While the gate reveal is active, it stores active `GlobalVisionMaskController` child mask ranges, narrows those masks to the dark overlay renderer's sorting range, and restores the original ranges on completion, stop, or disable. The target-scene apply tool enables this option for portal reveal components, and validation reports it as required in global vision mask scenes.
+`BossRewardObjectRevealPresentation` now has `isolateGlobalVisionMasksDuringReveal`, defaulted on for reward reveals but only applied when a local reveal mask or masked renderers exist. While the gate reveal is active, it stores eligible active `GlobalVisionMaskController` child mask ranges, skips player-following masks owned by `PlayerVisionMaskFollower`, narrows the remaining masks to the dark overlay renderer's sorting range, and restores the original ranges on completion, stop, or disable. The target-scene apply tool enables this option for portal reveal components, and validation reports it as required in global vision mask scenes.
 
 Prevention:
-For any future scene that combines a local reward gate SpriteMask reveal with `GlobalVisionMaskRoot`, keep global vision mask isolation enabled and verify both the dark overlay cutout and the portal reveal in Play Mode. Do not assume `VisibleInsideMask` means "inside only my local reveal mask."
+For any future scene that combines a local reward gate SpriteMask reveal with `GlobalVisionMaskRoot`, keep global vision mask isolation enabled and verify both the dark overlay cutout and the portal reveal in Play Mode. Do not assume `VisibleInsideMask` means "inside only my local reveal mask," and do not include player-following light/vision masks in broad scene-mask range rewrites.
+
+## 2026-05-29 - Reward Portal Isolation Narrowed Player Vision Mask
+
+Context:
+In the Shadow boss reward portal reveal, the player Light/vision mask appeared disabled while the portal reveal mask was active.
+
+Cause:
+The reward portal isolation pass enumerated every `SpriteMask` under active `GlobalVisionMaskController` objects. `GlobalVisionMaskController` also instantiates the player-following vision mask prefab with `PlayerVisionMaskFollower`, so that player mask had its custom sorting range narrowed with the scene isolation masks.
+
+Fix:
+`BossRewardObjectRevealPresentation` now skips any `SpriteMask` that has `PlayerVisionMaskFollower` on itself or a parent while applying global vision mask isolation.
+
+Prevention:
+When sweeping `SpriteMask` components from a global controller, separate scene-level masks from player-following presentation masks before changing range state. `Mask Source = Supported Renderers` is not a safe targeting fix for this conflict; if the portal reveal edge needs a square shape, keep the reveal mask as sprite-based and author a square mask sprite.
 
 ## 2026-05-28 - Global Ending IntroOverlay Appeared On Play Start
 
@@ -1100,3 +1142,17 @@ Keep the final-route chest skip policy separate from portal activation, but do n
 
 Prevention:
 When a boss reward chest appears inactive, first confirm whether the tested scene should actually be final-route suppressed. For non-final direct scene tests, confirm which `TreasureChest` object is wired into `BossEncounterEndDirector` or the active `BossBattleEndHandler`, then check the Unity Console for `[BossBattleEnd] ActivateTreasureChest failed.` Remove or clearly rename duplicate authored chest instances during scene authoring so the reward owner reference is unambiguous.
+
+## 2026-05-29 - Portal Presentation Blocker Tags Were Captured Into Runtime State
+
+Context:
+After using a `ScenePortal`, player aim could remain fixed in the destination scene.
+
+Cause:
+`ScenePortal` released `PlayerCinematicProtection` before `ScenePortalTravelService.TryTravel(...)`, but kept `GameFlowInputBlocker` until after the travel request returned. `TryTravel(...)` captures `PlayerRuntimeState` before it starts the scene transition, and `GameFlowInputBlocker` applies `TS_BlockControlByUI` through `UIManager`, including `State.Aim.Blocked`. That temporary UI block tag could be saved and restored, leaving `PlayerAim2D` blocked after the portal.
+
+Fix:
+`ScenePortal` now releases both `PlayerCinematicProtection` and `GameFlowInputBlocker` before calling `TryTravel(...)`.
+
+Prevention:
+Any pre-travel presentation lock that writes gameplay tags must be released before the runtime capture boundary. Holding an input blocker "until travel accepted" is unsafe when acceptance performs capture synchronously.

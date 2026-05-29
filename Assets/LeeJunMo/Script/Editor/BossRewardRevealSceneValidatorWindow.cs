@@ -13,20 +13,26 @@ public sealed class BossRewardRevealSceneValidatorWindow : EditorWindow
     private const string GateMaskName = "BossRewardGateRevealMask";
     private const string GateLoopDustName = "BossRewardGateRevealLoopDust";
     private const string GateBurstDustName = "BossRewardGateRevealBurstDust";
-    private const string ChestDustPrefabPath = "Assets/LeeJunMo/Prefab/Effect/Particle/DoorDust.prefab";
+    private const string ChestDustPrefabPath = "Assets/LeeJunMo/Prefab/Effect/Particle/ChestReavealDust.prefab";
     private const string GateLoopDustPrefabPath = "Assets/LeeJunMo/Prefab/Effect/Particle/GateRevealLoopDust.prefab";
     private const string GateBurstDustPrefabPath = "Assets/LeeJunMo/Prefab/Effect/Particle/GateRevealBurstDust.prefab";
     private const string RouteCatalogPath = "Assets/LeeJunMo/Datas/Scene/RunRouteCatalog.asset";
     private const string ShadowRouteSetPath = "Assets/LeeJunMo/Datas/Scene/ShadowCorridorBossRouteSet.asset";
-    private const string DragonRouteSetPath = "Assets/LeeJunMo/Datas/Scene/Drunken_Dragon_Spili_CorridorBossRouteSet.asset";
+    private const string DragonRouteSetPath = "Assets/LeeJunMo/Datas/Scene/Dragon_CorridorBossRouteSet.asset";
     private const string SlimeRouteSetPath = "Assets/LeeJunMo/Datas/Scene/SlimeRouteSet.asset";
     private const string DemonKingRouteSetPath = "Assets/LeeJunMo/Datas/Scene/DemonkingRouteSet.asset";
     private const int RequiredNormalStageCount = 3;
+    private static readonly Vector3 DefaultChestRewardDustLocalOffset = Vector3.zero;
+    private static readonly Vector3 DefaultGateStartLocalOffset = new(0f, -2.95f, 0f);
+    private static readonly Vector3 DefaultGateParticleSpawnLocalOffset = new(0f, -1.5f, 0f);
+    private static readonly Vector3 DefaultGateRevealRootShakeAmplitude = new(0.5f, 0.038f, 0f);
+    private const float DefaultGateRevealDurationSeconds = 1.5f;
+    private const float DefaultGateCompleteShakeAmplitude = 2f;
 
     private static readonly string[] TargetScenePaths =
     {
-        "Assets/Scenes/HeoMinSeok_Boss.unity",
-        "Assets/Scenes/HeoMinSeok_Boss_Dragon_Spili.unity",
+        "Assets/Scenes/HeoMinSeok_Boss_Shadow.unity",
+        "Assets/Scenes/HeoMinSeok_Boss_Dragon.unity",
         "Assets/Scenes/SangHyup_Boss_SlimeQueen.unity"
     };
 
@@ -39,8 +45,8 @@ public sealed class BossRewardRevealSceneValidatorWindow : EditorWindow
 
     private static readonly string[] TargetNormalBossSceneNames =
     {
-        "HeoMinSeok_Boss",
-        "HeoMinSeok_Boss_Dragon_Spili",
+        "HeoMinSeok_Boss_Shadow",
+        "HeoMinSeok_Boss_Dragon",
         "SangHyup_Boss_SlimeQueen"
     };
 
@@ -350,25 +356,58 @@ public sealed class BossRewardRevealSceneValidatorWindow : EditorWindow
         }
 
         SerializedObject serializedCatalog = new(catalog);
-        bool changed = false;
-        changed |= AssignInt(serializedCatalog, "normalStageCount", RequiredNormalStageCount, stats);
-        changed |= AssignObjectArray(serializedCatalog, "normalRouteSets", normalRouteSets, stats);
-        changed |= AssignBool(serializedCatalog, "allowDuplicateNormalRoutes", false, stats);
-        changed |= AssignObjectReference(serializedCatalog, "finalRouteSet", finalRouteSet, stats);
+        bool catalogChanged = false;
+        catalogChanged |= AssignInt(serializedCatalog, "normalStageCount", RequiredNormalStageCount, stats);
+        catalogChanged |= AssignObjectArray(serializedCatalog, "normalRouteSets", normalRouteSets, stats);
+        catalogChanged |= AssignBool(serializedCatalog, "allowDuplicateNormalRoutes", false, stats);
+        catalogChanged |= AssignObjectReference(serializedCatalog, "finalRouteSet", finalRouteSet, stats);
 
-        if (!changed)
-            return;
+        if (catalogChanged)
+        {
+            serializedCatalog.ApplyModifiedProperties();
+            EditorUtility.SetDirty(catalog);
+            stats.RouteCatalogUpdates++;
+            AddResult(
+                RouteCatalogPath,
+                Severity.Info,
+                "Updated RunRouteCatalog to Normal 3-stage route sets plus DemonKing final route set.",
+                catalog,
+                RouteCatalogPath);
+        }
 
-        serializedCatalog.ApplyModifiedProperties();
-        EditorUtility.SetDirty(catalog);
-        AssetDatabase.SaveAssets();
-        stats.RouteCatalogUpdates++;
-        AddResult(
-            RouteCatalogPath,
-            Severity.Info,
-            "Updated RunRouteCatalog to Normal 3-stage route sets plus DemonKing final route set.",
-            catalog,
-            RouteCatalogPath);
+        bool routeSetChanged = ApplyRouteSetSceneNameDefaults(stats);
+        if (catalogChanged || routeSetChanged)
+            AssetDatabase.SaveAssets();
+    }
+
+    private bool ApplyRouteSetSceneNameDefaults(ApplyStats stats)
+    {
+        bool changedAny = false;
+        for (int i = 0; i < TargetNormalRouteSetPaths.Length; i++)
+        {
+            CorridorBossRouteSetSO routeSet =
+                AssetDatabase.LoadAssetAtPath<CorridorBossRouteSetSO>(TargetNormalRouteSetPaths[i]);
+            if (routeSet == null)
+                continue;
+
+            SerializedObject serializedRouteSet = new(routeSet);
+            bool changed = AssignString(serializedRouteSet, "bossSceneName", TargetNormalBossSceneNames[i], stats);
+            if (!changed)
+                continue;
+
+            serializedRouteSet.ApplyModifiedProperties();
+            EditorUtility.SetDirty(routeSet);
+            stats.RouteCatalogUpdates++;
+            changedAny = true;
+            AddResult(
+                TargetNormalRouteSetPaths[i],
+                Severity.Info,
+                $"Updated RouteSet bossSceneName to {TargetNormalBossSceneNames[i]}.",
+                routeSet,
+                TargetNormalRouteSetPaths[i]);
+        }
+
+        return changedAny;
     }
 
     private ApplyStats ApplyScene(string scenePath, Scene scene)
@@ -476,11 +515,11 @@ public sealed class BossRewardRevealSceneValidatorWindow : EditorWindow
         ParticleSystem dustPrefab = LoadParticlePrefab(ChestDustPrefabPath);
 
         SerializedObject serializedChest = new(chest);
-        AssignObjectReferenceIfMissing(serializedChest, "rewardRevealDustParticle", dustPrefab, stats);
-        AssignObjectReferenceIfMissing(serializedChest, "rewardRevealDustAnchor", chest.transform, stats);
-        AssignVector3(serializedChest, "rewardRevealDustLocalOffset", new Vector3(0f, -0.35f, 0f), stats);
+        AssignObjectReference(serializedChest, "rewardRevealDustParticle", dustPrefab, stats);
+        AssignObjectReference(serializedChest, "rewardRevealDustAnchor", chest.transform, stats);
+        AssignVector3(serializedChest, "rewardRevealDustLocalOffset", DefaultChestRewardDustLocalOffset, stats);
         AssignBool(serializedChest, "clearRewardRevealDustBeforePlay", true, stats);
-        AssignFloatIfInvalid(serializedChest, "spawnedRewardRevealDustDestroyDelay", 2f, minimumValue: 0.01f);
+        AssignFloat(serializedChest, "spawnedRewardRevealDustDestroyDelay", 2f, stats);
         serializedChest.ApplyModifiedProperties();
         EditorUtility.SetDirty(chest);
     }
@@ -519,18 +558,23 @@ public sealed class BossRewardRevealSceneValidatorWindow : EditorWindow
         Collider2D[] colliders = portalRoot.GetComponentsInChildren<Collider2D>(true);
         ParticleSystem loopDustPrefab = LoadParticlePrefab(GateLoopDustPrefabPath);
         ParticleSystem burstDustPrefab = LoadParticlePrefab(GateBurstDustPrefabPath);
+        SpriteMask revealMask = EnsureGateMaskObject(
+            scenePath,
+            portalRoot.transform,
+            renderers.Length > 0 ? renderers[0] : null,
+            stats);
 
         SerializedObject serializedReveal = new(reveal);
-        AssignObjectReferenceIfMissing(serializedReveal, "revealRoot", portalRoot.transform, stats);
-        ClearObjectReference(serializedReveal, "revealMask", stats);
-        AssignObjectArrayIfEmpty(serializedReveal, "maskedRenderers", renderers, stats);
+        AssignObjectReference(serializedReveal, "revealRoot", portalRoot.transform, stats);
+        AssignObjectReference(serializedReveal, "revealMask", revealMask, stats);
+        AssignObjectArray(serializedReveal, "maskedRenderers", renderers, stats);
         AssignObjectArray(serializedReveal, "loopDustParticles", new Object[] { loopDustPrefab }, stats);
         AssignObjectArray(serializedReveal, "burstDustParticles", new Object[] { burstDustPrefab }, stats);
-        AssignObjectReferenceIfMissing(serializedReveal, "particleSpawnAnchor", portalRoot.transform, stats);
-        AssignVector3(serializedReveal, "particleSpawnLocalOffset", new Vector3(0f, -0.85f, 0f), stats);
-        AssignObjectArrayIfEmpty(serializedReveal, "collidersToDisableDuringReveal", colliders, stats);
-        AssignVector3IfInvalid(serializedReveal, "startLocalOffset", new Vector3(0f, -1.2f, 0f));
-        AssignFloatIfInvalid(serializedReveal, "revealDurationSeconds", 0.75f, minimumValue: 0.01f);
+        AssignObjectReference(serializedReveal, "particleSpawnAnchor", portalRoot.transform, stats);
+        AssignVector3(serializedReveal, "particleSpawnLocalOffset", DefaultGateParticleSpawnLocalOffset, stats);
+        AssignObjectArray(serializedReveal, "collidersToDisableDuringReveal", colliders, stats);
+        AssignVector3(serializedReveal, "startLocalOffset", DefaultGateStartLocalOffset, stats);
+        AssignFloat(serializedReveal, "revealDurationSeconds", DefaultGateRevealDurationSeconds, stats);
         AssignBool(serializedReveal, "applyMaskDuringReveal", true);
         AssignBool(serializedReveal, "disableMaskAfterReveal", true);
         AssignBool(serializedReveal, "stopLoopDustOnComplete", true);
@@ -546,10 +590,10 @@ public sealed class BossRewardRevealSceneValidatorWindow : EditorWindow
         AssignCameraShakeHook(
             serializedReveal,
             "completeCameraShake",
-            CameraShakeHook.Create(0.16f, 1f, 0f, 0f),
+            CameraShakeHook.Create(DefaultGateCompleteShakeAmplitude, 1f, 0f, 0f),
             stats);
         AssignBool(serializedReveal, "shakeRevealRootDuringReveal", true, stats);
-        AssignVector3(serializedReveal, "revealRootShakeAmplitude", new Vector3(0.035f, 0.018f, 0f), stats);
+        AssignVector3(serializedReveal, "revealRootShakeAmplitude", DefaultGateRevealRootShakeAmplitude, stats);
         AssignFloat(serializedReveal, "revealRootShakeFrequency", 24f, stats);
         serializedReveal.ApplyModifiedProperties();
         EditorUtility.SetDirty(reveal);
@@ -865,7 +909,7 @@ public sealed class BossRewardRevealSceneValidatorWindow : EditorWindow
             AddResult(
                 RouteCatalogPath,
                 Severity.Error,
-                "RunRouteCatalog.normalRouteSets should contain exactly Shadow, Dragon Spili, and Slime Queen route sets.",
+                "RunRouteCatalog.normalRouteSets should contain exactly Shadow, Dragon, and Slime Queen route sets.",
                 catalog,
                 RouteCatalogPath);
         }
@@ -912,7 +956,7 @@ public sealed class BossRewardRevealSceneValidatorWindow : EditorWindow
                 AddResult(
                     RouteCatalogPath,
                     Severity.Error,
-                    "RunRouteCatalog.normalRouteSets order should be Shadow, Dragon Spili, then Slime Queen for deterministic direct scene Play tests.",
+                    "RunRouteCatalog.normalRouteSets order should be Shadow, Dragon, then Slime Queen for deterministic direct scene Play tests.",
                     catalog,
                     RouteCatalogPath);
                 break;
@@ -1439,7 +1483,7 @@ public sealed class BossRewardRevealSceneValidatorWindow : EditorWindow
             AddResult(
                 scenePath,
                 Severity.Warning,
-                "Gate revealMask is parented under revealRoot. Runtime will clone it outside the moving root for playback, but rerun Apply Target Scenes to clear this stale serialized mask.",
+                "Gate revealMask is parented under revealRoot. Runtime will clone it outside the moving root for playback, but rerun Apply Target Scenes to move the authored mask outside the moving root.",
                 reveal,
                 GetObjectPath(reveal.transform));
         }
@@ -1575,6 +1619,22 @@ public sealed class BossRewardRevealSceneValidatorWindow : EditorWindow
             return false;
 
         property.intValue = value;
+        if (stats != null)
+            stats.ReferencesAssigned++;
+        return true;
+    }
+
+    private static bool AssignString(
+        SerializedObject serializedObject,
+        string propertyName,
+        string value,
+        ApplyStats stats = null)
+    {
+        SerializedProperty property = serializedObject != null ? serializedObject.FindProperty(propertyName) : null;
+        if (property == null || string.Equals(property.stringValue, value, StringComparison.Ordinal))
+            return false;
+
+        property.stringValue = value;
         if (stats != null)
             stats.ReferencesAssigned++;
         return true;

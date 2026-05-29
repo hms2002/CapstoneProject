@@ -19,6 +19,7 @@ public sealed class DemoCheatSettingsSO : ScriptableObject
     [SerializeField] private KeyCode warpToPortalKey = KeyCode.F10;
     [SerializeField] private KeyCode resetWeaponCooldownKey = KeyCode.F11;
     [SerializeField] private KeyCode increaseAttackKey = KeyCode.F12;
+    [SerializeField] private KeyCode mapZoomToggleKey = KeyCode.F5;
 
     [Header("Attributes")]
     [SerializeField] private AttributeDefinition healthAttribute;
@@ -30,6 +31,12 @@ public sealed class DemoCheatSettingsSO : ScriptableObject
 
     [Header("Currency Cheat")]
     [SerializeField, Min(1)] private int magicStoneAddAmount = 100;
+
+    [Header("Map Zoom Cheat")]
+    [SerializeField] private Vector2 mapZoomCenter = Vector2.zero;
+    [SerializeField] private Vector2 mapZoomSize = new Vector2(40f, 24f);
+    [SerializeField, Min(0f)] private float mapZoomPadding = 1f;
+    [SerializeField, Min(0f)] private float mapZoomTransitionSeconds = 0.45f;
 
     [Header("Notification")]
     [SerializeField, Min(0.1f)] private float notificationDuration = 1.2f;
@@ -43,11 +50,16 @@ public sealed class DemoCheatSettingsSO : ScriptableObject
     public KeyCode WarpToPortalKey => warpToPortalKey;
     public KeyCode ResetWeaponCooldownKey => resetWeaponCooldownKey;
     public KeyCode IncreaseAttackKey => increaseAttackKey;
+    public KeyCode MapZoomToggleKey => mapZoomToggleKey;
     public AttributeDefinition HealthAttribute => healthAttribute;
     public AttributeDefinition MaxHealthAttribute => maxHealthAttribute;
     public AttributeDefinition AttackAddAttribute => attackAddAttribute;
     public float AttackIncreaseAmount => attackIncreaseAmount;
     public int MagicStoneAddAmount => magicStoneAddAmount;
+    public Vector2 MapZoomCenter => mapZoomCenter;
+    public Vector2 MapZoomSize => mapZoomSize;
+    public float MapZoomPadding => Mathf.Max(0f, mapZoomPadding);
+    public float MapZoomTransitionSeconds => Mathf.Max(0f, mapZoomTransitionSeconds);
     public float NotificationDuration => notificationDuration;
     public float CheatGuideDuration => cheatGuideDuration;
 }

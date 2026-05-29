@@ -291,6 +291,7 @@ public class DialogueController : MonoBehaviour
         {
             string currentText = currentStory.Continue();
             participantRegistry.HandleSpeakerTag(currentStory.currentTags);
+            DialogueAnimType animType = ResolveDialogueAnimType(currentStory.currentTags);
             ApplyCurrentSpeakerTheme();
 
             if (portraitController != null)
@@ -303,7 +304,7 @@ public class DialogueController : MonoBehaviour
                               tagHandler.ProcessTags(currentStory.currentTags, participantRegistry.CurrentNPCData, ResumeDialogue);
 
             if (!isBlocking)
-                PlayCurrentLine(currentText);
+                PlayCurrentLine(currentText, animType);
 
             return;
         }
@@ -595,11 +596,11 @@ public class DialogueController : MonoBehaviour
                (input != null && input.IsPressed(InputActionId.DialogueAdvance));
     }
 
-    private void PlayCurrentLine(string currentText)
+    private void PlayCurrentLine(string currentText, DialogueAnimType animType)
     {
         sessionState.EndWaiting();
         sessionState.BeginTyping(currentText);
-        view.TypeText(participantRegistry.CurrentSpeakerName, currentText, () =>
+        view.TypeText(participantRegistry.CurrentSpeakerName, currentText, animType, () =>
         {
             sessionState.EndTyping();
             DisplayChoicesIfNeeded();
@@ -823,6 +824,26 @@ public class DialogueController : MonoBehaviour
         }
 
         return state;
+    }
+
+    private static DialogueAnimType ResolveDialogueAnimType(List<string> tags)
+    {
+        if (tags == null)
+            return DialogueAnimType.Normal;
+
+        for (int i = 0; i < tags.Count; i++)
+        {
+            if (!TryReadTagCommand(tags[i], out string command, out string value))
+                continue;
+
+            if ((command == "anim" || command == "dialogue_anim") &&
+                DialogueTextRevealUtility.TryParseAnimType(value, out DialogueAnimType animType))
+            {
+                return animType;
+            }
+        }
+
+        return DialogueAnimType.Normal;
     }
 
     private static bool TryReadTagCommand(string tag, out string command, out string value)

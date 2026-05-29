@@ -6,6 +6,7 @@ using UnityGAS;
 public sealed class DemonKingController : BossControllerBase
 {
     private const int DefaultWallLayer = 30;
+    private const float AutoFaceTargetDeadZone = 0.05f;
     private const string StaggerImmuneTagResourcePath = "Tags/State.Status.StaggerImmune";
 
     [Header("Demon King Runtime")]
@@ -883,18 +884,15 @@ public sealed class DemonKingController : BossControllerBase
 
     private bool CanAutoFaceTarget()
     {
-        return !HasGroggyTag() && !HasDeadTag();
+        return IsCombatActive && !HasGroggyTag() && !HasDeadTag();
     }
 
     private void FaceCurrentTarget()
     {
-        if (CurrentTarget == null || sprite == null)
+        if (CurrentTarget == null)
             return;
 
-        if (transform.position.x > CurrentTarget.position.x)
-            sprite.flipX = true;
-        else if (transform.position.x < CurrentTarget.position.x)
-            sprite.flipX = false;
+        TryApplySpriteFacingTargetX(CurrentTarget.position.x, AutoFaceTargetDeadZone);
     }
 
     private static void StripCopiedBossBehaviours(GameObject swordObject)

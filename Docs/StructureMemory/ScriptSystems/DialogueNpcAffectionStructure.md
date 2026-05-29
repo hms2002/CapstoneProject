@@ -46,12 +46,16 @@ Map dialogue, NPC features, affection, merchant, upgrade, and boss dialogue scri
 ## Key Files
 
 - `Assets/LeeJunMo/Script/Dialogue/DialogueService.cs`
+- `Assets/LeeJunMo/Script/Dialogue/UI/DialogueView.cs`
+- `Assets/LeeJunMo/Script/SpeechBubble/SpeechBubble.cs`
+- `Assets/LeeJunMo/Script/SpeechBubble/SpeechBubbleComponent.cs`
 - `Assets/LeeJunMo/Script/Dialogue/NPC/NPCFeature/Upgrade/UpgradeFeature.cs`
 - `Assets/LeeJunMo/Script/Dialogue/NPC/NPCFeature/Merchant/MerchantNPC.cs`
 - `Assets/LeeJunMo/Script/Dialogue/Affection/AffectionManager.cs`
 - `Assets/LeeJunMo/Script/Dialogue/Affection/AffectionUI.cs`
 - `Assets/LeeJunMo/Script/Dialogue/Affection/AffectionRewardProcessor.cs`
 - `Assets/LeeJunMo/Script/UIStructure/RewardDisplayService.cs`
+- `Assets/LeeJunMo/Script/Editor/NpcCustomizationHub/NpcCustomizationHubWindow.cs`
 
 ## Ownership And Lifecycle
 
@@ -62,6 +66,8 @@ Map dialogue, NPC features, affection, merchant, upgrade, and boss dialogue scri
 - Affection gain presentation gates dialogue continuation, so interrupted DOTween sequences must still invoke their pending completion callback exactly once.
 - Affection reward popups are part of the dialogue flow: after affection gain presentation, show the reward UI through `RewardDisplayService.ShowFlowOwnedReward(...)`, keep the dialogue continuation as the reward close callback, and resume dialogue only after the reward UI closes.
 - Boss reward affection effects author their own additive fields and convert them into `BossRewardModifierAggregate` at runtime; they should not depend on a separate modifier ScriptableObject asset.
+- Dialogue line rhythm is owned by `DialogueView`/`DialogueTextRevealUtility`: `DialogueController` resolves line-level `anim` Ink tags, while inline `[pause=seconds]` and scoped motion tags are stripped before TMP display and applied through unscaled reveal delays plus TMP vertex offsets/scales.
+- SpeechBubble reveal timing is opt-in through animated APIs on `SpeechBubbleComponent`; existing `Speak(...)` callers keep the legacy behavior unless they explicitly route through the animated path.
 
 ## Boundary Review
 
@@ -74,10 +80,14 @@ Map dialogue, NPC features, affection, merchant, upgrade, and boss dialogue scri
 | Merchant policy | `MerchantNPC` combines `ShopDefinitionSO`, `RunModifierService.ShopModifiers`, `MerchantShopPolicy`, and `MerchantRunStateService`. | Boundary is acceptable. Continue treating stock as run/session state and shop definition as authored policy. |
 | Boss dialogue sequence | `BossEncounterDirector` is the current encounter dialogue/camera/combat-start path; `BossTalkManager` remains a legacy bridge with similar sequence responsibilities. | Watch as legacy/current bridge. Do not create a separate backlog entry until prefab migration or duplicate sequence behavior becomes an active task. |
 | Run-internal special NPCs | Construction and same-scene teleport NPCs use `RunSpecialNpcInteractor`, `SpeechBubbleComponent`, and local authored choices rather than `DialogueController`, Ink, portraits, or `DialogueView`. | Keep this flow separate from the existing Ink dialogue stack. Use `Docs/StructureMemory/ScriptSystems/RunSpecialNpcStructure.md` for implementation details. |
+| NPC editor authoring | `NpcCustomizationHubWindow` is the shared editor surface for existing `NPCData` profile/dialogue/presentation/affection asset edits, Ink template creation, usage scans, and validation. | V1 mutates only `NPCData` and selected `NPCDatabase` assets. Scene/prefab usage and RunSpecial NPC data remain read-only until a later authoring-risk review. |
 
 ## Extension Entry Points
 
 - Add dialogue behavior through Dialogue Core and Dialogue UI buckets.
+- Add new dialogue reveal timing through `DialogueAnimType`, `DialogueTextRevealUtility`, and controller-owned Ink tags. Use scoped motion tags such as `[shake]`, `[tremble]`, `[punch]`, `[wave]`, and `[float]` for word-level emphasis instead of shaking a whole line by default.
+- Add broad dialogue timing passes as additive Ink/JSON copies under `Assets/LeeJunMo/Datas/Inks/AnimatedVariants/` first; do not replace original TextAsset references until the owning scene/tool is intentionally rewired.
+- Review and edit existing NPCData assets through `Tools/NPC/NPC Customization Hub` when changing profile, Ink JSON references, dialogue theme, sprite library, emote offset, affection rewards, or NPCDatabase membership.
 - Add NPC actions through NPC Feature Core and feature-specific folders.
 - Add run-internal speech-bubble NPC behavior through [Run Special NPC Structure](./RunSpecialNpcStructure.md), not the Ink portrait dialogue buckets.
 - Add run-special NPC feature behavior by deriving from `RunSpecialNpcFeatureBase`; do not attach it to `NPCFeatureController` unless the design intentionally moves back into the portrait dialogue stack.
@@ -92,6 +102,10 @@ Map dialogue, NPC features, affection, merchant, upgrade, and boss dialogue scri
 - `RunModifierService` should not be treated as an upgrade-only service when reviewing loot, boss rewards, graves, chests, or merchant policy; reward consumers should prefer `RunRewardModifierSnapshot` over direct individual modifier property reads.
 - `RunModifierService`, `RunModifierDeltas`, `RunRewardModifierSnapshot`, `RunModifierAggregationService`, `RunModifierUpgradeNodeProvider`, and `RunModifierRebuildService` live in the dedicated progression/run modifier layer.
 - Boss dialogue has both current and legacy sequence drivers; check scene/prefab references before removing either path.
+- `anim` Ink tags are presentation metadata. Keep them ignored by `DialogueTagHandler` so they do not become unknown tag warnings or gameplay blockers.
+- `[pause=seconds]` markers and scoped motion tags are stripped from displayed TMP text. Keep any future range effects in the same parser family instead of overloading Ink line tags or gameplay tags.
+- Animated Ink variants are not automatically used by existing scenes just because the files exist; Unity import and explicit TextAsset reassignment are still required.
+- Ink `# face: npcId: label` uses the NPC id to pick `NPCData`, but portrait sprite lookup uses the runtime SpriteLibrary category `Face` and the authored label. Editor validation should not treat the NPC id as a SpriteLibrary category.
 - Affection presentation must not rely only on DOTween `OnComplete`; disable, destroy, or replacement-animation paths also need to release the dialogue continuation.
 - Affection reward display can deadlock if it uses the normal reward opening path while a dialogue or boss encounter external blocker is active. Use the flow-owned reward path for dialogue-gated affection rewards, and keep the missing-view fallback so dialogue can continue if the authored reward UI is absent.
 - ScriptableObject changes need asset migration/reference review.

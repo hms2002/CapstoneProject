@@ -14,6 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   chargeAnimationTrigger: 
   releaseAnimationTrigger: Skill2
+  releaseHitEventTag: {fileID: 11400000, guid: ecf3ef1f54c629e40a9659ab9afec7e8, type: 2}
+  releaseHitEventTimeout: 0.6
   minChargeSeconds: 0.25
   maxChargeSeconds: 1
   spinDuration: 0.35
@@ -30,7 +32,7 @@ MonoBehaviour:
     hitboxPrefab: {fileID: 2863281621525748656, guid: 621dece46c884d5d93b149654fdcb397, type: 3}
     activeTime: 0.2
     hitboxSize: {x: 3.6, y: 3.6}
-    hitboxScaleMultiplier: {x: 1.6, y: 1.6}
+    hitboxScaleMultiplier: {x: 1, y: 1}
     overrideSizingMode: 1
     sizingMode: 3
     wallLayers:
@@ -85,8 +87,8 @@ MonoBehaviour:
   maxPartialChargeReleaseColor: {r: 1, g: 0.72, b: 0.24, a: 1}
   fullChargeReleaseColor: {r: 1, g: 0.38, b: 0.08, a: 1}
   minChargeReleaseSizeMultiplier: {x: 0.85, y: 0.85}
-  maxPartialChargeReleaseSizeMultiplier: {x: 1.05, y: 1.05}
-  fullChargeReleaseSizeMultiplier: {x: 1.35, y: 1.35}
+  maxPartialChargeReleaseSizeMultiplier: {x: 1.4, y: 1.4}
+  fullChargeReleaseSizeMultiplier: {x: 2, y: 2}
   fullChargeVfxPrefab: {fileID: 1465094183477541801, guid: 4895d901be2e5ce44a875520b037a7cb, type: 3}
   fullChargeVfxLocalPosition: {x: 0, y: 0, z: 0}
   fullChargeVfxLocalEulerAngles: {x: 0, y: 0, z: 0}

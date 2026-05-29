@@ -22,6 +22,7 @@ These documents are working memory for context reconstruction. They are not sour
 | [Inventory And Chest UI Structure](./InventoryAndChestUIStructure.md) | Inventory/chest UI, HUD, inventory runtime, world drops, interaction, item details. |
 | [Dialogue NPC Affection Structure](./DialogueNpcAffectionStructure.md) | Dialogue, NPC features, affection, merchant, upgrade, boss dialogue. |
 | [Run Special NPC Structure](./RunSpecialNpcStructure.md) | Run-internal speech-bubble NPC flows, construction/permanent shortcut NPCs, same-scene teleport NPCs. |
+| [Demo Cheat Structure](./DemoCheatStructure.md) | Demo review hotkeys, cheat settings, effect execution, and per-map camera zoom bounds authoring. |
 | [Scene Runtime Save Structure](./SceneRuntimeSaveStructure.md) | Scene/run transition, player runtime capture/restore, save data, run timer, map/shortcuts. |
 | [Loot Reward Structure](./LootRewardStructure.md) | Loot manager, boss rewards, grave/stage loot, pickups, reward presentation boundary. |
 | [Loading Presentation Structure](./LoadingPresentationStructure.md) | Loading, presentation runtime, global UI, camera/audio/input/settings/speech bubbles. |

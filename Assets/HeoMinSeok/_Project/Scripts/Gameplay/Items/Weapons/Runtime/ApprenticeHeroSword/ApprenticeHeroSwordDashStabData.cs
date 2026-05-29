@@ -7,6 +7,8 @@ public sealed class ApprenticeHeroSwordDashStabData : ScriptableObject
 {
     [Header("Animation")]
     [SerializeField] private string animationTrigger = "Skill1";
+    [SerializeField] private GameplayTag hitEventTag;
+    [SerializeField, Min(0f)] private float hitEventTimeout = 0.25f;
 
     [Header("Motion")]
     [SerializeField, Min(0f)] private float dashDistance = 3f;
@@ -24,6 +26,8 @@ public sealed class ApprenticeHeroSwordDashStabData : ScriptableObject
     [SerializeField] private SoundRef stabSound;
 
     public string AnimationTrigger => animationTrigger;
+    public GameplayTag HitEventTag => hitEventTag;
+    public float HitEventTimeout => Mathf.Max(0f, hitEventTimeout);
     public float DashDistance => Mathf.Max(0f, dashDistance);
     public float DashDuration => Mathf.Max(0.01f, dashDuration);
     public float RecoveryDuration => Mathf.Max(0f, recoveryDuration);

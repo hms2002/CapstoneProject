@@ -2,7 +2,7 @@
 status: active
 authority: structure-memory
 category: system-map
-last_reviewed: 2026-05-23
+last_reviewed: 2026-05-29
 ---
 
 # UI Flow Input Blocking
@@ -32,6 +32,12 @@ This is a fast context map, not the final UI architecture source of truth.
 - `Assets/LeeJunMo/Script/Dialogue/DialogueService.cs`
 - `Assets/LeeJunMo/Script/Dialogue/BossEncounterDirector.cs`
 - `Assets/LeeJunMo/Script/Dialogue/BossTalkManager.cs`
+- `Assets/Script/Enemy/Boss/FSM/Core/BossDeathPresentation.cs`
+- `Assets/HeoMinSeok/_Project/Scripts/Gameplay/PlayerHealth/GameOverPresentationController.cs`
+- `Assets/LeeJunMo/Script/Tutorial/TutorialCombatIntroSequence.cs`
+- `Assets/LeeJunMo/Script/Dialogue/NPC/NPCFeature/Merchant/MerchantActivationCinematic.cs`
+- `Assets/HeoMinSeok/_Project/Scripts/Gameplay/Characters/Runtime/PlayerHubSpawnPresentation2D.cs`
+- `Assets/LeeJunMo/Script/SceneManagement/BossRewardObjectRevealPresentation.cs`
 - `Assets/HeoMinSeok/_Project/Scripts/Gameplay/Inventory/Chest/Runtime/TreasureChest.cs`
 - `Assets/HeoMinSeok/_Project/Scripts/UI/Inventory/Chest/ChestFirstOpenRevealPresentation.cs`
 - `Assets/LeeJunMo/Script/Dialogue/NPC/NPCFeature/Upgrade/UpgradeManager.cs`
@@ -56,10 +62,12 @@ This is a fast context map, not the final UI architecture source of truth.
 - Chest reroll hold runs inside the already-open `InventoryScreen` / `ChestScreen` stack UI. Hold timing/progress should come from `HoldActionButton`, while `ChestScreen` owns refresh eligibility and reroll presentation. It should rely on the stack UI lock plus `ChestScreen` first-open reveal guard instead of creating a new external `GameFlowInputBlocker`.
 - Dialogue blocking is owned by `DialogueService` while dialogue is playing.
 - Boss encounter presentation blocking is owned by `BossEncounterDirector` for the outer camera/transition/dialogue/return sequence. Legacy `BossTalkManager` follows the same rule.
+- Boss death presentation, game-over return presentation, tutorial combat intro, merchant activation cinematic, hub spawn fall/wake presentation, and boss reward portal reveal each own a blocker for their flow window.
 - Upgrade open fade is executed by `UpgradeUiOpenFlow`; it blocks unrelated UI input, then opens `UpgradeTreeUI` through the owned push path.
 - Reward open presentation blocks unrelated UI input until the open presentation finishes.
 - Affection reward UI can open as a flow-owned popup during dialogue/encounter blocking, then its close callback resumes the waiting dialogue tag. While open, `RewardDisplayUI` asks `DialogueService` to make the captured Reward canvas and shared non-raycasting Hover canvas temporarily visible so reward item detail hover can render even though Dialogue suppression still owns the rest of the non-dialogue UI.
 - Flowering Bloom cut-in blocks unrelated UI input while it owns a short combat time freeze, so pause/menu freeze owners cannot enter during the cut-in and later restore a stale `Time.timeScale = 0`.
+- Stable stack UI close paths are not flow-blocked. Pause, Settings, KeyBinding, Inventory, Chest, Reward, Upgrade, and Encyclopedia should continue to close through their normal stack UI ESC policy outside a protected flow window.
 
 ## Extension Entry Points
 

@@ -51,6 +51,7 @@ public sealed class TutorialCombatIntroSequence : MonoBehaviour
 
     private Coroutine sequenceRoutine;
     private CinematicLetterboxOverlay letterboxOverlay;
+    private GameFlowInputBlocker inputBlocker;
     private PlayerCinematicProtection playerProtection;
     private PlayerTargetabilityBlocker targetabilityBlocker;
     private CinemachineCamera gameplayCamera;
@@ -282,6 +283,8 @@ public sealed class TutorialCombatIntroSequence : MonoBehaviour
 
     private void AcquireSequenceState()
     {
+        AcquireInputBlocker();
+
         if (lockPlayerControls)
             AcquirePlayerProtection();
 
@@ -293,6 +296,7 @@ public sealed class TutorialCombatIntroSequence : MonoBehaviour
     {
         ReleaseTargetabilityBlock();
         ReleasePlayerProtection();
+        ReleaseInputBlocker();
 
         if (invokeGameplayReleased)
             onGameplayReleased?.Invoke();
@@ -343,6 +347,21 @@ public sealed class TutorialCombatIntroSequence : MonoBehaviour
         infoPanel = FindObjectOfType<TutorialInfoPanel>(true);
 #endif
         return infoPanel;
+    }
+
+    private void AcquireInputBlocker()
+    {
+        if (inputBlocker != null && inputBlocker.IsBlocking)
+            return;
+
+        inputBlocker = GameFlowInputBlocker.GetOrAdd(this);
+        inputBlocker?.Acquire();
+    }
+
+    private void ReleaseInputBlocker()
+    {
+        inputBlocker?.Release();
+        inputBlocker = null;
     }
 
     private void AcquirePlayerProtection()

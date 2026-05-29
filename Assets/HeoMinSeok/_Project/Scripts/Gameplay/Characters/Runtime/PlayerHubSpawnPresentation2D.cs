@@ -120,6 +120,7 @@ public sealed class PlayerHubSpawnPresentation2D : MonoBehaviour
 
     private Coroutine sequenceRoutine;
     private Transform cameraAnchor;
+    private GameFlowInputBlocker inputBlocker;
 
     private Transform originalShadowParent;
     private Vector3 originalShadowLocalPosition;
@@ -166,6 +167,8 @@ public sealed class PlayerHubSpawnPresentation2D : MonoBehaviour
             ForceRestorePresentationState(allowHierarchyMutation: gameObject.activeInHierarchy);
         else
             SetFadeTransitionUnlockBlocked(false);
+
+        ReleaseInputBlocker();
     }
 
     private void HandleSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -194,6 +197,7 @@ public sealed class PlayerHubSpawnPresentation2D : MonoBehaviour
         landingPosition = transform.position;
         presentationPrepared = true;
 
+        AcquireInputBlocker();
         SetFadeTransitionUnlockBlocked(true);
         PrepareForPresentation();
         DetachShadow();
@@ -357,6 +361,7 @@ public sealed class PlayerHubSpawnPresentation2D : MonoBehaviour
         SetFadeTransitionUnlockBlocked(false);
         ZeroAllRigidbodies();
         presentationRuntime?.Stop(gameplayPresentation, BuildPresentationParams(landingPosition, hasExplicitPosition: true), playRemove: false);
+        ReleaseInputBlocker();
 
         presentationPrepared = false;
     }
@@ -663,6 +668,7 @@ public sealed class PlayerHubSpawnPresentation2D : MonoBehaviour
         RestoreGameplayControl();
         SetFadeTransitionUnlockBlocked(false);
         CleanupCameraAnchor();
+        ReleaseInputBlocker();
     }
 
     private bool HasWakeInput()
@@ -864,6 +870,21 @@ public sealed class PlayerHubSpawnPresentation2D : MonoBehaviour
             Destroy(activeSleepEffectInstance);
 
         activeSleepEffectInstance = null;
+    }
+
+    private void AcquireInputBlocker()
+    {
+        if (inputBlocker != null && inputBlocker.IsBlocking)
+            return;
+
+        inputBlocker = GameFlowInputBlocker.GetOrAdd(this);
+        inputBlocker?.Acquire();
+    }
+
+    private void ReleaseInputBlocker()
+    {
+        inputBlocker?.Release();
+        inputBlocker = null;
     }
 
     private void SetFadeTransitionUnlockBlocked(bool blocked)

@@ -1961,7 +1961,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
   m_AnchoredPosition: {x: 56, y: 0}
-  m_SizeDelta: {x: 319, y: 160}
+  m_SizeDelta: {x: 319, y: 200}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!222 &148011448855793725
 CanvasRenderer:
@@ -2008,7 +2008,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 304435214715937486}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 30649d3a9faa99c48a7b1166b86bf2a0, type: 3}
   m_Name: 
@@ -3741,6 +3741,16 @@ MonoBehaviour:
   maxSimulationStep: 1
   settlePositionThreshold: 30
   settleVelocityThreshold: 0
+  openSound:
+    key: sound_menu_chain1
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  closeSound:
+    key: sound_menu_chain2
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
   closePullDownOffset: {x: 0, y: -56}
   closePullDownDuration: 0.08
   closeLaunchDuration: 0.16
@@ -4777,6 +4787,16 @@ MonoBehaviour:
   maxSimulationStep: 1
   settlePositionThreshold: 30
   settleVelocityThreshold: 0
+  openSound:
+    key: sound_menu_chain1
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  closeSound:
+    key: sound_menu_chain2
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
   closePullDownOffset: {x: 0, y: -56}
   closePullDownDuration: 0.1
   closeLaunchDuration: 0.9
@@ -5022,8 +5042,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -92.5}
-  m_SizeDelta: {x: 431, y: 140}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 431, y: 200}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!222 &719235131843101813
 CanvasRenderer:
@@ -5142,7 +5162,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: -56}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &987742866507891541
@@ -7509,6 +7529,16 @@ MonoBehaviour:
   maxSimulationStep: 1
   settlePositionThreshold: 30
   settleVelocityThreshold: 0
+  openSound:
+    key: sound_menu_chain1
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  closeSound:
+    key: sound_menu_chain2
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
   closePullDownOffset: {x: 0, y: -56}
   closePullDownDuration: 0.1
   closeLaunchDuration: 0.9
@@ -7709,7 +7739,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
   m_AnchoredPosition: {x: 375, y: 0}
-  m_SizeDelta: {x: 56, y: 160}
+  m_SizeDelta: {x: 56, y: 200}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!222 &9060884421174303802
 CanvasRenderer:
@@ -7955,9 +7985,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   popupPrefab: {fileID: 788094768127510997, guid: 6dd146133f44c4e45a1839cbed6f7ec4, type: 3}
+  formatProfile: {fileID: 0}
+  logPopupRequests: 1
   worldOffset: {x: 0, y: 0.8, z: 0}
   randomOffsetX: {x: -0.15, y: 0.15}
   randomOffsetY: {x: -0.05, y: 0.05}
+  useTetrisPlacement: 1
+  slotSpacing: {x: 0.5, y: 0.36}
+  minSeparation: {x: 0.4, y: 0.28}
+  maxReservationSeconds: 0.75
   popupParent: {fileID: 0}
 --- !u!1 &1599957046012113080
 GameObject:
@@ -8336,6 +8372,20 @@ MonoBehaviour:
   closeButton: {fileID: 8543247278710713543}
   slideFadePresentation: {fileID: 0}
   firstOpenRevealPresentation: {fileID: 3291214652359126029}
+  rerollButton: {fileID: 0}
+  rerollHoldActionButton: {fileID: 0}
+  rerollHoldButtonView: {fileID: 0}
+  rerollHoldProgressImage: {fileID: 0}
+  rerollCountLabel: {fileID: 0}
+  rerollCountFormat: '{0}'
+  rerollHoldKey: 32
+  rerollHoldDuration: 1.5
+  rerollCloseDuration: 0.18
+  rerollOpenDuration: 0.18
+  rerollShakeStrength: {x: 30, y: 30}
+  rerollShakeFrequency: 18
+  enableSpaceReroll: 1
+  enableButtonHoldReroll: 1
   playerConsumableInventory: {fileID: 0}
   playerWeaponInventory: {fileID: 0}
   playerRelicInventory: {fileID: 0}
@@ -8362,6 +8412,8 @@ MonoBehaviour:
   chestPanel: {fileID: 9119845543824946600}
   inventoryPanel: {fileID: 4158285935949146723}
   motionBounds: {fileID: 1891207895635120300}
+  chestCollisionBounds: {fileID: 0}
+  inventoryCollisionBounds: {fileID: 0}
   topAnimRoot: {fileID: 5247961140025905387}
   middleRevealSlot: {fileID: 7763718870498663127}
   middleViewport: {fileID: 1646478250627569590}
@@ -8394,6 +8446,8 @@ MonoBehaviour:
       volumeMultiplier: 0
       anchorPolicy: 0
       localOffset: {x: 0, y: 0, z: 0}
+    randomSounds: []
+    additionalSounds: []
     cameraShake:
       amplitude: 0
       amplitudeMultiplier: 0
@@ -8407,6 +8461,11 @@ MonoBehaviour:
       localOffset: {x: 0, y: 0, z: 0}
       rotationOffsetZ: 0
       scaleMultiplier: {x: 0, y: 0, z: 0}
+      attachToTarget: 0
+      anchorMode: 0
+      scaleMode: 0
+      targetBoundsReferenceSize: 0
+      targetBoundsScaleMultiplier: 0
       lifetimeMode: 0
       lifetimeOverrideSeconds: 0
       useUnscaledTime: 0
@@ -8415,6 +8474,11 @@ MonoBehaviour:
       localOffset: {x: 0, y: 0, z: 0}
       rotationOffsetZ: 0
       scaleMultiplier: {x: 0, y: 0, z: 0}
+      attachToTarget: 0
+      anchorMode: 0
+      scaleMode: 0
+      targetBoundsReferenceSize: 0
+      targetBoundsScaleMultiplier: 0
       lifetimeMode: 0
       lifetimeOverrideSeconds: 0
       useUnscaledTime: 0
@@ -8432,6 +8496,19 @@ MonoBehaviour:
   playImpactUiParticles: 1
   impactUiParticleEmitter: {fileID: 8942350213942013994}
   impactUiParticleOffset: {x: 0, y: 0}
+  playOpenUiParticles: 1
+  openUiParticleEmitter: {fileID: 0}
+  openUiParticleAnchor: {fileID: 0}
+  openUiParticleRenderRoot: {fileID: 0}
+  openUiParticleOffset: {x: 0, y: 0}
+  forceOpenUiParticleRenderRootOnTop: 1
+  playSlotRevealUiParticles: 1
+  slotRevealUiParticleEmitterPrefab: {fileID: 0}
+  slotRevealUiParticlePoolRoot: {fileID: 0}
+  slotRevealUiParticlePrewarmCount: 3
+  slotRevealUiParticleMaxPoolSize: 8
+  slotRevealUiParticleOffset: {x: 0, y: 0}
+  slotRevealVisibilityPadding: 2
   uiImpactShakeDuration: 0.3
   uiImpactShakeAmplitude: 16
   uiImpactShakeFrequency: 5
@@ -10858,6 +10935,16 @@ MonoBehaviour:
   maxSimulationStep: 1
   settlePositionThreshold: 30
   settleVelocityThreshold: 0
+  openSound:
+    key: sound_menu_chain1
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  closeSound:
+    key: sound_menu_chain2
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
   closePullDownOffset: {x: 0, y: -56}
   closePullDownDuration: 0.08
   closeLaunchDuration: 0.16
@@ -11030,11 +11117,11 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 6127515203332293881}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 160}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0, y: 0.5}
+  m_AnchorMax: {x: 0, y: 0.5}
+  m_AnchoredPosition: {x: 212.66667, y: 0}
+  m_SizeDelta: {x: 106.333336, y: 200}
+  m_Pivot: {x: 0, y: 0.5}
 --- !u!222 &5103614594689385431
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -13625,6 +13712,16 @@ MonoBehaviour:
   maxSimulationStep: 1
   settlePositionThreshold: 30
   settleVelocityThreshold: 0
+  openSound:
+    key: sound_menu_chain1
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  closeSound:
+    key: sound_menu_chain2
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
   closePullDownOffset: {x: 0, y: -56}
   closePullDownDuration: 0.1
   closeLaunchDuration: 0.9
@@ -13861,6 +13958,7 @@ MonoBehaviour:
   consumableGridRoot: {fileID: 513639687666238696}
   weaponGridRoot: {fileID: 688368214820874104}
   relicGridRoot: {fileID: 2181314654011149158}
+  collisionBounds: {fileID: 0}
   playerStatPanel: {fileID: 0}
   dropZone: {fileID: 8396242281729942949}
   consumableSlotPrefab: {fileID: 6837752242998635657, guid: 265b276ebb1e5ba47afa0d99ea0822ed, type: 3}
@@ -14429,6 +14527,7 @@ MonoBehaviour:
   consumableGridRoot: {fileID: 1066029292177151072}
   weaponGridRoot: {fileID: 6111780990473329105}
   relicGridRoot: {fileID: 2630951198058706272}
+  collisionBounds: {fileID: 0}
   playerStatPanel: {fileID: 5054533514123141488}
   dropZone: {fileID: 6883469671042743618}
   consumableSlotPrefab: {fileID: 6837752242998635657, guid: 265b276ebb1e5ba47afa0d99ea0822ed, type: 3}
@@ -15140,6 +15239,7 @@ MonoBehaviour:
   groggySlider: {fileID: 1980133473321238881}
   fillImage: {fileID: 0}
   blinkSpeed: 4
+  blinkTargetColor: {r: 1, g: 0.25, b: 0.05, a: 1}
 --- !u!1 &3352759803564660846
 GameObject:
   m_ObjectHideFlags: 0
@@ -15880,11 +15980,11 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 6127515203332293881}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 0.5}
+  m_AnchorMax: {x: 0, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 160}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_SizeDelta: {x: 106.333336, y: 200}
+  m_Pivot: {x: 0, y: 0.5}
 --- !u!222 &8430838449577743652
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -16922,6 +17022,16 @@ MonoBehaviour:
   maxSimulationStep: 1
   settlePositionThreshold: 30
   settleVelocityThreshold: 0
+  openSound:
+    key: sound_menu_chain1
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  closeSound:
+    key: sound_menu_chain2
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
   closePullDownOffset: {x: 0, y: -56}
   closePullDownDuration: 0.08
   closeLaunchDuration: 0.16
@@ -19259,6 +19369,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   inventory: {fileID: 0}
   abilitySystem: {fileID: 0}
+  weaponEquipController: {fileID: 0}
   hudRoot: {fileID: 0}
   attackUI:
     root: {fileID: 0}
@@ -19270,6 +19381,7 @@ MonoBehaviour:
     activeOverlay: {fileID: 0}
     activeOverlayImage: {fileID: 0}
     cooldownFill: {fileID: 0}
+    activeDurationFill: {fileID: 0}
     cooldownText: {fileID: 0}
     chargeText: {fileID: 0}
   skill1UI:
@@ -19282,6 +19394,7 @@ MonoBehaviour:
     activeOverlay: {fileID: 1490375876641105243}
     activeOverlayImage: {fileID: 6820679082094677126}
     cooldownFill: {fileID: 6007547623280172655}
+    activeDurationFill: {fileID: 0}
     cooldownText: {fileID: 2873937185922622715}
     chargeText: {fileID: 44475989386775370}
   skill2UI:
@@ -19294,6 +19407,7 @@ MonoBehaviour:
     activeOverlay: {fileID: 8625387609543963088}
     activeOverlayImage: {fileID: 4448012574018869261}
     cooldownFill: {fileID: 3477465117798828772}
+    activeDurationFill: {fileID: 0}
     cooldownText: {fileID: 4971743119366778992}
     chargeText: {fileID: 7170691646466793409}
   normalIconColor: {r: 1, g: 1, b: 1, a: 1}
@@ -19478,7 +19592,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -618, y: -35}
-  m_SizeDelta: {x: 431, y: 465}
+  m_SizeDelta: {x: 431, y: 400}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3112327472413127071
 CanvasRenderer:
@@ -19650,7 +19764,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 56, y: 160}
+  m_SizeDelta: {x: 56, y: 200}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!222 &7674269848806393511
 CanvasRenderer:
@@ -19746,7 +19860,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 56, y: 140}
+  m_SizeDelta: {x: 56, y: 200}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!222 &7547273802592293119
 CanvasRenderer:
@@ -19930,6 +20044,8 @@ MonoBehaviour:
   fadeInSeconds: 0.12
   fadeOutSeconds: 0.18
   minimumVisibleSeconds: 0.35
+  delayedRevealSeconds: 1.5
+  loadingDotStepSeconds: 0.35
   activeProgressFollowSpeed: 9
   completionProgressFollowSpeed: 15
   tipCycleSeconds: 5.5
@@ -19939,7 +20055,6 @@ MonoBehaviour:
   customTravelVisualPrefab: {fileID: 0}
   trackFillProgressStart01: 0.2
   trackFillProgressEnd01: 0.78
-  debugPreviewToggleKey: 288
   debugPreviewCycleSeconds: 2.4
   startWithDebugPreview: 0
   defaultCorridorTips:
@@ -20861,8 +20976,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 72.5}
-  m_SizeDelta: {x: 431, y: 165}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 431, y: 0}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &1364987452690191025
 MonoBehaviour:
@@ -22331,6 +22446,16 @@ MonoBehaviour:
   maxSimulationStep: 1
   settlePositionThreshold: 30
   settleVelocityThreshold: 0
+  openSound:
+    key: sound_menu_chain1
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  closeSound:
+    key: sound_menu_chain2
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
   closePullDownOffset: {x: 0, y: -56}
   closePullDownDuration: 0.08
   closeLaunchDuration: 0.16
@@ -23804,8 +23929,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BossHealthBarUI
   immediateHealthSlider: {fileID: 7838629889540356179}
   delayedHealthSlider: {fileID: 4852871006630446966}
+  frameImage: {fileID: 0}
   delayedStartDelay: 0.5
   delayedSmoothTime: 0.2
+  splitHealthRoot: {fileID: 0}
+  splitDividerImage: {fileID: 0}
+  splitLeftLabelText: {fileID: 0}
+  splitRightLabelText: {fileID: 0}
+  createFallbackSplitHealthPresentation: 1
+  fallbackSplitDividerColor: {r: 1, g: 1, b: 1, a: 0.9}
+  fallbackSplitDividerWidth: 4
+  fallbackSplitDividerHeight: 36
 --- !u!1 &5566508865052831855
 GameObject:
   m_ObjectHideFlags: 0
@@ -26522,6 +26656,7 @@ MonoBehaviour:
   statusText: {fileID: 7061896330620942213}
   detailText: {fileID: 3125552394205349085}
   percentText: {fileID: 4524996782988756032}
+  loadingText: {fileID: 0}
   tipLabelText: {fileID: 258266943776457155}
   tipText: {fileID: 3022400883397599588}
   progressFillImage: {fileID: 2787993796118385406}
@@ -28193,6 +28328,7 @@ MonoBehaviour:
   rewardCanvas: {fileID: 8017398280050356475}
   damagePopupCanvas: {fileID: 5937847735298254093}
   bossHudCanvas: {fileID: 8862188657633301750}
+  gameOverCanvas: {fileID: 0}
   loadingCanvas: {fileID: 5200600149339355958}
   statusHudPresenterPrefab: {fileID: 1413385795910745094}
   statusTooltipPrefab: {fileID: 3741039668568504364}
@@ -28502,7 +28638,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
   m_AnchoredPosition: {x: 56, y: 0}
-  m_SizeDelta: {x: 319, y: 140}
+  m_SizeDelta: {x: 319, y: 200}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!222 &4253347809595344831
 CanvasRenderer:
@@ -30211,6 +30347,10 @@ MonoBehaviour:
   autoFindBossOnSceneLoad: 1
   displayNameOverride: 
   visibleRoot: {fileID: 0}
+  slotRoot: {fileID: 0}
+  slotPrefab: {fileID: 0}
+  ensureHorizontalLayoutGroup: 1
+  slotSpacing: 10
   healthBarUI: {fileID: 1938255669122893353}
   groggyBarUI: {fileID: 231952700181240352}
   bossNameText: {fileID: 674215786494709775}
@@ -30222,6 +30362,7 @@ MonoBehaviour:
   shownAnchoredPosY: 0
   slideDuration: 0.8
   useUnscaledSlideTime: 1
+  logSlidePresentation: 0
 --- !u!1 &7351477084799799427
 GameObject:
   m_ObjectHideFlags: 0
@@ -31477,6 +31618,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   themeOverride: {fileID: 11400000, guid: 1df4d6f6ce1f47e090ef5b50eef465e4, type: 2}
+  authoredCursorCanvas: {fileID: 0}
+  authoredCursorRect: {fileID: 0}
+  authoredCursorImage: {fileID: 0}
   hideSystemCursorWhileSpriteActive: 1
   overlaySortingOrder: 32767
 --- !u!1 &7794364039793127399
@@ -32237,7 +32381,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 56, y: 0}
+  m_AnchoredPosition: {x: 58, y: 0}
   m_SizeDelta: {x: 315, y: 165}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!222 &4783914144469544741
@@ -32797,11 +32941,11 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 6127515203332293881}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 160}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0, y: 0.5}
+  m_AnchorMax: {x: 0, y: 0.5}
+  m_AnchoredPosition: {x: 106.333336, y: 0}
+  m_SizeDelta: {x: 106.333336, y: 200}
+  m_Pivot: {x: 0, y: 0.5}
 --- !u!222 &9183270579784180299
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -33466,6 +33610,16 @@ MonoBehaviour:
   maxSimulationStep: 1
   settlePositionThreshold: 30
   settleVelocityThreshold: 0
+  openSound:
+    key: sound_menu_chain1
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
+  closeSound:
+    key: sound_menu_chain2
+    volumeMultiplier: 1
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
   closePullDownOffset: {x: 0, y: -56}
   closePullDownDuration: 0.08
   closeLaunchDuration: 0.16
@@ -33658,10 +33812,14 @@ MonoBehaviour:
   player: {fileID: 0}
   hpDef: {fileID: 11400000, guid: 3ff045849daafe84d97370c69cd17747, type: 2}
   maxHpDef: {fileID: 11400000, guid: 0e177e1d15e428745b5859fac08ce203, type: 2}
+  soulHeartDef: {fileID: 0}
   heartTokenPrefab: {fileID: 7286775436942910812, guid: 73286b2f835b74848bc1fef47d7f1294, type: 3}
   heartContainer: {fileID: 7933390349864068690}
   filledHeartSprite: {fileID: 6435912432560062591, guid: e75f469ea29530246a4a0543396316af, type: 3}
   emptyHeartSprite: {fileID: 2501108752766977309, guid: e75f469ea29530246a4a0543396316af, type: 3}
+  soulHeartSprite: {fileID: 0}
+  normalHeartColor: {r: 1, g: 1, b: 1, a: 1}
+  soulHeartColor: {r: 0.35, g: 0.75, b: 1, a: 1}
   healthPerHeart: 1
 --- !u!114 &2990190548105504199
 MonoBehaviour:
@@ -35571,7 +35729,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
   m_AnchoredPosition: {x: 375, y: 0}
-  m_SizeDelta: {x: 56, y: 140}
+  m_SizeDelta: {x: 56, y: 200}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!222 &2019155771230384807
 CanvasRenderer:
@@ -35738,6 +35896,12 @@ MonoBehaviour:
   relicPreviewPreviousGuide: {fileID: 7970398664986658624}
   relicPreviewNextGuide: {fileID: 6195928393708941241}
   disabledGuideAlpha: 0.35
+  actionHintRoot: {fileID: 0}
+  actionHintIcon: {fileID: 0}
+  actionHintKeyFallbackLabel: {fileID: 0}
+  actionHintLabel: {fileID: 0}
+  fallbackActionHintAnchoredPosition: {x: 0, y: 24}
+  fallbackActionHintSize: {x: 320, y: 36}
   weaponView: {fileID: 0}
   weaponViewV2: {fileID: 829276133880035968}
   relicView: {fileID: 8861880787674782532}
@@ -35746,6 +35910,11 @@ MonoBehaviour:
   glossaryPopup: {fileID: 0}
   tooltipColorPalette: {fileID: 0}
   glossaryLinkColorHex: 5EC8FF
+  openOffset: {x: 0, y: -24}
+  openDuration: 0.12
+  closeDuration: 0.1
+  closedAlpha: 0
+  useUnscaledTime: 1
 --- !u!114 &1972974727469605030
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -35850,10 +36019,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   titleText: {fileID: 9048568312877199282}
   contentText: {fileID: 7084585710909227700}
-  backgroundRect: {fileID: 7088042006494984841}
-  minTooltipWidth: 180
-  maxTooltipWidth: 360
-  horizontalPadding: 24
+  statusText: {fileID: 0}
+  openOffset: {x: 0, y: -24}
+  openDuration: 0.12
+  closeDuration: 0.1
+  closedAlpha: 0
+  useUnscaledTime: 1
 --- !u!1 &8901687247612021013
 GameObject:
   m_ObjectHideFlags: 0
@@ -35963,8 +36134,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 232.5}
-  m_SizeDelta: {x: 431, y: 160}
+  m_AnchoredPosition: {x: 0, y: 200}
+  m_SizeDelta: {x: 431, y: 200}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &8387152235537613736
 MonoBehaviour:

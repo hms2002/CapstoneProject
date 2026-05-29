@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
@@ -25,6 +26,8 @@ public class SpeechBubble : MonoBehaviour
     private Transform target;
     private Vector3 offset;
     private Tween typingTween;
+    private Coroutine typingRoutine;
+    private Coroutine textEffectRoutine;
     private Tween hideDelayTween;
     private Vector3 originalScale;
     private Action<SpeechBubble> releaseAction;
@@ -46,6 +49,9 @@ public class SpeechBubble : MonoBehaviour
     private int backgroundBorderColorPropertyId = -1;
     private int lastTypedCharacterCount;
     private float nextTypingSoundTime;
+    private DialogueTextRevealPlan currentRevealPlan;
+    private int currentRevealVisibleCharacterCount;
+    private bool hasCurrentRevealPlan;
 
     private const float UnwrappedPreferredWidthProbe = 10000f;
 
@@ -105,20 +111,118 @@ public class SpeechBubble : MonoBehaviour
         float maxTextWidth,
         float minTextHeight)
     {
+        SetupAndShowInternal(
+            target,
+            offset,
+            text,
+            duration,
+            useTyping,
+            typingSpeed,
+            theme,
+            onHidden,
+            onRelease,
+            preSizeLayout,
+            minTextWidth,
+            maxTextWidth,
+            minTextHeight,
+            false,
+            DialogueAnimType.Normal);
+    }
+
+    public void SetupAndShowAnimated(
+        Transform target,
+        Vector3 offset,
+        string text,
+        float duration,
+        SpeechBubbleThemeSettings theme,
+        Action onHidden,
+        Action<SpeechBubble> onRelease,
+        DialogueAnimType animType)
+    {
+        SetupAndShowAnimated(
+            target,
+            offset,
+            text,
+            duration,
+            theme,
+            onHidden,
+            onRelease,
+            animType,
+            false,
+            0f,
+            0f,
+            0f);
+    }
+
+    public void SetupAndShowAnimated(
+        Transform target,
+        Vector3 offset,
+        string text,
+        float duration,
+        SpeechBubbleThemeSettings theme,
+        Action onHidden,
+        Action<SpeechBubble> onRelease,
+        DialogueAnimType animType,
+        bool preSizeLayout,
+        float minTextWidth,
+        float maxTextWidth,
+        float minTextHeight)
+    {
+        SetupAndShowInternal(
+            target,
+            offset,
+            text,
+            duration,
+            true,
+            0f,
+            theme,
+            onHidden,
+            onRelease,
+            preSizeLayout,
+            minTextWidth,
+            maxTextWidth,
+            minTextHeight,
+            true,
+            animType);
+    }
+
+    private void SetupAndShowInternal(
+        Transform target,
+        Vector3 offset,
+        string text,
+        float duration,
+        bool useTyping,
+        float typingSpeed,
+        SpeechBubbleThemeSettings theme,
+        Action onHidden,
+        Action<SpeechBubble> onRelease,
+        bool preSizeLayout,
+        float minTextWidth,
+        float maxTextWidth,
+        float minTextHeight,
+        bool useAnimatedReveal,
+        DialogueAnimType animType)
+    {
         StopActiveTweens();
+
+        DialogueTextRevealPlan revealPlan = DialogueTextRevealUtility.BuildPlan(text);
+        string displayText = useAnimatedReveal ? revealPlan.DisplayText : text;
+        currentRevealPlan = revealPlan;
+        hasCurrentRevealPlan = useAnimatedReveal;
+        currentRevealVisibleCharacterCount = 0;
 
         this.target = target;
         this.offset = offset;
         hiddenAction = onHidden;
         releaseAction = onRelease;
-        currentFullText = text;
+        currentFullText = displayText;
         isTyping = false;
         isHiding = false;
 
         transform.position = target.position + offset;
         gameObject.SetActive(true);
         ApplyTheme(theme);
-        PrepareLayoutForText(text, preSizeLayout, minTextWidth, maxTextWidth, minTextHeight);
+        PrepareLayoutForText(displayText, preSizeLayout, minTextWidth, maxTextWidth, minTextHeight);
 
         if (canvasGroup != null)
         {
@@ -133,31 +237,136 @@ public class SpeechBubble : MonoBehaviour
         if (bubbleText != null)
         {
             bubbleText.text = string.Empty;
+            bubbleText.maxVisibleCharacters = int.MaxValue;
             ResetTypingAudioTracking();
 
-            float typingDuration = Mathf.Max(0f, text.Length * typingSpeed);
-            if (useTyping && typingDuration > 0f)
+            if (useAnimatedReveal)
             {
-                isTyping = true;
-                typingTween = bubbleText.DOText(text, typingDuration)
-                    .SetUpdate(true)
-                    .SetEase(Ease.Linear)
-                    .OnUpdate(HandleTypingTweenUpdated)
-                    .OnComplete(() =>
-                    {
-                        HandleTypingTweenUpdated();
-                        isTyping = false;
-                    });
+                bubbleText.richText = true;
+                bubbleText.text = displayText;
+                bubbleText.maxVisibleCharacters = 0;
+                bubbleText.ForceMeshUpdate();
+
+                int visibleCharacterCount = bubbleText.textInfo != null
+                    ? bubbleText.textInfo.characterCount
+                    : 0;
+                currentRevealVisibleCharacterCount = visibleCharacterCount;
+
+                if (visibleCharacterCount > 0)
+                {
+                    isTyping = true;
+                    typingRoutine = StartCoroutine(TypeTextRoutine(revealPlan, animType, visibleCharacterCount));
+                }
+                else
+                {
+                    bubbleText.maxVisibleCharacters = int.MaxValue;
+                }
             }
             else
             {
-                bubbleText.text = text;
-                lastTypedCharacterCount = string.IsNullOrEmpty(text) ? 0 : text.Length;
+                float typingDuration = Mathf.Max(0f, displayText.Length * typingSpeed);
+                if (useTyping && typingDuration > 0f)
+                {
+                    isTyping = true;
+                    typingTween = bubbleText.DOText(displayText, typingDuration)
+                        .SetUpdate(true)
+                        .SetEase(Ease.Linear)
+                        .OnUpdate(HandleTypingTweenUpdated)
+                        .OnComplete(() =>
+                        {
+                            HandleTypingTweenUpdated();
+                            isTyping = false;
+                        });
+                }
+                else
+                {
+                    bubbleText.text = displayText;
+                    lastTypedCharacterCount = string.IsNullOrEmpty(displayText) ? 0 : displayText.Length;
+                }
             }
         }
 
         if (duration > 0f)
             hideDelayTween = DOVirtual.DelayedCall(duration, Hide).SetUpdate(true);
+    }
+
+    private IEnumerator TypeTextRoutine(
+        DialogueTextRevealPlan revealPlan,
+        DialogueAnimType animType,
+        int visibleCharacterCount)
+    {
+        DialogueTextRevealProfile profile = DialogueTextRevealUtility.ResolveProfile(animType);
+
+        for (int i = 0; i < visibleCharacterCount; i++)
+        {
+            float explicitPause = DialogueTextRevealUtility.GetPauseBeforeCharacter(revealPlan, i);
+            if (explicitPause > 0f)
+                yield return WaitForTextRevealDelay(revealPlan, i, explicitPause);
+
+            if (bubbleText == null)
+                yield break;
+
+            bubbleText.maxVisibleCharacters = i + 1;
+            HandleTypingTweenUpdated();
+            DialogueTextRevealUtility.ApplyTextEffects(
+                bubbleText,
+                revealPlan,
+                i + 1,
+                Time.unscaledTime);
+
+            float delay = DialogueTextRevealUtility.GetPostCharacterDelay(
+                profile,
+                bubbleText.textInfo,
+                i);
+
+            if (delay > 0f)
+                yield return WaitForTextRevealDelay(revealPlan, i + 1, delay);
+        }
+
+        float settleSeconds = DialogueTextRevealUtility.GetTextEffectSettleSeconds(revealPlan);
+        if (settleSeconds > 0f)
+            yield return WaitForTextRevealDelay(revealPlan, visibleCharacterCount, settleSeconds);
+
+        typingRoutine = null;
+        isTyping = false;
+
+        if (bubbleText != null)
+        {
+            bubbleText.maxVisibleCharacters = visibleCharacterCount;
+            StartTextEffectRoutine(revealPlan, visibleCharacterCount);
+            HandleTypingTweenUpdated();
+        }
+    }
+
+    private IEnumerator WaitForTextRevealDelay(
+        DialogueTextRevealPlan revealPlan,
+        int visibleCharacterCount,
+        float seconds)
+    {
+        if (seconds <= 0f)
+            yield break;
+
+        if (!DialogueTextRevealUtility.HasTextEffects(revealPlan))
+        {
+            yield return new WaitForSecondsRealtime(seconds);
+            yield break;
+        }
+
+        float elapsed = 0f;
+        while (elapsed < seconds)
+        {
+            if (bubbleText == null)
+                yield break;
+
+            DialogueTextRevealUtility.ApplyTextEffects(
+                bubbleText,
+                revealPlan,
+                visibleCharacterCount,
+                Time.unscaledTime);
+
+            elapsed += Time.unscaledDeltaTime;
+            yield return null;
+        }
     }
 
     public bool TryAdvance()
@@ -220,12 +429,22 @@ public class SpeechBubble : MonoBehaviour
         hiddenAction = null;
         releaseAction = null;
         currentFullText = string.Empty;
+        hasCurrentRevealPlan = false;
+        currentRevealVisibleCharacterCount = 0;
         isTyping = false;
         isHiding = false;
     }
 
     private void StopActiveTweens()
     {
+        StopTextEffectRoutine(true);
+
+        if (typingRoutine != null)
+        {
+            StopCoroutine(typingRoutine);
+            typingRoutine = null;
+        }
+
         typingTween?.Kill();
         typingTween = null;
         ResetTypingAudioTracking();
@@ -241,14 +460,63 @@ public class SpeechBubble : MonoBehaviour
 
     private void CompleteTyping()
     {
+        if (typingRoutine != null)
+        {
+            StopCoroutine(typingRoutine);
+            typingRoutine = null;
+        }
+
         typingTween?.Kill();
         typingTween = null;
         isTyping = false;
 
         if (bubbleText != null)
+        {
             bubbleText.text = currentFullText;
+            bubbleText.maxVisibleCharacters = int.MaxValue;
+            if (hasCurrentRevealPlan && currentRevealVisibleCharacterCount > 0)
+                StartTextEffectRoutine(currentRevealPlan, currentRevealVisibleCharacterCount);
+            else
+                DialogueTextRevealUtility.ResetTextEffects(bubbleText);
+        }
 
         lastTypedCharacterCount = string.IsNullOrEmpty(currentFullText) ? 0 : currentFullText.Length;
+    }
+
+    private void StartTextEffectRoutine(DialogueTextRevealPlan revealPlan, int visibleCharacterCount)
+    {
+        StopTextEffectRoutine(true);
+
+        if (!DialogueTextRevealUtility.HasTextEffects(revealPlan) || bubbleText == null)
+            return;
+
+        textEffectRoutine = StartCoroutine(PlayTextEffectRoutine(revealPlan, visibleCharacterCount));
+    }
+
+    private IEnumerator PlayTextEffectRoutine(DialogueTextRevealPlan revealPlan, int visibleCharacterCount)
+    {
+        while (bubbleText != null)
+        {
+            DialogueTextRevealUtility.ApplyTextEffects(
+                bubbleText,
+                revealPlan,
+                visibleCharacterCount,
+                Time.unscaledTime);
+
+            yield return null;
+        }
+    }
+
+    private void StopTextEffectRoutine(bool resetText)
+    {
+        if (textEffectRoutine != null)
+        {
+            StopCoroutine(textEffectRoutine);
+            textEffectRoutine = null;
+        }
+
+        if (resetText)
+            DialogueTextRevealUtility.ResetTextEffects(bubbleText);
     }
 
     private void OnDestroy()
@@ -502,8 +770,18 @@ public class SpeechBubble : MonoBehaviour
         if (!playTypingSound || bubbleText == null)
             return;
 
-        string currentText = bubbleText.text;
-        int currentCharacterCount = string.IsNullOrEmpty(currentText) ? 0 : currentText.Length;
+        int currentCharacterCount;
+        if (bubbleText.maxVisibleCharacters != int.MaxValue)
+        {
+            int meshCharacterCount = bubbleText.textInfo != null ? bubbleText.textInfo.characterCount : 0;
+            currentCharacterCount = Mathf.Min(bubbleText.maxVisibleCharacters, meshCharacterCount);
+        }
+        else
+        {
+            string currentText = bubbleText.text;
+            currentCharacterCount = string.IsNullOrEmpty(currentText) ? 0 : currentText.Length;
+        }
+
         if (currentCharacterCount <= lastTypedCharacterCount)
             return;
 

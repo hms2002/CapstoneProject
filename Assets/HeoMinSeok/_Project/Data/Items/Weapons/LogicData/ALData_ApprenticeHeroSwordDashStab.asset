@@ -11,9 +11,11 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6c861f4b5c424177a779ddf07afabded, type: 3}
   m_Name: ALData_ApprenticeHeroSwordDashStab
-  m_EditorClassIdentifier:
+  m_EditorClassIdentifier: 
   animationTrigger: Swing1
-  dashDistance: 3
+  hitEventTag: {fileID: 11400000, guid: a9d545fc5072ee3419e47fc9ff0e650c, type: 2}
+  hitEventTimeout: 0.25
+  dashDistance: 6
   dashDuration: 0.18
   recoveryDuration: 0.18
   forwardOffset: 0.95

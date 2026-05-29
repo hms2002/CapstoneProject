@@ -81,6 +81,7 @@ public sealed class BossDeathPresentation : MonoBehaviour
     private CinematicLetterboxOverlay overlay;
     private readonly List<Renderer> cachedDeathRenderers = new();
 
+    private GameFlowInputBlocker inputBlocker;
     private PlayerCinematicProtection lockedPlayerProtection;
     private bool shouldNotifyRewardsForRunningSequence = true;
     private bool completedViaTerminalEnding;
@@ -113,6 +114,7 @@ public sealed class BossDeathPresentation : MonoBehaviour
 
         CleanupPresentationArtifacts();
         UnlockPlayerControls();
+        ReleaseInputBlocker();
     }
 
     public void Bind(BossControllerBase ownerController)
@@ -141,6 +143,7 @@ public sealed class BossDeathPresentation : MonoBehaviour
 
         shouldNotifyRewardsForRunningSequence = notifyRewardsReady;
         completedViaTerminalEnding = false;
+        AcquireInputBlocker();
         LockPlayerControls();
         runningSequence = StartCoroutine(RunDeathPresentationRoutine());
         return true;
@@ -172,7 +175,7 @@ public sealed class BossDeathPresentation : MonoBehaviour
         yield return overlayIntroRoutine;
         yield return WaitForPresentationSeconds(deathPreSpeechDelaySeconds);
         yield return PlayAnimationAndWait(breakdownAnimation);
-        yield return PlayDeathSpeechAndWait();
+        yield return PlayDeathSpeechAndWait(hasTerminalEnding);
 
         if (hasTerminalEnding && endingSequence != null)
         {
@@ -193,6 +196,7 @@ public sealed class BossDeathPresentation : MonoBehaviour
 
             UnlockPlayerControls();
             CleanupPresentationArtifacts();
+            ReleaseInputBlocker();
             runningSequence = null;
             yield break;
         }
@@ -215,6 +219,7 @@ public sealed class BossDeathPresentation : MonoBehaviour
 
         UnlockPlayerControls();
         CleanupPresentationArtifacts();
+        ReleaseInputBlocker();
         runningSequence = null;
     }
 
@@ -251,6 +256,21 @@ public sealed class BossDeathPresentation : MonoBehaviour
 
         if (deathEffectAnchor == null)
             deathEffectAnchor = transform;
+    }
+
+    private void AcquireInputBlocker()
+    {
+        if (inputBlocker != null && inputBlocker.IsBlocking)
+            return;
+
+        inputBlocker = GameFlowInputBlocker.GetOrAdd(this);
+        inputBlocker?.Acquire();
+    }
+
+    private void ReleaseInputBlocker()
+    {
+        inputBlocker?.Release();
+        inputBlocker = null;
     }
 
     private void LockPlayerControls()
@@ -321,7 +341,7 @@ public sealed class BossDeathPresentation : MonoBehaviour
             deathAnimator.enabled = false;
     }
 
-    private IEnumerator PlayDeathSpeechAndWait()
+    private IEnumerator PlayDeathSpeechAndWait(bool useTerminalEndingSpeechTiming)
     {
         if (speechController == null)
         {
@@ -330,10 +350,17 @@ public sealed class BossDeathPresentation : MonoBehaviour
         }
 
         bool bubbleHidden = false;
-        bool started = speechController.TrySpeakSituation(
-            deathSpeechSituation,
-            deathSpeechDuration,
-            () => bubbleHidden = true);
+        bool started = useTerminalEndingSpeechTiming
+            ? speechController.TrySpeakSituationAnimated(
+                deathSpeechSituation,
+                deathSpeechDuration,
+                DialogueAnimType.Slow,
+                () => bubbleHidden = true,
+                ApplyTerminalDeathSpeechMotion)
+            : speechController.TrySpeakSituation(
+                deathSpeechSituation,
+                deathSpeechDuration,
+                () => bubbleHidden = true);
 
         if (!started)
             yield break;
@@ -346,6 +373,14 @@ public sealed class BossDeathPresentation : MonoBehaviour
             elapsed += Time.unscaledDeltaTime;
             yield return null;
         }
+    }
+
+    private static string ApplyTerminalDeathSpeechMotion(string line)
+    {
+        if (string.IsNullOrWhiteSpace(line))
+            return line;
+
+        return $"[tremble]{line}[/tremble]";
     }
 
     private IEnumerator PlayAnimationAndWait(AnimationStepSettings settings)

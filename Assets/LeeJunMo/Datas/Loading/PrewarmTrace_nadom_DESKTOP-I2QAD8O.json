@@ -1,320 +1,185 @@
 {
     "sessions": [
         {
-            "sessionId": "bb72518ab288452094076f8e1023c156",
-            "startedUtc": "2026-05-28T05:34:53.5682500Z",
-            "endedUtc": "2026-05-28T05:34:54.8865948Z",
+            "sessionId": "c5977feb5dcd4f58926b543d2a4a838e",
+            "startedUtc": "2026-05-28T13:19:50.9847879Z",
+            "endedUtc": "2026-05-28T13:19:52.4678163Z",
             "entries": []
         },
         {
-            "sessionId": "d185d39e426b4a85af89a214eaf899d0",
-            "startedUtc": "2026-05-28T06:38:37.2939378Z",
-            "endedUtc": "2026-05-28T06:38:39.3437311Z",
+            "sessionId": "b73f1d10e18d4cc7ba87cfe64354aa9e",
+            "startedUtc": "2026-05-28T13:27:00.0886238Z",
+            "endedUtc": "2026-05-28T13:27:01.4865333Z",
             "entries": []
         },
         {
-            "sessionId": "a3b0350796c04b20b9cd3f11b8fd1025",
-            "startedUtc": "2026-05-28T06:40:49.1713742Z",
-            "endedUtc": "2026-05-28T06:40:50.6723328Z",
+            "sessionId": "f93816a1da32434280a652ebc1339eca",
+            "startedUtc": "2026-05-28T13:28:43.5435760Z",
+            "endedUtc": "2026-05-28T13:28:46.2102812Z",
             "entries": []
         },
         {
-            "sessionId": "e28cef2d55054f459d883f48332320fa",
-            "startedUtc": "2026-05-28T07:19:48.2559738Z",
-            "endedUtc": "2026-05-28T07:19:50.6061009Z",
-            "entries": []
-        },
-        {
-            "sessionId": "62b523c2d21d4cd9a7fecc1c1997455d",
-            "startedUtc": "2026-05-28T09:16:43.9150429Z",
-            "endedUtc": "2026-05-28T09:17:05.9661570Z",
+            "sessionId": "7b7ec334e30740b69a7b2ed686c9e5c5",
+            "startedUtc": "2026-05-28T15:11:52.0056449Z",
+            "endedUtc": "2026-05-28T15:26:14.4574131Z",
             "entries": [
                 {
-                    "prefabPath": "Assets/LeeJunMo/Prefab/Effect/AnimEffect/Boss1NormalAttack2Boom.prefab",
-                    "prefabName": "Boss1NormalAttack2Boom",
-                    "totalSpawns": 1,
-                    "coldSpawns": 0,
-                    "firstSeenSeconds": 21.96906280517578,
-                    "lastSeenSeconds": 21.9693603515625,
-                    "firstSceneName": "HeoMinSeok_Boss",
-                    "lastSceneName": "HeoMinSeok_Boss"
+                    "prefabPath": "Assets/HeoMinSeok/_Project/Prefabs/VFX/Element/ElectrocutedSparkParticle.prefab",
+                    "prefabName": "ElectrocutedSparkParticle",
+                    "totalSpawns": 7,
+                    "coldSpawns": 5,
+                    "firstSeenSeconds": 835.2167358398438,
+                    "lastSeenSeconds": 862.430419921875,
+                    "firstSceneName": "ProtoTypeHub",
+                    "lastSceneName": "ProtoTypeHub"
                 },
                 {
-                    "prefabPath": "Assets/LeeJunMo/Prefab/Effect/Particle/WitchNormal2AttackTileParticle.prefab",
-                    "prefabName": "WitchNormal2AttackTileParticle",
-                    "totalSpawns": 1,
-                    "coldSpawns": 0,
-                    "firstSeenSeconds": 21.97003936767578,
-                    "lastSeenSeconds": 21.970043182373048,
-                    "firstSceneName": "HeoMinSeok_Boss",
-                    "lastSceneName": "HeoMinSeok_Boss"
-                },
-                {
-                    "prefabPath": "Assets/LeeJunMo/Prefab/Effect/AnimEffect/Boss1NormalAttack2Boom.prefab",
-                    "prefabName": "Boss1NormalAttack2Boom",
+                    "prefabPath": "Assets/Prefabs/VFX/PF_Dragon_LandingDust.prefab",
+                    "prefabName": "PF_Dragon_LandingDust",
                     "totalSpawns": 1,
                     "coldSpawns": 1,
-                    "firstSeenSeconds": 25.668804168701173,
-                    "lastSeenSeconds": 25.66900634765625,
+                    "firstSeenSeconds": 519.6869506835938,
+                    "lastSeenSeconds": 519.6869506835938,
+                    "firstSceneName": "HeoMinSeok_Boss_Dragon",
+                    "lastSceneName": "HeoMinSeok_Boss_Dragon"
+                },
+                {
+                    "prefabPath": "Assets/LeeJunMo/Prefab/Effect/Particle/DashDust.prefab",
+                    "prefabName": "DashDust",
+                    "totalSpawns": 1,
+                    "coldSpawns": 1,
+                    "firstSeenSeconds": 518.2818603515625,
+                    "lastSeenSeconds": 518.2821655273438,
                     "firstSceneName": "HeoMinSeok_Boss_Dragon",
                     "lastSceneName": "HeoMinSeok_Boss_Dragon"
                 }
             ]
         },
         {
-            "sessionId": "c3ad270a69d24513b826486e3d248940",
-            "startedUtc": "2026-05-28T09:22:47.0418668Z",
-            "endedUtc": "2026-05-28T09:22:49.1425583Z",
+            "sessionId": "e30d88fdab33465888d0347ad84c3ae3",
+            "startedUtc": "2026-05-28T15:33:39.2197443Z",
+            "endedUtc": "2026-05-28T15:33:40.5252390Z",
             "entries": []
         },
         {
-            "sessionId": "61d0df8e364c45858a3e7f397d82c751",
-            "startedUtc": "2026-05-28T09:26:31.4473589Z",
-            "endedUtc": "2026-05-28T09:26:51.5925132Z",
+            "sessionId": "de99155a02ee4102ab71bed8861e9a4e",
+            "startedUtc": "2026-05-28T15:37:42.5034480Z",
+            "endedUtc": "2026-05-28T15:37:43.8273550Z",
+            "entries": []
+        },
+        {
+            "sessionId": "ff7c1487de93408fa2d7e3318aa101eb",
+            "startedUtc": "2026-05-28T16:05:43.2759630Z",
+            "endedUtc": "2026-05-28T16:05:45.0015410Z",
+            "entries": []
+        },
+        {
+            "sessionId": "6ab5437d2bf24e37aed0fbdf687afbe2",
+            "startedUtc": "2026-05-28T16:08:06.9930702Z",
+            "endedUtc": "2026-05-28T16:08:39.4214715Z",
             "entries": [
                 {
-                    "prefabPath": "Assets/LeeJunMo/Prefab/Effect/AnimEffect/SlashHit.prefab",
-                    "prefabName": "SlashHit",
-                    "totalSpawns": 3,
-                    "coldSpawns": 0,
-                    "firstSeenSeconds": 19.12640380859375,
-                    "lastSeenSeconds": 19.707130432128908,
-                    "firstSceneName": "HeoMinSeok_Boss",
-                    "lastSceneName": "HeoMinSeok_Boss"
-                },
-                {
-                    "prefabPath": "Assets/LeeJunMo/Prefab/Effect/Particle/WitchNormal1AttackTileParticle.prefab",
-                    "prefabName": "WitchNormal1AttackTileParticle",
-                    "totalSpawns": 3,
-                    "coldSpawns": 0,
-                    "firstSeenSeconds": 19.13990020751953,
-                    "lastSeenSeconds": 19.711456298828126,
-                    "firstSceneName": "HeoMinSeok_Boss",
-                    "lastSceneName": "HeoMinSeok_Boss"
-                },
-                {
-                    "prefabPath": "Assets/Prefabs/VFX/PF_Dragon_InhaleWind.prefab",
-                    "prefabName": "PF_Dragon_InhaleWind",
-                    "totalSpawns": 3,
+                    "prefabPath": "Assets/Prefabs/VFX/PF_Dragon_KegImpactSplash.prefab",
+                    "prefabName": "PF_Dragon_KegImpactSplash",
+                    "totalSpawns": 1,
                     "coldSpawns": 1,
-                    "firstSeenSeconds": 21.53631591796875,
-                    "lastSeenSeconds": 28.334596633911134,
+                    "firstSeenSeconds": 31.345542907714845,
+                    "lastSeenSeconds": 31.345977783203126,
+                    "firstSceneName": "HeoMinSeok_Boss_Dragon",
+                    "lastSceneName": "HeoMinSeok_Boss_Dragon"
+                },
+                {
+                    "prefabPath": "Assets/LeeJunMo/Prefab/Effect/Particle/DashDust.prefab",
+                    "prefabName": "DashDust",
+                    "totalSpawns": 1,
+                    "coldSpawns": 1,
+                    "firstSeenSeconds": 32.1873893737793,
+                    "lastSeenSeconds": 32.18739318847656,
                     "firstSceneName": "HeoMinSeok_Boss_Dragon",
                     "lastSceneName": "HeoMinSeok_Boss_Dragon"
                 }
             ]
         },
         {
-            "sessionId": "6c041ceef4ef4b178d04a318bec35768",
-            "startedUtc": "2026-05-28T09:59:30.6509732Z",
-            "endedUtc": "2026-05-28T09:59:51.6029742Z",
+            "sessionId": "9dd49b35d5e845ccbe0434de855b5668",
+            "startedUtc": "2026-05-28T16:16:01.9396347Z",
+            "endedUtc": "2026-05-28T16:16:03.5547289Z",
+            "entries": []
+        },
+        {
+            "sessionId": "6bd16206cb2046fc8dfd04c18ef9b759",
+            "startedUtc": "2026-05-28T17:44:33.1124439Z",
+            "endedUtc": "2026-05-28T17:44:36.2811665Z",
+            "entries": []
+        },
+        {
+            "sessionId": "1d49295bf2dc4a99bc41b52566ed1884",
+            "startedUtc": "2026-05-28T17:45:17.5157526Z",
+            "endedUtc": "2026-05-28T17:45:19.1566944Z",
+            "entries": []
+        },
+        {
+            "sessionId": "60fcaabcdd1c453182b142c0b96f3d05",
+            "startedUtc": "2026-05-28T17:47:11.9096434Z",
+            "endedUtc": "2026-05-28T17:47:13.6391223Z",
+            "entries": []
+        },
+        {
+            "sessionId": "f049110f2e134904a4cf51e42dac5a27",
+            "startedUtc": "2026-05-28T17:48:50.2351639Z",
+            "endedUtc": "2026-05-28T17:48:53.1265266Z",
+            "entries": []
+        },
+        {
+            "sessionId": "04fdd63beee74ad597d3167177908a4f",
+            "startedUtc": "2026-05-28T17:49:37.2303682Z",
+            "endedUtc": "2026-05-28T17:49:39.8594996Z",
+            "entries": []
+        },
+        {
+            "sessionId": "4541a81ce1c5463aa3f1a32201154032",
+            "startedUtc": "2026-05-28T18:05:16.5341061Z",
+            "endedUtc": "2026-05-28T18:05:18.8316958Z",
+            "entries": []
+        },
+        {
+            "sessionId": "ba0d8164e46d4fb6a147dcead5a4967a",
+            "startedUtc": "2026-05-28T18:17:22.8967850Z",
+            "endedUtc": "2026-05-28T18:17:25.3286866Z",
+            "entries": []
+        },
+        {
+            "sessionId": "5d5421a73ab14f3f94bd3f3557ce0ad0",
+            "startedUtc": "2026-05-28T18:20:03.0058196Z",
+            "endedUtc": "2026-05-28T18:20:06.7197966Z",
+            "entries": []
+        },
+        {
+            "sessionId": "66bec063e41f41c2bbeaec4a1fdb35dc",
+            "startedUtc": "2026-05-28T20:20:28.8309573Z",
+            "endedUtc": "2026-05-28T20:20:30.1848489Z",
+            "entries": []
+        },
+        {
+            "sessionId": "4ca78236ec334ae7b39c64d29d3a9f31",
+            "startedUtc": "2026-05-28T20:38:35.0659690Z",
+            "endedUtc": "2026-05-28T20:38:36.4262272Z",
+            "entries": []
+        },
+        {
+            "sessionId": "b07fe9f12b254cf78c77606ba957879f",
+            "startedUtc": "2026-05-28T21:20:59.6934028Z",
+            "endedUtc": "2026-05-28T21:21:15.8312540Z",
             "entries": [
                 {
-                    "prefabPath": "Assets/LeeJunMo/Prefab/Effect/AnimEffect/Boss1NormalAttack2Boom.prefab",
-                    "prefabName": "Boss1NormalAttack2Boom",
+                    "prefabPath": "Assets/HeoMinSeok/_Project/Prefabs/VFX/Element/ElectrocutedSparkParticle.prefab",
+                    "prefabName": "ElectrocutedSparkParticle",
                     "totalSpawns": 1,
-                    "coldSpawns": 0,
-                    "firstSeenSeconds": 20.93309211730957,
-                    "lastSeenSeconds": 20.933300018310548,
-                    "firstSceneName": "HeoMinSeok_Boss",
-                    "lastSceneName": "HeoMinSeok_Boss"
-                },
-                {
-                    "prefabPath": "Assets/LeeJunMo/Prefab/Effect/Particle/WitchNormal2AttackTileParticle.prefab",
-                    "prefabName": "WitchNormal2AttackTileParticle",
-                    "totalSpawns": 1,
-                    "coldSpawns": 0,
-                    "firstSeenSeconds": 20.93379783630371,
-                    "lastSeenSeconds": 20.933801651000978,
-                    "firstSceneName": "HeoMinSeok_Boss",
-                    "lastSceneName": "HeoMinSeok_Boss"
-                }
-            ]
-        },
-        {
-            "sessionId": "c4c28c068f8d4dbe8f5bacce3ee31e33",
-            "startedUtc": "2026-05-28T10:00:33.4434528Z",
-            "endedUtc": "2026-05-28T10:00:54.3688971Z",
-            "entries": [
-                {
-                    "prefabPath": "Assets/LeeJunMo/Prefab/Effect/AnimEffect/Boss1NormalAttack2Boom.prefab",
-                    "prefabName": "Boss1NormalAttack2Boom",
-                    "totalSpawns": 1,
-                    "coldSpawns": 0,
-                    "firstSeenSeconds": 20.907299041748048,
-                    "lastSeenSeconds": 20.90750503540039,
-                    "firstSceneName": "HeoMinSeok_Boss",
-                    "lastSceneName": "HeoMinSeok_Boss"
-                },
-                {
-                    "prefabPath": "Assets/LeeJunMo/Prefab/Effect/Particle/WitchNormal2AttackTileParticle.prefab",
-                    "prefabName": "WitchNormal2AttackTileParticle",
-                    "totalSpawns": 1,
-                    "coldSpawns": 0,
-                    "firstSeenSeconds": 20.90793228149414,
-                    "lastSeenSeconds": 20.907936096191408,
-                    "firstSceneName": "HeoMinSeok_Boss",
-                    "lastSceneName": "HeoMinSeok_Boss"
-                }
-            ]
-        },
-        {
-            "sessionId": "f3260795e2014e258d47ec289939f3de",
-            "startedUtc": "2026-05-28T10:10:05.5915669Z",
-            "endedUtc": "2026-05-28T10:10:07.8721941Z",
-            "entries": []
-        },
-        {
-            "sessionId": "7ccb8a33e97b452f8b450147743d5cba",
-            "startedUtc": "2026-05-28T10:11:26.8858439Z",
-            "endedUtc": "2026-05-28T10:11:28.9879317Z",
-            "entries": []
-        },
-        {
-            "sessionId": "e47e859ba0b44345a2d0313f59bfcbb8",
-            "startedUtc": "2026-05-28T10:57:07.0241870Z",
-            "endedUtc": "2026-05-28T10:57:08.9129708Z",
-            "entries": []
-        },
-        {
-            "sessionId": "8c18bc923f1f4e0c8421bae55f26a388",
-            "startedUtc": "2026-05-28T10:58:05.9378069Z",
-            "endedUtc": "2026-05-28T10:58:07.7789212Z",
-            "entries": []
-        },
-        {
-            "sessionId": "47edd2d799724348a52e38c9b9c687b5",
-            "startedUtc": "2026-05-28T11:01:19.4810683Z",
-            "endedUtc": "2026-05-28T11:01:22.4678676Z",
-            "entries": []
-        },
-        {
-            "sessionId": "3f734476a2cc456eb5171bf31714eb13",
-            "startedUtc": "2026-05-28T11:18:11.9125407Z",
-            "endedUtc": "2026-05-28T11:18:14.6727629Z",
-            "entries": []
-        },
-        {
-            "sessionId": "ff555c53caa449a0ba8db5321d86e465",
-            "startedUtc": "2026-05-28T11:22:00.6937419Z",
-            "endedUtc": "2026-05-28T11:22:42.7831880Z",
-            "entries": [
-                {
-                    "prefabPath": "Assets/Prefabs/VFX/PF_DeadSkeletonExplosionPurple.prefab",
-                    "prefabName": "PF_DeadSkeletonExplosionPurple",
-                    "totalSpawns": 2,
-                    "coldSpawns": 2,
-                    "firstSeenSeconds": 41.06498336791992,
-                    "lastSeenSeconds": 41.067169189453128,
-                    "firstSceneName": "HeoMinSeok_Boss",
-                    "lastSceneName": "HeoMinSeok_Boss"
-                },
-                {
-                    "prefabPath": "Assets/Prefabs/Enemies/Mobs/ShadowCorridor/ShadowServant/Fog.prefab",
-                    "prefabName": "Fog",
-                    "totalSpawns": 2,
-                    "coldSpawns": 0,
-                    "firstSeenSeconds": 41.03980255126953,
-                    "lastSeenSeconds": 41.0667724609375,
-                    "firstSceneName": "HeoMinSeok_Boss",
-                    "lastSceneName": "HeoMinSeok_Boss"
-                },
-                {
-                    "prefabPath": "Assets/LeeJunMo/Prefab/Effect/Particle/ExplosionParticle.prefab",
-                    "prefabName": "ExplosionParticle",
-                    "totalSpawns": 2,
-                    "coldSpawns": 0,
-                    "firstSeenSeconds": 41.08113479614258,
-                    "lastSeenSeconds": 41.08137512207031,
-                    "firstSceneName": "HeoMinSeok_Boss",
-                    "lastSceneName": "HeoMinSeok_Boss"
-                }
-            ]
-        },
-        {
-            "sessionId": "1cb851c2910249eaa38df750bb458438",
-            "startedUtc": "2026-05-28T11:23:30.7001018Z",
-            "endedUtc": "2026-05-28T11:24:22.1332041Z",
-            "entries": [
-                {
-                    "prefabPath": "Assets/LeeJunMo/Prefab/Effect/AnimEffect/Boss1NormalAttack2Boom.prefab",
-                    "prefabName": "Boss1NormalAttack2Boom",
-                    "totalSpawns": 1,
-                    "coldSpawns": 0,
-                    "firstSeenSeconds": 51.41220474243164,
-                    "lastSeenSeconds": 51.41240692138672,
-                    "firstSceneName": "HeoMinSeok_Boss",
-                    "lastSceneName": "HeoMinSeok_Boss"
-                },
-                {
-                    "prefabPath": "Assets/LeeJunMo/Prefab/Effect/Particle/WitchNormal2AttackTileParticle.prefab",
-                    "prefabName": "WitchNormal2AttackTileParticle",
-                    "totalSpawns": 1,
-                    "coldSpawns": 0,
-                    "firstSeenSeconds": 51.4129524230957,
-                    "lastSeenSeconds": 51.41295623779297,
-                    "firstSceneName": "HeoMinSeok_Boss",
-                    "lastSceneName": "HeoMinSeok_Boss"
-                }
-            ]
-        },
-        {
-            "sessionId": "9799fa28678c4782adf29d0e8cd99a5c",
-            "startedUtc": "2026-05-28T11:30:06.5516485Z",
-            "endedUtc": "2026-05-28T11:30:09.4849863Z",
-            "entries": []
-        },
-        {
-            "sessionId": "052b97212e724f758f6d933e013e995a",
-            "startedUtc": "2026-05-28T11:30:41.1511363Z",
-            "endedUtc": "2026-05-28T11:31:15.6096191Z",
-            "entries": [
-                {
-                    "prefabPath": "Assets/LeeJunMo/Prefab/Effect/AnimEffect/Boss1NormalAttack2Boom.prefab",
-                    "prefabName": "Boss1NormalAttack2Boom",
-                    "totalSpawns": 1,
-                    "coldSpawns": 0,
-                    "firstSeenSeconds": 34.43061065673828,
-                    "lastSeenSeconds": 34.430809020996097,
-                    "firstSceneName": "HeoMinSeok_Boss",
-                    "lastSceneName": "HeoMinSeok_Boss"
-                },
-                {
-                    "prefabPath": "Assets/LeeJunMo/Prefab/Effect/Particle/WitchNormal2AttackTileParticle.prefab",
-                    "prefabName": "WitchNormal2AttackTileParticle",
-                    "totalSpawns": 1,
-                    "coldSpawns": 0,
-                    "firstSeenSeconds": 34.43128967285156,
-                    "lastSeenSeconds": 34.43128967285156,
-                    "firstSceneName": "HeoMinSeok_Boss",
-                    "lastSceneName": "HeoMinSeok_Boss"
-                }
-            ]
-        },
-        {
-            "sessionId": "5eddc9779ba6415c8a0b06c5a070db03",
-            "startedUtc": "2026-05-28T11:35:04.8149397Z",
-            "endedUtc": "2026-05-28T11:35:27.6915413Z",
-            "entries": [
-                {
-                    "prefabPath": "Assets/LeeJunMo/Prefab/Effect/AnimEffect/Boss1NormalAttack2Boom.prefab",
-                    "prefabName": "Boss1NormalAttack2Boom",
-                    "totalSpawns": 1,
-                    "coldSpawns": 0,
-                    "firstSeenSeconds": 22.856212615966798,
-                    "lastSeenSeconds": 22.856491088867189,
-                    "firstSceneName": "HeoMinSeok_Boss",
-                    "lastSceneName": "HeoMinSeok_Boss"
-                },
-                {
-                    "prefabPath": "Assets/LeeJunMo/Prefab/Effect/Particle/WitchNormal2AttackTileParticle.prefab",
-                    "prefabName": "WitchNormal2AttackTileParticle",
-                    "totalSpawns": 1,
-                    "coldSpawns": 0,
-                    "firstSeenSeconds": 22.85712432861328,
-                    "lastSeenSeconds": 22.857128143310548,
-                    "firstSceneName": "HeoMinSeok_Boss",
-                    "lastSceneName": "HeoMinSeok_Boss"
+                    "coldSpawns": 1,
+                    "firstSeenSeconds": 16.1046199798584,
+                    "lastSeenSeconds": 16.104812622070314,
+                    "firstSceneName": "ProtoTypeHub",
+                    "lastSceneName": "ProtoTypeHub"
                 }
             ]
         }

@@ -32,16 +32,27 @@ public sealed class DemoCheatHotkeyController : MonoBehaviour
         service = new DemoCheatService(this);
     }
 
+    private void OnDisable()
+    {
+        service?.RestoreMapZoomImmediate();
+    }
+
     private void Update()
     {
         if (settings == null || !settings.EnableDemoCheats)
             return;
 
         if (IsSceneTransitionActive())
+        {
+            service.RestoreMapZoomImmediate();
             return;
+        }
 
         if (WasPressed(settings.CheatGuideKey))
             ShowResult(DemoCheatResult.Succeeded(service.BuildCheatGuide(settings)), settings.CheatGuideDuration);
+
+        if (WasPressed(settings.MapZoomToggleKey))
+            ShowResult(service.ToggleMapZoom(settings, this));
 
         if (WasPressed(settings.WarpToRunSpecialNpcKey))
             ShowResult(service.WarpPlayerToNextRunSpecialNpc(settings));

@@ -215,6 +215,7 @@ public sealed class GameOverPresentationController : MonoBehaviour
     private bool hasCapturedDefaultTimeTextActive;
     private string defaultReturnButtonLabel;
     private bool defaultTimeTextActive;
+    private GameFlowInputBlocker inputBlocker;
     private PlayerCinematicProtection acquiredProtection;
     private readonly List<SpriteRenderer> hiddenWorldPlayerRenderers = new List<SpriteRenderer>();
     private Vector2 returnPlayerAuthoredAnchorMin = new Vector2(0.5f, 0.5f);
@@ -294,6 +295,7 @@ public sealed class GameOverPresentationController : MonoBehaviour
     private void OnDisable()
     {
         SceneManager.sceneLoaded -= HandleSceneLoaded;
+        ReleaseInputBlocker();
         MouseCursorService.Instance?.ClearDomain(this);
     }
 
@@ -302,6 +304,7 @@ public sealed class GameOverPresentationController : MonoBehaviour
         RestoreHiddenWorldPlayerRenderers();
         RestoreDefaultReturnButtonLabel();
         RestoreDefaultTimeTextActive();
+        ReleaseInputBlocker();
         ReleasePlayerProtection();
         ReleaseTimerPause();
         MouseCursorService.Instance?.ClearDomain(this);
@@ -428,6 +431,8 @@ public sealed class GameOverPresentationController : MonoBehaviour
             UIManager.Instance.HideWorldPrompt();
         }
 
+        AcquireInputBlocker();
+
         if (RunTimeLimitSystem.Instance != null)
         {
             RunTimeLimitSystem.Instance.SetExternalPause(this, true);
@@ -459,6 +464,21 @@ public sealed class GameOverPresentationController : MonoBehaviour
 
         PlayerInteractor2D player = playerTransform.GetComponent<PlayerInteractor2D>();
         player?.SetInteractState(InteractState.None);
+    }
+
+    private void AcquireInputBlocker()
+    {
+        if (inputBlocker != null && inputBlocker.IsBlocking)
+            return;
+
+        inputBlocker = GameFlowInputBlocker.GetOrAdd(this);
+        inputBlocker?.Acquire();
+    }
+
+    private void ReleaseInputBlocker()
+    {
+        inputBlocker?.Release();
+        inputBlocker = null;
     }
 
     private static void CenterCameraOnPlayer(Transform playerTransform)
@@ -921,6 +941,7 @@ public sealed class GameOverPresentationController : MonoBehaviour
 
         hideOnNextSceneLoaded = false;
         RestoreHiddenWorldPlayerRenderers();
+        ReleaseInputBlocker();
         ReleasePlayerProtection();
         ReleaseTimerPause();
         MouseCursorService.Instance?.ClearDomain(this);
@@ -1157,7 +1178,7 @@ public sealed class GameOverPresentationController : MonoBehaviour
         ApplyTimeText(request);
 
         if (locationText != null)
-            locationText.text = $"장소  {request.LocationName}";
+            locationText.text = $"장소 : {request.LocationName}";
     }
 
     private void CaptureDefaultTimeTextActive()

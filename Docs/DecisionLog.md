@@ -2,10 +2,75 @@
 status: active
 authority: project-log
 category: decision-log
-last_reviewed: 2026-05-28
+last_reviewed: 2026-05-29
 ---
 
 # Decision Log
+
+## 2026-05-29 - ScenePortal Entrance Presentation Does Not Change Travel Semantics
+
+Decision:
+`ScenePortal` can play a short player pull-in presentation before calling `ScenePortalTravelService.TryTravel(...)`, but route resolution, run state mutation, transition context preparation, and player runtime capture remain owned by the existing portal travel service path.
+
+Reason:
+The requested effect is a local interaction presentation, not a new transition semantic. Reusing the compatibility travel entry point keeps hub, corridor, and boss reward portals on the same route/runtime-state path while allowing the player to visually move into the portal first.
+
+Implications:
+- `ScenePortal` releases `PlayerCinematicProtection` and `GameFlowInputBlocker` before `TryTravel(...)` so temporary cinematic/UI control tags are not captured into `PlayerRuntimeState`.
+- `TutorialScenePortal` remains unchanged for tutorial-only direct scene travel.
+- Portal center offsets are scene/prefab-facing tuning fields; they should be reviewed in Unity when a portal pivot is not the desired pull-in center.
+
+## 2026-05-29 - Flow-Owned Presentations Block ESC Pause
+
+Decision:
+Flow-owned presentations acquire `GameFlowInputBlocker` while they own camera framing, letterbox, player control locks, fullscreen UI, dialogue handoff, scene transition, or reward reveal timing. Short combat VFX, pattern visuals, hover/button/tooltip animations, and stable stack UI close behavior do not get this blocker.
+
+Reason:
+ESC pause should not interrupt authored flow timing, but blocking every class named `Presentation` would make ordinary combat feedback and already-open UI feel unresponsive. The existing blocker keeps the rule centralized in `UIManager` without adding a new manager or prefab/schema dependency.
+
+Implications:
+- New flow-owned presentations should wrap only the protected window and release from normal completion plus disable/destroy cleanup.
+- Stack UI close paths such as Pause, Settings, KeyBinding, Inventory, Chest, Reward, Upgrade, and Encyclopedia keep their normal ESC behavior when the game is in a stable UI state.
+- Flow-owned UI that must open during a block should use `TryPushOwnedUI` or `TryPushFlowOwnedUI`.
+
+## 2026-05-28 - NPC Customization Hub Edits NPCData Assets First
+
+Decision:
+NPC-related customization starts from one editor hub under `Tools/NPC/NPC Customization Hub`. V1 edits existing `NPCData` and selected `NPCDatabase` asset membership only, while scene/prefab usage and RunSpecial NPC assets are read-only validation surfaces.
+
+Reason:
+NPC dialogue, portrait, theme, affection, and Ink references are shared asset data and can be safely edited through `SerializedObject`, Undo, and `AssetDatabase.SaveAssets`. Scene components, prefab wiring, and RunSpecial interaction data have higher authoring/reference risk, so V1 should expose them for review before allowing mutation.
+
+Implications:
+- Do not use the hub as an automatic scene/prefab rewiring tool in V1.
+- New NPCData creation remains out of scope until the existing asset review and template Ink flow are stable.
+- RunSpecial NPCs stay visibly separate from Ink portrait dialogue even when they appear in the same NPC customization window.
+
+## 2026-05-28 - Dialogue Rhythm Is Timing-First And SpeechBubble Opt-In
+
+Decision:
+Dialogue text rhythm uses per-character TMP visibility, punctuation pauses, line-level `anim` tags, inline `[pause=seconds]` markers, and scoped text-motion tags such as `[shake]`, `[tremble]`, `[punch]`, `[wave]`, and `[float]`. SpeechBubble reveal support exists only through explicit animated APIs; normal `Speak(...)` callers keep the existing DOTween behavior.
+
+Reason:
+Dialogue delivery needs pacing, pauses, and restrained emphasis more than global motion effects. Keeping SpeechBubble animation opt-in avoids changing normal boss barks, run-special NPC lines, and other authored bubble timings.
+
+Implications:
+- Ink dialogue can use `# anim: normal|slow|angry|whisper|cold`, `[pause=0.45]`, and scoped motion tags without changing the dialogue controller call site for ordinary lines.
+- `DialogueTagHandler` treats `anim` tags as controller-owned presentation metadata, not unknown gameplay tags.
+- Terminal boss death can explicitly route its pre-ending SpeechBubble through the new animated reveal path while ordinary boss SpeechBubble calls remain unchanged.
+
+## 2026-05-28 - Animated Ink Variants Are Additive Review Copies
+
+Decision:
+Existing Ink files remain unchanged when adding dialogue rhythm passes. Animated versions live as clearly named additive copies under `Assets/LeeJunMo/Datas/Inks/AnimatedVariants/` with matching compiled JSON files.
+
+Reason:
+Several current Ink assets have provisional names such as `New Ink` and are already referenced by scenes/tools. Additive copies make the new timing and motion pass reviewable without breaking existing serialized TextAsset references.
+
+Implications:
+- Wire animated variants intentionally through existing Editor authoring tools or scene references after Unity import review.
+- Keep original `.ink/json` assets available as rollback/reference content until the owning scene or tool is explicitly migrated.
+- Use only supported `DialogueAnimType` values in variants unless the runtime enum is expanded first.
 
 ## 2026-05-28 - Normal Boss Routes Are The Default Reward Path
 
@@ -33,6 +98,7 @@ Implications:
 - The target-scene apply tool enables `isolateGlobalVisionMasksDuringReveal` for portal reveal components.
 - The reveal component defaults this option to enabled, but only applies it when the reveal actually uses a SpriteMask or masked renderers.
 - Global vision mask ranges are restored when reveal completes, is stopped, or the reveal component is disabled.
+- Player-following masks marked by `PlayerVisionMaskFollower` are excluded from this isolation so Shadow boss reward reveal does not make the player Light/vision mask appear disabled.
 - `HeoMinSeok_Boss` needs Play Mode review because it combines the reward portal reveal with the boss gimmick `GlobalVisionMaskRoot`.
 
 ## 2026-05-28 - Global Ending Outro View Owns Runtime Closed Startup

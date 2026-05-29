@@ -95,8 +95,8 @@ MonoBehaviour:
       recoveryDuration: 0.16
       nextAttackDelay: 0
       forwardOffset: 0.9
-      sideOffset: 0.2
-      sideSign: -1
+      sideOffset: 0.6
+      sideSign: 1
       lungeDistance: 0.45
       lungeDuration: 0.1
     - hitbox:

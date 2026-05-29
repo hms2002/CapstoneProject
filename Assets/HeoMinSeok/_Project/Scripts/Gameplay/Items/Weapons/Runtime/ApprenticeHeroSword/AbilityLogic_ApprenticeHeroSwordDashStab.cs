@@ -41,6 +41,17 @@ public sealed class AbilityLogic_ApprenticeHeroSwordDashStab : AbilityLogic
 
         try
         {
+            float hitEventWaitStart = Time.time;
+            yield return WaitForHitEvent(system, spec, data);
+            float hitEventWaitElapsed = Mathf.Max(0f, Time.time - hitEventWaitStart);
+
+            if (IsAbilityCancelled(spec))
+            {
+                motion.CancelMotion();
+                DestroyTrackedHitboxes(spec);
+                yield break;
+            }
+
             CombatHitPayload payload = ApprenticeHeroSwordHitUtility.BuildPayload(system, spec, data.Damage, 1f);
             if (payload != null)
             {
@@ -59,7 +70,8 @@ public sealed class AbilityLogic_ApprenticeHeroSwordDashStab : AbilityLogic
                 AbilityAudioRouter.PlayOneShotAtPosition(data.StabSound, system, spec, center, data);
             }
 
-            float activeDuration = Mathf.Max(data.DashDuration, data.Hitbox != null ? data.Hitbox.ActiveTime : 0f);
+            float remainingDashDuration = Mathf.Max(0f, data.DashDuration - hitEventWaitElapsed);
+            float activeDuration = Mathf.Max(remainingDashDuration, data.Hitbox != null ? data.Hitbox.ActiveTime : 0f);
             float elapsed = 0f;
             while (elapsed < activeDuration)
             {
@@ -134,5 +146,26 @@ public sealed class AbilityLogic_ApprenticeHeroSwordDashStab : AbilityLogic
             return;
 
         system.TryPlayAnimationTriggerHash(Animator.StringToHash(animationTrigger), definition);
+    }
+
+    private static IEnumerator WaitForHitEvent(
+        AbilitySystem system,
+        AbilitySpec spec,
+        ApprenticeHeroSwordDashStabData data)
+    {
+        if (system == null || spec == null || data == null || data.HitEventTag == null)
+            yield break;
+
+        float timeout = data.HitEventTimeout > 0f
+            ? data.HitEventTimeout
+            : data.DashDuration;
+
+        yield return AbilityTasks.WaitGameplayEvent(
+            system,
+            spec,
+            data.HitEventTag,
+            onReceived: null,
+            timeout: timeout,
+            predicate: eventData => eventData.Spec == spec);
     }
 }
