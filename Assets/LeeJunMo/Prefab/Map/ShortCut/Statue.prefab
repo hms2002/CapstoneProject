@@ -390,7 +390,7 @@ SpriteRenderer:
   m_SortingLayer: 2
   m_SortingOrder: 2
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 2733973228906417710, guid: 54d49fcb5010f7c4fba7b7db5af57ab4, type: 3}
+  m_Sprite: {fileID: -7124369960627298605, guid: 18d964c917812d04982e285e007fac25, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -584,7 +584,7 @@ MonoBehaviour:
   requirementAmountText: {fileID: 7687705846374167803}
   interactPromptRoot: {fileID: 5252018772044892120}
   activatedRoot: {fileID: 0}
-  magicStoneIcon: {fileID: 2733973228906417710, guid: 54d49fcb5010f7c4fba7b7db5af57ab4, type: 3}
+  magicStoneIcon: {fileID: -7124369960627298605, guid: 18d964c917812d04982e285e007fac25, type: 3}
   hpIcon: {fileID: 3411045427079179176, guid: e75f469ea29530246a4a0543396316af, type: 3}
   highlightRenderer: {fileID: 0}
   highlightTarget: {fileID: 0}
