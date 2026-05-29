@@ -230,9 +230,14 @@ MonoBehaviour:
   crossWaterPillarWallStopPadding: 0.05
   crossWaterPillarBlastInterval: 1.2
   crossWaterPillarBlastDiameter: 1.25
-  crossWaterPillarBlastViewSeconds: 0.2
+  crossWaterPillarBlastViewSeconds: 0.39
   crossWaterPillarDamage: 1.5
   crossWaterPillarDamageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
+  crossWaterPillarBlockedSpawnLayers:
+    serializedVersion: 2
+    m_Bits: 64
+  crossWaterPillarHoleCheckRadiusScale: 0.45
+  logSkippedCrossWaterPillarOnHole: 0
   waterCannonWarningStyle: {fileID: 11400000, guid: b15f18602ec87284d80cbd57720425f1, type: 2}
   waterCannonBeamStyle: {fileID: 0}
   waterCannonBeamVisualPrefab: {fileID: 1000000, guid: 3ec7b4634d524e0d84ec605c177e6b86, type: 3}
