@@ -4,7 +4,7 @@ using UnityGAS;
 public class MonsterElementGaugeViewInstaller : MonoBehaviour
 {
     // 이 클래스의 책임:
-    // 몬스터 생성 시 ElementGaugeSystem에 대응하는 월드 게이지 View를 생성하고 대상에 바인딩한다.
+    // 몬스터 생성 시 ElementGaugeSystem에 대응하는 월드 게이지 View를 생성하고 대상 수명에 맞춰 정리한다.
 
     [SerializeField] private MonsterElementGaugeView viewPrefab;
     [SerializeField] private Transform uiParentOverride;
@@ -18,6 +18,11 @@ public class MonsterElementGaugeViewInstaller : MonoBehaviour
             return;
 
         Install(gameObject);
+    }
+
+    private void OnDestroy()
+    {
+        Uninstall();
     }
 
     public MonsterElementGaugeView Install(GameObject monster)
@@ -48,5 +53,14 @@ public class MonsterElementGaugeViewInstaller : MonoBehaviour
         view.Bind(monster.transform, gaugeSystem);
         installedView = view;
         return installedView;
+    }
+
+    public void Uninstall()
+    {
+        if (installedView == null)
+            return;
+
+        Destroy(installedView.gameObject);
+        installedView = null;
     }
 }

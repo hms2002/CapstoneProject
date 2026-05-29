@@ -32,6 +32,7 @@ GameObject:
   - component: {fileID: 4160568613653900950}
   - component: {fileID: 7700200000000012}
   - component: {fileID: 7700100000000012}
+  - component: {fileID: 1831426399991419180}
   m_Layer: 31
   m_Name: SlimeQueenP2Long
   m_TagString: Enemy
@@ -235,22 +236,26 @@ MonoBehaviour:
   waterCannonBeamStyle: {fileID: 0}
   waterCannonBeamVisualPrefab: {fileID: 1000000, guid: 3ec7b4634d524e0d84ec605c177e6b86, type: 3}
   waterCannonMuzzleSocket: {fileID: 6057653836644520300}
-  waterCannonLaserVfxPrefab: {fileID: 0}
-  waterCannonLaserVfxResourcePath: DemonKing/DemonKingEgoLaserVfx
+  waterCannonCenterSocket: {fileID: 6057653836644520300}
+  waterCannonStartForwardOffset: 0.26
+  waterCannonLaserVfxPrefab: {fileID: 7799575014260888715, guid: 2b4807372e2866b4b9e2a5c30bc8c2e9, type: 3}
+  waterCannonLaserVfxResourcePath: DemonKing/WaterZetLaserVfx
   waterCannonActiveSeconds: 2
   waterCannonShotWarningSeconds: 0.25
   waterCannonShotActiveSeconds: 0.12
   waterCannonShotIntervalSeconds: 0.1
   waterCannonMaxTurnAnglePerShot: 10
   waterCannonBeamGrowSeconds: 0.18
-  waterCannonVisualWidth: 0.33
+  waterCannonVisualWidthMultiplier: 4.125
   waterCannonLaserBodyLengthMultiplier: 1
   waterCannonHitWidth: 0.08
-  waterCannonWallLayers:
+  waterCannonFixedDistance: 20
+  waterCannonWallHitEffectPrefab: {fileID: 0}
+  waterCannonWallHitEffectResourcePath: DemonKing/Effect_WaterjetHitparticle
+  waterCannonHitEffectWallLayers:
     serializedVersion: 2
     m_Bits: 1073741824
-  waterCannonFallbackDistance: 40
-  waterCannonWallStopPadding: 0.05
+  waterCannonHitEffectSurfaceOffset: 0.04
   waterCannonDamage: 1
   waterCannonDamageIntervalSeconds: 1
   waterCannonDamageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
@@ -680,6 +685,23 @@ MonoBehaviour:
     lastBuildUpTime: 0
     sustainVfxInstance: {fileID: 0}
     uiVisible: 1
+--- !u!114 &1831426399991419180
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1000000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b8f30f33e704d66ad23cc5fe2a27a0c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UnityGAS.FacingOffsetMirror2D
+  facingSprite: {fileID: 1002000}
+  mirroredTargets:
+  - {fileID: 6057653836644520300}
+  captureInitialPositionsOnAwake: 1
+  invertWhenFlipX: 1
 --- !u!1 &1024000
 GameObject:
   m_ObjectHideFlags: 0
@@ -762,7 +784,7 @@ SpriteRenderer:
   m_SortingLayer: 5
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 2678175620654883518, guid: 150ee18194255bc4b9091c89ba99f707, type: 3}
+  m_Sprite: {fileID: 2516001268547769420, guid: 708888a4c398edb42af9c84d6908162b, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -1081,7 +1103,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6057653836644520300}
   m_Layer: 31
-  m_Name: muzzle
+  m_Name: cannonCenter
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1096,7 +1118,7 @@ Transform:
   m_GameObject: {fileID: 5190044495122245195}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.938, z: 0}
+  m_LocalPosition: {x: -0.116, y: 0.892, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

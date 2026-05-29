@@ -24064,6 +24064,8 @@ MonoBehaviour:
   entryViewPrefab: {fileID: 156184429433629532, guid: 1a91e9b241db94942b15c25c2403efb6, type: 3}
   fallbackAnchoredPosition: {x: -220, y: -110}
   fallbackContainerSize: {x: 360, y: 56}
+  fallbackEntrySpacing: 8
+  fallbackChildAlignment: 2
 --- !u!114 &8559201446064768864
 MonoBehaviour:
   m_ObjectHideFlags: 0

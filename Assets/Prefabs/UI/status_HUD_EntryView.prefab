@@ -390,7 +390,7 @@ MonoBehaviour:
   highlightedBackgroundColor: {r: 0.33, g: 0.21, b: 0.08, a: 0.92}
   iconColor: {r: 1, g: 1, b: 1, a: 1}
   highlightedIconColor: {r: 1, g: 0.95, b: 0.72, a: 1}
-  durationFillColor: {r: 0, g: 0, b: 0, a: 0.27058825}
+  durationFillColor: {r: 0, g: 0, b: 0, a: 0.62352943}
   outlineColor: {r: 0.02, g: 0.04, b: 0.08, a: 0.6}
   outlineDistance: {x: 1, y: -1}
   iconOffsetMin: {x: 8, y: 8}
