@@ -8,6 +8,17 @@ public class MonsterElementGaugeViewInstaller : MonoBehaviour
 
     [SerializeField] private MonsterElementGaugeView viewPrefab;
     [SerializeField] private Transform uiParentOverride;
+    [SerializeField] private bool installOnStart = true;
+
+    private MonsterElementGaugeView installedView;
+
+    private void Start()
+    {
+        if (!installOnStart)
+            return;
+
+        Install(gameObject);
+    }
 
     public MonsterElementGaugeView Install(GameObject monster)
     {
@@ -21,9 +32,21 @@ public class MonsterElementGaugeViewInstaller : MonoBehaviour
         if (gaugeSystem == null)
             return null;
 
+        if (installedView != null)
+            return installedView;
+
+        MonsterElementGaugeView existingView = monster.GetComponentInChildren<MonsterElementGaugeView>(true);
+        if (existingView != null)
+        {
+            installedView = existingView;
+            installedView.Bind(monster.transform, gaugeSystem);
+            return installedView;
+        }
+
         Transform parent = uiParentOverride != null ? uiParentOverride : monster.transform;
         var view = Instantiate(viewPrefab, parent);
         view.Bind(monster.transform, gaugeSystem);
-        return view;
+        installedView = view;
+        return installedView;
     }
 }

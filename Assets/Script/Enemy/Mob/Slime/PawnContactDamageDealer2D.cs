@@ -101,20 +101,7 @@ public sealed class PawnContactDamageDealer2D : MonoBehaviour
         if (other == null)
             return false;
 
-        Transform current = other.transform;
-        while (current != null)
-        {
-            if (current.CompareTag("Player"))
-            {
-                playerObject = current.gameObject;
-                return true;
-            }
-
-            current = current.parent;
-        }
-
-        CombatHurtbox2D hurtbox = other.GetComponent<CombatHurtbox2D>();
-        GameObject resolved = hurtbox != null ? hurtbox.ResolveTargetRoot() : null;
+        GameObject resolved = CombatTargetResolver2D.ResolveDamageTarget(other);
         if (resolved == null || !resolved.CompareTag("Player"))
             return false;
 

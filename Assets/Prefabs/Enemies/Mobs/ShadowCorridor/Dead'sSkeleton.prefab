@@ -576,6 +576,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   viewPrefab: {fileID: 4173988088759112643, guid: 08da978b416319e47889bb7d3e9e0343, type: 3}
   uiParentOverride: {fileID: 2826825829709561300}
+  installOnStart: 1
 --- !u!114 &8449557556642649421
 MonoBehaviour:
   m_ObjectHideFlags: 0
