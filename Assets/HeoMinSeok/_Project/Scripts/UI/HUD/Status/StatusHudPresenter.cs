@@ -17,6 +17,8 @@ public sealed class StatusHudPresenter : MonoBehaviour
     [SerializeField] private StatusHudEntryView entryViewPrefab;
     [SerializeField] private Vector2 fallbackAnchoredPosition = new(-220f, -110f);
     [SerializeField] private Vector2 fallbackContainerSize = new(360f, 56f);
+    [SerializeField, Min(0f)] private float fallbackEntrySpacing = 8f;
+    [SerializeField] private TextAnchor fallbackChildAlignment = TextAnchor.UpperRight;
 
     private readonly List<StatusHudEntry> entries = new();
     private readonly List<StatusHudEntryView> entryViews = new();
@@ -114,12 +116,12 @@ public sealed class StatusHudPresenter : MonoBehaviour
             container.sizeDelta = fallbackContainerSize;
 
         HorizontalLayoutGroup layout = gameObject.GetComponent<HorizontalLayoutGroup>() ?? gameObject.AddComponent<HorizontalLayoutGroup>();
-        layout.spacing = 8f;
+        layout.spacing = fallbackEntrySpacing;
         layout.childControlWidth = false;
         layout.childControlHeight = false;
         layout.childForceExpandWidth = false;
         layout.childForceExpandHeight = false;
-        layout.childAlignment = TextAnchor.UpperRight;
+        layout.childAlignment = fallbackChildAlignment;
 
         ContentSizeFitter fitter = gameObject.GetComponent<ContentSizeFitter>() ?? gameObject.AddComponent<ContentSizeFitter>();
         fitter.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;

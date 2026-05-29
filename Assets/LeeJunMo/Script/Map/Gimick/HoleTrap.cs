@@ -63,7 +63,6 @@ public class HoleTrap : MonoBehaviour
 
         if (!PitFallTarget.TryCreate(collision, out PitFallTarget target))
         {
-            LogDebug($"ignored collider: no pitfall target. collider={GetColliderName(collision)}");
             return false;
         }
 
@@ -179,8 +178,4 @@ public class HoleTrap : MonoBehaviour
         Debug.Log($"[HoleTrap] {name}: {message}", this);
     }
 
-    private static string GetColliderName(Collider2D collider)
-    {
-        return collider != null ? collider.name : "<null>";
-    }
 }

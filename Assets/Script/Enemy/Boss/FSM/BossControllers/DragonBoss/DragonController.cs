@@ -30,7 +30,7 @@ public sealed class DragonController : BossControllerBase
     [SerializeField, Min(0)] private int fireBreathMinimumPuddlesToUse = 4;
     [SerializeField, Min(0.01f)] private float fireBreathMinimumPuddleWeightMultiplier = 1f;
     [SerializeField, Min(1)] private int fireBreathPuddlesForMaxWeight = 5;
-    [SerializeField, Min(0.01f)] private float fireBreathMaxPuddleWeightMultiplier = 5f;
+    [SerializeField, Min(0.01f)] private float fireBreathMaxPuddleWeightMultiplier = 10f;
 
     private DragonRuntimeData runtimeData;
     private int faceTargetLockCount;
