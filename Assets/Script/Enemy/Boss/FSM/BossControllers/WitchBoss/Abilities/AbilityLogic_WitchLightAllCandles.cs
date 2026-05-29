@@ -33,6 +33,8 @@ public class AbilityLogic_WitchLightAllCandles : AbilityLogic
     [Header("Charge Presentation")]
     [SerializeField] private SoundRef chargeLoopSound;
     [SerializeField] [Min(0f)] private float chargeLoopFadeOutSeconds = 0.1f;
+    [SerializeField] private bool chargeLoopPitchRampEnabled = true;
+    [SerializeField] private AnimationCurve chargeLoopPitchCurve = AnimationCurve.EaseInOut(0f, 1f, 1f, 1.35f);
     [SerializeField] private WorldPresentationHook chargePulsePresentation;
     [SerializeField] private WorldPresentationHook orbLaunchPresentation;
     [HideInInspector, FormerlySerializedAs("orbLaunchSound")]
@@ -85,9 +87,21 @@ public class AbilityLogic_WitchLightAllCandles : AbilityLogic
     public Vector3 ChargeOrbImpactLocalOffset => chargeOrbImpactLocalOffset;
     public SoundRef ChargeLoopSound => chargeLoopSound;
     public float ChargeLoopFadeOutSeconds => Mathf.Max(0f, chargeLoopFadeOutSeconds);
+    public bool ChargeLoopPitchRampEnabled => chargeLoopPitchRampEnabled;
     public WorldPresentationHook ChargePulsePresentation => chargePulsePresentation;
     public WorldPresentationHook OrbLaunchPresentation => orbLaunchPresentation;
     public WorldPresentationHook FailureImpactPresentation => failureImpactPresentation;
+
+    /// <summary>차지 진행도에 대응하는 루프 사운드 pitch를 계산합니다.</summary>
+    public float EvaluateChargeLoopPitch(float normalizedProgress)
+    {
+        if (!chargeLoopPitchRampEnabled)
+            return 1f;
+
+        float t = Mathf.Clamp01(normalizedProgress);
+        float pitch = chargeLoopPitchCurve != null ? chargeLoopPitchCurve.Evaluate(t) : 1f;
+        return Mathf.Clamp(pitch, 0.05f, 3f);
+    }
 
     private void OnValidate()
     {

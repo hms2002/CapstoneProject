@@ -9,6 +9,9 @@ namespace UnityGAS.Sample
     [CreateAssetMenu(fileName = "AL_Witch_ExtinguishCandle", menuName = "GAS/Ability Logic/Witch Boss/AL_Witch_ExtinguishCandle")]
     public class AbilityLogic_WitchExtinguishCandle : AbilityLogic
     {
+        // 이 클래스의 책임:
+        // 마녀 보스의 촛불 끄기 패턴 설정과 공격 실행 시점 presentation 데이터를 제공한다.
+
         [Header("Explosion Presentation")]
         [SerializeField] private AttackTelegraphStyle warningTelegraphStyle;
         [SerializeField] private GameObject explosionVisualPrefab;

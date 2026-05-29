@@ -6,7 +6,6 @@ using UnityGAS;
 public sealed class AbilityLogic_FloweringBloom : AbilityLogic
 {
     private bool timeScalePaused;
-    private float previousTimeScale = 1f;
 
     public override IEnumerator Activate(AbilitySystem system, AbilitySpec spec, GameObject initialTarget)
     {
@@ -108,8 +107,7 @@ public sealed class AbilityLogic_FloweringBloom : AbilityLogic
         if (timeScalePaused)
             return;
 
-        previousTimeScale = Time.timeScale;
-        Time.timeScale = 0f;
+        TimeScalePauseService.Acquire(this);
         timeScalePaused = true;
     }
 
@@ -118,7 +116,7 @@ public sealed class AbilityLogic_FloweringBloom : AbilityLogic
         if (!timeScalePaused)
             return;
 
-        Time.timeScale = previousTimeScale;
+        TimeScalePauseService.Release(this);
         timeScalePaused = false;
     }
 }

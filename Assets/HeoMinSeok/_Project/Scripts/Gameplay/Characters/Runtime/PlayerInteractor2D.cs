@@ -7,7 +7,6 @@ using UnityGAS;
 /// - 플레이어의 상호작용 입력을 처리하고 현재 상호작용 상태 및 말풍선 출력을 관리한다.
 /// </summary>
 [DisallowMultipleComponent]
-[RequireComponent(typeof(Collider2D))]
 [RequireComponent(typeof(PlayerInteractableTracker2D))]
 [RequireComponent(typeof(PlayerInteractionTargetResolver2D))]
 [RequireComponent(typeof(PlayerInteractionPromptPresenter))]
@@ -31,6 +30,7 @@ public class PlayerInteractor2D : MonoBehaviour, IPlayerInteractor
     [SerializeField] private GameplayTag interactBlockedTag;
 
     [Header("Interaction Components")]
+    [SerializeField] private Collider2D bodyCollider;
     [SerializeField] private PlayerInteractableTracker2D interactableTracker;
     [SerializeField] private PlayerInteractionSensor2D interactionSensor;
     [SerializeField] private PlayerInteractionTargetResolver2D targetResolver;
@@ -128,7 +128,7 @@ public class PlayerInteractor2D : MonoBehaviour, IPlayerInteractor
         if (interactableTracker == null)
             interactableTracker = gameObject.AddComponent<PlayerInteractableTracker2D>();
 
-        Collider2D bodyCollider = GetComponent<Collider2D>();
+        bodyCollider = ResolveBodyCollider();
         if (bodyCollider != null)
             bodyCollider.isTrigger = false;
 
@@ -148,6 +148,31 @@ public class PlayerInteractor2D : MonoBehaviour, IPlayerInteractor
             speechController = GetComponent<PlayerSpeechController>();
         if (speechController == null)
             speechController = gameObject.AddComponent<PlayerSpeechController>();
+    }
+
+    private Collider2D ResolveBodyCollider()
+    {
+        if (bodyCollider != null)
+            return bodyCollider;
+
+        Collider2D rootCollider = GetComponent<Collider2D>();
+        if (rootCollider != null && !rootCollider.isTrigger)
+            return rootCollider;
+
+        Collider2D[] colliders = GetComponentsInChildren<Collider2D>(includeInactive: true);
+        for (int i = 0; i < colliders.Length; i++)
+        {
+            Collider2D candidate = colliders[i];
+            if (candidate == null || candidate.isTrigger)
+                continue;
+
+            if (candidate.GetComponent<PlayerInteractionSensor2D>() != null)
+                continue;
+
+            return candidate;
+        }
+
+        return rootCollider;
     }
 
     private void MigrateLegacySerializedReferences()

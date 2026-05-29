@@ -125,11 +125,11 @@ public class ShadowServantAttackRunner : MonoBehaviour, IMobPatternRunner, IMobP
         if (telegraphService == null)
             return;
 
-        AttackTelegraphSpec spec = AttackTelegraphSpec.CreateCircle(
+        AttackTelegraphSpec spec = AttackTelegraphSpecUtility.WithThinWarningOutline(AttackTelegraphSpec.CreateCircle(
             context.HitPoint,
             context.WarningDiameter,
             duration,
-            warningStyle);
+            warningStyle));
 
         telegraphService.Show(spec);
     }

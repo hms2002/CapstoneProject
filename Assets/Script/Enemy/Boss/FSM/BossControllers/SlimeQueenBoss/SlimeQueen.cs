@@ -10,6 +10,10 @@ public sealed class SlimeQueen : SlimeQueenBossBase, ISlimeQueenBodyInflateHost,
 {
     private const float PhaseTwoSplitBlockedSkin = 0.08f;
     private const int PhaseTwoSplitDirectionAttempts = 16;
+    private const int PhaseTwoSplitSafeLandingResolveSteps = 8;
+    private const int PhaseTwoSplitSafeLandingRadialSteps = 4;
+    private const int PhaseTwoSplitSafeLandingAngleSteps = 16;
+    private const float PhaseTwoSplitSafeLandingMinRadiusScale = 0.35f;
 
     private static readonly int IsJumpingHash = Animator.StringToHash("isJumping");
     private static readonly int IsShoutingHash = Animator.StringToHash("isShouting");
@@ -156,9 +160,6 @@ public sealed class SlimeQueen : SlimeQueenBossBase, ISlimeQueenBodyInflateHost,
     [Tooltip("분열 착지점 계산에 실패했을 때 사용하는 2페이즈 원거리 퀸 fallback 오프셋입니다.")]
     [SerializeField] private Vector2 phase2LongSpawnOffset = new Vector2(1.5f, 0f);
 
-    [Tooltip("분열 연출의 시작점입니다. 비워두면 패턴 2 랜덤 이동 바운더리 중앙을 사용하고, 그것도 없으면 사망 위치를 사용합니다.")]
-    [SerializeField] private Transform phase2SplitOrigin;
-
     [Tooltip("분열 원점에서 각 2페이즈 퀸이 튀어나갈 거리입니다.")]
     [SerializeField, Min(0f)] private float phase2SplitDistance = 1.45f;
 
@@ -253,11 +254,13 @@ public sealed class SlimeQueen : SlimeQueenBossBase, ISlimeQueenBodyInflateHost,
 
     public void BeginBodyInflateImpactAnimation()
     {
+        BeginBodyInflateVisualScale();
         SetAnimatorBool(IsGiantizationHash, true);
     }
 
     public void EndBodyInflateImpactAnimation()
     {
+        EndBodyInflateVisualScale();
         SetAnimatorBool(IsGiantizationHash, false);
     }
 
@@ -309,6 +312,7 @@ public sealed class SlimeQueen : SlimeQueenBossBase, ISlimeQueenBodyInflateHost,
     protected override void ResetPatternAnimatorStateForInterrupt()
     {
         StopCallSlimeSpeechAnimation();
+        EndBodyInflateVisualScale(resetImmediately: true);
         SetAnimatorBoolIfExists(IsJumpingHash, false);
         SetAnimatorBoolIfExists(IsShoutingHash, false);
         ResetAnimatorTriggerIfExists(ReadyTriggerHash);
@@ -764,20 +768,9 @@ public sealed class SlimeQueen : SlimeQueenBossBase, ISlimeQueenBodyInflateHost,
         return spawnedQueen;
     }
 
-    /// <summary>분열 연출 원점을 씬 기준 안전 중앙 위치로 결정합니다.</summary>
+    /// <summary>분열 연출 원점을 1페이즈 보스 root 위치로 결정합니다.</summary>
     private Vector3 ResolvePhaseTwoSplitOrigin()
     {
-        if (phase2SplitOrigin != null)
-        {
-            Vector3 authoredOrigin = phase2SplitOrigin.position;
-            authoredOrigin.z = transform.position.z;
-            return authoredOrigin;
-        }
-
-        SlimeQueenRandomMoveBounds bounds = ResolveRandomMoveBounds();
-        if (bounds != null && bounds.TryGetCenter(transform.position.z, out Vector3 boundsCenter))
-            return boundsCenter;
-
         return transform.position;
     }
 
@@ -832,11 +825,14 @@ public sealed class SlimeQueen : SlimeQueenBossBase, ISlimeQueenBodyInflateHost,
         ResolveLegacyPhaseTwoSplitOffsets(splitOrigin, out shortLandingPosition, out longLandingPosition);
     }
 
-    /// <summary>기존 serialized 오프셋을 최후 fallback으로 사용합니다.</summary>
+    /// <summary>기존 serialized 오프셋을 최후 fallback 후보로 사용하되 착지 안전 검사를 통과시킵니다.</summary>
     private void ResolveLegacyPhaseTwoSplitOffsets(Vector3 splitOrigin, out Vector3 shortLandingPosition, out Vector3 longLandingPosition)
     {
-        shortLandingPosition = ClampPhaseTwoSplitPointToBounds(splitOrigin + new Vector3(phase2ShortSpawnOffset.x, phase2ShortSpawnOffset.y, 0f));
-        longLandingPosition = ClampPhaseTwoSplitPointToBounds(splitOrigin + new Vector3(phase2LongSpawnOffset.x, phase2LongSpawnOffset.y, 0f));
+        LayerMask blockedLayers = ResolvePhaseTwoSplitBlockedLayers();
+        Vector3 shortCandidate = ClampPhaseTwoSplitPointToBounds(splitOrigin + new Vector3(phase2ShortSpawnOffset.x, phase2ShortSpawnOffset.y, 0f));
+        Vector3 longCandidate = ClampPhaseTwoSplitPointToBounds(splitOrigin + new Vector3(phase2LongSpawnOffset.x, phase2LongSpawnOffset.y, 0f));
+        shortLandingPosition = ResolveSafePhaseTwoSplitLanding(splitOrigin, shortCandidate, blockedLayers);
+        longLandingPosition = ResolveSafePhaseTwoSplitLanding(splitOrigin, longCandidate, blockedLayers);
     }
 
     /// <summary>분열 방향을 랜덤 각도로 생성합니다.</summary>
@@ -869,22 +865,69 @@ public sealed class SlimeQueen : SlimeQueenBossBase, ISlimeQueenBodyInflateHost,
         return ResolveSafePhaseTwoSplitLanding(splitOrigin, candidate, blockedLayers);
     }
 
-    /// <summary>후보 착지점이 구덩이/배수구/벽과 겹치면 분열 원점 쪽으로 되돌리며 안전 좌표를 찾습니다.</summary>
+    /// <summary>후보 착지점이 구덩이/배수구/벽과 겹치면 되돌림과 주변 탐색으로 안전 좌표를 찾습니다.</summary>
     private Vector3 ResolveSafePhaseTwoSplitLanding(Vector3 splitOrigin, Vector3 candidate, LayerMask blockedLayers)
     {
         if (IsPhaseTwoSplitLandingSafe(candidate, blockedLayers))
             return candidate;
 
-        const int resolveSteps = 8;
-        for (int i = 1; i <= resolveSteps; i++)
+        for (int i = 1; i <= PhaseTwoSplitSafeLandingResolveSteps; i++)
         {
-            float t = 1f - (float)i / resolveSteps;
+            float t = 1f - (float)i / PhaseTwoSplitSafeLandingResolveSteps;
             Vector3 fallback = Vector3.Lerp(splitOrigin, candidate, t);
             if (IsPhaseTwoSplitLandingSafe(fallback, blockedLayers))
                 return fallback;
         }
 
-        return splitOrigin;
+        if (TryFindNearbySafePhaseTwoSplitLanding(splitOrigin, candidate, blockedLayers, out Vector3 nearbySafeLanding))
+            return nearbySafeLanding;
+
+        Vector3 clampedOrigin = ClampPhaseTwoSplitPointToBounds(splitOrigin);
+        return IsPhaseTwoSplitLandingSafe(clampedOrigin, blockedLayers) ? clampedOrigin : splitOrigin;
+    }
+
+    /// <summary>분열 원점 주변을 원형으로 훑어 기존 후보와 가까운 안전 착지점을 찾습니다.</summary>
+    private bool TryFindNearbySafePhaseTwoSplitLanding(Vector3 splitOrigin, Vector3 preferredCandidate, LayerMask blockedLayers, out Vector3 safeLanding)
+    {
+        safeLanding = splitOrigin;
+
+        Vector2 preferredOffset = preferredCandidate - splitOrigin;
+        float preferredDistance = preferredOffset.magnitude;
+        float maxRadius = Mathf.Max(phase2SplitLandingProbeRadius * 2f, preferredDistance, phase2SplitDistance);
+        if (maxRadius <= 0.0001f)
+            return false;
+
+        float minRadius = Mathf.Max(phase2SplitLandingProbeRadius * 1.25f, maxRadius * PhaseTwoSplitSafeLandingMinRadiusScale);
+        float baseAngle = preferredOffset.sqrMagnitude > 0.0001f
+            ? Mathf.Atan2(preferredOffset.y, preferredOffset.x)
+            : 0f;
+
+        for (int radialIndex = 0; radialIndex < PhaseTwoSplitSafeLandingRadialSteps; radialIndex++)
+        {
+            float radialT = PhaseTwoSplitSafeLandingRadialSteps <= 1
+                ? 1f
+                : (float)radialIndex / (PhaseTwoSplitSafeLandingRadialSteps - 1);
+            float radius = Mathf.Lerp(maxRadius, minRadius, radialT);
+
+            for (int angleIndex = 0; angleIndex < PhaseTwoSplitSafeLandingAngleSteps; angleIndex++)
+            {
+                int signedStep = angleIndex == 0
+                    ? 0
+                    : ((angleIndex + 1) / 2) * (angleIndex % 2 == 1 ? 1 : -1);
+                float angle = baseAngle + signedStep * (Mathf.PI * 2f / PhaseTwoSplitSafeLandingAngleSteps);
+                Vector3 candidate = splitOrigin + new Vector3(Mathf.Cos(angle), Mathf.Sin(angle), 0f) * radius;
+                candidate.z = splitOrigin.z;
+                candidate = ClampPhaseTwoSplitPointToBounds(candidate);
+
+                if (!IsPhaseTwoSplitLandingSafe(candidate, blockedLayers))
+                    continue;
+
+                safeLanding = candidate;
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /// <summary>분열 착지점이 바운더리 밖으로 나가지 않도록 보정합니다.</summary>

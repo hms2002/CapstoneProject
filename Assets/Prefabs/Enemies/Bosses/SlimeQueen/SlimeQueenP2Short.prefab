@@ -172,6 +172,14 @@ MonoBehaviour:
       - {fileID: 11400000, guid: b6b3270ae0b64527be3bc8398bbdcd6e, type: 2}
   airborneBodyZHeight: 1
   logHeightCollisionDebug: 1
+  enablePatternAfterimage: 1
+  patternAfterimageIntervalSeconds: 0.045
+  patternAfterimageLifetimeSeconds: 0.18
+  patternAfterimageColor: {r: 0.65, g: 1, b: 0.85, a: 0.38}
+  bodyInflateVisualScaleMultiplier: 2
+  bodyInflateVisualScaleInSeconds: 0.12
+  bodyInflateVisualScaleOutSeconds: 0.16
+  bodyInflateVisualScaleSteps: 2
   contactDamage: 1
   contactDamageCooldownSeconds: 1
   contactDamageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
@@ -198,6 +206,9 @@ MonoBehaviour:
   castlingHitRadius: 0.75
   castlingDamage: 1
   castlingDamageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
+  defeatedRendererBrightness: 0.5
+  toxicRushPitFallSlamVisualHeight: 10
+  logToxicRushPitFallSlamHeight: 1
   toxicRushWarningStyle: {fileID: 11400000, guid: b15f18602ec87284d80cbd57720425f1, type: 2}
   toxicRushWarningSeconds: 1.4
   toxicRushRepeatCount: 3
@@ -471,7 +482,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bubblePrefab: {fileID: 8482697653009772348, guid: 62446638c99411c4c9669c3f3efc113d, type: 3}
-  bubbleOffset: {x: 0.3, y: 2.4, z: 0}
+  bubbleOffset: {x: 0.3, y: 1.4, z: 0}
   showBubbleOffsetGizmo: 1
   bubbleOffsetGizmoColor: {r: 1, g: 0.92, b: 0.16, a: 0.9}
   bubbleOffsetGizmoRadius: 0.12

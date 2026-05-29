@@ -31,11 +31,38 @@ public abstract class SlimeQueenBossBase : BossControllerBase, IIntentMovementSo
     [SerializeField, Min(0f)] private float airborneBodyZHeight = 1f;
     [SerializeField] private bool logHeightCollisionDebug = true;
 
+    [Header("Pattern Afterimage")]
+    [Tooltip("점프/돌진 같은 빠른 이동형 패턴 중 본체 잔상을 남길지 여부입니다.")]
+    [SerializeField] private bool enablePatternAfterimage = true;
+
+    [Tooltip("잔상 스냅샷을 생성하는 간격입니다.")]
+    [SerializeField, Min(0.01f)] private float patternAfterimageIntervalSeconds = 0.045f;
+
+    [Tooltip("각 잔상 스냅샷이 사라질 때까지 걸리는 시간입니다.")]
+    [SerializeField, Min(0.01f)] private float patternAfterimageLifetimeSeconds = 0.18f;
+
+    [Tooltip("잔상에 입힐 색과 투명도입니다.")]
+    [SerializeField] private Color patternAfterimageColor = new(0.65f, 1f, 0.85f, 0.38f);
+
+    [Header("Body Inflate Presentation")]
+    [Tooltip("몸 부풀림 충격 중 Visual에 추가로 곱할 스케일 배율입니다.")]
+    [SerializeField, Min(1f)] private float bodyInflateVisualScaleMultiplier = 2f;
+
+    [Tooltip("몸 부풀림 Visual 스케일이 커지는 데 걸리는 시간입니다.")]
+    [SerializeField, Min(0.01f)] private float bodyInflateVisualScaleInSeconds = 0.12f;
+
+    [Tooltip("몸 부풀림 Visual 스케일이 원래대로 돌아오는 데 걸리는 시간입니다.")]
+    [SerializeField, Min(0.01f)] private float bodyInflateVisualScaleOutSeconds = 0.16f;
+
+    [Tooltip("몸 부풀림 Visual 스케일 변화 단계를 몇 단계로 끊어 보일지 설정합니다. 0이면 부드럽게 보간합니다.")]
+    [SerializeField, Min(0)] private int bodyInflateVisualScaleSteps = 5;
+
     private AttackTelegraphService telegraphService;
     private CombatHeightState2D combatHeightState;
     private CombatHeightPresentation2D combatHeightPresentation;
     private EntityCollisionProfile2D heightCollisionProfile;
     private CombatHeightCollisionBinder2D heightCollisionBinder;
+    private SpriteAfterimageEmitter2D patternAfterimageEmitter;
     private Collider2D[] heightCollisionBodyColliders;
     private GameplayTag patternMoveInvulnerableTag;
     private GameplayEffect runtimeGroggyStatusEffect;
@@ -45,6 +72,16 @@ public abstract class SlimeQueenBossBase : BossControllerBase, IIntentMovementSo
     private int pitFallTriggerBlockCount;
     private float nextHeightCollisionDebugLogTime;
     private float nextAirborneCollisionDebugLogTime;
+    private Transform bodyInflateVisualRoot;
+    private Vector3 bodyInflateVisualBaseScale = Vector3.one;
+    private bool hasBodyInflateVisualBaseScale;
+    private bool isBodyInflateVisualScaling;
+    private bool isBodyInflateVisualScaleReleasing;
+    private float bodyInflateVisualScaleElapsed;
+    private bool isPatternFacingLocked;
+    private bool patternFacingLockedFlipX;
+    private bool isDeathFacingFrozen;
+    private bool deathFacingFrozenFlipX;
 
     public bool IsPatternMoveDamageBlocked => isPatternMoveDamageBlocked;
 
@@ -75,8 +112,15 @@ public abstract class SlimeQueenBossBase : BossControllerBase, IIntentMovementSo
         FaceCurrentTarget();
     }
 
+    protected virtual void LateUpdate()
+    {
+        TickBodyInflateVisualScale();
+    }
+
     protected override void OnDestroy()
     {
+        StopPatternAfterimage(clearGhosts: true);
+        EndPatternFacingLock();
         CleanupAllTelegraphs();
         ClearCombatHeightPresentation();
 
@@ -92,6 +136,8 @@ public abstract class SlimeQueenBossBase : BossControllerBase, IIntentMovementSo
     /// <summary>사망 시작 시 남아 있는 공통/분리형 공격 예고를 즉시 정리합니다.</summary>
     protected override void OnDeathStarted()
     {
+        FreezeFacingForDeath();
+        EndPatternFacingLock();
         CleanupAllTelegraphs();
         base.OnDeathStarted();
     }
@@ -182,18 +228,151 @@ public abstract class SlimeQueenBossBase : BossControllerBase, IIntentMovementSo
     /// <summary>현재 타겟 방향에 맞춰 보스 스프라이트 방향을 갱신합니다.</summary>
     public void FaceCurrentTarget()
     {
-        if (sprite == null || CurrentTarget == null)
+        if (sprite == null)
             return;
 
-        if (transform.position.x > CurrentTarget.position.x)
+        if (ShouldBlockFacingUpdate())
+        {
+            ApplyDeathFacingFreeze();
+            return;
+        }
+
+        if (isPatternFacingLocked)
+        {
+            ApplyPatternFacingLock();
+            return;
+        }
+
+        if (CurrentTarget == null)
+            return;
+
+        SetFacingByWorldX(CurrentTarget.position.x);
+    }
+
+    /// <summary>이동형 패턴 준비부터 종료까지 현재/지정 타겟 기준 flipX를 고정합니다.</summary>
+    public void BeginPatternFacingLock(GameObject targetOverride = null)
+    {
+        if (targetOverride != null)
+        {
+            BeginPatternFacingLockTowards(targetOverride.transform.position);
+            return;
+        }
+
+        if (CurrentTarget != null)
+        {
+            BeginPatternFacingLockTowards(CurrentTarget.position);
+            return;
+        }
+
+        if (sprite == null)
+            return;
+
+        patternFacingLockedFlipX = sprite.flipX;
+        isPatternFacingLocked = true;
+        ApplyPatternFacingLock();
+    }
+
+    /// <summary>이동형 패턴 준비부터 종료까지 지정 월드 좌표 방향으로 flipX를 고정합니다.</summary>
+    public void BeginPatternFacingLockTowards(Vector3 targetPosition)
+    {
+        if (sprite == null)
+            return;
+
+        SetFacingByWorldX(targetPosition.x);
+        patternFacingLockedFlipX = sprite.flipX;
+        isPatternFacingLocked = true;
+        ApplyPatternFacingLock();
+    }
+
+    /// <summary>이동형 패턴이 끝난 뒤 flipX 고정을 해제합니다.</summary>
+    public void EndPatternFacingLock()
+    {
+        isPatternFacingLocked = false;
+    }
+
+    protected bool IsPatternFacingLocked => isPatternFacingLocked;
+
+    protected bool ShouldBlockFacingUpdate()
+    {
+        return isDeathFacingFrozen || IsDead || HasDeadTag() || CurrentHealthValue <= 0f;
+    }
+
+    protected void ApplyPatternFacingLock()
+    {
+        if (sprite != null)
+            sprite.flipX = patternFacingLockedFlipX;
+    }
+
+    private void FreezeFacingForDeath()
+    {
+        if (sprite == null)
+            return;
+
+        deathFacingFrozenFlipX = sprite.flipX;
+        isDeathFacingFrozen = true;
+        ApplyDeathFacingFreeze();
+    }
+
+    private void ApplyDeathFacingFreeze()
+    {
+        if (sprite != null && isDeathFacingFrozen)
+            sprite.flipX = deathFacingFrozenFlipX;
+    }
+
+    private void SetFacingByWorldX(float targetX)
+    {
+        if (sprite == null)
+            return;
+
+        if (transform.position.x > targetX)
             sprite.flipX = true;
-        else if (transform.position.x < CurrentTarget.position.x)
+        else if (transform.position.x < targetX)
             sprite.flipX = false;
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 슬라임 퀸 계열의 빠른 이동형 패턴 중 Visual 기준 잔상 방출을 시작한다.
+    /// - 개별 패턴 로직이 SpriteRenderer 복제 방식에 의존하지 않도록 공통 시작점만 제공한다.
+    /// </summary>
+    public void BeginPatternAfterimage()
+    {
+        if (!enablePatternAfterimage || !isActiveAndEnabled)
+            return;
+
+        SpriteAfterimageEmitter2D emitter = ResolvePatternAfterimageEmitter();
+        if (emitter == null)
+            return;
+
+        Transform sourceRoot = sprite != null ? sprite.transform : transform;
+        emitter.Begin(
+            sourceRoot,
+            patternAfterimageIntervalSeconds,
+            patternAfterimageLifetimeSeconds,
+            patternAfterimageColor);
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 슬라임 퀸 계열 이동형 패턴의 잔상 생성을 멈춘다.
+    /// - 일반 종료에서는 남은 잔상이 자연 소멸하고, 씬 정리 같은 강제 상황에서는 즉시 제거할 수 있다.
+    /// </summary>
+    public void StopPatternAfterimage(bool clearGhosts = false)
+    {
+        if (patternAfterimageEmitter == null)
+            return;
+
+        patternAfterimageEmitter.StopEmission();
+        if (clearGhosts)
+            patternAfterimageEmitter.ClearSpawnedGhosts();
     }
 
     /// <summary>패턴 종료 시 이동형 패턴 피해 차단 상태를 정리합니다.</summary>
     protected override void OnPatternEnd(BossPatternEntry patternEntry, bool forced)
     {
+        StopPatternAfterimage(clearGhosts: forced);
+        EndPatternFacingLock();
+        EndBodyInflateVisualScale(resetImmediately: forced);
         SetPatternMoveDamageBlocked(false);
         pitFallTriggerBlockCount = 0;
         CleanupAllTelegraphs();
@@ -285,8 +464,16 @@ public abstract class SlimeQueenBossBase : BossControllerBase, IIntentMovementSo
         {
             combatHeightState = heightState;
             heightState.SetGrounded();
+            SnapCombatHeightPresentationToState();
             LogHeightCollisionState("grounded cleanup");
         }
+    }
+
+    /// <summary>CombatHeightState2D가 가진 현재 높이를 smoothing 없이 즉시 렌더 위치에 반영합니다.</summary>
+    protected void SnapCombatHeightPresentationToState()
+    {
+        CombatHeightPresentation2D heightPresentation = GetComponent<CombatHeightPresentation2D>();
+        heightPresentation?.SnapToCurrentState();
     }
 
     private static float ResolveKnightStyleSlamGroundProgress(float normalizedTime)
@@ -329,6 +516,118 @@ public abstract class SlimeQueenBossBase : BossControllerBase, IIntentMovementSo
         float dropProgress = Mathf.InverseLerp(KnightStyleSlamPreDropEndNormalized, 1f, normalizedTime);
         float easedDrop = Mathf.Pow(Mathf.Clamp01(dropProgress), KnightStyleSlamLandingDropSharpness);
         return Mathf.Lerp(safeHeight * KnightStyleSlamPreDropHeightScale, 0f, easedDrop);
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 몸 부풀림 충격 연출 중 Visual 스케일을 일시적으로 키워 Animator 트리거만으로 부족한 팽창감을 보강한다.
+    /// - 실제 collider/피해 범위는 변경하지 않고 화면에 보이는 Visual root만 다룬다.
+    /// </summary>
+    protected void BeginBodyInflateVisualScale()
+    {
+        Transform visualRoot = ResolveBodyInflateVisualRoot();
+        if (visualRoot == null)
+            return;
+
+        CaptureBodyInflateVisualBaseScale(visualRoot);
+        isBodyInflateVisualScaling = true;
+        isBodyInflateVisualScaleReleasing = false;
+        bodyInflateVisualScaleElapsed = 0f;
+    }
+
+    /// <summary>몸 부풀림 Visual 스케일 보강을 종료하고 원래 크기로 복구합니다.</summary>
+    protected void EndBodyInflateVisualScale(bool resetImmediately = false)
+    {
+        Transform visualRoot = ResolveBodyInflateVisualRoot();
+        if (visualRoot == null || !hasBodyInflateVisualBaseScale)
+            return;
+
+        if (!isBodyInflateVisualScaling && !isBodyInflateVisualScaleReleasing)
+            return;
+
+        if (resetImmediately)
+        {
+            visualRoot.localScale = bodyInflateVisualBaseScale;
+            isBodyInflateVisualScaling = false;
+            isBodyInflateVisualScaleReleasing = false;
+            bodyInflateVisualScaleElapsed = 0f;
+            return;
+        }
+
+        isBodyInflateVisualScaling = false;
+        isBodyInflateVisualScaleReleasing = true;
+        bodyInflateVisualScaleElapsed = 0f;
+    }
+
+    private void TickBodyInflateVisualScale()
+    {
+        Transform visualRoot = ResolveBodyInflateVisualRoot();
+        if (visualRoot == null || !hasBodyInflateVisualBaseScale)
+            return;
+
+        if (!isBodyInflateVisualScaling && !isBodyInflateVisualScaleReleasing)
+            return;
+
+        float duration = isBodyInflateVisualScaling
+            ? bodyInflateVisualScaleInSeconds
+            : bodyInflateVisualScaleOutSeconds;
+        bodyInflateVisualScaleElapsed += Time.deltaTime;
+
+        float progress = Mathf.Clamp01(bodyInflateVisualScaleElapsed / Mathf.Max(0.01f, duration));
+        float steppedProgress = QuantizeBodyInflateScaleProgress(progress);
+        float eased = Mathf.SmoothStep(0f, 1f, steppedProgress);
+        Vector3 inflatedScale = bodyInflateVisualBaseScale * Mathf.Max(1f, bodyInflateVisualScaleMultiplier);
+        visualRoot.localScale = isBodyInflateVisualScaling
+            ? Vector3.LerpUnclamped(bodyInflateVisualBaseScale, inflatedScale, eased)
+            : Vector3.LerpUnclamped(inflatedScale, bodyInflateVisualBaseScale, eased);
+
+        if (progress < 1f)
+            return;
+
+        if (isBodyInflateVisualScaleReleasing)
+        {
+            visualRoot.localScale = bodyInflateVisualBaseScale;
+            isBodyInflateVisualScaling = false;
+            isBodyInflateVisualScaleReleasing = false;
+        }
+    }
+
+    private Transform ResolveBodyInflateVisualRoot()
+    {
+        if (bodyInflateVisualRoot != null)
+            return bodyInflateVisualRoot;
+
+        bodyInflateVisualRoot = sprite != null ? sprite.transform : transform;
+        return bodyInflateVisualRoot;
+    }
+
+    private void CaptureBodyInflateVisualBaseScale(Transform visualRoot)
+    {
+        if (visualRoot == null || hasBodyInflateVisualBaseScale)
+            return;
+
+        bodyInflateVisualBaseScale = visualRoot.localScale;
+        hasBodyInflateVisualBaseScale = true;
+    }
+
+    private float QuantizeBodyInflateScaleProgress(float progress)
+    {
+        int steps = Mathf.Max(0, bodyInflateVisualScaleSteps);
+        if (steps <= 1)
+            return progress;
+
+        return Mathf.Clamp01(Mathf.Ceil(progress * steps) / steps);
+    }
+
+    private SpriteAfterimageEmitter2D ResolvePatternAfterimageEmitter()
+    {
+        if (patternAfterimageEmitter != null)
+            return patternAfterimageEmitter;
+
+        if (!TryGetComponent(out patternAfterimageEmitter))
+            patternAfterimageEmitter = gameObject.AddComponent<SpriteAfterimageEmitter2D>();
+
+        return patternAfterimageEmitter;
     }
 
     private bool CanUseCombatHeightPresentation()

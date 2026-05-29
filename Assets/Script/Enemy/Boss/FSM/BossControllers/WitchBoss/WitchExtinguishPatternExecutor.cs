@@ -175,11 +175,11 @@ public sealed class WitchExtinguishPatternExecutor : MonoBehaviour
 
         for (int i = 0; i < centers.Count; i++)
         {
-            AttackTelegraphSpec spec = AttackTelegraphSpec.CreateCircle(
+            AttackTelegraphSpec spec = AttackTelegraphSpecUtility.WithThinWarningOutline(AttackTelegraphSpec.CreateCircle(
                 centers[i],
                 warningDiameter,
                 clampedWarningTime,
-                warningStyle);
+                warningStyle));
 
             AttackTelegraphView view = owner.ExtinguishTelegraphService.SpawnDetachedView(spec);
             if (view != null)

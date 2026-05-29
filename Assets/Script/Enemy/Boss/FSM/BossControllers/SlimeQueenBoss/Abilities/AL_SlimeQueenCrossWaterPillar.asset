@@ -12,9 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f9f0d318c124906a2bc43c2cbb86a12, type: 3}
   m_Name: AL_SlimeQueenCrossWaterPillar
   m_EditorClassIdentifier: 
+  blastEffectPrefab: {fileID: 3297215421415640078, guid: a007a9f51facfcb428c22ce2d3727a82, type: 3}
   castPresentation:
     sound:
-      key: sound_slimeQueen_CrossWaterPillar1
+      key: sound_slimequeen_crosswaterpillar1
       volumeMultiplier: 1
       anchorPolicy: 0
       localOffset: {x: 0, y: 0, z: 0}

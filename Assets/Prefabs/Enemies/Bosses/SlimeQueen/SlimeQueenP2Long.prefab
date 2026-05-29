@@ -54,6 +54,7 @@ Transform:
   - {fileID: 7379801895874624945}
   - {fileID: 7263198924155404901}
   - {fileID: 6821745983925161242}
+  - {fileID: 9202272511269249813}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &1003000
@@ -171,6 +172,14 @@ MonoBehaviour:
       additionalConditions: []
   airborneBodyZHeight: 1
   logHeightCollisionDebug: 1
+  enablePatternAfterimage: 1
+  patternAfterimageIntervalSeconds: 0.045
+  patternAfterimageLifetimeSeconds: 0.18
+  patternAfterimageColor: {r: 0.65, g: 1, b: 0.85, a: 0.38}
+  bodyInflateVisualScaleMultiplier: 2
+  bodyInflateVisualScaleInSeconds: 0.12
+  bodyInflateVisualScaleOutSeconds: 0.16
+  bodyInflateVisualScaleSteps: 5
   contactDamage: 1
   contactDamageCooldownSeconds: 1
   contactDamageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
@@ -197,6 +206,7 @@ MonoBehaviour:
   castlingHitRadius: 0.75
   castlingDamage: 1
   castlingDamageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
+  defeatedRendererBrightness: 0.5
   randomMoveBounds: {fileID: 0}
   jumpWarningStyle: {fileID: 11400000, guid: b15f18602ec87284d80cbd57720425f1, type: 2}
   jumpWarningDiameter: 2.4
@@ -222,15 +232,22 @@ MonoBehaviour:
   waterCannonWarningStyle: {fileID: 11400000, guid: b15f18602ec87284d80cbd57720425f1, type: 2}
   waterCannonBeamStyle: {fileID: 0}
   waterCannonBeamVisualPrefab: {fileID: 1000000, guid: 3ec7b4634d524e0d84ec605c177e6b86, type: 3}
-  waterCannonWarningSeconds: 1.4
+  waterCannonMuzzleSocket: {fileID: 6057653836644520300}
+  waterCannonLaserVfxPrefab: {fileID: 0}
+  waterCannonLaserVfxResourcePath: DemonKing/DemonKingEgoLaserVfx
   waterCannonActiveSeconds: 2
+  waterCannonShotWarningSeconds: 0.25
+  waterCannonShotActiveSeconds: 0.12
+  waterCannonShotIntervalSeconds: 0.1
+  waterCannonMaxTurnAnglePerShot: 10
   waterCannonBeamGrowSeconds: 0.18
-  waterCannonVisualWidth: 1
-  waterCannonHitWidth: 0.45
+  waterCannonVisualWidth: 0.33
+  waterCannonLaserBodyLengthMultiplier: 1
+  waterCannonHitWidth: 0.08
   waterCannonWallLayers:
     serializedVersion: 2
     m_Bits: 1073741824
-  waterCannonFallbackDistance: 8
+  waterCannonFallbackDistance: 40
   waterCannonWallStopPadding: 0.05
   waterCannonDamage: 1
   waterCannonDamageIntervalSeconds: 1
@@ -505,7 +522,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bubblePrefab: {fileID: 8482697653009772348, guid: 62446638c99411c4c9669c3f3efc113d, type: 3}
-  bubbleOffset: {x: 0.3, y: 2.4, z: 0}
+  bubbleOffset: {x: 0.3, y: 1.4, z: 0}
   showBubbleOffsetGizmo: 1
   bubbleOffsetGizmoColor: {r: 1, g: 0.92, b: 0.16, a: 0.9}
   bubbleOffsetGizmoRadius: 0.12
@@ -970,3 +987,66 @@ CapsuleCollider2D:
   m_Offset: {x: 0, y: 0}
   m_Size: {x: 0.32, y: 0.71}
   m_Direction: 0
+--- !u!1 &4304124208575027289
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 9202272511269249813}
+  m_Layer: 31
+  m_Name: Sockets
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &9202272511269249813
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4304124208575027289}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 6057653836644520300}
+  m_Father: {fileID: 1001000}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &5190044495122245195
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6057653836644520300}
+  m_Layer: 31
+  m_Name: muzzle
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6057653836644520300
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5190044495122245195}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.938, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 9202272511269249813}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

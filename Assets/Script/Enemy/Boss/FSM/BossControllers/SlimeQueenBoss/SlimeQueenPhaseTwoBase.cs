@@ -11,6 +11,7 @@ using UnityGAS;
 public abstract class SlimeQueenPhaseTwoBase : SlimeQueenBossBase, ISlimeQueenBodyInflateHost
 {
     private static readonly int IsDeadHash = Animator.StringToHash("isDead");
+    protected static readonly int IsSinkingHash = Animator.StringToHash("isSinking");
 
     [Header("Phase 2 Contact")]
     [Tooltip("2페이즈 퀸이 플레이어와 접촉했을 때 적용할 피해량입니다.")]
@@ -100,6 +101,12 @@ public abstract class SlimeQueenPhaseTwoBase : SlimeQueenBossBase, ISlimeQueenBo
     [Tooltip("캐슬링 피해에 사용할 GAS Damage Effect입니다. 비우면 2페이즈 접촉 피해 Effect를 사용합니다.")]
     [SerializeField] private GE_Damage_Spec castlingDamageEffect;
 
+    [Space(8)]
+
+    [Header("Phase 2 Defeated Presentation")]
+    [Tooltip("2페이즈 보스가 체력 0으로 쓰러진 채 남아 있을 때 SpriteRenderer 색에 곱할 밝기입니다.")]
+    [SerializeField, Range(0f, 1f)] private float defeatedRendererBrightness = 0.5f;
+
     private float nextContactDamageTime;
     private bool isPassiveContactDamageBlocked;
     private bool isJointPatternLocked;
@@ -112,6 +119,8 @@ public abstract class SlimeQueenPhaseTwoBase : SlimeQueenBossBase, ISlimeQueenBo
     private SlimeQueenVanishParticleEffect finaleVanishEffect;
     private readonly List<AttackTelegraphView> bodyInflateWarningViews = new List<AttackTelegraphView>();
     private readonly List<AttackTelegraphView> castlingWarningViews = new List<AttackTelegraphView>();
+    private SpriteRenderer[] phaseTwoSpriteRenderers;
+    private Color[] phaseTwoSpriteBaseColors;
 
     public int Phase2SlamCount => Mathf.Max(1, slamCount);
 
@@ -151,6 +160,7 @@ public abstract class SlimeQueenPhaseTwoBase : SlimeQueenBossBase, ISlimeQueenBo
     {
         base.Awake();
         EnsureFinaleVanishEffect();
+        CachePhaseTwoDefeatedTintTargets();
     }
 
     /// <summary>패턴 피해가 우선 적용되어야 하는 동안 상시 접촉 피해를 막습니다.</summary>
@@ -200,11 +210,13 @@ public abstract class SlimeQueenPhaseTwoBase : SlimeQueenBossBase, ISlimeQueenBo
     /// <summary>배수구 안에 잠긴 상태의 보스별 애니메이션 진입 훅입니다.</summary>
     public virtual void BeginDrainSinkAnimation()
     {
+        SetAnimatorBoolIfExists(IsSinkingHash, true);
     }
 
     /// <summary>배수구에서 올라올 때 보스별 애니메이션 상태를 정리하는 훅입니다.</summary>
     public virtual void EndDrainSinkAnimation()
     {
+        SetAnimatorBoolIfExists(IsSinkingHash, false);
     }
 
     protected override void Update()
@@ -224,6 +236,14 @@ public abstract class SlimeQueenPhaseTwoBase : SlimeQueenBossBase, ISlimeQueenBo
         }
 
         base.Update();
+    }
+
+    protected override void LateUpdate()
+    {
+        base.LateUpdate();
+
+        if (IsDead || HasDeadTag() || CurrentHealthValue <= 0f)
+            ApplyPhaseTwoDefeatedTint();
     }
 
     protected override void OnDestroy()
@@ -255,11 +275,13 @@ public abstract class SlimeQueenPhaseTwoBase : SlimeQueenBossBase, ISlimeQueenBo
     {
         SetPhaseTwoDeathAnimation(true);
         base.OnDeathStarted();
+        ApplyPhaseTwoDefeatedTint();
     }
 
     protected override void PlayDeathAnimation()
     {
         SetPhaseTwoDeathAnimation(true);
+        ApplyPhaseTwoDefeatedTint();
     }
 
     protected override void DestroyAfterDelay()
@@ -307,6 +329,8 @@ public abstract class SlimeQueenPhaseTwoBase : SlimeQueenBossBase, ISlimeQueenBo
 
         shortQueen.SetCastlingRuntimeLock(true);
         longQueen.SetCastlingRuntimeLock(true);
+        shortQueen.BeginPatternFacingLockTowards(longStartPosition);
+        longQueen.BeginPatternFacingLockTowards(shortStartPosition);
         shortQueen.SetPatternMoveDamageBlocked(true);
         longQueen.SetPatternMoveDamageBlocked(true);
         shortQueen.SetPassiveContactDamageBlocked(true);
@@ -347,6 +371,7 @@ public abstract class SlimeQueenPhaseTwoBase : SlimeQueenBossBase, ISlimeQueenBo
     public void ForceCleanupCastlingPattern()
     {
         CleanupCastlingPresentation();
+        EndPatternFacingLock();
         SetPatternMoveDamageBlocked(false);
         SetPassiveContactDamageBlocked(false);
         SetCastlingRuntimeLock(false);
@@ -558,6 +583,17 @@ public abstract class SlimeQueenPhaseTwoBase : SlimeQueenBossBase, ISlimeQueenBo
     public void SetPhase2SlamPose(Vector3 startPosition, Vector3 landingPosition, float normalizedTime)
     {
         ApplyKnightStyleSlamPose(startPosition, landingPosition, normalizedTime, slamArcHeight);
+    }
+
+    /// <summary>구덩이에서 복귀할 때 시작부터 공중에 있는 상태로 내려오는 낙하 자세를 적용합니다.</summary>
+    public void SetPhase2PitFallReturnPose(Vector3 landingPosition, float normalizedTime, float startVisualHeight)
+    {
+        float clampedTime = Mathf.Clamp01(normalizedTime);
+        float safeHeight = Mathf.Max(0f, startVisualHeight);
+        float easedDrop = Mathf.Pow(clampedTime, 2.25f);
+        float visualHeight = Mathf.Lerp(safeHeight, 0f, easedDrop);
+        ApplyGroundedMotionPose(landingPosition, visualHeight);
+        SnapCombatHeightPresentationToState();
     }
 
     /// <summary>페이즈 2 내려찍기 종료 위치로 보스 좌표를 확정합니다.</summary>
@@ -938,6 +974,42 @@ public abstract class SlimeQueenPhaseTwoBase : SlimeQueenBossBase, ISlimeQueenBo
         return false;
     }
 
+    /// <summary>2페이즈 패배 색상 고정에 사용할 SpriteRenderer와 원본 색을 캐싱합니다.</summary>
+    private void CachePhaseTwoDefeatedTintTargets()
+    {
+        phaseTwoSpriteRenderers = GetComponentsInChildren<SpriteRenderer>(includeInactive: true);
+        phaseTwoSpriteBaseColors = new Color[phaseTwoSpriteRenderers.Length];
+
+        for (int i = 0; i < phaseTwoSpriteRenderers.Length; i++)
+        {
+            SpriteRenderer targetRenderer = phaseTwoSpriteRenderers[i];
+            phaseTwoSpriteBaseColors[i] = targetRenderer != null ? targetRenderer.color : Color.white;
+        }
+    }
+
+    /// <summary>체력 0으로 쓰러진 2페이즈 보스 비주얼을 원본 대비 어둡게 유지합니다.</summary>
+    private void ApplyPhaseTwoDefeatedTint()
+    {
+        if (phaseTwoSpriteRenderers == null || phaseTwoSpriteBaseColors == null)
+            CachePhaseTwoDefeatedTintTargets();
+
+        float brightness = Mathf.Clamp01(defeatedRendererBrightness);
+        for (int i = 0; i < phaseTwoSpriteRenderers.Length; i++)
+        {
+            SpriteRenderer targetRenderer = phaseTwoSpriteRenderers[i];
+            if (targetRenderer == null)
+                continue;
+
+            Color baseColor = i < phaseTwoSpriteBaseColors.Length ? phaseTwoSpriteBaseColors[i] : Color.white;
+            targetRenderer.color = new Color(
+                baseColor.r * brightness,
+                baseColor.g * brightness,
+                baseColor.b * brightness,
+                baseColor.a);
+        }
+
+    }
+
     private void SetPhaseTwoRenderersVisible(bool visible)
     {
         Renderer[] renderers = GetComponentsInChildren<Renderer>(includeInactive: true);
@@ -968,6 +1040,15 @@ public abstract class SlimeQueenPhaseTwoBase : SlimeQueenBossBase, ISlimeQueenBo
     {
         if (sprite == null)
             return;
+
+        if (ShouldBlockFacingUpdate())
+            return;
+
+        if (IsPatternFacingLocked)
+        {
+            ApplyPatternFacingLock();
+            return;
+        }
 
         if (transform.position.x > destination.x)
             sprite.flipX = true;

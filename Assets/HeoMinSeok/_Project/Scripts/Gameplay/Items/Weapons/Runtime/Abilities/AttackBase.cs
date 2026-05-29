@@ -261,7 +261,7 @@ namespace UnityGAS
         /// - 공격체가 무시해야 하는 대상과 그 자식/부모 계층까지 같은 대상으로 간주한다.
         /// - 자식 트리거 콜라이더를 가진 오브젝트에서 발사 직후 자기 자신을 맞는 문제를 방지한다.
         /// </summary>
-        private bool IsIgnoredTarget(GameObject targetRoot)
+        protected bool IsIgnoredTarget(GameObject targetRoot)
         {
             if (targetRoot == null || IgnoreTarget == null)
                 return false;

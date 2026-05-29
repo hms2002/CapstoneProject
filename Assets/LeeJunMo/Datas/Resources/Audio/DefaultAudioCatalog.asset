@@ -77,7 +77,7 @@ MonoBehaviour:
     bus: 0
     category: 5
     variants:
-    - {fileID: 8300000, guid: d6166634a6742dd4d803a6c11fa777ed, type: 3}
+    - {fileID: 8300000, guid: b13b3257cfdefe64aae6dcc13fd07a50, type: 3}
     volume: 1
     playbackSpeed: 1
     pitchMin: 1
@@ -1613,6 +1613,96 @@ MonoBehaviour:
     pitchMin: 1
     pitchMax: 1
     loop: 0
+    spatial: 1
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_shadow_OffCandleLight
+    bus: 0
+    category: 7
+    variants:
+    - {fileID: 8300000, guid: 8cb44fff769063b41a472461e6b7b783, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 1
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_candlestick_SealedCnadleRage
+    bus: 0
+    category: 8
+    variants:
+    - {fileID: 8300000, guid: 16f017d1db246354c9dbfd2c2805163a, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 1
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_shadow_DamagedShield
+    bus: 0
+    category: 7
+    variants:
+    - {fileID: 8300000, guid: 06abf7f4c0ed00947b2eb7369261918d, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 1
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_shadow_BreakShield
+    bus: 0
+    category: 7
+    variants:
+    - {fileID: 8300000, guid: b56c1e989b15e2d4db07e9db3738075b, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 1
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_candlestick_ShotShieldBreaker
+    bus: 0
+    category: 8
+    variants:
+    - {fileID: 8300000, guid: 28e29949e77dab742bb7f544268f54bb, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 0
+    spatial: 1
+    important: 0
+    cooldown: 0
+    minDistance: 1
+    maxDistance: 20
+  - key: sound_shadow_ChargeEnergyLoop
+    bus: 0
+    category: 7
+    variants:
+    - {fileID: 8300000, guid: 0bd3d1f890730b8498238066169a54a0, type: 3}
+    volume: 1
+    playbackSpeed: 1
+    pitchMin: 1
+    pitchMax: 1
+    loop: 1
     spatial: 1
     important: 0
     cooldown: 0

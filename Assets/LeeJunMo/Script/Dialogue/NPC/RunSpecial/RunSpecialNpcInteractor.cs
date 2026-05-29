@@ -93,7 +93,6 @@ public sealed class RunSpecialNpcInteractor : InteractableBase
     private bool holdsRunTimerPause;
     private bool holdsTimeScalePause;
     private bool hasCachedCameraState;
-    private float previousTimeScale = 1f;
     private RunSpecialNpcFeatureBase featureToExecuteAfterPresentationClose;
 
     private void Awake()
@@ -718,8 +717,7 @@ public sealed class RunSpecialNpcInteractor : InteractableBase
         if (!pauseTimeScale || holdsTimeScalePause)
             return;
 
-        previousTimeScale = Time.timeScale;
-        Time.timeScale = 0f;
+        TimeScalePauseService.Acquire(this);
         holdsTimeScalePause = true;
     }
 
@@ -728,9 +726,8 @@ public sealed class RunSpecialNpcInteractor : InteractableBase
         if (!holdsTimeScalePause)
             return;
 
-        Time.timeScale = previousTimeScale;
+        TimeScalePauseService.Release(this);
         holdsTimeScalePause = false;
-        previousTimeScale = 1f;
     }
 
     private void ResumeGameplayClockForFeatureExecution()

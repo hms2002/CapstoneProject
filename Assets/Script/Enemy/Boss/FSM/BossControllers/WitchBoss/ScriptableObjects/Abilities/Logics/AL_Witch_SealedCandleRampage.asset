@@ -23,8 +23,8 @@ MonoBehaviour:
   telegraphStyle: {fileID: 11400000, guid: b15f18602ec87284d80cbd57720425f1, type: 2}
   candleAttackPresentation:
     sound:
-      key: 
-      volumeMultiplier: 0
+      key: sound_candlestick_SealedCnadleRage
+      volumeMultiplier: 1
       anchorPolicy: 0
       localOffset: {x: 0, y: 0, z: 0}
     cameraShake:
@@ -52,7 +52,7 @@ MonoBehaviour:
       lifetimeOverrideSeconds: 0
       useUnscaledTime: 0
   legacyCandleAttackSound:
-    key: 
-    volumeMultiplier: 0
+    key: sound_candlestick_SealedCnadleRage
+    volumeMultiplier: 1
     anchorPolicy: 0
     localOffset: {x: 0, y: 0, z: 0}

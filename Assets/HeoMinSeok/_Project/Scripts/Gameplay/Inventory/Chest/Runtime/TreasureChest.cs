@@ -43,7 +43,6 @@ public class TreasureChest : MonoBehaviour
     private bool isOpening;
     private bool isPreludeTimeFrozen;
     private GameFlowInputBlocker openingInputBlocker;
-    private float preludePreviousTimeScale = 1f;
     private WorldObjectPresentationRuntime openPresentationRuntime;
     private readonly List<ChestLootSnapshot> refreshGuard = new List<ChestLootSnapshot>();
     private readonly List<ParticleSystem> spawnedRewardRevealParticles = new List<ParticleSystem>();
@@ -444,8 +443,7 @@ public class TreasureChest : MonoBehaviour
         if (!freezeTimeOnFirstOpen || isPreludeTimeFrozen)
             return;
 
-        preludePreviousTimeScale = Time.timeScale;
-        Time.timeScale = 0f;
+        TimeScalePauseService.Acquire(this);
         isPreludeTimeFrozen = true;
     }
 
@@ -454,8 +452,7 @@ public class TreasureChest : MonoBehaviour
         if (!isPreludeTimeFrozen)
             return;
 
-        Time.timeScale = preludePreviousTimeScale;
-        preludePreviousTimeScale = 1f;
+        TimeScalePauseService.Release(this);
         isPreludeTimeFrozen = false;
     }
 

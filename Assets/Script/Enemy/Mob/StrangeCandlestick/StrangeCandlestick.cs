@@ -344,14 +344,13 @@ public class StrangeCandlestick : Mob, IMobAttackDecisionSource
         Vector2 direction = delta.sqrMagnitude <= 0.0001f
             ? (sprite != null && sprite.flipX ? Vector2.left : Vector2.right)
             : delta / length;
+        if (delta.sqrMagnitude <= 0.0001f)
+            end = start + direction * 0.01f;
 
-        Vector3 center = start + direction * (length * 0.5f);
-        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-
-        return AttackTelegraphSpec.CreateRectangle(
-            center,
-            new Vector2(length, Mathf.Max(0.01f, data.lockOnLineWidth)),
-            angle,
+        return AttackTelegraphSpec.CreateLine(
+            start,
+            end,
+            Mathf.Max(0.01f, data.lockOnLineWidth),
             Mathf.Max(0.01f, durationOverride >= 0f ? durationOverride : data.lockOnDuration),
             GetLockOnStyle());
     }

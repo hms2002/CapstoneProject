@@ -4,6 +4,9 @@ namespace CapstoneAudio
 {
     public static class SoundPlaybackUtility
     {
+        // 이 클래스의 책임:
+        // 게임플레이 코드가 SoundManager 구현 세부사항에 의존하지 않고 사운드 재생/정지/런타임 제어를 요청하게 한다.
+
         public static AudioHandle Play(
             in SoundRef soundRef,
             GameObject instigator = null,
@@ -29,6 +32,14 @@ namespace CapstoneAudio
                 return;
 
             SoundManager.EnsureInstance().Stop(handle, fadeOutDuration);
+        }
+
+        public static void SetPitch(AudioHandle handle, float pitch)
+        {
+            if (!handle.IsValid)
+                return;
+
+            SoundManager.EnsureInstance().SetPitch(handle, pitch);
         }
 
         public static SoundPlaybackContext BuildContext(

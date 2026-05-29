@@ -73,7 +73,7 @@ public class AbilityLogic_WitchBasicAttack2 : AbilityLogic
         float outerRadius = ComputeOuterRadius(witch);
         float innerSafeRadius = ComputeInnerSafeRadius(initialTarget != null ? initialTarget.transform : witch.CurrentTarget);
         float resolvedWarningSeconds = GetWarningSeconds();
-        RingTelegraphView ringTelegraph = null;
+        AttackTelegraphView ringTelegraph = null;
 
         witch.PlayPatternAttackMotion();
         ringTelegraph = SpawnRingTelegraph(witch, center, outerRadius, innerSafeRadius, resolvedWarningSeconds);
@@ -87,7 +87,7 @@ public class AbilityLogic_WitchBasicAttack2 : AbilityLogic
     }
 
     /// <summary>평타2 전용 도넛 텔레그래프를 생성하고 표시합니다.</summary>
-    private RingTelegraphView SpawnRingTelegraph(
+    private AttackTelegraphView SpawnRingTelegraph(
         Witch witch,
         Vector3 center,
         float outerRadius,
@@ -97,18 +97,18 @@ public class AbilityLogic_WitchBasicAttack2 : AbilityLogic
         if (witch == null)
             return null;
 
-        GameObject telegraphObject = new GameObject("WitchBasicAttack2RingTelegraph");
-        telegraphObject.transform.SetParent(witch.transform, false);
-        RingTelegraphView telegraph = telegraphObject.AddComponent<RingTelegraphView>();
-        SpriteRenderer referenceRenderer = witch.GetComponent<SpriteRenderer>();
-        telegraph.Show(
+        AttackTelegraphService telegraphService = witch.GetComponent<AttackTelegraphService>();
+        if (telegraphService == null)
+            return null;
+
+        AttackTelegraphSpec spec = AttackTelegraphSpecUtility.WithThinWarningOutline(AttackTelegraphSpec.CreateRing(
             center,
             outerRadius * 2f,
             innerSafeRadius * 2f,
             warningDuration,
-            donutTelegraphStyle,
-            referenceRenderer);
-        return telegraph;
+            donutTelegraphStyle));
+
+        return telegraphService.SpawnDetachedView(spec);
     }
 
     private void DealRingDamage(Witch witch, Vector3 center, float outerRadius, float innerSafeRadius, GameObject initialTarget)

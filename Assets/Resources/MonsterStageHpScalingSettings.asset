@@ -15,7 +15,7 @@ MonoBehaviour:
   enabled: 1
   hpMultiplierPerClearedStage: 0.5
   attackSpeedMultiplierPerClearedStage: 0.5
-  scaleAttackWarning: 0
+  scaleAttackWarning: 1
   scaleAttackRecovery: 1
   scaleAttackInterval: 1
   scaleAbilityCast: 0

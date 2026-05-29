@@ -11,6 +11,10 @@ using UnityGAS;
 /// </summary>
 public sealed class AbilityLogic_SlimeQueenCrossWaterPillar : AbilityLogic
 {
+    [Header("Effect")]
+    [Tooltip("물기둥 피해 지점마다 출력할 이펙트 프리팹입니다. 비워두면 피해 표시는 생략하고 판정만 적용합니다.")]
+    [SerializeField] private GameObject blastEffectPrefab;
+
     [Header("Sound")]
     [SerializeField] private WorldPresentationHook castPresentation = new WorldPresentationHook
     {
@@ -50,7 +54,7 @@ public sealed class AbilityLogic_SlimeQueenCrossWaterPillar : AbilityLogic
                 slimeQueen.transform.position,
                 this,
                 initialTarget);
-            slimeQueen.FireCrossWaterPillars(system, spec, segments);
+            slimeQueen.FireCrossWaterPillars(system, spec, segments, blastEffectPrefab);
             slimeQueen.FaceCurrentTarget();
 
             if (slimeQueen.CrossWaterPillarBlastViewSeconds > 0f)

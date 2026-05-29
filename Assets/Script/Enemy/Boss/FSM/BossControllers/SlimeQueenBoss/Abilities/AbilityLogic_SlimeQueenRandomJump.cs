@@ -25,13 +25,17 @@ public sealed class AbilityLogic_SlimeQueenRandomJump : AbilityLogic
             yield break;
 
         randomJumpHost.FaceCurrentTarget();
+        SlimeQueenBossBase facingLockOwner = randomJumpHost as SlimeQueenBossBase;
+        facingLockOwner?.BeginPatternFacingLock(initialTarget);
         randomJumpHost.ShowJumpWarning(landingPosition);
         SlimeQueen phaseOneQueen = randomJumpHost as SlimeQueen;
         SlimeQueenP2Long phaseTwoLongQueen = randomJumpHost as SlimeQueenP2Long;
+        SlimeQueenBossBase afterimageOwner = randomJumpHost as SlimeQueenBossBase;
         if (phaseOneQueen != null)
             phaseOneQueen.BeginRandomJumpAnimation();
         if (phaseTwoLongQueen != null)
             phaseTwoLongQueen.BeginRandomJumpAnimation();
+        afterimageOwner?.BeginPatternAfterimage();
 
         SlimeQueenPresentationAudioUtility.PlaySound(
             jumpSound,
@@ -73,6 +77,8 @@ public sealed class AbilityLogic_SlimeQueenRandomJump : AbilityLogic
                 phaseOneQueen.EndRandomJumpAnimation();
             if (phaseTwoLongQueen != null)
                 phaseTwoLongQueen.EndRandomJumpAnimation();
+            afterimageOwner?.StopPatternAfterimage(IsAbilityCancelled(spec));
+            facingLockOwner?.EndPatternFacingLock();
 
             randomJumpHost.SetPatternMoveDamageBlocked(false);
             if (pitFallBlockOwner != null)

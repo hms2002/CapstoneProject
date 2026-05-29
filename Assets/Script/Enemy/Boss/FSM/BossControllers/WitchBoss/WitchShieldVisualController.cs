@@ -8,6 +8,12 @@ using UnityEngine.Serialization;
 [DisallowMultipleComponent]
 public class WitchShieldVisualController : MonoBehaviour
 {
+    // 이 클래스의 책임:
+    // 마녀 보호막의 시각 연출, 단계별 색상, 보호막 타격/파괴 사운드와 presentation을 관리한다.
+
+    private static readonly SoundRef FallbackShieldDamagedSound = SoundRef.FromKey("sound_shadow_DamagedShield");
+    private static readonly SoundRef FallbackShieldBreakSound = SoundRef.FromKey("sound_shadow_BreakShield");
+
     [Serializable]
     private sealed class ShieldAnimationSettings
     {
@@ -36,6 +42,7 @@ public class WitchShieldVisualController : MonoBehaviour
     [SerializeField] private bool tintShieldVisualWithStageColor = true;
     [SerializeField] [Range(0f, 1f)] private float shieldVisualAlphaMultiplier = 0.72f;
     [SerializeField] private SoundRef shieldActivateSound;
+    [SerializeField] private SoundRef shieldDamagedSound;
     [SerializeField] private SoundRef shieldBreakSound;
     [SerializeField] private ShieldAnimationSettings activateAnimation = new ShieldAnimationSettings();
     [SerializeField] private ShieldAnimationSettings breakAnimation = new ShieldAnimationSettings();
@@ -192,12 +199,18 @@ public class WitchShieldVisualController : MonoBehaviour
     private void OnShieldStageChanged(int currentStage, int maxStage)
     {
         bool justActivated = lastCurrentStage <= 0 && currentStage > 0;
+        bool wasDamaged = lastCurrentStage > 0 && currentStage > 0 && currentStage < lastCurrentStage;
 
         lastCurrentStage = currentStage;
         lastMaxStage = Mathf.Max(1, maxStage);
 
         if (currentStage > 0)
+        {
+            if (wasDamaged)
+                PlayShieldDamagedSound();
+
             ShowShield(currentStage, lastMaxStage, justActivated);
+        }
         else
             HideImmediate();
     }
@@ -210,7 +223,7 @@ public class WitchShieldVisualController : MonoBehaviour
         SetOptionalShieldVisualVisible(true);
         PlayConfiguredAnimation(breakAnimation);
         SoundPlaybackUtility.Play(
-            shieldBreakSound,
+            shieldBreakSound.IsSet ? shieldBreakSound : FallbackShieldBreakSound,
             instigator: gameObject,
             causer: gameObject,
             position: transform.position,
@@ -227,6 +240,18 @@ public class WitchShieldVisualController : MonoBehaviour
                 causer: gameObject));
 
         breakRoutine = StartCoroutine(PlayBreakRoutine());
+    }
+
+    /// <summary>보호막 단계가 감소했을 때 전용 타격 사운드를 재생합니다.</summary>
+    private void PlayShieldDamagedSound()
+    {
+        SoundRef sound = shieldDamagedSound.IsSet ? shieldDamagedSound : FallbackShieldDamagedSound;
+        SoundPlaybackUtility.Play(
+            sound,
+            instigator: gameObject,
+            causer: gameObject,
+            position: transform.position,
+            sourceObject: this);
     }
 
     private void ShowShield(int currentStage, int maxStage, bool playActivatePresentation)

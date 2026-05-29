@@ -12,6 +12,7 @@ namespace UnityGAS
         private const int CircleTextureSize = 128;
         private const float CircleBorderThickness = 0.08f;
         private const string DefaultShaderName = "Sprites/Default";
+        private const int WallClipHitBufferSize = 16;
 
         [Header("Refs")]
         [SerializeField] private Transform fillRoot;
@@ -51,6 +52,9 @@ namespace UnityGAS
         private AttackTelegraphWallClippedMeshView wallClippedMeshView;
         private LineRenderer lineRenderer;
         private Material lineMaterial;
+        private LineRenderer thinOutlineRenderer;
+        private Material thinOutlineMaterial;
+        private bool activeUseMeshOutline;
         private bool activeUseWallClipping;
         private LayerMask activeWallClipLayers;
         private int activeWallClipSampleCount;
@@ -58,6 +62,7 @@ namespace UnityGAS
         private Vector3 activeLineStart;
         private Vector3 activeLineEnd;
         private float activeLineWidth = 0.05f;
+        private readonly RaycastHit2D[] wallClipHitBuffer = new RaycastHit2D[WallClipHitBufferSize];
 
         public bool IsVisible => isVisible;
 
@@ -121,6 +126,7 @@ namespace UnityGAS
 
             HideWallClippedMesh();
             ApplyShapeScale(spec.shape, spec.size);
+            ApplyThinOutlineGeometry(spec);
             ApplyStyle(0f);
         }
 
@@ -161,6 +167,7 @@ namespace UnityGAS
 
             HideWallClippedMesh();
             ApplyShapeScale(spec.shape, spec.size);
+            ApplyThinOutlineGeometry(spec);
             ApplyStyle(normalizedProgress);
         }
 
@@ -179,6 +186,7 @@ namespace UnityGAS
 
             HideWallClippedMesh();
             HideLineRenderer();
+            HideThinOutlineRenderer();
             ClearActiveWallClipping();
         }
 
@@ -235,7 +243,8 @@ namespace UnityGAS
 
             return spec.shape == AttackTelegraphShape.Rectangle ||
                    spec.shape == AttackTelegraphShape.Sector ||
-                   spec.shape == AttackTelegraphShape.Circle;
+                   spec.shape == AttackTelegraphShape.Circle ||
+                   spec.shape == AttackTelegraphShape.Ring;
         }
 
         private AttackTelegraphWallClippedMeshView GetOrCreateWallClippedMeshView()
@@ -263,6 +272,88 @@ namespace UnityGAS
 
             if (borderRenderer != null)
                 borderRenderer.enabled = enabled;
+        }
+
+        /// <summary>
+        /// 책임 :
+        /// - 원본 Sprite fill 경로는 유지하면서 사각형 외곽선만 LineRenderer 기반 얇은 선으로 덮어쓴다.
+        /// - wall clipping 없이도 최신 얇은 outline을 쓰되, 실제 피해 박스와 경고 fill 위치가 어긋나지 않게 한다.
+        /// </summary>
+        private void ApplyThinOutlineGeometry(AttackTelegraphSpec spec)
+        {
+            if (!spec.useMeshOutline || spec.useWallClipping || spec.shape != AttackTelegraphShape.Rectangle)
+            {
+                HideThinOutlineRenderer();
+                return;
+            }
+
+            LineRenderer renderer = GetOrCreateThinOutlineRenderer();
+            if (renderer == null)
+                return;
+
+            Vector2 half = new Vector2(Mathf.Max(0.0001f, spec.size.x), Mathf.Max(0.0001f, spec.size.y)) * 0.5f;
+            renderer.useWorldSpace = false;
+            renderer.loop = true;
+            renderer.positionCount = 4;
+            renderer.SetPosition(0, new Vector3(-half.x, -half.y, 0f));
+            renderer.SetPosition(1, new Vector3(-half.x, half.y, 0f));
+            renderer.SetPosition(2, new Vector3(half.x, half.y, 0f));
+            renderer.SetPosition(3, new Vector3(half.x, -half.y, 0f));
+            ApplyThinOutlineSorting();
+            renderer.enabled = true;
+        }
+
+        private LineRenderer GetOrCreateThinOutlineRenderer()
+        {
+            if (thinOutlineRenderer != null)
+                return thinOutlineRenderer;
+
+            Transform outlineRoot = transform.Find("ThinOutlineLine");
+            if (outlineRoot == null)
+            {
+                GameObject outlineObject = new("ThinOutlineLine");
+                outlineRoot = outlineObject.transform;
+                outlineRoot.SetParent(transform, false);
+            }
+
+            thinOutlineRenderer = outlineRoot.GetComponent<LineRenderer>();
+            if (thinOutlineRenderer == null)
+                thinOutlineRenderer = outlineRoot.gameObject.AddComponent<LineRenderer>();
+
+            thinOutlineRenderer.useWorldSpace = false;
+            thinOutlineRenderer.widthMultiplier = 0.045f;
+            thinOutlineRenderer.numCapVertices = 0;
+            thinOutlineRenderer.numCornerVertices = 0;
+            thinOutlineRenderer.alignment = LineAlignment.TransformZ;
+            thinOutlineRenderer.textureMode = LineTextureMode.Stretch;
+
+            if (thinOutlineMaterial == null)
+            {
+                Shader shader = Shader.Find(DefaultShaderName);
+                thinOutlineMaterial = new Material(shader);
+            }
+
+            thinOutlineRenderer.sharedMaterial = thinOutlineMaterial;
+            return thinOutlineRenderer;
+        }
+
+        private void ApplyThinOutlineSorting()
+        {
+            if (thinOutlineRenderer == null)
+                return;
+
+            SpriteRenderer reference = borderRenderer != null ? borderRenderer : fillRenderer;
+            if (reference == null)
+                return;
+
+            thinOutlineRenderer.sortingLayerID = reference.sortingLayerID;
+            thinOutlineRenderer.sortingOrder = reference.sortingOrder + 1;
+        }
+
+        private void HideThinOutlineRenderer()
+        {
+            if (thinOutlineRenderer != null)
+                thinOutlineRenderer.enabled = false;
         }
 
         /// <summary>
@@ -303,12 +394,47 @@ namespace UnityGAS
                 return spec.lineEnd;
 
             Vector2 direction = delta / distance;
-            RaycastHit2D hit = Physics2D.Raycast(start, direction, distance, spec.wallClipLayers);
-            if (hit.collider == null)
+            if (!TryFindNearestWallClipHit(start, direction, distance, spec.wallClipLayers, out RaycastHit2D hit))
                 return spec.lineEnd;
 
             float visibleDistance = Mathf.Clamp(hit.distance - spec.wallClipSkinWidth, 0f, distance);
             return start + direction * visibleDistance;
+        }
+
+        /// <summary>경고선 clipping은 실제 벽/문 같은 non-trigger 장애물만 사용하고, HoleTrap 같은 trigger 감지 영역은 무시합니다.</summary>
+        private bool TryFindNearestWallClipHit(
+            Vector2 start,
+            Vector2 direction,
+            float distance,
+            LayerMask wallLayers,
+            out RaycastHit2D nearestHit)
+        {
+            nearestHit = default;
+            if (wallLayers.value == 0)
+                return false;
+
+            ContactFilter2D filter = new ContactFilter2D
+            {
+                useTriggers = false
+            };
+            filter.SetLayerMask(wallLayers);
+
+            int hitCount = Physics2D.Raycast(start, direction, filter, wallClipHitBuffer, distance);
+            bool hasHit = false;
+            for (int i = 0; i < hitCount; i++)
+            {
+                RaycastHit2D hit = wallClipHitBuffer[i];
+                if (hit.collider == null || hit.collider.isTrigger)
+                    continue;
+
+                if (!hasHit || hit.distance < nearestHit.distance)
+                {
+                    nearestHit = hit;
+                    hasHit = true;
+                }
+            }
+
+            return hasHit;
         }
 
         private LineRenderer GetOrCreateLineRenderer()
@@ -367,6 +493,7 @@ namespace UnityGAS
 
         private void CacheActiveWallClipping(AttackTelegraphSpec spec)
         {
+            activeUseMeshOutline = spec.useMeshOutline;
             activeUseWallClipping = spec.useWallClipping;
             activeWallClipLayers = spec.wallClipLayers;
             activeWallClipSampleCount = spec.wallClipSampleCount;
@@ -375,23 +502,29 @@ namespace UnityGAS
 
         private AttackTelegraphSpec InheritActiveWallClipping(AttackTelegraphSpec spec)
         {
-            if (spec.useWallClipping)
+            if (spec.useMeshOutline || spec.useWallClipping)
             {
                 CacheActiveWallClipping(spec);
                 return spec;
             }
 
-            if (!activeUseWallClipping || activeWallClipLayers.value == 0)
+            if (!activeUseMeshOutline && (!activeUseWallClipping || activeWallClipLayers.value == 0))
                 return spec;
 
-            return spec.WithWallClipping(
-                activeWallClipLayers,
-                activeWallClipSampleCount,
-                activeWallClipSkinWidth);
+            if (activeUseWallClipping && activeWallClipLayers.value != 0)
+            {
+                return spec.WithWallClipping(
+                    activeWallClipLayers,
+                    activeWallClipSampleCount,
+                    activeWallClipSkinWidth);
+            }
+
+            return spec.WithMeshOutline(activeWallClipSampleCount);
         }
 
         private void ClearActiveWallClipping()
         {
+            activeUseMeshOutline = false;
             activeUseWallClipping = false;
             activeWallClipLayers = default;
             activeWallClipSampleCount = 0;
@@ -731,6 +864,9 @@ namespace UnityGAS
 
             if (lineMaterial != null)
                 Destroy(lineMaterial);
+
+            if (thinOutlineMaterial != null)
+                Destroy(thinOutlineMaterial);
         }
 
         private void ReleaseRingSprites()
@@ -827,8 +963,30 @@ namespace UnityGAS
 
                 borderColor.a *= blinkMultiplier;
                 borderRenderer.color = borderColor;
-                borderRenderer.enabled = true;
+                borderRenderer.enabled = !(activeUseMeshOutline && !activeUseWallClipping && activeShape == AttackTelegraphShape.Rectangle);
+                ApplyThinOutlineStyle(borderColor);
             }
+            else
+            {
+                Color borderColor = activeStyle != null
+                    ? Color.Lerp(activeStyle.borderColorStart, activeStyle.borderColorEnd, curved)
+                    : new Color(1f, 0.9f, 0.4f, 1f);
+
+                borderColor.a *= blinkMultiplier;
+                ApplyThinOutlineStyle(borderColor);
+            }
+        }
+
+        private void ApplyThinOutlineStyle(Color color)
+        {
+            if (thinOutlineRenderer == null || !thinOutlineRenderer.enabled)
+                return;
+
+            if (thinOutlineMaterial != null)
+                thinOutlineMaterial.color = color;
+
+            thinOutlineRenderer.startColor = color;
+            thinOutlineRenderer.endColor = color;
         }
 
         private void ApplyLineStyle(float normalized)
@@ -893,5 +1051,6 @@ namespace UnityGAS
 
             targetRenderer.maskInteraction = maskInteraction;
         }
+
     }
 }

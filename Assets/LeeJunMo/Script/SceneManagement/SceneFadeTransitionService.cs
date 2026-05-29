@@ -27,7 +27,6 @@ public sealed class SceneFadeTransitionService : MonoBehaviour
     [SerializeField] private Image overlayImage;
 
     private bool isTransitionActive;
-    private float savedTimeScale = 1f;
     private bool isInitialized;
     private bool ownsRuntimeOverlay;
     private SceneFadeTransitionService pendingReplacementInstance;
@@ -191,8 +190,7 @@ public sealed class SceneFadeTransitionService : MonoBehaviour
         isTransitionActive = true;
         PrepareTransitionUi();
         LockCurrentPlayer();
-        savedTimeScale = Time.timeScale;
-        Time.timeScale = 0f;
+        TimeScalePauseService.Acquire(this);
         ApplyOverlayVisualState(alpha: overlayCanvasGroup != null ? overlayCanvasGroup.alpha : 0f, active: true);
         return true;
     }
@@ -602,8 +600,7 @@ public sealed class SceneFadeTransitionService : MonoBehaviour
 
     private void RestoreTimeScaleImmediately()
     {
-        Time.timeScale = savedTimeScale;
-        savedTimeScale = 1f;
+        TimeScalePauseService.Release(this);
     }
 
     private void ApplyOverlayVisualState(float alpha, bool active)
