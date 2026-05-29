@@ -113,7 +113,7 @@ MeshRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -1039746825
-  m_SortingLayer: 2
+  m_SortingLayer: 5
   m_SortingOrder: 4
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
@@ -296,7 +296,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -1039746825
-  m_SortingLayer: 2
+  m_SortingLayer: 5
   m_SortingOrder: 1
   m_MaskInteraction: 0
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
@@ -387,7 +387,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -1039746825
-  m_SortingLayer: 2
+  m_SortingLayer: 5
   m_SortingOrder: 2
   m_MaskInteraction: 0
   m_Sprite: {fileID: -7124369960627298605, guid: 18d964c917812d04982e285e007fac25, type: 3}
@@ -443,6 +443,7 @@ GameObject:
   - component: {fileID: 7908045054142067715}
   - component: {fileID: 351202635860622217}
   - component: {fileID: 6871006423639541256}
+  - component: {fileID: 735738594576526300}
   m_Layer: 0
   m_Name: Statue
   m_TagString: Untagged
@@ -515,10 +516,10 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -1039746825
-  m_SortingLayer: 2
+  m_SortingLayer: 5
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 21300114, guid: 29c9cded5e558164aaf8c9bf08aa1510, type: 3}
+  m_Sprite: {fileID: 5468538506382318938, guid: b271e16036821b04784f014df3e695a9, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -560,6 +561,162 @@ MonoBehaviour:
         volumeMultiplier: 0
         anchorPolicy: 0
         localOffset: {x: 0, y: 0, z: 0}
+      cameraShakeOnExecute:
+        amplitude: 0
+        amplitudeMultiplier: 0
+        maxAmplitude: 0
+        minIntervalSeconds: 0
+        directionMode: 0
+        customDirection: {x: 0, y: 0, z: 0}
+        ignoreScreenShakeSetting: 0
+      cameraShakeWhileActive:
+        amplitude: 0
+        amplitudeMultiplier: 0
+        maxAmplitude: 0
+        minIntervalSeconds: 0
+        directionMode: 0
+        customDirection: {x: 0, y: 0, z: 0}
+        ignoreScreenShakeSetting: 0
+      cameraShakeOnRemove:
+        amplitude: 0
+        amplitudeMultiplier: 0
+        maxAmplitude: 0
+        minIntervalSeconds: 0
+        directionMode: 0
+        customDirection: {x: 0, y: 0, z: 0}
+        ignoreScreenShakeSetting: 0
+      presentationOnExecute:
+        sound:
+          key: 
+          volumeMultiplier: 0
+          anchorPolicy: 0
+          localOffset: {x: 0, y: 0, z: 0}
+        randomSounds: []
+        additionalSounds: []
+        cameraShake:
+          amplitude: 0
+          amplitudeMultiplier: 0
+          maxAmplitude: 0
+          minIntervalSeconds: 0
+          directionMode: 0
+          customDirection: {x: 0, y: 0, z: 0}
+          ignoreScreenShakeSetting: 0
+        effect:
+          prefab: {fileID: 0}
+          localOffset: {x: 0, y: 0, z: 0}
+          rotationOffsetZ: 0
+          scaleMultiplier: {x: 0, y: 0, z: 0}
+          attachToTarget: 0
+          anchorMode: 0
+          scaleMode: 0
+          boundsMode: 0
+          targetBoundsReferenceSize: 0
+          targetBoundsScaleMultiplier: 0
+          lifetimeMode: 0
+          lifetimeOverrideSeconds: 0
+          useUnscaledTime: 0
+        particle:
+          prefab: {fileID: 0}
+          localOffset: {x: 0, y: 0, z: 0}
+          rotationOffsetZ: 0
+          scaleMultiplier: {x: 0, y: 0, z: 0}
+          attachToTarget: 0
+          anchorMode: 0
+          scaleMode: 0
+          boundsMode: 0
+          targetBoundsReferenceSize: 0
+          targetBoundsScaleMultiplier: 0
+          lifetimeMode: 0
+          lifetimeOverrideSeconds: 0
+          useUnscaledTime: 0
+      presentationWhileActive:
+        sound:
+          key: 
+          volumeMultiplier: 0
+          anchorPolicy: 0
+          localOffset: {x: 0, y: 0, z: 0}
+        randomSounds: []
+        additionalSounds: []
+        cameraShake:
+          amplitude: 0
+          amplitudeMultiplier: 0
+          maxAmplitude: 0
+          minIntervalSeconds: 0
+          directionMode: 0
+          customDirection: {x: 0, y: 0, z: 0}
+          ignoreScreenShakeSetting: 0
+        effect:
+          prefab: {fileID: 0}
+          localOffset: {x: 0, y: 0, z: 0}
+          rotationOffsetZ: 0
+          scaleMultiplier: {x: 0, y: 0, z: 0}
+          attachToTarget: 0
+          anchorMode: 0
+          scaleMode: 0
+          boundsMode: 0
+          targetBoundsReferenceSize: 0
+          targetBoundsScaleMultiplier: 0
+          lifetimeMode: 0
+          lifetimeOverrideSeconds: 0
+          useUnscaledTime: 0
+        particle:
+          prefab: {fileID: 0}
+          localOffset: {x: 0, y: 0, z: 0}
+          rotationOffsetZ: 0
+          scaleMultiplier: {x: 0, y: 0, z: 0}
+          attachToTarget: 0
+          anchorMode: 0
+          scaleMode: 0
+          boundsMode: 0
+          targetBoundsReferenceSize: 0
+          targetBoundsScaleMultiplier: 0
+          lifetimeMode: 0
+          lifetimeOverrideSeconds: 0
+          useUnscaledTime: 0
+      presentationOnRemove:
+        sound:
+          key: 
+          volumeMultiplier: 0
+          anchorPolicy: 0
+          localOffset: {x: 0, y: 0, z: 0}
+        randomSounds: []
+        additionalSounds: []
+        cameraShake:
+          amplitude: 0
+          amplitudeMultiplier: 0
+          maxAmplitude: 0
+          minIntervalSeconds: 0
+          directionMode: 0
+          customDirection: {x: 0, y: 0, z: 0}
+          ignoreScreenShakeSetting: 0
+        effect:
+          prefab: {fileID: 0}
+          localOffset: {x: 0, y: 0, z: 0}
+          rotationOffsetZ: 0
+          scaleMultiplier: {x: 0, y: 0, z: 0}
+          attachToTarget: 0
+          anchorMode: 0
+          scaleMode: 0
+          boundsMode: 0
+          targetBoundsReferenceSize: 0
+          targetBoundsScaleMultiplier: 0
+          lifetimeMode: 0
+          lifetimeOverrideSeconds: 0
+          useUnscaledTime: 0
+        particle:
+          prefab: {fileID: 0}
+          localOffset: {x: 0, y: 0, z: 0}
+          rotationOffsetZ: 0
+          scaleMultiplier: {x: 0, y: 0, z: 0}
+          attachToTarget: 0
+          anchorMode: 0
+          scaleMode: 0
+          boundsMode: 0
+          targetBoundsReferenceSize: 0
+          targetBoundsScaleMultiplier: 0
+          lifetimeMode: 0
+          lifetimeOverrideSeconds: 0
+          useUnscaledTime: 0
       cuesOnExecute: []
       cuesWhileActive: []
       cuesOnRemove: []
@@ -583,10 +740,19 @@ MonoBehaviour:
   requirementIconRenderer: {fileID: 6539283319822102739}
   requirementAmountText: {fileID: 7687705846374167803}
   interactPromptRoot: {fileID: 5252018772044892120}
-  activatedRoot: {fileID: 0}
+  activatedRoot: {fileID: 2299076290862515328}
   magicStoneIcon: {fileID: -7124369960627298605, guid: 18d964c917812d04982e285e007fac25, type: 3}
   hpIcon: {fileID: 3411045427079179176, guid: e75f469ea29530246a4a0543396316af, type: 3}
-  highlightRenderer: {fileID: 0}
+  statueAnimator: {fileID: 735738594576526300}
+  waitForOfferingFillAnimationEvent: 1
+  statueRenderer: {fileID: 7908045054142067715}
+  magicStoneVisual:
+    statueSprite: {fileID: 5468538506382318938, guid: b271e16036821b04784f014df3e695a9, type: 3}
+    animatorController: {fileID: 9100000, guid: 90f236237688fae45b3f4d3152ada6e0, type: 2}
+  hpVisual:
+    statueSprite: {fileID: 4262318189563216989, guid: b271e16036821b04784f014df3e695a9, type: 3}
+    animatorController: {fileID: 9100000, guid: f55cedc7c3859984fa9ba057d9743374, type: 2}
+  highlightRenderer: {fileID: 7908045054142067715}
   highlightTarget: {fileID: 0}
 --- !u!61 &6871006423639541256
 BoxCollider2D:
@@ -626,7 +792,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0}
-    oldSize: {x: 1.15625, y: 2.28125}
+    oldSize: {x: 1.0625, y: 2.0625}
     newSize: {x: 0.5, y: 0.5}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -634,6 +800,28 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 2.5, y: 2.5}
   m_EdgeRadius: 0
+--- !u!95 &735738594576526300
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6578129014226894282}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 90f236237688fae45b3f4d3152ada6e0, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &7517094310018107034
 GameObject:
   m_ObjectHideFlags: 0
