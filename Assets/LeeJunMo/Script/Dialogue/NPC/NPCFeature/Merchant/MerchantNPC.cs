@@ -1,9 +1,12 @@
 using System;
 using System.Collections.Generic;
+using CapstoneAudio;
 using UnityEngine;
 
 public sealed class MerchantNPC : MonoBehaviour
 {
+    private static readonly SoundRef PurchaseSound = SoundRef.FromKey("ui.shop.purchase");
+
     [Serializable]
     private struct ShopSlotAnchorDefinition
     {
@@ -144,6 +147,7 @@ public sealed class MerchantNPC : MonoBehaviour
         MerchantPurchaseResult result = purchaseService.TryPurchase(player, slotEntry, itemDefinition);
         if (result.Succeeded)
         {
+            SoundPlaybackUtility.Play(PurchaseSound, sourceObject: this);
             runStateService.MarkSlotSold(runtimeState, slotIndex);
             RefreshSlot(slotIndex);
             return;

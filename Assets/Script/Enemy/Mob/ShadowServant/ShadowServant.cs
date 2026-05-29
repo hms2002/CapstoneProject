@@ -7,6 +7,7 @@ using UnityGAS;
 public class ShadowServant : Mob, IMobAttackDecisionSource
 {
     private const float DefaultPresentationLifetimeSeconds = 1f;
+    private static readonly SoundRef DefaultAttackSound = SoundRef.FromKey("sound_shadowServant_boom");
 
     // 이 클래스의 책임:
     // ShadowServant의 공격 조건 판단과 공격 설정 데이터 제공을 담당하고, 실제 시퀀스 실행은 AD/runner에 위임한다.
@@ -263,8 +264,9 @@ public class ShadowServant : Mob, IMobAttackDecisionSource
             data.attackParticleLifetimeOverrideSeconds,
             data.useUnscaledAttackParticleTime);
 
+        SoundRef attackSound = data.attackSound.IsSet ? data.attackSound : DefaultAttackSound;
         SoundPlaybackUtility.Play(
-            data.attackSound,
+            attackSound,
             instigator: gameObject,
             causer: gameObject,
             target: target != null ? target.gameObject : null,

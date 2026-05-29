@@ -41053,7 +41053,7 @@ PrefabInstance:
       objectReference: {fileID: 11400000, guid: 2199820cb676dbc4692f5aca1000cb22, type: 2}
     - target: {fileID: 5909209640859858232, guid: 99cd9d723ba00e14e8bf7327129f4aae, type: 3}
       propertyPath: entranceCenterWorldOffset.y
-      value: -0.2
+      value: 0.6406012
       objectReference: {fileID: 0}
     - target: {fileID: 6050417876131653467, guid: 99cd9d723ba00e14e8bf7327129f4aae, type: 3}
       propertyPath: m_SpriteSortPoint

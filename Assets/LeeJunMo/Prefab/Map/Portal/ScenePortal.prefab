@@ -5685,5 +5685,5 @@ MonoBehaviour:
   entranceDuration: 0.55
   entranceRotationDegrees: 720
   entranceCenter: {fileID: 0}
-  entranceCenterWorldOffset: {x: 0, y: 0, z: 0}
+  entranceCenterWorldOffset: {x: 0, y: 0.6406012, z: 0}
   sceneTravelCleanupTagSets: []

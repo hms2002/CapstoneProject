@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityGAS;
+using CapstoneAudio;
 
 /// <summary>
 /// 책임:
@@ -11,6 +12,8 @@ using UnityGAS;
 [RequireComponent(typeof(WizardScatterShotRunner))]
 public class Wizard : Slime
 {
+    private static readonly SoundRef ShotFireSound = SoundRef.FromKey("sound_wizard_shotFire");
+
     private const string AttackPrepareTriggerName = "attackPrepare";
     private const string AttackTriggerName = "attack";
     private const string DieTriggerName = "die";
@@ -186,6 +189,7 @@ public class Wizard : Slime
     {
         if (context.HitPayload == null || !context.HitPayload.IsValid()) return;
 
+        PlayShotFireSound(context.Origin);
         for (int i = 0; i < ShotCount; i++)
         {
             Vector2 direction = GetShotDirection(context.Direction);
@@ -216,6 +220,18 @@ public class Wizard : Slime
 
             projectile.Setup(spawnContext);
         }
+    }
+
+    /// <summary>Wizard 산탄 탄막 묶음 발사 타이밍에 사운드를 한 번 재생합니다.</summary>
+    private void PlayShotFireSound(Vector2 origin)
+    {
+        SoundPlaybackUtility.Play(
+            ShotFireSound,
+            instigator: gameObject,
+            causer: gameObject,
+            target: target != null ? target.gameObject : null,
+            position: origin,
+            sourceObject: this);
     }
 
     /// <summary>마법사의 기본 스탯과 크기를 적용합니다.</summary>

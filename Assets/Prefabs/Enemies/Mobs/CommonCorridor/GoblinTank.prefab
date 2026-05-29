@@ -29,6 +29,9 @@ GameObject:
   - component: {fileID: 8267142823806665185}
   - component: {fileID: 2163981048909941738}
   - component: {fileID: 8519541981975835247}
+  - component: {fileID: 7700200000000002}
+  - component: {fileID: 7700100000000002}
+  - component: {fileID: 4689914371086142016}
   m_Layer: 31
   m_Name: GoblinTank
   m_TagString: Enemy
@@ -53,6 +56,7 @@ Transform:
   - {fileID: 2893319327615597744}
   - {fileID: 1014265358309527294}
   - {fileID: 1014265358309527288}
+  - {fileID: 6729693867884112935}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &890152574739314615
@@ -450,6 +454,70 @@ MonoBehaviour:
   slamAbility: {fileID: 11400000, guid: 929248361764bfd478dbd50355bbff72, type: 2}
   maxHealth: 18
   chaseSpeedScale: 0.7
+--- !u!114 &7700200000000002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 827981175415890305}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fad5d077aaa519a4f831d619818082a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  viewPrefab: {fileID: 4173988088759112643, guid: 08da978b416319e47889bb7d3e9e0343, type: 3}
+  uiParentOverride: {fileID: 2659726163241547920}
+  installOnStart: 1
+--- !u!114 &7700100000000002
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 827981175415890305}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1d4aa4b27d4ffd45b29291c3673f422, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  catalog: {fileID: 11400000, guid: 170c93a1a1f812a4998120c119fcd1e0, type: 2}
+  useDecay: 1
+  decayDelaySeconds: 3
+  decayPercentPerSecond: 0.02
+  allowOverflowCarry: 1
+  logWhenTriggered: 0
+  logMissingDefinition: 1
+  runtimeStates:
+  - definition: {fileID: 11400000, guid: c8dcfe51fa9e3e044aed999a44ea0965, type: 2}
+    currentBuildUp: 0
+    lastBuildUpTime: 0
+    sustainVfxInstance: {fileID: 0}
+    uiVisible: 1
+  - definition: {fileID: 11400000, guid: af992dd323e918342ae0adff8855bbff, type: 2}
+    currentBuildUp: 0
+    lastBuildUpTime: 0
+    sustainVfxInstance: {fileID: 0}
+    uiVisible: 1
+  - definition: {fileID: 11400000, guid: 3805c019bc7d27c439fa252c9673e1f6, type: 2}
+    currentBuildUp: 0
+    lastBuildUpTime: 0
+    sustainVfxInstance: {fileID: 0}
+    uiVisible: 1
+--- !u!114 &4689914371086142016
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 827981175415890305}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b1a21a5a77b4e9e8d68c54b70c393fe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MonsterElementGaugeAnchor2D
+  anchor: {fileID: 6729693867884112935}
+  fallbackOffset: {x: 0, y: -1}
 --- !u!1 &1014265358309527293
 GameObject:
   m_ObjectHideFlags: 0
@@ -718,6 +786,37 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!1 &1755403901573839510
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6729693867884112935}
+  m_Layer: 31
+  m_Name: ElementGaugePivot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6729693867884112935
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1755403901573839510}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.22, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2659726163241547920}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4156382929136958610
 GameObject:
   m_ObjectHideFlags: 0

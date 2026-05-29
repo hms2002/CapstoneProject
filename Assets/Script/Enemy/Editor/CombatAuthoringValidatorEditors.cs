@@ -64,6 +64,7 @@ public static class CombatAuthoringValidationUtility
         ValidateRequiredComponent<TagSystem>(root, results, "TagSystem이 없습니다 -> 상태 태그 기반 분기와 제압 규칙이 흔들릴 수 있습니다.");
         ValidateRequiredComponent<AttributeSet>(root, results, "AttributeSet이 없습니다 -> 체력/스탯 기반 전투 계산이 정상 동작하지 않습니다.");
         ValidateRequiredComponent<GameplayEffectRunner>(root, results, "GameplayEffectRunner가 없습니다 -> GE 적용/갱신 경로가 비활성일 수 있습니다.");
+        ValidateElementGaugeAuthoring(root, results);
 
         if (root.GetComponentInChildren<CombatHurtbox2D>(true) == null)
         {
@@ -130,6 +131,66 @@ public static class CombatAuthoringValidationUtility
         }
 
         return results;
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - 속성 피해를 받을 수 있는 전투 본체가 ElementGaugeSystem과 월드 게이지 View installer를 갖췄는지 검사한다.
+    /// - 투사체/이펙트가 아닌 Enemy/보스/훈련 더미 authoring에서 속성 게이지 누락을 조기에 드러낸다.
+    /// </summary>
+    private static void ValidateElementGaugeAuthoring(GameObject root, List<AuthoringValidationMessage> results)
+    {
+        if (!ShouldRequireElementGauge(root))
+            return;
+
+        ElementGaugeSystem gauge = root.GetComponent<ElementGaugeSystem>();
+        if (gauge == null)
+        {
+            results.Add(new AuthoringValidationMessage(
+                AuthoringValidationSeverity.Error,
+                "ElementGaugeSystem이 없습니다 -> 속성 피해를 받아도 속성 게이지 누적/표시가 동작하지 않습니다."));
+            return;
+        }
+
+        SerializedObject gaugeSerialized = new(gauge);
+        if (!HasObjectReference(gaugeSerialized, "catalog"))
+        {
+            results.Add(new AuthoringValidationMessage(
+                AuthoringValidationSeverity.Error,
+                "ElementGaugeSystem.catalog가 비어 있습니다 -> Element Gauge Catalog를 연결해야 속성별 게이지를 만들 수 있습니다."));
+        }
+
+        MonsterElementGaugeViewInstaller installer = root.GetComponent<MonsterElementGaugeViewInstaller>();
+        if (installer == null)
+        {
+            results.Add(new AuthoringValidationMessage(
+                AuthoringValidationSeverity.Warning,
+                "MonsterElementGaugeViewInstaller가 없습니다 -> 직접 배치된 몬스터/보스는 속성 게이지 View가 자동 생성되지 않을 수 있습니다."));
+            return;
+        }
+
+        SerializedObject installerSerialized = new(installer);
+        if (!HasObjectReference(installerSerialized, "viewPrefab"))
+        {
+            results.Add(new AuthoringValidationMessage(
+                AuthoringValidationSeverity.Error,
+                "MonsterElementGaugeViewInstaller.viewPrefab이 비어 있습니다 -> 속성 게이지 UI prefab을 연결하세요."));
+        }
+    }
+
+    private static bool ShouldRequireElementGauge(GameObject root)
+    {
+        if (root == null || root.GetComponent<AttributeSet>() == null)
+            return false;
+
+        return root.GetComponent<Enemy>() != null ||
+               root.GetComponent<TrainingDummy2D>() != null;
+    }
+
+    private static bool HasObjectReference(SerializedObject serialized, string propertyName)
+    {
+        SerializedProperty property = serialized.FindProperty(propertyName);
+        return property != null && property.objectReferenceValue != null;
     }
 
     private static void ValidateRequiredComponent<T>(

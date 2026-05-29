@@ -215,11 +215,8 @@ public sealed class StatusHudTooltipView : MonoBehaviour, IHoverView
     /// </summary>
     private Image CreateIcon(string name)
     {
-        Transform existing = transform.Find(name);
-        GameObject child = existing != null ? existing.gameObject : new GameObject(name);
-        child.transform.SetParent(transform, false);
-
-        RectTransform childRect = child.GetComponent<RectTransform>() ?? child.AddComponent<RectTransform>();
+        RectTransform childRect = GetOrCreateUiChild(name);
+        GameObject child = childRect.gameObject;
         childRect.anchorMin = new Vector2(0f, 1f);
         childRect.anchorMax = new Vector2(0f, 1f);
         childRect.sizeDelta = new Vector2(32f, 32f);
@@ -235,11 +232,8 @@ public sealed class StatusHudTooltipView : MonoBehaviour, IHoverView
 
     private TMP_Text CreateText(string name, int fontSize, FontStyles fontStyle, TextAlignmentOptions alignment, Color color)
     {
-        Transform existing = transform.Find(name);
-        GameObject child = existing != null ? existing.gameObject : new GameObject(name);
-        child.transform.SetParent(transform, false);
-
-        RectTransform childRect = child.GetComponent<RectTransform>() ?? child.AddComponent<RectTransform>();
+        RectTransform childRect = GetOrCreateUiChild(name);
+        GameObject child = childRect.gameObject;
         childRect.anchorMin = new Vector2(0f, 1f);
         childRect.anchorMax = new Vector2(1f, 1f);
 
@@ -252,5 +246,27 @@ public sealed class StatusHudTooltipView : MonoBehaviour, IHoverView
         text.enableWordWrapping = true;
         text.overflowMode = TextOverflowModes.Overflow;
         return text;
+    }
+
+    /// <summary>
+    /// 책임 :
+    /// - fallback UI 생성 시 같은 이름의 일반 Transform 자식이 있어도 RectTransform 기반 UI 자식을 안전하게 보장한다.
+    /// - 잘못 authoring된 레거시 자식은 비활성화하고 새 UI 자식을 만들어 MissingComponentException을 막는다.
+    /// </summary>
+    private RectTransform GetOrCreateUiChild(string name)
+    {
+        Transform existing = transform.Find(name);
+        if (existing != null && existing.TryGetComponent(out RectTransform existingRect))
+            return existingRect;
+
+        if (existing != null)
+        {
+            existing.gameObject.SetActive(false);
+            existing.name = $"{name}_NonUiLegacy";
+        }
+
+        GameObject child = new(name, typeof(RectTransform));
+        child.transform.SetParent(transform, false);
+        return child.GetComponent<RectTransform>();
     }
 }

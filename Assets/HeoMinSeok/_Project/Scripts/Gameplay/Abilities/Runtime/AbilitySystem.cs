@@ -681,6 +681,7 @@ namespace UnityGAS
             if (currentCastSpec == spec || currentExecSpec == spec || IsParallelExecuting(spec))
                 return false;
 
+            presentationRouter?.PlayCastStart(def, spec, target);
             CommitAbilityCast(spec, def, target);
             cooldownController?.ConsumeChargeOnCommit(spec, def);
 

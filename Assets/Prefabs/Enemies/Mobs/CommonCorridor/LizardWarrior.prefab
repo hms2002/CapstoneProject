@@ -1,5 +1,36 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &937358426305561240
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1209318688673364916}
+  m_Layer: 31
+  m_Name: ElementGaugePivot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1209318688673364916
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 937358426305561240}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.22, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7274215414044830453}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2806868201374347340
 GameObject:
   m_ObjectHideFlags: 0
@@ -120,6 +151,9 @@ GameObject:
   - component: {fileID: 316479834885228407}
   - component: {fileID: 6363033391236315169}
   - component: {fileID: 4955077479827748174}
+  - component: {fileID: 7700200000000003}
+  - component: {fileID: 7700100000000003}
+  - component: {fileID: 7733485891336556685}
   m_Layer: 31
   m_Name: LizardWarrior
   m_TagString: Enemy
@@ -144,6 +178,7 @@ Transform:
   - {fileID: 4561858864242873996}
   - {fileID: 5623146841039510683}
   - {fileID: 5623146841039510685}
+  - {fileID: 1209318688673364916}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &5494531967321859538
@@ -545,6 +580,70 @@ MonoBehaviour:
   logMobFsmDebug: 0
   chargeAbility: {fileID: 11400000, guid: 0458cbeedbbc9844681e63e937311d3b, type: 2}
   maxHealth: 8
+--- !u!114 &7700200000000003
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5433486041897825252}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fad5d077aaa519a4f831d619818082a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  viewPrefab: {fileID: 4173988088759112643, guid: 08da978b416319e47889bb7d3e9e0343, type: 3}
+  uiParentOverride: {fileID: 7274215414044830453}
+  installOnStart: 1
+--- !u!114 &7700100000000003
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5433486041897825252}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1d4aa4b27d4ffd45b29291c3673f422, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  catalog: {fileID: 11400000, guid: 170c93a1a1f812a4998120c119fcd1e0, type: 2}
+  useDecay: 1
+  decayDelaySeconds: 3
+  decayPercentPerSecond: 0.02
+  allowOverflowCarry: 1
+  logWhenTriggered: 0
+  logMissingDefinition: 1
+  runtimeStates:
+  - definition: {fileID: 11400000, guid: c8dcfe51fa9e3e044aed999a44ea0965, type: 2}
+    currentBuildUp: 0
+    lastBuildUpTime: 0
+    sustainVfxInstance: {fileID: 0}
+    uiVisible: 1
+  - definition: {fileID: 11400000, guid: af992dd323e918342ae0adff8855bbff, type: 2}
+    currentBuildUp: 0
+    lastBuildUpTime: 0
+    sustainVfxInstance: {fileID: 0}
+    uiVisible: 1
+  - definition: {fileID: 11400000, guid: 3805c019bc7d27c439fa252c9673e1f6, type: 2}
+    currentBuildUp: 0
+    lastBuildUpTime: 0
+    sustainVfxInstance: {fileID: 0}
+    uiVisible: 1
+--- !u!114 &7733485891336556685
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5433486041897825252}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b1a21a5a77b4e9e8d68c54b70c393fe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MonsterElementGaugeAnchor2D
+  anchor: {fileID: 1209318688673364916}
+  fallbackOffset: {x: 0, y: -1}
 --- !u!1 &5623146841039510680
 GameObject:
   m_ObjectHideFlags: 0

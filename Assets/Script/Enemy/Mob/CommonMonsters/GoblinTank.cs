@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityGAS;
+using CapstoneAudio;
 
 /// <summary>
 /// 책임:
@@ -155,6 +156,8 @@ public sealed class GoblinTank : Mob, IMobAttackDecisionSource
 [RequireComponent(typeof(GoblinTank))]
 public sealed partial class GoblinTankSlamRunner : MonoBehaviour, IMobPatternRunner, IMobPresentationCleanup
 {
+    private static readonly SoundRef SlamSound = SoundRef.FromKey("sound_goblinTank_Slam");
+
     [SerializeField] private GoblinTank owner;
     [SerializeField] private MobAbilityCoordinator abilityCoordinator;
     [SerializeField] private AttackTelegraphService telegraphService;
@@ -215,6 +218,7 @@ public sealed partial class GoblinTankSlamRunner : MonoBehaviour, IMobPatternRun
             if (cancelRequested || owner.IsDead || IsCancelled(spec))
                 yield break;
 
+            PlaySlamSound(context.Center);
             SpawnImpactEffect(context.Center, context.ImpactDiameter, logic);
             CommonMonsterCombatUtility.TryApplyCircleDamage(
                 context.Center,
@@ -255,6 +259,18 @@ public sealed partial class GoblinTankSlamRunner : MonoBehaviour, IMobPatternRun
     private void HideWarning()
     {
         telegraphService?.HideCurrent();
+    }
+
+    /// <summary>고블린 탱커 내려찍기 피해 타이밍에 임팩트 사운드를 재생합니다.</summary>
+    private void PlaySlamSound(Vector2 center)
+    {
+        SoundPlaybackUtility.Play(
+            SlamSound,
+            instigator: owner != null ? owner.gameObject : gameObject,
+            causer: owner != null ? owner.gameObject : gameObject,
+            target: null,
+            position: center,
+            sourceObject: this);
     }
 
     /// <summary>

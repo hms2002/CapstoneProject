@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityGAS;
+using CapstoneAudio;
 
 /// <summary>
 /// 책임:
@@ -194,6 +195,9 @@ public sealed class ArcaneMeleeGolem : Mob, IMobAttackDecisionSource
 [RequireComponent(typeof(ArcaneMeleeGolem))]
 public sealed partial class ArcaneMeleeGolemChargeRunner : MonoBehaviour, IMobPatternRunner, IMobPresentationCleanup
 {
+    private static readonly SoundRef Dash1Sound = SoundRef.FromKey("sound_arcaneMeleeGolem_dash1");
+    private static readonly SoundRef Dash2Sound = SoundRef.FromKey("sound_arcaneMeleeGolem_dash2");
+
     [SerializeField] private ArcaneMeleeGolem owner;
     [SerializeField] private MobAbilityCoordinator abilityCoordinator;
     [SerializeField] private AttackTelegraphService telegraphService;
@@ -242,9 +246,9 @@ public sealed partial class ArcaneMeleeGolemChargeRunner : MonoBehaviour, IMobPa
 
         try
         {
-            yield return RunStep(system, context, owner.FirstStep, spec);
+            yield return RunStep(system, context, owner.FirstStep, spec, 0);
             if (!cancelRequested && !owner.IsDead && !IsCancelled(spec))
-                yield return RunStep(system, context, owner.SecondStep, spec);
+                yield return RunStep(system, context, owner.SecondStep, spec, 1);
         }
         finally
         {
@@ -271,7 +275,7 @@ public sealed partial class ArcaneMeleeGolemChargeRunner : MonoBehaviour, IMobPa
     /// - 마도 근접 골렘의 각 돌진 타격을 리자드 워리어와 같은 AttackReady -> Attack 흐름으로 실행한다.
     /// - 각 step 준비 시점마다 경고, 방향 고정, 공격 애니메이션을 새로 확정한다.
     /// </summary>
-    private IEnumerator RunStep(AbilitySystem system, ArcaneMeleeGolem.ChargeContext context, ArcaneMeleeGolem.ChargeStep step, AbilitySpec spec)
+    private IEnumerator RunStep(AbilitySystem system, ArcaneMeleeGolem.ChargeContext context, ArcaneMeleeGolem.ChargeStep step, AbilitySpec spec, int stepIndex)
     {
         Vector2 direction = context.Target != null
             ? CommonMonsterCombatUtility.DirectionTo(gameObject, context.Target, false)
@@ -291,6 +295,7 @@ public sealed partial class ArcaneMeleeGolemChargeRunner : MonoBehaviour, IMobPa
 
             HideWarning();
             CommonMonsterCombatUtility.TriggerAnimation(owner, CommonMonsterAnimationCue.Attack);
+            PlayDashSound(stepIndex);
             yield return Dash(direction, step, context.HitPayload, spec);
         }
         finally
@@ -355,6 +360,19 @@ public sealed partial class ArcaneMeleeGolemChargeRunner : MonoBehaviour, IMobPa
     private void HideWarning()
     {
         telegraphService?.HideCurrent();
+    }
+
+    /// <summary>마도 근접 골렘의 1타/2타 돌진 시작 타이밍에 대응 사운드를 재생합니다.</summary>
+    private void PlayDashSound(int stepIndex)
+    {
+        SoundRef sound = stepIndex <= 0 ? Dash1Sound : Dash2Sound;
+        SoundPlaybackUtility.Play(
+            sound,
+            instigator: gameObject,
+            causer: gameObject,
+            target: owner != null && owner.Target != null ? owner.Target.gameObject : null,
+            position: transform.position,
+            sourceObject: this);
     }
 
     private static bool IsCancelled(AbilitySpec spec)

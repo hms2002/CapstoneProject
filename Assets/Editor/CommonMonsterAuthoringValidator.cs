@@ -119,14 +119,40 @@ public static class CommonMonsterAuthoringValidator
         RequireComponent<EntityCollisionProfile2D>(path, prefab, errors);
         RequireComponent<GroggyOverheadEffectPresenter2D>(path, prefab, errors);
         RequireComponent<CommonMonsterAnimatorBridge>(path, prefab, errors);
+        RequireComponent<ElementGaugeSystem>(path, prefab, errors);
+        RequireComponent<MonsterElementGaugeViewInstaller>(path, prefab, errors);
 
         ValidateVisual(path, prefab, errors);
         ValidateChildColliders(path, prefab, errors);
         ValidateAbilitySystem(path, prefab, errors);
         ValidateCoordinator(path, prefab, errors);
         ValidateGroggyPresenter(path, prefab, errors);
+        ValidateElementGauge(path, prefab, errors);
         ValidateAnimator(path, prefab, errors);
         ValidateHeightPresentation(path, prefab, errors);
+    }
+
+    /// <summary>
+    /// 책임:
+    /// - 공통 몬스터가 속성 피해 누적 시스템과 월드 게이지 View authoring을 함께 갖췄는지 검증한다.
+    /// - 생성기 재실행 후 catalog/view prefab 참조가 비는 회귀를 잡는다.
+    /// </summary>
+    private static void ValidateElementGauge(string path, GameObject prefab, List<string> errors)
+    {
+        ElementGaugeSystem gauge = prefab.GetComponent<ElementGaugeSystem>();
+        if (gauge != null)
+        {
+            SerializedObject serialized = new(gauge);
+            RequireObjectReference(path, serialized, "catalog", errors);
+        }
+
+        MonsterElementGaugeViewInstaller installer = prefab.GetComponent<MonsterElementGaugeViewInstaller>();
+        if (installer == null)
+            return;
+
+        SerializedObject installerSerialized = new(installer);
+        RequireObjectReference(path, installerSerialized, "viewPrefab", errors);
+        RequireObjectReference(path, installerSerialized, "uiParentOverride", errors);
     }
 
     private static void ValidateVisual(string path, GameObject prefab, List<string> errors)

@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityGAS;
+using CapstoneAudio;
 
 /// <summary>
 /// 책임 :
@@ -8,6 +9,7 @@ using UnityGAS;
 /// </summary>
 public class StrangeCandlestick : Mob, IMobAttackDecisionSource
 {
+    private static readonly SoundRef ShotFireSound = SoundRef.FromKey("sound_strangeCandlestick_shotFire");
     private static readonly System.Collections.Generic.List<StrangeCandlestick> instances = new();
     private const int WallLayer = 30;
     [Header("Ability")]
@@ -314,6 +316,7 @@ public class StrangeCandlestick : Mob, IMobAttackDecisionSource
             speed = Mathf.Max(0f, data.projectileSpeed)
         };
 
+        PlayShotFireSound();
         lightBead.Setup(context);
         nextProjectileFireTime = Time.time + CombatTimingService.ScaleSeconds(
             abilitySystem,
@@ -324,6 +327,18 @@ public class StrangeCandlestick : Mob, IMobAttackDecisionSource
             animator.SetTrigger("attack");
 
         return true;
+    }
+
+    /// <summary>StrangeCandlestick 탄막 발사 타이밍에 사운드를 재생합니다.</summary>
+    private void PlayShotFireSound()
+    {
+        SoundPlaybackUtility.Play(
+            ShotFireSound,
+            instigator: gameObject,
+            causer: gameObject,
+            target: target != null ? target.gameObject : null,
+            position: transform.position,
+            sourceObject: this);
     }
 
     private void HideLockOnTelegraph()

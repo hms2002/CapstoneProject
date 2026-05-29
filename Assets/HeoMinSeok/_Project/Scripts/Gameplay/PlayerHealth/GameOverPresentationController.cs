@@ -200,6 +200,10 @@ public sealed class GameOverPresentationController : MonoBehaviour
     [SerializeField] private RectTransform returnHoleOccluderRect;
     [SerializeField] private RectTransform returnHoleDownMaskRect;
 
+    [Header("Audio")]
+    [SerializeField] private SoundRef gameOverBgm = SoundRef.FromKey("GameOverBGM");
+    [SerializeField, Min(0f)] private float gameOverBgmFadeSeconds = 0.5f;
+
     [Header("Legacy World Return Presentation")]
     [SerializeField] private Transform returnPitTransform;
     [SerializeField] private SpriteRenderer returnPitRenderer;
@@ -331,6 +335,7 @@ public sealed class GameOverPresentationController : MonoBehaviour
         CaptureDefaultTimeTextActive();
         ValidateAuthoredReferences();
         PrepareGameplayState(request.PlayerTransform);
+        PlayGameOverBgm();
         CenterCameraOnPlayer(request.PlayerTransform);
         CaptureReturnPlayerSnapshot(request.PlayerTransform);
         MouseCursorService.Instance?.SetDomain(this, MouseCursorDomain.SystemUi, priority: SystemCursorPriority);
@@ -341,6 +346,15 @@ public sealed class GameOverPresentationController : MonoBehaviour
             StopCoroutine(activeRoutine);
 
         activeRoutine = StartCoroutine(CoShow());
+    }
+
+    /// <summary>게임오버 연출 시작 시 기존 런 BGM에서 게임오버 전용 BGM으로 전환합니다.</summary>
+    private void PlayGameOverBgm()
+    {
+        if (!gameOverBgm.IsSet)
+            return;
+
+        SoundManager.EnsureInstance().PlayMusic(gameOverBgm, gameOverBgmFadeSeconds);
     }
 
     private GameOverPresentationRequest NormalizeRequest(GameOverPresentationRequest incomingRequest)

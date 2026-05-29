@@ -1,8 +1,10 @@
+using CapstoneAudio;
 using UnityEngine;
 
 [RequireComponent(typeof(Collider2D))]
 public class WorldItemPickup2D : InteractableBase
 {
+    private static readonly SoundRef GetItemSound = SoundRef.FromKey("sound_worldDropItem_GetItem");
     private static readonly int OutlineEnabledID = Shader.PropertyToID("_OutlineEnabled");
 
     [SerializeField] private ScriptableObject item;
@@ -110,6 +112,7 @@ public class WorldItemPickup2D : InteractableBase
 
         if (result.Succeeded)
         {
+            PlayGetItemSoundIfNeeded();
             Destroy(gameObject);
             return;
         }
@@ -149,6 +152,15 @@ public class WorldItemPickup2D : InteractableBase
     {
         if (player is PlayerInteractor2D playerInteractor)
             playerInteractor.SpeakSituation(PlayerSpeechSituationEnum.InventoryFull);
+    }
+
+    private void PlayGetItemSoundIfNeeded()
+    {
+        InventoryItemKind? kind = item.KindOf();
+        if (kind != InventoryItemKind.Weapon && kind != InventoryItemKind.Relic)
+            return;
+
+        SoundPlaybackUtility.Play(GetItemSound, causer: gameObject, position: transform.position, sourceObject: this);
     }
 
     private void RefreshVisual()

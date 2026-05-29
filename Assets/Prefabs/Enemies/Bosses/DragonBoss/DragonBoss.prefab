@@ -316,6 +316,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7430654471959025258}
+  - {fileID: 5677549016880165836}
   m_Father: {fileID: 289992003612041814}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3569719267307522377
@@ -350,6 +351,37 @@ Transform:
   - {fileID: 4313995309474416445}
   m_Father: {fileID: 6647991641573689653}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &3634241740040594212
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5677549016880165836}
+  m_Layer: 0
+  m_Name: ElementGaugePivot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5677549016880165836
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3634241740040594212}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.2, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8035289504571953555}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5055118451258413439
 GameObject:
   m_ObjectHideFlags: 0
@@ -382,6 +414,9 @@ GameObject:
   - component: {fileID: 6824159300182253414}
   - component: {fileID: 6824159300182253415}
   - component: {fileID: 182207136877452930}
+  - component: {fileID: 7700200000000010}
+  - component: {fileID: 7700100000000010}
+  - component: {fileID: 538843768290444404}
   m_Layer: 31
   m_Name: DragonBoss
   m_TagString: Enemy
@@ -721,6 +756,15 @@ MonoBehaviour:
   patternShadowMotionRoot: {fileID: 4313995309474416445}
   fireBreathMouthSocket: {fileID: 6467952144724724379}
   faceTargetDuringCombat: 1
+  enableJumpAfterimage: 1
+  jumpAfterimageEmissionInterval: 0.045
+  jumpAfterimageLifetimeSeconds: 0.18
+  jumpAfterimageColor: {r: 1, g: 0.72, b: 0.45, a: 0.36}
+  scaleFireBreathWeightByPuddles: 1
+  fireBreathMinimumPuddlesToUse: 4
+  fireBreathMinimumPuddleWeightMultiplier: 1
+  fireBreathPuddlesForMaxWeight: 5
+  fireBreathMaxPuddleWeightMultiplier: 10
 --- !u!114 &90180065996933109
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -874,6 +918,7 @@ MonoBehaviour:
   deathVanishEffectOffset: {x: 0, y: 0, z: 0}
   deathSpeechSituation: 2
   deathBgmFadeOutDuration: 0
+  terminalEndingSequence: {fileID: 0}
 --- !u!114 &6824159300182253412
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -963,6 +1008,70 @@ MonoBehaviour:
   - {fileID: 3367446406404327446}
   captureInitialPositionsOnAwake: 1
   invertWhenFlipX: 1
+--- !u!114 &7700200000000010
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5055118451258413439}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fad5d077aaa519a4f831d619818082a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  viewPrefab: {fileID: 4173988088759112643, guid: 08da978b416319e47889bb7d3e9e0343, type: 3}
+  uiParentOverride: {fileID: 289992003612041814}
+  installOnStart: 1
+--- !u!114 &7700100000000010
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5055118451258413439}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1d4aa4b27d4ffd45b29291c3673f422, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  catalog: {fileID: 11400000, guid: 170c93a1a1f812a4998120c119fcd1e0, type: 2}
+  useDecay: 1
+  decayDelaySeconds: 3
+  decayPercentPerSecond: 0.02
+  allowOverflowCarry: 1
+  logWhenTriggered: 0
+  logMissingDefinition: 1
+  runtimeStates:
+  - definition: {fileID: 11400000, guid: c8dcfe51fa9e3e044aed999a44ea0965, type: 2}
+    currentBuildUp: 0
+    lastBuildUpTime: 0
+    sustainVfxInstance: {fileID: 0}
+    uiVisible: 1
+  - definition: {fileID: 11400000, guid: af992dd323e918342ae0adff8855bbff, type: 2}
+    currentBuildUp: 0
+    lastBuildUpTime: 0
+    sustainVfxInstance: {fileID: 0}
+    uiVisible: 1
+  - definition: {fileID: 11400000, guid: 3805c019bc7d27c439fa252c9673e1f6, type: 2}
+    currentBuildUp: 0
+    lastBuildUpTime: 0
+    sustainVfxInstance: {fileID: 0}
+    uiVisible: 1
+--- !u!114 &538843768290444404
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5055118451258413439}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b1a21a5a77b4e9e8d68c54b70c393fe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MonsterElementGaugeAnchor2D
+  anchor: {fileID: 5677549016880165836}
+  fallbackOffset: {x: 0, y: -1}
 --- !u!1 &5151103204004599664
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,6 +1,11 @@
 using UnityEngine;
 using System.Collections;
 
+/// <summary>
+/// 책임:
+/// - 드롭된 마정석을 플레이어 쪽으로 끌어당기고, 공식 PickupCollector2D와 접촉했을 때 재화로 적립한다.
+/// - 플레이어 root/tag 구조 변화에 영향받지 않도록 수집 판정은 수집 전용 콜라이더 컴포넌트에 위임한다.
+/// </summary>
 [RequireComponent(typeof(Collider2D))]
 public class MagicStonePickup : MonoBehaviour
 {
@@ -12,6 +17,7 @@ public class MagicStonePickup : MonoBehaviour
     public float delayBeforeMagnet = 0.5f;// 드롭 후 대기 시간
 
     private Transform targetPlayer;
+    private bool collected;
 
     private void Awake()
     {
@@ -63,15 +69,31 @@ public class MagicStonePickup : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        // 플레이어 몸에 닿으면 획득 처리
-        if (collision.CompareTag("Player"))
-        {
-            Collect();
-        }
+        TryCollect(collision);
+    }
+
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        TryCollect(collision);
+    }
+
+    private void TryCollect(Collider2D collision)
+    {
+        if (collected || collision == null)
+            return;
+
+        if (collision.GetComponent<PickupCollector2D>() == null)
+            return;
+
+        Collect();
     }
 
     private void Collect()
     {
+        if (collected)
+            return;
+
+        collected = true;
         if (CurrencyManager.Instance != null)
         {
             CurrencyManager.Instance.AddMagicStone(amount);

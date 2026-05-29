@@ -30,6 +30,10 @@ GameObject:
   - component: {fileID: 1027000}
   - component: {fileID: 1028000}
   - component: {fileID: 4160568613653900950}
+  - component: {fileID: 7700200000000012}
+  - component: {fileID: 7700100000000012}
+  - component: {fileID: 1831426399991419180}
+  - component: {fileID: 6269069264931515585}
   m_Layer: 31
   m_Name: SlimeQueenP2Long
   m_TagString: Enemy
@@ -226,29 +230,41 @@ MonoBehaviour:
   crossWaterPillarWallStopPadding: 0.05
   crossWaterPillarBlastInterval: 1.2
   crossWaterPillarBlastDiameter: 1.25
-  crossWaterPillarBlastViewSeconds: 0.2
+  crossWaterPillarBlastViewSeconds: 0.39
   crossWaterPillarDamage: 1.5
   crossWaterPillarDamageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
+  crossWaterPillarBlockedSpawnLayers:
+    serializedVersion: 2
+    m_Bits: 64
+  crossWaterPillarHoleCheckRadiusScale: 0.45
+  logSkippedCrossWaterPillarOnHole: 0
   waterCannonWarningStyle: {fileID: 11400000, guid: b15f18602ec87284d80cbd57720425f1, type: 2}
   waterCannonBeamStyle: {fileID: 0}
   waterCannonBeamVisualPrefab: {fileID: 1000000, guid: 3ec7b4634d524e0d84ec605c177e6b86, type: 3}
   waterCannonMuzzleSocket: {fileID: 6057653836644520300}
-  waterCannonLaserVfxPrefab: {fileID: 0}
-  waterCannonLaserVfxResourcePath: DemonKing/DemonKingEgoLaserVfx
+  waterCannonCenterSocket: {fileID: 6057653836644520300}
+  waterCannonStartForwardOffset: 0.26
+  waterCannonLaserVfxPrefab: {fileID: 7799575014260888715, guid: 2b4807372e2866b4b9e2a5c30bc8c2e9, type: 3}
+  waterCannonLaserVfxResourcePath: DemonKing/WaterZetLaserVfx
   waterCannonActiveSeconds: 2
   waterCannonShotWarningSeconds: 0.25
   waterCannonShotActiveSeconds: 0.12
   waterCannonShotIntervalSeconds: 0.1
   waterCannonMaxTurnAnglePerShot: 10
+  waterCannonMinTurnAnglePerShot: 8
+  waterCannonAimSnapAngle: 1.5
   waterCannonBeamGrowSeconds: 0.18
-  waterCannonVisualWidth: 0.33
+  waterCannonWarningWidthMultiplier: 4.125
+  waterCannonVfxWidth: 0.165
   waterCannonLaserBodyLengthMultiplier: 1
   waterCannonHitWidth: 0.08
-  waterCannonWallLayers:
+  waterCannonFixedDistance: 20
+  waterCannonWallHitEffectPrefab: {fileID: 0}
+  waterCannonWallHitEffectResourcePath: DemonKing/Effect_WaterjetHitparticle
+  waterCannonHitEffectWallLayers:
     serializedVersion: 2
     m_Bits: 1073741824
-  waterCannonFallbackDistance: 40
-  waterCannonWallStopPadding: 0.05
+  waterCannonHitEffectSurfaceOffset: 0.04
   waterCannonDamage: 1
   waterCannonDamageIntervalSeconds: 1
   waterCannonDamageEffect: {fileID: 11400000, guid: e4a0c190c04336e4699962b2ee02f9a1, type: 2}
@@ -628,6 +644,87 @@ MonoBehaviour:
   fallbackSortingLayerName: Entity
   sortingOrderOffset: 3
   destroyPaddingSeconds: 0.1
+--- !u!114 &7700200000000012
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1000000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fad5d077aaa519a4f831d619818082a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  viewPrefab: {fileID: 4173988088759112643, guid: 08da978b416319e47889bb7d3e9e0343, type: 3}
+  uiParentOverride: {fileID: 1001000}
+  installOnStart: 1
+--- !u!114 &7700100000000012
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1000000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1d4aa4b27d4ffd45b29291c3673f422, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  catalog: {fileID: 11400000, guid: 170c93a1a1f812a4998120c119fcd1e0, type: 2}
+  useDecay: 1
+  decayDelaySeconds: 3
+  decayPercentPerSecond: 0.02
+  allowOverflowCarry: 1
+  logWhenTriggered: 0
+  logMissingDefinition: 1
+  runtimeStates:
+  - definition: {fileID: 11400000, guid: c8dcfe51fa9e3e044aed999a44ea0965, type: 2}
+    currentBuildUp: 0
+    lastBuildUpTime: 0
+    sustainVfxInstance: {fileID: 0}
+    uiVisible: 1
+  - definition: {fileID: 11400000, guid: af992dd323e918342ae0adff8855bbff, type: 2}
+    currentBuildUp: 0
+    lastBuildUpTime: 0
+    sustainVfxInstance: {fileID: 0}
+    uiVisible: 1
+  - definition: {fileID: 11400000, guid: 3805c019bc7d27c439fa252c9673e1f6, type: 2}
+    currentBuildUp: 0
+    lastBuildUpTime: 0
+    sustainVfxInstance: {fileID: 0}
+    uiVisible: 1
+--- !u!114 &1831426399991419180
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1000000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b8f30f33e704d66ad23cc5fe2a27a0c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UnityGAS.FacingOffsetMirror2D
+  facingSprite: {fileID: 1002000}
+  mirroredTargets:
+  - {fileID: 6057653836644520300}
+  captureInitialPositionsOnAwake: 1
+  invertWhenFlipX: 1
+--- !u!114 &6269069264931515585
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1000000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b1a21a5a77b4e9e8d68c54b70c393fe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MonsterElementGaugeAnchor2D
+  anchor: {fileID: 3335382834671591542}
+  fallbackOffset: {x: 0, y: -1}
 --- !u!1 &1024000
 GameObject:
   m_ObjectHideFlags: 0
@@ -710,7 +807,7 @@ SpriteRenderer:
   m_SortingLayer: 5
   m_SortingOrder: 0
   m_MaskInteraction: 0
-  m_Sprite: {fileID: 2678175620654883518, guid: 150ee18194255bc4b9091c89ba99f707, type: 3}
+  m_Sprite: {fileID: 2516001268547769420, guid: 708888a4c398edb42af9c84d6908162b, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -1017,6 +1114,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6057653836644520300}
+  - {fileID: 3335382834671591542}
   m_Father: {fileID: 1001000}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5190044495122245195
@@ -1029,7 +1127,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6057653836644520300}
   m_Layer: 31
-  m_Name: muzzle
+  m_Name: cannonCenter
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1044,7 +1142,38 @@ Transform:
   m_GameObject: {fileID: 5190044495122245195}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.938, z: 0}
+  m_LocalPosition: {x: -0.116, y: 0.892, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 9202272511269249813}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &5249662079288702916
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3335382834671591542}
+  m_Layer: 31
+  m_Name: ElementGaugePivot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3335382834671591542
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5249662079288702916}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.2, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

@@ -106,6 +106,7 @@ public class AL_Tackle : AbilityLogic
             tackle.HideTelegraph();
             tackle.SetAttackPreparationMoveBlocked(false);
             tackle.PlayAttackAnimation();
+            tackle.PlayAttackSound();
 
             AbilityMotionController2D motion = GetMotion(caster);
             float finalLungeTime = Mathf.Max(0f, lungeTime);

@@ -17,6 +17,28 @@ public sealed class StatusHudEntryView : MonoBehaviour, IPointerEnterHandler, IP
     [SerializeField] private TMP_Text stackText;
     [SerializeField] private TMP_Text durationText;
 
+    [Header("Style")]
+    [SerializeField] private Vector2 entrySize = new(48f, 48f);
+    [SerializeField] private Color backgroundColor = new(0.1f, 0.12f, 0.18f, 0.9f);
+    [SerializeField] private Color highlightedBackgroundColor = new(0.33f, 0.21f, 0.08f, 0.92f);
+    [SerializeField] private Color iconColor = Color.white;
+    [SerializeField] private Color highlightedIconColor = new(1f, 0.95f, 0.72f, 1f);
+    [SerializeField] private Color durationFillColor = new(0.95f, 0.77f, 0.26f, 0.95f);
+    [SerializeField] private Color outlineColor = new(0.02f, 0.04f, 0.08f, 0.6f);
+    [SerializeField] private Vector2 outlineDistance = new(1f, -1f);
+
+    [Header("Fallback Layout")]
+    [SerializeField] private Vector2 iconOffsetMin = new(8f, 8f);
+    [SerializeField] private Vector2 iconOffsetMax = new(-8f, -8f);
+    [SerializeField] private Vector2 durationFillOffsetMin = new(4f, 40f);
+    [SerializeField] private Vector2 durationFillOffsetMax = new(-4f, -4f);
+    [SerializeField] private int stackFontSize = 13;
+    [SerializeField] private int durationFontSize = 11;
+    [SerializeField] private Vector2 stackOffsetMin = new(-4f, -3f);
+    [SerializeField] private Vector2 stackOffsetMax = new(-4f, -3f);
+    [SerializeField] private Vector2 durationOffsetMin = new(4f, 2f);
+    [SerializeField] private Vector2 durationOffsetMax = new(-4f, 14f);
+
     private RectTransform rectTransform;
     private StatusHudEntry currentEntry;
     private bool isPointerHovering;
@@ -44,14 +66,14 @@ public sealed class StatusHudEntryView : MonoBehaviour, IPointerEnterHandler, IP
         }
 
         backgroundImage.color = entry.IsHighlighted
-            ? new Color(0.33f, 0.21f, 0.08f, 0.92f)
-            : new Color(0.1f, 0.12f, 0.18f, 0.9f);
+            ? highlightedBackgroundColor
+            : backgroundColor;
 
         iconImage.sprite = entry.Icon;
         iconImage.enabled = entry.Icon != null;
         iconImage.color = entry.IsHighlighted
-            ? new Color(1f, 0.95f, 0.72f, 1f)
-            : Color.white;
+            ? highlightedIconColor
+            : iconColor;
 
         stackText.text = entry.ShowStacks && entry.StackCount > 0 ? entry.StackCount.ToString() : string.Empty;
         durationText.text = entry.ShowDuration && entry.RemainingTime > 0f
@@ -120,25 +142,25 @@ public sealed class StatusHudEntryView : MonoBehaviour, IPointerEnterHandler, IP
 
         rectTransform ??= gameObject.GetComponent<RectTransform>() ?? gameObject.AddComponent<RectTransform>();
         if (rectTransform.sizeDelta == Vector2.zero)
-            rectTransform.sizeDelta = new Vector2(48f, 48f);
+            rectTransform.sizeDelta = entrySize;
 
         backgroundImage ??= gameObject.GetComponent<Image>() ?? gameObject.AddComponent<Image>();
-        backgroundImage.color = new Color(0.1f, 0.12f, 0.18f, 0.9f);
+        backgroundImage.color = backgroundColor;
         Outline outline = gameObject.GetComponent<Outline>() ?? gameObject.AddComponent<Outline>();
-        outline.effectColor = new Color(0.02f, 0.04f, 0.08f, 0.6f);
-        outline.effectDistance = new Vector2(1f, -1f);
+        outline.effectColor = outlineColor;
+        outline.effectDistance = outlineDistance;
 
-        iconImage ??= CreateImage("Icon", new Vector2(8f, 8f), new Vector2(-8f, -8f), 0);
+        iconImage ??= CreateImage("Icon", iconOffsetMin, iconOffsetMax, 0);
         iconImage.preserveAspect = true;
 
-        durationFillImage ??= CreateImage("DurationFill", new Vector2(4f, 40f), new Vector2(-4f, -4f), 1);
+        durationFillImage ??= CreateImage("DurationFill", durationFillOffsetMin, durationFillOffsetMax, 1);
         durationFillImage.type = Image.Type.Filled;
         durationFillImage.fillMethod = Image.FillMethod.Horizontal;
         durationFillImage.fillOrigin = (int)Image.OriginHorizontal.Left;
-        durationFillImage.color = new Color(0.95f, 0.77f, 0.26f, 0.95f);
+        durationFillImage.color = durationFillColor;
 
-        stackText ??= CreateText("StackText", 13, TextAlignmentOptions.TopRight, new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(-4f, -3f), new Vector2(-4f, -3f));
-        durationText ??= CreateText("DurationText", 11, TextAlignmentOptions.Bottom, new Vector2(0f, 0f), new Vector2(1f, 0f), new Vector2(4f, 2f), new Vector2(-4f, 14f));
+        stackText ??= CreateText("StackText", stackFontSize, TextAlignmentOptions.TopRight, new Vector2(0f, 0f), new Vector2(0f, 0f), stackOffsetMin, stackOffsetMax);
+        durationText ??= CreateText("DurationText", durationFontSize, TextAlignmentOptions.Bottom, new Vector2(0f, 0f), new Vector2(1f, 0f), durationOffsetMin, durationOffsetMax);
     }
 
     private Image CreateImage(string name, Vector2 offsetMin, Vector2 offsetMax, int siblingIndex)

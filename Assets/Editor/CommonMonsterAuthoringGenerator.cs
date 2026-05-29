@@ -355,6 +355,8 @@ public static class CommonMonsterAuthoringGenerator
         EnsureComponent<GroggyOverheadEffectPresenter2D>(instance);
         EnsureComponent<CombatHeightState2D>(instance);
         EnsureComponent<CommonMonsterAnimatorBridge>(instance);
+        EnsureComponent<ElementGaugeSystem>(instance);
+        EnsureComponent<MonsterElementGaugeViewInstaller>(instance);
     }
 
     private static void CopyTemplateCoreComponents(GameObject templatePrefab, GameObject instance)
@@ -370,6 +372,8 @@ public static class CommonMonsterAuthoringGenerator
         CopyTemplateComponent(templatePrefab, instance, instance.GetComponent<KnockbackReceiver2D>());
         CopyTemplateComponent(templatePrefab, instance, instance.GetComponent<MonsterDifficultyReceiver>());
         CopyTemplateComponent(templatePrefab, instance, instance.GetComponent<GroggyOverheadEffectPresenter2D>());
+        CopyTemplateComponent(templatePrefab, instance, instance.GetComponent<ElementGaugeSystem>());
+        CopyTemplateComponent(templatePrefab, instance, instance.GetComponent<MonsterElementGaugeViewInstaller>());
     }
 
     private static void ConfigureCoreReferences(
@@ -436,6 +440,8 @@ public static class CommonMonsterAuthoringGenerator
         SerializedObject bridge = new SerializedObject(animatorBridge);
         SetObject(bridge, "animator", instance.GetComponentInChildren<Animator>(true));
         bridge.ApplyModifiedPropertiesWithoutUndo();
+
+        ElementGaugeAuthoringUtility.EnsureDefaultElementGaugeAuthoring(instance);
 
         // Hurtbox collider는 CombatHurtbox2D가 소유하고, body collider는 이동 충돌 전용으로 분리한다.
         _ = hurtboxCollider;

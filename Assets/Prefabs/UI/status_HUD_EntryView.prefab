@@ -195,14 +195,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.4433962, g: 0.4433962, b: 0.4433962, a: 1}
+  m_Color: {r: 0.01886791, g: 0.01886791, b: 0.01886791, a: 0.39607844}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 1c9ed9d1200c29d4cbfd2071028c1cd5, type: 3}
+  m_Sprite: {fileID: -1700896211981756331, guid: 54d49fcb5010f7c4fba7b7db5af57ab4, type: 3}
   m_Type: 3
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -385,6 +385,24 @@ MonoBehaviour:
   durationFillImage: {fileID: 5882680222489377800}
   stackText: {fileID: 8077423629352576055}
   durationText: {fileID: 9047237295026957610}
+  entrySize: {x: 48, y: 48}
+  backgroundColor: {r: 0.1, g: 0.12, b: 0.18, a: 0.9}
+  highlightedBackgroundColor: {r: 0.33, g: 0.21, b: 0.08, a: 0.92}
+  iconColor: {r: 1, g: 1, b: 1, a: 1}
+  highlightedIconColor: {r: 1, g: 0.95, b: 0.72, a: 1}
+  durationFillColor: {r: 0, g: 0, b: 0, a: 0.62352943}
+  outlineColor: {r: 0.02, g: 0.04, b: 0.08, a: 0.6}
+  outlineDistance: {x: 1, y: -1}
+  iconOffsetMin: {x: 8, y: 8}
+  iconOffsetMax: {x: -8, y: -8}
+  durationFillOffsetMin: {x: 4, y: 40}
+  durationFillOffsetMax: {x: -4, y: -4}
+  stackFontSize: 13
+  durationFontSize: 11
+  stackOffsetMin: {x: -4, y: -3}
+  stackOffsetMax: {x: -4, y: -3}
+  durationOffsetMin: {x: 4, y: 2}
+  durationOffsetMax: {x: -4, y: 14}
 --- !u!1 &6850532884985505102
 GameObject:
   m_ObjectHideFlags: 0

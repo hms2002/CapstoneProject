@@ -11,12 +11,16 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
 {
     private const float MinCrossWaterPillarCastDistance = 40f;
     private static readonly int IsJumpingHash = Animator.StringToHash("isJumping");
+    private static readonly int IsWaterCannonHash = Animator.StringToHash("isWaterCannon");
     private static readonly int IdleStateHash = Animator.StringToHash("SlimeQueenC_Idle");
 
     private const int ToxicDropPositionCount = 3;
     private const float ToxicDropLowerTriangleY = -0.5f;
     private const float ToxicDropTriangleX = 0.8660254f;
-    private const string DefaultWaterCannonLaserVfxResourcePath = "DemonKing/DemonKingEgoLaserVfx";
+    private const string DefaultWaterCannonLaserVfxResourcePath = "DemonKing/WaterZetLaserVfx";
+    private const string DefaultWaterCannonHitEffectResourcePath = "DemonKing/Effect_WaterjetHitparticle";
+    private static readonly HashSet<int> WarnedMissingCrossWaterPillarTimedHitEffectPrefabs = new HashSet<int>();
+    private static readonly Collider2D[] CrossWaterPillarBlockedSpawnHits = new Collider2D[8];
 
     [Header("Phase 2 Long - Random Movement")]
     [Tooltip("랜덤 착지 위치를 뽑을 바운더리입니다. 비워두면 씬에서 자동 탐색합니다.")]
@@ -82,6 +86,15 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
     [Tooltip("물기둥 피해에 사용할 GAS Damage Effect입니다.")]
     [SerializeField] private GE_Damage_Spec crossWaterPillarDamageEffect;
 
+    [Tooltip("물기둥 생성이 금지되는 레이어입니다. 보통 HoleTrap 레이어를 지정합니다. 비어 있으면 검사하지 않습니다.")]
+    [SerializeField] private LayerMask crossWaterPillarBlockedSpawnLayers = 1 << 6;
+
+    [Tooltip("물기둥 생성 지점이 금지 레이어와 겹치는지 검사할 반경 배율입니다.")]
+    [SerializeField, Range(0f, 1f)] private float crossWaterPillarHoleCheckRadiusScale = 0.45f;
+
+    [Tooltip("켜면 구덩이 위라서 스킵된 물기둥 위치를 로그로 남깁니다.")]
+    [SerializeField] private bool logSkippedCrossWaterPillarOnHole;
+
     [Space(8)]
 
     [Header("Phase 2 Long - Water Cannon")]
@@ -91,16 +104,22 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
     [Tooltip("물대포 발사 중 표시할 선택적 AttackTelegraph 스타일입니다. 비워두면 물대포 비주얼 프리팹만 표시합니다.")]
     [SerializeField] private AttackTelegraphStyle waterCannonBeamStyle;
 
-    [Tooltip("물대포 발사 중 사용할 레이저 비주얼 프리팹입니다. DemonKingEgoLaserVfx가 있으면 우선 사용하고, 없으면 기존 막대기 비주얼로 처리합니다.")]
+    [Tooltip("물대포 발사 중 사용할 레이저 비주얼 프리팹입니다. WaterZetLaserVfx가 있으면 우선 사용하고, 없으면 기존 막대기 비주얼로 처리합니다.")]
     [SerializeField] private GameObject waterCannonBeamVisualPrefab;
 
-    [Tooltip("물대포 레이저가 시작될 위치입니다. 비워두면 보스 root 위치를 사용합니다.")]
+    [Tooltip("기존 물대포 레이저 시작 위치입니다. Center Socket이 비어 있을 때 호환용 기준점으로 사용합니다.")]
     [SerializeField] private Transform waterCannonMuzzleSocket;
 
-    [Tooltip("Demon King 레이저 VFX 프리팹입니다. 비워두면 Resources/DemonKing/DemonKingEgoLaserVfx를 시도합니다.")]
-    [SerializeField] private DemonKingEgoLaserVfx waterCannonLaserVfxPrefab;
+    [Tooltip("물대포 조준 중심점입니다. 이 지점에서 플레이어 방향으로 Start Forward Offset만큼 민 위치가 실제 발사 시작점이 됩니다.")]
+    [SerializeField] private Transform waterCannonCenterSocket;
 
-    [Tooltip("Demon King 레이저 VFX fallback Resources 경로입니다.")]
+    [Tooltip("물대포 중심점에서 플레이어 방향으로 밀어낼 발사 시작 거리입니다.")]
+    [SerializeField, Min(0f)] private float waterCannonStartForwardOffset = 0f;
+
+    [Tooltip("Slime Queen 물총 전용 레이저 VFX 프리팹입니다. 비워두면 Resources/DemonKing/WaterZetLaserVfx를 시도합니다.")]
+    [SerializeField] private WaterZetLaserVfx waterCannonLaserVfxPrefab;
+
+    [Tooltip("물총 전용 레이저 VFX fallback Resources 경로입니다.")]
     [SerializeField] private string waterCannonLaserVfxResourcePath = DefaultWaterCannonLaserVfxResourcePath;
 
     [Tooltip("물대포 연발 패턴의 총 지속 제한 시간입니다.")]
@@ -116,13 +135,22 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
     [SerializeField, Min(0.01f)] private float waterCannonShotIntervalSeconds = 0.1f;
 
     [Tooltip("샷 1회마다 플레이어 방향으로 회전할 수 있는 최대 각도입니다.")]
-    [SerializeField, Min(0f)] private float waterCannonMaxTurnAnglePerShot = 10f;
+    [SerializeField, Min(0f)] private float waterCannonMaxTurnAnglePerShot = 13f;
+
+    [Tooltip("목표 방향과 아직 어긋나 있을 때 최소한 이 각도만큼 회전해 추적 감속을 늦춥니다.")]
+    [SerializeField, Min(0f)] private float waterCannonMinTurnAnglePerShot = 8f;
+
+    [Tooltip("목표 방향과 이 각도 이내로 가까워지면 최소 회전량을 적용하지 않고 정확히 목표 방향에 맞춥니다.")]
+    [SerializeField, Min(0f)] private float waterCannonAimSnapAngle = 1.5f;
 
     [Tooltip("물대포 막대기가 최대 길이까지 뻗는 데 걸리는 시간입니다.")]
     [SerializeField, Min(0f)] private float waterCannonBeamGrowSeconds = 0.18f;
 
-    [Tooltip("보이는 물대포 물줄기 폭입니다.")]
-    [SerializeField, Min(0.05f)] private float waterCannonVisualWidth = 0.33f;
+    [Tooltip("실제 물대포 피해 판정 폭에 곱해 경고선 폭을 계산하는 배율입니다.")]
+    [SerializeField, Min(0.1f)] private float waterCannonWarningWidthMultiplier = 4.125f;
+
+    [Tooltip("물대포 레이저 VFX의 로컬 Y scale 축 폭입니다. 공격 판정 폭과 별도로 조정합니다.")]
+    [SerializeField, Min(0.01f)] private float waterCannonVfxWidth = 0.165f;
 
     [Tooltip("Demon King 레이저 VFX 몸통 길이 보정값입니다. 1이면 wall-clipped 선분 길이를 넘지 않습니다.")]
     [SerializeField, Min(0.01f)] private float waterCannonLaserBodyLengthMultiplier = 1f;
@@ -130,14 +158,20 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
     [Tooltip("실제 물대포 피해 판정 폭입니다. 시각 폭보다 작게 사용합니다.")]
     [SerializeField, Min(0.02f)] private float waterCannonHitWidth = 0.08f;
 
-    [Tooltip("물대포가 충돌해 멈출 벽 레이어입니다.")]
-    [SerializeField] private LayerMask waterCannonWallLayers = 1 << 30;
+    [Tooltip("물대포 경고/레이저/피해 판정이 벽 검사 없이 고정으로 뻗는 거리입니다.")]
+    [SerializeField, Min(0.1f)] private float waterCannonFixedDistance = 20f;
 
-    [Tooltip("벽을 감지하지 못했을 때 사용할 최대 거리입니다. 경고/레이저가 방 끝까지 뻗도록 넉넉하게 둡니다.")]
-    [SerializeField, Min(0.1f)] private float waterCannonFallbackDistance = 40f;
+    [Tooltip("물대포가 고정 길이 안에서 벽에 닿을 때 출력할 물튀김 이펙트 프리팹입니다.")]
+    [SerializeField] private GameObject waterCannonWallHitEffectPrefab;
 
-    [Tooltip("벽에 물대포가 겹치지 않도록 안쪽으로 줄일 거리입니다.")]
-    [SerializeField, Min(0f)] private float waterCannonWallStopPadding = 0.05f;
+    [Tooltip("물대포 벽 히트 이펙트 fallback Resources 경로입니다.")]
+    [SerializeField] private string waterCannonWallHitEffectResourcePath = DefaultWaterCannonHitEffectResourcePath;
+
+    [Tooltip("물대포 히트 이펙트를 출력할 벽 감지 레이어입니다. 레이저 길이는 줄이지 않고 이펙트 위치 계산에만 사용합니다.")]
+    [SerializeField] private LayerMask waterCannonHitEffectWallLayers = 1 << 30;
+
+    [Tooltip("벽 표면과 겹치지 않도록 히트 이펙트를 법선 방향으로 살짝 밀어내는 거리입니다.")]
+    [SerializeField, Min(0f)] private float waterCannonHitEffectSurfaceOffset = 0.04f;
 
     [Tooltip("물대포 접촉 시 플레이어에게 주는 피해량입니다.")]
     [SerializeField, Min(0f)] private float waterCannonDamage = 1f;
@@ -206,7 +240,8 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
     private readonly List<SlimeQueenToxicDropProjectileVisual> toxicDropProjectileVisuals = new List<SlimeQueenToxicDropProjectileVisual>();
     private readonly List<AttackTelegraphView> waterCannonShotWarningViews = new List<AttackTelegraphView>();
     private readonly List<AttackTelegraphView> waterCannonShotBeamViews = new List<AttackTelegraphView>();
-    private readonly List<DemonKingEgoLaserVfx> waterCannonLaserVfxViews = new List<DemonKingEgoLaserVfx>();
+    private readonly List<WaterZetLaserVfx> waterCannonLaserVfxViews = new List<WaterZetLaserVfx>();
+    private readonly List<GameObject> waterCannonWallHitEffectViews = new List<GameObject>();
     private AttackTelegraphView waterCannonWarningView;
     private AttackTelegraphView waterCannonBeamView;
     private SlimeQueenWaterCannonBeamVisual waterCannonBeamVisual;
@@ -235,6 +270,7 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
     protected override void ResetPatternAnimatorStateForInterrupt()
     {
         SetAnimatorBoolIfExists(IsJumpingHash, false);
+        SetAnimatorBoolIfExists(IsWaterCannonHash, false);
 
         if (!HasGroggyTag())
             SetAnimatorBoolIfExists(IsSinkingHash, false);
@@ -344,6 +380,16 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
         animator.SetBool(parameterHash, value);
     }
 
+    public void BeginWaterCannonAnimation()
+    {
+        SetAnimatorBoolIfExists(IsWaterCannonHash, true);
+    }
+
+    public void EndWaterCannonAnimation()
+    {
+        SetAnimatorBoolIfExists(IsWaterCannonHash, false);
+    }
+
     /// <summary>착지 범위 안의 현재 타겟에게 GAS Damage Effect를 적용합니다.</summary>
     public void ApplyJumpLandingDamage(AbilitySpec sourceSpec, Vector3 landingPosition)
     {
@@ -436,11 +482,12 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
         ClearViews(crossWaterPillarBlastViews);
         ClearCrossWaterPillarBlastEffects();
 
-        if (segments == null || crossWaterPillarDamage <= 0f || crossWaterPillarDamageEffect == null)
+        if (segments == null)
             return;
 
-        bool hasDamagedTarget = false;
         float interval = Mathf.Max(0.1f, crossWaterPillarBlastInterval);
+        CombatHitPayload hitPayload = BuildCrossWaterPillarHitPayload(sourceSystem, sourceSpec);
+        TimedAnimatedHitEffect2D.SharedHitRegistry sharedHitRegistry = new TimedAnimatedHitEffect2D.SharedHitRegistry();
 
         for (int i = 0; i < segments.Count; i++)
         {
@@ -452,10 +499,7 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
             for (float offset = 0f; offset <= segment.Length + 0.001f; offset += interval)
             {
                 Vector3 blastPosition = segment.Start + segment.Direction * offset;
-                SpawnWaterPillarBlastEffect(blastPosition, blastEffectPrefab);
-
-                if (!hasDamagedTarget && TryDamagePlayerAtBlast(sourceSystem, sourceSpec, blastPosition))
-                    hasDamagedTarget = true;
+                SpawnWaterPillarBlastEffect(blastPosition, blastEffectPrefab, hitPayload, sharedHitRegistry);
 
                 lastOffset = offset;
             }
@@ -463,10 +507,7 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
             if (segment.Length - lastOffset > crossWaterPillarBlastDiameter * 0.25f)
             {
                 Vector3 blastPosition = segment.End;
-                SpawnWaterPillarBlastEffect(blastPosition, blastEffectPrefab);
-
-                if (!hasDamagedTarget && TryDamagePlayerAtBlast(sourceSystem, sourceSpec, blastPosition))
-                    hasDamagedTarget = true;
+                SpawnWaterPillarBlastEffect(blastPosition, blastEffectPrefab, hitPayload, sharedHitRegistry);
             }
         }
     }
@@ -500,7 +541,9 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
             waterCannonLockedBeamDirection = RotateWaterCannonAimToward(
                 waterCannonLockedBeamDirection,
                 targetDirection.normalized,
-                waterCannonMaxTurnAnglePerShot);
+                waterCannonMaxTurnAnglePerShot,
+                waterCannonMinTurnAnglePerShot,
+                waterCannonAimSnapAngle);
 
         return TryBuildWaterCannonLine(waterCannonLockedBeamDirection, out line);
     }
@@ -517,10 +560,9 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
 
         AttackTelegraphSpec spec = CreateWaterCannonLineSpec(
             line,
-            waterCannonVisualWidth,
+            GetWaterCannonWarningWidth(),
             WaterCannonShotWarningSeconds,
             waterCannonWarningStyle);
-        spec = WithWaterCannonWallMasking(spec);
 
         AttackTelegraphView view = service.SpawnDetachedView(spec);
         if (view != null)
@@ -553,7 +595,7 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
     }
 
     /// <summary>짧은 물대포 레이저 샷 표시를 시작하고, 실제 피해 타이밍을 맞출 수 있도록 VFX 참조를 반환합니다.</summary>
-    public bool StartWaterCannonShotVisual(WaterCannonLine line, out DemonKingEgoLaserVfx laserVfx)
+    public bool StartWaterCannonShotVisual(WaterCannonLine line, out WaterZetLaserVfx laserVfx)
     {
         laserVfx = null;
         if (!line.IsValid)
@@ -564,10 +606,9 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
         {
             AttackTelegraphSpec spec = CreateWaterCannonLineSpec(
                 line,
-                waterCannonVisualWidth,
+                GetWaterCannonWarningWidth(),
                 WaterCannonShotActiveSeconds,
                 waterCannonBeamStyle);
-            spec = WithWaterCannonWallMasking(spec);
 
             AttackTelegraphView view = service.SpawnDetachedView(spec);
             if (view != null)
@@ -576,6 +617,12 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
 
         laserVfx = SpawnWaterCannonShotVisual(line);
         return true;
+    }
+
+    /// <summary>물대포 레이저 VFX가 실제 발사/Idle 상태에 들어간 타이밍에 벽 히트 물튀김 이펙트를 출력합니다.</summary>
+    public void PlayWaterCannonWallHitEffect(WaterCannonLine line)
+    {
+        SpawnWaterCannonWallHitEffect(line);
     }
 
     /// <summary>
@@ -587,7 +634,7 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
     {
         for (int i = waterCannonLaserVfxViews.Count - 1; i >= 0; i--)
         {
-            DemonKingEgoLaserVfx laserVfx = waterCannonLaserVfxViews[i];
+            WaterZetLaserVfx laserVfx = waterCannonLaserVfxViews[i];
             if (laserVfx == null)
             {
                 waterCannonLaserVfxViews.RemoveAt(i);
@@ -804,9 +851,16 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
         return Mathf.Max(MinCrossWaterPillarCastDistance, crossWaterPillarFallbackDistance);
     }
 
-    /// <summary>물기둥 발생 지점 이펙트를 생성합니다.</summary>
-    private void SpawnWaterPillarBlastEffect(Vector3 blastPosition, GameObject blastEffectPrefab)
+    /// <summary>물기둥 발생 지점 이펙트를 생성하고, 가능하면 이펙트 자체 콜리더 피해를 초기화합니다.</summary>
+    private void SpawnWaterPillarBlastEffect(
+        Vector3 blastPosition,
+        GameObject blastEffectPrefab,
+        CombatHitPayload hitPayload,
+        TimedAnimatedHitEffect2D.SharedHitRegistry sharedHitRegistry)
     {
+        if (ShouldSkipCrossWaterPillarBlastPosition(blastPosition))
+            return;
+
         if (blastEffectPrefab == null)
             return;
 
@@ -815,6 +869,60 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
             return;
 
         crossWaterPillarBlastEffects.Add(effect);
+
+        TimedAnimatedHitEffect2D timedHitEffect = effect.GetComponentInChildren<TimedAnimatedHitEffect2D>(true);
+        if (timedHitEffect != null)
+        {
+            timedHitEffect.Play(crossWaterPillarBlastViewSeconds, hitPayload, sharedHitRegistry);
+            return;
+        }
+
+        if (WarnedMissingCrossWaterPillarTimedHitEffectPrefabs.Add(blastEffectPrefab.GetInstanceID()))
+        {
+            Debug.LogWarning(
+                $"[{nameof(SlimeQueenP2Long)}] CrossWaterPillar blast effect prefab has no {nameof(TimedAnimatedHitEffect2D)}. " +
+                "물기둥 이펙트는 표시되지만 이펙트 콜리더 피해 타이밍은 적용되지 않습니다.",
+                blastEffectPrefab);
+        }
+    }
+
+    /// <summary>물기둥 생성 지점이 구덩이처럼 금지된 스폰 영역 위인지 검사합니다.</summary>
+    private bool ShouldSkipCrossWaterPillarBlastPosition(Vector3 blastPosition)
+    {
+        if (crossWaterPillarBlockedSpawnLayers.value == 0 || crossWaterPillarHoleCheckRadiusScale <= 0f)
+            return false;
+
+        float radius = Mathf.Max(0.01f, crossWaterPillarBlastDiameter * 0.5f * crossWaterPillarHoleCheckRadiusScale);
+        ContactFilter2D contactFilter = new ContactFilter2D
+        {
+            useLayerMask = true,
+            layerMask = crossWaterPillarBlockedSpawnLayers,
+            useTriggers = true
+        };
+        int hitCount = Physics2D.OverlapCircle(
+            blastPosition,
+            radius,
+            contactFilter,
+            CrossWaterPillarBlockedSpawnHits);
+
+        for (int i = 0; i < hitCount; i++)
+        {
+            Collider2D hit = CrossWaterPillarBlockedSpawnHits[i];
+            CrossWaterPillarBlockedSpawnHits[i] = null;
+
+            if (hit == null)
+                continue;
+
+            if (hit.GetComponent<HoleTrap>() == null && hit.GetComponentInParent<HoleTrap>() == null)
+                continue;
+
+            if (logSkippedCrossWaterPillarOnHole)
+                Debug.Log($"[{nameof(SlimeQueenP2Long)}] CrossWaterPillar skipped on HoleTrap. position={blastPosition}", hit);
+
+            return true;
+        }
+
+        return false;
     }
 
     private void ClearCrossWaterPillarBlastEffects()
@@ -829,37 +937,25 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
         crossWaterPillarBlastEffects.Clear();
     }
 
-    /// <summary>물기둥 판정 원 안에 있는 플레이어에게 한 번 피해를 적용합니다.</summary>
-    private bool TryDamagePlayerAtBlast(AbilitySystem sourceSystem, AbilitySpec sourceSpec, Vector3 blastPosition)
+    private CombatHitPayload BuildCrossWaterPillarHitPayload(AbilitySystem sourceSystem, AbilitySpec sourceSpec)
     {
-        float radius = crossWaterPillarBlastDiameter * 0.5f;
-        Collider2D[] hits = Physics2D.OverlapCircleAll(blastPosition, radius);
+        if (crossWaterPillarDamage <= 0f || crossWaterPillarDamageEffect == null)
+            return null;
 
-        for (int i = 0; i < hits.Length; i++)
-        {
-            if (!HasPlayerTagInHierarchy(hits[i].transform))
-                continue;
+        CombatDamageSnapshot snapshot = new(
+            finalHpDamage: crossWaterPillarDamage,
+            finalStaggerBuildUp: 0f,
+            finalKnockbackImpulse: 0f,
+            isCriticalHit: false);
 
-            GameObject damageTarget = CombatTargetResolver2D.ResolveDamageTarget(hits[i]);
-            if (damageTarget == null || !damageTarget.CompareTag("Player"))
-                continue;
-
-            CombatDamageAction.ApplyDamageAndEmitHit(
-                sourceSystem != null ? sourceSystem : AbilitySystem,
-                sourceSpec,
-                crossWaterPillarDamageEffect,
-                null,
-                damageTarget,
-                crossWaterPillarDamage,
-                0f,
-                0f,
-                null,
-                blastPosition,
-                gameObject);
-            return true;
-        }
-
-        return false;
+        return CombatHitPayload.FromSnapshot(
+            sourceSystem: sourceSystem != null ? sourceSystem : AbilitySystem,
+            sourceSpec: sourceSpec,
+            damageEffect: crossWaterPillarDamageEffect,
+            knockbackEffect: null,
+            snapshot: snapshot,
+            hitConfirmedTag: null,
+            causer: gameObject);
     }
 
     /// <summary>현재 타겟 방향과 벽 충돌을 기준으로 물대포 선분을 만듭니다.</summary>
@@ -872,7 +968,6 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
     /// <summary>지정된 방향과 벽 충돌을 기준으로 물대포 선분을 만듭니다.</summary>
     private bool TryBuildWaterCannonLine(Vector2 direction, out WaterCannonLine line)
     {
-        Vector2 start = ResolveWaterCannonOrigin();
         if (direction.sqrMagnitude <= 0.0001f)
         {
             line = new WaterCannonLine();
@@ -880,7 +975,8 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
         }
 
         Vector2 safeDirection = direction.normalized;
-        float distance = GetWaterCannonClampedDistance(start, safeDirection);
+        Vector2 start = ResolveWaterCannonOrigin(safeDirection);
+        float distance = GetWaterCannonFixedDistance();
         Vector2 end = start + safeDirection * distance;
         line = new WaterCannonLine(start, end, safeDirection);
         return line.IsValid;
@@ -899,24 +995,35 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
     }
 
     /// <summary>현재 조준 방향을 목표 방향으로 제한 각도만큼 회전합니다.</summary>
-    private static Vector2 RotateWaterCannonAimToward(Vector2 currentDirection, Vector2 targetDirection, float maxTurnDegrees)
+    private static Vector2 RotateWaterCannonAimToward(
+        Vector2 currentDirection,
+        Vector2 targetDirection,
+        float maxTurnDegrees,
+        float minTurnDegrees,
+        float snapAngleDegrees)
     {
         Vector2 safeCurrent = currentDirection.sqrMagnitude > 0.0001f ? currentDirection.normalized : Vector2.right;
         Vector2 safeTarget = targetDirection.sqrMagnitude > 0.0001f ? targetDirection.normalized : safeCurrent;
         float signedAngle = Vector2.SignedAngle(safeCurrent, safeTarget);
+        float absAngle = Mathf.Abs(signedAngle);
         float maxTurn = Mathf.Max(0f, maxTurnDegrees);
-        float clampedAngle = Mathf.Clamp(signedAngle, -maxTurn, maxTurn);
+        float minTurn = Mathf.Clamp(minTurnDegrees, 0f, maxTurn);
+        float snapAngle = Mathf.Max(0f, snapAngleDegrees);
+        float turnAngle = absAngle <= snapAngle
+            ? signedAngle
+            : Mathf.Sign(signedAngle) * Mathf.Min(maxTurn, Mathf.Max(minTurn, absAngle));
+        float clampedAngle = Mathf.Clamp(turnAngle, -maxTurn, maxTurn);
         return (Quaternion.Euler(0f, 0f, clampedAngle) * safeCurrent).normalized;
     }
 
     /// <summary>물대포가 향할 현재 플레이어 방향을 계산합니다.</summary>
     private Vector2 ResolveWaterCannonDirection(GameObject explicitTarget)
     {
-        Vector2 origin = ResolveWaterCannonOrigin();
+        Vector2 center = ResolveWaterCannonAimCenter();
         Transform targetTransform = explicitTarget != null ? explicitTarget.transform : CurrentTarget;
         if (targetTransform != null)
         {
-            Vector2 toTarget = (Vector2)targetTransform.position - origin;
+            Vector2 toTarget = (Vector2)targetTransform.position - center;
             if (toTarget.sqrMagnitude > 0.0001f)
                 return toTarget.normalized;
         }
@@ -926,36 +1033,49 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
 
     /// <summary>
     /// 책임:
-    /// - 물대포 경고/레이저/벽 cast가 모두 같은 발사 소켓에서 시작되도록 월드 좌표를 해석한다.
-    /// - 소켓 authoring이 아직 없으면 기존 root 기준으로 안전하게 fallback한다.
+    /// - 물대포 경고/레이저/벽 cast가 모두 같은 발사 시작점에서 시작되도록 월드 좌표를 해석한다.
+    /// - 중앙 소켓에서 조준 방향으로 보정한 위치를 사용하고, 소켓 authoring이 없으면 기존 기준점으로 fallback한다.
     /// </summary>
-    private Vector2 ResolveWaterCannonOrigin()
+    private Vector2 ResolveWaterCannonOrigin(Vector2 direction)
     {
+        Vector2 center = ResolveWaterCannonAimCenter();
+        Vector2 safeDirection = direction.sqrMagnitude > 0.0001f
+            ? direction.normalized
+            : (sprite != null && sprite.flipX ? Vector2.left : Vector2.right);
+
+        return center + safeDirection * Mathf.Max(0f, waterCannonStartForwardOffset);
+    }
+
+    /// <summary>물대포 방향 계산과 발사 시작점 보정에 사용할 보스 중앙 기준점을 해석합니다.</summary>
+    private Vector2 ResolveWaterCannonAimCenter()
+    {
+        if (waterCannonCenterSocket != null)
+            return waterCannonCenterSocket.position;
+
         return waterCannonMuzzleSocket != null
             ? waterCannonMuzzleSocket.position
             : transform.position;
     }
 
-    /// <summary>물대포가 벽 앞에서 멈추도록 허용 거리를 계산합니다.</summary>
-    private float GetWaterCannonClampedDistance(Vector2 start, Vector2 direction)
+    /// <summary>물대포가 벽 검사 없이 사용할 고정 사거리를 계산합니다.</summary>
+    private float GetWaterCannonFixedDistance()
     {
-        float fallbackDistance = Mathf.Max(0.1f, waterCannonFallbackDistance);
-        if (waterCannonWallLayers.value == 0)
-            return fallbackDistance;
-
-        RaycastHit2D hit = Physics2D.Raycast(
-            start,
-            direction,
-            fallbackDistance,
-            waterCannonWallLayers.value);
-
-        if (hit.collider != null)
-            return Mathf.Max(0.1f, hit.distance - waterCannonWallStopPadding);
-
-        return fallbackDistance;
+        return Mathf.Max(0.1f, waterCannonFixedDistance);
     }
 
-    /// <summary>물대포 선분을 벽에 잘리는 선형 텔레그래프 사양으로 변환합니다.</summary>
+    /// <summary>물대포 피해 판정 폭과 시각 배율을 기준으로 경고선 폭을 계산합니다.</summary>
+    private float GetWaterCannonWarningWidth()
+    {
+        return Mathf.Max(0.05f, waterCannonHitWidth * waterCannonWarningWidthMultiplier);
+    }
+
+    /// <summary>물대포 레이저 VFX의 로컬 Y scale에 사용할 표시 폭을 계산합니다.</summary>
+    private float GetWaterCannonVfxWidth()
+    {
+        return Mathf.Max(0.01f, waterCannonVfxWidth);
+    }
+
+    /// <summary>물대포 고정 선분을 선형 텔레그래프 사양으로 변환합니다.</summary>
     private static AttackTelegraphSpec CreateWaterCannonLineSpec(
         WaterCannonLine line,
         float width,
@@ -970,29 +1090,20 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
             style);
     }
 
-    /// <summary>물대포 경고/발사 텔레그래프가 같은 wall layer와 padding 기준으로 잘리도록 표시 옵션을 붙입니다.</summary>
-    private AttackTelegraphSpec WithWaterCannonWallMasking(AttackTelegraphSpec spec)
+    /// <summary>물총 전용 레이저 VFX를 우선 사용하고 없으면 기존 막대기 비주얼로 물대포 샷을 표시합니다.</summary>
+    private WaterZetLaserVfx SpawnWaterCannonShotVisual(WaterCannonLine line)
     {
-        if (waterCannonWallLayers.value == 0)
-            return spec;
-
-        return spec.WithWallClipping(waterCannonWallLayers, 48, waterCannonWallStopPadding);
-    }
-
-    /// <summary>Demon King 레이저 VFX를 우선 사용하고 없으면 기존 막대기 비주얼로 물대포 샷을 표시합니다.</summary>
-    private DemonKingEgoLaserVfx SpawnWaterCannonShotVisual(WaterCannonLine line)
-    {
-        DemonKingEgoLaserVfx laserPrefab = ResolveWaterCannonLaserVfxPrefab();
+        WaterZetLaserVfx laserPrefab = ResolveWaterCannonLaserVfxPrefab();
         if (laserPrefab != null)
         {
-            DemonKingEgoLaserVfx laserVfx = Instantiate(laserPrefab);
+            WaterZetLaserVfx laserVfx = Instantiate(laserPrefab);
             if (laserVfx != null)
             {
                 laserVfx.Play(
                     line.Start,
                     line.Direction,
                     line.Length,
-                    waterCannonVisualWidth,
+                    GetWaterCannonVfxWidth(),
                     WaterCannonShotActiveSeconds,
                     waterCannonLaserBodyLengthMultiplier);
                 waterCannonLaserVfxViews.Add(laserVfx);
@@ -1004,14 +1115,60 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
         return null;
     }
 
-    /// <summary>Demon King 레이저 VFX 프리팹을 인스펙터 참조 또는 Resources fallback으로 해결합니다.</summary>
-    private DemonKingEgoLaserVfx ResolveWaterCannonLaserVfxPrefab()
+    /// <summary>물대포 고정 사거리 안에서 벽을 만나면 벽 법선 방향으로 물튀김 이펙트를 재생합니다.</summary>
+    private void SpawnWaterCannonWallHitEffect(WaterCannonLine line)
+    {
+        if (!line.IsValid || waterCannonHitEffectWallLayers.value == 0)
+            return;
+
+        GameObject effectPrefab = ResolveWaterCannonWallHitEffectPrefab();
+        if (effectPrefab == null)
+            return;
+
+        RaycastHit2D hit = Physics2D.Raycast(
+            line.Start,
+            line.Direction,
+            line.Length,
+            waterCannonHitEffectWallLayers.value);
+
+        if (hit.collider == null)
+            return;
+
+        Vector2 normal = hit.normal.sqrMagnitude > 0.0001f ? hit.normal.normalized : -line.Direction;
+        Vector2 spawnPoint = hit.point + normal * waterCannonHitEffectSurfaceOffset;
+        GameObject effect = Instantiate(effectPrefab, spawnPoint, Quaternion.identity);
+        if (effect == null)
+            return;
+
+        WaterJetWallHitParticleEffect hitEffect = effect.GetComponent<WaterJetWallHitParticleEffect>();
+        if (hitEffect == null)
+            hitEffect = effect.AddComponent<WaterJetWallHitParticleEffect>();
+
+        hitEffect.Play(spawnPoint, normal);
+        waterCannonWallHitEffectViews.Add(effect);
+    }
+
+    /// <summary>물대포 벽 히트 이펙트 프리팹을 인스펙터 참조 또는 Resources fallback으로 해결합니다.</summary>
+    private GameObject ResolveWaterCannonWallHitEffectPrefab()
+    {
+        if (waterCannonWallHitEffectPrefab != null)
+            return waterCannonWallHitEffectPrefab;
+
+        string resourcePath = string.IsNullOrWhiteSpace(waterCannonWallHitEffectResourcePath)
+            ? DefaultWaterCannonHitEffectResourcePath
+            : waterCannonWallHitEffectResourcePath;
+        waterCannonWallHitEffectPrefab = Resources.Load<GameObject>(resourcePath);
+        return waterCannonWallHitEffectPrefab;
+    }
+
+    /// <summary>물총 전용 레이저 VFX 프리팹을 인스펙터 참조 또는 Resources fallback으로 해결합니다.</summary>
+    private WaterZetLaserVfx ResolveWaterCannonLaserVfxPrefab()
     {
         if (waterCannonLaserVfxPrefab != null)
             return waterCannonLaserVfxPrefab;
 
         if (waterCannonBeamVisualPrefab != null &&
-            waterCannonBeamVisualPrefab.TryGetComponent(out DemonKingEgoLaserVfx assignedLaserVfx))
+            waterCannonBeamVisualPrefab.TryGetComponent(out WaterZetLaserVfx assignedLaserVfx))
         {
             waterCannonLaserVfxPrefab = assignedLaserVfx;
             return waterCannonLaserVfxPrefab;
@@ -1022,12 +1179,12 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
             : waterCannonLaserVfxResourcePath;
         GameObject prefabObject = Resources.Load<GameObject>(resourcePath);
         if (prefabObject != null)
-            waterCannonLaserVfxPrefab = prefabObject.GetComponent<DemonKingEgoLaserVfx>();
+            waterCannonLaserVfxPrefab = prefabObject.GetComponent<WaterZetLaserVfx>();
 
         return waterCannonLaserVfxPrefab;
     }
 
-    /// <summary>Demon King 레이저 VFX가 없을 때 기존 물대포 막대기 비주얼을 현재 선분에 맞춰 표시합니다.</summary>
+    /// <summary>물총 전용 레이저 VFX가 없을 때 기존 물대포 막대기 비주얼을 현재 선분에 맞춰 표시합니다.</summary>
     private void ShowLegacyWaterCannonShotVisual(WaterCannonLine line)
     {
         if (waterCannonBeamVisualPrefab == null)
@@ -1055,7 +1212,7 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
             line.Start,
             line.Direction,
             line.Length,
-            waterCannonVisualWidth,
+            GetWaterCannonVfxWidth(),
             1f);
     }
 
@@ -1065,7 +1222,7 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
         if (waterCannonDamage <= 0f || waterCannonDamageEffect == null)
             return false;
 
-        float visualWidth = Mathf.Max(0.05f, waterCannonVisualWidth);
+        float visualWidth = GetWaterCannonWarningWidth();
         float hitWidth = Mathf.Min(Mathf.Max(0.02f, waterCannonHitWidth), visualWidth);
         Collider2D[] hits = Physics2D.OverlapBoxAll(
             line.Center,
@@ -1134,12 +1291,20 @@ public sealed class SlimeQueenP2Long : SlimeQueenPhaseTwoBase, ISlimeQueenRandom
 
         for (int i = 0; i < waterCannonLaserVfxViews.Count; i++)
         {
-            DemonKingEgoLaserVfx laserVfx = waterCannonLaserVfxViews[i];
+            WaterZetLaserVfx laserVfx = waterCannonLaserVfxViews[i];
             if (laserVfx != null)
                 Destroy(laserVfx.gameObject);
         }
 
+        for (int i = 0; i < waterCannonWallHitEffectViews.Count; i++)
+        {
+            GameObject effect = waterCannonWallHitEffectViews[i];
+            if (effect != null)
+                Destroy(effect);
+        }
+
         waterCannonLaserVfxViews.Clear();
+        waterCannonWallHitEffectViews.Clear();
         waterCannonBeamVisual = null;
         if (resetAim)
         {

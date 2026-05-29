@@ -26,6 +26,8 @@ public sealed class AbilityLogic_SlimeQueenWaterCannon : AbilityLogic
             if (!slimeQueen.BeginWaterCannonBurstAim(initialTarget))
                 yield break;
 
+            slimeQueen.BeginWaterCannonAnimation();
+
             if (!slimeQueen.TryBuildNextWaterCannonShot(initialTarget, out SlimeQueenP2Long.WaterCannonLine nextLine))
                 yield break;
 
@@ -80,6 +82,7 @@ public sealed class AbilityLogic_SlimeQueenWaterCannon : AbilityLogic
         }
         finally
         {
+            slimeQueen.EndWaterCannonAnimation();
             // 정상 종료도 남은 참조 목록은 정리하되, 2초 제한 시점에 진행 중인 레이저를 강제로 끊지는 않는다.
             slimeQueen.CleanupWaterCannonPresentation();
         }
@@ -120,7 +123,7 @@ public sealed class AbilityLogic_SlimeQueenWaterCannon : AbilityLogic
             if (IsAbilityCancelled(spec))
                 yield break;
 
-            bool shotStarted = slimeQueen.StartWaterCannonShotVisual(line, out DemonKingEgoLaserVfx laserVfx);
+            bool shotStarted = slimeQueen.StartWaterCannonShotVisual(line, out WaterZetLaserVfx laserVfx);
             if (shotStarted)
             {
                 SlimeQueenPresentationAudioUtility.PlaySound(
@@ -135,7 +138,10 @@ public sealed class AbilityLogic_SlimeQueenWaterCannon : AbilityLogic
 
             bool canApplyDamage = laserVfx == null || laserVfx.DamageActive;
             if (!IsAbilityCancelled(spec) && shotStarted && canApplyDamage)
+            {
+                slimeQueen.PlayWaterCannonWallHitEffect(line);
                 slimeQueen.TryDamagePlayerInWaterCannonShot(system, spec, line);
+            }
 
             float activeElapsedSeconds = 0f;
             while (activeElapsedSeconds < slimeQueen.WaterCannonShotActiveSeconds)
@@ -161,7 +167,7 @@ public sealed class AbilityLogic_SlimeQueenWaterCannon : AbilityLogic
     private IEnumerator WaitForWaterCannonDamageFrame(
         SlimeQueenP2Long slimeQueen,
         AbilitySpec spec,
-        DemonKingEgoLaserVfx laserVfx)
+        WaterZetLaserVfx laserVfx)
     {
         if (laserVfx == null)
         {

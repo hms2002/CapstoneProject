@@ -38,6 +38,7 @@ GameObject:
   - component: {fileID: 7001000000000000002}
   - component: {fileID: 6600200000000001}
   - component: {fileID: 880070000000000007}
+  - component: {fileID: 5001512703588793796}
   m_Layer: 31
   m_Name: ShadowMonster
   m_TagString: Enemy
@@ -59,6 +60,7 @@ Transform:
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 8315804103049438014}
+  - {fileID: 7713763953247894173}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &1695031726951874086
@@ -320,6 +322,11 @@ MonoBehaviour:
   blockMoveTag: {fileID: 0}
   telegraph: {fileID: 0}
   abilityCoordinator: {fileID: 0}
+  attackSound:
+    key: 
+    volumeMultiplier: 0
+    anchorPolicy: 0
+    localOffset: {x: 0, y: 0, z: 0}
   allowLegacyUpdateActivation: 0
   animator: {fileID: 0}
   attackReadyTriggerName: attackReady
@@ -591,6 +598,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   viewPrefab: {fileID: 4173988088759112643, guid: 08da978b416319e47889bb7d3e9e0343, type: 3}
   uiParentOverride: {fileID: 2826825829709561300}
+  installOnStart: 1
 --- !u!114 &8449557556642649421
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -743,6 +751,20 @@ MonoBehaviour:
   heightToScaleRatio: 0.45
   minScale: 0.55
   maxScale: 1.8
+--- !u!114 &5001512703588793796
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 625522859161183429}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b1a21a5a77b4e9e8d68c54b70c393fe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MonsterElementGaugeAnchor2D
+  anchor: {fileID: 7713763953247894173}
+  fallbackOffset: {x: 0, y: -1}
 --- !u!1 &7544634219824897759
 GameObject:
   m_ObjectHideFlags: 0
@@ -834,3 +856,34 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 1
+--- !u!1 &8916099285505860886
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7713763953247894173}
+  m_Layer: 31
+  m_Name: ElementGaugePivot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7713763953247894173
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8916099285505860886}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2826825829709561300}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

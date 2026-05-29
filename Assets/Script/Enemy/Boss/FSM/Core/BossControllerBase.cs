@@ -473,6 +473,7 @@ public abstract class BossControllerBase : Enemy, IBossAbilityStateBridge
 
         RunProgressCoordinator.EnsureInstance()?.NotifyBossCombatEnded(this);
         BossHudController.Instance?.MarkBossDefeated(this);
+        GetComponent<MonsterElementGaugeViewInstaller>()?.Uninstall();
         RunProgressCoordinator.EnsureInstance()?.NotifyBossDefeated(this);
         ResolveDeathPresentation();
         deathPresentation?.NotifyDeathStarted();

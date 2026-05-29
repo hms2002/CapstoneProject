@@ -1,3 +1,4 @@
+using CapstoneAudio;
 using UnityEngine;
 
 /// <summary>
@@ -7,6 +8,7 @@ using UnityEngine;
 [RequireComponent(typeof(Collider2D))]
 public class WeaponDrop2D : InteractableBase
 {
+    private static readonly SoundRef GetItemSound = SoundRef.FromKey("sound_worldDropItem_GetItem");
     private static readonly int OutlineEnabledID = Shader.PropertyToID("_OutlineEnabled");
     [SerializeField] private WeaponDefinition weapon;
     [SerializeField] private Transform promptAnchor;
@@ -93,6 +95,7 @@ public class WeaponDrop2D : InteractableBase
         var inventory = ResolveWeaponInventory(player);
         if (inventory != null && inventory.TryPickupWeapon(weapon, payload, transform.position))
         {
+            SoundPlaybackUtility.Play(GetItemSound, causer: gameObject, position: transform.position, sourceObject: this);
             Destroy(gameObject);
             return;
         }

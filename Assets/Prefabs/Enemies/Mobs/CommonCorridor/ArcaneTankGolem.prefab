@@ -145,6 +145,9 @@ GameObject:
   - component: {fileID: 1682370738737489465}
   - component: {fileID: 5421355747691400722}
   - component: {fileID: 239188215090358531}
+  - component: {fileID: 7700200000000006}
+  - component: {fileID: 7700100000000006}
+  - component: {fileID: 5059311314080229044}
   m_Layer: 31
   m_Name: ArcaneTankGolem
   m_TagString: Enemy
@@ -169,6 +172,7 @@ Transform:
   - {fileID: 5458160636778739136}
   - {fileID: 7343336548956091956}
   - {fileID: 7343336548956091954}
+  - {fileID: 2806285383944537333}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &7467483147040575357
@@ -609,6 +613,70 @@ MonoBehaviour:
   - {fileID: 7343336548956091954}
   captureInitialPositionsOnAwake: 1
   invertWhenFlipX: 1
+--- !u!114 &7700200000000006
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6955305126709057867}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fad5d077aaa519a4f831d619818082a0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  viewPrefab: {fileID: 4173988088759112643, guid: 08da978b416319e47889bb7d3e9e0343, type: 3}
+  uiParentOverride: {fileID: 5697791910601457754}
+  installOnStart: 1
+--- !u!114 &7700100000000006
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6955305126709057867}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1d4aa4b27d4ffd45b29291c3673f422, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  catalog: {fileID: 11400000, guid: 170c93a1a1f812a4998120c119fcd1e0, type: 2}
+  useDecay: 1
+  decayDelaySeconds: 3
+  decayPercentPerSecond: 0.02
+  allowOverflowCarry: 1
+  logWhenTriggered: 0
+  logMissingDefinition: 1
+  runtimeStates:
+  - definition: {fileID: 11400000, guid: c8dcfe51fa9e3e044aed999a44ea0965, type: 2}
+    currentBuildUp: 0
+    lastBuildUpTime: 0
+    sustainVfxInstance: {fileID: 0}
+    uiVisible: 1
+  - definition: {fileID: 11400000, guid: af992dd323e918342ae0adff8855bbff, type: 2}
+    currentBuildUp: 0
+    lastBuildUpTime: 0
+    sustainVfxInstance: {fileID: 0}
+    uiVisible: 1
+  - definition: {fileID: 11400000, guid: 3805c019bc7d27c439fa252c9673e1f6, type: 2}
+    currentBuildUp: 0
+    lastBuildUpTime: 0
+    sustainVfxInstance: {fileID: 0}
+    uiVisible: 1
+--- !u!114 &5059311314080229044
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6955305126709057867}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b1a21a5a77b4e9e8d68c54b70c393fe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MonsterElementGaugeAnchor2D
+  anchor: {fileID: 2806285383944537333}
+  fallbackOffset: {x: 0, y: -1}
 --- !u!1 &7343336548956091957
 GameObject:
   m_ObjectHideFlags: 0
@@ -854,3 +922,34 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+--- !u!1 &8194875862204155898
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2806285383944537333}
+  m_Layer: 31
+  m_Name: ElementGaugePivot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2806285383944537333
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8194875862204155898}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.22, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5697791910601457754}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

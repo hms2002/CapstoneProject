@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: GE_Puddle_AlcoholBuff
   m_EditorClassIdentifier: 
   effectName: GE_Puddle_AlcoholBuff
-  description: Alcohol puddle movement speed and attack speed buff.
+  description: 술 장판 이동 속도 및 공격 속도 버프.
   icon: {fileID: 0}
   duration: 0.35
   canStack: 0

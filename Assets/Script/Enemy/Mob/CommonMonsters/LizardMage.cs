@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityGAS;
+using CapstoneAudio;
 
 /// <summary>
 /// 책임:
@@ -12,6 +13,8 @@ using UnityGAS;
 [RequireComponent(typeof(LizardMageBurstRunner))]
 public sealed class LizardMage : Mob, IMobAttackDecisionSource
 {
+    private static readonly SoundRef ShotFireSound = SoundRef.FromKey("sound_lizardMage_shotFire");
+
     [SerializeField] private AbilityDefinition burstAbility;
     [SerializeField, Min(0f)] private float maxHealth = 7f;
 
@@ -171,6 +174,7 @@ public sealed class LizardMage : Mob, IMobAttackDecisionSource
             return;
         }
 
+        PlayShotFireSound(context.Origin);
         projectile.Setup(new ProjectileAttackSpawnContext
         {
             ownerSystem = abilitySystem,
@@ -184,6 +188,18 @@ public sealed class LizardMage : Mob, IMobAttackDecisionSource
             direction = direction,
             speed = context.ProjectileSpeed
         });
+    }
+
+    /// <summary>리자드 메이지의 각 마법탄 발사 타이밍에 사운드를 재생합니다.</summary>
+    private void PlayShotFireSound(Vector2 origin)
+    {
+        SoundPlaybackUtility.Play(
+            ShotFireSound,
+            instigator: gameObject,
+            causer: gameObject,
+            target: Target != null ? Target.gameObject : null,
+            position: origin,
+            sourceObject: this);
     }
 
     private void ApplyStats()
