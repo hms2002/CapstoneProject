@@ -1763,7 +1763,7 @@ MonoBehaviour:
     pitchMin: 1
     pitchMax: 1
     loop: 0
-    spatial: 1
+    spatial: 0
     important: 0
     cooldown: 0
     minDistance: 1
