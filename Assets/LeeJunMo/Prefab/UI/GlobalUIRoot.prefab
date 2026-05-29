@@ -34943,6 +34943,10 @@ MonoBehaviour:
   authoredCursorImage: {fileID: 0}
   hideSystemCursorWhileSpriteActive: 1
   overlaySortingOrder: 32767
+  scaleWithScreenHeight: 1
+  referenceScreenHeight: 1080
+  minResolutionScale: 0.75
+  maxResolutionScale: 2.5
 --- !u!1 &7718402600183217301
 GameObject:
   m_ObjectHideFlags: 0

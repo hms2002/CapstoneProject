@@ -102,9 +102,13 @@ public sealed class MouseCursorService : MonoBehaviour
     [SerializeField] private RectTransform authoredCursorRect;
     [SerializeField] private Image authoredCursorImage;
 
-    [Header("Software Cursor Fallback")]
+    [Header("Software Cursor Presentation")]
     [SerializeField] private bool hideSystemCursorWhileSpriteActive = true;
     [SerializeField] private int overlaySortingOrder = short.MaxValue;
+    [SerializeField] private bool scaleWithScreenHeight = true;
+    [SerializeField, Min(1f)] private float referenceScreenHeight = 1080f;
+    [SerializeField, Min(0.1f)] private float minResolutionScale = 0.1f;
+    [SerializeField, Min(0.1f)] private float maxResolutionScale = 2.5f;
 
     private readonly Dictionary<int, DomainRequest> domainRequests = new Dictionary<int, DomainRequest>();
     private readonly Dictionary<int, OwnerFlag> interactableOwners = new Dictionary<int, OwnerFlag>();
@@ -436,14 +440,8 @@ public sealed class MouseCursorService : MonoBehaviour
             return;
         }
 
-        if (TryApplyHardwareCursor(definition))
-        {
-            HideSoftwareCursor();
-            Cursor.visible = true;
-            return;
-        }
-
-        ApplySoftwareCursor(definition);
+        if (!ApplySoftwareCursor(definition))
+            RestoreSystemCursor();
     }
 
     private MouseCursorDomain ResolveDomain()
@@ -673,20 +671,26 @@ public sealed class MouseCursorService : MonoBehaviour
         return true;
     }
 
-    private void ApplySoftwareCursor(MouseCursorSpriteDefinition definition)
+    private bool ApplySoftwareCursor(MouseCursorSpriteDefinition definition)
     {
         EnsureRuntimePresentation();
         if (cursorImage == null || cursorRect == null)
-            return;
+        {
+            HideSoftwareCursor();
+            return false;
+        }
 
         Sprite sprite = definition.sprite;
         if (sprite == null)
-            return;
+        {
+            HideSoftwareCursor();
+            return false;
+        }
 
         cursorImage.sprite = sprite;
         cursorImage.enabled = true;
         cursorImage.SetNativeSize();
-        cursorRect.localScale = Vector3.one * Mathf.Max(0.1f, definition.scale);
+        cursorRect.localScale = Vector3.one * ResolveSoftwareCursorScale(definition);
         cursorRect.pivot = ResolvePivot(sprite, definition.hotspotPixels);
         cursorRect.SetAsLastSibling();
 
@@ -697,6 +701,18 @@ public sealed class MouseCursorService : MonoBehaviour
         appliedCursorTexture = null;
         appliedCursorHotspot = new Vector2(float.MinValue, float.MinValue);
         Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
+        return true;
+    }
+
+    private float ResolveSoftwareCursorScale(MouseCursorSpriteDefinition definition)
+    {
+        float authoredScale = definition != null ? Mathf.Max(0.1f, definition.scale) : 1f;
+        if (!scaleWithScreenHeight)
+            return authoredScale;
+
+        float safeReferenceHeight = Mathf.Max(1f, referenceScreenHeight);
+        float resolutionScale = Mathf.Clamp(Screen.height / safeReferenceHeight, minResolutionScale, maxResolutionScale);
+        return authoredScale * resolutionScale;
     }
 
     private void UpdateCursorPosition()
